@@ -180,8 +180,6 @@ theorem algebraMap_mem_mdl (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) (S : Su
 
 theorem jK_mem_mdl (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) (S : Subgroup (Ω ≃ₐ[ℚ] Ω)) : X.jK ∈ mdl X Γ' S := (mem_mdl_iff X Γ' S _).2 ⟨jK_mem_lev X Γ', fun s _ => gal_jK X s⟩
 
-def algConst (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) : Algebra Ω (lev X Γ') := (levConst X Γ').toAlgebra
-
 def algPoly (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) : Algebra (Polynomial Ω) (lev X Γ') := (jPoly X Γ').toAlgebra
 
 def algRat (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) : Algebra (RatFunc Ω) (lev X Γ') := (jRat X Γ').toAlgebra
@@ -191,7 +189,7 @@ def algMdl (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) (S : Subgroup (Ω ≃�
 
 section Instances
 
-attribute [local instance] algConst algPoly algRat algMdl
+attribute [local instance] algPoly algRat algMdl
 
 theorem isScalarTower_poly_rat (X : Tower Ω ε) (Γ' : Subgroup SL(2, ℤ)) :
     IsScalarTower (Polynomial Ω) (RatFunc Ω) (lev X Γ') := IsScalarTower.of_algebraMap_eq fun P => (jRat_algebraMap X Γ' P).symm

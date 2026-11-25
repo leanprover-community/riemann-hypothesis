@@ -50,7 +50,7 @@ lemma uw_col_out {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (h
 lemma piI_not_inW {i : Fin (2 * r + k + 1)} (hi : ¬ inW k r i) : ¬ inW k r (piI k r i) := by
   unfold inW at hi ⊢
   unfold piI
-  rw [ite_eq_right hi]
+  rw [if_neg hi]
   show ¬ (r ≤ 2 * r + k - i.val ∧ 2 * r + k - i.val ≤ r + k)
   have := i.isLt
   omega
@@ -62,39 +62,39 @@ private lemma Hpk_applyUnitaryQuotientCompactness (i x : Fin (2 * r + k + 1)) :
   by_cases hW : r ≤ i.val ∧ i.val ≤ r + k
   · have hp : piI k r i = i := by
       unfold piI
-      exact ite_eq_left hW
+      exact if_pos hW
     rw [hp]
     unfold Hpk
     have n1 : ¬ (i.val < r ∧ i.val + x.val = 2 * r + k) := by omega
-    rw [ite_eq_right n1]
+    rw [if_neg n1]
     by_cases hxi : x = i
     · subst hxi
       have n2 : ¬ (x.val < r ∧ x.val + x.val = 2 * r + k) := by omega
-      rw [ite_eq_right n2, ite_eq_left ⟨hW.1, hW.2, rfl⟩, ite_eq_left rfl]
+      rw [if_neg n2, if_pos ⟨hW.1, hW.2, rfl⟩, if_pos rfl]
     · have hxv : x.val ≠ i.val := fun h => hxi (Fin.ext h)
       have n2 : ¬ (x.val < r ∧ i.val + x.val = 2 * r + k) := by omega
       have n3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = x) := fun h => hxi h.2.2.symm
-      rw [ite_eq_right n2, ite_eq_right n3, ite_eq_right hxi]
+      rw [if_neg n2, if_neg n3, if_neg hxi]
   · have hp : piI k r i = ⟨2 * r + k - i.val, by omega⟩ := by
       unfold piI
-      exact ite_eq_right hW
+      exact if_neg hW
     rw [hp]
     unfold Hpk
     have hc : ¬ (i.val = r + k) := by omega
     have n3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = x) := fun h => hW ⟨h.1, h.2.1⟩
-    rw [ite_eq_right hc]
+    rw [if_neg hc]
     by_cases hxi : x.val = 2 * r + k - i.val
     · have hx' : x = ⟨2 * r + k - i.val, by omega⟩ := Fin.ext hxi
-      rw [ite_eq_left hx']
+      rw [if_pos hx']
       by_cases hir : i.val < r
-      · rw [ite_eq_left ⟨hir, by omega⟩]
+      · rw [if_pos ⟨hir, by omega⟩]
       · have n1 : ¬ (i.val < r ∧ i.val + x.val = 2 * r + k) := fun h => hir h.1
         have p2 : x.val < r ∧ i.val + x.val = 2 * r + k := ⟨by omega, by omega⟩
-        rw [ite_eq_right n1, ite_eq_left p2]
+        rw [if_neg n1, if_pos p2]
     · have hx' : ¬ x = ⟨2 * r + k - i.val, by omega⟩ := fun h => hxi (congrArg Fin.val h)
       have n1 : ¬ (i.val < r ∧ i.val + x.val = 2 * r + k) := by omega
       have n2 : ¬ (x.val < r ∧ i.val + x.val = 2 * r + k) := by omega
-      rw [ite_eq_right hx', ite_eq_right n1, ite_eq_right n2, ite_eq_right n3]
+      rw [if_neg hx', if_neg n1, if_neg n2, if_neg n3]
 
 lemma uw_block {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z)
     (i j : Fin (2 * r + k + 1)) (hij : ¬ (inW k r i ∧ inW k r j)) :
@@ -102,7 +102,7 @@ lemma uw_block {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh 
   by_cases hj : inW k r j
   · have hi : ¬ inW k r i := fun h' => hij ⟨h', hj⟩
     have hne : i ≠ j := fun e => hi (by rw [e]; exact hj)
-    rw [ite_eq_right hne]
+    rw [if_neg hne]
     have hh' := hh
     simp only [UWset, Set.mem_setOf_eq] at hh'
     have hU : hᴴ * Hpk k r * h = Hpk k r := hh'.1
@@ -112,22 +112,24 @@ lemma uw_block {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh 
     have hrowp : ∀ y, (hᴴ * Hpk k r) (piI k r i) y = Hpk k r (piI k r i) y := by
       intro y
       rw [Matrix.mul_apply, Finset.sum_eq_single (piI k r i)]
-      · rw [Matrix.conjTranspose_apply, hcol, ite_eq_left rfl, star_one, one_mul]
+      · rw [Matrix.conjTranspose_apply, hcol, if_pos rfl, star_one, one_mul]
       · intro x _ hx
-        rw [Matrix.conjTranspose_apply, hcol, ite_eq_right hx, star_zero, zero_mul]
-      · exact fun hm => absurd (Finset.mem_univ _) hm
+        rw [Matrix.conjTranspose_apply, hcol, if_neg hx, star_zero, zero_mul]
+      · intro hm
+        exact absurd (Finset.mem_univ _) hm
     have e := congrFun (congrFun hU (piI k r i)) j
     rw [Matrix.mul_apply] at e
     simp only [hrowp] at e
     rw [Finset.sum_eq_single i] at e
-    · rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) i, Hpk_applyUnitaryQuotientCompactness (piI k r i) j, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, ite_eq_left rfl,
-        ite_eq_right (Ne.symm hne)] at e
+    · rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) i, Hpk_applyUnitaryQuotientCompactness (piI k r i) j, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, if_pos rfl,
+        if_neg (Ne.symm hne)] at e
       have hc : (if (piI k r i).val = r + k then (-1 : ℂ) else 1) ≠ 0 := by
         split_ifs <;> norm_num
       exact (mul_eq_zero.mp e).resolve_left hc
     · intro y _ hy
-      rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) y, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, ite_eq_right hy, zero_mul]
-    · exact fun hm => absurd (Finset.mem_univ _) hm
+      rw [Hpk_applyUnitaryQuotientCompactness (piI k r i) y, _root_.PI.QuotSetU.UnitaryGroupMassFormula.SW.piI_piI, if_neg hy, zero_mul]
+    · intro hm
+      exact absurd (Finset.mem_univ _) hm
   · exact uw_col_out hh j hj i
 
 lemma one_mem_UW : (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) ∈ UWset k r z := by
@@ -147,26 +149,6 @@ lemma mul_mem_UW {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
   · rw [← Matrix.mulVec_mulVec, (hb2 i).1, (ha2 i).1]
   · rw [← Matrix.mulVec_mulVec, (hb2 i).2, (ha2 i).2]
   · rw [← Matrix.mulVec_mulVec, hb3, ha3]
-
-private lemma sign_mul_sign_piI_eq_one (i : Fin (2 * r + k + 1)) :
-    (if i.val = r + k then (-1 : ℂ) else 1) *
-      (if (piI k r i).val = r + k then (-1 : ℂ) else 1) = 1 := by
-  by_cases hW : r ≤ i.val ∧ i.val ≤ r + k
-  · have hp : piI k r i = i := by
-      unfold piI
-      exact ite_eq_left hW
-    rw [hp]
-    split_ifs <;> norm_num
-  · have hi := i.isLt
-    have hp : piI k r i = ⟨2 * r + k - i.val, by omega⟩ := by
-      unfold piI
-      exact ite_eq_right hW
-    rw [hp]
-    have h1 : ¬ (i.val = r + k) := by omega
-    have h2 : ¬ ((⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val = r + k) := by
-      show ¬ (2 * r + k - i.val = r + k)
-      omega
-    rw [ite_eq_right h1, ite_eq_right h2, one_mul]
 
 lemma inv_fix {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hU : a ∈ UH (Hpk k r))
     {v : Fin (2 * r + k + 1) → ℂ} (hv : a *ᵥ v = v) : a⁻¹ *ᵥ v = v := by
@@ -191,7 +173,8 @@ lemma inv_mem_UW {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
   have hinv : a⁻¹ = Hpk k r * aᴴ * Hpk k r := Matrix.inv_eq_left_inv hl
   have hr : a * a⁻¹ = 1 := by
     have hla : a⁻¹ * a = 1 := by
-      rwa [hinv]
+      rw [hinv]
+      exact hl
     exact Matrix.mul_nonsing_inv a (Matrix.isUnit_det_of_left_inverse hla)
   refine ⟨?_, fun i => ⟨inv_fix ha1 (ha2 i).1, inv_fix ha1 (ha2 i).2⟩, inv_fix ha1 ha3⟩
   show (a⁻¹)ᴴ * Hpk k r * a⁻¹ = Hpk k r

@@ -111,7 +111,7 @@ open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheor
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.intersection_number_multilinear_symm : ∀ (K : Type) [Field K] (A : AbVar K) (J : Type) [Fintype J], Fintype.card J = A.dim → (∃ M : MultilinearMap (RingHom.id ℤ) (fun _ : J => Pic A.X.left) ℤ, ∀ c, M c = inter A c) ∧ ∀ (J' : Type) [Fintype J'] (e : J' ≃ J) (c : J → Pic A.X.left), inter A (c ∘ e) = inter A c := by
-  exact GlobalTheory.AV.AbVar.inter_multilinear_and_symm
+  apply _root_.GlobalTheory.AV.AbVar.inter_multilinear_and_symm <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberMultilinearSymmStatement =====

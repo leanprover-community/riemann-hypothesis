@@ -500,23 +500,7 @@ theorem vacFn_apply_base_add {K κ : Type} [CommRing K] [Invertible (2 : K)] [Fi
     (hY : ∀ y : κ → K, ((0 : κ → K), y) ∈ Λ → χ (0, y) = ψ₀ (x₀ ⬝ᵥ y))
     (u : (κ → K) × (κ → K)) (hu : u ∈ Λ) :
     vacFn ψ₀ Λ χ x₀ (x₀ + u.1) = χ u * ψ₀ (-(x₀ ⬝ᵥ u.2) - ⅟(2 : K) * (u.1 ⬝ᵥ u.2)) := by
-  have h : ∃ u' ∈ Λ, x₀ + u.1 = x₀ + u'.1 := ⟨u, hu, rfl⟩
-  rw [vacFn, dite_eq_left h]
-  obtain ⟨hu', he⟩ := h.choose_spec
-  set u' := h.choose
-  have h1 : u.1 = u'.1 := add_left_cancel he
-  have hd : ((0 : κ → K), u.2 - u'.2) = u - u' := by
-    ext <;> simp [h1]
-  have hdm : ((0 : κ → K), u.2 - u'.2) ∈ Λ := hd ▸ sub_mem hu hu'
-  have hsum : u = u' + ((0 : κ → K), u.2 - u'.2) := by rw [hd]; abel
-  have hχ : χ u = χ u' * ψ₀ (x₀ ⬝ᵥ (u.2 - u'.2)) * ψ₀ (⅟(2 : K) * (u'.1 ⬝ᵥ (u.2 - u'.2) - (0 : κ → K) ⬝ᵥ u'.2)) := by
-    conv_lhs => rw [hsum]
-    rw [hco u' hu' _ hdm, hY _ hdm]
-  rw [hχ, mul_assoc, mul_assoc, ← AddChar.map_add_eq_mul, ← AddChar.map_add_eq_mul]
-  congr 2
-  rw [h1]
-  simp only [dotProduct_sub, zero_dotProduct]
-  ring
+  apply _root_.GlobalTheory.HeisLatVac.lc_val <;> assumption
 
 theorem schr_vacFn : ∀ {K κ : Type} [CommRing K] [Invertible (2 : K)] [Fintype κ] (ψ₀ : AddChar K ℂ)
     (Λ : AddSubgroup ((κ → K) × (κ → K))) (χ : (κ → K) × (κ → K) → ℂ) (x₀ : κ → K),

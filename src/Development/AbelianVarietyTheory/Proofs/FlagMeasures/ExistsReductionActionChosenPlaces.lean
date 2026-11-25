@@ -827,7 +827,7 @@ theorem exists_prod_le_of_isRadical {R : Type*} [CommRing R] [IsDedekindDomain R
   exact (Ideal.prod_le_inf.trans (Finset.inf_le hv)) hx
 
 theorem extId_eq_image (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (Inhab.psi I.F I.E) := by
-  exact GlobalTheory.RowLev.extId_eq_map_psi I 𝔞
+  apply _root_.GlobalTheory.RowLev.PrimeIdem.extId_eq_map <;> assumption
 
 private theorem isCoprime_map_of_ne {R S : Type*} [CommRing R] [IsDedekindDomain R] [CommRing S]
     (f : R →+* S) {u v : HeightOneSpectrum R} (huv : u ≠ v) :
@@ -948,7 +948,8 @@ theorem exists_intAd (f : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F
   exact ⟨⟨⟨f, Filter.Eventually.of_forall hmem⟩, hmem⟩, fun _ => rfl⟩
 
 theorem intAd_ext {x y : intAd F} (h : ∀ v, (x : Af F) v = (y : Af F) v) : x = y := by
-  exact Subtype.ext (DFunLike.ext _ _ h)
+  apply Subtype.ext
+  exact DFunLike.ext _ _ h
 
 theorem isUnit_intAd (x : intAd F) (hx : ∀ v, Valued.v ((x : Af F) v) = 1) : IsUnit x := by
   have hne : ∀ v, (x : Af F) v ≠ 0 := fun v h0 => by simpa [h0] using hx v
@@ -995,8 +996,8 @@ theorem exists_idem_intAd (x : intAd F) : ∃ μ : intAd F, (μ * x) * (μ * x) 
       rwa [HeightOneSpectrum.mem_adicCompletionIntegers] at this
     show Valued.v ((1 - ((μ * x : intAd F) : Af F) v) * (x : Af F) v * (y : Af F) v + 1) = 1
     by_cases h : Valued.v ((x : Af F) v) = 1
-    · rw [hprod v, ite_eq_left h, sub_self, zero_mul, zero_mul, zero_add, map_one]
-    · rw [hprod v, ite_eq_right h, sub_zero, one_mul, add_comm]
+    · rw [hprod v, if_pos h, sub_self, zero_mul, zero_mul, zero_add, map_one]
+    · rw [hprod v, if_neg h, sub_zero, one_mul, add_comm]
       apply Valuation.map_one_add_of_lt
       rw [map_mul]
       calc Valued.v ((x : Af F) v) * Valued.v ((y : Af F) v) ≤ Valued.v ((x : Af F) v) * 1 :=
@@ -1032,7 +1033,8 @@ theorem intAdIncl_isIntegral : (intAdIncl F E).IsIntegral := by
     · exact ⟨algebraMap (intAd F) (IntAf F E) y, isIntegral_algebraMap, rfl⟩
   intro x
   obtain ⟨y, hy, hyx⟩ := hle x.2
-  rwa [show x = y from Subtype.ext hyx.symm]
+  rw [show x = y from Subtype.ext hyx.symm]
+  exact hy
 
 theorem intAdIncl_jacobson {x : intAd F} (hx : x ∈ Ideal.jacobson (⊥ : Ideal (intAd F))) :
     intAdIncl F E x ∈ Ideal.jacobson (⊥ : Ideal (IntAf F E)) := by
@@ -1117,7 +1119,7 @@ theorem psi_mem_map_iff (𝔞 : Ideal (𝓞 E)) (h : 𝔞 ≠ ⊥) (a : 𝓞 E) 
 end
 
 theorem extId_eq_map (I : AutInst) (𝔞 : Ideal (𝓞 I.E)) : extId I 𝔞 = 𝔞.map (psi I.F I.E) := by
-  exact GlobalTheory.RowLev.extId_eq_map_psi I 𝔞
+  apply _root_.GlobalTheory.RowLev.PrimeIdem.extId_eq_map <;> assumption
 
 theorem extId_principal_and_inter : ∀ (I : AutInst) (𝔞 : Ideal (𝓞 I.E)), 𝔞 ≠ ⊥ → (∃ t : IntAf I.F I.E, IsUnit (t : (I.E ⊗[I.F] Af I.F)) ∧ extId I 𝔞 = Ideal.span {t}) ∧ ∀ (a : 𝓞 I.E) (h : Formalism.UG.inclE (F := I.F) (Af I.F) (a : I.E) ∈ IntAf I.F I.E), (⟨_, h⟩ : IntAf I.F I.E) ∈ extId I 𝔞 ↔ a ∈ 𝔞 := by
   intro I 𝔞 h𝔞
@@ -1257,7 +1259,8 @@ theorem trivial_iff_mem_Kg : ∀ (I : AutInst) (N : ℕ) (g : Fin 2 → ℕ) (Pl
       intro k v y hy
       have h1 : I.fmat x * I.fmat x⁻¹ = 1 := by rw [← fmat_mul, mul_inv_cancel, fmat_one]
       have h := neg_mem (H1 k v _ (mulVec_mem hx' hy))
-      rwa [Matrix.mulVec_mulVec, sub_mul, h1, one_mul, ← Matrix.neg_mulVec, neg_sub] at h
+      rw [Matrix.mulVec_mulVec, sub_mul, h1, one_mul, ← Matrix.neg_mulVec, neg_sub] at h
+      exact h
     refine ⟨hx, fun y hy => (crt y hy).1 fun u hu => ?_⟩
     have hk : ∃ k, ((g k : ℕ) : 𝓞 I.E) ∈ u.asIdeal := by
       rw [Nat.cast_mul] at hu

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RaynaudTorusWeightZeroInvariantFieldCoeffs
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
@@ -673,7 +674,7 @@ theorem isWt_of_local (α : Q.X) (V : Y.H.left.Opens) (f : Γ(Y.H.left, V))
       (∀ χ y J, Good Q.P.L y J → val ((Y.Φ _ x').s χ) (𝟙 _) y J =
         gm (𝟙 (Over.mk (spMap φ)).left) y ⊤ (unitOn (c χ)) * val ((Y.Φ _ x).s χ) (𝟙 _) y J) →
       valR (A := S) x'.left V f = c α * valR (A := S) x.left V f) : IsWt Y α V f := by
-  exact GlobalTheory.Heat.CoeffWt.isWt_of_local Y α V f h
+  apply _root_.GlobalTheory.Heat.CoeffWt.isWt_of_local <;> assumption
 
 end GlobalTheory.Heat.WtLocal
 
@@ -1055,7 +1056,7 @@ theorem rsT_pbT' {Z X : Scheme.{0}} (m : Z ⟶ X) {O₀ : X.Opens} {O₁ O₂ : 
     (s : Γ(X, O₀)) : rsT (pbT m s O₁) O₂ = pbT m s O₂ := by
   rw [_root_.GlobalTheory.KS.rsT_of_le h₂]
   unfold pbT
-  rw [dite_eq_left h₁, dite_eq_left (h₂.trans h₁), ← CommRingCat.comp_apply, Scheme.Hom.appLE_map]
+  rw [dif_pos h₁, dif_pos (h₂.trans h₁), ← CommRingCat.comp_apply, Scheme.Hom.appLE_map]
 
 theorem rsT_constFn' {R : Type} [CommRing R] {Z : Scheme.{0}} (p : Z ⟶ Sp R) {O₀ O : Z.Opens} (h : O ≤ O₀) (a : R) :
     rsT (constFn p O₀ a) O = constFn p O a := by

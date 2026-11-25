@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAffineChartRatLift
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRatPointOfFiniteType
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenCompactificationGenericSubsetModuli
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
@@ -101,65 +102,16 @@ theorem isUnit_map_of_ne_zero {o R : Type} [CommRing o] [IsDedekindDomain o] [Al
   letI := Ideal.Quotient.field m
   haveI : CharZero (R ⧸ m) := charZero_of_inj_zero fun n hn => by
     by_contra h0
-    exact ((hR n (by exact_mod_cast h0)).map (Ideal.Quotient.mk m)).ne_zero (by simpa using hn)
+    have hu := (hR n (by exact_mod_cast h0)).map (Ideal.Quotient.mk m)
+    exact hu.ne_zero (by simpa using hn)
   have hk := ker_eq_bot_of_charZero ((Ideal.Quotient.mk m).comp φ)
   have : a ∈ RingHom.ker ((Ideal.Quotient.mk m).comp φ) := Ideal.Quotient.eq_zero_iff_mem.2 ham
   rw [hk] at this
   exact ha this
 
 theorem exists_affine_chart_ratHull_lift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q → ∀ (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (cf : Coeff l) (C : UCompact Xo cf) (X : USetup C) (w₀ : X.M.Z), X.π w₀ ∈ Set.range C.i → ∃ (U₀ : X.M.Z.Opens) (u₀ : Sp (ratHull (X.M.ringOn U₀)) ⟶ Xo.XF cf), IsAffineOpen U₀ ∧ w₀ ∈ U₀ ∧ spMap (ratHull (X.M.ringOn U₀)).val.toRingHom ≫ u₀ = X.uΩ := by
-  intro E _ _ _ H Dw _ l Xo cf C X w hw
-  letI := C.b.toAlgebra
-  haveI := C.isFractionRing
-  haveI := C.iF_open
-  haveI := C.ded
-  haveI := C.ft
-  haveI := C.isPreimmersion_i
-  haveI : CharZero X.Ω₁ := by
-    obtain ⟨t, -⟩ := Spec.map_surjective (X.uΩ ≫ pullback.snd _ _)
-    exact (RingHom.charZero_iff (R := cf.F) t.hom.injective).1 inferInstance
-  haveI : IsPreimmersion (spMap C.b) := IsPreimmersion.of_isLocalization (nonZeroDivisors C.o)
-  have hg : Topology.IsEmbedding (pullback.fst C.z (spMap C.b) :) := (pullback.fst C.z (spMap C.b)).isEmbedding
-  obtain ⟨V, hV, hVe⟩ := hg.isInducing.isOpen_iff.1 C.iF.isOpenEmbedding.isOpen_range
-  have hwV : w ∈ X.π ⁻¹ᵁ ⟨V, hV⟩ := by
-    obtain ⟨x, hx⟩ := hw
-    have : C.iF x ∈ (pullback.fst C.z (spMap C.b) :) ⁻¹' V := hVe ▸ ⟨x, rfl⟩
-    show X.π w ∈ V
-    rwa [← hx]
-  obtain ⟨U, hU, hwU, hUV⟩ := exists_isAffineOpen_mem_and_subset (X := X.M.Z) hwV
-  have hne : ((U : X.M.Z.Opens) : Set X.M.Z).Nonempty := ⟨w, hwU⟩
-  let φ : Γ(X.M.Z, U) ⟶ CommRingCat.of (ratHull (X.M.ringOn U)) :=
-    CommRingCat.ofHom ((toRat (X.M.ringOn U)).comp (X.M.sectionsEquiv U hne).toRingHom)
-  let f : Sp (ratHull (X.M.ringOn U)) ⟶ X.M.Z := Spec.map φ ≫ hU.fromSpec
-  obtain ⟨ψ, hψ⟩ := Spec.map_surjective (f ≫ X.π ≫ C.z)
-  have hu : ∀ a : nonZeroDivisors C.o, IsUnit (ψ.hom a) := fun a =>
-    isUnit_map_of_ne_zero (fun n hn => isUnit_intCast_ratHull _ hn) ψ.hom (nonZeroDivisors.ne_zero a.2)
-  let χ : cf.F →+* ratHull (X.M.ringOn U) := IsLocalization.lift (M := nonZeroDivisors C.o) hu
-  have hχ : (f ≫ X.π) ≫ C.z = spMap χ ≫ spMap C.b := by
-    rw [Category.assoc, ← hψ, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-    exact congrArg (fun t => spMap t) (IsLocalization.lift_comp (M := nonZeroDivisors C.o) hu).symm
-  let g := pullback.lift _ _ hχ
-  have hgf : g ≫ pullback.fst _ _ = f ≫ X.π := pullback.lift_fst _ _ _
-  have hrange : Set.range g ⊆ Set.range C.iF := by
-    rintro _ ⟨y, rfl⟩
-    rw [← hVe]
-    show (g ≫ pullback.fst C.z (spMap C.b)) y ∈ V
-    rw [hgf]
-    have : hU.fromSpec (Spec.map φ y) ∈ Set.range hU.fromSpec := ⟨_, rfl⟩
-    rw [hU.range_fromSpec] at this
-    exact hUV this
-  refine ⟨U, IsOpenImmersion.lift C.iF g hrange, hU, hwU, ?_⟩
-  rw [← cancel_mono C.i, Category.assoc, Category.assoc, ← X.comp, UCompact.i, IsOpenImmersion.lift_fac_assoc, hgf]
-  have hpt : ⊤ ≤ X.M.pt ⁻¹ᵁ U := X.M.top_le_preimage_pt hne
-  have hφ : φ ≫ CommRingCat.ofHom (ratHull (X.M.ringOn U)).val.toRingHom = valMap X.M.pt U hpt := by
-    ext a
-    show ((X.M.sectionsEquiv U hne a : X.M.ringOn U) : X.Ω₁) = _
-    rw [RatModel.coe_sectionsEquiv, ← valR_eq, valF_eq_valR]
-  have hf : spMap (ratHull (X.M.ringOn U)).val.toRingHom ≫ f = X.M.pt := by
-    simp only [f, ← Category.assoc]
-    rw [spMap, ← Spec.map_comp, hφ, specMap_valMap_fromSpec]
-  rw [← hf]
-  simp only [Category.assoc]
+  intros
+  apply _root_.GlobalTheory.UPoinc.ChartAt.exists_affine_chart_ratLift <;> assumption
 
 end GlobalTheory.UPoinc.ChartAt
 end -- clump:auto
@@ -265,7 +217,8 @@ theorem GlobalTheory.UPoinc.exists_rechart_wit : ∀ (E : Type) [Field E] [Numbe
         spMap (Subalgebra.inclusion (ratHull_mono h₁)).toRingHom ≫ u₀ = u' := by
       rw [← Category.assoc, ← Spec.map_comp]
       rfl
-    rwa [e1, e2] at h2
+    rw [e1, e2] at h2
+    exact h2
   obtain ⟨G, _, α, β, hα, hβ, hLG⟩ := hUO
   have wβ : wi.β ≫ Xo.univ.t.G.hom = (wi.G.hom ≫ spMap (ratHull (X.M.ringOn U)).val.toRingHom) ≫ u' ≫ pullback.fst _ _ := by
     rw [wi.hβ.1.w, ← hu']
@@ -334,7 +287,8 @@ theorem GlobalTheory.UPoinc.exists_rechart_wit : ∀ (E : Type) [Field E] [Numbe
     obtain ⟨w0, h₁, h₂⟩ := hw0 x
     refine ⟨w0 ≫ inv e, ?_, ?_⟩
     · rw [← hea, Category.assoc, IsIso.inv_hom_id_assoc, h₁]
-    · rwa [← hea', Category.assoc, IsIso.inv_hom_id_assoc]
+    · rw [← hea', Category.assoc, IsIso.inv_hom_id_assoc]
+      exact h₂
   obtain ⟨c₀, hc, hthm, hevm, ρ', ⟨hS₁, G', _, α', β', hα', hβ', hL', m', hm', hm₁', hpt'⟩, hi₀⟩ :=
     GlobalTheory.ThetaExtend.exists_real_rechart hL X.S X.ρ (X.M.ringOn U) fg frac P' P₀ a a' pt' th b ha ha' hl hl' hg hyp hadd hbij hweil
       hw0 hth hb Q hQ
@@ -535,7 +489,8 @@ theorem exists_pull_univ {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
   refine ⟨e.hom.left ≫ m₂.cm.F, ((isGrpPullback_of_iso e).comp m₂.cart).congr (Category.id_comp _) rfl, ?_, fun a => ?_⟩
   · have hext : LBIso (T.t.PP.L.pull (pullback.fst T.t.G.hom (jK T.V))) (T.P.A.L.pull T.P.U.gen.hom.left) := by
       obtain ⟨w, hw⟩ := T.P.U.ext
-      exact LBIso.symm (T.P.bundle ▸ ⟨w, hw⟩)
+      have hb := T.P.bundle
+      exact LBIso.symm (hb ▸ ⟨w, hw⟩)
     have s1 := GlobalTheory.TripleTheta.lbIso_inv T.P.U.gen hext
     have s2 := (GlobalTheory.GenSpread.lbIso_pull_pull T.t.PP.isLB (a := pullback.fst T.t.G.hom (jK T.V))
       T.P.U.gen.inv.left rfl).symm
@@ -547,7 +502,8 @@ theorem exists_pull_univ {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
   · letI := H.starRing
     have h0 := T.P.lin.ext a
     have h1 : T.P.oA.act a ≫ T.P.U.gen.inv = T.P.U.gen.inv ≫ (Over.pullback (jK T.V)).map (T.t.act.act a) := by
-      rwa [Iso.comp_inv_eq, Category.assoc, eq_comm, Iso.inv_comp_eq]
+      rw [Iso.comp_inv_eq, Category.assoc, eq_comm, Iso.inv_comp_eq]
+      exact h0
     have h2 : ((Over.pullback (jK T.V)).map (T.t.act.act a)).left ≫ pullback.fst T.t.G.hom (jK T.V) =
         pullback.fst T.t.G.hom (jK T.V) ≫ (T.t.act.act a).left := pullback.lift_fst _ _ _
     have h3 : (T.P.oA.act a).left ≫ e.hom.left = e.hom.left ≫ (tK.act.act a).left := by

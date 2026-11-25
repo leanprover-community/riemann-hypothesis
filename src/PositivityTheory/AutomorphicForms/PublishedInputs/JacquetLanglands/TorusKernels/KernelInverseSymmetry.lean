@@ -44,6 +44,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.AutomorphyFactorScalarMatrix
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.KernelTermsInvariantBoundedProof
 
 @[expose] public section
 
@@ -67,9 +69,6 @@ theorem cK_nonneg (k : I → ℕ) (hk : ∀ v, 4 ≤ k v) : 0 ≤ cK k :=
   Finset.prod_nonneg fun v _ => div_nonneg (by
     have h : (4 : ℝ) ≤ k v := by exact_mod_cast hk v
     linarith) (by positivity)
-
-theorem nrm_pos (k : I → ℕ) (z : X I) : 0 < nrm k z :=
-  Finset.prod_pos fun v _ => Real.rpow_pos_of_pos (abs_pos.2 (z v).2) _
 
 theorem act_out (γ : PG F) (z : D.Xs) : D.act γ.out z = γ • z := by
   rw [← D.mk_smulX]
@@ -100,28 +99,16 @@ theorem Kap_smul (hB : B1b) (k : I → ℕ) (δ : PG F) (z w : D.Xs) :
   show kap (D.r v δ.out • z v) (D.r v δ.out • w v) ^ _ = _
   rw [hkap]
 
-theorem Kap_symm (hBc : B1c) (k : I → ℕ) (z w : X I) : Kap k z w = Kap k w z := by
-  obtain ⟨hsym, -⟩ := hBc
-  unfold Kap
-  refine Finset.prod_congr rfl fun v _ => ?_
-  rw [(hsym _ _).2.2]
-
 theorem Kap_swap (hB : B1b) (hBc : B1c) (k : I → ℕ) (γ : PG F) (z w : D.Xs) :
     Kap k z (γ • w : D.Xs) = Kap k w (γ⁻¹ • z : D.Xs) := by
   rw [← Kap_smul D hB k γ⁻¹ z (γ • w), inv_smul_smul]
-  exact Kap_symm hBc k _ _
+  exact KernelLevelTransform.Kap_symm hBc k _ _
 
 theorem ee_mem (x : Gf) (h : D.ee x ≠ 0) : x ∈ D.H := by
   unfold Dat.ee at h
   split_ifs at h with hx
   · exact hx
   · exact absurd rfl h
-
-theorem norm_ee (hAx : D.Ax) (x : Gf) : ‖D.ee x‖ ≤ 1 := by
-  unfold Dat.ee
-  split_ifs with hx
-  · rw [hAx.χn]
-  · simp
 
 theorem supp (γ : PG F) (ω : D.Om) (x : Gf) (h : D.ee ((D.rep ω)⁻¹ * (D.j γ.out)⁻¹ * x) ≠ 0) :
     γ • ω = (show D.Om from (x : Gf ⧸ D.H)) := by
@@ -153,7 +140,7 @@ theorem T_le (hB : B1b) (hBc : B1c) (hAx : D.Ax) (k : I → ℕ) (hk : ∀ v, 4 
         ENNReal.ofReal (Kap k y.2 (γ⁻¹ • (zX D p) : D.Xs))) γ := by
   by_cases hγ : γ • y.1 = (xH D p)
   · rw [Set.indicator_of_mem (show γ ∈ {γ : PG F | γ • y.1 = (xH D p)} from hγ)]
-    rw [← ENNReal.ofReal_mul (mul_nonneg (div_nonneg (cK_nonneg k hk) (nrm_pos k p.1).le) (nrm_pos k y.2).le),
+    rw [← ENNReal.ofReal_mul (mul_nonneg (div_nonneg (cK_nonneg k hk) (KernelLevelTransform.nrm_pos k p.1).le) (KernelLevelTransform.nrm_pos k y.2).le),
       ← ofReal_norm]
     apply ENNReal.ofReal_le_ofReal
     have hn := norm_term D hB k (fun v => le_trans (by norm_num) (hk v)) γ.out p.1 y.2
@@ -161,8 +148,8 @@ theorem T_le (hB : B1b) (hBc : B1c) (hAx : D.Ax) (k : I → ℕ) (hk : ∀ v, 4 
       rw [act_out]
       exact Kap_swap D hB hBc k γ p.1 y.2
     rw [hK] at hn
-    have hN := eq_div_of_mul_eq (nrm_pos k p.1).ne' hn
-    have he := norm_ee D hAx ((D.rep y.1)⁻¹ * (D.j γ.out)⁻¹ * p.2)
+    have hN := eq_div_of_mul_eq (KernelLevelTransform.nrm_pos k p.1).ne' hn
+    have he := KernelTermsInvariantLemmas.norm_ee_le D hAx ((D.rep y.1)⁻¹ * (D.j γ.out)⁻¹ * p.2)
     unfold T
     rw [norm_mul]
     calc _ ≤ 1 * ‖qq k p.1 (D.act γ.out y.2) * D.J k γ.out y.2‖ := mul_le_mul_of_nonneg_right he (norm_nonneg _)
@@ -203,16 +190,16 @@ theorem main (hB1a : B1a) (hB : B1b) (hBc : B1c) (hE0a : E0a) (hKS : KapSum) (hA
     ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top) (hT y)
   have hsumm : ∀ y : D.Y, Summable fun γ => ‖T D k p γ y‖ := fun y => by
     simpa only [toReal_enorm] using ENNReal.summable_toReal (hfin y)
-  have hc0 : 0 ≤ cK k / nrm k p.1 := div_nonneg (cK_nonneg k hk) (nrm_pos k p.1).le
+  have hc0 : 0 ≤ cK k / nrm k p.1 := div_nonneg (cK_nonneg k hk) (KernelLevelTransform.nrm_pos k p.1).le
   have hbound : ∀ y : D.Y, ∑' γ, ‖T D k p γ y‖ ≤ cK k / nrm k p.1 * Bnd * nrm k y.2 := fun y => by
     have h1 : ∑' γ, ‖T D k p γ y‖ = (∑' γ, ‖T D k p γ y‖ₑ).toReal := by
       rw [ENNReal.tsum_toReal_eq (fun γ => enorm_ne_top)]
       simp only [toReal_enorm]
     rw [h1]
-    refine ENNReal.toReal_le_of_le_ofReal (mul_nonneg (mul_nonneg hc0 hBnd) (nrm_pos k y.2).le) ?_
+    refine ENNReal.toReal_le_of_le_ofReal (mul_nonneg (mul_nonneg hc0 hBnd) (KernelLevelTransform.nrm_pos k y.2).le) ?_
     calc _ ≤ _ := hT y
       _ = ENNReal.ofReal (cK k / nrm k p.1 * Bnd * nrm k y.2) := by
-        rw [← ENNReal.ofReal_mul (mul_nonneg hc0 (nrm_pos k y.2).le)]
+        rw [← ENNReal.ofReal_mul (mul_nonneg hc0 (KernelLevelTransform.nrm_pos k y.2).le)]
         congr 1
         ring
   refine ⟨hsumm, ?_, ⟨cK k / nrm k p.1 * Bnd, fun y => (norm_tsum_le_tsum_norm (hsumm y)).trans (hbound y)⟩⟩

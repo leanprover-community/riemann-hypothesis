@@ -65,7 +65,8 @@ theorem cmpForm_surjective (hP : GlobalTheory.Published.CrystallineSmoothLift) (
     (A : Over (Sp R)) [GrpObj A] (g : ℕ) (hab : IsAbelianScheme A)
     (hdim : SmoothOfRelativeDimension g A.hom) :
     Function.Surjective (cmpForm (A.hom ≫ 𝟙 (Sp R))) := by
-  apply GlobalTheory.LieInjField.cmpForm_surjective <;> assumption
+  intros
+  apply _root_.GlobalTheory.LieInjField.cmpForm_surjective <;> assumption
 
 section Lie
 

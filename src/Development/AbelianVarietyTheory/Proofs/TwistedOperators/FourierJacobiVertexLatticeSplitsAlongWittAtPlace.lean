@@ -99,7 +99,6 @@ theorem monoAt_of_proj {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (L : L
     refine add_mem (add_mem (sum_mem fun i _ => h1 i) ?_) (sum_mem fun i _ => h3 i)
     exact rat_mulVec_mem_latV d.i₀ hi _ h2
 
-open GlobalTheory.SeeSaw.SplitLat (colProj)
 
 theorem sumLat_map {n k c : ℕ} {M : Matrix (Fin n) (Fin k) D.host.E} {Λ : Submodule (𝓞 D.host.E) (Fin k → D.host.E)}
     {a : Matrix (Fin n) (Fin c) D.host.E} {𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E}
@@ -176,7 +175,6 @@ theorem eq_idempotent_mul_add_of_mul_sub_eq {n : ℕ} (a : Matrix (Fin n) (Fin c
 
 end SlopeTestRemainingChoices
 
-open GlobalTheory.SeeSaw.SplitLat (colProj)
 
 theorem auxiliaryLattice_splitsAlongWitt_at_place {A B : HSp D} {c ρ : ℕ} (t : HermitianOrthogonalExtensionData A B c (-1)) (d : HypDec B A ρ) (hc : c = 2 * ρ)
     (hh : IsAuxiliaryVectorWittDec t d) (hi : d.i₀ = frameMat B A t.ι) (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E))

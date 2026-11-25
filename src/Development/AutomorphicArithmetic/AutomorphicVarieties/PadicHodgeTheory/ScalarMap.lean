@@ -70,11 +70,6 @@ private def Cond (Ψ : G →* Oˣ) (I : Subgroup G) {C : Type} [CommRing C] [Alg
         ((r (s 1)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 1 (s 1)))) *
         ((r (s 2)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 2 (s 2)))) = 0
 
-private theorem scalar_map {R C : Type} [CommRing R] [CommRing C] (f : R →+* C) (c : R) :
-    f.mapMatrix (Matrix.scalar (Fin 3) c) = Matrix.scalar (Fin 3) (f c) := by
-  ext i j
-  simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.scalar_apply, Matrix.diagonal_apply]
-  split_ifs <;> simp
 
 private theorem cond_eqs (Ψ : G →* Oˣ) (I : Subgroup G) {R : Type} [CommRing R] [Algebra O R] (r : G →* GG (m := 3) (R := R)) :
     ∃ S : Set R, ∀ (C : Type) [CommRing C] [Algebra O C] (f : R →ₐ[O] C),
@@ -97,7 +92,8 @@ private theorem cond_eqs (Ψ : G →* Oˣ) (I : Subgroup G) {R : Type} [CommRing
       ((push f r (s 0)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 0 (s 0)))) *
         ((push f r (s 1)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 1 (s 1)))) *
         ((push f r (s 2)).mat - Matrix.scalar _ (algebraMap O C (UpperTheory.V.UnitaryThreeInertia.psi Ψ 2 (s 2)))) := fun s => by
-    simp only [M, hm, map_mul, map_sub, scalar_map, hc]
+    simp only [M, hm, map_mul, map_sub, Matrix.scalar_apply, RingHom.mapMatrix_apply,
+      Matrix.diagonal_map (RingHom.map_zero _), hc]
   constructor
   · rintro ⟨h1, h2⟩ a (⟨s, hs, k, rfl⟩ | ⟨s, hs, i, j, rfl⟩)
     · have := hP s

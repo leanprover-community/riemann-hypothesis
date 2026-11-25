@@ -125,85 +125,12 @@ theorem isClosed_UL (n : ℕ) (w : Pl E) : IsClosed (UL n w : Set (GLw n w)) := 
     unfold Formalism.UG.cT
     exact ((hv.matrix_map hc).matrix_transpose.matrix_mul continuous_const).matrix_mul hv
 
-private theorem isCompact_adicCompletionIntegers' (w : Pl E) :
-    IsCompact (w.adicCompletionIntegers E : Set (w.adicCompletion E)) := by
-  obtain ⟨C, hCc, hC⟩ := exists_compact_mem_nhds (0 : w.adicCompletion E)
-  obtain ⟨γ, hγ⟩ := Valued.mem_nhds_zero.1 hC
-  have hB := (Valued.mem_nhds_zero (R := w.adicCompletion E)).2 ⟨γ, subset_refl _⟩
-  obtain ⟨π, hπ⟩ := IsDedekindDomain.HeightOneSpectrum.valuation_exists_uniformizer (K := E) w
-  have hv0 : Valued.v (π : w.adicCompletion E) = WithZero.exp (-1 : ℤ) := by
-    rw [← hπ]
-    exact IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w π
-  have hlt : Valued.v (π : w.adicCompletion E) < 1 := by
-    rw [hv0]
-    have h : WithZero.exp (-1 : ℤ) < WithZero.exp 0 := WithZero.exp_lt_exp.2 (by norm_num)
-    simpa using h
-  have hne : (π : w.adicCompletion E) ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hv0
-    exact WithZero.exp_ne_zero hv0.symm
-  obtain ⟨N, hN⟩ := ((GlobalTheory.ConjAtPlace.tendsto_pow_of_lt_one _ hlt).eventually hB).exists
-  have hcne : (π : w.adicCompletion E) ^ N ≠ 0 := pow_ne_zero _ hne
-  have hsub : (w.adicCompletionIntegers E : Set (w.adicCompletion E)) ⊆
-      (fun y => ((π : w.adicCompletion E) ^ N)⁻¹ * y) '' C := by
-    intro x hx
-    have hx1 : Valued.v x ≤ 1 := hx
-    refine ⟨(π : w.adicCompletion E) ^ N * x, hγ ?_, ?_⟩
-    · rw [Set.mem_ofPred_eq, map_mul]
-      exact lt_of_le_of_lt (mul_le_of_le_one_right' ((Valuation.restrict_le_one_iff _).2 hx1)) hN
-    · simp only
-      rw [← mul_assoc, inv_mul_cancel₀ hcne, one_mul]
-  have hcl : IsClosed (w.adicCompletionIntegers E : Set (w.adicCompletion E)) :=
-    Valued.isClosed_integer (w.adicCompletion E)
-  exact (hCc.image (continuous_const.mul continuous_id)).of_isClosed_subset hcl hsub
-
-private theorem isCompact_KGL' (w : Pl E) : IsCompact (GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w)) := by
-  have hO := isCompact_adicCompletionIntegers' w
-  let A : Set (Matrix (Fin n) (Fin n) (w.adicCompletion E)) :=
-    {M | ∀ i j, M i j ∈ (w.adicCompletionIntegers E : Set (w.adicCompletion E))}
-  have hA : IsCompact A := by
-    have h : A = Set.univ.pi (fun _ : Fin n => Set.univ.pi
-        (fun _ : Fin n => (w.adicCompletionIntegers E : Set (w.adicCompletion E)))) := by
-      ext M
-      constructor
-      · exact fun h i _ j _ => h i j
-      · exact fun h i j => h i (Set.mem_univ _) j (Set.mem_univ _)
-    rw [h]
-    exact isCompact_univ_pi (fun _ => isCompact_univ_pi (fun _ => hO))
-  let f := Units.embedProduct (Matrix (Fin n) (Fin n) (w.adicCompletion E))
-  have hind : Topology.IsInducing f := Units.isEmbedding_embedProduct.isInducing
-  let P : Set (Matrix (Fin n) (Fin n) (w.adicCompletion E) × (Matrix (Fin n) (Fin n) (w.adicCompletion E))ᵐᵒᵖ) :=
-    (A ×ˢ (MulOpposite.unop ⁻¹' A)) ∩ {q | q.1 * q.2.unop = 1 ∧ q.2.unop * q.1 = 1}
-  have hP : IsCompact P := by
-    apply IsCompact.inter_right
-    · exact hA.prod ((MulOpposite.opHomeomorph.symm.isCompact_preimage).2 hA)
-    · exact (isClosed_eq (continuous_fst.mul (MulOpposite.continuous_unop.comp continuous_snd))
-        continuous_const).inter
-        (isClosed_eq ((MulOpposite.continuous_unop.comp continuous_snd).mul continuous_fst) continuous_const)
-  have hclosed : IsClosed (GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w)) :=
-    Subgroup.isClosed_of_isOpen _
-      (Subgroup.isOpen_mono (fun g hg => ((GlobalTheory.PrincCong.mem_congSub_iff w n 0 g).1 hg).1)
-        (GlobalTheory.PrincCong.isOpen_congSub w n 0))
-  have hfP : IsCompact (f ⁻¹' P) := by
-    rw [hind.isCompact_iff]
-    have h : f '' (f ⁻¹' P) = P := by
-      apply Set.image_preimage_eq_of_subset
-      rintro ⟨a, b⟩ ⟨-, h1, h2⟩
-      exact ⟨⟨a, b.unop, h1, h2⟩, rfl⟩
-    rwa [h]
-  refine hfP.of_isClosed_subset hclosed ?_
-  intro g hg
-  refine ⟨⟨?_, ?_⟩, ?_, ?_⟩
-  · exact fun i j => GlobalTheory.UnramDict.entry_mem hg i j
-  · exact fun i j => GlobalTheory.UnramDict.entry_mem (inv_mem hg) i j
-  · exact g.mul_inv
-  · exact g.inv_mul
-
 theorem isCompact_locK (w : Pl E) :
     IsCompact (((GlobalTheory.LFun.KGL w (n := n)).comap ((cLoc w).comp (locU n w).subtype) : Subgroup (locU n w)) : Set (locU n w)) := by
   obtain ⟨e, he⟩ := exists_equiv n w
   have hK : IsCompact ((Subtype.val : UL n w → GLw n w) ⁻¹' (GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w))) :=
-    (isClosed_UL n w).isClosedEmbedding_subtypeVal.isCompact_preimage (isCompact_KGL' w)
+    (isClosed_UL n w).isClosedEmbedding_subtypeVal.isCompact_preimage
+      (GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w n).2
   have heq : (((GlobalTheory.LFun.KGL w (n := n)).comap ((cLoc w).comp (locU n w).subtype) : Subgroup (locU n w)) :
       Set (locU n w)) = e ⁻¹' ((Subtype.val : UL n w → GLw n w) ⁻¹' (GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w))) := by
     ext x
@@ -232,10 +159,13 @@ theorem exists_cong_le (w : Pl E) (U : Subgroup (UL n w)) (hU : IsOpen (U : Set 
   have hγ1 := (GlobalTheory.PrincCong.mem_congSub_iff w n m γ.1).1 hγ
   have hγ2 := (GlobalTheory.PrincCong.mem_congSub_iff w n m γ.1⁻¹).1 (inv_mem hγ)
   apply hVU
-  exact htV (hsub ⟨hN1 m (le_of_max_le_left hm) _ hγ1.2, hN2 m (le_of_max_le_right hm) _ hγ2.2⟩)
+  apply htV
+  apply hsub
+  exact ⟨hN1 m (le_of_max_le_left hm) _ hγ1.2, hN2 m (le_of_max_le_right hm) _ hγ2.2⟩
 
 theorem congSub_le_KGL (w : Pl E) (m : ℕ) : GlobalTheory.PrincCong.congSub w n m ≤ GlobalTheory.LFun.KGL w (n := n) := by
-  exact fun g hg => ((GlobalTheory.PrincCong.mem_congSub_iff w n m g).1 hg).1
+  intro g hg
+  exact ((GlobalTheory.PrincCong.mem_congSub_iff w n m g).1 hg).1
 
 def cong (n : ℕ) (w : Pl E) (m : ℕ) : Subgroup (UL n w) := (GlobalTheory.PrincCong.congSub w n m).subgroupOf (UL n w)
 
@@ -262,10 +192,8 @@ theorem isLevel_cong (w : Pl E) (m : ℕ) : IsLevel (MonoidHom.id (UL n w)) (KL 
 theorem isLevel_KL (w : Pl E) : IsLevel (MonoidHom.id (UL n w)) (KL n w) (KL n w) := by
   unfold GlobalTheory.BCT.IsLevel
   refine ⟨?_, le_rfl, fun k hk => hk⟩
-  have hK : IsOpen (GlobalTheory.LFun.KGL w (n := n) : Set (GLw n w)) :=
-    Subgroup.isOpen_mono (congSub_le_KGL w 0) (GlobalTheory.PrincCong.isOpen_congSub w n 0)
   rw [GlobalTheory.BCT.KL, Subgroup.coe_subgroupOf]
-  exact hK.preimage continuous_subtype_val
+  exact (GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w n).1.preimage continuous_subtype_val
 
 def fixG (φ : UA E n → ℂ) : Subgroup (UA E n) where
   carrier := {x | RU E n x φ = φ}
@@ -335,7 +263,8 @@ theorem step {π : Submodule ℂ (UA E n → ℂ)} (hπ : IsAutRepU π) {w : Pl 
   have hZ1 : ∀ x : UA E n, (j (p x))⁻¹ * x ∈ Z := by
     intro x
     rw [Subgroup.mem_centralizer_iff]
-    exact fun h hh => ((GlobalTheory.DefU.LocRet.commute_ret x ⟨h, hh⟩).eq).symm
+    intro h hh
+    exact ((GlobalTheory.DefU.LocRet.commute_ret x ⟨h, hh⟩).eq).symm
   have hZ2 : ∀ x ∈ Z, ∀ h : locU n w, x * j h = j h * x := by
     intro x hx h
     rw [Subgroup.mem_centralizer_iff] at hx
@@ -351,7 +280,8 @@ theorem step {π : Submodule ℂ (UA E n → ℂ)} (hπ : IsAutRepU π) {w : Pl 
         {g : locU n w | RU E n (g : UA E n) (v : UA E n → ℂ) = v} := by
       ext g
       simp only [Set.mem_ofPred_eq, Subtype.ext_iff, key]
-    rwa [hset]
+    rw [hset]
+    exact h2
   have hφ1ne : (⟨φ1, hφ1⟩ : π) ≠ 0 := fun h => hne1 (congrArg Subtype.val h)
   have hφ1K : (⟨φ1, hφ1⟩ : π) ∈ GlobalTheory.PRep.fixed (GlobalTheory.UnitaryBC.SatEx.pull π hst j)
       ((GlobalTheory.LFun.KGL w (n := n)).comap ((cLoc w).comp (locU n w).subtype)) := by
@@ -390,7 +320,8 @@ theorem step {π : Submodule ℂ (UA E n → ℂ)} (hπ : IsAutRepU π) {w : Pl 
   have h := hv2 ⟨⟨x, hx⟩, hc⟩
   simp only [MonoidHom.one_apply, Units.val_one, one_smul] at h
   have h' := congrArg Subtype.val h
-  rwa [key] at h'
+  rw [key] at h'
+  exact h'
 
 private theorem sum_le_mul_sum_of_fiber_weight_bound (t u : Pl E)
     (hu : u.under (𝓞 (maximalRealSubfield E)) = t.under (𝓞 (maximalRealSubfield E))) :
@@ -417,15 +348,18 @@ theorem levelEx : LevelEx := by
     rcases sum_le_mul_sum_of_fiber_weight_bound t w heq.symm with h | h
     · subst h
       simp [Tb, ht]
-    · simpa only [Tb, Finset.mem_union, Finset.mem_image] using Or.inl (Or.inr ⟨t, ht, h.symm⟩)
+    · simp only [Tb, Finset.mem_union, Finset.mem_image]
+      exact Or.inl (Or.inr ⟨t, ht, h.symm⟩)
   have hunr : ∀ w : Pl E, w ∉ Tb → IsUnramU π w := fun w hw => ⟨φ0, hφ0, hne0, hT w (hoff w hw)⟩
   let K₀ : (w : Pl E) → Subgroup (UL n w) := fun w =>
     if IsUnramU π w ∧ w ∉ R then KL n w else cong n w m
   have hlev : ∀ w : Pl E, IsLevel (MonoidHom.id (UL n w)) (KL n w) (K₀ w) := by
     intro w
     by_cases h : IsUnramU π w ∧ w ∉ R
-    · simpa only [K₀, ite_eq_left h] using isLevel_KL w
-    · simpa only [K₀, ite_eq_right h] using isLevel_cong w m
+    · simp only [K₀, if_pos h]
+      exact isLevel_KL w
+    · simp only [K₀, if_neg h]
+      exact isLevel_cong w m
   have hcof : ∀ᶠ w in Filter.cofinite, K₀ w = KL n w := by
     rw [Filter.eventually_cofinite]
     refine (Tb.finite_toSet).subset ?_
@@ -433,13 +367,13 @@ theorem levelEx : LevelEx := by
     by_contra hwT
     apply hw
     have h : IsUnramU π w ∧ w ∉ R := ⟨hunr w hwT, fun hR => hwT (by simp [Tb, hR])⟩
-    simp only [K₀, ite_eq_left h]
+    simp only [K₀, if_pos h]
   have hfam : IsLevelFam (fun w => MonoidHom.id (UL n w)) (KL n) K₀ := by
     unfold GlobalTheory.BCT.IsLevelFam
     exact ⟨hlev, hcof⟩
   have hK1 : ∀ w : Pl E, IsUnramU π w → w ∉ R → K₀ w = KL n w := by
     intro w h1 h2
-    simp only [K₀, ite_eq_left (And.intro h1 h2)]
+    simp only [K₀, if_pos (And.intro h1 h2)]
   have hK2 : ∀ w : Pl E, ¬ IsUnramU π w ∨ w ∈ R → IsCong m (K₀ w) := by
     intro w h
     have h' : ¬ (IsUnramU π w ∧ w ∉ R) := by
@@ -447,24 +381,27 @@ theorem levelEx : LevelEx := by
       rcases h with h | h
       · exact h h1
       · exact h2 h
-    simpa only [K₀, ite_eq_right h'] using isCong_cong w m
+    simp only [K₀, if_neg h']
+    exact isCong_cong w m
   let F : Finset (Pl E) := Tb.filter (fun w => w ∈ S ∧ IsUnramU π w ∧ w ∉ R)
   have hbase : ∀ w ∈ S, w ∉ F → ∀ x ∈ locU n w,
       (∃ κ ∈ K₀ w, (κ : GLw n w) = cLoc w x) → RU E n x φ0 = φ0 := by
     rintro w hwS hwF x hx ⟨κ, hκ, hκx⟩
     by_cases hT' : w ∈ Tb
     · have h' : ¬ (IsUnramU π w ∧ w ∉ R) := fun h => hwF (Finset.mem_filter.2 ⟨hT', hwS, h⟩)
-      simp only [K₀, ite_eq_right h'] at hκ
+      simp only [K₀, if_neg h'] at hκ
       rw [cong, Subgroup.mem_subgroupOf] at hκ
       have hc : cLoc w x ∈ GlobalTheory.PrincCong.congSub w n m := by
-        rwa [← hκx]
+        rw [← hκx]
+        exact hκ
       exact hk w m (le_trans (Finset.le_sup hT') (le_max_right _ _)) x hx hc
     · have hKL : cLoc w x ∈ GlobalTheory.LFun.KGL w (n := n) := by
         by_cases h : IsUnramU π w ∧ w ∉ R
-        · simp only [K₀, ite_eq_left h] at hκ
+        · simp only [K₀, if_pos h] at hκ
           rw [GlobalTheory.BCT.KL, Subgroup.mem_subgroupOf] at hκ
-          rwa [← hκx]
-        · simp only [K₀, ite_eq_right h] at hκ
+          rw [← hκx]
+          exact hκ
+        · simp only [K₀, if_neg h] at hκ
           rw [cong, Subgroup.mem_subgroupOf] at hκ
           rw [← hκx]
           exact congSub_le_KGL w m hκ
@@ -500,15 +437,17 @@ theorem levelEx : LevelEx := by
       by_cases hwa : w = a
       · subst hwa
         rintro x hx ⟨κ, hκ, hκx⟩
-        simp only [K₀, ite_eq_left (And.intro haU haR)] at hκ
+        simp only [K₀, if_pos (And.intro haU haR)] at hκ
         rw [GlobalTheory.BCT.KL, Subgroup.mem_subgroupOf] at hκ
         apply hψa x hx
-        rwa [← hκx]
+        rw [← hκx]
+        exact hκ
       · have hw' : w ∉ F ∨ w ∈ F' := by
           rcases hw with h | h
           · exact Or.inl h
           · exact Or.inr ((Finset.mem_insert.1 h).resolve_left hwa)
-        exact fun x hx hκ => hψQ x ⟨w, hwS, hwa, hw', hx, hκ⟩
+        intro x hx hκ
+        exact hψQ x ⟨w, hwS, hwa, hw', hx, hκ⟩
   refine ⟨K₀, m, le_trans (le_max_left _ _) (le_max_left _ _),
     le_trans (le_max_right _ _) (le_max_left _ _), hfam, hK1, hK2, ?_⟩
   intro K' hK'

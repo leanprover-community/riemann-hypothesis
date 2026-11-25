@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoordinateLatticeUniqueTermAlmostAllPlaces
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GgNone
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DetGramSumElimSmulSub
@@ -73,17 +74,7 @@ theorem vE_one : vE L ϖ (algebraMap F E 1) = 0 := by
 
 theorem vE_unit (x : F) (hx : x ≠ 0) (h1 : algebraMap F E x ∈ L.O)
     (h2 : ∃ y ∈ L.O, algebraMap F E x * y = 1) : vE L ϖ (algebraMap F E x) = 0 := by
-  obtain ⟨hadd, -, hint, -⟩ := GlobalTheory.UnramVal.vE_valuation L ϖ hϖ
-  obtain ⟨-, -, -, -, hO, -⟩ := GlobalTheory.UnramOrder.order_facts L ϖ hϖ
-  obtain ⟨y, hy, hxy⟩ := h2
-  have e : y = algebraMap F E x⁻¹ := by
-    calc y = algebraMap F E (x⁻¹ * x) * y := by rw [inv_mul_cancel₀ hx, map_one, one_mul]
-      _ = algebraMap F E x⁻¹ := by rw [map_mul, mul_assoc, hxy, mul_one]
-  have a1 := (hint x hx).2 ((hO x).1 h1)
-  have a2 := (hint x⁻¹ (inv_ne_zero hx)).2 ((hO _).1 (e ▸ hy))
-  have a3 := hadd x x⁻¹ hx (inv_ne_zero hx)
-  rw [mul_inv_cancel₀ hx, vE_one L ϖ hϖ] at a3
-  omega
+  apply _root_.GlobalTheory.HL.StdPlace.UnitVal.vE_eq_zero_of_unit <;> assumption
 
 theorem vE_pow (x : F) (hx : x ≠ 0) (n : ℕ) :
     vE L ϖ (algebraMap F E (x ^ n)) = n * vE L ϖ (algebraMap F E x) := by

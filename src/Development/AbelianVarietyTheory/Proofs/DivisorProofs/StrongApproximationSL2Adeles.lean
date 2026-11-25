@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemClosureSpecialUnitarySupportedAtPlaces
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveStrongApproximationAvoidingFinset
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
@@ -149,16 +150,7 @@ end General
 
 theorem idem_of_isPlacesIdem {F : Type} [Field F] [NumberField F] {S₁ : Finset (InfinitePlace F)}
     {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (h : IsPlacesIdem S₁ S₂ ε) : ε * ε = ε := by
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  refine Prod.ext (funext fun w => ?_) (RestrictedProduct.ext _ _ fun v => ?_)
-  · change fstA F ε w * fstA F ε w = fstA F ε w
-    by_cases hw : w ∈ S₁
-    · rw [h1 w hw, one_mul]
-    · rw [h2 w hw, zero_mul]
-  · change evalV F v (sndA F ε) * evalV F v (sndA F ε) = evalV F v (sndA F ε)
-    by_cases hv : v ∈ S₂
-    · rw [h3 v hv, one_mul]
-    · rw [h4 v hv, zero_mul]
+  apply _root_.GlobalTheory.SUTrunc.idem_mul_self <;> assumption
 
 theorem strongApprox_SL2 : ∀ (F : Type) [Field F] [NumberField F], ∀ (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) (ε : AF F), IsPlacesIdem S₁ S₂ ε → (S₁.Nonempty ∨ S₂.Nonempty) → ∀ g : Matrix (Fin 2) (Fin 2) (AF F), g.det = 1 → g ∈ closure {x : Matrix (Fin 2) (Fin 2) (AF F) | ∃ γ : Matrix (Fin 2) (Fin 2) F, γ.det = 1 ∧ ∃ h : Matrix (Fin 2) (Fin 2) (AF F), h.det = 1 ∧ ε • (h - 1) = h - 1 ∧ x = γ.map (algebraMap F (AF F)) * h} := by
   intro F _ _ S₁ S₂ ε hε hS g hg

@@ -71,12 +71,8 @@ theorem isAnalyticNear_zeroSetIn {σ : Type} [Fintype σ] (I : Ideal (MvPolynomi
   apply GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.zeroSetIn_isAnalyticNear
 
 theorem analyticOnNhd_of_differentiableOn_scalar_fin {d : ℕ} {U : Set (Fin d → ℂ)} {F : (Fin d → ℂ) → ℂ}
-    (hU : IsOpen U) (hF : DifferentiableOn ℂ F U) : AnalyticOnNhd ℂ F U := by
-  refine analyticOnNhd_of_continuousOn_of_separately hU hF.continuousOn (fun z hz i => ?_)
-  have h1 : DifferentiableAt ℂ F (Function.update z i (z i)) := by
-    rw [Function.update_eq_self]
-    exact hF.differentiableAt (hU.mem_nhds hz)
-  exact h1.comp (z i) (hasFDerivAt_update (𝕜 := ℂ) z (z i)).differentiableAt
+    (hU : IsOpen U) (hF : DifferentiableOn ℂ F U) : AnalyticOnNhd ℂ F U :=
+  ReciprocityTheory.AnForm.Osgood.osgood d U F hU hF
 
 theorem germIrreducibleAt_zeroSetIn_of_integrallyClosed (hic : NormalGermIntegrallyClosed.Statement)
     {σ : Type} [Fintype σ] (I : Ideal (MvPolynomial σ ℂ)) (w : σ → ℂ) (hI : I.IsPrime)

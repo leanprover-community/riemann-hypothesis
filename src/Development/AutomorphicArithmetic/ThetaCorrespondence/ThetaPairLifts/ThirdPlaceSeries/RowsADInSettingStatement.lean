@@ -177,7 +177,8 @@ theorem sum_locDeg_le (i : D.nd.Loc) (S : Finset (HeightOneSpectrum (𝓞 D.host
   have hl := (D.nd.lPrime i).out
   refine le_trans ?_ (TwistedPlaces.sum_nLam_le D hl)
   apply Finset.sum_le_sum_of_subset_of_nonneg
-  · exact fun v hv => (Set.Finite.mem_toFinset _).2 (hS v hv)
+  · intro v hv
+    exact (Set.Finite.mem_toFinset _).2 (hS v hv)
   · intro v _ _
     positivity
 
@@ -272,7 +273,8 @@ theorem blockBoundDeclaration_le_middleRange (L : SizeData₂ D) (i : D.nd.Loc) 
     (vdel_le_two_t i h2) hh
   unfold KillingConditions.localErrorBoundDecomposition
   push_cast
-  rwa [← Finset.sum_mul]
+  rw [← Finset.sum_mul]
+  exact this
 
 theorem blockBoundAtZero_le_middleRange (L : SizeData₂ D) (i : D.nd.Loc) (h2 : D.nd.l i ∉ D.host.small)
     (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i) (dc : TruncatedSeriesCountingIdentities.Decl D i)
@@ -384,7 +386,7 @@ theorem starAD_of_global : ∀ (D : D7) (L : SizeData₂ D) (HW : HWOf D.loc) (X
     simp only [Rows.Data.VV, hIco]
   have hcls : TwistedPlaces.SplitK D (D.nd.l i) ∨ TwistedPlaces.InertK D (D.nd.l i) := by
     unfold TwistedPlaces.SplitK TwistedPlaces.InertK Host.cls primeClass
-    simp only [hsm, hlq, hld, ite_false]
+    simp only [hsm, hlq, hld, if_false]
     split_ifs <;> simp
   rcases hcls with hsp | hin
   ·
@@ -402,7 +404,8 @@ theorem starAD_of_global : ∀ (D : D7) (L : SizeData₂ D) (HW : HWOf D.loc) (X
     have hsum : TwistedPlaces.sumOver D (D.nd.l i) (X.len0 i π) =
         ((∑ u ∈ (X.dc i).col, (2 * (N.locDeg D.host.E u : ℚ) * D.R.m + 1) * (X.eS i : ℚ) : ℚ) : ℝ) := by
       unfold TwistedPlaces.sumOver
-      rw [← hpl, finsum_mem_coe_finset, Finset.sum_congr rfl fun w _ => hD.len0S i hsp π w]
+      rw [← hpl, finsum_mem_coe_finset]
+      rw [Finset.sum_congr rfl fun w _ => hD.len0S i hsp π w]
       rw [← Rat.cast_sum]
       congr 1
       simp only [lenA]
@@ -556,8 +559,10 @@ theorem dcris_exact_strict_elementwise : ∀ D : D7, Formalism.MainNotions.Trunc
   obtain ⟨h1, h2, h3, h4⟩ :=
     hA hbij V₀ ρ₀ V₁ ρ₁ V₂ ρ₂ ι π hιe hπe hinj hsurj hker.symm c₀ c₁ c₂
   refine ⟨h1, ?_, h3, fun a => (h4 a).1, ?_⟩
-  · exact fun x hx hπx => Submodule.mem_map.mp (h2.ge ⟨hx, hπx⟩)
-  · exact fun a y hy hyF => (h4 a).2.ge ⟨hy, hyF⟩
+  · intro x hx hπx
+    exact Submodule.mem_map.mp (h2.ge ⟨hx, hπx⟩)
+  · intro a y hy hyF
+    exact (h4 a).2.ge ⟨hy, hyF⟩
 
 end GlobalTheory
 end -- clump:auto
@@ -801,7 +806,7 @@ theorem main : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (HW :
   split_ifs with hlt
   · have := (exists_rat_btwn hlt).choose_spec
     linarith [this.1]
-  · push Not at hlt
+  · push_neg at hlt
     have hc0 : coreB L (D.nd.l i) w ≤ 0 := by linarith
     have : 3 * C₂ * coreB L (D.nd.l i) w ≤ 0 := by
       have : (0:ℝ) ≤ 3 * C₂ := by linarith
@@ -921,7 +926,8 @@ theorem adm18_of_N1used : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) 
     obtain ⟨y, hy⟩ := hA.1.2 ⟨x, hx⟩
     have h2 := y.2.2
     have : ((y : ↥(K0 K)) : Om l) = x := congrArg Subtype.val hy
-    rwa [this] at h2
+    rw [this] at h2
+    exact h2
 
   have hgen : (D.loc l).v LL (algebraMap ↥(OL LL) ↥LL.1
       ((((HW l).W K 1 LL h).χΓ ((HW l).W K 1 LL h).gam : (↥(OL LL))ˣ) : ↥(OL LL)) - 1) = 1 := by
@@ -1174,7 +1180,10 @@ theorem main : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (HW :
   have hHm : (LiftingTheory.Hmax (nLet i w hw) Wd.Mi Wd.hi : ℝ) ≤ 2 * TwistedPlaces.hB L := by
     have hfl : LiftingTheory.Hmax (nLet i w hw) Wd.Mi Wd.hi ≤ ⌊2 * TwistedPlaces.hB L⌋₊ := by
       unfold LiftingTheory.Hmax
-      exact Finset.sup_le (fun k _ => Nat.le_floor (hbox.box_le _))
+      apply Finset.sup_le
+      intro k _
+      apply Nat.le_floor
+      exact hbox.box_le _
     calc (LiftingTheory.Hmax (nLet i w hw) Wd.Mi Wd.hi : ℝ) ≤ (⌊2 * TwistedPlaces.hB L⌋₊ : ℝ) := by exact_mod_cast hfl
       _ ≤ 2 * TwistedPlaces.hB L := Nat.floor_le (by linarith)
   have he : (TruncatedSeriesCountingBounds.eLift ((HW (D.nd.l i)).W (D.nbr i w hw).Kw 1 Cx.LL hG) T₁ Wd.Mi Wd.hi : ℝ) ≤
@@ -1259,8 +1268,8 @@ theorem flat_pos {D : D7} (L : SizeData₂ D) (bd : Prop) (l : ℕ) : 0 < Formal
   have h3 := Formalism.MainNotions.TwistedPlaces.L_ge_one L
   have h4 := L.Sc_pos
   by_cases hb : bd
-  · rw [ite_eq_left hb]; linarith
-  · rw [ite_eq_right hb]; linarith
+  · rw [if_pos hb]; linarith
+  · rw [if_neg hb]; linarith
 
 theorem coreF_pos {D : D7} (L : SizeData₂ D) (bd : Prop) (l : ℕ) (lam : HeightOneSpectrum (𝓞 D.host.E)) :
     0 < Formalism.MainNotions.N.coreF L bd l lam := by
@@ -1468,7 +1477,8 @@ theorem main_alt_alt : Hypotheses₂ → ∀ (D : D7) (L : SizeData₂ D) (P : P
     refine ⟨fun x v => hcx w hw C x v, fun _ => ⟨fun v => ?_, fun v => ?_⟩⟩
     · exact locC_cont D i _ (WpO_cont i (X.ρ i) π hρ) w hw C v
     · exact locC_cont D i _ (GlobalTheory.TwistedDualLoc.continuous_T2O D i (X.ρ i) π hρ) w hw C v
-  · exact fun _ w hw _ C => (hG2 w hw C).1.2.2.2.2.2.1
+  · intro _ w hw _ C
+    exact (hG2 w hw C).1.2.2.2.2.2.1
 end GlobalTheory.NLink.AmbSub
 end
 end
@@ -1541,7 +1551,10 @@ theorem main_alt_alt : Hypotheses₂ → ∀ (D : D7) (L : SizeData₂ D) (P : P
   haveI : IsDiscreteValuationRing ↥(OL C.LL) := Formalism.BasicNotions.Examples₂.LB.OL_dvr C.LL
   haveI : IsFractionRing ↥(OL C.LL) ↥C.LL.1 := Formalism.BasicNotions.Examples₂.LB.OL_frac C.LL
   refine EmbeddingTypes.len_le_of_kill (Br.PD D.loc D.nbr i w hw) L2.T hstd _ (X.c0 i u) ?_
-  exact fun x hx => pow_smul_eq_zero_of_le _ hc0 (hkill x fun g => hx g)
+  intro x hx
+  -- Searching for this module structure times out, so it is supplied directly.
+  letI : Module ↥(OL C.LL) ((Fin D.R.r → ↥C.LL.1) ⧸ L2.T) := Submodule.Quotient.module L2.T
+  exact pow_smul_eq_zero_of_le _ hc0 (hkill x fun g => hx g)
 end GlobalTheory.NLink.PowerSmulVanishing
 end
 end -- clump:auto

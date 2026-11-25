@@ -89,26 +89,16 @@ theorem relIndex_map {R A B : Type} [Ring R] [AddCommGroup A] [Module R A] [AddC
   rw [e, e]
   exact AddSubgroup.relIndex_map_map_of_injective (f := φ.toAddMonoidHom) J.toAddSubgroup K.toAddSubgroup hφ
 
-private theorem exists_int_eq_mul_of_ne_zero' {E : Type} [Field E] [NumberField E] {a : 𝓞 E} (ha : a ≠ 0) :
-    ∃ n : ℤ, n ≠ 0 ∧ ∃ b : 𝓞 E, (n : 𝓞 E) = b * a := by
-  have hne : (Ideal.span {a}).comap (algebraMap ℤ (𝓞 E)) ≠ ⊥ :=
-    Ideal.comap_ne_bot_of_integral_mem ha (Ideal.mem_span_singleton_self a)
-      (Algebra.IsIntegral.isIntegral a)
-  obtain ⟨n, hn, hn0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
-  rw [Ideal.mem_comap, Ideal.mem_span_singleton'] at hn
-  obtain ⟨b, hb⟩ := hn
-  exact ⟨n, hn0, b, by simpa using hb.symm⟩
-
 theorem finite_of_torsion [Module.Finite (𝓞 E) M] (h : Module.IsTorsion (𝓞 E) M) : Finite M := by
   haveI : Module.Finite ℤ M := Module.Finite.trans (𝓞 E) M
   apply Module.finite_of_fg_torsion
   intro x
   obtain ⟨⟨a, ha⟩, hax⟩ := @h x
   have ha0 : a ≠ 0 := nonZeroDivisors.ne_zero ha
-  obtain ⟨n, hn, b, hb⟩ := exists_int_eq_mul_of_ne_zero' ha0
-  refine ⟨⟨n, mem_nonZeroDivisors_of_ne_zero hn⟩, ?_⟩
-  show n • x = 0
-  rw [← Int.cast_smul_eq_zsmul (𝓞 E), hb, mul_smul]
+  obtain ⟨n, b, hn, hb⟩ := exists_mul_eq_nat ha0
+  refine ⟨⟨(n : ℤ), mem_nonZeroDivisors_of_ne_zero (Int.natCast_ne_zero.mpr hn)⟩, ?_⟩
+  show (n : ℤ) • x = 0
+  rw [← Int.cast_smul_eq_zsmul (𝓞 E), Int.cast_natCast, ← hb, mul_smul]
   rw [Submonoid.smul_def] at hax
   simp [hax]
 
@@ -121,11 +111,11 @@ theorem index_ne_zero [Module.Finite (𝓞 E) M] (J : Submodule (𝓞 E) M)
   exact AddSubgroup.index_ne_zero_of_finite
 
 theorem eq_zero_of_smul [Module.Free ℤ M] {a : 𝓞 E} (ha : a ≠ 0) {x : M} (hx : a • x = 0) : x = 0 := by
-  obtain ⟨n, hn, b, hb⟩ := exists_int_eq_mul_of_ne_zero' ha
-  have h1 : n • x = 0 := by
-    rw [← Int.cast_smul_eq_zsmul (𝓞 E), hb, mul_smul, hx, smul_zero]
+  obtain ⟨n, b, hn, hb⟩ := exists_mul_eq_nat ha
+  have h1 : (n : ℤ) • x = 0 := by
+    rw [← Int.cast_smul_eq_zsmul (𝓞 E), Int.cast_natCast, ← hb, mul_smul, hx, smul_zero]
   rcases smul_eq_zero.1 h1 with h | h
-  · exact absurd h hn
+  · exact absurd (Int.natCast_eq_zero.1 h) hn
   · exact h
 
 private theorem mem_span_range_subtype_iff {R N : Type} [CommRing R] [AddCommGroup N] [Module R N] {I : Submodule R N}
@@ -137,7 +127,8 @@ private theorem mem_span_range_subtype_iff {R N : Type} [CommRing R] [AddCommGro
     rfl
   rw [← hmap, Submodule.mem_map]
   constructor
-  · exact fun h => ⟨z, h, rfl⟩
+  · intro h
+    exact ⟨z, h, rfl⟩
   · rintro ⟨y, hy, hyz⟩
     rwa [← Subtype.ext hyz]
 
@@ -224,7 +215,8 @@ theorem relIndex_matrix {r : ℕ} {v w : Fin r → M} (hv : LinearIndependent (�
     intro b
     simp
   have hinj : Function.Injective f := by
-    rw [hfeq, LinearMap.coe_comp]
+    rw [hfeq]
+    rw [LinearMap.coe_comp]
     exact Function.Injective.comp hw' bV.repr.injective
   have hdet : LinearMap.det f = A.det := LinearMap.det_toLin bV A
   have hrange : (LinearMap.range f).map V.subtype = Submodule.span (𝓞 E) (Set.range w) := by
@@ -248,24 +240,13 @@ theorem relIndex_matrix {r : ℕ} {v w : Fin r → M} (hv : LinearIndependent (�
     rw [hrange, Submodule.map_subtype_top] at hm
     rw [hm, Submodule.top_toAddSubgroup, AddSubgroup.relIndex_top_right, index_range f hinj, hdet]
 
-private theorem bijective_algHom_comp_algebraMap {E : Type} [Field E] [NumberField E] :
-    Function.Bijective fun σ : E →ₐ[ℚ] ℂ => (σ : E →+* ℂ).comp (algebraMap (𝓞 E) E) := by
-  constructor
-  · intro σ₁ σ₂ h
-    exact AlgHom.coe_ringHom_injective (IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) h)
-  · intro s
-    refine ⟨(IsFractionRing.lift (_root_.LevelTowerAlt.emb_inj s)).toRatAlgHom, ?_⟩
-    apply RingHom.ext
-    intro a
-    rw [RingHom.comp_apply]
-    exact IsFractionRing.lift_algebraMap (_root_.LevelTowerAlt.emb_inj s) a
-
 theorem norm_eq_prod (d : 𝓞 E) : ((Algebra.norm ℤ d : ℤ) : ℂ) = ∏ s : 𝓞 E →+* ℂ, s d := by
   have h1 : ((Algebra.norm ℤ d : ℤ) : ℂ) = algebraMap ℚ ℂ (Algebra.norm ℚ (d : E)) := by
     rw [← Algebra.coe_norm_int]
     simp
   rw [h1, Algebra.norm_eq_prod_embeddings ℚ ℂ]
-  exact Fintype.prod_bijective _ bijective_algHom_comp_algebraMap _ _ (fun σ => rfl)
+  exact Fintype.prod_equiv ((RingHom.equivRatAlgHom E ℂ).symm.trans (embEquiv E))
+    _ _ (fun _ => rfl)
 
 end Index
 
@@ -273,11 +254,6 @@ section Riem
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
   {Ψ : Type} [Fintype Ψ] (R : RiemLat E g Λ)
-
-private theorem starRingEnd_comp_starRingEnd_comp {A : Type} [Ring A] (f : A →+* ℂ) :
-    (starRingEnd ℂ).comp ((starRingEnd ℂ).comp f) = f := by
-  ext x
-  simp
 
 omit [Fintype Ψ] in
 theorem cm_bij {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) :
@@ -293,7 +269,7 @@ theorem cm_bij {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) :
       exact absurd ⟨b, h.symm⟩ ((hiff (σ a)).1 ⟨a, rfl⟩)
     · simp only [Sum.elim_inr] at h
       have h' := congrArg (fun f => (starRingEnd ℂ).comp f) h
-      simp only [starRingEnd_comp_starRingEnd_comp] at h'
+      simp only [cj_cj] at h'
       rw [hinj h']
   · intro s
     by_cases hs : ∃ τ, σ τ = s
@@ -304,7 +280,7 @@ theorem cm_bij {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) :
         exact hs ((hiff s).2 hn)
       obtain ⟨τ, hτ⟩ := h2
       refine ⟨Sum.inr τ, ?_⟩
-      simp only [Sum.elim_inr, hτ, starRingEnd_comp_starRingEnd_comp]
+      simp only [Sum.elim_inr, hτ, cj_cj]
 
 theorem prod_normSq {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (d : 𝓞 E) :
     ∏ τ, Complex.normSq (σ τ d) = ((Algebra.norm ℤ d).natAbs : ℝ) := by
@@ -408,7 +384,8 @@ theorem nzOf_eq {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) {I : Submodu
   let f : Λ →ₗ[𝓞 E] Λ := (n : 𝓞 E) • LinearMap.id
   have hf : LinearMap.ker f = ⊥ := by
     rw [LinearMap.ker_eq_bot']
-    exact fun m hm => eq_zero_of_smul hn0 (by simpa [f] using hm)
+    intro m hm
+    exact eq_zero_of_smul hn0 (by simpa [f] using hm)
   have hli : LinearIndependent (𝓞 E) (f ∘ w) := hw.2.2.1.map' f hf
   have h1 : R.nzOf σ I (f ∘ w) = R.nzOf σ I v :=
     nzOf_of_le R hσ hv hli (fun b => by simpa [f] using family_nsmul (v := v) (hw.2.1 b))
@@ -433,7 +410,8 @@ theorem nzOf_pos (σ : Ψ → (𝓞 E →+* ℂ)) {I : Submodule (𝓞 E) Λ} (h
   · apply Finset.prod_pos
     intro τ _
     have hli := proj_indep R hI (σ τ) hvI hvli
-    simpa only [eigComp_eq] using gram_det_pos R hli
+    simp only [eigComp_eq]
+    exact gram_det_pos R hli
   · exact_mod_cast Nat.pos_of_ne_zero hidx
 
 end Riem

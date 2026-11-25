@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitTwoMulRhoSubTr
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceOfSection
@@ -151,7 +152,8 @@ theorem overId_comp_left {T P S : Scheme.{0}} (q q' : P ⟶ S) (h : q' = q) {A :
     (f : Over.mk q' ⟶ A) (a : T ⟶ P) (b : T ⟶ A.left) (e : a ≫ f.left = b) :
     a ≫ (overId q q' h ≫ f).left = b := by
   subst h
-  rwa [overId_rfl, Category.id_comp]
+  rw [overId_rfl, Category.id_comp]
+  exact e
 
 theorem overId_scal {P S : Scheme.{0}} (q q' : P ⟶ S) (h : q' = q) {A : Over S}
     (f : Over.mk q' ⟶ A) (g : A ⟶ A) (a : P ⟶ P) (e : Over.mk q ⟶ Over.mk q) (he : e.left = a)
@@ -189,7 +191,8 @@ theorem lieAt_id_of_liftFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPe
     haveI := act.hom c
     exact crysToDR_push (divided₂ hsq) h h (o₀.act.act c) (act.act c) (hact c).symm d
   have hq := epsPt_hq C
-  have one_left := one_left_eq A (spMap (RingHom.id C)) (Spec.map_id _)
+  have one_left : @Eq (Sp C ⟶ A.left) (1 : Over.mk (spMap (RingHom.id C)) ⟶ A).left η[A].left :=
+    one_left_eq A (spMap (RingHom.id C)) (Spec.map_id _)
   intro v hv
   obtain ⟨hv1, hv2⟩ := hv
   let v' : epsR C ⟶ A := overId _ _ hq ≫ v
@@ -272,7 +275,8 @@ theorem eigen_decomp_base_change :
 
   have hΩΩ : Ω * Ω = (tr : Matrix (Fin n) (Fin n) C) * Ω - (nm : Matrix (Fin n) (Fin n) C) := by
     have h1 : ω * ω = (tr : K) * ω - (nm : K) := by linear_combination hω
-    simpa [map_mul, map_sub, map_intCast] using congrArg f h1
+    have h2 := congrArg f h1
+    simpa [map_mul, map_sub, map_intCast] using h2
   have key : ∀ x : Fin n → C, Ω *ᵥ (Ω *ᵥ x) = (tr : C) • (Ω *ᵥ x) - (nm : C) • x := by
     intro x
     rw [mulVec_mulVec, hΩΩ, sub_mulVec, ← mulVec_mulVec, intCast_mulVec, intCast_mulVec]
@@ -310,7 +314,7 @@ theorem eigen_decomp_base_change :
       Finset.sum_ite_eq]
     have hg := congrArg g huinv
     simp only [map_mul, map_sub, map_intCast, map_one, map_ofNat] at hg ⊢
-    simp only [Finset.mem_univ, ite_true]
+    simp only [Finset.mem_univ, if_true]
     linear_combination (-(v k)) * hg
   refine ⟨fun i => ∑ j, v j • (g ∘ W j i), ?_, ?_⟩
   · intro i c
@@ -363,16 +367,7 @@ theorem mat_ext {n : ℕ} {C : Type} [CommRing C] {A B : Matrix (Fin n) (Fin n) 
 
 theorem isUnit_two_rho_sub {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R]
     (b : GlobalTheory.UPel.HT.Base D R) : IsUnit (2 * b.ρ - (D.tr : R)) := by
-  have hsq : (2 * b.ρ - (D.tr : R)) ^ 2 = ((D.tr ^ 2 - 4 * D.nm : ℤ) : R) := by
-    have := b.ρ_root; push_cast; linear_combination 4 * this
-  have hd : D.tr ^ 2 - 4 * D.nm = -(((D.tr ^ 2 - 4 * D.nm).natAbs : ℕ) : ℤ) := by
-    have := D.disc_neg; omega
-  have hcop : ((D.tr ^ 2 - 4 * D.nm).natAbs).Coprime p := by
-    rw [Nat.coprime_comm, Nat.Prime.coprime_iff_not_dvd (Fact.out)]
-    intro h; exact D.disc_p (Int.natCast_dvd.mpr h)
-  have hu := b.unit _ hcop
-  rw [← isUnit_pow_iff (n := 2) two_ne_zero, hsq, hd, Int.cast_neg, Int.cast_natCast]
-  exact hu.neg
+  apply _root_.GlobalTheory.UPel.HT.LieLin.RankIdeal.isUnit_two_mul_rho_sub_tr <;> assumption
 
 def TangentCoordinatesSmoothCommGroupLocalRing : Prop :=
   ∀ (W : Type) [CommRing W] [IsLocalRing W] (G : Over (Sp W)) [GrpObj G] [IsCommMonObj G], Smooth G.hom →
@@ -445,7 +440,8 @@ theorem spread_of_coord (hcoord : TangentCoordinatesSmoothCommGroupLocalRing) : 
     rw [← keyg, T0sm, hgapp]
     exact hv.2))
   refine ⟨fun i => T0 (w i), fun i c => ⟨(T0rng _).2 ⟨_, rfl⟩, ?_⟩, ?_⟩
-  · rw [keyg, hw i c, T0sm, show g0 (t i c) = β (b.t i c) from hgapp _]
+  · rw [keyg, hw i c, T0sm]
+    rw [show g0 (t i c) = β (b.t i c) from hgapp _]
   · rw [hvw, prod_ofFn_eq T0 T0zero T0add]
 
 theorem lieAt_spread : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (C : Type) [CommRing C] [IsLocalRing C] (tR : R →+* C) (A : Over (Sp C)) [GrpObj A] [IsCommMonObj A], Smooth A.hom → ∀ (act : GlobalTheory.UPel.HT.OActN D.O A), GlobalTheory.UPel.HT.LieAt b act tR (spMap (RingHom.id C)) → ∀ (R' : Type) [CommRing R'] (β : R →+* R') (x : Sp R' ⟶ Sp C), x ≫ spMap tR = spMap β → GlobalTheory.UPel.HT.LieAt b act β x :=

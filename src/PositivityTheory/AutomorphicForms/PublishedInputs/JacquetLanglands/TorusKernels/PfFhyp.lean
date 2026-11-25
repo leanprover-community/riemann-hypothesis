@@ -2,6 +2,7 @@ module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MultivariableReproducingFormula
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.HeightsOnQuotientProof
 
 @[expose] public section
 
@@ -14,11 +15,8 @@ namespace UpperTheory.Esk.HyperbolicTermsContribution
 
 open UpperTheory.Esk
 
-theorem vecMul_ne {F : Type} [Field F] (s : Fin 2 → F) (hs : s ≠ 0) (δ : GL (Fin 2) F) : s ᵥ* δ.val ≠ 0 := by
-  intro h
-  apply hs
-  have h2 := congrArg (fun v => v ᵥ* (δ⁻¹ : GL (Fin 2) F).val) h
-  simpa [Matrix.vecMul_vecMul] using h2
+theorem vecMul_ne {F : Type} [Field F] (s : Fin 2 → F) (hs : s ≠ 0) (δ : GL (Fin 2) F) : s ᵥ* δ.val ≠ 0 :=
+  @HeightsOnQuotientLemmas.vecMul_ne F _ s hs δ
 
 theorem isEll_conj {F : Type} [Field F]
     (hfix : ∀ (s : Fin 2 → F) (γ δ : GL (Fin 2) F), Fix s ((δ : PG F) * γ * (δ : PG F)⁻¹) ↔

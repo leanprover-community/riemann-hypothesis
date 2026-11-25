@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PlaceLaws
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatMapHandedFunctionVanishingPeriodInvariant
@@ -83,57 +84,7 @@ variable (F : Type) [Field F] [NumberField F]
 
 theorem finite_res (v : HeightOneSpectrum (𝓞 F)) :
     Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers F)) := by
-  let f : 𝓞 F →+* IsLocalRing.ResidueField (v.adicCompletionIntegers F) :=
-    (IsLocalRing.residue _).comp (algebraMap (𝓞 F) (v.adicCompletionIntegers F))
-  have hval : ∀ a : 𝓞 F, Valued.v ((algebraMap (𝓞 F) (v.adicCompletionIntegers F) a : v.adicCompletionIntegers F) :
-      v.adicCompletion F) = v.valuation F (algebraMap (𝓞 F) F a) := fun a =>
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (algebraMap (𝓞 F) F a)
-  have hmax : ∀ x : v.adicCompletionIntegers F, Valued.v (x : v.adicCompletion F) < 1 →
-      IsLocalRing.residue _ x = 0 := fun x hx => by
-    rw [IsLocalRing.residue_eq_zero_iff]
-    exact (Valuation.mem_maximalIdeal_iff _ _).2 hx
-  have hk : ∀ a ∈ v.asIdeal, f a = 0 := fun a ha => by
-    refine hmax _ ?_
-    rw [hval]
-    exact (HeightOneSpectrum.valuation_lt_one_iff_mem v a).2 ha
-  have hs : Function.Surjective f := by
-    intro y
-    obtain ⟨x, rfl⟩ := IsLocalRing.residue_surjective y
-    have ho : {z : v.adicCompletion F | Valued.v (z - x) < 1} ∈ nhds (x : v.adicCompletion F) := by
-      have h1 : {z : v.adicCompletion F | Valued.v z < 1} ∈ nhds (0 : v.adicCompletion F) := by
-        rw [Valued.mem_nhds_zero]
-        exact ⟨1, fun z hz => by simpa using hz⟩
-      have h2 : Filter.Tendsto (fun z : v.adicCompletion F => z - x) (nhds (x : v.adicCompletion F)) (nhds 0) := by
-        have : IsTopologicalAddGroup (v.adicCompletion F) := IsUniformAddGroup.to_topologicalAddGroup
-        have : Continuous fun z : v.adicCompletion F => z - x := continuous_id.sub continuous_const
-        simpa using this.tendsto (x : v.adicCompletion F)
-      exact h2 h1
-    obtain ⟨k, hk⟩ := (HeightOneSpectrum.denseRange_algebraMap F v).mem_nhds ho
-    have hk' : Valued.v (algebraMap F (v.adicCompletion F) k - x) < 1 := hk
-    have hv : ∀ k : F, Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k := fun k =>
-      HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
-    have hk1 : v.valuation F k ≤ 1 := by
-      rw [← hv]
-      have : algebraMap F (v.adicCompletion F) k = (algebraMap F (v.adicCompletion F) k - x) + x :=
-        (sub_add_cancel _ _).symm
-      rw [this]
-      exact Valuation.map_add_le _ hk'.le x.2
-    obtain ⟨a, ha⟩ := v.exists_valuation_sub_lt_of_integer hk1 1
-    refine ⟨a, ?_⟩
-    refine Ideal.Quotient.eq.2 ((IsLocalRing.residue_eq_zero_iff _).1 (hmax _ ?_))
-    have : ((algebraMap (𝓞 F) (v.adicCompletionIntegers F) a - x : v.adicCompletionIntegers F) : v.adicCompletion F) =
-        algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a - k) +
-          (algebraMap F (v.adicCompletion F) k - x) := by
-      rw [RingHom.map_sub]
-      have : ((algebraMap (𝓞 F) (v.adicCompletionIntegers F) a : v.adicCompletionIntegers F) : v.adicCompletion F) =
-        algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a) := rfl
-      rw [← this]
-      exact (sub_add_sub_cancel _ _ _).symm
-    rw [this]
-    refine Valuation.map_add_lt _ ?_ hk'
-    rwa [hv]
-  have : Finite (𝓞 F ⧸ v.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ v.ne_bot
-  exact Finite.of_surjective (Ideal.Quotient.lift v.asIdeal f hk) (Ideal.Quotient.lift_surjective_of_surjective _ hk hs)
+  first | exact _root_.GlobalTheory.SelfDualGenus.finite_residueField_adicCompletionIntegers | exact @_root_.GlobalTheory.SelfDualGenus.finite_residueField_adicCompletionIntegers | apply _root_.GlobalTheory.SelfDualGenus.finite_residueField_adicCompletionIntegers <;> assumption
 
 theorem compact_int (v : HeightOneSpectrum (𝓞 F)) :
     IsCompact (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
@@ -431,7 +382,8 @@ theorem span_lattice {n : ℕ} {N : Submodule (𝓞 E) (Fin n → E)} (hN : Subm
     Submodule.span_le_restrictScalars ℤ F _ (hz y hy)
   refine ⟨m, x, fun k => ?_, hz, ?_⟩
   · have : x k ∈ Submodule.span ℤ (Set.range x) := Submodule.subset_span ⟨k, rfl⟩
-    rwa [hx] at this
+    rw [hx] at this
+    exact this
   · have key : ∀ y ∈ Submodule.span E (N : Set (Fin n → E)), ∀ a : E, a • y ∈ Submodule.span F (Set.range x) := by
       intro y hy
       induction hy using Submodule.span_induction with
@@ -616,11 +568,11 @@ open Classical in
 def idemF (P : HeightOneSpectrum (𝓞 F) → Prop) : Af F :=
   ⟨fun v => if P v then 1 else 0, Filter.Eventually.of_forall fun v => by
     by_cases h : P v
-    · simp only [ite_eq_left h]; exact (v.adicCompletionIntegers F).one_mem
-    · simp only [ite_eq_right h]; exact (v.adicCompletionIntegers F).zero_mem⟩
+    · simp only [if_pos h]; exact (v.adicCompletionIntegers F).one_mem
+    · simp only [if_neg h]; exact (v.adicCompletionIntegers F).zero_mem⟩
 
-theorem idemF_pos {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : P v) : evalV F v (idemF P) = 1 := ite_eq_left h
-theorem idemF_neg {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : ¬ P v) : evalV F v (idemF P) = 0 := ite_eq_right h
+theorem idemF_pos {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : P v) : evalV F v (idemF P) = 1 := if_pos h
+theorem idemF_neg {P : HeightOneSpectrum (𝓞 F) → Prop} {v} (h : ¬ P v) : evalV F v (idemF P) = 0 := if_neg h
 
 def idem (P : HeightOneSpectrum (𝓞 F) → Prop) : AF F := pairA F 0 (idemF P)
 
@@ -1063,7 +1015,8 @@ theorem locFin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t)
           t.om j (1, r) (t.om j (ε, z) (comb c.ψ _ _ (v.eG j) (comb c.ψ _ _ (w.eQ j) Ψ))) := by
         conv_rhs => rw [← hfix]
         rw [omm, omm, one_mul, mul_one]
-      rwa [e']
+      rw [e']
+      exact e
     obtain ⟨a, ha, xG, hxG, xQ, hxQ, rfl⟩ := split_off D _ v.gP w.Q hF.disjG z hz
     have cQG : ∀ {x y}, x ∈ grpAt (c.V (j + 1)) (· ∈ v.gP) → y ∈ grpAt (c.V (j + 1)) (· ∈ w.Q) → y * x = x * y :=
       fun hx hy => comm_at D _ v.gP w.Q hF.disjG hx hy
@@ -1087,7 +1040,8 @@ theorem locFin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t)
       have e : (v.b (j + 1))⁻¹ * (kG * kQ * κ) * v.b (j + 1) = (v.b (j + 1))⁻¹ * (1 * kG * kQ) * v.b (j + 1) *
           ((v.b (j + 1))⁻¹ * (κ * 1 * 1) * v.b (j + 1)) := by
         simp only [mul_assoc, mul_inv_cancel_left, one_mul, mul_one]
-      rwa [e]
+      rw [e]
+      exact m3
     · have c1 : a * (rQ * q * kQ) * (rG * kG) = rG * rQ * a * q * (kG * kQ) := by
         rw [← hxQ', mul_assoc a xQ, ← mul_assoc xQ, cQG hrGa hxQ, ← mul_assoc a, ← mul_assoc a, hrf a ha rG (hGf hrGa), hxQ',
           ← cQG (hJG hkG) (hKQ hkQ), mul_assoc rG rQ a, ← hrf a ha rQ (hQf hrQa)]

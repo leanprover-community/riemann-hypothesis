@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNearGaloisQuotient
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsToricRankOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TateProductRigidificationTrivial
 public import Mathlib.AlgebraicGeometry.AffineSpace
@@ -507,7 +508,8 @@ theorem GlobalTheory.Mum.exists_etale_coords_lift_immersion : ∀ (R : Type) [Co
   · intro T t w hw
     have hfst' : Y.left.homOfLE hWV ≫ u ≫ AffineSpace.map (Fin g) (spMap (residue R)) = (j ∣_ W) ≫ τ0 := by
       rw [← Category.assoc]; exact hfst
-    rw [Category.assoc, Category.assoc, IsPullback.isoPullback_hom_fst, hfst', ← Category.assoc]
+    rw [Category.assoc, Category.assoc, IsPullback.isoPullback_hom_fst]
+    rw [hfst', ← Category.assoc]
     congr 1
     rw [← cancel_mono W.ι, Category.assoc, morphismRestrict_ι, hw]
 end -- clump:auto
@@ -555,7 +557,8 @@ theorem exists_mem_fibre_of_geometric_lifting :
       (pullback h π).fromSpecResidueField w
   have ht : ∀ y, t y = w := by
     intro y
-    simpa only [t, Scheme.Hom.comp_apply] using Scheme.fromSpecResidueField_apply _ _
+    simp only [t, Scheme.Hom.comp_apply]
+    exact Scheme.fromSpecResidueField_apply _ _
   have hξ : ∀ y, (t ≫ pullback.fst h π) y = x := by
     intro y
     rw [Scheme.Hom.comp_apply, ht, hw]
@@ -643,7 +646,8 @@ theorem exists_open_etale_restrict_of_universallyClosed : ∀ (X P' T : Scheme.{
     choose U hwU hU using hcov
     refine IsZariskiLocalAtSource.of_iSup_eq_top (fun w => (X.homOfLE hle) ⁻¹ᵁ (U w)) ?_ fun w => ?_
     · rw [eq_top_iff]
-      exact fun w _ => TopologicalSpace.Opens.mem_iSup.mpr ⟨w, hwU w⟩
+      intro w _
+      exact TopologicalSpace.Opens.mem_iSup.mpr ⟨w, hwU w⟩
     · rw [← Category.assoc, ← Scheme.Hom.resLE_comp_ι (X.homOfLE hle) (le_refl ((X.homOfLE hle) ⁻¹ᵁ U w)), Category.assoc]
       haveI : IsOpenImmersion ((X.homOfLE hle).resLE (U w) ((X.homOfLE hle) ⁻¹ᵁ U w) le_rfl) := by
         have h2 : IsOpenImmersion ((X.homOfLE hle).resLE (U w) ((X.homOfLE hle) ⁻¹ᵁ U w) le_rfl ≫ (U w).ι) := by
@@ -857,7 +861,8 @@ theorem etale_chart_at_closed_point : ∀ (R : Type) [CommRing R] [IsDomain R] [
       rintro _ ⟨t, rfl⟩
       show a (p t) ∈ W
       have h3 : a (p t) = W.ι (ξ t) := by
-        simpa [Scheme.Hom.comp_apply] using congrArg (fun f : Sp Ω ⟶ P' => f t) hp1
+        have h4 := congrArg (fun f : Sp Ω ⟶ P' => f t) hp1
+        simpa [Scheme.Hom.comp_apply] using h4
       rw [h3]
       have h5 := Set.mem_range_self (f := W.ι) (ξ t)
       rwa [Scheme.Opens.range_ι] at h5
@@ -914,79 +919,8 @@ open GlobalTheory.Mum
 namespace GlobalTheory.Mum
 
 theorem isPullback_iSup_of_forall : ∀ (P' X T S : Scheme.{0}) (a : X ⟶ P') (p : X ⟶ S) (q : P' ⟶ T) (π : S ⟶ T), a ≫ q = p ≫ π → ∀ (I : Type) (V : I → P'.Opens), (∀ i, IsPullback (a ∣_ V i) ((a ⁻¹ᵁ V i).ι ≫ p) ((V i).ι ≫ q) π) → IsPullback (a ∣_ (⨆ i, V i)) ((a ⁻¹ᵁ (⨆ i, V i)).ι ≫ p) ((⨆ i, V i).ι ≫ q) π := by
-  intro P' X T S a p q π w I V hV
-  have hw : (a ∣_ (⨆ i, V i)) ≫ (⨆ i, V i).ι ≫ q = ((a ⁻¹ᵁ (⨆ i, V i)).ι ≫ p) ≫ π := by
-    rw [morphismRestrict_ι_assoc, Category.assoc, w]
-  set U := ⨆ i, V i with hUdef
-  let L := pullback.lift (a ∣_ U) ((a ⁻¹ᵁ U).ι ≫ p) hw
-  let Wo : I → U.toScheme.Opens := fun i => U.ι ⁻¹ᵁ V i
-  let O : I → (pullback (U.ι ≫ q) π).Opens := fun i => pullback.fst (U.ι ≫ q) π ⁻¹ᵁ Wo i
-  have hO : (⨆ i, O i) = ⊤ := by
-    simp only [O, Wo]
-    rw [← Scheme.Hom.preimage_iSup, ← Scheme.Hom.preimage_iSup, ← hUdef, Scheme.Opens.ι_preimage_self,
-      Scheme.Hom.preimage_top]
-  have hle : ∀ i, V i ≤ U := fun i => le_iSup V i
-  have hr1 : ∀ i, Set.range ((Wo i).ι ≫ U.ι) = Set.range (V i).ι := by
-    intro i
-    ext x
-    simp only [Scheme.Opens.range_ι]
-    constructor
-    · rintro ⟨y, rfl⟩
-      exact y.2
-    · exact fun hx => ⟨⟨⟨x, hle i hx⟩, hx⟩, rfl⟩
-  have hpt : ∀ z, U.ι (pullback.fst (U.ι ≫ q) π (L z)) = a ((a ⁻¹ᵁ U).ι z) := by
-    intro z
-    have h := congr($(show L ≫ pullback.fst (U.ι ≫ q) π ≫ U.ι = (a ⁻¹ᵁ U).ι ≫ a by
-      rw [pullback.lift_fst_assoc, morphismRestrict_ι]) z)
-    simpa using h
-  have key : ∀ i, IsIso (L ∣_ O i) := by
-    intro i
-    let e := IsOpenImmersion.isoOfRangeEq ((Wo i).ι ≫ U.ι) (V i).ι (hr1 i)
-    have he : e.hom ≫ (V i).ι = (Wo i).ι ≫ U.ι := IsOpenImmersion.isoOfRangeEq_hom_fac _ _ _
-    let j : (a ⁻¹ᵁ V i).toScheme ⟶ (a ⁻¹ᵁ U).toScheme := X.homOfLE (a.preimage_mono (hle i))
-    have hj : j ≫ (a ⁻¹ᵁ U).ι = (a ⁻¹ᵁ V i).ι := Scheme.homOfLE_ι _ _
-    have outer : IsPullback ((j ≫ L) ≫ pullback.snd (U.ι ≫ q) π) ((a ∣_ V i) ≫ e.inv) π
-        ((Wo i).ι ≫ U.ι ≫ q) := by
-      have h0 := (hV i).flip
-      have e1 : (j ≫ L) ≫ pullback.snd (U.ι ≫ q) π = (a ⁻¹ᵁ V i).ι ≫ p := by
-        rw [Category.assoc, pullback.lift_snd, ← Category.assoc, hj]
-      rw [e1]
-      refine IsPullback.of_iso h0 (Iso.refl _) (Iso.refl _) e.symm (Iso.refl _) ?_ ?_ ?_ ?_
-      · simp
-      · simp
-      · simp
-      · simp only [Iso.symm_hom, Iso.refl_hom, Category.comp_id]
-        rw [← reassoc_of% he, Iso.inv_hom_id_assoc]
-    have hv : IsPullback (j ≫ L) ((a ∣_ V i) ≫ e.inv) (pullback.fst (U.ι ≫ q) π) (Wo i).ι := by
-      refine IsPullback.of_right (h₁₂ := pullback.snd (U.ι ≫ q) π) (h₂₂ := U.ι ≫ q) (v₁₃ := π) outer ?_
-        (IsPullback.of_hasPullback (U.ι ≫ q) π).flip
-      rw [← cancel_mono U.ι]
-      simp only [Category.assoc, L, pullback.lift_fst_assoc, morphismRestrict_ι, reassoc_of% hj]
-      rw [← he, Iso.inv_hom_id_assoc, morphismRestrict_ι]
-    have R := (isPullback_morphismRestrict (pullback.fst (U.ι ≫ q) π) (Wo i)).flip
-    have hr2 : Set.range ((L ⁻¹ᵁ O i).ι ≫ (a ⁻¹ᵁ U).ι) = Set.range (a ⁻¹ᵁ V i).ι := by
-      ext x
-      simp only [Scheme.Opens.range_ι]
-      constructor
-      · rintro ⟨y, rfl⟩
-        have hy := y.2
-        change U.ι (pullback.fst (U.ι ≫ q) π (L y.1)) ∈ V i at hy
-        rwa [hpt] at hy
-      · intro hx
-        refine ⟨⟨⟨x, hle i hx⟩, ?_⟩, rfl⟩
-        change U.ι (pullback.fst (U.ι ≫ q) π (L ⟨x, hle i hx⟩)) ∈ V i
-        exact (congrArg (· ∈ V i) (hpt _)).mpr hx
-    let f₁ := IsOpenImmersion.isoOfRangeEq _ _ hr2
-    have hkey : L ∣_ O i = f₁.hom ≫ (hv.isoIsPullback _ _ R).hom := by
-      rw [← cancel_mono (O i).ι, morphismRestrict_ι, Category.assoc, IsPullback.isoIsPullback_hom_fst,
-        ← Category.assoc f₁.hom]
-      congr 1
-      rw [← cancel_mono (a ⁻¹ᵁ U).ι, Category.assoc, hj, IsOpenImmersion.isoOfRangeEq_hom_fac]
-    rw [hkey]
-    infer_instance
-  have hiso : IsIso L :=
-    IsZariskiLocalAtTarget.of_iSup_eq_top (P := MorphismProperty.isomorphisms Scheme) O hO key
-  exact IsPullback.of_iso_pullback ⟨hw⟩ (asIso L) (pullback.lift_fst _ _ _) (pullback.lift_snd _ _ _)
+  intros
+  apply _root_.GlobalTheory.Mum.GlueNear.isPullback_iSup <;> assumption
 
 end GlobalTheory.Mum
 end -- clump:auto
@@ -1052,7 +986,8 @@ theorem mem_of_closedPoints_closedFibre_mem : ∀ (R : Type) [CommRing R] [IsLoc
     exact hemb.isClosedMap _ hyc
   have hqy : q (e y) = c := by
     have : e y ∈ Set.range e := ⟨y, rfl⟩
-    rwa [Scheme.Hom.range_fiberι] at this
+    rw [Scheme.Hom.range_fiberι] at this
+    exact this
   exact hyZ.2 (hU _ hyc' hqy)
 
 end GlobalTheory.Mum
@@ -1186,7 +1121,8 @@ theorem exists_near : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], 
     infer_instance
   have hU0 : ∀ y : P', (b ≫ PSpace.str R E.N) y = closedPoint R → y ∈ U := by
     refine GlobalTheory.T.mem_of_closedPoints_closedFibre_mem' R P' (b ≫ PSpace.str R E.N) hlft U ?_
-    exact fun y hy1 hy2 => TopologicalSpace.Opens.mem_iSup.2 ⟨⟨y, hy1, hy2⟩, hxV _⟩
+    intro y hy1 hy2
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨y, hy1, hy2⟩, hxV _⟩
   have hsep : IsSeparated (U.ι ≫ b ≫ PSpace.str R E.N) := by
     have : IsProper (PSpace.str R E.N) := ReciprocityTheory.ChartRestriction.G.Geo.Tor.isProper_str R E.N
     infer_instance

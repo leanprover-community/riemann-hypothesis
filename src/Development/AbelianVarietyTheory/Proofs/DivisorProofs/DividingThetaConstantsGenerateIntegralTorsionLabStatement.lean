@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemDividingLabelsIffClassZeroStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsActIffIsDiagEnd
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.RankOneModel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsThNeZero
@@ -96,75 +97,7 @@ theorem exists_trait_pull {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [
         ∃ (p' : QkPt D'.toPre (AlgebraicClosure (FractionRing W)) k)
           (x' : TFK (R := W) (AlgebraicClosure (FractionRing W)) ⟶ A'.A), p'.y = xe.symm p.y ∧
           QkToAkU U'.toUnifPre (AlgebraicClosure (FractionRing W)) k p' x' ∧ x'.left ≫ a = spMap em ≫ x.left := by
-  obtain ⟨hL, -, -, h4, h5⟩ := GlobalTheory.firstFiveLaws
-  haveI := hR.1
-  obtain ⟨W, _, _, _, φ, hW, hφ, hc⟩ := GlobalTheory.PrimeUnif.exists_cdvr R (maximalIdeal R)
-  have hloc : IsLocalHom φ := ⟨fun r hr => by
-    by_contra h
-    have : r ∈ (maximalIdeal W).comap φ := hc.symm ▸ (mem_maximalIdeal r).2 h
-    exact (mem_maximalIdeal _).1 this hr⟩
-  have := hW.1
-  have hW' : AdmBase W (maximalIdeal W) := ⟨inferInstance, inferInstance, inferInstance, hW.2.1⟩
-  obtain ⟨D', hD, A', U', hP⟩ := GlobalTheory.UT.EndBaseChange.exists_pull hL.polBaseChange h4.unifBaseChange h5.psiOnExists
-    hR hW' φ hφ (Ideal.map_le_iff_le_comap.2 hc.ge) hG U
-  have hinj : Function.Injective ((algebraMap W (FractionRing W)).comp φ) := (IsFractionRing.injective W _).comp hφ
-  let ga : FractionRing R →+* FractionRing W := IsFractionRing.lift hinj
-  have hga : ∀ r, ga (algebraMap R _ r) = algebraMap W _ (φ r) := fun r => IsFractionRing.lift_algebraMap hinj r
-  have hsq : jK W ≫ spMap φ = spMap ga ≫ jK R := by
-    rw [← Spec.map_comp, ← Spec.map_comp]; congr 1; ext1; exact RingHom.ext fun r => (hga r).symm
-  have g₁ := GlobalTheory.ThetaBaseChange.grp_generic U.toUnifPre
-  have g₂ := ((GlobalTheory.ThetaBaseChange.grp_generic U'.toUnifPre).comp (isGrpPullback_pullback G (spMap φ))).congr hsq rfl
-  let a : A'.A.left ⟶ A.A.left := g₁.1.lift _ (A'.A.hom ≫ spMap ga) (g₂.1.w.trans (Category.assoc _ _ _).symm)
-  have ha : a ≫ U.gen.inv.left ≫ pullback.fst G.hom (jK R) = _ := g₁.1.lift_fst _ _ _
-  have hb : (Iso.refl ((Over.pullback (specOf φ)).obj G)).hom.left ≫ pullback.fst G.hom (specOf φ) =
-      pullback.fst G.hom (specOf φ) := Category.id_comp _
-  have gp : IsGrpPullback A'.A A.A (spMap ga) a := g₁.cancel (g₂.congr rfl ha.symm) (g₁.1.lift_snd _ _ _)
-  letI : Algebra (FractionRing R) (AlgebraicClosure (FractionRing W)) :=
-    ((algebraMap (FractionRing W) (AlgebraicClosure (FractionRing W))).comp ga).toAlgebra
-  obtain ⟨em⟩ : Nonempty (AlgebraicClosure (FractionRing R) →ₐ[FractionRing R] AlgebraicClosure (FractionRing W)) :=
-    ⟨IsAlgClosed.lift⟩
-  have hF : GlobalTheory.ArcPull.Compat φ (AlgebraicClosure (FractionRing W)) := fun r =>
-    congrArg (algebraMap (FractionRing W) (AlgebraicClosure (FractionRing W))) (hga r)
-  refine ⟨W, _, _, hW.1, hW.2.2, φ, ga, D', A', _, _, _, U', a, hD.xe, em.toRingHom, hW.2.1, hloc, hga,
-    IsSemiAbelian.pullback _ G hG, gp, ?_, em.comp_algebraMap, fun k hk p x hpx => ?_⟩
-  · have hgi : U.gen.inv.left ≫ U.gen.hom.left = 𝟙 _ := by rw [← Over.comp_left, Iso.inv_hom_id, Over.id_left]
-    have hgi' : U'.gen.inv.left ≫ U'.gen.hom.left = 𝟙 _ := by rw [← Over.comp_left, Iso.inv_hom_id, Over.id_left]
-    have H₀ : LBIso A.L (U.LG.L.pull (U.gen.inv.left ≫ pullback.fst G.hom (jK R))) :=
-      LBIso.chartPull (h := U.gen.inv.left) (chartPullSec A.L _ _ hgi)
-        (chartPullSame U.LG.L _ (fun _ => pullback.fst G.hom (jK R)) _ _ fun _ => rfl) U.ext
-    have H₁ : LBIso A'.L (U'.LG.L.pull (U'.gen.inv.left ≫ pullback.fst _ (jK W))) :=
-      LBIso.chartPull (h := U'.gen.inv.left) (chartPullSec A'.L _ _ hgi')
-        (chartPullSame U'.LG.L _ (fun _ => pullback.fst _ (jK W)) _ _ fun _ => rfl) U'.ext
-    have H₂ : LBIso (U'.LG.L.pull (U'.gen.inv.left ≫ pullback.fst _ (jK W)))
-        (U.LG.L.pull (a ≫ U.gen.inv.left ≫ pullback.fst G.hom (jK R))) :=
-      LBIso.chartPull (Geo.Tor.chartPullPull _ _ _ rfl)
-        (chartPullSame U.LG.L _ (fun _ => _) _ _ fun _ => ha.trans (congrArg (_ ≫ ·) hb.symm))
-        ⟨hP.lg.choose, hP.lg.choose_spec.1⟩
-    have H₃ : LBIso (A.L.pull a) (U.LG.L.pull (a ≫ U.gen.inv.left ≫ pullback.fst G.hom (jK R))) :=
-      LBIso.chartPull (Geo.Tor.chartPullPull _ _ _ rfl) (chartPullSame U.LG.L _ (fun _ => _) _ _ fun _ => rfl) H₀
-    exact (H₁.trans A'.isLB (pull_isLB U'.LG.isLB _) (pull_isLB U.LG.isLB _) H₂).trans A'.isLB (pull_isLB U.LG.isLB _)
-      (pull_isLB A.isLB _) H₃.symm
-  · obtain ⟨⟨p₁, h₁⟩, hx, hgal⟩ := GlobalTheory.UT.ClModel.galois_all R _ hR D A G hG U _ _ em k hk p
-    obtain ⟨x₁, hx₁⟩ := hx x
-    have hw : x₁.left ≫ A.A.hom = jFK (R := W) (AlgebraicClosure (FractionRing W)) ≫ spMap ga :=
-      (Over.w x₁).trans (Spec.map_comp (CommRingCat.ofHom ga) (CommRingCat.ofHom (algebraMap _ _)))
-    let x' : TFK (R := W) (AlgebraicClosure (FractionRing W)) ⟶ A'.A :=
-      Over.homMk (gp.1.lift x₁.left _ hw) (gp.1.lift_snd _ _ _)
-    have h₄ : x'.left ≫ a = x₁.left := gp.1.lift_fst _ _ _
-    have hpoints := GlobalTheory.UT.EndBaseChange.points hL.globalFns hD D.tau_bimult D'.tau_bimult _ hF
-    obtain ⟨g', h₃, -⟩ := hpoints.1 p₁.g
-    obtain ⟨h, hn, hi⟩ := p₁.eq
-    obtain ⟨h', hh, -⟩ := hpoints.1 h
-    have hi' := (hpoints.2.2.1 h h' (hD.xe.symm p₁.y) hh).1 (by
-      simpa using hi)
-    have hn' := (hpoints.2.2.2 k p₁.g g' h h' h₃ hh).1 hn
-    let p' : QkPt D'.toPre (AlgebraicClosure (FractionRing W)) k :=
-      ⟨hD.xe.symm p₁.y, g', ⟨h', hn', hi'⟩⟩
-    have h₂ : p'.y = hD.xe.symm p₁.y := rfl
-    refine ⟨p', x', h₂.trans (congrArg _ h₁.1), ?_, h₄.trans hx₁⟩
-    refine h5.qkBaseChange R W _ _ hR hW' φ D A G U _ (Iso.refl _) (by show IsMonHom (𝟙 _); infer_instance) A' D' hD U' hP
-      _ hF k hk p₁ x₁ _ x' h₂ h₃ ?_ ((hgal p₁ x x₁ h₁ hx₁).1 hpx)
-    rw [← h₄, Category.assoc, ha, hb, Category.assoc]
+  apply _root_.GlobalTheory.GSep.TorTrans.exists_trait_pull <;> assumption
 
 theorem div_and_translate {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}}
     {i : F.X ⟶ Z} {X₁ : Setup F W i} {z₁ : X₁.M.Z} {act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)} {V : Type}
@@ -680,23 +613,7 @@ theorem mem_closure_iff (p J : ℕ) (hJ : 2 ≤ J) (hN : N = p ^ J) (hG : ∀ a 
 
 theorem zmod_tors {p J M : ℕ} (hp : 0 < p) (hJ : 1 ≤ J) (hM : M = p ^ J) (x : ZMod M) (hx : p • x = 0) :
     ∃ y : ZMod M, x = p ^ (J - 1) • y := by
-  subst hM
-  haveI : NeZero (p ^ J) := ⟨pow_ne_zero _ hp.ne'⟩
-  have h1 : p ^ J ∣ p * x.val := by
-    rw [← CharP.cast_eq_zero_iff (ZMod (p ^ J)) (p ^ J)]
-    push_cast
-    rw [ZMod.natCast_zmod_val]
-    rwa [nsmul_eq_mul] at hx
-  have h2 : p ^ (J - 1) ∣ x.val := by
-    have e : p ^ J = p * p ^ (J - 1) := by rw [← pow_succ']; congr 1; omega
-    have h1' : p * p ^ (J - 1) ∣ p * x.val := by rw [← e]; exact h1
-    exact Nat.dvd_of_mul_dvd_mul_left hp h1'
-  obtain ⟨q, hq⟩ := h2
-  refine ⟨(q : ZMod (p ^ J)), ?_⟩
-  conv_lhs => rw [← ZMod.natCast_zmod_val x]
-  rw [hq, nsmul_eq_mul]
-  push_cast
-  ring
+  apply _root_.GlobalTheory.GSep.IntLabel.zmod_tors <;> assumption
 
 end
 end GlobalTheory.Poinc.Sep.IntLabel

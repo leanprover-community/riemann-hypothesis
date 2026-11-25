@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNormEqNegOne
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmHostUnitAddConjEqOne
@@ -111,21 +112,7 @@ theorem sub_bar_mem_pow_succ (H : Host E) (𝔭 : Ideal (𝓞 E)) (n : ℕ) (hn 
   exact Ideal.Quotient.eq_zero_iff_mem.1 hD
 
 theorem exists_sub_bar_notMem (H : Host E) {𝔭 : Ideal (𝓞 E)} (h𝔭 : 𝔭 ≠ ⊤) : ∃ c, c - H.bar c ∉ 𝔭 := by
-  by_contra! h
-  have key : ∀ n : ℕ, ∀ c, c - H.bar c ∈ 𝔭 ^ (n + 1) := by
-    intro n
-    induction n with
-    | zero => simpa using h
-    | succ n ih => exact sub_bar_mem_pow_succ H 𝔭 (n + 1) (by omega) ih
-  have h0 : H.rt - H.bar H.rt = 0 := by
-    have hm : H.rt - H.bar H.rt ∈ ⨅ i, 𝔭 ^ i :=
-      Ideal.mem_iInf.2 fun i => Ideal.pow_le_pow_right (Nat.le_succ i) (key i _)
-    rwa [Ideal.iInf_pow_eq_bot_of_isDomain 𝔭 h𝔭, Ideal.mem_bot] at hm
-  rw [GlobalTheory.CharRank.bar_rt_neg, sub_neg_eq_add, ← two_mul] at h0
-  have hrt : H.rt = 0 := (mul_eq_zero.1 h0).resolve_left two_ne_zero
-  have hd := H.rt_sq
-  rw [hrt, zero_pow two_ne_zero, zero_eq_neg, Nat.cast_eq_zero] at hd
-  exact H.d_prime.ne_zero hd
+  apply _root_.GlobalTheory.IsoCols.exists_sub_bar_notMem <;> assumption
 
 end GlobalTheory.RealTheta
 

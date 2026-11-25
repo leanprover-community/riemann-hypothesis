@@ -75,13 +75,8 @@ structure Coord {K : Type} [Field K] [NumberField K] (G : Geo K) {s : Fin G.D �
 
   c₂ : (K →+* ℂ) → Fin δ → ℝ
   y_ne : ∀ p, y p ≠ 0
-  c₂_pos : ∀ σ p, 0 < c₂ σ p
-  c₂_conj : ∀ σ p, c₂ ((starRingEnd ℂ).comp σ) p = c₂ σ p
   mul : ∀ (j : ℕ) (u : Fin G.N → K) (g : G.SecOn s j),
     ev (j + 1) (mulSecOn G.isLB₂ G.isLB (G.comb u) (Nat.cast_succ j).symm g) = fun p => (∑ k, u k * y p k) * ev j g p
-  sq : ∀ (j : ℕ) (σ : K →+* ℂ) (m : ℕ) (c : Fin m → ℂ) (g : Fin m → G.SecOn s j),
-    csq (hs.normOn j) σ c g =
-      ∑ p, ‖∑ i, c i * σ (ev j (g i) p)‖ ^ 2 / (c₂ σ p * archSize (G.A σ) (fun k => σ (y p k)) ^ j) ^ 2
 
 def Claim (X : Data F) (C h J : ℝ) : Prop :=
   0 ≤ X.z ∧ X.z ≤ 1 ∧

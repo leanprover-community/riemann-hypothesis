@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
@@ -139,24 +140,8 @@ theorem pair_eq_zero [StarRing E] (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (a 
       star (Z.submatrix Fin.castSucc Fin.castSucc).det) ≠ 0)
     (h1 : Z *ᵥ b = Pi.single (Fin.last r) (T * a (Fin.last r)))
     (h2 : Zᴴ *ᵥ a = Pi.single (Fin.last r) (T' * b (Fin.last r))) : a = 0 ∧ b = 0 := by
-  have e1 := det_mul_last Z b _ h1
-  have e2 := det_mul_last Zᴴ a _ h2
-  rw [← conjTranspose_submatrix, det_conjTranspose, det_conjTranspose] at e2
-  have ha : a (Fin.last r) = 0 := by
-    refine (mul_eq_zero.1 ?_).resolve_left hG
-    linear_combination Z.det * e2 + star (Z.submatrix Fin.castSucc Fin.castSucc).det * T' * e1
-  have hb : b (Fin.last r) = 0 := by
-    refine (mul_eq_zero.1 ?_).resolve_left hG
-    linear_combination star Z.det * e1 + (Z.submatrix Fin.castSucc Fin.castSucc).det * T * e2
-  have hZ : Z.det ≠ 0 ∨ (Z.submatrix Fin.castSucc Fin.castSucc).det ≠ 0 := by
-    by_contra hn
-    rw [not_or, not_not, not_not] at hn
-    exact hG (by rw [hn.1, hn.2]; simp)
-  rw [ha, mul_zero, Pi.single_zero] at h1
-  rw [hb, mul_zero, Pi.single_zero] at h2
-  refine ⟨eq_zero_of_minor _ a h2 ha ?_, eq_zero_of_minor _ b h1 hb hZ⟩
-  rw [← conjTranspose_submatrix, det_conjTranspose, det_conjTranspose]
-  simpa using hZ
+  intros
+  apply _root_.PI.UnitaryGroupMassFormula.BetaLUniq.GN.key <;> assumption
 
 end Mat
 

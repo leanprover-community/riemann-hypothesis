@@ -185,20 +185,7 @@ theorem conv_support {G : Type} [Monoid G] : ∀ {n : ℕ} (H : Fin n → Type) 
 
 theorem aconv_support {G : Type} [AddMonoid G] (p : G → Prop) (h0 : p 0) (hadd : ∀ x y, p x → p y → p (x + y)) :
     ∀ l : List (G →₀ ℂ), (∀ c ∈ l, ∀ u ∈ c.support, p u) → ∀ u ∈ (aconv l).support, p u := by
-  classical
-  intro l
-  induction l with
-  | nil =>
-    intro _ u hu
-    obtain rfl := Finset.mem_singleton.1 (Finsupp.support_single_subset hu)
-    exact h0
-  | cons c l ih =>
-    intro h u hu
-    rw [aconv, List.foldr_cons] at hu
-    obtain ⟨x, hx, h2⟩ := Finset.mem_biUnion.1 (Finsupp.support_sum hu)
-    obtain ⟨y, hy, h3⟩ := Finset.mem_biUnion.1 (Finsupp.support_sum h2)
-    obtain rfl := Finset.mem_singleton.1 (Finsupp.support_single_subset h3)
-    exact hadd _ _ (h c List.mem_cons_self x hx) (ih (fun c hc => h c (List.mem_cons_of_mem _ hc)) y hy)
+  apply _root_.GlobalTheory.QVal.InnerSupp.support_aconv <;> assumption
 
 end Groups
 
@@ -209,18 +196,7 @@ variable {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D)
 theorem comb_aconv_cons (c : WO S T →₀ ℂ) (l : List (WO S T →₀ ℂ))
     (h : ∀ x ∈ c.support, ∀ y ∈ (aconv l).support, symplO S T x y = 0) (f : WO S T → ℂ) :
     comb ψ S T (aconv (c :: l)) f = comb ψ S T c (comb ψ S T (aconv l) f) := by
-  classical
-  have e : aconv (c :: l) = ∑ x ∈ c.support, ∑ y ∈ (aconv l).support, Finsupp.single (x + y) (c x * aconv l y) := rfl
-  rw [e, GlobalTheory.HeisComb.comb_comb, GlobalTheory.HeisComb.comb_eq_sum]
-  rw [← Finsupp.sum_finsetSum_index (fun u => zero_smul ℂ (heisO ψ S T u f)) (fun u a b => add_smul a b (heisO ψ S T u f))]
-  refine Finset.sum_congr rfl fun x hx => ?_
-  rw [← Finsupp.sum_finsetSum_index (fun u => zero_smul ℂ (heisO ψ S T u f)) (fun u a b => add_smul a b (heisO ψ S T u f))]
-  refine Finset.sum_congr rfl fun y hy => ?_
-  have h0 : symplOH S T x y = 0 := by
-    unfold symplOH
-    rw [h x hx y hy, mul_zero]
-  rw [Finsupp.sum_single_index (zero_smul ℂ (heisO ψ S T (x + y) f)), GlobalTheory.WeilVacMove.heisO_heisO, h0,
-    AddChar.map_zero_eq_one, one_smul]
+  apply _root_.GlobalTheory.QValInner.comb_aconv_cons <;> assumption
 
 def Off (e : AE D) (u : WO S T) : Prop := IsHalf (1 - e) u ∧ u.map (infPart D) = 0
 

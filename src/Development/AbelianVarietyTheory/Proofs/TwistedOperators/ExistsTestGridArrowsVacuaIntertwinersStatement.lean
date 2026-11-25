@@ -496,7 +496,6 @@ noncomputable section
 
 namespace GlobalTheory.GridJoin
 
-open GlobalTheory.Grid GlobalTheory.ChiGrid
 
 theorem isThetaAt_unique {D : D7} {m n : ℕ} {ψ : AddChar (AF D.host.F) ℂ} {B : Mx D m n → Mx D m n → AF D.host.F}
     {hs : Mx D m n → (Mx D m n → ℂ) → (Mx D m n → ℂ)} {e : AE D} {Λ : AddSubgroup (Mx D m n)} {c : ℂ}
@@ -536,7 +535,6 @@ end GlobalTheory.GridJoin
 
 namespace GlobalTheory.GridJoin
 
-open GlobalTheory.Grid GlobalTheory.ChiGrid
 
 theorem isFrame_col {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {F : Face D A}

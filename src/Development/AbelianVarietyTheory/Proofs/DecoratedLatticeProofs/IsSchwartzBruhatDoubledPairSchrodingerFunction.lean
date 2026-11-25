@@ -57,6 +57,7 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Heisenberg
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MixedModelSourceSupportFiniteComponentInBox
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LatHatOpenAndContinuous
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchroedingerFunctionHasDerivAtRealLineDoubledPai, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchroedingerFunctionHasDerivAtRealLineDoubledPaiStatement, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsSchwartzBruhatDoubledPairSchrodingerFunction
@@ -100,7 +101,8 @@ theorem sch_hasDerivAt_line : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsS
   have lin := GlobalTheory.StdUnn.sch_linear D ψ hψ A B ν 𝓨 hν
 
   have htr : ∀ t : ℝ, sch ψ A B ν 𝓨 f (x + M t) = sch ψ A B ν 𝓨 (heisO ψ (dblSp A) B (L t) f) x := by
-    exact fun t => (congrFun (hS x (M t)) 0).symm
+    intro t
+    exact (congrFun (hS x (M t)) 0).symm
 
   have key : ∀ t : ℝ, IsThetaFunO ψ (dblSp A) B ((t⁻¹ : ℂ) • (heisO ψ (dblSp A) B (L t) f - f) - f') ∧
       sch ψ A B ν 𝓨 ((t⁻¹ : ℂ) • (heisO ψ (dblSp A) B (L t) f - f) - f') x =
@@ -134,7 +136,8 @@ theorem sch_hasDerivAt_line : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsS
       (t⁻¹ : ℂ) * (sch ψ A B ν 𝓨 (heisO ψ (dblSp A) B (L t) f) x - sch ψ A B ν 𝓨 f x) := by
     rw [zero_add, htr t, map_zero, add_zero, Complex.real_smul, Complex.ofReal_inv]
   simp only
-  rwa [e2, edist_eq_enorm_sub, ← (key t).2]
+  rw [e2, edist_eq_enorm_sub, ← (key t).2]
+  exact hb
 
 end GlobalTheory.SchLine
 end -- clump:auto
@@ -190,7 +193,8 @@ variable {D : D7}
 def volOf {A B : HSp D} (ν : Measure (WO A B)) (𝓨 : Set (WO A B)) (h : IsCovolOne (ratL B A) ν 𝓨) :
     GlobalTheory.Unf.VolM D B.rank A.rank := ⟨ν, 𝓨, h⟩
 
-theorem continuous_finPart' : Continuous (finPart D) := GlobalTheory.Member.continuous_finPart D
+theorem continuous_finPart' : Continuous (finPart D) := by
+  apply _root_.GlobalTheory.Member.continuous_finPart <;> assumption
 
 variable {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {A B : HSp D} {ν : Measure (WO A B)}
   {𝓨 : Set (WO A B)} (hν : IsCovolOne (ratL B A) ν 𝓨) {f : WO (dblSp A) B → ℂ} (hf : IsThetaFunO ψ (dblSp A) B f)
@@ -253,7 +257,8 @@ theorem sch_schwartz (k : ℕ) (L : (Fin k → ℝ) →+ Mx D B.rank A.rank) (hL
       simp only [map_add (f := _), add_assoc]
       rfl
     simp only at h ⊢
-    rwa [he]
+    rw [he]
+    exact h
   have hdecay : ∀ φ ∈ V, ∀ N : ℕ, ∃ C : ℝ, ∀ t, ‖t‖ ^ N * ‖φ t‖ ≤ C := by
     rintro φ ⟨f', hf', rfl⟩ N
     obtain ⟨C₁, hC₁⟩ := (GlobalTheory.T.adelicMatrixRealSize_bounds_along_real_parametrisation D θ hθ B.rank A.rank k L hL).2 hinj

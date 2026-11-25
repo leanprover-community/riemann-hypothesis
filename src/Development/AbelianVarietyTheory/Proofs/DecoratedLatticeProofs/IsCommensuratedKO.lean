@@ -350,13 +350,7 @@ theorem isInt_KO_mul_iff {A κ : GL (Fin n) k} (hκ : κ ∈ KO k (Fin n)) : IsI
 
 theorem ord_det_of_mem_KO {κ : GL (Fin n) k} (hκ : κ ∈ KO k (Fin n)) :
     ord k (Matrix.GeneralLinearGroup.det κ) = 0 := by
-  obtain ⟨u, rfl⟩ := hκ
-  apply ord_eq_zero
-  have h1 : ((Matrix.GeneralLinearGroup.det (Matrix.GeneralLinearGroup.map (algebraMap 𝒪[k] k) u) : kˣ) : k) =
-      algebraMap 𝒪[k] k (Matrix.GeneralLinearGroup.det u : 𝒪[k]ˣ) :=
-    ((algebraMap 𝒪[k] k).map_det _).symm
-  rw [h1]
-  exact (Valuation.integer.integers (valuation k)).one_of_isUnit (Units.isUnit _)
+  apply _root_.GlobalTheory.HeckeShift.ord_det_of_mem_KO <;> assumption
 
 theorem ord_det_mul (a b : GL (Fin n) k) : ord k (Matrix.GeneralLinearGroup.det (a * b)) =
     ord k (Matrix.GeneralLinearGroup.det a) + ord k (Matrix.GeneralLinearGroup.det b) := by

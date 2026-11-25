@@ -45,15 +45,4 @@ open NumberField IsDedekindDomain Matrix GlobalTheory.CuspRep GlobalTheory.Unita
 
 namespace GlobalTheory.UnitaryBC
 
-private theorem polyConj_coord_pInf {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (τ : E →+* ℂ) (x : E) :
-    coord τ (pInf E (algebraMap E (Ad E) x)) = τ x := by
-  have h : ∀ w : InfinitePlace E, pInf E (algebraMap E (Ad E) x) w = w.embedding x := fun w => by
-    first | exact pInf_algebraMap _ _
-  unfold coord
-  split_ifs with hτ
-  · simp only [Pi.evalRingHom_apply, h, hτ]
-  · rcases InfinitePlace.embedding_mk_eq τ with h' | h'
-    · exact absurd h' hτ
-    · simp [h, h']
-
 end GlobalTheory.UnitaryBC

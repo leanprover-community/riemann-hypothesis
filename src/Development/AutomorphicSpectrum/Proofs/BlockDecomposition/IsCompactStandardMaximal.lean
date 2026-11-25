@@ -112,12 +112,9 @@ theorem isOpen_finInt : IsOpen (finInt F E : Set (AE F E)) := by
   let e := (Algebra.TensorProduct.basis (AF F) b).equivFun
   have he : Continuous e := IsModuleTopology.continuous_of_linearMap e.toLinearMap
   have hS : IsOpen {z : AE F E | ∀ i, ∀ v, evFin F v (e z i) ∈ v.adicCompletionIntegers F} := by
-    have e0 : {z : AE F E | ∀ i, ∀ v, evFin F v (e z i) ∈ v.adicCompletionIntegers F} =
-        ⋂ i, (fun z => e z i) ⁻¹' {a : AF F | ∀ v, evFin F v a ∈ v.adicCompletionIntegers F} := by
-      ext z
-      simp only [Set.mem_setOf_eq, Set.mem_iInter, Set.mem_preimage]
-    rw [e0]
-    exact isOpen_iInter_of_finite fun i => (isOpen_intAd (F := F)).preimage ((continuous_apply i).comp he)
+    rw [Set.ofPred_forall]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_intAd (F := F)).preimage ((continuous_apply i).comp he)
   refine AddSubgroup.isOpen_of_mem_nhds _ (g := 0) (Filter.mem_of_superset (hS.mem_nhds ?_) ?_)
   · intro i v
     simp

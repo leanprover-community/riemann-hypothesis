@@ -338,22 +338,6 @@ section Arch
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type}
   [AddCommGroup Λ] [Module (𝓞 E) Λ]
 
-omit [IsCMField E] in
-theorem embOf_coe (s : 𝓞 E →+* ℂ) (a : 𝓞 E) : embOf s (a : E) = s a :=
-  IsFractionRing.lift_algebraMap (intEmb_injective s) a
-
-omit [IsCMField E] in
-theorem embOf_comp (φ : E →+* ℂ) : embOf (φ.comp (algebraMap (𝓞 E) E)) = φ :=
-  IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (by
-    ext a; simpa using embOf_coe (φ.comp (algebraMap (𝓞 E) E)) a)
-
-omit [IsCMField E] in
-theorem embOf_injective : Function.Injective (embOf : (𝓞 E →+* ℂ) → (E →+* ℂ)) := by
-  intro s s' h
-  ext a
-  have := congrArg (fun φ : E →+* ℂ => φ (a : E)) h
-  simpa [embOf_coe] using this
-
 theorem plc_bijective (F : UnivFam E Ψ j j' n g Λ) : Function.Bijective (plc F) := by
   apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.plc_bijective
 

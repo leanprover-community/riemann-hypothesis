@@ -173,16 +173,6 @@ def bc (R : Type) [CommRing R] [Algebra ℚ R] : GQpts F H →* Gpts F H R :=
       rfl)
     rfl
 
-def bcMap {R R' : Type} [CommRing R] [Algebra ℚ R] [CommRing R'] [Algebra ℚ R'] (f : R →ₐ[ℚ] R') :
-    Gpts F H R →* Gpts F H R' :=
-  simMap ((Algebra.TensorProduct.map f (AlgHom.id ℚ F)).toRingHom) (f : R →+* R')
-    (fun x => by
-      induction x using TensorProduct.inductionOn with
-      | tmul r y => rfl
-      | add x y hx hy => simp only [map_add (f := _), hx, hy])
-    (fun a => rfl)
-    (by rw [Matrix.map_map]; congr 1; funext x; simp [Algebra.TensorProduct.map_tmul])
-
 end Points
 
 section Topology

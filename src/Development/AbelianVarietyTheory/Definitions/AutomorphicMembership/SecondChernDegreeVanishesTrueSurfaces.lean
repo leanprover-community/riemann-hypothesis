@@ -164,26 +164,6 @@ variable (s : SurfFp)
 
 end SurfFp
 
-structure SurfSt : Type 1 where
-
-  Surf : Type
-
-  surfCh2 : Surf → ℝ
-
-  surfDegOm : Surf → ℝ
-
-  SurfFp : Type
-
-  surfFpCh2 : SurfFp → ℝ
-
-namespace SurfSt
-
-variable {D : D7}
-
-def of (X : DivX D) : SurfSt := ⟨X.Surf, X.surfCh2, X.surfDegOm, X.SurfFp, X.surfFpCh2⟩
-
-end SurfSt
-
 variable {D : D7} {X : DivX D}
 
 end GlobalTheory.ShFam.Pad

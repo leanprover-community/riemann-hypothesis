@@ -615,12 +615,6 @@ namespace LateralTheory.EtaleFoundations.TwSecLocPf
 def ZarPow : Prop := ∀ (q : ℕ) [NeZero q] (V : Scheme.{0}) (ζ ξ : Prim q Γ(V, ⊤)),
   Loc V fun W h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
 
-theorem twF_single_pow (q : ℕ) [NeZero q] (i : ℤ) (A : CommRingCat.{0}) (ζ ξ : Prim q A) (a : (ZMod q)ˣ)
-    (h : ξ.1 = ζ.1 ^ (a : ZMod q).val) (b : ULift.{1} (ZMod q)) :
-    (Submodule.Quotient.mk (Finsupp.single ξ b) : (twF q i).obj A) =
-      (b.down * ((a ^ i : (ZMod q)ˣ) : ZMod q)).val • (Submodule.Quotient.mk (Finsupp.single ζ 1) : (twF q i).obj A) := by
-  apply LateralTheory.E.H2CurveOrder.TwLocGenPfSec.twF_single_pow <;> assumption
-
 theorem twF_loc (hZ : ZarPow) (q : ℕ) [NeZero q] (i : ℤ) (V : Scheme.{0}) (ζ : Prim q Γ(V, ⊤))
     (x : (twF q i).obj Γ(V, ⊤)) :
     Loc V fun W h => ∃ c : ℕ, ((twF q i).map h.appTop).hom x =

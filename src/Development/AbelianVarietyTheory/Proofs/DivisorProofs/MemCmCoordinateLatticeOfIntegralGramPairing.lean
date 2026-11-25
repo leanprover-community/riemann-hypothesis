@@ -207,7 +207,8 @@ theorem torsion_comp_eq_one {K : Type} [Field K] [NumberField K] (σ : K →+* �
     have h2 := h _ h1
     apply toBase_injective hgB
     rw [tb, toBase_one hgB hmB, eq_one_iff]
-    simpa [e] using (eq_one_iff _).1 h2
+    have h3 := (eq_one_iff _).1 h2
+    simpa [e] using h3
   obtain ⟨α, hα, hfac⟩ := GlobalTheory.HolUnifEnd.exists_factor_pow P'.A Q'.A P'.isAb n hn ψ' hC
   have kill' : ∀ (T' : Over (Sp ℂ)) (y : T' ⟶ P'.A), y ^ n = 1 → y ≫ ψ' = 1 := by
     intro T' y hy
@@ -765,7 +766,8 @@ theorem UpperTheory.exists_nsmul_mem_sum_image_lattice_of_surjective_mod :
   haveI : Countable ΛB := TopologicalSpace.separableSpace_iff_countable.mp inferInstance
   have hΦs : ∀ u, ∃ v, Φ v = u := by
     intro u
-    by_contra! hu
+    by_contra hu
+    push_neg at hu
     choose v hv using fun t : ℝ => hsurj (t • u)
     let f : ℝ → ΛB := fun t => ⟨t • u - Φ (v t), by rw [hΦapp]; exact hv t⟩
     have hf : Function.Injective f := by
@@ -775,7 +777,8 @@ theorem UpperTheory.exists_nsmul_mem_sum_image_lattice_of_surjective_mod :
       apply hu ((t - t')⁻¹ • (v t - v t'))
       rw [map_smul, map_sub]
       have h2 : (t - t') • u = Φ (v t) - Φ (v t') := by
-        rwa [sub_smul, sub_eq_sub_iff_sub_eq_sub]
+        rw [sub_smul, sub_eq_sub_iff_sub_eq_sub]
+        exact h1
       rw [← h2, smul_smul, inv_mul_cancel₀ (sub_ne_zero.mpr hne), one_smul]
     exact Cardinal.not_countable_real (Set.countable_univ_iff.mpr hf.countable)
   have hspan : Submodule.span ℝ (Sz : Set (Fin gB → ℂ)) = ⊤ := by
@@ -879,7 +882,8 @@ private theorem pt_mul {G : Over S} [GrpObj G] (x y : 𝟙_ (Over (Sp ℂ)) ⟶ 
   let ρ : Over.mk ((𝟙_ (Over (Sp ℂ))).hom ≫ f) ⟶ Over.mk f := Over.homMk (𝟙 _) (by simp)
   have h := (isGrpPullback_pullback G f).2 _ x y (ρ ≫ pt f x) (ρ ≫ pt f y) (Category.id_comp _) (Category.id_comp _)
   rw [← MonObj.comp_mul] at h
-  exact Over.OverMorphism.ext (h.symm.trans (Category.id_comp _))
+  refine Over.OverMorphism.ext ?_
+  exact h.symm.trans (Category.id_comp _)
 
 private theorem exists_unif (P : Out.PolAV S) : ∃ (L : LB ((Over.pullback f).obj P.A).left)
     (_ : HolUnif ((Over.pullback f).obj P.A) L P.g), IsAbelianScheme ((Over.pullback f).obj P.A) ∧
@@ -1260,7 +1264,8 @@ theorem flat_ker (S : Scheme.{0}) (P : Out.PolAV S) (m : ℕ) (hm : 1 ≤ m) :
     MorphismProperty.of_isPullback (P := @Flat) hp hf
   have hw : (pullback.snd (𝟙 P.A ^ m) η[P.A]).left = (pullback (𝟙 P.A ^ m) η[P.A]).hom := by
     simpa using Over.w (pullback.snd (𝟙 P.A ^ m) η[P.A])
-  rwa [hw] at he
+  rw [hw] at he
+  exact he
 
 theorem kill_complex (A' B' : Over (Sp ℂ)) [GrpObj A'] [GrpObj B'] (hA : IsAbelianScheme A')
     [IsSeparated B'.hom] [LocallyOfFiniteType B'.hom] (N : ℕ) (hN : 1 ≤ N) (φ : A' ⟶ B')
@@ -1291,7 +1296,8 @@ theorem kill_complex (A' B' : Over (Sp ℂ)) [GrpObj A'] [GrpObj B'] (hA : IsAbe
   have e' := congrArg (fun q => q.left (IsLocalRing.closedPoint ℂ)) e
   have hz' : p.left (IsLocalRing.closedPoint ℂ) = z := pointOfClosedPoint_apply _ z hz _
   simp only [Over.comp_left] at e'
-  rwa [← hz']
+  rw [← hz']
+  exact e'
 
 end GlobalTheory.TorsionKill
 
@@ -1332,6 +1338,57 @@ end GlobalTheory.TorsionKill
 noncomputable section
 namespace GlobalTheory.TorsionKill
 
+theorem kill_torsion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
+    (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (A B : GlobalTheory.CM.PAT H (Sp (𝓞 K))) (G : A.t.G ⟶ B.t.G),
+    IsMonHom G → ∀ m : ℕ, 0 < m →
+    (∀ x : Over.mk (spMap (σ.comp (algebraMap (𝓞 K) K))) ⟶ A.t.G, x ^ m = 1 → x ≫ G = 1) →
+    ∀ (T : Over (Sp (𝓞 K))) (x : T ⟶ A.t.G), x ^ m = 1 → x ≫ G = 1 := by
+  intro E _ _ _ H K _ _ σ A B G _ m hm hpt T x hx
+  let inc : pullback (𝟙 A.t.G ^ m) η[A.t.G] ⟶ A.t.G := pullback.fst _ _
+  suffices hY : inc ≫ G = 1 by
+    have hx' : x ≫ (𝟙 A.t.G ^ m) = toUnit T ≫ η[A.t.G] := by
+      rw [MonObj.comp_pow, Category.comp_id]; exact hx
+    rw [← pullback.lift_fst x (toUnit T) hx', Category.assoc]
+    change _ ≫ inc ≫ G = 1
+    rw [hY, MonObj.comp_one]
+  have := flat_ker _ A.pol m hm
+  have := isSchemeTheoreticallyDominant_complexPoint K σ
+  have := B.ab.proper
+  have := A.ab.proper
+  have : IsSeparated B.t.G.hom := inferInstance
+  refine eq_of_pullback_eq (spMap (σ.comp (algebraMap (𝓞 K) K))) ?_
+  set t := spMap (σ.comp (algebraMap (𝓞 K) K)) with ht
+  let F := Over.pullback t
+  have hA' : IsAbelianScheme (F.obj A.t.G) := ReciprocityTheory.ChartRestriction.G.Out.TLinPf.isAb_pullback t A.t.G A.ab
+  have : IsSeparated (F.obj B.t.G).hom := by change IsSeparated (pullback.snd _ _); infer_instance
+  have : LocallyOfFiniteType (F.obj B.t.G).hom := by change LocallyOfFiniteType (pullback.snd _ _); infer_instance
+  have hpow : F.map (𝟙 A.t.G ^ m) = 𝟙 (F.obj A.t.G) ^ m := by
+    simpa using map_pow (F.homMonoidHom (X := A.t.G) (M := A.t.G)) (𝟙 A.t.G) m
+  have hinc : inc ≫ (𝟙 A.t.G ^ m) = 1 := by
+    rw [show inc ≫ (𝟙 A.t.G ^ m) = pullback.snd (𝟙 A.t.G ^ m) η[A.t.G] ≫ η[A.t.G] from pullback.condition,
+      toUnit_unique (pullback.snd (𝟙 A.t.G ^ m) η[A.t.G]) (toUnit _)]
+    rfl
+  have hFinc : F.map inc ≫ (𝟙 (F.obj A.t.G) ^ m) = toUnit _ ≫ η[F.obj A.t.G] := by
+    rw [← hpow, ← F.map_comp, hinc, Functor.map_one]; rfl
+  have key := kill_complex (F.obj A.t.G) (F.obj B.t.G) hA' m hm (F.map G) (fun p => by
+    let y := p ≫ pullback.fst (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G]
+    have hy1 : y ≫ 𝟙 (F.obj A.t.G) ^ m = 1 := by
+      have c : pullback.fst (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G] ≫ 𝟙 (F.obj A.t.G) ^ m =
+          pullback.snd (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G] ≫ η[F.obj A.t.G] := pullback.condition
+      simp only [y, Category.assoc, c]
+      rw [← Category.assoc, toUnit_unique (p ≫ pullback.snd _ _) (toUnit _)]
+      rfl
+    have hyp : ptOf t y ^ m = 1 := by
+      rw [← Category.comp_id (ptOf t y), ← MonObj.comp_pow, ← ptOf_comp, hpow, hy1, ptOf_one]
+    have h2 : ptOf t (y ≫ F.map G) = ptOf t 1 := by
+      rw [ptOf_comp, ptOf_one]; exact hpt _ hyp
+    have h3 := ptOf_injective t h2
+    simp only [y, Category.assoc] at h3
+    rw [h3, MonObj.comp_one])
+  have hl : F.map inc = pullback.lift (F.map inc) (toUnit _) hFinc ≫ pullback.fst _ _ :=
+    (pullback.lift_fst _ _ _).symm
+  rw [F.map_comp, Functor.map_one, hl, Category.assoc, key, MonObj.comp_one]
+
 end GlobalTheory.TorsionKill
 end -- clump:auto
 end -- clump:auto
@@ -1358,7 +1415,7 @@ theorem exists_linear_pow_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     GlobalTheory.Serre.IsLinearHom A.t.act B.t.act G → ∀ m : ℕ, 0 < m →
     (∀ x : Over.mk (spMap (σ.comp (algebraMap (𝓞 K) K))) ⟶ A.t.G, x ^ m = 1 → x ≫ G = 1) →
     ∃ F : A.t.G ⟶ B.t.G, GlobalTheory.Serre.IsLinearHom A.t.act B.t.act F ∧ F ^ m = G := by
-  exact GlobalTheory.DivisibleLinear.exists_linear_pow_eq
+  apply _root_.GlobalTheory.DivisibleLinear.exists_linear_pow_eq <;> assumption
 
 theorem gen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E),
     GlobalTheory.IndefiniteRowSideFullHecke.EigenvectorLieDegree.IsHostField H → ∀ (K : Type) [Field K] [NumberField K] (ρ : 𝓞 K) (σ₁ : K →+* ℂ) (p : ℕ)
@@ -1665,7 +1722,8 @@ theorem weilEq_gram : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   have hg : 1 ≤ (X.A true).pol.g := NumInh.dim_pos_of_hasType X.split X.ρ_sq (X.A true) X.typeP
   have e₂ := H.bar.injective (LamF.Faithful.act_injective hL E K (X.A true).pol (X.A true).t.act hg e₁)
   have e₃ : r = r' := mul_left_cancel₀ (Nat.cast_ne_zero.2 hm.ne' : (m : 𝓞 E) ≠ 0) e₂
-  rwa [e₃]
+  rw [e₃]
+  exact hr'
 
 end GlobalTheory.FlatCM.HomLat
 

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieConditionHodgeSubspaceLeHodgeFiltration
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorRealiseKodairaSpencerDirectionStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrysActApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsArtinianRingTsze
 public import Development.AbelianVarietyTheory.Definitions.Divisors.InfUniv
@@ -351,24 +353,7 @@ theorem injective_chars {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum
 theorem root_sub_ne_zero {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R]
     (b : GlobalTheory.UPel.HT.Base D R) {k : Type} [Field k] (β : R →+* k) :
     β b.ρ - ((D.tr : k) - β b.ρ) ≠ 0 := by
-  intro h0
-  set z : ℤ := D.tr ^ 2 - 4 * D.nm with hz
-  have hp : ¬ p ∣ z.natAbs := fun h => D.disc_p (Int.natCast_dvd.2 h)
-  have hcop : z.natAbs.Coprime p := ((Nat.Prime.coprime_iff_not_dvd (Fact.out)).2 hp).symm
-  have hu : IsUnit ((z.natAbs : ℕ) : k) := by simpa using (b.unit _ hcop).map β
-  have hroot : β b.ρ ^ 2 - (D.tr : k) * β b.ρ + (D.nm : k) = 0 := by
-    have := congrArg β b.ρ_root
-    simpa using this
-  have hzk : (z : k) = 0 := by
-    have e : (z : k) = (β b.ρ - ((D.tr : k) - β b.ρ)) ^ 2 -
-        4 * (β b.ρ ^ 2 - (D.tr : k) * β b.ρ + (D.nm : k)) := by
-      rw [hz]; push_cast; ring
-    rw [e, h0, hroot]; ring
-  have hsq : (((z.natAbs : ℤ) : k)) ^ 2 = 0 := by
-    rw [← Int.cast_pow, Int.natAbs_sq, Int.cast_pow, hzk]; ring
-  have := pow_eq_zero_iff (n := 2) (by norm_num) |>.1 hsq
-  rw [Int.cast_natCast] at this
-  exact hu.ne_zero this
+  apply _root_.GlobalTheory.HTRealise.LieCond.delta_ne <;> assumption
 
 end GlobalTheory.HTGlueLie
 
@@ -546,44 +531,8 @@ theorem smul_mem_rhoPart (δ : k) (x : HdR o₀.A) :
   simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, map_smul, smul_sub, smul_comm δ]
 
 theorem lieZ_le_fil (hs : t = spMap β) : lieZ o₀ β ≤ Fil o₀.A := by
-  have hF : ∀ (x : D.O) (v : HdR o₀.A), v ∈ Fil o₀.A → crysAct o₀ x v ∈ Fil o₀.A := fun x v hv => by
-    haveI := o₀.act.hom x
-    rw [crysAct_apply]
-    exact push_mem_Fil _ hv
-  refine Submodule.span_le.2 ?_
-  rintro z ⟨r, lam, c, y, ⟨h, rfl⟩, hsum, rfl⟩
-  set A := crysAct o₀ (algebraMap (𝓞 D.F) D.O D.ω)
-  have hq0 : D.ω * D.ω - (D.tr : 𝓞 D.F) * D.ω + (D.nm : 𝓞 D.F) = 0 := by
-    rw [← D.tr_eq, ← D.nm_eq]; ring
-  have hq := congrArg (fun x => crysAct o₀ (algebraMap (𝓞 D.F) D.O x) h) hq0
-  simp only [map_add (f := _), map_sub, map_mul, map_intCast, map_zero, LinearMap.add_apply, LinearMap.sub_apply,
-    Module.End.mul_apply, Module.End.intCast_apply, LinearMap.zero_apply] at hq
-  rw [← Int.cast_smul_eq_zsmul k, ← Int.cast_smul_eq_zsmul k] at hq
-  have hroot : β b.ρ * ((D.tr : k) - β b.ρ) = (D.nm : k) := by
-    have := congrArg β b.ρ_root
-    simp only [map_add (f := _), map_sub, map_mul, map_pow, map_intCast, map_zero] at this
-    linear_combination -this
-  have hy0 : crysAct o₀ (algebraMap (𝓞 D.F) D.O D.ω) ((A - ((D.tr : k) - β b.ρ) • 1) h) -
-      β b.ρ • ((A - ((D.tr : k) - β b.ρ) • 1) h) ∈ Fil o₀.A := by
-    have e : crysAct o₀ (algebraMap (𝓞 D.F) D.O D.ω) ((A - ((D.tr : k) - β b.ρ) • 1) h) -
-        β b.ρ • ((A - ((D.tr : k) - β b.ρ) • 1) h) = 0 := by
-      simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, map_sub, map_smul]
-      linear_combination (norm := module) hq + hroot • h
-    rw [e]; exact zero_mem _
-  obtain ⟨w, hw, hws⟩ := _root_.GlobalTheory.HTSummand.lie_mod_fil p D R b N k β t hs o₀ _ hy0
-  set y := (A - ((D.tr : k) - β b.ρ) • 1) h
-  have e : ∑ l, lam l • crysAct o₀ (algebraMap (𝓞 D.F) D.O (c l)) y =
-      ∑ l, lam l • crysAct o₀ (algebraMap (𝓞 D.F) D.O (c l)) (y - ∑ i, w i) +
-        ∑ i, ∑ l, lam l • (crysAct o₀ (algebraMap (𝓞 D.F) D.O (c l)) (w i) - β (b.t i (c l)) • w i) := by
-    have h3 : ∀ i, ∑ l, lam l • β (b.t i (c l)) • w i = 0 := fun i => by
-      simp only [smul_smul, ← Finset.sum_smul, hsum i, zero_smul]
-
-    simp only [map_sub, map_sum, smul_sub, Finset.smul_sum, Finset.sum_sub_distrib, h3, sub_zero]
-    rw [Finset.sum_comm (f := fun i l => lam l • crysAct o₀ (algebraMap (𝓞 D.F) D.O (c l)) (w i))]
-    abel
-  rw [e]
-  refine add_mem (sum_mem fun l _ => Submodule.smul_mem _ _ (hF _ _ hws)) (sum_mem fun i _ => sum_mem fun l _ =>
-    Submodule.smul_mem _ _ (hw i (c l)))
+  intros
+  apply _root_.GlobalTheory.HTCount.lieZ_le_Fil <;> assumption
 
 end Lie
 

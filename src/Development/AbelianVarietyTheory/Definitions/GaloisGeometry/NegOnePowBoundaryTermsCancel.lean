@@ -72,21 +72,6 @@ structure Mult (F : C ⥤ ModuleCat.{0} R) where
 
 end GlobalTheory.CatH
 
-namespace GlobalTheory.LogCris
-
-variable {b : Base} (L : b.Fun)
-
-def mult : CatH.Mult (O L) where
-  mul T := letI := T.i.toAlgebra; LinearMap.mul b.R T.B
-  one T := (1 : T.B)
-  mul_assoc T x y z := mul_assoc (G := T.B) x y z
-  mul_comm T x y := mul_comm (G := T.B) x y
-  one_mul T x := one_mul (M := T.B) x
-  map_mul {X Y} f x y := map_mul f.φ (show X.B from x) y
-  map_one f := map_one f.φ
-
-end GlobalTheory.LogCris
-
 namespace GlobalTheory.CatH
 
 variable {R : Type} [CommRing R] {C : Type u} [Category.{v} C]
@@ -239,79 +224,6 @@ theorem d_cupC {m n k : ℕ} (h : m + n = k) (f : Cn F m) (g : Cn F n) :
         Fin.lt_def, Fin.val_castSucc, Fin.val_succ, apply_ite, bk, Fin.val_zero] <;>
       split_ifs <;> (try simp only [finCongr_apply_coe, Fin.val_cast, Fin.val_castAdd, Fin.val_natAdd, Fin.val_castLE] at *) <;> omega
 
-theorem cupC_mem_ker {m n k : ℕ} (h : m + n = k) {f : Cn F m} {g : Cn F n} (hf : d F m f = 0)
-    (hg : d F n g = 0) : d F k (cupC μ h f g) = 0 := by
-  rw [d_cupC, hf, hg, map_zero, LinearMap.zero_apply, map_zero, smul_zero, add_zero]
-
-theorem cupC_mem_left {m n k : ℕ} (h : m + n = k) {f : Cn F m} {g : Cn F n} (hf : f ∈ Bn F m)
-    (hg : d F n g = 0) : cupC μ h f g ∈ Bn F k := by
-  cases m with
-  | zero =>
-    obtain rfl : f = 0 := (Submodule.mem_bot R).1 hf
-    rw [map_zero, LinearMap.zero_apply]
-    exact Submodule.zero_mem _
-  | succ m =>
-    obtain ⟨f0, rfl⟩ := hf
-    obtain ⟨k, rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
-    refine ⟨cupC μ (show m + n = k by omega) f0 g, ?_⟩
-    rw [d_cupC, hg, map_zero, smul_zero, add_zero]
-
-theorem cupC_mem_right {m n k : ℕ} (h : m + n = k) {f : Cn F m} {g : Cn F n} (hf : d F m f = 0)
-    (hg : g ∈ Bn F n) : cupC μ h f g ∈ Bn F k := by
-  cases n with
-  | zero =>
-    obtain rfl : g = 0 := (Submodule.mem_bot R).1 hg
-    rw [map_zero]
-    exact Submodule.zero_mem _
-  | succ n =>
-    obtain ⟨g0, rfl⟩ := hg
-    obtain ⟨k, rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
-    refine ⟨((-1 : ℤ) ^ m) • cupC μ (show m + n = k by omega) f g0, ?_⟩
-    rw [map_zsmul, d_cupC, hf, map_zero, LinearMap.zero_apply, zero_add, smul_smul, ← mul_pow, neg_one_mul,
-      neg_neg, one_pow, one_smul]
-
-def cupZ {m n k : ℕ} (h : m + n = k) :
-    LinearMap.ker (d F m) →ₗ[R] LinearMap.ker (d F n) →ₗ[R] LinearMap.ker (d F k) :=
-  LinearMap.mk₂ R (fun f g => ⟨cupC μ h f g, LinearMap.mem_ker.2
-      (cupC_mem_ker μ h (LinearMap.mem_ker.1 f.2) (LinearMap.mem_ker.1 g.2))⟩)
-    (fun f f' g => Subtype.ext (by simp only [Submodule.coe_add, map_add (f := _), LinearMap.add_apply]))
-    (fun r f g => Subtype.ext (by simp only [Submodule.coe_smul, map_smul, LinearMap.smul_apply]))
-    (fun f g g' => Subtype.ext (by simp only [Submodule.coe_add, map_add (f := _)]))
-    (fun r f g => Subtype.ext (by simp only [Submodule.coe_smul, map_smul]))
-
-def cupProductCocycleClass {m n k : ℕ} (h : m + n = k) (f : LinearMap.ker (d F m)) : H F n →ₗ[R] H F k :=
-  Submodule.liftQ _ (Submodule.mkQ _ ∘ₗ cupZ μ h f) fun g hg => by
-    rw [LinearMap.mem_ker, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-    exact cupC_mem_right μ h (LinearMap.mem_ker.1 f.2) hg
-
-def cup {m n k : ℕ} (h : m + n = k) : H F m →ₗ[R] H F n →ₗ[R] H F k :=
-  Submodule.liftQ _
-    { toFun := cupProductCocycleClass μ h
-      map_add' := fun f f' => Submodule.linearMap_qext _ (LinearMap.ext fun g => by
-        simp only [cupProductCocycleClass, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.liftQ_apply, map_add (f := _),
-          LinearMap.add_apply])
-      map_smul' := fun r f => Submodule.linearMap_qext _ (LinearMap.ext fun g => by
-        simp only [cupProductCocycleClass, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.liftQ_apply, map_smul,
-          LinearMap.smul_apply, RingHom.id_apply]) }
-    fun f hf => by
-      rw [LinearMap.mem_ker]
-      refine Submodule.linearMap_qext _ (LinearMap.ext fun g => ?_)
-      simp only [LinearMap.coe_mk, AddHom.coe_mk, cupProductCocycleClass, LinearMap.comp_apply, Submodule.mkQ_apply,
-        Submodule.liftQ_apply, LinearMap.zero_comp, LinearMap.zero_apply, Submodule.Quotient.mk_eq_zero]
-      exact cupC_mem_left μ h hf (LinearMap.mem_ker.1 g.2)
-
-def oneC : Cn F 0 := fun s => μ.one _
-
-theorem d_oneC : d F 0 (oneC μ) = 0 := by
-  funext s
-  change ∑ i : Fin 2, (-1 : ℤ) ^ (i : ℕ) • (F.map (toLast i s)).hom (μ.one _) = 0
-  simp only [μ.map_one, Fin.sum_univ_two, Fin.val_zero, Fin.val_one, pow_zero, one_smul, pow_one, neg_smul,
-    add_neg_cancel]
-
-def oneZ : LinearMap.ker (d F 0) := ⟨oneC μ, LinearMap.mem_ker.2 (d_oneC μ)⟩
-
-def oneH : H F 0 := Submodule.Quotient.mk (oneZ μ)
-
 end Cup
 
 namespace Mor
@@ -326,10 +238,6 @@ end GlobalTheory.CatH
 namespace GlobalTheory.LogCris
 
 variable {b : Base} (L : b.Fun)
-
-def cup {m n k : ℕ} (h : m + n = k) : H L m →ₗ[b.R] H L n →ₗ[b.R] H L k := CatH.cup (mult L) h
-
-def one : H L 0 := CatH.oneH (mult L)
 
 structure LB where
 

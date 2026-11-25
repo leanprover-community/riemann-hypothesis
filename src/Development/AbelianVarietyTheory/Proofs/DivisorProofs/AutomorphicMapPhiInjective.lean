@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanInfinitePlacesWeightRepresentationEqTop
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Multilinear.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqSplitFinMulSplitInf
@@ -122,33 +123,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 theorem span_wInf (lam : InfinitePlace E → DomWeight n) :
     Submodule.span ℂ (Set.range fun k : infU E n => wInf lam k.1) = ⊤ := by
-  rw [eq_top_iff]
-  rintro Q -
-  obtain ⟨z, rfl⟩ := GlobalTheory.PiTensorCommute.mem_range_piTensorHomMap Q
-  induction z using PiTensorProduct.induction_on with
-  | smul_tprod r f =>
-    rw [map_smul, PiTensorProduct.piTensorHomMap_tprod_eq_map]
-    refine Submodule.smul_mem _ _ ?_
-    have h := _root_.GlobalTheory.MultilinearSpanImage.multilinear_apply_mem_span_image
-      (PiTensorProduct.mapMultilinear ℂ (fun v => nablaSq ℂ n (lam v)) (fun v => nablaSq ℂ n (lam v)))
-      (fun v => Set.range (GlobalTheory.Branching.smallRep (GlobalTheory.Branching.unitaryIncl n) (lam v))) f
-      (fun v => by rw [span_smallRep_unitary]; trivial)
-    refine Submodule.span_le.2 ?_ h
-    rintro _ ⟨g, hg, rfl⟩
-    choose u hu using hg
-    obtain ⟨x, hx, hxc⟩ := GlobalTheory.InfSurj.exists_infU_cAll_eq E n
-      (fun v => GlobalTheory.Branching.unitaryIncl n (u v)) (fun v => (u v).2)
-    refine Submodule.subset_span ⟨⟨x, hx⟩, ?_⟩
-    rw [PiTensorProduct.mapMultilinear_apply]
-    change PiTensorProduct.map _ = _
-    congr 1
-    funext v
-    rw [← hu v]
-    have h1 := congrFun hxc v
-    change cEmb v.embedding x = _ at h1
-    change GlobalTheory.Branching.sqRep ℂ n (lam v) (cEmb v.embedding x) = GlobalTheory.Branching.sqRep ℂ n (lam v) _
-    rw [h1]
-  | add a b ha hb => rw [map_add (f := _)]; exact Submodule.add_mem _ ha hb
+  apply _root_.GlobalTheory.BCT.TrKer.span_wInf_infU_eq_top <;> assumption
 
 end GlobalTheory.BCT.TrKer
 

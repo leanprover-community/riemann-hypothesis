@@ -103,11 +103,7 @@ theorem exists_compact_tails (K : Type) [CommRing K] [TopologicalSpace K] [T2Spa
   have htl : Continuous tl :=
     continuous_pi fun j => continuous_pi fun i => (continuous_apply i.succ).comp (continuous_apply j.succ)
   have hclosed : IsClosed {Y : Fin (n + 1) → Fin (M + 1) → K | ∀ i : Fin M, Y 0 i.succ = 0} := by
-    have : {Y : Fin (n + 1) → Fin (M + 1) → K | ∀ i : Fin M, Y 0 i.succ = 0} =
-        ⋂ i : Fin M, {Y | Y 0 i.succ = 0} := by
-      ext Y
-      simp
-    rw [this]
+    rw [Set.ofPred_forall]
     exact isClosed_iInter fun i =>
       isClosed_eq ((continuous_apply i.succ).comp (continuous_apply 0)) continuous_const
   refine ⟨tl '' (Q ∩ {Y | ∀ i : Fin M, Y 0 i.succ = 0}), (hQ.inter_right hclosed).image htl, ?_, ?_⟩

@@ -200,7 +200,7 @@ theorem lastDatum : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologi
       rw [dite_eq_left Q.lat.zero_mem]
       exact map_zero Q.fn
     have h0 := congrFun h 0
-    simp only [charInd, vecInd, hev, neg_zero, AddChar.map_zero_eq_one, Q.lat.zero_mem, ite_true, mul_one,
+    simp only [charInd, vecInd, hev, neg_zero, AddChar.map_zero_eq_one, Q.lat.zero_mem, if_true, mul_one,
       Pi.zero_apply] at h0
     exact one_ne_zero h0
   have hA : ∀ y : WO L S, Vac ψ A S LA LS (· = p.v) (comb ψ A S e (fun u => Ξ ((o.resS S).symm (u, y)))) ∧
@@ -248,7 +248,8 @@ theorem lastDatum : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologi
       funext u''
       exact congrFun (hX u'').2 x
     show C u x = comb ψ A S c (fun u' => comb ψ S X c' (fun x' => comb ψ A S e (fun u'' => comb ψ S X e' (C u'') x') u') x) u
-    simpa only [hsw] using (congrFun (hAc x).2 u).symm
+    simp only [hsw]
+    exact (congrFun (hAc x).2 u).symm
 
 end GlobalTheory.LastSeeSawDatum
 end -- clump:auto
@@ -265,70 +266,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastKer lastPai
 open GlobalTheory.LastSeeSawDatum (comb_apply' comb_smul_fun comb_sum_fun comb_swap vac_smul vac_sum) in
 
 theorem _root_.GlobalTheory.T.lastSeeSawDatum_exists_at_levelPrimePlace : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (q : Unif k) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → p.UnitAA → ∀ (χ : AddChar k Circle) (hχ : HasConductor χ 1), p.IsChar ψ χ → ∀ (n n' n'' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype n''] [DecidableEq n''] (V₀ A L S X T L'' : HSp D) (o : OrthDec V₀ A L) (o'' : OrthDec X T L'') (ζ : Fin L.rank → D.host.E) (ζ₀ : Fin L''.rank → D.host.E), IsLineVec L ζ → IsLineVec L'' ζ₀ → ∀ (τ : Matrix (Fin L.rank) (Fin L''.rank) D.host.E) (lam : D.host.E), Matrix.mulVec τ ζ₀ = lam • ζ → valuation k (p.pr (incA D lam)) = 1 → τ.conjTranspose * (L.gram * τ) = (-(D.host.xi0 * star D.host.xi0)) • L''.gram → ∃ ε : 𝓀[k]ˣ, ∀ (α : Frame p A n') (α₀ : Frame p V₀ (n' ⊕ Fin 1)) (β : Frame p S n) (γ : Frame p T n'') (γ₀ : Frame p X (n'' ⊕ Fin 1)), IsSumFrame o ζ α α₀ → IsSumFrame o'' ζ₀ γ γ₀ → ∀ (Q : Pair k n) (Λ : Submodule 𝒪[k] (n'' → k)) [Λ.IsFullLattice k] (Ψ : Matrix n n' k → ℂ) (LA : Lat A) (LS : Lat S) (LT : Lat T) (LX : Lat X), IsSelfDualC A LA → IsSelfDualC S LS → IsSelfDualC T LT → IsSelfDualC X LX → β.IsLat LS Q.lat → γ.IsLat LT Λ → ∀ (c : WO A S →₀ ℂ) (c' : WO S X →₀ ℂ), CombAt (· = p.v) c → CombAt (· = p.v) c' → (∀ f₀, Vac ψ A S LA LS (· = p.v) f₀ → Over ψ α β LA LS f₀ Ψ (comb ψ A S c f₀)) → (∀ f₀, Vac ψ S X LS LX (· = p.v) f₀ → Over ψ β γ₀ LS LX f₀ (phiOne (ε • Q) (lastPair q Λ)) (comb ψ S X c' f₀)) → ∃ (e : WO A S →₀ ℂ) (e' : WO S X →₀ ℂ), CombAt (· = p.v) e ∧ CombAt (· = p.v) e' ∧ ∀ (L₁ : Lat V₀) (L₂ : Lat S) (f₁ Ξ : WO V₀ S → ℂ) (Φ₂ : WO S T → ℂ), Over ψ α₀ β L₁ L₂ f₁ (tensCol Ψ (charInd (resChar χ hχ q) Q)) Ξ → Vac ψ S T LS LT (· = p.v) Φ₂ → BiVacAt ψ LA LS LX (· = p.v) (biComb ψ A S X e e' (lastBi o o'' τ Ξ Φ₂)) ∧ lastBi o o'' τ Ξ Φ₂ = biComb ψ A S X c c' (biComb ψ A S X e e' (lastBi o o'' τ Ξ Φ₂)) := by
-  intro D k _ _ _ _ p q ψ hψ hU χ hχ hIC n n' n'' _ _ _ _ _ _ V₀ A L S X T L'' o o'' ζ ζ₀ hζ hζ₀ τ lam hτ hlam hG
-  obtain ⟨ε, hε⟩ := GlobalTheory.T.lastSeesaw_datum_eq_lattice_pair_over_vacuum D k p q ψ hψ hU χ hχ hIC n n' n'' V₀ A L S X T L'' o o'' ζ ζ₀ hζ hζ₀ τ lam hτ hlam hG
-  refine ⟨ε, ?_⟩
-  intro α α₀ β γ γ₀ hα hγ Q Λ _ Ψ LA LS LT LX hLA hLS hLT hLX hβQ hγΛ c c' hc hc' hcv hcv'
-  obtain ⟨e, he, heP⟩ := _root_.GlobalTheory.FinPl.DatumBack.datumBack D k p n n' ψ hψ hU A S α β LA LS hLA hLS Ψ c hc hcv
-  obtain ⟨e', he', heP'⟩ := _root_.GlobalTheory.FinPl.DatumBack.datumBack D k p (n'' ⊕ Fin 1) n ψ hψ hU S X β γ₀ LS LX hLS hLX _ c' hc' hcv'
-  refine ⟨e, e', he, he', ?_⟩
-  intro L₁ L₂ f₁ Ξ Φ₂ hΞ hΦ₂
-  have ha : charInd (resChar χ hχ q) Q ≠ 0 := by
-    intro h
-    have hev : Q.ev 0 = 0 := by
-      unfold Pair.ev
-      rw [dite_eq_left Q.lat.zero_mem]
-      exact map_zero Q.fn
-    have h0 := congrFun h 0
-    simp only [charInd, vecInd, hev, neg_zero, AddChar.map_zero_eq_one, Q.lat.zero_mem, ite_true, mul_one,
-      Pi.zero_apply] at h0
-    exact one_ne_zero h0
-  have hA : ∀ y : WO L S, Vac ψ A S LA LS (· = p.v) (comb ψ A S e (fun u => Ξ ((o.resS S).symm (u, y)))) ∧
-      comb ψ A S c (comb ψ A S e (fun u => Ξ ((o.resS S).symm (u, y)))) = fun u => Ξ ((o.resS S).symm (u, y)) := by
-    intro y
-    obtain ⟨g, hg⟩ := _root_.GlobalTheory.LastSrcSlice.main D k p n n' ψ hψ hU V₀ A L S o ζ hζ α α₀ β hα Ψ _ ha LA LS hLA hLS L₁ L₂ f₁ Ξ hΞ y
-    exact heP g _ hg
-  have hcol : ∀ x, (fun u => lastBi o o'' τ Ξ Φ₂ u x) =
-      Φ₂ (o''.resT S x).1 • fun u => Ξ ((o.resS S).symm (u, kap τ S (o''.resT S x).2)) := by
-    intro x; funext u; rfl
-  have hAc : ∀ x, Vac ψ A S LA LS (· = p.v) (comb ψ A S e (fun u => lastBi o o'' τ Ξ Φ₂ u x)) ∧
-      comb ψ A S c (comb ψ A S e (fun u => lastBi o o'' τ Ξ Φ₂ u x)) = fun u => lastBi o o'' τ Ξ Φ₂ u x := by
-    intro x
-    rw [hcol x, comb_smul_fun, comb_smul_fun]
-    exact ⟨vac_smul _ (hA _).1, by rw [(hA _).2]⟩
-  have hX : ∀ u, Vac ψ S X LS LX (· = p.v) (comb ψ S X e' (lastBi o o'' τ Ξ Φ₂ u)) ∧
-      comb ψ S X c' (comb ψ S X e' (lastBi o o'' τ Ξ Φ₂ u)) = lastBi o o'' τ Ξ Φ₂ u := by
-    intro u
-    obtain ⟨g, hg⟩ := hε α α₀ β γ γ₀ hα hγ Q Λ Ψ LS LT LX hLS hLT hLX hβQ hγΛ L₁ L₂ f₁ Ξ Φ₂ hΞ hΦ₂ u
-    exact heP' g _ hg
-  generalize lastBi o o'' τ Ξ Φ₂ = C at hAc hX ⊢
-  refine ⟨⟨fun x => ?_, fun u => ?_⟩, ?_⟩
-  · have e1 : (fun u' => comb ψ S X e' (C u') x) =
-        ∑ j ∈ e'.support, (e' j * ψ (symplOH S X x j)) • fun u' => C u' (x + j) := by
-      funext u'
-      simp only [comb_apply', Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mul_assoc]
-    show Vac ψ A S LA LS (· = p.v) (comb ψ A S e (fun u' => comb ψ S X e' (C u') x))
-    rw [e1, comb_sum_fun]
-    exact vac_sum _ _ _ fun j _ => (hAc (x + j)).1
-  · have e2 : (fun x => comb ψ A S e (fun u' => comb ψ S X e' (C u') x) u) =
-        ∑ i ∈ e.support, (e i * ψ (symplOH A S u i)) • comb ψ S X e' (C (u + i)) := by
-      funext x
-      simp only [comb_apply', Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mul_assoc]
-    show Vac ψ S X LS LX (· = p.v) (fun x => comb ψ A S e (fun u' => comb ψ S X e' (C u') x) u)
-    rw [e2]
-    exact vac_sum _ _ _ fun i _ => (hX (u + i)).1
-  · funext u x
-    have hsw : ∀ u', comb ψ S X c' (fun x' => comb ψ A S e (fun u'' => comb ψ S X e' (C u'') x') u') x =
-        comb ψ A S e (fun u'' => C u'' x) u' := by
-      intro u'
-      have h1 := comb_swap (ψ := ψ) e c' (fun u'' x' => comb ψ S X e' (C u'') x') u' x
-      beta_reduce at h1
-      rw [h1]
-      congr 1
-      funext u''
-      exact congrFun (hX u'').2 x
-    show C u x = comb ψ A S c (fun u' => comb ψ S X c' (fun x' => comb ψ A S e (fun u'' => comb ψ S X e' (C u'') x') u') x) u
-    simpa only [hsw] using (congrFun (hAc x).2 u).symm
+  exact _root_.GlobalTheory.LastSeeSawDatum.lastDatum
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastSeeSawDatumExistsAtLevelPrimePlaceStatement =====
@@ -632,7 +570,8 @@ theorem main : ∀ D : D7, GlobalTheory.FinPl.LastTAll D := by
       rw [← hXY]
       have hΞ' : Ξ = f₁ := by
         have h := hΞ
-        rwa [hl] at h
+        rw [hl] at h
+        exact h
       subst hΞ'
       have hΞθ := hf₁.1
       have hΦθ := hΦ.1
@@ -728,7 +667,8 @@ theorem splitFac_eq {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT χS'
     rwa [norm_mul, norm_mul, Circle.norm_coe, Circle.norm_coe, mul_one, mul_one, Complex.norm_real, Complex.norm_real,
       Real.norm_of_nonneg hr.le, Real.norm_of_nonneg hr'.le] at this
   subst e3
-  exact Circle.ext (mul_left_cancel₀ (Complex.ofReal_ne_zero.2 hr'.ne') e2).symm
+  apply Circle.ext
+  exact (mul_left_cancel₀ (Complex.ofReal_ne_zero.2 hr'.ne') e2).symm
 
 theorem exists_unit_idem {e : AE D} (he : e * e = e) (u : (AE D)ˣ) : ∃ x : (AE D)ˣ, (x : AE D) = e * u + (1 - e) := by
   have hu : (u : AE D) * ((u⁻¹ : (AE D)ˣ) : AE D) = 1 := u.mul_inv
@@ -747,7 +687,8 @@ theorem exists_detUnit {e : AE D} (he : IsSplitIdem D e) (u : (AE D)ˣ) :
   have hab : (u : AE D) * ((u⁻¹ : (AE D)ˣ) : AE D) = 1 := u.mul_inv
   have hk := alg_key (cA D) he.1 he.2.1 hab
   refine ⟨⟨_, _, hk, by rw [mul_comm]; exact hk⟩, ?_, alg_supp (cA D) he.1 he.2.1, alg_at (cA D) he.1 he.2.1⟩
-  rwa [alg_conj (cA D) Formalism.L2.Theta.cA_cA]
+  rw [alg_conj (cA D) Formalism.L2.Theta.cA_cA]
+  exact hk
 
 theorem chiT_agree {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT χS' χT' : (AE D)ˣ →* Circle}
     {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
@@ -946,8 +887,10 @@ theorem SmallPl.exists_card_withLat (k : Type) [Field k] [ValuativeRel k] [Topol
       have hP' : P.lat = Q₀.lat := mem_withLat.1 hP
       refine Finset.mem_coe.2 (mem_withLat.2 ?_)
       rw [Pair.smul_lat, Pair.smul_lat, hP']
-    · exact fun P _ => smul_inv_smul g P
-    · exact fun P _ => inv_smul_smul g P
+    · intro P _
+      exact smul_inv_smul g P
+    · intro P _
+      exact inv_smul_smul g P
   · exact ⟨1, one_pos, fun Q => (h ⟨Q⟩).elim⟩
 
 theorem SmallPl.liftA_contAut {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {V₀ A L S : HSp D} (o : OrthDec V₀ A L)
@@ -1176,7 +1119,8 @@ theorem main : ∀ D : D7, GlobalTheory.FinPl.SmallAll D := by
     | nil =>
       intro f f' h i _ hv
       have h' : f' = f := h
-      rwa [h']
+      rw [h']
+      exact hv
     | cons j l ih =>
       intro f f' h i hi hv
       obtain ⟨g, hg, hOj⟩ := h
@@ -1280,7 +1224,8 @@ theorem main : ∀ (D : D7) (c : Comm D) (v : VCom c) (k : Type) [Field k] [Valu
         (fun i => phiOne (u i • o.Q (j + 1) i) (lastPair o.q (Λ i))) := by
       funext i
       simp only [Q, ε, smul_smul, mul_inv_cancel_left]
-    rwa [hf]
+    rw [hf]
+    exact hrep
   obtain ⟨e₁, e₂, he₁, he₂, hE⟩ := hε' (o.β j) (o.β₀ j 0 h) (o.β (j + 1)) o.γ (o.γ₀ (j + 1 + 1) h)
     (fun i => ⟨(hS.glued j 0 h i).sum, (hS.pre.topT (j + 1 + 1) h i).1⟩) Q Λ
     (fun i => phiOne (o.Q j i) (o.Q (j + 1) i)) (c.x j).L (c.x (j + 1)).L v.NT (c.x (j + 1 + 1)).L (o.M j 0 h)

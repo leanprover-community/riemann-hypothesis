@@ -53,14 +53,8 @@ open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo Reciproci
 
 theorem evC_conj {K : Type} {ι : K → Type} (z : (Σ k, ι k) → ℂ) (g : MRing ι) :
     evC (fun p => (starRingEnd ℂ) (z p)) g = (starRingEnd ℂ) (evC z g) := by
-  induction g using MvPolynomial.induction_on with
-  | C a => simp [evC]
-  | add p q hp hq =>
-    simp only [evC, map_add (f := _)] at hp hq ⊢
-    rw [hp, hq]
-  | mul_X p i hp =>
-    simp only [evC, map_mul, map_X, eval_X] at hp ⊢
-    rw [hp]
+  rw [evC, evC, eval_map, eval_map, hom_eval₂,
+    RingHom.ext_int ((starRingEnd ℂ).comp (Int.castRingHom ℂ)) (Int.castRingHom ℂ)]
 
 theorem ptOver_conj : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (F : Type)
     [Field F] [NumberField F] (y : (Σ k, ι k) → Ω) (φ : F →+* Ω) (σ : F →+* ℂ) (z : (Σ k, ι k) → ℂ),

@@ -96,15 +96,7 @@ theorem Jm_mul_Jm (R S : ℕ) : Jm R S * Jm R S = 1 := Formalism.UG.P.Jpq_mul_se
 theorem piInf_cA {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (x : AE F E) :
     piInf τ (cA σ x) = star (piInf τ x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add (f := _), hx, hy, star_add]
-  | tmul a e =>
-    have := h.1
-    have h3 := InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w) (evInf F w a)
-    simp only [piInf, cA, compInf, RingHom.comp_apply, Algebra.TensorProduct.map_tmul, AlgHom.toRingHom_eq_coe,
-      RingHom.coe_coe, AlgHom.id_apply, infEmb_tmul]
-    rw [star_mul', h.2.2.2 τ.1 e, ← h3, Complex.star_def, Complex.conj_ofReal]
+  apply _root_.PositivityTheory.RL.piInf_cA <;> assumption
 
 theorem mem_upq_of {R S : ℕ} (Y : Mat R S)
     (h : ∀ t : ℝ, (NormedSpace.exp (t • Y))ᵀ * Jm R S * (NormedSpace.exp (t • Y)).map star = Jm R S) :

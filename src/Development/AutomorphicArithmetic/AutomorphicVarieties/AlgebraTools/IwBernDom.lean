@@ -120,19 +120,6 @@ section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
   {C : Subgroup 𝓀[k]ˣ}
 
-private theorem mem_KO_iff (g : GL (Fin n) k) :
-    g ∈ KO k (Fin n) ↔ (∀ i j, g.val i j ∈ 𝒪[k]) ∧ ∀ i j, (g⁻¹).val i j ∈ 𝒪[k] := by
-  constructor
-  · rintro ⟨u, rfl⟩
-    exact ⟨fun i j => (u.val i j).2, fun i j => ((u⁻¹).val i j).2⟩
-  · rintro ⟨h1, h2⟩
-    have hi : Function.Injective (RingHom.mapMatrix (m := Fin n) (algebraMap 𝒪[k] k)) :=
-      Matrix.map_injective Subtype.val_injective
-    refine ⟨⟨Matrix.of fun i j => ⟨_, h1 i j⟩, Matrix.of fun i j => ⟨_, h2 i j⟩, hi ?_, hi ?_⟩, Units.ext rfl⟩
-    · rw [map_mul, map_one]; exact g.mul_inv
-    · rw [map_mul, map_one]; exact g.inv_mul
-
-
 variable (C) in
 private def Good (M : Matrix (Fin n) (Fin n) k) : Prop :=
   (∀ a c, valuation k (M a c) ≤ 1) ∧ (∀ a c, c < a → valuation k (M a c) < 1) ∧
@@ -141,10 +128,11 @@ private def Good (M : Matrix (Fin n) (Fin n) k) : Prop :=
 private theorem good_of_mem {g : GL (Fin n) k} (h : g ∈ iwC k n C) : Good C g.val := by
   obtain ⟨h1, h2⟩ := ((memIwC k n C).1 g).1 h
   obtain ⟨h3, h4⟩ := mem_iwahori.1 h1
-  exact ⟨((mem_KO_iff g).1 h3).1, h4, h2⟩
+  exact ⟨((_root_.GlobalTheory.SplitFlip.mem_KO_iff g).1 h3).1, h4, h2⟩
 
 private theorem mem_of_good {g : GL (Fin n) k} (h : Good C g.val) (h' : Good C (g⁻¹).val) : g ∈ iwC k n C :=
-  ((memIwC k n C).1 g).2 ⟨mem_iwahori.2 ⟨(mem_KO_iff g).2 ⟨h.1, h'.1⟩, h.2.1⟩, h.2.2⟩
+  ((memIwC k n C).1 g).2
+    ⟨mem_iwahori.2 ⟨(_root_.GlobalTheory.SplitFlip.mem_KO_iff g).2 ⟨h.1, h'.1⟩, h.2.1⟩, h.2.2⟩
 
 private theorem levi_mem {α : Type} {m : α → Type} [Fintype α] [LinearOrder α]
     [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] (e : (Σ a, m a) ≃ Fin n) (p : parab k e)

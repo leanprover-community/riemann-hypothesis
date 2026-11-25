@@ -145,17 +145,11 @@ lemma lint_lmul {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {a : Mat k 0}
     exact hc.measurable
   rw [← lintegral_map hF hm, hν.left a ha]
 
-private lemma iW_ne_iK' (hk : 1 ≤ k) : iW k ≠ iK k := by
-  intro h
-  have h' := congrArg Fin.val h
-  simp [iW, iK, wI] at h'
-  omega
-
 lemma rot (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {φ : ℂ → ℝ≥0∞}
     (hφ : Measurable φ) (v : Fin (2 * 0 + k + 1) → ℂ) (c : ℂ) (hc : c ≠ 0)
     (hvc : tW (iK k) v ^ 2 = Complex.normSq c) :
     ∫⁻ x, φ (((Matrix.of x)ᴴ *ᵥ v) (iW k)) ∂ν = ∫⁻ x, φ (star c * star (x (iW k) (iW k))) ∂ν := by
-  have hWK := iW_ne_iK' hk
+  have hWK := iW_ne_iK hk
   have hcs : star c ≠ 0 := by
     intro h; apply hc; rw [← star_star c, h, star_zero]
   have hc2 : Complex.normSq c ≠ 0 := (Complex.normSq_pos.mpr hc).ne'
@@ -271,7 +265,7 @@ lemma bnd (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {s :
     (hvb : tW (iK k) v ^ 2 ≤ Complex.normSq b) :
     ∫⁻ x, ENNReal.ofReal (lam * ‖((Matrix.of x)ᴴ *ᵥ v) (iW k) + b‖) ^ (-s) ∂ν ≤
       ENNReal.ofReal (lam * ‖b‖ / 2) ^ (-s) * (C0 k s ν + ν Set.univ) := by
-  have hWK := iW_ne_iK' hk
+  have hWK := iW_ne_iK hk
   have hb0 : 0 < ‖b‖ := norm_pos_iff.mpr hb
   have hA : 0 ≤ lam * ‖b‖ / 2 := div_nonneg (mul_nonneg hlam.le hb0.le) (by norm_num)
   obtain ⟨t, ht⟩ : ∃ t, t = tW (iK k) v := ⟨_, rfl⟩
@@ -377,7 +371,7 @@ lemma haarIntegralConstant_lt_top (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : 
     {s : ℝ} (hs : 0 ≤ s) (hsk : s < k) : C0 k s ν < ∞ := by
   classical
   have : IsFiniteMeasure ν := ⟨hνf⟩
-  have hpq : iW k ≠ iK k := iW_ne_iK' hk
+  have hpq : iW k ≠ iK k := iW_ne_iK hk
   have hcard : Fintype.card (Fin (2 * 0 + k + 1)) = k + 1 := by simp
   have hL := lint_Bset_lt_top hpq hcard hk hs hsk
   have hB0 := volume_Bset_ne_zero hpq hcard

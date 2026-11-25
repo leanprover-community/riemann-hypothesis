@@ -593,7 +593,8 @@ theorem exists_unitary_matLat_eq : ∀ {O K : Type} [CommRing O] [IsDomain O] [I
   open scoped IsMulCommutative in
   letI : CommRing A := inferInstance
   have hcomm : ∀ u ∈ A, ∀ v ∈ A, u * v = v * u := by
-    exact fun u hu v hv => congrArg (fun z : A => z.1) (mul_comm (⟨u, hu⟩ : A) ⟨v, hv⟩)
+    intro u hu v hv
+    exact congrArg (fun z : A => z.1) (mul_comm (⟨u, hu⟩ : A) ⟨v, hv⟩)
   have hstar : ∀ a ∈ A, (a.map σ)ᵀ ∈ A := fun a ha => conjTranspose_mem_adjoin σ γ hγ ha
   let τ : A →+* A :=
     { toFun := fun a => ⟨(a.1.map σ)ᵀ, hstar a.1 a.2⟩
@@ -632,7 +633,8 @@ theorem exists_unitary_matLat_eq : ∀ {O K : Type} [CommRing O] [IsDomain O] [I
   have hred : IsReduced A := by
     constructor
     rintro a ⟨k, hk⟩
-    obtain ⟨q, hq⟩ : ∃ q, aeval γ q = a.1 := (Algebra.adjoin_singleton_eq_range_aeval K γ).le a.2
+    obtain ⟨q, hq⟩ : ∃ q, aeval γ q = a.1 := by
+      exact (Algebra.adjoin_singleton_eq_range_aeval K γ).le a.2
     have h1 : aeval γ (q ^ k) = 0 := by
       rw [map_pow, hq]; exact congrArg Subtype.val hk
     have hsep : (minpoly K γ).Separable :=
@@ -679,7 +681,8 @@ theorem exists_unitary_matLat_eq : ∀ {O K : Type} [CommRing O] [IsDomain O] [I
 
   have hkeep : ∀ a : A, IsIntegral O a → ∀ v ∈ M, a.1 *ᵥ v ∈ M := by
     intro a ha
-    obtain ⟨q, hq⟩ : ∃ q, aeval γ q = a.1 := (Algebra.adjoin_singleton_eq_range_aeval K γ).le a.2
+    obtain ⟨q, hq⟩ : ∃ q, aeval γ q = a.1 := by
+      exact (Algebra.adjoin_singleton_eq_range_aeval K γ).le a.2
     have ha' : IsIntegral O (aeval γ q) := hq ▸ (hι a).mp ha
     obtain ⟨r, hr⟩ := _root_.GlobalTheory.MaxOrder.isIntegral_aeval_eq_aeval_map n P₀ hcop γ hchar q ha'
     rw [← hq, hr]
@@ -841,7 +844,8 @@ namespace GlobalTheory.LatOrb
 
 theorem herm_mulVec_eq_adj {K : Type} [Field K] (σ : K →+* K)
     {n : ℕ} (x : Matrix (Fin n) (Fin n) K) (y m : Fin n → K) :
-    herm σ y (x *ᵥ m) = herm σ ((x.map σ)ᵀ *ᵥ y) m := GlobalTheory.LatOrb.herm_mulVec_right σ x y m
+    herm σ y (x *ᵥ m) = herm σ ((x.map σ)ᵀ *ᵥ y) m := by
+  apply _root_.GlobalTheory.LatOrb.herm_mulVec_right <;> assumption
 
 theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (σ : K →+* K),
     (∀ x, σ (σ x) = x) → ∀ (n : ℕ) (x : Matrix (Fin n) (Fin n) K), IsUnit x →
@@ -962,7 +966,7 @@ theorem orbit_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
     · have hUL : ∀ h : UL n w, ((h.1.val).map (cj w))ᵀ * h.1.val = 1 := by
         intro h
         have := h.2
-        simp only [UL, hs, ite_false] at this
+        simp only [UL, hs, if_false] at this
         simpa [UJ, cT] using this
       have sd : ∀ g : UL n w, SelfDual (w.adicCompletionIntegers E) (cj w)
           (matLat (w.adicCompletionIntegers E) g.1.val (stdLat (w.adicCompletionIntegers E) n)) :=
@@ -973,13 +977,14 @@ theorem orbit_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
       have htu : IsUnit t := (Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_det_of_left_inverse ht1)
       refine ⟨htu.unit, ?_, ?_, by rw [hp]; exact htM⟩
       · show _ ∈ UL n w
-        simp only [UL, hs, ite_false]
+        simp only [UL, hs, if_false]
         show cT (cj w) _ * 1 * _ = 1
         simpa [cT] using ht1
       · ext : 1
         simpa using htc
   refine ⟨⟨t, htU⟩, ?_, (⟨t, htU⟩ * g₁)⁻¹ * g₂, ?_, by group⟩
-  · exact Subtype.ext htc
+  · show (⟨t, htU⟩ : UL n w) * γ = γ * (⟨t, htU⟩ : UL n w)
+    exact Subtype.ext htc
   · rw [hK]
     have e : (((⟨t, htU⟩ : UL n w) * g₁)⁻¹ * g₂ : UL n w).1.val =
         (g₁.1⁻¹ : GLw n w).val * ((t⁻¹ : GLw n w).val * g₂.1.val) := by simp [mul_assoc]

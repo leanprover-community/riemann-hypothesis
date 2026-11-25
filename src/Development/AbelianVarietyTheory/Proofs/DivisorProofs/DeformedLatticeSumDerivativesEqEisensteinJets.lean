@@ -141,7 +141,8 @@ open GlobalTheory.CMVal (modUnits unitRel)
 namespace GlobalTheory.HilbFam.BrVal
 
 theorem card_realEmb (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
-    Fintype.card (Emb F) = Module.finrank ℚ F := GlobalTheory.HilbFam.EisCmp.card_realEmb F
+    Fintype.card (Emb F) = Module.finrank ℚ F := by
+  apply _root_.GlobalTheory.HilbFam.EisCmp.card_realEmb <;> assumption
 
 theorem prod_cpow_ofReal {J : Type} (s : Finset J) (f : J → ℝ) (hf : ∀ i, 0 ≤ f i) (r : ℂ) :
     ∏ i ∈ s, ((f i : ℝ) : ℂ) ^ r = (((∏ i ∈ s, f i : ℝ)) : ℂ) ^ r := by

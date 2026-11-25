@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullClsDiag
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrystallinePull2SumCup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianDualCrystal
@@ -900,21 +901,8 @@ theorem pull_cls_diag {S S' : Scheme.{0}} {s : S ⟶ Sp R} {s' : S' ⟶ Sp R} {o
     {f : S' ⟶ S} (mp : ObjMap o' o f) :
     pull mp.φ (cls (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left) (pull_isLB o.isLB _)) =
       cls (o'.P.pull (lift (𝟙 o'.A) (𝟙 o'.A)).left) (pull_isLB o'.isLB _) := by
-  have hs := mp.sq
-  have e : (lift (𝟙 o'.A) (𝟙 o'.A)).left ≫ mp.φ₂ = mp.φ ≫ (lift (𝟙 o.A) (𝟙 o.A)).left := by
-    have a₁ := congrArg (fun q => q.left) (lift_fst (𝟙 o.A) (𝟙 o.A))
-    have a₂ := congrArg (fun q => q.left) (lift_snd (𝟙 o.A) (𝟙 o.A))
-    have b₁ := congrArg (fun q => q.left) (lift_fst (𝟙 o'.A) (𝟙 o'.A))
-    have b₂ := congrArg (fun q => q.left) (lift_snd (𝟙 o'.A) (𝟙 o'.A))
-    simp only [Over.comp_left, Over.id_left] at a₁ a₂ b₁ b₂
-    apply pullback.hom_ext
-    · show (_ ≫ _) ≫ (fst o.A o.A).left = (_ ≫ _) ≫ (fst o.A o.A).left
-      rw [Category.assoc, hs.1, ← Category.assoc, b₁, Category.assoc, a₁]; simp
-    · show (_ ≫ _) ≫ (snd o.A o.A).left = (_ ≫ _) ≫ (snd o.A o.A).left
-      rw [Category.assoc, hs.2, ← Category.assoc, b₂, Category.assoc, a₂]; simp
-  have h1 : pull mp.φ₂ (cls o.P o.isLB) = cls o'.P o'.isLB :=
-    ((cls_eq_iff o'.isLB (pull_isLB o.isLB mp.φ₂)).2 mp.pol).symm
-  rw [cls_pull o.isLB, cls_pull o'.isLB, ← pull_comp, ← e, pull_comp, h1]
+  intros
+  apply _root_.GlobalTheory.UPel.HT.Rigid.pull_cls_diag <;> assumption
 
 theorem phi_eq (hN : 3 ≤ N) (hNp : N.Coprime p) {k : Type} [Field k] [IsAlgClosed k] {t : Sp k ⟶ Sp R}
     (o₀ : Obj b N t) {S : Scheme.{0}} {s : S ⟶ Sp R} (o : Obj b N s) {z : Sp k ⟶ S}

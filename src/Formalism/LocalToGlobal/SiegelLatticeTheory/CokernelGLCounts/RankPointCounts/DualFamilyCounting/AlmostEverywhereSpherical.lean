@@ -99,24 +99,12 @@ theorem exists_unif_fin (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsMaximal
   refine ⟨π, hπ, fun a ha => ?_⟩
   have inj := IsFractionRing.injective (𝓞 K) K
   have hπ0 : π ≠ 0 := hπ.ne
-  have hP1 : (1 : 𝓞 K) ∉ P := fun h => hP.ne_top ((Ideal.eq_top_iff_one _).mpr h)
 
   have hc : ∀ s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P, s ∉ P ∧
-      ∀ s' : 𝓞 K, algebraMap (𝓞 K) K s' = star (algebraMap (𝓞 K) K s) → s' ∉ P := by
-    intro s hs
-    induction hs using Submonoid.closure_induction with
-    | mem s hs => exact hs
-    | one =>
-      refine ⟨hP1, fun s' hs' => ?_⟩
-      have e : s' = 1 := inj (by rw [hs', map_one, star_one])
-      rwa [e]
-    | mul x y _ _ hx hy =>
-      refine ⟨fun h => (hP.isPrime.mem_or_mem h).elim hx.1 hy.1, fun s' hs' => ?_⟩
-      obtain ⟨x', hx'⟩ := _root_.Formalism.HermitianLattices.Ext.L3.StandardSymmetricSums.star_int x
-      obtain ⟨y', hy'⟩ := _root_.Formalism.HermitianLattices.Ext.L3.StandardSymmetricSums.star_int y
-      have e : s' = x' * y' := inj (by rw [hs', map_mul, map_mul, star_mul', hx', hy'])
-      rw [e]
-      exact fun h => (hP.isPrime.mem_or_mem h).elim (hx.2 x' hx') (hy.2 y' hy')
+      ∀ s' : 𝓞 K, algebraMap (𝓞 K) K s' = star (algebraMap (𝓞 K) K s) → s' ∉ P := fun s hs =>
+    have hm := (mem_hcompl_iff hP.isPrime s).1 hs
+    ⟨hm.1, fun s' hs' h => hm.2 ((mem_conjIdeal_iff P s).2
+      (RingOfIntegers.ext (hs'.trans (algebraMap_conjO s).symm) ▸ h))⟩
 
   have hπmem : π ∈ Formalism.HermitianLatticesTheory.locR (K := K) P := hπ.mem
   obtain ⟨s0, hs0, hu⟩ := (Formalism.HermitianLatticesTheory.locDual_mem_locR (K := K) P π).mp hπmem
@@ -140,7 +128,8 @@ theorem exists_unif_fin (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsMaximal
     rintro rfl
     simp at ha
   have hY0 : algebraMap (𝓞 K) K Y ≠ 0 := by
-    exact fun h => nonZeroDivisors.ne_zero hY (inj (by rw [h, map_zero]))
+    intro h
+    exact nonZeroDivisors.ne_zero hY (inj (by rw [h, map_zero]))
   by_contra hall
   push Not at hall
   have key : ∀ N, ∃ s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P, ∃ r : 𝓞 K, s * X * s0 ^ N = r * Y * u ^ N := by
@@ -214,7 +203,8 @@ theorem mem_locF_span_iff (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
         obtain ⟨i, rfl⟩ := hw
         exact mem_spanS x i
       · exact Submodule.zero_mem _
-      · exact fun a b _ _ ha hb => Submodule.add_mem _ ha hb
+      · intro a b _ _ ha hb
+        exact Submodule.add_mem _ ha hb
       · intro c a _ ha
         rw [← algebraMap_smul K c a]
         exact smul_mem_spanS (algebraMap_mem_locRing P c) ha

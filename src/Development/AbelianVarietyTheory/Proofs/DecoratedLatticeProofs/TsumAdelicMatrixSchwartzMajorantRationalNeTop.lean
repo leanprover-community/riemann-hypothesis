@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicMatrixRealSizeBoundsAlongRealParametrisati
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RealSizeNonneg
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.CovolOneIntegralAdd
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicMatrixSchwartzMajorantMeasurableRationalShStatement
@@ -59,19 +60,8 @@ variable {D : D7}
 
 theorem realSize_add_le (θ : InfFam D) {m n : ℕ} (x y : Mx D m n) :
     realSize θ (x + y) ≤ realSize θ x + realSize θ y := by
-  unfold realSize
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun τ _ => ?_
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun i _ => ?_
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun j _ => ?_
-  have : Formalism.IndefR.Datum.compAt θ τ (x + y) i j =
-      Formalism.IndefR.Datum.compAt θ τ x i j + Formalism.IndefR.Datum.compAt θ τ y i j := by
-    show θ τ (infPart D (x i j + y i j)) = θ τ (infPart D (x i j)) + θ τ (infPart D (y i j))
-    rw [RingHom.map_add (infPart D), RingHom.map_add (θ τ)]
-  rw [this]
-  exact norm_add_le _ _
+  intros
+  apply _root_.GlobalTheory.RealParamSize.realSize_add_le <;> assumption
 
 theorem maj_le_shift (θ : InfFam D) {m n : ℕ} (K C : Set (Mx D m n)) (N : ℕ) (γ w : Mx D m n)
     (hwC : w ∈ C) (hw : realSize θ w ≤ 1) :

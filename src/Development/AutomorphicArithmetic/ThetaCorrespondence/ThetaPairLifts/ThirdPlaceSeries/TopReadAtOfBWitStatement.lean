@@ -880,16 +880,22 @@ theorem eq_zero_twArgs (K : Ctx) (B : GlobalTheory.Mem.Base) (f : Fr B.toPre) (T
     (Gl : G.LatInst (w.st Z).toD7) (Kc : G.Consts) (Yd : DivX (w.st Z).toD7) (cX : ExtraC)
     (ex : Extra (w.st Z).toD7 L hT Gi Gl Kc Yd cX) (t : Bl.RowsT K w Z Wt ex.p0) (a : R3.TwArgs ex t) :
     ∀ (s : a.x.T) (φ : Frm w.I (a.x.Y.tup s)), IsRes φ (0 : a.x.A3.A.fam.amb.FR s) → φ = 0 := by
-  cases a with
-  | mk Dc Sp Zsc lam err lam_eq x pack intersectionNumber_baseChange hκ hv hfw htup htupT hjA hjA0 heMt hPY hPW heFT hIL heE heW hjW heRR =>
-  cases x with
-  | mk G Pl0 I0 T' A3 core R F cG geo pins err' Y Z' C' sEE div JA amb0 JM mjH =>
-  cases pack
-  have hT' : Y.tup = t.r.Y.tup := eq_of_heq htup
-  intro s φ h
-  have e : w.I.tup (Y.tup s) = s.1 :=
-    (congrArg w.I.tup ((congrFun hT' s).trans (t.r.tup_ix s))).trans (R3.tup_ixOf w.I s)
-  exact eq_zero_of_isRes w.I _ φ s.1 e _ h
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (w.st Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (w.st Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (w.st Z).toD7) (_ : Algebra C.Q.c.F (w.st Z).toD7.what₂.LL)
+      (R : RealDat3 (w.st Z).toD7 A3 C.Q.c.F) (_ : Face3 (w.st Z).toD7 A3),
+      G0 R.Pg (w.st Z).toD7.R.r ≃* G0g (w.st Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, T0, A3, _, _, _, _, _⟩ =>
+      ∀ (tup : T0 → (w.st Z).toD7.what₂.Tup), HEq tup t.r.Y.tup →
+        ∀ (s : T0) (φ : Frm w.I (tup s)), IsRes φ (0 : A3.A.fam.amb.FR s) → φ = 0
+  have hP : P ⟨a.x.G, a.x.grp, a.x.fin, a.x.Pl0, a.x.I0, a.x.T, a.x.A3, a.x.core, a.x.alg, a.x.R, a.x.F, a.x.cG⟩ := by
+    rw [a.pack]
+    intro tup htup s φ h
+    have hT' : tup = t.r.Y.tup := eq_of_heq htup
+    have e : w.I.tup (tup s) = s.1 :=
+      (congrArg w.I.tup ((congrFun hT' s).trans (t.r.tup_ix s))).trans (R3.tup_ixOf w.I s)
+    exact eq_zero_of_isRes w.I _ φ s.1 e _ h
+  exact hP a.x.Y.tup a.tup
 
 theorem exists_hasMat {D : D7} (gP : Formalism.L2.Forms.gramP D = 1) (g : GA D D.sp.X') :
     ∃ g' y, GlobalTheory.Core.Rk.Top.HasMat g' y ∧ y ∈ Formalism.L2.Herm.UstdAf D.sp.cm (D.R.N D.R.m - 1) ∧
@@ -1544,18 +1550,21 @@ theorem datVal_twArgs (K : Ctx) (B : GlobalTheory.Mem.Base) (f : Top.Fr B.toPre)
     (Gl : G.LatInst (w.st Z).toD7) (Kc : G.Consts) (Yd : DivX (w.st Z).toD7) (cX : ExtraC)
     (ex : Extra (w.st Z).toD7 L hT Gi Gl Kc Yd cX) (t : Bl.RowsT K w Z Wt ex.p0) (a : R3.TwArgs ex t) (hs : t.r.z.Std) :
     DatVal w.I w.l Z (aK := a.x.alg) a.x.R.toRealDat a.x.Y.tup := by
-  have h := datVal_rows K B f T w Z Wt ex.p0 t hs
-  cases a with
-  | mk Dc Sp Zsc lam err lam_eq x pack intersectionNumber_baseChange hκ hv hfw htup htupT hjA hjA0 heMt hPY hPW heFT hIL heE heW hjW heRR =>
-  cases x with
-  | mk G Pl0 I0 T' A3 core R F cG geo pins err' Y Z' C' sEE div JA amb0 JM mjH =>
-  cases pack
-  have hT' : Y.tup = t.r.Y.tup := eq_of_heq htup
-  rw [← hT'] at h
-  obtain ⟨c, h1, h2⟩ := h
-  refine ⟨(by with_unfolding_all exact (c :)), ?_, ?_⟩
-  · exact (by with_unfolding_all exact (h1 :))
-  · exact (by with_unfolding_all exact (h2 :))
+  let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 (w.st Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (w.st Z).toD7.R.m)
+      (C : Formalism.L2.Pj.CoreJ (w.st Z).toD7) (_ : Algebra C.Q.c.F (w.st Z).toD7.what₂.LL)
+      (R : RealDat3 (w.st Z).toD7 A3 C.Q.c.F) (_ : Face3 (w.st Z).toD7 A3),
+      G0 R.Pg (w.st Z).toD7.R.r ≃* G0g (w.st Z).toD7.nd) → Prop :=
+    fun ⟨_, _, _, _, _, T0, _, _, al, R, _, _⟩ =>
+      ∀ (tup : T0 → (w.st Z).toD7.what₂.Tup), HEq tup t.r.Y.tup →
+        DatVal w.I w.l Z (aK := al) R.toRealDat tup
+  have hP : P ⟨a.x.G, a.x.grp, a.x.fin, a.x.Pl0, a.x.I0, a.x.T, a.x.A3, a.x.core, a.x.alg, a.x.R, a.x.F, a.x.cG⟩ := by
+    rw [a.pack]
+    intro tup htup
+    have hT' : tup = t.r.Y.tup := eq_of_heq htup
+    rw [hT']
+    exact datVal_rows K B f T w Z Wt ex.p0 t hs
+  exact hP a.x.Y.tup a.tup
 
 
 end GlobalTheory.TopVal
@@ -1655,14 +1664,21 @@ theorem row_of_pack {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalis
     (hτ : HEq x.Y.tup τ) (hj : HEq x.Y.jA j) (s : x.T) (v : Fin (rDim D x.A3.A x.F.P1 x.F.ψ1 s) → D.what₂.LL) :
     ∃ (s' : T0) (v' : Fin (rDim D A3.A P ψ s') → D.what₂.LL), x.Y.tup s = τ s' ∧
       HEq (R3.rowForm x.A3.A x.F.P1 x.F.ψ1 s v) (R3.rowForm A3.A P ψ s' v') ∧ HEq (x.Y.jA s v) (j s' v') := by
-  cases x with
-  | mk G Pl0 I0 T' A3 core R F cG geo pins err' Y Z' C' sEE div JA amb0 JM mjH =>
-  cases pack
-  subst hP
-  cases hψ
-  cases hτ
-  cases hj
-  exact ⟨s, v, rfl, HEq.rfl, HEq.rfl⟩
+  let Q : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
+      (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T0 D.R.m) (C : Formalism.L2.Pj.CoreJ D)
+      (_ : Algebra C.Q.c.F D.what₂.LL) (R : RealDat3 D A3 C.Q.c.F) (_ : Face3 D A3),
+      G0 R.Pg D.R.r ≃* G0g D.nd) → Prop :=
+    fun ⟨G', _, _, _, _, T0', A3', _, _, _, F', _⟩ =>
+      ∀ (τ' : T0' → D.what₂.Tup) (j' : ∀ s, (Fin (rDim D A3'.A F'.P1 F'.ψ1 s) → D.what₂.LL) →ₛₗ[D.what₂.embLL] D.what₂.Amb (τ' s)),
+        HEq τ' τ → HEq j' j → ∀ (s : T0') (v : Fin (rDim D A3'.A F'.P1 F'.ψ1 s) → D.what₂.LL),
+          ∃ (s' : T0) (v' : Fin (rDim D A3.A P ψ s') → D.what₂.LL), τ' s = τ s' ∧
+            HEq (R3.rowForm A3'.A F'.P1 F'.ψ1 s v) (R3.rowForm A3.A P ψ s' v') ∧ HEq (j' s v) (j s' v')
+  have hQ : Q ⟨x.G, x.grp, x.fin, x.Pl0, x.I0, x.T, x.A3, x.core, x.alg, x.R, x.F, x.cG⟩ := by
+    rw [pack]
+    intro τ' j' hτ' hj' s' v'
+    subst hP; cases hψ; cases hτ'; cases hj'
+    exact ⟨s', v', rfl, HEq.rfl, HEq.rfl⟩
+  exact hQ x.Y.tup x.Y.jA hτ hj s v
 
 
 

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothVectorsSubspaceStableSobolevFormDeriv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmFnAndKilledFnOfHolFn
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjInvol
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NegativeFrameDomainProductOpenPreconnectedStable
@@ -248,10 +250,10 @@ lemma decomp {H x : Mt n} {q : ℕ} (h : OrthFr H q x) (Z : Mt n) :
     ext a c
     simp only [hX, Matrix.add_apply, mul_diagonal, diagonal_mul, conjTranspose_apply, of_apply, Matrix.zero_apply]
     rcases lt_trichotomy a c with hac | hac | hac
-    · rw [ite_eq_left hac, ite_eq_right (not_lt.2 hac.le), ite_eq_left hac]
+    · rw [if_pos hac, if_neg (not_lt.2 hac.le), if_pos hac]
       linear_combination (-(s c * star (Y c a))) * hs2 a
     · subst hac; simp
-    · rw [ite_eq_right (not_lt.2 hac.le), ite_eq_left hac, ite_eq_left hac, star_neg, star_mul, star_mul, star_star, hs3, hs3]
+    · rw [if_neg (not_lt.2 hac.le), if_pos hac, if_pos hac, star_neg, star_mul, star_mul, star_star, hs3, hs3]
       linear_combination (-(s a * Y a c)) * hs2 c
   refine ⟨x * X * x⁻¹, ?_, Y - X, ?_, ?_⟩
   · change (x * X * x⁻¹)ᴴ * H + H * (x * X * x⁻¹) = 0
@@ -355,30 +357,12 @@ lemma uh_inv {H g : Mt n} (hu : IsUnit H.det) (hg : g ∈ Formalism.QuantumDeter
 
 lemma exp_mem {J X : Mt n} (hJ : IsUnit J.det) (hX : X ∈ lieH J) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ Formalism.QuantumDeterminants.UH J := by
-  have hX' : (t • X)ᴴ * J + J * (t • X) = 0 := by
-    have h0 : Xᴴ * J + J * X = 0 := hX
-    rw [conjTranspose_smul, star_trivial, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, h0, smul_zero]
-  generalize t • X = Y at hX'
-  have h1 : Yᴴ = J * (-Y) * J⁻¹ := by
-    rw [mul_neg, ← eq_neg_of_add_eq_zero_left hX', mul_nonsing_inv_cancel_right _ _ hJ]
-  change (NormedSpace.exp Y)ᴴ * J * NormedSpace.exp Y = J
-  rw [← Matrix.exp_conjTranspose, h1, Matrix.exp_conj _ _ ((isUnit_iff_isUnit_det J).2 hJ),
-    nonsing_inv_mul_cancel_right _ _ hJ, mul_assoc, ← Matrix.exp_add_of_commute _ _ (Commute.refl Y).neg_left,
-    neg_add_cancel, NormedSpace.exp_zero, mul_one]
+  intros
+  apply _root_.GlobalTheory.UnitarySmVec.exp_mem <;> assumption
 
 lemma hasDerivAt_exp_entry (X : Mt n) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => NormedSpace.exp (t • X) i j) (X i j) 0 := by
-  open scoped Matrix.Norms.Operator in
-  have h1 := hasDerivAt_exp_smul_const (𝕂 := ℝ) X (0 : ℝ)
-  open scoped Matrix.Norms.Operator in
-  have h2 : HasDerivAt (fun u : ℝ => NormedSpace.exp (u • X) i j) (X i j) 0 := by
-    let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] ℂ :=
-      LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)
-    have := L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
-    have e : NormedSpace.exp ((0 : ℝ) • X) * X = X := by simp
-    have e2 : X i j = (NormedSpace.exp ((0 : ℝ) • X) * X) i j := by rw [e]
-    rwa [e2]
-  exact h2
+  apply _root_.GlobalTheory.HolDict.HolTo.hasDerivAt_exp_entry <;> assumption
 
 lemma upT_tri {b : Mt n} (hb : UpT b) : b.BlockTriangular id := fun _ _ h => hb.2 _ _ h
 
@@ -450,7 +434,8 @@ lemma chi_deriv (w : Fin n → ℤ) (B : Mt n) :
     have h4 : HasDerivAt (fun z : ℂ => (1 + z * B a a) ^ w a) (B a a * w a) ((0 : ℝ) : ℂ) := by
       simpa [mul_comm, Function.comp_def] using h3
     simpa using h4.comp_ofReal
-  simpa using HasDerivAt.fun_finsetProd (u := Finset.univ) fun a _ => h1 a
+  have h := HasDerivAt.fun_finsetProd (u := Finset.univ) fun a _ => h1 a
+  simpa using h
 
 variable {Hm : ι → Mt n} {q : ι → ℕ} {x₀ : ι → Mt n} {w : ι → Fin n → ℤ}
 
@@ -564,7 +549,8 @@ lemma cd_det {g : E → Mt n} (hg : ∀ a c, ContDiffOn ℝ ∞ (fun x => g x a 
 
 lemma cd_mulM {g g' : E → Mt n} (hg : ∀ a c, ContDiffOn ℝ ∞ (fun x => g x a c) U)
     (hg' : ∀ a c, ContDiffOn ℝ ∞ (fun x => g' x a c) U) (a c : Fin n) : ContDiffOn ℝ ∞ (fun x => (g x * g' x) a c) U := by
-  simpa only [Matrix.mul_apply] using ContDiffOn.sum fun k _ => (hg _ _).mul (hg' _ _)
+  simp only [Matrix.mul_apply]
+  exact ContDiffOn.sum fun k _ => (hg _ _).mul (hg' _ _)
 
 lemma cd_inv {g : E → Mt n} (hg : ∀ a c, ContDiffOn ℝ ∞ (fun x => g x a c) U) (h0 : ∀ x ∈ U, (g x).det ≠ 0) (a c : Fin n) :
     ContDiffOn ℝ ∞ (fun x => (g x)⁻¹ a c) U := by

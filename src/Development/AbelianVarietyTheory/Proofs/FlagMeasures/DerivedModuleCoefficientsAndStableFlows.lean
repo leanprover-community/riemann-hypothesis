@@ -87,7 +87,12 @@ theorem act_cpart (ε : Fin n → Bool) (a b : Fin n) (v : V) :
   rw [← act_add_smul', ← (Formalism.REAL.cpartMem n ε (Matrix.single a b (1 : ℂ))).2.2.1, act_single_one']
 
 theorem uj_mul {g h : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) (hh : inUJ ε h) : inUJ ε (g * h) := by
-  exact Formalism.REAL.indefinite_unitary_mul_mem ε hg hh
+  have hg' : gᴴ * Formalism.REAL.Jm ε * g = Formalism.REAL.Jm ε := hg
+  have hh' : hᴴ * Formalism.REAL.Jm ε * h = Formalism.REAL.Jm ε := hh
+  show (g * h)ᴴ * Formalism.REAL.Jm ε * (g * h) = Formalism.REAL.Jm ε
+  calc (g * h)ᴴ * Formalism.REAL.Jm ε * (g * h) = hᴴ * (gᴴ * Formalism.REAL.Jm ε * g) * h := by
+        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
+    _ = Formalism.REAL.Jm ε := by rw [hg', hh']
 
 theorem rep_mul (hσ : IsURepOn (UJset ε) σ) {g h : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) (hh : inUJ ε h) (v : H) :
     σ (g * h) v = σ g (σ h v) := by
@@ -165,7 +170,14 @@ theorem exp_zero_smul (X : Matrix (Fin n) (Fin n) ℂ) : NormedSpace.exp (((0 : 
   simp
 
 theorem inK_smul {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (t : ℝ) : inK ε ((t : ℂ) • X) := by
-  exact Formalism.REAL.inK_smul_real ε hX t
+  obtain ⟨h1, h2⟩ : Formalism.REAL.inG ε X ∧ X * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * X := hX
+  have h1' : Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X = 0 := h1
+  show (((t : ℂ) • X)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * ((t : ℂ) • X) = 0) ∧
+    ((t : ℂ) • X) * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * ((t : ℂ) • X)
+  refine ⟨?_, ?_⟩
+  · rw [Matrix.conjTranspose_smul, Complex.star_def, Complex.conj_ofReal, Matrix.smul_mul,
+      Matrix.mul_smul, ← smul_add, h1', smul_zero]
+  · rw [Matrix.smul_mul, Matrix.mul_smul, h2]
 
 theorem inK_entry {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) {a b : Fin n} (hab : ε a ≠ ε b) : X a b = 0 := by
   obtain ⟨-, h2⟩ : Formalism.REAL.inG ε X ∧ X * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * X := hX
@@ -316,7 +328,7 @@ theorem diag_inK (ε : Fin n → Bool) (θ : Fin n → ℝ) :
 theorem exp_diag (θ : Fin n → ℝ) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) =
       Matrix.diagonal (fun a => Complex.exp (((t * θ a : ℝ) : ℂ) * Complex.I)) := by
-  exact GlobalTheory.KTypeHighest.exp_diag θ t
+  apply _root_.GlobalTheory.KTypeHighest.exp_diag <;> assumption
 
 theorem act_diag (d : Fin n → ℂ) (v : V) : act E (Matrix.diagonal d) v = ∑ a, d a • E a a v := by
   rw [act_apply]

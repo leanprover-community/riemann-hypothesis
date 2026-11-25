@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdditiveOfTrivAxes
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditiveOfUniversal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualAbelianSchemeExistsBiduality
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatSurjectiveQcPow
@@ -91,17 +92,7 @@ theorem cube_rel (hA : IsAbelianScheme A) {P : LB (A ⊗ A).left} (hP : P.IsLB) 
 theorem additive_of_birigid (hA : IsAbelianScheme A) {P : LB (A ⊗ A).left} (hP : P.IsLB)
     (h₁ : Triv (ev P (1 : A ⟶ A) (𝟙 A))) (h₂ : Triv (ev P (𝟙 A) (1 : A ⟶ A))) :
     IsAdditive P ∧ IsAdditive (swap P) := by
-  refine ⟨(isAdditive_iff hP).2 fun Y a a' t ↦ ?_, (BirigidLift.isAdditive_swap_iff hP).2 fun Y a t t' ↦ ?_⟩
-  · have e := cube_rel hA hP (lift a 1) (lift a' 1) (lift 1 t)
-    simp only [pull_eq_evc hP, MonObj.mul_comp, lift_fst, lift_snd, MonObj.one_comp, _root_.mul_one,
-      _root_.one_mul, evc_one_right hP h₂, evc_one_left hP h₁] at e
-    rw [← sub_eq_zero, ← e]
-    abel
-  · have e := cube_rel hA hP (lift a 1) (lift 1 t) (lift 1 t')
-    simp only [pull_eq_evc hP, MonObj.mul_comp, lift_fst, lift_snd, MonObj.one_comp, _root_.mul_one,
-      _root_.one_mul, evc_one_right hP h₂, evc_one_left hP h₁] at e
-    rw [← sub_eq_zero, ← e]
-    abel
+  apply _root_.GlobalTheory.CubeAxes.additive_of_triv_axes <;> assumption
 
 end GlobalTheory.BirigidRoot
 

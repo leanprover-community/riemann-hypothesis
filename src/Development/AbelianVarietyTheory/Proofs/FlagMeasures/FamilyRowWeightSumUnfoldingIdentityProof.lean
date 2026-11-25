@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ResiduallyFiniteUnitOff
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FamDefs
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
@@ -66,7 +67,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Unfold.Tied
 
 theorem infinite_finPl (K : Type) [Field K] [NumberField K] : Infinite (IsDedekindDomain.HeightOneSpectrum (𝓞 K)) := by
-  exact GlobalTheory.LvT.Inh.ResFin.infinite_places K
+  apply _root_.GlobalTheory.LvT.Inh.ResFin.infinite_places <;> assumption
 
 theorem dl_bcP (D : D7) (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)
     (F' : LFlag (D.sp.Y 0) D.R.rS T') (l : ℕ) :
@@ -132,7 +133,7 @@ theorem unfold_tied : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wh
   haveI := infinite_finPl D.host.F
   obtain ⟨p0, hp0⟩ : ∃ p, p ∉ Fm.P := by
     by_contra h
-    push Not at h
+    push_neg at h
     exact Set.infinite_univ (α := PlF D) (Fm.P.finite_toSet.subset fun p _ => h p)
   have hBased : Based (zOf Y) Fm.FP (Tu D u) (Tu D u') F00 F'0 := fun p => hFP p
   have hG : Gval F00 F'0 ≠ 0 := by

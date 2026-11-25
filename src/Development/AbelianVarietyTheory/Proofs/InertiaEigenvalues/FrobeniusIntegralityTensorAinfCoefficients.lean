@@ -84,16 +84,12 @@ theorem regRep_map (f : W →ₐ[R] W') (z : O ⊗[R] W) (i j : I) :
     rw [Algebra.TensorProduct.map_tmul, AlgHom.id_apply, regRep_tmul, regRep_tmul, map_smul]
   | add x y hx hy => simp [map_add (f := _), Matrix.add_apply, hx, hy]
 
-private theorem regRep_tmul' (o : O) (w : W) (i j : I) :
-    regRep b W (o ⊗ₜ w) i j = b.repr (o * b j) i • w := by
-  rw [regRep_tmul, Algebra.leftMulMatrix_eq_repr_mul]
-
 theorem eq_sum_regRep (z : O ⊗[R] W) :
     z = ∑ i, ∑ j, b.repr 1 j • (b i ⊗ₜ[R] regRep b W z i j) := by
   induction z using TensorProduct.induction_on with
   | zero => simp
   | tmul o w =>
-    simp_rw [regRep_tmul', ← TensorProduct.smul_tmul]
+    simp_rw [regRep_tmul, Algebra.leftMulMatrix_eq_repr_mul, ← TensorProduct.smul_tmul]
     rw [Finset.sum_comm]
     simp_rw [← Finset.smul_sum, ← TensorProduct.sum_tmul, b.sum_repr, TensorProduct.smul_tmul',
       ← TensorProduct.sum_tmul]

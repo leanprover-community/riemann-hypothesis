@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicLiftMemCuspFormMultiplicitySpaceStatement
 public import Formalism.LocalToGlobal.IndefiniteReal.FWExist
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsSmoothVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorMatrixCoeffHolomorphicType
@@ -140,32 +141,7 @@ namespace GlobalTheory.HolDict
 
 theorem isEnum_unique {n : ℕ} {S : SPar} {l l' : Fin n → ℝ} {e e' : Fin n → Bool}
     (h : IsEnum S l e) (h' : IsEnum S l' e') : l = l' ∧ e = e' := by
-  obtain ⟨ha, q, hq, hS⟩ := h
-  obtain ⟨ha', q', hq', hS'⟩ := h'
-  have k1 : ∀ a, ∃ b, q' b = q a ∧ e' b = e a := fun a => by
-    have : (q a, e a) ∈ S := hS ▸ Finset.mem_image_of_mem _ (Finset.mem_univ a)
-    rw [hS'] at this
-    obtain ⟨b, -, hb⟩ := Finset.mem_image.1 this
-    exact ⟨b, congrArg Prod.fst hb, congrArg Prod.snd hb⟩
-  have k2 : ∀ a, ∃ b, q b = q' a := fun a => by
-    have : (q' a, e' a) ∈ S := hS' ▸ Finset.mem_image_of_mem _ (Finset.mem_univ a)
-    rw [hS] at this
-    obtain ⟨b, -, hb⟩ := Finset.mem_image.1 this
-    exact ⟨b, congrArg Prod.fst hb⟩
-  have hl : l = l' := by
-    refine (StrictAnti.range_inj ha ha').1 ?_
-    ext x
-    constructor
-    · rintro ⟨a, rfl⟩
-      obtain ⟨b, hb, -⟩ := k1 a
-      exact ⟨b, by rw [hq', hq, hb]⟩
-    · rintro ⟨a, rfl⟩
-      obtain ⟨b, hb⟩ := k2 a
-      exact ⟨b, by rw [hq', hq, hb]⟩
-  refine ⟨hl, funext fun a => ?_⟩
-  obtain ⟨b, hb, he⟩ := k1 a
-  have : l' b = l' a := by rw [hq', hb, ← hq, hl]
-  rw [← he, ha'.injective this]
+  apply _root_.GlobalTheory.LowRow.isEnum_unique <;> assumption
 
 alias OrthFr.dets := _root_.GlobalTheory.HolDict.FrameDom.det_ne_of_orth
 

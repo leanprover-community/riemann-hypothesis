@@ -18,6 +18,7 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.TopoAF
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
 import Mathlib.Tactic.TypeStar
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.FinalH
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ContinuousPInfApply, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ContinuousPInfCoord, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.IdeleModuleSectionMul, PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.InvMulVecScalarMul
@@ -315,15 +316,10 @@ theorem norm_phiH_le {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H 
     positivity
   · simp
 
-private theorem pInf_coord_eq (x : Ad F) (v : InfinitePlace F) :
-    UpperTheory.V.TR.pInf F x v = (homeomorphMixedSpace F x.1).1 ⟨v, IsTotallyReal.isReal v⟩ := by
-  rw [homeomorphMixedSpace_apply, InfiniteAdeleRing.ringEquiv_mixedSpace_apply]
-  rfl
-
 private theorem continuous_pInf_coord (v : InfinitePlace F) :
     Continuous fun x : Ad F => UpperTheory.V.TR.pInf F x v := by
   have h : (fun x : Ad F => UpperTheory.V.TR.pInf F x v) =
-      fun x => (homeomorphMixedSpace F x.1).1 ⟨v, IsTotallyReal.isReal v⟩ := funext fun x => pInf_coord_eq x v
+      fun x => (homeomorphMixedSpace F x.1).1 ⟨v, IsTotallyReal.isReal v⟩ := funext fun x => pInf_apply_eq x v
   rw [h]
   exact (continuous_apply _).comp (continuous_fst.comp ((homeomorphMixedSpace F).continuous.comp continuous_fst))
 
@@ -710,13 +706,6 @@ theorem sq_le_of_le_one {t : ℝ} (ht0 : 0 < t) (ht : t ≤ 1) : t ^ 2 ≤ (1 + 
   rw [← one_div, le_div_iff₀ (by positivity)]
   linarith
 
-theorem norm_omega_eq_one {ω : HChar F} (hω : IsOfFinOrder ω) (x : Ideles F) : ‖((ω.1 x : ℂˣ) : ℂ)‖ = 1 := by
-  obtain ⟨n, hn, hpow⟩ := hω.exists_pow_eq_one
-  have h1 : (ω.1 x) ^ n = 1 := congrArg (fun ξ : HChar F => ξ.1 x) hpow
-  have h2 : ‖((ω.1 x : ℂˣ) : ℂ)‖ ^ n = 1 := by
-    rw [← norm_pow, ← Units.val_pow_eq_pow_val, h1, Units.val_one, norm_one]
-  exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 h2
-
 theorem continuous_absD : Continuous (absD (F := F)) := by
   have hdet : Continuous fun g : GA F 2 => (Matrix.GeneralLinearGroup.det g : IdeleGroup F) := by
     refine Units.continuous_iff.2 ⟨?_, ?_⟩
@@ -765,7 +754,7 @@ theorem eisInt_bound (hP : SPois) {ω : HChar F} {c : HeightOneSpectrum (𝓞 F)
   set z : IdeleGroup F := moduleSection (w0 F) t * (u : Ideles F) with hzdef
   have hnorm : ‖eisInt ω (Phi c) g t u‖ =
       ‖thetaS (Phi c) (Matrix.GeneralLinearGroup.scalar (Fin 2) z * g)‖ * t * s := by
-    simp only [eisInt, norm_mul, norm_inv, norm_omega_eq_one H.fin, inv_one, mul_one, Complex.norm_real,
+    simp only [eisInt, norm_mul, norm_inv, Esk.HyperbolicKernelContinuity.norm_omega H.fin, inv_one, mul_one, Complex.norm_real,
       Real.norm_of_nonneg ht0.le]
     rw [Real.norm_of_nonneg (hs_pos g).le]
   rw [hnorm]

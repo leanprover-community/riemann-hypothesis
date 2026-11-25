@@ -1197,9 +1197,6 @@ theorem SameTwist.eq {A : Type} [CommGroup A] {t t' : Twist D A} (h : SameTwist 
   cases h1; cases h2; cases h3
   rfl
 
-theorem SameBase.refl {S T : HSp D} (B : Base S T) : SameBase B B :=
-  ⟨.rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .refl _, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl, .rfl⟩
-
 theorem SameBase.eq {S T : HSp D} {B B' : Base S T} (h : SameBase B B') : B = B' := by
   obtain ⟨_, ⟨_, _, _, _, _, _, _, _, _, _⟩, ⟨_, _, _⟩, _, ⟨_, _, _, _, _, _⟩, _, _⟩ := B
   obtain ⟨_, ⟨_, _, _, _, _, _, _, _, _, _⟩, ⟨_, _, _⟩, _, ⟨_, _, _, _, _, _⟩, _, _⟩ := B'
@@ -1208,11 +1205,6 @@ theorem SameBase.eq {S T : HSp D} {B B' : Base S T} (h : SameBase B B') : B = B'
   dsimp only at *
   cases a0; cases a1; cases a2; cases a3; cases a4; cases a5; cases a6; cases a7; cases a8; cases a9; cases a10; cases a11; cases a12; cases a14; cases a15; cases a16; cases a17; cases a18; cases a19; cases a20; cases a21; cases a
   rfl
-
-theorem SameData.refl (ρ : Setup D.ntw) : SameData ρ ρ :=
-  ⟨.rfl, .rfl, .rfl, .rfl, .rfl, .rfl, fun _ _ hi _ _ hj _ => by cases hi; cases Fin.ext hj; exact .refl _, .rfl,
-    fun _ _ hi _ _ hj _ _ _ ht => by cases hi; cases Fin.ext hj; cases ht.eq; exact ⟨rfl, .rfl⟩, .rfl,
-    fun _ _ hi _ _ hj _ => by cases hi; cases Fin.ext hj; exact .rfl⟩
 
 theorem SameData.eq {ρ ρ' : Setup D.ntw} (h : SameData ρ ρ') : ρ = ρ' := by
   have hB : ρ.B = ρ'.B := funext fun i => funext fun j => funext fun b => (h.B i i .rfl j j rfl b).eq

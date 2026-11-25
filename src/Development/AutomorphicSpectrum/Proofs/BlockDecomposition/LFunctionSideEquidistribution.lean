@@ -361,7 +361,9 @@ theorem Th_le {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (b 
   set Y := fun X : Fin 1 → Fin 1 → E => fun p : Fin 1 × Fin 1 × Fin 2 => (N : F) * b.repr (X p.1 p.2.1) p.2.2 with hY
   have hYi : Function.Injective Y := fun X X' e => by
     funext a i
-    exact b.repr.injective (Finsupp.ext fun k => (mul_left_cancel₀ hN0 (congrFun e (a, i, k))))
+    refine b.repr.injective (Finsupp.ext fun k => ?_)
+    have h1 := congrFun e (a, i, k)
+    exact mul_left_cancel₀ hN0 h1
   set g : ({X : Fin 1 → Fin 1 → E | X ≠ 0} : Set _) → ℝ≥0∞ :=
     fun X => Psi φ A (fun a i => (y : AF F ⊗[F] E) * inclR (AF F) (X.1 a i)) with hg
   set T : Set ({X : Fin 1 → Fin 1 → E | X ≠ 0} : Set _) := {X | g X ≠ 0} with hTdef
@@ -469,7 +471,7 @@ theorem norm_inv_unit (F : Type) [Field F] [NumberField F] (hF : IsTotallyReal F
     ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F)‖ =
       ((∏ w : InfinitePlace F, ‖(n : InfiniteAdeleRing F) w‖₊)⁻¹ : ℝ≥0) := by
   have hmult : ∀ w : InfinitePlace F, w.mult = 1 := fun w => by
-    rw [InfinitePlace.mult, ite_eq_left (hF.isReal w)]
+    rw [InfinitePlace.mult, if_pos (hF.isReal w)]
   have hw : ∀ w : InfinitePlace F,
       ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F) w‖ =
         ‖(n : InfiniteAdeleRing F) w‖⁻¹ := fun w => by
@@ -569,7 +571,8 @@ theorem eventually_mul_closed {d : ℕ} (b : Module.Basis (Fin d) F E) :
   classical
   have h : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ i j k : Fin d,
       algebraMap F (Fv F v) (b.repr (b i * b j) k) ∈ v.adicCompletionIntegers F := by
-    simpa only [Filter.eventually_all] using fun i j k => eventually_integral _
+    simp only [Filter.eventually_all]
+    exact fun i j k => eventually_integral _
   filter_upwards [h] with v hv x y hx hy k
   rw [repr_mul]
   exact sum_mem fun i _ => sum_mem fun j _ => mul_mem (mul_mem (hx i) (hy j)) (hv i j k)
@@ -612,7 +615,8 @@ theorem eventually_cV_mul_mem_latV_iff : ∀ (F E : Type) [Field F] [NumberField
   · intro hY a i k
     have h := h3 _ _ c2 (hY a i) k
     rwa [← mul_assoc, hone, one_mul] at h
-  · exact fun hY a i k => h3 _ _ c1 (hY a i) k
+  · intro hY a i k
+    exact h3 _ _ c1 (hY a i) k
 
 end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitLat
 
@@ -850,7 +854,8 @@ theorem map_coordW_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
     have h1 := pi_map_mul (ι := Fin 1 × Fin 1 × Fin 2) lam _ hf c hc
     have e : c ^ Fintype.card (Fin 1 × Fin 1 × Fin 2) = c * c := by
       simp [pow_two]
-    rwa [e] at h1
+    rw [e] at h1
+    exact h1
   have hνπ : coordW R b lam 1 1 = π.map (eW R hK 1 1).symm := by
     rw [hπ, ← hmp.map_eq, Measure.map_map (eW R hK 1 1).symm.measurable (eW R hK 1 1).measurable,
       MeasurableEquiv.symm_comp_self, Measure.map_id]
@@ -1000,7 +1005,7 @@ theorem md_eq (hF : IsTotallyReal F) (n : (AF F)ˣ) (T : Finset (HeightOneSpectr
   rw [finprod_eq_prod_of_mulSupport_subset _ hsub]
   congr 1
   refine Finset.prod_congr rfl fun w _ => ?_
-  rw [InfinitePlace.mult, ite_eq_left (hF.isReal w), pow_one]
+  rw [InfinitePlace.mult, if_pos (hF.isReal w), pow_one]
 
 end Comp
 
@@ -1036,7 +1041,8 @@ theorem place1 {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] 
     { toFun := fun t a i => (y : R ⊗[F] E) * (eW R hK 1 1).symm t a i
       invFun := fun Y => eW R hK 1 1 fun a i => ((y⁻¹ : (R ⊗[F] E)ˣ) : R ⊗[F] E) * Y a i
       left_inv := fun t => by
-        simpa only [Units.inv_mul_cancel_left] using (eW R hK 1 1).apply_symm_apply t
+        simp only [Units.inv_mul_cancel_left]
+        exact (eW R hK 1 1).apply_symm_apply t
       right_inv := fun Y => by
         simp only [MeasurableEquiv.symm_apply_apply, Units.mul_inv_cancel_left]
       continuous_toFun := (hm _).comp c2
@@ -1264,7 +1270,7 @@ theorem equi_unit : PositivityTheory.Rg.Mass.Equi → ∀ (F E : Type) [Field F]
         simp only [hTd, hU]
         rw [e1, mul_zero, Set.indicator_of_notMem (by exact hall)]
     · rw [Set.indicator_of_notMem (by exact hx)]
-      push Not at hx
+      push_neg at hx
       obtain ⟨v, hv, i, hi⟩ := hx
       simp only [hU]
       have hn' : X ∉ {X : Fin 1 → Fin 1 → E | ∀ v, (fun a i => cV v (y : AF F ⊗[F] E) * ratTup (Fv F v) X a i) ∈ A v} :=
@@ -1423,8 +1429,8 @@ theorem ideleModule_bounded_on_compact : ∀ (K : Type) [Field K] [NumberField K
           · exact (Valued.toNormedField.norm_le_one_iff).2
               ((HeightOneSpectrum.mem_adicCompletionIntegers (R := 𝓞 K) K v).1 (hS ha v hv))
       _ = ∏ v ∈ S, (if v ∈ S then max (Bf v) 1 else 1) :=
-          (Finset.prod_subset Finset.subset_union_right fun v _ hv => ite_eq_right hv).symm
-      _ = ∏ v ∈ S, max (Bf v) 1 := Finset.prod_congr rfl fun v hv => ite_eq_left hv
+          (Finset.prod_subset Finset.subset_union_right fun v _ hv => if_neg hv).symm
+      _ = ∏ v ∈ S, max (Bf v) 1 := Finset.prod_congr rfl fun v hv => if_pos hv
   exact mul_le_mul h1 h2 (IdeleGroup.finiteModule_pos a).le
     (Finset.prod_nonneg fun _ _ => by positivity)
 
@@ -1455,16 +1461,14 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] 
   (b : Module.Basis (Fin d) F E)
 
 theorem cK_tmul_mul (r : R) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k := by
-  have e : (r ⊗ₜ[F] (1 : E)) * y = r • y := by
-    rw [Algebra.smul_def]
-    rfl
-  simp [cK, e]
+    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_tmul_mul
+    b r y k
 
 theorem cK_nat_mul (N : ℕ) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((N : R ⊗[F] E) * y) k = (N : R) * cK R b y k := by
-  have e : (N : R ⊗[F] E) = (N : R) ⊗ₜ[F] (1 : E) := (map_natCast (algebraMap R (R ⊗[F] E)) N).symm
-  rw [e, cK_tmul_mul]
+    cK R b ((N : R ⊗[F] E) * y) k = (N : R) * cK R b y k :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_nat_mul
+    b N y k
 
 end Coord
 
@@ -1483,10 +1487,9 @@ theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d
 
 theorem nat_mul_latV {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (N : ℕ)
     {Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E} (hY : Y ∈ latV b v) :
-    (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v := fun a i k => by
-  change cK (Fv F v) b ((N : Fv F v ⊗[F] E) * Y a i) k ∈ _
-  rw [cK_nat_mul]
-  exact mul_mem (natCast_mem _ N) (hY a i k)
+    (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v :=
+  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.nat_mul_latV
+    b v N hY
 
 end Scale
 
@@ -1516,7 +1519,8 @@ theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
         rw [hN1, hc]
         push_cast
         ring
-      rwa [e]
+      rw [e]
+      exact h1
     · rw [hAoff v hv] at hY
       exact nat_mul_latV b v N1 hY
   obtain ⟨r1, hr1⟩ := (IsCompact.image hφs t9).bddAbove
@@ -1531,7 +1535,8 @@ theorem mem_of_Psi_ne {F E : Type} [Field F] [NumberField F] [Field E] [Algebra 
   by_cases h1 : ∀ v, projV v (projFin Y) ∈ A v
   · refine ⟨h1, subset_tsupport φ ?_⟩
     rw [Set.indicator_of_mem (by exact h1)] at h
-    exact fun h2 => h (by simp [h2])
+    intro h2
+    exact h (by simp [h2])
   · rw [Set.indicator_of_notMem (by exact h1)] at h
     exact absurd rfl h
 
@@ -1542,7 +1547,8 @@ theorem cont_f : Continuous fun Y : Fin 1 → Fin 1 → AF F ⊗[F] E => GroundT
     GroundTheory.BlockD.ThmBHecke.continuous_adeleEquiv.comp (continuous_apply_apply 0 0)
 
 theorem hdiag (t : Eˣ) : GroundTheory.BlockD.ThmBHecke.ideleEquiv F E (ofE t) = IdeleGroup.diagonal E t := by
-    exact Units.ext (GroundTheory.BlockD.ThmBHecke.adeleEquiv_incA (t : E))
+    apply Units.ext
+    exact GroundTheory.BlockD.ThmBHecke.adeleEquiv_incA (t : E)
 
 theorem mod_mul (y : (AF F ⊗[F] E)ˣ) (t : Eˣ) : (IdeleGroup.ideleModule E (GroundTheory.BlockD.ThmBHecke.ideleEquiv F E (y * ofE t)) : ℝ) = (IdeleGroup.ideleModule E (GroundTheory.BlockD.ThmBHecke.ideleEquiv F E y) : ℝ) := by
   rw [map_mul, map_mul, hdiag, IdeleGroup.ideleModule_diagonal, mul_one]

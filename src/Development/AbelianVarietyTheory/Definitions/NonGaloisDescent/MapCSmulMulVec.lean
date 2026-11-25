@@ -158,25 +158,4 @@ variable [IsDomain O]
 
 end Sys
 
-structure Hom {l : ℕ} {O : Type} [CommRing O] {R : Fr l O} {n r r' : ℕ} (S : Sys R n r)
-    (S' : Sys R n r') where
-  F : ZMod n → Matrix (Fin r') (Fin r) O⟦X⟧
-  φ_comm : ∀ i x, ((F i).map R.ι).mulVec (S.φl i x) = S'.φl i (((F (i - 1)).map R.ι).mulVec x)
-  γ_comm : ∀ i x, ((F i).map R.ι).mulVec (S.γl i x) = S'.γl i (((F i).map R.ι).mulVec x)
-
-namespace Hom
-
-variable {l : ℕ} {O : Type} [CommRing O] {R : Fr l O} {n r r' r'' : ℕ} {S : Sys R n r} {S' : Sys R n r'}
-  {S'' : Sys R n r''} (F : Hom S S')
-
-def comp (F' : Hom S' S'') (F : Hom S S') : Hom S S'' where
-  F := fun i => F'.F i * F.F i
-  φ_comm := fun i x => by
-    rw [Matrix.map_mul, Matrix.map_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, F.φ_comm,
-      F'.φ_comm]
-  γ_comm := fun i x => by
-    rw [Matrix.map_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, F.γ_comm, F'.γ_comm]
-
-end Hom
-
 end GlobalTheory.NB

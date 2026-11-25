@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimesLifts
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftMatrixComputesLiftRational
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ClosureImageSpan
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EmbeddingOneApplyDivThree
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsThetaPToLiftReal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultiplicitySpaceEqZeroOfLowestKTypes
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankWeightComponentEq
@@ -143,25 +142,6 @@ theorem jW_lat_noEta (Z : Rw.RationalReadingWithoutCongruence R F X0 Y) (hP : Pi
 
 
 
-theorem jW_norm_noEta (Z : Rw.RationalReadingWithoutCongruence R F X0 Y) (hH : Holds R F) (i : Fin D.R.m) (x : Fin ((s0Of R F).dW i) → D.what₂.LL) :
-    Formalism.HermitianLatticesTheory.cnorm (Formalism.HermitianLatticesTheory.fcoord (Pi.basisFun D.what₂.LL _) ((s0Of R F).XW i) (InfinitePlace.mk D.what₂.embLL) x) =
-      ‖Z.jW i x‖ := by
-  have h1 := norm_w0C_sq (R.toCx3 F) false (RealDat3.kForm_of hH.prim.unif false) (RealDat3.ewNorm false) i x
-  have h2 : (R.toCx3 F).w0C false i (cpt A3.A.v0.embedding x) =
-      Tw.mk (twAt D.what₂.embLL A3.A.v0) (GlobalTheory.Mem.LiftTheta.goodForm R.toRealDat F.lv2 false i x) :=
-    GlobalTheory.Mem.LiftTheta.liftWeight_complexPoint_eq_twist R.toRealDat F.lv2 false i x
-  have h3 : ‖(R.toCx3 F).w0C false i (cpt A3.A.v0.embedding x)‖ = ‖Y.mj.eW i (Z.jW i x)‖ :=
-    (congrArg norm h2).trans (congrArg norm (eW_jW_eq_noEta Z i x)).symm
-  have h4 := Y.mj.eW_norm i (Z.jW i x)
-  have h5 : RealDat.nP F.lv2 false *
-      Formalism.HermitianLatticesTheory.cnorm (Formalism.HermitianLatticesTheory.fcoord (Pi.basisFun D.what₂.LL _) ((s0Of R F).XW i) A3.A.v0 x) ^ 2 =
-        RealDat.nP F.lv2 false * ‖Z.jW i x‖ ^ 2 := by
-    rw [← h4, ← h3]
-    exact h1.symm
-  rw [← R.hv0]
-  exact (sq_eq_sq₀ (Real.sqrt_nonneg _) (norm_nonneg _)).1
-    (mul_left_cancel₀ (RealDat.nP_pos (F := F.lv2) false).ne' h5)
-
 end GlobalTheory.Mem.R3.MjCoord
 
 namespace GlobalTheory.Mem.R3
@@ -224,20 +204,6 @@ theorem mjHTie_of_eq_noEta (Xd : DivX D) (h : Xd.MjH = mjH_noEta Z) (hj : HEq Xd
     exact hLatTie_castV ((mjH_succ_noEta Z i).symm.trans (congrFun h _).symm)
 
 end GlobalTheory.Mem.R3
-
-namespace GlobalTheory.Mem.R3.MjModel
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat3 D A3 Ks} {F : Face3 D A3}
-  {cG : G0 R.Pg D.R.r ≃* G0g D.nd} {X0 : BaseLevelRowSide D} {Y : Read (A3 := A3) R.toRealDat F.lv2 X0}
-
-theorem jM_metric_all_noEta (Z : Rw.RationalReadingWithoutCongruence R F X0 Y) (hH : Holds R F) (j : ℕ) (x : (mjH_noEta Z j).V) :
-    Formalism.HermitianLatticesTheory.cnorm (Formalism.HermitianLatticesTheory.fcoord (mjH_noEta Z j).b (mjH_noEta Z j).X (InfinitePlace.mk D.what₂.embLL) x) = ‖jM_noEta Z j x‖ :=
-  mapSeq_ind_all _ _ D.what₂.Mj Z.jW
-    (fun _ A g => ∀ x : A.V, Formalism.HermitianLatticesTheory.cnorm (Formalism.HermitianLatticesTheory.fcoord A.b A.X (InfinitePlace.mk D.what₂.embLL) x) = ‖g x‖)
-    (fun i => MjCoord.jW_norm_noEta Z hH i) (fun _ => unitMap_norm _ _) j x
-
-end GlobalTheory.Mem.R3.MjModel
 
 namespace GlobalTheory.Mem.ThRead
 
@@ -436,7 +402,7 @@ theorem GlobalTheory.Mem.R3.Rw.St.idx_zero_off_twisted_anyEta : ∀ (K : Ctx) (B
   obtain ⟨G, Y, -⟩ := GlobalTheory.PointGeometry.exists_geo (w.st x.o.Z).toD7.what₂.LL
   let Fm : ∀ k, GlobalTheory.ProvisionalDivX.MjForm (w.st x.o.Z).toD7 k := fun k =>
     ⟨mjH_noEta Zr k, jM_noEta Zr k, mjH_good_noEta Zr x.m.intersectionNumber_baseChange k, jM_basis_noEta Zr x.m.intersectionNumber_baseChange k, jM_lat_noEta Zr x.m.z.pins x.m.intersectionNumber_baseChange k,
-      mjLat_sub_noEta Zr x.m.z.pins x.m.intersectionNumber_baseChange k, MjModel.jM_metric_all_noEta Zr x.m.intersectionNumber_baseChange k⟩
+      mjLat_sub_noEta Zr x.m.z.pins x.m.intersectionNumber_baseChange k⟩
   let Xd : DivX (w.st x.o.Z).toD7 := GlobalTheory.provisionalDivX (w.st x.o.Z).toD7 G Y
     (fun p _ => (GlobalTheory.WittFracComplex.nonempty_ringHom_complex p).some)
     Fm

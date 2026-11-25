@@ -54,13 +54,8 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.PB.WMan.Mem
 
 theorem blockDiag_transvection {N j : ℕ} {ca cb : Fin N} (hc : (ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) (t : ℂ) :
-    IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := fun x y hxy => by
-  have h1 : (1 : Matrix (Fin N) (Fin N) ℂ) x y = 0 := Matrix.one_apply_ne fun e => hxy (by rw [e])
-  have h2 : Matrix.single cb ca t x y = 0 := by
-    rw [Matrix.single_apply, ite_eq_right]
-    rintro ⟨rfl, rfl⟩
-    exact hxy hc.symm
-  rw [Matrix.add_apply, h1, h2, add_zero]
+    IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) :=
+  Pts.transv_block hc t
 
 theorem det_transvection' {N : ℕ} {ca cb : Fin N} (hc : ca ≠ cb) (t : ℂ) :
     (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ).det = 1 :=
@@ -92,10 +87,12 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     · rw [one_mul]
       have hm := (hX p.1 p.2).2.2 k hk m
       by_cases e : p.1 = τ
-      · rw [ite_eq_left e] at hm
+      · rw [if_pos e] at hm
         rw [e, Function.update_self]
-        rwa [e] at hm
-      · rw [ite_eq_right e] at hm
-        rwa [Function.update_of_ne e]
+        rw [e] at hm
+        exact hm
+      · rw [if_neg e] at hm
+        rw [Function.update_of_ne e]
+        exact hm
 
 end GlobalTheory.CompanionTheory.Ar.PB.WMan.Mem

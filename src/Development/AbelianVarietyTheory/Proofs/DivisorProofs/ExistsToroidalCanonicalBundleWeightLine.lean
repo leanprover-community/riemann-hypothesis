@@ -396,7 +396,8 @@ theorem exists_frac_germ {X : Scheme.{0}} (B : X.Opens) (y : B.toScheme) (U : X.
     change (e.inv ≫ e.hom).hom a = a
     rw [Iso.inv_hom_id]
     rfl
-  rwa [h3] at h2
+  rw [h3] at h2
+  exact h2
 
 end GlobalTheory.LogKSDiv.LocalExt
 
@@ -569,7 +570,8 @@ theorem span_eq_top {k R A : Type} [Field k] [CommRing R] [CommRing A] [Algebra 
     have := congrArg (fun L : Ω[R⁄k] →ₗ[R] A => L (KaehlerDifferential.D k R r)) hs
     simp only [LinearMap.coe_comp, Function.comp_apply, Algebra.linearMap_apply, LinearMap.smul_apply,
       Derivation.liftKaehlerDifferential_comp_D] at this
-    rwa [Submonoid.smul_def, Algebra.smul_def] at this
+    rw [Submonoid.smul_def, Algebra.smul_def] at this
+    exact this
   obtain ⟨cf, hcf⟩ := (Submodule.mem_span_range_iff_exists_fun R).1 (hlog D')
   have hsu : IsUnit (φ s) := IsLocalization.map_units A s
   have hu : IsUnit (φ a * φ s) := ha.mul hsu
@@ -586,7 +588,8 @@ theorem span_eq_top {k R A : Type} [Field k] [CommRing R] [CommRing A] [Algebra 
     rw [key]
     exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
   have hmem' : ((hu.unit : Aˣ) : A) • d ∈ Submodule.span A (Set.range δ) := by
-    rwa [hu.unit_spec]
+    rw [hu.unit_spec]
+    exact hmem
   have := Submodule.smul_mem _ ((hu.unit⁻¹ : Aˣ) : A) hmem'
   rwa [smul_smul, Units.inv_mul, one_smul] at this
 
@@ -744,7 +747,8 @@ theorem isUnit_det_of_span_eq_top (k A : Type) [CommRing k] [CommRing A] [Algebr
     have h2 : (∑ j, a i j • δ j) (g l) = ∑ j, a i j * δ j (g l) := by
       have := map_sum (FunLike.coeAddMonoidHom (Derivation k A A) A A) (fun j => a i j • δ j) Finset.univ
       have h3 := congrFun this (g l)
-      rwa [Finset.sum_apply] at h3
+      rw [Finset.sum_apply] at h3
+      exact h3
     rw [h2] at h1
     simp only [Matrix.of_apply, mul_comm (δ _ _)]
     rw [h1]
@@ -974,7 +978,8 @@ theorem spread_exact {R L : Type} [CommRing R] [CommRing L] [Algebra R L] (M : S
   · funext i
     have := k₃ S ψ w₃ (j, i)
     simp only at this
-    rwa [RingHom.map_mulVec] at this
+    rw [RingHom.map_mulVec] at this
+    exact this
   · simp only [hs, eb]
     refine ⟨(↑w⁻¹ : S) • (A' *ᵥ v), can ?_, fun a ha => can ?_⟩
     · rw [Matrix.mulVec_smul, Matrix.mulVec_mulVec, q₁, Matrix.smul_mulVec, Matrix.one_mulVec, smul_smul,
@@ -1107,51 +1112,9 @@ theorem GlobalTheory.LogKSDiv.exists_spread_eigFrame : ∀ (E : Type) [Field E] 
         {xc' : ∀ m : ℕ, sp (R₀ := k) (ReciprocityTheory.ChartRestriction.G.Chart.JetR k (Fin n) m) ⟶ (Over.pullback x').obj TF.Y.t.G}
         (hx' : IsUnivChart _ n xc'), (∀ cc : Fin n → L, vec TF.Y.t x' xc' (ψ ∘ cc) = spMap (dualMap ψ) ≫ vec TF.Y.t x xc cc) → ∀ τ v, Matrix.mulVec ((P τ).map ψ) v ∈ eig c (ψ.comp φ) hx' τ ∧
           (v ∈ eig c (ψ.comp φ) hx' τ → Matrix.mulVec ((P τ).map ψ) v = v) := by
-    classical
-    have : CharZero c.F := RingHom.charZero c.F.val.toRingHom
-    obtain ⟨α, hinj, ⟨f, hf, hfs⟩, hN⟩ :=
-      exists_sepElt (E := E) (F := c.F) c.F.val.toRingHom (embK c) (fun τ a => embK_coe c τ a)
-    letI : Algebra c.F L := φ.toAlgebra
-    refine ⟨fun τ => LinearMap.toMatrix' (proj (rho hx) (embK c) α τ), fun {k} _ ψ {x' xc'} hx' hv τ => ?_⟩
-    letI : Algebra c.F k := (ψ.comp φ).toAlgebra
-    have e₁ : ∀ m, ReciprocityTheory.ChartRestriction.G.PullbackSections.IsEigV (rho hx') (embK c τ) (proj (rho hx') (embK c) α τ m) := fun m =>
-      eig_of_alpha _ _ α hN τ (proj_eig_alpha _ _ α hinj f hf hfs τ m)
-    have e₂ : ∀ m, ReciprocityTheory.ChartRestriction.G.PullbackSections.IsEigV (rho hx') (embK c τ) m → proj (rho hx') (embK c) α τ m = m := fun m hm => by
-      have := proj_sum_eig (rho hx') (embK c) α hinj (Pi.single τ m) (fun τ' => by
-        by_cases h : τ' = τ
-        · subst h; rwa [Pi.single_eq_same]
-        · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-      rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_same] at this
-    have htm : ∀ (a : 𝓞 E) (cc : Fin n → L), rho hx' a (ψ ∘ cc) = ψ ∘ rho hx a cc :=
-      fun a cc => vec_inj hx' (by
-        show vec TF.Y.t _ xc' (tmap hx' _ _) = vec TF.Y.t _ xc' (_ ∘ tmap hx _ _)
-        rw [vec_tmap hx', hv, hv, vec_tmap hx, Category.assoc])
-    have pw : ∀ (j : ℕ) cc, (rho hx' α ^ j) (ψ ∘ cc) = ψ ∘ (rho hx α ^ j) cc := fun j => by
-      induction j with
-      | zero => exact fun _ => rfl
-      | succ j ih => intro cc; rw [pow_succ', pow_succ', Module.End.mul_apply, Module.End.mul_apply, ih]; exact htm α _
-    have pr : ∀ (Q : Polynomial c.F) cc, Polynomial.aeval (rho hx' α) (Q.map (algebraMap c.F k)) (ψ ∘ cc) =
-        ψ ∘ Polynomial.aeval (rho hx α) (Q.map (algebraMap c.F L)) cc := fun Q cc => by
-      induction Q using Polynomial.induction_on' with
-      | add p q hp hq =>
-        rw [Polynomial.map_add (f := _), Polynomial.map_add (f := _), map_add (f := _), map_add (f := _), LinearMap.add_apply, LinearMap.add_apply, hp, hq]
-        funext j; simp
-      | monomial j a =>
-        rw [Polynomial.map_monomial, Polynomial.map_monomial, Polynomial.aeval_monomial, Polynomial.aeval_monomial,
-          Module.End.mul_apply, Module.End.mul_apply, pw, Module.algebraMap_end_apply, Module.algebraMap_end_apply]
-        funext i
-        exact (map_mul ψ _ _).symm
-    have hP : (LinearMap.toMatrix' (proj (rho hx) (embK c) α τ)).map ψ =
-        LinearMap.toMatrix' (proj (rho hx') (embK c) α τ) := by
-      ext i j
-      have s : (Pi.single j 1 : Fin n → k) = ψ ∘ Pi.single j 1 := funext fun r => by
-        by_cases hj : r = j <;> simp [hj]
-      rw [Matrix.map_apply, LinearMap.toMatrix'_apply, LinearMap.toMatrix'_apply, s]
-      exact (congrFun (pr _ _) i).symm
-    intro v
-    rw [hP, ← Matrix.toLin'_apply, Matrix.toLin'_toMatrix', ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff,
-      ReciprocityTheory.ChartRestriction.G.Chart.mem_eigLat_iff]
-    exact ⟨e₁ v, e₂ v⟩
+    first
+    | exact _root_.GlobalTheory.ShFam.EigSpread.exists_projectors
+    | apply _root_.GlobalTheory.ShFam.EigSpread.exists_projectors <;> assumption
   obtain ⟨P, hP⟩ := exists_projectors φ₀ hxc
   have hPL := hP lam hxL hvL
   have hBe : ∀ τ i, B τ i ∈ eig c (lam.comp φ₀) hxL τ := fun τ i =>
@@ -1604,18 +1567,19 @@ theorem exOf_kapBase {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Rec
   · rfl
   · by_cases h' : τ (H.rt : E) = H.rt0
     · have hi : (i : ℕ) < Dw.p := by
-        have := i.2; simp only [Datum.mult, ite_eq_left h'] at this; exact this
-      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, ite_eq_left h', dite_eq_left h', dite_eq_left hi, kapBase, sub_zero,
-        ite_eq_left hi]
+        have := i.2; simp only [Datum.mult, if_pos h'] at this; exact this
+      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, if_pos h', dif_pos h', dif_pos hi, kapBase, sub_zero,
+        if_pos hi]
     · have hi : (i : ℕ) < Dw.q := by
-        have := i.2; simp only [Datum.mult, ite_eq_right h'] at this; exact this
+        have := i.2; simp only [Datum.mult, if_neg h'] at this; exact this
       have hc : conjEmb τ (H.rt : E) = H.rt0 := by
         have := (ReciprocityTheory.ChartRestriction.G.PullbackSections.CVA.inPsi_or H τ).resolve_left h'
         unfold InPsi at this
-        rwa [ComplexEmbedding.conjugate_coe_eq] at this
+        rw [ComplexEmbedding.conjugate_coe_eq] at this
+        exact this
       have hn : ¬ (Dw.p + (Dw.q - 1 - (i : ℕ)) < Dw.p) := by omega
-      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, ite_eq_right h', dite_eq_right h', dite_eq_left hc, dite_eq_left hi, kapBase,
-        ite_eq_right hn, neg_neg, sub_zero]
+      simp only [Option.elim, AllWt.exOf, exZ, AllWt.wtOf, if_neg h', dif_neg h', dif_pos hc, dif_pos hi, kapBase,
+        if_neg hn, neg_neg, sub_zero]
 
 theorem exists_kap_theta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (TF : TorFlag Xo c) (Z : Comp Xo c), 1 ≤ Dw.p + Dw.q → FnAlgClosed (Xo := Xo) (c := c) → ∀ [SmoothOfRelativeDimension Dw.dim (s₀ TF.Y Z)] (K : CanonLB (s₀ TF.Y Z) Dw.dim), ∃ (κ : LB (X₀ TF.Y Z)) (hκ : κ.IsLB), CechPic.pull (π₀ TF.X Z) (cls κ hκ) = cls (L₀ TF.X Z (kapBase Dw)) (isLB_L₀ TF.X Z _) ∧ ∃ θ : (LB.div κ K.bundle).Sec, nonzeroLocus θ = (j₀ TF.Y Z).opensRange := by
   intro E hE hNumber hCM H Dw l Xo c TF Z hpq hF hSmooth K
@@ -1624,7 +1588,8 @@ theorem exists_kap_theta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   obtain ⟨φ₀, f₀, hgen, hdiv⟩ := _root_.GlobalTheory.EigDiv.exists_detDiv E H Dw l Xo c TF Z
   obtain ⟨D, hpull, hD⟩ := hdiv fun τ => if τ (H.rt : E) = H.rt0 then (Dw.q : ℤ) else Dw.p
   refine ⟨toLB D, isLB_toLB D, ?_, ?_⟩
-  · rwa [exOf_kapBase Dw] at hpull
+  · rw [exOf_kapBase Dw] at hpull
+    exact hpull
   · obtain ⟨i₀, hi₀⟩ := exists_chart K.isLB (genericPoint (X₀ TF.Y Z))
     have hP := presents_ofLB K.isLB i₀ hi₀
     have hKS := @_root_.GlobalTheory.LogKSDiv.exists_logKS_div

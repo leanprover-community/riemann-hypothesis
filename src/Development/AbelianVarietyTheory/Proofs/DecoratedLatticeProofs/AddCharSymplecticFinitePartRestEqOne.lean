@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IdempotentHalfMemCompletedHomLatticeIffLocal
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SplitPart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
@@ -74,23 +75,8 @@ theorem comp_mem {D : D7} {S T : HSp D} {N : Submodule (𝓞 D.host.E) (Fin S.ra
     (hx : x ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N')) :
     ((LinearMap.toMatrix' x).map fun r => e * incA D r : WO S T) ∈
       latO S T (N : Set (Fin S.rank → D.host.E)) (N' : Set (Fin T.rank → D.host.E)) fun _ => True := by
-  obtain ⟨s, hs, hsx⟩ := hx
-  have hs' : s ∉ P.asIdeal := hs
-  have hne : s ≠ 0 := fun h => hs' (h ▸ zero_mem _)
-  have hs0 : (s : D.host.E) ≠ 0 := fun h => hne (RingOfIntegers.ext h)
-  have h1 : finPart D (e * incA D ((s : D.host.E)⁻¹)) ∈ intAE D := by
-    by_contra h
-    exact hs' ((he.2 _ hne).2 h)
-  have h4 := GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ _ h1 _
-    (finTens_mem_latO (one_mem_intAf _) (toMatrix_mem_latRat hc hN hsx))
-  convert h4 using 1
-  ext i j
-  rw [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul]
-  refine GlobalTheory.SplitScalar.adele_ext (by simp only [RingHom.map_mul, h0, zero_mul]) ?_
-  have h6 : finPart D (finTens 1 (LinearMap.toMatrix' (s • x)) i j) =
-      finPart D (incA D ((s : D.host.E) * LinearMap.toMatrix' x i j)) := rfl
-  rw [RingHom.map_mul (finPart D) (_ * _), h6, ← RingHom.map_mul, mul_assoc, ← RingHom.map_mul (incA D),
-    inv_mul_cancel_left₀ hs0]
+  intros
+  apply _root_.GlobalTheory.AdForm.HalfLat.comp_mem <;> assumption
 
 theorem halfB_mem_locP {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ}
     {SS : Finset (HeightOneSpectrum (𝓞 E))} {M : Submodule (𝓞 E) (Formalism.L2.Col.HomE E a b)} {c : ℕ} (hc : 0 < c)

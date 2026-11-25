@@ -49,8 +49,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj GrpObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Poinc
 
 def diagPrecomp {T : Scheme.{0}} {X Y M : Over T} [MonObj M] (f : X ⟶ Y) : (Y ⟶ M) →* (X ⟶ M) where

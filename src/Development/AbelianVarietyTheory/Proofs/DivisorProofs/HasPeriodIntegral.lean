@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPowerSeriesFamilyToFractionsFormalGroupLawNat
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowEqOfIntegers
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankRigidExtensionsEqHeightAndDimAddDual
@@ -356,20 +357,7 @@ theorem frob_congr (p : ℕ) [Fact p.Prime] (t : B →+* B) (ht : ∀ b, (p : B)
     (hu : ¬IsUnit (p : B)) {τ : Type} (w : MvPowerSeries τ B) (α : τ →₀ ℕ) :
     coeff α (w ^ p - expand p (Fact.out : p.Prime).ne_zero (map t w)) ∈
       Ideal.span {(p : B)} := by
-  set I : Ideal B := Ideal.span {(p : B)}
-  haveI : CharP (B ⧸ I) p := CharP.quotient B p (by simpa [mem_nonunits_iff] using hu)
-  haveI : ExpChar (B ⧸ I) p := ExpChar.prime Fact.out
-  have hw : map (Ideal.Quotient.mk I) (map t w) =
-      map (frobenius (B ⧸ I) p) (map (Ideal.Quotient.mk I) w) := by
-    ext n
-    simp only [coeff_map, frobenius_def]
-    rw [← map_pow, Ideal.Quotient.eq, Ideal.mem_span_singleton]
-    exact ht _
-  have key : map (Ideal.Quotient.mk I)
-      (w ^ p - expand p (Fact.out : p.Prime).ne_zero (map t w)) = 0 := by
-    rw [map_sub, map_pow, map_expand, hw, ← map_expand, map_frobenius_expand, sub_self]
-  have := congrArg (coeff α) key
-  rwa [coeff_map, map_zero, Ideal.Quotient.eq_zero_iff_mem] at this
+  apply _root_.GlobalTheory.FrobPowDefect.pow_sub_expand_mem <;> assumption
 
 end GlobalTheory.QLog.FrobQL
 
@@ -1425,19 +1413,8 @@ theorem nmul_succ {S : Type} [CommRing S] (μ : Fin d → MvPowerSeries (Fin d �
 theorem up_nmul {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q]
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : ∀ i, constantCoeff (μ i) = 0) (n : ℕ) :
     up Q (nmul μ n) = nmul (up Q μ) n := by
-  induction n with
-  | zero => funext i; simp [up, nmul]
-  | succ n ih =>
-    have hs : ∀ j, constantCoeff (Sum.elim (nmul μ n)
-        (fun i => (X i : MvPowerSeries (Fin d) B)) j) = 0 := by
-      rintro (j | j) <;> simp [constantCoeff_nmul hμ]
-    funext i
-    rw [nmul_succ, nmul_succ, ← ih]
-    simp only [up, op, at2]
-    rw [map_subst (hasSubst_of_constantCoeff_zero hs)]
-    congr 1
-    funext j
-    rcases j with j | j <;> simp [map_X, up]
+  intros
+  apply _root_.GlobalTheory.QLog.up_nmul <;> assumption
 
 end GlobalTheory.QLog.LieAdd
 

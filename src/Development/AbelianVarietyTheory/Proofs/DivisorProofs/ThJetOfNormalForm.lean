@@ -259,13 +259,7 @@ theorem cv_dot (M N : Fin g → ℤ) : cv N ⬝ᵥ cv M = ((N ⬝ᵥ M : ℤ) : 
   simp [cv, dotProduct]
 
 theorem half_dot {a : Fin g → ℂ} (ha : Half a) (M : Fin g → ℤ) : ∃ n : ℤ, 2 * (a ⬝ᵥ cv M) = n := by
-  have h : ∀ i, ∃ e : ℤ, 2 * a i = e := fun i => by
-    rcases ha i with h | h
-    · exact ⟨0, by simp [h]⟩
-    · exact ⟨1, by simp [h]⟩
-  choose e he using h
-  refine ⟨e ⬝ᵥ M, ?_⟩
-  simp only [dotProduct, cv, Finset.mul_sum, Int.cast_sum, Int.cast_mul, ← he, _root_.mul_assoc]
+  apply _root_.GlobalTheory.MBLow.Cl.MulFrame.exists_two_mul_dot <;> assumption
 
 theorem perV_neg (τ : Matrix (Fin g) (Fin g) ℂ) (M N : Fin g → ℤ) : perV τ (-M) (-N) = -perV τ M N := by
   have h : ∀ K : Fin g → ℤ, cv (-K) = -cv K := fun K => funext fun i => by simp [cv]
@@ -411,7 +405,7 @@ theorem Reads.act (hL : L.IsLB) (hx : p ≫ Θ.pt = u.ex x) (hr : Reads u p Θ.�
 
 theorem fnT_iff {P : PolAV (Sp ℂ)} (u : HolUnif P.A P.L g) (k : ℕ) (t : LB.Sec (LPow P.A P.L (k : ℤ) (baseOver (Sp ℂ))))
     (f : (Fin g → ℂ) → ℂ) : FnT u k t f ↔ IsFnAt u basePt k t f := by
-  exact GlobalTheory.MBLow.Cl.MulFrame.fnT_iff u k t f
+  apply _root_.GlobalTheory.MBLow.Cl.MulFrame.fnT_iff <;> assumption
 
 variable {τ : Matrix (Fin g) (Fin g) ℂ} {a b : Fin g → ℂ}
 
@@ -607,7 +601,8 @@ theorem le_sec {A : Over (Sp ℂ)} (L : LB A.left) (k : ℤ) (i : L.ι) :
   intro p hp
   refine Set.mem_iInter.2 fun _ => ?_
   change ((sec A).left ≫ (snd (baseOver (Sp ℂ)) A).left) p ∈ L.U i
-  rwa [sec_snd]
+  rw [sec_snd]
+  exact hp
 
 theorem valR_epsLift : ∀ (g : ℕ) (P : PolAV (Sp ℂ)) (u : HolUnif P.A P.L g) (k : ℕ) (t : LB.Sec (LPow P.A P.L (k : ℤ) (baseOver (Sp ℂ)))) (f : (Fin g → ℂ) → ℂ) (v : epsR ℂ ⟶ P.A) (W : Fin g → ℂ) (i : P.L.ι), FnT u k t f → Differentiable ℂ f → IsTangent v → u.IsDiff W v → ⊤ ≤ (eSec P.A) ⁻¹ᵁ P.L.U i → valR (epsLift v) ((LPow P.A P.L (k : ℤ) (baseOver (Sp ℂ))).U fun _ => i) (t.f fun _ => i) = TrivSqZeroExt.inl (u.fr i 0 ^ k) * (TrivSqZeroExt.inl (f 0) + TrivSqZeroExt.inr (fderiv ℂ f 0 W + (k * fderiv ℂ (u.fr i) 0 W / u.fr i 0) * f 0)) := by
   intro g P u k t f v W i hf hd hv hW hi
@@ -739,7 +734,8 @@ theorem powerSectionFunctionInFrame_of_inverseImage {P : PolAV (Sp ℂ)} {g : �
       (LPow P.A P.L ((1 : ℕ) : ℤ) (baseOver (Sp ℂ))).U (fun _ => i) := fun p hp =>
     val_le P.A P.L (T := baseOver (Sp ℂ)) (u.ex z) (fun _ => i) (Set.mem_iInter.2 fun _ => hz hp)
   rw [H i (lpow_le P _ _ fun _ => i), pow_one, ← h i z hz, ← valR_eq_valAt']
-  exact (valR_appLE' _ _ _ _ _ hx _).trans (congrArg (fun y => valR y (P.L.U i) (s.f i)) e)
+  refine (valR_appLE' _ _ _ _ _ hx _).trans ?_
+  exact congrArg (fun y => valR y (P.L.U i) (s.f i)) e
 
 theorem eq_of_fnT {P : PolAV (Sp ℂ)} {g : ℕ} (u : HolUnif P.A P.L g) (k : ℕ)
     (t t' : LB.Sec (LPow P.A P.L (k : ℤ) (baseOver (Sp ℂ)))) (f) (h : FnT u k t f) (h' : FnT u k t' f) (j) :
@@ -755,13 +751,15 @@ theorem eq_of_fnT {P : PolAV (Sp ℂ)} {g : ℕ} (u : HolUnif P.A P.L g) (k : �
   have e : ptSecT P.A (T := baseOver (Sp ℂ)) (u.ex z) = x' := by
     apply CartesianMonoidalCategory.hom_ext
     · rw [ptSecT, lift_fst]
-      exact Over.OverMorphism.ext ((Category.comp_id _).symm.trans (Over.w (x' ≫ fst _ _))).symm
+      refine Over.OverMorphism.ext ?_
+      exact ((Category.comp_id _).symm.trans (Over.w (x' ≫ fst _ _))).symm
     · rw [ptSecT, lift_snd]; exact hz
   obtain rfl : (ptSecT P.A (T := baseOver (Sp ℂ)) (u.ex z)).left = x := congrArg (·.left) e
   have hz' : ⊤ ≤ (u.ex z).left ⁻¹ᵁ P.L.U i := by
     intro p hp
     have := lpow_le P _ (k : ℤ) (fun _ => i) (hi hp)
-    rwa [← ptSecT_snd' P.A (T := baseOver (Sp ℂ)) (u.ex z)]
+    rw [← ptSecT_snd' P.A (T := baseOver (Sp ℂ)) (u.ex z)]
+    exact this
   rw [← valR_eq_valAt', ← valR_eq_valAt']
   exact (h i z hz').trans (h' i z hz').symm
 
@@ -853,7 +851,9 @@ theorem thJet_of_normalForm : ∀ (g : ℕ) (x : KeyIn ℂ) (hg : x.P.g = g) (u 
     have h1 := GlobalTheory.T.sectionValue_tangentLift_eq_firstJet g x.P u (m ^ 2) (t i) _ (x.v (j.cast hg.symm)) (W j) i₀ hf (hd.const_mul c)
       (x.basis.1 _) (hdiff j) hi₀
     have h2 : u.fr i₀ 0 = valR (𝟙 (Sp ℂ)) ((x.P.L.pull (eSec x.P.A)).U fun _ => i₀) (x.rig.s fun _ => i₀).val := by
-      exact hrig (fun _ => i₀) (fun q hq => Set.mem_iInter.2 fun _ => hi₀ hq)
+      refine hrig (fun _ => i₀) ?_
+      intro q hq
+      exact Set.mem_iInter.2 fun _ => hi₀ hq
     refine h1.trans ?_
     rw [← h2, fderiv_const_mul (hd 0)]
     congr 3

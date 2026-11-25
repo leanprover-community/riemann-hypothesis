@@ -94,16 +94,6 @@ namespace CoverDenseAlt.Met
 
 open GlobalTheory.CompanionTheory.Ar.RootHt
 
-theorem lat_val (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (Ω : Type) [Field Ω]
-    (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (R : Type)
-    [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.of R) ⟶ X) (h : genPt ξ ⤳ centre z) (ER : Type)
-    [AddCommGroup ER] [Module R ER] (MR : LieModel G z ER) :
-    IsCptGen ξ → Smooth G.hom → ∃ ev : M.lat ⟨centre z, h⟩ →+ ER,
-      (∀ (e : E) (w : ER), M.ValAt z e (MR.pt w) ↔ ∃ he : e ∈ M.lat ⟨centre z, h⟩, ev ⟨e, he⟩ = w) ∧
-      (∀ (a : regAt ξ ⟨centre z, h⟩) (r : R) e, ValAt ξ z (a : Ω) r → ev (a • e) = r • ev e) ∧
-      Submodule.span R (Set.range ev) = ⊤ := by
-  apply GlobalTheory.CompanionTheory.Ar.lieLat_val
-
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {G : Over X} [GrpObj G]
   {Li : Type} [AddCommGroup Li] [Module Ω Li] {r : ℕ}
 

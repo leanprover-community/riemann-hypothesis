@@ -209,7 +209,9 @@ theorem exists_archFrame_of_isAH : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] 
     have e := congrArg (fun a => valAt' z _ (Units.val a)) (P.rigGen (fun _ => i) (fun _ => i₀))
     have e2 := (valAt'_res z inf_le_left _ hm).symm.trans (e.trans ((valAt'_mul _ _ _ _).trans
       (congrArg₂ (· * ·) rfl (valAt'_res z inf_le_right _ hm))))
-    rwa [he, ← val_pull_g P.L (eSec G) z (fun _ => i) (fun _ => i₀) hm]
+    rw [he]
+    rw [← val_pull_g P.L (eSec G) z (fun _ => i) (fun _ => i₀) hm]
+    exact e2
   have hn : valF (X := (𝟙_ (Over S)).left) z _ (P.rig.s fun _ => i₀).val ≠ 0 :=
     valAt'_unit_ne_zero z (hz i₀ h₀) _
   have hd := u.fr_ne (fun _ => i₀) 0 (hfr i₀ h₀)
@@ -260,10 +262,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GroundTheory.Heights₂.Heights TensorProduct
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
 
-private theorem eq_of_sp_complex_pts (y y' : ↥(ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ)) : y = y' := by
-  have e : ∀ p : PrimeSpectrum ℂ, p.asIdeal = ⊥ := fun p => Ideal.eq_bot_of_prime p.asIdeal
-  exact PrimeSpectrum.ext (R := ℂ) ((e y).trans (e y').symm)
-
 theorem fn_factor (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (P : RigLB G) (z : Sp ℂ ⟶ S) (g : ℕ)
     (a : ArchFrame P z g) (n : ℕ) (s : Out.H0 P.L n) (θ : (Fin g → ℂ) → ℂ) (hθ : a.IsFn s θ)
     (l : a.u.Λ) (w : Fin g → ℂ) :
@@ -277,18 +275,21 @@ theorem fn_factor (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (P :
       trivial
     obtain ⟨j, hj⟩ := TopologicalSpace.Opens.mem_iSup.1 hx
     refine ⟨j, fun y _ => ?_⟩
-    rwa [eq_of_sp_complex_pts y x0]
+    rw [Subsingleton.elim y x0]
+    exact hj
   have hz : ∀ v : Fin g → ℂ, ⊤ ≤ (TopologicalSpace.Opens.map (a.pt v).base).obj (P.L.U i) →
       ⊤ ≤ (TopologicalSpace.Opens.map (CategoryTheory.Over.Hom.left (a.u.ex v)).base).obj
         ((P.L.pull a.φ).U fun _ => i) := by
-    exact fun v hv y hy => Set.mem_iInter.2 fun _ => hv hy
+    intro v hv y hy
+    exact Set.mem_iInter.2 fun _ => hv hy
   have hpt : a.pt (w + (l : Fin g → ℂ)) = a.pt w := by
     have h1 : a.u.ex (l : Fin g → ℂ) = 1 := (a.u.ker _).2 l.2
     change CategoryTheory.CategoryStruct.comp (CategoryTheory.Over.Hom.left (a.u.ex (w + (l : Fin g → ℂ)))) a.φ =
       CategoryTheory.CategoryStruct.comp (CategoryTheory.Over.Hom.left (a.u.ex w)) a.φ
     rw [a.u.ex_add, h1, _root_.mul_one]
   have hi' : ⊤ ≤ (TopologicalSpace.Opens.map (a.pt (w + (l : Fin g → ℂ))).base).obj (P.L.U i) := by
-    rwa [hpt]
+    rw [hpt]
+    exact hi
   have hA := hθ i w hi
   have hB := hθ i (w + (l : Fin g → ℂ)) hi'
   rw [hpt] at hB
@@ -336,7 +337,8 @@ theorem isVec_existsUnique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hvl : v.left = spMap (GlobalTheory.CompanionTheory.Ar.dualMap (σ.comp (algebraMap (𝓞 L) L))) ≫ (D.MB.pt x).left := rfl
   have hlift : (v.left ≫ (𝟙 D.t.G.left) = ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (GlobalTheory.CompanionTheory.Ar.dualMap (σ.comp (algebraMap (𝓞 L) L))) ≫ (D.MB.pt x).left) := by
     show v.left ≫ 𝟙 _ = _
-    rwa [Category.comp_id]
+    rw [Category.comp_id]
+    exact hvl
   have hsq : v.left ≫ D.t.G.hom = (epsR ℂ).hom ≫ emb σ := hw
   let v' : epsR ℂ ⟶ a.A := Over.homMk (a.cart.1.lift v.left (epsR ℂ).hom hsq) (a.cart.1.lift_snd _ _ _)
   have hφ : v'.left ≫ a.φ = v.left := a.cart.1.lift_fst _ _ _
@@ -368,7 +370,8 @@ theorem isVec_existsUnique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   rintro c' ⟨v₁, hl₁, v₁', hφ₁, hc₁⟩
   have e₁ : v₁.left = v.left := by
     have : v₁.left ≫ 𝟙 _ = _ := hl₁
-    rwa [Category.comp_id] at this
+    rw [Category.comp_id] at this
+    exact this
   have e₂ : v₁' = v' := by
     apply Over.OverMorphism.ext
     apply a.cart.1.hom_ext
@@ -424,7 +427,8 @@ theorem tmul_one_injective {L : Type} [Field L] [NumberField L] (σ : L →+* �
       (Algebra.linearMap (𝓞 L) (ComplexAt σ)).rTensor M 0 := by
     rw [LinearMap.rTensor_tmul, map_zero, Algebra.linearMap_apply, map_one, h]
   have h3 := hr h2
-  simpa using congrArg (TensorProduct.lid (𝓞 L) M) h3
+  have h4 := congrArg (TensorProduct.lid (𝓞 L) M) h3
+  simpa using h4
 
 theorem core_eq_zero {V : Type*} [AddCommGroup V] [Module ℂ V] (C : InnerProductSpace.Core ℂ V)
     (v : V) (h : (C.inner v v : ℂ).re = 0) : v = 0 := by

@@ -58,12 +58,7 @@ variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} 
 
 /-- If `O` is a discrete valuation ring with fraction field `K` of characteristic zero and `A` is a
 reduced finite-dimensional `K`-algebra, then the integral closure of `O` in `A` is finite over `O`
-and its localization at each maximal ideal is a discrete valuation ring.
-[The Stacks project authors, *Stacks Project* (Tags 032L and 09IG)][stacks-project].
-This is a special case of these two tags, after splitting `A` into a product of fields; the last step,
-from a Dedekind domain to its localizations at maximal ideals being discrete valuation rings, is standard
-and is not part of Tag 09IG.
-This reference is a reader's proposal and has not been checked by a mathematician. -/
+and its localization at each maximal ideal is a discrete valuation ring. -/
 def PublishedIntClos : Prop :=
   ∀ (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K]
     [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A] [IsScalarTower O K A]

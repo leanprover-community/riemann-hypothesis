@@ -107,12 +107,6 @@ private theorem lie_scalar {F : Type} [Field F] [NumberField F] [IsTotallyReal F
   rw [h2] at h1
   exact h1.unique (hasDerivAt_const _ _)
 
-private theorem casimir {V : Type} [AddCommGroup V] [Module ℂ V] (E : Fin 2 → Fin 2 → Module.End ℂ V)
-    (hE : Formalism.REAL.GlRel E) (k : ℂ) (φ : V) (h0 : E 0 0 φ + E 1 1 φ = 0)
-    (h1 : E 0 1 φ - E 1 0 φ = (Complex.I * k) • φ) (h2 : E 0 0 φ - E 1 1 φ = Complex.I • (E 0 1 φ + E 1 0 φ)) (u : ℂ) :
-    Formalism.REAL.qdet E (u + 1 / 2) φ = ((u + (k - 1) / 2) * (u - (k - 1) / 2)) • φ :=
-  _root_.UpperTheory.Reformulated.B.Qf10.casimir E hE k φ h0 h1 h2 u
-
 theorem zfinV {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (k : InfinitePlace F → ℕ) (ω : HChar F)
     (hω : IsOfFinOrder ω) (φ : Sm F 2)
     (hc : ∀ (z : Ideles F) (g : GA F 2), φ.1 (GeneralLinearGroup.scalar (Fin 2) z * g) = ((ω.1 z : ℂˣ) : ℂ) * φ.1 g)
@@ -126,8 +120,11 @@ theorem zfinV {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (k : Infini
       congr 2
       ext i j
       fin_cases i <;> fin_cases j <;> simp
-    have := casimir _ (TR.glRel_Eop v) (k v) φ h0 (hw v) (hl v) u
-    refine ⟨_, Eq.trans ?_ this⟩
+    have hq : Formalism.REAL.qdet (TR.Eop v) (u + 1 / 2) φ =
+        ((u + (k v - 1) / 2) * (u - (k v - 1) / 2)) • φ :=
+      _root_.UpperTheory.Reformulated.B.Qf10.casimir
+        _ (TR.glRel_Eop v) (k v) φ h0 (hw v) (hl v) u
+    refine ⟨_, Eq.trans ?_ hq⟩
     rw [TR.cap]
     norm_num
   refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ {φ}) (Submodule.span_le.2 ?_)

@@ -67,9 +67,6 @@ theorem form_ne_zero (h : AdjKlt c n T S η φ) : η ≠ 0 := h.1
 
 theorem apply_zero (h : AdjKlt c n T S η φ) : φ 0 = 0 := h.2.1
 
-theorem mono (h : AdjKlt c n T S η φ) (hT : T ≤ T') : AdjKlt c n T' S η φ :=
-  ⟨h.1, h.2.1, fun Q hQ t u E hQ' => h.2.2 Q hQ t u E (hT.trans hQ')⟩
-
 def incl {Q : Subring K} {P : Place c} (h : P.Contains Q) : Q →+* P.ring :=
   Q.subtype.codRestrict P.ring fun q => h q q.2
 

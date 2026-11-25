@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClassifiedOnOpenOfSpecialisesToClassifiedStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegOUnif
@@ -1318,17 +1319,7 @@ namespace GlobalTheory.UCanon.FamFrom
 
 theorem rescale_inv_psi {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) (g : D.X → (FractionRing R)ˣ) (χ : D.X) :
     (GlobalTheory.PolDeg.rescale (GlobalTheory.PolDeg.rescale D g) (fun y => (g y)⁻¹)).psi χ = D.psi χ := by
-  show GlobalTheory.UU.scaleGen _ (GlobalTheory.UU.scaleGen _ _) = _
-  unfold GlobalTheory.UU.scaleGen
-  generalize D.psi χ = b
-  cases b
-  congr 1
-  funext j
-  have h1 : unitOn ((g χ)⁻¹) * unitOn (g χ) = 1 := by
-    have hu : unitOn ((g χ)⁻¹ * g χ) = unitOn ((g χ)⁻¹) * unitOn (g χ) := map_mul _ _ _
-    rw [← hu, inv_mul_cancel]
-    exact Units.ext (map_one _)
-  rw [← _root_.mul_assoc, ← map_mul, h1, map_one, _root_.one_mul]
+  apply _root_.GlobalTheory.PullDegResc.rescale_inv <;> assumption
 
 theorem isPullDeg_rescale_inv {W R : Type} [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] (φ : W →+* R)
     (D₀ : DegPre W) (D : DegPre R) (g : D.X → (FractionRing R)ˣ) (hD : IsPullDeg φ D₀ D) :

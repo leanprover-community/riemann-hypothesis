@@ -67,9 +67,6 @@ def LeafChartFact : Prop := Hyp → ∀ (q : ℕ) [NeZero q] (d : ℕ) (R : Type
     (∀ i, Eqv _ α.left (tw q i)) ∧ (∀ i, Eqv _ α.right (tw q i)) ∧
     IsPullback P.hom β.left β.right (pr d R).hom ∧ Cover2 (ZMod q) β.right (pr d R).hom
 
-theorem dbl_hom_ext {P : Arrow Spc} {X : Spc} {f g : dbl P ⟶ X} (h0 : dbl.inl P ≫ f = dbl.inl P ≫ g)
-    (h1 : dbl.inr P ≫ f = dbl.inr P ≫ g) : f = g := pushout.hom_ext h0 h1
-
 theorem pull_comp_apply (q : ℕ) {P'' P' P : Arrow Spc} (α : P'' ⟶ P') (β : P' ⟶ P) (n i : ℤ) (x : Hs q P n i) :
     Hs.pull q (α ≫ β) n i x = Hs.pull q α n i (Hs.pull q β n i x) := by
   apply Subtype.ext

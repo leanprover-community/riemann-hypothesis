@@ -50,7 +50,6 @@ open Matrix
 open scoped ComplexOrder Topology
 open GlobalTheory.ShFam.Hor GlobalTheory.CxPts
 open MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.ShFam.Hor.LogCh
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 

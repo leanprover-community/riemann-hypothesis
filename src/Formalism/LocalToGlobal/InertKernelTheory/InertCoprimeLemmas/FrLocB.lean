@@ -61,22 +61,7 @@ theorem exists_loc_basis {V : Type*} [AddCommGroup V] [Module K V] (p : ℕ) [hp
       (∀ i, ∃ s : ℕ, Nat.Coprime s p ∧ (s : K) • b i ∈ A) ∧
       ∀ y ∈ A, ∃ s : ℕ, Nat.Coprime s p ∧ ∃ c : Fin n → 𝓞 K, (s : K) • y = ∑ i, ((c i : K)) • b i := by
   classical
-  obtain ⟨T, hT⟩ := hfg
-  let U : Finset V := T.image Subtype.val
-  have hU : AddSubgroup.closure (U : Set V) = A := by
-    apply le_antisymm
-    · apply (AddSubgroup.closure_le A).2
-      intro y hy
-      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hy
-      exact z.property
-    · intro y hy
-      have hz : (⟨y, hy⟩ : A) ∈ AddSubsemigroup.closure (T : Set A) := by rw [hT]; trivial
-      have hall : ∀ z : A, z ∈ AddSubsemigroup.closure (T : Set A) → (z : V) ∈ AddSubgroup.closure (U : Set V) := by
-        intro z hz
-        induction hz using AddSubsemigroup.closure_induction with
-        | mem z hz => exact AddSubgroup.subset_closure (Finset.mem_image.mpr ⟨z, hz, rfl⟩)
-        | add x y _ _ hx hy => exact AddSubgroup.add_mem _ hx hy
-      exact hall ⟨y, hy⟩ hz
+  obtain ⟨U, hU⟩ := AddSubgroup.isAddFG_iff.mp hfg
   have hS := Sp_le (K := K) p
   let R := Localization.subalgebra.ofField K (Sp K p) hS
   haveI : IsDedekindDomain R := IsLocalization.isDedekindDomain (𝓞 K) hS R
@@ -191,22 +176,7 @@ theorem exists_loc_basis_unif {V : Type*} [AddCommGroup V] [Module K V] (p : ℕ
       ∃ S : ℕ, Nat.Coprime S p ∧ ∀ y ∈ A, ∃ c : Fin n → 𝓞 K, (S : K) • y = ∑ i, ((c i : K)) • b i := by
   classical
   obtain ⟨n, b, hli, hmem, hsp⟩ := exists_loc_basis p A hfg hO
-  obtain ⟨T, hT⟩ := hfg
-  let U : Finset V := T.image Subtype.val
-  have hU : AddSubgroup.closure (U : Set V) = A := by
-    apply le_antisymm
-    · apply (AddSubgroup.closure_le A).2
-      intro y hy
-      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hy
-      exact z.property
-    · intro y hy
-      have hz : (⟨y, hy⟩ : A) ∈ AddSubsemigroup.closure (T : Set A) := by rw [hT]; trivial
-      have hall : ∀ z : A, z ∈ AddSubsemigroup.closure (T : Set A) → (z : V) ∈ AddSubgroup.closure (U : Set V) := by
-        intro z hz
-        induction hz using AddSubsemigroup.closure_induction with
-        | mem z hz => exact AddSubgroup.subset_closure (Finset.mem_image.mpr ⟨z, hz, rfl⟩)
-        | add x y _ _ hx hy => exact AddSubgroup.add_mem _ hx hy
-      exact hall ⟨y, hy⟩ hz
+  obtain ⟨U, hU⟩ := AddSubgroup.isAddFG_iff.mp hfg
   obtain ⟨S, hS, hSp⟩ := uniform_den p b U (fun y hy => hsp y (hU ▸ AddSubgroup.subset_closure hy))
   exact ⟨n, b, hli, hmem, S, hS, fun y hy => hSp y (hU ▸ hy)⟩
 

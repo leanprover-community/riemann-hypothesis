@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSelfDualOrthAt
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.LineLatAt
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Algebra.Order.Floor.Extended
@@ -125,16 +126,7 @@ theorem rat_mulVec_gen {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) (t : AF
 theorem rat_mulVec_mem_latV {S' : HSp D} (M : Matrix (Fin S'.rank) (Fin S.rank) D.host.E) {L : Lat S} {L' : Lat S'}
     (hM : ∀ x ∈ L, M *ᵥ x ∈ L') (P : Pl D → Prop) {y : Fin S.rank → AE D} (hy : y ∈ latV S L P) :
     rat M *ᵥ y ∈ latV S' L' P := by
-  induction hy using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨β, hβi, hβ, c, hc, x, hx, rfl⟩ := hz
-    rw [Set.mem_singleton_iff] at hc
-    subst hc
-    rw [rat_mulVec_gen]
-    exact AddSubgroup.subset_closure ⟨β, hβi, hβ, 1, rfl, _, hM x hx, rfl⟩
-  | zero => rw [Matrix.mulVec_zero]; exact zero_mem _
-  | add z z' _ _ hz hz' => rw [Matrix.mulVec_add]; exact add_mem hz hz'
-  | neg z _ hz => rw [Matrix.mulVec_neg]; exact neg_mem hz
+  first | exact _root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV | exact @_root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV | apply _root_.GlobalTheory.OrthSumLat.rat_mulVec_mem_latV <;> assumption
 
 variable {d} {L₀ : Lat S₀} {𝔟 : ℕ → FI D}
 

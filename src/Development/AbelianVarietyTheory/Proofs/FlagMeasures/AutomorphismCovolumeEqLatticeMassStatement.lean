@@ -708,24 +708,24 @@ theorem stMat_int_iff : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
       refine ⟨fun hji => ?_, fun hij => ?_⟩
       · have h1 : i ≠ j := fun h => (lt_irrefl j) (h ▸ hji)
         have h2 : ¬ (i < j ∧ Formalism.L2.SG.RealObj.blkOf w.1 i.1 = Formalism.L2.SG.RealObj.blkOf w.1 j.1) := fun h => (lt_asymm hji) h.1
-        simp only [B, ite_eq_right h1, dite_eq_right h2]
-      · simp only [B, ite_eq_left hij]
+        simp only [B, if_neg h1, dif_neg h2]
+      · simp only [B, if_pos hij]
     have hBblk : ∀ a b : Fin (D.R.rS + 1), Formalism.L2.SG.RealObj.blkOf w.1 a.1 ≠ Formalism.L2.SG.RealObj.blkOf w.1 b.1 →
         B a b = 0 := by
       intro a b hne
       have h1 : a ≠ b := fun h => hne (h ▸ rfl)
       have h2 : ¬ (a < b ∧ Formalism.L2.SG.RealObj.blkOf w.1 a.1 = Formalism.L2.SG.RealObj.blkOf w.1 b.1) := fun h => hne h.2
-      simp only [B, ite_eq_right h1, dite_eq_right h2]
+      simp only [B, if_neg h1, dif_neg h2]
     obtain ⟨x, ⟨hxSt, hxB⟩, -⟩ := hStCo.2 B hBU hBblk
     have hxK : x ∈ G.K0 := by
       refine (hK x hxSt B hxB).2 fun a b hab => ?_
       have h1 : a ≠ b := ne_of_lt hab
       by_cases h2 : a < b ∧ Formalism.L2.SG.RealObj.blkOf w.1 a.1 = Formalism.L2.SG.RealObj.blkOf w.1 b.1
-      · simp only [B, ite_eq_right h1, dite_eq_left h2]
+      · simp only [B, if_neg h1, dif_pos h2]
         have := hlam ⟨(a, b), h2⟩
         rw [hexp _ _ hab] at this
         exact this
-      · simp only [B, ite_eq_right h1, dite_eq_right h2]
+      · simp only [B, if_neg h1, dif_neg h2]
         exact FractionalIdeal.mem_coe.1 (Submodule.zero_mem _)
     have hspec := GlobalTheory.HL.TraceConjugationCover.stMat_spec G x ⟨B, hxB⟩
     have hM : GlobalTheory.HL.TraceConjugationCover.stMat G x = B := by
@@ -739,7 +739,7 @@ theorem stMat_int_iff : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
     simp only [Formalism.L2.SG.NGCut.SplitEmbedding.embS, AddMonoidHom.coe_mk, ZeroHom.coe_mk, one_mul] at e1
     rw [hM, ← e1]
     have h1 : p.1.1 ≠ p.1.2 := ne_of_lt p.2.1
-    simp only [B, ite_eq_right h1, dite_eq_left p.2]
+    simp only [B, if_neg h1, dif_pos p.2]
     all_goals first | rfl
 
 end GlobalTheory.HL.StIntLat
@@ -1311,7 +1311,13 @@ theorem nlam_iff (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.host.E} (F : L
 
 theorem gmap_mul (a b : (VS D).V ≃ₗ[D.host.E] (VS D).V) (Λ : Submodule (𝓞 D.host.E) (VS D).V) :
     Formalism.HermitianLatticesTheory.gmap (a * b) Λ = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b Λ) := by
-  exact Formalism.L2.SG.Pf.gmap_mul' a b Λ
+  ext x
+  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe]
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    exact ⟨b y, ⟨y, hy, rfl⟩, rfl⟩
+  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+    exact ⟨y, hy, rfl⟩
 
 theorem gmap_inv_of (a : (VS D).V ≃ₗ[D.host.E] (VS D).V) {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V}
     (h : Formalism.HermitianLatticesTheory.gmap a Λ' = Λ) : Formalism.HermitianLatticesTheory.gmap a⁻¹ Λ = Λ' := by
@@ -1325,7 +1331,8 @@ variable {Z : LocDat D} {T T' : D.host.E} {F0 : LFlag (D.sp.Y 0) D.R.rS T} {F0' 
   (c : GCoord Z F0 F0' FP G)
 
 theorem grp_conj (ρ l n : (VS D).V ≃ₗ[D.host.E] (VS D).V) :
-    c.grp (ρ * l) (l⁻¹ * n * l) = c.grp ρ n := GlobalTheory.HL.Cov0.grp_conj c ρ l n
+    c.grp (ρ * l) (l⁻¹ * n * l) = c.grp ρ n := by
+  apply _root_.GlobalTheory.HL.Cov0.grp_conj <;> assumption
 
 theorem lat_map_grp (ρ n : (VS D).V ≃ₗ[D.host.E] (VS D).V) (Λ : Submodule (𝓞 D.host.E) (VS D).V) :
     (c.lat ρ Λ).map (((c.grp ρ n : G.GLV) : G.V →ₗ[D.host.E] G.V).restrictScalars (𝓞 D.host.E)) =

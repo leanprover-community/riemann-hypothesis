@@ -598,7 +598,8 @@ theorem cst_injective {R : Type} [CommRing R] {X : Scheme.{0}} [IsIntegral X] (p
   exact (fnOf_injective ⊤ trivial).comp (h1.comp h2)
 
 theorem injective_of_flat {R S : Type} [CommRing R] [IsDomain R] [CommRing S] [Nontrivial S] (ρ : R →+* S)
-    (h : ρ.Flat) : Function.Injective ρ := GlobalTheory.Desc.GaussPt.injective_of_flat h
+    (h : ρ.Flat) : Function.Injective ρ := by
+  apply _root_.GlobalTheory.Desc.GaussPt.injective_of_flat <;> assumption
 
 theorem height_of_vert {S : Type} [CommRing S] [IsDomain S] {X : Scheme.{0}} (p : X ⟶ Sp S) [Flat p] {f : S}
     (hf : f ≠ 0) {z : X} (hz : Vert p f z) : (p z).asIdeal.height = 1 := by

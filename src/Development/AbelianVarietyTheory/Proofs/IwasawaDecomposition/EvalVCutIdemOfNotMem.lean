@@ -181,19 +181,6 @@ theorem mem_of_isClosed {H : Subgroup (GAd σ J)} (hH : IsClosed (H : Set (GAd �
 
 end General
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.WeilParts
-
-theorem ksph_le_of_isClosed : ∀ (D : D7) (V : HSp D) (Z : Finset (HeightOneSpectrum (𝓞 D.host.F))) (H : Subgroup (GA D V)), IsClosed (H : Set (GA D V)) → (∀ v, v ∉ Z → ∀ ε, IsPlaceIdem D v ε → ∀ g ∈ KsphC V ∅, SuppPl ε V g → g ∈ H) → ∀ k ∈ KsphC V Z, k ∈ H := by
-  intro D V Z H hH h k hk
-  rw [KsphC_eq] at hk
-  obtain ⟨h1, h2, h3⟩ := mem_levelOff.1 hk
-  refine mem_of_isClosed D.sp.cm.sig V.gram hH h1 fun v => ?_
-  by_cases hv : v ∈ Z
-  · rw [h2 v hv, map_one]; exact one_mem _
-  · have hε : IsPlaceIdem D v (pairA D.host.F 0 (singleFin v 1)) :=
-      ⟨_, rfl, evalV_singleFin_self v 1, fun _ hu => evalV_singleFin_ne hu 1⟩
-    exact h v hv _ hε _ ((Model.emb_mem_KsphC_iff V v _).2 (h3 v hv)) ((Model.suppF_iff V hε _).2 ⟨_, rfl⟩)
-
 end GlobalTheory.LevelClosure
 
 end

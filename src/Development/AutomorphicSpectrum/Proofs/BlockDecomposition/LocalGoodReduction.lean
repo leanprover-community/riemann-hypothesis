@@ -69,14 +69,6 @@ theorem mem_twCent_prodMap (θ : G →* G) (θ' : G' →* G') (δ g : G × G') :
   change g * δ = δ * (θ.prodMap θ') g ↔ g.1 * δ.1 = δ.1 * θ g.1 ∧ g.2 * δ.2 = δ.2 * θ' g.2
   exact Prod.ext_iff
 
-theorem mul_norm_comm (θ : G →* G) (hθ : ∀ g, θ (θ g) = g) {δ g : G} (hg : g ∈ twCent θ δ) :
-    g * (δ * θ δ) = δ * θ δ * g := by
-  have h : g * δ = δ * θ g := hg
-  have h' : θ g * θ δ = θ δ * g := by
-    have := congrArg θ h
-    simpa only [map_mul, hθ] using this
-  rw [← mul_assoc, h, mul_assoc, h', mul_assoc]
-
 variable [TopologicalSpace G] [TopologicalSpace G']
 
 theorem isCompact_closure_zpowers_of_map [T2Space G'] (φ : G →* G') (hφ : Continuous φ) (t : G)

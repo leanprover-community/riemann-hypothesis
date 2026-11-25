@@ -29,16 +29,14 @@ variable {K K₂ M : Type*} [Zero M]
 theorem extend_inl_inl (f : K → M) (k : K) : Function.extend (Sum.inl : K → K ⊕ K₂) f 0 (Sum.inl k) = f k :=
   Sum.inl_injective.extend_apply _ _ _
 
-theorem extend_inl_inr (f : K → M) (k : K₂) : Function.extend (Sum.inl : K → K ⊕ K₂) f 0 (Sum.inr k) = 0 := by
-  rw [Function.extend_apply' _ _ _ (by rintro ⟨_, h⟩; cases h)]
-  rfl
+theorem extend_inl_inr (f : K → M) (k : K₂) : Function.extend (Sum.inl : K → K ⊕ K₂) f 0 (Sum.inr k) = 0 :=
+  (Function.extend_apply' _ _ _ (by rintro ⟨_, h⟩; cases h)).trans rfl
 
 theorem extend_inr_inr (f : K₂ → M) (k : K₂) : Function.extend (Sum.inr : K₂ → K ⊕ K₂) f 0 (Sum.inr k) = f k :=
   Sum.inr_injective.extend_apply _ _ _
 
-theorem extend_inr_inl (f : K₂ → M) (k : K) : Function.extend (Sum.inr : K₂ → K ⊕ K₂) f 0 (Sum.inl k) = 0 := by
-  rw [Function.extend_apply' _ _ _ (by rintro ⟨_, h⟩; cases h)]
-  rfl
+theorem extend_inr_inl (f : K₂ → M) (k : K) : Function.extend (Sum.inr : K₂ → K ⊕ K₂) f 0 (Sum.inl k) = 0 :=
+  (Function.extend_apply' _ _ _ (by rintro ⟨_, h⟩; cases h)).trans rfl
 
 end Extend
 
@@ -126,25 +124,26 @@ theorem num_den_not_mem {P : Ideal (MRing ι)} (hP : P.IsPrime) (g : (Σ k, ι�
     simp only [map_prod, map_mul, map_pow, graphMap_rename_inlV, graphMap_X_inrV]
     exact Finset.prod_ne_zero_iff.mpr fun k _ => mul_ne_zero (pow_ne_zero _ (h2 k)) (pow_ne_zero _ (h1 k))
 
+private theorem exists_not_mem_of_basePtFree {P : Ideal (MRing ι)} {g : (Σ k, ι₂ k) → MRing ι}
+    (hBP : IsBasePtFree P g) {I : Ideal (MRing ι)} (hI : I.IsPrime) (hPI : P ≤ I)
+    (hrel : ∀ k', ∃ i, (X ⟨k', i⟩ : MRing ι) ∉ I) (k : K₂) : ∃ j', g ⟨k, j'⟩ ∉ I := by
+  by_contra hall
+  push Not at hall
+  choose i hi using hrel
+  obtain ⟨N, hN⟩ := hBP k i
+  have hmem := sup_le hPI (Ideal.span_le.mpr (Set.range_subset_iff.mpr hall)) hN
+  obtain ⟨k', -, hk'⟩ := Ideal.IsPrime.prod_mem_iff.mp (hI.mem_of_pow_mem N hmem)
+  exact hi k' hk'
+
 theorem exists_unit {P : Ideal (MRing ι)} {g : (Σ k, ι₂ k) → MRing ι} (hBP : IsBasePtFree P g)
     (j : ∀ k, ι₂ k) (a : K₂ → ℤ) {W : Ideal (MRing (Sum.elim ι ι₂))} (hW : W.IsPrime)
     (hΓW : graphIdeal P g ≤ W) (hrel : IsRelevant W) :
     ∃ u v, u ∉ W ∧ v ∉ W ∧ u * num g j a - v * den g j a ∈ graphIdeal P g := by
-  have hlin : ∀ k, ∃ j', rename inlV (g ⟨k, j'⟩) ∉ W := by
-    intro k
-    by_contra hall
-    push Not at hall
-    choose i hi using fun k' => hrel (Sum.inl k')
-    obtain ⟨N, hN⟩ := hBP k i
-    have hle : P ⊔ Ideal.span (Set.range fun j' : ι₂ k => g ⟨k, j'⟩) ≤
-        W.comap (rename (inlV (ι₂ := ι₂)) : MRing ι →ₐ[ℤ] MRing (Sum.elim ι ι₂)) :=
-      sup_le (fun p hp => hΓW (rename_mem_graphIdeal g hp))
-        (Ideal.span_le.mpr (Set.range_subset_iff.mpr hall))
-    have hmem := hle hN
-    rw [Ideal.mem_comap, map_pow, map_prod] at hmem
-    obtain ⟨k', -, hk'⟩ := Ideal.IsPrime.prod_mem_iff.mp (hW.mem_of_pow_mem N hmem)
-    rw [rename_X] at hk'
-    exact hi k' hk'
+  have hlin : ∀ k, ∃ j', rename inlV (g ⟨k, j'⟩) ∉ W :=
+    exists_not_mem_of_basePtFree hBP (Ideal.comap_isPrime _ W)
+      (fun p hp => hΓW (rename_mem_graphIdeal g hp)) fun k' => by
+        obtain ⟨i, hi⟩ := hrel (Sum.inl k')
+        exact ⟨i, by simpa [inlV] using hi⟩
   choose j' hj' using hlin
   have hy : ∀ k, X (inrV ⟨k, j' k⟩) ∉ W := by
     intro k hyk
@@ -153,21 +152,15 @@ theorem exists_unit {P : Ideal (MRing ι)} {g : (Σ k, ι₂ k) → MRing ι} (h
     have hprod : X (inrV ⟨k, j''⟩) * rename inlV (g ⟨k, j' k⟩) ∈ W := by
       have h := W.add_mem hm (W.mul_mem_right (rename inlV (g ⟨k, j''⟩)) hyk)
       rwa [sub_add_cancel] at h
-    rcases hW.mem_or_mem hprod with h | h
-    · exact hj'' h
-    · exact hj' k h
+    exact (hW.mem_or_mem hprod).elim hj'' (hj' k)
+  have hnm : ∀ u v : K₂ → MRing (Sum.elim ι ι₂), (∀ k, u k ∉ W) → (∀ k, v k ∉ W) →
+      ∏ k, u k * v k ∉ W := fun u v hu hv h => by
+    obtain ⟨k, -, hk⟩ := Ideal.IsPrime.prod_mem_iff.mp h
+    exact (hW.mem_or_mem hk).elim (hu k) (hv k)
   refine ⟨∏ k, X (inrV ⟨k, j' k⟩) ^ (a k).toNat * rename inlV (g ⟨k, j' k⟩) ^ (-a k).toNat,
-    ∏ k, rename inlV (g ⟨k, j' k⟩) ^ (a k).toNat * X (inrV ⟨k, j' k⟩) ^ (-a k).toNat, ?_, ?_, ?_⟩
-  · intro h
-    obtain ⟨k, -, hk⟩ := Ideal.IsPrime.prod_mem_iff.mp h
-    rcases hW.mem_or_mem hk with h | h
-    · exact hy k (hW.mem_of_pow_mem _ h)
-    · exact hj' k (hW.mem_of_pow_mem _ h)
-  · intro h
-    obtain ⟨k, -, hk⟩ := Ideal.IsPrime.prod_mem_iff.mp h
-    rcases hW.mem_or_mem hk with h | h
-    · exact hj' k (hW.mem_of_pow_mem _ h)
-    · exact hy k (hW.mem_of_pow_mem _ h)
+    ∏ k, rename inlV (g ⟨k, j' k⟩) ^ (a k).toNat * X (inrV ⟨k, j' k⟩) ^ (-a k).toNat,
+    hnm _ _ (fun k h => hy k (hW.mem_of_pow_mem _ h)) (fun k h => hj' k (hW.mem_of_pow_mem _ h)),
+    hnm _ _ (fun k h => hj' k (hW.mem_of_pow_mem _ h)) (fun k h => hy k (hW.mem_of_pow_mem _ h)), ?_⟩
   · rw [graphIdeal, RingHom.mem_ker, map_sub, sub_eq_zero]
     simp only [num, den, map_prod, map_mul, map_pow, graphMap_rename_inlV, graphMap_X_inrV]
     rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
@@ -222,22 +215,12 @@ theorem proof : GraphIsometricForms.Statement := by
       have h := hz.2 _ (minor_mem P g k j₁ j₂)
       simp only [map_sub, map_mul, hlin, hyev] at h
       exact sub_eq_zero.mp h
-    have hgx : ∀ k, ∃ j', formApply g x ⟨k, j'⟩ ≠ 0 := by
-      intro k
-      by_contra hall
-      push Not at hall
-      choose i hi using hx.1
-      obtain ⟨N, hN⟩ := hBP k i
-      let φ : MRing ι →+* ℂ := (eval x).comp (map (Int.castRingHom ℂ))
-      have hle : P ⊔ Ideal.span (Set.range fun j' : ι₂ k => g ⟨k, j'⟩) ≤ RingHom.ker φ := by
-        refine sup_le (fun p hp => RingHom.mem_ker.mpr (hx.2 p hp))
-          (Ideal.span_le.mpr (Set.range_subset_iff.mpr fun j' => ?_))
-        exact RingHom.mem_ker.mpr (hall j')
-      have h0 := RingHom.mem_ker.mp (hle hN)
-      have hne : φ ((∏ k', (X ⟨k', i k'⟩ : MRing ι)) ^ N) ≠ 0 := by
-        simp only [φ, map_pow, map_prod, RingHom.comp_apply, map_X, eval_X]
-        exact pow_ne_zero _ (Finset.prod_ne_zero_iff.mpr fun k' _ => hi k')
-      exact hne h0
+    let φ : MRing ι →+* ℂ := (eval x).comp (map (Int.castRingHom ℂ))
+    have hgx : ∀ k, ∃ j', formApply g x ⟨k, j'⟩ ≠ 0 :=
+      exists_not_mem_of_basePtFree hBP (RingHom.ker_isPrime φ)
+        (fun p hp => RingHom.mem_ker.mpr (hx.2 p hp)) fun k' => by
+          obtain ⟨i, hi⟩ := hx.1 k'
+          exact ⟨i, by simp [φ, hi]⟩
     choose jx hjx using hgx
     set c : K₂ → ℂ := fun k => y ⟨k, jx k⟩ / formApply g x ⟨k, jx k⟩ with hcdef
     have hyc : ∀ q : Σ k, ι₂ k, y q = c q.1 * formApply g x q := by

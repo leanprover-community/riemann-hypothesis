@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.RingTheory.Ideal.Height
+import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
@@ -13,13 +14,8 @@ set_option maxSynthPendingDepth 1
 namespace GroundTheory.Heights₂.Heights
 
 theorem ringKrullDim_quotient_eq_coheight {B : Type*} [CommRing B] (P : Ideal B) [hP : P.IsPrime] :
-    ringKrullDim (B ⧸ P) = Order.coheight (⟨P, hP⟩ : PrimeSpectrum B) := by
-  rw [ringKrullDim_quotient, Order.coheight_eq_krullDim_Ici]
-  have h : PrimeSpectrum.zeroLocus (P : Set B) = Set.Ici (⟨P, hP⟩ : PrimeSpectrum B) := by
-    ext q
-    rw [PrimeSpectrum.mem_zeroLocus, Set.mem_Ici, ← PrimeSpectrum.asIdeal_le_asIdeal]
-    exact SetLike.coe_subset_coe
-  rw [h]
+    ringKrullDim (B ⧸ P) = Order.coheight (⟨P, hP⟩ : PrimeSpectrum B) :=
+  ReciprocityTheory.AnForm.R.IntegerToRational.ringKrullDim_quotient_eq_coheight P
 
 theorem height_add_ringKrullDim_quotient_le {B : Type*} [CommRing B] (P : Ideal B) [hP : P.IsPrime] :
     (P.height : WithBot ℕ∞) + ringKrullDim (B ⧸ P) ≤ ringKrullDim B := by

@@ -257,7 +257,8 @@ theorem ptsPosDens_eq {P : Ideal (MRing ι)} {L : Fin e → HermLine ι} (hL : �
       obtain ⟨hyU, hw1⟩ := hNp _ hqN
       have hseg : segre (h.choose y) = segre (γ y) := hc.1.trans (hw1 ⟨h.choose y, hc.2.self_of_nhds.2.1, hc.1, hΨw⟩)
       have := apply_eq_of_segre_eq hmemE hc.2.self_of_nhds.2.1.1 hseg
-      rwa [this]
+      rw [this]
+      exact hcE
     · exact absurd rfl hne
   unfold ptsPosDens
   by_cases hy : y ∈ U ∩ γ ⁻¹' E
@@ -268,7 +269,7 @@ theorem ptsPosDens_eq {P : Ideal (MRing ι)} {L : Fin e → HermLine ι} (hL : �
     have hqN : (y, segre (γ y)) ∈ N := by
       have h := hEN _ hy.2 (by rw [hΨ1]; simp)
       rwa [crd_of_eq hΨ1, nrm_of_eq hΨ1] at h
-    rw [finsum_eq_single _ (segre (γ y)) ?_, finsum_eq_if, ite_eq_left hfib,
+    rw [finsum_eq_single _ (segre (γ y)) ?_, finsum_eq_if, if_pos hfib,
       sheetDensity_eq hL hEg hU hγ hN hNp hqN hfib, Set.indicator_of_mem (show γ y ∈ E from hy.2)]
     intro w hne
     rw [finsum_eq_if]
@@ -296,32 +297,24 @@ theorem PtsPosPartLocal.proof : PtsPosPartLocal.Statement := by
   obtain ⟨y₀, γ₀, U, N, hU, hN, hq₀, hseg₀, hγ₀, hNp⟩ := exists_local hs
   obtain ⟨y₀', γ₀', U', N', hU', hN', hq₀', hseg₀', hγ₀', hNp'⟩ := exists_local hs'
 
-  have hz0 : Ψ (segre z) 0 ≠ 0 := by
-    intro h0
-    have h := congrFun (hγ₀ y₀ (hNp _ hq₀).1).2.2 0
-    rw [hseg₀, h0, inv_zero, zero_smul, map_zero] at h
-    simp at h
-  have hz0' : Ψ' (segre z) 0 ≠ 0 := by
-    intro h0
-    have h := congrFun (hγ₀' y₀' (hNp' _ hq₀').1).2.2 0
-    rw [hseg₀', h0, inv_zero, zero_smul, map_zero] at h
-    simp at h
-  have hN0 : (crd Ψ (segre z), nrm Ψ (segre z)) ∈ N := by
-    have h1 : Ψ (nrm Ψ (segre z)) = Fin.cons 1 y₀ := by
-      rw [← (hγ₀ y₀ (hNp _ hq₀).1).2.2, hseg₀]
-      rfl
-    have h2 : crd Ψ (segre z) = y₀ := by
-      funext i
-      simp [crd, h1]
-    rwa [h2]
-  have hN0' : (crd Ψ' (segre z), nrm Ψ' (segre z)) ∈ N' := by
-    have h1 : Ψ' (nrm Ψ' (segre z)) = Fin.cons 1 y₀' := by
-      rw [← (hγ₀' y₀' (hNp' _ hq₀').1).2.2, hseg₀']
-      rfl
-    have h2 : crd Ψ' (segre z) = y₀' := by
-      funext i
-      simp [crd, h1]
-    rwa [h2]
+  have hpt : ∀ {Φ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)} {y₀ : Fin e → ℂ}
+      {γ₀ : (Fin e → ℂ) → (Σ k, ι k) → ℂ} {U : Set (Fin e → ℂ)}
+      {N : Set ((Fin e → ℂ) × (((k : K) → ι k) → ℂ))},
+      (y₀, nrm Φ (segre z)) ∈ N → segre (γ₀ y₀) = nrm Φ (segre z) →
+      (∀ y ∈ U, DifferentiableAt ℂ γ₀ y ∧ γ₀ y ∈ mcPts P ∧ Φ (segre (γ₀ y)) = Fin.cons 1 y) →
+      (∀ q ∈ N, q.1 ∈ U ∧ (q.2 ∈ fibre P Φ q.1 → q.2 = segre (γ₀ q.1))) →
+      Φ (segre z) 0 ≠ 0 ∧ (crd Φ (segre z), nrm Φ (segre z)) ∈ N := by
+    intro Φ y₀ γ₀ U N hq hseg hγ hNp''
+    refine ⟨fun h0 => ?_, ?_⟩
+    · have h := congrFun (hγ y₀ (hNp'' _ hq).1).2.2 0
+      rw [hseg, nrm, h0, inv_zero, zero_smul, map_zero] at h
+      simp at h
+    · have h1 : Φ (nrm Φ (segre z)) = Fin.cons 1 y₀ := by
+        rw [← (hγ y₀ (hNp'' _ hq).1).2.2, hseg]
+      have h2 : crd Φ (segre z) = y₀ := funext fun i => by simp [crd, h1]
+      rw [h2]; exact hq
+  obtain ⟨hz0, hN0⟩ := hpt hq₀ hseg₀ hγ₀ hNp
+  obtain ⟨hz0', hN0'⟩ := hpt hq₀' hseg₀' hγ₀' hNp'
 
   set WS : Set (((k : K) → ι k) → ℂ) := {w | Ψ w 0 ≠ 0 ∧ Ψ' w 0 ≠ 0 ∧ (crd Ψ w, nrm Ψ w) ∈ N ∧
     (crd Ψ' w, nrm Ψ' w) ∈ N'} with hWSdef
@@ -407,7 +400,8 @@ theorem PtsPosPartLocal.proof : PtsPosPartLocal.Statement := by
       · subst hk
         simp only [hcdef, Function.update_self]
         exact AnalyticAt.inv (f := fun y => Φ y 0) (analyticAt_pi_iff.mp (hΦan y hy.1) 0) hy0
-      · simpa only [hcdef, Function.update_of_ne hk] using analyticAt_const
+      · simp only [hcdef, Function.update_of_ne hk]
+        exact analyticAt_const
     have hγ'a : AnalyticAt ℂ γ₀' y := hγ₀'an y hy.1
     have hγta : AnalyticAt ℂ γt y :=
       analyticAt_pi_iff.mpr fun p => (hca p.1).mul (analyticAt_pi_iff.mp hγ'a p)
@@ -431,7 +425,8 @@ theorem PtsPosPartLocal.proof : PtsPosPartLocal.Statement := by
     intro y hy
     have h1 : crd Ψ' (segre (γ₀' y)) = y := crd_of_eq (hγ₀' y hy.1).2.2
     have h2 := crd_smul (Ψ := Ψ') hy.2.1 (nrm Ψ (segre (γ₀' y)))
-    rwa [← eq_smul_nrm hy.2.1, h1] at h2
+    rw [← eq_smul_nrm hy.2.1, h1] at h2
+    exact h2
   have hτinj : Set.InjOn τ O' := by
     intro y₁ h₁ y₂ h₂ h
     have e₁ := (hτU y₁ h₁).2

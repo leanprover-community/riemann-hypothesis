@@ -56,8 +56,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.TorusPart
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Poinc.Eq8
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {D : DegData R (maximalIdeal R)}

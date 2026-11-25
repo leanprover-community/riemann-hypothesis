@@ -174,18 +174,6 @@ def RealDat.comap {A : FamIn D.what₂.LL G Pl0 T' D.R.m} (R : RealDat D A Ks) (
   lam := lam
   err0 := err0
 
-def RealDat3.comap {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T' D.R.m} (R : RealDat3 D A3 Ks) (f : T → T') (t0 : T)
-    (mu : HeightOneSpectrum (𝓞 D.what₂.LL) → T) (twPl : Finset (HeightOneSpectrum (𝓞 D.what₂.LL))) (FW : type_of% R.FW) (kap : ℝ)
-    (lam : Fin D.R.m → T → (A3.comap f t0).A.fam.base.Ix → InfinitePlace D.what₂.LL → ℝ) (err0 : type_of% R.err0)
-    (phs : Fin D.R.m → ℂ) (lam3 : Fin D.R.m → T → (A3.comap f t0).fam3.base3.Ix → InfinitePlace D.what₂.LL → ℝ) :
-    RealDat3 D (A3.comap f t0) Ks where
-  toRealDat := R.toRealDat.comap f t0 mu twPl FW kap lam err0
-  plI := R.plI
-  SF := R.SF
-  phs := phs
-  lam3 := lam3
-
-
 end Comap
 
 end Formalism.IndefR.Links

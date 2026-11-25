@@ -67,43 +67,16 @@ section Level
 
 variable (p : ℕ) [Fact p.Prime] {N r : ℕ} [NeZero r] (G : Formalism.GM.M.BlockData N)
 
-private theorem fockK_eq_lemma {k σ : Type} [Field k] (F G : MvPolynomial σ k) (s : Finset (σ →₀ ℕ))
-    (hs : F.support ⊆ s) :
-    Formalism.GM.M.fockK F G = ∑ m ∈ s, F.coeff m * G.coeff m * (m.prod fun _ j => (j.factorial : k)) := by
-  unfold Formalism.GM.M.fockK
-  apply Finset.sum_subset hs
-  intro m _ hm
-  have h0 : F.coeff m = 0 := by simpa using hm
-  rw [h0, zero_mul, zero_mul]
-
 theorem bejj_smul_left (j : Fin G.T.t → ℕ) (jp : ℕ) (c : ℚ_[p]) (u v : MvPolynomial (Formalism.GM.M.BVar N r G.T.t) ℚ_[p]) :
     bejj p (r := r) G j jp (c • u) v = c * bejj p (r := r) G j jp u v := by
   unfold bejj
-  rw [map_smul, fockK_eq_lemma _ v _ MvPolynomial.support_smul]
-  unfold Formalism.GM.M.fockK
-  rw [mul_div_assoc', Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [MvPolynomial.coeff_smul, smul_eq_mul]
-  ring
+  rw [map_smul, Formalism.GM.ProjS.fockK_smul_left, mul_div_assoc]
 
 theorem bejj_sum_left (j : Fin G.T.t → ℕ) (jp : ℕ) {ι : Type} (s : Finset ι)
     (f : ι → MvPolynomial (Formalism.GM.M.BVar N r G.T.t) ℚ_[p]) (v : MvPolynomial (Formalism.GM.M.BVar N r G.T.t) ℚ_[p]) :
     bejj p (r := r) G j jp (∑ i ∈ s, f i) v = ∑ i ∈ s, bejj p (r := r) G j jp (f i) v := by
-  classical
   unfold bejj
-
-  rw [map_sum, ← Finset.sum_div]
-  congr 1
-  set S := (∑ i ∈ s, G.phiAll p (r := r) j jp (f i)).support ∪
-    s.biUnion (fun i => (G.phiAll p (r := r) j jp (f i)).support) with hS
-  rw [fockK_eq_lemma _ v S Finset.subset_union_left]
-  rw [Finset.sum_congr rfl (fun i hi => fockK_eq_lemma (G.phiAll p (r := r) j jp (f i)) v S
-    ((Finset.subset_biUnion_of_mem (fun i => (G.phiAll p (r := r) j jp (f i)).support) hi).trans
-      Finset.subset_union_right))]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [MvPolynomial.coeff_sum, Finset.sum_mul, Finset.sum_mul]
+  rw [map_sum, Formalism.GM.ProjS.fockK_sum_left, Finset.sum_div]
 
 theorem bejj_bdd (j : Fin G.T.t → ℕ) (jp : ℕ) (D : ℤ) :
     BddAbove {n | ∃ x y : Fin n → MvPolynomial (Formalism.GM.M.BVar N r G.T.t) ℚ_[p],

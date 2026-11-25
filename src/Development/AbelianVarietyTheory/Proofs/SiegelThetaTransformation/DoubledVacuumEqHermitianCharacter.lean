@@ -271,25 +271,12 @@ theorem vecMul_dblT (y₁ y₂ : Fin r → E) : Sum.elim y₁ y₂ ᵥ* dblT X =
       Pi.add_apply, Pi.smul_apply, smul_eq_mul]
     ring
 
-private theorem ccT_mul_siegel_theta_transformation (M N : Matrix (Fin r) (Fin r) E) : ccT (M * N) = ccT N * ccT M := by
-  ext i j
-
-  simp [ccT, cc, Matrix.mul_apply, map_sum, map_mul, mul_comm]
-
-private theorem ccT_one_fin_r : ccT (1 : Matrix (Fin r) (Fin r) E) = 1 := by
-  simp only [ccT]
-  rw [Matrix.map_one _ (by simp [cc]) (by simp [cc]), Matrix.transpose_one]
-
-private theorem ccT_ccT_siegel_theta_transformation (M : Matrix (Fin r) (Fin r) E) : ccT (ccT M) = M := by
-  ext i j
-  simp [ccT, cc]
-
 private theorem pair_smul_left_eq_mul (c : E) (x y : Fin r → E) : pair (c • x) y = c * pair x y := by
   simp only [pair, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
 
 private theorem pair_vecMul_right_eq_ccT (x y : Fin r → E) (N : Matrix (Fin r) (Fin r) E) :
     pair x (y ᵥ* N) = pair (x ᵥ* ccT N) y := by
-  rw [pair_vecMul, ccT_ccT_siegel_theta_transformation]
+  rw [pair_vecMul, Base.ccT_ccT]
 
 theorem doubled_lattice_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r), ∀ w : E, IsIntegral ℤ w → w + cc w = 1 → ∀ L₁ L₂ : Lt E r, SelfD X L₁ → SelfD X L₂ → ∃ β : Matrix (Fin r) (Fin r) E, ccT β = β ∧ ∀ d b : Fin r → E, ((∃ y₁ ∈ L₁, ∃ y₂ ∈ L₂, Sum.elim y₁ y₂ ᵥ* dblT X = Sum.elim d b) ↔ (d ∈ L₁ ⊔ L₂ ∧ ∀ d' ∈ L₁ ⊔ L₂, ∃ k : ℤ, Algebra.trace ℚ E (∑ a, (b - d ᵥ* β) a * cc (d' a)) = k)) := by
   intro E _ _ _ r X w hw hw1 L₁ L₂ h₁ h₂
@@ -305,7 +292,7 @@ theorem doubled_lattice_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   have hhalf : cc (1 / 2 : E) = 1 / 2 := by simp [cc]
   have hD : ccT β₀ - β₀ = (A - 1) * skew X * ccT (A - 1) - A * skew X * ccT A := by
     rw [hβ₀]
-    simp only [ccT_mul_siegel_theta_transformation, ccT_skew, ccT_sub, ccT_smul, ccT_one_fin_r, hhalf, sub_mul, mul_sub,
+    simp only [Base.ccT_mul, ccT_skew, ccT_sub, ccT_smul, Base.ccT_one, hhalf, sub_mul, mul_sub,
       Matrix.smul_mul, one_mul, mul_one, neg_mul]
     module
   have hvA : ∀ d : Fin r → E, d ᵥ* β₀ = (d ᵥ* A - (1 / 2 : E) • d) ᵥ* skew X := by
@@ -340,7 +327,7 @@ theorem doubled_lattice_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     simp only [Matrix.smul_vecMul] at k₁ k₂ ⊢
     exact sub_mem k₂ k₁
   refine ⟨(1 - w) • β₀ + w • ccT β₀, ?_, fun d b => ?_⟩
-  · rw [ccT_add, ccT_smul, ccT_smul, ccT_ccT_siegel_theta_transformation, hcc1, hwcc, add_comm]
+  · rw [ccT_add, ccT_smul, ccT_smul, Base.ccT_ccT, hcc1, hwcc, add_comm]
   have hmem : (∀ d' ∈ L₁ ⊔ L₂, ∃ k : ℤ, Algebra.trace ℚ E
       (∑ a, (b - d ᵥ* ((1 - w) • β₀ + w • ccT β₀)) a * cc (d' a)) = k) ↔
       ∀ d' ∈ L₁ ⊔ L₂, pair (b - d ᵥ* ((1 - w) • β₀ + w • ccT β₀)) d' ∈ intTr E := Iff.rfl

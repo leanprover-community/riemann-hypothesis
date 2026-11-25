@@ -87,9 +87,8 @@ theorem mat_inv_levi (g₀ : G D p) (a : GL (Fin p) (AE D)) (hg : mat g₀ = blk
     mat g₀⁻¹ = blk4 (a⁻¹).1 0 0 (adj a.1) := by
   have h1 : HMul.hMul (mat g₀) (blk4 (a⁻¹).1 0 0 (adj a.1)) = (1 : Mx D (p + p) (p + p)) := by
     rw [hg, submatrix_fromBlocks_mul]
-    have e1 : a.1 * (a⁻¹).1 = 1 := by rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
     have e2 : HMul.hMul (adj (a⁻¹).1) (adj a.1) = (1 : Mx D p p) := adj_inv_mul_adj a
-    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, e1, e2]
+    simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Units.mul_inv a, e2]
     exact block_matrix_one
   calc mat g₀⁻¹ = HMul.hMul (mat g₀⁻¹) (HMul.hMul (mat g₀) (blk4 (a⁻¹).1 0 0 (adj a.1))) := by
         rw [h1]; exact (Matrix.mul_one _).symm
@@ -100,14 +99,12 @@ theorem mat_inv_levi (g₀ : G D p) (a : GL (Fin p) (AE D)) (hg : mat g₀ = blk
 
 theorem exists_lv (hn : ρ + p = n) (a : GL (Fin p) (AE D)) :
     ∃ b : GL (Fin n) (AE D), b.1 = bl hn 1 0 0 a.1 := by
-  have e : a.1 * (a⁻¹).1 = 1 := by rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
-  have e' : (a⁻¹).1 * a.1 = 1 := by rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
   refine ⟨⟨bl hn 1 0 0 a.1, bl hn 1 0 0 (a⁻¹).1, ?_, ?_⟩, rfl⟩
   · rw [blockMatrix_multiply]
-    simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, add_zero, zero_add, e]
+    simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, add_zero, zero_add, a.mul_inv]
     exact blockMatrix_one hn
   · rw [blockMatrix_multiply]
-    simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, add_zero, zero_add, e']
+    simp only [Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_one, add_zero, zero_add, a.inv_mul]
     exact blockMatrix_one hn
 
 theorem det_lv (hn : ρ + p = n) (a : GL (Fin p) (AE D)) (b : GL (Fin n) (AE D)) (hb : b.1 = bl hn 1 0 0 a.1) :

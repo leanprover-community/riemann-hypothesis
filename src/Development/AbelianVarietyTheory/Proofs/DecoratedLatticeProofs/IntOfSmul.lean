@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WittLeviTransvectionMemCompactAtPlace
 
 @[expose] public section
 
@@ -65,16 +66,7 @@ variable {D : D7}
 
 theorem herm_colY {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (i : Fin ρ) (a : AE D) (y : Fin S.rank → AE D) :
     hermAt S (colMul d.jY i a) y = a * cA D ((d.pX *ᵥ y) i) := by
-  have e0 : colMul d.jY i a = a • fun k => d.jY k i := rfl
-  have e1 := herm_smul S a 1 (fun k => d.jY k i) y
-  rw [one_smul, RingHom.map_one, mul_one] at e1
-  rw [e0, e1, ← herm_conj, herm_eq]
-  congr 2
-  have e2 : d.pX = adj d.jY ⬝ gA S := by
-    change rat (d.e'ᴴ * S.gram) = _
-    rw [rat_mul, rat_conjTranspose]; rfl
-  rw [e2, ← mulVec_mulVec]
-  rfl
+  apply _root_.GlobalTheory.FinPl.RootKeep.hermAt_colMul_jY <;> assumption
 
 theorem dual_line {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {L : Lat S} {L₀ : Lat S₀} {x : Pl D} (hL : IsSelfDualC S L)
     (hm : MonoAt d L L₀ x) (i : Fin ρ) {b : (AE D)ˣ}

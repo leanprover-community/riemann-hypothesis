@@ -646,15 +646,7 @@ lemma entry_bound {N : ℕ} (P Z Q : Matrix (Fin N) (Fin N) ℝ) (i j : Fin N) (
 
 lemma orth_entry_le {N : ℕ} (k : Matrix (Fin N) (Fin N) ℝ) (h : kᵀ * k = 1) (p q : Fin N) :
     |k p q| ≤ 1 := by
-  have h1 : ∑ r, k r q * k r q = 1 := by
-    have := congrFun (congrFun h q) q
-    simpa [Matrix.mul_apply] using this
-  have h2 : k p q * k p q ≤ ∑ r, k r q * k r q :=
-    Finset.single_le_sum (f := fun r => k r q * k r q) (fun r _ => mul_self_nonneg _)
-      (Finset.mem_univ p)
-  rw [h1] at h2
-  have h3 : |k p q| ^ 2 ≤ 1 := by rw [sq_abs, sq]; exact h2
-  nlinarith [abs_nonneg (k p q)]
+  apply _root_.GlobalTheory.ReducedBasisBound.abs_entry_le_one <;> assumption
 
 lemma le_of_le_idx {N : ℕ} {C Cm : ℝ} {k : Matrix (Fin N) (Fin N) ℝ} {a : Fin N → ℝ}
     {n : Matrix (Fin N) (Fin N) ℝ} (hS : IsSiegel C k a n) (h1 : 1 ≤ Cm) (hC : C ≤ Cm)

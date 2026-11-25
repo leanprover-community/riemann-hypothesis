@@ -181,7 +181,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem thetaOf_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1)
     (n : ℕ) : GlobalTheory.GLq.thetaOf L d x (L.gen d ^ n) = L.teich x ^ n := by
-  exact GlobalTheory.LabelNorm.theta_gen_pow L hd hx n
+  apply _root_.GlobalTheory.LabelNorm.theta_gen_pow <;> assumption
 
 theorem exists_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) (u : Tor p d) :
     ∃ n : ℕ, ((u : (Fbar p)ˣ) : Fbar p) = L.gen d ^ n := by
@@ -537,8 +537,8 @@ theorem eq_of_prod_eq {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (
   by_contra hne
   have h1 := (_root_.GlobalTheory.GLq.ZOrth.zorth _ _ _ (h i) (h i)).2.2
   have h2 := (_root_.GlobalTheory.GLq.ZOrth.zorth _ _ _ (h i) (h' i)).2.2
-  rw [ite_eq_left rfl] at h1
-  rw [ite_eq_right hne] at h2
+  rw [if_pos rfl] at h1
+  rw [if_neg hne] at h2
   have h3 : ip (χ i) (χ i) * ∏ k ∈ Finset.univ.erase i, χ k 1 = ip (χ i) (χ' i) * ∏ k ∈ Finset.univ.erase i, χ' k 1 := by
     simp only [ip, mul_assoc, Finset.sum_mul, ← key, e]
   rw [h1, h2, one_mul, zero_mul] at h3

@@ -348,8 +348,6 @@ def unif : Unif (fam I) (str B) σ where
 theorem isFor (K : Charts (fam I)) : (real σ K).IsFor (unif σ) := fun k p hp ↦
   (Cris.spMap_comp _ _).symm.trans (congrArg spMap (ev_comp_pt σ K k p hp))
 
-theorem based : (unif σ).Based := ⟨⊤, isAffineOpen_top _, fun _ _ ↦ le_top⟩
-
 end MulGrp
 
 end GlobalTheory.AnPer

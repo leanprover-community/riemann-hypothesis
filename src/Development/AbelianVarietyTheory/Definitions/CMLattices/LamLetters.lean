@@ -51,8 +51,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.LamCM
 open scoped ComplexOrder
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LamF
 
 section Obj

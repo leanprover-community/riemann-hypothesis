@@ -332,15 +332,6 @@ lemma two_mul_le_of_dvd_ne {a b : ℕ} (hb : 0 < b) (hd : a ∣ b) (hne : b ≠ 
   · simp at hne
   · nlinarith
 
-private lemma exists_five_pow_two_pow_eq_one_add (m : ℕ) : ∃ t : ℕ, 5 ^ (2 ^ m) = 1 + 2 ^ (m + 2) * (2 * t + 1) := by
-  induction m with
-  | zero => exact ⟨0, by norm_num⟩
-  | succ m ih =>
-    obtain ⟨t, ht⟩ := ih
-    refine ⟨t + 2 ^ m * (2 * t + 1) ^ 2, ?_⟩
-    rw [pow_succ 2 m, pow_mul, ht]
-    ring
-
 lemma orderOf_five_units_two_pow (k : ℕ) : orderOf (u5 (k + 2)) = 2 ^ k := by
   apply Formalism.TwoAdicCyclotomicDecomposition.AdmissibleUnits.orderOf_five_units_two_pow
 

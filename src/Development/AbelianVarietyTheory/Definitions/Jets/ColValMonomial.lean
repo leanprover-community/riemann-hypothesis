@@ -50,7 +50,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.H1
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS FB ev Dof)
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.FamGerm
 
 structure Pt1 (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ApplyAt0Smul
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -126,18 +127,7 @@ theorem zero_mem_TT (T : Tor D) (N N' : ℕ) : (0 : VC D N N' → ℂ) ∈ TT D 
 
 theorem add_mem_TT {T : Tor D} {N N' : ℕ} {F G : VC D N N' → ℂ} (hF : F ∈ TT D T N N') (hG : G ∈ TT D T N N') :
     F + G ∈ TT D T N N' := by
-  obtain ⟨hF1, m, hm, hFm⟩ := hF
-  obtain ⟨hG1, n, hn, hGn⟩ := hG
-  refine ⟨hF1.add hG1, m * n, Nat.mul_pos hm hn, fun x hx => ?_⟩
-  have h1 := hFm (n • x) (AddSubgroup.nsmul_mem _ hx n)
-  have h2 := hGn (m • x) (AddSubgroup.nsmul_mem _ hx m)
-  rw [smul_smul] at h1 h2
-  rw [mul_comm n m] at h2
-  funext z
-  have e1 := congrFun h1 z
-  have e2 := congrFun h2 z
-  simp only [Wd, U, Pi.add_apply] at e1 e2 ⊢
-  linear_combination e1 + e2
+  apply _root_.GlobalTheory.FunObj.NormUniq.tt_add <;> assumption
 
 theorem Om_sum {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ} {e0 : VC D N N' → ℂ} (W : WeilO D cc δ N N' e0)
     (g : GA D N) (g' : GA D N') {ι : Type*} (s : Finset ι) (f : ι → VC D N N' → ℂ)

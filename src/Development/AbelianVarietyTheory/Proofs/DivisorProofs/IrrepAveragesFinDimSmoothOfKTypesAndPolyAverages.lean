@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyCoeffVectorsLieInFiniteDimensionalSmooth
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DatumEquiv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactTypeInCompactStableSubmodule
 public import Mathlib.Topology.Algebra.MvPolynomial
@@ -85,53 +86,10 @@ theorem sumTypes_mul_conjT {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalis
 theorem sumTypes_inner {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
     {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalism.REAL.Kset ε) (r v : H) :
     ⟪r, σ g v⟫_ℂ = ⟪σ gᴴ r, v⟫_ℂ := by
-  have hK := Formalism.REAL.kFacts n ε
-  have hgU : g ∈ UJset ε := hK.1 g hg
-  have hgU' : gᴴ ∈ UJset ε := hK.1 _ (sumTypes_conjT_mem hg)
-  let f : H →ₗᵢ[ℂ] H := { (σ g : H →ₗ[ℂ] H) with norm_map' := hσ.2.1 g hgU }
-  have e : σ g (σ gᴴ r) = r := by
-    have h1 := hσ.1.2 g hgU gᴴ hgU'
-    rw [sumTypes_mul_conjT hg, hσ.1.1] at h1
-    have := congrArg (fun T : H →L[ℂ] H => T r) h1
-    simpa using this.symm
-  calc ⟪r, σ g v⟫_ℂ = ⟪f (σ gᴴ r), f v⟫_ℂ := by
-        show ⟪r, σ g v⟫_ℂ = ⟪σ g (σ gᴴ r), σ g v⟫_ℂ
-        rw [e]
-    _ = ⟪σ gᴴ r, v⟫_ℂ := f.inner_map_map _ _
+  apply _root_.GlobalTheory.PsCo.PcEF.UF.sumTypes_inner <;> assumption
 
 theorem finDimStable_isSumOfKTypes : SumTypes := by
-  intro n ε H _ _ σ hσ S hSfd hSK
-  set R : Submodule ℂ H := sSup {S' | S' ≤ S ∧ ∃ μ, Formalism.MainNotions.S.IsKTypeOf ε σ μ S'} with hR
-  have hRS : R ≤ S := sSup_le fun S' hS' => hS'.1
-  have : FiniteDimensional ℂ R := Submodule.finiteDimensional_of_le hRS
-  have hRK : Formalism.MainNotions.S.IsKStableOn ε σ R := by
-    intro g hg v hv
-    have hle : R ≤ Submodule.comap (σ g : H →ₗ[ℂ] H) R := sSup_le fun S' hS' x hx => by
-      obtain ⟨μ, hμ⟩ := hS'.2
-      exact Submodule.mem_sSup_of_mem hS' (hμ.2.1 g hg x hx)
-    exact hle hv
-  have hRoK : Formalism.MainNotions.S.IsKStableOn ε σ Rᗮ := by
-    intro g hg v hv r hr
-    rw [sumTypes_inner hσ hg]
-    exact hv _ (hRK _ (sumTypes_conjT_mem hg) r hr)
-  set T : Submodule ℂ H := S ⊓ Rᗮ
-  have hT : T = ⊥ := by
-    by_contra h0
-    have : FiniteDimensional ℂ T := Submodule.finiteDimensional_of_le inf_le_left
-    obtain ⟨μ, S', hS'T, hS'⟩ := GlobalTheory.KTypeExists.exists_kType n ε H σ hσ T inferInstance
-      (fun g hg v hv => Submodule.mem_inf.2 ⟨hSK g hg v (Submodule.mem_inf.1 hv).1, hRoK g hg v (Submodule.mem_inf.1 hv).2⟩) h0
-    obtain ⟨v, hv, hv0, -⟩ := hS'.2.2.2.1
-    have hvR : v ∈ R := Submodule.mem_sSup_of_mem (show S' ∈ {S' | S' ≤ S ∧ ∃ μ, Formalism.MainNotions.S.IsKTypeOf ε σ μ S'} from ⟨hS'T.trans inf_le_left, μ, hS'⟩) hv
-    have hvRo : v ∈ Rᗮ := (hS'T hv).2
-    exact hv0 (inner_self_eq_zero.1 (hvRo v hvR))
-  intro v hv
-  obtain ⟨y, hy, z, hz, rfl⟩ := R.exists_add_mem_mem_orthogonal v
-  have hzS : z ∈ S := by
-    have := sub_mem hv (hRS hy)
-    simpa using this
-  have hz0 : z ∈ T := ⟨hzS, hz⟩
-  rw [hT, Submodule.mem_bot] at hz0
-  rwa [hz0, add_zero]
+  exact _root_.GlobalTheory.PsCo.PcEF.UF.finDimStable_isSumOfKTypes
 
 end GlobalTheory.PsCo.PcEF
 end -- clump:auto
@@ -167,7 +125,8 @@ theorem polyAverages_finiteWeightStableSubspace : PolyAvg := by
   have hφs : ∀ m ∈ Kset ε, ∃ g, φ g = m := by
     intro m hm
     have : m ∈ Set.range (fun k : Formalism.REAL.KG ε => Formalism.REAL.toMK k) := by
-      rwa [Formalism.REAL.range_toMK]
+      rw [Formalism.REAL.range_toMK]
+      exact hm
     obtain ⟨g, hg⟩ := this
     exact ⟨g, hg⟩
   have hinUJ : ∀ g, φ g ∈ UJset ε := fun g => smd_inUJ_of_Kset (hφK g)
@@ -185,7 +144,8 @@ theorem polyAverages_finiteWeightStableSubspace : PolyAvg := by
   let Xu : H → MvPolynomial (EntIdx n) ℂ →ₗ[ℂ] H := fun u =>
     { toFun := fun Q => ∫ k, eval (entVar (φ k)) Q • σ (φ k) u ∂(muK ε)
       map_add' := fun Q R => by
-        simpa only [map_add (f := _), add_smul] using integral_add (hint Q u) (hint R u)
+        simp only [map_add (f := _), add_smul]
+        exact integral_add (hint Q u) (hint R u)
       map_smul' := fun c Q => by
         simp only [smul_eval, mul_smul, RingHom.id_apply]
         exact integral_smul c _ }
@@ -227,7 +187,8 @@ theorem polyAverages_finiteWeightStableSubspace : PolyAvg := by
     rw [SetLike.mem_coe, mem_restrictTotalDegree] at hQ
     rw [mem_restrictTotalDegree]
     exact (totalDegree_bind_le_of_linear _ (trF_totalDegree _) Q).trans hQ
-  · exact fun P hP => Submodule.mem_map_of_mem ((mem_restrictTotalDegree _ _ P).2 hP)
+  · intro P hP
+    exact Submodule.mem_map_of_mem ((mem_restrictTotalDegree _ _ P).2 hP)
   · rintro μ s ⟨Q, hQ, rfl⟩ hs0 hsw
     by_contra hμ
     rw [SetLike.mem_coe, mem_restrictTotalDegree] at hQ
@@ -239,7 +200,8 @@ theorem polyAverages_finiteWeightStableSubspace : PolyAvg := by
       rw [← map_smul, smul_monomial, smul_eq_mul, mul_one]
     have horth : ∀ m ∈ Q.support, inner ℂ (Xu u Q) (Xu u (monomial m 1)) = 0 := by
       intro m hm
-      exact kfin_wt_orth hσ hsw (hmono u m) fun h => hμ ⟨m, (le_totalDegree hm).trans hQ, h.symm⟩
+      refine kfin_wt_orth hσ hsw (hmono u m) fun h => hμ ?_
+      exact ⟨m, (le_totalDegree hm).trans hQ, h.symm⟩
     apply hs0
     rw [← inner_self_eq_zero (𝕜 := ℂ)]
     calc inner ℂ (Xu u Q) (Xu u Q) = inner ℂ (Xu u Q) (∑ m ∈ Q.support, AddMonoidAlgebra.coeff Q m • Xu u (monomial m 1)) := by

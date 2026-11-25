@@ -55,18 +55,10 @@ theorem capelliPoly_ofReal {n : ℕ} (lam : Fin n → ℝ) (Y : ℝ) :
     Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) (Y : ℂ) = ((∏ s, (Y + lam s) : ℝ) : ℂ) := by
   simp only [Formalism.QuantumDeterminants.capP, Complex.ofReal_prod, Complex.ofReal_add]
 
-private theorem prod_Icc_one_eq_prod_fin_succ {M : Type*} [CommMonoid M] (n : ℕ) (f : ℕ → M) :
-    ∏ i ∈ Finset.Icc 1 n, f i = ∏ i : Fin n, f (i.1 + 1) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Finset.prod_Icc_succ_top (by omega), ih, Fin.prod_univ_castSucc]
-    rfl
-
 theorem cfg_P (D : D7) (τ : D.what₂.Tau) (Y : ℝ) :
     (cfgOf D τ).P Y = ∏ s : Fin D.R.r, (Y + lamS D.R (D.hc τ) s) := by
   unfold Formalism.FourierDecayAlt.Sz.Cfg.P
-  rw [prod_Icc_one_eq_prod_fin_succ]
+  simp only [← Ico_add_one_right_eq_Icc, ← prod_Ico_add' _ 0 _ 1, Nat.Ico_zero_eq_range, prod_range]
   exact Finset.prod_congr rfl fun s _ => congrArg (Y + ·) (cfg_lam D τ s)
 
 theorem deOf_ne (D : D7) (u u' : D.what₂.Word) (τ : D.what₂.Tau)

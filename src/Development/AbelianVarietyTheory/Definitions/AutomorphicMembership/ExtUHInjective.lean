@@ -190,35 +190,6 @@ theorem stepY_fin_orb (hX : X.Ok) (hI : ∀ b P, (Θ b P).H.FiniteIndex)
     rw [hg, smul_smul, Prod.mk_mul_mk, inv_mul_cancel, one_mul]
     exact one_smul _ d0
 
-theorem stepY_ok (hX : X.Ok) (hI : ∀ b P, (Θ b P).H.FiniteIndex)
-    (hr : ∀ b P g, ∃ m : ℕ, 0 < m ∧ (Θ b P).lam g ^ m = 1)
-    (hy : ∀ N, Submodule.IsLattice X.E N → (y.ys N).Finite) : (stepY ST y β Λ Θ pref).Ok := by
-  exact {
-    fin_orb := stepY_fin_orb y β Λ Θ pref hX hI hy
-    fin_stab b p :=
-      haveI := autO_finite (posStar_of_ok hX) p.1.1.deco.full_lattice
-      Finite.of_injective _ (stabAut_inj y β Λ Θ pref b p)
-    unit b g := by
-      have h : Formalism.UG.cT (starRingEnd X.E) (toGLm X.E n g.1.1 : Matrix (Fin n) (Fin n) X.E) * (1 : Matrix (Fin n) (Fin n) X.E) *
-        (toGLm X.E n g.1.1 : Matrix (Fin n) (Fin n) X.E) = 1 := toGLm_mem_UJ g.1
-      rwa [Matrix.mul_one] at h
-    root b g := by
-      have h1 : IsOfFinOrder ((Λ b).chr g.2.1) := MonoidHom.isOfFinOrder _ (isOfFinOrder_of_finite _)
-      have h2 : IsOfFinOrder ((Θ b).chr g.2.2) := by
-        rw [show (Θ b).chr g.2.2 = ∏ P, (Θ b P).lam (piProj (fun P => (Θ b P).H) P g.2.2) from
-          piChar_apply (fun P => (Θ b P).H) (fun P => (Θ b P).lam) g.2.2]
-        exact Finset.prod_induction _ IsOfFinOrder (fun _ _ => IsOfFinOrder.mul) IsOfFinOrder.one
-          fun P _ => isOfFinOrder_iff_pow_eq_one.2 (hr b P _)
-      exact isOfFinOrder_iff_pow_eq_one.1 (h1.mul h2)
-    lsh_smul b g p x := by
-      rw [stepY_gam]
-      show _ ∈ (p.1.1.deco.1.act g.1.1 g.2.1.1).Lsh ↔ _
-      rw [Deco.Lsh_act _ g.1.2, mem_gmap, LinearEquiv.symm_apply_apply]
-    lsh_full_lat b p := p.1.1.deco.2.Lsh_full_lattice
-    stab_inj b g p h h1 := stepY_eq_one y β Λ Θ pref b g p h
-      (Subtype.ext ((toGLm X.E n).injective (h1.trans (map_one _).symm)))
-  }
-
 end StepOk
 
 section TOk
@@ -368,7 +339,8 @@ theorem tdatY_tied (hP : ∀ P : ST, MoveHyp ST SG P)
       have hd := p.1.1.deco.2
       refine ⟨hd.lat, hd.uni, hd.f_add, hd.f_smul, hd.f_off, hd.f_ne, ?_, ?_, ?_, ?_, ?_⟩
       all_goals
-        exact fun w => (Finset.notMem_empty _ w.2).elim
+        intro w
+        exact (Finset.notMem_empty _ w.2).elim
     Lsh_eq _ _ := rfl
     dnN_eq _ _ _ := rfl
     ker_eq _ _ _ := rfl
@@ -524,7 +496,8 @@ theorem tilH_Lsh (hpi : ∀ P : ST, pi ∈ P.1.asIdeal) (hdvd : ∀ r : 𝓞 E, 
   · have e : hStd E (n + 1) (z0 E n (algebraMap (𝓞 E) E pi)) x = star (pi : E) * x (Br.iL rfl) := hermStd_lastVector_apply pi x
     rw [mem_dual, ← e]
     constructor
-    · exact fun H => H _ (Submodule.mem_span_singleton_self _)
+    · intro H
+      exact H _ (Submodule.mem_span_singleton_self _)
     · intro H z hz
       obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hz
       rw [hStd_osmul_left, LinearMap.map_smul_of_tower]

@@ -1,7 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyValExtOfOverLa
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.EqCOfPderivZero
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsExpEqOfSubstLg
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -157,7 +157,7 @@ theorem detPow_map (i c : ℕ) : MvPolynomial.map φ (detPow K i c) = detPow C i
   ext a b
   simp
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.FormalLog
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.TB.LogPf
 
 theorem map_pderiv {σ : Type} (i : σ) (f : MvPowerSeries σ K) :
     MvPowerSeries.map φ (MvPowerSeries.pderiv i f) = MvPowerSeries.pderiv i (MvPowerSeries.map φ f) := by

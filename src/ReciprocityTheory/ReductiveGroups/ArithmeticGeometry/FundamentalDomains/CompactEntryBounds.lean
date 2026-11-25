@@ -62,25 +62,18 @@ theorem hermC_expand (τ : E →+* ℂ) (P : Matrix (Fin r) (Fin r) E) (u w : Fi
 
 theorem hermC_stab {γ : Matrix (Fin r) (Fin r) E}
     (hγ : ∀ x y, herm X.Gm (γ *ᵥ x) (γ *ᵥ y) = herm X.Gm x y) (τ : E →+* ℂ) (u w : Fin r → ℂ) :
-    hermC τ X.Gm ((γ.map τ) *ᵥ u) ((γ.map τ) *ᵥ w) = hermC τ X.Gm u w := by
-  exact GlobalTheory.FlagMahler.hermC_stab X hγ τ u w
+    hermC τ X.Gm ((γ.map τ) *ᵥ u) ((γ.map τ) *ᵥ w) = hermC τ X.Gm u w :=
+  GlobalTheory.FlagMahler.hermC_stab X hγ τ u w
 
 theorem gram_stab {γ : Matrix (Fin r) (Fin r) E}
     (hγ : ∀ x y, herm X.Gm (γ *ᵥ x) (γ *ᵥ y) = herm X.Gm x y) (τ : E →+* ℂ)
-    (Y : Matrix (Fin r) (Fin r) ℂ) : gram τ X.Gm (γ.map τ * Y) = gram τ X.Gm Y := by
-  exact GlobalTheory.FlagMahler.gram_stab X hγ τ Y
+    (Y : Matrix (Fin r) (Fin r) ℂ) : gram τ X.Gm (γ.map τ * Y) = gram τ X.Gm Y :=
+  GlobalTheory.FlagMahler.gram_stab X hγ τ Y
 
 theorem inv_lact (γ : GL (Fin r) E) (τ : E →+* ℂ) (Y : Matrix (Fin r) (Fin r) ℂ) (v : Fin r → E) :
     ((γ : Matrix (Fin r) (Fin r) E).map τ * Y)⁻¹ *ᵥ Data.emb τ v =
-      Y⁻¹ *ᵥ Data.emb τ (((γ⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ v) := by
-  exact GlobalTheory.FlagMahler.inv_lact γ τ Y v
-
-private theorem gram_eq_transpose_mul_map_mul_fundamental_domains (τ : E →+* ℂ) (Y : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ X.Gm Y = Yᵀ * X.Gm.map τ * (Yᴴ)ᵀ := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-    Matrix.conjTranspose_apply, Matrix.map_apply, Finset.sum_mul, Complex.star_def]
-  exact Finset.sum_comm
+      Y⁻¹ *ᵥ Data.emb τ (((γ⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ v) :=
+  GlobalTheory.FlagMahler.inv_lact γ τ Y v
 
 theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.det ≠ 0)
     (hg : gram τ X.Gm Y = diagonal fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) (l b : Fin r) :
@@ -88,23 +81,14 @@ theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.
   apply GlobalTheory.FlagMahler.entry_bound <;> assumption
 
 theorem comp_le_Qy (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (τ : X.Ψ) (p : Fin r → E) (b : Fin r) :
-    X.c τ * ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) b‖ ^ 2 ≤ QuadraticLatticeForms.Qy X y p := by
-  unfold QuadraticLatticeForms.Qy
-  have hc : ∀ τ' : X.Ψ, 0 ≤ X.c τ' := fun τ' => by unfold Data.c; positivity
-  calc X.c τ * ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) b‖ ^ 2
-      ≤ X.c τ * ∑ a, ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) a‖ ^ 2 :=
-        mul_le_mul_of_nonneg_left (Finset.single_le_sum
-          (f := fun a => ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) a‖ ^ 2) (fun a _ => by positivity)
-          (Finset.mem_univ b)) (hc τ)
-    _ ≤ _ := Finset.single_le_sum
-          (f := fun τ' => X.c τ' * ∑ a, ‖((y τ')⁻¹ *ᵥ Data.emb τ'.1 p) a‖ ^ 2)
-          (fun τ' _ => mul_nonneg (hc τ') (by positivity)) (Finset.mem_univ τ)
+    X.c τ * ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) b‖ ^ 2 ≤ QuadraticLatticeForms.Qy X y p :=
+  GlobalTheory.FlagMahler.comp_le_Qy X y τ p b
 
 theorem comb_bound (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (τ : X.Ψ) {ι : Type} [Fintype ι]
     (q : ι → ℚ) (f : ι → Fin r → E) (b : Fin r) :
     ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 (∑ i, q i • f i)) b‖ ≤
-      ∑ i, ‖(q i : ℂ)‖ * (1 + QuadraticLatticeForms.Qy X y (f i) / X.c τ) := by
-  exact GlobalTheory.FlagMahler.comb_bound X y τ q f b
+      ∑ i, ‖(q i : ℂ)‖ * (1 + QuadraticLatticeForms.Qy X y (f i) / X.c τ) :=
+  GlobalTheory.FlagMahler.comb_bound X y τ q f b
 
 def Kset (R : ℝ) : Set (Frame X.Ψ r) :=
   {w | ∀ τ : X.Ψ, gram τ.1 X.Gm (mat w τ) = diagonal (fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) ∧
@@ -116,35 +100,12 @@ theorem cont_gram' (τ : X.Ψ) : Continuous fun w : Frame X.Ψ r => gram τ.1 X.
   simp only [gram, hermC, col, mat, Matrix.of_apply]
   fun_prop
 
-theorem Kset_compact (R : ℝ) : IsCompact (Kset X R) := by
-  have hcl : IsClosed (Kset X R) := by
-    have : Kset X R = ⋂ τ : X.Ψ, ({w : Frame X.Ψ r | gram τ.1 X.Gm (mat w τ) =
-        diagonal (fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ))} ∩
-        ⋂ a, ⋂ c, {w : Frame X.Ψ r | ‖w τ a c‖ ≤ R}) := by
-      ext w
-      simp only [Kset, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_inter_iff]
-    rw [this]
-    refine isClosed_iInter fun τ => (isClosed_eq (cont_gram' X τ) continuous_const).inter
-      (isClosed_iInter fun a => isClosed_iInter fun c => isClosed_le (by fun_prop) continuous_const)
-  refine Metric.isCompact_of_isClosed_isBounded hcl ?_
-  refine (Metric.isBounded_closedBall (x := (0 : Frame X.Ψ r)) (r := max R 0)).subset ?_
-  intro w hw
-  rw [Metric.mem_closedBall, dist_zero_right]
-  exact (pi_norm_le_iff_of_nonneg (le_max_right _ _)).2 fun τ =>
-    (pi_norm_le_iff_of_nonneg (le_max_right _ _)).2 fun a =>
-      (pi_norm_le_iff_of_nonneg (le_max_right _ _)).2 fun c =>
-        ((hw τ).2 a c).trans (le_max_left _ _)
+theorem Kset_compact (R : ℝ) : IsCompact (Kset X R) :=
+  GlobalTheory.FlagMahler.Kset_compact X R
 
 theorem det_ne_of_gram {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} {p0 : ℕ}
-    (hg : gram τ X.Gm Y = diagonal fun a : Fin r => ((sgn p0 (a : ℕ) : ℝ) : ℂ)) : Y.det ≠ 0 := by
-  intro h0
-  have h := congrArg Matrix.det hg
-  rw [gram_eq_transpose_mul_map_mul_fundamental_domains, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul,
-    zero_mul, Matrix.det_diagonal] at h
-  refine absurd h.symm (Finset.prod_ne_zero_iff.2 fun a _ => ?_)
-  rw [ne_eq, Complex.ofReal_eq_zero]
-  unfold sgn
-  split_ifs <;> norm_num
+    (hg : gram τ X.Gm Y = diagonal fun a : Fin r => ((sgn p0 (a : ℕ) : ℝ) : ℂ)) : Y.det ≠ 0 :=
+  GlobalTheory.FlagMahler.det_ne_of_gram X hg
 
 theorem Kset_sub (R : ℝ) : Kset X R ⊆ X.dom := by
   intro w hw

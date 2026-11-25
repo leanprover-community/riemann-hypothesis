@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.L2.Indef GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.R3
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 namespace GlobalTheory.Mem.R3.SelC
 

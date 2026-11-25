@@ -57,8 +57,6 @@ theorem castSp_apply {E : Type} [Field E] {a b : ℕ} (h : a = b) (x : Sp E a) (
 
 theorem castSp_comp {E : Type} [Field E] {a b : ℕ} (x : HomE E a b) : castSp E rfl ∘ₗ x = x := rfl
 
-def castV {ι : Type} {a b b' : ℕ} (h : b = b') (z : VCx ι a b) : VCx ι a b' := fun τ r c => z τ (Fin.cast h.symm r) c
-
 end Cast
 
 theorem thC_zero {E : Type} [Field E] [NumberField E] [StarRing E] {ι : Type} [Fintype ι] {a b : ℕ} (emb : ι → E →+* ℂ) (δ : ℂ)

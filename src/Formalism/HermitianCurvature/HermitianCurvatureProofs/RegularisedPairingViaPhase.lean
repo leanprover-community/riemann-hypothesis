@@ -120,25 +120,25 @@ private theorem star_aDil_entry_mul_aDil_entry_eq_one {k r : ℕ} (t : ℝ) (ht 
   · have e1 : ¬ j.val < r := by omega
     have e2 : ¬ j.val ≤ r + k := by omega
     have e3 : j.val - (r + k) = r - i.val := by omega
-    rw [ite_eq_left hA.1, ite_eq_right e1, ite_eq_right e2, e3]
+    rw [if_pos hA.1, if_neg e1, if_neg e2, e3]
     rw [show star ((t ^ (r - i.val) : ℝ) : ℂ) = ((t ^ (r - i.val) : ℝ) : ℂ) from Complex.conj_ofReal _]
     rw [← Complex.ofReal_mul, mul_inv_cancel₀ (pow_ne_zero _ ht), Complex.ofReal_one]
   by_cases hB : j.val < r ∧ i.val + j.val = 2 * r + k
   · have e1 : ¬ i.val < r := by omega
     have e2 : ¬ i.val ≤ r + k := by omega
     have e3 : i.val - (r + k) = r - j.val := by omega
-    rw [ite_eq_right e1, ite_eq_right e2, ite_eq_left hB.1, e3]
+    rw [if_neg e1, if_neg e2, if_pos hB.1, e3]
     rw [show star (((t ^ (r - j.val))⁻¹ : ℝ) : ℂ) = (((t ^ (r - j.val))⁻¹ : ℝ) : ℂ) from
       Complex.conj_ofReal _]
     rw [← Complex.ofReal_mul, inv_mul_cancel₀ (pow_ne_zero _ ht), Complex.ofReal_one]
   by_cases hC : r ≤ i.val ∧ i.val ≤ r + k ∧ i = j
   · obtain ⟨hC1, hC2, rfl⟩ := hC
-    rw [ite_eq_right (not_lt.2 hC1), ite_eq_left hC2]
+    rw [if_neg (not_lt.2 hC1), if_pos hC2]
     simp
   · exfalso
     apply h
     unfold Hpk
-    rw [ite_eq_right hA, ite_eq_right hB, ite_eq_right hC]
+    rw [if_neg hA, if_neg hB, if_neg hC]
 
 private theorem aDil_mem_gv {k r : ℕ} (t : ℝ) (ht : t ≠ 0) : aDil k r t ∈ GV k r := by
   show (aDil k r t)ᴴ * Hpk k r * aDil k r t = Hpk k r
@@ -458,40 +458,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.phase_function_bound : Formalism.Four
 section calculus
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-private theorem hpk_apply_of_mid_index {k r : ℕ} (i b : Fin (2 * r + k + 1)) (hi : r ≤ i.val ∧ i.val ≤ r + k) :
-    Hpk k r i b = if b = i then (if i.val = r + k then -1 else 1) else 0 := by
-  have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-  have e2 : ¬ (b.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-  simp only [Hpk, ite_eq_right e1, ite_eq_right e2]
-  by_cases hb : b = i
-  · subst hb
-    simp [hi.1, hi.2]
-  · have e3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = b) := fun h => hb h.2.2.symm
-    rw [ite_eq_right e3, ite_eq_right hb]
-
-private theorem hpk_apply_of_not_mid_index {k r : ℕ} (i b : Fin (2 * r + k + 1)) (hi : ¬(r ≤ i.val ∧ i.val ≤ r + k)) :
-    Hpk k r i b = if b.val = 2 * r + k - i.val then 1 else 0 := by
-  have hi1 := i.isLt
-  have hb1 := b.isLt
-  have e3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = b) := fun h => hi ⟨h.1, h.2.1⟩
-  by_cases hb : b.val = 2 * r + k - i.val
-  · rw [ite_eq_left hb]
-    by_cases h1 : i.val < r
-    · have e1 : i.val < r ∧ i.val + b.val = 2 * r + k := ⟨h1, by omega⟩
-      simp only [Hpk, ite_eq_left e1]
-    · have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := fun h => h1 h.1
-      have e2 : b.val < r ∧ i.val + b.val = 2 * r + k := by omega
-      simp only [Hpk, ite_eq_right e1, ite_eq_left e2]
-  · rw [ite_eq_right hb]
-    have e1 : ¬ (i.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-    have e2 : ¬ (b.val < r ∧ i.val + b.val = 2 * r + k) := by omega
-    simp only [Hpk, ite_eq_right e1, ite_eq_right e2, ite_eq_right e3]
-
-private theorem hpk_mul_self' {k r : ℕ} : Hpk k r * Hpk k r = 1 := by
-  first
-  | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
-  | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
 
 theorem exp_mem {X : Mat k r} (hX : inLie k r X) (t : ℝ) : NormedSpace.exp ((t : ℂ) • X) ∈ GV k r := by
   apply PI.ComplexConjugateDerivative.exp_mem_GV <;> assumption

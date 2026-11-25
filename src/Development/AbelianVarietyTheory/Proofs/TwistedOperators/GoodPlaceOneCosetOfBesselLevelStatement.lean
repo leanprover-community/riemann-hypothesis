@@ -512,7 +512,6 @@ end GlobalTheory.OneCosetGood
 
 namespace GlobalTheory.OneCosetGood
 
-open GlobalTheory.FinPl (Lat idAt intAt grpAt InK)
 
 
 

@@ -613,7 +613,8 @@ theorem eq_map_maximalIdeal_of_ringKrullDim_eq_one (R A : Type) [CommRing R] [Is
     exact (Ideal.mem_bot).1 this
   have hIh : 1 ≤ I.height := by
     rw [ENat.one_le_iff_ne_zero]
-    exact fun h0 => hIne (Ideal.height_eq_zero_iff_eq_bot.1 h0)
+    intro h0
+    exact hIne (Ideal.height_eq_zero_iff_eq_bot.1 h0)
   exact (Ideal.eq_of_le_of_height_le I hle (by rw [hp1]; exact hIh)).symm
 
 end GlobalTheory
@@ -765,9 +766,9 @@ theorem pushout_residue_linearIndependent :
     · intro a b ha hb; rw [map_add (f := _), ha, hb, add_zero]
   have := hkill _ hd
 
-  rw [map_sum, Finset.sum_eq_single j (fun i _ hi => by rw [map_smul, hψ, hg, ite_eq_right hi, smul_zero])
+  rw [map_sum, Finset.sum_eq_single j (fun i _ hi => by rw [map_smul, hψ, hg, if_neg hi, smul_zero])
   (by simp)] at this
-  rw [map_smul, hψ, hg, ite_eq_left rfl, Algebra.smul_def, mul_one] at this
+  rw [map_smul, hψ, hg, if_pos rfl, Algebra.smul_def, mul_one] at this
   exact (residue_eq_zero_iff _).1 this
 
 end GlobalTheory
@@ -845,7 +846,8 @@ theorem GlobalTheory.Desc.ResInj.mem_map_of_germ_mem : ∀ (R : Type) [CommRing 
     exact ringKrullDim_eq_of_ringEquiv (IsLocalization.algEquiv p.asIdeal.primeCompl (Localization.AtPrime p.asIdeal) (G.left.presheaf.stalk y)).toRingEquiv
   have e := _root_.GlobalTheory.eq_map_maximalIdeal_of_ringKrullDim_eq_one R Γ(G.left, U) p.asIdeal hle hd (_root_.GlobalTheory.isDomain_quot_maximalIdeal_of_smooth R G hsm hgc U hU y hyU hy)
   have : b ∈ p.asIdeal := (hmem b).1 hb
-  rwa [e] at this
+  rw [e] at this
+  exact this
 
 theorem GlobalTheory.Desc.ResInj.residue_linearIndependent : ∀ (T D : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [CommRing D] [IsDomain D] [IsDiscreteValuationRing D] (a : T →+* D), a.Flat → (maximalIdeal T).map a = maximalIdeal D → ∀ (H : Over (Sp T)) [GrpObj H] [IsIntegral H.left] (H' : Over (Sp D)) [GrpObj H'] [IsIntegral H'.left] (π : H'.left ⟶ H.left) (θ : H.left.functionField →+* H'.left.functionField), IsSemiAbelian H → IsPullback π H'.hom H.hom (spMap a) → PFF (𝟙 _) π θ → ∀ (y : H.left) (y' : H'.left), H.hom y = closedPoint T → H'.hom y' = closedPoint D → ringKrullDim (H.left.presheaf.stalk y) = 1 → ringKrullDim (H'.left.presheaf.stalk y') = 1 → ∀ (n : ℕ) (u : Fin n → H.left.functionField), (∀ i, GlobalTheory.Cartier.RegAt y (u i)) → (∀ c : Fin n → T, GlobalTheory.Cartier.ZeroAt y (∑ i, GlobalTheory.Desc.cst H.hom (c i) * u i) → ∀ i, c i ∈ maximalIdeal T) → ∀ d : Fin n → D, GlobalTheory.Cartier.ZeroAt y' (∑ i, GlobalTheory.Desc.cst H'.hom (d i) * θ (u i)) → ∀ i, d i ∈ maximalIdeal D := by
   intro T D _ _ _ _ _ _ a ha hm H _ _ H' _ _ π θ hH hpb hpff y y' hy hy' hdy hdy' n u hu hind d hz
@@ -1022,7 +1024,7 @@ theorem modPi : ∀ (T D : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationR
       intro d u hu hz
       by_cases hind : ∀ cc : Fin (n + 1) → T, GlobalTheory.Cartier.ZeroAt y (∑ i, cst H.hom (cc i) * u i) → ∀ i, cc i ∈ maximalIdeal T
       · exact hyes _ d u hu hind hz
-      push Not at hind
+      push_neg at hind
       obtain ⟨cc, hZ, k, hk⟩ := hind
       obtain ⟨ν, hν⟩ : ∃ ν : T, ν * cc k = 1 := by
         obtain ⟨v, hv⟩ := IsLocalRing.notMem_maximalIdeal.1 hk
@@ -1079,7 +1081,7 @@ open GlobalTheory.Desc
 namespace GlobalTheory.Desc.GaussBC
 
 theorem cst_regAt_zeroAt : ∀ (R : Type) [CommRing R] [IsLocalRing R] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp R) (x : X), p x = closedPoint R → ∀ r : R, GlobalTheory.Cartier.RegAt x (GlobalTheory.Desc.cst p r) ∧ (r ∈ maximalIdeal R → GlobalTheory.Cartier.ZeroAt x (GlobalTheory.Desc.cst p r)) := by
-  exact GlobalTheory.Desc.ModPi.cst_reg_zero
+  apply _root_.GlobalTheory.Desc.ModPi.cst_reg_zero <;> assumption
 
 end GlobalTheory.Desc.GaussBC
 
@@ -1345,7 +1347,8 @@ theorem exists_dvd_pow {A : Type} [CommRing A] [IsDomain A] [IsLocalRing A] (hA 
     rw [Ideal.radical_eq_sInf, Submodule.mem_sInf]
     rintro P ⟨hP, hP'⟩
     have hne : P ≠ ⊥ := fun h => hb (by simpa [h] using hP)
-    rwa [eq_maximalIdeal (Ring.krullDimLE_one_iff_of_noZeroDivisors.1 h1 P hne hP')]
+    rw [eq_maximalIdeal (Ring.krullDimLE_one_iff_of_noZeroDivisors.1 h1 P hne hP')]
+    exact ht
   obtain ⟨n, hn⟩ := this
   exact ⟨n, Ideal.mem_span_singleton.1 hn⟩
 
@@ -1452,7 +1455,8 @@ theorem exists_unram {R T : Type} [CommRing R] [IsDomain R] [IsNoetherianRing R]
   haveI hA : IsLocalization.AtPrime A y.asIdeal := StructureSheaf.IsLocalization.to_stalk R y
   have e : StructureSheaf.toStalk R y ≫ Scheme.stalkClosedPointTo (spMap ρ) = CommRingCat.ofHom ρ := by
     have h := Scheme.germ_stalkClosedPointTo_Spec (CommRingCat.ofHom ρ)
-    rwa [← Iso.inv_comp_eq] at h
+    rw [← Iso.inv_comp_eq] at h
+    exact h
   haveI : IsNoetherianRing A := IsLocalization.isNoetherianRing y.asIdeal.primeCompl A inferInstance
   haveI : IsDomain A := IsLocalization.isDomain_of_le_nonZeroDivisors A y.asIdeal.primeCompl_le_nonZeroDivisors
   have hic : IsIntegrallyClosed A := isIntegrallyClosed_of_isLocalization A _ y.asIdeal.primeCompl_le_nonZeroDivisors

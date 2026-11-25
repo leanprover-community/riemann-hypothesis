@@ -509,20 +509,10 @@ def ratA (ξ : κ → F) : κ → AF F := fun i => algebraMap F (AF F) (ξ i)
 theorem continuous_finOf : Continuous (finOf : (κ → AF F) → κ → FiniteAdeleRing (𝓞 F) F) :=
   continuous_pi fun i => continuous_snd.comp (continuous_apply i)
 
-private theorem continuous_infiniteAdeleRing_ringEquiv_mixedSpace :
-    Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  first
-  | (rw [show (InfiniteAdeleRing.ringEquiv_mixedSpace F : InfiniteAdeleRing F → mixedEmbedding.mixedSpace F) =
-        fun x => (fun v : {w : InfinitePlace F // w.IsReal} =>
-          InfinitePlace.Completion.extensionEmbeddingOfIsReal v.2 (x v.1),
-          fun v : {w : InfinitePlace F // w.IsComplex} =>
-          InfinitePlace.Completion.extensionEmbedding v.1 (x v.1)) from rfl]
-     exact Continuous.prodMk
-      (continuous_pi fun v => (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal v.2).continuous.comp (continuous_apply _))
-      (continuous_pi fun v => (InfinitePlace.Completion.isometry_extensionEmbedding v.1).continuous.comp (continuous_apply _)))
-
-theorem continuous_infOf : Continuous (infOf : (κ → AF F) → κ → mixedEmbedding.mixedSpace F) := by
-  exact continuous_pi fun i => continuous_infiniteAdeleRing_ringEquiv_mixedSpace.comp (continuous_fst.comp (continuous_apply i))
+theorem continuous_infOf : Continuous (infOf : (κ → AF F) → κ → mixedEmbedding.mixedSpace F) :=
+  continuous_pi fun i => ((GroundTheory.Global.homeomorphMixedSpace F).continuous.congr
+    fun x => GroundTheory.Global.homeomorphMixedSpace_apply F x).comp
+    (continuous_fst.comp (continuous_apply i))
 
 theorem indicator_mem_SB_of_isClopen {X : Type} [TopologicalSpace X] {V : Set X} (hV : IsClopen V) (hc : IsCompact V) :
     V.indicator (fun _ => (1 : ℂ)) ∈ SB X := by

@@ -23,19 +23,6 @@ namespace UpperTheory.HilbertEisensteinWeightOne.EisensteinSmoothness
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-theorem finite_support_of_hyp {χ : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H : Hyp χ c) :
-    {w | c w ≠ 0}.Finite := by
-  obtain ⟨m, hm, h⟩ := (isOfFinOrder_iff_pow_eq_one).mp H.fin
-  have ho := GlobalTheory.HeckeGal.isOpen_ker_of_pow χ.1 χ.2.1 hm fun x => congrArg (fun ξ : HChar F => ξ.1 x) h
-  obtain ⟨S, M, hS, key⟩ := GlobalTheory.OpenIdeleCongr.localIdele_mem_of_isOpen χ.1.ker ho
-  refine hS.subset fun w hw => ?_
-  by_contra hwS
-  apply hw
-  have h0 : (0 : ℕ) ∈ {n : ℕ | ∀ x : (w.adicCompletion F)ˣ, IsUnitAt w x →
-      Valued.v ((x : w.adicCompletion F) - 1) ≤ WithZero.exp (-(n : ℤ)) → χ.loc w x = 1} := by
-    exact fun x hx _ => key w x hx fun h => absurd h hwS
-  exact Nat.le_zero.mp ((H.cond w).2 h0)
-
 omit [IsTotallyReal F] in
 theorem exists_int_of_val (x : F)
     (h : ∀ w : HeightOneSpectrum (𝓞 F), Valued.v (pLoc F w (algebraMap F (Af F) x)) ≤ 1) :
@@ -125,7 +112,8 @@ theorem exists_den_row (c : HeightOneSpectrum (𝓞 F) → ℕ) (g : GA F 2) {C 
     have h2 := congrArg (fun v => pFin F (v i)) hrow
 
     simp only [Matrix.vecMul, dotProduct, coe_Mcol_apply', map_sum, map_mul] at h2
-    rwa [← pFin_algebraMap]
+    rw [← pFin_algebraMap]
+    exact h2
   apply exists_int_of_val
   intro w
 
@@ -162,7 +150,8 @@ theorem exists_elem_col (c : HeightOneSpectrum (𝓞 F) → ℕ) (hc : {w | c w 
     rfl
   obtain ⟨k, hkJ, hk0⟩ : ∃ k ∈ Cfr * Dfr, k ≠ 0 := by
     have hne : ((Cfr * Dfr : FractionalIdeal (𝓞 F)⁰ F) : Submodule (𝓞 F) F) ≠ ⊥ := by
-      rwa [Ne, FractionalIdeal.coeToSubmodule_eq_bot]
+      rw [Ne, FractionalIdeal.coeToSubmodule_eq_bot]
+      exact hJ0
     exact Submodule.exists_mem_ne_zero_of_ne_bot hne
   have hval : ∀ w : HeightOneSpectrum (𝓞 F), w.valuation F k ≤ WithZero.exp (-((c w : ℤ) + dd w)) := fun w => by
     have h1 := valuation_le_of_mem_fractionalIdeal w hkJ
@@ -216,7 +205,8 @@ theorem exists_den_col (c : HeightOneSpectrum (𝓞 F) → ℕ) (hc : {w | c w �
     have h2 := congrArg (fun v => pFin F (v i)) hcol
 
     simp only [Matrix.mulVec, dotProduct, coe_Mrow_apply', map_sum, map_mul] at h2
-    rwa [← pFin_algebraMap]
+    rw [← pFin_algebraMap]
+    exact h2
   apply exists_int_of_val
   intro w
   have e1 : algebraMap F (Af F) ((d : F) * (e : F) * ξ i) = ∑ j,

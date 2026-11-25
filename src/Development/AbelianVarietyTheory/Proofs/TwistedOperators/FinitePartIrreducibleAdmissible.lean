@@ -87,7 +87,6 @@ noncomputable section
 
 namespace GlobalTheory.PureDS
 
-open GlobalTheory.AutMult
 
 section Comb
 
@@ -202,7 +201,6 @@ end GlobalTheory.PureDS
 
 namespace GlobalTheory.PureDS
 
-open GlobalTheory.AutMult
 
 section Expand
 
@@ -846,7 +844,6 @@ end GlobalTheory.FinPartIrrAdm
 
 namespace GlobalTheory.FinPartIrrAdm
 open GlobalTheory.PRep (fixed smoothPart smoothRep IsSmooth)
-open Formalism.MainNotions.KudlaSiegelWeil (Restr)
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type} [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] {π : GA D V →* (H →L[ℂ] H)}

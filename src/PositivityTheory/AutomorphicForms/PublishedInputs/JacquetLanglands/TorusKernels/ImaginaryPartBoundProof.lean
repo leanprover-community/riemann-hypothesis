@@ -7,6 +7,7 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.DualNumberUnitMulDecomposition
 
 @[expose] public section
 
@@ -18,31 +19,6 @@ open scoped ENNReal NNReal ComplexConjugate
 namespace UpperTheory.Esk.ImaginaryPartBound
 
 open UpperTheory.Esk
-
-theorem fixed_pt (g : GL (Fin 2) ℝ) (h : g.val.trace ^ 2 < 4 * g.val.det) : ∃ z : P, g • z = z := by
-  rw [Matrix.trace_fin_two, det_eq] at h
-  have hc : g 1 0 ≠ 0 := fun hc => by
-    rw [hc] at h
-    linarith [sq_nonneg (g 0 0 - g 1 1),
-      show (g 0 0 + g 1 1) ^ 2 - 4 * (g 0 0 * g 1 1 - g 0 1 * 0) = (g 0 0 - g 1 1) ^ 2 by ring]
-  have hs0 : 0 < 4 * (g 0 0 * g 1 1 - g 0 1 * g 1 0) - (g 0 0 + g 1 1) ^ 2 := sub_pos.mpr h
-  set s := Real.sqrt (4 * (g 0 0 * g 1 1 - g 0 1 * g 1 0) - (g 0 0 + g 1 1) ^ 2)
-  set zc : ℂ := (((g 0 0 - g 1 1 : ℝ) : ℂ) + (s : ℂ) * Complex.I) / ((2 * g 1 0 : ℝ) : ℂ) with hzc
-  have him : zc.im = s / (2 * g 1 0) := by rw [hzc, Complex.div_ofReal_im]; simp
-  have hz : zc.im ≠ 0 := him ▸ div_ne_zero (Real.sqrt_pos.mpr hs0).ne' (mul_ne_zero two_ne_zero hc)
-  have hz2 : ((2 * g 1 0 : ℝ) : ℂ) * zc = ((g 0 0 - g 1 1 : ℝ) : ℂ) + (s : ℂ) * Complex.I := by
-    rw [hzc, mul_comm]; exact div_mul_cancel₀ _ (mod_cast mul_ne_zero two_ne_zero hc)
-  push_cast at hz2
-  have hs2C : (s : ℂ) ^ 2 = 4 * ((g 0 0 : ℂ) * g 1 1 - g 0 1 * g 1 0) - (g 0 0 + g 1 1) ^ 2 :=
-    mod_cast Real.sq_sqrt hs0.le
-  have hQ : (4 * (g 1 0 : ℂ)) * ((g 1 0 : ℂ) * zc ^ 2 - ((g 0 0 : ℂ) - g 1 1) * zc - g 0 1) = 0 := by
-    linear_combination (2 * (g 1 0 : ℂ) * zc + (s : ℂ) * Complex.I - ((g 0 0 : ℂ) - g 1 1)) * hz2
-      + (s : ℂ) ^ 2 * Complex.I_sq - hs2C
-  let zP : P := ⟨zc, hz⟩
-  refine ⟨zP, Subtype.ext <| (coe_smul g zP).trans <| (div_eq_iff (den_ne g hz)).mpr ?_⟩
-  simp only [zP, num, den]
-  linear_combination -((mul_eq_zero.mp hQ).resolve_left
-    (mul_ne_zero (OfNat.ofNat_ne_zero 4) (mod_cast hc)))
 
 theorem no_eig {F : Type} [Field F] {I : Type} (σ : I → F →+* ℝ) (v : I) (γ : GL (Fin 2) F)
     (h : σ v γ.val.trace ^ 2 < 4 * σ v γ.val.det) (s : Fin 2 → F) (hs : s ≠ 0) (c : F) :
@@ -106,7 +82,7 @@ theorem kap_inv (hB : B1b) (γ : PG F) (z w : D.Xs) (v : I) :
   rw [smul_X D, smul_X D]; exact hB.2.2.2.1 _ _ _
 
 theorem fixX (γ : PG F) (hell : D.TotEll γ.out) : ∃ z : D.Xs, γ • z = z := by
-  have hfx : ∀ v, ∃ w : P, D.r v γ.out • w = w := fun v => fixed_pt _ <| by
+  have hfx : ∀ v, ∃ w : P, D.r v γ.out • w = w := fun v => RadialIntegralLemmas.exists_fix _ <| by
     have ht : (D.r v γ.out).val.trace = D.σ v γ.out.val.trace := by
       rw [Matrix.trace_fin_two, Matrix.trace_fin_two, map_add]; rfl
     have hd : (D.r v γ.out).val.det = D.σ v γ.out.val.det := by

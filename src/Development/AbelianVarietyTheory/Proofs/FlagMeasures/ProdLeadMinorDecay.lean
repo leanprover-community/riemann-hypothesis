@@ -380,7 +380,8 @@ private theorem sum_castLE_lemma {n l : ℕ} (hl : l ≤ n) (f : Fin n → ℂ) 
     constructor
     · rintro ⟨x, rfl⟩
       simp
-    · exact fun h => ⟨⟨a.val, h⟩, Fin.ext rfl⟩
+    · intro h
+      exact ⟨⟨a.val, h⟩, Fin.ext rfl⟩
   rw [← Finset.sum_filter, ← e, Finset.sum_map]
   rfl
 
@@ -411,16 +412,16 @@ theorem trace_block {n : ℕ} (Y : Matrix (Fin n) (Fin n) ℂ) (hY : Y.IsHermiti
       ∑ b : Fin n, ((if l ≤ b.val ∧ a.val < l then ‖Y b a‖ ^ 2 else 0 : ℝ) : ℂ) := by
     intro a
     by_cases ha : a.val < l
-    · rw [ite_eq_left ha, ite_eq_left ha, ← Finset.sum_sub_distrib]
+    · rw [if_pos ha, if_pos ha, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl (fun b _ => ?_)
       by_cases hb : b.val < l
-      · rw [ite_eq_left hb, ite_eq_right (fun h => absurd h.1 (Nat.not_le.mpr hb)), sub_self,
+      · rw [if_pos hb, if_neg (fun h => absurd h.1 (Nat.not_le.mpr hb)), sub_self,
           Complex.ofReal_zero]
-      · rw [ite_eq_right hb, sub_zero, ite_eq_left ⟨Nat.le_of_not_lt hb, ha⟩, hH]
-    · rw [ite_eq_right ha, ite_eq_right ha, sub_self]
+      · rw [if_neg hb, sub_zero, if_pos ⟨Nat.le_of_not_lt hb, ha⟩, hH]
+    · rw [if_neg ha, if_neg ha, sub_self]
       symm
       refine Finset.sum_eq_zero (fun b _ => ?_)
-      rw [ite_eq_right (fun h => ha h.2), Complex.ofReal_zero]
+      rw [if_neg (fun h => ha h.2), Complex.ofReal_zero]
   rw [e1, e2, ← Finset.sum_sub_distrib, Finset.sum_congr rfl (fun a _ => key a), Finset.sum_comm,
     Complex.ofReal_sum]
   simp only [Complex.ofReal_sum]
@@ -447,7 +448,8 @@ theorem deriv_leadMinor_exp : ∀ (n : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ), Y.
     intro t
     have hg := ReciprocityTheory.GeometryOfNumbersTheory.hasDerivAt_det
       (fun s : ℝ => (NormedSpace.exp ((s : ℂ) • Y)).submatrix (Fin.castLE hl) (Fin.castLE hl)) _ t (hM t)
-    simpa [leadMinor, Function.comp_def] using Complex.reCLM.hasFDerivAt.comp_hasDerivAt t hg
+    have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t hg
+    simpa [leadMinor, Function.comp_def] using h
   have hderiv : deriv (fun s : ℝ => (leadMinor (NormedSpace.exp ((s : ℂ) • Y)) l hl).re) =
       fun t : ℝ => (((NormedSpace.exp ((t : ℂ) • Y)).submatrix (Fin.castLE hl) (Fin.castLE hl)).adjugate *
         (NormedSpace.exp ((t : ℂ) • Y) * Y).submatrix (Fin.castLE hl) (Fin.castLE hl)).trace.re :=
@@ -472,7 +474,8 @@ theorem deriv_leadMinor_exp : ∀ (n : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ), Y.
       have h := hasDerivAt_mul_entry (fun s : ℝ => NormedSpace.exp ((s : ℂ) • Y)) (fun _ => Y)
         (NormedSpace.exp (((0 : ℝ) : ℂ) • Y) * Y) 0 0 (hasDerivAt_exp_entry Y 0)
         (fun _ _ => hasDerivAt_const _ _) (Fin.castLE hl x) (Fin.castLE hl y)
-      rwa [hE0, Matrix.one_mul, Matrix.mul_zero, add_zero] at h
+      rw [hE0, Matrix.one_mul, Matrix.mul_zero, add_zero] at h
+      exact h
     have hsum := HasDerivAt.fun_sum (u := Finset.univ) (fun x _ =>
       hasDerivAt_mul_entry
         (fun s : ℝ => ((NormedSpace.exp ((s : ℂ) • Y)).submatrix (Fin.castLE hl) (Fin.castLE hl)).adjugate)
@@ -512,7 +515,7 @@ namespace GlobalTheory.GapSum
 
 theorem inP_apply_eq_zero {n : ℕ} {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ}
     (hY : inP ε Y) {a b : Fin n} (hab : ε a = ε b) : Y a b = 0 := by
-  exact GlobalTheory.EigenPartialSum.apply_eq_zero_of_inP hY a b hab
+  apply _root_.GlobalTheory.EigenPartialSum.apply_eq_zero_of_inP <;> assumption
 
 theorem inP_norm_symm {n : ℕ} {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ}
     (hY : inP ε Y) (a b : Fin n) : ‖Y a b‖ = ‖Y b a‖ := by
@@ -586,7 +589,7 @@ theorem gap_mul_hs_le : ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ
   refine Finset.sum_le_sum fun b _ => ?_
   by_cases hba : b < a
   · have hba' : b.val < a.val := hba
-    rw [ite_eq_left hba, ite_eq_left hba']
+    rw [if_pos hba, if_pos hba']
     by_cases he : ε a = ε b
     · simp [inP_apply_eq_zero hY he]
     · have h1 := hgap a b he
@@ -617,8 +620,9 @@ theorem sum_dite_card {n l : ℕ} {M : Type*} [AddCommMonoid M] (f : Set.powerse
   refine Finset.sum_of_injOn (fun S : Set.powersetCard (Fin n) l => S.1)
     (fun _ _ _ _ h => Subtype.ext h) (fun _ _ => Finset.mem_univ _) ?_ ?_
   · intro J _ hJ
-    rw [dite_eq_right]
-    exact fun h => hJ ⟨⟨J, h⟩, by simp, rfl⟩
+    rw [dif_neg]
+    intro h
+    exact hJ ⟨⟨J, h⟩, by simp, rfl⟩
   · intro S _
     have h : S.1.card = l := S.2
     rw [dite_eq_left h]
@@ -633,7 +637,8 @@ theorem exp_smul_eq {n : ℕ} {Y : Matrix (Fin n) (Fin n) ℂ} (hY : Y.IsHermiti
   have h2 : Uᴴ * U = 1 := (hY.eigenvectorUnitary).2.1
   have hs : Y = U * diagonal (fun j => ((hY.eigenvalues j : ℝ) : ℂ)) * Uᴴ := by
     have := hY.spectral_theorem
-    rwa [Unitary.conjStarAlgAut_apply] at this
+    rw [Unitary.conjStarAlgAut_apply] at this
+    exact this
   have h3 : (t : ℂ) • Y = U * diagonal (fun j => ((t * hY.eigenvalues j : ℝ) : ℂ)) * Uᴴ := by
     conv_lhs => rw [hs]
     rw [← Matrix.smul_mul, ← Matrix.mul_smul, ← diagonal_smul]
@@ -667,7 +672,7 @@ theorem leadMinor_exp_eq_sum (n : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ) (hY : Y.
     split_ifs <;> positivity
   · intro J hJ
     by_contra h
-    exact hJ (dite_eq_right h)
+    exact hJ (dif_neg h)
   · rw [sum_dite_card (fun S => ‖(A.submatrix id (GlobalTheory.subsetEnum S)).det‖ ^ 2)]
     exact GlobalTheory.sum_norm_sq_minors_eq_one A hAA
   · intro t

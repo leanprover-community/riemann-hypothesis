@@ -69,11 +69,6 @@ private structure PairSp (H G : Type) [Group G] (U : Subgroup G) : Type where
       ⟨a * (b * p.1 * b⁻¹) * a⁻¹, j a • j b • p.2⟩
     simp [mul_assoc, mul_smul]
 
-private theorem out_eq_mul {G : Type} [Group G] (U : Subgroup G) (g : G) :
-    ∃ u ∈ U, ((g : G ⧸ U).out : G) = g * u := by
-  obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul U g
-  exact ⟨h, h.2, hh⟩
-
 private theorem pair_inv_mul_eq_of_mul_self_eq_one {H G : Type} [Group H] [Group G] (a b o u : G) (key : a⁻¹ * (b * a) = b) :
     (a * o * u)⁻¹ * b * (a * o * u) = u⁻¹ * (o⁻¹ * b * o) * u := by
   calc (a * o * u)⁻¹ * b * (a * o * u) = u⁻¹ * o⁻¹ * (a⁻¹ * (b * a)) * o * u := by group
@@ -96,7 +91,8 @@ theorem UpperTheory.orbitalFiber_pair_correspondence :
       conv_lhs => rw [← QuotientGroup.out_eq' y]
       rfl
     rw [hy]
-    exact out_eq_mul U _
+    obtain ⟨u, hu⟩ := QuotientGroup.mk_out_eq_mul U (a * y.out)
+    exact ⟨u, u.2, hu⟩
   let K' : PairSp H G U → ℂ := fun p => c p.1 * f (p.2.out⁻¹ * j p.1 * p.2.out)
   have hKinv : ∀ (h : H) (p : PairSp H G U), K' (h • p) = K' p := by
     intro h p

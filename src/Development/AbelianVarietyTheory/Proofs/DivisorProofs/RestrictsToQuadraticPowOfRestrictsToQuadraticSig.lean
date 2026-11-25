@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHalfAbstract
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Mathlib.NumberTheory.NumberField.AdeleRing
@@ -63,7 +64,7 @@ theorem sig_invol {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (x : E) : σ (σ x) 
   rw [h.2.2.2, h.2.2.2, star_star]
 
 theorem sig_ne {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ x, σ x ≠ x := by
-  exact GlobalTheory.AdelicU.exists_cm_conj_ne h
+  apply _root_.GlobalTheory.SplitDetCharF.sig_ne <;> assumption
 
 
 variable (F E) in
@@ -120,7 +121,7 @@ theorem exists_isEtaF {σ : E →ₐ[F] E} (h : IsCMExt F E σ) :
     ∃ η : (AF F)ˣ →* Circle, Formalism.IndefR.DatumF.IsEtaF E η := by
   obtain ⟨a, ha⟩ : ∃ a, a ∉ normGrp F E := by
     by_contra hc
-    push Not at hc
+    push_neg at hc
     exact normGrp_ne_top h (eq_top_iff.2 fun a _ => hc a)
   obtain ⟨η, h1, h2⟩ := GlobalTheory.VolHeckeCompare.exists_char_of_not_mem _ (sq_mem_normGrp h) a ha
   refine ⟨η, ?_, fun b => h1 (Subgroup.mem_sup_left ⟨b, rfl⟩), fun x => h1 (Subgroup.mem_sup_right ⟨x, rfl⟩),

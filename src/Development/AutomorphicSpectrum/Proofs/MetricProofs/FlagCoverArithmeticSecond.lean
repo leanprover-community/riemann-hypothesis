@@ -79,29 +79,8 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {K' : 
 
 theorem comp_mem_mcPts {κ : K → K'} {v : (Σ k, ι k) → (Σ k, ι' k)} (hv : IsBlockMap κ v) (φ : Ω →+* Ω')
     {x : (Σ k, ι k) → Ω} {x' : (Σ k, ι' k) → Ω'} (hx : ∀ q, x' (v q) = φ (x q))
-    {zb : (Σ k, ι' k) → ℂ} (hz : zb ∈ mcPts (mCoordIdeal x')) : zb ∘ v ∈ mcPts (mCoordIdeal x) := by
-  have key : ∀ f : MRing ι, mConeMap x' (rename v f) = rename κ (map φ (mConeMap x f)) := by
-    intro f
-    induction f using MvPolynomial.induction_on with
-    | C a => simp [mConeMap]
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p i hp =>
-      simp only [map_mul, hp, rename_X]
-      congr 1
-      simp [mConeMap, hx, hv.2.2.1 i]
-  refine ⟨fun k => ?_, fun f hf => ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 (κ k)
-    obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i⟩ ⟨k, rfl⟩
-    obtain ⟨k₁, i₁⟩ := p
-    have e : k₁ = k := hv.1 (by rw [← hv.2.2.1 ⟨k₁, i₁⟩, hp])
-    subst e
-    exact ⟨i₁, by simpa [Function.comp, hp] using hi⟩
-  · have hf' : mConeMap x f = 0 := hf
-    have h1 : rename v f ∈ mCoordIdeal x' := by
-      show mConeMap x' (rename v f) = 0
-      rw [key, hf', map_zero, map_zero]
-    have h2 := hz.2 _ h1
-    rwa [map_rename, eval_rename] at h2
+    {zb : (Σ k, ι' k) → ℂ} (hz : zb ∈ mcPts (mCoordIdeal x')) : zb ∘ v ∈ mcPts (mCoordIdeal x) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.comp_mem_mcPts hv φ (funext hx) hz
 
 end Proj
 

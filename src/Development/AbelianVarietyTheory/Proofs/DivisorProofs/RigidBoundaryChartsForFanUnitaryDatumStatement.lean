@@ -969,7 +969,7 @@ namespace GlobalTheory.UPoinc.UTraitRam
 
 theorem evalZ_eq_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → ∀ (T T' : UTrait Xo c) (f : T.V →+* T'.V) (fK : FractionRing T.V →+* FractionRing T'.V), Function.Injective f → IsLocalHom f → (∀ a, fK (algebraMap T.V (FractionRing T.V) a) = algebraMap T'.V (FractionRing T'.V) (f a)) → T'.y = spMap fK ≫ T.y → ∀ m : ℕ, Associated (f T.ϖ) (T'.ϖ ^ m) → ∀ φ : InvFun (𝓞 E), IsPolFan H.bar (min Dw.p Dw.q) φ → φ.evalZ T'.be = m * φ.evalZ T.be := by
   intros
-  apply GlobalTheory.UPoinc.LiftOrd.evalZ_ram <;> assumption
+  apply _root_.GlobalTheory.UPoinc.LiftOrd.evalZ_ram <;> assumption
 
 end GlobalTheory.UPoinc.UTraitRam
 end -- clump:auto

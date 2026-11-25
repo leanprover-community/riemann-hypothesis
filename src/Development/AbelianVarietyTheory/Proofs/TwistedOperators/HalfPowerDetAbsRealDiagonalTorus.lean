@@ -56,14 +56,11 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct ENNReal
 open GlobalTheory.SquareComm
 open scoped Pointwise
-open Formalism.IndefR.Datum
-open GlobalTheory.Grid
 
 noncomputable section
 
 namespace GlobalTheory.HalfModTorus
 
-open GlobalTheory.Doubling
 
 theorem compFin_eq_one {D : D7} (v : HeightOneSpectrum (𝓞 D.host.F)) (y : AE D) (h : finPart D y = 1) :
     GlobalTheory.AdelicU.compFin D.host.F D.host.E v y = 1 := by

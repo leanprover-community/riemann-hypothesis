@@ -104,11 +104,6 @@ private theorem adicCont_maximalIdeal_comp_of_isLocalHom {Γ R R' : Type} [Topol
   funext x
   simp [Ideal.quotientMap_mk]
 
-private theorem res_eq_zero_of_mem_maximalIdeal {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R]
-    [IsCO O R] (x : R) (hx : x ∈ maximalIdeal R) : res O R x = 0 := by
-  show ((RingEquiv.ofBijective _ _).symm.toRingHom.comp (residue R)) x = 0
-  simp [(IsLocalRing.residue_eq_zero_iff x).mpr hx]
-
 theorem UpperTheory.V.Pa.BC.pair_bc :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (O O' : Type) [CommRing O] [IsLocalRing O] [CommRing O'] [IsLocalRing O'] [Algebra O O'] [IsLocalHom (algebraMap O O')] [Algebra ℤ_[l] O] [Algebra ℤ_[l] O'] [IsScalarTower ℤ_[l] O O'] (n : ℕ) (r : Resid F O n) (r' : Resid F O' n), RBC r r' → ∀ (R R' : Type) [CommRing R] [Algebra O R] [IsCO O R] [CommRing R'] [Algebra O' R'] [IsCO O' R'] (g : R →+* R') [IsLocalHom g], (∀ a, g (algebraMap O R a) = algebraMap O' R' (algebraMap O O' a)) → ∀ p : Pair r R, (∀ x, res O' R' (g x) = ResidueField.map (algebraMap O O') (res O R x)) ∧ ∃ p' : Pair r' R', p.Maps g p'.D p'.ψ := by
   intro l _ F O O' _ _ _ _ _ _ _ _ _ n r r' hr R R' _ _ _ _ _ _ g _ hg p
@@ -117,7 +112,8 @@ theorem UpperTheory.V.Pa.BC.pair_bc :
     obtain ⟨a, ha⟩ := IsCO.res_surj (O := O) x
     have hx : x = algebraMap O R a + (x - algebraMap O R a) := by ring
     have h2 : g (x - algebraMap O R a) ∈ maximalIdeal R' := map_nonunit g _ ha
-    rw [hx, map_add (f := _), map_add (f := _), map_add (f := _), hg, res_eq_zero_of_mem_maximalIdeal _ h2, res_eq_zero_of_mem_maximalIdeal _ ha, add_zero, add_zero,
+    rw [hx, map_add (f := _), map_add (f := _), map_add (f := _), hg,
+      (res_eq_zero_iff O' R' _).2 h2, (res_eq_zero_iff O R _).2 ha, add_zero, add_zero,
       AlgHom.commutes, AlgHom.commutes, ResidueField.algebraMap_eq, ResidueField.algebraMap_eq,
       ResidueField.map_residue]
   have hs1 : ∀ h : F.G₀, (MonoidAlgebra.single h (1 : R') : MonoidAlgebra R' F.G₀)

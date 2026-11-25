@@ -81,7 +81,7 @@ theorem split_ses : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommG
 
     rw [hes, LinearMap.sum_apply, map_sum]
     simp only [LinearMap.smul_apply, map_smul, hg]
-    rw [h1, hc s, ite_eq_left rfl, map_one, one_smul]
+    rw [h1, hc s, if_pos rfl, map_one, one_smul]
   have hA : ∀ x, x ∈ eig ρ (fun a => algebraMap k K (χ s a)) ↔
       f x ∈ eig (fun a => ρ' a) (fun a => algebraMap k K (χ s a)) := by
     intro x
@@ -115,36 +115,10 @@ theorem split_ses : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommG
     · intro hz
       obtain ⟨y, hy, hyz⟩ := (hS.2.2.2.2 i _).1 hz
       refine ⟨e s y, he_hom s i y hy, he_mem s y, ?_⟩
-      rwa [key y (hyz ▸ z.2)]
+      rw [key y (hyz ▸ z.2)]
+      exact hyz
   rw [hdeg, hIeq]
   rfl
-
-private theorem isBun_of_linearEquiv {K : Type} [Field K] {C : ACurve K} {V V' : Type} [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
-    {L : C.I → AddSubgroup V} {L' : C.I → AddSubgroup V'} (e : V ≃ₗ[K] V') (hL' : IsBun C L')
-    (h : ∀ i x, x ∈ L i ↔ e x ∈ L' i) : IsBun C L := by
-  have hr : Module.finrank K V' = Module.finrank K V := e.finrank_eq.symm
-  have key : ∀ i (b : Module.Basis (Fin (Module.finrank K V')) K V'), IsLatOf C i b (L' i) →
-      IsLatOf C i ((b.map e.symm).reindex (finCongr hr)) (L i) := by
-    intro i b hb x
-    rw [h i x, hb (e x)]
-    simp only [Module.Basis.repr_reindex_apply, Module.Basis.map_repr, LinearEquiv.trans_apply,
-      LinearEquiv.symm_symm]
-    constructor
-    · exact fun H q => H _
-    · intro H q
-      simpa using H (finCongr hr q)
-  obtain ⟨h1, b, hb⟩ := hL'
-  refine ⟨fun i => ?_, (b.map e.symm).reindex (finCongr hr), hb.subset fun i hi hl => hi (key i b hl)⟩
-  obtain ⟨b', hb'⟩ := h1 i
-  exact ⟨_, key i b' hb'⟩
-
-private theorem deg_eq_of_linearEquiv' {K : Type} [Field K] {C : ACurve K} {V V' : Type} [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
-    {L : C.I → AddSubgroup V} {L' : C.I → AddSubgroup V'} (e : V ≃ₗ[K] V') (hL : IsBun C L)
-    (hL' : IsBun C L') (h : ∀ i x, x ∈ L i ↔ e x ∈ L' i) : deg C L = deg C L' :=
-  le_antisymm (deg_le_of_equiv e hL hL' fun i x hx => (h i x).1 hx)
-    (deg_le_of_equiv e.symm hL' hL fun i x hx => (h i _).2 (by simpa using hx))
 
 private theorem deg_eq_zero_of_finrank_eq_zero {K : Type} [Field K] (C : ACurve K) {V : Type} [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (h : Module.finrank K V = 0) :
@@ -184,7 +158,8 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
     by_contra hs
     have h0 := (Set.ncard_eq_zero (Set.toFinite _)).1 (Nat.le_zero.1 hn)
     have hmem : s ∈ ({s | eig (fun a => ρ a) (fun a => algebraMap k K (χ s a)) ≠ ⊥} : Set S) := hs
-    rwa [h0] at hmem
+    rw [h0] at hmem
+    exact hmem
   | succ n ih =>
     intro V _ _ _ L ρ hL hρ hn
     obtain ⟨e, he_hom, he_mem, he_id, he_sum, he_comb⟩ :=
@@ -192,7 +167,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
     by_cases hall : ∀ s, eig (fun a => ρ a) (fun a => algebraMap k K (χ s a)) = ⊥
     · exact subDeg_top_eq_sum_subDeg_of_all_eq_bot C L (fun s => eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) e he_mem
         he_sum hall
-    push Not at hall
+    push_neg at hall
     obtain ⟨s0, hs0⟩ := hall
     have hcomm : ∀ s a x, e s (ρ a x) = ρ a (e s x) := by
       intro s a x
@@ -212,7 +187,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
         comb_eig (fun a => ρ a) (fun a => χ t a) hx c b
       rw [hes, LinearMap.sum_apply]
       simp only [LinearMap.smul_apply]
-      rw [h1, hc t, ite_eq_right hts, map_zero, zero_smul]
+      rw [h1, hc t, if_neg hts, map_zero, zero_smul]
     set W0 := eig (fun a => ρ a) (fun a => algebraMap k K (χ s0 a)) with hW0
     set K0 := LinearMap.ker (e s0) with hK0
     have hidem : ∀ x, e s0 (e s0 x) = e s0 x := fun x => he_id s0 _ (he_mem s0 x)
@@ -244,6 +219,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
           show (z : V) - e s0 z = z
           rw [hK0mem z, sub_zero]
         · rintro ⟨y, hy, rfl⟩
+          show y - e s0 y ∈ L i
           exact (L i).sub_mem hy (he_hom s0 i y hy)
     obtain ⟨I, hI, hdegT, hImem⟩ :=
       ses_restrict hL hS ⊤ ⊤ ⊤ (fun x => by simp) (fun z => by simpa using hS.2.2.1 z)
@@ -259,7 +235,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rfl
     have hLK : IsBun C (sub C L K0) := by
       rw [hIeq] at hI
-      exact isBun_of_linearEquiv (Submodule.topEquiv.symm) hI fun i x => Iff.rfl
+      exact (DegEquiv.deg_equiv K C _ _ _ _ Submodule.topEquiv hI fun _ _ => Iff.rfl).1
     have hpresK : ∀ a (x : V), x ∈ K0 → ρ a x ∈ K0 := by
       intro a x hx
       show e s0 (ρ a x) = 0
@@ -290,7 +266,10 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
           rfl }
     let ρW : O → Module.End K W0 := fun a =>
       ((ρ a).comp W0.subtype).codRestrict W0 fun x => hpresW a x x.2
-    have hρK : ∀ a, IsHom C (sub C L K0) (sub C L K0) (ρK a) := fun a i z hz => hρ a i _ hz
+    have hρK : ∀ a, IsHom C (sub C L K0) (sub C L K0) (ρK a) := by
+      intro a i z hz
+      show ρ a (z : V) ∈ L i
+      exact hρ a i _ hz
     have hf : ∀ a (x : W0), W0.subtype (ρW a x) = ρ a (W0.subtype x) := fun a x => rfl
     have hg : ∀ a y, g (ρ a y) = ρK a (g y) := by
       intro a y
@@ -303,7 +282,10 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rw [eq_top_iff]
       intro w _
       rw [mem_eig]
-      exact fun a => Subtype.ext ((mem_eig _ _ _).1 w.2 a)
+      intro a
+      apply Subtype.ext
+      show ρ a (w : V) = algebraMap k K (χ s0 a) • (w : V)
+      exact (mem_eig _ _ _).1 w.2 a
     have hWbot : ∀ s, s ≠ s0 → eig ρW (fun a => algebraMap k K (χ s a)) = ⊥ := by
       intro s hs
       rw [eq_bot_iff]
@@ -311,7 +293,8 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rw [Submodule.mem_bot]
       have hw' : (w : V) ∈ eig (fun a => ρ a) (fun a => algebraMap k K (χ s a)) := by
         rw [mem_eig]
-        exact fun a => congrArg Subtype.val ((mem_eig _ _ _).1 hw a)
+        intro a
+        exact congrArg Subtype.val ((mem_eig _ _ _).1 hw a)
       apply Subtype.ext
       show (w : V) = 0
       rw [← he_id s0 _ w.2]
@@ -322,7 +305,8 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rw [Submodule.mem_bot]
       have hz' : (z : V) ∈ W0 := by
         rw [hW0, mem_eig]
-        exact fun a => congrArg Subtype.val ((mem_eig _ _ _).1 hz a)
+        intro a
+        exact congrArg Subtype.val ((mem_eig _ _ _).1 hz a)
       apply Subtype.ext
       show (z : V) = 0
       rw [← he_id s0 _ hz']
@@ -336,7 +320,8 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
       rw [Submodule.mem_bot]
       have hz' : (z : V) ∈ eig (fun a => ρ a) (fun a => algebraMap k K (χ s a)) := by
         rw [mem_eig]
-        exact fun a => congrArg Subtype.val ((mem_eig _ _ _).1 hz a)
+        intro a
+        exact congrArg Subtype.val ((mem_eig _ _ _).1 hz a)
       rw [hbot, Submodule.mem_bot] at hz'
       exact Subtype.ext hz'
     have hcount : {s | eig (fun a => ρK a) (fun a => algebraMap k K (χ s a)) ≠ ⊥}.ncard ≤ n := by
@@ -357,13 +342,13 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
     · intro s _ hs
       rw [hWbot s hs]
       exact deg_eq_zero_of_finrank_eq_zero C _ (by simp)
-    · exact fun h => absurd (Finset.mem_univ _) h
+    · intro h
+      exact absurd (Finset.mem_univ _) h
 
 theorem split_deg : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (O k S : Type) [CommRing O] [Field k] [Algebra k K] [Fintype S] [DecidableEq S] (χ : S → (O →+* k)), IsSplit χ → (∀ i (c : k), C.v i (algebraMap k K c) ≤ 1) → ∀ ρ : O →+* Module.End K V, IsBun C L → (∀ a, IsHom C L L (ρ a)) → deg C L = ∑ s, subDeg C L (eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) := by
   intro K _ C V _ _ _ L O k S _ _ _ _ _ χ hχ hv ρ hL hρ
   have htop : subDeg C L ⊤ = deg C L :=
-    deg_eq_of_linearEquiv' Submodule.topEquiv (isBun_of_linearEquiv Submodule.topEquiv hL fun _ _ => Iff.rfl) hL
-      fun _ _ => Iff.rfl
+    (DegEquiv.deg_equiv K C V _ L (sub C L ⊤) Submodule.topEquiv.symm hL fun _ _ => Iff.rfl).2
   rw [← htop]
   exact subDeg_top_eq_sum_subDeg_eig_of_ncard_le K C O k S χ hχ hv _ V L ρ hL hρ le_rfl
 

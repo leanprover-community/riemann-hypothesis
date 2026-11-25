@@ -12,6 +12,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.RingTheory.Norm.Transitivity
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogSineMongeAmpereIntegral
 
 @[expose] public section
 
@@ -40,10 +41,6 @@ theorem hasDerivAt_cay (w : ℂ) (hw : w ≠ 1) : HasDerivAt cay (2 * Complex.I 
   refine this.congr_deriv ?_
   show (Complex.I * 1 * (1 - w) - Complex.I * (1 + w) * -1) / (1 - w) ^ 2 = 2 * Complex.I / (1 - w) ^ 2
   ring
-
-theorem det_cay (c : ℂ) :
-    ((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) c).restrictScalars ℝ).det = normSq c := by
-  simp [ContinuousLinearMap.det, LinearMap.det_restrictScalars, Algebra.norm_complex_eq]
 
 theorem ne_one_of_mem (w : ℂ) (hw : w ∈ ball (0 : ℂ) 1) : w ≠ 1 := by
   rintro rfl; simp at hw
@@ -97,7 +94,7 @@ theorem step2 (g : ℂ → ℂ) (hg : IntegrableOn g {t : ℂ | 0 < t.im}) :
       |((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (2 * Complex.I / (1 - w) ^ 2)).restrictScalars ℝ).det|
         = 4 / normSq (1 - w) ^ 2 := by
     intro w hw
-    rw [det_cay, abs_of_nonneg (normSq_nonneg _), map_div₀, map_pow, map_mul]
+    rw [GlobalTheory.CompanionTheory.Ar.PB.FibPt.det_smulRight_restrictScalars, abs_of_nonneg (normSq_nonneg _), map_div₀, map_pow, map_mul]
     simp [normSq_apply]
     norm_num
   have hpt : EqOn (fun w => |((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ)

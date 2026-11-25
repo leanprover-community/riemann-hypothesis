@@ -84,7 +84,6 @@ section True
 
 open GlobalTheory.TwU.AtTrue
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 
 

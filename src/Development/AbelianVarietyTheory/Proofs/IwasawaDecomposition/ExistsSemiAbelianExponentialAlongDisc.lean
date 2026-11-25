@@ -72,12 +72,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open Filter Topology GlobalTheory.TangentOrigin GlobalTheory.RelChart
 
-private theorem exists_open_smoothOfRelativeDimension : ∀ (Z X : Scheme.{0}) (p : Z ⟶ X) [Smooth p] (z : Z), ∃ (g : ℕ) (W : Z.Opens), z ∈ W ∧ SmoothOfRelativeDimension g (W.ι ≫ p) := by
-  exact fun Z X p _ z => H1.exists_dim p z
-
-private theorem chart_lemma_4 : ∀ (m g : ℕ) (Z X : Scheme.{0}) (p : Z ⟶ X) (B : Set (Fin m → ℂ)) (y : (Fin m → ℂ) → (Sp ℂ ⟶ X)) (b₀ : Fin m → ℂ) (z₀ : Sp ℂ ⟶ Z), SmoothOfRelativeDimension g p → IsOpen B → b₀ ∈ B → IsHolTo B y → z₀ ≫ p = y b₀ → ∃ (U : Z.Opens) (t : Fin g → Γ(Z, U)) (n : ℕ) (f : Fin n → Γ(Z, U)) (N : Set ((Fin m → ℂ) × (Fin g → ℂ))) (O : Set ((Fin m → ℂ) × (Fin n → ℂ))) (σ : (Fin m → ℂ) × (Fin g → ℂ) → (Sp ℂ ⟶ Z)), IsOpen N ∧ IsOpen O ∧ ⊤ ≤ z₀ ⁻¹ᵁ U ∧ (b₀, fun j => valAt' z₀ U (f j)) ∈ O ∧ IsHolTo N σ ∧ (∀ q ∈ N, σ q ≫ p = y q.1 ∧ ⊤ ≤ σ q ⁻¹ᵁ U ∧ ∀ i, valAt' (σ q) U (t i) = q.2 i) ∧ (∀ (b : Fin m → ℂ) (x : Sp ℂ ⟶ Z), x ≫ p = y b → ⊤ ≤ x ⁻¹ᵁ U → (b, fun j => valAt' x U (f j)) ∈ O → (b, fun i => valAt' x U (t i)) ∈ N ∧ σ (b, fun i => valAt' x U (t i)) = x) ∧ ∀ (v v' : Sp (DualNumber ℂ) ⟶ Z) (h : ⊤ ≤ v ⁻¹ᵁ U) (h' : ⊤ ≤ v' ⁻¹ᵁ U), v ≫ p = v' ≫ p → spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v = spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v' → (∀ i, GlobalTheory.TangentOrigin.evalPt v U h (t i) = GlobalTheory.TangentOrigin.evalPt v' U h' (t i)) → v = v' :=
-  GlobalTheory.RelChart.exists_chart_with_parameters _root_.GlobalTheory.EtaleFamily.exists_holomorphic_sections
-
 private theorem valAt'_presheaf_map_eqToHom {Y : Scheme.{0}} (x : Sp ℂ ⟶ Y) {V V' : Y.Opens} (h : V = V')
     (s : Γ(Y, V')) : valAt' x V ((Y.presheaf.map (eqToHom h).op).hom s) = valAt' x V' s := by
   subst h
@@ -123,17 +117,21 @@ theorem exists_chart_of_smooth (m : ℕ) (Z X : Scheme.{0}) (p : Z ⟶ X) (B : S
     (y : (Fin m → ℂ) → (Sp ℂ ⟶ X)) (b₀ : Fin m → ℂ) (z₀ : Sp ℂ ⟶ Z) [Smooth p] (hB : IsOpen B) (hb₀ : b₀ ∈ B)
     (hy : IsHolTo B y) (hz₀ : z₀ ≫ p = y b₀) :
     ∃ (g : ℕ) (U : Z.Opens) (t : Fin g → Γ(Z, U)) (n : ℕ) (f : Fin n → Γ(Z, U)) (N : Set ((Fin m → ℂ) × (Fin g → ℂ))) (O : Set ((Fin m → ℂ) × (Fin n → ℂ))) (σ : (Fin m → ℂ) × (Fin g → ℂ) → (Sp ℂ ⟶ Z)), IsOpen N ∧ IsOpen O ∧ ⊤ ≤ z₀ ⁻¹ᵁ U ∧ (b₀, fun j => valAt' z₀ U (f j)) ∈ O ∧ IsHolTo N σ ∧ (∀ q ∈ N, σ q ≫ p = y q.1 ∧ ⊤ ≤ σ q ⁻¹ᵁ U ∧ ∀ i, valAt' (σ q) U (t i) = q.2 i) ∧ (∀ (b : Fin m → ℂ) (x : Sp ℂ ⟶ Z), x ≫ p = y b → ⊤ ≤ x ⁻¹ᵁ U → (b, fun j => valAt' x U (f j)) ∈ O → (b, fun i => valAt' x U (t i)) ∈ N ∧ σ (b, fun i => valAt' x U (t i)) = x) ∧ ∀ (v v' : Sp (DualNumber ℂ) ⟶ Z) (h : ⊤ ≤ v ⁻¹ᵁ U) (h' : ⊤ ≤ v' ⁻¹ᵁ U), v ≫ p = v' ≫ p → spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v = spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v' → (∀ i, GlobalTheory.TangentOrigin.evalPt v U h (t i) = GlobalTheory.TangentOrigin.evalPt v' U h' (t i)) → v = v' := by
-  obtain ⟨g, W, hzW, hWsm⟩ := exists_open_smoothOfRelativeDimension Z X p (z₀.base default)
+  obtain ⟨g, W, hzW, hWsm⟩ := H1.exists_dim p (z₀.base default)
   have hz₀W : Set.range z₀.base ⊆ Set.range W.ι.base := by
     rintro _ ⟨a, rfl⟩
-    rwa [Subsingleton.elim a default, Scheme.Opens.range_ι]
+    rw [Subsingleton.elim a default, Scheme.Opens.range_ι]
+    exact hzW
   obtain ⟨z₀', rfl⟩ : ∃ z₀' : Sp ℂ ⟶ W, z₀' ≫ W.ι = z₀ := ⟨_, IsOpenImmersion.lift_fac _ _ hz₀W⟩
   obtain ⟨U', t', n, f', N, O, σ', hN, hO, hU', hO', hσ', hσN', hinv', hun'⟩ :=
-    chart_lemma_4 m g W X (W.ι ≫ p) B y b₀ z₀' hWsm hB hb₀ hy (by rw [← Category.assoc]; exact hz₀)
+    exists_chart_with_parameters _root_.GlobalTheory.EtaleFamily.exists_holomorphic_sections
+      m g W X (W.ι ≫ p) B y b₀ z₀' hWsm hB hb₀ hy (by rw [← Category.assoc]; exact hz₀)
   refine ⟨g, W.ι ''ᵁ U', fun i => (W.ι.appIso U').inv.hom (t' i), n, fun j => (W.ι.appIso U').inv.hom (f' j), N, O,
     fun q => σ' q ≫ W.ι, hN, hO, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rwa [preimage_comp_ι_image_eq_preimage]
-  · simpa only [valAt'_ι_appIso_inv] using hO'
+  · rw [preimage_comp_ι_image_eq_preimage]
+    exact hU'
+  · simp only [valAt'_ι_appIso_inv]
+    exact hO'
   · exact isHolTo_of_holAt hN fun q hq => HolAt.post ⟨N, hN, hq, hσ'⟩ W.ι
   · intro q hq
     obtain ⟨h1, h2, h3⟩ := hσN' q hq
@@ -192,7 +190,8 @@ theorem exists_relative_exp_of_smooth (X : Scheme.{0}) (G : Over X) [GrpObj G] [
         (hhol z).comp (φ := fun v : Fin g → ℂ => (b, v)) (analyticAt_const.prod analyticAt_id)
     obtain ⟨ht1, ht2⟩ := GlobalTheory.vertical_derivative_in_coordinates X G (y b) g (e b) hhol'
     have hU0 : ⊤ ≤ (show Sp ℂ ⟶ G.left from (e b 0).left) ⁻¹ᵁ U := by
-      rwa [he0]
+      rw [he0]
+      exact hU1
     have hfd : fderiv ℂ (fun z i => valAt' (e b z).left U (t i)) 0 = ContinuousLinearMap.id ℂ (Fin g → ℂ) :=
       hder.fderiv
     have hinj : Function.Injective (fderiv ℂ (fun z i => valAt' (e b z).left U (t i)) 0) := by
@@ -210,7 +209,8 @@ theorem exists_relative_exp_of_smooth (X : Scheme.{0}) (G : Over X) [GrpObj G] [
       · exact (hO.preimage (by fun_prop)).inter (hQ.preimage (by fun_prop))
       · refine ⟨hO1, ?_⟩
         show (b, crd U t (pt (1 : Over.mk (y b) ⟶ G)) - crd U t (pt (1 : Over.mk (y b) ⟶ G))) ∈ Q
-        rwa [sub_self]
+        rw [sub_self]
+        exact hQ1
       · intro a ha1 ha2
         exact MonoidHom.mem_range.mpr ⟨Multiplicative.ofAdd (L (b, crd0 t a)), hinv' b a ha1 ha2.1 ha2.2⟩
     have hsurj : Function.Surjective (e b) := by
@@ -238,7 +238,9 @@ theorem exists_exp_along_disc : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] (y 
   let y' : (Fin 1 → ℂ) → (Sp ℂ ⟶ X) := fun b => y (b 0)
   let B : Set (Fin 1 → ℂ) := (fun b : Fin 1 → ℂ => b 0) ⁻¹' Metric.ball 0 r
   have hBo : IsOpen B := Metric.isOpen_ball.preimage (continuous_apply 0)
-  have hb0 : (0 : Fin 1 → ℂ) ∈ B := Metric.mem_ball_self hr
+  have hb0 : (0 : Fin 1 → ℂ) ∈ B := by
+    show (0 : ℂ) ∈ Metric.ball (0 : ℂ) r
+    exact Metric.mem_ball_self hr
   have hy' : IsHolTo B y' := isHolTo_of_holAt hBo fun b hb =>
     HolAt.comp (a := y) (φ := fun b : Fin 1 → ℂ => b 0) ⟨_, Metric.isOpen_ball, hb, hy⟩
       ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin 1 => ℂ) 0).analyticAt b)

@@ -17,6 +17,7 @@ import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import Mathlib.Algebra.Order.Star.Int
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.FiniteSystemProof
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.RealArchimedeanBounds.DRepsP, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ValNatCastLe, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ValuationDetCongruenceSubgroupEqOne, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.PfGTerm, PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.MixSeedOf
@@ -38,7 +39,8 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem norm_one' {w : Pl F} {x : w.adicCompletion F} (h : Valued.v x = 1) : ‖x‖ = 1 := by
   have := (Valued.toNormedField.norm_le_one_iff (x := x)).2 h.le
-  exact le_antisymm this ((Valued.toNormedField.one_le_norm_iff (x := x)).2 h.ge)
+  have h2 := (Valued.toNormedField.one_le_norm_iff (x := x)).2 h.ge
+  exact le_antisymm this h2
 
 theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => ‖pLoc F w (y : Af F)‖ := by
   have h1 := Filter.eventually_cofinite.1 (y : Af F).2
@@ -140,7 +142,8 @@ theorem base (c : Pl F → ℕ) : IsReps c ([] : List (Pl F)) (fun _ : Unit => (
     simpa using hx
   · intro i
     simp [absF]
-  · exact fun i w hw => ⟨0, by simp⟩
+  · intro i w hw
+    exact ⟨0, by simp⟩
 
 theorem reindex {c : Pl F → ℕ} {W : List (Pl F)} {ι κ : Type} [Fintype ι] [Fintype κ] (e : κ ≃ ι) {a : ι → GF F}
     (h : IsReps c W a) : IsReps c W (a ∘ e) := by
@@ -172,7 +175,7 @@ theorem ex (c : Pl F → ℕ) (W : List (Pl F)) : ∃ (ι : Type) (_ : Fintype �
         (Matrix.GeneralLinearGroup.scalar (Fin 2) (atFin w (unif w)) * (aff (atFin w (unif w)) 0)⁻¹)
         (fun u => aff (atFin w (unif w)) ((u : w.adicCompletionIntegers F) : w.adicCompletion F))) ?_ ?_ ?_⟩
       · intro V _ _ ρ x hx
-        rw [(uopSum F w V ρ (c w) x hx).2 S hS, ite_eq_left hc, Fintype.sum_option, add_comm, ← Finset.sum_coe_sort S]
+        rw [(uopSum F w V ρ (c w) x hx).2 S hS, if_pos hc, Fintype.sum_option, add_comm, ← Finset.sum_coe_sort S]
         rfl
       · intro j
         cases j with
@@ -182,7 +185,7 @@ theorem ex (c : Pl F → ℕ) (W : List (Pl F)) : ∃ (ι : Type) (_ : Fintype �
     · refine ⟨S × ι, inferInstance, _, step hb (fun u : S => aff (atFin w (unif w))
         ((u : w.adicCompletionIntegers F) : w.adicCompletion F)) ?_ (fun _ => det_aff _ _) (fun _ u => ⟨u, rfl⟩)⟩
       intro V _ _ ρ x hx
-      rw [(uopSum F w V ρ (c w) x hx).2 S hS, ite_eq_right hc, add_zero, ← Finset.sum_coe_sort S]
+      rw [(uopSum F w V ρ (c w) x hx).2 S hS, if_neg hc, add_zero, ← Finset.sum_coe_sort S]
 
 end UpperTheory.Esk.DeterminantRepresentatives
 
@@ -253,7 +256,7 @@ theorem nz_prod {F : Type} [Field F] [NumberField F] {l : ℕ} [Fact l.Prime] {�
       rw [List.count_cons]
       by_cases h : D.pl v = w
       · subst h
-        rw [ite_eq_left rfl]
+        rw [if_pos rfl]
         simp [mul_add, pow_add]
         try ring
       · have h' : ¬ (w == D.pl v) = true := by
@@ -346,7 +349,8 @@ variable [IsTotallyReal F]
 theorem absF_det_Kc {c : Pl F → ℕ} {k : GF F} (hk : k ∈ Kc c) : absF (Matrix.GeneralLinearGroup.det k) = 1 := by
   refine (Hm.absf F).2.2.1 _ fun w => ?_
   have h := valuation_det_congruence_subgroup_eq_one w (c w) (mem_local_congruence_of_mem_global hk w)
-  rwa [Matrix.GeneralLinearGroup.val_det_apply, RingHom.map_det]
+  rw [Matrix.GeneralLinearGroup.val_det_apply, RingHom.map_det]
+  exact h
 
 theorem prod_reAt {c : Pl F → ℕ} {W : List (Pl F)} {n : ℕ} {a : Fin n → GF F} (hR : IsReps c W a) {γ : GL (Fin 2) F}
     {x : GF F} {i : Fin n} {k : GF F} (hk : k ∈ Kc c) {z : (Af F)ˣ} (hrel : jF F γ * x * (k * zc F z) = x * a i) :
@@ -383,13 +387,6 @@ theorem prod_reAt {c : Pl F → ℕ} {W : List (Pl F)} {n : ℕ} {a : Fin n → 
   have h5 : absF (Matrix.GeneralLinearGroup.det (jF F γ)) * (absF z * absF z) * (W.map fun w => (normV w : ℝ)).prod = 1 := by
     rw [h4, inv_mul_cancel₀ hN]
   nlinarith [h5]
-
-theorem val_nat_le (ν : Valuation ℂ ℝ≥0) (m : ℕ) : ν (m : ℂ) ≤ 1 := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    push_cast
-    exact (Valuation.map_add ν _ _).trans (max_le ih (by simp))
 
 theorem tr_conj {R : Type*} [CommRing R] (g y : GL (Fin 2) R) :
     ((g * y * g⁻¹ : GL (Fin 2) R) : Matrix (Fin 2) (Fin 2) R).trace = (y : Matrix (Fin 2) (Fin 2) R).trace := by
@@ -521,8 +518,9 @@ theorem loc (hU : GUnit) {c : Pl F → ℕ} (hc : ∀ v, c (D.pl v) = 1) {W : Li
   have hU1 : nu ι (D.em v Y) = 1 := (nu_eq_one_iff D v Y).2 hY
   have hνδ : nu ι M.det = nu ι (l : ℂ) ^ cnt := by
     have := congrArg (nu ι) hδU
-    rwa [map_mul, hU1, mul_one, map_pow] at this
-  have hνl : nu ι (l : ℂ) ≤ 1 := val_nat_le _ l
+    rw [map_mul, hU1, mul_one, map_pow] at this
+    exact this
+  have hνl : nu ι (l : ℂ) ≤ 1 := Fin0Aux.nat_le_one _ l
   have hδr : nu ι M.det ≤ nu ι (l : ℂ) ^ r := by
     rw [hνδ]; exact pow_le_pow_of_le_one zero_le hνl (hW v)
   have hδ1 : nu ι M.det ≤ 1 := hδr.trans (pow_le_one₀ zero_le hνl)
@@ -641,7 +639,7 @@ theorem UpperTheory.Esk.pf_GTerm : UpperTheory.Esk.GCh → UpperTheory.Esk.GUnit
   have hcong := fun v => local_cong (nu ι) hG (τ v) (δ v) (U v) (max (nu ι l ^ N) (nu ι l ^ r)) k₀ (t v) hk₀ (hτ1 v) (hδ1 v)
     ((hδr v).trans (le_max_right _ _)) ((hpow v (t v) (ht v)).1.trans (le_max_left _ _)) (hU1 v)
     ((hpow v (t v) (ht v)).2.trans (le_max_left _ _))
-  obtain ⟨p1, p2, p3⟩ := val_prod_sub (nu ι) Finset.univ (fun v => -(ch (τ v) (δ v) (k₀ - 1)))
+  obtain ⟨p1, p2, p3⟩ := UpperTheory.Reformulated.B.ProdSubProdLeOfFactorsClose.main (nu ι) Finset.univ (fun v => -(ch (τ v) (δ v) (k₀ - 1)))
     (fun v => -(ch (τ v) (δ v) (k₀ + 2 * t v - 1) * U v ^ t v)) (max (nu ι l ^ N) (nu ι l ^ r))
     (fun v _ => by rw [Valuation.map_neg]; exact (hcong v).1) (fun v _ => by rw [Valuation.map_neg]; exact (hcong v).2.1)
     (fun v _ => by rw [neg_sub_neg, Valuation.map_sub_swap]; exact (hcong v).2.2)

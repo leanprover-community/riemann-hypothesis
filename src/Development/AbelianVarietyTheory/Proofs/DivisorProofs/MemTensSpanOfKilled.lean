@@ -232,17 +232,7 @@ theorem exists_proj_of_graded {σ : Type} (K : Submodule ℂ (MvPolynomial σ �
 
 theorem homogeneousComponent_fockAct1 {P Q R S : ℕ} (X : Mat P Q) (hX : IsKC X) (n : ℕ) (f : Pol P Q R S) :
     homogeneousComponent n (fockAct1 P Q R S X f) = fockAct1 P Q R S X (homogeneousComponent n f) := by
-  classical
-  have hh : ∀ i, fockAct1 P Q R S X (homogeneousComponent i f) ∈ homogeneousSubmodule (Ix P Q × Ix R S) ℂ i :=
-    fun i => GlobalTheory.FockAlg.MinFirst.kStable_homog i X hX _ (homogeneousComponent_isHomogeneous i f)
-
-  conv_lhs => rw [← sum_homogeneousComponent f, map_sum, map_sum]
-  simp_rw [homogeneousComponent_of_mem (hh _)]
-  rw [Finset.sum_ite_eq]
-  split_ifs with h
-  · rfl
-  · have : f.totalDegree < n := by simp at h; omega
-    rw [homogeneousComponent_eq_zero _ _ this, map_zero]
+  apply _root_.GlobalTheory.FockAlg.MinFirst.comp_comm <;> assumption
 
 theorem homogeneousComponent_mem_chiOne {P Q R S : ℕ} (x : ℚ) (f : Pol P Q R S) (hf : f ∈ chiOne P Q R S x) (n : ℕ) :
     homogeneousComponent n f ∈ chiOne P Q R S x := by

@@ -209,18 +209,6 @@ theorem cross {y : (Σ k, J k) → Ω} {a : K → ℤ} {c₀ : Ω} {g h g' h' : 
   simp only [evC, map_sub, map_mul] at h1 ⊢
   exact sub_eq_zero.1 h1
 
-private theorem sq_zpow_lemma_4 (x : ℝ) (hx : x ≠ 0) (n : ℤ) :
-    (x ^ 2) ^ n.toNat / (x ^ 2) ^ (-n).toNat = (x ^ n) ^ 2 := by
-  rcases le_total 0 n with h0 | h0
-  · obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le h0
-    have : (-(m : ℤ)).toNat = 0 := by omega
-    rw [this, Int.toNat_natCast, zpow_natCast, pow_zero, div_one, ← pow_mul, ← pow_mul, mul_comm]
-  · obtain ⟨m, hm⟩ := Int.exists_eq_neg_ofNat h0
-    subst hm
-    have : (-(m : ℤ)).toNat = 0 := by omega
-    rw [this, neg_neg, Int.toNat_natCast, zpow_neg, zpow_natCast, pow_zero, one_div, inv_pow,
-      ← pow_mul, ← pow_mul, mul_comm]
-
 theorem exists_unit_metric (y : (Σ k, J k) → Ω) (a : K → ℤ) (c₀ : Ω)
     (hloc : ∀ w : (Σ k, J k) → ℂ, (∀ k, ∃ i, w ⟨k, i⟩ ≠ 0) →
       ∃ g h dg dh, Pres y a c₀ g h dg dh ∧ evC w g ≠ 0 ∧ evC w h ≠ 0) :
@@ -273,7 +261,11 @@ theorem exists_unit_metric (y : (Σ k, J k) → Ω) (a : K → ℤ) (c₀ : Ω)
     have hu : (∏ k, (‖c k‖ ^ 2) ^ (a k).toNat) / ∏ k, (‖c k‖ ^ 2) ^ (-a k).toNat =
         (∏ k, ‖c k‖ ^ a k) ^ 2 := by
       rw [← Finset.prod_div_distrib, ← Finset.prod_pow]
-      exact Finset.prod_congr rfl fun k _ => sq_zpow_lemma_4 _ (norm_ne_zero_iff.2 (hc k)) _
+      refine Finset.prod_congr rfl fun k _ => ?_
+      rw [← zpow_natCast (‖c k‖ ^ 2), ← zpow_natCast (‖c k‖ ^ 2),
+        ← zpow_sub₀ (pow_ne_zero 2 (norm_ne_zero_iff.2 (hc k))),
+        show ((a k).toNat : ℤ) - (-a k).toNat = a k by simp only [Int.ofNat_toNat]; omega,
+        ← zpow_natCast _ 2, ← zpow_natCast _ 2, ← zpow_mul, ← zpow_mul, mul_comm]
     rw [hN', hD', hZp', hZm']
     have e1 : N z * ((∏ k, (‖c k‖ ^ 2) ^ (a k).toNat) * Zp z) /
         (D z * ((∏ k, (‖c k‖ ^ 2) ^ (-a k).toNat) * Zm z)) =

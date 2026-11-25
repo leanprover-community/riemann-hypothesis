@@ -164,8 +164,6 @@ def RegAf (G : HTGroup p) (g : G.GAf) : Prop :=
     Commute a ((ubcMap (AfP.eval w) g).1.1 : w.1.adicCompletion ℚ ⊗[ℚ] G.C) →
     Commute b ((ubcMap (AfP.eval w) g).1.1 : w.1.adicCompletion ℚ ⊗[ℚ] G.C) → Commute a b
 
-def Form.one (G : HTGroup p) : Form G := ⟨1, sh_one_eq G, ⟨1, 1, by simp [Triv, inC]⟩, ⟨1, by simp [Triv, inC]⟩⟩
-
 theorem fixL_one (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (z : Fin G.n → ℂ) : FixL G v β 1 z :=
   ⟨1, by simp [toV]⟩
 

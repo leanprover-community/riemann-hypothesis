@@ -121,7 +121,8 @@ theorem log_index_le : Real.log U.index ≤ 2 * SS U := by
           rw [Finset.mem_filter, Nat.mem_divisors] at hm
           have hmN : N / m ∣ N := Nat.div_dvd_of_dvd hm.1.1
           have hex' : ∃ u ∈ KK N (N / m), u ∉ U := by
-            by_contra! hcon
+            by_contra hcon
+            push_neg at hcon
             exact hm.2 (hcdvd _ hmN hcon)
           have h12 := half_le_rho U hmN hex'
           have hΛ : 0 ≤ vonMangoldt m := vonMangoldt_nonneg
@@ -228,7 +229,8 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
         push_cast; rw [hval]; ring
       rw [CharP.cast_eq_zero_iff (ZMod (2 ^ (e + 2))) (2 ^ (e + 2))] at h1
       have h4 : 4 ∣ (u : ZMod N).val + 1 := by
-        simpa using (pow_dvd_pow 2 (by omega : 2 ≤ e + 2)).trans h1
+        have h5 := (pow_dvd_pow 2 (by omega : 2 ≤ e + 2)).trans h1
+        simpa using h5
       have h4' : (u : ZMod N).val ≡ 1 [MOD 4] := by
         have h6 := Nat.ModEq.of_dvd ((pow_dvd_pow 2 hi2).trans (dvd_mul_right _ M))
           (mem_KK.mp hu)
@@ -236,7 +238,7 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
       unfold Nat.ModEq at h4'
       omega
     by_cases hi2 : i < 2
-    · rw [ite_eq_left hi2]
+    · rw [if_pos hi2]
       by_cases hw : ∃ w ∈ (KK N (2 ^ i * M)).filter (fun u => u ∈ U),
           ZMod.unitsMap h2 w = -1
       · obtain ⟨w, hwH, hw1⟩ := hw
@@ -257,14 +259,14 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
           _ ≤ _ := Finset.card_union_le _ _
           _ ≤ _ := Nat.add_le_add_left Finset.card_image_le _
           _ = 2 * (KK N (2 ^ (e + 2) * M)).card := by ring
-      · push Not at hw
+      · push_neg at hw
         calc _ ≤ (KK N (2 ^ (e + 2) * M)).card := Finset.card_le_card (fun u hu => by
               rw [Finset.mem_filter] at hu
               rcases hU u hu.2 with h1 | h1
               · exact hA u (hKM u hu.1) h1
               · exact absurd h1 (hw u (Finset.mem_filter.mpr hu)))
           _ ≤ 2 * _ := by omega
-    · rw [ite_eq_right hi2]
+    · rw [if_neg hi2]
       calc _ ≤ (KK N (2 ^ (e + 2) * M)).card := Finset.card_le_card (fun u hu => by
             rw [Finset.mem_filter] at hu
             rcases hU u hu.2 with h1 | h1
@@ -290,14 +292,14 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
   have hkey : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ) * (2 ^ i).totient
       ≤ (((2 ^ i).totient : ℝ) + if i < 2 then 1 else 0) * (KK N (2 ^ (e + 2) * M)).card := by
     by_cases hi2 : i < 2
-    · rw [ite_eq_left hi2] at hcard ⊢
+    · rw [if_pos hi2] at hcard ⊢
       have ht : (2 ^ i).totient = 1 := by interval_cases i <;> simp
       rw [ht]
       have : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ)
           ≤ 2 * (KK N (2 ^ (e + 2) * M)).card := by exact_mod_cast hcard
       push_cast
       linarith
-    · rw [ite_eq_right hi2] at hcard ⊢
+    · rw [if_neg hi2] at hcard ⊢
       have : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ)
           ≤ (KK N (2 ^ (e + 2) * M)).card := by
         have := hcard; rw [one_mul] at this; exact_mod_cast this
@@ -315,35 +317,15 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
   rw [div_le_div_iff₀ (mul_pos ha (mul_pos hp hs)) hp]
   nlinarith [mul_le_mul_of_nonneg_right hkey (le_of_lt (mul_pos hs hp))]
 
-private theorem exists_two_pow_mul_odd_of_le_of_ne_zero (k : ℕ) :
-    ∀ n : ℕ, n ≤ k → n ≠ 0 → ∃ v M : ℕ, ¬ 2 ∣ M ∧ n = 2 ^ v * M := by
-  induction k with
-  | zero => intro n h1 h2; exact absurd (Nat.le_zero.mp h1) h2
-  | succ k ih =>
-    intro n h1 h2
-    by_cases h : 2 ∣ n
-    · obtain ⟨j, rfl⟩ := h
-      obtain ⟨v, M, hM, hj⟩ := ih j (by omega) (by omega)
-      exact ⟨v + 1, M, hM, by rw [hj, pow_succ]; ring⟩
-    · exact ⟨0, n, h, by simp⟩
-
-private theorem sum_range_ite_lt_two_eq_two (e : ℕ) :
-    ∑ i ∈ range (e + 2), (if i < 2 then (1 : ℝ) else 0) = 2 := by
-  induction e with
-  | zero =>
-    show ∑ i ∈ range 2, (if i < 2 then (1 : ℝ) else 0) = 2
-    rw [Finset.sum_range_succ, Finset.sum_range_one]
-    norm_num
-  | succ k ih =>
-    rw [show k + 1 + 2 = k + 2 + 1 from rfl, Finset.sum_range_succ, ih, ite_eq_right (by omega), add_zero]
-
 theorem le_SS {e d : ℕ} (h2 : 2 ^ (e + 2) ∣ N) (hd : d.Prime) (hdN : d ∣ N) (hd2 : ¬ 2 ∣ d)
     (hU : ∀ u ∈ U, ZMod.unitsMap h2 u = 1 ∨ ZMod.unitsMap h2 u = -1) (rd : 1 / 2 ≤ rho U (N / d)) :
     ((e : ℝ) + 1 - 1 / 2 ^ e) * Real.log 2 + Real.log d / 2 ≤ SS U := by
   classical
   have hN0 : N ≠ 0 := NeZero.ne N
-  obtain ⟨v, M, hModd, hNvM⟩ := exists_two_pow_mul_odd_of_le_of_ne_zero N N le_rfl hN0
-  have hM : Nat.Coprime 2 M := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr hModd
+  set v := N.factorization 2
+  set M := N / 2 ^ v
+  have hM : Nat.Coprime 2 M := Nat.coprime_ordCompl Nat.prime_two hN0
+  have hNvM : N = 2 ^ v * M := (Nat.ordProj_mul_ordCompl_eq_self N 2).symm
   have hv : e + 2 ≤ v := by
     have h1 : 2 ^ (e + 2) ∣ 2 ^ v * M := by rw [← hNvM]; exact h2
     have h3 : 2 ^ (e + 2) ∣ 2 ^ v := (Nat.Coprime.pow_left (e + 2) hM).dvd_of_dvd_mul_right h1
@@ -406,8 +388,12 @@ theorem le_SS {e d : ℕ} (h2 : 2 ^ (e + 2) ∣ N) (hd : d.Prime) (hdN : d ∣ N
     exact_mod_cast h
   have hsum : ∑ i ∈ range (e + 2), Real.log 2 * (1 - (((2 ^ i).totient : ℝ) + if i < 2 then 1 else 0) / 2 ^ (e + 1))
       = ((e : ℝ) + 1 - 1 / 2 ^ e) * Real.log 2 := by
+    have hite : ∑ i ∈ range (e + 2), (if i < 2 then (1 : ℝ) else 0) = 2 := by
+      rw [add_comm e 2, Finset.sum_range_add, Finset.sum_range_succ, Finset.sum_range_one,
+        Finset.sum_eq_zero fun i _ => if_neg (by omega)]
+      norm_num
     rw [← Finset.mul_sum, Finset.sum_sub_distrib, ← Finset.sum_div, Finset.sum_add_distrib,
-      sum_range_ite_lt_two_eq_two e, hφ]
+      hite, hφ]
     simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
     push_cast
     field_simp
@@ -543,7 +529,8 @@ theorem minpoly_map : (minpoly E ζ).map (algebraMap E L) = Lagrange.nodal Finse
       fun σ _ => ?_
     rw [Polynomial.dvd_iff_isRoot, IsRoot.def, eval_map, ← aeval_def]
     have := Polynomial.aeval_algHom_apply (σ : L →ₐ[E] L) ζ (minpoly E ζ)
-    rwa [minpoly.aeval, _root_.map_zero] at this
+    rw [minpoly.aeval, _root_.map_zero] at this
+    exact this
   · refine le_of_eq ?_
     rw [natDegree_map, ← IntermediateField.adjoin.finrank hint_r, htop, IntermediateField.finrank_top',
       Lagrange.natDegree_nodal, Finset.card_univ, hcard]
@@ -586,7 +573,8 @@ theorem absNorm_diff : ((Ideal.absNorm (differentIdeal (𝓞 E) (𝓞 L)) : ℕ)
     rw [← aeval_algebraMap_apply, hζL, aeval_def, eval₂_eq_eval_map, ← derivative_map, hmapL]
     have h1 := Lagrange.eval_nodal_derivative_eval_node_eq (s := (Finset.univ : Finset (L ≃ₐ[E] L)))
       (v := fun σ : L ≃ₐ[E] L => σ ζ) (Finset.mem_univ 1)
-    rwa [Lagrange.eval_nodal] at h1
+    rw [Lagrange.eval_nodal] at h1
+    exact h1
   have hnormR : ((Algebra.norm ℤ (aeval z (derivative (minpoly (𝓞 E) z))) : ℤ) : ℝ) =
       ((Algebra.norm ℚ (∏ σ ∈ (Finset.univ : Finset (L ≃ₐ[E] L)).erase 1, (ζ - σ ζ)) : ℚ) : ℝ) := by
     rw [← hy, ← Algebra.coe_norm_int]; norm_cast
@@ -611,7 +599,11 @@ theorem log_discr_tower : Real.log |(discr L : ℝ)| =
       |((Algebra.norm ℚ (ζ - σ ζ) : ℚ) : ℝ)| ≠ 0 := by
     intro σ hσ
     have hσ1 : σ ≠ 1 := Finset.ne_of_mem_erase hσ
-    have hne : ζ - σ ζ ≠ 0 := fun h => hσ1 (gal_inj hζ E (sub_eq_zero.1 h).symm)
+    have hne : ζ - σ ζ ≠ 0 := by
+      intro h
+      apply hσ1
+      apply gal_inj hζ E
+      exact (sub_eq_zero.1 h).symm
     rw [abs_ne_zero, Rat.cast_ne_zero]
     exact Algebra.norm_ne_zero_iff.2 hne
   have hdE : |(discr E : ℝ)| ≠ 0 := abs_ne_zero.2 (Int.cast_ne_zero.2 (NumberField.discr_ne_zero E))
@@ -694,7 +686,8 @@ theorem log_norm_weight (u : ZMod N) (hu : u ≠ 1) :
   rw [IsCyclotomicExtension.finrank L (cyclotomic.irreducible_rat (NeZero.pos N))] at key
   rw [hfac, map_mul, map_pow, Rat.cast_mul, Rat.cast_pow, abs_mul, abs_pow, hnz, one_pow, one_mul]
   have ht : (0 : ℝ) < (addOrderOf (u - 1)).totient := by exact_mod_cast Nat.totient_pos.2 (by omega)
-  rwa [mul_div_assoc', eq_div_iff ht.ne']
+  rw [mul_div_assoc', eq_div_iff ht.ne']
+  exact key
 
 
 local instance (p : Prop) : Decidable p := Classical.propDecidable p
@@ -830,7 +823,8 @@ theorem log_rd_eq : Real.log H.rd = SS H.art.ker := by
     have h2 := H.art_spec u σ hσ
     rw [MonoidHom.mem_ker, ← H.gal.symm.map_eq_one_iff]
     constructor
-    · exact fun h3 => AlgEquiv.ext fun x => H.cycEmb.injective ((h2 x).trans (h3 x))
+    · intro h3
+      exact AlgEquiv.ext fun x => H.cycEmb.injective ((h2 x).trans (h3 x))
     · intro h3 x
       rw [h3] at h2
       exact (h2 x).symm)
@@ -861,6 +855,7 @@ private theorem q_mul_d_ne_zero : H.q * H.d ≠ 0 := by
   norm_num at h3
 
 theorem div_d : H.condN / H.d = H.QS * H.q := by
+  show H.QS * H.q * H.d / H.d = H.QS * H.q
   exact Nat.mul_div_cancel _ (Nat.pos_of_ne_zero (right_ne_zero_of_mul (q_mul_d_ne_zero H)))
 
 theorem div_q : H.condN / H.q = H.QS * H.d := by

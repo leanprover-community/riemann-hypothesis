@@ -217,7 +217,7 @@ theorem exists_lieCorr_of_pow_eq_zero : ∀ (p : ℕ) [Fact p.Prime]  (R : Type)
   have hv : IsTangent v := by
     have h := (t.eq_one_iff N ((TrivSqZeroExt.fstHom R R R).comp ψ₀)).2 hfst
     rw [← spOver_comp, Category.assoc] at h
-    refine (congrArg Over.Hom.left h).trans ?_
+    refine @Eq.trans (Sp R ⟶ A.left) _ _ _ (congrArg Over.Hom.left h) ?_
     rw [Hom.one_def, Over.comp_left, Over.toUnit_left]
     exact (congrArg (· ≫ η[A].left) (Cris.spMap_id R)).trans (Category.id_comp _)
   haveI : IsAdicComplete (Ideal.span {(p : R)}) R :=

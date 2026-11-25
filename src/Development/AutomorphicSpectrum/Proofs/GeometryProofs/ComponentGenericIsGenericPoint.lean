@@ -67,19 +67,9 @@ theorem genPt_mem_genericPoints : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     rw [Scheme.range_fromSpecStalk]
     exact hp
   obtain ⟨q, rfl⟩ := hp'
-  have hfield : IsField (Y.X.presheaf.stalk (GlobalTheory.CompanionTheory.Ar.genPt ξ₀)) :=
-    MulEquiv.isField (Field.toIsField Ω₀)
-      (RingEquiv.ofBijective (CommRingCat.Hom.hom (Scheme.stalkClosedPointTo ξ₀)) hξ.bij).toMulEquiv
-  have hq : q = IsLocalRing.closedPoint _ := by
-    apply PrimeSpectrum.ext
-    apply le_antisymm
-    · exact IsLocalRing.le_maximalIdeal q.isPrime.ne_top
-    · intro a ha
-      by_cases h0 : a = 0
-      · rw [h0]
-        exact q.asIdeal.zero_mem
-      · obtain ⟨b, hb⟩ := hfield.mul_inv_cancel h0
-        exact absurd ⟨⟨a, b, hb, by rw [mul_comm]; exact hb⟩, rfl⟩ ((IsLocalRing.mem_maximalIdeal a).1 ha)
+  have hq : q = IsLocalRing.closedPoint _ := (PrimeSpectrum.comapEquiv
+    (RingEquiv.ofBijective (CommRingCat.Hom.hom (Scheme.stalkClosedPointTo ξ₀)) hξ.bij)).injective
+    (Subsingleton.elim _ _)
   rw [hq, Scheme.fromSpecStalk_closedPoint]
 
 end GlobalTheory.CompanionTheory.Ar.GenPtModel

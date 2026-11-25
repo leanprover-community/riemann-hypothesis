@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridNuUnitTrivial
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjSmulConjSmul
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealMatrixApproxCongruentOneTranslate
@@ -137,31 +138,13 @@ variable {D : D7}
 open GlobalTheory.Mem.Col2.SplitChar in
 theorem vl_le_of_mem_hatId' {I : Ideal (𝓞 D.host.E)} {PP : HeightOneSpectrum (𝓞 D.host.E)} {n : ℕ}
     (hI : I ≤ PP.asIdeal ^ n) {x : AE D} (hx : x ∈ hatId D I) : vl D PP x ≤ WithZero.exp (-(n : ℤ)) := by
-  induction hx using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨b, hb, s, hs, rfl⟩ := hy
-    rw [map_mul, vl_inc]
-    refine (mul_le_of_le_one_right' (vl_le hs PP)).trans ?_
-    rw [HeightOneSpectrum.valuation_of_algebraMap]
-    exact (HeightOneSpectrum.intValuation_le_pow_iff_mem PP b n).2 (hI hb)
-  | zero => simp
-  | add a b _ _ ha hb => exact (Valuation.map_add _ _ _).trans (max_le ha hb)
-  | neg a _ ha => rwa [Valuation.map_neg]
+  apply _root_.GlobalTheory.BotPairSmall.CondNu.vl_le_of_mem_hatId <;> assumption
 
 
 open GlobalTheory.Mem.Col2.SplitChar in
 theorem sgA_mem_hatId' {I : Ideal (𝓞 D.host.E)} {x : AE D} (hx : x ∈ hatId D I) :
     sgA D x ∈ hatId D (D.host.conj • I) := by
-  induction hx using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨b, hb, s, hs, rfl⟩ := hy
-    refine AddSubgroup.subset_closure ⟨D.host.conj • b, Ideal.smul_mem_pointwise_smul _ _ _ hb, sgA D s,
-      GlobalTheory.NormSum.UnramHecke.sgA_mem D hs, ?_⟩
-    rw [map_mul, GlobalTheory.Mem.Col2.SplitChar.sgA_inc]
-    rfl
-  | zero => simp
-  | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
-  | neg a _ ha => rw [map_neg]; exact neg_mem ha
+  apply _root_.GlobalTheory.BotPairSmall.CondNu.sgA_mem_hatId <;> assumption
 
 theorem conj_conj_smul (𝔪 : Ideal (𝓞 D.host.E)) : D.host.conj • D.host.conj • 𝔪 = 𝔪 := by
   have h : D.host.conj * D.host.conj = 1 := AlgEquiv.ext fun z => GlobalTheory.NormSum.UnramHecke.conj_conj D z

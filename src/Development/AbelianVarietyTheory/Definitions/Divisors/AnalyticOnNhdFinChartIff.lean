@@ -122,9 +122,6 @@ theorem refl (A : FinHolAtlas e X) (P : LocPot X) : SameForm A P P := fun _ _ _ 
 
 theorem symm (h : SameForm A P Q) : SameForm A Q P := fun j y hy => (h j y hy).symm
 
-theorem trans (h : SameForm A P Q) (h' : SameForm A Q T) : SameForm A P T :=
-  fun j y hy => (h j y hy).trans (h' j y hy)
-
 theorem of_re (hQ : IsPotential A Q) (h : ∀ x, ∃ W : Set X, IsOpen W ∧ x ∈ W ∧ ∃ G : X → ℂ,
     A.HoloOn W G ∧ ∀ z ∈ W, P.φ x z = Q.φ x z + (G z).re) : SameForm A P Q := fun j y hy => by
   obtain ⟨W, hW, hx, G, hG, h⟩ := h ((A.chart j).symm y)

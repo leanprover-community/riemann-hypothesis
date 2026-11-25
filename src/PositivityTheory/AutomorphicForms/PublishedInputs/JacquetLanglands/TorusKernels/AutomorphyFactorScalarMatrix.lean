@@ -6,6 +6,7 @@ public import Mathlib.Analysis.Complex.LocallyUniformLimit
 public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Congr
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.KernelTermsInvariantBoundedProof
 
 @[expose] public section
 
@@ -27,15 +28,6 @@ def tm (k : I → ℕ) (ω : D.Om) (w : X I) (p : X I × Gf) (g : GL (Fin 2) F) 
 
 theorem kern_eq (k : I → ℕ) (y : D.Y) (p : X I × Gf) : D.Kern k y p = ∑' γ : PG F, tm D k y.1 y.2 p γ.out := rfl
 
-theorem ee_mul_right (x : Gf) (h : D.H) : D.ee (x * h) = D.ee x * D.χ h := by
-  unfold Dat.ee
-  by_cases hx : x ∈ D.H
-  · have hxh : x * (h : Gf) ∈ D.H := D.H.mul_mem hx h.2
-    rw [dite_eq_left hxh, dite_eq_left hx, ← Units.val_mul, ← map_mul]
-    rfl
-  · have hxh : x * (h : Gf) ∉ D.H := fun hh => hx (by simpa using D.H.mul_mem hh (D.H.inv_mem h.2))
-    rw [dite_eq_right hxh, dite_eq_right hx, zero_mul]
-
 theorem ee_mul_left (x : Gf) (h : D.H) : D.ee (h * x) = D.χ h * D.ee x := by
   unfold Dat.ee
   by_cases hx : x ∈ D.H
@@ -44,19 +36,6 @@ theorem ee_mul_left (x : Gf) (h : D.H) : D.ee (h * x) = D.χ h * D.ee x := by
     rfl
   · have hxh : (h : Gf) * x ∉ D.H := fun hh => hx (by simpa using D.H.mul_mem (D.H.inv_mem h.2) hh)
     rw [dite_eq_right hxh, dite_eq_right hx, mul_zero]
-
-theorem norm_ee_le (hD : D.Ax) (x : Gf) : ‖D.ee x‖ ≤ 1 := by
-  unfold Dat.ee
-  split_ifs with hx
-  · exact (hD.χn _).le
-  · simp
-
-theorem smulO_out (γ : PG F) (ω : D.Om) : γ • ω = ((D.j γ.out * D.rep ω : Gf) : Gf ⧸ D.H) := by
-  have h1 := D.mk_smulO γ.out (D.rep ω)
-  rw [QuotientGroup.out_eq'] at h1
-  rw [← h1]
-  congr 1
-  exact (QuotientGroup.out_eq' ω).symm
 
 theorem smulX_out (γ : PG F) (w : D.Xs) : (γ • w : D.Xs) = D.act γ.out w := by
   have h1 := D.mk_smulX γ.out w
@@ -68,7 +47,7 @@ theorem tm_supp (k : I → ℕ) (ω : D.Om) (w : X I) (γ : PG F) (z : X I) (x :
   rw [Dat.ee, dite_eq_right, zero_mul]
   intro hm
   apply h
-  rw [smulO_out]
+  rw [KernelTermsInvariantLemmas.smul_eq]
   apply QuotientGroup.eq.2
   simpa [_root_.mul_inv_rev, mul_assoc] using hm
 
@@ -159,7 +138,7 @@ theorem tm_aut (hB : B1b) (k : I → ℕ) (ω : D.Om) (w : X I) (γ g : GL (Fin 
 theorem tm_lev (k : I → ℕ) (ω : D.Om) (w : X I) (g : GL (Fin 2) F) (z : X I) (x : Gf) (h : D.H) :
     tm D k ω w (z, x * h) g = D.χ h * tm D k ω w (z, x) g := by
   unfold tm
-  rw [show (D.rep ω)⁻¹ * (D.j g)⁻¹ * (x * h) = (D.rep ω)⁻¹ * (D.j g)⁻¹ * x * h by group, ee_mul_right]
+  rw [show (D.rep ω)⁻¹ * (D.j g)⁻¹ * (x * h) = (D.rep ω)⁻¹ * (D.j g)⁻¹ * x * h by group, KernelTermsInvariantLemmas.ee_mul_right]
   ring
 
 def cst (k : I → ℕ) : ℝ := ∏ v, ((k v : ℝ) - 1) / (4 * Real.pi)
@@ -238,7 +217,7 @@ theorem norm_tm_le (hD : D.Ax) (hB : B1b) (k : I → ℕ) (hk : ∀ v, 1 ≤ k v
     rw [norm_mul]
     calc ‖D.ee ((D.rep y.1)⁻¹ * (D.j γ.out)⁻¹ * x)‖ * ‖qq k z (D.act γ.out y.2) * D.J k γ.out y.2‖
           ≤ 1 * ‖qq k z (D.act γ.out y.2) * D.J k γ.out y.2‖ :=
-          mul_le_mul_of_nonneg_right (norm_ee_le D hD _) (norm_nonneg _)
+          mul_le_mul_of_nonneg_right (KernelTermsInvariantLemmas.norm_ee_le D hD _) (norm_nonneg _)
       _ = _ := by rw [one_mul, eq_div_of_mul_eq hn.ne' hq]; ring
   · rw [tm_supp D k y.1 y.2 γ z x hγ]
     simp [hγ]

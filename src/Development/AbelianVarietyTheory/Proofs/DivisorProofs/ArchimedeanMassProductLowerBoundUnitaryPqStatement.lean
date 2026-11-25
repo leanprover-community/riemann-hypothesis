@@ -260,7 +260,7 @@ theorem norm_sMat_dg_mul {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {c : ℂ} (hc : �
   rw [hmat, Matrix.det_mul, det_dg]
   simp only [dg, Matrix.sub_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Function.update_apply, Pi.one_apply]
   by_cases ha : a = a₀ <;> by_cases hb : b = a₀
-  · simp only [ha, hb, ite_true]
+  · simp only [ha, hb, if_true]
     congr 2
     rw [mul_inv]; field_simp
   · have : a ≠ b := by rintro rfl; exact hb ha
@@ -344,7 +344,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
     calc ∑ i ∈ Finset.univ.erase a₀, ‖X.1 i i‖ ≤ ∑ _i ∈ Finset.univ.erase a₀, 9 / 10 * ε * n⁻¹ := by
           refine Finset.sum_le_sum fun i hi => ?_
           have h1 := (hX i i).le
-          rwa [rad, ite_eq_left ⟨rfl, Finset.ne_of_mem_erase hi⟩] at h1
+          rwa [rad, if_pos ⟨rfl, Finset.ne_of_mem_erase hi⟩] at h1
       _ ≤ ∑ _i : Fin p ⊕ Fin q, 9 / 10 * ε * n⁻¹ :=
           Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _) fun _ _ _ => by positivity
       _ = 9 / 10 * ε := by
@@ -364,7 +364,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
     unfold sMat
     simp only [dg, Matrix.sub_apply, Matrix.mul_diagonal, Function.update_apply, Pi.one_apply] at h0 ⊢
     by_cases hb : b = a₀
-    · rw [ite_eq_left hb]
+    · rw [if_pos hb]
       by_cases hab : a = b
       · subst hab
         subst hb
@@ -385,7 +385,7 @@ theorem exp_box {p q : ℕ} (a₀ : Fin p ⊕ Fin q) {n : ℝ} (hn : n = ((p + q
         linarith
       · rw [Matrix.one_apply_ne hab, sub_zero] at h0 ⊢
         rwa [norm_mul, norm_inv, hz1, inv_one, mul_one]
-    · rwa [ite_eq_right hb, mul_one]
+    · rwa [if_neg hb, mul_one]
   · linarith [Complex.abs_im_le_norm X.1.trace]
   · rw [hdet, Complex.norm_exp, Real.exp_eq_one_iff] at hz1
     rw [hdet]
@@ -651,7 +651,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 theorem exists_lam (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r)
     (hx : ∀ τ, (mat x τ).det ≠ 0) :
     ∃ lam : Measure (realLie Ψ G), lam.IsAddHaarMeasure ∧ lam.map Subtype.val = riemLie Ψ G x := by
-  exact GlobalTheory.CovTop.VolUp.UpBall.exists_lam Ψ G x hx
+  apply _root_.GlobalTheory.CovTop.VolUp.UpBall.exists_lam <;> assumption
 
 theorem exists_conj_bound (Ψ : Finset (E →+* ℂ)) (x : Frame Ψ r) (hx : ∀ τ, (mat x τ).det ≠ 0) :
     ∃ C : ℝ, 0 < C ∧ ∀ (t : ℝ) (X : Ψ → Fin r → Fin r → ℂ), 0 ≤ t →

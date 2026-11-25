@@ -43,11 +43,6 @@ lemma H.map_zero_injective {C : Type*} [Category C] {J : GrothendieckTopology C}
   rw [Sheaf.H.map_apply, Sheaf.H.map_apply, Ext.mk₀_comp_mk₀, Ext.mk₀_comp_mk₀] at hxy
   rw [(cancel_mono f).1 ((Ext.mk₀_bijective _ _).1 hxy)]
 
-private theorem finite_of_injective_linear {R M N : Type*} [CommRing R] [IsNoetherianRing R]
-    [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N] [Module.Finite R N]
-    (f : M →ₗ[R] N) (hf : Function.Injective f) : Module.Finite R M :=
-  Module.Finite.of_injective (σ' := RingHom.id R) f hf
-
 variable [IsNoetherianRing A]
 
 theorem FiniteH.of_shortExact₂ {S : ShortComplex X.Modules} (hS : S.ShortExact)
@@ -67,7 +62,8 @@ theorem FiniteH.of_shortExact₁ {S : ShortComplex X.Modules} (hS : S.ShortExact
   | zero =>
     have := h₂ 0
     have : Mono (abSC S).f := hS'.mono_f
-    exact finite_of_injective_linear (f 0) (H.map_zero_injective.{w'} (abSC S).f)
+    exact Module.Finite.of_injective (σ' := RingHom.id A)
+      (f 0) (H.map_zero_injective.{w'} (abSC S).f)
   | succ p =>
     have := h₂ (p + 1)
     have := h₃ p

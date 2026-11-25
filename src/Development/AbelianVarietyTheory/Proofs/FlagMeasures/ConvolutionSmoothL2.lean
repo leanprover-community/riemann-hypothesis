@@ -150,7 +150,8 @@ theorem encard_le {G : Type} [Group G] (Γ : Subgroup G) (U T : Set G) (x z : G)
       refine hT _ (γ * γ₀⁻¹).2 _ hγ _ h0 ?_
       simp only [Subgroup.coe_mul, Subgroup.coe_inv]
       group
-    · exact fun a _ b _ hab => mul_right_cancel (Subtype.ext hab)
+    · intro a _ b _ hab
+      exact mul_right_cancel (Subtype.ext hab)
 
 theorem local_mass_le : ∀ (B : RowsAut) (U : Set B.I.GA), 1 ≤ B.I.n → IsCompact U → (∀ u ∈ U, u.2 ∈ B.I.Kset) → ∃ C : ℝ, 0 ≤ C ∧ ∀ (y : B.I.L2 B.μf B.fund) (x : B.I.GA), ∫⁻ g in U, (‖B.I.ext y (x * g)‖₊ : ENNReal) ^ 2 ∂(B.I.muA B.μf) ≤ ENNReal.ofReal (C * (tau1 B.I x)⁻¹ ^ (4 * B.I.n ^ 2 * B.I.f) * ‖y‖ ^ 2) := by
   intro B U hn hU hK
@@ -165,7 +166,7 @@ theorem local_mass_le : ∀ (B : RowsAut) (U : Set B.I.GA), 1 ≤ B.I.n → IsCo
     intro y
     have h := hfund.2.1 y
     have e : B.I.rep B.fund y = h.choose * y := by
-      unfold AutInst.rep; exact dite_eq_left h
+      unfold AutInst.rep; exact dif_pos h
     have hm : h.choose ∈ (Γ : Set B.I.GA) := by
       have k := h.choose_spec.1
       generalize h.choose = z at k ⊢
@@ -449,12 +450,14 @@ theorem exists_retraction {n : ℕ} {ε : Fin n → Bool} (x : UJ ε) :
   have hex : ∀ Y, (1 + skew ε (cay (t Y))).det ≠ 0 → ∃ u : UJ ε, uMat u = cay (skew ε (cay (t Y))) := by
     intro Y hY
     have : cay (skew ε (cay (t Y))) ∈ {g | inUJ ε g} := inUJ_cay ε (adj_skew ε _) hY
-    rwa [← hrange] at this
+    rw [← hrange] at this
+    exact this
   let r : (Fin n → Fin n → ℂ) → UJ ε := fun Y =>
     if h : (1 + skew ε (cay (t Y))).det ≠ 0 then (hex Y h).choose else 1
   have hr : ∀ Y, (1 + skew ε (cay (t Y))).det ≠ 0 → uMat (r Y) = cay (skew ε (cay (t Y))) := by
     intro Y hY
-    simpa only [r, dite_eq_left hY] using (hex Y hY).choose_spec
+    simp only [r, dif_pos hY]
+    exact (hex Y hY).choose_spec
   refine ⟨fun Y => x * r Y, ?_⟩
   filter_upwards [hev.eventually_nhds] with Y hY
   have hY0 := hY.self_of_nhds
@@ -621,7 +624,7 @@ theorem integrable_mul_of_support {X : Type} [MeasurableSpace X] (μ : Measure X
   exact mul_le_mul_of_nonneg_right (hM g) (norm_nonneg _)
 
 theorem continuous_of_smoothInf (I : AutInst) (a : I.Ginf → ℂ) (ha : SmoothInf I a) : Continuous a := by
-  exact GlobalTheory.SmoothConv.continuous_of_smoothInf I ha
+  apply _root_.GlobalTheory.SmoothConv.continuous_of_smoothInf <;> assumption
 
 theorem continuous_of_open_invariant {X G : Type} [TopologicalSpace X] [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] (K : Set G) (hK : IsOpen K) (h1 : (1 : G) ∈ K) (f : X × G → ℂ)

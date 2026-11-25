@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermOverRelationUniqueness
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PlacesOf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerPreimageEqOfLocalInnerLatticeEq
@@ -292,18 +293,7 @@ theorem img_selfDual (g : V ≃ₗ[E] V) (hg : IsUnitary H g) (Λ : Submodule M.
     exact h (g y) (by rw [hm]; simpa using hy)
 
 theorem N_unitary {g : V ≃ₗ[E] V} (hg : g ∈ Fr.N) : IsUnitary H g := by
-  induction hg using Subgroup.closure_induction with
-  | mem g h => exact h.1
-  | one => intro x y; rfl
-  | mul a b _ _ ha hb =>
-    intro x y
-    show H.h (a (b x)) (a (b y)) = H.h x y
-    rw [ha, hb]
-  | inv a _ ha =>
-    intro x y
-    show H.h (a.symm x) (a.symm y) = H.h x y
-    rw [← ha (a.symm x) (a.symm y)]
-    simp
+  first | exact _root_.GlobalTheory.HL.PairingClass.unitary_of_mem | exact @_root_.GlobalTheory.HL.PairingClass.unitary_of_mem | apply _root_.GlobalTheory.HL.PairingClass.unitary_of_mem <;> assumption
 
 theorem img_lamStd_selfDual {n : V ≃ₗ[E] V} (hn : n ∈ Fr.N) (L : Submodule M.L.O (H.Wb Fr.f))
     (hL : Fr.IsInner L) (x : V) :

@@ -64,6 +64,7 @@ import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalTwistContinuousInvolutionIntegralProperties
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteUnitaryLocalComponentMemIntegralGLCofini, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteUnitaryLocalComponentMemIntegralGLCofiniStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteOfValuationBoundedNormLeOne, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlAdicCompletionEntriesBoundedOfIsCompact, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalTestFactorNeZeroOfGlobalProductNeZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalTestFactorNeZeroOfGlobalProductNeZeroStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormComplexEmbeddingEntryDefiniteUnitaryRational, Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormComplexEmbeddingEntryDefiniteUnitaryRationalStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteRationalPointsSupportDefiniteUnitaryTestFu
@@ -411,27 +412,7 @@ theorem cLoc_eventually_KGL : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
 theorem factor_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w)) (f : ∀ w : Pl E, UL n w → ℂ), IsTest (KL n) K' f → ∀ y : finU (E := E) (n := n), (∀ᶠ w in cofinite, cLoc w y.1 ∈ GlobalTheory.LFun.KGL w (n := n)) → globFn S f y ≠ 0 → ∀ w ∈ S, f w (toSub _ (cLoc w y.1)) ≠ 0 := GlobalTheory.T.localTestFactor_ne_zero_of_globalProduct_ne_zero
 
 theorem cLoc_mem_UL : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (w : Pl E) (y : UA E n), cLoc w y ∈ UL n w := by
-  intro E _ _ _ hU n w y
-  by_cases hs : IsSplitAt w
-  · unfold UL
-    rw [ite_eq_left hs]
-    exact Subgroup.mem_top _
-  · obtain ⟨-, -, hloc, -⟩ := (GlobalTheory.ConjAtPlace.main E hU w).2.2.2.1 hs
-    have hu := GlobalTheory.DefU.ClassFin.cT_pFin y
-    unfold UL
-    rw [ite_eq_right hs]
-    change cT (cj w) (cLoc w y).val * 1 * (cLoc w y).val = 1
-    rw [mul_one]
-    have key : cT (cj w) ((GeneralLinearGroup.map (pFin E) (y : GA E n)).val.map (pLoc E w)) =
-        (cT (conjFin (GlobalTheory.DefU.ClassFin.cc E)) (GeneralLinearGroup.map (pFin E) (y : GA E n)).val).map (pLoc E w) := by
-      refine Matrix.ext fun i j => ?_
-      simpa only [cT, Matrix.map_apply, Matrix.transpose_apply] using (hloc _).symm
-    calc cT (cj w) (cLoc w y).val * (cLoc w y).val =
-        (cT (conjFin (GlobalTheory.DefU.ClassFin.cc E)) (GeneralLinearGroup.map (pFin E) (y : GA E n)).val *
-          (GeneralLinearGroup.map (pFin E) (y : GA E n)).val).map (pLoc E w) := by
-          rw [Matrix.map_mul, ← key]
-          rfl
-      _ = 1 := by rw [hu, Matrix.map_one _ (map_zero _) (map_one _)]
+  apply _root_.GlobalTheory.BCT.ThBasic.cLoc_mem_UL <;> assumption
 
 theorem compact_val_bounded : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (D : Set (GL (Fin n) (w.adicCompletion E))), IsCompact D → ∃ N : ℤ, ∀ h ∈ D, ∀ i j, Valued.v (h.val i j) ≤ WithZero.exp N ∧ Valued.v ((h⁻¹).val i j) ≤ WithZero.exp N := _root_.GlobalTheory.BCT.SuppFin.gl_entries_bounded_of_isCompact
 
@@ -442,7 +423,8 @@ theorem valuation_conj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     fun v b => HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v b
   have e := h2 (algebraMap E _ a)
   rw [h1] at e
-  rwa [← hv, ← hv]
+  rw [← hv, ← hv]
+  exact e
 
 theorem section_conjSrc : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (S : Set (Pl E)), IsSection S → (∀ w, w ∉ S → conjSrc (GlobalTheory.SplitPts.conjE E) w ∈ S) ∧ Function.Injective (conjSrc (GlobalTheory.SplitPts.conjE E)) := by
   intro E _ _ _ S hS
@@ -487,15 +469,16 @@ theorem cLoc_finPt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
   have hfin : (⟨_, hUA⟩ : UA E n) ∈ finU (E := E) (n := n) := (MonoidHom.mem_ker).2 (Units.ext (by
     have := pInf_finGL (E := E) (ratF E n γ.1)
     exact congrArg Units.val this))
-  have e0 : toSub (UA E n) (finGL E n (ratF E n γ.1)) = ⟨_, hUA⟩ := dite_eq_left hUA
+  have e0 : toSub (UA E n) (finGL E n (ratF E n γ.1)) = ⟨_, hUA⟩ := dif_pos hUA
   have e1 : (finPt γ).1 = ⟨finGL E n (ratF E n γ.1), hUA⟩ := by
     unfold finPt
     rw [e0]
-    exact congrArg Subtype.val (dite_eq_left hfin)
+    exact congrArg Subtype.val (dif_pos hfin)
   rw [e1]
   have h2 := GlobalTheory.CuspRep.pFin_finGL (E := E) (a := n) (ratF E n γ.1)
   apply Units.ext
-  exact Matrix.ext fun i j => congrArg (fun g : GL (Fin n) (Af E) => pLoc E w (g.val i j)) h2
+  refine Matrix.ext fun i j => ?_
+  exact congrArg (fun g : GL (Fin n) (Af E) => pLoc E w (g.val i j)) h2
 
 end GlobalTheory.BCT.SuppFin
 
@@ -561,7 +544,8 @@ theorem finite_of_bounds (S : Set (Pl E)) (hS : IsSection S) (Γs : Set (UE E n)
   have hM : (Set.pi Set.univ fun _ : Fin n => Set.pi Set.univ fun _ : Fin n => X).Finite :=
     Set.Finite.pi fun _ => Set.Finite.pi fun _ => hX
   refine (hM.preimage (f := fun γ : UE E n => (γ.1.val : Fin n → Fin n → E)) ?_).subset ?_
-  · exact fun a _ b _ h => Subtype.ext (Units.ext h)
+  · intro a _ b _ h
+    exact Subtype.ext (Units.ext h)
   · intro γ hγ i _ j _
     exact ⟨γ, hγ, i, j, Or.inl rfl⟩
 
@@ -603,14 +587,14 @@ theorem GlobalTheory.BCT.SuppFin.suppFin : ∀ (E : Type) [Field E] [NumberField
       rw [hpt]
       refine ⟨_, ⟨⟨_, hUL w _⟩, subset_tsupport _ ?_, rfl⟩, rfl⟩
       have h0 := hnz γ hγ w hw
-      rwa [toSub, dite_eq_left (hUL w _)] at h0
+      rwa [toSub, dif_pos (hUL w _)] at h0
     obtain ⟨h1, h2⟩ := hN _ hmem i j
     rw [(hent w γ i j).1, hv] at h1
     rw [(hent w γ i j).2, hv] at h2
     exact ⟨h1, h2⟩
   · filter_upwards [hf.2, _root_.GlobalTheory.BCT.SuppFin.cLoc_mem_KGL_cofinite E n x.1] with w hfw hxw hw γ hγ i j
     have h0 := hnz γ hγ w hw
-    rw [hfw, toSub, dite_eq_left (hUL w _)] at h0
+    rw [hfw, toSub, dif_pos (hUL w _)] at h0
     have hy : cLoc w (x⁻¹ * finPt γ * x).1 ∈ GlobalTheory.LFun.KGL w (n := n) :=
       Subgroup.mem_subgroupOf.1 (Set.indicator_apply_ne_zero.1 h0).1
     have hg : GeneralLinearGroup.map (algebraMap E (w.adicCompletion E)) γ.1 ∈ GlobalTheory.LFun.KGL w (n := n) := by

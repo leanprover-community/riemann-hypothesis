@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms
 public import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
@@ -124,12 +125,13 @@ theorem brk_sum_reps_orth : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (H : 
   have hΛint := (Formalism.L2.Th1.H.semicharacterBasic V H hH Λ α hΛ).2.2
   have hwΛ : w ∈ Λ := (AddSubgroup.mem_inf.1 hw).1
   by_cases hwB : w ∈ B
-  · rw [ite_eq_left hwB, Finset.sum_congr rfl fun y hy => brk_one_of_int H (hBint hwB y (hSB.1 y hy))]
+  · rw [if_pos hwB, Finset.sum_congr rfl fun y hy => brk_one_of_int H (hBint hwB y (hSB.1 y hy))]
     simp
-  · rw [ite_eq_right hwB]
+  · rw [if_neg hwB]
     have hnd : w ∉ Formalism.L2.Th1.H.dualLat H B := by rw [sdB]; exact hwB
     have hex : ∃ y₀ ∈ B, ¬ ∃ m : ℤ, Formalism.L2.Th1.H.altE H w y₀ = (m : ℝ) := by
-      by_contra! hcon
+      by_contra hcon
+      push_neg at hcon
       exact hnd (fun y hy => hcon y hy)
     obtain ⟨y₀, hy₀B, hy₀⟩ := hex
     exact char_sum_zero hSB (fun y => brk H y w) (fun u v => brk_add_left H u v w)
@@ -154,54 +156,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.RepsCard
 
 theorem card_reps_eq : ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (H : Formalism.L2.Th1.H.Sesq V) (α : V → ℂ) (A B Λ : AddSubgroup V), SplitHyp H α A B Λ → ∀ SA SB : Finset V, Formalism.L2.Th1.H.IsReps B (Λ ⊓ A) SA → Formalism.L2.Th1.H.IsReps Λ B SB → SA.card = SB.card := by
-  intro V _ _ H α A B Λ hyp SA SB hSA hSB
-  obtain ⟨hH, -, hB, -, sdB, hΛ, -, -, -, h5⟩ := hyp
-  have hBint := (Formalism.L2.Th1.H.semicharacterBasic V H hH B α hB).2.2
-  have hΛint := (Formalism.L2.Th1.H.semicharacterBasic V H hH Λ α hΛ).2.2
-  have hone : ∀ {Λ₁ Λ₂ : AddSubgroup V} {S : Finset V} (c : ℂ), Formalism.L2.Th1.H.IsReps Λ₁ Λ₂ S →
-      ∑ x ∈ S, (if x ∈ Λ₁ then c else 0) = c := by
-    intro Λ₁ Λ₂ S c hS
-    obtain ⟨x₀, hx₀, hd⟩ := hS.2.2 0 Λ₂.zero_mem
-    have hx₀Λ : x₀ ∈ Λ₁ := by simpa using Λ₁.neg_mem hd
-    rw [Finset.sum_eq_single x₀]
-    · simp [hx₀Λ]
-    · intro x hx hne
-      rw [ite_eq_right]
-      exact fun hxΛ => hne (hS.2.1 x hx x₀ hx₀ (Λ₁.sub_mem hxΛ hx₀Λ))
-    · intro h; exact absurd hx₀ h
-  have hcol : ∀ s ∈ SA, ∑ y ∈ SB, brk H y s = if s ∈ B then (SB.card : ℂ) else 0 := by
-    intro s hs
-    have hsΛ : s ∈ Λ := (hSA.1 s hs).1
-    split_ifs with hsB
-    · have hsd : s ∈ Formalism.L2.Th1.H.dualLat H B := by rw [sdB]; exact hsB
-      rw [Finset.sum_congr rfl fun y hy => brk_one_of_int H (hsd y (hSB.1 y hy))]
-      simp
-    · by_contra hne
-      apply hsB
-      have hsd : s ∈ Formalism.L2.Th1.H.dualLat H B := by
-        intro y hyB
-        by_contra hno
-        refine hne (char_sum_zero hSB (fun y => brk H y s) (fun u v => brk_add_left H u v s) ?_ (x₀ := y) hyB ?_)
-        · intro m _ hmΛ; exact brk_one_of_int H (hΛint hsΛ m hmΛ)
-        · intro h1; exact hno (int_of_brk_one H h1)
-      rwa [sdB] at hsd
-  have hrow : ∀ y ∈ SB, ∑ s ∈ SA, brk H y s = if y ∈ Λ then (SA.card : ℂ) else 0 := by
-    intro y hy
-    have hyB : y ∈ B := hSB.1 y hy
-    split_ifs with hyΛ
-    · rw [Finset.sum_congr rfl fun s hs => brk_one_of_int H (hΛint (hSA.1 s hs).1 y hyΛ)]
-      simp
-    · by_contra hne
-      apply hyΛ
-      apply h5 y hyB
-      intro a haA haΛ
-      by_contra hno
-      refine hne (char_sum_zero hSA (fun s => brk H y s) (fun u v => brk_add_right H y u v) ?_ (x₀ := a) ⟨haΛ, haA⟩ ?_)
-      · intro m _ hmB; exact brk_one_of_int H (hBint hmB y hyB)
-      · intro h1; exact hno (int_of_brk_one H h1)
-  have key : ∑ s ∈ SA, ∑ y ∈ SB, brk H y s = ∑ y ∈ SB, ∑ s ∈ SA, brk H y s := Finset.sum_comm
-  rw [Finset.sum_congr rfl hcol, Finset.sum_congr rfl hrow, hone _ hSA, hone _ hSB] at key
-  exact_mod_cast key.symm
+  first | exact _root_.Formalism.L2.AlgTh.KerA.card_SA_SB | exact @_root_.Formalism.L2.AlgTh.KerA.card_SA_SB | apply _root_.Formalism.L2.AlgTh.KerA.card_SA_SB <;> assumption
 
 end GlobalTheory.RepsCard
 end -- clump:auto
@@ -291,7 +246,8 @@ theorem exists_rep_add_mem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ :
   have hne : Nonempty D.what₂.Tau := ⟨D.eTau.symm 1⟩
   have hβs : β = s - px x := by
     apply Formalism.L2.Ker.embH_inj (tauE D) hP.ne
-    rwa [map_sub, (hpx x hxS).2]
+    rw [map_sub, (hpx x hxS).2]
+    exact hβe
   refine ⟨x, hxS, fun P hPS => ?_⟩
   have h1 : s + g ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
     have h2 := hsP P hPS
@@ -868,11 +824,7 @@ theorem cocR_zero_left (z : Formalism.L2.Col.HomE E a b) : cocR (ι := ι) emb �
 
 theorem hv_embH_smul (hconj : ∀ τ x, emb τ (star x) = starRingEnd ℂ (emb τ x)) (r : E) (x y : Formalism.L2.Col.HomE E a b) :
     HV (ι := ι) sc (embH emb δ (r • x)) (embH emb δ y) = HV sc (embH emb δ x) (embH emb δ (star r • y)) := by
-  simp only [HV, LinearMap.mk₂'ₛₗ_apply, embH, AddMonoidHom.coe_mk, ZeroHom.coe_mk, LinearMap.smul_apply, Pi.smul_apply,
-    smul_eq_mul, map_mul, hconj, Complex.conj_conj]
-  congr 1
-  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
+  apply _root_.GlobalTheory.CocIntLoc.hv_smul <;> assumption
 
 theorem cocR_smul (hconj : ∀ τ x, emb τ (star x) = starRingEnd ℂ (emb τ x)) (r : E) (x y : Formalism.L2.Col.HomE E a b) :
     cocR (ι := ι) emb δ d sc (r • x) y = cocR emb δ d sc x (star r • y) := by
@@ -946,19 +898,7 @@ noncomputable section
 namespace GlobalTheory.HalfSplit
 
 theorem noConj_of_idemSum : ∀ (D : D7) (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e SS → ∀ P ∈ SS, Formalism.L2.Col.conjPrime₂ P ∉ SS := by
-  intro D e SS hI P hP hP'
-  obtain ⟨⟨es, hes, he⟩, hc⟩ := hI
-  have h1 : ∀ i ∈ SS, es i * es i = es i := fun i hi => (hes i hi).1.1
-  have hcross : ∀ i ∈ SS, ∀ j ∈ SS, es i * cA D (es j) = 0 := by
-    subst he
-    exact GlobalTheory.PlaceDatum.cross_eq_zero (R := AE D) GlobalTheory.PlaceDatum.isUnit_natCast (cA D) es SS h1 hc
-  have hcj : Lev.IsConjPl (D := D) (Formalism.L2.Col.conjPrime₂ P) P := by
-    exact fun c hc' => ⟨Formalism.L2.Col.cO D.host.E c, (Formalism.L2.Col.mem_conjP P c).1 hc', rfl⟩
-  have heq : es P = cA D (es (Formalism.L2.Col.conjPrime₂ P)) :=
-    Formalism.IndefR.Fin.conj_idem_eq (hes _ hP') (hes P hP) hcj
-  apply Formalism.IndefR.Fin.idemAt_ne_zero (hes P hP)
-  have := hcross P hP _ hP'
-  rwa [← heq, h1 P hP] at this
+  first | exact _root_.GlobalTheory.PerLift.conjP_notMem_of_isIdemSum | exact @_root_.GlobalTheory.PerLift.conjP_notMem_of_isIdemSum | apply _root_.GlobalTheory.PerLift.conjP_notMem_of_isIdemSum <;> assumption
 
 theorem splitHyp_halves : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (δ : ℂ) (sc : ℝ), StdPair θ S T δ sc ψ → ∀ (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e SS → ∀ (N : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (N' : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (c : ℕ), 0 < c → Odd c → (∀ Q ∈ SS, ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∉ Q.asIdeal) → LaFacts (tauE D) δ D.host.d sc (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N' → IsSelfDualC S N → IsSelfDualC T N' → SplitHyp (HV sc) (alV D.host.d sc) (AC (tauE D) δ (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) SS N N' c) (BC (tauE D) δ (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) SS N N' c) (LamC (tauE D) δ (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
   intro D ψ θ S T δ sc hP e SS hI N N' c hc hcS h2 hL hN hN'
@@ -1016,7 +956,7 @@ theorem xi_add_halfB {E : Type} [Field E] [NumberField E] [StarRing E] {a b : �
   have h1 : (c : E)⁻¹ • β ∈ Formalism.L2.Col.homAt SS N N' := by
     refine hH _ fun P hP => ?_
     have h2 := (Formalism.L2.Ker.mem_twO M c _ β).1 hβ P
-    have h3 : expS SS P = 1 := by unfold expS; rw [ite_eq_left hP]
+    have h3 : expS SS P = 1 := by unfold expS; rw [if_pos hP]
     rwa [h3, zpow_one] at h2
   have h4 := hΞ2 x _ h1
   rwa [smul_smul, mul_inv_cancel₀ hcE, one_smul] at h4
@@ -1063,9 +1003,9 @@ theorem fin_sum {V : Type} [AddCommGroup V] [Module ℂ V] (H : Formalism.L2.Th1
     exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun y _ => by ring
   rw [h1, Finset.sum_congr rfl fun s hs => by rw [horth (v - s) (sub_mem hv (hRA.1 s hs))]]
   rw [Finset.sum_eq_single s0 (fun s hs hne' => by
-      rw [ite_eq_right (fun h => hne' (hRA.2.1 s hs s0 hs0 (by
+      rw [if_neg (fun h => hne' (hRA.2.1 s hs s0 hs0 (by
         have h2 : s - s0 = (v - s0) - (v - s) := by abel
-        rw [h2]; exact sub_mem hvs0 h))), mul_zero]) (fun h => absurd hs0 h), ite_eq_left hvs0, hcard]
+        rw [h2]; exact sub_mem hvs0 h))), mul_zero]) (fun h => absurd hs0 h), if_pos hvs0, hcard]
   have : (SB.card : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hne
   field_simp
 
@@ -1166,7 +1106,7 @@ theorem four_expand : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam
     intro x _ h
     have h0 : halfInd e Λ (t + eXm S T e (px x)) = 0 := by
       unfold halfInd
-      rw [ite_eq_right]
+      rw [if_neg]
       rintro ⟨h1, h3⟩
       rcases h with h | h
       exacts [h h1, h h3]
@@ -1200,7 +1140,7 @@ theorem four_expand : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam
       have h1 : k • t = e • (k • t) := by
         ext i j
         rw [Matrix.smul_apply, Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, nsmul_eq_mul, mul_left_comm, ht i j]
-      rw [h1, htM, smul_add, heF, smul_add, hkeX k M, ite_eq_right hk.ne', hsn, hns3]
+      rw [h1, htM, smul_add, heF, smul_add, hkeX k M, if_neg hk.ne', hsn, hns3]
     have hΦg : Φ t = Ξ (Matrix.toLin' ((k : D.host.E)⁻¹ • M)) := by
       rw [hteq, hinv _ (nsmul_mem (hΛe u hu) c) (hhs c _ (hhe u)), hΦ']
     have hg1 := hΞ1 _ (hΦg ▸ h0)
@@ -1228,7 +1168,7 @@ theorem four_expand : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam
       · exact hloc Q hQ
       · have h6 := (Formalism.L2.Ker.mem_twO _ c _ _).1 hA Q
         unfold expS at h6
-        rw [ite_eq_right hQ] at h6
+        rw [if_neg hQ] at h6
         split_ifs at h6 with hQ'
         · have hcE : (c : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 hc.ne'
           have h7 := Formalism.L2.Ker.nat_smul_mem _ c h6
@@ -1251,7 +1191,7 @@ theorem four_expand : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam
     rw [Matrix.add_apply, mul_add, ht i j, heX _ i j]
   have hI : halfInd e Λ (t + eXm S T e (px x0)) = 1 := by
     unfold halfInd
-    rw [ite_eq_left ⟨hu0, huh⟩]
+    rw [if_pos ⟨hu0, huh⟩]
   simp only [hI, mul_one]
   obtain ⟨M, hM, u', hu', huM⟩ := GlobalTheory.DatumFourier.approx_mod (Nat.mul_pos hk hc) hu0
   have hueq : t + eXm S T e (px x0) = eXm S T e (Matrix.toLin' M) + k • (c • (e • u')) := by

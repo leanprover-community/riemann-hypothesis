@@ -135,7 +135,7 @@ variable {D : D7}
 
 theorem continuous_mixed (F : Type) [Field F] [NumberField F] :
     Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  exact GlobalTheory.ThetaTransformMeas.continuous_mixed F
+  apply _root_.GlobalTheory.ThetaTransformMeas.continuous_mixed <;> assumption
 
 def realCoord (σ : (D.what₂.Tau → ℂ) →+ AE D) {m n d : ℕ} (ε : Module.Basis (Fin d) D.host.F D.host.E) :
     (D.what₂.Tau → Fin m → Fin n → ℂ) →+ (Fin m × Fin n × Fin d → mixedEmbedding.mixedSpace D.host.F) where
@@ -420,7 +420,7 @@ theorem absThetaInt_le_contSeminorm : GlobalTheory.Published.WeilThetaConvergenc
   refine Seminorm.continuous_of_lowerSemicontinuous (ν.comp L) fun f y hy => ?_
   by_cases hy0 : y < 0
   · exact Filter.Eventually.of_forall fun f' => hy0.trans_le ENNReal.toReal_nonneg
-  · push Not at hy0
+  · push_neg at hy0
     have h1 : ENNReal.ofReal y < absThetaInt B m ((pureS g f).1 ∘ coord ε) :=
       (ENNReal.ofReal_lt_iff_lt_toReal hy0 (hfin _)).2 hy
     filter_upwards [hN f _ h1] with f' hf'

@@ -355,33 +355,21 @@ structure DivX (D : D7) : Type 1 where
 
   shv : letI := D.host.cmStar; HSpace D.host.E → Lev → DV.ShimX D.what₂.Tau
 
-  shv_N : letI := D.host.cmStar; ∀ S κ, 2 ≤ S.rank → (shv S κ).N = S.rank
-  shv_lev : letI := D.host.cmStar; ∀ S κ, (shv S κ).lev = levPr κ
 
   PlP : ∀ (p : ℕ) [Fact p.Prime], Type
   [plpFin : ∀ (p : ℕ) [Fact p.Prime], Fintype (PlP p)]
-  plpNe : ∀ (p : ℕ) [Fact p.Prime], Nonempty (PlP p)
   wtP : ∀ (p : ℕ) [Fact p.Prime], PlP p → ℝ
-  divisorWeight_nonneg : ∀ (p : ℕ) [Fact p.Prime] (la : PlP p), 0 ≤ wtP p la
-  divisorWeight_sum : ∀ (p : ℕ) [Fact p.Prime], ∑ la, wtP p la = 1
 
   plP : ∀ (p : ℕ) [Fact p.Prime], PlP p ≃ {w : D.what₂.places.Pl // D.what₂.places.resChar w = p}
 
-  divisorWeight_def : ∀ (p : ℕ) [Fact p.Prime] (la : PlP p),
-    wtP p la = (D.what₂.places.ramIdx (plP p la).1 : ℝ) *
-      (padicValNat p (Ideal.absNorm (D.plEq (plP p la).1).asIdeal) : ℝ) / (Module.finrank ℚ D.what₂.LL : ℝ)
 
   jC : ∀ (p : ℕ) [Fact p.Prime], PlP p → (DV.KW p →+* ℂ)
 
   Mp : letI := D.host.cmStar; ∀ (_S : HSpace D.host.E) (_κ : Lev) (p : ℕ) [Fact p.Prime], PlP p → Type
 
   vdd : ℕ → D.what₂.Tau → ℝ
-  vdd_unram : ∀ p τ, DV.UnramE D p → vdd p τ = 0
 
-  phiFr_unram : letI := D.host.cmStar; ∀ S κ p y x, DV.UnramE D p →
-    (shv S κ).phiFr p y x = (shv S κ).phiDR p y x
 
-  vdd_nonneg : ∀ p τ, 0 ≤ vdd p τ
 
   CurveM : letI := D.host.cmStar; ∀ (S : HSpace D.host.E) (κ : Lev) (p : ℕ) [Fact p.Prime]
     (la : PlP p), Mp S κ p la → Type
@@ -392,10 +380,6 @@ structure DivX (D : D7) : Type 1 where
     (la : PlP p), Mp S κ p la
   htCurve : letI := D.host.cmStar; ∀ (S : HSpace D.host.E) (κ : Lev) (p : ℕ) [Fact p.Prime],
     (shv S κ).CurveHT p ≃ Σ la : PlP p, CurveM S κ p la (htMdl S κ p la)
-  htCurve_deg : letI := D.host.cmStar; ∀ (S : HSpace D.host.E) (κ : Lev) (p : ℕ) [Fact p.Prime]
-    (c : (shv S κ).CurveHT p),
-    degM S κ p (htCurve S κ p c).1 (htMdl S κ p (htCurve S κ p c).1) (htCurve S κ p c).2 =
-      (shv S κ).degHT p c
 
   MjH : ℕ → HLat D.what₂.LL
   MjH_good : ∀ j, (MjH j).Good
@@ -409,8 +393,6 @@ structure DivX (D : D7) : Type 1 where
 
   MjLat_sub : ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ x ∈ (D.what₂.MjLat j).gen, x ∈ Set.range (jM j)
 
-  jM_metric : ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ x, Formalism.HermitianLatticesTheory.cnorm (Formalism.HermitianLatticesTheory.fcoord (MjH j).b (MjH j).X
-    (InfinitePlace.mk D.what₂.embLL) x) = ‖jM j x‖
 
   Qp : D.what₂.Tup → Finset ℕ
 
@@ -418,49 +400,35 @@ structure DivX (D : D7) : Type 1 where
 
   Qp_muAt : ∀ w, D.what₂.places.resChar w ∉ Qp (D.what₂.muAt w)
 
-  Qp_g : ∀ μ, (μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w) → ∀ i, D.host.g i ∉ Qp μ
 
   QPl : D.what₂.Tup → Type
-  [finQ : ∀ μ, Fintype (QPl μ)]
 
   qv : ∀ μ, QPl μ → ℕ
 
-  qv_gt : ∀ μ v, 1 < qv μ v
 
-  qv_char : ∀ μ, (μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w) → ∀ v, ∃ p ∈ Qp μ, p.Prime ∧ qv μ v = p
 
-  nu : ∀ μ, QPl μ → ℕ → ℂ
 
   Comp : ℕ → Type
-  [compFin : ∀ j, Fintype (Comp j)]
 
-  degHH : ∀ j, Comp j → D.what₂.Tau → ℝ
 
   Yv : ∀ j, Comp j → geo.Var
 
-  Ybd : ∀ j c, geo.Cl (Yv j c)
 
   Lw : ∀ j c, (D.what₂.Tau → Fin D.R.r → ℤ) →+ geo.Dv (Yv j c)
 
   iMj : ∀ j c, (MjH j).V →ₗ[D.what₂.LL] geo.Fn (Yv j c)
-  iMj_mem : ∀ j c x, iMj j c x ∈ geo.H0 (Yv j c) (Lw j c (DV.kapW D j))
 
   logLam : ℕ → D.what₂.FT → (D.what₂.LL →+* ℂ) → ℝ
 
   logLam_base : ∀ j σ, logLam j σ D.what₂.embLL = Real.log (D.what₂.lamP D.what₂.mu0 j σ)
 
   kapR : (D.what₂.LL →+* ℂ) → ℝ
-  kapR_pos : ∀ e, 0 < kapR e
 
-  kapR_conj : ∀ e, kapR (NumberField.ComplexEmbedding.conjugate e) = kapR e
 
   Surf : Type
-  surfCh2 : Surf → ℝ
-  surfDegOm : Surf → ℝ
   SurfFp : Type
-  surfFpCh2 : SurfFp → ℝ
 
-attribute [instance] DivX.finQ DivX.compFin DivX.plpFin
+attribute [instance] DivX.plpFin
 
 def DV.HidaSetting (D : D7) (XD : DivX D) (S : letI := D.host.cmStar; HSpace D.host.E) (κ : XD.Lev) : Prop :=
   letI := D.host.cmStar

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicTraceSupportedAtSplitPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,16 +54,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem liftV_one_mul (v : Pl (F := F)) (b : AF F) :
     GlobalTheory.LatVac.liftV v 1 * b = GlobalTheory.LatVac.liftV v (evFin F v b) := by
-  have h1 : ∀ z : AF F, At (evFin F v) z → GlobalTheory.LatVac.liftV v 1 * z = z := by
-    intro z hz
-    have := hz (1 - GlobalTheory.LatVac.liftV v 1) (by rw [map_sub, map_one, GlobalTheory.LatVac.evFin_liftV, sub_self])
-    rw [smul_eq_mul] at this
-    linear_combination -this
-  have h2 := GlobalTheory.LatVac.at_liftV v 1 (b - GlobalTheory.LatVac.liftV v (evFin F v b))
-    (by rw [map_sub, GlobalTheory.LatVac.evFin_liftV, sub_self])
-  rw [smul_eq_mul] at h2
-  have h3 := h1 _ (GlobalTheory.LatVac.at_liftV v (evFin F v b))
-  linear_combination h2 + h3
+  apply _root_.GlobalTheory.SplitAdeleTrace.liftV_one_mul_comp <;> assumption
 
 omit [NumberField E] in
 theorem smul_eq_map (v : Pl (F := F)) (a : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) :

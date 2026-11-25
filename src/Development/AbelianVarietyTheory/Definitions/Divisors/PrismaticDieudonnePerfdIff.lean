@@ -229,10 +229,6 @@ def bcChar (χ : G.dual.Tate) : (G.baseChange O').dual.Tate :=
 @[simp] theorem charElem_bcChar (χ : G.dual.Tate) (n : ℕ) : charElem (bcChar O' χ) n = 1 ⊗ₜ charElem χ n :=
   CartierDual.eq_of_forall_apply (R := O') fun φ => apply_charElem _ n φ
 
-theorem muRoot_pairing_bc (t : G.Tate) (χ : G.dual.Tate) (n : ℕ) :
-    muRoot (pairing _ O' (bcTate O' t) (bcChar O' χ)) n = algebraMap O O' (muRoot (pairing G O t χ) n) := by
-  rw [muRoot_pairing, muRoot_pairing, charElem_bcChar, bcTate_pt, one_mul]
-
 def dualBaseChange (G : PDivGroup p O) : (G.baseChange O').dual ≅ G.dual.baseChange O' where
   hom := ⟨fun n => CartierDual.baseChangeHom O O' (G.A n), fun n => BialgHom.ext fun x => by
     change CartierDual.map ((G.baseChange O').mulP n) _ = _
@@ -256,19 +252,6 @@ namespace ConstTate
 
 variable {ε : (PDivGroup.mu p O).Tate} {G : PDivGroup p O}
 
-def ofPerfect (t : Fin G.height → G.Tate) (t' : Fin G.height → G.dual.Tate) (P : GL (Fin G.height) ℤ_[p])
-    (h : ∀ i j, pairing G O (t i) (t' j) = P i j • ε) : ConstTate ε G where
-  t := t
-  t' j := ∑ k, P⁻¹ k j • t' k
-  pair i j := by
-    have h1 : ∑ k, P i k * P⁻¹ k j = if i = j then 1 else 0 := by
-      have h2 := congrFun (congrFun P.mul_inv i) j
-      rwa [Matrix.mul_apply, Matrix.one_apply] at h2
-
-    simp only [map_sum, map_smul, h, smul_smul, mul_comm (P⁻¹ _ j)]
-    rw [← Finset.sum_smul, h1]
-    split_ifs <;> simp
-
 variable (c : ConstTate ε G)
 
 def dual : ConstTate ε G.dual where
@@ -279,22 +262,6 @@ def dual : ConstTate ε G.dual where
 def al : (Fin G.height → O) →ₗ[O] G.dual.omega := Fintype.linearCombination O fun i => hodgeTate G (c.t i)
 
 def W : Submodule O (Fin G.height → O) := LinearMap.ker c.al
-
-section BaseChange
-
-variable (O' : Type) [CommRing O'] [Algebra O O']
-
-def baseChange {ε' : (PDivGroup.mu p O').Tate} (h : ∀ n, muRoot ε' n = algebraMap O O' (muRoot ε n)) :
-    ConstTate ε' (G.baseChange O') where
-  t i := bcTate O' (c.t i)
-  t' j := bcChar O' (c.t' j)
-  pair i j := muRoot_ext fun n => by
-    rw [muRoot_pairing_bc, c.pair]
-    split_ifs
-    · exact (h n).symm
-    · rw [muRoot_zero, muRoot_zero, map_one]
-
-end BaseChange
 
 end ConstTate
 
@@ -348,11 +315,6 @@ def K (n : ℕ) : Submodule (Ainf p S.R) (Fin G.height → Ainf p S.R) :=
   Nat.rec (LinearMap.range (coord D c)) (fun _ N => N.comap (piMap frobenius _)) n
 
 def b : D.Cov G →ₛₗ[fontaineTheta S.R p] (Fin G.height → S.R) := (piMap (fontaineTheta S.R p) _).comp (coord D c)
-
-def thetaK (n : ℕ) : Submodule S.R (Fin G.height → S.R) := (K D c n).map (piMap (fontaineTheta S.R p) _)
-
-def H (n : ℕ) : Submodule S.R (Fin G.height → S.R) :=
-  ((zeta S.ε 1 - 1) • thetaK D c (n + 1)).comap (LinearMap.lsmul S.R _ (zeta S.ε (n + 1) - 1))
 
 
 end Lattices

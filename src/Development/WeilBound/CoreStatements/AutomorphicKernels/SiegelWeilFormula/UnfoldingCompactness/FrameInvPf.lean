@@ -55,16 +55,12 @@ theorem jw_sq_ks {R : Type} [CommRing R] (n : ℕ) (e : R) : jw n e * jw n e = e
   rw [jw, Matrix.fromBlocks_multiply, ← Matrix.fromBlocks_one, Matrix.fromBlocks_smul]
   simp
 
-private theorem map_jw_eq_self_of_involution {R : Type} [CommRing R] (s : R →+* R) (hs : ∀ x, s (s x) = x) {n : ℕ} (e : R)
+private theorem map_jw_eq_self_of_involution {R : Type} [CommRing R] (s : R →+* R) {n : ℕ} (e : R)
     (hse : s e = e) : (jw n e).map s = jw n e := by
   unfold jw
   rw [Matrix.fromBlocks_map]
-  congr 1
-  · ext i j; simp
-  · ext i j; simp [Matrix.one_apply]
-  · ext i j
-    by_cases h : i = j <;> simp [Matrix.smul_apply, h, hse]
-  · ext i j; simp
+  congr 1 <;> ext i j <;> simp [Matrix.one_apply, Matrix.smul_apply]
+  rw [apply_ite s, hse, map_zero]
 
 theorem frame_inv_pf {R : Type} [CommRing R] (s : R →+* R) (hs : ∀ x, s (s x) = x) {n : ℕ} (e : R) (he : e * e = 1)
     (hse : s e = e) (M : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R) (hM : Mᵀ * jw n e * M.map s = jw n e) :
@@ -77,7 +73,8 @@ theorem frame_inv_pf {R : Type} [CommRing R] (s : R →+* R) (hs : ∀ x, s (s x
   have hss : (M.map s).map s = M := by ext i j; simp [hs]
   have hM' : (M.map s)ᵀ * jw n e * M = jw n e := by
     have := congrArg (fun X => X.map s) hM
-    simp only [Matrix.map_mul, Matrix.transpose_map, map_jw_eq_self_of_involution s hs e hse, hss] at this
+    simp only [Matrix.map_mul, Matrix.transpose_map, hss,
+      map_jw_eq_self_of_involution s e hse] at this
     simpa [Matrix.transpose_map] using this
   have hJ : jw n e * jw n e = e • 1 := jw_sq_ks n e
   have hK : N = e • (jw n e * (M.map s)ᵀ * jw n e) := by

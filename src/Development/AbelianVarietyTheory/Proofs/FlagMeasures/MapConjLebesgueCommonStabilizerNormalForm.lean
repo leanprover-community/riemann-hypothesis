@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerSetEqRangeNormalForm
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormFlagZeroMiddleInverseMinorOrthogonal
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.SUpPowEqZero
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsNormalFormStabilizerMeasure
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicStabilizerRadicalStructure
@@ -126,16 +128,7 @@ theorem inv_upper_gt (x : UT r → ℂ) {a b : Fin r} (h : b < a) : (upper x)⁻
   exact upper_of_gt x hlt
 
 theorem inv_upper_diag (x : UT r → ℂ) (a : Fin r) : (upper x)⁻¹ a a = 1 := by
-  have h1 : ((upper x)⁻¹ * upper x) a a = 1 := by
-    rw [Matrix.nonsing_inv_mul _ (isUnit_upper x), Matrix.one_apply_eq]
-  rw [Matrix.mul_apply, Finset.sum_eq_single a] at h1
-  · simpa [upper_diag] using h1
-  · intro c _ hc
-    rcases lt_or_gt_of_ne hc with hlt | hgt
-    · rw [inv_upper_gt x hlt, zero_mul]
-    · rw [upper_of_gt x hgt, mul_zero]
-  · intro hna
-    exact absurd (Finset.mem_univ a) hna
+  apply _root_.GlobalTheory.Amp.CommonStab.inv_diag <;> assumption
 
 theorem inv_upper_lt (x : UT r → ℂ) {a b : Fin r} (h : a < b) :
     -(upper x)⁻¹ a b - upper x a b = ∑ c, if a < c ∧ c < b then upper x a c * (upper x)⁻¹ c b else 0 := by
@@ -606,15 +599,7 @@ theorem exists_perm {j : ℕ} (hj : j ≤ r) (β : Fin r → ℕ) (Z : Matrix (F
 
 theorem apply_of_mem_XstJ {j : ℕ} {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ XstJ k r j) {i : Fin (2 * r + k + 1)}
     (hi : ∀ b : Fin r, b.val < j → i ≠ esI k r b) : v i = 0 := by
-  have hv' : v ∈ Submodule.span ℂ (Set.range fun a : {a : Fin r // a.val < j} => bvec (esI k r a.1)) := hv
-  clear hv
-  induction hv' using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨a, rfl⟩ := hx
-    exact Pi.single_eq_of_ne (hi a.1 a.2) 1
-  | zero => simp
-  | add x y _ _ hx hy => simp [hx, hy]
-  | smul c x _ hx => simp [hx]
+  apply _root_.GlobalTheory.Amp.CommonStab.xst_coord <;> assumption
 
 theorem mulVec_bvec (g : Mat k r) (x i : Fin (2 * r + k + 1)) : (g *ᵥ bvec x) i = g i x := by
   show (g *ᵥ Pi.single x 1) i = g i x
@@ -626,14 +611,7 @@ theorem H_sq : Hpk k r * Hpk k r = 1 := by
   | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
 
 theorem isUnit_det_of_mem {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hH : (Hpk k r).det * (Hpk k r).det = 1 := by
-    rw [← Matrix.det_mul, H_sq, Matrix.det_one]
-  have h := congrArg Matrix.det hg'
-  rw [Matrix.det_mul, Matrix.det_mul] at h
-  refine isUnit_iff_ne_zero.mpr fun h0 => ?_
-  rw [h0, mul_zero] at h
-  exact left_ne_zero_of_mul_eq_one hH h.symm
+  apply _root_.GlobalTheory.Amp.NfMid.unit_det <;> assumption
 
 theorem pairing {g : Mat k r} (hg : g ∈ GG k r) (x i : Fin (2 * r + k + 1)) :
     ∑ a, star (g (esI k r a) x) * g (eI k r a) i + ∑ n, star (g (wI k r n) x) * sg k n * g (wI k r n) i +

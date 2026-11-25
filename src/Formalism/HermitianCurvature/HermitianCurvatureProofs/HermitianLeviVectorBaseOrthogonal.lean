@@ -110,13 +110,13 @@ lemma hermitian_dual_base_vector_left (v : Fin (2 * (1 + r') + k + 1) → ℂ) :
 
 lemma liftVec_first (y : Fin (2 * r' + k + 1) → ℂ) : liftVec k 1 r' y (iF k r') = 0 := by
   unfold liftVec
-  rw [dite_eq_right]
+  rw [dif_neg]
   simp only [iF, Fin.val_mk]
   omega
 
 lemma liftVec_last (y : Fin (2 * r' + k + 1) → ℂ) : liftVec k 1 r' y (iL k r') = 0 := by
   unfold liftVec
-  rw [dite_eq_right]
+  rw [dif_neg]
   simp only [iL, Fin.val_mk]
   omega
 
@@ -124,7 +124,7 @@ lemma liftVec_mid (y : Fin (2 * r' + k + 1) → ℂ) (j : Fin (2 * r' + k + 1)) 
     liftVec k 1 r' y (levPos k 1 r' j) = y j := by
   have hj := j.isLt
   unfold liftVec
-  rw [dite_eq_left (show 1 ≤ (levPos k 1 r' j).val ∧ (levPos k 1 r' j).val < 2 * r' + k + 1 + 1 from
+  rw [dif_pos (show 1 ≤ (levPos k 1 r' j).val ∧ (levPos k 1 r' j).val < 2 * r' + k + 1 + 1 from
     ⟨show 1 ≤ j.val + 1 by omega, show j.val + 1 < 2 * r' + k + 1 + 1 by omega⟩)]
   congr 1
 
@@ -194,15 +194,15 @@ private lemma w0_apply_iF_col (c : ℂ) (i : Fin (2 * (1 + r') + k + 1)) :
     exact lt_irrefl 0 h2
   by_cases h : i = iL k r'
   · have hi : i.val = 2 * (1 + r') + k := by rw [h]; rfl
-    rw [ite_eq_right (by omega), ite_eq_left ⟨hi, h0⟩, ite_eq_left h]
+    rw [if_neg (by omega), if_pos ⟨hi, h0⟩, if_pos h]
   · have hi : i.val ≠ 2 * (1 + r') + k := fun h' => h (Fin.ext h')
-    rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h3, ite_eq_right h]
+    rw [if_neg (by omega), if_neg (by omega), if_neg h3, if_neg h]
 
 lemma long_weyl_sends_base_to_dual (c : ℂ) : w0 k r' c *ᵥ e0 k r' = c • es0 k r' := by
   rw [e0_eq, dual_base_vector_eq_single]
   ext i
   have hcol : (w0 k r' c *ᵥ Pi.single (iF k r') 1) i = w0 k r' c i (iF k r') := by
-    simp only [mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    simp only [mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
   rw [hcol, w0_apply_iF_col, Pi.smul_apply, Pi.single_apply, smul_eq_mul]
   split_ifs <;> simp
 
@@ -230,8 +230,8 @@ lemma lev_mid (g : Mat k r') (i j : Fin (2 * r' + k + 1)) : ιLev k 1 r' g (levP
   have hi := i.isLt
   have hj := j.isLt
   unfold ιLev levPos
-  rw [dite_eq_left (show 1 ≤ i.val + 1 ∧ i.val + 1 < 2 * r' + k + 1 + 1 by omega),
-    dite_eq_left (show 1 ≤ j.val + 1 ∧ j.val + 1 < 2 * r' + k + 1 + 1 by omega)]
+  rw [dif_pos (show 1 ≤ i.val + 1 ∧ i.val + 1 < 2 * r' + k + 1 + 1 by omega),
+    dif_pos (show 1 ≤ j.val + 1 ∧ j.val + 1 < 2 * r' + k + 1 + 1 by omega)]
   congr 1
 
 lemma mid_or (p : Fin (2 * (1 + r') + k + 1)) : (∃ i, p = levPos k 1 r' i) ∨ ¬ (1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1) := by
@@ -248,17 +248,6 @@ lemma levPos_inj : Function.Injective (levPos k 1 r') := by
 lemma levPos_mid (i : Fin (2 * r' + k + 1)) : 1 ≤ (levPos k 1 r' i).val ∧ (levPos k 1 r' i).val < 2 * r' + k + 1 + 1 := by
   have hi := i.isLt
   exact ⟨show 1 ≤ i.val + 1 by omega, show i.val + 1 < 2 * r' + k + 1 + 1 by omega⟩
-
-private lemma iotaLev_levPos_apply_of_col_outside (g : Mat k r') (i : Fin (2 * r' + k + 1)) (m : Fin (2 * (1 + r') + k + 1))
-    (hm : ¬ (1 ≤ m.val ∧ m.val < 2 * r' + k + 1 + 1)) : ιLev k 1 r' g (levPos k 1 r' i) m = 0 := by
-  unfold ιLev
-  rw [dite_eq_left (levPos_mid i), dite_eq_right hm]
-
-private lemma iotaLev_apply_of_first_index_outside (g : Mat k r') (p : Fin (2 * (1 + r') + k + 1))
-    (hp : ¬ (1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1)) (m : Fin (2 * (1 + r') + k + 1)) :
-    ιLev k 1 r' g p m = if p = m then 1 else 0 := by
-  unfold ιLev
-  rw [dite_eq_right hp]
 
 lemma lev_mul (g h : Mat k r') : ιLev k 1 r' (g * h) = ιLev k 1 r' g * ιLev k 1 r' h := by
   apply ReciprocityTheory.ChartRestriction.DS.Xi.StepA.lev_mul
@@ -316,8 +305,8 @@ lemma liftVec_cont : Continuous (liftVec k 1 r') := by
   intro p
   unfold liftVec
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
-  · simp only [dite_eq_left hp]; exact continuous_apply _
-  · simp only [dite_eq_right hp]; exact continuous_const
+  · simp only [dif_pos hp]; exact continuous_apply _
+  · simp only [dif_neg hp]; exact continuous_const
 
 lemma herm_cont {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) : Continuous fun p : (Fin m → ℂ) × (Fin m → ℂ) => herm H p.1 p.2 := by
   first
@@ -358,10 +347,10 @@ lemma levM_cont : Continuous (levM k r') := by
   unfold levM ιLev
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
   · by_cases hq : 1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1
-    · simp only [dite_eq_left hp, dite_eq_left hq]
+    · simp only [dif_pos hp, dif_pos hq]
       first | exact continuous_apply_apply _ _
-    · simp only [dite_eq_left hp, dite_eq_right hq]; exact continuous_const
-  · simp only [dite_eq_right hp]; exact continuous_const
+    · simp only [dif_pos hp, dif_neg hq]; exact continuous_const
+  · simp only [dif_neg hp]; exact continuous_const
 
 lemma tau_meas : Measurable (tau k r') := by
   have h1 : Measurable fun p : ℂ × HPar k r' => heisF k r' p.2 := heisenberg_map_continuous.measurable.comp measurable_snd
@@ -760,7 +749,7 @@ lemma nu_conc (HIv : HaarInv) (hG : ClosedG) (HI : HeisInv) (OM : OneStepMem)
     filter_upwards [hae] with p hp
     have hmem := (OM k r' p.1.1 p.1.2 c hc (Matrix.of p.2) hp).1
     classical
-    rw [Set.indicator_apply, ite_eq_right (fun hn => hn hmem)]
+    rw [Set.indicator_apply, if_neg (fun hn => hn hmem)]
 
 lemma evalE_cont : Continuous fun g : Mt k (1 + r') => (Matrix.of g : Mat k (1 + r')) *ᵥ e0 k r' := by
   first
@@ -922,18 +911,18 @@ lemma lev_off (g : Mat k r') (m : Fin (2 * (1 + r') + k + 1)) (hm : m ∉ Set.ra
   have hp : ¬ (1 ≤ m.val ∧ m.val < 2 * r' + k + 1 + 1) := by
     rintro ⟨h1, h2⟩
     exact hm ⟨⟨m.val - 1, by omega⟩, Fin.ext (show m.val - 1 + 1 = m.val by omega)⟩
-  rw [dite_eq_right hp, ite_eq_right]
+  rw [dif_neg hp, if_neg]
   intro h
   exact hm ⟨j, h.symm⟩
 
 lemma prod_block (x : HPar k r') (g : Mat k r') (i j : Fin (2 * r' + k + 1)) :
     (heis0 k r' x * ιLev k 1 r' g) (levPos k 1 r' i) (levPos k 1 r' j) = g i j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (levPos k 1 r' i)]
-  · rw [heis_block, ite_eq_left rfl, one_mul, lev_block]
+  · rw [heis_block, if_pos rfl, one_mul, lev_block]
   · intro m _ hm
     by_cases hr : m ∈ Set.range (levPos k 1 r')
     · obtain ⟨l, rfl⟩ := hr
-      rw [heis_block, ite_eq_right (fun h => hm (by rw [h])), zero_mul]
+      rw [heis_block, if_neg (fun h => hm (by rw [h])), zero_mul]
     · rw [lev_off g m hr, mul_zero]
   · intro h; exact absurd (Finset.mem_univ _) h
 

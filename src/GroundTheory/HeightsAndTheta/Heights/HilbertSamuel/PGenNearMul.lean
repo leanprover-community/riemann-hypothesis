@@ -123,44 +123,38 @@ theorem cellRes_locMul (hW : W ≤ Module.annihilator (MRingOver S ι) M) {J I :
 
 theorem act_mem (hW : W ≤ Module.annihilator (MRingOver S ι) M) {𝓜 : (K → ℤ) → Submodule S M}
     (h𝓜 : KH.IsMGraded S ι 𝓜) {c e : K → ℤ} {a : MRingOver S ι ⧸ W} (ha : a ∈ KH.quotPart S W c) {m : M}
-    (hm : m ∈ 𝓜 e) : act hW a m ∈ 𝓜 (e + c) := by
-  induction ha using Submodule.span_induction with
-  | mem a ha =>
-    obtain ⟨q, ⟨hc, hq⟩, rfl⟩ := ha
-    rw [act_mk]
-    have := h𝓜.2 _ e q m hq hm
-    convert this using 2
+    (hm : m ∈ 𝓜 e) : act hW a m ∈ 𝓜 (e + c) :=
+  (Submodule.span_le.mpr (by
+    rintro _ ⟨q, ⟨hc, hq⟩, rfl⟩
+    rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply,
+      LinearMap.flip_apply, act_mk]
+    convert h𝓜.2 _ e q m hq hm using 2
     funext k
-    simp [hc k]
-  | zero => rw [map_zero, LinearMap.zero_apply]; exact zero_mem _
-  | add a₁ a₂ _ _ h₁ h₂ => rw [map_add (f := _), LinearMap.add_apply]; exact add_mem h₁ h₂
-  | smul s a _ h => rw [act_smulS]; exact Submodule.smul_mem _ s h
+    simp [hc k]) :
+    KH.quotPart S W c ≤ (𝓜 (e + c)).comap (((act hW).flip m).restrictScalars S)) ha
 
 theorem locMul_mem (hW : W ≤ Module.annihilator (MRingOver S ι) M) {𝓜 : (K → ℤ) → Submodule S M}
     (h𝓜 : KH.IsMGraded S ι 𝓜) {d n : K → ℤ} {T : Submonoid (MRingOver S ι)}
     {x : LocalizedModule T (MRingOver S ι ⧸ W)} {y : LocalizedModule T M}
     (hx : x ∈ KH.locPart ι (KH.quotPart S W) T n) (hy : y ∈ KH.locPart ι 𝓜 T d) :
-    locMul T hW x y ∈ KH.locPart ι 𝓜 T (d + n) := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨a, s, e, hs, ha, rfl⟩ := hx
-      obtain ⟨m, t, e', ht, hm, rfl⟩ := hy
-      rw [locMul_mk]
-      refine Submodule.subset_span ⟨_, s * t, e + e', by simpa using GenTwistGenerated.isMultiHomog_mul hs ht,
-        ?_, rfl⟩
-      have := act_mem hW h𝓜 ha hm
-      convert this using 2
+    locMul T hW x y ∈ KH.locPart ι 𝓜 T (d + n) :=
+  (Submodule.span_le.mpr (by
+    rintro _ ⟨a, s, e, hs, ha, rfl⟩
+    rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply,
+      LinearMap.flip_apply]
+    refine (Submodule.span_le.mpr (by
+      rintro _ ⟨m, t, e', ht, hm, rfl⟩
+      rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.restrictScalars_apply, locMul_mk]
+      refine Submodule.subset_span ⟨_, s * t, e + e',
+        by simpa using GenTwistGenerated.isMultiHomog_mul hs ht, ?_, rfl⟩
+      convert act_mem hW h𝓜 ha hm using 2
       funext k
       simp only [Pi.add_apply, Nat.cast_add]
-      ring
-    | zero => rw [map_zero]; exact zero_mem _
-    | add y₁ y₂ _ _ h₁ h₂ => rw [map_add]; exact add_mem h₁ h₂
-    | smul c y _ h => rw [(locMul_smulS T hW c x y).2]; exact Submodule.smul_mem _ c h
-  | zero => rw [map_zero, LinearMap.zero_apply]; exact zero_mem _
-  | add x₁ x₂ _ _ h₁ h₂ => rw [map_add (f := _), LinearMap.add_apply]; exact add_mem h₁ h₂
-  | smul c x _ h => rw [(locMul_smulS T hW c x y).1]; exact Submodule.smul_mem _ c h
+      ring) :
+      KH.locPart ι 𝓜 T d ≤
+        (KH.locPart ι 𝓜 T (d + n)).comap ((locMul T hW _).restrictScalars S)) hy) :
+    KH.locPart ι (KH.quotPart S W) T n ≤
+      (KH.locPart ι 𝓜 T (d + n)).comap (((locMul T hW).flip y).restrictScalars S)) hx
 
 theorem cechD_zero_apply_uniform (I : KH.Cell K ι 1) :
     ∃ J₁ J₂ : KH.Cell K ι 0, ∃ σ : ℤ, (σ = 1 ∨ σ = -1) ∧
@@ -286,31 +280,25 @@ theorem exists_div (hW : W ≤ Module.annihilator (MRingOver S ι) M) {𝓜 : (K
     (hNh : IsMultiHomog N fun k => (-n k).toNat) {x : LocalizedModule (KH.cellMon S I) M}
     (hx : x ∈ KH.locPart ι 𝓜 (KH.cellMon S I) (d + n)) :
     ∃ y ∈ KH.locPart ι 𝓜 (KH.cellMon S I) d,
-      locMul _ hW (LocalizedModule.mk (Ideal.Quotient.mk W P) ⟨N, hN⟩) y = x := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨m, s, e, hs, hm, rfl⟩ := hx
-    refine ⟨LocalizedModule.mk (N • m) (⟨P, hP⟩ * s), Submodule.subset_span ⟨N • m, ⟨P, hP⟩ * s,
-      (fun k => (n k).toNat) + e, by simpa using GenTwistGenerated.isMultiHomog_mul hPh hs, ?_, rfl⟩, ?_⟩
-    · have := h𝓜.2 _ _ N m hNh hm
-      convert this using 2
+      locMul _ hW (LocalizedModule.mk (Ideal.Quotient.mk W P) ⟨N, hN⟩) y = x :=
+  (Submodule.span_le.mpr (by
+    rintro _ ⟨m, s, e, hs, hm, rfl⟩
+    rw [SetLike.mem_coe, Submodule.mem_map]
+    refine ⟨LocalizedModule.mk (N • m) (⟨P, hP⟩ * s),
+      Submodule.subset_span ⟨N • m, ⟨P, hP⟩ * s, (fun k => (n k).toNat) + e,
+        by simpa using GenTwistGenerated.isMultiHomog_mul hPh hs, ?_, rfl⟩, ?_⟩
+    · convert h𝓜.2 _ _ N m hNh hm using 2
       funext k
       have := Int.toNat_sub_toNat_neg (n k)
       simp only [Pi.add_apply, Nat.cast_add]
       omega
-    · rw [locMul_mk, act_mk]
+    · rw [LinearMap.restrictScalars_apply, locMul_mk, act_mk]
       refine LocalizedModule.mk_eq.mpr ⟨1, ?_⟩
       simp only [Submonoid.smul_def, Submonoid.coe_mul, one_smul, smul_smul]
       congr 1
-      ring
-  | zero => exact ⟨0, zero_mem _, map_zero _⟩
-  | add x₁ x₂ _ _ h₁ h₂ =>
-    obtain ⟨y₁, hy₁, e₁⟩ := h₁
-    obtain ⟨y₂, hy₂, e₂⟩ := h₂
-    exact ⟨y₁ + y₂, add_mem hy₁ hy₂, by rw [map_add (f := _), e₁, e₂]⟩
-  | smul c x _ h =>
-    obtain ⟨y, hy, e⟩ := h
-    exact ⟨c • y, Submodule.smul_mem _ c hy, by rw [(locMul_smulS _ hW c _ y).2, e]⟩
+      ring) :
+    KH.locPart ι 𝓜 (KH.cellMon S I) (d + n) ≤ (KH.locPart ι 𝓜 (KH.cellMon S I) d).map
+      ((locMul _ hW (LocalizedModule.mk (Ideal.Quotient.mk W P) ⟨N, hN⟩)).restrictScalars S)) hx
 
 end GenNearMul
 

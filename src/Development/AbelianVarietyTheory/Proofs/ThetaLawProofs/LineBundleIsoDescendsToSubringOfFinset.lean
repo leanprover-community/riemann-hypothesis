@@ -52,7 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRuleOneOfKeyFo
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyPow GlobalTheory.KeyKa
 

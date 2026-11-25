@@ -58,21 +58,17 @@ private theorem eq_specMap_comp_of_apply_eq {X : Scheme.{0}} {B K Ω : Type} [Co
     (hy : y ≫ h = Spec.map (CommRingCat.ofHom (k.comp β)))
     (a : Spec (CommRingCat.of Ω)) (b : Spec (CommRingCat.of K)) (hab : y a = s b) :
     y = Spec.map (CommRingCat.ofHom k) ≫ s := by
-  have hpt : ∀ (L : Type) [Field L] (p q : Spec (CommRingCat.of L)), p = q := by
-    intro L _ p q
-    let p' : PrimeSpectrum L := p
-    let q' : PrimeSpectrum L := q
-    exact (PrimeSpectrum.ext ((Ideal.eq_bot_of_prime p'.asIdeal).trans
-      (Ideal.eq_bot_of_prime q'.asIdeal).symm) : p' = q')
   obtain ⟨W, hW, hbW, -⟩ := exists_isAffineOpen_mem_and_subset (TopologicalSpace.Opens.mem_top (s b))
   haveI := hW.isOpenImmersion_fromSpec
   have hrange : ∀ {Y : Scheme.{0}} (e : Y ⟶ X) (z : Y), (∀ z', z' = z) → e z ∈ W →
       Set.range e ⊆ Set.range hW.fromSpec := by
     intro Y e z hz he
     rintro _ ⟨z', rfl⟩
-    rwa [hW.range_fromSpec, hz z']
-  have hyW := hrange y a (fun z' => hpt Ω z' a) (by rw [hab]; exact hbW)
-  have hsW := hrange s b (fun z' => hpt K z' b) hbW
+    rw [hW.range_fromSpec, hz z']
+    exact he
+  have hyW := hrange y a (fun z' => Subsingleton.elim (α := PrimeSpectrum Ω) z' a)
+    (by rw [hab]; exact hbW)
+  have hsW := hrange s b (fun z' => Subsingleton.elim (α := PrimeSpectrum K) z' b) hbW
   obtain ⟨ψ, hψ⟩ := Spec.map_surjective (IsOpenImmersion.lift hW.fromSpec y hyW)
   obtain ⟨σ, hσ⟩ := Spec.map_surjective (IsOpenImmersion.lift hW.fromSpec s hsW)
   obtain ⟨α, hα⟩ := Spec.map_surjective (hW.fromSpec ≫ h)
@@ -95,7 +91,8 @@ private theorem eq_specMap_comp_of_apply_eq {X : Scheme.{0}} {B K Ω : Type} [Co
     have hmem : x ∈ PrimeSpectrum.asIdeal ((Spec.map σ) b) := by
       rw [Spec.map_apply]
       change σ.hom x ∈ b'.asIdeal
-      rwa [hb, Ideal.mem_bot]
+      rw [hb, Ideal.mem_bot]
+      exact hx
     rw [← e, Spec.map_apply] at hmem
     change ψ.hom x ∈ a'.asIdeal at hmem
     rwa [ha, Ideal.mem_bot] at hmem

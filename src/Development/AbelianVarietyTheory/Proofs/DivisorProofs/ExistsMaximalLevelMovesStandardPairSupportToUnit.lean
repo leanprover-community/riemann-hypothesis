@@ -224,22 +224,7 @@ private theorem cF_oToS (b : 𝓞 D.host.E) :
   rw [Formalism.MainNotions.GlobalTheoryTheory.jnt_sig_eq_conj]
 
 private theorem cF_mem (z : EAf D) (hz : z ∈ OO) : σσ z ∈ OO := by
-  induction hz using Subring.closure_induction with
-  | mem r hr =>
-    rcases hr with ⟨⟨_, b, rfl⟩, rfl⟩ | ⟨⟨β, hβ⟩, rfl⟩
-    · have := (Formalism.L2.DIV.oToS D.host.F D.host.E (D.host.conj • b)).2
-      rwa [← cF_oToS] at this
-    · have h : σσ ((1 : D.host.E) ⊗ₜ[D.host.F] β) = (1 : D.host.E) ⊗ₜ[D.host.F] β := by
-        rw [GlobalTheory.AdelicLatMove.cF_tmul, star_one]
-      have h2 : (1 : D.host.E) ⊗ₜ[D.host.F] β ∈ OO := Subring.subset_closure (Or.inr ⟨⟨β, hβ⟩, rfl⟩)
-      rwa [← h] at h2
-  | zero => rw [map_zero]; exact zero_mem _
-  | one => rw [map_one]; exact one_mem _
-  | add a b _ _ ha hb =>
-    rw [(σσ).map_add]
-    exact add_mem ha hb
-  | neg a _ ha => rw [map_neg]; exact neg_mem ha
-  | mul a b _ _ ha hb => rw [map_mul]; exact mul_mem ha hb
+  apply _root_.GlobalTheory.PlaceVec.cF_mem_int <;> assumption
 
 private theorem inId_cF {I : Ideal (𝓞 D.host.E)} {z : EAf D} (hz : GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I z) :
     GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId (D.host.conj • I) (σσ z) := by
@@ -301,7 +286,8 @@ private theorem idempotent_mul_xi0_integral (hc : D.host.ccK = ⊤) {e : Formali
     by_contra h
     exact hn (((hes w hw).2 _ hx0).2 h)
   have h2 := GlobalTheory.IdemRes.toEAf_mem_of_finPart hmem
-  rwa [RingHom.map_mul, ← hξ] at h2
+  rw [RingHom.map_mul, ← hξ] at h2
+  exact h2
 
 private theorem dualCoord_eq (S T : HSp D) (hS : S.gram = 1) (hT : T.gram = 1) (βS : GL (Fin S.rank) (EAf D)) (y : WO S T) :
     GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.dualCoord S T βS 1 y =
@@ -327,7 +313,8 @@ private theorem exists_intG {n : ℕ} {k : Matrix (Fin n) (Fin n) (EAf D)} (hk :
   let u : GL (Fin n) (Formalism.MainNotions.StandardLatticesGL3.AE D) := ⟨a, Formalism.UG.cT (Formalism.MainNotions.StandardLatticesGL3.sgA D) a, mul_eq_one_comm.1 ha, ha⟩
   have hu' : u ∈ Formalism.MainNotions.StandardLatticesGL3.GA D n := by
     change Formalism.UG.cT _ a * _ * a = _
-    rwa [Matrix.map_one _ (map_zero _) (map_one _), mul_one]
+    rw [Matrix.map_one _ (map_zero _) (map_one _), mul_one]
+    exact ha
   have hi : ∀ z ∈ OO, (toE D).symm.toRingHom z ∈ OhE D := fun z hz => by
     rw [← toE_int]
     exact ((toE D).apply_symm_apply z).symm ▸ hz
