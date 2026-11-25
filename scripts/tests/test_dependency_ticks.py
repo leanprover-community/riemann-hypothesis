@@ -716,14 +716,18 @@ class Runs(unittest.TestCase):
         with self.assertRaises(ticks.Refused):
             run(gh, 99)
 
-    def test_the_dependents_of_a_closed_pull_request(self):
+    def test_a_run_for_a_closed_pull_request_is_a_sweep(self):
+        # It names what depends on the closed one, and does what a sweep would, so that a sweep
+        # GitHub drops for it while waiting loses nothing: #7 depends on another one.
         gh = self.scene()
         gh.add(6, state="MERGED")
         gh.add(7, "- [ ] depends on: #6\n")
         log = run(gh, closed=1)
-        self.assertEqual(sorted(gh.edits()), ["pulls/2", "pulls/3"])
+        self.assertEqual(sorted(gh.edits()), ["pulls/2", "pulls/3", "pulls/7"])
         self.assertIn("open pull requests that depend on #1: #2, #3", log)
-        self.assertEqual(gh.pulls[7]["body"], "- [ ] depends on: #6\n")
+        self.assertEqual(gh.pulls[7]["body"], "- [x] depends on: (main) #6\n")
+        self.assertIn("4 of 5 open pull requests declare dependencies; 3 lines ticked, marked or unticked; 0 pull "
+                      "requests told about a dependency closed without landing", log)
 
     def test_a_dry_run_reads_everything_and_writes_nothing(self):
         gh = self.scene(dry_run=True)

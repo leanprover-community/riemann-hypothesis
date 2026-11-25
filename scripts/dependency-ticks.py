@@ -2,10 +2,11 @@
 """Tick the `depends on` boxes in open pull requests' descriptions once the dependency is on main or
 in a batch being built.
 
-The dependencies workflow runs this from its trusted checkout: for the open pull requests whose
-description names a pull request that was just closed, merged or not; for one pull request when
-it is opened or reopened or its description is edited, since what it depends on may have landed
-already; and for every open pull request every hour. Nothing from a pull request is checked out
+The dependencies workflow runs this from its trusted checkout: for every open pull request every
+hour, and when a pull request is closed, merged or not; and for one pull request when it is opened
+or reopened or its description is edited, since what it depends on may have landed already. A run
+for a closed pull request reads every open pull request anyway, so it does what a sweep does, and
+a sweep that GitHub drops for it while waiting loses nothing. Nothing from a pull request is checked out
 or run. `pr-dependencies.py` says which lines declare a dependency, such as
 `- [ ] depends on: #123`.
 
@@ -612,8 +613,9 @@ def handle(gh, main, pr, known):
 
 
 def sync(gh, number=None, closed=None):
-    """Tick and tell on one pull request (`number`), on the open pull requests whose description
-    names one that was just closed (`closed`), or on every open pull request. Returns a log."""
+    """Tick and tell on one pull request (`number`), or on every open pull request. A run for a
+    pull request just closed (`closed`) is a sweep too, which also names in the log the open pull
+    requests that depend on it. Returns a log."""
     log, known, counts = [], {}, {"changed": 0, "told": 0}
     # Compares, the batches being built, what landed a commit and records are read at most once a run.
     gh._compares, gh._built, gh._landed, gh._records = {}, None, {}, {}
@@ -629,11 +631,11 @@ def sync(gh, number=None, closed=None):
             main, everyone = gh.everything()
             targets = [pr for _, pr in sorted(everyone.items())
                        if any(line.numbers for line in _dependencies.declarations(pr["body"], gh.repo))]
-            if closed is not None:
-                targets = [pr for pr in targets if closed in _dependencies.dependencies(pr["body"], gh.repo)]
-                if targets:
-                    log.append(f"open pull requests that depend on #{closed}: "
-                               + ", ".join(f"#{pr['number']}" for pr in targets))
+            depending = [pr["number"] for pr in targets
+                         if closed is not None and closed in _dependencies.dependencies(pr["body"], gh.repo)]
+            if depending:
+                log.append(f"open pull requests that depend on #{closed}: "
+                           + ", ".join(f"#{other}" for other in depending))
     except Stopped as error:
         return log + [f"{error}: stopped, and the next run carries on"]
     try:
@@ -668,8 +670,7 @@ def sync(gh, number=None, closed=None):
         log.append(f"stopped, because {error}")
     if everyone is not None:
         would = "would be " if gh.dry_run else ""
-        which = f"depend on #{closed}" if closed is not None else "declare dependencies"
-        log.append(f"{len(targets)} of {len(everyone)} open pull requests {which}; {counts['changed']} lines "
+        log.append(f"{len(targets)} of {len(everyone)} open pull requests declare dependencies; {counts['changed']} lines "
                    f"{would}ticked, marked or unticked; {counts['told']} pull requests {would}told about a "
                    "dependency closed without landing")
     return log
@@ -680,7 +681,8 @@ def main():
     parser.add_argument("--repo", required=True, help="owner/name")
     which = parser.add_mutually_exclusive_group()
     which.add_argument("--pr", type=int, help="look at this pull request only")
-    which.add_argument("--closed", type=int, help="look at the open pull requests that depend on this one")
+    which.add_argument("--closed", type=int, help="this pull request was just closed: look at every open pull "
+                       "request, and name those that depend on it")
     parser.add_argument("--dry-run", action="store_true", help="read everything, change nothing")
     parser.add_argument("--summary", type=Path, help="append what was done to this file")
     args = parser.parse_args()

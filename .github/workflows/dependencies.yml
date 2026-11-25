@@ -27,11 +27,10 @@ name: dependencies
 # `scripts/pr-dependencies.py` has the forms a `depends on` line can take, and
 # `scripts/dependency-ticks.py` the exact rules and what it cannot tell apart.
 #
-# A run looks at the open pull requests whose description names a pull request when that one is
-# closed, merged or not; at one pull request when it is opened or reopened or its description is
-# edited, since what it depends on may have landed already; at every open pull request every
-# hour; and, when started by hand, at one pull request or at all of them, as a dry run if asked,
-# which only says what it would change. GitHub starts no run
+# A run looks at every open pull request every hour and when a pull request is closed, merged or
+# not; at one pull request when it is opened or reopened or its description is edited, since what
+# it depends on may have landed already; and, when started by hand, at one pull request or at all
+# of them, as a dry run if asked, which only says what it would change. GitHub starts no run
 # for changes made with a workflow token, such as the batch queue closing a pull request that
 # landed through a batch or this workflow's own edits, so the hourly sweep catches those, and a
 # batch that starts or stops being built. The sweep is offset from those of the inbox and the
@@ -72,10 +71,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # One run at a time for each pull request opened, reopened or edited, and one at a time for
-    # everything else: the sweeps, and the runs for closed pull requests, which look at the pull
-    # requests that depend on the one closed. A burst of closes, as when a batch lands, then
-    # collapses to the run under way and one waiting, and GitHub drops the others. What a dropped
-    # run would have done, the next sweep, within the hour, does.
+    # everything else: the sweeps, the runs for closed pull requests and the runs started by hand
+    # without `pr`. GitHub keeps only the newest run waiting in a group and drops the others, so a
+    # burst of closes, as when a batch lands, collapses to the run under way and one waiting. A run
+    # for a closed pull request looks at every open pull request, as a sweep does, so a sweep it
+    # drops loses nothing, nor does a run for a closed pull request that a later one drops. A dry
+    # run started by hand writes nothing, so a waiting run it drops is left to the next sweep,
+    # within the hour.
     concurrency:
       group: dependencies-${{ (github.event_name == 'pull_request_target' && github.event.action != 'closed' && github.event.pull_request.number) || inputs.pr || 'sweep' }}
       cancel-in-progress: false
