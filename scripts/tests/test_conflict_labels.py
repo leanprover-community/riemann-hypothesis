@@ -9,7 +9,9 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import sys
 import unittest
+from unittest import mock
 from unittest.mock import patch
 from urllib.parse import unquote
 
@@ -313,6 +315,20 @@ def comparing(table):
 def run(gh, number=None, table=None):
     with contextlib.redirect_stdout(io.StringIO()):
         return labels.sync(gh, number, compare=comparing(table or {}))
+
+
+class SwitchedOff(unittest.TestCase):
+    def test_a_real_run_does_nothing_while_the_labels_are_off(self):
+        was = labels._labels.CONFLICT_LABELS_ON
+        labels._labels.CONFLICT_LABELS_ON = False
+        try:
+            with mock.patch.object(sys, "argv", ["conflict-labels.py", "--repo", REPO]), \
+                    mock.patch.object(labels, "sync", side_effect=AssertionError("ran")), \
+                    contextlib.redirect_stdout(io.StringIO()) as out:
+                labels.main()
+        finally:
+            labels._labels.CONFLICT_LABELS_ON = was
+        self.assertIn("switched off", out.getvalue())
 
 
 class Runs(unittest.TestCase):

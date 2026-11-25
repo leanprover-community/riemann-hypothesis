@@ -95,12 +95,14 @@ class Workflows(unittest.TestCase):
 class Documentation(unittest.TestCase):
     def test_labels_at_a_glance_lists_the_batch_labels(self):
         """The table lists each label of `batch-labels.py`, and a row marked *(planned, #N)* one
-        that a pull request still under review adds: that one is not in `batch-labels.py` yet."""
+        that a pull request still under review adds: that one is not in `batch-labels.py` yet. A
+        row marked *(switched on by #N)* is in `batch-labels.py`, but nothing puts it on until
+        that pull request lands."""
         text = (ROOT / "verification" / "BATCHES.md").read_text()
         table = text.split("## Labels at a glance", 1)[1].split("\n## ", 1)[0]
-        rows = re.findall(r"^\| `([^`]+)`( \*\(planned, #\d+\)\*)? \|", table, re.MULTILINE)
-        self.assertEqual({name for name, planned in rows if not planned}, BATCH_LABELS)
-        self.assertFalse({name for name, planned in rows if planned} & BATCH_LABELS)
+        rows = re.findall(r"^\| `([^`]+)`(?: \*\((planned|switched on by),? #\d+\)\*)? \|", table, re.MULTILINE)
+        self.assertEqual({name for name, marker in rows if marker != "planned"}, BATCH_LABELS)
+        self.assertFalse({name for name, marker in rows if marker == "planned"} & BATCH_LABELS)
 
 
 if __name__ == "__main__":
