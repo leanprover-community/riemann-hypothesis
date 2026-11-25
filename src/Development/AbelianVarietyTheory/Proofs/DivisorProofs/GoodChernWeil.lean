@@ -175,7 +175,8 @@ theorem coeff_aeval_C_mul_X (c : ℂ) (Q : MvPolynomial (Fin n × Fin n) ℂ) (d
     split_ifs with h
     · rw [h]
     · simp
-  | add p q hp hq => rw [map_add (f := _), MvPolynomial.coeff_add, MvPolynomial.coeff_add, hp, hq, mul_add]
+  | add p q hp hq =>
+    simp only [map_add, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, hp, hq, mul_add]
 
 section Rev
 
@@ -315,7 +316,7 @@ theorem diag_unitAt_and_mul : ∀ (F : Type) [Field F] (X : Var F) (ι : Type) (
   refine ⟨?_, ?_⟩
   · set P := A' * A⁻¹ with hPdef
     have hdet : (P τ).det = P τ i i * ∏ j ∈ Finset.univ.erase i, P τ j j := by
-      rw [Matrix.det_of_lowerTriangular _ (hl P _ hP),
+      rw [Matrix.det_of_isLowerTriangular _ (hl P _ hP),
         Finset.mul_prod_erase Finset.univ (fun j => P τ j j) (Finset.mem_univ i)]
     have hne : (P τ).det ≠ 0 := hP.det_ne τ
     rw [hdet] at hne
@@ -762,9 +763,7 @@ theorem algHom_aeval_ev {m m' : ℕ} {ι : Type} (φ : Alt m →ₐ[ℂ] Alt m')
     (h : ∀ i, φ (u i : Alt m) = (u' i : Alt m')) (P : MvPolynomial ι ℝ) :
     φ ((aeval u (P.map (algebraMap ℝ ℂ)) : Ev m) : Alt m) = ((aeval u' (P.map (algebraMap ℝ ℂ)) : Ev m') : Alt m') := by
   induction P using MvPolynomial.induction_on with
-  | C a =>
-    simp only [MvPolynomial.map_C, MvPolynomial.aeval_C]
-    exact φ.commutes _
+  | C a => simp
   | add p q hp hq =>
     simp only [map_add (f := _), Subalgebra.coe_add, hp, hq]
   | mul_X p i hp =>
@@ -878,7 +877,7 @@ theorem alternating_of_adjacent_swap (ι : Type) [Fintype ι] (m : ι → ℕ)
             (fun x : Root m => (⟨x.1, v x.1 x.2⟩ : Root m)) ∘
               (fun x : Root m => (⟨x.1, w x.1 x.2⟩ : Root m)) := by
           funext x; rfl
-        simp only [Set.mem_setOf_eq] at hv hw ⊢
+        simp only [Set.mem_ofPred_eq] at hv hw ⊢
         rw [this, ← rename_rename, hv, hw]
         simp only [Pi.mul_apply, map_mul, Finset.prod_mul_distrib, Units.val_mul, Int.cast_mul]
         ring }
@@ -1503,7 +1502,7 @@ theorem corrC_sum_eq_zero : ∀ {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
     have hs := dbar_sum (t := Finset.univ) (A := fun i x => (ρ i x : ℂ)) (z := v)
       (fun i _ => Complex.ofRealCLM.differentiableAt.comp v (hd i))
     rw [e, dbar_const] at hs
-    rw [← ContinuousLinearMap.sum_apply, ← hs]; rfl
+    rw [← sum_apply, ← hs]; rfl
   have hadd : ∀ (K₁ K₀ : EndValuedForm11Coeffs n r) (j : Fin n) (L L' : EndValuedForm11Coeffs n r),
       mixTop (intersection_update_fsHerm_neg_one K₁ (L + L') K₀ j) = mixTop (intersection_update_fsHerm_neg_one K₁ L K₀ j) + mixTop (intersection_update_fsHerm_neg_one K₁ L' K₀ j) := by
     intro K₁ K₀ j L L'; simpa using _root_.GlobalTheory.GoodTop.mixTop_position_linear K₁ K₀ L L' 1 1 j
@@ -1544,7 +1543,7 @@ open scoped ContDiff Matrix
 
 namespace GlobalTheory.GoodTop
 
-theorem sum_corrDens_eq_zero : ∀ {F : Type} [Field F] {σ : F →+* ℂ} {X : Var F} {m : ℕ} (E : Fr (ratOf X) (fun _ : Unit => m) 0) (O : X.X.Opens) (H H₀ : Mat (fun _ : Unit => m) X.Fn → CxPts X.str σ → Mat (fun _ : Unit => m) ℂ), ∀ {ι : Type} [Fintype ι] (ρ : ι → CxPts X.str σ → ℝ), (∀ i y, CInfAt (ρ i) y) → (∀ y, ∑ i, ρ i y = 1) → ∀ (c : AlgChart X.str σ X.dim) (y : CxPts X.str σ), y ∈ c.e.source → ∑ i, corrDens E H₀ H (ρ i) c y = 0 := by
+theorem sum_corrDens_eq_zero : ∀ {F : Type} [Field F] {σ : F →+* ℂ} {X : Var F} {m : ℕ} (E : Fr (ratOf X) (fun _ : Unit => m) 0) (_O : X.X.Opens) (H H₀ : Mat (fun _ : Unit => m) X.Fn → CxPts X.str σ → Mat (fun _ : Unit => m) ℂ), ∀ {ι : Type} [Fintype ι] (ρ : ι → CxPts X.str σ → ℝ), (∀ i y, CInfAt (ρ i) y) → (∀ y, ∑ i, ρ i y = 1) → ∀ (c : AlgChart X.str σ X.dim) (y : CxPts X.str σ), y ∈ c.e.source → ∑ i, corrDens E H₀ H (ρ i) c y = 0 := by
   intro F _ σ X m E O H H₀ ι _ ρ hρ h1 c y hy
   have hc : IsHoloChart c.e := c.holo
   have key := _root_.GlobalTheory.GoodTop.corrC_sum_eq_zero (fun i v => ρ i (c.e.symm v))
