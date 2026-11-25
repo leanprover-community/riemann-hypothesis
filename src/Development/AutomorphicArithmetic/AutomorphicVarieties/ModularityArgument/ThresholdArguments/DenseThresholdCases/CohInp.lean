@@ -158,7 +158,7 @@ private theorem diag_eq_and_triangular_of_charpoly_eq [Finite (ResidueField O)] 
     (hc : ∀ g ∈ U, η g = 1 → (r g).mat.charpoly = (((r0 η Ψ g).mat).map (algebraMap O A)).charpoly) :
     (∀ g a, (r g).mat a a = algebraMap O A ((r0 η Ψ g).mat a a)) ∧
       ((∀ g a b, wt a b < 0 → (r g).mat a b = 0) ∨ ∀ g a b, 0 < wt a b → (r g).mat a b = 0) := by
-  letI : Algebra (ResidueField O) A := (Ideal.Quotient.lift (maximalIdeal O) (algebraMap O A) h0).toAlgebra
+  let : Algebra (ResidueField O) A := (Ideal.Quotient.lift (maximalIdeal O) (algebraMap O A) h0).toAlgebra
   have e : ∀ g a b, algebraMap (ResidueField O) A ((r0 η (barChar O Ψ) g).mat a b) =
       algebraMap O A ((r0 η Ψ g).mat a b) := fun g a b => by
     rw [gf_bar]
@@ -197,9 +197,9 @@ theorem UpperTheory.V.Pr.finA_of_end :
   intro hP Ω _ _ _ K _ _ _ l _ c N _ e ψ D g₁ hM B hB ⟨V, hV, hE⟩ U S
   obtain ⟨W, hz, hw, hp⟩ := gf_pres (Loc.locGood hP D.loc U).conj S
   refine gf_fin W _ hp (finCrit c.O S.R W hz fun A _ _ hA f hf h0 => ?_)
-  haveI := hA.toIsDomain
-  haveI := hA.toIsDiscreteValuationRing
-  haveI := hA.complete
+  have := hA.toIsDomain
+  have := hA.toIsDiscreteValuationRing
+  have := hA.complete
   have hO := ordPt_of_gd hP D g₁ hM U S B hB A f hf
   obtain ⟨hd, hT⟩ := diag_eq_and_triangular_of_charpoly_eq (dat_facts D).2.2.2.2.2.2.1 h0 hM _ hO.red hO.norm V hV (hE A h0 _ hO)
   refine ⟨fun i hi => ?_, hT.imp (fun h i hi => ?_) fun h i hi => ?_⟩
@@ -238,9 +238,9 @@ private theorem exists_dvr {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Alg
   classical
   obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := ℤ_[l]) (M := O)
   let S : Set (PadicAlgCl l) := Set.range b ∪ algebraMap O _ '' s
-  haveI : Finite S := ((Set.finite_range b).union (s.finite_toSet.image _)).to_subtype
+  have : Finite S := ((Set.finite_range b).union (s.finite_toSet.image _)).to_subtype
   let K : IntermediateField ℚ_[l] (PadicAlgCl l) := IntermediateField.adjoin ℚ_[l] S
-  haveI : FiniteDimensional ℚ_[l] K :=
+  have : FiniteDimensional ℚ_[l] K :=
     IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
   obtain ⟨h1, h2, -⟩ := UpperTheory.V.abelian₂.dvr_intClosure l K
   let f : K →ₐ[ℤ_[l]] PadicAlgCl l := K.val.restrictScalars ℤ_[l]
@@ -263,7 +263,7 @@ private theorem exists_dvr {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Alg
   have d1 : IsDiscreteValuationRing B := IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing e
   have d2 : Module.Finite ℤ_[l] B := Module.Finite.equiv e.toLinearEquiv
   refine ⟨A, d1, ?_, fun i => hB _ (Or.inl ⟨i, rfl⟩) ((_root_.GlobalTheory.isIntegral_padicInt_iff_norm_le_one _).2 (hb i))⟩
-  haveI : Module.Finite ℤ_[l] A := d2
+  have : Module.Finite ℤ_[l] A := d2
   exact Module.Finite.of_restrictScalars_finite ℤ_[l] O A
 
 private theorem mem_range_of_approx {l : ℕ} [Fact l.Prime] {R : Type} [CommRing R] (J : Ideal R)
@@ -326,9 +326,9 @@ private theorem loc_of_int {O R A : Type} [CommRing O] [CommRing R] [IsLocalRing
     [Nontrivial A] [Algebra O A] [Algebra.IsIntegral O A] (f : R →ₐ[O] A) : IsLocalHom f := by
   let g : R →+* f.range := f.rangeRestrict
   have hg : Function.Surjective g := f.rangeRestrict_surjective
-  haveI : IsLocalRing f.range := IsLocalRing.of_surjective' g hg
+  have : IsLocalRing f.range := IsLocalRing.of_surjective' g hg
   have hl : IsLocalHom g := IsLocalHom.of_surjective _ hg
-  haveI : Algebra.IsIntegral f.range A := Algebra.IsIntegral.tower_top (R := O)
+  have : Algebra.IsIntegral f.range A := Algebra.IsIntegral.tower_top (R := O)
   have h2 : IsLocalHom (algebraMap f.range A) := Algebra.IsIntegral.isLocalHom _ _
   exact ⟨fun x hx => hl.map_nonunit x (h2.map_nonunit (g x) hx)⟩
 
@@ -482,7 +482,7 @@ private theorem exists_range {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [A
     convert hbA i using 3
     funext j
     simp [Pi.single_apply, eq_comm]
-  haveI : Module.Finite ℤ_[l] A := Module.Finite.trans O A
+  have : Module.Finite ℤ_[l] A := Module.Finite.trans O A
   exact ⟨A, hA1, hA2, Ξ.codRestrict A hmem, (UpperTheory.V.abelian₂.dvr_finite l A).1, fun _ => rfl⟩
 
 private theorem push_eq {O Γ R K : Type} [CommRing O] [Group Γ] [CommRing R] [Algebra O R] [CommRing K] [Algebra O K]
@@ -516,10 +516,10 @@ theorem UpperTheory.V.Pr.exists_ordPt_of_point :
         OrdPt l D.η D.Ψ D.cc g₁ B r' ∧ UnitaryThreeInertia.push A.val r' = conjBy (tor _ t) r := by
   intro hP Ω _ _ _ K _ _ _ l _ c N _ e ψ D g₁ hg U S hfin B hB ξ r hr
   obtain ⟨hc, -, hl, hinj, -⟩ := UpperTheory.V.abelian₂.dvr_finite l c.O
-  haveI : IsNoetherianRing c.O := PrincipalIdealRing.isNoetherianRing
-  haveI : Algebra.IsAlgebraic ℤ_[l] (PadicAlgCl l) :=
+  have : IsNoetherianRing c.O := PrincipalIdealRing.isNoetherianRing
+  have : Algebra.IsAlgebraic ℤ_[l] (PadicAlgCl l) :=
     IsFractionRing.comap_isAlgebraic_iff.2 (inferInstance : Algebra.IsAlgebraic ℚ_[l] (PadicAlgCl l))
-  haveI : Algebra.IsAlgebraic c.O (PadicAlgCl l) := Algebra.IsAlgebraic.extendScalars hinj
+  have : Algebra.IsAlgebraic c.O (PadicAlgCl l) := Algebra.IsAlgebraic.extendScalars hinj
   obtain ⟨W, hz, hs, hent⟩ := exists_pres S (Loc.locGood hP D.loc U).conj
   have hlS : (l : S.R) ∈ maximalIdeal S.R := fun h => by
     have h1 : IsUnit (algebraMap c.O S.R (l : c.O)) := by rwa [map_natCast]
@@ -527,7 +527,7 @@ theorem UpperTheory.V.Pr.exists_ordPt_of_point :
   have h0 := part_zero_le _ hlS S.r.hom W hz hs (hfin U S)
   have hA : W.A ≤ entAlg c.O S.r.hom :=
     A_le W _ (fun i => span_le_ent _ _ (hs i)) fun x hx => weight_zero_algebra_le_entry_algebra _ (h0 x hx)
-  haveI := hfin U S
+  have := hfin U S
   have hfg : ((W.gr 0).map (ξ.comp (Subalgebra.inclusion hA)).toLinearMap).FG := by
     refine ((Module.Finite.fg_top (R := c.O) (M := weightZeroSubalgebra c.O S.r.hom)).map
       (ξ.comp (Subalgebra.inclusion (weight_zero_algebra_le_entry_algebra S.r.hom))).toLinearMap).of_le ?_
@@ -535,7 +535,7 @@ theorem UpperTheory.V.Pr.exists_ordPt_of_point :
     exact ⟨⟨x, h0 x hx⟩, trivial, rfl⟩
   obtain ⟨t, Ξ, hΞ, hr'⟩ := Alg.points_finite c.O ℤ S.R W hz (PadicAlgCl l) _ hfg
   obtain ⟨A, hA1, hA2, f, hA3, hf⟩ := exists_range Ξ hr'
-  haveI : IsLocalRing A := hA1.toIsLocalRing
+  have : IsLocalRing A := hA1.toIsLocalRing
   have : Algebra.IsIntegral c.O A := Algebra.IsIntegral.of_finite c.O A
   exact ⟨A, hA1, hA2, t (Multiplicative.ofAdd 1), U3.push f S.r.hom,
     ordPt_of_gd hP D g₁ hg U S B hB A f (loc_of_int f), push_eq _ W hent hA ξ r hr t Ξ hΞ A f hf⟩

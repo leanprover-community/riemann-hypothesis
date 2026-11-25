@@ -76,7 +76,7 @@ private theorem pow_fixes (F Ω : Type) [Field F] [Field Ω] [Algebra F Ω] {M :
   have hfin : {ζ : Ω | ζ ^ M = 1}.Finite := by
     refine ((Polynomial.nthRoots M (1 : Ω)).toFinset.finite_toSet).subset fun ζ hζ => ?_
     simpa [Polynomial.mem_nthRoots (show 0 < M by omega)] using hζ
-  haveI : Finite {ζ : Ω // ζ ^ M = 1} := hfin
+  have : Finite {ζ : Ω // ζ ^ M = 1} := hfin
   let f : G F Ω →* Equiv.Perm {ζ : Ω // ζ ^ M = 1} :=
     { toFun := fun s => Equiv.Perm.subtypePerm (s : Ω ≃ₐ[F] Ω).toEquiv fun x => by
         change s x ^ M = 1 ↔ x ^ M = 1
