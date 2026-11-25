@@ -297,6 +297,24 @@ def safe_file(root, relative):
 
 
 def snapshot(candidate, head, destination):
+    new_inputs = [destination / name for name in ("src", *SNAPSHOT_CONFIGS)
+                  if not os.path.lexists(destination / name)]
+    try:
+        extract_snapshot(candidate, head, destination)
+    except BaseException as error:
+        # Compilation has not started. A failed extraction can strand thousands of input files.
+        for path in new_inputs:
+            try:
+                if path.is_dir() and not path.is_symlink():
+                    shutil.rmtree(path)
+                else:
+                    path.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                error.add_note(f"Could not discard partial snapshot input {path}: {cleanup_error}")
+        raise
+
+
+def extract_snapshot(candidate, head, destination):
     # Expose only attested build inputs, not PR scripts, docs, Git config, or caches.
     command = ["git", "-C", str(candidate), "archive", head, "--", "src", *SNAPSHOT_CONFIGS]
     process = subprocess.Popen(command, stdout=subprocess.PIPE, env=trusted_env())

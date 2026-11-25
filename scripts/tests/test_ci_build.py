@@ -176,6 +176,37 @@ def snapshot_tests(ci):
         head = ci.git(candidate, "rev-parse", "HEAD")
         ci.snapshot(candidate, head, destination)
 
+        partial = root / "partial"
+        partial.mkdir()
+        prior = partial / "prior.olean"
+        prior.write_bytes(b"retained")
+        copy = shutil.copyfileobj
+
+        def interrupted_copy(source, output):
+            copy(source, output)
+            if Path(output.name).suffix == ".lean":
+                raise OSError(errno.ENOSPC, "disk full")
+
+        with patch.object(shutil, "copyfileobj", side_effect=interrupted_copy):
+            for path in (partial, destination):
+                try:
+                    ci.snapshot(candidate, head, path)
+                except OSError as error:
+                    assert error.errno == errno.ENOSPC
+                else:
+                    raise AssertionError("incomplete source snapshot succeeded")
+        assert list(partial.iterdir()) == [prior]
+        assert prior.read_bytes() == b"retained"
+        with patch.object(shutil, "copyfileobj", side_effect=interrupted_copy), \
+                patch.object(shutil, "rmtree", side_effect=OSError(errno.EACCES, "cleanup failed")):
+            try:
+                ci.snapshot(candidate, head, partial)
+            except OSError as error:
+                assert error.errno == errno.ENOSPC
+                assert any("cleanup failed" in note for note in error.__notes__)
+            else:
+                raise AssertionError("cleanup hid the original error")
+
         def rejects(message):
             try:
                 ci.verify_snapshot(candidate, head, destination)
