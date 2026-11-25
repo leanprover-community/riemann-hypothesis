@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import re
 import unittest
@@ -45,14 +46,18 @@ MAIN = sha("main")
 
 def setUpModule():
     # These tests are written for the conflict labels switched on, as they are once the
-    # description check can say what a batch includes. `ConflictLabelsOff` covers them off.
-    global _conflicts_were
+    # description check can say what a batch includes and the repository variable is set.
+    # `ConflictLabelsOff` covers them off.
+    global _conflicts_were, _variable
     _conflicts_were = batch._labels.CONFLICT_LABELS_ON
     batch._labels.CONFLICT_LABELS_ON = True
+    _variable = mock.patch.dict(os.environ, {"CONFLICT_LABELS": "on"})
+    _variable.start()
 
 
 def tearDownModule():
     batch._labels.CONFLICT_LABELS_ON = _conflicts_were
+    _variable.stop()
 
 
 class Fake(batch.GitHub):
@@ -239,6 +244,8 @@ class Fake(batch.GitHub):
         return 200, [{"name": name} for name in sorted(self.pulls[int(number)]["labels"])]
 
     def _dispatch(self, payload):
+        # A real run: one started without `dry_run` is a dry run.
+        assert payload["inputs"] == {"dry_run": "false"}, payload
         self.dispatched.append(payload["ref"])
         return 204, None
 
@@ -1633,6 +1640,18 @@ class ConflictLabelsOff(unittest.TestCase):
         batch._labels.CONFLICT_LABELS_ON = True
 
     def test_nothing_is_started_and_conflict_entries_are_told(self):
+        self.check()
+
+    def test_switched_on_in_the_code_but_not_by_the_repository_variable(self):
+        batch._labels.CONFLICT_LABELS_ON = True
+        for value in (None, "off"):
+            with self.subTest(value=value), mock.patch.dict(os.environ):
+                os.environ.pop("CONFLICT_LABELS", None)
+                if value is not None:
+                    os.environ["CONFLICT_LABELS"] = value
+                self.check()
+
+    def check(self):
         gh = Fake()
         gh.add_pull(11, "head11")
         gh.add_pull(21, "head21")

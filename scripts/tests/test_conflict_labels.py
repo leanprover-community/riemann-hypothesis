@@ -373,6 +373,20 @@ class SwitchedOff(unittest.TestCase):
             labels._labels.CONFLICT_LABELS_ON = was
         self.assertIn("switched off", out.getvalue())
 
+    def test_a_dry_run_runs_while_the_labels_are_off(self):
+        # A maintainer looks at a dry run before switching the labels on.
+        was = labels._labels.CONFLICT_LABELS_ON
+        labels._labels.CONFLICT_LABELS_ON = False
+        try:
+            with mock.patch.object(sys, "argv", ["conflict-labels.py", "--repo", REPO, "--dry-run"]), \
+                    mock.patch.object(labels, "sync", return_value=["looked"]) as sync, \
+                    contextlib.redirect_stdout(io.StringIO()) as out, self.assertRaises(SystemExit) as done:
+                labels.main()
+        finally:
+            labels._labels.CONFLICT_LABELS_ON = was
+        self.assertTrue(sync.call_args.args[0].dry_run)
+        self.assertEqual((done.exception.code, out.getvalue().splitlines()[0]), (None, "- looked"))
+
 
 class Runs(unittest.TestCase):
     def scene(self, **options):

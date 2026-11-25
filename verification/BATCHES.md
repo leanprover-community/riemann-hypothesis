@@ -147,10 +147,16 @@ name some of them as well.
 
 ## Conflicts with main and with the batch
 
-*Switched off until #1707 lands:* `CONFLICT_LABELS_ON` in `scripts/batch-labels.py` is `False`, so
-the workflow below does nothing outside a dry run, and the batch queue tells pull requests listed
-under a heading about conflicts what the description says, as it does for any other heading.
-#1707 lets the workflow skip the pull requests a batch says it includes, and switches it on.
+*Switched off until #1707 lands and a maintainer switches it on:* `CONFLICT_LABELS_ON` in
+`scripts/batch-labels.py` is `False` until #1707, which lets the workflow below skip the pull
+requests a batch says it includes. The workflow also runs only when the repository variable
+`CONFLICT_LABELS` is `on`. Until both are on, it writes nothing, and the batch queue tells pull
+requests listed under a heading about conflicts what the description says, as it does for any other
+heading. To switch it on once #1707 has landed, start the workflow by hand (Actions → conflict
+labels → Run workflow) with `dry_run` ticked, as it is by default, and no pull request number. Its
+summary lists every label and comment a real run would add. If that looks right, set the variable
+to `on` (Settings → Secrets and variables → Actions → Variables). A dry run can be started whether
+or not the variable is set.
 
 Another workflow (`.github/workflows/conflict-labels.yml`, which runs
 `scripts/conflict-labels.py`) labels the open pull requests into `main` that are not drafts and

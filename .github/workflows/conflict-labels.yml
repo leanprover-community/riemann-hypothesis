@@ -1,8 +1,13 @@
 name: conflict labels
 
-# Switched off until the description check can say which pull requests a batch includes:
-# `CONFLICT_LABELS_ON` in `scripts/batch-labels.py`. While it is off, the script does nothing
-# outside a dry run.
+# Switched off twice over. In the code, until the description check can say which pull requests a
+# batch includes: `CONFLICT_LABELS_ON` in `scripts/batch-labels.py`. While it is off, the script
+# does nothing outside a dry run. And on GitHub, by the repository variable `CONFLICT_LABELS`:
+# the job runs only when it is `on`, except for a dry run started by hand. To switch it on, start
+# the workflow by hand with `dry_run` ticked (the default) and no pull request number, read what
+# the run says it would do in its summary, and then set the variable to `on` (Settings → Secrets
+# and variables → Actions → Variables). Until then the batch queue neither starts this workflow
+# nor leaves to it the pull requests a batch's description lists under a heading about conflicts.
 #
 # Keeps two labels on the open pull requests into main that are not drafts and not batches:
 # `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that
@@ -51,6 +56,10 @@ on:
         description: Pull request to look at (optional; without one, every open pull request is)
         type: number
         required: false
+      dry_run:
+        description: Only say what would change. Allowed whether or not the workflow is switched on.
+        type: boolean
+        default: true
 
 permissions: {}
 
@@ -60,8 +69,10 @@ jobs:
     # pull request start a sweep; label changes count only for `building` and `latest batch`.
     # Events on any other pull request start a run for it alone; an edit counts only if it changed the description,
     # where the `depends on` lines are, or the base.
+    # Only when switched on by the repository variable, except for a dry run started by hand.
     if: >-
-      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' &&
+          (vars.CONFLICT_LABELS == 'on' || (github.event_name == 'workflow_dispatch' && inputs.dry_run)) && (
           contains(fromJSON('["schedule", "push", "workflow_dispatch"]'), github.event_name) ||
           (github.event_name == 'pull_request_target' &&
            startsWith(github.event.pull_request.head.ref, 'batch/') &&
@@ -100,7 +111,10 @@ jobs:
           REPO: ${{ github.repository }}
           # Empty for a sweep.
           PR: ${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr }}
+          # `true` only for a dry run started by hand.
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
-          one=()
-          if [ -n "$PR" ]; then one=(--pr "$PR"); fi
-          python3 scripts/conflict-labels.py --repo "$REPO" "${one[@]}" --summary "$GITHUB_STEP_SUMMARY"
+          options=()
+          if [ -n "$PR" ]; then options+=(--pr "$PR"); fi
+          if [ "$DRY_RUN" = true ]; then options+=(--dry-run); fi
+          python3 scripts/conflict-labels.py --repo "$REPO" "${options[@]}" --summary "$GITHUB_STEP_SUMMARY"
