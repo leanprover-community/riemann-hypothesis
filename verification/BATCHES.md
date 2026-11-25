@@ -23,7 +23,7 @@ pull request lands and switches it on.
 | `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it; a batch it builds on is rebuilt without a pull request it carries | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is put on it; a batch it builds on is rebuilt without a pull request it carries | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
 | `main-conflict` *(switched on by #1707)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
 | `batch-conflict` *(switched on by #1707)* | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -170,8 +170,10 @@ not batches:
   with: its branch holds the batches under it, and the stack lands as a whole, so that is the
   batch to merge and to depend on. git cannot merge a file that both change since they left
   `main`, or one of the two deletes a Lean file that the other starts to import. The pull requests
-  in the batch, labelled `batch-building`, never get it. The first time a pull request gets it for a batch, it is also
-  labelled `awaiting-author` and told in a comment which files conflict and what to do.
+  in the batch, labelled `batch-building`, never get it. Each time a pull request gets it, the
+  first time or again after it was fixed, it is also labelled `awaiting-author` and told in a
+  comment which files conflict and what to do. While it keeps the label, it is told about each
+  batch it conflicts with once.
 
 Both labels come off by themselves once the reason has gone: the conflict was resolved, the pull
 request was closed or joined the batch, or the batch was merged or closed. `awaiting-author` stays

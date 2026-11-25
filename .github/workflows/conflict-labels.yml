@@ -18,10 +18,11 @@ name: conflict labels
 # line such as `- [ ] depends on: #123`, does not get `main-conflict`: it is expected to carry
 # the batch's changes and so to conflict with main until the batch lands.
 #
-# The first time a pull request gets `batch-conflict` for a batch, it is also labelled
-# `awaiting-author` and told in a comment which files conflict and what to do: merge the batch's
-# branch into its own, add the `depends on` line and comment `ready`, or wait until the batch has
-# landed and then merge main. `main-conflict` comes with no comment, because GitHub already shows
+# Each time a pull request gets `batch-conflict`, the first time or again after it was fixed, it
+# is also labelled `awaiting-author` and told in a comment which files conflict and what to do:
+# merge the batch's branch into its own, add the `depends on` line and comment `ready`, or wait
+# until the batch has landed and then merge main. While it keeps the label, it is told about each
+# batch it conflicts with once. `main-conflict` comes with no comment, because GitHub already shows
 # the conflict. Both labels come off as soon as their reason has gone, whoever put them on;
 # `awaiting-author` never does here. `verification/BATCHES.md` says this for authors, and
 # `scripts/conflict-labels.py` has the exact rules.

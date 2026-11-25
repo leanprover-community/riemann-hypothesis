@@ -147,30 +147,37 @@ class Decide(unittest.TestCase):
 
 
 class Plan(unittest.TestCase):
-    def test_newly_conflicting_is_labelled_handed_back_and_told(self):
+    def test_newly_conflicting_is_labelled_handed_back_and_told_without_reading_comments(self):
         case = pr(1)
         decision = labels.decide(case, "main", BATCHES, {900: CONFLICT})
-        self.assertTrue(labels.needs_told(case, decision, BATCHES))
-        add, remove, notes = labels.plan(case, decision, set(), BATCHES)
+        self.assertFalse(labels.needs_told(case, decision))
+        add, remove, notes = labels.plan(case, decision, None, BATCHES)
         self.assertEqual((add, remove, [number for number, _ in notes]), ({BATCH_CONFLICT, WAITING}, set(), [900]))
         self.assertTrue(notes[0][1].startswith("<!-- conflict-labels-batch 900 -->\n"))
 
-    def test_told_before_about_this_batch_is_only_labelled(self):
+    def test_conflicting_again_without_the_label_is_told_again(self):
         case = pr(1)
         decision = labels.decide(case, "main", BATCHES, {900: CONFLICT})
-        self.assertEqual(labels.plan(case, decision, {900}, BATCHES), ({BATCH_CONFLICT}, set(), []))
+        add, remove, notes = labels.plan(case, decision, {900}, BATCHES)
+        self.assertEqual((add, remove, [number for number, _ in notes]), ({BATCH_CONFLICT, WAITING}, set(), [900]))
 
-    def test_already_labelled_with_one_batch_reads_no_comments(self):
+    def test_labelled_and_told_before_about_this_batch_is_left_alone(self):
         case = pr(1, labels_=[BATCH_CONFLICT])
         decision = labels.decide(case, "main", BATCHES, {900: CONFLICT})
-        self.assertFalse(labels.needs_told(case, decision, BATCHES))
+        self.assertEqual(labels.plan(case, decision, {900}, BATCHES), (set(), set(), []))
+
+    def test_labelled_and_conflicting_reads_the_comments_unless_known(self):
+        case = pr(1, labels_=[BATCH_CONFLICT])
+        decision = labels.decide(case, "main", BATCHES, {900: CONFLICT})
+        self.assertTrue(labels.needs_told(case, decision))
+        self.assertFalse(labels.needs_told(case, decision, {"told": {900}, "stale": set()}))
         self.assertEqual(labels.plan(case, decision, None, BATCHES), (set(), set(), []))
 
     def test_a_second_batch_is_told_about_too(self):
         batches = {900: B, 901: batch(901)}
         case = pr(1, labels_=[BATCH_CONFLICT, WAITING])
         decision = labels.decide(case, "main", batches, {900: CONFLICT, 901: CONFLICT})
-        self.assertTrue(labels.needs_told(case, decision, batches))
+        self.assertTrue(labels.needs_told(case, decision))
         add, remove, notes = labels.plan(case, decision, {900}, batches)
         self.assertEqual((add, remove, [number for number, _ in notes]), (set(), set(), [901]))
 
@@ -218,17 +225,17 @@ class Stale(unittest.TestCase):
     def test_it_is_told_once_for_each_head_of_the_batch_and_handed_back(self):
         case, decision = self.decided()
         self.assertEqual(decision["stale"], {900: {"head": B["sha"], "prs": [11]}})
-        self.assertTrue(labels.needs_told(case, decision, BATCHES))
+        self.assertTrue(labels.needs_told(case, decision))
         add, remove, notes = labels.plan(case, decision, set(), BATCHES, set())
         self.assertEqual((add, remove, [number for number, _ in notes]), ({WAITING}, set(), [900]))
         self.assertTrue(notes[0][1].startswith(f"<!-- conflict-labels-stale 900 {B['sha']} -->\n"))
         # Told about this head already: nothing to read, nothing to say.
         known = {"told": set(), "stale": {(900, B["sha"])}}
-        self.assertFalse(labels.needs_told(case, decision, BATCHES, known))
+        self.assertFalse(labels.needs_told(case, decision, known))
         self.assertEqual(labels.plan(case, decision, None, BATCHES, None), (set(), set(), []))
         self.assertEqual(labels.plan(case, decision, set(), BATCHES, known["stale"]), (set(), set(), []))
         # A new head of the batch is told again.
-        self.assertTrue(labels.needs_told(case, decision, BATCHES, {"told": set(), "stale": {(900, "0" * 40)}}))
+        self.assertTrue(labels.needs_told(case, decision, {"told": set(), "stale": {(900, "0" * 40)}}))
 
     def test_what_the_author_is_told(self):
         text = labels.stale_message(batch(900, ref="batch/b9-on-1313"), [11, 12])
@@ -241,7 +248,7 @@ class Stale(unittest.TestCase):
         case = pr(5, depends=[900])
         decision = labels.decide(case, "main", BATCHES, {900: Comparison("clean")}, {"on": [900], "prs": []})
         self.assertEqual(decision["stale"], {})
-        self.assertFalse(labels.needs_told(case, decision, BATCHES))
+        self.assertFalse(labels.needs_told(case, decision))
 
 
 # ---------------------------------------------------------------------------------------------
@@ -467,11 +474,28 @@ class Runs(unittest.TestCase):
         gh.sent.clear()
         run(gh, table={(1, 900): CONFLICT})
         self.assertEqual((gh.sent, gh.pulls[1]["labels"]), ([], {BATCH_CONFLICT}))
-        # Fixed, then broken again by a later push to the batch: labelled, not told again.
+        # Fixed, then broken again by a later push to the batch: told again, and handed back.
         run(gh, table={(1, 900): Comparison("clean", [b"a"])})
         self.assertEqual(gh.pulls[1]["labels"], set())
         run(gh, table={(1, 900): CONFLICT})
-        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT}, ["900"]))
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT, WAITING}, ["900", "900"]))
+        # And once only while the label stays on.
+        gh.pulls[1]["labels"].discard(WAITING)
+        run(gh, table={(1, 900): CONFLICT})
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT}, ["900", "900"]))
+
+    def test_a_label_left_from_an_older_batch_does_not_keep_the_new_one_from_being_told(self):
+        # #900 is closed and #901 is built before a sweep has taken the label off.
+        gh = self.scene()
+        run(gh, table={(1, 900): CONFLICT})
+        gh.pulls[1]["labels"].discard(WAITING)  # `ready`
+        gh.pulls[900]["labels"].discard(BUILDING)
+        gh.pulls[900]["state"] = "CLOSED"
+        gh.add(901, ref="batch/b10", own=True, labels_=[BUILDING])
+        gh.comment_reads.clear()
+        run(gh, table={(1, 901): CONFLICT})
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT, WAITING}, ["900", "901"]))
+        self.assertEqual(gh.comment_reads, [1])
 
     def test_a_new_batch_is_told_about_again(self):
         gh = self.scene()
@@ -630,6 +654,7 @@ class Runs(unittest.TestCase):
 
     def test_a_comment_by_someone_else_with_the_marker_does_not_count(self):
         gh = self.scene()
+        gh.pulls[1]["labels"].add(BATCH_CONFLICT)  # so that its comments are read
         gh.comments[1] = [("<!-- conflict-labels-batch 900 -->\nfake", {"__typename": "User", "login": "someone"})]
         run(gh, table={(1, 900): CONFLICT})
         self.assertEqual(gh.told_about(1), ["900", "900"])
@@ -647,7 +672,8 @@ class Runs(unittest.TestCase):
         table = {(1, 900): CONFLICT, (1, 910): CONFLICT}
         run(gh, table=table)
         run(gh, table=table)
-        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1, 1], ["900", "910"]))
+        # The first run tells it without reading, and the second reads once.
+        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1], ["900", "910"]))
 
     def test_with_two_stacks_a_new_conflict_is_still_told(self):
         gh = self.stacks()
