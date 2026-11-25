@@ -203,10 +203,12 @@ heading about conflicts with the batch.
 ### If your pull request is labelled `batch-conflict`
 
 1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, rather than
-   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt before it lands,
-   which is how a pull request is taken out of a batch (rule 5), your branch still carries the
-   pull request that was taken out. Then make a new branch from the new batch branch, copy only
-   your own commits onto it with `git cherry-pick`, and push that to your pull request.
+   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt without a pull
+   request before it lands, as rule 5 asks for taking one out, your branch still carries the
+   pull request that was taken out, and the workflow tells you so. Then make a new branch from
+   the new batch branch, copy only your own commits onto it with `git cherry-pick`, and push that
+   to your pull request. If a pull request is taken out by reverting its merge instead, you are
+   not told, and need do nothing: the batch's branch is not rewritten.
 2. Add this line at the end of the description, under a line `---`, as the template in
    [AGENTS.md](../AGENTS.md#pull-requests) has it, where #123 is the batch's pull request:
 

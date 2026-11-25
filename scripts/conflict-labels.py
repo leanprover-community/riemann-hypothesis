@@ -42,9 +42,11 @@ fixed or closed, it joined the batch, or the batch was merged or closed. `awaiti
 comes off here. Its author takes it off by commenting `ready`, or a maintainer does.
 
 A pull request that merged a batch's branch carries the batch's commits. When the batch is then
-rebuilt without one of its pull requests, which is how a pull request is taken out of a batch,
-the dependent pull request still carries that one's commits: landing it would land them too, and
-GitHub would mark the pull request that was taken out merged. A sweep looks for this in each pull
+rebuilt without one of its pull requests, as `verification/BATCHES.md` asks for taking a pull
+request out of a batch, the dependent pull request still carries that one's commits: landing it
+would land them too, and GitHub would mark the pull request that was taken out merged. A pull
+request taken out by reverting its merge instead gets no notice here, and needs none: the batch's
+branch is not rewritten, so the dependent carries nothing the batch does not. A sweep looks for this in each pull
 request that depends on an open batch, or shares commits beyond main with a batch it is compared
 with (see `stale_in`). Its branch must hold a batch's merge commit for another open pull request,
 `Merge PR #123 into batch` or `Merge #123 head (...) into batch/...` as batches are assembled,
