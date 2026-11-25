@@ -289,7 +289,7 @@ theorem split_of_closure
     simp [u, extRep_apply, he, hf, smul_sub]
     abel
   have hui : Function.Injective u := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨w, c⟩ h
     have h' : j w + c • x = 0 := by simpa [u] using h
     have hc0 : c = 0 := by

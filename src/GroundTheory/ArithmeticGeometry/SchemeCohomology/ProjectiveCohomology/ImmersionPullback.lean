@@ -33,7 +33,6 @@ instance final_opensMap (f : Y ⟶ Z) : (Opens.map f.base).Final :=
     (fun _ _ => ⟨_, 𝟙 _, rfl⟩)
 
 
-set_option backward.isDefEq.respectTransparency.types false in
 def pullbackUnitIso (f : Y ⟶ Z) :
     (Scheme.Modules.pullback f).obj (SheafOfModules.unit Z.ringCatSheaf) ≅
       SheafOfModules.unit Y.ringCatSheaf :=
@@ -57,7 +56,6 @@ lemma pullbackUnitApp_naturality (f : Y ⟶ Z) {N N' : Z.Modules} (φ : N ⟶ N'
   exact h.symm
 
 
-set_option backward.isDefEq.respectTransparency.types false in
 lemma pullbackUnitIso_hom_one (f : Y ⟶ Z) :
     (pullbackUnitIso f).hom.app ⊤
       (pullbackUnitApp f (SheafOfModules.unit Z.ringCatSheaf) ⊤ (unitOne Z ⊤)) = unitOne Y ⊤ := by

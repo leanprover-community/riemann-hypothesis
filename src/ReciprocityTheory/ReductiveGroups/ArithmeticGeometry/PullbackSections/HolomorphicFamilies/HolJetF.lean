@@ -182,7 +182,6 @@ theorem isLocalHom_jetTan (ℓ : Fin 1 × Fin g) :
   simpa using this
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem jetPt_tan (e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)) (hol : IsHolFam e) (ℓ : Fin 1 × Fin g)
     (v : Sp (DualNumber ℂ) ⟶ Y) (hd : IsDerivAt0 e (Pi.single ℓ.2 1) v) :
     spMap ((jetTan ℓ : Jet ℂ (Fin 1 × Fin g) (0 + 1) →ₐ[ℂ] DualNumber ℂ) :

@@ -693,7 +693,6 @@ private instance (W : C) : (lamF (S := S) W).PreservesMonomorphisms where
 
 variable [HasBinaryProducts C]
 
-set_option backward.isDefEq.respectTransparency false in
 private noncomputable def adjTo (W : C) {P Q : Cᵒᵖ ⥤ ModuleCat.{1} S} (α : lam W P ⟶ Q) :
     P ⟶ (prod.functor.obj W).op ⋙ Q where
   app T := ModuleCat.ofHom
@@ -729,14 +728,11 @@ private noncomputable def invApp (W : C) {P Q : Cᵒᵖ ⥤ ModuleCat.{1} S}
     ((T.unop ⟶ W) →₀ P.obj T) →ₗ[S] Q.obj T :=
   Finsupp.lsum ℕ fun g => (Q.map (prod.lift g (𝟙 T.unop)).op).hom ∘ₗ (u.app T).hom
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma invApp_single (W : C) {P Q : Cᵒᵖ ⥤ ModuleCat.{1} S}
     (u : P ⟶ (prod.functor.obj W).op ⋙ Q) (T : Cᵒᵖ) (g : T.unop ⟶ W) (m : P.obj T) :
     invApp W u T (Finsupp.single g m) = (Q.map (prod.lift g (𝟙 T.unop)).op).hom ((u.app T).hom m) := by
   simp only [invApp, Finsupp.lsum_single, LinearMap.comp_apply]
-  try rfl
 
-set_option backward.isDefEq.respectTransparency false in
 private noncomputable def adjInv (W : C) {P Q : Cᵒᵖ ⥤ ModuleCat.{1} S}
     (u : P ⟶ (prod.functor.obj W).op ⋙ Q) : lam W P ⟶ Q where
   app T := ModuleCat.ofHom (invApp W u T)

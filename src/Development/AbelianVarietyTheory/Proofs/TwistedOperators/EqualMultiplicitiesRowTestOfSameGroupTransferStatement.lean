@@ -19,8 +19,6 @@ noncomputable section
 
 namespace GlobalTheory.Twist
 
-set_option backward.isDefEq.lazyProjDelta false in
-set_option backward.isDefEq.lazyWhnfCore false in
 theorem multEq_rowTest_of_copy :
     ∀ (B : Base) (C : Cols B) (a b : Late B C) (px : PreX B.toPre) (I : ColIn B px)
       (hX : B.fields.Ok) (Tw : TwDat B) (Wt : Set B.places.Pl) (s : SameGrp a b)
