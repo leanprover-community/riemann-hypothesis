@@ -145,6 +145,10 @@ holds the lower batch's pull requests too, and it lands right after it.
   stacked on each other in a circle are taken to be stacked on none. The workflow warns in its
   log when a batch's branch shares no commit beyond `main` with the batch it says it is stacked
   on.
+- **Batches at the same commit** hold the same pull requests. Whatever they say about each
+  other, each is taken to be stacked on the one with the next lower number: the lowest holds
+  their members, and the highest is `latest batch`. What they say about other batches still
+  counts. The workflow warns in its log on every run that sees them.
 - **Each pull request belongs to the lowest batch that holds it.** A pull request whose head
   commit is in several batches of a stack is a member of the lowest one only: it is listed in
   that batch's record, and its comments (that it is frozen, that it was pushed to, that it left

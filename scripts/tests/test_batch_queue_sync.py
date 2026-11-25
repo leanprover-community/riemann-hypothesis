@@ -1655,6 +1655,15 @@ class Pushed(unittest.TestCase):
         [said] = self.pushes(gh, 12)
         self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {sha('head12')} -->"))
 
+    def test_of_two_batches_at_the_same_commit_the_lower_number_tells_it(self):
+        gh = self.built()
+        by_hand(gh, 11, 12, 14, number=1100, ref="batch/copy", name="kim")
+        sync(gh)
+        gh.push(12, "head12-later")
+        log = batch.pushed(gh, 12)
+        self.assertIn("told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`", log)
+        self.assertEqual(len(self.pushes(gh, 12)), 1)
+
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
         self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
