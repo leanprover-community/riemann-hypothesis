@@ -20,7 +20,7 @@ open NumberField ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanis
 variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
 lemma mem_orthogonal_lattice_iff {r : ℕ} (X : Data E r) (ξ v : Fin r → E) :
-    v ∈ X.Λp ξ ↔ v ∈ X.Λ ∧ herm X.Gm v ξ = 0 := by first | exact Iff.rfl
+    v ∈ X.Λp ξ ↔ v ∈ X.Λ ∧ herm X.Gm v ξ = 0 := by exact Iff.rfl
 
 lemma integer_smul_eq_coe_smul {r : ℕ} (β : 𝓞 E) (v : Fin r → E) : β • v = (β : E) • v := by
   first

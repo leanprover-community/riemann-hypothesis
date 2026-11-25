@@ -29,7 +29,7 @@ theorem theta_lin_indep {F E : Type} [Field F] [Field E] [Algebra F E] (φ : E �
       rw [hγ, map_div₀, div_eq_iff hφ0]
       push_cast
       field_simp
-      first | linear_combination h
+      linear_combination h
     have hσγ : σ γ = γ := by
       apply φ.injective
       rw [hσφ, hφγ, Complex.conj_ofReal]

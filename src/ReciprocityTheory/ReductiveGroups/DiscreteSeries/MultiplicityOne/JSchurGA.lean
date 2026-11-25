@@ -101,7 +101,7 @@ theorem PG_J_PG (k r : ℕ) : PG k r * Formalism.REAL.Jm (epsG k r) * PG k r = F
   rcases lt_or_ge i.val r with h1 | h1
   · have : dG k r i = sq2 := by
       simp only [dG]
-      split_ifs <;> first | rfl
+      split_ifs <;> rfl
     rw [this]
     have : cG k r i = sq2 := by
       simp only [cG]
@@ -131,7 +131,7 @@ theorem PG_J_PG (k r : ℕ) : PG k r * Formalism.REAL.Jm (epsG k r) * PG k r = F
     rw [this]
     have : eG k r i = 1 := by
       simp only [eG]
-      split_ifs <;> first | rfl
+      split_ifs <;> rfl
     rw [this]
     split_ifs <;> first | omega | ring1
   rcases eq_or_lt_of_le h3 with h4 | h4
@@ -217,7 +217,7 @@ def psiM (k r : ℕ) (u : Formalism.REAL.UJ (epsG k r)) : Mat k r :=
 def psiG (k r : ℕ) (u : Formalism.REAL.UJ (epsG k r)) : Mt k r := Matrix.of.symm (psiM k r u)
 
 theorem of_psiG (u : Formalism.REAL.UJ (epsG k r)) : Matrix.of (psiG k r u) = psiM k r u := by
-  first | exact Matrix.of.apply_symm_apply _
+  exact Matrix.of.apply_symm_apply _
 
 theorem psiM_eq (u : Formalism.REAL.UJ (epsG k r)) : psiM k r u = PG k r * Formalism.MainNotions.S.umat u * PG k r := rfl
 

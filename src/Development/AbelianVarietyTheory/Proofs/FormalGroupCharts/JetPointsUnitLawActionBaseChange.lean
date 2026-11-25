@@ -67,8 +67,7 @@ variable {X0 : Scheme.{0}} {S S' : Type} [CommRing S] [CommRing S'] (ψ : S →+
 def baseMap : overAt (spMap ψ ≫ x0) S' ⟶ overAt x0 S :=
   Over.homMk (spMap ψ) (by
     show spMap ψ ≫ spMap (algebraMap S S) ≫ x0 = spMap (algebraMap S' S') ≫ spMap ψ ≫ x0
-    rw [← Category.assoc, ← Category.assoc, spMap_spMap, spMap_spMap]
-    first | done)
+    rw [← Category.assoc, ← Category.assoc, spMap_spMap, spMap_spMap])
 
 def jetPtMap (d m n : ℕ) : jOG (spMap ψ ≫ x0) d m n ⟶ jOG x0 d m n :=
   Over.homMk (spMap (jetCoef ψ (Fin n × Fin d) m)) (by

@@ -53,7 +53,7 @@ theorem padicValNat_prod_pow_sub (g q r : ℕ) [Fact g.Prime] (hq : 2 ≤ q) :
   apply Finset.sum_nbij' (fun i => r - i) (fun a => r - a)
   all_goals intro a ha
   all_goals (try simp only [Finset.mem_range, Finset.mem_Icc] at ha ⊢)
-  all_goals (first | omega)
+  all_goals (omega)
 
 theorem card_GL_zmod (q r : ℕ) [Fact q.Prime] :
     Nat.card (Matrix.GeneralLinearGroup (Fin r) (ZMod q)) =

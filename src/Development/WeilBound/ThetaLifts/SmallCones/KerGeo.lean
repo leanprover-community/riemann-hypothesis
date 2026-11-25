@@ -177,7 +177,7 @@ theorem pg_of (hB : B.IsGood σ) {Y : Spc F E n} {Y₁ : Spc F E n₁} {H : Plan
       obtain ⟨s, t, u, rfl⟩ := hb
       exact ⟨a * s, a * t, a • u, by rw [Matrix.mulVec_smul]; module⟩
   refine ⟨⟨conj_conj hB, by rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self]; simp, map_intCast _ _, hJ, hH.xx, hH.yy, hH.xy,
-    fun z => (hH.orth z).1, fun z => (hH.orth z).2, sp, fun v hv => ?_⟩, (by first | exact planeOK hB hH ε hJ hd hL), fun u hu => ?_, hH.gram⟩
+    fun z => (hH.orth z).1, fun z => (hH.orth z).2, sp, fun v hv => ?_⟩, (by exact planeOK hB hH ε hJ hd hL), fun u hu => ?_, hH.gram⟩
   · refine Matrix.eq_zero_of_vecMul_eq_zero hd (funext fun j => ?_)
     have := hv (Pi.single j 1)
     have e : (fun l => σ.toRingHom ((Pi.single j 1 : Fin n → E) l)) = Pi.single j 1 := funext fun l => by

@@ -55,7 +55,7 @@ lemma measure_coset_le (κ : Measure H) [κ.IsMulLeftInvariant] (y : G) (E : Set
     have h0 : κ {h : H | y * h ∈ E} = 0 :=
       measure_mono_null (fun h hh => (hne h hh).elim) measure_empty
     rw [h0]
-    first | exact zero_le
+    exact zero_le
 
 lemma measure_coset_lt_top (hH : IsClosed (H : Set G)) (κ : Measure H)
     [IsFiniteMeasureOnCompacts κ] {E : Set G} (hE : IsCompact E) :

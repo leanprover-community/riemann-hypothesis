@@ -81,8 +81,8 @@ theorem alphaN_rho_diff_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram 
       8 * ((vF 𝔭 n : ℝ) + 1) ^ 2 *
         (Ideal.absNorm 𝔭 : ℝ) ^ (-(((finrank K V - 1) * ((vF 𝔭 n + 1) / 2) : ℕ) : ℤ)) := by
   have hq : (1 : ℝ) < (Ideal.absNorm 𝔭 : ℝ) := unitaryAbsoluteValueBounds.one_lt_q h𝔭
-  rw [unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd (by first | exact hL) hLi h𝔭 hv (by omega) _ n hn rfl,
-    unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd (by first | exact hL) hLi h𝔭 hv (by omega) _ n' hn' rfl,
+  rw [unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd (by exact hL) hLi h𝔭 hv (by omega) _ n hn rfl,
+    unitaryAbsoluteValueBounds.alphaN_closed hK hF hs hd (by exact hL) hLi h𝔭 hv (by omega) _ n' hn' rfl,
     mul_div_cancel_left₀ _ (unitaryAbsoluteValueBounds.beta_pos h𝔭 (by omega)).ne',
     mul_div_cancel_left₀ _ (unitaryAbsoluteValueBounds.beta_pos h𝔭 (by omega)).ne', hvv,
     Finset.sum_range_succ _ (vF 𝔭 n' + 1), add_sub_cancel_left, abs_pow, unitaryAbsoluteValueBounds.abs_x_eq, zpow_neg,

@@ -53,7 +53,7 @@ theorem ext_lat {W : Type*} [AddCommGroup W] [Module E W] [Module (𝓞 E) W] [I
     intro u a b h
     rw [mul_smul]
     exact P.smul_mem b h
-  have hal : ∀ o : 𝓞 E, algebraMap (𝓞 E) E o = (o : E) := fun o => by first | rfl
+  have hal : ∀ o : 𝓞 E, algebraMap (𝓞 E) E o = (o : E) := fun o => by rfl
   refine ⟨{ toFun := fun x => ((d x.1 x.2 : E))⁻¹ • f ⟨d x.1 x.2 • x.1, hdP x.1 x.2⟩,
             map_add' := ?_, map_smul' := ?_ }, ?_⟩
   · intro x y

@@ -236,7 +236,7 @@ private theorem mem_lat_of_specializes {X : Scheme.{0}} {G : Over X} [GrpObj G] 
           (X.presheaf.stalk q.1) (X.presheaf.stalk q.1) (X.presheaf.stalk q.1)).toRingHom) := by
         rw [hφl, ← Spec.map_comp, ← Spec.map_comp]
         congr 1
-        ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap] <;> first | rfl
+        ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap] <;> rfl
       rw [Over.comp_left, ← Category.assoc, key, Category.assoc, hv1]
       let ψ : Over.mk (X.fromSpecStalk q'.1) ⟶ Over.mk (X.fromSpecStalk q.1) := Over.homMk _ hψ
       have h1 : ψ ≫ (1 : Over.mk (X.fromSpecStalk q.1) ⟶ G) = 1 := by

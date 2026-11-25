@@ -87,7 +87,7 @@ theorem locK_eq_of_level (χ : HChar E) {v : HeightOneSpectrum (𝓞 E)} {m : �
     rw [hd, map_mul, map_inv₀]
     calc v.valuation E ((y : E) - x) * (v.valuation E (x : E))⁻¹
         ≤ WithZero.exp (-((m : ℤ) + 1)) * v.valuation E (x : E) * (v.valuation E (x : E))⁻¹ := by
-          first | gcongr
+          gcongr
       _ = WithZero.exp (-((m : ℤ) + 1)) := by rw [mul_assoc, mul_inv_cancel₀ hv0, mul_one]
   have hlt : v.valuation E (((y * x⁻¹ : Eˣ) : E) - 1) < v.valuation E 1 := by
     rw [map_one]

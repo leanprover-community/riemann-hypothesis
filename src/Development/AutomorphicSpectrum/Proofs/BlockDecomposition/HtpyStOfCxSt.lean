@@ -138,7 +138,7 @@ theorem homotopy (n : ℕ) (f : Cn (Cyl G) (n + 1)) :
     smul_smul, S, pow_add]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
-    first | exact congrArg₂ (· • ·) (mul_comm _ _) rfl
+    exact congrArg₂ (· • ·) (mul_comm _ _) rfl
   have e2 : hop G (n + 1) (dn (Cyl G) (n + 1) f) = ∑ j, ∑ i, T i j := by
 
     simp only [dn, hop, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, P_cof, Finset.smul_sum,

@@ -76,7 +76,7 @@ private theorem term {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ �
     rfl
   rw [heq] at hB
   have hc : Cgr (l ^ n) (U (galU X s f ^ c)) (U (galU X s f ^ c)) := by
-    first | exact ⟨1, by simp⟩
+    exact ⟨1, by simp⟩
   have hz := hUniq _ _ _ _ hA hB hc
   rw [map_smul]
   have hsplit : k • clsK X l n (slD X N ((galU X s f ^ c : X.Kˣ) : X.K)) -

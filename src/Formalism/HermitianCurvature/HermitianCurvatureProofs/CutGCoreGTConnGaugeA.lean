@@ -140,7 +140,7 @@ theorem actA_diag (P : M.Par) (x : M.Ty P → (MA.DQ P).Pr) (g : M.Ty P → MA.S
   unfold MA.actA
   refine (Fintype.sum_eq_single ρ (fun b hb => ?_)).trans ?_
   · have h0 := congrArg (fun m : (MA.DQ P).Pr => m.1 (g b)) (Matrix.diagonal_apply_ne x (Ne.symm hb))
-    exact h0.trans (by first | rfl)
+    exact h0.trans (by rfl)
   · exact congrArg (fun m : (MA.DQ P).Pr => m.1 (g ρ)) (Matrix.diagonal_apply_eq x ρ)
 
 theorem algebraMap_fst_apply (P : M.Par) (c : ℂ) (f : MA.SmQ P.r P.TT) :

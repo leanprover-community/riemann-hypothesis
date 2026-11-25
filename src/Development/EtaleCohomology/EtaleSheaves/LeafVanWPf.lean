@@ -147,7 +147,7 @@ theorem commGroup_inv_eq_conj_twist_identity {B W S X T : Scheme.{0}} (pA : X �
         have e4 := pullback.condition_assoc (f := pullback.fst (pA ≫ s) ι ≫ pA) (g := r) s
         simp only [Category.assoc] at e4
         rw [← e3]
-        first | exact e4.symm
+        exact e4.symm
     · simp only [Category.assoc, Category.id_comp, pullback.lift_snd]
   · apply pullback.hom_ext
     · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc]

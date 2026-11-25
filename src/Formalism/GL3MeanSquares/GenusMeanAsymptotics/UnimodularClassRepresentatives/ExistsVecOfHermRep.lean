@@ -45,7 +45,7 @@ def vecSplitPerp (h : V →ₗ⋆[K] V →ₗ[K] K) {x₀ : V} (hx : h x₀ x₀
 
 private theorem star_sesq_eq_swap_of_isSymm {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (a b : V) :
     star (h a b) = h b a := by
-  first | exact hs.eq a b
+  exact hs.eq a b
 
 theorem VecSplit.finrank_add_one {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K}
     (S : VecSplit h h') : finrank K V' + 1 = finrank K V := by
@@ -85,7 +85,7 @@ theorem VecSplit.isSymm {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K]
     intro a b
     rw [← S.isom, ← S.isom]
     exact star_sesq_eq_swap_of_isSymm hs _ _
-  first | exact ⟨H⟩
+  exact ⟨H⟩
 
 theorem exists_vec_of_hermRep (hH : HermRepUnram) (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) (hV : 2 ≤ finrank K V)

@@ -85,7 +85,7 @@ private theorem ev_pt_pair {n : ℕ} (x y : Pt C n dd) : ev (n := n) ![x, y] Y.h
   congr 1
   funext q
   rcases q with ⟨j, l⟩
-  fin_cases j <;> first | rfl
+  fin_cases j <;> rfl
 
 theorem addOf_eq {n : ℕ} (a b : Pt C n dd) : addOf (Y.B.FK C) a b = addAt Y a b := by
   funext i
@@ -98,7 +98,7 @@ theorem addOf_eq {n : ℕ} (a b : Pt C n dd) : addOf (Y.B.FK C) a b = addAt Y a 
   congr 1
   funext q
   rcases q with ⟨j, l⟩
-  fin_cases j <;> first | rfl
+  fin_cases j <;> rfl
 
 section Three
 

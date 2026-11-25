@@ -164,7 +164,7 @@ private theorem spanMono_top {O B : Type} [CommRing O] [IsLocalRing O] [IsAdicCo
             rw [Ideal.sup_mul] at hmul
             have hle : ((maximalIdeal O).map (algebraMap O B)) * Ideal.span u ⊔ Ideal.span u ^ k * Ideal.span u ≤
                 ((maximalIdeal O).map (algebraMap O B)) ⊔ Ideal.span u ^ (k + 1) :=
-              sup_le_sup (by first | exact Ideal.mul_le_left) (le_of_eq (pow_succ _ _).symm)
+              sup_le_sup (by exact Ideal.mul_le_left) (le_of_eq (pow_succ _ _).symm)
             exact hle hmul
         | zero =>
           intro b

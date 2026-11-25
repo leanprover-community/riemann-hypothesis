@@ -57,7 +57,7 @@ theorem hessC_weight_trans {L : HolLineBundle A} (W : Weight L) (j k : Fin A.n) 
     rw [trans_target_eq] at h; exact h.1
   have hψ : ContDiffAt ℝ 2 (W.φ k ∘ (A.chart k).symm) (T y) :=
     ((weight_contDiffOn W k).contDiffAt ((A.chart k).open_target.mem_nhds hTy)).of_le
-      (by first | simp)
+      (by simp)
   have hTc : ContDiffAt ℝ 2 T y := (hTan.contDiffAt (n := 2)).restrict_scalars ℝ
   have hφ : ContDiffAt ℝ 2 ((W.φ k ∘ (A.chart k).symm) ∘ T) y := hψ.comp y hTc
   set g : (Fin D → ℂ) → ℂ := fun w => L.g j k ((A.chart j).symm w) ^ 2 with hg

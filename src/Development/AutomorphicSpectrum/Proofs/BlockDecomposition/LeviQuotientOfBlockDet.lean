@@ -747,7 +747,7 @@ theorem c₀_par (hB : BdetLaw) (hA : A.Good) (hI : Iwa (A.uQ ε s ⊓ A.uQ ε S
     rw [hx, hL.χi]
     rfl
   · have hc : Continuous (fun z : Circle => (z : ℂ)) := by
-      first | fun_prop
+      fun_prop
     exact hc.comp_continuousOn (hL.χcont.comp_continuousOn (bdet_contQ A ε s hB hL))
 
 theorem bdet_j (m : A.U ε ↥sᶜ) : bdet (Sum.inl '' s) (jQ (s := s) A ε m : A.U ε ι).1 = 1 := by

@@ -241,9 +241,9 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     simp only [XLam, Submodule.mem_inf]
     constructor
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1
+      exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1
+      exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1
 
   have hXmap : (Xsp (repF γ)).map (β₀ : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp (liftF F'₂) :=
     BwdBetaCut.Xsp_of_frame β₀ _ _ hfr

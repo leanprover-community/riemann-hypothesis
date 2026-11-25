@@ -156,7 +156,7 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
     · rw [hw i hi]; simp
     · have h0 : Hpk k r i p = 0 := by
         simp only [Hpk]
-        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
+        split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> omega
       rw [h0, mul_zero]
   have hpw' : ∀ (p : Fin (2 * r + k + 1)) (w : Fin (2 * r + k + 1) → ℂ), (p.val < r ∨ r + k < p.val) →
       inWb k r w → herm (Hpk k r) w (Pi.single p 1) = 0 := by
@@ -167,19 +167,19 @@ theorem herm_cvec (hz' : inWb k r z') (hν : inWb k r ν') (hνz : herm (Hpk k r
   have hee : ∀ a b : Fin r, herm (Hpk k r) (ee k r a) (ee k r b) = 0 := by
     intro a b; rw [hEe, hEe, hsing]; have := a.isLt; have := b.isLt
     simp only [Hpk]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> omega
   have hss : ∀ a b : Fin r, herm (Hpk k r) (es k r a) (es k r b) = 0 := by
     intro a b; rw [hEs, hEs, hsing]; have := a.isLt; have := b.isLt
     simp only [Hpk]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> omega
   have hes : ∀ a b : Fin r, herm (Hpk k r) (ee k r a) (es k r b) = if a = b then 1 else 0 := by
     intro a b; rw [hEe, hEs, hsing]; have := a.isLt; have := b.isLt
     simp only [Hpk]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> omega
   have hse : ∀ a b : Fin r, herm (Hpk k r) (es k r a) (ee k r b) = if a = b then 1 else 0 := by
     intro a b; rw [hEs, hEe, hsing]; have := a.isLt; have := b.isLt
     simp only [Hpk]
-    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | omega
+    split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> omega
   have hez : ∀ (a : Fin r) (w : Fin (2 * r + k + 1) → ℂ), inWb k r w →
       herm (Hpk k r) (ee k r a) w = 0 ∧ herm (Hpk k r) w (ee k r a) = 0 ∧
         herm (Hpk k r) (es k r a) w = 0 ∧ herm (Hpk k r) w (es k r a) = 0 := by

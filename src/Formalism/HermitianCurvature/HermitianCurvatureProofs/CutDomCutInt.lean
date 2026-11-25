@@ -38,7 +38,7 @@ theorem aesm_weight_smul (D : B.RealPlaceData k r Wp Wq) {E : Type*} [NormedAddC
     · exact isOpen_lt continuous_const (Complex.continuous_normSq.comp continuous_snd)
   have contW : Continuous (fun q : (Fin r → ℂ) × ℂ => (∏ a : Fin r, ‖q.1 a‖ ^ (2 * (Mdim k r a - 2))) *
       (Complex.normSq q.2 - Tz k r D.z * Tz k r D.z') ^ (k - 1)) := by
-    first | fun_prop
+    fun_prop
   have hw : ContinuousOn (fun q => bcWeight k r (Tz k r D.z) (Tz k r D.z') q) s := by
     refine contW.continuousOn.congr fun q hq => ?_
     unfold bcWeight

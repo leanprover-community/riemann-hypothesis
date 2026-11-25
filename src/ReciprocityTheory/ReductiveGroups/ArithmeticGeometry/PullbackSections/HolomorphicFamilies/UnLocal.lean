@@ -33,9 +33,9 @@ private lemma local_lemma_4 {A : Type} [CommRing A] (ψ : A →+* ℂ) {U : (Sp 
   obtain ⟨pt⟩ : Nonempty (Sp ℂ) := by
     first
       | infer_instance
-  have hpt : pt ∈ spMap ψ ⁻¹ᵁ U := e (show pt ∈ (⊤ : (Sp ℂ).Opens) by first | trivial)
+  have hpt : pt ∈ spMap ψ ⁻¹ᵁ U := e (show pt ∈ (⊤ : (Sp ℂ).Opens) by trivial)
   obtain ⟨g', hD, hxD⟩ := (isAffineOpen_top (Sp A)).exists_basicOpen_le ⟨(spMap ψ).base pt, hpt⟩
-    (by first | trivial)
+    (by trivial)
   obtain ⟨g, rfl⟩ : ∃ g : A, (Scheme.ΓSpecIso (CommRingCat.of A)).inv g = g' :=
     ⟨(Scheme.ΓSpecIso (CommRingCat.of A)).hom g', by simp⟩
   refine ⟨g, ?_, hD⟩

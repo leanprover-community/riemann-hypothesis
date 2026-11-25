@@ -136,7 +136,7 @@ theorem exists_similitude_tri_of_hkPt : ∀ (E : Type) [Field E] [NumberField E]
         intro a
         ext <;> simp [epsMul]
       rw [e0]
-      first | exact Spec.map_id _
+      exact Spec.map_id _
     have e3 : spMap (epsMul (p : ℂ)) ≫ z.u τ m = wv ≫ ψ ≫ pullback.fst _ _ := by
       rw [hw3]
       refine (spMap_epsMul_comp (p : ℂ) ((p : ℂ)⁻¹) _).trans ?_

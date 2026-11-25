@@ -84,7 +84,7 @@ theorem mapAlong_transport_comp {k G H : Type} [CommRing k] [Group G] [Topologic
   rw [← cohomologyMapAlong_comp]
   exact mapAlong_eq_id_of_eq_id A (φ.comp ψ) (hφ.comp hψ)
     (MonoidHom.ext fun x => by show θ.symm (θ x) = x; simp)
-    ((Rep.resFunctor ψ).map (𝟙 (Rep.res φ A)) ≫ g) (fun a => by first | rfl) n
+    ((Rep.resFunctor ψ).map (𝟙 (Rep.res φ A)) ≫ g) (fun a => by rfl) n
 
 theorem finite_cohomology_transport {k G H : Type} [CommRing k] [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H)

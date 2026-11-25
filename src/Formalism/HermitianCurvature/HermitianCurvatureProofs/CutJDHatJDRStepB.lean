@@ -188,10 +188,10 @@ theorem stepB_pt (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : i
   have hne : eI k r ⟨l, by omega⟩ ≠ eI k r ⟨l + 1, by omega⟩ := by simp [eI, Fin.ext_iff]
   have hring := stepB_ring (EA (E := E) hD) (EA_gl hD) Λ (eI k r ⟨l, by omega⟩) (eI k r ⟨l + 1, by omega⟩) hne
     (c ⟨l + 1, by omega⟩ / c ⟨l, by omega⟩) a b
-    (Fin.ext (by rw [hav]; simp [eI]; first | omega))
-    (Fin.ext (by rw [hav]; simp [eI]; first | omega))
-    (Fin.ext (by rw [hbv]; simp [eI]; first | omega))
-    (Fin.ext (by rw [hbv]; simp [eI]; first | omega))
+    (Fin.ext (by rw [hav]; simp [eI]; omega))
+    (Fin.ext (by rw [hav]; simp [eI]; omega))
+    (Fin.ext (by rw [hbv]; simp [eI]; omega))
+    (Fin.ext (by rw [hbv]; simp [eI]; omega))
     (fun m hm h => by have := congrArg Fin.val h; rw [hav] at this; simp [eI] at this; split_ifs at this <;> omega)
     (fun m hm h => by have := congrArg Fin.val h; rw [hbv] at this; simp [eI] at this; split_ifs at this <;> omega)
     (fun m hm X => hLmid (a m) (by rw [hav]; split_ifs <;> omega) (hab_le m).1 X) hL1

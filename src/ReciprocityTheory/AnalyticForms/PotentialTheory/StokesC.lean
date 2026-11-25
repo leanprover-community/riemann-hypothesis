@@ -48,8 +48,8 @@ private lemma hessC_add_potential {D : ℕ} {f g : (Fin D → ℂ) → ℝ} {y :
     hessC (fun z => f z + g z) y = hessC f y + hessC g y := by
   have hd : fderiv ℝ (fun z => f z + g z) =ᶠ[𝓝 y] fun z => fderiv ℝ f z + fderiv ℝ g z := by
     filter_upwards [hf, hg] with z h1 h2
-    exact fderiv_add (h1.differentiableAt (by first | norm_num))
-      (h2.differentiableAt (by first | norm_num))
+    exact fderiv_add (h1.differentiableAt (by norm_num))
+      (h2.differentiableAt (by norm_num))
   have hf2 : DifferentiableAt ℝ (fderiv ℝ f) y :=
     (hf.self_of_nhds.fderiv_right (m := 1)
       (by first | norm_num)).differentiableAt (by first | exact one_ne_zero)

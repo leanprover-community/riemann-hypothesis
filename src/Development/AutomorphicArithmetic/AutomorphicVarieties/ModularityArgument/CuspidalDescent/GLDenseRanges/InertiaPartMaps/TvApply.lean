@@ -242,7 +242,7 @@ private theorem rowStep {W : Type} [AddCommGroup W] [Module ℂ W] (τ : Represe
     apply Units.ext
     ext a b
     simp [tv, Matrix.vecMulVec_apply, Matrix.one_apply, Pi.single_apply, he, hx]
-    split_ifs <;> first | rfl
+    split_ifs <;> rfl
   set y : Fin n → k := (p : Matrix (Fin n) (Fin n) k) *ᵥ x with hyd
   set w : Fin n → k := ((p⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) c with hwd
   have hyv : ∀ a, y a = (p : Matrix (Fin n) (Fin n) k) a j * (s : k) := by

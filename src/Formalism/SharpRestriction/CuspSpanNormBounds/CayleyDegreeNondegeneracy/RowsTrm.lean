@@ -785,7 +785,7 @@ theorem rowsT_chSh_nonneg (T T' : ℕ) (F : LFlag (D.sp.Y 0) D.R.rS (T : D.host.
 theorem rowsT_invSh_nonneg (T T' : ℕ) (F : LFlag (D.sp.Y 0) D.R.rS (T : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (T' : D.host.E))
     (φ : D.host.E →+* ℂ) : 0 ≤ invSh T T' F F' φ := by
   unfold invSh Lat.sh Lat.ch
-  split_ifs <;> first | positivity
+  split_ifs <;> positivity
 
 theorem rowsT_small_one {ι : Type*} [Fintype ι] (s : ι → ℝ) (T T' g : ℝ) (hT : 0 < T) (hT' : 0 < T') (hg : 0 < g)
     (hs : ∀ v, 0 < s v) (h : Real.sqrt (T * T' / g ^ 2) ^ Fintype.card ι ≤ ∏ v, 1 / s v) :

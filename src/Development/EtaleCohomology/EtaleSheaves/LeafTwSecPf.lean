@@ -33,7 +33,7 @@ theorem gen_map {q : ℕ} {B : Type} [CommRing B] (ζ : Prim q B) (k : ℤ) {U V
     change (Scheme.Γ.map f.left.op).hom (ρ U ζ.1) = ρ V ζ.1
     simp only [ρ]
     rw [← Over.w f]
-    first | rfl
+    rfl
   exact congrArg (fun z => Submodule.Quotient.mk (p := twRel q k _) (Finsupp.single z (1 : ULift.{1} (ZMod q)))) h
 
 def cmap {q : ℕ} {B : Type} [CommRing B] (ζ : Prim q B) (k : ℤ) : Cst q _ ⟶ Pr q k (Spec (CommRingCat.of B)) where

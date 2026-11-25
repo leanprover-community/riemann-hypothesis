@@ -169,7 +169,7 @@ theorem nil_mem (Λ : Submodule (𝓞 E) S.V) (e a : Fin r → S.V) (s : Matrix 
       first | norm_cast | exact map_mul (algebraMap (𝓞 E) E) x1 x2⟩)
   refine ⟨-o1 + o2, ?_⟩
   rw [kap, ← h1, ← h2]
-  first | norm_cast
+  norm_cast
 
 end PI.TermsAtPtFiniteW.HeisW
 

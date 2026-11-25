@@ -107,7 +107,7 @@ theorem actA_sc (P : M.Par) (x : (MA.DQ P).Pr) (g : M.Ty P → MA.SmQ P.r P.TT) 
   refine (Fintype.sum_eq_single ρ ?_).trans ?_
   · intro b hb
     simp [Matrix.scalar_apply, Matrix.diagonal_apply_ne _ (Ne.symm hb)]
-    first | rfl
+    rfl
   · simp [Matrix.scalar_apply]
     rfl
 

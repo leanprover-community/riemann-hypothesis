@@ -59,7 +59,7 @@ theorem level_product_of_constant_weights (k r : ℕ) (GG : ℝ) : ∀ (n : ℕ)
     simp only [C.nAux]
     simp [ih, e, Fin.val_succ]
     all_goals (by_cases hb : b = r + 1 <;> simp [hb])
-    all_goals (left; congr 1; first | ring)
+    all_goals (left; congr 1; ring)
 
 theorem ptLast_bigPt (r : ℕ) (c : Fin (r + 1) → ℂ) : D.ptLast (TBB.bigPt r c) = (1, c (Fin.last r)) := by
   have h : ∀ {α : Type} (n : ℕ) (f : Fin (n + 1) → α) (z : α), (List.ofFn f).getLast?.getD z = f (Fin.last n) := by

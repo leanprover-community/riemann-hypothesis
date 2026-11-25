@@ -218,7 +218,7 @@ theorem lgCurve_expC (G : LogFGL v d) {q : ℕ} (hq : q ≠ 0) {ga : Fin d → P
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun b => h0 b)
   have hX : HasSubst (fun _ : Unit => (PowerSeries.X ^ q : PowerSeries C)) := by
     first
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => by first | simp [hq, PowerSeries.X])
+    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => by simp [hq, PowerSeries.X])
   have e1 : ∀ g : PowerSeries C,
       PowerSeries.expand q hq g = PowerSeries.subst (PowerSeries.X ^ q : PowerSeries C) g :=
     fun g => (expC_apply hq (fun _ => g) a).symm
