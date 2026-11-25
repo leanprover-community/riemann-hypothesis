@@ -1387,7 +1387,7 @@ theorem lineOfLargeDegree_of_use :
       (fun F _ K _ ι _ => Targets.ExistsUnique.full F ι)
       DualStdBasePtFree.proof DualStdImageBot.proof hStdGenDeg DualStdMetricPull.proof
   exact LineOfLargeDegreeFromZ.ofOpen hVRI hSN hEnergy hBasis hStacked hSDeg hBC
-    (GrassLinesProj.proof (_root_.GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system hAIS))
+    (GrassLinesProj.proof (_root_.PositivityTheory.HtPt.Aig.pfCoord_of_system hAIS))
     (DualGeomDegCharts.proof ChartDensityIntegrable.proof) GrassGeomDegChart.proof ChartMassInvariant.proof
     (degree_of_system hAIS) hInd hU.z1 hZ2 hI
 

@@ -177,7 +177,7 @@ theorem killsOver_pow (u : splitTorus S X ⟶ G) [IsMonHom u] (Y : AddSubgroup X
       simp only [I]
       rw [← Ideal.map_pow, ← pow_mul, Ideal.map_eq_bot_iff_le_ker, Ideal.mk_ker]
       exact Ideal.pow_le_pow_right (by omega)
-    refine _root_.GlobalTheory.CompanionTheory.Ar.killsOver_of_sq_zero S G X u Y _ _ I hI ?_
+    refine _root_.CoverDenseAlt.kills_over_of_square_zero_ideal S G X u Y _ _ I hI ?_
     let c : R ⧸ (IsLocalRing.maximalIdeal R ^ (n + 1)) →+*
         (R ⧸ IsLocalRing.maximalIdeal R ^ (n + 1 + 1)) ⧸ I :=
       Ideal.Quotient.lift _ ((Ideal.Quotient.mk I).comp (Ideal.Quotient.mk _))

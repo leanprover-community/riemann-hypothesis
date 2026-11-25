@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TendstoIntUv
 public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagScalarCommuteTransposedRMatrix
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FsvMulFsvNeg
@@ -39,12 +40,7 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)} {S : Type} [Fintype S] [DecidableEq S]
 
 theorem hsInner_smul_right (a : ℂ) (U V : Wq →L[ℂ] Wp) : B.hsInner U (a • V) = conj a * B.hsInner U V := by
-  have e : Formalism.FourierDecayAlt.B.hsVec (a • V) = a • Formalism.FourierDecayAlt.B.hsVec V := by
-    unfold Formalism.FourierDecayAlt.B.hsVec
-    rw [← WithLp.toLp_smul]
-    rfl
-  unfold Formalism.FourierDecayAlt.B.hsInner
-  rw [e, inner_smul_left]
+  apply _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right <;> assumption
 
 theorem pairAt_mulOp_right (μ : Measure (Mt k r)) (l : Fin r) (s : ℂ) (Wv : Module.End ℂ (RadSp k r z z' π π'))
     (hW : multiplicationOperator Wv (fun c _ => fsv s (c l))) (Φ Ψ : RadSp k r z z' π π') (c : Fin r → ℂ) :

@@ -327,20 +327,6 @@ namespace GlobalTheory.LocGL.LenOneSupport
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem eq_of_isCosocle_prodIrr_one (ρ x : IrrGL (k := k)) (y : Fin 1 → IrrGL (k := k)) (hy : ∀ a, y a = ρ)
-    (hd : ∑ a, (y a).1 = x.1) (h : IsCosocle x.rep (prodIrr y hd)) : x = ρ := by
-  have e : y = fun _ => ρ := funext hy
-  subst e
-  obtain ⟨n, c⟩ := x
-  obtain ⟨m, r⟩ := ρ
-  have hmn : m = n := by simpa using hd
-  subst hmn
-  obtain ⟨ψ⟩ := nonempty_equiv_prodIrr_one (⟨m, r⟩ : IrrGL (k := k)) hd
-  have h2 := h.of_equiv (.refl _) ψ.symm
-  obtain ⟨φ⟩ := (isCosocle_self r.rep.irr).unique h2
-  have e1 := (IrrGL.of_eq_of (hs := c.rep.smooth) (hi := c.rep.irr) (hs' := r.rep.smooth) (hi' := r.rep.irr)).2 ⟨φ⟩
-  exact (IrrGL.of_rep (⟨m, c⟩ : IrrGL (k := k))).symm.trans (e1.trans (IrrGL.of_rep (⟨m, r⟩ : IrrGL (k := k))))
-
 theorem hasSupport_first_of_isL_len_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (c : ℕ) (Δ : Fin c → Segment k) (x : IrrGL (k := k)), (∀ i, (Δ i).len = 1) →
     IsL ((List.ofFn Δ : List (Segment k)) : Multiset (Segment k)) x.rep →

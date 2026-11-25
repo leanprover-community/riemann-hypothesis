@@ -53,14 +53,6 @@ open AlgebraicGeometry CategoryTheory Limits Opposite GlobalTheory.QcSub
 
 namespace GlobalTheory.QcSub.Local
 
-theorem adjoin_mem_of_away {R A R' A' : Type} [CommRing R] [CommRing A] [CommRing R'] [CommRing A']
-    [Algebra R A] [Algebra R R'] [Algebra R' A'] [Algebra A A'] [Algebra R A']
-    [IsScalarTower R A A'] [IsScalarTower R R' A'] (g : R) [IsLocalization.Away g R']
-    [IsLocalization.Away (algebraMap R A g) A'] (T : Set A) (b : A)
-    (hb : algebraMap A A' b ∈ Algebra.adjoin R' (algebraMap A A' '' T)) :
-    ∃ m : ℕ, algebraMap R A g ^ m * b ∈ Algebra.adjoin R T := by
-  apply (config := { allowSynthFailures := true }) GlobalTheory.adjoin_mem_of_away_localization' <;> assumption
-
 theorem mem_gen_of_local (X : Scheme.{0}) (F : X.Opensᵒᵖ ⥤ CommRingCat) (α : X.presheaf ⟶ F)
     (hα : ((Scheme.AffineZariskiSite.toOpensFunctor X).op.whiskerLeft α).Coequifibered)
     (V W : X.Opens) (T : Set (F.obj (op V))) (b : F.obj (op W))
@@ -118,7 +110,7 @@ theorem mem_gen_of_local (X : Scheme.{0}) (F : X.Opensᵒᵖ ⥤ CommRingCat) (�
         exact Set.image_congr (fun y _ => comp hV (X.basicOpen_le f) y)
       rw [e1, e2]
       exact hres
-    obtain ⟨m, hm⟩ := adjoin_mem_of_away f T' b' hb''
+    obtain ⟨m, hm⟩ := GlobalTheory.adjoin_mem_of_away_localization f T' b' hb''
     exact ⟨m, (hI _).mpr (by rw [map_pow]; exact hm)⟩
   have cover : W' ≤ ⨆ f : (I.radical : Set Γ(X, W')), X.basicOpen f.1 := by
     intro x hx

@@ -974,12 +974,6 @@ variable {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {σ : Type}
 theorem in_zero : In (⊤ : Ideal B) (0 : MvPowerSeries σ Q) :=
   fun _ => ⟨0, trivial, by simp⟩
 
-theorem in_add {g h : MvPowerSeries σ Q} (hg : In (⊤ : Ideal B) g) (hh : In (⊤ : Ideal B) h) :
-    In (⊤ : Ideal B) (g + h) := fun α => by
-  obtain ⟨a, -, ha⟩ := hg α
-  obtain ⟨b, -, hb⟩ := hh α
-  exact ⟨a + b, trivial, by rw [map_add (f := _), ha, hb, map_add (f := _)]⟩
-
 theorem in_smul (c : B) {g : MvPowerSeries σ Q} (hg : In (⊤ : Ideal B) g) :
     In (⊤ : Ideal B) (algebraMap B Q c • g) := fun α => by
   obtain ⟨a, -, ha⟩ := hg α
@@ -992,7 +986,7 @@ theorem in_sum {κ : Type} (s : Finset κ) (g : κ → MvPowerSeries σ Q)
   | empty => simpa using in_zero
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    exact in_add (hg a (Finset.mem_insert_self _ _)) (ih fun j hj => hg j (Finset.mem_insert_of_mem hj))
+    exact GlobalTheory.QLogBasis.in_top_add (hg a (Finset.mem_insert_self _ _)) (ih fun j hj => hg j (Finset.mem_insert_of_mem hj))
 
 theorem comb_one {ι : Type} [Fintype ι] [DecidableEq ι] (e : ι → MvPowerSeries σ Q) (i : ι) :
     comb ((1 : Matrix ι ι B) i) e = e i := by
@@ -1018,7 +1012,7 @@ theorem mul_eq_one {d : ℕ} (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B) 
   obtain ⟨b, -, hb⟩ := he.2 (e i) (he.1 i)
   have hA : In (⊤ : Ideal B) (e i - comb ((Matrix.of P * Matrix.of P') i) e) := by
     rw [comb_mul e f P P' i]
-    exact in_add (h1 i) (in_sum _ _ fun j _ => in_smul _ (h2 j))
+    exact GlobalTheory.QLogBasis.in_top_add (h1 i) (in_sum _ _ fun j _ => in_smul _ (h2 j))
   have hB : In (⊤ : Ideal B) (e i - comb ((1 : Matrix ι ι B) i) e) := by
     rw [comb_one, sub_self]; exact in_zero
   exact (hb _ hA).trans (hb _ hB).symm

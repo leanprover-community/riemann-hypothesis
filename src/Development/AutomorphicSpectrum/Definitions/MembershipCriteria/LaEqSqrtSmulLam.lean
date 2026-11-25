@@ -43,12 +43,6 @@ def Cyclic (φ : M) : Prop := Submodule.span ℂ (Set.range fun x => S.rho x φ)
 
 def UnitVac (al : X → ℂ) (Γ : AddSubgroup X) (φ : M) : Prop := Law S al Γ φ ∧ S.B φ φ = 1
 
-def la (al : X → ℂ) (Γ' Γ : AddSubgroup X) (φ : M) : M :=
-  ∑ᶠ q : Γ' ⧸ Γ.addSubgroupOf Γ', al ((Quotient.out q : Γ') : X) • S.rho ((Quotient.out q : Γ') : X) φ
-
-def abelian₂ (al : X → ℂ) (Γ' Γ : AddSubgroup X) (φ : M) : M :=
-  ((Real.sqrt (Γ.relIndex Γ' : ℝ) : ℝ) : ℂ)⁻¹ • la S al Γ' Γ φ
-
 def ip : M →ₗ[ℂ] M →ₗ⋆[ℂ] ℂ := S.B.flip
 
 @[simp] theorem ip_apply (u v : M) : ip S u v = S.B v u := rfl

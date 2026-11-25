@@ -943,7 +943,6 @@ end
 end LeafFixedPointPairing
 section
 open GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.SumSize
-alias _root_.GlobalTheory.Adopt.leafFixedPoint_of_finK_awayK := _root_.LeafFixedPointPairing.GlobalTheory.CompanionTheory.LeafFixedPointPlaceNorm.fp_tie_alt
 end
 end
 end -- clump:auto

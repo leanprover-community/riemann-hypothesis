@@ -732,16 +732,7 @@ theorem gap_one {P : M.Par} (h : P.OK) (i : ℕ) (hi : i ∈ Finset.Icc 1 (P.k -
 
 theorem gap_nat {P : M.Par} (h : P.OK) (i : ℕ) (hi : i ∈ Finset.Icc 1 (P.k - 1)) :
     ∃ N : ℕ, P.u' i - P.u' (i + 1) = (N : ℝ) + 1 := by
-  have h1 := gap_one h i hi
-  rw [Finset.mem_Icc] at hi
-  obtain ⟨a, ha⟩ := h.int_u' i (Finset.mem_Icc.2 ⟨hi.1, by omega⟩)
-  obtain ⟨c, hc⟩ := h.int_u' (i + 1) (Finset.mem_Icc.2 ⟨by omega, by omega⟩)
-  have h2 : ((0 : ℤ) : ℝ) ≤ ((a - c - 1 : ℤ) : ℝ) := by push_cast; linarith
-  have h3 : (0 : ℤ) ≤ a - c - 1 := by exact_mod_cast h2
-  refine ⟨(a - c - 1).toNat, ?_⟩
-  have h4 : (((a - c - 1).toNat : ℤ) : ℝ) = ((a - c - 1 : ℤ) : ℝ) := by rw [Int.toNat_of_nonneg h3]
-  push_cast at h4
-  linarith
+  apply _root_.GlobalTheory.WigSh.par_gap_right <;> assumption
 
 theorem ok_plus {P : M.Par} (h : P.OK) (l n₀ : ℕ) (he : ∀ i ∈ Finset.Icc 1 P.k, P.u i = P.u' i)
     (hg : 2 * (n₀ : ℝ) + 1 ≤ P.u' l - P.u' (l + 1)) :

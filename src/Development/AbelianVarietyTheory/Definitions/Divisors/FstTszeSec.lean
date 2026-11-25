@@ -57,7 +57,6 @@ open CategoryTheory GlobalTheory.CatCoh
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ} {K : Charts F}
 
 
-set_option autoImplicit false in
 open TopologicalSpace Filter Topology in
 open CategoryTheory in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
@@ -91,7 +90,6 @@ def tszeSec {O : Type} [CommRing O] [Algebra ℂ O] (D : Fin g → Derivation �
   map_mul' x y := TrivSqZeroExt.ext (by simp) (funext fun a ↦ by simp)
 
 
-set_option autoImplicit false in
 open TopologicalSpace Filter Topology in
 open CategoryTheory in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
@@ -102,7 +100,6 @@ theorem _root_.GlobalTheory.AnPer.Charts.fst_tszeSec {O : Type} [CommRing O] [Al
   simp [_root_.GlobalTheory.AnPer.Charts.tszeSec]
 
 
-set_option autoImplicit false in
 open TopologicalSpace Filter Topology in
 open CategoryTheory in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
@@ -115,7 +112,6 @@ theorem _root_.GlobalTheory.AnPer.Charts.snd_tszeSec {O : Type} [CommRing O] [Al
 def jetSec (k : K.K) : Hol (K.W k) →+* TrivSqZeroExt (Hol (K.W k)) (Fin g → Hol (K.W k)) := tszeSec dw
 
 
-set_option autoImplicit false in
 open TopologicalSpace Filter Topology in
 open CategoryTheory in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]

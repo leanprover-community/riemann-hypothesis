@@ -250,34 +250,12 @@ theorem measurable_theta [SFinite μR] (hK : ∀ m, IsClosed (K m)) : Measurable
 
 variable {g μR K}
 
-private theorem hpk_sq_lemma (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  have hs : (if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val) < 2 * r + k + 1 := by
-    split_ifs <;> omega
-  rw [Finset.sum_eq_single (⟨_, hs⟩ : Fin (2 * r + k + 1))]
-  · by_cases hij : i = j
-    · subst hij
-      rw [if_pos rfl]
-      simp only [Hpk, Fin.ext_iff]
-      split_ifs <;> first | (exfalso; (try simp only at *); omega) | (simp_all; done)
-    · rw [if_neg hij]
-      rw [Fin.ext_iff] at hij
-      simp only [Hpk, Fin.ext_iff]
-      split_ifs <;> first | (exfalso; (try simp only at *); omega) | (simp_all; done)
-  · intro l _ hl
-    rw [Ne, Fin.ext_iff, Fin.val_mk] at hl
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs at * <;> first | (exfalso; (try simp only at *); omega) | (simp_all; done)
-  · intro h
-    exact absurd (Finset.mem_univ _) h
-
 private theorem isUnit_det_of_mem_UH' {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r)) :
     IsUnit g.det := by
   have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
   have h : Hpk k r * gᴴ * Hpk k r * g = 1 := by
     calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hg', hpk_sq_lemma k r]
+      _ = 1 := by rw [hg', Hpk_mul_self]
   exact Matrix.isUnit_det_of_left_inverse h
 
 theorem nInv_act {b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hb : b ∈ UH (Hpk k r)) (a : Mt k r) (y : PairSp k r) :

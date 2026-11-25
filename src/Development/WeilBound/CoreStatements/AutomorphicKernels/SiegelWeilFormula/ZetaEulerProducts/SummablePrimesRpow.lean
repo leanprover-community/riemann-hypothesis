@@ -52,11 +52,8 @@ theorem dedekindZeta_eq_exp (K : Type) [Field K] [NumberField K] {s : ℂ} (hs :
   rw [GlobalTheory.Mem.ZetaPole.dedekindZeta_eq_tsum_ideal K hs, h]
 
 theorem two_le_absNorm' (K : Type) [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) :
-    2 ≤ Ideal.absNorm P.asIdeal := by
-  have h0 : Ideal.absNorm P.asIdeal ≠ 0 := fun h => P.ne_bot (Ideal.absNorm_eq_zero_iff.mp h)
-  have h1 : Ideal.absNorm P.asIdeal ≠ 1 := fun h =>
-    P.isPrime.ne_top (Ideal.absNorm_eq_one_iff.mp h)
-  omega
+    2 ≤ Ideal.absNorm P.asIdeal :=
+  NumberField.HeightOneSpectrum.one_lt_absNorm P
 
 theorem summable_primes_rpow (K : Type) [Field K] [NumberField K] (σ : ℝ) (hσ : 1 < σ) :
     Summable fun P : HeightOneSpectrum (𝓞 K) => ((Ideal.absNorm P.asIdeal : ℕ) : ℝ) ^ (-σ) := by

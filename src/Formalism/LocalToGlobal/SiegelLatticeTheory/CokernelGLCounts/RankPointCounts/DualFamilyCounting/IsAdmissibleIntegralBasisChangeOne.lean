@@ -21,8 +21,6 @@ open Classical
 
 namespace Formalism.L2.SG.Pf.Cnt.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} {T T' : D.host.E} {F0 : FlagG (VS D) D.R.rS T} {F' : LFlag (D.sp.Y 0) D.R.rS T'}
 variable (hw : LinearIndependent D.host.E (Sum.elim F0.fvec F'.fl.fvec))
 include hw
@@ -289,8 +287,6 @@ open Classical
 
 namespace Formalism.L2.SG.Pf.Cnt.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section General
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ}
@@ -456,8 +452,6 @@ end Formalism.L2.SG.Pf.Cnt.R3
 namespace Formalism.L2.SG.Pf.Cnt
 
 open Formalism.L2.SG.Pf.Cnt.R3
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem mmChar_of (hU : Formalism.MainNotions.BridgeRowsGenus.LocUnimod) : MMChar := by
   intro D u u' _ F0 what₂ _ Z F' hz hZ hP

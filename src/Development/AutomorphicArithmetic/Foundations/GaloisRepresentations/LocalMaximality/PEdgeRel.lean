@@ -146,13 +146,8 @@ private theorem ah_cocycle (α : Finset ι → E)
     rw [e1, Finset.smul_sum, e2, ← Finset.smul_sum, ← Finset.smul_sum, ← smul_add,
       ← Finset.sum_union hd, h, smul_zero]
   · obtain ⟨x, hxI, hxJ⟩ := Finset.not_disjoint_iff.1 hd
-    have hsym : Disjoint I (J.erase x) ↔ Disjoint (I.erase x) J := by
-      rw [Finset.disjoint_left, Finset.disjoint_left]
-      constructor
-      · intro h' y hy hyJ
-        exact h' (Finset.mem_of_mem_erase hy) (Finset.mem_erase.2 ⟨Finset.ne_of_mem_erase hy, hyJ⟩)
-      · intro h' y hyI hy
-        exact h' (Finset.mem_erase.2 ⟨Finset.ne_of_mem_erase hy, hyI⟩) (Finset.mem_of_mem_erase hy)
+    have hsym : Disjoint I (J.erase x) ↔ Disjoint (I.erase x) J :=
+      Finset.disjoint_erase_comm.symm
     have e1 : ∑ i ∈ I, GlobalTheory.cubeSign I i • ah α (I.erase i) J =
         GlobalTheory.cubeSign I x • ah α (I.erase x) J := by
       refine Finset.sum_eq_single_of_mem x hxI fun i _ hne => ?_

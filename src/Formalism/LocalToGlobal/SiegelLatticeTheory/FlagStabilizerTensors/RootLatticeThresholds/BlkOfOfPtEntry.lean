@@ -33,8 +33,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.PairValG
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
@@ -227,8 +225,6 @@ open scoped Classical
 open NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.PairVal Formalism.L2.SG.Pf.StabilizerIndexVolumes
 
 namespace Formalism.L2.SG.Pf.VolPinAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Basic
 
@@ -751,8 +747,6 @@ open scoped Classical
 open NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.PairVal Formalism.L2.SG.Pf.StabilizerIndexVolumes
 
 namespace Formalism.L2.SG.Pf.VolPinAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section GlobalTheory
 

@@ -511,7 +511,6 @@ theorem sub_mem_smul_top_of_level (E : Type) [Field E] [NumberField E] (La Λ Q 
   rw [← hev, map_sub, ← h, sub_self]
 
 open AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Semi
-attribute [local instance] Over.cartesianMonoidalCategory
 
 
 

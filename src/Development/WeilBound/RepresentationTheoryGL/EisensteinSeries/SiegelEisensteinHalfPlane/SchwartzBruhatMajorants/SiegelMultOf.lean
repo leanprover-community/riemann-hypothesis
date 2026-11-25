@@ -1865,7 +1865,6 @@ theorem epMain_of : EpConv → EpMain := GlobalTheory.CompanionTheory.EpsteinMai
 theorem testFun : TestFun := PositivityTheory.RgEis.TF.testFun
 theorem testSph : TestSph := _root_.GlobalTheory.CompanionTheory.RgEisTestSph.testSph
 theorem stdGood : StdGood := _root_.GlobalTheory.CompanionTheory.StdGoodAd.stdGood
-theorem mirGen_of : SecLaw → StdGood → BdetLaw → EpConv → EpMain → TestFun → TestSph → MirGen := PositivityTheory.RgEis.MG.mirGen
 theorem dict : Dict := _root_.GlobalTheory.CompanionTheory.EisDict.dict
 theorem dictInf : DictInf := _root_.GlobalTheory.CompanionTheory.RgEis.dictInf
 theorem cmGood_of : StdGood → Dict → DictInf → CMGood := _root_.GlobalTheory.CompanionTheory.RgEisCM.cmGood
@@ -1900,7 +1899,7 @@ theorem eisBL : GlobalTheory.ThK.Dbl.EisBL :=
   have hW := wallLaw_of secLaw
   have hP := parLaw_of bdetLaw extLaw grpTop
   have hG := cmGood_of stdGood dict dictInf
-  have hM := mirGen_of secLaw stdGood bdetLaw epConv (epMain_of epConv) testFun testSph
+  have hM := _root_.PositivityTheory.RgEis.MG.mirGen secLaw stdGood bdetLaw epConv (epMain_of epConv) testFun testSph
   SiegelEisensteinSeries.BRoad.eisBL_of _root_.GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf
     (siegelMult_of secLaw hW dict dictInf hG grpTop bdetLaw extLaw hP
       (sgAll_of hG (_root_.GlobalTheory.CompanionTheory.CMMirror.cmMir dict hG grpTop bdetLaw extLaw hP hM)

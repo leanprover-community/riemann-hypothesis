@@ -33,17 +33,6 @@ open PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.Sp
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-namespace PositivityTheory.Rg.BcB.F.RS
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-abbrev tJ {w : Pl E} {ϖ : w.adicCompletion E} (h0 : ϖ ≠ 0) (m i : ℕ) : GLw m w :=
-  GlobalTheory.WeylGL.tor h0 fun r : Fin m => if (r : ℕ) < i then 1 else 0
-
-abbrev pairsK (a b k : ℕ) : Finset (ℕ × ℕ) :=
-  (Finset.range (a + 1) ×ˢ Finset.range (b + 1)).filter fun p => p.1 + p.2 = k
-
-end PositivityTheory.Rg.BcB.F.RS
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

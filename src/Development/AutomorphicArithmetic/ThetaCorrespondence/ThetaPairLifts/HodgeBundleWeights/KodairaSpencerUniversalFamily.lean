@@ -311,7 +311,6 @@ section
 noncomputable section
 open CategoryTheory AlgebraicGeometry DividedPowers TensorProduct TrivSqZeroExt
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CrysConn
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.KSSym
 end GlobalTheory.KSSym
 namespace GlobalTheory.KSSym
@@ -350,7 +349,6 @@ section
 noncomputable section
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory MonObj GlobalTheory.DeRham GlobalTheory.Cris
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.KSFull
 end GlobalTheory.KSFull
 namespace GlobalTheory.KSFull
@@ -472,7 +470,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits NumberField TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames GlobalTheory.AllWt
 open scoped Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.DeRham
 end GlobalTheory.DeRham
 namespace GlobalTheory.FlagTan

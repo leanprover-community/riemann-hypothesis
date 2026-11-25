@@ -167,8 +167,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.LsDatumB
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep}
   {δ : ∀ p : PlF D, (D.s.atP p).Fp} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
@@ -210,8 +208,6 @@ namespace Formalism.L2.SG.Pf.FCount
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem eligible_totally_positive {D : Formalism.BasicNotions.D7} (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u))
     (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)) : EligPos u u' F0 what₂ :=
   fun γ w h => Formalism.L2.SG.WConst.atPt_totPos γ w h.2
@@ -235,8 +231,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.PCount
 open Classical ValuativeRel
 open scoped Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section ClsInv
 
@@ -566,8 +560,6 @@ namespace Formalism.L2.SG.Pf.LocUnramB
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.MainNotions.S.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Restr2
 
 variable {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -729,8 +721,6 @@ open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism
 open Formalism.L2.SG.LsDatumB
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section ModeL
 
 variable {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -846,8 +836,6 @@ open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section DetL
 
 variable {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -929,8 +917,6 @@ open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section DetG
 
 variable {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -966,8 +952,6 @@ namespace Formalism.L2.SG.Pf.ThSomePf
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
 open scoped Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section DetG2
 
@@ -1035,8 +1019,6 @@ namespace Formalism.L2.SG.Pf.ThSomePf
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
 open scoped Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section DetG3
 
@@ -1145,8 +1127,6 @@ namespace Formalism.L2.SG.Pf.ThSomePf
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB Formalism.L2.SG.TermLoc
 open scoped Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section DetG4
 
@@ -1317,8 +1297,6 @@ open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB Formalism.L2.SG.TermLoc
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Assembly
 
 variable {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -1393,8 +1371,6 @@ namespace Formalism.L2.SG.Pf
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.L2.SG.LsDatumB
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem thSome_holds {D : Formalism.BasicNotions.D7} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
     {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep} (hA : ∀ p, Agree δ M p) {u u' : D.what₂.Word}
     (hT : (D.mem u).A.T ≡ (D.mem u').A.T [MOD (Lat.gS D) ^ 2])
@@ -1438,8 +1414,6 @@ namespace Formalism.L2.SG.Pf.Coef
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
   Formalism.L2.SG.LsDatumB
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem cutAt_of_leaves {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep}
     {δ : ∀ p : PlF D, (D.s.atP p).Fp} {L : CntLocal.LocSp D M} {u u' : D.what₂.Word}

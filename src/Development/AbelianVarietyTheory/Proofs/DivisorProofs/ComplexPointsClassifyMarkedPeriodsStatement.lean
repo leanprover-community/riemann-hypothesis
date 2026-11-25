@@ -466,13 +466,6 @@ open GlobalTheory.UPel.HT
 
 namespace GlobalTheory.HTIso
 
-theorem one_comp_monHom {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [GrpObj A'] (f : A ⟶ A') [IsMonHom f] :
-    (1 : A ⟶ A) ≫ f = 1 := by
-  rw [Hom.one_def, Hom.one_def, Category.assoc, IsMonHom.one_hom]
-
-theorem comp_one' {S : Scheme.{0}} {A A' : Over S} [GrpObj A'] (f : A ⟶ A') : f ≫ (1 : A' ⟶ A') = 1 := by
-  rw [Hom.one_def, Hom.one_def, ← Category.assoc, comp_toUnit]
-
 theorem pull_birig : ∀ (S : Scheme.{0}) (A A' : Over S) [GrpObj A] [IsCommMonObj A] [GrpObj A'] [IsCommMonObj A']
     (f : A ⟶ A'), IsMonHom f → ∀ P : LB (G2 A').left, P.IsLB →
     (∃ t : (P.pull (lift (1 : A' ⟶ A') (𝟙 A')).left).Gen, t.IsGen) →

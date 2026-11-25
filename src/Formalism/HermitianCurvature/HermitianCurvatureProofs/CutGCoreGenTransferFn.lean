@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGenTransferCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeVLem
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
@@ -30,18 +31,7 @@ theorem smInv_mem (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 
 
 theorem inverse_apply (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 0) (q : MA.Qp r TT) :
     ((Ring.inverse f : MA.SmQ r TT) : MA.Qp r TT → ℂ) q = ((f : MA.Qp r TT → ℂ) q)⁻¹ := by
-  obtain ⟨g, hg⟩ : ∃ g : MA.SmQ r TT, ∀ q, (g : MA.Qp r TT → ℂ) q = ((f : MA.Qp r TT → ℂ) q)⁻¹ :=
-    ⟨⟨_, smInv_mem f hf⟩, fun _ => rfl⟩
-  have hfg : f * g = 1 := by
-    apply Subtype.ext
-    funext q'
-    show (f : MA.Qp r TT → ℂ) q' * (g : MA.Qp r TT → ℂ) q' = 1
-    rw [hg, mul_inv_cancel₀ (hf q')]
-  have hu : IsUnit f := ⟨⟨f, g, hfg, by rw [mul_comm]; exact hfg⟩, rfl⟩
-  have hinv : Ring.inverse f = g := by
-    calc Ring.inverse f = Ring.inverse f * (f * g) := by rw [hfg, mul_one]
-      _ = g := by rw [← mul_assoc, Ring.inverse_mul_cancel f hu, one_mul]
-  rw [hinv, hg]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx2.Adj.inv_val <;> assumption
 
 theorem coordQ_vz (q : MA.Qp r TT) : ((MA.coordQ (r := r) (TT := TT) M.vz : MA.SmQ r TT) : MA.Qp r TT → ℂ) q = q.1.2 := by
   show MA.coordE (M.vz (r := r)) q.1 = q.1.2

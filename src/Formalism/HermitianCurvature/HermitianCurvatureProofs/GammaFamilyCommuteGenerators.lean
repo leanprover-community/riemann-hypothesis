@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
 public import Formalism.HermitianCurvature.StatementM
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstEmbeddingOne
 public import Formalism.YangianSpanCharacter.YangianRTTProofs.RttRelation
@@ -29,14 +30,7 @@ theorem eval_two_smul (s : ℂ) (M : M2 A) : E2 (s • M) = s • E2 M := by
 
 theorem isStart_smul (QQ : ℂ → M2 A) (q : ℂ → ℂ) (s : ℂ) (hs : s * s = 1) (hs' : star s = s)
     (h : IsStart QQ q) : IsStart (fun Y => s • QQ Y) q := by
-  refine ⟨fun Y hY => ?_, fun Y Y' => ?_, fun Y => ?_, h.q_real⟩
-  · rw [Matrix.conjTranspose_smul, hs', h.herm Y hY]
-  · have := h.rtt Y Y'
-    simp only [kronecker_E1_smul, eval_two_smul, Matrix.mul_smul, Matrix.smul_mul, smul_smul, hs, one_smul]
-    exact this
-  · have := h.det Y
-    simp only [Matrix.transpose_smul, Matrix.mul_smul, Matrix.smul_mul, smul_smul, hs, one_smul]
-    exact this
+  apply _root_.Formalism.FourierDecayAlt.P.MAx1.WeylSymmetry.isStart_smul <;> assumption
 
 def sStar (σ : Site A) : Site A := ⟨star σ.p, -star σ.ci, -star σ.c⟩
 
@@ -87,15 +81,7 @@ theorem isDet_Tm {p c ci : A} (h : WeylRel p c ci) : IsDet (fun Y : ℂ => Tm Y 
 
 theorem Ts_comm (σ : Site A) (x : A) (hp : Commute x σ.p) (hc : Commute x σ.c) (hci : Commute x σ.ci)
     (Y : ℂ) (a b : Fin 2) : Commute x (Ts σ Y a b) := by
-  fin_cases a <;> fin_cases b
-  · show Commute x (algebraMap ℂ A Y + σ.p)
-    exact Commute.add_right (Algebra.commutes Y x).symm hp
-  · show Commute x (-σ.c)
-    exact hc.neg_right
-  · show Commute x σ.ci
-    exact hci
-  · show Commute x 0
-    exact Commute.zero_right x
+  apply _root_.Formalism.FourierDecayAlt.P.MAx1.WeylSymmetry.Ts_comm <;> assumption
 
 theorem isStart_step (σ : Site A) (QQ : ℂ → M2 A) (q : ℂ → ℂ) (hσ : IsSite σ)
     (hc : QQCommutes QQ σ) (h : IsStart QQ q) :
@@ -156,13 +142,7 @@ section Lev
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
 theorem fn_cancel : L.ζb * L.ζi * L.GGi * (L.ζ * L.ζbi) = L.GGi := by
-  have c1 : L.GGi * L.ζ = L.ζ * L.GGi := L.fns_comm _ (by simp) _ (by simp)
-  have c3 : L.ζb * L.GGi = L.GGi * L.ζb := L.fns_comm _ (by simp) _ (by simp)
-  calc L.ζb * L.ζi * L.GGi * (L.ζ * L.ζbi) = L.ζb * (L.ζi * (L.GGi * L.ζ)) * L.ζbi := by
-        simp only [mul_assoc]
-    _ = L.ζb * ((L.ζi * L.ζ) * L.GGi) * L.ζbi := by rw [c1]; simp only [mul_assoc]
-    _ = L.GGi * (L.ζb * L.ζbi) := by rw [L.ζi_ζ, one_mul, c3, mul_assoc]
-    _ = L.GGi := by rw [L.ζb_ζbi, mul_one]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx1.WeylSymmetry.fn_cancel <;> assumption
 
 end Lev
 

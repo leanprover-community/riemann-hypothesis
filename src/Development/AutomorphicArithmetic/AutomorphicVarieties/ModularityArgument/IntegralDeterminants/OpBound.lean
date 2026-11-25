@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.MemISupAutomorphicRepsOfInvariantForm
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.IntegralDeterminants.PlaceConjAlt
@@ -98,23 +100,8 @@ variable {K : Type} [Field K] [NumberField K]
 
 theorem valued_det_of_KGL {w : HeightOneSpectrum (𝓞 K)} {n : ℕ} {g : GL (Fin n) (w.adicCompletion K)}
     (hg : g ∈ GlobalTheory.LFun.KGL w (n := n)) : Valued.v g.val.det = 1 := by
-  obtain ⟨g0, rfl⟩ := hg
-  set O := (w.adicCompletionIntegers K).toSubring
-  have hd : ∀ h : GL (Fin n) O, ((Formalism.UG.bc O.subtype h).val.det) = ((h.val.det : O) : w.adicCompletion K) := by
-    intro h
-    exact (RingHom.map_det O.subtype h.val).symm
-  have h1 : Valued.v ((g0.val.det : O) : w.adicCompletion K) ≤ 1 := (g0.val.det).2
-  have h2 : Valued.v (((g0⁻¹).val.det : O) : w.adicCompletion K) ≤ 1 := ((g0⁻¹).val.det).2
-  have h3 : ((g0.val.det : O) : w.adicCompletion K) * (((g0⁻¹).val.det : O) : w.adicCompletion K) = 1 := by
-    rw [← Subring.coe_mul, ← Matrix.det_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.det_one]
-    rfl
-  have h4 := congrArg Valued.v h3
-  rw [map_mul, map_one] at h4
-  rw [hd]
-  refine le_antisymm h1 ?_
-  calc (1 : WithZero (Multiplicative ℤ)) = _ := h4.symm
-    _ ≤ Valued.v ((g0.val.det : O) : w.adicCompletion K) * 1 := mul_le_mul' le_rfl h2
-    _ = _ := mul_one _
+  intros
+  apply _root_.GlobalTheory.BCT.AbsHalfInv.v_det_KGL <;> assumption
 
 end GlobalTheory.HenQ
 end -- clump:auto
@@ -678,15 +665,7 @@ private theorem expand {V : Type} [Fintype V] {W : V → Type} [∀ v, AddCommGr
   exact Finset.sum_congr rfl fun j _ => f.map_smul_univ _ _
 
 private theorem inf_comm (k : infU E n) (g : finU (E := E) (n := n)) : k.1 * g.1 = g.1 * k.1 := by
-  have h := GlobalTheory.BCT.TrKer.eq_splitFin_mul_splitInf (k.1 * g.1)
-  have h1 : GlobalTheory.BCT.TrKer.splitFin E n (k.1 * g.1) = g := by
-    rw [map_mul, GlobalTheory.BCT.TrKer.splitFin_inf, GlobalTheory.BCT.TrKer.splitFin_fin, one_mul]
-  have h2 : GlobalTheory.BCT.TrKer.splitInf E n (k.1 * g.1) = k := by
-    have a1 : GlobalTheory.BCT.TrKer.splitInf E n g.1 = 1 := by simpa using GlobalTheory.BCT.TrKer.splitInf_mul g 1
-    have a2 : GlobalTheory.BCT.TrKer.splitInf E n k.1 = k := by simpa using GlobalTheory.BCT.TrKer.splitInf_mul 1 k
-    rw [map_mul, a1, a2, mul_one]
-  rw [h1, h2] at h
-  exact h
+  apply _root_.UpperTheory.Reformulated.B.Gr38.inf_fin_comm <;> assumption
 
 private theorem cEmb_rat {γ₀ : GlobalTheory.BCT.UE E n} {r : UA E n} (hr : r ∈ ratU E n)
     (hre : ∀ v : InfinitePlace E, cEmb v.embedding r = GeneralLinearGroup.map v.embedding γ₀.1) (τ : E →+* ℂ) :

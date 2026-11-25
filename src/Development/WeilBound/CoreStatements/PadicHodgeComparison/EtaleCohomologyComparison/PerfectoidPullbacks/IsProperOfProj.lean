@@ -16,8 +16,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris Recipro
 
 namespace CrystallineSemistableComparison.Pb
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 theorem isProper_of_proj {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R} (h : IsProjOver f) : IsProper f := by
   obtain ⟨N, i, hi, rfl⟩ := h
   have := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.isProper_str R N

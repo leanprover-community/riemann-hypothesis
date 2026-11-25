@@ -62,18 +62,7 @@ variable {k r : ℕ} {E₁ E₂ : Type*} [NormedAddCommGroup E₁] [NormedSpace 
 theorem dop_rdV_local {X : B.Mat k r} (hX : B.inLie k r X) {U : Set (B.Mat k r)} (hU : IsOpen U)
     {f f' : B.Mat k r → E₁} (he : ∀ x ∈ U, x ∈ B.GV k r → f x = f' x) {g : B.Mat k r} (hg : g ∈ U)
     (hgG : g ∈ B.GV k r) : Formalism.REAL.RdV X f g = Formalism.REAL.RdV X f' g := by
-  show deriv (fun t : ℝ => f (g * NormedSpace.exp ((t : ℂ) • X))) 0 =
-    deriv (fun t : ℝ => f' (g * NormedSpace.exp ((t : ℂ) • X))) 0
-  apply Filter.EventuallyEq.deriv_eq
-  have hc : Continuous (fun t : ℝ => g * NormedSpace.exp ((t : ℂ) • X)) :=
-    (Formalism.FourierDecayAlt.P.B5.curve_contDiff g X).continuous
-  have hev : ∀ᶠ t : ℝ in nhds (0 : ℝ), g * NormedSpace.exp (((t : ℝ) : ℂ) • X) ∈ U := by
-    apply hc.continuousAt.preimage_mem_nhds
-    show U ∈ nhds (g * NormedSpace.exp (((0 : ℝ) : ℂ) • X))
-    rw [Formalism.FourierDecayAlt.P.B5.curve_zero]
-    exact hU.mem_nhds hg
-  filter_upwards [hev] with t ht
-  exact he _ ht (Formalism.FourierDecayAlt.P.B5.curve_mem hgG hX t)
+  apply _root_.Formalism.FourierDecayAlt.P.PositiveOrbitOpen.rdV_local <;> assumption
 
 theorem dop_rw_local (w : List (B.Mat k r)) (hw : ∀ X ∈ w, B.inLie k r X) {U : Set (B.Mat k r)} (hU : IsOpen U)
     {f f' : B.Mat k r → E₁} (he : ∀ x ∈ U, x ∈ B.GV k r → f x = f' x) :
@@ -857,13 +846,8 @@ variable {k r : ℕ}
 
 theorem prW_inWb {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (v : Fin (2 * r + k + 1) → ℂ) :
     inWb k r (D.prW k r z v) := by
-  intro i hi
-  have hzi : z i = 0 := hz i hi
-  simp only [D.prW]
-  simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hzi, mul_zero, sub_zero]
-  split_ifs with h
-  · exfalso; omega
-  · rfl
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.CutBP.TNM.HM.pW_inWb <;> assumption
 
 theorem projection_hermitian_orthogonal (z v : Fin (2 * r + k + 1) → ℂ) (hzz : herm (Hpk k r) z z ≠ 0) :
     herm (Hpk k r) (D.prW k r z v) z = 0 := by

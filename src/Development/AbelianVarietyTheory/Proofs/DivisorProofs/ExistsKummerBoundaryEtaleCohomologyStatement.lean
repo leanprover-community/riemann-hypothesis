@@ -1009,13 +1009,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 noncomputable section
 namespace GlobalTheory.EtC.KumPic.DvGlue
 
-private theorem unitsMap_comp_appTop {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U) (u : (Γ(U, ⊤))ˣ) :
-    Units.map (k ≫ g).appTop.hom.toMonoidHom u =
-      Units.map k.appTop.hom.toMonoidHom (Units.map g.appTop.hom.toMonoidHom u) := by
-  ext
-  simp
-  rfl
-
 private theorem isUnit_natCast_appTop {V U : Scheme.{0}} (g : V ⟶ U) (q : ℕ) (h : IsUnit (q : Γ(U, ⊤))) :
     IsUnit (q : Γ(V, ⊤)) := by
   simpa using h.map g.appTop.hom
@@ -1035,7 +1028,7 @@ theorem glue : ∀ (q : ℕ) [NeZero q] (φ : Gm ⟶ (res ℤ (twZ q)).X 0), (�
       downward_closed := by
         rintro V W g ⟨v, hv⟩ k
         refine ⟨Units.map k.appTop.hom.toMonoidHom v, ?_⟩
-        rw [← map_pow, hv, unitsMap_comp_appTop] }
+        rw [← map_pow, hv, GlobalTheory.EtC.KumRoots.units_map_comp] }
   have hS : S ∈ Scheme.etaleTopology U := by
     obtain ⟨S₀, hS₀, hP⟩ := (GlobalTheory.T.etaleLocal_primitiveRoot_and_roots_of_unity q U).2.2.2 hq b
     exact GrothendieckTopology.superset_covering _ (fun V g hg => hP V g hg) hS₀
@@ -1049,7 +1042,7 @@ theorem glue : ∀ (q : ℕ) [NeZero q] (φ : Gm ⟶ (res ℤ (twZ q)).X 0), (�
     change Sec.res k (dv q φ V hg.choose) = dv q φ W (S.downward_closed hg k).choose
     rw [dv_res q φ k hg.choose hqV]
     refine hdv W hqW _ _ ?_
-    rw [(S.downward_closed hg k).choose_spec, ← map_pow, hg.choose_spec, unitsMap_comp_appTop]
+    rw [(S.downward_closed hg k).choose_spec, ← map_pow, hg.choose_spec, GlobalTheory.EtC.KumRoots.units_map_comp]
   obtain ⟨a, ha⟩ := (_root_.GlobalTheory.EtC.sec_ext_glue _ _ U).2 S hS s hcompat
   refine ⟨a, fun V g v hv => ?_⟩
   have hg : S.arrows g := ⟨v, hv⟩
@@ -1162,13 +1155,6 @@ theorem isSheaf_forget {R : Type} [CommRing R] (F : Shv R) :
 theorem sec_res_zero {R : Type} [CommRing R] (F : Shv R) {V U : Scheme.{0}} (g : V ⟶ U) : Sec.res g (0 : Sec F U) = 0 :=
   map_zero _
 
-theorem sec_eq_zero {R : Type} [CommRing R] (F : Shv R) {U : Scheme.{0}} (x : Sec F U)
-    (h : Loc U fun _ g => Sec.res g x = 0) : x = 0 := by
-  obtain ⟨S, hS, hP⟩ := h
-  refine ((isSheaf_forget F) S hS).isSeparatedFor.ext (fun V g hg => ?_)
-  change Sec.res g x = Sec.res g 0
-  rw [hP V g hg, sec_res_zero]
-
 theorem sec_map_comp {R : Type} [CommRing R] {F G H : Shv R} (f : F ⟶ G) (g : G ⟶ H) {U : Scheme.{0}} (x : Sec F U) :
     Sec.map (f ≫ g) x = Sec.map g (Sec.map f x) := rfl
 
@@ -1205,7 +1191,7 @@ theorem GlobalTheory.EtC.kumCoker_bijective : ∀ (q : ℕ) [NeZero q] (κ : (re
     intro U hU
     refine (injective_iff_map_eq_zero ((qb.hom.app (op U)).hom)).2 (fun c hc => ?_)
     have hc' : Sec.map qb c = 0 := hc
-    apply sec_eq_zero
+    apply GlobalTheory.EtC.KummerSplit.sec_eq_zero_of_loc
     refine ⟨_, Presheaf.imageSieve_mem Scheme.etaleTopology (cokernel.π κ).hom c, fun V g hg => ?_⟩
     obtain ⟨b, hb⟩ := hg
     have hb' : Sec.map (cokernel.π κ) b = Sec.res g c := hb
@@ -1226,7 +1212,7 @@ theorem GlobalTheory.EtC.kumCoker_bijective : ∀ (q : ℕ) [NeZero q] (κ : (re
       Sec.map qb (Sec.res f₂ (Sec.map (cokernel.π κ) (c _ g₂ hg₂)))
     rw [← sec_nat, ← sec_nat, key, key, hc, hc, sec_res_comp, sec_res_comp, w]
   obtain ⟨t, ht, -⟩ := isSheaf_forget (cokernel κ) S hS x hx
-  refine ⟨t, sub_eq_zero.1 (sec_eq_zero Gm _ ⟨S, hS, fun V g hg => ?_⟩)⟩
+  refine ⟨t, sub_eq_zero.1 (GlobalTheory.EtC.KummerSplit.sec_eq_zero_of_loc Gm _ ⟨S, hS, fun V g hg => ?_⟩)⟩
   have ht' : Sec.res g t = Sec.map (cokernel.π κ) (c V g hg) := ht g hg
   change (Gm.obj.map g.op).hom (Sec.map qb t - b) = 0
   rw [map_sub]

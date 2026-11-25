@@ -84,15 +84,8 @@ theorem UpperTheory.HF.mem_ram :
   have hA : H.el l ≠ 1 ↔ l ∣ H.condE := by
     rw [hel, Ne, hcardbot 0 (Nat.zero_le _), hdvdE]
     omega
-  have hT : ∀ n : ℕ, 0 ≤ 1 - 1 / (n : ℝ) := by
-    intro n
-    rcases Nat.eq_zero_or_pos n with h | h
-    · simp [h]
-    · have h1 : (1 : ℝ) ≤ n := by exact_mod_cast h
-      have : 1 / (n : ℝ) ≤ 1 := by
-        rw [div_le_one (by linarith)]
-        exact h1
-      linarith
+  have hT : ∀ n : ℕ, 0 ≤ 1 - 1 / (n : ℝ) := fun n =>
+    sub_nonneg.2 ((one_div (n : ℝ)).le.trans (Nat.cast_inv_le_one n))
   have hT0 : ∀ n : ℕ, (1 - 1 / (n : ℝ) = 0 ↔ n = 1) := by
     intro n
     constructor

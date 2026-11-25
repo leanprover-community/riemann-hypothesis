@@ -52,9 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.PGsh
@@ -160,7 +157,6 @@ section -- clump:auto
 
 
 section
-set_option autoImplicit false
 
 noncomputable section
 open AlgebraicGeometry CategoryTheory NumberField IsLocalRing IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.PGsh

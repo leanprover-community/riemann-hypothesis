@@ -27,10 +27,6 @@ theorem Smooth.add {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f
     Smooth n z (fun x => f x + g x) := by
   exact fun e he => (hf e he).add (hg e he)
 
-theorem Smooth.sub {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f g : M → ℂ) (hf : Smooth n z f) (hg : Smooth n z g) :
-    Smooth n z (fun x => f x - g x) := by
-  exact fun e he => (hf e he).sub (hg e he)
-
 theorem Smooth.mul {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f g : M → ℂ) (hf : Smooth n z f) (hg : Smooth n z g) :
     Smooth n z (fun x => f x * g x) := by
   exact fun e he => (hf e he).mul (hg e he)
@@ -41,11 +37,6 @@ theorem Smooth.conj {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (
   have h1 := Complex.conjCLE.contDiff.comp_contDiffOn (hf e he)
   refine h1.congr (fun w _ => ?_)
   simp
-
-theorem Smooth.cexp {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f : M → ℂ) (hf : Smooth n z f) :
-    Smooth n z (fun x => Complex.exp (f x)) := by
-  intro e he
-  exact Complex.contDiff_exp.comp_contDiffOn (hf e he)
 
 theorem SmoothR.comp {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (k : ℝ → ℝ) (hk : ContDiff ℝ ∞ k) (f : M → ℝ) (hf : SmoothR n z f) :
     SmoothR n z (fun x => k (f x)) := by
@@ -74,10 +65,6 @@ theorem Holo.const {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (c
 theorem Holo.add {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f g : M → ℂ) (hf : Holo n z f) (hg : Holo n z g) :
     Holo n z (fun x => f x + g x) := by
   exact fun e he => (hf e he).add (hg e he)
-
-theorem Holo.sub {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f g : M → ℂ) (hf : Holo n z f) (hg : Holo n z g) :
-    Holo n z (fun x => f x - g x) := by
-  exact fun e he => (hf e he).sub (hg e he)
 
 theorem Holo.mul {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (f g : M → ℂ) (hf : Holo n z f) (hg : Holo n z g) :
     Holo n z (fun x => f x * g x) := by

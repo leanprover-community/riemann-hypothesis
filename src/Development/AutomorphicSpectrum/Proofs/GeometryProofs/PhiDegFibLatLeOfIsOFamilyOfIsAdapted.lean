@@ -605,15 +605,15 @@ theorem exists_logNorms {L : Type} [Field L] [NumberField L] (B : HermitianBundl
   have hd0 : Ideal.absNorm (detIdeal E) ≠ 0 := right_ne_zero_of_mul hprod
   have hfs : N.finSum = fun p : Nat.Primes => Real.log ‖((idx : ℚ) : ℂ_[p])‖ := by
     funext p
-    have e1 := _root_.GlobalTheory.CompanionTheory.Ar.Fl.sum_logIdeal_eq_log_norm_absNorm L _ hcn p
-    have e2 := _root_.GlobalTheory.CompanionTheory.Ar.Fl.sum_logIdeal_eq_log_norm_absNorm L _ hD p
+    have e1 := _root_.PositivityTheory.Xgf.sum_logIdeal_eq_log_absNorm L _ hcn p
+    have e2 := _root_.PositivityTheory.Xgf.sum_logIdeal_eq_log_absNorm L _ hD p
     have hne1 : ‖((idx : ℕ) : ℂ_[p])‖ ≠ 0 := norm_ne_zero_iff.2 (Nat.cast_ne_zero.2 hi0)
     have hne2 : ‖((Ideal.absNorm (detIdeal E) : ℕ) : ℂ_[p])‖ ≠ 0 := norm_ne_zero_iff.2 (Nat.cast_ne_zero.2 hd0)
     show ∑ j : L →+* ℂ_[p], (logIdeal (j.comp (algebraMap (𝓞 L) L)) (Ideal.span {c ^ n}) -
       logIdeal (j.comp (algebraMap (𝓞 L) L)) (detIdeal E)) = _
     rw [Finset.sum_sub_distrib, e1, e2, hidx, Nat.cast_mul, norm_mul, Real.log_mul hne1 hne2, Rat.cast_natCast]
     ring
-  have hpf := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.rat_product_formula_complex (idx : ℚ) (Nat.cast_ne_zero.2 hi0)).2
+  have hpf := (_root_.PositivityTheory.Xgf.rat_product_formula (idx : ℚ) (Nat.cast_ne_zero.2 hi0)).2
   let s : Fin n → F := fun i => ⟨x i, hx i⟩
   have hsli : LinearIndependent (𝓞 L) s := LinearIndependent.of_comp F.subtype hli
   have hsub : (Submodule.span (𝓞 L) (Set.range s)).toAddSubgroup =
@@ -1089,7 +1089,7 @@ theorem flat_point_of_principal_sign (hG : _root_.GlobalTheory.CompanionTheory.A
       (∀ (p : Nat.Primes) (κ : c.F →+* ℂ_[p]), HasFinNorm U τ φ p κ (N.fin p κ)) ∧ N.IsAdelic ∧
       N.deg = ((p' : ℝ) - q') / 2 * (GlobalTheory.CM.logOm E χ).re := by
   obtain ⟨⟨hP, hN, -, -⟩, -, -, -, hResK, -, -, hGaga, -⟩ := hG
-  obtain ⟨D, rfl, rfl, ⟨I⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.SabModel.datum_tate E H L t ht σ p' q' fun τ => by
+  obtain ⟨D, rfl, rfl, ⟨I⟩⟩ := _root_.PositivityTheory.Xgn.shimura_datum_tate_isomorphism E H L t ht σ p' q' fun τ => by
     have := hs ℂ σ τ
     rwa [hσ] at this
   let Xo : ∀ l : Level H, Moduli D l := fun l => (hN E H D l h1).some

@@ -381,10 +381,6 @@ theorem chars_ne (β : R →+* k) : ∀ i j : Fin D.a, i ≠ j → ∃ x, β (b.
   intros
   apply _root_.GlobalTheory.HTLieRho.exists_sep <;> assumption
 
-theorem delta_ne (β : R →+* k) : β b.ρ - ((D.tr : k) - β b.ρ) ≠ 0 := by
-  intros
-  apply _root_.GlobalTheory.HTLieRho.two_rho_sub_ne_zero <;> assumption
-
 end GlobalTheory.HTRealise.LieCond
 
 namespace GlobalTheory.HTRealise.LieCond
@@ -480,7 +476,7 @@ theorem eigen_decomp_graphFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.U
   set ρ := β b.ρ with hρ
   set ρ' := (D.tr : k) - ρ with hρ'
   set δ := ρ - ρ' with hδdef
-  have hδ : δ ≠ 0 := delta_ne (b := b) β
+  have hδ : δ ≠ 0 := _root_.GlobalTheory.HTLieRho.two_rho_sub_ne_zero b β
   have hcoord := coords_sub (fun c => push_coords (o₀.act.act (algebraMap (𝓞 D.F) D.O D.ω)) huv c)
     (fun c => smul_coords ρ huv c)
   obtain ⟨hx, hy⟩ := (mem_graphFil_iff_coords (f := f) hcoord).1 hd

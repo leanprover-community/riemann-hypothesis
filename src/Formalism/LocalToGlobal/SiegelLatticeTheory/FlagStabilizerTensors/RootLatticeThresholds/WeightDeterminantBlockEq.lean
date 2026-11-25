@@ -305,8 +305,6 @@ namespace Formalism.L2.SG.Pf.Carrier.CarPinVt
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem rd_eq' : Formalism.FourierDecayAlt.S6.rd D.host.E = D.host.rdE := by

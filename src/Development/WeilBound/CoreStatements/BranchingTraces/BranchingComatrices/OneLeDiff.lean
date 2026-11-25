@@ -23,7 +23,7 @@ theorem cap_of {m : ℕ} {ε : Fin m → Bool} {lam : Fin m → ℝ} {H : Type} 
     {S : Submodule ℂ H} {E : Fin m → Fin m → Module.End ℂ S} (hS : IsSmMod ε π S E) (u : ℂ) (v : S) :
     qdet E u v = (∏ j, (u + ((lam j : ℂ) - ((m : ℂ) - 1) / 2))) • v := by
   have h := discrete_series_infinitesimal_character m ε lam H π hl hπ v ((hS.mem _).1 v.2) (u - ((m : ℂ) - 1) / 2)
-  rw [sub_add_cancel, hActQ m ε H π S E hS] at h
+  rw [sub_add_cancel, _root_.GlobalTheory.CompanionTheory.DSCapelliAction.actQ m ε H π S E hS] at h
   refine Subtype.ext (h.trans ?_)
   rw [Submodule.coe_smul, Formalism.QuantumDeterminants.capP]
   congr 1

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialSideRaising
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpMRad
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 import Std.Tactic.BVDecide.Normalize.BitVec
@@ -108,15 +109,7 @@ variable {c : Fin r → ℂ} {g : Q.Mx k r}
 theorem row_e (hc : c ∈ OmX r) (hg : g ∈ Q.Glev k r (Fin.last r)) (a : Fin r) (q : Fin (2 * r + k + 1)) :
     herm (Hpk k r) ((Q.wCell k r (Fin.last r) c * g) *ᵥ bvec q) (bvec (eI k r a)) =
       if q = eI k r a then c a else 0 := by
-  have hW : Q.wCell k r (Fin.last r) c ∈ UH (Hpk k r) :=
-    (Formalism.FourierDecayAlt.P.Qx3.wlist_glev hc ((List.finRange r).filter fun a : Fin r => a.val < (Fin.last r).val)).1
-  have hca : star (c a) ≠ 0 := star_ne_zero.2 (hc a)
-  have he : bvec (eI k r a) = Q.wCell k r (Fin.last r) c *ᵥ (star (c a) • bvec (esI k r a)) := by
-    rw [Matrix.mulVec_smul, W_es, smul_smul, mul_inv_cancel₀ hca, one_smul]
-  have hges : g *ᵥ bvec (esI k r a) = bvec (esI k r a) := (hg.2 a (by simp [a.isLt])).2
-  rw [← Matrix.mulVec_mulVec, he, herm_uh hW, herm_smul_right, star_star, ← hges, herm_uh hg.1, herm_bvec,
-    Formalism.FourierDecayAlt.P.Qx3.hpk_row_es]
-  split_ifs <;> simp
+  apply _root_.Formalism.FourierDecayAlt.P.PBN.xi_cell <;> assumption
 
 theorem herm_wCell_last_mul_mulVec_eq_of_inWb (hc : c ∈ OmX r) {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (v : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) ((Q.wCell k r (Fin.last r) c * g) *ᵥ v) z = herm (Hpk k r) (g *ᵥ v) z := by

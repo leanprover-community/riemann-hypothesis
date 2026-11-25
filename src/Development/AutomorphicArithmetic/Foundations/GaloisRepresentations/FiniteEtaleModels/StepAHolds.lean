@@ -1406,8 +1406,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.HT.Hecke.PullHecke
 open GlobalTheory.UPel.HT.HeckeAd (IsTranslA heckeSubA mem_heckeSubA)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace UpperTheory.Gal.FiniteEtaleModels
 
 theorem trPull : TrPull := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
@@ -117,24 +118,7 @@ variable [Algebra.IsAlgebraic F Ω]
 
 theorem continuous_restrict :
     Continuous (AlgEquiv.restrictScalarsHom F : (Ω ≃ₐ[K] Ω) →* (Ω ≃ₐ[F] Ω)) := by
-  apply continuous_of_continuousAt_one
-  rw [ContinuousAt, map_one]
-  intro U hU
-  rw [Filter.mem_map]
-  obtain ⟨E, hE, hEU⟩ := (krullTopology_mem_nhds_one_iff F Ω U).1 hU
-  obtain ⟨S, hS⟩ : E.FG := IntermediateField.fg_of_fg_toSubalgebra _
-    (Subalgebra.fg_of_fg_toSubmodule ((Submodule.fg_iff_finiteDimensional _).2 hE))
-  haveI : Algebra.IsAlgebraic K Ω := Algebra.IsAlgebraic.tower_top (K := F) K
-  have hfd : FiniteDimensional K (IntermediateField.adjoin K (S : Set Ω)) :=
-    IntermediateField.finiteDimensional_adjoin fun x _ => (Algebra.IsIntegral.isIntegral x)
-  refine Filter.mem_of_superset ((IntermediateField.adjoin K (S : Set Ω)).fixingSubgroup_isOpen.mem_nhds
-    (Subgroup.one_mem _)) ?_
-  intro g hg
-  apply hEU
-  rw [← hS]
-  apply mem_fixingSubgroup_adjoin_of
-  intro x hx
-  exact (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg x (IntermediateField.subset_adjoin _ _ hx)
+  apply _root_.UpperTheory.V.Af.continuous_restrictScalarsHom <;> assumption
 
 theorem continuous_symm : Continuous (equiv F K Ω).symm := by
   apply continuous_of_continuousAt_one (equiv F K Ω).symm

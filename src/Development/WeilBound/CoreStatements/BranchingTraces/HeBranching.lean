@@ -52,24 +52,6 @@ def Intertw (ε' : Fin n → Bool) (e : Fin n ⊕ Unit ≃ Fin (n + 1)) (π : Ma
     (σ : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H')) (P : H →L[ℂ] H') : Prop :=
   ‖P‖ ≤ 1 ∧ ∀ h : UJ ε', ∀ x, P (π (emb e (um h)) x) = σ (um h) (P x)
 
-def Out (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (e : Fin n ⊕ Unit ≃ Fin (n + 1)) (B : ℝ)
-    (π : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ → (H →L[ℂ] H)) (σ : Matrix (Fin n) (Fin n) ℂ → (H' →L[ℂ] H'))
-    (ν : Measure (UJ ε')) : Prop :=
-  ∃ (v : H) (P : H →L[ℂ] H') (w : H') (κ Y : ℝ), ‖v‖ = 1 ∧ Intertw ε' e π σ P ∧ P v ≠ 0 ∧ w = (‖P v‖⁻¹ : ℂ) • P v ∧
-    0 < κ ∧ 1 ≤ Y ∧ Real.log Y ≤ 100 * ((n : ℝ) + 1) ^ 2 * Real.log (8 * (n + 1) * B) ∧
-    Real.exp (-(1000 * ((n : ℝ) + 1) ^ 4 * Real.log (8 * (n + 1) * B))) ≤ ‖P v‖ ∧
-    (∀ g : UJ ε, ‖⟪v, π (um g) v⟫_ℂ‖ ≤
-      Real.exp (1000 * ((n : ℝ) + 1) ^ 4 * Real.log (8 * (n + 1) * B)) * hs (um g) ^ (-(3 * ((n : ℝ) + 1) ^ 2))) ∧
-    Integrable (fun g : UJ ε => ⟪v, π (um g) v⟫_ℂ) (muG ε) ∧
-    (∀ a b : H', Integrable (fun h : UJ ε' => conj ⟪v, π (emb e (um h)) v⟫_ℂ * ⟪b, σ (um h) a⟫_ℂ) ν ∧
-      ∫ h : UJ ε', conj ⟪v, π (emb e (um h)) v⟫_ℂ * ⟪b, σ (um h) a⟫_ℂ ∂ν = κ * (⟪b, w⟫_ℂ * ⟪w, a⟫_ℂ)) ∧
-    (∀ g : UJ ε, ∫⁻ h : UJ ε', ‖⟪v, π (um g * emb e (um h)) v⟫_ℂ‖ₑ ∂ν ≤
-      ENNReal.ofReal (κ * Real.exp (1000 * ((n : ℝ) + 1) ^ 4 * Real.log (8 * (n + 1) * B)) *
-        colSq (um g) (zi e) ^ (-((2 * ((n : ℝ) + 1) + 5) / 2)))) ∧
-    Formalism.L2.Theta.SmoothVec {X | inG ε' X} σ w ∧
-    ∀ (S : ℕ) (W : List (Matrix (Fin n) (Fin n) ℂ)), W.length ≤ S → (∀ X ∈ W, inG ε' X ∧ hs X ≤ 1) →
-      ‖W.foldr (Formalism.L2.Theta.dRep σ) w‖ ≤ (8 * Real.sqrt (n + 1) * (B + S) * Y) ^ W.length / ‖P v‖
-
 end
 
 def ForPairs (Q : ∀ {n : ℕ} (ε : Fin (n + 1) → Bool) (_ : Fin (n + 1) → ℝ) (ε' : Fin n → Bool) (_ : Fin n → ℝ) (_ : ℝ)

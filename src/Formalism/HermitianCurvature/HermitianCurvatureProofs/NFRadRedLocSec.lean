@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenAdelicUnipotentTimesIntegralOutsideSet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
@@ -319,23 +320,7 @@ theorem key {z v : Fin (2 * r + k + 1) → ℂ} {ζ : ℂ} {T T' : ℝ} (hT : T 
     ring
 
 theorem uh_inv_mem {X : Q.Mx k r} (hX : X ∈ UH (Hpk k r)) : X⁻¹ ∈ UH (Hpk k r) := by
-  have hX' : Xᴴ * Hpk k r * X = Hpk k r := hX
-  have hdH : (Hpk k r).det ≠ 0 := by
-    intro h0
-    have e := congrArg Matrix.det (GBasic.Hpk_sq k r)
-    rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at e
-    exact zero_ne_one e
-  have hdX : IsUnit X.det := by
-    have e := congrArg Matrix.det hX'
-    rw [Matrix.det_mul, Matrix.det_mul] at e
-    refine isUnit_iff_ne_zero.2 fun h0 => hdH ?_
-    rw [h0, mul_zero] at e
-    exact e.symm
-  show (X⁻¹)ᴴ * Hpk k r * X⁻¹ = Hpk k r
-  calc (X⁻¹)ᴴ * Hpk k r * X⁻¹ = (X⁻¹)ᴴ * (Xᴴ * Hpk k r * X) * X⁻¹ := by rw [hX']
-    _ = (X * X⁻¹)ᴴ * Hpk k r * (X * X⁻¹) := by
-        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hdX]; simp
+  apply _root_.Formalism.FourierDecayAlt.P.Qx4.uh_inv <;> assumption
 
 theorem inv_fix {X : Q.Mx k r} (hu : IsUnit X.det) {v w : Fin (2 * r + k + 1) → ℂ} (h : X *ᵥ v = w) :
     X⁻¹ *ᵥ w = v := by

@@ -878,7 +878,7 @@ theorem limit_of_data : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
           exact congrArg Subtype.val hdx
         exact hx0 ((smul_eq_zero.1 hzx).resolve_left (by exact_mod_cast hd.ne'))
       have hyfam : IsNzFamily I r (fun a' => (y a' : Λ)) := ⟨hr, hyI, hyli, hidx0⟩
-      obtain ⟨heq, hpos, _⟩ := (GlobalTheory.CompanionTheory.Relay.isotropic_sublattice_covolume_positive
+      obtain ⟨heq, hpos, _⟩ := (_root_.LevelTowerAlt.isotropic_submodule_nonzero_family
         E g Λ Ψ R σ I hσ hiso hbot).2 r _ hyfam
       exact ⟨heq, hpos⟩
   obtain ⟨hnz, hnzpos⟩ := hnz_data

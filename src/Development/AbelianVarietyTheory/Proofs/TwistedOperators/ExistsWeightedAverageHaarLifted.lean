@@ -272,12 +272,6 @@ theorem exists_nat_den (a : D.host.E) : ∃ q : ℕ, 0 < q ∧ (q : EAf D) * eTo
   rw [h2]
   exact mul_mem (intCast_mem _ _) h1
 
-theorem dualCoord_add_nsmul (A' WW : HSp D) (βA' : GL (Fin A'.rank) (EAf D)) (βW : GL (Fin WW.rank) (EAf D))
-    (t u : WO A' WW) (k : ℕ) :
-    dualCoord A' WW βA' βW (t + k • u) = dualCoord A' WW βA' βW t + k • dualCoord A' WW βA' βW u := by
-  unfold dualCoord
-  rw [_root_.GlobalTheory.PlaceVec.frMapAdj_add, _root_.GlobalTheory.CompanionTheory.StdSndTheta.frMapAdj_nsmul, smul_add, smul_comm]
-
 theorem isIntM_rightBlock {k d : ℕ} (a : ℕ) {Y : Matrix (Fin k) (Fin d) (EAf D)} (h : IsIntM Y) :
     IsIntM (rightBlock a Y) := fun i j => by
   unfold rightBlock

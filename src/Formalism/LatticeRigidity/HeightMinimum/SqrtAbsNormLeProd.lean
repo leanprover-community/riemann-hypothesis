@@ -226,7 +226,7 @@ theorem card_box_le (b : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (hb : b �
         gcongr
         norm_num
 
-theorem nat_log_floor_upper (u : ℝ) (_hu : 0 ≤ u) : u < 2 ^ (Nat.log 2 ⌊u⌋₊ + 1) := by
+theorem nat_log_floor_upper (u : ℝ) : u < 2 ^ (Nat.log 2 ⌊u⌋₊ + 1) := by
   have h1 : ⌊u⌋₊ < 2 ^ (Nat.log 2 ⌊u⌋₊ + 1) := Nat.lt_pow_succ_log_self (by norm_num) _
   have h2 : u < ⌊u⌋₊ + 1 := Nat.lt_floor_add_one u
   have h3 : ((⌊u⌋₊ + 1 : ℕ) : ℝ) ≤ ((2 ^ (Nat.log 2 ⌊u⌋₊ + 1) : ℕ) : ℝ) := by exact_mod_cast h1
@@ -298,9 +298,8 @@ theorem cube_sum_le (b : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (hb : b �
     have h := min_one_inv_le (w l / x w) (div_pos hwl (hx w))
     rwa [one_div_div] at h
   have hbox : ∀ l ∈ S, ∀ w, w l < 2 ^ (kf l w + 1) * x w := by
-    intro l hl w
-    have hwl : 0 < w l := NumberField.InfinitePlace.pos_iff.mpr (hS l hl).2
-    have h := nat_log_floor_upper (w l / x w) (div_pos hwl (hx w)).le
+    intro l _ w
+    have h := nat_log_floor_upper (w l / x w)
     rwa [div_lt_iff₀ (hx w)] at h
   have hF : ∀ l ∈ S, (∏ w, min 1 (x w / w l)) ^ 3 ≤ G (kf l) ^ 3 := by
     intro l hl

@@ -1217,24 +1217,6 @@ structure Pend (X : Ch D u) where
 
 variable {X : Ch D u}
 
-def ArchimedeanSignatureMatching (P : Pend X) : Prop :=
-  ∀ τ, Formalism.MainNotions.PrimeDegreeVariant.IsBr (Nm_succ D.R) (lamTr X τ) (sgTr X τ) (P.br τ)
-
-theorem delSq_lamTr (X : Ch D u) (R : Type) [CommRing R] (τ : D.what₂.Tau) :
-    delSq R _ (lamTr X τ) = delSq R _ (X.fm.lam D.R.m τ) := by
-  unfold lamTr delSq
-  rw [Formalism.MainNotions.product_first_zeroth_parts.natW_wSh]
-
-theorem degZ_tr (X : Ch D u) (τ : D.what₂.Tau) : Formalism.MainNotions.PrimeDegreeVariant.degZ (lamTr X τ) (sgTr X τ) = X.fm.deg τ := by
-  unfold Formalism.MainNotions.PrimeDegreeVariant.degZ lamTr sgTr
-  unfold Formalism.BasicNotions.MemberForms.deg
-  unfold Formalism.MainNotions.PrimeDegreeVariant.wsum wSh cTw
-  simp only [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  have hN := Nm_succ D.R
-  have hc : ((D.R.N D.R.m - 1 : ℕ) : ℤ) = (D.R.N D.R.m : ℤ) - 1 := by omega
-  rw [hc]
-  ring
-
 theorem fockF_self_eq {σ : Type} (f : MvPolynomial σ ℂ) : Formalism.REAL.fockF f f =
     ((∑ m ∈ f.support, Complex.normSq (f.coeff m) * ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℝ) : ℝ) : ℂ) := by
   unfold Formalism.REAL.fockF

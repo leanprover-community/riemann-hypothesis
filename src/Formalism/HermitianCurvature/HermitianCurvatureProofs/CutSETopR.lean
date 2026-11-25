@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTKLineCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSIpInt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
@@ -183,15 +184,7 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
 theorem rds_hsVec_ne_zero {A : Wq →L[ℂ] Wp} (hA : A ≠ 0) : B.hsVec A ≠ 0 := by
-  intro h
-  apply hA
-  have hb : ∀ i, A (stdOrthonormalBasis ℂ Wq i) = 0 := fun i => by
-    have := congrArg (fun v => (WithLp.ofLp v) i) h
-    simpa [B.hsVec] using this
-  ext v
-
-  rw [← (stdOrthonormalBasis ℂ Wq).sum_repr v, map_sum]
-  simp [hb]
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.hsVec_ne_zero <;> assumption
 
 theorem rdsMul_mem (a : (Fin r → ℂ) → ℝ) (b : ℂ → ℝ) (ha : ContDiff ℝ ∞ a) (hb : ContDiff ℝ ∞ b)
     (Δ : RadSp k r z z' π π') :

@@ -87,23 +87,6 @@ namespace GlobalTheory.DenseSec
 open KaehlerDifferential
 open scoped TensorProduct
 
-theorem formallyEtale_of_bijective_kaehler_mapBaseChange (R P B : Type*) [CommRing R] [CommRing P] [CommRing B]
-    [Algebra R P] [Algebra R B] [Algebra P B] [IsScalarTower R P B] [Algebra.FormallySmooth R B]
-    (h : Function.Bijective (mapBaseChange R P B)) : Algebra.FormallyEtale P B := by
-  have h1 : Subsingleton Ω[B⁄P] := by
-    refine subsingleton_of_forall_eq 0 fun x => ?_
-    obtain ⟨y, rfl⟩ := map_surjective R P B x
-    exact (exact_mapBaseChange_map R P B y).mpr (h.2 y)
-  have h2 : Subsingleton (Algebra.H1Cotangent P B) := by
-    refine subsingleton_of_forall_eq 0 fun x => ?_
-    have h3 : Algebra.H1Cotangent.δ R P B x = 0 := by
-      apply h.1
-      rw [map_zero]
-      exact (Algebra.H1Cotangent.exact_δ_mapBaseChange R P B _).mpr ⟨x, rfl⟩
-    obtain ⟨y, rfl⟩ := (Algebra.H1Cotangent.exact_map_δ R P B x).mp h3
-    rw [Subsingleton.elim y 0, map_zero]
-  exact ⟨h1, h2⟩
-
 theorem exists_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) [CommRing A] [Algebra R A]
     [Algebra.Smooth R A] (ε : A →ₐ[R] R), ∃ (g : ℕ) (t : Fin g → A) (h : A),
       (∀ i, ε (t i) = 0) ∧ IsUnit (ε h) ∧ GlobalTheory.DenseSec.EtChart R A t h := by
@@ -180,7 +163,7 @@ theorem exists_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) 
       rw [this]
       exact (bP.equiv bB' (Equiv.refl _)).bijective
     haveI : Algebra.FormallyEtale P (Localization.Away g) :=
-      formallyEtale_of_bijective_kaehler_mapBaseChange R P (Localization.Away g) hbij
+      GlobalTheory.SmoothDescent.formallyEtale_of_bijective_mapBaseChange R P (Localization.Away g) hbij
     haveI : Algebra.FinitePresentation R (Localization.Away g) :=
       Algebra.FinitePresentation.trans R A (Localization.Away g)
     haveI : Algebra.FinitePresentation P (Localization.Away g) :=

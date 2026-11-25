@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
@@ -68,12 +69,7 @@ section Wb
 variable {k r : ℕ}
 
 theorem hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i j
-  simp only [Matrix.conjTranspose_apply, Hpk]
-  rcases i with ⟨a, ha⟩
-  rcases j with ⟨b, hb⟩
-  simp only [Fin.mk.injEq]
-  split_ifs <;> first | (exfalso; omega) | simp
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.hpk_herm <;> assumption
 
 theorem inWb_add {x y : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (hy : inWb k r y) : inWb k r (x + y) := by
   intro i hi

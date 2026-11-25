@@ -297,7 +297,7 @@ theorem act_mem_CE (M : KMod n)
     {k : Mat n → (M.V →L[ℂ] M.V)} (hk : ContDiffOn ℝ ∞ k (GLs n)) {R : ℝ} (hR : ∀ y ∈ GLs n, R < lg y → k y = 0)
     (hkq : ∀ y ∈ GLs n, ∀ k₁ : Matrix.unitaryGroup (Fin n) ℂ, k (k₁.1 * y) = M.ρ k₁ * k y)
     {F : Mat n → M.V} (hF : ContinuousOn F (GLs n)) : act μ M k F ∈ CE M :=
-  ⟨act_contDiffOn μ M hk hR hF, (GlobalTheory.T.kernel_action_equivariant _root_.GlobalTheory.CompanionTheory.LengthGL.lgFacts n μ M k F ⟨hk.continuousOn, R, hR⟩ hF hkq).2⟩
+  ⟨act_contDiffOn μ M hk hR hF, (_root_.GlobalTheory.CompanionTheory.WaveMult.act_kReg_section _root_.GlobalTheory.CompanionTheory.LengthGL.lgFacts n μ M k F ⟨hk.continuousOn, R, hR⟩ hF hkq).2⟩
 
 section Clm
 

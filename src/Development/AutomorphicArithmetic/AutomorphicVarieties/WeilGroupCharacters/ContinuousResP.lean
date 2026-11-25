@@ -65,13 +65,6 @@ def GDet.IsTwist {n : ℕ} {A G : Type} [CommRing A] [Group G] (D : GDet n A G) 
         map_one' := by simp [← MonoidAlgebra.one_def]
         map_mul' := fun g h => by simp [MonoidAlgebra.single_mul_single] } y)
 
-private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
-    [TotallyDisconnectedSpace G] (N : Subgroup G) [N.Normal] (hN : IsClosed (N : Set G)) :
-    TotallyDisconnectedSpace (G ⧸ N) := by
-  first
-  | exact _root_.Formalism.SharedLemmas.totDisc_quot
-  | (apply _root_.Formalism.SharedLemmas.totDisc_quot <;> assumption)
-
 section LocAlg
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
@@ -169,7 +162,7 @@ theorem continuous_resP : Continuous (resP L Ω) := Af.continuous_restrictScalar
 def HidaSetting.Lev.frame {s : HidaSetting l L Ω} (V : s.Lev) : GFrame l where
   Γ := GS Ω V.S'
   cpt := inferInstance
-  tdisc := by exact totDisc_quot _ (isClosed_NS Ω V.S')
+  tdisc := by exact Formalism.SharedLemmas.totDisc_quot _ (isClosed_NS Ω V.S')
   η := V.η
   η_open := V.η_open
   c := toGS Ω V.S' s.c

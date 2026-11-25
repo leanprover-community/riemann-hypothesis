@@ -512,13 +512,13 @@ theorem anCore (hR : Replace) (hB : BaseSide) (hI : PB.Inputs) (hK : ResK.ResKSt
   obtain ⟨L₁, hL₁⟩ := ((_root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap K₁ J₁ K₃ ρ κ₁ v₁ hb₁).1 Sg).exists
   obtain ⟨L₂, hL₂⟩ := ((_root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap K J K₃ ρ κ₂ v₂ hb₂).1 (muVert Hd B)).exists
   obtain ⟨f, g, hfg, hdef⟩ := hiso L₁ L₂ hL₁ hL₂
-  have hcr := (_root_.GlobalTheory.CompanionTheory.Ar.Cmp.IsoLines.isoLineOn_comb_trans_symm_pull K' ρ' _ ∅ har'.2.1 (Set.empty_subset _)).2.2.2 K₁ J₁ _ _ σ Re.ref r m hc₁.1 hr
+  have hcr := (_root_.PositivityTheory.UnitarySelfGeneration.i_comb K' ρ' _ ∅ har'.2.1 (Set.empty_subset _)).2.2.2 K₁ J₁ _ _ σ Re.ref r m hc₁.1 hr
   have hfg' : IsLineIso (mCoordIdeal y') (Top.combLine r m).a ref.a (rename v f) (rename v g) := by
     obtain ⟨t, ht⟩ := hev.exists
     rw [hcr.1, ← hSa, hc₁.2, ← hL₁.1, ← ht.2.1, (hMt t).1, hc₂.2, muReg, smoothRep_a]
     have := (_root_.GlobalTheory.CompanionTheory.Ar.Cmp.lineIso_algebra K₃ ρ _ har.2.1).2.2.2.2 K' ρ' κ v _ hb e₀ _ _ _ _ hfg
     rwa [hL₂.1] at this
-  obtain ⟨w, hw, -, hws⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.defect_exists_smooth K' ρ' _ J' d R _ ref _ _ har'.2.1 hfg' ((_root_.GlobalTheory.CompanionTheory.Ar.Top.combLine_smooth_conj K' ρ' σ r m).1 hrs) hrefs
+  obtain ⟨w, hw, -, hws⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_defect K' ρ' _ J' d R _ ref _ _ har'.2.1 hfg' ((_root_.GlobalTheory.CompanionTheory.Ar.Top.combLine_smooth_conj K' ρ' σ r m).1 hrs) hrefs
   obtain ⟨B₀, hB₀⟩ := isCompact_univ.exists_bound_of_continuousOn (OneModel.continuous_of_smooth R.A hws).continuousOn
   have hB₀' : ∀ x, |w (R.lift x x)| ≤ |B₀| := fun x => (hB₀ x trivial).trans (le_abs_self _)
   have hmain : ∀ x ∉ bdry s, (fun p => R.lift x x ((v ∘ v₂) p)) ∉ D.Bd ∧ w (R.lift x x) = ∑ a, (m a : ℝ) * S.ph a (π x) +
@@ -715,7 +715,7 @@ theorem tie_of (hC : Common) (hR : Replace) (hB : BaseSide) : PB.AgreementPos �
       (fun p hp hd => (o.bad_iff p).2 ⟨hp, (hd.mul_left 2).mul_right _⟩) (o.omVB B a) (hEx.2 B a) hp hbg hsm hGood hgen
   have hmono := OrLinked.mono_int' c
   obtain ⟨x₀, hx₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GenOpen.gen_open E H D l _ c _ _ Y _ _ _ _ _ (o.Or B a).𝔐 hmono
-  have alg := _root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l _ c _ _ Y _ _ _ _ (o.Or B a) (spMap (o.Or B a).𝔐.fn ≫ x₀) (by
+  have alg := _root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l _ c _ _ Y _ _ _ _ (o.Or B a) (spMap (o.Or B a).𝔐.fn ≫ x₀) (by
     rw [Category.assoc, ← hx₀]; exact (o.Or B a).𝔐.fn_over) hmono (hEx.1 a)
   have : Nonempty (RootIx D) := ⟨(Classical.choice (_root_.GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H).2.1, ⟨0, by omega⟩)⟩
   obtain ⟨K', _, ρ', _, κ, v, y', hb, hy, hfield, har', hcore⟩ := anCore hR hB hI hK hII ((o.Or B a).Re.comap some) alg
@@ -768,7 +768,7 @@ theorem tie_of (hC : Common) (hR : Replace) (hB : BaseSide) : PB.AgreementPos �
         fun r => pl ((o.Or B a).Re.line (some r) t)) fun o' => o'.elim (cc none) (gapc (cc ∘ some))).h z =
           (pl (Top.combLine (x' t) cc)).h z := by
       intro cc
-      have h3 := (_root_.GlobalTheory.CompanionTheory.Ar.Cmp.IsoLines.isoLineOn_comb_trans_symm_pull K' ρ' _ ∅ har'.2.1 (Set.empty_subset _)).2.2.2 _ _ _ _ _
+      have h3 := (_root_.PositivityTheory.UnitarySelfGeneration.i_comb K' ρ' _ ∅ har'.2.1 (Set.empty_subset _)).2.2.2 _ _ _ _ _
         (fun o' : Option (RootIx D) => o'.elim (PF.cst _) fun r => (o.Or B a).Re.line (some r) t)
         (fun o' : Option (RootIx D) => o'.elim (PF.cst ρ') fun r => pl ((o.Or B a).Re.line (some r) t))
         (fun o' => o'.elim (cc none) (gapc (cc ∘ some))) hc₁ fun o' => by

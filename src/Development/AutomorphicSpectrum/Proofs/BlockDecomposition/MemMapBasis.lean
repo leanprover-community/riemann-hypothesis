@@ -714,7 +714,7 @@ theorem maps_out : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (n : ℕ) (B : Type
   have hOb : D.Pf l (Ob l) := ⟨(base l).natCast_l, (base l).perf.1⟩
   have hA : D.Pf l A.A := ⟨A.natCast_l, A.perf.1⟩
   obtain ⟨hts, htk⟩ := RL.tens A n
-  have hbs := ((RL.base_acr (base l) isBase_base).2 n).1
+  have hbs := ((_root_.GlobalTheory.CompanionTheory.BaseAcris.main (base l) isBase_base).2 n).1
   refine ⟨fun g hg => ?_, fun f f' h1 h2 h3 => ?_⟩
   · obtain ⟨⟨f₀, hf₀⟩, -⟩ := GlobalTheory.CompanionTheory.PerfectWittMaps.wittVector_lift l _ n hA hlB hlJ hJp g
     have hc : f₀.comp A.sW = h.comp ((base l).toAcr n) :=
@@ -1112,7 +1112,7 @@ theorem tower_acr {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} {�
       refine Ideal.Quotient.eq.1 ?_
       rw [he'f, hfc])
     (fun r z hz => by
-      obtain ⟨a, ha⟩ := (RL.u_mod 𝒯.A).1 (Ideal.Quotient.mk _ (𝒯.g r))
+      obtain ⟨a, ha⟩ := (_root_.GlobalTheory.CompanionTheory.Untilt.sharp_map_surjective_ker 𝒯.A).1 (Ideal.Quotient.mk _ (𝒯.g r))
       rw [sharpMap_eq] at ha
       have ha' : 𝒯.A.sharp a - 𝒯.g r ∈ Ideal.span {(l : 𝒯.A.U)} := by
         have h6 := Ideal.Quotient.eq.1 ha

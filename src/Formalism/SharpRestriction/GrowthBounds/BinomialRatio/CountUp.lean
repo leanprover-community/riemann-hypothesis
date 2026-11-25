@@ -72,13 +72,8 @@ theorem wdim_pos {r : ℕ} {lam : Fin r → ℤ} (h : Antitone lam) : 0 < wdim l
     apply div_pos <;> linarith
   · exact one_pos
 
-theorem hockey (r B : ℕ) : ∑ i ∈ Finset.range (B + 1), Nat.choose (i + r) r = Nat.choose (B + r + 1) (r + 1) := by
-  induction B with
-  | zero => simp
-  | succ B ih =>
-    rw [Finset.sum_range_succ, ih, show B + 1 + r + 1 = (B + r + 1) + 1 by omega, Nat.choose_succ_succ (B + r + 1) r,
-      show B + 1 + r = B + r + 1 by omega]
-    ring
+theorem hockey (r B : ℕ) : ∑ i ∈ Finset.range (B + 1), Nat.choose (i + r) r = Nat.choose (B + r + 1) (r + 1) :=
+  Nat.sum_range_add_choose B r
 
 open Classical in
 theorem hockey_fin (r B : ℕ) (hr : 1 ≤ r) :

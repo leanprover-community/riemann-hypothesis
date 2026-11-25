@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrablePhiF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Imports
 public import Formalism.HermitianCurvature.StatementD
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -233,15 +234,7 @@ variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
 
 theorem continuous_psi (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) :
     Continuous fun n : Mt k r => psi k r z c (Matrix.of n) := by
-  unfold psi ell
-  refine Complex.continuous_exp.comp (continuous_const.mul (Complex.continuous_ofReal.comp
-    (Complex.continuous_re.comp (continuous_const.mul (continuous_finsetSum _ fun a _ => ?_)))))
-  split_ifs
-  · exact (continuous_apply _).comp (continuous_apply _)
-  · simp only [Matrix.mulVec, dotProduct]
-    exact continuous_finsetSum _ fun j _ => by
-      show Continuous fun n : Mt k r => n (eI k r a) j * z j
-      fun_prop
+  apply _root_.Formalism.FourierDecayAlt.P.S3dx6.continuous_psi <;> assumption
 
 theorem norm_psi (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (g : B.Mat k r) : ‖psi k r z c g‖ = 1 := by
   unfold psi

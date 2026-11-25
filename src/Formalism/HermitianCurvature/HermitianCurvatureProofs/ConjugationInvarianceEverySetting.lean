@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HermitianFormLiftVecFirstVector
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
@@ -153,15 +154,7 @@ lemma Hpk_levPos (k r' : ℕ) (i j : Fin (2 * r' + k + 1)) :
 
 lemma herm_lift (k r' : ℕ) (y y' : Fin (2 * r' + k + 1) → ℂ) :
     herm (Hpk k (1 + r')) (liftVec k 1 r' y) (liftVec k 1 r' y') = herm (Hpk k r') y y' := by
-  simp only [herm, dotProduct, mulVec, Pi.star_apply]
-  rw [sum_lift]
-  · apply Finset.sum_congr rfl; intro i _
-    rw [liftVec_levPos, sum_lift]
-    · congr 1
-      apply Finset.sum_congr rfl; intro j _
-      rw [liftVec_levPos, Hpk_levPos]
-    · intro p hp; rw [liftVec_out k r' y p hp, mul_zero]
-  · intro p hp; rw [liftVec_out k r' y' p hp, star_zero, zero_mul]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.BL.herm_lv <;> assumption
 
 lemma hb_rel (k r' : ℕ) (y : Fin (2 * r' + k + 1) → ℂ) (s : ℝ) :
     hb k r' y s + star (hb k r' y s) + herm (Hpk k r') y y = 0 := by

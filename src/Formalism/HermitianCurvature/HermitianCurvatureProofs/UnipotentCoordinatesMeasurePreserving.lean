@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.ContinuousBlockMatrixThree
 public import Formalism.HermitianCurvature.StatementD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
@@ -1880,12 +1881,21 @@ private theorem exists_frame_of_moves_last {Wp Wq : Type} [NormedAddCommGroup Wp
       · simp only [YA]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
       · fin_cases i <;> simp [YA, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
 
-private theorem exists_frame_of_fixes_last {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+noncomputable def frameFixLast (z z' ν' : Fin (2 * r + k + 1) → ℂ)
+    (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ) : B.Mat k r :=
+  let s := Real.sqrt (Tz k r z')
+  let μ := Real.sqrt (Tz k r z' / Tz k r z)
+  let d' : Fin (r + 1) → ℂ := fun b => if π b = Fin.last r then (μ : ℂ) * d0 b else d0 b
+  let κ := Real.sqrt (1 / s ^ 2 - s ^ 2 / Complex.normSq (d' (Fin.last r)))
+  smat (Hpk k r) (uB z' ν') (wB z' ν' s) (YB π d' z' ν' s κ)
+
+theorem frameFixLast_spec {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
     (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
     (hd0 : ∀ a, d0 a ≠ 0) (hB : π (Fin.last r) = Fin.last r)
     (hG : Tz k r S.z * Tz k r S.z' < Complex.normSq (d0 (Fin.last r))) :
-    ∃ σ : B.Mat k r, m₀ * σ ∈ B.GV k r ∧ Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 ∧
+    let σ := frameFixLast S.z S.z' ν' π d0
+    m₀ * σ ∈ B.GV k r ∧ Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 ∧
       Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
       (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
       (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
@@ -1974,7 +1984,9 @@ private theorem exists_frame_of_fixes_last {Wp Wq : Type} [NormedAddCommGroup Wp
   have hm0u : IsUnit m₀.det := (Formalism.FourierDecayAlt.P.unitary_group_closed k r).unit _ hmU
   have hDl : d0 (Fin.last r) ≠ 0 := hd0 _
   have hDc : conj (d0 (Fin.last r)) ≠ 0 := by simpa using hDl
-  refine ⟨σ, hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
+  dsimp only
+  rw [show frameFixLast S.z S.z' ν' π d0 = σ from rfl]
+  refine ⟨hγ, hZ, ⟨?_, ?_, ?_⟩, hσU, ?_, ?_⟩
   ·
     refine ⟨μ * κ, mul_pos hμ hκ0, ?_⟩
     have hcof : Formalism.FourierDecayAlt.D.cofR S (m₀ * σ) =
@@ -2113,6 +2125,18 @@ private theorem exists_frame_of_fixes_last {Wp Wq : Type} [NormedAddCommGroup Wp
       · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
       · simp only [YB]; (try split_ifs) <;> simp [Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
       · fin_cases i <;> simp [YB, Matrix.mulVec_add, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_neg, (hge _).1, (hge _).2, hgz, hgν]
+
+private theorem exists_frame_of_fixes_last {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+    [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
+    (hbase : Formalism.FourierDecayAlt.D.IsBaseFrame S ν' m₀) (π : Equiv.Perm (Fin (r + 1))) (d0 : Fin (r + 1) → ℂ)
+    (hd0 : ∀ a, d0 a ≠ 0) (hB : π (Fin.last r) = Fin.last r)
+    (hG : Tz k r S.z * Tz k r S.z' < Complex.normSq (d0 (Fin.last r))) :
+    ∃ σ : B.Mat k r, m₀ * σ ∈ B.GV k r ∧ Zhat k r S.z S.z' (m₀ * σ) = C2.monoP π d0 ∧
+      Formalism.FourierDecayAlt.D.IsDFrame S ν' m₀ (m₀ * σ) ∧ σ ∈ UH (Hpk k r) ∧
+      (∀ x, inWb k r x → herm (Hpk k r) x S.z' = 0 → herm (Hpk k r) x ν' = 0 → σ *ᵥ x = x) ∧
+      (∀ g ∈ UH (Hpk k r), (∀ a : Fin r, g *ᵥ ee k r a = ee k r a ∧ g *ᵥ es k r a = es k r a) →
+        g *ᵥ S.z' = S.z' → g *ᵥ ν' = ν' → σ * g = g * σ) :=
+  ⟨frameFixLast S.z S.z' ν' π d0, frameFixLast_spec S ν' m₀ hbase π d0 hd0 hB hG⟩
 
 theorem caseA {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
@@ -3366,17 +3390,7 @@ theorem continuous_block3_matrix {X : Type*} [TopologicalSpace X] {j ρ : ℕ}
     (h22 : Continuous f22) (h23 : Continuous f23) (h31 : Continuous f31) (h32 : Continuous f32)
     (h33 : Continuous f33) :
     Continuous (fun x => U.blk3 (f11 x) (f12 x) (f13 x) (f21 x) (f22 x) (f23 x) (f31 x) (f32 x) (f33 x)) := by
-  refine continuous_pi fun p => continuous_pi fun q => ?_
-  obtain ⟨a, rfl⟩ := (U.eB k j ρ).surjective p
-  obtain ⟨b, rfl⟩ := (U.eB k j ρ).surjective q
-  simp only [Ux3.block3_apply]
-  rcases a with ((a | a) | a) <;> rcases b with ((b | b) | b) <;>
-    simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁,
-      Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl,
-      Matrix.fromCols_apply_inr] <;>
-    first | exact h11.matrix_elem _ _ | exact h12.matrix_elem _ _ | exact h13.matrix_elem _ _ |
-      exact h21.matrix_elem _ _ | exact h22.matrix_elem _ _ | exact h23.matrix_elem _ _ |
-      exact h31.matrix_elem _ _ | exact h32.matrix_elem _ _ | exact h33.matrix_elem _ _
+  apply _root_.PI.UnitaryGroupMassFormula.UsCost.continuous_block_matrix_three <;> assumption
 
 theorem rn_cont (j ρ : ℕ) : Continuous (fun x : U.RC k j ρ => U.Rn k j ρ x) := by
   have hof : Continuous fun x : U.RC k j ρ => (Matrix.of x.1 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ) := continuous_fst

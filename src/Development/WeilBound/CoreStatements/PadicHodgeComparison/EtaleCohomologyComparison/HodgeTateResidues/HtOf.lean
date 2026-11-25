@@ -370,7 +370,7 @@ theorem coEx : CoEx l K := by
   intro Y m L M hM r j hr
   haveI := AdicGeo.proper_p hM.1
   haveI := hM.2
-  obtain ⟨U⟩ := (cov_ex M.q).1 inferInstance
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov M.q).1 inferInstance
   exact CoB.main L.γB M.q L.θ U L.tB_mem m L.ker_θ L.pdB L.nil L.gr r j hr
 
 end CrystallineSemistableComparison.HT
@@ -1497,7 +1497,7 @@ theorem rS_tr (r j n : ℕ) (x : CH.H (Y.SS M r (n + 1)).fn j) :
 theorem ex [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (r j : ℕ) (hr : r < m) (x : Y.Fam M r j) (hx : CB.Comp x) : ∃! w, L.Rho x w := by
   haveI := AdicGeo.proper_p hM.1
   haveI : IsDiscreteValuationRing (OK l K) := OK_dvr
-  obtain ⟨U⟩ := (cov_ex M.p).1 hM.2
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov M.p).1 hM.2
   obtain ⟨k, h1, h2⟩ := lift_gr afgA L.γ l m ok_dv (tf_dom (Fact.out : l.Prime).ne_zero ok_dv (by omega)) L.lat M.p U r hr j
   obtain ⟨z, hz⟩ := h1 (fun n => (L.rS M r n).pull j (x n)) fun n =>
     (rS_tr L M r j n (x (n + 1))).symm.trans (congrArg ((L.rS M r n).pull j) (hx n))

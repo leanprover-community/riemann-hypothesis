@@ -148,22 +148,6 @@ structure IsChart (s : X ⟶ Sp ℂ) {d : ℕ} (B : Set (Fin d → ℂ)) (Y : (F
     ∃ (ε : ℝ) (κ : (Fin m → ℂ) → (Fin d → ℂ)), 0 < ε ∧ ball b₀ ε ⊆ B' ∧ DifferentiableOn ℂ κ (ball b₀ ε) ∧
       κ b₀ = b₁ ∧ ∀ b ∈ ball b₀ ε, κ b ∈ B ∧ y b = Y (κ b)
 
-theorem IsChart.mono {s : X ⟶ Sp ℂ} {d : ℕ} {B B₂ : Set (Fin d → ℂ)} {Y : (Fin d → ℂ) → (Sp ℂ ⟶ X)}
-    (h : IsChart s B Y) (o : IsOpen B₂) (l : B₂ ⊆ B) : IsChart s B₂ Y := by
-  refine { isOpen := o, hol := ?_, isOver := fun b hb => h.isOver b (l hb), factor := ?_ }
-  · intro U f
-    have e : {b ∈ B₂ | ⊤ ≤ Y b ⁻¹ᵁ U} = B₂ ∩ {b ∈ B | ⊤ ≤ Y b ⁻¹ᵁ U} := by
-      ext b; exact ⟨fun hb => ⟨hb.1, l hb.1, hb.2⟩, fun hb => ⟨hb.1, hb.2.2⟩⟩
-    rw [e]
-    exact ⟨o.inter (h.hol U f).1, (h.hol U f).2.mono Set.inter_subset_right⟩
-  · intro m B' y oB hy ov b₀ h₀ b₁ h₁ e
-    obtain ⟨ε, κ, ε0, sub, dκ, k₀, hκ⟩ := h.factor m B' y oB hy ov b₀ h₀ b₁ (l h₁) e
-    have c : ContinuousAt κ b₀ := (dκ.differentiableAt (ball_mem_nhds _ ε0)).continuousAt
-    have m₂ : κ ⁻¹' B₂ ∈ 𝓝 b₀ := c.preimage_mem_nhds (o.mem_nhds (k₀ ▸ h₁))
-    obtain ⟨δ, δ0, hδ⟩ := Metric.mem_nhds_iff.1 (Filter.inter_mem m₂ (ball_mem_nhds b₀ ε0))
-    have sb : ball b₀ δ ⊆ ball b₀ ε := fun b hb => (hδ hb).2
-    exact ⟨δ, κ, δ0, sb.trans sub, dκ.mono sb, k₀, fun b hb => ⟨(hδ hb).1, (hκ b (sb hb)).2⟩⟩
-
 structure HChart (s : X ⟶ Sp ℂ) (ξ : Sp Ω ⟶ X) (W U : X.Opens) (F : (Sp ℂ ⟶ X) → ℂ) (T : Ω) {d : ℕ}
     (B : Set (Fin d → ℂ)) (Y : (Fin d → ℂ) → (Sp ℂ ⟶ X)) (H : (Fin d → ℂ) → ℂ) : Prop where
   chart : IsChart s B Y

@@ -21,8 +21,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGCut.NormalInvariants.Gen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NmlInvG : Prop :=
   ∀ Cg cb Cw cT CT C0 : ℝ, ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
     ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word),
@@ -156,8 +154,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Pf.MainEqNml
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : HidaSetting D} (Y : Full X) (u : D.what₂.Word)
 

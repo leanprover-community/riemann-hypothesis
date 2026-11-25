@@ -56,7 +56,7 @@ open scoped TensorProduct Matrix ComplexOrder
 
 namespace GlobalTheory.RepsObj
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SublevelSplitting hiding levJ
+open GlobalTheory.IndefiniteRowSideFullHecke.SublevelSplitting
 
 section Space
 

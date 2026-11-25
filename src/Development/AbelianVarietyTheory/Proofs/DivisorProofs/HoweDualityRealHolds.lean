@@ -341,23 +341,11 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [DecidableEq W] {
 theorem lineSign_cases {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : (lineSign a b : ℂ) = 1 ∨ (lineSign a b : ℂ) = -1 := by
   rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
 
-theorem lineSign_mul_self {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : lineSign a b * lineSign a b = 1 := by
-  rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
-
 theorem comm_expand (A A' B B' : Module.End ℂ V) (c u v : ℂ) :
     -(c • (A + u • A')) * (c • (B - v • B')) - (c • (B - v • B')) * -(c • (A + u • A')) =
       -((c * c) • ((A * B - B * A) - v • (A * B' - B' * A) + u • (A' * B - B * A') - (u * v) • (A' * B' - B' * A'))) := by
   simp only [neg_mul, mul_neg, smul_mul_assoc, mul_smul_comm, mul_add, add_mul, mul_sub, sub_mul]
   module
-
-theorem inv_sq : (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ * (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ =
-    (8 * (Real.pi : ℂ))⁻¹ := by
-  have h : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = 2 * (Real.pi : ℂ) := by
-    rw [← Complex.ofReal_mul, Real.mul_self_sqrt (by positivity)]
-    push_cast; ring
-  rw [← mul_inv]
-  congr 1
-  linear_combination 4 * h
 
 def ccrM (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) → Module.End ℂ V)
     (j : Σ w : W, Ix (P w) (Q w) × Ix (R w) (S w)) : Module.End ℂ V :=
@@ -395,7 +383,7 @@ theorem ccrD_ccrM_comm [Fintype W] (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix 
     ccrD H j * ccrM H k - ccrM H k * ccrD H j = if j = k then 1 else 0 := by
   unfold ccrD ccrM
   rw [comm_expand, hc, hc, hc, hc, sum_unitAtS, sum_unitAtS, sum_unitAtS, sum_unitAtS,
-    inv_sq]
+    GlobalTheory.CCRFock.CommDM.inv_sq]
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   by_cases h : j = k
   · subst h
@@ -436,7 +424,7 @@ theorem heis_expanccrD [Fintype W] (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix 
   have hs : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) ≠ 0 := by
     have : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.mpr (by positivity)
     exact_mod_cast this.ne'
-  have he := lineSign_mul_self j.2.1 j.2.2
+  have he := GlobalTheory.MulVarSpan.lineSign_sq j.2.1 j.2.2
   unfold ccrM ccrD GlobalTheory.CCRFock.coefM GlobalTheory.CCRFock.coefD
   generalize ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = s at hs ⊢
   generalize lineSign j.2.1 j.2.2 = e at he ⊢

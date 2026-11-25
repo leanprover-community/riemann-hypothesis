@@ -244,19 +244,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
-theorem _root_.GlobalTheory.T.reduce_lattice_coords_to_residue : ∀ (E : Type) [Field E] [NumberField E] (Ω Vs C : Type) [Field Ω] [CharZero Ω] [AddCommGroup Vs] [Module Ω Vs]
-    [FiniteDimensional Ω Vs] [Field C] [CharZero C] (ρ : 𝓞 E →+* Module.End Ω Vs) (R' : Subring Ω) (g n : ℕ)
-    (ℓ : Fin g → Vs) (ψ : R' →+* C) (ρC : 𝓞 E →+* Module.End C (Fin g → C)) (σ : E →+* Ω) (σC : E →+* C)
-    (b : Fin n → Vs) (x : Fin n → Fin g → R'),
-    LinearIndependent Ω ℓ → Submodule.span Ω (Set.range ℓ) = ⊤ →
-    (∀ a i, ρ a (ℓ i) ∈ Submodule.span R' (Set.range ℓ)) → Tied ℓ ψ ρ ρC →
-    (∀ e : E, ∃ h : σ e ∈ R', ψ ⟨σ e, h⟩ = σC e) →
-    (∀ i, b i = comb ℓ (x i)) → LinearIndependent Ω b →
-    Submodule.span R' (Set.range b) = HT.eigSub ρ σ (Submodule.span R' (Set.range ℓ)) →
-    Module.finrank Ω (HT.eigSp ρ σ) = n →
-    LinearIndependent C (fun i k => ψ (x i k)) ∧
-      Submodule.span C (Set.range fun i k => ψ (x i k)) = HT.eigSp ρC σC := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.EvalFrame.values_basis
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ReduceLatticeCoordsToResidueStatement =====

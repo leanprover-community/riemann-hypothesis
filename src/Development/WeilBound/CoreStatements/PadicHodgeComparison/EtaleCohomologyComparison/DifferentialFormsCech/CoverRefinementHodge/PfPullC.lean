@@ -131,10 +131,6 @@ open GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableCo
 
 theorem top_le_map {X Y : TopCat.{0}} (f : X ⟶ Y) : (⊤ : Opens X) ≤ (Opens.map f).obj ⊤ := le_top
 
-theorem zeroEquiv_eq_equivZero {X : TopCat.{0}} (F : AbSheaf X) (W : Opens X) (x : Sheaf.H'.{0} F 0 W) :
-    GlobalTheory.SiteCoh.zeroEquiv F W x = GlobalTheory.SheafLES.equivZero.{0} F W x :=
-  rfl
-
 -- Keep the sheafification instances abstract until the final specialization to opens.
 private theorem sitePull_zero_terminal {C D : Type} [Category C] [Category D]
     {J : GrothendieckTopology C} {K : GrothendieckTopology D}

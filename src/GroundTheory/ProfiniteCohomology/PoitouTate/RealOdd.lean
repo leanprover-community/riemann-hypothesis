@@ -310,7 +310,7 @@ theorem cupPairing_H0_cocycleTwo (a : M.ρ.invariants) (φ : cartierDual F Ω M)
       funext j; fin_cases j <;> rfl
     have e3 : Fin.partialProd (![g, h] : Fin 2 → Gal(Ω/F)) ⟨0, by omega⟩ = 1 := by
       simp [Fin.partialProd]
-    rw [e1, e3, map_one, Module.End.one_apply]
+    rw [e1, e3, map_one, one_apply_eq_self]
   obtain ⟨ht, hzt⟩ := exists_eq_cocycleTwo_of_normalized (galUnits.{0} F Ω) hG hc z
     (fun g => by rw [hval, cochainTwo_one_left _ hc, LinearMap.zero_apply])
     (fun g => by rw [hval, cochainTwo_one_right _ hc, LinearMap.zero_apply])
@@ -398,8 +398,8 @@ theorem realDualityPairing_zero_two_eq_zero (x : cohomology M 0) (hx : x ∈ nor
   have hφb : (φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) (M.ρ c b) =
       (galUnits.{0} F Ω).ρ c ((φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) b) := by
     conv_lhs => rw [← hφ]
-    rw [cartierDual_ρ_apply, inv_eq_self hG hc, ← Module.End.mul_apply, ← map_mul,
-      mul_self_eq_one hG hc, map_one, Module.End.one_apply]
+    rw [cartierDual_ρ_apply, inv_eq_self hG hc, ← mul_apply_eq_comp, ← map_mul,
+      mul_self_eq_one hG hc, map_one, one_apply_eq_self]
   change (φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) (M.ρ.norm b) = _
   rw [norm_apply _ hG hc, map_add (f := _), hφb]
 
@@ -774,8 +774,7 @@ theorem tensorHom_dualToCartier_cartierPairing :
         cartierPairing K L (Rep.res ψ.toMonoidHom M) =
       _root_.GroundTheory.ProfCoh.resEvalPairing ψ D M ≫ ρ := by
   refine Rep.Hom.ext (Representation.IntertwiningMap.ext (LinearMap.ext fun x => ?_))
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction x using TensorProduct.inductionOn with
   | tmul a f => rfl
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
@@ -1088,8 +1087,8 @@ end Local
 
 section Hypotheses
 
-noncomputable instance fintypeRealPlaces (K : FiniteSubfield) : Fintype {v : InfinitePlace K.1 // v.IsReal} :=
-  Fintype.ofFinite _
+noncomputable instance fintypeRealPlaces (K : FiniteSubfield) : Fintype {v : InfinitePlace K.1 // v.IsReal} := by
+  classical infer_instance
 
 theorem injective_resZero {G H : Type} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (φ : H →ₜ* G)

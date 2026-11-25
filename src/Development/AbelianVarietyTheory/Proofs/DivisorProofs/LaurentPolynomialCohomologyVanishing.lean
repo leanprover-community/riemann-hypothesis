@@ -1141,12 +1141,6 @@ namespace GlobalTheory.EtC.SpecMapPullbackFunctoriality
 abbrev PC (q : ℕ) (T : Type) [CommRing T] : Prop :=
   ∀ i : ℤ, Function.Bijective (pull _ (spMap (LaurentPolynomial.C : T →+* LaurentPolynomial T)) (tw q i) 0)
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Polynomial in
-private lemma laurentMap_coeff' {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
-    (e : LaurentPolynomial A) (n : ℤ) :
-    (_root_.GlobalTheory.EtC.GmStep.laurentMap f e).coeff n = f (e.coeff n) := by
-  rw [_root_.GlobalTheory.EtC.GmStep.laurentMap_coeff]; rfl
-
 open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma pull_spMap_comp_apply (R : Type) [CommRing R] {A B C : Type} [CommRing A]
     [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) (F : _root_.GlobalTheory.EtC.Shv R) (n : ℤ)
@@ -1178,7 +1172,7 @@ private lemma laurentConstant_of_ringEquiv (q : ℕ) {T T' : Type} [CommRing T] 
         (_root_.GlobalTheory.EtC.GmStep.laurentMap (f : U →+* V)) = RingHom.id _ := by
     intro U V _ _ f
     refine RingHom.ext fun p => LaurentPolynomial.ext fun n => ?_
-    simp [laurentMap_coeff']
+    simp [GlobalTheory.EtC.GmStep.KillColim.laurentMap_coeff_apply]
   have hu := pull_bijective_of_ringHom_inverse (ZMod q) (e : T →+* T') (e.symm : T' →+* T)
     (by ext; simp) (by ext; simp) (_root_.GlobalTheory.EtC.tw q i) 0
   have hv := pull_bijective_of_ringHom_inverse (ZMod q) (_root_.GlobalTheory.EtC.GmStep.laurentMap (e : T →+* T'))
@@ -1230,7 +1224,7 @@ private lemma laurentMap_fst_prod_snd_bijective (T₁ T₂ : Type) [CommRing T�
     refine LaurentPolynomial.ext fun n => ?_
     have h1 := congrArg (fun g => g.coeff n) hxy.1
     have h2 := congrArg (fun g => g.coeff n) hxy.2
-    simp only [laurentMap_coeff'] at h1 h2
+    simp only [GlobalTheory.EtC.GmStep.KillColim.laurentMap_coeff_apply] at h1 h2
     exact Prod.ext h1 h2
   · obtain ⟨y₁, hy₁⟩ := hsurj (RingHom.fst T₁ T₂) (fun a => (a, 0)) (fun _ => rfl) p.1
     obtain ⟨y₂, hy₂⟩ := hsurj (RingHom.snd T₁ T₂) (fun a => (0, a)) (fun _ => rfl) p.2
@@ -1314,7 +1308,7 @@ private lemma laurent_isIdempotentElem_eq_zero_or_one_of_isLocalRing (T : Type) 
       rcases IsIdempotentElem.iff_eq_zero_or_one.mp
           (he.map (_root_.GlobalTheory.EtC.GmStep.laurentMap (Ideal.Quotient.mk p))) with h | h
       · have := congrArg (fun g => g.coeff n) h
-        simp only [laurentMap_coeff'] at this
+        simp only [GlobalTheory.EtC.GmStep.KillColim.laurentMap_coeff_apply] at this
         exact Ideal.Quotient.eq_zero_iff_mem.mp (this.trans rfl)
       · exfalso
         have hpm : p ≤ m := IsLocalRing.le_maximalIdeal hp.ne_top
@@ -1322,13 +1316,13 @@ private lemma laurent_isIdempotentElem_eq_zero_or_one_of_isLocalRing (T : Type) 
             _root_.GlobalTheory.EtC.GmStep.laurentMap (Ideal.Quotient.factor hpm)
               (_root_.GlobalTheory.EtC.GmStep.laurentMap (Ideal.Quotient.mk p) e) := by
           ext n
-          simp only [laurentMap_coeff']
+          simp only [GlobalTheory.EtC.GmStep.KillColim.laurentMap_coeff_apply]
           rfl
         rw [h, map_one, h0] at hcomp
         exact zero_ne_one hcomp
     have hnil : _root_.GlobalTheory.EtC.GmStep.laurentMap (Ideal.Quotient.mk (nilradical T)) e = 0 := by
       ext n
-      rw [laurentMap_coeff']
+      rw [GlobalTheory.EtC.GmStep.KillColim.laurentMap_coeff_apply]
       refine (Ideal.Quotient.eq_zero_iff_mem.mpr ?_).trans rfl
       rw [nilradical_eq_sInf, Ideal.mem_sInf]
       exact fun p hp => hall p hp n
@@ -1393,12 +1387,6 @@ namespace GlobalTheory.EtC.GmStep.LevelZero
 
 variable {R : Type} [CommRing R]
 
-theorem pull_iso_bijective {E E' : Spc} (e : E ≅ E') (F : Shv R) (n : ℤ) :
-    Function.Bijective (pull R e.hom F n) := by
-  refine Function.bijective_iff_has_inverse.2 ⟨pull R e.inv F n, fun x => ?_, fun x => ?_⟩
-  · rw [← pull_comp, e.inv_hom_id, pull_id]
-  · rw [← pull_comp, e.hom_inv_id, pull_id]
-
 theorem cechC_pull_bijective : ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A], SH A → IsUnit (q : A) →
     ∀ (A' : Type) [CommRing A'] [Algebra A A'], Module.Finite A A' → ∀ (k : ℕ) (i : ℤ),
     Function.Bijective (pull _ (disc.map ((cechC A A').app (op ⦋k⦌))) (tw q i) 0) := by
@@ -1421,9 +1409,9 @@ theorem cechC_pull_bijective : ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A],
         LaurentPolynomial (PiTensorProduct A (fun _ : Fin (k + 1) => A')))) (tw q i) 0) ∘
         (pull _ (disc.map e0.hom) (tw q i) 0) := funext heq
   have he : Function.Bijective (pull _ (disc.map e.hom) (tw q i) 0) :=
-    pull_iso_bijective (disc.mapIso e) (tw q i) 0
+    GlobalTheory.EtC.GmStep.LevelOne.pull_iso_bijective' (disc.mapIso e) (tw q i) 0
   have he0 : Function.Bijective (pull _ (disc.map e0.hom) (tw q i) 0) :=
-    pull_iso_bijective (disc.mapIso e0) (tw q i) 0
+    GlobalTheory.EtC.GmStep.LevelOne.pull_iso_bijective' (disc.mapIso e0) (tw q i) 0
   rw [← Function.Bijective.of_comp_iff' he, hcomp]
   exact hr0.comp he0
 

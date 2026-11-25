@@ -37,58 +37,13 @@ public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsCuspFunSlice
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DerivativeSkewAdjointCuspFormsStatement
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LieAlgebraSpannedByCompactAndFrameStatement
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SkewOperatorBoundedByPolynomialRoots
 import Development.WeilBound.CoreStatements.MeasureExistence.ExistsMeas
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsConstAlongSingleton
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MemFormsOnOfMemSpan
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankOrth
 import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 import Mathlib.Tactic.Linter.Style
@@ -96,17 +51,11 @@ import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExist
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsModGrowthExpLeNormInfPow
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOneP
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ContinuousConjBlockEmbeddingStatement
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LeviNormalizesUnipotentVariant
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Mathlib.ModelTheory.Arithmetic.Presburger.Semilinear.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GlobalProofs.CasimirAnnihilatedCuspFormsFiniteDimensional, Development.AutomorphicSpectrum.Proofs.GlobalProofs.CasimirAnnihilatedCuspFormsFiniteDimensionalStatement, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConstantTermParabolicFiniteTypeStatement, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConstantTermRestrictSmoothModerate, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConstantTermRestrictSmoothModerateStatement, Development.AutomorphicSpectrum.Proofs.GlobalProofs.OrthogonalSubspaceUnitaryEmbedding, Development.AutomorphicSpectrum.Proofs.GlobalProofs.OrthogonalSubspaceUnitaryEmbeddingStatement, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SmoothAutomorphicDerivativeGrowth, Development.AutomorphicSpectrum.Proofs.GlobalProofs.SmoothAutomorphicDerivativeGrowthStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfAMemAdjoinLow, Development.AutomorphicSpectrum.Proofs.GlobalProofs.StandardThreeBlockIndex, Development.AutomorphicSpectrum.Proofs.GlobalProofs.StandardThreeBlockIndexStatement, Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.CuspidalConstantTerms.CoeffSpanCompMem
@@ -161,7 +110,7 @@ theorem quad_symm (μ : Measure (GA D V)) [μ.IsHaarMeasure] (hθ : IsInfFam θ)
     (hX : ∀ a, X a ∈ lieAt V τ) (hY : ∀ b, Y b ∈ lieAt V τ) (φ ψ : Mc θ V) :
     ⟪io μ hθ (quad hθ hX hY φ), io μ hθ ψ⟫_ℂ = ⟪io μ hθ φ, io μ hθ (quad hθ hX hY ψ)⟫_ℂ :=
   symm_of_skew (io μ hθ) (fun a => der hθ τ (hX a)) (fun b => der hθ τ (hY b))
-    (fun a x y => GlobalTheory.T.derivative_skew_adjoint_cusp_forms D θ hθ V μ τ _ (hX a) x y) (fun b x y => GlobalTheory.T.derivative_skew_adjoint_cusp_forms D θ hθ V μ τ _ (hY b) x y) φ ψ
+    (fun a x y => _root_.GlobalTheory.CompanionTheory.HCCusp.inner_io_der_skew D θ hθ V μ τ _ (hX a) x y) (fun b x y => _root_.GlobalTheory.CompanionTheory.HCCusp.inner_io_der_skew D θ hθ V μ τ _ (hY b) x y) φ ψ
 
 theorem bd_of_quad (μ : Measure (GA D V)) [μ.IsHaarMeasure] (hθ : IsInfFam θ) {τ : D.what₂.Tau}
     (E : Set (Mc θ V)) {n₁ n₂ : ℕ} {X : Fin n₁ → Matrix (Fin V.rank) (Fin V.rank) ℂ}
@@ -247,7 +196,7 @@ theorem exists_gelfOp (hθ : IsInfFam θ) {τ : D.what₂.Tau} {e : Fin V.rank �
     ∃ C : Module.End ℂ (Mc θ V), (∀ φ : Mc θ V, gelf θ V τ 1 φ.1 = (C φ).1) ∧
       ∀ (μ : Measure (GA D V)) [μ.IsHaarMeasure] (φ ψ : Mc θ V),
         ⟪io μ hθ (C φ), io μ hθ ψ⟫_ℂ = ⟪io μ hθ φ, io μ hθ (C ψ)⟫_ℂ := by
-  obtain ⟨n₁, n₂, X, y, hX, hy, -, hq⟩ := GlobalTheory.T.lie_algebra_spanned_by_compact_and_frame D θ hθ V τ e P hP hg
+  obtain ⟨n₁, n₂, X, y, hX, hy, -, hq⟩ := _root_.GlobalTheory.CompanionTheory.HCCusp.quadGelf_frame D θ hθ V τ e P hP hg
   have hYl : ∀ b, P⁻¹ * y b * P ∈ lieAt V τ := fun b => lie_conj hP hg (hy b)
   refine ⟨quad hθ hX hYl, fun φ => ?_, fun μ _ φ ψ => quad_symm μ hθ hX hYl φ ψ⟩
   rw [hq φ.1 (smooth_of_mem φ), quad_apply]
@@ -259,7 +208,7 @@ theorem bd_der (μ : Measure (GA D V)) [μ.IsHaarMeasure] (hθ : IsInfFam θ) {�
     (hρ : IsContRep ρ) (E : Set (Mc θ V)) (hE : ∀ φ ∈ E, HasTypeAt θ V τ e P ρ φ.1) (C : Module.End ℂ (Mc θ V))
     (hC : ∀ φ : Mc θ V, gelf θ V τ 1 φ.1 = (C φ).1) (hb : Bd μ hθ E C)
     (Z : Matrix (Fin V.rank) (Fin V.rank) ℂ) (hZ : Z ∈ lieAt V τ) : Bd μ hθ E (der hθ τ hZ) := by
-  obtain ⟨n₁, n₂, X, y, hX, hy, hspan, hq⟩ := GlobalTheory.T.lie_algebra_spanned_by_compact_and_frame D θ hθ V τ e P hP hg
+  obtain ⟨n₁, n₂, X, y, hX, hy, hspan, hq⟩ := _root_.GlobalTheory.CompanionTheory.HCCusp.quadGelf_frame D θ hθ V τ e P hP hg
   have hYl : ∀ b, P⁻¹ * y b * P ∈ lieAt V τ := fun b => lie_conj hP hg (hy b)
   have bK : ∀ b, Bd μ hθ E (der hθ τ (hYl b)) := fun b =>
     (bd_ktype μ hθ hP ρ hρ (hy b) (hYl b)).mono fun φ hφ => hE φ hφ

@@ -355,7 +355,7 @@ theorem exists_eigBase : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have hw : ∃ l, x l ≠ 0 := by
     obtain ⟨l, hl⟩ := htie.cover (Flat.ZLat.gp ξ)
     exact ⟨l, hl.1⟩
-  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flag_model_common_refinement ℤ Ω₀ ((k : K₀) → J₀ k) x
+  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.PositivityTheory.HtPt.Mb.LTopCommon.exists_common_normal_model ℤ Ω₀ ((k : K₀) → J₀ k) x
     (PModel.mk X₀ ξ (specZIsTerminal.from X₀) hover hall htie) Unit (fun _ => (k : K₀) → J₀ k) (fun _ => x)
     (CMType H ⊕ CMType H) (fun _ => Li) L V (fun _ => hw) hcoh hspan
   have hd' : GlobalTheory.CompanionTheory.Ar.Dominates M'.ξ ξ g (RingHom.id Ω₀) := hd

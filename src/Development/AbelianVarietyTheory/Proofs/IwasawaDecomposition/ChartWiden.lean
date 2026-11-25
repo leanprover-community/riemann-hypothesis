@@ -93,15 +93,11 @@ structure TwLevJ {Ch0 : B.Word → ℕ → Type} {chOf0 : ∀ u i, ((I.rec7 l Z)
   levJ : Formalism.L2.Herm.StepLevelQ (I.rec7 l Z).sp.cm ((I.rec7 l Z).sp.X (B.R.m - 1)) (I.rec7 l Z).host.g (B.T u) B.R.f Q
 
   Yb : Type
-  [YbFin : Finite Yb]
   [YbAct : MulAction levJ.U Yb]
 
   yb : Ch → Yb
-  yb_orbit : ∀ y : Yb, ∃! β, ∃ κ : levJ.U, κ • yb β = y
 
   lb : ∀ β, (K β).lev.Lb = reL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) levJ.Lb
-  le : ∀ β, (K β).lev.U ≤ levJ.U.map (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).toMonoidHom
-  stab : ∀ β (κ : levJ.U), reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _ κ.1 ∈ (K β).lev.U ↔ κ • yb β = yb β
 
   chiJ : levJ.U →* ℂˣ
   chiJ_eq : ∀ β (κ : levJ.U) (κ' : (K β).lev.U), κ'.1 = reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _ κ.1 →
@@ -125,7 +121,7 @@ structure TwLevJ {Ch0 : B.Word → ℕ → Type} {chOf0 : ∀ u i, ((I.rec7 l Z)
   y_inj : ∀ y y', yG y = yG y' → yQ y = yQ y' → y = y'
   yQ_off : ∀ (κ : levJ.U) y, (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → yQ (κ • y) = yQ y
 
-attribute [instance] TwLevJ.YbFin TwLevJ.YbAct
+attribute [instance] TwLevJ.YbAct
 
 end GlobalTheory.Mem.Col2.TC
 

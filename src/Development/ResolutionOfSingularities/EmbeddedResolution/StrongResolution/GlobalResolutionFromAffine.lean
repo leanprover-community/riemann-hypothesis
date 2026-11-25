@@ -146,18 +146,6 @@ theorem opensCoprodMapOfRefinement_comp_sigmaOpensDesc {X' X : Scheme.{u}} (φ :
     sigma_ι_sigmaOpensDesc_assoc]
   simp
 
-private theorem resLE_eq_homOfLE_comp_restrict {X' X : Scheme.{u}} (φ : X' ⟶ X)
-    (U : X.Opens) (V : X'.Opens) (e : V ≤ φ ⁻¹ᵁ U) :
-    φ.resLE U V e = X'.homOfLE e ≫ φ ∣_ U := by
-  rw [← cancel_mono U.ι]
-  simp
-
-private theorem smooth_resLE {X' X : Scheme.{u}} (φ : X' ⟶ X) [Smooth φ]
-    (U : X.Opens) (V : X'.Opens) (e : V ≤ φ ⁻¹ᵁ U) :
-    Smooth (φ.resLE U V e) := by
-  rw [resLE_eq_homOfLE_comp_restrict]
-  infer_instance
-
 end FunctorialResolution.EmbeddedResolution
 end -- clump:auto
 end -- clump:auto
@@ -738,10 +726,6 @@ namespace LocalResolutionData
 variable {k : Type u} [Field k] {X : Scheme.{u}} {f : X ⟶ Spec (CommRingCat.of k)}
   [LocallyOfFiniteType f] {s : SequenceOfBlowups X}
 
-private theorem comp_base_apply {A B C : Scheme.{u}} (a : A ⟶ B) (b : B ⟶ C) (z : ↥A) :
-    (a ≫ b).base z = b.base (a.base z) := by
-  simp
-
 private theorem mem_support_comap_of_mem_support {Z W : Scheme.{u}} (g : Z ⟶ W) (I : W.IdealSheafData)
     (z : ↥Z) (hz : g.base z ∈ I.support) : z ∈ (I.comap g).support := by
   rw [Scheme.IdealSheafData.support_comap]
@@ -766,11 +750,11 @@ theorem centersLieOver_smoothLocusComplement (d : LocalResolutionData k f s) :
   have ht : ((d.schemeAtIsoPullback i₀ l hl.le).inv.base w) ∈ ((d.seq i₀).center l).support := by
     rw [d.localSequence_center_eq_comap i₀ l hl]
     refine mem_support_comap_of_mem_support _ _ _ ?_
-    rw [comp_base_apply, AlgebraicGeometry.Scheme.inv_hom_apply, hw2']
+    rw [Scheme.Hom.comp_apply, AlgebraicGeometry.Scheme.inv_hom_apply, hw2']
     exact hx
   have key : ((d.seq i₀).projectionToBase l).base ((d.schemeAtIsoPullback i₀ l hl.le).inv.base w)
       = (pullback.fst (d.cover.f i₀) (s.projectionToBase (d.reindex i₀ l))).base w := by
-    rw [← d.schemeAtIsoPullback_hom_fst i₀ l hl.le, comp_base_apply, AlgebraicGeometry.Scheme.inv_hom_apply]
+    rw [← d.schemeAtIsoPullback_hom_fst i₀ l hl.le, Scheme.Hom.comp_apply, AlgebraicGeometry.Scheme.inv_hom_apply]
   have hres := d.isResolution i₀
   unfold FunctorialResolution.EmbeddedResolution.IsStrongResolution at hres
   obtain ⟨-, -, -, -, hC, -⟩ := hres

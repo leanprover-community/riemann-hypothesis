@@ -195,8 +195,6 @@ def Supp (p n : ℕ) (φ : HahnSeries ℚ Ω) : Prop := ∀ r : ℚ, φ.coeff r 
 
 variable {j : Ω →+* Ωl} {n : ℕ} {ψ : O0 p →+* Ωl} {T : GlobalTheory.K5.Tower p Ωl}
 
-theorem castM (p n : ℕ) : ((p ^ n : ℕ) : ℚ) = (p : ℚ) ^ n := by push_cast; ring
-
 theorem val_uniq (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {φ : HahnSeries ℚ Ω} {x y : Ωl}
     (hx : IsVal j n ψ φ x) (hy : IsVal j n ψ φ y) : x = y := by
   obtain ⟨x', hx⟩ := hx
@@ -248,8 +246,8 @@ theorem val_mul (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {φ χ : HahnSeries �
   funext r
   have hp : 0 < p ^ n := pow_pos (Fact.out : p.Prime).pos n
   have key := restrict_mul j hp φ χ C D hφ hχ
-    (fun r => by rw [hC, castM]) (fun r => by rw [hD, castM]) r
-  rw [key, castM]
+    (fun r => by rw [hC, Rat.natCast_pow]) (fun r => by rw [hD, Rat.natCast_pow]) r
+  rw [key, Rat.natCast_pow]
 
 theorem algMapC (l : Ω) : algebraMap Ω (HahnSeries ℚ Ω) l = HahnSeries.C l := by
   rw [HahnSeries.algebraMap_apply']; simp
@@ -289,7 +287,7 @@ theorem val_ne (hclo : IsClo p Ωl) (hreb : IsReb T n ψ) {A : ValuationSubring 
   have hd := hs r0 h0
   have hpn : ((p ^ n : ℕ) : ℚ) ≠ 0 := by exact_mod_cast (pow_pos (Fact.out : p.Prime).pos n).ne'
   have hm : (((r0 * ((p ^ n : ℕ) : ℚ)).num : ℤ) : ℚ) / (p : ℚ) ^ n = r0 := by
-    rw [← castM, (Rat.den_eq_one_iff _).1 hd, mul_div_cancel_right₀ _ hpn]
+    rw [← Rat.natCast_pow, (Rat.den_eq_one_iff _).1 hd, mul_div_cancel_right₀ _ hpn]
   refine (_root_.GlobalTheory.Glue.ev_cong_iff_and_unit p Ωl hclo T n ψ hreb 0 _ x x' hx).2 ⟨(r0 * ((p ^ n : ℕ) : ℚ)).num, ?_, ?_⟩ |>.1
   · simp only [hm]; exact (map_ne_zero j).2 h0
   · simp only [hm]; rw [← map_inv₀]; exact (hint _).1 hinv
@@ -357,7 +355,7 @@ theorem val_exists (hclo : IsClo p Ωl) (hint : ∀ z, z ∈ A ↔ IsInt (p := p
   obtain ⟨x, x', h⟩ := exists_ev hclo ψ j halg S C
     (fun r => ⟨by rw [hC r]; exact (hint _).1 (hc _).1, by rw [hC r]; exact (hc _).2⟩)
   have e : (fun r : ℤ => j (C.coeff r)) = fun r : ℤ => j (φ.coeff ((r : ℚ) / (p : ℚ) ^ n)) := by
-    funext r; rw [hC, castM]
+    funext r; rw [hC, Rat.natCast_pow]
   rw [e] at h
   exact ⟨x, x', h⟩
 

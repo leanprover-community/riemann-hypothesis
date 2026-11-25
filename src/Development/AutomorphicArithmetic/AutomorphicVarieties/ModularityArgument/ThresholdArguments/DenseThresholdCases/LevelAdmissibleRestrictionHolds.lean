@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.ConjStableShaFam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SemisimpleLevels.CountRankThree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.SplitIrr
@@ -248,15 +249,7 @@ namespace GlobalTheory.QuadSplit
 
 theorem mem_decompositionSubgroup_iff' {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] (A : ValuationSubring Ω)
     (g : Ω ≃ₐ[K] Ω) : g ∈ A.decompositionSubgroup K ↔ ∀ x, g x ∈ A ↔ x ∈ A := by
-  rw [ValuationSubring.decompositionSubgroup, MulAction.mem_stabilizer_iff]
-  constructor
-  · intro h x
-    rw [← ValuationSubring.smul_mem_pointwise_smul_iff (g := g) (S := A) (x := x), h]
-    rfl
-  · intro h
-    ext x
-    rw [ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem, ← h]
-    simp [AlgEquiv.smul_def]
+  apply _root_.UpperTheory.V.Base.mem_decompositionSubgroup_iff_selmer_transport <;> assumption
 
 end GlobalTheory.QuadSplit
 end -- clump:auto

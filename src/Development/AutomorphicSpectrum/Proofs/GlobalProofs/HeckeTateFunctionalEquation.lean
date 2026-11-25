@@ -404,9 +404,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.HeckeBridge
 
-theorem finEps_shift : ∀ (E : Type) [Field E] [NumberField E] (χ : HChar E) (a : HeightOneSpectrum (𝓞 E) →₀ ℕ) (s : ℂ), finEps χ a s = finEps χ a (1 / 2) * (((discr E).natAbs * a.prod fun v k => Ideal.absNorm v.asIdeal ^ k : ℕ) : ℂ) ^ (1 / 2 - s) :=
-  fun _ _ _ χ a s => GlobalTheory.HeckeEpsAbs.finEps_eq χ a s
-
 end GlobalTheory.CompanionTheory.HeckeBridge
 end -- clump:auto
 end -- clump:auto
@@ -1199,10 +1196,6 @@ theorem L_notPow {I : Type} [Fintype I] (φ : I → E →+* ℂ) (hφ : IsCMType
 
 theorem L_euler (χ : HChar E) (hu : IsUnitary χ) {s : ℂ} (hs : 1 < s.re) :
     HasProd (eulerFactor χ s) ((toHecke χ hu).LFunction s) := _root_.GlobalTheory.CompanionTheory.HeckeBridge.hasProd_eulerFactor_toHecke E χ hu s hs
-
-theorem L_shift (χ : HChar E) (a : HeightOneSpectrum (𝓞 E) →₀ ℕ) (s : ℂ) :
-    finEps χ a s = finEps χ a (1 / 2) *
-      (((discr E).natAbs * a.prod fun v k => Ideal.absNorm v.asIdeal ^ k : ℕ) : ℂ) ^ (1 / 2 - s) := _root_.GlobalTheory.CompanionTheory.HeckeBridge.finEps_shift E χ a s
 
 theorem ord_unif (v : HeightOneSpectrum (𝓞 E)) (k : ℕ) :
     ord ((atFin v (unif v ^ k) : (v.adicCompletion E)ˣ) : v.adicCompletion E) = k := by

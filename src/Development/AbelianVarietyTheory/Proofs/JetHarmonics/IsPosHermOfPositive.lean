@@ -248,7 +248,7 @@ namespace GlobalTheory.PointStepCompare
 
 open NumberField IsLocalRing ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.IndefiniteRowSideFullHecke.PairingFromOuterAgreement
-open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil leastExponent IsIntegralFn IsPositiveFn IsBalancedSpace evalSum)
+open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil IsIntegralFn IsPositiveFn IsBalancedSpace evalSum)
 
 section Lattice
 

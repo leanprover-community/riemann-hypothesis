@@ -581,8 +581,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR KaehlerDifferential GlobalTheory.W1
 
-set_option autoImplicit false
-
 namespace UpperTheory.Core
 
 private theorem isClosed_part {X : Scheme.{0}} {M : Type} (W : M → X.Opens)

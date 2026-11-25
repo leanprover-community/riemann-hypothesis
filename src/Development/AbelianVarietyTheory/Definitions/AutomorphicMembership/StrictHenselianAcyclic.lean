@@ -71,9 +71,6 @@ structure LI (hL : GlobalTheory.Published.LocalLanglandsGL) (x : St P) : Type 1 
   rat : InRat x.r.Y x.m.z.cG
   cusp : RowCusp (Dof x) a.A.row
 
-structure SeriesLevel (hL : GlobalTheory.Published.LocalLanglandsGL) (x : St P) : Type 1 extends LI hL x where
-  b : SeriesState x.m.z.geo a rat mt.ad.PV Pq
-
 structure StrictHenselianAcyclic (hL : GlobalTheory.Published.LocalLanglandsGL) (x : St P) : Type 1 extends LI hL x where
   b : ModuliPointsState x.m.z.geo a rat mt.ad.PV Pq
 

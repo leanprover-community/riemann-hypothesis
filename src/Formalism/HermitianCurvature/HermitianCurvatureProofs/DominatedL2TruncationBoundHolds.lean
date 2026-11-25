@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselNormSqEqBigCellNormSq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.StatementJF
@@ -226,43 +227,8 @@ theorem ew_eq_weight (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp
     TBB.Ew p (fun _ => 1) F (P.r + 1) [] (TBB.bigPt P.r c) =
       bcWeight P.k P.r (Tz P.k P.r p.T.base.z) (Tz P.k P.r p.T.base.z') ((fun j => c j.castSucc), c (Fin.last P.r)) *
         ‖B.hsVec (B.JF p.T.base F (bigCell P.k P.r (fun j => c j.castSucc) (p.T.base.μsec (c (Fin.last P.r)))))‖ ^ 2 := by
-  have hloc := isLocPt_bigPt_of_ne_zero P.r c hd
-  have hTT : TBB.TTp p = Tz P.k P.r p.T.base.z * Tz P.k P.r p.T.base.z' := rfl
-  have hpos : 0 < Complex.normSq (∏ i : Fin P.r, c i.castSucc) :=
-    Complex.normSq_pos.2 (Finset.prod_ne_zero_iff.2 fun i _ => hd _)
-  have hRR : p.RR F (P.r + 1) [] (TBB.bigPt P.r c) (TBB.bigPt P.r c) =
-      B.hsInner (p.V F (TBB.bigPt P.r c)) (p.V F (TBB.bigPt P.r c)) := by
-    unfold KB.Pl.RR D.RRplace
-    rw [dite_eq_left ⟨hloc, hloc⟩, dite_eq_right (by omega), if_pos rfl, if_pos rfl]
-    rfl
-  have hEw : TBB.Ew p (fun _ => 1) F (P.r + 1) [] (TBB.bigPt P.r c) =
-      Real.sqrt (TBB.nPt P.k P.r (TBB.TTp p) (TBB.bigPt P.r c)) *
-        Real.sqrt (TBB.nPt P.k P.r (TBB.TTp p) (TBB.bigPt P.r c)) *
-        ‖B.hsVec (p.V F (TBB.bigPt P.r c))‖ ^ 2 := by
-    rw [TBB.Ew, TBB.NP, hRR, B.hsInner, JCTx2.inner_self_real, ← Complex.ofReal_mul, Complex.ofReal_re]
-    simp [TBB.normC]
-  rw [hEw]
-  by_cases hζ : TBB.TTp p < Complex.normSq (c (Fin.last P.r))
-  · have hG : 0 < TBB.Gp p (TBB.bigPt P.r c) := by
-      rw [gp_bigPt_eq_normSq_prod_mul_sub]
-      exact mul_pos hpos (by linarith)
-    have hn := nPt_bigPt P.k P.r (Tz P.k P.r p.T.base.z) (Tz P.k P.r p.T.base.z') c
-      (by rw [← hTT]; exact hζ.le)
-    rw [hTT, hn, Real.mul_self_sqrt (bcWeight_nonneg0 _ _ _ _ _), hsVec_norm_V_bigPt p F c hd hG]
-  · replace hζ := not_lt.1 hζ
-    have hG : ¬ 0 < TBB.Gp p (TBB.bigPt P.r c) := by
-      rw [gp_bigPt_eq_normSq_prod_mul_sub]
-      intro h
-      have := (pos_iff_pos_of_mul_pos h).1 hpos
-      linarith
-    have hV0 : p.V F (TBB.bigPt P.r c) = 0 := by
-      unfold KB.Pl.V D.vecV
-      rw [dite_eq_right]
-      exact fun hh => hG hh.2
-    have h0 : B.hsVec (0 : Wq →L[ℂ] Wp) = 0 := by
-      simpa using JCTx2.hsVec_smul' (0 : ℂ) (0 : Wq →L[ℂ] Wp)
-    rw [bcWeight_eq_zero_of_normSq_le p.hl.2.2 _ _ _ (by exact hζ), hV0, h0]
-    simp
+  intros
+  apply _root_.GlobalTheory.jN2_eq_normSq_base.pt_eq <;> assumption
 
 theorem ew_integrable (p : KB.Pl P Wp Wq) {A : ℝ} {H : B.Mat P.k P.r → (Wq →L[ℂ] Wp)} (hAB : B.AB P.k P.r ≤ A)
     (hT : JF.TransportedAlt P.k P.r A 0) (hH : ∀ j : ℕ, j ≤ 5 → B.InCC A j H) :

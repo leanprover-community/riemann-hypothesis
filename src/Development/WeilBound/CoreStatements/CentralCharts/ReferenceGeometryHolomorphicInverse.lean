@@ -403,7 +403,7 @@ theorem central (h0 : FlatLineGenerator) (h1 : FlatLineGeneratorComponent) (hS :
       obtain ⟨_, s1, e1, -⟩ := v1
       obtain ⟨_, s2, e2, -⟩ := v2
       exact ⟨by simpa using ho, ⟨s1, by simpa using e1⟩, ⟨s2, by simpa using e2⟩⟩
-    obtain ⟨-, hL2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.lineLat_isVBOn_gen_frames 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
+    obtain ⟨-, hL2, -⟩ := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
       (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) hVA hVB haF hbF
       ⟨_, trivial, _, hco _ hp⟩
     have hgn := (hL2 _ trivial _).2 ⟨hd0, hco _ hp⟩
@@ -557,7 +557,7 @@ theorem exists_member (hR : RegGlobalStatement) (R : AnLogRes P ⊤ n) (L : LocP
     have hthc := _root_.GlobalTheory.CompanionTheory.Ar.PB.Cj.pot_conj_pluriharmonic hsys c hspec hcont hanal (fsHerm J d) (Cj.fs_conj d) (potOf R (fsHerm J d)) fun x =>
       ⟨Set.univ, isOpen_univ, trivial, fun _ => 0, fun _ => analyticOnNhd_const,
         fun z _ => (sub_self _).trans Complex.zero_re.symm⟩
-    obtain ⟨C', t', r', c'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.an_conj_symmetrise n R.X R.A _ L s nb m W hL hs snc hn (hA _ hfs) hΘ c hcont hinv hanal
+    obtain ⟨C', t', r', c'⟩ := _root_.PositivityTheory.Xgp.t_an_conj n R.X R.A _ L s nb m W hL hs snc hn (hA _ hfs) hΘ c hcont hinv hanal
       (fun y => (hcb _ _ (hspec y)).1) (fun y => (hcb _ _ (hspec y)).2) _ u phT C t₀ hth hthc
       (fun y _ => huc _ _ (hspec y)) r c2
     obtain ⟨line, l1, l2⟩ := hlines (fun t y => (phT t y + phT t (c y)) / 2) t' (fun t h0 h1 => (r'.2.2 t h0 h1).1)
@@ -804,7 +804,7 @@ theorem of_local (hI : PB.Inputs) {E : Type} [Field E] [NumberField E] [IsCMFiel
     ∃ A : G.An, (∃ inv : A.Sys.X → A.Re.R.X, ReciprocityTheory.AnForm.M.HoloMap A.Sys.A A.Re.R.A inv ∧
       ∀ x, inv (A.Re.π x) = x) := by
   classical
-  have harith := _root_.GlobalTheory.CompanionTheory.Relay.isArithVar_of_snc_model G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y _ G.bd (one_le_dimFl H (by omega)) G.𝔐.tie G.snc
+  have harith := _root_.PositivityTheory.Xgp.t_c_bm_exists_arith G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y _ G.bd (one_le_dimFl H (by omega)) G.𝔐.tie G.snc
   obtain ⟨y1, y2, y3⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BdSym.boundary_closed_torus_conj G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y (abLocus G.𝔐.t.G) G.bd G.𝔐.tie G.bd_iff
   obtain ⟨R, L, s, nb, m, W, hL, hs, snc, hn, hbd, hrc⟩ := _root_.GlobalTheory.CompanionTheory.Relay.lowerBound_height_on_boundary G.K G.J G.Ω G.y _ G.bd G.snc harith y1 y2 y3
   have hmem : ∀ x, R.lift x x ∈ mcPts (mCoordIdeal G.y) := fun x => R.mem x x (R.mem_U x)

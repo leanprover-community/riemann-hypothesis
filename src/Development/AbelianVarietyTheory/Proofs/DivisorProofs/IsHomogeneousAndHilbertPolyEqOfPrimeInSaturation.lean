@@ -195,17 +195,8 @@ attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma coe_decompose_homogeneousSubmodule_eq_homogeneousComponent {K : Type} [Field K] {N : ℕ}
     (g : MvPolynomial (Fin N) K) (n : ℕ) :
     ((DirectSum.decompose (homogeneousSubmodule (Fin N) K) g n : MvPolynomial (Fin N) K)) =
-      homogeneousComponent n g := by
-  conv_lhs => rw [← sum_homogeneousComponent g]
-  rw [DirectSum.decompose_sum, DFinsupp.finsetSum_apply, AddSubmonoidClass.coe_finsetSum,
-    Finset.sum_eq_single n]
-  · exact DirectSum.decompose_of_mem_same _ (homogeneousComponent_mem n g)
-  · intro i _ hi
-    exact DirectSum.decompose_of_mem_ne _ (homogeneousComponent_mem i g) hi
-  · intro hn
-    rw [Finset.mem_range, not_lt] at hn
-    rw [DirectSum.decompose_of_mem_same _ (homogeneousComponent_mem n g),
-      homogeneousComponent_eq_zero n g (by omega)]
+      homogeneousComponent n g :=
+  decomposition.decompose'_apply g n
 
 open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in

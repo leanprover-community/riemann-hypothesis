@@ -863,8 +863,7 @@ namespace GlobalTheory.UnifEvery
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level)
-open GlobalTheory.IndefiniteRowSideFullHecke.EmbeddingLevelSets (IsCover)
-open GlobalTheory.IndefiniteRowSideFullHecke.LevelLiftConditions (LevGrp levDet idealHat CongMod IsInvTame IsLevLift)
+open GlobalTheory.IndefiniteRowSideFullHecke.LevelLiftConditions (LevGrp idealHat IsLevLift)
 open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

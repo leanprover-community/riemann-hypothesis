@@ -90,7 +90,6 @@ omit [IsCMField E] in
 theorem mem_stdLat (v : Fin n → E) : v ∈ stdLat E n ↔ ∀ j, ∃ b : 𝓞 E, (b : E) = v j := by
   simp [stdLat, Submodule.mem_pi, Submodule.mem_one]
 
-set_option autoImplicit false in
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma mem_range_algebraMap_iff_isIntegral_int (x : E) :
@@ -101,7 +100,6 @@ private lemma mem_range_algebraMap_iff_isIntegral_int (x : E) :
   · intro h
     exact ⟨⟨x, h⟩, rfl⟩
 
-set_option autoImplicit false in
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma complexConj_mem_integers_iff (x : E) :
@@ -112,7 +110,6 @@ private lemma complexConj_mem_integers_iff (x : E) :
   simpa using h.map (IsCMField.complexConj E).symm
 
 
-set_option autoImplicit false in
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 theorem _root_.GlobalTheory.Survey.UnimodularStandardLattice.unimod_std :

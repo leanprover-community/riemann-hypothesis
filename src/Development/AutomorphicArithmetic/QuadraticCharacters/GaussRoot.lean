@@ -98,9 +98,6 @@ theorem exists_gauss {K : Type} [Field K] [CharZero K] {d : ℕ} [hd : Fact d.Pr
     rw [hG, gaussSum_mulShift_eq, hχq.inv]
     simp [χ, u]
 
-theorem eq_or_neg {K : Type} [Field K] {a b c : K} (ha : a ^ 2 = c) (hb : b ^ 2 = c) :
-    a = b ∨ a = -b := sq_eq_sq_iff_eq_or_eq_neg.mp (ha.trans hb.symm)
-
 theorem ne_zero {K : Type} [Field K] [CharZero K] {d : ℕ} (hd : d.Prime) {b : K}
     (hb : b ^ 2 = -(d : K)) : b ≠ 0 := by
   rintro rfl

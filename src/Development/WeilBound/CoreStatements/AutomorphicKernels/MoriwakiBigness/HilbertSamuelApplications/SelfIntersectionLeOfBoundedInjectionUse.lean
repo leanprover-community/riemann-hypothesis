@@ -21,6 +21,6 @@ theorem selfIntersection_le_of_boundedInjection_use :
       GroundTheory.Heights₂.Heights.HilbertSamuel.LocalRep.proof
       GroundTheory.Heights₂.Heights.HilbertSamuel.ConstantShift.proof
       (GroundTheory.Heights₂.Heights.HilbertSamuel.ArithmeticVolumeBig.of_moriwakiBig_only hBig)
-      hU.g7 _root_.GlobalTheory.CompanionTheory.Ar.Small.packing
+      hU.g7 _root_.MultiProjectiveCoordinates.packing_statement
 
 end GlobalTheory.CompanionTheory.Ar.Giv

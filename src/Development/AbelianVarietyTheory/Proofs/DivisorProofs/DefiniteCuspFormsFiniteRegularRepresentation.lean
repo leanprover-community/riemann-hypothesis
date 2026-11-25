@@ -166,18 +166,10 @@ open scoped ComplexOrder ComplexConjugate Matrix
 
 namespace GlobalTheory.FlagDomain
 
-theorem gram_eq_transpose_mul {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ)
-    (G : Matrix (Fin r) (Fin r) E) (M : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G M = Mᵀ * G.map τ * M.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-    Matrix.map_apply, Finset.sum_mul]
-  rw [Finset.sum_comm]
-
 theorem gram_mul {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ)
     (G : Matrix (Fin r) (Fin r) E) (P Q : Matrix (Fin r) (Fin r) ℂ) :
     gram τ G (P * Q) = Qᵀ * gram τ G P * Q.map (starRingEnd ℂ) := by
-  rw [gram_eq_transpose_mul, gram_eq_transpose_mul, Matrix.transpose_mul,
+  rw [GlobalTheory.Published.gram_eq, GlobalTheory.Published.gram_eq, Matrix.transpose_mul,
     Matrix.map_mul]
   simp only [Matrix.mul_assoc]
 

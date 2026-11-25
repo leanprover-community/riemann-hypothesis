@@ -72,8 +72,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.FullLocalDualAgreement
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def LocalDualAgreement : Prop :=
   ∀ D : D7, Formalism.L2.SG.Pf.LocCP.LocTied D → ∃ (δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp)
     (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
@@ -97,8 +95,6 @@ theorem locDualC_of' (hG : Formalism.L2.SG.Pf.LocCP.LocDualGenC) (hP : Formalism
 end Formalism.L2.SG.Pf.FullLocalDualAgreement
 
 namespace Formalism.L2.SG.Pf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem fullExists_tied (h1 : TRExistsC) (hR : LatticeRowBijectionClassFinite) (hL : FullLocalDualAgreement.LocalDualAgreement) :
     ∀ (D : D7) (X : HidaSetting D), X.LevelSubgroupCharacter → Formalism.L2.SG.Pf.LocCP.LocTied D → Nonempty (Full X) := by
@@ -138,8 +134,6 @@ open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotio
 namespace PI.SchurPlaces
 
 open Formalism.L2.SG.KappaOffDiagonal
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem schurNFC_of (hA : SchurCoreA) (hB : GeomB) : SchurNFC := by
   intro D X u u' Λ Λ' q hdiff hrel hG P hP

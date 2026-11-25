@@ -453,26 +453,6 @@ theorem finite_cmp (g : GA D V) : {v | cmp V v g ∉ levG V β L}.Finite := by
 
 end Level
 
-theorem levProd_of_laws : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type)
-    [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i, LevProd R i := by
-  intro D G _ _ Pl0 T A Ks _ _ _ R F _ _ i
-  have hH : (R.datWp i R.triv).P.H = ⊥ := rfl
-  refine ⟨fun k hk => hk.1, fun k _ => ?_, fun v => cmp (Wc D i) v, fun v f hf g => ?_, fun g hg =>
-    ⟨⟨fun h v => cmp_mem_of_mem hH h v, mem_of_cmp_mem hH hg⟩, finite_cmp g⟩⟩
-  · unfold levChi levFn
-    have h1 : ∀ x, ext1 (R.datWp i R.triv).P.H (R.datWp i R.triv).P.chi x = 1 := by
-      intro x
-      unfold ext1
-      split_ifs <;> rfl
-    rw [h1, one_mul, Finset.prod_eq_one, Finset.prod_eq_one, one_mul, Units.val_one]
-    · intro PP hP
-      exact absurd hP (Finset.notMem_empty _)
-    · intro PP _
-      exact Finset.prod_eq_one fun c hc => absurd hc (Finset.notMem_empty _)
-  · obtain ⟨ε, hε, rfl⟩ := hf
-    obtain rfl := placeIdem_unique hε (epsF_spec v)
-    exact ⟨cmp_supp _ v g, cmp_triv _ v g⟩
-
 end GlobalTheory.LevelProduct
 
 end

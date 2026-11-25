@@ -59,8 +59,6 @@ namespace Formalism.L2.GlobalTheoryTheory.VolumeCarry
 open Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def frameMat (D : D7) (W W' : HSpace D.host.E) (ι : W'.V →ₗ[D.host.E] W.V) :
     Matrix (Fin W.rank) (Fin W'.rank) D.host.E :=
   fun i j => W.frame.repr (ι (W'.frame j)) i

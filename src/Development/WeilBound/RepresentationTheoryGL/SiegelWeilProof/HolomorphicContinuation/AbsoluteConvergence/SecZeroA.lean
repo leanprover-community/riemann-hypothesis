@@ -21,11 +21,8 @@ lemma JJ_mul_JJ (n : ℕ) : JJ n * JJ n = -1 := by
   rw [← fromBlocks_one, fromBlocks_neg]
   congr 1 <;> simp
 
-lemma det_JJ_ne (n : ℕ) : (JJ n).det ≠ 0 := by
-  intro h
-  have := congrArg Matrix.det (JJ_mul_JJ n)
-  rw [det_mul, h, zero_mul, det_neg, det_one] at this
-  simp at this
+lemma det_JJ_ne (n : ℕ) : (JJ n).det ≠ 0 :=
+  det_ne_zero_of_right_inverse (B := -JJ n) (by rw [Matrix.mul_neg, JJ_mul_JJ, neg_neg])
 
 lemma exists_of_InG {M : M2 n} (h : InG M) : ∃ g : GR n, mR g = M := by
   have h' : Mᴴ * JJ n * M = JJ n := h

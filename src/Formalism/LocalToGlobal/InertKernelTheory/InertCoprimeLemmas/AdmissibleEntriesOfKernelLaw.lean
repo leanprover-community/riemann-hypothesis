@@ -33,8 +33,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.KerInert.AdmLoc2
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.PairingIndexBounds.F
 open Formalism.L2.KerInert.AdmLoc (pendG CurveIn XiIn)
 
@@ -449,8 +447,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G
 open scoped TensorProduct
 
 namespace Formalism.L2.KerInert.AdmLoc2
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.PairingIndexBounds.F
 open Formalism.L2.KerInert.AdmLoc (pendG CurveIn XiIn)

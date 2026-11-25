@@ -10,6 +10,7 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Analysis.Calculus.Deriv.CompMul
 public import Mathlib.Analysis.Calculus.Deriv.Shift
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCCA
 
 @[expose] public section
 
@@ -130,26 +131,7 @@ lemma inLie_sub {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) : inLie k 
   exact inLie_add hX (inLie_neg hY)
 
 private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  have hi := i.isLt
-  have hj := j.isLt
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  have key : ∀ l : Fin (2 * r + k + 1),
-      l.val ≠ (if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val) →
-      Hpk k r i l = 0 := by
-    intro l hl
-    have hl' := l.isLt
-    unfold Hpk
-    simp only [Fin.ext_iff]
-    split_ifs at hl ⊢ <;> first | rfl | (exfalso; omega)
-  rw [Finset.sum_eq_single_of_mem
-    ⟨(if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val), by split_ifs <;> omega⟩
-    (Finset.mem_univ _)]
-  · unfold Hpk
-    simp only [Fin.ext_iff]
-    split_ifs <;> first | (exfalso; omega) | norm_num
-  · intro l _ hl
-    rw [key l (fun h => hl (Fin.ext h)), MulZeroClass.zero_mul]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.InvCC.hpk_sq <;> assumption
 
 lemma hpk_inv : (Hpk k r)⁻¹ = Hpk k r := by
   exact Matrix.inv_eq_left_inv hpk_sq_lemma

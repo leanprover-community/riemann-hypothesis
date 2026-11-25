@@ -353,20 +353,12 @@ structure InvariantSubspaceData (K : Type) [Field K] [NumberField K] where
   n : ℕ
   d : ℕ
   E : Matrix (Fin n) (Fin d) K
-  Pr : Matrix (Fin d) (Fin n) K
-  H : Matrix (Fin d) (Fin d) K
-  L : Submodule (𝓞 K) (Fin d → K)
-  Ldel : Submodule (𝓞 K) (Fin d → K)
 
 def InvariantSubspaceData.of {K : Type} [Field K] [NumberField K] [StarRing K] (S : CSD K) {G : Type} [Group G] [Fintype G]
     (r : Representation K G S.Forms) (Xg : Finset (G → K)) (P : Subgroup G) (ψ : P →* Kˣ) : InvariantSubspaceData K where
   n := S.dim
   d := S.BaseDimension r Xg P ψ
   E := S.V0E r Xg P ψ
-  Pr := S.goodPartProjection r Xg P ψ
-  H := S.goodPartHermitianForm r Xg P ψ
-  L := S.Mt r Xg P ψ
-  Ldel := S.MtDel r Xg P ψ
 
 section V0C
 

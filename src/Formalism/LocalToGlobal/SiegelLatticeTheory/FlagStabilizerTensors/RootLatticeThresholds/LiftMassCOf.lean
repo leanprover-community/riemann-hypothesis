@@ -248,8 +248,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNoti
 
 namespace Formalism.L2.SG.Pf.FibreCounting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Rel
 
 variable {D : D7} {X : HidaSetting D} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
@@ -447,8 +445,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNoti
   Formalism.L2.SG.Full
 
 namespace Formalism.L2.SG.Pf.FibreCounting
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Count
 

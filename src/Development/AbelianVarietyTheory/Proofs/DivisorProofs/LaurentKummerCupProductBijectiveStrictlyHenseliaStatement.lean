@@ -1348,12 +1348,8 @@ noncomputable section
 
 namespace GlobalTheory.EtC.GmPhiNoeth
 
-theorem coeff_laurentMap {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (p : LaurentPolynomial R) (n : ℤ) :
-    (laurentMap f p).coeff n = f (p.coeff n) := by
-  simp [laurentMap]
-
 theorem laurentMap_id (R : Type) [CommRing R] : laurentMap (RingHom.id R) = RingHom.id _ :=
-  RingHom.ext fun p => AddMonoidAlgebra.ext (Finsupp.ext fun n => by rw [coeff_laurentMap]; rfl)
+  RingHom.ext fun p => AddMonoidAlgebra.ext (Finsupp.ext fun n => by rw [GlobalTheory.EtC.LiftWitness.laurentMap_coeff]; rfl)
 
 def laurentFunctor : CommRingCat.{0} ⥤ CommRingCat.{0} where
   obj R := CommRingCat.of (LaurentPolynomial R)
@@ -1421,7 +1417,7 @@ def isColimit_laurent {J : Type} [SmallCategory J] [IsFiltered J] {D : J ⥤ Com
       | insert n s _ ih =>
         obtain ⟨k₁, h₁, hk₁⟩ := ih
         have hn : (c.ι.app m).hom (z.coeff n) = 0 := by
-          rw [← coeff_laurentMap, hz]; rfl
+          rw [← GlobalTheory.EtC.LiftWitness.laurentMap_coeff, hz]; rfl
         obtain ⟨k₂, h₂, hk₂⟩ := hker m _ hn
         obtain ⟨k, g₁, g₂, hg⟩ := IsFiltered.span h₁ h₂
         refine ⟨k, h₁ ≫ g₁, fun n' hn' => ?_⟩
@@ -1431,7 +1427,7 @@ def isColimit_laurent {J : Type} [SmallCategory J] [IsFiltered J] {D : J ⥤ Com
     obtain ⟨k, hmk, hk⟩ := hfin z.coeff.support
     have hz0 : laurentMap (D.map hmk).hom z = 0 := by
       refine AddMonoidAlgebra.ext (Finsupp.ext fun n => ?_)
-      rw [coeff_laurentMap]
+      rw [GlobalTheory.EtC.LiftWitness.laurentMap_coeff]
       by_cases hn : n ∈ z.coeff.support
       · exact hk n hn
       · rw [Finsupp.notMem_support_iff.1 hn, map_zero]; rfl

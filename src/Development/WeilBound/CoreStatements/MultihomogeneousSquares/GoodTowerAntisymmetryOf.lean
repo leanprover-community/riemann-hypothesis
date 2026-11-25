@@ -819,7 +819,7 @@ theorem pts_eq_polar (hE : ResExistsStatement) (Q : SqSys Re a₀ ε) {t : ℝ} 
     have hxZ : x ∉ Z := fun h => hx (Or.inr h)
     rw [hAm _ (Q.ReW.R.mem x x (Q.ReW.R.mem_U x)) hxZ, hNe t ht ht' x hxN]
     rfl
-  have hbr := _root_.GlobalTheory.CompanionTheory.Ar.PB.ptsIntegral_logNormRat_eq_base hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
+  have hbr := _root_.PositivityTheory.Xgp.t_re_bridge hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
     Q.ReW.deg Q.ReW.br Q.alg.arithW Q.ReW.degree (fun j => combLine (fun o => Q.ReW.line o t) (c j)) Φ
     hsmooth hΦ hSame Am Q.alg.g Q.alg.h (Q.an.gT t) (N ∪ Z) hAmS hRat hN' hEq hexp.1
   rw [hbr, Q.deg_eq]
@@ -876,7 +876,7 @@ theorem first_half_at_scale : Inputs → ∀ (II : IntersectionSystem), IsFullIn
   have hpol : ∀ c : Fin (d + 2) → σ → ℤ, polar (d + 2) (Re.num II t) (fun r a => (c r a : ℝ)) =
       II K ι P (d + 2) (fun r => combLine LY (c r)) / Re.deg := by
     intro c
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.combLine_intersection hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
+    rw [(_root_.PositivityTheory.Xgp.t_re_comb hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
     exact polar_div _ _ _ _
   let Xi : HermLine ι := combLine LY ε
   let A : HermLine ι := combLine LY n
@@ -1378,7 +1378,7 @@ theorem sq_of (hT : StTie) (hCmp : StCmp) : StSq := by
   obtain ⟨M', t, d, S, K, _, ι, _, P, Re, hgen, hR, hdeg, hpos, hS, hF, hPB⟩ :=
     hT hG hW E H D l (Xo l) c Y (o.S B) _ (o.Or B a).𝔐.ξ₀ (o.Or B a).𝔐.gen₀ (o.Or B a).𝔐.S_prime hdisc hp hq
   obtain ⟨-, ⟨x, hx⟩, -⟩ := HodgeCpt.basic _ _ _ _ _ _ _ _ Y _ _ _ _ _ (o.Or B a).𝔐 RingOfIntegers.coe_injective
-  have hA := _root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
+  have hA := _root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
   obtain ⟨f₁, f₂⟩ := hCmp hIn hC II hII E H D l (Xo l) c _ _ Y _ _ _ _ t
     (RootFieldNumerics.Sq.tieOf (o.Or B a) ((o.Sys a).reg none).1 (o.omVB B a) t.discr hA) hmono hgen
     (fun p hp => (hX.2 B a p hp).trans (hR p hp).symm) hdeg (o.Or B a).Re_deg

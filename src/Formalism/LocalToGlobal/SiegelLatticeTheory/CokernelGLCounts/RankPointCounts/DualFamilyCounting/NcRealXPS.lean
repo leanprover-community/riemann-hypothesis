@@ -158,8 +158,6 @@ namespace Formalism.L2.SG.RealObj.InfCut.ProductExactness
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sf_smul {β : Type*} [MeasurableSpace β] (μ : Measure β) [SigmaFinite μ] (c : ℝ≥0∞) (hc : c ≠ ∞) :
     SigmaFinite (c • μ) := by
   rw [← ENNReal.coe_toNNReal hc, ← ENNReal.smul_def]
@@ -329,8 +327,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf
   Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates Formalism.L2.SG.RealObj.InfCut
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Gen
 

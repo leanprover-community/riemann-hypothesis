@@ -82,52 +82,6 @@ section Adele
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem exists_moved {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ β : E, σ β ≠ β := by
-  by_contra hne
-  push Not at hne
-  have := h.2.1
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  refine IsTotallyComplex.complexEmbedding_not_isReal τ ?_
-  rw [ComplexEmbedding.isReal_iff]
-  ext y
-  have := h.2.2.2 τ y
-  rw [hne y] at this
-  simpa using this.symm
-
-theorem im_ne_zero {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {β : E} (hβ : σ β ≠ β) (τ : E →+* ℂ) : (τ β).im ≠ 0 := by
-  intro h0
-  apply hβ
-  apply τ.injective
-  rw [h.2.2.2 τ β]
-  exact Complex.conj_eq_iff_im.2 h0
-
-theorem exists_basis {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {β : E} (hβ : σ β ≠ β) :
-    ∃ B : Module.Basis (Fin 2) F E, B 0 = 1 ∧ B 1 = β := by
-  have hfin : FiniteDimensional F E := Module.finite_of_finrank_pos (by rw [h.2.2.1]; omega)
-  have hli : LinearIndependent F ![(1 : E), β] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    have ht : t = 0 := by
-      by_contra ht
-      apply hβ
-      have e : β = algebraMap F E (-(s / t)) := by
-        have ht' : algebraMap F E t ≠ 0 := by simpa using ht
-        rw [Algebra.smul_def, Algebra.smul_def, mul_one] at hst
-        rw [map_neg, map_div₀]
-        field_simp
-        linear_combination hst
-      rw [e, AlgHom.commutes]
-    subst ht
-    simpa using hst
-  refine ⟨basisOfLinearIndependentOfCardEqFinrank hli (by simp [h.2.2.1]), ?_, ?_⟩ <;> simp
-
-omit [NumberField E] in
-theorem eq_add_tmul (B : Module.Basis (Fin 2) F E) (x : AF F ⊗[F] E) :
-    x = (Algebra.TensorProduct.basis (AF F) B).repr x 0 ⊗ₜ[F] B 0 +
-      (Algebra.TensorProduct.basis (AF F) B).repr x 1 ⊗ₜ[F] B 1 := by
-  conv_lhs => rw [← (Algebra.TensorProduct.basis (AF F) B).sum_repr x]
-  simp [Fin.sum_univ_two, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul']
-
 omit [NumberField E] in
 theorem piInf_tmul {w : InfinitePlace F} (τ : EmbOver E w) (a : AF F) (y : E) :
     piInf τ (a ⊗ₜ[F] y) = InfinitePlace.Completion.extensionEmbedding w (a.1 w) * τ.1 y := rfl
@@ -153,18 +107,6 @@ theorem piInf_cA {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace F}
 theorem eq_zero_of_piInf {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) (x : AE F E)
     (hx : At (evI F) x) (hinf : ∀ w, piInf (τ w) x = 0) : x = 0 := by
   apply PositivityTheory.RL.eq_zero_of_piInf <;> assumption
-
-def ofInf (c : ∀ w : InfinitePlace F, w.Completion) : AF F := ((c : Ainf F), (0 : Af F))
-
-theorem continuous_ofInf : Continuous (ofInf (F := F)) := continuous_id.prodMk continuous_const
-
-theorem mul_ofInf (u : AF F) (hu : evI F u = 0) (c : ∀ w : InfinitePlace F, w.Completion) : u * ofInf c = 0 := by
-  have h1 : u.1 = 0 := (InfiniteAdeleRing.ringEquiv_mixedSpace F).injective (by rw [map_zero]; exact hu)
-  refine Prod.ext ?_ ?_
-  · change u.1 * _ = 0
-    rw [h1, zero_mul]
-  · change u.2 * 0 = 0
-    rw [mul_zero]
 
 theorem exists_section {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) :
     ∃ s : (InfinitePlace F → ℂ) → AE F E, Continuous s ∧ ∀ z, At (evI F) (s z) ∧ ∀ w, piInf (τ w) (s z) = z w := by

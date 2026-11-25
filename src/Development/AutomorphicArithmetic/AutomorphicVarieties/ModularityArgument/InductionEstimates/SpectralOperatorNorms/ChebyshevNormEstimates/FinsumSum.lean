@@ -1411,7 +1411,6 @@ private theorem sep (hEV : EvVal) (hVB : ValBc) (hSep : SepPoly) {F E : Type} [F
 set_option maxHeartbeats 16000000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.cixOf :
     ParEx → TrExp → EvVal → ValBc → KillEx2 → KfBc → TruncSpec → SepPoly → OneSide → OneSideX → EvEx → Kill → KillExempt → FamEx → CIx := by
-  set_option maxHeartbeats 4000000 in
     intro hPar hTr hEV hVB hK2 hKf hTS hSep hOS hOSX hEv hKill hKX hFam F E _ _ _ _ _ _ _ μE _ μF _ θ 𝔢 𝔣 c hG 𝔵 hoff
     classical
     obtain ⟨hAE0, hAE1, -, evE, hevE, hinE⟩ := hEv E (2 + 2) (by norm_num) μE 𝔢.toAmp

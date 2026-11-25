@@ -69,13 +69,6 @@ private lemma projection_comm_of_mapsTo {p q : Submodule ℂ V} (h : IsCompl p q
   have e4 := (Submodule.IsCompl.projection_apply_eq_zero_iff h).mpr (hq b hb)
   simp only [map_add (f := _), e1, e2, e3, e4, add_zero]
 
-variable {V : Type} [AddCommGroup V] [Module ℂ V] in
-private lemma sub_projection_mem' {p q : Submodule ℂ V} (h : IsCompl p q) (v : V) :
-    v - p.projection q h v ∈ q := by
-  rw [← Submodule.IsCompl.projection_apply_eq_zero_iff h, map_sub,
-    (Submodule.IsCompl.projection_eq_self_iff h _).mpr
-      (Submodule.IsCompl.projection_apply_mem h v), sub_self]
-
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.ClassFin.exists_reynolds_of_completelyReducible (V : Type) [AddCommGroup V] [Module ℂ V]
@@ -161,7 +154,7 @@ theorem _root_.GlobalTheory.ClassFin.exists_reynolds_of_completelyReducible (V :
   have hPfix : ∀ v ∈ Fix, P v = v := by
     intro v hv
     have hd : v - P v ∈ Fix := Fix.sub_mem hv (hW'Fix _ (Submodule.IsCompl.projection_apply_mem _ v))
-    exact (sub_eq_zero.mp (hFixW _ hd (sub_projection_mem' hWW'.symm v))).symm
+    exact (sub_eq_zero.mp (hFixW _ hd (Submodule.sub_projection_mem hWW'.symm v))).symm
   have hPT : ∀ T : V →ₗ[ℂ] V, (∀ s ∈ S, ∀ v, T (s v) = s (T v)) → ∀ v, P (T v) = T (P v) := by
     intro T hT v
     refine projection_comm_of_mapsTo hWW'.symm T (fun x hx => ?_) (hWT T hT) v
@@ -169,7 +162,7 @@ theorem _root_.GlobalTheory.ClassFin.exists_reynolds_of_completelyReducible (V :
     rw [← hPfix _ hTx]
     exact Submodule.IsCompl.projection_apply_mem _ _
   refine ⟨P, fun v s hs => hW'Fix _ (Submodule.IsCompl.projection_apply_mem _ v) s hs,
-    fun v hv => hPfix v hv, fun v s hs => ?_, fun v => sub_projection_mem' hWW'.symm v,
+    fun v hv => hPfix v hv, fun v s hs => ?_, fun v => Submodule.sub_projection_mem hWW'.symm v,
     hPT, fun U hU v hv => ?_⟩
   · have h0 : P ((s : V → V) v - v) = 0 :=
       (Submodule.IsCompl.projection_apply_eq_zero_iff _).mpr (hWgen s hs v)

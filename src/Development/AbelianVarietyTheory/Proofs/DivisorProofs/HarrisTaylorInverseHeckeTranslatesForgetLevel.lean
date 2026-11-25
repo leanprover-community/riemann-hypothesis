@@ -68,17 +68,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.UPel.HT.Hecke.FibreMulK
 
-private theorem ev_nsmul' {p : ℕ} [Fact p.Prime] {D : Datum p} {k : Type} [Field k] {Q : Type} [Group Q]
-    {act : D.O → Q → Q} {e : ℕ → Q → Q → kˣ → Prop} (I : TateIsoO D k Q act e) (n j : ℕ) (y : D.La) :
-    I.ev n (j • y) = I.ev n y ^ j := by
-  induction j with
-  | zero =>
-    have h := I.add n 0 0
-    rw [add_zero] at h
-    rw [zero_smul, _root_.pow_zero]
-    exact mul_left_cancel (a := I.ev n 0) (by rw [_root_.mul_one]; exact h.symm)
-  | succ j ih => rw [succ_nsmul, I.add, ih, _root_.pow_succ]
-
 private theorem nsmul_cancel {M : Type} [AddCommGroup M] [Module.Free ℤ M] {k : ℕ} (hk : 0 < k) {x y : M}
     (h : k • x = k • y) : x = y := by
   have hk' : (k : ℤ) ≠ 0 := by exact_mod_cast hk.ne'
@@ -106,7 +95,7 @@ theorem fibre_mulK : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [Comm
   have hpos : 0 < N * k * k := Nat.mul_pos (Nat.mul_pos hN hk) hk
   obtain ⟨z, hz⟩ := (I.onto (N * k * k) hpos hcop d).1 (by
     rw [pow_mul, pow_right_comm, hdk, one_pow])
-  have hkz : I.ev (N * k * k) (k • z) = 1 := by rw [ev_nsmul', hz, hdk]
+  have hkz : I.ev (N * k * k) (k • z) = 1 := by rw [GlobalTheory.UPel.HT.TateIsoO.ev_nsmul, hz, hdk]
   obtain ⟨w, hw⟩ := (I.ker (N * k * k) hpos hcop _).1 hkz
   haveI := D.freeLa
   have hzw : z = (N * k) • w := by

@@ -285,7 +285,7 @@ theorem theta_mem {E : Type} [Field E] [NumberField E] {g : ℕ} (F : 𝓞 E →
 
 theorem finrank_symm_comm_le (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (g p q : ℕ) (ρ₀ : ℂ)
     (Hm : Matrix (Fin g) (Fin g) ℂ) (F : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)) (S : Submodule ℂ (Matrix (Fin g) (Fin g) ℂ))
-    (hρ : ρ₀ ^ 2 = -(H.d : ℂ)) (_hH : Hm.IsHermitian)
+    (hρ : ρ₀ ^ 2 = -(H.d : ℂ))
     (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re)
     (hdim : ∀ τ : 𝓞 E →+* ℂ, Module.finrank ℂ ↥(⨅ a, Module.End.eigenspace (F a) (τ a)) = if τ H.rt = ρ₀ then p else q)
     (hS : ∀ Θ ∈ S, IsSymm Hm Θ ∧ ∀ a, Comm Θ (F a)) :
@@ -1868,7 +1868,7 @@ theorem finrank_derivation_le : Out.Laws → Out.Laws2 → (∀ (S : Scheme.{0})
     (algebraMap o ℂ) t₀.A m hP hx hm
   obtain ⟨F, hF⟩ := (GlobalTheory.KS.exists_linear_lift_action t₀.pol u Hm χ hG).2 (𝓞 E) act₀
   have hle := _root_.GlobalTheory.KS.DimPEL.finrank_symm_comm_le E H t₀.pol.g D.p D.q (algebraMap o ℂ ρ) Hm F (LinearMap.range κ)
-    (by rw [← map_pow, hρ]; simp) hG.ah.1 hG.ah.2.1
+    (by rw [← map_pow, hρ]; simp) hG.ah.2.1
     (fun σ => by
       split_ifs with h
       · exact _root_.GlobalTheory.UnifEigenRank.finrank_eigenspace_of_lieMult t₀.pol u Hm χ hG (𝓞 E) act₀ F hF σ _ ((hdet σ).1 h)

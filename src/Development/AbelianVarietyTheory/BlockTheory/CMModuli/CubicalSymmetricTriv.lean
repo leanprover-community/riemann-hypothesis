@@ -63,10 +63,6 @@ abbrev symLB (L : LB G.left) : LB G.left :=
 
 variable {G}
 
-def rigV (L : RigLB G) {T : Over S} (z : T.left) (J : (T.left ⟶ G.left) → L.L.ι) :
-    (T.left.presheaf.stalk z)ˣ :=
-  val (L := L.L) L.rig (toUnit T).left z J
-
 def symV {L : LB G.left} (σ : LB.Gen (symLB G L)) {T : Over S} (z : T.left)
     (J : (T.left ⟶ G.left) → L.ι) (x : T ⟶ G) : (T.left.presheaf.stalk z)ˣ :=
   val (L := L) σ x.left z J
@@ -100,37 +96,9 @@ section Triv
 
 variable {S : Scheme.{0}} {H G : Over S} [GrpObj H] [IsCommMonObj H] [GrpObj G] [IsCommMonObj G]
 
-abbrev lamOn (i : H ⟶ G) (L : LB G.left) : LB (H ⊗ G).left :=
-  LB.LinComb L (K := Fin 4)
-    ![((fst H G ≫ i) * snd H G).left, (fst H G ≫ i).left, (snd H G).left, (1 : H ⊗ G ⟶ G).left]
-    ![1, -1, -1, 1]
-
-def lamV {i : H ⟶ G} {L : LB G.left} (s : LB.Gen (lamOn i L)) {T : Over S} (z : T.left)
-    (J : (T.left ⟶ G.left) → L.ι) (t : T ⟶ H) (x : T ⟶ G) : (T.left.presheaf.stalk z)ˣ :=
-  val (L := L) s (lift t x).left z J
-
-structure IsBiextTriv {L : RigLB G} (c : CubicalStr G L) (i : H ⟶ G) [IsMonHom i]
-    (s : LB.Gen (lamOn i L.L)) : Prop where
-  gen : s.IsGen
-  law₁ : ∀ (T : Over S) (z : T.left) (J : (T.left ⟶ G.left) → L.L.ι), Good L.L z J →
-    ∀ (t t' : T ⟶ H) (x : T ⟶ G), lamV s z J (t * t') x =
-      cubV c z J (t ≫ i) (t' ≫ i) x * lamV s z J t x * lamV s z J t' x
-  law₂ : ∀ (T : Over S) (z : T.left) (J : (T.left ⟶ G.left) → L.L.ι), Good L.L z J →
-    ∀ (t : T ⟶ H) (x x' : T ⟶ G), lamV s z J t (x * x') =
-      cubV c z J (t ≫ i) x x' * lamV s z J t x * lamV s z J t x'
-
 def trivV {i : H ⟶ G} {L : LB G.left} (σ : LB.Gen (L.pull i.left)) {T : Over S} (z : T.left)
     (J : (T.left ⟶ G.left) → L.ι) (t : T ⟶ H) : (T.left.presheaf.stalk z)ˣ :=
   val (L := L) σ t.left z J
-
-structure IsCubTriv {L : RigLB G} (c : CubicalStr G L) (i : H ⟶ G) [IsMonHom i]
-    (σ : LB.Gen (L.L.pull i.left)) : Prop where
-  gen : σ.IsGen
-  rig : ∀ (T : Over S) (z : T.left) (J : (T.left ⟶ G.left) → L.L.ι), Good L.L z J →
-    trivV σ z J 1 = rigV L z J
-  cub : ∀ (T : Over S) (z : T.left) (J : (T.left ⟶ G.left) → L.L.ι), Good L.L z J →
-    ∀ t t' t'' : T ⟶ H,
-      thirdDiff (trivV σ z J) t t' t'' = cubV c z J (t ≫ i) (t' ≫ i) (t'' ≫ i)
 
 variable {B : Over S} [GrpObj B] [IsCommMonObj B]
 
@@ -149,19 +117,6 @@ variable {S : Scheme.{0}} {X : Type} [AddCommGroup X] {G : Over S} [GrpObj G]
 
 def charV (χ : X) {T : Over S} (z : T.left) (t : T ⟶ splitTorus S X) : (T.left.presheaf.stalk z)ˣ :=
   gm t.left z ⊤ (charUnit S X χ)
-
-variable {B : Over S} [GrpObj B]
-
-structure IsTorusExt (i : splitTorus S X ⟶ G) (q : G ⟶ B) : Prop where
-  free : Module.Free ℤ X
-  finite : Module.Finite ℤ X
-  comm : IsCommMonObj G
-  abelian : IsAbelianScheme B
-  i_hom : IsMonHom i
-  q_hom : IsMonHom q
-  isKernel : IsPullback i (toUnit _) q (η[B])
-  locTriv : ∀ b : B.left, ∃ V : B.left.Opens, b ∈ V ∧
-    ∃ r : V.toScheme ⟶ G.left, r ≫ q.left = V.ι
 
 end Torus
 

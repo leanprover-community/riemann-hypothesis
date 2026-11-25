@@ -150,12 +150,6 @@ private lemma tsum_one_div_add_int_sq_of_im_pos (z : ℂ) (hz : 0 < z.im) :
 
 open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 open Filter Topology in
-private lemma tsum_sq_mul_geometric_of_norm_lt_one {r : ℂ} (hr : ‖r‖ < 1) :
-    ∑' n : ℕ, (n : ℂ) ^ 2 * r ^ n = r * (1 + r) / (1 - r) ^ 3 :=
-  (_root_.hasSum_sq_mul_geometric_of_norm_lt_one hr).tsum_eq
-
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma tsum_one_div_add_int_pow_three_of_im_pos (z : ℂ) (hz : 0 < z.im) :
     ∑' m : ℤ, 1 / (z + m) ^ 3 = -(1 / 2) * (2 * (Real.pi : ℂ) * Complex.I) ^ 3 *
       (Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * z)

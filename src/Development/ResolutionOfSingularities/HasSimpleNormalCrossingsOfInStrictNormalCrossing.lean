@@ -822,9 +822,6 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem base_comp_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C) (x : ↥A) :
-    (f ≫ g).base x = g.base (f.base x) := by simp
-
 private theorem isIso_stalkMap_of_isOpenImmersion {A B : Scheme.{u}} (f : A ⟶ B)
     [AlgebraicGeometry.IsOpenImmersion f] (x : ↥A) :
     CategoryTheory.IsIso (AlgebraicGeometry.Scheme.Hom.stalkMap f x) := by
@@ -849,7 +846,7 @@ private theorem base_apply_mem_support_ker {W Z : Scheme.{u}} (g : W ⟶ Z) (q :
   rw [← AlgebraicGeometry.Scheme.IdealSheafData.range_subschemeι]
   exact ⟨(AlgebraicGeometry.IsClosedImmersion.lift
       (AlgebraicGeometry.Scheme.Hom.ker g).subschemeι g hle).base q, by
-    rw [← base_comp_apply, hfac]⟩
+    rw [← Scheme.Hom.comp_apply, hfac]⟩
 
 theorem mem_support_centerOffDetached_of_mem_support_ambientCenter (i : ℕ) (p : ↥(S.strictTransform i))
     (hp : p ∈ ((S.discardedLocusClosureCompl i : (S.strictTransform i).Opens) : Set ↥(S.strictTransform i)))
@@ -869,7 +866,7 @@ theorem mem_support_centerOffDetached_of_mem_support_ambientCenter (i : ℕ) (p 
   obtain ⟨q, hq⟩ := hq0
   have hmain := base_apply_mem_support_ker
     (((S.comapAmbientCenter i).comap (S.discardedLocusClosureCompl i).ι).subschemeι ≫ (S.discardedLocusClosureCompl i).ι) q
-  rw [base_comp_apply, hq] at hmain
+  rw [Scheme.Hom.comp_apply, hq] at hmain
   rw [S.centerOffDetached_eq i]
   exact hmain
 
@@ -1333,7 +1330,7 @@ theorem boundary_preimage_subset_smoothLocusComplement_preimage (A : Principaliz
         (AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).strictTransformι i).base q
       = ((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).strictTransformι i).base
           (((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).discardedι i).base q) :=
-    base_comp_apply _ _ q
+    Scheme.Hom.comp_apply _ _ q
   rw [hbase] at hmem
   have hnc := not_avoidsCenters_of_mem_support_boundary A hemb hsnc hsm k Y pY i (le_of_lt hi) E hE
     (((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).strictTransformι i).base
@@ -1343,7 +1340,7 @@ theorem boundary_preimage_subset_smoothLocusComplement_preimage (A : Principaliz
     (((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).discardedι i).base q) hnc
   show ((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).detachedToBase i).base q ∈
     ((smoothLocusComplement pY : TopologicalSpace.Closeds ↥Y) : Set ↥Y)
-  rw [AffineSpacePrincipalizationData.detachedToBase_def, base_comp_apply]
+  rw [AffineSpacePrincipalizationData.detachedToBase_def, Scheme.Hom.comp_apply]
   exact hsing
 
 theorem detachedSingularPreimageEqBoundary_ofAffine (A : PrincipalizationAlgorithm.{u})
@@ -1370,7 +1367,7 @@ theorem detachedSingularPreimageEqBoundary_ofAffine (A : PrincipalizationAlgorit
           Set ↥((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).ambientLevel i)) := by
     intro E hE hmem
     refine hcon ?_
-    have hb := base_comp_apply
+    have hb := Scheme.Hom.comp_apply
       ((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).discardedι i)
       ((AffineSpacePrincipalizationData.ofAffine A hemb hsnc hsm k Y pY).strictTransformι i) q
     simp only [Set.mem_preimage, hb]

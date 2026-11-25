@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapQdetEtr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MinorCellOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
@@ -114,16 +115,7 @@ section qm
 theorem map_qminor {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B) {n t : ℕ}
     (E : Fin n → Fin n → A) (a b : Fin t → Fin n) (u : ℂ) :
     φ (qminor E a b u) = qminor (fun p q => φ (E p q)) a b u := by
-  unfold qminor
-
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  rw [map_mul, map_intCast, map_list_prod, List.map_ofFn]
-  congr 2
-  congr 1
-  funext k
-  simp only [Function.comp_apply, Tm, map_add]
-  split_ifs <;> simp
+  apply _root_.GlobalTheory.CompanionTheory.CapelliMap.map_qminor <;> assumption
 
 theorem qminor_reindex {A : Type} [Ring A] [Algebra ℂ A] {n n' t : ℕ} (E : Fin n' → Fin n' → A) (ι : Fin n → Fin n')
     (hι : Function.Injective ι) (a b : Fin t → Fin n) (u : ℂ) :

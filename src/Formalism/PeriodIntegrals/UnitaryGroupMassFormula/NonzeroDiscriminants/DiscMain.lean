@@ -19,15 +19,7 @@ noncomputable section
 namespace DiscrNeWork
 
 theorem bern6 : bernoulli 6 = 1 / 42 := by
-  have h5 : bernoulli' 5 = 0 := by
-    rw [bernoulli'_def]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, bernoulli'_zero, bernoulli'_one, bernoulli'_two,
-      bernoulli'_three, bernoulli'_four]
-    norm_num [Nat.choose]
-  rw [bernoulli_eq_bernoulli'_of_ne_one (by norm_num), bernoulli'_def]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, bernoulli'_zero, bernoulli'_one, bernoulli'_two,
-    bernoulli'_three, bernoulli'_four, h5]
-  norm_num [Nat.choose]
+  simpa only [one_div] using bernoulli_six
 
 theorem zeta6 : riemannZeta 6 = (Real.pi : ℂ) ^ 6 / 945 := by
   have h := riemannZeta_two_mul_nat (show (3 : ℕ) ≠ 0 by norm_num)

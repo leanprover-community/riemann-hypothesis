@@ -613,8 +613,6 @@ namespace Formalism.L2.SG.FixedDecomposition
 
 open PI.SchurPlaces PI.SchurPlaces.Geo Formalism.L2.SG.KappaOffDiagonal Formalism.L2.SG.TermOp.Vanish
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def FixedDecompositionZero : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word)
     (t : GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u')), t.relevant → t.G = 0 →
@@ -1206,8 +1204,6 @@ def CovariantRepresentationZero : Prop :=
        (X.piU u h).comp (OO (Formalism.L2.SG.ProjRows.muInf X.B.I) Ω (X.Wu u) (X.Wu u') t.pt.1) =
         (OO (Formalism.L2.SG.ProjRows.muInf X.B.I) Ω (X.Wu u) (X.Wu u') t.pt.1).comp
           (X.piU u' (t.pt.1⁻¹ * h * t.pt.1)))
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem covariantRepZero_of_lemmaV (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTrivialC) (hG : PsiInfChar)
     (h1 : RClosedC) (h2 : RODiscreteC) (h3 : RCocompactC) :

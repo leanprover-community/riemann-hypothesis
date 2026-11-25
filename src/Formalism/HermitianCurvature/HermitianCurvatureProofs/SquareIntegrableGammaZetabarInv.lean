@@ -966,10 +966,7 @@ def Phi : (DQ P).Pr →+* Module.End ℂ (SmQ P.r P.TT) :=
 theorem actA_eq (a : A P (DQ P)) (f π) : actA P a f π = ∑ π', Phi P (a π π') (f π') := rfl
 
 theorem act_mul (a b : A P (DQ P)) (f) : actA P (a * b) f = actA P a (actA P b f) := by
-  funext π
-
-  simp only [actA_eq, Matrix.mul_apply, map_sum, map_mul, LinearMap.sum_apply, Module.End.mul_apply]
-  rw [Finset.sum_comm]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_mul <;> assumption
 theorem act_diag (d : M.Ty P → (DQ P).Pr) (f π) : actA P (Matrix.diagonal d) f π = (d π).1 (f π) := by
   rw [actA_eq, Finset.sum_eq_single π (fun b _ hb => by rw [Matrix.diagonal_apply_ne _ hb.symm, map_zero]; rfl)
     (by simp), Matrix.diagonal_apply_eq]

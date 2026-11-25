@@ -499,37 +499,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.CrystallineSubrepresentation Global
 
 namespace GlobalTheory.CrysInertDescent
 
-theorem L_inert : ∀ (l : ℕ) [Fact l.Prime] (g : ↥(GK (Formalism.MainNotions.ElementDenominator.qlExt l))), g ∈ IK (Formalism.MainNotions.ElementDenominator.qlExt l) →
-    ∀ x ∈ MaximalUnramifiedExtension l, (g : GQ l) x = x :=
-  _root_.GlobalTheory.InertQlUnr.IK_qlExt_fixes_Kur
-
-theorem L_span : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), IsStd P AI →
-    ∀ (LL : FinExt l) (T : QLat LL) (K K'' : FinExt l), K.1 ≤ K''.1 → IsCrys (P.PD K) (T.ρ.comp (inclG K)) →
-    DcrisK₀ (P.PD K'') (T.ρ.comp (inclG K'')) ≤
-      Submodule.span ↥(K0 K'') (↑(DcrisK₀ (P.PD K) (T.ρ.comp (inclG K))) : Set (P.R.B ⊗[ℚ_[l]] T.V)) :=
-  _root_.GlobalTheory.Per.DcrisSpan.dcris_span
-
-theorem L_lift : ∀ (l : ℕ) [Fact l.Prime] (K' F K'' : FinExt l), (GK K').Normal → K''.1 = K'.1 ⊔ F.1 →
-    ∀ h : GQ l, h ∈ GK F → (∀ x ∈ K0 K'', h x = x) →
-    ∃ i : ↥(GK (Formalism.MainNotions.ElementDenominator.qlExt l)), i ∈ IK (Formalism.MainNotions.ElementDenominator.qlExt l) ∧ (i : GQ l) ∈ GK F ∧ (i : GQ l)⁻¹ * h ∈ GK K'' :=
-  _root_.GlobalTheory.InertiaLift.lift
-
-theorem L_speiser : ∀ {G L Ω M : Type} [Group G] [Field L] [Field Ω] [Algebra L Ω] [AddCommGroup M] [Module Ω M]
-    [Module L M] [IsScalarTower L Ω M] (b : G → Ω → Ω) (a : G → L →+* Ω) (σ : G → M →+ M) (W : Submodule L M),
-    (∀ g h c, a (g * h) c = b g (a h c)) → (∀ c, a 1 c = algebraMap L Ω c) →
-    (∀ m, σ 1 m = m) → (∀ g h m, σ (g * h) m = σ g (σ h m)) →
-    (∀ g (c : L) m, σ g (c • m) = a g c • σ g m) → (Set.range a).Finite →
-    (∀ g, ∀ m ∈ W, σ g m ∈ W) → (∀ g, (∀ c, a g c = algebraMap L Ω c) → ∀ m ∈ W, σ g m = m) →
-    ∀ m ∈ W, m ∈ Submodule.span Ω {m | m ∈ W ∧ ∀ g, σ g m = m} :=
-  _root_.GlobalTheory.speiser_descent_span
-
-theorem L_dim : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), IsStd P AI →
-    ∀ (LL : FinExt l) (T : QLat LL) (F K'' : FinExt l), IsCrys (P.PD K'') (T.ρ.comp (inclG K'')) →
-    (∀ m ∈ DcrisK₀ (P.PD K'') (T.ρ.comp (inclG K'')),
-      m ∈ Submodule.span ↥(MaximalUnramifiedExtension l) (↑(DcrisK₀ (P.PD F) (T.ρ.comp (inclG F))) : Set (P.R.B ⊗[ℚ_[l]] T.V))) →
-    IsCrys (P.PD F) (T.ρ.comp (inclG F)) :=
-  _root_.GlobalTheory.BKGal.isCrys_of_dcris_le_span
-
 end GlobalTheory.CrysInertDescent
 
 namespace GlobalTheory.CrysInertDescent

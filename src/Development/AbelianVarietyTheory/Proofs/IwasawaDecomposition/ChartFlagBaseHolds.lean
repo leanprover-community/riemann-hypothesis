@@ -43,7 +43,6 @@ import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsNatDiagIffIsDiag
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemMaximalIdealBall
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
@@ -58,7 +57,7 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits NumberField TopologicalSpace IsLocalRing
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ModuliIntegralCharts GlobalTheory.ShFam
 open Formalism.MainNotions.DIV.Cons (SCF intO)
-open GlobalTheory.LocM GlobalTheory.LocM.Cht
+open GlobalTheory.LocM
 open MonObj
 
 attribute [local instance] Over.cartesianMonoidalCategory

@@ -116,14 +116,6 @@ end Gram
 end Formalism.L2.SG.Pf.Rescale
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub
-
-namespace Formalism.L2.SG.Pf.Rescale
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : D7}
-
-end Formalism.L2.SG.Pf.Rescale
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

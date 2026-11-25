@@ -1617,7 +1617,7 @@ theorem PositivityTheory.Xgn.test_group_point_exists : GlobalTheory.CompanionThe
   obtain ⟨-, hN, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.hcpt_generic_point E H D l Xo c O₀ β Y S Ω K J y 𝔐 p hpS (PositivityTheory.Xgn.PackingFacts.zp Ω p) (PositivityTheory.Xgn.PackingFacts.mem_range_zp Ω p)
   obtain ⟨AA, AW, hAA, hAW, hM, hret, -⟩ := PositivityTheory.Xgn.test_order_sections E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hd hpq p
     hpS hfree hp2 hdisc b hb φ hφ A m hpm O t₀ Sg e φ' F pq sc w σF hO hsec G c' hc' P i hseq hbase C RC hT χ hχ
-  obtain ⟨-, htight⟩ := _root_.GlobalTheory.CompanionTheory.Relay.arith_variety_model_hodge_relay hHD hOC E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hd hpq p
+  obtain ⟨-, htight⟩ := _root_.PositivityTheory.Xgn.tight_hopf_order_test hHD hOC E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hd hpq p
     hpS hfree hp2 hdisc b hb φ hφ A m hpm O t₀ Sg e φ' F pq sc w σF hO hsec G c' hc' P i hseq hbase C RC hT χ hχ v hv hvp
   obtain ⟨g, io, ev, Hm, Eg, hio, hev, hcard, hEt, ⟨Ei, hEi, hiso⟩, hE, hH⟩ :=
     point_data hF E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hd hpq p hpS A m hpm O G c' hc' P C RC w hO.2.2.2.2.2.2.2 hT

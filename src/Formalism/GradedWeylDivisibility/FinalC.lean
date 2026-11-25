@@ -961,14 +961,6 @@ noncomputable section
 
 namespace Formalism.GradedWeylDivisibility
 
-private lemma pairW_apply {r n : ℕ} (l j : Fin n) (v : Fin r × Fin n) (b : Fin r)
-    (t : Fin n) :
-    pairW l j v (b, t) = if v.2 = j then (if (v.1, l) = (b, t) then 1 else 0)
-      else (if v = (b, t) then 1 else 0) := by
-  classical
-  unfold pairW
-  split_ifs <;> simp_all
-
 theorem lcplead_weight_apply {r n : ℕ} (l j : Fin n) (hlj : l ≠ j) (d : Fin r × Fin n →₀ ℕ)
     (b : Fin r) (t : Fin n) :
     Finsupp.weight (pairW l j) d (b, t) =

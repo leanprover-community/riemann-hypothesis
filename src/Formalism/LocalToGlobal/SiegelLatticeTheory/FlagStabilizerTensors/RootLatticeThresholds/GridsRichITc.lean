@@ -290,7 +290,7 @@ namespace Formalism.L2.SG.Pf.CarrierT
 
 open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 def gridT {D : D7} (e : InfinitePlace D.host.E ≃ D.what₂.Tau) (l : ℕ) (j : Fin (nfE D)) : ℕ → Finset ℝ :=
   Formalism.L2.SG.Pf.CarrierSz.gridCh ((Formalism.L2.SG.SpectralTiesReal.gOf D e).place (plE D j)) l

@@ -412,9 +412,9 @@ theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     rw [map_natCast] at h3
     exact h3.trans hs1
   haveI : CharP Γ.κ p := (CharP.charP_iff_prime_eq_zero hp).2 hpκ
-  obtain ⟨F, hF0, hFi⟩ := GlobalTheory.T.fibre_curve_germ_powers E H hstar X t Ω ξ d M S O' s _ p Γ hξ hpow hfib
+  obtain ⟨F, hF0, hFi⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.GermFam.germ_family E H hstar X t Ω ξ d M S O' s _ p Γ hξ hpow hfib
   choose hFB φ' ψ' lam' he hφ hψ hlam using hFi
-  choose xs A hxs hfr hpr using GlobalTheory.T.hodge_lattice_germ_eigen E H X t Ω ξ d r M S ρ 𝓗 σ u hξ hgive hσ hu hsp
+  choose xs A hxs hfr hpr using _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.Frame.exists_basis_frame E H X t Ω ξ d r M S ρ 𝓗 σ u hξ hgive hσ hu hsp
   have hdet := fun q => (_root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeLat.quot_det_bundle X Ω ξ E (Fin d → Ω) M.lat ρ H.bar r 𝓗 σ u hσ hu hsp).2.2 q (A q) (hfr q)
   choose Mt hAM hMt using fun i => exists_trans S hgive σ (qi i) q0 (FibreCurve.generic_centre_specializes Γ i) (τ q0) (hτ q0)
     (he i) (hxs q0) hu (hpr (qi i)) (hpr q0)
@@ -439,8 +439,8 @@ theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   let x : ∀ i : Γ.C.I, Fin r → (Fin d → (Γ.C.v i).valuationSubring) × (Fin d → (Γ.C.v i).valuationSubring) :=
     fun i j => vmap (vi i) (xs (qi i) j)
   let N : Γ.C.I → Matrix (Fin r) (Fin r) Γ.κ := fun i => (Mt i).map v0
-  have hx₀ : IsHBasis F.B x₀ := GlobalTheory.T.intersection_second E _ _ v0 d r _ _ _ hF0 (hxs q0)
-  have hx : ∀ i, IsHBasis (F.Bi i) (x i) := fun i => GlobalTheory.T.intersection_second E _ _ (vi i) d r _ _ _ (hFB i) (hxs (qi i))
+  have hx₀ : IsHBasis F.B x₀ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.isHBasis_map E _ _ v0 d r _ _ _ hF0 (hxs q0)
+  have hx : ∀ i, IsHBasis (F.Bi i) (x i) := fun i => _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.isHBasis_map E _ _ (vi i) d r _ _ _ (hFB i) (hxs (qi i))
   have hrel : ∀ i j, transH (F.φ i) (F.ψ i) (F.lam i) (vmap (Γ.C.v i).valuationSubring.subtype (x i j)) -
       ∑ l, N i j l • x₀ l ∈ eigW F.B χ := fun i j => by
     have h1 := vmap_mem_eigW hF0 (τ q0) (hMt i j)
@@ -448,7 +448,7 @@ theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       (xs (qi i) j) (Mt i j) (xs q0)
     rw [hφ i, hψ i, hlam i]
     exact h2 ▸ h1
-  obtain ⟨hne, hfin, hsum⟩ := GlobalTheory.T.valuation_bounded_frame E Γ.κ Γ.C p d r F χ
+  obtain ⟨hne, hfin, hsum⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegProd.curve_deg E Γ.κ Γ.C p d r F χ
     (GlobalTheory.T.charpoly_splits_of_embeddings E Ω O Γ.κ (v0.comp ((GlobalTheory.CompanionTheory.Ar.ValHom.stalkEquiv ξ hξ q0).symm.toRingHom.comp
       ((algebraMap O Ω).codRestrict (regAt ξ q0) (hreg q0)))) hinj hcard hrange) hχ x₀ x N hx₀ hx hrel
   have hNdet : ∀ i, (N i).det = v0 (Mt i).det := fun i => (RingHom.map_det v0 (Mt i)).symm
@@ -846,7 +846,7 @@ theorem emb_inr (𝔐 : HodgeCpt Y S y) (τ : CMType H) :
 
 theorem cst_mem (𝔐 : HodgeCpt Y S y) (q : Cpt 𝔐.ξ) (o : 𝓞 c.F) : 𝔐.cst (o : c.F) ∈ regAt 𝔐.ξ q := by
   letI algΩ : Algebra (𝓞 c.F) Ω := (𝔐.cst.comp (algebraMap (𝓞 c.F) c.F)).toAlgebra
-  exact GlobalTheory.T.base_constants_regular 𝔐.X Ω 𝔐.ξ (𝓞 c.F) (𝔐.f ≫ Y.s) 𝔐.cst_over q o
+  exact _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.RegBase.algebraMap_mem_regAt_of_base 𝔐.X Ω 𝔐.ξ (𝓞 c.F) (𝔐.f ≫ Y.s) 𝔐.cst_over q o
 
 
 open CptHodge in
@@ -887,7 +887,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
     ⟨finrank_of_isVB (𝔐.vb (.inl ⟨τ', h⟩)), by
       rw [← emb_inr 𝔐 ⟨τ', h⟩]
       exact finrank_of_isVB (𝔐.vb (.inr ⟨τ', h⟩))⟩
-  obtain ⟨d, M, ⟨G⟩⟩ := GlobalTheory.T.exists_germ_system E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ hPow hgen
+  obtain ⟨d, M, ⟨G⟩⟩ := _root_.PositivityTheory.Xgn.germ_system_exists E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ hPow hgen
   obtain ⟨e, he, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_existsUnique_equiv 𝔐.X 𝔐.t.G Ω 𝔐.ξ (Fin d → Ω) 𝔐.Li M 𝔐.M
   let ρ' : 𝓞 E →+* Module.End Ω (Fin d → Ω) := (e.symm.conjRingEquiv : _ ≃+* _).toRingHom.comp 𝔐.ρ
   have hρ' : ∀ a v, e (ρ' a v) = 𝔐.ρ a (e v) := fun a v => by
@@ -912,10 +912,10 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
         simp
       rw [hcc] at e2
       rw [e1, e2, add_comm]
-  have hC : HChar G.g₀.B (D.p + D.q) := GlobalTheory.T.hermitian_signature_character E Ω d (D.p + D.q) G.g₀.B ρ' hrho hcard hsum
-  have hfree := GlobalTheory.T.germ_system_height_free E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G hPow hgen hC
+  have hC : HChar G.g₀.B (D.p + D.q) := _root_.PositivityTheory.Xgn.hodge_character_generic E Ω d (D.p + D.q) G.g₀.B ρ' hrho hcard hsum
+  have hfree := _root_.PositivityTheory.Xgn.hodge_free_every_stalk E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G hPow hgen hC
     (fun q p' hp' h => hFib p' hp' q.1 h)
-  obtain ⟨𝓗, hG⟩ := GlobalTheory.T.exists_hodge_lattice_germ_system E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G ρ' hgen hact hfree
+  obtain ⟨𝓗, hG⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.germ_gives_hodgeLat E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G ρ' hgen hact hfree
   letI algΩ : Algebra (𝓞 c.F) Ω := (𝔐.cst.comp (algebraMap (𝓞 c.F) c.F)).toAlgebra
   have hint : ∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap (𝓞 c.F) Ω).range := by
     intro s' a
@@ -927,7 +927,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
     germ_degZero_prime E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G ρ' 𝓗 (𝓞 c.F) ℤ s₀ p σ hp
       (𝔐.cst.injective.comp RingOfIntegers.coe_injective) (cst_mem 𝔐) hgen
       hPow hG (fun q h => hFib p hp q.1 h) hcard hint
-  have htr := GlobalTheory.T.hodge_lattice_transport_equiv 𝔐.X Ω 𝔐.ξ E (Fin d → Ω) 𝔐.Li e M.lat ρ' 𝔐.ρ H.bar (D.p + D.q) 𝓗 hρ'
+  have htr := _root_.GlobalTheory.CompanionTheory.Ar.Flat.hodgeLat_transport 𝔐.X Ω 𝔐.ξ E (Fin d → Ω) 𝔐.Li e M.lat ρ' 𝔐.ρ H.bar (D.p + D.q) 𝓗 hρ'
   rw [lat_map M 𝔐.M e he] at htr
   obtain ⟨𝓗', h'⟩ := htr
   exact ⟨𝓗', fun σ => h' σ _ (hdeg σ)⟩
@@ -941,7 +941,7 @@ open CategoryTheory AlgebraicGeometry NumberField GlobalTheory.CompanionTheory.A
 open PositivityTheory.Xgn.NumericalTriviality in
 theorem PositivityTheory.Xgn.numerical_triviality_of_good_reduction : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (Yl : ∀ (p : ℕ) (W : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ W.nonunits → LocalSystem Xo p W), (∀ p W hp hW i, (Yl p W hp hW i).SplitFibres ∧ (Yl p W hp hW i).N3) → ∀ (l : Level H) (c : Coeff l) (hg : ∀ p : ℕ, p.Prime → l.GoodAt p) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)), (∀ (p : ℕ) (W : ValuationSubring ℂ) (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits) (b : 𝓞 c.F →+* c.V W), (∀ x, ((b x : c.V W) : c.F) = (x : c.F)) → ReciprocityTheory.ChartRestriction.G.Geo.Tor.Dominates Y (Yl p W hp hW ⟨l, c, hg p hp⟩) b) → ∀ (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (p : ℕ), p.Prime → p ∉ S → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (τ : CMType H) (a : ⋀[Ω]^D.p 𝔐.Li) (b : ⋀[Ω]^D.q 𝔐.Li), a ≠ 0 → b ≠ 0 → (∃ x f, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) D.p D.q a b x f) → NumTrivMod (lineLat (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) D.p D.q a b) (p : Ω) := by
   intro E _ _ _ H D Xo Yl hY l c hg Y hdom S Ω _ K _ J _ y 𝔐 p hp hpS hdisc τ a b ha hb hc
-  obtain ⟨-, hFib⟩ := GlobalTheory.T.global_model_power_free E H D Xo Yl hY l c hg Y hdom
+  obtain ⟨-, hFib⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GlobalFib.global_fibPF E H D Xo Yl hY l c hg Y hdom
   obtain ⟨𝓗, hz⟩ := exists_hodgeLat 𝔐 hFib p hp
   haveI : CharZero Ω := charZero_of_injective_ringHom 𝔐.cst.injective
   let σ : E →+* Ω := 𝔐.cst.comp (τ.1.codRestrict c.F.toSubfield (c.conj τ.1))

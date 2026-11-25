@@ -307,7 +307,7 @@ theorem exists_comp_eq_of_colength (p : ℕ) [Fact p.Prime] (T : Theory p) (k : 
       Submodule.Quotient.nontrivial_iff.2 fun h => hsurj (LinearMap.range_eq_top.1 h)
     exact Module.finrank_pos
   have h1 : (1 : ℕ∞) ≤ Module.length (WittVector p k) (T.M G ⧸ LinearMap.range (T.map q₁)) := by
-    refine le_trans ?_ (GlobalTheory.T.finrank_quot_range_le_length_quot_range_map p T k G Q₁ q₁).1
+    refine le_trans ?_ (GlobalTheory.Dieu.colength_range_map_ge p T k G Q₁ q₁).1
     rw [hCq₁, ← hCq]
     exact_mod_cast hpos
   have hadd := (_root_.GlobalTheory.Dieu.colength_add_and_pow_and_eq p k (T.M G) (T.M Q₁) (T.M Q)).1 (T.map q₁) (T.map r) hinj

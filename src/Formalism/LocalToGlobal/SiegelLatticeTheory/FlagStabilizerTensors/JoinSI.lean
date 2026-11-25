@@ -27,8 +27,6 @@ open MeasureTheory Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.
 
 namespace Formalism.L2.SG.KerSideCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Chain
 
 theorem chainOpM_add' {Rg : Type} [CommSemiring Rg] {ι : ℕ → Type} [∀ j, Fintype (ι j)]
@@ -108,8 +106,6 @@ open MeasureTheory Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.
 set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.JoinSI
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Twist
 

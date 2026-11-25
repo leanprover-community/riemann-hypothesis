@@ -645,7 +645,7 @@ open GlobalTheory.Mum
 theorem GlobalTheory.Mum.exists_lift_of_lam_lift_sq : ∀ (R R₀ : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [CommRing R₀] [IsLocalRing R₀] (π : R →+* R₀), Function.Surjective π → RingHom.ker π ^ 2 = ⊥ → ∀ (Y₀ : Over (Sp R₀)) [GrpObj Y₀] (Y : Over (Sp R)) [GrpObj Y] (i : Y₀.left ⟶ Y.left) (l : (Y₀ ⊗ Y₀).left ⟶ (Y ⊗ Y).left), IsAbelianScheme Y₀ → IsAbelianScheme Y → IsGrpPullback Y₀ Y (spMap π) i → IsSquare i l → ∀ (L₀ : LB Y₀.left) (Q : LB (Y ⊗ Y).left), L₀.IsLB → Q.IsLB → GlobalTheory.AbDual.IsAdditive Q → GlobalTheory.AbDual.IsAdditive (GlobalTheory.AbDual.swap Q) → LBIso (Q.pull l) (abelian₂ Y₀ L₀) → ∃ L : LB Y.left, L.IsLB ∧ LBIso L₀ (L.pull i) := by
   intro R R₀ _ _ _ _ _ π hπ hI Y₀ _ Y _ i l hY₀ hY hgp hsq L₀ Q hL₀ hQ _ _ hΛ
   haveI : IsCommMonObj Y₀ := hY₀.comm
-  obtain ⟨L, hL, hiso⟩ := GlobalTheory.T.exists_lineBundle_lift_squareZero_of_mumfordBundle R R₀ π hπ (by rw [hI]; rfl) Y Y₀ i l hY hgp hsq Q L₀
+  obtain ⟨L, hL, hiso⟩ := _root_.GlobalTheory.LBObs.exists_lift_of_lam_iso_pull R R₀ π hπ (by rw [hI]; rfl) Y Y₀ i l hY hgp hsq Q L₀
     hQ hL₀ (LBIso.symm hΛ)
   exact ⟨L, hL, LBIso.symm hiso⟩
 end -- clump:auto
@@ -753,7 +753,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 noncomputable section
@@ -856,9 +855,6 @@ namespace GlobalTheory.AlgGroup
 
 open GlobalTheory.LN GlobalTheory.UU GlobalTheory.AbLaw.Seesaw
 
-theorem isPullback_of_isGrpPullback {S S' : Scheme.{0}} {B : Over S} {B' : Over S'} [GrpObj B] [GrpObj B']
-    {f : S' ⟶ S} {F : B'.left ⟶ B.left} (h : IsGrpPullback B' B f F) : IsPullback F B'.hom B.hom f := h.1
-
 theorem isAbelianScheme_of_thickenings_local (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
     [IsNoetherianRing R] (I : Ideal R) (hI : I ≠ ⊤) (hc : IsAdicComplete I R)
     (hc' : IsAdicComplete (IsLocalRing.maximalIdeal R) R)
@@ -903,7 +899,7 @@ theorem exists_abelianScheme_of_tower : ∀ (R : Type) [CommRing R] [IsDomain R]
   choose v hv using hv
   have hAlg : GlobalTheory.LN.AlgSt := GlobalTheory.LN.ega_holds.1
   obtain ⟨B, M, b, hB, hs, hM, hA', hb, hβb, hiso⟩ := hAlg R I hI hc hc' Y β N v
-    (fun e => isPullback_of_isGrpPullback (hβ e)) (fun e => (hY e).smooth) (fun e => ⟨hN e, hv e⟩) hA
+    (fun e => GlobalTheory.TowerAlg.isPullback_of_grp (hβ e)) (fun e => (hY e).smooth) (fun e => ⟨hN e, hv e⟩) hA
   obtain ⟨G, hG, hG'⟩ :=
     isAbelianScheme_of_thickenings_local R I hI hc hc' Y β hY hβ B b hB hs hb hβb
   exact ⟨B, G, M, b, hG, hM, hA', hG', hβb, hiso⟩

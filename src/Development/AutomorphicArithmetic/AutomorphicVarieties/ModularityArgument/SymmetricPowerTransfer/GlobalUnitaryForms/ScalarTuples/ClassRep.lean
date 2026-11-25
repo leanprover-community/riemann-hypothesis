@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.IntegralStabilizers.FinSUnit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.HodgeTateFromSandwich
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsCongrIffTraceFormsIsometricCm
 public import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.ExistsNormTensor
@@ -618,17 +619,7 @@ section Loc
 variable {K : Type} [Field K] {Δ : K}
 
 private theorem det_eq [CharZero K] (g : DX Δ) : (mt g).det = algebraMap K _ (mt g).det.re := by
-  have h : GeneralLinearGroup.map (starRingEnd (Lsq K Δ)) g.1 = (wJ Δ)⁻¹ * g.1 * (wJ Δ)⁻¹⁻¹ := g.2
-  have h1 := congrArg (fun x => (GeneralLinearGroup.det x : Lsq K Δ)) h
-  simp only [map_mul, map_inv, mul_right_comm _ (GeneralLinearGroup.det g.1), mul_inv_cancel, one_mul] at h1
-  have h2 : star (mt g).det = (mt g).det := by
-    rw [← starRingEnd_apply, RingHom.map_det]
-    exact h1
-  have h3 := congrArg QuadraticAlgebra.im h2
-  rw [QuadraticAlgebra.im_star] at h3
-  ext
-  · simp
-  · simpa using (self_eq_neg.1 h3.symm)
+  apply _root_.UpperTheory.V.Z.Sym.Glob.det_im <;> assumption
 
 private theorem nrd_ex [CharZero K] (Δ : K) : ∃ N : DX Δ →* Kˣ, ∀ g : DX Δ, (Glob.mt g).det = algebraMap K _ (N g : K) := by
   let f : DX Δ →* K :=

@@ -147,31 +147,4 @@ theorem isCompAlong_of_equiv {π : Submodule ℂ (UA E n → ℂ)} {Gv : Subgrou
 
 end CM
 
-theorem main : GlobalTheory.Published.BaseChangeIsobaric → GlobalTheory.Published.BernsteinUnitaryProductIrreducible →
-    GlobalTheory.Published.BaseChangeDefiniteUnitary := by
-  intro hBC hB E _ _ _ hun n hn π hπ
-  obtain ⟨c, N, h, V, σ, m, P, H⟩ := hBC E hun n hn π hπ
-  refine ⟨c, N, h, V, σ, m, ?_⟩
-  have hirr : ∀ w, (locProd h w (σ · w)).IsIrreducible := fun w =>
-    ((GlobalTheory.SmGL.MultiIrr.products_irreducible hB (w.adicCompletion E)).1 c N (Fin n) (GlobalTheory.SmGL.stdBlocks N h)
-      (fun i => (σ i w).V) (fun i => (σ i w).ρ) (fun i => (σ i w).smooth) (fun i => (σ i w).irred)
-      (fun i => GlobalTheory.DiscreteUnit.isUnitarisable_of_isLocCompGL E (N i) (V i) (H.discrete i) w (σ i w)
-        (H.loc i w))).2.1
-  exact
-    { pos := H.pos
-      discrete := H.discrete
-      csd := H.csd
-      loc := H.loc
-      inf := H.inf
-      unram := fun w hw => by
-        obtain ⟨e, he⟩ := exists_equiv_of_isSubquotient (P w).irred (hirr w) (H.sub w)
-        exact isSpherical_of_equiv e he (H.unram w hw)
-      inert := fun w s ϖ q hs hq α hα => by
-        obtain ⟨e, he⟩ := exists_equiv_of_isSubquotient (P w).irred (hirr w) (H.sub w)
-        exact hasSatGL_of_equiv e he (H.inert w s ϖ q hs hq α hα)
-      split := fun w hw => by
-        obtain ⟨e, he⟩ := exists_equiv_of_isSubquotient (P w).irred (hirr w) (H.sub w)
-        exact isCompAlong_of_equiv e he (hirr w) (H.split w hw)
-      weight := H.weight }
-
 end GlobalTheory.BaseChangeBridge

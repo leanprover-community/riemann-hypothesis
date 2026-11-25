@@ -96,15 +96,6 @@ theorem prod_cons_action {O : Type} [CommRing O] [IsDomain O] {n r t : ℕ}
     funext c
     simp only [List.map_cons, List.prod_cons, map_mul, mul_assoc]
 
-private lemma list_prod_range'_eq_prod_Ico {M : Type} [CommMonoid M] (g : ℕ → M) (n : ℕ) :
-    ∀ m : ℕ, ((List.range' m n).map g).prod = ∏ k ∈ Finset.Ico m (m + n), g k := by
-  induction n with
-  | zero => intro m; simp
-  | succ n ih =>
-    intro m
-    rw [List.range'_succ, List.map_cons, List.prod_cons, ih, show m + (n + 1) = m + 1 + n by omega,
-      Finset.prod_eq_prod_Ico_succ_bot (show m < m + 1 + n by omega)]
-
 theorem prod_other_factors_action {O : Type} [CommRing O] [IsDomain O] {n r t : ℕ}
     (e : (Fin n → FractionRing O) ≃ₗ[FractionRing O]
       ((Fin r → FractionRing O) × (Fin t → FractionRing O)))

@@ -221,25 +221,13 @@ namespace GlobalTheory.SgStarOddTheta
 
 open Formalism.L2.Th1.F
 
-theorem jacobiTheta₂_add_int_lattice (z τ : ℂ) (m k : ℤ) :
-    jacobiTheta₂ (z + (m * τ + k)) τ =
-      cexp (-(Real.pi : ℂ) * I * (m ^ 2 * τ + 2 * m * z)) * jacobiTheta₂ z τ := by
-  rw [jacobiTheta₂, jacobiTheta₂, ← (Equiv.addRight m).tsum_eq (fun n => jacobiTheta₂_term n z τ),
-    ← tsum_mul_left]
-  refine tsum_congr fun n => ?_
-  rw [jacobiTheta₂_term, jacobiTheta₂_term, ← Complex.exp_add]
-  refine Complex.exp_eq_exp_iff_exists_int.2 ⟨n * k, ?_⟩
-  simp only [Equiv.coe_addRight]
-  push_cast
-  ring
-
 theorem oddTheta_add (τ : UpperHalfPlane) (z : ℂ) (m k : ℤ) :
     GlobalTheory.ThetaWeberRoad.oddTheta τ (z + (m * (τ : ℂ) + k)) =
       cexp ((Real.pi : ℂ) * I * (k - m - m ^ 2 * (τ : ℂ) - 2 * m * z)) *
         GlobalTheory.ThetaWeberRoad.oddTheta τ z := by
   unfold GlobalTheory.ThetaWeberRoad.oddTheta
   rw [show z + (m * (τ : ℂ) + k) + ((τ : ℂ) + 1) / 2 = (z + ((τ : ℂ) + 1) / 2) + (m * (τ : ℂ) + k) by ring,
-    jacobiTheta₂_add_int_lattice, ← mul_assoc, ← mul_assoc, ← Complex.exp_add, ← Complex.exp_add]
+    GlobalTheory.OddThetaNorm.jacobiTheta₂_add_lattice, ← mul_assoc, ← mul_assoc, ← Complex.exp_add, ← Complex.exp_add]
   congr 2
   ring
 

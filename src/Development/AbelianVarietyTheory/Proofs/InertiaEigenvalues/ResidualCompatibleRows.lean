@@ -52,7 +52,7 @@ noncomputable section
 namespace GlobalTheory.ResLoc
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
-open GlobalTheory.EigTie (ResTied IsRowPar plRed resTied_of_plSide)
+open GlobalTheory.EigTie (IsRowPar plRed)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE OnW)
 
 theorem continuous_qCast {p q : ℕ} [Fact p.Prime] [Fact q.Prime] (h : p = q) (ι : Qbar p ≃+* ℂ) {Y : Type} [TopologicalSpace Y]

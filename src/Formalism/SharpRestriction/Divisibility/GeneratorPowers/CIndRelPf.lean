@@ -13,8 +13,6 @@ public import Mathlib.LinearAlgebra.Dimension.Constructions
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1

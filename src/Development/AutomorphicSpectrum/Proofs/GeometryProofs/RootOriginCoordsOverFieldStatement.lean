@@ -1336,8 +1336,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-alias _root_.GlobalTheory.T.root_origin_coords_over_field :=
-  GlobalTheory.CompanionTheory.Ar.root_model_on_cover
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordsOverFieldStatement =====

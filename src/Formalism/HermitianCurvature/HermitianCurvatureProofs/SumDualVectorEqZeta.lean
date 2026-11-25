@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharA
 public import Formalism.HermitianCurvature.StatementQ
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -168,24 +169,7 @@ theorem unit_col' {i : Fin (r + 1)} {a b p : Fin (2 * r + k + 1)} (ha : inV k r 
 theorem hpart_lev (i : Fin (r + 1)) (a b : Fin (mdim k r i)) :
     inLieLev k r i (hpart1 (Hpk k r) (Matrix.single (posL k r i a) (posL k r i b) 1)) ∧
       inLieLev k r i (hpart2 (Hpk k r) (Matrix.single (posL k r i a) (posL k r i b) 1)) := by
-  have hb := inV_posL i b
-  have ha' := inV_posL i a
-  have hs : ∀ (c : ℂ) (A : Mx k r) (v : Fin (2 * r + k + 1) → ℂ), (c • A) *ᵥ v = c • (A *ᵥ v) :=
-    fun c A v => by
-      ext q
-      simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
-  have e1 : ∀ p, ¬ inV k r i p →
-      hpart1 (Hpk k r) (Matrix.single (posL k r i a) (posL k r i b) 1) *ᵥ bvec p = 0 := by
-    intro p hp
-    rw [hpart1, hpk_inv, hs, Matrix.sub_mulVec, unit_col hb hp, unit_col' ha' hp,
-      sub_zero, smul_zero]
-  have e2 : ∀ p, ¬ inV k r i p →
-      hpart2 (Hpk k r) (Matrix.single (posL k r i a) (posL k r i b) 1) *ᵥ bvec p = 0 := by
-    intro p hp
-    rw [hpart2, hpk_inv, hs, Matrix.add_mulVec, unit_col hb hp, unit_col' ha' hp,
-      add_zero, smul_zero]
-  exact ⟨⟨hpart1_lie _, fun c hc => ⟨e1 _ (not_inV_eI hc), e1 _ (not_inV_esI hc)⟩⟩,
-    ⟨hpart2_lie _, fun c hc => ⟨e2 _ (not_inV_eI hc), e2 _ (not_inV_esI hc)⟩⟩⟩
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.hpart_lie <;> assumption
 
 def evalV (v : Fin (2 * r + k + 1) → ℂ) : Mx k r →L[ℝ] (Fin (2 * r + k + 1) → ℂ) :=
   LinearMap.toContinuousLinearMap
@@ -197,16 +181,7 @@ def evalV (v : Fin (2 * r + k + 1) → ℂ) : Mx k r →L[ℝ] (Fin (2 * r + k +
 
 theorem exp_fix {X : Mx k r} {v : Fin (2 * r + k + 1) → ℂ} (hX : X *ᵥ v = 0) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • X) *ᵥ v = v := by
-  have hd : ∀ t₀ : ℝ, HasDerivAt (fun t : ℝ => evalV v (1 * NormedSpace.exp ((t : ℂ) • X))) 0 t₀ := by
-    intro t₀
-    have h := (evalV v).hasFDerivAt.comp_hasDerivAt t₀ (B5.curve_hasDerivAt (1 : Mx k r) X t₀)
-    have e : evalV v (1 * NormedSpace.exp ((t₀ : ℂ) • X) * X) = 0 := by
-      show (1 * NormedSpace.exp ((t₀ : ℂ) • X) * X) *ᵥ v = 0
-      rw [← Matrix.mulVec_mulVec, hX, Matrix.mulVec_zero]
-    exact h.congr_deriv e
-  have hc := is_const_of_deriv_eq_zero (fun t₀ => (hd t₀).differentiableAt) (fun t₀ => (hd t₀).deriv) t 0
-  have hc' : (1 * NormedSpace.exp ((t : ℂ) • X)) *ᵥ v = (1 * NormedSpace.exp (((0 : ℝ) : ℂ) • X)) *ᵥ v := hc
-  simpa [NormedSpace.exp_zero] using hc'
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.exp_fix <;> assumption
 
 theorem curve_lev {i : Fin (r + 1)} {g X : Mx k r} (hg : g ∈ Glev k r i) (hX : inLieLev k r i X) (t : ℝ) :
     g * NormedSpace.exp ((t : ℂ) • X) ∈ Glev k r i := by
@@ -767,15 +742,7 @@ theorem herm_expand (M : Mx k r) (v w : Fin (2 * r + k + 1) → ℂ) :
   rfl
 
 theorem herm_star (v w : Fin (2 * r + k + 1) → ℂ) : star (herm (Hpk k r) v w) = herm (Hpk k r) w v := by
-  have hH : ∀ a b, star (Hpk k r a b) = Hpk k r b a := fun a b => by
-    have h := congrFun (congrFun (hpk_h (k := k) (r := r)) b) a
-    rw [Matrix.conjTranspose_apply] at h
-    exact h
-  simp only [herm, dotProduct, Matrix.mulVec, star_sum, star_mul', Pi.star_apply, star_star,
-    Finset.mul_sum, hH]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.herm_conj <;> assumption
 
 theorem herm_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (x y : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (g *ᵥ x) (g *ᵥ y) = herm (Hpk k r) x y := by

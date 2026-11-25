@@ -414,13 +414,7 @@ section Local
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ : K}
 
 theorem stab_star_int {x : Lsq K Δ} (h : IsIntegral O x) : IsIntegral O (star x) := by
-  let φ : Lsq K Δ →ₐ[O] Lsq K Δ :=
-    { starRingEnd (Lsq K Δ) with
-      commutes' := fun r => by
-        show star (algebraMap O (Lsq K Δ) r) = algebraMap O (Lsq K Δ) r
-        rw [IsScalarTower.algebraMap_apply O K (Lsq K Δ)]
-        ext <;> simp }
-  exact h.map φ
+  apply _root_.UpperTheory.V.Z.Sym.Glob.int_star <;> assumption
 
 theorem stab_re_int {x : Lsq K Δ} (h : IsIntegral O x) : IsIntegral O (2 * x.re) := by
   have h2 := h.add (stab_star_int h)

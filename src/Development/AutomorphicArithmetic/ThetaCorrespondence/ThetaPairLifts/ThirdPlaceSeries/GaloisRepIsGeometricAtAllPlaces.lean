@@ -157,9 +157,6 @@ namespace GlobalTheory.RankTw
 
 open GlobalTheory.RowCopy GlobalTheory.NRows
 
-theorem used_loc (D : D7) (i : D.nd.Loc) : D.nd.mu i = D.what₂.mu0 ∨ ∃ w, D.nd.mu i = D.what₂.muAt w :=
-  Or.inr ⟨D.nd.w i, (D.nd.mu_w i).trans ((D.what₂.muAt_or _).resolve_left (D.nd.w_tw i)).symm⟩
-
 alias lamLoc := _root_.GlobalTheory.NRows.LamUsed.loc
 
 theorem up_injective {D : D7} {μ} {j : ℕ} (h : LamPos D μ j) (hI : DirectSum.IsInternal (D.what₂.isot j)) :
@@ -339,8 +336,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.T
-
-alias eigGood_of_archimedean_signature_adm5 := _root_.GlobalTheory.EigGoodTypes.main_alt_alt
 
 end GlobalTheory.T
 end -- clump:auto

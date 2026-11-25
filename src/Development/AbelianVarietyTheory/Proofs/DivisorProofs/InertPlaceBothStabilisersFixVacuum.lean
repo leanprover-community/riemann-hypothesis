@@ -257,10 +257,6 @@ namespace GlobalTheory.VDblEig
 
 alias boxFun_mem_SB' := _root_.GlobalTheory.DblVacLine.box_mem_SB
 
-theorem star_mem_SB' {Y : Type} [TopologicalSpace Y] {φ : Y → ℂ} (h : φ ∈ SB Y) :
-    (fun y => star (φ y)) ∈ SB Y :=
-  ⟨h.1.comp _, h.2.comp_left (star_zero _)⟩
-
 theorem vdbl_eigen : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ (v : Pl (F := F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → v ∉ X.T →
@@ -279,7 +275,7 @@ theorem vdbl_eigen : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   set φ := G.M.vac v with hφ
   set vD := boxFun φ (fun x => star (φ x)) with hvD
   set RD := boxFun r (fun x => star (r x)) with hRD
-  have hvDSB : vD ∈ SB _ := boxFun_mem_SB' hvSB (star_mem_SB' hvSB)
+  have hvDSB : vD ∈ SB _ := boxFun_mem_SB' hvSB (GlobalTheory.DblVacEigen.sb_star hvSB)
   have hS : boxFun (tens (evFin F v) φ r) (fun x => star (tens (evFin F v) φ r x)) = tens (evFin F v) vD RD := by
     funext x
     simp only [tens, boxFun, hvD, hRD, Function.comp_def, star_mul']

@@ -163,7 +163,6 @@ def rowLenS (w : ℕ) : ℕ∞ :=
   Module.length (D.nd.O i) (FsS i r π dc g0 eB e₁ s Dd hD hc w ⧸ (ImS i r π dc g0 eB e₁ s Dd hD hc hT hrk w).comap (FsS i r π dc g0 eB e₁ s Dd hD hc w).subtype)
 
 
-set_option maxHeartbeats 4000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem selmer_inequality_of_inputs [IsNoetherian Dd.R' Dd.R']
     [∀ x', IsScalarTower Dd.T' Dd.R' (EvalSp (D.nd.O i) (Fin D.R.nV) Dd.R' x')]

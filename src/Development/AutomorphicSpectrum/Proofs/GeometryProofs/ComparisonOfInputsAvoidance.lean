@@ -296,7 +296,7 @@ theorem assemble (hPB : PullbackStatement) {κ₁ : K₁ → K} {v₁ : (Σ k, �
     rw [(hr₁ a).1, (hr₂ a).1, (hjb.2.2 K₁ ι₁ K ι K' ι' κ₁ v₁ κ v hb₁ hb).2,
       (hjb.2.2 K₂ ι₂ K ι K' ι' κ₂ v₂ κ v hb₂ hb).2]
     exact (_root_.GlobalTheory.CompanionTheory.Ar.Cmp.lineIso_algebra K ι _ har.2.1).2.2.2.2 K' ι' κ v _ hb e₀ _ _ _ _ (hfg a).1
-  choose w hw hinv hsm using fun a => _root_.GlobalTheory.CompanionTheory.Ar.Cmp.defect_exists_smooth K' ι' _ J D R (r₁ a) (r₂ a) (rename v (f₀ a))
+  choose w hw hinv hsm using fun a => _root_.PositivityTheory.UnitarySelfGeneration.i_defect K' ι' _ J D R (r₁ a) (r₂ a) (rename v (f₀ a))
     (rename v (g₀ a)) har'.2.1 (hiso a) (sm₁ a) (sm₂ a)
   have hmain : ∀ a x, x ∉ bdry s → S₁.ph a (π₁ x) = S₂.ph a (π₂ x) + w a (R.lift x x) := by
     intro a x hx
@@ -359,10 +359,6 @@ theorem joint_system : Inputs → ReciprocityTheory.ChartRestriction.G.Geo.ResK.
   exact ⟨K', _, ι', _, κ, v, y', S, Re, f, g, d, hb, hy, hfield, h⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.BuildK
-
-namespace PositivityTheory.UnitarySelfGeneration
-
-end PositivityTheory.UnitarySelfGeneration
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -414,11 +410,6 @@ theorem side_eq (II : IntersectionSystem) (hPF : HasPFCoord II)
   exact key.symm
 
 end GlobalTheory.CompanionTheory.Ar.Cmp.CoordK
-
-namespace PositivityTheory.UnitarySelfGeneration
-
-
-end PositivityTheory.UnitarySelfGeneration
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

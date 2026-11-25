@@ -894,10 +894,10 @@ theorem val_psumExpansion_mul : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDisc
         ((cycEval (fun W => classNum (Sum.elim (T.x ∘ e) (T.x' ∘ e)) (psumExpansion r k a) L W)
           (ratDiv P (T.f (e a)) (T.g (e a))) : ℤ) : ℝ) := by
     intro i L
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.Num.cycNum_linear O K ι (σ ⊕ σ) (ratDiv P (T.f i) (T.g i)) (Sum.elim T.x T.x') L).2.2.1]
+    rw [(_root_.BaseChangeColon.cycNum_linear_in_polynomial O K ι (σ ⊕ σ) (ratDiv P (T.f i) (T.g i)) (Sum.elim T.x T.x') L).2.2.1]
     refine Finset.sum_congr rfl fun a ha => ?_
     obtain rfl : e a = i := (Finset.mem_filter.mp ha).2
-    rw [_root_.GlobalTheory.CompanionTheory.Ar.Num.numbers_rename.1 O K ι (Fin r ⊕ Fin r) (σ ⊕ σ) (Sum.map e e) _ (Sum.elim T.x T.x') _ L, hcomp]
+    rw [_root_.BaseChangeColon.cycNum_rename_variables.1 O K ι (Fin r ⊕ Fin r) (σ ⊕ σ) (Sum.map e e) _ (Sum.elim T.x T.x') _ L, hcomp]
     exact (cycNum_int_and_comb O K ι (Fin r ⊕ Fin r) (Sum.elim (T.x ∘ e) (T.x' ∘ e)) L).1 _
       (hfin _ _) _
   have hck : ∀ L : List (K → ℤ), (((T.comp e).ck P k L : ℤ) : ℝ) =
@@ -908,7 +908,7 @@ theorem val_psumExpansion_mul : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDisc
     rw [Finset.sum_fiberwise]
     simp only [LocPair.ck, pairNum, LocPair.comp, Function.comp_apply, Int.cast_sum]
   unfold LocPair.val
-  simp only [_root_.GlobalTheory.CompanionTheory.Ar.Num.cycNum_mul O K ι (σ ⊕ σ), List.append_nil, hterm]
+  simp only [_root_.BaseChangeColon.cycNum_mul_expansion O K ι (σ ⊕ σ), List.append_nil, hterm]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun μ _ => ?_
   rw [← Finset.mul_sum, hck]
@@ -1199,7 +1199,7 @@ theorem val_psum_mul_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscr
       (P ⊔ (IsLocalRing.maximalIdeal O).map (C : O →+* MRing ι O))).subset ?_
     intro W hW
     exact (hZc W hW).1
-  rw [_root_.GlobalTheory.CompanionTheory.Ar.Num.cycNum_mul O K ι (σ ⊕ σ) (ratDiv P (T.f i) (T.g i)) (Sum.elim T.x T.x') _ (Gs i) []]
+  rw [_root_.BaseChangeColon.cycNum_mul_expansion O K ι (σ ⊕ σ) (ratDiv P (T.f i) (T.g i)) (Sum.elim T.x T.x') _ (Gs i) []]
   refine Finset.sum_eq_zero fun μ hμ => ?_
   have hlen : ((classList (Sum.elim T.x T.x') μ ++ []).length) + k = d := by
     rw [List.append_nil, classList_length_of_mem_support _ (hGs i) hμ]
@@ -1207,7 +1207,7 @@ theorem val_psum_mul_eq_zero : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscr
   have hcomp : Sum.elim T.x T.x' ∘ (Sum.inr ∘ e) = T.x' ∘ e := by
     funext a
     simp
-  rw [sum_X_inr_pow_eq, (_root_.GlobalTheory.CompanionTheory.Ar.Num.numbers_rename).1 O K ι (Fin r) (σ ⊕ σ) (Sum.inr ∘ e), hcomp,
+  rw [sum_X_inr_pow_eq, (_root_.BaseChangeColon.cycNum_rename_variables).1 O K ι (Fin r) (σ ⊕ σ) (Sum.inr ∘ e), hcomp,
     (cycNum_int_and_comb O K ι (Fin r) (T.x' ∘ e) (classList (Sum.elim T.x T.x') μ ++ [])).1
       (ratDiv P (T.f i) (T.g i)) hfin (psum (Fin r) ℤ k)]
   have hzero : cycEval (fun W => classNum (T.x' ∘ e) (psum (Fin r) ℤ k)
@@ -1257,7 +1257,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Num.power_sum_term_dvr : ∀ (O : Type) 
     rw [_root_.GlobalTheory.CompanionTheory.Ar.Num.val_psumExpansion_mul O K ι (Ψ × Fin N) T P N k (fun a => (τ, a)) (rename Sum.inl Q),
       support_rename_of_injective Sum.inl_injective,
       Finset.sum_image (Finsupp.mapDomain_injective Sum.inl_injective).injOn,
-      _root_.GlobalTheory.CompanionTheory.Ar.Num.cycNum_mul O K ι (Ψ × Fin N) (divCycle P (C (p : O))) T.x (bracket j φ p k τ) Q []]
+      _root_.BaseChangeColon.cycNum_mul_expansion O K ι (Ψ × Fin N) (divCycle P (C (p : O))) T.x (bracket j φ p k τ) Q []]
     refine Finset.sum_congr rfl fun μ hμ => ?_
     have hcl : classList (Sum.elim T.x T.x') (Finsupp.mapDomain Sum.inl μ) = classList T.x μ := by
       have hm : Finsupp.toMultiset (Finsupp.mapDomain (Sum.inl : Ψ × Fin N → (Ψ × Fin N) ⊕ (Ψ × Fin N)) μ) =

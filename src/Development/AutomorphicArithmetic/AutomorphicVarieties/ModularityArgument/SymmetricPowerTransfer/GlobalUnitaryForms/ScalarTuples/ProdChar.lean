@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.FinMulSupp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.HodgeTateFromSandwich
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SummableLipschitzLatticeNormPowSummand
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FinprodLocalDifferentIdealNormEqDiscr
@@ -92,15 +93,7 @@ private theorem real_prod {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
   exact Finset.prod_congr rfl fun σ _ => hs_real (hΔ σ)
 
 private theorem delta_ne {F : Type} [Field F] [NumberField F] {Δ : F} {D : Dat Δ} (h : D.Ok) : Δ ≠ 0 := by
-  intro hΔ
-  haveI := h.real
-  have h0 : ∏ τ : F →+* ℝ, τ 0 = 0 := by
-    rw [GlobalTheory.LipschitzTR.LhsSum.prod_realEmb_eq_norm]
-    simp
-  obtain ⟨σ, -, -⟩ := Finset.prod_eq_zero_iff.mp h0
-  have hσ := h.neg σ
-  rw [hΔ, map_zero] at hσ
-  exact lt_irrefl _ hσ
+  apply _root_.UpperTheory.V.Z.Sym.Glob.Dat.Ok.ne0 <;> assumption
 
 private theorem int_case {F : Type} [Field F] [NumberField F] {Δ : F} {D : Dat Δ} (h : D.Ok) (z : Fˣ) (a : 𝓞 F)
     (ha : (a : F) = z) :

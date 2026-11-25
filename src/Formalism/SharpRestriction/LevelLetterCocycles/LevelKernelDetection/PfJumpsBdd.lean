@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
 import Formalism.DistinguishedUnitIdeals.Statement
@@ -83,64 +84,16 @@ theorem jb_FilV_sep (y : V ⊗[Qp] BdR) (hy : ∀ a, y ∈ FilV PD (LL := LL) (V
 theorem jb_FildR_anti (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) : Antitone (FildR PD ρ τ) :=
   fun _ _ hab => inf_le_inf_left _ (jb_FilV_anti PD hab)
 
+open Formalism.MainNotions.N.Pv.LocalLengthBound in
 theorem jb_bound (ρ : Representation LL G V) (τ : K →ₐ[Qp] LL) (hfin : FiniteDimensional LL ↥(DdRE PD ρ τ)) :
     ∃ a₀ a₁ : ℤ, ∀ a, IsJumpV PD ρ τ a → a₀ ≤ a ∧ a ≤ a₁ := by
-  classical
-  set D := DdRE PD ρ τ with hD
-  have hFD : ∀ a, FildR PD ρ τ a ≤ D := fun a => inf_le_left
-
-  let bD := Module.finBasis LL ↥D
-  have hex : ∀ j, ∃ a, ((bD j : ↥D) : V ⊗[Qp] BdR) ∈ FilV PD (LL := LL) (V := V) a :=
-    fun j => jb_FilV_exh PD (LL := LL) (V := V) _
-  choose aj haj using hex
-  set a₀ : ℤ := -(∑ j, |aj j|) with ha₀
-  have ha₀j : ∀ j, a₀ ≤ aj j := by
-    intro j
-    have h1 : |aj j| ≤ ∑ k, |aj k| :=
-      Finset.single_le_sum (f := fun k => |aj k|) (fun k _ => abs_nonneg _) (Finset.mem_univ j)
-    have h2 := neg_abs_le (aj j)
-    linarith
-  have hlow : ∀ a, a ≤ a₀ → FildR PD ρ τ a = D := by
-    intro a ha
-    refine le_antisymm (hFD a) (le_inf le_rfl ?_)
-    have hspan : (Submodule.span LL (Set.range bD)).map D.subtype = D := by
-      rw [bD.span_eq, Submodule.map_top, Submodule.range_subtype]
-    rw [← hspan, Submodule.map_span, Submodule.span_le]
-    rintro _ ⟨_, ⟨j, rfl⟩, rfl⟩
-    exact jb_FilV_anti PD (ha.trans (ha₀j j)) (haj j)
-
-  let f : ℕ → ℕ := fun k => finrank LL ↥(FildR PD ρ τ (k : ℤ))
-  have hne : ∃ m, ∃ k, f k = m := ⟨_, 0, rfl⟩
-  let m := Nat.find hne
-  obtain ⟨k₀, hk₀⟩ := Nat.find_spec hne
-  have hmin : ∀ k, m ≤ f k := fun k => Nat.find_min' hne ⟨k, rfl⟩
-  have hfinF : ∀ a, FiniteDimensional LL ↥(FildR PD ρ τ a) :=
-    fun a => Submodule.finiteDimensional_of_le (hFD a)
-  have hstab : ∀ k : ℕ, k₀ ≤ k → FildR PD ρ τ (k : ℤ) = FildR PD ρ τ (k₀ : ℤ) := by
-    intro k hk
-    have hle : FildR PD ρ τ (k : ℤ) ≤ FildR PD ρ τ (k₀ : ℤ) := jb_FildR_anti PD ρ τ (by exact_mod_cast hk)
-    have hr1 : f k ≤ f k₀ := Submodule.finrank_mono hle
-    have hr2 := hmin k
-    exact Submodule.eq_of_le_of_finrank_eq hle (by show f k = f k₀; omega)
-  have hbot : FildR PD ρ τ (k₀ : ℤ) = ⊥ := by
-    rw [eq_bot_iff]
-    intro x hx
-    rw [Submodule.mem_bot]
-    apply jb_FilV_sep PD (LL := LL) (V := V) x
-    intro a
-    rcases le_total a (k₀ : ℤ) with h | h
-    · exact jb_FilV_anti PD (LL := LL) (V := V) h hx.2
-    · obtain ⟨k, rfl⟩ := Int.eq_ofNat_of_zero_le (le_trans (Int.natCast_nonneg k₀) h)
-      have hk : k₀ ≤ k := by exact_mod_cast h
-      rw [← hstab k hk] at hx
-      exact hx.2
-  have hhigh : ∀ a, (k₀ : ℤ) ≤ a → FildR PD ρ τ a = ⊥ := fun a ha =>
-    eq_bot_iff.mpr (hbot ▸ jb_FildR_anti PD ρ τ ha)
-  refine ⟨a₀, (k₀ : ℤ) - 1, fun a ha => ⟨?_, ?_⟩⟩
-  · by_contra hlt
-    exact ha (by rw [hlow a (by omega), hlow (a + 1) (by omega)])
-  · by_contra hlt
-    exact ha (by rw [hhigh a (by omega), hhigh (a + 1) (by omega)])
+  obtain ⟨lo, hlo⟩ := rk_fildR_lo PD ρ τ
+  obtain ⟨hi, hhi⟩ := rk_fildR_hi PD ρ τ
+  refine ⟨lo, hi - 1, fun a ha => ⟨?_, ?_⟩⟩
+  · by_contra! h
+    exact ha ((hlo _ (by lia)).trans (hlo _ h.le).symm)
+  · by_contra! h
+    exact ha ((hhi _ (by lia)).trans (hhi _ (by lia)).symm)
 
 end Period
 

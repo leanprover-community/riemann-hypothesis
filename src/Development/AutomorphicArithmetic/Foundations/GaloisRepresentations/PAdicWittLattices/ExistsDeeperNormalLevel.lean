@@ -36,64 +36,15 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTorsionOfB
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorIntegralModelNonemptyStatement
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.TransCancel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibrePowerMapOfTotalSpacesIsPullback
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbelianSchemeAndExtendOfGenericHoms
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardTorsionGeometricPointsEqPowTwoDim
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatLocalResidueTensorInjective
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsogenyDegreeEqCardKernelOfKilledByInvertible
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateModuleFreeFinrankTwoMulDim
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
-import Mathlib.NumberTheory.NumberField.ClassNumber
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowEqOneOfGeometricPointsTorsion
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompEqOneOfTransl
 
@@ -478,113 +429,6 @@ theorem card_ker_eq_det {S : Scheme.{0}} (A : Over S) [GrpObj A] (hA : IsAbelian
     MulEquiv.ofBijective (pushHom pb (Over.mk (𝟙 (Sp k)))) (hbij _)
   have ea : ∀ y, e (y ≫ f.hom) = e y ≫ u := fun y => hf _ y
   have hlk : (l : k) ≠ 0 := Nat.cast_ne_zero.2 hl.ne_zero
-  open GlobalTheory.CharpolyLattice GlobalTheory.HTLat in
-  have charpoly_eq_lattice_model : ∀ (k : Type) [Field k] [IsAlgClosed k] (B : GlobalTheory.AV.AbVar k) (f : B ⟶ B)
-      (L : Type) [AddCommGroup L] [Module.Free ℤ L] [Module.Finite ℤ L]
-      (φ : L →ₗ[ℤ] L) (l : ℕ), l.Prime → (l : k) ≠ 0 →
-      ∀ ev : ℕ → L → (Over.mk (𝟙 (Sp k)) ⟶ B.X),
-      (∀ j x y, ev j (x + y) = ev j x * ev j y) →
-      (∀ j x, ev j (φ x) = ev j x ≫ f.hom) →
-      (∀ j x, ev j x = 1 ↔ ∃ y, x = l ^ j • y) →
-      (∀ j (q : Over.mk (𝟙 (Sp k)) ⟶ B.X), q ^ (l ^ j) = 1 ↔ ∃ x, ev j x = q) →
-      LinearMap.charpoly φ = GlobalTheory.AV.AbVar.charpoly (CategoryTheory.End.of f) := by
-    intro k _ _ B f L _ _ _ φ l hl hlk ev hadd hequi hker him
-    haveI : Fact l.Prime := ⟨hl⟩
-    obtain ⟨e, he⟩ := pts_equiv k B
-    obtain ⟨hfree, hfin, -⟩ := tl_free_finrank k l hlk B
-    have hc : ∀ n : ℕ, Nat.card {x : B.Pt // x ^ (l ^ n) = 1} = l ^ (2 * B.dim * n) := by
-      intro n
-      rw [card_torsion_pt k B (l ^ n) (by push_cast; exact pow_ne_zero _ hlk), ← pow_mul, mul_comm n]
-    let E : ℕ → L →+ Additive B.Pt := fun j =>
-      AddMonoidHom.mk' (fun x => Additive.ofMul (e (ev j x))) fun x y => by
-        rw [hadd, map_mul]; rfl
-    have hE : ∀ j (n : ℕ) x, e (ev j (n • x)) = e (ev j x) ^ n := fun j n x =>
-      congrArg Additive.toMul (map_nsmul (E j) n x)
-    have key : ∀ j : ℕ, (LinearMap.charpoly φ).map (Int.castRingHom (ZMod (l ^ j))) =
-        (LinearMap.charpoly (tend l B (CategoryTheory.End.of f))).map (PadicInt.toZModPow j) := by
-      intro j
-      haveI : NeZero (l ^ j) := ⟨pow_ne_zero _ hl.ne_zero⟩
-      let K := (powMonoidHom (l ^ j) : B.Pt →* B.Pt).ker
-      have hK : ∀ x : B.Pt, x ∈ K ↔ x ^ (l ^ j) = 1 := fun x => MonoidHom.mem_ker
-      letI : Module (ZMod (l ^ j)) (Additive K) := AddCommGroup.zmodModule fun x =>
-        congrArg Additive.ofMul (Subtype.ext (by
-          change ((Additive.toMul x : K) : B.Pt) ^ (l ^ j) = 1
-          exact (hK _).1 (Additive.toMul x).2))
-      have hsm : ∀ (c : ZMod (l ^ j)) (q : Additive K), c • q = c.val • q := fun c q => by
-        conv_lhs => rw [← ZMod.natCast_zmod_val c]
-        exact Nat.cast_smul_eq_nsmul _ _ _
-      have hπ : ((l : ZMod (l ^ j))) ^ j = 0 := by rw [← Nat.cast_pow, ZMod.natCast_self]
-      let G0 : Additive K →+ Additive K := AddMonoidHom.mk'
-        (fun q => Additive.ofMul ⟨((Additive.toMul q : K) : B.Pt) ≫ f.hom, (hK _).2 (by
-          rw [← ptMap_apply, ← map_pow, (hK _).1 (Additive.toMul q).2, map_one])⟩)
-        fun q q' => congrArg Additive.ofMul (Subtype.ext (MonObj.mul_comp _ _ _))
-      let G : Additive K →ₗ[ZMod (l ^ j)] Additive K := G0.toZModLinearMap (l ^ j)
-      let eL : L →+ Additive K := AddMonoidHom.mk'
-        (fun x => Additive.ofMul ⟨e (ev j x), (hK _).2 (by
-          rw [← hE, (hker j _).2 ⟨x, rfl⟩, map_one])⟩)
-        fun x y => congrArg Additive.ofMul (Subtype.ext (by
-          change e (ev j (x + y)) = e (ev j x) * e (ev j y)
-          rw [hadd, map_mul]))
-      let eT : Tate l B.Pt →+ Additive K := AddMonoidHom.mk'
-        (fun t => Additive.ofMul ⟨t.lev j, (hK _).2 (t.lev_pow j)⟩) fun s t => rfl
-      obtain ⟨_, _, h1⟩ := charpoly_reduce (Int.castRingHom (ZMod (l ^ j))) ZMod.intCast_surjective
-        ((l : ℤ) ^ j) (by rw [map_pow, map_natCast, hπ]) eL
-        (fun q => by
-          obtain ⟨x, hx⟩ := (him j (e.symm (Additive.toMul q : K))).1 (by
-            rw [← map_pow, (hK _).1 (Additive.toMul q).2, map_one])
-          refine ⟨x, congrArg Additive.ofMul (Subtype.ext ?_)⟩
-          change e (ev j x) = _
-          rw [hx, MulEquiv.apply_symm_apply]
-          rfl)
-        (fun r x => by rw [map_zsmul, eq_intCast, Int.cast_smul_eq_zsmul])
-        (fun x hx => by
-          have h0 : e (ev j x) = 1 := congrArg Subtype.val (congrArg Additive.toMul hx)
-          obtain ⟨y, hy⟩ := (hker j x).1 ((map_eq_one_iff e e.injective).1 h0)
-          exact ⟨y, by rw [hy, ← Nat.cast_pow, natCast_zsmul]⟩)
-        φ G (fun x => congrArg Additive.ofMul (Subtype.ext (by
-          change e (ev j (φ x)) = e (ev j x) ≫ f.hom
-          rw [hequi, he])))
-      obtain ⟨_, _, h2⟩ := charpoly_reduce (PadicInt.toZModPow j) (ZMod.ringHom_surjective _)
-        ((l : ℤ_[l]) ^ j) (by rw [map_pow, map_natCast, hπ]) eT
-        (fun q => by
-          obtain ⟨t, ht⟩ := tate_lev_surj B.Pt l (2 * B.dim) hc j _ ((hK _).1 (Additive.toMul q).2)
-          exact ⟨t, congrArg Additive.ofMul (Subtype.ext ht)⟩)
-        (fun a t => by
-          rw [hsm]
-          rfl)
-        (fun t ht => by
-          obtain ⟨s, hs⟩ := (tate_lev_eq_one_iff B.Pt l t j).1
-            (congrArg Subtype.val (congrArg Additive.toMul ht))
-          exact ⟨s, hs⟩)
-        (tend l B (CategoryTheory.End.of f)) G (fun t => rfl)
-      exact h1.symm.trans h2
-    have hT : (GlobalTheory.AV.AbVar.charpoly (CategoryTheory.End.of f)).map (algebraMap ℤ ℤ_[l]) =
-        (tend l B (CategoryTheory.End.of f)).charpoly := by
-      apply Polynomial.map_injective (algebraMap ℤ_[l] ℚ_[l]) (IsFractionRing.injective ℤ_[l] ℚ_[l])
-      rw [Polynomial.map_map, ← LinearMap.charpoly_baseChange]
-      have hc : (algebraMap ℤ_[l] ℚ_[l]).comp (algebraMap ℤ ℤ_[l]) = algebraMap ℤ ℚ_[l] := Subsingleton.elim _ _
-      rw [hc]
-      haveI : Module.Finite ℚ_[l] (Vl l B) := (tl_free_finrank k l hlk B).2.2.2.1
-      obtain ⟨⟨hm, hd, hev⟩, -⟩ := charpoly_spec k B (CategoryTheory.End.of f)
-      have key := GlobalTheory.T.abelianVariety_degreePolynomial_map_eq_charpoly_rationalTate k l hlk B (CategoryTheory.End.of f)
-        ((GlobalTheory.AV.AbVar.charpoly (CategoryTheory.End.of f)).map (algebraMap ℤ ℚ)) (hm.map _)
-        (by rw [Polynomial.natDegree_map_eq_of_injective (RingHom.injective_int (algebraMap ℤ ℚ)), hd])
-        (fun n => by rw [Polynomial.eval_intCast_map, Int.cast_id, hev n]; simp)
-      change (GlobalTheory.AV.AbVar.charpoly (CategoryTheory.End.of f)).map (algebraMap ℤ ℚ_[l]) = (vmap l f).charpoly
-      rw [← key, Polynomial.map_map]
-      congr 1
-    have hinj : Function.Injective (Polynomial.map (Int.castRingHom ℤ_[l])) :=
-      Polynomial.map_injective _ Int.cast_injective
-    apply hinj
-    rw [show Int.castRingHom ℤ_[l] = algebraMap ℤ ℤ_[l] from RingHom.ext_int _ _, hT]
-    apply Polynomial.ext
-    intro i
-    apply PadicInt.ext_of_toZModPow.mp
-    intro n
-    have h := congrArg (fun P => _root_.AddMonoidAlgebra.coeff (M := ℕ) P i) (key n)
-    simp only [Polynomial.coeff_map, eq_intCast] at h ⊢
-    rw [map_intCast]
-    exact h
   have hch := charpoly_eq_lattice_model k B f L φ l hl hlk (fun j y => e.symm (ev j y))
     (fun j y z => by rw [h1, map_mul])
     (fun j y => e.injective (by rw [ea, e.apply_symm_apply, e.apply_symm_apply, h2]))

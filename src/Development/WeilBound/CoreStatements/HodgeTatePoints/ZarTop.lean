@@ -237,9 +237,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqT
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-namespace PositivityTheory.PrwZar
-
-end PositivityTheory.PrwZar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -345,9 +342,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqT
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-namespace PositivityTheory.PrwZar
-
-end PositivityTheory.PrwZar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -291,8 +291,6 @@ section GermsRig
 
 open MonoidalCategory CartesianMonoidalCategory
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S S' Z : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [IsCommMonObj G] [GrpObj G'] [IsCommMonObj G']
 
 theorem gm_rigPullOf (F : G'.left ⟶ G.left) (e : (𝟙_ (Over S')).left ⟶ (𝟙_ (Over S)).left)

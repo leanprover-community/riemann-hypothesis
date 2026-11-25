@@ -154,18 +154,6 @@ theorem nuDual_shapeDeg {m K : ℕ} (sz : Fin K → ℕ) :
   simp only [nuDual, shapeDeg, Finset.sum_apply, Finset.card_filter]
   omega
 
-private lemma card_filter_fin_val_lt_eq_of_le {N a : ℕ} (h : a ≤ N) :
-    (Finset.univ.filter fun i : Fin N => i.val < a).card = a := by
-  have e : (Finset.univ.filter fun i : Fin N => i.val < a) = Finset.univ.map (Fin.castLEEmb h) := by
-    ext i
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_map, Fin.castLEEmb_apply]
-    constructor
-    · intro hi
-      exact ⟨⟨i.val, hi⟩, rfl⟩
-    · rintro ⟨j, rfl⟩
-      exact j.isLt
-  rw [e, Finset.card_map, Finset.card_univ, Fintype.card_fin]
-
 theorem sum_shapeDeg_sub {m K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ m + 1) :
     ∑ i, (shapeDeg sz : Fin (m + 1) → ℕ) i - (shapeDeg sz : Fin (m + 1) → ℕ) 0 = ∑ k, (sz k - 1) := by
   have h1 : ∑ i, (shapeDeg sz : Fin (m + 1) → ℕ) i = ∑ k, sz k := by
@@ -173,7 +161,7 @@ theorem sum_shapeDeg_sub {m K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [← Finset.card_filter]
-    exact card_filter_fin_val_lt_eq_of_le (hsz k)
+    exact Fin.card_filter_val_lt.trans (min_eq_right (hsz k))
   have h0 : (shapeDeg sz : Fin (m + 1) → ℕ) 0 = ∑ k, (if (0 : Fin (m + 1)).val < sz k then 1 else 0) := by
     simp only [shapeDeg, Finset.card_filter]
   have h2 : ∑ k, (sz k - 1) + ∑ k, (if (0 : Fin (m + 1)).val < sz k then 1 else 0) = ∑ k, sz k := by

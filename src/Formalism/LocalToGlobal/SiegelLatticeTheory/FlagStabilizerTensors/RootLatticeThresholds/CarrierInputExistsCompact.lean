@@ -645,7 +645,7 @@ namespace Formalism.L2.SG.Pf.CarrierT
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCMT2
+attribute [local instance] instCMT2
 
 end Formalism.L2.SG.Pf.CarrierT
 

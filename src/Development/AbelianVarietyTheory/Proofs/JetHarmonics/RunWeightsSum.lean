@@ -64,7 +64,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 
 variable {D : D7} {j : ℕ}
 
-set_option autoImplicit false in
 variable {D : _root_.Formalism.BasicNotions.D7} {j : ℕ} in
 private lemma ofGaps_eq_sub_mul {p : ℕ} (a b g : Fin p → ℕ) (T : ℕ)
     (hg : ∀ k : Fin p, (g k : ℤ) = if (k : ℕ) + 1 < p then _root_.Formalism.MainNotions.WeightAlgebra.gapZ a k - T * _root_.Formalism.MainNotions.WeightAlgebra.gapZ b k
@@ -100,7 +99,6 @@ private lemma mul_toNat_fdiv_add_two_le_of_add_two_le {T K : ℕ} (hK : T + 2 �
   · rw [h0]; simp [hd]
   · nlinarith
 
-set_option autoImplicit false in
 variable {D : _root_.Formalism.BasicNotions.D7} {j : ℕ} in
 private lemma gapZ_nonneg_of_antitone' {p : ℕ} (a : Fin p → ℕ) (ha : Antitone a) (k : Fin p) :
     0 ≤ _root_.Formalism.MainNotions.WeightAlgebra.gapZ a k := by
@@ -111,7 +109,6 @@ private lemma gapZ_nonneg_of_antitone' {p : ℕ} (a : Fin p → ℕ) (ha : Antit
     omega
   · positivity
 
-set_option autoImplicit false in
 variable {D : _root_.Formalism.BasicNotions.D7} {j : ℕ} in
 private lemma mul_toNat_fdiv_le_of_le_of_nonneg {T K : ℕ} (hK : T + 2 ≤ K) {y a : ℤ} (hy : y ≤ a)
     (ha : 0 ≤ a) : (T : ℤ) * (y.fdiv K).toNat ≤ a := by
@@ -126,7 +123,6 @@ private lemma mul_toNat_fdiv_le_of_le_of_nonneg {T K : ℕ} (hK : T + 2 ≤ K) {
     simpa using ha
 
 
-set_option autoImplicit false in
 variable {D : _root_.Formalism.BasicNotions.D7} {j : ℕ} in
 theorem _root_.GlobalTheory.RunWeightTest.isF'_fWt (ka : _root_.Formalism.MainNotions.WeightFamilies.Wt D j) (T nW nP : ℕ) (hW : Even nW)
     (hP : Even nP) :

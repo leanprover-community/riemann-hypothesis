@@ -439,10 +439,6 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-abbrev ModInst (D : D7) (V : HSp D) {S : D.what₂.Tau → SPar} (M : DSModel V S)
-    (pl : InfinitePlace D.host.F ≃ D.what₂.Tau) : Type :=
-  InstData D.sp.cm V (fun v => M.ε (pl v)) (fun v => tauE D (pl v))
-
 def levHom (I : AutInst) {Hs : Type} [NormedAddCommGroup Hs] [InnerProductSpace ℂ Hs]
     (σs : I.Ginf → (Hs →L[ℂ] Hs)) (μf : Measure I.Gf) [SigmaFinite μf] (fund : Set I.GA)
     (R : I.GA → (I.L2 μf fund →L[ℂ] I.L2 μf fund)) (J : Set I.Gf) (χ : I.Gf → ℂ) :

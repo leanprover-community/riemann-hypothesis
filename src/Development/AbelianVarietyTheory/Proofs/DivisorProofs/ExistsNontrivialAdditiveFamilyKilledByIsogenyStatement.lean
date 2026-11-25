@@ -1120,12 +1120,6 @@ theorem isPullback_over_left {S : Scheme.{0}} {P X Y Z : Over S} {f : P ⟶ X} {
     (H : IsPullback f g h k) : IsPullback f.left g.left h.left k.left :=
   H.map (Over.forget S)
 
-theorem res_res_units {X : Scheme.{0}} {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (x : Γ(X, U)ˣ) :
-    res h₂ (res h₁ x) = res (h₂.trans h₁) x := by
-  apply Units.ext
-  change _ = (X.presheaf.map ((homOfLE h₁).op ≫ (homOfLE h₂).op)).hom x.val
-  rw [Functor.map_comp, CommRingCat.hom_comp, RingHom.comp_apply]; rfl
-
 theorem res_pullU_units {X Y : Scheme.{0}} (f : Y ⟶ X) {U V : X.Opens} (h : V ≤ U) (x : Γ(X, U)ˣ) :
     pullU f V (res h x) = res (f.preimage_mono h) (pullU f U x) := by
   apply Units.ext
@@ -1165,7 +1159,7 @@ theorem exists_equivGen : ∀ (S : Scheme.{0}) (A A' N T : Over S) [GrpObj A] [G
       res ((pmap q T).left.preimage_mono inf_le_left) (e k) *
         (res ((pmap q T).left.preimage_mono inf_le_right) (e l))⁻¹ := fun k l => desc _ _ (by
     intro W h₁ h₂
-    simp only [map_mul, map_inv, res_pullU_units, res_res_units]
+    simp only [map_mul, map_inv, res_pullU_units, ReciprocityTheory.ChartRestriction.G.DVR.res_res']
     rw [he k W _ (h₂.trans ((prMap A N T).left.preimage_mono ((pmap q T).left.preimage_mono inf_le_left))),
       he l W _ (h₂.trans ((prMap A N T).left.preimage_mono ((pmap q T).left.preimage_mono inf_le_right))),
       mul_mul_inv_mul_inv_cancel])
@@ -1177,9 +1171,9 @@ theorem exists_equivGen : ∀ (S : Scheme.{0}) (A A' N T : Over S) [GrpObj A] [G
     simp only [res_pullU_units, hg, map_one, mul_inv_cancel]
   · intro a b c
     apply inj
-    simp only [res_pullU_units, hg, map_mul, map_inv, res_res_units, _root_.mul_assoc, inv_mul_cancel_left]
+    simp only [res_pullU_units, hg, map_mul, map_inv, ReciprocityTheory.ChartRestriction.G.DVR.res_res', _root_.mul_assoc, inv_mul_cancel_left]
   · intro k l W h₁ h₂ h₃
-    simp only [hg, map_mul, map_inv, res_res_units, _root_.mul_assoc, inv_mul_cancel, _root_.mul_one]
+    simp only [hg, map_mul, map_inv, ReciprocityTheory.ChartRestriction.G.DVR.res_res', _root_.mul_assoc, inv_mul_cancel, _root_.mul_one]
 
 end GlobalTheory.CharKer
 end -- clump:auto

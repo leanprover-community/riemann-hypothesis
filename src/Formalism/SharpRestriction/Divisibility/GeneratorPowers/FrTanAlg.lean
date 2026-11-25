@@ -10,8 +10,6 @@ public import Mathlib.Algebra.Algebra.Hom.Rat
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.FrTanAlg

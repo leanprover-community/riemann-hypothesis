@@ -1,5 +1,6 @@
 module
 
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeLocalEqIntegralAlmostAll
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
@@ -57,7 +58,7 @@ section General
 
 variable {D : D7}
 
-alias mul_mem_intAE := _root_.GlobalTheory.IdemPrime.mul_mem_int
+alias mul_mem_intAE := GlobalTheory.IntegralAdeleProducts.intAE_mul_mem
 
 theorem finPart_cA (x : AE D) : finPart D (cA D x) = sigR (Af D.host.F) D.sp.cm.sig (finPart D x) := by
   induction x using TensorProduct.induction_on with

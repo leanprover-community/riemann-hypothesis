@@ -137,9 +137,6 @@ private theorem sec_res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G)
 private theorem sec_res_sub {R : Type} [CommRing R] {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) :
     Sec.res g (x - y) = Sec.res g x - Sec.res g y := map_sub _ x y
 
-private theorem sec_map_sub {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (x y : Sec F U) :
-    Sec.map φ (x - y) = Sec.map φ x - Sec.map φ y := map_sub _ x y
-
 theorem red_chern_deg_one : ∀ (Q q : ℕ) [NeZero Q], q ∣ Q → ∀ (U : Scheme.{0}) (u : (Γ(U, ⊤))ˣ), IsUnit (Q : Γ(U, ⊤)) → ∀ (a : Sec ((res _ (tw Q 1)).X 1) U) (b : Sec ((res _ (tw q 1)).X 1) U), (∀ (V : Scheme.{0}) (g : V ⟶ U) (v : (Γ(V, ⊤))ˣ), v ^ Q = Units.map g.appTop.hom.toMonoidHom u → Sec.res g a = Sec.map ((res _ (tw Q 1)).d 0 1) (kumT Q V v)) → (∀ (V : Scheme.{0}) (g : V ⟶ U) (w : (Γ(V, ⊤))ˣ), w ^ q = Units.map g.appTop.hom.toMonoidHom u → Sec.res g b = Sec.map ((res _ (tw q 1)).d 0 1) (kumT q V w)) → (redMap Q q 1).app U 1 a - b = Sec.map ((res _ (tw q 1)).d 0 1) (GlobalTheory.EtC.RedChern.defectSec Q q U u) := by
   intro Q q _ hqQ U u hQ a b ha hb
   refine (_root_.GlobalTheory.EtC.sec_ext_glue _ _ U).1 _ _ ?_
@@ -148,7 +145,7 @@ theorem red_chern_deg_one : ∀ (Q q : ℕ) [NeZero Q], q ∣ Q → ∀ (U : Sch
   have hw : (v ^ (Q / q)) ^ q = Units.map g.appTop.hom.toMonoidHom u := by
     rw [← pow_mul, Nat.div_mul_cancel hqQ, hv]
   rw [sec_res_sub, (redMap Q q 1).nat, ha V g v hv, hb V g _ hw, ← (redMap Q q 1).comm, sec_res_map,
-    _root_.GlobalTheory.EtC.RedChern.res_defectSec Q q hqQ U u hQ V g v hv, defect, sec_map_sub]
+    _root_.GlobalTheory.EtC.RedChern.res_defectSec Q q hqQ U u hQ V g v hv, defect, GlobalTheory.EtC.KummerSplit.smap_sub]
 
 end GlobalTheory.EtC.RedChern
 end -- clump:auto
@@ -1179,10 +1176,6 @@ theorem secMap_nsmul' {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} (c : ℕ) (x 
     Sec.map f (c • x) = c • Sec.map f x :=
   map_nsmul (f.hom.app (op U)).hom c x
 
-theorem secMap_zero' {F G : Shv R} (f : F ⟶ G) {U : Scheme.{0}} :
-    Sec.map f (0 : Sec F U) = 0 :=
-  map_zero (f.hom.app (op U)).hom
-
 theorem extSh_hom_ext (φ : R →+* S) {F : Shv R} {M : Shv S} (a b : (extSh φ).obj F ⟶ M)
     (h : ∀ (U : Scheme.{0}) (y : Sec F U), Sec.map a (extSh.sec φ F U y) = Sec.map b (extSh.sec φ F U y)) : a = b := by
   apply Sheaf.hom_ext
@@ -1221,7 +1214,7 @@ theorem extAug_comp_ext : ∀ (Q q : ℕ) [NeZero Q] (hq : q ∣ Q) (i : ℤ) (K
     dsimp only
     rw [secMap_res', secMap_res', extSh.sec_res, e, e]
     rcases hy V g hg with h0 | ⟨ζ, c, hc⟩
-    · rw [h0, secMap_zero', map_zero, secMap_zero', secMap_zero']
+    · rw [h0, GlobalTheory.EtC.PicSpec.sec_map_zero, map_zero, GlobalTheory.EtC.PicSpec.sec_map_zero, GlobalTheory.EtC.PicSpec.sec_map_zero]
     · rw [hc, secMap_nsmul', map_nsmul, secMap_nsmul', secMap_nsmul']
       exact congrArg (c • ·) (h V ζ)
   have hv : ∀ v : extCx (ZMod.castHom hq (ZMod q)) (res _ (tw Q i)) ⟶ K, (extAug (ZMod.castHom hq (ZMod q)) (tw Q i) ≫ v).f 0 =

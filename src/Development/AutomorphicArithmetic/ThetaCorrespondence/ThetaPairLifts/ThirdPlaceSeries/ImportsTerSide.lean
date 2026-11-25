@@ -710,15 +710,12 @@ def lzE : PairedCharacterCondition.LzData g where
   idem_central τ z := (decS_spec g _).1.2.1 _ τ.2 z
   idem_ne τ := (decS_spec g _).1.2.2.1 _ τ.2
   idem_orth τ σ h := (decS_spec g _).1.2.2.2.1 _ τ.2 _ σ.2 (fun e => h (Subtype.ext e))
-  idem_sum a := by
-    rw [Finset.sum_coe_sort (decS g a) (fun x => x)]; exact (decS_spec g a).1.2.2.2.2
   idem_prim τ x hx hc hxt := (decS_spec g _).2 _ τ.2 x hx hc hxt
   lab τ := labF g r e _ τ.1
   lab_spec τ := labF_spec g r e _ τ.1
   Rep a := Set ↥(decS g a)
   ofIrr τ := {τ}
   cons R τ := τ ∈ R
-  cons_ofIrr _ _ := Set.mem_singleton_iff
   hc _ _ := ∅
 
 open Classical in

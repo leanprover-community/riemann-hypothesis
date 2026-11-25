@@ -60,7 +60,6 @@ private lemma continuousAt_dbar_ofReal_of_contDiffAt_one {n : ℕ} {ρ : _root_.
   fun_prop
 
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
 theorem _root_.GlobalTheory.GoodTop.continuousAt_corrC :

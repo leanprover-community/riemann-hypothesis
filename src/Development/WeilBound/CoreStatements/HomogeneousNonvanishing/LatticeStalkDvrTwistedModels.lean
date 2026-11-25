@@ -77,8 +77,8 @@ theorem isHTFormOver_move (hψ : IsGrpPullback G₀ G x ψ) (hψ' : IsGrpPullbac
     (tie : ∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left)
     (N : ℕ) (w : Module.Dual Ω E) (h : M.IsHTFormOver N x k w) : M'.IsHTFormOver N x k w := by
   obtain ⟨hd, T, _, Γ, i, L, _, _, M₀, j, χ, w₀, ht, hj, hHT, hw⟩ := h
-  obtain ⟨i₀, hi₀, ht₀⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.torsionAlong_iff_pullback_torsion R T Γ X x G G₀ ψ N hψ).1 i ht
-  have ht' := (_root_.GlobalTheory.CompanionTheory.Ar.torsionAlong_iff_pullback_torsion R T Γ X x G' G₀ ψ' N hψ').2 i₀ ht₀
+  obtain ⟨i₀, hi₀, ht₀⟩ := (_root_.PositivityTheory.UnitarySelfGeneration.isTorsionAlong_iff_of_isGrpPullback R T Γ X x G G₀ ψ N hψ).1 i ht
+  have ht' := (_root_.PositivityTheory.UnitarySelfGeneration.isTorsionAlong_iff_of_isGrpPullback R T Γ X x G' G₀ ψ' N hψ').2 i₀ ht₀
   obtain ⟨M₀₀, hM₀⟩ := (GlobalTheory.CompanionTheory.Ar.LieMove.main R X x G G₀ ψ L hψ).1 M₀
   obtain ⟨M₀', hM₀'⟩ := (GlobalTheory.CompanionTheory.Ar.LieMove.main R X x G' G₀ ψ' L hψ').2 M₀₀
   refine ⟨hd, T, _, Γ, i₀ ≫ ψ', L, _, _, M₀', j, χ, w₀, ht', ?_, ?_, hw⟩
@@ -207,7 +207,7 @@ end torsion
 theorem htOm_eq_of_dvr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (B : Type) [CommRing B] (b : Base l B) (g : HostAut H) (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (s : Sp Ω ⟶ Sp B) (o : Obj D l b s) (t t' : SAB H X) (m : SABMap o.t t ξ) (m' : SABMap (twistSAB o.t g) t' ξ) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V) (M' : LieModel t'.G ξ V) (n : ℕ) (q : Cpt ξ), IsCptGen ξ → 0 < n → FullTorsion t.G ξ n → (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ o.t.G, v.left ≫ m.φ = (M.pt e).left ∧ v.left ≫ m'.φ = (M'.pt e).left) → (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) → M'.htOm t'.PP.L n q = M.htOm t.PP.L n q := by
   intro E _ _ _ H D l B _ b g X Ω _ _ ξ s o t t' m m' V _ _ M M' n q hξ hn hf hv hq
   obtain ⟨a⟩ := PositivityTheory.UnitarySelfGeneration.tw_iso E H D g
-  have hok := _root_.GlobalTheory.CompanionTheory.Ar.TwistOk.twOK_obj E H D l B b (Sp Ω) s o g a
+  have hok := _root_.PositivityTheory.UnitarySelfGeneration.tw_ok E H D l B b (Sp Ω) s o g a
   have hf' : FullTorsion t'.G ξ n := fullTorsion_of_common_fibre (G₀ := o.t.G) m.cart m'.cart hf
   obtain ⟨hd, hdvr⟩ := id hq
   have hic : IsIntegrallyClosed (X.presheaf.stalk q.1) := inferInstance

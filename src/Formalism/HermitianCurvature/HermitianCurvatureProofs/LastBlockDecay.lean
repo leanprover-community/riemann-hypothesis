@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -26,15 +27,7 @@ section dil
 
 theorem map_mul_volume (ρ : ℂ) (hρ : ρ ≠ 0) :
     Measure.map (fun z : ℂ => ρ * z) volume = ENNReal.ofReal ((‖ρ‖ ^ 2)⁻¹) • (volume : Measure ℂ) := by
-  have hdet : LinearMap.det (LinearMap.mulLeft ℝ ρ) = ‖ρ‖ ^ 2 := by
-    rw [← Complex.normSq_eq_norm_sq, ← Algebra.norm_complex_apply, Algebra.norm_apply]
-    rfl
-  have hne : LinearMap.det (LinearMap.mulLeft ℝ ρ) ≠ 0 := by
-    rw [hdet]
-    positivity
-  have h := Measure.map_linearMap_addHaar_eq_smul_addHaar (volume : Measure ℂ) hne
-  rw [hdet, abs_of_nonneg (by positivity)] at h
-  exact h
+  apply _root_.GroundTheory.Global.map_mul_left_volume_complex <;> assumption
 
 def mulEquiv (ρ : ℂ) (hρ : ρ ≠ 0) : ℂ ≃ᵐ ℂ := (Homeomorph.mulLeft₀ ρ hρ).toMeasurableEquiv
 

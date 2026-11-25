@@ -44,8 +44,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsTies
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure ConcAt0 (D : D7) (T : TermTie D) where
   X : HidaSetting D
   Y : Full X
@@ -168,8 +166,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsTies
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section ThrS
 
 end ThrS
@@ -281,8 +277,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
   Formalism.L2.SG.ThmSOwn
 
 namespace Formalism.L2.SG.LoopsTies
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section SelQ
 

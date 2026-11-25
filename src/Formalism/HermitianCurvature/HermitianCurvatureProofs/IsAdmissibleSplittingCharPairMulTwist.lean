@@ -15822,10 +15822,7 @@ noncomputable section
 
 theorem actA_finsum {P : M.Par} {ι : Type} (s : Finset ι) (x : ι → A P (DQ P)) (j : M.Ty P → SmQ P.r P.TT) :
     actA P (∑ e ∈ s, x e) j = ∑ e ∈ s, actA P (x e) j := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [F.actA_zero]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, F.actA_add, ih]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx3.F.actA_sum <;> assumption
 
 theorem ipA_sum_left {P : M.Par} {ι : Type} (s : Finset ι) (f : ι → M.Ty P → SmQ P.r P.TT) (g : M.Ty P → SmQ P.r P.TT)
     (h : ∀ e ∈ s, ∀ π, Integrable (fun q => evQ P (f e π) q * conj (evQ P (g π) q)) (mu0 P.r P.TT)) :
@@ -16021,28 +16018,14 @@ theorem ipA_add_right {f g1 g2 : M.Ty P → SmQ P.r P.TT}
     (h1 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g1 π) q)) (mu0 P.r P.TT))
     (h2 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g2 π) q)) (mu0 P.r P.TT)) :
     ipA P f (g1 + g2) = ipA P f g1 + ipA P f g2 := by
-  rw [ipA_eq, ipA_eq, ipA_eq, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_add (h1 π) (h2 π)]
-  congr 1; funext q
-  show evQ P (f π) q * conj (evQ P (g1 π) q + evQ P (g2 π) q) = _
-  rw [map_add (f := _)]; ring
+  apply _root_.Formalism.FourierDecayAlt.P.MAx3.Z.ipA_add_right <;> assumption
 
 theorem ipA_smul_right (c : ℂ) (f g : M.Ty P → SmQ P.r P.TT) :
     ipA P f (fun π => c • g π) = conj c * ipA P f g := by
-  rw [ipA_eq, ipA_eq, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_const_mul]
-  congr 1; funext q
-  show evQ P (f π) q * conj (c * evQ P (g π) q) = _
-  rw [map_mul]; ring
+  apply _root_.Formalism.FourierDecayAlt.P.MAx3.Z.ipA_smul_right <;> assumption
 
 theorem ipA_zero_right (f : M.Ty P → SmQ P.r P.TT) : ipA P f 0 = 0 := by
-  rw [ipA_eq]
-  refine Finset.sum_eq_zero fun π _ => ?_
-  have : (fun q => evQ P (f π) q * conj (evQ P ((0 : M.Ty P → SmQ P.r P.TT) π) q)) = fun _ => 0 := by
-    funext q; show _ * conj (0 : ℂ) = 0; simp
-  rw [this, integral_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx3.Z.ipA_zero_right <;> assumption
 
 variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
 variable (hTTp : 0 < P.TT) (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)

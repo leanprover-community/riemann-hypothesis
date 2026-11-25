@@ -1075,7 +1075,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 theorem pair_double_coset_finite_support (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     (Function.support fun q : (GLw a w × GLw b w) ⧸ I2 a b w => dc2 w ϖ x y q.out).Finite :=
-  _root_.GlobalTheory.CompanionTheory.ProdQuotient.support_mul_out_finite _ _ _ _ _ _ (GlobalTheory.T.iwahori_double_coset_finite E w a _).1 (GlobalTheory.T.iwahori_double_coset_finite E w b _).1
+  _root_.GlobalTheory.CompanionTheory.ProdQuotient.support_mul_out_finite _ _ _ _ _ _ (_root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w a _).1 (_root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w b _).1
     (fun k hk g => (dcos_inv a w _ k hk g).2) (fun k hk g => (dcos_inv b w _ k hk g).2)
 
 theorem pair_double_coset_bi_invariant (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
@@ -1103,8 +1103,8 @@ theorem core (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (hϖ : ordL (ϖ : w.adicCo
     ∃ (ξa : Fin a → ℂˣ) (ξb : Fin b → ℂˣ), (∃ v ∈ GlobalTheory.PRep.fixed ρ (I2 a b w), v ≠ 0 ∧
       ∀ x y, Gap x → Gap y → hkG ρ (I2 a b w) (dc2 w ϖ x y) v = ev2 w ξa ξb x y • v) ∧
       ∑ j, c j * ev2 w ξa ξb (x j) (y j) ≠ 0 := by
-  have hIa := GlobalTheory.T.iwahori_double_coset_finite E w a
-  have hIb := GlobalTheory.T.iwahori_double_coset_finite E w b
+  have hIa := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w a
+  have hIb := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w b
   have hmul : ∀ (x x' : Fin a → ℤ) (y y' : Fin b → ℤ), Gap x → Gap x' → Gap y → Gap y' →
       hkW ρ (I2 a b w) (dc2 w ϖ (x + x') (y + y')) (pair_double_coset_finite_support w ϖ _ _) (pair_double_coset_bi_invariant w ϖ _ _) =
         hkW ρ (I2 a b w) (dc2 w ϖ x y) (pair_double_coset_finite_support w ϖ _ _) (pair_double_coset_bi_invariant w ϖ _ _) *
@@ -1202,8 +1202,8 @@ end Place
 theorem rReadT : RReadT := by
   intro hRM E _ _ _ n a b μ s₁ s₂ Pa Pb D hC w ϖ J _ c x y m G hϖ hgap hm hGS hGI hne
   obtain ⟨hinv, J', L, hLeq, hLsep⟩ := hRM E a b s₁ s₂ Pa Pb w hC.g₁ hC.g₂ hC.u₁ hC.u₂ hC.t₁ hC.t₂
-  have hIa := GlobalTheory.T.iwahori_double_coset_finite E w a
-  have hIb := GlobalTheory.T.iwahori_double_coset_finite E w b
+  have hIa := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w a
+  have hIb := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w b
   have hIopen : IsOpen ((I2 a b w : Subgroup (GLw a w × GLw b w)) : Set (GLw a w × GLw b w)) := by
     rw [Subgroup.coe_prod]
     exact (hIa 1).2.1.prod (hIb 1).2.1

@@ -65,6 +65,7 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralWeierstrassChartXyUnitSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmLatticeWeylOperatorEqThetaRootOfUnityShift, Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeilOperatorThetaTranslateShiftPrimeToQ
@@ -83,14 +84,7 @@ variable {q : ℕ} [Fact q.Prime]
 
 theorem hat_pow (ι : ℂ ≃+* ℂ_[q]) (ℓ : ℂ_[q]⟦X⟧) (hℓ : constantCoeff ℓ = 0) (F : ℂ → ℂ)
     (hF : AnalyticAt ℂ F 0) (m : ℕ) : hat ι ℓ (fun z => F z ^ m) = hat ι ℓ F ^ m := by
-  obtain ⟨h1, h2, -⟩ := GlobalTheory.MomOne.TaylorRead.hat_laws q ι ℓ hℓ
-  induction m with
-  | zero => simpa using h2 1
-  | succ k ih =>
-    have hk : AnalyticAt ℂ (fun z => F z ^ k) 0 := hF.pow k
-    have := (h1 _ F hk hF).2.1
-    simp only [pow_succ]
-    rw [this, ih]
+  apply _root_.GlobalTheory.MomOne.ChartXY.hat_pow <;> assumption
 
 theorem hat_funEq (ι : ℂ ≃+* ℂ_[q]) (ω : ℂ_[q]) (F G : ℂ → ℂ) (hF : AnalyticAt ℂ F 0)
     (hG : AnalyticAt ℂ G 0) (α : ℂ) (a : ℤ_[q]) (ha : ι α = zc a) (m : ℕ)
@@ -108,14 +102,7 @@ theorem hat_funEq (ι : ℂ ≃+* ℂ_[q]) (ω : ℂ_[q]) (F G : ℂ → ℂ) (h
   exact (h1 _ _ hα (hk.mul hG)).2.2.1 h
 
 theorem bd_pow (f : ℂ_[q]⟦X⟧) (hf : Bd 1 f) (m : ℕ) : Bd 1 (f ^ m) := by
-  induction m with
-  | zero =>
-    intro n
-    rw [pow_zero, coeff_one]
-    split_ifs <;> simp
-  | succ k ih =>
-    have := ((GlobalTheory.MomOne.sup_norm_laws q).1 _ _ _ _ ih hf).2
-    simpa [pow_succ] using this
+  apply _root_.GlobalTheory.MomOne.FeUniq.intSer_pow <;> assumption
 
 theorem shift_pow (ζ : ℂ_[q]) (hζ : ‖ζ - 1‖ < 1) (f : ℂ_[q]⟦X⟧) (hf : Bd 1 f) (m : ℕ) :
     shiftS ζ (f ^ m) = shiftS ζ f ^ m := by

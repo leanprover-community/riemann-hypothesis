@@ -12,8 +12,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory NumberField Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem spMap_comp {S T U : Type} [CommRing S] [CommRing T] [CommRing U] (φ : S →+* T) (ψ : T →+* U) :
     spMap (ψ.comp φ) = spMap ψ ≫ spMap φ := by
   simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]

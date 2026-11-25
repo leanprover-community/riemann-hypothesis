@@ -100,7 +100,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
         P₀.map (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)) := by
       rw [hloc, hP₀, hy]
       exact Matrix.charpoly_map _ _
-    obtain ⟨t, ht, k, hk, he⟩ := GlobalTheory.T.integral_conj_set_localUnitary_eq_doubleCoset E n w h1 h2 P₀ hcop (locPt w γ) hcp 1 g
+    obtain ⟨t, ht, k, hk, he⟩ := GlobalTheory.BCT.OrbitT.orbit_main E n w h1 h2 P₀ hcop (locPt w γ) hcp 1 g
       (by simpa using hK) hg
     refine ⟨t, ht, ?_⟩
     rw [he, mul_one, inv_mul_cancel_left]

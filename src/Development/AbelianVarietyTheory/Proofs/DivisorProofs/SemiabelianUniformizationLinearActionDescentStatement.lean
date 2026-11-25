@@ -323,9 +323,6 @@ end Main
 section Cube
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G]
 
-theorem lift_tripleCoordinates_eq_id : lift (x3 G 0) (lift (x3 G 1) (x3 G 2)) = 𝟙 (G3 G) := by
-  ext <;> simp [x3]
-
 theorem exists_cubL (P : CP G) (a : 𝟙_ (Over S) ⟶ G) :
     ∃ t : LB.Gen (LB.LinComb P.L.L (fun I => thφ G (x3 G) I ≫ ((toUnit G ≫ a) * 𝟙 G).left) thε), t.IsGen ∧
       ∀ (T : Over S) (x y u : T ⟶ G) (z : T.left) (J), Good P.L.L z J →
@@ -341,7 +338,7 @@ theorem exists_cubL (P : CP G) (a : 𝟙_ (Over S) ⟶ G) :
       simp only [Sum.elim_inl, Sum.elim_inr, zpow_neg, Finset.prod_inv_distrib]
       refine (congrArg₂ (· * ·) (prod_cub _ _ _ h) (congrArg (·⁻¹) (prod_cub _ _ _ h))).trans ?_
       have e := prod_cub (x3 G 0) (x3 G 1) (x3 G 2) (fun q => h (q ≫ ((toUnit G ≫ a) * 𝟙 G).left))
-      simp only [lift_tripleCoordinates_eq_id, Over.id_left, Category.id_comp, comp_transl] at e
+      simp only [GlobalTheory.LamBiext.id₃, Over.id_left, Category.id_comp, comp_transl] at e
       refine Eq.trans ?_ e.symm
       have c₁ : x3 G 0 * x3 G 1 * ((toUnit (G3 G) ≫ a) * x3 G 2) =
           (toUnit (G3 G) ≫ a) * (x3 G 0 * x3 G 1 * x3 G 2) := by ac_rfl

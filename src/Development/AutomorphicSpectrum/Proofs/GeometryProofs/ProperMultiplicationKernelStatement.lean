@@ -65,17 +65,6 @@ variable {k C : Type} [Field k] [CommRing C] [Algebra k C]
 
 end Weyl
 
-section Hopf
-open Module TensorProduct Coalgebra Bialgebra WithConv
-
-variable {k H : Type} [Field k] [CommRing H] [HopfAlgebra k H]
-
-noncomputable def inv (D : H →ₗ[k] k) : H →ₗ[k] H :=
-  (TensorProduct.rid k H).toLinearMap ∘ₗ D.lTensor H ∘ₗ comul
-
-
-end Hopf
-
 section Coef
 open TensorProduct TrivSqZeroExt
 

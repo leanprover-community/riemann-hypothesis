@@ -40,55 +40,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeightFu
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacobiMapsExist
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolarPartIdentity
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularSectionOfHeights
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
@@ -96,7 +49,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicCo
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ValueFormula
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.EisCellsDefs
 import Formalism.LocalRingCardinality.DataHost
-import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Definitions.Foundations.AestronglyMeasurableQuotMeasureIffLift
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
@@ -112,7 +64,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMa
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.RedLem
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoefficientDataExistsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterEtaCondition
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialConstantFourierCoefficient
@@ -1278,13 +1229,13 @@ theorem unfold_on {hn : ρ + p = n} (M : Maps D hn) (m : Meas D ρ p) {ψ : AddC
         Wz M m ψ b₀ f (M.sh (u.2.map (incA D)) * M.emb (u.1.out : GF D p) * g)) (zc M m ψ b₀ (eisS f) g) := by
   obtain ⟨hinv, hdet, hmaj⟩ := GlobalTheory.T.eisenstein_terms_uniformly_summable hχ hf hl hs
   obtain ⟨hHaar, hFD, hvol⟩ := m.hz
-  obtain ⟨hadd, hcsh, hcem, hrat⟩ := GlobalTheory.T.heisenberg_centre_rational_form M
+  obtain ⟨hadd, hcsh, hcem, hrat⟩ := _root_.GlobalTheory.CompanionTheory.ZUnf.centre_nzx M
   have hcolat := GlobalTheory.CompanionTheory.HermVol.isCoLat_herm (D := D) (r := ρ)
   haveI : Countable (ratHerm D ρ) := countable_ratHerm
   haveI : Countable (Cosets (P D n) (GF D n)) := countable_cosets
   haveI : Countable (Cosets (P D p) (GF D p)) := countable_cosets
   haveI : Countable (Matrix (Fin ρ) (Fin p) D.host.E) := countable_mat ρ p
-  obtain ⟨e, he, hfib, hτe, hterm⟩ := GlobalTheory.T.heisenberg_cosets_param_rational hn M
+  obtain ⟨e, he, hfib, hτe, hterm⟩ := _root_.GlobalTheory.CompanionTheory.ZUnf.CellGlue.cell hn M
   obtain ⟨K0, hK0, hKc⟩ := hcolat.2
   have hcn := _root_.GlobalTheory.CompanionTheory.PcB.continuous_nz M
   obtain ⟨Um, hUm, hub⟩ := hmaj ((fun d : hermA D ρ × G D n => M.nzx d.1 0 * d.2) '' (K0 ×ˢ C))

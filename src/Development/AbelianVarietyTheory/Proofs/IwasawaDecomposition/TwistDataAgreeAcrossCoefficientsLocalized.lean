@@ -116,26 +116,6 @@ theorem inGeo_transfer (h : InGeo z.geo) : InGeo (z.transfer s).geo := (by with_
 
 end Dat
 
-section Rows
-
-variable {ix : C.Tup ≃ I.ι} {p0 : BaseLevelRowSide a.D}
-
-def RowsAre.tr (c : Refill a) (r : RowsAre a.st I hX T Wt ix p0) : RowsAre c.to.st I hX T Wt ix (baseLevelRowSideTransport c p0) :=
-  @RowsAre.mk c.to.st px I hX T Wt ix (baseLevelRowSideTransport c p0)
-    (z := r.z.transfer c.same)
-    (intersectionNumber_baseChange := Dat.holds_transfer c.same r.intersectionNumber_baseChange)
-    (Y := (by with_unfolding_all exact ((read c r.Y) :)))
-    (Z := (by with_unfolding_all exact ((readL c r.Z) :)))
-    (tup_ix := (by with_unfolding_all exact (r.tup_ix :)))
-
-namespace RowsAre
-
-variable (c : Refill a) (r : RowsAre a.st I hX T Wt ix p0)
-
-end RowsAre
-
-end Rows
-
 end GlobalTheory.Mem.R3
 
 end

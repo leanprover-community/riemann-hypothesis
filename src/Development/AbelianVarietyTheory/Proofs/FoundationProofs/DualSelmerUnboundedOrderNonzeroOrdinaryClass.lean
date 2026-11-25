@@ -450,11 +450,6 @@ section -- clump:auto
 
 namespace GlobalTheory.IntegralElementNorm
 
-theorem norm_algebraMap_le_one {l : ℕ} [Fact l.Prime] (a : ℤ_[l]) :
-    ‖algebraMap ℤ_[l] (PadicAlgCl l) a‖ ≤ 1 := by
-  rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (PadicAlgCl l)]
-  exact (PadicAlgCl.norm_extends (p := l) _).trans_le (PadicInt.norm_le_one a)
-
 theorem norm_le_one_of_isIntegral {l : ℕ} [Fact l.Prime] {x : PadicAlgCl l} (hx : IsIntegral ℤ_[l] x) :
     ‖x‖ ≤ 1 := by
   apply GlobalTheory.PadicNormCastBounds.norm_le_one_of_isIntegral <;> assumption

@@ -80,9 +80,6 @@ def DataFrom (Q : Data V) (e : Q.X ≃+ (Fin T.r → ℤ)) : Prop :=
           (lamVal w (lift (toUnit (TK V) ≫ Q.c a) (toUnit (TK V) ≫ Q.c b)).left z J J' *
             val (T.τ₀ ((n : ℤ) • e a) ((n : ℤ) • e b)) ((TK V).hom ≫ spMap iw) z J)
 
-def DegFrom (D : DegPre V) (e : D.X ≃+ (Fin T.r → ℤ)) : Prop :=
-  ∃ (Q : Data V) (e' : D.X ≃+ Q.X), Refines Q (RingHom.id V) D e' ∧ DataFrom T iw s ε n Q (e'.symm.trans e)
-
 end From
 
 structure LowBase {o : Type} [CommRing o] (ζ : o) (n : ℕ) where
@@ -160,12 +157,6 @@ def t (k : Fin C.m) : C.R := C.s (.inl k)
 def form (k : Fin C.m ⊕ Fin C.N) : LinearMap.BilinForm ℤ (Fin C.T.r → ℤ) := C.ε k
 
 def δ (k : Fin C.m) : LinearMap.BilinForm ℤ C.Q.X := pull C.e.toIntLinearEquiv.toLinearMap (C.form (.inl k))
-
-def IsFam (F : SFam g n ζ) (G₁ : Over (Sp C.R)) [GrpObj G₁] (y : Sp (FractionRing C.R) ⟶ F.X)
-    (α₁ : pullback G₁.hom (jK C.R) ⟶ F.univ.A.left) : Prop :=
-  IsSemiAbelian G₁ ∧ (∀ p : Sp C.R, p ∈ abLocus G₁ ↔ ∏ k, C.t k ∉ p.asIdeal) ∧ IsGenFibre F y α₁ ∧
-    IsMumfordFam F y α₁ C.Q ∧ y ≫ F.s = jK C.R ≫ spMap C.b
-
 end Taut
 
 def IsMumPol {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (Q : Data R) (G₁ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁]
@@ -186,9 +177,5 @@ def SameFib {S S' T : Scheme.{0}} (A : Over S) [GrpObj A] [IsCommMonObj A] (P : 
 def TorsRat {R : Type} [CommRing R] [IsDomain R] (G : Over (Sp R)) [GrpObj G] (n : ℕ) : Prop :=
   ∀ (K : Type) [Field K] [IsAlgClosed K] (κ : FractionRing R →+* K) (x : Over.mk (spMap κ ≫ jK R) ⟶ G), x ^ n = 1 →
     ∃ x₀ : Over.mk (jK R) ⟶ G, x.left = spMap κ ≫ x₀.left
-
-def GalRigid {A R : Type} [CommRing A] [CommRing R] (f : A →+* R) : Prop :=
-  ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (θ : R →+* R') (σ : R' ≃+* R'), IsCN R' → Function.Injective θ →
-    θ.Finite → IsOfFinOrder σ → (∀ a, σ (θ (f a)) = θ (f a)) → (∀ r, σ (θ r) - θ r ∈ maximalIdeal R') → ∀ r, σ (θ r) = θ r
 
 end GlobalTheory.TChart

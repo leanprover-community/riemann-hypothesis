@@ -113,7 +113,7 @@ theorem abPart_principal_and_bound : ∀ (E : Type) [Field E] [NumberField E] [I
     have key : ∀ (z₀ : Sp ℂ ⟶ Sp C.R), z₀ = spMap r ≫ spMap f → ∀ P : AbPart C.t z₀, IsPrincipal P.tB := by
       rintro _ rfl P
       obtain ⟨m', -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartPull.exists_sabMap_tK E H _ _ tV C.t _ mV ℂ (spMap r) P
-      exact _root_.GlobalTheory.CompanionTheory.Relay.polarized_abelian_part_principal E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
+      exact _root_.PositivityTheory.HtPt.Ppic.dvr E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
     refine key _ ?_ P
     rw [← hrf]
     show Spec.map (CommRingCat.ofHom (r.comp f)) = _

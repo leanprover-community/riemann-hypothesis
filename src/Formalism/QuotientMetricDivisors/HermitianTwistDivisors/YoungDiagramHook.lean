@@ -430,7 +430,7 @@ lemma arith_fact_top {w S Sc N Bl cs C0 La n k : ℝ} (hw : 0 ≤ w) (hSc0 : 0 �
   have h5 := mul_le_mul_of_nonneg_left hLa (sq_nonneg N)
   nlinarith
 
-lemma arith_fact_off {w S Sc N Bl cs C0 La n k : ℝ} (hw : 0 ≤ w) (_hSc0 : 0 ≤ Sc) (hBl : 0 ≤ Bl)
+lemma arith_fact_off {w S Sc N Bl cs C0 La n k : ℝ} (hw : 0 ≤ w) (hBl : 0 ≤ Bl)
     (hn : 0 ≤ n) (hk : k = n + 1) (hkN : k ≤ N) (hcs : 0 ≤ cs) (hC2 : 2 ≤ C0) (hCcs : cs + 1 ≤ C0)
     (hSc : 2 * Sc ≤ C0 * S) (hLa : 1 ≤ La) :
     (w + 2 * Sc + n * (cs * N) + Bl) * La ≤ C0 * (w + S + N ^ 2 + Bl) * La := by
@@ -498,7 +498,7 @@ theorem young_diagram_step : RowsStepE := by
       have hF := (young_diagram_factorial (n + 1) (w j ρ) Sc (m * (t + 1) * η) (cs * N) (a * rd) La
         (fa j ρ) (ν j ρ) (ap j ρ) hLa hLa1 (hwA j ρ) hBlA (hfa j ρ)).1 hO
       have hA := arith_fact_off (w := (w j ρ : ℝ)) (n := ((n + 1 : ℕ) : ℝ)) (k := k)
-        (Nat.cast_nonneg _) h0.1 h0.2 (Nat.cast_nonneg _) (by push_cast; linarith) hkN hcs hC2
+        (Nat.cast_nonneg _) h0.2 (Nat.cast_nonneg _) (by push_cast; linarith) hkN hcs hC2
         hCcs hSc hLa1
       linarith
   · dsimp only

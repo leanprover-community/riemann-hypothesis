@@ -1490,14 +1490,7 @@ theorem van_mul {f g : ℂ_[q]⟦X⟧} {a b : ℕ} (hf : Bd 1 f) (hg : Bd 1 g) (
     exact norm_mul_lt_left (hb _ (by omega)) (hf _)
 
 theorem bd_pow {g : ℂ_[q]⟦X⟧} (hg : Bd 1 g) (d : ℕ) : Bd 1 (g ^ d) := by
-  induction d with
-  | zero =>
-    intro n
-    rw [pow_zero, coeff_one]
-    split_ifs <;> simp
-  | succ d ih =>
-    have := ((sup_norm_laws q).1 _ _ _ _ ih hg).2
-    rwa [one_mul, ← pow_succ] at this
+  apply _root_.GlobalTheory.MomOne.Triang.bd_one_pow <;> assumption
 
 theorem van_pow {g : ℂ_[q]⟦X⟧} {r : ℕ} (hg : Bd 1 g) (hr : Van r g) (d : ℕ) : Van (d * r) (g ^ d) := by
   induction d with

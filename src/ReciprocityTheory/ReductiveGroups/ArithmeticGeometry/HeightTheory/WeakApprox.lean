@@ -280,20 +280,6 @@ theorem wa_sep {ι : Type*} [DecidableEq ι] (v : ι → AddValuation F (WithTop
 
 end WeakApproxAux
 
-private theorem lt_addValuation_sum_of_forall_lt {F : Type*} [Field F] {ι : Type*} (w : AddValuation F (WithTop ℤ))
-    (S : Finset ι) (x : ι → F) (c : WithTop ℤ) (h : ∀ i ∈ S, c < w (x i)) (hc : c ≠ ⊤) :
-    c < w (∑ i ∈ S, x i) := by
-  classical
-  revert h
-  refine Finset.induction_on S ?_ ?_
-  · intro _
-    rw [Finset.sum_empty, AddValuation.map_zero]
-    exact lt_top_iff_ne_top.mpr hc
-  · intro j S hjS ih h
-    rw [Finset.sum_insert hjS]
-    exact lt_of_lt_of_le (lt_min (h j (Finset.mem_insert_self j S))
-      (ih fun i hi => h i (Finset.mem_insert_of_mem hi))) (AddValuation.map_add w _ _)
-
 theorem weak_approx_orders {F : Type*} [Field F] {k : ℕ} (v : Fin k → AddValuation F (WithTop ℤ))
     (hfin : ∀ i (a : F), a ≠ 0 → v i a ≠ ⊤) (hone : ∀ i, ∃ π : F, v i π = 1)
     (hdist : Pairwise fun i j => v i ≠ v j) (n : Fin k → ℤ) :
@@ -337,7 +323,7 @@ theorem weak_approx_orders {F : Type*} [Field F] {k : ℕ} (v : Fin k → AddVal
   rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
   have hrest : ((n j : ℤ) : WithTop ℤ) <
       v j (∑ i ∈ Finset.univ.erase j, q i ^ n i * (1 + s i ^ (N i + 1))⁻¹) :=
-    lt_addValuation_sum_of_forall_lt (v j) _ _ _ (fun i hi => hoff i j (Finset.ne_of_mem_erase hi)) WithTop.coe_ne_top
+    (v j).map_lt_sum WithTop.coe_ne_top fun i hi => hoff i j (Finset.ne_of_mem_erase hi)
   have hlt : v j (q j ^ n j * (1 + s j ^ (N j + 1))⁻¹) <
       v j (∑ i ∈ Finset.univ.erase j, q i ^ n i * (1 + s i ^ (N i + 1))⁻¹) := by
     rw [hdiag j]

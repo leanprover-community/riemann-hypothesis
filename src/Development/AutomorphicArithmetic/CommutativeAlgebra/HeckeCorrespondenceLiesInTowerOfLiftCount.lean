@@ -73,7 +73,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheory.CechPic GlobalTheory.AV GlobalTheory.AV.AbVar
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
@@ -255,7 +254,6 @@ open GlobalTheory.GalV (HTower Splits)
 open UpperTheory.Gal.crystallineComparison.Mod (Std TjD TjE KSOKE)
 open UpperTheory.Gal.Int.Geo
 open scoped TensorProduct
-attribute [local instance] Ideal.Quotient.field
 
 private theorem pow_pr {X Y : Scheme.{0}} {A : Over X} {B : Over Y} (f : X ⟶ Y) (φ : A.left ⟶ B.left)
     (u : φ ≫ B.hom = A.hom ≫ f) (k : ℕ) (i : Fin k) :

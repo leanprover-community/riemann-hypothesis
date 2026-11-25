@@ -361,7 +361,7 @@ theorem local_form (Hd : HodgeData D) (a : Fin D.nCharts) {t₀ : (Fin (Fintype.
           (Real.log ((S τ t)ᴴ * (D.h τ).gram (l τ) ((D.chart a).γ t) * S τ t).det.re -
             Real.log (((S τ t)ᴴ * (D.h τ).gram (l τ) ((D.chart a).γ t) * S τ t).submatrix
               (headIdx D.j_le_N) (headIdx D.j_le_N)).det.re) / 2 := by
-  obtain ⟨hex, heq, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.hodge_metric_frame_properties K J II Ψ Ω W D Hd
+  obtain ⟨hex, heq, -, -⟩ := _root_.LevelTowerAlt.mu_frame_norm_line K J II Ψ Ω W D Hd
   have hγ : ContinuousAt (D.chart a).γ t₀ := ((D.chart a).analytic t₀ hball).continuousAt
   have hz₀ : (D.chart a).γ t₀ ∈ mcPts (mCoordIdeal D.y) := (D.chart a).mem t₀ hball
   obtain ⟨d⟩ := hex _ hz₀
@@ -527,8 +527,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
 open ReciprocityTheory.AnForm (levi)
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.hodge_potential_smooth_off_boundary : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D), (∀ a, ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun t => phMu Hd ((D.chart a).γ t)) (offBd D a)) ∧ ∀ a, ∀ t₀ : Fin (Fintype.card Ψ * D.j * (D.N - D.j)) → ℂ, ‖t₀‖ ≤ 1 / 2 → ∃ ε > (0 : ℝ), ∃ C > (0 : ℝ), ∀ t ∈ offBd D a, ‖t - t₀‖ < ε → -(C * Real.log ((D.chart a).logR t)) ≤ phMu Hd ((D.chart a).γ t) ∧ phMu Hd ((D.chart a).γ t) ≤ C ∧ ‖fderiv ℝ (fun s => phMu Hd ((D.chart a).γ s)) t‖ ≤ C * (D.chart a).logR t ^ C * Real.exp ((D.chart a).logR t / 2) := by
-  first | exact @LevelTowerAlt.mu_potential_smooth_off_boundary
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgePotentialSmoothOffBoundary =====

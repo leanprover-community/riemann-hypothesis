@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerFlagSplitting.MulVecColOfMul
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCCB
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
@@ -39,36 +40,13 @@ lemma gv_one : (1 : Mat k r) ∈ GV k r := by
   simp
 
 lemma gv_mul {a b : Mat k r} (ha : a ∈ GV k r) (hb : b ∈ GV k r) : a * b ∈ GV k r := by
-  have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
-  have hb' : bᴴ * Hpk k r * b = Hpk k r := hb
-  show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
-  rw [Matrix.conjTranspose_mul]
-  calc bᴴ * aᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [ha', hb']
+  apply _root_.PI.StabSplit.GV_mul <;> assumption
 
 lemma gv_inv {a : Mat k r} (ha : a ∈ GV k r) : a⁻¹ ∈ GV k r := by
-  have hg : aᴴ * Hpk k r * a = Hpk k r := ha
-  have hu : IsUnit a.det := by
-    rw [isUnit_iff_ne_zero]
-    intro h0
-    have h1 := congrArg Matrix.det hg
-    rw [Matrix.det_mul, h0, mul_zero] at h1
-    exact (Hdet k r).ne_zero h1.symm
-  have h1 : a * a⁻¹ = 1 := Matrix.mul_nonsing_inv a hu
-  have h2 : (a⁻¹)ᴴ * aᴴ = 1 := by
-    rw [← Matrix.conjTranspose_mul, h1, Matrix.conjTranspose_one]
-  show (a⁻¹)ᴴ * Hpk k r * a⁻¹ = Hpk k r
-  calc (a⁻¹)ᴴ * Hpk k r * a⁻¹ = (a⁻¹)ᴴ * (aᴴ * Hpk k r * a) * a⁻¹ := by rw [hg]
-    _ = ((a⁻¹)ᴴ * aᴴ) * Hpk k r * (a * a⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
+  apply _root_.PI.StabSplit.GV_inv <;> assumption
 
 lemma gv_unit {a : Mat k r} (ha : a ∈ GV k r) : IsUnit a.det := by
-  have hg : aᴴ * Hpk k r * a = Hpk k r := ha
-  rw [isUnit_iff_ne_zero]
-  intro h0
-  have h1 := congrArg Matrix.det hg
-  rw [Matrix.det_mul, h0, mul_zero] at h1
-  exact (Hdet k r).ne_zero h1.symm
+  apply _root_.PI.StabSplit.GV_unit <;> assumption
 
 lemma gv_closed : IsClosed (GV k r) := by
   show IsClosed {g : Mat k r | gᴴ * Hpk k r * g = Hpk k r}

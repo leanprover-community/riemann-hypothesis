@@ -1567,8 +1567,6 @@ namespace Formalism.L2.S.Pv.SecW
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem stepSection_holds : Formalism.L2.SG.RealObj.EnergyInst.StepSection := by
   intro D X u u' sc hsc
   have hk : 0 < D.R.k := by have := D.R.m_add_three_le_k; omega
@@ -1605,8 +1603,6 @@ open scoped InnerProductSpace ComplexConjugate ENNReal
 namespace Formalism.L2.SG.RealObj.EnergyInst
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.EnergyAbs
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def StepIntAt (D : D7) : Prop :=
   ∀ (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) (sc : ℝ), 0 < sc →

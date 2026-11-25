@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.IntegralStabilizers.FinSLoc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.TraceFormulaEigenvalues.IsGenEig
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Mathlib.LinearAlgebra.Determinant
@@ -776,17 +777,8 @@ theorem approx_F (a : ∀ v : Pl F, Kv v) {e f : F} (he : e ≠ 0) (hf : f ≠ 0
   field_simp
   ring
 
-theorem den_loc (v : Pl F) (x : Kv v) : ∃ n : ℕ, n ≠ 0 ∧ IsIntegral (Ov v) ((n : Kv v) * x) := by
-  have hU : IsOpen {w : Kv v | x - w ∈ v.adicCompletionIntegers F} :=
-    (Valued.isOpen_valuationSubring (Kv v)).preimage (continuous_const.sub continuous_id)
-  obtain ⟨z, hz⟩ := (HeightOneSpectrum.denseRange_algebraMap (K := F) v).exists_mem_open hU ⟨x, by simp⟩
-  obtain ⟨n, hn, h⟩ := den_glob z
-  refine ⟨n, hn, ?_⟩
-  have h1 := (int_glob _).1 h v
-  rw [map_mul, map_natCast] at h1
-  have e : (n : Kv v) * x = n * cv v z + n * (x - cv v z) := by ring
-  rw [e]
-  exact h1.add ((isIntegral_natCast (R := Ov v) (B := Kv v) n).mul ((int_iff v _).2 hz))
+theorem den_loc (v : Pl F) (x : Kv v) : ∃ n : ℕ, n ≠ 0 ∧ IsIntegral (Ov v) ((n : Kv v) * x) :=
+  _root_.UpperTheory.V.Z.Sym.Glob.exists_nat_mul_loc v x
 
 variable {Δ : F}
 

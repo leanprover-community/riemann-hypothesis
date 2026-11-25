@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.SLemOm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselScaling
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
@@ -268,17 +269,7 @@ variable (k r : ℕ)
 
 lemma sum_mid (f : Fin (2 * r + k + 1) → ℂ) (hf : ∀ i : Fin (2 * r + k + 1), (i.val < r ∨ r + k < i.val) → f i = 0) :
     ∑ i, f i = ∑ j : Fin (k + 1), f (wI k r j) := by
-  symm
-  refine Fintype.sum_of_injective (wI k r) ?_ (fun j => f (wI k r j)) f ?_ (fun _ => rfl)
-  · intro a b hab
-    have := congrArg Fin.val hab
-    simp only [wI] at this
-    ext; omega
-  · intro c hc
-    apply hf
-    by_contra hcon
-    push_neg at hcon
-    exact hc ⟨⟨c.val - r, by omega⟩, by ext; simp only [wI]; omega⟩
+  apply _root_.PI.StabBigW.sum_mid <;> assumption
 
 lemma Hpk_mid (a b : Fin (k + 1)) : Hpk k r (wI k r a) (wI k r b) = Hb k a b := by
   simp only [Hpk, Hb, wI, Matrix.diagonal_apply, Fin.ext_iff, Fin.val_last]

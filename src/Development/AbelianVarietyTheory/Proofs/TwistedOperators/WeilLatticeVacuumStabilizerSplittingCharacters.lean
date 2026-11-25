@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBaseChangeFiniteAdeleRingEquiv
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
@@ -106,7 +107,7 @@ theorem finPart_detAt {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)} {g : GA D V
     apply GlobalTheory.AdIdem.idempotent_mem_intAE
     rw [← map_mul, he]
   rw [detAt_val, map_add (f := _), map_mul, map_sub, map_one]
-  exact add_mem (GlobalTheory.IdemPrime.mul_mem_int hfe hd) (sub_mem GlobalTheory.VacInert.one_int hfe)
+  exact add_mem (GlobalTheory.HostAdeleIso.intAE_mul_mem D hfe hd) (sub_mem GlobalTheory.VacInert.one_int hfe)
 
 theorem mul_eq_self_of_orthogonal_supported_sub_one {R : Type} [CommRing R] {a b x : R} (h : b * a = 0) (hx : b * (x - 1) = x - 1) : a * x = a := by
   linear_combination (x - 1) * h - a * hx

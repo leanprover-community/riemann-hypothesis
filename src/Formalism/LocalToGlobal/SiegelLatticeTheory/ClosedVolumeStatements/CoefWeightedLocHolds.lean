@@ -1241,8 +1241,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace ChkScMu
 
 theorem hform_crdA {D : D7} (A : UnitaryGroupInstance D) (v w : (VS D).V) :
@@ -1456,8 +1454,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScPi
 

@@ -704,7 +704,7 @@ theorem thetaInv : PositivityTheory.GramSchwartzFunctions.EC.ThetaInv := by
         have := hg (ω g⁻¹ Φ)
         rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply] at this
         exact this.symm }
-  have hle : GF D n ≤ S := GlobalTheory.T.rational_group_le_of_generators_mem D n S (fun g a hg Φ => GlobalTheory.T.theta_sum_invariant_levi_element D n V ψ χ θ μ ω hS g a hg Φ)
+  have hle : GF D n ≤ S := _root_.GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl D n S (fun g a hg Φ => GlobalTheory.T.theta_sum_invariant_levi_element D n V ψ χ θ μ ω hS g a hg Φ)
     (fun g b hg Φ => GlobalTheory.T.theta_sum_invariant_unipotent_translate D n V ψ χ θ μ ω hS g b hg Φ)
     (fun g hg Φ => GlobalTheory.T.theta_sum_invariant_weyl_involution D n V ψ χ θ μ ω hS g hg Φ)
   intro Φ γ hγ
@@ -747,7 +747,7 @@ namespace GlobalTheory.CompanionTheory.EisCellsChapter
 
 theorem eisCells : PositivityTheory.GramSchwartzFunctions.EisCells :=
   GlobalTheory.T.eisenstein_cells_decomposition GlobalTheory.T.eisenstein_bruhat_decomposition GlobalTheory.T.eisenstein_rational_points GlobalTheory.T.eisenstein_siegel_parabolic_invariance
-    (GlobalTheory.T.eisenstein_second_term_from_parts GlobalTheory.T.eisenstein_heisenberg_schwartz GlobalTheory.T.eisenstein_covariance GlobalTheory.T.eisenstein_vanishing GlobalTheory.T.eisenstein_unfolding_second_term GlobalTheory.T.eisenstein_theta_invariance)
+    (GlobalTheory.T.eisenstein_second_term_from_parts _root_.PositivityTheory.RdEc.heisSch GlobalTheory.T.eisenstein_covariance _root_.GlobalTheory.CompanionTheory.EisZero.zero _root_.GlobalTheory.CompanionTheory.EisUnfold.unfold2 GlobalTheory.T.eisenstein_theta_invariance)
 
 end GlobalTheory.CompanionTheory.EisCellsChapter
 end -- clump:auto

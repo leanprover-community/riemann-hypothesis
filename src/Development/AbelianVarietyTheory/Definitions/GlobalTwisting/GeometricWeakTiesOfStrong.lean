@@ -57,8 +57,6 @@ end
 
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
 
-variable (Q : V4.Slot) (Lk : LkT Bundle)
-
 def NL (𝒞 : FamClass) : Prop := Closed 𝒞 fun Fm _ => Formalism.MainNotions.LinkN Fm
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL}

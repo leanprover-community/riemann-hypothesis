@@ -24,8 +24,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.StabIntLat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (w : Point D.host.E (D.R.rS + 1))
 
 theorem E_strict {X : MatR D} (hU : UpU X) (hB : IsBlockDiagonalMatrix w X) (i j : Fin (D.R.rS + 1)) (hji : j ≤ i) :
@@ -120,8 +118,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.Pf.BlockPermutation Formalism.L2.SG.Pf.StabIntSh
 
 namespace Formalism.L2.SG.Pf.StabIntLat
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -284,8 +280,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.Pf.BlockPermutation Formalism.L2.SG.Pf.StabIntSh
 
 namespace Formalism.L2.SG.Pf.StabIntLat
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (w : Point D.host.E (D.R.rS + 1))
 

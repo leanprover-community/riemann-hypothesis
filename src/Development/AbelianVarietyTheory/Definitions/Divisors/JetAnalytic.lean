@@ -57,31 +57,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LatJet
 
-abbrev Idx (I : Type) [Fintype I] (n : ℕ) : Type := {ν : I → ℕ // ∑ i, ν i ≤ n + 1}
-
-structure JetRing (R : Type) [CommRing R] (I : Type) [Fintype I] (n : ℕ) where
-
-  B : Type
-  [cr : CommRing B]
-  [alg : Algebra R B]
-
-  b : Module.Basis (Idx I n) R B
-
-  one : b ⟨0, by simp⟩ = 1
-
-  mul : ∀ ν ν' : Idx I n, b ν * b ν' =
-    if h : ∑ i, (ν.1 + ν'.1) i ≤ n + 1 then (∏ i, (ν.1 i + ν'.1 i).choose (ν.1 i)) • b ⟨ν.1 + ν'.1, h⟩ else 0
-
-  π : B →+* R
-
-  π_eq : ∀ x, π x = b.repr x ⟨0, by simp⟩
-
-  κ : DividedPowers (RingHom.ker π)
-
-  nil : IsNilDP κ
-
-attribute [instance] JetRing.cr JetRing.alg
-
 section Alg
 
 variable {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {R : Type} [CommRing R] {I : Type} [Fintype I] {n : ℕ}

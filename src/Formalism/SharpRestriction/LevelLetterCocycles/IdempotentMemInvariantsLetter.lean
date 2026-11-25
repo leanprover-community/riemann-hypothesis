@@ -185,11 +185,6 @@ theorem trunc_sub_alt (F G : PowerSeries O) (N : ℕ) : trunc N (F - G) = trunc 
   ext m
   simp only [PowerSeries.coeff_trunc, Polynomial.coeff_sub, map_sub]
 
-theorem trunc_smul_alt (o : O) (F : PowerSeries O) (N : ℕ) : trunc N (o • F) = o • trunc N F := by
-  ext m
-  simp only [PowerSeries.coeff_trunc, Polynomial.coeff_smul, PowerSeries.coeff_smul]
-  all_goals split_ifs <;> simp
-
 theorem aeval_mem_invariants (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) (p : Polynomial O) :
     Polynomial.aeval (qP W) p ∈ W.AΔ := by
   induction p using Polynomial.induction_on' with

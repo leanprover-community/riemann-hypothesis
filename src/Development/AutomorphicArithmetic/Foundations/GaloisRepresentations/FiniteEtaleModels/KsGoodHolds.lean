@@ -1855,9 +1855,9 @@ theorem stepA : StepA := stepA_holds (multUnit_of mIn) (latGen_of mIn) (clsEx_of
 theorem baseFet : BaseFet := baseFet_holds (powCart_of mIn) (piFet_of mIn)
 
 theorem stepB : StepB :=
-  stepB_of (tjExG_of esNorm_link esGen_link objTri_holds pullIsog_holds pullKer_holds)
-    (bRead_of (isogG_of (trEta_of mIn) (trBack_of mIn) (multUnit_of mIn) (trTj_of mIn)) (qObj_of mIn) (qComp_of mIn) objTri_holds)
-    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds pullKer_holds kerFromU_holds isoOfKer_holds) (trEtaPt_of mIn))
+  stepB_of (tjExG_of esNorm_link esGen_link _root_.UpperTheory.Gal.crystallineComparison.Mod.objTri_of pullIsog_holds _root_.UpperTheory.Gal.crystallineComparison.Mod.pullKer_of)
+    (bRead_of (isogG_of (trEta_of mIn) (trBack_of mIn) (multUnit_of mIn) (trTj_of mIn)) (qObj_of mIn) (qComp_of mIn) _root_.UpperTheory.Gal.crystallineComparison.Mod.objTri_of)
+    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds _root_.UpperTheory.Gal.crystallineComparison.Mod.pullKer_of kerFromU_holds isoOfKer_holds) (trEtaPt_of mIn))
     (bLev_of latB_holds etaPtB_holds etInj_holds) (descExt_of normExt_holds) baseFet O.baseOnto pulledEx_holds
 
 theorem quotOf : QuotOf := quotOf_holds (powCart_of mIn) (piInv_of mIn) (piFet_of mIn) (piSep_of mIn) (congCRT_of mIn) O.baseOnto

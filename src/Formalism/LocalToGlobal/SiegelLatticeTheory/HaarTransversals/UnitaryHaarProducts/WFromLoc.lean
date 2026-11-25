@@ -303,7 +303,6 @@ end Inv
 
 section Assembly
 open Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.ConcreteSettingExists
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem lam_matchR (R : Ranks) (P : HCParam R) (i : Fin (2 * R.rS + R.k + 1)) (hr : 2 * R.rS + R.k + 1 = R.r) :
     lamS R P (Fin.cast hr i) =
@@ -374,7 +373,6 @@ namespace Formalism.L2.SG.Pf.WFL
 variable {k r : ℕ}
 
 section Main
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem split_S {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r + k + 1) → ℂ}
     {wf : Fin k → Fin (2 * r + k + 1) → ℂ} {z0 : Fin (2 * r + k + 1) → ℂ} (hF : IsFrameJ ε e f wf z0)
@@ -628,16 +626,6 @@ theorem wblk_core (hQK : QuotProdK) (hHN : LocHNProps) (hNU : NUnimodLoc) (hTens
 end Main
 
 section Final
-
-theorem weighted_block_exists_of_local_data (hQK : QuotProdK) (hHN : LocHNProps) (hNU : NUnimodLoc) (D : D7)
-    (hB : BesselNVGap) (hCW : CoefWeightedLoc) (hWl : WlocExists) (hGB : GapBigOfGapHyp D) :
-    GapHyp D → ∀ (A : UnitaryGroupInstance D) (L : UnitaryLatticeData D) (Ps : AdditiveCharacterData A)
-      (Rf : ReferenceFrame A L) (Bu : AutomorphicBundle A Ps Rf) (Pi : RepresentationData A L)
-      (Mu : MuBlocks A L), Nonempty (WBlk A L Bu Pi Mu) := by
-  intro hG A L Ps Rf Bu Pi Mu
-  obtain ⟨I, ιE, ιE_conj, ιE_F, bas, J_eq, L_eq, pl, φ_eq, n_eq, eps_eq⟩ := A
-  exact wblk_core hQK hHN hNU Formalism.L2.SG.Pf.WuDec.integrable_and_integral_pi_apply hB hCW hWl hGB hG I ιE ιE_conj ιE_F bas J_eq L_eq pl
-    φ_eq n_eq eps_eq L Ps Rf Bu Pi Mu
 
 end Final
 

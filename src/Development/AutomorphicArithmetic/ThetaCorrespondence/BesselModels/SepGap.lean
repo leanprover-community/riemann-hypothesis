@@ -703,9 +703,6 @@ theorem e_add_le_b {l : ℕ} (h1 : 1 ≤ l) (h2 : l + 1 ≤ D.R.m) :
   rw [e_spec D C τ (by omega), b_spec D C τ (by omega)] at h
   linarith
 
-theorem b_lt {l l' : ℕ} (h1 : 1 ≤ l) (h2 : l < l') (h3 : l' ≤ D.R.m) : ((num D C τ).b l : ℚ) < (num D C τ).b l' := by
-  exact_mod_cast (num D C τ).b_mono l l' h1 h2 h3
-
 theorem cloud_gt {x : ℚ} (h : x ∈ (num D C τ).cloud) : -((num D C τ).b 1 : ℚ) < x := by
   obtain ⟨i, h1, h2, rfl⟩ := GlobalTheory.SignedHC.GridData.mem_cloud.1 h
   have hk : D.R.m + 3 ≤ D.R.k := D.R.m_add_three_le_k

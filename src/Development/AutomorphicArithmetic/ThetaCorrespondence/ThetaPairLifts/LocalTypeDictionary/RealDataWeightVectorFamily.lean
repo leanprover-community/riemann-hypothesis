@@ -1519,7 +1519,7 @@ theorem stage4_alt : _root_.GlobalTheory.PrimIn.PublishedThetaConditionTheorems 
   intro P hHL D G _ _ Pl0 I0 T0 A3 T _ R F κ v₀ O hT hG hM hRow hLv hPos
   have hE : GlobalTheory.Published.SiegelEisensteinContinuation := _root_.ResidueKilled.sec_of_dm P.q9
   obtain ⟨hOk, hGU, hGE, hBlk, hA, _hB⟩ := _root_.GlobalTheory.T.pgUnit_and_pgEquiv_of_multEq P R F hT hM
-  obtain ⟨hLT, hLTB, _hML⟩ := GlobalTheory.T.liftTests_modularLattice_of_coreCompatibility T R F κ v₀ O hT hG
+  obtain ⟨hLT, hLTB, _hML⟩ := _root_.GlobalTheory.PrimIn.liftTests_and_mLat_of_ties T R F κ v₀ O hT hG
   obtain ⟨hLevW, hPartsW, hHecke, hSep, _hTr⟩ := _root_.GlobalTheory.T.pLevW_and_trISep_of_liftTest_pos P R F hT hM hG.unif hLT hLv hPos
   have hOnto := _root_.GlobalTheory.LiftOntoOfPublished.ontoC_of_hypotheses_alt P.q5 P.q4 P.q2 P.q1 P.q7 P.q9 P.q10 P.q11 hHL (s := 1) R F hT.ok hT.char hT.ex hT.host
     hT.params hT.ccK hT.guard hT.types hOk.2 hGE hG.unif

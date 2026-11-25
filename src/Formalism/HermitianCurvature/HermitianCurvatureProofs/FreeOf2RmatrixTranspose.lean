@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EmbedLoweringConstant
 public import Formalism.HermitianCurvature.StatementFr
 public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
@@ -42,12 +43,7 @@ theorem free_star [StarRing A] {c : S} {x : SlopeTestRemainingChoices S A} (hx :
   rwa [Wd1.star_eU] at h
 
 theorem free_io (c : S) (x : A) : FreeOf c (io x : SlopeTestRemainingChoices S A) := by
-  intro i j
-  show (eU c i j : SlopeTestRemainingChoices S A) * io x = io x * eU c i j
-  ext u v
-  unfold io
-  rw [Matrix.scalar_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Wd1.eU_apply]
-  split_ifs <;> simp
+  apply _root_.Formalism.FourierDecayAlt.P.Fr6.fr_io <;> assumption
 
 theorem free_eU {a c : S} (hc : c ≠ a) (k l : Fin 2) : FreeOf c (eU a k l : SlopeTestRemainingChoices S A) :=
   fun i j => Wd1.eU_comm_of_ne hc i j k l
@@ -62,12 +58,7 @@ theorem freeOf2_transpose {c : S} {M : M2 (SlopeTestRemainingChoices S A)} (hM :
 
 theorem freeOf2_matrix_entries {c : S} {x y z w : SlopeTestRemainingChoices S A} (hx : FreeOf c x) (hy : FreeOf c y) (hz : FreeOf c z)
     (hw : FreeOf c w) : FreeOf2 c !![x, y; z, w] := by
-  intro i j
-  fin_cases i <;> fin_cases j
-  · exact hx
-  · exact hy
-  · exact hz
-  · exact hw
+  apply _root_.Formalism.FourierDecayAlt.P.Fr6.fr2 <;> assumption
 
 theorem freeOf2_one (c : S) : FreeOf2 c (1 : M2 (SlopeTestRemainingChoices S A)) := by
   intro i j

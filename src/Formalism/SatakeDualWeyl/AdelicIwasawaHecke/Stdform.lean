@@ -185,10 +185,6 @@ section Sign
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-private lemma re_conj_mul_self_eq_normSq (z : ℂ) : (starRingEnd ℂ z * z).re = Complex.normSq z := by
-  rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.normSq_apply]
-  ring
-
 theorem stdform_sig_diag {p q : ℕ} (M : Matrix n n ℂ) (e : n ≃ Fin p ⊕ Fin q)
     (P : GL (Fin p ⊕ Fin q) ℂ)
     (hP : (P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)ᴴ * M.reindex e e *

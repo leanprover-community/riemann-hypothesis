@@ -64,91 +64,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.B CrystallineSemistableComparison.Pb DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.CompanionTheory.KMVan
-
-section Sc
-
-variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
-
-structure Sc (Φ : PDF R C) (Λ : Type) [CommRing Λ] where
-  ρ : ∀ T : C, Λ →+* Φ.A.obj T
-  nat : ∀ {T T' : C} (φ : T ⟶ T') (a : Λ), (Φ.A.map φ).hom (ρ T a) = ρ T' a
-
-variable {Φ : PDF R C} {Λ : Type} [CommRing Λ]
-
-end Sc
-
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-section Loc
-open TensorProduct
-variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
-  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
-
-end Loc
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
-
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
-section D
-variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
-  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
-
-end D
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
-section LT
-variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
-  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
-
-end LT
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-section FV
-variable {R : Type} [CommRing R]
-
-end FV
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-section PS
-open CrystallineSemistableComparison.Pb.Site GlobalTheory.PDA GlobalTheory.CompanionTheory.ChartLocBc
-variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
-  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
-
-end PS
-
-section Res
-variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C}
-
-end Res
-
-section Fr
-open CrystallineSemistableComparison.Pb.Site
-variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
-  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {V : X.Opens} {d : ℕ}
-
-end Fr
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-section CL
-open CrystallineSemistableComparison.Pb.Site
-variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
-  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {V V' : X.Opens} {d : ℕ}
-
-end CL
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
 section TAU
 open CrystallineSemistableComparison.Pb.Site
 variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
@@ -169,15 +84,6 @@ theorem evT_nat {T T' : Thick (nlFun γ p X q κ)} (φ : T ⟶ T') (f : Γ(X, �
   exact key _ (pt_hom φ) (inU_top T')
 
 end TAU
-end GlobalTheory.CompanionTheory.KMVan
-
-namespace GlobalTheory.CompanionTheory.KMVan
-section TAU2
-open CrystallineSemistableComparison.Pb.Site
-variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
-  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
-
-end TAU2
 end GlobalTheory.CompanionTheory.KMVan
 end -- clump:auto
 end -- clump:auto

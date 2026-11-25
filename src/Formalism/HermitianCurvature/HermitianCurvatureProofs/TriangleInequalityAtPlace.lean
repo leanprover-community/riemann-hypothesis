@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.FormalDegreeBessel.FinalG
@@ -39,21 +40,7 @@ theorem Gf_sgs {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductS
 theorem ae_inSS {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Ds : B.RealPlaceData k r Wp Wq) :
     ∀ᵐ q ∂Ds.μSS, Ds.inSS q := by
-  have key : ∀ {α β : Type} [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α) (ν : Measure β)
-      (P : α → Prop), (∀ᵐ x ∂μ, P x) → ∀ᵐ p ∂(μ.prod ν), P p.1 := by
-    intro α β _ _ μ ν P h
-    exact Measure.quasiMeasurePreserving_fst.ae h
-  have key2 : ∀ {α β : Type} [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α) (ν : Measure β)
-      (P : β → Prop), (∀ᵐ y ∂ν, P y) → ∀ᵐ p ∂(μ.prod ν), P p.2 := by
-    intro α β _ _ μ ν P h
-    exact Measure.quasiMeasurePreserving_snd.ae h
-  have h1 : ∀ᵐ x ∂Ds.μW, Matrix.of x ∈ UWset k r Ds.z := ae_iff.mpr Ds.haarW.conc
-  have h2 : ∀ᵐ x ∂Ds.μN, Matrix.of x ∈ Nset k r := ae_iff.mpr Ds.haarN.conc
-  have h3 : ∀ᵐ x ∂Ds.μW', Matrix.of x ∈ UWset k r Ds.z' := ae_iff.mpr Ds.haarW'.conc
-  show ∀ᵐ q ∂((Ds.μW.prod Ds.μN).prod (Ds.μW'.prod Ds.μN)), Ds.inSS q
-  filter_upwards [key _ _ _ (key _ _ _ h1), key _ _ _ (key2 _ _ _ h2), key2 _ _ _ (key _ _ _ h3),
-    key2 _ _ _ (key2 _ _ _ h2)] with q a b c d
-  exact And.intro a (And.intro b (And.intro c d))
+  apply _root_.Formalism.FourierDecayAlt.P.B5.ae_inSS <;> assumption
 
 theorem Gf_of_Zhat {k r : ℕ} (z z' : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) (pt : C.LPt)
     (h : Zhat k r z z' g = D.ptMatN pt (r + 1)) :

@@ -542,18 +542,13 @@ end Lat
 
 variable {D : D7}
 
-theorem isEquiv_val (w : Pl D.host.E) :
-    (ValuativeRel.valuation (Kw w)).IsEquiv (Valued.v : Valuation (Kw w) (WithZero (Multiplicative ℤ))) :=
-  haveI : (Valued.v : Valuation (Kw w) (WithZero (Multiplicative ℤ))).Compatible := Valuation.Compatible.ofValuation _
-  ValuativeRel.isEquiv _ _
-
 theorem change_mem_KO {a : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {β β' : GL (Fin a) (Formalism.IndefR.Lev.EAf D)}
     (h : IsFrame β Λ) (h' : IsFrame β' Λ) (w : Pl D.host.E) : (loc w β')⁻¹ * loc w β ∈ KO (Kw w) (Fin a) := by
   have key : ∀ {β β' : GL (Fin a) (Formalism.IndefR.Lev.EAf D)}, IsFrame β Λ → IsFrame β' Λ → ∀ i j,
       ((loc w β')⁻¹ * loc w β).val i j ∈ (ValuativeRel.valuation (Kw w)).integer := fun {β β'} h h' i j => by
     have h2 := (mem_OA_iff _).1 (int_change h h' i j) w
     rw [← map_inv, ← map_mul]
-    exact (isEquiv_val w).le_one_iff_le_one.2 h2
+    exact (GlobalTheory.FunObj.Good.isEquiv_Kw w).le_one_iff_le_one.2 h2
   refine (mem_KO_iff _).2 ⟨key h h', ?_⟩
   rw [_root_.mul_inv_rev, inv_inv]
   exact key h' h
@@ -596,7 +591,7 @@ theorem val_xiAt (w : Pl D.host.E)
   have h4 : w.valuation D.host.E D.host.xi0 = 1 := by
     unfold Formalism.BasicNotions.Host.xi0
     rw [map_div₀, map_mul, h1, h3, Valuation.map_neg, map_one, mul_one, div_one]
-  refine (isEquiv_val w).eq_one_iff_eq_one.2 ?_
+  refine (GlobalTheory.FunObj.Good.isEquiv_Kw w).eq_one_iff_eq_one.2 ?_
   exact (w.valuedAdicCompletion_eq_valuation' _).trans h4
 
 theorem changes_mem_KO : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (B : Frames G) (t : T) (i j : Fin D.R.m) (X : TriG G i j), SquareStanding G t →

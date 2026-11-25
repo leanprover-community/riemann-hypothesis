@@ -446,7 +446,7 @@ theorem first_minimum_cusp_weight_regular : ∀ (E : Type) [Field E] [NumberFiel
       · rintro ⟨y, rfl⟩
         refine ⟨_, ⟨γ.symm y, rfl⟩, ?_⟩
         rw [← hφ, γ.apply_symm_apply]
-    obtain ⟨a, b, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.cusp_weight_invariant_under_isometry E g Λ Ψ (F.R t) F.σ g Λ (F.R t') φ F.cm himg h1 h2
+    obtain ⟨a, b, -⟩ := _root_.LevelTowerAlt.riemann_lattice_isometry_transport E g Λ Ψ (F.R t) F.σ g Λ (F.R t') φ F.cm himg h1 h2
     exact ⟨b.symm, a.symm⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.FamilyMeas

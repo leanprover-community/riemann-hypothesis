@@ -45,16 +45,6 @@ open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift Global
 
 namespace GlobalTheory.HoweR
 
-theorem isKC_Eab_of_posC {p q : ℕ} {c d : Ix p q} (h : posC c d) : IsKC (Eab c d) := by
-  intro a b hab
-  have hcd : sameBlock c d := by
-    cases c <;> cases d <;> simp_all [posC, sameBlock]
-  simp only [Eab, Matrix.single_apply]
-  split_ifs with h1
-  · obtain ⟨rfl, rfl⟩ := h1
-    exact absurd hcd hab
-  · rfl
-
 theorem mem_hwSub_iff {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
     (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (μ : Ix p q → ℚ) (v : V) :
     v ∈ hwSub act μ ↔ (∀ c, act (Eab c c) v = ((μ c : ℚ) : ℂ) • v) ∧ ∀ c d, posC c d → act (Eab c d) v = 0 := by
@@ -87,7 +77,7 @@ theorem hw_sup_le (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : 
       rw [map_add (f := _)] at this
       exact eq_neg_of_add_eq_zero_left this
     rw [e]
-    exact N'.neg_mem (hN' _ (isKC_Eab_of_posC hcd) n' hn')
+    exact N'.neg_mem (hN' _ (GlobalTheory.FockAlg.MinFirst.isKC_pos hcd) n' hn')
   obtain ⟨n1, hn1N, hn1h, hd⟩ := _root_.GlobalTheory.HoweR.LiftMod.lift_mod p q V act hG (N ⊓ N') N hI hN μ n hn h1 h2
   have hdN' : n + n' - n1 ∈ N' := by
     have : n + n' - n1 = (n - n1) + n' := by abel

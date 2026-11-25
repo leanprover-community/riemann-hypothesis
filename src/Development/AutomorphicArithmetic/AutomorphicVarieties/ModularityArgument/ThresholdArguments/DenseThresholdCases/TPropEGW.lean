@@ -685,17 +685,7 @@ private theorem small_mul {x y : ℂ} (hx : ‖ι.symm x‖ < 1) (hy : ‖ι.sym
   exact lt_of_le_of_lt (mul_le_of_le_one_right (norm_nonneg _) hy) hx
 
 private theorem int_chi {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (a : ZMod N) : ‖ι.symm (χ a)‖ ≤ 1 := by
-  by_cases ha : IsUnit a
-  · obtain ⟨u, rfl⟩ := ha
-    have hfin : 0 < orderOf u := orderOf_pos u
-    have h1 : (ι.symm (χ u)) ^ orderOf u = 1 := by
-      rw [← map_pow, ← map_pow, ← Units.val_pow_eq_pow_val, pow_orderOf_eq_one, Units.val_one,
-        map_one, map_one]
-    have h2 : ‖ι.symm (χ u)‖ ^ orderOf u = 1 := by
-      rw [← norm_pow, h1, norm_one]
-    exact le_of_eq ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hfin.ne').mp h2)
-  · rw [MulChar.map_nonunit χ ha, map_zero, norm_zero]
-    exact zero_le_one
+  apply _root_.UpperTheory.V.Z.Sym.Unl.norm_chi <;> assumption
 
 private theorem int_term (k : ℕ) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (j : ℕ) :
     ‖ι.symm (χ (j : ZMod N) * (j : ℂ) ^ (k - 1))‖ ≤ 1 := by

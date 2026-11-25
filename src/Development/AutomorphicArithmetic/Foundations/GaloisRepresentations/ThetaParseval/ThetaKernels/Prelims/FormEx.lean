@@ -74,23 +74,13 @@ private theorem map_update_mem (S : Submodule ℂ (⨂[ℂ] i, V i)) (C : ∀ i,
       PiTensorProduct.map (Function.update (fun i => (1 : Module.End ℂ (V i))) i B) x ∈ S)
     (i : I) (B : Module.End ℂ (V i)) :
     ∀ x ∈ S, PiTensorProduct.map (Function.update (fun i => (1 : Module.End ℂ (V i))) i B) x ∈ S := by
+  intro x hx
+  let applyAtX : Module.End ℂ (V i) →ₗ[ℂ] (⨂[ℂ] j, V j) :=
+    (LinearMap.applyₗ (R := ℂ) x).comp
+      ((PiTensorProduct.mapMultilinear ℂ V V).toLinearMap (fun _ => 1) i)
   have hB : B ∈ Submodule.span ℂ (C i) := hC i ▸ Submodule.mem_top
-  induction hB using Submodule.span_induction with
-  | mem B hB => exact hS i B hB
-  | zero =>
-    intro x _
-    have h0 := (PiTensorProduct.mapMultilinear ℂ V V).map_update_zero (fun i => (1 : Module.End ℂ (V i))) i
-    have h1 : PiTensorProduct.map (Function.update (fun i => (1 : Module.End ℂ (V i))) i 0) = 0 := h0
-    rw [h1]
-    exact S.zero_mem
-  | add B D _ _ hB hD =>
-    intro x hx
-    rw [PiTensorProduct.map_update_add, LinearMap.add_apply]
-    exact add_mem (hB x hx) (hD x hx)
-  | smul c B _ hB =>
-    intro x hx
-    rw [PiTensorProduct.map_update_smul, LinearMap.smul_apply]
-    exact S.smul_mem _ (hB x hx)
+  exact (Submodule.map_span_le applyAtX (C i) S).2 (fun D hD => hS i D hD x hx)
+    (Submodule.mem_map_of_mem hB)
 
 private theorem map_mem (S : Submodule ℂ (⨂[ℂ] i, V i))
     (hS : ∀ i (B : Module.End ℂ (V i)), ∀ x ∈ S,

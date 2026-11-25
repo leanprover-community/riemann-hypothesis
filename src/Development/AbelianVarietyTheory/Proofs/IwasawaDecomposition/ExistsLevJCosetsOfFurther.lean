@@ -910,7 +910,7 @@ theorem exists_levJ_cosets_of_further : ∀ {B : Base} {X : PreX B.toPre} (I : T
       · exact hQloc ⟨v, hv⟩
       · exact (hKloc β v hv (φ v κ)).mpr
           ⟨hJoff κ v hv, fun j hj => congrFun hFix ⟨j, v, hj⟩⟩
-  obtain ⟨Yb, hYf, aY, yb, yG, YQ, yQ, hA1, hA2, hA3, hA4, hA5⟩ :=
+  obtain ⟨Yb, _, aY, yb, yG, YQ, yQ, -, -, hA3, hA4, hA5⟩ :=
     @assemble J.U inferInstance Ch hCh Q inferInstance (fun q => ↥(W q.1 q.2)) inferInstance
       zQ Kc (fun β q => hWfi β q.1 q.2) V hfinV actV wv Hs hH
 
@@ -920,22 +920,6 @@ theorem exists_levJ_cosets_of_further : ∀ {B : Base} {X : PreX B.toPre} (I : T
     have hBase : (F u).levJ.Lb = reL e J.Lb :=
       hH0L.trans (congrArg (reL e) hJLb.symm)
     exact hCharts.trans (((F u).levJ_Lb h1 (g β)).trans hBase)
-
-  have hle (β : Ch) : (K β).lev.U ≤ J.U.map reA.toMonoidHom := by
-    intro x hx
-    let y := reA.symm x
-    have hy : reA y = x := reA.apply_symm_apply x
-    have hx' := ((K β).lev.U_eq x).mp hx
-    refine ⟨y, (hmemU y).mpr ⟨(hUP y).mp ((mem_congr rfl hy).mpr hx'.1), ?_⟩, hy⟩
-    intro v
-    have hLoc : reV v (srcLoc v y) ∈ (K β).lev.Uloc v :=
-      (mem_congr rfl ((hbc v y).symm.trans (congrArg (dstLoc v) hy))).mpr (hx'.2 v)
-    by_cases hv : v ∈ Q
-    · exact (mem_congr (ulocQ_pos H0 Q W hv) rfl).mpr
-        ((hmap v _ _).mp (hWle β v hv hLoc))
-    · have hJloc := ((hKloc β v hv _).mp hLoc).1
-      exact (mem_congr (ulocQ_neg H0 Q W hv) rfl).mpr
-        ((hmap v (H0.Uloc v) (srcLoc v y)).mp ((mem_congr (hH0U v) rfl).mp hJloc))
 
   have hJg : ∀ (j : Fin 2) (v : Place) (hv : (B.host.g j : 𝓞 B.host.F) ∈ v.asIdeal),
       ∀ x ∈ levelVL B.sp.cm.sig (B.sp.X i).gram v J.Lb,
@@ -1039,8 +1023,8 @@ theorem exists_levJ_cosets_of_further : ∀ {B : Base} {X : PreX B.toPre} (I : T
     intro κ y hκ
     exact hA5 κ y (funext fun q => Subtype.ext (hκ q.1 q.2))
   exact ⟨{
-    levJ := J, Yb := Yb, YbFin := hYf, YbAct := aY, yb := yb, yb_orbit := hA1, lb := hLbK, «le» := hle,
-    stab := hA2, chiJ := chiJ, chiJ_eq := hchiJ, J_g := hJg, J_off := hJo,
+    levJ := J, Yb := Yb, YbAct := aY, yb := yb, lb := hLbK,
+    chiJ := chiJ, chiJ_eq := hchiJ, J_g := hJg, J_off := hJo,
     yG := fun y j v hv => yG y ⟨j, v, hv⟩, yG_smul := hyGs,
     YQ := YQ, yQ := yQ, y_inj := hyI, yQ_off := hyQ }⟩
 

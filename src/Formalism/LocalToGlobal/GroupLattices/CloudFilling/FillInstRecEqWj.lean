@@ -24,8 +24,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def LatticeCompatibleAt {D : D7} {L : SizeData₂ D} (X : Inst D L) {p : ℕ} (G : GAtP p)
     (pos : (Σ v : Fin G.P.nV, Fin (G.P.n' v)) ≃ D.what₂.Tau) (vOf : HH D → Fin G.P.nV) (Fl : Fills G) : Prop :=
   Fl.mm = D.R.m ∧ Fl.t = D.R.t ∧
@@ -161,8 +159,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.UG Formalism.
 open scoped TensorProduct
 
 namespace Formalism.L2.G
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 structure LocPack (D : D7) (u : D.what₂.Word)
     (Lc : ColLevel D.R D.host.F D.host.E D.sp D.host.g (D.mem u).C (D.mem u).A (D.clsLat u)) (p : ℕ) where

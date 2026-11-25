@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.HeckeCharAlgebraicOfSign
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicFormHyp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ShapeFacts
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
@@ -96,24 +97,7 @@ private theorem diagR_mk (φ : E →+* ℂ) (k : E) : ((diagR E k (InfinitePlace
 private theorem chiInf_pos {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgPos χ n) (u : (TR.Rinf E)ˣ)
     (hu : ∀ v, 0 < u.val v) :
     ((TR.chiInf χ u : ℂˣ) : ℂ) = ∏ φ : E →+* ℂ, ((u.val (InfinitePlace.mk φ) : ℝ) : ℂ) ^ n φ := by
-  have hc : ∀ v, Continuous fun u : (TR.Rinf E)ˣ => u.val v := fun v => (continuous_apply v).comp Units.continuous_val
-  have ho : IsOpen {u : (TR.Rinf E)ˣ | ∀ v, 0 < u.val v} := by
-    rw [Set.setOf_forall]
-    exact isOpen_iInter_of_finite fun v => isOpen_lt continuous_const (hc v)
-  have hcl : IsClosed {u : (TR.Rinf E)ˣ |
-      ((TR.chiInf χ u : ℂˣ) : ℂ) = ∏ φ : E →+* ℂ, ((u.val (InfinitePlace.mk φ) : ℝ) : ℂ) ^ n φ} :=
-    isClosed_eq (Units.continuous_val.comp (TR.continuous_chiInf χ)) (continuous_finsetProd _ fun φ _ =>
-      (Complex.continuous_ofReal.comp (hc _)).zpow₀ _ fun u => Or.inl
-        (Complex.ofReal_ne_zero.2 (TR.unit_ne_zero u _)))
-  refine closure_minimal ?_ hcl (denseRange_unitsR.open_subset_closure_inter ho hu)
-  rintro _ ⟨hk, k, rfl⟩
-  have h1 := h k fun φ => by
-    have h2 := hk (InfinitePlace.mk (Complex.ofRealHom.comp φ))
-    have h3 := diagR_mk (Complex.ofRealHom.comp φ) (k : E)
-    exact h2.trans_eq (Complex.ofReal_injective h3)
-  rw [HChar.inf, MonoidHom.comp_apply, infDiag_eqR] at h1
-  refine h1.trans (Finset.prod_congr rfl fun φ _ => ?_)
-  exact congrArg (· ^ n φ) (diagR_mk φ (k : E)).symm
+  apply _root_.chiInf_pos <;> assumption
 private theorem expo_intR {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgPos χ n) (v : InfinitePlace E) :
     ∃ k : ℤ, TR.expo χ v = k := by
   classical

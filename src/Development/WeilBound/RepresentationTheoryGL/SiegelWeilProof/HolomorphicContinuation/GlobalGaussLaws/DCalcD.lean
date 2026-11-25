@@ -46,8 +46,6 @@ theorem pow_mul_exp_le_half_exp (N : ℕ) (a : ℝ) (ha : 0 < a) :
     _ = (2 / a) ^ N * (N.factorial : ℝ) * Real.exp (a / 2) * Real.exp (-(a / 2 * x)) := by
         rw [h4]; ring
 
-alias PositivityTheory.Rg.Sw.Glob.DCalcDH.poly_exp := _root_.UpperTheory.Reformulated.B.P6.r23b.pow_mul_exp_le_half_exp
-
 end UpperTheory.Reformulated.B.P6.r23b
 end -- clump:auto
 end -- clump:auto

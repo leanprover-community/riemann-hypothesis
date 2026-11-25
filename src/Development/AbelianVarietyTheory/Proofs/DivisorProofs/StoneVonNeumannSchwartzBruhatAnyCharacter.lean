@@ -250,7 +250,7 @@ theorem stoneVonNeumann_any_char :
     intro a Y z
     simp only [Matrix.smul_apply, smul_eq_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-  obtain ⟨ι, hbij, h1, h2⟩ := GlobalTheory.T.stoneVonNeumann_schwartzBruhat_transverseLagrangians (κ := κ) (n := n) (d := d) (ψ0.mulShift c) hψ1
+  obtain ⟨ι, hbij, h1, h2⟩ := _root_.GlobalTheory.StoneVN.intertwiner_matrix (κ := κ) (n := n) (d := d) (ψ0.mulShift c) hψ1
     (fun x => by simpa only [AddChar.mulShift_apply] using hcond x)
     ((scaleSnd c⁻¹).comp wT) ((scaleSnd c⁻¹).comp (wM.comp S))
     (fun Y Y' => by

@@ -458,7 +458,7 @@ theorem testRest_bound : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ)
       ∑ p ∈ (Finset.Ioc B₀ B).filter (fun p => p.Prime ∧ p ∉ bad), restTerm j p (frob p τ) m (Q τ m))
       atTop (𝓝 (∑ τ, ∑ m ∈ Finset.Icc 1 (j + k), restSum j bad frob B₀ τ m (Q τ m))) :=
     tendsto_finsetSum _ fun τ _ => tendsto_finsetSum _ fun m _ =>
-      (_root_.GlobalTheory.CompanionTheory.Ar.Top.restTerm_bound_and_tendsto Ψ (j + k) j bad frob τ m (Q τ m)).2 B₀
+      (_root_.RootFieldNumerics.rest_term_bound_convergent Ψ (j + k) j bad frob τ m (Q τ m)).2 B₀
   refine le_of_tendsto hlim.abs (Eventually.of_forall fun B => ?_)
   have h := TestRest.finite_bound hj hk frob B₀ Q hB hQ
     ((Finset.Ioc B₀ B).filter (fun p => p.Prime ∧ p ∉ bad))
@@ -508,9 +508,9 @@ theorem test_height_bound_slope_flat : ∀ II : IntersectionSystem, ∀ (Ψ : Ty
   have hj1 := T.j_pos
   have hjN := T.j_lt
   obtain ⟨hhom, htd, hcase1, hcase2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts Ψ N T.j hj1 hjN
-  obtain ⟨Q, hQ1, hQ2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.form_top_succ_eq_sum_pk Ψ N (testPoly T.j) (by omega) hhom
+  obtain ⟨Q, hQ1, hQ2⟩ := _root_.RootFieldNumerics.decomposition_power_sums_top_degree Ψ N (testPoly T.j) (by omega) hhom
   have hdec : IsDecomp (testPoly T.j) Q := ⟨hQ1, hQ2⟩
-  have hPP := _root_.GlobalTheory.CompanionTheory.Ar.Top.identOnDecomposedForm II Ψ N T hh frob B₀ A₀ b₀ (testPoly T.j) Q hId hdec
+  have hPP := _root_.RootFieldNumerics.tower_point_count_identity II Ψ N T hh frob B₀ A₀ b₀ (testPoly T.j) Q hId hdec
   have hR := _root_.GlobalTheory.CompanionTheory.Ar.Top.testRest_bound Ψ N T.j T.bad frob B₀ Q hj1 hjN hB4 hdec
   have hAb := _root_.GlobalTheory.CompanionTheory.Ar.Top.flat_85_bound II Ψ N T hh frob C' rd Lval B₀ A₀ b₀ hprop hI9 hPF hB128 hbad hId
   have hSL' := hSL B₀ hB128 hB4 hbad

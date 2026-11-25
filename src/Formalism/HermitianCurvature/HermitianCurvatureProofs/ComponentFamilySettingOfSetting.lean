@@ -44,17 +44,7 @@ theorem mMap_zero (k j ρ : ℕ) (hj : j = 0) (Z : Matrix (Fin j) (Fin j) ℂ) (
   congr 1 <;> ext <;> simp [eB_val]
 
 theorem psi_one (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (c : ℂ) : psi k r z c 1 = 1 := by
-  have hell : ell k r z 1 = 0 := by
-    unfold ell
-    refine Finset.sum_eq_zero fun a _ => ?_
-    split_ifs with h
-    · rw [Matrix.one_apply_ne]
-      intro he
-      have := congrArg Fin.val he
-      simp [eI] at this
-    · rw [Matrix.one_mulVec]
-      exact hz _ (Or.inl (by simp [eI]))
-  simp [psi, hell]
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.psi_one <;> assumption
 
 theorem psiH_zero (β : ℂ) (σ : Equiv.Perm (Fin 0)) (η : U.XiH 0 0 σ) : U.psiH β σ η = 1 := by
   simp [U.psiH, U.subS, U.supS, U.cornerA, U.cornerB, G.psi]

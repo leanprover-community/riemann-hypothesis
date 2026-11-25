@@ -445,65 +445,6 @@ def overCpt {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D :
   vb := A.vb
 
 
-open Limits GeoModel in
-theorem exists_base' (hRes : ResK.ResKStatement) (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H)
-    (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (Ω₀ : Type) [Field Ω₀]
-    (ξ₀ : Spec (CommRingCat.of Ω₀) ⟶ Y.X) (hg : IsCptGen ξ₀) (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) :
-    ∃ (Ω : Type) (_ : Field Ω) (_ : CharZero Ω) (K : Type) (_ : Fintype K) (J : K → Type) (_ : ∀ k, Fintype (J k))
-      (y : (Σ k, J k) → Ω) (M₁ : PModel ℤ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩)) (f₁ : M₁.X ⟶ Y.X)
-      (y₀ : Sp Ω ⟶ Xo.XF c) (i : Ω₀ →+* Ω), Nonempty K ∧ (letI := i.toAlgebra; FiniteDimensional Ω₀ Ω) ∧
-      Flat.NormalCpt M₁.ξ ∧ M₁.ξ ≫ f₁ = y₀ ≫ Y.j ∧ M₁.ξ ≫ f₁ = spMap i ≫ ξ₀ ∧
-      (∀ p ∈ S, FullTorsion Y.t.G (M₁.ξ ≫ f₁) (p ^ 4)) ∧ (∀ p ∈ S, ∃ ζ : Ω, IsPrimitiveRoot ζ (p ^ 4)) ∧
-      SncPts M₁.ξ D.dim {p | Char0 M₁.ξ p ∧ p.1 ∉ f₁ ⁻¹' abLocus Y.t.G} ∧
-      Algebra.trdeg ℤ Ω = ((D.dim : ℕ) : Cardinal) := by
-  haveI : FiniteDimensional ℚ c.F := c.fin
-  haveI : NumberField c.F := {}
-  have hgen₀ := _root_.GlobalTheory.CompanionTheory.Ar.GenPtModel.genPt_mem_genericPoints E H D l Xo c Y Ω₀ ξ₀ hg
-  obtain ⟨w₀, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ChangeGeo.exists_factor_XF_of_genericPoint E H D l Xo c Y Ω₀ ξ₀ hgen₀
-  obtain ⟨cst, -⟩ := exists_cst (Y := Y) w₀
-  haveI : CharZero Ω₀ := charZero_of_injective_ringHom cst.injective
-  obtain ⟨Ω, _, _, i, hfin, htors, hroot⟩ := ChgField.exists_field E H D l Xo c Y Ω₀ ξ₀ S hgen₀ hS
-  obtain ⟨K₀, _, J₀, _, yc, X₀, ξ', f₀, bd₀, -, hall₀, htie₀, hf₀, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.SncBase.exists_sncBase hRes E H D l Xo c Y Ω₀ ξ₀ hg
-  obtain ⟨K₁, _, J₁, _, y₁, bk, bx, M, h, -, -, hdom, hnorm, hsm⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Ar.ChangeModel.exists_normal_model hRes K₀ J₀ Ω₀ Ω i yc X₀ ξ' hfin hall₀ htie₀
-  have hMξ : M.ξ ≫ h ≫ f₀ = spMap i ≫ ξ₀ := by
-    have e : M.ξ ≫ h = Spec.map (CommRingCat.ofHom i) ≫ ξ' := hdom
-    rw [← Category.assoc, e, Category.assoc, hf₀]
-  have hgenM : GlobalTheory.CompanionTheory.Ar.genPt (M.ξ ≫ h ≫ f₀) ∈ genericPoints Y.X := by
-    rw [hMξ]
-    show GlobalTheory.CompanionTheory.Ar.genPt (Spec.map (CommRingCat.ofHom i) ≫ ξ₀) ∈ _
-    rw [genPt_comp]
-    exact hgen₀
-  obtain ⟨y₀, hy₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ChangeGeo.exists_factor_XF_of_genericPoint E H D l Xo c Y Ω _ hgenM
-  have hinj : Function.Injective (algebraMap (𝓞 c.F) c.F) := RingOfIntegers.coe_injective
-  have hA := _root_.GlobalTheory.CompanionTheory.Ar.CptTrdeg.trdeg_eq_dim E H D l Xo c _ _ Y Ω₀ ξ₀ Ω y₀ i hinj hg (hy₀ ▸ hMξ)
-  have htr : Algebra.trdeg ℤ Ω = ((D.dim : ℕ) : Cardinal) := by
-    letI : Algebra Ω₀ Ω := i.toAlgebra
-    haveI : FiniteDimensional Ω₀ Ω := hfin
-    haveI : FaithfulSMul ℤ Ω₀ := (faithfulSMul_iff_algebraMap_injective ℤ Ω₀).mpr Int.cast_injective
-    haveI : FaithfulSMul Ω₀ Ω := (faithfulSMul_iff_algebraMap_injective Ω₀ Ω).mpr i.injective
-    have htow := trdeg_add_eq ℤ Ω₀ (A := Ω)
-    rw [hA, trdeg_eq_zero_iff.2 (Algebra.IsAlgebraic.of_finite Ω₀ Ω), add_zero] at htow
-    exact htow.symm
-  obtain ⟨U, hd, hAb⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GeoModel.OpenLocus.exists_dense_open E H D l Xo c Y Ω _ _ M (h ≫ f₀) y₀ hy₀
-  have hU := _root_.GlobalTheory.CompanionTheory.Ar.GenSmooth.smooth_genericFibre E H D l Xo c Y Ω K₁ J₁ y₁ M (h ≫ f₀) y₀ U hy₀ hsm htr
-  have hnm : Tor.IsNormalScheme M.X := ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω M.ξ M.tie.gen M.all).2).1 hnorm
-  obtain ⟨N, x, X, ξ, f₂, hall, htie, hf₂, hp⟩ := exists_patches_of_res hRes c.F M.X ((h ≫ f₀) ≫ Y.s)
-    (_root_.GlobalTheory.CompanionTheory.Ar.ProjModel.isProjOver_comp_model E H D l Xo c Y Ω _ _ M (h ≫ f₀)) hnm U hd D.dim hU _ hAb Ω M.ξ M.tie.gen
-  obtain ⟨K, _, J, _, y, M₁, g, hne, hdom₁, hn₁, hp₁⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GeoModel.NormPatch.exists_normal_model Ω X ξ N x D.dim
-    (f₂ ⁻¹' ((h ≫ f₀) ⁻¹' abLocus Y.t.G)) hall htie hp
-  have hg₁ : M₁.ξ ≫ g = ξ := by
-    have e : M₁.ξ ≫ g = Spec.map (CommRingCat.ofHom (RingHom.id Ω)) ≫ ξ := hdom₁
-    rw [e]; simp
-  have hξ₁ : M₁.ξ ≫ g ≫ f₂ ≫ h ≫ f₀ = M.ξ ≫ h ≫ f₀ := by
-    rw [← Category.assoc, hg₁, ← Category.assoc, hf₂]
-  refine ⟨Ω, inferInstance, inferInstance, K, inferInstance, J, inferInstance, y, M₁, g ≫ f₂ ≫ h ≫ f₀, y₀, i, hne, hfin, hn₁,
-    hξ₁.trans hy₀, hξ₁.trans hMξ, fun p hp' => ?_, hroot, ?_, htr⟩
-  · rw [hξ₁, hMξ]
-    exact htors p hp'
-  · convert hp₁ using 4
-    simp
-
 theorem stBase : StBase := by
   intro hRes hW E _ _ _ H D l Xo c Y S Ω₀ _ ξ₀ hξ₀ hS hSd
   obtain ⟨Ω, _, _, K₁, _, J₁, _, y₁, M₁, f₁, z₀, i, ⟨k₁⟩, hfin, hN, hz₀, hdomi, htors, hroot, hsnc₁, htr⟩ :=
@@ -1020,13 +961,13 @@ theorem stCmp : StCmp := by
   have hJ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M.K M.ι K ι κ v hbv
   have hJ' := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M'.K M'.ι K ι κ' v' hbv'
   have hmpp : IsMultiProjPrime (mCoordIdeal y) := harith.2.1
-  obtain ⟨hc1, -, -, hc4⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.IsoLines.isoLineOn_comb_trans_symm_pull K ι (mCoordIdeal y)
+  obtain ⟨hc1, -, -, hc4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_comb K ι (mCoordIdeal y)
     {z | z ∈ mcPts (mCoordIdeal y) ∧ evC z b ≠ 0} hmpp (fun z hz => hz.1)
   choose Lr hLr using fun r => (hJ.1 (T.sing r)).exists
   choose Lr' hLr' using fun r => (hJ'.1 (T'.sing r)).exists
   refine poly_smul_of_sameSing SheetDecomposition.numPull hIn hC II hII T.Re T'.Re hP hP' hbv hbv' harith hmh hb T.alg T'.alg (fun a => ?_) hne hm
     (by rw [hd, hd', mul_one, hdeg])
-  exact _root_.GlobalTheory.CompanionTheory.Ar.Cmp.sameSing_of_isoLine K ι M.K M.ι M'.K M'.ι κ v κ' v' (mCoordIdeal y) M.P M'.P _ _ _ T.Sy T'.Sy T.Re T'.Re b a a _ _ _ _ hbv hbv'
+  exact _root_.PositivityTheory.UnitarySelfGeneration.h_samesing K ι M.K M.ι M'.K M'.ι κ v κ' v' (mCoordIdeal y) M.P M'.P _ _ _ T.Sy T'.Sy T.Re T'.Re b a a _ _ _ _ hbv hbv'
     (hc4 _ _ κ v _ _ _ _ hbv hLr) (hc4 _ _ κ' v' _ _ _ _ hbv' hLr') (T.ref_deg a) (T'.ref_deg a) (T.sing_eq a)
     (T'.sing_eq a) hmpp (hc1 _ Lr Lr' _ fun r => hiso r _ _ (hLr r) (hLr' r))
 
@@ -1164,13 +1105,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.LowerBoundFree (ComponentData ComponentSetting degMu ArLimExists slX)
-
-namespace GlobalTheory.CompanionTheory.Ar.Top
-
-theorem full_intersection_tower_I8_relation : GlobalTheory.CompanionTheory.Ar.Cmp.CmpSt → Given → Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : RootTower (CMType H) (D.p + D.q)) (o : GoodOrigin Y T) (II : IntersectionSystem), o.Extra → IsFullIntersectionSystem II → 1 ≤ D.p → 1 ≤ D.q → T.I8 II (hhFl (CMType H) (D.p + D.q) II) :=
-  @SquareStatements.good_tower_antisymmetry
-
-end GlobalTheory.CompanionTheory.Ar.Top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FullIntersectionTowerI8Identity =====

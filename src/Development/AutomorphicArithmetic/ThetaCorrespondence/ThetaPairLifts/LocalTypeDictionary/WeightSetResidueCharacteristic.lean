@@ -933,7 +933,7 @@ theorem theta_Z_mem_range_iC {K : Type} [Field K] [NumberField K] [StarRing K] {
   have h1 : z ∈ (A3.A.fam.R t).ZHg A3.A.fam.X := hIB.1 t hz
   obtain ⟨x, hx⟩ := GlobalTheory.PrincipalRows.mem_range_toF_full (A3.A.fam.R t) A3.A.fam.X (X.zs.Z t) z hz h1.2
   refine ⟨cpt A3.A.v0.embedding x, ?_⟩
-  have h3 := GlobalTheory.OneForm.iC_cpt X (crdOf3 A3 ⊥ 1 P1 ψ1 Dc Sp Zsc) false t x
+  have h3 := Formalism.IndefR.Cx.CxData.iC_cpt_eq X (crdOf3 A3 ⊥ 1 P1 ψ1 Dc Sp Zsc) false t x
   refine h3.trans ?_
   exact congrArg (fun y => X.Θ t (X.jR t y)) hx
 
@@ -1103,7 +1103,7 @@ theorem primRows3_typesSep3_alt : _root_.GlobalTheory.PrimIn.PublishedThetaCondi
   obtain ⟨_hGiven, hGS, hCD, hLI, _hTR, _hUI, _hUIW⟩ := _root_.GlobalTheory.PrimBase.base_of_ties_alt P R F hT hM
   obtain ⟨hOk, hGU, hGE, _hBlk, hA, hB⟩ := _root_.GlobalTheory.Stage1.stage1_alt P R F hT hM
   obtain ⟨hPos, hK, hH2⟩ := hx₀ R F L hLe hLx hSz hPar hT hM hRT
-  obtain ⟨hLT, hLTB, hML⟩ := GlobalTheory.T.liftTests_modularLattice_of_coreCompatibility T R F κ v₀ O hT hG
+  obtain ⟨hLT, hLTB, hML⟩ := _root_.GlobalTheory.PrimIn.liftTests_and_mLat_of_ties T R F κ v₀ O hT hG
   have hU : R.toRealDat.LUnif := hG.unif
   obtain ⟨_hLev, _hW, hHk, hTS, htr⟩ := _root_.GlobalTheory.Stage3.stage3_alt P R F hT hM hU hLT hPos hK
   obtain ⟨hGal, hPP⟩ := _root_.GlobalTheory.Stage4.stage4_alt P hHL T R F κ v₀ O hT hG hM hRT hPos hK
@@ -1188,7 +1188,7 @@ theorem atDat_holds_alt (hP : _root_.GlobalTheory.PrimIn.PublishedThetaCondition
   have hT : TypesTrue (w.st Z').toD7.ntypes y.R.C.P y.R.C.W := by
     rw [y.lev.C, w.C_eq]
     exact g1'
-  have hIo : IoExt y.R.toRealDat := GlobalTheory.T.ioExt_of_weakCharacterisation_of_orthonormal_frames _ _ _ _ _ _ _ y.R y.F hch hEx' hV
+  have hIo : IoExt y.R.toRealDat := _root_.GlobalTheory.IoExtStd.thetaIoExtension_of_weakCharacterisation_frames _ _ _ _ _ _ _ y.R y.F hch hEx' hV
   have hOM : ∀ i, OneMapRowR y.core y.R.toRealDat y.geo.κ y.geo.v₀ y.geo.O (fun _ => 1) i := fun i =>
     GlobalTheory.OneMapRow3.oneFormMapRow_threeLevel_of_characterisation _ _ _ _ _ _ y.core y.R y.F y.geo.κ y.geo.v₀ y.geo.O (fun _ => 1) hn hch hEx' ⟨y.geo.fw⟩ hIo i
       (y.geo.pins i) (y.geo.phase i hU')

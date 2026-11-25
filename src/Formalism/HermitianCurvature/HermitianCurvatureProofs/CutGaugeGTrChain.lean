@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSTr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCVPresFF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LongWeylElement
@@ -30,16 +31,7 @@ theorem tc_hsVec_smul (a : ℂ) (X : Wq →L[ℂ] Wp) : B.hsVec (a • X) = a �
 
 theorem tc_hsVec_sum {ι : Type} (s : Finset ι) (X : ι → (Wq →L[ℂ] Wp)) :
     B.hsVec (∑ i ∈ s, X i) = ∑ i ∈ s, B.hsVec (X i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    rw [Finset.sum_empty, Finset.sum_empty]
-    simp only [B.hsVec, ContinuousLinearMap.zero_apply]
-    exact WithLp.toLp_zero 2
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, ← ih]
-    simp only [B.hsVec, ContinuousLinearMap.add_apply]
-    exact WithLp.toLp_add 2 _ _
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.SSTr.hsVec_sum <;> assumption
 
 theorem tc_gq (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (x : (Fin P.r → ℂ) × ℂ) :
     B.gq Bs x = Q.wCell P.k P.r (Fin.last P.r) x.1 * NF.muZ P.k P.r Bs.μsec x.2 := by

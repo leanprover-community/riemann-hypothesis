@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelExplicitFormula
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
@@ -384,20 +385,7 @@ variable {K : Type} [CommRing K]
 private alias blk_revIn_lemma_4 := _root_.Formalism.DoubleCosetMeasures.P.Phase.blk_revIn
 
 private lemma pt_unit_lemma_5 (s : List ℕ) (t : ℕ → Kˣ) : IsUnit (pt s t).det := by
-  refine Matrix.isUnit_det_of_right_inverse (B := Matrix.of fun b c : Fin s.sum =>
-    if (c : ℕ) = revIn s b then (((t (blk s b))⁻¹ : Kˣ) : K) else 0) ?_
-  ext a c
-  rw [Matrix.mul_apply, Finset.sum_eq_single ⟨revIn s a, _root_.Formalism.DoubleCosetMeasures.P.Phase.revIn_lt s a a.2⟩]
-  · by_cases hca : c = a
-    · subst hca
-      simp [pt, _root_.Formalism.DoubleCosetMeasures.P.Phase.revIn_revIn s c c.2, blk_revIn_lemma_4 s c c.2]
-    · have h1 : (c : ℕ) ≠ a := fun e => hca (Fin.ext e)
-      have h2 : a ≠ c := fun e => hca e.symm
-      simp [pt, _root_.Formalism.DoubleCosetMeasures.P.Phase.revIn_revIn s a a.2, h1, h2]
-  · intro b _ hb
-    have : (b : ℕ) ≠ revIn s a := fun e => hb (Fin.ext e)
-    simp [pt, this]
-  · simp
+  apply _root_.Formalism.FourierDecayAlt.P.A5x5.isUnit_det_pt <;> assumption
 
 theorem pt_append (l l' : List ℕ) (T T₁ T₂ : ℕ → Kˣ) (h₁ : ∀ b, b < l.length → T b = T₁ b)
     (h₂ : ∀ b, b < l'.length → T (l.length + b) = T₂ b) (hN : (l ++ l').sum = l.sum + l'.sum) :

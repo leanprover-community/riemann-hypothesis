@@ -59,11 +59,6 @@ namespace GlobalTheory.MBLow.ScaleJet
 
 variable {R : Type} [CommRing R]
 
-theorem res_cst {X : Scheme.{0}} (q : X ⟶ Sp R) {U V : X.Opens} (h : V ≤ U) (a : R) :
-    (X.presheaf.map (homOfLE h).op).hom (constFn q U a) = constFn q V a :=
-  congrArg (fun φ => φ.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom a))
-    (Scheme.Hom.appLE_map q (U := ⊤) (V := U) (fun _ _ => trivial) (homOfLE h).op)
-
 theorem appLE_cst {X Y : Scheme.{0}} (q : X ⟶ Sp R) (q' : Y ⟶ Sp R) (f : Y ⟶ X) (hf : f ≫ q = q')
     (U : X.Opens) (V : Y.Opens) (h : V ≤ f ⁻¹ᵁ U) (a : R) :
     (f.appLE U V h).hom (constFn q U a) = constFn q' V a := by
@@ -74,7 +69,7 @@ theorem appLE_cst {X Y : Scheme.{0}} (q : X ⟶ Sp R) (q' : Y ⟶ Sp R) (f : Y �
 def cMul {X : Scheme.{0}} (q : X ⟶ Sp R) {L : LB X} (a : R) (s : LB.Sec L) : LB.Sec L where
   f i := constFn q _ a * s.f i
   compat i j := by
-    rw [map_mul, map_mul, res_cst, res_cst, s.compat, mul_left_comm]
+    rw [map_mul, map_mul, GlobalTheory.ThetaOnto.res_constFn, GlobalTheory.ThetaOnto.res_constFn, s.compat, mul_left_comm]
 
 theorem nonzeroLocus_cMul {X : Scheme.{0}} (q : X ⟶ Sp R) {L : LB X} {a : R}
     (ha : IsUnit a) (s : LB.Sec L) : Out.nonzeroLocus (cMul q a s) = Out.nonzeroLocus s := by

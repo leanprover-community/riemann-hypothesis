@@ -172,16 +172,6 @@ private lemma conjTranspose_mul_Hpk_mul_apply (A : Mx k r) (p q : Fin (2 * r + k
   rw [Matrix.mul_apply]
   simp only [Matrix.conjTranspose_apply, hpk_col_lemma, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
-private lemma mul_mem_uh {g h : Mx k r} (hg : g ∈ UH (Hpk k r)) (hh : h ∈ UH (Hpk k r)) :
-    g * h ∈ UH (Hpk k r) := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hh' : hᴴ * Hpk k r * h = Hpk k r := hh
-  show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-  rw [Matrix.conjTranspose_mul]
-  calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hg', hh']
-
 lemma w_uh (l : Fin r) (a : ℂ) (ha : a ≠ 0) : w1 k r l a ∈ UH (Hpk k r) := by
   apply Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.weyl_cell_mem_unitary <;> assumption
 

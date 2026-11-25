@@ -199,17 +199,7 @@ theorem sgs_GV {Bs : B.RealPlaceData k ρ Wp Wq} {P : B.SS k ρ} (hP : Bs.inSS P
   · exact Formalism.FourierDecayAlt.P.B6.UWset_sub k ρ _ hP.2.2.1
 
 theorem isClosed_inSS (Bs : B.RealPlaceData k ρ Wp Wq) : IsClosed {P : B.SS k ρ | Bs.inSS P} := by
-  have hWc := (Formalism.FourierDecayAlt.P.weyl_subgroup_closed k ρ Bs.z).closed
-  have hWc' := (Formalism.FourierDecayAlt.P.weyl_subgroup_closed k ρ Bs.z').closed
-  have hNc := (Formalism.FourierDecayAlt.P.unipotent_radical_closed k ρ).closed
-  have e : {P : B.SS k ρ | Bs.inSS P} = (fun p : B.SS k ρ => (p.1.1 : B.Mat k ρ)) ⁻¹' (UWset k ρ Bs.z) ∩
-      ((fun p : B.SS k ρ => (p.1.2 : B.Mat k ρ)) ⁻¹' (Nset k ρ) ∩
-        ((fun p : B.SS k ρ => (p.2.1 : B.Mat k ρ)) ⁻¹' (UWset k ρ Bs.z') ∩
-          (fun p : B.SS k ρ => (p.2.2 : B.Mat k ρ)) ⁻¹' (Nset k ρ))) := by
-    ext p; rfl
-  rw [e]
-  exact (hWc.preimage continuous_fst.fst).inter ((hNc.preimage continuous_fst.snd).inter
-    ((hWc'.preimage continuous_snd.fst).inter (hNc.preimage continuous_snd.snd)))
+  apply _root_.Formalism.FourierDecayAlt.P.B6.setting_support_closed <;> assumption
 
 theorem sgs_contOn (Bs : B.RealPlaceData k ρ Wp Wq) (g : B.Mat k ρ) :
     ContinuousOn (fun P : B.SS k ρ => B.sgs P g) {P | Bs.inSS P} := by

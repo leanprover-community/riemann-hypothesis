@@ -25,24 +25,8 @@ namespace SectionNormSqExtension
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
-def val (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) (s : Ω) (z : (Σ k, ι k) → ℂ) : ℂ := by
-  classical
-  exact if hsz : s ∈ chartLat y A.a n ∧ z ∈ mcPts (mCoordIdeal y) then
-    eval z (map (Int.castRingHom ℂ) (GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.exists_rep_at hsz.1 hsz.2).choose.1) /
-      (eval z (map (Int.castRingHom ℂ) (GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.exists_rep_at hsz.1 hsz.2).choose.2) * (A.h z : ℂ) ^ n)
-  else 0
-
-theorem val_spec {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
-    {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) {g h : MRing ι} (hr : GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.IsRep y A.a n s g h) :
-    eval z (map (Int.castRingHom ℂ) g) =
-      val y A n s z * eval z (map (Int.castRingHom ℂ) h) * (A.h z : ℂ) ^ n := by
-  have H := (GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.exists_rep_at hs hz).choose_spec
-  rw [val, dite_eq_left ⟨hs, hz⟩]
-  have hc := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.cross hr H.1 hz
-  have h1 := H.2
-  have h2 := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.metric_ne (A := A) hz n
-  rw [eq_comm, div_mul_eq_mul_div, div_mul_eq_mul_div, div_eq_iff (mul_ne_zero h1 h2)]
-  linear_combination (-(A.h z : ℂ) ^ n) * hc
+abbrev val := @PowerBlockMetric.val
+abbrev val_spec := @PowerBlockMetric.val_spec
 
 theorem val_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
     {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) {g h : MRing ι} (hr : GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.IsRep y A.a n s g h)
@@ -80,24 +64,9 @@ def w (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) : chartLat y A.a n �
         val_eq s.2 hz r₁ n₁, val_eq t.2 hz r₂ n₂]
       simp only [map_add (f := _), map_mul]
       field_simp
-    · simp [val, hz]
+    · simp [val, PowerBlockMetric.val, hz]
 
-theorem secNormAt_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
-    {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) : secNormAt y A n s z = ‖val y A n s z‖ := by
-  have hT : 0 < A.h z := A.pos z hz.1
-  have hnT : ‖(A.h z : ℂ) ^ n‖ = A.h z ^ n := by
-    rw [norm_pow, Complex.norm_real, Real.norm_of_nonneg hT.le]
-  have hb : IsBoundedAt y A n ‖val y A n s z‖ s z := by
-    intro dg dh g h hg hh hd hy
-    rw [val_spec hs hz ⟨dg, dh, hg, hh, hd, hy⟩, norm_mul, norm_mul, hnT]
-  refine le_antisymm (secNormAt_le (norm_nonneg _) hb) ?_
-  rw [secNormAt]
-  refine le_csInf ⟨_, norm_nonneg _, hb⟩ ?_
-  rintro c ⟨-, hc⟩
-  obtain ⟨⟨g, h⟩, ⟨dg, dh, hg, hh, hd, hy⟩, hne⟩ := GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMetric.exists_rep_at hs hz
-  have := hc dg dh g h hg hh hd hy
-  rw [val_spec hs hz ⟨dg, dh, hg, hh, hd, hy⟩, norm_mul, norm_mul, hnT, mul_assoc, mul_assoc] at this
-  exact le_of_mul_le_mul_right this (mul_pos (norm_pos_iff.mpr hne) (pow_pos hT n))
+abbrev secNormAt_eq := @PowerBlockMetric.secNormAt_eq
 
 theorem exists_chartData [DecidableEq K] (y : (Σ k, ι k) → Ω) (A : HermLine ι) (m N : ℕ) (v : Fin N → Ω)
     (hv : ∀ j, v j ∈ chartLat y A.a m) (c : ∀ k, ι k) :

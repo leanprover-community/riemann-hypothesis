@@ -155,8 +155,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
   Topology Filter
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace Formalism.IndefR.Fin.U1
 
 section Places

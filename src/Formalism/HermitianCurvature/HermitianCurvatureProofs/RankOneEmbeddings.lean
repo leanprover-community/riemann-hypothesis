@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.BigCellCommuteFrameElement
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Mathlib.MeasureTheory.Function.FactorsThrough
 import Mathlib.Tactic.Linter.HaveILetI
@@ -61,40 +62,9 @@ lemma emb_wI (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (i j : Fin (k + 1)) :
   rw [emb_mid (r := r) μ _ _ (wI_mid i) (wI_mid j)]
   simp only [fin_wI_sub_eq_self]
 
-private lemma sum_eq_sum_wI_of_eq_zero_off_mid (f : Fin (2 * r + k + 1) → ℂ) (hf : ∀ p, ¬ mid k r p → f p = 0) :
-    ∑ p, f p = ∑ q : Fin (k + 1), f (wI k r q) := by
-  have hinj : Function.Injective (wI k r) := fun a b h => by
-    simpa [wI, Fin.ext_iff] using h
-  calc ∑ p, f p = ∑ p ∈ Finset.univ.map ⟨wI k r, hinj⟩, f p := by
-        refine (Finset.sum_subset (Finset.subset_univ _) ?_).symm
-        intro p _ hp
-        apply hf
-        intro hm
-        apply hp
-        rw [Finset.mem_map]
-        refine ⟨⟨p.val - r, by have := hm.2; omega⟩, Finset.mem_univ _, ?_⟩
-        apply Fin.ext
-        have := hm.1
-        show r + (p.val - r) = p.val
-        omega
-    _ = ∑ q : Fin (k + 1), f (wI k r q) := Finset.sum_map _ _ _
-
 lemma emb_mul (a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     embWb k r (a * b) = embWb k r a * embWb k r b := by
-  ext i j
-  rw [Matrix.mul_apply]
-  by_cases hi : mid k r i
-  · by_cases hj : mid k r j
-    · rw [emb_mid _ _ _ hi hj, Matrix.mul_apply, sum_eq_sum_wI_of_eq_zero_off_mid]
-      · refine Finset.sum_congr rfl fun q _ => ?_
-        rw [emb_mid _ _ _ hi (wI_mid q), emb_mid _ _ _ (wI_mid q) hj]
-        simp only [fin_wI_sub_eq_self]
-      · intro p hp
-        rw [emb_out_col a i p hp, if_neg (fun (h : i = p) => hp (h ▸ hi)), zero_mul]
-    · simp [emb_out_col b _ _ hj]
-      rw [emb_out_col _ _ _ hj, emb_out_col _ _ _ hj]
-  · simp [emb_out_row a _ _ hi]
-    rw [emb_out_row _ _ _ hi, emb_out_row _ _ _ hi]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.SymA.emb_mul <;> assumption
 
 lemma emb_cont : Continuous (fun μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ => (embWb k r μ : Mt k r)) := by
   refine continuous_pi fun i => continuous_pi fun j => ?_

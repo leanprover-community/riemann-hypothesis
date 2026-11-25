@@ -58,12 +58,6 @@ structure Laws (R : RealDat D A Ks) (F : Face D A) : Prop where
   models : R.IsModels
   thP : R.IsThP
 
-def ThOnto (R : RealDat D A Ks) : Prop :=
-  ∀ i, (Submodule.span ℂ (Set.range (R.jV i A.μ0))).map (R.thF i A.μ0) = R.Wall i (sg0 D A)
-
-def RatSpan (R : RealDat D A Ks) : Prop :=
-  ∀ i t, Submodule.span ℂ (Set.range (R.jV i t)) = ⊤
-
 def IsRaw (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (th : (R.HV i t).H →ₗ[ℂ] (R.HW i (sg0 D A)).H) : Prop :=
   ∀ x, (R.HW i (sg0 D A)).e (th x) = R.thF i t x
 
@@ -74,13 +68,6 @@ def part (R : RealDat D A Ks) (i : Fin D.R.m) (S : Finset (HeightOneSpectrum (�
     (c : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ) : Submodule ℂ (R.HW i (sg0 D A)).H :=
   (partFull R.θ (R.MW i (sg0 D A)) (levS _ (R.βW i) (R.datWp i R.triv)) (levChi _ (R.βW i) (R.datWp i R.triv)) S c).comap
     (R.HW i (sg0 D A)).e
-
-def PartsSpan (R : RealDat D A Ks) (i : Fin D.R.m) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Prop :=
-  ⨆ c, part R i S c = ⊤
-
-def InnerPos (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Prop :=
-  ∀ th, IsRaw R i t th → ∀ c, ∃ l : ℝ, 0 < l ∧ ∀ x ∈ part R i S c, ∀ y,
-    ⟪LinearMap.adjoint th x, LinearMap.adjoint th y⟫_ℂ = (l : ℂ) * ⟪x, y⟫_ℂ
 
 def InnerNe (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Prop :=
   ∀ th, IsRaw R i t th → ∀ c, ∃ l : ℂ, l ≠ 0 ∧ ∀ x ∈ part R i S c, ∀ y,
@@ -113,18 +100,7 @@ theorem Laws.posDef {R : RealDat D A Ks} {F : Face D A} (h : Laws R F) (i : Fin 
     (Vc D i).SigOK ∧ (Vc D i).IsPosDef :=
   ⟨D.sp.V_sig _, h.models.vpos i⟩
 
-theorem exists_lift_model {X Z : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup Z] [Module ℂ Z]
-    (M : HMod Z) {U : Submodule ℂ Z} {ip : Z → Z → ℂ} (H : M.Is U ip) (f : X →ₗ[ℂ] Z) (hm : ∀ x, f x ∈ U) :
-    ∃ th : X →ₗ[ℂ] M.H, ∀ x, M.e (th x) = f x := by
-  have hm' : ∀ x, f x ∈ LinearMap.range M.e := fun x => H.2.1 ▸ hm x
-  exact ⟨(LinearEquiv.ofInjective M.e H.1).symm.toLinearMap ∘ₗ f.codRestrict _ hm', fun x =>
-    congrArg Subtype.val ((LinearEquiv.ofInjective M.e H.1).apply_symm_apply (f.codRestrict _ hm' x))⟩
 
-
-
-theorem Laws.exists_isRaw {R : RealDat D A Ks} {F : Face D A} (h : Laws R F) (i : Fin D.R.m) (t : T) :
-    ∃ th, IsRaw R i t th :=
-  exists_lift_model (R.HW i (sg0 D A)) (h.models.HW i (sg0 D A)) (R.thF i t) (h.thP.thF_mem i t)
 
 
 theorem thetaInner_smul_left {S T' : HSp D} (μ : Measure (WO S T')) (𝓕 : Set (WO S T')) (a : ℂ) (f f' : WO S T' → ℂ) :

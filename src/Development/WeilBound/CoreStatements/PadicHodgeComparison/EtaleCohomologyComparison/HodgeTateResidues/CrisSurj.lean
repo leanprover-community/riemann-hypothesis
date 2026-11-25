@@ -224,7 +224,7 @@ open Pb Pb.Kap PAlg
 
 variable (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l))
 
-theorem crisSurj : CrisSurj l := fun n => ((RL.base_acr (base l) isBase_base).2 n).1
+theorem crisSurj : CrisSurj l := fun n => ((_root_.GlobalTheory.CompanionTheory.BaseAcris.main (base l) isBase_base).2 n).1
 
 def thP : period_ring_base.Plus l →+* ℂ_[l] where
   toFun x := period_ring_base.th l x.1

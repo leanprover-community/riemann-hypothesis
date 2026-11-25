@@ -241,14 +241,7 @@ theorem pos_int (j : ℕ) (Kg : Type) [Group Kg] [TopologicalSpace Kg] [IsTopolo
   have hc : Continuous (fun k => ‖minorOn (blkA j) (wM (ι k))‖ ^ 2 * ‖minorOn (blkB j) (wM (ι k))‖ ^ 2) :=
     (((continuous_minorOn _).comp hw).norm.pow 2).mul (((continuous_minorOn _).comp hw).norm.pow 2)
   have hm1 : ∀ s : Finset (Fin n), minorOn s (1 : Matrix (Fin n) (Fin n) ℂ) = 1 := fun s => by
-    rw [minorOn]
-    have : (1 : Matrix (Fin n) (Fin n) ℂ).submatrix (fun i : s => (i : Fin n)) (fun i : s => (i : Fin n)) = 1 := by
-      ext a b
-      by_cases h : a = b
-      · subst h; simp
-      · have h' : (a : Fin n) ≠ b := fun e => h (Subtype.ext e)
-        rw [Matrix.submatrix_apply, Matrix.one_apply_ne h', Matrix.one_apply_ne h]
-    rw [this, det_one]
+    rw [minorOn, Matrix.submatrix_one _ Subtype.val_injective, det_one]
   refine hc.integral_pos_of_hasCompactSupport_nonneg_nonzero
     (IsCompact.of_isClosed_subset isCompact_univ (isClosed_tsupport _) (Set.subset_univ _))
     (fun k => by positivity) (x := 1) ?_

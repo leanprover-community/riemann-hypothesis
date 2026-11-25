@@ -662,7 +662,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem toAfF_injective (G : HTGroup p) (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ)
     (hx : Triv G (AfP p) β x t) : Function.Injective (GlobalTheory.LKCx.toAfF G β x t hx) := by
-  haveI := GlobalTheory.LKMid.finiteAdeleRingAway_nontrivial p
+  have := GlobalTheory.LKMid.finiteAdeleRingAway_nontrivial p
   intro a b h
   have h0 := congrArg Subtype.val h
   have h1 := congrArg Prod.fst h0
@@ -747,7 +747,7 @@ theorem GlobalTheory.LKDef.DForm.centSum_eq_zero_of_orbK : ∀ (p : ℕ) [Fact p
   have hstab := _root_.GlobalTheory.DefStab.finite_locPart p G ha L K' hf'.1 B
   have hfin : ∀ x : G.GAf × Gr G 1, ((Γ' ⊓ K.map (MulAut.conj x).toMonoidHom : Subgroup (G.GAf × Gr G 1)) : Set (G.GAf × Gr G 1)).Finite := by
     intro x
-    haveI := hstab x
+    have := hstab x
     exact (Set.toFinite ((GlobalTheory.LKLoc.locPart B.emb.range K x : Subgroup (G.GAf × Gr G 1)) : Set (G.GAf × Gr G 1))).subset
       (SetLike.coe_subset_coe.2 (inf_le_inf_right _ hrange))
   have hsupp := finite_supp_cent B.emb hι K F₀ y hbi (GlobalTheory.T.finite_doubleCoset_definiteHermitianForm_level p G ha L K' hf'.1 B) hstab

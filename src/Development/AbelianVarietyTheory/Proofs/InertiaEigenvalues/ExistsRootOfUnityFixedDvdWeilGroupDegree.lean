@@ -64,15 +64,7 @@ private theorem dvd_of_primitiveRoot_pow_pow_eq_self {Ω : Type} [Field Ω] {q k
       rw [← pow_succ, Nat.sub_add_cancel (Nat.one_le_pow _ _ (by omega)), one_mul]
       exact hm
     exact mul_right_cancel₀ hz h0
-  have h2 := Nat.pow_sub_one_gcd_pow_sub_one q k m
-  rw [Nat.gcd_eq_left h1] at h2
-  have h3 : q ^ k = q ^ Nat.gcd k m := by
-    have := Nat.one_le_pow (Nat.gcd k m) q (by omega)
-    have := Nat.one_le_pow k q (by omega)
-    omega
-  have h4 := Nat.pow_right_injective hq h3
-  rw [h4]
-  exact Nat.gcd_dvd_right k m
+  exact (Nat.pow_sub_one_dvd_pow_sub_one_iff hq).1 h1
 
 
 open NumberField IsDedekindDomain Polynomial in

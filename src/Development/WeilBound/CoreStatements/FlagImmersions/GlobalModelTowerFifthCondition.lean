@@ -658,7 +658,7 @@ theorem flat_unit_of_root_lines : Flat.FlatLineGenerator → ∀ (E : Type) [Fie
   have hco : ∀ p ∈ genFibre ℤ 𝔐.ξ, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) (labelRk D (.inl τ)) (labelRk D (.inr τ))
       (exteriorPower.ιMulti R.Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti R.Ω _ (Fl.b (.inr τ))) p (d₁ / d₂)⁻¹ :=
     fun p hp => isCoeffAt_of_smul h₁ h₂ ea eb (hfr p hp)
-  obtain ⟨-, hL2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.lineLat_isVBOn_gen_frames 𝔐.X R.Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
+  obtain ⟨-, hL2, -⟩ := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle 𝔐.X R.Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
     (exteriorPower.ιMulti R.Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti R.Ω _ (Fl.b (.inr τ))) hVA hVB haF hbF
     ⟨x₀, trivial, _, hco x₀ hx₀⟩
   have hd0 : d₁ / d₂ ≠ 0 := div_ne_zero h₁ h₂
@@ -1588,7 +1588,7 @@ theorem tower_upper : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T
   have hR : rootHt (R c) 1 (T.lamS lam s) s L' (fun p => z (joinInr (T.M B c).ι (R c).ι p)) ≤
       (l1 (T.lamS lam s) + |(s : ℝ)|) * D' := by
     refine rootHt_le _ _ _ _ _ _ _ fun j => ?_
-    have h := _root_.GlobalTheory.CompanionTheory.Ar.Ht.lineHt_map_scale _ _ ((R c).line 1 j) L L' e w (fun _ => 1) hw.1 (fun _ => one_ne_zero)
+    have h := _root_.CoverDenseAlt.lineHt_invariant_base_change_scaling _ _ ((R c).line 1 j) L L' e w (fun _ => 1) hw.1 (fun _ => one_ne_zero)
     simp only [one_mul] at h
     rw [hze, h]
     exact (hQ inferInstance j).trans (hDle c)

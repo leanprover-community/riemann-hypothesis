@@ -24,17 +24,7 @@ structure TowerBC {k k' : Type} [Field k] [Field k'] (φ : k →+* k') (H : HTow
   hs : ∀ j, IsPullback (y j) (H'.s (ι' j)) (H.s (ι j)) z
   ht : ∀ j, y j ≫ H.t (ι j) = H'.t (ι' j) ≫ z
 
-def HodgeOcc {k : Type} [Field k] (H : HTower k) {J : Type} (ι : J → H.Γ) [∀ j, IsFinite (H.s (ι j))]
-    [∀ j, Etale (H.s (ι j))] (θ : J → k) (a : ℕ) : Prop :=
-  ∃ b : ℕ, (⨅ j, Module.End.maxGenEigenspace
-    (hodgeTrace (s := H.q) (s' := H.s (ι j) ≫ H.q) rfl a b ∘ₗ hodgePull (s := H.q) (H.comm (ι j)) a b) (θ j)) ≠ ⊥
-
 variable {l : ℕ} [Fact l.Prime]
-
-def IsRepOf {k : Type} [Field k] (H : HTower k) (Ω : Type) [Field Ω] [Algebra k Ω] {J : Type} (ι : J → H.Γ)
-    (θ : J → Qbar l) {d : ℕ} (ρ : (Ω ≃ₐ[k] Ω) → Matrix (Fin d) (Fin d) (Qbar l)) : Prop :=
-  ∃ b : Module.Basis (Fin d) (Qbar l) (V l H Ω (Qbar l) ι θ),
-    ∀ σ q, galV l H Ω (Qbar l) σ (b q) = ∑ p, ρ σ p q • (b p).1
 
 def HTCover {K : FinExt l} (H : HTower ↥K.1) {J : Type} (ι : J → H.Γ) (n : ℕ) : Prop :=
   ∃ (F : Frame (K := K) H.q n) (Φ : Matrix (Fin F.d) F.Col ℂ_[l]), F.IsHT Φ ∧

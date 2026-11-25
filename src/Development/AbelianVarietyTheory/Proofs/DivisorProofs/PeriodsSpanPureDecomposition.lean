@@ -925,18 +925,6 @@ section Crt
 
 variable {M : Type} [CommGroup M]
 
-theorem crt_pow_left {q a : ℕ} (h : q.Coprime a) {u v : M} (hu : u ^ a = 1) (hv : v ^ q = 1) :
-    _root_.GlobalTheory.TateGlue.glue q a u v ^ q = u := by
-  have e : Nat.gcdA q a * (q : ℤ) = 1 - a * Nat.gcdB q a := by rw [← _root_.GlobalTheory.TateGlue.bezout h]; ring
-  rw [_root_.GlobalTheory.TateGlue.glue, mul_pow, ← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, e, mul_comm (Nat.gcdB q a), zpow_mul,
-    zpow_natCast, hv, one_zpow, mul_one, zpow_sub, zpow_mul, zpow_natCast, hu, one_zpow, zpow_one, inv_one, mul_one]
-
-theorem crt_pow_right {q a : ℕ} (h : q.Coprime a) {u v : M} (hu : u ^ a = 1) (hv : v ^ q = 1) :
-    _root_.GlobalTheory.TateGlue.glue q a u v ^ a = v := by
-  have e : Nat.gcdB q a * (a : ℤ) = 1 - q * Nat.gcdA q a := by rw [← _root_.GlobalTheory.TateGlue.bezout h]; ring
-  rw [_root_.GlobalTheory.TateGlue.glue, mul_pow, ← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, e, mul_comm (Nat.gcdA q a), zpow_mul,
-    zpow_natCast, hu, one_zpow, one_mul, zpow_sub, zpow_mul, zpow_natCast, hv, one_zpow, zpow_one, inv_one, mul_one]
-
 theorem crt_pow_pow {q a : ℕ} (h : q.Coprime a) (t : M) : _root_.GlobalTheory.TateGlue.glue q a (t ^ q) (t ^ a) = t := by
   rw [_root_.GlobalTheory.TateGlue.glue, ← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, ← zpow_add, _root_.GlobalTheory.TateGlue.bezout h, zpow_one]
 
@@ -976,13 +964,13 @@ theorem exists_join {κ : Type} [Field κ] {Q : Type} [CommGroup Q] (act : D.O �
     (I.onto _ (apos n hn) (h2 n hn) _).2 ⟨y, rfl⟩
   have tE : ∀ s y, ev s y ^ p ^ s = 1 := fun s y => (onto s _).2 ⟨y, rfl⟩
   have T1 : ∀ n, 0 < n → ∀ y, T n y ^ p ^ r n = I.ev (a n) y := fun n hn y =>
-    crt_pow_left (cop n hn) (tI n hn y) (tE _ y)
+    GlobalTheory.TateGlue.glue_pow_left (cop n hn) (tI n hn y) (tE _ y)
   have T2 : ∀ n, 0 < n → ∀ y, T n y ^ a n = ev (r n) y := fun n hn y =>
-    crt_pow_right (cop n hn) (tI n hn y) (tE _ y)
+    GlobalTheory.TateGlue.glue_pow_right (cop n hn) (tI n hn y) (tE _ y)
   have Z1 : ∀ n, 0 < n → Z n ^ p ^ r n = I.ζ (a n) := fun n hn =>
-    crt_pow_left (cop n hn) (I.ζ_prim _ (apos n hn) (h2 n hn)).pow_eq_one (prim _).pow_eq_one
+    GlobalTheory.TateGlue.glue_pow_left (cop n hn) (I.ζ_prim _ (apos n hn) (h2 n hn)).pow_eq_one (prim _).pow_eq_one
   have Z2 : ∀ n, 0 < n → Z n ^ a n = ζ (r n) := fun n hn =>
-    crt_pow_right (cop n hn) (I.ζ_prim _ (apos n hn) (h2 n hn)).pow_eq_one (prim _).pow_eq_one
+    GlobalTheory.TateGlue.glue_pow_right (cop n hn) (I.ζ_prim _ (apos n hn) (h2 n hn)).pow_eq_one (prim _).pow_eq_one
   have tT : ∀ n, 0 < n → ∀ y, T n y ^ n = 1 := fun n hn y => by
     conv_lhs => rw [← h1 n]
     rw [h1, ← h1 n, pow_mul, h1, T1 n hn, tI n hn]

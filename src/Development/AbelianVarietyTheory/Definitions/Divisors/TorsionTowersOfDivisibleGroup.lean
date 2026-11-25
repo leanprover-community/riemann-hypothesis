@@ -558,14 +558,6 @@ theorem lieCorr_zero : t.LieCorr 0 1 :=
     ⟨(1 : WithConv (G.A n →ₐ[O] DualNumber (ModPow p O n))).ofConv, (_root_.map_one (t.pts n _)).trans (MonObj.comp_one _).symm, fun w a _ => by
       rw [LinearMap.zero_apply, map_zero]; rfl⟩⟩
 
-theorem LieCorr.map [Fact p.Prime] (h : t.LieCorr x v) (f : A ⟶ A₁) [IsMonHom f] :
-    t₁.LieCorr (lieMap G H (t.map t₁ f) x) (v ≫ f) := by
-  refine ⟨GrpTangent.isTangent_comp h.1 f, fun n => ?_⟩
-  obtain ⟨ψ, h1, h2⟩ := h.2 n
-  refine ⟨ψ.comp ((t.map t₁ f).app n : H.A n →ₐ[O] G.A n), ?_, fun w a ha => ?_⟩
-  · rw [← spOver_comp, Category.assoc, map_y, ← Category.assoc, h1, Category.assoc]
-  · exact h2 _ _ (by rw [omegaMap_val, ← ha, cotMap_d]; rfl)
-
 theorem LieCorr.unique_left [IsHausdorff (Ideal.span {(p : O)}) O] (h : t.LieCorr x v)
     (h' : t.LieCorr x' v) : x = x' :=
   LinearMap.ext fun w => sub_eq_zero.1 <| IsHausdorff.haus' (I := Ideal.span {(p : O)}) _ fun n => by

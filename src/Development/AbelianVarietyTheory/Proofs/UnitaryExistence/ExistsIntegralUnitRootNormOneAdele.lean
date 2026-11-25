@@ -75,8 +75,8 @@ variable {F E}
 
 open NumberField IsDedekindDomain in
 open scoped TensorProduct Topology Matrix in
-variable (F : Type) [Field F] [NumberField F] in
-variable (E : Type) [Field E] [NumberField E] [Algebra F E] in
+variable (F : Type) [Field F] in
+variable (E : Type) [Field E] [Algebra F E] in
 variable {F E} in
 theorem _root_.GlobalTheory.AdLat.UnitRoot.conj_mem (c : E ≃ₐ[F] E) :
     ∀ x ∈ Set.range (algebraMap (𝓞 E) E), c x ∈ Set.range (algebraMap (𝓞 E) E) := by
@@ -101,16 +101,15 @@ private lemma mul_self_eq_one_of_quadratic {F E : Type} [Field F] [NumberField F
     ![AlgHom.id F E, (c : E →ₐ[F] E), ((c * c : E ≃ₐ[F] E) : E →ₐ[F] E)]
   have hf : Function.Injective f := by
     intro i j hij
-    fin_cases i <;> fin_cases j <;> simp [f] at hij ⊢
-    all_goals have hx := fun x => DFunLike.congr_fun hij x
-    all_goals simp only [AlgHom.coe_id, id_eq, AlgEquiv.coe_algHom, AlgEquiv.mul_apply] at hx
-    all_goals first
-      | exact hc (AlgEquiv.ext fun x => (hx x).symm)
-      | exact hc (AlgEquiv.ext fun x => hx x)
-      | exact h (AlgEquiv.ext fun x => (hx x).symm)
-      | exact h (AlgEquiv.ext fun x => hx x)
-      | exact hc (AlgEquiv.ext fun x => c.injective (hx x).symm)
-      | exact hc (AlgEquiv.ext fun x => c.injective (hx x))
+    have hx := fun x => DFunLike.congr_fun hij x
+    fin_cases i <;> fin_cases j <;>
+    simp [f] at hij ⊢
+    . exact hc (AlgEquiv.ext fun x => (hx x).symm)
+    . exact h (AlgEquiv.ext fun x => (hx x).symm)
+    . exact hc (AlgEquiv.ext fun x => hx x)
+    . exact hc (AlgEquiv.ext fun x => c.injective (hx x).symm)
+    . exact h (AlgEquiv.ext fun x => hx x)
+    . exact hc (AlgEquiv.ext fun x => c.injective (hx x))
   have := Nat.card_le_card_of_injective f hf
   rw [Nat.card_fin] at this
   omega

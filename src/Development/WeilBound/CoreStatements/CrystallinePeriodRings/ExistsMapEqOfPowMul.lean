@@ -258,14 +258,6 @@ def tiltInv : PreTilt ↥(normInteger ℂ_[l]) l →+* OCb l :=
 theorem tiltMap_tiltInv (x : PreTilt ↥(normInteger ℂ_[l]) l) : Per6.tiltMap l (tiltInv l x) = x :=
   Perfection.ext fun _ => (Per6.modPEquiv l).apply_symm_apply _
 
-theorem tiltInv_tiltMap (x : OCb l) : tiltInv l (Per6.tiltMap l x) = x :=
-  Perfection.ext fun _ => (Per6.modPEquiv l).symm_apply_apply _
-
-def tiltEquiv : OCb l ≃+* PreTilt ↥(normInteger ℂ_[l]) l :=
-  RingEquiv.ofRingHom (Per6.tiltMap l) (tiltInv l) (RingHom.ext (tiltMap_tiltInv l))
-    (RingHom.ext (tiltInv_tiltMap l))
-
-
 variable {l} in
 def galT (g : GQ l) : OCb l →+* OCb l :=
   (tiltInv l).comp ((preTiltMap l (galCp (Per6.toBot g) : ℂ_[l] →+* ℂ_[l])

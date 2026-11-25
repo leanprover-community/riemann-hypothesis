@@ -31,17 +31,10 @@ theorem sgn_mul_sgn_erase_swap {L : Finset (Fin n)} {j k : Fin n} (hj : j ∈ L)
   · have h' : k < j := lt_of_le_of_ne (not_lt.mp h) (Ne.symm hjk)
     rw [H hk hj (Ne.symm hjk) h', neg_neg]
   have h1 : (L.erase j).filter (· < k) = (L.filter (· < k)).erase j := by
-    ext z
-    simp only [Finset.mem_filter, Finset.mem_erase]
-    tauto
+    rw [Finset.filter_erase]
   have h2 : (L.erase k).filter (· < j) = L.filter (· < j) := by
-    ext z
-    simp only [Finset.mem_filter, Finset.mem_erase]
-    constructor
-    · rintro ⟨⟨_, hz⟩, hzj⟩
-      exact ⟨hz, hzj⟩
-    · rintro ⟨hz, hzj⟩
-      exact ⟨⟨fun hzk => by subst hzk; exact lt_irrefl _ (hzj.trans h), hz⟩, hzj⟩
+    rw [Finset.filter_erase]
+    exact Finset.erase_eq_of_notMem fun hk => lt_asymm h (Finset.mem_filter.1 hk).2
   have hmem : j ∈ L.filter (· < k) := Finset.mem_filter.mpr ⟨hj, h⟩
   have hc := Finset.card_erase_add_one hmem
   simp only [Cech.sgn, h1, h2]

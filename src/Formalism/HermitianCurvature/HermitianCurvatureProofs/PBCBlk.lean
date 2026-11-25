@@ -412,12 +412,6 @@ theorem sum_le (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (b s
         rwa [Ne, FractionalIdeal.absNorm_eq_zero_iff]
       have h2 := FractionalIdeal.absNorm_nonneg (S6.dualIdl E S.g ν)
       exact_mod_cast lt_of_le_of_ne h2 (Ne.symm h1)
-    have hthr0 : ∀ w, 0 ≤ J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w := by
-      intro w
-      have := hΛ (S.pl.symm w)
-      have h' : PBC.thr S b s (S.pl.symm w) = J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w := by
-        simp [PBC.thr]
-      linarith [this.1, this.2, h'.le, h'.ge]
     have hprodthr : ∏ w, J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w ≤
         √(FractionalIdeal.absNorm (S6.dualIdl E S.g ν) : ℝ) := by
       have hv : (∏ w, J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w) ^ 2 /

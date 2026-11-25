@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CmHalfIntegralGeneratorMemAlgebraicClosure
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
@@ -40,13 +41,7 @@ lemma herm_zero_right (u : ι → ℂ) : herm H u 0 = 0 := by
   simp [herm]
 
 lemma herm_conj (hH : Hᴴ = H) (u v : ι → ℂ) : conj (herm H u v) = herm H v u := by
-  have h : ∀ i j, star (H i j) = H j i := fun i j => by
-    have := congrFun (congrFun hH j) i
-    rwa [conjTranspose_apply] at this
-  simp only [herm, dotProduct, mulVec, Pi.star_apply, starRingEnd_apply, star_sum, star_mul', star_star, h,
-    Finset.mul_sum]
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+  apply _root_.Formalism.FourierDecayAlt.P.B2x8.herm_conj <;> assumption
 
 lemma herm_UH [DecidableEq ι] {g : Matrix ι ι ℂ} (hg : g ∈ UH H) (u v : ι → ℂ) :
     herm H (g *ᵥ u) (g *ᵥ v) = herm H u v := by
@@ -324,11 +319,7 @@ lemma heisG_zero (k r' : ℕ) : heisG k r' (liftVec k 1 r' 0) 0 = 1 := by
   simpa [lift_zero, herm_zero_right] using heis_act' k r' 0 w 0
 
 lemma Hherm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i j
-  have hi := i.isLt
-  have hj := j.isLt
-  simp only [conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> first | omega | simp
+  apply _root_.Formalism.FourierDecayAlt.P.B2x8.Hpk_herm <;> assumption
 
 lemma herm_self_im (k r : ℕ) (y : Fin (2 * r + k + 1) → ℂ) : (herm (Hpk k r) y y).im = 0 := by
   exact Complex.conj_eq_iff_im.mp (herm_conj _ (Hherm k r) y y)

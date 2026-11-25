@@ -20,8 +20,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Semi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section PerFr
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

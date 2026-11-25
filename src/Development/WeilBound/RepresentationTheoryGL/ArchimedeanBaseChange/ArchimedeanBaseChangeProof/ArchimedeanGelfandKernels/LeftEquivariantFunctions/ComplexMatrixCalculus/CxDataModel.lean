@@ -1594,18 +1594,6 @@ open PositivityTheory.RgBcC
 
 namespace GlobalTheory.CompanionTheory.MatInv
 
-section Norm
-
-attribute [-instance] instTopologicalSpaceMatrix
-
-attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
-  Matrix.linftyOpNormedSpace
-
-def chart (n : ℕ) : (Fin n → Fin n → ℂ) ≃L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
-  (Matrix.ofLinearEquiv ℝ).toContinuousLinearEquiv
-
-end Norm
-
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem contDiffOn_inv : ∀ {n : ℕ}, ContDiffOn ℝ ∞ (fun x : Mat n => x⁻¹) (GLs n) := by

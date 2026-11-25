@@ -367,8 +367,6 @@ noncomputable section
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.ResW GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
   GroundTheory.Automorphic.UnitaryAdmissible UpperTheory.V.Cm
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 namespace UpperTheory.V.Z.Inf
 
 private theorem exists_pullback {V C L G : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup C] [Module ℂ C]

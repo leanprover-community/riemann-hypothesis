@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.HermitianCurvature.StatementG
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -16,15 +17,7 @@ open Formalism.FourierDecayAlt.G
 instance sigmaFinite_mu (β : ℂ) : SigmaFinite (mu β) := by unfold mu; infer_instance
 
 theorem wMat_mul_self (d : ℕ) : wMat d * wMat d = 1 := by
-  ext i j
-  have key : ∀ k : Fin d, (if k = i.rev then (1:ℂ) else 0) * (if j = k.rev then (1:ℂ) else 0) =
-      if k = i.rev then (if i = j then 1 else 0) else 0 := by
-    intro k
-    by_cases hk : k = i.rev
-    · simp [hk, eq_comm]
-    · simp [hk]
-  simp only [wMat, Matrix.mul_apply, Matrix.one_apply, Matrix.of_apply, key]
-  simp
+  apply _root_.Formalism.FourierDecayAlt.P.Ux3.wMat_mul_self <;> assumption
 
 theorem norm_det_wMat (d : ℕ) : ‖(wMat d).det‖ = 1 := by
   have h := congrArg (fun M => ‖Matrix.det M‖) (wMat_mul_self d)
@@ -32,12 +25,7 @@ theorem norm_det_wMat (d : ℕ) : ‖(wMat d).det‖ = 1 := by
   nlinarith [norm_nonneg (wMat d).det]
 
 theorem det_upper {d : ℕ} (v : UT d → ℂ) : (upper v).det = 1 := by
-  have h : (upper v).BlockTriangular id := by
-    intro i j hij
-    have hij' : j < i := hij
-    simp [upper, strictUpper, hij'.ne', not_lt.2 hij'.le]
-  rw [Matrix.det_of_isUpperTriangular h]
-  simp [upper, strictUpper]
+  apply _root_.Formalism.FourierDecayAlt.P.Ux3.det_upper <;> assumption
 
 theorem continuous_upper (d : ℕ) : Continuous (upper : (UT d → ℂ) → Matrix (Fin d) (Fin d) ℂ) := by
   refine continuous_matrix fun i j => ?_

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStrictUpper
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselIntegrability.Growth
 public import Formalism.PeriodIntegrals.BesselPeriodGGP
 public import Formalism.PeriodIntegrals.IsLowUnitH
@@ -96,22 +97,7 @@ variable {m : ℕ}
 
 theorem pow_entry_zero {X : Matrix (Fin m) (Fin m) ℂ} (hX : SUpper X) :
     ∀ (p : ℕ) (i j : Fin m), (j : ℕ) < i + p → (X ^ p) i j = 0 := by
-  intro p
-  induction p with
-  | zero =>
-    intro i j hij
-    rw [pow_zero, Matrix.one_apply_ne]
-    intro h
-    subst h
-    omega
-  | succ p ih =>
-    intro i j hij
-    rw [pow_succ X p, Matrix.mul_apply]
-    apply Finset.sum_eq_zero
-    intro l _
-    by_cases hl : (l : ℕ) < i + p
-    · rw [ih i l hl, zero_mul]
-    · rw [hX l j (Fin.le_iff_val_le_val.mpr (by omega)), mul_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.G6.pow_apply_eq_zero <;> assumption
 
 open scoped Matrix.Norms.Operator in
 theorem exp_entry_eq {X : Matrix (Fin m) (Fin m) ℂ} (hX : SUpper X) (i j : Fin m) :

@@ -67,8 +67,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC Formalism.L2.Host PositivityThe
 
 namespace PositivityTheory.Rg.BcB.Desc
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 def InertThin : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],

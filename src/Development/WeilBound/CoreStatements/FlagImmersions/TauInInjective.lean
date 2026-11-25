@@ -371,12 +371,8 @@ theorem valAt_up {R : Type} [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.
 def curvePush {ϖ l : Ω} (Γ : FibreCurve ξ' ϖ) (hz : ValAt (ξ' ≫ g) (Γ.η ≫ g) l 0) : FibreCurve (ξ' ≫ g) l where
   k := Γ.k
   κ := Γ.κ
-  fg := Γ.fg
-  trdeg := Γ.trdeg
   C := Γ.C
   w_pos := Γ.w_pos
-  triv := Γ.triv
-  all := Γ.all
   η := Γ.η ≫ g
   η_spec := hz.1
   η_zero := hz
@@ -409,7 +405,7 @@ theorem order_at_place : ∀ (X X' : Scheme.{0}) (Ω : Type) [Field Ω] [CharZer
     SetLike.ext (hreg p (push ξ' g p) rfl)
   have hconst : ∀ (o : O) (p : Cpt ξ'), algebraMap O Ω o ∈ regAt ξ' p := fun o p =>
     (ConstReg.regular_const X' Ω ξ' O s hs p o).1
-  have hconn := _root_.GlobalTheory.CompanionTheory.Ar.Flat.isConnected_zeroSet_of_isProper X' Ω ξ' O s ϖ hirr hinj hs hc' hcc
+  have hconn := _root_.PositivityTheory.Xgn.zero_set_special_fibre_connected X' Ω ξ' O s ϖ hirr hinj hs hc' hcc
   have hgen' : ∀ p ∈ genFibre O ξ', (pullL hr L).IsGenAt p σ := fun p hp => by
     refine isGenAt_pull hr (hgen _ fun o ho => ?_)
     have e : algebraMap ℤ Ω o = algebraMap O Ω (o : O) := by simp
@@ -422,7 +418,7 @@ theorem order_at_place : ∀ (X X' : Scheme.{0}) (Ω : Type) [Field Ω] [CharZer
     rcases hT with hT | hT
     · exact hZ X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ (isVB_pull hr hVB)
         (trivMod_pull hr e (hconst ϖ) (hconst u) hT) hgen'
-    · exact _root_.GlobalTheory.CompanionTheory.Ar.Flat.propZ_numerical X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ
+    · exact _root_.PositivityTheory.Xgn.normal_proper_line_order X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ
         (isVB_pull hr hVB) (numTrivMod_pull hr hc' e (hconst ϖ) (hconst u) hT) hgen'
   obtain ⟨M, a, hM, H⟩ := main
   refine ⟨M, a, hM, ?_⟩
@@ -1777,7 +1773,7 @@ theorem core (hSm : SmoothLine) (hLc : LocalCmp) (hNu : Numerics) (hF : HT.Fargu
   have hco : ∀ p ∈ genFibre ℤ 𝔐.ξ, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) (labelRk D (.inl τ)) (labelRk D (.inr τ))
       (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) p (d₁ / d₂)⁻¹ :=
     fun p hp => CptIn.isCoeffAt_of_smul h₁ h₂ ea eb (hfr p hp)
-  obtain ⟨hL1, hL2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.lineLat_isVBOn_gen_frames 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
+  obtain ⟨hL1, hL2, -⟩ := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
     (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) hVA hVB haF hbF
     ⟨x₀, trivial, _, hco x₀ hx₀⟩
   have hd0 : d₁ / d₂ ≠ 0 := div_ne_zero h₁ h₂

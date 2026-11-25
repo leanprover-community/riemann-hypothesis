@@ -75,13 +75,7 @@ theorem modEq_of_pow_modEq {l d : ℕ} (hl : 1 < l) (hd : 0 < d) {a b : ℕ}
       conv_rhs => rw [this]
       simp
     exact h2.coprime_dvd_right (dvd_pow_self l hd.ne')
-  have h3 := Nat.gcd_eq_left (hcop.dvd_of_dvd_mul_left h1)
-  rw [Nat.pow_sub_one_gcd_pow_sub_one] at h3
-  have h4 : l ^ d.gcd c = l ^ d := by
-    have := Nat.one_le_pow (d.gcd c) l (by omega)
-    have := Nat.one_le_pow d l (by omega)
-    omega
-  have h5 : d ∣ c := (Nat.pow_right_injective hl h4) ▸ Nat.gcd_dvd_right d c
+  have h5 : d ∣ c := (Nat.pow_sub_one_dvd_pow_sub_one_iff hl).1 (hcop.dvd_of_dvd_mul_left h1)
   exact (Nat.modEq_iff_dvd' hab).2 (by simpa using h5)
 
 variable {l : ℕ} [hl : Fact l.Prime]

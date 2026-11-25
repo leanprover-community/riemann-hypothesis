@@ -22,7 +22,7 @@ namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
 
@@ -51,7 +51,7 @@ namespace Formalism.L2.SG.Pf.Carrier
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 open Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 section UMat
 

@@ -45,7 +45,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits NumberField TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames GlobalTheory.AllWt
 open scoped Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.DeRham
 end GlobalTheory.DeRham
 namespace GlobalTheory.FlagTan

@@ -1709,8 +1709,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.TheoremS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem pbApplied : ∀ C₄ Cthr : ℝ, 1 ≤ C₄ →
     ∃ CA C : ℝ, Cthr ≤ CA ∧ 1 ≤ CA ∧ 0 ≤ C ∧ C ≤ CA ∧
     ∀ (C0 CG CDel cT Cb : ℝ), 1 ≤ C0 → 0 ≤ CG → 4 < CDel → 0 < cT → 0 < Cb → 1 < cT * Cb →

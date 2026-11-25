@@ -33,8 +33,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.Lap.LemK
 
 open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.S7
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace PsW
 
 variable {n : ℕ}

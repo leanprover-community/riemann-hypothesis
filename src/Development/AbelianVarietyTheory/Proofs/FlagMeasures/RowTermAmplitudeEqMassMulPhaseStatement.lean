@@ -82,51 +82,6 @@ namespace GlobalTheory.AdmWitChar
 open Formalism.L2.SG.Pf.unitaryCongruence Matrix
 open scoped TensorProduct
 
-private theorem coprime_absNorm_of_isCoprime_span {K : Type} [Field K] [NumberField K] (J : Ideal (𝓞 K)) (g : ℕ)
-    (hJ : J ⊔ Ideal.span {((g : ℕ) : 𝓞 K)} = ⊤) : Nat.Coprime (Ideal.absNorm J) g := by
-  have h1mem : (1 : 𝓞 K) ∈ J ⊔ Ideal.span {((g : ℕ) : 𝓞 K)} := by rw [hJ]; exact Submodule.mem_top
-  obtain ⟨j, hj, y, hy, hjy⟩ := Submodule.mem_sup.1 h1mem
-  obtain ⟨r, rfl⟩ := Ideal.mem_span_singleton'.1 hy
-  apply Nat.coprime_of_dvd
-  intro p hp hpc hpg
-  obtain ⟨k, rfl⟩ := hpg
-  by_cases hJb : J = ⊥
-  · have hj0 : j = 0 := (Submodule.mem_bot _).1 (hJb ▸ hj)
-    have h1 : ((p * k : ℕ) : 𝓞 K) * r = 1 := by rw [← hjy, hj0, zero_add, mul_comm]
-    have h2 := congrArg (Algebra.norm ℤ) h1
-    rw [map_mul, map_one, ← map_natCast (algebraMap ℤ (𝓞 K)), Algebra.norm_algebraMap] at h2
-    have hd : 0 < Module.finrank ℤ (𝓞 K) := Module.finrank_pos
-    have h3 : ((p : ℤ)) ∣ 1 := by
-      rw [← h2]
-      apply Dvd.dvd.mul_right
-      apply Dvd.dvd.pow _ hd.ne'
-      push_cast
-      exact dvd_mul_right _ _
-    have h4 := Int.eq_one_of_dvd_one (by positivity) h3
-    norm_cast at h4
-    exact hp.one_lt.ne' h4
-  · haveI : Finite (𝓞 K ⧸ J) := J.finiteQuotientOfFreeOfNeBot hJb
-    haveI : Fintype (𝓞 K ⧸ J) := Fintype.ofFinite _
-    haveI := Fact.mk hp
-    have hcard : p ∣ Fintype.card (𝓞 K ⧸ J) := by
-      rw [← Nat.card_eq_fintype_card, ← Submodule.cardQuot_apply, ← Ideal.absNorm_apply]
-      exact hpc
-    obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card p hcard
-    have hpx : ((p : ℕ) : 𝓞 K ⧸ J) * x = 0 := by
-      rw [← nsmul_eq_mul, ← hx, addOrderOf_nsmul_eq_zero]
-    have hunit : ((p : ℕ) : 𝓞 K ⧸ J) * Ideal.Quotient.mk J ((k : 𝓞 K) * r) = 1 := by
-      rw [← map_natCast (Ideal.Quotient.mk J), ← map_mul, ← map_one (Ideal.Quotient.mk J), Ideal.Quotient.eq]
-      have : ((p : ℕ) : 𝓞 K) * ((k : 𝓞 K) * r) - 1 = -j := by
-        rw [← hjy]; push_cast; ring
-      rw [this]
-      exact J.neg_mem hj
-    have hx0 : x = 0 := by
-      calc x = (((p : ℕ) : 𝓞 K ⧸ J) * Ideal.Quotient.mk J ((k : 𝓞 K) * r)) * x := by rw [hunit, one_mul]
-        _ = Ideal.Quotient.mk J ((k : 𝓞 K) * r) * (((p : ℕ) : 𝓞 K ⧸ J) * x) := by ring
-        _ = 0 := by rw [hpx, mul_zero]
-    rw [hx0, addOrderOf_zero] at hx
-    exact hp.one_lt.ne hx
-
 private theorem psiEf_divN_eq {D : D7} (X : HidaSetting D) (y : X.B.I.E) :
     X.psiEf (Formalism.L2.SG.HidaSetting.divN X.B.I X.B.g (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) y)) =
       (Formalism.L2.SG.PairVal.psiInf (gS D) (X.ιE y))⁻¹ := by

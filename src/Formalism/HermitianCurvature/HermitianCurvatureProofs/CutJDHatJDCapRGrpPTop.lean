@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianInvariantCellAction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpPRad
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasFDerivAtFsvOther
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
@@ -21,19 +22,7 @@ section
 variable {k r : ℕ}
 
 theorem unipotent_fixes_anisotropic_vector (l : Fin r) (c : ℂ) (v : Fin (2 * r + k + 1) → ℂ) (hv : inWb k r v) : Q.w1 k r l c *ᵥ v = v := by
-  have hsum : v = ∑ q, v q • bvec q := by
-    funext p
-    simp [bvec, Finset.sum_apply, Pi.single_apply]
-  rw [hsum, Matrix.mulVec_sum]
-  refine Finset.sum_congr rfl fun q _ => ?_
-  rw [Matrix.mulVec_smul]
-  by_cases h1 : q = eI k r l
-  · have : v q = 0 := hv q (Or.inl (by rw [h1]; simp [eI]))
-    rw [this, zero_smul, zero_smul]
-  by_cases h2 : q = esI k r l
-  · have : v q = 0 := hv q (Or.inr (by rw [h2]; simp [esI]; omega))
-    rw [this, zero_smul, zero_smul]
-  rw [Formalism.FourierDecayAlt.P.Qx3.reflection_fixes_basis_vector l c h1 h2]
+  apply +allowSynthFailures _root_.Formalism.FourierDecayAlt.P.CutMP.TemperedBoundGL3.unipotent_fixes_base_vector <;> assumption
 
 theorem top_wlist_wb (c : Fin r → ℂ) (L : List (Fin r)) (v : Fin (2 * r + k + 1) → ℂ) (hv : inWb k r v) :
     (L.map fun a => Q.w1 k r a (c a)).prod *ᵥ v = v := by

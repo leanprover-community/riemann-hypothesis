@@ -136,8 +136,6 @@ namespace GlobalTheory.EqvTrans
 
 open MonObj GlobalTheory.LieMet ReciprocityTheory.ChartRestriction.G.PullbackSections
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}

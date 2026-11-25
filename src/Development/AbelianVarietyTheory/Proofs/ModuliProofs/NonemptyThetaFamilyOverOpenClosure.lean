@@ -1756,7 +1756,7 @@ theorem Covered.hasTh_iff (h : Covered Mat κ univ) (h₁ : Out.Laws) (h₂ : Ou
         exact hf (hM.isPrime.mem_of_pow_mem n hn)
       exact (IsLocalization.isPrime_of_isPrime_disjoint (Submonoid.powers f) (Localization.Away f) M
         hM.isPrime hdis).ne_top h2
-    refine _root_.GlobalTheory.ZM.secCoord_of_locally _ Y.de _ Y.th R (z ≫ U.ι) v Y.isLB hspan (fun p => ?_)
+    refine _root_.GlobalTheory.ZM.secCoord_of_locally _ Y.de _ Y.th R (z ≫ U.ι) v hspan (fun p => ?_)
     obtain ⟨f, hf, hsc⟩ := loc p
     refine ⟨Localization.Away f, inferInstance, algebraMap R (Localization.Away f), ?_, ?_, hsc⟩
     · first

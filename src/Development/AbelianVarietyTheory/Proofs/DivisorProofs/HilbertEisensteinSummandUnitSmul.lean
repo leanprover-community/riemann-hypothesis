@@ -51,7 +51,6 @@ open scoped Classical MatrixGroups nonZeroDivisors
 
 namespace GlobalTheory.HilbFam
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem coord_unit_smul {F : Type} [Field F]
@@ -63,7 +62,6 @@ private theorem coord_unit_smul {F : Type} [Field F]
   ring
 
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.gTerm_unit_smul : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (σ : ℂ) (b a : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ)

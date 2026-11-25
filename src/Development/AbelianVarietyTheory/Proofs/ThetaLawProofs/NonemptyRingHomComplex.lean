@@ -74,7 +74,6 @@ open GlobalTheory.KeyCl GlobalTheory.KeyPow
 namespace GlobalTheory.KeyRuleUnique
 
 
-set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 open Cardinal in
 theorem _root_.GlobalTheory.KeyRuleUnique.nonempty_ringHom_complex (K : Type) [Field K] [CharZero K]

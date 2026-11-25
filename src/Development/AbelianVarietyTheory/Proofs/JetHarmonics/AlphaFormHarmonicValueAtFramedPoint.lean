@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaRulesLinearAndLevelCongruence
 public import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormalizedPullbackConjugateTranslateEqTranslateL
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLevelPointEqOfKilledByHalfLevelStatement
@@ -57,7 +58,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory GlobalTheory.PowGerm GlobalTheory.PtTie
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 
@@ -84,20 +84,7 @@ theorem totalDegree_harm {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
     (c : Coeff l) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ}
     {P : MvPolynomial (LtN Dw n) c.F} (hP : P ∈ harmA c a n) (h0 : P ≠ 0) :
     P.totalDegree = ∑ τ : E →+* ℂ, ∑ i : Fin (Dw.mult τ), a (τ, i) := by
-  simp only [harmA, HaO, HHa, RowDeg, Set.mem_setOf_eq] at hP
-  obtain ⟨⟨-, -, hD⟩, -⟩ := hP
-  have hR : ∀ m ∈ P.support, (m.sum fun _ e => e) = ∑ τ : E →+* ℂ, ∑ i : Fin (Dw.mult τ), a (τ, i) := by
-    intro m hm
-    rw [Finsupp.sum_fintype _ _ (fun _ => rfl)]
-    refine (Fintype.sum_sigma (fun ℓ => m ℓ)).trans ?_
-    refine Finset.sum_congr rfl fun τ _ => ?_
-    rw [Fintype.sum_prod_type]
-    exact Finset.sum_congr rfl fun i _ => hD m hm τ i
-  apply le_antisymm
-  · exact Finset.sup_le fun m hm => (hR m hm).le
-  · obtain ⟨m, hm⟩ := Finset.nonempty_iff_ne_empty.2 (mt MvPolynomial.support_eq_empty.1 h0)
-    rw [← hR m hm]
-    exact MvPolynomial.le_totalDegree hm
+  apply _root_.GlobalTheory.ThetaRule.totalDegree_of_mem_harm <;> assumption
 
 theorem nrm_mul_nrm {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (Dw : Datum H) {l : Level H}
     (c : Coeff l) (a : (E →+* ℂ) × ℕ → ℕ) (α β : 𝓞 E) (N : ℕ) (h : α * β = (N : 𝓞 E)) :

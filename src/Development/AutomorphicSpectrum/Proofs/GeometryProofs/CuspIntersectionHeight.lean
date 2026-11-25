@@ -888,7 +888,7 @@ theorem g_height : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   choose! t ht0 htv htf using hvert
   set g : L := uL * ∏ p ∈ Dc.SB B, t p with hg
   have hg0 : g ≠ 0 := mul_ne_zero huL (Finset.prod_ne_zero_iff.2 ht0)
-  have hmd := _root_.GlobalTheory.CompanionTheory.Relay.intersection_datum_degree_sum E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B b s (u * chartMono Dc.y cc Hd.aMu) hsm heq
+  have hmd := _root_.LevelTowerAlt.det_lattice_tensor_isDegOn_muTwDeg E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B b s (u * chartMono Dc.y cc Hd.aMu) hsm heq
 
   have hy : ∀ k, Dc.y ⟨k, cc k⟩ ≠ 0 := fun k => (hw.2 k (cc k) (isUnit_iff_ne_zero.2 (hc k))).1
   have cm_ne : ∀ x : K → ℤ, chartMono Dc.y cc x ≠ 0 := fun x =>

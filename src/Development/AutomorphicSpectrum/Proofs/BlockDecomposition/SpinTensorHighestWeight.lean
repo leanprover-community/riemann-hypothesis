@@ -970,8 +970,6 @@ open GroundTheory.Automorphic.HarishChandra
 
 namespace GlobalTheory.CompanionTheory.PresRho
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable {n : ℕ}
 
 theorem exists_exp {μ : Fin n → ℤ} {x : U n} (h : x ∈ lowSpanW μ ⊔ vermaIdeal (rhoVec n))

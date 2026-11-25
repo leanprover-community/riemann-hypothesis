@@ -432,13 +432,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace PositivityTheory.Rg.BcB.F.Eig.CSD
-
-open PositivityTheory.Rg.BcB.F.Eig
-
-theorem splitDict : SplitDict := _root_.GlobalTheory.CompanionTheory.SplitPlace.splitDict
-
-end PositivityTheory.Rg.BcB.F.Eig.CSD
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FixedSpaceRankOne.SplitDict =====

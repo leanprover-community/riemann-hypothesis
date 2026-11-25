@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.K1V
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCTheta
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSection
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_GCore_GTConnCut
@@ -74,21 +75,7 @@ def GTRTrans : Prop :=
 
 theorem poly_coeff_zero {V : Type*} [AddCommGroup V] [Module ℂ V] (N : ℕ) (a : ℕ → V)
     (h : ∀ Y : ℂ, ∑ j ∈ Finset.range N, Y ^ j • a j = 0) : ∀ j < N, a j = 0 := by
-  intro j hj
-  refine (Module.forall_dual_apply_eq_zero_iff ℂ (a j)).mp ?_
-  intro f
-  have hp0 : (∑ i ∈ Finset.range N, Polynomial.C (f (a i)) * Polynomial.X ^ i : Polynomial ℂ) = 0 := by
-    apply Polynomial.funext
-    intro Y
-    have hY := congrArg f (h Y)
-
-    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at hY
-    simp only [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
-      Polynomial.eval_X, Polynomial.eval_zero]
-    rw [← hY]
-    exact Finset.sum_congr rfl (fun i _ => mul_comm _ _)
-  have hc := congrArg (fun q => q.coeff j) hp0
-  simpa [Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, hj] using hc
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.poly_coeff_eq_zero <;> assumption
 
 theorem poly_coeff_eq {V : Type*} [AddCommGroup V] [Module ℂ V] (N : ℕ) (a b : ℕ → V)
     (h : ∀ Y : ℂ, ∑ j ∈ Finset.range N, Y ^ j • a j = ∑ j ∈ Finset.range N, Y ^ j • b j) :

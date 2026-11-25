@@ -11,6 +11,7 @@ public import GroundTheory.AutomorphicForms.CuspidalAdmissible
 public import Development.AutomorphicArithmetic.AdelicGluing.BaseChangeLevelIsOpenIsCompactContainsIwahori
 public import Development.AutomorphicArithmetic.AdelicGluing.GaloisTwistCompUOperatorEqUOperatorSmulPlace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriHeckeInjectivity.IdempotentTraces.GalLoc
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriHeckeInjectivity.IdempotentTraces.GalLoc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriHeckeInjectivity.IdempotentTraces.TensAmp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.AvgTens
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.HopLevel
@@ -150,14 +151,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 private theorem central_fixed (σ : E ≃ₐ[F] E) (s : {r : ℝ // 0 < r}) :
     mapGL n (galAd σ) (centralSection E n s) = centralSection E n s := by
-  have hd : Module.finrank F E ≠ 0 := Module.finrank_pos.ne'
-  have hroot : (⟨(s : ℝ) ^ ((Module.finrank F E : ℝ))⁻¹, Real.rpow_pos_of_pos s.2 _⟩ : {r : ℝ // 0 < r}) ^
-      Module.finrank F E = s := by
-    apply Subtype.ext
-    rw [Positive.val_pow]
-    exact Real.rpow_inv_natCast_pow s.2.le hd
-  rw [← hroot, ← UpperTheory.centralSection_baseChange F E n]
-  exact (UpperTheory.adele_galois_action_baseChange_compat F E σ n).2.2.2.2.1 _
+  apply _root_.gal_cent <;> assumption
 
 private theorem galois_twist_finite_adelic_point (σ : E ≃ₐ[F] E) (hn : 0 < n) {μ : Measure (G1 E n)} [μ.IsHaarMeasure] {θ : Twist μ}
     (hθ : IsGalTwist σ θ) {x x' : FA E n} (h : mapGL n (galAd σ) (finEmb E n x) = finEmb E n x') :

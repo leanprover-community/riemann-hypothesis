@@ -392,11 +392,9 @@ namespace GlobalTheory.LKMid.Pair
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem finiteQ (G : HTGroup p) : Module.Finite ℚ G.C := Module.Finite.trans G.F G.C
-
 theorem norm_sim (P : Pair G) :
     Algebra.norm ℚ (P.γ : G.C) * Algebra.norm ℚ (sh G P.γ) = (P.c : ℚ) ^ Module.finrank ℚ G.C := by
-  haveI := finiteQ G
+  haveI := GlobalTheory.LKTrip.HTGroup.finQ G
   have h := congrArg (Algebra.norm ℚ) P.sim
   rw [map_mul, map_mul, map_mul, Algebra.norm_algebraMap] at h
   have hb : Algebra.norm ℚ (P.β : G.C) ≠ 0 := (P.β.isUnit.map (Algebra.norm ℚ)).ne_zero
@@ -405,7 +403,7 @@ theorem norm_sim (P : Pair G) :
 
 theorem c_eq_or_eq_neg : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P P' : Pair G), P'.γ = P.γ → P'.c = P.c ∨ P'.c = -P.c := by
   intro p _ G P P' hγ
-  haveI := finiteQ G
+  haveI := GlobalTheory.LKTrip.HTGroup.finQ G
   have h1 := norm_sim P
   have h2 := norm_sim P'
   rw [hγ, h1] at h2

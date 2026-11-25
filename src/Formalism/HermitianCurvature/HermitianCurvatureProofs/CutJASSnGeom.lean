@@ -1349,18 +1349,7 @@ lemma omW_N {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.
 lemma omW'_N {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.StdZ k r z') {n n' : B.Mat k r}
     (hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r) {g : B.Mat k r} (hg : g ∈ B.GV k r) :
     omW' k r z z' (n * g * n') = omW' k r z z' g := by
-  have hh : nᴴ * Hpk k r * n = Hpk k r := hn.1
-  have hleft : (Hpk k r * nᴴ * Hpk k r) * n = 1 := by
-    calc (Hpk k r * nᴴ * Hpk k r) * n = Hpk k r * (nᴴ * Hpk k r * n) := by
-          simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hh, WeylGroupFacts.hpk_sq]
-  have hnn : n⁻¹ * n = 1 := by
-    rw [Matrix.inv_eq_left_inv hleft]
-    exact hleft
-  show prW k r z' ((n * g * n')⁻¹ *ᵥ xcofL k r z z' (n * g * n')) = prW k r z' (g⁻¹ *ᵥ xcofL k r z z' g)
-  rw [xcofL_N hz hz' hn hn' g, Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.mulVec_mulVec,
-    Matrix.mul_assoc, Matrix.mul_assoc, hnn, Matrix.mul_one, ← Matrix.mulVec_mulVec]
-  exact prW_N (WeylGroupFacts.mem_n_inv hn') (fun a => ginv_xcofL_esI z z' hg a)
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Geom.S3.omW'_N <;> assumption
 
 end S2
 

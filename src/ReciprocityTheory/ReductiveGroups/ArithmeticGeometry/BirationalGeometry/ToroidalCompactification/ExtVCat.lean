@@ -12,8 +12,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G]
 
 theorem eta_eq_one (M : Over S) [MonObj M] : (η[M] : 𝟙_ (Over S) ⟶ M) = 1 := by

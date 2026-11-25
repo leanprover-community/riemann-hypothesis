@@ -77,17 +77,8 @@ section Grp
 
 variable {k r : ℕ}
 
-private theorem Hpk_mul_self_eq_one (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
-  first
-  | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
-  | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
-
 theorem mul_inv_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g * g⁻¹ = 1 := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hl : (Hpk k r * gᴴ * Hpk k r) * g = 1 := by
-    calc (Hpk k r * gᴴ * Hpk k r) * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hg', Hpk_mul_self_eq_one]
-  exact Matrix.mul_nonsing_inv g (Matrix.isUnit_det_of_left_inverse hl)
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.mul_inv_uh <;> assumption
 
 theorem inv_mul_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g (Matrix.isUnit_det_of_right_inverse (mul_inv_uh hg))
 
@@ -107,25 +98,8 @@ theorem herm_inv {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (x y : Fin (2 * r + k + 
   simp only [Matrix.mulVec_mulVec]
   rw [key2]
 
-private theorem hpk_conjTranspose_eq_self (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i j
-  have := i.2
-  have := j.2
-  simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> first | omega | norm_num
-
 theorem herm_self (z : Fin (2 * r + k + 1) → ℂ) : herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := by
-  have hH := hpk_conjTranspose_eq_self k r
-  have hs : star (herm (Hpk k r) z z) = herm (Hpk k r) z z := by
-    unfold herm
-    conv_rhs => rw [Matrix.star_dotProduct]
-    rw [Matrix.star_mulVec, hH, ← Matrix.dotProduct_mulVec]
-  have him : (herm (Hpk k r) z z).im = 0 := by
-    have h2 := congrArg Complex.im hs
-    simp at h2
-    linarith
-  unfold Tz
-  apply Complex.ext <;> simp [him]
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.herm_self' <;> assumption
 
 theorem frame_inv {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) {m : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     {Bs : Fin m → Fin (2 * r + k + 1) → ℂ} (hB : IsFrameOf k r [z] Bs) :

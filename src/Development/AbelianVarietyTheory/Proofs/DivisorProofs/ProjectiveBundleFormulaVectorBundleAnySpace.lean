@@ -291,24 +291,6 @@ theorem cpush_comp (K : Cx R) {I J M : Cx R} (f : I ⟶ J) (g : J ⟶ M) (n : �
   simp only [cpush, cpost_mk]
   congr 1
 
-theorem cpush_add (K : Cx R) {I J : Cx R} (f g : I ⟶ J) (n : ℤ) (x : CohomologyClass K I n) :
-    cpush K (f + g) n x = cpush K f n x + cpush K g n x := by
-  obtain ⟨x, rfl⟩ := x.mk_surjective
-  simp only [cpush, cpost_mk]
-  rw [← CohomologyClass.mk_add]
-  congr 1
-  ext1
-  simp [zcomp, Cochain.ofHom_add, Cochain.comp_add]
-
-theorem cpush_zero (K : Cx R) {I J : Cx R} (n : ℤ) (x : CohomologyClass K I n) :
-    cpush K (0 : I ⟶ J) n x = 0 := by
-  obtain ⟨x, rfl⟩ := x.mk_surjective
-  simp only [cpush, cpost_mk]
-  rw [← CohomologyClass.mk_zero]
-  congr 1
-  ext1
-  simp [zcomp, Cochain.ofHom_zero]
-
 theorem cpush_id (K : Cx R) {I : Cx R} (n : ℤ) (x : CohomologyClass K I n) :
     cpush K (𝟙 I) n x = x := by
   obtain ⟨x, rfl⟩ := x.mk_surjective
@@ -319,8 +301,8 @@ theorem cpush_id (K : Cx R) {I : Cx R} (n : ℤ) (x : CohomologyClass K I n) :
 
 def cpushHom (K : Cx R) (I J : Cx R) (n : ℤ) (x : CohomologyClass K I n) : (I ⟶ J) →+ CohomologyClass K J n where
   toFun f := cpush K f n x
-  map_zero' := cpush_zero K n x
-  map_add' f g := cpush_add K f g n x
+  map_zero' := GlobalTheory.EtC.cpush_zero_hom K n x
+  map_add' f g := GlobalTheory.EtC.PostFun.cpush_add K f g n x
 
 theorem cpush_sum (K : Cx R) {I J : Cx R} {ι : Type} (s : Finset ι) (f : ι → (I ⟶ J)) (n : ℤ) (x : CohomologyClass K I n) :
     cpush K (∑ j ∈ s, f j) n x = ∑ j ∈ s, cpush K (f j) n x :=
@@ -371,7 +353,7 @@ theorem biproduct_push : ∀ (R : Type) [CommRing R] {ι : Type} [Fintype ι] (L
       rw [Finset.sum_eq_single k]
       · rw [biproduct.ι_π_self, cpush_id]
       · intro j _ hj
-        rw [biproduct.ι_π_ne _ hj, cpush_zero]
+        rw [biproduct.ι_π_ne _ hj, GlobalTheory.EtC.cpush_zero_hom]
       · intro h; exact absurd (Finset.mem_univ k) h
     · intro b
       simp only [← cpush_comp]
@@ -1408,14 +1390,6 @@ noncomputable section
 
 namespace GlobalTheory.AWFront
 
-theorem sub_full {E : Spc} {N : ℕ} {U : Scheme.{0}} (x : Sx E N U) (h : 0 + N ≤ N) : x.sub 0 N h = x := by
-  have e : SimplexCategory.subinterval (n := N) 0 N h = 𝟙 _ := by
-    ext i
-    simp [SimplexCategory.subinterval]
-  unfold Sx.sub
-  rw [e, op_id, CategoryTheory.Functor.map_id]
-  rfl
-
 theorem ev_of_front {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {S : Spc} {n m k : ℤ} (hk : n + m = k)
     (α : Cochain ((chains R).obj S) I n) (β : Cochain ((chains R).obj S) J m) (γ : Cochain ((chains R).obj S) K k)
     (hγ : μ.IsAW hk α β γ)
@@ -1436,7 +1410,7 @@ theorem ev_of_front {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {S 
     rintro p rfl H h1 h2
     have e1 : (m * ((0 : ℕ) : ℤ)).negOnePow = 1 := by simp
     rw [e1, one_smul]
-    have e2 : x.sub 0 (N - 0) h2 = x := sub_full x h2
+    have e2 : x.sub 0 (N - 0) h2 = x := GlobalTheory.EtC.CupGen.sub_zero_full x h2
     rw [e2]
     exact key _ (by simp) H rfl
   rw [hγ N w h U x, Fin.sum_univ_succ, Finset.sum_eq_zero (fun i _ => ?_), add_zero]

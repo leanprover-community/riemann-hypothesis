@@ -1,5 +1,7 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.ReproducingKernels.OneLeGN
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.FormalDegreeBessel.FinalG
@@ -76,17 +78,7 @@ section sizes
 variable {k j ρ : ℕ}
 
 theorem entry_le_gN {r : ℕ} (M : B.Mat k r) (i l : Fin (2 * r + k + 1)) : ‖M i l‖ ≤ B.gN M := by
-  unfold B.gN
-  calc ‖M i l‖ = Real.sqrt (Complex.normSq (M i l)) := by
-        rw [Complex.normSq_eq_norm_sq, Real.sqrt_sq (norm_nonneg _)]
-    _ ≤ Real.sqrt (∑ i, ∑ l, Complex.normSq (M i l)) := by
-        apply Real.sqrt_le_sqrt
-        calc Complex.normSq (M i l) ≤ ∑ l, Complex.normSq (M i l) :=
-              Finset.single_le_sum (f := fun l => Complex.normSq (M i l)) (fun _ _ => Complex.normSq_nonneg _)
-                (Finset.mem_univ l)
-          _ ≤ ∑ i, ∑ l, Complex.normSq (M i l) :=
-              Finset.single_le_sum (f := fun i => ∑ l, Complex.normSq (M i l))
-                (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.S0.DecA.gN_entry <;> assumption
 
 theorem wMat_mul_apply' {n : ℕ} (M : Matrix (Fin j) (Fin n) ℂ) (a : Fin j) (b : Fin n) :
     (G.wMat j * M) a b = M a.rev b := by

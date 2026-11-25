@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAFFStableGerm
 public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -31,16 +32,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 theorem rdV_local {f₁ f₂ : Mat k r → E} {V : Set (Mat k r)} (hV : IsOpen V)
     (h : ∀ x ∈ V, x ∈ GV k r → f₁ x = f₂ x) {X : Mat k r} (hX : inLie k r X) :
     ∀ x ∈ V, x ∈ GV k r → RdV X f₁ x = RdV X f₂ x := by
-  intro x hx hxG
-  have hγ := Formalism.FourierDecayAlt.P.B5.curve_hasDerivAt x X 0
-  have hγ0 : x * NormedSpace.exp (((0 : ℝ) : ℂ) • X) = x := by simp
-  have hmem : ∀ᶠ t : ℝ in 𝓝 (0 : ℝ), x * NormedSpace.exp ((t : ℂ) • X) ∈ V :=
-    hγ.continuousAt.preimage_mem_nhds (by rw [hγ0]; exact hV.mem_nhds hx)
-  show deriv (fun t : ℝ => f₁ (x * NormedSpace.exp ((t : ℂ) • X))) 0 =
-    deriv (fun t : ℝ => f₂ (x * NormedSpace.exp ((t : ℂ) • X))) 0
-  apply Filter.EventuallyEq.deriv_eq
-  filter_upwards [hmem] with t ht
-  exact h _ ht (Formalism.FourierDecayAlt.P.B5.curve_mem hxG hX t)
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.FFS.rdV_local <;> assumption
 
 theorem rw_local {f₁ f₂ : Mat k r → E} {V : Set (Mat k r)} (hV : IsOpen V)
     (h : ∀ x ∈ V, x ∈ GV k r → f₁ x = f₂ x) (w : List (Mat k r)) (hw : ∀ X ∈ w, inLie k r X) :
@@ -52,14 +45,7 @@ theorem rw_local {f₁ f₂ : Mat k r → E} {V : Set (Mat k r)} (hV : IsOpen V)
     exact rdV_local hV (ih (fun Y hY => hw Y (List.mem_cons_of_mem X hY))) (hw X (by simp)) x hx hxG
 
 theorem rw_smul (w : List (Mat k r)) (c : ℂ) (f : Mat k r → E) : Rw w (c • f) = c • Rw w f := by
-  induction w with
-  | nil => rfl
-  | cons X w ih =>
-    show RdV X (Rw w (c • f)) = c • RdV X (Rw w f)
-    rw [ih]
-    funext g
-    simp only [RdV, Pi.smul_apply]
-    exact deriv_const_smul_field (f := fun t : ℝ => Rw w f (g * NormedSpace.exp ((t : ℂ) • X))) c
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.FFS.rw_smul <;> assumption
 
 end local_
 

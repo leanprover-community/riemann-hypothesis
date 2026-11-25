@@ -429,8 +429,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.CovB.TrD
 
 open Formalism.L2.SG.HidaSetting Formalism.MainNotions.S Formalism.L2.SG.Pf.NcReal.JX Formalism.L2.SG.Pf.NcReal.JX.CovB.CovolumeSpans
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev Dv (D : D7) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=

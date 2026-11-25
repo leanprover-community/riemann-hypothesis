@@ -639,8 +639,6 @@ theorem bound_conv_local (C₅ M : ℝ) : ∃ C₅' : ℝ, 0 ≤ C₅' ∧ ∀ (
           exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h3 hB0) hA0
       _ = K * y ^ K * Real.exp (y / 2) := by rw [hK]; ring
 
-theorem bound_conv : ∀ (C₅ M : ℝ), ∃ C₅' : ℝ, 0 ≤ C₅' ∧ ∀ (rw rl p d : ℝ), Real.exp 1 ≤ rw → Real.exp 1 ≤ rl → |rw - rl| ≤ M → (-C₅ * Real.log rw ≤ p → p ≤ C₅ → -C₅' * Real.log rl ≤ p ∧ p ≤ C₅') ∧ (d ≤ |C₅| * rw ^ |C₅| * Real.exp (rw / 2) → d ≤ C₅' * rl ^ C₅' * Real.exp (rl / 2)) :=
-  bound_conv_local
 
 end GlobalTheory.CompanionTheory.Metric.BoundConv
 end -- clump:auto
@@ -1253,7 +1251,7 @@ theorem regGlobalStatement_holds : RegGlobalStatement := by
   choose S mm hm1 hbd hrl using hM
   have hcl : IsClosed (bdry s) := LeviFormBoundaryTopology.isClosed_bdry hS
   obtain ⟨hth, hphs, hpsh, hb⟩ := hSW
-  obtain ⟨C₅', hC₅'0, hconv⟩ := _root_.GlobalTheory.CompanionTheory.Metric.BoundConv.bound_conv C₅ M
+  obtain ⟨C₅', hC₅'0, hconv⟩ := _root_.GlobalTheory.CompanionTheory.Metric.BoundConv.bound_conv_local C₅ M
   obtain ⟨hlogd, hmono, hle, htend, hsmall, hmin⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Num.epsT_numerics
   have hrWge : ∀ y, Real.exp 1 ≤ rW L s y := rW_ge L s hs
   have h2le : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast le_top

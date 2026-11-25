@@ -81,8 +81,8 @@ theorem bessel_orth_of_param_ne : HypsG → ∀ (k r : ℕ) (ε : Fin (2 * r + k
   intro hH k r ε mu mu' R R' Wp _ _ _ _ z π u μW μN μG νq Bm Bm' hR hR' hne hS hB hB'
   have hK : PI.KFinSmooth := hH.1.2.2.1
   have hP : PoulsenG := hH.2.2.2.2.2.1
-  obtain ⟨hL, hI⟩ := GlobalTheory.T.isometric_bessel_memLp_and_integral_inner_eq hK k r ε mu R Wp z π u μW μN μG νq Bm hR hS hB
-  obtain ⟨hL', hI'⟩ := GlobalTheory.T.isometric_bessel_memLp_and_integral_inner_eq hK k r ε mu' R' Wp z π u μW μN μG νq Bm' hR' hS hB'
+  obtain ⟨hL, hI⟩ := _root_.Gp91.GlobalTheory.isoBessel_polarised hK k r ε mu R Wp z π u μW μN μG νq Bm hR hS hB
+  obtain ⟨hL', hI'⟩ := _root_.Gp91.GlobalTheory.isoBessel_polarised hK k r ε mu' R' Wp z π u μW μN μG νq Bm' hR' hS hB'
   have hq := _root_.GlobalTheory.quot_integral_rmul k r Wp z π u μW μN μG νq
   obtain ⟨⟨ha, hs, he, hc⟩, -⟩ := hB
   obtain ⟨⟨ha', hs', he', hc'⟩, -⟩ := hB'
@@ -243,7 +243,7 @@ theorem pairing : HypsG → ∀ (k r : ℕ) (ι κ : Type) [Fintype ι] [Decidab
   rw [MeasureTheory.integral_finsetSum]
   · rw [Finset.sum_eq_single I]
     · rw [MeasureTheory.integral_const_mul,
-        (Gp91.GlobalTheory.T.isometric_bessel_memLp_and_integral_inner_eq hK k r ε (muI I) (RI I) Wp z π u μW μN μG νq (BI I) (hRI I) hS hIso).2 _ (hv I) y hy]
+        (_root_.Gp91.GlobalTheory.isoBessel_polarised hK k r ε (muI I) (RI I) Wp z π u μW μN μG νq (BI I) (hRI I) hS hIso).2 _ (hv I) y hy]
     · intro J _ hJI
       rw [MeasureTheory.integral_const_mul]
       rcases hOr J with hJ | hJ
@@ -255,8 +255,8 @@ theorem pairing : HypsG → ∀ (k r : ℕ) (ι κ : Type) [Fintype ι] [Decidab
   · intro J _
     rcases hOr J with hJ | hJ
     · exact (integrable_inner_of_memLp
-        ((Gp91.GlobalTheory.T.isometric_bessel_memLp_and_integral_inner_eq hK k r ε (muI I) (RI I) Wp z π u μW μN μG νq (BI I) (hRI I) hS hIso).1 y hy)
-        ((Gp91.GlobalTheory.T.isometric_bessel_memLp_and_integral_inner_eq hK k r ε (muI J) (RI J) Wp z π u μW μN μG νq (BI J) (hRI J) hS hJ).1 _
+        ((_root_.Gp91.GlobalTheory.isoBessel_polarised hK k r ε (muI I) (RI I) Wp z π u μW μN μG νq (BI I) (hRI I) hS hIso).1 y hy)
+        ((_root_.Gp91.GlobalTheory.isoBessel_polarised hK k r ε (muI J) (RI J) Wp z π u μW μN μG νq (BI J) (hRI J) hS hJ).1 _
           (hv J))).const_mul (β J)
     · simp only [hJ, zero_mul]
       exact MeasureTheory.integrable_zero _ _ _

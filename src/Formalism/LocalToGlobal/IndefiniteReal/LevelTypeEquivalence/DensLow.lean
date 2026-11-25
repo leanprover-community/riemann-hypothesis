@@ -175,7 +175,7 @@ open scoped InnerProductSpace ContDiff
 
 namespace Formalism.IndefR.Eqv.KerDiag
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Matrix.normedAddCommGroup Matrix.normedSpace
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau)
 

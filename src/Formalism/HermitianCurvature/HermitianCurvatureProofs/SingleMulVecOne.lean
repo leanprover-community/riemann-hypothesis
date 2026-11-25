@@ -1,5 +1,7 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.LowerInv
+import Formalism.SharpRestriction.CuspSpanNormBounds.StarVecMulDM
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.UnitaryOfBlockWMem
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.FrameExists2
@@ -29,12 +31,7 @@ namespace QrCap
 variable {k r : ℕ}
 
 theorem inWb_bvec_wI (j : Fin (k + 1)) : inWb k r (bvec (wI k r j)) := by
-  intro i hi
-  unfold bvec
-  rw [Pi.single_apply, if_neg]
-  rintro rfl
-  simp [wI] at hi
-  omega
+  apply _root_.Formalism.MainNotions.FrameBoundFromBesselTorus.inWb_bvec_wI <;> assumption
 
 def fr (k r : ℕ) (g : Mx k r) : Fin k → Fin (2 * r + k + 1) → ℂ := fun a => g *ᵥ bvec (wI k r a.castSucc)
 
@@ -202,19 +199,7 @@ theorem torus {g : Mx k r} (hgU : g ∈ UH (Hpk k r)) (θ : Fin k → ℝ) :
   rw [hs, Matrix.exp_conj _ _ hu, Matrix.exp_diagonal, diag_exp_blockW]
 
 theorem Dg_mem (θ : Fin k → ℝ) : Dg θ ∈ PI.UpqRep.Kset (PI.UpqRep.allPos k) := by
-  refine ⟨?_, ?_⟩
-  · rw [Matrix.mem_unitaryGroup_iff']
-    unfold Dg
-    rw [Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal,
-      ← Matrix.diagonal_one]
-    congr 1
-    funext a
-    rw [Pi.star_apply, Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
-    have e : (starRingEnd ℂ) ((θ a : ℂ) * Complex.I) + (θ a : ℂ) * Complex.I = 0 := by
-      rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
-      ring
-    rw [e, Complex.exp_zero]
-  · rw [PI.HwUniqW.Jm_allPos, Matrix.mul_one, Matrix.one_mul]
+  apply _root_.PI.WMI.lowerInv_torus_mem <;> assumption
 
 theorem blockW_uh {h : Matrix (Fin k) (Fin k) ℂ} (hh : hᴴ * h = 1) :
     PI.UpqRep.blockW k r h ∈ UH (Hpk k r) := by

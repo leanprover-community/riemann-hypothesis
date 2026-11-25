@@ -660,25 +660,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
-open GlobalTheory.EtC.CupSpec GlobalTheory.EtC.DiscCoch in
-
-theorem _root_.GlobalTheory.T.discrete_projBundleModel_cohomology_equiv_prod_fibre :
-    ∀ (R : Type) [CommRing R] (q N : ℕ) (I : Cx R) (F : PSh) (n : ℤ),
-      ∃ e : CohomologyClass ((chains R).obj (disc.obj F)) (Jcx R q N I) n ≃+
-          CohomologyClass ((chains R).obj (disc.obj F ⨯ fibQ q N)) I n,
-        ∀ (β : Cocycle ((chains R).obj (disc.obj F)) (Jcx R q N I) n)
-          (γ : Cocycle ((chains R).obj (disc.obj F ⨯ fibQ q N)) I n),
-          (∀ (p : ℕ), 0 < p → ∀ (s : ℤ) (h : -(p : ℤ) + n = s), β.1.v (-(p : ℤ)) s h = 0) →
-          (∀ (U : Scheme.{0}) (x : F.obj (op U)),
-            ∃ c : Cochain ((chains R).obj (sch.obj U ⨯ fibQ q N)) I n,
-              ev (R := R) β.1 0 n (by simp) U x = Jsec c ∧
-              ∀ (k : ℕ) (s : ℤ) (hs : -(k : ℤ) + n = s) (V : Scheme.{0})
-                (y : Sx (sch.obj U ⨯ fibQ q N) k V),
-                ev (R := R) c k s hs V y =
-                  ev (R := R) γ.1 k s hs V
-                    (Sx.map (prod.map (disc.map (yonedaEquiv.symm x)) (𝟙 (fibQ q N))) y)) →
-          e (CohomologyClass.mk β) = CohomologyClass.mk γ := by
-  apply _root_.GlobalTheory.EtC.DiscCoch.model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscreteProjBundleModelCohomologyEquivProdFibreStatement =====
@@ -693,20 +674,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory.EtC.PsiModel
 variable {R : Type} [CommRing R]
-
-theorem map_sres {E E' : Spc} (f : E ⟶ E') {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (x : Sx E p U) :
-    Sx.map f (Sx.res g x) = Sx.res g (Sx.map f x) := by
-  unfold Sx.map Sx.res
-  exact NatTrans.naturality_apply (f.app (op (SimplexCategory.mk p))) g.op x
-
-theorem map_face {E E' : Spc} (f : E ⟶ E') {p : ℕ} {U : Scheme.{0}} (x : Sx E (p + 1) U) (i : Fin (p + 2)) :
-    Sx.map f (Sx.face x i) = Sx.face (Sx.map f x) i := by
-  unfold Sx.map Sx.face
-  have h1 := NatTrans.congr_app (f.naturality (SimplexCategory.δ i).op) (op U)
-  simp only [NatTrans.comp_app] at h1
-  have h2 := ConcreteCategory.congr_hom h1 x
-  simp only [ConcreteCategory.comp_apply] at h2
-  exact h2
 
 theorem map_map {E E' E'' : Spc} (f : E ⟶ E') (f' : E' ⟶ E'') {p : ℕ} {U : Scheme.{0}} (x : Sx E p U) :
     Sx.map f' (Sx.map f x) = Sx.map (f ≫ f') x := rfl
@@ -728,13 +695,13 @@ def fstH {U V : Scheme.{0}} {p : ℕ} (y : Sx (sch.obj U ⨯ fibQ q N) p V) : V 
 theorem fstH_res {U V' V : Scheme.{0}} {p : ℕ} (g : V' ⟶ V) (y : Sx (sch.obj U ⨯ fibQ q N) p V) :
     fstH (Sx.res g y) = g ≫ fstH y := by
   unfold fstH
-  rw [map_sres]
+  rw [GlobalTheory.EtC.ClsSpec.map_res]
   rfl
 
 theorem fstH_face {U V : Scheme.{0}} {p : ℕ} (y : Sx (sch.obj U ⨯ fibQ q N) (p + 1) V) (i : Fin (p + 2)) :
     fstH (Sx.face y i) = fstH y := by
   unfold fstH
-  rw [map_face]
+  rw [GlobalTheory.EtC.ClsSpec.map_face]
   rfl
 
 theorem fstH_map {U U' V : Scheme.{0}} {p : ℕ} (g : U' ⟶ U) (y : Sx (sch.obj U' ⨯ fibQ q N) p V) :
@@ -757,7 +724,7 @@ theorem pval_res {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X 
     {V' V : Scheme.{0}} (g : V' ⟶ V) (y : Sx (sch.obj U ⨯ fibQ q N) p V) :
     Sec.res g (pval μ z hw a p s hs V y) = pval μ z hw a p s hs V' (y.res g) := by
   unfold pval
-  rw [μ.nat, res_res, ev_res, map_sres, fstH_res]
+  rw [μ.nat, res_res, ev_res, GlobalTheory.EtC.ClsSpec.map_res, fstH_res]
 
 def cval {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X m) U) :
     Cochain ((chains R).obj (sch.obj U ⨯ fibQ q N)) K w :=
@@ -836,7 +803,7 @@ theorem cval_δ (hn : Even n) (hz : δ n (n + 1) z = 0) {U : Scheme.{0}} {m w w'
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [cval_ev]
       unfold pval
-      rw [fstH_face, map_face]
+      rw [fstH_face, GlobalTheory.EtC.ClsSpec.map_face]
     rw [e2, cval_ev]
     unfold pval
     rw [μ.leibniz, mul_d_congr μ (t2 := -(k : ℤ) + n) (by push_cast; omega) _ (by push_cast; omega)]
@@ -1050,16 +1017,12 @@ theorem sx_prod_ext {A B : Spc} {p : ℕ} {V : Scheme.{0}} {y y' : Sx (A ⨯ B) 
     (h1 : y.map prod.fst = y'.map prod.fst) (h2 : y.map prod.snd = y'.map prod.snd) : y = y' := by
   rw [← sxPair_eta y, ← sxPair_eta y', h1, h2]
 
-theorem sxMap_res {E E' : Spc} (f : E ⟶ E') {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (x : Sx E p U) :
-    (x.res g).map f = (x.map f).res g :=
-  ConcreteCategory.congr_hom ((f.app (op (SimplexCategory.mk p))).naturality g.op) x
-
 theorem sxMap_comp {E E' E'' : Spc} (f : E ⟶ E') (f' : E' ⟶ E'') {p : ℕ} {U : Scheme.{0}} (x : Sx E p U) :
     x.map (f ≫ f') = (x.map f).map f' := rfl
 
 theorem sxPair_res {A B : Spc} {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (a : Sx A p U) (b : Sx B p U) :
     (sxPair a b).res g = sxPair (a.res g) (b.res g) :=
-  sx_prod_ext (by rw [sxMap_res, sxPair_fst, sxPair_fst]) (by rw [sxMap_res, sxPair_snd, sxPair_snd])
+  sx_prod_ext (by rw [GlobalTheory.EtC.ClsSpec.map_res, sxPair_fst, sxPair_fst]) (by rw [GlobalTheory.EtC.ClsSpec.map_res, sxPair_snd, sxPair_snd])
 
 theorem sxPair_map {A B A' B' : Spc} (f : A ⟶ A') (f' : B ⟶ B') {p : ℕ} {V : Scheme.{0}} (a : Sx A p V) (b : Sx B p V) :
     (sxPair a b).map (prod.map f f') = sxPair (a.map f) (b.map f') :=
@@ -1233,7 +1196,7 @@ theorem buildC_exists (U : Scheme.{0}) (b : Sec B U) :
   have ha (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (V W : Scheme.{0})
       (g : V ⟶ W) (y : Sx E p W) : Sec.res g (a p s h W y) = a p s h V (y.res g) := by
     dsimp only [a]
-    erw [hχ, secRes_res, sxMap_res, sxMap_res]
+    erw [hχ, secRes_res, GlobalTheory.EtC.ClsSpec.map_res, GlobalTheory.EtC.ClsSpec.map_res]
     rfl
   have components (i j : ℤ) (hij : i + n = j) :
       ∃ φ : ((chains R).obj E).X i ⟶ I.X j, ∀ (p : ℕ) (hp : i = -(p : ℤ)) W y,
@@ -1599,7 +1562,7 @@ theorem pbf_disc_model : ∀ (q : ℕ) [NeZero q] (N : ℕ) (i : ℤ), ∃ (J : 
     _root_.GlobalTheory.EtC.Jcx_X_injective _ q N _ (fun m => inferInstanceAs (Injective ((injectiveResolution (tw q i)).cochainComplex.X m))), ?_⟩
   intro F hF n
   obtain ⟨θ, hθ1, hθ2⟩ := _root_.GlobalTheory.EtC.trivProj_iso q N F hF
-  obtain ⟨e₀, he₀⟩ := GlobalTheory.T.discrete_projBundleModel_cohomology_equiv_prod_fibre (ZMod q) q N (res (ZMod q) (tw q i)) F n
+  obtain ⟨e₀, he₀⟩ := GlobalTheory.EtC.DiscCoch.model (ZMod q) q N (res (ZMod q) (tw q i)) F n
   let e₁ : Ht q (pullback (trivV N (disc.obj F)) (PGL.pr N)) n i ≃+ Ht q (disc.obj F ⨯ fibQ q N) n i :=
     { toFun := pull _ θ.hom _ _
       invFun := pull _ θ.inv _ _

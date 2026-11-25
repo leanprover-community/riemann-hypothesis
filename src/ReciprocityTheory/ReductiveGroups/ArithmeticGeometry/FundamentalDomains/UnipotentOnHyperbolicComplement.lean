@@ -92,13 +92,6 @@ private lemma hermC_finset_sum_left (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin 
   | empty => simp [hC_zero_left]
   | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, hC_add_left, ih]
 
-private lemma hermC_finset_sum_right (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {ι : Type*}
-    (s : Finset ι) (f : ι → Fin r → ℂ) (u : Fin r → ℂ) :
-    hermC τ G u (∑ i ∈ s, f i) = ∑ i ∈ s, hermC τ G u (f i) := by
-  induction s using Finset.cons_induction with
-  | empty => simp [hermC]
-  | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_right, ih]
-
 private lemma sum_mul_mul_eq_of_mul_eq_one {n : ℕ} (k : Fin n → ℂ) (A B : Matrix (Fin n) (Fin n) ℂ)
     (h : A * B = 1) (a : Fin n) : ∑ b, (∑ a', k a' * A a' b) * B b a = k a := by
   calc ∑ b, (∑ a', k a' * A a' b) * B b a = Matrix.vecMul (Matrix.vecMul k A) B a := rfl
@@ -159,7 +152,7 @@ private lemma hermC_ppos_left_eq_ppos_right_frame (x : Frame X.Ψ r) (τ : X.Ψ)
   have hGi : ∀ a b, conj ((X.gramPos x τ)⁻¹ b a) = (X.gramPos x τ)⁻¹ a b :=
     fun a b => hH.inv.apply a b
 
-  simp only [ppos, _root_.ReciprocityTheory.ChartRestriction.G.FD.hC_sum_left, hermC_finset_sum_right, hC_smul_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_smul_right, map_sum,
+  simp only [ppos, _root_.ReciprocityTheory.ChartRestriction.G.FD.hC_sum_left, hermC_sum_right, hC_smul_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_smul_right, map_sum,
   map_mul]
   simp only [← X.hermC_Gm_eq_conj_swap, hGi, Finset.sum_mul]
   rw [Finset.sum_comm]

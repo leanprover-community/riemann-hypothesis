@@ -71,16 +71,7 @@ private theorem exists_sq_eq_neg_of_quadratic_discr {K : Type*} [Field K] [Numbe
     push Not at h
     have := (finrank_eq_one_iff_of_nonzero' (1 : K) one_ne_zero).2 h
     omega
-  have li : LinearIndependent ℚ ![(1 : K), x] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    by_cases ht : t = 0
-    · subst ht
-      simp at hst
-      exact ⟨hst, rfl⟩
-    · exfalso
-      apply hx (-(s / t))
-      rw [neg_smul, neg_eq_iff_add_eq_zero, ← one_smul ℚ x, ← inv_mul_cancel₀ ht, mul_smul, div_eq_inv_mul, mul_smul, ← smul_add, hst, smul_zero]
+  have li : LinearIndependent ℚ ![(1 : K), x] := (LinearIndependent.pair_iff' one_ne_zero).2 hx
   let b := basisOfLinearIndependentOfCardEqFinrank li (by simp [hK])
   have hb : ⇑b = ![(1 : K), x] := coe_basisOfLinearIndependentOfCardEqFinrank _ _
   set A := b.repr (x ^ 2) 0

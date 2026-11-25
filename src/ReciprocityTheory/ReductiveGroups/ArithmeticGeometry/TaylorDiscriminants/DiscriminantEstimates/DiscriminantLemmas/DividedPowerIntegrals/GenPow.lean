@@ -12,10 +12,6 @@ namespace PI.DivPowInteg.Gen
 section
 variable {K I J : Type} [CommRing K] [Fintype I] [Fintype J]
 
-theorem pderiv_comm (a b : I ⊕ J) (p : MvPolynomial (I ⊕ J) K) :
-    pderiv a (pderiv b p) = pderiv b (pderiv a p) := by
-  apply PI.WickFormula.Gen.pderiv_comm
-
 noncomputable abbrev pd (a : I ⊕ J) : Module.End K (MvPolynomial (I ⊕ J) K) :=
   (pderiv a).toLinearMap
 

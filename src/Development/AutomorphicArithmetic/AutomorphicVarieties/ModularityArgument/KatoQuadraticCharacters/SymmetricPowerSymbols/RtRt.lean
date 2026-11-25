@@ -442,8 +442,6 @@ lemma isAdmissibleSmoothingFactor_divided_indices (c m : ℕ) (x : Fin 2 → ℚ
   · push_cast; rw [hk]; field_simp; ring
   · push_cast; rw [hl]; field_simp; ring
 
-alias isOpen_Hs' := _root_.GlobalTheory.KZ.SiegelModel.isOpen_Hs
-
 theorem siegel_distribution : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (T : Tower Ω ε)
     (c : ℕ) (m : ℕ) (x : Fin 2 → ℚ), admitted c x → 0 < m → Nat.Coprime c m →
     ∏ a ∈ Finset.range m, ∏ b ∈ Finset.range m, siegel T c ![(x 0 + a) / m, (x 1 + b) / m] = siegel T c x := by

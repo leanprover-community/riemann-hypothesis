@@ -112,14 +112,6 @@ theorem norm_root {ζ : ℂ} {m : ℕ} (hm : 0 < m) (h : ζ ^ m = 1) : ‖ι ζ�
     rw [← norm_pow, ← map_pow, h, map_one, norm_one]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hm.ne').1 h1
 
-private theorem iteratedDeriv_const_mul_fun (a : ℂ) (f : ℂ → ℂ) (n : ℕ) :
-    iteratedDeriv n (fun z => a * f z) = fun z => a * iteratedDeriv n f z := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [iteratedDeriv_succ, iteratedDeriv_succ, ih]
-    exact deriv_const_mul_field' a
-
 theorem inW_const_mul (a : ℂ) (f : ℂ → ℂ) :
     inW l ι W (fun z => a * f z) = C (ι a) * inW l ι W f := by
   have ht : Formalism.L2.Th1.F.taylor0 (fun z => a * f z) = C a * Formalism.L2.Th1.F.taylor0 f := by

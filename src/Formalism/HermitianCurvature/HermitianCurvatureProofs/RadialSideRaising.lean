@@ -1,5 +1,6 @@
 module
 
+import Formalism.PieriBlockIdeals.PieriColumnMinors.LowerTriangularIntegral
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadAATopOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAlgebraFacts
@@ -69,18 +70,7 @@ theorem xi_cell (c : Fin r → ℂ) {g : B.Mat k r} (hg : g ∈ Q.Glev k r (Fin.
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem mono_ge {n : ℕ} {C : Fin r → Fin n} (hC : StrictMono C) : ∀ l : Fin r, l.val ≤ (C l).val := by
-  have key : ∀ m, ∀ l : Fin r, l.val = m → m ≤ (C l).val := by
-    intro m
-    induction m with
-    | zero => intro l _; exact Nat.zero_le _
-    | succ m ih =>
-      intro l hl
-      have hm : m < r := by have := l.isLt; omega
-      have h1 := ih ⟨m, hm⟩ rfl
-      have h2 : C ⟨m, hm⟩ < C l := hC (by rw [Fin.lt_def]; simp; omega)
-      rw [Fin.lt_def] at h2
-      omega
-  exact fun l => key l.val l rfl
+  apply +allowSynthFailures _root_.Formalism.CohomologicalDescent.LR.lre_le_apply <;> assumption
 
 theorem mono_le {n : ℕ} {C : Fin r → Fin n} (hC : StrictMono C) (hb : ∀ l, (C l).val < r) :
     ∀ l : Fin r, (C l).val ≤ l.val := by

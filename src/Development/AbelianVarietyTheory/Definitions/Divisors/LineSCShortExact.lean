@@ -69,8 +69,4 @@ theorem wInt_one [MeasurableSpace M] (α : A.Fld) : wInt A (fun _ => 1) α = A.i
 
 end Manifold
 
-variable {k : Type} [CommRing k] {X Y : Scheme.{0}} {p : X ⟶ Sp k} {p' : Y ⟶ Sp k} {D D' : ℕ}
-
-variable (h : IsRegVar p D) (h' : IsRegVar p' D') (σ : k →+* ℂ)
-
 end GlobalTheory.LineForm

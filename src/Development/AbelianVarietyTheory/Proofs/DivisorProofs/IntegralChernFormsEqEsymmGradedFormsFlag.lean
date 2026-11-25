@@ -284,7 +284,6 @@ namespace GlobalTheory.CxForm.IntegralSum
 
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : HolAtlas M n)
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
@@ -299,7 +298,6 @@ private theorem isForm_zero' : A.IsForm 0 := by
   · intro x x' _
     exact (map_zero _).symm
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
@@ -308,7 +306,6 @@ private theorem integral_zero_fld : A.integral 0 = 0 := by
   have h := A.integral_sub_of_isForm 0 0 (isForm_zero' A) (isForm_zero' A)
   simpa using h
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
@@ -328,7 +325,6 @@ private theorem isForm_add' {α β : A.Fld}
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
@@ -348,7 +344,6 @@ private theorem isForm_sub' {α β : A.Fld}
   · intro x x' hx
     simp [ha.compat x x' hx, hb.compat x x' hx]
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
@@ -366,7 +361,6 @@ private theorem integral_add_of_isForm {α β : A.Fld}
   rw [h, h0]
   ring
 
-set_option autoImplicit false in
 open Set Matrix MeasureTheory in
 open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in

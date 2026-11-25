@@ -80,6 +80,42 @@ noncomputable section
 
 namespace GlobalTheory.Poinc.Sep.TorTrans
 
+private def toGSet {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}}
+    {i : F.X ⟶ Z} (X₁ : Setup F W i) : GlobalTheory.GSep.GSet where
+  o₁ := X₁.o₁
+  Ω₁ := X₁.Ω₁
+  S := X₁.S
+  ρ := X₁.ρ
+  big := X₁.big
+  M := X₁.M
+  normal := X₁.normal
+  projM := X₁.projM
+  div := X₁.div
+
+private def toGMem {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}}
+    {i : F.X ⟶ Z} {X₁ : Setup F W i} {z₁ : X₁.M.Z} {act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}
+    {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {ev : X₁.M.Z.presheaf.stalk z₁ →+* V}
+    {X : Type} [AddCommGroup X] {m : ℕ} {t : Fin m → V} {δ : Fin m → LinearMap.BilinForm ℤ X}
+    (𝔪 : UMem X₁ z₁ act V ev X t δ) :
+    GlobalTheory.GSep.GMem (toGSet X₁) z₁ Empty.elim V ev (Fin 8 → X) (mono W t δ) Empty.elim where
+  cn := 𝔪.cn
+  loc := 𝔪.loc
+  reg := 𝔪.reg
+  yK := 𝔪.yK
+  yK_eq := 𝔪.yK_eq
+  D := 𝔪.D
+  e₈ := 𝔪.e₈
+  G := 𝔪.G
+  semi := 𝔪.semi
+  A := 𝔪.A
+  U := 𝔪.U
+  φ := 𝔪.φ
+  cart := 𝔪.cart
+  wl := 𝔪.wl
+  wl_gen := 𝔪.wl_gen
+  equiv := fun a => a.elim
+  psi := 𝔪.psi
+
 theorem exists_trait_pull {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [CharZero R]
     (hR : AdmBase R (maximalIdeal R)) {D : DegData R (maximalIdeal R)} {A : PolAV (Sp (FractionRing R))}
     {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] (hG : IsSemiAbelian G) (U : Unif (maximalIdeal R) D A G) :
@@ -106,70 +142,8 @@ theorem div_and_translate {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (F
     (hx₀ : X₁.M.Div X₁.S.th x₀ z₁) (a : X₁.S.Gam) (mu : Fin 8 → X) (ha : 𝔪.YY a mu) :
     (a ∈ X₁.S.supI X₁.M z₁ → ∃ w, mu = (X₁.S.r * X₁.S.N) • w) ∧
       ((∃ w, mu = (X₁.S.r * X₁.S.N) • w) → ∃ b : X₁.S.Gam, X₁.ρ.n • b = 0 ∧ a + b ∈ X₁.S.supI X₁.M z₁) := by
-  haveI : CharZero V := 𝔪.cn.2.2.2
-  haveI := 𝔪.loc
-  have hA : AdmBase V (maximalIdeal V) := ⟨𝔪.cn.1, inferInstance, 𝔪.cn.2.1, 𝔪.cn.2.2.1⟩
-  have hk : 1 ≤ X₁.S.r * X₁.S.N := by
-    have := X₁.S.r_pos; have := X₁.S.N_ge
-    exact Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (by omega) (by omega))
-  obtain ⟨T, _, _, _, _, φ, ga, D', A', G', _, _, U', α, xe, em, hc, hloc, hga, hG', gp, lb, hem, hmove⟩ :=
-    exists_trait_pull hA 𝔪.semi 𝔪.U
-  let ξ : Sp V ⟶ X₁.M.Z := spMap ev ≫ X₁.M.Z.fromSpecStalk z₁
-  have hx : ξ (closedPoint V) = z₁ := by
-    show X₁.M.Z.fromSpecStalk z₁ (spMap ev (closedPoint V)) = z₁
-    rw [show spMap ev (closedPoint V) = closedPoint _ from IsLocalRing.comap_closedPoint ev]
-    exact Scheme.fromSpecStalk_closedPoint
-  have hU : IsUnit ((X₁.S.r * X₁.S.N : ℕ) : T) := by
-    have := (X₁.S.unit.map (Spec.preimage (ξ ≫ X₁.M.s)).hom).map φ
-    rwa [map_natCast, map_natCast] at this
-  haveI : CharZero (FractionRing T) := charZero_of_injective_algebraMap (IsFractionRing.injective T (FractionRing T))
-  have cart : IsGrpPullback A'.A X₁.ρ.P.A (spMap (ga.comp 𝔪.yK)) (α ≫ 𝔪.φ) :=
-    (gp.comp 𝔪.cart).congr (Spec.map_comp (CommRingCat.ofHom 𝔪.yK) (CommRingCat.ofHom ga)).symm rfl
-  have lb' : LBIso A'.L (X₁.ρ.P.L.pull (α ≫ 𝔪.φ)) :=
-    LBIso.trans A'.isLB (pull_isLB 𝔪.A.isLB _) (pull_isLB X₁.ρ.P.isLB _) lb (lbIso_pull_comp ⟨𝔪.wl, 𝔪.wl_gen⟩ α)
-  obtain ⟨s, v, hs, hsv, -, hcl⟩ := GlobalTheory.Poinc.ScaleAtModel.scale_at_model _ _ X₁.S X₁.ρ T hc hU (ga.comp 𝔪.yK) A' _
-    cart lb' G' hG' D' U' (GlobalTheory.ThetaGeneric.exists_th_ne_zero GlobalTheory.firstFiveLaws.1 GlobalTheory.firstFiveLaws.2.1 _ _ _ X₁.ρ _ _)
-  have tr : ∀ a mu, 𝔪.YY a mu → (IsUnit (v a) → ∃ w, mu = (X₁.S.r * X₁.S.N) • w) ∧
-      ((∃ w, mu = (X₁.S.r * X₁.S.N) • w) → ∃ b : X₁.S.Gam, X₁.ρ.n • b = 0 ∧ IsUnit (v (a + b))) := by
-    rintro a mu ⟨p, x, hp, hq, hxa⟩
-    obtain ⟨p', x', hp', hq', hx'⟩ := hmove _ hk p x hq
-    obtain ⟨h₁, h₂⟩ := hcl a p' x' hq' (by
-      rw [← Category.assoc, hx', Category.assoc, hxa, ← Category.assoc, ← RingHom.comp_assoc, ← hem, RingHom.comp_assoc]
-      exact congrArg (· ≫ _) (Spec.map_comp (CommRingCat.ofHom _) (CommRingCat.ofHom em)).symm)
-    rw [hp] at hp'
-    refine ⟨fun h => ?_, fun ⟨w, hw⟩ => h₂ ⟨xe.symm (𝔪.e₈ w), by rw [hp', hw, map_nsmul, map_nsmul]⟩⟩
-    obtain ⟨z, hz⟩ := h₁ h
-    refine ⟨𝔪.e₈.symm (xe z), ?_⟩
-    rw [← map_nsmul, ← map_nsmul, ← hz, hp', AddEquiv.apply_symm_apply, AddEquiv.symm_apply_apply]
-  have hsp : ∀ w, (jK V ≫ ξ) w ⤳ (jK V ≫ ξ) (closedPoint (FractionRing V)) := fun w => by
-    rw [Subsingleton.elim w (closedPoint (FractionRing V))]
-  have hsx : ξ (closedPoint V) ⤳ z₁ := hx ▸ specializes_rfl
-  let wv : X₁.S.Gam → V := fun b => RatModel.valLoc ξ z₁ hsx ⟨X₁.S.th b / X₁.S.th x₀, hx₀.2 b⟩
-  have hw : ∀ b, φ (wv b) * v x₀ = v b := fun b => by
-    have e1 : X₁.M.val (jK V ≫ ξ) (X₁.S.th b / X₁.S.th x₀) = algebraMap V (FractionRing V) (wv b) :=
-      RatModel.val_spMap_comp (algebraMap V (FractionRing V)) ξ hsx ⟨X₁.S.th b / X₁.S.th x₀, hx₀.2 b⟩
-    have e2 := RatModel.val_mul hsp (RatModel.O_le_of_specializes (hx ▸ (IsLocalRing.specializes_closedPoint
-      (jK V (closedPoint (FractionRing V)))).map ξ.continuous) (hx₀.2 b)) (𝔪.reg _ (X₁.S.th_mem x₀))
-    rw [div_mul_cancel₀ _ hx₀.1, e1] at e2
-    have e3 : 𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩ =
-        algebraMap V (FractionRing V) (wv b) * 𝔪.yK ⟨X₁.S.th x₀, X₁.S.th_mem x₀⟩ := by
-      rw [𝔪.yK_eq, 𝔪.yK_eq]; exact e2
-    have e4 := congrArg ga e3
-    rw [map_mul, hga] at e4
-    have e5 := hsv b
-    have e6 := hsv x₀
-    rw [RingHom.comp_apply] at e5 e6
-    rw [e5, e6, ← _root_.mul_assoc, mul_comm _ s, _root_.mul_assoc, ← map_mul] at e4
-    exact IsFractionRing.injective T (FractionRing T) (mul_left_cancel₀ hs e4).symm
   obtain ⟨a₀, ha₀⟩ := (GlobalTheory.Poinc.Sep.Labels.yy_hom _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 𝔪).2.1 0
-  obtain ⟨b₀, -, hb₀⟩ := (tr a₀ 0 ha₀).2 ⟨0, (nsmul_zero _).symm⟩
-  have hv0 : IsUnit (v x₀) := isUnit_of_mul_isUnit_right (show IsUnit (φ (wv (a₀ + b₀)) * v x₀) by rw [hw]; exact hb₀)
-  have hset : ∀ b, b ∈ X₁.S.supI X₁.M z₁ ↔ IsUnit (v b) := fun b => by
-    show X₁.M.Div X₁.S.th b z₁ ↔ IsUnit (v b)
-    rw [hx₀.div_iff_isUnit b, ← RatModel.isUnit_valLoc_iff ξ hx, ← hw b, IsUnit.mul_iff, and_iff_left hv0,
-      isUnit_map_iff φ]
-  simp only [hset]
-  exact tr a mu ha
+  exact _root_.GlobalTheory.GSep.TorTrans.div_and_translate (toGMem 𝔪) hx₀ a₀ ha₀ a mu ha
 
 theorem exists_translate_mem_supI : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (x₀ : X₁.S.Gam), X₁.M.Div X₁.S.th x₀ z₁ → ∀ a, 𝔪.YY a 0 → ∃ b : X₁.S.Gam, X₁.ρ.n • b = 0 ∧ a + b ∈ X₁.S.supI X₁.M z₁ := by
   intro g n F W Z i X₁ z₁ act V _ _ _ ev X _ m t δ 𝔪 x₀ hx₀ a ha
@@ -358,39 +332,10 @@ open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 namespace GlobalTheory.Poinc.Sep.DivBound
 
-theorem theta_pow_le : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (ν : Valuation (FractionRing V) (WithZero (Multiplicative ℤ))), (∀ v : V, ν (algebraMap V (FractionRing V) v) ≤ 1) → (∀ v ∈ maximalIdeal V, ν (algebraMap V (FractionRing V) v) < 1) → ∀ c : WithZero (Multiplicative ℤ), (∀ b, ν (𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩) ≤ c) → ∀ a, ∃ w : Fin 8 → X, 𝔪.YY a w ∧ ν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩) ^ ((X₁.S.r * X₁.S.N) ^ 2) ≤ c ^ ((X₁.S.r * X₁.S.N) ^ 2) * ν (algebraMap V (FractionRing V) (mono W t δ w)) := by
-  intro g n F W Z i X₁ z₁ act V _ _ _ ev X _ m t δ 𝔪 ν h1 h2 c hc a
-  obtain ⟨yy1, -, yy3, -⟩ := GlobalTheory.Poinc.Sep.Labels.yy_hom g n F W Z i X₁ z₁ act V ev X m t δ 𝔪
-  by_cases hm : maximalIdeal V = ⊥
-  · obtain ⟨w, hw⟩ := yy1 a
-    refine ⟨w, hw, ?_⟩
-    have hu : IsUnit (mono W t δ w) := by
-      by_contra hn
-      exact 𝔪.mono_ne_zero w ((Submodule.mem_bot V).1 (hm ▸ (mem_maximalIdeal _).2 hn))
-    have h1' : ν (algebraMap V (FractionRing V) (mono W t δ w)) = 1 := by
-      refine le_antisymm (h1 _) ?_
-      have e : ν (algebraMap V (FractionRing V) (mono W t δ w)) * ν (algebraMap V (FractionRing V) (hu.unit⁻¹ : Vˣ)) = 1 := by
-        rw [← map_mul, ← map_mul, hu.mul_val_inv, map_one, map_one]
-      calc (1 : WithZero (Multiplicative ℤ)) = _ := e.symm
-        _ ≤ ν (algebraMap V (FractionRing V) (mono W t δ w)) * 1 := mul_le_mul' le_rfl (h1 _)
-        _ = _ := _root_.mul_one _
-    rw [h1', _root_.mul_one]
-    exact pow_le_pow_left' (hc a) _
-  · obtain ⟨V', _, _, _, _, j, k, hcn, hj, hjl, hk, hν⟩ := GlobalTheory.DivBound.exists_cdvr_valuation_le V 𝔪.cn ν h1 h2 hm
-    obtain ⟨𝔫, hyk, hyy⟩ := GlobalTheory.Poinc.Sep.MemBC.uMem_baseChange_values g n F W Z i X₁ z₁ act V ev X m t δ 𝔪 V' j k hcn hj hjl hk
-    obtain ⟨b, hb⟩ := GlobalTheory.Poinc.IntTerm.DvrScale.exists_dvd_pow g n F W Z i X₁ z₁ act V' (j.comp ev) X m (fun i => j (t i)) δ 𝔫
-    obtain ⟨w, r, hw, he⟩ := hb a
-    obtain ⟨mu, hmu⟩ := yy1 a
-    have hn3 := (GlobalTheory.Poinc.Sep.Labels.yy_hom g n F W Z i X₁ z₁ act V' (j.comp ev) X m (fun i => j (t i)) δ 𝔫).2.2.1
-    have hw' : 𝔪.YY a w := (yy3 a mu w hmu).2 ((hn3 a mu w (hyy a mu hmu)).1 hw)
-    refine ⟨w, hw', ?_⟩
-    have hmono : mono W (fun i => j (t i)) δ w = j (mono W t δ w) := by
-      simp [mono, map_prod, map_pow]
-    have key := hν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩ ^ ((X₁.S.r * X₁.S.N) ^ 2))
-      (𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩ ^ ((X₁.S.r * X₁.S.N) ^ 2) * algebraMap V (FractionRing V) (mono W t δ w))
-      ⟨r, by rw [map_pow, ← hyk, he, map_mul, map_pow, ← hyk, hk, hmono]; ring⟩
-    rw [map_pow, map_mul, map_pow] at key
-    exact key.trans (mul_le_mul' (pow_le_pow_left' (hc b) _) le_rfl)
+theorem theta_pow_le : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (ν : Valuation (FractionRing V) (WithZero (Multiplicative ℤ))), (∀ v : V, ν (algebraMap V (FractionRing V) v) ≤ 1) → (∀ v ∈ maximalIdeal V, ν (algebraMap V (FractionRing V) v) < 1) → ∀ c : WithZero (Multiplicative ℤ), (∀ b, ν (𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩) ≤ c) → ∀ a, ∃ w : Fin 8 → X, 𝔪.YY a w ∧ ν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩) ^ ((X₁.S.r * X₁.S.N) ^ 2) ≤ c ^ ((X₁.S.r * X₁.S.N) ^ 2) * ν (algebraMap V (FractionRing V) (mono W t δ w)) :=
+  fun _ _ _ W _ _ X₁ z₁ _ V _ _ _ ev X _ _ t δ 𝔪 ν h1 h2 c hc a =>
+    _root_.GlobalTheory.GSep.DivBound.theta_pow_le Empty (TorTrans.toGSet X₁) z₁ Empty.elim V ev
+      (Fin 8 → X) (mono W t δ) Empty.elim (TorTrans.toGMem 𝔪) ν h1 h2 c hc a
 
 end GlobalTheory.Poinc.Sep.DivBound
 end -- clump:auto
@@ -407,7 +352,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 end -- clump:auto
@@ -436,51 +380,13 @@ theorem ratio {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8
     {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {ev : X₁.M.Z.presheaf.stalk z₁ →+* V}
     {X : Type} [AddCommGroup X] {m : ℕ} {t : Fin m → V} {δ : Fin m → LinearMap.BilinForm ℤ X}
     (𝔪 : UMem X₁ z₁ act V ev X t δ) {a : X₁.S.Gam} (ha : X₁.M.Div X₁.S.th a z₁) (b : X₁.S.Gam) :
-    ∃ v : V, 𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩ = algebraMap V (FractionRing V) v * 𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩ := by
-  have sp : ∀ w, X₁.M.Z.fromSpecStalk z₁ w ⤳ z₁ := fun w => by
-    have : X₁.M.Z.fromSpecStalk z₁ w ∈ Set.range (X₁.M.Z.fromSpecStalk z₁) := ⟨w, rfl⟩
-    rwa [Scheme.range_fromSpecStalk] at this
-  set yC : Sp V ⟶ X₁.M.Z := spMap ev ≫ X₁.M.Z.fromSpecStalk z₁ with hyC
-  have hC : yC (closedPoint V) ⤳ z₁ := sp _
-  set y : Sp (FractionRing V) ⟶ X₁.M.Z := jK V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁ with hy
-  set ξ := y (closedPoint (FractionRing V)) with hξ
-  have hyξ : ∀ w, y w ⤳ ξ := RatModel.specializes_of_range_eq (RatModel.range_eq_singleton y _)
-  have hξz : ξ ⤳ z₁ := sp _
-  have hr : X₁.S.th b / X₁.S.th a ∈ X₁.M.O z₁ := ha.2 b
-  have hrξ : X₁.S.th b / X₁.S.th a ∈ X₁.M.O ξ := RatModel.O_le_of_specializes hξz hr
-  have haξ : X₁.S.th a ∈ X₁.M.O ξ := 𝔪.reg _ (X₁.S.th_mem a)
-  refine ⟨RatModel.valLoc yC z₁ hC ⟨_, hr⟩, ?_⟩
-  have e1 : X₁.S.th b = X₁.S.th b / X₁.S.th a * X₁.S.th a := (div_mul_cancel₀ _ ha.1).symm
-  have e2 : X₁.M.val y (X₁.S.th b / X₁.S.th a) = algebraMap V (FractionRing V) (RatModel.valLoc yC z₁ hC ⟨_, hr⟩) :=
-    RatModel.val_spMap_comp (algebraMap V (FractionRing V)) yC hC ⟨_, hr⟩
-  rw [𝔪.yK_eq, 𝔪.yK_eq]
-  show X₁.M.val y (X₁.S.th b) = _ * X₁.M.val y (X₁.S.th a)
-  rw [← e2, ← RatModel.val_mul hyξ hrξ haξ, ← e1]
+    ∃ v : V, 𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩ = algebraMap V (FractionRing V) v * 𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩ :=
+  _root_.GlobalTheory.GSep.DivInt.ratio (TorTrans.toGMem 𝔪) ha b
 
-theorem label_zero_of_mem_supI : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (a : X₁.S.Gam), a ∈ X₁.S.supI X₁.M z₁ → 𝔪.YY a 0 := by
-  intro g n F W Z i X₁ z₁ act V _ _ _ ev X _ m t δ 𝔪 a ha
-  have ha' : X₁.M.Div X₁.S.th a z₁ := ha
-  obtain ⟨b₀, hb₀⟩ := GlobalTheory.T.exists_thetaConstant_value_ne_zero g n F W Z i X₁ z₁ act V ev X m t δ 𝔪
-  have hane : 𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩ ≠ 0 := by
-    intro h0
-    obtain ⟨v, hv⟩ := ratio 𝔪 ha' b₀
-    rw [h0, mul_zero] at hv
-    exact hb₀ hv
-  obtain ⟨ν, hν1, hνm⟩ := _root_.GlobalTheory.DivVal.exists_valuation_centre V 𝔪.cn
-  have hmax : ∀ b, ν (𝔪.yK ⟨X₁.S.th b, X₁.S.th_mem b⟩) ≤ ν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩) := fun b => by
-    obtain ⟨v, hv⟩ := ratio 𝔪 ha' b
-    rw [hv, map_mul]
-    exact mul_le_of_le_one_left' (hν1 v)
-  obtain ⟨w, hw, hle⟩ := _root_.GlobalTheory.Poinc.Sep.DivBound.theta_pow_le g n F W Z i X₁ z₁ act V ev X m t δ 𝔪 ν hν1 hνm _ hmax a
-  have h0 : ν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩) ^ ((X₁.S.r * X₁.S.N) ^ 2) ≠ 0 :=
-    pow_ne_zero _ ((Valuation.ne_zero_iff ν).2 hane)
-  have h1 : 1 ≤ ν (algebraMap V (FractionRing V) (mono W t δ w)) := by
-    have := mul_le_mul_of_nonneg_left hle
-      (zero_le' : (0 : WithZero (Multiplicative ℤ)) ≤ (ν (𝔪.yK ⟨X₁.S.th a, X₁.S.th_mem a⟩) ^ ((X₁.S.r * X₁.S.N) ^ 2))⁻¹)
-    rwa [← _root_.mul_assoc, inv_mul_cancel₀ h0, _root_.one_mul] at this
-  by_cases hw0 : w = 0
-  · exact hw0 ▸ hw
-  · exact absurd h1 (not_le.2 (hνm _ (𝔪.mono_mem hw0)))
+theorem label_zero_of_mem_supI : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (a : X₁.S.Gam), a ∈ X₁.S.supI X₁.M z₁ → 𝔪.YY a 0 :=
+  fun _ _ _ W _ _ X₁ z₁ _ V _ _ _ ev X _ _ t δ 𝔪 a ha =>
+    _root_.GlobalTheory.GSep.DivInt.label_zero_of_mem_supI Empty (TorTrans.toGSet X₁) z₁ Empty.elim V ev
+      (Fin 8 → X) (mono W t δ) Empty.elim (TorTrans.toGMem 𝔪) a ha
 
 end GlobalTheory.Poinc.Sep.DivInt
 end -- clump:auto
@@ -525,91 +431,39 @@ namespace GlobalTheory.Poinc.Sep.IntLabel
 section
 variable {G X : Type} [AddCommGroup G] [AddCommGroup X] {N : ℕ} {Y : G → (Fin 8 → X) → Prop}
 
+private theorem congMod_pi_iff {X : Type} [AddCommGroup X] {N : ℕ} {mu' mu : Fin 8 → X} :
+    (∀ v, CongMod N (mu' v) (mu v)) ↔ CongMod N mu' mu :=
+  ⟨fun h => by choose w hw using h; exact ⟨w, funext fun v => hw v⟩,
+    fun ⟨w, hw⟩ v => ⟨w v, congrFun hw v⟩⟩
+
 theorem yy_zero (h1 : ∀ a, ∃ mu, Y a mu) (h3 : ∀ a mu mu', Y a mu → (Y a mu' ↔ ∀ v, CongMod N (mu' v) (mu v)))
-    (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) : Y 0 0 := by
-  obtain ⟨mu, hmu⟩ := h1 0
-  have h2 := h4 0 0 mu mu hmu hmu
-  rw [add_zero] at h2
-  have hc := (h3 0 mu (mu + mu) hmu).1 h2
-  refine (h3 0 mu 0 hmu).2 fun v => ?_
-  obtain ⟨w, hw⟩ := hc v
-  have e : mu v = N • w := add_left_cancel (a := mu v) (by simpa using hw)
-  exact ⟨-w, by simp [e]⟩
+    (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) : Y 0 0 :=
+  _root_.GlobalTheory.GSep.IntLabel.yy_zero h1 (fun a mu mu' h => (h3 a mu mu' h).trans congMod_pi_iff) h4
 
 theorem yy_neg (h1 : ∀ a, ∃ mu, Y a mu) (h3 : ∀ a mu mu', Y a mu → (Y a mu' ↔ ∀ v, CongMod N (mu' v) (mu v)))
     (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) {a : G} {mu : Fin 8 → X} (ha : Y a mu) :
-    Y (-a) (-mu) := by
-  obtain ⟨mu', h'⟩ := h1 (-a)
-  have h0 := h4 a (-a) mu mu' ha h'
-  rw [add_neg_cancel] at h0
-  have hc := (h3 0 0 (mu + mu') (yy_zero h1 h3 h4)).1 h0
-  refine (h3 (-a) mu' (-mu) h').2 fun v => ?_
-  obtain ⟨w, hw⟩ := hc v
-  simp only [Pi.add_apply, Pi.zero_apply, zero_add] at hw
-  refine ⟨-w, ?_⟩
-  simp only [Pi.neg_apply, smul_neg]
-  rw [← hw]
-  abel
+    Y (-a) (-mu) :=
+  _root_.GlobalTheory.GSep.IntLabel.yy_neg h1 (fun a mu mu' h => (h3 a mu mu' h).trans congMod_pi_iff) h4 ha
 
 theorem yy_sub (h1 : ∀ a, ∃ mu, Y a mu) (h3 : ∀ a mu mu', Y a mu → (Y a mu' ↔ ∀ v, CongMod N (mu' v) (mu v)))
     (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) {a b : G} {mu nu : Fin 8 → X} (ha : Y a mu)
-    (hb : Y b nu) : Y (a - b) (mu - nu) := by
-  rw [sub_eq_add_neg, sub_eq_add_neg]
-  exact h4 _ _ _ _ ha (yy_neg h1 h3 h4 hb)
+    (hb : Y b nu) : Y (a - b) (mu - nu) :=
+  _root_.GlobalTheory.GSep.IntLabel.yy_sub h1 (fun a mu mu' h => (h3 a mu mu' h).trans congMod_pi_iff) h4 ha hb
 
 theorem yy_nsmul (h1 : ∀ a, ∃ mu, Y a mu) (h3 : ∀ a mu mu', Y a mu → (Y a mu' ↔ ∀ v, CongMod N (mu' v) (mu v)))
     (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) (k : ℕ) {a : G} {mu : Fin 8 → X} (ha : Y a mu) :
-    Y (k • a) (k • mu) := by
-  induction k with
-  | zero => simpa using yy_zero h1 h3 h4
-  | succ k ih => rw [succ_nsmul, succ_nsmul]; exact h4 _ _ _ _ ih ha
+    Y (k • a) (k • mu) :=
+  _root_.GlobalTheory.GSep.IntLabel.yy_nsmul h1 (fun a mu mu' h => (h3 a mu mu' h).trans congMod_pi_iff) h4 k ha
 
 theorem mem_closure_iff (p J : ℕ) (hJ : 2 ≤ J) (hN : N = p ^ J) (hG : ∀ a : G, N • a = 0)
     (htor : ∀ b : G, p • b = 0 → ∃ c, b = p ^ (J - 1) • c) (htf : ∀ x : X, p ^ (J - 1) • x = 0 → x = 0)
     (h1 : ∀ a, ∃ mu, Y a mu) (h2 : ∀ mu, ∃ a, Y a mu)
     (h3 : ∀ a mu mu', Y a mu → (Y a mu' ↔ ∀ v, CongMod N (mu' v) (mu v)))
     (h4 : ∀ a a' mu mu', Y a mu → Y a' mu' → Y (a + a') (mu + mu')) (S : Set G) (hS : ∀ a ∈ S, Y a 0)
-    (hT : ∀ a, Y a 0 → ∃ b, p • b = 0 ∧ a + b ∈ S) (a : G) : a ∈ AddSubgroup.closure S ↔ Y a 0 := by
-  constructor
-  · intro ha
-    induction ha using AddSubgroup.closure_induction with
-    | mem x hx => exact hS x hx
-    | zero => exact yy_zero h1 h3 h4
-    | add x y _ _ hx hy => simpa using h4 x y 0 0 hx hy
-    | neg x _ hx => simpa using yy_neg h1 h3 h4 hx
-  · intro ha
-    obtain ⟨b, hb, hab⟩ := hT a ha
-    have hYb : Y b 0 := by simpa using yy_sub h1 h3 h4 (hS _ hab) ha
-    obtain ⟨c, rfl⟩ := htor b hb
-    obtain ⟨muc, hc⟩ := h1 c
-    have hcong := (h3 _ _ _ (yy_nsmul h1 h3 h4 (p ^ (J - 1)) hc)).1 hYb
-    have hw : ∀ v, ∃ w : X, muc v = p • w := by
-      intro v
-      obtain ⟨w, hw⟩ := hcong v
-      simp only [Pi.zero_apply, Pi.smul_apply] at hw
-      refine ⟨-w, ?_⟩
-      have e : p ^ (J - 1) • (muc v + p • w) = 0 := by
-        rw [smul_add, smul_smul, ← pow_succ, Nat.sub_add_cancel (by omega), ← hN]
-        exact hw.symm
-      rw [smul_neg, eq_neg_iff_add_eq_zero]
-      exact htf _ e
-    choose w hw using hw
-    have hmu : muc = p • w := funext fun v => by simp [hw v]
-    obtain ⟨c', hc'⟩ := h2 w
-    have hk : Y (c - p • c') 0 := by
-      have := yy_sub h1 h3 h4 hc (yy_nsmul h1 h3 h4 p hc')
-      rwa [← hmu, sub_self] at this
-    obtain ⟨bk, hbk, hkS⟩ := hT _ hk
-    have hbk0 : p ^ (J - 1) • bk = 0 := by
-      obtain ⟨e, he⟩ : ∃ e, J - 1 = e + 1 := ⟨J - 2, by omega⟩
-      rw [he, pow_succ, mul_smul, hbk, smul_zero]
-    have key : p ^ (J - 1) • c = p ^ (J - 1) • ((c - p • c') + bk) := by
-      rw [smul_add, hbk0, add_zero, smul_sub, smul_smul, ← pow_succ, Nat.sub_add_cancel (by omega), ← hN, hG, sub_zero]
-    have hbcl : p ^ (J - 1) • c ∈ AddSubgroup.closure S := by
-      rw [key]; exact nsmul_mem (AddSubgroup.subset_closure hkS) _
-    have e : a = (a + p ^ (J - 1) • c) - p ^ (J - 1) • c := by abel
-    rw [e]
-    exact sub_mem (AddSubgroup.subset_closure hab) hbcl
+    (hT : ∀ a, Y a 0 → ∃ b, p • b = 0 ∧ a + b ∈ S) (a : G) : a ∈ AddSubgroup.closure S ↔ Y a 0 :=
+  _root_.GlobalTheory.GSep.IntLabel.mem_closure_iff p J hJ hN hG htor
+    (fun f hf => funext fun v => htf (f v) (congrFun hf v)) h1 h2
+    (fun a mu mu' h => (h3 a mu mu' h).trans congMod_pi_iff) h4 S hS hT a
 
 theorem zmod_tors {p J M : ℕ} (hp : 0 < p) (hJ : 1 ≤ J) (hM : M = p ^ J) (x : ZMod M) (hx : p • x = 0) :
     ∃ y : ZMod M, x = p ^ (J - 1) • y := by
@@ -622,40 +476,10 @@ namespace GlobalTheory.Poinc.Sep
 
 
 open GlobalTheory.Poinc.Sep.IntLabel in
-theorem mem_HH_iff_yy_zero : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (x₀ : X₁.S.Gam), X₁.M.Div X₁.S.th x₀ z₁ → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (a : X₁.S.Gam), a ∈ X₁.S.HH X₁.M z₁ ↔ 𝔪.YY a 0 := by
-  intro g n F W Z i X₁ z₁ act x₀ hx₀ V _ _ _ ev X _ m t δ 𝔪 a
-  obtain ⟨h1, h2, h3, h4⟩ := GlobalTheory.T.surjective_labelHom_lattice_mod_level_thetaMember g n F W Z i X₁ z₁ act V ev X m t δ 𝔪
-  obtain ⟨j, hj, hr⟩ := X₁.ρ.r_eq
-  have hp : 0 < X₁.ρ.n := X₁.ρ.n_prime.pos
-  have hk := X₁.ρ.two_le
-  have hN : X₁.S.r * X₁.S.N = X₁.ρ.n ^ (j + X₁.ρ.k * 2) := by rw [hr, X₁.ρ.N_eq, pow_add, pow_mul]
-  have hJ : 2 ≤ j + X₁.ρ.k * 2 := by omega
-  have hG : ∀ b : X₁.S.Gam, (X₁.S.r * X₁.S.N) • b = 0 := fun b => by
-    funext v
-    simp [nsmul_eq_mul]
-  have htor : ∀ b : X₁.S.Gam, X₁.ρ.n • b = 0 → ∃ c : X₁.S.Gam, b = X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) • c := by
-    intro b hb
-    have hv : ∀ v, ∃ y : ZMod (X₁.S.r * X₁.S.N), b v = X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) • y := fun v =>
-      zmod_tors hp (by omega) hN (b v) (by simpa using congrFun hb v)
-    choose c hc using hv
-    exact ⟨c, funext fun v => by simpa using hc v⟩
-  have htf : ∀ x : X, X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) • x = 0 → x = 0 := by
-    intro x hx
-    have hq : X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) ≠ 0 := pow_ne_zero _ hp.ne'
-    have hs : X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) • (Pi.single 0 x : Fin 8 → X) = 0 := by
-      funext v
-      by_cases hv : v = 0
-      · subst hv; simp [hx]
-      · simp [hv]
-    have he : ((X₁.ρ.n ^ (j + X₁.ρ.k * 2 - 1) : ℕ) : ℤ) • 𝔪.e₈ (Pi.single 0 x) = 0 := by
-      rw [natCast_zsmul, ← map_nsmul, hs, map_zero]
-    have h0 : 𝔪.e₈ (Pi.single 0 x) = 0 := (smul_eq_zero.1 he).resolve_left (by exact_mod_cast hq)
-    have h0' : (Pi.single 0 x : Fin 8 → X) = 0 := 𝔪.e₈.injective (h0.trans (map_zero _).symm)
-    simpa using congrFun h0' 0
-  rw [ThetaSys.HH]
-  exact mem_closure_iff (X₁.ρ.n) (j + X₁.ρ.k * 2) hJ hN hG htor htf h1 h2 h3 h4 _
-    (fun b hb => GlobalTheory.T.thetaLabel_class_zero_of_divides_all_thetaConstants g n F W Z i X₁ z₁ act V ev X m t δ 𝔪 b hb)
-    (fun b hb => GlobalTheory.T.exists_torsionTranslate_label_thetaConstant_divides_all g n F W Z i X₁ z₁ act V ev X m t δ 𝔪 x₀ hx₀ b hb) a
+theorem mem_HH_iff_yy_zero : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)) (x₀ : X₁.S.Gam), X₁.M.Div X₁.S.th x₀ z₁ → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (a : X₁.S.Gam), a ∈ X₁.S.HH X₁.M z₁ ↔ 𝔪.YY a 0 :=
+  fun _ _ _ W _ _ X₁ z₁ _ x₀ hx₀ V _ _ _ ev X _ _ t δ 𝔪 a =>
+    _root_.GlobalTheory.GSep.mem_HH_iff_yy_zero Empty (TorTrans.toGSet X₁) z₁ Empty.elim x₀ hx₀ V ev
+      (Fin 8 → X) (mono W t δ) Empty.elim (TorTrans.toGMem 𝔪) a
 
 end GlobalTheory.Poinc.Sep
 end -- clump:auto

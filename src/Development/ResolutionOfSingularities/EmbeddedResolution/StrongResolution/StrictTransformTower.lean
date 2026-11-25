@@ -305,9 +305,6 @@ theorem comapAmbientCenter_le_centerOffDetached (i : ℕ) :
   rw [h]
   exact Scheme.IdealSheafData.le_map_iff_comap_le.mpr le_rfl
 
-private theorem hom_comp_base_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C)
-    (x : ↥A) : ⇑(f ≫ g).base x = ⇑g.base (⇑f.base x) := rfl
-
 theorem support_centerOffDetached_subset_preimage (i : ℕ) :
     ((S.centerOffDetached i).support : Set ↥(S.strictTransform i)) ⊆
       ⇑(S.strictTransformι i).base ⁻¹' ((S.ambientCenter i).support : Set ↥(S.schemeAt i)) := by
@@ -326,7 +323,7 @@ theorem support_centerOffDetached_subset_preimage (i : ℕ) :
         (S.ambientCenter i).subschemeι).base z =
       ⇑((S.centerOffDetached i).subschemeι ≫ S.strictTransformι i).base z := by
     rw [hu]
-  rw [hom_comp_base_apply, hom_comp_base_apply] at key
+  rw [Scheme.Hom.comp_apply, Scheme.Hom.comp_apply] at key
   rw [← Scheme.IdealSheafData.range_subschemeι]
   exact ⟨_, key⟩
 

@@ -101,20 +101,6 @@ theorem laurent_degrees_substitution_eq (M M' : Matrix (Fin n) (Fin n) A) (h : M
 
 end inv
 
-private theorem genericMatrixBis_mul_genericMatrixInverse (R : Type) [Field R] (n : ℕ) : genericMatrixRootWeights R n * genericMatrixInverse R n = 1 := by
-  have e : genericMatrixInverse R n = IsLocalization.Away.invSelf (S := GLCoord R n) (genMat R n).det •
-      (genMat R n).adjugate.map (algebraMap (MvPolynomial (Fin n × Fin n) R) (GLCoord R n)) := by
-    ext a b
-    simp [genericMatrixInverse, Matrix.smul_apply]
-  rw [e, genericMatrixRootWeights, Matrix.mul_smul, ← Matrix.map_mul, Matrix.mul_adjugate]
-  ext a b
-  by_cases hab : a = b
-  · subst hab
-    simp only [Matrix.smul_apply, Matrix.map_apply, Matrix.one_apply_eq, smul_eq_mul, mul_one]
-    rw [mul_comm]
-    exact IsLocalization.Away.mul_invSelf _
-  · simp [Matrix.smul_apply, hab]
-
 private theorem map_C_genericMatrixBis_and_inverse_eq_gL_gLinv (R : Type) [Field R] (n : ℕ) :
     (genericMatrixRootWeights R n).map LaurentPolynomial.C = gL R n ∧ (genericMatrixInverse R n).map LaurentPolynomial.C = gLinv R n := by
   constructor <;> (ext a b; simp [genericMatrixRootWeights, genericMatrixInverse, gL, gLinv])
@@ -192,7 +178,7 @@ theorem twist_exponents_are_weight_entries : TwistExponentsAreWeightEntries := b
     ext m
     rw [MvPolynomial.mem_support_iff, MvPolynomial.mem_support_iff, hcoef, Ne, laurent_C_mul_T_eq_zero_iff]
   show mul_degs (twistSub LL S j G) = _
-  rw [hT, ← hgL, ← hgLinv, laurent_degrees_substitution_eq LL S (genericMatrixRootWeights R n) (genericMatrixInverse R n) (genericMatrixBis_mul_genericMatrixInverse R n)]
+  rw [hT, ← hgL, ← hgLinv, laurent_degrees_substitution_eq LL S (genericMatrixRootWeights R n) (genericMatrixInverse R n) (genericMatrix_mul_inverse R n)]
   rw [mul_degs, hsupp, ← Finset.biUnion_singleton]
   apply Finset.biUnion_congr rfl
   intro m hm

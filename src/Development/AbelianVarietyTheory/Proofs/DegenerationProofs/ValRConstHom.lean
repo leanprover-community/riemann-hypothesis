@@ -155,15 +155,6 @@ theorem valR_appLE (x : Sp R ⟶ Y) (g : Y ⟶ X) (U : X.Opens) (W : Y.Opens) (e
   rw [valR, valR, dif_pos h, dif_pos h', ← key]
   rfl
 
-private lemma valR_rs_eq_valR {R : Type} [CommRing R] (x : Sp R ⟶ Y) {U V : Y.Opens} (hVU : V ≤ U)
-    (h : ⊤ ≤ x ⁻¹ᵁ V) (f : Γ(Y, U)) : valR x V (rs hVU f) = valR x U f := by
-  have h' : ⊤ ≤ x ⁻¹ᵁ U := fun p hp => hVU (h hp)
-  have k : Y.presheaf.map (homOfLE hVU).op ≫ x.appLE V ⊤ h = x.appLE U ⊤ h' := by
-    rw [Scheme.Hom.map_appLE]
-  unfold rs
-  rw [valR, valR, dif_pos h, dif_pos h', ← k]
-  rfl
-
 private lemma valR_mul_lemma_2 {R : Type} [CommRing R] (x : Sp R ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
     (f g : Γ(Y, U)) : valR x U (f * g) = valR x U f * valR x U g := by
   rw [valR, valR, valR, dif_pos h, dif_pos h, dif_pos h, map_mul, map_mul]
@@ -185,9 +176,9 @@ theorem crd_secOfIso [IsLocalRing R] {A B : LB Y} {u : LB.Iso A B} (hu : u.IsGen
   obtain ⟨w, hw⟩ := isUnit_valR_of_unit x _ hV ((res (divLe l b) (u.s (b, l)))⁻¹)
   refine ⟨b, c * w, hV.trans (Scheme.Hom.preimage_mono x inf_le_right), fun j => ?_⟩
   have e := congrArg (valR x (A.U l ⊓ B.U b)) (secOfIso_spec (t j) hu hA hB l b)
-  rw [valR_rs_eq_valR x _ hV] at e
+  rw [valR_res x _ hV] at e
   unfold isoCand at e
-  rw [valR_mul_lemma_2 x _ hV, valR_rs_eq_valR x _ hV] at e
+  rw [valR_mul_lemma_2 x _ hV, valR_res x _ hV] at e
   show v j = _
   rw [hv j]
   show (c : R) * valR x (A.U l) ((secOfIso (t j) hu hA hB).f l) = _
@@ -275,7 +266,7 @@ theorem crd_comb {V K : Type} [CommRing V] [CommRing K] {L : LB X} {T : Type} [F
   have hpull : ∀ j, valR x ((LB.LinComb L φ' ε).U l) (LB.Sec.f (pullOver L ε hp hφ (σ j)) l) =
       valR (x ≫ p) ((LB.LinComb L φ ε).U l) (LB.Sec.f (σ j) l) := by
     intro j
-    refine (valR_rs_eq_valR x (wchart_eq hφ l).le hl' ((p.app _).hom (LB.Sec.f (σ j) l))).trans ?_
+    refine (valR_res x (wchart_eq hφ l).le hl' ((p.app _).hom (LB.Sec.f (σ j) l))).trans ?_
     rw [Scheme.Hom.app_eq_appLE]
     exact valR_appLE x p _ _ le_rfl (fun q _ => hl trivial) _
   have hconst : ∀ k : K, valR x ((LB.LinComb L φ' ε).U l) (constHom π' _ k) = ψ k := by

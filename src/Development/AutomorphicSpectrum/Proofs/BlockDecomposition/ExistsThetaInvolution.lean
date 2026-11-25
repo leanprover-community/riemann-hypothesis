@@ -49,7 +49,6 @@ open PositivityTheory.RgBcC.Real (IsLefK)
 open PositivityTheory.RgBcC.RealD (invA flipA trOn hwSp harmSet kF gelA barF IsPair IsDerivK)
 open PositivityTheory.RgTw (G Mat)
 open scoped ContDiff InnerProductSpace
-attribute [local instance] borelH Matrix.normedAddCommGroup Matrix.normedSpace
 
 noncomputable section
 

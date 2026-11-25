@@ -86,7 +86,7 @@ theorem lift_transfer {X X' W W' V : Scheme.{0}} {Ω : Type} [Field Ω] {R : Typ
   have hxu : ξp ≫ u' = x' := by
     rw [← cancel_mono j', Category.assoc, hu', ← Category.assoc, hξp, hf']
   have heq : u' ≫ Ψ.inv ≫ j = X'.fromSpecStalk p ≫ e.hom ≫ f := by
-    refine _root_.GlobalTheory.CompanionTheory.Ar.maps_eq_of_eq_at_generic R (Spec (X'.presheaf.stalk p)) W sW Ω ξp _ _ hproj hgp ?_
+    refine _root_.PositivityTheory.UnitarySelfGeneration.morphism_eq_of_generic_point_eq R (Spec (X'.presheaf.stalk p)) W sW Ω ξp _ _ hproj hgp ?_
     have h1 : ξp ≫ u' ≫ Ψ.inv ≫ j = x ≫ j := by rw [reassoc_of% hxu, reassoc_of% hx]
     have h2 : ξp ≫ X'.fromSpecStalk p ≫ e.hom ≫ f = x ≫ j := by rw [reassoc_of% hξp, reassoc_of% hξ, hf]
     rw [h1, h2]
@@ -691,7 +691,7 @@ theorem gramAt_iff_of_tied : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hξup : ξp ≫ up = x := by
     rw [hup_def, ← Category.assoc, hξu', hxx, Category.assoc, Iso.hom_inv_id, Category.comp_id]
   have hup : up ≫ Y.j = A'.X.fromSpecStalk (centre z) ≫ e.hom ≫ A.f := by
-    refine _root_.GlobalTheory.CompanionTheory.Ar.maps_eq_of_eq_at_generic O (Spec (A'.X.presheaf.stalk (centre z))) Y.X Y.s Ω ξp _ _ Y.proj hgen ?_
+    refine _root_.PositivityTheory.UnitarySelfGeneration.morphism_eq_of_generic_point_eq O (Spec (A'.X.presheaf.stalk (centre z))) Y.X Y.s Ω ξp _ _ Y.proj hgen ?_
     rw [← Category.assoc, hξup, ← hx, reassoc_of% hξp, ← hξ, Category.assoc]
   obtain ⟨tp, π⟩ : ∃ tp : SAB H (Spec (A'.X.presheaf.stalk (centre z))), Nonempty (SABMap tp Y.oF.t up) := by
     obtain ⟨_, _, _, _, _, π, -⟩ := sabPull ReciprocityTheory.ChartRestriction.G.Out.proved_CubePullSt up Y.oF.t

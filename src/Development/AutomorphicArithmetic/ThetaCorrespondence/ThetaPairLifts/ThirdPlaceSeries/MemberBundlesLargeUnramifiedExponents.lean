@@ -1125,7 +1125,7 @@ theorem holdsL_of_ties_alt (P : _root_.GlobalTheory.PrimIn.PublishedThetaConditi
   intro D G _ _ Pl0 I0 T0 A3 T _ R F κ v₀ O L hLe hLx hSz ⟨pV⟩ hT hG hM hInt
   obtain ⟨hGiven, hGS, hCD, -, hTR, hUp, -⟩ := _root_.GlobalTheory.PrimBase.base_of_ties_alt P R F hT hM
   obtain ⟨hOk, hGU, hGE, hBlk, hA, hB⟩ := _root_.GlobalTheory.T.pgUnit_and_pgEquiv_of_multEq P R F hT hM
-  obtain ⟨hLT, hLTB, hML⟩ := GlobalTheory.T.liftTests_modularLattice_of_coreCompatibility T R F κ v₀ O hT hG
+  obtain ⟨hLT, hLTB, hML⟩ := _root_.GlobalTheory.PrimIn.liftTests_and_mLat_of_ties T R F κ v₀ O hT hG
   have hU : R.toRealDat.LUnif := hG.unif
   have hJ := (GlobalTheory.Hk3.inertJunk_iff A3).1 hT.junk
   have hcore := GlobalTheory.CoreOfWeak.core_of_weak R F hT.char hT.ex
@@ -1204,7 +1204,7 @@ theorem lu_of_multEq_at_data : _root_.GlobalTheory.PrimIn.PublishedThetaConditio
   have hU' := DatCopy.copy_lUnif b s (hU w hw Z hX Wt z g1 g2 hEx g4)
   have hT := ties_at P.q12 w b hX Wt (DatCopy.copy b s z) hb
     ((hOk w.px w.I hX w.ok w.C_eq w.xi_range).2 _ _ _ (DatCopy.copy b s z).good.irr) hEx' hhost ⟨L, hP⟩ hn
-    (GlobalTheory.T.ioExt_of_weakCharacterisation_of_orthonormal_frames _ _ _ _ _ _ _ (DatCopy.copy b s z).R (DatCopy.copy b s z).F (DatCopy.copy b s z).pins.char hEx' hV) hU' hW
+    (_root_.GlobalTheory.IoExtStd.thetaIoExtension_of_weakCharacterisation_frames _ _ _ _ _ _ _ (DatCopy.copy b s z).R (DatCopy.copy b s z).F (DatCopy.copy b s z).pins.char hEx' hV) hU' hW
   exact LiftCopy.holdsL_of_copy b s (hcl L hL hS hP w.px w.I hX T Wt (DatCopy.copy b s z) hT.1 hT.2
     (DatCopy.copy_multEq b s (hM w hw Z hX Wt z g1 g2 hEx g4)) (DatCopy.copy_lIntegral b s (hI w hw Z hX Wt z g1 g2 hEx g4)))
 end GlobalTheory.Mem.R3.LiftsAt

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSLocalCut
 public import Formalism.HermitianCurvature.ActualZetaSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnBetaFrame
@@ -21,20 +22,7 @@ namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 noncomputable section
 
 theorem wRc_smooth (P : M.Par) : ContDiffOn ℝ ∞ (fun ζ : ℂ => ((wR P.k P.TT ζ : ℝ) : ℂ)) (Ann P) := by
-  have h1 : ContDiffOn ℝ ∞ (fun ζ : ℂ => (Complex.normSq ζ - P.TT) ^ (P.k - 1)) (Ann P) := by
-    have h2 : ContDiff ℝ ∞ (fun ζ : ℂ => Complex.normSq ζ) := by
-      have h3 : (fun ζ : ℂ => Complex.normSq ζ) = fun ζ : ℂ => ‖ζ‖ ^ 2 := by
-        funext ζ
-        rw [Complex.normSq_eq_norm_sq]
-      rw [h3]
-      exact contDiff_norm_sq ℝ
-    exact ((h2.sub contDiff_const).pow _).contDiffOn
-  have h4 : ContDiffOn ℝ ∞ (fun ζ : ℂ => wR P.k P.TT ζ) (Ann P) := by
-    unfold wR
-    refine h1.sqrt fun ζ hζ => ?_
-    have h5 : P.TT < Complex.normSq ζ := hζ
-    exact (pow_pos (by linarith) _).ne'
-  exact Complex.ofRealCLM.contDiff.comp_contDiffOn h4
+  apply +allowSynthFailures _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.gcl_wRc_smooth <;> assumption
 
 theorem wRc_ne (P : M.Par) {ζ : ℂ} (hζ : ζ ∈ Ann P) : ((wR P.k P.TT ζ : ℝ) : ℂ) ≠ 0 := by
   have h5 : P.TT < Complex.normSq ζ := hζ

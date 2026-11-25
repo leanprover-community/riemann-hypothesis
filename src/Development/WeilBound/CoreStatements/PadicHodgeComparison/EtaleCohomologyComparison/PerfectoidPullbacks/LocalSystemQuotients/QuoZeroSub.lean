@@ -1649,7 +1649,7 @@ theorem bij : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (Padic
       (IdF.span _ ((l : WittVector l r.k) ^ n)) (fun _ => le_rfl)).pull j) := by
   intro l _ K r M hM n hn j
   have : IsProper M.p := GlobalTheory.CommonModel.isProper_of_isProjOver hM.1.1
-  obtain ⟨U⟩ := (cov_ex M.p).1 hM.2
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov M.p).1 hM.2
   exact bij_cov M.p r.ρ U hn j
 
 end CrystallineSemistableComparison.Pb.SubquotientResolution

@@ -242,8 +242,6 @@ theorem kForm_semi {H X : Type} [AddCommGroup H] [Module ℂ H] [AddCommGroup X]
 
 end Semi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Links

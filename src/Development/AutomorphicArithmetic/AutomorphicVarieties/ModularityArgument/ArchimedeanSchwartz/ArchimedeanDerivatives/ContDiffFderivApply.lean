@@ -75,15 +75,8 @@ namespace GlobalTheory.CapelliWeyl
 theorem sum_perm_of_not_injective {M : Type} [AddCommMonoid M] {n : ℕ}
     (F : (Fin n → Fin n) → M) (hF : ∀ s, ¬ Function.Injective s → F s = 0) :
     ∑ s, F s = ∑ p : Equiv.Perm (Fin n), F p := by
-  symm
-  have e : ∑ p : Equiv.Perm (Fin n), F p = ∑ s ∈ Finset.univ.map
-      (⟨fun p : Equiv.Perm (Fin n) => (p : Fin n → Fin n), DFunLike.coe_injective⟩ :
-        Equiv.Perm (Fin n) ↪ (Fin n → Fin n)), F s := by
-    rw [Finset.sum_map]; rfl
-  rw [e]
-  refine Finset.sum_subset (Finset.subset_univ _) fun s _ hs => hF s fun hinj => hs ?_
-  rw [Finset.mem_map]
-  exact ⟨Equiv.ofBijective s (Finite.injective_iff_bijective.mp hinj), Finset.mem_univ _, rfl⟩
+  intros
+  apply _root_.GlobalTheory.QuantumMinorAdjacentSwap.sum_eq_sum_perm <;> assumption
 
 theorem map_det_eq {C W : Type} [CommRing C] [Ring W] {n : ℕ} (f : C →+* W)
     (M : Matrix (Fin n) (Fin n) C) :

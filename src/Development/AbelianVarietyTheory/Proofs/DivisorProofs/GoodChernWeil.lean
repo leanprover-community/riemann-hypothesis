@@ -518,11 +518,8 @@ theorem leadMinor_conj (T G : Matrix (Fin s) (Fin s) ℂ) (hT : ∀ a b, a < b �
   congr 1
   rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_prod, Finset.prod_pow]
 
-theorem leadMinor_re_pos {G : Matrix (Fin s) (Fin s) ℂ} (hG : G.PosDef) (j : ℕ) : 0 < (leadMinor G j).re :=
-  (Complex.pos_iff.1 (hG.submatrix Subtype.val_injective).det_pos).1
-
 theorem grD_pos {G : Matrix (Fin s) (Fin s) ℂ} (hG : G.PosDef) (i : Fin s) : 0 < grD G i :=
-  div_pos (leadMinor_re_pos hG _) (leadMinor_re_pos hG _)
+  div_pos (GlobalTheory.ChernCalc.leadMinor_re_pos_of_posDef hG _) (GlobalTheory.ChernCalc.leadMinor_re_pos_of_posDef hG _)
 
 theorem grD_conj (T G : Matrix (Fin s) (Fin s) ℂ) (hT : ∀ a b, a < b → T a b = 0) (hd : ∀ a, T a a ≠ 0) (i : Fin s) :
     grD (T * G * Tᴴ) i = ‖T i i‖ ^ 2 * grD G i := by

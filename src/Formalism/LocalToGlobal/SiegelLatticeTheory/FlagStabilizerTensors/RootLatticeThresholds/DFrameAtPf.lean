@@ -389,8 +389,6 @@ namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut.PtRepPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace DFrameAtPf
 
 theorem matW_liftU {n k : ℕ} {ε : Fin n → Bool} (wb : Fin k → Fin n → ℂ)

@@ -205,8 +205,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem refNBox_of (hF : FrameRow) : RefNBox := by
   intro D X u w
   choose L hL hdet using fun v => hF X u w v

@@ -163,13 +163,13 @@ local notation "ℚ̄" => AlgebraicClosure ℚ
 
 def addAct {G : Type} [Group G] (M : Rep.{0} (ULift.{0} ℤ) G) : G →* AddMonoid.End M where
   toFun g := (M.ρ g).toAddMonoidHom
-  map_one' := by ext x; simp <;> rfl
-  map_mul' g h := by ext x; simp <;> rfl
+  map_one' := by ext x; simp; rfl
+  map_mul' g h := by ext x; simp; rfl
 
 def zmodRep (n : ℕ) {G V : Type} [Group G] [AddCommGroup V] [Module (ZMod n) V] (φ : G →* AddMonoid.End V) :
     Representation (ZMod n) G V where
   toFun g := (φ g).toZModLinearMap n
-  map_one' := by ext x; simp <;> rfl
+  map_one' := by ext x; simp; rfl
   map_mul' g h := by ext x; simp only [map_mul]; rfl
 
 theorem nonempty_iso_of_addEquiv {k G : Type} [CommRing k] [Group G] (hk : Function.Surjective (Int.cast : ℤ → k))
@@ -639,7 +639,7 @@ theorem ratio_coind_stage_pow (ℓ : ℕ) [Fact ℓ.Prime]
   let W : OpenSubgroup (galUnramifiedOutside K.1 ℚ̄ S) := gsOpenSubgroup S hL'
   haveI : CompactSpace (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) := compactSpace_openSubgroup (gsOpenSubgroup S hL')
   let H : OpenSubgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) :=
-    ⟨(gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)), (gsOpenSubgroup S hK'').isOpen.preimage continuous_subtype_val⟩
+    ⟨(gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)), (gsOpenSubgroup S hK'').isOpen.preimage continuous_subtypeVal⟩
   haveI : (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal := inferInstanceAs ((gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))).Normal
   haveI : IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (H : Subgroup (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)))) :=
     inferInstanceAs (IsCyclic ((gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (gsOpenSubgroup S hK'' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hL' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))))
@@ -952,7 +952,7 @@ theorem ratioOne_of_killed_l (ℓ : ℕ) [Fact ℓ.Prime] (P : FiniteSubfield �
   | succ r ih =>
     letI : Module (ULift.{0} ℤ) M := M.hV2
     let T : Module.End (ULift.{0} ℤ) M := (ℓ : Module.End (ULift.{0} ℤ) M)
-    have hTx : ∀ x : M, T x = ℓ • x := fun x => Module.End.natCast_apply ℓ x
+    have hTx : ∀ x : M, T x = ℓ • x := fun x => natCast_apply_eq_smul ℓ x
     have hT : ∀ g, Commute T (M.ρ g) := fun g => Nat.cast_commute ℓ _
     have hD : ∀ g, (⊤ : Submodule _ _) ≤ Submodule.comap (M.ρ g) ⊤ := fun _ => le_top
     have hSE := rangeStepComplex_shortExact T hT ⊤ hD
@@ -1382,7 +1382,7 @@ def resS (S : Set (HeightOneSpectrum (𝓞 F))) : G F Ω →* galUnramifiedOutsi
 theorem card_fix_conj {k Γ : Type} [CommRing k] [Group Γ] (A : Rep.{0} k Γ) (g c : Γ) :
     Nat.card {a : A // A.ρ (g * c * g⁻¹) a = a} = Nat.card {a : A // A.ρ c a = a} := by
   have key : ∀ x y : Γ, ∀ a : A, A.ρ x (A.ρ y a) = A.ρ (x * y) a := fun x y a => by
-    rw [map_mul, Module.End.mul_apply]
+    rw [map_mul, mul_apply_eq_comp]
   refine Nat.card_congr
     { toFun := fun a => ⟨A.ρ g⁻¹ a.1, ?_⟩
       invFun := fun a => ⟨A.ρ g a.1, ?_⟩
@@ -1397,9 +1397,9 @@ theorem card_fix_conj {k Γ : Type} [CommRing k] [Group Γ] (A : Rep.{0} k Γ) (
     congr 1
     group
   · show A.ρ g (A.ρ g⁻¹ a.1) = a.1
-    rw [key, mul_inv_cancel, map_one, Module.End.one_apply]
+    rw [key, mul_inv_cancel, map_one, one_apply_eq_self]
   · show A.ρ g⁻¹ (A.ρ g a.1) = a.1
-    rw [key, inv_mul_cancel, map_one, Module.End.one_apply]
+    rw [key, inv_mul_cancel, map_one, one_apply_eq_self]
 
 theorem exists_fieldTransport :
     ∃ (K : FiniteSubfield) (τ : Ω ≃+* AlgebraicClosure ℚ) (σ : F ≃+* K.1),
@@ -1589,10 +1589,10 @@ theorem transport_data {l : ℕ} [Fact l.Prime] (S : Finset (HeightOneSpectrum (
   choose g hg using fun v => exists_transport_elem K τ σ hτ (cc v)
   refine ⟨K, S', hS', θ, ιr, fun w => if hw : w.IsReal then g (e ⟨w, hw⟩) else 1, e,
     hn l hS, fun w hw => ?_, hcard, fun A _ w => ?_⟩
-  · simp only [dif_pos hw]
+  · simp only [dite_eq_left hw]
     exact hcc ⟨w, hw⟩ _ _ (hg _) (hccv _)
   · rw [hfixv (e w)]
-    simp only [dif_pos w.2, Subtype.coe_eta]
+    simp only [dite_eq_left w.2, Subtype.coe_eta]
     rw [← hθ _ _ (hg (e w))]
     refine Nat.card_congr (Equiv.subtypeEquivRight fun a => ?_)
     show A.ρ (θ.symm (θ _)) a = a ↔ _
@@ -1619,8 +1619,7 @@ theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
       (gsRealH0Card S' (Rep.res θ.symm.toMulEquiv.toMonoidHom A) ιr v : ℚ)) ≠ 0 :=
     Finset.prod_ne_zero_iff.2 fun v _ => by
       exact_mod_cast (gsRealH0Card_pos S' (Rep.res θ.symm.toMulEquiv.toMonoidHom A) ιr v).ne'
-  replace h1 := (div_eq_one_iff_eq hP).1 (by convert h1)
-  rw [hχ] at h1
+  rw [div_eq_one_iff_eq hP, hχ] at h1
   have hn : Nat.card (Rep.res θ.symm.toMulEquiv.toMonoidHom A) = Nat.card A := rfl
   rw [hn] at h1
   rw [hcard, h1]

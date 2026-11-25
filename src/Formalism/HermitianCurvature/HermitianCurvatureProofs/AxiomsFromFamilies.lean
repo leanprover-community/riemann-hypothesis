@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
 public import Formalism.HermitianCurvature.StatementJ
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -42,25 +43,8 @@ theorem psd_sum {ι : Type} {F : Finset α} (s : Finset ι) (k : ι → α → �
 
 theorem pull [DecidableEq X] (η : α → X) (F : Finset α) (k : X → X → ℂ) (h : A5.IsPSD (F.image η) k) :
     A5.IsPSD F (fun x y => k (η x) (η y)) := by
-  intro a
-  set b : X → ℂ := fun x' => ∑ x ∈ F with η x = x', a x with hb
-  have inner : ∀ (c : ℂ) (x' : X), ∑ y' ∈ F.image η, c * conj (b y') * k x' y' =
-      ∑ y ∈ F, c * conj (a y) * k x' (η y) := by
-    intro c x'
-    apply Finset.sum_image'
-    intro i _
-
-    simp only [hb, map_sum, mul_sum, sum_mul]
-    exact sum_congr rfl fun j hj => by rw [(mem_filter.1 hj).2]
-  have key : ∑ x' ∈ F.image η, ∑ y' ∈ F.image η, b x' * conj (b y') * k x' y' =
-      ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y) := by
-    apply Finset.sum_image'
-    intro i _
-    rw [inner]
-    simp only [hb, sum_mul]
-    rw [sum_comm]
-    exact sum_congr rfl fun j hj => by rw [(mem_filter.1 hj).2]
-  rw [← key]; exact h b
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.A5x6.psd_comap <;> assumption
 
 end gen
 

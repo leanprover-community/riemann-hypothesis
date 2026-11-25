@@ -34,9 +34,6 @@ structure IsUnrQuad (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) 
 
 def IsUnimod (σ : R →+* R) {m : ℕ} (S : Matrix (Fin m) (Fin m) R) : Prop := cT σ S = S ∧ IsUnit S.det
 
-def IsHermND (σ : R →+* R) (ϖ : R) {n : ℕ} (T : Matrix (Fin n) (Fin n) R) : Prop :=
-  cT σ T = T ∧ ∃ k, ϖ ^ k ∈ Ideal.span {T.det}
-
 def red (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) : Matrix (Fin a) (Fin b) (R ⧸ lev ϖ k) :=
   x.map (Ideal.Quotient.mk (lev ϖ k))
 
@@ -64,10 +61,6 @@ def siegAt (ϖ : R) (σ : R →+* R) (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ) 
     (T : Matrix (Fin n) (Fin n) R) (k : ℕ) : ℂ :=
   ∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (red ϖ k T * B.1)) *
     (((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1))
-
-def OrthCount : Prop :=
-  ∀ (M X : Type) [AddCommGroup M] [Fintype M] [Fintype X] [DecidableEq M] (Q : X → M) (t : M),
-    ((Finset.univ.filter fun x => Q x = t).card : ℂ) * (Fintype.card M : ℂ) = ∑' χ : AddChar M ℂ, ∑ x, χ (Q x - t)
 
 def UnrFormula : Prop :=
   ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ), IsUnrQuad R σ ϖ q ε →

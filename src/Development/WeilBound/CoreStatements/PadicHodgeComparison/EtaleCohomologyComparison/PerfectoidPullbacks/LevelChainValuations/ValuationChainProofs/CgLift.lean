@@ -90,7 +90,7 @@ theorem cg_lift_pf [FiniteDimensional ℚ_[l] K] {L : Lev R m} (hL : L.Good) (M 
         obtain ⟨k, u, hu⟩ := hdiv _ hn'
         exact ⟨k, u, hu.symm⟩ }
   have : IsProper M.p := sm_proper hM
-  obtain ⟨U⟩ := (cov_ex M.p).1 hM.2
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov M.p).1 hM.2
   exact liftA (O := OK l K) (A := L.A) L.γ l s s hdiv htf (hL.lat s hs) le_rfl
     M.p U {⊤} sSup_singleton j
 

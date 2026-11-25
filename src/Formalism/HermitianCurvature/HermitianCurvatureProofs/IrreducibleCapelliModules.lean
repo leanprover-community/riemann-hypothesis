@@ -889,20 +889,11 @@ theorem coeffs (hPV : PolyVanish) (K : Module.End ℂ W) (A : ℕ → Module.End
   rw [Finset.sum_sub_distrib, sub_self]
 
 theorem pow_mem (G : Submodule ℂ W) (K : Module.End ℂ W) (hK : ∀ x ∈ G, K x ∈ G) (s : ℕ) : ∀ x ∈ G, (K ^ s) x ∈ G := by
-  induction s with
-  | zero => intro x hx; simpa using hx
-  | succ s ih =>
-    intro x hx
-    rw [pow_succ', Module.End.mul_apply]
-    exact hK _ (ih x hx)
+  apply _root_.Formalism.FourierDecayAlt.P.CapelliAbstractCharacter.pow_mem <;> assumption
 
 theorem aeval_mem (G : Submodule ℂ W) (K : Module.End ℂ W) (hK : ∀ x ∈ G, K x ∈ G) (q : ℂ[X]) :
     ∀ x ∈ G, aeval K q x ∈ G := by
-  intro x hx
-  rw [Polynomial.aeval_eq_sum_range, LinearMap.sum_apply]
-  refine Submodule.sum_mem _ (fun s _ => ?_)
-  rw [LinearMap.smul_apply]
-  exact Submodule.smul_mem _ _ (pow_mem G K hK s x hx)
+  apply _root_.Formalism.FourierDecayAlt.P.CapelliAbstractCharacter.aeval_mem <;> assumption
 
 theorem ch (hPV : PolyVanish) (G : Submodule ℂ W) (K : Module.End ℂ W) (hK : ∀ x ∈ G, K x ∈ G)
     (A : ℕ → Module.End ℂ W) (d : ℕ) (P : ℂ[X]) (hP : P.natDegree < d + 1)
@@ -1127,16 +1118,7 @@ theorem box_strictAnti {n : ℕ} {L : Fin (n + 1) → ℤ} {M : Fin n → ℤ} (
     exact lt_of_le_of_lt h1 h2
 
 theorem sdec_shf {n : ℕ} (β : ℂ) {M : Fin n → ℤ} (h : StrictAnti M) : SDec (shf β M) := by
-  intro a b hab
-  have h1 := h hab
-  refine ⟨(M a - M b - 1).toNat, ?_⟩
-  simp only [shf]
-  have h2 : ((M a - M b - 1).toNat : ℤ) = M a - M b - 1 := Int.toNat_of_nonneg (by omega)
-  have h3 : (((M a - M b - 1).toNat : ℕ) : ℂ) = ((M a - M b - 1 : ℤ) : ℂ) := by
-    rw [← Int.cast_natCast, h2]
-  rw [h3]
-  push_cast
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.HighestWeightPolynomials.sdec_shf <;> assumption
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 

@@ -805,10 +805,6 @@ theorem gen_ker (φ : GA D B.A → ℂ) (G : GA D J.W → ℂ) {Φ : WO B.V J.W 
     (s.om (embA B.d B.o h₀, h) Φ) = _
   rw [fl_const_mul, (GlobalTheory.T.besselLevel_unfolding_character_and_flatMap D ψ ρ B J s).2 _ (s.weil.om_pres _ _ hΦ)]
 
-theorem flBF_theta {Ψ : WO B.V J.W → ℂ} (hΨ : IsThetaFunO ψ B.V J.W Ψ) : IsThetaFunO ψ B.V₀ J.W₀ (flBF s Ψ) :=
-  (GlobalTheory.T.flatThetaMaps_converge_thetaFunctions D ψ s.weil.std B.V B.V₀ J.W J.W₀ ρ ρ B.d J.d s.vS s.vT s.vU J.d.e
-    (GlobalTheory.T.unfolding_base_point_fourierJacobi_group D J.W J.W₀ ρ J.d).1.1 _ Ψ hΨ).2
-
 theorem flBF_rat {Ψ : WO B.V J.W → ℂ} (hΨ : IsThetaFunO ψ B.V J.W Ψ) {γ : GA D J.W}
     (hγ : γ ∈ GQ J.W ⊓ jacGrp J.d) : flBF s (s.om (1, γ) Ψ) 0 = flBF s Ψ 0 := by
   obtain ⟨n, hn, h', rfl⟩ := (GlobalTheory.MixPer.Decomp.mem_jacGrp_iff J.d).1 hγ.2

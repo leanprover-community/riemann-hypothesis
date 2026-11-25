@@ -31,8 +31,6 @@ open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Code
 
 theorem relIndex_ne_zero_of_code {G : Type*} [Group G] (H A : Subgroup G) {Q : Type*} [Finite Q] (φ : A → Q)
@@ -147,8 +145,6 @@ noncomputable section
 open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.StabShape
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Fin2
 
@@ -287,8 +283,6 @@ open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Good2
 
 variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
@@ -359,8 +353,6 @@ noncomputable section
 open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.StabShape
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Good
 
@@ -441,8 +433,6 @@ noncomputable section
 open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.StabShape
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Good3
 
@@ -562,8 +552,6 @@ open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Split
 
 variable {F K : Type*} [Field F] [CommRing K] [Algebra F K] {r : ℕ}
@@ -675,8 +663,6 @@ noncomputable section
 open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.StabShape
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section CloseAt
 
@@ -809,8 +795,6 @@ open IsDedekindDomain NumberField ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Main
 
 variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
@@ -920,8 +904,6 @@ noncomputable section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
   (δ : ∀ p : PlF D, (D.s.atP p).Fp) (u u' : D.what₂.Word)

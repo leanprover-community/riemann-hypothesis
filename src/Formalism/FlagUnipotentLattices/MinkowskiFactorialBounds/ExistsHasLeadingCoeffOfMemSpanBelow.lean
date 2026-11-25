@@ -195,9 +195,6 @@ private theorem HermSpace_B_smul_left (H : Formalism.HermitianLatticeCounting.S6
 private theorem HermSpace_B_zero_left (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (y : V) : H.B 0 y = 0 := by
   rw [map_zero, LinearMap.zero_apply]
 
-private theorem HermSpace_B_neg_left (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (x y : V) : H.B (-x) y = -H.B x y := by
-  rw [map_neg, LinearMap.neg_apply]
-
 private theorem HermSpace_B_add_right (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (x y z : V) : H.B x (y + z) = H.B x y + H.B x z :=
   map_add _ _ _
 

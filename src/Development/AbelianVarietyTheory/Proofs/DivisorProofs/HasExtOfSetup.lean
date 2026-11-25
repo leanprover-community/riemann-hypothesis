@@ -1417,12 +1417,6 @@ theorem sep (R : Type) [CommRing R] (P : Scheme.{0}) (p : P ⟶ Sp R) [IsSeparat
   rw [terminal.hom_ext (terminal.from P) (p ≫ terminal.from _)]
   infer_instance
 
-theorem gp_dom (Y : Scheme.{0}) [IsIntegral Y] : IsDominant (gp Y) := by
-  refine ⟨?_⟩
-  have h : genericPoint Y ∈ Set.range (gp Y) := ⟨closedPoint _, Scheme.fromSpecStalk_closedPoint⟩
-  refine Dense.mono (Set.singleton_subset_iff.2 h) ?_
-  rw [dense_iff_closure_eq, (genericPoint_spec Y).def]
-
 theorem regAt_pow {Y : Scheme.{0}} [IsIntegral Y] {y : Y} {x : Y.functionField} (h : RegAt y x) (m : ℕ) :
     RegAt y (x ^ m) := by
   induction m with
@@ -1524,7 +1518,7 @@ theorem exists_map_to_model : ∀ (R F : Type) [CommRing R] [IsDomain R] [Field 
     (θ.comp ψ) (hreg y)
   obtain ⟨m, hmU, hmg⟩ := _root_.GlobalTheory.Desc.GenGlue.exists_glue Y P U hyU f (spMap (θ.comp ψ) ≫ gp P) hf
   refine ⟨m, ?_, ⟨gp Y, Category.comp_id _, hmg⟩, ?_⟩
-  · haveI := gp_dom Y
+  · haveI := GlobalTheory.Desc.Sat.isDominant_gp Y
     refine ext_of_isDominant (gp Y) ?_
     rw [reassoc_of% hmg, _root_.GlobalTheory.Desc.gp_comp_eq_spMap_cst P R p, ← Category.assoc, _root_.GlobalTheory.Desc.gp_comp_eq_spMap_cst Y R₁ q, ← Spec.map_comp, ← Spec.map_comp]
     congr 1

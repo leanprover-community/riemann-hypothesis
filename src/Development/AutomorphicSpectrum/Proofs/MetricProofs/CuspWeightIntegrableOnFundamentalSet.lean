@@ -719,7 +719,7 @@ theorem exists_subspace (R : RiemLat E g Λ) {Ψ : Type} [Fintype Ψ] [Nonempty 
   let v : Fin r → Λ := fun i => ((e i : T) : Λ)
   have hv_ind : LinearIndependent (𝓞 E) v := hs1.comp e e.injective
   have hv_mem : ∀ i, v i ∈ Submodule.span (𝓞 E) T := fun i => Submodule.subset_span (e i : T).2
-  have hC := (_root_.GlobalTheory.CompanionTheory.Relay.isotropic_eigencomponent_conjugate_form E g Λ Ψ R (Submodule.span (𝓞 E) T) (isIso_span R hI) (σ τ₀)).2 r v hv_mem hv_ind
+  have hC := (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Ψ R (Submodule.span (𝓞 E) T) (isIso_span R hI) (σ τ₀)).2 r v hv_mem hv_ind
   have hmem := ((_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Ψ R).2.2.1 (σ τ₀)).1
   have hr : r ≤ j' := by
     let w : Fin r → eigSp R.B (σ τ₀) := fun a => ⟨_, hmem (R.P (v a))⟩

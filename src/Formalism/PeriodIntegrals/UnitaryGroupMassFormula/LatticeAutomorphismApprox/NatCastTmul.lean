@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.BasIntSmulMem
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeAutomorphismApprox.LocDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicIndexEquality.CompactLocalGlobal
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.AdelicLatticeToLocalLattices
@@ -67,42 +68,7 @@ theorem full_loc {I : AutInst} {g r k : ℕ} {e f : Fin r → Fin I.n → I.E} (
     rw [PI.FinKW.LocTo.ov_smul_vec, PI.FinKW.LocTo.ov_smul_vec, smul_comm, h, smul_comm]
 
 theorem latLoc_fg (I : AutInst) (v : HeightOneSpectrum (𝓞 I.F)) :
-    (Formalism.L2.SG.Sub.latLoc v (I.L : Set (Fin I.n → I.E))).FG := by
-  classical
-  have hL : (I.L.restrictScalars ℤ).FG := I.L_fg.restrictScalars
-  obtain ⟨S, hS⟩ := hL
-  have hSL : ∀ s ∈ S, s ∈ I.L := by
-    intro s hs
-    have : s ∈ I.L.restrictScalars ℤ := hS ▸ Submodule.subset_span hs
-    exact this
-  refine ⟨S.image (Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v)), ?_⟩
-  apply le_antisymm
-  · rw [Submodule.span_le]
-    intro y hy
-    simp only [Finset.coe_image] at hy
-    obtain ⟨s, hs, rfl⟩ := hy
-    exact Submodule.subset_span ⟨s, hSL s hs, rfl⟩
-  · rw [Formalism.L2.SG.Sub.latLoc, Submodule.span_le]
-    rintro _ ⟨l, hl, rfl⟩
-    have hl' : l ∈ Submodule.span ℤ (S : Set (Fin I.n → I.E)) := by
-      rw [hS]; exact hl
-    clear hl
-    induction hl' using Submodule.span_induction with
-    | mem s hs => exact Submodule.subset_span (by simp only [Finset.coe_image]; exact ⟨s, hs, rfl⟩)
-    | zero =>
-      have : Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) (0 : Fin I.n → I.E) = 0 := by
-        funext i; simp [Formalism.L2.SG.Sub.ratV]
-      rw [this]; exact Submodule.zero_mem _
-    | add x y _ _ hx hy =>
-      have : Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) (x + y) =
-          Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) x +
-            Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) y := by
-        funext i; simp [Formalism.L2.SG.Sub.ratV]
-      rw [this]; exact Submodule.add_mem _ hx hy
-    | smul a x _ hx =>
-      have : Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) (a • x) =
-          a • Formalism.L2.SG.Sub.ratV (F := I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) x := by
-        funext i; simp [Formalism.L2.SG.Sub.ratV]
-      rw [this]; exact Submodule.smul_of_tower_mem _ a hx
+    (Formalism.L2.SG.Sub.latLoc v (I.L : Set (Fin I.n → I.E))).FG :=
+  PI.OmLocU.basLat_fg v I.L (Submodule.IsLattice.of_fg I.E I.L_fg)
 
 end PI.UnitaryGroupMassFormula.ScXuExists

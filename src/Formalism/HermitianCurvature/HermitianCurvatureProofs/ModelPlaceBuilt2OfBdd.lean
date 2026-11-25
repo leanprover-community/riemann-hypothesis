@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASAPairLQOf
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapAGrp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapToda
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapTodaV
@@ -353,14 +354,7 @@ def qOf (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) : (Fin 
 
 theorem qOf_contOn (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) :
     ContinuousOn (qOf k r z z') (Q.OmPlus k r z z') := by
-  refine ContinuousOn.prodMk ?_ ?_
-  · refine continuousOn_pi.2 fun a => ?_
-    unfold Formalism.QuantumDeterminants.cmin
-    exact (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn.div (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn
-      (fun g hg => hg.1 _ (Nat.le_of_lt a.isLt))
-  · unfold Formalism.QuantumDeterminants.zeta
-    exact (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn.div (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn
-      (fun g hg => hg.1 _ le_rfl)
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SA.QO.qOf_contOn <;> assumption
 
 theorem qOf_sgs {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq) {p : B.SS k r} (hp : D.inSS p)

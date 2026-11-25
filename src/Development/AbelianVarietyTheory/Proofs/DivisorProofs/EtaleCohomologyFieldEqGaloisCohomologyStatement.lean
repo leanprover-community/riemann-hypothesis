@@ -454,18 +454,9 @@ namespace GlobalTheory.EtC.LeraySurj
 
 variable {R : Type} [CommRing R]
 
-theorem chains_d_eq (E : Spc) (n : ℕ) :
-    ((chains R).obj E).d (-((n + 1 : ℕ) : ℤ)) (-(n : ℤ)) =
-      (chainsXIso R E (n + 1)).hom ≫ (∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • (free R).map (E.δ i)) ≫
-        (chainsXIso R E n).inv := by
-  have h2 : ((chainsN R).obj E).d (n + 1) n = ∑ i : Fin (n + 2), (-1 : ℤ) ^ (i : ℕ) • (free R).map (E.δ i) :=
-    AlgebraicTopology.AlternatingFaceMapComplex.obj_d_eq _ _
-  rw [← h2]
-  exact HomologicalComplex.extend_d_eq _ _ rfl rfl
-
 theorem cobd_eq (E : Spc) {F : Shv R} (n : ℕ) (s : (free R).obj (E.obj (op ⦋n⦌)) ⟶ F) :
     cobd s = (chainsXIso R E (n + 1)).inv ≫ ((chains R).obj E).d (-((n + 1 : ℕ) : ℤ)) (-(n : ℤ)) ≫ (chainsXIso R E n).hom ≫ s := by
-  rw [chains_d_eq]
+  rw [GlobalTheory.EtC.ClsBasic.chains_d]
   simp only [Category.assoc, Iso.inv_hom_id_assoc, Preadditive.sum_comp, Preadditive.zsmul_comp]
   rfl
 

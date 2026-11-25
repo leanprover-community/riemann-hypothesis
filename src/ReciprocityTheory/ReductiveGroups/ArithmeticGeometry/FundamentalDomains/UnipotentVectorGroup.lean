@@ -132,24 +132,6 @@ private theorem gram_zmat_mul_eq_gram {r : ℕ} (X : Data E r) (u : Fin 2 → Fi
   ext a c
   simp only [gram, Matrix.of_apply, _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.col_mul, hermC_zmat_mulVec_of_isIsoPair X u hiso b hb τ]
 
-private theorem dmin_Zb_eq_dmin {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
-    (hiso : IsIsoPair X.Gm u) (b : X.Ψ → Fin 2 → Fin 2 → ℂ) (hb : IsHermFam b)
-    (x : Frame X.Ψ r) (τ : X.Ψ) (i : Fin (r + 1)) :
-    dmin X.Gm (X.Zb u b x) τ i = dmin X.Gm x τ i := by
-  simp only [dmin, _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.mat_Zb, gram_zmat_mul_eq_gram X u hiso b hb τ]
-
-private theorem zmat_mul_zmat_eq_zmat_add {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
-    (hiso : IsIsoPair X.Gm u) (b b' : X.Ψ → Fin 2 → Fin 2 → ℂ) (τ : X.Ψ) :
-    X.zmat u b τ * X.zmat u b' τ = X.zmat u (b + b') τ := by
-  rw [zmat_eq_one_sub_smul X u b τ, zmat_eq_one_sub_smul X u b' τ, zmat_eq_one_sub_smul X u (b + b') τ,
-    one_sub_smul_mul_one_sub_smul_of_mul_eq_zero _ _ (gram_conj_emb_mul_emb_eq_zero_of_isIsoPair X u hiso τ), Matrix.of_add_of, Pi.add_apply]
-
-private theorem det_zmat_eq_one {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
-    (hiso : IsIsoPair X.Gm u) (b : X.Ψ → Fin 2 → Fin 2 → ℂ) (τ : X.Ψ) :
-    (X.zmat u b τ).det = 1 := by
-  rw [zmat_eq_one_sub_smul X u b τ]
-  exact det_one_sub_smul_mul_of_mul_eq_zero _ _ (gram_conj_emb_mul_emb_eq_zero_of_isIsoPair X u hiso τ) _ _
-
 private theorem flowMatV_uvec_eq_zmat {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
     (a : X.Ψ → Fin 2 → ℂ) (s : X.Ψ → ℂ) (τ : X.Ψ) :
     X.flowMatV (X.uvec u a τ) τ (s τ) =
@@ -168,16 +150,16 @@ theorem unipotent_vector_group : UnipotentVectorGroup (E := E) := by
   refine ⟨fun b b' x => ?_, fun b hb => ?_⟩
   · funext τ
     show X.zmat u b τ * (X.zmat u b' τ * mat x τ) = X.zmat u (b + b') τ * mat x τ
-    rw [← Matrix.mul_assoc, zmat_mul_zmat_eq_zmat_add X u hiso]
+    rw [← Matrix.mul_assoc, X.zmat_mul u hiso.1]
   · have hfix := zmat_mulVec_emb_eq_self X u hiso b
     have hdom : ∀ x ∈ X.dom, X.Zb u b x ∈ X.dom := by
       intro x hx
       simp only [Data.dom, GG, Set.mem_setOf_eq] at hx ⊢
       intro τ
       refine ⟨?_, fun i => ?_⟩
-      · rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.mat_Zb, Matrix.det_mul, det_zmat_eq_one X u hiso b, one_mul]
+      · rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.mat_Zb, Matrix.det_mul, X.zmat_det u hiso.1 b, one_mul]
         exact (hx τ).1
-      · rw [dmin_Zb_eq_dmin X u hiso b hb]
+      · rw [X.dmin_Zb u hiso.1 b hb]
         exact (hx τ).2 i
     have hmaj : ∀ (x : Frame X.Ψ r) (τ : X.Ψ), x ∈ X.dom →
         X.maj (X.Zb u b x) τ (Data.emb τ.1 (u 0)) = X.maj x τ (Data.emb τ.1 (u 0)) := by
@@ -195,7 +177,7 @@ theorem unipotent_vector_group : UnipotentVectorGroup (E := E) := by
       refine ⟨hdom x hx.1, fun τ => ?_⟩
       rw [hmaj x τ hx.1]
       exact hx.2 τ
-    refine ⟨?_, hfix, fun τ => det_zmat_eq_one X u hiso b τ, hdom, ?_, ?_, hmaj, hD1, ?_, ?_⟩
+    refine ⟨?_, hfix, fun τ => X.zmat_det u hiso.1 b τ, hdom, ?_, ?_, hmaj, hD1, ?_, ?_⟩
     · intro τ w w'
       exact hermC_zmat_mulVec_of_isIsoPair X u hiso b hb τ w w'
     · intro x x' h τ
@@ -208,13 +190,13 @@ theorem unipotent_vector_group : UnipotentVectorGroup (E := E) := by
         congr 1
       rw [key x, key x', Submodule.span_image, Submodule.span_image, h τ]
     · intro la x _
-      simp only [Data.nfac, dmin_Zb_eq_dmin X u hiso b hb x]
+      simp only [Data.nfac, X.dmin_Zb u hiso.1 b hb x]
     · intro a s x
       funext τ
       show X.zmat u b τ * (X.flowMatV (X.uvec u a τ) τ (s τ) * mat x τ) =
         X.flowMatV (X.uvec u a τ) τ (s τ) * (X.zmat u b τ * mat x τ)
-      rw [flowMatV_uvec_eq_zmat X u a s τ, ← Matrix.mul_assoc, ← Matrix.mul_assoc, zmat_mul_zmat_eq_zmat_add X u hiso,
-        zmat_mul_zmat_eq_zmat_add X u hiso, add_comm]
+      rw [flowMatV_uvec_eq_zmat X u a s τ, ← Matrix.mul_assoc, ← Matrix.mul_assoc, X.zmat_mul u hiso.1,
+        X.zmat_mul u hiso.1, add_comm]
     · intro a s x
       funext τ
       exact congrArg (fun M => M * mat x τ) (flowMatV_uvec_eq_zmat X u a (fun τ => (s τ : ℂ)) τ)

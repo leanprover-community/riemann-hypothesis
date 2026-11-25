@@ -225,28 +225,5 @@ structure HidaSetting (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] where
 
 attribute [instance] HidaSetting.grp HidaSetting.comm HidaSetting.addX HidaSetting.freeX HidaSetting.finX
 
-namespace HidaSetting
-
-variable {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] (S : HidaSetting V)
-
-abbrev Tower := AlgebraLevelSetting.Tower (IsLocalRing.maximalIdeal V) S.P S.Q₀.i
-
-abbrev Alg (W : S.Tower) := AlgebraLevelSetting.Alg W
-
-end HidaSetting
-
-def SymTriv.triv {S S' : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {f : S' ⟶ S}
-    {H : Over S'} [GrpObj H] (j : H.left ⟶ G.left) (hj : j ≫ G.hom = H.hom ≫ f) : SymTriv (CP.triv G) j hj where
-  s := unitGen _ _
-  gen := unitGen_isGen _ _
-  cub T x y u z J _ := by
-    have e : ∀ r, val (L := (CP.triv G).L.L) (unitGen ![j, H.hom ≫ f ≫ eSec G] ![1, -1]) r z J = 1 :=
-      fun r => val_unitGen _ _ _ _ _
-    have b : @id (T.left.presheaf.stalk z)ˣ (cubV (CP.triv G).c (T := Over.mk (T.hom ≫ f)) z J (toBase hj x)
-        (toBase hj y) (toBase hj u)) = 1 := cubV_trivCub G _ _ _ _ _
-    simp only [e, b, _root_.mul_one]
-  even T x z J _ := (val_unitGen _ _ _ _ _).trans ((congrArg₂ (· * ·) (val_sym_triv _ _ _ _)
-    (val_unitGen _ _ _ _ _)).trans (_root_.mul_one 1)).symm
-
 end GlobalTheory.IndefiniteRowSideFullHecke.AlgebraLevelSetting
 end

@@ -1,5 +1,7 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieListProducts
 public import Formalism.HermitianCurvature.FrameExists2
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameEntries
@@ -28,18 +30,7 @@ section Geometry
 variable {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
 
 theorem uw_mul {g h : Mx k r} (hg : g ∈ UWset k r z) (hh : h ∈ UWset k r z) : g * h ∈ UWset k r z := by
-  obtain ⟨hg1, hg2, hg3⟩ := hg
-  obtain ⟨hh1, hh2, hh3⟩ := hh
-  refine ⟨?_, fun a => ⟨?_, ?_⟩, ?_⟩
-  · have e1 : gᴴ * Hpk k r * g = Hpk k r := hg1
-    have e2 : hᴴ * Hpk k r * h = Hpk k r := hh1
-    show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-    rw [Matrix.conjTranspose_mul]
-    calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [e1, e2]
-  · rw [← Matrix.mulVec_mulVec, (hh2 a).1, (hg2 a).1]
-  · rw [← Matrix.mulVec_mulVec, (hh2 a).2, (hg2 a).2]
-  · rw [← Matrix.mulVec_mulVec, hh3, hg3]
+  apply _root_.PI.WBL.Cv.uw_mul <;> assumption
 
 theorem uw_pow {g : Mx k r} (hg : g ∈ UWset k r z) (n : ℕ) : g ^ n ∈ UWset k r z := by
   induction n with
@@ -65,17 +56,7 @@ theorem lie_zero : InLieW k r z (0 : Mx k r) := by
   simp
 
 theorem lie_add {X Y : Mx k r} (hX : InLieW k r z X) (hY : InLieW k r z Y) : InLieW k r z (X + Y) := by
-  unfold InLieW inLieLev at *
-  obtain ⟨⟨h1, h1'⟩, h2⟩ := hX
-  obtain ⟨⟨h3, h3'⟩, h4⟩ := hY
-  refine ⟨⟨?_, fun a ha => ⟨?_, ?_⟩⟩, ?_⟩
-  · rw [Matrix.conjTranspose_add, add_mul, mul_add]
-    calc Xᴴ * Hpk k r + Yᴴ * Hpk k r + (Hpk k r * X + Hpk k r * Y)
-        = (Xᴴ * Hpk k r + Hpk k r * X) + (Yᴴ * Hpk k r + Hpk k r * Y) := by abel
-      _ = 0 := by rw [h1, h3, add_zero]
-  · rw [Matrix.add_mulVec, (h1' a ha).1, (h3' a ha).1, add_zero]
-  · rw [Matrix.add_mulVec, (h1' a ha).2, (h3' a ha).2, add_zero]
-  · rw [Matrix.add_mulVec, h2, h4, add_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.LieListProducts.lie_add <;> assumption
 
 theorem lie_smul {X : Mx k r} (hX : InLieW k r z X) (s : ℝ) : InLieW k r z ((s : ℂ) • X) := by
   unfold InLieW inLieLev at *

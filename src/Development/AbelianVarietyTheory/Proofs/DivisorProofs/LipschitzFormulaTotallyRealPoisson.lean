@@ -94,10 +94,6 @@ theorem covolume_latOf [IsTotallyReal F] (N : FractionalIdeal (𝓞 F)⁰ F) (hN
 theorem dual_latOf [IsTotallyReal F] (N : FractionalIdeal (𝓞 F)⁰ F) (hN : N ≠ 0) :
     Formalism.H.dual (latOf N) = latOf (FractionalIdeal.dual ℤ ℚ N) := _root_.GlobalTheory.LipschitzTR.dual_latOf_eq_latOf_traceDual F N hN
 
-theorem fourier_lipschitzOneVariableKernel (k : ℕ) (hk : 2 ≤ k) (he : Even k) (w : ℂ) (hw : w.im ≠ 0) (x : ℝ) :
-    𝓕 (phi1 k w) x = ((k - 1).factorial : ℂ) / (2 * Real.pi * Complex.I) ^ k * (w - x) ^ (-(k : ℤ)) :=
-  _root_.GlobalTheory.LipschitzTR.fourier_phi1_eq_factorial_mul_zpow k hk he w hw x
-
 theorem Phi_cont_decay (k : ℕ) (hk : 2 ≤ k) (z : (F →+* ℝ) → ℂ) (hz : ∀ τ, (z τ).im ≠ 0) :
     Continuous (Phi k z) ∧
       ∀ b : ℝ, Phi k z =O[Filter.cocompact (RSp F)] fun v => ‖v‖ ^ (-b) := _root_.GlobalTheory.LipschitzTR.continuous_and_isBigO_rpow_Phi F k hk z hz

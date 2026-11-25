@@ -1,15 +1,15 @@
 module
 
-import Mathlib
 public import GroundTheory.PAdicHodge.TiltField
 public import GroundTheory.PAdicHodge.KerFontaineThetaCompFrobeniusEquivSymmPow
-public import GroundTheory.PAdicHodge.KerTheta
+import GroundTheory.PAdicHodge.KerTheta
 public import GroundTheory.PAdicHodge.GaloisOnCp
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
+import Mathlib.Algebra.Order.Ring.Star
+import Std.Internal.Order.Automation
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.PAdicHodge.TiltMap, GroundTheory.PAdicHodge.TiltAlgebra, GroundTheory.PAdicHodge.AInfGalois

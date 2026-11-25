@@ -65,13 +65,6 @@ public import Formalism.SharedLemmas.TotDiscQuot
 
 open NumberField Matrix IsLocalRing Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.Aut UpperTheory.V.UnitaryThreeInertia
 
-private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
-    [TotallyDisconnectedSpace G] (N : Subgroup G) [N.Normal] (hN : IsClosed (N : Set G)) :
-    TotallyDisconnectedSpace (G ⧸ N) := by
-  first
-  | exact _root_.Formalism.SharedLemmas.totDisc_quot
-  | (apply _root_.Formalism.SharedLemmas.totDisc_quot <;> assumption)
-
 private theorem schur {G κ : Type} [Group G] [Field κ] [IsAlgClosed κ] {m : ℕ} [NeZero m] (U : Subgroup G)
     (a : G → Matrix (Fin m) (Fin m) κ) (h : MatIrr U a) (M : Matrix (Fin m) (Fin m) κ)
     (hM : ∀ g ∈ U, M * a g = a g * M) : ∃ x : κ, M = x • 1 := by
@@ -132,7 +125,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.matIrr_cyc :
   intro Ω _ _ _ l _ c N _ e ψ o₁ h S A F hF g₁ hg r hr hI
   have hok := hostFrame_ok Ω c e ψ o₁ h S A F hF
   haveI hcl := isClosed_NS Ω (S : Set Pl)
-  haveI : TotallyDisconnectedSpace (Gam Ω S) := totDisc_quot _ hcl
+  haveI : TotallyDisconnectedSpace (Gam Ω S) := Formalism.SharedLemmas.totDisc_quot _ hcl
   obtain ⟨hm, -, hc, -⟩ := isCharZeroPt_basic F hok g₁ hg r hr
   have hη : ∀ s, F.η (toGS Ω _ s) = eta4 Ω s := fun s => by rw [← hF.η, hF.π]; rfl
   refine abs_irr (eta4 Ω) ?_ (r.comp (toGS Ω _)) (fun s => (hm _).trans (hη s)) (hc.comp (continuous_toGS Ω _))

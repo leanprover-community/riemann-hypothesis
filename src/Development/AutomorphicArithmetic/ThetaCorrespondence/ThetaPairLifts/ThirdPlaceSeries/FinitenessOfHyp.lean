@@ -684,7 +684,7 @@ theorem nAllC_withLoc_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D
     { gal := g, cover := (hgm ▸ cov), chiD := Tw.chiD, chi := Tw.chi,
       types := (hgj.symm ▸ ty), twF := F0, tw := tw, nct := Tw.ch.nct, exp := Tw.exp, choice := Tw.ch.choice,
       cf := cfL b.L b.cf, tp := tpL b.L b.tp,
-      plB := TO.plB, plκ := TO.plκ },
+      plB := TO.plB },
     rfl, hgj, hgm, hX, ⟨Tw.chrN⟩, Tw.chrGal, hrow⟩
 end GlobalTheory.HeightCounting.FitAll
 end

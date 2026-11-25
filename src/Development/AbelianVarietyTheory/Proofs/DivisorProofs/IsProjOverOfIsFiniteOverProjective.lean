@@ -63,7 +63,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G Recip
 
 namespace GlobalTheory.RegCoverExists
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
 private theorem isSeparated_spMap {R R' : Type} [CommRing R] [CommRing R'] (c : R →+* R') :
     IsSeparated (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap c) := by
@@ -74,7 +73,6 @@ private theorem isSeparated_spMap {R R' : Type} [CommRing R] [CommRing R'] (c : 
   infer_instance
 
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry in
 theorem _root_.GlobalTheory.RegCoverExists.isProjOver_of_comp_spMap {R R' : Type} [CommRing R] [CommRing R'] (c : R →+* R')
     {Y : Scheme.{0}} {f : Y ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R'} (h : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver (f ≫ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap c)) : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver f := by

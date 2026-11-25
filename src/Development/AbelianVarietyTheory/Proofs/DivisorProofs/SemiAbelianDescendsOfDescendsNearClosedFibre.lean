@@ -492,10 +492,6 @@ noncomputable section
 
 namespace GlobalTheory.Mum
 
-theorem pullback_one_left_fst {S P : Scheme.{0}} (f : P ⟶ S) (G' : Over S) [GrpObj G'] :
-    (η[(Over.pullback f).obj G'] : _ ⟶ _).left ≫ pullback.fst G'.hom f = f ≫ η[G'].left := by
-  simp
-
 theorem descend_one : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (S : Scheme.{0})
     (π : S ⟶ Sp R), IsProper π → Surjective π → IsIntegral S → ∀ (G' : Over S) [GrpObj G'] (G : Over (Sp R))
     (β : G'.left ⟶ G.left), IsPullback β G'.hom G.hom π →
@@ -508,8 +504,8 @@ theorem descend_one : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing
   have hfl : Flat (𝟙 (Sp R)) := inferInstance
 
   have heq : pullback.fst π π ≫ (η[G'].left ≫ β) = pullback.snd π π ≫ (η[G'].left ≫ β) := by
-    have h1 := pullback_one_left_fst (pullback.fst π π) G'
-    have h2 := pullback_one_left_fst (pullback.snd π π) G'
+    have h1 := GlobalTheory.GrpTangent.one_pullback_left_fst (pullback.fst π π) G'
+    have h2 := GlobalTheory.GrpTangent.one_pullback_left_fst (pullback.snd π π) G'
     have hu : (η : _ ⟶ (Over.pullback (pullback.fst π π)).obj G').left ≫ φ.hom.left =
         (η : _ ⟶ (Over.pullback (pullback.snd π π)).obj G').left := by
       rw [← Over.comp_left, IsMonHom.one_hom]

@@ -299,7 +299,7 @@ theorem contOn_Xo (Hd : HodgeData D) (ref : HermLine J) (ha : (muLine Hd).a = re
   have h0 := h.self_of_nhds hz₀.1
   have hoff : T z₀ ∈ offBd D a := ⟨hb, fun hm => hz₀.2 (bd_orbit D h0.2 hm)⟩
   have h1 : ContinuousAt (fun t => phMu Hd ((D.chart a).γ t)) (T z₀) :=
-    ((_root_.GlobalTheory.CompanionTheory.Relay.hodge_potential_smooth_off_boundary K J II Ψ Ω W D Hd).1 a).continuousOn.continuousAt ((SncPiece.isOpen_offBd D a).mem_nhds hoff)
+    ((_root_.LevelTowerAlt.mu_potential_smooth_off_boundary K J II Ψ Ω W D Hd).1 a).continuousOn.continuousAt ((SncPiece.isOpen_offBd D a).mem_nhds hoff)
   have hγ := ((D.chart a).analytic _ hb).continuousAt
   have hm := (D.chart a).mem _ hb
   have ho : IsOpen {z : (Σ k, J k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := by
@@ -803,7 +803,7 @@ theorem muHodge : MuHodge := by
   have htie : CoordTie ℤ Or.𝔐.ξ (fun c' : (k : K) → J k => ∏ k, Dc.y ⟨k, c' k⟩) := Or.𝔐.tie
   have hS : ∀ p ∈ Dc.SB B, p ∈ Dc.S := fun p hp => (Finset.mem_filter.1 hp).1
   have hmc : w ∈ mcPts (mCoordIdeal Dc.y) := (_root_.GlobalTheory.CompanionTheory.Ar.mem_mcPts_iff_exists_coordsAt Or.𝔐.X Ω Or.𝔐.ξ K J Dc.y htie w).2 ⟨z, h, hw⟩
-  obtain ⟨d⟩ := GlobalTheory.T.component_data_hodge_first E H D l (Xo l) c Y II K J Ω W Dc Hd S₀ Or z w hw
+  obtain ⟨d⟩ := _root_.GlobalTheory.CompanionTheory.Ar.MuFrame.nonempty_muFrameAt E H D l (Xo l) c Y II K J Ω W Dc Hd S₀ Or z w hw
   obtain ⟨s', hs'⟩ := PhMuFree.exists_smallPart Or d
   obtain ⟨Γ, hΓ, hpd, -⟩ := PhMuFree.norm_eq Or hw hi d hs'
   have hph := PhMuFree.phMu_eq Or hw hi d hs' hΓ
@@ -1338,7 +1338,7 @@ theorem one_coord₂ (hBr : ResBridgeStatement) (hG : GoodProjExistsStatement) {
   have r2 := hI.2.2 P e L M' g γ hP hL hM' hM'a hgγ hgP
   rw [recR_eq] at r1 r2
 
-  have hc := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq K ι P f g hU
+  have hc := _root_.PositivityTheory.UnitarySelfGeneration.i_cycle K ι P f g hU
   have hcyc : cycR I P L f = cycR I P L g := by
     unfold cycR
     refine finsum_mem_congr hc.1 fun W hW => ?_
@@ -1442,7 +1442,7 @@ theorem position_zero {I : Ideal (MRing J) → (n : ℕ) → (Fin n → HermLine
     linarith
   · filter_upwards [hsm, hw] with t h1 h2
     refine ⟨?_, h2.2.2⟩
-    obtain ⟨w', a1, -, a2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.defect_exists_smooth K J P B e R (A₁ t) (A₂ t) f g hP.2.1 h2.1 h1.1 h1.2
+    obtain ⟨w', a1, -, a2⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_defect K J P B e R (A₁ t) (A₂ t) f g hP.2.1 h2.1 h1.1 h1.2
     refine (OneModel.continuous_of_smooth R.A a2).congr fun x => ?_
     have hz := R.mem x x (R.mem_U x)
     obtain ⟨u, v, huv, hu, -⟩ := OneModel.exists_pair_ne h2.1.2 hz
@@ -1740,7 +1740,7 @@ theorem testPoly_eq_slX : PB.AgreementPos → PB.Proportional → Cmp.CmpSt → 
   intro hAg hPr hCmp hGiv hPts E _ _ _ _ H D Xo l c Y _ T o II hGl hEx hII hp hq B B₁ a K _ J _ Ω _ _ W _ _ Dc O Lt _ _ _ X Or hB hBB hqp hbg hsm hGood hgen hS
   have hIn : PB.Inputs := hGiv.2.2.2.2.2.2.2.2.2.1
   haveI : Nonempty (CMType H) := GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.cm_nonempty H
-  have hUnif := _root_.GlobalTheory.CompanionTheory.Relay.good_tower_real_agreement hGiv E H D Xo l c Y T o II hGl hEx hII hp hq
+  have hUnif := _root_.RootFieldNumerics.global_model_real_tower hGiv E H D Xo l c Y T o II hGl hEx hII hp hq
   have hProp : T.Proportional :=
     _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hPr hIn II hII (CMType H) (D.p + D.q) T (Top.realOf o.toTowerOrigin) hUnif
   have hJpos : 0 < Top.testDeg (CMType H) (D.p + D.q) T.j :=

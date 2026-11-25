@@ -455,8 +455,6 @@ section
 variable {F B : Type} [Field F] [AddCommGroup B] [Module F B]
   {L : Type} [Field L] [Algebra F L] {V : Type} [AddCommGroup V] [Module L V] [Module F V] [IsScalarTower F L V]
 
-private abbrev Phi (a : End L V) (b : End F B) : End L (V ⊗[F] B) := AlgebraTensorModule.map a b
-
 end
 
 private theorem commute_tensorMap_of_commute {F B L V : Type} [Field F] [AddCommGroup B] [Module F B] [Field L]

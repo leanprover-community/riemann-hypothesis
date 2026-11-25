@@ -1274,20 +1274,6 @@ namespace GlobalTheory.Core.Deg.AtRecord
 
 open Formalism.FourierDecayAlt
 
-def sizeData (D : D7) (u : D.what₂.Word) : Sz.SizeData D.what₂.Tau where
-  k := D.R.k
-  r := D.R.rS
-  v := D.host.v
-  dF := (2 * D.host.v) ^ D.R.f
-  Lv := fun M => Formalism.HermitianLatticesTheory.lValEta D.host.E M
-  vol := fun M => Cnt.massU D.host.E M
-  g1 := D.host.g 0
-  g2 := D.host.g 1
-  T := (D.mem u).A.T
-  dsig := D.dsig
-  Vu := fun τ => vand (uS D u τ)
-  du := D.duS u
-
 theorem sq_le_two_pow (k : ℕ) (hk : 4 ≤ k) : k ^ 2 ≤ 2 ^ k := by
   induction k, hk using Nat.le_induction with
   | base => norm_num

@@ -57,16 +57,11 @@ section Forms
 
 variable {Y : Type} [AddCommGroup Y]
 
-def quad (β : Bil Y) (x : Y) : ℝ := β x x / 2
-
 def IsIntegralFn (S : Submodule ℝ (Bil Y)) (l : S →ₗ[ℝ] ℝ) : Prop :=
   ∀ β : S, (∀ a c, ∃ z : ℤ, (β : Bil Y) a c = z) → ∃ z : ℤ, l β = z
 
 def IsPositiveFn (S : Submodule ℝ (Bil Y)) (l : S →ₗ[ℝ] ℝ) : Prop :=
   ∀ β : S, (∀ a, 0 ≤ (β : Bil Y) a a) → β ≠ 0 → 0 < l β
-
-def leastExponent (S : Submodule ℝ (Bil Y)) (b : S) : ℝ :=
-  sInf {x | ∃ l : S →ₗ[ℝ] ℝ, IsIntegralFn S l ∧ IsPositiveFn S l ∧ x = l b}
 
 def evalSum (S : Submodule ℝ (Bil Y)) {k : ℕ} (x x' : Fin k → Y) : S →ₗ[ℝ] ℝ where
   toFun β := ∑ i, (β : Bil Y) (x i) (x' i)

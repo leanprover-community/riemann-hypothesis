@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 public import Formalism.HermitianCurvature.StatementJ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevToThreshold
 import Mathlib.RingTheory.Henselian
@@ -120,30 +121,6 @@ theorem pull_lift_typed_unit : Formalism.FourierDecayAlt.J.PullLiftTypedUnit := 
   rw [mul_inv_rev, inv_inv, Units.val_mul]
   exact (mul_unit_mul_mem_iff R c hc hci _ _).symm
 
-private lemma isPSD_comp_of_isPSD_image {X Y : Type} {inst : DecidableEq Y} (F : Finset X) (η : X → Y)
-    (k : Y → Y → ℂ) (hk : A5.IsPSD (F.image η) k) : A5.IsPSD F (fun h h' => k (η h) (η h')) := by
-  intro a
-  have hmap : ∀ x ∈ F, η x ∈ F.image η := fun x hx => Finset.mem_image_of_mem η hx
-  have key : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y) =
-      ∑ p ∈ F.image η, ∑ q ∈ F.image η,
-        (∑ x ∈ F.filter (fun x => η x = p), a x) * conj (∑ y ∈ F.filter (fun y => η y = q), a y) *
-          k p q := by
-    rw [← Finset.sum_fiberwise_of_maps_to hmap]
-    refine Finset.sum_congr rfl fun p _ => ?_
-
-    simp only [map_sum, Finset.sum_mul, Finset.mul_sum]
-    conv_rhs => enter [2, q]; rw [Finset.sum_comm]
-    conv_rhs => rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun x hx => ?_
-    rw [← Finset.sum_fiberwise_of_maps_to hmap]
-    refine Finset.sum_congr rfl fun q _ => ?_
-    refine Finset.sum_congr rfl fun y hy => ?_
-    rw [(Finset.mem_filter.1 hx).2, (Finset.mem_filter.1 hy).2]
-  have hk' := hk (fun p => ∑ x ∈ F.filter (fun x => η x = p), a x)
-  beta_reduce at hk' ⊢
-  rw [key]
-  exact hk'
-
 
 open Classical in
 theorem top_unit_heads : Formalism.FourierDecayAlt.J.TopUnitHeads := by
@@ -162,7 +139,7 @@ theorem top_unit_heads : Formalism.FourierDecayAlt.J.TopUnitHeads := by
       simpa using R.add_mem h hτ
     · intro h
       exact R.sub_mem h hτ
-  have hpull := isPSD_comp_of_isPSD_image F η _ h7
+  have hpull := _root_.Formalism.FourierDecayAlt.P.Jx9.pull η F _ h7
   have hF : A5.IsPSD F (fun h h' => (if t ∈ (topSys R ψ σ u τ₀ η Θ).L then (1 : ℂ) else 0) -
       (topSys R ψ σ u τ₀ η Θ).N t t h h') := by
     intro a

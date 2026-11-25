@@ -674,12 +674,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.CompanionTheory.CM
-
-theorem idealInvariantsOneOrbit : GlobalTheory.Published.IdealInvariantsOneOrbitSt :=
-  GlobalTheory.Published.ComplexMultiplicationJSt.oneOrbit _root_.GlobalTheory.CompanionTheory.Published.complexMultiplicationJ
-
-end GlobalTheory.CompanionTheory.CM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.IdealInvariantsOneOrbit =====

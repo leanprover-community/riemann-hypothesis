@@ -1301,30 +1301,6 @@ open MvPolynomial Formalism.GradedWeylDivisibility
 
 namespace GlobalTheory.GenCoef
 
-theorem rowSubst_diagonal_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (R : Type) [CommRing R] [Algebra O R] (d : Fin N → R) (D : ℕ)
-    (f : MvPolynomial (Fin N × Fin N) O), f.totalDegree ≤ D →
-    rowSubst O N R (Matrix.diagonal d) f = ∑ w ∈ Fintype.piFinset (fun _ : Fin N => Finset.range (D + 1)),
-      (∏ a, d a ^ w a) • MvPolynomial.map (algebraMap O R) (weightedHomogeneousComponent (rowW N N) w f) := _root_.GlobalTheory.DiagRowSubst.rowSubst_diagonal_eq_sum_components
-
-theorem rowDiv_mem_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (a b : Fin N), a ≠ b → ∀ k : ℕ,
-    ∃ p ∈ dwAlg O N ν, ∀ f : dualWeyl O N N ν,
-      (p f : MvPolynomial (Fin N × Fin N) O) = rowDiv O a b k (f : MvPolynomial (Fin N × Fin N) O) := _root_.GlobalTheory.GenCoef.rowDiv_mem_dwAlg
-
-theorem totalDegree_le_of_mem_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (ν : Fin N → ℕ) (f : MvPolynomial (Fin N × Fin N) O),
-    f ∈ dualWeyl O N N ν → f.totalDegree ≤ ∑ a, ν a := _root_.GlobalTheory.DualWeylDeg.totalDegree_le_of_mem_dualWeyl
-
-theorem lduHom_pure_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (M : Type) [AddCommGroup M] [Module O M]
-    (s : Finset (Fin N × Fin N →₀ ℕ)) (c : (Fin N × Fin N →₀ ℕ) → M),
-    (∀ n, ∑ m ∈ s, (lduHom O N (monomial m 1)).coeff n • c m = 0) → ∀ m ∈ s, c m = 0 := _root_.GlobalTheory.GenCoef.lduHom_coeff_smul_injective
-
-theorem rowSubst_eq_sum_genSub_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (R : Type) [CommRing R] [Algebra O R]
-    (Y : Matrix (Fin N) (Fin N) R) (f : MvPolynomial (Fin N × Fin N) O),
-    rowSubst O N R Y f = ∑ m ∈ (GlobalTheory.HighWt.genSub O N f).support, (m.prod fun v k => Y v.1 v.2 ^ k) •
-      MvPolynomial.map (algebraMap O R) ((GlobalTheory.HighWt.genSub O N f).coeff m) := _root_.GlobalTheory.GenCoef.RowSubstSum.main
-
-theorem genSub_coeff_le_of_parts : ∀ (O : Type) [CommRing O] (N : ℕ) (D : ℕ) (f : MvPolynomial (Fin N × Fin N) O), f.totalDegree ≤ D →
-    ∀ m, (GlobalTheory.HighWt.genSub O N f).coeff m ≠ 0 → ∀ v, m v ≤ D := _root_.GlobalTheory.GenSubDeg.genSub_coeff_le
-
 end GlobalTheory.GenCoef
 
 namespace GlobalTheory.GenCoef

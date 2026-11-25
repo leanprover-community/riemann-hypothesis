@@ -20,8 +20,6 @@ namespace Formalism.MainNotions.Inhab
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.BasicNotions.Examples₂ NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Ext
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
@@ -77,8 +75,6 @@ open scoped TensorProduct ContDiff
 namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.MainNotions.Inhab Formalism.BasicNotions.Examples₂
 

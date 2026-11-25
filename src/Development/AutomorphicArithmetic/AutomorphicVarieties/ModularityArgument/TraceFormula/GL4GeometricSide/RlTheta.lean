@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4GeometricSide.ContOfRightInv
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL4GeometricSide.InnerEq
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNormalisedThetaSub
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EopWMemStabAlg
@@ -76,13 +77,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 private theorem along_unitary (w : InfinitePlace E) (g : GA E n) (φ : GA E n → ℂ) (k : Un n) :
     Bridge.along w g φ k.1 = φ (g * kAt w k) := by
-  classical
-  have e : Bridge.atW (E := E) w k.1 = toL (locInf w (Unitary.toUnits k)).val := by
-    funext i j v
-    rw [Bridge.atW]
-    exact (locInf_apply w (Unitary.toUnits k) i j v).symm
-  rw [Bridge.along, e, chart_val]
-  rfl
+  apply _root_.UpperTheory.V.Z.GSp4Splitting.along_unit <;> assumption
 
 private theorem eop_theta (w : InfinitePlace E) (a b : Fin n) {φ φ' : Sm E n}
     (h : ∀ x, φ'.1 x = φ.1 (thetaA E n x)) (x : GA E n) :

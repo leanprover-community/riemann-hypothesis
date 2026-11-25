@@ -592,7 +592,7 @@ theorem trivFlagOnHodge_of_fargues : GlobalTheory.CompanionTheory.Ar.HT.FarguesH
       have hR : 𝔐.R p - 2 ≠ 0 := by
         have := 𝔐.R_ge p hpS
         omega
-      exact _root_.GlobalTheory.CompanionTheory.Ar.HT.trivFlagMod_of_dvd O Ω K J y _ ϖ _ _ (dvd_pow hpO hR) h2
+      exact _root_.PositivityTheory.HtPt.Gf.trivflag_mono O Ω K J y _ ϖ _ _ (dvd_pow hpO hR) h2
   have hJ := isMultiHomogIdeal_pointIdeal_sup_map_C (ι := J) (O := O) y (IsLocalRing.maximalIdeal O)
   have hWh := GroundTheory.Heights₂.Heights.NumbersDVR.MinimalPrimeMultiHomog.proof.{0} O K J _ W hJ hW.1
   have hCϖ : (C ϖ : GroundTheory.Heights₂.Heights.NumbersDVR.MRing J O) ∈ W :=

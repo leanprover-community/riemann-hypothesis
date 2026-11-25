@@ -115,7 +115,7 @@ theorem isogeny_decomposition_product : ∀ (R V : Type) [CommRing R] [CommRing 
         congr 1
         rw [← Over.comp_left, MonObj.comp_one]
       simp [fV, e2]
-  obtain ⟨bB⟩ := _root_.GlobalTheory.CompanionTheory.Relay.lie_model_free_of_smooth (Sp R) B.A n (hg ▸ B.smoothDim) V (spMap f ≫ 𝟙 (Sp R)) EBV MBV
+  obtain ⟨bB⟩ := _root_.PositivityTheory.UnitarySelfGeneration.lie_free (Sp R) B.A n (hg ▸ B.smoothDim) V (spMap f ≫ 𝟙 (Sp R)) EBV MBV
   obtain ⟨hli, hsp⟩ := _root_.GlobalTheory.CompanionTheory.CommAlg.linearIndependent_span_of_dual_unit V EBV n bB EV fV (N : V) hN hval
   have bridge := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Bridge.comb_eig_frame (Sp V) V G (𝟙 (Sp V)) EBV MG).1 n
   refine ⟨fun k => MG.pt (EV k), fun k => hMG' (EV k) ▸ hEV k, fun k => MG.tan _, fun w hw => ?_⟩

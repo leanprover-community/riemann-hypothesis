@@ -175,7 +175,6 @@ open CategoryTheory TopologicalSpace Limits NumberField ReciprocityTheory.ChartR
 open GlobalTheory.FlagMod.LowRank (ECh Proj str)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv mkT tanM_ext tv_mem actR)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

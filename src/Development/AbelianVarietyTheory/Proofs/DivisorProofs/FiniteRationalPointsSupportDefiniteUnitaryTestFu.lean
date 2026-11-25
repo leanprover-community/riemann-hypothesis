@@ -217,20 +217,6 @@ namespace GlobalTheory.BCT.SuppFin
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem isOpen_vle (w : HeightOneSpectrum (𝓞 E)) (m : ℤ) :
-    IsOpen {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp m} := by
-  obtain ⟨c, hc⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective E w (WithZero.exp m)
-  have hc0 : c ≠ 0 := by
-    rintro rfl
-    rw [map_zero] at hc
-    exact WithZero.exp_ne_zero hc.symm
-  have : {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp m} =
-      {y | Valued.v.restrict y ≤ Valued.v.restrict c} := by
-    ext y
-    simp only [Set.mem_ofPred_eq, Valuation.restrict_le_iff, hc]
-  rw [this]
-  exact Valued.isOpen_closedBall _ (by simp [hc0])
-
 theorem exists_bound_of_isCompact (w : HeightOneSpectrum (𝓞 E)) {K : Set (w.adicCompletion E)}
     (hK : IsCompact K) : ∃ N : ℤ, ∀ z ∈ K, Valued.v z ≤ WithZero.exp N := by
   have hcov : K ⊆ ⋃ N : ℤ, {y : w.adicCompletion E | Valued.v y ≤ WithZero.exp N} := by
@@ -239,7 +225,7 @@ theorem exists_bound_of_isCompact (w : HeightOneSpectrum (𝓞 E)) {K : Set (w.a
     by_cases hz : Valued.v z = 0
     · exact ⟨0, by simp [hz]⟩
     · exact ⟨WithZero.log (Valued.v z), by simp [WithZero.exp_log hz]⟩
-  obtain ⟨N, hN⟩ := hK.elim_directed_cover _ (fun N => isOpen_vle w N) hcov
+  obtain ⟨N, hN⟩ := hK.elim_directed_cover _ (fun N => GlobalTheory.Mem.UnitOpen.isOpen_val_le w N) hcov
     (Monotone.directed_le fun a b hab y hy => le_trans hy (WithZero.exp_le_exp.2 hab))
   exact ⟨N, fun z hz => hN hz⟩
 

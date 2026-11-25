@@ -59,11 +59,6 @@ def OfCase (D : Raw Ω c) (h : Host) (e : ℕ) (ψ : DirichletCharacter c.O h.N)
 
 def IsAut4 (ι : PadicAlgCl l ≃+* ℂ) (r : G ℚ Ω →* M4 (PadicAlgCl l)) : Prop := Af.IsAutQ ι r.toHomUnits
 
-def Sp4In : Prop :=
-  ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (h : Host) (t : ℕ), h.Big t →
-    ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (e : ℕ), l ≠ 2 → 0 < e → e < t → ∀ ψ ∈ h.X c e, ∀ D : Raw Ω c, D.Good → OfCase D h e ψ →
-      D.Fin0 ∧ D.NoEnd ∧ ∃ ι : PadicAlgCl l ≃+* ℂ, D.AllIrr (IsAut4 ι)
-
 end UpperTheory.V.Aut
 
 end

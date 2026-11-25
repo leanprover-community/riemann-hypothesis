@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HermCmpWedgeEqDet
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Formalism.FlagUnipotentLattices.UnipotentStabiliserCharacterisation
@@ -130,15 +131,7 @@ end general
 
 theorem cmp_mulVec_wedge {n l : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) (f : Fin l → Fin n → ℂ) :
     BranchingSupport.cmp l g *ᵥ wedge f = wedge (fun b => g *ᵥ f b) := by
-  funext I
-  have h := Formalism.HermitianLatticeCounting.P.ge_cauchyBinet (g.submatrix (I.1.orderEmbOfFin I.2) id)
-    (Matrix.of fun (i : Fin n) (b : Fin l) => f b i)
-  refine Eq.trans ?_ (h.symm.trans ?_)
-  · simp only [mulVec, dotProduct]
-    refine Finset.sum_congr rfl fun J _ => ?_
-    rw [mul_comm]
-    rfl
-  · rfl
+  apply _root_.GlobalTheory.TopMinorWedge.cmp_mulVec_wedge <;> assumption
 
 theorem sum_norm_wedge {n l : ℕ} (f : Fin l → Fin n → ℂ) :
     ∑ J, ‖wedge f J‖ ^ 2 =

@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.ResidualChains.RtFacts
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.SmallCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.PotentialModularityTower
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.RatTorsionFree
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
@@ -142,32 +144,6 @@ variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [F
 private theorem aut_conj (ι : PadicAlgCl l ≃+* ℂ) {r r' : G ℚ Ω →* M4 (PadicAlgCl l)} (h : IsConj4 r r')
     (ha : _root_.UpperTheory.V.Aut.IsAut4Alt ι r') : _root_.UpperTheory.V.Aut.IsAut4Alt ι r := by
   exact _root_.UpperTheory.GalN.V.autQIsoN ℚ Ω l ι 4 _ _ (((irrIff (PadicAlgCl l)).2 r r').1 h) ha
-private theorem cont_small (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l) (he : 𝔞.IsZero e) {ι Γ : Type} [Group Γ] [TopologicalSpace Γ]
-    (P : PD ι Γ 𝔞.V) (hP : 𝔞.Small P) : Continuous (mapRep ((e : 𝔞.K →+* PadicAlgCl l).comp 𝔞.toK) P.r) := by
-  obtain ⟨A, _, _, _, f, P₁, hf, hc, rfl⟩ := hP
-  haveI := hf.loc
-  let φ : A →+* PadicAlgCl l := ((e : 𝔞.K →+* PadicAlgCl l).comp 𝔞.toK).comp f
-  have h1 : ∀ x, ‖φ x‖ ≤ 1 := fun x => (he.2 _).1 (f x).2
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible A
-  have h2 : ‖φ ϖ‖ < 1 := by
-    refine lt_of_le_of_ne (h1 ϖ) fun h => hϖ.not_isUnit (hf.loc.map_nonunit ϖ ?_)
-    have h0 : ((f ϖ : 𝔞.V) : 𝔞.K) ≠ 0 := fun h0 => by
-      have : φ ϖ = 0 := by show e (f ϖ : 𝔞.V) = 0; rw [h0, map_zero]
-      rw [this] at h; simp at h
-    have hm : ((f ϖ : 𝔞.V) : 𝔞.K)⁻¹ ∈ 𝔞.V := (he.2 _).2 (by
-      rw [map_inv₀, norm_inv]
-      exact (inv_eq_one.2 h).le)
-    exact IsUnit.of_mul_eq_one ⟨_, hm⟩ (Subtype.ext (mul_inv_cancel₀ h0))
-  refine continuous_matrix fun i j => ?_
-  show Continuous fun g => φ (P₁.r g i j)
-  refine continuous_iff_continuousAt.2 fun g => Metric.tendsto_nhds.2 fun ε hε => ?_
-  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one hε h2
-  refine ((hc i j N).eventually_eq g).mono fun g' hg' => ?_
-  have h3 := Ideal.Quotient.eq.1 hg'
-  rw [hϖ.maximalIdeal_eq, Ideal.span_singleton_pow, Ideal.mem_span_singleton'] at h3
-  obtain ⟨a, ha⟩ := h3
-  rw [dist_eq_norm, ← map_sub, ← ha, map_mul, map_pow, norm_mul, norm_pow]
-  exact lt_of_le_of_lt (mul_le_of_le_one_left (by positivity) (h1 a)) hN
 private theorem comm_ab (E : Type) [Field E] [Algebra ℚ E] [Algebra E Ω] [IsScalarTower ℚ E Ω] [IsAbelianGalois ℚ E]
     (a b : G ℚ Ω) (x : E) : (a * b * a⁻¹ * b⁻¹) (algebraMap E Ω x) = algebraMap E Ω x := by
   have h : AlgEquiv.restrictNormalHom E (a * b * a⁻¹ * b⁻¹) = 1 := by
@@ -187,12 +163,7 @@ private theorem comm_L {D : Raw Ω c} (T : Tower D) (a b : G ℚ Ω) : a * b * a
     tauto
 private theorem rt_wt {O Γ : Type} [CommRing O] [Group Γ] (Φ : Fr O Γ) (g : Γ) (h : Φ.χ 0 g * Φ.χ 3 g = Φ.χ 1 g * Φ.χ 2 g)
     (i j : Fin 4) : Φ.rt (wt i j) g * Φ.χ j g = Φ.χ i g := by
-  have h3 : Φ.χ 3 g = (Φ.χ 0 g)⁻¹ * (Φ.χ 1 g * Φ.χ 2 g) := by rw [← h, inv_mul_cancel_left]
-  show (Φ.χ 0 g * (Φ.χ 1 g)⁻¹) ^ (wt i j).1 * (Φ.χ 0 g * (Φ.χ 2 g)⁻¹) ^ (wt i j).2 * Φ.χ j g = Φ.χ i g
-  apply Additive.ofMul.injective
-  have h4 := congrArg Additive.ofMul h3
-  simp only [ofMul_mul, ofMul_inv, ofMul_zpow] at h4 ⊢
-  fin_cases i <;> fin_cases j <;> simp [wt, lamW, muW, h4] <;> abel
+  apply _root_.UpperTheory.V.Ws.Chain.rt_wt <;> assumption
 private theorem dist_L {D : Raw Ω c} (T : Tower D) (hT : T.Ok) (i j : Fin 4) (hij : i ≠ j) :
     ∃ g ∈ T.L.fixingSubgroup, Raw.bar (D.ps i) g ≠ Raw.bar (D.ps j) g := by
   have key : ∀ i j, i ≠ j → ∃ g ∈ T.L.fixingSubgroup, Raw.bar (chi D T.pr i) g ≠ Raw.bar (chi D T.pr j) g := by
@@ -275,7 +246,7 @@ theorem UpperTheory.V.Ws.aut_n_alt :
   have hi : Irr (mapRep f r) := by
     rw [mapRep_comp]
     exact irr_map e hirr
-  have hcont : Continuous (mapRep f r) := cont_small 𝔞 e he (⟨r, fun _ => u⟩ : PD Unit _ _) hK.small
+  have hcont : Continuous (mapRep f r) := _root_.UpperTheory.V.Ws.smallCont 𝔞 e he (⟨r, fun _ => u⟩ : PD Unit _ _) hK.small
   have hiL := irr_L T hfit.1 𝔞 f (e.injective.comp Subtype.val_injective) r hK.red hi
   have hm : D.Mult (mapRep f r₁) := fun g => by
     have h1 := gsp_map f (hmult g)

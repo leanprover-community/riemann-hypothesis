@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbGermRateLowBOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDom
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutDec
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -28,20 +29,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 theorem cutN_ckOn {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {f : B.Mat k r → E}
     (hf : B.CkOn (⊤ : ℕ∞) (B.GV k r) f) (n : ℕ) :
     B.CkOn (⊤ : ℕ∞) (B.GV k r) (fun g => cutN k r n g • f g) := by
-  have hN : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : ℂ => Complex.normSq z) := by
-    simp_rw [Complex.normSq_apply]
-    exact (Complex.reCLM.contDiff.mul Complex.reCLM.contDiff).add (Complex.imCLM.contDiff.mul Complex.imCLM.contDiff)
-  have hc : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (cutN k r n) := by
-    unfold cutN
-    refine Complex.ofRealCLM.contDiff.comp (Real.smoothTransition.contDiff.comp ?_)
-    refine ContDiff.div_const (contDiff_const.sub ?_) _
-    refine ContDiff.sum fun i _ => ContDiff.sum fun j _ => ?_
-    exact hN.comp ((contDiff_apply_apply (𝕜 := ℝ) i j).comp (contDiff_const_smul _))
-  intro g₀ hg₀
-  obtain ⟨U, f', hU, hgU, hf', hff⟩ := hf g₀ hg₀
-  refine ⟨U, fun g => cutN k r n g • f' g, hU, hgU, hc.contDiffOn.smul hf', fun g hg hgv => ?_⟩
-  show cutN k r n g • f g = cutN k r n g • f' g
-  rw [hff g hg hgv]
+  apply _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.cutN_smooth <;> assumption
 
 end cutn
 

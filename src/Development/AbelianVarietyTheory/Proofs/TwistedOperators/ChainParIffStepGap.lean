@@ -50,7 +50,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift (NcGapGt NcGapGe minSig shiftPar alV alW lamS lamT StepGap StepWeil VacVec fockOf)
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift (NcGapGt NcGapGe minSig shiftPar alV alW lamS lamT StepGap)
 
 namespace GlobalTheory.Chain.ItPairCompare
 

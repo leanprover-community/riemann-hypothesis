@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtNonneg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBBStmt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleWordMemBoundedLetterLists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
@@ -71,15 +72,7 @@ theorem sizeAt_nonneg (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (a : List C.Lett
 
 theorem gN_psd (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (v : Fin S.f) (ε : ℝ) (hε : 0 < ε) (j : ℕ)
     (hj : j ≤ S.G.r + 1) (w : S.W) (Z : Finset C.LPt) : TB.PSDOn Z (KB.gN S v ε j (w.1 v)) := by
-  have h0 := hpos v ε hε j hj w Z
-  have h1 := _root_.Formalism.FourierDecayAlt.P.Jx7.t_DiagScale C.LPt Z _ (fun _ => (√(S.sizeAt v (w.1 v)))⁻¹) h0
-  refine psd_congr Z _ _ (fun x _ y _ => ?_) h1
-  unfold KB.gN
-  have hs := sizeAt_nonneg S v (w.1 v)
-  have e : (((√(S.sizeAt v (w.1 v)))⁻¹ : ℝ) : ℂ) * (((√(S.sizeAt v (w.1 v)))⁻¹ : ℝ) : ℂ) =
-      ((S.sizeAt v (w.1 v) : ℝ) : ℂ)⁻¹ := by
-    rw [← Complex.ofReal_mul, ← mul_inv, Real.mul_self_sqrt hs, Complex.ofReal_inv]
-  rw [e, div_eq_mul_inv, mul_comm]
+  apply _root_.Formalism.FourierDecayAlt.P.PBA.gN_psd <;> assumption
 
 theorem lift_block0 (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (v : Fin S.f) (ε : ℝ) (hε : 0 < ε) (j : ℕ)
     (hj : j ≤ S.G.r + 1) (w : S.W) (Y : Finset (TB.Pt E)) (P P' : TB.Pt E → C.LPt) :

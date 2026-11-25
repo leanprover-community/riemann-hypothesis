@@ -32,7 +32,7 @@ theorem map_monomial_eq_zero {J : Type} [Fintype J] [DecidableEq J] (d : ℕ) (�
       (∀ m : J →₀ ℕ, m.degree = d → AddMonoidAlgebra.coeff Pl m =
         (-1) ^ d * (m.multinomial : ℝ) * Φ (monomial m 1)) ∧
       (∀ m : J →₀ ℕ, m.degree = d → |Φ (monomial m 1)| ≤ |Pl.coeff m|) :=
-    _root_.GlobalTheory.CompanionTheory.Ar.Top.polarisation_functional J d Φ
+    _root_.RootFieldNumerics.polarization_coefficients_bound J d Φ
   have hP : Pl = 0 := MvPolynomial.funext fun c => by rw [hev c, h c, map_zero]
   have h0 := hco m hm
   simp only [hP, AddMonoidAlgebra.coeff_zero] at h0

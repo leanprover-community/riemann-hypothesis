@@ -280,8 +280,6 @@ theorem exists_section_of_trace : _root_.GlobalTheory.CompanionTheory.Ar.Top.Giv
     Formalism.L2.Pj.evalAt_mul _ _ _ _ _
   rw [h4, h3, one_mul, hgv Z, hbb]
 
-alias _root_.GlobalTheory.CompanionTheory.Relay.comp_laws_tower_bound := _root_.GlobalTheory.CompanionTheory.Ar.Plug.exists_section_of_trace
-
 end GlobalTheory.CompanionTheory.Ar.Plug
 end -- clump:auto
 end -- clump:auto

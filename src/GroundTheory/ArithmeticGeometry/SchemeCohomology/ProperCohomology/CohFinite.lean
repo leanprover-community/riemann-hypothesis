@@ -10,8 +10,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 3
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits Abelian

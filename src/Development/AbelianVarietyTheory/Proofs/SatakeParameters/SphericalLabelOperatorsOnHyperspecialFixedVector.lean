@@ -184,7 +184,7 @@ theorem idem_mul_loc_mem (h : Comparison₂ P e) {t : Formalism.MainNotions.Glob
     by_contra hn
     exact hs ((h s hs0).2 hn)
   have h2 : (t ⊗ₜ[D.host.F] (a : D.host.E)) ∈ intAE D := AddSubgroup.subset_closure ⟨t, ht, a, rfl⟩
-  have h3 := mul_mem_int D h1 h2
+  have h3 := GlobalTheory.HostAdeleIso.intAE_mul_mem D h1 h2
   have h4 : finPart D (incA D ((s : D.host.E)⁻¹)) =
     (1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) ⊗ₜ[D.host.F] ((s : D.host.E)⁻¹) := rfl
   rw [RingHom.map_mul, h4, mul_assoc, Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_comm _ (a : D.host.E)] at h3

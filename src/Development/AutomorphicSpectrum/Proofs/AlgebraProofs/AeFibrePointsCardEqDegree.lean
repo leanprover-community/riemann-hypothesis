@@ -20,7 +20,7 @@ private theorem ae_fibre_encard_eq {n e : ℕ} (S : Set (EuclideanSpace ℂ (Fin
     ∀ᵐ (π : Fin (e + 1) → Fin n → ℂ), (fibrePts S π).encard = δ := by
   let T : ℝ≥0∞ → ℝ≥0∞ := fun x => if x = (δ : ℝ≥0∞) then 0 else 1
   have hT : Measurable T := Measurable.ite (measurableSet_singleton _) measurable_const measurable_const
-  have hcross := _root_.GlobalTheory.CompanionTheory.Relay.ball_average_fibre_count n e S hss hsc T hT
+  have hcross := _root_.PositivityTheory.Xgn.t_xgz_chow_mahler_e0reduce n e S hss hsc T hT
   have hlhs : ∫⁻ (π : Fin (e + 1) → Fin n → ℂ), matGauss π *
       ∫⁻ (w : EuclideanSpace ℂ (Fin (e + 1))) in Metric.ball 0 1, T (cntOver S π w) = 0 := by
     have hae : (fun π : Fin (e + 1) → Fin n → ℂ => matGauss π *

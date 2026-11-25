@@ -28,8 +28,6 @@ namespace Formalism.L2.S.Pv.MSOrdP
 
 open Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.Carrier.EnergyConst Formalism.L2.SG.Pf.Carrier.EnergyMS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem three_dvd (r : ℕ) : 3 ∣ (r + 1) * (8 * r ^ 2 + 10 * r + 3) := by
   obtain ⟨k, hk | hk | hk⟩ : ∃ k, r = 3 * k ∨ r = 3 * k + 1 ∨ r = 3 * k + 2 := ⟨r / 3, by omega⟩
   · subst hk
@@ -90,8 +88,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Is
 namespace Formalism.L2.S.Pv.MSTypP
 
 open Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets Formalism.L2.SG.Pf.Carrier.EnergyConst Formalism.L2.SG.Pf.Carrier.EnergyMS
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem T_cong {D : D7} (u u' : D.what₂.Word) :
     (D.mem u).A.T ≡ (D.mem u').A.T [MOD (Formalism.MainNotions.S.Lat.gS D) ^ 2] := by

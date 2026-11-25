@@ -34,6 +34,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineHeightIn
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NumberFieldPointIntegralModel
+public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunctorialMap
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
@@ -54,12 +55,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.MetricOrth
 
-def resEquiv (E : Type) [Field E] [NumberField E] : (E →+* ℂ) ≃ (𝓞 E →+* ℂ) :=
-  Equiv.ofBijective (fun τ => τ.comp (algebraMap (𝓞 E) E))
-    ⟨fun τ τ' h => IsFractionRing.injective_comp_algebraMap (A := 𝓞 E) h, fun φ => GlobalTheory.CompanionTheory.Ar.ConstEmbedding.exists_extend E φ⟩
-
-instance fintypeIntEmb (E : Type) [Field E] [NumberField E] : Fintype (𝓞 E →+* ℂ) := Fintype.ofEquiv _ (resEquiv E)
-
 theorem exists_coeff (E : Type) [Field E] [NumberField E] :
     ∃ (Ix : Type) (_ : Fintype Ix) (α : Ix → 𝓞 E) (d : (𝓞 E →+* ℂ) → Ix → ℂ) (m : Ix → ℤ),
       (∀ τ : 𝓞 E →+* ℂ, ∑ a, d τ a * τ (α a) = 1) ∧
@@ -73,7 +68,7 @@ theorem exists_coeff (E : Type) [Field E] [NumberField E] :
   have hcard : Fintype.card Ix = Fintype.card (E →ₐ[ℚ] ℂ) := by
     rw [AlgHom.card, ← RingOfIntegers.rank, Module.finrank_eq_card_chooseBasisIndex]
   let e₁ : Ix ≃ (E →ₐ[ℚ] ℂ) := Fintype.equivOfCardEq hcard
-  let e₂ : Ix ≃ T := (e₁.trans (RingHom.equivRatAlgHom (R := E) (S := ℂ)).symm).trans (resEquiv E)
+  let e₂ : Ix ≃ T := (e₁.trans (RingHom.equivRatAlgHom (R := E) (S := ℂ)).symm).trans (LevelTowerAlt.embEquiv E)
   let N : Matrix Ix Ix ℂ := Algebra.embeddingsMatrixReindex ℚ ℂ (integralBasis E) e₁
   have hN : N.det ≠ 0 := by
     intro h
@@ -90,7 +85,7 @@ theorem exists_coeff (E : Type) [Field E] [NumberField E] :
     simp only [A, Matrix.of_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, Matrix.transpose_apply, N,
       Algebra.embeddingsMatrixReindex, Algebra.embeddingsMatrix, Matrix.reindex_apply, Equiv.refl_apply,
       Equiv.refl_symm, Equiv.symm_symm]
-    simp [e₂, resEquiv, b, integralBasis_apply]
+    simp [e₂, LevelTowerAlt.embEquiv, b, integralBasis_apply]
     rfl
   have hNu : IsUnit Nᵀ.det := by
     rw [Matrix.det_transpose]; exact isUnit_iff_ne_zero.2 hN
@@ -347,7 +342,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
   intro E _ _ _ H D l Xo c Y S Ω _ K _ J _ y 𝔐
   haveI : Smooth 𝔐.t.G.hom := 𝔐.t.semi.smooth
   have hch : CharZero Ω := (RingHom.charZero_iff 𝔐.cst.injective).1 inferInstance
-  obtain ⟨h₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.MetricAny.exists_lieMetric 𝔐.X Ω K J y 𝔐.ξ hch 𝔐.all 𝔐.tie 𝔐.t.G 𝔐.Li 𝔐.M
+  obtain ⟨h₀⟩ := _root_.CoverDenseAlt.nonempty_lie_metric_of_coordinates 𝔐.X Ω K J y 𝔐.ξ hch 𝔐.all 𝔐.tie 𝔐.t.G 𝔐.Li 𝔐.M
   exact exists_orth E 𝔐.M 𝔐.t.act 𝔐.ρ 𝔐.act h₀
 
 end GlobalTheory.CompanionTheory.Ar.MetricOrth
@@ -423,8 +418,7 @@ theorem exists_fibreLift {L : Type} [Field L] {E : Type} [AddCommGroup E] [Modul
       rw [hr, smul_comm])
   refine ⟨{ toFun := TensorProduct.lift B, map_add' := map_add _, map_smul' := ?_ }, fun e => ?_⟩
   · intro c x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
+    induction x using TensorProduct.inductionOn with
     | tmul a e =>
       rw [TensorProduct.smul_tmul', TensorProduct.lift.tmul, TensorProduct.lift.tmul]
       change ((ComplexAt.ofComplex σ).symm (c • a) : ℂ) • j e = c • ((ComplexAt.ofComplex σ).symm a : ℂ) • j e
@@ -502,15 +496,14 @@ theorem exists_fibreEquiv (MB : LieModel G z E) (σ : L →+* ℂ) :
     rw [hg]; exact hf e
   have hgf : g ∘ₗ f = LinearMap.id := by
     refine LinearMap.ext fun x => ?_
-    induction x using TensorProduct.induction_on with
-    | zero => simp
+    induction x using TensorProduct.inductionOn with
     | tmul a e =>
       rw [pure_smul, map_smul, map_smul]
       change _ • g (f _) = _
       rw [hf, hg]
       rfl
     | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  refine ⟨V, iA, iM, Mz, LinearEquiv.ofLinear f g hfg hgf, fun e => ?_⟩
+  refine ⟨V, iA, iM, Mz, LinearEquiv.ofLinearMap f g hfg hgf, fun e => ?_⟩
   change MB.Lifts _ _ e (Mz.pt (f _))
   rw [hf]
   exact hj e
@@ -559,12 +552,10 @@ theorem form_conj_of_pure (core : ∀ σ : L →+* ℂ, InnerProductSpace.Core �
   have h1 : ∀ e : E, conjMap σ E ((1 : ComplexAt σ) ⊗ₜ[𝓞 L] e) =
       (1 : ComplexAt (NumberField.ComplexEmbedding.conjugate σ)) ⊗ₜ[𝓞 L] e := fun e => by
     rw [conjMap_tmul, map_one]
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero, core_zero_left]
+  induction x using TensorProduct.inductionOn with
   | add x x' hx hx' => simp only [map_add (f := _), (core _).add_left, hx, hx']
   | tmul a e =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [map_zero, core_zero_right]
+    induction y using TensorProduct.inductionOn with
     | add y y' hy hy' => simp only [map_add (f := _), core_add_right, hy, hy']
     | tmul b f =>
       rw [pure_smul σ a e, pure_smul σ b f, conjMap_smul, conjMap_smul, h1, h1, (core _).smul_left, core_smul_right,
@@ -783,7 +774,7 @@ theorem exists_frames : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   have hsep : ∀ s s', s ≠ s' → ∃ a, 𝔐.emb s a ≠ 𝔐.emb s' a := by
     intro s s' h
     by_contra hc
-    push_neg at hc
+    push Not at hc
     exact h (hinj (RingHom.ext hc))
   have hstab : ∀ a, ∀ e ∈ 𝔐.M.lat p, 𝔐.ρ a e ∈ 𝔐.M.lat p := fun a e he =>
     haveI := 𝔐.t.act.hom a
@@ -1544,7 +1535,7 @@ theorem fibreInput : N1ab → PartI → Geo.ResK.ResKStatement → GlobalTheory.
     (hdeg.symm ▸ hroot)
   have hch : CharZero R.Ω := (RingHom.charZero_iff 𝔐.cst.injective).1 inferInstance
   refine ⟨max C₁ C₂, hC₁.trans (le_max_left _ _), fun L _ _ w hw => ?_⟩
-  obtain ⟨z₀, hz₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.algebraicPoint_extends_to_integers 𝔐.X R.Ω R.K R.ι R.y 𝔐.ξ hch 𝔐.all 𝔐.tie L w hw
+  obtain ⟨z₀, hz₀⟩ := _root_.CoverDenseAlt.exists_integral_point_with_coordinates 𝔐.X R.Ω R.K R.ι R.y 𝔐.ξ hch 𝔐.all 𝔐.tie L w hw
   obtain ⟨L', _, _, ε, hs⟩ := hslope L z₀
   have hsm : Smooth 𝔐.t.G.hom := 𝔐.t.semi.smooth
   obtain ⟨B, MB, hB⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lie_fibre_exists 𝔐.X R.Ω R.K R.ι R.y 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M h L'
@@ -1559,7 +1550,7 @@ theorem fibreInput : N1ab → PartI → Geo.ResK.ResKStatement → GlobalTheory.
     rw [hpt]
     exact coordsAt_comp 𝔐.all ε hz₀
   have hext : ∀ r, Ht.lineHt (R.x 1 r) L' (fun p => ε (w p)) = Ht.lineHt (R.x 1 r) L w := fun r => by
-    simpa using _root_.GlobalTheory.CompanionTheory.Ar.Ht.lineHt_map_scale R.K R.ι (R.x 1 r) L L' ε w (fun _ => 1) hw.1 fun _ => one_ne_zero
+    simpa using _root_.CoverDenseAlt.lineHt_invariant_base_change_scaling R.K R.ι (R.x 1 r) L L' ε w (fun _ => 1) hw.1 fun _ => one_ne_zero
   obtain ⟨ha, hb⟩ := hht L' _ _ hz B MB A hB hW
   refine ⟨L', inferInstance, inferInstance, ε, B, A, hA, fun τ i => ?_, fun τ i => ?_, ?_⟩
   · rw [← hext]

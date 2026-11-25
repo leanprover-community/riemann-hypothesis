@@ -85,7 +85,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.BarCompSubsetClosur
 import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagSpaceComponentSmoothProjectiveConnected
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SizeAltBis
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WeightsAtPointStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WeightsAtPoint
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -261,7 +261,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovTop.LowNonzero
@@ -318,7 +317,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovTop.LowNonzero

@@ -629,7 +629,6 @@ def transOp {L G W : Type} [CommRing L] [Mul G] [AddCommGroup W] [Module L W] (a
   map_add' v v' := by funext g; simp [Finset.sum_add_distrib, smul_add]
   map_smul' c v := by funext g; simp [Finset.smul_sum, smul_comm c]
 
-set_option autoImplicit false in
 private lemma coeffs_eq_zero_of_linearIndependent_of_injective {O K X : Type} [CommRing O] [IsDomain O] [Field K]
     (emb : O →+* K) (hemb : Function.Injective emb) :
     ∀ (n : ℕ) (α : Fin n → X → O), LinearIndependent O α →

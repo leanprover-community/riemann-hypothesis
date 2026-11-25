@@ -12,8 +12,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace CycSplitWork
 
 open scoped BigOperators

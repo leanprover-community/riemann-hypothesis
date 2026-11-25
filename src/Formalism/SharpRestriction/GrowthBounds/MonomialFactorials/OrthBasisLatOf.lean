@@ -11,13 +11,6 @@ namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
 open MvPolynomial
 
-def FreeLat : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p]))
-    (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])),
-    FiniteDimensional ℚ_[p] W → (∀ x ∈ L, x ∈ W) → L.FG →
-    ∃ (m : ℕ) (f : Fin m → MvPolynomial σ ℚ_[p]), (∀ a, f a ∈ L) ∧ LinearIndependent ℤ_[p] f ∧
-      Submodule.span ℤ_[p] (Set.range f) = L
-
 def OrthSplit : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (σ : Type) (B : MvPolynomial σ ℚ_[p] → MvPolynomial σ ℚ_[p] → ℚ_[p])
     (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p])) (W : Submodule ℚ_[p] (MvPolynomial σ ℚ_[p])),
@@ -29,10 +22,7 @@ def OrthSplit : Prop :=
       (∀ u ∈ L', B x u = 0) ∧ Submodule.span ℤ_[p] {x} ⊔ L' = L ∧
       (∀ (c : ℤ_[p]) (y : MvPolynomial σ ℚ_[p]), y ∈ L' → c • x + y = 0 → c = 0)
 
-theorem freeLat_proved : FreeLat := by
-  first | (apply Bl.FreeLattices.goal1 <;> assumption)
-
-theorem orthBasisLat_of (hF : FreeLat) (hS : OrthSplit) : OrthBasisLat := by
+theorem orthBasisLat_of (hS : OrthSplit) : OrthBasisLat := by
   intro p _ σ B L W hp hW hLW hfg hsm hadd hsy
 
   suffices H : ∀ n : ℕ, ∀ L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p]), Module.finrank ℤ_[p] L = n →
@@ -69,7 +59,7 @@ theorem orthBasisLat_of (hF : FreeLat) (hS : OrthSplit) : OrthBasisLat := by
           · simp only [Fin.cons_succ]
             exact hfo a' b' (fun e => h (by rw [e]))
     · push Not at h0
-      obtain ⟨m, f, hfL, hli, hsp⟩ := hF p σ L W hW hLW hfg
+      obtain ⟨m, f, hfL, hli, hsp⟩ := Bl.FreeLattices.exists_basis_of_fg hfg
       exact ⟨m, f, hfL, hli, hsp, fun a b _ => h0 _ (hfL a) _ (hfL b)⟩
 
 end Formalism.MainNotions.G.SymmetricFormBlocks

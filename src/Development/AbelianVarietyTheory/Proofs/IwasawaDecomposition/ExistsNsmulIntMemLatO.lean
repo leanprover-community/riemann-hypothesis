@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemLatOIffExistsActO
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddNsmulResidueAssoc
@@ -239,7 +240,7 @@ theorem finPart_mem_intAE {w : AE D} (hw : toEAf D w ∈ Formalism.L2.Herm.intAf
     | one => rw [map_one]; exact AddSubgroup.subset_closure ⟨1, one_mem (Formalism.UG.intAd D.host.F), 1, rfl⟩
     | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
     | neg a _ ha => rw [map_neg]; exact neg_mem ha
-    | mul a b _ _ ha hb => rw [map_mul]; exact GlobalTheory.HeckeConj.mul_mem_intAE D ha hb
+    | mul a b _ _ ha hb => rw [map_mul]; exact GlobalTheory.IntegralAdeleProducts.intAE_mul_mem (F := D.host.F) (E := D.host.E) ha hb
   have := key _ hw
   rwa [show c (toEAf D w) = finPart D w from
     (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).symm_apply_apply _] at this

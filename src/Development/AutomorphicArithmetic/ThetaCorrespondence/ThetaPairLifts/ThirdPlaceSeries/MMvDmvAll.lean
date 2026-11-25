@@ -303,7 +303,6 @@ def mvAll_alt {D : D7} (m : Mv D) {C : NChoice D} (a : _root_.GlobalTheory.Heigh
       (psi_is := (by with_unfolding_all exact (a.tp.psi_is :)))
       (psi_un := (by with_unfolding_all exact (a.tp.psi_un :))))
     (plB := (by with_unfolding_all exact (a.plB :)))
-    (plκ := (by with_unfolding_all exact (a.plκ :)))
 end UpperTheory.One.M
 end
 end

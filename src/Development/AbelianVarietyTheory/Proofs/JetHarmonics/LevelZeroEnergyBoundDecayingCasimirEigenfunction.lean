@@ -97,6 +97,7 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingV
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.StatementA
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MapConjLebesgueCommonStabilizerNormalForm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.CovectorMultiplierShift, Development.AbelianVarietyTheory.Proofs.JetHarmonics.EhInvEntry, Development.AbelianVarietyTheory.Proofs.JetHarmonics.InverseEntrySmulCapelliEigenfunctionSum, Development.AbelianVarietyTheory.Proofs.FoundationProofs.BesselJUnitaryEquivariant, Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryConjEntryAndInvEntryLinear, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConjEntrySmulCapelliEigenSum, Development.AbelianVarietyTheory.Proofs.JetHarmonics.PolynomialSmulCapelliEigenfunctionSum, Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliEigenfunctionPowSmulCompPolyFamilyEigenSu, Development.AbelianVarietyTheory.Proofs.JetHarmonics.BetaCapelliSymmOfXiExists, Development.AbelianVarietyTheory.Proofs.JetHarmonics.BetaSelfReNonneg, Development.AbelianVarietyTheory.Proofs.JetHarmonics.FoldrCapelliSumEigen, Development.AbelianVarietyTheory.Proofs.JetHarmonics.GramBlockDiagonalEnergyBound, Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroEnergyLeOfEigenSum, Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroFormLeNormCOfEigenSum, Development.AbelianVarietyTheory.Proofs.JetHarmonics.EnergyBoundPolynomialWeightPowCapelliEigen, Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelZeroEnergyBoundDecayingCasimirEigenfunction
@@ -282,16 +283,7 @@ lemma gram_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   split_ifs <;> simp only [Fin.ext_iff] at * <;> first | rfl | omega
 
 lemma gram_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  have hi := i.isLt
-  have hj := j.isLt
-  rw [Matrix.mul_apply, Finset.sum_eq_single (partner k r i)]
-  · rw [gram_apply, gram_apply, Matrix.one_apply, if_pos rfl]
-    unfold partner
-    split_ifs <;> simp only [Fin.ext_iff] at * <;> first | omega | (simp; done) | (split_ifs <;> first | omega | simp)
-  · intro b _ hb
-    rw [gram_apply k r i b, if_neg hb, zero_mul]
-  · simp
+  apply _root_.GlobalTheory.Amp.RConj.H_sq <;> assumption
 
 end GlobalTheory.BesselUnitary
 

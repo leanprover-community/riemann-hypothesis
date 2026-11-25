@@ -1045,14 +1045,6 @@ theorem mixArch_zero {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegral Y] {q 
   have e (S : Finset (Fin 0)) : S.card = 0 := by simp [Subsingleton.elim S ∅]
   simp [mixArch, FibreProj.pol, h, e]
 
-theorem archInt_eq_zero {k : Type} [CommRing k] {Z : Scheme.{0}} [IsIntegral Z] {q : Z ⟶ Sp k}
-    (hq : ∀ σ : k →+* ℂ, IsEmpty (CxPts q σ)) (L M : HermLB q) (e : ℕ)
-    {r : M.B.ι → Z.functionFieldˣ} (hr : IsRatSec M.B r) : L.archInt M e hr = 0 := by
-  unfold HermLB.archInt
-  refine finsum_eq_zero_of_forall_eq_zero fun σ => ?_
-  haveI := hq σ
-  simp [Weight.chernInt, MeasureTheory.integral_of_isEmpty]
-
 theorem main : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegral Y] [IsLocallyNoetherian Y] (q : Y ⟶ Sp k), IsAmb q → topologicalKrullDim Y = (0 + 1 : ℕ) → ∀ (N : HermLB q) (L : Fin 0 → HermLB q) (r : N.B.ι → Y.functionFieldˣ) (hr : IsRatSec N.B r) (r' : N.B.ι → Y.functionFieldˣ) (hr' : IsRatSec N.B r'), recVal (fun z => Real.log (Nat.card (Y.residueField z))) L N hr = recVal (fun z => Real.log (Nat.card (Y.residueField z))) L N hr' := by
   intro k _ Y _ _ q hA hd N L r hr r' hr'
   obtain ⟨f, hf⟩ := exists_ratio N.isLB hr hr'
@@ -1075,7 +1067,7 @@ theorem main : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegral Y] [IsLo
   rcases _root_.GlobalTheory.MixHt.amb_vertical_or_arithVar k Y q hA (0 + 1) hd with ⟨l, hl, ⟨alg⟩, hemp⟩ | ⟨e, he, hq⟩
   · have h0 : ∑ᶠ z, (Scheme.ord (f : Y.functionField) z : ℝ) * c z = 0 :=
       @_root_.GlobalTheory.PrincDegZero.finsum_ord_mul_log_card_eq_zero k _ Y _ _ q hA hd l hl alg (f : Y.functionField) f.ne_zero
-    rw [h0, archInt_eq_zero hemp, archInt_eq_zero hemp]
+    rw [h0, GlobalTheory.MixHt.archInt_eq_zero_of_isEmpty hemp, GlobalTheory.MixHt.archInt_eq_zero_of_isEmpty hemp]
     ring
   · obtain rfl : e = 0 := by omega
     have := hq.finite_emb

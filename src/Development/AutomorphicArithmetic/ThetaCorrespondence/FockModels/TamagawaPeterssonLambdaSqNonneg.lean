@@ -550,16 +550,6 @@ theorem UpperTheory.Lit.Tam.tamagawaPeterssonLambdaSq_nonneg :
         (AllWt.modelWt (U σ) G) w hw hsp (GlobalTheory.AllWt.Model.chi_modelWt (U σ) (hL.chiTriv σ hσ) G hG))
       Z y hy
 
-/-- Sharper quadratic-in-`(f, r)`, linear-in-`Lb` bound for `MainStatements.Tam.Plug.supConst2`. -/
-theorem UpperTheory.Lit.Tam.supConst2_log_le_quadratic (D : D7) (M : ℕ) (Lb w : ℝ)
-    (hM : 1 ≤ M) (hLb : 1 ≤ Lb) (hMl : Real.log M ≤ 30 * Lb) (hsz : fieldSz D.host.E ≤ 3 * Lb)
-    (hfrl : Real.log (D.R.f * D.R.r) ≤ Lb) (hw : 1 ≤ w) (hwl : Real.log w ≤ 25 * Lb) :
-    1 ≤ MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d M w ∧
-      Real.log (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d M w) ≤
-        3125 * ((D.R.f : ℝ) * D.R.r) ^ 2 * Lb :=
-  GlobalTheory.ConstSzRows.supConst_quadratic_rows D M Lb w _ hM hLb hMl hsz hfrl hw hwl
-    fun L => MainStatements.Tam.Plug.supremum_constant_log_bound_alt D.host.E D.R.r D.host.d M w L
-
 theorem UpperTheory.Lit.Tam.supConst2Bounds :
     ∀ (D : D7) (M : ℕ) (Lb w : ℝ), 1 ≤ M → 1 ≤ Lb → Real.log M ≤ 30 * Lb →
       fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → 1 ≤ w → Real.log w ≤ 25 * Lb →

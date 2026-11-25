@@ -1042,17 +1042,6 @@ open NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory
 
-private lemma natAbs_eq_one_of_dvd_prime_pow_not_dvd {d : ℤ} {m k : ℕ} (hm : m.Prime) (h1 : d ∣ (m : ℤ) ^ k)
-    (h2 : ¬ (m : ℤ) ∣ d) : d.natAbs = 1 := by
-  have h1' : d.natAbs ∣ m ^ k := by
-    have := Int.natAbs_dvd_natAbs.mpr h1
-    simpa [Int.natAbs_pow] using this
-  have hc : Nat.Coprime m d.natAbs := by
-    rw [hm.coprime_iff_not_dvd]
-    intro h
-    exact h2 (Int.natCast_dvd.mpr h)
-  exact Nat.Coprime.eq_one_of_dvd (Nat.Coprime.pow_left k hc).symm h1'
-
 theorem irreducible_cyclotomic_of_not_dvd_discr (K : Type) [Field K] [NumberField K] (m : ℕ)
     (hm : m.Prime) (hd : ¬ (m : ℤ) ∣ discr K) : Irreducible (cyclotomic m K) := by
   apply GlobalTheory.cyclotomic_irreducible_of_not_dvd_discr <;> assumption

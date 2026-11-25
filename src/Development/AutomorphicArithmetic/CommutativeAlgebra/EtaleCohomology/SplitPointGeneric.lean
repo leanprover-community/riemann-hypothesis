@@ -825,12 +825,12 @@ private lemma lift_coi (A : PAlg l) {I : Type} [Fintype I] (e : I → A.U)
     have := (RL.sharp_cong A).2.2 1 IsIdempotentElem.one
     simpa [s1] using this
   have hsub : ∀ a : A.A, IsIdempotentElem a → A.sharp (1 - a) = 1 - A.sharp a := (RL.sharp_cong A).2.2
-  have h := fun i => (RL.idem_au A (e i) (he.toOrthogonalIdempotents.idem i)).exists
+  have h := fun i => (_root_.GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp A (e i) (he.toOrthogonalIdempotents.idem i)).exists
   choose e₀ h1 h2 using h
   have hz : ∀ a : A.A, IsIdempotentElem a → A.sharp a = 0 → a = 0 := fun a ha hs =>
-    (RL.idem_au A 0 IsIdempotentElem.zero).unique ⟨ha, hs⟩ ⟨IsIdempotentElem.zero, s0⟩
+    (_root_.GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp A 0 IsIdempotentElem.zero).unique ⟨ha, hs⟩ ⟨IsIdempotentElem.zero, s0⟩
   have ho : ∀ a : A.A, IsIdempotentElem a → A.sharp a = 1 → a = 1 := fun a ha hs =>
-    (RL.idem_au A 1 IsIdempotentElem.one).unique ⟨ha, hs⟩ ⟨IsIdempotentElem.one, s1⟩
+    (_root_.GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp A 1 IsIdempotentElem.one).unique ⟨ha, hs⟩ ⟨IsIdempotentElem.one, s1⟩
   have hort : ∀ i j, i ≠ j → e₀ i * e₀ j = 0 := fun i j hij =>
     hz _ ((h1 i).mul (h1 j)) (by
       rw [map_mul, h2, h2]

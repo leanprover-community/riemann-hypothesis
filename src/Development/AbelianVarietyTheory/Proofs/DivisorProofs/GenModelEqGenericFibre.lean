@@ -328,17 +328,14 @@ theorem zpow_right {G : Type} [CommGroup G] {N P : ℕ} (h : N.Coprime P) {b : G
   have : b ^ ((N : ℤ) * N.gcdA P + (P : ℤ) * N.gcdB P) = b := by rw [bezout h, zpow_one]
   rwa [zpow_add, zpow_mul b (N : ℤ), zpow_natCast, hb, one_zpow, _root_.one_mul] at this
 
-theorem zpow_pow_comm {G : Type} [CommGroup G] (a : G) (z : ℤ) (n : ℕ) : (a ^ z) ^ n = (a ^ n) ^ z := by
-  rw [← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, mul_comm]
-
 theorem glue_pow_left {G : Type} [CommGroup G] {N P : ℕ} (h : N.Coprime P) {a b : G} (ha : a ^ P = 1)
     (hb : b ^ N = 1) : glue N P a b ^ N = a := by
-  rw [glue, mul_pow, zpow_pow_comm b, hb, one_zpow, _root_.mul_one, zpow_pow_comm, ← zpow_natCast, ← zpow_mul,
+  rw [glue, mul_pow, GlobalTheory.TateFree.zpow_pow_comm' b, hb, one_zpow, _root_.mul_one, GlobalTheory.TateFree.zpow_pow_comm', ← zpow_natCast, ← zpow_mul,
     zpow_left h ha]
 
 theorem glue_pow_right {G : Type} [CommGroup G] {N P : ℕ} (h : N.Coprime P) {a b : G} (ha : a ^ P = 1)
     (hb : b ^ N = 1) : glue N P a b ^ P = b := by
-  rw [glue, mul_pow, zpow_pow_comm a, ha, one_zpow, _root_.one_mul, zpow_pow_comm, ← zpow_natCast, ← zpow_mul,
+  rw [glue, mul_pow, GlobalTheory.TateFree.zpow_pow_comm' a, ha, one_zpow, _root_.one_mul, GlobalTheory.TateFree.zpow_pow_comm', ← zpow_natCast, ← zpow_mul,
     zpow_right h hb]
 
 theorem glue_mul {G : Type} [CommGroup G] (N P : ℕ) (a b a' b' : G) :
@@ -505,8 +502,8 @@ theorem exists_gTateIso : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (k : Type) 
     have c2 := huniq _ hN _ _ _ _ l2 (I.isom _ hN hNp x y)
     have : c = Z n ^ (2 * D.EF x y) := by
       refine eq_of_pow_eq hc ?_ ?_
-      · rw [c1, zpow_pow_comm, Zl n hn]
-      · rw [c2, zpow_pow_comm, Zr n hn]
+      · rw [c1, GlobalTheory.TateFree.zpow_pow_comm', Zl n hn]
+      · rw [c2, GlobalTheory.TateFree.zpow_pow_comm', Zr n hn]
     exact this ▸ hc0
   refine ⟨{ ζ := Z
             ζ_prim := fun n hn => ⟨sys_pow_self hp ζ1 ζ2 hn, fun l hl => ?_⟩

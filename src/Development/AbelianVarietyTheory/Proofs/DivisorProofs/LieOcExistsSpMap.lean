@@ -1352,12 +1352,6 @@ noncomputable section
 namespace GlobalTheory.UPel.HT.LieLin
 open Matrix
 
-theorem ringHom_mapMatrix_algebraMap_scalar {B T : Type} [CommRing B] [CommRing T] (f : B →+* T) {n : ℕ} (x : B) :
-    f.mapMatrix (algebraMap B (Matrix (Fin n) (Fin n) B) x) = algebraMap T (Matrix (Fin n) (Fin n) T) (f x) := by
-  ext i j
-  simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.algebraMap_matrix_apply]
-  split_ifs <;> simp
-
 theorem list_prod_matrixActionAfterRingHom_sub_apply {O T : Type} [CommRing O] [CommRing T] {n : ℕ} {B : Type} [CommRing B]
     (M : O →+* Matrix (Fin n) (Fin n) B) (f : B →+* T) {a : ℕ} (c : Fin a → O) (τ : Fin a → (O →+* T))
     (v : Fin n → T) :
@@ -1391,8 +1385,8 @@ theorem lieMod_matAct_iff_lieIdeal_le_ker : ∀ (p : ℕ) [Fact p.Prime] (D : Da
     intro c
     rw [lieMat, map_mul, map_list_prod, List.map_ofFn]
     congr 1
-    · congr 2; funext i; rw [Function.comp_apply, map_sub, ringHom_mapMatrix_algebraMap_scalar]; rfl
-    · rw [map_sub, ringHom_mapMatrix_algebraMap_scalar]; rfl
+    · congr 2; funext i; rw [Function.comp_apply, map_sub, GlobalTheory.UPel.HT.LieLin.RankIdeal.mapMatrix_algebraMap_fin]; rfl
+    · rw [map_sub, GlobalTheory.UPel.HT.LieLin.RankIdeal.mapMatrix_algebraMap_fin]; rfl
   have hdec : ∀ v, (∃ w : Fin D.a → (Fin n → T), (∀ i, w i ∈ eigSub (matAct M f) (τ i)) ∧ v = ∑ i, w i) ↔
       ∀ c, P c *ᵥ v = 0 := by
     intro v

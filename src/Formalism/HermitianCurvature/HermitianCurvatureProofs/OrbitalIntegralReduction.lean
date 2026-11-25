@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RecursionWithDensities
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelExplicitFormula
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GramKernelHermitian
@@ -481,14 +482,7 @@ theorem tk_out_subG (M : AddSubgroup V) (x : V) : (Quotient.out (x : V ⧸ M) : 
   rw [hh]; simp
 
 theorem tk_mk_eqG (M : AddSubgroup V) (x y : V) : ((x : V ⧸ M) = (y : V ⧸ M)) ↔ x - y ∈ M := by
-  rw [QuotientAddGroup.eq]
-  constructor
-  · intro h
-    have := M.neg_mem h
-    simpa [sub_eq_add_neg, add_comm] using this
-  · intro h
-    have := M.neg_mem h
-    simpa [sub_eq_add_neg, add_comm] using this
+  apply _root_.Formalism.FourierDecayAlt.P.RecursionWithDensities.A1.mk_eq_iff <;> assumption
 
 theorem tk_out_sub_mem {M' M : AddSubgroup V} (h : M' ≤ M) (y : V ⧸ M') :
     (Quotient.out (AddSubgroup.quotientEquivProdOfLE h y).1 : V) - (Quotient.out y : V) ∈ M := by

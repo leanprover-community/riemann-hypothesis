@@ -1559,8 +1559,6 @@ namespace Formalism.L2.G
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem stdSubF_of_tied {eps : ℝ} (Fm : FamP eps) (h : GroupCompatibilityFamily Fm) : Ev Fm fun x i => Joints.StdSubAt (Fm.D x i) := by
   obtain ⟨x0, h0⟩ := h.and (Ev.x1 Fm)
   refine ⟨x0, fun x hx i => ?_⟩

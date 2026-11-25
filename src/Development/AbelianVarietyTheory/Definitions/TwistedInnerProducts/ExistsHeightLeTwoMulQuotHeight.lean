@@ -829,11 +829,6 @@ theorem norm_le_quotHeight_pow {f : GA D V → X} (hf : ∀ γ ∈ GQ V, ∀ g, 
 theorem ModGrowth.of_bounded {f : GA D V → X} {C : ℝ} (h : ∀ g, ‖f g‖ ≤ C) : ModGrowth V f :=
   ⟨C, 0, by simpa using h⟩
 
-theorem ModGrowth.of_le {Y : Type} [NormedAddCommGroup Y] {f : GA D V → X} {f' : GA D V → Y} (h : ModGrowth V f)
-    (hle : ∀ g, ‖f' g‖ ≤ ‖f g‖) : ModGrowth V f' := by
-  obtain ⟨C, A, hC⟩ := h
-  exact ⟨C, A, fun g => (hle g).trans (hC g)⟩
-
 theorem ModGrowth.add {f f' : GA D V → X} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f + f') := by
   obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
   obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
@@ -843,10 +838,6 @@ theorem ModGrowth.mul {f f' : GA D V → ℂ} (h : ModGrowth V f) (h' : ModGrowt
   obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
   obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
   exact modGrowth_iff_exp.2 ⟨A + B, hA.mul hB⟩
-
-theorem ModGrowth₂.right {f : GA D V → GA D W → X} (h : ModGrowth₂ V W f) (g : GA D V) : ModGrowth W (f g) := by
-  obtain ⟨C, A, hC⟩ := h
-  exact ⟨C * height V g ^ A, A, fun h => by rw [mul_assoc, ← mul_pow]; exact hC g h⟩
 
 variable (V)
 

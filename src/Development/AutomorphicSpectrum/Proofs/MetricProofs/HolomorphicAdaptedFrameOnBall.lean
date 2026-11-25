@@ -596,10 +596,6 @@ theorem det_unit_of_eq {m k : ℕ} {x : Matrix (Fin m) (Fin m) ℂ} {y : Matrix 
   rw [Matrix.det_mul] at hu
   exact isUnit_of_mul_isUnit_right hu
 
-theorem moebW_zero (u : Matrix (Sg j j') (Sg j j') ℂ) :
-    moebW u 0 = u.toBlocks₂₁ * u.toBlocks₁₁⁻¹ := by
-  simp [moebW]
-
 theorem one_sub_mul_eq {a : Matrix (Fin j) (Fin j) ℂ} {b : Matrix (Fin j) (Fin j') ℂ}
     {c : Matrix (Fin j') (Fin j) ℂ} {d : Matrix (Fin j') (Fin j') ℂ}
     (ha : IsUnit a.det) (hd : IsUnit d.det) (h2 : bᴴ * b - dᴴ * d = -1)

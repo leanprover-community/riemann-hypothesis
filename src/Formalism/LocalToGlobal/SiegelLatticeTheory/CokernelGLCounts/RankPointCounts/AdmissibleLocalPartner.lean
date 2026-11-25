@@ -322,8 +322,6 @@ open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.BBTie Formalism.L2.SG.Pf.Generat
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Cmat
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)

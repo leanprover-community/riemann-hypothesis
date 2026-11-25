@@ -432,8 +432,6 @@ end Abs
 
 section Glob
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def HuSub (hD : SDecomp) {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u : D.what₂.Word) :
     Subgroup X.B.I.Ginf where
   carrier := Hu X u
@@ -512,8 +510,6 @@ theorem isFolner_Sinf_gen {n r k : ℕ} (hn : n = 2 * r + k + 1) {ι : Type} [Fi
   subst hn
   exact Formalism.L2.S.Pv.FolnerJ.isFolner_Sinf ev fv wv zv T hT
     (fun v => ⟨hee v, hff v, hef v, hez v, hfz v, hzz v, hww v, hew v, hfw v, hzw v⟩) μS hμ
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hermitian_scaled_right {n : ℕ} (ε : Fin n → Bool) (T : ℝ) (x z : Fin n → ℂ) :
     hJ ε x (z0v T z) = (((Real.sqrt T)⁻¹ : ℝ) : ℂ) * hJ ε x z := by
@@ -1118,8 +1114,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace Formalism.L2.S.Pv.HaarSubS
 

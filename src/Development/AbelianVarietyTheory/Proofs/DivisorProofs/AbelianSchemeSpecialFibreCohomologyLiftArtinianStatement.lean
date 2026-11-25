@@ -587,12 +587,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AbCoh
 
-theorem isClosedImmersion_of_isPullback_spMap_surj {R R' : Type} [CommRing R] [CommRing R'] {σ : R →+* R'}
-    (hσ : Function.Surjective σ) {X X' : Scheme.{0}} {s : X ⟶ Sp R} {s' : X' ⟶ Sp R'} {φ : X' ⟶ X}
-    (h : IsPullback φ s' s (spMap σ)) : IsClosedImmersion φ := by
-  have : IsClosedImmersion (spMap σ) := IsClosedImmersion.spec_of_surjective _ hσ
-  exact MorphismProperty.of_isPullback (P := @IsClosedImmersion) h.flip this
-
 theorem restrict_pull1_preRes_pairFst {R' : Type} [CommRing R'] {X Y Y' : Scheme.{0}} (ψ : Y ⟶ X)
     (χ : Y' ⟶ Y) [IsAffineHom χ] (q' : Y' ⟶ Sp R') (y : HO1 q') :
     (CoefMap.restrict (OPre χ q') (pairFst ψ)).pull1 ((preRes χ q').pull1 y) =
@@ -614,10 +608,10 @@ theorem bock_natural : ∀ (R R' R₀ : Type) [CommRing R] [CommRing R'] [CommRi
     hS hs hq x z z' hB hB'
   obtain ⟨f, v, hfv, hf, hv⟩ := hB
   obtain ⟨f₂, v₂, hfv₂, hf₂, hv₂⟩ := hB'
-  haveI : IsClosedImmersion φ := isClosedImmersion_of_isPullback_spMap_surj hS.1 h
-  haveI : IsClosedImmersion φ₀ := isClosedImmersion_of_isPullback_spMap_surj hS.2.2.1 h₀
-  haveI : IsClosedImmersion χ := isClosedImmersion_of_isPullback_spMap_surj hS.1 k
-  haveI : IsClosedImmersion χ₀ := isClosedImmersion_of_isPullback_spMap_surj hS.2.2.1 k₀
+  haveI : IsClosedImmersion φ := GlobalTheory.AbCoh.isClosedImmersion_of_isPullback_surj hS.1 h
+  haveI : IsClosedImmersion φ₀ := GlobalTheory.AbCoh.isClosedImmersion_of_isPullback_surj hS.2.2.1 h₀
+  haveI : IsClosedImmersion χ := GlobalTheory.AbCoh.isClosedImmersion_of_isPullback_surj hS.1 k
+  haveI : IsClosedImmersion χ₀ := GlobalTheory.AbCoh.isClosedImmersion_of_isPullback_surj hS.2.2.1 k₀
   have hsec := GlobalTheory.AbCoh.preα_surjective_and_ker R R' R₀ t σ σ₀ Y Y' Y₀ q q' q₀ χ χ₀ k k₀ hS hq
   obtain ⟨c₁, hc₁, hC₁⟩ :=
     (GlobalTheory.AbCoh.red_preimage_pairs R R' σ X X' Y Y' s s' q q' φ χ h.w ψ ψ' w w' hc inferInstance).1 f x hf
@@ -864,7 +858,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 

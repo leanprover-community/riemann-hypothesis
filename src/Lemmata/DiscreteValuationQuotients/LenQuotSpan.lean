@@ -11,13 +11,11 @@ universe u_1 u_2
 namespace Bl.DiscreteValuationQuotients
 
 private lemma lenQuotSpan {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    {x : O} (hx : x ≠ 0) :
+    (x : O) :
     Module.length O (O ⧸ Ideal.span ({x} : Set O)) = IsDiscreteValuationRing.addVal O x := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hx hϖ
-  rw [IsDiscreteValuationRing.addVal_def' u hϖ n, Ideal.span_singleton_mul_left_unit u.isUnit,
-    ← Ideal.span_singleton_pow, ← hϖ.maximalIdeal_eq,
-    IsDiscreteValuationRing.length_quotient_pow_maximalIdeal]
+  rw [Module.length_quotient, ← Order.coheight_orderIso (IsDiscreteValuationRing.idealOrderIsoENat O)]
+  exact (Order.height_enat _).trans <| (IsDiscreteValuationRing.addVal_eq_iff_associated _ _).2
+    (Submodule.IsPrincipal.associated_generator_span_self x)
 
 private lemma addValProd {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     {ι : Type*} (s : Finset ι) (g : ι → O) :
@@ -70,6 +68,6 @@ theorem goal1 :
     exact (IsDiscreteValuationRing.addVal_eq_iff_associated _ _).2 hassoc
   rw [(Submodule.quotientEquivPiSpan (LinearMap.range φ) b h).length_eq,
     Module.length_pi_of_fintype, hval, addValProd]
-  exact Finset.sum_congr rfl fun i _ => lenQuotSpan (Submodule.smithNormalFormCoeffs_ne_zero b h i)
+  exact Finset.sum_congr rfl fun i _ => lenQuotSpan (a i)
 
 end Bl.DiscreteValuationQuotients

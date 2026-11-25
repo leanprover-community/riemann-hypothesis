@@ -59,7 +59,6 @@ open scoped IntermediateField Pointwise
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
@@ -82,7 +81,6 @@ theorem _root_.GlobalTheory.FieldSize.RaySplit.ncard_eq_primesOver (𝔭 : Heigh
     rw [hlies.over, Ideal.under, Ideal.comap_bot_of_injective]
     exact FaithfulSMul.algebraMap_injective _ _
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
@@ -168,7 +166,6 @@ private theorem ncard_primesOver_eq_finrank_iff_frob_eq_one {F R : Type} [Field 
       · exact h0
     omega
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
@@ -181,7 +178,6 @@ private theorem eq_one_iff_forall_char_eq_one_of_finite_commutative {G : Type} [
   obtain ⟨χ, hχ⟩ := CommGroup.exists_apply_ne_one_of_hasEnoughRootsOfUnity G ℂ hσ
   exact hχ (h χ)
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
@@ -198,7 +194,6 @@ private theorem heckeIdeal_asIdeal_eq_heckeVal {F R : Type} [Field F] [NumberFie
     intro h
     exact h𝔮 (HeightOneSpectrum.ext (associated_iff_eq.mp (Associates.mk_eq_mk_iff_associated.mp h)))
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
@@ -212,7 +207,6 @@ private theorem false_of_ringHom_real_of_isTotallyComplex {F : Type} [Field F] [
   simp [ComplexEmbedding.conjugate_coe_eq]
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in

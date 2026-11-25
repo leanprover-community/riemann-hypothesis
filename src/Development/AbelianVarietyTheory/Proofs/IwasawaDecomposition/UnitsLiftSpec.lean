@@ -64,8 +64,7 @@ namespace GlobalTheory.HeckeLocN
 variable {D : D7}
 
 def mt0 (M : MtFam D) : MtFam0 D.host D.what₂ := fun μ j h1 h2 =>
-  { wt := (M μ j h1 h2).wt, J := (M μ j h1 h2).J, χ := (M μ j h1 h2).χ, J_open := (M μ j h1 h2).J_open,
-    real := (M μ j h1 h2).real, real_inj := (M μ j h1 h2).real_inj, real_range := (M μ j h1 h2).real_range }
+  { wt := (M μ j h1 h2).wt, J := (M μ j h1 h2).J, χ := (M μ j h1 h2).χ, real := (M μ j h1 h2).real }
 
 def plEmb (pl : PlSide D) : PlEmb D.what₂ where
   emb w := (pl.ι w).symm.toRingHom.comp D.what₂.embLL

@@ -699,7 +699,7 @@ theorem thetaInt_eq_zero (hSA : GlobalTheory.Published.StrongApproxSU) (hK : Glo
       IsLocFn W B t e Γ w v (flipAt W t i j w n Φ) χ)
     (fun v hv φ₀ hφ₀ => by
       obtain ⟨w, hw, ew⟩ := (hti.2.2.1 v).1 hv
-      obtain ⟨n, Φ, φ₂, k, φ₃, h1, h2, h3, h4, h5, h6⟩ := GlobalTheory.T.squareFlip_reaches_localQuotient_classes hL W B t i j M hst e Bs Γ X om om' h R Rf hm hti w hw v ew φ₀ hφ₀
+      obtain ⟨n, Φ, φ₂, k, φ₃, h1, h2, h3, h4, h5, h6⟩ := _root_.GlobalTheory.SquareFlipReach.flip_reach hL W B t i j M hst e Bs Γ X om om' h R Rf hm hti w hw v ew φ₀ hφ₀
       refine ⟨φ₂, h3.1, fun w' hw' ew' => ?_, _, ⟨k, rfl⟩, φ₃, h4, h5, h6⟩
       obtain rfl : w = w' := (hti.2.2.2 ⟨v, hT.chars.sub hv⟩ w hw ew).symm.trans (hti.2.2.2 ⟨v, hT.chars.sub hv⟩ w' hw' ew')
       exact ⟨n, Φ, h1, h2, h3⟩) hf ⟨φ₁, p₁, g₀, hg₀, hne₁⟩

@@ -65,26 +65,6 @@ namespace GlobalTheory.CompanionTheory.InertZetaTop
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {q n : ℕ}
 
-theorem v_det_mat (hσ : ∀ x, Valued.v (σ x) = Valued.v x) (g : GU σ n) : Valued.v (mat g).det = 1 := by
-  have h : cT σ (mat g) * antiJ L n * mat g = antiJ L n := g.2
-  have h1 := congrArg (fun M => Valued.v (det M)) h
-  have hJ : IsInt (antiJ L n) := fun i j => by
-    unfold antiJ; split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  simp only [det_mul, map_mul, cT, det_transpose, ← RingHom.mapMatrix_apply, ← RingHom.map_det, hσ,
-    v_det_eq_one hJ hJ GlobalTheory.UnitarySwap.antiJ_mul_self, mul_one] at h1
-  exact (pow_eq_one_iff_of_nonneg zero_le two_ne_zero).1 (by rw [sq, h1])
-
-theorem secVal_pow {ϖ : Lˣ} (hU : IsUnramInv (ϖ : L) σ q) (χ : Lˣ →* ℂˣ) (s : ℂ) (k : ℕ) :
-    secVal q χ (s + (n : ℂ) / 2) (ϖ ^ k) = varX q n (χ ϖ) s ^ k := by
-  have h := P.fSatake_ord_zpow hU.2.2.2.1 (k : ℤ)
-  rw [zpow_natCast] at h
-  rw [secVal, Units.val_pow_eq_pow_val, h, map_pow, Units.val_pow_eq_pow_val, varX, mul_pow, ← Complex.cpow_nat_mul]
-  congr 2
-  push_cast
-  ring
-
 theorem section_eq (hC : Completion) {ϖ : Lˣ} (hU : IsUnramInv (ϖ : L) σ q) {χ : Lˣ →* ℂˣ} (hχ : IsUnr χ) {s : ℂ}
     {Φ : GD σ n → ℂ} (hΦ : IsSphSec σ q n χ s Φ) (g : GU σ n) {l : ℕ} (h : HasLen (mat g) l) :
     Φ (io1 σ n g) = varX q n (χ ϖ) s ^ l := by

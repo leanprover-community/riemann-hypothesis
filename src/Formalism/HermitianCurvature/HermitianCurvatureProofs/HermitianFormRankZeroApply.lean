@@ -40,23 +40,7 @@ lemma skewOf_gt (q : (G.UT j → ℂ) × (Fin j → ℝ)) {a b : Fin j} (h : b <
   exact h3
 
 lemma skewOf_skc {M : Matrix (Fin j) (Fin j) ℂ} (hM : Mᴴ = -M) : skewOf (_root_.Formalism.FourierDecayAlt.P.Ux3.skewCoords M) = M := by
-  have hM' : ∀ a b, conj (M b a) = -M a b := fun a b => by
-    have := congrFun (congrFun hM a) b
-    rwa [conjTranspose_apply] at this
-  ext a b
-  rcases lt_trichotomy a b with h | rfl | h
-  · rw [skewOf_lt _ h]; rfl
-  · rw [skewOf_diag]
-    have h1 := hM' a a
-    apply Complex.ext
-    · simp only [Complex.mul_re, Complex.I_re, Complex.ofReal_re, Complex.I_im, Complex.ofReal_im]
-      have := congrArg Complex.re h1
-      simp only [Complex.conj_re, Complex.neg_re] at this
-      simp [_root_.Formalism.FourierDecayAlt.P.Ux3.skewCoords]; linarith
-    · simp [_root_.Formalism.FourierDecayAlt.P.Ux3.skewCoords]
-  · rw [skewOf_gt _ h, skewOf_lt _ h]
-    show -conj (M b a) = M a b
-    rw [hM']; ring
+  apply _root_.Formalism.FourierDecayAlt.P.Ux3.skewOf_coords <;> assumption
 
 lemma skewOf_add (q1 q2 : (G.UT j → ℂ) × (Fin j → ℝ)) : skewOf (q1 + q2) = skewOf q1 + skewOf q2 := by
   ext a b

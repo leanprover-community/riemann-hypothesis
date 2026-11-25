@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.HomOfDer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalTwists.PromodularityCaseThree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedTanDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedTanFlow
@@ -69,17 +70,7 @@ theorem zeroA {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] {Φ : 
 theorem limRA {O Γ : Type} [CommRing O] [Group Γ] {Φ : Fr O Γ} {k : Type} [Field k] {a : O →+* k} {c : PD Φ.ι Γ k}
     (h : Φ.Res a c) {S : Finset (ℤ × ℤ)} (hS : Supp S c.r) {m : Fin 4 → ℤ}
     (hm : ∀ i j, i ≠ j → wt i j ∈ S → m j < m i) (g : Γ) : Lim m (c.r g) ((Φ.split a).r g) := by
-  have z : ∀ i j, i ≠ j → m i ≤ m j → c.r g i j = 0 := fun i j h1 h2 =>
-    hS g i j h1 fun h3 => absurd (hm i j h1 h3) (by omega)
-  refine ⟨fun i j hij => z i j (by rintro rfl; omega) (by omega), ?_⟩
-  ext i j
-  rw [cmp_apply, Fr.split_r_apply]
-  by_cases h1 : i = j
-  · subst h1; simp [h.diag]
-  · rw [if_neg h1]
-    split_ifs with h2
-    · exact (z i j h1 (by omega)).symm
-    · rfl
+  apply _root_.limR <;> assumption
 
 theorem limA {k : Type} [Field k] {n : M4 k} (h : IsLow n) : Lim ![0, 0, 1, 1] n (1 + n 1 0 • xMA k) := by
   obtain ⟨h1, h2, h3⟩ := h

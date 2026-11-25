@@ -1173,9 +1173,6 @@ end GlobalTheory.ColRows.LastSideProof
 
 namespace GlobalTheory.ColRows.LastSideProof
 
-theorem uW_first (N : NumDatum) (δ : Code N) (z : RPl N.R) (h : 0 < N.R.k) : N.uW δ z ⟨0, h⟩ = (N.hc z).u ⟨0, h⟩ := by
-  simp [NumDatum.uW]
-
 theorem uW_last (N : NumDatum) (δ : Code N) (z : RPl N.R) (h : N.R.k - 1 < N.R.k) :
     N.uW δ z ⟨N.R.k - 1, h⟩ = (N.hc z).u ⟨N.R.k - 1, h⟩ := by
   unfold NumDatum.uW
@@ -1409,7 +1406,7 @@ theorem lastSide_of_logT_le : ∀ (CY CT : ℝ) (N : NumDatum) (X : Fields) (Pr 
   have hrow : ∀ z, (W.hc u (pl z)).v = (N.hc z).v ∧ (W.hc u (pl z)).b = (N.hc z).b ∧ (W.hc u (pl z)).e = (N.hc z).e := fun z =>
     ⟨congrArg RowPar.v (hWT.2.2 z).1, congrArg RowPar.b (hWT.2.2 z).1, congrArg RowPar.e (hWT.2.2 z).1⟩
   have hu0 : ∀ z, (W.hc u (pl z)).u ⟨0, by omega⟩ = (N.hc z).u ⟨0, by omega⟩ := fun z =>
-    ((hWT.2.2 z).2 _).trans (uW_first N δ z _)
+    ((hWT.2.2 z).2 _).trans (Formalism.L2.DIV.NumDatum.uW_zero N δ z _)
   have hul : ∀ z, (W.hc u (pl z)).u ⟨N.R.k - 1, by omega⟩ = (N.hc z).u ⟨N.R.k - 1, by omega⟩ := fun z =>
     ((hWT.2.2 z).2 _).trans (uW_last N δ z _)
   have hlam1 : ∀ z, lam1 z = (((N.hc z).u ⟨0, by omega⟩ : ℚ) : ℝ) - ((N.R.k : ℝ) - 1) / 2 -

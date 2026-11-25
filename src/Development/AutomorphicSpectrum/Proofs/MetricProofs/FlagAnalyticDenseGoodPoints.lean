@@ -23,12 +23,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.DensR
 
 variable {K : Type} {ι : K → Type}
 
-theorem orbit_symm {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') : SameOrbit z' z := by
-  obtain ⟨c, hc, rfl⟩ := h
-  refine ⟨fun k => (c k)⁻¹, fun k => inv_ne_zero (hc k), ?_⟩
-  funext p
-  simp [hc p.1]
-
 theorem analytic_minorIJ {m N : ℕ} {V : Set (Fin m → ℂ)} {h : (Fin m → ℂ) → Matrix (Fin N) (Fin N) ℂ}
     (hh : ∀ r s, AnalyticOnNhd ℂ (fun u => h u r s) V) (I J : Finset (Fin N)) :
     AnalyticOnNhd ℂ (fun u => minorIJ (h u) I J) V := by

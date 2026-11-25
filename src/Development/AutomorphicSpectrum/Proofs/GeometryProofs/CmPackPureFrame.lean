@@ -261,10 +261,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Matrix GlobalTheory GlobalTheory.CM GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
-
-namespace GlobalTheory.CompanionTheory.Ar.Fl
-
-end GlobalTheory.CompanionTheory.Ar.Fl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.PureTypeProjectionIndependent =====
@@ -334,7 +330,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.cm_pack_pure_frame : ∀ (E : 
       (X.β.comp (tauIn c σ)) n v X.pt.symm
     rw [hiff v' hv']
     obtain ⟨M, ρ, hact, hρ, hder, -⟩ := GlobalTheory.CompanionTheory.Relay.lie_model_with_cm_action E H D l Xo c g ty FU i P hP
-    have hz := GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero E H _ (Z b)
+    have hz := _root_.PositivityTheory.Xgf.curve_z_ne_zero E H _ (Z b)
     obtain ⟨-, huniq, -⟩ := GlobalTheory.isDerivAt0_ex_isTanAt E H D l Xo (algebraMap (KA l) ℂ) g ty FU i P hP
     have e : ∀ a, v' a = M.pt ((Z b).z • T a) := fun a => by
       obtain ⟨t, -, htu⟩ := huniq ((Z b).z • T a)

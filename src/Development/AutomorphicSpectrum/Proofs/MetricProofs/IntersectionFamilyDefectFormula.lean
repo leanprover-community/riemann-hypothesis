@@ -289,7 +289,7 @@ theorem inter_sub_eq_neg_mInt : RatRStatement → ResBridgeStatement → GoodPro
   have r2 := hI.2.2 P e L M' g γ hP hL hM' hM'a hgγ hgP
   rw [recR_eq] at r1 r2
 
-  have hc := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq K ι P f g hU
+  have hc := _root_.PositivityTheory.UnitarySelfGeneration.i_cycle K ι P f g hU
   have hcyc : cycR I P L f = cycR I P L g := by
     unfold cycR
     refine finsum_mem_congr hc.1 fun W hW => ?_

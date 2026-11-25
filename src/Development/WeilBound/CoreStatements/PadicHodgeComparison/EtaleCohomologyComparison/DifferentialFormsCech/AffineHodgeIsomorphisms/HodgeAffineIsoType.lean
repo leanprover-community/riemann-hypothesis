@@ -875,7 +875,7 @@ theorem om_top : AffOm → OmNat → ∀ (K : Type) [Field K] [CharZero K] {X : 
     ∃ e : Om K (Sec q ⊤) a →ₗ[K] HV q ⊤ a a, IsOm q ⊤ a e ∧ Function.Bijective e := by
   intro hA hN K _ _ X q _ _ a
   classical
-  obtain ⟨U⟩ := (Pb.cov_ex q).1 inferInstance
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).1 inferInstance
   have hAff2 : ∀ α β, IsAffineOpen (U.U α ⊓ U.U β) := fun α β => by
     have h := U.inter {α, β} ⟨α, by simp⟩
     rwa [Finset.iInf_insert, Finset.iInf_singleton] at h

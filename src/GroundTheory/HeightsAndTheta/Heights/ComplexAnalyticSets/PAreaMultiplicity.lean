@@ -96,13 +96,7 @@ theorem lintegral_abs_det_eq_lintegral_encard {E : Type*} [NormedAddCommGroup E]
     have hr : r (e : E →L[ℝ] E) = (‖(e.symm : E →L[ℝ] E)‖₊ + 1)⁻¹ := by
       simp only [r, ContinuousLinearMap.inverse_equiv]
     rw [hr]
-    have hpos : 0 < ‖(e.symm : E →L[ℝ] E)‖₊ := by
-      rw [pos_iff_ne_zero, ne_eq, nnnorm_eq_zero]
-      intro h0
-      obtain ⟨z, hz⟩ := exists_ne (0 : E)
-      apply hz
-      simpa using congrArg (fun T : E →L[ℝ] E => T (e z)) h0
-    exact (inv_lt_inv₀ (by positivity) hpos).2 (lt_add_one _)
+    exact (inv_lt_inv₀ (by positivity) e.nnNorm_symm_pos).2 (lt_add_one _)
   have hBU : B = ⋃ n, P n := by
     rw [← inter_iUnion]; exact (inter_eq_left.2 hcov).symm
   have himg : ∀ n, NullMeasurableSet (f '' P n) μ := fun n =>

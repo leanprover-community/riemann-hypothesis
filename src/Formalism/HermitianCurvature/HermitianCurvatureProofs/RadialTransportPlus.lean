@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableEmbeddingLevM
 public import Formalism.HermitianCurvature.StatementHeads
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockRelationTwistedHeight
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousZetaL
@@ -18,30 +19,6 @@ namespace Formalism.FourierDecayAlt.P.PBH
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-private theorem lintegral_zWeight_closedBall_ne_infty (k : ℕ) (T T' R : ℝ) :
-    ∫⁻ ζ in Metric.closedBall (0 : ℂ) R, ENNReal.ofReal (B2.zWeight k T T' ζ) < ⊤ := by
-  have hb : ∀ ζ ∈ Metric.closedBall (0 : ℂ) R,
-      ENNReal.ofReal (B2.zWeight k T T' ζ) ≤ ENNReal.ofReal ((R ^ 2 + |T * T'|) ^ (k - 1)) := by
-    intro ζ hζ
-    apply ENNReal.ofReal_le_ofReal
-    unfold B2.zWeight
-    split_ifs with h
-    · apply pow_le_pow_left₀ (by linarith)
-      have h1 : Complex.normSq ζ ≤ R ^ 2 := by
-        rw [Complex.normSq_eq_norm_sq]
-        have := mem_closedBall_zero_iff.mp hζ
-        have h0 : 0 ≤ ‖ζ‖ := norm_nonneg _
-        nlinarith
-      have h2 : -(T * T') ≤ |T * T'| := neg_le_abs _
-      linarith
-    · positivity
-  calc ∫⁻ ζ in Metric.closedBall (0 : ℂ) R, ENNReal.ofReal (B2.zWeight k T T' ζ)
-      ≤ ∫⁻ _ in Metric.closedBall (0 : ℂ) R, ENNReal.ofReal ((R ^ 2 + |T * T'|) ^ (k - 1)) :=
-        setLIntegral_mono measurable_const (fun ζ hζ => hb ζ hζ)
-    _ = ENNReal.ofReal ((R ^ 2 + |T * T'|) ^ (k - 1)) * volume (Metric.closedBall (0 : ℂ) R) :=
-        setLIntegral_const _ _
-    _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top measure_closedBall_lt_top
 
 theorem ph_cast {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k n ρ : ℕ} (hn : n = 1 + ρ)
@@ -86,7 +63,7 @@ theorem ph_cast {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp
   subst ez ez' eπ eπ'
   have hmap : μs.map (B2.levM k ρ) = μ := by
     refine map_levM_eq hμ hμs (fun ζ => ENNReal.ofReal (B2.zWeight k (Tz k ρ zs) (Tz k ρ zs') ζ))
-      (fun R => lintegral_zWeight_closedBall_ne_infty k _ _ R) ?_ hlaws
+      (fun R => zWeight_fin (k := k) _ _ R) ?_ hlaws
     intro ψ hψ
     rw [hlaw ψ hψ, tz_iota, tz_iota]
   refine ⟨trL ht zs zs' π π', ?_, ?_⟩

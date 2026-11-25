@@ -186,7 +186,7 @@ theorem word_eq (hL : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocalStat
     II M.K M.ι M.P (dimFl Ψ N + 1) (fun r => M.line t (w r)) =
       PB.polar (dimFl Ψ N + 1) (fun v => II M.K M.ι M.P (dimFl Ψ N + 1) fun r => R.Re.line (v r) t)
         (fun r a => (rootC (w r) a : ℝ)) := by
-  have hc := _root_.GlobalTheory.CompanionTheory.Ar.PB.combLine_intersection hL II hII M.K M.ι (Option (Ψ × Fin N)) M.P (dimFl Ψ N + 1)
+  have hc := _root_.PositivityTheory.Xgp.t_re_comb hL II hII M.K M.ι (Option (Ψ × Fin N)) M.P (dimFl Ψ N + 1)
     (fun a => R.Re.line a t) (fun r => rootC (w r)) R.Re.arith (fun a => R.Re.line_smooth a t ht0 ht)
   rw [← hc.2]
   exact hL M.K M.ι (II M.K M.ι) (hII.1 M.K M.ι) M.P _ _ _ R.Re.arith (fun j => smooth_line M t _) hc.1

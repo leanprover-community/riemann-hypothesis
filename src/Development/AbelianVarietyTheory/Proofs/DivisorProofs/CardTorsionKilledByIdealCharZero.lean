@@ -166,11 +166,7 @@ theorem card_torsion_ideal (hdiv : ∀ c : 𝓞 F, c ≠ 0 → Function.Surjecti
     rw [Ideal.isUnit_iff] at hu
     subst hu
     have hbot : Submodule.torsionBySet (𝓞 F) M ((⊤ : Ideal (𝓞 F)) : Set (𝓞 F)) = ⊥ := by
-      rw [eq_bot_iff]
-      intro m hm
-      have := (Submodule.mem_torsionBySet_iff _ _).1 hm ⟨1, Submodule.mem_top⟩
-      rw [Submodule.mem_bot]
-      simpa using this
+      rw [Submodule.top_coe, Submodule.torsionBySet_univ]
     rw [hbot, Ideal.absNorm_top, one_pow]
     simp
   · intro P i hp _

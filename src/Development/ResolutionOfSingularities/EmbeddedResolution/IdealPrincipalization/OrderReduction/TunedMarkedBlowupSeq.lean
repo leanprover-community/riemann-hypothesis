@@ -51,17 +51,6 @@ namespace MarkedBlowupSequenceData
 variable {k : Type u} [Field k] {X : Scheme.{u}} {p : X ⟶ Spec (CommRingCat.of k)}
   {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData}
 
-private theorem isLocallyGeneratedByNonZeroDivisor_exceptionalIdeal {Y Y' : Scheme.{u}} (π : Y' ⟶ Y)
-    (J : Y.IdealSheafData) (h : Blowup.IsBlowupAlongIdealSheaf π J) : Blowup.IsLocallyGeneratedByNonZeroDivisor (Blowup.exceptionalIdeal π J) := h.1
-
-private theorem eq_of_exceptionalIdeal_pow_mul_eq (s : MarkedBlowupSequenceData p I m E) :
-    ∀ i < s.length, ∀ A B : (s.obj (i + 1)).IdealSheafData,
-      Blowup.exceptionalIdeal (s.map i) (s.center i) ^ m * A = (s.ideal i).comap (s.map i) →
-      Blowup.exceptionalIdeal (s.map i) (s.center i) ^ m * B = (s.ideal i).comap (s.map i) → A = B := by
-  intro i hi A B hA hB
-  exact ((isLocallyGeneratedByNonZeroDivisor_exceptionalIdeal (s.map i) (s.center i) (s.isBlowup i hi)).pow
-    m).eq_of_mul_eq_mul (hA.trans hB.symm)
-
 alias controlledTransform_eq_ideal := _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.toBlowupSequenceData_controlledTransform_eq
 
 end MarkedBlowupSequenceData

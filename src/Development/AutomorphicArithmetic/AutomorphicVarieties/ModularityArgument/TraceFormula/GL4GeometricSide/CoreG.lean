@@ -208,26 +208,7 @@ theorem tri_sgn (a b c : Fin n) : tri sgn0 a b c = triT a b c := by
     | (subst_vars; simp [*, ne_of_lt, ne_of_gt, lt_asymm]; done)
 
 theorem sum_sgn (a : Fin n) : ∑ b, sgn0 a b = 2 * rhoV n a := by
-  have h : ∀ b, sgn0 a b = (if a < b then (1:ℝ) else 0) - (if b < a then (1:ℝ) else 0) := by
-    intro b
-    unfold sgn0
-    rcases lt_trichotomy a b with h | h | h
-    · simp [h, h.not_gt]
-    · simp [h]
-    · simp [h, h.not_gt]
-  simp only [h, Finset.sum_sub_distrib, Finset.sum_boole]
-  have c1 : ((univ.filter fun b => a < b).card : ℝ) = (n : ℝ) - 1 - (a : ℕ) := by
-    have : (univ.filter fun b => a < b) = Finset.Ioi a := by ext; simp
-    rw [this, Fin.card_Ioi]
-    have := a.isLt
-    rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
-    push_cast; ring
-  have c2 : ((univ.filter fun b => b < a).card : ℝ) = (a : ℕ) := by
-    have : (univ.filter fun b => b < a) = Finset.Iio a := by ext; simp
-    rw [this, Fin.card_Iio]
-  rw [c1, c2]
-  unfold rhoV
-  ring
+  apply _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.sum_standard_tournament <;> assumption
 
 def sgnB (B : Finset (Fin n × Fin n)) (a b : Fin n) : ℝ :=
   sgn0 a b - 2 * ((if (a, b) ∈ B then 1 else 0) - (if (b, a) ∈ B then 1 else 0))
@@ -250,30 +231,12 @@ theorem sgnB_sign {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) (a
     by_cases hm : (b, a) ∈ B <;> simp [h, h.not_gt, hn, hm] <;> norm_num
 
 theorem card_fst (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.1 = a).card = (univ.filter fun b => (a, b) ∈ B).card := by
-  refine Finset.card_bij (fun p _ => p.2) ?_ ?_ ?_
-  · intro p hp
-    obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hp
-    refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
-    rw [← h2]
-    exact h1
-  · intro p hp q hq h
-    exact Prod.ext (((Finset.mem_filter.1 hp).2).trans ((Finset.mem_filter.1 hq).2).symm) h
-  · intro b hb
-    exact ⟨(a, b), Finset.mem_filter.2 ⟨(Finset.mem_filter.1 hb).2, rfl⟩, rfl⟩
+    (B.filter fun p => p.1 = a).card = (univ.filter fun b => (a, b) ∈ B).card :=
+  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst B a
 
 theorem card_snd (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.2 = a).card = (univ.filter fun b => (b, a) ∈ B).card := by
-  refine Finset.card_bij (fun p _ => p.1) ?_ ?_ ?_
-  · intro p hp
-    obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hp
-    refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
-    rw [← h2]
-    exact h1
-  · intro p hp q hq h
-    exact Prod.ext h (((Finset.mem_filter.1 hp).2).trans ((Finset.mem_filter.1 hq).2).symm)
-  · intro b hb
-    exact ⟨(b, a), Finset.mem_filter.2 ⟨(Finset.mem_filter.1 hb).2, rfl⟩, rfl⟩
+    (B.filter fun p => p.2 = a).card = (univ.filter fun b => (b, a) ∈ B).card :=
+  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd B a
 
 theorem sum_sgnB (B : Finset (Fin n × Fin n)) (a : Fin n) :
     ∑ b, sgnB B a b = 2 * (rhoV n a - wtB B a) := by

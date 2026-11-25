@@ -234,7 +234,7 @@ theorem abelian_part_integral_point_bis : Top.Given → ∀ (E : Type) [Field E]
     have key : ∀ d ∈ differentIdeal ℤ (𝓞 E), (∏ p ∈ S, k p) • σ₀ s d • x ∈ A.eig s := fun d hd => by
       refine ⟨(hΛ _).2 ?_, ?_⟩
       · let MB := LiePull.extModel (g := algebraMap (𝓞 L) L) (x := z) (FaithfulSMul.algebraMap_injective _ _) rfl ML
-        obtain ⟨e, he⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_lifts_of_local (𝓞 L) L 𝔐.X z 𝔐.t.G _ MB (ML.pt ((∏ p ∈ S, k p) • σ₀ s d • x)) (ML.tan _)
+        obtain ⟨e, he⟩ := _root_.CoverDenseAlt.tangent_vector_extends_over_integers (𝓞 L) L 𝔐.X z 𝔐.t.G _ MB (ML.pt ((∏ p ∈ S, k p) • σ₀ s d • x)) (ML.tan _)
           fun Q hQ cc hc => ((hloc Q cc hc).2 x (hx' ⟨Q, hQ.isPrime⟩) d hd).2
         exact ⟨MB.pt e, MB.tan e, (hML _).trans ((Category.comp_id _).symm.trans he)⟩
       · obtain ⟨cc, hc⟩ := hcc ⊥
@@ -794,7 +794,7 @@ theorem height_comparison_global_model : (Top.Given → Fl.FlatDegree → FlatSa
     exact h1.trans h2
   have hrank : ∀ τ, A.Bq.rank (A.img (Or.sm τ)) ≤ Dc.j' := by
     intro τ
-    obtain ⟨k', q', -, -, hk', hrk', -⟩ := (_root_.GlobalTheory.CompanionTheory.Relay.adapted_family_exists_on_eigenspace E L (CMType H) V A hf2).2 r v hO (Or.sm τ)
+    obtain ⟨k', q', -, -, hk', hrk', -⟩ := (_root_.LevelTowerAlt.orthogonal_family_adapted_basis E L (CMType H) V A hf2).2 r v hO (Or.sm τ)
     have h1 : Module.finrank L (eigSp A.ρ (A.σ (Or.sm τ))) = r + k := by
       rw [← (hq τ).1.2, finrank_span_eq_card (hq τ).1.1, Fintype.card_fin]
     omega
@@ -814,7 +814,7 @@ theorem height_comparison_global_model : (Top.Given → Fl.FlatDegree → FlatSa
   have hσ : A.σ = σ₀ := hσu A.σ hLin.2.1
   have hrk2 : ∀ s, A.Bq.rank (eigSp ρM (intLift (A.σ s))) ≤ labelRk D s := by
     intro s
-    obtain ⟨k', q', -, -, hk', hrk', -⟩ := (_root_.GlobalTheory.CompanionTheory.Relay.adapted_family_exists_on_eigenspace E L (CMType H) V A hf2).2 r v hO s
+    obtain ⟨k', q', -, -, hk', hrk', -⟩ := (_root_.LevelTowerAlt.orthogonal_family_adapted_basis E L (CMType H) V A hf2).2 r v hO s
     rw [finrank_eig' Or.𝔐 hLin] at hk'
     rw [e1]
     omega

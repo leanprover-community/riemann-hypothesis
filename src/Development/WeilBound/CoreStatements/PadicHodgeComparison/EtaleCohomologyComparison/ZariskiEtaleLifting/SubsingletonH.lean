@@ -596,7 +596,7 @@ theorem test_cover : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), A.IsTest → ∀
   obtain ⟨u, hi, hm, hp⟩ := idem_refine hV m s 1 IsIdempotentElem.one (by rw [hs]; trivial)
   rw [one_mul] at hp
   have hex : ∀ k, ∃ e₀ : A.A, IsIdempotentElem e₀ ∧ A.sharp e₀ = u k := fun k =>
-    (RL.idem_au A (u k) (hi k)).exists
+    (_root_.GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp A (u k) (hi k)).exists
   choose e he hsh using hex
   have hc := (RL.sharp_cong A).2.2
   have hzero : A.sharp 0 = 0 := by
@@ -608,7 +608,7 @@ theorem test_cover : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), A.IsTest → ∀
   have hidem : IsIdempotentElem (∏ k, (1 - e k)) :=
     idem_prod _ _ fun k => (he k).one_sub
   have h0 : ∏ k, (1 - e k) = 0 :=
-    (RL.idem_au A 0 IsIdempotentElem.zero).unique ⟨hidem, hsp⟩ ⟨IsIdempotentElem.zero, hzero⟩
+    (_root_.GlobalTheory.CompanionTheory.Untilt.existsUnique_idempotent_sharp A 0 IsIdempotentElem.zero).unique ⟨hidem, hsp⟩ ⟨IsIdempotentElem.zero, hzero⟩
   exact ⟨e, he, span_top_of_prod e h0, fun k => by rw [hsh]; exact hm k⟩
 
 end GlobalTheory.CompanionTheory.TestCover
@@ -1001,13 +1001,13 @@ theorem mapU_mem {A A' : PAlg l} (φ : A ⟶ A') {x : A.U} (hx : x ∈ Ideal.spa
   exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
 
 theorem exists_sharp_cong (A : PAlg l) (x : A.U) : ∃ a, A.sharp a - x ∈ Ideal.span {(l : A.U)} := by
-  obtain ⟨a, ha⟩ := (RL.u_mod A).1 (Ideal.Quotient.mk _ x)
+  obtain ⟨a, ha⟩ := (_root_.GlobalTheory.CompanionTheory.Untilt.sharp_map_surjective_ker A).1 (Ideal.Quotient.mk _ x)
   refine ⟨a, ?_⟩
   rw [A.sharpMap_eq] at ha
   simpa using Ideal.Quotient.eq.1 ha
 
 def modEquiv (A : PAlg l) : (A.A ⧸ Ideal.span {A.pi}) ≃+* A.Un 1 :=
-  (Ideal.quotEquivOfEq (RL.u_mod A).2.symm).trans (RingHom.quotientKerEquivOfSurjective (RL.u_mod A).1)
+  (Ideal.quotEquivOfEq (_root_.GlobalTheory.CompanionTheory.Untilt.sharp_map_surjective_ker A).2.symm).trans (RingHom.quotientKerEquivOfSurjective (_root_.GlobalTheory.CompanionTheory.Untilt.sharp_map_surjective_ker A).1)
 
 theorem modEquiv_mk (A : PAlg l) (a : A.A) : modEquiv A (Ideal.Quotient.mk _ a) = A.aToU1 a := rfl
 
@@ -1661,17 +1661,11 @@ theorem CrystallineSemistableComparison.B.P.tower_act : ∀ {l : ℕ} [Fact l.Pr
 theorem CrystallineSemistableComparison.B.P.theta_ex : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} {κ : O →+* OC l} {d : ℕ} {s : F.Small d} (𝒯 : Tower κ s) (k : Bool) (n : ℕ) (𝓛 : Lift s.a (fun k => (s.T k : s.R)) (bs l k n).R (bs l k n).I (κb κ k n)) (δ : DividedPowers ((bs l k n).I.map 𝓛.i)) (hδ : IsDPMorphism (bs l k n).γ δ 𝓛.i) (hp : (bs l k n).p ≠ 0) (hn : IsNilpotent ((bs l k n).p : (bs l k n).R)) (ε : Eps l) (A : Act (𝟭 _) (thU (Lc F κ k n) (ε.qU n) (ε.qU_mem k n)) d (liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn)) (A' : Act (jE (F.pt κ)) (epsU ε (F.pt κ)) d 𝒯.obj), (∀ (T : Thick (Lc F κ k n)) (a : Fin d → (thU (Lc F κ k n) (ε.qU n) (ε.qU_mem k n)).U T) (c : liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn ⟶ T) (j : Fin d), (A.act a c).φ (𝓛.t j) = ((a j).1 : T.B) * c.φ (𝓛.t j)) → (∀ (T : (F.pt κ).Elements) (a : Fin d → (epsU ε (F.pt κ)).U T) (φ : 𝒯.obj ⟶ T) (j : Fin d), PAlg.Hom.f (A'.act a φ).1 (𝒯.c j 0).val = ((a j).1 : T.1.A) * PAlg.Hom.f φ.1 (𝒯.c j 0).val) → ∃ θ : liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn ⟶ (gE F κ k n).obj 𝒯.obj, (∀ j, θ.φ (𝓛.t j) = 𝒯.A.toAcr n (WittVector.teichmuller l (𝒯.c j 0 : 𝒯.A.A))) ∧ ∀ a, (A.γ a).asHom ≫ θ = θ ≫ (gE F κ k n).map (A'.γ a).asHom :=
   @GlobalTheory.CompanionTheory.ThetaEx.main
 
-theorem CrystallineSemistableComparison.B.P.local_ni : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} {κ : O →+* OC l} {d : ℕ} {s : F.Small d} (𝒯 : Tower κ s) (k : Bool) (n : ℕ) (𝓛 : Lift s.a (fun k => (s.T k : s.R)) (bs l k n).R (bs l k n).I (κb κ k n)) (δ : DividedPowers ((bs l k n).I.map 𝓛.i)) (hδ : IsDPMorphism (bs l k n).γ δ 𝓛.i) (hp : (bs l k n).p ≠ 0) (hn : IsNilpotent ((bs l k n).p : (bs l k n).R)) (ε : Eps l) (ρ : ℕ → ℕ) (hρ : Slow ρ) (γ : Gam d →* End (liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn)) (γ' : Gam d →* End 𝒯.obj) (θ : SingleObj.functor γ ⟶ SingleObj.functor γ' ⋙ gE F κ k n), n ≠ 0 → (∀ j, (θ.app (SingleObj.star _)).φ (𝓛.t j) = 𝒯.A.toAcr n (WittVector.teichmuller l (𝒯.c j 0 : 𝒯.A.A))) → (∀ a j, Thick.Hom.φ (γ a).asHom (𝓛.t j) = 𝓛.i (ε.qU n) ^ (Multiplicative.toAdd a j) * 𝓛.t j) → (∀ a j, PAlg.Hom.f (A := 𝒯.A) (B := 𝒯.A) (γ' a).asHom.1 (𝒯.c j 0).val = 𝒯.A.s (ε.e 0) ^ (Multiplicative.toAdd a j) * (𝒯.c j 0).val) → Nonempty (NI (Polynomial.X : Polynomial ℤ) (Functor.whiskerRight θ (flt F κ ε k n ρ hρ).rees)) :=
-  @GlobalTheory.CompanionTheory.TowerNI.main
 
 theorem CrystallineSemistableComparison.B.P.desc : ∀ {l : ℕ} [Fact l.Prime], D.Out l → ∀ {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) (ε : Eps l) (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slow ρ), (k = false ∨ ρ = 0) → Desc (Polynomial.X : Polynomial ℤ) (gE F κ k n ⋙ (flt F κ ε k n ρ hρ).rees) (jE (F.pt κ)) :=
   @GlobalTheory.CompanionTheory.DescTest.main
 
-theorem CrystallineSemistableComparison.B.P.el_zar : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) {d : ℕ} (𝒜 : F.Atlas d) (k : Bool) (n r : ℕ), ZarCov (gT F κ k n ⋙ (pdS (Lc F κ k n) ((base l).cris n) r).fn) fun T => ∃ α, (𝒜.V α).In ((gT F κ k n).obj T).y.1.2 :=
-  @GlobalTheory.CompanionTheory.TestZar.zarCov_test
 
-theorem CrystallineSemistableComparison.B.P.el_onto : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) {d : ℕ} (𝒜 : F.Atlas d) (S : Set 𝒜.A) (k : Bool) (n : ℕ), n ≠ 0 → Onto (subEl κ (Fn.Sub.inter 𝒜.V S)) fun T => ∀ α ∈ S, (𝒜.V α).In ((gT F κ k n).obj T).y.1.2 :=
-  @GlobalTheory.CompanionTheory.ElOnto.onto_subEl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.PropsE =====
@@ -1703,7 +1697,7 @@ theorem local_of (hD : D.Out l) : Local l := by
   intro d j
   obtain ⟨N, hN⟩ := P.glue.{0, 0, 1, 0, 1, 0, 1} d j
   refine ⟨N, fun {O} _ F κ ε k n ρ hρ hn hk s => ?_⟩
-  obtain ⟨𝓛⟩ := P.elift s.a (fun k => (s.T k : s.R)) (bs l k n).I (κb κ k n) s.et
+  obtain ⟨𝓛⟩ := _root_.GlobalTheory.CompanionTheory.EtaleLift.nonempty_lift s.a (fun k => (s.T k : s.R)) (bs l k n).I (κb κ k n) s.et
   obtain ⟨δ, hδ⟩ := exists_dp 𝓛.i (P.lift_flat 𝓛.i 𝓛.t 𝓛.et).1 (bs l k n).I (bs l k n).γ
   have hp : (bs l k n).p ≠ 0 := (Fact.out : l.Prime).ne_zero
   have hnil : IsNilpotent ((bs l k n).p : (bs l k n).R) := ⟨n, (base l).pow_l_acr n⟩
@@ -1727,7 +1721,7 @@ theorem local_of (hD : D.Out l) : Local l := by
     (P.thick_line F (bs l k n) rfl (κb κ k n) ((base l).cris n) ρ hρ ε.μ (ε.μ_mem k (base l) n) (ε.qU n) (ε.qU_mem k n)
       ((base l).cris n (ε.qk 1)) Fact.out hq hμ hξ)
   obtain ⟨L', hL'⟩ := P.cont_line F κ ε k n ρ hρ
-  obtain ⟨ni⟩ := P.local_ni 𝒯 k n 𝓛 δ hδ hp hnil ε ρ hρ A.γ A'.γ ⟨fun _ => θ, fun _ _ a => hθγ a⟩ hn hθ
+  obtain ⟨ni⟩ := _root_.GlobalTheory.CompanionTheory.TowerNI.main 𝒯 k n 𝓛 δ hδ hp hnil ε ρ hρ A.γ A'.γ ⟨fun _ => θ, fun _ _ a => hθγ a⟩ hn hθ
     (fun a j => (hA _ _ (𝟙 _) j).trans (congrArg (· * 𝓛.t j) (Units.val_pow_eq_pow_val _ _)))
     (fun a j => (hA' _ _ (𝟙 _) j).trans (congrArg (· * (𝒯.c j 0).val) (Units.val_pow_eq_pow_val _ _)))
   exact hN (flt F κ ε k n ρ hρ).rees (gE F κ k n) (jE _) _ _ A L _ _ A' L' θ hθγ _
@@ -1747,8 +1741,8 @@ theorem global_of (h : Local l) (d j : ℕ) : ∃ N : ℕ, ∀ {O : Type} [CommR
   refine ⟨((Finset.range (d + 1)).sup N) * (2 * j + 3), fun {O} _ F κ ε k n ρ hρ hn hk 𝒜 => ?_⟩
   rw [pow_mul]
   have hp : (bs l k n).p ≠ 0 := (Fact.out : l.Prime).ne_zero
-  have z₁ := fun r => P.thick_zar F (bs l k n) rfl (κb κ k n) ((base l).cris n) 𝒜 hp r
-  have z₂ := fun r => P.el_zar F κ 𝒜 k n r
+  have z₁ := fun r => _root_.GlobalTheory.CompanionTheory.ThickZar.zarCov_pdS F (bs l k n) rfl (κb κ k n) ((base l).cris n) 𝒜 hp r
+  have z₂ := fun r => _root_.GlobalTheory.CompanionTheory.TestZar.zarCov_test F κ 𝒜 k n r
   have onto : ∀ {C : Type 1} [Category.{0} C] (Q : C → Prop), Onto (ObjectProperty.ι Q) Q := fun Q =>
     ⟨inferInstance, inferInstance, fun T => T.property, fun T hT => ⟨⟨T, hT⟩, ⟨Iso.refl _⟩⟩⟩
   refine P.glob _ (gT F κ k n) (fun α T => (𝒜.V α).In T.y.1.2) _ j ?_ ?_ ?_ fun S hS => ?_
@@ -1760,7 +1754,7 @@ theorem global_of (h : Local l) (d j : ℕ) : ∃ N : ℕ, ∀ {O : Type} [CommR
   · exact (_root_.GlobalTheory.CompanionTheory.ReesUp.main ((flt F κ ε k n ρ hρ).comap (gT F κ k n)) _ j).1 fun r => P.zar _ _ _ (onto _) (z₂ (ρ r)) j
   · obtain ⟨d', hd', ⟨s⟩⟩ := 𝒜.small S hS
     refine ⟨_, _, _, _, subThick (Fn.Sub.inter 𝒜.V S) (bs l k n) rfl (κb κ k n), subEl κ (Fn.Sub.inter 𝒜.V S),
-      gT (Fn.Sub.inter 𝒜.V S).fn κ k n, P.thick_onto _ _ _ _, P.el_onto F κ 𝒜 S k n hn, ⟨eqToIso (subEl_gT κ _ k n)⟩, ?_⟩
+      gT (Fn.Sub.inter 𝒜.V S).fn κ k n, _root_.GlobalTheory.CompanionTheory.ThickSub.subThick_onto _ _ _ _, _root_.GlobalTheory.CompanionTheory.ElOnto.onto_subEl F κ 𝒜 S k n hn, ⟨eqToIso (subEl_gT κ _ k n)⟩, ?_⟩
     rw [subThick_rees]
     exact ri_pow (Finset.le_sup (f := N) (Finset.mem_range.2 (Nat.lt_succ_of_le hd'))) (hN d' _ κ ε k n ρ hρ hn hk s)
 

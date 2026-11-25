@@ -508,20 +508,6 @@ theorem deriv_ext {f g : PowerSeries ℂ_[p]} (hd : PowerSeries.derivative (R :=
     first
     | exact mul_right_cancel₀ (Nat.cast_add_one_ne_zero n) e
 
-private theorem derivative_subst_eq_subst_derivative_mul (a f : PowerSeries ℂ_[p]) (ha : PowerSeries.HasSubst a) :
-    PowerSeries.derivative (R := ℂ_[p]) (PowerSeries.subst a f) =
-      PowerSeries.subst a (PowerSeries.derivative (R := ℂ_[p]) f) * PowerSeries.derivative (R := ℂ_[p]) a := by
-  have hpd : ∀ g : PowerSeries ℂ_[p], MvPowerSeries.pderiv (R := ℂ_[p]) () g = PowerSeries.derivative (R := ℂ_[p]) g := by
-    intro g
-    refine PowerSeries.ext fun n => ?_
-    rw [PowerSeries.coeff_derivative]
-    show MvPowerSeries.coeff (Finsupp.single () n) (MvPowerSeries.pderiv (R := ℂ_[p]) () g) = _
-    rw [MvPowerSeries.coeff_pderiv, ← Finsupp.single_add, Finsupp.single_eq_same]
-    rfl
-  have := PI.AddIntG.Wk.pderiv_subst (σ := Unit) ha f ()
-  rw [hpd, hpd] at this
-  exact this
-
 theorem flog_iW {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]} (h : IsWq W wq) :
     PowerSeries.subst (iW W wq) (flog W wq) = -flog W wq := by
   have hs := hasSubst_iW W wq
@@ -538,7 +524,7 @@ theorem flog_iW {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]} (h : I
     simp only [map_add (f := _), map_sub, map_mul, map_pow, map_neg, map_ofNat, AlgHom.commutes, hX] at hom'
     simp only [← hφ] at hom'
     rw [hwi] at hom'
-    have hcw := derivative_subst_eq_subst_derivative_mul (iW W wq) wq hs
+    have hcw := PowerSeries.derivative_subst (f := wq) hs
     rw [hwi] at hcw
     have hdwD : PowerSeries.derivative (R := ℂ_[p]) (wq * Dser W wq ^ 2) =
         PowerSeries.derivative (R := ℂ_[p]) wq * Dser W wq ^ 2 +
@@ -555,7 +541,7 @@ theorem flog_iW {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]} (h : I
       have h00 := congrArg PowerSeries.constantCoeff h0
       have h2 : PowerSeries.constantCoeff (2 : PowerSeries ℂ_[p]) = 2 := map_ofNat _ 2
       simp [D_const, wq_const' h, h2] at h00
-    rw [derivative_subst_eq_subst_derivative_mul (iW W wq) (flog W wq) hs, derivative_flog', map_neg, derivative_flog']
+    rw [PowerSeries.derivative_subst (f := flog W wq) hs, derivative_flog', map_neg, derivative_flog']
     have key : (PowerSeries.subst (iW W wq) (omegaW W wq) * PowerSeries.derivative (R := ℂ_[p]) (iW W wq) +
         omegaW W wq) * (Dser W wq * (wq * (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₁ * PowerSeries.X +
         algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₃ * PowerSeries.X ^ 3 * wq - 2))) = 0 := by

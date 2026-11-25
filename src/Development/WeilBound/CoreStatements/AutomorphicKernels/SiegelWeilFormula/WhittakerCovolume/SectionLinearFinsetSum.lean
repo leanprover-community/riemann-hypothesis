@@ -18,11 +18,8 @@ open PositivityTheory.SiegelWeilFormula
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 theorem lin_addChar_sum {A : Type} [AddCommMonoid A] (ψ : AddChar A ℂ) {ι : Type} (s : Finset ι) (f : ι → A) :
-    ψ (∑ i ∈ s, f i) = ∏ i ∈ s, ψ (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert j s hj ih => rw [Finset.sum_insert hj, Finset.prod_insert hj, AddChar.map_add_eq_mul, ih]
+    ψ (∑ i ∈ s, f i) = ∏ i ∈ s, ψ (f i) :=
+  map_prod ψ.toMonoidHom (fun i => Multiplicative.ofAdd (f i)) s
 
 theorem lin_holValueAt_sum {ι : Type} (s : Finset ι) (c : ι → ℂ) (h : ι → ℂ → ℂ) (v : ι → ℂ) (s₀ : ℂ)
     (hh : ∀ i ∈ s, HolValueAt (h i) s₀ (v i)) :

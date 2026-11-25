@@ -1588,11 +1588,11 @@ theorem alg_const (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (D : ℕ)
 open GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights in
 theorem degFl_vand (hIn : PB.Inputs) (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) (Ψ : Type) [Fintype Ψ]
     [DecidableEq Ψ] [Nonempty Ψ] (N : ℕ) (hN : 2 ≤ N) : ∃ c : ℝ, degFlPoly Ψ N = C c * antisymDelta Ψ N := by
-  obtain ⟨M, BM, hhom, hfs, hbd⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.flagModel_over_point Ψ N hN
+  obtain ⟨M, BM, hhom, hfs, hbd⟩ := _root_.PositivityTheory.Xgp.t_c_fl_model Ψ N hN
   have hpos : 1 ≤ antisymDegree Ψ N := Nat.mul_pos Fintype.card_pos (Nat.choose_pos hN)
   obtain ⟨d, hd⟩ : ∃ d, d + 1 = antisymDegree Ψ N := ⟨antisymDegree Ψ N - 1, by omega⟩
   have harith : IsArithVar (mCoordIdeal (yFl Ψ N)) (d + 2) := by
-    have := _root_.GlobalTheory.CompanionTheory.Ar.PB.pFl_isArithVar Ψ N hN
+    have := _root_.PositivityTheory.Xgp.t_c_fl_arith Ψ N hN
     rw [← hd] at this
     exact this
   have hdim : d + 1 = 0 + Fintype.card Ψ * (N.choose 2 + (N - N).choose 2) := by

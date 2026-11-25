@@ -1840,7 +1840,6 @@ namespace PositivityTheory.Rg.BcB.G8
 
 open GlobalTheory.CompanionTheory
 
-theorem translation_existence_holds : TranslEx := LocalThetaTranslation.translEx
 
 theorem lefschetz_pair_holds : LefPair := GlobalTheory.CompanionTheory.LefPair.lefPairOf EllipticTwist.ellDiag weylAt_holds LocalThetaTopology.topo
 

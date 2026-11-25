@@ -1106,11 +1106,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.Hec
 
 namespace GlobalTheory.HeckeTwo
 
-lemma ofReal_add_I_ne_zero (t : ℝ) : (t : ℂ) + I ≠ 0 := by
-  intro h
-  have := congrArg Complex.im h
-  simp at this
-
 lemma norm_inv_ofReal_add_I_sq (t : ℝ) : ‖((t : ℂ) + I)⁻¹ ^ 2‖ = (1 + t ^ 2)⁻¹ := by
   rw [norm_pow, norm_inv, inv_pow, Complex.sq_norm, Complex.normSq_apply]
   simp
@@ -1137,7 +1132,7 @@ lemma tendsto_inv_ofReal_add_I_atBot :
 lemma hasDerivAt_neg_inv_ofReal_add_I (t : ℝ) :
     HasDerivAt (fun s : ℝ => -((s : ℂ) + I)⁻¹) (((t : ℂ) + I)⁻¹ ^ 2) t := by
   have h1 : HasDerivAt (fun w : ℂ => w + I) 1 (t : ℂ) := (hasDerivAt_id _).add_const I
-  have h2 := (h1.inv (ofReal_add_I_ne_zero t)).neg
+  have h2 := (h1.inv (GlobalTheory.HeckeTwoC.tI_ne t)).neg
   have h3 := h2.comp_ofReal
   convert (preTransparency := .reducible) h3 using 1
   · funext s
@@ -1148,7 +1143,7 @@ lemma hasDerivAt_neg_inv_ofReal_add_I (t : ℝ) :
 lemma integral_inv_ofReal_add_I_sq : ∫ t : ℝ, ((t : ℂ) + I)⁻¹ ^ 2 = 0 := by
   have hint : MeasureTheory.Integrable (fun t : ℝ => ((t : ℂ) + I)⁻¹ ^ 2) := by
     refine integrable_inv_one_add_sq.mono' ?_ ?_
-    · exact (((continuous_ofReal.add continuous_const).inv₀ ofReal_add_I_ne_zero).pow 2).aestronglyMeasurable
+    · exact (((continuous_ofReal.add continuous_const).inv₀ GlobalTheory.HeckeTwoC.tI_ne).pow 2).aestronglyMeasurable
     · exact Filter.Eventually.of_forall (fun t => (norm_inv_ofReal_add_I_sq t).le)
   rw [MeasureTheory.integral_of_hasDerivAt_of_tendsto hasDerivAt_neg_inv_ofReal_add_I hint
     (by simpa using tendsto_inv_ofReal_add_I_atBot.neg)

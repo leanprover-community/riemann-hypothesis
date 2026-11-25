@@ -1670,7 +1670,7 @@ theorem tie_of (hX : StX) (hAlg : StAlg) (hHt : StHt) (hSing : StSing) (hBase : 
   have hU := _root_.GlobalTheory.CompanionTheory.Relay.flag_analytic_data_uniformised K ι Φ y (CMType H) (D.p + D.q) D.p M _ d BM FA (by rw [hsub]) hd
   obtain ⟨Cv, CR, hCv, -, hCRl⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.identity_cover K ι Φ y (CMType H) (D.p + D.q) D.p M _ d BM FA
   have FS : Nonempty (PB.FlagSys CR.Re D.p) := ⟨⟨M.j_le, hd, hU, fun τ a b hab hb =>
-    (_root_.GlobalTheory.CompanionTheory.Relay.flag_cover_realisation_pullback hIn K ι Φ y (CMType H) (D.p + D.q) D.p M _ d BM FA K ι Φ y M Cv CR hv' τ a b hab hb).some⟩⟩
+    (_root_.PositivityTheory.Xgp.t_c_sqsys hIn K ι Φ y (CMType H) (D.p + D.q) D.p M _ d BM FA K ι Φ y M Cv CR hv' τ a b hab hb).some⟩⟩
   obtain ⟨⟨pr, j', hov', hR', -⟩, hroots, hdy, -⟩ := id htot
   choose sing hsd hho hsc using _root_.GlobalTheory.CompanionTheory.Ar.HodgeLine.exists_hodgeLine E H D l Xo c _ _ Y S Φ K ι y 𝔐' Fl xdeg e hβ hroots
   have hrd : ∀ a, ((FA.Re.comap some).ref a).a = (Top.combLine sing (Cmp.fundOnRoot a)).a := fun a => by

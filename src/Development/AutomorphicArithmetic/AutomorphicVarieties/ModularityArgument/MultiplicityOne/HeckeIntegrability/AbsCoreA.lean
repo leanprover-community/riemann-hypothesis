@@ -1002,8 +1002,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
 namespace UpperTheory.V.Z.Mult.Pi
 
-attribute [local instance] borelG borelF borelA borelH
-
 private theorem lev_mono {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (S : Set (Pl E))
     {N N' : ∀ w : Pl E, Subgroup (GLw n w)} (h : ∀ w, N w ≤ N' w) : Lev S N ≤ Lev S N' := by
   intro g hg

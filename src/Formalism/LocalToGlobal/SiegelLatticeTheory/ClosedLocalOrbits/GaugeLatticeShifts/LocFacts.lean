@@ -603,8 +603,6 @@ namespace Formalism.L2.SG.Pf
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef
   Formalism.L2.SG.Saturated Formalism.L2.SG.TermLoc ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DualLoc : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (p : HeightOneSpectrum (𝓞 K)) [Fact (Loc.resChar p).Prime]
     (Fp : Type) [Field Fp] [ValuativeRel Fp] [TopologicalSpace Fp] [IsNonarchimedeanLocalField Fp]

@@ -131,18 +131,7 @@ end ring
 theorem skip_two_succAbove_comp {m : ℕ} (q : Fin (m + 2)) (i' : Fin (m + 1)) :
     (skip2 (min (q.succAbove i') q) (max (q.succAbove i') q) : Fin m → Fin (m + 2)) =
       q.succAbove ∘ i'.succAbove := by
-  funext j
-  by_cases h : i'.castSucc < q
-  · rw [Fin.succAbove_of_castSucc_lt _ _ h, min_eq_left h.le, max_eq_right h.le]
-    apply Fin.ext
-    simp only [skip2, Function.comp, Fin.succAbove, Fin.lt_def, Fin.val_castSucc] at h ⊢
-    split_ifs <;> simp at * <;> omega
-  · have h' := not_lt.mp h
-    have h2 : q ≤ q.succAbove i' := by
-      rw [Fin.succAbove_of_le_castSucc _ _ h']
-      exact h'.trans (Fin.castSucc_lt_succ).le
-    rw [min_eq_right h2, max_eq_left h2]
-    exact skip_succ_double_identity m q i' j (by simpa [Fin.le_def] using h')
+  apply _root_.Formalism.FourierDecayAlt.P.Qx6.skip_two_succAbove_comp_alt <;> assumption
 
 theorem sign_succ {m : ℕ} (q : Fin (m + 1)) (x : Fin m) :
     ((-1 : ℤ) ^ (x : ℕ)) = (-1) ^ ((q.succAbove x : Fin (m + 1)) : ℕ) * eps (q.succAbove x) q := by

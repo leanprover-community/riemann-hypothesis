@@ -70,14 +70,6 @@ theorem gv_inj {V : Y.Opens} (hV : V = ⊤) {a b : Γ(Y, ⊤)ˣ} (h : gv a V = g
   unfold gv at h
   rwa [res_self, res_self] at h
 
-private theorem res_res_lemma {Y : Scheme.{0}} {U V W : Y.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (x : Γ(Y, U)ˣ) :
-    res h2 (res h1 x) = res (h2.trans h1) x := by
-  ext
-  change (Y.presheaf.map (homOfLE h2).op).hom ((Y.presheaf.map (homOfLE h1).op).hom (x : Γ(Y, U))) =
-    (Y.presheaf.map (homOfLE (h2.trans h1)).op).hom x
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 private theorem linComb_trivLB_U_eq_univ (φ : J → (Y ⟶ Z)) (ε : J → ℤ) (j : ((Inh.trivLB Z).LinComb φ ε).ι) :
     ((Inh.trivLB Z).LinComb φ ε).U j = ⊤ :=
   wchart_triv φ j
@@ -87,7 +79,7 @@ theorem exists_isConst {φ : J → (Y ⟶ Z)} {ε : J → ℤ} (t : LB.Gen (LB.L
   obtain ⟨j0, -⟩ : ∃ j : ((Inh.trivLB Z).LinComb φ ε).ι, True := ⟨fun _ => PUnit.unit, trivial⟩
   refine ⟨res (linComb_trivLB_U_eq_univ φ ε j0).ge (t.s j0), fun j => ?_⟩
   obtain rfl : j = j0 := funext fun _ => rfl
-  exact ((res_res_lemma _ _ _).trans (res_self _ _)).symm
+  exact ((res_res _ _ _).trans (res_self _ _)).symm
 
 theorem isConst_unique {φ : J → (Y ⟶ Z)} {ε : J → ℤ} {t : LB.Gen (LB.LinComb (Inh.trivLB Z) φ ε)}
     {a b : Γ(Y, ⊤)ˣ} (ha : IsConst t a) (hb : IsConst t b) : a = b := by
@@ -111,7 +103,7 @@ theorem eq_of_corr {φ : J → (Y ⟶ Z)} {ε : J → ℤ} {φ' : J' → (Y ⟶ 
   have e := h j0 j1 (fun _ _ _ => rfl) (fun _ _ _ => rfl) (fun _ _ _ => rfl)
   rw [ha j0, hb j1] at e
   unfold gv at e
-  refine gv_inj ?_ ((res_res_lemma _ _ a).symm.trans (e.trans (res_res_lemma _ _ b)))
+  refine gv_inj ?_ ((res_res _ _ a).symm.trans (e.trans (res_res _ _ b)))
   simp
   exact ⟨wchart_triv φ j0, wchart_triv φ' j1⟩
 

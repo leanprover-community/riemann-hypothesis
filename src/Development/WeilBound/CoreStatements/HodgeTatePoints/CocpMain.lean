@@ -1055,7 +1055,7 @@ theorem cocycle_p : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
     rintro ⟨i, j⟩
     obtain rfl : i = 0 := Subsingleton.elim _ _
     exact hkill j
-  obtain ⟨hI, hN, hCh, hT⟩ := GlobalTheory.T.formal_germ_jet_lift E H hstar X0 t k p x d g (fun m => xkZ t.G x (g.x m))
+  obtain ⟨hI, hN, hCh, hT⟩ := _root_.PositivityTheory.HtPt.Cg.fibre_taylor E H hstar X0 t k p x d g (fun m => xkZ t.G x (g.x m))
     (fun m => xkZ_fst t.G x _) (fun m => xkZ_snd t.G x _)
   obtain ⟨C, hC, hnorm, hB⟩ := GlobalTheory.CompanionTheory.Ar.Coc.Pf.pfold E H hstar X0 t k p x d g w gs hax hpow _ rfl hy0 hyp
   have hL := t.PP.isLB

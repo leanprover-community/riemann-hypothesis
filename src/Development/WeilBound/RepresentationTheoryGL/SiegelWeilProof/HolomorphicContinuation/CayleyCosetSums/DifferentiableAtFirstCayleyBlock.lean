@@ -103,13 +103,8 @@ private theorem differentiableAt_det_of_differentiableAt_entries {ι : Type} [Fi
     {x : M2 n} (hf : ∀ a b, DifferentiableAt ℂ (fun y => f y a b) x) :
     DifferentiableAt ℂ (fun y => (f y).det) x := by
   have hp : ∀ (s : Finset ι) (σ : Equiv.Perm ι),
-      DifferentiableAt ℂ (fun y => ∏ i ∈ s, f y (σ i) i) x := by
-    intro s σ
-    refine Finset.induction_on s ?_ ?_
-    · simp
-    · intro a s ha ih
-      simp only [Finset.prod_insert ha]
-      exact (hf _ _).mul ih
+      DifferentiableAt ℂ (fun y => ∏ i ∈ s, f y (σ i) i) x :=
+    fun s σ => (HasFDerivAt.finsetProd (u := s) fun i _ => (hf (σ i) i).hasFDerivAt).differentiableAt
   have e : (fun y => (f y).det) =
       fun y => ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, f y (σ i) i := by
     funext y

@@ -83,7 +83,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Giv
 
 theorem genDeg_of_system (h : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement) :
     GenDegStatement :=
-  _root_.GlobalTheory.CompanionTheory.Relay.generic_degree_of_projection_and_fibre_dim (_root_.GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system h) fibreDim
+  _root_.GlobalTheory.CompanionTheory.Relay.generic_degree_of_projection_and_fibre_dim (_root_.PositivityTheory.HtPt.Aig.pfCoord_of_system h) fibreDim
 
 end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto

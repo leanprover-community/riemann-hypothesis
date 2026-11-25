@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaCompleteRings.DenseBox
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
@@ -124,16 +125,7 @@ namespace PowerSeriesEvalAlgCl
 
 theorem exists_coef_ge_finset {l : ℕ} [Fact l.Prime] (c : Coef l) (s : Finset (PadicAlgCl l))
     (hs : ∀ y ∈ s, IsIntegral ℤ_[l] y) : ∃ c' : Coef l, c.O ≤ c'.O ∧ ∀ y ∈ s, y ∈ c'.O := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => exact ⟨c, le_rfl, by simp⟩
-  | insert a s _ ih =>
-    obtain ⟨c₁, h₁, h₂⟩ := ih fun y hy => hs y (Finset.mem_insert_of_mem hy)
-    obtain ⟨c₂, h₃, h₄⟩ := (coefSup l).2.2.1 c₁ a (hs a (Finset.mem_insert_self _ _))
-    refine ⟨c₂, h₁.trans h₃, fun y hy => ?_⟩
-    rcases Finset.mem_insert.1 hy with rfl | hy
-    · exact h₄
-    · exact h₃ (h₂ y hy)
+  apply _root_.exPt_coef <;> assumption
 
 end PowerSeriesEvalAlgCl
 

@@ -340,8 +340,6 @@ open Matrix Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheo
 
 namespace GlobalTheory.CompanionTheory.BmuDsAd
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem ex_mul_eq {y : Mat n} (hy : IsUnit y) (X : Mat n) (t : ℝ) :

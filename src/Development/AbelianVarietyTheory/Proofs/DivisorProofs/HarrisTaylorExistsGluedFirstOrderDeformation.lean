@@ -790,24 +790,12 @@ theorem red_pull (A₀ : Over (Sp k)) [GrpObj A₀] (c : prim (dp0 k) (𝟙 _) A
   rw [GrpMor.pull_pull _ _ (homMor (dp0 k) (𝟙 _) (𝟙 A₀)) (fun r => rfl) (by simp)]
   exact Subtype.ext (IsMor.pullCohomologyOne_id _ c.1)
 
-theorem eq_of_surj {K C : Type} [Field K] [CommRing C] [Algebra K C] {M M' : Type*} [AddCommGroup M]
-    [Module K M] [AddCommGroup M'] [Module C M'] (P : M →ₛₗ[algebraMap K C] M')
-    (hP : Function.Surjective (liftSemi P)) (π : C →+* K)
-    (Q : M' →ₛₗ[π] M) (e : M' →ₗ[C] C) (y : M →ₗ[K] K) (hQ : ∀ c, Q (P c) = c)
-    (he : ∀ c, π (e (P c)) = y c) (c' : M') : y (Q c') = π (e c') := by
-  obtain ⟨u, rfl⟩ := hP c'
-  induction u using TensorProduct.induction_on with
-  | zero => simp
-  | add u v hu hv => rw [map_add (f := _), map_add (f := _), map_add (f := _), map_add (f := _), map_add (f := _), hu, hv]
-  | tmul r c =>
-    rw [liftSemi_tmul, LinearMap.map_smulₛₗ, hQ, map_smul, map_smul, smul_eq_mul, smul_eq_mul, map_mul, he]
-
 theorem corr_of_fst (A₀ : Over (Sp k)) [GrpObj A₀] (hA : IsAbelianScheme A₀)
     (e : Crys (divided₂ (GlobalTheory.FODef.sqZero k V)) (spMap (TrivSqZeroExt.fstHom k k V).toRingHom) A₀)
     (y : HdR A₀) (hc : ∀ c, (TrivSqZeroExt.fstHom k k V).toRingHom
       (e ((GlobalTheory.FODef.constMorV k V A₀).pull c)) = y c) :
     (GlobalTheory.Published.GrothendieckMessing.crysRedMor (divided₂ (GlobalTheory.FODef.sqZero k V)) rfl A₀).Corr e y :=
-  eq_of_surj _ (GlobalTheory.SqZeroCrys.isBC_trivSqZeroExt k V A₀ hA (GlobalTheory.FODef.sqZero k V)
+  GlobalTheory.HTGlue.eq_of_liftSemi_surj _ (GlobalTheory.SqZeroCrys.isBC_trivSqZeroExt k V A₀ hA (GlobalTheory.FODef.sqZero k V)
     (GlobalTheory.FODef.constMorV k V A₀)).2 _ _ e y (red_pull A₀) hc
 
 theorem eps_smul_eq {k : Type} [Field k] (A₀ : Over (Sp k)) [GrpObj A₀] (hA : IsAbelianScheme A₀) (y : HdR A₀)
@@ -942,8 +930,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 
 noncomputable section
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HTDeform
 

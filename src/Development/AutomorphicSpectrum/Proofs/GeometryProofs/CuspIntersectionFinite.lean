@@ -631,7 +631,7 @@ theorem abPart_principal (C : Flat.BdryChart Xo σ₀ n a) {z : Fin n → ℂ} (
   have key : ∀ (z₀ : Sp ℂ ⟶ Sp C.R), z₀ = spMap r ≫ spMap f → ∀ P : AbPart C.t z₀, IsPrincipal P.tB := by
     rintro _ rfl P
     obtain ⟨m', -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartPull.exists_sabMap_tK E H _ _ tV C.t _ mV ℂ (spMap r) P
-    exact _root_.GlobalTheory.CompanionTheory.Relay.polarized_abelian_part_principal E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
+    exact _root_.PositivityTheory.HtPt.Ppic.dvr E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
   refine key _ ?_ P
   rw [← hrf]
   show Spec.map (CommRingCat.ofHom (r.comp f)) = _
@@ -707,7 +707,7 @@ theorem centre_phi (C : Flat.BdryChart Xo σ₀ n a) {X : Scheme.{0}} {tt : SAB 
   obtain ⟨m', hm'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartPull.exists_sabMap_tK E H _ _ C.t tt jj m ℂ _ P
   let P' : AbPart C.t (spMap (C.ψ ((ρ : ℂ) • 0))) := ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
   have hP := abPart_principal C (Metric.ball_subset_ball hρ1 hbρ) P'
-  obtain ⟨Mz, hMz⟩ := _root_.GlobalTheory.CompanionTheory.Ar.QuotUnif.frame_lieModel_fibre E H D l Xo σ₀ n a C ((ρ : ℂ) • 0)
+  obtain ⟨Mz, hMz⟩ := _root_.PositivityTheory.Xgn.quotient_uniformization_model E H D l Xo σ₀ n a C ((ρ : ℂ) • 0)
   have hL : ∀ i, ((Mz.pt (Pi.single i 1)).left ≫ (𝟙 _) = ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.ψ ((ρ : ℂ) • 0))) ≫ (C.M.pt (Pi.single i 1)).left) := fun i => by
     have h1 := hMz (Pi.single i 1)
     have h2 : (fun j => C.ψ ((ρ : ℂ) • 0) ((Pi.single i 1 : Fin C.g → C.R) j)) = (Pi.single i 1 : Fin C.g → ℂ) := by

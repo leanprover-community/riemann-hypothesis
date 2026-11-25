@@ -147,8 +147,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.TermOp.Vanish Formalism.L2.SG.PairVal
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Conj
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
@@ -378,8 +376,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.PhaseLiftCell
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem realLink' {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word)
     {what₂ rows' : Finset (Submodule (𝓞 D.host.E) (VS D).V)}

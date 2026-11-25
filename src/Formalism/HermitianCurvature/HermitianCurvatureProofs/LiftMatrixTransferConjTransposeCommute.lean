@@ -381,18 +381,8 @@ variable {K A S : Type} [Field K] [StarRing K] [Ring A] [StarRing A] [Algebra K 
 
 theorem eU_apply (a : S) (i j : Fin 2) (x y : Ix S) :
     (eU a i j : SlopeTestRemainingChoices S A) x y = if x a = i ∧ y = Function.update x a j then 1 else 0 := by
-  simp only [eU, Matrix.of_apply]
-  congr 1
-  apply propext
-  constructor
-  · rintro ⟨h1, h2, h3⟩
-    refine ⟨h1, funext fun b => ?_⟩
-    by_cases hb : b = a
-    · rw [hb]
-      simp [h2]
-    · simp [hb, h3 b hb]
-  · rintro ⟨h1, rfl⟩
-    exact ⟨h1, by simp, fun b hb => by simp [hb]⟩
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.Wd7.eU_apply <;> assumption
 
 theorem eU_mul_apply (a : S) (i j : Fin 2) (B : SlopeTestRemainingChoices S A) (x y : Ix S) :
     ((eU a i j : SlopeTestRemainingChoices S A) * B) x y = if x a = i then B (Function.update x a j) y else 0 := by

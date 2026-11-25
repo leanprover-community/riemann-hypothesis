@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenAdelicUnipotentTimesIntegralOutsideSet
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -306,18 +307,8 @@ theorem fam_hasFDerivAt {Φ : Fn k r E} {U : Set (XX k r)} {F : XX k r → E} (h
     (hxG : x.2 ∈ Glev k r i) :
     HasFDerivAt (fun c' => Φ c' x.2)
       ((fderiv ℝ F x).comp (ContinuousLinearMap.inl ℝ (Fin r → ℂ) (Mx k r))) x.1 := by
-  have hFd : DifferentiableAt ℝ F x :=
-    (hF.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hx)
-  have h1 : HasFDerivAt (fun c' : Fin r → ℂ => ((c', x.2) : XX k r))
-      (ContinuousLinearMap.inl ℝ (Fin r → ℂ) (Mx k r)) x.1 := hasFDerivAt_prodMk_left x.1 x.2
-  have h2 : HasFDerivAt (fun c' : Fin r → ℂ => F (c', x.2))
-      ((fderiv ℝ F x).comp (ContinuousLinearMap.inl ℝ (Fin r → ℂ) (Mx k r))) x.1 :=
-    HasFDerivAt.comp x.1 (f := fun c' : Fin r → ℂ => ((c', x.2) : XX k r)) (g := F) hFd.hasFDerivAt h1
-  refine h2.congr_of_eventuallyEq ?_
-  have hmem : ∀ᶠ c' : Fin r → ℂ in 𝓝 x.1, ((c', x.2) : XX k r) ∈ U :=
-    h1.continuousAt.preimage_mem_nhds (hU.mem_nhds hx)
-  filter_upwards [hmem] with c' hc'
-  exact hΦ _ hc' hxG
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.slice_hasFDeriv <;> assumption
 
 theorem sf_fderiv (v : Fin r → ℂ) {Φ : Fn k r E} (h : SmoothFam k r i U₀ Φ) :
     SmoothFam k r i U₀ (fun c g => fderiv ℝ (fun c' => Φ c' g) c v) := by
@@ -559,12 +550,7 @@ theorem reflection_fixes_basis_vector (l : Fin r) (c : ℂ) {q : Fin (2 * r + k 
   rw [w1_apply, sw_o l h1 h2, dd_o l c h1 h2]
 
 theorem weyl_cell_mem_level_group (l : Fin r) {c : ℂ} (hc : c ≠ 0) : w1 k r l c ∈ Glev k r l.castSucc := by
-  refine ⟨weyl_cell_mem_unitary l hc, fun a ha => ?_⟩
-  have ha' : a.val < l.val := ha
-  have hl := l.isLt
-  constructor
-  · apply reflection_fixes_basis_vector <;> simp only [eI, esI, ne_eq, Fin.ext_iff] <;> omega
-  · apply reflection_fixes_basis_vector <;> simp only [eI, esI, ne_eq, Fin.ext_iff] <;> omega
+  apply _root_.Formalism.FourierDecayAlt.P.Qx4.weyl_cell_mem_level_group <;> assumption
 
 theorem tau_e (l : Fin r) : WeylGroupFacts.tau k r (eI k r l) = esI k r l := by
   have := l.isLt
@@ -582,42 +568,7 @@ theorem tau_es (l : Fin r) : WeylGroupFacts.tau k r (esI k r l) = eI k r l := by
 
 theorem w1_commute_of_mem_Glev (l : Fin r) (c : ℂ) {g : Mx k r} (hg : g ∈ Glev k r l.succ) :
     w1 k r l c * g = g * w1 k r l c := by
-  have hne := e_ne_es (k := k) l
-  have hl : l.val < (l.succ : Fin (r + 1)).val := by simp
-  have ce : ∀ p, g p (eI k r l) = if p = eI k r l then 1 else 0 := WeylGroupFacts.col_of_fix (hg.2 l hl).1
-  have ces : ∀ p, g p (esI k r l) = if p = esI k r l then 1 else 0 := WeylGroupFacts.col_of_fix (hg.2 l hl).2
-  have res : ∀ j, g (esI k r l) j = if esI k r l = j then 1 else 0 := by
-    have := WeylGroupFacts.row_of_fixed_col hg.1 (eI k r l) ce
-    rwa [tau_e] at this
-  have re : ∀ j, g (eI k r l) j = if eI k r l = j then 1 else 0 := by
-    have := WeylGroupFacts.row_of_fixed_col hg.1 (esI k r l) ces
-    rwa [tau_es] at this
-  ext p q
-  rw [mul_weyl_cell_apply, weyl_cell_mul_apply]
-  rcases tri l p with h | h | ⟨h1, h2⟩
-  · subst h
-    rw [sw_e, dd_es, res, re]
-    rcases tri l q with h' | h' | ⟨h1', h2'⟩
-    · subst h'
-      simp [sw_e, hne, hne.symm]
-    · subst h'
-      simp [sw_es, dd_es]
-    · simp [sw_o l h1' h2', Ne.symm h1', Ne.symm h2']
-  · subst h
-    rw [sw_es, dd_e, res, re]
-    rcases tri l q with h' | h' | ⟨h1', h2'⟩
-    · subst h'
-      simp [sw_e, dd_e]
-    · subst h'
-      simp [sw_es, hne, hne.symm]
-    · simp [sw_o l h1' h2', Ne.symm h1', Ne.symm h2']
-  · rw [sw_o l h1 h2, dd_o l c h1 h2]
-    rcases tri l q with h' | h' | ⟨h1', h2'⟩
-    · subst h'
-      simp [sw_e, ce, ces, h1, h2]
-    · subst h'
-      simp [sw_es, ce, ces, h1, h2]
-    · simp [sw_o l h1' h2', dd_o l c h1' h2']
+  apply _root_.Formalism.FourierDecayAlt.P.Qx4.w1_commute_of_mem_Glev <;> assumption
 
 end W1
 

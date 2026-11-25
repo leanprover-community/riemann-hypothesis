@@ -1889,8 +1889,6 @@ theorem reflection_symmetry : Reflect :=
 theorem forward_simple_module : FwdSimple :=
   forward_simple_of_tensor_facts _root_.GlobalTheory.CompanionTheory.RgExh.qdetTens _root_.GlobalTheory.CompanionTheory.RgHeckeBack.backStable dual_module_facts unitarity
 
-theorem infinitesimal_character_shift : CompanionTheory.RgExh.StepChar := _root_.GlobalTheory.CompanionTheory.RgExhHecke.StepCharPf.stepChar
-
 theorem hecke_algebra_exhaustion : CompanionTheory.RgExh.Hecke :=
   hecke_of' GlobalTheory.T.QuantumDeterminantEquality _root_.GlobalTheory.CompanionTheory.RgExhHecke.StepCharPf.stepChar _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof.nonVan _root_.GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal _root_.GlobalTheory.CompanionTheory.RgExhHecke.BackProof.back _root_.GlobalTheory.CompanionTheory.RgExhHecke.OmScalP.omScal
     forward_simple_module reflection_symmetry

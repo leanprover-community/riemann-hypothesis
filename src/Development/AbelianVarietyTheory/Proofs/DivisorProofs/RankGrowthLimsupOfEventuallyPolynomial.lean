@@ -51,7 +51,6 @@ namespace GlobalTheory.CompHt
 open Filter Topology
 open scoped ENNReal
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 private lemma factorial_mul_div_pow_ennreal_eq_ofReal (D k m : ℕ) (hk : 1 ≤ k) :
@@ -64,7 +63,6 @@ private lemma factorial_mul_div_pow_ennreal_eq_ofReal (D k m : ℕ) (hk : 1 ≤ 
     ENNReal.ofReal_pow (by positivity)]
   simp
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ) (D : ℕ) (hQ : Q.degree ≤ D) :
@@ -80,7 +78,6 @@ private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ)
     simpa [hc] using this
 
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 theorem _root_.GlobalTheory.CompHt.growth_of_eventually_eq_eval :

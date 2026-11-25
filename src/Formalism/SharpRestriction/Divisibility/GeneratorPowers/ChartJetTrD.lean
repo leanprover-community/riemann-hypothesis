@@ -9,8 +9,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTr
 
 attribute [local simp] MvPolynomial.bind₁
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.JetTr

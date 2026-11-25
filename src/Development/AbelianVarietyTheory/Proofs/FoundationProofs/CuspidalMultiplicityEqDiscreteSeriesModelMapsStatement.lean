@@ -227,7 +227,7 @@ theorem exists_allMaps : ∀ (D : D7) (θ : D.what₂.Tau → (TensorProduct D.h
     refine (uniq _ _ q1 ?_).symm
     rw [coe_update, hw, ← (hsmM y).2 τ X hX]
     exact q2
-  obtain ⟨N, L, hL, hgr⟩ := GlobalTheory.T.sobolev_bound_for_smooth_vectors D θ V hθ μ 𝓕 ρ hp hρ U hU
+  obtain ⟨N, L, hL, hgr⟩ := _root_.GlobalTheory.SobolevGrowth.pointwise_growth D θ V hθ μ 𝓕 ρ hp hρ U hU
   have hEq : GlobalTheory.RepSmooth.IsEquiv θ T := by
     intro τ g hg y z hz
     refine uniq _ _ (continuous_rTr (atTau θ V τ g) (p2 y).cont) ?_

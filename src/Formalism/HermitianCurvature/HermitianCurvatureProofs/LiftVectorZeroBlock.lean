@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.StatementHeads
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
@@ -178,19 +179,7 @@ theorem tL_iota {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {z z' : Fi
 theorem diff_rad {r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
     {Φ : Fn k r (Wq →L[ℂ] Wp)} (hΦ : Φ ∈ RadSp k r z z' π π') (g : Mx k r) {c : Fin r → ℂ} (hc : c ∈ OmX r) :
     DifferentiableAt ℝ (fun c' => Φ c' g) c := by
-  by_cases hx : (c, g) ∈ DomR k r z z'
-  · obtain ⟨U, F, hU, hxU, hF, hΦF⟩ := hΦ.2.1 (c, g) hx
-    have hU' : IsOpen ((fun c' => (c', g)) ⁻¹' U) := hU.preimage (continuous_id.prodMk continuous_const)
-    have hd : DifferentiableAt ℝ (fun c' => F (c', g)) c :=
-      ((hF.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hxU)).comp c
-        ((differentiableAt_id).prodMk (differentiableAt_const _))
-    refine hd.congr_of_eventuallyEq ?_
-    filter_upwards [hU'.mem_nhds (show (c, g) ∈ U from hxU)] with c' hc'
-    exact hΦF (c', g) hc' hx.2.1
-  · have h0 : (fun c' => Φ c' g) = fun _ => 0 := by
-      funext c'
-      refine hΦ.1 (c', g) fun h => hx ⟨hc, h.2.1, h.2.2⟩
-    rw [h0]; exact differentiableAt_const _
+  apply _root_.Formalism.FourierDecayAlt.P.Qx5.slice_diff <;> assumption
 
 def insL : (Fin ρ → ℂ) →L[ℝ] (Fin (1 + ρ) → ℂ) :=
   LinearMap.toContinuousLinearMap

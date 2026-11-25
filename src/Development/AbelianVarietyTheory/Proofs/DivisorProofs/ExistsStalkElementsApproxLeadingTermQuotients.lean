@@ -868,14 +868,6 @@ theorem stalkId_pow' {Y : Scheme.{0}} (I : Y.IdealSheafData) (a : ℕ) (y : Y) :
   rw [ds_stalkId_eq_map _ ⟨W, hW⟩ y h₁, ds_stalkId_eq_map _ ⟨W, hW⟩ y h₁, ← Ideal.map_pow]
   rfl
 
-theorem valOn_pow : ∀ {o : Type} [CommRing o] {ζ : o} {g n : ℕ} (F : SFam g n ζ) {S : Scheme.{0}} (j : F.X ⟶ S)
-    (φ : InvFun ℤ) (J : S.IdealSheafData) (d k : ℕ), ValOn F j φ J d → ValOn F j φ (J ^ k) (k * d) := by
-  intro o _ ζ g n F S j φ J d k h T ξ hξ
-  obtain ⟨a, ha, hJ⟩ := h T ξ hξ
-  refine ⟨k * a, ?_, ?_⟩
-  · push_cast; rw [ha]; ring
-  · rw [idlAlong, stalkId_pow', Ideal.map_pow, ← idlAlong, hJ, Ideal.span_singleton_pow, pow_mul']
-
 end GlobalTheory.Poinc
 end -- clump:auto
 end -- clump:auto

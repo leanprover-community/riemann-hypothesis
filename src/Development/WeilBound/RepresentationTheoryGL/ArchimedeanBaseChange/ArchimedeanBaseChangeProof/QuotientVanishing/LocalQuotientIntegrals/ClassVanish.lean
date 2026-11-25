@@ -1761,8 +1761,6 @@ theorem classVanish : ClassVanish :=
     (ChiGamGlobal.chiGam_of onlyIsotropic (PosYGlobal.posY_of degSubmod degPairing) chainSum)
     (QuotStageInt.quotStage_of QuotNorm.integral_normaliser_eq) sizeBasic
 
-theorem unfold : Unfold := UnfoldCut.unfold_of_mahler mahler
-
 end PositivityTheory.Rg.BcB.CV
 end -- clump:auto
 end -- clump:auto

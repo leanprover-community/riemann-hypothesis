@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatQMinOp
 public import Formalism.HermitianCurvature.StatementJC
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 public import Formalism.HermitianCurvature.StatementJF
@@ -805,32 +806,7 @@ theorem bc_qminorWords (k r : ℕ) {t : ℕ} (p q : Fin t → Fin (2 * r + k + 1
     ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (UU : Set (B.Mat k r)) (f : B.Mat k r → E),
       B.CkOn (t : ℕ∞) UU f → ∀ g ∈ UU, g ∈ B.GV k r →
         qminorOp (Q.EH k r) p q u f g = (L.map fun cw => cw.1 • B.Rw cw.2 f g).sum := by
-  let ts : Equiv.Perm (Fin t) → List (ℂ × Fin (2 * r + k + 1) × Fin (2 * r + k + 1)) :=
-    fun σ => List.ofFn fun j : Fin t => (u - ((j : ℕ) : ℂ), p (σ j), q j)
-  refine ⟨(Finset.univ : Finset (Equiv.Perm (Fin t))).toList.flatMap
-      (fun σ => (CapelliWordSumExpansion.expand k r (ts σ)).map fun cw => (((Equiv.Perm.sign σ : ℤ) : ℂ) * cw.1, cw.2)), ?_, ?_⟩
-  · intro cw hcw
-    simp only [List.mem_flatMap, List.mem_map] at hcw
-    obtain ⟨σ, _, cw', hm', rfl⟩ := hcw
-    have := CapelliWordSumExpansion.expand_words (k := k) (r := r) (ts σ) cw' hm'
-    refine ⟨this.1, this.2.trans ?_⟩
-    simp [ts]
-  · intro E _ _ UU f hf g hgU hg
-    have hloc : ∀ σ, CapelliWordSumExpansion.Loc ((ts σ).length : ℕ∞) f g := by
-      intro σ
-      obtain ⟨U, f', a, b, c, d⟩ := hf g hgU
-      refine ⟨U, f', a, b, ?_, d⟩
-      simpa [ts] using c
-    have e1 : qminorOp (Q.EH k r) p q u f g = ∑ σ, (((Equiv.Perm.sign σ : ℤ) : ℂ)) • CapelliWordSumExpansion.foldT (ts σ) f g := by
-      simp only [qminorOp, Finset.sum_apply, Pi.smul_apply]
-      refine Finset.sum_congr rfl (fun σ _ => ?_)
-      congr 1
-      simp only [CapelliWordSumExpansion.foldT, ts, List.map_ofFn]
-      rfl
-    rw [e1, CapelliWordSumExpansion.sum_flatMap, Finset.sum_map_toList]
-    refine Finset.sum_congr rfl (fun σ _ => ?_)
-    rw [CapelliWordSumExpansion.expand_eq (ts σ) f g hg (hloc σ), List.map_map, ← CapelliWordSumExpansion.sum_map_mul_smul]
-    rfl
+  apply +allowSynthFailures _root_.Formalism.FourierDecayAlt.P.CutMP.QMinOp.qminorWordSum <;> assumption
 
 section under
 

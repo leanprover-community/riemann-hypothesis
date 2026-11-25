@@ -104,13 +104,6 @@ noncomputable section
 
 namespace GlobalTheory.CovTop.GoodWCore
 
-theorem fullLat_congr {K Rg : Type} [Field K] [NumberField K] [CommRing Rg] [Algebra K Rg] [Algebra (𝓞 K) Rg]
-    [IsScalarTower (𝓞 K) K Rg] {C C' : Submodule K Rg} (h : C = C')
-    {Vs : HeightOneSpectrum (𝓞 K) → Set (Rg → EReal)} {hV : ∀ la, ∀ v ∈ Vs la, IsVal la v}
-    (hl : FullLat C Vs hV) : FullLat C' Vs hV := by
-  subst h
-  exact hl
-
 
 set_option maxHeartbeats 8000000 in
 theorem goodW_core {D : D7} (T : CoreJ D) (hT : LawsJ T) (j : ℕ) (hj : InR D j) (w : WeightFamilies.Wt D j)

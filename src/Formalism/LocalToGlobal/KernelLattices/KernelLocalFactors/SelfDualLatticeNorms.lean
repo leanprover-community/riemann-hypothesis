@@ -110,13 +110,6 @@ namespace GM
 
 variable (p : ℕ) [Fact p.Prime]
 
-theorem norm_divisor_twelve_power_eq_one (h5 : 5 ≤ p) {N k : ℕ} (hN : N ∣ 12 ^ k) : ‖(N : ℂ_[p])‖ = 1 := by
-  refine Formalism.L2.Th1.E.ScaledModelNorms.norm_nat p fun h => ?_
-  have hp : p.Prime := Fact.out
-  have h12 : p ∣ 12 := hp.dvd_of_dvd_pow (h.trans hN)
-  have hle : p ≤ 12 := Nat.le_of_dvd (by norm_num) h12
-  interval_cases p <;> first | omega | exact absurd hp (by norm_num)
-
 end GM
 
 theorem good_model_exists_all_primes : GoodModelAll := by

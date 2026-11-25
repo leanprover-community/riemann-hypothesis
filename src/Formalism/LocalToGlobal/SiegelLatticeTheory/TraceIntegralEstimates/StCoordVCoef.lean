@@ -164,8 +164,6 @@ namespace Formalism.MainNotions.S.Pv.HH
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma₂
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem one_le_rdE : 1 ≤ D.host.rdE := by
@@ -194,8 +192,6 @@ open scoped Matrix
 open Finset NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj
 
 namespace Formalism.L2.S.Pv.Chart
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hJ_conj {n : ℕ} (ε : Fin n → Bool) (x y : Fin n → ℂ) : hJ ε x y = star (hJ ε y x) := by
   unfold hJ Formalism.REAL.Jm

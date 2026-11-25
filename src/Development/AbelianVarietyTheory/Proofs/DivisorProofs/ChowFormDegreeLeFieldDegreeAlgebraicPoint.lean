@@ -234,7 +234,6 @@ private theorem det_multiplication_form_eq_zero_of_sum_eq_zero {K L A : Type} [F
       _ = 0 := by rw [hu, zero_mul]
 
 
-set_option autoImplicit false in
 open MvPolynomial in
 variable {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {N : ℕ} in
 theorem _root_.GlobalTheory.CompHt.PointUp.le_finrank_of_isChowFormInt : ∀ (K : Type) [Field K] (N δ : ℕ) (y : Fin N → AlgebraicClosure K)

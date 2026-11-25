@@ -82,7 +82,6 @@ theorem exists_component_equiv_of_tower : ∀ (E : Type) [Field E] [NumberField 
     exact Scheme.Hom.comp_apply _ _ _
   exact ⟨Equiv.ofBijective k ⟨hinj, hsurj⟩, hk⟩
 
-theorem y_comp_of : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (T : Top.RootTower (CMType H) (Dw.p + Dw.q)) (o : TowerOrigin Y T), Top.Given → ∃ κ : Comp Xo c ≃ T.Comp, CompOf o κ := exists_component_equiv_of_tower
 
 end PositivityTheory.UnitarySelfGeneration
 end -- clump:auto
@@ -102,7 +101,7 @@ open scoped Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.tower_components_equiv_of_given : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (T : Top.RootTower (CMType H) (Dw.p + Dw.q)) (o : TowerOrigin Y T), Top.Given → ∃ κ : Comp Xo c ≃ T.Comp, CompOf o κ := by
-  first | exact @PositivityTheory.UnitarySelfGeneration.y_comp_of
+  first | exact @_root_.PositivityTheory.UnitarySelfGeneration.exists_component_equiv_of_tower
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerComponentsEquivOfGiven =====

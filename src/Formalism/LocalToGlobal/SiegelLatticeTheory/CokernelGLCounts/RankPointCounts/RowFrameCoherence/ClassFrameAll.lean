@@ -778,8 +778,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting 
 
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
   (κ : TermDef.Term D u u' (X.Fu u) (Y.what₂ u) → ℕ)
 
@@ -835,8 +833,6 @@ namespace Formalism.L2.SG.Pf.RowForm
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.RowForm.ClassFrameOO2Aux
 
 open scoped Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
   (κ : TermDef.Term D u u' (X.Fu u) (Y.what₂ u) → ℕ)
@@ -1097,8 +1093,6 @@ theorem xplus_sum (F : FlagG S r T) {v : S.V} (hv : v ∈ F.Xplus) : ∃ C : Fin
 end Flag
 
 section GT
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
   (s : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u'))
@@ -1373,8 +1367,6 @@ open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.RowForm.ClassFrameNormalVectorScalars
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
 
 theorem gval_ne (s : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u'))
@@ -1531,8 +1523,6 @@ namespace Formalism.L2.SG.Pf.RowForm
 
 open Formalism.L2.SG.Pf.RowForm.ClassFrameNormalVectorScalars
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
   (κ : Formalism.L2.SG.TermDef.Term D u u' (X.Fu u) (Y.what₂ u) → ℕ)
 
@@ -1567,8 +1557,6 @@ namespace Formalism.L2.SG.Pf.RowForm
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge Formalism.L2.SG.TypedSets
   Formalism.L2.SG.MassDataConc Formalism.L2.SG.MassDataForm MeasureTheory
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem classFrameAll_comp {V V' : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
     [NormedAddCommGroup V'] [InnerProductSpace ℂ V'] (P G K : V →L[ℂ] V) (G' H' K' : V' →L[ℂ] V') (T : V' →L[ℂ] V)

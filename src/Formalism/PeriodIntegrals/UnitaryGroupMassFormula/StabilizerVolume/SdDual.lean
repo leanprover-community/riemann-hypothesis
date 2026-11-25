@@ -26,24 +26,7 @@ variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
 variable {E : Type} [Field E] [Algebra F E] {d : ℕ} (b : Module.Basis (Fin d) F E)
 
-def latSub (a M : ℕ) : AddSubgroup (Fin a → Fin M → Fv F v ⊗[F] E) where
-  carrier := latV b v
-  zero_mem' := by
-    simp only [latV, Set.mem_ofPred_eq]
-    intro p i k
-    simp
-  add_mem' := by
-    intro X Y hX hY
-    simp only [latV, Set.mem_ofPred_eq] at hX hY ⊢
-    intro p i k
-    simpa [Pi.add_apply, map_add (f := _)] using add_mem (hX p i k) (hY p i k)
-  neg_mem' := by
-    intro X hX
-    simp only [latV, Set.mem_ofPred_eq] at hX ⊢
-    intro p i k
-    simpa [map_neg] using neg_mem (hX p i k)
-
-export PI.VolStabSW.SdDualW (crd_smul sigR_smul BR_smul_left BR_add_right BR_smul_right)
+export PI.VolStabSW.SdDualW (latSub crd_smul sigR_smul BR_smul_left BR_add_right BR_smul_right)
 
 section Nondeg
 
@@ -58,14 +41,7 @@ section Dual
 
 variable [FiniteDimensional F E] (σ : E →ₐ[F] E) {M a : ℕ} (J : Matrix (Fin M) (Fin M) E)
 
-export PI.VolStabSW.SdDualW (eT eT_mem sum_eT)
-
-export PI.VolStabSW.SdDualW (BR_expand)
-
-def phiL : (Fin a → Fin M → Fv F v ⊗[F] E) →ₗ[Fv F v] (Fin a × Fin M × Fin d → Fv F v) where
-  toFun Y q := BR (Fv F v) σ J (eT v b q) Y
-  map_add' Y Y' := by funext q; simp [BR_add_right]
-  map_smul' s Y := by funext q; simp [BR_smul_right]
+export PI.VolStabSW.SdDualW (eT eT_mem sum_eT BR_expand phiL)
 
 include b in
 theorem dualAt_alt
@@ -87,22 +63,7 @@ section Herm
 
 variable [FiniteDimensional F E]
 
-def latA : AddSubgroup (Fv F v ⊗[F] E) where
-  carrier := {z | ∀ k, crd b (Fv F v) z k ∈ v.adicCompletionIntegers F}
-  zero_mem' := by intro k; simp [crd]
-  add_mem' := by
-    intro x y hx hy k
-    simpa [crd, map_add (f := _)] using add_mem (hx k) (hy k)
-  neg_mem' := by
-    intro x hx k
-    simpa [crd, map_neg] using neg_mem (hx k)
-
-export PI.VolStabSW.SdDualW (isOpen_latA isCompact_latA)
-
-def latS (σ : E →ₐ[F] E) : AddSubgroup (Fv F v ⊗[F] E) :=
-  latA v b ⊔ (latA v b).map (sigR (Fv F v) σ).toAddMonoidHom
-
-export PI.VolStabSW.SdDualW (iota iota_mem pairHerm_iota dualAt_H)
+export PI.VolStabSW.SdDualW (latA isOpen_latA isCompact_latA latS iota iota_mem pairHerm_iota dualAt_H)
 
 end Herm
 

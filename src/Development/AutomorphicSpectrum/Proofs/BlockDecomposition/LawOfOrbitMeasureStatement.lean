@@ -315,8 +315,6 @@ open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open GlobalTheory.CompanionTheory.ColumnSplitting
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.law_of_orbit_measure : Law := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.LawPf.law
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LawOfOrbitMeasureStatement =====

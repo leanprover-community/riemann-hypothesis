@@ -77,10 +77,6 @@ def InParM (a : ℕ) {n : ℕ} (M : Matrix (Fin n) (Fin n) F) : Prop :=
 theorem inPar_eq (a : ℕ) {n : ℕ} (x : GL (Fin n) F) :
     InPar a x ↔ InParM a (x : Matrix (Fin n) (Fin n) F) := Iff.rfl
 
-theorem gal_id (n : ℕ) (y : GL (Fin n) F) : gal (RingHom.id F) n y = y := by
-  ext i j
-  simp [gal]
-
 theorem inPar_one (a n : ℕ) : InPar a (1 : GL (Fin n) F) := by
   intro i j hj hi
   show (1 : Matrix (Fin n) (Fin n) F) i j = 0
@@ -136,7 +132,7 @@ def blk0 (a b : ℕ) (α : GL (Fin a) F → ℂ) (β : GL (Fin b) F → ℂ) (n 
 theorem hc_eq [Fintype F] (a b : ℕ) (α : GL (Fin a) F → ℂ) (β : GL (Fin b) F → ℂ) (n : ℕ) (x : GL (Fin n) F) :
     hc a b α β n x = (Nat.card {p : GL (Fin n) F // InPar a p} : ℂ)⁻¹ *
       hcT a b (fun u v => α u * β v) n x := by
-  simp only [hc, hcTw, hcT, gal_id, finsum_eq_sum_of_fintype]
+  simp only [hc, hcTw, hcT, GlobalTheory.Shin.gal_id_eq, finsum_eq_sum_of_fintype]
 
 theorem hc_eq' [Fintype F] (a b : ℕ) (α : GL (Fin a) F → ℂ) (β : GL (Fin b) F → ℂ) (n : ℕ) (x : GL (Fin n) F) :
     hc a b α β n x = (Nat.card {p : GL (Fin n) F // InPar a p} : ℂ)⁻¹ *
@@ -514,11 +510,6 @@ theorem aflipG_conj {n : ℕ} (x : GL (Fin n) F) : ∃ p : GL (Fin n) F, aflipG 
   rw [eq_mul_inv_iff_mul_eq]
   exact Units.ext (by simp only [Units.val_mul, aflipG_coe, IsUnit.unit_spec, h])
 
-theorem toG_coe' {n : ℕ} (x : GL (Fin n) F) : toG (x : Matrix (Fin n) (Fin n) F) = x := by
-  unfold toG
-  rw [dite_eq_left x.isUnit]
-  exact Units.ext (IsUnit.unit_spec _)
-
 theorem cl_conj {n : ℕ} {α : GL (Fin n) F → ℂ} (hα : IsCl α) (p x : GL (Fin n) F) :
     α (p * x * p⁻¹) = α x := by
   have := hα x p⁻¹
@@ -529,8 +520,8 @@ theorem class_aflip {n : ℕ} {α : GL (Fin n) F → ℂ} (hα : IsCl α) (M : M
   by_cases h : IsUnit M
   · obtain ⟨x, rfl⟩ := h
     obtain ⟨p, hp⟩ := aflipG_conj x
-    have h1 : toG (aflip (x : Matrix (Fin n) (Fin n) F)) = aflipG x := toG_coe' (aflipG x)
-    rw [h1, toG_coe', hp, cl_conj hα]
+    have h1 : toG (aflip (x : Matrix (Fin n) (Fin n) F)) = aflipG x := GlobalTheory.Shin.HcUnit.toG_val (aflipG x)
+    rw [h1, GlobalTheory.Shin.HcUnit.toG_val, hp, cl_conj hα]
   · have h' : ¬ IsUnit (aflip M) := by
       rintro ⟨x, hx⟩
       exact h ⟨aflipG x, by rw [aflipG_coe, hx, aflip_aflip]⟩
@@ -564,9 +555,6 @@ theorem br_aflip {a b : ℕ} (M : Matrix (Fin (a + b)) (Fin (a + b)) F) : br b a
   rw [dite_eq_left (by omega), dite_eq_left (by simp only [Fin.val_rev]; omega), aflip_apply]
   congr 1 <;> apply Fin.ext <;> simp only [Fin.val_rev] <;> omega
 
-theorem gal_id (n : ℕ) (y : GL (Fin n) F) : gal (RingHom.id F) n y = y := by
-  ext i j; simp [gal]
-
 end GlobalTheory.HCCommF
 end -- clump:auto
 end -- clump:auto
@@ -584,7 +572,7 @@ private lemma hc_conj_invariant {F : Type} [Field F] (a b n : ℕ) (α : GL (Fin
     (β : GL (Fin b) F → ℂ) (x p : GL (Fin n) F) :
     hc a b α β n (p * x * p⁻¹) = hc a b α β n x := by
   unfold hc hcTw
-  simp only [GlobalTheory.HCCommF.gal_id]
+  simp only [GlobalTheory.Shin.gal_id_eq]
   congr 1
   rw [← finsum_comp_equiv (Equiv.mulLeft p)]
   congr 1
@@ -610,7 +598,7 @@ private lemma hc_swap_eq_hc_aflipG {F : Type} [Field F] (a b : ℕ) (α : GL (Fi
     (β : GL (Fin b) F → ℂ) (hα : IsCl α) (hβ : IsCl β) (x : GL (Fin (a + b)) F) :
     hc b a β α (a + b) x = hc a b α β (a + b) (GlobalTheory.HCCommF.aflipG x) := by
   unfold hc hcTw
-  simp only [GlobalTheory.HCCommF.gal_id]
+  simp only [GlobalTheory.Shin.gal_id_eq]
   have hcard : Nat.card {p : GL (Fin (a + b)) F // InPar b p} =
       Nat.card {p : GL (Fin (a + b)) F // InPar a p} :=
     Nat.card_congr (Equiv.subtypeEquiv (GlobalTheory.HCCommF.aflipE (F := F) (a + b)) (fun p => by

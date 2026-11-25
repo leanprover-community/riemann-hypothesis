@@ -221,10 +221,6 @@ theorem rank_pos (X : Data E r) (hn : 0 < nd X) : 0 < r := by
   obtain ⟨e⟩ : Nonempty (Ent X) := Fintype.card_pos_iff.1 hn
   exact Fin.pos e.2.1.1
 
-theorem isOrth_translate (X : Data E r) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) {x : Frame X.Ψ r}
-    (ho : IsOrth X x) : IsOrth X (lact γ x) := fun τ => by
-  rw [OntoS.gram_lact X hγ]; exact ho τ
-
 def testFn (X : Data E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (Ψ : Frame X.Ψ r → ℝ≥0∞)
     (y : Frame X.Ψ r) : ℝ≥0∞ := by
   classical
@@ -276,7 +272,7 @@ theorem vanish_translate : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
   have hr : (0 : ℝ) < r := Nat.cast_pos.2 (rank_pos X hn)
   have hR : (0 : ℝ) < 1 / (100 * (r : ℝ) ^ 2) := by positivity
   set x1 := lact γ x with hx1def
-  have ho1 : IsOrth X x1 := isOrth_translate X hγ ho
+  have ho1 : IsOrth X x1 := ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.isOrth_lact X hγ ho
   have h01 := IW.zero_mem_OmF X x1 ho1
   have hO1 := (ExF.isOpen_OmF X x1).mem_nhds h01
   have hO := (ExF.isOpen_OmF X x).mem_nhds (IW.zero_mem_OmF X x ho)

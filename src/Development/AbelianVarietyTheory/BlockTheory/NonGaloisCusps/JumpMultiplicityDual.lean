@@ -70,15 +70,6 @@ def mapdR {V' : Type} [AddCommGroup V'] [Module LL V'] [Module Qp V'] [IsScalarT
     (f : V →ₗ[LL] V') : V ⊗[Qp] BdR →ₗ[LL] V' ⊗[Qp] BdR :=
   AlgebraTensorModule.map f (LinearMap.id : BdR →ₗ[Qp] BdR)
 
-def tdR : BdRˣ := (PD.t_unit.map PD.ι).unit
-
-variable (ρ : Representation LL G V)
-
-def filDdR (a : ℤ) : Submodule LL (V ⊗[Qp] BdR) := DdR PD ρ ⊓ FilV PD (LL := LL) (V := V) a
-
-def jumpMult (τ : K →ₐ[Qp] LL) (a : ℤ) : ℕ :=
-  Module.finrank LL (↥(FildR PD ρ τ a) ⧸ (FildR PD ρ τ (a + 1)).comap (FildR PD ρ τ a).subtype)
-
 end Ops
 
 variable [TopologicalSpace G] (LL O : Type) [Field LL] [Algebra Qp LL] [CommRing O] [Algebra O LL]

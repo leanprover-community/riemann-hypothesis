@@ -63,16 +63,6 @@ namespace LevelTowerAlt
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {p : Cpt ξ}
 
-theorem uZpow {a : Ω} (ha : unitAt ξ p a) (n : ℤ) : unitAt ξ p (a ^ n) := by
-  obtain ⟨h0, h1, h2⟩ := ha
-  refine ⟨zpow_ne_zero n h0, ?_, ?_⟩
-  · rcases n with m | m
-    · simpa using pow_mem h1 m
-    · simpa [zpow_negSucc] using pow_mem h2 (m + 1)
-  · rcases n with m | m
-    · simpa using pow_mem h2 m
-    · simpa [zpow_negSucc] using pow_mem h1 (m + 1)
-
 theorem gen_unit {Λ : Lat ξ Ω} {s t : Ω} (hs : Λ.IsGenAt p s) (ht : Λ.IsGenAt p t) : unitAt ξ p (s / t) := by
   apply GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_unit <;> assumption
 
@@ -519,7 +509,7 @@ theorem core (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag) (hB : Birational y) {e : C
   have hne : ∀ k, ∃ a, y ⟨k, a⟩ ≠ 0 := by
     obtain ⟨ch, hc⟩ := 𝔐.tie.cover ⟨genPt 𝔐.ξ, specializes_rfl⟩
     exact fun k => ⟨ch k, chart_ne hc k⟩
-  obtain ⟨f₁, f₂, hfg, hval⟩ := _root_.GlobalTheory.CompanionTheory.Ar.LineIso.lineIso_of_two_degrees _ Ω 𝔐.ξ K J y Ω _ A.a A'.a _ ρ 𝔐.tie hB hne D1
+  obtain ⟨f₁, f₂, hfg, hval⟩ := _root_.PositivityTheory.UnitarySelfGeneration.l_lineiso _ Ω 𝔐.ξ K J y Ω _ A.a A'.a _ ρ 𝔐.tie hB hne D1
     (by rw [smul_eq_mul, hρe]; exact D2)
   refine ⟨f₁, f₂, hfg, ?_⟩
   rintro w ⟨z, hzw, hzI⟩ u₁ u₂ huv hu₁
@@ -974,7 +964,7 @@ theorem common (h₁ : LevelFree) (h₂ : MuHodge) : Common := by
       (Or.i_range τ ▸ LinearMap.mem_range_self (Or.i τ) (bb τ (tailIdx Dc.j_le_N k)))
     exact ⟨z, hz, by rw [← h, add_sub_cancel_right]; exact ha⟩
   choose s hs using hs
-  obtain ⟨hsi, hdeg⟩ := _root_.GlobalTheory.CompanionTheory.Relay.intersection_datum_degree_sum E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B bb s _ hs hΛ
+  obtain ⟨hsi, hdeg⟩ := _root_.LevelTowerAlt.det_lattice_tensor_isDegOn_muTwDeg E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B bb s _ hs hΛ
   have hmet := h₂ hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B bb s _ hs hΛ
   have hn : Dc.N - Dc.j = D.q := by
     rcases Or.side with ⟨-, -, h⟩ | ⟨h, -, -⟩

@@ -343,8 +343,6 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def shcAdC {ε : Fin n → Bool} (y : PCoord ε → ℂ) (w : PCoord ε → ℂ) : PCoord ε → ℂ :=
   fun ab => shcAd y (pmat w) ab.1.1 ab.1.2
 
@@ -823,8 +821,6 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def detPaCj (P Q : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] Matrix (Fin n) (Fin n) ℂ where
   toFun W := P * W * Q
   map_add' A B := by simp [Matrix.mul_add, Matrix.add_mul]
@@ -904,8 +900,6 @@ namespace ReciprocityTheory.ChartRestriction.DS
 open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace PolarJacobianDeterminant
 

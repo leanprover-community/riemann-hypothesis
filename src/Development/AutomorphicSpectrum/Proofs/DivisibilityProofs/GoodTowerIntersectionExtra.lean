@@ -118,7 +118,7 @@ theorem degPush_of (hEq : NumEq) (hPF : GeoPF) (hFib : FibNum) (hTr : TrdegU) (h
   intro _ hProp _ hG hInt E _ _ _ _ H D Xo l c Y _ T o II hY hX hII hp hq hqp a K _ J _ Ω _ _ W _ _ Dc Hd Or eb es _ _ eS eg
   have hIn : PB.Inputs := hG.2.2.2.2.2.2.2.2.2.1
   have : Nonempty (CMType H) := (_root_.GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H).2.1
-  have hT : T.Proportional := _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hProp hIn II hII _ _ T _ (_root_.GlobalTheory.CompanionTheory.Relay.good_tower_real_agreement hG E H D Xo l c Y T o II hY hX hII hp hq)
+  have hT : T.Proportional := _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hProp hIn II hII _ _ T _ (_root_.RootFieldNumerics.global_model_real_tower hG E H D Xo l c Y T o II hY hX hII hp hq)
   have htd : 0 < Top.testDeg (CMType H) (D.p + D.q) D.p := (_root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts (CMType H) (D.p + D.q) D.p hp (by omega)).2.1
   have eg' : genPt Or.𝔐.ξ₀ = genPt (o.Or 2 a).𝔐.ξ₀ := by
     have g1 := congrArg (fun f => f (IsLocalRing.closedPoint _)) ((o.Or 2 a).g_over.symm.trans (o.Or 2 a).𝔐.fn_over)
@@ -1334,7 +1334,7 @@ theorem muLink : ChartVal → Centre → CoordLat → MuLink := by
       (Or.i_range τ ▸ LinearMap.mem_range_self (Or.i τ) (bb τ (tailIdx Dc.j_le_N k)))
     exact ⟨z, hz, by rw [← h, add_sub_cancel_right]; exact ha⟩
   choose s hs using hs
-  obtain ⟨hsi, hdeg⟩ := _root_.GlobalTheory.CompanionTheory.Relay.intersection_datum_degree_sum E H D Xo l c Y II K J Ω W Dc Hd S₀ Or 0 bb s _ hs hΛ
+  obtain ⟨hsi, hdeg⟩ := _root_.LevelTowerAlt.det_lattice_tensor_isDegOn_muTwDeg E H D Xo l c Y II K J Ω W Dc Hd S₀ Or 0 bb s _ hs hΛ
   have hSB : Dc.SB 0 = ∅ := by simp [ComponentData.SB, hS]
   have hmu : muTwDeg Hd 0 = Hd.aMu := by simp [muTwDeg, hSB]
   rw [hmu, hSB, Finset.union_empty, hsm] at hdeg
@@ -1423,8 +1423,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.LowerBoundFree (ComponentData ComponentSetting degMu ArLimExists slX)
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.good_tower_intersection_extra : GlobalTheory.CompanionTheory.Ar.Cmp.CmpSt → Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : RootTower (CMType H) (D.p + D.q)) (o : GoodOrigin Y T) (II : IntersectionSystem), IsGlobal Xo l c Y → o.Extra → IsFullIntersectionSystem II → 1 ≤ D.q → 3 * D.q + 1 ≤ D.p + D.q → T.VolEq := by
-  first | exact @SheetDecomposition.volEq_of_isFullIntersectionSystem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra =====

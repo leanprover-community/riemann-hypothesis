@@ -801,7 +801,6 @@ private theorem char_eq_proj_nsmul {G : Type*} [Group G] [TopologicalSpace G]
     exact hg
   exact Set.eq_univ_iff_forall.mp (eq_univ E hclosed hpow hmul) g
 
-set_option maxHeartbeats 4000000 in
 theorem char_eq_proj_nsmul_of_gsDecomp {ℓ : ℕ} (hℓ : ℓ.Prime) (b : ℕ)
     (χ : Additive Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1) →ₜ+ QZ)
     (hχk : ℓ ^ b • χ = 0) (hB : ∀ h, gsDecomp K S ιs v h = 1 → χ (Additive.ofMul h) = 0)
@@ -830,7 +829,6 @@ private theorem zmod_eq_zero_of_char_eq_nsmul {G : Type*} [Group G] [Topological
   exact (ZMod.val_eq_zero (proj g)).1
     (Nat.eq_zero_of_dvd_of_lt (horder _ hsmul) (ZMod.val_lt (proj g)))
 
-set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem proj_unramifiedDegree_eq_zero_of_gsDecomp_eq_one (b : ℕ)
     (g : Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1))
@@ -877,7 +875,6 @@ private theorem exists_range_hom_zmod {G H : Type*} [Group G] [Group H]
     change Multiplicative.ofAdd (ProfiniteInteger.proj n (Multiplicative.toAdd (deg σ))) = _
     rw [hσ, toAdd_ofAdd, map_one]
 
-set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem exists_hom_zmod_pow_rangeRestrict_gsDecomp
     (σ : Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1))
@@ -891,7 +888,6 @@ theorem exists_hom_zmod_pow_rangeRestrict_gsDecomp
     (proj_unramifiedDegree_eq_zero_of_gsDecomp_eq_one K S ιs v hℓ hS b) σ hσ
 
 
-set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem exists_isPrimePowGenerator_gsDecomp :
     ∃ σ : (gsDecomp K S ιs v).range, IsPrimePowGenerator ℓ σ := by
@@ -908,7 +904,6 @@ instance totallyDisconnectedSpace_range_gsDecomp : TotallyDisconnectedSpace (gsD
   inferInstance
 
 
-set_option maxHeartbeats 4000000 in
 include hℓ hS in
 theorem eq_zero_of_pow_nsmul_cohomology_range_gsDecomp {p : ℕ} (hp : 2 ≤ p)
     (x : cohomology (Rep.res (gsDecomp K S ιs v).range.subtype

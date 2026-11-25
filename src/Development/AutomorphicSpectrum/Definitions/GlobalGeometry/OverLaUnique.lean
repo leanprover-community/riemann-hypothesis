@@ -44,11 +44,6 @@ abbrev PtU (la : HeightOneSpectrum (𝓞 c.F)) : Type :=
 def pjSys : PtSys c.F (Rul Xo c) where
   Pt := PtU Xo c
   val y f := vAtV y f
-  val_zero y := vAtV_zero y
-  val_ne_bot y f := vAtV_ne_bot y f
-  val_add y f g := vAtV_add y f g
-  val_smul y a f ha := vAtV_smul y a f ha
-  val_mul y f g := vAtV_mul y f g
 
 
 variable {Xo c} in

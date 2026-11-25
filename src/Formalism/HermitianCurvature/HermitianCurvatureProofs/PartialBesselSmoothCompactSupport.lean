@@ -276,19 +276,7 @@ open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Form
 open scoped Matrix.Norms.Elementwise
 
 theorem fmc_RC (k p ρ : ℕ) : IsFiniteMeasureOnCompacts (U.muRC k p ρ) := by
-  unfold U.muRC
-  have h0 : IsFiniteMeasureOnCompacts (volume : Measure (Fin p → ℂ)) := by rw [volume_pi]; infer_instance
-  have h1 : IsFiniteMeasureOnCompacts (volume : Measure (G.UT p → ℂ)) := by rw [volume_pi]; infer_instance
-  have h2 : IsFiniteMeasureOnCompacts (volume : Measure (Fin p → ℝ)) := by rw [volume_pi]; infer_instance
-  have h3 : IsFiniteMeasureOnCompacts (volume : Measure (Fin (2 * ρ + k + 1) → Fin p → ℂ)) := by
-    rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure (Fin p → ℝ)) := by rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure (G.UT p → ℂ)) := by rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure ((G.UT p → ℂ) × (Fin p → ℝ))) := by
-    rw [Measure.volume_eq_prod]; infer_instance
-  have h4 : IsFiniteMeasureOnCompacts (volume : Measure ((G.UT p → ℂ) × (Fin p → ℝ))) := by
-    rw [Measure.volume_eq_prod]; infer_instance
-  rw [Measure.volume_eq_prod]; infer_instance
+  apply +allowSynthFailures _root_.Formalism.FourierDecayAlt.P.LeftFubiniLemmas.fmoc_RC <;> assumption
 
 section ck
 

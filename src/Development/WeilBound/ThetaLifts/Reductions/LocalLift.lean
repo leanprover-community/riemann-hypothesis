@@ -36,15 +36,10 @@ abbrev Eu (l : Type) : Type := EuclideanSpace ℝ l
 def rf (p q : Eu l) (f : Eu l → ℂ) : Eu l → ℂ :=
   fun x => exp (((2 * π * ⟪q, x⟫ + π * ⟪p, q⟫ : ℝ) : ℂ) * I) * f (x + p)
 
-theorem rhoFun_eq (w : l ⊕ l → ℝ) (f : Eu l → ℂ) : rhoFun w f = rf (pPart w) (qPart w) f := rfl
-
 def Intw (S : Sch l →L[ℂ] Sch l) (p q p' q' : Eu l) : Prop :=
   ∀ f g : Sch l, ⇑g = rf p q f → ⇑(S g) = rf p' q' (S f)
 
 def Iso (S : Sch l →L[ℂ] Sch l) : Prop := ∀ f, ‖schwartzToL2 l (S f)‖ = ‖schwartzToL2 l f‖
-
-theorem Intw.mul {S T : Sch l →L[ℂ] Sch l} {p q p' q' p'' q'' : Eu l} (hS : Intw S p' q' p'' q'') (hT : Intw T p q p' q') :
-    Intw (S * T) p q p'' q'' := fun f g h => hS _ _ (hT f g h)
 
 theorem Intw.smul {S : Sch l →L[ℂ] Sch l} {p q p' q' : Eu l} (hS : Intw S p q p' q') (c : ℂ) :
     Intw (c • S) p q p' q' :=
@@ -105,11 +100,6 @@ theorem isUnit_dil {B : Eu l →L[ℝ] Eu l} (h : IsUnit B) : IsUnit (dil B) := 
   exact ⟨⟨dil u, dil (u⁻¹ : (Eu l →L[ℝ] Eu l)ˣ), by rw [dil_mul u.isUnit u⁻¹.isUnit, Units.inv_mul, dil_one],
     by rw [dil_mul u⁻¹.isUnit u.isUnit, Units.mul_inv, dil_one]⟩, rfl⟩
 
-theorem intw_dil {B : Eu l →L[ℝ] Eu l} (hB : IsUnit B) {p q p' q' : Eu l} (hp : B p' = p) (hq : ∀ x, ⟪q', x⟫ = ⟪q, B x⟫) :
-    Intw (dil B) p q p' q' := fun f g h => by
-  funext x
-  simp only [rf, dil_apply hB, h, map_add (f := _), hp, real_inner_comm q' p', hq, real_inner_comm q p]
-
 theorem iso_dil {B : Eu l →L[ℝ] Eu l} (hB : IsUnit B) {c : ℝ} (hc : c ^ 2 = |B.det|) : Iso ((c : ℂ) • dil B) :=
   _root_.CompanionTheory.ThKR.LL.iso_dil hB hc
 
@@ -140,12 +130,6 @@ theorem iso_fou : Iso (fou l) := fun f => norm_fourier_toL2_eq f
 theorem iso_fouInv : Iso (fouInv l) := fun f => by
   rw [← iso_fou (fouInv l f), ← ContinuousLinearMap.mul_apply, fou_mul_fouInv, ContinuousLinearMap.one_apply]
 
-theorem intw_fou (p q : Eu l) : Intw (fou l) p q (-q) p :=
-  CompanionTheory.ThKR.LL.intw_fou p q
-
-theorem intw_fouInv (p q : Eu l) : Intw (fouInv l) p q q (-p) :=
-  CompanionTheory.ThKR.LL.intw_fouInv p q
-
 def big (Ai B C : Eu l →L[ℝ] Eu l) (c : ℝ) : Sch l →L[ℂ] Sch l :=
   ph (C * Ai) * (((c : ℂ) • dil Ai) * (fou l * (ph (-(Ai * B)) * fouInv l)))
 
@@ -161,12 +145,6 @@ theorem iso_big {Ai : Eu l →L[ℝ] Eu l} (h : IsUnit Ai) (B C : Eu l →L[ℝ]
 
 theorem big_one : big (1 : Eu l →L[ℝ] Eu l) 0 0 1 = 1 := by
   simp [big, ph_zero, dil_one, fou_mul_fouInv]
-
-theorem intw_big {A Ai B C D : Eu l →L[ℝ] Eu l} (h : IsUnit Ai) (h1 : ∀ x, A (Ai x) = x) (h2 : ∀ x, Ai (A x) = x)
-    (hAC : ∀ y z, ⟪A y, C z⟫ = ⟪C y, A z⟫) (hBD : ∀ y z, ⟪B y, D z⟫ = ⟪D y, B z⟫)
-    (hAD : ∀ y z, ⟪A y, D z⟫ - ⟪C y, B z⟫ = ⟪y, z⟫) (c : ℝ) (p q : Eu l) :
-    Intw (big Ai B C c) p q (A p + B q) (C p + D q) := by
-  apply CompanionTheory.ThKR.LL.intw_big <;> assumption
 
 end PositivityTheory.ThKR.LL
 end -- clump:auto
@@ -205,18 +183,6 @@ theorem hasDerivAt_schwartz_to_L2 {F : ℝ → Sch l} {G : Sch l} {t₀ : ℝ} (
 
 def LD (U : ℝ → Sch l →L[ℂ] Sch l) (Q : Sch l → Sch l) (t₀ : ℝ) : Prop :=
   ∀ f, HasDerivAt (fun t => schwartzToL2 l (U t f)) (schwartzToL2 l (Q f)) t₀
-
-theorem LD.const (U : Sch l →L[ℂ] Sch l) (t₀ : ℝ) : LD (fun _ => U) (fun _ => 0) t₀ := fun f => by
-  simpa using hasDerivAt_const t₀ (schwartzToL2 l (U f))
-
-theorem LD.smul {U : ℝ → Sch l →L[ℂ] Sch l} {Q : Sch l → Sch l} {t₀ : ℝ} (h : LD U Q t₀) {c : ℝ → ℂ} {c' : ℂ}
-    (hc : HasDerivAt c c' t₀) : LD (fun t => c t • U t) (fun f => c t₀ • Q f + c' • U t₀ f) t₀ := fun f => by
-  simpa using hc.fun_smul (h f)
-
-theorem LD.mul {U W : ℝ → Sch l →L[ℂ] Sch l} {P Q : Sch l → Sch l} {t₀ : ℝ} (hU : LD U P t₀) (hW : LD W Q t₀)
-    (hn : ∀ᶠ t in 𝓝 t₀, ∀ f, ‖schwartzToL2 l (U t f)‖ = ‖schwartzToL2 l f‖) :
-    LD (fun t => U t * W t) (fun f => P (W t₀ f) + U t₀ (Q f)) t₀ :=
-  CompanionTheory.ThKR.LL.LD.mul (U := U) (W := W) (P := P) (Q := Q) hU hW hn
 
 variable [DecidableEq l]
 
@@ -304,9 +270,6 @@ variable {l : Type} [Fintype l]
 def mq (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
   smulLeftCLM ℂ fun x : Eu l => ((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I
 
-theorem mq_apply (S : Eu l →L[ℝ] Eu l) (f : Sch l) (x : Eu l) : mq S f x = ((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I * f x :=
-  CompanionTheory.ThKR.LL.mq_apply S f x
-
 theorem norm_exp_sub_le (a b : ℝ) : ‖exp ((a : ℂ) * I) - exp ((b : ℂ) * I)‖ ≤ |a - b| :=
   CompanionTheory.ThKR.LL.norm_exp_sub_le a b
 
@@ -315,26 +278,8 @@ theorem exists_lip {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {S : �
   obtain ⟨K, hK, h⟩ := h.isBigO_sub.exists_nonneg
   exact ⟨K, hK, h.bound⟩
 
-theorem ld_ph {S : ℝ → Eu l →L[ℝ] Eu l} {S' : Eu l →L[ℝ] Eu l} {t₀ : ℝ} (h : HasDerivAt S S' t₀) :
-    LD (fun t => ph (S t)) (fun f => mq S' (ph (S t₀) f)) t₀ :=
-  CompanionTheory.ThKR.LL.ld_ph h
-
 def vf (H : Eu l →L[ℝ] Eu l) (f : Sch l) : Sch l :=
   bilinLeftCLM (ContinuousLinearMap.id ℝ (Eu l →L[ℝ] ℂ)) H.hasTemperateGrowth (fderivCLM ℝ (Eu l) ℂ f)
-
-theorem vf_apply (H : Eu l →L[ℝ] Eu l) (f : Sch l) (x : Eu l) : vf H f x = fderiv ℝ f x (H x) := rfl
-
-theorem ld_dil_one {H : ℝ → Eu l →L[ℝ] Eu l} {H' : Eu l →L[ℝ] Eu l} {t₀ : ℝ} (h : HasDerivAt H H' t₀) (h0 : H t₀ = 1)
-    (f : Sch l) {F : ℝ → Sch l} (hF : ∀ᶠ t in 𝓝 t₀, ∀ x, F t x = f (H t x)) :
-    HasDerivAt (fun t => schwartzToL2 l (F t)) (schwartzToL2 l (vf H' f)) t₀ := by
-  apply CompanionTheory.ThKR.LL.ld_dil_one <;> assumption
-
-theorem ld_dil {B : ℝ → Eu l →L[ℝ] Eu l} {B' : Eu l →L[ℝ] Eu l} {t₀ : ℝ} (h : HasDerivAt B B' t₀) (h0 : IsUnit (B t₀)) :
-    LD (fun t => dil (B t)) (fun f => vf (Ring.inverse (B t₀) * B') (dil (B t₀) f)) t₀ := fun f => by
-  refine ld_dil_one (h.const_mul (Ring.inverse (B t₀))) (Ring.inverse_mul_cancel _ h0) _ ?_
-  set_option synthInstance.maxHeartbeats 200000 in
-    filter_upwards [h.continuousAt.eventually (Units.isOpen.mem_nhds h0)] with t ht x
-  rw [dil_apply ht, dil_apply h0, ← ContinuousLinearMap.mul_apply, ← mul_assoc, Ring.mul_inverse_cancel _ h0, one_mul]
 
 theorem ld_big {Ai B C : ℝ → Eu l →L[ℝ] Eu l} {Ai' B' C' : Eu l →L[ℝ] Eu l} {c : ℝ → ℝ} {c' t₀ : ℝ}
     (hA : HasDerivAt Ai Ai' t₀) (hB : HasDerivAt B B' t₀) (hC : HasDerivAt C C' t₀) (hc : HasDerivAt c c' t₀)
@@ -370,17 +315,6 @@ def bl (i j : l → l ⊕ l) : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] (Eu l 
 
 theorem bl_apply (i j : l → l ⊕ l) (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (x : Eu l) (a : l) :
     bl i j g x a = ∑ b, g (i a) (j b) * x b := rfl
-
-theorem pPart_mulVec (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (w : l ⊕ l → ℝ) :
-    pPart (g *ᵥ w) = bl Sum.inl Sum.inl g (pPart w) + bl Sum.inl Sum.inr g (qPart w) := by
-  ext a
-  simp [bl_apply, pPart, qPart, mulVec, dotProduct]
-
-theorem qPart_mulVec (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (w : l ⊕ l → ℝ) :
-    qPart (g *ᵥ w) = bl Sum.inr Sum.inl g (pPart w) + bl Sum.inr Sum.inr g (qPart w) := by
-  ext a
-  simp [bl_apply, pPart, qPart, mulVec, dotProduct]
-
 theorem det_bl (i j : l → l ⊕ l) (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) : (bl i j g).det = (g.submatrix i j).det :=
   LinearMap.det_toLin (EuclideanSpace.basisFun l ℝ).toBasis _
 
@@ -427,12 +361,6 @@ theorem intw_of_sympl {g : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hg : ∀ w w', sympl
     Intw (big (Ring.inverse (bl Sum.inl Sum.inl g)) (bl Sum.inl Sum.inr g) (bl Sum.inr Sum.inl g) c) (pPart w) (qPart w)
       (pPart (g *ᵥ w)) (qPart (g *ᵥ w)) :=
   CompanionTheory.ThKR.LL.intw_of_sympl (g := g) hg h c w
-
-theorem fou_mq_fouInv (B : Matrix l l ℝ) (f : Sch l) :
-    fou l (mq (-(Matrix.toEuclideanCLM (𝕜 := ℝ) (n := l) B)) (fouInv l f)) =
-      (4 * π * I : ℂ)⁻¹ • ∑ j, ∑ k, (B j k : ℂ) • (∂_{(EuclideanSpace.single j 1 : Eu l)}
-        (∂_{(EuclideanSpace.single k 1 : Eu l)} f)) := by
-  apply CompanionTheory.ThKR.LL.fou_mq_fouInv
 
 theorem quad_eq {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Symplectic.sp l ℝ) (f : Sch l) :
     quad X f = mq (bl Sum.inr Sum.inl X) f + vf (-bl Sum.inl Sum.inl X) f +

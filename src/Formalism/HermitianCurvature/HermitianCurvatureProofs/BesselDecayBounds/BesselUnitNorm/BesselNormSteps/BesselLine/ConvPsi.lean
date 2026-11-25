@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExpMemUnipotentAndHasDerivAtCharacter
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselLine
 
@@ -99,17 +100,7 @@ theorem ell_mul {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {n m : Mx k 
   exact Finset.sum_congr rfl fun a _ => ellT_mul hz hn hm a
 
 theorem ell_one {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) : ell k r z 1 = 0 := by
-  rw [ell_eq]
-  apply Finset.sum_eq_zero
-  intro a _
-  unfold ellT
-  split_ifs with hlt
-  · rw [Matrix.one_apply, if_neg]
-    intro h
-    have h1 := congrArg Fin.val h
-    simp [eI] at h1
-  · rw [Matrix.one_mulVec]
-    exact hz _ (Or.inl (by simp [eI]))
+  apply _root_.GlobalTheory.UnipotentExp.ell_one <;> assumption
 
 theorem psi_add (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) {g g' g'' : Mx k r}
     (h : ell k r z g = ell k r z g' + ell k r z g'') :

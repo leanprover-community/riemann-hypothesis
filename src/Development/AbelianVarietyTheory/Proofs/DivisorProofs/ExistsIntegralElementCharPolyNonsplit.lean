@@ -53,10 +53,6 @@ namespace GlobalTheory.ExInertUnit
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem eventually_mem_integers (a : E) :
-    ∀ᶠ w : Pl E in cofinite, algebraMap E (w.adicCompletion E) a ∈ w.adicCompletionIntegers E :=
-  (algebraMap E (FiniteAdeleRing (𝓞 E) E) a).2
-
 theorem mem_KGL_of_entries (w : Pl E) (g : GLw n w)
     (h1 : ∀ a b, g.val a b ∈ w.adicCompletionIntegers E)
     (h2 : ∀ a b, (g⁻¹).val a b ∈ w.adicCompletionIntegers E) : g ∈ GlobalTheory.LFun.KGL w (n := n) := by

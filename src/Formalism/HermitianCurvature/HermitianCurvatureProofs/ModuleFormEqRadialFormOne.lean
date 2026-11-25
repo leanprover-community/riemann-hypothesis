@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JDiagExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableOfDecay4
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
@@ -211,25 +212,7 @@ section exist
 
 theorem haar_smul {k r : ℕ} {U : Set (B.Mat k r)} {μ : Measure (Mt k r)} (h : B.IsHaarOn U μ) {c : ℝ≥0∞}
     (hc0 : c ≠ 0) (hcT : c ≠ ∞) : B.IsHaarOn U (c • μ) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  · rw [Measure.smul_apply, h.conc, smul_zero]
-  · intro a ha
-    have hcont : Continuous (lmulM a : Mt k r → Mt k r) := by
-      unfold lmulM
-      exact continuous_const.matrix_mul (continuous_id (X := B.Mat k r))
-    rw [Measure.map_smul c hcont.measurable.aemeasurable, h.left a ha]
-  · intro a ha
-    have hcont : Continuous (B.rmulF a) := by
-      unfold B.rmulF
-      exact (continuous_id (X := B.Mat k r)).matrix_mul continuous_const
-    rw [Measure.map_smul c hcont.measurable.aemeasurable, h.right a ha]
-  · intro K hK
-    rw [Measure.smul_apply, smul_eq_mul]
-    exact ENNReal.mul_lt_top (lt_top_iff_ne_top.2 hcT) (h.finite_compact K hK)
-  · intro h0
-    apply h.ne_zero
-    have := congrArg (fun ν : Measure (Mt k r) => c⁻¹ • ν) h0
-    simpa [smul_smul, ENNReal.inv_mul_cancel hc0 hcT] using this
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.isHaarOn_smul_of <;> assumption
 
 theorem zetaNormExists : Formalism.FourierDecayAlt.P.PBO.ZetaNormExists := by
   intro k r Wp Wq _ _ _ _ Bs

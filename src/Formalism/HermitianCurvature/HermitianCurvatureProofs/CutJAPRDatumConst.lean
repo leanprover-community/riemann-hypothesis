@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnRepDatumUnit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPolyRadialCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoFrameLoc
@@ -202,14 +203,7 @@ def EE' (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ) : Fin (2 * r + k + 1) →
 
 theorem prWv_fix {z x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (h0 : herm (Hpk k r) x z = 0) :
     SSn.prWv k r z x = x := by
-  have hw : SSn.wbP k r x = x := by
-    funext i
-    unfold SSn.wbP
-    split_ifs with h
-    · rfl
-    · exact (hx i (by omega)).symm
-  unfold SSn.prWv
-  rw [hw, h0, zero_div, zero_smul, add_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.DU.prWv_fix <;> assumption
 
 theorem prWv_self {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z) : SSn.prWv k r z z = 0 := by
   have hw : SSn.wbP k r z = z := by

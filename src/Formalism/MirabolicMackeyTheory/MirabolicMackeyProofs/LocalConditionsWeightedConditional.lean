@@ -386,12 +386,6 @@ theorem theta_identity_orthogonal : ThetaIdentityOrth := by
     · rintro ⟨z, ⟨m, hm, rfl⟩, rfl⟩
       exact ⟨eX (p m), ⟨p m, ⟨m, hm, rfl⟩, rfl⟩, key m⟩
 
-private theorem vw_mul_lemma (K : Type) [Field K] [NumberField K] [StarRing K] (w : HeightOneSpectrum (𝓞 K))
-    (a b : K) (ha : a ≠ 0) (hb : b ≠ 0) : vw w (a * b) = vw w a + vw w b := by
-  unfold vw
-  rw [← FractionalIdeal.spanSingleton_mul_spanSingleton]
-  apply FractionalIdeal.count_mul <;> rwa [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
-
 theorem constant_b_bound : ConstB := by
   intro RR PP DF d' n1 nW g' qmin hRR hDF hd hn1 hn hq hqg hPP
   have hg : 0 < g' := lt_of_lt_of_le hq hqg

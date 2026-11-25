@@ -296,7 +296,7 @@ def ExportRow : Prop :=
     (∀ (i : Fin D.R.m) (x : (Y.MjH ((i : ℕ) + 1)).V)
       (y : Fin (Module.finrank D.what₂.LL (p.R.toRealDat.WL p.F.lv2 false i)) → D.what₂.LL),
       HEq ((p.P.JM.eW i).symm x) y → (p.nexp.fi i).e (jD ((i : ℕ) + 1) x) = Formalism.IndefR.NX.jDL p.R p.F.lv2 i y) ∧
-    Nonempty (Formalism.IndefR.NX.NMjRR p.R p.cG p.Sx p.nexp Y ex.nch jD)
+    Nonempty (Formalism.IndefR.NX.NMjR Y ex.nch)
 
 def Realised : Prop :=
   ∃ (Rc : RecT ex) (S : Formalism.L2.SG.SpectralTiesReal.STiesR Rc)

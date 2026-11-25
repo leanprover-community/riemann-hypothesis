@@ -1324,8 +1324,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-alias GlobalTheory.T.exists_selected_realization_alt :=
-  GlobalTheory.Mem.R3.SelectionPairing.exists_selection_pair_local_langlands_alt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsSelectionPairLocalLanglandsStatement =====

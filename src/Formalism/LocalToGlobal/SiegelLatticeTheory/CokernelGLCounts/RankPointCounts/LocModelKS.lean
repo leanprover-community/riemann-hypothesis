@@ -33,8 +33,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.
 open scoped BigOperators ComplexOrder
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem twist_mul {D : Formalism.BasicNotions.D7} (p : PlF D) (s : ℕ) (x : (D.s.atP p).Ep) :
     twist p s x = x * twist p s 1 := by
   unfold twist

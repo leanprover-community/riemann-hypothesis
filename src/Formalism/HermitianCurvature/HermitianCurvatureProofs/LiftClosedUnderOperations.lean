@@ -1,5 +1,6 @@
 module
 
+import all Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatQMinOp
 public import Formalism.HermitianCurvature.StatementTL
 public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
@@ -83,12 +84,7 @@ theorem opApply_append (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) (F : B.Mat k r → (Wq
   rw [List.map_append, List.sum_append]
 
 private theorem foldr_max_eq_max_foldr_max_zero (l : List ℕ) (b : ℕ) : l.foldr max b = max (l.foldr max 0) b := by
-  induction l with
-  | nil => simp
-  | cons a t ih =>
-    simp only [List.foldr_cons]
-    rw [ih]
-    exact (max_assoc _ _ _).symm
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.QMinOp.foldr_max_init_lemma_3 <;> assumption
 
 theorem opOrder_append (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) :
     B.opOrder (Θ₁ ++ Θ₂) = max (B.opOrder Θ₁) (B.opOrder Θ₂) := by

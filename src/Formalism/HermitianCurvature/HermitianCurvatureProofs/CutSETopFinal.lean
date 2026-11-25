@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnGeom
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSOpR
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRvStepB
@@ -272,27 +273,7 @@ theorem ckOn_of_contDiff {m : ℕ∞} {f : B.Mat k r → E} (hf : ContDiff ℝ �
 
 theorem ubl_add' {f₁ f₂ : B.Mat k r → E} {S : Set (B.Mat k r)} (hSG : S ⊆ B.GV k r) {n e γ : ℕ}
     (h₁ : UBL f₁ S n e γ) (h₂ : UBL f₂ S n e γ) : UBL (fun g => f₁ g + f₂ g) S n e γ := by
-  obtain ⟨⟨C₁, hC₁, hb₁⟩, hl₁⟩ := h₁
-  obtain ⟨⟨C₂, hC₂, hb₂⟩, hl₂⟩ := h₂
-  refine ⟨⟨C₁ + C₂, add_nonneg hC₁ hC₂, fun w hw g hg => ?_⟩, fun g hg => ?_⟩
-  · obtain ⟨a, ha, V, hV, hgV, haa⟩ := hl₁ g hg
-    obtain ⟨b, hb, W, hW, hgW, hbb⟩ := hl₂ g hg
-    have hlie := admissible_word_mem_lie hw
-    have hG := hSG hg
-    have e0 : Dw w (fun g => f₁ g + f₂ g) g = Dw w (fun g => a g + b g) g :=
-      Dw_congr_loc hlie (hV.inter hW) (fun g' hG' hg' => by simp [haa g' hG' hg'.1, hbb g' hG' hg'.2]) g hG
-        ⟨hgV, hgW⟩
-    rw [e0, Dw_add hlie (ckOn_of_contDiff ha) (ckOn_of_contDiff hb) g hG,
-      ← Dw_congr_loc hlie hV haa g hG hgV, ← Dw_congr_loc hlie hW hbb g hG hgW]
-    have b1 := hb₁ w hw g hg
-    have b2 := hb₂ w hw g hg
-    calc ‖Dw w f₁ g + Dw w f₂ g‖ ≤ ‖Dw w f₁ g‖ + ‖Dw w f₂ g‖ := norm_add_le _ _
-      _ ≤ C₁ * B.gN g ^ (e + γ * w.length) + C₂ * B.gN g ^ (e + γ * w.length) := add_le_add b1 b2
-      _ = (C₁ + C₂) * B.gN g ^ (e + γ * w.length) := by ring
-  · obtain ⟨a, ha, V, hV, hgV, haa⟩ := hl₁ g hg
-    obtain ⟨b, hb, W, hW, hgW, hbb⟩ := hl₂ g hg
-    exact ⟨fun g => a g + b g, ha.add hb, V ∩ W, hV.inter hW, ⟨hgV, hgW⟩, fun g' hG' hg' => by
-      simp [haa g' hG' hg'.1, hbb g' hG' hg'.2]⟩
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Geom.ubl_add <;> assumption
 
 theorem ubl_smulC (c : ℂ) {f : B.Mat k r → E} {S : Set (B.Mat k r)} (hSG : S ⊆ B.GV k r) {n e γ : ℕ}
     (h : UBL f S n e γ) : UBL (fun g => c • f g) S n e γ := by

@@ -759,8 +759,6 @@ open TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G ReciprocityThe
 open GlobalTheory.FlagMod.LowRank (ECh Proj str)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
@@ -856,21 +854,6 @@ theorem exists_cellModel (Y : Model Xo c (RingHom.id c.F)) (p : Proj (RingHom.id
     exact ⟨z, hz, fun z' hz' => huniq S P z' z hz' hz⟩
   · refine (Set.finite_singleton z).subset fun z' ⟨hx, h⟩ => ?_
     exact _root_.GlobalTheory.FlagMod.FieldFlag.cell_sep E H Dw l Xo c Y p A Z π g κ hZ ht K z' z _ hx rfl h
-
-theorem smooth_proj_flagStr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (T : GlobalTheory.CompHS.TorFlag Xo c), ∃ d : ℕ, SmoothOfRelativeDimension d (GlobalTheory.CompHS.flagStr T.X) ∧ IsProjOver (GlobalTheory.CompHS.flagStr T.X) := by
-  intro E _ _ _ H D l Xo c T
-  obtain ⟨p⟩ := GlobalTheory.FlagMod.LowRank.nonempty_proj_id (E := E) (c := c)
-  obtain ⟨A⟩ := nonempty_atlas_of_cover T.Y p (exists_gChart_of_flagCover T.X)
-  obtain ⟨M, g, κ, hκ, hZ⟩ := exists_cellModel T.Y p A
-  obtain ⟨d, hsm, hpr⟩ := _root_.GlobalTheory.CompanionTheory.FlagMod.cells_smooth_proj E H D l Xo c T.Y p A M.YY M.π g κ hκ hZ T.smooth
-  obtain ⟨h, hh, hπ⟩ := _root_.DifferentiableLines.flag_model_projective_embedding_alt E H D l Xo c T.Y p A M g κ hκ hZ T.smooth T.flag
-  have e : flagStr T.X = h ≫ M.π ≫ T.Y.s := by
-    rw [← Category.assoc, hπ]
-  refine ⟨d, ?_, ?_⟩
-  · rw [e]; exact GlobalTheory.VarFlag.smooth_iso h _ hsm
-  · rw [e]
-    obtain ⟨N, i, hi, hs⟩ := hpr
-    exact ⟨N, h ≫ i, inferInstance, by rw [Category.assoc, hs]⟩
 
 end GlobalTheory.CompanionTheory.FlagSmooth
 end -- clump:auto
@@ -1051,7 +1034,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
   {Xo : Moduli D l} {c : Coeff l} {r : ℕ} {σ : c.F →+* ℂ}
 
 open Limits GlobalTheory.CxPts Filter Topology GlobalTheory.ShFam GlobalTheory.ShFam.BdArc GlobalTheory.Toroidal MonoidalCategory CartesianMonoidalCategory
-attribute [local instance] Over.cartesianMonoidalCategory
 
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.GeometryOfNumbersTheory Formalism.BasicNotions MonObj GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.HermTools GlobalTheory.Adelic GlobalTheory.CovTop GlobalTheory.HSApp in
@@ -1189,7 +1171,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 section ThetaShiftProofs
 
 open Limits GlobalTheory.CxPts Filter Topology GlobalTheory.ShFam GlobalTheory.ShFam.BdArc GlobalTheory.Toroidal MonoidalCategory CartesianMonoidalCategory
-attribute [local instance] Over.cartesianMonoidalCategory
 
 
 

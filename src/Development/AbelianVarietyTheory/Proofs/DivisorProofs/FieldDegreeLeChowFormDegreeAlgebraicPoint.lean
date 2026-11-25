@@ -54,7 +54,6 @@ open MvPolynomial GlobalTheory.ChowHt GlobalTheory.CompHt
 
 namespace GlobalTheory.CompHt.PointLow
 
-set_option autoImplicit false in
 open MvPolynomial in
 private lemma natDegree_aeval_le_totalDegree_of_natDegree_le_one {R S σ : Type} [CommRing R] [CommRing S] [Algebra R S]
     (p : MvPolynomial σ R) (s : σ → Polynomial S) (hs : ∀ i, (s i).natDegree ≤ 1) :
@@ -75,7 +74,6 @@ private lemma natDegree_aeval_le_totalDegree_of_natDegree_le_one {R S σ : Type}
   simpa using Nat.mul_le_mul_left (d i) (hs i)
 
 
-set_option autoImplicit false in
 open MvPolynomial in
 theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K : Type) [Field K] [CharZero K] (N δ : ℕ) (y : Fin N → AlgebraicClosure K)
     (j : Fin N) (f : MvPolynomial (Fin (0 + 1) × Fin N) K), y j = 1 → _root_.GlobalTheory.ChowHt.IsChowFormInt (_root_.GlobalTheory.CompHt.coneIdeal K y) 0 δ f →

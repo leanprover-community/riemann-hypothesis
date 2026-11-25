@@ -65,7 +65,6 @@ open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory
 namespace GlobalTheory.LawDer
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma iterate_mul_eq_sum_antidiagonal_choose {A : Type} [CommRing A] (D : A → A)
     (hadd : ∀ a b, D (a + b) = D a + D b) (hmul : ∀ a b, D (a * b) = D a * b + a * D b) (n : ℕ)
     (a b : A) :
@@ -88,7 +87,6 @@ private lemma iterate_mul_eq_sum_antidiagonal_choose {A : Type} [CommRing A] (D 
 
 
 open MvPowerSeries in
-set_option autoImplicit false in
 theorem _root_.GlobalTheory.LawDer.constantCoeff_iterate_invDer_mul : ∀ (p : ℕ) [Fact p.Prime] (R : Type)
     [CommRing R] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R),
     (∀ i, constantCoeff (μ i) = 0) →

@@ -322,7 +322,7 @@ theorem flat_restriction : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField �
     M.Sm → ∀ m j, Function.Bijective (resF l (B.schFn M.p) r.ρ m j) := by
   intro l _ K r M hM m j
   haveI : IsProper M.p := GlobalTheory.CommonModel.isProper_of_isProjOver hM.1.1
-  obtain ⟨U⟩ := (cov_ex M.p).1 hM.2
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov M.p).1 hM.2
   exact resF_bij M.p r.ρ U m j
 
 end GlobalTheory.CompanionTheory.FlatRes

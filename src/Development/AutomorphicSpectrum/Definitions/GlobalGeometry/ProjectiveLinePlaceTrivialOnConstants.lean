@@ -83,8 +83,6 @@ section Proj
 
 open MvPolynomial HomogeneousLocalization ProjCoord
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 variable {o κ Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
 theorem valAt_pow {Y : Scheme.{0}} {ξ : Spec (CommRingCat.of Ω) ⟶ Y} {R : Type} [CommRing R] [IsLocalRing R]

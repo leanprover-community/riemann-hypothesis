@@ -203,11 +203,6 @@ theorem T_fac {B : Type} [Field B] (ι : C₀ →+* B) (i : A →+* B) (hι : �
       ∀ G : A ⊗[W] L →+ B, (∀ a y, G (a ⊗ₜ y) = i a * h y) → ∀ z, G z = ∑ s, ι (T c k hk (b.coord s) z) * E (b s) :=
   _root_.GlobalTheory.CompanionTheory.FrobFac.T_fac c k hk ι i hι h hh b
 
-theorem E_fix {B : Type} [Field B] [IsFractionRing W K₀] (ι : C₀ →+* B) (σB : B →+* B) (h : L →+ B)
-    (E : K₀ ⊗[W] L →+ B) (hE : ∀ x y, E (x ⊗ₜ y) = ι (k x) * h y)
-    (hσ : ∀ w, σB (ι (k (algebraMap W K₀ w))) = ι (k (algebraMap W K₀ w))) (hy : ∀ y, σB (h y) = h y) (v : K₀ ⊗[W] L) :
-    σB (E v) = E v := _root_.GlobalTheory.CompanionTheory.FrobFix.extension_fixed k ι σB h E hE hσ hy v
-
 end CrystallineSemistableComparison.Pb.Psi
 end -- clump:auto
 end -- clump:auto

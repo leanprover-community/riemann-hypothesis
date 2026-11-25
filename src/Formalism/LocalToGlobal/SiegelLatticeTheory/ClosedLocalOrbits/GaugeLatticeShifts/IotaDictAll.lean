@@ -26,8 +26,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.BridgeAd
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem hermitian_module_dual_beta_congruence {m : VA X.B.I} (hm : m ∈ Mo X.B.I X.B.g (Set.range X.e0)) (j : Fin D.R.k) :
@@ -129,8 +127,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.BridgeAR
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem Z_of_coprime {t : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (ht : t ∈ IntAf X.B.I.F X.B.I.E) {c : ℕ}
@@ -165,8 +161,6 @@ end Formalism.L2.SG.Pf.BridgeAR
 namespace Formalism.L2.SG.Pf
 
 open Formalism.L2.SG.Pf.BridgeAR
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem iotaBridgeARC_holds : IotaBridgeARC := by
   intro D X Y u Λ hΛ β b hb hK hN hT x hx
@@ -225,8 +219,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
   Formalism.L2.SG.NormCut
 
 namespace Formalism.L2.SG.Pf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def IotaDictAllC : Prop :=
   ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)

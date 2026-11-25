@@ -116,8 +116,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.VacEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 end Gen
@@ -175,8 +173,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def PhiM (m n : ℕ) (x : Mx D m n) : Fin m → Fin n → Fin (nE D) → AF D.host.F :=
@@ -206,8 +202,6 @@ open scoped TensorProduct
 set_option synthInstance.maxHeartbeats 160000
 
 namespace Formalism.IndefR.Fin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

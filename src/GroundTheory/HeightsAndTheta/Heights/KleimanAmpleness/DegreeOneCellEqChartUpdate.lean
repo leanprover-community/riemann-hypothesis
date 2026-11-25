@@ -3,7 +3,7 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.ModelSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellResMemLocPart
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ConstVanishHypSegment
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartAlt
+public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartAlt
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
@@ -14,7 +14,7 @@ import Mathlib.Topology.Sheaves.Presheaf
 -- Members: GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartBis, GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.DegreeOneCellEqChartUpdate
 
 -- ===== clump member: GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartBis =====
--- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartBis", "h": "module\n\nimport GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartAlt\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.ModelSt\npublic import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellResMemLocPart\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartBis", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsHomogOfMemQuotPartAlt\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.ModelSt\npublic import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.CellResMemLocPart\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -76,132 +76,19 @@ section Eval
 
 variable {Ω : Type} [Field Ω] [Algebra S Ω] (y : (Σ k, ι k) → Ω)
 
-theorem mConeMapOver_homog {g : MRingOver S ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
-    mConeMapOver S y g = C (aeval y g) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.mConeMapOver_homog <;> assumption
+abbrev Good (I : ∀ k, Finset (ι k)) : Prop := CellMeets y I
 
-theorem aeval_eq_zero_of_mem {f : MRingOver S ι} (hf : f ∈ mIdealOver S y) : aeval y f = 0 := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.aeval_eq_zero_of_mem <;> assumption
-
-theorem mk_eq_zero_of_aeval {g : MRingOver S ι} {d : K → ℕ} (hg : IsMultiHomog g d) (h0 : aeval y g = 0) :
-    Ideal.Quotient.mk (mIdealOver S y) g = 0 := by
-  rw [Ideal.Quotient.eq_zero_iff_mem]
-  show g ∈ RingHom.ker (mConeMapOver S y)
-  rw [RingHom.mem_ker, mConeMapOver_homog y hg, h0, map_zero, zero_mul]
-
-def ev0 : (MRingOver S ι ⧸ mIdealOver S y) →ₐ[S] Ω :=
-  Ideal.Quotient.liftₐ (mIdealOver S y) (aeval y) (fun _ hf => aeval_eq_zero_of_mem y hf)
-
-theorem evalAtPoint_mk (p : MRingOver S ι) : ev0 y (Ideal.Quotient.mk (mIdealOver S y) p) = aeval y p := rfl
-
-theorem evalAtPoint_smul (r : MRingOver S ι) (m : MRingOver S ι ⧸ mIdealOver S y) :
-    ev0 y (r • m) = aeval y r * ev0 y m := by
-  obtain ⟨m, rfl⟩ := Ideal.Quotient.mk_surjective m
-  show ev0 y (Ideal.Quotient.mk _ (r * m)) = _
-  rw [evalAtPoint_mk, evalAtPoint_mk, map_mul]
-
-def Good (I : ∀ k, Finset (ι k)) : Prop :=
-  ∀ k, ∀ i ∈ I k, y ⟨k, i⟩ ≠ 0
-
-variable {y}
-
-theorem aeval_ne_zero_of_mem {I : ∀ k, Finset (ι k)} (hI : Good y I) {t : MRingOver S ι}
-    (ht : t ∈ cellMon S I) : aeval y t ≠ 0 := by
-  unfold ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.cellMon at ht
-  induction ht using Submonoid.closure_induction with
-  | mem x hx =>
-    obtain ⟨k, i, hi, rfl⟩ := hx
-    rw [aeval_X]
-    exact hI k i hi
-  | one => simp
-  | mul x z _ _ hx hz => rw [map_mul]; exact mul_ne_zero hx hz
-
-variable (y)
-
-def ev (I : ∀ k, Finset (ι k)) (hI : Good y I)
-    (x : LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y)) : Ω :=
-  LocalizedModule.liftOn x (fun p => ev0 y p.1 / aeval y (p.2 : MRingOver S ι)) (by
-    rintro ⟨a, s⟩ ⟨b, t⟩ ⟨u, hu⟩
-    simp only [Submonoid.smul_def] at hu
-    have h := congrArg (ev0 y) hu
-    rw [evalAtPoint_smul, evalAtPoint_smul, evalAtPoint_smul, evalAtPoint_smul] at h
-    have hu0 := aeval_ne_zero_of_mem hI u.2
-    have hs0 := aeval_ne_zero_of_mem hI s.2
-    have ht0 := aeval_ne_zero_of_mem hI t.2
-    dsimp only
-    rw [div_eq_div_iff hs0 ht0]
-    have h' := mul_left_cancel₀ hu0 h
-    linear_combination h')
-
-theorem ev_mk (I : ∀ k, Finset (ι k)) (hI : Good y I) (m : MRingOver S ι ⧸ mIdealOver S y)
-    (s : cellMon S I) : ev y I hI (LocalizedModule.mk m s) = ev0 y m / aeval y (s : MRingOver S ι) :=
-  LocalizedModule.liftOn_mk _ _ _
-
-def evLin (I : ∀ k, Finset (ι k)) (hI : Good y I) :
-    LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y) →ₗ[S] Ω where
-  toFun := ev y I hI
-  map_add' x x' := by
-    induction x using LocalizedModule.induction_on with
-    | h m s =>
-      induction x' using LocalizedModule.induction_on with
-      | h m' s' =>
-        have hs0 := aeval_ne_zero_of_mem hI s.2
-        have hs0' := aeval_ne_zero_of_mem hI s'.2
-        rw [LocalizedModule.mk_add_mk, ev_mk, ev_mk, ev_mk]
-        simp only [Submonoid.smul_def, map_add (f := _), evalAtPoint_smul, Submonoid.coe_mul, map_mul]
-        field_simp
-  map_smul' s x := by
-    induction x using LocalizedModule.induction_on with
-    | h m t =>
-      rw [LocalizedModule.smul'_mk, ev_mk, ev_mk, map_smul, smul_div_assoc, RingHom.id_apply]
-
-
-open Classical in
-def evMap (I : ∀ k, Finset (ι k)) :
+abbrev evMap (I : ∀ k, Finset (ι k)) :
     LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y) →ₗ[S] Ω :=
-  if h : Good y I then evLin y I h else 0
+  CellLocEval.evMap y I
 
-theorem evMap_mk {I : ∀ k, Finset (ι k)} (hI : Good y I) (g : MRingOver S ι) (t : cellMon S I) :
-    evMap y I (LocalizedModule.mk (Ideal.Quotient.mk (mIdealOver S y) g) t) =
-      aeval y g / aeval y (t : MRingOver S ι) := by
-  unfold evMap
-  rw [dite_eq_left hI]
-  exact ev_mk y I hI _ t
+abbrev evMap_mk := @CellLocEval.evMap_mk
+abbrev exists_rep := @CellLocEval.exists_rep
+abbrev evMap_injOn := @CellLocEval.evMap_injOn
 
 end Eval
 
-section Rep
-
-variable {V : Ideal (MRingOver S ι)}
-
-theorem exists_homog_of_mem_quotPart {d : K → ℤ} {m : MRingOver S ι ⧸ V} (hm : m ∈ quotPart S V d) :
-    ∃ g : MRingOver S ι, IsMultiHomog g (fun k => (d k).toNat) ∧ ((∀ k, 0 ≤ d k) ∨ g = 0) ∧
-      Ideal.Quotient.mk V g = m := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_homog_of_mem_quotPart <;> assumption
-
-theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
-    {x : LocalizedModule T (MRingOver S ι ⧸ V)} (hx : x ∈ locPart ι (quotPart S V) T β) :
-    ∃ (g : MRingOver S ι) (t : T) (a : K → ℕ), IsMultiHomog (t : MRingOver S ι) a ∧
-      IsMultiHomog g (fun k => (β k + a k).toNat) ∧ ((∀ k, 0 ≤ β k + a k) ∨ g = 0) ∧
-      x = LocalizedModule.mk (Ideal.Quotient.mk V g) t :=
-  by apply _root_.GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_rep; assumption
-
-end Rep
-
 variable {Ω : Type} [Field Ω] [Algebra S Ω] (y : (Σ k, ι k) → Ω)
-
-theorem evMap_injOn {I : ∀ k, Finset (ι k)} (hI : Good y I) (β : K → ℤ) :
-    Set.InjOn (evMap (S := S) y I) (locPart ι (quotPart S (mIdealOver S y)) (cellMon S I) β) := by
-  intro x hx x' hx' hxx'
-  rw [← sub_eq_zero]
-  have hs : x - x' ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I) β := sub_mem hx hx'
-  have h0 : evMap y I (x - x') = 0 := by rw [map_sub, hxx', sub_self]
-  obtain ⟨g, t, a, -, hg, -, he⟩ := exists_rep hs
-  rw [he] at h0 ⊢
-  rw [evMap_mk y hI, div_eq_zero_iff] at h0
-  rcases h0 with h0 | h0
-  · rw [mk_eq_zero_of_aeval y hg h0, LocalizedModule.zero_mk]
-  · exact absurd h0 (aeval_ne_zero_of_mem hI t.2)
 
 def chart (c : ∀ k, ι k) : ∀ k, Finset (ι k) := fun k => {c k}
 
@@ -274,37 +161,14 @@ open CechPointVanish
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)] {y}
 
 theorem subsingleton_of_bad {I : ∀ k, Finset (ι k)} {k : K} {i : ι k} (hi : i ∈ I k) (hy : y ⟨k, i⟩ = 0) :
-    Subsingleton (LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y)) := by
-  have hX : (X ⟨k, i⟩ : MRingOver S ι) ∈ cellMon S I := Submonoid.subset_closure ⟨k, i, hi, rfl⟩
-  have hmem : (X ⟨k, i⟩ : MRingOver S ι) ∈ mIdealOver S y := by
-    simp [mIdealOver, mConeMapOver, RingHom.mem_ker, hy]
-  have hz : ∀ w : MRingOver S ι ⧸ mIdealOver S y, (X ⟨k, i⟩ : MRingOver S ι) • w = 0 := by
-    intro w
-    obtain ⟨g, rfl⟩ := Submodule.Quotient.mk_surjective _ w
-    rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, smul_eq_mul]
-    exact Ideal.mul_mem_right _ _ hmem
-  refine ⟨fun a b => ?_⟩
-  induction a using LocalizedModule.induction_on with
-  | h m t =>
-    induction b using LocalizedModule.induction_on with
-    | h m' t' =>
-      rw [LocalizedModule.mk_eq]
-      refine ⟨⟨_, hX⟩, ?_⟩
-      simp only [Submonoid.smul_def]
-      rw [hz, hz]
+    Subsingleton (LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y)) :=
+  CellLocEval.subsingleton_of_not y fun h => h k i hi hy
 
 theorem cellRes_mem_locPart {J I : ∀ k, Finset (ι k)} (h : cellMon S J ≤ cellMon S I) (β : K → ℤ)
     {x : LocalizedModule (cellMon S J) (MRingOver S ι ⧸ mIdealOver S y)}
     (hx : x ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S J) β) :
-    cellRes S _ J I x ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I) β := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨m, t, a, ht, hm, rfl⟩ := hx
-    rw [cellRes_mk h]
-    exact Submodule.subset_span ⟨m, ⟨t.1, h t.2⟩, a, ht, hm, rfl⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x₁ x₂ _ _ h₁ h₂ => rw [map_add]; exact add_mem h₁ h₂
-  | smul s x _ h' => rw [CellLocEval.cellRes_smul]; exact Submodule.smul_mem _ s h'
+    cellRes S _ J I x ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I) β :=
+  CellLocEval.cellRes_mem_locPart h β hx
 
 theorem cechD_mem_locPart (β : K → ℤ) (n : ℕ) {f : CechC S ι (MRingOver S ι ⧸ mIdealOver S y) n}
     (hf : f ∈ cechCc ι (quotPart S (mIdealOver S y)) β n) (I : Cell K ι (n + 1)) :
@@ -486,12 +350,8 @@ theorem good_chart {c : ∀ k, ι k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) : Good y
 
 theorem evMap_cellRes {J I : ∀ k, Finset (ι k)} (hJI : ∀ k, J k ⊆ I k) (hI : Good y I)
     (x : LocalizedModule (cellMon S J) (MRingOver S ι ⧸ mIdealOver S y)) :
-    evMap y I (cellRes S _ J I x) = evMap y J x := by
-  have hJ : Good y J := fun k i hi => hI k i (hJI k hi)
-  induction x using LocalizedModule.induction_on with
-  | h m t =>
-    obtain ⟨g, rfl⟩ := Ideal.Quotient.mk_surjective m
-    rw [CechPointVanish.cellRes_mk (CechPointVanish.cellMon_mono hJI), evMap_mk y hI, evMap_mk y hJ]
+    evMap y I (cellRes S _ J I x) = evMap y J x :=
+  CellLocEval.evMap_cellRes hJI hI x
 
 theorem evMap_cechD (x : CechC S ι (MRingOver S ι ⧸ mIdealOver S y) 0) (J : Cell K ι 1) (hJ : Good y J.1) :
     evMap y J.1 (cechD S ι _ 0 x J) = constD K ι Ω 0 (fun I => evMap y I.1 (x I)) J := by
@@ -634,6 +494,46 @@ theorem exists_lift {I : ∀ k, Finset (ι k)} (hI : Good y I) {c : ∀ k, ι k}
     rw [evMap_mk y hI, map_mul, aeval_prod_X, aeval_prod_X, hA, ← hh']
     field_simp
 
+theorem exists_cocycle {n : K → ℤ} {s : Ω} (hs : s ∈ secOver S y n) :
+    ∃ z ∈ cechZc ι (quotPart S (mIdealOver S y)) n 0,
+      ∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) → evMap y (chart c) (z (cell0 c)) = s := by
+  have hs' : ∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) →
+      s * ∏ k, y ⟨k, c k⟩ ^ (-n k) ∈ chartRingOver S y c := by
+    intro c hc
+    exact (Submodule.mem_iInf _).mp ((Submodule.mem_iInf _).mp hs c) hc
+  have hlift : ∀ I : Cell K ι 0, Good y I.1 → ∃ w ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I.1) n,
+      evMap y I.1 w = s := fun I hI =>
+    exists_lift hI (fun k => Finset.min'_mem _ (I.2.1 k)) n
+      (hs' _ fun k => hI k _ (Finset.min'_mem _ (I.2.1 k)))
+  classical
+  let z : CechC S ι (MRingOver S ι ⧸ mIdealOver S y) 0 := fun I =>
+    if hI : Good y I.1 then (hlift I hI).choose else 0
+  have hzC : ∀ I : Cell K ι 0, z I ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I.1) n := by
+    intro I
+    by_cases hI : Good y I.1
+    · simp only [z, dif_pos hI]; exact (hlift I hI).choose_spec.1
+    · simp only [z, dif_neg hI]; exact Submodule.zero_mem _
+  have hzv : ∀ I : Cell K ι 0, Good y I.1 → evMap y I.1 (z I) = s := by
+    intro I hI
+    simp only [z, dif_pos hI]
+    exact (hlift I hI).choose_spec.2
+  have hzCc : z ∈ cechCc ι (quotPart S (mIdealOver S y)) n 0 :=
+    Submodule.mem_pi.mpr fun I _ => hzC I
+  have hzD : cechD S ι _ 0 z = 0 := by
+    funext J
+    by_cases hJ : Good y J.1
+    · refine evMap_injOn y hJ n (cechD_mem_locPart n 0 hzCc J) (Submodule.zero_mem _) ?_
+      have hconst : constD K ι Ω 0 (fun I => evMap y I.1 (z I)) J = constD K ι Ω 0 (fun _ => s) J :=
+        CechPointVanish.constD_congr J.1 0 (fun I hIJ => hzv I fun k i hi => hJ k i (hIJ k hi)) J
+          fun k => subset_refl _
+      rw [evMap_cechD z J hJ, hconst, constD_const, Pi.zero_apply, map_zero]
+    · unfold Good CellMeets at hJ
+      push Not at hJ
+      obtain ⟨k, i, hi, hy0⟩ := hJ
+      have := subsingleton_of_bad (S := S) hi hy0
+      exact @Subsingleton.elim _ this _ _
+  exact ⟨z, Submodule.mem_inf.mpr ⟨hzCc, hzD⟩, fun c hc => hzv (cell0 c) (good_chart hc)⟩
+
 end Main
 
 end HZeroRowPlaceData
@@ -695,44 +595,8 @@ theorem HZeroRowPlaceData.full : GlobalSectionsComparisonStatement := by
         field_simp
       · simp
     · intro s hs
-      have hs' : ∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) →
-          s * ∏ k, y ⟨k, c k⟩ ^ (-n k) ∈ chartRingOver S y c := by
-        intro c hc
-        exact (Submodule.mem_iInf _).mp ((Submodule.mem_iInf _).mp hs c) hc
-      have hlift : ∀ I : Cell K ι 0, Good y I.1 → ∃ w ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I.1) n,
-          evMap y I.1 w = s := fun I hI =>
-        exists_lift hI (fun k => Finset.min'_mem _ (I.2.1 k)) n
-          (hs' _ fun k => hI k _ (Finset.min'_mem _ (I.2.1 k)))
-      classical
-      let z : CechC S ι (MRingOver S ι ⧸ mIdealOver S y) 0 := fun I =>
-        if hI : Good y I.1 then (hlift I hI).choose else 0
-      have hzC : ∀ I : Cell K ι 0, z I ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I.1) n := by
-        intro I
-        by_cases hI : Good y I.1
-        · simp only [z, dif_pos hI]; exact (hlift I hI).choose_spec.1
-        · simp only [z, dif_neg hI]; exact Submodule.zero_mem _
-      have hzv : ∀ I : Cell K ι 0, Good y I.1 → evMap y I.1 (z I) = s := by
-        intro I hI
-        simp only [z, dif_pos hI]
-        exact (hlift I hI).choose_spec.2
-      have hzCc : z ∈ cechCc ι (quotPart S (mIdealOver S y)) n 0 :=
-        Submodule.mem_pi.mpr fun I _ => hzC I
-      have hzD : cechD S ι _ 0 z = 0 := by
-        funext J
-        by_cases hJ : Good y J.1
-        · refine evMap_injOn y hJ n (cechD_mem_locPart n 0 hzCc J) (Submodule.zero_mem _) ?_
-          have hconst : constD K ι Ω 0 (fun I => evMap y I.1 (z I)) J = constD K ι Ω 0 (fun _ => s) J :=
-            CechPointVanish.constD_congr J.1 0 (fun I hIJ => hzv I fun k i hi => hJ k i (hIJ k hi)) J
-              fun k => subset_refl _
-          rw [evMap_cechD z J hJ, hconst, constD_const, Pi.zero_apply, map_zero]
-        · unfold Good at hJ
-          push Not at hJ
-          obtain ⟨k, i, hi, hy0⟩ := hJ
-          have := subsingleton_of_bad (S := S) hi hy0
-          exact @Subsingleton.elim _ this _ _
-      refine ⟨⟨z, Submodule.mem_inf.mpr ⟨hzCc, hzD⟩⟩, ?_⟩
-      rw [hφ]
-      exact hzv (cell0 c₀) hg₀
+      obtain ⟨z, hz, hzv⟩ := exists_cocycle hs
+      exact ⟨⟨z, hz⟩, by rw [hφ]; exact hzv c₀ hc₀⟩
   · intro z d g _ _ hz1
     rw [hφ, hz1 (cell0 c₀), evMap_mk y hg₀]
     simp

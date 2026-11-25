@@ -379,7 +379,6 @@ structure TwStep (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, For
   offU : ∀ h1 hm β v, v ∉ Q → (lev h1 hm β).Uloc v = (H.lev u i h1 hm (gOf β)).Uloc v
   offL : ∀ h1 hm β, (lev h1 hm β).Lb = (H.lev u i h1 hm (gOf β)).Lb
   offK : ∀ h1 (h2 : i + 1 ≤ B.R.m) β v, v ∉ Q → (K h1 (le_of_succ_m h2) β).lev.Uloc v = ((F u).ch i h1 h2 (gOf β)).lev.Uloc v
-  uniq : i = B.R.m → Nonempty (Unique Ch)
   chiFin : a ≠ I.mu0 → ∀ h1 hm β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K h1 hm β).lev.chi κ ^ n = 1
   chiC : ∀ h1 (h2 : i + 1 ≤ B.R.m) β (κ : (K h1 (le_of_succ_m h2) β).lev.U) (κ' : ((F u).ch i h1 h2 (gOf β)).lev.U), κ.1 = κ'.1 →
     (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → (K h1 (le_of_succ_m h2) β).lev.chi κ = ((F u).ch i h1 h2 (gOf β)).lev.chi κ'
@@ -403,7 +402,6 @@ theorem twStep_out {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, F
      offU := fun h1 hm => absurd ⟨h1, hm⟩ hout
      offL := fun h1 hm => absurd ⟨h1, hm⟩ hout
      offK := fun h1 h2 => absurd ⟨h1, le_of_succ_m h2⟩ hout
-     uniq := fun e => (hout ⟨(one_le_m B.R).trans e.ge, e.le⟩).elim
      chiFin := fun _ h1 hm => absurd ⟨h1, hm⟩ hout
      chiC := fun h1 h2 => absurd ⟨h1, le_of_succ_m h2⟩ hout }⟩
 
@@ -448,7 +446,6 @@ def twStep_mk (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermColsC
     (hLb : ∀ β, (K β).lev.Lb = reL (rankN (I.rec7 l Z) i hmi) (H.lev u i h1i hmi (g β)).Lb)
     (hU : ∀ β v, v ∉ Q → (K β).lev.Uloc v = ((H.lev u i h1i hmi (g β)).Uloc v).map (reGL (rankN (I.rec7 l Z) i hmi) _).toMonoidHom)
     (hK : ∀ h1 (h2 : i + 1 ≤ B.R.m) β v, v ∉ Q → (K β).lev.Uloc v = ((F u).ch i h1 h2 (g β)).lev.Uloc v)
-    (hu : i = B.R.m → Nonempty (Unique Ch))
     (hF : a ≠ I.mu0 → ∀ β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K β).lev.chi κ ^ n = 1)
     (hC : ∀ h1 (h2 : i + 1 ≤ B.R.m) β (κ : (K β).lev.U) (κ' : ((F u).ch i h1 h2 (g β)).lev.U), κ.1 = κ'.1 →
       (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → (K β).lev.chi κ = ((F u).ch i h1 h2 (g β)).lev.chi κ') :
@@ -461,7 +458,7 @@ def twStep_mk (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermColsC
       have h1 : (K β).lev.Uloc v = _ := (hx β).choose_spec.choose_spec.2.Uloc_eq v
       rw [hU β v hv] at h1
       exact Subgroup.map_injective (reGL (rankN (I.rec7 l Z) i hmi) _).injective h1.symm,
-    offL := fun _ _ β => (hx β).choose_spec.choose_spec.1, offK := hK, uniq := hu,
+    offL := fun _ _ β => (hx β).choose_spec.choose_spec.1, offK := hK,
     chiFin := fun h _ _ => hF h, chiC := hC }
 
 theorem reads_lb_eq {u : B.Word} {a a' : I.ι} {i : ℕ} {hi : i ≤ B.R.m} {bad bad' : Set (HeightOneSpectrum (𝓞 B.host.F))} {Ch Ch' : Type}
@@ -493,7 +490,7 @@ theorem twStep_mid (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
       fun β => chartWiden Set.subset_union_left ((F u).ch i h1 h2 β)
     refine ⟨twStep_mk hok pins u I.mu0 i h1 hi hoff (H.Ch u i) (H.ChFin u i) (H.chOf u i) id K hr0
       (fun _ => hr0.elim fun k hk => ⟨k, hk, fun _ v hv => absurd hv (GlobalTheory.T.not_twistPlace_referenceTuple I hok v)⟩) (fun β => ?_) (fun β v _ => ?_) (fun _ _ β v _ => rfl)
-      (fun e => by omega) (fun h => absurd rfl h) (fun _ _ β κ κ' e _ => ?_)⟩
+      (fun h => absurd rfl h) (fun _ _ β κ κ' e _ => ?_)⟩
     · exact (hC.carC u i h1 h2 β).Lb_eq
     · exact (hC.carC u i h1 h2 β).Uloc_eq v
     · exact congrArg ((F u).ch i h1 h2 β).lev.chi (Subtype.ext e)
@@ -502,7 +499,7 @@ theorem twStep_mid (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     have hr : I.ReadsK l Z u a i hi chOf K := hrQ.elim fun k hk => ⟨k, hk.1⟩
     have hoU : ∀ β v, v ∉ Q → (K β).lev.Uloc v = ((F u).ch i h1 h2 (g β)).lev.Uloc v := fun β v hv => (hp β).1 v hv
     refine ⟨twStep_mk hok pins u a i h1 hi hoff Ch fin chOf g K hr (fun _ => hrQ) (fun β => ?_) (fun β v hv => ?_) (fun _ _ β v hv => hoU β v hv)
-      (fun e => by omega) (fun _ β => (hp β).2.1) (fun _ _ β κ κ' e hv => (hp β).2.2 κ κ' e hv)⟩
+      (fun _ β => (hp β).2.1) (fun _ _ β κ κ' e hv => (hp β).2.2 κ κ' e hv)⟩
     · exact (reads_lb_eq (K := K) (K' := (F u).ch i h1 h2)
         hr ((hF u).mid i h1 h2) β (g β)).trans (hC.carC u i h1 h2 (g β)).Lb_eq
     · exact (hoU β v hv).trans ((hC.carC u i h1 h2 (g β)).Uloc_eq v)
@@ -539,7 +536,7 @@ theorem twStep_top (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     let S := twStep_mk (F := F) hok pins u I.mu0 B.R.m h1m le_rfl hoff
       Unit inferInstance (fun _ => ()) (fun _ => chM H u) K hr (fun h2 => (hno h2).elim)
       (fun _ => (hC.carM u).Lb_eq) (fun _ v _ => (hC.carM u).Uloc_eq v)
-      (fun _ h2 => (hno h2).elim) (fun _ => ⟨inferInstance⟩)
+      (fun _ h2 => (hno h2).elim)
       (fun h => (h rfl).elim) (fun _ h2 => (hno h2).elim)
     exact ⟨S, ⟨fun h => (h rfl).elim, fun h => (h rfl).elim⟩⟩
   · obtain ⟨K1, hk, htop, hoU, hfin, -⟩ := _root_.GlobalTheory.Mem.Col2.TC.chart_twm I hok pins l Z u a Q ((F u).cls B.R.m le_rfl (Or.inr rfl)) hQ hr0
@@ -553,7 +550,7 @@ theorem twStep_top (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
       Unit inferInstance (fun _ => ()) (fun _ => chM H u) K1 hr (fun h2 => (hno h2).elim)
       (fun β => (hLb β).trans (hC.carM u).Lb_eq)
       (fun _ v hv => (hoU v hv).trans ((hC.carM u).Uloc_eq v))
-      (fun _ h2 => (hno h2).elim) (fun _ => ⟨inferInstance⟩)
+      (fun _ h2 => (hno h2).elim)
       (fun _ _ => hfin) (fun _ h2 => (hno h2).elim)
     exact ⟨S, ⟨fun _ _ _ => htop, fun _ _ => hk⟩⟩
 
@@ -603,66 +600,24 @@ theorem twPack_ex (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermC
     (fun β v hv => (St (B.R.m - 1)).offK h1 h2 β v hv) (fun β κ κ' e hv => (St (B.R.m - 1)).chiC h1 h2 β κ κ' e hv)
   exact ⟨⟨St, hSt ▸ hSm, J⟩⟩
 
-theorem reL_inj {a b : ℕ} (h : a = b) {E : Type} [Field E] [NumberField E] {L L' : Submodule (𝓞 E) (Fin a → E)}
-    (e : reL h L = reL h L') : L = L' :=
-  Submodule.map_injective_of_injective (f := (reV h E : (Fin a → E) →ₗ[E] (Fin b → E)).restrictScalars (𝓞 E)) (reV h E).injective e
-
-def stab0Equiv (u : B.Word) (a : I.ι) (c : (I.stp u I.mu0 0).Cl) (c' : (I.stp u a 0).Cl) : (I.stp u I.mu0 0).Stab c ≃* (I.stp u a 0).Stab c' :=
-  have h0 : Subsingleton ((I.stp u I.mu0 0).Stab c) := ⟨fun x y => Subtype.ext
-    (((l.lev u I.mu0).free0 c.1 x.1 _ x.2).trans ((l.lev u I.mu0).free0 c.1 y.1 _ y.2).symm)⟩
-  have h1 : Subsingleton ((I.stp u a 0).Stab c') := ⟨fun x y => Subtype.ext
-    (((l.lev u a).free0 c'.1 x.1 _ x.2).trans ((l.lev u a).free0 c'.1 y.1 _ y.2).symm)⟩
-  { toFun := fun _ => 1
-    invFun := fun _ => 1
-    left_inv := fun _ => Subsingleton.elim _ _
-    right_inv := fun _ => Subsingleton.elim _ _
-    map_mul' := fun _ _ => Subsingleton.elim _ _ }
-
-
-
 def twT {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)}
     {inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop}
     (Q : I.ι → Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (hQ : ∀ a v, v ∈ Q a ↔ inQ a v)
     (p : ∀ u a, TwPack (I := I) (l := l) (Z := Z) H F (Q a) u a) : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ where
   eCls0 u μ := I.eCls0 l u μ
-  eStab0 u μ c := stab0Equiv (l := l) u μ c _
   eY _ _ _ _ := Equiv.refl _
-  de_eq _ _ _ _ _ _ := rfl
-  twisted_character_eq u μ φ c y := by
-    show φ ((I.eCls0 l u μ).symm (I.eCls0 l u μ c)) y = φ c y
-    exact congrArg (fun c' => φ c' y) (Equiv.symm_apply_apply _ c)
   Q := Q
   Q_iff := hQ
   Ch u μ i := ((p u μ).St i).Ch
   ChFin u μ i := ((p u μ).St i).fin
-  Ch_m u μ := ((p u μ).St B.R.m).uniq rfl
   chOf u μ i := ((p u μ).St i).chOf
   lev u μ i h1 hm β := ((p u μ).St i).lev h1 hm β
   lat u μ i := I.latAt u μ i
   cls u μ _ i h1 hm β := ((p u μ).St i).cls h1 hm β
   levJ u μ _ := (p u μ).J.levJ
   Yb u μ _ := (p u μ).J.Yb
-  YbFin u μ _ := (p u μ).J.YbFin
   YbAct u μ _ := (p u μ).J.YbAct
   yb u μ _ := (p u μ).J.yb
-  yb_orbit u μ _ := (p u μ).J.yb_orbit
-  levJ_Lb u μ h β := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).Lb_eq
-    have e2 := (p u μ).J.lb β
-    rw [e1] at e2
-    exact reL_inj _ e2
-  levJ_le u μ h β := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).U_eq
-    have e2 := (p u μ).J.le β
-    rw [e1] at e2
-    exact (Subgroup.map_le_map_iff_of_injective (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).injective).1 e2
-  levJ_stab u μ h β κ := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).U_eq
-    have e2 := (p u μ).J.stab β κ
-    rw [e1] at e2
-    exact (Subgroup.mem_map_iff_mem (f := (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).toMonoidHom)
-      (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).injective).symm.trans e2
-  DGam_one _ _ := rfl
 
 
 

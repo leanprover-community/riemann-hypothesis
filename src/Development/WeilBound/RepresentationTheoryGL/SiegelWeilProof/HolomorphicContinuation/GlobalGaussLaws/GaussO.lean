@@ -19,11 +19,7 @@ private theorem isUnit_det_and_eq_inv_of_conjTranspose_mul_eq_one {n : ℕ} (A B
   have hDA : D * Aᴴ = 1 := mul_eq_one_comm.mp h1
   have hAD : A * Dᴴ = 1 := by simpa using congrArg conjTranspose hDA
   refine ⟨?_, (inv_eq_right_inv h1).symm, ?_⟩
-  · have h := congrArg det h1
-    rw [det_mul, det_one, det_conjTranspose] at h
-    refine isUnit_iff_ne_zero.mpr fun h0 => ?_
-    rw [h0, star_zero, zero_mul] at h
-    exact zero_ne_one h
+  · exact isUnit_det_of_right_inverse hAD
   · rw [conjTranspose_mul, conjTranspose_conjTranspose]
     calc A * Bᴴ = A * (Bᴴ * D) * Aᴴ := by
           rw [Matrix.mul_assoc, Matrix.mul_assoc, hDA, Matrix.mul_one]

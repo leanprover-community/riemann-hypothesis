@@ -85,14 +85,6 @@ structure NH (t : AD K L) where
   h : ∀ n, K.X n →ₗ[R] L.X n
   eq : ∀ n x, L.d n (h n x) - h (n + 1) (K.d n x) = t.r n x
 
-def AD.ofH (h : ∀ n, K.X n →ₗ[R] L.X n) : AD K L where
-  r n := (L.d n).comp (h n) - (h (n + 1)).comp (K.d n)
-  anti n x := by
-    change L.d (n + 1) (L.d n (h n x) - h (n + 1) (K.d n x)) +
-      (L.d (n + 1) (h (n + 1) (K.d n x)) - h (n + 2) (K.d (n + 1) (K.d n x))) = 0
-    rw [map_sub, L.dd, K.dd, map_zero]
-    abel
-
 def cone (t : AD K L) : Cx.{w} R where
   X n := L.X n × K.X n
   d n := ((L.d n).comp (LinearMap.fst R _ _) + (t.r n).comp (LinearMap.snd R _ _)).prod ((K.d n).comp (LinearMap.snd R _ _))

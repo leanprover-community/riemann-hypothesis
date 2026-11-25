@@ -27,11 +27,6 @@ open Matrix
 
 namespace UpperTheory.V
 
-private def transl (R : Type) [CommRing R] {G : Type} [Group G] (g : G) : (G → R) →ₗ[R] (G → R) where
-  toFun x := fun h => x (g⁻¹ * h)
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-
 end UpperTheory.V
 
 private theorem UpperTheory.sum_B_smul_pi_sum_smul_eq_sum_smul {G N : Type} [Group G] [Fintype G] [AddCommGroup N] [Module ℂ N]

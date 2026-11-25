@@ -255,7 +255,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Fl.CMValue.value_on_cmFrame : ∀ (E : T
       rwa [← RingHom.comp_assoc, hcomp] at this
     · have := (hw w' hw').1 hF.2.2.2
       rwa [← RingHom.comp_assoc, hcomp] at this
-  have hz₂ : (Z false).z ≠ 0 := _root_.GlobalTheory.CompanionTheory.Ar.Fl.curve0_z_ne_zero E H _ (Z false)
+  have hz₂ : (Z false).z ≠ 0 := _root_.PositivityTheory.Xgf.curve_z_ne_zero E H _ (Z false)
   have hcard : Fintype.card (Fin D.p ⊕ Fin D.q) = (FU.Di i).p + (FU.Di i).q := by
     simp [(FU.sig i).1, (FU.sig i).2]
 

@@ -28,15 +28,9 @@ private theorem under_int_isMaximal (𝔭 : HeightOneSpectrum (𝓞 K)) : (𝔭.
 private theorem under_int_ne_bot' (𝔭 : HeightOneSpectrum (𝓞 K)) : 𝔭.asIdeal.under ℤ ≠ ⊥ :=
   Ring.ne_bot_of_isMaximal_of_not_isField (under_int_isMaximal 𝔭) Int.not_isField
 
-private theorem int_ideal_eq_span_absNorm (J : Ideal ℤ) : J = Ideal.span {((Ideal.absNorm J : ℕ) : ℤ)} := by
-  obtain ⟨a, rfl⟩ : ∃ a, J = Ideal.span {a} :=
-    ⟨_, (Submodule.IsPrincipal.span_singleton_generator J).symm⟩
-  rw [Ideal.absNorm_span_singleton]
-  simp [Algebra.norm_self]
-
 private theorem under_eq_span_ratPrimeBelow (𝔭 : HeightOneSpectrum (𝓞 K)) :
     𝔭.asIdeal.under ℤ = Ideal.span {((ratPrimeBelow 𝔭 : ℕ) : ℤ)} :=
-  int_ideal_eq_span_absNorm _
+  (Int.ideal_span_absNorm_eq_self _).symm
 
 theorem ratPrimeBelow_prime (𝔭 : HeightOneSpectrum (𝓞 K)) : (ratPrimeBelow 𝔭).Prime := by
   have hprime : (Ideal.span {((ratPrimeBelow 𝔭 : ℕ) : ℤ)}).IsPrime := by

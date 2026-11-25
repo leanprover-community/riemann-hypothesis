@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 
@@ -25,11 +26,7 @@ theorem sgn_one (p : Fin (2 * r + k + 1)) (h : p.val ≠ r + k) : WeylGroupFacts
 
 theorem mulVec_hpk (v : Fin (2 * r + k + 1) → ℂ) (l : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) l = WeylGroupFacts.sgn k r l * v (tau k r l) := by
-  simp only [Matrix.mulVec, dotProduct]
-  rw [Finset.sum_eq_single (tau k r l)]
-  · rw [hpk_row, if_pos rfl]
-  · intro m _ hm; rw [hpk_row, if_neg hm, zero_mul]
-  · simp
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.hpkVec <;> assumption
 
 theorem herm_expand (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) v w = ∑ l, star (w l) * (WeylGroupFacts.sgn k r l * v (tau k r l)) := by

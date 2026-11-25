@@ -995,8 +995,6 @@ theorem Mv.rowLoc {D : D7} (m : Mv D) (F : Formalism.L2.RowFrame D) (F' : Formal
     (sat := (x.sat))
     )
 
-theorem congrFun_heq {α β : Type} {f g : α → β} (h : HEq f g) (x : α) : f x = g x := by rw [eq_of_heq h]
-
 end GlobalTheory.LayerMove
 end
 end -- clump:auto

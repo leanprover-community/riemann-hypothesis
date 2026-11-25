@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.WhittakerVanishingImpliesZero
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.Data.Nat.Choose.Multinomial
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
@@ -223,15 +224,7 @@ namespace Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 open Formalism.FourierDecayAlt.G
 
 theorem b_pow_sub_one (ω : ℂ) (hω : ‖ω‖ = 1) (i : ℕ) : ‖ω ^ i - 1‖ ≤ i * ‖ω - 1‖ := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have e : ω ^ (i + 1) - 1 = ω * (ω ^ i - 1) + (ω - 1) := by ring
-    rw [e]
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, hω, one_mul]
-    push_cast
-    linarith
+  apply _root_.Formalism.FourierDecayAlt.P.WhittakerVanishingImpliesZero.norm_pow_sub_one_le <;> assumption
 
 theorem b_root_sep (s : ℕ) (hs : 0 < s) (z z' : ℂ) (hz : z ≠ 0) (h : z' ^ s = z ^ s) (hne : z' ≠ z) :
     ‖z‖ ≤ s * ‖z' - z‖ := by

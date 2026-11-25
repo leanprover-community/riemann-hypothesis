@@ -117,9 +117,6 @@ theorem place_ext {v : HeightOneSpectrum (𝓞 F)} {α : Af F} (h0 : ∀ v', v' 
 
 end Local
 
-theorem star_delta (D : D7) : star D.host.sqrtMinusD = -D.host.sqrtMinusD := by
-  rw [star_eq_conj, D.host.conj_sqrtMinusD]
-
 theorem d_ne_zero (D : D7) : D.host.d ≠ 0 := D.host.hyp.2.1.pos.ne'
 
 theorem tensor_decomp {F A E : Type} [Field F] [CommRing A] [Algebra F A] [CommRing E] [Algebra F E] (δ : E)
@@ -284,7 +281,7 @@ theorem exists_half_idem : ∀ D : D7, ∃ ε : AE D, ε * ε = ε ∧ ε * cA D
   exact exists_half_abstract (algebraMap (AF D.host.F) (AE D)) (cA D) (infPart D)
     ((1 : AF D.host.F) ⊗ₜ[D.host.F] D.host.sqrtMinusD) D.host.d (d_ne_zero D) tensor_inj
     (fun a => (hcA a 1).trans (congrArg (fun x => a ⊗ₜ[D.host.F] x) (star_one _)))
-    ((hcA 1 _).trans ((congrArg (fun x => (1 : AF D.host.F) ⊗ₜ[D.host.F] x) (star_delta D)).trans
+    ((hcA 1 _).trans ((congrArg (fun x => (1 : AF D.host.F) ⊗ₜ[D.host.F] x) (GlobalTheory.FockCompare.RealChart.star_sqrtMinusD D)).trans
       (TensorProduct.tmul_neg _ _)))
     (tensor_sq _ _ D.host.sqrtMinusD_sq) (tensor_decomp _ (field_decomp D))
     (fun _ => TensorProduct.zero_tmul (Ainf D.host.F) (1 : D.host.E))

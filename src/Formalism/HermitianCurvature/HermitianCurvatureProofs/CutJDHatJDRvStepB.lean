@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHLFrozen
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapTodaVCoef
@@ -249,21 +250,7 @@ section ring
 
 theorem comm_qminor {A : Type} [Ring A] [Algebra ℂ A] {n t : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E) (p : Fin n)
     {a b : Fin t → Fin n} (ha : ∀ i, a i ≠ p) (hb : ∀ i, b i ≠ p) (w : ℂ) : Commute (E p p) (qminor E a b w) := by
-  unfold qminor
-  refine Commute.sum_right _ _ _ fun σ _ => ?_
-  refine ((Int.cast_commute _ _).symm).mul_right ?_
-  apply Commute.list_prod_right
-  intro T hT
-  rw [List.mem_ofFn] at hT
-  obtain ⟨i, rfl⟩ := hT
-  unfold Tm
-  refine Commute.add_right ?_ ?_
-  · split_ifs
-    · exact Algebra.commute_algebraMap_right _ _
-    · exact Commute.zero_right _
-  · have h := hE p p (a (σ i)) (b i)
-    rw [if_neg (Ne.symm (ha _)), if_neg (hb _), sub_zero] at h
-    exact sub_eq_zero.1 h
+  apply _root_.Formalism.FourierDecayAlt.P.CutHL.comm_qminor <;> assumption
 
 theorem stepBv_ring {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E)
     {M : Type} [AddCommGroup M] [Module ℂ M] (Λ : A →ₗ[ℂ] M) (q0 q1 : Fin n) (h01 : q0 ≠ q1) (κ : ℂ)

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtEpart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfExhaustOfAvgCutoff
 public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -110,14 +111,7 @@ theorem ckOn_Rw' {UU : Set (Mat k r)} {f : Mat k r → E} {N : ℕ} (h : CkOn (N
 
 theorem ckOn_Rw_top' {UU : Set (Mat k r)} {f : Mat k r → E} (h : CkOn ⊤ UU f) :
     ∀ (w : List (Mat k r)), (∀ X ∈ w, inLie k r X) → CkOn ⊤ UU (Rw w f) := by
-  intro w hw
-  induction w with
-  | nil => exact h
-  | cons X w ih =>
-    have hX : inLie k r X := hw X (by simp)
-    have h1 := ih (fun Y hY => hw Y (by simp [hY]))
-    have h2 : CkOn ((⊤ : ℕ∞) + 1) UU (Rw w f) := by simpa using h1
-    exact ckOn_RdV' hX h2
+  apply _root_.Formalism.FourierDecayAlt.P.MinorPolynomials.ckOn_Rw_top <;> assumption
 
 theorem rdV_hasDerivAt' {UU : Set (Mat k r)} {f : Mat k r → E} (h : CkOn 1 UU f) {g X : Mat k r} (hg : g ∈ UU)
     (hgG : g ∈ GV k r) (hX : inLie k r X) :

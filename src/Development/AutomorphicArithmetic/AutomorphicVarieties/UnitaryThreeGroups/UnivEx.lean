@@ -329,13 +329,6 @@ private theorem transfer (hη : IsLocallyConstant η) (N : Set Γ) (M : Subgroup
 
 end Desc
 
-private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
-    [TotallyDisconnectedSpace G] (N : Subgroup G) [N.Normal] (hN : IsClosed (N : Set G)) :
-    TotallyDisconnectedSpace (G ⧸ N) := by
-  first
-  | exact _root_.Formalism.SharedLemmas.totDisc_quot
-  | (apply _root_.Formalism.SharedLemmas.totDisc_quot <;> assumption)
-
 section Quot
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ ι : Type} [Group Γ] [TopologicalSpace Γ] [Fintype ι]
@@ -386,7 +379,7 @@ theorem UpperTheory.V.U3.exists_univ :
     rw [hMeq]
     exact Subgroup.isClosed_topologicalClosure _
   haveI : IsClosed (M : Set Γ) := hMc
-  haveI : TotallyDisconnectedSpace (Γ ⧸ M) := totDisc_quot M hMc
+  haveI : TotallyDisconnectedSpace (Γ ⧸ M) := Formalism.SharedLemmas.totDisc_quot M hMc
   have hNM : N ⊆ M := fun g hg => by
     rw [hMeq]
     exact Subgroup.le_topologicalClosure _ (Subgroup.subset_normalClosure hg)

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ColumnOperationTripleForm
 public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.MulInvBlockDiagApplySameBlock
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsIntOfLatOfLe
@@ -17,23 +18,11 @@ section Supp
 variable {K : Type} [CommRing K] (R : Subring K)
 
 theorem blk_app (l : List ℕ) (s : ℕ) (hs : 1 ≤ s) : blk (l ++ [s]) l.sum = l.length := by
-  induction l with
-  | nil => simp only [List.nil_append, List.sum_nil, List.length_nil, blk]; simp [Nat.lt_of_lt_of_le Nat.zero_lt_one hs]
-  | cons a l ih =>
-    rw [List.cons_append, List.sum_cons, List.length_cons]
-    simp only [blk]
-    rw [if_neg (by omega), Nat.add_sub_cancel_left, ih]
-    omega
+  apply _root_.Formalism.FourierDecayAlt.P.A5x2.blk_app <;> assumption
 
 theorem revIn_app (l : List ℕ) (s : ℕ) (hs : 1 ≤ s) :
     revIn (l ++ [s]) l.sum = l.sum + (s - 1) := by
-  induction l with
-  | nil => simp only [List.nil_append, List.sum_nil, revIn]; simp [Nat.lt_of_lt_of_le Nat.zero_lt_one hs]
-  | cons a l ih =>
-    rw [List.cons_append, List.sum_cons]
-    simp only [revIn]
-    rw [if_neg (by omega), Nat.add_sub_cancel_left, ih]
-    omega
+  apply _root_.Formalism.FourierDecayAlt.P.A5x2.revIn_app <;> assumption
 
 theorem blk_app_lt (s : ℕ) : ∀ (l : List ℕ) (j : ℕ), j < l.sum → blk (l ++ [s]) j = blk l j
   | [], j, h => by simp at h

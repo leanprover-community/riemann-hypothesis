@@ -222,15 +222,6 @@ theorem lift_lof (τ : Pair I J T) (V : Scheme.{0}) (st : ℤ) (p : {p : ℤ × 
   unfold Pair.lift
   rw [DirectSum.toModule_lof, TensorProduct.lift.tmul]
 
-theorem tres_lof {V U : Scheme.{0}} (g : V ⟶ U) (st : ℤ) (p : {p : ℤ × ℤ // p.1 + p.2 = st})
-    (a : Sec (I.X p.1.1) U) (b : Sec (J.X p.1.2) U) :
-    Tens.res (I := I) (J := J) g st (DirectSum.lof (ULift.{1} R) _ (fun p : {p : ℤ × ℤ // p.1 + p.2 = st} =>
-      Sec (I.X p.1.1) U ⊗[ULift.{1} R] Sec (J.X p.1.2) U) p (a ⊗ₜ b)) =
-      DirectSum.lof (ULift.{1} R) _ (fun p : {p : ℤ × ℤ // p.1 + p.2 = st} =>
-      Sec (I.X p.1.1) V ⊗[ULift.{1} R] Sec (J.X p.1.2) V) p (Sec.res g a ⊗ₜ Sec.res g b) := by
-  unfold Tens.res
-  rw [DirectSum.lmap_lof, TensorProduct.map_tmul]
-
 theorem tens_ind {V : Scheme.{0}} {st : ℤ} {P : Tens I J V st → Prop} (x : Tens I J V st) (h0 : P 0)
     (hadd : ∀ x y, P x → P y → P (x + y))
     (hof : ∀ (p : {p : ℤ × ℤ // p.1 + p.2 = st}) (a : Sec (I.X p.1.1) V) (b : Sec (J.X p.1.2) V),
@@ -275,7 +266,7 @@ theorem lift_nat (τ : Pair I J T) {V U : Scheme.{0}} (g : V ⟶ U) (st : ℤ) (
   induction x using tens_ind with
   | h0 => simp
   | hadd x y hx hy => rw [map_add (f := _), res_add', hx, hy, map_add (f := _), map_add (f := _)]
-  | hof p a b => rw [lift_lof, tres_lof, lift_lof, τ.nat]
+  | hof p a b => rw [lift_lof, GlobalTheory.EtC.TensEx.res_lof, lift_lof, τ.nat]
 
 theorem B_nat (μ' : Pair J K M) (ν' : Pair I M L) (st u w : ℤ) (h : st + u = w) {V U : Scheme.{0}} (g : V ⟶ U)
     (c : Sec (K.X u) U) (x : Tens I J U st) :
@@ -283,7 +274,7 @@ theorem B_nat (μ' : Pair J K M) (ν' : Pair I M L) (st u w : ℤ) (h : st + u =
   induction x using tens_ind with
   | h0 => simp
   | hadd x y hx hy => rw [map_add (f := _), res_add', hx, hy, map_add (f := _), map_add (f := _)]
-  | hof p a b => rw [B_lof, tres_lof, B_lof, ν'.nat, μ'.nat]
+  | hof p a b => rw [B_lof, GlobalTheory.EtC.TensEx.res_lof, B_lof, ν'.nat, μ'.nat]
 
 theorem B_add_c (μ' : Pair J K M) (ν' : Pair I M L) (st u w : ℤ) (h : st + u = w) (V : Scheme.{0})
     (c c' : Sec (K.X u) V) (x : Tens I J V st) :

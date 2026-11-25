@@ -260,7 +260,6 @@ open GlobalTheory.LamT (CMPt)
 open IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM fullB tv)
 open scoped nonZeroDivisors
-attribute [local instance] Over.cartesianMonoidalCategory
 open MonObj
 
 

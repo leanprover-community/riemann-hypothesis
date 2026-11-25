@@ -1,6 +1,7 @@
 module
 
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
@@ -20,18 +21,14 @@ section frob
 
 attribute [local instance] Matrix.frobeniusNormedAddCommGroup
 
-theorem gN_eq_frob {k r : ℕ} (g : Mat k r) : gN g = ‖g‖ := by
-  rw [frobenius_norm_def, gN, Real.sqrt_eq_rpow]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [Complex.normSq_eq_norm_sq, Real.rpow_two]
+theorem gN_eq_frob {k r : ℕ} (g : Mat k r) : gN g = ‖g‖ :=
+  TopH.gN_eq_frob g
 
-theorem gN_mul_le {k r : ℕ} (A B : Mat k r) : gN (A * B) ≤ gN A * gN B := by
-  rw [gN_eq_frob, gN_eq_frob, gN_eq_frob]
-  exact frobenius_norm_mul A B
+theorem gN_mul_le {k r : ℕ} (A B : Mat k r) : gN (A * B) ≤ gN A * gN B :=
+  TopH.gN_mul_le A B
 
-theorem gN_conjTranspose {k r : ℕ} (A : Mat k r) : gN Aᴴ = gN A := by
-  rw [gN_eq_frob, gN_eq_frob, frobenius_norm_conjTranspose]
+theorem gN_conjTranspose {k r : ℕ} (A : Mat k r) : gN Aᴴ = gN A :=
+  TopH.gN_conjT A
 
 theorem continuous_gN {k r : ℕ} : Continuous (fun g : Mat k r => gN g) := by
   have : (fun g : Mat k r => gN g) = fun g => ‖g‖ := funext gN_eq_frob
@@ -60,12 +57,8 @@ theorem GV_inv_eq {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : g⁻¹ = Hpk k
 theorem GV_mul_inv {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : g * g⁻¹ = 1 :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.UH_mul_inv k r hg
 
-theorem gN_inv_le {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : gN g⁻¹ ≤ KH k r * gN g := by
-  rw [GV_inv_eq hg]
-  have h0 := gN_nonneg (Hpk k r)
-  calc gN (Hpk k r * gᴴ * Hpk k r) ≤ gN (Hpk k r * gᴴ) * gN (Hpk k r) := gN_mul_le _ _
-    _ ≤ gN (Hpk k r) * gN gᴴ * gN (Hpk k r) := by gcongr; exact gN_mul_le _ _
-    _ = KH k r * gN g := by rw [gN_conjTranspose, KH]; ring
+theorem gN_inv_le {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : gN g⁻¹ ≤ KH k r * gN g :=
+  TopH.gN_inv_le hg
 
 theorem inv_mem_G {k r : ℕ} (hCG : IsClosedSubgroup (GV k r)) {g : Mat k r} (hg : g ∈ GV k r) :
     g⁻¹ ∈ GV k r := hCG.inv_mem g hg

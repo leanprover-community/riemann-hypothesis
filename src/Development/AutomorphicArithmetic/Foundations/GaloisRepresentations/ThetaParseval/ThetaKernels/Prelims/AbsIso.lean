@@ -63,18 +63,14 @@ theorem absIso : AbsIso := by
     refine (hU _ hle ?_).resolve_left ?_
     · intro g v hv
       obtain ⟨h, hh, hc⟩ := hG g
-      induction hv using Submodule.span_induction with
-      | mem v hv =>
-        obtain ⟨z, hz, x, rfl⟩ := hv
-        have hw : h⁻¹ * g * z ∈ Z := fun h' hh' => (hc h' hh').mul_left (hz h' hh')
-        refine Submodule.subset_span ⟨_, hw, τ ⟨h, hh⟩ x, ?_⟩
-        rw [hfe, ← hmul, ← hmul]
-        have e : g * z = h⁻¹ * g * z * h := by rw [(hw h hh).eq]; group
-        change ρ (g * z) (f x) = ρ (h⁻¹ * g * z * h) (f x)
-        rw [← e]
-      | zero => simp
-      | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
-      | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ _ ha
+      refine (Submodule.map_span_le (ρ g) S _).2 ?_ (Submodule.mem_map_of_mem hv)
+      rintro _ ⟨z, hz, x, rfl⟩
+      have hw : h⁻¹ * g * z ∈ Z := fun h' hh' => (hc h' hh').mul_left (hz h' hh')
+      refine Submodule.subset_span ⟨_, hw, τ ⟨h, hh⟩ x, ?_⟩
+      rw [hfe, ← hmul, ← hmul]
+      have e : g * z = h⁻¹ * g * z * h := by rw [(hw h hh).eq]; group
+      change ρ (g * z) (f x) = ρ (h⁻¹ * g * z * h) (f x)
+      rw [← e]
     · intro h0
       apply hf0
       ext x

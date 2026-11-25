@@ -17,8 +17,6 @@ open AlgebraicGeometry CategoryTheory Opposite Limits MonoidalCategory Cartesian
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open scoped ContDiff
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Pt
 
 variable {K : Type} [Field K] {ι : Type} {m : ℕ}

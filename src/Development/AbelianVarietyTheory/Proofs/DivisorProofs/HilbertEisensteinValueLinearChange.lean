@@ -70,7 +70,6 @@ namespace GlobalTheory.HilbFam
 
 variable {F : Type} [Field F] [NumberField F]
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 variable {F : Type} [Field F] [NumberField F] in
@@ -109,7 +108,6 @@ open scoped Classical MatrixGroups nonZeroDivisors
 
 namespace GlobalTheory.HilbFam
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem exists_unit_transfQuot_out_eq_smul {F : Type} [Field F] [NumberField F]
@@ -123,7 +121,6 @@ private theorem exists_unit_transfQuot_out_eq_smul {F : Type} [Field F] [NumberF
     (Quotient.mk_out (s := MulAction.orbitRel (𝓞 F)ˣ (Fin 2 → F)) (T q.out)))
   exact ⟨ε, hε.symm⟩
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem gTerm_eq_of_linear_change {F : Type} [Field F] [NumberField F]
@@ -139,7 +136,6 @@ private theorem gTerm_eq_of_linear_change {F : Type} [Field F] [NumberField F]
   rw [Complex.mul_cpow_ofReal_nonneg (norm_nonneg _) (norm_nonneg _), mul_inv, mul_pow]
   ring
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem isGVal_of_linear_change {F : Type} [Field F] [NumberField F]
@@ -205,7 +201,6 @@ private theorem isGVal_of_linear_change {F : Type} [Field F] [NumberField F]
       ((differentiable_id.const_mul (-2 : ℂ)).const_cpow (Or.inl hne))).differentiableOn).mul hH
 
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.gval_linear_change : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (L L' : _root_.GlobalTheory.HilbFam.Lat F) (T : (Fin 2 → F) ≃ₗ[F] (Fin 2 → F)) (b a b' a' lam : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ), Even k → (∀ x, x ∈ L ↔ T x ∈ L') → (∀ i, lam i ≠ 0) → (∀ x i, _root_.GlobalTheory.HilbFam.coord b a x i = lam i * _root_.GlobalTheory.HilbFam.coord b' a' (T x) i) → _root_.GlobalTheory.HilbFam.gval k L b a = (∏ i, lam i)⁻¹ ^ k * _root_.GlobalTheory.HilbFam.gval k L' b' a' := by

@@ -59,7 +59,7 @@ theorem preRes_bijective : ∀ (R' : Type) [CommRing R'] (X X' : Scheme.{0}) (φ
   intro R' _ X X' φ _ s'
   have hB : ∀ {U : TopologicalSpace.Opens X} {x : X}, x ∈ U → ∃ U' ∈ X.affineOpens, x ∈ U' ∧ U' ≤ U :=
     TopologicalSpace.Opens.isBasis_iff_nbhd.mp X.isBasis_affineOpens
-  refine GlobalTheory.T.structureSheafCohomology_basis_bijective R' X' s' X.affineOpens (preU φ) (preU_mono φ) ?_ ?_
+  refine _root_.GlobalTheory.AbCoh.cohO_basis_bijective R' X' s' X.affineOpens (preU φ) (preU_mono φ) ?_ ?_
   · intro U x hx
     obtain ⟨W, hW, hWU⟩ := (φ.isClosedEmbedding).isInducing.isOpen_iff.mp U.1.2
     have hxW : φ.base x ∈ W := by

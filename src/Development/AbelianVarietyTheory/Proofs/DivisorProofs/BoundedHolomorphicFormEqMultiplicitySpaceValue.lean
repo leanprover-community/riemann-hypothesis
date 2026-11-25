@@ -1541,7 +1541,7 @@ theorem exists_multMap : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂
     refine (uniq _ _ q1 ?_).symm
     rw [coe_update, hw, ← (hsmM y).2 τ X hX]
     exact q2
-  obtain ⟨N, L, hL, hgr⟩ := GlobalTheory.T.sobolev_bound_for_smooth_vectors D θ V hθ μ 𝓕 ρ hp hρ U hU
+  obtain ⟨N, L, hL, hgr⟩ := _root_.GlobalTheory.SobolevGrowth.pointwise_growth D θ V hθ μ 𝓕 ρ hp hρ U hU
   refine ⟨T, ⟨fun y => ⟨p2 y, p3 y, ?_, N, fun l hl x => ?_⟩, fun y => ?_, fun y k hk g => ?_, fun τ g hg y z hz => ?_,
     fun τ y x => ?_⟩, uniq v φ hφ.aut.cont (e1 ▸ hF)⟩
   · refine zfin_value T hsm hT (fun τ k => ?_) y

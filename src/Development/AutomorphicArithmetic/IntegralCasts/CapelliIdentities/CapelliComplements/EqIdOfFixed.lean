@@ -71,19 +71,9 @@ private lemma ne_id_of_cm {F E : Type} [Field F] [NumberField F] [Field E] [Numb
 private lemma eq_id_of_fix {F E : Type} [Field F] [Field E] [Algebra F E]
     (hd : Module.finrank F E = 2) (σ : E →ₐ[F] E) {x : E} (hx : σ x = x)
     (hno : ∀ t : F, algebraMap F E t ≠ x) (y : E) : σ y = y := by
-  have hli : LinearIndependent F ![(1 : E), x] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    by_cases ht : t = 0
-    · subst ht
-      simp only [zero_smul, add_zero, smul_eq_zero, one_ne_zero, or_false] at hst
-      exact ⟨hst, rfl⟩
-    · exfalso
-      apply hno (-(s / t))
-      have h1 : t • x = -(s • (1 : E)) := eq_neg_of_add_eq_zero_right hst
-      have h2 : x = t⁻¹ • -(s • (1 : E)) := by
-        rw [← h1, smul_smul, inv_mul_cancel₀ ht, one_smul]
-      rw [h2, Algebra.algebraMap_eq_smul_one, smul_neg, smul_smul, neg_smul, div_eq_inv_mul]
+  have hli : LinearIndependent F ![(1 : E), x] :=
+    (LinearIndependent.pair_iff' one_ne_zero).2 fun t ht =>
+      hno t ((Algebra.algebraMap_eq_smul_one t).trans ht)
   have hc : Fintype.card (Fin 2) = Module.finrank F E := by simp [hd]
   let b := basisOfLinearIndependentOfCardEqFinrank hli hc
   have heq : σ.toLinearMap = (LinearMap.id : E →ₗ[F] E) := by

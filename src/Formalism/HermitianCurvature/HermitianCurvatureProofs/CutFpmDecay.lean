@@ -1,5 +1,7 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NilpotentDerivative
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.ThmMOfXi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
@@ -24,45 +26,12 @@ variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
 
 private theorem deriv_smul_const_at_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (φ : ℝ → ℂ) (T : E) :
     deriv (fun t => φ t • T) 0 = deriv φ 0 • T := by
-  by_cases hφ : DifferentiableAt ℝ φ 0
-  · exact deriv_smul_const hφ T
-  by_cases hT : T = 0
-  · simp [hT]
-  rw [deriv_zero_of_not_differentiableAt hφ, zero_smul]
-  apply deriv_zero_of_not_differentiableAt
-  intro hd
-  apply hφ
-
-  obtain ⟨ℓ, -, hℓ⟩ := exists_dual_vector ℂ T (norm_ne_zero_iff.2 hT)
-  have hℓT : ℓ T ≠ 0 := by
-    rw [hℓ]
-    exact Complex.ofReal_ne_zero.2 (norm_ne_zero_iff.2 hT)
-  have h2 : DifferentiableAt ℝ (fun t => ℓ (φ t • T) / ℓ T) 0 :=
-    ((ℓ.restrictScalars ℝ).differentiableAt.comp (0 : ℝ) hd).div_const _
-  refine h2.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
-  show φ t = ℓ (φ t • T) / ℓ T
-  rw [map_smul, smul_eq_mul, mul_div_cancel_right₀ _ hℓT]
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity.nd_deriv_smul_const <;> assumption
 
 private theorem dLR_smul_const_right {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (φ : B.Mat k r → ℂ) (T : E)
     (u v : List (B.Mat k r)) : B.dLR u v (fun g => φ g • T) = fun g => B.dLR u v φ g • T := by
-  have hR : ∀ v : List (B.Mat k r), B.Rw v (fun g => φ g • T) = fun g => B.Rw v φ g • T := by
-    intro v
-    induction v with
-    | nil => rfl
-    | cons X v ih =>
-      funext g
-      show Formalism.REAL.RdV X (B.Rw v fun g => φ g • T) g = Formalism.REAL.RdV X (B.Rw v φ) g • T
-      rw [ih]
-      exact deriv_smul_const_at_zero _ T
-  unfold B.dLR
-  rw [hR v]
-  induction u with
-  | nil => rfl
-  | cons X u ih =>
-    funext g
-    show B.LdV X (u.foldr B.LdV fun g => B.Rw v φ g • T) g = B.LdV X (u.foldr B.LdV (B.Rw v φ)) g • T
-    rw [ih]
-    exact deriv_smul_const_at_zero _ T
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.SymBetaA.dLR_smul <;> assumption
 
 private theorem ckOn_of_contDiff_infty {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (f : B.Mat k r → E)
     (hf : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f) (m : ℕ∞) (UU : Set (B.Mat k r)) : B.CkOn m UU f :=

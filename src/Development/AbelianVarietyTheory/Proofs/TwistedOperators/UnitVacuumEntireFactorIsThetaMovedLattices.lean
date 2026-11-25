@@ -282,7 +282,7 @@ theorem gen_mem {S T : HSp D} (frS : GL (Fin S.rank) D.host.E) (frT : GL (Fin T.
     (t : Fin T.rank → D.host.E) (ht : t ∈ Lt) :
     GlobalTheory.VacUnique.finRat S T (frT.1 * (a • Matrix.vecMulVec t (star s)) * (frS⁻¹).1) ∈
       latO S T (GlobalTheory.MovedDict.inV frS Ls) (GlobalTheory.MovedDict.inV frT Lt) (fun _ => True) := by
-  refine AddSubgroup.subset_closure ⟨1, GlobalTheory.ThetaLawLat.one_mem_intAf', fun v h => (h trivial).elim, a, ha,
+  refine AddSubgroup.subset_closure ⟨1, Formalism.IndefR.Fin.one_intAf, fun v h => (h trivial).elim, a, ha,
     frS.1 *ᵥ s, ⟨s, hs, rfl⟩, frT.1 *ᵥ t, ⟨t, ht, rfl⟩, ?_⟩
   ext i j
   show (pairA D.host.F 0 1) ⊗ₜ[D.host.F] (frT.1 * (a • Matrix.vecMulVec t (star s)) * (frS⁻¹).1) i j = _

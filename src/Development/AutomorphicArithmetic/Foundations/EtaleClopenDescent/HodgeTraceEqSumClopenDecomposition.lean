@@ -110,23 +110,20 @@ end Alg
 private theorem res_pi_bijective {Y : Scheme.{0}} {M : Type} (A : Y.Opens) (D : M → Y.Opens)
     (hD : ∀ m, D m ≤ A) (hc : A ≤ iSup D) (hd : ∀ i j, i ≠ j → D i ⊓ D j = ⊥) :
     Function.Bijective fun (x : Γ(Y, A)) m ↦ Y.presheaf.map (homOfLE (hD m)).op x := by
-  constructor
-  · intro x y e
-    exact TopCat.Sheaf.eq_of_locally_eq' Y.sheaf D A (fun m ↦ homOfLE (hD m)) hc x y
-      fun m ↦ congrFun e m
-  · intro y
-    have hcomp : TopCat.Presheaf.IsCompatible Y.sheaf.1 D y := by
-      intro i j
-      by_cases hij : i = j
-      · subst hij
-        rfl
-      · have : Subsingleton Γ(Y, D i ⊓ D j) := by
-          rw [hd i j hij]
-          infer_instance
-        exact this.elim _ _
-    obtain ⟨x, hx, -⟩ := TopCat.Sheaf.existsUnique_gluing' Y.sheaf D A
-      (fun m ↦ homOfLE (hD m)) hc y hcomp
-    exact ⟨x, funext hx⟩
+  rw [Function.bijective_iff_existsUnique]
+  intro y
+  have hcomp : TopCat.Presheaf.IsCompatible Y.sheaf.1 D y := by
+    intro i j
+    by_cases hij : i = j
+    · subst hij
+      rfl
+    · have : Subsingleton Γ(Y, D i ⊓ D j) := by
+        rw [hd i j hij]
+        infer_instance
+      exact this.elim _ _
+  obtain ⟨x, hx, hunique⟩ := TopCat.Sheaf.existsUnique_gluing' Y.sheaf D A
+    (fun m ↦ homOfLE (hD m)) hc y hcomp
+  exact ⟨x, funext hx, fun z hz ↦ hunique z (congrFun hz)⟩
 
 section Geo
 

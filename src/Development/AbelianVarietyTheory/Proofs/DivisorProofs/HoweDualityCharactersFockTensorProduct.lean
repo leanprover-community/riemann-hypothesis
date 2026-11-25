@@ -641,11 +641,6 @@ open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift Global
 
 namespace GlobalTheory.HoweR
 
-theorem pcTrace_eq_zero {p q : ℕ} {Z : Mat p q} (hZ : IsPC Z) : Z.trace = 0 := by
-  simp only [Matrix.trace, Matrix.diag]
-  refine Finset.sum_eq_zero fun a _ => hZ a a ?_
-  rcases a with a | a <;> simp [sameBlock]
-
 theorem span_harm2_sup_coinv_eq_univ : ∀ (P Q R S : ℕ) (x : ℂ),
     Submodule.span ℂ (harm2 P Q R S) ⊔ coinv P Q R S x = ⊤ := by
   intro P Q R S x
@@ -654,7 +649,7 @@ theorem span_harm2_sup_coinv_eq_univ : ∀ (P Q R S : ℕ) (x : ℂ),
     intro Z hZ g
     rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
     refine Submodule.subset_span ⟨Z, g, ?_⟩
-    rw [pcTrace_eq_zero hZ, mul_zero, zero_smul, sub_zero]
+    rw [GlobalTheory.HarmLift.trace_PC hZ, mul_zero, zero_smul, sub_zero]
   obtain ⟨h, hh, he⟩ := GlobalTheory.FockAlg.HarmLift.exists_harm2_rep P Q R S _ (coinv P Q R S x).mkQ hpr f
   have hd : f - h ∈ coinv P Q R S x := by
     rw [← Submodule.Quotient.eq]; exact he.symm
@@ -1055,30 +1050,6 @@ noncomputable section
 namespace GlobalTheory.FockAlg.Model
 open Formalism.BasicNotions.TH MvPolynomial
 
-def fockEmb (σ : Type) [DecidableEq σ] :
-    MvPolynomial σ ℂ →ₗ[ℂ] lp (fun _ : σ →₀ ℕ => ℂ) 2 :=
-  (basisMonomials σ ℂ).constr ℂ fun α =>
-    lp.single 2 α ((Real.sqrt (α.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ)
-
-theorem isFockIsometry_fockEmb (σ : Type) [DecidableEq σ] : IsFockIP (fockEmb σ) := by
-  intro α β
-  have h : ∀ γ : σ →₀ ℕ, fockEmb σ (monomial γ 1) =
-      lp.single 2 γ ((Real.sqrt (γ.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ) := by
-    intro γ
-    have := (basisMonomials σ ℂ).constr_basis ℂ (fun α : σ →₀ ℕ =>
-      (lp.single 2 α ((Real.sqrt (α.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ) :
-        lp (fun _ : σ →₀ ℕ => ℂ) 2)) γ
-    simpa [fockEmb] using this
-  rw [h, h, lp.inner_single_left]
-  split_ifs with e
-  · subst e
-    have h0 : 0 ≤ α.prod fun _ k => (k.factorial : ℝ) :=
-      Finset.prod_nonneg fun _ _ => Nat.cast_nonneg _
-    rw [lp.single_apply_self, RCLike.inner_apply, Complex.conj_ofReal, ← Complex.ofReal_mul,
-      Real.mul_self_sqrt h0]
-    simp [Finsupp.prod]
-  · rw [lp.single_apply_ne _ _ _ e, inner_zero_right]
-
 end GlobalTheory.FockAlg.Model
 end -- clump:auto
 end -- clump:auto
@@ -1095,26 +1066,6 @@ noncomputable section
 open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.JointHarm
 
 namespace GlobalTheory.FockScalarType
-
-theorem injective_of_isFockIP {σ : Type} [DecidableEq σ] {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] {ι : MvPolynomial σ ℂ →ₗ[ℂ] H} (hι : IsFockIP ι) :
-    Function.Injective ι := by
-  have key : ∀ (α : σ →₀ ℕ) (P : MvPolynomial σ ℂ), inner ℂ (ι (monomial α 1)) (ι P) =
-      AddMonoidAlgebra.coeff P α * α.prod (fun _ k => (k.factorial : ℂ)) := by
-    intro α P
-    induction P using MvPolynomial.induction_on' with
-    | add P P' h h' => simp only [map_add (f := _), inner_add_right, h, h', MvPolynomial.coeff_add, add_mul]
-    | monomial β c =>
-      rw [monomial_eq_smul β c, map_smul, inner_smul_right, hι, MvPolynomial.coeff_smul, coeff_monomial]
-      by_cases e : α = β
-      · subst e; simp
-      · simp [e, Ne.symm e]
-  refine (injective_iff_map_eq_zero ι).2 fun P hP => ?_
-  ext α
-  have h := key α P
-  rw [hP, inner_zero_right, eq_comm, mul_eq_zero] at h
-  refine h.resolve_right ?_
-  exact Finset.prod_ne_zero_iff.2 fun i _ => Nat.cast_ne_zero.2 (Nat.factorial_ne_zero _)
 
 variable {p q r s : ℕ}
 

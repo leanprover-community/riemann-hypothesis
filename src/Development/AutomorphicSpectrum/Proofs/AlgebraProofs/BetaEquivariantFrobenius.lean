@@ -20,7 +20,7 @@ theorem beta_rhoH_eq : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] [Cha
   refine dotProduct_eq _ _ fun u => ?_
   have hadj := (_root_.GlobalTheory.CompanionTheory.Ar.Conj.rhoH_hom_adjoint R d O B).2.2 (star a) (alpha B p u) y
   rw [star_star] at hadj
-  have htw := _root_.GlobalTheory.CompanionTheory.Ar.Conj.AlphaAct.alpha_comm_act R p d O B (star a) u
+  have htw := _root_.PositivityTheory.HtPt.Cb.alpha_act R p d O B (star a) u
   rw [dotProduct_comm, dotProduct_beta, ← hadj, ← htw, ← dotProduct_beta, dotProduct_comm _ (beta B p y),
     Matrix.dotProduct_mulVec, Matrix.transpose_map, Matrix.mulVec_transpose]
 

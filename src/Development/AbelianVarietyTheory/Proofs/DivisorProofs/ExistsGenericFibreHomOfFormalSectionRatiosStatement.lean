@@ -97,20 +97,12 @@ namespace GlobalTheory.ThickEndo
 
 variable {S S' : Scheme.{0}}
 
-theorem homEquiv_mul' (φ : S' ⟶ S) (X : Over S') (A : Over S) [GrpObj A]
-    (a b : (Over.map φ).obj X ⟶ A) :
-    (Over.mapPullbackAdj φ).homEquiv X A (a * b) =
-      (Over.mapPullbackAdj φ).homEquiv X A a * (Over.mapPullbackAdj φ).homEquiv X A b := by
-  rw [Adjunction.homEquiv_unit, Adjunction.homEquiv_unit, Adjunction.homEquiv_unit, Hom.mul_def,
-    Hom.mul_def, Functor.obj.μ_def, ← comp_lift_assoc, ← Category.assoc (lift _ _),
-    Functor.Monoidal.lift_μ, CategoryTheory.Functor.map_comp]
-
 theorem homEquiv_symm_mul' (φ : S' ⟶ S) (X : Over S') (A : Over S) [GrpObj A]
     (a b : X ⟶ (Over.pullback φ).obj A) :
     ((Over.mapPullbackAdj φ).homEquiv X A).symm (a * b) =
       ((Over.mapPullbackAdj φ).homEquiv X A).symm a * ((Over.mapPullbackAdj φ).homEquiv X A).symm b := by
   apply ((Over.mapPullbackAdj φ).homEquiv X A).injective
-  rw [homEquiv_mul', Equiv.apply_symm_apply, Equiv.apply_symm_apply, Equiv.apply_symm_apply]
+  rw [ReciprocityTheory.ChartRestriction.G.Out.UBC.homEquiv_mul, Equiv.apply_symm_apply, Equiv.apply_symm_apply, Equiv.apply_symm_apply]
 
 theorem homEquiv_symm_left' (t : S' ⟶ S) {Y : Over S'} {A : Over S} (q : Y ⟶ (Over.pullback t).obj A) :
     (((Over.mapPullbackAdj t).homEquiv Y A).symm q).left = q.left ≫ pullback.fst A.hom t := by
@@ -249,7 +241,7 @@ theorem lim_mul (hmon : ∀ e, IsMonHom (b e))
   have he : ∀ e, incl hI e ≫ lim hI hb (x * y) = incl hI e ≫ (lim hI hb x * lim hI hb y) := by
     intro e
     have := hmon e
-    rw [comp_mul, incl_lim, incl_lim, incl_lim, red, comp_mul, homEquiv_mul', mul_comp, homEquiv_symm_mul']
+    rw [comp_mul, incl_lim, incl_lim, incl_lim, red, comp_mul, ReciprocityTheory.ChartRestriction.G.Out.UBC.homEquiv_mul, mul_comp, homEquiv_symm_mul']
     rfl
   exact Over.OverMorphism.ext (hom_ext_of_isHausdorff (maximalIdeal B) fun e => congrArg (·.left) (he e))
 

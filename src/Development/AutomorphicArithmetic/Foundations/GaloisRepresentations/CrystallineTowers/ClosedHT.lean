@@ -137,7 +137,7 @@ theorem capO_pre {X Y : Scheme.{0}} (u : X ⟶ Y) {ι κ : Type} (U : ι → X.O
   exact fun k => hτ (i k) (hx k)
 
 def covX {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q] [IsProper q] : Pb.Cov q :=
-  Classical.choice ((Pb.cov_ex q).1 inferInstance)
+  Classical.choice ((_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).1 inferInstance)
 
 end CrystallineSemistableComparison.Om.Nt2
 end -- clump:auto
@@ -296,9 +296,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableComparison CrystallineSemistableComparison.Om CrystallineSemistableComparison.Om.Cech
 
-theorem _root_.GlobalTheory.T.forms_to_cech_smul :
-    type_of% @GlobalTheory.CompanionTheory.OmBridge.formToCO_smul :=
-  @GlobalTheory.CompanionTheory.OmBridge.formToCO_smul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormsToCechSmulStatement =====
@@ -562,11 +559,6 @@ theorem hdg_iso_of_ing (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.
     rwa [hH, hCi] at this
   rw [← e1]
   exact isoI_nat hG hB hS hA hP hC q p u hu U' (covX p) (fun α => (k α).2) (fun α => (hk α).trans inf_le_right) a j x
-
-theorem formToCO_bijective_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_bijective _) := _root_.GlobalTheory.CompanionTheory.OmCech.formToCO_bijective
-theorem formToCO_smul_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_smul _) := GlobalTheory.T.forms_to_cech_smul
-theorem cechOmAdd_smul_i : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOmAdd_smul _) := _root_.GlobalTheory.CompanionTheory.OmCech.cechOmAdd_smul
-theorem formCoch_pull_i : type_of% (@CrystallineSemistableComparison.Om.Cech.formCoch_pull _) := CrystallineSemistableComparison.Om.Cech.formCoch_pull_pf
 
 end CrystallineSemistableComparison.Om.Nt2F
 end -- clump:auto
@@ -926,7 +918,7 @@ theorem kTop : KTop := by
   refine powK_ne_zero q d D hD c' hc' ?_
   obtain ⟨N, i, hi, hip, hO⟩ := hD
   have hP : IsProper q := GlobalTheory.CommonModel.isProper_of_isProjOver ⟨N, i, hi, hip⟩
-  obtain ⟨U, hUd⟩ := (cov_ex q).2 d inferInstance
+  obtain ⟨U, hUd⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).2 d inferInstance
   have hcov : sSup (𝒱D D) = ⊤ := sSup_𝒱D D N i hO
   have hk := (k_iso_pf q U (d + 1) (fun α => by rw [hUd]; omega) (𝒱D D) hcov (2 * d)).1
   let g := (KS q (d + 1) (𝒱D D)).ι

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadJacquetOfLetterAndHead
 public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightDerivativeRulePsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
@@ -32,13 +33,7 @@ variable {k r : ℕ}
 
 theorem hpk_col_esI (a : Fin r) (l : Fin (2 * r + k + 1)) :
     Hpk k r l (esI k r a) = if l.val = a.val then 1 else 0 := by
-  have ha := a.isLt
-  have hl := l.isLt
-  unfold Hpk esI
-  by_cases hla : l.val = a.val
-  · rw [if_pos (by simp only [Fin.val_mk]; omega), if_pos hla]
-  · rw [if_neg (by simp only [Fin.val_mk]; omega), if_neg (by simp only [Fin.val_mk]; omega),
-      if_neg (by simp only [Fin.ext_iff, Fin.val_mk]; omega), if_neg hla]
+  apply _root_.Formalism.FourierDecayAlt.P.WirtingerOperators.LeviExponential.hpk_col_esI <;> assumption
 
 theorem hpk_W_row (w p : Fin (2 * r + k + 1)) (hw : r ≤ w.val ∧ w.val ≤ r + k) :
     Hpk k r w p = if p = w then Hpk k r w w else 0 := by

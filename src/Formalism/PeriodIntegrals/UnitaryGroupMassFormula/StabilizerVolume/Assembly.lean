@@ -48,7 +48,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocPosV
 import Mathlib.Tactic.Linter.Style
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdTest
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdTest
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoAF
@@ -393,7 +393,7 @@ end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.RestrProdAlt =====
 
 -- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdTestInf =====
--- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdTestInf", "h": "module\n\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdTest\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq\npublic import Mathlib.Analysis.Complex.Circle\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfAll\npublic import Lemmata.FunctionAtZero.FZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\npublic import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.Calculus.BumpFunction.Basic\npublic import Mathlib.Analysis.Distribution.SchwartzSpace.Basic\n\n"}
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdTestInf", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdTest\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq\npublic import Mathlib.Analysis.Complex.Circle\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfAll\npublic import Lemmata.FunctionAtZero.FZero\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\npublic import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.Calculus.BumpFunction.Basic\npublic import Mathlib.Analysis.Distribution.SchwartzSpace.Basic\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -407,17 +407,7 @@ open MeasureTheory Complex Filter Topology
 
 alias char_real := _root_.Bl.FunctionAtZero.goal1
 
-theorem freq_unique {u v : ℝ} (h : ∀ s : ℝ, exp (↑(u * s) * I) = exp (↑(v * s) * I)) : u = v := by
-  by_contra huv
-  have hne : u - v ≠ 0 := sub_ne_zero.2 huv
-  have h1 := h (Real.pi / (u - v))
-  have h2 : exp (↑((u - v) * (Real.pi / (u - v))) * I) = 1 := by
-    have : (↑((u - v) * (Real.pi / (u - v))) : ℂ) * I =
-        ↑(u * (Real.pi / (u - v))) * I - ↑(v * (Real.pi / (u - v))) * I := by
-      push_cast; ring
-    rw [this, Complex.exp_sub, h1, div_self (Complex.exp_ne_zero _)]
-  rw [mul_div_cancel₀ _ hne, Complex.exp_pi_mul_I] at h2
-  norm_num at h2
+alias freq_unique := PI.AprimeInfW.ST.freq_unique
 
 section Bichar
 
@@ -426,90 +416,14 @@ open scoped RealInnerProductSpace
 variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℝ W] [FiniteDimensional ℝ W]
   [MeasurableSpace W] [BorelSpace W]
 
-structure IsBichar (χ : W → W → ℂ) : Prop where
-  addL : ∀ x x' y, χ (x + x') y = χ x y * χ x' y
-  addR : ∀ x y y', χ x (y + y') = χ x y * χ x y'
-  norm1 : ∀ x y, ‖χ x y‖ = 1
-  contL : ∀ y, Continuous fun x => χ x y
-  contR : ∀ x, Continuous (χ x)
+abbrev IsBichar (χ : W → W → ℂ) : Prop := PI.AprimeInfW.ST.IsBichar χ
 
-theorem IsBichar.zero_left {χ : W → W → ℂ} (h : IsBichar χ) (y : W) : χ 0 y = 1 := by
-  have hne : χ 0 y ≠ 0 := fun h0 => by have := h.norm1 0 y; rw [h0, norm_zero] at this; exact zero_ne_one this
-  have e := h.addL 0 0 y
-  rw [add_zero] at e
-  exact mul_left_cancel₀ hne (by rw [mul_one]; exact e.symm)
-
-theorem IsBichar.freq {χ : W → W → ℂ} (h : IsBichar χ) (v y : W) :
-    ∃ β : ℝ, ∀ s : ℝ, χ (s • v) y = exp (↑(β * s) * I) :=
-  char_real (fun s => χ (s • v) y) ((h.contL y).comp (continuous_id.smul continuous_const))
-    (fun s t => by simp only [add_smul]; exact h.addL _ _ y) (fun s => h.norm1 _ y)
-
-theorem arg_exp_small {θ : ℝ} (h : θ ∈ Set.Ioo (-Real.pi) Real.pi) : arg (exp (↑θ * I)) = θ := by
-  rw [arg_exp_mul_I, toIocMod_eq_self]
-  exact ⟨h.1, by linarith [h.2, Real.pi_pos]⟩
-
-theorem measurable_freq {χ : W → W → ℂ} (h : IsBichar χ) (v : W) (β : W → ℝ)
-    (hβ : ∀ y, ∀ s : ℝ, χ (s • v) y = exp (↑(β y * s) * I)) : Measurable β := by
-  let g : ℕ → W → ℝ := fun m y => ((m : ℝ) + 1) * arg (χ ((1 / ((m : ℝ) + 1)) • v) y)
-  have hg : ∀ m, Measurable (g m) := fun m =>
-    measurable_const.mul (measurable_arg.comp (h.contR _).measurable)
-  refine measurable_of_tendsto_metrizable hg (tendsto_pi_nhds.2 fun y => ?_)
-  have ht : Tendsto (fun m : ℕ => β y * (1 / ((m : ℝ) + 1))) atTop (𝓝 (β y * 0)) :=
-    (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul (β y)
-  rw [mul_zero] at ht
-  have hev := ht (Ioo_mem_nhds (neg_lt_zero.2 Real.pi_pos) Real.pi_pos)
-  refine tendsto_const_nhds.congr' ?_
-  filter_upwards [hev] with m hm
-  simp only [g]
-  rw [hβ y, arg_exp_small hm]
-  field_simp
-
-theorem freq_add {χ : W → W → ℂ} (h : IsBichar χ) (v : W) (β : W → ℝ)
-    (hβ : ∀ y, ∀ s : ℝ, χ (s • v) y = exp (↑(β y * s) * I)) (y y' : W) :
-    β (y + y') = β y + β y' := by
-  refine freq_unique fun s => ?_
-  rw [← hβ, h.addR, hβ, hβ, ← Complex.exp_add]
-  congr 1; push_cast; ring
-
-theorem bichar_eq {χ : W → W → ℂ} (h : IsBichar χ) :
-    ∃ L : W →L[ℝ] W, ∀ x y, χ x y = (Real.fourierChar ⟪x, L y⟫ : ℂ) := by
-  classical
-  choose β hβ using fun v y => h.freq v y
-  let b := stdOrthonormalBasis ℝ W
-  have hm : ∀ j, Measurable (fun y => β (b j) y) := fun j =>
-    measurable_freq h (b j) _ (fun y => hβ (b j) y)
-  have ha : ∀ j y y', β (b j) (y + y') = β (b j) y + β (b j) y' := fun j =>
-    freq_add h (b j) (fun y => β (b j) y) (fun y => hβ (b j) y)
-  let Lf : W → W := fun y => ∑ j, (β (b j) y / (2 * Real.pi)) • b j
-  let Lm : W →+ W := AddMonoidHom.mk' Lf fun y y' => by
-    simp only [Lf, ha, add_div, add_smul, Finset.sum_add_distrib]
-  have hLm : Measurable Lm := by
-    show Measurable fun y => ∑ j, (β (b j) y / (2 * Real.pi)) • b j
-    exact Finset.measurable_sum Finset.univ fun j _ => ((hm j).div_const _).smul_const (b j)
-  have hLc : Continuous Lm := Measure.AddMonoidHom.continuous_of_measurable Lm hLm
-  refine ⟨Lm.toRealLinearMap hLc, fun x y => ?_⟩
-  have hprod : ∀ s : Finset (Fin (Module.finrank ℝ W)),
-      χ (∑ j ∈ s, ⟪b j, x⟫ • b j) y = ∏ j ∈ s, χ (⟪b j, x⟫ • b j) y := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simp [h.zero_left]
-    | insert j s hj ih => rw [Finset.sum_insert hj, Finset.prod_insert hj, h.addL, ih]
-  have e1 : χ x y = χ (∑ j, ⟪b j, x⟫ • b j) y := by rw [b.sum_repr' x]
-  rw [e1, hprod]
-  have e2 : ∀ j, χ (⟪b j, x⟫ • b j) y = exp (↑(β (b j) y * ⟪b j, x⟫) * I) := fun j => hβ _ _ _
-  simp only [e2]
-  rw [← Complex.exp_sum, Real.fourierChar_apply]
-  congr 1
-  have hLy : ⟪x, (Lm.toRealLinearMap hLc) y⟫ = ∑ j, β (b j) y / (2 * Real.pi) * ⟪b j, x⟫ := by
-    show ⟪x, Lf y⟫ = _
-    simp only [Lf, inner_sum, inner_smul_right]
-    exact Finset.sum_congr rfl fun j _ => by rw [real_inner_comm]
-  rw [hLy]
-  push_cast
-  simp only [Finset.mul_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  have : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 Real.pi_ne_zero
-  field_simp
+alias IsBichar.zero_left := PI.AprimeInfW.ST.IsBichar.zero_left
+alias IsBichar.freq := PI.AprimeInfW.ST.IsBichar.freq
+alias arg_exp_small := PI.AprimeInfW.ST.arg_exp_small
+alias measurable_freq := PI.AprimeInfW.ST.measurable_freq
+alias freq_add := PI.AprimeInfW.ST.freq_add
+alias bichar_eq := PI.AprimeInfW.ST.bichar_eq
 
 end Bichar
 
@@ -522,69 +436,24 @@ variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℝ W] [FiniteDime
 
 theorem testEx_kernel (μ : Measure W) [μ.IsAddHaarMeasure] (χ : W → W → ℂ)
     (hadd : ∀ x x' y, χ (x + x') y = χ x y * χ x' y) (hc : ∀ y, Continuous fun x => χ x y)
-    (t : W) (ht0 : t ≠ 0) (ht : ∀ y, χ t y = 1) : SdUniqW.TestEx μ χ := by
-  apply PI.AprimeInfW.ST.testEx_kernel <;> assumption
+    (t : W) (ht0 : t ≠ 0) (ht : ∀ y, χ t y = 1) : SdUniqW.TestEx μ χ :=
+  PI.AprimeInfW.ST.testEx_kernel μ χ hadd hc t ht0 ht
 
 theorem testEx_fourier (μ : Measure W) [μ.IsAddHaarMeasure] (A : W ≃L[ℝ] W) :
-    SdUniqW.TestEx μ (fun x y => (Real.fourierChar ⟪x, A y⟫ : ℂ)) := by
-  apply PI.AprimeInfW.ST.testEx_fourier
+    SdUniqW.TestEx μ (fun x y => (Real.fourierChar ⟪x, A y⟫ : ℂ)) :=
+  PI.AprimeInfW.ST.testEx_fourier μ A
 
 theorem testEx_bichar (μ : Measure W) [μ.IsAddHaarMeasure] {χ : W → W → ℂ} (h : IsBichar χ) :
-    SdUniqW.TestEx μ χ := by
-  obtain ⟨L, hL⟩ := bichar_eq h
-  by_cases hs : Function.Surjective L
-  · have hi : Function.Injective L :=
-      (LinearMap.injective_iff_surjective (f := (L : W →ₗ[ℝ] W))).2 hs
-    let A : W ≃L[ℝ] W :=
-      (LinearEquiv.ofBijective (L : W →ₗ[ℝ] W) ⟨hi, hs⟩).toContinuousLinearEquiv
-    have e : χ = fun x y => (Real.fourierChar ⟪x, A y⟫ : ℂ) :=
-      funext₂ fun x y => by rw [hL x y]; rfl
-    rw [e]; exact testEx_fourier μ A
-  · have hK : (LinearMap.range (L : W →ₗ[ℝ] W))ᗮ ≠ ⊥ := by
-      rw [Ne, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]; exact hs
-    obtain ⟨t, htK, ht0⟩ := (Submodule.ne_bot_iff _).1 hK
-    refine testEx_kernel μ χ h.addL h.contL t ht0 fun y => ?_
-    have h0 : ⟪t, L y⟫ = 0 :=
-      (Submodule.mem_orthogonal' _ t).1 htK _ (LinearMap.mem_range_self (L : W →ₗ[ℝ] W) y)
-    rw [hL, h0, AddChar.map_zero_eq_one, Circle.coe_one]
+    SdUniqW.TestEx μ χ :=
+  PI.AprimeInfW.ST.testEx_bichar μ h
 
 theorem testEx_of_homeo {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V]
     [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (χ : V → V → ℂ)
     (e : V ≃ₜ W) (he : ∀ x y, e (x + y) = e x + e y)
     (hL : ∀ x x' y, χ (x + x') y = χ x y * χ x' y) (hR : ∀ x y y', χ x (y + y') = χ x y * χ x y')
     (hn : ∀ x y, ‖χ x y‖ = 1) (hcL : ∀ y, Continuous fun x => χ x y)
-    (hcR : ∀ x, Continuous (χ x)) : SdUniqW.TestEx μ χ := by
-  let ea : V ≃+ W := AddEquiv.mk' e.toEquiv he
-  have hs : ∀ u v : W, e.symm (u + v) = e.symm u + e.symm v := fun u v => ea.symm.map_add u v
-  let ce : V ≃ₜ+ W :=
-    { ea with continuous_toFun := e.continuous, continuous_invFun := e.symm.continuous }
-  let em : V ≃ᵐ W := e.toMeasurableEquiv
-  let μ' : Measure W := Measure.map em μ
-  have : μ'.IsAddHaarMeasure := ContinuousAddEquiv.isAddHaarMeasure_map μ ce
-  let χ' : W → W → ℂ := fun x y => χ (e.symm x) (e.symm y)
-  have hb : IsBichar χ' :=
-    { addL := fun x x' y => by simp only [χ', hs, hL]
-      addR := fun x y y' => by simp only [χ', hs, hR]
-      norm1 := fun x y => hn _ _
-      contL := fun y => (hcL _).comp e.symm.continuous
-      contR := fun x => (hcR _).comp e.symm.continuous }
-  obtain ⟨φ, hφc, hφs, hI, z, hz⟩ := testEx_bichar μ' hb
-  have hT : ∀ y, ∫ x, φ (e x) * χ x y ∂μ = ∫ x, φ x * χ' x (e y) ∂μ' := by
-    intro y
-    rw [integral_map_equiv em]
-    simp [χ', em]
-  refine ⟨fun x => φ (e x), hφc.comp e.continuous, hφs.comp_homeomorph e, ?_, e.symm z, ?_⟩
-  · show Integrable (fun y => ∫ x, φ (e x) * χ x y ∂μ) μ
-    have e1 : (fun y => ∫ x, φ (e x) * χ x y ∂μ) = (fun y => ∫ x, φ x * χ' x y ∂μ') ∘ em :=
-      funext hT
-    rw [e1]
-    exact (integrable_map_equiv em _).1 hI
-  · show φ (e (-e.symm z)) ≠ 0
-    have h1 : e (-e.symm z) = -z := by
-      have := ea.map_neg (e.symm z)
-      change e (-e.symm z) = -e (e.symm z) at this
-      rw [this, e.apply_symm_apply]
-    rw [h1]; exact hz
+    (hcR : ∀ x, Continuous (χ x)) : SdUniqW.TestEx μ χ :=
+  PI.AprimeInfW.ST.testEx_of_homeo μ χ e he hL hR hn hcL hcR
 
 end Tests
 

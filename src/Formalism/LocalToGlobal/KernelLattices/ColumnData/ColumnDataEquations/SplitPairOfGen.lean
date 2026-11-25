@@ -131,8 +131,6 @@ open Formalism.L2.PairingIndexBounds.Eq.Mu Formalism.L2.PairingIndexBounds.Eq Fo
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Car}
 
 theorem yy_stab {N N' : ℕ} {M : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
@@ -512,8 +510,6 @@ namespace Formalism.L2.Ker.Cd.PairingIndexBounds.Eq.Mu
 open Formalism.L2.PairingIndexBounds.Eq.Mu Formalism.L2.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Car}
 

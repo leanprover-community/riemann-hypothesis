@@ -249,7 +249,7 @@ theorem prod_det_gram (R : RiemLat E g Λ) {σ : Ψ → (𝓞 E →+* ℂ)} (hσ
   set G := R.gram fun a => eigComp R.B (σ τ) (R.P (v a)) with hGdef
   have hconj : (R.gram fun a => eigComp R.B ((starRingEnd ℂ).comp (σ τ)) (R.P (v a))) = G.map (starRingEnd ℂ) := by
     ext a b
-    exact (_root_.GlobalTheory.CompanionTheory.Relay.isotropic_eigencomponent_conjugate_form E g Λ Ψ R I hI (σ τ)).1 _ (hv a) _ (hv b)
+    exact (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Ψ R I hI (σ τ)).1 _ (hv a) _ (hv b)
   have htr : G.map (starRingEnd ℂ) = Gᵀ := by
     ext a b
     exact ip_conj R _ _
@@ -402,7 +402,7 @@ theorem det_re_gram_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       (R.nz σ I * (|(discr E : ℝ)| ^ (1 / (Module.finrank ℚ E : ℝ))) ^
         (Fintype.card Ψ * Module.finrank (𝓞 E) I)) ^ 2 := by
   intro E _ _ _ g Λ _ _ Ψ _ R σ I hσ hI hne m b
-  obtain ⟨⟨r, v, hv⟩, hall⟩ := _root_.GlobalTheory.CompanionTheory.Relay.isotropic_sublattice_covolume_positive E g Λ Ψ R σ I hσ hI hne
+  obtain ⟨⟨r, v, hv⟩, hall⟩ := _root_.LevelTowerAlt.isotropic_submodule_nonzero_family E g Λ Ψ R σ I hσ hI hne
   obtain ⟨hnz, -, hr⟩ := hall r v hv
   have hf := finrank_eq_two_card hσ
   have htf : ∀ (n : ℕ) (x : Λ), n ≠ 0 → n • x = 0 → x = 0 := by

@@ -154,16 +154,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace PositivityTheory.Groth
-open CompanionTheory.Groth (cls_of)
-
-theorem groth_of_three (hZ : GlobalTheory.Published.SegmentRepresentation)
-    (hI : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Zc.Cos.LUnlinkedIrr k)
-    (H : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k],
-      CompanionTheory.Exh.MidP k ∧ CompanionTheory.Exh.RefineP k ∧ CompanionTheory.Exh.SwapP k) : GlobalTheory.Published.GrothendieckRingPolynomial :=
-  groth_of_cls fun k _ _ _ _ => cls_of hZ k (hI k) (H k)
-
-end PositivityTheory.Groth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.AutomorphicKernels.GrothendieckRingPolynomial.GrothOfThree =====

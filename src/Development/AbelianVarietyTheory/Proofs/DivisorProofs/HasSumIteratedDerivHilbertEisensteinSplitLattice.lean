@@ -375,7 +375,6 @@ open Filter Topology
 
 namespace GlobalTheory.HilbFam.LagDeriv
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma hasDerivAt_inv_pow_mul_exp_div_one_add_mul (c y : ℂ) (j : ℕ) {z : ℂ} (hz : 1 + z * c ≠ 0) :
     HasDerivAt (fun w : ℂ ↦ (1 + w * c)⁻¹ ^ j * Complex.exp (y * w / (1 + w * c)))
@@ -399,14 +398,12 @@ private lemma hasDerivAt_inv_pow_mul_exp_div_one_add_mul (c y : ℂ) (j : ℕ) {
     field_simp
     ring
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma rco_eq_zero_of_lt (k n m : ℕ) (hm : n < m) :
     _root_.GlobalTheory.HilbFam.rco k n m = 0 := by
   unfold _root_.GlobalTheory.HilbFam.rco
   simp [Nat.choose_eq_zero_of_lt hm]
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma ascFactorial_succ_eq_mul_succ_ascFactorial (a e : ℕ) :
     a.ascFactorial (e + 1) = a * (a + 1).ascFactorial e := by
@@ -416,7 +413,6 @@ private lemma ascFactorial_succ_eq_mul_succ_ascFactorial (a e : ℕ) :
     rw [Nat.ascFactorial_succ, ih, Nat.ascFactorial_succ]
     ring
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma rco_succ_succ (k n m : ℕ) (hm : m ≤ n) :
     (_root_.GlobalTheory.HilbFam.rco k (n + 1) (m + 1) : ℤ) =
@@ -447,7 +443,6 @@ private lemma rco_succ_succ (k n m : ℕ) (hm : m ≤ n) :
     rw [pow_succ]
     linear_combination ((-1 : ℤ) ^ e * ((k + (m + 1)).ascFactorial e : ℤ)) * hcz
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma rco_mul_pow_mul_pow_succ_succ (k n m : ℕ) (hm : m ≤ n) (c y : ℂ) :
     (_root_.GlobalTheory.HilbFam.rco k (n + 1) (m + 1) : ℂ) * c ^ (n + 1 - (m + 1)) * y ^ (m + 1) =
@@ -470,7 +465,6 @@ private lemma rco_mul_pow_mul_pow_succ_succ (k n m : ℕ) (hm : m ≤ n) (c y : 
     push_cast
     ring
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma rco_succ_zero (k n : ℕ) :
     (_root_.GlobalTheory.HilbFam.rco k (n + 1) 0 : ℤ) =
@@ -480,7 +474,6 @@ private lemma rco_succ_zero (k n : ℕ) :
   push_cast
   ring
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma rco_mul_pow_mul_pow_succ_zero (k n : ℕ) (c y : ℂ) :
     (_root_.GlobalTheory.HilbFam.rco k (n + 1) 0 : ℂ) * c ^ (n + 1 - 0) * y ^ 0 =
@@ -493,7 +486,6 @@ private lemma rco_mul_pow_mul_pow_succ_zero (k n : ℕ) (c y : ℂ) :
   push_cast
   ring
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma iteratedDeriv_inv_pow_mul_exp_eq_sum_rco (c y : ℂ) (n : ℕ) :
     ∀ k : ℕ, ∀ z : ℂ, 1 + z * c ≠ 0 →
@@ -556,7 +548,6 @@ private lemma iteratedDeriv_inv_pow_mul_exp_eq_sum_rco (c y : ℂ) (n : ℕ) :
     ring
 
 
-set_option autoImplicit false in
 open Filter Topology in
 theorem _root_.GlobalTheory.HilbFam.LagDeriv.iteratedDeriv_zero_eq_lag : ∀ (k n : ℕ) (c y : ℂ),
     iteratedDeriv n (fun z : ℂ ↦ (1 + z * c)⁻¹ ^ k * Complex.exp (y * z / (1 + z * c))) 0 =

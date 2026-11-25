@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.ArchimedeanDerivatives.ShiftOf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.ShiftOf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RingEquivPlaceCorrespondencePlaceUnder
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WeylCharacterRegularity.IsRegConj
@@ -58,26 +59,7 @@ namespace UpperTheory.V.Z.Inf
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ}
 
 private theorem prod_coord (d : Cinf K) : ∏ σ : K →+* ℂ, coord σ d = ((∏ w, ‖d w‖ ^ 2 : ℝ) : ℂ) := by
-  classical
-  rw [← Finset.prod_fiberwise Finset.univ (fun σ : K →+* ℂ => InfinitePlace.mk σ), Complex.ofReal_prod]
-  refine Finset.prod_congr rfl fun w _ => ?_
-  have hne : w.embedding ≠ ComplexEmbedding.conjugate w.embedding := fun h =>
-    InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w)
-      (InfinitePlace.isReal_iff.2 (ComplexEmbedding.isReal_iff.2 h.symm))
-  have hf : (Finset.univ.filter fun σ : K →+* ℂ => InfinitePlace.mk σ = w) =
-      {w.embedding, ComplexEmbedding.conjugate w.embedding} := by
-    ext σ
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert, Finset.mem_singleton]
-    constructor
-    · rintro rfl
-      rcases InfinitePlace.embedding_mk_eq σ with h | h
-      · exact Or.inl h.symm
-      · exact Or.inr (by rw [h]; simp)
-    · rintro (rfl | rfl)
-      · exact InfinitePlace.mk_embedding w
-      · rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
-  rw [hf, Finset.prod_pair hne, GlobalTheory.IsoPull.coord_conj, GlobalTheory.IsoPull.coord_embedding, Complex.mul_conj,
-    Complex.normSq_eq_norm_sq]
+  apply _root_.UpperTheory.V.Z.Inf.prod_coord <;> assumption
 
 private theorem nrm_eq (x : Lie K n) : ((nrm x : ℝ) : ℂ) = ∏ σ, detAt σ x := (prod_coord _).symm
 

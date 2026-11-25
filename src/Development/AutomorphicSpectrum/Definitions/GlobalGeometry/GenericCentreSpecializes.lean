@@ -30,13 +30,9 @@ structure FibreCurve (ξ : Spec (CommRingCat.of Ω) ⟶ X) (ϖ : Ω) where
   [fk : Field k]
   [fκ : Field κ]
   [alg : Algebra k κ]
-  fg : (⊤ : IntermediateField k κ).FG
-  trdeg : Algebra.trdeg k κ = 1
 
   C : Crv.ACurve κ
   w_pos : ∀ i, 0 < C.w i
-  triv : ∀ i (a : k), a ≠ 0 → C.v i (algebraMap k κ a) = 1
-  all : ∀ W : ValuationSubring κ, W ≠ ⊤ → (∀ a : k, algebraMap k κ a ∈ W) → ∃! i, (C.v i).valuationSubring = W
 
   η : Spec (CommRingCat.of κ) ⟶ X
   η_spec : genPt ξ ⤳ centre η

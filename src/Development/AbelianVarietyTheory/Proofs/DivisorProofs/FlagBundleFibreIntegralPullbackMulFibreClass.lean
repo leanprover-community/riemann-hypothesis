@@ -578,10 +578,6 @@ open scoped ComplexConjugate
 
 namespace GlobalTheory.SecForm
 
-theorem coordVec_expand {n : ℕ} (w : V n) : w = ∑ a, w a • coordVec a := by
-  ext i
-  simp [coordVec, Pi.single_apply]
-
 theorem sesq_sum_left {n : ℕ} {α : V n → V n → ℂ} (hα : IsSesq α) {ι : Type} (s : Finset ι) (c : ι → ℂ)
     (x : ι → V n) (y : V n) : α (∑ i ∈ s, c i • x i) y = ∑ i ∈ s, c i * α (x i) y := by
   classical
@@ -603,7 +599,7 @@ theorem sesq_sum_right {n : ℕ} {α : V n → V n → ℂ} (hα : IsSesq α) {�
 theorem sesq_expand {n : ℕ} {α : V n → V n → ℂ} (hα : IsSesq α) (x y : V n) :
     α x y = ∑ a, ∑ b, α (coordVec a) (coordVec b) * (x a * conj (y b)) := by
   calc α x y = α (∑ a, x a • coordVec a) (∑ b, y b • coordVec b) := by
-        rw [← coordVec_expand x, ← coordVec_expand y]
+        rw [← GlobalTheory.LineForm.chain_sum_coordVec x, ← GlobalTheory.LineForm.chain_sum_coordVec y]
     _ = _ := by
         rw [sesq_sum_left (α := α) hα]
         refine Finset.sum_congr rfl fun a _ => ?_

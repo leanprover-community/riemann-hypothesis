@@ -638,7 +638,7 @@ theorem exists_tiedBoth (hL : L.Is μ₀) (W : G.Weil) (t : T) (i j : Fin D.R.m)
       rw [dite_eq_left v.2]
       exact hbas v⟩
   obtain ⟨co, vac, dom, hMo⟩ := GlobalTheory.T.squareModel_negSpace_goodSchroedinger t i j M hM Bs hT.base V' Γ.W h.JW₁ _ _ _ _ hV' hT.geo.hW
-  obtain ⟨om₁, hom⟩ := GlobalTheory.T.exists_weilRep_squarePair_characters_alpha_quotient hL t i j hst Bs hT.base V' Γ.W _ _ _ _ hV' hT.geo.hW _ hMo
+  obtain ⟨om₁, hom⟩ := GlobalTheory.FunObj.squareWeil₁ hL t i j hst Bs hT.base V' Γ.W _ _ _ _ hV' hT.geo.hW _ hMo
   refine ⟨e, Bs, ⟨Γ.p, Γ.q, Γ.V, V', Γ.W, Γ.M, _⟩, X, om, om₁,
     ⟨h.ψ, h.JW, h.JW₁, h.JWW, h.cart, h.α, h.β, h.μW, rfl⟩,
     ⟨hT.base, ⟨hT.geo.lt, hT.geo.even, hT.geo.kappa, hT.geo.eBig, hT.geo.aBig, hT.geo.hV, hV', hT.geo.hW, hT.geo.hM, hMo⟩,

@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageMetrics
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageChi
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
@@ -147,29 +146,8 @@ theorem N_injective (hB : IsBlockImage y k₀ M N x) (hx : LinearIndependent ℤ
 omit [DecidableEq K] [CharZero Ω] in
 theorem exists_blockBasis [CharZero Ω] (y : (Σ k, ι k) → Ω) (k₀ : K) :
     ∃ (r : ℕ) (M : Matrix (Ix (Fin r)) (ι k₀) ℤ) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) (x : Ix (Fin r) → Ω),
-      IsBlockImage y k₀ M N x ∧ LinearIndependent ℤ x := by
-  set W : Submodule ℤ Ω := Submodule.span ℤ (Set.range fun i : ι k₀ => y ⟨k₀, i⟩) with hW
-  have : Module.Finite ℤ W := Module.Finite.span_of_finite ℤ (Set.finite_range _)
-  set b := (Module.Free.chooseBasis ℤ W).reindex (Fintype.equivFin _) with hb
-  have hc : ∀ j, ∃ c : ι k₀ → ℤ, ∑ i, c i • y ⟨k₀, i⟩ = (b j : Ω) := fun j =>
-    (Submodule.mem_span_range_iff_exists_fun ℤ).mp (b j).2
-  choose c hc using hc
-  refine ⟨_, fun j i => c j.2 i, fun i j => b.repr ⟨y ⟨k₀, i⟩, Submodule.subset_span (Set.mem_range_self i)⟩ j.2,
-    fun j => (b j.2 : Ω), ⟨fun j => ?_, fun i => ?_⟩, ?_⟩
-  · show (b j.2 : Ω) = ∑ i, (c j.2 i : Ω) * y ⟨k₀, i⟩
-    rw [← hc j.2]
-    simp [zsmul_eq_mul]
-  · have h2 := congrArg Subtype.val (b.sum_repr ⟨y ⟨k₀, i⟩, Submodule.subset_span (Set.mem_range_self i)⟩)
-    simp only [Submodule.coe_sum, Submodule.coe_smul] at h2
-    show y ⟨k₀, i⟩ = ∑ j : Ix (Fin _),
-      ((b.repr ⟨y ⟨k₀, i⟩, Submodule.subset_span (Set.mem_range_self i)⟩ j.2 : ℤ) : Ω) * (b j.2 : Ω)
-    conv_lhs => rw [← h2]
-    simp [Fintype.sum_sigma, zsmul_eq_mul]
-  · have h1 := b.linearIndependent.map' W.subtype (Submodule.ker_subtype W)
-    refine h1.comp (fun j : Ix (Fin _) => j.2) ?_
-    rintro ⟨⟨⟩, a⟩ ⟨⟨⟩, a'⟩ h
-    cases h
-    rfl
+      IsBlockImage y k₀ M N x ∧ LinearIndependent ℤ x :=
+  BlockSectionsRank.exists_blockBasis y k₀
 
 end Lemmas
 

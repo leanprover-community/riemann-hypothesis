@@ -592,7 +592,7 @@ theorem resK_res (𝒱 : Set X.Opens) {s S : ℕ} (h : s ≤ S) (x : HdR q 2) :
 theorem restriction_bijective_above_dimension (d : ℕ) [SmoothOfRelativeDimension d q] (D : E.LineData X) (hD : IsTautologicalLine q D) :
     ∀ S, d < S → Function.Bijective (resK q (KS q S (𝒱D D)) 2) := by
   have hP : IsProper q := isProper_of_isO1 hD
-  obtain ⟨U, hU⟩ := (cov_ex q).2 d inferInstance
+  obtain ⟨U, hU⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).2 d inferInstance
   have hcov : sSup (𝒱D D) = ⊤ := by
     obtain ⟨N, i, -, -, hi⟩ := hD
     exact sSup_𝒱D D N i hi
@@ -659,9 +659,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris
 namespace CrystallineSemistableComparison.Pb
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
-
-theorem isO1At_exists {R : Type} [CommRing R] {X : Scheme.{0}} (N : ℕ) (i : X ⟶ PSpace R N) :
-    ∃ D : E.LineData X, IsTautologicalLineAt D N i := _root_.GlobalTheory.CompanionTheory.ConeTwistingSheafMap.main N i
 
 theorem isO1_exists {R : Type} [CommRing R] {X : Scheme.{0}} (p : X ⟶ Sp R) (hp : IsProjOver p) :
     ∃ D : E.LineData X, IsTautologicalLine p D := by

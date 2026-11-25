@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Formalism.HermitianCurvature.StatementG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
@@ -245,16 +246,7 @@ theorem DB.inv {q : ℕ} {f : E → ℂ} {u : E} {S P W : ℝ} (hf : DB q f u S 
 theorem iteratedDeriv_expI (n : ℕ) :
     iteratedDeriv n (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ))) =
       fun r : ℝ => Complex.I ^ n * Complex.exp (Complex.I * (r : ℂ)) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [iteratedDeriv_succ, ih]
-    funext r
-    have h1 : HasDerivAt (fun r : ℝ => (r : ℂ)) 1 r := Complex.ofRealCLM.hasDerivAt
-    have h2 : HasDerivAt (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ)))
-        (Complex.exp (Complex.I * (r : ℂ)) * (Complex.I * 1)) r := (h1.const_mul Complex.I).cexp
-    rw [(h2.const_mul (Complex.I ^ n)).deriv]
-    ring
+  apply _root_.GlobalTheory.CompanionTheory.AdelicHeis.iteratedDeriv_exp_I <;> assumption
 
 theorem DB_expI (q : ℕ) (r : ℝ) : DB q (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ))) r 1 1 := by
   refine ⟨?_, fun j _ => ?_⟩

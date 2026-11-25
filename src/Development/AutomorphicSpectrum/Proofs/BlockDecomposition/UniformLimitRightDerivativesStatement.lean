@@ -117,7 +117,7 @@ theorem limit_smooth : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSp
       (∀ w, TendstoUniformlyOn (fun k => Rw w (g k)) (Gf w) atTop (GLs n)) ∧
       ContDiffOn ℝ ∞ (Gf []) (GLs n) ∧ ∀ w, ∀ z ∈ GLs n, Rw w (Gf []) z = Gf w z := by
   intro n V _ _ _ g hg hc
-  obtain ⟨A, hAc, hA⟩ := GlobalTheory.T.derivative_right_basis_expansion n
+  obtain ⟨A, hAc, hA⟩ := _root_.GlobalTheory.CompanionTheory.PresSobA.Frame.frame n
   have hopen : IsOpen (GLs n) := isOpen_GLs
   let Gf : List (Bool × Fin n × Fin n) → Mat n → V :=
     fun w z => limUnder atTop (fun k => Rw w (g k) z)
@@ -171,7 +171,7 @@ theorem limit_smooth : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSp
     rw [h1]
     exact tendsto_nhds_unique h2 (hpt (p :: w) z hz)
   have hfam : ∀ v, ContDiffOn ℝ ∞ (Gf v) (GLs n) :=
-    GlobalTheory.T.closed_derivative_system_smooth n V (List (Bool × Fin n × Fin n)) Gf (fun p w => p :: w)
+    _root_.GlobalTheory.CompanionTheory.PresSobA.contDiffOn_of_right_family n V (List (Bool × Fin n × Fin n)) Gf (fun p w => p :: w)
       (fun v z hz => (hhas v z hz).differentiableAt) (fun v p z hz => hRd v p z hz)
   refine ⟨Gf, hu, hfam [], ?_⟩
   intro w
@@ -199,8 +199,6 @@ open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc GlobalTheory.CompanionTheo
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 noncomputable section
 
-theorem _root_.GlobalTheory.T.uniform_limit_right_derivatives : ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V] (g : ℕ → Mat n → V), (∀ k, ContDiffOn ℝ ∞ (g k) (GLs n)) → (∀ w, UniformCauchySeqOn (fun k => Rw w (g k)) atTop (GLs n)) → ∃ Gf : List (Bool × Fin n × Fin n) → Mat n → V, (∀ w, TendstoUniformlyOn (fun k => Rw w (g k)) (Gf w) atTop (GLs n)) ∧ ContDiffOn ℝ ∞ (Gf []) (GLs n) ∧ ∀ w, ∀ z ∈ GLs n, Rw w (Gf []) z = Gf w z := by
-  first | exact @GlobalTheory.CompanionTheory.PresSobA.LimSmooth.limit_smooth
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

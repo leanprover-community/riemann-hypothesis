@@ -83,12 +83,6 @@ variable (h) in
 def IsRecV (rc : IrrGL (k := w.adicCompletion E) → WD h) : Prop :=
   ∃ (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a) (ε : EpsFamily A), LawsV a ha ε rc
 
-theorem toV {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : IsRec h rc) : IsRecV h rc :=
-  let ⟨a, ha, ε, _, k⟩ := H
-  ⟨a, ha, ε, k.dim, k.one, k.langlands, k.det, k.prod, k.supp, k.sph, k.sat, k.cusp, k.nu_eq,
-    fun x ω hω σ => by rw [k.central x ω hω σ], fun x χ hχ _ => k.twist x χ hχ, fun x ω _ => k.central x ω,
-    fun n π π' _ => k.dual n π π', fun _ _ _ e => k.bij.1 e⟩
-
 def ExtraV : Prop :=
   ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω)
     (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (rc : IrrGL (k := w.adicCompletion E) → WD h), IsRecT h rc → IsRecV h rc

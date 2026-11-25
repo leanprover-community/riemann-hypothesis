@@ -1269,7 +1269,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Plug.growth_le_vol_deg : GlobalTheory.Co
     exact_mod_cast this
   have hnef : ∀ W, ReciprocityTheory.ChartRestriction.G.Geo.IsArithVar W 2 → mCoordIdeal M.y ≤ W → 0 ≤ geomDeg W (Top.combLine (M.line 1) (nOf u)) 1 := by
     intro W hW hPW
-    have h1 := (_root_.GlobalTheory.CompanionTheory.Ar.Top.rt_nefgen _root_.GlobalTheory.CompanionTheory.Ar.PB.nefPol hIn II hII _ _ T (Top.realOf o.toTowerOrigin) o.smooth o.flat B (κ Z)).1
+    have h1 := (_root_.RootFieldNumerics.tower_nef_generic_dominant _root_.GlobalTheory.CompanionTheory.Ar.PB.nefPol hIn II hII _ _ T (Top.realOf o.toTowerOrigin) o.smooth o.flat B (κ Z)).1
       (reW u) hdom W hW hPW
     rw [geomDeg_combLine_one hIn M (nOf u) W hW]
     simpa only [wtc] using h1

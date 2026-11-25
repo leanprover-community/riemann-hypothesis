@@ -141,89 +141,40 @@ section aux
 
 variable {k r : ℕ}
 
-def rp_ι (k r : ℕ) (i : Fin k) : Fin (2 * r + k + 1) := ⟨r + i.val, by have := i.2; omega⟩
+def rp_ι (k r : ℕ) (i : Fin k) : Fin (2 * r + k + 1) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_ι k r i
 
 def rp_blk (k r : ℕ) (m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) : Matrix (Fin k) (Fin k) ℂ :=
-  fun i j => m (rp_ι k r i) (rp_ι k r j)
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_blk k r m
 
-theorem rp_mid_ι (i : Fin k) : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Mid k r (rp_ι k r i) := by
-  have := i.2
-  constructor <;> simp only [rp_ι] <;> omega
+theorem rp_mid_ι (i : Fin k) : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Mid k r (rp_ι k r i) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_mid_ι i
 
-theorem rp_ι_inj : Function.Injective (rp_ι k r) := fun a b hab =>
-  Fin.ext (by have := congrArg Fin.val hab; simpa [rp_ι] using this)
+theorem rp_ι_inj : Function.Injective (rp_ι k r) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_ι_inj
 
 theorem rp_eq_blockW (m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (h : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r m) :
-    m = blockW k r (rp_blk k r m) := by
-  ext i j
-  unfold blockW
-  by_cases hi : r ≤ i.val ∧ i.val < r + k
-  · rw [dite_eq_left hi]
-    by_cases hj : r ≤ j.val ∧ j.val < r + k
-    · rw [dite_eq_left hj]
-      have e1 : rp_ι k r ⟨i.val - r, by omega⟩ = i := Fin.ext (by simp only [rp_ι]; omega)
-      have e2 : rp_ι k r ⟨j.val - r, by omega⟩ = j := Fin.ext (by simp only [rp_ι]; omega)
-      simp only [rp_blk, e1, e2]
-    · rw [dite_eq_right hj, (h j hj).2 i, if_neg]
-      rintro rfl
-      exact hj hi
-  · rw [dite_eq_right hi, (h i hi).1 j]
+    m = blockW k r (rp_blk k r m) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_eq_blockW m h
 
 theorem rp_sum (f : Fin (2 * r + k + 1) → ℂ) (h : ∀ l, ¬ Formalism.MainNotions.LowestKTypeMultiplicity.rp_Mid k r l → f l = 0) :
-    ∑ l, f l = ∑ i, f (rp_ι k r i) := by
-  symm
-  refine Fintype.sum_of_injective (rp_ι k r) rp_ι_inj _ _ ?_ (fun _ => rfl)
-  intro l hl
-  apply h
-  intro hm
-  exact hl ⟨⟨l.val - r, by have := hm.2; have := hm.1; omega⟩, Fin.ext (by simp only [rp_ι]; have := hm.1; omega)⟩
+    ∑ l, f l = ∑ i, f (rp_ι k r i) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_sum f h
 
 theorem rp_blk_mul (a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (ha : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r a) :
-    rp_blk k r (a * b) = rp_blk k r a * rp_blk k r b := by
-  ext i j
-  simp only [rp_blk, Matrix.mul_apply]
-  refine rp_sum _ fun l hl => ?_
-  rw [(ha l hl).2 (rp_ι k r i), if_neg, zero_mul]
-  rintro rfl
-  exact hl (rp_mid_ι i)
+    rp_blk k r (a * b) = rp_blk k r a * rp_blk k r b :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_blk_mul a b ha
 
-theorem rp_blk_one : rp_blk k r 1 = 1 := by
-  ext i j
-  simp only [rp_blk, Matrix.one_apply]
-  by_cases h : i = j
-  · rw [if_pos h, if_pos (by rw [h])]
-  · rw [if_neg h, if_neg (fun e => h (rp_ι_inj e))]
+theorem rp_blk_one : rp_blk k r 1 = 1 :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_blk_one
 
 theorem rp_blk_unitary (m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hU : m ∈ UH (Hpk k r))
-    (hs : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r m) : (rp_blk k r m)ᴴ * rp_blk k r m = 1 := by
-  ext i j
-  have e := congrFun (congrFun (show mᴴ * Hpk k r * m = Hpk k r from hU) (rp_ι k r i)) (rp_ι k r j)
-  rw [Matrix.mul_assoc, Matrix.mul_apply, Formalism.MainNotions.LowestKTypeMultiplicity.rp_H_mid _ (rp_mid_ι i)] at e
-  have e2 : ∑ l, mᴴ (rp_ι k r i) l * (Hpk k r * m) l (rp_ι k r j) =
-      ∑ a, mᴴ (rp_ι k r i) (rp_ι k r a) * (Hpk k r * m) (rp_ι k r a) (rp_ι k r j) :=
-    rp_sum _ fun l hl => by
-      rw [Matrix.conjTranspose_apply, (hs l hl).1 (rp_ι k r i), if_neg, star_zero, zero_mul]
-      rintro rfl
-      exact hl (rp_mid_ι i)
-  have e3 : ∀ a, (Hpk k r * m) (rp_ι k r a) (rp_ι k r j) = m (rp_ι k r a) (rp_ι k r j) := by
-    intro a
-    rw [Matrix.mul_apply]
-    simp only [Formalism.MainNotions.LowestKTypeMultiplicity.rp_H_mid _ (rp_mid_ι a), ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-  rw [e2] at e
-  simp only [e3] at e
-  simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, rp_blk, Matrix.one_apply]
-  simp only [Matrix.conjTranspose_apply] at e
-  rw [e]
-  by_cases h : i = j
-  · rw [if_pos h, if_pos (by rw [h])]
-  · rw [if_neg h, if_neg (fun e => h (rp_ι_inj e))]
+    (hs : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r m) : (rp_blk k r m)ᴴ * rp_blk k r m = 1 :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_blk_unitary m hU hs
 
 theorem rp_blk_mem (m : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hU : m ∈ UH (Hpk k r))
-    (hs : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r m) : rp_blk k r m ∈ UJset (allPos k) := by
-  have hJ : Formalism.REAL.Jm (allPos k) = 1 := by
-    simp [Formalism.REAL.Jm, allPos]
-  show (rp_blk k r m)ᴴ * Formalism.REAL.Jm (allPos k) * rp_blk k r m = Formalism.REAL.Jm (allPos k)
-  rw [hJ, Matrix.mul_one, rp_blk_unitary m hU hs]
+    (hs : Formalism.MainNotions.LowestKTypeMultiplicity.rp_Std k r m) : rp_blk k r m ∈ UJset (allPos k) :=
+  Formalism.MainNotions.LowestKTypeMultiplicity.rp_blk_mem m hU hs
 
 end aux
 
@@ -250,51 +201,6 @@ end Formalism.MainNotions.BridgeLemma₃
 end
 
 end PartCal
-
-section PartCal2
-
-open Matrix Filter Topology
-
-noncomputable section
-
-namespace Formalism.MainNotions.BridgeLemma₃
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
-
-section Frob
-
-attribute [local instance] Matrix.frobeniusSeminormedAddCommGroup Matrix.frobeniusNormedAddCommGroup
-  Matrix.frobeniusNormedSpace Matrix.frobeniusNormedRing
-
-end Frob
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end Formalism.MainNotions.BridgeLemma₃
-
-end
-
-end PartCal2
-
-section PartCCI
-
-open Matrix Filter Topology
-
-noncomputable section
-
-namespace Formalism.MainNotions.BridgeLemma₃
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P Formalism.MainNotions.S.TopsChoicePartA
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-end Formalism.MainNotions.BridgeLemma₃
-
-end
-
-end PartCCI
 
 section PartAdj0
 

@@ -1407,7 +1407,7 @@ theorem hfree_geom : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
   obtain ⟨Q⟩ := GlobalTheory.T.abelian_quotient_of_power_fns E H X t hP k p x hG
   obtain ⟨d', ⟨gB⟩⟩ := GlobalTheory.T.exists_formal_germ_local E H hbar (Sp k) Q.tB (GlobalTheory.T.proper_has_power_fns E H k Q.tB Q.proper) k (𝟙 (Sp k))
   obtain ⟨Λ, _, _, _, _, P, j, hD, hs, hi, hk, hρ, hj⟩ := GlobalTheory.T.abelian_quotient_lattice E H hbar X t k p x Q d d' g gB
-  obtain ⟨Z, hZ⟩ := GlobalTheory.T.abelian_quotient_bilinear E H hbar X t k p x Q d d' g gB P hD
+  obtain ⟨Z, hZ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.FrGauge.frame_gauge E H hbar X t k p x Q d d' g gB P hD
   obtain ⟨⟨ρH, hρH⟩, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.rhoH_hom_adjoint k d (𝓞 E) g.B
   let S : 𝓞 E → Module.End k (TensorProduct ℤ k Λ) := fun a =>
     LinearMap.baseChange k ((LinearMap.lsmul (𝓞 E) Λ a).restrictScalars ℤ)

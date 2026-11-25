@@ -115,22 +115,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace UpperTheory.Gal.Mod
 
-private theorem pullHl_bijective (l : ℕ) [Fact l.Prime] {E E' : Spc} (f : E ⟶ E') (n i : ℤ)
-    (h : ∀ k : ℕ, Function.Bijective (pull _ f (tw (l ^ k) i) n)) :
-    Function.Bijective (pullHl l f n i) := by
-  constructor
-  · intro x y hxy
-    apply Subtype.ext
-    funext k
-    apply (h k).1
-    exact congrFun (congrArg Subtype.val hxy) k
-  · intro y
-    choose g hg using fun k => (h k).2 (y.1 k)
-    refine ⟨⟨g, fun k => (h k).1 ?_⟩, Subtype.ext (funext hg)⟩
-    refine (pull_red _ _ f n i (g (k + 1))).trans ?_
-    refine (congrArg _ (hg (k + 1))).trans ?_
-    exact (y.2 k).trans (hg k).symm
-
 end UpperTheory.Gal.Mod
 end -- clump:auto
 end -- clump:auto

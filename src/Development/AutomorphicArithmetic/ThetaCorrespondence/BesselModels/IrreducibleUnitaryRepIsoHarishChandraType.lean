@@ -97,40 +97,6 @@ section -- clump:auto
 
 open MeasureTheory
 
-private theorem UpperTheory.Reformulated.B.SetIntegralDifferentiability.hasFDerivAt_setIntegral
-    {X P E F : Type} [TopologicalSpace X] [T2Space X]
-    [MeasurableSpace X] [BorelSpace X] [NormedAddCommGroup P] [NormedSpace ℝ P]
-    [FiniteDimensional ℝ P] [NormedAddCommGroup E] [NormedSpace ℝ E] (μ : Measure X)
-    [IsFiniteMeasureOnCompacts μ] {K : Set X} (hK : IsCompact K) {a : X → E} (ha : Continuous a)
-    [NormedAddCommGroup F] [NormedSpace ℝ F] (Ψ : P × E → F)
-    (hΨ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Ψ) (p₀ : P) :
-    HasFDerivAt (fun p : P ↦ ∫ x in K, Ψ (p, a x) ∂μ)
-      (∫ x in K, (fderiv ℝ Ψ (p₀, a x)).comp (ContinuousLinearMap.inl ℝ P E) ∂μ) p₀ := by
-  haveI : ProperSpace P := FiniteDimensional.proper_real P
-  have hc : Continuous Ψ := hΨ.continuous
-  have hd : Differentiable ℝ Ψ := hΨ.differentiable (by simp)
-  have hD : Continuous fun z : P × E ↦
-      (fderiv ℝ Ψ z).comp (ContinuousLinearMap.inl ℝ P E) :=
-    (hΨ.continuous_fderiv (by simp)).clm_comp continuous_const
-  have hcomp : IsCompact (Metric.closedBall p₀ 1 ×ˢ (a '' K)) :=
-    (isCompact_closedBall p₀ 1).prod (hK.image ha)
-  obtain ⟨C, hC⟩ := hcomp.exists_bound_of_continuousOn hD.continuousOn
-  have hsec : ∀ p : P, Continuous fun x : X ↦ (p, a x) := fun p ↦ continuous_const.prodMk ha
-  refine hasFDerivAt_integral_of_dominated_of_fderiv_le
-    (F := fun p x ↦ Ψ (p, a x))
-    (F' := fun p x ↦ (fderiv ℝ Ψ (p, a x)).comp (ContinuousLinearMap.inl ℝ P E))
-    (bound := fun _ ↦ C) (s := Metric.closedBall p₀ 1)
-    (Metric.closedBall_mem_nhds p₀ one_pos) ?_ ?_ ?_ ?_ ?_ ?_
-  · exact Filter.Eventually.of_forall fun p ↦
-      ((hc.comp (hsec p)).continuousOn.integrableOn_compact hK).aestronglyMeasurable
-  · exact (hc.comp (hsec p₀)).continuousOn.integrableOn_compact hK
-  · exact ((hD.comp (hsec p₀)).continuousOn.integrableOn_compact hK).aestronglyMeasurable
-  · filter_upwards [ae_restrict_mem hK.measurableSet] with x hx p hp
-    exact hC (p, a x) ⟨hp, Set.mem_image_of_mem a hx⟩
-  · exact (continuous_const (y := C)).continuousOn.integrableOn_compact hK
-  · refine Filter.Eventually.of_forall fun x p _ ↦ ?_
-    exact (hd (p, a x)).hasFDerivAt.comp p (hasFDerivAt_prodMk_left p (a x))
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SetIntegralDifferentiability =====

@@ -298,7 +298,7 @@ theorem herm_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF
       (GlobalTheory.CompanionTheory.SW.HermSd.mp_hermVec hCM (Fv F v) bs n (lam v))
   haveI : ∀ v : S, SigmaFinite (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v.1) σ bs (lam v.1) n) := fun v => hSF v.1
   have hmp := HS.db_split σ hCM ψ hψ n ν hν bs laminf hinf lf hlf h1
-  obtain ⟨-, -, -, -, -, -, -, -, hme0, -⟩ := GlobalTheory.T.hermitian_haar_splits_arch_times_finite F E σ hCM n ν hν.1
+  obtain ⟨-, -, -, -, -, -, -, -, hme0, -⟩ := _root_.GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod F E σ hCM n ν hν.1
   have hme : MeasurableEmbedding (fun S : HermR (AF F) σ n => (HS.hInfR σ S, HS.hFinR σ S)) := hme0
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ bs laminf n) := by
     obtain ⟨hH, -⟩ := hinf
@@ -919,7 +919,7 @@ theorem tup_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF 
       rw [← Finset.prod_coe_sort S]
     rw [e1, hmap, integral_fintype_prod_eq_prod (fun v : S => g v.1), ← Finset.prod_coe_sort S]
 
-  obtain ⟨-, -, -, -, -, -, -, -, hme, -⟩ := GlobalTheory.T.adelic_haar_splits_as_arch_times_finite F E σ hCM M n μ hμ.1
+  obtain ⟨-, -, -, -, -, -, -, -, hme, -⟩ := _root_.GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple F E σ hCM M n μ hμ.1
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordW (Af F) bs lf n M) :=
     GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler.sfinite_coordW σ hCM bs lf hlf n M
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) bs laminf n M) := by
