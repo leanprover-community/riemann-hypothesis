@@ -13,8 +13,11 @@ WORKFLOWS = SCRIPTS.parent / ".github" / "workflows"
 
 
 def load(name, filename):
+    # Registered before it runs, as `load` in `github-rest.py` does: its dataclass needs that up to
+    # Python 3.14.
     spec = importlib.util.spec_from_file_location(name, SCRIPTS / filename)
     module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
