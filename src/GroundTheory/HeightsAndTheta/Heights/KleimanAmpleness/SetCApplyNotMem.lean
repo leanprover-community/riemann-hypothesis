@@ -39,16 +39,6 @@ theorem rem_apply_subset (I : ∀ k, Finset (ι k)) (p : Σ k, ι k) (l : K) : r
   · subst hl; rw [rem_apply_self]; exact Finset.erase_subset _ _
   · rw [rem_apply_of_ne i hl]
 
-theorem sign_swap_same {I : ∀ k, Finset (ι k)} {k : K} {i i' : ι k} (hi : i ∈ I k) (hlt : i < i') :
-    faceSign I k i' * faceSign (rem I ⟨k, i'⟩) k i = -(faceSign I k i * faceSign (rem I ⟨k, i⟩) k i') := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.sign_swap_same <;> assumption
-
-theorem sign_swap_lt {I : ∀ k, Finset (ι k)} {k k' : K} (i : ι k) (i' : ι k') (hi : i ∈ I k)
-    (hk : k < k') (h2 : 2 ≤ (I k).card) :
-    faceSign I k' i' * faceSign (rem I ⟨k', i'⟩) k i =
-      -(faceSign I k i * faceSign (rem I ⟨k, i⟩) k' i') := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellDSq.sign_swap_lt <;> assumption
-
 theorem sign_swap {I : ∀ k, Finset (ι k)} {p q : Σ k, ι k} (hp : p.2 ∈ I p.1) (hq : q.2 ∈ I q.1)
     (hne : q ≠ p) (hJ : ∀ l, (rem (rem I p) q l).Nonempty) :
     faceSign I p.1 p.2 * faceSign (rem I p) q.1 q.2 =

@@ -181,18 +181,6 @@ structure TwJoin (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7) (nch : 
   cg : CGTrue hL D gal.wd
   base : first → ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 → BaseTup Y (nch.twI w)
 
-theorem TwJoin.Sb_eq {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {nch : NChoice D} {xd : ThData D} {first : Prop} {G : Type}
-    [iG : Group G] [fG : Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {C : Formalism.L2.Pj.CoreJ D}
-    [aC : Algebra C.Q.c.F D.what₂.LL] {R : RealDat3 D A3 C.Q.c.F} {F : Face3 D A3} {cG : G0 R.Pg D.R.r ≃* G0g D.nd}
-    {geo : GlobalTheory.RealGeo.GeoHalf C R.toRealDat fun _ => 1} {S : RatDat D.ntw} {YS : NExpRealS R cG S}
-    {cf : CharFrame D} (a : TwJoin hL D nch xd first R F cG geo S YS cf) : a.X.R.Sb = R.Sb := by
-  obtain ⟨X, h1, h2, h3, h4, h5, h6, h7, h8, hR, -, -, -, hA, -⟩ := a
-  cases X
-  dsimp only at h1 h2 h3 h4 h5 h6 h7 h8 hR hA ⊢
-  subst h1 h4 h5 h6 h7
-  cases h2; cases h3; cases h8; cases hA; cases hR
-  rfl
-
 end GlobalTheory.TwInputs
 
 end
@@ -234,13 +222,7 @@ def TwAt (_H : NExpRealH R cG S YS) (cf : CharFrame D) : Type 1 :=
 
 variable {hL D nch xd first R F cG geo S YS}
 
-theorem TwAt.Sb_eq {H : NExpRealH R cG S YS} {cf : CharFrame D} (a : TwAt hL D nch xd first R F cG geo S YS H cf) :
-    a.X.R.Sb = R.Sb := TwJoin.Sb_eq a
-
 end At
-
-def TwExt (hL : GlobalTheory.Published.LocalLanglandsGL) : NExt hL := fun _ B _ T w Z _ _ t nch _ xd c =>
-  TwAt hL (w.st Z).toD7 nch xd (T = TwDat.untw B T.pl) t.r.z.R t.r.z.F t.r.z.cG t.r.z.geo _ c.row.nexp c.row.hecke (TC.cf w.I w.l Z)
 
 section Rows
 

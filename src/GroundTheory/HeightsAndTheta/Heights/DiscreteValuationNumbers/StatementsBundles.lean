@@ -187,19 +187,6 @@ variable {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} {Ω : Type*}
 instance pointIdeal_isPrime (y : (Σ k, ι k) → Ω) : (pointIdeal O y).IsPrime :=
   RingHom.ker_isPrime _
 
-theorem isFlagPair_self (ϖ : O) (y : (Σ k, ι k) → Ω) (r : ℕ) {s : Ω} (hs : s ≠ 0) :
-    IsFlagPair ϖ y (scaledTrivBundle O (segreVec y) r hs) (scaledTrivBundle O (segreVec y) r hs)
-      (scaledBasis r hs) (scaledBasis r hs) 0 0 (fun _ => 1) (fun _ => 1) := by
-  have hFlag := isFlagFrame_scaledTriv O y r hs
-  refine ⟨hFlag, hFlag, ?_, ?_, ?_⟩
-  · intro i j hij
-    rw [Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right hij.ne]
-  · intro i
-    rw [sub_self]
-    exact isVerticalDivisor_one ϖ _
-  · intro i
-    simp [Module.Basis.repr_self]
-
 end ExamplesDVR
 
 section ExamplesZ2
