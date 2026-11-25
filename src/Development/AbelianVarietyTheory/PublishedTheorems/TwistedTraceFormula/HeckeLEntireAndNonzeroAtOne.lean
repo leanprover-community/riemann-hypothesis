@@ -45,6 +45,26 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 
+/-!
+# Hecke `L`-functions: entire, and nonzero at `s = 1`
+
+This file states `GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne`. A Hecke character
+`χ : HChar K` of a number field `K` is a continuous homomorphism from the ideles of `K` to `ℂˣ`
+that is trivial on `Kˣ`; it is unitary (`χ.IsUnitary`) when its values have norm one. The
+`L`-function of `χ` is the Euler product of `GlobalTheory.CMVal.eulerFactor χ s`, which is
+`(1 - χ.val v * N(v) ^ (-s))⁻¹` at a finite place `v` where `χ` is unramified and `1` at the
+others. Here `χ.val v` is the value of `χ` at a uniformizer at `v`, and `N(v)` is
+`Ideal.absNorm v.asIdeal`. `GlobalTheory.CMVal.IsHeckeL χ Λ` says that `Λ` is entire and equals
+this product when `1 < s.re`.
+
+* `IsNormPow χ t` says that `χ` is the character `x ↦ |x| ^ (t * I)`, where `|x|` is the idele
+  norm; this is `normChar K t` (`isNormPow_iff`).
+* `IsContAtOne χ Λ` says that `Λ` is analytic at `1` and equals the Euler product when
+  `1 < s.re`. All such `Λ` have the same value at `1` (`IsContAtOne.apply_one_eq`).
+* `exists_entire_ne_zero` combines the two parts of the statement: a unitary `χ` that is not a
+  `normChar K t` has an entire `L`-function that is nonzero at `1`.
+-/
+
 @[expose] public section
 
 noncomputable section
@@ -58,9 +78,12 @@ namespace GlobalTheory.HeckeOne
 
 variable {K : Type} [Field K] [NumberField K]
 
+/-- `χ x = |x| ^ (t * I)` for every idele `x`, where `|x|` is the idele norm. -/
 def IsNormPow (χ : HChar K) (t : ℝ) : Prop :=
   ∀ x : Ideles K, ((χ.1 x : ℂˣ) : ℂ) = ((ideleNorm x : ℝ) : ℂ) ^ ((t : ℂ) * Complex.I)
 
+/-- `Λ` is analytic at `1` and equals the Euler product of `χ` when `1 < s.re`. Unlike
+`GlobalTheory.CMVal.IsHeckeL χ Λ`, it does not ask `Λ` to be entire. -/
 def IsContAtOne (χ : HChar K) (Λ : ℂ → ℂ) : Prop :=
   AnalyticAt ℂ Λ 1 ∧ ∀ s : ℂ, 1 < s.re → HasProd (eulerFactor χ s) (Λ s)
 
@@ -70,6 +93,12 @@ namespace GlobalTheory.Published
 
 open GlobalTheory.HeckeOne
 
+/-- **Hecke `L`-functions are entire and nonzero at `s = 1`.** For every number field `K` and
+every unitary Hecke character `χ` of `K`:
+* if `χ` is not `x ↦ |x| ^ (t * I)` for any real `t`, there is an entire `Λ` equal to the Euler
+  product of `χ` when `1 < s.re` (`GlobalTheory.CMVal.IsHeckeL χ Λ`);
+* if `χ ≠ 1`, there is a `Λ` that is analytic at `1`, equals the Euler product when `1 < s.re`,
+  and has `Λ 1 ≠ 0` (`IsContAtOne χ Λ`). -/
 def HeckeLEntireAndNonzeroAtOne : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (χ : HChar K), χ.IsUnitary →
     ((¬ ∃ t : ℝ, IsNormPow χ t) → ∃ Λ : ℂ → ℂ, IsHeckeL χ Λ) ∧
@@ -81,6 +110,7 @@ namespace GlobalTheory.HeckeOne
 
 variable {K : Type} [Field K] [NumberField K]
 
+/-- The idele norm of an idele is positive. -/
 theorem ideleNorm_pos (x : Ideles K) : 0 < ideleNorm x := by
   refine lt_of_le_of_ne ?_ (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm_ne_zero x).symm
   exact mul_nonneg (Finset.prod_nonneg fun v _ => pow_nonneg (norm_nonneg _) _)
@@ -97,6 +127,9 @@ theorem cpow_eq_exp (x : Ideles K) (t : ℝ) :
 
 
 variable (K) in
+/-- The unitary Hecke character `x ↦ |x| ^ (t * I)`, where `|x|` is the idele norm
+(`normChar_apply`, `isNormPow_iff`). It is unramified at every finite place (`unrAt_normChar`), with
+value `N(v) ^ (-(t * I))` at `v` (`val_normChar`). -/
 def normChar (t : ℝ) : HChar K :=
   ⟨Circle.toUnits.comp (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow K t).toHom,
     Units.continuous_iff.2
@@ -113,6 +146,7 @@ def normChar (t : ℝ) : HChar K :=
 theorem normChar_apply (t : ℝ) (x : Ideles K) :
     (((normChar K t).1 x : ℂˣ) : ℂ) = ((Circle.exp (t * Real.log (ideleNorm x)) : Circle) : ℂ) := rfl
 
+/-- `χ` is `x ↦ |x| ^ (t * I)` exactly when it is `normChar K t`. -/
 theorem isNormPow_iff (χ : HChar K) (t : ℝ) : IsNormPow χ t ↔ χ = normChar K t := by
   constructor
   · intro h
@@ -132,6 +166,8 @@ theorem normChar_add (s t : ℝ) : normChar K (s + t) = normChar K s * normChar 
     change _ = (((normChar K s).1 x : ℂˣ) : ℂ) * (((normChar K t).1 x : ℂˣ) : ℂ)
     rw [normChar_apply, normChar_apply, normChar_apply, add_mul, Circle.exp_add, Circle.coe_mul]))
 
+/-- The idele that is `u` at the finite place `v` and `1` at every other place has idele norm
+`‖u‖`. -/
 theorem ideleNorm_localIdele (v : HeightOneSpectrum (𝓞 K)) (u : (v.adicCompletion K)ˣ) :
     ideleNorm (Neutral.B1.localIdele K v u) = ‖(u : v.adicCompletion K)‖ := by
   rw [← GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.ideleNorm_localIdele]
@@ -143,9 +179,12 @@ theorem unrAt_normChar (t : ℝ) (v : HeightOneSpectrum (𝓞 K)) : (normChar K 
   rw [normChar_apply, ideleNorm_localIdele, GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.norm_eq_one_of_valued hu]
   simp
 
+/-- A Hecke character that is ramified at some finite place is not of the form
+`x ↦ |x| ^ (t * I)`. -/
 theorem not_isNormPow_of_not_unrAt {χ : HChar K} {v : HeightOneSpectrum (𝓞 K)} (h : ¬ χ.UnrAt v) :
     ¬ ∃ t : ℝ, IsNormPow χ t := fun ⟨t, ht⟩ => h ((isNormPow_iff χ t).1 ht ▸ unrAt_normChar t v)
 
+/-- The value of `normChar K t` at the finite place `v` is `N(v) ^ (-(t * I))`. -/
 theorem val_normChar (t : ℝ) (v : HeightOneSpectrum (𝓞 K)) :
     (((normChar K t).val v : ℂˣ) : ℂ) = ((Ideal.absNorm v.asIdeal : ℕ) : ℂ) ^ (-((t : ℂ) * Complex.I)) := by
   have h := GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt_eq _
@@ -159,6 +198,7 @@ theorem val_normChar (t : ℝ) (v : HeightOneSpectrum (𝓞 K)) :
   push_cast
   ring
 
+/-- Some `normChar K t` is not the trivial character. -/
 theorem exists_normChar_ne_one : ∃ t : ℝ, normChar K t ≠ 1 := by
   obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 K)
   let v : HeightOneSpectrum (𝓞 K) :=
@@ -172,9 +212,12 @@ theorem exists_normChar_ne_one : ∃ t : ℝ, normChar K t ≠ 1 := by
   have h3 : (1 : ℂ) = -1 := h2
   norm_num at h3
 
+/-- An entire `L`-function of `χ` is in particular analytic at `1`. -/
 theorem isContAtOne_of_isHeckeL {χ : HChar K} {Λ : ℂ → ℂ} (h : IsHeckeL χ Λ) : IsContAtOne χ Λ :=
   ⟨h.1.analyticAt 1, h.2⟩
 
+/-- Two functions that are analytic at `1` and equal the Euler product of `χ` when `1 < s.re`
+have the same value at `1`: they agree on the real numbers greater than `1`. -/
 theorem IsContAtOne.apply_one_eq {χ : HChar K} {Λ Λ' : ℂ → ℂ} (h : IsContAtOne χ Λ) (h' : IsContAtOne χ Λ') :
     Λ 1 = Λ' 1 := by
   have hc : Tendsto (fun x : ℝ => (x : ℂ)) (𝓝[>] 1) (𝓝 1) :=
@@ -184,6 +227,9 @@ theorem IsContAtOne.apply_one_eq {χ : HChar K} {Λ Λ' : ℂ → ℂ} (h : IsCo
   filter_upwards [self_mem_nhdsWithin] with x hx
   exact (h.2 x hx).unique (h'.2 x hx)
 
+/-- Under `GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne`, a unitary Hecke character that
+is not `x ↦ |x| ^ (t * I)` for any `t` has an entire `L`-function `Λ` with `Λ 1 ≠ 0`. The value at
+`1` comes from the second part of the statement, through `IsContAtOne.apply_one_eq`. -/
 theorem exists_entire_ne_zero (H : GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne) {χ : HChar K} (hu : χ.IsUnitary)
     (hχ : ¬ ∃ t : ℝ, IsNormPow χ t) : ∃ Λ : ℂ → ℂ, IsHeckeL χ Λ ∧ Λ 1 ≠ 0 := by
   obtain ⟨Λ, hΛ⟩ := (H K χ hu).1 hχ
