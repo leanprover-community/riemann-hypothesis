@@ -141,16 +141,13 @@ theorem coord_tan (l : Fin d) : IsCombAtG t x g.tg (fun j => lin φ.1 1 j l) (g�
     funext j; simp
   rw [comb_iff, tg_eq, tv_gd, tv_gd, hφ, PP, ← e, GlobalTheory.ChartCompare.hcomp, vec_subst, e₂]
 
-
 omit hφ in
 abbrev vE (g : GermAt t x d) (m : ℕ) {Z : Scheme.{0}} (r : Z ⟶ Sp (Jet S (Fin 2 × Fin d) m)) (z : Z)
     (J : (Z ⟶ t.G.left) → t.PP.L.ι) : (Z.presheaf.stalk z)ˣ :=
   val (L := t.PP.L) (φ := cφG t ![jptG t x d g.x m (0 : Fin 2), jptG t x d g.x m (1 : Fin 2)]) (ε := cε 2) (g.e m) r z J
 
-
 omit hφ in
 abbrev bb (φ : Q S d 1) : Fin 2 → Q S d 2 := ![ac φ (gen 0), ac φ (gen 1)]
-
 
 omit hφ in
 def LamEq (g g₂ : GermAt t x d) (φ : Q S d 1) (lam : PS S 2 d) : Prop :=
@@ -236,7 +233,6 @@ theorem val₂_eq (hp : PowFns t) {K : Type} [Fintype K] {ξ : K → ((t.G ⊗ t
     (pullGen_isGen _ _ _ _ hw (lift (powPr t.G (0 : Fin 3)) (powPr t.G (2 : Fin 3))).left)
     (pullGen_isGen _ _ _ _ hw' (lift (powPr t.G (0 : Fin 3)) (powPr t.G (2 : Fin 3))).left) p p q hJ
   simpa only [val_ros _ _ hJ, tup_0, tup_2, h, h', _root_.mul_one] using key
-
 
 theorem iso_of_coord (hs : ∀ a : 𝓞 E, star a = H.bar a) (hp : PowFns t) {ψ : Q S d 1}
     (hψ : ∀ m, g.x m = PP m g₂.x ψ) {lam : PS S 2 d} (hl : LamEq g g₂ φ lam) :
@@ -680,16 +676,6 @@ theorem exists_bc (f : S →+* S₂) (e : x₂ = spMap f ≫ x) (g : GermAt t x 
 theorem IsBC.cancel {f : S →+* S₂} {k : S₂ →+* S₃} {g : GermAt t x d} {g₂ : GermAt t x₂ d} {g₃ : GermAt t x₃ d}
     (h : IsBC f g g₂) (h' : IsBC (k.comp f) g g₃) : IsBC k g₂ g₃ := by
   refine ⟨isMapOf_cancel h.map h'.map, ?_, ?_, ?_⟩
-  · intro l
-    rw [h'.tg, h.tg, ← Category.assoc, _root_.GlobalTheory.CompanionTheory.Ar.LieFin.spMap_comp', dualMap_comp]
-  · intro m
-    rw [h'.jet, h.jet, ← jetCoef_comp, ← _root_.GlobalTheory.CompanionTheory.Ar.LieFin.spMap_comp', Category.assoc]
-  · intro m Z r z J hJ
-    rw [h'.fr m Z r z J hJ, h.fr m Z _ z J hJ, Category.assoc, _root_.GlobalTheory.CompanionTheory.Ar.LieFin.spMap_comp', jetCoef_comp]
-
-theorem IsBC.trans {f : S →+* S₂} {k : S₂ →+* S₃} {g : GermAt t x d} {g₂ : GermAt t x₂ d} {g₃ : GermAt t x₃ d}
-    (h : IsBC f g g₂) (h' : IsBC k g₂ g₃) : IsBC (k.comp f) g g₃ := by
-  refine ⟨h.map.trans h'.map, ?_, ?_, ?_⟩
   · intro l
     rw [h'.tg, h.tg, ← Category.assoc, _root_.GlobalTheory.CompanionTheory.Ar.LieFin.spMap_comp', dualMap_comp]
   · intro m

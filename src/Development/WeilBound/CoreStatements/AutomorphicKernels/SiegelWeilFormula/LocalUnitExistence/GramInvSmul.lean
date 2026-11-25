@@ -64,9 +64,6 @@ theorem gram_inv_smul {H H₀ : Matrix ι ι S} (M : GL ι S) (s : Sˣ) (hM : M.
 def cj {H H₀ : Matrix ι ι S} (M : GL ι S) (s : S) (hM : M.1ᵀ * H * M.1.map c = s • H₀) (z : UG c H₀) : UG c H :=
   ⟨M * z.1 * M⁻¹, conj_mem c M s hM z.2⟩
 
-theorem cj_val {H H₀ : Matrix ι ι S} (M : GL ι S) (s : S) (hM : M.1ᵀ * H * M.1.map c = s • H₀) (z : UG c H₀) :
-    (cj c M s hM z).1 = M * z.1 * M⁻¹ := rfl
-
 theorem cj_mul {H H₀ : Matrix ι ι S} (M : GL ι S) (s : S) (hM : M.1ᵀ * H * M.1.map c = s • H₀) (z z' : UG c H₀) :
     cj c M s hM (z * z') = cj c M s hM z * cj c M s hM z' := by
   apply Subtype.ext

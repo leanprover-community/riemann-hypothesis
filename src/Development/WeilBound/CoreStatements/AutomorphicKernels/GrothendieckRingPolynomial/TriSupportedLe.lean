@@ -217,35 +217,4 @@ theorem uni_exists {M I C : Type*} (L : M ≃ I) (c : M → C) (w : M → ℕ) (
       rw [hsum, hv]
       abel
 
-theorem uni_bij {M I C : Type*} (L : M ≃ I) (c : M → C) (w : M → ℕ) (b : C → ℕ) (f : M → I →₀ ℤ)
-    (hb : ∀ m, w m ≤ b (c m)) (h1 : ∀ m, f m (L m) = 1)
-    (hlt : ∀ m n, f m (L n) ≠ 0 → c m = c n ∧ (m = n ∨ w m < w n)) :
-    Function.Bijective (Finsupp.linearCombination ℤ f) := by
-  refine ⟨uni_inj L w f h1 (fun m n hf => (hlt m n hf).2), ?_⟩
-  have hrange : ∀ i, Finsupp.single i (1 : ℤ) ∈ LinearMap.range (Finsupp.linearCombination ℤ f) := by
-    intro i
-    obtain ⟨a, -, ha⟩ := uni_exists L c w b f hb h1 hlt (L.symm i)
-    rw [Equiv.apply_symm_apply] at ha
-    exact LinearMap.mem_range.2 ⟨a, ha⟩
-  intro g
-  have hg : g ∈ LinearMap.range (Finsupp.linearCombination ℤ f) := by
-    refine Finsupp.induction_linear g ?_ ?_ ?_
-    · exact Submodule.zero_mem _
-    · intro x y hx hy
-      exact Submodule.add_mem _ hx hy
-    · intro i r
-      have hmem := Submodule.smul_mem _ r (hrange i)
-      rwa [Finsupp.smul_single, smul_eq_mul, mul_one] at hmem
-  exact LinearMap.mem_range.1 hg
-
 end PositivityTheory.Groth.ChartWirtingerDerivatives
-
-namespace PositivityTheory.Groth
-open CompanionTheory.Groth (TriAut UniTri)
-
-theorem triAut : TriAut := fun _ w ψ h => ChartWirtingerDerivatives.tri_bij w ψ h
-
-theorem uniTri : UniTri := fun _ _ _ L c w b f hb h1 hlt =>
-  ⟨ChartWirtingerDerivatives.uni_bij L c w b f hb h1 hlt, ChartWirtingerDerivatives.uni_exists L c w b f hb h1 hlt⟩
-
-end PositivityTheory.Groth

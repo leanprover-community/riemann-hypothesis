@@ -48,49 +48,10 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 namespace GenericFibreProof
 
-private theorem isLocallyNoetherian_of_closedImmersion_pSpace (O F : Type) [CommRing O] [Field F] (β : O →+* F) (X : Scheme.{0}) (s : X ⟶ Sp O)
-    (hp : IsProjOver s) : TopologicalSpace.NoetherianSpace ↥(pullback (C := Scheme.{0}) s (spMap β)) := by
-  obtain ⟨N, i, hi, hs⟩ := hp
-  haveI := hi
-  haveI : Algebra.FiniteType ((MvPolynomial.homogeneousSubmodule (Fin (N + 1)) O) 0)
-      (MvPolynomial (Fin (N + 1)) O) :=
-    haveI : IsScalarTower O ((MvPolynomial.homogeneousSubmodule (Fin (N + 1)) O) 0)
-        (MvPolynomial (Fin (N + 1)) O) := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
-    Algebra.FiniteType.of_restrictScalars_finiteType O _ _
-  have hsurj : Function.Surjective
-      (algebraMap O ((MvPolynomial.homogeneousSubmodule (Fin (N + 1)) O) 0)) := by
-    rintro ⟨p, hp⟩
-    have h0 : p.totalDegree = 0 := (MvPolynomial.totalDegree_zero_iff_isHomogeneous (p := p)).mpr
-      ((MvPolynomial.mem_homogeneousSubmodule _ _).mp hp)
-    refine ⟨p.coeff 0, Subtype.ext ?_⟩
-    exact (MvPolynomial.totalDegree_eq_zero_iff_eq_C.mp h0).symm
-  haveI : LocallyOfFiniteType (spMap (algebraMap O ((MvPolynomial.homogeneousSubmodule (Fin (N + 1)) O) 0))) := by
-    rw [spMap, HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)]
-    exact RingHom.FiniteType.of_surjective _ hsurj
-  haveI : LocallyOfFiniteType (PSpace.str O N) := by
-    unfold PSpace.str
-    infer_instance
-  haveI : QuasiCompact (PSpace.str O N) := by
-    unfold PSpace.str
-    infer_instance
-  haveI : LocallyOfFiniteType s := by
-    rw [← hs]
-    infer_instance
-  haveI : QuasiCompact s := by
-    rw [← hs]
-    infer_instance
-  haveI : IsLocallyNoetherian (pullback s (spMap β)) :=
-    LocallyOfFiniteType.isLocallyNoetherian (pullback.snd s (spMap β))
-  haveI : CompactSpace ↥(pullback (C := Scheme.{0}) s (spMap β)) :=
-    QuasiCompact.compactSpace_of_compactSpace (pullback.snd s (spMap β))
-  haveI : IsNoetherian (pullback s (spMap β)) := {}
-  infer_instance
-
 theorem generic_points_range_local : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β), IsDomain O → (letI := β.toAlgebra; IsFractionRing O c.F) → genericPoints Y.X ⊆ Set.range Y.j := by
   apply PositivityTheory.HtPt.Ml.generic_points_range
 
 end GenericFibreProof
-
 
 end -- clump:auto
 end -- clump:auto

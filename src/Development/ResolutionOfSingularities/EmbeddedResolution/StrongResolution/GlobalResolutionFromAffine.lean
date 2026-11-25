@@ -146,18 +146,6 @@ theorem opensCoprodMapOfRefinement_comp_sigmaOpensDesc {X' X : Scheme.{u}} (φ :
     sigma_ι_sigmaOpensDesc_assoc]
   simp
 
-private theorem resLE_eq_homOfLE_comp_restrict {X' X : Scheme.{u}} (φ : X' ⟶ X)
-    (U : X.Opens) (V : X'.Opens) (e : V ≤ φ ⁻¹ᵁ U) :
-    φ.resLE U V e = X'.homOfLE e ≫ φ ∣_ U := by
-  rw [← cancel_mono U.ι]
-  simp
-
-private theorem smooth_resLE {X' X : Scheme.{u}} (φ : X' ⟶ X) [Smooth φ]
-    (U : X.Opens) (V : X'.Opens) (e : V ≤ φ ⁻¹ᵁ U) :
-    Smooth (φ.resLE U V e) := by
-  rw [resLE_eq_homOfLE_comp_restrict]
-  infer_instance
-
 end FunctorialResolution.EmbeddedResolution
 end -- clump:auto
 end -- clump:auto

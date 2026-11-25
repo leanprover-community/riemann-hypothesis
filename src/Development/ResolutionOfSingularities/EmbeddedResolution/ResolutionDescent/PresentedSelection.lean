@@ -34,12 +34,6 @@ def affineSpacePresentedSelection (hemb : AffineEmbedsIntoAffineSpace.{u})
   sel := affineSpaceEmbeddingChoice hemb hsncE hsm
   pres := fun k _ _ Y p _ _ _ _ => affineSpaceChartPresentation hemb hsncE hsm k Y p
 
-@[simp]
-theorem affineSpacePresentedSelection_selection (hemb : AffineEmbedsIntoAffineSpace.{u})
-    (hsncE : NilIsStrictNormalCrossingsOnAffineSpace.{u}) (hsm : AffineSpaceIsSmooth.{u}) :
-    (affineSpacePresentedSelection hemb hsncE hsm).sel = affineSpaceEmbeddingChoice hemb hsncE hsm :=
-  rfl
-
 end FunctorialResolution.EmbeddedResolution
 
 end

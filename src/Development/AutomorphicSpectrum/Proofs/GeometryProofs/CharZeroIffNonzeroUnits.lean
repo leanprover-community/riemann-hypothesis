@@ -33,10 +33,6 @@ theorem aux4 : ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [inst : Field Ω]
   intro X Ω inst ξ p
   exact p.2
 
-theorem aux5 : ∀ {Ω : Type} [inst : Field Ω], IsLocalRing (CommRingCat.of Ω) := by
-  intro Ω inst
-  infer_instance
-
 noncomputable def genMap : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} →
     [inst : Field Ω] →

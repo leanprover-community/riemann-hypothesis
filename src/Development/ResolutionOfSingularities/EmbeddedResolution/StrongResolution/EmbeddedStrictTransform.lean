@@ -62,9 +62,6 @@ def strictTransformIdeal (i : ℕ) : (S.ambientLevel i).IdealSheafData :=
     (Scheme.Hom.ker (S.emb ≫ S.ambientBlowups.isoZero.inv))
     (fun j ih => Blowup.strictTransform (S.ambientBlowupMorphism j) (S.ambientCenter j) ih) i
 
-@[simp] theorem strictTransformIdeal_zero :
-    S.strictTransformIdeal 0 = Scheme.Hom.ker (S.emb ≫ S.ambientBlowups.isoZero.inv) := rfl
-
 @[simp] theorem strictTransformIdeal_succ (i : ℕ) :
     S.strictTransformIdeal (i + 1) =
       Blowup.strictTransform (S.ambientBlowupMorphism i) (S.ambientCenter i) (S.strictTransformIdeal i) := rfl

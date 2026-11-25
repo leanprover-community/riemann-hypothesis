@@ -121,8 +121,6 @@ def conjL (f : Module.End ℂ (Fin g → ℂ)) : Module.End ℂ (Fin g → ℂ) 
   map_add' x y := by rw [star_add, map_add (f := _), star_add]
   map_smul' c x := by rw [star_smul, map_smul, star_smul, star_star, RingHom.id_apply]
 
-theorem conjL_apply (f : Module.End ℂ (Fin g → ℂ)) (x : Fin g → ℂ) : conjL f x = star (f (star x)) := rfl
-
 def conjB (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)) : 𝓞 E →+* Module.End ℂ (Fin g → ℂ) where
   toFun a := conjL (ρ a)
   map_one' := LinearMap.ext fun x => by simp [conjL_apply]
@@ -804,7 +802,6 @@ alias isOpen_nz := _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.G1.isOpe
 
 variable {ref : HermLine J} {w : ((Σ k, J k) → ℂ) → ℝ} (P : PotentialCharts M.atlas)
 
-
 include P in
 theorem relative_weight_bounded (hr : IsSmoothHerm ref) (hL : LogHom D ref.a w) (hB : ChartBdd D w) :
     ∃ C, ∀ y ∈ Yo M, |ph0 M ref w y| ≤ C := by
@@ -897,7 +894,6 @@ theorem chart_local (hth : ThRef M ref P.th) (hL : LogHom D ref.a w) (hP : Chart
     exact mul_div_cancel_right₀ _ (h6 k)
   simp only [e5]
   linarith
-
 
 open Classical in
 noncomputable def ph (ref : HermLine J) (w : ((Σ k, J k) → ℂ) → ℝ) (x : M.Xc) : ℝ :=
@@ -1367,8 +1363,6 @@ theorem GlobalTheory.CompanionTheory.Ar.Cusp.breg_margin_tendsto (C : ℝ) :
     tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero)
   have h2 := h0.max (h1.add (h0.const_mul C))
   simpa using h2
-
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_regularization_setting : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D) (w : ((Σ k, J k) → ℂ) → ℝ), LogHom D Hd.aMu w → ChartPsh D w → ChartCont D w → ChartBdd D w → ConjOff D w → ∃ S' : BoundedRegularisationSetting M D.Xo Hd.aMu w, S'.IsTied ∧ ConjU S' := by
   intro K _ J _ II Ψ _ Ω _ _ W _ _ D Hd M w hL hP hC hB hO

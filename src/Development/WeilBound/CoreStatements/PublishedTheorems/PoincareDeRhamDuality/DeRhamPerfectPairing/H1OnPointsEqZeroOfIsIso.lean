@@ -16,12 +16,6 @@ namespace CrystallinePoints.Pd
 
 variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] {X X' X'' : Scheme.{0}}
 
-theorem hom_ext' {s : X ⟶ Sp R} {P Q : Pt s} {φ ψ : P.Hom Q} (h : ∀ b, φ.ρ b = ψ.ρ b) : φ = ψ := by
-  obtain ⟨ρ, e⟩ := φ
-  obtain ⟨ρ', e'⟩ := ψ
-  obtain rfl : ρ = ρ' := AlgHom.ext h
-  rfl
-
 instance ptCat (s : X ⟶ Sp R) : Category.{0} (Pt s) where
   Hom := Pt.Hom
   id := Pt.Hom.id
@@ -71,38 +65,6 @@ def pushC (h : φ ≫ s = s' ≫ spMap σ) : CoefMap σ (FP s) (FP s') where
   smul T r b := (Algebra.smul_def (A := T.B) (σ r) b).symm
 
 def pullP (h : φ ≫ s = s' ≫ spMap σ) : H1OnPoints s →ₛₗ[σ] H1OnPoints s' := (pushC h).pull1
-
-theorem pullP_toP (m : IsMor (dp0 R) s (dp0 R') s' σ φ) (c : FirstDeRham s) :
-    pullP m.w (toP s c) = toP s' (m.pull1 c) := by
-  obtain ⟨f, rfl⟩ := H1.mk_surjective _ c
-  rfl
-
-theorem pullP_pullP {τ : R' →+* R''} {ψ : X'' ⟶ X'} {ρ : R →+* R''} {χ : X'' ⟶ X}
-    (h : φ ≫ s = s' ≫ spMap σ) (h' : ψ ≫ s' = s'' ≫ spMap τ) (h'' : χ ≫ s = s'' ≫ spMap ρ)
-    (e : ∀ r, τ (σ r) = ρ r) (e' : ψ ≫ φ = χ) (c : H1OnPoints s) : pullP h' (pullP h c) = pullP h'' c :=
-  ((pushC h).pullCohomologyOne_comp (pushC h') c).symm.trans (((pushC h).comp (pushC h')).pullCohomologyOne_eq_of_natTrans (pushC h'')
-    { app := fun T ↦
-        { ρ := { RingHom.id T.B with commutes' := fun r ↦ congrArg (algebraMap R'' T.B) (e r) }
-          pt := by
-            change spMap (RingHom.id T.B) ≫ (T.x ≫ ψ) ≫ φ = T.x ≫ χ
-            rw [GlobalTheory.Cris.spMap_id, ← e']; simp }
-      naturality := fun _ _ _ ↦ hom_ext' fun _ ↦ rfl } (fun _ _ ↦ rfl) c)
-
-theorem toP_eq_zero_iff (c : FirstDeRham s) : toP s c = 0 ↔ c ∈ F1 s := by
-  constructor
-  · intro hc
-    obtain ⟨f, rfl⟩ := H1.mk_surjective _ c
-    obtain ⟨g, hg⟩ := H1.mk_eq_zero.1 hc
-    refine h1_mk_mem_f1_of_isRep_zero R X s Unit (fun _ ↦ ⊤) (by simp) f
-      ⟨fun _ P ↦ g P, fun _ P Q φ _ ↦ ?_, fun _ _ _ _ _ ↦ sub_self _⟩
-    exact (congrFun (congrFun (congrFun hg P) Q) φ).symm
-  · intro hc
-    rw [hodgeFiltration_eq_range] at hc
-    obtain ⟨f, rfl⟩ := hc
-    refine H1.mk_eq_zero.2 ⟨0, ?_⟩
-    funext T T' φ
-    rw [map_zero]
-    exact (f.2 (Pt.Hom.triv φ) rfl rfl).symm
 
 def SurjAll : Prop :=
   ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A →

@@ -351,7 +351,6 @@ section Main
 
 variable [Algebra K ℂ] [_root_.NumberField.IsTotallyComplex K] (hK : finrank ℚ K = 2)
 
-
 include hK in
 theorem weberSet_fixed (hd : NumberField.discr K < -4) (L : PeriodPair)
     (hL : ∀ z, z ∈ L.lattice ↔ ∃ a : 𝓞 K, algebraMap K ℂ (a : K) = z) {n : ℕ} (hn : n ≠ 0)
@@ -387,7 +386,6 @@ theorem weberSet_fixed (hd : NumberField.discr K < -4) (L : PeriodPair)
     have e := weberFunction_transport L (σ : ℂ →+* ℂ) hf' _ _ (hp t t hq)
     rw [weberFunction_toPointHom L h2 h3 hzn] at e
     exact (Option.some_injective _ e).symm
-
 
 include hK in
 theorem mk_mem_of_fixed (hd : NumberField.discr K < -4) (L : PeriodPair)
@@ -439,7 +437,6 @@ end Main
 section Final
 
 variable [Algebra K ℂ] [_root_.NumberField.IsTotallyComplex K] (hK : finrank ℚ K = 2)
-
 
 include hK in
 theorem adjoin_weberSet_eq_rayClassField (hd : NumberField.discr K < -4) (L : PeriodPair)
@@ -674,12 +671,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.CompanionTheory.CM
-
-theorem idealInvariantsOneOrbit : GlobalTheory.Published.IdealInvariantsOneOrbitSt :=
-  GlobalTheory.Published.ComplexMultiplicationJSt.oneOrbit _root_.GlobalTheory.CompanionTheory.Published.complexMultiplicationJ
-
-end GlobalTheory.CompanionTheory.CM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.IdealInvariantsOneOrbit =====

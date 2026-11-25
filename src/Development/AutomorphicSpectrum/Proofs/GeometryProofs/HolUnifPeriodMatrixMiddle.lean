@@ -308,11 +308,6 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.QuotLoc.Pair
 open GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.UU
 
-theorem cubWeil_of_lbIso (G : Over (Sp ℂ)) [GrpObj G] [IsCommMonObj G] (hs : IsSemiAbelian G) (τ : TorusExtension G)
-    (L₁ L₂ : RigLB G) (c₁ : CubicalStr G L₁) (c₂ : CubicalStr G L₂) (hw : LBIso L₁.L L₂.L) (N : ℕ)
-    (x y : 𝟙_ (Over (Sp ℂ)) ⟶ G) (ζ : Γ(Sp ℂ, ⊤)ˣ) (h : CubWeil c₁ N x y ζ) : CubWeil c₂ N x y ζ :=
-  _root_.GlobalTheory.CompanionTheory.Ar.CubIso.cubWeil_of_lbIso G hs τ L₁ L₂ c₁ c₂ hw N x y ζ h
-
 theorem cubWeil_congr {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {L : RigLB G} {c : CubicalStr G L} {N : ℕ}
     {Z : Scheme.{0}} {a b : Z ⟶ S} (hab : a = b) {x y : Over.mk a ⟶ G} {x' y' : Over.mk b ⟶ G}
     (hx : x'.left = x.left) (hy : y'.left = y.left) {ζ : Γ(Z, ⊤)ˣ} (h : CubWeil c N x y ζ) :

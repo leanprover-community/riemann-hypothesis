@@ -195,11 +195,6 @@ theorem smul_field (c : 𝓞 K) (y : K) : c • y = (c : K) * y := Algebra.smul_
 theorem smul_coord (c : 𝓞 K) (x : Fin n → K) (i : Fin n) : (c • x) i = (c : K) * x i :=
   smul_field c (x i)
 
-theorem exists_smul_mem (M : Submodule (𝓞 K) (Fin n → K)) {x : Fin n → K}
-    (hx : x ∈ Submodule.span K (M : Set (Fin n → K))) :
-    ∃ c : 𝓞 K, c ≠ 0 ∧ c • x ∈ M :=
-  _root_.UpperTheory.Reformulated.B.P6.r03a.GlobalTheory.CompanionTheory.Adelic.SatLine.exists_smul_mem M hx
-
 theorem exists_denominator {M : Submodule (𝓞 K) (Fin n → K)} (hM : M.FG) (j : Fin n) (a : K) :
     ∃ d : 𝓞 K, d ≠ 0 ∧ ∀ x ∈ M, ∃ t : 𝓞 K, (d : K) * (a * x j) = t := by
   classical

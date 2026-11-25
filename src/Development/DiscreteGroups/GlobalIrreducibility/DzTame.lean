@@ -17,14 +17,6 @@ namespace DiscreteGroups.sglob.DzType
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω}
 
-theorem val_lt_iff_of_dec {σ : G E Ω} (hσ : σ ∈ Dec (F := E) A) {a b : Ω} (hb : b ≠ 0) :
-    A.valuation (σ a) < A.valuation (σ b) ↔ A.valuation a < A.valuation b := by
-  have hb' : σ b ≠ 0 := (map_ne_zero σ).mpr hb
-  have h1 : 0 < A.valuation b := (Valuation.pos_iff _).mpr hb
-  have h2 : 0 < A.valuation (σ b) := (Valuation.pos_iff _).mpr hb'
-  rw [← div_lt_one₀ h1, ← div_lt_one₀ h2, ← map_div₀ A.valuation (σ a), ← map_div₀ A.valuation a, ← map_div₀ σ]
-  exact valuation_apply_lt_one_iff hσ (a / b)
-
 theorem val_apply_eq {σ : G E Ω} (hσ : σ ∈ Dec (F := E) A) (x : Ω) : A.valuation (σ x) = A.valuation x := by
   apply GlobalTheory.PrimeToInertia.valuation_apply_eq <;> assumption
 

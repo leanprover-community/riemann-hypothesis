@@ -24,9 +24,6 @@ theorem th_incM_injective {m n : Type} : Function.Injective (incM F : Matrix m n
   fun _ _ h => Matrix.map_injective th_inclR_injective h
 
 omit [NumberField E] in
-theorem th_inclR_eq (x : E) : HeckeCharacterZeroLocus.SiegelWeilU.inclR (F := F) (AF F) x = inclR (F := F) (E := E) (AF F) x := rfl
-
-omit [NumberField E] in
 theorem th_sigR_eq (x : AE F E) : HeckeCharacterZeroLocus.SiegelWeilU.sigR (AF F) σ x = cA σ x := by
   induction x using TensorProduct.inductionOn with
   | tmul a b => rfl

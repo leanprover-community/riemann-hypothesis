@@ -32,60 +32,7 @@ open PowerSeries
 
 variable {B : Type} [CommRing B]
 
-theorem e_pow (Q : PDPoly B) (l n : ℕ) :
-    ∃ M : ℕ, M * l.factorial ^ n = (n * l).factorial ∧ Q.e l ^ n = (M : Q.P) * Q.e (n * l) := by
-  induction n with
-  | zero => exact ⟨1, by simp, by simp [Q.e_zero]⟩
-  | succ n ih =>
-    obtain ⟨M, h1, h2⟩ := ih
-    refine ⟨M * (n * l + l).choose (n * l), ?_, ?_⟩
-    · have := Nat.add_choose_mul_factorial_mul_factorial (n * l) l
-      rw [← Nat.choose_symm_add] at this
-      rw [Nat.succ_mul, ← this, ← h1]; ring
-    · rw [pow_succ, h2, mul_assoc, Q.e_mul, Nat.succ_mul]; push_cast; ring
-
-theorem choose_fac (a b : ℕ) : (a + b).choose a * a.factorial * b.factorial = (a + b).factorial := by
-  have h := Nat.choose_mul_factorial_mul_factorial (Nat.le_add_right a b)
-  rwa [Nat.add_sub_cancel_left] at h
-
-theorem num1 (m n : ℕ) {K : ℕ} (hK : K ≠ 0) :
-    m.uniformBell K * n.uniformBell K * (m * K + n * K).choose (m * K) =
-      (m + n).choose m * (m + n).uniformBell K := by
-  apply GlobalTheory.PDA.uniformBell_mul_uniformBell <;> assumption
-
-theorem num2 (n l M : ℕ) {K : ℕ} (hK : K ≠ 0) (hM : M * l.factorial ^ n = (n * l).factorial) :
-    M * n.uniformBell K * (n * l + n * K).choose (n * l) = (l + K).choose l ^ n * n.uniformBell (l + K) := by
-  have h1 := Nat.uniformBell_mul_eq n hK
-  have h3 := Nat.uniformBell_mul_eq n (show l + K ≠ 0 by omega)
-  have h4 := choose_fac (n * l) (n * K)
-  have h5 := choose_fac l K
-  have hpos : 0 < l.factorial ^ n * K.factorial ^ n * n.factorial := by positivity
-  refine Nat.eq_of_mul_eq_mul_right hpos ?_
-  calc _ = (n * l + n * K).choose (n * l) * (M * l.factorial ^ n) *
-        (n.uniformBell K * K.factorial ^ n * n.factorial) := by ring
-    _ = (n * (l + K)).factorial := by rw [h1, hM, h4, mul_add]
-    _ = n.uniformBell (l + K) * ((l + K).choose l * l.factorial * K.factorial) ^ n * n.factorial := by
-        rw [h5, h3]
-    _ = _ := by ring
-
 def gb (Q : PDPoly B) (K n : ℕ) : Q.P := (n.uniformBell K : Q.P) * Q.e (n * K)
-
-theorem gb_zero (Q : PDPoly B) (K : ℕ) : gb Q K 0 = 1 := by simp [gb, Nat.uniformBell_zero_left, Q.e_zero]
-
-theorem gb_mul (Q : PDPoly B) {K : ℕ} (hK : K ≠ 0) (m n : ℕ) :
-    gb Q K m * gb Q K n = ((m + n).choose m : Q.P) * gb Q K (m + n) := by
-  unfold gb
-  have h := num1 m n hK
-  calc ((m.uniformBell K : Q.P) * Q.e (m * K)) * ((n.uniformBell K : Q.P) * Q.e (n * K))
-      = ((m.uniformBell K * n.uniformBell K * (m * K + n * K).choose (m * K) : ℕ) : Q.P) *
-          Q.e (m * K + n * K) := by
-        rw [mul_mul_mul_comm, Q.e_mul]
-        push_cast
-        ring
-    _ = _ := by
-        rw [h, ← add_mul]
-        push_cast
-        ring
 
 theorem pre_aug (B : Type) [CommRing B] (Q : PDPoly B) : ∃ η : ℕ → Q.P → Q.P, IsPreDP Q.aug η ∧
     ∀ n k : ℕ, η n (Q.e (k + 1)) = (n.uniformBell (k + 1) : Q.P) * Q.e (n * (k + 1)) := by
@@ -146,11 +93,6 @@ def liftAlg (Q : PDPoly B) {C : Type} [CommRing C] [Algebra B C] (c : ℕ → C)
         Module.Basis.constr_basis, Q.e_mul]
       rw [← nsmul_eq_mul, LinearMap.map_smul_of_tower, Module.Basis.constr_basis, nsmul_eq_mul, hm]
     exact congrArg (fun g ↦ g x y) key)
-
-theorem liftAlg_e (Q : PDPoly B) {C : Type} [CommRing C] [Algebra B C] (c : ℕ → C) (h0 : c 0 = 1)
-    (hm : ∀ m n, c m * c n = ((m + n).choose m : C) * c (m + n)) (n : ℕ) :
-    liftAlg Q c h0 hm (Q.e n) = c n :=
-  Q.e.constr_basis B c n
 
 theorem exists_lift_and_aug : ∀ (B : Type) [CommRing B] (Q : PDPoly B),
     (∀ (C : Type) [CommRing C] (f : B →+* C) (c : ℕ → C), c 0 = 1 →

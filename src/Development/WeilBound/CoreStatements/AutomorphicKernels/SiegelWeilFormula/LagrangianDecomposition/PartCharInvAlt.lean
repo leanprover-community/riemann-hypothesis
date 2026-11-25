@@ -278,8 +278,6 @@ def inr2 : (κ'' → W) →L[ℝ] (κ' ⊕ κ'' → W) := LinearMap.toContinuous
     map_add' := fun v w => by funext j; rcases j with j | j <;> simp
     map_smul' := fun c v => by funext j; rcases j with j | j <;> simp }
 
-theorem inr_two_apply (v : κ'' → W) : (inr2 v : κ' ⊕ κ'' → W) = Sum.elim (0 : κ' → W) v := rfl
-
 theorem Ain_eq (s : ℝ) (x : κ' ⊕ κ'' → W) : Ain s x = Ain 0 x + s • inr2 (x ∘ Sum.inr) := by
   funext j; rcases j with j | j <;> simp [Ain_apply, sc, inr_two_apply]
 

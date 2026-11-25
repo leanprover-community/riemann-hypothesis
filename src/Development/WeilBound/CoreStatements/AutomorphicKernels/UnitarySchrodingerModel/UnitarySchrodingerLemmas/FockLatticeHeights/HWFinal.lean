@@ -77,11 +77,6 @@ theorem secondCountable_Ev : SecondCountableTopology (Fv F v ⊗[F] E) :=
   haveI := PI.UnitaryGroupMassFormula.LocJacTyp.BM.secondCountable_Fv v
   (coordEv (E := E) v).toHomeomorph.isEmbedding.secondCountableTopology
 
-theorem isOpenUnits_Ev : IsOpenUnits (Fv F v ⊗[F] E) :=
-  haveI := isModuleTopology_Ev (E := E) v
-  haveI := isTopologicalRing_Ev (E := E) v
-  GlobalTheory.GaugeEx.isOpenUnits_of_basis (basisEv v)
-
 attribute [local instance] isTopologicalRing_Ev t2Space_Fv_tensor locallyCompactSpace_Ev secondCountable_Ev isOpenUnits_Ev
 
 theorem distribHaarChar_Ev (u : (Fv F v ⊗[F] E)ˣ) :
@@ -250,8 +245,6 @@ theorem nu2_eq_modu {B : Type} [CommRing B] [TopologicalSpace B] [IsTopologicalR
   rw [← hpre, mul_div_assoc, ENNReal.div_self h0 ht, mul_one, ENNReal.coe_toReal]
 
 end Haar
-
-
 
 theorem hwFin : PositivityTheory.PfSWUS.SwFockk.HWFin := by
   intro D n w hw nb hnb b p k hp hk hwk a ha v lam hlam
@@ -619,8 +612,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace PositivityTheory.PfSWUS.SwFockk
 
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC NumberField IsDedekindDomain
-
-
 
 theorem heightWN_of (hF : HWFin) (hI : HWInf) (hL : LstdStd) : PositivityTheory.PfSWUS.SwMatch.HeightWN := by
   intro D n H hH θ hθ nb hnb w hw

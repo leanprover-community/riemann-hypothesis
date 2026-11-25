@@ -312,12 +312,6 @@ def truncatedSeriesRingHom (σ : R →+* S) (D : Derivation A R R) (β : S) (N :
     map_zero' := mk_truncatedSeries_zero σ D β N J
     map_add' := mk_truncatedSeries_add σ D β N J }
 
-@[simp]
-theorem truncatedSeriesRingHom_apply (σ : R →+* S) (D : Derivation A R R) (β : S) (N : ℕ) (J : Ideal S)
-    (hN : 1 ≤ N) (hβ : β ^ N ∈ J) (f : R) :
-    truncatedSeriesRingHom σ D β N J hN hβ f = Ideal.Quotient.mk J (truncatedSeries σ D β N f) :=
-  rfl
-
 end
 
 end FunctorialResolution.EmbeddedResolution.TaylorExpansion

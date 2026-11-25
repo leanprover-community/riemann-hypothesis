@@ -116,11 +116,6 @@ def UnitOfUnif : Prop := AltIdentity → FiniteOfAlt → UnifAdmGL → UnitAdmGL
 
 def Glue : Prop := CuspGen → KirBump → BigCell → WhitSep → GlobalTheory.Published.LocalConverseGL
 
-theorem localConverseGL_of_leaves (h1 : CuspGen) (h2 : KirBump) (h3 : BigCell) (h4 : ExtremeExists)
-    (h5 : ExtremeIrred) (h6 : SepOfExtreme) (h7 : CommBound) (h8 : UnifOfComm) (h9 : AltIdentity)
-    (h10 : FiniteOfAlt) (h11 : UnitOfUnif) (h12 : Glue) : GlobalTheory.Published.LocalConverseGL :=
-  h12 h1 h2 h3 (h6 h4 h5 (h11 h9 h10 (h8 h7)))
-
 end DiscreteGroups.sglob.LConv
 
 end

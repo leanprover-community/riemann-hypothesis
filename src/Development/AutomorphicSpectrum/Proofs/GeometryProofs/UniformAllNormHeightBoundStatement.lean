@@ -1261,8 +1261,6 @@ section Val
 
 variable {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K))
 
-theorem vLa_one : vLa la (1 : K) = 0 := by simp [vLa]
-
 theorem vLa_natCast_nonneg {n : ℕ} (hn : n ≠ 0) : 0 ≤ vLa la (n : K) := by
   have e : (n : K) = algebraMap (𝓞 K) K (n : 𝓞 K) := (map_natCast _ n).symm
   have h0 : (n : K) ≠ 0 := Nat.cast_ne_zero.2 hn
@@ -1308,7 +1306,6 @@ open scoped ENNReal
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-
 
 variable (E) in
 def clearN (S : Finset ℕ) (u : GlobalTheory.AllWt.Weight Dw) : ℕ := ∏ p ∈ S, p ^ ⌈2 * exTwo E p * GlobalTheory.CovHt.l1 u⌉₊
@@ -1423,7 +1420,6 @@ theorem trOf_sub (Rd : Reading Fr h Z) (u : GlobalTheory.AllWt.Weight Dw) (a b :
   simp only [trOf, sub_div, map_sub]
 
 end Tr
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem modelSmall_encard_le [IsGalois ℚ E] (hGv : Top.Given) {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)

@@ -62,13 +62,6 @@ theorem ker_comp_coprod_inl_comap_inr {X Y Z : Scheme.{u}} (f : Z ⟶ X)
   rw [range_coprod_inr_eq_compl X Y] at h2
   exact h2 (hsub hy')
 
-private theorem surjective_of_isIso {A B : CommRingCat.{u}} (φ : A ⟶ B) (hφ : IsIso φ) :
-    Function.Surjective (CommRingCat.Hom.hom φ) := by
-  have := hφ
-  intro y
-  exact ⟨CommRingCat.Hom.hom (inv φ) y,
-    congrArg (fun ψ : B ⟶ B => CommRingCat.Hom.hom ψ y) (IsIso.inv_hom_id φ)⟩
-
 private theorem isAffineOpen_image {W Z : Scheme.{u}} (g : W ⟶ Z) [IsOpenImmersion g]
     (V : W.Opens) (hV : IsAffineOpen V) : IsAffineOpen (g ''ᵁ V) :=
   hV.image_of_isOpenImmersion g
@@ -78,11 +71,6 @@ private theorem preimage_image_opens {W Z : Scheme.{u}} (g : W ⟶ Z) [IsOpenImm
   refine TopologicalSpace.Opens.ext ?_
   show ⇑g.base ⁻¹' (⇑g.base '' (V : Set ↥W)) = (V : Set ↥W)
   exact Set.preimage_image_eq _ g.isOpenEmbedding.injective
-
-private theorem ker_ideal_eq_ker_app {T W : Scheme.{u}} (f : T ⟶ W) [QuasiCompact f]
-    (U : W.affineOpens) :
-    f.ker.ideal U = RingHom.ker (CommRingCat.Hom.hom (f.app (U : W.Opens))) := by
-  simp
 
 theorem ker_comp_coprod_inl_comap_inl {X Y Z : Scheme.{u}} (f : Z ⟶ X)
     [QuasiCompact f] [QuasiCompact (f ≫ (coprod.inl : X ⟶ X ⨿ Y))] :

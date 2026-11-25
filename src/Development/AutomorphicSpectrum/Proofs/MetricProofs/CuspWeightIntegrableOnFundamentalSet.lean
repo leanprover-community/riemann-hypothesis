@@ -395,7 +395,6 @@ theorem abs_form_le (him : ∀ x y, ((f x y : ℤ) : ℝ) = (inner ℂ (p y) (p 
   rw [him, mul_comm]
   exact (Complex.abs_im_le_norm _).trans (norm_inner_le_norm _ _)
 
-
 include p in
 theorem finite_short [Module.Free ℤ L] [Module.Finite ℤ L]
     (him : ∀ x y, ((f x y : ℤ) : ℝ) = (inner ℂ (p y) (p x)).im) (hu : Function.Surjective f) (T : ℝ) :
@@ -1282,7 +1281,6 @@ end Orbit
 
 section Ball
 
-
 open scoped ComplexOrder in
 theorem isPreconnected_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n) :
     IsPreconnected (ballDom q) := by
@@ -1665,19 +1663,6 @@ end Card
 section Dens
 
 variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
-
-theorem measurable_ballDens (q : Ψ × Fin j × Fin j' ≃ Fin n) : Measurable (ballDens q) := by
-  have hZ : ∀ τ, Continuous fun t : Fin n → ℂ => ballMat q t τ := fun τ =>
-    continuous_matrix fun a b => continuous_apply _
-  have hdet : ∀ τ, Measurable fun t : Fin n → ℂ =>
-      Real.log (1 - (ballMat q t τ)ᴴ * ballMat q t τ).det.re := fun τ =>
-    Real.measurable_log.comp (Complex.continuous_re.comp
-      (continuous_const.sub ((hZ τ).matrix_conjTranspose.matrix_mul (hZ τ))).matrix_det).measurable
-  have hpot : Measurable (ballPot q) := by
-    unfold ballPot
-    exact (Finset.measurable_sum _ fun τ _ => hdet τ).neg
-  unfold ballDens
-  exact Real.measurable_exp.comp (hpot.const_mul _)
 
 theorem ballDens_pos (q : Ψ × Fin j × Fin j' ≃ Fin n) (t : Fin n → ℂ) : 0 < ballDens q t := Real.exp_pos _
 

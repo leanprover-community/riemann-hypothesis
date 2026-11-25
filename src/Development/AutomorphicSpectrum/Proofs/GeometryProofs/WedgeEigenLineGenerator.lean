@@ -43,14 +43,6 @@ theorem comp_list_prod {S : Scheme.{0}} {G A B : Over S} [GrpObj G] (g : A ⟶ B
   | nil => simp [comp_one]
   | cons a l ih => simp only [List.prod_cons, List.map_cons, comp_mul, ih]
 
-theorem isComb_base : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (F : Type) [Field F] (x : Sp F ⟶ S) (F' : Type) [Field F'] (f : F →+* F') (x' : Sp F' ⟶ S), spMap f ≫ x = x' → ∀ (n : ℕ) (v : Fin n → (epsAt x ⟶ G)) (cf : Fin n → F) (w : epsAt x ⟶ G) (v' : Fin n → (epsAt x' ⟶ G)) (w' : epsAt x' ⟶ G), (∀ i, (v' i).left = spMap (dualMap f) ≫ (v i).left) → w'.left = spMap (dualMap f) ≫ w.left → IsComb cf v w → IsComb (fun i => f (cf i)) v' w' := by
-  rintro S G _ _ F _ x F' _ f x' hx n v cf w v' w' hv hw ⟨u, hu, e⟩
-  refine ⟨fun i => LieTangent.epsBase f hx ≫ u i, fun i => ?_, ?_⟩
-  · change spMap (dualMap f) ≫ (u i).left = _
-    rw [hu i, ← Category.assoc, LieTangent.spec_dual_eps, Category.assoc, hv i]
-  · rw [(LieTangent.left_eq_iff f hx w' w).1 hw, e, comp_list_prod, List.map_ofFn]
-    rfl
-
 end GlobalTheory.CompanionTheory.Ar.CombBase
 end -- clump:auto
 end -- clump:auto
@@ -281,7 +273,6 @@ def IsGen (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V)
   ∃ (v₀ : Vecs y D.p) (w₀ : Vecs y D.q) (r₀ : F) (A : Matrix (Fin D.p) (Fin D.p) F)
     (B : Matrix (Fin D.q) (Fin D.q) F), IsRat Z τ a b y v₀ w₀ r₀ ∧ (∀ i, IsComb (A i) v₀ (v i)) ∧
     (∀ j, IsComb (B j) w₀ (w j)) ∧ A.det ≠ 0 ∧ r * A.det = r₀ * B.det
-
 
 open Classical in
 def repFn (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V) (b : ⋀[Z.Ω]^D.q Z.V) : FrameFn Xo c :=
