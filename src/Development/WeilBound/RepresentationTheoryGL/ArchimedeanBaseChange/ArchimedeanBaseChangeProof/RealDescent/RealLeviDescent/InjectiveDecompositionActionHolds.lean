@@ -1588,8 +1588,6 @@ namespace PositivityTheory.RgBcC.RealD
 theorem injective_decomposition_action_holds : InjectiveDecompositionAction :=
   injective_decomposition_action_of _root_.GlobalTheory.CompanionTheory.KPChains.bdSqL _root_.GlobalTheory.CompanionTheory.KostL.vanKL _root_.GlobalTheory.CompanionTheory.InjRL.injRL_of _root_.GlobalTheory.CompanionTheory.LvChain.injUU_of_injRL (hcdecL_of _root_.GlobalTheory.CompanionTheory.RealHCLv.hcdecLv) _root_.GlobalTheory.CompanionTheory.PairBridge.actUU
 
-theorem hc_decomposition_levi_holds : HCdecLv := _root_.GlobalTheory.CompanionTheory.RealHCLv.hcdecLv
-
 end PositivityTheory.RgBcC.RealD
 end -- clump:auto
 end -- clump:auto

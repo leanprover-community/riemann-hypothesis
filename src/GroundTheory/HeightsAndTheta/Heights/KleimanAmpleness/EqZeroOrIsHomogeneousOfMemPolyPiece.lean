@@ -13,57 +13,6 @@ open MvPolynomial
 
 noncomputable section
 
-section Graded
-
-variable (S : Type) [CommRing S] (N : ℕ)
-
-theorem mem_polyPiece_of_isHomogeneous {f : Poly S N} {e : ℕ} (hf : f.IsHomogeneous e) :
-    f ∈ IndefiniteRowSideFullHecke.Kleiman.polyPiece S N e := by
-  rw [IndefiniteRowSideFullHecke.Kleiman.polyPiece, mem_weightedHomogeneousSubmodule]
-  exact isWeightedHomogeneous_int_of_isHomogeneous hf
-
-theorem eq_zero_or_isHomogeneous_of_mem_polyPiece {f : Poly S N} {d : ℤ}
-    (hf : f ∈ IndefiniteRowSideFullHecke.Kleiman.polyPiece S N d) :
-    f = 0 ∨ ∃ e : ℕ, (e : ℤ) = d ∧ f.IsHomogeneous e := by
-  classical
-  rw [IndefiniteRowSideFullHecke.Kleiman.polyPiece, mem_weightedHomogeneousSubmodule] at hf
-  have hw : ∀ s : Fin (N + 1) →₀ ℕ,
-      Finsupp.weight (fun _ : Fin (N + 1) => (1 : ℤ)) s = ((Finsupp.weight (1 : Fin (N + 1) → ℕ) s : ℕ) : ℤ) := by
-    intro s
-    simp [Finsupp.weight_apply, Finsupp.sum]
-  by_cases h0 : f = 0
-  · exact Or.inl h0
-  · right
-    obtain ⟨s, hs⟩ := MvPolynomial.ne_zero_iff.mp h0
-    refine ⟨Finsupp.weight (1 : Fin (N + 1) → ℕ) s, ?_, ?_⟩
-    · rw [← hw]; exact hf hs
-    · intro t ht
-      have h1 := hf ht
-      have h2 := hf hs
-      rw [hw] at h1 h2
-      exact_mod_cast h1.trans h2.symm
-
-variable (M : Type) [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
-
-def gradedEquiv : IndefiniteRowSideFullHecke.Kleiman.GradedMod S N M ≃ Kleiman.GradedPMod S N M where
-  toFun G :=
-    { piece := G.piece
-      isInternal := G.internal
-      smul_mem := fun d c p m hp hm => by
-        rw [add_comm]
-        exact G.smul_mem d c p (mem_polyPiece_of_isHomogeneous S N hp) m hm }
-  invFun G :=
-    { piece := G.piece
-      internal := G.isInternal
-      smul_mem := fun d c f hf m hm => by
-        rcases eq_zero_or_isHomogeneous_of_mem_polyPiece S N hf with rfl | ⟨e, rfl, he⟩
-        · rw [zero_smul]; exact zero_mem _
-        · rw [add_comm]; exact G.smul_mem e c f m he hm }
-  left_inv _ := rfl
-  right_inv _ := rfl
-
-end Graded
-
 section Charts
 
 variable (S : Type) [CommRing S] {N : ℕ} {Ω : Type} [Field Ω] [Algebra S Ω]
