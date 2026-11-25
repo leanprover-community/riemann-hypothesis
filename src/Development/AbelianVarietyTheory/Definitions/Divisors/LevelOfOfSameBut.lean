@@ -46,9 +46,6 @@ open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eExt incl)
 open scoped TensorProduct
 
-
-
-
 namespace GlobalTheory.BigOn.Exp
 
 section Sets
@@ -156,7 +153,6 @@ abbrev Tgt (ex : Extra D L hT Gi Gl Kc Y cX) (w : D.what₂.places.Pl) (j : Fin 
 
 abbrev Can : Type := (Fin ((R2 p).nW j) → D.what₂.LL) →ₛₗ[ex.nch.embW w] Tgt ex w j
 
-
 variable {w j} in
 def IsCan (rd : Can p w j) : Prop :=
   ∀ f : NX.FmK p.Sx ((j : ℕ) + 1), rd ((p.nexp.fi j).e (Subtype.val f)) = (1 : FractionRing (ex.nch.Oe w)) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
@@ -183,11 +179,9 @@ def twLat {ρ : Setup D.ntw} (hρ : ρ.Good) (ν : ℂ) : Submodule (ex.nch.Oe w
   Submodule.span _ (incl D.nexp (ex.nch.twI w) _ (ex.nch.sd w) (ex.nch.Oe w) (ex.nch.k' w) ''
     twSet hρ (rdAt p w j hρ ν) (ex.nch.k' w) (ex.nch.Q w) (GlobalTheory.TwistIndex.chosenChar ex.nch w))
 
-
 variable {w j} in
 def realBase (rd : Can p w j) : Submodule (ex.nch.Oe w) (Tgt ex w j) :=
   Submodule.span _ (rd '' thetaBase (R2 p) j (F2 p).P0 (F2 p).ψ0⁻¹ 1 (D.plEq w) (ownAt D (D.plEq w)))
-
 
 variable {w j} in
 def realTw (rd : Can p w j) : Submodule (ex.nch.Oe w) (Tgt ex w j) :=
@@ -296,17 +290,6 @@ def AtTw (Q : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm
     (Fm.D x i).what₂.places.Pl → Fin (Fm.D x i).R.m → Prop) : Prop :=
   AtPts fun Fm x hx i p => ∀ w, (Fm.D x i).plEq w ∈ p.R.twPl → ∀ j, Q Fm x hx i p w j
 
-section AtTw
-
-variable {Q Q' : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), Pt Fm x hx i →
-  (Fm.D x i).what₂.places.Pl → Fin (Fm.D x i).R.m → Prop}
-
-theorem AtTw.of_forall (f : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (p : Pt Fm x hx i), p.Rows →
-    More p → ∀ w, (Fm.D x i).plEq w ∈ p.R.twPl → ∀ j, Q Fm x hx i p w j) : AtTw Q :=
-  ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ => ⟨0, fun x hx _ i p => f Fm x hx i p⟩⟩⟩
-
-end AtTw
-
 def CanEx : Prop := AtTw fun Fm x hx i p w j => ∃ rd : Can p w j, IsCan p rd ∧
   ∃ (n : ℕ) (β : Module.Basis (Fin n) (Fm.D x i).what₂.LL (Fin ((R2 p).nW j) → (Fm.D x i).what₂.LL)),
     LinearIndependent (FractionRing ((Fm.ex x hx i).nch.Oe w)) fun a => rd (β a)
@@ -345,8 +328,6 @@ def ConjTw : Prop := AtTw fun Fm x hx i p w j => ∀ (ρ ρ' : Setup (Fm.D x i).
     RatAt p w j hρ ν → Fit p w j hρ' ν' → twLat p w j hρ ν = twLat p w j hρ' ν'
 
 def TwPl : Prop := AtTw fun Fm x _ i p w j => ∀ ρ : Setup (Fm.D x i).ntw, ρ.Good → RealPin p.R p.cG ρ → PlacesAt p w j ρ
-
-theorem twPl : TwPl := AtTw.of_forall fun _ _ _ _ _ _ _ _ hw _ _ hρ hp => placesAt hw hρ hp
 
 def AtFit (Q : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (p : Pt Fm x hx i) (w : (Fm.D x i).what₂.places.Pl)
     (j : Fin (Fm.D x i).R.m) (ρ : Setup (Fm.D x i).ntw), ρ.Good → ℂ → Can p w j → Prop) : Prop :=

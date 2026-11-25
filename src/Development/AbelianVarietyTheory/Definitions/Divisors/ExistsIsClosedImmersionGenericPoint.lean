@@ -367,7 +367,6 @@ theorem chernPart_apply (h : φ.IsCInf) (ε : ℤˣ) (c : AlgChart p σ D) (hS :
     rw [c.chernDens_trans c' h hy hy', mul_left_comm, ENNReal.ofReal_mul (sq_nonneg _)]) c hS hc,
     chartMeas_apply_of_subset _ _ hS hc]
 
-
 omit [SecondCountableTopology (CxPts p σ)] in
 theorem chernPart_neg_eq_zero (h : φ.IsCInf) (h' : φ.SemiPosReg D) : φ.chernPart D (-1) = 0 := by
   refine le_antisymm (iSup_le fun c => le_of_eq (Measure.measure_univ_eq_zero.1 ?_)) bot_le
@@ -457,7 +456,6 @@ variable {q : Z ⟶ Sp k} {y : CxPts q σ} {f g : Z.functionField}
 
 abbrev under (y : CxPts q σ) : Z := y.1 (IsLocalRing.closedPoint ℂ)
 
-
 open Classical in
 def ratVal (f : Z.functionField) (y : CxPts q σ) : ℂ :=
   if h : RegAt (under y) f then
@@ -524,7 +522,6 @@ theorem fnOf_sec_ne_zero {s : L.Sec} (hs : genericPoint Z ∈ nonzeroLocus s) {i
     (h : genericPoint Z ∈ L.U i) : fnOf _ h (s.f i) ≠ 0 :=
   ((unitAt_fnOf_iff h h _).2 ((mem_nonzeroLocus_iff s i h).1 hs)).ne_zero
 
-
 open Classical in
 def ratOfSec (s : L.Sec) (hs : genericPoint Z ∈ nonzeroLocus s) (i : L.ι) :
     Z.functionFieldˣ :=
@@ -536,13 +533,11 @@ theorem val_ratOfSec {i : L.ι} (h : genericPoint Z ∈ L.U i) :
     (ratOfSec s hs i : Z.functionField) = fnOf _ h (s.f i) := by
   rw [ratOfSec, dif_pos h, Units.val_mk0]
 
-
 variable (s hs) in
 theorem isRatSec_ratOfSec : IsRatSec L (ratOfSec s hs) := fun i j h => by
   rw [val_ratOfSec h.1, val_ratOfSec h.2, ← fnOf_resG inf_le_left h, ← fnOf_resG inf_le_right h,
     ← map_mul]
   exact congrArg _ (s.compat i j)
-
 
 variable (hL s hs) in
 abbrev divOfSec : CartierDiv Z := divOfRatSec hL (isRatSec_ratOfSec s hs)
@@ -626,9 +621,6 @@ structure IsArithVar (p : X ⟶ Sp k) (D : ℕ) : Prop where
   dim_eq : topologicalKrullDim X = (D + 1 : ℕ)
 
 def GenSmooth (p : X ⟶ Sp k) (D : ℕ) : Prop := ∀ σ : k →+* ℂ, Nonempty (AnRead p σ D)
-
-theorem genSmooth_of_smooth (p : X ⟶ Sp k) (D : ℕ) [SmoothOfRelativeDimension D p] :
-    GenSmooth p D := fun _ => inferInstance
 
 theorem flat_int_iff_charZero [IsIntegral X] (t : X ⟶ Sp ℤ) : Flat t ↔ CharZero Γ(X, ⊤) := by
   have key (U : X.Opens) [Nonempty U] : (t.appLE ⊤ U le_top).hom.Flat ↔ CharZero Γ(X, U) := by
@@ -772,7 +764,6 @@ theorem nsq_shift (t : (k →+* ℂ) → ℝ) (ht : ∀ σ, t ((starRingEnd ℂ)
     ((L.shift t ht).φ σ).nsq s y = (L.φ σ).nsq s y * Real.exp (-(2 * t σ)) :=
   (L.φ σ).nsq_addFn _ s y
 
-
 variable (p) in
 def triv : HermLB p where
   B := LB.triv X
@@ -780,7 +771,6 @@ def triv : HermLB p where
   φ _ := Weight.ofFun fun _ => 0
   cInf _ := Weight.isCInf_ofFun (cInfAt_const 0)
   conj _ _ _ _ _ _ _ := rfl
-
 
 variable (p) in
 def fs {B : LB X} (hB : B.IsLB) {α : Type} [Fintype α] [DecidableEq α] (b : α → B.Sec)
@@ -803,7 +793,6 @@ theorem zero_mem_smallSec : 0 ∈ L.smallSec := fun σ y => by
   simp [Weight.nsq]
 
 def SemiPos (D : ℕ) : Prop := ∀ σ, (L.φ σ).SemiPosReg D
-
 
 end HermLB
 
@@ -1150,7 +1139,6 @@ theorem SemiPos.shift {L : HermLB p} (h : L.SemiPos D) (t : (k →+* ℂ) → �
     (ht : ∀ σ, t ((starRingEnd ℂ).comp σ) = t σ) : (L.shift t ht).SemiPos D :=
   fun σ => (h σ).addFn_const _
 
-
 variable (p D) in
 theorem isNef_triv : (triv p).IsNef D := {
   semiPos σ i c y _ ξ := (congrArg Complex.re (ReciprocityTheory.L2DbarEstimates.Y.cmpb_leviV_const 0 _ ξ)).ge
@@ -1181,7 +1169,6 @@ namespace ProjSpace
 
 variable (k) (N : ℕ)
 
-
 attribute [local instance] MvPolynomial.gradedAlgebra in
 theorem isIntegral_of_isDomain [IsDomain k] : IsIntegral (PSpace k N) := by
   let η : ProjectiveSpectrum (grading k N) := ⟨⊥, Ideal.isPrime_bot, fun h =>
@@ -1195,26 +1182,6 @@ theorem isIntegral_of_isDomain [IsDomain k] : IsIntegral (PSpace k N) := by
     inferInstanceAs (IsReduced (Sp (MvPolynomial {j // j ≠ i} k)))
   have : IsReduced (PSpace k N) := IsReduced.of_openCover _ (chartCover k N)
   exact isIntegral_of_irreducibleSpace_of_isReduced _
-
-theorem isArithVar_int : IsArithVar (PSpace.str ℤ N) N := by
-  have := isIntegral_of_isDomain ℤ N
-  have : Smooth (PSpace.str ℤ N) := SmoothOfRelativeDimension.smooth N _
-  have hc : ∀ i, topologicalKrullDim (chart ℤ N i : Set (PSpace ℤ N)) = (N + 1 : ℕ) := fun i => by
-    rw [topologicalKrullDim_eq_of_isEmbedding (chartι ℤ N i).isOpenEmbedding.isEmbedding
-      (congrArg SetLike.coe (opensRange_chartι ℤ N i))]
-    refine (PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim
-      (R := MvPolynomial {j // j ≠ i} ℤ)).trans ?_
-    rw [MvPolynomial.ringKrullDim_of_isNoetherianRing,
-      IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField]
-    simp [add_comm]
-  refine ⟨inferInstance, inferInstance, ‹_›, ⟨N, 𝟙 _, inferInstance, Category.id_comp _⟩, ?_,
-    le_antisymm (topologicalKrullDim_le_of_forall_exists_isOpen fun x => ?_)
-      ((hc 0).ge.trans (topologicalKrullDim_subspace_le _ _))⟩
-  · rw [RingHom.ext_int (Int.castRingHom ℤ) (RingHom.id ℤ), spMap, CommRingCat.ofHom_id, Spec.map_id,
-      Category.comp_id]
-    infer_instance
-  · obtain ⟨i, hi⟩ := exists_mem_chart ℤ N x
-    exact ⟨_, (chart ℤ N i).isOpen, hi, (hc i).le⟩
 
 def hermitianTwistingSheaf : HermLB (PSpace.str k N) :=
   .fs _ (O1_isLB k N) (coord k N) (iSup_nonzeroLocus_coord k N) (fun _ => 1) (fun _ => by simp)
@@ -1237,9 +1204,6 @@ theorem isArithVar_id [IsDomain k] [CharZero k] [Module.Finite ℤ k] (hd : ring
       (ConcreteCategory.bijective_of_isIso _).1).1 ‹_›),
     (PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim k).trans hd⟩
 
-theorem isArithVar_int : IsArithVar (𝟙 (Sp ℤ)) 0 :=
-  isArithVar_id (IsPrincipalIdealRing.ringKrullDim_eq_one ℤ Int.not_isField)
-
 variable {Z : Scheme.{0}} [IsIntegral Z]
 
 section Product
@@ -1250,17 +1214,6 @@ include e
 end Product
 
 variable (i : Z ⟶ Sp ℤ)
-
-theorem mem_asIdeal_iff (n : ℤ) : n ∈ (i (genericPoint Z)).asIdeal ↔ (n : Γ(Z, ⊤)) = 0 := by
-  have e : i ⁻¹ᵁ PrimeSpectrum.basicOpen n = Z.basicOpen (n : Γ(Z, ⊤)) := by
-    rw [← basicOpen_eq_of_affine (R := .of ℤ) n, Scheme.preimage_basicOpen_top,
-      eq_intCast (Scheme.ΓSpecIso (.of ℤ)).inv.hom, map_intCast]
-  refine not_iff_not.1 (Iff.trans (b := genericPoint Z ∈ Z.basicOpen (n : Γ(Z, ⊤)))
-    (e ▸ Iff.rfl) ?_)
-  rw [← unitAt_fnOf_iff (Opens.mem_top _) (Opens.mem_top _), ← ne_eq, ← map_ne_zero_iff _ (fnOf_injective ⊤ (Opens.mem_top _))]
-  exact ⟨UnitAt.ne_zero, unitAt_genericPoint⟩
-
-
 
 end ArithBase
 

@@ -179,33 +179,6 @@ def val (φ : K₀ →ₐ[c.F] S) (y : FrPt Xo c S) : RulK Xo c K₀ →ₗ[c.F]
   TensorProduct.lift ((LinearMap.mul c.F S).compl₁₂ φ.toLinearMap
     (evalL (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y))
 
-@[simp] theorem val_tmul (φ : K₀ →ₐ[c.F] S) (y : FrPt Xo c S) (a : K₀) (f : Rul Xo c) :
-    val φ y (a ⊗ₜ f) = φ a * evR Xo c f y := rfl
-
-theorem secK_induction {e : Ix Dw → ℤ} {P : RulK Xo c K₀ → Prop} (h0 : P 0)
-    (h1 : ∀ a f, f ∈ secZ Xo c e → P (a ⊗ₜ f)) (h2 : ∀ s s', P s → P s' → P (s + s')) {s : RulK Xo c K₀}
-    (hs : s ∈ secK Xo c K₀ e) : P s := by
-  obtain ⟨z, rfl⟩ : ∃ z, (secZ Xo c e).subtype.baseChange K₀ z = s := hs
-  induction z with
-  | add s s' h h' => rw [map_add (f := _)]; exact h2 _ _ h h'
-  | tmul a f => exact h1 a f.1 f.2
-
-theorem val_frMap [IsLocalRing S] {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e)
-    {φ : K₀ →ₐ[c.F] S} {ψ : S →ₐ[c.F] T} {χ : K₀ →ₐ[c.F] T} (hχ : ∀ a, ψ (φ a) = χ a) {y : FrPt Xo c S}
-    {z : FrPt Xo c T} (h : FrMap ψ y z) : val χ z s = ψ (val φ y s) := by
-  refine secK_induction (P := fun s => val χ z s = ψ (val φ y s)) (by simp) (fun a f hf => ?_)
-    (fun s s' k k' => ?_) hs
-  · simp only [val_tmul, map_mul, hχ, evR_frMap hf.1 h]
-  · simp only [map_add (f := _), k, k']
-
-theorem val_frBor [IsLocalRing S] {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e)
-    (φ : K₀ →ₐ[c.F] S) {t : Ix Dw → Sˣ} {y y' : FrPt Xo c S} (h : FrBor t y y') :
-    val φ y' s = ((∏ i, t i ^ e i : Sˣ) : S) * val φ y s := by
-  refine secK_induction (P := fun s => val φ y' s = ((∏ i, t i ^ e i : Sˣ) : S) * val φ y s) (by simp)
-    (fun a f hf => ?_) (fun s s' k k' => ?_) hs
-  · simp only [val_tmul, evR_frBor hf h]; ring
-  · simp only [map_add (f := _), k, k', mul_add]
-
 end Coef
 
 section Thick
@@ -220,7 +193,6 @@ instance isLocalRing_trivSqZeroExt {M : Type} [AddCommGroup M] [Module K M] [Mod
   .of_isUnit_or_isUnit_one_sub_self fun a => by
     simp only [isUnit_iff_isUnit_fst, fst_sub, fst_one]
     exact IsLocalRing.isUnit_or_isUnit_one_sub_self _
-
 
 variable (Dw) in
 abbrev FIx : Type := Option (Σ σ : E →+* ℂ, Fin (Dw.mult σ) × Fin (Dw.mult σ))
@@ -251,14 +223,11 @@ end
 
 variable [Algebra c.F K]
 
-
 variable (c K) in
 abbrev red : DualNumber K →ₐ[c.F] K := fstHom c.F K K
 
-
 variable (c K) in
 abbrev cst : K →ₐ[c.F] DualNumber K := inlAlgHom c.F K K
-
 
 variable (c) in
 def dir {ι : Type} [Fintype ι] (m : ι → K) : TrivSqZeroExt K (ι → K) →ₐ[c.F] DualNumber K :=

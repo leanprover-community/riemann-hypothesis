@@ -105,24 +105,6 @@ def Data.IsMonomialTau (Q : Data R) {m : ℕ} (t : Fin m → R) (β : Fin m → 
 def Data.IsPos (Q : Data R) (I : Ideal R) : Prop :=
   ∀ y : Q.X, y ≠ 0 → ∃ r ∈ I, ∃ k : (FractionRing R)ˣ, (k : FractionRing R) = algebraMap R (FractionRing R) r ∧ Q.TauCoord y y k
 
-theorem Data.IsMonomialTau.isPos {Q : Data R} {m : ℕ} {t : Fin m → R} {β : Fin m → LinearMap.BilinForm ℤ Q.X}
-    (h : Q.IsMonomialTau t β) {I : Ideal R} (ht : ∀ i, t i ∈ I) (h₀ : ∀ i y, 0 ≤ β i y y)
-    (h₁ : ∀ y, y ≠ 0 → ∃ i, 0 < β i y y) : Q.IsPos I := fun y hy => by
-  obtain ⟨k, hk, hc⟩ := h y y
-  obtain ⟨i, hi⟩ := h₁ y hy
-  refine ⟨∏ i, t i ^ (β i y y).toNat, Ideal.mem_of_dvd I (Finset.dvd_prod_of_mem _ (Finset.mem_univ i))
-    (I.pow_mem_of_mem (ht i) _ (by omega)), k, ?_, hc⟩
-  rw [hk, map_prod]
-  exact Finset.prod_congr rfl fun i _ => by rw [map_pow, ← zpow_natCast, Int.toNat_of_nonneg (h₀ i y)]
-
-theorem Data.val_tau_zero (Q : Data R) (b : Q.X) (z J) (hJ : Good Q.M.L z J) : val (Q.tau 0 b) (𝟙 _) z J = 1 := by
-  have h := Q.tau_add 0 0 b z J hJ
-  have c0 : Q.c 0 = 1 := mul_eq_left.1 ((Q.c_add 0 0).symm.trans (by rw [add_zero]))
-  have f : cubV Q.cub z J (toUnit (TK R) ≫ Q.c 0) (toUnit (TK R) ≫ Q.c 0) (toUnit (TK R) ≫ Q.c b) = 1 := by
-    rw [c0, MonObj.comp_one]; exact (isCub_cubV Q.cub hJ).face _ _
-  rw [f, _root_.mul_one, add_zero] at h
-  exact mul_eq_left.1 h.symm
-
 def lamVal {S S' : Scheme.{0}} {B : Over S} {B' : Over S'} [GrpObj B] [IsCommMonObj B] [GrpObj B'] [IsCommMonObj B']
     {M : LB B.left} {M' : LB B'.left} {β₂ : (G2 B').left ⟶ (G2 B).left} (w : LB.Iso (abelian₂ B' M') ((abelian₂ B M).pull β₂))
     {Z : Scheme.{0}} (p : Z ⟶ (G2 B').left) (z : Z) (J : (Z ⟶ B.left) → M.ι) (J' : (Z ⟶ B'.left) → M'.ι) :
@@ -150,16 +132,6 @@ def IsMumfordOf [IsLocalRing R] (ξ : Sp R ⟶ S) (Q : Data R) : Prop :=
     ∀ (D : DegData R' (maximalIdeal R')) (ε : D.toPre.X ≃+ Q.X), Refines Q ρ D.toPre ε →
       ∃ (G' : Over (Sp R')) (_ : GrpObj G') (_ : IsCommMonObj G') (π : G'.left ⟶ G.left) (A : PolAV (Sp (FractionRing R')))
         (U : Unif (maximalIdeal R') D A G'), IsUnifOf F j e (spMap ρ ≫ ξ) π U
-
-
-
-
-variable {F j e} in
-theorem IsMumfordOf.unif [IsLocalRing R] {ξ : Sp R ⟶ S} {Q : Data R} (h : IsMumfordOf F j e ξ Q) :
-  ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : R →+* R'), IsCN R' → Function.Injective ρ → ρ.Finite →
-    ∀ (D : DegData R' (maximalIdeal R')) (ε : D.toPre.X ≃+ Q.X), Refines Q ρ D.toPre ε →
-      ∃ (G' : Over (Sp R')) (_ : GrpObj G') (_ : IsCommMonObj G') (π : G'.left ⟶ G.left) (A : PolAV (Sp (FractionRing R')))
-        (U : Unif (maximalIdeal R') D A G'), IsUnifOf F j e (spMap ρ ≫ ξ) π U := h.2.2
 
 def HasPolChart [IsOpenImmersion j] (φ : InvFun ℤ) (BD : EffCartierData S) (d : ℕ) (x : S) : Prop :=
   ∃ (R : Type) (_ : CommRing R) (_ : IsRegularLocalRing R) (_ : IsDomain R) (b : o →+* R) (ξ : Sp R ⟶ S) (m : ℕ)
@@ -256,7 +228,6 @@ theorem refines_ofDeg (D : DegPre R) (hB : D.TauBimult) : Refines (ofDeg D hB) (
     refine (Finset.prod_congr rfl fun k _ => congrArg (· ^ negε k) (inv (𝟙 _ ≫ _))).trans ?_
     exact prod_neg_lamPts _ _ (fun q => gm q z _ (D.P.L.g (J q) (J' q)))
 
-
 open InhTate in
 def tate (k : ℤ) : Data InhTate.R where
   B := P0.A
@@ -279,9 +250,6 @@ def tate (k : ℤ) : Data InhTate.R where
     refine (congrArg₂ (· * ·) (gm_res _ z _ (hJ.mem _ _) _) ((gm_res _ z _ (hJ.mem _ _) _).trans (map_one _))).trans
       (Eq.trans ?_ (congrArg₂ (· * ·) (gm_res _ z _ (hJ.mem _ _) _) (gm_res _ z _ (hJ.mem _ _) _)).symm)
     rw [_root_.mul_one, ← map_mul, ← zpow_add, mul_add, add_mul]
-
-
-
 
 end Wit
 

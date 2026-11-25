@@ -252,16 +252,4 @@ abbrev projTuple (M : ℕ) : Tuple ℚ where
   j₀ := 1
   th := secToPow (ProjSpace.coord ℚ M (Fin.last M)) 1
 
-namespace projTuple
-
-variable (M : ℕ)
-
-theorem spans : (projTuple M).Spans := top_le_iff.1 fun u _ => by
-  rw [pi_eq_sum_univ' u]
-  refine Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, ?_⟩)
-  funext j
-  simp [Matrix.one_apply, Pi.single_apply]
-
-end projTuple
-
 end GlobalTheory.Adelic

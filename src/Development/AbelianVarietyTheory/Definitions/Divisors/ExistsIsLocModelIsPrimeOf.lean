@@ -81,7 +81,6 @@ def IsFormOrd (η : Forms c n) (a : ℤ) : Prop :=
   ∃ ω : Forms E.const n, IsFreeGen E.ring ω ∧
     ∃ f : Kˣ, η = (f : K) • E.toRat n ω ∧ E.ord f = a
 
-
 open Classical in
 def formOrd (η : Forms c n) : ℤ := if h : ∃ a, E.IsFormOrd η a then h.choose else 0
 
@@ -135,9 +134,6 @@ theorem ring_ne_top : E.ring ≠ ⊤ := by
   refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, fun {a} ha => ?_⟩
   have ha' : (a : K) ≠ 0 := fun e => ha (Subtype.ext e)
   exact ⟨⟨(a : K)⁻¹, h.ge trivial⟩, Subtype.ext (mul_inv_cancel₀ ha')⟩
-
-theorem Contains.mono {E : Place c} {R R' : Subring K} (h : E.Contains R') (hR : R ≤ R') :
-    E.Contains R := fun f hf => h f (hR hf)
 
 theorem isFreeGen_toRat {ω : Forms E.const n} (hω : IsFreeGen E.ring ω) :
     IsFreeGen K (E.toRat n ω) := by
@@ -227,18 +223,6 @@ theorem isLocModel_self : IsLocModel (RingHom.id k) ⊤ :=
 namespace Place
 
 variable {c : k →+* K} (E : Place c) {n : ℕ}
-
-theorem isLocModel : IsLocModel c E.ring.toSubring :=
-  { const_mem := E.const_mem
-    isLocalRing := inferInstanceAs (IsLocalRing E.ring)
-    essFiniteType := E.essFiniteType
-    frac := by
-      intro f
-      obtain ⟨a, b, hb, e⟩ := IsFractionRing.div_surjective (A := E.ring) f
-      have hb0 : (b : K) ≠ 0 := fun h => nonZeroDivisors.ne_zero hb (Subtype.ext h)
-      refine ⟨a, a.2, b, b.2, hb0, ?_⟩
-      rw [← e]
-      exact div_mul_cancel₀ _ hb0 }
 
 theorem exists_isFreeGen [PerfectField k] {x : Fin n → K} (hx : TrBasis c x) :
     ∃ ω : Forms E.const n, IsFreeGen E.ring ω := by

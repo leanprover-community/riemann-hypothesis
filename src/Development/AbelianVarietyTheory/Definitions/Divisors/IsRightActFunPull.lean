@@ -112,10 +112,6 @@ theorem IsRightAct.tr_mem_eigen {st : G → R →ₐ[K] R} (hs : IsRightAct st) 
   congr 1
   simp
 
-theorem tr_of_mem_eigen {χ : G →* Kˣ} {F : R} (hF : F ∈ eigen st χ) : tr st χ F = (Fintype.card G : K) • F := by
-  rw [tr_apply, Finset.sum_congr rfl (g := fun _ => F) fun h _ => by rw [hF h, smul_smul]; simp]
-  simp [Nat.cast_smul_eq_nsmul]
-
 end Right
 
 section Lat
@@ -128,22 +124,7 @@ def latCap (L : Submodule O C) (W : Submodule K R) : Submodule O C :=
 
 def spanQ (N : Submodule O C) : Submodule K R := (Submodule.span K (N : Set C)).map C.subtype
 
-
-omit [Algebra O K] [IsScalarTower O K C] in
-theorem mem_spanQ {N : Submodule O C} {F : C} (hF : F ∈ N) : (F : R) ∈ spanQ N :=
-  ⟨F, Submodule.subset_span hF, rfl⟩
-
 def cutLat (N : Submodule O C) (T : Module.End K R) : Submodule O C := latCap N ((spanQ N).map T)
-
-theorem mem_cutLat_iff {N : Submodule O C} {T : Module.End K R} (hT : IsIdempotentElem T) {F : C} :
-    F ∈ cutLat N T ↔ F ∈ N ∧ T F = F :=
-  and_congr_right fun hF => ⟨fun ⟨x, _, e⟩ => by
-      have e' : T x = F := e
-      rw [← e']; exact congrArg (fun S : Module.End K R => S x) hT,
-    fun e => ⟨F, mem_spanQ hF, e⟩⟩
-
-theorem cutLat_one (N : Submodule O C) : cutLat N 1 = N :=
-  Submodule.ext fun _ => (mem_cutLat_iff IsIdempotentElem.one).trans (and_iff_left rfl)
 
 end Lat
 
@@ -206,7 +187,6 @@ def autRed (h : I ≤ J) : QAut N I →* QAut N J where
 
 theorem autRed_qProj (h : I ≤ J) (γ : QAut N I) (q : QMod N I) : autRed h γ (qProj h q) = qProj h (γ q) :=
   endRed_qProj h _ q
-
 
 variable (N I J) in
 def trivMod : Subgroup (QAut N I) where

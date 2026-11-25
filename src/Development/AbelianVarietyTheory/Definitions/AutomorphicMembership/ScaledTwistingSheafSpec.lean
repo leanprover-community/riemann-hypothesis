@@ -112,34 +112,14 @@ abbrev genι : Z.gen ⟶ Z.X := pullback.fst _ _
 
 abbrev genStr : Z.gen ⟶ Sp c.F := pullback.snd _ _
 
-theorem proj : IsProjOver Z.s := ⟨Z.n, Z.I.subschemeι, inferInstance, rfl⟩
-
 end PreCode
-
-theorem exists_preCode (Z' : GModel Xo c) : ∃ (Z : PreCode Xo c) (e : Z'.X ≅ Z.X), Z.Iso Z' e := by
-  obtain ⟨n, i, hi, e⟩ := Z'.proj
-  have : IsIso i.toImage := inferInstance
-  refine ⟨⟨n, i.ker, Z'.j ≫ i.toImage⟩, asIso i.toImage, ?_, rfl⟩
-  change i.toImage ≫ i.imageι ≫ _ = _
-  rw [← Category.assoc, i.toImage_imageι, e]
 
 structure Code (Y : LocFam Xo) (c : Coeff l) (hg : ∀ p : ℕ, p.Prime → l.GoodAt p) : Type extends PreCode Xo c where
   ex : ∃ (Z' : GModel Xo c) (e : Z'.X ≅ toPreCode.X), toPreCode.Iso Z' e ∧ DomLoc Y hg Z'
 
-theorem exists_code (Z' : GModel Xo c) (h : DomLoc Y hg Z') :
-    ∃ (Z : Code Y c hg) (e : Z'.X ≅ Z.X), Z.Iso Z' e := by
-  obtain ⟨Z, e, he⟩ := exists_preCode Z'
-  exact ⟨⟨Z, Z', e, he, h⟩, e, he⟩
-
 namespace Code
 
 variable (Z : Code Y c hg)
-
-theorem flat : Flat Z.s := by
-  obtain ⟨Z', e, he, -⟩ := Z.ex
-  have := Z'.flat
-  rw [← e.inv_hom_id_assoc Z.s, he.1]
-  infer_instance
 
 section BC
 
@@ -164,7 +144,6 @@ variable (M : QLB Y c hg)
 
 variable {M}
 
-
 end QLB
 
 end Free
@@ -172,7 +151,6 @@ end Free
 variable {D : D7} {A : Amb D} {N j : ℕ}
 
 abbrev CodeAt (S : Sig A N j) (κ : Lv A) : Type := Code S.sys.Y κ.c κ.good
-
 
 instance nonempty_codeAt (S : Sig A N j) (κ : Lv A) : Nonempty (CodeAt S κ) :=
   (exists_code (Y := S.sys.Y) _ (S.tor.glob κ.l κ.c κ.good).2.1).elim fun Z _ => ⟨Z⟩

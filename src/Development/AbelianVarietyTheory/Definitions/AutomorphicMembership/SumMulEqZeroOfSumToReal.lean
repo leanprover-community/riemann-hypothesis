@@ -180,8 +180,6 @@ theorem sum_mul_eq_zero_of_sum_toReal {L ι : Type} [AddCommGroup L] [Fintype ι
 def pullR (r : X →ₗ[O] X₁) (B : X₁ →ₗ[ℤ] X₁ →ₗ[ℤ] ℝ) : X →ₗ[ℤ] X →ₗ[ℤ] ℝ :=
   B.compl₁₂ r.toAddMonoidHom.toIntLinearMap r.toAddMonoidHom.toIntLinearMap
 
-@[simp] theorem pullR_apply (r : X →ₗ[O] X₁) (B : X₁ →ₗ[ℤ] X₁ →ₗ[ℤ] ℝ) (a b : X) : pullR r B a b = B (r a) (r b) := rfl
-
 def IsPosDef (B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ) : Prop :=
   ∀ (n : ℕ) (x : Fin n → X), LinearIndependent ℤ x → ∀ c : Fin n → ℝ, c ≠ 0 → 0 < ∑ i, ∑ j, c i * c j * B (x i) (x j)
 
@@ -382,11 +380,9 @@ theorem IsStrict.of_pull {r : X →ₗ[O] X₁} (hr : Function.Surjective r) {γ
     obtain ⟨b, rfl⟩ := hr b
     simpa [LinearMap.sum_apply] using LinearMap.congr_fun₂ hc a b
 
-
 omit [Module.Finite O X] [Module.Finite O X₁] in
 @[simp] theorem pull_symm_pull (e : X ≃ₗ[O] X₁) (β : LinearMap.BilinForm ℤ X₁) :
     pull e.symm.toLinearMap (pull e.toLinearMap β) = β := LinearMap.ext₂ fun a b => by simp
-
 
 omit [Module.Finite O X] [Module.Finite O X₁] in
 @[simp] theorem pull_pull_symm (e : X ≃ₗ[O] X₁) (β : LinearMap.BilinForm ℤ X) :
@@ -496,33 +492,6 @@ theorem IsPolFanOn.exists_nat (h : IsPolFanOn bar φ X) {β : LinearMap.BilinFor
   lift n to ℕ using by exact_mod_cast this
   exact ⟨n, by simpa using hn⟩
 
-theorem IsPolFanOn.of_equiv (h : IsPolFanOn bar φ X) (e : X ≃ₗ[O] X₁) : IsPolFanOn bar φ X₁ := by
-  constructor
-  · intro B hB t ht
-    rw [← evalR_pullR φ (r := e.toLinearMap) e.surjective, ← evalR_pullR φ (r := e.toLinearMap) e.surjective B]
-    exact h.homog _ (pullR_mem_psdCone e.surjective hB) t ht
-  · intro B hB B' hB'
-    simp only [← evalR_pullR φ (r := e.toLinearMap) e.surjective]
-    exact h.superadd _ (pullR_mem_psdCone e.surjective hB) _ (pullR_mem_psdCone e.surjective hB')
-  · intro β hβ hp
-    rw [← evalZ_pull φ (r := e.toLinearMap) e.surjective]
-    exact h.integral _ (pull_mem _ hβ) fun y => hp _
-  · intro β hβ hp h0
-    rw [← evalZ_pull φ (r := e.toLinearMap) e.surjective]
-    refine h.pos _ (pull_mem _ hβ) (fun y => hp _) fun h1 => h0 ?_
-    rw [← pull_symm_pull e β, h1]; rfl
-  · intro m m' γ s hγ
-    simpa using (h.face _ _ _ s (hγ.pull_equiv e)).pull_equiv e.symm
-  · intro B hB
-    obtain ⟨m, γ, c, hγ, hc, hs⟩ := h.cover _ (pullR_mem_psdCone (r := e.toLinearMap) e.surjective hB)
-    refine ⟨m, _, c, hγ.pull_equiv e.symm, hc, LinearMap.ext₂ fun a b => ?_⟩
-    simpa [LinearMap.sum_apply] using LinearMap.congr_fun₂ hs (e.symm a) (e.symm b)
-  · obtain ⟨S, hS, h1⟩ := h.finite
-    refine ⟨_, hS.image (pull e.symm.toLinearMap), fun m γ hγ => ?_⟩
-    obtain ⟨g, hg⟩ := h1 m _ (hγ.pull_equiv e)
-    exact ⟨e.symm.trans (g.trans e), fun i => ⟨_, hg i, rfl⟩⟩
-
-
 end Fan
 
 section Fine
@@ -535,8 +504,6 @@ def IsFine (N : ℕ) (γ : Fin m → LinearMap.BilinForm ℤ X) : Prop :=
 variable {N : ℕ} {γ : Fin m → LinearMap.BilinForm ℤ X}
 
 def sqForm (l : X →ₗ[ℤ] ℤ) : LinearMap.BilinForm ℤ X := (LinearMap.mul ℤ ℤ).compl₁₂ l l
-
-@[simp] theorem sqForm_apply (l : X →ₗ[ℤ] ℤ) (a b : X) : sqForm l a b = l a * l b := rfl
 
 end Fine
 

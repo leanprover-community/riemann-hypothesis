@@ -231,9 +231,5 @@ def thetaFamZero (n N : ℕ) (hN : Odd N) (J : Type) (b : TBase ℂ (N ^ 2)) :
   rep := fun S s' t _ _ => ⟨s', ⟨by simp [spMap], tmap_zero _ t _⟩, fun y hy => by simpa [spMap] using hy.1⟩
   unram := fun K _ x _ h _ _ => by simpa [spMap] using h
 
-theorem linComb_g_one {X Y : Scheme.{0}} (M : LB X) (hg : ∀ i j, M.g i j = 1) {K : Type} [Fintype K]
-    (φ : K → (Y ⟶ X)) (ε : K → ℤ) (j j' : (LB.LinComb M φ ε).ι) : (LB.LinComb M φ ε).g j j' = 1 :=
-  Finset.prod_eq_one fun _ _ => by rw [hg, map_one]; erw [map_one]; exact one_zpow _
-
 end GlobalTheory.ZM.Model
 end

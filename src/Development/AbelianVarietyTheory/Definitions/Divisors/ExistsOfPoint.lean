@@ -96,28 +96,6 @@ variable {R : Type} [CommRing R] [IsDomain R] (D : Out.DegPre R)
 
 end Conclusion
 
-theorem cube : Out.CubeSt :=
-  GlobalTheory.AbLaw.Cube.cube_of_gen GlobalTheory.laws_without_cohomology.1 (GlobalTheory.AbLaw.exists_gen_theta
-    GlobalTheory.forall_geometricallyIntegral_of_smooth_of_geometricallyConnected
-    GlobalTheory.laws_without_cohomology.1 GlobalTheory.AbLaw.nonempty_perf_of_smooth_isProjBy
-    (GlobalTheory.AbLaw.polAV_veryAmpleBy GlobalTheory.laws_without_cohomology.2.2.1)
-    GlobalTheory.AbLaw.isProjBy_tensor GlobalTheory.TrivLocus.isClosed_trivLocus
-    (GlobalTheory.AbLaw.CubeOpen.triv_basicOpen_of_triv_fibre GlobalTheory.laws_without_cohomology.1 GlobalTheory.AbLaw.Seesaw.seesaw
-      (GlobalTheory.SmallExtLift.exists_gen_of_small_extension GlobalTheory.laws_without_cohomology.1
-        GlobalTheory.KuennethOne.kuenneth_injective)))
-
-theorem exists_degPre {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
-    (P : Out.PolAV (Spec (CommRingCat.of R))) (c : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ P.A) :
-    ∃ (D : Out.DegPre R) (α : D.X) (e : D.P = P), e ▸ D.c α = c := by
-  obtain ⟨rig, hrig⟩ := P.rigid
-  obtain ⟨cub⟩ := (cube _ P ⟨P.L, rig, P.isLB, hrig⟩ rfl).1
-  obtain ⟨sym, hsym, hsr⟩ := SelfUnif.exists_sym P
-  choose psi hpsi using fun n : ℤ => DVR.exists_gen_of_local (V := FractionRing R) P.L P.isLB (K := PUnit)
-    (fun _ => Out.ptK (c ^ n)) (fun _ => -1)
-  exact ⟨{ P := P, rig := rig, rig_gen := hrig, cub := cub, sym := sym, sym_gen := hsym, sym_rig := hsr, X := ℤ
-           c := fun n => c ^ n, c_add := fun a b => zpow_add c a b, psi := psi, psi_gen := hpsi },
-    (1 : ℤ), rfl, zpow_one c⟩
-
 end GlobalTheory.TwistCompare
 end -- clump:auto
 end -- clump:auto
@@ -171,7 +149,6 @@ structure TautBase (o : Type) [CommRing o] (W : Type) [CommRing W] [IsLocalRing 
       val (τ₀ a a'') (𝟙 _) z J * val (τ₀ a' a'') (𝟙 _) z J
 
 attribute [instance] TautBase.grp TautBase.comm
-
 
 open InhTate Inh in
 def TautBase.torus {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (b : o →+* W) (r : ℕ)
@@ -230,22 +207,6 @@ def TautBase.ofPolAV {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (b :
     τ₀_gen := h.choose_spec.1
     τ₀_symm := h.choose_spec.2.1
     τ₀_add := h.choose_spec.2.2 }
-
-theorem TautBase.exists_of_point {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] [IsNoetherianRing W]
-    (b : o →+* W) (P : PolAV (Sp W)) (p : 𝟙_ (Over (Sp W)) ⟶ P.A) :
-    ∃ (T : TautBase o W) (a : Fin T.r → ℤ), T.B = P.A ∧ T.g = P.g ∧ T.r = 1 ∧ HEq (T.c₀ a) p := by
-  obtain ⟨D, α, rfl, h⟩ := GlobalTheory.TwistCompare.exists_degPre P p
-  have := D.P.isAb.comm
-  refine ⟨TautBase.ofPolAV b D.P D.rig D.rig_gen D.cub (r := 1) (fun a => D.c (a 0 • α))
-    (fun a a' => by rw [Pi.add_apply, add_smul, D.c_add]; rfl), fun _ => 1, rfl, rfl, rfl, heq_of_eq ?_⟩
-  exact (congrArg D.c (one_smul ℤ α)).trans h
-
-theorem TautBase.exists_ell {o W : Type} [CommRing o] [CommRing W] [IsDomain W] [IsLocalRing W] [IsNoetherianRing W]
-    (b : o →+* W) (E : _root_.WeierstrassCurve W) [E.IsElliptic]
-    (p : 𝟙_ (Over (Sp W)) ⟶ (GlobalTheory.WeierstrassCurve.ellPolAV E).A) :
-    ∃ (T : TautBase o W) (a : Fin T.r → ℤ),
-      T.B = (GlobalTheory.WeierstrassCurve.ellPolAV E).A ∧ T.g = 1 ∧ T.r = 1 ∧ HEq (T.c₀ a) p :=
-  TautBase.exists_of_point b _ p
 
 theorem TautBase.c₀_zero {o W : Type} [CommRing o] [CommRing W] [IsLocalRing W] (T : TautBase o W) : T.c₀ 0 = 1 := by
   have h := T.c₀_add 0 0

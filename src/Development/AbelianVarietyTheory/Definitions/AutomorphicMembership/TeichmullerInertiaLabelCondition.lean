@@ -88,7 +88,6 @@ namespace GlobalTheory.WeilDeligne
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
 variable {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
 
-
 variable (E) in
 def Wild (A : ValuationSubring Ω) : Subgroup (G E Ω) where
   carrier := {σ | ∀ y : Ω, y ≠ 0 → A.valuation (σ y / y - 1) < 1}
@@ -123,11 +122,9 @@ def Wild (A : ValuationSubring Ω) : Subgroup (G E Ω) where
     rw [e, Valuation.map_neg, map_div₀, h2, div_one]
     exact h1
 
-
 omit [NumberField E] in
 theorem mem_Wild {σ : G E Ω} :
     σ ∈ Wild E A ↔ ∀ y : Ω, y ≠ 0 → A.valuation (σ y / y - 1) < 1 := Iff.rfl
-
 
 open Pointwise in
 theorem Wild_le_Ine : Wild E A ≤ Ine (F := E) A := by
@@ -445,11 +442,9 @@ end WD
 
 variable {g : ℕ} [Fact g.Prime]
 
-
 variable (A w) in
 def TeichmullerInertiaLabelCondition (τ : Fbar g →* ℂ) (γ : G E Ω) : Prop :=
   normV w = g ∧ γ ∈ Ine (F := E) A ∧ IsTeich τ
-
 
 omit [IsAlgClosure E Ω] in
 theorem TeichmullerInertiaLabelCondition.of_tameGenAt {τ : Fbar g →* ℂ} {γ : G E Ω} (hw : normV w = g)
@@ -468,7 +463,6 @@ theorem existsUnique_lab (H : TeichmullerInertiaLabelCondition A w τ γ) (x : W
   have h2 := tameEig_map_pow x H.2.1
   rw [H.1] at hc h2
   exact H.2.2.existsUnique_monic (fun z hz => H.2.2.exists_eq h0 hc (hn z hz)) h2
-
 
 open Classical in
 def lab (τ : Fbar g →* ℂ) (γ : G E Ω) (x : WD h) : (ZMod g)[X] :=
@@ -560,9 +554,6 @@ theorem lab_of_lpDim_eq_zero (τ : Fbar g →* ℂ) (γ : G E Ω) {x : WD h} (hx
     lab τ γ x = 1 :=
   (lab_monic τ γ x).natDegree_eq_zero.mp (Nat.le_zero.mp (hx ▸ natDegree_lab_le τ γ x))
 
-@[simp] theorem lab_lpZero (τ : Fbar g →* ℂ) (γ : G E Ω) : lab τ γ (lpZero (h := h)) = 1 :=
-  lab_of_lpDim_eq_zero τ γ (by simp [lpZero])
-
 theorem lab_lpSum (τ : Fbar g →* ℂ) (γ : G E Ω) (x y : WD h) :
     lab τ γ (lpSum x y) = lab τ γ x * lab τ γ y := by
   by_cases H : TeichmullerInertiaLabelCondition A w τ γ
@@ -614,8 +605,6 @@ theorem lab_lpOfChar_eq_iff (H : TeichmullerInertiaLabelCondition A w τ γ) {χ
   exact and_iff_right (monic_X_sub_C c)
 
 end WD
-
-
 
 end GlobalTheory.WeilDeligne
 end -- clump:auto

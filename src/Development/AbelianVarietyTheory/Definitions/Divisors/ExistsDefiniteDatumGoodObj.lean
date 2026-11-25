@@ -105,7 +105,6 @@ def embP (p : ℕ) (τ : F →+* ℂ) (a : 𝓞 F) : ZbarP p :=
 
 variable {S : Scheme.{0}}
 
-
 open Classical in
 def DetCondP (D : Datum F) (p : ℕ) {k : Type} [Field k] {G : Over S} [GrpObj G] (act : OAct (𝓞 F) G)
     (x : Sp k ⟶ S) (β : D.OEp p →+* k) : Prop :=
@@ -194,7 +193,6 @@ theorem conj_mem_type_iff (H : Host E) (τ : E →+* ℂ) :
   · intro h
     rw [(sq_eq_sq_iff_eq_or_eq_neg.mp hsq).resolve_left h, neg_neg]
 
-
 open Classical in
 theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
     ∑ τ : E →+* ℂ, (D.mult τ : ℂ) * τ a =
@@ -241,19 +239,6 @@ theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
   dom := by
     obtain ⟨J, h₁, h₂, h₃, h₄⟩ := D.dom
     exact ⟨J, h₁, h₂, h₃, fun a A hA => h₄ a A _ hA (by convert sum_mult_eq D (a : E))⟩
-
-theorem definite_ofHost_iff (D : Geo.Tor.Datum H) : (Datum.ofHost D).Definite ↔ D.p = 0 ∨ D.q = 0 := by
-  obtain ⟨τ₀, h₀⟩ := HostModel.exists_embedding_rt_eq H
-  constructor
-  · rintro ⟨τ, hτ⟩
-    change D.mult τ = 0 at hτ
-    unfold Geo.Tor.Datum.mult at hτ
-    split_ifs at hτ
-    exacts [Or.inl hτ, Or.inr hτ]
-  · rintro (h | h)
-    · exact ⟨τ₀, (if_pos h₀).trans h⟩
-    · exact ⟨(starRingEnd ℂ).comp τ₀, (if_neg fun h' => (conj_mem_type_iff H τ₀).1 h' h₀).trans h⟩
-
 
 end Host
 

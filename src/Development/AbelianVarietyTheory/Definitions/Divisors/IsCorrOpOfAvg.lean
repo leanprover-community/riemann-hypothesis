@@ -106,31 +106,6 @@ def genEig {H : Type*} [AddCommGroup H] [Module ℚ_[l] H] (L : Type*) [Field L]
 
 variable (l)
 
-theorem isGalois_id (X : Scheme.{0}) : IsGalois (𝟙 X) Unit (fun _ => 𝟙 X) := by
-  refine ⟨inferInstance, inferInstance, inferInstance, rfl, fun _ _ => (Category.comp_id _).symm,
-    fun _ => Category.comp_id _, ?_⟩
-  have hd : IsIso (Sigma.desc (fun _ : Unit => 𝟙 X)) :=
-    ⟨⟨Sigma.ι (fun _ : Unit => X) (), by ext j; cases j; simp, by simp⟩⟩
-  refine (isIso_comp_right_iff _ (pullback.fst (𝟙 X) (𝟙 X))).mp ?_
-  convert hd using 1
-  ext j
-  simp
-
-theorem splits_fold (X : Scheme.{0}) (J : Type) :
-    Splits (Sigma.desc fun _ : J => 𝟙 X) (𝟙 X) (Sigma.ι (fun _ : J => X)) := by
-  refine ⟨fun _ => by simp, ?_⟩
-  refine (isIso_comp_right_iff _ (pullback.fst (Sigma.desc fun _ : J => 𝟙 X) (𝟙 X))).mp ?_
-  convert (inferInstance : IsIso (𝟙 (∐ fun _ : J => X))) using 1
-  ext j
-  simp
-
-theorem isCorrOp_fold {X Z' : Scheme.{0}} {J : Type} [Fintype J] (f : J → (X ⟶ Z')) :
-    IsCorrOp l (Sigma.desc fun _ : J => 𝟙 X) (Sigma.desc f) (∑ j, pullTot l (sch.map (f j))) := by
-  refine ⟨X, 𝟙 X, Unit, inferInstance, inferInstance, fun _ => 𝟙 X, J, inferInstance, Sigma.ι (fun _ : J => X),
-    isGalois_id X, splits_fold X J, fun x => ?_⟩
-  rw [CategoryTheory.Functor.map_id, pullTot_id, LinearMap.id_apply, LinearMap.sum_apply]
-  simp only [Sigma.ι_comp_desc]
-
 end GlobalTheory.GalV
 
 end

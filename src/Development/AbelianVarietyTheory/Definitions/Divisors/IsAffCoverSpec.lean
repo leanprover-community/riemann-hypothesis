@@ -72,45 +72,6 @@ variable {n m : ℕ}
 def scale (n : ℕ) (s t : ℂ) : Alt n →ₐ[ℂ] Alt n :=
   ExteriorAlgebra.map (Matrix.toLin' (Matrix.fromBlocks (s • 1) 0 0 (t • 1)))
 
-theorem scale_single (s t : ℂ) (i : Fin (n + n)) :
-    scale n s t (bas n {i}) = (if i.val < n then s else t) • bas n {i} := by
-  obtain ⟨i, rfl⟩ := finSumFinEquiv.surjective i
-  rw [bas_singleton, ← map_smul]
-  refine (ExteriorAlgebra.map_apply_ι _ _).trans (congrArg _ (funext ?_))
-  rcases i with i | i <;> rintro (b | b) <;> simp [Pi.single_apply, Matrix.one_apply]
-
-theorem scale_bas (s t : ℂ) (S : Finset (Fin (n + n))) :
-    scale n s t (bas n S) = (s ^ (S.filter (·.val < n)).card * t ^ (S.filter (n ≤ ·.val)).card) • bas n S := by
-  induction S using Finset.induction_on with
-  | empty => simp [bas_empty]
-  | insert a S ha ih =>
-    obtain ⟨ε, h⟩ := bas_mul (n := n) (S := {a}) (T := S) (by simpa using ha)
-    have h' : bas n (insert a S) = ε • (bas n {a} * bas n S) := by
-      rw [h, smul_smul, Int.units_mul_self, one_smul, Finset.insert_eq]
-    rw [h', Units.smul_def, map_zsmul, map_mul, scale_single, ih, smul_mul_smul_comm, smul_comm]
-    congr 1
-    rw [Finset.filter_insert, Finset.filter_insert]
-    by_cases hn : a.val < n
-    · rw [if_pos hn, if_pos hn, if_neg (not_le.2 hn), Finset.card_insert_of_notMem (by simp [ha])]
-      ring
-    · rw [if_neg hn, if_neg hn, if_pos (not_lt.1 hn), Finset.card_insert_of_notMem (by simp [ha])]
-      ring
-
-theorem repr_scale (s t : ℂ) (α : Alt n) (S : Finset (Fin (n + n))) :
-    (bas n).repr (scale n s t α) S =
-      (s ^ (S.filter (·.val < n)).card * t ^ (S.filter (n ≤ ·.val)).card) * (bas n).repr α S := by
-  conv_lhs => rw [← (bas n).sum_repr α]
-
-  simp only [map_sum, map_smul, scale_bas, Module.Basis.repr_self, Finsupp.finsetSum_apply, Finsupp.smul_apply,
-  Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  ring
-
-theorem scale_pull (L : V n →L[ℂ] V m) (s t : ℂ) (α : Alt m) :
-    scale n s t (pull L α) = pull L (scale m s t α) := by
-  rw [← AlgHom.comp_apply, ← AlgHom.comp_apply, scale, scale, pull, ExteriorAlgebra.map_comp_map,
-    ExteriorAlgebra.map_comp_map, ← Matrix.toLin'_mul, ← Matrix.toLin'_mul]
-  simp [Matrix.fromBlocks_multiply]
-
 end GlobalTheory.CxForm.PullType
 
 namespace GlobalTheory.CxForm
@@ -184,135 +145,6 @@ def HasDeg (k : ℕ) (α : Alt n) : Prop := ∀ S, (bas n).repr α S ≠ 0 → S
 
 def degPart (n k : ℕ) : Alt n →ₗ[ℂ] Alt n := (bas n).constr ℂ fun S => if S.card = k then bas n S else 0
 
-theorem repr_scale_self (t : ℂ) (α : Alt n) (S : Finset (Fin (n + n))) :
-    (bas n).repr (PullType.scale n t t α) S = t ^ S.card * (bas n).repr α S := by
-  rw [PullType.repr_scale, ← pow_add, ← Finset.card_filter_add_card_filter_not (s := S) (·.val < n)]
-  simp only [not_lt]
-
-theorem hasDeg_iff_scale (k : ℕ) (α : Alt n) : HasDeg k α ↔ PullType.scale n 2 2 α = (2 : ℂ) ^ k • α := by
-  constructor
-  · intro h
-    refine (bas n).ext_elem fun S => ?_
-    rw [repr_scale_self, map_smul, Finsupp.smul_apply, smul_eq_mul]
-    by_cases hS : (bas n).repr α S = 0
-    · simp [hS]
-    · rw [h S hS]
-  · intro h S hS
-    have e := congrArg (fun β => (bas n).repr β S) h
-    simp only [repr_scale_self, map_smul, Finsupp.smul_apply, smul_eq_mul] at e
-    have : (2 : ℕ) ^ S.card = 2 ^ k := by exact_mod_cast mul_right_cancel₀ hS e
-    exact Nat.pow_right_injective le_rfl this
-
-theorem HasDeg.mul {k l : ℕ} {α β : Alt n} (hα : HasDeg k α) (hβ : HasDeg l β) : HasDeg (k + l) (α * β) := by
-  rw [hasDeg_iff_scale] at hα hβ ⊢
-  rw [map_mul, hα, hβ, smul_mul_smul_comm, pow_add]
-
-theorem HasDeg.zero (k : ℕ) : HasDeg k (0 : Alt n) := fun S h => by simp at h
-
-theorem HasDeg.add {k : ℕ} {α β : Alt n} (hα : HasDeg k α) (hβ : HasDeg k β) : HasDeg k (α + β) := by
-  rw [hasDeg_iff_scale] at hα hβ ⊢
-  rw [map_add (f := _), hα, hβ, smul_add]
-
-theorem HasDeg.smul {k : ℕ} {α : Alt n} (c : ℂ) (hα : HasDeg k α) : HasDeg k (c • α) := by
-  rw [hasDeg_iff_scale] at hα ⊢
-  rw [map_smul, hα, smul_comm]
-
-theorem HasDeg.sum {k : ℕ} {ι : Type} {t : Finset ι} {α : ι → Alt n} (h : ∀ i ∈ t, HasDeg k (α i)) :
-    HasDeg k (∑ i ∈ t, α i) :=
-  Finset.sum_induction _ _ (fun _ _ => HasDeg.add) (.zero k) h
-
-theorem HasDeg.pull {k : ℕ} {α : Alt m} (L : V n →L[ℂ] V m) (hα : HasDeg k α) : HasDeg k (pull L α) := by
-  rw [hasDeg_iff_scale] at hα ⊢
-  rw [PullType.scale_pull, hα, map_smul]
-
-theorem hasDeg_bas (S : Finset (Fin (n + n))) : HasDeg S.card (bas n S) := fun T hT => by
-  rw [Module.Basis.repr_self, Finsupp.single_apply] at hT
-  split_ifs at hT with h
-  exacts [h ▸ rfl, (hT rfl).elim]
-
-theorem hasDeg_algebraMap (c : ℂ) : HasDeg 0 (algebraMap ℂ (Alt n) c) := by
-  rw [hasDeg_iff_scale, AlgHom.commutes, pow_zero, one_smul]
-
-theorem scale_ι (t : ℂ) (u : Fin n ⊕ Fin n → ℂ) :
-    PullType.scale n t t (ExteriorAlgebra.ι ℂ u) = t • ExteriorAlgebra.ι ℂ u := by
-  rw [← map_smul]
-  refine (ExteriorAlgebra.map_apply_ι _ _).trans (congrArg _ ?_)
-  rw [← smul_zero t, ← Matrix.fromBlocks_smul, Matrix.fromBlocks_one]
-  simp
-
-theorem hasDeg_ι (u : Fin n ⊕ Fin n → ℂ) : HasDeg 1 (ExteriorAlgebra.ι ℂ u) := by
-  rw [hasDeg_iff_scale, scale_ι, pow_one]
-
-theorem hasDeg_iff_mem (k : ℕ) (α : Alt n) : HasDeg k α ↔ α ∈ ⋀[ℂ]^k (Fin n ⊕ Fin n → ℂ) := by
-  constructor
-  · intro h
-    rw [← (bas n).sum_repr α]
-    refine Submodule.sum_mem _ fun S _ => ?_
-    by_cases hS : (bas n).repr α S = 0
-    · simp [hS]
-    · refine Submodule.smul_mem _ _ ?_
-      rw [← h S hS, bas, ExteriorAlgebra.basis_apply]
-      exact ExteriorAlgebra.ιMulti_range _ _ ⟨_, rfl⟩
-  · intro h
-    induction h using Submodule.pow_induction_on_left' with
-    | algebraMap r => exact hasDeg_algebraMap r
-    | add x y i _ _ hx hy => exact hx.add hy
-    | mem_mul u hu i x _ hx =>
-      obtain ⟨u, rfl⟩ := hu
-      rw [Nat.succ_eq_one_add]
-      exact (hasDeg_ι u).mul hx
-
-theorem repr_degPart (k : ℕ) (α : Alt n) (S : Finset (Fin (n + n))) :
-    (bas n).repr (degPart n k α) S = if S.card = k then (bas n).repr α S else 0 := by
-  conv_lhs => rw [← (bas n).sum_repr α]
-
-  simp only [map_sum, map_smul, degPart, Module.Basis.constr_basis, Finsupp.finsetSum_apply, Finsupp.smul_apply]
-  rw [Finset.sum_eq_single S (fun T _ h => by split_ifs <;> simp [h]) (by simp)]
-  split_ifs <;> simp
-
-theorem HasDeg.degPart_eq {j : ℕ} {α : Alt n} (h : HasDeg j α) (k : ℕ) : degPart n k α = if j = k then α else 0 := by
-  refine (bas n).ext_elem fun S => ?_
-  rw [repr_degPart]
-  by_cases hS : (bas n).repr α S = 0
-  · split_ifs <;> simp [hS]
-  · rw [h S hS]
-    split_ifs <;> simp
-
-theorem degPart_pull (L : V n →L[ℂ] V m) (k : ℕ) (α : Alt m) : degPart n k (pull L α) = pull L (degPart m k α) := by
-  have : degPart n k ∘ₗ (pull L).toLinearMap = (pull L).toLinearMap ∘ₗ degPart m k := (bas m).ext fun S => by
-    simp only [LinearMap.comp_apply, AlgHom.toLinearMap_apply]
-    rw [((hasDeg_bas S).pull L).degPart_eq, (hasDeg_bas S).degPart_eq, apply_ite (pull L), map_zero]
-  exact LinearMap.congr_fun this α
-
-theorem par_ι (u : Fin n ⊕ Fin n → ℂ) : par n (ExteriorAlgebra.ι ℂ u) = -ExteriorAlgebra.ι ℂ u := by
-  rw [par, scale_ι, neg_one_smul]
-
-theorem HasDeg.par_eq {k : ℕ} {α : Alt n} (h : HasDeg k α) : par n α = (-1 : ℂ) ^ k • α := by
-  refine (bas n).ext_elem fun S => ?_
-  rw [par, repr_scale_self, map_smul, Finsupp.smul_apply, smul_eq_mul]
-  by_cases hS : (bas n).repr α S = 0
-  · simp [hS]
-  · rw [h S hS]
-
-theorem ι_mul_eq (u : Fin n ⊕ Fin n → ℂ) (α : Alt n) :
-    ExteriorAlgebra.ι ℂ u * α = par n α * ExteriorAlgebra.ι ℂ u := by
-  induction α using ExteriorAlgebra.induction with
-  | algebraMap r => rw [AlgHom.commutes, Algebra.commutes]
-  | ι x => rw [par_ι, neg_mul]; exact eq_neg_of_add_eq_zero_left (ExteriorAlgebra.ι_add_mul_swap u x)
-  | mul a b ha hb => rw [← mul_assoc, ha, mul_assoc, hb, map_mul, mul_assoc]
-  | add a b ha hb => rw [mul_add, ha, hb, map_add (f := _), add_mul]
-
-theorem HasDeg.mul_comm {k l : ℕ} {α β : Alt n} (hα : HasDeg k α) (hβ : HasDeg l β) :
-    α * β = (-1 : ℂ) ^ (k * l) • (β * α) := by
-  rw [hasDeg_iff_mem] at hα
-  induction hα using Submodule.pow_induction_on_left' with
-  | algebraMap r => rw [zero_mul, pow_zero, one_smul, Algebra.commutes]
-  | add x y i _ _ hx hy => rw [add_mul, mul_add, hx, hy, smul_add]
-  | mem_mul u hu i x _ hx =>
-    obtain ⟨u, rfl⟩ := hu
-    rw [mul_assoc, hx, mul_smul_comm, ← mul_assoc, ι_mul_eq, hβ.par_eq, smul_mul_assoc, smul_mul_assoc, smul_smul,
-      ← pow_add, mul_assoc, Nat.succ_mul]
-
 end Point
 
 section Coord
@@ -327,25 +159,6 @@ def dirD (i : Fin n ⊕ Fin n) (f : V n → ℂ) (v : V n) : ℂ :=
 def opAt (s : Fin n → Fin n ⊕ Fin n) (F : V n → Alt n) (v : V n) : Alt n :=
   ∑ a, ExteriorAlgebra.ι ℂ (Pi.single (s a) 1) * coefwise (fun f => dirD (s a) f v) F
 
-theorem dirD_zero (i : Fin n ⊕ Fin n) : dirD i (fun _ => 0) v = 0 := by
-  rcases i with a | a <;> simp [dirD]
-
-theorem repr_linear (L : Alt n →ₗ[ℂ] Alt n) (α : Alt n) (S : Finset (Fin (n + n))) :
-    (bas n).repr (L α) S = ∑ T, (bas n).repr (L (bas n T)) S • (bas n).repr α T := by
-  conv_lhs => rw [← (bas n).sum_repr α]
-
-  simp only [map_sum, map_smul, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul, mul_comm]
-
-theorem hasDeg_opAt (s : Fin n → Fin n ⊕ Fin n) {k : ℕ} {F : V n → Alt n} (hF : ∀ x, HasDeg k (F x)) :
-    HasDeg (k + 1) (opAt s F v) := by
-  refine HasDeg.sum fun a _ => add_comm 1 k ▸ (hasDeg_ι _).mul fun S hS => ?_
-  by_contra h
-  have : (fun x => (bas n).repr (F x) S) = fun _ => 0 := funext fun x => by
-    by_contra h'
-    exact h (hF x S h')
-  rw [FormMul.repr_coefwise, this, dirD_zero] at hS
-  exact hS rfl
-
 end Coord
 
 namespace HolAtlas
@@ -359,8 +172,6 @@ def IsDeg (k : ℕ) (α : A.Fld) : Prop := ∀ x, HasDeg k (α x)
 
 def degFld (k : ℕ) : A.Fld →ₗ[ℂ] A.Fld := (degPart n k).compLeft A.Pt
 
-@[simp] theorem degFld_apply (k : ℕ) (α : A.Fld) (x : A.Pt) : A.degFld k α x = degPart n k (α x) := rfl
-
 def forms : Subalgebra ℂ A.Fld where
   carrier := {α | A.IsForm α}
   mul_mem' ha hb := ((isForm_algebra M n A).2 1 _ _ ha hb).2.1
@@ -369,72 +180,13 @@ def forms : Subalgebra ℂ A.Fld where
     rw [Algebra.algebraMap_eq_smul_one]
     exact ((isForm_algebra M n A).2 c _ _ (isForm_algebra M n A).1 (isForm_algebra M n A).1).2.2
 
-
 variable {A}
-
-theorem loc_linear (L : Alt n →ₗ[ℂ] Alt n) (α : A.Fld) (i : A.ι) :
-    A.loc (fun x => L (α x)) i = fun v => L (A.loc α i v) := by
-  funext v
-  unfold loc
-  split_ifs
-  exacts [rfl, (map_zero L).symm]
-
-theorem IsForm.linear {α : A.Fld} (hα : A.IsForm α) (L : Alt n →ₗ[ℂ] Alt n)
-    (hL : ∀ (T : V n →L[ℂ] V n) (β : Alt n), L (pull T β) = pull T (L β)) : A.IsForm fun x => L (α x) := by
-  refine ⟨fun i S => ?_, fun x x' h => by rw [hα.compat x x' h, hL]⟩
-  simp only [loc_linear, repr_linear L (A.loc α i _)]
-  exact ContDiffOn.sum fun T _ => (hα.smooth i T).const_smul _
-
-theorem IsForm.degFld {α : A.Fld} (hα : A.IsForm α) (k : ℕ) : A.IsForm (A.degFld k α) :=
-  hα.linear (degPart n k) fun T β => degPart_pull T k β
-
-theorem IsForm.dExt {α : A.Fld} (hα : A.IsForm α) : A.IsForm (A.dExt α) :=
-  A.forms.add_mem (A.isForm_del_dbar hα).1 (A.isForm_del_dbar hα).2
-
-theorem dExt_add {α β : A.Fld} (hα : A.IsForm α) (hβ : A.IsForm β) : A.dExt (α + β) = A.dExt α + A.dExt β := by
-  obtain ⟨h₁, h₂, -, -⟩ := (del_dbar_linear M n A).2 1 α β hα hβ
-  rw [dExt, h₁, h₂, add_add_add_comm]
-  rfl
-
-theorem dExt_smul (c : ℂ) {α : A.Fld} (hα : A.IsForm α) : A.dExt (c • α) = c • A.dExt α := by
-  obtain ⟨-, -, h₁, h₂⟩ := (del_dbar_linear M n A).2 c α α hα hα
-  rw [dExt, h₁, h₂, ← smul_add]
-  rfl
-
 
 variable (A) in
 def dForms : A.forms →ₗ[ℂ] A.forms where
   toFun α := ⟨A.dExt α, IsForm.dExt α.2⟩
   map_add' α β := Subtype.ext (dExt_add α.2 β.2)
   map_smul' c α := Subtype.ext (dExt_smul c α.2)
-
-
-
-variable (A) in
-@[simp] theorem dExt_zero : A.dExt 0 = 0 := congrArg Subtype.val (map_zero A.dForms)
-
-
-
-theorem loc_prop {P : Alt n → Prop} (h₀ : P 0) {α : A.Fld} (hα : ∀ x, P (α x)) (i : A.ι) (v : V n) : P (A.loc α i v) := by
-  unfold loc
-  split_ifs
-  exacts [hα _, h₀]
-
-theorem IsDeg.dExt {k : ℕ} {α : A.Fld} (hα : A.IsDeg k α) : A.IsDeg (k + 1) (A.dExt α) := fun x =>
-  (hasDeg_opAt .inl (loc_prop (.zero k) hα x.1.1)).add (hasDeg_opAt .inr (loc_prop (.zero k) hα x.1.1))
-
-theorem IsDeg.mul {k l : ℕ} {α β : A.Fld} (hα : A.IsDeg k α) (hβ : A.IsDeg l β) : A.IsDeg (k + l) (α * β) :=
-  fun x => (hα x).mul (hβ x)
-
-theorem IsDeg.mul_comm {k l : ℕ} {α β : A.Fld} (hα : A.IsDeg k α) (hβ : A.IsDeg l β) :
-    α * β = (-1 : ℂ) ^ (k * l) • (β * α) :=
-  funext fun x => (hα x).mul_comm (hβ x)
-
-variable {A' A''}
-
-
-theorem IsForm.pullback {f : M' → M} (hf : A.IsHolo A' f) {α : A.Fld} (hα : A.IsForm α) : A'.IsForm (A.pullback A' f α) :=
-  PullbackForm.isForm_pullback M M' n n' A A' f α hf hα
 
 end HolAtlas
 
@@ -538,8 +290,6 @@ def exactForms (k : ℕ) : Submodule ℂ A.Fld where
 
 variable {A}
 
-
-
 variable (A) in
 def HSm (k : ℕ) : Type := A.closedForms k ⧸ (A.exactForms k).submoduleOf (A.closedForms k)
 
@@ -549,24 +299,8 @@ instance (k : ℕ) : Module ℂ (A.HSm k) := inferInstanceAs (Module ℂ (_ ⧸ 
 
 namespace HSm
 
-
 variable (A) in
 def mk (k : ℕ) : A.closedForms k →ₗ[ℂ] A.HSm k := Submodule.mkQ _
-
-theorem mk_surjective (k : ℕ) : Function.Surjective (mk A k) := Submodule.mkQ_surjective _
-
-@[elab_as_elim] theorem induction_on {k : ℕ} {P : A.HSm k → Prop} (c : A.HSm k) (h : ∀ α, P (mk A k α)) : P c := by
-  obtain ⟨α, rfl⟩ := mk_surjective k c
-  exact h α
-
-
-
-
-
-
-
-
-variable {A'}
 
 end HSm
 
@@ -642,7 +376,6 @@ variable [IsIntegral X]
 
 variable [Algebra k X.functionField]
 
-
 omit σ in
 structure IsAffCover {ι : Type} (U : ι → X.Opens) (B : Finset ι → Subalgebra k X.functionField) : Prop where
   alg : algebraMap k X.functionField = @algebraMap k X.functionField _ _ (ffAlg p)
@@ -668,25 +401,6 @@ section Basic₂
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : HolAtlas M n)
 
 end Basic₂
-
-section Inhab
-
-variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : HolAtlas M n)
-
-theorem FormOn.of_isForm {α : A.Fld} (h : A.IsForm α) (S : Set M) : FormOn A S α := by
-  refine ⟨?_, ?_⟩
-  · intro i T
-    exact (h.smooth i T).mono Set.inter_subset_left
-  · intro x x' _ hx
-    exact h.compat x x' hx
-
-theorem FormOn.zero (S : Set M) : FormOn A S 0 := by
-  have h := (HolAtlas.isForm_algebra M n A).1
-  have h0 := ((HolAtlas.isForm_algebra M n A).2 0 1 1 h h).2.2
-  rw [zero_smul] at h0
-  exact FormOn.of_isForm A h0 S
-
-end Inhab
 
 end GlobalTheory.PD
 end -- clump:auto

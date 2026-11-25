@@ -110,14 +110,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.KeyFam
-
-theorem connFam_holds : GlobalTheory.KeyKa.ConnFam :=
-  GlobalTheory.T.keyDatumConnectedFamily_of_polarizedArithmeticFamily GlobalTheory.abelianSchemeLaws_all.1 GlobalTheory.abelianSchemeLaws_all.2
-    (GlobalTheory.T.polarized_family_of_theta_uniformization GlobalTheory.abelianSchemeLaws_all.1 GlobalTheory.abelianSchemeLaws_all.2 GlobalTheory.thetaUnifAV_closed
-      GlobalTheory.torusAlgebraic_holds)
-
-end GlobalTheory.KeyFam
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ConnFamHolds =====
@@ -133,12 +125,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyPow GlobalTheory.KeyKa
 
-namespace GlobalTheory
-
-theorem keyFormula_and_keyCore : KeyFormula ∧ Formalism.L2.LamCM.KeyCore :=
-  ⟨GlobalTheory.keyFormula_of_connFam GlobalTheory.KeyFam.connFam_holds, Formalism.L2.LamCM.key_formula_link (GlobalTheory.keyFormula_of_connFam GlobalTheory.KeyFam.connFam_holds)⟩
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.KeyFormulaAndKeyCore =====
@@ -196,30 +182,6 @@ def lieGram (z : NgC g) : Matrix (Fin g) (Fin g) ℂ :=
 
 def etaSq (z : NgC g) : ℝ := (z.lieGram.det.re)⁻¹
 
-theorem lieGram_eq (z : NgC g) :
-    z.lieGram = (((4 * Real.pi)⁻¹ • (z.Y)⁻¹ : Matrix (Fin g) (Fin g) ℝ)).map fun x : ℝ => (x : ℂ) := by
-  ext i j
-  have hp : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 Real.pi_ne_zero
-  have e : star (Pi.single j (2 * Real.pi * Complex.I : ℂ)⁻¹ : Fin g → ℂ) =
-      Pi.single j (-(2 * Real.pi * Complex.I : ℂ)⁻¹) := by
-    funext k
-    by_cases h : k = j
-    · subst h; simp
-    · simp [h]
-  simp only [lieGram, Matrix.of_apply, hermForm, e, single_dotProduct, Matrix.mulVec_single, Matrix.map_apply,
-    Matrix.smul_apply, smul_eq_mul]
-  simp
-  field_simp
-  simp
-  ring
-
-theorem etaSq_eq (z : NgC g) : z.etaSq = (4 * Real.pi) ^ g * z.Y.det := by
-  have e : z.lieGram.det = ((((4 * Real.pi)⁻¹ • (z.Y)⁻¹ : Matrix (Fin g) (Fin g) ℝ)).det : ℝ) := by
-    rw [lieGram_eq]
-    exact (RingHom.map_det Complex.ofRealHom _).symm
-  rw [etaSq, e, Complex.ofReal_re, Matrix.det_smul, Matrix.det_nonsing_inv, Fintype.card_fin, Ring.inverse_eq_inv',
-    mul_inv, inv_inv, inv_pow, inv_inv]
-
 end NgC
 
 structure IsKF (g c : ℕ) (κ : Rule) : Prop where
@@ -231,72 +193,9 @@ structure IsKF (g c : ℕ) (κ : Rule) : Prop where
   unitSp : UnitSp κ
   off : ∀ (K : Type) [Field K] [CharZero K] (x : KeyIn K), x.P.g ≠ g → κ K x = 1
 
-namespace IsKF
-
-variable {g c : ℕ} {κ κ' : Rule}
-
-theorem value_normalAt (h : IsKF g c κ) (x : KeyIn ℂ) (hx : x.P.g = g) {τ M : Matrix (Fin x.P.g) (Fin x.P.g) ℂ}
-    {a b : Fin x.P.g → ℂ} {c₀ : ℂ} (hc : c₀ ≠ 0) (hM : M.det ≠ 0) (hN : NormalAt x τ M a b c₀) (t : ℂ)
-    (ht : ∀ (y : KeyIn ℂ) (e : y.P.g = x.P.g), NormalAt y (τ.submatrix (Fin.cast e) (Fin.cast e)) 1
-      (fun i => a (i.cast e)) (fun i => b (i.cast e)) 1 → (κ ℂ y : ℂ) = t) :
-    c₀ ^ (2 * c) * (κ ℂ x : ℂ) = M.det ^ c * t := by
-  obtain ⟨P, hg, rig, hr, th, hth, v, hv⟩ := x
-  obtain ⟨th₀, hth₀, v₀, hv₀, hN₀, e₁, hMv⟩ := KeyConst.exists_rescale P hg rig hr th hth v hv τ M _ _ c₀ hc hM hN
-  rw [← ht ⟨P, hg, rig, hr, th₀, hth₀, v₀, hv₀⟩ rfl hN₀]
-  exact h.homog ℂ P hg rig hr _ hth₀ v₀ hv₀ th hth v hv c₀ M hx e₁ hMv
-
-theorem ext (h : IsKF g c κ) (h' : IsKF g c κ') (f : NgC g → ℂˣ)
-    (hf : ∀ (z : NgC g) x, z.Frame x → κ ℂ x = f z) (hf' : ∀ (z : NgC g) x, z.Frame x → κ' ℂ x = f z) : κ = κ' := by
-  funext K _ _ x
-  by_cases hx : x.P.g = g
-  swap
-  · rw [h.off K x hx, h'.off K x hx]
-  obtain ⟨K₀, x₀, hK₀, hx₀⟩ := (KeyCountableDescent.keyIn_descends_countable firstFiveLaws.1).2 K x
-  obtain ⟨σ⟩ := KeyRuleUnique.nonempty_ringHom_complex K₀
-  obtain ⟨y, hy⟩ := exists_keyPB_ring x₀ σ
-  have hyg : y.P.g = g := (KeyGalDesc.g_eq hy).trans ((KeyGalDesc.g_eq hx₀).symm.trans hx)
-  subst hyg
-  obtain ⟨⟨τ, M, a, b, c₀, hab, hc, hM, hN⟩, -⟩ := KeyNormalExists.exists_normalAt thetaUnifAV_all y
-  let z : NgC y.P.g := ⟨τ, hN.mem_siegelH.1, hN.mem_siegelH.2, a, b, hab⟩
-  have e : (κ ℂ y : ℂ) = κ' ℂ y := by
-    refine mul_left_cancel₀ (pow_ne_zero (2 * c) hc) ?_
-    rw [h.value_normalAt y rfl hc hM hN (f z) fun w e hw => congrArg Units.val (hf z w ⟨e, hw⟩),
-      h'.value_normalAt y rfl hc hM hN (f z) fun w e hw => congrArg Units.val (hf' z w ⟨e, hw⟩)]
-  rw [h.funct K₀ ℂ σ x₀ y hy, h'.funct K₀ ℂ σ x₀ y hy] at e
-  apply Units.ext
-  rw [h.funct K₀ K _ x₀ x hx₀, h'.funct K₀ K _ x₀ x hx₀, σ.injective e]
-
-end IsKF
-
 open Classical in
 def cutRule (g : ℕ) (s : ℤˣ) (κ : Rule) : Rule := fun K _ _ x =>
   if x.P.g = g then Units.map (Int.castRingHom K).toMonoidHom s * κ K x else 1
-
-theorem isKF_cutRule {g c : ℕ} (s : ℤˣ) {κ : Rule}
-    (hH : ∀ (K : Type) [Field K] [CharZero K] (P : Out.PolAV (Sp K)) (hg rig hr th hth v hv th' hth' v' hv') (a : K)
-      (M : Matrix (Fin P.g) (Fin P.g) K), P.g = g → (∀ i, LB.Sec.f th' i = constFn P.A.hom _ a * LB.Sec.f th i) →
-      (∀ i, IsLieComb (M i) v (v' i)) →
-      a ^ (2 * c) * (κ K ⟨P, hg, rig, hr, th', hth', v', hv'⟩ : K) = M.det ^ c * κ K ⟨P, hg, rig, hr, th, hth, v, hv⟩)
-    (hF : Funct κ) (hU : UnitSp κ) : IsKF g c (cutRule g s κ) := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro K _ _ P hg rig hr th hth v hv th' hth' v' hv' a M hP h₁ h₂
-    simp only [cutRule, ite_eq_left hP, Units.val_mul]
-    rw [mul_left_comm, hH K P hg rig hr th hth v hv th' hth' v' hv' a M hP h₁ h₂, mul_left_comm]
-  · intro K K' _ _ _ _ f x x' h
-    simp only [cutRule, KeyGalDesc.g_eq h]
-    split_ifs
-    · simp [hF K K' f x x' h]
-    · simp
-  · intro R K _ _ _ _ _ _ _ x xK h
-    by_cases hx : x.P.g = g
-    · obtain ⟨u, hu, hk⟩ := hU R K x xK h
-      refine ⟨Units.map (Int.castRingHom R).toMonoidHom s * u, ?_, fun k _ _ r xk hr hxk => ?_⟩
-      · simp [cutRule, KeyGalDesc.g_eq h, hx, hu]
-      · simp [cutRule, KeyGalDesc.g_eq hxk, hx, hk k r xk hr hxk]
-    · exact ⟨1, by simp [cutRule, KeyGalDesc.g_eq h, hx],
-        fun k _ _ r xk hr hxk => by simp [cutRule, KeyGalDesc.g_eq hxk, hx]⟩
-  · intro K _ _ x hx
-    exact ite_eq_right hx
 
 structure KF (g c : ℕ) : Type where
 
@@ -334,10 +233,6 @@ def ngTrue : Formalism.L2.Geo.NgPkg where
   NgC_ne _ := inferInstance
   KF := KF
   kfNorm kf z := kf.norm z
-
-theorem exists_kf_four (g : ℕ) : ∃ kf : KF g 4, ∀ z, kf.val z = 1 := by
-  obtain ⟨κ, h₁, h₂, h₃, h₄, -⟩ := keyFormula_iff.1 keyFormula_and_keyCore.1
-  exact ⟨KF.ofRule (fun _ => 1) κ h₁ h₂ h₃ h₄ g, fun _ => rfl⟩
 
 end GlobalTheory.LocM
 end

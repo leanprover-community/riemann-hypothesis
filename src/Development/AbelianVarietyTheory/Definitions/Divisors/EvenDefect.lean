@@ -63,13 +63,6 @@ def Half (Q : Data R) (ρ : R →+* R') (D : DegPre R') (e : D.X ≃+ Q.X) (f : 
       val (D.tau a b) (𝟙 _) z J' * gm (𝟙 (TK R').left) z ⊤ (unitOn (f a b)) =
         lamVal w (lift (toUnit (TK R') ≫ D.c a) (toUnit (TK R') ≫ D.c b)).left z J J' * val (Q.tau (e a) (e b)) κ z J
 
-theorem Half.refines {Q : Data R} {ρ : R →+* R'} {D : DegPre R'} {e : D.X ≃+ Q.X} (h : Half Q ρ D e fun _ _ => 1) :
-    Refines Q ρ D e := by
-  obtain ⟨β, β₂, w, h₁, h₂, h₃, -, h₄, h₅⟩ := h
-  refine ⟨β, β₂, w, h₁, h₂, h₃, h₄, fun κ hκ a b z J J' hJ hJ' => ?_⟩
-  have := h₅ κ hκ a b z J J' hJ hJ'
-  rwa [show unitOn (1 : (FractionRing R')ˣ) = 1 from map_one _, map_one, _root_.mul_one] at this
-
 def rescale (D : DegPre R) (g : D.X → (FractionRing R)ˣ) : DegPre R :=
   { D with
     psi := fun χ => GlobalTheory.UU.scaleGen (unitOn (g χ)) (D.psi χ)

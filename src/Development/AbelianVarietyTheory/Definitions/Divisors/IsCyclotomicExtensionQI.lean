@@ -372,8 +372,6 @@ def FwOf (τ : F →+* PadicAlgCl p) : IntermediateField ℚ_[p] (PadicAlgCl p) 
 def embOf (τ : F →+* PadicAlgCl p) : F →+* FwOf τ :=
   τ.codRestrict (FwOf τ) (fun x => IntermediateField.subset_adjoin _ _ ⟨x, rfl⟩)
 
-@[simp] theorem embOf_apply (τ : F →+* PadicAlgCl p) (x : F) : ((embOf τ x : FwOf τ) : PadicAlgCl p) = τ x := rfl
-
 end Local
 
 structure HTGroup (p : ℕ) [Fact p.Prime] where

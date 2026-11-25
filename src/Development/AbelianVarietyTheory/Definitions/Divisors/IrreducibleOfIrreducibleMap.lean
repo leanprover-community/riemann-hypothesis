@@ -208,53 +208,12 @@ theorem pos (h : IsChowFormInt I e dl f) : 0 < dl := by
   refine (IsUnit.mk0 _ fun h3 => h.ne_zero ?_).map C
   rw [h2, h3, C_0]
 
-theorem single (h : IsChowFormInt I e dl f) (hp : I.IsPrime)
-    (hI : I.IsHomogeneous (homogeneousSubmodule (Fin N) k)) :
-    IsChowFormCycle (Finsupp.single I 1) e dl f := by
-  refine ⟨1, one_ne_zero, fun _ => dl, fun _ => f, fun P hP => ?_, ?_, ?_⟩
-  · obtain rfl := Finset.mem_singleton.1 (Finsupp.support_single_subset hP)
-    exact ⟨hp, hI, h⟩
-  · rw [Finsupp.sum_single_index] <;> simp
-  · rw [Finsupp.prod_single_index] <;> simp
-
 end IsChowFormInt
 
 namespace IsChowFormCycle
 
 variable {Z Z' : Ideal (MvPolynomial (Fin N) k) →₀ ℕ} {e dl dl' : ℕ}
   {f f' : MvPolynomial (Fin (e + 1) × Fin N) k}
-
-theorem component (h : IsChowFormCycle Z e dl f) {P : Ideal (MvPolynomial (Fin N) k)}
-    (hP : P ∈ Z.support) : P.IsPrime ∧ P.IsHomogeneous (homogeneousSubmodule (Fin N) k) ∧
-      ∃ d g, IsChowFormInt P e d g := by
-  obtain ⟨c, -, d, g, hg, -, -⟩ := h
-  exact ⟨(hg P hP).1, (hg P hP).2.1, d P, g P, (hg P hP).2.2⟩
-
-theorem ne_zero (h : IsChowFormCycle Z e dl f) : f ≠ 0 := by
-  obtain ⟨c, hc, d, g, hg, -, rfl⟩ := h
-  exact mul_ne_zero (by simpa using hc)
-    (Finset.prod_ne_zero_iff.2 fun P hP => pow_ne_zero _ (hg P hP).2.2.ne_zero)
-
-theorem homog (h : IsChowFormCycle Z e dl f) :
-    ReciprocityTheory.MultiplicativeHeights.IsMultiHomogeneous (fun _ => dl) f := by
-  obtain ⟨c, hc, d, g, hg, rfl, rfl⟩ := h
-  rw [isMultiHomogeneous_iff_block]
-  refine IsWeightedHomogeneous.C_mul ?_ c
-  have := IsWeightedHomogeneous.prod (w := GlobalTheory.Chow.blockWeight) Z.support
-    (fun P => g P ^ Z P) (fun P => Z P • fun _ : Fin (e + 1) => d P)
-    (fun P hP => IsWeightedHomogeneous.pow
-      (isMultiHomogeneous_iff_block.1 (hg P hP).2.2.homog) (Z P))
-  have hd : (fun _ : Fin (e + 1) => Z.sum fun P m => m * d P) =
-      ∑ P ∈ Z.support, Z P • fun _ : Fin (e + 1) => d P := by
-    funext b
-    simp [Finsupp.sum, Finset.sum_apply]
-  rw [hd]
-  exact this
-
-theorem C_mul (h : IsChowFormCycle Z e dl f) {a : k} (ha : a ≠ 0) :
-    IsChowFormCycle Z e dl (C a * f) := by
-  obtain ⟨c, hc, d, g, hg, hd, rfl⟩ := h
-  exact ⟨a * c, mul_ne_zero ha hc, d, g, hg, hd, by rw [MvPolynomial.C_mul, mul_assoc]⟩
 
 theorem eq_of_components (h : IsChowFormCycle Z e dl f)
     (d : Ideal (MvPolynomial (Fin N) k) → ℕ)
@@ -276,48 +235,6 @@ theorem eq_of_components (h : IsChowFormCycle Z e dl f)
     refine Finset.prod_congr rfl fun P hP => ?_
     simp only [a', dif_pos hP]
     rw [hag P hP, mul_pow, map_pow]
-
-theorem unique (h : IsChowFormCycle Z e dl f) (h' : IsChowFormCycle Z e dl' f') :
-    dl = dl' ∧ ∃ c : k, c ≠ 0 ∧ f' = C c * f := by
-  obtain ⟨c, hc, d, g, hg, rfl, rfl⟩ := h
-  obtain ⟨hd, c', hc', rfl⟩ := h'.eq_of_components d g fun P hP => (hg P hP).2.2
-  refine ⟨hd.symm, c' * c⁻¹, mul_ne_zero hc' (inv_ne_zero hc), ?_⟩
-  rw [← mul_assoc, ← MvPolynomial.C_mul, mul_assoc, inv_mul_cancel₀ hc, mul_one]
-
-theorem add (h : IsChowFormCycle Z e dl f) (h' : IsChowFormCycle Z' e dl' f') :
-    IsChowFormCycle (Z + Z') e (dl + dl') (f * f') := by
-  classical
-  have hex : ∀ P, ∃ d g, P ∈ Z.support ∪ Z'.support → (P.IsPrime ∧
-      P.IsHomogeneous (homogeneousSubmodule (Fin N) k) ∧ IsChowFormInt P e d g) := by
-    intro P
-    by_cases hP : P ∈ Z.support ∪ Z'.support
-    · rcases Finset.mem_union.1 hP with hP | hP
-      · obtain ⟨h1, h2, d, g, h3⟩ := h.component hP
-        exact ⟨d, g, fun _ => ⟨h1, h2, h3⟩⟩
-      · obtain ⟨h1, h2, d, g, h3⟩ := h'.component hP
-        exact ⟨d, g, fun _ => ⟨h1, h2, h3⟩⟩
-    · exact ⟨0, 0, fun h => (hP h).elim⟩
-  choose d g hg using hex
-  obtain ⟨rfl, c, hc, rfl⟩ := h.eq_of_components d g fun P hP =>
-    (hg P (Finset.mem_union_left _ hP)).2.2
-  obtain ⟨rfl, c', hc', rfl⟩ := h'.eq_of_components d g fun P hP =>
-    (hg P (Finset.mem_union_right _ hP)).2.2
-  refine ⟨c * c', mul_ne_zero hc hc', d, g, fun P hP => hg P (Finsupp.support_add hP), ?_, ?_⟩
-  · rw [Finsupp.sum_add_index' (by simp) (fun _ _ _ => add_mul _ _ _)]
-  · rw [Finsupp.prod_add_index' (by simp) (fun _ _ _ => pow_add _ _ _), MvPolynomial.C_mul]
-    ring
-
-theorem zero_iff_of_isAlgClosed (h : IsChowFormCycle Z e dl f)
-    {Ω : Type*} [Field Ω] [IsAlgClosed Ω] [Algebra k Ω] (u : Fin (e + 1) × Fin N → Ω) :
-    MvPolynomial.aeval u f = 0 ↔ ∃ P ∈ Z.support,
-      ∃ y : Fin N → Ω, y ≠ 0 ∧ (∀ g ∈ P, MvPolynomial.aeval y g = 0) ∧
-        ∀ i, ∑ j, u (i, j) * y j = 0 := by
-  obtain ⟨c, hc, d, g, hg, -, rfl⟩ := h
-  rw [map_mul, aeval_C, mul_eq_zero, map_eq_zero, or_iff_right hc, Finsupp.prod, map_prod,
-    Finset.prod_eq_zero_iff]
-  refine exists_congr fun P => and_congr_right fun hP => ?_
-  rw [map_pow, pow_eq_zero_iff (Finsupp.mem_support_iff.1 hP)]
-  exact (hg P hP).2.2.zero_iff_of_isAlgClosed (hg P hP).2.1 u
 
 end IsChowFormCycle
 

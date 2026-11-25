@@ -133,14 +133,6 @@ theorem adicCompletion_ringHom_ext {J : Ideal A} (hJ : J.FG) (I : Ideal R) [IsHa
   have := sub_mem (hmem ψ rfl) (hmem ψ' h.symm)
   simpa using this
 
-theorem existsUnique_extend_adicCompletion (φ : A →+* R) {J : Ideal A} (hJ : J.FG) (I : Ideal R)
-    [IsAdicComplete I R] (hk : ∃ k : ℕ, J.map φ ^ k ≤ I) :
-    ∃! ψ : AdicCompletion J A →+* R, ψ.comp (algebraMap A (AdicCompletion J A)) = φ := by
-  obtain ⟨k, hk⟩ := hk
-  obtain ⟨ψ, hψ, -⟩ := exists_extend_adicCompletion φ J I hk
-  refine ⟨ψ, hψ, fun ψ' hψ' => ?_⟩
-  exact adicCompletion_ringHom_ext hJ I (k := k) (by rwa [hψ']) (hψ'.trans hψ.symm)
-
 theorem isLocalHom_of_extend_adicCompletion [IsLocalRing A] [IsLocalRing R]
     (hJ : (maximalIdeal A).FG) (ψ : AdicCompletion (maximalIdeal A) A →+* R)
     [hψ : IsLocalHom (ψ.comp (algebraMap A (AdicCompletion (maximalIdeal A) A)))] :
@@ -165,56 +157,11 @@ theorem existsUnique_factor_stalk (f : Spec (.of R) ⟶ X) {x : X} (hx : f (clos
   rw [← cancel_mono (X.fromSpecStalk _), hφ]
   exact (Scheme.Spec_stalkClosedPointTo_fromSpecStalk (R := .of R) f).symm
 
-theorem isLocalHom_of_factor_stalk {f : Spec (.of R) ⟶ X} {x : X} (hx : f (closedPoint R) = x)
-    {φ : X.presheaf.stalk x ⟶ .of R} (hφ : Spec.map φ ≫ X.fromSpecStalk x = f) :
-    IsLocalHom φ.hom := by
-  subst hx
-  rw [(existsUnique_factor_stalk f rfl).unique hφ
-    (Scheme.Spec_stalkClosedPointTo_fromSpecStalk (R := .of R) f)]
-  exact Scheme.isLocalHom_stalkClosedPointTo' f
-
 noncomputable def fromSpecCompletedStalk (X : Scheme.{u}) (x : X) :
     Spec (.of (AdicCompletion (maximalIdeal (X.presheaf.stalk x)) (X.presheaf.stalk x))) ⟶ X :=
   Spec.map (CommRingCat.ofHom (algebraMap (X.presheaf.stalk x)
     (AdicCompletion (maximalIdeal (X.presheaf.stalk x)) (X.presheaf.stalk x)))) ≫
     X.fromSpecStalk x
-
-
-omit [IsLocalRing R] in
-theorem existsUnique_factor_completedStalk (I : Ideal R) [IsAdicComplete I R]
-    {f : Spec (.of R) ⟶ X} {x : X}
-    {φ : X.presheaf.stalk x ⟶ .of R} (hφ : Spec.map φ ≫ X.fromSpecStalk x = f)
-    (hfg : (maximalIdeal (X.presheaf.stalk x)).FG)
-    (hk : ∃ k : ℕ, (maximalIdeal (X.presheaf.stalk x)).map φ.hom ^ k ≤ I) :
-    ∃! ψ : AdicCompletion (maximalIdeal (X.presheaf.stalk x)) (X.presheaf.stalk x) →+* R,
-      Spec.map (CommRingCat.ofHom ψ) ≫ fromSpecCompletedStalk X x = f := by
-  refine (existsUnique_congr fun ψ => ?_).mp
-    (existsUnique_extend_adicCompletion (R := R) φ.hom hfg I hk)
-  rw [fromSpecCompletedStalk, ← Spec.map_comp_assoc, ← hφ, cancel_mono, ← CommRingCat.ofHom_comp]
-  constructor
-  · intro h; rw [h]; rfl
-  · intro h; exact congr($(Spec.map_injective h).hom)
-
-
-omit [IsLocalRing R] in
-theorem existsUnique_factor_completedStalk' (I : Ideal R) [IsAdicComplete I R]
-    {f : Spec (.of R) ⟶ X} {x : X}
-    {φ : X.presheaf.stalk x ⟶ .of R} (hφ : Spec.map φ ≫ X.fromSpecStalk x = f)
-    (hfg : (maximalIdeal (X.presheaf.stalk x)).FG)
-    (hk : ∃ k : ℕ, (maximalIdeal (X.presheaf.stalk x)).map φ.hom ^ k ≤ I) :
-    ∃! g, g ≫ fromSpecCompletedStalk X x = f := by
-  obtain ⟨ψ, hψ, hu⟩ := existsUnique_factor_completedStalk I hφ hfg hk
-  refine ⟨_, hψ, fun g hg => ?_⟩
-  obtain ⟨χ, rfl⟩ := Spec.map_surjective g
-  rw [← hu χ.hom hg]
-  rfl
-
-theorem isLocalHom_of_factor_completedStalk {f : Spec (.of R) ⟶ X} {x : X}
-    (hx : f (closedPoint R) = x) (hfg : (maximalIdeal (X.presheaf.stalk x)).FG)
-    {ψ : AdicCompletion (maximalIdeal (X.presheaf.stalk x)) (X.presheaf.stalk x) →+* R}
-    (hψ : Spec.map (CommRingCat.ofHom ψ) ≫ fromSpecCompletedStalk X x = f) : IsLocalHom ψ := by
-  rw [fromSpecCompletedStalk, ← Spec.map_comp_assoc] at hψ
-  exact isLocalHom_of_extend_adicCompletion hfg ψ (hψ := isLocalHom_of_factor_stalk hx hψ)
 
 end Local
 
@@ -257,10 +204,6 @@ theorem IsAdicFamily.of_le {X : Scheme.{u}} {f : ∀ n : ℕ, Spec (.of (R ⧸ I
   induction n, h using Nat.le_induction with
   | base => rw [adicLevelMap_self, Category.id_comp]
   | succ n h ih => rw [← ih, ← hf n, adicLevelMap_comp_assoc]
-
-theorem IsAdicFamily.comp {X Y : Scheme.{u}} {f : ∀ n : ℕ, Spec (.of (R ⧸ I ^ (n + 1))) ⟶ X}
-    (hf : IsAdicFamily I f) (p : X ⟶ Y) : IsAdicFamily I fun n => f n ≫ p :=
-  fun n => by rw [← Category.assoc, hf n]
 
 variable [IsLocalRing R]
 
@@ -356,8 +299,6 @@ theorem existsUnique_over_of_isAdicFamily [IsAdicComplete I R] {X S : Scheme.{u}
   rw [← Category.assoc, hg, hs]
 
 variable (I)
-
-
 
 end Limit
 

@@ -100,7 +100,6 @@ variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam
 @[reducible] def Charts.Obj.ratAlg {K : Charts F} (T : K.Obj) : Algebra ℚ T.C :=
   ((algebraMap (Hol F.V) T.C).comp ((algebraMap ℂ (Hol F.V)).comp (algebraMap ℚ ℂ))).toAlgebra
 
-
 open Classical in
 def Charts.Obj.δ {K : Charts F} (T : K.Obj) : DividedPowers T.J :=
   letI := T.ratAlg
@@ -231,40 +230,6 @@ theorem valAt'_spMap {R : Type} [CommRing R] (ψ : R →+* ℂ) (t : R) :
   erw [← n]
   exact (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv_hom_id_apply _
 
-theorem perCl_injective (F : Fam I g Λ) : Function.Injective F.allCharts.perCl := by
-  intro per per' h
-  obtain ⟨G, hG⟩ := H1.mk_eq_mk.1 h
-  let G₀ : Hol (F.allCharts.W F.totChart) := G (F.allCharts.triv F.totChart)
-  have hd : ∀ a (p : Tot I g) (hp : p ∈ F.allCharts.W F.totChart), (dw a G₀).fn p = 0 := fun a p hp ↦ by
-    have h0 := congrFun (congrFun (congrFun hG _) _)
-      (Charts.ptHom (F.allCharts.dualAt F.totChart p hp) (F.allCharts.le_refl F.totChart))
-    have h1 := congrFun (congrFun (congrFun hG _) _) (F.allCharts.tangentHom F.totChart a p hp)
-    have h2 : (TrivSqZeroExt.inl (Hol.ev p hp (Charts.sh (F.allCharts.le_refl F.totChart) G₀)) : DualNumber ℂ) =
-        tangentAt a p hp G₀ :=
-      sub_right_injective (G := F.allCharts.Oc.obj (F.allCharts.dualAt F.totChart p hp)) (h0.trans h1.symm)
-    have h3 := congrArg TrivSqZeroExt.snd h2
-    rw [← Hol.ev_apply p hp]
-    simpa [tangentAt] using h3.symm
-  have hc : ∀ z ∈ F.V, ∀ w w', G₀.fn (z, w) = G₀.fn (z, w') := fun z hz w w' ↦ by
-    have hf : ∀ w, HasFDerivAt (fun w ↦ G₀.fn (z, w)) (0 : (Fin g → ℂ) →L[ℂ] ℂ) w := fun w ↦ by
-      have k := (G₀.analytic (z, w) hz).differentiableAt.hasFDerivAt.comp w (hasFDerivAt_prodMk_right (𝕜 := ℂ) z w)
-      refine k.congr_fderiv ?_
-      apply ContinuousLinearMap.coe_injective
-      refine LinearMap.pi_ext' fun a ↦ LinearMap.ext_ring ?_
-      have := (Hol.fn_der ((0, Pi.single a 1) : Tot I g) G₀ (p := (z, w)) hz).symm.trans (hd a (z, w) hz)
-      simpa using this
-    exact is_const_of_fderiv_eq_zero (𝕜 := ℂ) (fun w ↦ (hf w).differentiableAt) (fun w ↦ (hf w).fderiv) w w'
-  refine AddMonoidHom.ext fun l ↦ Hol.ext_fn fun z hz ↦ ?_
-  have h3 := congrFun (congrFun (congrFun hG _) _) (F.transl l)
-  have hl : F.allCharts.le l F.totChart F.totChart := fun _ h ↦ h
-  change G₀ - Charts.sh hl G₀ = F.allCharts.cst F.totChart (per l) - F.allCharts.cst F.totChart (per' l) at h3
-  have hp : ((z, 0) : Tot I g) ∈ F.allCharts.W F.totChart := hz
-  have h4 := congrArg (Hol.ev _ hp) h3
-  simp only [map_sub, Hol.ev_apply, Charts.fn_cst _ _ _ hp] at h4
-  rw [Charts.fn_sh _ _ hp, Fam.shift, hc z hz 0 (0 + F.τ l z), sub_self] at h4
-  exact sub_eq_zero.1 h4.symm
-
-
 variable (I) in
 def fam : Fam I 1 ℤ where
   V := ⊤
@@ -273,14 +238,11 @@ def fam : Fam I 1 ℤ where
          map_add' l m := by funext _ _; simp [add_mul] }
   hol _ := analyticOnNhd_const
 
-
 variable (B) in
 abbrev Ring : Type := Localization.Away (Polynomial.X : B[X])
 
-
 variable (B) in
 abbrev str : Sp (Ring B) ⟶ Sp B := spMap (algebraMap B (Ring B))
-
 
 variable (B) in
 def coord : Ring B := algebraMap B[X] (Ring B) Polynomial.X
@@ -344,9 +306,6 @@ def unif : Unif (fam I) (str B) σ where
       fun p hp ↦ (valAt'_spMap _ a).trans ?_
     rw [← ev_comp_pt σ (fam I).allCharts (fam I).totChart p hp]
     exact Hol.ev_apply p hp _
-
-theorem isFor (K : Charts (fam I)) : (real σ K).IsFor (unif σ) := fun k p hp ↦
-  (Cris.spMap_comp _ _).symm.trans (congrArg spMap (ev_comp_pt σ K k p hp))
 
 end MulGrp
 

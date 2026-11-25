@@ -78,15 +78,12 @@ def frL (u : ι → GL (Fin n) ℂ) (y : Frames G) : Frames G :=
 
 def lT (u : ι → GL (Fin n) ℂ) : (Frames G → ℂ) →ₗ[ℂ] (Frames G → ℂ) := LinearMap.funLeft ℂ ℂ (frL G u)
 
-
 omit [Fintype ι] in
 theorem lT_apply (u : ι → GL (Fin n) ℂ) (F : Frames G → ℂ) (y : Frames G) : lT G u F y = F (frL G u y) := rfl
-
 
 omit [Fintype ι] in
 theorem lT_mul (u v : ι → GL (Fin n) ℂ) (F : Frames G → ℂ) : lT G (u * v) F = lT G v (lT G u F) :=
   funext fun y => congrArg F (Subtype.ext (funext fun τ => Matrix.mul_assoc _ _ _))
-
 
 omit [Fintype ι] in
 theorem lT_one (F : Frames G → ℂ) : lT G 1 F = F :=
@@ -113,18 +110,6 @@ theorem lT_mem (lam : ι → DomWeight n) (u : ι → GL (Fin n) ℂ) {F : Frame
   congr 3
   simp [Matrix.mul_apply]
 
-theorem continuous_lT (lam : ι → DomWeight n) [FiniteDimensional ℂ (ValC G lam)] (l : (Frames G → ℂ) →ₗ[ℂ] ℂ) {F : Frames G → ℂ}
-    (hF : F ∈ ValC G lam) {X : Type} [TopologicalSpace X] {u : X → ι → GL (Fin n) ℂ}
-    (hu : ∀ τ, Continuous fun x => (u x τ : Matrix (Fin n) (Fin n) ℂ)) : Continuous fun x => l (lT G (u x) F) := by
-  have h1 : Continuous fun x => (⟨lT G (u x) F, lT_mem G lam _ hF⟩ : ValC G lam) := by
-    refine Continuous.subtype_mk (continuous_pi fun y => ?_) _
-    obtain ⟨P, -, rfl⟩ := hF
-    simp only [lT_apply, fnOf, LinearMap.coe_mk, AddHom.coe_mk, Pi.one_apply, Matrix.one_mul]
-    refine (continuous_finsetProd _ fun τ _ => ?_).mul ((MvPolynomial.continuous_eval P).comp (continuous_pi fun v => ?_))
-    · exact (((hu τ).matrix_mul continuous_const).matrix_det).zpow₀ _ fun x => Or.inl ((frL G (u x) y).2 τ).ne_zero
-    · exact ((hu v.1).matrix_mul continuous_const).matrix_elem _ _
-  exact (l ∘ₗ (ValC G lam).subtype).continuous_of_finiteDimensional.comp h1
-
 end Tr
 
 section Val
@@ -135,50 +120,11 @@ variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [Numbe
 def valL (b : S.β) (d : S.D b) : (S.Cl → Fr emb σ n → ℂ) →ₗ[ℂ] (Fr emb σ n → ℂ) :=
   (S.trTo emb σ b d).toLinearMap ∘ₗ LinearMap.proj (S.cl b d)
 
-
-omit [StarRing E] [NumberField K] [StarRing K] in
-theorem tr_mul (b : S.β) (g h : S.G b) (F : Fr emb σ n → ℂ) :
-    S.tr emb σ b (g * h) F = S.tr emb σ b g (S.tr emb σ b h F) := by
-  funext y
-  simp only [GStep.tr, trFr_apply, map_mul, Units.val_mul, _root_.mul_inv_rev, frMul_mul, mul_assoc]
-
 variable {S emb σ} {lam : ι → DomWeight n} {φ : S.Cl → Fr emb σ n → ℂ}
-
-theorem valL_eq (hφ : φ ∈ S.Fi emb σ lam) (c : S.Cl) (g : S.G c.1) :
-    valL S emb σ c.1 (g • S.rep c) φ = S.tr emb σ c.1 g (φ c) := by
-  obtain ⟨b, q⟩ := c
-  have hq : (Quotient.mk _ (g • S.rp b q) : MulAction.orbitRel.Quotient (S.G b) (S.D b)) = q :=
-    (Quotient.sound (show (MulAction.orbitRel (S.G b) (S.D b)).r (g • S.rp b q) (S.rp b q) from ⟨g, rfl⟩)).trans (S.rp_spec b q)
-  have h1 : S.mv b (g • S.rp b q) • S.rp b (Quotient.mk _ (g • S.rp b q)) = g • S.rp b q := S.mv_smul b _
-  rw [hq] at h1
-  have h2 := (hφ ⟨b, q⟩).2 ⟨g⁻¹ * S.mv b (g • S.rp b q), by
-    show (g⁻¹ * S.mv b (g • S.rp b q)) • S.rp b q = S.rp b q
-    rw [mul_smul, h1, inv_smul_smul]⟩
-  show S.tr emb σ b (S.mv b (g • S.rp b q)) (φ ⟨b, Quotient.mk _ (g • S.rp b q)⟩) = S.tr emb σ b g (φ ⟨b, q⟩)
-  rw [hq, ← h2]
-  refine Eq.trans ?_ (tr_mul S emb σ b g _ _)
-  rw [mul_inv_cancel_left]
-  exact congrArg _ h2
-
-theorem valL_smul (hφ : φ ∈ S.Fi emb σ lam) (b : S.β) (g : S.G b) (d : S.D b) :
-    valL S emb σ b (g • d) φ = S.tr emb σ b g (valL S emb σ b d φ) := by
-  have h := valL_eq hφ (S.cl b d) (g * S.mv b d)
-  rw [mul_smul, S.mv_smul, tr_mul] at h
-  exact h
-
-theorem valL_mem (hφ : φ ∈ S.Fi emb σ lam) (b : S.β) (d : S.D b) : valL S emb σ b d φ ∈ ValC (Gr emb σ n) lam :=
-  DiaStab.tr_mem S emb σ lam b _ (hφ _).1
-
 
 variable (S emb σ lam) in
 def prFi : (S.Cl → Fr emb σ n → ℂ) →ₗ[ℂ] S.Fi emb σ lam :=
   (LinearMap.exists_leftInverse_of_injective (S.Fi emb σ lam).subtype (Submodule.ker_subtype _)).choose
-
-
-omit [StarRing E] [NumberField K] [StarRing K] in
-theorem prFi_of_mem (hφ : φ ∈ S.Fi emb σ lam) : prFi S emb σ lam φ = ⟨φ, hφ⟩ :=
-  LinearMap.congr_fun (LinearMap.exists_leftInverse_of_injective (S.Fi emb σ lam).subtype (Submodule.ker_subtype _)).choose_spec
-    ⟨φ, hφ⟩
 
 end Val
 
@@ -233,80 +179,6 @@ theorem finN_mem (hG : V.gram = 1) (g : GA D V) : finN V hn g ∈ UAd D.sp.cm n 
   congr 1
   exact Matrix.ext fun i j => (swapAE_sig _).symm
 
-theorem exists_rat (hθ : IsInfFam θ) (hG : V.gram = 1) {γ : GA D V} (hγ : γ ∈ GQ V) :
-    ∃ δ : URat D.sp.cm n, finN V hn γ = Formalism.UG.bc (Formalism.UG.inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) δ.1 ∧
-      ∀ τ, (infN θ V hn t γ τ : Matrix (Fin n) (Fin n) ℂ) = (δ.1 : Matrix (Fin n) (Fin n) D.host.E).map (tauE D (t τ)) := by
-  subst hn
-  obtain ⟨δ, hδ, e⟩ := hγ
-  rw [hG] at hδ
-  refine ⟨⟨δ, hδ⟩, ?_, fun τ => ?_⟩
-  · show Formalism.UG.bc _ (Formalism.UG.bc _ (matHom V γ)) = _
-    rw [show matHom V γ = _ from e.symm]
-    rfl
-  · show (Formalism.UG.bc _ (Formalism.UG.bc _ (matHom V γ))).1 = _
-    rw [show matHom V γ = _ from e.symm]
-    exact Matrix.ext fun i j => (hθ (t τ)).1 _
-
-theorem continuous_infN (hθ : IsInfFam θ) (τ : ι) : Continuous fun g => (infN θ V hn t g τ : Matrix (Fin n) (Fin n) ℂ) := by
-  subst hn
-  exact GlobalTheory.Mem.VolExists.continuous_infMat V.gram (hθ (t τ))
-
-
-open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
-attribute [local instance] Algebra.TensorProduct.rightAlgebra in
-theorem eventually_congOne (x₀ : GL (Fin n) (AfE D.host.F D.host.E)) (a : 𝓞 D.host.E) :
-    ∀ᶠ κ in 𝓝 (1 : GA D V), CongOne a (x₀⁻¹ * finN V hn κ * x₀) := by
-  subst hn
-  letI := rlt_top D.host.F D.host.E
-  haveI := rlt_isModTop D.host.F D.host.E
-  haveI := rlt_topRing (F := D.host.F) (E := D.host.E)
-  haveI : IsModuleTopology (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F ⊗[D.host.F] D.host.E) :=
-    ⟨rfl⟩
-  have hs : Continuous (swapAE D) := by
-    haveI := IsModuleTopology.toContinuousAdd (FiniteAdeleRing (𝓞 D.host.F) D.host.F) (EAf D)
-    refine (IsModuleTopology.continuous_of_linearMap
-      (LinearEquiv.ofBijective (rlt_comm (F := D.host.F) (E := D.host.E)) (TensorProduct.comm _ _ _).bijective).symm.toLinearMap).congr
-      fun z => ?_
-    refine (LinearEquiv.symm_apply_eq _).2 ?_
-    exact ((Algebra.TensorProduct.comm D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.host.E).symm_apply_apply z).symm
-  have hf : Continuous fun κ : GA D V => (finN V rfl κ).1 :=
-    (GlobalTheory.Mem.VolExists.continuous_finMat (σ := D.sp.cm.sig) V.gram).matrix_map hs
-  simp only [CongOne, Filter.eventually_all]
-  intro i j
-  have hc : Continuous fun κ : GA D V => Formalism.UG.inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)
-      (algebraMap (𝓞 D.host.E) D.host.E a)⁻¹ * ((x₀⁻¹ * finN V rfl κ * x₀).1 i j - (1 : Matrix _ _ (AfE D.host.F D.host.E)) i j) :=
-    continuous_const.mul ((((continuous_const.matrix_mul hf).matrix_mul continuous_const).matrix_elem i j).sub continuous_const)
-  refine (rlt_isOpen_intAf.preimage hc).mem_nhds ?_
-  simp
-
-theorem isAutFunDef_of [Fintype ι] (hθ : IsInfFam θ) (G : ι → Matrix (Fin n) (Fin n) ℂ) (lam : ι → DomWeight n)
-    [FiniteDimensional ℂ (ValC G lam)] (Φ : GA D V → Frames G → ℂ) (h1 : ∀ g, Φ g ∈ ValC G lam)
-    (h2 : ∀ γ ∈ GQ V, ∀ g, lT G (infN θ V hn t γ) (Φ (γ * g)) = Φ g) (h3 : ∀ᶠ κ in 𝓝 (1 : GA D V), ∀ g, Φ (g * κ) = Φ g)
-    (h4 : ∀ k ∈ GinfC V, ∀ g, Φ (g * k) = Φ g) (l : (Frames G → ℂ) →ₗ[ℂ] ℂ) :
-    IsAutFunDef V fun g => l (lT G (infN θ V hn t g) (Φ g)) := by
-  haveI : IsTopologicalGroup (GA D V) := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA _ _
-  refine ⟨⟨fun γ hγ g => by rw [map_mul, lT_mul, h2 γ hγ], ?_, continuous_iff_continuousAt.2 fun g₀ => ?_⟩, ?_⟩
-  · let U : Subgroup (GA D V) :=
-      { carrier := {κ | ∀ g, Φ (g * κ) = Φ g}
-        one_mem' := fun g => by rw [mul_one]
-        mul_mem' := fun {a b} ha hb g => by rw [← mul_assoc, hb, ha]
-        inv_mem' := fun {a} ha g => by rw [← ha, inv_mul_cancel_right] }
-    exact ⟨U, Subgroup.isOpen_of_mem_nhds U (g := 1) h3, fun k hk hk' g => by
-      rw [map_mul, infN_of_fin θ hn t hk', mul_one, hk g]⟩
-  · refine (continuous_lT G lam l (h1 g₀) (continuous_infN θ hn t hθ)).continuousAt.congr ?_
-    have ht : Tendsto (fun g : GA D V => g₀⁻¹ * g) (𝓝 g₀) (𝓝 1) := by
-      have := (continuous_const_mul g₀⁻¹).tendsto g₀
-      rwa [inv_mul_cancel] at this
-    filter_upwards [ht.eventually h3] with g hg
-    rw [← hg g₀, mul_inv_cancel_left]
-  · let Ψ : Module.Dual ℂ (ValC G lam) →ₗ[ℂ] (GA D V → ℂ) :=
-      LinearMap.pi fun g => Module.Dual.eval ℂ _ ⟨_, lT_mem G lam (infN θ V hn t g) (h1 g)⟩
-    refine Submodule.finiteDimensional_of_le (S₂ := LinearMap.range Ψ) (Submodule.span_le.2 ?_)
-    rintro _ ⟨k, hk, rfl⟩
-    refine ⟨l ∘ₗ lT G (infN θ V hn t k) ∘ₗ (ValC G lam).subtype, funext fun g => ?_⟩
-    show l (lT G (infN θ V hn t k) (lT G (infN θ V hn t g) (Φ g))) = l (lT G (infN θ V hn t (g * k)) (Φ (g * k)))
-    rw [map_mul, lT_mul, h4 k hk]
-
 theorem isAniso_of_gram (hG : V.gram = 1) : IsAniso V := by
   rintro r C ⟨hr, hC, h0⟩
   have h1 := congrFun (congrFun h0 ⟨0, hr⟩) ⟨0, hr⟩
@@ -324,11 +196,6 @@ theorem isAniso_of_gram (hG : V.gram = 1) : IsAniso V := by
   refine hC.ne_zero ⟨0, hr⟩ (funext fun i => ?_)
   have := (Finset.sum_eq_zero_iff_of_nonneg fun i _ => Complex.normSq_nonneg _).1 h4 i (Finset.mem_univ i)
   simpa using this
-
-theorem mem_cuspS (hθ : IsInfFam θ) (hG : V.gram = 1) (hs : V.SigOK) (hd : V.IsDefinite) {φ : GA D V → ℂ} (h : IsAutFunDef V φ) :
-    φ ∈ CuspS θ V := by
-  rw [CuspS_eq_of_aniso θ (isAniso_of_gram hG)]
-  exact Submodule.subset_span (GlobalTheory.DefiniteForms.sm_of_kfin hθ hs hd h)
 
 end Comp
 

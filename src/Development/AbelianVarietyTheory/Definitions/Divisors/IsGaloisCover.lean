@@ -63,27 +63,4 @@ def IsGal {Z W : Scheme.{0}} {s : Z ⟶ Sp ℂ} {sW : W ⟶ Sp ℂ} (π : W ⟶ 
     (act : G → (W ⟶ W)) : Prop :=
   GlobalTheory.ZM.IsGaloisCover G (fun g => act g⁻¹) π
 
-namespace IsGal
-
-variable {Z W : Scheme.{0}} {s : Z ⟶ Sp ℂ} {sW : W ⟶ Sp ℂ} {π : W ⟶ Z} {hπ : π ≫ s = sW} {G : Type} [Group G]
-  {act : G → (W ⟶ W)}
-
-theorem mk' (hG : Finite G) (hfin : IsFinite π) (het : Etale π) (hon : Surjective π) (hinv : ∀ g, act g ≫ π = π)
-    (hmul : ∀ g h, act (g * h) = act h ≫ act g) (hone : act 1 = 𝟙 W)
-    (hfib : ∀ (K : Type) [Field K] [IsAlgClosed K] (a b : Sp K ⟶ W), a ≫ π = b ≫ π → ∃! g : G, b = a ≫ act g) :
-    IsGal π hπ G act := by
-  refine GlobalTheory.ZM.IsGaloisCover.mk hG ?_ ?_ (fun a => hinv a⁻¹) hfin het hon ?_
-  · simpa only [inv_one] using hone
-  · intro a c
-    simpa only [mul_inv_rev] using hmul c⁻¹ a⁻¹
-  · intro K _ _ y y' e
-    obtain ⟨g, hg, hu⟩ := hfib K y y' e
-    refine ⟨g⁻¹, by simpa only [inv_inv] using hg.symm, fun a ha => ?_⟩
-    simpa only [inv_inv] using congrArg Inv.inv (hu a⁻¹ ha.symm)
-
-theorem finite (h : IsGal π hπ G act) : Finite G := GlobalTheory.ZM.IsGaloisCover.finite h
-theorem surjective (h : IsGal π hπ G act) : Surjective π := GlobalTheory.ZM.IsGaloisCover.onto h
-
-end IsGal
-
 end GlobalTheory.W1
