@@ -120,7 +120,7 @@ theorem baseUnif_of_kUnif (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (sm : CMT
 
 theorem baseUnifEx2_of (hV : VecOfPeriods) (hC : KUnifConj) : BaseUnifEx2 := by
   intro hG E _ _ _ H D l Xo c Y sm j j' n h1 hs hn
-  have hN : N1c := hG.1.2.2.1
+  have hN : N1c := hG.1.2.2
   obtain ⟨g, ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
   have q : CMType H × Fin j × Fin j' ≃ Fin n := Fintype.equivFinOfCardEq (by simp [hn, mul_assoc])
   let ρ : c.F := (IntermediateField.inclusion c.le).toRingHom (baseKA l).ρ

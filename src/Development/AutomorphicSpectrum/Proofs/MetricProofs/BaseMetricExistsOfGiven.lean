@@ -524,7 +524,7 @@ theorem PositivityTheory.Xgp.t_c_bm_exists_period : Given → ∀ (E : Type) [Fi
     simp
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 hsq with hs | hs
   · obtain ⟨ρ, B, Pi, Γ, h1, h2, h3, h4, h5, h6, h7, -⟩ :=
-      family_period hG.1.2.2.1 tie hpq hF p τ₀ hs hhol hτ hint hg0
+      family_period hG.1.2.2 tie hpq hF p τ₀ hs hhol hτ hint hg0
     exact fin ρ B (Pi τ) (Γ τ) h1 h2 h3 h4 h5 (h6 τ) (h7 τ)
   · have hcc : (spMap (starRingEnd ℂ) : Sp ℂ ⟶ Sp ℂ) ≫ spMap (starRingEnd ℂ) = 𝟙 _ := by
       refine (Spec.map_comp (CommRingCat.ofHom (starRingEnd ℂ)) (CommRingCat.ofHom (starRingEnd ℂ))).symm.trans ?_
@@ -555,7 +555,7 @@ theorem PositivityTheory.Xgp.t_c_bm_exists_period : Given → ∀ (E : Type) [Fi
       rw [e]
       exact hg0
     obtain ⟨ρ, B, Pi, Γ, h1, h2, h3, h4, h5, h6, h7, -⟩ :=
-      family_period hG.1.2.2.1 tie hpq hF p' _ hs' hhol' hτ' hint' hg0'
+      family_period hG.1.2.2 tie hpq hF p' _ hs' hhol' hτ' hint' hg0'
     refine fin ρ (star ⁻¹' B) (fun u => (Pi τ (star u)).map (starRingEnd ℂ))
       (fun u => (Γ τ (star u)).map (starRingEnd ℂ)) h1 h2 (h3.preimage continuous_star) (by simpa using h4)
       (fun u hu => by simpa using star_mem_ball' (h5 hu)) (fun a b u hu => ?_) fun u hu => ⟨?_, ?_⟩
@@ -622,7 +622,7 @@ theorem PositivityTheory.Xgp.t_c_bm_exists_immersion : Given → ∀ (E : Type) 
     have h2 := congrArg CommRingCat.Hom.hom (Spec.map_injective h1)
     rw [← hφ]
     exact IsFractionRing.ringHom_ext (A := 𝓞 c.F) fun t => (DFunLike.congr_fun h2 t).symm
-  obtain ⟨ρ, B, Pi, Γ, hρ, hρ', hB, h0, hsub, hPi, hgr, hder⟩ := family_period hG.1.2.2.1 tie hpq (hF l₀) p τ₀
+  obtain ⟨ρ, B, Pi, Γ, hρ, hρ', hB, h0, hsub, hPi, hgr, hder⟩ := family_period hG.1.2.2 tie hpq (hF l₀) p τ₀
     (by rw [hτ₀]; rfl) hhol hτ hint (by rw [ptIdeal_centre hc0]; exact hgood l₀ x hl₀)
   obtain ⟨h1, h2, h3⟩ := to_manifold Rb.A j hj (r := (r : ℂ) * ρ) hB h0
   have hne : (r : ℂ) * ρ ≠ 0 := by exact_mod_cast (mul_pos hr hρ).ne'

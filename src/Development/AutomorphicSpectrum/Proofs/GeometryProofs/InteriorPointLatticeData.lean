@@ -306,7 +306,7 @@ theorem exists_fibreLat_rank : Top.Given → ∀ (E : Type) [Field E] [NumberFie
   intro hG E _ _ _ H D l Xo c Y S Ω _ K _ J _ y 𝔐 z hD hz
   obtain ⟨κ, p, hO⟩ := exists_isOver E H D l Xo c Y S Ω K J y 𝔐 z hz
   obtain ⟨g, ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
-  have hN : N1c := hG.1.2.2.1
+  have hN : N1c := hG.1.2.2
   let j : KA l →+* c.F := (IntermediateField.inclusion c.le).toRingHom
   let ρF : c.F := j (baseKA l).ρ
   have hρF : (ρF : ℂ) = H.rt0 := rfl

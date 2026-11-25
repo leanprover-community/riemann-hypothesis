@@ -66,8 +66,7 @@ structure GoodOrigin extends TowerOrigin Y T where
   ample : ∀ a, Ht.AmpleQ (R a).y (R a).A.a
 
 def Given : Prop :=
-  (PartI ∧ N1ab ∧ N1c ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H),
-      ToroidalLevelCompatibility (D := D) ∧ ToroidalHeckeCompatibility (D := D)) ∧ KeyFormula ∧ GlobalTheory.Published.SemiAbelianHomExtension ∧
+  (PartI ∧ N1ab ∧ N1c) ∧ KeyFormula ∧ GlobalTheory.Published.SemiAbelianHomExtension ∧
     GroundTheory.Heights₂.Heights.NumbersDVR.NumericalSegre.Statement ∧ ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement ∧ ReciprocityTheory.ChartRestriction.G.SA.SAStatement ∧
     HT.FarguesHodgeTate ∧ Flat.GagaSections ∧ SlopeBoundSt ∧ PB.Inputs ∧ Prov.HS ∧ Prov.An ∧ Prov.ZhangDimensionPushDownGrassmannianHeightBounds ∧
     GroundTheory.Heights₂.Heights.AntisymPerturbation.Statement

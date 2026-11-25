@@ -1491,7 +1491,7 @@ theorem over_const [NumberField c.F] {m : ℕ} {T : Set (Fin m → ℂ)} {y : (F
 theorem periodOf : PeriodOf := by
   intro hG E _ _ _ H D l Xo c _ Y U Z hp hq hU _ hgeom
   classical
-  have hN : N1c := hG.1.2.2.1
+  have hN : N1c := hG.1.2.2
   obtain ⟨g, ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
   obtain ⟨FU⟩ := hN E H D l Xo (algebraMap (KA l) ℂ) g ty (by omega) rfl hty
   let s : Xo.XF c ⟶ Sp c.F := pullback.snd _ _

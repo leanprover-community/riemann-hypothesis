@@ -1060,7 +1060,7 @@ theorem flat_point_of_principal_sign (hG : _root_.GlobalTheory.CompanionTheory.A
       y ≫ pullback.snd _ _ = spMap β ∧ Set.range y ⊆ U ∧ IsLineFn U τ φ ∧ (∀ s, HasInfNorm U τ φ s (N.inf s)) ∧
       (∀ (p : Nat.Primes) (κ : c.F →+* ℂ_[p]), HasFinNorm U τ φ p κ (N.fin p κ)) ∧ N.IsAdelic ∧
       N.deg = ((p' : ℝ) - q') / 2 * (GlobalTheory.CM.logOm E χ).re := by
-  obtain ⟨⟨hP, hN, -, -⟩, -, -, -, hResK, -, -, hGaga, -⟩ := hG
+  obtain ⟨⟨hP, hN, -⟩, -, -, -, hResK, -, -, hGaga, -⟩ := hG
   obtain ⟨D, rfl, rfl, ⟨I⟩⟩ := _root_.PositivityTheory.Xgn.shimura_datum_tate_isomorphism E H L t ht σ p' q' fun τ => by
     have := hs ℂ σ τ
     rwa [hσ] at this

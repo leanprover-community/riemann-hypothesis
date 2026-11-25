@@ -990,7 +990,7 @@ end VsLaws
 
 theorem vs_laws : Top.Given → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ j → j < D.R.m → ∀ (Y : GlobalTheory.CovTop.Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → (∃ h e', CompLaws Y.U h e') ∧ (∀ p : ℕ, p.Prime → Y.d.l₂.GoodAt p) ∧ (T.Q.Dw j).q = D.R.m - j ∧ (T.Q.Dw j).p + (T.Q.Dw j).q = D.R.r ∧ Fintype.card (CMType T.Q.H) = D.R.f ∧ hostRd D.host.E = D.host.rdE ∧ hostLval T.Q.H = dlogL D 1 := by
   intro hG D T hT j hj1 hjm Y e o hY
-  obtain ⟨⟨-, hN, hN', -⟩, -⟩ := hG
+  obtain ⟨⟨-, hN, hN'⟩, -⟩ := hG
   have hI : InR D j := ⟨hj1, hjm.le⟩
   obtain ⟨hH, hLv, -, hD⟩ := hT.pins
   obtain ⟨hp, hq, -⟩ := hD j hI
@@ -1092,7 +1092,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
 
-theorem given_of_inputs : (PartI ∧ N1ab ∧ N1c ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H), ToroidalLevelCompatibility (D := D) ∧ ToroidalHeckeCompatibility (D := D)) → KeyFormula → GlobalTheory.Published.SemiAbelianHomExtension → GroundTheory.Heights₂.Heights.NumbersDVR.NumericalSegre.Statement → ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → HT.FarguesHodgeTate → Flat.GagaSections → GroundTheory.Heights₂.Heights.LineOfLargeDegree.Statement → PB.Inputs → Prov.HS → Prov.An → Prov.ZhangDimensionPushDownGrassmannianHeightBounds → Top.Given :=
+theorem given_of_inputs : (PartI ∧ N1ab ∧ N1c) → KeyFormula → GlobalTheory.Published.SemiAbelianHomExtension → GroundTheory.Heights₂.Heights.NumbersDVR.NumericalSegre.Statement → ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → HT.FarguesHodgeTate → Flat.GagaSections → GroundTheory.Heights₂.Heights.LineOfLargeDegree.Statement → PB.Inputs → Prov.HS → Prov.An → Prov.ZhangDimensionPushDownGrassmannianHeightBounds → Top.Given :=
   fun hModel hKey hSAH hSegre hResK hFar hGaga hLLD hPB hHS hAn hNine =>
     ⟨hModel, hKey, hSAH, hSegre, hResK, _root_.GlobalTheory.CompanionTheory.Ar.Link.saStatement_holds, hFar, hGaga, (_root_.GlobalTheory.CompanionTheory.Ar.Sl.slopeBound_and_lemmaS_of_siegel hLLD).1, hPB, hHS, hAn, hNine,
       GlobalTheory.T.antisymmetric_perturbation_holds⟩

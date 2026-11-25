@@ -887,7 +887,7 @@ theorem finite_nonempty_maximal : _root_.GlobalTheory.CompanionTheory.Ar.Top.Giv
   intro hG E _ _ _ H D l Xo c Y
   have : NumberField c.F := { to_charZero := inferInstance, to_finiteDimensional := c.fin }
   have : TopologicalSpace.NoetherianSpace Y.X := GlobalTheory.ModelSum.noetherianSpace_of_isProjOver Y.proj
-  have : Nonempty Y.X := model_nonempty Y (moduli_nonempty hG.1.2.2.1 Xo)
+  have : Nonempty Y.X := model_nonempty Y (moduli_nonempty hG.1.2.2 Xo)
   exact ⟨finite_maximal_points Y.X, nonempty_maximal_points Y.X⟩
 
 end GlobalTheory.CompanionTheory.Ar.Comps

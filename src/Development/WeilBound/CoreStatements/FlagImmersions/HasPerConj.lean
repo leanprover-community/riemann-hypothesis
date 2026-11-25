@@ -108,7 +108,7 @@ theorem locPer : LocPer := by
   have hc : ∀ b ∈ Metric.ball t₀ ε, (z b ≫ 𝔐.f) ≫ Y.s = spMap ((κ t₀).comp (algebraMap (𝓞 c.F) c.F)) := fun b hb => by
     rw [hκy, FamEx.embedding_const_preconnected (convex_ball t₀ ε).isPreconnected κ hd hb h0]
   have hi' : ∀ t ∈ Metric.ball t₀ ε, 𝔐.Interior (z t) := fun t ht => hi t (hB ht)
-  have hN : N1c := hG.1.2.2.1
+  have hN : N1c := hG.1.2.2
   obtain ⟨g, ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
   let ρ : c.F := (IntermediateField.inclusion c.le).toRingHom (baseKA l).ρ
   have key : HasPer 𝔐 (Metric.ball t₀ ε) z t₀ := by

@@ -1690,8 +1690,7 @@ end GlobalTheory.CompanionTheory.Ar.Top.Link
 namespace GlobalTheory.CompanionTheory.Ar.Top.Link
 
 theorem goodOrigin_linked {P : Prop} : GlobalTheory.CompanionTheory.Ar.Cmp.CmpSt → PB.AgreementPos → HodgeLatticeFlagBound → TrivFlagOnHodge →
-    ((PartI ∧ N1ab ∧ N1c ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H),
-      ToroidalLevelCompatibility (D := D) ∧ ToroidalHeckeCompatibility (D := D)) ∧ KeyFormula ∧ GlobalTheory.Published.SemiAbelianHomExtension ∧
+    ((PartI ∧ N1ab ∧ N1c) ∧ KeyFormula ∧ GlobalTheory.Published.SemiAbelianHomExtension ∧
     GroundTheory.Heights₂.Heights.NumbersDVR.NumericalSegre.Statement ∧ ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement ∧ ReciprocityTheory.ChartRestriction.G.SA.SAStatement ∧
     HT.FarguesHodgeTate ∧ Flat.GagaSections ∧ SlopeBoundSt ∧ PB.Inputs ∧ Prov.HS ∧ Prov.An ∧ Prov.ZhangDimensionPushDownGrassmannianHeightBounds ∧
     P) → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : RootTower (CMType H) (D.p + D.q)) (o : GoodOrigin Y T) (II : IntersectionSystem), IsGlobal Xo l c Y → o.Extra → IsFullIntersectionSystem II → 1 ≤ D.p → 1 ≤ D.q → ∃ φ : ℕ → Equiv.Perm (CMType H ⊕ CMType H), FrobShape (fun p τ n => (φ p ^ (n + 1)) (Sum.inl τ)) ∧ Num.LinkedTower T II φ := by
