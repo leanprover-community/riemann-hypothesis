@@ -364,9 +364,6 @@ open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison Crys
 
 theorem CrystallineSemistableComparison.RL.d_ob : ∀ (l : ℕ) [Fact l.Prime], CrystallineSemistableComparison.D.ObFacts l := _root_.GlobalTheory.CompanionTheory.TiltFacts.obFacts
 
-theorem CrystallineSemistableComparison.RL.acris_mod_l_base_change : ∀ (l : ℕ) [Fact l.Prime], CrystallineSemistableComparison.D.RAcr1 l := _root_.GlobalTheory.CompanionTheory.ACrisMod.acr1
-
-theorem CrystallineSemistableComparison.RL.d_seq : ∀ (l : ℕ) [Fact l.Prime], CrystallineSemistableComparison.D.RAcrSeq l := _root_.GlobalTheory.CompanionTheory.LSeq.racrSeq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.AcrisModLBaseChange =====

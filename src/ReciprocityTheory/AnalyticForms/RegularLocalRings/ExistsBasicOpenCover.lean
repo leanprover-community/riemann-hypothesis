@@ -106,12 +106,6 @@ section Chart
 
 variable {s : W ⟶ Spec (.of ℂ)}
 
-theorem AffPres.isAffineOpen (P : AffPres s) : IsAffineOpen P.V := by
-  first
-  | exact IsAffine.of_isIso P.iso.hom
-
-def AffPres.affOpen (P : AffPres s) : W.affineOpens := ⟨P.V, P.isAffineOpen⟩
-
 end Chart
 
 end
