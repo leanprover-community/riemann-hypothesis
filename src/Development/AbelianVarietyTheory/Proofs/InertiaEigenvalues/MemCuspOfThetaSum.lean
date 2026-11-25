@@ -179,7 +179,7 @@ theorem mem_cusp_of_thetaSum (d : DeltaDat Xo c n) {r : ℕ} (U : ∀ σ : c.F �
   obtain ⟨A₀, hAm, -⟩ := uw_anFib E H Dw l Xo c σ r (U σ) hσ hu hr1 W k Dc.bas Dc.idx Dc.sympl
     (hDe ▸ Dc.per_eq) (hDe ▸ Dc.ty_eq) ⟨_, hx₀⟩ hux₀
   obtain ⟨z₀, hz₀⟩ := hlev.2.2.2.2.2.2.1 ℂ halg (unC (U σ) k ⟨_, hx₀⟩)
-  obtain ⟨B₀, -, mk₂, hmk₂, hB₀, hover⟩ := Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e _ _
+  obtain ⟨B₀, -, -, mk₂, hmk₂, hB₀, hover⟩ := Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e _ _
     _ A₀ Dc.sympl hx₀ hsd z₀ hz₀ _ hAm
   obtain ⟨Y, hY⟩ := (DualMark.dual_marking E H Dw d.l₂ r _ _ mk₂ _ hsd hmk₂
     (Complex.isPrimitiveRoot_exp _ hM.ne')).2.2.2.2 n N hO.1.pos

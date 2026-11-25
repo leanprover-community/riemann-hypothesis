@@ -441,7 +441,7 @@ theorem exists_scalar_fib : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (σ : T.Q.c.F �
     let A₁' : AnFib X bas idx e x L (y' : FrPt (T.Q.Xo j) C.c' ℂ) :=
       ⟨A₁.ex, A₁.ex_add, A₁.ex_onto, A₁.ex_ker, A₁.ex_lin, A₁.hol, A₁.der, A₁.fr, A₁.fr_hol, A₁.fr_ne, A₁.fr_g,
         A₁.fr_0, A₁.χ, A₁.χ_norm, A₁.fr_per⟩
-    obtain ⟨A₂, hr₂, -⟩ := GlobalTheory.Dict.Lift.anFib_lift _ _ _ _ (T.Q.Xo j) C.c' 0 C.d (fun _ => rfl) hlev r g X bas idx e x
+    obtain ⟨A₂, -, hr₂, -⟩ := GlobalTheory.Dict.Lift.anFib_lift _ _ _ _ (T.Q.Xo j) C.c' 0 C.d (fun _ => rfl) hlev r g X bas idx e x
       L (y' : FrPt (T.Q.Xo j) C.c' ℂ) A₁' hsym hxd hL (w : FrPt C.d.Xo₂ C.d.c₂ ℂ) hy' mk (hm₁ mk hmk)
     exact ⟨A₂, hr₂ _ (hr₁ ϑ hr)⟩
 

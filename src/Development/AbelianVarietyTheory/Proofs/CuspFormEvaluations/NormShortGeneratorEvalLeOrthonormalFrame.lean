@@ -202,7 +202,7 @@ theorem norm_evR_le : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt
     _root_.GlobalTheory.Dict.VSetup.exists_setup E H Dw l Xo c σ r U hσ hU hr1 a n hDom k x huf
   obtain ⟨-, -, hlen, -, -⟩ := hx_ortho E r (U.X k) W.g Dc.bas Dc.idx Dc.sympl x.1 x.2 hxo
   obtain ⟨y₂, hy₂⟩ := hlev.2.2.2.2.2.2.1 ℂ hcomp (unC U k x)
-  obtain ⟨B, hB, mk₂, hmk₂, hB₂, -⟩ := _root_.GlobalTheory.Dict.Lift.anFib_lift E H Dw l Xo c n d hcomp hlev r W.g (U.X k) Dc.bas Dc.idx W.e x.1
+  obtain ⟨B, -, hB, mk₂, hmk₂, hB₂, -⟩ := _root_.GlobalTheory.Dict.Lift.anFib_lift E H Dw l Xo c n d hcomp hlev r W.g (U.X k) Dc.bas Dc.idx W.e x.1
     (U.X k).Λ (unC U k x) A Dc.sympl x.2 hL y₂ hy₂ (W.mark k) hA
   obtain ⟨v0, hv0, hev⟩ := hrule ℂ hcomp (unC U k x) y₂ hy₂
   have hM : 0 < d.l₂.M := by have := d.l₂.three_le; omega

@@ -142,7 +142,7 @@ theorem exists_lift_of_reached {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} (d : D
     ∃ (y₂ : FrPt d.Xo₂ d.c₂ ℂ) (A₂ : AnFib X bas idx e x L y₂), FrOver d y₂ y ∧ A₂.Marked mk₂ ∧
       ∀ θ, A.Reads 1 y.s θ → A₂.Reads 1 y₂.s θ := by
   obtain ⟨y₃, h₃⟩ := hlev.2.2.2.2.2.2.1 ℂ hk y
-  obtain ⟨A₃, ex₃, rd₃, mk₃, hm₃, hmk₃, ho₃⟩ := MarkLift.anFib_lift_ex E H Dw l Xo c n d hk hlev r g X bas idx e x L y A
+  obtain ⟨A₃, ex₃, rd₃, mk₃, hm₃, hmk₃, ho₃⟩ := Lift.anFib_lift E H Dw l Xo c n d hk hlev r g X bas idx e x L y A
     hsym hx hL y₃ h₃ mk hmk
   rcases Nat.eq_zero_or_pos (Dw.p + Dw.q) with h0 | hpq
   · haveI := Dw.fin
@@ -219,7 +219,7 @@ theorem exists_lift_of_reached {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} (d : D
       exact ⟨w', hw'⟩
   obtain ⟨y₄, hy₄, h₄⟩ := hl' ℂ hk y y₃ h₃
   have hyρ : y₄.x ≫ ρ = y₃.x := by rw [hy₄, Category.assoc, IsIso.inv_hom_id, Category.comp_id]
-  obtain ⟨A₄, ex₄, -⟩ := MarkLift.anFib_lift_ex E H Dw l Xo c n d' hk hlev' r g X bas idx e x L y A
+  obtain ⟨A₄, ex₄, -⟩ := Lift.anFib_lift E H Dw l Xo c n d' hk hlev' r g X bas idx e x L y A
     hsym hx hL y₄ h₄ mk hmk
   have hA₄ : A₄.Marked mk₂ := key m' y₄ A₄ ex₄ fun a => by
     rw [hm'', ← Category.assoc, Category.assoc y₄.x, hν.2.1, ← Category.assoc y₄.x, hyρ]
@@ -229,7 +229,7 @@ theorem exists_lift_of_reached {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} (d : D
   rw [hyρ] at hb hη
   obtain ⟨y₂, hy₂, h₂⟩ := (frames_lift_to_cover firstFiveLaws.1 E H Dw l Xo c n d).1 ℂ hk y y₄.x
     (hb.symm.trans h₃.1) y₄.x_over
-  obtain ⟨A₂, ex₂, rd₂, -⟩ := MarkLift.anFib_lift_ex E H Dw l Xo c n d hk hlev r g X bas idx e x L y A hsym
+  obtain ⟨A₂, ex₂, rd₂, -⟩ := Lift.anFib_lift E H Dw l Xo c n d hk hlev r g X bas idx e x L y A hsym
     hx hL y₂ h₂ mk hmk
   exact ⟨y₂, A₂, h₂, key d.m y₂ A₂ ex₂ fun a => by rw [hy₂, hη], rd₂⟩
 

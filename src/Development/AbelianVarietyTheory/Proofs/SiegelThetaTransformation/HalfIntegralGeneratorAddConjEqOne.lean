@@ -183,7 +183,7 @@ theorem rdU_eq_thP : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2
       obtain ⟨A, hA, θ, hθ, hmean⟩ := GlobalTheory.Dict.uw_anFib E H Dw l Xo c σ r U hσ hU hr1 W k Dc.bas Dc.idx Dc.sympl
         (hDe ▸ Dc.per_eq) (hDe ▸ Dc.ty_eq) ⟨x, hx⟩ hux
       obtain ⟨y₂, hy₂⟩ := hlev.2.2.2.2.2.2.1 ℂ halg (unC U k ⟨x, hx⟩)
-      obtain ⟨B, hB, mk₂, hmk₂, hBm, hover⟩ := GlobalTheory.Dict.Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e x _
+      obtain ⟨B, -, hB, mk₂, hmk₂, hBm, hover⟩ := GlobalTheory.Dict.Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e x _
         _ A Dc.sympl hx hL y₂ hy₂ _ hA
       have hT := GlobalTheory.Dict.isTheta1_of_reads_generator E H Dw l Xo c r _ _ Dc.bas Dc.idx W.e x _ _ A Dc.sympl hx hL θ hθ
       obtain ⟨κ, hκ⟩ := GlobalTheory.Dict.VacProd.prod_eq_mul_thA E r _ _ Dc.bas Dc.idx n Dc.sympl hn _ hw hw' _ hL v hv x hx θ hT

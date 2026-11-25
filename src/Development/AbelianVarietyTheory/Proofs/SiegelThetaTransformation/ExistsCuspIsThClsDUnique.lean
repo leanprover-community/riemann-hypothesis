@@ -421,7 +421,7 @@ theorem isThClsD_mem_cusp : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartI
   obtain ⟨A, hAm, -⟩ := uw_anFib E H Dw l Xo c σ r (U σ) hσ hu hr1 W k Dc.bas Dc.idx Dc.sympl
     (hDe ▸ Dc.per_eq) (hDe ▸ Dc.ty_eq) ⟨_, hx⟩ hux
   obtain ⟨y₂, hy₂⟩ := hlev.2.2.2.2.2.2.1 ℂ halg (unC (U σ) k ⟨_, hx⟩)
-  obtain ⟨A₂', -, mk₂, hmk₂, hA₂', hover⟩ := Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e _ _
+  obtain ⟨A₂', -, -, mk₂, hmk₂, hA₂', hover⟩ := Lift.anFib_lift E H Dw l Xo c n d halg hlev r _ _ Dc.bas Dc.idx W.e _ _
     _ A Dc.sympl hx hsd y₂ hy₂ _ hAm
   choose Y hY using fun j => (DualMark.dual_marking E H Dw d.l₂ r _ _ mk₂ _ hsd hmk₂
     (Complex.isPrimitiveRoot_exp _ hM.ne')).2.2.2.2 n (Nc j) (hN j)
