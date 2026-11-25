@@ -1,8 +1,8 @@
 """GitHub's API through `gh`, as the workflows that label pull requests use it, in one place.
 
-`batch-queue-sync.py` and `inbox-sync.py` load this file, and load the other files they share
-through its `load`. Each keeps a subclass of `GitHub` with what only it needs, such as the GraphQL queries
-that read its pull requests.
+`batch-queue-sync.py`, `conflict-labels.py` and `inbox-sync.py` load this file, and load the other
+files they share through its `load`. Each keeps a subclass of `GitHub` with what only it needs, such
+as the GraphQL queries that read its pull requests.
 
 The workflows' token has an hourly allowance of REST requests, shared with every other workflow
 here. GitHub says in each answer how many are left, and a run's log ends with that count. So `call`
@@ -15,6 +15,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -27,6 +28,20 @@ RESERVE = 150
 # that create content a minute, and asks for a pause of a second between those that change
 # anything.
 PACE = 1.0
+# How GraphQL names the workflows' own account, which REST calls github-actions[bot].
+GRAPHQL_BOT = "github-actions"
+# The comments on a pull request, a hundred to a page, for finding the workflows' own markers.
+COMMENTS = """query($owner: String!, $name: String!, $number: Int!, $after: String) {
+  rateLimit { cost remaining }
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      comments(first: 100, after: $after) {
+        pageInfo { hasNextPage endCursor }
+        nodes { body author { __typename login } }
+      }
+    }
+  }
+}"""
 
 
 def load(filename):
@@ -53,7 +68,8 @@ def quoted(name):
 class GitHub:
     """The repository through `gh api`. With `dry_run`, writes are printed, not sent.
 
-    `calls` counts REST requests and `queries` GraphQL ones. `remaining` is how many REST requests
+    `calls` counts REST requests and `queries` GraphQL ones, `points` what the queries cost, and
+    `wrote` the writes made, or that a real run would make. `remaining` is how many REST requests
     GitHub last said were left this hour, or None before it has said. A script sets `failed` when
     something went wrong that did not stop the run.
     """
@@ -61,7 +77,7 @@ class GitHub:
     def __init__(self, repo, dry_run=False):
         self.repo, self.dry_run = repo, dry_run
         self.owner, _, self.name = repo.partition("/")
-        self.calls, self.queries = 0, 0
+        self.calls, self.queries, self.points, self.wrote = 0, 0, 0, 0
         self.remaining, self.changed, self.failed = None, None, False
         # Whether each label looked up exists, by name.
         self.known_labels = {}
@@ -123,6 +139,7 @@ class GitHub:
         the allowance the other workflows share. Each script records what it does as it does it,
         so the next run carries on.
         """
+        self.wrote += 1
         if self.dry_run:
             print(f"would {method} {path} {json.dumps(payload) if payload else ''}".rstrip())
             return 0, None
@@ -143,7 +160,15 @@ class GitHub:
         if not isinstance(answer, dict) or not answer.get("data") or errors or done.returncode != 0:
             sys.stderr.write(done.stderr.decode("utf-8", "replace"))
             raise RuntimeError(f"GraphQL query failed: {json.dumps(errors) if errors else 'no answer'}")
+        self.points += (answer["data"].get("rateLimit") or {}).get("cost", 0)
         return answer["data"]
+
+    def rate_limit(self):
+        """How many REST requests are left this hour. Asking does not use one up."""
+        done = self.run(["rate_limit", "--jq", ".resources.core.remaining"])
+        text = done.stdout.decode().strip()
+        if done.returncode == 0 and text.isdigit():
+            self.remaining = int(text)
 
     def short(self):
         """Whether the hour's allowance is nearly used up."""
@@ -159,3 +184,36 @@ class GitHub:
                 raise RuntimeError(f"GET labels/{name} answered {status}")
             self.known_labels[name] = status == 200
         return self.known_labels[name]
+
+    def add_labels(self, number, names):
+        status, _ = self.write("POST", f"issues/{number}/labels", {"labels": sorted(names)})
+        if status not in (0, 200, 201):
+            raise RuntimeError(f"could not label #{number}: {status}")
+
+    def remove_label(self, number, name):
+        status, _ = self.write("DELETE", f"issues/{number}/labels/{quoted(name)}")
+        # Taking off a label that someone else has just taken off answers 404.
+        if status not in (0, 200, 204, 404):
+            raise RuntimeError(f"could not take `{name}` off #{number}: {status}")
+
+    def comment(self, number, body):
+        status, _ = self.write("POST", f"issues/{number}/comments", {"body": body})
+        if status not in (0, 200, 201):
+            raise RuntimeError(f"could not comment on #{number}: {status}")
+
+    def marked(self, number, marker):
+        """The numbers that the workflows' own comments on pull request `number` name in a marker
+        at their very start, read through GraphQL. `marker` is a regular expression whose first
+        group is the number."""
+        found, after = set(), None
+        while True:
+            data = self.graphql(COMMENTS, owner=self.owner, name=self.name, number=number, after=after)
+            page = data["repository"]["pullRequest"]["comments"]
+            for comment in page["nodes"]:
+                author = comment.get("author") or {}
+                match = re.match(marker, comment.get("body") or "")
+                if match and author.get("__typename") == "Bot" and author.get("login") == GRAPHQL_BOT:
+                    found.add(int(match.group(1)))
+            if not page["pageInfo"]["hasNextPage"]:
+                return found
+            after = page["pageInfo"]["endCursor"]
