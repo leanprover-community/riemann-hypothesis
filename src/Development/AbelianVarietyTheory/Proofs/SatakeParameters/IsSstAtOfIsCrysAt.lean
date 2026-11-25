@@ -29,21 +29,21 @@ theorem finrank_Dst_le {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l
       finrank ℚ_[l] ↥(Dst P ρ) ≤ finrank ℚ_[l] V * finrank ℚ_[l] ↥(K0 K) := by
   obtain ⟨hdom, hreg, -⟩ := GlobalTheory.Pst.stRegular l P AI ⟨T⟩
   have hup := GlobalTheory.PstRank.rank_DpstUr_le P hdom hreg ρ
-  haveI : FiniteDimensional ↥(MaximalUnramifiedExtension l) (DpstUr P ρ) :=
+  have : FiniteDimensional ↥(MaximalUnramifiedExtension l) (DpstUr P ρ) :=
     Module.rank_lt_aleph0_iff.mp (hup.trans_lt Cardinal.natCast_lt_aleph0)
   have hup' : finrank ↥(MaximalUnramifiedExtension l) (DpstUr P ρ) ≤ finrank ℚ_[l] V := by
     rw [← finrank_eq_rank] at hup
     exact_mod_cast hup
-  haveI := K.2
-  haveI : FiniteDimensional ℚ_[l] ↥(K0 K) :=
+  have := K.2
+  have : FiniteDimensional ℚ_[l] ↥(K0 K) :=
     FiniteDimensional.of_injective (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).toLinearMap
       (IntermediateField.inclusion_injective inf_le_left)
   let val : DpstUr P ρ →+ V ⊗[ℚ_[l]] Bst P :=
     (Dpst P ρ).subtype.toAddMonoidHom.comp (toUr P ρ).symm.toAddMonoidHom
   have hSD : Dst P ρ ≤ Dpst P ρ := fun s hs => (mem_Dpst P ρ).mpr ⟨K, fun g _ => (mem_Dst P ρ).mp hs g⟩
   obtain ⟨b, hbS, hsp, hli⟩ := exists_linearIndependent ↥(MaximalUnramifiedExtension l) {y : DpstUr P ρ | val y ∈ Dst P ρ}
-  haveI : Finite ↥b := hli.finite
-  letI : Fintype ↥b := Fintype.ofFinite _
+  have : Finite ↥b := hli.finite
+  let : Fintype ↥b := Fintype.ofFinite _
   have hspan : ∀ y : DpstUr P ρ, y ∈ Submodule.span ↥(MaximalUnramifiedExtension l) b → ∃ c : ↥b → ↥(MaximalUnramifiedExtension l),
       ∑ i, c i • (i : DpstUr P ρ) = y := fun y hy => by
     rw [← Submodule.mem_span_range_iff_exists_fun, Subtype.range_coe]; exact hy
@@ -78,8 +78,8 @@ theorem finrank_Dst_le {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l
 theorem isSst_of_isCrys {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI)
     {K LL : FinExt l} {V : Type} [AddCommGroup V] [Module ↥LL.1 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥LL.1 V]
     [FiniteDimensional ↥LL.1 V] (ρ : Representation ↥LL.1 ↥(GK K) V) (h : IsCrys (P.PD K) ρ) : IsSst P ρ := by
-  haveI := LL.2
-  haveI : FiniteDimensional ℚ_[l] V := Module.Finite.trans ↥LL.1 V
+  have := LL.2
+  have : FiniteDimensional ℚ_[l] V := Module.Finite.trans ↥LL.1 V
   obtain ⟨hfin, hb⟩ := finrank_Dst_le P AI T (GlobalTheory.PstCoeff.resQ ρ)
   have hD : Dst P (GlobalTheory.PstCoeff.resQ ρ) = (Dst P ρ).restrictScalars ℚ_[l] := by
     ext x
@@ -88,8 +88,8 @@ theorem isSst_of_isCrys {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf 
     rw [hD, finrank_mul_finrank]
     rfl
   have hfin' : FiniteDimensional ℚ_[l] ↥((Dst P ρ).restrictScalars ℚ_[l]) := hD ▸ hfin
-  haveI : Module.Finite ℚ_[l] ↥(Dst P ρ) := hfin'
-  haveI : FiniteDimensional ↥LL.1 ↥(Dst P ρ) :=
+  have : Module.Finite ℚ_[l] ↥(Dst P ρ) := hfin'
+  have : FiniteDimensional ↥LL.1 ↥(Dst P ρ) :=
     Module.Finite.of_restrictScalars_finite ℚ_[l] ↥LL.1 ↥(Dst P ρ)
   have hV : finrank ℚ_[l] V = finrank ℚ_[l] ↥LL.1 * finrank ↥LL.1 V := (finrank_mul_finrank ℚ_[l] ↥LL.1 V).symm
   have hup : finrank ↥LL.1 ↥(Dst P ρ) ≤ finrank ℚ_[l] ↥(K0 K) * finrank ↥LL.1 V := by

@@ -175,8 +175,8 @@ theorem crys_pass (T : LocTied l P AI) (K L : FinExt l) {V : Type} [AddCommGroup
     (hF : ∀ v : Fin a → ↥L.1, ∃ (F : V →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : V),
       (∀ g y, F (ρq g y) = R g (F y)) ∧ F x = v)
     (h : IsCrys (P.PD K) ρq) : IsCrys (P.PD K) R := by
-  haveI := L.2
-  haveI : IsDomain P.R.B := GlobalTheory.RegularRing.isDomain_of_tied T K
+  have := L.2
+  have : IsDomain P.R.B := GlobalTheory.RegularRing.isDomain_of_tied T K
   have hf := GlobalTheory.TateDualCrys.fracInv_of_tied T K
   have hu := GlobalTheory.TateDualCrys.lineUnit_of_tied T K
   rw [GlobalTheory.RegularRing.isCrys_iff_span (P.PD K) hf hu] at h ⊢
@@ -207,7 +207,7 @@ theorem dr_pass (T : LocTied l P AI) (K L : FinExt l) {LL0 : Type} [Field LL0] [
     (hF : ∀ v : Fin a → ↥L.1, ∃ (F : V →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : V),
       (∀ g y, F (ρ0 g y) = R g (F y)) ∧ F x = v)
     (h : GlobalTheory.DRFil.Spans (P.PD K) ρ0) : IsDR (P.PD K) R := by
-  haveI := L.2
+  have := L.2
   apply GlobalTheory.DRFil.isDR_of_spans T K L R
   intro y
   induction y using TensorProduct.induction_on with
@@ -265,12 +265,12 @@ theorem dr_pass_rat (T : LocTied l P AI) (K L : FinExt l) {V : Type} [AddCommGro
     (h : IsDR (P.PD K) ρq) : IsDR (P.PD K) R := by
   let LL : FinExt l := ⟨⊥, inferInstance⟩
   let e : (↥(LL.1)) ≃ₐ[ℚ_[l]] ℚ_[l] := IntermediateField.botEquiv ℚ_[l] (Om l)
-  letI iM : Module (↥(LL.1)) V := Module.compHom V e.toRingEquiv.toRingHom
-  haveI iT : IsScalarTower ℚ_[l] (↥(LL.1)) V :=
+  let iM : Module (↥(LL.1)) V := Module.compHom V e.toRingEquiv.toRingHom
+  have iT : IsScalarTower ℚ_[l] (↥(LL.1)) V :=
     ⟨fun q x v => by
       show e (q • x) • v = q • (e x • v)
       rw [show e (q • x) = q • e x from e.toLinearEquiv.map_smul q x, smul_eq_mul, mul_smul]⟩
-  haveI iF : FiniteDimensional (↥(LL.1)) V := Module.Finite.of_restrictScalars_finite ℚ_[l] (↥(LL.1)) V
+  have iF : FiniteDimensional (↥(LL.1)) V := Module.Finite.of_restrictScalars_finite ℚ_[l] (↥(LL.1)) V
   let ρ' : Representation (↥(LL.1)) (↥(GK K)) V :=
     { toFun := fun g =>
         { toFun := ρq g, map_add' := (ρq g).map_add, map_smul' := fun x v => (ρq g).map_smul (e x) v }
@@ -329,7 +329,7 @@ namespace GlobalTheory
 
 theorem card_eq_of_indep_spans_dR : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (a m : ℕ) (w : Fin m → Fin a → P.R.BdR), (∀ β : Fin m → P.R.BdR, ∑ i, β i • w i = 0 → β = 0) → (∀ j, ∃ u : Fin m → P.R.BdR, ∑ i, u i • w i = Pi.single j 1) → m = a := by
   intro l _ P AI T a m w hind hspan
-  haveI : Nontrivial P.R.BdR := (GlobalTheory.DRFil.isField_dR T).nontrivial
+  have : Nontrivial P.R.BdR := (GlobalTheory.DRFil.isField_dR T).nontrivial
   have hli : LinearIndependent P.R.BdR w := by
     rw [Fintype.linearIndependent_iff]
     intro g hg i
@@ -609,9 +609,9 @@ namespace GlobalTheory.HodgeAt
 
 theorem exists_hodge_at_embedding : ∀ (l : ℕ) [Fact l.Prime] (K L : FinExt l) (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (C : Core l), Fits T C → ∀ (ξ : Ainf l), Ideal.span {ξ} = RingHom.ker (Per.θ l) → ∀ (a : ℕ) (r : ↥(GK K) →* GL (Fin a) ↥L.1) (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1)), (∀ g v, R g v = (r g).val *ᵥ v) → Formalism.MainNotions.N.IsDR (P.PD K) R → ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] ↥L.1) (σ : GQ l), (∀ x : ↥K.1, σ ((τ x : ↥L.1) : Om l) = (x : Om l)) → ∃ (K' : FinExt l) (H : Hodge C ξ (fun g => (r g).val.map fun x => σ (x : Om l)) K'), K.1 ≤ K'.1 ∧ ∀ n : ℤ, ((Finset.univ.filter fun i => (H.p i : ℤ) - H.q = n).card : ℤ) = multV (P.PD K) R τ n := by
   intro l _ K L P AI T C hC ξ hξ a r R hR hDR τ σ hσ
-  haveI := K.2
-  haveI := L.2
-  haveI := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K L (Fin a → ↥L.1) R).1
+  have := K.2
+  have := L.2
+  have := (_root_.GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI T K L (Fin a → ↥L.1) R).1
   obtain ⟨m, d, k, hA⟩ := GlobalTheory.DRFil.exists_adapted (P.PD K) (GlobalTheory.DRFil.isField_dR T) R
     (GlobalTheory.DRFil.filSpans T K L R hDR) τ
   obtain ⟨K', hKK', hK'⟩ := exists_ext_fixing l K L σ
@@ -697,7 +697,7 @@ theorem htOp_pow_eq_sum : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (C : Core 
   have hθo : ∀ w : Om l, Per.θD l (C.o w) = algebraMap (Om l) ℂ_[l] w := fun w => C.o_sec.th w
 
   let S : Set (Om l) := Set.range fun t : Fin d × Fin a × Fin a => σ (b t.1 t.2.1 t.2.2)
-  haveI : Finite S := (Set.finite_range _).to_subtype
+  have : Finite S := (Set.finite_range _).to_subtype
   have hfd : FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] S) :=
     IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
   let K' : FinExt l := ⟨IntermediateField.adjoin ℚ_[l] S, hfd⟩
@@ -895,7 +895,7 @@ theorem GlobalTheory.BKLim.isHT_iff_diag : ∀ (l : ℕ) [Fact l.Prime] (K K' : 
   constructor
   · intro hm K'' p q x y hfix hxy
     obtain ⟨hdom, hinj, hF, -⟩ := BdRField.bdR_isField l
-    haveI := hdom
+    have := hdom
     set ι := algebraMap (Per.BdRp l) (Per.BdR l) with hι
 
     have hxiker : xi C.ε ∈ Ideal.span {ξ} := by
@@ -943,7 +943,7 @@ theorem GlobalTheory.BKLim.isHT_iff_diag : ∀ (l : ℕ) [Fact l.Prime] (K K' : 
     have hxa : x = H.Q *ᵥ av := by rw [hav, Matrix.mulVec_mulVec, hQQi, Matrix.one_mulVec]
 
     let K3 : FinExt l := ⟨K'.1 ⊔ K''.1, by
-      haveI := K'.2; haveI := K''.2; exact IntermediateField.finiteDimensional_sup _ _⟩
+      have := K'.2; have := K''.2; exact IntermediateField.finiteDimensional_sup _ _⟩
     have hmono : ∀ {A B : FinExt l}, A.1 ≤ B.1 → ∀ g, g ∈ GK B → g ∈ GK A := fun h g hg =>
       (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun x hx =>
         (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg x (h hx)
@@ -1423,8 +1423,8 @@ theorem repOf_apply {Γ : Type} [Group Γ] {a : ℕ} {L : FinExt l} (r : Γ →*
 
 theorem isDR_of_isSst (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) {K L : FinExt l} {a : ℕ}
     (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1)) (h : IsSst P R) : Formalism.MainNotions.N.IsDR (P.PD K) R := by
-  haveI := L.2
-  haveI : FiniteDimensional ℚ_[l] (Fin a → ↥L.1) := Module.Finite.trans ↥L.1 _
+  have := L.2
+  have : FiniteDimensional ℚ_[l] (Fin a → ↥L.1) := Module.Finite.trans ↥L.1 _
   exact (GlobalTheory.PstCoeff.isDR_resQ_iff P R).mp
     (GlobalTheory.sst_isDR l P AI T K _ (GlobalTheory.PstCoeff.resQ R) (_root_.GlobalTheory.LayerSst.isSst_resQ P R h))
 
@@ -1471,7 +1471,7 @@ theorem lay_pos {Γ : Type} [Group Γ] [TopologicalSpace Γ] {a : ℕ} (ha : 1 �
     apply h0
     funext k
     exact absurd k.2 (by omega)
-  haveI : IsEmpty (Fin (Cv.tw.d' 1)) := by rw [hd']; infer_instance
+  have : IsEmpty (Fin (Cv.tw.d' 1)) := by rw [hd']; infer_instance
   have hd : Cv.d = 0 := by
     by_contra hd
     obtain ⟨S, hS⟩ := (Cv.tw.onto 1).surj
@@ -1482,7 +1482,7 @@ theorem lay_pos {Γ : Type} [Group Γ] [TopologicalSpace Γ] {a : ℕ} (ha : 1 �
     have hl1 : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
     rw [inv_eq_one] at hu
     linarith
-  haveI : IsEmpty (Fin Cv.d) := by rw [hd]; infer_instance
+  have : IsEmpty (Fin Cv.d) := by rw [hd]; infer_instance
   have h1 := Cv.reads.one
   simp at h1
   have h2 := congrFun (congrFun h1 ⟨0, ha⟩) ⟨0, ha⟩
@@ -1499,7 +1499,7 @@ theorem closed_of_cover : ∀ (l : ℕ) [Fact l.Prime] (K L₀ : FinExt l) (P : 
   obtain ⟨C, hC⟩ := GlobalTheory.MemLoc.FitsEx.exists_fits l P AI T
   have hCd : C.InvdR := hC.invdR
   have hξ : Ideal.span {bk.ev bk.E} = RingHom.ker (Per.θ l) := bk.span_ev
-  haveI := K.2
+  have := K.2
 
   let N : ℕ := Finset.univ.sup fun τ' : ↥K.1 →ₐ[ℚ_[l]] Om l => ((J τ').map Int.natAbs).sup
   have hN : ∀ τ', ∀ n ∈ J τ', |n| ≤ (N : ℤ) := by
@@ -1670,8 +1670,8 @@ theorem cover_exists : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ] [Topo
     intro ρ'
     by_cases h : Continuous ρ'
     · obtain ⟨L, hLf, hL⟩ := _root_.GlobalTheory.CompactRepField.exists_finiteDimensional_entries_mem_of_continuous l Γ a ρ' h
-      haveI := hLf
-      haveI := L₀.2
+      have := hLf
+      have := L₀.2
       let L' : FinExt l := ⟨L ⊔ L₀.1, inferInstance⟩
       have hL' : ∀ g i j, ((ρ' g : GL (Fin a) (Om l)) : Matrix (Fin a) (Fin a) (Om l)) i j ∈ L'.1 := fun g i j =>
         (le_sup_left : L ≤ L ⊔ L₀.1) (hL g i j)
@@ -1824,8 +1824,8 @@ theorem closedAtL : ClosedAtL := by
   have model : ∀ L₀ : FinExt l, ∃ (L : FinExt l) (r₁ : Formalism.ConjugateSelfDual.G E Ω →* GL (Fin a) ↥L.1), L₀.1 ≤ L.1 ∧ Bw.LL.1 ≤ L.1 ∧
       mapRep (algebraMap ↥L.1 (Om l)) r₁ = r := by
     intro L₀
-    haveI := L₀.2
-    haveI := Bw.LL.2
+    have := L₀.2
+    have := Bw.LL.2
     obtain ⟨L, hL, hmem⟩ := GlobalTheory.CompactRepField.exists_finExt_entries_mem l (Formalism.ConjugateSelfDual.G E Ω) a r hcont
       ⟨L₀.1 ⊔ Bw.LL.1, IntermediateField.finiteDimensional_sup _ _⟩
     obtain ⟨r₁, -, hr₁⟩ := GlobalTheory.DeRhamRead.exists_model_of_mem r hcont L hmem
