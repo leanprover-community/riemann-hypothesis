@@ -187,11 +187,13 @@ def imports(contents):
     Only the header is read. It ends at the first line that is not blank, a comment, `module`,
     `prelude` or an import.
     """
-    found, depth = set(), 0
+    found, depth, pending = set(), 0, ""
     for raw in contents.decode("utf-8", "replace").split("\n"):
         kept, at = [], 0
         while at < len(raw):
             if raw.startswith("/-", at):
+                if not depth:
+                    kept.append(" ")
                 depth, at = depth + 1, at + 2
             elif depth and raw.startswith("-/", at):
                 depth, at = depth - 1, at + 2
@@ -203,8 +205,16 @@ def imports(contents):
                 kept.append(raw[at])
                 at += 1
         line = "".join(kept).strip()
-        if not line or line in ("module", "prelude"):
+        if not line:
             continue
+        line = (pending + " " + line).strip()
+        if line in ("module", "prelude"):
+            continue
+        # Lean's import modifiers and module name need not be on the same line.
+        if re.fullmatch(r"(?:public(?:\s+meta)?|meta|(?:public\s+)?(?:meta\s+)?import(?:\s+all)?)", line):
+            pending = line
+            continue
+        pending = ""
         match = IMPORT.fullmatch(line)
         if not match:
             break

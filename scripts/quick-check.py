@@ -28,7 +28,7 @@ def runner(identifier):
 
 def imports(path):
     if path.stat().st_size > 4 * 1024**2: raise ValueError('source/header exceeds quick-check limit')
-    result = []; depth = 0
+    result = []; depth = 0; pending = ''
     # Lean only accepts imports in the header, so stop at the first other command.
     with path.open(encoding='utf-8') as source:
         for raw_line in source:
@@ -42,12 +42,19 @@ def imports(path):
                 elif depth: i += 1
                 else: cleaned.append(raw_line[i]); i += 1
             line = ''.join(cleaned).strip()
-            if not line or line in ('module', 'prelude'): continue
+            if not line: continue
+            line = (pending + ' ' + line).strip()
+            if line in ('module', 'prelude'): continue
+            # Lean's import modifiers and module name need not be on the same line.
+            if re.fullmatch(r'(?:public(?:\s+meta)?|meta|(?:public\s+)?(?:meta\s+)?import(?:\s+all)?)', line):
+                pending = line; continue
+            pending = ''
             match = re.fullmatch(r'(?:public\s+)?(?:meta\s+)?import(?:\s+all)?\s+([\w\']+(?:\.[\w\']+)*)', line)
             if match: result.append(match[1]); continue
             if re.match(r'(?:public\s+|meta\s+)*import\b', line): raise ValueError('unsupported import header')
             return result
     if depth: raise ValueError('unterminated header comment')
+    if pending: raise ValueError('incomplete import header')
     return result
 
 def dependency_closure(project, targets, maximum=MAX_CLOSURE, importers=None):

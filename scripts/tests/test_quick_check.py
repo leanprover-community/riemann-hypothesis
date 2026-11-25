@@ -58,6 +58,26 @@ class QuickChecks(unittest.TestCase):
   self.assertEqual(q.imports(p),['B','C'])
  def test_real_module_system_header(self):
   p=self.source('A','module\npublic meta import Foo\nimport all Bar\n\ndef x:=1\n');self.assertEqual(q.imports(p),['Foo','Bar'])
+ def test_import_directives_can_span_lines(self):
+  for directive in ('public\nimport B', 'meta\nimport B', 'public\nmeta\nimport\nB',
+                    'import\nall\nB', 'public /- comment\n /- nested -/ -/\nimport B'):
+   with self.subTest(directive=directive):
+    p=self.source('A','module\n'+directive+'\nimport C\n')
+    self.assertEqual(q.imports(p),['B','C'])
+ def test_split_import_cannot_hide_an_oversized_closure(self):
+  self.source('A','module\npublic\nimport B\n')
+  self.source('B','import C\n');self.source('C','def x := 1\n')
+  with self.assertRaisesRegex(ValueError,'ancestor cone'):
+   q.dependency_closure(self.root,['A'],maximum=2)
+ def test_split_public_section_still_ends_header(self):
+  p=self.source('A','module\nimport B\npublic\nsection\ndef s := "/-"\nimport TooLate\n')
+  self.assertEqual(q.imports(p),['B'])
+ def test_unsupported_split_import_is_deferred(self):
+  p=self.source('A','module\npublic\nimport «A B»\n')
+  with self.assertRaisesRegex(ValueError,'unsupported import header'):q.imports(p)
+ def test_unfinished_import_is_deferred(self):
+  p=self.source('A','module\npublic\nimport\n')
+  with self.assertRaisesRegex(ValueError,'incomplete import header'):q.imports(p)
  def test_unrecognized_header_deferred(self):
   p=self.source('A','module\nimport «A B»\n')
   with self.assertRaisesRegex(ValueError,'unsupported'):q.imports(p)

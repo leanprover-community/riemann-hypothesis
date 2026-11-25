@@ -185,6 +185,21 @@ class LaterForks(unittest.TestCase):
 
 
 class ImportHeaders(unittest.TestCase):
+    def test_import_directives_can_span_lines(self):
+        for directive in ("public\nimport A", "meta\nimport A", "public\nmeta\nimport\nA",
+                          "import\nall\nA", "public /- comment\n /- nested -/ -/\nimport A"):
+            with self.subTest(directive=directive):
+                text = "module\n" + directive + "\nimport B\n"
+                self.assertEqual(conflicts.imports(text.encode()), {b"src/A.lean", b"src/B.lean"})
+
+    def test_comments_separate_import_tokens(self):
+        text = "module\npublic/- outer /- inner -/ -/import A\nimport B\n"
+        self.assertEqual(conflicts.imports(text.encode()), {b"src/A.lean", b"src/B.lean"})
+
+    def test_split_public_section_ends_header(self):
+        text = 'module\nimport A\npublic\nsection\ndef s := "/-"\nimport TooLate\n'
+        self.assertEqual(conflicts.imports(text.encode()), {b"src/A.lean"})
+
     def test_every_form_of_import_line_is_read(self):
         text = "module\n\npublic import A.B\nimport C\npublic meta import D.E'\nimport all F\nmeta import G\n"
         self.assertEqual(conflicts.imports(text.encode()),
@@ -255,6 +270,11 @@ class DeletedImports(unittest.TestCase):
     def test_new_import_in_an_existing_file_is_reported(self):
         result = self.check(self.branch("new-import", self.write("Kept.lean", "import Sub₂.Gone\n\ntheorem kept : True := gone\n")))
         self.assertEqual(result.stale, [("ours", self.GONE, b"src/Kept.lean")])
+
+    def test_split_import_of_deleted_file_is_reported(self):
+        result = self.check(self.branch("split-import", self.write(
+            "New.lean", "module\npublic\nimport Sub₂.Gone\n\ntheorem new : True := gone\n")))
+        self.assertEqual((result.kind, result.stale), ("apart", [("ours", self.GONE, self.NEW)]))
 
     def test_it_is_reported_from_the_other_side_too(self):
         theirs = self.branch("new-file-2", self.write("New.lean", "import Sub₂.Gone\n"))
