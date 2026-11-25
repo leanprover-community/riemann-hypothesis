@@ -90,8 +90,10 @@ line or branch name to match.
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
 soon as the push comes in (see `pushed`) or else by the next sync, unless the batch's branch has
-the new head already, as when the merge of main the batch was built from is pushed to the pull
-request afterwards: then the record takes the new head. If the batch then takes its new head, or
+the new head already, and the new head has the commit the batch took in it, as when the merge of
+main the batch was built from is pushed to the pull request afterwards: then the record takes the
+new head. A push back to an earlier commit is told even though the branch has that commit: the
+batch still lands the one it took. If the batch then takes its new head, or
 it is pushed back to the commit the batch took, `awaiting-author` comes off again, but only if
 this workflow put it on along with that comment: a label a person put on stays. Whenever the
 record takes a member's new head, nothing new is posted: the comment that told it it is frozen is
@@ -1126,8 +1128,11 @@ def look_through(gh, batch, by, pulls, before, gone, log):
     they are when the batch has just been labelled `building` again, or when the note is from
     before it recorded what the branch reverts. What has arrived is added. What was found before
     stays as long as the commit it was found at is still there, even after its author has pushed
-    again, unless its new head is in the branch too. Which of them the branch reverts (`reverted`,
-    see `reverts`) is read from the same list. `before` is the pull
+    again, unless its new head is in the branch too and has that commit in it, which costs a
+    request (see `contains`): after a push back to an earlier commit, or of a rewritten one, the
+    batch still lands the commit it was found at, and `tell_members` tells the pull request so.
+    Which of them the branch reverts (`reverted`, see `reverts`) is read from the same list.
+    `before` is the pull
     requests that some note says were labelled `batch queue` before a batch took them, and `gone`
     the batches assembled by hand that were merged or closed and are being tidied up after.
 
@@ -1157,8 +1162,11 @@ def look_through(gh, batch, by, pulls, before, gone, log):
             return
         now = inside(batch, pulls, commits)
         for key, commit in found.items():
-            if commit in commits:
-                now.setdefault(key, commit)
+            if commit not in commits:
+                continue
+            if now.get(key, commit) != commit and not contains(gh, now[key], commit):
+                now[key] = commit  # also when GitHub did not say: `tell_members` asks again
+            now.setdefault(key, commit)
         found = now
         if set(below) != set(note.get("below", {})):
             log.append(f"#{number} is stacked on {stacking(batch)}" if batch["under"] else
@@ -1315,9 +1323,9 @@ def tell_members(gh, batch, pulls, main, log):
 
     A member whose head is not the commit the note holds may have been pushed to with a commit the
     batch already has, as when the merge of `main` that the batch was built from is pushed to the
-    pull request afterwards. The batch is asked first (see `has_head`). If it has the new head, that
-    becomes the member's commit in the note, and no new comment is posted: if it was told it is
-    frozen at the old one, that comment is edited to name the new head, and so is a comment of
+    pull request afterwards. The batch is asked first (see `takes`). If it has the new head, and the
+    new head has the commit in the note in it, the new head becomes the member's commit in the
+    note, and no new comment is posted: if it was told it is frozen at the old one, that comment is edited to name the new head, and so is a comment of
     `pushed` about the old one, which also takes off the `awaiting-author` it put on (see
     `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
     note, number, since = batch["note"], batch["number"], 0
@@ -1333,10 +1341,10 @@ def tell_members(gh, batch, pulls, main, log):
         if pr["sha"] != commit and pushed.get(key) != commit:
             if key in (batch.get("handed") or {}):
                 continue  # `keep_in_step` could not move it to its new head in this run (see `retell`)
-            inside = has_head(gh, batch, pr["sha"])
+            inside = takes(gh, batch, pr["sha"], commit)
             if inside is None:
-                log.append(f"GitHub did not say whether the batch #{number} has the new head of #{key}: "
-                           "the next run asks again")
+                log.append(f"GitHub did not say whether the batch #{number} has the new head of #{key}, with "
+                           f"`{commit[:10]}` in it: the next run asks again")
                 continue
             if inside:
                 if told.get(key) == commit:
@@ -1378,6 +1386,18 @@ def has_head(gh, batch, sha):
     if batch.get("commits") is not None:
         return sha in batch["commits"]
     return contains(gh, batch["sha"], sha)
+
+
+def takes(gh, batch, sha, commit):
+    """Whether a push of `sha` to a pull request that the batch `batch` took at `commit` brought in
+    only commits the batch has already: whether its branch has `sha` (see `has_head`), and `sha`
+    has `commit` in it, one more request. A push back to an earlier commit than `commit`, or of a
+    rewritten one, does not count even when the branch has it: the batch still lands `commit`.
+    None when GitHub did not say."""
+    inside = has_head(gh, batch, sha)
+    if not inside:
+        return inside
+    return contains(gh, sha, commit)
 
 
 def announce(gh, batch, number, marker, text):
@@ -1430,7 +1450,7 @@ def handed_back(gh, number, key, commits):
 def retell(gh, batch, pr, old, main, log):
     """Bring what a member of a batch assembled by hand was told up to date when the batch takes its
     new head, so that its record moves from the commit `old` to `pr["sha"]`: when the branch is
-    looked through again and has the new head (`keep_in_step`), or when `has_head` finds it there
+    looked through again and has the new head (`keep_in_step`), or when `takes` finds it there
     (`tell_members`). It was told that it is frozen at `old`, and is not told so again: the last
     comment of the workflow's whose marker is this batch's `FROZEN_NOTE`, at whatever commit, is
     edited to name the new head, marker and all. One is posted only if there is none. A comment
@@ -1746,10 +1766,10 @@ def describe_by_hand(note, under=""):
             "It adds nothing to a batch assembled by hand and leaves its description alone, but it keeps the labels "
             "in step: each open pull request whose head commit is in this branch, and in no batch this one is "
             f"stacked on, is now `{MEMBER}` and `{FROZEN}`, in place of `{QUEUED}` if it had that, and is asked not "
-            f"to push until this has landed. Those this description lists as left out are told why and labelled "
-            f"`{WAITING}`, unless a batch being built contains them. Where the description and the branch disagree, "
-            "or the branch reverts a pull request, it says so in another comment. When this is merged the pull "
-            f"requests in it lose "
+            f"to push until this has landed. Those this description lists as left out are told why, unless they "
+            f"are `{DEFERRED}` or a batch being built contains them: the comment only informs. Where the description "
+            "and the branch disagree, or the branch reverts a pull request, it says so in another comment. When this "
+            f"is merged the pull requests in it lose "
             f"`{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, and the ones that "
             f"were queued go back to `{QUEUED}`, except those that a batch stacked on this one still holds. See "
             "`verification/BATCHES.md`.\n\n"
@@ -2184,9 +2204,10 @@ def pushed(gh, number):
     built. The pull request's own batch is the lowest of them, in the order `stack` puts them in,
     whose record holds it: a record written before batches were stacked may hold it too, and
     otherwise one record does. If that batch holds it at another commit than its head, and its
-    branch does not have the new head as well (one request, see `has_head`), it is told so and
-    labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If the branch has the
-    new head, nothing is said: the next sync records it at that commit, and edits the comments
+    branch does not have the new head as well, with that commit in it (a request or two, see
+    `takes`), it is told so and labelled `awaiting-author`, as `tell_members` does (see
+    `tell_pushed`). If the branch has the new head, and the new head has that commit in it,
+    nothing is said: the next sync records it at that commit, and edits the comments
     that named the old one, taking off an `awaiting-author` they put on (see `retell`). The note is
     not written here, so neither are they. If it was pushed
     back to that commit instead, `awaiting-author` comes off, if the workflow put it on when it told
@@ -2214,15 +2235,15 @@ def pushed(gh, number):
         if commit is None:
             continue
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
-            inside = has_head(gh, batch, pr["sha"])
+            inside = takes(gh, batch, pr["sha"], commit)
             if inside:
                 # Frozen at the new head, as the next sync records it.
                 held_at[key] = pr["sha"]
                 log.append(f"#{key} was pushed to with `{pr['sha'][:10]}`, which the batch #{batch['number']} has "
                            "already: nothing to say")
             elif inside is None:
-                log.append(f"GitHub did not say whether the batch #{batch['number']} has the new head of #{key}: "
-                           "the next sync asks again")
+                log.append(f"GitHub did not say whether the batch #{batch['number']} has the new head of #{key}, "
+                           f"with `{commit[:10]}` in it: the next sync asks again")
             else:
                 tell_pushed(gh, batch["number"], commit, pr, main, log)
         elif commit == pr["sha"] and WAITING in pr["labels"] and (
