@@ -182,49 +182,6 @@ variable [Algebra R A] [Algebra R B] {D E : Type} [CommRing D] [Algebra R D] [Co
 def ev (x : A →ₐ[R] D) (z : B →ₐ[R] D) : A ⊗[R] B →ₐ[R] D :=
   Algebra.TensorProduct.lift x z fun _ _ => Commute.all _ _
 
-theorem tensorToHom_ev (f : A →ₐ[R] D) (g : B →ₐ[R] E) (u : A ⊗[R] B) (φ : CartierDual R E) :
-    tensorToHom R D E (ev (Algebra.TensorProduct.includeLeft.comp f) (Algebra.TensorProduct.includeRight.comp g) u) φ =
-      f (tensorToHom R A B u (transpose g.toLinearMap φ)) := by
-  induction u with
-  | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, hs, ht]
-  | tmul a b => simp [ev, tensorToHom_apply]
-
-theorem tensorToHom_mul_right (u v : A ⊗[R] B) (φ ψ : CartierDual R B) :
-    tensorToHom R A (B ⊗[R] B)
-      (ev Algebra.TensorProduct.includeLeft
-          (Algebra.TensorProduct.includeRight.comp Algebra.TensorProduct.includeLeft) u *
-        ev Algebra.TensorProduct.includeLeft
-          (Algebra.TensorProduct.includeRight.comp Algebra.TensorProduct.includeRight) v : A ⊗[R] (B ⊗[R] B))
-      (toConv (pair R B B (φ ⊗ₜ ψ))) = tensorToHom R A B u φ * tensorToHom R A B v ψ := by
-  induction u with
-  | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, add_mul, hs, ht]
-  | tmul a b =>
-    induction v with
-    | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, mul_add, hs, ht]
-    | tmul a' b' => simp [ev, tensorToHom_apply, mul_smul, smul_comm (φ.ofConv b)]
-
-theorem tensorToHom_mul_left [Module.Finite R B] [Module.Projective R B] (u v : A ⊗[R] B) (φ : CartierDual R B) :
-    tensorToHom R (A ⊗[R] A) B
-      (ev (Algebra.TensorProduct.includeLeft.comp Algebra.TensorProduct.includeLeft)
-          Algebra.TensorProduct.includeRight u *
-        ev (Algebra.TensorProduct.includeLeft.comp Algebra.TensorProduct.includeRight)
-          Algebra.TensorProduct.includeRight v : (A ⊗[R] A) ⊗[R] B) φ =
-      TensorProduct.map (tensorToHom R A B u) (tensorToHom R A B v) (Coalgebra.comul φ) := by
-  induction u with
-  | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, add_mul, hs, ht, TensorProduct.map_add_left]
-  | tmul a b =>
-    induction v with
-    | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, mul_add, hs, ht, TensorProduct.map_add_right]
-    | tmul a' b' =>
-      have key : ∀ t : CartierDual R B ⊗[R] CartierDual R B,
-          TensorProduct.map (tensorToHom R A B (a ⊗ₜ b)) (tensorToHom R A B (a' ⊗ₜ b')) t =
-            pair R B B t (b ⊗ₜ b') • (a ⊗ₜ a') := fun t => by
-        induction t with
-        | add s t hs ht => simp only [map_add (f := _), LinearMap.add_apply, add_smul, hs, ht]
-        | tmul f g => simp [tensorToHom_apply, ← smul_tmul', smul_smul, mul_comm]
-      rw [key, pair_comul_tmul]
-      simp [ev, tensorToHom_apply]
-
 end Values
 
 variable [Bialgebra R A] [Bialgebra R B]
@@ -238,13 +195,6 @@ structure IsBimul (u : A ⊗[R] B) : Prop where
 
   mul_right : ∀ (D : Type) [CommRing D] [Algebra R D] (x : A →ₐ[R] D) (z z' : WithConv (B →ₐ[R] D)),
     ev x (z * z').ofConv u = ev x z.ofConv u * ev x z'.ofConv u
-
-theorem conv_incl {D : Type} [CommRing D] [Algebra R D] (j : A ⊗[R] A →ₐ[R] D) :
-    (toConv (j.comp Algebra.TensorProduct.includeLeft) * toConv (j.comp Algebra.TensorProduct.includeRight)).ofConv =
-      j.comp (Bialgebra.comulAlgHom R A) := AlgHom.ext fun a => by
-  rw [AlgHom.convMul_apply]
-  refine DFunLike.congr_fun (g := j) ?_ _
-  ext <;> simp
 
 variable [Module.Finite R B] [Module.Projective R B] {u : A ⊗[R] B} (h : IsBimul u)
 
@@ -293,30 +243,7 @@ def IsBimul.hom : CartierDual R B →ₐc[R] A where
     refine Eq.trans ?_ (tensorToHom_ev (AlgHom.id R A) (Bialgebra.comulAlgHom R B) u _).symm
     exact congrArg (tensorToHom R A B u) (ext_apply fun a => mul_apply φ ψ a)
 
-theorem exists_hom {p : ℕ} (G H : PDivGroup p R) (u : ∀ n, G.A n ⊗[R] H.A n) (h : ∀ n, IsBimul (u n))
-    (hl : ∀ (n : ℕ) (D : Type) [CommRing D] [Algebra R D] (x : G.A n →ₐ[R] D) (z : H.A (n + 1) →ₐ[R] D),
-      ev (x.comp (G.res n : G.A (n + 1) →ₐ[R] G.A n)) z (u (n + 1)) =
-        ev x (z.comp (H.mulP n : H.A n →ₐ[R] H.A (n + 1))) (u n)) :
-    ∃ w : G ⟶ H.dual, ∀ n χ, w.app n χ = tensorToHom R _ _ (u n) χ :=
-  ⟨⟨fun n => (h n).hom, fun n => BialgHom.ext fun χ =>
-    (tensorToHom_ev (G.res n : G.A (n + 1) →ₐ[R] G.A n) (AlgHom.id R _) (u (n + 1)) χ).symm.trans
-      ((congrArg (tensorToHom R _ _ · χ) (hl n (G.A n ⊗[R] H.A (n + 1)) Algebra.TensorProduct.includeLeft
-        Algebra.TensorProduct.includeRight)).trans
-        (tensorToHom_ev (AlgHom.id R _) (H.mulP n : H.A n →ₐ[R] H.A (n + 1)) (u n) χ))⟩, fun _ _ => rfl⟩
-
 end Alg
-
-section Geo
-
-variable {S : Scheme.{0}}
-
-theorem triv_theta (hC : GlobalTheory.Published.CubeTheorem) {A : Over S} [GrpObj A] (hA : IsAbelianScheme A) {L : LB A.left}
-    (hL : L.IsLB) : ∃ t : LB.Gen (Theta A L), t.IsGen := by
-  apply _root_.GlobalTheory.SymMulPull.hasGen_theta <;> assumption
-
-variable {p : ℕ} {R : Type} [CommRing R] {A B : Over (Sp R)} [GrpObj A] [GrpObj B]
-
-end Geo
 
 end GlobalTheory.WeilHom
 end -- clump:auto
@@ -364,34 +291,6 @@ variable (p : ℕ) [Fact p.Prime] (R R₀ : Type) [CommRing R] [CommRing R₀] [
 abbrev red : Sp R₀ ⟶ Sp R := spMap (algebraMap R R₀)
 
 end Clauses
-
-section Functor
-
-variable {p : ℕ} [Fact p.Prime] {R R₀ : Type} [CommRing R] [CommRing R₀] [Algebra R R₀]
-  {A B : Over (Sp R)} [GrpObj A] [GrpObj B] {A₀ B₀ : Over (Sp R₀)} [GrpObj A₀] [GrpObj B₀]
-  {i : A₀.left ⟶ A.left} {j : B₀.left ⟶ B.left} {G H : PDivGroup p R}
-
-
-omit [Algebra R R₀] [GrpObj A] [GrpObj B] [GrpObj A₀] [GrpObj B₀] in
-theorem IsPairRed.polBundle {P : LB (A ⊗ B).left} {P₀ : LB (A₀ ⊗ B₀).left} (hP : P.IsLB) (hP₀ : P₀.IsLB)
-    (r : IsPairRed i j P P₀) {lam : A ⟶ B} {lam₀ : A₀ ⟶ B₀} (e : i ≫ lam.left = lam₀.left ≫ j)
-    {l : (A₀ ⊗ A₀).left ⟶ (A ⊗ A).left} (l₁ : l ≫ (fst A A).left = (fst A₀ A₀).left ≫ i)
-    (l₂ : l ≫ (snd A A).left = (snd A₀ A₀).left ≫ i) : IsPairRed i i (polBundle P lam) (polBundle P₀ lam₀) := by
-  obtain ⟨m, m₁, m₂, hm⟩ := r
-  refine ⟨l, l₁, l₂, (CechPic.cls_eq_iff (pull_isLB hP₀ _) (pull_isLB (pull_isLB hP _) _)).1 ?_⟩
-  rw [CechPic.cls_pull hP₀, CechPic.cls_pull (pull_isLB hP _), CechPic.cls_pull hP,
-    (CechPic.cls_eq_iff hP₀ (pull_isLB hP _)).2 hm, CechPic.cls_pull hP, ← CechPic.pull_comp, ← CechPic.pull_comp]
-  congr 2
-  apply pullback.hom_ext
-  · change (_ ≫ m) ≫ (fst A B).left = (l ≫ _) ≫ (fst A B).left
-    rw [Category.assoc, m₁, ← Category.assoc, ← Over.comp_left, lift_fst, Category.assoc, ← Over.comp_left,
-      lift_fst, l₁]
-  · change (_ ≫ m) ≫ (snd A B).left = (l ≫ _) ≫ (snd A B).left
-    rw [Category.assoc, m₂, ← Category.assoc, ← Over.comp_left, lift_snd, Category.assoc, ← Over.comp_left,
-      lift_snd, Over.comp_left, Over.comp_left, Category.assoc, ← e, ← Category.assoc, ← l₂, Category.assoc]
-
-
-end Functor
 
 section Consequences
 

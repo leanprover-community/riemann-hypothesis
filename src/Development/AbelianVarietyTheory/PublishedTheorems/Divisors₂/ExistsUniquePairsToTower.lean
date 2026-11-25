@@ -72,14 +72,12 @@ namespace EpsWeil
 
 variable {R : Type} [CommRing R] (D : Type) [CommRing D] [Algebra R D]
 
-
 variable {D} in
 def epsUnit (b : D) : (DualNumber D)ˣ where
   val := 1 + TrivSqZeroExt.inr b
   inv := 1 - TrivSqZeroExt.inr b
   val_inv := by ext <;> simp
   inv_val := by ext <;> simp
-
 
 variable (R) in
 def epsMap : DualNumber R →ₐ[R] DualNumber D :=
@@ -91,13 +89,6 @@ def PairsTo (P : LB (A ⊗ B).left) (n : ℕ) (x : PDiv.SpAlg R D ⟶ A) (v : ep
   WeilIs (A ⊗ B) P (n : ℤ) (T := PDiv.SpAlg R (DualNumber D))
     (lift (spOver (TrivSqZeroExt.inlAlgHom R D D) ≫ x) 1) (lift 1 (spOver (epsMap R D) ≫ v))
     (unitOn (epsUnit b))
-
-theorem unitOn_bijective : Function.Bijective (unitOn (R := D)) :=
-  (Units.mapEquiv (Scheme.ΓSpecIso (CommRingCat.of D)).symm.commRingCatIsoToRingEquiv.toMulEquiv).bijective
-
-theorem map_unitOn {D' : Type} [CommRing D'] (f : D →+* D') (u : Dˣ) :
-    Units.map (spMap f).appTop.hom.toMonoidHom (unitOn u) = unitOn (Units.map f.toMonoidHom u) :=
-  Units.ext (congrArg (fun q ↦ q.hom u.val) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom f))).symm
 
 end EpsWeil
 

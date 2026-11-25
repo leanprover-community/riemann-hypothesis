@@ -212,8 +212,6 @@ lemma f_smul_right (c : ℤ) (u v : Vec r) : f u (c • v) = c • f u v := by
 def B (r : ℕ) : Vec r →ₗ[ℤ] Vec r →ₗ[ℤ] (Vec r →₀ ℤ) ⧸ S r :=
   LinearMap.mk₂ ℤ f f_add_left f_smul_left f_add_right f_smul_right
 
-lemma B_apply (u v : Vec r) : B r u v = Submodule.Quotient.mk (lam u v) := rfl
-
 lemma B_comm (u v : Vec r) : B r u v = B r v u := f_comm u v
 
 lemma axv_eq (A : Matrix (Fin r) (Fin r) ℤ) (i : Fin r) : axv A i = ∑ l, A i l • xv l := by

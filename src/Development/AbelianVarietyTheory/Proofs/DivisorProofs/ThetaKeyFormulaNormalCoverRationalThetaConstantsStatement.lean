@@ -471,8 +471,6 @@ end GlobalTheory.UMin.KeySmall
 
 namespace GlobalTheory.UMin.KeySmall
 
-
-
 theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V],
     IsAdicComplete (IsLocalRing.maximalIdeal V) V →
     ∀ (D : DegData V (IsLocalRing.maximalIdeal V)) (x : KeyIn (FractionRing V)) (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G],
@@ -637,7 +635,6 @@ end GlobalTheory.UMin.KeySmall
 
 namespace GlobalTheory.UMin.KeySmall
 
-
 open Cardinal IsLocalRing GlobalTheory.RatNorm in
 
 theorem exists_cExt_complex : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V], #V ≤ 𝔠 →
@@ -707,7 +704,6 @@ theorem exists_cExt_complex : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscre
       (by rw [hC]; exact Cardinal.aleph0_lt_continuum)
       (Cardinal.eq.1 (by rw [hC, Cardinal.mk_complex]))
 
-
 open Cardinal GlobalTheory.KeyEven in
 theorem key_unit_unif (κ : Rule) (hR : Rule4 κ) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
     (hcpl : IsAdicComplete (IsLocalRing.maximalIdeal V) V) (hcV : #V ≤ 𝔠)
@@ -747,7 +743,6 @@ theorem dualMapR_eq_of_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+*
     rw [map_add (f := _), map_mul, h1, h1, h2]
   rw [hF, ← Algebra.smul_def, ← DualNumber.inr_eq_smul_eps, TrivSqZeroExt.algebraMap_eq_inl]
   rfl
-
 
 open Cardinal GlobalTheory.KeyEven in
 theorem key_unit_trait (κ : Rule) (hR : Rule4 κ) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
@@ -1020,7 +1015,6 @@ noncomputable section
 
 namespace GlobalTheory.UMin.KeySmall
 
-
 open Cardinal in
 theorem mk_adicCompletion_le {D : Type} [CommRing D] (I : Ideal D) (h : #D ≤ 𝔠) : #(AdicCompletion I D) ≤ 𝔠 := by
   have hs : ∀ a : AdicCompletion I D, ∃ s : ℕ → D, ∀ n, a.val n = Submodule.Quotient.mk (s n) := fun a => by
@@ -1031,7 +1025,6 @@ theorem mk_adicCompletion_le {D : Type} [CommRing D] (I : Ideal D) (h : #D ≤ �
   refine (Cardinal.mk_le_of_injective hinj).trans ?_
   rw [← Cardinal.power_def, Cardinal.mk_nat]
   exact (Cardinal.power_le_power_right h).trans_eq Cardinal.continuum_power_aleph0
-
 
 open Cardinal in
 theorem dvd_of_forall_small : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] [CharZero R],
@@ -1096,7 +1089,6 @@ theorem dvd_of_map_dvd {V W : Type} [CommRing V] [IsDomain V] [ValuationRing V] 
   have hu : IsUnit (g c) := isUnit_iff_exists_inv.mpr ⟨t, mul_left_cancel₀ ha' e⟩
   obtain ⟨u, rfl⟩ := isUnit_of_map_unit g c hu
   exact ⟨↑u⁻¹, by rw [hc, _root_.mul_assoc, Units.mul_inv, _root_.mul_one]⟩
-
 
 open Cardinal in
 theorem mem_range_of_small_traits {A : Type} [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [CharZero A]
@@ -1182,7 +1174,6 @@ theorem pullT_iso {S S' : Scheme.{0}} (f : S' ⟶ S) (t : SAB H S) {L : LB t.G.l
   have e'' := LBIso.trans i₁ i₂ hL' e' h'
   exact LBIso.trans i₀ i₁ hL' e e''
 
-
 open Cardinal in
 theorem key_unit_split (κ : Rule) (hR : Rule4 κ) (W : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [CharZero W]
     (hc : IsAdicComplete (IsLocalRing.maximalIdeal W) W) (hW : #W ≤ 𝔠) (t : SAB H (Sp W))
@@ -1202,7 +1193,6 @@ theorem key_unit_split (κ : Rule) (hR : Rule4 κ) (W : Type) [CommRing W] [IsDo
   have hW' : GlobalTheory.LN.CDvr W := (GlobalTheory.LN.cDvr_iff W).2 ⟨inferInstance, hc, inferInstance⟩
   obtain ⟨U, -⟩ := GlobalTheory.LN.uDvrSt_holds E H W hW' t hp hS
   exact key_unit_trait κ hR W hc hW t.G L σ x y t.semi ⟨U.D, U.A, U.U, by rw [U.bundle]; exact hL⟩ hy hσ hk0
-
 
 open Cardinal in
 theorem key_unit_normal (κ : Rule) (hR : Rule4 κ) (A : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A]
@@ -1309,7 +1299,6 @@ theorem germ_lbPow_g' {S : Scheme.{0}} (M : LB S) (n : ℕ) (j j' : (lbPow M n).
   erw [Units.coe_map, Units.coe_map]
   exact TopCat.Presheaf.germ_res_apply _ _ _ _ _
 
-
 open Cardinal in
 theorem key_sab {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (S : Scheme.{0}) [IsIntegral S]
     (t : SAB H S) (g : ℕ) (δ : LB S) (σ : (CechPic.tens t.PP.L (δ.pull t.G.hom)).Sec) (hg : 1 ≤ g)
@@ -1338,20 +1327,6 @@ theorem key_sab {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} 
     rw [germ_lbPow_g' δ 8 i i' _ h2 h2', germ_lbPow_g' _ 4 c c' _ h1 h1']
     exact hcomp _ _ _ _ h1' h2'
 
-theorem cls_eq_zero_of_chart {Z : Scheme.{0}} {L : LB Z} (hL : L.IsLB) (i₀ : L.ι) (h : L.U i₀ = ⊤) :
-    CechPic.cls L hL = 0 := by
-  have le : ∀ j, L.U j ≤ L.U j ⊓ L.U i₀ := fun j => le_inf le_rfl (h ▸ le_top)
-  have hm : ∀ y : Z, y ∈ L.U i₀ := fun y => h ▸ TopologicalSpace.Opens.mem_top y
-  exact (CechPic.cls_eq_zero_iff hL).2 ⟨⟨fun j => res (le j) (L.g j i₀)⟩, fun i j => unit_ext fun y hy => by
-      rw [map_mul, gm_res (𝟙 Z) y _ hy, gm_res (𝟙 Z) y _ hy.1, gm_res (𝟙 Z) y _ hy, gm_res (𝟙 Z) y _ hy.2]
-      exact (gm_cocycle hL (𝟙 Z) y hy.1 hy.2 (hm y)).symm⟩
-
-theorem cls_O1_zero (o : Type) [CommRing o] : CechPic.cls _ (ProjSpace.O1_isLB o 0) = 0 := by
-  refine cls_eq_zero_of_chart _ (0 : Fin 1) (top_le_iff.1 fun x _ => ?_)
-  obtain ⟨i, hi⟩ := Semi.LB.mem_of_cover (ProjSpace.O1_isLB o 0) x
-  obtain rfl : i = (0 : Fin 1) := Subsingleton.elim (α := Fin 1) _ _
-  exact hi
-
 theorem cls_det_zero {X : Scheme.{0}} (F : X.Modules) (h : (VB.det F 0).IsLB) : CechPic.cls _ h = 0 := by
   refine (CechPic.cls_eq_zero_iff h).2 ⟨⟨fun _ => 1⟩, fun c c' => ?_⟩
   have e : (VB.det F 0).g c c' = 1 := Units.ext (by
@@ -1359,7 +1334,6 @@ theorem cls_det_zero {X : Scheme.{0}} (F : X.Modules) (h : (VB.det F 0).IsLB) : 
     rw [Module.Basis.det_apply, Matrix.det_isEmpty]
     rfl)
   simp [e]
-
 
 open Cardinal in
 theorem mk_le_of_lft {k A : Type} [Field k] [CommRing A] (hk : #k ≤ 𝔠) (s : Sp A ⟶ Sp k) [LocallyOfFiniteType s] :
@@ -1487,7 +1461,6 @@ theorem valR_pullO1_g {L : Type} [Field L] {X : Scheme.{0}} {o : Type} [CommRing
   refine (valR_res (y0 ≫ π) inf_le_left h1 (ProjSpace.ratio o r (i PUnit.unit) (j PUnit.unit))).trans ?_
   exact (_root_.GlobalTheory.UMin.CrdChart.pCrd_chart o L r (y0 ≫ π) t _ ht (le_preimage_mono _ inf_le_left h1)).2 _
 
-
 open Classical in
 def unitOf (M : RatModel k Ω) (U : M.Z.Opens) (x : Ω) (hx : ∀ z ∈ U, x ≠ 0 ∧ x ∈ M.O z ∧ x⁻¹ ∈ M.O z) :
     Γ(M.Z, U)ˣ :=
@@ -1605,7 +1578,6 @@ end Moves
 end GlobalTheory.UMin
 
 namespace GlobalTheory.UMin
-
 
 open GlobalTheory.CechPic in
 theorem key_on_cover : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (o : Type) [CommRing o] (m n : ℕ) (f : Xo.XF c ⟶ PSpace o n), Odd m → 3 ≤ m → IsUnit (m : o) → n + 1 = m ^ (4 * (Module.finrank ℚ E / 2 * (Dw.p + Dw.q))) → ThMap Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (pullback.fst _ _ : Xo.XF c ⟶ Xo.X) f → ∀ (Y : Model Xo c (RingHom.id c.F)) (g : Y.X ⟶ PSpace o n), Y.j ≫ g = f → ∀ (Ω : Type) [Field Ω] [CharZero Ω] [Algebra c.F Ω] (M : RatModel c.F Ω) (π : M.Z ⟶ Y.X) (y : Sp Ω ⟶ Xo.XF c) (d : Fin (n + 1) → Ω), Geo.Tor.IsNormalScheme M.Z → M.pt ≫ π = y ≫ Y.j → HasTh Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (y ≫ pullback.fst _ _) d → LBIso ((lbPow ((ProjSpace.O1 o n).pull g) 8).pull π) ((lbPow (GlobalTheory.SiegelTor.hodge Y.t.G (Module.finrank ℚ E / 2 * (Dw.p + Dw.q))) (4 * (n + 1).factorial)).pull π) := by

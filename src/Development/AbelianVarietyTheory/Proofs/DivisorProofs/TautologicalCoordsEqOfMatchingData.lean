@@ -69,8 +69,6 @@ namespace GlobalTheory.SymMono
 def elem {r : ℕ} (a b : Fin r) : LinearMap.BilinForm ℤ (Fin r → ℤ) :=
   (LinearMap.mul ℤ ℤ).compl₁₂ (LinearMap.proj a) (LinearMap.proj b)
 
-@[simp] theorem elem_apply {r : ℕ} (a b : Fin r) (u v : Fin r → ℤ) : elem a b u v = u a * v b := rfl
-
 end GlobalTheory.SymMono
 
 end -- clump:auto

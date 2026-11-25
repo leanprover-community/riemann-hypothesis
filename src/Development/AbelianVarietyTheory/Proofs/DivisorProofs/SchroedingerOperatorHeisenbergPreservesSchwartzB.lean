@@ -58,17 +58,6 @@ section -- clump:auto
 
 namespace GlobalTheory.PositiveFormRecursion
 
-theorem step (w : ℂ) (h : ‖w - 1‖ < 1/2) : (3/2 : ℝ) * ‖w - 1‖ ≤ ‖w ^ 2 - 1‖ := by
-  have h1 : w ^ 2 - 1 = (w - 1) * (w + 1) := by ring
-  have h2 : (3/2 : ℝ) ≤ ‖w + 1‖ := by
-    have e : (2 : ℂ) = (w + 1) - (w - 1) := by ring
-    have h3 : ‖(2 : ℂ)‖ ≤ ‖w + 1‖ + ‖w - 1‖ := by
-      rw [e]; exact norm_sub_le _ _
-    have h4 : ‖(2 : ℂ)‖ = 2 := by norm_num
-    linarith
-  rw [h1, norm_mul]
-  nlinarith [norm_nonneg (w - 1)]
-
 theorem main : ∀ {z : ℂ}, (∀ (n : ℕ), ‖z ^ (2 : ℕ) ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) → z = (1 : ℂ) := by
   apply GlobalTheory.IterativeScalingBound.main
 

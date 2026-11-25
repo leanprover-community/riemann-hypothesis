@@ -146,22 +146,6 @@ end GlobalTheory.RealLift.OneParam
 namespace GlobalTheory.RealLift.OneParam
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem linInd_one {σ : E →ₐ[F] E} {ξ : E} (hξ : σ ξ ≠ ξ) : LinearIndependent F ![(1 : E), ξ] := by
-  rw [LinearIndependent.pair_iff]
-  intro s t hst
-  by_cases ht : t = 0
-  · subst ht
-    rw [zero_smul, add_zero, smul_eq_zero] at hst
-    exact ⟨hst.resolve_right one_ne_zero, rfl⟩
-  · exfalso
-    apply hξ
-    have e : ξ = algebraMap F E (-(s / t)) := by
-      rw [Algebra.algebraMap_eq_smul_one]
-      have : t • ξ = -(s • (1 : E)) := eq_neg_of_add_eq_zero_right hst
-      calc ξ = t⁻¹ • (t • ξ) := (inv_smul_smul₀ ht ξ).symm
-        _ = _ := by rw [this, smul_neg, smul_smul, ← neg_smul, div_eq_inv_mul]
-    rw [e, AlgHom.commutes]
-
 theorem eq_zero_of_at {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     {z : AE F E} (hz : At (evI F) z) (h0 : ∀ w, piInf (τ w) z = 0) : z = 0 := by
   apply GlobalTheory.RealLift.KLineProof.eq_zero_of_piInf <;> assumption

@@ -511,7 +511,6 @@ theorem originOpen_le : originOpen W ≤ coordOpen W 1 := (scheme W).basicOpen_l
 theorem isAffineOpen_originOpen : IsAffineOpen (originOpen W) :=
   (isAffineOpen_coordOpen W 1).basicOpen _
 
-
 variable {W} in
 theorem isUnit_originCofactor {U : (scheme W).Opens} (h : U ≤ originOpen W) :
     IsUnit (originCofactor W U (h.trans (originOpen_le W))) := by
@@ -545,7 +544,6 @@ theorem originOpen_sup_coordOpen_two : originOpen W ⊔ coordOpen W 2 = ⊤ := b
   · exact Or.inr ((basicOpen_ratioOn le_rfl).le (((scheme W).mem_basicOpen _ x hx).2 h)).2
 
 abbrev originParam : Γ(scheme W, originOpen W) := ratioOn W (originOpen W) 1 (originOpen_le W) 0
-
 
 variable {W} in
 theorem isUnit_ratioOn_one_zero {U : (scheme W).Opens} (h₀ : U ≤ originOpen W)
@@ -600,7 +598,6 @@ theorem nonzeroLocus_originSec : nonzeroLocus (originSec W) = coordOpen W 2 := b
   · exact ((scheme W).basicOpen_of_isUnit (isUnit_one (M := Γ(scheme W, coordOpen W 2)))).ge.trans
       (basicOpen_le_nonzeroLocus (originSec W) false)
 
-
 variable {W} in
 theorem evalPt_zero_ratioOn {U : (scheme W).Opens} (hU : U ≤ coordOpen W 1)
     (h : ⊤ ≤ zero W ⁻¹ᵁ U) (j : Fin 3) :
@@ -608,12 +605,10 @@ theorem evalPt_zero_ratioOn {U : (scheme W).Opens} (hU : U ≤ coordOpen W 1)
   (mul_one _).symm.trans (evalPt_ptHom_ratioOn_mul (algebraMap R R) ![0, 1, 0]
     (isUnimodularSol_zero _) hU h j)
 
-
 variable {W} in
 theorem evalPt_zero_constOn {U : (scheme W).Opens} (h : ⊤ ≤ zero W ⁻¹ᵁ U) (r : R) :
     evalPt (zero W) U h (constOn W U r) = r :=
   evalPt_constOn (ρ := RingHom.id R) ((zero_toSpec W).trans (Spec.map_id _).symm) h r
-
 
 variable {W} in
 theorem evalPt_zero_originCofactor {U : (scheme W).Opens} (hU : U ≤ coordOpen W 1)
@@ -630,7 +625,6 @@ abbrev originValue : Γ(scheme W, originOpen W) →+* R :=
   evalPt (zero W) (originOpen W) (zero_preimage_originOpen W).ge
 
 theorem originValue_originParam : originValue W (originParam W) = 0 := evalPt_zero_ratioOn _ _ 0
-
 
 variable {W} in
 theorem eq_spMap_zero_of_evalPt {A : Type} [CommRing A] {x : Sp A ⟶ scheme W} {ρ : R →+* A}
@@ -732,7 +726,6 @@ theorem nonzeroLocus_coordSec (j : Fin 3) : nonzeroLocus (coordSec W j) = coordO
   simp only [basicOpen_coordFn]
   rw [← iSup_inf_eq, (originLB_isLB W).cover, top_inf_eq]
 
-
 variable {W} in
 theorem resG_coordFn {V : (scheme W).Opens} {i : Fin 3} (hi : V ≤ coordOpen W i) (j : Fin 3) :
     ∀ (k : (originLB W).ι) (hk : V ≤ (originLB W).U k),
@@ -744,7 +737,6 @@ theorem resG_coordFn {V : (scheme W).Opens} {i : Fin 3} (hi : V ≤ coordOpen W 
     rw [e, e, ← ratioOn_mul_ratioOn (hk.trans (originOpen_le W)) hi]
     ring
   | false, hk => (ratioOn_mul_ratioOn (U := V) (i := 2) hk hi).symm.trans (mul_comm _ _)
-
 
 variable {W} in
 theorem gs_coordFn {Z : Scheme.{0}} (r : Z ⟶ scheme W) (z : Z) {i : Fin 3} (j : Fin 3)
@@ -900,23 +892,6 @@ def chartPullOriginLB : ChartPull (originLB W') (originLB W) (mapHom W f h) wher
     refine Units.ext ((mul_cancel_right_mem_nonZeroDivisors ?_).1 e₂)
     rw [gs_eq (𝟙 _) y _ hj]
     exact hr
-
-theorem existsUnique_iso_pull_originLB :
-    ∃! w : LB.Iso (originLB W') ((originLB W).pull (mapHom W f h)), w.IsGen ∧
-      Cartier.SecMaps w (originSec W') (Cartier.secPull (originSec W) (mapHom W f h)) := by
-  refine Cartier.existsUnique_secMaps (isRegularSec_originSec W') fun p q => ?_
-  have hp : ((originLB W).pull (mapHom W f h)).U p ⊓ (originLB W').U q ≤ (originLB W').U (p ⟨⟩) :=
-    inf_le_left.trans ((Cartier.pull_U _ _ p).trans (mapHom_preimage_originLB_U W f h _)).le
-  have e : resG _ (inf_le_left : ((originLB W).pull (mapHom W f h)).U p ⊓ (originLB W').U q ≤ _)
-      ((Cartier.secPull (originSec W) (mapHom W f h)).f p) = resG _ hp ((originSec W').f (p ⟨⟩)) :=
-    (resG_resG _ _ _).trans ((congrArg (resG _ _) (mapHom_app_originSec W f h _)).trans
-      (resG_resG _ _ _))
-  rw [e, Cartier.sec_compat (originSec W') (p ⟨⟩) q hp inf_le_right]
-  exact associated_unit_mul_right _ _ ((Units.isUnit _).map _)
-
-theorem lbIso_pull_originLB : LBIso (originLB W') ((originLB W).pull (mapHom W f h)) :=
-  let ⟨w, hw, _⟩ := existsUnique_iso_pull_originLB W f h
-  ⟨w, hw.1⟩
 
 end BaseChange
 

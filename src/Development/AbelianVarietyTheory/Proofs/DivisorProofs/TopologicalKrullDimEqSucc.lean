@@ -179,7 +179,6 @@ theorem topologicalKrullDim_eq_succ (h : IsArithVar p D) {K : Type} [Field K] [A
     refine Order.le_krullDim_iff.2 ⟨(l.map _ hm).cons x hlt, ?_⟩
     simp [hl]
 
-
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 theorem ringKrullDim_chart (h : IsArithVar p D) {K : Type} [Field K] [Algebra k K]
     [IsFractionRing k K] {Y : Scheme.{0}} {j : Y ⟶ X} {q : Y ⟶ Sp K}
@@ -219,77 +218,5 @@ theorem ringKrullDim_chart (h : IsArithVar p D) {K : Type} [Field K] [Algebra k 
   rw [hd]
   have e₅ : d + 1 = D + 1 := by exact_mod_cast e₄
   rw [Nat.succ_injective e₅]
-
-theorem smooth_genericFibre (h : IsArithVar p D) (hr : ∀ x, IsRegularLocalRing (X.presheaf.stalk x)) :
-    SmoothOfRelativeDimension D (pullback.snd p (spMap (algebraMap k (FractionRing k)))) := by
-  have := h.isDomain
-  have := h.charZero_base
-  have H := IsPullback.of_hasPullback p (spMap (algebraMap k (FractionRing k)))
-  refine smoothOfRelativeDimension_genericFibre_of_affine k X p D fun A _ _ i _ hi => ?_
-  have : IsProper p := CommonModel.isProper_of_isProjOver h.isProjOver
-  have hft : LocallyOfFiniteType (spMap (algebraMap k A)) := by rw [← hi]; infer_instance
-  rw [HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)] at hft
-  have : Algebra.FiniteType k A := RingHom.finiteType_algebraMap.mp hft
-  refine smooth_of_regular _ _ D fun m hm => ⟨?_, ?_⟩
-  · obtain ⟨i₀, _, -⟩ := exists_affine_chart_of_isPullback H i hi
-    have : Flat (spMap (algebraMap k (FractionRing k))) :=
-      flat_specMap_localization (nonZeroDivisors k) _
-    have : IsPreimmersion (spMap (algebraMap k (FractionRing k))) :=
-      IsPreimmersion.of_isLocalization (nonZeroDivisors k)
-    let y : Spec (.of (FractionRing k ⊗[k] A)) := (⟨m, inferInstance⟩ : PrimeSpectrum _)
-    have := GenSpread.isIso_stalkMap_of_flat
-      (pullback.fst p (spMap (algebraMap k (FractionRing k)))) (i₀ y)
-    have := hr (pullback.fst p (spMap (algebraMap k (FractionRing k))) (i₀ y))
-    exact IsRegularLocalRing.of_ringEquiv
-      (asIso ((pullback.fst p (spMap (algebraMap k (FractionRing k)))).stalkMap (i₀ y)) ≪≫
-        asIso (i₀.stalkMap y) ≪≫ Spec.stalkIso (.of _) y).commRingCatIsoToRingEquiv
-  · have : Nontrivial (FractionRing k ⊗[k] A) := Ideal.Quotient.nontrivial_iff.2 hm.ne_top |>
-      fun _ => (Ideal.Quotient.mk m).domain_nontrivial
-    have : Nontrivial A := by
-      by_contra hA
-      rw [not_nontrivial_iff_subsingleton] at hA
-      exact false_of_nontrivial_of_subsingleton (FractionRing k ⊗[k] A)
-    obtain ⟨_, hd⟩ := ringKrullDim_chart h H i hi
-    have e := height_add_ringKrullDim_quotient_of_finiteType (FractionRing k) m
-    rw [hd, ringKrullDim_eq_zero_of_isField ((Ideal.Quotient.maximal_ideal_iff_isField_quotient m).1 hm),
-      add_zero] at e
-    rw [IsLocalization.AtPrime.ringKrullDim_eq_height m (Localization.AtPrime m), e]
-
-theorem exists_opens_smooth (h : IsArithVar p D) (hr : ∀ x, IsRegularLocalRing (X.presheaf.stalk x))
-    (σ : k →+* ℂ) (y : CxPts p σ) :
-    ∃ U : X.Opens, y ∈ ptsIn p σ U ∧ SmoothOfRelativeDimension D (U.ι ≫ p) := by
-  have := h.isDomain
-  have := h.finite
-  have := h.isNoetherianRing
-  have : IsProper p := CommonModel.isProper_of_isProjOver h.isProjOver
-  have : LocallyOfFinitePresentation p := inferInstance
-  have := smooth_genericFibre h hr
-  have H := IsPullback.of_hasPullback p (spMap (algebraMap k (FractionRing k)))
-  have : Flat (spMap (algebraMap k (FractionRing k))) :=
-    flat_specMap_localization (nonZeroDivisors k) _
-  have : IsPreimmersion (spMap (algebraMap k (FractionRing k))) :=
-    IsPreimmersion.of_isLocalization (nonZeroDivisors k)
-  obtain ⟨τ, hτ⟩ : ∃ τ : FractionRing k →+* ℂ, τ.comp (algebraMap k _) = σ :=
-    ⟨IsFractionRing.lift (K := FractionRing k) (injective_of_charZero σ), RingHom.ext fun a => by
-      rw [RingHom.comp_apply, IsFractionRing.lift_algebraMap]⟩
-  have hτ' : spMap τ ≫ spMap (algebraMap k _) = spMap σ := by
-    rw [← hτ, ← Spec.map_comp]
-    rfl
-  obtain ⟨y', hy'⟩ : ∃ y' : Sp ℂ ⟶ pullback p (spMap (algebraMap k (FractionRing k))),
-      y' ≫ pullback.fst _ _ = y.1 :=
-    ⟨H.lift y.1 (spMap τ) (y.2.trans hτ'.symm), H.lift_fst _ _ _⟩
-  obtain ⟨W, hW, hs⟩ := GenSpread.exists_opens_smoothOfRelativeDimension_of_isPullback H D
-    (y' (IsLocalRing.closedPoint ℂ))
-  refine ⟨W, mem_ptsIn.2 ?_, hs⟩
-  rw [← hy']
-  exact hW
-
-theorem genSmooth (h : IsArithVar p D) (hr : ∀ x, IsRegularLocalRing (X.presheaf.stalk x)) :
-    GenSmooth p D := fun σ => by
-  refine ⟨⟨AlgChart p σ D, id, fun y => ?_⟩⟩
-  obtain ⟨W, hW, _⟩ := exists_opens_smooth h hr σ y
-  obtain ⟨U, x, hU, hz, hx⟩ := ModelCharts.exists_etale_coords_of_opens p D W (mem_ptsIn.1 hW)
-  obtain ⟨c, hc, -⟩ := AlgChart.exists_of_etale hU x hx (mem_ptsIn.2 hz)
-  exact ⟨c, hc⟩
 
 end GlobalTheory.RegGenSmooth

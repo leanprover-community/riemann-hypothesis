@@ -127,20 +127,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaLevel
 
-theorem uniform_locConst {X : Type} [AddCommGroup X] [TopologicalSpace X] [IsTopologicalAddGroup X]
-    [NonarchimedeanAddGroup X] (g : X → ℂ) (hg : IsLocallyConstant g) (hc : HasCompactSupport g) :
-    ∃ H : OpenAddSubgroup X, ∀ z, ∀ a ∈ H, g (z + a) = g z :=
-  _root_.GlobalTheory.locallyConstant_compactSupport_invariant_openAddSubgroup g hg hc
-
-theorem char_dot_compact {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
-    [NonarchimedeanAddGroup K] (χ : AddChar K ℂ) (hχ : Continuous χ) (κ : Type) [Fintype κ] (C : Set (κ → K))
-    (hC : IsCompact C) : ∃ H : OpenAddSubgroup (κ → K), ∀ z ∈ C, ∀ a ∈ H, ∀ b ∈ H, χ (z ⬝ᵥ b + a ⬝ᵥ b) = 1 :=
-  _root_.GlobalTheory.CharDotKill.charDot_kill χ hχ κ C hC
-
-end GlobalTheory.ThetaLevel
-
-namespace GlobalTheory.ThetaLevel
-
 open Matrix
 
 section Heis
@@ -196,8 +182,6 @@ def infIncl (F : Type) [Field F] [NumberField F] : Ainf F →ₗ[F] AF F where
   toFun x := pairA F x 0
   map_add' _ _ := Prod.ext rfl (add_zero 0).symm
   map_smul' c _ := Prod.ext rfl (smul_zero c).symm
-
-
 
 theorem infIdem_smul (D : D7) (z : AE D) :
     pairA D.host.F 1 0 • z = TensorProduct.map (infIncl D.host.F) LinearMap.id
@@ -301,8 +285,6 @@ end GlobalTheory.ThetaLevel
 namespace GlobalTheory.ThetaLevel
 
 open Matrix
-
-
 
 theorem thetaTr_level : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)

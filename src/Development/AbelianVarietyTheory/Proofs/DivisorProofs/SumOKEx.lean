@@ -275,14 +275,6 @@ theorem frAt_add (w : Pl D.host.E) {a b : ℕ} (β' : GL (Fin b) (Lev.EAf D)) (�
     frAt w β' β (x + y) = frAt w β' β x + frAt w β' β y := by
   rw [frAt, frAt, frAt, Matrix.map_add _ (map_add (toEAf D)), Comparison₂.fr_add, Matrix.map_add _ (map_add (cpt (D := D) w))]
 
-theorem frAt_neg (w : Pl D.host.E) {a b : ℕ} (β' : GL (Fin b) (Lev.EAf D)) (β : GL (Fin a) (Lev.EAf D)) (x : Mx D b a) :
-    frAt w β' β (-x) = -frAt w β' β x := by
-  have h := frAt_add w β' β x (-x)
-  rw [add_neg_cancel] at h
-  have h0 : frAt w β' β 0 = 0 := by ext; simp [frAt, Comparison₂.fr]
-  rw [h0] at h
-  exact eq_neg_of_add_eq_zero_right h.symm
-
 theorem colAt_eq (S : GridChoice W U) (t : T) (w : Pl D.host.E) (x : ∀ j : Fin D.R.m, WO (G.V (.top j)) (G.V (.top (j + 1))))
     {j : ℕ} (h : j < D.R.m) : S.colAt t w x j = (frAt w (S.βp (j + 1)) (S.βp j) (x ⟨j, h⟩)).submatrix
       (Fin.cast (topRank_eq G t w h)) (Fin.cast (topRank_eq G t w h.le)) := by
@@ -322,7 +314,6 @@ section Abstract
 
 variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] {A : ι → Type} [∀ j, AddCommGroup (A j)]
   {B : κ → Type} [∀ i, AddCommGroup (B i)]
-
 
 open Classical in
 theorem sum_reps_eq (SA : ∀ j, A j → Prop) (SB : ∀ i, B i → Prop) (BA : ∀ j, A j → Prop) (BB : ∀ i, B i → Prop)
@@ -394,7 +385,6 @@ theorem exists_idemSum_locPl' {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) 
   · first
     | exact GlobalTheory.ParahoricLift.exists_isIdemAt fun h => (hL.Q_pl t w b).2 w b h
 
-
 variable (G) in
 def finDatOf (t : T) (p : Pair T) {e : AE D} (he : IsIdemSum e (locPl G t)) (f : WO (G.pS p) (G.pT p) → ℂ)
     (hf : IsSBHalf e (latO (G.pS p) (G.pT p) (G.latS p : Set _) (G.latT p : Set _) fun _ => True) f) : FinDatum G t p :=
@@ -412,10 +402,6 @@ theorem isSmall_zero : IsSmall P β' β n (0 : Mx D b a) := fun w _ r s => by
   rw [h]; simp
 
 alias IsSmall.add := _root_.GlobalTheory.FunObj.CosSB.isSmall_add
-
-theorem IsSmall.neg {x : Mx D b a} (h : IsSmall P β' β n x) : IsSmall P β' β n (-x) := fun w hw r s => by
-  rw [frAt_neg, Matrix.neg_apply, Valuation.map_neg]
-  exact h w hw r s
 
 alias IsSmall.sub := _root_.GlobalTheory.FunObj.CosSB.isSmall_sub
 
@@ -451,24 +437,6 @@ end Expand
 section Lat
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
-
-theorem isLattice_top (G : GridData L sc) {j : ℕ} (hj : j ≤ D.R.m) : Submodule.IsLattice D.host.E (G.Λ (.top j)) :=
-  (G.isV (X := .top j) hj fun _ e => by cases e).sd.1
-
-theorem isLattice_grid_succ (G : GridData L sc) {i : ℕ} (hi : i + 1 ≤ D.R.m) :
-    Submodule.IsLattice D.host.E (G.Λ (.grid (i + 1) D.R.m)) :=
-  (G.isV (X := .grid (i + 1) D.R.m) ⟨hi, le_rfl⟩ fun j e => by injection e with h1; omega).sd.1
-
-theorem isLattice_X {μ₀ : T} (hL : L.Is μ₀) : Submodule.IsLattice D.host.E L.ΛX := by
-  obtain ⟨c, hc⟩ := hL.βX
-  obtain ⟨h1, h2⟩ := GlobalTheory.ParahoricLift.base_lattice hc
-  exact Submodule.IsLattice.of_fg D.host.E h1
-
-theorem isLattice_grid_zero {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) :
-    Submodule.IsLattice D.host.E (G.Λ (.grid 0 D.R.m)) := by
-  have key : ∀ X : LSp D, X = ⟨D.sp.X', L.ΛX⟩ → Submodule.IsLattice D.host.E X.lat := by
-    rintro _ rfl; exact isLattice_X hL
-  exact key (columnBlock L D.R.m) (colY_m L)
 
 theorem isFullLattice_top (G : GridData L sc) {j : ℕ} (hj : j ≤ D.R.m) :
     Submodule.IsFullLattice D.host.E (G.Λ (.top j)) :=
@@ -525,8 +493,6 @@ end SBs
 section Main
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
-
-
 
 theorem GridChoice.exists_isCosExpansion {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) (t : T) (Φ : G.Datum)
     (hde : Nat.Coprime D.host.pde (D.host.QS * D.host.q) ∧ Nat.Coprime D.host.pde' (D.host.QS * D.host.q))

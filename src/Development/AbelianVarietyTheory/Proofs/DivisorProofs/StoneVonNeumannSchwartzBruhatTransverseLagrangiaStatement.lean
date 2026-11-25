@@ -209,7 +209,6 @@ theorem schr_mem_SB (hψ : ∀ y ∈ 𝒪[k], ψ y = 1) (w : (κ → k) × (κ �
     HasCompactSupport.mul_left (f := fun x : κ → k => ψ (x ⬝ᵥ w.2 + ⅟(2 : k) * (w.1 ⬝ᵥ w.2)))
       (hφ.2.comp_homeomorph (Homeomorph.addRight w.1))⟩
 
-
 omit [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem schr_ind (hψ : ∀ y ∈ 𝒪[k], ψ y = 1) (w : (κ → k) × (κ → k)) (h1 : ∀ i, w.1 i ∈ 𝒪[k])
     (h2 : ∀ i, ⅟(2 : k) * w.2 i ∈ 𝒪[k]) :
@@ -249,7 +248,6 @@ theorem exists_fix_ind (hψ : ∀ y ∈ 𝒪[k], ψ y = 1) {Y Y' : Type} [Fintyp
   · have := h (Sum.inr i) u hu
     simpa [l, mul_left_comm] using this
 
-
 open GlobalTheory.IrredSB in
 omit [Invertible (2 : k)] in
 theorem finite_quot [CharZero k] (Y Y' : Type) [Fintype Y] [Fintype Y'] {N : ℕ} (hN : 0 < N) :
@@ -273,7 +271,6 @@ theorem finite_quot [CharZero k] (Y Y' : Type) [Fintype Y] [Fintype Y'] {N : ℕ
   · simp [h2]
 
 end GlobalTheory.LagVac
-
 
 open GlobalTheory.WeilM GlobalTheory.VacLoc GlobalTheory.IrredSB in
 theorem GlobalTheory.LagVac.exists_vacuum : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k]
@@ -441,9 +438,6 @@ def toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) : AddChar
   map_zero_eq_one' := Circle.ext (by simp)
   map_add_eq_mul' a b := Circle.ext (AddChar.map_add_eq_mul ψ0 a b)
 
-theorem coe_toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) (x : k) :
-    ((toCircle ψ0 h1 x : Circle) : ℂ) = ψ0 x := rfl
-
 theorem continuous_toCircle (ψ0 : AddChar k ℂ) (h1 : ∀ y ∈ 𝒪[k], ψ0 y = 1) (hψ : Continuous ψ0) :
     Continuous (toCircle ψ0 h1) :=
   hψ.subtype_mk _
@@ -577,9 +571,6 @@ def toCirc (ψ0 : AddChar k ℂ) (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y
   toFun x := ⟨ψ0 x, mem_sphere_zero_iff_norm.2 (norm_eq_one hc x)⟩
   map_zero_eq_one' := by ext; simp
   map_add_eq_mul' a b := by ext; exact AddChar.map_add_eq_mul ψ0 a b
-
-theorem toCirc_apply {ψ0 : AddChar k ℂ} (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y) = 1) ↔ x ∈ 𝒪[k])
-    (x : k) : (toCirc ψ0 hc x : ℂ) = ψ0 x := rfl
 
 theorem toCirc_cont {ψ0 : AddChar k ℂ} (hc : ∀ x : k, (∀ y ∈ 𝒪[k], ψ0 (x * y) = 1) ↔ x ∈ 𝒪[k])
     (h : Continuous ψ0) : Continuous (toCirc ψ0 hc) :=
@@ -854,7 +845,6 @@ open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 open scoped GlobalTheory.VacAny
-
 
 theorem _root_.GlobalTheory.T.stoneVonNeumann_schwartzBruhat_transverseLagrangians : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k]
     [Invertible (2 : k)] {κ : Type} [Fintype κ] {n d : ℕ} (ψ0 : AddChar k ℂ), Continuous ψ0 →

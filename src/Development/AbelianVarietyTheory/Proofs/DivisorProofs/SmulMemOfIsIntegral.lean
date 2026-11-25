@@ -111,14 +111,6 @@ def dualLie (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E
       linear_combination -h1
     · rw [Matrix.mul_neg, trace_neg]; exact (hY.2.2 X hX).neg
 
-theorem closure_dualLie (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) :
-    AddSubgroup.closure {Y : Matrix (Fin r) (Fin r) E | Y.trace = 0 ∧
-      (∀ u w, herm G (Y *ᵥ u) w + herm G u (Y *ᵥ w) = 0) ∧
-      ∀ X ∈ lieLat G Λ, IsIntegral ℤ (Matrix.trace (X * Y))} = dualLie G Λ :=
-  AddSubgroup.closure_eq (dualLie G Λ)
-
-theorem cc_cc (a : E) : cc (cc a) = a := by simp [cc]
-
 theorem smul_mem_of_isIntegral {Λ : Submodule (𝓞 E) (Fin r → E)} {c : E} (hc : IsIntegral ℤ c)
     {x : Fin r → E} (hx : x ∈ Λ) : c • x ∈ Λ := by
   have h := Λ.smul_mem (⟨c, hc⟩ : 𝓞 E) hx
@@ -132,12 +124,5 @@ theorem smul_mem_endLat {Λ : Submodule (𝓞 E) (Fin r → E)} {c : E} (hc : Is
   have : (c • Y) *ᵥ x = c • (Y *ᵥ x) := by
     ext i; simp [mulVec, dotProduct, Finset.mul_sum, mul_assoc]
   rw [this]; exact smul_mem_of_isIntegral hc (hY x hx)
-
-theorem mul_mem_endLat {Λ : Submodule (𝓞 E) (Fin r → E)} {Y Z : Matrix (Fin r) (Fin r) E}
-    (hY : Y ∈ endLat Λ) (hZ : Z ∈ endLat Λ) : Y * Z ∈ endLat Λ := fun x hx => by
-  rw [← mulVec_mulVec]; exact hY _ (hZ x hx)
-
-theorem one_mem_endLat {Λ : Submodule (𝓞 E) (Fin r → E)} : (1 : Matrix (Fin r) (Fin r) E) ∈ endLat Λ :=
-  fun x hx => by rw [one_mulVec]; exact hx
 
 end GlobalTheory.LieDisc

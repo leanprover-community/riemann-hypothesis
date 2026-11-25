@@ -100,10 +100,6 @@ theorem pairResO_bijective (φ : X' ⟶ X) (s' : X' ⟶ Sp R') :
     Function.Bijective (pairRes φ s').pull1 ∧ Function.Bijective (pairRes φ s').pull2 :=
   restrictO_bijective_of_basis s' (pairFst φ) (pair_cover_affine φ s') (exists_pair_below_two φ s')
 
-theorem triResO_injective (ψ : X'' ⟶ X') (φ : X' ⟶ X) (s'' : X'' ⟶ Sp R'') :
-    Function.Injective (cechTripleRestrictComposite ψ φ s'').pull1 := by
-  apply _root_.GlobalTheory.CompanionTheory.Axis.PullO.triple_restriction_injective <;> assumption
-
 variable {s : X ⟶ Sp R} {s' : X' ⟶ Sp R'} {s'' : X'' ⟶ Sp R''} {σ : R →+* R'} {τ : R' →+* R''}
   {φ : X' ⟶ X} {ψ : X'' ⟶ X'}
 

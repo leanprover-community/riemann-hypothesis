@@ -205,12 +205,6 @@ def scaleSnd {k : Type} [Field k] {κ : Type} (c : k) :
   map_zero' := by simp
   map_add' a b := by simp
 
-@[simp] theorem scaleSnd_fst {k : Type} [Field k] {κ : Type} (c : k) (w : (κ → k) × (κ → k)) :
-    (scaleSnd c w).1 = w.1 := rfl
-
-@[simp] theorem scaleSnd_snd {k : Type} [Field k] {κ : Type} (c : k) (w : (κ → k) × (κ → k)) :
-    (scaleSnd c w).2 = c • w.2 := rfl
-
 theorem schr_mulShift_scaleSnd {k : Type} [Field k] [Invertible (2 : k)] {κ : Type} [Fintype κ]
     (ψ : AddChar k ℂ) {c : k} (hc : c ≠ 0) (w : (κ → k) × (κ → k)) (φ : (κ → k) → ℂ) :
     GlobalTheory.WeilM.schr (ψ.mulShift c) (scaleSnd c⁻¹ w) φ = GlobalTheory.WeilM.schr ψ w φ := by

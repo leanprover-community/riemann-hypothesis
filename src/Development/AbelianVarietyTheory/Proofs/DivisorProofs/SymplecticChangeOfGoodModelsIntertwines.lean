@@ -253,9 +253,6 @@ def mulVecCLE (M N : Matrix κ κ (mixedEmbedding.mixedSpace F)) (h1 : M * N = 1
       simp only [mulVecR, LinearMap.coe_comp, Function.comp_apply, LinearMap.coe_restrictScalars, Matrix.mulVecLin_apply,
         Matrix.mulVec_mulVec, h2, Matrix.one_mulVec, LinearMap.id_coe, id_eq])).toContinuousLinearEquiv
 
-theorem mulVecCLE_apply (M N : Matrix κ κ (mixedEmbedding.mixedSpace F)) (h1 : M * N = 1) (h2 : N * M = 1) (x) :
-    mulVecCLE M N h1 h2 x = M *ᵥ x := rfl
-
 theorem levi_map_mul {R : Type} [CommRing R] (f : F →+* R) {g h : Matrix κ κ F} (hg : gᵀ * h = 1) :
     hᵀ.map f * g.map f = 1 ∧ g.map f * hᵀ.map f = 1 := by
   have h1 := levi_transpose_mul hg
@@ -296,7 +293,6 @@ end GlobalTheory.RatWeilOp
 noncomputable section
 namespace GlobalTheory.RatWeilOp
 variable {κ : Type} [Fintype κ] [DecidableEq κ] {F : Type} [Field F] [NumberField F]
-
 
 open scoped Classical in
 theorem funLeft_pure_levi {g h : Matrix κ κ F} (hI1 : hᵀ.map (mixedEmbedding F) * g.map (mixedEmbedding F) = 1)
@@ -341,7 +337,6 @@ end GlobalTheory.RatWeilOp
 
 noncomputable section
 namespace GlobalTheory.RatWeilOp
-
 
 open scoped Classical in
 theorem hasOp_levi (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (κ : Type) [Fintype κ] [DecidableEq κ]
@@ -585,7 +580,6 @@ namespace GlobalTheory.RatWeilUnip
 
 open GlobalTheory.AdelicSvNQuad (quad archMul)
 
-
 open scoped Classical in
 theorem hasOp_unip : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ → ∀ (κ : Type) [Fintype κ]
     [DecidableEq κ] (b : Matrix κ κ F), bᵀ = b → HasOp ψ (Matrix.fromBlocks 1 0 b 1) := by
@@ -617,103 +611,6 @@ open scoped Matrix GlobalTheory.VacAny
 open NumberField IsDedekindDomain MeasureTheory Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RatWeilOp
 
 noncomputable section
-namespace GlobalTheory.SelfDualFirstProjAny
-
-theorem exists_valuation_eq (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (n : ℤ) :
-    ∃ a : v.adicCompletion F, Valued.v a = WithZero.exp n := by
-  obtain ⟨π, hπ⟩ := v.valuation_exists_uniformizer F
-  refine ⟨(π : v.adicCompletion F) ^ (-n), ?_⟩
-  rw [map_zpow₀, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', hπ]
-  simp [← WithZero.exp_zsmul]
-
-theorem exists_pair_of_annihilator_any : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (κ : Type) [Fintype κ] (ψ : AddChar (Fv F v) ℂ), Continuous ψ → (∀ t, ‖ψ t‖ = 1) → ψ ≠ 1 →
-    ∀ (Λ : AddSubgroup ((κ → Fv F v) × (κ → Fv F v))) (c : Fv F v), c ≠ 0 →
-    (∀ w, w ∈ Λ ↔ ∀ l ∈ Λ, ψ (w.1 ⬝ᵥ l.2 - l.1 ⬝ᵥ w.2) = 1) →
-    (∀ l ∈ Λ, ∀ i, c * l.1 i ∈ v.adicCompletionIntegers F ∧ c * l.2 i ∈ v.adicCompletionIntegers F) →
-    ∀ η : κ → Fv F v, (∀ b : κ → Fv F v, ((0 : κ → Fv F v), b) ∈ Λ → ψ (η ⬝ᵥ b) = 1) → ∃ y, (η, y) ∈ Λ := by
-  intro F _ _ v κ _ ψ hcont hnorm hne Λ c hc hself hbd η hη
-  classical
-  have hne' : ∃ t, ψ t ≠ 1 := by
-    by_contra h
-    push_neg at h
-    exact hne (by ext t; simpa using h t)
-  obtain ⟨n, hn⟩ := _root_.GlobalTheory.ConductorAdicCompletion.exists_conductor_adicCompletion F v ψ hcont hnorm hne'
-  obtain ⟨a, ha⟩ := exists_valuation_eq F v n
-  have ha0 : a ≠ 0 := by
-    intro h; rw [h, map_zero] at ha; exact WithZero.zero_ne_coe ha
-  let O := v.adicCompletionIntegers F
-  let ψ₀ : AddChar (Fv F v) ℂ := ψ.mulShift a
-  have hψ₀ : ∀ x, ψ₀ x = ψ (a * x) := fun x => rfl
-
-  have hcond : ∀ x : Fv F v, (∀ y ∈ v.adicCompletionIntegers F, ψ₀ (x * y) = 1) ↔
-      x ∈ v.adicCompletionIntegers F := by
-    intro x
-    have := hn (a * x)
-    simp only [hψ₀, mul_assoc] at this ⊢
-    rw [this, map_mul, ha, HeightOneSpectrum.mem_adicCompletionIntegers]
-    have e : Valued.v x = WithZero.exp (-n) * (WithZero.exp n * Valued.v x) := by
-      rw [← mul_assoc, ← WithZero.exp_add]; simp
-    constructor
-    · intro h
-      rw [e]
-      calc WithZero.exp (-n) * (WithZero.exp n * Valued.v x) ≤ WithZero.exp (-n) * WithZero.exp n := by gcongr
-        _ = 1 := by rw [← WithZero.exp_add]; simp
-    · intro h
-      calc WithZero.exp n * Valued.v x ≤ WithZero.exp n * 1 := by gcongr
-        _ = WithZero.exp n := mul_one _
-
-  let f : ((κ → Fv F v) × (κ → Fv F v)) →+ ((κ → Fv F v) × (κ → Fv F v)) :=
-    { toFun := fun w => (w.1, a • w.2)
-      map_zero' := by simp
-      map_add' := by intro x y; simp [smul_add] }
-  let Λ₀ := Λ.comap f
-  have hmem : ∀ w, w ∈ Λ₀ ↔ (w.1, a • w.2) ∈ Λ := fun w => Iff.rfl
-  have hback : ∀ l : (κ → Fv F v) × (κ → Fv F v), (l.1, a • (a⁻¹ • l.2)) = l := by
-    intro l; rw [smul_smul, mul_inv_cancel₀ ha0, one_smul]
-  have hself₀ : ∀ w, w ∈ Λ₀ ↔ ∀ l ∈ Λ₀, ψ₀ (w.1 ⬝ᵥ l.2 - l.1 ⬝ᵥ w.2) = 1 := by
-    intro w
-    rw [hmem, hself]
-    constructor
-    · intro h l hl
-      have := h (l.1, a • l.2) hl
-      rw [hψ₀]
-      convert this using 2
-      simp only [mul_sub, dotProduct_smul, smul_eq_mul]
-    · intro h l hl
-      have hl' : (l.1, a⁻¹ • l.2) ∈ Λ₀ := by rw [hmem]; simpa [hback l] using hl
-      have := h _ hl'
-      rw [hψ₀] at this
-      convert this using 2
-      simp only [mul_sub, dotProduct_smul, smul_eq_mul]
-      rw [← mul_assoc, mul_inv_cancel₀ ha0, one_mul]
-
-  obtain ⟨c', hc', hbd₀⟩ : ∃ c' : Fv F v, c' ≠ 0 ∧ ∀ l ∈ Λ₀, ∀ i,
-      c' * l.1 i ∈ v.adicCompletionIntegers F ∧ c' * l.2 i ∈ v.adicCompletionIntegers F := by
-    rcases O.mem_or_inv_mem a with haO | haO
-    · refine ⟨c * a, mul_ne_zero hc ha0, fun l hl i => ?_⟩
-      have h := hbd _ ((hmem l).1 hl) i
-      simp only [Pi.smul_apply, smul_eq_mul] at h
-      refine ⟨?_, ?_⟩
-      · have e : c * a * l.1 i = a * (c * l.1 i) := by ring
-        rw [e]; exact O.toSubring.mul_mem haO h.1
-      · have e : c * a * l.2 i = c * (a * l.2 i) := by ring
-        rw [e]; exact h.2
-    · refine ⟨c, hc, fun l hl i => ?_⟩
-      have h := hbd _ ((hmem l).1 hl) i
-      simp only [Pi.smul_apply, smul_eq_mul] at h
-      refine ⟨h.1, ?_⟩
-      have e : c * l.2 i = a⁻¹ * (c * (a * l.2 i)) := by
-        rw [mul_left_comm, ← mul_assoc a⁻¹ a, inv_mul_cancel₀ ha0, one_mul]
-      rw [e]; exact O.toSubring.mul_mem haO h.2
-  have hη₀ : ∀ b : κ → Fv F v, ((0 : κ → Fv F v), b) ∈ Λ₀ → ψ₀ (η ⬝ᵥ b) = 1 := by
-    intro b hb
-    rw [hmem] at hb
-    rw [hψ₀, ← smul_eq_mul, ← dotProduct_smul]
-    exact hη _ hb
-  obtain ⟨y, hy⟩ := GlobalTheory.SelfDualFirstProj.exists_pair_of_annihilator v ψ₀ Λ₀ c' hc' hcond hself₀ hbd₀ η hη₀
-  exact ⟨a • y, (hmem _).1 hy⟩
-
-end GlobalTheory.SelfDualFirstProjAny
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -889,55 +786,6 @@ open scoped GlobalTheory.VacAny
 
 noncomputable section
 
-namespace GlobalTheory.VacThetaInd
-
-theorem psi_half_symp_theta_indep : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
-    (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (r s r' s' : ℕ), B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' →
-    ∀ (v : Pl (F := F)) (θ θ' : 𝓞 E), (θ : E) + σ θ = 1 → (θ' : E) + σ θ' = 1 → ∀ γ ∈ latAtV X W v,
-      B.ψ (⅟(2 : AF F) * symp (R := AF F) (cA σ) (inclR (F := F) (AF F) (θ : E)) (incM F X.J) (incM F W.J) γ γ) =
-        B.ψ (⅟(2 : AF F) * symp (R := AF F) (cA σ) (inclR (F := F) (AF F) (θ' : E)) (incM F X.J) (incM F W.J) γ γ) := by
-  intro F E _ _ _ _ _ σ B n d X W r s r' s' hB hX hW v θ θ' hθ hθ' γ hγ
-  have hσ : ∀ x : E, σ (σ x) = x := fun x => by
-    obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    apply τ.injective
-    rw [hB.cm.2.2.2, hB.cm.2.2.2, star_star]
-  have hc : ∀ z, cA σ (cA σ z) = z := fun z => by
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a e => simp [cA, hσ]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : ∀ e : E, cA σ (inclR (F := F) (AF F) e) = inclR (F := F) (AF F) (σ e) := fun e => rfl
-  have ht : cA σ (hTens (cA σ) (incM F X.J) (incM F W.J) γ γ) = -hTens (cA σ) (incM F X.J) (incM F W.J) γ γ :=
-    Tw.VacCocycle.conj_hTens (cA σ) hc (fun i j => by simp only [incM, Matrix.map_apply, hi, hX.herm])
-      (fun i j => by simp only [incM, Matrix.map_apply, hi, hW.skew, map_neg]) γ γ
-  set t := hTens (cA σ) (incM F X.J) (incM F W.J) γ γ with htdef
-  have htr : ∀ z, Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (cA σ z) = Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) z :=
-    Tw.VacCocycle.trace_conj (cA σ) hc
-  set a := inclR (F := F) (AF F) (θ : E) with ha
-  set a' := inclR (F := F) (AF F) (θ' : E) with ha'
-  have hca : cA σ a = 1 - a := by
-    rw [ha, hi, eq_sub_of_add_eq' hθ, map_sub, map_one]
-  have hca' : cA σ a' = 1 - a' := by
-    rw [ha', hi, eq_sub_of_add_eq' hθ', map_sub, map_one]
-  set z := (a - a') * t with hz
-  have hcz : cA σ z = z := by
-    rw [hz, map_mul, map_sub, hca, hca', ht]; ring
-  have h2 : Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) z = 2 * Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (a * z) := by
-    have e1 : Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (cA σ (a * z)) = Algebra.trace (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (a * z) := htr _
-    rw [map_mul, hca, hcz, sub_mul, one_mul, map_sub] at e1
-    linear_combination e1
-  have hmul : inclR (F := F) (AF F) (((θ * (θ - θ') : 𝓞 E)) : E) = a * (a - a') := by
-    rw [ha, ha', ← map_sub, ← map_mul]; push_cast; rfl
-  have key : symp (R := AF F) (cA σ) a (incM F X.J) (incM F W.J) γ γ =
-      symp (R := AF F) (cA σ) a' (incM F X.J) (incM F W.J) γ γ +
-        2 * symp (R := AF F) (cA σ) (inclR (F := F) (AF F) (((θ * (θ - θ') : 𝓞 E)) : E)) (incM F X.J) (incM F W.J) γ γ := by
-    simp only [symp, hmul]
-    rw [← htdef, mul_assoc, ← hz, ← h2, hz, sub_mul, map_sub]; ring
-  have h1 := GlobalTheory.LatVacArith.psi_symp_latAtV σ B X W r s r' s' hB hX hW v (θ * (θ - θ')) 1
-    (by rw [map_one]; exact one_mem _) γ hγ γ hγ
-  rw [key, mul_add, ← mul_assoc, invOf_mul_self, one_mul, AddChar.map_add_eq_mul, ← one_mul (symp (R := AF F) (cA σ) (inclR (F := F) (AF F) (((θ * (θ - θ') : 𝓞 E)) : E)) (incM F X.J) (incM F W.J) γ γ), h1, mul_one]
-
-end GlobalTheory.VacThetaInd
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -952,16 +800,6 @@ open scoped Matrix GlobalTheory.VacAny
 open NumberField IsDedekindDomain MeasureTheory Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RatWeilOp
 
 noncomputable section
-
-namespace GlobalTheory.VacThetaIndep
-
-theorem vacuum_character_theta_indep : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (r s r' s' : ℕ), B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' →
-    ∀ (v : Pl (F := F)) (θ θ' : 𝓞 E), (θ : E) + σ θ = 1 → (θ' : E) + σ θ' = 1 → ∀ γ ∈ latAtV X W v,
-      B.ψ (⅟(2 : AF F) * symp (_root_.Algebra.TensorProduct.map (_root_.AlgHom.id (AF F) (AF F)) σ) (inclR (F := F) (AF F) (θ : E)) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) X.J) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) W.J) γ γ) =
-        B.ψ (⅟(2 : AF F) * symp (_root_.Algebra.TensorProduct.map (_root_.AlgHom.id (AF F) (AF F)) σ) (inclR (F := F) (AF F) (θ' : E)) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) X.J) ((_root_.Matrix.map · (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F))) W.J) γ γ) :=
-  GlobalTheory.VacThetaInd.psi_half_symp_theta_indep
-
-end GlobalTheory.VacThetaIndep
 
 end
 end -- clump:auto
@@ -1007,10 +845,6 @@ theorem schA_le {N : Submodule ℂ ((κ → AF F) → ℂ)} (h : ∀ f φ, IsFam
   | mem p hp =>
     obtain ⟨φ, hφ, hs, rfl⟩ := hp
     exact h f φ ⟨hφ, hs⟩
-
-theorem IsFam.finite {φ : ∀ v : Pl F, (κ → Fv F v) → ℂ} (hφ : IsFam φ) (x : κ → AF F) :
-    (Function.mulSupport fun v => φ v fun i => evFin F v (x i)).Finite := by
-  apply _root_.GlobalTheory.RatWeilUnip.finite_mulSupport <;> assumption
 
 def schrL {R : Type} [CommRing R] [Invertible (2 : R)] (ψ : AddChar R ℂ) (w : (κ → R) × (κ → R)) :
     ((κ → R) → ℂ) →ₗ[ℂ] (κ → R) → ℂ where

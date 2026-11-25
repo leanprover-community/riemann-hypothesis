@@ -402,10 +402,6 @@ section Concrete
 
 variable {D : D7} {V : HSp D} {n : ℕ}
 
-theorem countRank {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} (π : Formalism.L2.NG.FinTyp L n) :
-    Module.rank ℂ π.S ≤ Cardinal.aleph0 :=
-  _root_.GlobalTheory.FinTyp.rank_le_aleph0 π
-
 def rtHom (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) :
     Formalism.AUTREP.GAf L n →* Module.End ℂ (Formalism.AUTREP.GAf L n → ℂ) where
   toFun h := Formalism.L2.NG.rt L n h
@@ -427,7 +423,6 @@ theorem pre_psi (Q : principalLevelFrame.RowPsi V n) (h : Formalism.AUTREP.GAf D
   unfold principalLevelFrame.pre
   rw [dite_eq_left hx]
   exact Q.inj hx.choose_spec
-
 
 open Classical in
 def ext0 (Q : principalLevelFrame.RowPsi V n) : (Formalism.AUTREP.GAf D.host.E n → ℂ) →ₗ[ℂ] (GA D V → ℂ) where

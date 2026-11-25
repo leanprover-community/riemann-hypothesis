@@ -395,7 +395,6 @@ theorem conv_mul_left {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
 
 end GlobalTheory.TrMult.OneLevel
 
-
 open GlobalTheory.TrMult.OneLevel in
 theorem GlobalTheory.TrMult.oneLevel : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V), ∃ K : Subgroup (GfC V), IsOpen (K : Set (GfC V)) ∧ IsCompact (K : Set (GfC V)) ∧ ∀ (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)), (∀ v, (μf v).IsHaarMeasure) → ∀ ff, IsTestFin T U μf ff → SphRest T U ff → IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff ∧ ∀ k ∈ K, ∀ g, finFn V ff (k * g) = finFn V ff g := by
   intro D V T U
@@ -773,8 +772,6 @@ theorem map_isHaar_rightInv {F E : Type} [Field F] [Field E] [Algebra F E] {σ :
   rw [hc]
   exact map_mul_left_eq_self _ g
 
-
-
 open GlobalTheory.Orb in
 theorem phi_map : ∀ (D : D7) (V V' : HSp D) (r : ℕ) (P : PPol D.sp.cm.sig r) (v : HeightOneSpectrum (𝓞 D.host.F)) (j : GLoc D.sp.cm.sig V.gram v ≃ₜ* GLoc D.sp.cm.sig V'.gram v), IsLatticeConj (frameLat V) (frameLat V') j → ∀ (μ : Measure (GLoc D.sp.cm.sig V.gram v)) (dt : Measure (Tor P (Fv D.host.F v))) (f : GLoc D.sp.cm.sig V.gram v → ℂ), μ.IsHaarMeasure → dt.IsHaarMeasure → PhiOK (J := V.gram) μ dt f → PhiOK (J := V'.gram) (μ.map j) dt (f ∘ j.symm) → Phi (J := V'.gram) (μ.map j) dt (f ∘ j.symm) = Phi (J := V.gram) μ dt f := by
   intro D V V' r P v j hj μ dt f hμ hdt hok hok'
@@ -992,7 +989,6 @@ def equivCompSymm' {G H : Type} [Group G] [Group H] [TopologicalSpace G] [Topolo
 end GlobalTheory.TrMultEnd
 
 namespace GlobalTheory.TrMultEnd
-
 
 end GlobalTheory.TrMultEnd
 end -- clump:auto
@@ -1390,27 +1386,6 @@ theorem gap_of_gapG {r : ℕ} {lam : Fin r → ℤ} (h : GapG r lam) : Gap lam :
       nlinarith [pow_le_pow_left₀ (by positivity : (0:ℤ) ≤ 1) this 3]
   linarith
 
-theorem isPCG_dsRep (M : DSModel V S) (ρ : D.what₂.Tau) (μ : Measure (GArch D.sp.cm.sig V.gram (placeOf D ρ)))
-    [μ.IsHaarMeasure] (f : Formalism.REAL.UJ (M.ε ρ) → ℂ) :
-    haveI := (M.ds ρ).1
-    IsPCG (ujMat (M.ε ρ)) (μ.map (frameEquiv M ρ)) (ujRep (M.ds ρ).2.2.1) f →
-      IsPCG (matAt V ρ) μ (dsRep M ρ) (f ∘ frameEquiv M ρ) := by
-  exact ArchT.isPCG_dsRep M ρ μ f
-
-theorem orb_dsRep (M : DSModel V S) (ρ : D.what₂.Tau) (μ : Measure (GArch D.sp.cm.sig V.gram (placeOf D ρ)))
-    [μ.IsHaarMeasure] (f : Formalism.REAL.UJ (M.ε ρ) → ℂ)
-    (h : ∀ s, IsRegSS (ujMat (M.ε ρ) s) → IsCompact (cent s : Set (Formalism.REAL.UJ (M.ε ρ))) →
-      ∀ (y : Formalism.REAL.UJ (M.ε ρ)) (θ : Fin V.rank → ℝ), y⁻¹ * s * y = torusPt (M.ε ρ) θ →
-      ∀ (dt : Measure (cent s)) [dt.IsHaarMeasure] [dt.IsMulRightInvariant],
-        HasOrbInt (μ.map (frameEquiv M ρ)) s dt f (conj (dsChar (M.ε ρ) (M.lam ρ) θ) / dt.real univ))
-    (s : GArch D.sp.cm.sig V.gram (placeOf D ρ)) (hs : IsRegSS (matAt V ρ s))
-    (hT : IsCompact (cent s : Set (GArch D.sp.cm.sig V.gram (placeOf D ρ))))
-    (y : GArch D.sp.cm.sig V.gram (placeOf D ρ)) (θ : Fin V.rank → ℝ)
-    (hy : frameMat M ρ (y⁻¹ * s * y) = Matrix.diagonal (fun a => Complex.exp (θ a * Complex.I)))
-    (dt : Measure (cent s)) [dt.IsHaarMeasure] [dt.IsMulRightInvariant] :
-    HasOrbInt μ s dt (f ∘ frameEquiv M ρ) (conj (dsChar (M.ε ρ) (M.lam ρ) θ) / dt.real univ) := by
-  exact ArchT.orb_dsRep M ρ μ f h s hs hT y θ hy dt
-
 theorem exists_testArch (hL : LocalPC) (M : DSModel V S) (lam : D.what₂.Tau → Fin V.rank → ℤ) (hodd : Odd V.rank)
     (hgap : ∀ ρ, GapG V.rank (lam ρ)) (hlam : ∀ ρ i, M.lam ρ i = lam ρ i)
     (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)) [∀ w, (μa w).IsHaarMeasure] :
@@ -1474,8 +1449,6 @@ def TraceEqX : Prop :=
           GlobalTheory.Orb.IsTestArchGX M' μa' fa' → ArchO M' μa' fa' →
           ∃ c : ℂ, HasTrace (RopG V μ (tensor D.sp.cm.sig V.gram fa ff)) c ∧
             HasTrace (RopG V' μ' (tensor D.sp.cm.sig V'.gram fa' (transfer j ff))) c
-
-
 
 theorem realStableX : RealStableX := by
   intro D V lam S M μa fa hodd hlam hM hμa hfa hO P ρ dt hdt
@@ -1593,8 +1566,6 @@ def TRCusp' : Prop :=
       [μ'.IsMulRightInvariant] (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W),
       σ.IsIrreducible → IsAdmissible σ → HasTypeVec T σ →
       mCuspDS μ σ M = mCuspDS μ' (σ.comp Φ.symm.toMulEquiv.toMonoidHom) M'
-
-
 
 theorem trCusp'_of_steps (hL : LocalPC) (hF : SpecFin) (hT : GlobalTheory.TrMult.SpecTraceX) (hS : Separation)
     (hE : TraceEqX) : TRCusp' := by
@@ -1764,8 +1735,6 @@ theorem params_match' : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : T
     rw [enum_fst ((R.MW i (sg0 D A)).enum ρ) (fun a : Fin (Wc D i).rank => Formalism.L2.NTheta.lamAt (D.hc ρ) a)
       (lamAt_anti_fin _ hW.le) (parAt_fst R i ρ hW) a]
     exact (keyR ρ (a : ℕ)).symm
-
-
 
 theorem multEq_of_trCusp' : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.GreenCuspidal → TRCusp' → ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Given R F → GlobalTheory.CuspMult.MultEq R := by
   intro hRD hHC hDM hGC hTR D G _ _ Pl0 T A Ks _ _ _ R F hG

@@ -70,25 +70,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 
 noncomputable section
 
-namespace GlobalTheory.RealLift
-
-open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU Classical
-
-section SignAdele
-
-variable {F : Type} [Field F] [NumberField F]
-
-variable {E : Type} [Field E] [NumberField E] [Algebra F E]
-
-theorem piInf_algebraMap {v : InfinitePlace F} (τ : EmbOver E v) (y : AF F) :
-    piInf τ (algebraMap (AF F) (AE F E) y) = InfinitePlace.Completion.extensionEmbedding v (evInf F v y) := by
-  unfold piInf
-  rw [RingHom.comp_apply, Algebra.TensorProduct.algebraMap_apply]
-  simp [compInf]
-
-end SignAdele
-
-end GlobalTheory.RealLift
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -148,13 +129,6 @@ theorem atPl_add (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L + L') = atPl
 
 theorem atPl_smul (w : ι) (c : ℂ) (L : Module.End ℂ (V w)) : atPl w (c • L) = c • atPl w L := by
   simp only [atPl_eq, MultilinearMap.map_update_smul, RingHom.id_apply]
-
-theorem atPl_one (w : ι) : atPl w (1 : Module.End ℂ (V w)) = 1 := by
-  rw [atPl_eq, show Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w 1 = fun i => LinearMap.id by
-    funext i; by_cases h : i = w
-    · subst h; simp; rfl
-    · simp [Function.update_of_ne h]]
-  exact PiTensorProduct.map_id
 
 theorem atPl_zero (w : ι) : atPl w (0 : Module.End ℂ (V w)) = 0 := by
   simp only [atPl_eq, MultilinearMap.map_update_zero]

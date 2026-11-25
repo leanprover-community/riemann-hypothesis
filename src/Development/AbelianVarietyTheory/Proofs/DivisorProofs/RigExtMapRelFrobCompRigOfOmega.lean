@@ -174,36 +174,6 @@ theorem eq_verschiebung_of_relFrob_comp {v : frobTwist h G ⟶ G}
   haveI := epi_relFrob h (G := G)
   (cancel_epi _).1 (e.trans (relFrob_comp_verschiebung h G).symm)
 
-section Naturality
-
-variable (h' : (p : S) = 0) {σ : R →+* S} {G' : PDivGroup p S} (s : SemiHom σ G' G)
-
-theorem SemiHom.app_relFrob (n : ℕ) (x : (PDivGroup.frobTwist h G).A n) :
-    s.app n ((relFrob h G).app n x) = (relFrob h' G').app n ((s.frobTwist h h').app n x) := by
-  induction x using frobTwist_induction h n with
-  | h0 => simp only [map_zero]
-  | h2 x y hx hy => simp only [map_add (f := _), hx, hy]
-  | h1 r a =>
-    rw [map_smul, SemiBialgHom.smul_map, SemiBialgHom.smul_map, map_smul, relFrob_app_frobProj,
-      SemiHom.frobTwist_app_frobProj, relFrob_app_frobProj, map_pow]
-
-theorem SemiHom.app_verschiebung (n : ℕ) (a : G.A n) :
-    (s.frobTwist h h').app n ((verschiebung h G).app n a) =
-      (verschiebung h' G').app n (s.app n a) := by
-  refine Test.mulP_injective (PDivGroup.frobTwist h' G') n ?_
-  obtain ⟨b, rfl⟩ := G.res_surjective n a
-  rw [← PDivGroup.res_app, ← SemiHom.res_app, ← SemiHom.res_app, ← PDivGroup.res_app, mulP_res,
-    mulP_res, ← map_mulBy,
-    ← SemiBialgHom.map_mulBy (s.app _), ← relFrob_app_verschiebung_app h, s.app_relFrob h h',
-    ← prime_smul_id_app, ← verschiebung_comp_relFrob]
-  rfl
-
-variable {H : PDivGroup p R}
-
-variable (G) [Algebra R S]
-
-end Naturality
-
 variable (G)
 
 theorem dualHom_verschiebung :

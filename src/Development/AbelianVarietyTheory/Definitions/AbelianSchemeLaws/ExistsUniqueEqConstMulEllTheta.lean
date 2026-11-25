@@ -110,8 +110,6 @@ def ellPolAV : Out.PolAV (Spec (CommRingCat.of R)) where
   ample := relAmple_originLB W
   ktriv := kTriv_originLB W
 
-@[simp] theorem ellPolAV_g : (ellPolAV W).g = 1 := rfl
-
 theorem eSec_ellPolAV : eSec (ellPolAV W).A = zero W := one_left W
 
 def ellTheta : (ellPolAV W).L.Sec := originSec W
@@ -121,19 +119,5 @@ theorem exists_isLieBasis_ellPolAV : ∃ v : epsR R ⟶ (ellPolAV W).A,
       v.left = ptHom W (algebraMap R (DualNumber R)) ![DualNumber.eps, -1, 0] h) ∧
     IsLieBasis ![v] :=
   WeierstrassLie.isLieBasis_eps R W (one_left W)
-
-section BaseChange
-
-variable {R' : Type} [CommRing R'] {W' : _root_.WeierstrassCurve R'} [W'.IsElliptic]
-  (f : R →+* R') (h : W.map f = W')
-
-theorem isGrpPullback_ellPolAV :
-    IsGrpPullback (ellPolAV W').A (ellPolAV W).A (spMap f) (mapHom W f h) :=
-  isGrpPullback_mapHom W f h
-
-theorem lbIso_ellPolAV : LBIso (ellPolAV W').L ((ellPolAV W).L.pull (mapHom W f h)) :=
-  lbIso_pull_originLB W f h
-
-end BaseChange
 
 end GlobalTheory.WeierstrassCurve

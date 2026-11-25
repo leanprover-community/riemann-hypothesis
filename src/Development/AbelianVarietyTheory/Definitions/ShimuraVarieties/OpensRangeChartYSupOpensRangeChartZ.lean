@@ -244,7 +244,6 @@ theorem evalHom_smul (c : A) (h' : (W.map ρ).toProjective.Equation (c • P)) {
   obtain ⟨p, hp, rfl⟩ := ha
   exact eval₂_smul_of_isHomogeneous ρ hp c P
 
-
 variable {ρ P} in
 theorem map_irrelevant_evalHom (h : IsUnimodularSol (W.map ρ) P) :
     (irrelevant (grading W)).toIdeal.map (evalHom W ρ P h.equation) = ⊤ := by
@@ -855,13 +854,11 @@ section BaseChange
 variable {R' R'' : Type u} [CommRing R'] [CommRing R''] {W' : WeierstrassCurve R'}
   {W'' : WeierstrassCurve R''}
 
-
 variable {W} in
 theorem map_comp_eq {A : Type*} [CommRing A] {f : R →+* R'} (h : W.map f = W') (ρ : R' →+* A) :
     W.map (ρ.comp f) = W'.map ρ := by
   subst h
   rfl
-
 
 variable {W} in
 theorem IsUnimodularSol.comp_of_map_eq {A : Type*} [CommRing A] {f : R →+* R'}
@@ -936,14 +933,6 @@ theorem mapHom_toSpec :
 theorem zero_mapHom : zero W' ≫ mapHom W f h = Spec.map (CommRingCat.ofHom f) ≫ zero W := by
   rw [SpecMap_zero]
   exact ptHom_mapHom W f h (RingHom.id R') ![0, 1, 0] (isUnimodularSol_zero _)
-
-theorem mapHom_comp (g : R' →+* R'') (h' : W'.map g = W'') :
-    mapHom W' g h' ≫ mapHom W f h = mapHom W (g.comp f) ((map_comp_eq h g).trans h') := by
-  apply scheme_hom_ext
-  · rw [chartY, pt_eq_ptHom, ptHom_mapHom_assoc, ptHom_mapHom, ptHom_mapHom]
-    rfl
-  · rw [chartZ, pt_eq_ptHom, ptHom_mapHom_assoc, ptHom_mapHom, ptHom_mapHom]
-    rfl
 
 def awayRingMap (i : Fin 3) : AwayRing W i →+* AwayRing W' i :=
   awayEval W i ((awayConst W' i).comp f) (awayCoord W' i)

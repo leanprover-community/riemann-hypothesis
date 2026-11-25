@@ -85,22 +85,6 @@ def beF : LinearMap.BilinForm ℤ P.D.toPre.X :=
     (fun a a' b => by simp [map_add (f := _)]) (fun n a b => by simp [map_zsmul])
     (fun a b b' => by simp [map_add (f := _)]) (fun n a b => by simp [map_zsmul])
 
-theorem beF_symm (a b : P.D.toPre.X) : beF P hϖ a b = beF P hϖ b a := QForm.bOf_comm P.D a b
-
-theorem beF_self (a : P.D.toPre.X) : beF P hϖ a a = 2 * qv P hϖ a :=
-  (QForm.two_Q_eq hϖ P.D (isQ_qv P hϖ) a).symm
-
-theorem beF_adj (x : 𝓞 E) (a b : P.D.toPre.X) : beF P hϖ (x • a) b = beF P hϖ a (H.bar x • b) :=
-  letI := H.starRing
-  QForm.bOf_balance hϖ P.D GlobalTheory.abelianSchemeLaws_all.1 P.oD (isQ_qv P hϖ) x a b
-
-theorem beF_w0 (a : P.D.toPre.X) : beF P hϖ a (H.w0 • a) = qv P hϖ a := by
-  have h₁ := beF_adj P hϖ H.w0 a a
-  have hb : H.bar H.w0 = 1 - H.w0 := by rw [HostModel.cmHost_bar_halfIntegerGenerator]
-  rw [hb, sub_smul, one_smul, map_sub, beF_symm P hϖ (H.w0 • a) a] at h₁
-  have h₂ := beF_self P hϖ a
-  omega
-
 def piK : (FractionRing T.V)ˣ :=
   Units.mk0 (algebraMap T.V (FractionRing T.V) ϖ)
     ((map_ne_zero_iff _ (IsFractionRing.injective T.V (FractionRing T.V))).2 hϖ.ne_zero)
@@ -115,8 +99,6 @@ section ThetaShiftProofs
 
 variable {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
   (Y : Model Xo c β) (b : O →+* T.V) (y : Sp T.V ⟶ Y.X) (m : SABMap t Y.t y)
-
-
 
 end ThetaShiftProofs
 
@@ -191,7 +173,6 @@ abbrev D0 : DegPre T.V := letI := H.starRing; GlobalTheory.TauTwist.twist D.toPr
 def oa0 : letI := H.starRing; (D0 (H := H) D hϖ).OAct (𝓞 E) :=
   letI := H.starRing; twistAct (GlobalTheory.ArcBuild.cmIdempotent_add_star_eq_one (H := H)) (isScalarForm_tF D oD hϖ) oD
 
-
 include oD in
 theorem gen0 (a : D.toPre.X) : PsiUnitOn (D0 (H := H) D hϖ) a Set.univ :=
   psiUnitOn_rescale_of_qVal T D.toPre ϖ hϖ a (qv D hϖ a) (isQ_qv D hϖ a) _ (by
@@ -235,7 +216,6 @@ def eta0 (hdiv : ∀ a a', (2 * l.M' : ℤ) ∣ beF D hϖ a a') (pM : Dm.La → 
   qkScale (GlobalTheory.ArcBuild.cmIdempotent_add_star_eq_one (H := H)) (isScalarForm_tF D oD hϖ) (psiRel0 D hϖ)
     (isRootForm_rF D oD hϖ (dvd_of_dvd D hϖ (Nat.dvd_lcm_left l.M l.A) hdiv)) _ (pM v)
 
-
 open scoped Classical in
 variable (Dm) in
 def LieCl : Prop :=
@@ -245,7 +225,6 @@ def LieCl : Prop :=
       (spMap ((algebraMap (FractionRing T.V) F).comp (algebraMap T.V _))) τ n ∧
       n + Module.finrank (𝓞 E) D.toPre.X =
         if τ H.rt = (algebraMap (FractionRing T.V) F).comp (algebraMap T.V _) (b r) then Dm.p else Dm.q
-
 
 variable (Dm) in
 def TateCl (hdiv : ∀ a a', (2 * l.M' : ℤ) ∣ beF D hϖ a a') (pA : Dm.La → QkPt D.toPre (FractionRing T.V) l.A)
