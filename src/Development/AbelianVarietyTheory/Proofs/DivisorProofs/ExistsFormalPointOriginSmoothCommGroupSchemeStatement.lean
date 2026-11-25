@@ -353,9 +353,6 @@ noncomputable def pdZ {σ R : Type} [CommRing R] (j : σ) : Derivation ℤ (MvPo
   map_one_eq_zero' := MvPowerSeries.pderiv_one
   leibniz' := (MvPowerSeries.pderiv (R := R) j).leibniz
 
-theorem pdZ_apply {σ R : Type} [CommRing R] (j : σ) (F : MvPowerSeries σ R) :
-    pdZ j F = MvPowerSeries.pderiv (R := R) j F := rfl
-
 theorem add_sum_apply {σ R ι : Type} [CommRing R] [Fintype ι] (E : Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R))
     (G : ι → MvPowerSeries σ R) (P : ι → Derivation ℤ (MvPowerSeries σ R) (MvPowerSeries σ R))
     (F : MvPowerSeries σ R) : (E + ∑ j, G j • P j) F = E F + ∑ j, G j * P j F := by
@@ -945,7 +942,6 @@ theorem germMap_germ (hd : IsField W d) (hxW : x ∈ W) {O : X.Opens} (hO : x �
 
 end GlobalTheory.StalkDerField
 
-
 open GlobalTheory.StalkDerField in
 theorem GlobalTheory.StalkDerField.exists_stalk_derivation : ∀ (X : Scheme.{0}) (W : X.Opens) (d : Fld X), IsField W d → ∀ (x : X), x ∈ W → ∃ δ : Derivation ℤ (X.presheaf.stalk x) (X.presheaf.stalk x), ∀ (O : X.Opens) (hO : x ∈ O), O ≤ W → ∀ f, δ ((X.presheaf.germ O x hO).hom f) = (X.presheaf.germ O x hO).hom (d O f) := by
   intro X W d hd x hxW
@@ -1060,9 +1056,6 @@ theorem valR_eq_evHom (x : Sp A ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) 
   unfold valR
   rw [dif_pos h]
   rfl
-
-theorem top_le_spMap {A' : Type} [CommRing A'] (ψ : A →+* A') (x : Sp A ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) :
-    ⊤ ≤ (spMap ψ ≫ x) ⁻¹ᵁ U := fun y _ => h (Set.mem_univ ((spMap ψ) y))
 
 theorem top_le_fromSpecStalk {x : X} {U : X.Opens} (hU : x ∈ U) : ⊤ ≤ X.fromSpecStalk x ⁻¹ᵁ U := fun w _ => by
   have : X.fromSpecStalk x w ∈ Set.range (X.fromSpecStalk x) := ⟨w, rfl⟩

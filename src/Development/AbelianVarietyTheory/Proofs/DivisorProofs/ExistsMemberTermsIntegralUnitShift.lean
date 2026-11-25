@@ -104,10 +104,6 @@ theorem mem_of_psiCoord {V : Type} [CommRing V] [IsDomain V] {I : Ideal V} (D : 
   obtain ⟨s, hs, es⟩ := (Ideal.mem_map_iff_of_surjective _ hb.2).1 hr'
   rwa [← hb.1 es]
 
-theorem mono_zero {s m : ℕ} (W : Matrix (Fin s) (Fin s) ℤ) {X : Type} [AddCommGroup X] {V : Type} [CommRing V]
-    (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) : mono W t δ 0 = 1 := by
-  simp [mono, qW]
-
 theorem isUnit_of_sub_mem {V : Type} [CommRing V] [IsLocalRing V] {a b : V} (h : a - b ∈ maximalIdeal V) :
     IsUnit a ↔ IsUnit b := by
   rw [← not_iff_not, ← mem_nonunits_iff, ← mem_nonunits_iff, ← mem_maximalIdeal, ← mem_maximalIdeal]

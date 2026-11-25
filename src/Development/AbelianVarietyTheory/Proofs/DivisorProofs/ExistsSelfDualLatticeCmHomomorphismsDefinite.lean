@@ -346,54 +346,6 @@ end Lattices
 
 variable [IsAlgClosed C] [CharZero C]
 
-theorem pairV_mapV [Algebra ℤ_[p] C] (x : P.V) (y : P'.V) :
-    P'.pairV (mapV P P' α x) y = P.pairV x (adjV P P' α y) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x x' hx hx' => simp only [map_add (f := _), LinearMap.add_apply, hx, hx']
-  | tmul c s =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp only [map_add (f := _), hy, hy']
-    | tmul d t => exact congrArg (· • (c * d)) (pairT_mapT P P' α s t)
-
-theorem weil_adjT (he : P'.eps = P.eps) (t : P'.T) {n : ℕ} {z : ChTor.Pts P.A.A} (hz : z ^ p ^ n = 1) :
-    weil P'.A (p ^ n) (z ≫ α) (t.lev n) = weil P.A (p ^ n) z ((adjT P P' α t).lev n) := by
-  obtain ⟨s, rfl⟩ := (tate_free_of_card p _ _ P.card_torsion).2.1 n z hz
-  rw [← pow_pairT P.A P.eps, ← pairT_mapT, ← he, pow_pairT, lev_mapT]
-
-variable [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
-  (β : P.Gt ⟶ P'.Gt) [IsMonHom β] (he : P'.eps = P.eps) (hβ : ∀ x, P'.toA (x ≫ β) = P.toA x ≫ α)
-
-include he hβ
-
-theorem weilChar_adjT (t : P'.T) (n : ℕ) : (P.weilChar (adjT P P' α t)).χ n =
-    ExtensionTorsion.torsionHom β (p ^ n) ≫ (P'.weilChar t).χ n := P.char_ext fun w => by
-  rw [← Category.assoc, P.isWeilChar_weilChar, P'.isWeilChar_weilChar, Category.assoc,
-    ExtensionTorsion.torsionHom_ι, ← Category.assoc, hβ, weil_adjT α he t (P.toA_pow w)]
-
-variable [Algebra ℤ_[p] O]
-
-theorem al₀_adjT (t : P'.T) (x : LieG P.Gt) :
-    (P.al₀ (adjT P P' α t)).1 x = (P'.al₀ t).1 (lieMap β x) := by
-  refine HodgeTateImage.eq_of_forall (p := p) fun n => ?_
-  have hR := HodgeTateImage.pow_quot (O := O) (p := p) n
-  have h1 := isAl_dlogTv (P.weilChar (adjT P P' α t)) n _ hR x _ (HodgeTateImage.lift_ι hR x)
-  have h2 := isAl_dlogTv (P'.weilChar t) n _ hR (lieMap β x)
-    (HodgeTateImage.lift hR x ≫ ExtensionTorsion.torsionHom β (p ^ n)) (by
-      rw [Category.assoc, ExtensionTorsion.torsionHom_ι, ← Category.assoc, HodgeTateImage.lift_ι]
-      exact Category.assoc _ _ _)
-  rw [Category.assoc, ← weilChar_adjT α β he hβ, h1] at h2
-  change algebraMap O _ ((dlogTv (P.weilChar (adjT P P' α t))).1 x) =
-    algebraMap O _ ((dlogTv (P'.weilChar t)).1 (lieMap β x))
-  simpa [Algebra.algebraMap_eq_smul_one] using congrArg TrivSqZeroExt.snd h2
-
-variable [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
-
-theorem mapV_bLie (x : LieG P.Gt) : mapV P P' α (P.bLie x) = P'.bLie (lieMap β x) :=
-  P'.eq_of_pairV fun t => by
-    rw [pairV_mapV, adjV_tmul, Point.pairV_bLie, Point.pairV_bLie, al₀_adjT α β he hβ]
-
 end General
 
 section Good
@@ -422,50 +374,7 @@ end Linear
 
 variable [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
 
-theorem toG_goodPoint (x : specO O O ⟶ (goodPoint hv ε j B o).Gt) : (goodPoint hv ε j B o).toG x = x :=
-  (goodPoint hv ε j B o).hom_ext_red fun m => (goodPoint hv ε j B o).red_toG x m
-
-theorem toA_homO (f : B.A ⟶ B'.A) (x : specO O O ⟶ (goodPoint hv ε j B o).Gt) :
-    (goodPoint hv ε j B' o').toA (x ≫ homO hv ε j o o' f) = (goodPoint hv ε j B o).toA x ≫ homC hv ε j o o' f := by
-  have h1 := ((goodPoint hv ε j B o).eq_toA_iff x _).1 rfl
-  have h2 : (homC hv ε j o o' f).left ≫ (goodPoint hv ε j B' o').gen =
-      (goodPoint hv ε j B o).gen ≫ (homO hv ε j o o' f).left := pullback.lift_fst _ _ _
-  rw [toG_goodPoint] at h1
-  symm
-  rw [Point.eq_toA_iff, toG_goodPoint, Over.comp_left, Category.assoc, h2]
-  exact (Category.assoc _ _ _).symm.trans ((congrArg (· ≫ (homO hv ε j o o' f).left) h1).trans (Category.assoc _ _ _))
-
-variable [IsAlgClosed C] [CharZero C] [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
-
-theorem homV_bLie (f : B.A ⟶ B'.A) [IsMonHom f] (x : LieG (goodPoint hv ε j B o).Gt) :
-    homV hv ε j o o' f ((goodPoint hv ε j B o).bLie x) = (goodPoint hv ε j B' o').bLie (homLie hv ε j o o' f x) :=
-  mapV_bLie _ (homO hv ε j o o' f) rfl (toA_homO hv ε j o o' f) x
-
-variable {f : B.A ⟶ B'.A} [IsMonHom f]
-
-
 end Good
-
-section Triples
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {K : Type} [Field K] {ℓ : ℕ} [Fact ℓ.Prime]
-  {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C] (hv : v.Integers O)
-  (ε : Eps ℓ C) (i : K →+* C) {T T' : PAT H (Sp (𝓞 K))} {f g : T.t.G ⟶ T'.t.G}
-  (hf : Serre.IsLinearHom T.t.act T'.t.act f) (hg : Serre.IsLinearHom T.t.act T'.t.act g)
-
-variable [Algebra ℤ_[ℓ] C]
-
-variable [Algebra ℤ_[ℓ] O] [IsScalarTower ℤ_[ℓ] O C]
-
-variable [Fact ¬IsUnit (ℓ : O)] [IsAdicComplete (Ideal.span {(ℓ : O)}) O] [IsAlgClosed C] [CharZero C]
-
-theorem patV_bLie : letI := H.starRing
-    ∀ x, patV hv ε i hf ((patPoint hv ε i T).bLie x) = (patPoint hv ε i T').bLie (patLie hv ε i hf x) :=
-  letI := H.starRing
-  haveI : IsMonHom (C := Over (Sp (𝓞 K))) (M := T.pol.A) (N := T'.pol.A) f := hf.isMonHom
-  homV_bLie (B := T.pol) (B' := T'.pol) hv ε (embO hv i) (patAct T) (patAct T') f
-
-end Triples
 
 end GlobalTheory.PointMap
 end -- clump:auto
@@ -596,7 +505,6 @@ theorem homT_one [IsMonHom (1 : B.A ⟶ B'.A)] : homT hv ε j o o' 1 = 0 :=
   LinearMap.ext fun t => Tate.ext fun n => (ptsEquiv hv ε j o').injective (by
     rw [lev_homT, ptsEquiv_homC, MonObj.comp_one, LinearMap.zero_apply, Tate.lev_zero, map_one])
 
-
 omit [IsAlgClosed C] [CharZero C] in
 theorem ptsEquiv_lev_sum {A A' : Out.PolAV (Sp R)} (oA : A.OAct Λ) (oA' : A'.OAct Λ) {m m' : ℕ}
     (φ : Fin m → (A.A ⟶ B.A)) (φ' : Fin m' → (A'.A ⟶ B.A)) [∀ k, IsMonHom (φ k)] [∀ k, IsMonHom (φ' k)]
@@ -604,7 +512,6 @@ theorem ptsEquiv_lev_sum {A A' : Out.PolAV (Sp R)} (oA : A.OAct Λ) (oA' : A'.OA
     ptsEquiv hv ε j o ((∑ k, homT hv ε j oA o (φ k) (s k) + ∑ k, homT hv ε j oA' o (φ' k) (s' k)).lev n) =
       (∏ k, ptsEquiv hv ε j oA ((s k).lev n) ≫ φ k) * ∏ k, ptsEquiv hv ε j oA' ((s' k).lev n) ≫ φ' k := by
   simp only [Tate.lev_add, lev_sum, map_mul, map_prod, lev_homT, ptsEquiv_homC]
-
 
 omit [IsAlgClosed C] [CharZero C] in
 theorem homT_inverse {A A' : Out.PolAV (Sp R)} (oA : A.OAct Λ) (oA' : A'.OAct Λ) {m m' N : ℕ}
@@ -636,19 +543,6 @@ section Points
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O]
   [Algebra O C] {Λ : Type} [CommRing Λ] [StarRing Λ] [IsAlgClosed C] [CharZero C]
 
-theorem pairV_baseChange [Algebra ℤ_[p] C] {X Y A B : Point p v O Λ} {f₁ : X.T →ₗ[ℤ_[p]] A.T} {f₂ : Y.T →ₗ[ℤ_[p]] A.T}
-    {g₁ : X.T →ₗ[ℤ_[p]] B.T} {g₂ : Y.T →ₗ[ℤ_[p]] B.T}
-    (h : ∀ s t, pairT A.A A.eps (f₁ s) (f₂ t) = pairT B.A B.eps (g₁ s) (g₂ t)) (x : X.V) (y : Y.V) :
-    A.pairV (f₁.baseChange C x) (f₂.baseChange C y) = B.pairV (g₁.baseChange C x) (g₂.baseChange C y) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x x' hx hx' => simp only [map_add (f := _), LinearMap.add_apply, hx, hx']
-  | tmul c s =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp only [map_add (f := _), hy, hy']
-    | tmul d t => exact congrArg (· • (c * d)) (h s t)
-
 theorem eq_zero_of_actT {E : Type} [Field E] [NumberField E] [StarRing (𝓞 E)] (P : Point p v O (𝓞 E)) (hg : 0 < P.A.g)
     {a : 𝓞 E} (h : ∀ t, P.actT a t = 0) : a = 0 := by
   by_contra ha
@@ -663,8 +557,6 @@ theorem eq_zero_of_actT {E : Type} [Field E] [NumberField E] [StarRing (𝓞 E)]
 
 variable {A A' B : Point p v O Λ} {m m' : ℕ} (φ : Fin m → (A.T →ₗ[ℤ_[p]] B.T)) (φ' : Fin m' → (A'.T →ₗ[ℤ_[p]] B.T))
   {N : ℕ} (hN : 0 < N) (ψ : Fin m → (B.T →ₗ[ℤ_[p]] A.T)) (ψ' : Fin m' → (B.T →ₗ[ℤ_[p]] A'.T))
-
-
 
 include hN in
 theorem det_ne_zero_of_inverse {E : Type} [Field E] [NumberField E] [StarRing (𝓞 E)] {A A' B : Point p v O (𝓞 E)}
@@ -1036,7 +928,6 @@ abbrev phiTQ (b : Fin q) : letI := H.starRing; (pointA hv ε i X false).T →ₗ
 
 variable [IsAlgClosed C] [CharZero C]
 
-
 omit [NumberField K] in
 theorem pairT_patT_gram {T T' : PAT H (Sp (𝓞 K))} {f f' : T.t.G ⟶ T'.t.G} (hf : Serre.IsLinearHom T.t.act T'.t.act f)
     (hf' : Serre.IsLinearHom T.t.act T'.t.act f') {g : 𝓞 E}
@@ -1138,27 +1029,6 @@ theorem gram_det_of_emb {gP : Matrix (Fin p) (Fin p) (𝓞 E)} {gQ : Matrix (Fin
   · exact congrArg Prod.snd (@hi (0, s) (0, 0) (by simp only [hs, Pi.zero_apply, map_zero, Finset.sum_const_zero]))
 
 variable [Algebra ℤ_[ℓ] C]
-
-theorem gram_V {gP : Matrix (Fin p) (Fin p) (𝓞 E)} {gQ : Matrix (Fin q) (Fin q) (𝓞 E)} (h : IsGram X gP gQ) :
-    letI := H.starRing
-    (∀ a b x y, (pointB hv ε i X).pairV (phiVP hv ε i X a x) (phiVP hv ε i X b y) =
-      (pointA hv ε i X true).pairV ((pointA hv ε i X true).actV (gP a b) x) y) ∧
-    (∀ a b x y, (pointB hv ε i X).pairV (phiVQ hv ε i X a x) (phiVQ hv ε i X b y) =
-      (pointA hv ε i X false).pairV ((pointA hv ε i X false).actV (gQ a b) x) y) ∧
-    ∀ a b x y, (pointB hv ε i X).pairV (phiVP hv ε i X a x) (phiVQ hv ε i X b y) = 0 := by
-  letI := H.starRing
-  obtain ⟨hP, hQ, hO⟩ := tateModule_gram_relations_blocks_orthogonal hv ε i X h
-  refine ⟨fun a b x y => ?_, fun a b x y => ?_, fun a b x y => ?_⟩
-  · have e := pairV_baseChange (A := pointB hv ε i X) (B := pointA hv ε i X true) (g₂ := LinearMap.id) (hP a b) x y
-    rw [LinearMap.baseChange_id] at e
-    exact e
-  · have e := pairV_baseChange (A := pointB hv ε i X) (B := pointA hv ε i X false) (g₂ := LinearMap.id) (hQ a b) x y
-    rw [LinearMap.baseChange_id] at e
-    exact e
-  · have e := pairV_baseChange (A := pointB hv ε i X) (B := pointB hv ε i X) (g₁ := 0) (g₂ := 0)
-      (fun s t => (hO a b s t).trans (map_zero _).symm) x y
-    rw [LinearMap.baseChange_zero, LinearMap.baseChange_zero, LinearMap.zero_apply, LinearMap.zero_apply, map_zero] at e
-    exact e
 
 end At
 

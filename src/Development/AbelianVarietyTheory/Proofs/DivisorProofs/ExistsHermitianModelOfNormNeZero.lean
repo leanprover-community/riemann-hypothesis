@@ -61,9 +61,6 @@ open GlobalTheory.UnitLemma Polynomial Matrix
 noncomputable section
 namespace GlobalTheory.InertUnitOrb.ModelOfN
 
-theorem sigma_smul {K : UQ} (B : InvAlg K) (e : K.E) (y : B.A) : B.σ (e • y) = K.c e • B.σ y := by
-  rw [Algebra.smul_def, map_mul, B.σ_alg, ← Algebra.smul_def]
-
 theorem trace_sigma {K : UQ} (B : InvAlg K) (w : B.A) :
     Algebra.trace K.E B.A (B.σ w) = K.c (Algebra.trace K.E B.A w) := by
   apply GlobalTheory.SesqAsym.trace_σ

@@ -221,24 +221,4 @@ theorem fibre_one_dim (D : DegPre V₁) {K : Type} [Field K] (ev : V₁ →+* K)
   erw [mid, rhs1]
   exact mul_left_comm _ _ _
 
-theorem sharpPair_fst {W₀ : Type} [CommRing W₀] (ρ : V →+* V₁) (Q : Data V) (D : DegPre V₁)
-    (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B)) (B₀ : Over (Sp W₀)) [GrpObj B₀] [IsCommMonObj B₀]
-    (β : Q.B.left ⟶ B₀.left) (β₂ : (G2 Q.B).left ⟶ (G2 B₀).left) (hsq : IsSquare β β₂) (a b : Fin 8) :
-    sharpPair ρ Q D pr a b ≫ β₂ ≫ (fst B₀ B₀).left = (pr a).left ≫ pullback.fst Q.B.hom (spMap ρ) ≫ β := by
-  rw [hsq.1]
-  show (lift (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr a))
-    (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr b)) ≫ fst Q.B Q.B).left ≫ β = _
-  rw [lift_fst]
-  rfl
-
-theorem sharpPair_snd {W₀ : Type} [CommRing W₀] (ρ : V →+* V₁) (Q : Data V) (D : DegPre V₁)
-    (pr : Fin 8 → (D.P.A ⟶ (Over.pullback (spMap ρ)).obj Q.B)) (B₀ : Over (Sp W₀)) [GrpObj B₀] [IsCommMonObj B₀]
-    (β : Q.B.left ⟶ B₀.left) (β₂ : (G2 Q.B).left ⟶ (G2 B₀).left) (hsq : IsSquare β β₂) (a b : Fin 8) :
-    sharpPair ρ Q D pr a b ≫ β₂ ≫ (snd B₀ B₀).left = (pr b).left ≫ pullback.fst Q.B.hom (spMap ρ) ≫ β := by
-  rw [hsq.2]
-  show (lift (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr a))
-    (pushPt (isGrpPullback_pullback Q.B (spMap ρ)).1.w (pr b)) ≫ snd Q.B Q.B).left ≫ β = _
-  rw [lift_snd]
-  rfl
-
 end GlobalTheory.Poinc.Sep

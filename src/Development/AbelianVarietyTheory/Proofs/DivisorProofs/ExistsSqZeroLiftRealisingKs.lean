@@ -161,7 +161,6 @@ theorem ext_of_isBC (hm : m.IsBC) {h₁ h₂ : Crys κ' t' A'} (e : ∀ c, h₁ 
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | tmul x c => rw [liftSemi_tmul, map_smul, map_smul, e c]
 
-
 omit [Algebra R R'] in
 theorem crys_sum_apply {J : Type} (s : Finset J) (g : J → Crys κ' t' A') (q : prim κ' t' A') :
     (∑ i ∈ s, g i) q = ∑ i ∈ s, g i q := by
@@ -174,11 +173,9 @@ theorem bcMap_pull (hm : m.IsBC) (h : Crys κ t A) (c : prim κ t A) :
     hm.bcMap h (m.pull c) = algebraMap R R' (h c) :=
   (hm.corr_iff (h := h)).2 rfl c
 
-
 omit [Algebra R R'] in
 theorem crys_add_apply (g g' : Crys κ' t' A') (q : prim κ' t' A') : (g + g') q = g q + g' q :=
   LinearMap.add_apply g g' q
-
 
 omit [Algebra R R'] in
 theorem crys_smul_apply (r : R') (g : Crys κ' t' A') (q : prim κ' t' A') : (r • g) q = r * g q :=
@@ -209,8 +206,6 @@ theorem glue_pairing_eq_zero {k : Type} [Field k] {d : ℕ} {H M : Type*} [AddCo
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_eq_zero fun j _ ↦ ?_
   rw [← mul_add, ← map_add (f := _), huv j, map_zero, mul_zero]
-
-
 
 theorem glueFil_isotropic : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → ∀ (k : Type) [Field k] [IsAlgClosed k] (t : Sp k ⟶ Sp R) (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k), t = spMap β → ∀ φ : LinearMap.BilinForm k (HdR o₀.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o₀.A o₀.A o₀.P φ → ∀ (d : ℕ) (f : Fin d → (HdR o₀.A →ₗ[k] HdR o₀.A)), (∀ j, IsKS (GlobalTheory.HTCount.crysAct o₀) φ (Fil o₀.A) (GlobalTheory.HTCount.lieZ o₀ β) (f j)) → (∀ Φ : Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A →ₗ[(TrivSqZeroExt k (Fin d → k))] Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A →ₗ[(TrivSqZeroExt k (Fin d → k))] (TrivSqZeroExt k (Fin d → k)), GlobalTheory.AbDual.IsCorrForm (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A o₀.A o₀.P Φ → ∀ x ∈ (GlobalTheory.HTGlue.glueFil o₀.A f), ∀ y ∈ (GlobalTheory.HTGlue.glueFil o₀.A f), Φ x y = 0) := by
   intro p _ D R _ b N hN hNp k _ _ t o₀ β hβ φ hφ d f hf Φ hΦ X hX Y hY
@@ -375,9 +370,6 @@ def crdL (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u : CrysC k d A₀) :
   toFun q := π (u ((GlobalTheory.FODef.constMorV k (Fin d → k) A₀).pull q))
   map_add' q q' := crdL_add A₀ π u q q'
   map_smul' r q := crdL_smul A₀ π u r q
-
-theorem crdL_apply (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u : CrysC k d A₀) (q : primDR A₀) :
-    crdL A₀ π u q = π (u ((GlobalTheory.FODef.constMorV k (Fin d → k) A₀).pull q)) := rfl
 
 theorem crdL_add_u (π : TrivSqZeroExt k (Fin d → k) →ₗ[k] k) (u v : CrysC k d A₀) (q : primDR A₀) :
     crdL A₀ π (u + v) q = crdL A₀ π u q + crdL A₀ π v q := by
@@ -557,7 +549,6 @@ end GlobalTheory.HTGlueLie
 
 namespace GlobalTheory.HTGlueLie
 
-
 open GlobalTheory.HTCount in
 theorem glueFil_lie : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → ∀ (k : Type) [Field k] [IsAlgClosed k] (t : Sp k ⟶ Sp R) (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k), t = spMap β → ∀ φ : LinearMap.BilinForm k (HdR o₀.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o₀.A o₀.A o₀.P φ → ∀ (d : ℕ) (f : Fin d → (HdR o₀.A →ₗ[k] HdR o₀.A)), (∀ j, IsKS (GlobalTheory.HTCount.crysAct o₀) φ (Fil o₀.A) (GlobalTheory.HTCount.lieZ o₀ β) (f j)) → (∀ e : Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A, (haveI := o₀.act.hom (algebraMap (𝓞 D.F) D.O D.ω); push (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) (o₀.act.act (algebraMap (𝓞 D.F) D.O D.ω)) (e)) - algebraMap k (TrivSqZeroExt k (Fin d → k)) (β b.ρ) • e ∈ (GlobalTheory.HTGlue.glueFil o₀.A f) → ∃ w : Fin D.a → Crys (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) o₀.A, (∀ i (c : 𝓞 D.F), (haveI := o₀.act.hom (algebraMap (𝓞 D.F) D.O c); push (divided₂ (GlobalTheory.FODef.sqZero k (Fin d → k))) (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom) (o₀.act.act (algebraMap (𝓞 D.F) D.O c)) (w i)) - algebraMap k (TrivSqZeroExt k (Fin d → k)) (β (b.t i c)) • w i ∈ (GlobalTheory.HTGlue.glueFil o₀.A f)) ∧ e - ∑ i, w i ∈ (GlobalTheory.HTGlue.glueFil o₀.A f)) := by
   intro p _ D R _ b N _ _ k _ _ t o₀ β hs φ _ d f hf e he
@@ -701,8 +692,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
-
-
 
 theorem GlobalTheory.UPel.HT.exists_sqZero_lift_realising_ks : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → ∀ (k : Type) [Field k] [IsAlgClosed k] (t : Sp k ⟶ Sp R) (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k), t = spMap β → ∀ φ : LinearMap.BilinForm k (HdR o₀.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o₀.A o₀.A o₀.P φ → ∀ (d : ℕ) (f : Fin d → (HdR o₀.A →ₗ[k] HdR o₀.A)), (∀ j, IsKS (GlobalTheory.HTCount.crysAct o₀) φ (Fil o₀.A) (GlobalTheory.HTCount.lieZ o₀ β) (f j)) → ∃ (o : GlobalTheory.UPel.HT.Obj b N (spMap (algebraMap k (TrivSqZeroExt k (Fin d → k))) ≫ t)) (m : GlobalTheory.UPel.HT.ObjMap o₀ o (spMap (TrivSqZeroExt.fstHom k k (Fin d → k)).toRingHom)), ∀ x ∈ Fil o₀.A, GlobalTheory.FODef.IsFilLiftV m.cart x (LinearMap.pi fun j => f j x) := by
   intro p _ D R _ b N hN hNp k _ _ t o₀ β ht φ hφ d f hf

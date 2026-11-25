@@ -201,21 +201,6 @@ theorem IsDer.map_natCast {d : Ω → Ω} (h : IsDer d) (k : ℕ) : d k = 0 := b
   | zero => simpa using h.map_zero
   | succ k ih => rw [Nat.cast_succ, h.1, ih, h.map_one, add_zero]
 
-theorem IsDer.map_neg {d : Ω → Ω} (h : IsDer d) (a : Ω) : d (-a) = -d a := by
-  have := h.1 a (-a)
-  rw [add_neg_cancel, h.map_zero] at this
-  linear_combination -this
-
-theorem IsDer.map_sub {d : Ω → Ω} (h : IsDer d) (a b : Ω) : d (a - b) = d a - d b := by
-  rw [sub_eq_add_neg, h.1, h.map_neg, ← sub_eq_add_neg]
-
-theorem IsDer.map_sum {d : Ω → Ω} (h : IsDer d) {β : Type} (s : Finset β) (f : β → Ω) :
-    d (∑ i ∈ s, f i) = ∑ i ∈ s, d (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using h.map_zero
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, h.1, ih]
-
 theorem IsDer.pow_mul {d : Ω → Ω} (h : IsDer d) {g gi : Ω} (hg : g * gi = 1) (k : ℕ) (f : Ω) :
     d (g ^ k * f) = g ^ k * (d f + k * (d g * gi) * f) := by
   induction k with

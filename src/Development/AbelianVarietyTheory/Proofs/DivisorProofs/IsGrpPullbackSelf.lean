@@ -211,57 +211,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
-namespace GlobalTheory.FibrePull
-
-theorem fibre_isPull : ∀ (S T : Scheme.{0}) (A₀ : Over T) [GrpObj A₀] [IsCommMonObj A₀] (P₀ : LB (G2 A₀).left) (A : Over S) [GrpObj A] [IsCommMonObj A] (P : LB (G2 A).left) (f : T ⟶ S), P₀.IsLB → P.IsLB → SameFib A₀ P₀ (𝟙 _) A P f → ∃ (φ : A₀.left ⟶ A.left) (φ₂ : (G2 A₀).left ⟶ (G2 A).left), IsGrpPullback A₀ A f φ ∧ IsSquare φ φ₂ ∧ LBIso P₀ (P.pull φ₂) ∧ LBIso (P₀.pull (lift (𝟙 A₀) (𝟙 A₀)).left) ((P.pull (lift (𝟙 A) (𝟙 A)).left).pull φ) := by
-  intro S T A₀ _ _ P₀ A _ _ P f hP₀ hP hS
-  obtain ⟨H, _, _, a, a₂, a', a₂', h₁, s₁, h₂, s₂, w⟩ := hS
-  have : IsMonHom (Iso.refl A₀).hom := inferInstanceAs (IsMonHom (𝟙 A₀))
-  obtain ⟨e, he, hea⟩ := grpPullback_iso h₁ (isGrpPullback_of_iso (Iso.refl A₀))
-  have hea' : e.hom.left = a := by simpa using hea
-  have : IsMonHom e.symm.hom := inferInstanceAs (IsMonHom e.inv)
-  have hinv : e.inv.left ≫ a = 𝟙 _ := by rw [← hea', ← Over.comp_left, e.inv_hom_id, Over.id_left]
-  let ψ : G2 A₀ ⟶ G2 H := lift (fst A₀ A₀ ≫ e.inv) (snd A₀ A₀ ≫ e.inv)
-  have ext2 : ∀ {G : Over T} {X : Scheme.{0}} (u v : X ⟶ (G2 G).left), u ≫ (fst G G).left = v ≫ (fst G G).left →
-      u ≫ (snd G G).left = v ≫ (snd G G).left → u = v := fun u v h1 h2 => Over.tensorObj_ext _ _ h1 h2
-  have ext2' : ∀ {X : Scheme.{0}} (u v : X ⟶ (G2 A).left), u ≫ (fst A A).left = v ≫ (fst A A).left →
-      u ≫ (snd A A).left = v ≫ (snd A A).left → u = v := fun u v h1 h2 => Over.tensorObj_ext _ _ h1 h2
-  have k1 : ψ.left ≫ (fst H H).left = (fst A₀ A₀).left ≫ e.inv.left := by rw [← Over.comp_left, lift_fst, Over.comp_left]
-  have k2 : ψ.left ≫ (snd H H).left = (snd A₀ A₀).left ≫ e.inv.left := by rw [← Over.comp_left, lift_snd, Over.comp_left]
-  have d1 : (lift (𝟙 A₀) (𝟙 A₀)).left ≫ (fst A₀ A₀).left = 𝟙 _ := by rw [← Over.comp_left, lift_fst, Over.id_left]
-  have d2 : (lift (𝟙 A₀) (𝟙 A₀)).left ≫ (snd A₀ A₀).left = 𝟙 _ := by rw [← Over.comp_left, lift_snd, Over.id_left]
-  have d1' : (lift (𝟙 A) (𝟙 A)).left ≫ (fst A A).left = 𝟙 _ := by rw [← Over.comp_left, lift_fst, Over.id_left]
-  have d2' : (lift (𝟙 A) (𝟙 A)).left ≫ (snd A A).left = 𝟙 _ := by rw [← Over.comp_left, lift_snd, Over.id_left]
-  have hψ : ψ.left ≫ a₂ = 𝟙 _ := by
-    apply ext2
-    · rw [Category.assoc, s₁.1, Category.id_comp, ← Category.assoc, k1, Category.assoc, hinv, Category.comp_id]
-    · rw [Category.assoc, s₁.2, Category.id_comp, ← Category.assoc, k2, Category.assoc, hinv, Category.comp_id]
-  have hψ₀ : LBIso P₀ ((P₀.pull a₂).pull ψ.left) :=
-    GlobalTheory.ThetaAffineGlue.lbIso_cancel hP₀ (pull_isLB hP₀ _) hP₀
-      (by rw [hψ]; exact GlobalTheory.ThetaAffineGlue.lbIso_pull_id hP₀)
-      (LBIso.trans (pull_isLB hP₀ _) (pull_isLB hP _) (pull_isLB hP₀ _) w w.symm)
-  have hP₀₂ : LBIso P₀ (P.pull (ψ.left ≫ a₂')) :=
-    hψ₀.trans hP₀ (pull_isLB (pull_isLB hP₀ _) _) (pull_isLB hP _) (GlobalTheory.ThetaAffineGlue.lbIso_pull w ψ.left)
-  have hd : (lift (𝟙 A₀) (𝟙 A₀)).left ≫ (ψ.left ≫ a₂') = (e.inv.left ≫ a') ≫ (lift (𝟙 A) (𝟙 A)).left := by
-    apply ext2'
-    · simp only [Category.assoc]
-      rw [s₂.1, d1', Category.comp_id, ← Category.assoc ψ.left, k1, ← Category.assoc, ← Category.assoc, d1, Category.id_comp]
-    · simp only [Category.assoc]
-      rw [s₂.2, d2', Category.comp_id, ← Category.assoc ψ.left, k2, ← Category.assoc, ← Category.assoc, d2, Category.id_comp]
-  refine ⟨e.inv.left ≫ a', ψ.left ≫ a₂', ?_, ?_, hP₀₂, ?_⟩
-  · exact ((isGrpPullback_of_iso e.symm).comp h₂).congr (Category.id_comp _) rfl
-  · constructor
-    · rw [Category.assoc, s₂.1, ← Category.assoc, ← Over.comp_left, lift_fst, Over.comp_left, Category.assoc]
-    · rw [Category.assoc, s₂.2, ← Category.assoc, ← Over.comp_left, lift_snd, Over.comp_left, Category.assoc]
-  · have h3 := GlobalTheory.ThetaAffineGlue.lbIso_pull hP₀₂ (lift (𝟙 A₀) (𝟙 A₀)).left
-    rw [hd] at h3
-    have hΔ := pull_isLB hP (lift (𝟙 A) (𝟙 A)).left
-    exact h3.trans (pull_isLB hP₀ _) (pull_isLB hP _) (pull_isLB hΔ _)
-      (GlobalTheory.ThetaAffineGlue.lbIso_pull
-        (show LBIso (P.pull (lift (𝟙 A) (𝟙 A)).left) (P.pull (lift (𝟙 A) (𝟙 A)).left) from
-          LBIso.trans hΔ (pull_isLB hΔ _) hΔ (GlobalTheory.ThetaAffineGlue.lbIso_pull_id hΔ) (LBIso.symm (GlobalTheory.ThetaAffineGlue.lbIso_pull_id hΔ))) (e.inv.left ≫ a')).symm
-
-end GlobalTheory.FibrePull
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -278,8 +227,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.grpPullback_of_sameFibreWithSquareBundle : ∀ (S T : Scheme.{0}) (A₀ : Over T) [GrpObj A₀] [IsCommMonObj A₀] (P₀ : LB (G2 A₀).left) (A : Over S) [GrpObj A] [IsCommMonObj A] (P : LB (G2 A).left) (f : T ⟶ S), P₀.IsLB → P.IsLB → SameFib A₀ P₀ (𝟙 _) A P f → ∃ (φ : A₀.left ⟶ A.left) (φ₂ : (G2 A₀).left ⟶ (G2 A).left), IsGrpPullback A₀ A f φ ∧ IsSquare φ φ₂ ∧ LBIso P₀ (P.pull φ₂) ∧ LBIso (P₀.pull (lift (𝟙 A₀) (𝟙 A₀)).left) ((P.pull (lift (𝟙 A) (𝟙 A)).left).pull φ) := by
-  first | exact @GlobalTheory.FibrePull.fibre_isPull
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpPullbackOfSameFibreWithSquareBundleStatement =====
@@ -440,8 +387,6 @@ end GlobalTheory.LevSpread
 
 namespace GlobalTheory.LevSpread
 
-theorem l1 : ∀ (S T : Scheme.{0}) (A₀ : Over T) [GrpObj A₀] [IsCommMonObj A₀] (P₀ : LB (G2 A₀).left) (A : Over S) [GrpObj A] [IsCommMonObj A] (P : LB (G2 A).left) (f : T ⟶ S), P₀.IsLB → P.IsLB → SameFib A₀ P₀ (𝟙 _) A P f → ∃ (φ : A₀.left ⟶ A.left) (φ₂ : (G2 A₀).left ⟶ (G2 A).left), IsGrpPullback A₀ A f φ ∧ IsSquare φ φ₂ ∧ LBIso P₀ (P.pull φ₂) ∧ LBIso (P₀.pull (lift (𝟙 A₀) (𝟙 A₀)).left) ((P.pull (lift (𝟙 A) (𝟙 A)).left).pull φ) := GlobalTheory.T.grpPullback_of_sameFibreWithSquareBundle
-
 theorem l2 : ∀ (R₀ : Type) [CommRing R₀] [IsDomain R₀] [IsNoetherianRing R₀] [IsIntegrallyClosed R₀] (A : Over (Sp R₀)) [GrpObj A] [IsCommMonObj A] (n : ℕ), IsAbelianScheme A → IsUnit (n : R₀) → TorsRat A n → ∀ (K : Type) [Field K] (t : Sp K ⟶ Sp R₀) (x : Over.mk t ⟶ A), x ^ n = 1 → ∃ σ : 𝟙_ (Over (Sp R₀)) ⟶ A, σ ^ n = 1 ∧ toUnit (Over.mk t) ≫ σ = x := by
   intro R₀ _ _ _ _ A _ _ n hA hnR hT K _ t x hx
   have hnΓ : IsUnit (n : Γ(Sp R₀, ⊤)) := by
@@ -466,102 +411,6 @@ theorem prim_map {n : ℕ} (hn : n ≠ 0) {R : Type} [CommRing R] [IsDomain R] (
   have : NeZero (n : R) := ⟨by simpa using ((isUnit_natCast hn).map β).ne_zero⟩
   have h₂ := (h₁.isRoot_cyclotomic (Nat.pos_of_ne_zero hn)).map (f := β)
   rwa [Polynomial.map_cyclotomic, Polynomial.isRoot_cyclotomic_iff] at h₂
-
-theorem level_spreads : ∀ (n : ℕ), 3 ≤ n → Odd n → ∀ (R₀ : Type) [CommRing R₀] [IsDomain R₀] [IsNoetherianRing R₀] [IsIntegrallyClosed R₀] (b : cycAway n →+* R₀) (A : Over (Sp R₀)) [GrpObj A] [IsCommMonObj A] (P : LB (G2 A).left), IsAbelianScheme A → IsPPol A P → TorsRat A n → ∀ (g : ℕ) (K : Type) [Field K] (κ : R₀ →+* K) (c₀ : SiegPre g n (zetaAway n) (spMap (κ.comp b))), c₀.Principal → SameFib c₀.A c₀.P (𝟙 _) A P (spMap κ) → ∃ c : SiegPre g n (zetaAway n) (spMap b), c.Principal ∧ SiegPB c₀ c (spMap κ) ∧ ∃ (a : c.A.left ⟶ A.left) (a₂ : (G2 c.A).left ⟶ (G2 A).left), IsGrpPullback c.A A (𝟙 _) a ∧ IsSquare a a₂ ∧ LBIso c.P (P.pull a₂) := by
-  intro n hn3 hnodd R₀ _ _ _ _ b A _ _ P hA hP hT g K _ κ c₀ hc₀ hsf
-  have hn0 : n ≠ 0 := by omega
-  have hnR : IsUnit (n : R₀) := by simpa using (isUnit_natCast hn0).map b
-  have hnΓ : IsUnit (n : Γ(Sp R₀, ⊤)) := by
-    have := hnR.map (Scheme.ΓSpecIso (CommRingCat.of R₀)).inv.hom
-    rwa [map_natCast] at this
-
-  have hζc : IsPrimitiveRoot (zetaAway n) n :=
-    IsPrimitiveRoot.of_map_of_injective (f := (cycAway n).subtype) (Complex.isPrimitiveRoot_exp n hn0) Subtype.val_injective
-  let ζU : (cycAway n)ˣ := (hζc.isUnit hn0).unit
-  have hζU : (ζU : cycAway n) = zetaAway n := rfl
-  let ζR : R₀ˣ := Units.map b.toMonoidHom ζU
-  have hζR : IsPrimitiveRoot ζR n := IsPrimitiveRoot.coe_units_iff.1 (prim_map hn0 b)
-
-  obtain ⟨φ, φ₂, hφ, hsq, hiso, hdiag⟩ := l1 _ _ c₀.A c₀.P A P (spMap κ) c₀.isLB hP.1.1 hsf
-  let E := GlobalTheory.ObjPull.pushEquiv hφ (𝟙_ (Over (Sp K)))
-  have hxa : ∀ a, (E (c₀.lev a)) ^ n = 1 := fun a => by rw [← map_pow, c₀.lev_tors, map_one]
-  choose σ hσn hσx using fun a => l2 R₀ A n hA hnR hT K _ (E (c₀.lev a)) (hxa a)
-  have hcomp : ∀ a, (c₀.lev a).left ≫ φ = spMap κ ≫ (σ a).left := fun a => by
-    have e := congrArg (fun w => w.left) (hσx a)
-    simp only [Over.comp_left, GlobalTheory.ObjPull.toUnit_left'] at e
-    rw [← GlobalTheory.ObjPull.pushEquiv_left hφ, ← e]
-    exact congrArg (· ≫ (σ a).left) (Category.id_comp _)
-  haveI : PreconnectedSpace (𝟙_ (Over (Sp R₀))).left := inferInstanceAs (PreconnectedSpace (Sp R₀))
-  have inj : ∀ (T : Over (Sp R₀)) [Nonempty T.left] (s s' : 𝟙_ (Over (Sp R₀)) ⟶ A), s ^ n = 1 → s' ^ n = 1 →
-      toUnit T ≫ s = toUnit T ≫ s' → s = s' := fun T _ s s' hs hs' h =>
-    eq_of_comp_eq A hA hnΓ (𝟙_ _) s s' hs hs' T (toUnit T) h
-  haveI : Nonempty (Over.mk ((𝟙_ (Over (Sp K))).hom ≫ spMap κ)).left := inferInstanceAs (Nonempty (Sp K))
-  have hadd : ∀ a a', σ (a + a') = σ a * σ a' := fun a a' =>
-    inj _ _ _ (hσn _) (by rw [mul_pow, hσn, hσn, _root_.mul_one])
-      (by rw [MonObj.comp_mul, hσx, hσx, hσx, c₀.lev_add, map_mul])
-  have one_iff : ∀ (T : Over (Sp R₀)) [Nonempty T.left] a, toUnit T ≫ σ a = 1 ↔ σ a = 1 := fun T _ a =>
-    ⟨fun h => inj T (σ a) 1 (hσn a) (one_pow n) (h.trans (MonObj.comp_one _).symm),
-      fun h => by rw [h, MonObj.comp_one]⟩
-  let c : SiegPre g n (zetaAway n) (spMap b) :=
-    { A := A
-      ab := hA
-      P := P
-      isLB := hP.1.1
-      rig₁ := hP.1.2.1
-      rig₂ := hP.1.2.2.1
-      symm := hP.1.2.2.2
-      lev := σ
-      lev_add := hadd
-      lev_tors := hσn
-      geom := ?_ }
-  refine ⟨c, ⟨hP.2.1, hP.2.2⟩, ⟨φ, φ₂, hφ, hsq, hiso, hcomp⟩,
-    ⟨𝟙 _, 𝟙 _, _root_.GlobalTheory.ObjComp.isGrpPullback_id A, ⟨(Category.id_comp _).trans (Category.comp_id _).symm,
-      (Category.id_comp _).trans (Category.comp_id _).symm⟩, GlobalTheory.ThetaAffineGlue.lbIso_pull_id hP.1.1⟩⟩
-  intro k _ _ x β z hxβ hz
-  obtain ⟨ρ, rfl⟩ : ∃ ρ : R₀ →+* k, spMap ρ = x := ⟨(Spec.preimage x).hom, by simp [spMap]⟩
-  have hβ : β = ρ.comp b := by
-    have e : spMap (ρ.comp b) = spMap β := by rw [← hxβ]; exact Spec.map_comp _ _
-    exact (congrArg CommRingCat.Hom.hom (Spec.map_injective e)).symm
-  have hzU : z = Units.map ρ.toMonoidHom ζR := Units.ext (by rw [hz, hβ]; rfl)
-  subst hzU
-  let iK : K →+* AlgebraicClosure K := algebraMap K (AlgebraicClosure K)
-  let x₀ : Sp (AlgebraicClosure K) ⟶ Sp K := spMap iK
-  obtain ⟨g1, g2, g3⟩ := c₀.geom (AlgebraicClosure K) x₀ ((iK.comp κ).comp b)
-    (Units.map ((iK.comp κ).comp b).toMonoidHom ζU) (by rw [← Spec.map_comp]; rfl) rfl
-  let T₀ : Over (Sp R₀) := Over.mk ((Over.mk x₀).hom ≫ spMap κ)
-  haveI : Nonempty T₀.left := inferInstanceAs (Nonempty (Sp (AlgebraicClosure K)))
-  haveI : Nonempty (Over.mk (spMap ρ)).left := inferInstanceAs (Nonempty (Sp k))
-  have push : ∀ a, GlobalTheory.ObjPull.pushEquiv hφ (Over.mk x₀) (toUnit _ ≫ c₀.lev a) = toUnit T₀ ≫ σ a := fun a => by
-    apply Over.OverMorphism.ext
-    rw [GlobalTheory.ObjPull.pushEquiv_left, Over.comp_left, Over.comp_left, Category.assoc, hcomp,
-      GlobalTheory.ObjPull.toUnit_left', GlobalTheory.ObjPull.toUnit_left']
-    exact (Category.assoc _ _ _).symm
-  refine ⟨fun a => ?_, fun gg hg => ?_, fun a a' => ?_⟩
-  · rw [one_iff, ← one_iff T₀, ← push, map_eq_one_iff _ (GlobalTheory.ObjPull.pushEquiv hφ _).injective]
-    exact g1 a
-  · obtain ⟨τ, hτn, hτ⟩ := l2 R₀ A n hA hnR hT k (spMap ρ) gg hg
-    obtain ⟨a, ha⟩ := g2 ((GlobalTheory.ObjPull.pushEquiv hφ (Over.mk x₀)).symm (toUnit T₀ ≫ τ))
-      (by rw [← map_pow, ← MonObj.comp_pow, hτn, MonObj.comp_one, map_one])
-    refine ⟨a, ?_⟩
-    have e : σ a = τ := inj T₀ _ _ (hσn a) hτn (by rw [← push, ha, MulEquiv.apply_symm_apply])
-    rw [e, hτ]
-  · have H' := (_root_.GlobalTheory.weilIs_grpPullback_of_comm (Sp R₀) (Sp K) A c₀.A (spMap κ) φ
-      (P.pull (lift (𝟙 A) (𝟙 A)).left) (c₀.P.pull (lift (𝟙 c₀.A) (𝟙 c₀.A)).left) (pull_isLB hP.1.1 _)
-      (pull_isLB c₀.isLB _) hφ hdiag (Over.mk x₀) (n : ℤ) _ _ (toUnit T₀ ≫ σ a) (toUnit T₀ ≫ σ a') _
-      (by rw [← push]; rfl) (by rw [← push]; rfl)).1 (g3 a a')
-    have ht : (Over.mk x₀).hom ≫ spMap κ = spMap (iK.comp κ) := by
-      show x₀ ≫ spMap κ = _
-      rw [← Spec.map_comp]; rfl
-    have hu : (Units.map ((iK.comp κ).comp b).toMonoidHom ζU) ^ (2 * omegaStd a a') =
-        Units.map (iK.comp κ).toMonoidHom (ζR ^ (2 * omegaStd a a')) := by
-      rw [map_zpow]; rfl
-    rw [hu] at H'
-    simp only [T₀] at H'
-    rw [ht] at H'
-    have H'' := l3 R₀ A hA P hP n (by omega) hnR (σ a) (σ a') (hσn a) (hσn a') ζR hζR (2 * omegaStd a a')
-      (AlgebraicClosure K) (iK.comp κ) H' k ρ
-    rw [← map_zpow]
-    exact H''
 
 end GlobalTheory.LevSpread
 end -- clump:auto

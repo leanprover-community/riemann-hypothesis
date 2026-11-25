@@ -148,23 +148,6 @@ def RatP (x : Sp K ⟶ A.left) : Prop := ∀ a, DefOver k₀ (x ≫ q a)
 
 variable {f q ev k₀}
 
-theorem ratM_const (x : Over.mk (spMap ev) ⟶ A) (hx : RatP q k₀ x.left) :
-    RatM q ev k₀ (fst (Over.mk (spMap ev)) A ≫ x).left := fun σ hσ σt h a => by
-  obtain ⟨P₀, hP₀⟩ := hx a
-  show σt ≫ ((fst (Over.mk (spMap ev)) A).left ≫ x.left) ≫ q a = ((fst (Over.mk (spMap ev)) A).left ≫ x.left) ≫ q a
-  simp only [Category.assoc]
-  rw [reassoc_of% h.1]
-  erw [← hP₀]
-  congr 1
-  rw [← Category.assoc, spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
-
-theorem ratM_one (h1 : RatP q k₀ (1 : Over.mk (spMap ev) ⟶ A).left) :
-    RatM q ev k₀ (1 : Over.mk (spMap ev) ⊗ A ⟶ A).left := by
-  have := ratM_const 1 h1
-  rwa [MonObj.comp_one] at this
-
-variable {L : LB A.left} {X₂ : Scheme.{0}} {L₂ : LB X₂} {I : Type} [Fintype I] {π : I → (A.left ⟶ X₂)} {e : I → ℤ}
-
 end Galois
 
 section Normalised

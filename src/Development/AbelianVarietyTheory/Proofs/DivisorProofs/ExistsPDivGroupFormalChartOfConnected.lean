@@ -1295,7 +1295,6 @@ theorem lift_counit_eq {O A : Type} [CommRing O] [CommRing A] [Bialgebra O A] (t
 
 end GlobalTheory.ChartUnit
 
-
 open GlobalTheory.ChartUnit in
 theorem GlobalTheory.chart_unit : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A] [Bialgebra O A] [IsAdicComplete (Ideal.span {(p : A)}) A] {d : ℕ} (x : Fin d → A) (ev : MvPowerSeries (Fin d) O →ₐ[O] A) (E₂ : MvPowerSeries (Fin d ⊕ Fin d) O →ₐ[O] A ⊗[O] A) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O), (∀ i, ∃ N : ℕ, (p : A) ∣ x i ^ N) → (∀ i, Coalgebra.counit (R := O) (x i) = 0) → IsEval p x ev → IsEval p (Sum.elim (fun i => x i ⊗ₜ[O] (1 : A)) fun i => (1 : A) ⊗ₜ[O] x i) E₂ → (∀ i, E₂ (μ i) = Coalgebra.comul (R := O) (x i)) → ∀ i, ev (op μ (fun i => (X i : MvPowerSeries (Fin d) O)) (fun _ => 0) i) = x i := by
   intro p O A _ _ _ _ d x ev E₂ μ hnil hcu hev hev₂ hcomul i
@@ -1328,27 +1327,6 @@ section -- clump:auto
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 open TensorProduct
 
-namespace GlobalTheory.FinProjComplete
-
-theorem mem_span_pow_smul_top_iff (p : ℕ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    (n : ℕ) (x : M) :
-    x ∈ (Ideal.span {(p : R)}) ^ n • (⊤ : Submodule R M) ↔ ∃ m : M, x = (p ^ n : ℕ) • m := by
-  rw [Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
-    Submodule.mem_smul_pointwise_iff_exists]
-  constructor
-  · rintro ⟨m, -, rfl⟩
-    exact ⟨m, by rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]⟩
-  · rintro ⟨m, rfl⟩
-    exact ⟨m, Submodule.mem_top, by rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]⟩
-
-theorem smodEq_iff (p : ℕ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    (n : ℕ) (x y : M) :
-    x ≡ y [SMOD ((Ideal.span {(p : R)}) ^ n • (⊤ : Submodule R M))] ↔
-      ∃ m : M, x - y = (p ^ n : ℕ) • m := by
-  rw [SModEq.sub_mem, mem_span_pow_smul_top_iff]
-
-end GlobalTheory.FinProjComplete
-
 open GlobalTheory.FinProjComplete in
 theorem GlobalTheory.FinProjComplete.isAdicComplete_span_natCast : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A] [Algebra O A] [Module.Finite O A] [Module.Projective O A] [IsAdicComplete (Ideal.span {(p : O)}) O], IsAdicComplete (Ideal.span {(p : A)}) A := by
   apply GlobalTheory.FinProjComplete.isAdicComplete_span_natCast_of_finite_projective
@@ -1369,7 +1347,6 @@ noncomputable section
 namespace GlobalTheory.SurjTens
 
 variable {O σ ι : Type} [CommRing O]
-
 
 open Classical in
 def pushVars (j : σ → ι) (f : MvPowerSeries σ O) : MvPowerSeries ι O :=

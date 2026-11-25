@@ -228,7 +228,6 @@ instance : Module ℤ_[p] (Tate p M) where
   add_smul a b t := ext fun n => pow_digit_add (t.lev_pow n) a b
   zero_smul t := ext fun n => by rw [lev_smul, digit_zero, pow_zero, lev_zero]
 
-
 variable (p) in
 def map {M' : Type} [CommGroup M'] (f : M →* M') : Tate p M →ₗ[ℤ_[p]] Tate p M' where
   toFun t := mk (fun n => f (t.lev n)) fun n =>
@@ -348,9 +347,6 @@ theorem Eps.bijective (ε : Eps p C) :
 def Eps.equiv (ε : Eps p C) : ℤ_[p] ≃ₗ[ℤ_[p]] Tate p Cˣ :=
   LinearEquiv.ofBijective _ ε.bijective
 
-theorem Eps.lev_equiv (ε : Eps p C) (a : ℤ_[p]) (n : ℕ) :
-    (ε.equiv a).lev n = ε.1.lev n ^ digit n a := rfl
-
 instance [IsAlgClosed C] [CharZero C] : Nonempty (Eps p C) := by
   have hp : p.Prime := Fact.out
   haveI : NeZero (p : C) := ⟨Nat.cast_ne_zero.2 hp.ne_zero⟩
@@ -463,11 +459,6 @@ variable {p}
 
 def pairT (ε : Eps p C) : LinearMap.BilinForm ℤ_[p] (TateA A p) :=
   (weilT A p).compr₂ ε.equiv.symm.toLinearMap
-
-theorem pow_pairT (ε : Eps p C) (s t : TateA A p) (n : ℕ) :
-    ε.1.lev n ^ digit n (pairT A ε s t) = weil A (p ^ n) (s.lev n) (t.lev n) := by
-  have h : pairT A ε s t = ε.equiv.symm (weilT A p s t) := rfl
-  rw [h, ← Eps.lev_equiv, LinearEquiv.apply_symm_apply, lev_weilT]
 
 theorem isAlt_pairT (ε : Eps p C) : (pairT A ε).IsAlt := by
   intro s

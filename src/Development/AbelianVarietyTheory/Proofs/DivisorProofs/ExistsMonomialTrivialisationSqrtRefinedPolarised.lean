@@ -96,24 +96,6 @@ theorem psiCoord_zero {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (D : 
   rw [hv, Units.val_mul, e₀, Units.val_mul, IsUnit.unit_spec, map_mul]
   rfl
 
-theorem exists_unit_of_sq {R : Type} [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (g : FractionRing R) (w : Rˣ)
-    (h : g ^ 2 = algebraMap R (FractionRing R) w) : ∃ a : Rˣ, g = algebraMap R (FractionRing R) a := by
-  have hw : algebraMap R (FractionRing R) (w : R) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective R (FractionRing R))).2 w.ne_zero
-  have hg : g ≠ 0 := by rintro rfl; exact hw (by rw [← h]; ring)
-  have int : ∀ (g : FractionRing R) (w : Rˣ), g ^ 2 = algebraMap R (FractionRing R) w →
-      ∃ a : R, algebraMap R (FractionRing R) a = g := fun g w h => by
-    refine IsIntegrallyClosed.isIntegral_iff.1 ⟨Polynomial.X ^ 2 - Polynomial.C (w : R),
-      Polynomial.monic_X_pow_sub_C _ two_ne_zero, ?_⟩
-    simp [h]
-  obtain ⟨a, ha⟩ := int g w h
-  obtain ⟨b, hb⟩ := int g⁻¹ w⁻¹ (by
-    rw [inv_pow, h]
-    exact inv_eq_of_mul_eq_one_right (by rw [← map_mul, Units.mul_inv, map_one]))
-  have hab : a * b = 1 := IsFractionRing.injective R (FractionRing R) (by
-    rw [map_mul, ha, hb, mul_inv_cancel₀ hg, map_one])
-  exact ⟨⟨a, b, hab, by rw [mul_comm, hab]⟩, ha.symm⟩
-
 theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing R'] [IsDomain R'] (Q : Data R) (ρ : R →+* R') (D : DegPre R') (e : D.X ≃+ Q.X) [IsLocalRing R'] (m : ℕ) (t : Fin m → R) (r : Fin m → R') (δ : Fin m → LinearMap.BilinForm ℤ Q.X), IsCN R' → Function.Injective ρ → Half Q ρ D e (fun _ _ => 1) → D.PsiEven → D.TauBimult → Q.IsMonomialTau t δ → (∀ i y, 0 ≤ δ i y y) → (∀ i, t i ≠ 0) → (∀ i, r i ^ 2 = ρ (t i)) → IsMonomial D r fun i => (2 : ℤ) • pull e.toIntLinearEquiv.toLinearMap (δ i) := by
   intro R _ _ R' _ _ Q ρ D e _ m t r δ hCN hρ hH hE hB hQ hδ ht hr y
   haveI : IsIntegrallyClosed R' := hCN.2.1
