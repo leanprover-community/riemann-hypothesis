@@ -1992,7 +1992,7 @@ class NewHeadTaken(unittest.TestCase):
             sync(gh)
         else:
             batch.pushed(gh, 12)
-        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
         return [item["id"] for item in self.ours(gh, 12)]
 
     def check(self, gh, ids, new="head12-later", handed=True):
@@ -2005,6 +2005,7 @@ class NewHeadTaken(unittest.TestCase):
                       f"its new head `{short(new)}`, and builds and lands that instead, so nothing more is needed "
                       "here.", notice["body"])
         self.assertEqual(batch.HANDED_BACK in notice["body"], handed)
+        # Still `frozen`, and no longer `changed after frozen`.
         self.assertEqual(gh.pulls[12]["labels"], IN if handed else IN | {WAITING})
         record = note(gh.said(1018)[0])
         self.assertEqual((record["members"]["12"], record["told"]["12"]), (sha(new), sha(new)))
@@ -2054,8 +2055,12 @@ class NewHeadTaken(unittest.TestCase):
         self.held_already(gh)
         gh.writes = []
         self.assertEqual(batch.pushed(gh, 12), [f"#12 was pushed to with `{short('head12-merged')}`, which the batch "
-                                                "#1018 has already: nothing to say"])
-        self.assertEqual(gh.writes, [])
+                                                "#1018 has already: nothing to say",
+                                                f"#12 is at `{short('head12-merged')}`, the commit that was taken: "
+                                                f"`{CHANGED}` removed"])
+        # It is frozen at the new head at once, and its comments wait for the sync.
+        self.assertEqual([(method, path) for method, path, _ in gh.writes],
+                         [("DELETE", "issues/12/labels/changed%20after%20frozen")])
         self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
         gh.reads = []
         log = sync(gh)
@@ -2198,6 +2203,30 @@ class ChangedAfterFrozen(unittest.TestCase):
         gh.label(14, remove=FROZEN, login="maintainer")
         sync(gh)
         self.assertNotIn(CHANGED, gh.pulls[14]["labels"])
+
+    def test_a_member_loses_the_label_once_pushed_to_a_commit_its_batch_has_already(self):
+        # Pushed to with a commit the batch does not have, and then with one it has: the batch
+        # takes the new head through `has_head`, whether `pushed` runs for the second push or not.
+        for job in (True, False):
+            with self.subTest(job=job):
+                gh = Fake()
+                gh.add_pull(14, "head14")
+                by_hand(gh, 14)
+                sync(gh)
+                gh.push(14, "head14-later")
+                batch.pushed(gh, 14)
+                self.assertEqual(gh.pulls[14]["labels"], IN | {WAITING, CHANGED})
+                merged = sha("head14-merged")
+                gh.inside[gh.pulls[1018]["sha"]].add(merged)
+                gh.push(14, "head14-merged")
+                if job:
+                    batch.pushed(gh, 14)
+                    self.assertEqual(gh.pulls[14]["labels"], IN | {WAITING})
+                log = sync(gh)
+                self.assertEqual(gh.pulls[14]["labels"], IN)
+                self.assertEqual(note(gh.said(1018)[0])["members"]["14"], merged)
+                if not job:
+                    self.assertIn(f"#14 is at `{merged[:10]}`, the commit that was taken: `{CHANGED}` removed", log)
 
 class Unlinked(unittest.TestCase):
     """Quoted entries name pull requests without linking to them."""
