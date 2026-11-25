@@ -175,7 +175,7 @@ theorem levDown : LevDown := by
   unfold LevDown
   intro q _ D hm R _ b N S s o 𝔟₁ 𝔟₂ ε h𝔟 hmul l hl
   obtain ⟨hbij, hproj, -⟩ := mOne q D hm
-  haveI := hproj
+  have := hproj
   have hw₁ : wSub D 𝔟₁ 1 = idealSub D.O D.La 𝔟₁ := wSub_one D 𝔟₁
   have hw₂ : wSub D 𝔟₂ 1 = idealSub D.O D.La 𝔟₂ := wSub_one D 𝔟₂
   have hI : Ideal.span {ε} ⊔ 𝔟₁ ≠ ⊥ := fun h0 => h𝔟 (eq_bot_iff.mpr (h0 ▸ le_sup_right))
@@ -259,12 +259,12 @@ theorem UpperTheory.Gal.FiniteEtaleModels.O.downEx :
     have e2 := huniq (X₁.π ≫ u)
       ⟨by rw [Category.assoc, hu, X₁.ov], ⟨(GlobalTheory.UPel.HT.OfLift.ObjMap.forget X₁.mπ N₀ hd hcq₁).comp mu⟩⟩
     rw [e1, e2]
-  haveI := X₁.fin
-  haveI := X₁.et
-  haveI := X₂.fin
-  haveI := X₂.et
-  haveI : IsFinite (t ≫ X₂.π) := by rw [hsq]; infer_instance
-  haveI : Etale (t ≫ X₂.π) := by rw [hsq]; infer_instance
+  have := X₁.fin
+  have := X₁.et
+  have := X₂.fin
+  have := X₂.et
+  have : IsFinite (t ≫ X₂.π) := by rw [hsq]; infer_instance
+  have : Etale (t ≫ X₂.π) := by rw [hsq]; infer_instance
   exact ⟨t, m, ht, IsFinite.of_comp t X₂.π, Etale.of_comp t X₂.π, hmt⟩
 end -- clump:auto
 end -- clump:auto

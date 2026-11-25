@@ -321,7 +321,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.betaLat_holds :
   intro hL q _ D 𝔟₁ 𝔟₂ n m₁ a₁ a₂ hn hm hle G1 G2 g h1 h2 h3
   have cancel : ∀ k : ℕ, 0 < k → ∀ x y : D.La, k • x = k • y → x = y := by
     intro k hk x y h
-    haveI := D.freeLa
+    have := D.freeLa
     have h' : (k : ℤ) • (x - y) = 0 := by
       rw [smul_sub, natCast_zsmul, natCast_zsmul, h, sub_self]
     rcases smul_eq_zero.mp h' with h0 | h0
@@ -420,12 +420,12 @@ private theorem mult_form (D : Datum p) (g : ℤ) (hg : ∀ x y, g ∣ D.EF x y)
     exact Mult.neg h
 
 private theorem form_ne (D : Datum p) : ∃ x y, D.EF x y ≠ 0 := by
-  haveI := D.freeLa
-  haveI := D.finLa
+  have := D.freeLa
+  have := D.finLa
   have hrank : 0 < Module.finrank ℤ D.La := by
     rw [D.rankLa]
     exact Nat.mul_pos (Nat.mul_pos D.m_pos D.n_pos) Module.finrank_pos
-  haveI : Nontrivial D.La := Module.nontrivial_of_finrank_pos hrank
+  have : Nontrivial D.La := Module.nontrivial_of_finrank_pos hrank
   obtain ⟨x, hx⟩ := exists_ne (0 : D.La)
   have hne : D.EF x ≠ 0 := fun h => hx (D.nondeg (by rw [h, map_zero]))
   obtain ⟨y, hy⟩ := DFunLike.ne_iff.mp hne
@@ -620,22 +620,22 @@ open UpperTheory.Gal.FiniteEtaleModels
 theorem UpperTheory.Gal.FiniteEtaleModels.galOfKer_holds :
     GalOfKer := by
   intro S A B _ _ _ _ hA hB ψ ψ' κ hψ hψ' h1 h2 hκ H hfin hHψ hinj hsurj
-  haveI := hA
-  haveI := hB
+  have := hA
+  have := hB
   obtain ⟨-, haF, haE, -⟩ := GlobalTheory.abelianScheme_id_pow_finite_etale_surjective S A κ hA hκ
   obtain ⟨-, -, hbE, hbS⟩ := GlobalTheory.abelianScheme_id_pow_finite_etale_surjective S B κ hB hκ
-  haveI : IsProper A.hom := IsAbelianScheme.proper
-  haveI : IsProper B.hom := IsAbelianScheme.proper
-  haveI : Smooth B.hom := IsAbelianScheme.smooth
-  haveI : IsSeparated (ψ'.left ≫ A.hom) := by rw [Over.w ψ']; infer_instance
-  haveI : IsSeparated ψ'.left := IsSeparated.of_comp ψ'.left A.hom
-  haveI : LocallyOfFiniteType (ψ'.left ≫ A.hom) := by rw [Over.w ψ']; infer_instance
-  haveI : LocallyOfFiniteType ψ'.left := locallyOfFiniteType_of_comp ψ'.left A.hom
-  haveI : IsFinite (ψ.left ≫ ψ'.left) := by rw [← Over.comp_left, h1]; exact haF
-  haveI : Etale (ψ.left ≫ ψ'.left) := by rw [← Over.comp_left, h1]; exact haE
-  haveI : Etale (ψ'.left ≫ ψ.left) := by rw [← Over.comp_left, h2]; exact hbE
-  haveI : Surjective (ψ'.left ≫ ψ.left) := by rw [← Over.comp_left, h2]; exact hbS
-  haveI : FormallyUnramified ψ'.left := FormallyUnramified.of_comp ψ'.left ψ.left
+  have : IsProper A.hom := IsAbelianScheme.proper
+  have : IsProper B.hom := IsAbelianScheme.proper
+  have : Smooth B.hom := IsAbelianScheme.smooth
+  have : IsSeparated (ψ'.left ≫ A.hom) := by rw [Over.w ψ']; infer_instance
+  have : IsSeparated ψ'.left := IsSeparated.of_comp ψ'.left A.hom
+  have : LocallyOfFiniteType (ψ'.left ≫ A.hom) := by rw [Over.w ψ']; infer_instance
+  have : LocallyOfFiniteType ψ'.left := locallyOfFiniteType_of_comp ψ'.left A.hom
+  have : IsFinite (ψ.left ≫ ψ'.left) := by rw [← Over.comp_left, h1]; exact haF
+  have : Etale (ψ.left ≫ ψ'.left) := by rw [← Over.comp_left, h1]; exact haE
+  have : Etale (ψ'.left ≫ ψ.left) := by rw [← Over.comp_left, h2]; exact hbE
+  have : Surjective (ψ'.left ≫ ψ.left) := by rw [← Over.comp_left, h2]; exact hbS
+  have : FormallyUnramified ψ'.left := FormallyUnramified.of_comp ψ'.left ψ.left
   refine ⟨hfin, ?_, ?_, ?_, IsFinite.of_comp ψ.left ψ'.left, Etale.of_comp ψ.left ψ'.left,
     Surjective.of_comp ψ'.left ψ.left, ?_⟩
   · simp [Hecke.PullHecke.transl_one]
@@ -790,7 +790,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
   obtain ⟨e, he⟩ := hq
   obtain ⟨hψ, hact, -, hgal, -, -⟩ := hT
   obtain ⟨hadd, hlin, hkill, hgeo⟩ := hL
-  haveI := hψ
+  have := hψ
   have hnI : ((q ^ e : ℕ) : 𝓞 D.F) ∈ 𝔟 := he
   have hkn : k.Coprime (q ^ e) := Nat.Coprime.pow_right e hk
   obtain ⟨m, -, hm⟩ := Nat.exists_mul_mod_eq_of_coprime 1 hkn
@@ -806,16 +806,16 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
     (𝟙 o.A ^ k) (GlobalTheory.SS.DivSemi.isMonHom_id_pow o.A k) (fun h hh => by
       rw [MonObj.comp_pow, Category.comp_id]
       exact HeckeAd.pow_eq_one_of_mem o f h hh)
-  haveI := hφm
-  haveI : Epi ψ := by
-    haveI := GlobalTheory.GaloisCartDesc.epi_of_isGaloisCover hgal
+  have := hφm
+  have : Epi ψ := by
+    have := GlobalTheory.GaloisCartDesc.epi_of_isGaloisCover hgal
     exact Over.epi_of_epi_left ψ
   have hφψ : φ ≫ ψ = 𝟙 o'.A ^ k := by
     apply (cancel_epi ψ).1
     rw [← Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp', MonObj.comp_pow, Category.id_comp, Category.comp_id]
   have hφact : ∀ a : D.O, φ ≫ o.act.act a = o'.act.act a ≫ φ := by
     intro a
-    haveI := o.act.hom a
+    have := o.act.hom a
     apply (cancel_epi ψ).1
     rw [← Category.assoc, hψφ, ← Category.assoc, ← hact a, Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp',
       MonObj.comp_pow, Category.id_comp, Category.comp_id]
@@ -1254,7 +1254,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.trEtaK_holds :
     TrEtaK := by
   intro p _ D G L R _ _ gb h X s M₁ M₂ o' o ψ hT n κ c₁ c₂ hM1 hM2 x y hxy
   obtain ⟨v, hv, hxv⟩ := hxy
-  haveI : IsMonHom ψ := hT.1
+  have : IsMonHom ψ := hT.1
   obtain ⟨hM13, hM1c⟩ := M₁.2
   obtain ⟨hM23, hM2c⟩ := M₂.2
   have hne1 : (M₁ : ℕ) ≠ 0 := by omega
@@ -1563,9 +1563,9 @@ theorem UpperTheory.Gal.FiniteEtaleModels.trSame_holds :
     { hom := φ, inv := φ',
       hom_inv_id := canc ψ₁ _ _ (by rw [reassoc_of% hφc, hφ'c, Category.comp_id])
       inv_hom_id := canc ψ₂ _ _ (by rw [reassoc_of% hφ'c, hφc, Category.comp_id]) }
-  haveI : IsMonHom e.hom := hφ
-  haveI : IsMonHom ψ₁ := m₁
-  haveI : IsMonHom ψ₂ := m₂
+  have : IsMonHom e.hom := hφ
+  have : IsMonHom ψ₁ := m₁
+  have : IsMonHom ψ₂ := m₂
   have hc : ψ₁.left ≫ φ.left = ψ₂.left := by rw [← Over.comp_left, hφc]
   refine ⟨⟨φ.left, sq2 φ, isGrpPullback_of_iso e, ⟨grpSchemeSquareProductMap_fst φ, grpSchemeSquareProductMap_snd φ⟩, ?_, ?_, ?_⟩, hc⟩
   · intro a
@@ -1741,7 +1741,7 @@ theorem stepA_of (hD : DictP) (hX : SysExt) (hE : TrEtaK) (hK : TrKer) (hG : Gal
   have hA : IsTranslA (D := datAt S.atq S.sp) F c κ N₀ o₁ (ob (D := datAt S.atq S.sp) (gb := gb) S.mat W.o N₀ c₂ e₂ h₂) W.ψ := by
     obtain ⟨hfin, hfree⟩ := HeckeAd.heckeSubA_finite_free S.b F κ N₀ hκ0 (by omega) hκq lq' _ o₁
     refine ⟨hmon, hlin, fun y => (heta y).symm, ?_, hdiv ▸ hpol, ⟨c', hcc.symm⟩⟩
-    haveI := hmon
+    have := hmon
     refine hG _ _ _ (T.M M₁).univ.ab W.o.ab W.ψ ψ' κ hmon hm' b₁ b₂ (Hecke.Comp.isUnit_natCast S.b ((T.M M₁).s ≫ spMap (algebraMap (Ow w) E)) κ hκq) _ hfin ?_ hfree ?_
     · rintro _ ⟨x, rfl⟩
       show (T.M M₁).univ.eta (c₁ • N₀ • F x) ≫ W.ψ = 1
@@ -1749,7 +1749,7 @@ theorem stepA_of (hD : DictP) (hX : SysExt) (hE : TrEtaK) (hK : TrKer) (hG : Gal
       exact W.o.eta_ker x
     · intro Ω _ _ z y₀ hy₀
       obtain ⟨x, hx⟩ := hK p D G L E gb h _ _ M₁ M₂ _ _ W.ψ W.trans N₀ κ c₁ e₁ hκ F hF Ω z y₀ hy₀ (by
-        haveI := hm'
+        have := hm'
         rw [← Category.comp_id y₀, ← MonObj.comp_pow, ← b₁, ← Category.assoc, hy₀, MonObj.one_comp])
       exact ⟨_, HeckeAd.mem_heckeSubA o₁ F N₀ x, hx⟩
   obtain ⟨n', hn'⟩ := (hQ q (datAt S.atq S.sp) (Ow w) E S.b gb M₂.1 N₀ c₂ _ _ _ _ _ _ (T.M M₂).univ X₂.Y.univ X₂.Y.univ C₂.j (𝟙 _)).2.2.2
@@ -1763,9 +1763,9 @@ theorem stepA_of (hD : DictP) (hX : SysExt) (hE : TrEtaK) (hK : TrKer) (hG : Gal
         erw [W.φ.eta]
         rw [Category.assoc, Category.assoc]
         exact congrArg _ (C₂.lv y) }
-  haveI : Smooth X₁.M.s := X₁.M.smooth.smooth
-  haveI := X₁.et
-  haveI : IsLocallyNoetherian X₁.Y.X := LocallyOfFiniteType.isLocallyNoetherian (X₁.π ≫ X₁.M.s)
+  have : Smooth X₁.M.s := X₁.M.smooth.smooth
+  have := X₁.et
+  have : IsLocallyNoetherian X₁.Y.X := LocallyOfFiniteType.isLocallyNoetherian (X₁.π ≫ X₁.M.s)
   obtain ⟨t, Φ, ht, hΦ, j₁, j₂⟩ := hC q (datAt S.atq S.sp) (Ow w) E S.b gb _ S.mat N₀ κ c 𝔟₁ 𝔟₂ X₁.Y X₂.Y this l3' lq' hκq ⟨c', hcc.symm⟩ hle
     ⟨e, hqe⟩ f' u' (hsys'.mono q) ρ hρ _ _ M₁.1 M₂.1 c₁ c₂ a₁ a₂ e₁ e₂ h₁ h₂ g₂ (T.M M₁).univ W.o W.ψ hA hlv C₁ C₂'
   exact ⟨⟨t, ht, Φ, hΦ⟩, j₁, j₂.trans (by rw [← hn'])⟩
