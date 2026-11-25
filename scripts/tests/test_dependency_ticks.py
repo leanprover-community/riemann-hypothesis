@@ -365,7 +365,7 @@ class Runs(unittest.TestCase):
         self.assertIn("would POST issues/9/comments", printed.getvalue())
         self.assertIn("#2: would tick line 1, because #1 was merged", log)
         self.assertIn(f"#9: would add `{WAITING}`; would tell it that #8 was closed without landing", log)
-        self.assertEqual(gh.writes, 4)
+        self.assertEqual(gh.wrote, 4)
 
     def test_writes_stop_when_the_hour_is_nearly_used_up(self):
         gh = self.scene()

@@ -1,8 +1,8 @@
 """GitHub's API through `gh`, as the workflows that label pull requests use it, in one place.
 
-`batch-queue-sync.py`, `conflict-labels.py` and `inbox-sync.py` load this file, and load the other
-files they share through its `load`. Each keeps a subclass of `GitHub` with what only it needs, such
-as the GraphQL queries that read its pull requests.
+`batch-queue-sync.py`, `conflict-labels.py`, `dependency-ticks.py` and `inbox-sync.py` load this
+file, and load the other files they share through its `load`. Each keeps a subclass of `GitHub`
+with what only it needs, such as the GraphQL queries that read its pull requests.
 
 The workflows' token has an hourly allowance of REST requests, shared with every other workflow
 here. GitHub says in each answer how many are left, and a run's log ends with that count. So `call`
@@ -130,10 +130,10 @@ class GitHub:
                 return items
             page += 1
 
-    def write(self, method, path, payload=None):
+    def write(self, method, path, payload=None, shown=None):
         """A request that changes something. Returns (HTTP status, decoded body or None), or with
         `dry_run` prints the line saying what it would be and returns (0, None): 0 says that
-        nothing was sent.
+        nothing was sent. `shown` stands in for the payload in that line.
 
         A refusal for going too fast stops the run: every write after it would be refused too, on
         the allowance the other workflows share. Each script records what it does as it does it,
@@ -141,15 +141,16 @@ class GitHub:
         """
         self.wrote += 1
         if self.dry_run:
-            print(f"would {method} {path} {json.dumps(payload) if payload else ''}".rstrip())
+            print(f"would {method} {path} {shown or (json.dumps(payload) if payload else '')}".rstrip())
             return 0, None
         status, data = self.call(method, path, payload)
         if status == 429 or (status == 403 and "rate limit" in str((data or {}).get("message", "")).lower()):
             raise Refused(f"GitHub's rate limit refused {method} {path}: the next run carries on.")
         return status, data
 
-    def graphql(self, query, **variables):
-        """A GraphQL query's data. An answer with errors, or without data, is an error."""
+    def graphql(self, query, missing=False, **variables):
+        """A GraphQL query's data. An answer with errors, or without data, is an error, except that
+        with `missing`, a number that names nothing is not: its field is null."""
         done = self.run(["graphql", "--input", "-"], {"query": query, "variables": variables})
         self.queries += 1
         try:
@@ -157,7 +158,9 @@ class GitHub:
         except json.JSONDecodeError:
             answer = None
         errors = answer.get("errors") if isinstance(answer, dict) else None
-        if not isinstance(answer, dict) or not answer.get("data") or errors or done.returncode != 0:
+        allowed = missing and errors and all(error.get("type") == "NOT_FOUND" for error in errors)
+        if not isinstance(answer, dict) or not answer.get("data") or (errors and not allowed) \
+                or (done.returncode != 0 and not allowed):
             sys.stderr.write(done.stderr.decode("utf-8", "replace"))
             raise RuntimeError(f"GraphQL query failed: {json.dumps(errors) if errors else 'no answer'}")
         self.points += (answer["data"].get("rateLimit") or {}).get("cost", 0)
