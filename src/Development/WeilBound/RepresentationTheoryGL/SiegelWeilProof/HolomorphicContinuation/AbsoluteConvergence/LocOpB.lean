@@ -59,16 +59,6 @@ theorem continuous_hLoc : Continuous (fun g : GR n => hLoc g) := by
   exact (continuous_det_first_block.norm.pow 2).inv₀ fun g =>
     (pow_pos (norm_pos_iff.2 (det_first_block_ne_zero_group (inG_of g))) 2).ne'
 
-theorem toBlocks₂₁_one : (1 : M2 n).toBlocks₂₁ = 0 := by
-  ext i j; simp [toBlocks₂₁]
-
-theorem toBlocks₂₂_one : (1 : M2 n).toBlocks₂₂ = 1 := by
-  ext i j; simp [toBlocks₂₂, Matrix.one_apply]
-
-theorem weight_factor_one (p q : ℕ) (e : ℤ) : F0 p q e (1 : GR n) = 1 := by
-  have h1 : mR (1 : GR n) = 1 := rfl
-  simp [F0, f0, u1, u2, h1, toBlocks₂₁_one, toBlocks₂₂_one]
-
 def kSet (n : ℕ) : Set (M2 n) := {M | InK M}
 
 theorem isCompact_kSet : IsCompact (kSet n) := by

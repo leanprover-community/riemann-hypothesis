@@ -57,25 +57,6 @@ def Rigid : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : 
       GlobalTheory.SmGL.IsSubquotient P.ρ (locProd D.h w (D.σ · w))) ∧
     ∀ B, SatAt D w B → ∃ B', SatAt D' w B' ∧ ∑ i, B i = ∑ i, B' i
 
-theorem core_of (hS : RunSplit) (hI : RunInert) (hR : Rigid) (hE : Unr E) (hn : 1 ≤ n)
-    (π : Submodule ℂ (UA E n → ℂ)) (hπ : IsAutRepU π) :
-    ∃ D : Datum E n, (∀ τ lam, HasWeightAt π τ lam → ∑ i, D.m i τ = infOfWeight lam) ∧
-      (∀ w, IsSplitAt w → SplitAt π D w) ∧
-      ∀ w, IsUnramU π w → ¬ IsSplitAt w → ∃ B, SatAt D w B ∧
-        ∀ (s : w.adicCompletion E →+* w.adicCompletion E) (ϖ : w.adicCompletion E) (q : ℕ),
-          (∀ x : E, s (algebraMap E _ x) = algebraMap E _ (IsCMField.complexConj E x)) → IsUnramInv ϖ s q →
-          ∀ α, HasSatAt π w s ϖ q α → ∑ i, B i = GlobalTheory.LGrp.bcParam n α := by
-  obtain ⟨D, hD, -, hsph⟩ := hS E hE n hn π hπ ∅ (by simp)
-  refine ⟨D, hD.1, fun w hw => ?_, fun w hu hw => ?_⟩
-  · obtain ⟨D', hD', h1, -⟩ := hS E hE n hn π hπ {w} (by simp)
-    obtain ⟨P, hP, hc⟩ := h1 w (Finset.mem_singleton_self w) hw
-    exact ⟨P, (hR E n hn π hπ D D' hD hD' w).1 P hP, hc⟩
-  · obtain ⟨B, hB⟩ := hsph w hu hw
-    obtain ⟨D', hD', h1⟩ := hI E hE n hn π hπ w hu hw
-    obtain ⟨B', hB', e⟩ := (hR E n hn π hπ D D' hD hD' w).2 B hB
-    exact ⟨B, hB, fun s ϖ q a b α hα => e.trans (h1 B' hB' s ϖ q a b α hα)⟩
-
-
 end PositivityTheory.Rg.BcB
 
 end

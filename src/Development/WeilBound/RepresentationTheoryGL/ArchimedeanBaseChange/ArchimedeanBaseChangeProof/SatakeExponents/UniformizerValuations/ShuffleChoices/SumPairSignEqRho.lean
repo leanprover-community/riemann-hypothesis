@@ -196,8 +196,6 @@ theorem not_hi_lt_md {n : ℕ} (i : Fin (n / 2)) (t : Fin (n % 2)) : ¬ hi n i <
   have := i.isLt; have := t.isLt
   simp only [Fin.lt_def, hi, md]; omega
 
-theorem lOf_eq {n : ℕ} (x : Fin n → ℤ) (i : Fin (n / 2)) : lOf x i = x (lo n i) - x (hi n i) := rfl
-
 theorem pt4 {n : ℕ} (x : Fin n → ℤ) (hx : ∀ i j : Fin n, i < j → x j + 2 ≤ x i) (i j : Fin (n / 2)) (hij : i ≠ j) :
     (x (lo n i) - x (lo n j)) * sgn2 (lo n i) (lo n j) + (x (lo n i) - x (hi n j)) * sgn2 (lo n i) (hi n j) +
       (x (hi n i) - x (lo n j)) * sgn2 (hi n i) (lo n j) + (x (hi n i) - x (hi n j)) * sgn2 (hi n i) (hi n j) =

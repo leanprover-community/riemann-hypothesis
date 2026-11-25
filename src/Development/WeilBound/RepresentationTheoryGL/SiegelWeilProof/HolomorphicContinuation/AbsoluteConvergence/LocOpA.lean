@@ -84,8 +84,6 @@ theorem mul_linv {M : M2 n} (h : InG M) : M * linv M = 1 := mul_eq_one_comm.1 (l
 
 def mkG (M : M2 n) (h : InG M) : GR n := ⟨⟨M, linv M, mul_linv h, linv_mul h⟩, h⟩
 
-@[simp] theorem mR_mkG (M : M2 n) (h : InG M) : mR (mkG M h) = M := rfl
-
 theorem inG_of (g : GR n) : InG (mR g) := g.2
 
 theorem continuous_mR : Continuous (fun g : GR n => mR g) := by unfold mR; fun_prop

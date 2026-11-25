@@ -264,24 +264,6 @@ theorem mem_dcos_of_ne (w : Pl E) (n : ℕ) (t δ : GLw n w) (hδ : dcos n w t �
   · exact h
   · exact absurd rfl hδ
 
-private theorem apply_eq_zero_of_mem_tor_of_ne {k : Type} [Field k] (N : ℕ) (x : GL (Fin N) k) (hx : x ∈ PositivityTheory.Lbc.Tor k N)
-    (i j : Fin N) (h : i ≠ j) : (x : Matrix (Fin N) (Fin N) k) i j = 0 := by
-  obtain ⟨s, rfl⟩ := hx
-  simp [PositivityTheory.Lbc.torEmb, GlobalTheory.SmGL.leviEmb, Matrix.reindex_apply, Matrix.submatrix_apply]
-  have hne : ((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm i).1 ≠ ((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm j).1 := by
-    intro hfst
-    apply h
-    have hs : (GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm i = (GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm j := by
-      refine Sigma.ext hfst ?_
-      apply (Fin.heq_ext_iff (congrArg _ hfst)).2
-      have h1 : (((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm i).2 : ℕ) < 1 :=
-        ((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm i).2.isLt
-      have h2 : (((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm j).2 : ℕ) < 1 :=
-        ((GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)).symm j).2.isLt
-      omega
-    simpa using congrArg (GlobalTheory.SmGL.stdBlocks (PositivityTheory.Lbc.ones N) (PositivityTheory.Lbc.sum_ones N)) hs
-  convert Matrix.blockDiagonal'_apply_ne (fun (a : Fin N) ↦ (s a).val) _ _ hne
-
 theorem contr_id_pf (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (n : ℕ) (y : Fin n → ℤ)
     (hy : StrictAnti y) (δ : GLw n w) (hδ : dcos n w (tdiag ϖ y) δ ≠ 0) :
     ∃ m ∈ iwGL n w, ∃ τ ∈ TO n w, m⁻¹ * δ * m = tdiag ϖ y * τ := by

@@ -95,7 +95,6 @@ theorem cpow_eq_exp (x : Ideles K) (t : ℝ) :
   push_cast
   ring
 
-
 variable (K) in
 def normChar (t : ℝ) : HChar K :=
   ⟨Circle.toUnits.comp (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow K t).toHom,
@@ -158,19 +157,6 @@ theorem val_normChar (t : ℝ) (v : HeightOneSpectrum (𝓞 K)) :
   congr 1
   push_cast
   ring
-
-theorem exists_normChar_ne_one : ∃ t : ℝ, normChar K t ≠ 1 := by
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 K)
-  let v : HeightOneSpectrum (𝓞 K) :=
-    ⟨M, hM.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hM (RingOfIntegers.not_isField K)⟩
-  obtain ⟨t, ht⟩ := GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.exists_normPow_valueAt_eq_neg_one v
-  refine ⟨t, fun h => ?_⟩
-  rw [GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt_eq _
-    (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow_isUnramifiedAt t v) (Formalism.L2.Host.unif_spec v)] at ht
-  have h2 : (((normChar K t).val v : ℂˣ) : ℂ) = -1 := ht
-  rw [h] at h2
-  have h3 : (1 : ℂ) = -1 := h2
-  norm_num at h3
 
 theorem isContAtOne_of_isHeckeL {χ : HChar K} {Λ : ℂ → ℂ} (h : IsHeckeL χ Λ) : IsContAtOne χ Λ :=
   ⟨h.1.analyticAt 1, h.2⟩

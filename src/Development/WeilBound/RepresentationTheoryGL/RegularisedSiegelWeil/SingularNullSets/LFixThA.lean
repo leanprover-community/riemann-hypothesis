@@ -52,9 +52,6 @@ open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
 
-
-
-
 open PositivityTheory.Rg.Rsw.L
 
 variable {D : D7} {n : ℕ}
@@ -62,10 +59,6 @@ variable {D : D7} {n : ℕ}
 theorem mat_mul (g h : G D n) : mat (g * h) = mat g * mat h := by simp [mat]
 
 theorem mat_mul_inv (g : G D n) : mat g * mat g⁻¹ = 1 := by simp [mat]
-
-theorem mat_proj (g : G D n) (v : Pl D) :
-    ((matHom (Fv D.host.F v) D.sp.cm.sig (Jst D n) (proj D.sp.cm.sig (Jst D n) v g)).1 : Matrix _ _ _) =
-      (mat g).map (cv D v) := rfl
 
 theorem compInf_eq (w : InfinitePlace D.host.F) (x : AE D) :
     compInf D.host.F D.host.E w x = Algebra.TensorProduct.map (GlobalTheory.AutFunCompare.evW w) (AlgHom.id D.host.F D.host.E)

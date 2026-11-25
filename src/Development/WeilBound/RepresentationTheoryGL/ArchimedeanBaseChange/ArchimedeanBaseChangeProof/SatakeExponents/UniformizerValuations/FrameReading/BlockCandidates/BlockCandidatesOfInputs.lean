@@ -160,8 +160,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -169,7 +167,6 @@ attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : Rd.ReadLimit} {π : Submodule ℂ (UA E n → ℂ)}
   {S T : Finset (Pl E)} {F₀ : Frame0 hR π S} (F : RunFrame F₀ T) (i : F₀.C.ι)
   {χ : Rd.ChAlg (fun x => F.g x i) (X F i) →⋆ₐ[ℂ] ℂ}
-
 
 theorem cand_of (O : BO F i χ) (ia : ∀ τ, mOf O.χa τ = mOf (F₀.A i).χa τ) (ib : ∀ τ, mOf O.χb τ = mOf (F₀.A i).χb τ)
     (h5 : PreOfTree) (h6 : JoinEx) : ∃ Pa Pb D, F₀.Cand F.d i O.s₁ O.s₂ Pa Pb D := by
@@ -206,8 +203,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -216,7 +211,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : Rd.R
   {S T : Finset (Pl E)} {F₀ : Frame0 hR π S} (F : RunFrame F₀ T) (i : F₀.C.ι)
   {χ : Rd.ChAlg (fun x => F.g x i) (X F i) →⋆ₐ[ℂ] ℂ}
 
-
 theorem sq_ne (c : F.Γ → ℂ) (hc : c (.inl ()) = 1) (hχ : Chi (fun x => F.g x i) (X F i) c χ) (O : BO F i χ) :
     convF (F.B i).ν ((F.β i).sq (F.m - 1)).ψ O.F ≠ 0 := by
   have e := O.eigX
@@ -224,7 +218,6 @@ theorem sq_ne (c : F.Γ → ℂ) (hc : c (.inl ()) = 1) (hχ : Chi (fun x => F.g
   rw [h0] at e
   refine smul_ne_zero (div_ne_zero hχ.2.2 (pow_ne_zero _ ?_)) O.ne e.symm
   exact ((hχ.2.1 (.inl ())).trans hc).trans_ne one_ne_zero
-
 
 theorem eig_h (c : F.Γ → ℂ) (hc : c (.inl ()) = 1) (hχ : Chi (fun x => F.g x i) (X F i) c χ) (O : BO F i χ)
     (x : {w : Pl E // w ∈ F₀.Sec ∧ F.d.Good w} × ℕ × Bool) :
@@ -253,8 +246,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -270,7 +261,6 @@ def Q : Prop := ∃ (i : F₀.C.ι) (s₁ : Tr E (F₀.C.a i)) (s₂ : Tr E (n -
   (convF (F.B i).ν (F.ψ i (F.d.betaL _ (F₀.C.le i))))^[F.m] G ≠ 0 ∧
   (∀ τ lam, HasWeightAt π τ lam → ∑ k, D.m k τ = infOfWeight lam) ∧
   (∀ᶠ w : Pl E in cofinite, IsSplitAt w → D.SplitAt π w)
-
 
 theorem q_of (hE : GlobalTheory.BCT.Unr E) (hn : 1 ≤ n) (hπ : IsAutRepU π) (h : F.Struct)
     (hχ : Chi (fun x => F.g x i) (X F i) (fun x => (F.ug x).p F.fam F.i₀) χ) (h2 : LimAt) (h3 : Ident) (h4 : PowNe)
@@ -305,8 +295,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -314,7 +302,6 @@ attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {hR : Rd.ReadLimit} {π : Submodule ℂ (UA E n → ℂ)}
   {S T : Finset (Pl E)} {F₀ : Frame0 hR π S} (F : RunFrame F₀ T) (i : F₀.C.ι)
   {χ : Rd.ChAlg (fun x => F.g x i) (X F i) →⋆ₐ[ℂ] ℂ}
-
 
 theorem blockCand_of (h1 : ChiTr) (h2 : LimAt) (h3 : Ident) (h4 : PowNe) (h5 : PreOfTree) (h6 : JoinEx) (h7 : FG.LevRead)
     (h8 : FG.FRGood) (h9 : FG.FRWeight) : BlockCand := fun _ hD E _ _ _ hE n hn π hπ S T F₀ F h =>
@@ -388,8 +375,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.BC
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -432,13 +417,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace PositivityTheory.Rg.BcB.F.Eig.CSD
-
-open PositivityTheory.Rg.BcB.F.Eig
-
-theorem splitDict : SplitDict := _root_.GlobalTheory.CompanionTheory.SplitPlace.splitDict
-
-end PositivityTheory.Rg.BcB.F.Eig.CSD
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FixedSpaceRankOne.SplitDict =====
@@ -570,12 +548,9 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.FG
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 theorem frGoodOf_holds : FRGoodOf := by
   intro h1 h2 hR E _ _ _ hE n π hπ S T F₀ F i s₁ s₂ Pa Pb D hc A G h0 hG hl he
@@ -587,7 +562,6 @@ theorem frGoodOf_holds : FRGoodOf := by
     (fun w hw a b => (F₀.good w hw (e1 ▸ a) (e2 ▸ b)).2) (F.fam.σ F.i₀)
     (fun w hw => ⟨F.comp w hw, ((F.fam.comp F.i₀).2.2.2 w hw).2.1⟩) _ _ _ _ _ _ (F₀.A i) s₁ s₂ Pa Pb D hc l1 l2 A G h0 hG hl
     fun w hw hg k intersection_update_fsHerm_neg_one => he (⟨w, hw, hg⟩, k, intersection_update_fsHerm_neg_one)
-
 
 theorem frWeightOf_holds : FRWeightOf := by
   intro h1 hR E _ _ _ hE n hn π hπ S F₀ d i s₁ s₂ Pa Pb D hc
@@ -613,8 +587,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT GlobalTheory.LFun
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.FG
 
@@ -731,8 +703,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT GlobalTheory.LFun
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.FG
 
@@ -862,8 +832,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.FG
 
 theorem mOf_infOf_embedding {E : Type} [Field E] [NumberField E] {n : ℕ} (l : InfinitePlace E → DomWeight n)
@@ -960,8 +928,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT GlobalTheory.LFun
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.FG
 

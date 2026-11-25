@@ -381,7 +381,6 @@ theorem modulus_scalar_block (d : ℕ) (t : kˣ) :
   simp only [modulus, Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, e0, e1, hdet, h1]
   rw [_root_.one_zpow, mul_one, zpow_natCast, ← pow_mul]
 
-
 theorem bound_main : Bound k := by
   classical
   intro d W _ _ _ τ hsm hadm hunit t c ht hc
@@ -544,10 +543,6 @@ private noncomputable def flipConj {V : Type} [AddCommGroup V] [Module ℂ V]
     (by intro v w₁ w₂; simp [map_add (f := _)])
     (by intro c v w; simp [map_smulₛₗ, smul_eq_mul])
 
-private theorem flipConj_apply {V : Type} [AddCommGroup V] [Module ℂ V]
-    (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (v w : V) :
-    flipConj B v w = starRingEnd ℂ (B w v) := rfl
-
 end UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers
 
 open UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers in
@@ -630,9 +625,6 @@ def resF {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛ�
     W →ₗ[ℂ] W →ₛₗ[starRingEnd ℂ] ℂ :=
   LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun v w => B v w)
     (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp)
-
-@[simp] theorem resF_apply {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ)
-    (W : Submodule ℂ M) (v w : W) : resF B W v w = B v w := rfl
 
 theorem exists_herm {ρ : Representation ℂ G V} (h : HasSesq ρ) :
     ∃ B : V →ₗ[ℂ] V →ₛₗ[starRingEnd ℂ] ℂ, B ≠ 0 ∧ (∀ v w, B w v = starRingEnd ℂ (B v w)) ∧
@@ -1022,7 +1014,6 @@ theorem norm_chi (d : ℕ) (s : ℝ) (g : Levi k fun _ : Fin 2 => Fin d) :
     Complex.norm_cpow_eq_rpow_re_of_pos (nabs_pos' k _)]
   simp
 
-
 theorem someRed_of (h1 : Complementary) (h2 : Compact k) (h3 : Bound k) (h4 : Herm k) (h5 : ProdModel k) :
     SomeRed k := by
   intro x hx hu
@@ -1193,7 +1184,6 @@ theorem hasSesq_of {G V V₁ V₂ : Type} [Group G] [TopologicalSpace G] [IsTopo
     rw [hΦi, contra_apply, ← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
 
 end HermB
-
 
 open HermB in
 theorem herm_ofB (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

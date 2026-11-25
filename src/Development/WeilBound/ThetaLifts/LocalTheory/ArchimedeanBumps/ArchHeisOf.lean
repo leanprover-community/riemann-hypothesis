@@ -31,8 +31,6 @@ variable {κ : Type} [Fintype κ]
 def evR : AF F →+* mixedEmbedding.mixedSpace F :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).toRingHom.comp (RingHom.fst (Ainf F) (Af F))
 
-theorem evR_eq (a : AF F) : evI F a = evR a := rfl
-
 def lf : (κ → mixedEmbedding.mixedSpace F) →ₗ[ℝ] Module.Dual ℝ (κ → mixedEmbedding.mixedSpace F) :=
   LinearMap.mk₂ ℝ (fun b y => -(2 * Real.pi) * Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (y ⬝ᵥ b))
     (fun a b y => by rw [dotProduct_add, map_add (f := _), mul_add]) (fun c b y => by rw [dotProduct_smul, map_smul, smul_eq_mul, smul_eq_mul]; ring)

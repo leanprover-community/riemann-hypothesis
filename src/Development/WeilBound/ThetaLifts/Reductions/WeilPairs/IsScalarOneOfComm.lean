@@ -76,13 +76,9 @@ variable {σ : E →ₐ[F] E} {B : Base F E} {nS nT : ℕ} {JS : Matrix (Fin nS)
 
 variable {η : (AEF F E)ˣ →* Circle} {ε : AEF F E} {of oi : GAF σ JS × GAF σ JT →* Module.End ℂ (WOF F E nS nT → ℂ)}
 
-
 variable (σ JS JT) in
 def substF (p : GAF σ JS × GAF σ JT) : Module.End ℂ (WOF F E nS nT → ℂ) :=
   LinearMap.funLeft ℂ ℂ (actOF σ JS JT p.1⁻¹ p.2⁻¹)
-
-theorem substF_apply (p : GAF σ JS × GAF σ JT) (f : WOF F E nS nT → ℂ) :
-    substF σ JS JT p f = fun x => f (actOF σ JS JT p.1⁻¹ p.2⁻¹ x) := rfl
 
 theorem substF_mul (p q : GAF σ JS × GAF σ JT) (f : WOF F E nS nT → ℂ) :
     substF σ JS JT (p * q) f = substF σ JS JT p (substF σ JS JT q f) := by
@@ -94,7 +90,6 @@ theorem substF_one (f : WOF F E nS nT → ℂ) : substF σ JS JT 1 f = f := by
   funext x
   show f (actOF σ JS JT 1⁻¹ 1⁻¹ x) = f x
   rw [inv_one, inv_one, GlobalTheory.FinLatF.actOF_one]
-
 
 variable (ξ₀ B of oi) in
 def IsScalarF (p : GAF σ JS × GAF σ JT) (c : ℂ) : Prop :=

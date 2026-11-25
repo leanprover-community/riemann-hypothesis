@@ -64,10 +64,6 @@ theorem actOF_zero' (g : GAF σ JS) (h : GAF σ JT) : actOF σ JS JT g h (0 : WO
   unfold actOF
   rw [Matrix.mul_zero, Matrix.zero_mul]
 
-theorem piWA_apply (x : WOF F E nS nT) : piWA θ x = piWF θ x := rfl
-
-theorem iotaA_apply (v : IxF F nS nT → ℂ) : iotaA (nS := nS) (nT := nT) ι v = iotaVF ι v := rfl
-
 section Act
 
 variable {g : GAF σ JS} {h : GAF σ JT} {a : Matrix (Fin nS) (Fin nS) E} {b : Matrix (Fin nT) (Fin nT) E}

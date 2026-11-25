@@ -210,135 +210,6 @@ theorem eq_delta' {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteD
 end Real
 end S
 
-open GlobalTheory.AdelicU in
-open scoped Classical in
-theorem schur (F : Type) [Field F] [NumberField F] [IsTotallyReal F] {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ)
-    (hψ : IsCharAF F ψ) (hstd : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd ψ) (T : Module.End ℂ ((κ → AF F) → ℂ))
-    (hadm : ∀ l ∈ (adeleClass F).adm κ, l ∘ₗ T ∈ (adeleClass F).adm κ)
-    (hT : ∀ w, ∀ Φ ∈ schA F κ, T (schr ψ w Φ) = schr ψ w (T Φ)) :
-    ∃ a : ℂ, ∀ Φ ∈ schA F κ, T Φ = a • Φ := by
-  letI := fun v : HeightOneSpectrum (𝓞 F) => GlobalTheory.LocalData.complRel v
-  have hpm : ∀ (f : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ), ∀ g ∈ SB (κ → Af F), pureA F f g ∈ schA F κ :=
-    fun f g hg => Submodule.subset_span ⟨f, g, hg, rfl⟩
-  obtain ⟨nd1, -, nd2⟩ := GlobalTheory.GaugeEx.CharLoc.char_local F ψ hψ
-  let l : ((κ → AF F) → ℂ) →ₗ[ℂ] ℂ := LinearMap.proj (0 : κ → AF F) ∘ₗ T
-  have hl : l ∈ (adeleClass F).adm κ := hadm _ fun g _ =>
-    ⟨g 0 • (BoundedContinuousFunction.evalCLM ℂ 0 ∘L SchwartzMap.toBoundedContinuousFunctionCLM ℂ _ _), fun f => by
-      show f (fun _ => InfiniteAdeleRing.ringEquiv_mixedSpace F 0) * g 0 = g 0 * f 0
-      rw [map_zero, mul_comm]; rfl⟩
-  have hmod : ∀ y, ∀ Φ ∈ schA F κ, l (fun x => ψ (x ⬝ᵥ y) * Φ x) = l Φ := fun y Φ hΦ => by
-    have e1 : (fun x => ψ (x ⬝ᵥ y) * Φ x) = schr ψ (0, y) Φ := by funext u; simp [schr]
-    show T _ 0 = T Φ 0
-    rw [e1, hT _ _ hΦ]
-    simp [schr]
-  let lf : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ → ((κ → Af F) → ℂ) →ₗ[ℂ] ℂ := fun f => l ∘ₗ
-    { toFun := pureA F f
-      map_add' := fun g g' => by funext x; simp [pureA, mul_add]
-      map_smul' := fun a g => by funext x; simp [pureA, mul_left_comm] }
-  have hfin : ∀ f, ∀ g ∈ SB (κ → Af F), g 0 = 0 → lf f g = 0 := fun f g hg h0 => by
-    refine eq_zero_of_mul_invariant (lf f) (Set.range fun p : κ × Σ v, Fv F v => fun u =>
-      psiV F ψ p.2.1 (evalV F p.2.1 (u p.1) * p.2.2)) ?_ ?_ hg ?_
-    · rintro _ ⟨⟨i, v, c⟩, rfl⟩
-      have := GlobalTheory.LocalData.isLocalField v
-      have := nonarch_field (Fv F v)
-      have h1 := isLocallyConstant_addChar (ψ.compAddMonoidHom
-        ((LinearMap.inr F (Ainf F) (Af F) ∘ₗ singleFin v).toAddMonoidHom))
-        (hψ.1.comp (continuous_const.prodMk (continuous_singleFin v)))
-      exact h1.comp_continuous (((RestrictedProduct.continuous_eval v).comp (continuous_apply i)).mul continuous_const)
-    · rintro _ ⟨⟨i, v, c⟩, rfl⟩ g hg
-      rw [show lf f g = l (pureA F f g) from rfl, ← hmod (Pi.single i (pairA F 0 (singleV F v c))) _ (hpm f g hg)]
-      refine congrArg l (funext fun x => ?_)
-      have e : x i * pairA F 0 (singleV F v c) = pairA F 0 (singleV F v (evalV F v (x i).2 * c)) := by
-        refine Prod.ext (mul_zero _) (af_ext fun u => ?_)
-        show evalV F u ((x i).2 * singleFin v c) = evalV F u (singleFin v _)
-        by_cases h : u = v
-        · subst h; rw [map_mul, evalV_singleFin_self, evalV_singleFin_self]
-        · rw [map_mul, evalV_singleFin_ne h, evalV_singleFin_ne h, mul_zero]
-      rw [dotProduct_single, e]
-      exact mul_left_comm _ _ _
-    · intro u hu
-      obtain ⟨i, hi⟩ := Function.ne_iff.1 (show u ≠ 0 from fun e => hu (e ▸ h0))
-      obtain ⟨v, hv⟩ : ∃ v, evalV F v (u i) ≠ 0 := by
-        by_contra h
-        push Not at h
-        exact hi (af_ext fun v => (h v).trans (map_zero _).symm)
-      obtain ⟨y, hy⟩ := nd1 v
-      refine ⟨_, ⟨⟨i, v, y / evalV F v (u i)⟩, rfl⟩, ?_⟩
-      show psiV F ψ v _ ≠ 1
-      rwa [mul_div_cancel₀ _ hv]
-  let r := InfiniteAdeleRing.ringEquiv_mixedSpace F
-  have hst : ∀ a : Ainf F, ψ (pairA F a 0) = Complex.exp (-(2 * Real.pi * Complex.I) *
-      (Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (r a) : ℝ)) := fun a =>
-    hstd.2.2 _ fun u hu => Prod.ext (by
-      show u.1 * a = 0
-      rw [(map_eq_zero_iff _ r.injective).1 hu, zero_mul]) (mul_zero _)
-  let β : LinearMap.BilinForm ℝ (κ → mixedEmbedding.mixedSpace F) := LinearMap.mk₂ ℝ
-    (fun x y => Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (x ⬝ᵥ y))
-    (fun _ _ _ => by rw [add_dotProduct, map_add (f := _)]) (fun _ _ _ => by rw [smul_dotProduct, map_smul])
-    (fun _ _ _ => by rw [dotProduct_add, map_add (f := _)]) (fun _ _ _ => by rw [dotProduct_smul, map_smul])
-  have hβ : Function.Surjective β := by
-    refine (LinearMap.injective_iff_surjective_of_finrank_eq_finrank Subspace.dual_finrank_eq.symm).1
-      ((injective_iff_map_eq_zero _).2 fun x hx => funext fun i => ?_)
-    refine (map_eq_zero_iff _ r.symm.injective).1 (nd2 _ fun y => ?_)
-    have := LinearMap.congr_fun hx (Pi.single i (r y))
-    simp only [β, LinearMap.mk₂_apply, dotProduct_single, LinearMap.zero_apply] at this
-    rw [psiInf, hst, map_mul, r.apply_symm_apply, this]; simp
-  have hinf : ∀ g ∈ SB (κ → Af F), ∃ a : ℂ, ∀ f, lf f g = a * f 0 := fun g hg => by
-    obtain ⟨T₀, hT₀⟩ := hl g hg
-    obtain ⟨a, ha⟩ := S.eq_delta' T₀ fun m f f' h => by
-      obtain ⟨y, rfl⟩ := hβ (-m) |>.imp fun y hy => (neg_eq_iff_eq_neg.2 hy : -β y = m)
-      rw [← hT₀, ← hT₀, ← hmod (fun i => pairA F (r.symm (y i)) 0) _ (hpm f g hg)]
-      refine congrArg l (funext fun x => ?_)
-      have e : (x ⬝ᵥ fun i => pairA F (r.symm (y i)) 0) = pairA F (r.symm (y ⬝ᵥ fun i => r (x i).1)) 0 := by
-        refine Prod.ext ?_ ?_
-        · show fstA F _ = r.symm _
-
-          simp only [dotProduct, map_sum, map_mul, r.symm_apply_apply]
-          exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-        · show sndA F _ = 0
-
-          simp only [dotProduct, map_sum, map_mul]
-          exact Finset.sum_eq_zero fun i _ => mul_zero _
-      rw [e, hst, r.apply_symm_apply, pureA, pureA, h, mul_assoc _ (f _)]
-      refine congrArg₂ (· * ·) (congrArg Complex.exp ?_) rfl
-      simp only [β, LinearMap.neg_apply, LinearMap.mk₂_apply, Complex.ofReal_neg, mul_neg, neg_mul]
-      rfl
-    exact ⟨a, fun f => (hT₀ f).trans (ha f)⟩
-  obtain ⟨a, ha⟩ : ∃ a : ℂ, ∀ f, ∀ g ∈ SB (κ → Af F), lf f g = a * (f 0 * g 0) := by
-    by_cases h : ∃ g ∈ SB (κ → Af F), g 0 ≠ 0
-    · obtain ⟨g₀, h0, h1⟩ := h
-      obtain ⟨a, ha⟩ := hinf g₀ h0
-      refine ⟨a / g₀ 0, fun f g hg => ?_⟩
-      have := hfin f _ (sub_mem hg (Submodule.smul_mem _ (g 0 / g₀ 0) h0)) (by simp [h1])
-      rw [map_sub, map_smul, sub_eq_zero, ha] at this
-      rw [this, smul_eq_mul]; ring
-    · push Not at h
-      exact ⟨0, fun f g hg => by rw [hfin f g hg (h g hg), zero_mul]⟩
-  refine ⟨a, fun Φ hΦ => funext fun x => ?_⟩
-  have h4 : l (schr ψ (x, 0) Φ) = T Φ x := by
-    show T _ 0 = _
-    rw [hT _ _ hΦ]; simp [schr]
-  rw [← h4]
-  clear h4
-  induction hΦ using Submodule.span_induction with
-  | mem Φ h =>
-    obtain ⟨f, g, hg, rfl⟩ := h
-    have := ha (SchwartzMap.compSubConstCLM ℂ (-fun i => r (x i).1) f) (fun u => g (u + fun i => (x i).2))
-      ⟨hg.1.comp_continuous (continuous_add_const _), hg.2.comp_homeomorph (Homeomorph.addRight _)⟩
-    refine Eq.trans (congrArg l (funext fun u => ?_)) (this.trans ?_)
-    · simp only [schr, dotProduct_zero, mul_zero, add_zero, AddChar.map_zero_eq_one, one_mul]
-      refine congrArg₂ (· * ·) (congrArg f (funext fun i => ?_)) rfl
-      exact (map_add r _ _).trans (sub_neg_eq_add _ _).symm
-    · simp [pureA, r]
-  | zero =>
-    rw [show schr ψ (x, 0) 0 = 0 from funext fun _ => mul_zero _, map_zero]; simp
-  | add Φ Ψ _ _ h h' =>
-    rw [show schr ψ (x, 0) (Φ + Ψ) = schr ψ (x, 0) Φ + schr ψ (x, 0) Ψ from funext fun _ => mul_add _ _ _, map_add (f := _), h, h']
-    simp [mul_add]
-  | smul c Φ _ h =>
-    rw [show schr ψ (x, 0) (c • Φ) = c • schr ψ (x, 0) Φ from funext fun _ => mul_left_comm _ _ _, map_smul, h]
-    simp [mul_left_comm]
-
 end PositivityTheory.Member.ZakTransform
 end
 end
@@ -861,21 +732,6 @@ open GlobalTheory.EmbChart (tensAt compFin_tensAt tensAt_mul_right tensAt_tmul)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {v : HeightOneSpectrum (𝓞 F)}
 
-theorem hasSig_det {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
-  first
-  | exact _root_.PositivityTheory.ThKG.Tow.Pln.det_ne_zero_of_hasSig
-  | (apply _root_.PositivityTheory.ThKG.Tow.Pln.det_ne_zero_of_hasSig <;> assumption)
-
-theorem hTens_tr {R E : Type} [CommRing R] [CommRing E] [Algebra R E] (c : E →ₐ[R] E) {α β : Type} [Fintype α] [Fintype β]
-    (JA : Matrix α α E) (JB : Matrix β β E) (x y : Matrix α β E) :
-    hTens c JA JB x y = trace (xᵀ * JA * y.map c * JBᵀ) := by
-  simp only [hTens, Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.map_apply, Matrix.transpose_apply,
-    Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Finset.sum_comm, Finset.sum_congr rfl fun b _ => Finset.sum_comm, Finset.sum_comm]
-  exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
-
 theorem piW_tmul (t : E →ₐ[F] Fv F v) (a : AF F) (x : E) : piW t (a ⊗ₜ[F] x) = evFin F v a * t x := rfl
 
 theorem piW_smul (t : E →ₐ[F] Fv F v) (a : AF F) (z : AE F E) : piW t (a • z) = evFin F v a * piW t z := by
@@ -951,37 +807,8 @@ theorem AE_ext (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {y z : AE F E} (h0 
   rw [sub_smul, sub_smul, this, one_smul, one_smul] at h0
   exact sub_left_injective h0
 
-theorem mat_ext (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {m n : Type} {y z : Matrix m n (AE F E)}
-    (h0 : (1 - ep v) • y = (1 - ep v) • z) (h1 : y.map (piW t) = z.map (piW t))
-    (h2 : y.map (piW (t.comp σ)) = z.map (piW (t.comp σ))) : y = z :=
-  Matrix.ext fun i j => AE_ext h t (congrFun (congrFun h0 i) j) (congrFun (congrFun h1 i) j) (congrFun (congrFun h2 i) j)
-
 def spM (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {m n : Type} (A B : Matrix m n (Fv F v)) : Matrix m n (AE F E) :=
   of fun i j => tensAt E v ((splitAlgEquiv h t).symm (A i j, B i j))
-
-theorem spM_fst (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {m n : Type} (A B : Matrix m n (Fv F v)) :
-    (spM h t A B).map (piW t) = A := Matrix.ext fun i j => by
-  show splitProj t (compFin F E v (tensAt E v _)) = _
-  rw [compFin_tensAt, splitProj_symm]
-
-theorem spM_snd (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {m n : Type} (A B : Matrix m n (Fv F v)) :
-    (spM h t A B).map (piW (t.comp σ)) = B := Matrix.ext fun i j => by
-  show splitProj (t.comp σ) (compFin F E v (tensAt E v _)) = _
-  rw [compFin_tensAt, splitProj_comp_symm]
-
-theorem spM_off (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {m n : Type} (A B : Matrix m n (Fv F v)) :
-    (1 - ep v) • spM h t A B = 0 := Matrix.ext fun i j => by
-  show (1 - ep v) • tensAt E v _ = 0
-  rw [sub_smul, one_smul, ep_smul, compFin_tensAt, sub_self]
-
-theorem map_smul_piW (t : E →ₐ[F] Fv F v) {m n : Type} (a : AF F) (y : Matrix m n (AE F E)) :
-    (a • y).map (piW t) = evFin F v a • y.map (piW t) := Matrix.ext fun _ _ => piW_smul t a _
-
-theorem map_cA_piW (t : E →ₐ[F] Fv F v) {m n : Type} (y : Matrix m n (AE F E)) :
-    (y.map (cA σ)).map (piW t) = y.map (piW (t.comp σ)) := Matrix.ext fun _ _ => piW_cA t _
-
-theorem incM_piW (t : E →ₐ[F] Fv F v) {m n : Type} (J : Matrix m n E) : (incM F J).map (piW t) = J.map t :=
-  Matrix.ext fun i j => by rw [map_apply, map_apply, incM, map_apply, piW_inc]
 
 def mkM (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {n : ℕ} (A B : Matrix (Fin n) (Fin n) (Fv F v)) :
     Matrix (Fin n) (Fin n) (AE F E) := (1 - ep v) • 1 + spM h t A B
@@ -991,33 +818,6 @@ variable {n d : ℕ} {X : Spc F E n} {W : Spc F E d}
 def coB (σ : E →ₐ[F] E) (X : Spc F E n) (W : Spc F E d) (t : E →ₐ[F] Fv F v) (u : Matrix (Fin n) (Fin d) (AE F E)) :
     Matrix (Fin n) (Fin d) (Fv F v) := -(X.J.map t * u.map (piW (t.comp σ)) * (W.J.map t)ᵀ)
 
-theorem ev_symp (h : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) (hX : ∀ i j, σ (X.J j i) = X.J i j)
-    (hW : ∀ i j, σ (W.J j i) = -W.J i j) (w w' : Matrix (Fin n) (Fin d) (AE F E)) :
-    evFin F v (symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J) w w') =
-      trace (coB σ X W t w * (-w'.map (piW t))ᵀ) - trace (coB σ X W t w' * (-w.map (piW t))ᵀ) := by
-  have a : ∀ t : E →ₐ[F] Fv F v, piW t (hTens (cA σ) (incM F X.J) (incM F W.J) w w') =
-      trace ((w.map (piW t))ᵀ * X.J.map t * w'.map (piW (t.comp σ)) * (W.J.map t)ᵀ) := fun t => by
-    rw [hTens_tr, AddMonoidHom.map_trace (piW t), Matrix.map_mul, Matrix.map_mul, Matrix.map_mul, transpose_map, transpose_map,
-      incM_piW, incM_piW, map_cA_piW]
-  have b1 : X.J.map (t.comp σ) = (X.J.map t)ᵀ := Matrix.ext fun i j => congrArg t (hX j i)
-  have b2 : (W.J.map (t.comp σ))ᵀ = -W.J.map t := Matrix.ext fun i j => (congrArg t (hW i j)).trans (map_neg t _)
-  rw [symp, ev_trace h t, map_mul, map_mul, a, a, comp_conj_conj h, b1, b2, coB, coB]
-  generalize w.map (piW t) = A
-  generalize w'.map (piW t) = A'
-  generalize w.map (piW (t.comp σ)) = B
-  generalize w'.map (piW (t.comp σ)) = B'
-  generalize X.J.map t = P
-  generalize W.J.map t = Q
-  have c1 : trace (P * B * Qᵀ * A'ᵀ) = trace (Bᵀ * Pᵀ * A' * Q) := by
-    rw [← trace_transpose, transpose_mul, transpose_mul, transpose_mul, transpose_transpose, transpose_transpose,
-      ← Matrix.mul_assoc, trace_mul_comm]
-    simp only [Matrix.mul_assoc]
-  have c2 : trace (P * B' * Qᵀ * Aᵀ) = trace (Aᵀ * P * B' * Qᵀ) := by
-    rw [trace_mul_comm]
-    simp only [Matrix.mul_assoc]
-  simp only [transpose_neg, Matrix.neg_mul, Matrix.mul_neg, neg_neg, c1, c2, map_neg, map_one, trace_neg]
-  ring
-
 end Split
 
 section Gen
@@ -1025,44 +825,8 @@ variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] {v : Heig
 
 theorem cont_at : Continuous (atPlace (F := F) v) := continuous_const.prodMk (continuous_singleFin v)
 
-open Classical in
-theorem exists_bump : ∃ f : SInf F κ, HasCompactSupport f ∧ f 0 = 1 := by
-  let b : ContDiffBump (0 : κ → mixedEmbedding.mixedSpace F) := ⟨1, 2, one_pos, one_lt_two⟩
-  have h1 : HasCompactSupport fun x => (b x : ℂ) := b.hasCompactSupport.comp_left (g := fun x : ℝ => (x : ℂ)) (by simp)
-  refine ⟨h1.toSchwartzMap (Complex.ofRealCLM.contDiff.comp b.contDiff), h1, ?_⟩
-  show (b 0 : ℂ) = 1
-  rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self zero_le_one), Complex.ofReal_one]
-
-open Classical in
-theorem rest_zero {f : SInf F κ} (hf : f 0 = 1) : pure f (Function.update (stdF κ) v 1) 0 = 1 := by
-  unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
-  rw [finprod_eq_one_of_forall_eq_one, mul_one, ← hf]
-  · congr 1
-    funext i
-    exact map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
-  · intro u
-    by_cases h : u = v
-    · subst h; simp
-    · rw [Function.update_of_ne h, stdF, Set.indicator_of_mem (fun i => by simp)]; rfl
-
-theorem tens_at {r : (κ → AF F) → ℂ} (h : Indep v r) (φ : (κ → Fv F v) → ℂ) (t : κ → Fv F v) :
-    tens (evFin F v) φ r (fun i => atPlace v (t i)) = φ t * r 0 := by
-  rw [tens, ← h 0 t, zero_add]
-  simp only [evFin_atPlace]
-
 def sub {n d : ℕ} {k : Type} [Field k] (γ : GL (Fin n) k) : Module.End ℂ (Matrix (Fin n) (Fin d) k → ℂ) :=
   LinearMap.funLeft ℂ ℂ fun Y => γ.1 * Y
-
-theorem sub_mem {n d : ℕ} (γ : GL (Fin n) (Fv F v)) {f : Matrix (Fin n) (Fin d) (Fv F v) → ℂ} (hf : f ∈ SB _) :
-    sub γ f ∈ SB (Matrix (Fin n) (Fin d) (Fv F v)) := by
-  let h : Matrix (Fin n) (Fin d) (Fv F v) ≃ₜ Matrix (Fin n) (Fin d) (Fv F v) :=
-    { toFun := fun Y => γ.1 * Y
-      invFun := fun Y => (γ⁻¹).1 * Y
-      left_inv := fun Y => by simp only [← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
-      right_inv := fun Y => by simp only [← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]
-      continuous_toFun := continuous_const.matrix_mul continuous_id
-      continuous_invFun := continuous_const.matrix_mul continuous_id }
-  exact ⟨hf.1.comp_continuous h.continuous, hf.2.comp_homeomorph h⟩
 
 end Gen
 
@@ -1073,12 +837,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem offP_eq {κ : Type} (w : (κ → AF F) × (κ → AF F)) : offP v w = (1 - ep v) • w :=
   Prod.ext (funext fun _ => off_eq _) (funext fun _ => off_eq _)
-
-theorem evalEmbedding_smul {κ : Type} (a : AF F) (w : (κ → AF F) × (κ → AF F)) : evP v (a • w) = evFin F v a • evP v w :=
-  Prod.ext (funext fun _ => map_mul (evFin F v) _ _) (funext fun _ => map_mul (evFin F v) _ _)
-
-theorem evalPoints_add {κ : Type} (w w' : (κ → AF F) × (κ → AF F)) : evP v (w + w') = evP v w + evP v w' :=
-  Prod.ext (funext fun _ => map_add (evFin F v) _ _) (funext fun _ => map_add (evFin F v) _ _)
 
 end PartB
 

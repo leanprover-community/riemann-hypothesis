@@ -139,8 +139,6 @@ def piFun (κ : C(KR n, ℂ)) (h : C(KR n, ℂ)) : C(KR n, ℂ) :=
       exact mul_le_mul (κ.norm_coe_le_norm k) (h.norm_coe_le_norm _) (norm_nonneg _) (norm_nonneg _)
     exact continuous_const.mul (h.continuous.comp (continuous_id.mul continuous_const))⟩
 
-theorem piFun_apply (κ h : C(KR n, ℂ)) (k' : KR n) : piFun ν κ h k' = ∫ k, κ k * h (k' * k) ∂ν := rfl
-
 def piL (κ : C(KR n, ℂ)) : C(KR n, ℂ) →L[ℂ] C(KR n, ℂ) :=
   LinearMap.mkContinuous
     { toFun := piFun ν κ
@@ -1290,7 +1288,6 @@ open scoped NNReal
 namespace PositivityTheory.Rg.Sw.AbsSt
 
 open PositivityTheory.Rg.Sw
-
 
 theorem tsGenC_of (hD : CayleyBlocksInvertible) (hK : KAK) (hM : Mult) (hS : SecZero) (hDF : DerivativeVacuumDilations)
     (hH : HolParam) (hLC : LC) (hT : TSBFacts) : TSGenC := by

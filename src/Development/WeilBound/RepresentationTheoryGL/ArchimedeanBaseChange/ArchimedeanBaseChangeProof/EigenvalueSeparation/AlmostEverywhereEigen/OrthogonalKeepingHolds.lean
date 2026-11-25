@@ -1057,8 +1057,6 @@ variable {X : Type} [TopologicalSpace X]
 
 def ofR (g : C(X, ℝ)) : C(X, ℂ) := ⟨fun x => (g x : ℂ), by fun_prop⟩
 
-@[simp] lemma ofR_apply (g : C(X, ℝ)) (x : X) : ofR g x = (g x : ℂ) := rfl
-
 lemma ofR_add (g h : C(X, ℝ)) : ofR (g + h) = ofR g + ofR h := by
   ext x; simp
 

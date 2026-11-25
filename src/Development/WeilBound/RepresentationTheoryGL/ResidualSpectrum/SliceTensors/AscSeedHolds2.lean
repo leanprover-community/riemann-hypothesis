@@ -148,7 +148,6 @@ theorem exists_upper_unitary_complex {N : ℕ} (g : Matrix (Fin N) (Fin N) ℂ) 
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
-
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem exists_borel_unitary {N : ℕ} (y : GL (Fin N) (Cinf E)) :
     ∃ (b : GL (Fin N) (Cinf E)) (k : Kinf E N),
@@ -741,10 +740,6 @@ def frobFun (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
       show ℓ (σ'.ρ (x * g) v) = ℓ (σ'.ρ x v)
       rw [map_mul, Module.End.mul_apply, hg'])⟩
 
-theorem frobFun_apply (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
-      ℓ (σ'.ρ p v) = ρ (leviProj k (stdBlocks n h) p) (ℓ v)) (v : σ'.V) (g : GL (Fin N) k) :
-    (frobFun hℓ v).1.1 g = ℓ (σ'.ρ g v) := rfl
-
 def frobMap (hℓ : ∀ (p : parab k (stdBlocks n h)) (v : σ'.V),
       ℓ (σ'.ρ p v) = ρ (leviProj k (stdBlocks n h) p) (ℓ v)) :
     σ'.ρ.IntertwiningMap (parInd (stdBlocks n h) (twist ρ (deltaHalf k fun i => Fin (n i))⁻¹)) where
@@ -800,7 +795,6 @@ section Local
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {a d : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem piTensor_twist_tprod (ρ : Representation ℂ (GL (Fin a) k) V) (χ : Fin d → GL (Fin a) k →* ℂˣ)
     (g : Fin d → GL (Fin a) k) (x : Fin d → V) :
@@ -837,7 +831,6 @@ theorem levi_equiv (ρ : Representation ℂ (GL (Fin a) k) V) (s t : Fin d → �
 end Local
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
-
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem loc_eq_absPow {ν : HChar E} {s : ℝ} (hν : ν.IsAbsPow s) (w : HeightOneSpectrum (𝓞 E)) :

@@ -18,8 +18,6 @@ open Formalism.UG (cT)
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem realAd_snd (t : ℝ) : (realAd F t).2 = 0 := rfl
-
 theorem realAd_inf [IsTotallyReal F] (w : InfinitePlace F) (t : ℝ) :
     InfinitePlace.Completion.extensionEmbedding w ((realAd F t).1 w) = t := by
   have hw := IsTotallyReal.isReal w
@@ -77,7 +75,6 @@ theorem two_mul_le_of_wittFrame (hs : ∀ x, σ (σ x) = x) (hJ : IsHermND σ J)
   have := (Matrix.rank_mul_le_right _ _).trans' e2.symm.le |>.trans (Matrix.rank_le_card_height _)
   rw [Fintype.card_fin] at this
   omega
-
 
 omit [NumberField F] [NumberField E] in
 theorem ext_of_frame (hs : ∀ x, σ (σ x) = x) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) {A : Type} [CommRing A]

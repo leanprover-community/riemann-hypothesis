@@ -84,7 +84,6 @@ namespace GlobalTheory.InertSupp.Unram
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-
 open ValuativeRel Matrix MeasureTheory in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 omit [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
@@ -202,10 +201,6 @@ def constInd (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : k
         show (detChar (Fin n) χ (x * g) : ℂ) • w0 = (detChar (Fin n) χ x : ℂ) • w0
         rw [map_mul, hg', mul_one])⟩
 
-theorem constInd_apply (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ)
-    (w0 : W) (hw : ∀ p : P, σ p w0 = (detChar (Fin n) χ (p : GL (Fin n) k) : ℂ) • w0) (x : GL (Fin n) k) :
-    (constInd P σ χ hχ w0 hw).1.1 x = (detChar (Fin n) χ x : ℂ) • w0 := rfl
-
 theorem smInd_constInd (P : Subgroup (GL (Fin n) k)) (σ : Representation ℂ P W) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ)
     (w0 : W) (hw : ∀ p : P, σ p w0 = (detChar (Fin n) χ (p : GL (Fin n) k) : ℂ) • w0) (g : GL (Fin n) k) :
     smInd P σ g (constInd P σ χ hχ w0 hw) = (detChar (Fin n) χ g : ℂ) • constInd P σ χ hχ w0 hw := by
@@ -307,7 +302,6 @@ theorem key_law (a b : ℂˣ) (hL : unrChar k a = unrChar k b * absPow k 1) (t :
     rw [← Units.val_mul, ← MonoidHom.mul_apply, ← absPow_add]; norm_num
   rw [e]
   linear_combination -((unrChar k b t : ℂ) * (absPow k (1 / 2) t : ℂ)) * e2
-
 
 theorem linked (a b : ℂˣ) (hL : unrChar k a = unrChar k b * absPow k 1) :
     ∃ T : (iP (k := k) ![a, b]).IntertwiningMap (iP (k := k) ![b, a]), KInj k T := by
@@ -851,13 +845,11 @@ theorem unrChar_append {r t : ℕ} (a : Fin r → ℂˣ) (b : Fin t → ℂˣ) :
   funext i
   refine Fin.addCases (fun l => ?_) (fun l => ?_) i <;> simp
 
-
 theorem prin_append {r t : ℕ} (ψ₁ : Fin r → kˣ →* ℂˣ) (ψ₂ : Fin t → kˣ →* ℂˣ) :
     Nonempty ((prod₂ (prinSeries ψ₁) (prinSeries ψ₂)).Equiv (prinSeries (Fin.append ψ₁ ψ₂))) := by
   obtain ⟨E1⟩ := GlobalTheory.SmGL.PrinProd.stage_one (k := k) ψ₁ ψ₂
   obtain ⟨E2⟩ := GlobalTheory.SmGL.PrinProd.stage_two (k := k) ψ₁ ψ₂
   exact ⟨E1.trans E2⟩
-
 
 theorem iP_append (r t : ℕ) (A : Fin r → ℂˣ) (B : Fin t → ℂˣ) :
     Nonempty ((prod₂ (iP (k := k) A) (iP (k := k) B)).Equiv (iP (k := k) (Fin.append A B))) := by
@@ -909,8 +901,6 @@ open PositivityTheory.Rg.BcB.N3 PositivityTheory.Rg.BcB.N3.Pse
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-
-
 theorem main {r t : ℕ} (A : Fin r → ℂˣ) (a b : ℂˣ) (B : Fin t → ℂˣ)
     (T : (iP (k := k) ![a, b]).IntertwiningMap (iP (k := k) ![b, a])) (hT : KInj k T) :
     ∃ T' : (iP (k := k) (Fin.append A (Fin.append ![a, b] B))).IntertwiningMap
@@ -920,7 +910,6 @@ theorem main {r t : ℕ} (A : Fin r → ℂˣ) (a b : ℂˣ) (B : Fin t → ℂ�
   obtain ⟨Eo⟩ := iP_append (k := k) r (2 + t) A (Fin.append ![a, b] B)
   obtain ⟨Eo'⟩ := iP_append (k := k) r (2 + t) A (Fin.append ![b, a] B)
   exact mainGen _ _ Ei Ei' Eo Eo' T hT
-
 
 variable (k) in
 theorem stageLift : StageLift k := by
@@ -1093,7 +1082,6 @@ theorem coe_mem_fixed {ρ : Representation ℂ G V} (S : Subrepresentation ρ) {
 theorem hI {W : Type} [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ G V} {σ : Representation ℂ G W}
     (f : ρ.IntertwiningMap σ) (g : G) (y : V) : f (ρ g y) = σ g (f y) :=
   Representation.IntertwiningMap.isIntertwining _ _ f g y
-
 
 theorem satLink : SatLink := by
   intro E _ _ w c n N h σ P ξ hq hsph ⟨f, hf⟩

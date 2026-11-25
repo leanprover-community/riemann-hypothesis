@@ -71,11 +71,6 @@ def ModelFunctionsMultiply : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (m₁ m₂ : Fin n → ℤ), NonnegDom ε m₁ → NonnegDom ε m₂ → ∀ k : KG ε,
     f0K ε (m₁ + m₂) k = f0K ε m₁ k * f0K ε m₂ k
 
-theorem cK_transport {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T T' : KType ε Λ) (k : KG ε) : cK T k = cK T' k := by
-  obtain ⟨φ, hφ, -, hw⟩ := kType_unique T T'
-  unfold cK
-  rw [← hw, ← hφ, LinearIsometryEquiv.inner_map_map]
-
 theorem cK_eq_f0K (hM : CkModel) (hT : CkTwist) {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ)
     (m : Fin n → ℤ) (hm : NonnegDom ε m) (c : ℤ) (hΛ : ∀ a, Λ a = (m a : ℝ) + c) (k : KG ε) :
     cK T k = ‖f0K ε m k‖ := by

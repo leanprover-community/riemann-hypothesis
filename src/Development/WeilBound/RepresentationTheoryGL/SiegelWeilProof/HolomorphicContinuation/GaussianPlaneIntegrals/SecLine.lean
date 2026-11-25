@@ -119,10 +119,6 @@ lemma norm_sq_le (x : Fin m → Fin n → ℂ) : ‖x‖ ^ 2 ≤ sq x := by
   calc ‖x‖ ^ 2 ≤ (Real.sqrt (sq x)) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) h 2
     _ = sq x := Real.sq_sqrt (sq_nonneg' x)
 
-lemma pow_mul_exp_le (K : ℕ) {β : ℝ} (hβ : 0 < β) :
-    ∃ M : ℝ, ∀ s : ℝ, 0 ≤ s → (1 + s) ^ K * Real.exp (-β * s) ≤ M :=
-  _root_.UpperTheory.Reformulated.B.P6.r22b.PositivityTheory.Rg.Sw.FFTSteps.SecondLineEstimates.pow_mul_exp_le K hβ
-
 lemma integrable_poly_gauss (N : ℕ) {β : ℝ} (hβ : 0 < β) :
     Integrable (fun x : Fin m → Fin n → ℂ => (1 + sq x) ^ N * Real.exp (-β * sq x)) := by
   set L : ℕ := Module.finrank ℝ (Fin m → Fin n → ℂ) + 1 with hL

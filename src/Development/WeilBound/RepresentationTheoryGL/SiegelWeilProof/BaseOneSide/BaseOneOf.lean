@@ -1418,7 +1418,6 @@ theorem lamLim_nonneg {Λ : ℂ} (h : IsLamLim F E Λ) : Λ.im = 0 ∧ 0 ≤ Λ.
 theorem lamLim_unique {Λ Λ' : ℂ} (h : IsLamLim F E Λ) (h' : IsLamLim F E Λ') : Λ = Λ' :=
   tendsto_nhds_unique h h'
 
-
 variable (F E) in
 theorem exists_half_lamLim : ∃ c : ℝ≥0, ∀ Λ : ℂ, IsLamLim F E Λ → ((c : ℝ) : ℂ) = Λ / 2 := by
   by_cases h : ∃ Λ, IsLamLim F E Λ
@@ -1492,9 +1491,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
 def g1 (x : E) (hx : x ≠ 0) : GL (Fin 1) E :=
   Matrix.GeneralLinearGroup.mkOfDetNeZero (Matrix.of fun _ _ => x) (by rw [Matrix.det_fin_one]; exact hx)
-
-theorem scalar_matrix_apply (x : E) (hx : x ≠ 0) (i j : Fin 1) :
-    ((g1 x hx : GL (Fin 1) E) : Matrix (Fin 1) (Fin 1) E) i j = x := rfl
 
 theorem tuple_action_scalar_eq_mul (R : Type) [CommRing R] [Algebra F R] (x : E) (hx : x ≠ 0) :
     actTup R (bc (inclR R) (g1 x hx)) =

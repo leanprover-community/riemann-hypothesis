@@ -472,7 +472,6 @@ theorem continuous_nuE : Continuous (nuE (n := n)) := by
     rw [e]
     exact continuous_nU.comp continuous_hpart.neg
 
-
 open Classical in
 def mlE (A : Matrix (Fin n) (Fin n) ℂ) : GR n :=
   if h : IsUnit A.det then mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (inG_mL h) else 1
@@ -606,8 +605,6 @@ theorem tauE_not_real (τ : D.what₂.Tau) : ¬ NumberField.ComplexEmbedding.IsR
   exact Formalism.IndefR.Fin.embedding_xi_zero_ne_zero ((map_eq_zero_iff _ (tauE D τ).injective).1 h3)
 
 theorem denseRange_tauE (τ : D.what₂.Tau) : DenseRange (tauE D τ) := denseRange_of_not_isReal' _ (tauE_not_real τ)
-
-theorem sig_apply (x : D.host.E) : D.sp.cm.sig x = star x := rfl
 
 theorem cT_map_tauE (τ : D.what₂.Tau) {k : ℕ} (u : Matrix (Fin k) (Fin k) D.host.E) :
     (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) u).map (tauE D τ) = (u.map (tauE D τ))ᴴ := by
@@ -1486,15 +1483,6 @@ theorem thetaInt_at {θ : InfFam D} {V : HSp D} (ω : G D n →* Module.End ℂ 
     funext h
     simp only [theta, map_one, Module.End.one_apply]
   simp only [thetaInt, h]
-
-theorem thetaInt_smul {θ : InfFam D} {V : HSp D} (ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)) (ν : Measure (GA D V))
-    (r : ℂ) (Φ : schwartzA θ V.rank n) (g : G D n) : thetaInt ω ν (r • Φ) g = r * thetaInt ω ν Φ g := by
-  have h : theta ω (r • Φ) g = fun h => r * theta ω Φ g h := by
-    funext h
-    simp only [theta, map_smul, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul]
-    exact tsum_mul_left
-  simp only [thetaInt, h, GlobalTheory.AutomorphicL2Unitary.descend, MeasureTheory.average_eq, integral_const_mul]
-  exact (mul_smul_comm _ _ _).symm
 
 theorem phiS_of_mem {θ : InfFam D} (τ : D.what₂.Tau) (fr : Matrix (Fin m) (Fin m) ℂ) (c : ℝ) (Ψ : Mx D m n → ℂ)
     (P : PX m n) (h : tens θ τ fr (fP c P) Ψ ∈ schwartzA θ m n) : phiS θ τ fr c Ψ P = ⟨_, h⟩ := by

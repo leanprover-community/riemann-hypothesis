@@ -16,12 +16,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-
-theorem PositivityTheory.NCmp.cap_eq_qdet {E : Type} [Field E] [NumberField E] [NumberField.IsTotallyComplex E] (a : ℕ)
-    (τ : E →+* ℂ) (u : ℂ) :
-    (GlobalTheory.CuspRep.cap (a := a) τ u : Module.End ℂ (GlobalTheory.CuspRep.Sm E a)) =
-      Formalism.REAL.qdet (GlobalTheory.CuspRep.Eop (a := a) τ) (u + ((a : ℂ) - 1) / 2) :=
-  rfl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.SatakeConjugation.CapEqQdet =====

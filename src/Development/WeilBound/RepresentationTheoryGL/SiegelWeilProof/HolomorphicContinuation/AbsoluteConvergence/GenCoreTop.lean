@@ -625,7 +625,6 @@ theorem cz_diff (hH : HolParam) (p q : ℕ) (e : ℤ) (A B : GR n) {ψ : (Fin n 
   rw [heq]
   exact differentiableOn_univ.1 h
 
-
 theorem locOp : LV → Iwa → Mult → HolParam → LocOp := by
   intro hLV hIwa hMult hHol n p q e hgood _ _ μ _ _
   let ι : KR n →* M2 n := (Units.coeHom (M2 n)).comp ((GR n).subtype.comp (KR n).subtype)
@@ -957,8 +956,6 @@ theorem continuous_u_det (X : Fin n → ℝ) (w : ℂ) :
     hM.matrix_submatrix (fun i : Fin n => (Sum.inr i : Fin n ⊕ Fin n)) (fun j : Fin n => (Sum.inr j : Fin n ⊕ Fin n))
   exact ((h21.const_smul w).add h22).matrix_det
 
-theorem first_cayley_block_eq (M : M2 n) : u1 M = Complex.I • M.toBlocks₂₁ + M.toBlocks₂₂ := rfl
-
 theorem second_cayley_block_eq (M : M2 n) : u2 M = (-Complex.I) • M.toBlocks₂₁ + M.toBlocks₂₂ := by
   simp [u2, neg_smul]
 
@@ -1168,8 +1165,6 @@ theorem finInt {K : Type*} [TopologicalSpace K] [MeasurableSpace K] [BorelSpace 
     _ = ∫ k, w k * l (v k) ∂μ := by
         refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)
         simp only [hv' k, Finset.mul_sum, mul_assoc]
-
-
 
 theorem thSph_of' (hA : HelpA) (hC : HelpC) (hKAK : KAK) (hMult : Mult) (hD : DerivativeVacuumDilations) (hSph : Sph)
     (hSZ : SecZero) (hHP : HolParam) (hLC : LC) : ThSph := by

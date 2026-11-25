@@ -97,7 +97,6 @@ theorem continuous_single (v : InfinitePlace E) : Continuous (single v) :=
     show Continuous (fun z : ℂ => (Pi.mulSingle v z : InfinitePlace E → ℂ))
     exact continuous_mulSingle (A := fun _ : InfinitePlace E => ℂ) v)
 
-
 variable (E) in
 abbrev below (v : InfinitePlace E) : InfinitePlace (maximalRealSubfield E) := v.comap (algebraMap (maximalRealSubfield E) E)
 
@@ -353,12 +352,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-namespace PositivityTheory.Rg.BcB.F.Fok
-
-theorem cm_quadratic_character_unramified : type_of% GlobalTheory.T.quadratic_character_trivial_unit_ideles :=
-  _root_.GlobalTheory.EtaFinUnit.quadChar_finPartI_eq_one
-
-end PositivityTheory.Rg.BcB.F.Fok
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.QuadraticCharacterNorms.CmQuadraticCharacterUnramified =====
@@ -410,7 +403,6 @@ theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield 
   rw [e1, e2, h2, h3, infSign_ideleMap_finPartI, mul_one]
 
 end GlobalTheory.ConsEta
-
 
 open GlobalTheory.ConsEta in
 theorem GlobalTheory.ConsEta.exists_open_subgroup_eta_consistent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
@@ -519,15 +511,6 @@ open PositivityTheory.Rg.BcB.F.Fok
 namespace PositivityTheory.Rg.BcB.F.Fok.Mu2
 open GlobalTheory.ConsEta
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-theorem infSign_ideleMap_finPartI (b : Neutral.B1.Ideles (maximalRealSubfield E)) :
-    infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E (GlobalTheory.Mem.Chr.finPartI _ b)) = 1 := by
-  exact GlobalTheory.ConsEta.infSign_ideleMap_finPartI b
-
-theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield E))
-    (hb : b ∈ GlobalTheory.Mem.Chr.unitIdl (maximalRealSubfield E)) :
-    (GlobalTheory.GalOfCusp.quadChar E).1 b = infSign E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E b) := by
-  exact GlobalTheory.ConsEta.eta_eq_infSign hU b hb
 
 theorem quadratic_character_square : type_of% GlobalTheory.T.exists_unitary_hecke_character_norm :=
   GlobalTheory.T.exists_unitary_hecke_character_norm

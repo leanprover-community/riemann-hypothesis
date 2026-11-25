@@ -832,7 +832,6 @@ theorem mem_iwahori_iff {g : GL (Fin n) F} :
     g ∈ PositivityTheory.Rg.Tf.Loc.iwahori (m := n) F ↔ g ∈ GlobalTheory.SmGL.iwahori F (Fin n) := by
   rw [GlobalTheory.SmGL.mem_iwahori]; rfl
 
-
 end GlobalTheory.CompanionTheory.IwContract
 end -- clump:auto
 end -- clump:auto
@@ -1343,7 +1342,6 @@ namespace GlobalTheory.CompanionTheory.RegPow
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 open GlobalTheory.CompanionTheory.MatchPow in
 theorem hasVals_nrm (hU : Unr E) {w : Pl E} (hw : ¬ IsSplitAt w) {ϖ : (w.adicCompletion E)ˣ} (hϖ : IsUnifAt ϖ) {a : ℕ}
     {y : Fin a → ℤ} (hy : StrictAnti y) {δ : GLw a w} (hδ : dcos a w (tdiag ϖ y) δ ≠ 0) :
@@ -1364,7 +1362,6 @@ theorem hasVals_nrm (hU : Unr E) {w : Pl E} (hw : ¬ IsSplitAt w) {ϖ : (w.adicC
   rw [← GlobalTheory.CompanionTheory.MatchLinear.charpoly_nrmL_twConj hU a w δ m, hdu, GlobalTheory.CompanionTheory.TwSide.nrmL_diagT hw, GlobalTheory.SmGL.val_diagT,
     Matrix.charpoly_diagonal]
   exact ⟨fun i => _, rfl, fun i => ⟨Units.ne_zero _, GlobalTheory.CompanionTheory.TwSide.ordL_norm_entry hU _ y hord i⟩⟩
-
 
 open GlobalTheory.CompanionTheory.MatchPow in
 theorem mpow_entT {w : Pl E} {n : ℕ} (a : ℕ) {ϖ : (w.adicCompletion E)ˣ} (hϖ : IsUnifAt ϖ) {J : Type} [Fintype J]
@@ -1549,9 +1546,6 @@ namespace PositivityTheory.Rg.BcB.F.MLM
 theorem matchLMIdOf : MatchLMIdOf := _root_.GlobalTheory.CompanionTheory.MatchId.matchLMIdOf
 theorem matchLMUnitOf : MatchLMUnitOf := _root_.GlobalTheory.CompanionTheory.MatchUnit.matchLMUnitOf
 
-theorem muInert : MuInert := _root_.GlobalTheory.CompanionTheory.MuInertPlace.muInert
-theorem regPowT : RegPowT := _root_.GlobalTheory.CompanionTheory.RegPow.regPowT
-theorem sepPowT : SepPowT := _root_.GlobalTheory.CompanionTheory.SepPow.sepPowT
 theorem ctStar : CtStar := _root_.GlobalTheory.CompanionTheory.CtAdj.ctStar
 theorem matchLMWordSOf : MatchLMWordSOf := _root_.GlobalTheory.CompanionTheory.LeviMatchingWords.matchLMWordSOf
 

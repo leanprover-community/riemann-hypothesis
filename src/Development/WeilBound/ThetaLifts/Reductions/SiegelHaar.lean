@@ -445,15 +445,6 @@ instance [MeasurableSpace A] [MeasurableSpace B] [BorelSpace A] [BorelSpace B] [
 
 variable [IsTopologicalAddGroup A] [IsTopologicalAddGroup B]
 
-theorem Heis.isTopologicalGroup (hβ : Continuous fun p : A × A => β p.1 p.2) : IsTopologicalGroup (Heis β) := {
-  continuous_mul := by
-    change Continuous fun p : (A × B) × A × B => ((p.1.1 + p.2.1, p.1.2 + p.2.2 + β p.1.1 p.2.1) : A × B)
-    exact (continuous_fst.fst.add continuous_snd.fst).prodMk ((continuous_fst.snd.add continuous_snd.snd).add
-      (hβ.comp (continuous_fst.fst.prodMk continuous_snd.fst)))
-  continuous_inv := by
-    change Continuous fun p : A × B => ((-p.1, -p.2 + β p.1 p.1) : A × B)
-    exact continuous_fst.neg.prodMk (continuous_snd.neg.add (hβ.comp (continuous_fst.prodMk continuous_fst))) }
-
 variable [LocallyCompactSpace A] [SecondCountableTopology A] [T2Space A] [MeasurableSpace A] [BorelSpace A]
   [LocallyCompactSpace B] [SecondCountableTopology B] [T2Space B] [MeasurableSpace B] [BorelSpace B]
 

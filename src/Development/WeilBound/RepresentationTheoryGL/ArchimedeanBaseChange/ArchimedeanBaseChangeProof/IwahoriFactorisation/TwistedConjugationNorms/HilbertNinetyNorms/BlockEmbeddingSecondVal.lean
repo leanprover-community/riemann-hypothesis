@@ -89,10 +89,6 @@ def emb2 (n : ℕ) : Fin (n / 2) ↪ Fin n :=
     simp only at h1
     omega)⟩
 
-@[simp] theorem block_embedding_first_val (n : ℕ) (k : Fin (n / 2)) : (emb1 n k).val = k.val := rfl
-
-@[simp] theorem block_embedding_second_val (n : ℕ) (k : Fin (n / 2)) : (emb2 n k).val = n - 1 - k.val := rfl
-
 theorem card_symIdx (n : ℕ) (mid : Prop) [Decidable mid] (s : Finset (Fin (n / 2))) :
     (symIdx n mid s).card = 2 * s.card + (if mid ∧ n % 2 = 1 then 1 else 0) := by
   let ι₁ := emb1 n

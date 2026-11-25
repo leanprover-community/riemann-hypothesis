@@ -143,8 +143,6 @@ theorem cellSum_holds : CellSum := by
     _ = X.μ (Ω₀ * Ω) * ∑' i, c i := by
         rw [ENNReal.tsum_mul_right, mul_comm]
 
-theorem cellSum_of_cntBasic : CntBasic → CellSum := fun _ => cellSum_holds
-
 end GlobalTheory.CompanionTheory.CellSumProof
 end -- clump:auto
 end -- clump:auto
@@ -1436,10 +1434,6 @@ namespace GlobalTheory.CompanionTheory.Schur
 open PositivityTheory.Rg.BcB.E1
 
 variable {α : Type} [MeasurableSpace α] {ν : Measure α}
-
-theorem eLpNorm_two_sq (f : α → ℂ) : eLpNorm' f 2 ν ^ 2 = ∫⁻ x, ‖f x‖ₑ ^ 2 ∂ν := by
-  simpa [ENNReal.rpow_ofNat] using
-    (lintegral_rpow_eNorm_eq_rpow_eLpNorm' (f := f) (μ := ν) (q := 2) (by norm_num)).symm
 
 theorem schur_memLp (hS : SchurL) [SFinite ν] (k : α → α → ℂ) (A : ℝ≥0∞)
     (hk : Measurable (Function.uncurry k)) (hA : A ≠ ⊤)

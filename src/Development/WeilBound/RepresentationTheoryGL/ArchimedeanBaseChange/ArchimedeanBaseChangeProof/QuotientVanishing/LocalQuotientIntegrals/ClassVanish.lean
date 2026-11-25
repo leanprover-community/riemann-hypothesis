@@ -163,7 +163,6 @@ theorem ga_ext' {g h : GA E n} (h1 : ∀ w, GeneralLinearGroup.map (cV w) g = Ge
   ext i j w
   exact congrArg (fun x : GL (Fin n) ℂ => x i j) (h1 w)
 
-
 open Classical in
 def sV (v : InfinitePlace E) : ℂ →ₙ+* Ad E where
   toFun x := sInf E (Pi.single v x)
@@ -1760,8 +1759,6 @@ theorem classVanish : ClassVanish :=
     SplitTwo.splitAt2 PairParam.pairParam (TorusCh.torusChar degAdelic)
     (ChiGamGlobal.chiGam_of onlyIsotropic (PosYGlobal.posY_of degSubmod degPairing) chainSum)
     (QuotStageInt.quotStage_of QuotNorm.integral_normaliser_eq) sizeBasic
-
-theorem unfold : Unfold := UnfoldCut.unfold_of_mahler mahler
 
 end PositivityTheory.Rg.BcB.CV
 end -- clump:auto

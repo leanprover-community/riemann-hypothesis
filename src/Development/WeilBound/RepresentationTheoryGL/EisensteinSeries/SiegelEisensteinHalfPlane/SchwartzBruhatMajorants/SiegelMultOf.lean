@@ -353,7 +353,6 @@ open PositivityTheory.RgEis
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-
 variable (F E) in
 def sec : (Af F ⊗[F] E) →+ AE F E :=
   (TensorProduct.map (LinearMap.inr F (Ainf F) (Af F)) (LinearMap.id : E →ₗ[F] E)).toAddMonoidHom
@@ -863,9 +862,6 @@ variable {R R' : Type} [CommRing R] [CommRing R'] {ι : Type} [Fintype ι] [Deci
 
 def glEquiv (e : R ≃+* R') : GL ι R ≃* GL ι R' := Units.mapEquiv (RingEquiv.mapMatrix e).toMulEquiv
 
-theorem coe_glEquiv (e : R ≃+* R') (g : GL ι R) :
-    ((glEquiv e g : GL ι R') : Matrix ι ι R') = (g : Matrix ι ι R).map e := rfl
-
 theorem coe_glEquiv_inv (e : R ≃+* R') (g : GL ι R) :
     (((glEquiv e g)⁻¹ : GL ι R') : Matrix ι ι R') = ((g⁻¹ : GL ι R) : Matrix ι ι R).map e := by
   rw [← map_inv]; rfl
@@ -1348,7 +1344,6 @@ end Heights
 variable {E R : Type} [Field E] [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] [T2Space R]
   [LocallyCompactSpace R] [SecondCountableTopology R]
 
-
 open scoped Classical in
 theorem wallQ (hTr : Transfer) (hTop : GrpTop) (hPar : ParLaw) (hLQ : LeviQ) (A : Ad E R) (hA : A.Good) (ε : ℤˣ)
     {ι : Type} [Fintype ι] [DecidableEq ι] (s : Set ι) (hI : Iwa (A.uQ ε s ⊓ A.uQ ε Set.univ) (A.uK ε ι))
@@ -1438,7 +1433,6 @@ theorem wallsS (hTr : Transfer) (hTw : Twist) (hTop : GrpTop) (hPar : ParLaw) (h
   have X₂ := hTr _ W _ ρ t₇ hρ _ _ _ _ _ _ _ _ _ _ _ π j 1 _ _ _ _ _ _ _ _ _ _ (Fintype.card ι) hk hL hPS
     (hP {i₁}ᶜ) (hP {i₀}) u₂ b₂ a₂ d₁ h₀ d₃ p₁ (hH {i₀}) p₃ (hH Set.univ)
   exact ⟨X₁.2.1 (T₁.2.1 m₁), X₂.1 (T₂.1 m₂), X₁.2.2 (T₁.2.2 m₃)⟩
-
 
 open Classical in
 theorem sgStep : Gallery → Transfer → Twist → GrpTop → ParLaw → LeviS → LeviQ → ConvGrOf → ConvU → SgStep := by
@@ -1849,13 +1843,9 @@ namespace PositivityTheory.RgEis.Hd
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-theorem idTube : IdTube := _root_.GlobalTheory.CompanionTheory.Eis.idTube
-theorem tubeChain : TubeChain := _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain
 theorem secLaw : SecLaw := _root_.GlobalTheory.CompanionTheory.RgEisSec.secLaw
 theorem htLip : HtLip := _root_.GlobalTheory.CompanionTheory.RgEis.htLip
-theorem stage : PiLocalization₂ := _root_.GlobalTheory.CompanionTheory.RgEis.stage
 theorem wallLaw_of : SecLaw → WallLaw := _root_.GlobalTheory.CompanionTheory.RgEis.wallLaw_of_secLaw
-theorem scale : Scale := _root_.GlobalTheory.CompanionTheory.RgEisScale.scale
 theorem grpTop : GrpTop := _root_.GlobalTheory.CompanionTheory.RgEisTop.grpTop
 theorem bdetLaw : BdetLaw := _root_.GlobalTheory.CompanionTheory.RgEis.bdetLaw
 theorem extLaw : ExtLaw := _root_.GlobalTheory.CompanionTheory.RgEisExt.extLaw

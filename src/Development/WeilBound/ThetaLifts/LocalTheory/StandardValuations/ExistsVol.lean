@@ -875,10 +875,6 @@ theorem nu_data {a a' : ℕ} {G : Geo σ a a'} {X : Chars F E} {om om'} (t : IsT
   refine ⟨fun x => ?_, cond_ex ⟨c, e ▸ h1.div h2⟩ (hram hw)⟩
   rw [Chars.ν, chrW_div, chrW_div, chrW_conj t.base.cm _ t.chars.resα, chrW_conj t.base.cm _ t.chars.resβ, inv_div_inv, inv_div]
 
-theorem eA_val {a a' : ℕ} (i : Fin a) : (eA a a' i).1 = i := rfl
-
-theorem eB_val {a a' : ℕ} (i : Fin a') : (eB a a' i).1 = a + i := rfl
-
 theorem unit_J {n d : ℕ} {X : Spc F E n} {W : Spc F E d} (h : IsSec σ t sec) {r s r' s'} (hX : X.IsHerm σ B r s) (hW : W.IsSkew σ B r' s') :
     IsUnit (X.J.map t) ∧ IsUnit (W.J.map t) := by
   have := grams h hX hW

@@ -450,7 +450,6 @@ theorem caseB (hTB : TwBound) (hNE : NodeEmb) (hG : Graft) (hTS : TwShift) (hTr 
   intro r hr hrN c hc
   exact (hcon ⟨r, hr, hrN, c, hc⟩).elim
 
-
 variable (E) in
 def Q (N : ℕ) : Prop :=
   ∀ W : Submodule ℂ (Kinf E N → ℂ), FiniteDimensional ℂ W →
@@ -1311,9 +1310,6 @@ def mulOp {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) : Sm E N →ₗ[ℂ
   map_smul' c φ := Subtype.ext (funext fun x => by
     show f x * (c * φ.1 x) = c * (f x * φ.1 x)
     ring)
-
-theorem mulOp_val {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) (φ : Sm E N) :
-    (mulOp f hf φ).1 = fun x => f x * φ.1 x := rfl
 
 theorem mulOp_mulChi {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) (χ : HChar E) (ψ : Sm E N) :
     mulOp f hf (mulChi N χ ψ) = mulChi N χ (mulOp f hf ψ) := Subtype.ext (funext fun x => by

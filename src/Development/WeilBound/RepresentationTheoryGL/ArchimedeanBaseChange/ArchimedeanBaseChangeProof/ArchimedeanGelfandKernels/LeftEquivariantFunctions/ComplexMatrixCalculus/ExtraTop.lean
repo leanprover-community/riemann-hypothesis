@@ -112,18 +112,6 @@ variable {n : ℕ}
 
 theorem hbM_herm (m : Md n) : (hbM m).IsHermitian := (hbOrtho n).2 m
 
-private theorem trace_single_mul_single_eq_ite (a b c d : Fin n) :
-    (single a b (1 : ℂ) * single c d (1 : ℂ)).trace = if b = c ∧ a = d then 1 else 0 := by
-  by_cases h : b = c
-  · subst h
-    rw [single_mul_single_same, one_mul]
-    by_cases h' : a = d
-    · subst h'
-      simp [trace_single_eq_same]
-    · simp [Matrix.trace_single_eq_of_ne, h']
-  · rw [single_mul_single_of_ne (h := h)]
-    simp [h]
-
 private theorem trace_hbM_mul_hbM_eq_ite (p q : Md n) : (hbM p * hbM q).trace = if p = q then 1 else 0 := by
   simp only [hbM, _root_.PositivityTheory.RgBcC.Cxa.hb_ortho, EmbeddingLike.apply_eq_iff_eq]
 

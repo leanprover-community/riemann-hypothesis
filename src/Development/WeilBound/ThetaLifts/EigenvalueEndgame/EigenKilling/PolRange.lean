@@ -75,9 +75,6 @@ end Tensor
 theorem heisOp_zero {P Q R S : ℕ} : heisOp (P := P) (Q := Q) (R := R) (S := S) 0 = 0 := by
   simp [heisOp]
 
-theorem Jm_transpose' (p q : ℕ) : (Jm p q)ᵀ = Jm p q := by
-  simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_transpose]
-
 theorem exists_mat_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     {m k : Type} (z : InfinitePlace F → Matrix m k ℂ) :

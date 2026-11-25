@@ -119,10 +119,6 @@ def triv : X × H ≃ₜ G × Fib p where
     exact Continuous.subtype_mk
       (((σ.cont.comp (QuotientGroup.continuous_mk.comp continuous_fst)).inv).mul continuous_fst) _
 
-@[simp]
-theorem triv_symm_apply (r : G × Fib p) :
-    (triv hp σ hpc).symm r = (r.1 • r.2.1, ⟨(σ.s (r.1 : G ⧸ H))⁻¹ * r.1, σ.inv_mul_mem r.1⟩) := rfl
-
 end Triv
 
 section Fap

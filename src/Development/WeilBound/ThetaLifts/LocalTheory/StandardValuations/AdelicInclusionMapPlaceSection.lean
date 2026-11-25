@@ -139,11 +139,9 @@ theorem lin_of (hψ : IsStd ψ) {π₁ π₀ : AE F E →+* Fv F v} {c₁ c₂ �
   rw [dm, show ofM (Y + c₁ (u₁ + u₀)) = ofM Y + ofM (c₁ (u₁ + u₀)) from rfl, add_dotProduct]
   rw [show ofM (c₁ (u₁ + u₀)) ⬝ᵥ ofM (c₂ (u₁ + u₀)) = 0 from h0, add_zero]; rfl
 
-
 variable (t) in
 def cW (b : GL (Fin n) (Fv F v)) (c : GL (Fin d) (Fv F v)) (u : Matrix (Fin n) (Fin d) (AE F E)) : Matrix (Fin n) (Fin d) (Fv F v) :=
   (b⁻¹).1 * u.map (piW t) * (c⁻¹).1ᵀ
-
 
 variable (σ t X W) in
 def cB (b : GL (Fin n) (Fv F v)) (c : GL (Fin d) (Fv F v)) (u : Matrix (Fin n) (Fin d) (AE F E)) : Matrix (Fin n) (Fin d) (Fv F v) :=
@@ -392,13 +390,11 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
   {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
 
-
 variable (σ t) in
 structure PE (J : Matrix (Fin n) (Fin n) E) (J₁ : Matrix (Fin n₁) (Fin n₁) E) (b : GL (Fin n) (Fv F v)) (b₁ : GL (Fin n₁) (Fv F v))
     (ι : Matrix (Fin n) (Fin n₁) E) (sk : Fin n₁ → Fin n) : Prop where
   p1 : (b⁻¹).1 * ι.map t = emb (Fv F v) sk * (b₁⁻¹).1
   p2 : b.1ᵀ * J.map t * ι.map (t.comp σ) = emb (Fv F v) sk * (b₁.1ᵀ * J₁.map t)
-
 
 variable (σ t) in
 structure PX (J : Matrix (Fin n) (Fin n) E) (b : GL (Fin n) (Fv F v)) (x y : Fin n → E) (j₀ j₁ : Fin n) (ε : Fv F v) : Prop where
@@ -501,10 +497,8 @@ theorem emb_c (h : IsSec σ t sec) {ι ι' jr jc} (a : PE σ t X.J X₁.J b b₁
           rw [a.p2, a'.p2]
           simp only [ext, cB, transpose_mul, transpose_transpose, Matrix.mul_assoc, Matrix.mul_neg, Matrix.neg_mul]
 
-
 variable (t) in
 def v1 (b : GL (Fin n) (Fv F v)) (p : Fin n → AE F E) : Fin n → Fv F v := (b⁻¹).1 *ᵥ fun i => piW t (p i)
-
 
 variable (σ t) in
 def v2 (J : Matrix (Fin n) (Fin n) E) (b : GL (Fin n) (Fv F v)) (p : Fin n → AE F E) : Fin n → Fv F v :=
@@ -611,46 +605,6 @@ theorem shiftB_c (h : IsSec σ t sec) {H : Plane E n n₁} {H' : Plane E d d₁}
     (vec_inc h a').1, (vec_inc h a').2.1, (idem_smul h _).1, (idem_smul h _).2, (h.conj _).1, (h.conj _).2, ← Pi.single_smul,
     ← Pi.single_smul, vmv, vmv]
   simp [sneg]
-
-theorem inB_mem (h : IsSec σ t sec) {B : Base F E} (hb : IsSplitBasis t X.L b) {K : Subgroup (UA σ X.J)} (hK : IsStab B K) {k}
-    (hk : k ∈ K) : inB t b k ∈ GlobalTheory.SplitWeil.KO (Fv F v) (Fin n) := by
-  have to' : ∀ z ∈ latHat X, (fun i => piW t (z i)) ∈ splitLat t X.L := fun z hz => by
-    induction hz using AddSubgroup.closure_induction with
-    | mem z hz =>
-      obtain ⟨a, -, ha, x, hx, rfl⟩ := hz
-      exact ⟨fun i => evFin F v a ⊗ₜ[F] x i, AddSubgroup.subset_closure ⟨_, ha v, x, hx, rfl⟩, funext fun i => by
-        rw [Pi.smul_apply, (h.smul _ _).1, incV, (h.inc _).1]; rfl⟩
-    | zero => simp only [Pi.zero_apply, map_zero]; exact zero_mem _
-    | add a b _ _ ha hb => simp only [Pi.add_apply, map_add (f := _)]; exact add_mem ha hb
-    | neg a _ ha => simp only [Pi.neg_apply, map_neg]; exact neg_mem ha
-  have fr : ∀ y ∈ latLoc F X.L v, ∃ z ∈ latHat X, (fun i => piW t (z i)) = splitVec t y := fun y hy => by
-    induction hy using AddSubgroup.closure_induction with
-    | mem y hy =>
-      obtain ⟨a, ha, x, hx, rfl⟩ := hy
-      refine ⟨sgl v a • incV F x, AddSubgroup.subset_closure ⟨sgl v a, map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F), fun u => ?_,
-        x, hx, rfl⟩, funext fun i => by rw [Pi.smul_apply, (h.smul _ _).1, incV, (h.inc _).1, ev_sgl]; rfl⟩
-      rcases eq_or_ne u v with rfl | hu
-      · rwa [ev_sgl]
-      · rw [show evFin F u (sgl v a) = 0 from evalV_singleFin_ne hu a]; exact zero_mem _
-    | zero => exact ⟨0, zero_mem _, funext fun _ => (map_zero _).trans (map_zero _).symm⟩
-    | add a b _ _ ha hb =>
-      obtain ⟨p, p1, p2⟩ := ha
-      obtain ⟨q, q1, q2⟩ := hb
-      exact ⟨p + q, add_mem p1 q1, funext fun i => by
-        rw [Pi.add_apply, map_add (f := _), congrFun p2 i, congrFun q2 i]; exact (map_add _ _ _).symm⟩
-    | neg a _ ha =>
-      obtain ⟨p, p1, p2⟩ := ha
-      exact ⟨-p, neg_mem p1, funext fun i => by rw [Pi.neg_apply, map_neg, congrFun p2 i]; exact (map_neg _ _).symm⟩
-  have key : ∀ k ∈ K, ∀ i j, (inB t b k).1 i j ∈ 𝒪[Fv F v] := fun k hk i j => by
-    obtain ⟨y, hy, e⟩ := (hb (Pi.single j 1)).1 fun i => by rw [Pi.single_apply]; split_ifs; exacts [one_mem _, zero_mem _]
-    obtain ⟨z, hz, e'⟩ := fr y hy
-    have := hb.mem_iff.1 (to' _ (((hK k).1 hk).2 z hz).1) i
-    rw [show (fun i => piW t ((mat k *ᵥ z) i)) = (mat k).map (piW t) *ᵥ fun i => piW t (z i) from
-      funext fun i => RingHom.map_mulVec _ _ _ i, e', e, mulVec_mulVec, mulVec_mulVec, mulVec_single_one] at this
-    exact (int_iff _).1 this
-  refine (mem_KO_iff _).2 ⟨key k hk, ?_⟩
-  rw [show (inB t b k)⁻¹ = inB t b k⁻¹ by simp [inB, mul_assoc]]
-  exact key _ (inv_mem hk)
 
 end PositivityTheory.ThKG.Std
 end -- clump:auto

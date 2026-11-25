@@ -63,9 +63,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 
-
-
-
 namespace PositivityTheory.Rg.Rsw.L.LGenK
 
 section Coord
@@ -117,12 +114,6 @@ theorem sum_crd (R : Type) [CommRing R] [Algebra F R] (y : R ⊗[F] E) :
 end Coord
 
 variable {D : D7}
-
-theorem cv_eq (v : Pl D) (x : AE D) :
-    cv D v x = Algebra.TensorProduct.map (evFin D.host.F v) (AlgHom.id D.host.F D.host.E) x := rfl
-
-theorem infPart_eq (x : AE D) :
-    infPart D x = Algebra.TensorProduct.map (fstA D.host.F) (AlgHom.id D.host.F D.host.E) x := rfl
 
 theorem ext_comp {D : D7} {x y : AE D} (hf : ∀ v, cv D v x = cv D v y) (hi : infPart D x = infPart D y) : x = y := by
   refine crd_ext (AF D.host.F) fun k => ?_
@@ -244,9 +235,6 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
-
-
-
 
 namespace PositivityTheory.Rg.Rsw.L.LGenK
 

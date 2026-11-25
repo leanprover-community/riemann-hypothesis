@@ -383,9 +383,6 @@ namespace PositivityTheory.Rg.Cz
 section
 variable {n : ℕ} {Q : Type} [Fintype Q] [DecidableEq Q]
 
-theorem pm_apply' (σ : Equiv.Perm Q) (f : TV n ℂ Q) (I : Q → Fin n) :
-    (pm σ : Module.End ℂ (TV n ℂ Q)) f I = f (I ∘ σ) := rfl
-
 theorem pm_pm (σ τ : Equiv.Perm Q) (f : TV n ℂ Q) :
     (pm σ : Module.End ℂ (TV n ℂ Q)) (pm τ f) = pm (σ * τ) f := rfl
 

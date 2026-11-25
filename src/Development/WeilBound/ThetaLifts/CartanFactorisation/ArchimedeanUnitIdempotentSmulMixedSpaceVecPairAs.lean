@@ -37,9 +37,6 @@ def actLin (p : GlobalTheory.WeilM.UG c JA × GlobalTheory.WeilM.UG c JB) : Matr
     rw [Units.mul_inv, Matrix.one_mul, Matrix.mul_assoc, ← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one,
       Matrix.mul_one]
 
-theorem actLin_apply (p : GlobalTheory.WeilM.UG c JA × GlobalTheory.WeilM.UG c JB) (x : Matrix α β E) :
-    actLin (R := R) c p x = GlobalTheory.WeilM.actAB c p x := rfl
-
 end Gen
 
 variable (F : Type) [Field F] [NumberField F]

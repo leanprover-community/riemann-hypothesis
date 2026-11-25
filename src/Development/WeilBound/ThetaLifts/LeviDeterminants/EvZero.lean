@@ -244,7 +244,6 @@ namespace PositivityTheory.ThKF0
 
 open PositivityTheory.Mix.Adapt
 
-
 theorem exists_model0 : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (n d d₁ r s r' s' i₀ i₁ : ℕ) (X : Spc F E n) (W : Spc F E d) (W₁ : Spc F E d₁) (H' : Plane E d d₁) (M : Model σ X W)
     (M₁ : Model σ X W₁), B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' → M.IsGood B.ψ → H'.IsAdapted σ B W W₁ i₀ i₁ →
@@ -335,36 +334,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 noncomputable section
-
-namespace GlobalTheory.CompanionTheory.Ar.RT.Lie
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-omit [NumberField F] in
-private theorem conj_extensionEmbedding_of_isReal {w : InfinitePlace F} (hw : w.IsReal) (y : w.Completion) :
-    starRingEnd ℂ (InfinitePlace.Completion.extensionEmbedding w y) =
-      InfinitePlace.Completion.extensionEmbedding w y := by
-  rw [← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply hw y]
-  exact Complex.conj_ofReal _
-
-theorem piInf_cA {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w)
-    (x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) :
-    piInf τ (cA σ x) = (starRingEnd ℂ) (piInf τ x) := by
-  obtain ⟨hF, -, -, hστ⟩ := h
-  induction x using TensorProduct.inductionOn with
-  | tmul a e =>
-    rw [show cA σ (a ⊗ₜ[F] e) = a ⊗ₜ[F] σ e by simp [cA]]
-    change InfinitePlace.Completion.extensionEmbedding w (evInf F w a) * τ.1 (σ e) =
-      starRingEnd ℂ (InfinitePlace.Completion.extensionEmbedding w (evInf F w a) * τ.1 e)
-    rw [map_mul, conj_extensionEmbedding_of_isReal (hF.isReal w), starRingEnd_apply, hστ]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
-omit [NumberField E] in
-theorem piInf_inclR {w : InfinitePlace F} (τ : EmbOver E w) (e : E) :
-    piInf τ (inclR (F := F) (AF F) e) = τ.1 e := by
-  simp [piInf, compInf, infEmb, inclR]
-
-end GlobalTheory.CompanionTheory.Ar.RT.Lie
 
 end
 end -- clump:auto

@@ -328,8 +328,6 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs.HolB PositivityTheory.Rg.
 
 variable {n : ℕ}
 
-theorem two_le_infty : ((2 : ℕ) : WithTop ℕ∞) ≤ ∞ := WithTop.coe_le_coe.mpr le_top
-
 theorem det_ne_zero_of_inG {y : M2 n} (hy : InG y) : y.det ≠ 0 := by
   intro h
   have hJ : (JJ n).det ≠ 0 := by
