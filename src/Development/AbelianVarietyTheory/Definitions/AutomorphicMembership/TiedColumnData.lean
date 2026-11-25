@@ -11,7 +11,8 @@ public import Formalism.LocalToGlobal.UnitaryNorms.DefsDatum
 public import Formalism.LocalToGlobal.Divisibility.QLocTied
 public import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilEq
-public import Formalism.LocalToGlobal.JointCharacters.SameChr
+public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Formalism.LocalToGlobal.GlobalTheory.LinkTiesOm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -162,7 +163,6 @@ structure ThT {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {nch : NChoice 
   all : Formalism.L2.Theta.AllTied (w.D Z) th provA
   weq : Formalism.L2.Theta.WeilCompatibleEquivariance all.W
   chr : ThetaChrTied (w.D Z) (TC.cf w.I w.l Z) nch n.tp th
-  same : Formalism.L2.JoinChr.SameChr all.T chr
   std : Formalism.L2.Theta.IsStdChar (w.D Z) all.W.ψ (-1)
   io : th.TieIo
 

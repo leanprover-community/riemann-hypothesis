@@ -364,7 +364,6 @@ theorem thT_setDiv {B : Base} {f : Fr B.toPre} {T : TwDat B}
            all := allTiedTr w Z N h t.all
            weq := weilTiedEq_tr w Z N h t.weq
            chr := { t.chr with }
-           same := ⟨⟩
            std := t.std
            io := t.io }⟩
 

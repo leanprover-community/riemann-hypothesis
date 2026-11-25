@@ -13,7 +13,8 @@ public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
 public import Formalism.LocalToGlobal.HermitianForms.ExtraSym
 public import Formalism.LocalToGlobal.HilbertRowConditions.KaTiedIffKapDef
 public import Formalism.LocalToGlobal.HilbertRowConditions.TiedEMt
-public import Formalism.LocalToGlobal.JointCharacters.SameChr
+public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
+public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
 public import Formalism.LocalToGlobal.UnitaryNorms.JointCut
 public import Formalism.LocalToGlobal.UnitaryNorms.LeastSplitAuxiliaryPrimeThetaChainSpec
 public import Formalism.SharpRestriction.Divisibility.SmallFirstModulusBelowScale
@@ -123,7 +124,6 @@ structure TiedDataSAlt (ex : Extra D L hT Gi Gl K Y cX) where
   chrN : Host.NCharTied D n.cf ex.nch n.tp
   chrGal : Host.NGalChrTied D n.cf ex.nch n.tp
   chrPsi : Host.PsiChoiceCompatible D n.cf ex.nch n.tp
-  sameChr : JoinChr.SameChr theta.T thetaChr
   what₂ : Rows.RowsCompatible D host n.cf n.tp
   tw : Forms.SymmetricTwistedColumnsAtPrimes n.tp cols ex.tw
   emt : Rows.EMtTied D cols tw
