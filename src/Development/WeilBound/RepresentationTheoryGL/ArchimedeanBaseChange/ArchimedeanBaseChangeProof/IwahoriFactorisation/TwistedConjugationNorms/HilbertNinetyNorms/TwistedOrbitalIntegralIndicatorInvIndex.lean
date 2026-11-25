@@ -239,11 +239,6 @@ variable {G : Type} [Group G] [TopologicalSpace G]
 theorem finsum_const_mul_eq {α : Type*} (c : ℂ) (g : α → ℂ) : ∑ᶠ i, c * g i = c * ∑ᶠ i, g i :=
   (mul_finsum g c).symm
 
-theorem avg_eq_of_rStab {H : Type} [Group H] (u : H → ℂ) (S : Subgroup H) (hS : rStab u = S) :
-    avg u = ((S.index : ℕ) : ℂ)⁻¹ * ∑ᶠ q : H ⧸ S, u q.out := by
-  subst hS
-  rfl
-
 theorem twisted_orbital_integral_proportional (θ : G →* G) (K : Subgroup G) (δ : G) (f₁ f₂ : G → ℂ) (c : ℂ)
     (h : ∀ p : G, f₁ (p⁻¹ * δ * θ p) = c * f₂ (p⁻¹ * δ * θ p)) : twOrb θ K δ f₁ = c * twOrb θ K δ f₂ := by
   unfold twOrb

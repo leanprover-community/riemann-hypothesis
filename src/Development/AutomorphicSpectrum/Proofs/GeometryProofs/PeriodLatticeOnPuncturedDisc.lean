@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.Finiteness.Defs
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsEqNsmulOfForallDvdOfBijective
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsConstAddEquivOfRangeEq
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
@@ -65,6 +64,42 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
+
+section
+@[expose] public section
+
+open Set
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem exists_const_addEquiv_of_range_eq : ∀ (n g : ℕ) (Λ Λ' : Type) [AddCommGroup Λ] [Countable Λ] [AddCommGroup Λ'] [Countable Λ'] (B : Set (Fin n → ℂ)), IsOpen B → IsPreconnected B → B.Nonempty → ∀ (P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ))) (P' : (Fin n → ℂ) → (Λ' →+ (Fin g → ℂ))), (∀ x, DifferentiableOn ℂ (fun b => P b x) B) → (∀ x, DifferentiableOn ℂ (fun b => P' b x) B) → (∀ b ∈ B, Function.Injective (P b) ∧ Function.Injective (P' b) ∧ (P b).range = (P' b).range) → ∃ T : Λ' ≃+ Λ, ∀ b ∈ B, ∀ x, P' b x = P b (T x) := by
+  intro n g Λ Λ' _ _ _ _ B hB hc hne P P' hP hP' h
+  have h1 : ∀ x : Λ', ∃ y : Λ, ∀ b ∈ B, P' b x = P b y := fun x =>
+    exists_const_of_section_mem_range n g Λ B hB hc hne P (fun b => P' b x) hP (hP' x)
+      (fun b hb => by rw [(h b hb).2.2]; exact ⟨x, rfl⟩)
+  have h2 : ∀ y : Λ, ∃ x : Λ', ∀ b ∈ B, P b y = P' b x := fun y =>
+    exists_const_of_section_mem_range n g Λ' B hB hc hne P' (fun b => P b y) hP' (hP y)
+      (fun b hb => by rw [← (h b hb).2.2]; exact ⟨y, rfl⟩)
+  choose f hf using h1
+  choose k hk using h2
+  obtain ⟨b₀, hb₀⟩ := hne
+  obtain ⟨hi, hi', -⟩ := h b₀ hb₀
+  refine ⟨{ toFun := f, invFun := k, left_inv := ?_, right_inv := ?_, map_add' := ?_ }, ?_⟩
+  · intro x
+    apply hi'
+    rw [← hk _ b₀ hb₀, ← hf _ b₀ hb₀]
+  · intro y
+    apply hi
+    rw [← hf _ b₀ hb₀, ← hk _ b₀ hb₀]
+  · intro x x'
+    apply hi
+    rw [map_add (f := _), ← hf _ b₀ hb₀, ← hf _ b₀ hb₀, ← hf _ b₀ hb₀, map_add (f := _)]
+  · intro b hb x
+    exact hf x b hb
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SaturatedLatticeQuotientCount, Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicGroupLawGerm, Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeOnPuncturedDisc
@@ -139,7 +174,9 @@ theorem mem_of_forall_card_mul_eq_pow :
     have hmem : b' - b ∈ W :=
       hW (N : ℤ) (b' - b) (by exact_mod_cast hN.ne') (by rw [← hdiff]; exact W.sub_mem w.2 w'.2)
     rw [Submodule.Quotient.eq]
-    exact ⟨⟨b' - b, hmem⟩, Subtype.ext hdiff.symm⟩
+    refine ⟨⟨b' - b, hmem⟩, ?_⟩
+    apply Subtype.ext
+    exact hdiff.symm
   have h3 : ∀ p, ∃ a, R a p := by
     intro p
     obtain ⟨w, rfl⟩ := Submodule.Quotient.mk_surjective _ p
@@ -233,11 +270,11 @@ theorem IsHolMarkingOn.exists_glue {U V : Set (Fin n → ℂ)} (hU : IsOpen U) (
     ∃ R, IsHolMarkingOn Γ Q e (U ∪ V) R := by
   classical
   obtain ⟨R, hR, hRP⟩ := h.exists_twist hU hV hc hne h'
-  have eU : ∀ b ∈ U, (if b ∈ U then P b else R b) = P b := fun b hb => ite_eq_left hb
+  have eU : ∀ b ∈ U, (if b ∈ U then P b else R b) = P b := fun b hb => if_pos hb
   have eV : ∀ b ∈ V, (if b ∈ U then P b else R b) = R b := fun b hb => by
     by_cases hbU : b ∈ U
-    · rw [ite_eq_left hbU, hRP b ⟨hbU, hb⟩]
-    · rw [ite_eq_right hbU]
+    · rw [if_pos hbU, hRP b ⟨hbU, hb⟩]
+    · rw [if_neg hbU]
   refine ⟨fun b => if b ∈ U then P b else R b, fun x => ?_, ?_⟩
   · have d1 : DifferentiableOn ℂ (fun b => (if b ∈ U then P b else R b) x) U :=
       (h.1 x).congr fun b hb => by rw [eU b hb]
@@ -317,7 +354,8 @@ theorem exists_marking_tube {B : Set (Fin n → ℂ)} (hconv : Convex ℝ B)
       have hsub : γ '' Icc 0 (t 0 : ℝ) ⊆ N := by
         rintro _ ⟨r, hr, rfl⟩
         have hr0 : r = 0 := le_antisymm (by simpa [ht0] using hr.2) hr.1
-        rwa [hr0, hγ0]
+        rw [hr0, hγ0]
+        exact haN
       obtain ⟨δ, hδ, hth⟩ := (isCompact_Icc.image hγ).exists_thickening_subset_open hN hsub
       exact ⟨δ, hδ, hth.trans hNB, P, hP.mono hth⟩
     | succ k ih =>
@@ -351,7 +389,8 @@ theorem exists_marking_tube {B : Set (Fin n → ℂ)} (hconv : Convex ℝ B)
       refine ⟨min δ₁ δ₂, hδ, ?_, R, ?_⟩
       · rw [hKs, Metric.thickening_union]
         exact union_subset (hA.trans hB₁) (hC.trans hNB)
-      · rwa [hKs, Metric.thickening_union]
+      · rw [hKs, Metric.thickening_union]
+        exact hR
   obtain ⟨δ, hδ, hδB, P, hP⟩ := claim m
   have htm : (t m : ℝ) = 1 := by rw [hm m le_rfl]; rfl
   rw [htm] at hδB hP
@@ -394,7 +433,8 @@ variable {n a : ℕ}
 lemma expCover_mem_punctured (h : a ≤ n) {w : Fin n → ℂ} (hw : w ∈ logCover h) :
     expCover a w ∈ {z | z ∈ ball (0 : Fin n → ℂ) 1 ∧ ∀ i : Fin n, i.val < a → z i ≠ 0} := by
   refine ⟨expCover_mem_ball h hw, fun i hi => ?_⟩
-  simpa only [expCover, hi, ite_true] using Complex.exp_ne_zero _
+  simp only [expCover, hi, if_true]
+  exact Complex.exp_ne_zero _
 
 lemma exists_mem_logCover (h : a ≤ n) {z : Fin n → ℂ}
     (hz : z ∈ {z | z ∈ ball (0 : Fin n → ℂ) 1 ∧ ∀ i : Fin n, i.val < a → z i ≠ 0}) :
@@ -404,22 +444,22 @@ lemma exists_mem_logCover (h : a ≤ n) {z : Fin n → ℂ}
   refine ⟨logLift a z, ⟨fun i => ?_, fun k hk => ?_⟩, ?_⟩
   · have hi : (Fin.castLE h i).val < a := i.2
     have h0 := hz.2 _ hi
-    simp only [logLift, ite_eq_left hi, Complex.log_re]
+    simp only [logLift, if_pos hi, Complex.log_re]
     exact Real.log_neg (norm_pos_iff.2 h0) (hlt _)
-  · simp only [logLift, ite_eq_right (not_lt.2 hk)]
+  · simp only [logLift, if_neg (not_lt.2 hk)]
     exact hlt k
   · funext k
     by_cases hk : k.val < a
-    · simp only [expCover, logLift, ite_eq_left hk]
+    · simp only [expCover, logLift, if_pos hk]
       exact Complex.exp_log (hz.2 k hk)
-    · simp only [expCover, logLift, ite_eq_right hk]
+    · simp only [expCover, logLift, if_neg hk]
 
 lemma differentiable_expCover : Differentiable ℂ (expCover (n := n) a) := by
   refine differentiable_pi.2 fun k => ?_
   by_cases hk : k.val < a
-  · simp only [expCover, ite_eq_left hk]
+  · simp only [expCover, if_pos hk]
     exact Complex.differentiable_exp.comp (differentiable_apply k)
-  · simp only [expCover, ite_eq_right hk]
+  · simp only [expCover, if_neg hk]
     exact differentiable_apply k
 
 lemma expCover_add_single (h : a ≤ n) (i : Fin a) (w : Fin n → ℂ) :
@@ -459,17 +499,21 @@ lemma eq_at_zero_of_eqOn {F : Type*} [TopologicalSpace F] [T2Space F]
       simp only [Function.comp]
       push_cast
       ring_nf
-    simpa [u, Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp h1
+    have h2 := (Complex.continuous_ofReal.tendsto 0).comp h1
+    simpa [u, Function.comp_def] using h2
   have hmem : ∀ k, u k ∈ {z | z ∈ ball (0 : Fin n → ℂ) 1 ∧ ∀ i : Fin n, i.val < a → z i ≠ 0} := by
     intro k
     refine ⟨?_, fun i _ => ?_⟩
     · rw [mem_ball_zero_iff, pi_norm_lt_iff one_pos]
       intro j
-      simpa only [u, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hpos k)] using hlt k
+      simp only [u, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hpos k)]
+      exact hlt k
     · simp only [u]
       exact_mod_cast (hpos k).ne'
   have t1 := hf.tendsto.comp hu
-  exact tendsto_nhds_unique t1 ((hf'.tendsto.comp hu).congr fun k => (he _ (hmem k)).symm)
+  have t2 := hf'.tendsto.comp hu
+  refine tendsto_nhds_unique t1 (t2.congr fun k => ?_)
+  exact (he _ (hmem k)).symm
 
 lemma coiso_of_count {Λ M : Type} [AddCommGroup Λ] [Module.Free ℤ Λ] [Module.Finite ℤ Λ]
     [AddCommGroup M] (E : LinearMap.BilinForm ℤ Λ) (hbij : Function.Bijective E)
@@ -493,7 +537,8 @@ lemma coiso_of_count {Λ M : Type} [AddCommGroup Λ] [Module.Free ℤ Λ] [Modul
       refine ⟨(N : ℤ) • e.symm y', ⟨e.symm y', by simp⟩, by simp⟩
   let Q := Submodule.Quotient.equiv _ _ e hmap
   refine ⟨Q '' T, ?_, ?_⟩
-  · rwa [Nat.card_image_of_injective Q.injective, ← Nat.card_congr Q.toEquiv]
+  · rw [Nat.card_image_of_injective Q.injective, ← Nat.card_congr Q.toEquiv]
+    exact hcard
   · intro x y hx
     obtain ⟨x', rfl⟩ := e.surjective x
     obtain ⟨y', rfl⟩ := e.surjective y
@@ -634,7 +679,8 @@ theorem exists_logPeriods_range_eq : ∀ (n a g : ℕ) (_h : a ≤ n) (Λ : Type
       refine ⟨e ⟨u, hu⟩, ?_⟩
       simp only [LinearEquiv.symm_apply_apply, (hS _).2.1]
   change Submodule.span ℂ (Set.range fun x : LinearMap.range lam => S (e.symm x) 0) = ⊤
-  rwa [hr]
+  rw [hr]
+  exact hspan
 
 end GlobalTheory.CompanionTheory.Ar.Flat
 end -- clump:auto

@@ -28,8 +28,6 @@ variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintyp
 
 abbrev MCone (ι : K → Type) := (Σ k, ι k) → ℂ
 
-def logH (L : HLine ι) : MCone ι → ℝ := fun z => Real.log (L.h z)
-
 
 variable (ι) in
 structure Res (P : Ideal (MRing ι ℂ)) (e : ℕ) where

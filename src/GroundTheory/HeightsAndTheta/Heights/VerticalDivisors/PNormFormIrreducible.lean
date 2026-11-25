@@ -23,40 +23,6 @@ section Basis
 
 variable {R A : Type*} [CommRing R] [CommRing A] [Algebra R A] {n : ℕ}
 
-def polyTensorAlgEquiv (R A : Type*) [CommRing R] [CommRing A] [Algebra R A] (n : ℕ) :
-    (MvPolynomial (Fin n) R ⊗[R] A) ≃ₐ[R] MvPolynomial (Fin n) A :=
-  (Algebra.TensorProduct.comm R (MvPolynomial (Fin n) R) A).trans
-    ((algebraTensorAlgEquiv R A).restrictScalars R)
-
-theorem polyTensorAlgEquiv_tmul (p : MvPolynomial (Fin n) R) (a : A) :
-    polyTensorAlgEquiv R A n (p ⊗ₜ a) = a • MvPolynomial.map (algebraMap R A) p := by
-  simp [polyTensorAlgEquiv]
-
-def polyTensorEquiv (R A : Type*) [CommRing R] [CommRing A] [Algebra R A] (n : ℕ) :
-    (MvPolynomial (Fin n) R ⊗[R] A) ≃ₗ[MvPolynomial (Fin n) R] MvPolynomial (Fin n) A where
-  toFun := polyTensorAlgEquiv R A n
-  invFun := (polyTensorAlgEquiv R A n).symm
-  map_add' := map_add _
-  left_inv := (polyTensorAlgEquiv R A n).symm_apply_apply
-  right_inv := (polyTensorAlgEquiv R A n).apply_symm_apply
-  map_smul' q t := by
-    induction t using TensorProduct.induction_on with
-    | zero => simp
-    | tmul p a =>
-      rw [smul_tmul', smul_eq_mul, polyTensorAlgEquiv_tmul, polyTensorAlgEquiv_tmul, RingHom.id_apply,
-        Algebra.smul_def q, MvPolynomial.algebraMap_def, map_mul, mul_smul_comm]
-    | add s t hs ht =>
-      rw [smul_add, map_add (f := _), map_add (f := _), hs, ht, smul_add]
-
-def polyBasis {ι : Type*} (b : Module.Basis ι R A) (n : ℕ) :
-    Module.Basis ι (MvPolynomial (Fin n) R) (MvPolynomial (Fin n) A) :=
-  (Algebra.TensorProduct.basis (MvPolynomial (Fin n) R) b).map (polyTensorEquiv R A n)
-
-theorem polyBasis_apply {ι : Type*} (b : Module.Basis ι R A) (n : ℕ) (i : ι) :
-    polyBasis b n i = C (b i) := by
-  simp [polyBasis, polyTensorEquiv, Algebra.TensorProduct.basis_apply, polyTensorAlgEquiv_tmul,
-    smul_eq_C_mul]
-
 end Basis
 
 theorem normForm_eq_det {R A : Type*} [CommRing R] [CommRing A] [Algebra R A] {n : ℕ} {ι : Type*}

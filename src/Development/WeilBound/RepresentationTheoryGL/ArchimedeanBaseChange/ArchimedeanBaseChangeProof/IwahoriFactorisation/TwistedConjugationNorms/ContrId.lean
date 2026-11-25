@@ -89,21 +89,6 @@ theorem offDiag_of_mem {N : ℕ} {x : GL (Fin N) k} (hx : x ∈ Tor k N) {i j : 
     (x : Matrix (Fin N) (Fin N) k) i j = 0 := by
   apply GlobalTheory.CompanionTheory.LbElem.ConjMonomial.tor_offDiag <;> assumption
 
-theorem diag_ne_zero {N : ℕ} (x : GL (Fin N) k)
-    (h : ∀ i j : Fin N, i ≠ j → (x : Matrix (Fin N) (Fin N) k) i j = 0) (i : Fin N) :
-    (x : Matrix (Fin N) (Fin N) k) i i ≠ 0 := by
-  have hM : (x : Matrix (Fin N) (Fin N) k) =
-      Matrix.diagonal fun l => (x : Matrix (Fin N) (Fin N) k) l l := by
-    ext a b
-    by_cases hab : a = b
-    · subst hab
-      simp
-    · rw [Matrix.diagonal_apply_ne _ hab]
-      exact h a b hab
-  have hdet : (x : Matrix (Fin N) (Fin N) k).det ≠ 0 := (Matrix.isUnits_det_units x).ne_zero
-  rw [hM, Matrix.det_diagonal] at hdet
-  exact Finset.prod_ne_zero_iff.mp hdet i (Finset.mem_univ i)
-
 theorem mem_of_offDiag {N : ℕ} (x : GL (Fin N) k)
     (h : ∀ i j : Fin N, i ≠ j → (x : Matrix (Fin N) (Fin N) k) i j = 0) : x ∈ Tor k N := by
   apply GlobalTheory.CompanionTheory.LbElem.ConjMonomial.mem_tor_of_offDiag <;> assumption

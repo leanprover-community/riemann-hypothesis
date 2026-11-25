@@ -36,15 +36,29 @@ theorem sub_mul_choose_le_mul_choose (T D : ℕ) (hT : D * (2 * D + 7) ≤ T) :
     have h7 : 7 * D ≤ T := by nlinarith [Nat.zero_le (D * D)]
     have hA := choose_succ_mul_succ_eq_choose_mul_sub (T + 2 * D + 6) k (by omega)
     have hB := choose_succ_mul_succ_eq_choose_mul_sub (T - 1) k (by omega)
-    push_cast [Nat.cast_sub (show 1 ≤ T by omega)] at hA hB
+    have ha : ((T + 2 * D + 6 : ℕ) : ℝ) = (T : ℝ) + 2 * D + 6 := by push_cast; ring
+    have hT1 : ((T - 1 : ℕ) : ℝ) = (T : ℝ) - 1 := by
+      rw [Nat.cast_sub (by omega)]; simp
+    rw [ha] at hA
+    rw [hT1] at hB
     have hkT : ((k : ℝ) + 2) ≤ T := by exact_mod_cast (show k + 2 ≤ T by omega)
     have hb : (0 : ℝ) ≤ (T : ℝ) - 1 - k := by linarith
     have hCA : (0 : ℝ) ≤ (((T + 2 * D + 6).choose k : ℕ) : ℝ) := Nat.cast_nonneg _
     have hk1 : (0 : ℝ) < (k : ℝ) + 1 := by positivity
-    have hD : (0 : ℝ) ≤ (2 * D + 7) * ((k : ℝ) + 1) * (2 * D + 6) := by positivity
+    have hdiff : (0 : ℝ) ≤ ((T : ℝ) - k * (2 * D + 7)) * ((T : ℝ) - 1 - k) -
+        ((T : ℝ) - ((k : ℝ) + 1) * (2 * D + 7)) * ((T : ℝ) + 2 * D + 6 - k) := by
+      have e : ((T : ℝ) - k * (2 * D + 7)) * ((T : ℝ) - 1 - k) -
+          ((T : ℝ) - ((k : ℝ) + 1) * (2 * D + 7)) * ((T : ℝ) + 2 * D + 6 - k) =
+          (2 * (D : ℝ) + 7) * ((k : ℝ) + 1) * (2 * (D : ℝ) + 6) := by ring
+      rw [e]; positivity
+    have P := mul_le_mul_of_nonneg_right ih hb
+    have Q := mul_nonneg hCA hdiff
+    have key : ((T : ℝ) - ((k : ℝ) + 1) * (2 * D + 7)) *
+        (((T + 2 * D + 6).choose (k + 1) : ℕ) : ℝ) * ((k : ℝ) + 1) ≤
+        (T : ℝ) * (((T - 1).choose (k + 1) : ℕ) : ℝ) * ((k : ℝ) + 1) := by
+      rw [mul_assoc, hA, mul_assoc, hB]
+      nlinarith [P, Q]
     push_cast
-    refine le_of_mul_le_mul_right ?_ hk1
-    linear_combination mul_le_mul_of_nonneg_right ih hb + mul_nonneg hCA hD +
-      ((T : ℝ) - ((k : ℝ) + 1) * (2 * D + 7)) * hA - (T : ℝ) * hB
+    exact le_of_mul_le_mul_right key hk1
 
 end ReciprocityTheory.ChartRestriction.G.T0

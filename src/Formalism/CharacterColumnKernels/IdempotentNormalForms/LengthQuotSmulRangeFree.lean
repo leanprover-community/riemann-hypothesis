@@ -51,6 +51,7 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.LinearAlgebra.Quotient.Pi
+import ReciprocityTheory.GroupCohomology.RankLen
 
 @[expose] public section
 
@@ -76,61 +77,6 @@ lemma quot_mono {M : Type*} [AddCommGroup M] [Module O M] {A B : Submodule O M} 
     Module.length O (M ⧸ B) ≤ Module.length O (M ⧸ A) := by
   exact Module.length_le_of_surjective (Submodule.factor h) (Submodule.factor_surjective h)
 
-private theorem length_quot_span_pow_irreducible {ϖ : O} (hϖ : Irreducible ϖ) (k : ℕ) :
-    Module.length O (O ⧸ Ideal.span {ϖ ^ k}) = k := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    have hle : Ideal.span {ϖ ^ (k + 1)} ≤ Ideal.span {ϖ ^ k} := by
-      rw [Ideal.span_singleton_le_span_singleton]
-      exact pow_dvd_pow ϖ (Nat.le_add_right k 1)
-    have hcomap : Ideal.span {ϖ} ≤
-        Submodule.comap (LinearMap.mulLeft O (ϖ ^ k)) (Ideal.span {ϖ ^ (k + 1)}) := by
-      intro a ha
-      rw [Submodule.mem_comap, LinearMap.mulLeft_apply]
-      obtain ⟨b, rfl⟩ := Ideal.mem_span_singleton'.mp ha
-      exact Ideal.mem_span_singleton'.mpr ⟨b, by ring⟩
-    let f := Submodule.mapQ (Ideal.span {ϖ}) (Ideal.span {ϖ ^ (k + 1)})
-      (LinearMap.mulLeft O (ϖ ^ k)) hcomap
-    let g := Submodule.factor hle
-    have hf : Function.Injective f := by
-      rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-      intro z hz
-      obtain ⟨a, rfl⟩ := Submodule.mkQ_surjective _ z
-      have h0 : (Submodule.Quotient.mk (ϖ ^ k * a) : O ⧸ Ideal.span {ϖ ^ (k + 1)}) = 0 := hz
-      rw [Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton'] at h0
-      obtain ⟨b, hb⟩ := h0
-      rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton']
-      refine ⟨b, ?_⟩
-      apply mul_left_cancel₀ (pow_ne_zero _ hϖ.ne_zero)
-      rw [← hb]
-      ring
-    have hex : Function.Exact f g := by
-      intro z
-      constructor
-      · intro h0
-        obtain ⟨a, rfl⟩ := Submodule.mkQ_surjective _ z
-        have h1 : (Submodule.Quotient.mk a : O ⧸ Ideal.span {ϖ ^ k}) = 0 := h0
-        rw [Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton'] at h1
-        obtain ⟨b, rfl⟩ := h1
-        refine ⟨Submodule.Quotient.mk b, ?_⟩
-        show (Submodule.Quotient.mk (ϖ ^ k * b) : O ⧸ Ideal.span {ϖ ^ (k + 1)}) =
-          Submodule.Quotient.mk (b * ϖ ^ k)
-        rw [mul_comm (ϖ ^ k) b]
-      · rintro ⟨y, rfl⟩
-        obtain ⟨b, rfl⟩ := Submodule.mkQ_surjective _ y
-        show (Submodule.Quotient.mk (ϖ ^ k * b) : O ⧸ Ideal.span {ϖ ^ k}) = 0
-        rw [Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton']
-        exact ⟨b, mul_comm _ _⟩
-    have hlen := Module.length_eq_add_of_exact f g hf (Submodule.factor_surjective hle) hex
-    have h1 : Module.length O (O ⧸ Ideal.span {ϖ}) = 1 := by
-      rw [Module.length_eq_one_iff, isSimpleModule_iff_isCoatom]
-      first
-        | exact (PrincipalIdealRing.isMaximal_of_irreducible hϖ).out
-    rw [hlen, h1, ih]
-    first
-      | (push_cast; ring)
-
 private theorem length_quot_smulRange_eq_addVal (l : O) :
     Module.length O (O ⧸ smulRange O l) = addVal O l := by
   have hspan : smulRange O l = Ideal.span {l} := by
@@ -142,15 +88,16 @@ private theorem length_quot_smulRange_eq_addVal (l : O) :
     · rintro ⟨y, rfl⟩
       exact ⟨y, by rw [smul_eq_mul, mul_comm]⟩
   rw [hspan]
-  obtain ⟨ϖ, hϖ⟩ : ∃ ϖ : O, Irreducible ϖ := by
+  have hirr : ∃ ϖ : O, Irreducible ϖ := by
     first
       | exact IsDiscreteValuationRing.exists_irreducible O
+  obtain ⟨ϖ, hϖ⟩ := hirr
   by_cases hl : l = 0
   · subst hl
     rw [addVal_zero]
     have hbound : ∀ k : ℕ, (k : ℕ∞) ≤ Module.length O (O ⧸ Ideal.span {(0 : O)}) := by
       intro k
-      rw [← length_quot_span_pow_irreducible hϖ k]
+      rw [← ReciprocityTheory.Coh.TorsionRankLength.len_quot_pow hϖ k]
       apply quot_mono
       rw [Ideal.span_singleton_eq_bot.mpr rfl]
       exact bot_le
@@ -161,7 +108,7 @@ private theorem length_quot_smulRange_eq_addVal (l : O) :
     have h' : m + 1 ≤ m := by exact_mod_cast h
     omega
   · obtain ⟨k, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hl hϖ
-    rw [Ideal.span_singleton_mul_left_unit u.isUnit, length_quot_span_pow_irreducible hϖ k, addVal_mul,
+    rw [Ideal.span_singleton_mul_left_unit u.isUnit, ReciprocityTheory.Coh.TorsionRankLength.len_quot_pow hϖ k, addVal_mul,
       addVal_pow, addVal_uniformizer hϖ, IsDiscreteValuationRing.addVal_eq_zero_of_unit]
     simp
 
@@ -326,6 +273,7 @@ lemma split {M P : Type*} [AddCommGroup M] [Module O M] [AddCommGroup P] [Module
     (hiB : ∀ p, i p ∈ B) (hC : C ≤ A.comap i) (hB : B ≤ A ⊔ LinearMap.range i) :
     Module.length O (M ⧸ A) ≤ Module.length O (M ⧸ B) + Module.length O (P ⧸ C) := by
   let q : (M ⧸ A) →ₗ[O] (M ⧸ B) := Submodule.factor hAB
+  have hqs : Function.Surjective q := Submodule.factor_surjective hAB
   have hC' : C ≤ LinearMap.ker (A.mkQ ∘ₗ i) := by
     intro p hp
     rw [LinearMap.mem_ker, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
@@ -352,7 +300,7 @@ lemma split {M P : Type*} [AddCommGroup M] [Module O M] [AddCommGroup P] [Module
     first
       | exact LinearMap.exact_subtype_ker_map q
   have hlen := Module.length_eq_add_of_exact (LinearMap.ker q).subtype q
-    (LinearMap.ker q).injective_subtype (Submodule.factor_surjective hAB) hex
+    (LinearMap.ker q).injective_subtype hqs hex
   have h1 : Module.length O (LinearMap.ker q) ≤ Module.length O (LinearMap.range φ) :=
     Module.length_le_of_injective (Submodule.inclusion hker) (Submodule.inclusion_injective hker)
   have h2 : Module.length O (LinearMap.range φ) ≤ Module.length O (P ⧸ C) :=

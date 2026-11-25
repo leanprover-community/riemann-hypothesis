@@ -55,9 +55,6 @@ variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h :
 
 def divBack (X : DivX (GlobalTheory.EX.OB.setDiv D N h)) : DivX D := { X with }
 
-theorem idxDefs_fwd {X : DivX (GlobalTheory.EX.OB.setDiv D N h)} (H : IdxDefs D (divBack N h X)) : IdxDefs (GlobalTheory.EX.OB.setDiv D N h) X :=
-  ⟨(by with_unfolding_all exact (H.Ij_def :)), (by with_unfolding_all exact (H.jw_def :))⟩
-
 end Gen
 
 section Amb
