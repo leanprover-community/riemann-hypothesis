@@ -212,8 +212,8 @@ theorem genPath_scaling : ∀ (k K E : Type) [Field k] [IsAlgClosed k] [CharZero
   ∀ (G : Over C) [GrpObj G], IsSemiAbelian G → ∀ (W : C.Modules) (r : ℕ) (i : W ⟶ Lie G) (V₀ : C.Opens) (s : Fin r → Γ(W, V₀)) (ρ : Place k E → Place k K), IsRes ρ → ∀ (p : Place k E) (g : Matrix (Fin r) (Fin r) K), LocFrame x s (ρ p) g → ∀ (w : Fin r → E) (u : E), u ≠ 0 → p.1 u = nrm p ((g.map (algebraMap K E)).mulVec w) → ∀ ξ, IsPath G 2 (spMap (algebraMap K E) ≫ x) ξ → HasTan G (spMap (algebraMap K E) ≫ x) ξ (fun j => i.app V₀ (s j)) w → ∃ (b : Sp p.O ⟶ C) (ζ : Sp (PowerSeries p.O) ⟶ G.left), spMap p.O.subtype ≫ b = spMap (algebraMap K E) ≫ x ∧ IsPath G 2 b ζ ∧ ξ = spMap (sc p u) ≫ ζ := by
   intro k K E _ _ _ _ _ _ _ _ _ _ C _ x _ G _ hG W r i V₀ s ρ hρ p g hg w u hu hpu ξ hξ hξt
   have hsm : Smooth G.hom := hG.smooth
-  have hqs : QuasiSeparated G.hom := by haveI := hG.separated; infer_instance
-  haveI : CharZero E := charZero_of_injective_algebraMap (algebraMap k E).injective
+  have hqs : QuasiSeparated G.hom := by have := hG.separated; infer_instance
+  have : CharZero E := charZero_of_injective_algebraMap (algebraMap k E).injective
   obtain ⟨b₀, V, t, Vf, h₀, h₁, hxf, M, hb₀, hb₀V, -, hst, rfl⟩ := hg
   set xE := spMap (algebraMap K E) ≫ x with hxE
   let α := resO hρ p
@@ -223,7 +223,7 @@ theorem genPath_scaling : ∀ (k K E : Type) [Field k] [IsAlgClosed k] [CharZero
     rw [hxE, ← hb₀]
     simp only [b, ← Category.assoc, spMap, ← Spec.map_comp]
     rfl
-  letI : Algebra ℚ p.O := ((constO p).comp (algebraMap ℚ k)).toAlgebra
+  let : Algebra ℚ p.O := ((constO p).comp (algebraMap ℚ k)).toAlgebra
   have hbV : ⊤ ≤ b ⁻¹ᵁ V := top_le_comp_preimage _ _ hb₀V
   let y : Fin r → E := ((M.map (evAt x hxf)).map (algebraMap K E)).mulVec w
   let eE : Fin r → E := fun j => u⁻¹ * y j
@@ -358,7 +358,7 @@ theorem den_along_path : ∀ (k E : Type) [Field k] [Field E] [Algebra k E] (p :
     have hyU₀ := (hloc _ _ _ _).1 hη0
     obtain ⟨t, htU, hyt⟩ := hU₀.exists_basicOpen_le (V := U) ⟨_, hyU⟩ hyU₀
     have hηt : ⊤ ≤ (spMap (sc p u) ≫ ζ) ⁻¹ᵁ Y.basicOpen t := (hloc _ _ _ _).2 hyt
-    haveI := hU₀.isLocalization_basicOpen t
+    have := hU₀.isLocalization_basicOpen t
     obtain ⟨⟨a, ⟨_, n, rfl⟩⟩, hmk⟩ := IsLocalization.mk'_surjective (Submonoid.powers t)
       (Y.presheaf.map (homOfLE htU).op f)
     have hspec := IsLocalization.mk'_spec Γ(Y, Y.basicOpen t) a (⟨t ^ n, n, rfl⟩ : Submonoid.powers t)
@@ -915,7 +915,7 @@ theorem isRatPath_of_integral_at_places : ∀ (k K E : Type) [Field k] [IsAlgClo
   choose e ψ he0 he1 heq using fun p => _root_.GlobalTheory.Nef.den_along_path k E p (u p) G.left (ζ p) U (hUp p) f
   have key : ∀ p, ⊤ ≤ (b p) ⁻¹ᵁ V → ⊤ ≤ (ζ p) ⁻¹ᵁ U := by
     intro p hp
-    haveI := isLocalHom_constantCoeff_ps p.O
+    have := isLocalHom_constantCoeff_ps p.O
     rw [_root_.GlobalTheory.Nef.evAt_calculus.2.2.2.1 (PowerSeries p.O) G.left (ζ p) U]
     rw [← (IsLocalRing.comap_closedPoint (PowerSeries.constantCoeff (R := p.O)) :
       spMap (PowerSeries.constantCoeff (R := p.O)) (IsLocalRing.closedPoint p.O) = _)]
@@ -1268,8 +1268,8 @@ theorem ratRigid_of_isProper_of_charZero : ∀ (Ω : Type) [Field Ω] [CharZero 
     intros; rw [← Category.assoc, comp]
   have canc := (_root_.GlobalTheory.Nef.spMap_injective_cancel).1
   have cancS := (_root_.GlobalTheory.Nef.spMap_injective_cancel).2
-  haveI := hP
-  haveI : IsSeparated H.hom := inferInstance
+  have := hP
+  have : IsSeparated H.hom := inferInstance
   have sqr_hom : sqr H ≫ H.hom = H.hom := Over.w (𝟙 H * 𝟙 H)
   have hi : Function.Injective (algebraMap (PowerSeries Ω) (LaurentSeries Ω)) :=
     IsFractionRing.injective _ _
@@ -1556,8 +1556,8 @@ theorem exists_lift {Ω : Type} [Field Ω] {G : Over (Sp Ω)} [GrpObj G] (E : To
     (z : Z ⟶ Sp Ω) (f : Z ⟶ G.left) (hf : f ≫ G.hom = z) (hq : letI := E.grpB; f ≫ E.q.left = z ≫ unitSec E.B) :
     letI := E.addCommGroup
     ∃ g : Z ⟶ (splitTorus (Sp Ω) E.X).left, g ≫ E.i.left = f ∧ g ≫ (splitTorus (Sp Ω) E.X).hom = z := by
-  letI := E.addCommGroup
-  letI := E.grpB
+  let := E.addCommGroup
+  let := E.grpB
   let f' : Over.mk z ⟶ G := Over.homMk f hf
   have h : f' ≫ E.q = toUnit _ ≫ η := by
     ext
@@ -1570,8 +1570,8 @@ theorem exists_lift {Ω : Type} [Field Ω] {G : Over (Sp Ω)} [GrpObj G] (E : To
 theorem mono_i {Ω : Type} [Field Ω] {G : Over (Sp Ω)} [GrpObj G] (E : TorusExtension G) :
     letI := E.addCommGroup
     Mono E.i.left := by
-  letI := E.addCommGroup
-  letI := E.grpB
+  let := E.addCommGroup
+  let := E.grpB
   have : Mono E.i := ⟨fun a b hab => E.isKernel.hom_ext hab (toUnit_unique _ _)⟩
   exact Over.mono_left_of_mono _
 
@@ -1584,13 +1584,13 @@ open TorExt in
 theorem ratRigid_of_torusExtension : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (G : Over (Sp Ω)) [GrpObj G],
     Nonempty (TorusExtension G) → RatRigid G (𝟙 (Sp Ω)) := by
   intro Ω _ _ G _ ⟨E⟩ ξ hξ ⟨β, hβ⟩
-  letI := E.addCommGroup
-  letI := E.grpB
-  haveI := E.q_hom
-  haveI := E.i_hom
-  haveI : IsProper E.B.hom := E.isAbelian.proper
-  haveI := mono_i E
-  haveI := isLocalHom_field (algebraMap (RatFunc Ω) (LaurentSeries Ω))
+  let := E.addCommGroup
+  let := E.grpB
+  have := E.q_hom
+  have := E.i_hom
+  have : IsProper E.B.hom := E.isAbelian.proper
+  have := mono_i E
+  have := isLocalHom_field (algebraMap (RatFunc Ω) (LaurentSeries Ω))
   obtain ⟨-, bc2⟩ := _root_.GlobalTheory.Nef.paths_bc
   obtain ⟨epi1, -⟩ := _root_.GlobalTheory.Nef.spMap_injective_cancel
   set T := splitTorus (Sp Ω) E.X
@@ -1645,7 +1645,7 @@ theorem ratRigid_of_isSemiAbelian : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G]
     ∀ (F : Type) [Field F] [CharZero F] (b : Sp F ⟶ S), RatRigid G b := by
   intro S G _ hG F _ _ b
   let Ω := AlgebraicClosure F
-  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
+  have : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
   have hE : Nonempty (TorusExtension ((Over.pullback (spMap (algebraMap F Ω) ≫ b)).obj G)) :=
     hG.fibres Ω (spMap (algebraMap F Ω) ≫ b)
   have h1 := _root_.GlobalTheory.Nef.ratRigid_of_torusExtension Ω ((Over.pullback (spMap (algebraMap F Ω) ≫ b)).obj G) hE
@@ -1673,10 +1673,10 @@ namespace GlobalTheory.Nef
 theorem tan_triv_eq_zero : ∀ (k K E : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field K] [Algebra k K] [Field E] [Algebra k E] [Algebra K E] [IsScalarTower k K E] [FiniteDimensional K E] (C : Scheme.{0}) [Algebra k Γ(C, ⊤)] (x : Sp K ⟶ C), IsGenOver k x →
   ∀ (G : Over C) [GrpObj G], IsSemiAbelian G → ∀ (W : C.Modules) (r : ℕ) (i : W ⟶ Lie G), Mono i → ∀ (V₀ : C.Opens) (s : Fin r → Γ(W, V₀)), (V₀ : Set C).Nonempty → IsFrame s → ∀ w : Fin r → E, HasTan G (spMap (algebraMap K E) ≫ x) (triv G (spMap (algebraMap K E) ≫ x)) (fun j => i.app V₀ (s j)) w → w = 0 := by
   intro k K E _ _ _ _ _ _ _ _ _ _ C _ x hx G _ hG W r i hi V₀ s hV₀ hs w hw
-  haveI := hG
-  haveI := hi
-  haveI : IsIntegral C := LieSemineg.isIntegral_curve hx.1.1 hx.1.2.2
-  haveI : Smooth G.hom := hG.smooth
+  have := hG
+  have := hi
+  have : IsIntegral C := LieSemineg.isIntegral_curve hx.1.1 hx.1.2.2
+  have : Smooth G.hom := hG.smooth
   obtain ⟨h₀, -, -⟩ := _root_.GlobalTheory.Nef.isGen_evAt_frac K C x hx.2.1 V₀ hV₀
   have hp₀ : x (IsLocalRing.closedPoint K) ∈ V₀ := (_root_.GlobalTheory.Nef.evAt_calculus.2.2.2.1 K C x V₀).1 h₀
   obtain ⟨U₁, n, om, hpU₁, hom⟩ := exists_isFrame_omega G (x (IsLocalRing.closedPoint K))
@@ -1705,7 +1705,7 @@ theorem tan_triv_eq_zero : ∀ (k K E : Type) [Field k] [IsAlgClosed k] [CharZer
     intro e'
     obtain ⟨f, rfl⟩ := c.d_surjective (sec_hom η[G]) e'
     exact key f
-  haveI : Nonempty V' := ⟨⟨_, hpV'⟩⟩
+  have : Nonempty V' := ⟨⟨_, hpV'⟩⟩
   let N : Matrix (Fin r) (Fin n) Γ(C, V') := fun j a => dualApp (i.app V₀ (s j)) hV (resM (omega G) hVU (om a))
   have hN : LinearIndependent Γ(C, V') N.row := by
     rw [Fintype.linearIndependent_iff]
@@ -1761,8 +1761,8 @@ theorem linesLE_zero_of_sub_lie : ∀ (k K : Type) [Field k] [IsAlgClosed k] [Ch
   simp only [zero_mul]
   by_contra! hpos
   have hpos' : 0 < degLine (pullAd ρ g) w := by exact_mod_cast hpos
-  haveI : CharZero E := charZero_of_injective_algebraMap (algebraMap k E).injective
-  letI : Algebra ℚ E := DivisionRing.toRatAlgebra
+  have : CharZero E := charZero_of_injective_algebraMap (algebraMap k E).injective
+  let : Algebra ℚ E := DivisionRing.toRatAlgebra
 
   have hne : Nonempty (Place k E) := by
     by_contra h
@@ -1776,7 +1776,7 @@ theorem linesLE_zero_of_sub_lie : ∀ (k K : Type) [Field k] [IsAlgClosed k] [Ch
     have hz := h₀ (hxV (show (spMap (algebraMap K E)).base z ∈ (⊤ : (Sp K).Opens) from trivial))
     show b.base z ∈ V₀
     simpa [hb] using hz
-  haveI : QuasiSeparated G.hom := inferInstance
+  have : QuasiSeparated G.hom := inferInstance
   obtain ⟨ξ, hξ, htan⟩ := _root_.GlobalTheory.Nef.exists_path_tan C G E hG.smooth inferInstance b r V₀ (fun j => i.app V₀ (s j)) w hbV
 
   have hvec : ∀ p : Place k E, (pullAd ρ g p).mulVec w ≠ 0 := by

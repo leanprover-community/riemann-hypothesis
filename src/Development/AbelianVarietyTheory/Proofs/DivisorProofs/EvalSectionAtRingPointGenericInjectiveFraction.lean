@@ -22,8 +22,8 @@ theorem exists_fraction_genericStalk_germ_affineOpen (C : Scheme.{0}) [IsIntegra
     (q : C) (hq : q = genericPoint C) (hqV : q ∈ V) (s : C.presheaf.stalk q) :
     ∃ a b : Γ(C, V), b ≠ 0 ∧ s * C.presheaf.germ V q hqV b = C.presheaf.germ V q hqV a := by
   subst hq
-  haveI : Nonempty V := ⟨⟨_, hqV⟩⟩
-  haveI := functionField_isFractionRing_of_isAffineOpen (X := C) V hV
+  have : Nonempty V := ⟨⟨_, hqV⟩⟩
+  have := functionField_isFractionRing_of_isAffineOpen (X := C) V hV
   obtain ⟨⟨a, b⟩, hab⟩ := IsLocalization.mk'_surjective (S := C.functionField) (nonZeroDivisors Γ(C, V)) s
   refine ⟨a, b, nonZeroDivisors.ne_zero b.2, ?_⟩
   have := IsLocalization.mk'_spec (S := C.functionField) a b
@@ -44,8 +44,8 @@ theorem isGen_evAt_frac : ∀ (K : Type) [Field K] (C : Scheme.{0}) [IsIntegral 
     ∀ V : C.Opens, (V : Set C).Nonempty → ∃ h : ⊤ ≤ x ⁻¹ᵁ V, Function.Injective (evAt x h) ∧
       (IsAffineOpen V → ∀ z : K, ∃ a b : Γ(C, V), b ≠ 0 ∧ z * evAt x h b = evAt x h a) := by
   intro K _ C _ x hx V hV
-  haveI : IsDominant x := hx.1
-  haveI : IsPreimmersion x := hx.2
+  have : IsDominant x := hx.1
+  have : IsPreimmersion x := hx.2
   have hsub : ∀ p q : Sp K, p = q := fun p q => Subsingleton.elim (α := PrimeSpectrum K) p q
   have hgen : ∀ p : Sp K, x p = genericPoint C := by
     intro p
