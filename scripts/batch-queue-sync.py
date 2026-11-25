@@ -135,14 +135,15 @@ Which pull requests a batch contains is read from its branch, never from its des
 should do for all this to work.
 
 The description is also compared with the branch, in a comment of its own on the batch's pull
-request. It names the pull requests listed under any other heading, as included, that are merged
-already, or closed without being merged, and which of those the branch still holds, or whose head
-commit is not in the branch; those in the branch that the description does not list, unless it
-lists nothing as included; those in the branch that it lists as left out; and those the branch
-merged and then reverted, read from the messages and parents of its commits. Each one reverted is
-told once that the batch would land it although its changes did not, unless it is labelled
-`deferred`. The comment is posted once there is something to say, and edited in place after that,
-also to say that all is well again. The note remembers a digest of it, so a run that would say
+request. It names the pull requests listed under a heading that says "included", and not "not
+included", that are merged already, or closed without being merged, and which of those the
+branch still holds, or whose head commit is not in the branch; those in the branch that the
+description does not list, unless it lists nothing as included; those in the branch that it
+lists as left out; and those the branch merged and then reverted, read from the messages and
+parents of its commits. Pull requests under any other heading are neither checked as included nor
+told they are left out. Each one reverted is told once that the batch would land it although its
+changes did not, unless it is labelled `deferred`. The comment is posted once there is something
+to say, and edited in place after that, also to say that all is well again. The note remembers a digest of it, so a run that would say
 the same costs nothing.
 
 The batch being assembled is built on top of the batch assembled by hand labelled `latest batch`,

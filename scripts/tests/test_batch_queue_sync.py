@@ -1912,6 +1912,24 @@ class DescriptionCheck(unittest.TestCase):
         [told] = self.reverted(gh, 13)
         self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
 
+    def test_a_heading_that_says_neither_lists_neither(self):
+        # As batch 16 held four pull requests: not in the branch, and not left out either. #13 is
+        # not named as missing its head, nor told it is left out; #14, under a heading that says
+        # "included", is still included.
+        gh = self.built(LISTED.replace("These can be dropped if the maintainers prefer:",
+                                       "Included, but borderline; these can be dropped if the maintainers prefer:")
+                        + "\nHeld by the maintainers:\n\n- #13 Waits for a decision (@dan)\n")
+        log = sync(gh)
+        self.assertEqual(self.checks(gh), [])
+        self.assertEqual(gh.said(13), [])
+        self.assertNotIn("told #13 that the batch #1018 leaves it out", log)
+        # Under "Included:", it is missing its head.
+        gh.pulls[1018]["body"] = gh.pulls[1018]["body"].replace("- #12 Prune", "- #13 Not merged in (@dan)\n- #12 Prune")
+        gh.touch(1018)
+        sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("Listed as included, but their head commit is not in this branch: #13.", check)
+
     def merge_with_main_and_revert(self, gh, subject="Merge PR #13 into batch"):
         """As batch 15's ten reverts: `main` was merged into #13 for the batch, the batch merged
         that, and git reverted the batch's merge. Its head is a grandparent of that merge. Returns

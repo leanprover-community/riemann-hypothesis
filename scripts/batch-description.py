@@ -14,6 +14,10 @@ import re
 CHECK = "<!-- batch-queue-description-check -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
+# A heading under which the pull requests listed are included, unless it leaves them out too, as
+# "Not included:" does. A heading that says neither, such as "Held by the maintainers:", lists
+# pull requests that are neither included nor left out.
+INCLUDED_HEADING = re.compile(r"\bincluded\b", re.IGNORECASE)
 # The line git writes in the message of a commit that reverts another one, naming that commit.
 REVERTS = re.compile(r"^This reverts commit ([0-9a-f]{7,40})\b", re.MULTILINE)
 # A commit id, whole or abbreviated, anywhere in a commit message, as in "This undoes the merge of
@@ -56,6 +60,12 @@ def list_entries(body, repo):
 def leaves_out(heading):
     """Whether the pull requests listed under a heading are left out."""
     return bool(heading and LEFT_OUT_HEADING.search(heading))
+
+
+def includes(heading):
+    """Whether the pull requests listed under a heading are included: it says "included" and does
+    not leave them out."""
+    return bool(heading and INCLUDED_HEADING.search(heading)) and not leaves_out(heading)
 
 
 def left_out(body, repo):
@@ -184,8 +194,8 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
     as numbers: the branch holds them too, but the note records only what the batch contains of
     its own.
 
-    It names what the description lists as included, under any heading but one that leaves pull
-    requests out, that is merged already, and what is closed without being merged or is no pull
+    It names what the description lists as included, under a heading that says so (see
+    `includes`), that is merged already, and what is closed without being merged or is no pull
     request, saying which of those are still in the branch and so land with it although GitHub
     will not mark them merged. `fates` says which is which, as {number: "merged" or "closed"}: one
     it does not know is "not an open pull request". It names what it lists as included that is
@@ -201,7 +211,7 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
     """
     entries = list_entries(body, repo)
     found = {int(key) for key in note["members"]}
-    included = {entry for entry, heading, _ in entries if heading and not leaves_out(heading)} - {number}
+    included = {entry for entry, heading, _ in entries if includes(heading)} - {number}
     anywhere = {entry for entry, _, _ in entries}
     out = {entry for entry, heading, _ in entries if leaves_out(heading)}
     fates = fates or {}
