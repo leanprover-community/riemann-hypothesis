@@ -64,7 +64,8 @@ name: batch queue
 # closes. When a batch is closed without being merged, each batch stacked on it is told once in a
 # comment: its branch still carries the closed batch's commits, whose pull requests are now its
 # own and stay `batch-building` and `frozen`, and it should be rebuilt and its `depends on` line
-# or branch name updated.
+# or branch name updated. If a batch stacked on it cannot be looked through in that run, the
+# closed batch's pull requests keep their labels, and the next run settles them.
 #
 # Only a comment whose whole text is one of these counts, letter case and surrounding blank space
 # aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `p` and `p <commit>`, `-batch` or
