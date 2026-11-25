@@ -122,10 +122,12 @@ comment of its own on the batch's pull request. It names:
   flooded;
 - pull requests in the branch that the description lists as left out;
 - pull requests whose merge into the branch was reverted. The workflow knows a revert by the
-  message git gives it: `Revert "Merge PR #123 into batch"`, or `Revert "..."` around the message
-  of any other merge commit that brought in #123 and names it. A revert of the revert puts the
-  pull request back. Each pull request reverted is also told, once, that the batch would land it
-  although its changes did not (rule 5).
+  line git writes in its message, `This reverts commit <commit>`, naming the merge commit that
+  brought in the commit of the pull request that the batch holds, whatever the revert's first line
+  says. A revert of the revert puts the pull request back. A pull request merged in again at a new
+  head is in the batch at that head, and a revert of its earlier merge no longer counts. Each pull
+  request reverted is also told, once, that the batch would land it although its changes did not
+  (rule 5).
 
 What is in the branch is what the workflow found there, at the commit it found, so a pull request
 pushed to after it was merged in is not named. The comment is posted once there is something to

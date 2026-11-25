@@ -1595,6 +1595,9 @@ class DescriptionCheck(unittest.TestCase):
     def checks(self, gh):
         return [body for body in gh.said(1018) if body.startswith(batch.CHECK)]
 
+    def record(self, gh):
+        return next(body for body in gh.said(1018) if body.startswith("<!-- batch-queue-by-hand"))
+
     def reverted(self, gh, number):
         return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-reverted")]
 
@@ -1735,6 +1738,52 @@ class DescriptionCheck(unittest.TestCase):
         move(gh, again)
         sync(gh)
         self.assertEqual(self.reverted(gh, 13), [])
+
+    def test_a_revert_is_known_by_the_commit_it_names_not_by_its_first_line(self):
+        gh = self.built()
+        undo = merge_and_revert(gh, 13)
+        gh.commits[undo]["message"] = "Take #13 out again\n\n" + gh.commits[undo]["message"].split("\n\n", 1)[1]
+        sync(gh)
+        [told] = self.reverted(gh, 13)
+        self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
+
+    def test_merged_in_again_at_a_new_head_under_the_same_name_it_is_not_reverted(self):
+        gh = self.built(WITH_13)
+        merge_and_revert(gh, 13)
+        sync(gh)
+        self.assertEqual(len(self.reverted(gh, 13)), 1)
+        gh.push(13, "head13-new")
+        old, head = gh.refs[HAND], gh.pulls[13]["sha"]
+        again = sha("kim merge again")
+        gh.commits[again] = {"message": "Merge PR #13 into batch", "parents": [{"sha": old}, {"sha": head}]}
+        gh.inside[again] = gh.inside[old] | gh.inside[head] | {old, head}
+        move(gh, again)
+        log = sync(gh)
+        self.assertEqual(note(self.record(gh))["members"]["13"], head)
+        self.assertEqual(note(self.record(gh))["reverted"], {})
+        self.assertEqual(len(self.reverted(gh, 13)), 1)  # told about the first merge only
+        [check] = self.checks(gh)
+        self.assertNotIn("Reverted in this branch", check)
+        self.assertNotIn("told #13 that the batch #1018 reverts it", log)
+
+    def test_a_revert_of_the_reapplied_revert_is_told_again(self):
+        gh = self.built()
+        undo = merge_and_revert(gh, 13)
+        sync(gh)
+        again = sha("kim-reapply")
+        gh.commits[again] = {"message": f'Reapply "Merge PR #13 into batch"\n\nThis reverts commit {undo}.',
+                             "parents": [{"sha": undo}]}
+        gh.inside[again] = gh.inside[undo] | {undo}
+        move(gh, again)
+        sync(gh)
+        third = sha("kim-revert-again")
+        gh.commits[third] = {"message": f'Revert "Reapply "Merge PR #13 into batch""\n\nThis reverts commit {again}.',
+                             "parents": [{"sha": again}]}
+        gh.inside[third] = gh.inside[again] | {again}
+        move(gh, third)
+        sync(gh)
+        first, second = self.reverted(gh, 13)
+        self.assertTrue(second.startswith(f"<!-- batch-queue-reverted 1018 {third} -->"))
 
     def test_a_note_from_before_reverts_were_recorded_lists_the_branch_once_more(self):
         gh = self.built()

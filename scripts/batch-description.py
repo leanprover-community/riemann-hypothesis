@@ -14,10 +14,8 @@ import re
 CHECK = "<!-- batch-queue-description-check -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
-# The merge commit that adds a pull request to a batch assembled by hand, and the first line git
-# gives a commit that reverts another one, or that reverts such a revert.
-MERGED_BY_HAND = re.compile(r"Merge PR #(\d+) into batch")
-UNDONE = re.compile(r'(Revert|Reapply) "(.*)"')
+# The line git writes in the message of a commit that reverts another one, naming that commit.
+REVERTS = re.compile(r"^This reverts commit ([0-9a-f]{7,40})\b", re.MULTILINE)
 # A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
 # the pull request with `batch-conflict`, so they are not told again from the description.
 CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
@@ -79,35 +77,67 @@ def left_out_digest(heading, entry):
 
 def reverts(commits, found):
     """Which pull requests in a batch assembled by hand its branch reverts, as {number: the commit
-    that reverts it}. `commits` is what `branch_commits` lists, oldest first, and `found` what the
-    batch contains, as {number: commit}.
+    that reverts it}. `commits` is what `branch_commits` lists, as {commit: (message, parents)},
+    and `found` what the batch contains, as {number: commit}.
 
-    A commit whose first line is `Revert "Merge PR #123 into batch"` reverts #123: that is the
-    message git gives a commit that reverts the merge commit adding #123. So does one whose first
-    line is `Revert "..."` around any other line naming #123, if a merge commit of the branch with
-    that first line brought in the commit of #123 the batch holds. A revert of such a revert, which
-    git calls `Revert "Revert "..."` or `Reapply "..."`, puts the pull request back.
+    A pull request is reverted when a commit of the branch reverts the merge commit that brought in
+    the commit of it the batch holds, as one of its parents after the first. A commit reverts
+    another when its message says `This reverts commit <commit>`, as git writes it, whatever its
+    first line says. A revert of that revert, which git calls `Revert "Revert "..."` or `Reapply
+    "..."`, puts the pull request back, and so on. The commit named for a pull request is the
+    revert in effect that comes last in that chain. A merge brings in a pull request only at the
+    commit the batch holds, so one merged in again at a new head is not taken for reverted by a
+    revert of its earlier merge, whatever the two merges are called.
     """
-    brought = {}
-    for message, parents in commits.values():
-        for parent in parents[1:]:
-            brought.setdefault(message.split("\n", 1)[0].strip(), set()).add(parent)
-    count, last = {}, {}
+    def named(text):
+        found_ = [commit for commit in commits if commit.startswith(text)]
+        return found_[0] if len(found_) == 1 else None
+
+    target = {}
     for commit, (message, _) in commits.items():
-        subject, depth = message.split("\n", 1)[0].strip(), 0
-        match = UNDONE.fullmatch(subject)
-        while match:
-            subject, depth = match.group(2), depth + (1 if match.group(1) == "Revert" else 2)
-            match = UNDONE.fullmatch(subject)
-        if not depth:
-            continue
-        ours = MERGED_BY_HAND.fullmatch(subject)
-        for key in {ours.group(1)} if ours else set(re.findall(r"#(\d+)\b", subject)):
-            if key in found and (ours or found[key] in brought.get(subject, ())):
-                count[key] = count.get(key, 0) + (1 if depth % 2 else -1)
-                if depth % 2:
-                    last[key] = commit
-    return {key: last[key] for key in sorted(count, key=int) if count[key] > 0}
+        match = REVERTS.search(message)
+        undone = named(match.group(1)) if match else None
+        if undone is not None and undone != commit:
+            target[commit] = undone
+    by = {}
+    for commit, undone in target.items():
+        by.setdefault(undone, set()).add(commit)
+    brought = {}
+    for commit, (_, parents) in commits.items():
+        for key, held in found.items():
+            if held in parents[1:]:
+                brought.setdefault(key, set()).add(commit)
+
+    undone_, depth_ = {}, {}
+
+    def is_undone(commit, seen=()):
+        # Undone when a commit reverts it that is not undone itself.
+        if commit not in undone_:
+            undone_[commit] = any(not is_undone(other, (*seen, commit))
+                                  for other in sorted(by.get(commit, ())) if other not in seen)
+        return undone_[commit]
+
+    def chain(commit):
+        """Every commit that reverts `commit`, directly or not, with how many reverts deep it is."""
+        found_, todo = {}, [(other, 1) for other in by.get(commit, ())]
+        while todo:
+            other, depth = todo.pop()
+            if other not in found_:
+                found_[other] = depth
+                todo += [(next_, depth + 1) for next_ in by.get(other, ())]
+        return found_
+
+    result = {}
+    for key in sorted(brought, key=int):
+        for merge in sorted(brought[key]):
+            if not is_undone(merge):
+                continue
+            # The revert in effect, of an odd depth, deepest in the chain.
+            live = [(depth, other) for other, depth in chain(merge).items() if depth % 2 and not is_undone(other)]
+            if live:
+                result[key] = max(live)[1]
+                break
+    return result
 
 
 def description_check(number, body, repo, note, pulls):

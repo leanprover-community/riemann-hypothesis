@@ -120,7 +120,7 @@ The description is also compared with the branch, in a comment of its own on the
 request. It names the pull requests listed under any other heading, as included, that are closed
 or whose head commit is not in the branch; those in the branch that the description does not
 list, unless it lists nothing as included; those in the branch that it lists as left out; and
-those the branch merged and then reverted, read from the messages of its commits. Each one
+those the branch merged and then reverted, read from the messages and parents of its commits. Each one
 reverted is told once that the batch would land it although its changes did not. The comment is
 posted once there is something to say, and edited in place after that, also to say that all is
 well again. The note remembers a digest of it, so a run that would say the same costs nothing.
