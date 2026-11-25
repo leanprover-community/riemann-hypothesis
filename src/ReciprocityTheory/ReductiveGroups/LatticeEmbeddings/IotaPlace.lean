@@ -92,7 +92,3 @@ theorem smallIdeal_isPrime (ι : K →+* ℂ_[p]) : (smallIdeal ι).IsPrime := b
     nlinarith [norm_int_le ι a, norm_int_le ι b]
 
 end ReciprocityTheory.ChartRestriction.B3.IotaPl
-
-namespace ReciprocityTheory.ChartRestriction.B3
-
-end ReciprocityTheory.ChartRestriction.B3

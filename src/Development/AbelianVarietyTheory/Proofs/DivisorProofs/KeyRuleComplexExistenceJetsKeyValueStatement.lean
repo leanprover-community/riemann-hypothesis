@@ -1302,8 +1302,6 @@ theorem term_differentiable {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fi
   have e1 : Differentiable ℂ (fun Z : Fin g → ℂ => thetaChar d.τ d.a d.b
       (zP σ ((m : ℂ) • Z + (m : ℂ)⁻¹ • perV (d.full σ S) M Nn) + d.t12 *ᵥ co bX χ)) :=
     hθ.comp ((hzP.comp haff).add_const _)
-  have e2 : Differentiable ℂ (fun Z : Fin g → ℂ => co bX χ ⬝ᵥ (tP σ ((m : ℂ) • Z + (m : ℂ)⁻¹ • perV (d.full σ S) M Nn) + d.b2)) :=
-    by have := (hdot (co bX χ)).comp ((htP.comp haff).add_const d.b2); exact this
   have e3 : Differentiable ℂ (fun Z : Fin g → ℂ => cv Nn ⬝ᵥ Z) := hdot _
   refine Differentiable.mul ?_ (Differentiable.mul ?_ e1)
   · fun_prop

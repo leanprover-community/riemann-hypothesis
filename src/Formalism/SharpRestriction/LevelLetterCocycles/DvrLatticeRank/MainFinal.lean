@@ -161,8 +161,6 @@ section -- clump:auto
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace Formalism.MainNotions.N.Ln34.UniversalFiltration
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.N.Ln34 Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules
@@ -188,7 +186,6 @@ theorem lattice_finrank {O LL V : Type*} [CommRing O] [IsDomain O] [Field LL] [A
       Submodule.smul_of_tower_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   rw [Module.finrank_eq_card_chooseBasisIndex, ← finrank_top LL V, ← hsp, finrank_span_eq_card hliLL]
 
-set_option maxHeartbeats 1000000 in
 theorem r_eq (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l) (hG : Good K 1 LL)
     (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K))) (E : ZMod (finrank ℚ_[l] ↥(K0 K)) → Polynomial ↥(OL LL))
@@ -682,8 +679,6 @@ section -- clump:auto
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace Formalism.MainNotions.N.Ln34.UniversalFiltration
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.N.Ln34 Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules PowerSeries
@@ -824,7 +819,6 @@ theorem phi_zero (D : D7) (HW : HWOf D.loc) {l : ℕ} [Fact l.Prime] (hl : l ≠
     exact Nat.div_pos (Nat.le_of_dvd (by omega) hd) he
   rw [hw3, map_mul, map_mul, map_pow, map_mul, map_mul, map_pow, hE0, zero_pow (by omega), mul_zero]
 
-set_option maxHeartbeats 1000000 in
 theorem range_eq (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -853,7 +847,6 @@ theorem range_eq (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : Cm
   exact Submodule.sum_mem _ fun k _ =>
     Submodule.smul_mem _ _ (ModelFPf.valAt_mem ((HW l).W K 1 LL hG) T c hp4 hpt (hrN k))
 
-set_option maxHeartbeats 1000000 in
 theorem setup_fd (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -873,7 +866,6 @@ theorem setup_fd (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : Cm
   exact ⟨Module.finite_of_finrank_pos (by omega), Module.finite_of_finrank_pos (by omega), by omega,
     by omega⟩
 
-set_option maxHeartbeats 1000000 in
 theorem setup_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -888,7 +880,6 @@ theorem setup_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : C
   obtain ⟨-, -, hI, -⟩ := setup_fd D HW F Cm hA hdR hDi hl K LL hG π' E hp9 T hT c τ ζ hpt r bL rep hrep hbrep hrpos
   exact inj_of_range _ _ (range_eq D HW F Cm hA hdR hDi hl K LL hG π' E hp9 T hT c τ ζ hpt r bL rep hrep hbrep) hI
 
-set_option maxHeartbeats 1000000 in
 theorem setup_match (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -936,7 +927,6 @@ theorem jumps_sub {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀
     push_cast
     omega
 
-set_option maxHeartbeats 1000000 in
 theorem down_d (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -958,7 +948,6 @@ theorem down_d (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpO
   push_cast
   ring
 
-set_option maxHeartbeats 1000000 in
 theorem universal_filtration_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (hA : adm1 D HW F Cm) (hdR : DdRFull D) (hDi : DiRank D HW F Cm) {l : ℕ} [Fact l.Prime] (hl : l ≠ 2)
     (K LL : FinExt l) (hG : Good K 1 LL)
@@ -1137,8 +1126,6 @@ section -- clump:auto
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace Formalism.MainNotions.N.Ln34.UniversalLiftFrames
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.N.Ln34 Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules PowerSeries
@@ -1207,8 +1194,6 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable section
-
-set_option synthInstance.maxHeartbeats 400000
 
 namespace Formalism.MainNotions.N.Ln34.UniversalLiftFrames
 

@@ -489,8 +489,7 @@ theorem lattice_open_last_entry : MirabolicColumnBlock → S9 := by
         (∑ q : L ⧸ L0.addSubgroupOf L,
           χ (dotp (rowOf hk h - e) ((Quotient.out q : L) : UnipotentBlockColumnIndex a (m + 1) (m + 1) → F))) * Λ (ρ h v) := by
       rw [Finset.sum_image]
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, map_sum, Finset.sum_mul]
+      · rw [map_sum, map_sum, Finset.sum_mul]
         refine Finset.sum_congr rfl fun q _ => ?_
         rw [map_smul, map_smul, smul_eq_mul, key hS hk χ ρ Y hY Λ hΛ h hh v hvY, hc1, dotp_sub_left, hdot,
           sub_eq_neg_add, AddChar.map_add_eq_mul, mul_assoc]

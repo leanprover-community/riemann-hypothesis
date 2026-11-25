@@ -55,8 +55,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap PSpace resG LBIso Is
 open ReciprocityTheory.ChartRestriction.G.DVR.SecOps (secScale)
 open GlobalTheory.QCoh.Qcqs GlobalTheory.Cartier GlobalTheory.AbLaw
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 namespace GlobalTheory.ProjSpace
 
 variable {R : Type} [CommRing R] {M : ℕ} {Y Z : Scheme.{0}} {L L' : LB Y}

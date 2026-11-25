@@ -37,7 +37,6 @@ theorem exists_finsum {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ} {Ix : Typ
     rw [Finset.sum_insert hi, ← hg Z r z J hJ]
     exact gs_add r z _ (hJ.mem _ r) _ _
 
-
 open Classical in
 theorem sum_indep (I : Ideal R) {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ} {Ix : Type} {w : Ix → D.X}
     (s : ∀ i, SecT D a n j (w i)) (e : ℕ) (S S' : Finset Ix) (hS : ∀ i ∉ S, Van I (s i) e)
@@ -52,15 +51,10 @@ theorem sum_indep (I : Ideal R) {D : DegPre R} {a : D.P.A ⟶ D.P.A} {n j : ℤ}
       hT i (fun hm => hi' (Finset.mem_filter.2 ⟨hm, (Finset.mem_filter.1 hi).2⟩)) Z x z J hJ
   exact (key S (S ∪ S') hS Finset.subset_union_left).trans (key S' (S ∪ S') hS' Finset.subset_union_right).symm
 
-omit [IsDomain R] in
-theorem thickMap_fst (I : Ideal R) (e : ℕ) (G : Over (Spec (CommRingCat.of R))) :
-    thickMap R I e G ≫ pullback.fst G.hom (thick R I (e + 1)) = pullback.fst G.hom (thick R I e) :=
-  (pullback.lift_fst _ _ _).trans (Category.comp_id _)
-
 theorem van_of_succ (I : Ideal R) {D : DegPre R} {K : Type} [Fintype K] {φ : K → (D.P.A.left ⟶ D.P.A.left)} {ε : K → ℤ}
     (s : LB.Sec (LB.LinComb D.P.L φ ε)) (e : ℕ) (h : Van I s (e + 1)) : Van I s e := fun Z x z J hJ => by
   have := h Z (x ≫ thickMap R I e D.P.A) z J hJ
-  rwa [Category.assoc, thickMap_fst] at this
+  rwa [Category.assoc, GlobalTheory.EndData.trans_fst] at this
 
 theorem exists_isSum : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (D : DegData R (maximalIdeal R)), ∀ (a : D.toPre.P.A ⟶ D.toPre.P.A), ∀ (n j : ℤ) (Ix : Type) (w : Ix → D.toPre.X) (s : ∀ i, SecT D.toPre a n j (w i)), Small (maximalIdeal R) s → ∃ F : ∀ β, SecT D.toPre a n j β, IsSum (maximalIdeal R) s F ∧ Small (maximalIdeal R) (w := id) F := by
   intro R _ _ _ hR D a n j Ix w s hs
@@ -77,7 +71,7 @@ theorem exists_isSum : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R],
     (fun e => H1.SectionArithmetic.pullSec (g e β) (pullback.fst D.toPre.P.A.hom (thick R (maximalIdeal R) e)))
     (fun e z J hJ => by
       refine (H1.SectionArithmetic.sval_pullSec _ _ _ z hJ).trans (Eq.trans ?_ (H1.SectionArithmetic.sval_pullSec _ _ _ z hJ).symm)
-      rw [thickMap_fst, hg _ _ _ _ z J hJ, hg _ _ _ _ z J hJ]
+      rw [GlobalTheory.EndData.trans_fst, hg _ _ _ _ z J hJ, hg _ _ _ _ z J hJ]
       refine Eq.trans ?_ (sum_indep (maximalIdeal R) s e _ _ (fun i hi => van_of_succ _ _ e (hS (e + 1) i hi)) (hS e) β
         (𝟙 _) z J hJ)
       rw [Category.id_comp])

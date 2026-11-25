@@ -373,13 +373,9 @@ theorem dv_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
   unfold dv
   rfl
 
-theorem dvO_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c : Fin d → O) :
-    dvO W T e b c = ∑ k, algebraMap O LL (c k) • dv W T e b (Pi.single k 1) := by
-  unfold dvO; rw [dv_sum]
-
 theorem dvO_smul (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (o : O) (c : Fin d → O) :
     dvO W T e b (fun k => o * c k) = algebraMap O LL o • dvO W T e b c := by
-  rw [dvO_sum, dvO_sum, Finset.smul_sum]
+  rw [Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq, Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq, Finset.smul_sum]
   simp only [map_mul, mul_smul]
 
 theorem coef_eq {M : Type} [AddCommGroup M] [Module LL M] {dY : ℕ} (u : Fin dY → M)
@@ -444,25 +440,25 @@ theorem pull_vec [FiniteDimensional Qp LL] (hK : Function.Bijective (algebraMap 
     rw [← sub_eq_zero.1 h0]
     exact hξ'F
   have hlamL : dvO W Y e bY cY ∈ DcrisL PD Y.ρ (W.emb a) := by
-    rw [← hspanY, dvO_sum]
+    rw [← hspanY, Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq]
     exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
   have hξL := letter_pull W hK h9 T₂ Y ι π hses h2 hY (W.emb a) hξD (by rw [hξlam]; exact hlamL)
   rw [← hspan2] at hξL
   obtain ⟨ρ, hρ⟩ := (Submodule.mem_span_range_iff_exists_fun LL).1 hξL
   obtain ⟨m, r, hr⟩ := int_vec W hV ρ
   have hdvr : dvO W T₂ e b r = (PD.p : LL) ^ m • ξ := by
-    rw [dvO_sum, ← hρ, Finset.smul_sum]
+    rw [Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq, ← hρ, Finset.smul_sum]
     simp only [hr, mul_smul]
   refine ⟨m, r, fun j => ?_, fun s hs hneg => ?_⟩
   · have h1 : crisMap B ι.f (dvO W T₂ e b r) = ∑ j, (∑ k, algebraMap O LL (r k) * algebraMap O LL (o k j)) •
         dv W Y e bY (Pi.single j 1) := by
 
-      rw [dvO_sum, map_sum]
+      rw [Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq, map_sum]
       simp only [map_smul, ho, Finset.smul_sum, smul_smul, Finset.sum_smul]
       exact Finset.sum_comm
     have h2' : crisMap B ι.f (dvO W T₂ e b r) = ∑ j, ((PD.p : LL) ^ m * algebraMap O LL (cY j)) •
         dv W Y e bY (Pi.single j 1) := by
-      rw [hdvr, map_smul, hξlam, dvO_sum, Finset.smul_sum]
+      rw [hdvr, map_smul, hξlam, Formalism.MainNotions.UnusedSlot80.UnivF.dvO_eq, Finset.smul_sum]
       simp only [smul_smul]
     have := congrFun (coef_eq _ hindY _ _ (h1.symm.trans h2')) j
     apply hinj
@@ -499,7 +495,6 @@ theorem o_inj [FiniteDimensional Qp LL] (hK : Function.Bijective (algebraMap K�
   have hξ0 := hinjD ξ hξD h0
   funext k
   exact Fintype.linearIndependent_iff.1 hind2 ρ (by rw [← hξ, hξ0]) k
-
 
 include W in
 theorem right_inv (hV : ValRing (LL := LL) O v) (hinj : Function.Injective (algebraMap O LL)) {d dY : ℕ}
@@ -1374,15 +1369,12 @@ theorem smulS_vanish_neg {f : ℤ → V} (hf : LB 0 f) (g : PowerSeries LL) (r :
   rw [smulS_eq_sum hf g r 0 (by omega)]; simp
 
 omit [IsDomain O] in
-theorem LB_delta (v : V) : LB 0 (fun k : ℤ => if k = 0 then v else 0) := fun k hk => by simp [show k ≠ 0 by omega]
-
-omit [IsDomain O] in
 theorem smulS_delta (g : PowerSeries LL) (v : V) (r : ℤ) :
     smulS g (fun k : ℤ => if k = 0 then v else 0) r = (if 0 ≤ r then PowerSeries.coeff r.toNat g else 0) • v := by
   rcases lt_or_ge r 0 with h | h
   · rw [ite_eq_right (by omega), zero_smul]
-    exact smulS_vanish_neg (LB_delta v) g r h
-  · rw [ite_eq_left h, smulS_eq_sum (LB_delta v) g r (r.toNat + 1) (by omega), Finset.sum_eq_single r.toNat]
+    exact smulS_vanish_neg (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta v) g r h
+  · rw [ite_eq_left h, smulS_eq_sum (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta v) g r (r.toNat + 1) (by omega), Finset.sum_eq_single r.toNat]
     · rw [ite_eq_left (show r - ((r.toNat : ℕ) : ℤ) = 0 by omega)]
     · intro j _ hj; rw [ite_eq_right (show r - (j : ℤ) ≠ 0 by omega), smul_zero]
     · intro hj; exact absurd (Finset.mem_range.2 (Nat.lt_succ_self _)) hj
@@ -1420,9 +1412,9 @@ omit [IsDomain O] in
 theorem smulS_sum_delta {d : ℕ} (g : PowerSeries LL) (G : Fin d → PowerSeries LL) (vv : Fin d → V) (r : ℤ) :
     smulS g (fun k => ∑ j, smulS (G j) (fun k : ℤ => if k = 0 then vv j else 0) k) r =
       ∑ j, (if 0 ≤ r then PowerSeries.coeff r.toNat (g * G j) else 0) • vv j := by
-  rw [smulS_sum Finset.univ _ (fun j => LB_smulS (LB_delta (vv j)) (G j)) g]
+  rw [smulS_sum Finset.univ _ (fun j => LB_smulS (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta (vv j)) (G j)) g]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [← smulS_mul (LB_delta (vv j)), smulS_delta]
+  rw [← smulS_mul (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta (vv j)), smulS_delta]
 
 theorem dg_core {Fil : ℤ → Submodule LL V} (hF : Antitone Fil) {d I : ℕ} (G : Fin d → PowerSeries LL)
     (vv : Fin d → V) (cc : Fin I → Fin d → LL) (Nser : Fin I → PowerSeries LL) (α : Fin I → ℤ) (D0 : ℕ)
@@ -1434,7 +1426,7 @@ theorem dg_core {Fil : ℤ → Submodule LL V} (hF : Antitone Fil) {d I : ℕ} (
     (hfil : ∀ i, ∑ j, cc i j • vv j ∈ Fil (-α i)) :
     Dg Fil s (fun k => ∑ j, smulS (G j) (fun k : ℤ => if k = 0 then vv j else 0) k) := by
   have hLB : LB 0 (fun k => ∑ j, smulS (G j) (fun k : ℤ => if k = 0 then vv j else 0) k) :=
-    LB_sum _ _ (fun j => LB_smulS (LB_delta (vv j)) (G j))
+    LB_sum _ _ (fun j => LB_smulS (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta (vv j)) (G j))
   refine Dg_of_mul hF hLB D0 uD huD s ?_
   intro r
   rw [smulS_sum_delta]
@@ -1673,8 +1665,8 @@ theorem lev0Mpr_of [NeZero n] (C : Formalism.MainNotions.UnusedSlot80.LevC.Ctx W
         have hEF := Formalism.MainNotions.UnusedSlot80.LevE.expFrame0_of Ti C.hs C.hR C.hp0 C.h5 C.hH C.hCA A hA c' hc' T hT b sol hb
           e ζ hζ (A.M PD.p) κ₀ j (Hh j) (hHh j) H (hZN j)
         have h1 := Formalism.MainNotions.UnusedSlot80.LevE.smulS_congr_lt (LB_mono (fun k hk => hmj k hk) (min_le_left mj 0))
-          (LB_mono (LB_smulS (LB_delta (vv j)) g₁) (min_le_right mj 0)) (W.lev a' ζ (cj j)) N₀ hEF j' hlo
-        rw [h1, ← smulS_mul (LB_delta (vv j)), ← map_mul]
+          (LB_mono (LB_smulS (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta (vv j)) g₁) (min_le_right mj 0)) (W.lev a' ζ (cj j)) N₀ hEF j' hlo
+        rw [h1, ← smulS_mul (Formalism.MainNotions.UnusedSlot80.CrC.LB_delta (vv j)), ← map_mul]
       rw [Finset.sum_congr rfl fun j _ => hagree j]
 
       obtain ⟨uD, huD, huDc⟩ : ∃ uD : PowerSeries LL, W.lev a' ζ DEN =

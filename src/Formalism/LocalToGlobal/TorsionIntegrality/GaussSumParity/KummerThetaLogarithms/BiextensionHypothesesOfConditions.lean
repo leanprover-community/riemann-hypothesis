@@ -216,7 +216,6 @@ variable {K : Type} [Field K] {τ τ' : Type}
 theorem subst_C_mul_sum {a : τ → MvPowerSeries τ' K} (ha : HasSubst a) (c : K) {α : Type}
     (s : Finset α) (f : α → MvPowerSeries τ K) :
     subst a (MvPowerSeries.C c * ∑ k ∈ s, f k) = MvPowerSeries.C c * ∑ k ∈ s, subst a (f k) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [MvPowerSeries.subst_mul ha, MvPowerSeries.subst_C, ← MvPowerSeries.coe_substAlgHom ha,
     map_sum]
 

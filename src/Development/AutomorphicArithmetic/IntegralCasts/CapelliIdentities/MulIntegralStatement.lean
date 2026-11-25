@@ -25,8 +25,8 @@ end OneParameterGroupMulIntegral
 
 open OneParameterGroupMulIntegral in
 theorem UpperTheory.Reformulated.B.OneParameterGroupDifferentiableAtZero.main.{u_1} :
-    ∀ {W : Type u_1} [inst : NormedAddCommGroup W]
-    [inst_1 : NormedSpace ℂ W] [CompleteSpace W] (φ : ℝ → W →L[ℂ] W),
+    ∀ {W : Type u_1} [NormedAddCommGroup W]
+    [NormedSpace ℂ W] [CompleteSpace W] (φ : ℝ → W →L[ℂ] W),
     Continuous φ → φ (0 : ℝ) = (1 : W →L[ℂ] W) → (∀ (s t : ℝ), φ (s + t) = φ s * φ t) → DifferentiableAt ℝ φ (0 : ℝ) := by
   intro W _ _ _ φ hc h0 hmul
 

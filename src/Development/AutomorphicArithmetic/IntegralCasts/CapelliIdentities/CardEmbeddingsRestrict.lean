@@ -6,8 +6,8 @@ import Mathlib.Tactic.Linter.HaveILetI
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CardEmbeddingsRestrict.card_embeddings_restrict.{u_1, u_2} :
-    ∀ {K : Type u_1} {L : Type u_2} [inst : Field K] [NumberField K] [inst_2 : Field L] [inst_3 : NumberField L]
-    [inst_4 : Algebra K L] (τ : K →+* ℂ),
+    ∀ {K : Type u_1} {L : Type u_2} [Field K] [NumberField K] [Field L] [NumberField L]
+    [Algebra K L] (τ : K →+* ℂ),
     (open Classical in Finset.filter (fun σ : L →+* ℂ => σ.comp (Algebra.algebraMap K L) = τ) Finset.univ).card = Module.finrank K L := by
   intro K L _ _ _ _ _ τ
   classical

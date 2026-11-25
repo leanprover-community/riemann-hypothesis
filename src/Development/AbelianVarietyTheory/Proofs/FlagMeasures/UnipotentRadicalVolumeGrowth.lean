@@ -150,10 +150,7 @@ private theorem dOp_nonneg_subadditive_continuous {n : ℕ} (ε : Fin n → Bool
   · subst hn
     have h0 : ∀ g : Matrix (Fin 0) (Fin 0) ℂ, dOp g = 0 := by
       intro g
-      have hz : ‖LinearMap.toContinuousLinearMap (Matrix.toEuclideanLin g)‖ = 0 := by
-        refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun x => ?_) (norm_nonneg _)
-        rw [zero_mul, EuclideanSpace.norm_eq]
-        simp
+      have hz : ‖LinearMap.toContinuousLinearMap (Matrix.toEuclideanLin g)‖ = 0 := norm_of_subsingleton _
       simp only [dOp, hz, Real.log_zero]
     simp only [h0]
     exact ⟨fun _ => le_rfl, fun _ _ => by norm_num, continuous_const⟩

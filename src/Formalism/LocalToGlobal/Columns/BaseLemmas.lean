@@ -564,12 +564,6 @@ theorem sgTrue_eq (i : Fin (R.N R.m - 1)) :
 
 end RowPar
 
-namespace Wts
-
-variable {X : Fields} {Word : Type} {R : Ranks} (W : Wts X Word R)
-
-end Wts
-
 namespace Fields
 
 variable (X : Fields)

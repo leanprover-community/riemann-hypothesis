@@ -571,8 +571,7 @@ theorem glAct_inv_glAct {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) (f : P
   have key : (glAct g⁻¹).comp (glAct g) = AlgHom.id K (PolXY K k) := by
     apply MvPolynomial.algHom_ext
     rintro (i | i)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inl, map_sum, map_mul,
+    · simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inl, map_sum, map_mul,
         MvPolynomial.algHom_C, MvPolynomial.algebraMap_eq]
       have hm : ∀ l : Fin k, C (∑ j : Fin k, (g : Matrix (Fin k) (Fin k) K) i j *
           ((g⁻¹ : GL (Fin k) K) : Matrix (Fin k) (Fin k) K) j l) = (if i = l then 1 else 0 : PolXY K k) := by

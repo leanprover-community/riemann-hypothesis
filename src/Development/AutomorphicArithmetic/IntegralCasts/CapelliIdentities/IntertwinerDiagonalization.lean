@@ -18,7 +18,7 @@ private theorem UpperTheory.Reformulated.B.IntertwinerDiagonalization.of_intertw
     Units.inv_mul, one_mul]
 
 theorem UpperTheory.Reformulated.B.IntertwinerDiagonalization.exists_diag :
-    ∀ {K : Type} [inst : Field K]
+    ∀ {K : Type} [Field K]
     (M : GL (Fin (2 : ℕ)) K) {x : K},
     x ≠ (1 : K) →
       (↑M : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) K).trace = (1 : K) + x →

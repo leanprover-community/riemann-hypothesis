@@ -5,8 +5,8 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Objects
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsNsmulMem.exists_nsmul_mem.{u_1, u_2} :
-    ∀ {E : Type u_1} {W : Type u_2} [inst : Field E] [NumberField E] [inst_2 : AddCommGroup W]
-    [inst_3 : _root_.Module E W] {La : AddSubgroup W},
+    ∀ {E : Type u_1} {W : Type u_2} [Field E] [NumberField E] [AddCommGroup W]
+    [_root_.Module E W] {La : AddSubgroup W},
     GroundTheory.Heights₂.Heights.FiniteCovolume.IsLattice (E := E) La →
       ∀ (w : W),
         ∃ (d : ℕ),

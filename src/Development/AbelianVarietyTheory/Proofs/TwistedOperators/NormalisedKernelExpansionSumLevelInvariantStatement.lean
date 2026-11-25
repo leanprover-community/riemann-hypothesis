@@ -359,18 +359,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.ExpansionInvariance
 
-theorem _root_.GlobalTheory.T.expansion_pairing_invariant_last_vertex_level : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {t : T} {Φ : G.Datum} {β : CosFam G t} {τ : PureDat G t →₀ ℂ} {μ₀ : T},
-    L.Is μ₀ → (Nat.Coprime D.host.pde (D.host.QS * D.host.q) ∧ Nat.Coprime D.host.pde' (D.host.QS * D.host.q)) →
-    (∀ P ∈ L.Q t, ((Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) →
-    t ∈ U → β ∈ S.supp t Φ → S.IsExpansion t Φ β τ →
-    (∀ d ∈ τ.support, (∀ j, S.Z.HasVec (d.1 j)) ∧ ∀ i, S.Z.HasVec (d.2 i)) →
-    ∀ (Ψ : FinPt G (.top 0) → VV ℂ (wt G (.top 0))) (F : FinPt G (.grid 0 D.R.m) → VV ℂ (listedWt G (.grid 0 D.R.m))),
-    ∀ (x : ∀ j, FinPt G (.top j)) (y : ∀ i, FinPt G (.grid i D.R.m)) (k : FinPt G (.grid D.R.m D.R.m)),
-      x D.R.m = finEmb G.sp.topDec (y D.R.m) → finG (G.V (.grid D.R.m D.R.m)) k ∈ S.levRow t D.R.m le_rfl →
-      pairPts S τ (Function.update x D.R.m (finEmb G.sp.topDec (y D.R.m * k))) (Function.update y D.R.m (y D.R.m * k))
-        (Ψ (Function.update x D.R.m (finEmb G.sp.topDec (y D.R.m * k)) 0)) (F (Function.update y D.R.m (y D.R.m * k) 0)) =
-      pairPts S τ x y (Ψ (x 0)) (F (y 0)) := by
-  first | exact @GlobalTheory.LastVertexInv.pairPts_last_invariant
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExpansionPairingInvariantLastVertexLevelStatement =====
@@ -388,7 +376,6 @@ noncomputable section
 namespace GlobalTheory.TopZeroInv
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
-
 
 variable (W) in
 def thetaSub (p : Pair T) : Submodule ℂ (WO (G.pS p) (G.pT p) → ℂ) where
@@ -647,9 +634,6 @@ def datFn {t : T} (d : PureDat G t) : ∀ l : Arr D, WO (G.pS (arrP t l)) (G.pT 
   | .inl j => (d.1 j).fn
   | .inr i => (d.2 i).fn
 
-
-
-
 theorem colAt_firstPt (S : GridChoice W U) {t : T} (ht : t ∈ U) (k : FinPt G (.top 0)) {w : Pl D.host.E}
     (hw : w ∈ locPl G t) (x : ∀ j : Fin D.R.m, WO (G.pS (.top t j : Pair T)) (G.pT (.top t j : Pair T))) :
     S.colAt t w (firstPt t ((S.N.u (.top 0))⁻¹ * k * S.N.u (.top 0)) x) =
@@ -701,7 +685,6 @@ section Local
 open GlobalTheory.FunObj.FiniteSupport GlobalTheory.TopLevelInv.FlatStep
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
-
 
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem fill_moveEnd {Γ : Grid k} (hs : 1 ≤ Γ.s) (hm : 0 < Γ.m) (g : GL (Fin (Γ.rank (Γ.m, 0))) k)
@@ -784,9 +767,6 @@ end Local
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
-
-
-
 theorem inBasis_mem_glLatCong (G : GridData L sc) {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
     {β x : GL (Fin V.rank) (Lev.EAf D)} (hβ : IsFrame β Λ) (hx : x ∈ congLev D.sp.cm V.gram Λ G.modul) {n : ℕ} (h : n = V.rank)
     (w : Pl D.host.E) : inBasis h β w x ∈ glLatCong (unifAt w ^ cosExp G w) (SplitFlip.stdLat (Kw w) _) := by
@@ -815,7 +795,6 @@ theorem kapTop0_mem (S : GridChoice W U) (t : T) (k : FinPt G (.top 0)) (hk : fi
     (w : Pl D.host.E) : kapTop0 S t k w ∈ glLatCong (unifAt w ^ cosExp G w) (SplitFlip.stdLat (Kw w) _) :=
   inBasis_mem_glLatCong G (S.βp_is 0 (Nat.zero_le _)) hk _ w
 
-
 open GlobalTheory.RowVacScalar in
 theorem mu_one_unramAt {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) (t : T) {v : HeightOneSpectrum (𝓞 D.host.F)}
     (hv : ∀ w ∈ locPl G t, w.under (𝓞 D.host.F) ≠ v) : GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.CharUnramAt D (L.mu t (0 + 1)) v := by
@@ -835,7 +814,6 @@ theorem mu_one_unramAt {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) (t : T)
     rcases (hL.Q_ram t w).1 h with h | ⟨P, hP, h⟩
     · exact hQ w h hw
     · exact hQ P hP (by rw [← hw, (GlobalTheory.IdemSupport.isConjPl_iff _ _).1 h, GlobalTheory.IdemSupport.under_cP])
-
 
 open GlobalTheory.RowVacScalar in
 
@@ -947,7 +925,6 @@ theorem datum_end {Γ : Grid k} (hs : 1 ≤ Γ.s) (ψ : AddChar k Circle) (ν : 
   rw [← flatTensor_moveEnd hs ψ ν (moved Γ keep h' F) hm g κ hκ h x y]
   conv_rhs => rw [hmv]
   simp only [flatTensor, flatIntegrand, mul_assoc, integral_const_mul]
-
 
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem exists_end_lift {Γ : Grid k} (hs : 1 ≤ Γ.s) (hm : 0 < Γ.m) (ϖ c : kˣ) (e : ℕ) {κ : GL (Fin (topRank Γ 0)) k}
@@ -1092,8 +1069,6 @@ theorem first_mem_stdLat_iff (S : GridChoice W U) (t : T) (k : FinPt G (.top 0))
   · intro hx
     rw [inv_one]
     exact GlobalTheory.LocalLatStab.actO_mem _ _ _ _ _ g⁻¹ 1 (fun y hy => (h4 y).1 hy) h1 _ hx
-
-
 
 theorem product_invariant : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
     (S : GridChoice W U) {t : T}, t ∈ U → ∀ {Φ : G.Datum} {β : CosFam G t} {τ : PureDat G t →₀ ℂ} {μ₀ : T},
@@ -1355,7 +1330,7 @@ theorem levels_invariant (S : GridChoice W U) {t : T} {Φ : G.Datum} {β : CosFa
         (Ψ (Function.update x D.R.m (finEmb G.sp.topDec (y D.R.m * k)) 0)) (F (Function.update y D.R.m (y D.R.m * k) 0)) =
       pairPts S τ x y (Ψ (x 0)) (F (y 0))) :=
   ⟨_root_.GlobalTheory.ExpansionInvariance.pairPts_update_top S hL hde hc ht hβ hτ hv Ψ F, _root_.GlobalTheory.TopZeroInv.pairPts_update_top_zero S hL hde hc ht hβ hτ hv Ψ F,
-    GlobalTheory.T.expansionPairing_invariant_innerVertex_level S hL hde hc ht hβ hτ hv Ψ F, GlobalTheory.T.expansion_pairing_invariant_last_vertex_level S hL hde hc ht hβ hτ hv Ψ F⟩
+    GlobalTheory.T.expansionPairing_invariant_innerVertex_level S hL hde hc ht hβ hτ hv Ψ F, GlobalTheory.LastVertexInv.pairPts_last_invariant S hL hde hc ht hβ hτ hv Ψ F⟩
 
 end GlobalTheory.ExpansionInvariance
 

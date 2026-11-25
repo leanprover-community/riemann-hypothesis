@@ -12,10 +12,6 @@ import Mathlib.Tactic.Linter.Style
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.GalOfCusp Matrix IsLocalRing
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3
 
-private theorem det_ne_zero' {F : Type} [NormedField F] [IsUltrametricDist F] {m : ℕ} (t : F) (ht : ‖t‖ = 1)
-    (E : Matrix (Fin m) (Fin m) F) (hE : ∀ a b, ‖E a b‖ < 1) : (t • (1 : Matrix (Fin m) (Fin m) F) + E).det ≠ 0 :=
-  _root_.UpperTheory.Reformulated.B.Qi6.det_ne_zero t ht E hE
-
 private theorem conj_of_close {F Γ : Type} [NormedField F] [IsUltrametricDist F] [Group Γ] [Fintype Γ] {m : ℕ}
     (hΓ : ‖(Fintype.card Γ : F)‖ = 1) (ρ ρ₀ : Γ →* GL (Fin m) F)
     (hi : ∀ g a b, ‖(ρ g : Matrix (Fin m) (Fin m) F) a b‖ ≤ 1)
@@ -37,7 +33,7 @@ private theorem conj_of_close {F Γ : Type} [NormedField F] [IsUltrametricDist F
       Nat.cast_smul_eq_nsmul]
   have hdet : M.det ≠ 0 := by
     rw [hsplit]
-    refine det_ne_zero' _ hΓ _ fun a b => ?_
+    refine UpperTheory.Reformulated.B.Qi6.det_ne_zero _ hΓ _ fun a b => ?_
     rw [Matrix.sum_apply]
     refine _root_.UpperTheory.Reformulated.B.Qe17.norm_sum_lt _ _ one_pos fun g _ => ?_
     rw [Matrix.mul_apply]

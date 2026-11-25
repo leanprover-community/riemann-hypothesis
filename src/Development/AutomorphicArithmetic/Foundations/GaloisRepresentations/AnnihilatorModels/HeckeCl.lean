@@ -6,7 +6,6 @@ public import Development.EtaleCohomology.EtaleTrace.LadicH0LocallyConstant
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

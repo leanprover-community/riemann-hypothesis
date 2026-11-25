@@ -195,7 +195,6 @@ theorem sum_abs_aaExp_le (w : Pl D.host.E) (j : ℕ) :
       |FractionalIdeal.count D.host.E w D.host.AAbar|)) := by
   set A := FractionalIdeal.count D.host.E w D.host.AA
   set A' := FractionalIdeal.count D.host.E w D.host.AAbar
-  have hA : 0 ≤ |A| + |A'| := by positivity
   rw [Fintype.sum_sum_type]
   have h0 : ∑ a : Fin (topRank (bareGrid w) j), |aaExp w j (Sum.inl a)| = 0 :=
     Finset.sum_eq_zero fun a _ => by simp [show aaExp w j (Sum.inl a) = 0 from rfl]
@@ -261,9 +260,6 @@ theorem aaTerm_coef_eq_zpow {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G
           rcases Nat.eq_zero_or_pos (bigN D) with h | h
           · simp [h]
           · nlinarith [show (1 : ℤ) ≤ bigN D by exact_mod_cast h]
-        have hA : 0 ≤ |FractionalIdeal.count D.host.E w D.host.AA| + |FractionalIdeal.count D.host.E w D.host.AAbar| :=
-          by positivity
-        have hm : (0 : ℤ) ≤ D.R.m := by positivity
         rw [hB]
         have : (D.R.m : ℤ) * ((bigN D : ℤ) * ((D.R.m : ℤ) * ((D.R.m : ℤ) * (|FractionalIdeal.count D.host.E w D.host.AA| +
           |FractionalIdeal.count D.host.E w D.host.AAbar|)))) = (bigN D : ℤ) * ((D.R.m : ℤ) ^ 3 *

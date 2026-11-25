@@ -369,10 +369,8 @@ theorem ident_trans (φ' : H.Wb t₁.f' ≃ₗ[E] H.Wb f₂')
   have hz := locInA_zhat' H e hiso t₁ hf hf'
   have hd : ∀ l, H.Dl t₁.f f₃' l = H.Dl t₁.f f₂' l := fun l => locInA_dl' H e hiso t₁ hf hf' l
   have hom' : H.om' t₁.f f₃' = e (H.om' t₁.f f₂') := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [Loc.HermSp.om', hz, map_sum, map_smul, hf']
   have hom : H.om t₁.f f₃' = e (H.om t₁.f f₂') := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [Loc.HermSp.om, hz, map_sum, map_smul, hf]
   have h21 : ∀ y ∈ H.Xp t₁.f ⊔ H.Xp f₃', e.symm y ∈ H.Xp t₁.f ⊔ H.Xp f₂' := by
     intro y hy

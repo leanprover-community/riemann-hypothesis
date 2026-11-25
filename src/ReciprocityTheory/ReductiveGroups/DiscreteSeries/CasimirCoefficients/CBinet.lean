@@ -20,58 +20,6 @@ open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
-private lemma cb_det_mul_fun {R : Type*} [CommRing R] {i N : ℕ} (A : Matrix (Fin i) (Fin N) R)
-    (B : Matrix (Fin N) (Fin i) R) :
-    (A * B).det = ∑ f : Fin i → Fin N, (∏ a, A a (f a)) * (B.submatrix f id).det := by
-  have hrow : A * B = Matrix.of (fun a => ∑ j, A a j • B j) := by
-    ext a b
-    simp [Matrix.mul_apply, Finset.sum_apply]
-  rw [hrow]
-  have h1 := (Matrix.detRowAlternating (R := R) (n := Fin i)).toMultilinearMap.map_sum
-    (fun a j => A a j • B j)
-  have h2 : ∀ f : Fin i → Fin N,
-      (Matrix.detRowAlternating (R := R) (n := Fin i)).toMultilinearMap (fun a => A a (f a) • B (f a)) =
-        (∏ a, A a (f a)) * (B.submatrix f id).det := by
-    intro f
-    rw [MultilinearMap.map_smul_univ, smul_eq_mul]
-    rfl
-  exact h1.trans (Finset.sum_congr rfl fun f _ => h2 f)
-
-private def cbPar {i N : ℕ} (p : (Σ _ : {S : Finset (Fin N) // S.card = i}, Equiv.Perm (Fin i))) :
-    Fin i ↪ Fin N :=
-  p.2.toEmbedding.trans (p.1.1.orderEmbOfFin p.1.2).toEmbedding
-
-private lemma cbPar_image {i N : ℕ} (S : Finset (Fin N)) (hS : S.card = i) (σ : Equiv.Perm (Fin i)) :
-    univ.map (cbPar ⟨⟨S, hS⟩, σ⟩) = S := by
-  simp only [cbPar]
-  rw [← Finset.map_map, Finset.map_univ_equiv]
-  exact Finset.map_orderEmbOfFin_univ S hS
-
-private lemma cbPar_bij {i N : ℕ} : Function.Bijective (cbPar (i := i) (N := N)) := by
-  refine ⟨?_, ?_⟩
-  · rintro ⟨⟨S, hS⟩, σ⟩ ⟨⟨S', hS'⟩, σ'⟩ h
-    have hSS : S = S' := by
-      rw [← cbPar_image S hS σ, ← cbPar_image S' hS' σ', h]
-    subst hSS
-    have hσ : σ = σ' := by
-      ext a
-      have h2 := DFunLike.congr_fun h a
-      exact congrArg Fin.val ((S.orderEmbOfFin hS).injective h2)
-    subst hσ
-    rfl
-  · intro g
-    have hcard : (univ.map g).card = i := by simp
-    have hmem : ∀ a, g a ∈ univ.map g := fun a => Finset.mem_map_of_mem g (Finset.mem_univ a)
-    let g' : Fin i ≃ (univ.map g) := Equiv.ofBijective (fun a => ⟨g a, hmem a⟩)
-      ⟨fun a b h => g.injective (congrArg Subtype.val h), fun ⟨x, hx⟩ => by
-        obtain ⟨a, _, rfl⟩ := Finset.mem_map.1 hx
-        exact ⟨a, rfl⟩⟩
-    refine ⟨⟨⟨univ.map g, hcard⟩, g'.trans ((univ.map g).orderIsoOfFin hcard).symm.toEquiv⟩, ?_⟩
-    refine DFunLike.ext _ _ fun a => ?_
-    change ((univ.map g).orderEmbOfFin hcard) (((univ.map g).orderIsoOfFin hcard).symm (g' a)) = g a
-    rw [← Finset.coe_orderIsoOfFin_apply, OrderIso.apply_symm_apply]
-    rfl
-
 theorem det_mul_eq_sum_submatrix {R : Type*} [CommRing R] {i N : ℕ} (A : Matrix (Fin i) (Fin N) R)
     (B : Matrix (Fin N) (Fin i) R) :
     (A * B).det = ∑ S : {S : Finset (Fin N) // S.card = i},

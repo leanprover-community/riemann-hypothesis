@@ -164,7 +164,7 @@ abbrev concreteLevelAdelicSubset : Subgroup X.B.I.Gf := levelSubgroupOfCharacter
 
 theorem le1 : KgSub X ≤ KSub X.B.I := fun _ hx => hx.1
 theorem le2 : KgSub X ≤ concreteLevelAdelicSubset X := fun x hx => ((Formalism.L2.SG.Closed.level_subgroup_properties X).1 x hx).1
-theorem le3 : concreteLevelAdelicSubset X ≤ KSub X.B.I := fun x hx => Formalism.L2.SG.Count.level_set_le_compact X hx
+theorem le3 : concreteLevelAdelicSubset X ≤ KSub X.B.I := fun _ hx => Formalism.L2.SG.Count.level_set_le_compact X hx
 
 def rho2 : concreteLevelAdelicSubset X →* G0g D.nd := (rhoX X).comp (Subgroup.inclusion (le3 X))
 

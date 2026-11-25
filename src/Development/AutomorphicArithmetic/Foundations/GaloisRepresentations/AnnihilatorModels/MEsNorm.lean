@@ -360,13 +360,6 @@ theorem exists_generization_mem {Y : Scheme.{0}} [IsLocallyNoetherian Y] {O : Se
   exact ⟨U.ι hC.1.genericPoint, (hg.specializes mem_irreducibleComponent).map U.ι.continuous,
     ((hg.specializes (hoC hwo)).map U.ι.continuous).mem_open hO hwO⟩
 
-theorem spMap_algebraMap_apply (V K : Type) [CommRing V] [IsDomain V] [Field K] [Algebra V K]
-    [IsFractionRing V K] (p : Sp K) : spMap (algebraMap V K) p = (⊥ : PrimeSpectrum V) := by
-  refine PrimeSpectrum.ext ?_
-  show Ideal.comap (algebraMap V K) p.asIdeal = ⊥
-  rw [(Ideal.eq_bot_or_top p.asIdeal).resolve_right p.isPrime.ne_top, ← RingHom.ker_eq_comap_bot]
-  exact (RingHom.injective_iff_ker_eq_bot _).1 (IsFractionRing.injective V K)
-
 end GlobalTheory.FibreCrit
 
 namespace GlobalTheory.FibreCrit
@@ -397,7 +390,7 @@ theorem finite_fibre_of_isFinite : ∀ (X Y₀ Y : Scheme.{0}) (s t : Y ⟶ X) (
       exact ⟨O, inferInstance, hO, hV, f, hf0 ▸ he0i, hf1⟩
   have hr : Set.range (spMap (algebraMap V (FractionRing V)) ≫ g) ⊆ Set.range i := by
     rintro _ ⟨q, rfl⟩
-    rw [Scheme.Hom.comp_apply, spMap_algebraMap_apply V (FractionRing V) q]
+    rw [Scheme.Hom.comp_apply, GlobalTheory.ExtendNormal.spMap_apply_eq_bot V (FractionRing V) q]
     exact hg0
   refine ⟨V, FractionRing V, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
     inferInstance, g ≫ s, g ≫ t, IsOpenImmersion.lift i _ hr, ?_, ?_, ?_, ?_⟩

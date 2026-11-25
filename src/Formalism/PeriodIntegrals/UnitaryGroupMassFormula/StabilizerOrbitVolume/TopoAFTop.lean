@@ -8,7 +8,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.T
 
 namespace PI.VolStabSW.TopoAF
 
-theorem afTop_holds : PI.VolSemiDirect.W.Lc.AFTop := fun F _ _ =>
+theorem afTop_holds : PI.VolSemiDirect.W.Lc.AFTop := fun _ _ _ =>
   ⟨inferInstance, inferInstance, inferInstance⟩
 
 end PI.VolStabSW.TopoAF

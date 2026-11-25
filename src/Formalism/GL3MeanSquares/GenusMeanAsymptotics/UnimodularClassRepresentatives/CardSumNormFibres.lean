@@ -115,15 +115,8 @@ theorem sigma_eq_pow {k : Type*} [Field k] [Fintype k] (σ : k ≃+* k)
   haveI : NeZero p := ⟨hp.ne_zero⟩
   letI : Algebra (ZMod p) k := ZMod.algebra k p
   have hpow : ∀ i : ℕ, ∀ x : k,
-      ((FiniteField.frobeniusAlgEquivOfAlgebraic (ZMod p) k) ^ i) x = x ^ (p ^ i) := by
-    intro i
-    induction i with
-    | zero => intro x; simp
-    | succ i ih =>
-      intro x
-      rw [pow_succ, AlgEquiv.mul_apply, ih]
-      simp only [FiniteField.coe_frobeniusAlgEquivOfAlgebraic, ZMod.card]
-      rw [← pow_mul, ← pow_succ']
+      ((FiniteField.frobeniusAlgEquivOfAlgebraic (ZMod p) k) ^ i) x = x ^ (p ^ i) := fun i x => by
+    rw [AlgEquiv.coe_pow, FiniteField.coe_frobeniusAlgEquivOfAlgebraic_iterate, ZMod.card]
   let σ' : k ≃ₐ[ZMod p] k := AlgEquiv.ofRingEquiv (f := σ) (fun c =>
     DFunLike.congr_fun (RingHom.ext_zmod (σ.toRingHom.comp (algebraMap (ZMod p) k))
       (algebraMap (ZMod p) k)) c)

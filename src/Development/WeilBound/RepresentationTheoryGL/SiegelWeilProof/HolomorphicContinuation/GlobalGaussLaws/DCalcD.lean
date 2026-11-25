@@ -113,11 +113,12 @@ theorem evX_growth (Q : PX m n) : ∃ C N, 0 ≤ C ∧ ∀ v, ‖evX Q v‖ ≤ 
 alias poly_exp := _root_.UpperTheory.Reformulated.B.P6.r23b.pow_mul_exp_le_half_exp
 
 theorem integrable_gauss_C (a : ℝ) (ha : 0 < a) : Integrable (fun z : ℂ => Real.exp (-(a * ‖z‖ ^ 2))) := by
-  have h := GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := (a : ℂ)) (by simpa using ha) 0 0
-  refine h.norm.congr (Eventually.of_forall fun z => ?_)
+  have h := (GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := (a : ℂ))
+    (by simpa using ha) 0 0).norm
+  refine h.congr (Filter.Eventually.of_forall fun z => ?_)
   simp only [zero_mul, add_zero, Complex.norm_exp]
   congr 1
-  simp [Complex.mul_re, ← Complex.ofReal_pow]
+  simp [← Complex.ofReal_pow]
 
 theorem integrable_gauss (a : ℝ) (ha : 0 < a) : Integrable (fun u : Fin m → Fin n → ℂ => Real.exp (-(a * sqN u))) := by
   apply _root_.PositivityTheory.Rg.Sw.FFTSteps.integrable_gs_re <;> assumption

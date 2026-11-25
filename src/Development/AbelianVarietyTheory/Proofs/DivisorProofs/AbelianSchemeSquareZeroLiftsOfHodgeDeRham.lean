@@ -55,8 +55,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.LiftSys GlobalTheory.Published
 
-theorem _root_.GlobalTheory.T.abelianLift_reduction_standard_facts : CrystallineSmoothLift → AbelianHodgeDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (g : ℕ) (A₀ : Over (Sp R₀)) [GrpObj A₀] (A' : Over (Sp R)) [GrpObj A'] (i' : A₀.left ⟶ A'.left) (h' : IsGrpPullback A₀ A' (spMap π) i'), IsAbelianScheme A' → SmoothOfRelativeDimension g A'.hom → AllPrim (dp0 R) (𝟙 _) A' ∧ AllPrim (dp0 R₀) (𝟙 _) A₀ ∧ AllPrim (divided₂ hI) (spMap π) A₀ ∧ Function.Bijective (liftMor (divided₂ hI) h').pull ∧ Module.Finite R (Cr hI π A₀.hom) ∧ Module.Projective R (Cr hI π A₀.hom) ∧ IsAbelianScheme A₀ ∧ SmoothOfRelativeDimension g A₀.hom := by
-  first | exact @GlobalTheory.LiftSys.abelianLift_facts
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianLiftReductionStandardFactsStatement =====
@@ -110,7 +108,7 @@ theorem mem_smul_top_of_tmul_eq_zero {R R₀ M : Type} [CommRing R] [CommRing R�
 theorem full_and_isCompl : CrystallineSmoothLift → AbelianHodgeDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (g : ℕ) (A₀ : Over (Sp R₀)) [GrpObj A₀] (A' : Over (Sp R)) [GrpObj A'] (i' : A₀.left ⟶ A'.left) (h' : IsGrpPullback A₀ A' (spMap π) i'), IsAbelianScheme A' → SmoothOfRelativeDimension g A'.hom → ∀ S : Sys I π A₀.hom, S.Presents A'.hom i' → S.Full hI ∧ ∃ N, IsCompl (S.K hI) N := by
   intro H HD R R₀ _ _ I hI π hπ hk g A₀ _ A' _ i' h' hA hg S hS
   have hpb : IsPullback i' A₀.hom A'.hom (spMap π) := h'.1
-  obtain ⟨e, he1, he2⟩ := GlobalTheory.T.hodge_cohomology_iso_presented_crystal R R₀ I hI π hπ hk A₀.left A₀.hom S A'.left A'.hom i' hpb hS
+  obtain ⟨e, he1, he2⟩ := GlobalTheory.LiftSys.cohomology_presents R R₀ I hI π hπ hk A₀.left A₀.hom S A'.left A'.hom i' hpb hS
   have hsm : Smooth A'.hom := hA.smooth
   haveI : IsProper A'.hom := hA.proper
   have hsep : IsSeparated A'.hom := inferInstance
@@ -118,8 +116,6 @@ theorem full_and_isCompl : CrystallineSmoothLift → AbelianHodgeDeRham → ∀ 
   have hw : i' ≫ A'.hom = (A₀.hom ≫ spMap π) ≫ spMap (RingHom.id R) := by
     rw [Cris.spMap_id, Category.comp_id]; exact hpb.w
   let m : IsMor (dp0 R) A'.hom (divided₂ hI) (A₀.hom ≫ spMap π) (RingHom.id R) i' := IsMor.of_dividedPowersZeroIdeal _ hw
-  have hm := (H.toCrystallineDeRham R I (divided₂ hI) (isDPNilpotent_squareZero hI) R₀ π hπ hk A'.left A₀.left A'.hom A₀.hom i'
-    hsm hsep hqc hpb m).1
   have hc := H.bijective_cechDeRhamComparison_degreeOne A'.hom hsm hsep hqc
   obtain ⟨-, -, -, ⟨-, hproj, -⟩, ⟨-, -, hto⟩, hbc⟩ := HD R A' g hA hg
   have key : ∀ c, S.r hI (m.pull1 c) = e (toHO1 A'.hom (cmp1 A'.hom c)) := fun c ↦ (he1 m c).symm
@@ -602,8 +598,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.LiftSys GlobalTheory.Published
 
-theorem _root_.GlobalTheory.T.exists_scheme_presenting_squareZeroSmoothLiftSystem : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀), ∀ S : Sys I π s₀, ∃ (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X), IsClosedImmersion i ∧ Surjective i ∧ Nonempty (S.Presents s i) := by
-  first | exact @GlobalTheory.LiftGlue.exists_presents
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSchemePresentingSquareZeroSmoothLiftSystemStatement =====
@@ -630,7 +624,7 @@ theorem exists_corr_of_defect : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀]
   choose η hη using fun U ↦ (hext U).exists
   have hψ : ∀ U : AffOp X₀, ∃ ψ : S.F.obj U →ₐ[R] S'.F.obj U,
       IsTheta I (S.p U) (Φ.φ U : S.F.obj U →ₐ[R] S'.F.obj U) ψ (-η U) := fun U ↦
-    (GlobalTheory.T.algHom_lifts_sqZero_classified_by_differentials R R₀ (S.F.obj U) (Sec s₀ U.unop.1) (S'.F.obj U) I hI π hπ (S.p U) (S.semi U) (S.surj U)
+    (GlobalTheory.LiftSys.theta_classify R R₀ (S.F.obj U) (Sec s₀ U.unop.1) (S'.F.obj U) I hI π hπ (S.p U) (S.semi U) (S.surj U)
       (S.ker U) (Φ.φ U : S.F.obj U →ₐ[R] S'.F.obj U)).2 (-η U)
       (fun b w ↦ by rw [AddMonoidHom.neg_apply, AddMonoidHom.neg_apply, (hη U).1, mul_neg])
       (fun w ↦ by rw [AddMonoidHom.neg_apply]; exact neg_mem ((hη U).2.1 w))
@@ -724,7 +718,7 @@ theorem diff_mem {U V : AffOp X₀} (a : U ⟶ V) (b : S.F.obj U) :
 
 theorem ex (hI : I ^ 2 = 0) (hπ : Function.Surjective π) {U V : AffOp X₀} (a : U ⟶ V) :
     ∃! θ : Ω[Sec s₀ U.unop.1⁄R₀] →+ S'.F.obj V, IsTheta I (S.p U) (al Φ a) (be Φ a) θ :=
-  (GlobalTheory.T.algHom_lifts_sqZero_classified_by_differentials R R₀ (S.F.obj U) (Sec s₀ U.unop.1) (S'.F.obj V) I hI π hπ (S.p U) (S.semi U)
+  (GlobalTheory.LiftSys.theta_classify R R₀ (S.F.obj U) (Sec s₀ U.unop.1) (S'.F.obj V) I hI π hπ (S.p U) (S.semi U)
     (S.surj U) (S.ker U) (al Φ a)).1 (be Φ a) (diff_mem Φ a)
 
 def th (hI : I ^ 2 = 0) (hπ : Function.Surjective π) {U V : AffOp X₀} (a : U ⟶ V) : Ω[Sec s₀ U.unop.1⁄R₀] →+ S'.F.obj V :=
@@ -820,7 +814,7 @@ namespace GlobalTheory.LiftSys
 
 theorem sysHom_of_K_eq : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀), Good s₀ → RhoBC hI hk s₀ → ∀ S S' : Sys I π s₀, S.Full hI → S.K hI = S'.K hI → ∃ ψ : ∀ U, S.F.obj U →ₐ[R] S'.F.obj U, (∀ U b, S'.p U (ψ U b) = S.p U b) ∧ ∀ (U V : AffOp X₀) (a : U ⟶ V) (b : S.F.obj U), mp S'.F a (ψ U b) = ψ V (mp S.F a b) := by
   intro R R₀ _ _ I hI π hπ hk X₀ s₀ hG hρ S S' hF hK
-  obtain ⟨Φ⟩ := GlobalTheory.T.nonempty_locIso_squareZeroSmoothLiftSystems R R₀ I hI π hπ hk X₀ s₀ S S'
+  obtain ⟨Φ⟩ := GlobalTheory.LiftSys.locIso_nonempty R R₀ I hI π hπ hk X₀ s₀ S S'
   obtain ⟨θ, v, hθ, hv, hvI, hvs⟩ := GlobalTheory.T.exists_liftSystemDefect_cocycle_globalForms R R₀ I hI π hπ hk X₀ s₀ S S' Φ
 
   have hcl : ∀ w, H1.mk _ (v w) = 0 := by
@@ -1314,7 +1308,7 @@ theorem hodgeFiltration_lift_map_eq_crystalline_kernel (H : CrystallineSmoothLif
       (∀ (m : IsMor (dp0 R) s (divided₂ hI) (s₀ ≫ spMap π) (RingHom.id R) i)
         (c : FirstDeRham s), e (toHO1 s (cmp1 s c)) = S.r hI (m.pull1 c)) ∧
       ∀ c : HO1 s, IsPullO h.w c (S.redO.pull1 (e c)) :=
-    GlobalTheory.T.hodge_cohomology_iso_presented_crystal R R₀ I hI π hπ hk X₀ s₀ S X s i h hP
+    GlobalTheory.LiftSys.cohomology_presents R R₀ I hI π hπ hk X₀ s₀ S X s i h hP
   obtain ⟨e, he, -⟩ := hex
   have key : ∀ c, m.pull1 c ∈ S.K hI ↔ c ∈ F1 s := fun c ↦ by
     change S.r hI (m.pull1 c) = 0 ↔ toH1O s c = 0
@@ -1370,8 +1364,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.LiftSys GlobalTheory.Published
 
-theorem _root_.GlobalTheory.T.isSmoothLift_of_squareZeroLiftSystemPresents : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀), ∀ (S : Sys I π s₀) (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X), IsClosedImmersion i → Surjective i → S.Presents s i → IsPullback i s₀ s (spMap π) ∧ Smooth s := by
-  first | exact @GlobalTheory.LiftSys.presents_isLift
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSmoothLiftOfSquareZeroLiftSystemPresentsStatement =====
@@ -1423,11 +1415,11 @@ theorem abelianSchemeLifts_of_hodgeDeRham (hC : CrystallineSmoothLift) (hH : Abe
     AbelianSchemeLifts := by
   intro R _ _ I hI R₀ _ π hπ hk g A₀ _ A' _ i' h' hA hg
   haveI : IsNoetherianRing R₀ := isNoetherianRing_of_surjective R R₀ π hπ
-  obtain ⟨-, -, -, -, -, -, hA₀, hg₀⟩ := GlobalTheory.T.abelianLift_reduction_standard_facts hC hH R R₀ I hI π hπ hk g A₀ A' i' h' hA hg
+  obtain ⟨-, -, -, -, -, -, hA₀, hg₀⟩ := GlobalTheory.LiftSys.abelianLift_facts hC hH R R₀ I hI π hπ hk g A₀ A' i' h' hA hg
   have hG : Good A₀.hom := GlobalTheory.T.goodForSquareZeroLiftClassification_of_abelianScheme hC hH R₀ A₀ g hA₀ hg₀
   have hR : RhoBC hI hk A₀.hom := GlobalTheory.T.abelianScheme_crystal_reduces_to_deRham_sqZero hC hH R R₀ I hI π hπ hk g A₀ A' i' h' hA hg
   obtain ⟨ad1, ad2, ad3⟩ := GlobalTheory.T.admissible_deRhamHomology_summands_crystal hC hH R R₀ I hI π hπ hk g A₀ A' i' h' hA hg
-  obtain ⟨S', ⟨P'⟩⟩ := GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk A₀.left A₀.hom A'.left A'.hom i' h'.1 hA.smooth
+  obtain ⟨S', ⟨P'⟩⟩ := GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk A₀.left A₀.hom A'.left A'.hom i' h'.1 hA.smooth
   obtain ⟨hF', hc'⟩ := GlobalTheory.T.abelian_scheme_presented_by_system hC hH R R₀ I hI π hπ hk g A₀ A' i' h' hA hg S' P'
   have core1 := GlobalTheory.T.squareZeroLiftSystem_filtration_direct_summand R R₀ I hI π hπ hk A₀.left A₀.hom hG hR S' hF' hc'
   have ksup := _root_.GlobalTheory.LiftSys.Sys.mem_K_sup_iff R R₀ I hI π hπ hk A₀.left A₀.hom S' hR hF'
@@ -1437,18 +1429,18 @@ theorem abelianSchemeLifts_of_hodgeDeRham (hC : CrystallineSmoothLift) (hH : Abe
     congrArg Submodule.dualAnnihilator
       (_root_.GlobalTheory.LiftSys.hodgeFiltration_lift_eq_comap_systemFiltration hC R R₀ I hI π hπ hk A₀ hA₀.proper hA₀.geomConnected X i h hX S P)
   refine ⟨⟨fun X i h hX ↦ ?_, fun F hF ↦ ?_⟩, fun X Y i j h k hX hY e ↦ ?_⟩
-  · obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
+  · obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
     obtain ⟨hc, hs⟩ := core1 S
     obtain ⟨F, hF, e⟩ := ad1 (S.K hI) hc fun c ↦ by rw [hs]; exact ksup c
     exact ⟨F, hF, (fil X i h hX S P).trans e⟩
   · obtain ⟨K, hc, hs, e⟩ := ad2 F hF
     obtain ⟨S, rfl⟩ := _root_.GlobalTheory.LiftSys.exists_sys_of_summand R R₀ I hI π hπ hk A₀.left A₀.hom hG hR S' hF' hc' K hc
       (Submodule.ext fun c ↦ (hs c).trans (ksup c).symm)
-    obtain ⟨X, s, i, h1, h2, ⟨P⟩⟩ := GlobalTheory.T.exists_scheme_presenting_squareZeroSmoothLiftSystem R R₀ I hI π hπ hk A₀.left A₀.hom S
-    obtain ⟨h, hX⟩ := GlobalTheory.T.isSmoothLift_of_squareZeroLiftSystemPresents R R₀ I hI π hπ hk A₀.left A₀.hom S X s i h1 h2 P
+    obtain ⟨X, s, i, h1, h2, ⟨P⟩⟩ := GlobalTheory.LiftGlue.exists_presents R R₀ I hI π hπ hk A₀.left A₀.hom S
+    obtain ⟨h, hX⟩ := GlobalTheory.LiftSys.presents_isLift R R₀ I hI π hπ hk A₀.left A₀.hom S X s i h1 h2 P
     exact ⟨Over.mk s, i, h, hX, (fil (Over.mk s) i h hX S P).trans e⟩
-  · obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
-    obtain ⟨T, ⟨Q⟩⟩ := GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk A₀.left A₀.hom Y.left Y.hom j k hY
+  · obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
+    obtain ⟨T, ⟨Q⟩⟩ := GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk A₀.left A₀.hom Y.left Y.hom j k hY
     have hK : T.K hI = S.K hI := ad3 _ _ (core1 T).1 (core1 S).1
       ((fil Y j k hY T Q).symm.trans (e.symm.trans (fil X i h hX S P)))
     have hT : T.Full hI := (_root_.GlobalTheory.LiftSys.K_inf_eq_and_full R R₀ I hI π hπ hk A₀.left A₀.hom hG.const S' T).2 hF'

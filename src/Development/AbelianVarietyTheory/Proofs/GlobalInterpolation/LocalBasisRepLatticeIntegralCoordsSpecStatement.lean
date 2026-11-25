@@ -72,7 +72,7 @@ theorem blk_mulVec_last (A : Matrix (Fin n) (Fin n) E) (c : E) (x : Fin (n + 1) 
   simp [blk, Matrix.mulVec, dotProduct, Fin.sum_univ_castSucc]
 
 theorem blk_mulVec_ext {P Q : Matrix (Fin (n + 1)) (Fin (n + 1)) E} (h : ∀ x, P *ᵥ x = Q *ᵥ x) : P = Q :=
-  Matrix.ext_of_mulVec_single fun j => h _
+  Matrix.ext_of_mulVec_single fun _ => h _
 
 theorem blk_mul (A A' : Matrix (Fin n) (Fin n) E) (c c' : E) :
     blk A c * blk A' c' = blk (A * A') (c * c') := by

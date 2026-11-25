@@ -570,8 +570,7 @@ theorem lamC_one (lam : Qbar →+* ℂ_[p]) : lamC lam 1 = 1 := by
 
 theorem coeff_one_subst (f s : PowerSeries ℂ_[p]) (hf : PowerSeries.constantCoeff f = 0) :
     PowerSeries.coeff 1 (PowerSeries.subst f s : PowerSeries ℂ_[p]) = PowerSeries.coeff 1 s * PowerSeries.coeff 1 f := by
-  intros
-  apply _root_.GlobalTheory.SerTransport.one_subst <;> assumption
+  apply GlobalTheory.SerTransport.one_subst <;> assumption
 
 theorem ePhiOne_holds (D : D7) : EPhiOne D := by
   intro p _ cc δ g hA

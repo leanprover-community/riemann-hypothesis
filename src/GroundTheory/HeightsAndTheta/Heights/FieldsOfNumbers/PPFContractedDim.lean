@@ -145,47 +145,48 @@ theorem killBlocks_mem_of_isMultiHomogIdeal {Q : Ideal (MRing ι F)} (hQ : IsMul
 def killIdeal (Q : Ideal (MRing ι F)) (T : Finset K) : Ideal (MRing ι F) :=
   Q.comap (killBlocks T)
 
-theorem card_le_ringKrullDim [Fintype K] {Q : Ideal (MRing ι F)} [hQp : Q.IsPrime]
-    (hQ : ∀ (T : Finset K) (q : MRing ι F), q ∈ Q → killBlocks T q ∈ Q) (hrel : IsRelevant Q) :
-    (Fintype.card K : WithBot ℕ∞) ≤ ringKrullDim (MRing ι F ⧸ Q) := by
+theorem ringKrullDim_killIdeal_add_card_le {Q : Ideal (MRing ι F)} [Q.IsPrime]
+    (hQ : ∀ (T : Finset K) (q : MRing ι F), q ∈ Q → killBlocks T q ∈ Q) (hrel : IsRelevant Q)
+    (T : Finset K) :
+    ringKrullDim (MRing ι F ⧸ killIdeal Q T) + (T.card : WithBot ℕ∞) ≤
+      ringKrullDim (MRing ι F ⧸ Q) := by
   choose i hi using hrel
   have hmono : ∀ {T T' : Finset K}, T ⊆ T' → killIdeal Q T ≤ killIdeal Q T' := by
     intro T T' h q hq
     change killBlocks T' q ∈ Q
     rw [← killBlocks_comp h]
     exact hQ T' _ hq
-  have hprime : ∀ T, (killIdeal Q T).IsPrime := fun T => Ideal.comap_isPrime _ _
-  have hchain : ∀ T : Finset K,
-      ringKrullDim (MRing ι F ⧸ killIdeal Q T) + (T.card : WithBot ℕ∞) ≤
-        ringKrullDim (MRing ι F ⧸ Q) := by
-    intro T
-    induction T using Finset.induction_on with
-    | empty =>
-      have : killIdeal Q (∅ : Finset K) = Q := by
-        ext q
-        simp [killIdeal, killBlocks_empty]
-      rw [this, Finset.card_empty, Nat.cast_zero, add_zero]
-    | insert k T hk ih =>
-      have := hprime T
-      have hstep := ringKrullDim_add_one_le (P := killIdeal Q T) (Q := killIdeal Q (insert k T))
-        (hmono (Finset.subset_insert k T)) (f := X ⟨k, i k⟩)
-        (by
-          change killBlocks T (X ⟨k, i k⟩) ∉ Q
-          rw [killBlocks_X, ite_eq_right hk]
-          exact hi k)
-        (by
-          change killBlocks (insert k T) (X ⟨k, i k⟩) ∈ Q
-          rw [killBlocks_X, ite_eq_left (Finset.mem_insert_self k T)]
-          exact Q.zero_mem)
-      calc ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + ((insert k T).card : WithBot ℕ∞)
-          = (ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + 1) + (T.card : WithBot ℕ∞) := by
-            rw [Finset.card_insert_of_notMem hk, Nat.cast_add, Nat.cast_one, add_assoc,
-              add_comm (1 : WithBot ℕ∞)]
-        _ ≤ ringKrullDim (MRing ι F ⧸ killIdeal Q T) + (T.card : WithBot ℕ∞) := by gcongr
-        _ ≤ _ := ih
-  have := hprime Finset.univ
+  induction T using Finset.induction_on with
+  | empty =>
+    have : killIdeal Q (∅ : Finset K) = Q := by
+      ext q
+      simp [killIdeal, killBlocks_empty]
+    rw [this, Finset.card_empty, Nat.cast_zero, add_zero]
+  | insert k T hk ih =>
+    have : (killIdeal Q T).IsPrime := Ideal.comap_isPrime _ _
+    have hstep := ringKrullDim_add_one_le (P := killIdeal Q T) (Q := killIdeal Q (insert k T))
+      (hmono (Finset.subset_insert k T)) (f := X ⟨k, i k⟩)
+      (by
+        change killBlocks T (X ⟨k, i k⟩) ∉ Q
+        rw [killBlocks_X, ite_eq_right hk]
+        exact hi k)
+      (by
+        change killBlocks (insert k T) (X ⟨k, i k⟩) ∈ Q
+        rw [killBlocks_X, ite_eq_left (Finset.mem_insert_self k T)]
+        exact Q.zero_mem)
+    calc ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + ((insert k T).card : WithBot ℕ∞)
+        = (ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + 1) + (T.card : WithBot ℕ∞) := by
+          rw [Finset.card_insert_of_notMem hk, Nat.cast_add, Nat.cast_one, add_assoc,
+            add_comm (1 : WithBot ℕ∞)]
+      _ ≤ ringKrullDim (MRing ι F ⧸ killIdeal Q T) + (T.card : WithBot ℕ∞) := by gcongr
+      _ ≤ _ := ih
+
+theorem card_le_ringKrullDim [Fintype K] {Q : Ideal (MRing ι F)} [hQp : Q.IsPrime]
+    (hQ : ∀ (T : Finset K) (q : MRing ι F), q ∈ Q → killBlocks T q ∈ Q) (hrel : IsRelevant Q) :
+    (Fintype.card K : WithBot ℕ∞) ≤ ringKrullDim (MRing ι F ⧸ Q) := by
+  have : (killIdeal Q Finset.univ).IsPrime := Ideal.comap_isPrime _ _
   have h0 := ringKrullDim_nonneg_of_nontrivial (R := MRing ι F ⧸ killIdeal Q Finset.univ)
-  have := hchain Finset.univ
+  have := ringKrullDim_killIdeal_add_card_le hQ hrel Finset.univ
   rw [Finset.card_univ] at this
   calc (Fintype.card K : WithBot ℕ∞) = 0 + (Fintype.card K : WithBot ℕ∞) := (zero_add _).symm
     _ ≤ ringKrullDim (MRing ι F ⧸ killIdeal Q Finset.univ) + (Fintype.card K : WithBot ℕ∞) := by

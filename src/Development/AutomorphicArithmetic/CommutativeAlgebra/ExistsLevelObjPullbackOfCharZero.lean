@@ -229,7 +229,7 @@ private def baseChangeMap (o : GObj gb N s) (s' : S' ⟶ Sp R) (hs : f ≫ s = s
   sq := isSquare f o.A
   act c := pullAct_sq f o.act c
   pol := gen_refl _ (pull_isLB o.isLB _)
-  eta y := GlobalTheory.SiegelPull.secPull_left (isGrpPullback f o.A) _
+  eta _ := GlobalTheory.SiegelPull.secPull_left (isGrpPullback f o.A) _
 
 end Obj
 

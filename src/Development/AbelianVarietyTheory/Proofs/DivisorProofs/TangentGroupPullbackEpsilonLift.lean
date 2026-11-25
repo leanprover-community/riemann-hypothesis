@@ -112,8 +112,8 @@ def epsFunctor (hs : s' = s ≫ DeRham.epsRed R) : Thick (dp0 R) s ⥤ Thick (ep
       comm := fun b ↦ (f.comm _).trans (congrArg T'.π (fst_epsMap (f.φ : T.B →+* T'.B) b).symm)
       dp := isDPMorphism_extMap f.dp _
       pt := f.pt }
-  map_id T := Thick.hom_ext fun b ↦ TrivSqZeroExt.ext (fst_epsMap _ _) (snd_epsMap _ _)
-  map_comp f g := Thick.hom_ext fun b ↦ TrivSqZeroExt.ext
+  map_id _ := Thick.hom_ext fun _ ↦ TrivSqZeroExt.ext (fst_epsMap _ _) (snd_epsMap _ _)
+  map_comp _ _ := Thick.hom_ext fun _ ↦ TrivSqZeroExt.ext
     ((fst_epsMap _ _).trans ((congrArg _ (fst_epsMap _ _)).symm.trans (fst_epsMap _ _).symm))
     ((snd_epsMap _ _).trans ((congrArg _ (snd_epsMap _ _)).symm.trans (snd_epsMap _ _).symm))
 

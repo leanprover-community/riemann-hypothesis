@@ -88,14 +88,6 @@ structure BData : Type 1 where
 
 attribute [instance] BData.hN BData.hI BData.hC BData.vN BData.vI BData.vF
 
-namespace BData
-
-variable (X : BData)
-
-variable {X}
-
-end BData
-
 end Formalism.MainNotions.LeviCoordinates
 
 end

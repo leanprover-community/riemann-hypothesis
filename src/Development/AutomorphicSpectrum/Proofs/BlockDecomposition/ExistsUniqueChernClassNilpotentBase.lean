@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCr
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb GroundTheory.PAdicHodge
 
 namespace GlobalTheory.CompanionTheory.CrystallineChernClass

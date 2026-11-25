@@ -191,7 +191,7 @@ theorem exists_hol_chart (X : Data E r) {B : Set W} (hB : IsOpen B) (x : W → F
     change LUPf.nF X (x b₀) (x b₀) _ _ _ = 0
     simp only [LUPf.nF, hM, hL, inv_one]
     exact Matrix.one_apply_ne ((Fintype.equivFin (Ent X)).symm k).2.2.ne'
-  · have hb' := LUPf.bF_mem (hx b hb.1) hb.2
+  · have hb' := LUPf.bF_mem hb.2
     have hs : x b = rmul (cpt X (x b₀) (LUPf.zF X (x b₀) (x b))) (LUPf.bF X (x b₀) (x b)) := by
       funext τ
       change x b τ = (mat (x b₀) τ * mat (nmat X (LUPf.zF X (x b₀) (x b))) τ *

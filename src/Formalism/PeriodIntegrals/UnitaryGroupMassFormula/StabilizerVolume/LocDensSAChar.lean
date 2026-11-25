@@ -1,14 +1,10 @@
 module
-
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 
 @[expose] public section
-
 noncomputable section
-
 open NumberField
-
 namespace PI.VolStabS
 
 def ChInf : Prop :=
@@ -29,29 +25,15 @@ def AddIntF : Prop :=
 theorem chInf_of (hL : ChLift) (hA : AddIntF) : ChInf := by
   intro F _ _ Λ hne hnot χ hχ hΛ x
   obtain ⟨ℓ, hℓc, hℓ⟩ := hL F χ hχ
-  have h2 : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
-    simp [Real.pi_ne_zero, Complex.I_ne_zero]
-
-  let g : F →+ ℂ := (AddMonoidHom.mulLeft (2 * (Real.pi : ℂ) * Complex.I)⁻¹).comp
-    (ℓ.comp (algebraMap F (InfiniteAdeleRing F)).toAddMonoidHom)
-  have hgv : ∀ a, g a = (2 * (Real.pi : ℂ) * Complex.I)⁻¹ * ℓ (algebraMap F _ a) := fun a => rfl
-  have hgint : ∀ a ∈ Λ, ∃ n : ℤ, g a = n := by
-    intro a ha
-    have h1 := hΛ a ha
-    rw [hℓ, Complex.exp_eq_one_iff] at h1
-    obtain ⟨n, hn⟩ := h1
-    refine ⟨n, ?_⟩
-    rw [hgv, hn, inv_mul_eq_iff_eq_mul₀ h2, mul_comm]
-  have hg0 := hA F Λ hne hnot g hgint
-  have hℓ0 : ∀ a : F, ℓ (algebraMap F (InfiniteAdeleRing F) a) = 0 := by
-    intro a
-    have h3 := hg0 a
-    rw [hgv] at h3
-    exact (mul_eq_zero.mp h3).resolve_left (inv_ne_zero h2)
-
-  have hfun : (ℓ : InfiniteAdeleRing F → ℂ) = fun _ => 0 :=
-    (InfiniteAdeleRing.denseRange_algebraMap F).equalizer hℓc continuous_const
-      (funext fun a => hℓ0 a)
-  rw [hℓ, congrFun hfun x, Complex.exp_zero]
+  suffices h : (ℓ : InfiniteAdeleRing F → ℂ) = fun _ => 0 by rw [hℓ, congrFun h x, Complex.exp_zero]
+  apply (InfiniteAdeleRing.denseRange_algebraMap F).equalizer hℓc continuous_const
+  funext a
+  let p : ℂ := 2 * (Real.pi : ℂ) * Complex.I
+  have hp : p ≠ 0 := by simp [p, Real.pi_ne_zero, Complex.I_ne_zero]
+  apply (mul_eq_zero.mp ?_).resolve_left (inv_ne_zero hp)
+  refine hA F Λ hne hnot ((AddMonoidHom.mulLeft p⁻¹).comp
+    (ℓ.comp (algebraMap F (InfiniteAdeleRing F)).toAddMonoidHom)) (fun b hb => ?_) a
+  obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp ((hℓ _).symm.trans (hΛ b hb))
+  exact ⟨n, (inv_mul_eq_iff_eq_mul₀ hp).2 (hn.trans (mul_comm _ p))⟩
 
 end PI.VolStabS

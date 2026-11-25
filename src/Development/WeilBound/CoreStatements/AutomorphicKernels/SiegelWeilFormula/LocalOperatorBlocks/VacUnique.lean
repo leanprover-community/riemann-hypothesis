@@ -89,13 +89,7 @@ private theorem integral_cexp_quadratic_mul_det_neg_eq_pi_pow (M U : Matrix (Fin
     have h1 : (star U * (-M) * U).det = (-M).det := by
       rw [Matrix.det_mul, Matrix.det_mul, mul_comm (star U).det, mul_assoc, ← Matrix.det_mul, hsU,
         Matrix.det_one, mul_one]
-    have h2 : -Matrix.diagonal d = Matrix.diagonal (fun k => -d k) := by
-      ext i j
-      by_cases hij : i = j
-      · subst hij
-        simp
-      · simp [Matrix.diagonal_apply_ne _ hij]
-    rw [← h1, Matrix.mul_neg, Matrix.neg_mul, hM, h2, Matrix.det_diagonal]
+    rw [← h1, Matrix.mul_neg, Matrix.neg_mul, hM, Matrix.diagonal_neg, Matrix.det_diagonal]
   rw [hdet, ← Finset.prod_mul_distrib]
   rw [Finset.prod_congr rfl fun k _ => div_mul_cancel₀ (Real.pi : ℂ) (fun h => by
     have := hd k

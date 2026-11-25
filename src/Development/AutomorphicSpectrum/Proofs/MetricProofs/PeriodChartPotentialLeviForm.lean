@@ -311,13 +311,6 @@ section -- clump:auto
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
 open scoped ComplexOrder
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem holomorphic_factor_big_cell :
-    ∀ (e N : ℕ) (g : (Fin e → ℂ) → Matrix (Fin N) (Fin N) ℂ) (x₀ : Fin e → ℂ), (∀ a b, AnalyticAt ℂ (fun x => g x a b) x₀) → (g x₀).BlockTriangular id → IsUnit (g x₀).det → ∃ (z : (Fin e → ℂ) → Pairs N → ℂ) (b : (Fin e → ℂ) → Matrix (Fin N) (Fin N) ℂ), AnalyticAt ℂ z x₀ ∧ (∀ p q, AnalyticAt ℂ (fun x => b x p q) x₀) ∧ z x₀ = 0 ∧ (∀ᶠ x in 𝓝 x₀, (b x).BlockTriangular id ∧ IsUnit (b x).det ∧ g x = cellMat N (z x) * b x) ∧ ∀ v, fderiv ℂ z x₀ v = 0 ↔ ((g x₀)⁻¹ * Matrix.of fun p q => fderiv ℂ (fun x => g x p q) x₀ v).BlockTriangular id :=
-  PositivityTheory.Xgp.t_per_cell
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalBruhatCellAnalyticCoordinates =====
@@ -460,7 +453,7 @@ theorem exists_cell_coords {j : ℕ} (hj : j ≤ N) (gc : (Fin e → ℂ) → Ma
     intro a b
     simp only [Matrix.mul_apply]
     exact Finset.analyticAt_fun_sum _ fun c _ => analyticAt_const.fun_mul (han c b)
-  obtain ⟨z, b, hz, hb, hz0, hev, hiff⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.holomorphic_factor_big_cell e N (fun w => u * gc w) z0 han'
+  obtain ⟨z, b, hz, hb, hz0, hev, hiff⟩ := _root_.PositivityTheory.Xgp.t_per_cell e N (fun w => u * gc w) z0 han'
     (by simpa only [hub] using hb₀) (by simpa only [hub] using hdet)
   refine ⟨z, hz, hz0, fun i => ?_, fun v => ?_⟩
   · have hcell : ∀ᶠ w in 𝓝 z0, InFlagDomain N j (cellMat N (z w)) := by
@@ -585,7 +578,6 @@ theorem pairEquiv_lt_snd {j : ℕ} (hj : j ≤ N) (p : Pairs N) (i : Fin N) :
   rfl
 
 end PerDiag
-
 
 open PerDiag in
 theorem levi_diagonal_of_isPeriodChart :

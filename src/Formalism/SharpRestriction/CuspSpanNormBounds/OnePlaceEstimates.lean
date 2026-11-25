@@ -72,16 +72,6 @@ def ConclusionB3 (D : D7) (Aw Ch Cg Cb : ℝ) : Prop :=
       ENNReal.ofReal (Real.exp (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 * (Fintype.card D.what₂.Tau : ℝ) * Real.log b)) *
         jSqG D X
 
-def FormalDegreeRatioAlt (_D : D7) : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (X : TensorDS n ε μ H σ),
-    IsHCParam μ → IsDS ε μ σ →
-    (∀ v w : H, IsKFin ε σ v → IsKFin ε σ w →
-      MemLp (fun g : Formalism.REAL.UJ ε => (frob (umat g) : ℂ) * coefOn σ v w g) 2 (Formalism.REAL.muG ε)) →
-    ∀ s ∈ X.Sm, ∀ (v : H) (vs : X.Hs s), v ≠ 0 → vs ≠ 0 →
-      fdegOf (Formalism.REAL.muG ε) (X.σs s) vs / fdegOf (Formalism.REAL.muG ε) σ v =
-        ∏ s' ∈ Finset.univ.erase s, (μ s + 1 - μ s') / (μ s - μ s')
-
 def RngU (D : D7) (Cu Cg' : ℝ) (lam' lam0 : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) : Prop :=
   AllGaps lam0 (Cg' * D.R.k * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3) ∧
     l1 lam' lam0 ≤ Cu * D.R.k * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 3
@@ -165,25 +155,6 @@ structure TensorDSd (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Ty
 attribute [instance] TensorDSd.nH TensorDSd.iH TensorDSd.cH
 
 end Formalism.MainNotions.OnePlaceEstimates
-
-section ShortGrids
-
-open Filter Topology NumberField
-open scoped ContDiff ComplexOrder nonZeroDivisors
-
-namespace Formalism.MainNotions.OnePlaceEstimates
-
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
-
-section Raw
-
-variable {D : D7} {k0 : ℕ} (Gm : GramWordSpace.GramMap k0 D.R.rS) (X : GramWordSpace.Dat D k0) (Pst : D.what₂.Tau → ℝ → ℝ)
-
-end Raw
-
-end Formalism.MainNotions.OnePlaceEstimates
-
-end ShortGrids
 
 namespace Formalism.MainNotions.OnePlaceEstimates
 

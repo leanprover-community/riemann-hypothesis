@@ -19,31 +19,6 @@ section SlopeTestRemainingChoices
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap adeleMap finiteCompletionMap)
 
-private def lev (K : Type) [Field K] [NumberField K] (N : ℕ) : Subgroup (Ideles K) where
-  carrier := {a | a ∈ GlobalTheory.Mem.Chr.unitIdl K ∧ ∀ v : HeightOneSpectrum (𝓞 K),
-    Valued.v ((a : AdeleRing (𝓞 K) K).2 v - 1) ≤ Valued.v (N : v.adicCompletion K)}
-  one_mem' := ⟨one_mem _, fun v => by
-    show Valued.v ((1 : v.adicCompletion K) - 1) ≤ _
-    rw [sub_self, map_zero]
-    exact zero_le⟩
-  mul_mem' := fun {a b} ha hb => ⟨mul_mem ha.1 hb.1, fun v => by
-    show Valued.v ((a : AdeleRing (𝓞 K) K).2 v * (b : AdeleRing (𝓞 K) K).2 v - 1) ≤ _
-    have e : (a : AdeleRing (𝓞 K) K).2 v * (b : AdeleRing (𝓞 K) K).2 v - 1 =
-        (a : AdeleRing (𝓞 K) K).2 v * ((b : AdeleRing (𝓞 K) K).2 v - 1) + ((a : AdeleRing (𝓞 K) K).2 v - 1) := by ring
-    rw [e]
-    refine Valuation.map_add_le _ ?_ (ha.2 v)
-    rw [map_mul, ha.1 v, one_mul]
-    exact hb.2 v⟩
-  inv_mem' := fun {a} ha => ⟨inv_mem ha.1, fun v => by
-    have h : (a : AdeleRing (𝓞 K) K).2 v * ((a⁻¹ : Ideles K) : AdeleRing (𝓞 K) K).2 v = 1 :=
-      congrArg (fun z : AdeleRing (𝓞 K) K => z.2 v) a.mul_inv
-    have e : (a : AdeleRing (𝓞 K) K).2 v * (((a⁻¹ : Ideles K) : AdeleRing (𝓞 K) K).2 v - 1) =
-        -((a : AdeleRing (𝓞 K) K).2 v - 1) := by linear_combination h
-    have h2 := congrArg (Valued.v : Valuation (v.adicCompletion K) _) e
-    rw [map_mul, ha.1 v, one_mul, Valuation.map_neg] at h2
-    rw [h2]
-    exact ha.2 v⟩
-
 private noncomputable def crd (K : Type) [Field K] [NumberField K] (w : InfinitePlace K) : Ideles K →* ℂˣ :=
   Units.map ((InfinitePlace.Completion.extensionEmbedding w).comp
     ((Pi.evalRingHom (fun v : InfinitePlace K => v.Completion) w).comp

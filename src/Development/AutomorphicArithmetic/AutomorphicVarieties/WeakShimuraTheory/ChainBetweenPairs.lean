@@ -102,32 +102,6 @@ theorem samePs_symm (h : P.SamePs P') : P'.SamePs P := ⟨fun g => (h.1 g).symm,
 
 end In
 
-section Map
-
-variable {O Γ R R' : Type} [CommRing O] [Group Γ] [CommRing R] [CommRing R'] {Φ : Fr O Γ} {a : O →+* R}
-
-theorem pair_map {P : PD Φ.ι Γ R} (h : Φ.IsPair a P) (f : R →+* R') : Φ.IsPair (f.comp a) (P.map f) := by
-  have cj : ∀ n X : M4 R, adj (n.map f) * X.map f * n.map f = (adj n * X * n).map f := fun n X => by
-    rw [Matrix.map_mul, Matrix.map_mul, adj_map]
-  refine ⟨fun g => gsp_map f (h.mult g), fun g hg => ?_, fun i j hij => ?_, fun v => ⟨?_, fun i => ?_, fun i j hij => ?_⟩,
-    fun v s hs i j hij => ?_, fun v s hs i => ?_⟩
-  · show (P.r g).map f = 1
-    rw [h.kill g hg, Matrix.map_one _ (map_zero f) (map_one f)]
-  · show f (P.r Φ.g0 i j) = 0
-    rw [h.nrm hij, map_zero]
-  · exact map_one f ▸ gsp_map f (h.low v).1
-  · show f (P.n v i i) = 1
-    rw [(h.low v).2.1, map_one]
-  · show f (P.n v i j) = 0
-    rw [(h.low v).2.2 i j hij, map_zero]
-  · show (adj ((P.n v).map f) * (P.r s).map f * (P.n v).map f : M4 R') i j = 0
-    rw [cj, Matrix.map_apply, h.flag v s hs i j hij, map_zero]
-  · show (adj ((P.n v).map f) * (P.r s).map f * (P.n v).map f : M4 R') i i = 1
-    rw [cj, Matrix.map_apply]
-    exact (congrArg f (h.mu v s hs i)).trans (map_one f)
-
-end Map
-
 section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c}

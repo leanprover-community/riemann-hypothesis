@@ -266,12 +266,6 @@ structure LatModel (P : Finset ℕ) (c : O.s.Comp) : Type 1 where
   amp : HermLB V.p
   amp_spec : V.Induces (O.met.ab c) amp k
 
-namespace LatModel
-
-variable {O} {P : Finset ℕ} {c : O.s.Comp} (W : O.LatModel P c)
-
-end LatModel
-
 end Setup
 
 end GlobalTheory.Mean4O

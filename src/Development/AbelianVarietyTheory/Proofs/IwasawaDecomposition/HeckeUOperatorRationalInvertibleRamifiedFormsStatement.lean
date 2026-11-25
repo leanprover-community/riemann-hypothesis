@@ -346,14 +346,6 @@ theorem rel_inj (hs : Function.Surjective res) (ht : res t = 0) (htf : ∀ x : V
     · exact (A y hy).2.symm
     · rw [ho.off y hy, ho'.off y (fun h => hy (B y h).1)]
 
-theorem rel_ne (ht : res t = 0) (htf : ∀ x : V, t • x = 0 → x = 0)
-    (hsat : ∀ s x, res s ≠ 0 → s • x ∈ Λ → x ∈ Λ) (hr : Red res t Λ π) (q : Pr R V k) :
-    ¬ Rel res t Λ π q 0 := by
-  rintro ⟨ho, hk, e, he, h⟩
-  have := ((hk _).1 (mem_of_pi htf hsat hr (te_mem ht ho hk (mem_of_one ho he)) h)).2
-  rw [he] at this
-  exact one_ne_zero this
-
 theorem rel_ex (hs : Function.Surjective res) {q : Pr R V k} (ho : q.Ok res) (hk : q.IsKer Λ) :
     ∃ w, Rel res t Λ π q w := by
   obtain ⟨x, hx⟩ := ho.ne
@@ -843,18 +835,13 @@ namespace GlobalTheory.LevelHecke.AboveSum
 
 variable {R V k : Type} [CommRing R] [AddCommGroup V] [Module R V] [Field k]
 
-theorem mem_of_one {res : R →+* k} {q : Pr R V k} (h : q.Ok res) {e : V} (he : q.f e = 1) : e ∈ q.L := by
-  by_contra hn
-  rw [h.off e hn] at he
-  exact zero_ne_one he
-
 theorem smul_mem_ker {res : R →+* k} {q : Pr R V k} {Λ : Submodule R V} (h : q.Ok res) (hk : q.IsKer Λ) {t : R}
     (ht : res t = 0) {e : V} (he : q.f e = 1) : t • e ∈ Λ :=
-  (hk _).2 ⟨q.L.smul_mem _ (mem_of_one h he), by rw [h.smul _ _ (mem_of_one h he), ht, zero_mul]⟩
+  (hk _).2 ⟨q.L.smul_mem _ (GlobalTheory.LevelHecke.UpInj.mem_of_one h he), by rw [h.smul _ _ (GlobalTheory.LevelHecke.UpInj.mem_of_one h he), ht, zero_mul]⟩
 
 theorem sub_mem_ker {res : R →+* k} {q : Pr R V k} {Λ : Submodule R V} (h : q.Ok res) (hk : q.IsKer Λ)
     {e : V} (he : q.f e = 1) {y : V} (hy : y ∈ q.L) {a : R} (ha : res a = q.f y) : y + (-a) • e ∈ Λ := by
-  have he' := mem_of_one h he
+  have he' := GlobalTheory.LevelHecke.UpInj.mem_of_one h he
   refine (hk _).2 ⟨q.L.add_mem hy (q.L.smul_mem _ he'), ?_⟩
   rw [h.add _ hy _ (q.L.smul_mem _ he'), h.smul _ _ he', he, map_neg, ha]
   ring
@@ -865,7 +852,7 @@ theorem le_of_ker {res : R →+* k} (hres : Function.Surjective res) {q q' : Pr 
   obtain ⟨a, ha⟩ := hres (q.f y)
   have h1 := sub_mem_ker h hk he hy ha
   have h2 := (hk' _).1 (Λ.add_mem h1 (Λ.smul_mem a hd))
-  have h3 := mem_of_one h' he'
+  have h3 := GlobalTheory.LevelHecke.UpInj.mem_of_one h' he'
   have e0 : y = (y + (-a) • e + a • (e - e')) + a • e' := by
     rw [smul_sub, neg_smul]; abel
   have h4 := q'.L.smul_mem a h3
@@ -900,7 +887,7 @@ theorem finsum_above : ∀ (R V k W M : Type) [CommRing R] [AddCommGroup V] [Mod
     obtain ⟨-, -, e', h3', h4'⟩ := hq w' hw'
     rw [← hww] at h3'
     have hd : e + (-1 : R) • e' ∈ p.L :=
-      sub_mem_ker h1 h2 h3' (mem_of_one h1 h3) (by rw [map_one, h3])
+      sub_mem_ker h1 h2 h3' (GlobalTheory.LevelHecke.UpInj.mem_of_one h1 h3) (by rw [map_one, h3])
     have e0 : t • e = t • e' + t • (e + (-1 : R) • e') := by
       rw [neg_smul, one_smul, smul_add, smul_neg]; abel
     rw [← h4, ← h4', e0, hred.add _ (smul_mem_ker h1 h2 ht h3') _ (p.L.smul_mem _ hd), hred.smul _ _ hd, ht,
@@ -1226,12 +1213,6 @@ section
 variable {R V k W W' : Type} [CommRing R] [AddCommGroup V] [Module R V] [Field k]
   [AddCommGroup W] [Module k W] [AddCommGroup W'] [Module k W']
 
-theorem mem_loc_map_equiv (res : R →+* k) (g : V ≃ₗ[R] V) (M : Submodule R V) (y : V) :
-    y ∈ loc res (M.map (g : V →ₗ[R] V)) ↔ g.symm y ∈ loc res M := by
-  rw [mem_loc, mem_loc]
-  refine exists_congr fun s => and_congr_right fun _ => ?_
-  rw [Submodule.mem_map_equiv, map_smul]
-
 theorem act_pairOf_value (res : R →+* k) (g : V ≃ₗ[R] V) (M M' : Submodule R V) (pr : M →+ W) (pr' : M' →+ W')
     (φ : Module.Dual k W) (φ' : Module.Dual k W')
     (hs : ∀ (a : R) z, pr (a • z) = res a • pr z) (hs' : ∀ (a : R) z, pr' (a • z) = res a • pr' z)
@@ -1239,7 +1220,7 @@ theorem act_pairOf_value (res : R →+* k) (g : V ≃ₗ[R] V) (M M' : Submodule
     (hm : e ∈ loc res (M'.map (g : V →ₗ[R] V)))
     (h : ∀ (x : M') (hx : t • g x.1 ∈ M), φ' (pr' x) = φ (pr ⟨_, hx⟩)) :
     ((pairOf res M' pr' φ').act g).f e = 1 := by
-  rw [mem_loc_map_equiv] at hm
+  rw [GlobalTheory.LevelHecke.PairToLevel.loc_map] at hm
   obtain ⟨s, hs0, hx⟩ := (mem_loc _ _ _).1 hm
   have e1 : t • g (s • g.symm e) = (s • z : M).1 := by
     rw [map_smul, g.apply_symm_apply, smul_comm, he]; rfl
@@ -1262,7 +1243,7 @@ theorem up_move_incidence : ∀ (D : D7) (u : D.what₂.Word) (A : AtTTied u) (i
   refine ⟨fun y => ?_, (((D.mem u).A.T : ℕ) : D.host.E)⁻¹ • z.1, ?_, ?_⟩
   · rw [Pr.mem_act]
     have h5 := pc_isKer P K v c' ((glE γ).symm y)
-    rw [_root_.GlobalTheory.LevelHecke.loc_lk_eq_loc_cls D u A i hi K v c', ← mem_loc_map_equiv, map_glE, h2] at h5
+    rw [_root_.GlobalTheory.LevelHecke.loc_lk_eq_loc_cls D u A i hi K v c', ← GlobalTheory.LevelHecke.PairToLevel.loc_map, map_glE, h2] at h5
     exact h5
   · refine act_pairOf_value (A.res v) (glE γ) _ _ (P.pr v c) (P.pr v c') _ _ (P.pr_smul v c) (P.pr_smul v c')
       _ z _ he h1 ?_ h4

@@ -65,10 +65,6 @@ namespace HostRaw
 
 variable {φ : Frame} (H : HostRaw φ)
 
-theorem condN_eq_q : H.condN = H.QS * H.d * H.q := by
-  rw [HostRaw.condN]
-  ring
-
 theorem condN_div_d : H.condN / H.d = H.QS * H.q := by
   obtain ⟨-, hd, -, -, -⟩ := H.hyp
   rw [HostRaw.condN, Nat.mul_div_cancel _ hd.pos]

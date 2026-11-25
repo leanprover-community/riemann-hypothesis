@@ -11,7 +11,7 @@ open scoped TensorProduct ENNReal
 
 namespace GlobalTheory.CompanionTheory.SiegelND.Coef
 
-theorem continuous_chiT : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (hJ : IsHermND σ J) (n : ℕ), 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ T : Matrix (Fin n) (Fin n) E, Continuous (chiT σ ψ T) := by
+theorem continuous_chiT : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (_ : IsCMExt F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (_ : IsHermND σ J) (n : ℕ), 2 * n < M → ∀ ψ : AddChar (AF F) ℂ, IsCharAF F ψ → ∀ T : Matrix (Fin n) (Fin n) E, Continuous (chiT σ ψ T) := by
   intro F E _ _ _ _ _ σ _ M J _ n _ ψ hψ T
   have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
   have : IsTopologicalRing (AF F ⊗[F] E) := GlobalTheory.CompanionTheory.SW.TopK.isTopRing (AF F)

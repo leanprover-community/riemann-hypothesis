@@ -20,9 +20,7 @@ open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
-theorem memGL (y : G n) : y.val ∈ GLs n := by
-  show y.val.det ≠ 0
-  exact ((Matrix.isUnit_iff_isUnit_det _).1 y.isUnit).ne_zero
+theorem memGL (y : G n) : y.val ∈ GLs n := PositivityTheory.RgBcC.VC.NAvgH.mem_GLsG y
 
 def S2 (a : Mat n) : ℝ := ∑ i, ∑ j, ‖a i j‖ ^ 2
 
@@ -43,9 +41,7 @@ theorem lg_mul_le (a b : Mat n) : lg (a * b) ≤ lg a + lg b := by
   apply _root_.PositivityTheory.RgBcC.VC.NAvgH.lg_mul_le <;> assumption
 
 theorem lg_inv (a : Mat n) (ha : a ∈ GLs n) : lg a⁻¹ = lg a := by
-  have hu : IsUnit a.det := isUnit_iff_ne_zero.mpr ha
-  rw [lg_eq, lg_eq, Matrix.nonsing_inv_nonsing_inv a hu]
-  ring_nf
+  exact PositivityTheory.RgBcC.VC.NAvgH.lg_inv a ha
 
 theorem lg_le_of_mul (u y : Mat n) (hy : y ∈ GLs n) : lg u ≤ lg (u * y) + lg y := by
   have hu : IsUnit y.det := isUnit_iff_ne_zero.mpr hy

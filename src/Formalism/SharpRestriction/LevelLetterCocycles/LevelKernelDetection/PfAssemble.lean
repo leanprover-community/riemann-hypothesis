@@ -560,10 +560,6 @@ theorem grdB_zero' (τ : Ks ≃ₐ[LL] Ks) (a : LLˣ) : grdB τ a 0 = 0 := by
 theorem grdB_one' (τ : Ks ≃ₐ[LL] Ks) (a : LLˣ) : grdB τ a 1 = 1 := by
   apply _root_.Formalism.MainNotions.N.Ln03.Pf.Pf_LvEquiv_grdB_one <;> assumption
 
-theorem grdB_mul' (τ : Ks ≃ₐ[LL] Ks) (a : LLˣ) (x y : HahnSeries ℤ Ks) :
-    grdB τ a (x * y) = grdB τ a x * grdB τ a y := by
-  apply Formalism.MainNotions.N.Ln03.Pf.Pf_LvEquiv_grdB_mul
-
 theorem grdB_ringInverse (τ : Ks ≃ₐ[LL] Ks) (a : LLˣ) {X : HahnSeries ℤ Ks} (hX : grdB τ a X = X) :
     grdB τ a (Ring.inverse X) = Ring.inverse X := by
   by_cases hu : IsUnit X
@@ -571,7 +567,7 @@ theorem grdB_ringInverse (τ : Ks ≃ₐ[LL] Ks) (a : LLˣ) {X : HahnSeries ℤ 
     rw [Ring.inverse_unit]
     have h1 : grdB τ a (↑u⁻¹ : HahnSeries ℤ Ks) * ↑u = 1 := by
       conv_lhs => rw [← hX]
-      rw [← grdB_mul', Units.inv_mul, grdB_one']
+      rw [← Formalism.MainNotions.N.Ln03.Pf.Pf_LvEquiv_grdB_mul, Units.inv_mul, grdB_one']
     calc grdB τ a (↑u⁻¹ : HahnSeries ℤ Ks)
         = grdB τ a (↑u⁻¹ : HahnSeries ℤ Ks) * (↑u * ↑u⁻¹) := by rw [Units.mul_inv, mul_one]
       _ = (grdB τ a (↑u⁻¹ : HahnSeries ℤ Ks) * ↑u) * ↑u⁻¹ := by ring
@@ -1049,9 +1045,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} [NeZero n] {W : LocWach PD LL O v n}
     {Lb : LevB W} {hR : Ring9 W} {uZ : ℤ_[PD.p]ˣ} {ιZ : ℤ_[PD.p] →+* O}
 
-theorem Pf_MapLoc_ιV_inj (T : LocLat G Qp LL O) : Function.Injective (ιV PD (LL := LL) (V := T.V)) := by
-  apply _root_.Formalism.MainNotions.N.Ln03.Pf.Pf_LvExp_ιV_inj <;> assumption
-
 theorem Pf_MapLoc_ιV_map {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (y : T₁.V ⊗[Qp] B) :
     AlgebraTensorModule.map F.f (LinearMap.id : BdR →ₗ[Qp] BdR) (ιV PD (LL := LL) (V := T₁.V) y) =
       ιV PD (LL := LL) (V := T₂.V) (AlgebraTensorModule.map F.f (LinearMap.id : B →ₗ[Qp] B) y) := by
@@ -1067,7 +1060,7 @@ theorem Pf_MapLoc_levB_map {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T�
     (i : ZMod n) (ζ : LL) (x : ↥(W.N T₁)) (hx : W.map F (x : W.DD T₁) ∈ W.N T₂) (k : ℤ) :
     Lb.levB T₂ i ζ ⟨W.map F (x : W.DD T₁), hx⟩ k =
       AlgebraTensorModule.map F.f (LinearMap.id : B →ₗ[Qp] B) (Lb.levB T₁ i ζ x k) := by
-  apply Pf_MapLoc_ιV_inj (PD := PD) T₂
+  apply Formalism.MainNotions.N.Ln03.Pf.crystalline_to_deRham_injective (PD := PD) T₂
   rw [← levN_eq, W.levN_map F crys₁ crys₂ i ζ x hx k, levN_eq, Pf_MapLoc_ιV_map]
 
 theorem Pf_MapLoc_toKsD_map (s : ℕ) {D₁ D₂ : Type} [AddCommGroup D₁] [Module LL D₁]

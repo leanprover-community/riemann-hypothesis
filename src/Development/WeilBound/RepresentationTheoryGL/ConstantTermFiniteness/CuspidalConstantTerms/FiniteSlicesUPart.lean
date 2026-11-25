@@ -140,7 +140,6 @@ theorem isRealLine_conj (h : IsCMExt F E σ) {γ : ℝ → GAd σ J} (hγ : IsRe
 
 end GlobalTheory.UAut.RightTranslate
 
-
 open GlobalTheory.UAut.RightTranslate in
 theorem GlobalTheory.UAut.isSm_mul_right_of_isCMExt : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E), IsCMExt F E σ → ∀ (f : GlobalTheory.AdelicU.GAd σ J → ℂ) (a : GlobalTheory.AdelicU.GAd σ J), GlobalTheory.UAut.IsSm σ J f → GlobalTheory.UAut.IsSm σ J (fun x => f (x * a)) := by
   intro F E _ _ _ _ _ σ n J h f a hf
@@ -326,8 +325,6 @@ open scoped TensorProduct
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-theorem _root_.GlobalTheory.T.frame_family_right_translate : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (ε : D.what₂.Tau → Fin V.rank → Bool) (fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ), IsFrameFam V ε fr → ∀ b : GA D V, IsFrameFam V ε (fun τ => fr τ * (infMat D.sp.cm.sig V.gram (θ τ) b)⁻¹) := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.isFrameFam_mul_infMat_inv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.LanglandsDecompositionUnipotentLeviStatement =====
@@ -461,7 +458,6 @@ open Matrix
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.JStable
-
 
 open Module in
 theorem exists_adapted_onb {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -1241,7 +1237,7 @@ theorem finite_slices_uPart : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.
         exact ⟨b₀⁻¹ * x * b₀, hx, by group⟩
     rw [e]
     exact hU.preimage (by fun_prop)
-  have hfr' := GlobalTheory.T.frame_family_right_translate D θ hθ V ε fr hfr b₀
+  have hfr' := GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.isFrameFam_mul_infMat_inv D θ hθ V ε fr hfr b₀
   have hfin := finite_slices_core D θ hθ V _ hU' ε _ hfr' W ρ hρ c m X Y hWF T hT had
   set H := uPart D.sp.cm.sig V.gram X Y T with hH
   set L := levi D.sp.cm.sig V.gram X Y T with hL

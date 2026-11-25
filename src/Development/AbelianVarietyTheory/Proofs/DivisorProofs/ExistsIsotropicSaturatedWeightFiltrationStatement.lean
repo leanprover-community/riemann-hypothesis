@@ -131,7 +131,6 @@ theorem IsOpp.exists_isometry_extend {E : Type} [Field E] [NumberField E] [IsCMF
         have key : ∀ u w : D.La, D.EF u (x • w) = D.EF (H.bar x • u) w := fun u w => by rw [D.adj, bar_bar]
         simp only [RingHom.id_apply, Submodule.coe_smul, map_smul, ← smul_sub]
         rw [key, key, ← Submodule.coe_smul, hc, Submodule.coe_smul, map_smul, smul_sub]).symm }
-  have hα : ∀ a, α a = c a := fun _ => rfl
   let g : D.La →ₗ[𝓞 E] D.La := LinearMap.id + (t - Z.subtype) ∘ₗ q - Z'.subtype ∘ₗ α
   have hg : ∀ a, g a = a + (t (q a) - q a) - c a := fun _ => rfl
   refine ⟨g, fun a a' => ?_, fun a => ?_, fun z => ?_⟩

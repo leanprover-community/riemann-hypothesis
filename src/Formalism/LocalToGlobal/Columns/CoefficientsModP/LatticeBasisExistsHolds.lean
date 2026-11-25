@@ -89,28 +89,6 @@ variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarT
 theorem mem_localized_iff_mem_baseChange (w : HeightOneSpectrum (𝓞 K)) (L : Submodule (𝓞 K) V) (x : V) :
     x ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal L ↔ x ∈ atW w L := mem_atW_iff.symm
 
-theorem localized_eq_of_baseChange_eq (w : HeightOneSpectrum (𝓞 K)) {A B : Submodule (𝓞 K) V} (h : atW w A = atW w B) :
-    Formalism.HermitianLatticesTheory.localization₂ w.asIdeal A = Formalism.HermitianLatticesTheory.localization₂ w.asIdeal B := by
-  rw [← atW_restrictScalars, ← atW_restrictScalars, h]
-
-theorem lc_atW_span (w : HeightOneSpectrum (𝓞 K)) (S : Set V) :
-    atW w (Submodule.span (𝓞 K) S) = Submodule.span (Ow w) S :=
-  Submodule.span_span_of_tower (𝓞 K) (Ow w) S
-
-theorem lc_exists_basis (w : HeightOneSpectrum (𝓞 K)) {A : Submodule (𝓞 K) V} (hfg : A.FG)
-    (hsp : Submodule.span K (A : Set V) = ⊤) :
-    ∃ (κ : Type) (_ : Fintype κ) (bK : Module.Basis κ K V),
-      Formalism.HermitianLatticesTheory.localization₂ w.asIdeal A = Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Submodule.span (𝓞 K) (Set.range bK)) := by
-  obtain ⟨κ, hκ, b, bK, hb⟩ := exists_basis_atW w hfg hsp
-  refine ⟨κ, hκ, bK, localized_eq_of_baseChange_eq w ?_⟩
-  rw [lc_atW_span]
-  have h1 : Set.range bK = (atW w A).subtype '' Set.range b := by
-    rw [← Set.range_comp]
-    congr 1
-    funext i
-    exact hb i
-  rw [h1, ← Submodule.map_span, b.span_eq, Submodule.map_top, Submodule.range_subtype]
-
 end Gen
 
 theorem latticeBasisExists_holds :

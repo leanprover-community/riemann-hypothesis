@@ -203,10 +203,6 @@ open Classical in
 def normDet (p : ℕ) (b : Bool) (τ : D.what₂.Tau) (y : Pt s) (a : Qb) : ℝ :=
   if h : p.Prime then (haveI := Fact.mk h; ‖iotaP p a‖ * Real.exp (∑ i, lnAt s p b y (τ, i))) else 1
 
-def JcPin (D : D7) (p : ℕ) [Fact p.Prime] (la : PlL D p) (jc : DV.KW p →+* ℂ) : Prop :=
-  ∃ W : ValuationSubring ℂ, (∀ x : D.what₂.LL, D.what₂.embLL x ∈ W ↔ la.1.valuation D.what₂.LL x ≤ 1) ∧
-    ∀ a : DV.KW p, jc a ∈ W ↔ a ∈ (algebraMap (WittVector p (AlgebraicClosure (ZMod p))) (DV.KW p)).range
-
 structure LocSt (D : D7) (N j : ℕ) (ng : NgPkg) : Type 1 where
   loc : ∀ p : ℕ, ModuliIntegralCharts.Loc D N j p
   ex : ∀ p, ModuliIntegralCharts.ExtA D (loc p)

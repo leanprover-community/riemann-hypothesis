@@ -18,7 +18,7 @@ def fibM (X Z : Type) [TopologicalSpace X] [AddCommGroup Z] [Module ℂ Z] : Sub
   carrier := {φ | IsLocallyConstant φ ∧ HasCompactSupport φ}
   add_mem' ha hb := ⟨ha.1.add hb.1, ha.2.add hb.2⟩
   zero_mem' := ⟨IsLocallyConstant.const 0, HasCompactSupport.zero⟩
-  smul_mem' c φ hφ := ⟨hφ.1.comp (fun z => c • z), hφ.2.comp_left (g := fun z => c • z) (smul_zero c)⟩
+  smul_mem' c _ hφ := ⟨hφ.1.comp (fun z => c • z), hφ.2.comp_left (g := fun z => c • z) (smul_zero c)⟩
 
 section Cols
 

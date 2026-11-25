@@ -75,7 +75,6 @@ theorem pow_ratio_eq_one {ι : Type*} [Fintype ι] (ℓ : ℕ) (hl0 : (ℓ : ℚ
     linarith
   exact_mod_cast h'
 
-
 open scoped Classical in
 theorem ratio_eq_one_of_altSum [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
@@ -145,7 +144,6 @@ variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (�
 theorem cast_sum_add_mul {ι : Type*} [Fintype ι] (f : ι → ℕ) (c n m : ℕ) (h : n = m) :
     (((∑ i, f i) + c * n : ℕ) : ℤ) = ∑ i, (f i : ℤ) + (c : ℤ) * (m : ℤ) := by
   subst h; push_cast; rfl
-
 
 open scoped Classical in
 theorem dInf_eq (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
@@ -635,7 +633,7 @@ theorem finite_cohomology_two_int [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) 
   have : Finite (cohomology A 2) :=
     finite_cohomology_of_forall_trivial ℓ 2 W₀
       (fun V hV A _ _ htriv hA r hr =>
-        finite_cohomology_of_trivial_of_cyclic ℓ r
+        UpperTheory.Reformulated.B.Gua5.finite_cohomology_of_trivial_of_cyclic ℓ r
           (fun C _ _ _ htrivC hC => hcyc V hV C htrivC hC r hr) A htriv hA)
       U A (nsmul_intRep M) 2 le_rfl
   exact finite_cohomology_of_res_top (intRep M) 2
@@ -750,7 +748,6 @@ theorem modNRep_actA_one_apply (g : galUnramifiedOutside K.1 ℚ̄ S) :
     (QuotientGroup.mk'_surjective _) (QuotientGroup.ker_mk' _).le (galSUnitsMax K.1 ℚ̄ S) 1 g y
   exact congrArg Submodule.Quotient.mk (h1.trans h2.symm)
 
-
 omit [Module.Finite (ZMod ℓ) M] in
 theorem nRep_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :
     nRep hL hζ M hM (gsRestrictGal hL g) =
@@ -764,7 +761,6 @@ theorem nRep_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :
   exact congrArg (quotientRep (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))
     (homRep (gsRootsZMod S ℓ) M)
     (homRep_ρ_of_mem (gsOpenSubgroup S hL) (gsRootsZMod S ℓ) M (roots_trivial hL hζ) hM)) h1
-
 
 omit [Module.Finite (ZMod ℓ) M] in
 theorem tprod_gsRestrictGal (g : galUnramifiedOutside K.1 ℚ̄ S) :
@@ -902,8 +898,6 @@ theorem poitou_tate_H2_nat [Fintype S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞
         congrArg₂ (· * ·) (card_sha_int M hℓS ιs) (Finset.prod_congr rfl fun v _ => card_H0_dual_local M ιs v)
     _ = _ := by rw [Finset.prod_pow_eq_pow_sum]
 
-
-
 theorem poitou_tate_H2_int [Fintype S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
     (hcop : Nat.Coprime (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).index ℓ)
     (hK : ℓ ≠ 2 ∨ IsTotallyComplex L.1) [Finite (ModN (AA hL 1) ℓ)]
@@ -952,7 +946,7 @@ theorem finrank_H2_euler_formula [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) :
     (hcop : Nat.Coprime (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).index ℓ)
     (hK : ℓ ≠ 2 ∨ IsTotallyComplex L.1) [Finite (ModN (AA hL 1) ℓ)] :
     (Module.finrank (ZMod ℓ) (cohomology M 2) : ℤ) =
-      dMod hL (dN hL hζ M hM hΓ) 1 + dPlaces (S := S) (dN hL hζ M hM hΓ) - (dN hL hζ M hM hΓ).one := set_option synthInstance.maxHeartbeats 200000 in by
+      dMod hL (dN hL hζ M hM hΓ) 1 + dPlaces (S := S) (dN hL hζ M hM hΓ) - (dN hL hζ M hM hΓ).one := by
   classical
   haveI : Fintype S := Fintype.ofFinite S
   have ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1) :=
@@ -1117,15 +1111,12 @@ theorem symm_gsRestrictGal (σ : galUnramifiedOutside K.1 ℚ̄ S) :
     (gsQuotientGalEquiv hL).symm (gsRestrictGal hL σ) = QuotientGroup.mk σ :=
   (gsQuotientGalEquiv hL).symm_apply_eq.2 (gsQuotientGalEquiv_mk hL σ).symm
 
-
 omit [Module.Finite (ZMod ℓ) M] in
 theorem nRep_gsRestrictGal (σ : galUnramifiedOutside K.1 ℚ̄ S) :
     nRep hL hζ M hM (gsRestrictGal hL σ) = (homRep (gsRootsZMod S ℓ) M).ρ σ :=
   (congrArg (quotientRep (PP hL) (homRep (gsRootsZMod S ℓ) M)
     (homRep_ρ_of_mem (gsOpenSubgroup S hL) (gsRootsZMod S ℓ) M (roots_trivial hL hζ) hM))
     (symm_gsRestrictGal hL σ)).trans (QuotientGroup.lift_mk _ _ _)
-
-
 
 theorem real_place_H0_finrank_b (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
     (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
@@ -1210,7 +1201,6 @@ theorem real_place_H0_finrank_b (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsRea
 end Main
 
 end PositivityTheory.Lit1.GEN.X.RealC
-
 
 namespace PositivityTheory.Lit1.GEN.X
 
@@ -1370,7 +1360,6 @@ variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (�
 theorem sum_eq_card_mul_sub {ι : Type*} [Fintype ι] (a b : ι → ℤ) (m : ℤ) (h : ∀ i, a i = m - b i) :
     ∑ i, a i = Fintype.card ι * m - ∑ i, b i := by
   rw [Finset.sum_congr rfl fun i _ => h i, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-
 
 open scoped Classical in
 theorem altSum [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) : 𝓞 K.1) ∉ v.asIdeal)

@@ -167,9 +167,6 @@ theorem formallyUnramified_of_dual_const_field {K A B : Type} [Field K] [IsAlgCl
 
 end GlobalTheory.TangentCrit
 
-namespace GlobalTheory.TangentCrit
-
-end GlobalTheory.TangentCrit
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormallyUnramifiedOfDualConstField =====
@@ -209,7 +206,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped TensorProduct
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-
 
 end -- clump:auto
 end -- clump:auto
@@ -331,7 +327,6 @@ open scoped TensorProduct
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormallyUnramifiedKernelIsogenyTangentInjectiveStatement =====
@@ -346,7 +341,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped TensorProduct
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-
 
 theorem _root_.GlobalTheory.T.geometric_point_abelian_variety_action : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A → ∀ (F : Type) [Field F] [NumberField F] (act : OAct (𝓞 F) A) (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ S), ∃ (B : AbVar k) (e : (Over.mk x ⟶ A) ≃* B.Pt) (ψ : 𝓞 F →+* End B), (∀ (c : 𝓞 F) (g : Over.mk x ⟶ A), e (g ≫ act.act c) = e g ≫ Hom.hom (ψ c).asHom) ∧ ∀ c : 𝓞 F, (∀ v : epsPtR x ⟶ A, spMap (TrivSqZeroExt.fstHom k k k).toRingHom ≫ v.left = (1 : Over.mk x ⟶ A).left → v ≫ act.act c = 1 → v = 1) → ∀ w : epsPtR (𝟙 (Sp k)) ⟶ B.X, spMap (TrivSqZeroExt.fstHom k k k).toRingHom ≫ w.left = (1 : Over.mk (𝟙 (Sp k)) ⟶ B.X).left → w ≫ Hom.hom (ψ c).asHom = 1 → w = 1 := by
   intro S A _ _ hA F _ _ act k _ _ x
@@ -459,7 +453,7 @@ section
 
 theorem deg_eq_card_ker_of_unram : ∀ (K : Type) [Field K] (A B : AbVar K) (f : A ⟶ B), IsIsogeny f → FormallyUnramified (pullback.snd (Hom.hom f).left η[B.X].left) → deg f = Nat.card (ptMap f).ker := by
   intro K _ A B f hiso hpfu
-  have hfl : Flat f.hom.left := (GlobalTheory.T.dim_eq_flat_finrank_eq_deg_of_isIsogeny K A B f hiso).2.1
+  have hfl : Flat f.hom.left := (GlobalTheory.AV.AbVar.isogeny_flat_finrank K A B f hiso).2.1
   have hfin : IsFinite f.hom.left := hiso.1
   let e : Sp K ⟶ B.X.left := η[B.X].left
   let p := pullback.snd f.hom.left e
@@ -559,7 +553,6 @@ theorem card_ker_eq_norm_pow : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsC
         ⟨fun a b hab => hinj (congrArg Subtype.val hab),
          fun g => by obtain ⟨a, ha⟩ := hsurj g.1 (by rw [pow_one]; exact g.2); exact ⟨a, Subtype.ext ha⟩⟩
     rw [← Nat.card_congr eq, Nat.card_fun, hcardQ, Nat.card_eq_fintype_card, Fintype.card_fin, ← pow_mul, mul_comm]
-  have hℓ1 : 1 < ℓ := hℓ.one_lt
   have hdim : 2 * B.dim = h * Module.finrank ℚ F := by
     have := htors.symm.trans hL2
     exact Nat.pow_right_injective hℓ.two_le this
@@ -582,7 +575,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Hecke GlobalTheory.UPel.HT.EtLev
 open scoped TensorProduct
-
 
 end -- clump:auto
 end -- clump:auto

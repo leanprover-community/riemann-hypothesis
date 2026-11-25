@@ -54,8 +54,4 @@ def oppDatum (D : Datum H) : Datum H where
 
 end General
 
-namespace CyclotomicTwentyEight
-
-end CyclotomicTwentyEight
-
 end GlobalTheory.CM

@@ -77,11 +77,6 @@ private lemma rw_congr_on_open_of_eq_on_GV {F : Type*} [NormedAddCommGroup F] [N
     filter_upwards [crv_ev (x := (false, X)) hV hgV] with t ht
     exact ih' _ (crv_mem (x := (false, X)) (hw X (by simp)) hg t) ht
 
-private lemma dw_const_smul {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] (c : ℂ) (f : Mat k r → F) :
-    ∀ w : List (Bool × Mat k r), Dw w (fun g => c • f g) = fun g => c • Dw w f g := by
-  intros
-  apply _root_.Formalism.FourierDecayAlt.P.BetaSesquilinearity.Dw_smul <;> assumption
-
 lemma ubl_fib (D : RealPlaceData k r Wp Wq) (E : Mat k r → C6.EndH Wp Wq) (hE : C6.FibBound D E) {ε : ℝ} (hε : 0 < ε)
     {S : Set (Mat k r)} (hS : ∀ g ∈ S, g ∈ GV k r ∧ ε ≤ Gf k r D.z D.z' g) (v : List (Mat k r))
     (hv : ∀ X ∈ v, inLie k r X) (n : ℕ) :
@@ -97,7 +92,7 @@ lemma ubl_fib (D : RealPlaceData k r Wp Wq) (E : Mat k r → C6.EndH Wp Wq) (hE 
     have hX : 0 ≤ gN g := by
       first
       | (unfold gN; positivity)
-    rw [Rw_scale v E, dw_const_smul, norm_smul]
+    rw [Rw_scale v E, Dw_smul, norm_smul]
     have hsplit : Dw (wL u ++ wR v') (Rw (v.map nrm) E) g = dLR u (v' ++ v.map nrm) E g := by
       rw [dLR_eq, Dw_append, Dw_append, Dw_wR, Dw_wR]
       rw [show Rw (v' ++ v.map nrm) E = Rw v' (Rw (v.map nrm) E) by simp only [Rw, List.foldr_append]]

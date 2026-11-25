@@ -47,7 +47,6 @@ open scoped TensorProduct
 
 theorem trace_red_mul {R : Type} [CommRing R] (ϖ : R) (k : ℕ) {n : ℕ} (A B : Matrix (Fin n) (Fin n) R) :
     Matrix.trace (red ϖ k A * red ϖ k B) = Ideal.Quotient.mk (lev ϖ k) (∑ a, ∑ c, A a c * B c a) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, red, Matrix.map_apply, map_sum, map_mul]
 
 theorem psiLev_holds : PositivityTheory.SiegelWeilFormula.Gunr.PsiLev := by
@@ -215,7 +214,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIntegralUnramifiedStatement", "h": "module\n\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIntegralUnramified\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 theorem _root_.GlobalTheory.T.coset_integral_unramified : PositivityTheory.SiegelWeilFormula.Gunr.CosetInt := by
   first | exact @GlobalTheory.CompanionTheory.CosetSum.integrable_iff_and_integral_eq
@@ -1019,7 +1017,6 @@ theorem not_dvd_of_not_lvl {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (h : I
 
 end GlobalTheory.CompanionTheory.GunrNuBound
 
-
 open GlobalTheory.CompanionTheory.GunrNuBound in
 theorem GlobalTheory.CompanionTheory.GunrNuBound.nuBound : PositivityTheory.SiegelWeilFormula.Gunr.NuBound := by
   classical
@@ -1222,10 +1219,6 @@ namespace GlobalTheory.CompanionTheory.UnrDens.GramDiff
 
 variable {E : Type} [CommRing E] (τ : E →+* E)
 
-theorem cT_mul {a b c : ℕ} (A : Matrix (Fin a) (Fin b) E) (B : Matrix (Fin b) (Fin c) E) :
-    cT τ (A * B) = cT τ B * cT τ A := by
-  simp only [cT, Matrix.map_mul, Matrix.transpose_mul]
-
 theorem cT_add {a b : ℕ} (A B : Matrix (Fin a) (Fin b) E) :
     cT τ (A + B) = cT τ A + cT τ B := by
   ext i j
@@ -1251,7 +1244,7 @@ theorem cT_cT (hτ : ∀ a, τ (τ a) = a) {a b : ℕ} (A : Matrix (Fin a) (Fin 
 
 theorem cT_cross (hτ : ∀ a, τ (τ a) = a) {m n : ℕ} {S : Matrix (Fin m) (Fin m) E} (hS : cT τ S = S)
     (x y : Matrix (Fin m) (Fin n) E) : cT τ (cT τ x * S * y) = cT τ y * S * x := by
-  rw [cT_mul, cT_mul, cT_cT τ hτ, hS, Matrix.mul_assoc]
+  rw [GlobalTheory.CompanionTheory.UnrDens.Emb.cT_mul_rect, GlobalTheory.CompanionTheory.UnrDens.Emb.cT_mul_rect, cT_cT τ hτ, hS, Matrix.mul_assoc]
 
 def hermSub (n : ℕ) : AddSubgroup (Matrix (Fin n) (Fin n) E) where
   carrier := {H | cT τ H = H}
@@ -1488,12 +1481,9 @@ abbrev solSet (σ : R →+* R) (ϖ : R) (S : Matrix (Fin a) (Fin a) R) (T : Matr
     (k : ℕ) : Set (Matrix (Fin a) (Fin b) R) :=
   {x | red ϖ k (cT σ x * S * x) = red ϖ k T}
 
-theorem lev_succ_le_lev (ϖ : R) (k : ℕ) : lev ϖ (k + 1) ≤ lev ϖ k :=
-  Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow ϖ (Nat.le_succ k))
-
 def proj (ϖ : R) (k : ℕ) (t : Matrix (Fin a) (Fin b) (R ⧸ lev ϖ (k + 1))) :
     Matrix (Fin a) (Fin b) (R ⧸ lev ϖ k) :=
-  t.map (Ideal.Quotient.factor (lev_succ_le_lev ϖ k))
+  t.map (Ideal.Quotient.factor (GlobalTheory.CompanionTheory.LocalDens.lev_le ϖ k))
 
 theorem proj_red (ϖ : R) (k : ℕ) (x : Matrix (Fin a) (Fin b) R) :
     proj ϖ k (red ϖ (k + 1) x) = red ϖ k x := by
@@ -1576,7 +1566,6 @@ theorem fibre_card {q : ℕ} {ε : ℤ} (h : IsUnrQuad R σ ϖ q ε) {m n : ℕ}
 end Main
 
 end GlobalTheory.CompanionTheory.UnrDens.HenselStep
-
 
 open GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.UnrDens.HenselStep in
 theorem GlobalTheory.CompanionTheory.UnrDens.solCount_succ : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ),

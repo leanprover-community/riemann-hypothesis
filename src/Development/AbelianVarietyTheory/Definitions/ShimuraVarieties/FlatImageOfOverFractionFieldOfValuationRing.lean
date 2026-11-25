@@ -417,14 +417,6 @@ end graphClosure
 
 end Graph
 
-section Examples
-
-namespace GraphClosureExample
-
-end GraphClosureExample
-
-end Examples
-
 end
 
 end GlobalTheory

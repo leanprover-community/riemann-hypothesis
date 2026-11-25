@@ -51,9 +51,7 @@ namespace UpperTheory.Zero.LLC.CharacterSumPairs
 variable {G : Type} [CommGroup G] [Fintype G]
 
 theorem norm_char (χ : G →* ℂˣ) (z : G) : ‖((χ z : ℂˣ) : ℂ)‖ = 1 := by
-  have h : ((χ z : ℂˣ) : ℂ) ^ Fintype.card G = 1 := by
-    rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one, map_one, Units.val_one]
-  exact Complex.norm_eq_one_of_pow_eq_one h Fintype.card_ne_zero
+  exact GlobalTheory.GLm.norm_unitsChar_apply χ z
 
 theorem conj_char (χ : G →* ℂˣ) (z : G) : conj ((χ z : ℂˣ) : ℂ) = (((χ⁻¹) z : ℂˣ) : ℂ) := by
   rw [MonoidHom.inv_apply, Units.val_inv_eq_inv_val, Complex.inv_eq_conj (norm_char χ z)]

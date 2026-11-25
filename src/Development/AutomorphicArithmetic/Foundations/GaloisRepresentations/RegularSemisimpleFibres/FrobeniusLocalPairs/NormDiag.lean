@@ -24,13 +24,6 @@ section Alg
 
 variable {k E : Type} [Field k] [Field E] [Algebra k E] {n : ℕ}
 
-private theorem iter_eq (σ : E ≃ₐ[k] E) (j : ℕ) (x : E) : (σ : E ≃+* E)^[j] x = (σ ^ j) x := by
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    rw [Function.iterate_succ_apply', ih, pow_succ', AlgEquiv.mul_apply]
-    rfl
-
 private theorem norm_prod [FiniteDimensional k E] [IsGalois k E] (σ : E ≃ₐ[k] E)
     (hg : ∀ τ : E ≃ₐ[k] E, τ ∈ Subgroup.zpowers σ) (x : E) :
     algebraMap k E (Algebra.norm k x) = ∏ j ∈ Finset.range (Module.finrank k E), (σ : E ≃+* E)^[j] x := by
@@ -48,7 +41,7 @@ private theorem norm_prod [FiniteDimensional k E] [IsGalois k E] (σ : E ≃ₐ[
     obtain ⟨m, hm, h⟩ := hτ
     exact ⟨m, hm, h⟩
   · intro j _
-    exact iter_eq σ j x
+    exact (congrFun (AlgEquiv.coe_pow σ j) x).symm
 
 private theorem map_diag {F : Type} [Field F] (f : E →+* F) (u : Fin n → Eˣ) :
     Matrix.GeneralLinearGroup.map f (diagT E (Fin n) u) = diagT F (Fin n) fun i => Units.map (f : E →* F) (u i) := by

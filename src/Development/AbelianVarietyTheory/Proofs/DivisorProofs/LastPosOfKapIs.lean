@@ -13,7 +13,6 @@ namespace GlobalTheory.HolDict
 theorem lamAt_last {R : Ranks} (h : HCParam R) (i : Fin R.m) (n : ℕ) (hn : n + 1 = R.k + i) :
     Formalism.L2.NTheta.lamAt h n = -h.b i := by
   have hk := R.m_add_three_le_k
-  have hi := i.2
   have e : n - (R.k - 1) = i := by omega
   unfold Formalism.L2.NTheta.lamAt
   rw [dite_eq_right (by omega), dite_eq_left (by omega)]

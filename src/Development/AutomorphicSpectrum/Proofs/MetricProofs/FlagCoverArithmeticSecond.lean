@@ -20,13 +20,9 @@ section Orbit
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem mCoordIdeal_le_of_sameOrbit {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
-    mCoordIdeal z' ≤ mCoordIdeal z := by
-  apply GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le <;> assumption
-
 theorem mCoordIdeal_eq_of_sameOrbit {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :
     mCoordIdeal z = mCoordIdeal z' :=
-  le_antisymm (mCoordIdeal_le_of_sameOrbit (Cj.sameOrbit_symm h)) (mCoordIdeal_le_of_sameOrbit h)
+  le_antisymm (GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le (Cj.sameOrbit_symm h)) (GlobalTheory.CompanionTheory.Ar.PB.CovMap.ImgBase.mCoordIdeal_le h)
 
 end Orbit
 

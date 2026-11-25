@@ -9,8 +9,8 @@ import Formalism.LocalToGlobal.IndefiniteReal.MemSpanOfSmulMem
 namespace Bl.general_b_fact_second''''''''
 
 theorem goal1 :
-  ∀ {K : Type} [inst : Field.{0} K] [NumberField.{0} K] {V : Type} [inst_2 : AddCommGroup.{0} V]
-  [inst_3 : Module.{0, 0} K V] [inst_4 : Module.{0, 0} (NumberField.RingOfIntegers.{0} K) V]
+  ∀ {K : Type} [Field.{0} K] [NumberField.{0} K] {V : Type} [AddCommGroup.{0} V]
+  [Module.{0, 0} K V] [Module.{0, 0} (NumberField.RingOfIntegers.{0} K) V]
   [IsScalarTower.{0, 0, 0} (NumberField.RingOfIntegers.{0} K) K V]
   (M : Submodule.{0, 0} (NumberField.RingOfIntegers.{0} K) V) {x : V},
   Membership.mem.{0, 0} (Submodule.span.{0, 0} K (SetLike.coe.{0, 0} M)) x →

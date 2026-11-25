@@ -18,8 +18,8 @@ private lemma lenQuotSpan {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValua
     (Submodule.IsPrincipal.associated_generator_span_self x)
 
 theorem goal1 :
-  ∀ {O : Type u_1} {M : Type u_2} [inst : CommRing.{u_1} O] [inst_1 : IsDomain.{u_1} O]
-  [inst_2 : IsDiscreteValuationRing.{u_1} O] [inst_3 : AddCommGroup.{u_2} M] [inst_4 : Module.{u_1, u_2} O M]
+  ∀ {O : Type u_1} {M : Type u_2} [CommRing.{u_1} O] [IsDomain.{u_1} O]
+  [IsDiscreteValuationRing.{u_1} O] [AddCommGroup.{u_2} M] [Module.{u_1, u_2} O M]
   [Module.Free.{u_1, u_2} O M] [Module.Finite.{u_1, u_2} O M]
   (φ : LinearMap.{u_1, u_1, u_2, u_2} (RingHom.id.{u_1} O) M M),
   Function.Injective.{u_2 + 1, u_2 + 1} (DFunLike.coe.{u_2 + 1, u_2 + 1, u_2 + 1} φ) →

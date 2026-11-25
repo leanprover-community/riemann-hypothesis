@@ -958,16 +958,6 @@ theorem ringKrullDim_le_of_isAlgebraic_adjoin_singleton {A B : Type u} [CommRing
       _ ≤ Cardinal.ofENat (N : ℕ∞) := Cardinal.ofENat_le_ofENat.mpr hp
   exact_mod_cast Cardinal.ofENat_le_ofENat.mp hc
 
-private theorem lt_natCast_of_add_one_le_withBotENat {x : WithBot ℕ∞} {n : ℕ} (h : x + 1 ≤ (n : WithBot ℕ∞)) :
-    x < (n : WithBot ℕ∞) := by
-  induction x using WithBot.recBotCoe with
-  | bot => exact WithBot.bot_lt_coe _
-  | coe a =>
-    induction a using ENat.recTopCoe with
-    | top => exact absurd h (by norm_cast)
-    | coe a =>
-      norm_cast at h ⊢
-
 end Helpers
 
 section Proof
@@ -1094,7 +1084,7 @@ theorem ExceptionalContraction.proof (h₁ : BlowUpDecomposition.Statement.{u}) 
       (by rw [Ideal.Quotient.factor_mk, Ideal.Quotient.eq_zero_iff_mem]
           exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self s))
     rw [hP.dim] at h
-    exact lt_natCast_of_add_one_le_withBotENat (by convert h using 2; omega)
+    exact GroundTheory.Heights₂.Heights.NumbersDVR.withBotENat_lt_of_add_one_le (by convert h using 2; omega)
   exact TopDimMinimal.proof DimStrictDrop.proof (MRing ι O) (P ⊔ Ideal.span {s}) G
     (d + 1 + Fintype.card K) (sup_le hPG ((Ideal.span_singleton_le_iff_mem _).mpr hsG)) hsum hdimA
 

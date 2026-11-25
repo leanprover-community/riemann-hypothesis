@@ -175,8 +175,4 @@ theorem evLgG_of_forall {p : Ctx → ∀ B : Base, Fr B.toPre → TwDat B → Pr
 
 end GlobalTheory.LiftInfRef
 
-namespace GlobalTheory.LiftInfRef
-
-end GlobalTheory.LiftInfRef
-
 end

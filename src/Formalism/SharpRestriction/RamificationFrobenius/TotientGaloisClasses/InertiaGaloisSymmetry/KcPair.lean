@@ -13,38 +13,6 @@ namespace Formalism.HC.Der
 section
 open Ideal UniqueFactorizationMonoid
 
-private theorem mulEquiv_ideal_bot_eq_bot {S : Type*} [CommRing S] [IsDedekindDomain S]
-    (f : Ideal S ≃* Ideal S) : f ⊥ = ⊥ := by
-  obtain ⟨J, hJ⟩ := f.surjective ⊥
-  calc f ⊥ = f (⊥ * J) := by rw [Ideal.bot_mul]
-    _ = f ⊥ * f J := map_mul f _ _
-    _ = ⊥ := by rw [hJ, Ideal.mul_bot]
-
-private theorem prime_mulEquiv_ideal_apply {S : Type*} [CommRing S] [IsDedekindDomain S]
-    (f : Ideal S ≃* Ideal S) {P : Ideal S} (hP : Prime P) : Prime (f P) := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro h
-    apply hP.ne_zero
-    apply f.injective
-    rw [Ideal.zero_eq_bot] at h ⊢
-    rw [h, mulEquiv_ideal_bot_eq_bot f]
-  · intro hu
-    apply hP.not_unit
-    rw [isUnit_iff_eq_one] at hu ⊢
-    apply f.injective
-    rw [hu, map_one]
-  · intro a b h
-    have h' : P ∣ f.symm a * f.symm b := by
-      have := map_dvd f.symm h
-      rwa [map_mul, MulEquiv.symm_apply_apply] at this
-    rcases hP.dvd_or_dvd h' with h1 | h1
-    · left
-      have := map_dvd f h1
-      rwa [MulEquiv.apply_symm_apply] at this
-    · right
-      have := map_dvd f h1
-      rwa [MulEquiv.apply_symm_apply] at this
-
 theorem kc_nf_map {S : Type*} [CommRing S] [IsDedekindDomain S] (I : Ideal S) (hI : I ≠ ⊥)
     (f : Ideal S ≃* Ideal S) : normalizedFactors (f I) = (normalizedFactors I).map f := by
   calc normalizedFactors (f I) = normalizedFactors ((normalizedFactors I).map f).prod := by
@@ -53,7 +21,7 @@ theorem kc_nf_map {S : Type*} [CommRing S] [IsDedekindDomain S] (I : Ideal S) (h
         apply normalizedFactors_prod_of_prime
         intro Q hQ
         obtain ⟨R, hR, rfl⟩ := Multiset.mem_map.mp hQ
-        exact prime_mulEquiv_ideal_apply f (prime_of_normalized_factor R hR)
+        exact (MulEquiv.prime_iff f).2 (prime_of_normalized_factor R hR)
 
 private theorem mem_of_prime_dvd_multiset_prod {S : Type*} [CommRing S] [IsDedekindDomain S]
     {s : Multiset (Ideal S)} (hs : ∀ Q ∈ s, Prime Q) {P : Ideal S} (hP : Prime P)

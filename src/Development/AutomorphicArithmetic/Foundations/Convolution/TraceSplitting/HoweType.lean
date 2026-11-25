@@ -1003,17 +1003,8 @@ namespace UpperTheory.ConvolutionTheory.Loc
 variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
 
 private theorem cont_coeff {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (l : V →ₗ[ℂ] ℂ) (w : V) :
-    Continuous fun g : G => l (ρ g w) := by
-  have h : IsLocallyConstant fun g : G => ρ g w := by
-    rw [IsLocallyConstant.iff_exists_open]
-    intro x
-    refine ⟨(fun g => x⁻¹ * g) ⁻¹' {g | ρ g w = w}, (hρ w).preimage (continuous_const.mul continuous_id), by simp, ?_⟩
-    intro y hy
-    have hy' : ρ (x⁻¹ * y) w = w := hy
-    calc ρ y w = ρ x (ρ (x⁻¹ * y) w) := by
-          rw [← mul_apply_eq_comp, ← map_mul, mul_inv_cancel_left]
-      _ = ρ x w := by rw [hy']
-  exact (h.comp l).continuous
+    Continuous fun g : G => l (ρ g w) :=
+  GroundTheory.Automorphic.continuous_dual_orbit (hρ w) l
 
 open Classical in
 private theorem avg {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (C : Subgroup G) (hC : IsCompact (C : Set G))

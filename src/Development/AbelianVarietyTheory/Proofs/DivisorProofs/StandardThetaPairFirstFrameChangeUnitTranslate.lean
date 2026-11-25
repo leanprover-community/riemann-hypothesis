@@ -118,13 +118,8 @@ variable {D : D7}
 
 local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
-private theorem det_int {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} (hN : IsIntM N) : N.det ∈ OO := by
-  let A : Matrix (Fin k) (Fin k) OO := fun i j => ⟨N i j, hN i j⟩
-  have eA : N.det = ((A.det : OO) : EAf D) := by
-    rw [show N = (OO).subtype.mapMatrix A from rfl]
-    exact (RingHom.map_det (OO).subtype A).symm
-  rw [eA]
-  exact A.det.2
+private theorem det_int {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} (hN : IsIntM N) : N.det ∈ OO :=
+  GlobalTheory.Harm.det_mem_of_forall_mem _ _ hN
 
 private theorem isUnitDet_unique {e : AE D} {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} {x x' : (AE D)ˣ}
     (h : IsUnitDet e N x) (h' : IsUnitDet e N x') : x = x' :=

@@ -414,11 +414,6 @@ namespace Formalism.TruncatedSeriesCounting.WachCoordinates
 
 open Finset
 
-private theorem geom_sum_range_mul_one_sub (x : ℝ) :
-    ∀ n : ℕ, Finset.sum (range n) (fun i => x ^ i) * (1 - x) = 1 - x ^ n := fun
-  | 0 => by simp
-  | n + 1 => by rw [sum_range_succ, add_mul, geom_sum_range_mul_one_sub x n, pow_succ]; ring
-
 theorem tsum_le_two_level (x A B D : ℝ) (j : ℕ) (f : ℕ → ℝ) (hx0 : 0 ≤ x) (hx1 : x < 1)
     (hA0 : 0 ≤ A) (hf0 : ∀ a, 0 ≤ f a) (hfB : ∀ a, f a ≤ (B + D) * x ^ a)
     (hfA : ∀ a, a < j → f a ≤ (A + D) * x ^ a) :
@@ -441,7 +436,7 @@ theorem tsum_le_two_level (x A B D : ℝ) (j : ℕ) (f : ℕ → ℝ) (hx0 : 0 �
     rw [mul_sum]
     exact sum_le_sum fun a ha => hfA a (mem_range.mp ha)
   have hS' : Finset.sum (range j) (fun a => x ^ a) = (1 - x ^ j) * (1 - x)⁻¹ := by
-    rw [← geom_sum_range_mul_one_sub x j, mul_assoc, mul_inv_cancel₀ hx1'.ne', mul_one]
+    rw [← geom_sum_mul_neg x j, mul_assoc, mul_inv_cancel₀ hx1'.ne', mul_one]
   have hpos : 0 ≤ A * x ^ j * (1 - x)⁻¹ :=
     mul_nonneg (mul_nonneg hA0 (pow_nonneg hx0 _)) (inv_nonneg.mpr hx1'.le)
   rw [← hsplit]

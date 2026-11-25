@@ -30,11 +30,6 @@ theorem exists_near (v : HeightOneSpectrum R) (y : v.adicCompletion K) :
     ∃ k : K, y - algebraMap K (v.adicCompletion K) k ∈ v.adicCompletionIntegers K :=
   ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.exists_near v y
 
-theorem exists_den_local (v : HeightOneSpectrum R) (y : v.adicCompletion K) :
-    ∃ s : R, s ≠ 0 ∧
-      algebraMap K (v.adicCompletion K) (algebraMap R K s) * y ∈ v.adicCompletionIntegers K :=
-  ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.exists_den_local v y
-
 theorem exists_den (b : FiniteAdeleRing R K) :
     ∃ r : R, r ≠ 0 ∧ IsInt (algebraMap R (FiniteAdeleRing R K) r * b) :=
   ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.exists_den b

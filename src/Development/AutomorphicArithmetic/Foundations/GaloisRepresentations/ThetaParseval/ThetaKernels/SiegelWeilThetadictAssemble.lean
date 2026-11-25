@@ -5,11 +5,9 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCom
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ContinuousTransportFApplyK
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.SiegelWeilLdexaMain
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Stab2CptK
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExistsLocUnit
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.DiagonalColumns.AdChar
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.FinOneOneMem
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.FrameOf
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.Siegel
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SiegelA
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SiegelB
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SiegelC
@@ -22,10 +20,8 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalUnitExistence.InclusionFromRowsIdentityZero
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalUnitExistence.UnitHermitianSpace
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.BasisReprMap
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.CmbVCrdV
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.Frames
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.Places
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.ProjInf
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
@@ -36,6 +32,316 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterInvariantAdelicFormEqMulEvalZero
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NonemptyAlgHomOfNotIsField
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
+public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.UnramifiedAntiInvariantLocal
+public import Mathlib.Algebra.Order.Floor.Extended
+public import Mathlib.Algebra.Order.Floor.Semifield
+public import Mathlib.Algebra.Order.Interval.Basic
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+public import Mathlib.Combinatorics.Enumerative.DyckWord
+public import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+public import Mathlib.Data.NNRat.Floor
+public import Mathlib.Geometry.Euclidean.Volume.Basic
+public import Mathlib.NumberTheory.Chebyshev
+public import Mathlib.NumberTheory.Height.NumberField
+public import Mathlib.NumberTheory.Height.Projectivization
+public import Mathlib.NumberTheory.LucasLehmer
+public import Mathlib.NumberTheory.SelbergSieve
+public import Mathlib.RingTheory.Radical.NatInt
+public import Mathlib.Tactic.Echelon.Zsqrtd
+public import Mathlib.Tactic.Inclusion.Extension.Core.Core
+public import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
+public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
+public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+public import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
+public import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
+public import Mathlib.Tactic.NormNum.Irrational
+public import Mathlib.Tactic.NormNum.IsCoprime
+public import Mathlib.Tactic.NormNum.IsSquare
+public import Mathlib.Tactic.NormNum.LegendreSymbol
+public import Mathlib.Tactic.NormNum.ModEq
+public import Mathlib.Tactic.NormNum.NatFib
+public import Mathlib.Tactic.NormNum.NatLog
+public import Mathlib.Tactic.NormNum.NatSqrt
+public import Mathlib.Tactic.NormNum.Ordinal
+public import Mathlib.Tactic.NormNum.Parity
+public import Mathlib.Tactic.NormNum.Prime
+public import Mathlib.Tactic.NormNum.RealSqrt
+public import Mathlib.Topology.Sheaves.Init
+public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SliceFacts
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SubSplitOf
+import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+public import Mathlib.Tactic.Linter.HaveILetI
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.IsPureTIff
+
+section
+@[expose] public section
+
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl GlobalTheory.Cont PositivityTheory.Rg.Sw
+
+namespace PositivityTheory.SiegelWeilFormula.ThetaDictR.PureB
+
+open PositivityTheory.SiegelWeilFormula PositivityTheory.SiegelWeilFormula.KWhit
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+theorem map_star_mul {p q r : Type} [Fintype q] (A : Matrix p q ℂ) (B : Matrix q r ℂ) :
+    (A * B).map star = A.map star * B.map star :=
+  Matrix.map_mul (f := starRingEnd ℂ)
+
+end PositivityTheory.SiegelWeilFormula.ThetaDictR.PureB
+
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+open scoped TensorProduct Matrix HeckeCharacterZeroLocus.SiegelWeilU
+open NumberField IsDedekindDomain Filter
+
+namespace PositivityTheory.SiegelWeilFormula.ThetaDictR.PureC
+
+open PositivityTheory.SiegelWeilFormula.ThetaDictR.PureA
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem map_mul_alg {A B : Type} [CommRing A] [CommRing B] [Algebra F A] [Algebra F B] (f : A →ₐ[F] B) {p q r : ℕ}
+    (M : Matrix (Fin p) (Fin q) A) (N : Matrix (Fin q) (Fin r) A) : (M * N).map f = M.map f * N.map f :=
+  Matrix.map_mul (f := f.toRingHom)
+
+variable (bs : Module.Basis (Fin 2) F E) {m n : ℕ} (u : GL (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.AF F ⊗[F] E))
+  (v : HeightOneSpectrum (𝓞 F))
+
+def toMxV (Y : Fin n → Fin m → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) : Matrix (Fin m) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) :=
+  Matrix.of fun a j => Y j a
+
+abbrev Av : Matrix (Fin n) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) :=
+  (((u⁻¹ : GL (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.AF F ⊗[F] E)).1)ᵀ).map (mapV v)
+
+abbrev Bv : Matrix (Fin n) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) := ((u.1)ᵀ).map (mapV v)
+
+theorem Av_mul_Bv : Av u v * Bv u v = 1 := by
+  rw [Av, Bv, ← map_mul_alg, ← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
+  exact Matrix.map_one _ (map_zero _) (map_one _)
+
+theorem Bv_mul_Av : Bv u v * Av u v = 1 := by
+  rw [Av, Bv, ← map_mul_alg, ← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]
+  exact Matrix.map_one _ (map_zero _) (map_one _)
+
+def crdV (N : Matrix (Fin m) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E)) : Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v :=
+  fun k => (Algebra.TensorProduct.basis (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) bs).repr (N k.1 k.2.1) k.2.2
+
+def cmbV (c : Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) : Matrix (Fin m) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) :=
+  Matrix.of fun i j => ∑ kk, c (i, j, kk) • Algebra.TensorProduct.basis (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) bs kk
+
+theorem cmbV_crdV (N : Matrix (Fin m) (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E)) : cmbV bs v (crdV bs v N) = N := by
+  ext i j
+  exact (Algebra.TensorProduct.basis (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) bs).sum_repr (N i j)
+
+theorem crdV_cmbV (c : Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) : crdV bs v (cmbV bs v c) = c := by
+  funext k
+  simp only [crdV, cmbV, Matrix.of_apply]
+  rw [(Algebra.TensorProduct.basis (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) bs).repr_sum_self]
+
+def eL : (Fin n → Fin m → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) ≃ₗ[HeckeCharacterZeroLocus.SiegelWeilU.Fv F v]
+    (Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) where
+  toFun Y := crdV bs v (toMxV v Y * Av u v)
+  map_add' Y Y' := by
+    funext k
+    have : toMxV v (Y + Y') = toMxV v Y + toMxV v Y' := by ext; rfl
+    simp only [this, Matrix.add_mul, crdV, Matrix.add_apply, map_add (f := _), Finsupp.add_apply, Pi.add_apply]
+  map_smul' r Y := by
+    funext k
+    have : toMxV v (r • Y) = r • toMxV v Y := by ext; rfl
+    simp only [this, Matrix.smul_mul, crdV, Matrix.smul_apply, map_smul, Finsupp.smul_apply, RingHom.id_apply,
+      Pi.smul_apply]
+  invFun c := fun j a => (cmbV bs v c * Bv u v) a j
+  left_inv Y := by
+    funext j a
+    simp only [cmbV_crdV, Matrix.mul_assoc, Av_mul_Bv, Matrix.mul_one]
+    rfl
+  right_inv c := by
+    have : toMxV v (fun j a => (cmbV bs v c * Bv u v) a j) = cmbV bs v c * Bv u v := by ext; rfl
+    simp only [this, Matrix.mul_assoc, Bv_mul_Av, Matrix.mul_one, crdV_cmbV]
+
+section Top
+
+instance modTopV : IsModuleTopology (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) := ⟨rfl⟩
+
+def eH : (Fin n → Fin m → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) ≃ₜ (Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) := by
+  haveI : ContinuousAdd (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) := IsModuleTopology.toContinuousAdd (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) _
+  haveI : ContinuousSMul (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) :=
+    IsModuleTopology.toContinuousSMul (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) _
+  exact { toEquiv := (eL bs u v).toEquiv
+          continuous_toFun := IsModuleTopology.continuous_of_linearMap (eL bs u v).toLinearMap
+          continuous_invFun := IsModuleTopology.continuous_of_linearMap (eL bs u v).symm.toLinearMap }
+
+theorem isSB_comp (φ : (Fin m × Fin n × Fin 2 → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) → ℂ)
+    (hφ : IsLocallyConstant φ ∧ HasCompactSupport φ) :
+    HeckeCharacterZeroLocus.SiegelWeilU.IsSB (fun Y : Fin n → Fin m → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E => φ (crdV bs v (toMxV v Y * Av u v))) :=
+  ⟨hφ.1.comp_continuous (eH bs u v).continuous, hφ.2.comp_homeomorph (eH bs u v)⟩
+
+end Top
+
+theorem int_iff : ∀ᶠ v in cofinite, ∀ Y : Fin n → Fin m → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E,
+    (∀ k, crdV bs v (toMxV v Y * Av u v) k ∈ (v : HeightOneSpectrum (𝓞 F)).adicCompletionIntegers F) ↔
+      Y ∈ HeckeCharacterZeroLocus.SiegelWeilU.latV bs v := by
+  filter_upwards [ev_matmul_int bs ((u⁻¹ : GL (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.AF F ⊗[F] E)).1)ᵀ,
+    ev_matmul_int bs (u.1)ᵀ] with v h1 h2
+  intro Y
+  have e1 : (∀ k, crdV bs v (toMxV v Y * Av u v) k ∈ (v : HeightOneSpectrum (𝓞 F)).adicCompletionIntegers F) ↔
+      IntM bs v (toMxV v Y * Av u v) := ⟨fun h i j kk => h (i, j, kk), fun h k => h k.1 k.2.1 k.2.2⟩
+  have e2 : Y ∈ HeckeCharacterZeroLocus.SiegelWeilU.latV bs v ↔ IntM bs v (toMxV v Y) := ⟨fun h i j kk => h j i kk, fun h a i kk => h i a kk⟩
+  rw [e1, e2]
+  constructor
+  · intro h
+    have := h2 _ _ h
+    rwa [Matrix.mul_assoc, ← Bv, Av_mul_Bv, Matrix.mul_one] at this
+  · intro h
+    exact h1 _ _ h
+
+end PositivityTheory.SiegelWeilFormula.ThetaDictR.PureC
+
+end
+end
+end
+
+
+section
+section -- clump:auto
+@[expose] public section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open GlobalTheory.Doubling (absE)
+
+noncomputable section
+namespace GlobalTheory.MixUniq
+
+open scoped Classical
+
+abbrev ev0 {F : Type} [Field F] [NumberField F] (κ : Type) [Fintype κ] : ((κ → AF F) → ℂ) →ₗ[ℂ] ℂ :=
+  LinearMap.proj (R := ℂ) (φ := fun _ : (κ → AF F) => ℂ) 0
+
+theorem adelicCoordinatesEvalZeroForm_mem_admissible {F : Type} [Field F] [NumberField F] (κ : Type) [Fintype κ] : ev0 (F := F) κ ∈ (adeleClass F).adm κ := by
+  intro g _
+  refine ⟨g 0 • (BoundedContinuousFunction.evalCLM ℂ 0).comp
+    (SchwartzMap.toBoundedContinuousFunctionCLM ℂ (κ → mixedEmbedding.mixedSpace F) ℂ), fun f => ?_⟩
+  simp only [ev0, LinearMap.proj_apply, pureA, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_comp',
+    Function.comp_apply, Pi.smul_apply, SchwartzMap.toBoundedContinuousFunctionCLM_apply,
+    BoundedContinuousFunction.evalCLM_apply, smul_eq_mul]
+  have h1 : (fun i : κ => InfiniteAdeleRing.ringEquiv_mixedSpace F ((0 : κ → AdeleRing (𝓞 F) F) i).1) = 0 := by
+    funext i; exact map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
+  have h2 : (fun i : κ => ((0 : κ → AdeleRing (𝓞 F) F) i).2) = 0 := by
+    funext i; rfl
+  rw [h1, h2, mul_comm]
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+  {n d d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {W₁ : Spc F E d₁}
+
+end GlobalTheory.MixUniq
+
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicCoordinatesEvalZeroFormMemAdmissible =====
+
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix Classical
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl GlobalTheory.Cont PositivityTheory.Rg.Sw
+
+namespace PositivityTheory.SiegelWeilFormula.Ald
+
+variable {F : Type} [Field F] [NumberField F]
+
+theorem evalZero_mem_adelicSchwartzAdmittedForms (κ : Type) [Fintype κ] : ev0 (F := F) κ ∈ (adeleClass F).adm κ := by
+  have e : ev0 (F := F) κ = GlobalTheory.MixUniq.ev0 κ := LinearMap.ext fun _ => rfl
+  rw [e]
+  exact GlobalTheory.MixUniq.adelicCoordinatesEvalZeroForm_mem_admissible κ
+
+theorem schr_zero_fst {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ) (v : κ → AF F) (Ψ : (κ → AF F) → ℂ) :
+    schr ψ (0, v) Ψ = fun x => ψ (x ⬝ᵥ v) * Ψ x := by
+  funext x
+  simp [schr]
+
+end PositivityTheory.SiegelWeilFormula.Ald
+
+end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.Siegel =====
+end
+
+
+/-! # ExistsLocUnit: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+private theorem inv_mem {F : Type} [Field F] [NumberField F]
+    (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))
+    (n : NumberField.RingOfIntegers F) (hn : n ∉ v.asIdeal) :
+    algebraMap F (v.adicCompletion F) (n : F)⁻¹ ∈ v.adicCompletionIntegers F := by
+  have h1 : v.valuation F (n : F) = 1 := by
+    have := (IsDedekindDomain.HeightOneSpectrum.valuation_eq_one_iff_notMem (K := F) v (r := n)).2 hn
+    exact this
+  rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
+  have h2 := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v ((n : F)⁻¹)
+  refine le_of_eq (Eq.trans h2 ?_)
+  rw [map_inv₀, h1, inv_one]
+
+theorem UpperTheory.Reformulated.B.Gs6.exists_locUnit :
+    ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E]
+      [inst_4 : Algebra F E] {σ : E →ₐ[F] E} {B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E},
+      UpperTheory.TP.W.GoodK σ B →
+        ∀ {ξ : E},
+          ξ ≠ (0 : E) →
+            (σ : E → E) ξ = -ξ →
+              ∀ (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)),
+                ∃ (u : (TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E)ˣ),
+                  (↑u : TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E) ∈ GlobalTheory.AdelicU.intLoc F E v ∧
+                    (↑u⁻¹ : TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E) ∈ GlobalTheory.AdelicU.intLoc F E v ∧
+                      (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) σ :
+                                  TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E → TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E)
+                                (↑u : TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E) =
+                        -(↑u : TensorProduct F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) E) := by
+  intro F E _ _ _ _ _ σ B hG ξ hξ hσ v
+  obtain ⟨hCM, -, hU, -, -, -⟩ := hG
+  obtain ⟨a, b, n, hn, ha, hab⟩ := UpperTheory.unramified_anti_invariant_local σ hCM.2.2.1 hU ξ hξ hσ v
+  have hn0 : (n : F) ≠ 0 := by
+    intro h
+    apply hn
+    have : n = 0 := by exact_mod_cast h
+    rw [this]; exact v.asIdeal.zero_mem
+  have hmul : ((1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) ⊗ₜ[F] (a : E)) *
+      (algebraMap F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) (n : F)⁻¹ ⊗ₜ[F] (b : E)) = 1 := by
+    rw [Algebra.TensorProduct.tmul_mul_tmul, hab, one_mul, Algebra.algebraMap_eq_smul_one,
+      Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul_smul, inv_mul_cancel₀ hn0, one_smul]
+    rfl
+  refine ⟨⟨_, _, hmul, by rw [mul_comm]; exact hmul⟩, ?_, ?_, ?_⟩
+  · exact AddSubgroup.subset_closure ⟨1, one_mem _, a, rfl⟩
+  · exact AddSubgroup.subset_closure ⟨_, inv_mem v n hn, b, rfl⟩
+  · change Algebra.TensorProduct.map (AlgHom.id F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v)) σ (1 ⊗ₜ[F] (a : E)) = -(1 ⊗ₜ[F] (a : E))
+    rw [Algebra.TensorProduct.map_tmul, ha, map_one, TensorProduct.tmul_neg]
+end
+
 
 /-! # SiegelWeilThetadictAssemble: Consolidated global theta-kernel definitions and proofs (SiegelWeilThetadictAssemble). -/
 @[expose] public section

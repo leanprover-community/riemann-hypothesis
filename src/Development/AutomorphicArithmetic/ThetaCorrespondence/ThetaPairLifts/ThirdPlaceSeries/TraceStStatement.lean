@@ -126,11 +126,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 open GlobalTheory.ConjTwist (BaseOf)
 
 
-namespace GlobalTheory.TraceFlatLevel
-open GlobalTheory.TraceLevelPf
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-end GlobalTheory.TraceFlatLevel
 namespace GlobalTheory.BigOn.Exp.TupLe
 theorem traceSt_alt : _root_.GlobalTheory.BigOn.Exp.TupLe.TraceCondition := by
   intro D L hT Gi Gl Kc Y cX ex Csz p j hr hm ρ hρ hpin hlev i b ψ ω hψ hQ hω h P

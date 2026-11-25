@@ -101,8 +101,3 @@ theorem nabVal_monomial (B : FB R d O) (h : PS k 2 d) (w0 : O) (q : ℕ) (f : PS
       ite_true, map_one, one_mul]
 
 end GlobalTheory.CrudeValue
-
-namespace GlobalTheory
-
-
-end GlobalTheory

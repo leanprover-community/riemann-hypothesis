@@ -248,17 +248,6 @@ end GlobalTheory.GridWtBound
 
 namespace GlobalTheory.GridWtBound
 
-theorem extend_bounds {n : ℕ} (d : ℕ) (f : Fin n → ℚ) (h : ℝ) (hh : 0 ≤ h)
-    (hf : ∀ i, 0 ≤ ((f i : ℚ) : ℝ) ∧ ((f i : ℚ) : ℝ) ≤ h) (j : ℕ) :
-    0 ≤ ((GridData.extend d f j : ℤ) : ℝ) ∧ ((GridData.extend d f j : ℤ) : ℝ) ≤ h :=
-  GlobalTheory.KerConjMean.TopSizes.extend_bounds d f h hh hf j
-
-variable {D : D7}
-
-end GlobalTheory.GridWtBound
-
-namespace GlobalTheory.GridWtBound
-
 theorem one_le_b {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows large₂) : (1 : ℝ) ≤ large₂.sc.b := by
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hgap, -, -⟩ := hs
   have hSc := large₂.Sc_pos
@@ -402,7 +391,7 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   have hScb : large₂.Sc ≤ large₂.sc.b := by nlinarith
 
   have hv : ∀ j, 0 ≤ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ∧ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ≤ large₂.Sc :=
-    GlobalTheory.GridWtBound.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
+    GlobalTheory.KerConjMean.TopSizes.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
   have hbl : ∀ l : Fin D.R.m, 0 ≤ (((D.hc τ).b l : ℚ) : ℝ) ∧ (((D.hc τ).b l : ℚ) : ℝ) ≤ 4 * large₂.sc.b := fun l => by
     obtain ⟨h1, h2⟩ := hbe τ l
     have h3 := (D.hc τ).gap_be l
@@ -416,8 +405,8 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
     have ht : (0 : ℚ) ≤ D.R.t := Nat.cast_nonneg _
     have h4 : 0 ≤ (D.hc τ).e l := by linarith
     exact ⟨by exact_mod_cast h4, h2⟩
-  have hb := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hbl
-  have he := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hel
+  have hb := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hbl
+  have he := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hel
   have htb : (D.R.t : ℝ) ≤ 8 * large₂.sc.b := by
     obtain ⟨h1, h2⟩ := hbe τ ⟨0, by have := D.R.two_le_m; omega⟩
     have h3 := (D.hc τ).gap_be ⟨0, by have := D.R.two_le_m; omega⟩
@@ -480,13 +469,6 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   calc |(y : ℝ) + (((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)|
       ≤ |(y : ℝ)| + |(((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)| := abs_add_le _ _
     _ ≤ 14 * large₂.sc.b := by linarith
-
-theorem pow_le_exp_posLog (x : ℝ) (g : ℕ) : x ^ g ≤ Real.exp (g * Real.posLog x) :=
-  GlobalTheory.KerConjMean.pow_le_exp_posLog x g
-
-theorem max_pow_le_exp_posLog (A : ℝ) (hA : 0 < A) (d : ℕ) :
-    max 1 A⁻¹ ^ d ≤ Real.exp (d * Real.posLog A⁻¹) :=
-  GlobalTheory.KerConjMean.max_pow_le_exp_posLog A hA d
 
 theorem rowSizes : BigC fun {D} _ _ _ _ _ _ _ _ _ _ _ _ ch _ b =>
     ∀ i τ a, ((wt ch.G (.grid i D.R.m) τ).natW a : ℝ) ≤ 29 * b := by

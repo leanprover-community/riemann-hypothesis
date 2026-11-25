@@ -176,7 +176,3 @@ def vOm (l : ℕ) [Fact l.Prime] : AddValuation (Om l) (WithTop ℚ) :=
   AddValuation.of vf vf_zero vf_one vf_add vf_mul
 
 end GlobalTheory.Per.Val
-
-namespace GlobalTheory.Per
-
-end GlobalTheory.Per

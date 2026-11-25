@@ -43,66 +43,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
 section PartLat1
 
 open Finset Filter Topology MeasureTheory
@@ -134,10 +74,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartLat1
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 section PartLat2b
 
@@ -181,14 +117,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartLat2b
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 section PartDefs3
 
@@ -267,46 +195,6 @@ end Formalism.MainNotions.BlockEstimateWords
 end
 
 end PartDefs3
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
-
-namespace Formalism.MainNotions.BlockEstimateWords
-
-end Formalism.MainNotions.BlockEstimateWords
 
 end -- clump:auto
 end -- clump:auto

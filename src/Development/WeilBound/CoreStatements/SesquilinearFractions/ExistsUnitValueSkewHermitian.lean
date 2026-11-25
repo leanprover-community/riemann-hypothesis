@@ -5,6 +5,7 @@ public import Mathlib.LinearAlgebra.Matrix.IsDiag
 public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.Unramified.Basic
+import Formalism.SharedLemmas.NormLeOneOfIntegral
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.RingTheory.DedekindDomain.Factorization
@@ -513,34 +514,6 @@ theorem norm_natCast_cp (p : Nat.Primes) (n : ℕ) (hn : ¬ (p : ℕ) ∣ n) : �
 
 end PositivityTheory.Xgf.LocGen
 
-private theorem norm_le_one_lemma (p : Nat.Primes) (y : ℂ_[(p : ℕ)]) (f : Polynomial ℤ) (hmon : f.Monic)
-    (hf : f.eval₂ (Int.castRingHom ℂ_[(p : ℕ)]) y = 0) : ‖y‖ ≤ 1 := by
-  by_contra! hlt
-  rw [hmon.as_sum] at hf
-  simp only [Polynomial.eval₂_add, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_finsetSum,
-    Polynomial.eval₂_mul, Polynomial.eval₂_C, Int.coe_castRingHom] at hf
-  have hd : f.natDegree ≠ 0 := by
-    intro h0
-    rw [h0] at hf
-    simp at hf
-  have h1 : y ^ f.natDegree = -∑ i ∈ Finset.range f.natDegree, ((f.coeff i : ℤ) : ℂ_[(p : ℕ)]) * y ^ i :=
-    eq_neg_of_add_eq_zero_left hf
-  have h2 : ‖∑ i ∈ Finset.range f.natDegree, ((f.coeff i : ℤ) : ℂ_[(p : ℕ)]) * y ^ i‖ ≤
-      ‖y‖ ^ (f.natDegree - 1) := by
-    apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity)
-    intro i hi
-    rw [norm_mul, norm_pow]
-    have hc : ‖((f.coeff i : ℤ) : ℂ_[(p : ℕ)])‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one _ _
-    have hi' : i ≤ f.natDegree - 1 := by
-      have := Finset.mem_range.1 hi
-      omega
-    calc ‖((f.coeff i : ℤ) : ℂ_[(p : ℕ)])‖ * ‖y‖ ^ i ≤ 1 * ‖y‖ ^ (f.natDegree - 1) :=
-          mul_le_mul hc (pow_le_pow_right₀ hlt.le hi') (by positivity) zero_le_one
-      _ = _ := one_mul _
-  rw [← norm_neg, ← h1, norm_pow] at h2
-  have h3 : ‖y‖ ^ (f.natDegree - 1) < ‖y‖ ^ f.natDegree := pow_lt_pow_right₀ hlt (by omega)
-  linarith
-
 open PositivityTheory.Xgf.LocGen in
 theorem PositivityTheory.Xgf.ideal_padic_generator_log_norm : ∀ (F : Type) [Field F] [NumberField F] (I : Ideal (𝓞 F)) (p : Nat.Primes), I ≠ ⊥ → ∃ δ ∈ I, δ ≠ 0 ∧ (∃ n : ℕ, ¬ (p : ℕ) ∣ n ∧ ∀ a ∈ I, (n : 𝓞 F) * a ∈ Ideal.span {δ}) ∧ ∀ j : F →+* ℂ_[p], Real.log ‖j (δ : F)‖ = logIdeal (j.comp (algebraMap (𝓞 F) F)) I := by
   intro F _ _ I p hI
@@ -594,13 +567,9 @@ theorem PositivityTheory.Xgf.ideal_padic_generator_log_norm : ∀ (F : Type) [Fi
     exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ hay) (Ideal.mul_mem_right _ _ hNmem)
   refine ⟨δ, hδI, hδ0, ⟨n, hn, hmul⟩, ?_⟩
   intro j
-  have hint : ∀ b : 𝓞 F, ‖j (algebraMap (𝓞 F) F b)‖ ≤ 1 := by
-    intro b
-    obtain ⟨f, hmon, hf⟩ := NumberField.RingOfIntegers.isIntegral_coe b
-    refine norm_le_one_lemma p _ f hmon ?_
-    have h := congrArg j hf
-    rw [Polynomial.hom_eval₂, map_zero] at h
-    rwa [show j.comp (algebraMap ℤ F) = Int.castRingHom _ from RingHom.ext_int _ _] at h
+  have hint : ∀ b : 𝓞 F, ‖j (algebraMap (𝓞 F) F b)‖ ≤ 1 := fun b =>
+    _root_.Formalism.SharedLemmas.norm_le_one_of_isIntegral
+      (map_isIntegral_int j (NumberField.RingOfIntegers.isIntegral_coe b))
   have bound : ∀ a ∈ I, ‖j (algebraMap (𝓞 F) F a)‖ ≤ ‖j (algebraMap (𝓞 F) F δ)‖ := by
     intro a ha
     obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.1 (hmul a ha)

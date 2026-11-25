@@ -56,12 +56,6 @@ theorem hJ_span_zero (x : Fin n → ℂ) (S : Set (Fin n → ℂ)) (h : ∀ y �
   | add y z _ _ hy hz => rw [_root_.PI.SchurPlaces.Geo.hJ_add_right, hy, hz, add_zero]
   | smul c y _ hy => rw [_root_.PI.SchurPlaces.Geo.hJ_smul_right, hy, mul_zero]
 
-theorem spanLt_mono (e : Fin r → Fin n → ℂ) {a b : ℕ} (h : a ≤ b) : spanLt e a ≤ spanLt e b :=
-  Submodule.span_mono (Set.image_mono fun c (hc : c.1 < a) => lt_of_lt_of_le hc h)
-
-theorem mem_spanLt (e : Fin r → Fin n → ℂ) {a : ℕ} (b : Fin r) (h : b.1 < a) : e b ∈ spanLt e a :=
-  Submodule.subset_span ⟨b, h, rfl⟩
-
 theorem sub_mem_of (e : Fin r → Fin n → ℂ) (m : Matrix (Fin n) (Fin n) ℂ)
     (hm : ∀ b : Fin r, m *ᵥ e b - e b ∈ spanLt e b.1) (a : ℕ) :
     ∀ w ∈ spanLt e (a + 1), m *ᵥ w - w ∈ spanLt e a := by
@@ -69,7 +63,7 @@ theorem sub_mem_of (e : Fin r → Fin n → ℂ) (m : Matrix (Fin n) (Fin n) ℂ
   induction hw using Submodule.span_induction with
   | mem y hy =>
     obtain ⟨b, hb, rfl⟩ := hy
-    exact spanLt_mono e (Nat.lt_succ_iff.1 hb) (hm b)
+    exact Formalism.L2.SG.Pf.WuDec.spanLt_mono e (Nat.lt_succ_iff.1 hb) (hm b)
   | zero => simp
   | add y z _ _ hy hz =>
     rw [Matrix.mulVec_add, show m *ᵥ y + m *ᵥ z - (y + z) = (m *ᵥ y - y) + (m *ᵥ z - z) by abel]
@@ -82,7 +76,7 @@ theorem maps_of (e : Fin r → Fin n → ℂ) (m : Matrix (Fin n) (Fin n) ℂ)
     (hm : ∀ b : Fin r, m *ᵥ e b - e b ∈ spanLt e b.1) (a : ℕ) :
     ∀ w ∈ spanLt e a, m *ᵥ w ∈ spanLt e a := by
   intro w hw
-  have h := sub_mem_of e m hm a w (spanLt_mono e (Nat.le_succ a) hw)
+  have h := sub_mem_of e m hm a w (Formalism.L2.SG.Pf.WuDec.spanLt_mono e (Nat.le_succ a) hw)
   have := Submodule.add_mem _ h hw
   rwa [sub_add_cancel] at this
 
@@ -185,7 +179,7 @@ theorem conj_core (hgi : gi * g = 1) (hgi' : g * gi = 1)
         have hbase : hJ ε (g *ᵥ F a) (N + x) = hJ ε (F a) N := by
           rw [← hgN, hiso, hFN]
         rw [hdec, _root_.PI.SchurPlaces.Geo.hJ_add_right ε _ (N + x), _root_.PI.SchurPlaces.Geo.hJ_add_right ε _ (s *ᵥ N - N), hbase, hgF a _ hsN,
-          hgF a _ (spanLt_mono E (Nat.le_succ _) (hsX a.1 x hxa)), hFlow a _ (hsX a.1 x hxa), add_zero, ← _root_.PI.SchurPlaces.Geo.hJ_add_right]
+          hgF a _ (Formalism.L2.SG.Pf.WuDec.spanLt_mono E (Nat.le_succ _) (hsX a.1 x hxa)), hFlow a _ (hsX a.1 x hxa), add_zero, ← _root_.PI.SchurPlaces.Geo.hJ_add_right]
         congr 1
         abel
       unfold psiR
@@ -217,7 +211,7 @@ theorem conj_core (hgi : gi * g = 1) (hgi' : g * gi = 1)
         have e : E a = g *ᵥ (gi *ᵥ E a) := by rw [Matrix.mulVec_mulVec, hgi', Matrix.one_mulVec]
         rw [e, hiso]
 
-        have hm : gi *ᵥ E a ∈ spanLt E r := hgiX r _ (mem_spanLt E a a.2)
+        have hm : gi *ᵥ E a ∈ spanLt E r := hgiX r _ (Formalism.L2.SG.Pf.WuDec.mem_spanLt E a a.2)
         have hy' : ∀ w ∈ spanLt E r, hJ ε w y = 0 := by
           intro w hw
           induction hw using Submodule.span_induction with

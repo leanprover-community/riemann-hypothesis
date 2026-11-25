@@ -66,8 +66,6 @@ section -- clump:auto
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.generic_degree_of_projection_and_fibre_dim : PFCoordStatement → FibreDimStatement → GenDegStatement := by
-  first | exact @PositivityTheory.HtPt.Aig.genDeg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericDegreeOfProjectionAndFibreDim =====
@@ -83,7 +81,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Giv
 
 theorem genDeg_of_system (h : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement) :
     GenDegStatement :=
-  _root_.GlobalTheory.CompanionTheory.Relay.generic_degree_of_projection_and_fibre_dim (_root_.PositivityTheory.HtPt.Aig.pfCoord_of_system h) fibreDim
+  _root_.PositivityTheory.HtPt.Aig.genDeg_of_coord (_root_.PositivityTheory.HtPt.Aig.pfCoord_of_system h) fibreDim
 
 end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto

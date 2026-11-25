@@ -153,7 +153,7 @@ theorem chi_unitOff : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Ty
     have hqm : (q : 𝓞 D.host.E) ∈ (conjPl P).asIdeal := by
       rw [natCast_mem_conjPl, ← hqc]; exact natCard_mem P (by rw [hqc]; exact hq.ne_zero)
     exact (R.C.isMu0 i).unr (conjPl P) fun k hk =>
-      not_mem_of_prime_ne (conjPl P) (D.host.g_prime k) hq (hqg k) hqm hk
+      GlobalTheory.NatCastNotMemPrimeIdeal.natCast_notMem_of_prime_ne (conjPl P) (D.host.g_prime k) hq (hqg k) hqm hk
   have hcoe : (u : D.host.E) = ((Formalism.L2.DIV.starO ϖ : 𝓞 D.host.E) : D.host.E) := by rw [Formalism.L2.DIV.starO_coe]; rfl
   obtain ⟨nμ, -, hnμ⟩ := (R.C.isMu0 i).inf
   obtain ⟨n, hn, hnx⟩ := hK.fin

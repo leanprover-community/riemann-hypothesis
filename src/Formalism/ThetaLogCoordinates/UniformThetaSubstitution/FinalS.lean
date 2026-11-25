@@ -45,7 +45,6 @@ open Formalism.DworkPowerSeriesWeights (Integral mvExp)
 
 namespace GramFrameCompositionLinFacts
 
-
 open MvPowerSeries in
 theorem continuous_pderiv {R τ : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalSemiring R]
     (e : τ) :
@@ -59,7 +58,6 @@ theorem continuous_pderiv {R τ : Type} [CommRing R] [TopologicalSpace R] [IsTop
     exact coeff_pderiv f n
   rw [this]
   exact (WithPiTopology.continuous_coeff R _).mul continuous_const
-
 
 open MvPowerSeries in
 theorem pderiv_subst {R σ τ : Type} [CommRing R] [Fintype σ] {a : σ → MvPowerSeries τ R}
@@ -132,11 +130,6 @@ theorem subst_psubst {τ κ : Type} {b : τ → MvPowerSeries κ K} (hb : HasSub
     subst b (PowerSeries.subst u f) = PowerSeries.subst (subst b u) f :=
   subst_comp_subst_apply hu.const hb f
 
-theorem subst_single_variable {τ κ : Type} {b : τ → MvPowerSeries κ K} (hb : HasSubst b) (x : τ)
-    (f : PowerSeries K) : subst b (at1 x f) = PowerSeries.subst (b x) f := by
-  unfold at1
-  rw [subst_psubst hb (PowerSeries.HasSubst.X x), subst_X hb]
-
 theorem subst_identity_two_vars (H : MvPowerSeries (Fin 2) K) :
     subst ![(X 0 : MvPowerSeries (Fin 2) K), X 1] H = H := by
   have : ![(X 0 : MvPowerSeries (Fin 2) K), X 1] = X := by
@@ -191,7 +184,7 @@ theorem subst_zero_pderiv {τ : Type} (G : MvPowerSeries (Fin 2) K)
   obtain ⟨Q, hQ⟩ := hd
   have e : pderiv (R := K) 0 G = at1 1 (fLin G) + X 0 * Q := by rw [← hQ]; ring
   have h := hs2 (map_zero _) hw
-  rw [e, subst_add h, subst_mul h, subst_X h, subst_single_variable h]
+  rw [e, subst_add h, subst_mul h, subst_X h, Formalism.InvariantFactorPaths.G7.CoboundarySeries.subst_single_var h]
   simp
 
 theorem subst_swap2 {τ : Type} {u v : MvPowerSeries τ K} (h : HasSubst ![u, v])
@@ -205,10 +198,6 @@ theorem pderiv_swap2 (H : MvPowerSeries (Fin 2) K) :
   unfold swap2
   rw [pderiv_subst2 HasSubst.X_X, pderiv_X_self, pderiv_X_of_ne (by decide), mul_one, mul_zero,
     add_zero]
-
-theorem constantCoeff_law_first_two_of_three {F : MvPowerSeries (Fin 2) K} (hF : constantCoeff F = 0) :
-    constantCoeff (in3 F) = 0 :=
-  constantCoeff_subst_eq_zero HasSubst.X_X (fun i => by fin_cases i <;> simp) hF
 
 end Alg
 
@@ -303,7 +292,7 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
   have he0 : HasSubst ![(X 0 : MvPowerSeries (Fin 2) K), 0, X 1] :=
     hs3 (hX 0) (map_zero _) (hX 1)
   have hin : HasSubst ![in3 F, (X 2 : MvPowerSeries (Fin 3) K)] :=
-    hs2 (constantCoeff_law_first_two_of_three hF0) (hX 2)
+    hs2 (Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX 2)
 
   have hE : subst ![(X 0 : MvPowerSeries (Fin 2) K), 0, X 1] (in3 F) = X 0 := by
     unfold in3
@@ -353,7 +342,7 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
       pderiv_psubst (PowerSeries.HasSubst.of_constantCoeff_zero hF0), sub_eq_zero] at h1
     have h2 := congrArg (subst ![(X 0 : MvPowerSeries (Fin 2) K), 0]) h1
     rw [subst_mul hs0, subst_psubst hs0 (PowerSeries.HasSubst.of_constantCoeff_zero hF0), hF4,
-      ← hφ', subst_single_variable hs0] at h2
+      ← hφ', Formalism.InvariantFactorPaths.G7.CoboundarySeries.subst_single_var hs0] at h2
     rw [at1, h2]
     change PowerSeries.subst (0 : MvPowerSeries (Fin 2) K) _ = 1
     rw [PowerSeries.subst_zero_eq_C_constantCoeff, constantCoeff_dlgF hp.two_le]
@@ -393,7 +382,7 @@ theorem CobLin_of : CobLin := by
     unfold in3
     rw [pderiv_subst2 HasSubst.X_X, pderiv_X_of_ne (by decide), pderiv_X_of_ne (by decide),
       mul_zero, mul_zero, add_zero]
-  obtain ⟨a1, b1⟩ := term (in3 F) (constantCoeff_law_first_two_of_three hF0) hdF
+  obtain ⟨a1, b1⟩ := term (in3 F) (Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) hdF
   obtain ⟨a2, b2⟩ := term (X 0) (hX 0) (pderiv_X_of_ne (by decide))
   obtain ⟨a3, b3⟩ := term (X 1) (hX 1) (pderiv_X_of_ne (by decide))
   have hA : subst ![(X 0 : MvPowerSeries (Fin 2) K), X 1, 0] (d1 F (swap2 G)) = 0 := by
@@ -423,9 +412,6 @@ namespace GramFrameCompositionLinFacts
 
 theorem sq_modEq_one {p : ℕ} (hp : 2 ≤ p) : p ^ 2 ≡ 1 [MOD p ^ 2 - 1] :=
   ((Nat.modEq_iff_dvd' (Nat.one_le_pow _ _ (by omega))).2 dvd_rfl).symm
-
-theorem powq_modEq_one {p : ℕ} (hp : 2 ≤ p) (i : ℕ) : (p ^ 2) ^ i ≡ 1 [MOD p ^ 2 - 1] := by
-  simpa using (sq_modEq_one hp).pow i
 
 theorem not_one_modEq {p : ℕ} (hp : 2 ≤ p) : ¬ 1 ≡ p [MOD p ^ 2 - 1] := by
   intro h
@@ -461,7 +447,7 @@ theorem StepI_of (h1 : LemmaOne) (hF : FirstDeriv) (hC : CobLin) : StepI := by
     · have hl : PowerSeries.coeff j (lgF K p) = 0 := by
         by_contra h
         obtain ⟨i, rfl⟩ := coeff_lgF_ne_zero h
-        exact not_one_modEq hp2 ((powq_modEq_one hp2 i).symm.trans hj)
+        exact not_one_modEq hp2 ((Formalism.InvariantFactorPaths.G7.CoboundarySeries.powq_modEq_one hp2 i).symm.trans hj)
       have e : PowerSeries.coeff j (fLin G) - α * PowerSeries.coeff j (g0F K p) =
           PowerSeries.coeff j R := by
         rw [hf]
@@ -486,7 +472,7 @@ theorem StepI_of (h1 : LemmaOne) (hF : FirstDeriv) (hC : CobLin) : StepI := by
         by_contra h
         obtain ⟨i, rfl⟩ := coeff_g0F_ne_zero h
         apply hj
-        simpa using (powq_modEq_one hp2 i).mul_left p
+        simpa using (Formalism.InvariantFactorPaths.G7.CoboundarySeries.powq_modEq_one hp2 i).mul_left p
       rw [hfj, hgj]
       simp
   refine ⟨α, hα, ?_⟩
@@ -1068,7 +1054,6 @@ theorem norm_sub_le_one {x y : K} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) : �
 end Norm
 
 end LemTwo
-
 
 open LemTwo in
 theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by

@@ -199,9 +199,6 @@ end Sized
   cK := t.cK
   cP := t.cP
 
-def ClsPinF {c : Comm D} {𝒯 : Type} (t : 𝒯 → Tup c) : Prop :=
-  ∃ (N : ℕ → ℕ) (fr : ∀ j, j ≤ D.R.m → (c.Fr j ≃ FrN D (N j))), ClsPinD fun s => (t s).onFrames fr
-
 @[reducible] def RealD.onFrames {c : Comm D} (ρ : RealD c) : RealD (c.onFrames ρ.N) :=
   ⟨ρ.N, ρ.hN, ρ.NT, ρ.hT, fun _ => Equiv.refl _, ρ.lam, ρ.n, ρ.sS, ρ.sD, ρ.sc, ρ.BT, ρ.sg, ρ.J, ρ.low⟩
 

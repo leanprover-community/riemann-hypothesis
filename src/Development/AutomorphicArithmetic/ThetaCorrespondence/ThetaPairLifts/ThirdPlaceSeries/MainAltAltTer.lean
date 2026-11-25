@@ -234,10 +234,6 @@ theorem tw_jumps (D : D7) (L : SizeData₂ D) (ep : Bool) (hJ : hodgeTateJumpsAt
 
 end GlobalTheory.GTwoTheta
 
-namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
-
-end GlobalTheory.GTwoTheta
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -253,19 +249,6 @@ section -- clump:auto
 section
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 noncomputable section
-namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
-variable {D : D7}
-end GlobalTheory.GTwoTheta
-namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
-end GlobalTheory.GTwoTheta
-namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
-end GlobalTheory.GTwoTheta
-namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
-end GlobalTheory.GTwoTheta
 namespace GlobalTheory.GTwoTheta
 open Formalism.MainNotions.AdmissibleParameterJ
 theorem main_alt_alt : GlobalTheory.Published.FontaineBcris → ∀ (D : D7) (L : SizeData₂ D), _root_.Formalism.MainNotions.AdmissibleParameterJ.DeRhamFamilyAwayAlt D → AdmissibleParameterJ.ConclusionJa D → AdmissibleParameterJ.jcCondition L → ∀ (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i), GoodR D.nd i r → D.nd.l i ≠ D.host.g 0 → D.nd.l i ≠ D.host.g 1 → π ∈ D.nd.Z i → TruncatedSeriesCountingIdentities.SemisimpleDecomposition (D := D) i r ρ π → TruncatedSeriesCountingIdentities.admG2 (D := D) i r ρ π := by

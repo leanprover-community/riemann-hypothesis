@@ -911,8 +911,6 @@ theorem cycloSq_le_of_ne_zero {l : ℕ} (hl : 1 < l) {ζ : ℂ} (hζ : IsPrimiti
     rw [← Finset.sum_add_distrib]
     calc (l : ℤ) = ∑ b ∈ Finset.range l, (1 : ℤ) := by simp
       _ ≤ _ := Finset.sum_le_sum (fun b _ => by
-        have h1 := sq_nonneg (f x - f b)
-        have h2 := sq_nonneg (f 0 - f b)
         by_cases h : f x = f b
         · have : f 0 - f b ≠ 0 := by omega
           rcases lt_or_gt_of_ne this with h3 | h3 <;> nlinarith

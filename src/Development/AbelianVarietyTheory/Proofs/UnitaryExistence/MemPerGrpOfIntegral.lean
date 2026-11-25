@@ -701,7 +701,6 @@ theorem imForm_apply (x y : EuclideanSpace ℂ ι) : imForm x y = (Hf x y).im :=
 
 theorem imForm_swap (x y : EuclideanSpace ℂ ι) : imForm y x = -imForm x y := by
   have h : Hf y x = starRingEnd ℂ (Hf x y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [Hf, map_sum, mul_comm]
   rw [imForm_apply, imForm_apply, h, Complex.conj_im]
 

@@ -77,9 +77,6 @@ end
 
 end Formalism.L2.SG.RealObj.StepIntOf.Theta
 
-namespace Formalism.L2.SG.RealObj.StepIntOf
-
-end Formalism.L2.SG.RealObj.StepIntOf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

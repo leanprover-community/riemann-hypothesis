@@ -276,16 +276,6 @@ theorem mem_range_of_pow_card_eq_self {F k : Type*} [Field F] [Finite F] [Field 
 variable {A B : Type*} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
   [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Algebra A B]
 
-theorem isLocalHom_algebraMap_of_map_maximalIdeal
-    (hunr : (maximalIdeal A).map (algebraMap A B) = maximalIdeal B) :
-    IsLocalHom (algebraMap A B) := by
-  refine ⟨fun a ha ↦ ?_⟩
-  by_contra h
-  have hm : a ∈ maximalIdeal A := (mem_maximalIdeal a).2 h
-  have := Ideal.mem_map_of_mem (algebraMap A B) hm
-  rw [hunr] at this
-  exact (mem_maximalIdeal _).1 this ha
-
 variable [IsAdicComplete (maximalIdeal A) A] [Finite (ResidueField A)]
   (hunr : (maximalIdeal A).map (algebraMap A B) = maximalIdeal B) (σ : B →ₐ[A] B)
   (hσ : ∀ x : B, residue B (σ x) = residue B x ^ Nat.card (ResidueField A))
@@ -294,7 +284,7 @@ include hunr hσ
 omit [IsAdicComplete (maximalIdeal A) A] in
 theorem exists_sub_algebraMap_mem_of_fixed {c : B} (hc : σ c = c) :
     ∃ d : A, c - algebraMap A B d ∈ maximalIdeal B := by
-  have := isLocalHom_algebraMap_of_map_maximalIdeal hunr
+  have := GroundTheory.LocalField.FormalGroup.isLocalHom_of_map_maximalIdeal hunr
   have hy : residue B c ^ Nat.card (ResidueField A) = residue B c := by rw [← hσ, hc]
   obtain ⟨t, ht⟩ := mem_range_of_pow_card_eq_self hy
   obtain ⟨d, rfl⟩ := residue_surjective t
@@ -393,7 +383,8 @@ theorem map_maximalIdeal_completedUnramifiedIntegers :
     AdicCompletion.maximalIdeal_eq_map]
 
 instance isLocalHom_algebraMap_completedUnramifiedIntegers : IsLocalHom (algebraMap 𝒪[K] 𝔹) :=
-  isLocalHom_algebraMap_of_map_maximalIdeal (map_maximalIdeal_completedUnramifiedIntegers K Ω)
+  GroundTheory.LocalField.FormalGroup.isLocalHom_of_map_maximalIdeal
+      (map_maximalIdeal_completedUnramifiedIntegers K Ω)
 
 def residueFieldCompletedUnramifiedIntegersEquiv :
     ResidueField 𝒪[𝔼] ≃+* ResidueField 𝔹 :=

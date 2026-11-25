@@ -296,7 +296,7 @@ theorem _root_.UpperTheory.KN.exists_galois_stable_lattice_of_period_data :
       {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [IsTopologicalRing LL]
       {O : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] [Algebra O LL] [IsFractionRing O LL] {nn : ℕ}
       (emb : ZMod nn → (K₀ →ₐ[Qp] LL)) (lam : O) (jT : ZMod nn → ℤ → ℤ) (cT : G → Polynomial LL)
-      {m : ℕ} (F : Fin m → tableLineDegreeTwo.FullRep PD emb lam jT cT) (Λ : Lattice (O := O) (tableLineDegreeTwo.piRep F))
+      {m : ℕ} (F : Fin m → tableLineDegreeTwo.FullRep PD emb lam jT cT) (_ : Lattice (O := O) (tableLineDegreeTwo.piRep F))
       {A : Type} [AddCommGroup A] [Module O A] [Module.Finite O A] (j : A →ₗ[O] (∀ k, (F k).V)) (actA : G → A → A)
       {E : Type} [AddCommGroup E] [Module O E] (act : G → E → E) (S : Submodule O E) (q : A →ₗ[O] (E ⧸ S)) (c : O),
       Function.Injective j → (∀ g a, j (actA g a) = tableLineDegreeTwo.piRep F g (j a)) → Function.Surjective q →
@@ -396,8 +396,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qj4.tmul_surjective_rank_one :
-    ∀ {O T X : Type} [inst : CommRing O]
-    [inst_1 : AddCommGroup T] [inst_2 : _root_.Module O T] [inst_3 : AddCommGroup X] [inst_4 : _root_.Module O X]
+    ∀ {O T X : Type} [CommRing O]
+    [AddCommGroup T] [_root_.Module O T] [AddCommGroup X] [_root_.Module O X]
     (x₀ : X), (∀ (x : X), ∃ (c : O), x = c • x₀) → ∀ (m : TensorProduct O T X), ∃ (t : T), t ⊗ₜ[O] x₀ = m := by
   intro O T X _ _ _ _ _ x₀ h m
   induction m using TensorProduct.induction_on with

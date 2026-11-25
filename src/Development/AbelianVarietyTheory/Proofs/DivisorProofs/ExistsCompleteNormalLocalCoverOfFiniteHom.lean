@@ -185,7 +185,7 @@ theorem main (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (C : Type) [Co
   obtain ⟨P, -, hP, hPc⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (R := R) (S := C) (⊥ : Ideal R) ⊥
     (by rw [Ideal.under_def, ← RingHom.ker_eq_comap_bot]; exact ((RingHom.injective_iff_ker_eq_bot _).1 hφ).le)
   have hD : Function.Injective (algebraMap R (C ⧸ P)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have : a ∈ P.comap (algebraMap R C) := by
       rw [Ideal.mem_comap, ← Ideal.Quotient.eq_zero_iff_mem]

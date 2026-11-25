@@ -525,8 +525,6 @@ open scoped ENNReal Pointwise
 
 namespace PositivityTheory.Rg.BcB.E1
 
-attribute [local instance] borelH
-
 theorem cntPair_of (h : RatProper) (ht : ThetaBasic) : CntPair := by
   intro E _ _ _ a b
   obtain ⟨a1, a2, a3⟩ := ht E a

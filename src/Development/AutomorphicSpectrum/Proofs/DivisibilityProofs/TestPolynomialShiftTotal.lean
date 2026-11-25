@@ -184,8 +184,7 @@ theorem d_sum (τ : Ψ) (S T : Finset (Fin N)) :
     dS τ S (∑ σ : Ψ, ∑ i ∈ T, (X (σ, i) : RP Ψ N)) = C (((T.filter (· ∈ S)).card : ℕ) : ℝ) := by
 
   rw [map_sum, Finset.sum_eq_single τ]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     simp only [dS_X, true_and]
     rw [Finset.sum_boole, map_natCast]
   · intro σ _ hσ

@@ -119,7 +119,7 @@ theorem isotIn_detect_by_eqv_map : ∀ (D : D7) {n : ℕ} (A : Type) [AddCommGro
     apply hyK; rw [← hsum, hf', map_zero, add_zero]; exact hk
   let Ψ : (K × π.S) →ₗ[ℂ] A := K.subtype.coprod Φ
   have hΨ : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨k, f⟩ h0
     simp only [Ψ, LinearMap.coprod_apply, Submodule.subtype_apply] at h0
     have hneg : Φ f = -(k : A) := eq_neg_iff_add_eq_zero.2 (by rw [add_comm]; exact h0)

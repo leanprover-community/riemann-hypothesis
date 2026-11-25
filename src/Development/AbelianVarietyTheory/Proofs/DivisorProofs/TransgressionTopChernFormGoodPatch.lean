@@ -867,8 +867,6 @@ theorem integral_det_dbar_eq_zero_of_poincare : ∀ {n : ℕ} (S : Finset (Fin n
       have hp : 0 ≤ poinWt S v (u j) * poinWt S v b := mul_nonneg (hw _).le (hw _).le
       have hA : 0 ≤ ‖dbar (f j) v (coordVec b)‖ * (poinWt S v (u j) * poinWt S v b) :=
         mul_nonneg (norm_nonneg _) hp
-      have hB : 0 ≤ ‖dbar (fun x => (χ k x : ℂ)) v (coordVec b)‖ * poinWt S v b :=
-        mul_nonneg (norm_nonneg _) (hw _).le
       have hE : 0 ≤ ‖f j v‖ * poinWt S v (u j) := mul_nonneg (norm_nonneg _) (hw _).le
       calc ‖(χ k v : ℂ) * dbar (f j) v (coordVec b) + dbar (fun x => (χ k x : ℂ)) v (coordVec b) * f j v‖ *
             (poinWt S v (u j) * poinWt S v b)
@@ -1005,7 +1003,6 @@ theorem weighted_bound_cut_entry (x X₁ X₀ d Y₁ Y₀ : ℂ) (wa wb C c : �
     (hX₁ : ‖X₁‖ * (wa * wb) ≤ c) (hX₀ : ‖X₀‖ ≤ C) (hY₁ : ‖Y₁‖ * wa ≤ c) (hY₀ : ‖Y₀‖ ≤ C)
     (hwa0 : 0 ≤ wa) (hwa1 : wa ≤ 1) (hwb0 : 0 ≤ wb) (hwb1 : wb ≤ 1) :
     ‖x * (X₁ - X₀) - d * (Y₁ - Y₀)‖ * (wa * wb) ≤ 2 * C * (|c| + C) := by
-  have hC : 0 ≤ C := (norm_nonneg _).trans hx
   have e1 := weighted_bound_cut_sum ‖x‖ ‖X₁‖ ‖X₀‖ (wa * wb) C c (norm_nonneg _) hx (norm_nonneg _) (norm_nonneg _)
     (by positivity) (by nlinarith) hX₁ hX₀
   have e2 := weighted_bound_cut_sum ‖d‖ ‖Y₁‖ ‖Y₀‖ wa C c (norm_nonneg _) hd (norm_nonneg _) (norm_nonneg _)
@@ -1080,7 +1077,6 @@ theorem integral_mixTop_position_eq_zero : ∀ {n : ℕ} {r : Type} [Fintype r] 
     obtain ⟨hρv, hdv, hc0, hk0⟩ := hC v hvK
     obtain ⟨hwa0, hwa1⟩ := hw v hv.1 a
     obtain ⟨hwb0, hwb1⟩ := hw v hv.1 b
-    have hww : 0 ≤ poinWt S v a * poinWt S v b := by positivity
     have hww1 : poinWt S v a * poinWt S v b ≤ 1 := by nlinarith
     have hca : 0 ≤ |c| := abs_nonneg c
     rw [show mdbar (θ i a) v (coordVec b) = _ from congrFun (congrFun (congrFun (heq v hv) i) a) b]

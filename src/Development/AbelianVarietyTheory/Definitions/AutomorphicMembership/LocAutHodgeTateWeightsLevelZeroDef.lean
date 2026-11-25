@@ -222,8 +222,8 @@ structure LocAut {L : NLay0 R H what₂ LL0} (X : LocNd L) where
       (algebraMap (X.nd.O i) (FractionRing (X.nd.O i)))) =
     ((L.naut.frobEig (L.naut.lpTw (locV i P w) ((1 - (R.nV : ℝ)) / 2))).map fun α => Polynomial.X - Polynomial.C α).prod
   infWt : X.nd.Loc → (H.E →+* ℂ) → Multiset ℂ
-  locW : ∀ i : X.nd.Loc, what₂.FT → ∀ w, L.naut.LP w
-  satW : ∀ i : X.nd.Loc, what₂.FT → PlE H → Multiset ℂ
+  locW : ∀ _ : X.nd.Loc, what₂.FT → ∀ w, L.naut.LP w
+  satW : ∀ _ : X.nd.Loc, what₂.FT → PlE H → Multiset ℂ
   lab_loc : ∀ i k σ v, X.nd.lab k σ v = L.naut.items₂ k (L.naut.plGw k v) (locW i σ (L.naut.plGw k v))
   wdOf : ∀ i {a}, (G H.E X.nd.Om →* GL (Fin a) (Qbar (X.nd.l i))) → ∀ w, L.naut.LP w
   wdOf_dim : ∀ i {a} (r : G H.E X.nd.Om →* GL (Fin a) (Qbar (X.nd.l i))) w, L.naut.lpDim (wdOf i r w) = a

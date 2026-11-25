@@ -224,10 +224,6 @@ theorem tame_fixed_of_type_alt : ∀ D : D7, WildOne D → _root_.UpperTheory.Ga
     rw [hudef, map_mul, map_inv, inv_mul_eq_one, map_pow] at h3
     exact h3.symm
 end GlobalTheory.TypeLeaf
-namespace GlobalTheory.TypeLeaf.ConjPlace
-end GlobalTheory.TypeLeaf.ConjPlace
-namespace GlobalTheory.AdmTame
-end GlobalTheory.AdmTame
 end
 end
 end -- clump:auto
@@ -616,10 +612,6 @@ namespace GlobalTheory.IneAway
 open GlobalTheory.TypeLeaf
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 end GlobalTheory.IneAway
-namespace GlobalTheory.TypeLeaf
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
-open GlobalTheory.TameLabels
-end GlobalTheory.TypeLeaf
 namespace GlobalTheory.TypeLeaf.ConjPlace
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
@@ -701,8 +693,6 @@ theorem tame_any_at_of_is_conj_pl_tame_gen : ∀ D : D7, WildOne D → (∀ (i :
       (by rw [← hχ0, ← Units.val_pow_eq_pow_val, hχM, Units.val_one]), ← hχ0, ← Units.val_pow_eq_pow_val, ← hχ1,
       map_mul, map_mul, map_inv _ g, mul_inv_cancel_comm, chiBar_val, chi1, chi1, hcχ]
 end GlobalTheory.TypeLeaf.ConjPlace
-namespace GlobalTheory.AdmTame
-end GlobalTheory.AdmTame
 end
 end
 end -- clump:auto
@@ -753,15 +743,6 @@ namespace GlobalTheory.IneAway
 open GlobalTheory.TypeLeaf
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 end GlobalTheory.IneAway
-namespace GlobalTheory.TypeLeaf
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
-open GlobalTheory.TameLabels
-end GlobalTheory.TypeLeaf
-namespace GlobalTheory.TypeLeaf.ConjPlace
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
-open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
-open scoped Pointwise
-end GlobalTheory.TypeLeaf.ConjPlace
 namespace GlobalTheory.AdmTame
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 theorem main_alt_alt_alt : ∀ D : D7, SumRepresentations.tie0 D → _root_.Formalism.MainNotions.SumRepresentations.adm2_alt D → SumRepresentations.adm5 D → UpperTheory.GalS.LabTameS D.nd D.naut → UpperTheory.GalS.AdmissibleResidualTameEigenvalues D := by

@@ -18,14 +18,6 @@ private theorem monoidAlgebra_lift_freeMonoid_eq_wop {F A J : Type*} [Field F] [
   simp only [MonoidAlgebra.lift_apply, wop, Finsupp.sum_equivMapDomain, FreeMonoid.lift_apply]
   rfl
 
-private theorem algHom_wop_eq_wop_comp {F A B J : Type*} [Field F] [Ring A] [Algebra F A] [Ring B]
-    [Algebra F B] (φ : A →ₐ[F] B) (T : J → A) (t : List J →₀ F) :
-    φ (wop T t) = wop (fun j => φ (T j)) t := by
-  unfold wop
-
-  simp only [Finsupp.sum, map_sum, map_smul, map_list_prod, List.map_map]
-  rfl
-
 private theorem exists_idempotent_aeval_nilpotent_sub_of_isIntegral {F D : Type*} [Field F] [CommRing D] [Algebra F D] (x : D)
     (hx : IsIntegral F x) (c : F) :
     ∃ q : Polynomial F, q.eval c = 1 ∧ IsIdempotentElem (Polynomial.aeval x q) ∧
@@ -110,11 +102,11 @@ theorem pProjOne_holds : ProjOne.{u} := by
   have ht' : MonoidAlgebra.lift F (F × A) (FreeMonoid J) (FreeMonoid.lift gen) t = z := ht
   let coeff := t.coeff.equivMapDomain FreeMonoid.toListEquiv
   have hwθ : wop θ coeff = (z : F × A).1 := by
-    have h1 := algHom_wop_eq_wop_comp (AlgHom.fst F F A) gen coeff
+    have h1 := map_wop (AlgHom.fst F F A) gen coeff
     rw [← monoidAlgebra_lift_freeMonoid_eq_wop, ht'] at h1
     exact h1.symm
   have hwT : wop T coeff = (z : F × A).2 := by
-    have h1 := algHom_wop_eq_wop_comp (AlgHom.snd F F A) gen coeff
+    have h1 := map_wop (AlgHom.snd F F A) gen coeff
     rw [← monoidAlgebra_lift_freeMonoid_eq_wop, ht'] at h1
     exact h1.symm
   refine ⟨coeff, ?_, ?_, ?_⟩

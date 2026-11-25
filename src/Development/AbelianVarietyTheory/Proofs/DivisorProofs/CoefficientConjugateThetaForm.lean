@@ -249,10 +249,10 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
       rw [e]
       refine ⟨?_, fun u' hu' => ?_⟩
       · rw [hψ u hu]
-        exact hbK.map_of_commute fun g hg => commute_factU_factK _ _ _ _ (fun τ => (mem_KC_of_K (hu τ)).1) hg
-      · rw [← Module.End.mul_apply, ← hv1.2.2.1 u' u (fun τ => mem_KC_of_K (hu' τ)) (fun τ => mem_KC_of_K (hu τ)),
+        exact hbK.map_of_commute fun g hg => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (hu τ)).1) hg
+      · rw [← Module.End.mul_apply, ← hv1.2.2.1 u' u (fun τ => GlobalTheory.Dec.FormF.K_KC (hu' τ)) (fun τ => GlobalTheory.Dec.FormF.K_KC (hu τ)),
           hψ (u' * u) (fun τ => K_mul (hu' τ) (hu τ)), hψ u hu,
-          hhU.2.2.1 u' u (fun τ => mem_KC_of_K (hu' τ)) (fun τ => mem_KC_of_K (hu τ)), Module.End.mul_apply]
+          hhU.2.2.1 u' u (fun τ => GlobalTheory.Dec.FormF.K_KC (hu' τ)) (fun τ => GlobalTheory.Dec.FormF.K_KC (hu τ)), Module.End.mul_apply]
     | zero => exact ⟨by rw [map_zero]; exact zero_mem _, fun u _ => by simp only [map_zero]⟩
     | add a b _ _ ha hb =>
       exact ⟨by rw [map_add]; exact add_mem ha.1 hb.1, fun u hu => by simp only [map_add, ha.2 u hu, hb.2 u hu]⟩
@@ -282,8 +282,8 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
   · rw [hio, hio, map_smul]
     refine congrArg (HSMul.hSMul _) ?_
     have hcm := hm1 (factU M.ε x₁ x₂ x₃ fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ)
-      (fun k hk => commute_factU_factK _ _ _ _ (fun τ => (mem_KC_of_K (mem_K_allPos (hun τ))).1)
-        fun τ => mem_KC_of_K (hk τ)) x
+      (fun k hk => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (mem_K_allPos (hun τ))).1)
+        fun τ => GlobalTheory.Dec.FormF.K_KC (hk τ)) x
     have h2 : j (c.ρ u w) = ϖ (fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ) (j w) := by
       rw [hϖ]; exact hj2 u hu w
     rw [h2, (key _ (hjm w)).2 _ fun τ => mem_K_allPos (hun τ)]
@@ -304,8 +304,8 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
   · rw [MultilinearMap.map_smul_univ]
     rw [map_smul, map_smul, LinearMap.smul_apply, hio, smul_smul, smul_smul, hψ0, hmv _ hbK, factK]
     have : (fun τ => ((((k₀ * κ) τ).map star)⁻¹)ᵀ) = k₀ * κ := funext fun τ => invT_conj (hκ' τ).1
-    have hm := (_root_.GlobalTheory.JointHarm.fact_one_mul_adj D W.rank V.rank M.ε x₁ x₂ x₃).2.1 k₀ κ 1 1 (fun τ => mem_KC_of_K (hk₀ τ))
-      (fun τ => mem_KC_of_K (hκ τ)) (fun _ => isUnit_one) (fun _ => isUnit_one)
+    have hm := (_root_.GlobalTheory.JointHarm.fact_one_mul_adj D W.rank V.rank M.ε x₁ x₂ x₃).2.1 k₀ κ 1 1 (fun τ => GlobalTheory.Dec.FormF.K_KC (hk₀ τ))
+      (fun τ => GlobalTheory.Dec.FormF.K_KC (hκ τ)) (fun _ => isUnit_one) (fun _ => isUnit_one)
     rw [mul_one] at hm
     rw [this, hm, Module.End.mul_apply, hΔ]
     simp only [RingHom.id_apply, Finset.prod_inv_distrib]
@@ -452,8 +452,8 @@ theorem fact_mul_cancel {D : D7} {m n : ℕ} (ε : D.what₂.Tau → Fin m → B
     (hk' : ∀ τ, k' τ ∈ Formalism.REAL.Kset (ε τ)) (h : k * k' = 1) (P : PolF D m n) :
     fact ε x₁ x₂ x₃ k 1 (fact ε x₁ x₂ x₃ k' 1 P) = P := by
   have H := _root_.GlobalTheory.JointHarm.fact_one_mul_adj D m n ε x₁ x₂ x₃
-  have hm := H.2.1 k k' 1 1 (fun τ => mem_KC_of_K (hk τ))
-    (fun τ => mem_KC_of_K (hk' τ)) (fun _ => isUnit_one) (fun _ => isUnit_one)
+  have hm := H.2.1 k k' 1 1 (fun τ => GlobalTheory.Dec.FormF.K_KC (hk τ))
+    (fun τ => GlobalTheory.Dec.FormF.K_KC (hk' τ)) (fun _ => isUnit_one) (fun _ => isUnit_one)
   rw [mul_one, h, H.1] at hm
   rw [← Module.End.mul_apply, ← hm, Module.End.one_apply]
 

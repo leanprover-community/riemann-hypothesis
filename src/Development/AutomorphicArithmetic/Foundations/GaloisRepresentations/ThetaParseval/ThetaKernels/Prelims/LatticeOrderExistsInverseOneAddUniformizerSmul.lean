@@ -221,15 +221,8 @@ private theorem mul_eM {v : Pl (F := F)} {n : ℕ} {A : Matrix (Fin n) (Fin n) (
   rw [eM, Matrix.mul_smul, mul_one, e_smul h]
 
 private theorem max_mem {v : Pl (F := F)} {ϖ : Fv F v} (hϖ : ϖ ∈ v.adicCompletionIntegers F) (hlt : Valued.v ϖ < 1) :
-    (⟨ϖ, hϖ⟩ : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  intro hu
-  obtain ⟨w, hw⟩ := hu.exists_right_inv
-  have h1 : ϖ * (w : Fv F v) = 1 := congrArg Subtype.val hw
-  have h2 : Valued.v (w : Fv F v) ≤ 1 := (HeightOneSpectrum.mem_adicCompletionIntegers _ _ v).1 w.2
-  have h3 : Valued.v ϖ * Valued.v (w : Fv F v) = 1 := by rw [← map_mul, h1, map_one]
-  have h4 : Valued.v ϖ * Valued.v (w : Fv F v) ≤ Valued.v ϖ := mul_le_of_le_one_right' h2
-  exact absurd (h3 ▸ h4) (not_le.2 hlt)
+    (⟨ϖ, hϖ⟩ : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) :=
+  mem_maximalIdeal_iff_valued.mpr hlt
 
 end UpperTheory.AdelicOrderPrincipalUnitInverse
 

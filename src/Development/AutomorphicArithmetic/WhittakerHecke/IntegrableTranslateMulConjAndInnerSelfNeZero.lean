@@ -24,7 +24,6 @@ theorem UpperTheory.integrable_translate_mul_conj_and_inner_self_ne_zero :
       ∫ y : RightCosetSpace (rationalGLOne (K := E) (n := r)), b.f.1 ((Quotient.out y : normOneGL (K := E) (n := r)) : GA E r) * starRingEnd ℂ (b.f.1 ((Quotient.out y : normOneGL (K := E) (n := r)) : GA E r)) ∂(quotientMeasure (rationalGLOne (K := E) (n := r)) (mu1 E r)) ≠ 0 := by
   intro E _ _ _ S r b
   have : OpensMeasurableSpace (RightCosetSpace (rationalGLOne (K := E) (n := r))) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   have hfin := Reduction.isFiniteMeasure_quotientMeasure (K := E) (n := r) (mu1 E r)
   have hcont : Continuous b.f.1 := b.cusp.1.continuous

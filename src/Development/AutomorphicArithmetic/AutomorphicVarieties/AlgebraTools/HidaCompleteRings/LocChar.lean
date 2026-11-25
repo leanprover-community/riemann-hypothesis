@@ -12,13 +12,6 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 
 open IsLocalRing
 
-private theorem map_mem_smul_top {R N : Type} [CommRing R] [AddCommGroup N] [Module R N]
-    (J : Ideal R) (f : Module.End R N) {x : N} (hx : x ∈ J • (⊤ : Submodule R N)) :
-    f x ∈ J • (⊤ : Submodule R N) := by
-  have h1 : f x ∈ (J • (⊤ : Submodule R N)).map f := Submodule.mem_map_of_mem hx
-  rw [Submodule.map_smul''] at h1
-  exact Submodule.smul_mono le_rfl le_top h1
-
 private theorem pow_mem_pow_smul_top {R N : Type} [CommRing R] [AddCommGroup N] [Module R N]
     (J : Ideal R) (f : Module.End R N) (hf : ∀ x, f x ∈ J • (⊤ : Submodule R N)) (k : ℕ) :
     ∀ x, (f ^ k) x ∈ J ^ k • (⊤ : Submodule R N) := by
@@ -41,7 +34,7 @@ theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.locChar :
   intro R N T ι _ _ _ _ _ _ _ ρ I u e hI he hu hspan x
   have hP : ∀ (k : ℕ) (t : T) {z : N}, z ∈ maximalIdeal R ^ k • (⊤ : Submodule R N) →
       ρ t z ∈ maximalIdeal R ^ k • (⊤ : Submodule R N) :=
-    fun k t z hz => map_mem_smul_top _ (ρ t) hz
+    fun k t z hz => Submodule.smul_top_le_comap_smul_top _ (ρ t) hz
   constructor
   · intro hx i k
     obtain ⟨n, hn⟩ := hu i

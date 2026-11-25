@@ -808,12 +808,6 @@ section Tc
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
-theorem along_smul' (w : InfinitePlace E) (g : GA E a) (c : ℂ) (φ : GA E a → ℂ) :
-    along w g (c • φ) = c • along w g φ := by
-  funext x
-  simp only [along, chart, Pi.smul_apply]
-  split_ifs <;> simp
-
 theorem zfin_of (φ : Sm E a) (c : (E →+* ℂ) → ℂ → ℂ) (hc : ∀ τ u, cap τ u φ = c τ u • φ) :
     FiniteDimensional ℂ (Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' (Zalg E a : Set _))) := by
   have : FiniteDimensional ℂ (Submodule.span ℂ {φ}) := FiniteDimensional.span_of_finite ℂ (Set.finite_singleton φ)
@@ -1036,7 +1030,7 @@ theorem hasInf_single (hB : BridgeSt) (χ : InfinitePlace E → Inf a) (φ : Sm 
     intro ψ hψ g
     obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hψ
     have e : ((c • φ : Sm E a) : GA E a → ℂ) = c • (φ : GA E a → ℂ) := rfl
-    rw [e, along_smul']
+    rw [e, PositivityTheory.RgBcC.Bridge.along_smul]
     exact isEig_smul (hφ _ g) c)
   by_cases h : τ = (InfinitePlace.mk τ).embedding
   · have e : mOf χ τ = Multiset.map (χ (InfinitePlace.mk τ) true) Finset.univ.val := by
@@ -1343,9 +1337,6 @@ variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
 end GlobalTheory.CompanionTheory.WaveCp.Rep.Frame
 
-namespace GlobalTheory.CompanionTheory.WaveCp.Rep
-
-end GlobalTheory.CompanionTheory.WaveCp.Rep
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1532,7 +1523,6 @@ theorem contDiffAt_matMul {X : Type} [NormedAddCommGroup X] [NormedSpace ℝ X] 
   simp only [Matrix.mul_apply]
   exact ContDiffAt.sum fun k _ =>
     (contDiffAt_pi.1 (contDiffAt_pi.1 hf i) k).mul (contDiffAt_pi.1 (contDiffAt_pi.1 hg k) j)
-
 
 open Classical in
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
@@ -1730,7 +1720,6 @@ theorem continuous_hFin₀ {a b : ℕ} : Continuous (hFin : H E a b → Hf E a b
 theorem gFin_infGL₀ (u : GL (Fin n) (Cinf E)) : gFin (infGL E n u) = 1 := pFin_infGL u
 
 end SmoothIntegrals
-
 
 open SmoothIntegrals in
 theorem smoothOf (hTT : TensTest) : SmoothOf := by

@@ -795,7 +795,7 @@ theorem form_zero (hHC : GlobalTheory.Published.HarishChandraModules) (M : DSMod
   have hq : Continuous ((normSeminorm ℂ ℂ).comp (f : E →ₗ[ℂ] ℂ)) := continuous_norm.comp f.continuous
   obtain ⟨Sl, C, hS, hb⟩ := sobBd_seminorm hp hL _ hq
   have hsc := GlobalTheory.T.sobolevContinuous_modelRep_of_sobolevBound M τ ((f : E →ₗ[ℂ] ℂ) ∘ₗ L) Sl C hS (fun w hw => by simpa using hb w hw)
-  exact GlobalTheory.T.sobolevForm_eq_zero_on_smooth_of_kFinite_discreteSeries hHC D V S M τ _ hsc h0
+  exact GlobalTheory.KFiniteDense.eq_zero_of_kFin hHC D V S M τ _ hsc h0
 
 theorem uniq (hHC : GlobalTheory.Published.HarishChandraModules) (M : DSModel V S) (τ : D.what₂.Tau) {p : ℕ → Seminorm ℂ E}
     (hp : WithSeminorms p) {L : M.H τ →ₗ[ℂ] E} (hL : L ∈ sobBd (M.ε τ) (M.σ τ) p)

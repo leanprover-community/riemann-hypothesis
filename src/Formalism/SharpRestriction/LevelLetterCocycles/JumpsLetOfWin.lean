@@ -151,11 +151,7 @@ theorem ps_mem_AΔ (hπ : W.π₀ ∈ W.AΔ) (s : ℕ) : Formalism.MainNotions.A
 
 theorem smul_mem_NΔ (T : LocLat G Qp LL O) {a : LetA O n} (ha : a ∈ W.AΔ) {z : W.DD T}
     (hz : z ∈ W.NΔ T) : a • z ∈ W.NΔ T := by
-  have ha' : ∀ δ ∈ W.DelF, W.γA δ a = a := ha
-  have hz' : z ∈ W.N T ∧ ∀ δ ∈ W.DelF, W.γD T δ z = z := hz
-  show a • z ∈ W.N T ∧ ∀ δ ∈ W.DelF, W.γD T δ (a • z) = a • z
-  refine ⟨(W.N T).smul_mem a hz'.1, fun δ hδ => ?_⟩
-  rw [γD_smulA, ha' δ hδ, hz'.2 δ hδ]
+  exact Formalism.MainNotions.LiftingTheory.invariant_smul_mem_invariants' W T a ha z hz
 
 theorem φD_pow_Δ (T : LocLat G Qp LL O) {x : W.DD T} (hx : ∀ δ ∈ W.DelF, W.γD T δ x = x) (k : ℕ) :
     ∀ δ ∈ W.DelF, W.γD T δ (((W.φD T) ^ k) x) = ((W.φD T) ^ k) x := by

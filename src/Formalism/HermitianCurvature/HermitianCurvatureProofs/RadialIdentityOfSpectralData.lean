@@ -83,15 +83,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 
-theorem rdb_one_mem_Sset (z : Fin (2 * r + k + 1) → ℂ) : (1 : Mx k r) ∈ Sset k r z :=
-  ⟨1, Formalism.FourierDecayAlt.P.TBBx2.one_mem_UW k r z, 1, (nSubgroup k r).1, by simp⟩
-
-theorem rdb_n_mem_Sset (z : Fin (2 * r + k + 1) → ℂ) {n : Mx k r} (hn : n ∈ Nlev k r 0) : n ∈ Sset k r z :=
-  ⟨1, Formalism.FourierDecayAlt.P.TBBx2.one_mem_UW k r z, n, hn.1, by simp⟩
-
-theorem rdb_h_mem_Sset (z : Fin (2 * r + k + 1) → ℂ) {h : Mx k r} (hh : h ∈ UWset k r z) : h ∈ Sset k r z :=
-  ⟨h, hh, 1, (nSubgroup k r).1, by simp⟩
-
 theorem rdb_fsv_dmin_contDiff (z z' : Fin (2 * r + k + 1) → ℂ) (s : ℂ) (h1 : 1 < r + 2) :
     ContDiff ℝ ∞ (fun g : Mx k r => fsv s (Dmin k r z z' g ⟨1, h1⟩)) := by
   have e : (fun g : Mx k r => fsv s (Dmin k r z z' g ⟨1, h1⟩)) = fun g =>
@@ -118,20 +109,20 @@ theorem rdb_wvG_mem_FFl {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpac
     rw [hFJ g hgU hgG]
   · intro g hg n hn
     have e : Dmin k r z z' (n * g) ⟨1, h1⟩ = Dmin k r z z' g ⟨1, h1⟩ := by
-      have := inv (rdb_n_mem_Sset z hn) (rdb_one_mem_Sset z') g
+      have := inv (Formalism.FourierDecayAlt.P.CutMP.n_mem_Sset z hn) (Formalism.FourierDecayAlt.P.CutMP.one_mem_Sset z') g
       simpa using this
     show fsv s (Dmin k r z z' (n * g) ⟨1, h1⟩) • J (n * g) = _ • (fsv s (Dmin k r z z' g ⟨1, h1⟩) • J g)
     rw [e, hL g hg n hn, smul_comm]
   · intro g hg n hn
     have e : Dmin k r z z' (g * n) ⟨1, h1⟩ = Dmin k r z z' g ⟨1, h1⟩ := by
-      have := inv (rdb_one_mem_Sset z) (rdb_n_mem_Sset z' hn) g
+      have := inv (Formalism.FourierDecayAlt.P.CutMP.one_mem_Sset z) (Formalism.FourierDecayAlt.P.CutMP.n_mem_Sset z' hn) g
       simpa using this
     show fsv s (Dmin k r z z' (g * n) ⟨1, h1⟩) • J (g * n) = _ • (fsv s (Dmin k r z z' g ⟨1, h1⟩) • J g)
     rw [e, hR g hg n hn, smul_comm]
   · intro g hg h hh h' hh'
     show fsv s (Dmin k r z z' (h * g * h') ⟨1, h1⟩) • J (h * g * h') =
       (π h).comp ((fsv s (Dmin k r z z' g ⟨1, h1⟩) • J g).comp (π' h'))
-    rw [inv (rdb_h_mem_Sset z hh) (rdb_h_mem_Sset z' hh') g, hU g hg h hh h' hh',
+    rw [inv (Formalism.FourierDecayAlt.P.CutMP.h_mem_Sset z hh) (Formalism.FourierDecayAlt.P.CutMP.h_mem_Sset z' hh') g, hU g hg h hh h' hh',
       ContinuousLinearMap.smul_comp, ContinuousLinearMap.comp_smul]
 
 end WaveFF

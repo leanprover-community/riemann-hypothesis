@@ -261,14 +261,11 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X]
 def ReHolAt (A : FinHolAtlas e X) (f : X → ℝ) (y₀ : X) : Prop :=
   ∃ W : Set X, IsOpen W ∧ y₀ ∈ W ∧ ∃ G : X → ℂ, A.HoloOn W G ∧ ∀ z ∈ W, f z = (G z).re
 
-theorem holoOn_mono {A : FinHolAtlas e X} {U V : Set X} {G : X → ℂ} (h : A.HoloOn U G) (hVU : V ⊆ U) :
-    A.HoloOn V G := fun j u hu => h j u ⟨hu.1, hVU hu.2⟩
-
 theorem ReHolAt.congr {A : FinHolAtlas e X} {f g : X → ℝ} {y₀ : X} (hg : ReHolAt A g y₀)
     (h : f =ᶠ[𝓝 y₀] g) : ReHolAt A f y₀ := by
   obtain ⟨W, hW, hy, G, hG, hWG⟩ := hg
   obtain ⟨T, hT, hTo, hyT⟩ := mem_nhds_iff.1 h
-  exact ⟨W ∩ T, hW.inter hTo, ⟨hy, hyT⟩, G, holoOn_mono hG Set.inter_subset_left,
+  exact ⟨W ∩ T, hW.inter hTo, ⟨hy, hyT⟩, G, GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono hG Set.inter_subset_left,
     fun z hz => (hT hz.2).trans (hWG z hz.1)⟩
 
 theorem ReHolAt.add {A : FinHolAtlas e X} {f g : X → ℝ} {y₀ : X} (hf : ReHolAt A f y₀)
@@ -521,8 +518,8 @@ theorem potential_nbarQ (X : ComponentSetting D O Lt) (Θ : LocPot X.M.Xc) (hs :
   have hall := (h1.add ((h2.add h3).const_mul ((p : ℝ) / q))).sub h4
   obtain ⟨W, hW, hyW, G, hG, hWG⟩ := hall
   refine ⟨W ∩ (U₁ ∩ (U₂ ∩ X.S.R.Yo)), hW.inter (hU₁.inter (hU₂.inter hYo)), ⟨hyW, hy₁, hy₂, hy.2⟩, ?_, s,
-    fun y' hy' => hsm y' hy'.2.1, fun p => holoOn_mono (hsH p) fun y' hy' => hy'.2.1, G,
-    holoOn_mono hG Set.inter_subset_left, fun y' hy' => ?_⟩
+    fun y' hy' => hsm y' hy'.2.1, fun p => GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono (hsH p) fun y' hy' => hy'.2.1, G,
+    GlobalTheory.CompanionTheory.Ar.Giv.MuLimit.holo_mono hG Set.inter_subset_left, fun y' hy' => ?_⟩
   · intro y' hy'
     exact ⟨⟨⟨(hU₁s hy'.2.1 : _), (hU₂s hy'.2.2.1).1⟩, Set.mem_univ _⟩, hy'.2.2.2⟩
   · have hm := hsm y' hy'.2.1
@@ -1279,7 +1276,6 @@ theorem term_tendsto (X : ComponentSetting D O Lt) (B : ℕ) (Θ : LocPot X.M.Xc
 end
 
 end Mix
-
 
 open Mix in
 theorem mixed_limit : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → TopNMixedLimit.Statement := by

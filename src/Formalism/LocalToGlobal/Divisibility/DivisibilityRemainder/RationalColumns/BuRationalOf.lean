@@ -103,44 +103,6 @@ namespace Formalism.L2.DIV.RatFullPt
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {K : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC} {ex : Extra D L hT Gi Gl K Y cX}
 
-private theorem span_of_scaled_dual {K : Type} [Field K] [NumberField K] [StarRing K]
-    {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (M : Submodule (𝓞 K) (Fin n → K))
-    (hfg : M.FG) {c : 𝓞 K} (hc : c ≠ 0)
-    (hdual : ∀ x ∈ dual (hform H) M, c • x ∈ M) :
-    Submodule.span K (M : Set (Fin n → K)) = ⊤ := by
-  rw [eq_top_iff]
-  intro x _
-  obtain ⟨generators, hgen⟩ := hfg
-  obtain ⟨d, hd⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors (𝓞 K))
-    generators (fun y => hform H y x)
-  have hmem : (d : 𝓞 K) • x ∈ dual (hform H) M := by
-    rw [mem_dual_iff]
-    intro y hy
-    rw [← hgen] at hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-        rw [← algebraMap_smul K, LinearMap.map_smul, algebraMap_smul K]
-        exact Submodule.mem_one.mpr (hd y hy)
-    | zero => simp
-    | add y z _ _ hy hz =>
-        rw [map_add, LinearMap.add_apply]
-        exact add_mem hy hz
-    | smul a y _ hy =>
-        obtain ⟨b, hb⟩ := star_algebraMap_ringOfIntegers_mem_range a
-        rw [← algebraMap_smul K a y, LinearMap.map_smulₛₗ₂]
-        change star (algebraMap (𝓞 K) K a) • hform H y ((d : 𝓞 K) • x) ∈ _
-        rw [← hb, algebraMap_smul K]
-        exact Submodule.smul_mem _ _ hy
-  have hcK : algebraMap (𝓞 K) K c ≠ 0 := by
-    simpa only [map_zero] using (IsFractionRing.injective (𝓞 K) K).ne hc
-  have hdK : algebraMap (𝓞 K) K d ≠ 0 :=
-    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors d.2
-  apply (Submodule.smul_mem_iff _ hdK).mp
-  rw [algebraMap_smul K]
-  apply (Submodule.smul_mem_iff _ hcK).mp
-  rw [algebraMap_smul K]
-  exact Submodule.subset_span (hdual _ hmem)
-
 private theorem rr_span_eq_top (P : RowSideFamily ex) {s : ℕ} (hOk : P.A3.fam3.Ok3 s)
     (hF : ColFacts P.S1 P.C) :
     Submodule.span D.what₂.LL (P.S1.RR : Set (Fin P.S1.D → D.what₂.LL)) = ⊤ := by

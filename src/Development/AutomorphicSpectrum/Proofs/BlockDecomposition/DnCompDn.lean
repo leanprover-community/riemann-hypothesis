@@ -55,7 +55,7 @@ theorem act_comp {k m n : ℕ} (θ : Fin (k + 1) →o Fin (m + 1)) (ψ : Fin (m 
 def cosimp : CosimplicialObject (ModuleCat.{0} R) where
   obj a := ModuleCat.of R (Cn F a.len)
   map θ := ModuleCat.ofHom (act F θ.toOrderHom)
-  map_id a := ModuleCat.hom_ext (LinearMap.ext fun f ↦ act_id F f)
+  map_id _ := ModuleCat.hom_ext (LinearMap.ext fun f ↦ act_id F f)
   map_comp θ ψ := ModuleCat.hom_ext (LinearMap.ext fun f ↦ act_comp F θ.toOrderHom ψ.toOrderHom f)
 
 theorem cof_eq (n : ℕ) (i : Fin (n + 2)) :

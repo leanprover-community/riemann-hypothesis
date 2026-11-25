@@ -38,7 +38,6 @@ theorem mem_SS_of_decay (X : Data E r) (hr : 0 < r) (la : Wt X.Ψ r) (P : Frame 
   have := GlobalTheory.ModeDecay.nonempty_cmType X
   set f : ℝ := (Fintype.card X.Ψ : ℝ) with hf
   have hf0 : 0 < f := Nat.cast_pos.2 Fintype.card_pos
-  have hπ := Real.pi_pos
   refine ⟨hP, fun ξ hξ x hx => GlobalTheory.ModeDecay.fj_eq_zero_of_decay GlobalTheory.fj_norm_mul_exp_le_sup_flow
     ReciprocityTheory.ChartRestriction.G.AR.Inst.la1GGStatement_firstMinimum r X la P (c / (8 * Real.pi * f)) hP.1
     ⟨Real.sqrt |C|, 0, le_rfl, fun y hy η hη h2 => ?_⟩ ξ hξ 0 (by simpa using by positivity) x hx⟩

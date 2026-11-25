@@ -23,26 +23,6 @@ namespace PositivityTheory.SiegelWeilFormula.HeightDict
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-private theorem secondCountable_Fv' (v : HeightOneSpectrum (𝓞 F)) :
-    SecondCountableTopology (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) := by
-  haveI : Countable F := (Module.finBasis ℚ F).equivFun.toEquiv.injective.countable
-  haveI : TopologicalSpace.SeparableSpace (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v) :=
-    ⟨⟨Set.range (algebraMap F (v.adicCompletion F)), Set.countable_range _,
-      HeightOneSpectrum.denseRange_algebraMap F v⟩⟩
-  infer_instance
-
-private theorem secondCountable_Fv_tensor (v : HeightOneSpectrum (𝓞 F)) :
-    SecondCountableTopology (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) := by
-  classical
-  haveI := secondCountable_Fv' (F := F) v
-  let K := HeckeCharacterZeroLocus.SiegelWeilU.Fv F v
-  let b := Module.Free.chooseBasis K (K ⊗[F] E)
-  let e := b.equivFun
-  have h1 : Continuous e := IsModuleTopology.continuous_of_linearMap e.toLinearMap
-  have h2 : Continuous e.symm := IsModuleTopology.continuous_of_linearMap e.symm.toLinearMap
-  let h : (K ⊗[F] E) ≃ₜ (Module.Free.ChooseBasisIndex K (K ⊗[F] E) → K) := ⟨e.toEquiv, h1, h2⟩
-  exact h.secondCountableTopology
-
 theorem vol_image_mulVec (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} (μ : Measure (Fin n → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E))
     [μ.IsAddHaarMeasure] (M : GL (Fin n) (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E)) (L : Set (Fin n → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E)) :
     μ ((fun y => M.1 *ᵥ y) '' L) =
@@ -50,8 +30,9 @@ theorem vol_image_mulVec (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} (μ : Measur
   classical
   let K := HeckeCharacterZeroLocus.SiegelWeilU.Fv F v
   let B := K ⊗[F] E
-  haveI : SecondCountableTopology K := secondCountable_Fv' v
-  haveI : SecondCountableTopology B := secondCountable_Fv_tensor v
+  haveI : SecondCountableTopology K :=
+    PI.UnitaryGroupMassFormula.LocJacTyp.BM.secondCountable_Fv v
+  haveI : SecondCountableTopology B := inferInstance
   haveI : BorelSpace K := ⟨rfl⟩
   haveI : TopologicalSpace.PseudoMetrizableSpace (Fin n → B) := inferInstance
   haveI : SigmaCompactSpace (Fin n → B) := inferInstance
@@ -112,7 +93,7 @@ theorem vol_image_mulVec' (v : HeightOneSpectrum (𝓞 F)) {n : ℕ} (μ : Measu
 
 theorem exists_haar_tup (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) :
     ∃ lv : Measure (Fin n → HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E), lv.IsAddHaarMeasure := by
-  haveI : SecondCountableTopology (HeckeCharacterZeroLocus.SiegelWeilU.Fv F v ⊗[F] E) := secondCountable_Fv_tensor (E := E) v
+  haveI := PI.UnitaryGroupMassFormula.LocJacTyp.BM.secondCountable_Fv (F := F) v
   exact ⟨Measure.addHaar, inferInstance⟩
 
 end PositivityTheory.SiegelWeilFormula.HeightDict

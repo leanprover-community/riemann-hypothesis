@@ -206,11 +206,6 @@ theorem model_aeval {B : InvAlg K} {n : ℕ} {γ : Matrix (Fin n) (Fin n) K.E} {
     rw [aeval_monomial, aeval_monomial, mul_assoc, ← Algebra.smul_def, map_smul, model_pow h,
       ← Algebra.smul_def, Matrix.smul_mulVec]
 
-theorem aeval_g_P (B : InvAlg K) : aeval B.g B.P = 0 := by
-  have h : Algebra.lmul K.E B.A (aeval B.g B.P) = 0 := by
-    rw [← aeval_algHom_apply]; exact LinearMap.aeval_self_charpoly _
-  simpa using LinearMap.congr_fun h 1
-
 theorem aeval_prod (B₁ B₂ : InvAlg K) (p : K.E[X]) :
     aeval (B₁.prod B₂).g p = ((aeval B₁.g p, aeval B₂.g p) : B₁.A × B₂.A) := by
   change aeval ((B₁.g, B₂.g) : B₁.A × B₂.A) p = _
@@ -223,11 +218,11 @@ theorem ker_model (B₁ B₂ : InvAlg K) (hs : (B₁.P * B₂.P).Separable) {n :
     (h : IsModel (B₁.prod B₂) γ x ψ) (y : Fin n → K.E) :
     aeval γ B₁.P *ᵥ y = 0 ↔ ∃ a : B₁.A, y = ψ ((a, 0) : B₁.A × B₂.A) := by
   obtain ⟨z, rfl⟩ := ψ.surjective y
-  rw [← model_aeval h, LinearEquiv.map_eq_zero_iff, aeval_prod, aeval_g_P]
+  rw [← model_aeval h, LinearEquiv.map_eq_zero_iff, aeval_prod, GlobalTheory.UnitLemma.CayleyCase.aeval_P]
   obtain ⟨a, c, hac⟩ := Polynomial.Separable.isCoprime hs
   have hu : IsUnit (aeval B₂.g B₁.P) := by
     have := congrArg (aeval B₂.g) hac
-    rw [map_add (f := _), map_mul, map_mul, aeval_g_P B₂, mul_zero, add_zero, map_one] at this
+    rw [map_add (f := _), map_mul, map_mul, GlobalTheory.UnitLemma.CayleyCase.aeval_P B₂, mul_zero, add_zero, map_one] at this
     exact isUnit_iff_exists_inv'.2 ⟨_, this⟩
   constructor
   · intro hz

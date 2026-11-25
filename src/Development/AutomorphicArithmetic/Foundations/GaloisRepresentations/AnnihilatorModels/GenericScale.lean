@@ -38,7 +38,6 @@ def StOfCr : Prop :=
     admitted (σCr P K) (finrank ℚ_[l] ↥(K0 K)) ρ → admitted (σSt P K) (finrank ℚ_[l] ↥(K0 K)) ρ ∧
       ∀ (f q n : ℕ) (T : ℕ → End ℚ_[l] V), AnnD (σCr P K) (ψCr P f) q n ρ T → AnnD (σSt P K) (ψSt P f) q n ρ T
 
-set_option synthInstance.maxHeartbeats 100000 in
 def NilWeil : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
     (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (O : Type) [CommRing O] [Algebra ℤ_[l] O]
@@ -48,7 +47,6 @@ def NilWeil : Prop :=
     NilD (σSt P Bw.Kw) (ψSt P (resDeg l w)) ρ Q → ∀ g : ↥(Weil h), deg g = -1 →
       haveI := hV.finite; IsNilpotent (Polynomial.aeval (weilD Bw h P ρ g) Q)
 
-set_option synthInstance.maxHeartbeats 100000 in
 def NilRho : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (ι : Om l ≃+* ℂ) (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
     [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (O : Type) [CommRing O]

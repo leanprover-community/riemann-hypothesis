@@ -381,8 +381,6 @@ theorem smul_mem_of_mem' (Λ : Submodule O (Fin n → R)) {c : R} (hc : c ∈ O)
   have := Λ.smul_mem (⟨c, hc⟩ : O) hx
   simpa [Subring.smul_def] using this
 
-alias exists_nat_smul_mem := _root_.GlobalTheory.NatSmulMem.exists_nat_smul_mem
-
 theorem exists_nat_between (Λ : Submodule O (Fin n → R)) (hfg : Λ.FG)
     (hsp : Submodule.span R (Λ : Set (Fin n → R)) = ⊤)
     (hd : ∀ y : R, ∃ m : ℕ, m ≠ 0 ∧ (m : R) * y ∈ O) :
@@ -415,7 +413,7 @@ theorem exists_nat_between (Λ : Submodule O (Fin n → R)) (hfg : Λ.FG)
       exact O.mul_mem a.2 (hx i)
 
   have hsingle : ∀ i : Fin n, ∃ m : ℕ, m ≠ 0 ∧ (m : R) • (Pi.single i 1 : Fin n → R) ∈ Λ := fun i =>
-    exists_nat_smul_mem Λ (fun y => ⟨md y, hmd0 y, hmd y⟩) (by rw [hsp]; exact Submodule.mem_top)
+    GlobalTheory.NatSmulMem.exists_nat_smul_mem Λ (fun y => ⟨md y, hmd0 y, hmd y⟩) (by rw [hsp]; exact Submodule.mem_top)
   choose ms hms0 hms using hsingle
   set m2 : ℕ := ∏ i, ms i with hm2
   have hm20 : m2 ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hms0 i

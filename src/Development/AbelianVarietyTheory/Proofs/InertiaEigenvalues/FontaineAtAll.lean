@@ -34,7 +34,7 @@ theorem isTwistRep_dual_of_pairing {G L : Type} [Group G] [Field L]
     (h2 : ∀ y, (∀ x, m x y = 0) → y = 0) (h3 : finrank L V = finrank L V') :
     IsTwistRep χ ρ.dual ρ' := by
   have hinj : Function.Injective m.flip := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     exact h2 y fun x => by simpa using LinearMap.congr_fun hy x
   have hdim : finrank L V' = finrank L (Module.Dual L V) := by

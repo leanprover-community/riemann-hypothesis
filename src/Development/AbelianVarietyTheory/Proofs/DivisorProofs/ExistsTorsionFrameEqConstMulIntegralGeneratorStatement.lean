@@ -160,7 +160,6 @@ open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.Poinc.IntTerm.FrameInt
 

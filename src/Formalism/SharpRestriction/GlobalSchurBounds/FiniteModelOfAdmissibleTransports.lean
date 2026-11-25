@@ -415,16 +415,8 @@ def Q (Λ : H.Lc) (x : Fin (D.R.N i) → (D.mem u).A.Fv v) : Fn D u i →ₗ[ℂ
 
 end Unf
 
-namespace Unf
-
-end Unf
-
 lemma two_le_N (R : Ranks) (j : ℕ) : 2 ≤ R.N j := by
   have := R.m_add_three_le_k; unfold Ranks.N; omega
-
-namespace Unf
-
-end Unf
 
 variable (D u)
 

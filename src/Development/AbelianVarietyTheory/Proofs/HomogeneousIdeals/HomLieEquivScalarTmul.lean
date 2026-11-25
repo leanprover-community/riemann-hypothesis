@@ -60,8 +60,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding epsScale
 open GlobalTheory.GrpTangent
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Serre
 
 section Lie

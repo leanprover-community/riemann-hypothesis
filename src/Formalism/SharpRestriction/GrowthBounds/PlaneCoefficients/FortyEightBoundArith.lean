@@ -108,25 +108,12 @@ theorem first_gap (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) : Fr.fr (j 
   rw [Finset.mem_filter, Finset.mem_Ioo]
   exact ⟨⟨hzy, hzx.trans hxI.1.2⟩, hz.2⟩
 
-private theorem llPos_mem_LLset (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) :
-    llPos Fr j l ∈ Fr.LLset j := by
-  unfold llPos
-  rw [List.getD_eq_getElem _ _ (by rw [Finset.length_sort]; exact hl)]
-  exact (Finset.mem_sort _).mp (List.getElem_mem _)
-
-private theorem llPos_injOn (j : ℤ) (a b : ℕ) (ha : a < (Fr.LLset j).card)
-    (hb : b < (Fr.LLset j).card) (h : llPos Fr j a = llPos Fr j b) : a = b := by
-  unfold llPos at h
-  rw [List.getD_eq_getElem _ _ (by rw [Finset.length_sort]; exact ha),
-    List.getD_eq_getElem _ _ (by rw [Finset.length_sort]; exact hb)] at h
-  exact (List.Nodup.getElem_inj_iff (Finset.sort_nodup _ _)).mp h
-
 private theorem llPos_zero_le_of_mem (j : ℤ) (hc : 0 < (Fr.LLset j).card) :
     ∀ z ∈ Fr.LLset j, llPos Fr j 0 ≤ z := by
   classical
   intro z hz
   by_contra! hzx
-  have hx := llPos_mem_LLset (Fr := Fr) j 0 hc
+  have hx := Formalism.MainNotions.Proposition5Numerics.llPos_mem (Fr := Fr) j 0 hc
   have hf := filt_card (Fr := Fr) j 0 hc
   have hsub : ({z, llPos Fr j 0} : Finset ℤ) ⊆ (Fr.LLset j).filter (· ≤ llPos Fr j 0) := by
     intro w hw
@@ -184,7 +171,7 @@ theorem oldest_far (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i : ℕ) 
     rw [Finset.mem_image] at hz
     obtain ⟨l, hl, rfl⟩ := hz
     rw [Finset.mem_range] at hl
-    have hm := llPos_mem_LLset (Fr := Fr) j l (by omega)
+    have hm := Formalism.MainNotions.Proposition5Numerics.llPos_mem (Fr := Fr) j l (by omega)
     have hev := ((hV.2.2.2.2.2.2.1 j).2.1 _ hm
       (Or.inl (le_trans (filt_card (Fr := Fr) j l (by omega)) (by omega)))).1
     have h0 := llPos_zero_le_of_mem (Fr := Fr) j (by omega) _ hm
@@ -202,7 +189,7 @@ theorem oldest_far (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i : ℕ) 
   refine le_trans ?_ (Finset.card_le_card hsub)
   rw [Finset.card_image_of_injOn, Finset.card_range]
   intro a ha b hb hab
-  exact llPos_injOn (Fr := Fr) j a b (by simp at ha; omega) (by simp at hb; omega) hab
+  exact Formalism.MainNotions.Proposition5Numerics.llPos_inj (Fr := Fr) j a b (by simp at ha; omega) (by simp at hb; omega) hab
 
 end Geo
 
@@ -316,8 +303,6 @@ theorem forty_eight_bound_arith (Y k N P : ℝ) (hY : 2 ≤ Y) (hk : 1 ≤ k) (h
   linarith
 
 end Ar
-
-
 
 theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C CLa := by
   intro p W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w n' m r _ _ TT L₁ L₂ de h x lam0 aT bT a Y cpp c0 Dp cStar K _ _ hk

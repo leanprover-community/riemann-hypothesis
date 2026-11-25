@@ -165,82 +165,6 @@ theorem mk_comm (X Xs Y Ys : Op r) (h1 : X * Y = Y * X) (h2 : Xs * Ys = Ys * Xs)
   show MulOpposite.op (Ys * Xs) = MulOpposite.op (Xs * Ys)
   rw [h2]
 
-theorem dd_comm : (mulOp (coord vzb)⁻¹ * euler vzb : Op r) * (mulOp (coord vz)⁻¹ * euler vz) =
-    (mulOp (coord vz)⁻¹ * euler vz) * (mulOp (coord vzb)⁻¹ * euler vzb) := by
-  have h1 : euler vzb ((coord vz)⁻¹ : Fn r) = 0 := by rw [eci, ite_eq_right vz_ne.symm]
-  have h2 : euler vz ((coord vzb)⁻¹ : Fn r) = 0 := by rw [eci, ite_eq_right vz_ne]
-  have a1 := comm_eu vzb vz _ h1
-  have a2 := comm_eu vz vzb _ h2
-  calc (mulOp (coord vzb)⁻¹ * euler vzb : Op r) * (mulOp (coord vz)⁻¹ * euler vz)
-      = mulOp (coord vzb)⁻¹ * (euler vzb * (mulOp (coord vz)⁻¹ * euler vz)) := mul_assoc _ _ _
-    _ = mulOp (coord vzb)⁻¹ * ((mulOp (coord vz)⁻¹ * euler vz) * euler vzb) := by rw [a1]
-    _ = (mulOp (coord vzb)⁻¹ * mulOp (coord vz)⁻¹) * (euler vz * euler vzb) := by simp only [mul_assoc]
-    _ = (mulOp (coord vz)⁻¹ * mulOp (coord vzb)⁻¹) * (euler vzb * euler vz) := by
-        rw [mulOp_mul, mulOp_mul, mul_comm (coord vzb)⁻¹ (coord vz)⁻¹, eulerComm r vz vzb]
-    _ = mulOp (coord vz)⁻¹ * ((mulOp (coord vzb)⁻¹ * euler vzb) * euler vz) := by simp only [mul_assoc]
-    _ = mulOp (coord vz)⁻¹ * (euler vz * (mulOp (coord vzb)⁻¹ * euler vzb)) := by rw [a2]
-    _ = (mulOp (coord vz)⁻¹ * euler vz) * (mulOp (coord vzb)⁻¹ * euler vzb) := (mul_assoc _ _ _).symm
-
-theorem dz_comm : (dzbP : Pr r) * dzP = dzP * dzbP := by
-  apply mk_comm
-  · exact dd_comm
-  · rw [neg_mul_neg, neg_mul_neg]; exact dd_comm.symm
-
-theorem key_zb (TT : ℝ) : (coord vzb)⁻¹ * euler vzb (coord vzb * (gg TT)⁻¹ : Fn r) =
-    -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹)) := by
-  have hg : (coord vz * coord vzb : Fn r) = gg TT + algebraMap ℂ (Fn r) (TT : ℂ) := by unfold gg; ring
-  have h1 := gg_ne (r := r) TT
-  have h2 := coord_ne r vzb
-  rw [eulerLeibniz, ec, ite_eq_left rfl, euler_inv _ _ h1, euler_gg_zb, hg]
-  field_simp
-  ring
-
-theorem euler_zeta_gamma_inv_identity (TT : ℝ) : (coord vz)⁻¹ * euler vz (coord vz * (gg TT)⁻¹ : Fn r) =
-    -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹)) := by
-  have hg : (coord vz * coord vzb : Fn r) = gg TT + algebraMap ℂ (Fn r) (TT : ℂ) := by unfold gg; ring
-  have h1 := gg_ne (r := r) TT
-  have h2 := coord_ne r vz
-  rw [eulerLeibniz, ec, ite_eq_left rfl, euler_inv _ _ h1, euler_GG_z, hg]
-  field_simp
-  ring
-
-theorem curv (a TT : ℝ) :
-    (-dzbP + (a : ℂ) • (zP * ggiP TT)) * (dzP + (a : ℂ) • (zbP * ggiP TT)) -
-      (dzP + (a : ℂ) • (zbP * ggiP TT)) * (-dzbP + (a : ℂ) • (zP * ggiP TT)) =
-      (algebraMap ℂ (Pr r) ((2 * a * TT : ℝ) : ℂ)) * ggiP TT * ggiP TT := by
-  have e1 : (dzbP : Pr r) * fnP ((a : ℂ) • (coord vzb * (gg TT)⁻¹)) ((a : ℂ) • (coord vz * (gg TT)⁻¹)) =
-      fnP ((a : ℂ) • (coord vzb * (gg TT)⁻¹)) ((a : ℂ) • (coord vz * (gg TT)⁻¹)) * dzbP +
-      fnP ((coord vzb)⁻¹ * euler vzb ((a : ℂ) • (coord vzb * (gg TT)⁻¹)))
-        ((coord vz)⁻¹ * euler vz ((a : ℂ) • (coord vz * (gg TT)⁻¹))) := by
-    rw [dzbP, der_fn]
-  have e2 : (dzP : Pr r) * fnP ((a : ℂ) • (coord vz * (gg TT)⁻¹)) ((a : ℂ) • (coord vzb * (gg TT)⁻¹)) =
-      fnP ((a : ℂ) • (coord vz * (gg TT)⁻¹)) ((a : ℂ) • (coord vzb * (gg TT)⁻¹)) * dzP +
-      fnP ((coord vz)⁻¹ * euler vz ((a : ℂ) • (coord vz * (gg TT)⁻¹)))
-        ((coord vzb)⁻¹ * euler vzb ((a : ℂ) • (coord vzb * (gg TT)⁻¹))) := by
-    rw [dzP, der_fn]
-  rw [mul_assoc, ← Algebra.smul_def, zP, zbP, ggiP, multiplierPair_mul, multiplierPair_mul, multiplierPair_mul, smul_fnP, smul_fnP, smul_fnP]
-  simp only [map_smul, mul_smul_comm, euler_zeta_gamma_inv_identity, key_zb] at e1 e2
-  have e3 := multiplierPair_comm ((a : ℂ) • (coord vz * (gg TT)⁻¹ : Fn r)) ((a : ℂ) • (coord vzb * (gg TT)⁻¹))
-    ((a : ℂ) • (coord vzb * (gg TT)⁻¹)) ((a : ℂ) • (coord vz * (gg TT)⁻¹))
-  have e4 : fnP (((2 * a * TT : ℝ) : ℂ) • ((gg TT)⁻¹ * (gg TT)⁻¹ : Fn r)) (((2 * a * TT : ℝ) : ℂ) • ((gg TT)⁻¹ * (gg TT)⁻¹)) =
-      -fnP ((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹)))
-        ((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹))) -
-      fnP ((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹)))
-        ((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹))) := by
-    rw [multiplierPair_neg, sub_eq_add_neg, multiplierPair_neg, multiplierPair_add]
-    have : (((2 * a * TT : ℝ) : ℂ) • ((gg TT)⁻¹ * (gg TT)⁻¹ : Fn r)) =
-        -((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹))) +
-        -((a : ℂ) • -(algebraMap ℂ (Fn r) (TT : ℂ) * ((gg TT)⁻¹ * (gg TT)⁻¹))) := by
-      simp only [Algebra.smul_def]
-      push_cast
-      simp only [map_ofNat]
-      ring
-    rw [← this]
-  rw [e4]
-  simp only [add_mul, mul_add, neg_mul, mul_neg]
-  rw [e1, e2, e3, dz_comm]
-  abel
-
 theorem rho_eq (P : Par) (π : Ty P) (i : ℕ) (h : 1 ≤ i ∧ i ≤ P.k - 1) :
     rho P π i = P.lo i + (((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) : ℝ) := by
   simp only [rho, dite_eq_left h]
@@ -605,36 +529,9 @@ theorem corner (P : Par) (hP : P.OK) (l j : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (h
 noncomputable def sR (P : Par) (l : ℕ) : Matrix (Ty P) (Ty P) ℝ :=
   Matrix.of fun π' π => if Up P l π π' then Real.sqrt (Nrm P l π) else 0
 
-noncomputable def ioR (P : Par) : Matrix (Ty P) (Ty P) ℝ →+* A P :=
-  ((algebraMap ℂ (Pr P.r)).comp Complex.ofRealHom).mapMatrix
-
-theorem ioR_apply (P : Par) (M : Matrix (Ty P) (Ty P) ℝ) (a b : Ty P) :
-    ioR P M a b = algebraMap ℂ (Pr P.r) ((M a b : ℝ) : ℂ) := rfl
-
 theorem kap_eq (P : Par) (f : Ty P → ℂ) :
     kap P f = Matrix.diagonal fun π => algebraMap ℂ (Pr P.r) (f π) := by
   rfl
-
-theorem ioR_sR (P : Par) (l : ℕ) : ioR P (sR P l) = SS P l := by
-  ext π' π
-  rw [ioR_apply]
-  simp only [sR, SS, Matrix.of_apply]
-  split_ifs
-  · rfl
-  · simp
-
-theorem ioR_diag (P : Par) (f : Ty P → ℝ) : ioR P (Matrix.diagonal f) = kap P fun π => ((f π : ℝ) : ℂ) := by
-  rw [kap_eq]
-  ext a b
-  rw [ioR_apply]
-  by_cases h : a = b
-  · subst h; simp
-  · simp [Matrix.diagonal_apply_ne _ h]
-
-theorem ioR_transpose (P : Par) (M : Matrix (Ty P) (Ty P) ℝ) : ioR P M.transpose = star (ioR P M) := by
-  ext a b
-  rw [Matrix.star_apply, ioR_apply, ioR_apply, Matrix.transpose_apply, ← algebraMap_star_comm]
-  simp
 
 theorem sR_pos {P : Par} {l : ℕ} {π π' : Ty P} (h : Up P l π π') : sR P l π' π = Real.sqrt (Nrm P l π) := by
   unfold sR; rw [Matrix.of_apply, ite_eq_left h]
@@ -760,79 +657,4 @@ theorem aC_up (P : Par) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π π' : Ty P) (
     rw [Finset.sum_congr rfl (rhoUp P l π π' hU), Finset.sum_add_distrib, Finset.sum_ite_eq', ite_eq_left hl]
   rw [this]; ring
 
-theorem nab_step (a : ℝ) (D W : Pr r) (c : ℂ) :
-    (D + ((a - 1 : ℝ) : ℂ) • W) * algebraMap ℂ (Pr r) c =
-      algebraMap ℂ (Pr r) c * (D + (a : ℂ) • W) - W * algebraMap ℂ (Pr r) c := by
-  rw [Algebra.commutes c (D + (a : ℂ) • W), ← sub_mul]
-  congr 1
-  push_cast
-  rw [sub_smul, one_smul]
-  abel
-
 end Formalism.FourierDecayAlt.P.Mx4
-
-namespace Formalism.FourierDecayAlt.P
-
-open Mx4
-
-theorem shift_shift_relation : Formalism.FourierDecayAlt.M.SSShift := by
-  intro P l f g h
-  rw [kap_eq, kap_eq]
-  ext π' π
-  rw [Matrix.diagonal_mul, Matrix.mul_diagonal]
-  by_cases hu : Up P l π π'
-  · simp only [SS, Matrix.of_apply, ite_eq_left hu, h π π' hu]
-    exact (Algebra.commutes _ _)
-  · simp [SS, hu]
-
-theorem shift_norm_relation : Formalism.FourierDecayAlt.M.SSNorm := by
-  intro P hP l hl
-  constructor
-  · rw [← ioR_sR P l, ← ioR_transpose, ← map_mul, r_norm P hP l hl, ioR_diag]
-  · rw [← ioR_sR P l, ← ioR_transpose, ← map_mul, r_normDown P hP l hl, ioR_diag]
-
-theorem shift_commute_relation : Formalism.FourierDecayAlt.M.SSComm := by
-  intro P hP l hl j hj hjl
-  have e1 : (kap P fun π => ((rho P π j - rho P π l - 1 : ℝ) : ℂ)) =
-      ioR P (Matrix.diagonal fun π => rho P π j - rho P π l - 1) := (ioR_diag P _).symm
-  have e2 : (kap P fun π => ((rho P π j - rho P π l + 1 : ℝ) : ℂ)) =
-      ioR P (Matrix.diagonal fun π => rho P π j - rho P π l + 1) := (ioR_diag P _).symm
-  rw [e1, e2, ← ioR_sR P l, ← ioR_sR P j]
-  simp only [← map_mul]
-  rw [r_comm P hP l j hl hj hjl]
-
-theorem shift_mixed_relation : Formalism.FourierDecayAlt.M.SSMixed := by
-  intro P hP l hl j hj hjl
-  rw [← ioR_sR P l, ← ioR_sR P j, ← ioR_transpose]
-  simp only [← map_mul]
-  rw [r_mixed P hP l j hl hj hjl]
-
-theorem nabla_shift_relation : Formalism.FourierDecayAlt.M.NabSS := by
-  intro P l hl
-  constructor
-  · ext π' π
-    simp only [nabA, zbA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul,
-      Matrix.mul_diagonal, Matrix.sub_apply]
-    by_cases hU : Up P l π π'
-    · simp only [SS, Matrix.of_apply, ite_eq_left hU]
-      rw [aC_up P l hl π π' hU]
-      exact nab_step _ _ _ _
-    · simp only [SS, Matrix.of_apply, ite_eq_right hU, mul_zero, zero_mul, sub_zero]
-  · ext π' π
-    simp only [nabsA, zA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul,
-      Matrix.mul_diagonal, Matrix.sub_apply]
-    by_cases hU : Up P l π π'
-    · simp only [SS, Matrix.of_apply, ite_eq_left hU]
-      rw [aC_up P l hl π π' hU]
-      exact nab_step _ _ _ _
-    · simp only [SS, Matrix.of_apply, ite_eq_right hU, mul_zero, zero_mul, sub_zero]
-
-theorem m_curvature_proof : Formalism.FourierDecayAlt.M.Curvature := by
-  intro P
-  rw [kap_eq]
-  simp only [nabA, nabsA, ggiA, sc, Matrix.scalar_apply, Matrix.diagonal_mul_diagonal, Matrix.diagonal_sub]
-  congr 1
-  funext π
-  exact curv _ _
-
-end Formalism.FourierDecayAlt.P

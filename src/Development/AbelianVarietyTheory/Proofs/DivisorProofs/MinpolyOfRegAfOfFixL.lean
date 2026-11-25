@@ -570,9 +570,6 @@ theorem ubc_val_eq (G : HTGroup p) (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t 
 
 end GlobalTheory.LKCx
 
-namespace GlobalTheory.LKCx
-
-end GlobalTheory.LKCx
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

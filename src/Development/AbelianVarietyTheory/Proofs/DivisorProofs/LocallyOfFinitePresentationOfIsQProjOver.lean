@@ -30,7 +30,3 @@ def ObjMap.comp {R : Type} [CommRing R] {D : Datum p} {b : Base D R} {N : ℕ} {
   eta y := by rw [← Category.assoc, m₁.eta, Category.assoc, m₂.eta, Category.assoc]
 
 end GlobalTheory.UPel.HT
-
-namespace GlobalTheory.RelTan
-
-end GlobalTheory.RelTan

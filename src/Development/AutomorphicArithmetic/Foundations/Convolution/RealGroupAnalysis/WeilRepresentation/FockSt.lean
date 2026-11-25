@@ -161,7 +161,6 @@ open scoped Classical
 
 private theorem cw_sum {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w : InfinitePlace F)
     (a b : Fin 4 → A F) : cw w (∑ j, a j * b j) = ∑ j, cw w (a j) * cw w (b j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [cw, map_sum, map_mul, Finset.sum_apply, Pi.mul_apply, Complex.ofReal_sum, Complex.ofReal_mul]
 
 theorem UpperTheory.ConvolutionTheory.R2.Fo.lX :

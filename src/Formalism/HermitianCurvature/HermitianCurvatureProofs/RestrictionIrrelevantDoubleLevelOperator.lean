@@ -428,10 +428,6 @@ end Eigen
 
 end Formalism.FourierDecayAlt.P.Qx8
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
@@ -1616,10 +1612,6 @@ end Final
 
 end Formalism.FourierDecayAlt.P.Qx8
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
@@ -2245,7 +2237,3 @@ theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {B
 end Spectral
 
 end Formalism.FourierDecayAlt.P.Qx8
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

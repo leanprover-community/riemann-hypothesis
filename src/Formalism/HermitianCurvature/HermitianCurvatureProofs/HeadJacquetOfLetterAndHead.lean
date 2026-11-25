@@ -316,12 +316,6 @@ namespace Formalism.FourierDecayAlt.P.WirtingerOperators.XiPf
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.LevelPointCoordinates
 
-theorem fsym (m n : ℕ) (i : Fin (m + n)) : finSumFinEquiv.symm i =
-    if h : i.val < m then Sum.inl ⟨i, h⟩ else Sum.inr ⟨i - m, by omega⟩ := by
-  split_ifs with h
-  · rw [Equiv.symm_apply_eq]; ext; simp
-  · rw [Equiv.symm_apply_eq]; ext; simp; omega
-
 theorem castM_apply' {k a b : ℕ} (h : a = b) (g : B.Mat k a) (p q : Fin (2 * b + k + 1)) :
     D.castM h g p q = g (Fin.cast (by omega) p) (Fin.cast (by omega) q) := by
   subst h; simp [D.castM, Matrix.reindex_apply]
@@ -329,7 +323,7 @@ theorem castM_apply' {k a b : ℕ} (h : a = b) (g : B.Mat k a) (p q : Fin (2 * b
 theorem zfull_apply {j : ℕ} (Z : Matrix (Fin j) (Fin j) ℂ) (τ : ℂ) (c d : Fin (j + 1)) :
     zfull Z τ c d = if hc : c.val < j then (if hd : d.val < j then Z ⟨c.val, hc⟩ ⟨d.val, hd⟩ else 0)
       else (if d.val < j then 0 else τ) := by
-  simp only [zfull, U.blk2, Matrix.reindex_apply, Matrix.submatrix_apply, fsym]
+  simp only [zfull, U.blk2, Matrix.reindex_apply, Matrix.submatrix_apply, Formalism.FourierDecayAlt.P.WirtingerOperators.LeviExponential.fsym]
   split_ifs <;> simp [Matrix.fromBlocks]
 
 theorem det_zfull {j : ℕ} (Z : Matrix (Fin j) (Fin j) ℂ) (τ : ℂ) : (zfull Z τ).det = Z.det * τ := by
@@ -371,11 +365,6 @@ theorem level_point_first_lines (k r j : ℕ) (hj : j + 1 ≤ r) (Z : Matrix (Fi
     simp only [Matrix.fromBlocks_apply₂₂, Matrix.zero_apply]
     rw [dite_eq_right (by omega)]
 
-theorem Hpk_eI_col (k r : ℕ) (a : Fin r) (s : Fin (2 * r + k + 1)) :
-    Hpk k r s (eI k r a) = if s = esI k r a then 1 else 0 := by
-  simp only [Hpk, eI, esI, Fin.ext_iff, Fin.val_mk]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 theorem Hpk_low (k r : ℕ) (p s : Fin (2 * r + k + 1)) (hs : s.val < r) :
     Hpk k r p s = if p.val + s.val = 2 * r + k then 1 else 0 := by
   simp only [Hpk, Fin.ext_iff]
@@ -408,7 +397,7 @@ theorem xiCoefV : XiCoefV := by
   rw [hinv, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
   have hH : Hpk k r *ᵥ bvec (eI k r (Fin.castLE (by omega) a)) = bvec (esI k r (Fin.castLE (by omega) a)) := by
     ext s
-    simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Hpk_eI_col, Pi.single_apply]
+    simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Formalism.FourierDecayAlt.P.Qx3.hpk_col_e, Pi.single_apply]
   rw [hH]
   simp only [bvec, Matrix.mulVec_single_one]
   simp only [Matrix.mulVec, dotProduct]
@@ -759,7 +748,6 @@ def cZ {j N : ℕ} (Z : MJ j) (p : Fin N) (a : Fin j) : ℂ := if hp : p.val < j
 def cvZ (k r : ℕ) {j : ℕ} (Z : MJ j) (p : Fin (2 * r + k + 1)) (a : Fin j) : ℂ :=
   if hp : 2 * r + k < p.val + j then conj (Z a ⟨2 * r + k - p.val, by omega⟩) else 0
 
-
 open scoped Classical in
 def AZ (k r j m : ℕ) (hm : m ≤ r) (hmj : m ≤ j) (u : ℂ) (h : MJ j → E) : MJ j → E := fun Z =>
   ∑ c : Fin m → Fin (2 * r + k + 1),
@@ -767,7 +755,6 @@ def AZ (k r j m : ℕ) (hm : m ≤ r) (hmj : m ≤ j) (u : ℂ) (h : MJ j → E)
       (Matrix.of fun a l : Fin m => cZ Z (c l) (Fin.castLE hmj a)).det •
         qminG (EopZ (E := E) k r j) (C3.xR k r m hm) c u h Z
     else 0
-
 
 open scoped Classical in
 def AvZ (k r j m : ℕ) (hm : m ≤ r) (hmj : m ≤ j) (ell : ℂ) (h : MJ j → E) : MJ j → E := fun Z =>
@@ -1612,9 +1599,6 @@ section x0
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem det_zfull {j : ℕ} (Z : Matrix (Fin j) (Fin j) ℂ) (τ : ℂ) : (zfull Z τ).det = Z.det * τ := by
-  simp [zfull, U.blk2, Matrix.det_fromBlocks_zero₂₁]
-
 theorem es_zfull (j : ℕ) (s : Set (ℂ × (Fin j → Fin j → ℂ))) :
     ES (fun q : ℂ × (Fin j → Fin j → ℂ) => zfull (Matrix.of q.2) q.1) s := by
   have h1 : ES (fun q : ℂ × (Fin j → Fin j → ℂ) => Matrix.of q.2) s := fun a b => by
@@ -1649,7 +1633,7 @@ theorem base_point_facts_holds : BasePointSmoothAndMem := by
     have hdet : ∀ q ∈ {q : ℂ × (Fin j → Fin j → ℂ) | q.1 ≠ 0 ∧ (Matrix.of q.2).det ≠ 0},
         (zfull (Matrix.of q.2) q.1)ᴴ.det ≠ 0 := by
       rintro q ⟨h1, h2⟩
-      rw [Matrix.det_conjTranspose, det_zfull]
+      rw [Matrix.det_conjTranspose, Formalism.FourierDecayAlt.P.WirtingerOperators.XiPf.det_zfull]
       exact star_ne_zero.mpr (mul_ne_zero h2 h1)
     have hI := es_inv (es_conjTranspose hZ) hdet
     have hM : ES (fun q : ℂ × (Fin j → Fin j → ℂ) => U.mMap k (j + 1) (r - (j + 1)) (zfull (Matrix.of q.2) q.1) γ)
@@ -1667,7 +1651,7 @@ theorem base_point_facts_holds : BasePointSmoothAndMem := by
     simp only [x0]
     apply _root_.Formalism.FourierDecayAlt.P.PBE.castM_GV
     apply mMap_mem_GV _ _ hγ
-    rw [det_zfull]
+    rw [Formalism.FourierDecayAlt.P.WirtingerOperators.XiPf.det_zfull]
     exact mul_ne_zero h2 h1
 
 end x0

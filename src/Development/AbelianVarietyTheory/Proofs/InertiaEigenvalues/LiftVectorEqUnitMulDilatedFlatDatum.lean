@@ -489,8 +489,6 @@ open Classical
 
 namespace GlobalTheory.ScalarSelfDual
 
-alias eq_of_parts := _root_.GlobalTheory.SplitDualElt.eq_of_toEAf
-
 theorem mul_hO_of_half {D : D7} {S T : HSp D} {e : AE D} {l : WO S T} (hl : IsHalf e l) (u : WO S T) :
     e * hO S T l u = hO S T l u := by
   unfold hO
@@ -571,7 +569,7 @@ theorem int_iff_dual : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp 
       symplO S T l u = Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * (Z * Z')) := by
     intro l Z' hl hZ' h
     have : hO S T l u = Z * Z' := by
-      refine eq_of_parts (hsupp _ (mul_hO_of_half hl u)) (by rw [map_mul, hsupp Z hZ, zero_mul]) ?_
+      refine GlobalTheory.SplitDualElt.eq_of_toEAf (hsupp _ (mul_hO_of_half hl u)) (by rw [map_mul, hsupp Z hZ, zero_mul]) ?_
       rw [GlobalTheory.TraceFrames.toEAf_hO_eq_trace_frames S T βS βT u l, huZ, trace_single_mul', map_mul, h]
     unfold symplO
     rw [this]

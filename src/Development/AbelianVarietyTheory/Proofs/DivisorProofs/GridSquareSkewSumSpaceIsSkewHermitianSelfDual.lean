@@ -467,7 +467,6 @@ theorem bigSpace_isSkew : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} 
     exact zero_ne_one this
   set Λ := pairLat (scLat D.host.AA (G.Λ (.grid (i : ℕ) ((j : ℕ) + 1)))) (scLat D.host.AA (G.Λ (.grid ((i : ℕ) + 1) (j : ℕ)))) e
     with hΛ
-  have hlat : Submodule.IsLattice D.host.E Λ := _root_.GlobalTheory.SkewLat.pairLat_scLat_isLattice hAA hV.sd.1 hV₁.sd.1 e
   have hfull : Submodule.IsFullLattice D.host.E Λ :=
     pairLat_isFull (scLat_isFull hAA (GlobalTheory.ProjXCols.selfDual_isFullLattice _ _ hV.sd))
       (scLat_isFull hAA (GlobalTheory.ProjXCols.selfDual_isFullLattice _ _ hV₁.sd)) e

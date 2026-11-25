@@ -120,13 +120,11 @@ theorem norm_le_of_aPre [Fact l.Prime] (hρ0 : 0 < ρ) (hρ : ρ < 1) (y : PreDi
   obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (div_pos ht0 (pow_pos hl c)) (show (ρ : ℝ) < 1 by exact_mod_cast hρ)
   set hd : W⟦X⟧ := ∑ m ∈ Finset.range N, C (coeff m s) * X ^ m with hhd
   obtain ⟨s', hs'⟩ : (X : W⟦X⟧) ^ N ∣ s - hd := X_pow_dvd_iff.2 fun m hm => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [hhd, map_sub, map_sum, Finset.mem_range, hm]
   have hsplit : y = ∑ m ∈ Finset.range N, algebraMap _ (PreDisc l (X : W⟦X⟧) ρ) (C (coeff m s) * X ^ m) *
         IsLocalization.Away.invSelf (S := PreDisc l (X : W⟦X⟧) ρ) (l : W⟦X⟧) ^ c +
       algebraMap _ (PreDisc l (X : W⟦X⟧) ρ) (X ^ N * s') *
         IsLocalization.Away.invSelf (S := PreDisc l (X : W⟦X⟧) ρ) (l : W⟦X⟧) ^ c := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [hy, ← Finset.sum_mul, ← map_sum, ← add_mul, ← map_add (f := _), ← hs', ← hhd, add_sub_cancel]
   rw [hsplit]
   refine (gauge_add_le_max l _ ρ _ _).trans (max_le ?_ ?_)

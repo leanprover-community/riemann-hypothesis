@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Gal.TranscendenceTraces
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem isFinite_sigma_desc_of_finite (ι : Type) [Finite ι] :
     ∀ {S : Scheme.{0}} (Z : ι → Scheme.{0}) (p : ∀ a, Z a ⟶ S), (∀ a, IsFinite (p a)) →
       IsFinite (Sigma.desc p) := by
@@ -61,7 +60,6 @@ private theorem isFinite_sigma_desc_of_finite (ι : Type) [Finite ι] :
     rw [h']
     infer_instance
 
-set_option backward.isDefEq.respectTransparency false in
 theorem UpperTheory.Gal.TranscendenceTraces.imageFin_of :
     ImageOne → ImageFin := by
   intro hOne S Y B bS bY _ _ ι _ Z p f hp hf

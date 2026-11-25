@@ -22,8 +22,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Reg
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv mkT tanM_ext tv_mem actR)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Ev
 
 variable {Z Z' : Scheme.{0}} {S S' : Type} [CommRing S] [CommRing S']

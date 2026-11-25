@@ -1035,9 +1035,3 @@ theorem conjF_star (x : D.host.E) : D.conjF x = star x := (D.conjF_eq x).trans (
 
 
 end Formalism.L2.SG.Pf.AtPt
-
-namespace Formalism.L2.SG.Pf
-
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.AtPt
-
-end Formalism.L2.SG.Pf

@@ -12,13 +12,6 @@ open UpperTheory.V.Af.Bc
 
 namespace UpperTheory.V.Af.Cr
 
-def QuadCM : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (d : F) (δ : Ω),
-    δ ^ 2 = algebraMap F Ω d → (∀ φ : F →+* ℝ, φ d < 0) →
-    ∃ (K : Type) (_ : Field K) (_ : NumberField K) (_ : IsCMField K) (_ : Algebra F K) (_ : Algebra K Ω) (_ : IsScalarTower F K Ω)
-      (_ : IsAlgClosure K Ω), Module.finrank F K = 2 ∧ ∃ y : K, algebraMap K Ω y = δ ∧
-        ∀ x : K, ∃ a b : F, x = algebraMap F K a + algebraMap F K b * y
-
 def IneRes : Prop :=
   ∀ (F₀ F Ω : Type) [Field F₀] [NumberField F₀] [Field F] [NumberField F] [Field Ω] [Algebra F₀ F] [Algebra F₀ Ω] [Algebra F Ω]
     [IsScalarTower F₀ F Ω] [IsAlgClosure F Ω], ∀ᶠ v : HeightOneSpectrum (𝓞 F₀) in Filter.cofinite,
@@ -43,12 +36,6 @@ def Parallel : Prop :=
 def AlgOfSign : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (χ : HChar F) (b : ℤ), IsAlgPos χ (fun _ => b) →
     (∀ v : InfinitePlace F, χ.locInf v (-1) = (-1) ^ b) → χ.IsAlg fun _ => b
-
-def CsdTw : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [IsCMField K] (n : ℕ), 1 ≤ n → ∀ (P : CuspSub K n) (χ : HChar (maximalRealSubfield K)),
-    (CG.mk P).IsRegAlg → (∀ v v' : InfinitePlace (maximalRealSubfield K), χ.locInf v (-1) = χ.locInf v' (-1)) →
-    GlobalTheory.ContraPair.DualIsConjBy P (compNorm K χ) →
-    ∃ (κ : HChar K) (m : (K →+* ℂ) → ℤ), κ.IsAlg m ∧ GlobalTheory.ContraPair.DualIsConj (P.twist κ)
 
 def BcDual : Prop :=
   GlobalTheory.Published.JacquetShalikaRigidity → GlobalTheory.Published.GelfandKazhdanDual →

@@ -1043,12 +1043,9 @@ theorem conv_zero_coeff (e : PowerSeries LL) (f : ℤ → M) (hf : ∀ k < (0 : 
   · intro j hj
     rw [hf _ (by omega), smul_zero]
 
-theorem mem_latSpan {ι : Type} (ex : ι → ℤ → M) (x : ι) : ex x ∈ latSpan (LL := LL) ex :=
-  Submodule.subset_span ⟨1, x, (GlobalTheory.NL.LowLevel.conv_one _).symm⟩
-
 theorem neg_eq_zero_of_std {ι : Type} {D : Submodule LL M} {ex : ι → ℤ → M}
     (h : Std D (latSpan (LL := LL) ex)) (x : ι) : ∀ k < (0 : ℤ), ex x k = 0 :=
-  ((h _).1 (mem_latSpan ex x)).2
+  ((h _).1 (GlobalTheory.NL.Model.mem_latSpan ex x)).2
 
 theorem full_of_std {D : Submodule LL M} {Λ : Submodule LL (ℤ → M)} (h : Std D Λ) : Full D Λ :=
   ⟨0, fun f h1 h2 => (h f).2 ⟨h1, by simpa using h2⟩⟩
@@ -1059,7 +1056,7 @@ theorem span_const_of_std {ι : Type} {D : Submodule LL M} {ex : ι → ℤ → 
   apply le_antisymm
   · rw [Submodule.span_le]
     rintro _ ⟨x, rfl⟩
-    exact ((h _).1 (mem_latSpan ex x)).1 0
+    exact ((h _).1 (GlobalTheory.NL.Model.mem_latSpan ex x)).1 0
   · intro d hd
     have h1 : (Pi.single (0 : ℤ) d : ℤ → M) ∈ latSpan (LL := LL) ex := by
       refine (h _).2 ⟨fun k => ?_, fun k hk => Pi.single_eq_of_ne hk.ne _⟩
@@ -1178,7 +1175,7 @@ theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap 
         (Finset.mem_univ _)
     have hv : ∀ j, (letπ : LetA O n) ∣ nb.repr x j := fun j =>
       π_dvd_of_van W hinj _ fun i =>
-        hvan i x (exists_shift_of_std (hstd i) _ (mem_latSpan _ x) (h0 i)) j
+        hvan i x (exists_shift_of_std (hstd i) _ (GlobalTheory.NL.Model.mem_latSpan _ x) (h0 i)) j
     choose b hb using hv
     refine ⟨∑ j, b j • nb j, ?_⟩
     rw [Finset.smul_sum]
@@ -1320,20 +1317,6 @@ theorem finite_of_pi_pow {O : Type} [CommRing O] {n : ℕ} [NeZero n] {M : Type}
   exact Submodule.subset_span (Finset.mem_coe.2 (Finset.mem_image.2
     ⟨(i, k, m), Finset.mem_product.2 ⟨Finset.mem_univ _, Finset.mem_product.2 ⟨hk, hm⟩⟩, rfl⟩))
 
-theorem finiteLength_of_killed {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    {M : Type} [AddCommGroup M] [Module O M] [Module.Finite O M] {c : O}
-    (hc : c ≠ 0) (h : ∀ x : M, c • x = 0) : IsFiniteLength O M := by
-  have hfl := isFiniteLength_quotient_span_singleton O (mem_nonZeroDivisors_of_ne_zero hc)
-  rw [isFiniteLength_iff_isNoetherian_isArtinian] at hfl ⊢
-  refine ⟨inferInstance, ?_⟩
-  have ht : Module.IsTorsionBySet O M (Ideal.span {c}) :=
-    (Module.isTorsionBySet_span_singleton_iff c).mpr (fun x => h x)
-  letI := ht.module
-  haveI : IsScalarTower O (O ⧸ Ideal.span {c}) M := ht.isScalarTower
-  haveI : IsArtinianRing (O ⧸ Ideal.span {c}) := isArtinian_of_tower O hfl.2
-  haveI : Module.Finite (O ⧸ Ideal.span {c}) M := Module.Finite.of_restrictScalars_finite O _ _
-  exact isArtinian_of_surjective_algebraMap (R := O ⧸ Ideal.span {c}) Ideal.Quotient.mk_surjective
-
 section Generic
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
@@ -1366,7 +1349,7 @@ theorem length_cokN_lt_top [NeZero n] [IsDomain O] [IsDiscreteValuationRing O]
     refine ⟨y, hy, ?_⟩
     change W.map π y = ((p : ℕ) : O) ^ c • z
     rw [e, ← algebraMap_smul (LetA O n) (((p : ℕ) : O) ^ c) z, map_pow, map_natCast]
-  exact lt_top_iff_ne_top.2 (Module.length_ne_top_iff.2 (finiteLength_of_killed (pow_ne_zero c hp0) hl'))
+  exact lt_top_iff_ne_top.2 (Module.length_ne_top_iff.2 (GlobalTheory.AdmLoc.finiteLength_of_smul_eq_zero (pow_ne_zero c hp0) hl'))
 
 end Generic
 

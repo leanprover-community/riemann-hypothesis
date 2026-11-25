@@ -9,12 +9,6 @@ open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global UpperTheory.
 
 namespace UpperTheory.ConvolutionTheory.RankTwoDescent
 
-private lemma eq_one_of_mul {Γ : Type*} [LinearOrderedCommGroupWithZero Γ] {a b : Γ}
-    (ha : a ≤ 1) (hb : b ≤ 1) (h : a * b = 1) : a = 1 := by
-  refine le_antisymm ha ?_
-  have := mul_le_mul' (le_refl a) hb
-  rwa [h, mul_one] at this
-
 private lemma mem_UU_iff (t : IdeleGroup ℚ) :
     t ∈ UU ↔ IdeleGroup.toInfinite ℚ t = 1 ∧ IdeleGroup.toFinite ℚ t ∈ finiteIntegralUnits ℚ := by
   have hinv : ∀ v : H.P ℚ, Valued.v ((((IdeleGroup.toFinite ℚ t)⁻¹ : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ) :
@@ -38,8 +32,9 @@ private lemma mem_UU_iff (t : IdeleGroup ℚ) :
   · rintro ⟨h1, h2⟩
     refine ⟨congrArg Units.val h1, fun v => ?_⟩
     obtain ⟨ha, hb⟩ := (mem_finiteIntegralUnits ℚ).1 h2 v
-    exact eq_one_of_mul ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 ha)
-      ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 hb) (by rw [mul_comm]; exact hinv v)
+    exact eq_one_of_one_le_mul_left ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 ha)
+      ((HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).1 hb)
+      (by rw [mul_comm]; exact (hinv v).ge)
 
 private lemma measurableSet_UU : MeasurableSet (UU : Set (IdeleGroup ℚ)) := by
   have h : (UU : Set (IdeleGroup ℚ)) = {t | IdeleGroup.toInfinite ℚ t = 1} ∩

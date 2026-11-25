@@ -7,8 +7,8 @@ import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsN
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsZsmulMem.exists_zsmul_mem.{u_1, u_2} :
-    ∀ {E : Type u_1} [inst : Field E] [NumberField E] {W : Type u_2} [inst_2 : AddCommGroup W]
-    [inst_3 : _root_.Module E W] {La : AddSubgroup W},
+    ∀ {E : Type u_1} [Field E] [NumberField E] {W : Type u_2} [AddCommGroup W]
+    [_root_.Module E W] {La : AddSubgroup W},
     GroundTheory.Heights₂.Heights.FiniteCovolume.IsLattice (E := E) La →
       ∀ (x : W),
         ∃ (d : ℤ),

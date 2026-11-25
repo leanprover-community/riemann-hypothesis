@@ -551,18 +551,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite TensorProduct GlobalTheory
 
 namespace LateralTheory.EtaleFoundations.TwSecLocPf
 
-theorem loc_surj {R : Type} [CommRing R] (M : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R)) (U : Scheme.{0})
-    (y : Sec (ofRings R M) U) :
-    Loc U fun V g => ∃ x : M.obj Γ(V, ⊤), Sec.res g y = ofRings.sec M V x := by
-  have h := Presheaf.imageSieve_mem Scheme.etaleTopology (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ M)) y
-  refine ⟨_, h, fun V g hg => ?_⟩
-  obtain ⟨x, hx⟩ := hg
-  exact ⟨x, hx.symm⟩
-
-end LateralTheory.EtaleFoundations.TwSecLocPf
-
-namespace LateralTheory.EtaleFoundations.TwSecLocPf
-
 def ZarPow : Prop := ∀ (q : ℕ) [NeZero q] (V : Scheme.{0}) (ζ ξ : Prim q Γ(V, ⊤)),
   Loc V fun W h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
 
@@ -574,7 +562,7 @@ theorem twF_loc (hZ : ZarPow) (q : ℕ) [NeZero q] (i : ℤ) (V : Scheme.{0}) (�
 
 theorem TwSecLoc_of (hZ : ZarPow) : LateralTheory.EtaleFoundations.TwLocPf.TwSecLoc := by
   intro q _ i U ζ y
-  refine LateralTheory.E.H2CurveOrder.TwLocGenPfSec.loc_bind (loc_surj (twF q i) U y) fun V g ⟨x, hx⟩ => ?_
+  refine LateralTheory.E.H2CurveOrder.TwLocGenPfSec.loc_bind (LateralTheory.E.H2CurveOrder.TwLocGenPfSec.loc_surj (twF q i) U y) fun V g ⟨x, hx⟩ => ?_
   refine LateralTheory.E.H2CurveOrder.TwLocGenPfSec.loc_mono (twF_loc hZ q i V (ζ.map g.appTop.hom) x) fun W h ⟨c, hc⟩ => ⟨c, ?_⟩
   have e : Sec.res (h ≫ g) y = Sec.res h (Sec.res g y) := by
     simp only [Sec.res, op_comp, Functor.map_comp, ModuleCat.hom_comp, LinearMap.comp_apply]

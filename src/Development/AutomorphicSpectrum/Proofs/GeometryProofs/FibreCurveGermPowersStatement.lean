@@ -145,8 +145,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.fibre_power_free_conj_injective : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (k : Type) [Field k] (p : ℕ) [Fact p.Prime] [CharP k p] (x : Sp k ⟶ X0) (d : ℕ) (g : GermAt t x d), FibPF t (x (IsLocalRing.closedPoint k)) → ConjInj g.B p := by
-  first | exact @PositivityTheory.HtPt.Cf.fib_inj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibrePowerFreeConjInjective =====
@@ -161,8 +159,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.fibre_power_free_conj_injective : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (k : Type) [Field k] (p : ℕ) [Fact p.Prime] [CharP k p] (x : Sp k ⟶ X0) (d : ℕ) (g : GermAt t x d), FibPF t (x (IsLocalRing.closedPoint k)) → ConjInj g.B p := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.fibre_power_free_conj_injective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibrePowerFreeConjInjectiveStatement =====
@@ -440,10 +436,10 @@ theorem exists_residue_germ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     {R : Type} [CommRing R] [IsLocalRing R] (x : Sp R ⟶ X) (d : ℕ) (g : GermAt t x d) (p : ℕ) [Fact p.Prime]
     (hp : (p : R) = 0) (hf : FibPF t (centre x)) :
     ∃ Bk : Germ.FB (IsLocalRing.ResidueField R) d (𝓞 E), IsMapOf (IsLocalRing.residue R) g.B Bk ∧ ConjInj Bk p := by
-  obtain ⟨g₂, hm, -⟩ := GlobalTheory.T.formal_germ_base_change E H hbar X t R (IsLocalRing.ResidueField R) (IsLocalRing.residue R) x d g
+  obtain ⟨g₂, hm, -⟩ := PositivityTheory.HtPt.Ce.germ_bc E H hbar X t R (IsLocalRing.ResidueField R) (IsLocalRing.residue R) x d g
   haveI : CharP (IsLocalRing.ResidueField R) p :=
     (CharP.charP_iff_prime_eq_zero Fact.out).2 (by rw [← map_natCast (IsLocalRing.residue R), hp, map_zero])
-  refine ⟨g₂.B, hm, GlobalTheory.T.fibre_power_free_conj_injective E H hbar X t hpow _ p _ d g₂ ?_⟩
+  refine ⟨g₂.B, hm, PositivityTheory.HtPt.Cf.fib_inj E H hbar X t hpow _ p _ d g₂ ?_⟩
   have e := centre_spMap (IsLocalRing.residue R) x
   change FibPF t (centre (Spec.map (CommRingCat.ofHom (IsLocalRing.residue R)) ≫ x))
   rw [e]
@@ -509,7 +505,7 @@ end Integral
 theorem germ_family : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (d : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (O : Type) [CommRing O] (s : X ⟶ Sp O) [IsSeparated s] [LocallyOfFiniteType s] (ϖ : Ω) (p : ℕ) [Fact p.Prime] (Γ : FibreCurve ξ ϖ) [CharP Γ.κ p], IsCptGen ξ → PowFns t → (∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1) → ∃ F : Family Γ.C p d (𝓞 E), IsMapOf (Scheme.stalkClosedPointTo Γ.η).hom (S.g ⟨centre Γ.η, Γ.η_spec⟩).B F.B ∧ ∀ i, IsMapOf (Scheme.stalkClosedPointTo (Γ.z i)).hom (S.g ⟨centre (Γ.z i), Γ.z_spec i⟩).B (F.Bi i) ∧ ∃ (φ' ψ' : Germ.Pt (X.presheaf.stalk (centre Γ.η)) 1 d) (lam' : Germ.PS (X.presheaf.stalk (centre Γ.η)) 2 d), transH (S.φ ⟨centre (Γ.z i), Γ.z_spec i⟩) (S.ψ ⟨centre (Γ.z i), Γ.z_spec i⟩) (S.lam ⟨centre (Γ.z i), Γ.z_spec i⟩) = transH (S.φ ⟨centre Γ.η, Γ.η_spec⟩) (S.ψ ⟨centre Γ.η, Γ.η_spec⟩) (S.lam ⟨centre Γ.η, Γ.η_spec⟩) ∘ₗ transH (fun l => MvPowerSeries.map (genMap ξ ⟨centre Γ.η, Γ.η_spec⟩) (φ' l)) (fun l => MvPowerSeries.map (genMap ξ ⟨centre Γ.η, Γ.η_spec⟩) (ψ' l)) (MvPowerSeries.map (genMap ξ ⟨centre Γ.η, Γ.η_spec⟩) lam') ∧ F.φ i = (fun l => MvPowerSeries.map (Scheme.stalkClosedPointTo Γ.η).hom (φ' l)) ∧ F.ψ i = (fun l => MvPowerSeries.map (Scheme.stalkClosedPointTo Γ.η).hom (ψ' l)) ∧ F.lam i = MvPowerSeries.map (Scheme.stalkClosedPointTo Γ.η).hom lam' := by
   intro E _ _ _ H _ hbar X t Ω _ ξ d M S O _ s _ _ ϖ p _ Γ _ hξ hpow hfib
   have hκ : ((p : ℕ) : Γ.κ) = 0 := CharP.cast_eq_zero Γ.κ p
-  obtain ⟨g0, m0, -⟩ := GlobalTheory.T.formal_germ_base_change E H hbar X t _ _ (Scheme.stalkClosedPointTo Γ.η).hom
+  obtain ⟨g0, m0, -⟩ := PositivityTheory.HtPt.Ce.germ_bc E H hbar X t _ _ (Scheme.stalkClosedPointTo Γ.η).hom
     (X.fromSpecStalk (centre Γ.η)) d (S.g ⟨centre Γ.η, Γ.η_spec⟩)
   have place : ∀ i : Γ.C.I, ∃ (Bi : Germ.FB (Γ.C.v i).valuationSubring d (𝓞 E)) (BK : Germ.FB Γ.κ d (𝓞 E))
       (Bk : Germ.FB (IsLocalRing.ResidueField (Γ.C.v i).valuationSubring) d (𝓞 E))
@@ -534,10 +530,10 @@ theorem germ_family : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
         Γ.C.v i (lin (fun l => MvPowerSeries.map (Scheme.stalkClosedPointTo Γ.η).hom (ψ' l)) 1 a b) ≤ 1 ∧
         Γ.C.v i (bil (MvPowerSeries.map (Scheme.stalkClosedPointTo Γ.η).hom lam') 1 1 a b) ≤ 1) := by
     intro i
-    obtain ⟨gi, mi, -⟩ := GlobalTheory.T.formal_germ_base_change E H hbar X t _ (Γ.C.v i).valuationSubring
+    obtain ⟨gi, mi, -⟩ := PositivityTheory.HtPt.Ce.germ_bc E H hbar X t _ (Γ.C.v i).valuationSubring
       (Scheme.stalkClosedPointTo (Γ.z i)).hom (X.fromSpecStalk (centre (Γ.z i))) d
       (S.g ⟨centre (Γ.z i), Γ.z_spec i⟩)
-    obtain ⟨gK, mK, -⟩ := GlobalTheory.T.formal_germ_base_change E H hbar X t _ Γ.κ (Γ.C.v i).valuationSubring.subtype _ d gi
+    obtain ⟨gK, mK, -⟩ := PositivityTheory.HtPt.Ce.germ_bc E H hbar X t _ Γ.κ (Γ.C.v i).valuationSubring.subtype _ d gi
     have hp : ((p : ℕ) : (Γ.C.v i).valuationSubring) = 0 := Subtype.ext (by simpa using hκ)
     have ex : spMap (Scheme.stalkClosedPointTo (Γ.z i)).hom ≫ X.fromSpecStalk (centre (Γ.z i)) = Γ.z i :=
       Scheme.Spec_stalkClosedPointTo_fromSpecStalk (Γ.z i)

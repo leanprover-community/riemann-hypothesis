@@ -98,7 +98,6 @@ private lemma fin_quot {F L : Type} [Field F] [Field L] [Algebra ℂ F] [Algebra
     exact map_add (Ideal.Quotient.mk _) _ _
   | smul r u _ hu =>
     obtain ⟨c, hb, hc'⟩ := exists_const_sub_mem_span_tco_of_mem_rA (L := L) d x r.1 r.2
-    set_option synthInstance.maxHeartbeats 200000 in
     have e : (⟨((r • u : integralClosure (rA ℂ (xv x) {0}) L) : L), (r • u).2⟩ : rB ℂ L (xv x) {0}) =
         ⟨_, hb⟩ * ⟨u.1, u.2⟩ := by
       apply Subtype.ext

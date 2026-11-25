@@ -676,11 +676,6 @@ theorem xT_GV (r : ℕ) {Z : Matrix (Fin r) (Fin r) ℂ} {μ : B.Mat k (r - r)} 
     xT k r Z μ ∈ B.GV k r :=
   Formalism.FourierDecayAlt.P.PBE.castM_GV _ ((_root_.Formalism.FourierDecayAlt.P.Ux2.sliceMem k r (r - r)).1 Z μ hZ hμ)
 
-theorem gf_castM {a b : ℕ} (e : a = b) (z z' : Fin (2 * b + k + 1) → ℂ) (g : B.Mat k a) :
-    Gf k b z z' (D.castM e g) = Gf k a (D.castV e.symm z) (D.castV e.symm z') g := by
-  subst e
-  rw [Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl, Formalism.FourierDecayAlt.P.JCTx5.castV_rfl, Formalism.FourierDecayAlt.P.JCTx5.castV_rfl]
-
 end lemmas
 
 theorem pullback_smooth_formula : PbSmooth := by
@@ -696,7 +691,7 @@ theorem pullback_smooth_formula : PbSmooth := by
   have hG₀' : Matrix.of q₀.2 ∈ B.GV P.k (P.r - P.r) := hG₀.1
   have hgf : 0 < Gf P.k P.r p.T.base.z p.T.base.z' (xT P.k P.r (Matrix.of q₀.1) (Matrix.of q₀.2)) := by
     unfold xT
-    rw [gf_castM]
+    rw [Formalism.FourierDecayAlt.P.CutEXPbSupp.gf_castM]
     have e := _root_.Formalism.FourierDecayAlt.P.Ux3.gfSlice P.k P.r (P.r - P.r)
       (D.castV (by omega : P.r = P.r + (P.r - P.r)) p.T.base.z) (D.castV (by omega : P.r = P.r + (P.r - P.r)) p.T.base.z')
       (_root_.Formalism.FourierDecayAlt.P.PBH.inWb_castV _ p.T.base.z_mem) (_root_.Formalism.FourierDecayAlt.P.PBH.inWb_castV _ p.T.base.z'_mem) 0 0 (Matrix.of q₀.1) (Matrix.of q₀.2)
@@ -1526,8 +1521,6 @@ section outer
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
 
-
-
 theorem outer_int (S : B.RealPlaceData k r Wp Wq) (hN : S.μN = D.muN k r) (hW1 : S.μW Set.univ = 1)
     (hW1' : S.μW' Set.univ = 1) (z0 z0' : Fin (2 * 0 + k + 1) → ℂ)
     (hz : S.z = liftVec k r 0 z0) (hz' : S.z' = liftVec k r 0 z0')
@@ -1689,8 +1682,6 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
 theorem lev_inv {k R : ℕ} (y : B.Mat k 0) (hy : IsUnit y.det) : ιLev k R 0 y⁻¹ = (ιLev k R 0 y)⁻¹ := by
   refine (Matrix.inv_eq_left_inv ?_).symm
   rw [← Dx2.Tower.lev_mul, Matrix.nonsing_inv_mul _ hy, Dx2.Tower.lev_one]
-
-
 
 theorem vecV_append_singleton_eq_vecV_sliceAt (k R ρ : ℕ) (hρ : ρ = 0) (e : R + ρ = R) (S : B.RealPlaceData k R Wp Wq) (S0 : B.RealPlaceData k ρ Wp Wq)
     (hzL : D.castV e (liftVec k R ρ S0.z) = S.z) (hzL' : D.castV e (liftVec k R ρ S0.z') = S.z')

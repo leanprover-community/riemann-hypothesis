@@ -694,8 +694,6 @@ theorem crd_conj_scalar : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   have hu0 : IsUnit J₀.det := isUnit_iff_ne_zero.mpr hF.herm₀.2
   have jj : adMat F J₀⁻¹ * adMat F J₀ = 1 := by
     rw [adMat, adMat, ← Matrix.map_mul, Matrix.nonsing_inv_mul _ hu0, Matrix.map_one _ (map_zero _) (map_one _)]
-  have jj' : adMat F J₀ * adMat F J₀⁻¹ = 1 := by
-    rw [adMat, adMat, ← Matrix.map_mul, Matrix.mul_nonsing_inv _ hu0, Matrix.map_one _ (map_zero _) (map_one _)]
   have hJ0 : cT s (adMat F J₀) = adMat F J₀ := by
     rw [cT_adMat]; congr 1; ext i k; simp [Formalism.UG.cT, hF.herm₀.1]
   have hJ0i : cT s (adMat F J₀⁻¹) = adMat F J₀⁻¹ := by

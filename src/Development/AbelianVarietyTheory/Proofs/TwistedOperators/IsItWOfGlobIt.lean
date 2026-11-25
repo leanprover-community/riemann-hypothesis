@@ -739,8 +739,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Matrix GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.not_locallyFinite_quadraticMul_add_degreeNonraising : ∀ (σ : Type) [Finite σ] (Q : MvPolynomial σ ℂ) (L : Module.End ℂ (MvPolynomial σ ℂ)), Q ≠ 0 → Q.IsHomogeneous 2 → (∀ P, (L P).totalDegree ≤ P.totalDegree) → ∀ φ : MvPolynomial σ ℂ, φ ≠ 0 → ∀ F : Submodule ℂ (MvPolynomial σ ℂ), FiniteDimensional ℂ F → ¬ ∀ n : ℕ, ((LinearMap.mulLeft ℂ Q + L) ^ n) φ ∈ F := by
-  first | exact @GlobalTheory.Chain.RealIt.not_locallyFinite_mulLeft_add
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotLocallyFiniteQuadraticMulAddDegreeNonraisingStatement =====
@@ -827,7 +825,7 @@ theorem not_locFin {σ : Type} [Finite σ] {A : Module.End ℂ (MvPolynomial σ 
     ¬ ∀ m : ℕ, ((A + c • 1) ^ m) φ ∈ F := by
   obtain ⟨Q, L, hQ, hh, hL, rfl⟩ := h
   rw [add_assoc]
-  refine GlobalTheory.T.not_locallyFinite_quadraticMul_add_degreeNonraising σ Q (L + c • 1) hQ hh (fun P => ?_) φ hφ F hF
+  refine GlobalTheory.Chain.RealIt.not_locallyFinite_mulLeft_add σ Q (L + c • 1) hQ hh (fun P => ?_) φ hφ F hF
   exact (MvPolynomial.totalDegree_add _ _).trans (max_le (hL P) (MvPolynomial.totalDegree_smul_le c P))
 
 variable {D : D7}
@@ -1103,8 +1101,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Matrix GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace
 
-theorem _root_.GlobalTheory.T.exists_contraction_isometric_discreteSeries_fock : ∀ (p q r s : ℕ) (T₀ : GrpData (p * r + q * s) (p * s + q * r)) (T₁ : GrpData p q) (T₂ : GrpData r s) (F : FockData T₀ T₁ T₂) (R₁ : DSRep T₁) (R₂ : DSRep T₂) (Tm : R₁.U.H →L[ℂ] R₂.U.H →L[ℂ] F.H), (∀ x x' y y', inner ℂ (Tm x y) (Tm x' y') = inner ℂ x x' * inner ℂ y y') → (∀ g h x y, F.π (g, h) (Tm x y) = Tm (R₁.U.π g x) (R₂.U.π h y)) → ∃ B : Pol p q r s →ₗ[ℂ] R₂.U.H →ₛₗ[starRingEnd ℂ] R₁.U.H, IsCoverIt R₁ R₂ B := by
-  first | exact @GlobalTheory.Chain.CoverContr.exists_isCoverIt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContractionIsometricDiscreteSeriesFockStatement =====
@@ -1144,8 +1140,8 @@ theorem exists_locIt {X : ProvA} (hX : ChosenSeries X) (h1 : Formalism.MainNotio
   obtain ⟨U', hU'⟩ := hU' e' he'
   obtain ⟨Φ, hΦ⟩ := (h1.1 t al be ga de hd).1
   obtain ⟨Tm, hi, hq, -⟩ := h2.1 t al be ga de hd Φ hΦ
-  obtain ⟨B, hB⟩ := GlobalTheory.T.exists_contraction_isometric_discreteSeries_fock _ _ _ _ _ _ _ _ _ _ Tm hi hq
-  obtain ⟨κ, hκ⟩ := GlobalTheory.T.exists_fockPolynomialIso_unitaryPair _ _ _ _ _ _ _ _ e e' he he'
+  obtain ⟨B, hB⟩ := GlobalTheory.Chain.CoverContr.exists_isCoverIt _ _ _ _ _ _ _ _ _ _ Tm hi hq
+  obtain ⟨κ, hκ⟩ := GlobalTheory.Chain.RealIt.PolyIso.exists_isPolyIso _ _ _ _ _ _ _ _ e e' he he'
   obtain ⟨v, hv, -⟩ := (hX _ _ _ p2).1
   have c1 := Fintype.card_congr e
   have c2 := Fintype.card_congr e'

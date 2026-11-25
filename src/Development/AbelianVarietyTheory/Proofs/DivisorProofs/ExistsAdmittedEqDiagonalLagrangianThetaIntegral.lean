@@ -60,7 +60,6 @@ theorem uniform_majorant {g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ} (hg :
   have hw0 : ∀ η, 0 ≤ w η := fun η => Set.indicator_nonneg (fun _ _ => inv_nonneg.2 (by positivity)) η
   refine ⟨k, B * (1 + R') ^ k * 2 ^ k * ∑' η, w η, by
     have h1 : 0 ≤ ∑' η, w η := tsum_nonneg hw0
-    have h2 : 0 ≤ R' := le_max_right _ _
     positivity, fun f a => ?_⟩
   set C := (Finset.Iic (k, 0)).sup (fun m => SchwartzMap.seminorm ℝ m.1 m.2) f
   choose y hy using fun i => hcov (a i)

@@ -1028,9 +1028,6 @@ section -- clump:auto
 
 open IsLocalRing Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.HV UpperTheory.V.Th GlobalTheory.GalOfCusp
 
-private theorem red_mul' {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (A B : Matrix (Fin n) (Fin n) O) :
-    red m (A * B) = red m A * red m B := Matrix.map_mul
-
 private theorem red_sub' {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (A B : Matrix (Fin n) (Fin n) O) :
     red m (A - B) = red m A - red m B := by
   ext i j
@@ -1069,11 +1066,11 @@ theorem UpperTheory.V.Th.h0v0O :
     exact Matrix.map_one _ (map_zero _) (map_one _)
   have hinv : ∀ g : G0.G₀, y.ρ0 m g * y.ρ0 m g⁻¹ = 1 ∧ y.ρ0 m g⁻¹ * y.ρ0 m g = 1 := by
     intro g
-    simp only [Pt.ρ0, ← red_mul', ← map_mul, mul_inv_cancel, inv_mul_cancel, map_one, hone, and_self]
+    simp only [Pt.ρ0, ← red_mul, ← map_mul, mul_inv_cancel, inv_mul_cancel, map_one, hone, and_self]
   have hred : ∀ (g : G0.G₀) (Z : Matrix (Fin n) (Fin n) O),
       red m (e g • (M g * Z) - Z * M g) = epsm O G0 m g • (y.ρ0 m g * red m Z) - red m Z * y.ρ0 m g := by
     intro g Z
-    rw [red_sub', red_smul', red_mul', red_mul']
+    rw [red_sub', red_smul', red_mul, red_mul]
     rfl
   have hset : {Y : Mm O n m | ∀ g ∈ D, epsm O G0 m (g : G0.G₀) • (y.ρ0 m g * Y * y.ρ0 m g⁻¹) = Y} =
       {Y : Mm O n m | ∃ Y' : Matrix (Fin n) (Fin n) O, red m Y' = Y ∧ ∀ s, red m (Φ s Y') = 0} := by

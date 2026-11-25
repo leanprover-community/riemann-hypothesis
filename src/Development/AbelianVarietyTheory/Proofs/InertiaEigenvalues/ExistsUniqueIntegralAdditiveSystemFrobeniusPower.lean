@@ -66,7 +66,7 @@ theorem existsUnique_integral_gsum_eq (F : Type) [NontriviallyNormedField F] [Is
     · intro n hn i j
       have := Finset.le_sup (f := fun t : ℕ × m × m => ‖V t.1 t.2.1 t.2.2‖₊)
         (s := (range (D + 1)) ×ˢ (univ : Finset (m × m))) (b := (n, i, j))
-        (by simp [Nat.lt_succ_iff, hn])
+        (by simp [hn])
       exact_mod_cast this
   have hq : 0 < p ^ e := pow_pos (Fact.out : p.Prime).pos e
   have hint : ∀ y : m → F, Integral y ↔ ‖y‖ ≤ 1 := fun y => (pi_norm_le_iff_of_nonneg zero_le_one).symm

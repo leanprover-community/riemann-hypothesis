@@ -249,7 +249,6 @@ theorem heq_apply {α β β' : Type} {g : α → β} {g' : α → β'} (e : β' 
   rfl
 
 
-set_option maxHeartbeats 8000000 in
 theorem exists_agree_root : ∀ {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwDat B} {T' : TwDat B'} {w : ColW B f T} {w' : ColW B' f' T'}
   {Z : w.Lt} {Z' : w'.Lt} {hX : B.fields.Ok} {hX' : B'.fields.Ok} {Wt : Set B.places.Pl} {Wt' : Set B'.places.Pl}
   (z : Dat (w.st Z) w.I hX T Wt), Enl0 B B' → HEq f' f → HEq w'.px w.px → z.Std →
@@ -270,7 +269,6 @@ theorem exists_agree_root : ∀ {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre
   set_option synthInstance.maxHeartbeats 200000 in
     obtain ⟨φ, rfl⟩ := ((mtKGSD (Pr := B.primes w.px) B.wts w.I.Ch w.I.sel (mu0F (X := B.fields) (tuOf w.I (usedOf w.I T Wt))).1
       ((i : ℕ) + 1)).res (mtKOk _ _ _ _ hX _)).surjective x
-  set_option synthInstance.maxHeartbeats 200000 in
     have hφ : φ ≠ 0 := fun h0 => hx (h0 ▸ map_zero _)
   obtain ⟨h, hh⟩ : ∃ h, z.R.B.jL i (mu0F (X := B.fields) (tuOf w.I (usedOf w.I T Wt)))
       ((mtKGSD (Pr := B.primes w.px) B.wts w.I.Ch w.I.sel (mu0F (X := B.fields) (tuOf w.I (usedOf w.I T Wt))).1

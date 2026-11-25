@@ -1486,25 +1486,9 @@ lemma fz_zero_of_inv (X : Data E r) (u : Fin 2 → Fin r → E) (hu : ∀ i k, h
   have hV : (volume (exists_fd X la).choose).toReal ≠ 0 := (ENNReal.toReal_pos hfd_pos.ne' hfd_top.ne).ne'
   exact (smul_eq_zero.1 hL.symm).resolve_left hV
 
-private lemma herm_add_left_fundamental_domains (G : Matrix (Fin r) (Fin r) E) (x y z : Fin r → E) :
-    herm G (x + y) z = herm G x z + herm G y z := by
-  simp only [herm, Pi.add_apply, add_mul, Finset.sum_add_distrib]
-
 private lemma herm_add_right_fundamental_domains (G : Matrix (Fin r) (Fin r) E) (x y z : Fin r → E) :
     herm G x (y + z) = herm G x y + herm G x z := by
   simp only [herm, cc, Pi.add_apply, map_add (f := _), mul_add, Finset.sum_add_distrib]
-
-private lemma herm_smul_left_fundamental_domains' (G : Matrix (Fin r) (Fin r) E) (t : E) (x y : Fin r → E) :
-    herm G (t • x) y = t * herm G x y := by
-  simp only [herm, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
-
-private lemma herm_smul_right_eq_cc_mul' (G : Matrix (Fin r) (Fin r) E) (t : E) (x y : Fin r → E) :
-    herm G x (t • y) = cc t * herm G x y := by
-  simp only [herm, cc, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
 
 theorem nonvanishing_coefficient_positivity_of (h2 : UnipotentLatticeLift (E := E)) (h3 : FourierCoefficientProperties (E := E)) :
     NonvanishingCoefficientPositivity (E := E) := by
@@ -1565,8 +1549,8 @@ theorem nonvanishing_coefficient_positivity_of (h2 : UnipotentLatticeLift (E := 
     exact Submodule.smul_mem _ _ (hΛ i)
   have hξ0 : ξ ≠ 0 := fun h => he0 (funext (Fintype.linearIndependent_iff.1 hu.2 e h))
   have hξξ : herm X.Gm ξ ξ = 0 := by
-    simp only [hξ_def, Fin.sum_univ_two, herm_add_left_fundamental_domains, herm_add_right_fundamental_domains, herm_smul_left_fundamental_domains',
-      herm_smul_right_eq_cc_mul', hu.1, mul_zero, add_zero]
+    simp only [hξ_def, Fin.sum_univ_two, ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_add_left, herm_add_right_fundamental_domains, ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_left,
+      ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_right, hu.1, mul_zero, add_zero]
   have hemb : ∀ σ : X.Ψ, Data.emb σ.1 ξ = X.uvec u (fun σ i => σ.1 (e i)) σ := by
     intro σ
     funext j

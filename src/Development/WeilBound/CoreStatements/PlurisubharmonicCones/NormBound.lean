@@ -50,11 +50,8 @@ variable {L : Type} [Field L] [NumberField L]
 theorem const_int {p : ℕ} (hp : p.Prime) {r : L} (h2 : p = 2 → r = 4) (hodd : p ≠ 2 → IsPrimitiveRoot (r + 1) p) :
     ∃ k : 𝓞 L, algebraMap (𝓞 L) L k = r ∧ k ≠ 0 ∧
       Real.log (Ideal.absNorm (Ideal.span {k})) ≤ Module.finrank ℚ L * (2 * (Real.log p / ((p : ℝ) - 1))) := by
-  have hnormZ : ∀ m : ℕ, Ideal.absNorm (Ideal.span {(m : 𝓞 L)}) = m ^ Module.finrank ℚ L := by
-    intro m
-    rw [Ideal.absNorm_span_singleton, ← map_natCast (algebraMap ℤ (𝓞 L)) m, Algebra.norm_algebraMap,
-      NumberField.RingOfIntegers.rank, Int.natAbs_pow]
-    simp
+  have hnormZ : ∀ m : ℕ, Ideal.absNorm (Ideal.span {(m : 𝓞 L)}) = m ^ Module.finrank ℚ L := fun m => by
+    rw [Ideal.absNorm_span_natCast, NumberField.RingOfIntegers.rank]
   have hd : (0 : ℝ) ≤ Module.finrank ℚ L := Nat.cast_nonneg _
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
   have ht : 0 ≤ Real.log p / ((p : ℝ) - 1) := div_nonneg (Real.log_nonneg hp1.le) (by linarith)

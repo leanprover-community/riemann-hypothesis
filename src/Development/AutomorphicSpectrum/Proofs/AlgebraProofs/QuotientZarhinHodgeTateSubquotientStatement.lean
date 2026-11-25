@@ -112,23 +112,11 @@ theorem ev_injective (hinj : Function.Injective (algebraMap R C)) (A : HopfOrder
     ext f
     exact ⟨fun hf => ⟨⟨f, hf⟩, rfl⟩, by rintro ⟨g, rfl⟩; exact g.2⟩
   have hsp : Submodule.span R (Set.range fun p : Q × Q => w p.1 ⊗ₜ[R] w p.2) = ⊤ := by
-    rw [eq_top_iff]
-    intro t ht
-    clear ht
-    induction t using TensorProduct.induction_on with
-    | zero => exact Submodule.zero_mem _
-    | add a b ha hb => exact Submodule.add_mem _ ha hb
-    | tmul a b =>
-      have ha : a ∈ Submodule.span R (Set.range w) := hw ▸ Submodule.mem_top
-      have hb : b ∈ Submodule.span R (Set.range w) := hw ▸ Submodule.mem_top
-      obtain ⟨r, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun R).1 ha
-      obtain ⟨s, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun R).1 hb
-      rw [TensorProduct.sum_tmul]
-      refine Submodule.sum_mem _ fun i _ => ?_
-      rw [TensorProduct.tmul_sum]
-      refine Submodule.sum_mem _ fun j _ => ?_
-      rw [TensorProduct.tmul_smul, ← TensorProduct.smul_tmul']
-      exact Submodule.smul_mem _ _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨(i, j), rfl⟩))
+    have hm := Submodule.map₂_span_span R (TensorProduct.mk R (subalg A) (subalg A))
+      (Set.range w) (Set.range w)
+    rw [Set.image2_range] at hm
+    refine hm.symm.trans ?_
+    rw [hw, TensorProduct.map₂_mk_top_top_eq_top]
   refine LinearMap.injective_of_linearIndependent (f := (ev A).toLinearMap) hsp ?_
   have hu : IsUnit (β ⊗ₖ β) := by
     rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_kronecker]
@@ -407,7 +395,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.torsion_points_finite_flat_sub
   have hΛR : ∀ k1 k2, (Λ k1 k2).comp Algebra.TensorProduct.includeRight = evbar k2 := fun k1 k2 =>
     AlgHom.ext fun b => by simp [hΛt]
   have hι : Function.Injective (Pi.algHom R (fun _ : K => R) evbar).toLinearMap := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro b hb
     exact hsep1 b fun k => by simpa using congrFun hb k
   have key : ∀ (w : TensorProduct R (T.A ⧸ I) (T.A ⧸ I)) (k1 k2 : K),
@@ -817,8 +805,8 @@ theorem sub_abelianScheme : QuotientByFiniteFlatStatement → ZarhinStatement �
     (q ≫ i) hjm
   obtain ⟨hK, hid⟩ := GlobalTheory.T.torsion_points_homomorphism_compatible p C v R hint hp A P.A T N pt hpt T' _ pt' hpt' (q ≫ i) hjm K
     hj jN hjN
-  obtain ⟨⟨AA, hAA⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hint hp A T N pt hpt
-  obtain ⟨⟨AP, hAP⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hint hp P.A T' _ pt' hpt'
+  obtain ⟨⟨AA, hAA⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hint hp A T N pt hpt
+  obtain ⟨⟨AP, hAP⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hint hp P.A T' _ pt' hpt'
   have hinv := _root_.GlobalTheory.CompanionTheory.Relay.hopf_order_pullback_along_hom p C v R hint hp N AA _ AP jN
     (by rw [hAA, hAP]; exact hpull) (by rw [hAA, hAP]; exact hid)
   rw [hAA, hAP, hK] at hinv
@@ -887,9 +875,9 @@ theorem subquotientStatement_of_quotient_zarhin_hodgeTate
   have hi : Function.Injective i := Function.LeftInverse.injective (g := π) hiπ
   haveI : Finite N := Finite.of_injective i hi
   letI : Fintype N := Fintype.ofFinite N
-  obtain ⟨⟨AA, hAA⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hv hp A T N' pt hpt
+  obtain ⟨⟨AA, hAA⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hv hp A T N' pt hpt
   have hgen := _root_.GlobalTheory.CompanionTheory.Ar.GR.sub_abelianScheme hQ hZ hH p C v R hv hp hc A L hA hL hamp T N' pt hpt (K.map i)
-  have hret := _root_.GlobalTheory.CompanionTheory.Ar.GR.ret_hopf_factor p C v R hv hp N' AA N i π hiπ (by rw [hAA]; exact hst)
+  have hret := _root_.PositivityTheory.HtPt.Re.ret_hopf p C v R hv hp N' AA N i π hiπ (by rw [hAA]; exact hst)
   rw [← hAA]
   exact hret.2.2 K (by rw [hAA]; exact hgen)
 

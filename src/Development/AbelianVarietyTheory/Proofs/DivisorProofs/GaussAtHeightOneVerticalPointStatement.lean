@@ -1341,7 +1341,7 @@ theorem cst_comm {R₁ : Type} [CommRing R₁] {Y V : Scheme.{0}} [IsIntegral Y]
   simp only [Category.assoc]
 
 theorem cst_injective [IsDomain R] (p : X ⟶ Sp R) [Surjective p] : Function.Injective (GlobalTheory.Desc.cst p) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   obtain ⟨y, hy⟩ := p.surjective ⟨⊥, Ideal.isPrime_bot⟩
   have h1 : cstAt p y r = 0 :=

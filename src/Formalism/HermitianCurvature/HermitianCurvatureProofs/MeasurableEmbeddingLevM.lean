@@ -84,9 +84,3 @@ theorem pairAt_tr {t : ℂ} (ht : t ≠ 0) {μ : Measure (Mt k (1 + ρ))} {μs :
 end pair
 
 end Formalism.FourierDecayAlt.P.PBH
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.PBH
-
-end Formalism.FourierDecayAlt.P

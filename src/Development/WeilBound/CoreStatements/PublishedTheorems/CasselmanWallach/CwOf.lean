@@ -509,7 +509,6 @@ theorem incl_E (a b : Fin n) (v : kfin ε σ) :
 
 theorem incl_actM (X : Mx n) (v : kfin ε σ) :
     incl hK (ReciprocityTheory.ChartRestriction.DS.actM (Eop hK h2) X v) = ReciprocityTheory.ChartRestriction.DS.actM (ReciprocityTheory.ChartRestriction.DS.smE ε σ) X (incl hK v) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [ReciprocityTheory.ChartRestriction.DS.actM, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, incl_E]
 
 end PositivityTheory.CW.KFiniteInclusion

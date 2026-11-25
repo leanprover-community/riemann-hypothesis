@@ -95,7 +95,6 @@ open QuadraticAlgebra UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc
 
 open Matrix in
 theorem UpperTheory.V.Z.Sym.Loc.orbEq : UpperTheory.V.Z.Sym.Loc.OrbEq := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro O K _ _ _ _ _ Δ τ hLoc c d m _ δ ι P hM
     have hmv : ∀ (a b : U3 Δ) (v : Fin 3 → Lsq K Δ),
         ((a * b : U3 Δ) : Matrix (Fin 3) (Fin 3) (Lsq K Δ)).mulVec v
@@ -1242,7 +1241,6 @@ private theorem cu_le_cint {K : Type} [Field K] (O : Type) [CommRing O] [Algebra
 set_option maxHeartbeats 1600000 in
 theorem UpperTheory.V.Z.Sym.Glob.gqG :
     UpperTheory.V.Z.Sym.Glob.GqG := by
-  set_option synthInstance.maxHeartbeats 200000 in
   classical
   intro F _ _ Δ D hOk ι hιG θ hθ t hCone τ c d m δ i P hCM hdat hmod
   haveI := hOk.real

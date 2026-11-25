@@ -979,9 +979,3 @@ theorem locReprodStep_of (hS : LocScalarStep) : LocReprodStep := by
   exact fun xv => ⟨(hc xv).1, by rw [(hc xv).2, h1, one_smul]⟩
 
 end Formalism.L2.SG.Pf.WuDec
-
-namespace Formalism.L2.SG.Pf
-
-open Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.Pf.WuDec
-
-end Formalism.L2.SG.Pf

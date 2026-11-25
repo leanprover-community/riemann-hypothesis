@@ -77,7 +77,6 @@ theorem isRelevant_of_ringKrullDim (W : Ideal (MRing (fun _ : Unit => ι₀) F))
   apply _root_.GroundTheory.Heights₂.Heights.Kleiman.ProjDegreePositive.isRelevant_of_ringKrullDim <;> assumption
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem hilbFn_pos (q : Ideal (MRing (fun _ : Unit => ι₀) F)) (hq : IsMultiProjPrime q) (n : ℕ) :
     0 < hilbFn q (fun _ => (n : ℤ)) := by
   apply _root_.GroundTheory.Heights₂.Heights.Kleiman.ProjDegreePositive.hilbFn_pos <;> assumption

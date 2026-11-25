@@ -477,7 +477,7 @@ theorem pullback_support : CutEX.PbSupp := by
       {q | c ≤ Q.GGl P.k (P.r - P.r) zr zr' (Matrix.of q.2)}, ?_, ?_, ?_⟩
   · refine (((hA.prod hB).inter_right ?_).inter_right ?_).inter_right ?_
     · exact hK0c.isClosed.preimage (Continuous.matrix_det continuous_fst)
-    · exact (Formalism.FourierDecayAlt.P.JCTx5.glev_closed _ _ _).preimage continuous_snd
+    · exact (QnRdSkewW.glev_closed _ _ _).preimage continuous_snd
     · exact isClosed_le continuous_const ((Formalism.FourierDecayAlt.P.Qx8.GGl_cont _ _ _ _).comp continuous_snd)
   · rintro q ⟨⟨⟨_, hq1⟩, _⟩, hq3⟩
     refine ⟨fun h0 => h0K0 ?_, lt_of_lt_of_le hcpos hq3⟩

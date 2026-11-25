@@ -115,7 +115,3 @@ theorem LeafGeo_of : LeafGeo :=
   ⟨GeoPf.part1, GeoPf.part2, GeoPf.part3, GeoPf.part4⟩
 
 end LateralTheory.CohomologicalPurity.Thom
-
-namespace LateralTheory.CohomologicalPurity.Thom.GeoPf
-
-end LateralTheory.CohomologicalPurity.Thom.GeoPf

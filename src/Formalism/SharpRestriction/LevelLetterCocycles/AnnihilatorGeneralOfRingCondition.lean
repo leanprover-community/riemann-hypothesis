@@ -23,16 +23,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem cancel_unit_mul_uniformizer_pow {w : (LetA O n)ˣ} {k : ℕ} {a b : LetA O n}
     (h : (w : LetA O n) * letπ ^ k * a = (w : LetA O n) * letπ ^ k * b) : a = b := by
-  unfold letπ at h
-  have h' : (fun _ => PowerSeries.X) ^ k * a = (fun _ => PowerSeries.X) ^ k * b := by
-    have := congrArg (fun x => (↑w⁻¹ : LetA O n) * x) h
-    simpa [← mul_assoc, Units.inv_mul] using this
-  funext i
-  have hi := congrFun h' i
-  simp only [Pi.mul_apply, Pi.pow_apply] at hi
-  ext m
-  have hm := congrArg (PowerSeries.coeff (m + k)) hi
-  rwa [mul_comm, PowerSeries.coeff_mul_X_pow, mul_comm, PowerSeries.coeff_mul_X_pow] at hm
+  exact Formalism.MainNotions.LiftingTheory.unit_mul_pi_pow_left_cancel w k a b h
 
 theorem pi0Core_of (W : LocWach PD LL O v n) (w : (LetA O n)ˣ) (k : ℕ) (h1 : W.π₀ ∈ W.AΔ)
     (h3 : W.π₀ = (w : LetA O n) * letπ ^ k) : Pi0LatticeCondition W := by

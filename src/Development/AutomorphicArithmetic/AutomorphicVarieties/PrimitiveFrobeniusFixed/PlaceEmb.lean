@@ -861,18 +861,11 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Odd UpperTheory.V.Stick UpperTheory.V.ML
 open scoped nonZeroDivisors Pointwise
 
-private theorem int_le {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {b : Ω} (hb : IsIntegral ℤ b) :
-    A.valuation b ≤ 1 := by
-  have h : IsIntegral A b := hb.tower_top
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.1 h
-  rw [A.valuation_le_one_iff, ← hy]
-  exact y.2
-
 theorem UpperTheory.valuation_comap_isEquiv_of_lt_one_iff_mem_prime :
     ∀ (K Ω : Type) [Field K] [NumberField K] [Field Ω] (ι : K →+* Ω) (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 K)), (∀ y : 𝓞 K, A.valuation (ι (y : K)) < 1 ↔ y ∈ w.asIdeal) → (A.valuation.comap ι).IsEquiv (w.valuation K) := by
   intro K Ω _ _ _ ι A w h
   have hle : ∀ y : 𝓞 K, A.valuation (ι (y : K)) ≤ 1 := fun y =>
-    int_le A (y.isIntegral_coe.map ι.toIntAlgHom)
+    GlobalTheory.InertiaAlmostAll.val_le_one_of_isIntegral A (y.isIntegral_coe.map ι.toIntAlgHom)
   have key : ∀ x : K, w.valuation K x ≤ 1 → ∃ a s : 𝓞 K, s ∉ w.asIdeal ∧ x * (s : K) = (a : K) ∧
       A.valuation (ι x) = A.valuation (ι (a : K)) := by
     intro x hx

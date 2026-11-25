@@ -79,9 +79,3 @@ theorem logNorm_pull {y : CxPts (ρ ≫ q) σ}
   rw [logNorm_eq (M.φ σ) hr hx hj', logNorm, e₁, e₂]
 
 end GlobalTheory.ArchIntAlter
-
-namespace GlobalTheory.ArchIntAlter
-
-open Set
-
-end GlobalTheory.ArchIntAlter

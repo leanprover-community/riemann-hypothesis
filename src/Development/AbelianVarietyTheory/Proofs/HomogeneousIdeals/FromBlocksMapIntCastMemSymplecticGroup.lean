@@ -622,14 +622,6 @@ theorem differentiableOn_riemannTheta_comp (a b : ι → ℝ) {Ω : E → Matrix
 
 end Families
 
-section Upper
-
-variable {ι : Type*} [LinearOrder ι]
-
-variable [Fintype ι]
-
-end Upper
-
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto

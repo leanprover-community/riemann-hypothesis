@@ -450,8 +450,8 @@ end UpperTheory.Reformulated.B.Ra2
 
 open UpperTheory.Reformulated.B.Ra2 in
 theorem UpperTheory.Reformulated.B.Ra2.finite_of_alg :
-    ∀ {O R : Type} [inst : CommRing O] [inst_1 : IsDomain O] [inst_2 : IsDiscreteValuationRing O]
-      [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [inst_4 : CommRing R] [IsDomain R] [inst_6 : Algebra O R]
+    ∀ {O R : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+      [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [CommRing R] [IsDomain R] [Algebra O R]
       [UpperTheory.V.Alg.IsCO O R],
       Function.Injective (⇑(Algebra.algebraMap O R) : O → R) →
         (∀ (a : R), ∃ (P : Polynomial O), P ≠ (0 : Polynomial O) ∧ (Polynomial.aeval a : Polynomial O → R) P = (0 : R)) →

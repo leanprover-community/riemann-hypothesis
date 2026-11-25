@@ -222,17 +222,9 @@ namespace GlobalTheory.AscFinBumpAdj
 
 variable {D : D7}
 
-theorem infPart_conj_eq_zero {a : AE D} (h : infPart D a = 0) : infPart D (cA D a) = 0 := by
-  have e : ∀ z : AE D, infPart D (cA D z) = sigR (Ainf D.host.F) D.sp.cm.sig (infPart D z) := fun z => by
-    induction z using TensorProduct.induction_on with
-    | zero => simp only [map_zero]
-    | tmul a x => rfl
-    | add a b ha hb => rw [RingHom.map_add (f := _), RingHom.map_add (f := _), RingHom.map_add (f := _), RingHom.map_add (f := _), ha, hb]
-  rw [e, h, map_zero]
-
 theorem adj_fin {m n : ℕ} {x : Mx D m n} (h : x.map (infPart D) = 0) : (adj x).map (infPart D) = 0 := by
   funext i j
-  exact infPart_conj_eq_zero (a := x j i) (congrFun (congrFun h j) i)
+  exact GlobalTheory.PlaceVec.infPart_cA (a := x j i) (congrFun (congrFun h j) i)
 
 theorem smul_fin {m n : ℕ} (c : AE D) {x : Mx D m n} (h : x.map (infPart D) = 0) : (c • x).map (infPart D) = 0 := by
   funext i j
@@ -479,8 +471,8 @@ theorem main_part {D : D7} {ρ : ℕ} (ψ : AddChar (AF D.host.F) ℂ) (u : UX D
   have hsplit : N = GlobalTheory.FinTranslate.eInf D • N + (1 - GlobalTheory.FinTranslate.eInf D) • N := by
     rw [sub_smul, one_smul, add_sub_cancel]
   show psiE ψ (upSum u.1.1) = _
-  rw [hN, GlobalTheory.AscFinInhab.upSum_add', GlobalTheory.AscFinInhab.upSum_one', zero_add, hsplit,
-    GlobalTheory.AscFinInhab.upSum_add', psiE_add, h1, mul_one, ← hsplit]
+  rw [hN, GlobalTheory.MixPer.upSum_add, GlobalTheory.AscFinInhab.upSum_one', zero_add, hsplit,
+    GlobalTheory.MixPer.upSum_add, psiE_add, h1, mul_one, ← hsplit]
 
 theorem charOnSupport : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V V₀ W W₀ : HSp D) (ρ σ : ℕ) (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ σ) (p : Pieces V₀ W W₀ ρ σ) (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E) (L : Matrix (Fin ρ) (Fin W.rank) D.host.E), L * x₀ = 1 → p.Is dV dW (rat x₀) ψ → ∀ (u : UX D ρ) (r : Mx D W.rank ρ), r.map (finPart D) = 0 → rat x₀ ⬝ u.1.1 - (rat x₀ + r) ∈ p.A₁ → psiUni ψ u.1 = psiE ψ (upSum (rat L ⬝ r)) := by
   intro D ψ V V₀ W W₀ ρ σ dV dW p x₀ L hL hp u r hr ha
@@ -613,7 +605,6 @@ open scoped TensorProduct
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
 
 theorem _root_.GlobalTheory.T.isCompact_unitriangular_of_rational_mul_mem_compact : ∀ (D : D7) (n ρ : ℕ) (x₀ : Matrix (Fin n) (Fin ρ) D.host.E), LinearIndependent D.host.E x₀.transpose → ∀ K : Set (Mx D n ρ), IsCompact K → IsCompact {u : UX D ρ | rat x₀ ⬝ u.1.1 ∈ K} := by
   first | exact @GlobalTheory.AscFin.isCompact_setOf_rat_mul_mem
@@ -866,21 +857,11 @@ namespace GlobalTheory.AscFinNe
 
 variable {D : D7}
 
-theorem left_inv_of_li {n ρ : ℕ} (x₀ : Matrix (Fin n) (Fin ρ) D.host.E) (h : LinearIndependent D.host.E x₀.transpose) :
-    ∃ L : Matrix (Fin ρ) (Fin n) D.host.E, L * x₀ = 1 := by
-  have hinj : Function.Injective (Matrix.toLin' x₀) := by
-    show Function.Injective x₀.mulVec
-    exact mulVec_injective_iff.mpr h
-  obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective (Matrix.toLin' x₀) (LinearMap.ker_eq_bot.2 hinj)
-  refine ⟨LinearMap.toMatrix' g, ?_⟩
-  conv_lhs => rw [← LinearMap.toMatrix'_toLin' x₀]
-  rw [← LinearMap.toMatrix'_comp, hg, LinearMap.toMatrix'_id]
-
 theorem flat_ne_zero : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (V V₀ W W₀ : HSp D) (ρ σ : ℕ) (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ σ) (s : Step ψ V V₀ W W₀ ρ σ) (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E) (y : Mx D V₀.rank σ), LinearIndependent D.host.E x₀.transpose → ∀ p : Pieces V₀ W W₀ ρ σ, p.Is dV dW (rat x₀) ψ → ∃ Φ ∈ cls dV dW p (rat x₀) y ψ, flatS dV dW s (rat x₀) y Φ ≠ 0 := by
   intro D ψ hψ V V₀ W W₀ ρ σ dV dW s x₀ y hx₀ p hp
   obtain ⟨g, hgv, hg0⟩ := hp.vac₀
   obtain ⟨β₂, hβ₂, hβ₂y, hβ₂per, hβ₂supp⟩ := _root_.GlobalTheory.AscFinBumpAdj.exists_bump_adj D V₀ W W₀ σ dW p.B₂ hp.b₂ y
-  obtain ⟨L, hL⟩ := left_inv_of_li x₀ hx₀
+  obtain ⟨L, hL⟩ := GlobalTheory.Unf.MajMeas.exists_leftInv x₀ hx₀
   obtain ⟨b, hb, hbx, hb01, hbsupp, hbper⟩ := exists_bump_le (rat x₀) p.A₁ hp.a₁ _
     (_root_.GlobalTheory.PosNhdsChar.posNhds D ψ hψ W.rank ρ (rat L) (rat x₀))
   have hpos : ∀ u : UX D ρ, b (rat x₀ ⬝ u.1.1) ≠ 0 → 0 < (star (psiUni ψ u.1)).re := by

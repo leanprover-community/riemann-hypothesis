@@ -62,7 +62,7 @@ variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyCompl
 omit [NumberField K] in
 theorem isEmpty_realEmb : IsEmpty (K →+* ℝ) :=
   ⟨fun φ => IsTotallyComplex.complexEmbedding_not_isReal (Complex.ofRealHom.comp φ)
-    (ComplexEmbedding.isReal_iff.2 (RingHom.ext fun x => Complex.conj_ofReal _))⟩
+    (ComplexEmbedding.isReal_iff.2 (RingHom.ext fun _ => Complex.conj_ofReal _))⟩
 
 theorem exists_rayPair_top_iff {I : Ideal (𝓞 K)} (hI : I ≠ ⊥) :
     (∃ α β : 𝓞 K, RayPair ⊤ α β ∧ I * Ideal.span {β} = Ideal.span {α}) ↔ I.IsPrincipal := by

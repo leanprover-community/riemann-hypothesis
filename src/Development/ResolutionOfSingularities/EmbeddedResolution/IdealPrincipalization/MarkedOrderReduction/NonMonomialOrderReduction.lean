@@ -183,7 +183,6 @@ private theorem orderAtLeastLocus_comap_iso_nonempty {k : Type u} [Field k] [Cha
     (hne : (orderAtLeastLocus N c).Nonempty) :
     (orderAtLeastLocus (N.comap e.hom) c).Nonempty := by
   have := hp
-  have : AlgebraicGeometry.Smooth e.inv := inferInstance
   obtain ⟨x, hx⟩ := hne
   have hcomp : (N.comap e.hom).comap e.inv = N := by
     rw [← Scheme.IdealSheafData.comap_comp, e.inv_hom_id]

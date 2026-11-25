@@ -265,7 +265,6 @@ theorem sz_invDiff : ∀ (l : ℕ) [Fact l.Prime] (lam : algebraicClosure ℚ �
     rw [one_div, ← zpow_neg, neg_neg, zpow_natCast] at this
     rwa [Real.rpow_natCast]
   have hn : 0 < n := Module.finrank_pos
-  have hnr : (0 : ℝ) < n := by exact_mod_cast hn
   calc ‖χ y‖ = (‖χ y‖ ^ n) ^ ((n : ℝ)⁻¹) := (Real.pow_rpow_inv_natCast (norm_nonneg _) hn.ne').symm
     _ ≤ ((l : ℝ) ^ (v : ℝ)) ^ ((n : ℝ)⁻¹) := Real.rpow_le_rpow (by positivity) hpow (by positivity)
     _ = (l : ℝ) ^ ((v : ℝ) / n) := by rw [← Real.rpow_mul hl0.le, div_eq_mul_inv]

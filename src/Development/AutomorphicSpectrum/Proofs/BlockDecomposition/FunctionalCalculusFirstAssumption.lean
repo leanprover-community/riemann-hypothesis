@@ -287,7 +287,7 @@ theorem cut_eq_one {c y : ℝ} (h : y ≤ c) : cut c y = 1 := by
   unfold cut
   rw [min_eq_left (by linarith), max_eq_right zero_le_one]
 
-theorem core (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob μ E.V} {T : Lp E.V 2 μ →L[ℂ] Lp E.V 2 μ}
+theorem coreRep (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob μ E.V} {T : Lp E.V 2 μ →L[ℂ] Lp E.V 2 μ}
     (hL : LgFacts) (hU : Unimod) (hR : RCalc) (hSG : SobG)
     (hAC : AbsCut) (hFc : Fcurve) (hW : WvAlg) (hC : ClsFacts) (hO : SobOps) (hCp : CptSob) (hP : PresSob)
     (hCJ : CurveJoint)
@@ -296,7 +296,8 @@ theorem core (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob
     (hT : ∀ x : Msob μ E.V, T ((x : Lp E.V 2 μ) + (Ω (Ω x) : Lp E.V 2 μ)) = x) (c : ℝ)
     (hc : ∀ f : Mat n → E.V, Sob μ f → IsSec E f → (⟪cls μ (Om f), cls μ f⟫_ℂ).re ≤ c * ‖cls μ f‖ ^ 2)
     {f : Mat n → E.V} (hf : f ∈ CE E) (hcf : Cpt f) :
-    ∃ u, IsWave E u ∧ ∀ g ∈ GLs n, u 0 g = f g := by
+    ∃ (N : ℕ) (b : Lp E.V 2 μ) (U : ℝ → Mat n → E.V), 1 ≤ N ∧ (T ^ N) b = cls μ f ∧ IsWave E U ∧
+      (∀ x ∈ GLs n, U 0 x = f x) ∧ ∀ t, Sob μ (U t) ∧ cls μ (U t) = F.Φ (toC0 (wv c N 0 t)) b := by
   have hbp := fun N => Bn_props μ hL hR hCp E hf hcf N
   have hbS : ∀ N, Sob μ (Bn f N) := fun N => (hCp n μ E.V hL hR _ (hbp N).1.1 (hbp N).2).1
   have hbE : ∀ N, IsSec E (Bn f N) := fun N => (hbp N).1.2
@@ -330,7 +331,14 @@ theorem core (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob
     rw [e2]
     exact hd
   obtain ⟨hjoint, hder⟩ := hCJ n μ E.V U hL hR hSG hUS hd
-  refine ⟨U 0, ⟨hjoint, fun t => ⟨(hUS 0 t).1, hUE 0 t⟩, ?_, ?_⟩, ?_⟩
+  have hT2 : (T ^ 2) (cls μ (Bn f 2)) = cls μ f := by
+    rw [pow_two, ContinuousLinearMap.mul_apply]
+    have a1 : T (cls μ (Bn f 2)) = cls μ (Bn f 1) := T_B hC hO hL hU hR hΩ hT (hbS 1)
+    have a2 : T (cls μ (Bn f 1)) = cls μ (Bn f 0) := T_B hC hO hL hU hR hΩ hT (hbS 0)
+    rw [a1, a2]
+    rfl
+  refine ⟨2, cls μ (Bn f 2), U 0, by norm_num, hT2, ⟨hjoint, fun t => ⟨(hUS 0 t).1, hUE 0 t⟩, ?_, ?_⟩, ?_,
+    fun t => ⟨hUS 0 t, hUc 0 t⟩⟩
   · intro t g hg
     have d1 : deriv (fun s => U 0 s g) = fun s => U 1 s g := funext fun s => (hder 0 s g hg).deriv
     have d2 : iteratedDeriv 2 (fun s => U 0 s g) t = U 2 t g := by
@@ -383,6 +391,19 @@ theorem core (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob
       rw [map_sub, ContinuousLinearMap.sub_apply, hr, sub_eq_zero] at hcut
       exact hcut.symm
     exact cls_eq_of_sob hC hU (hUS 0 0) (hbS 0) ((hUc 0 0).trans hw)
+
+theorem core (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] Msob μ E.V} {T : Lp E.V 2 μ →L[ℂ] Lp E.V 2 μ}
+    (hL : LgFacts) (hU : Unimod) (hR : RCalc) (hSG : SobG)
+    (hAC : AbsCut) (hFc : Fcurve) (hW : WvAlg) (hC : ClsFacts) (hO : SobOps) (hCp : CptSob) (hP : PresSob)
+    (hCJ : CurveJoint)
+    (F : FCalc (Lp E.V 2 μ) (Msob μ E.V) Ω T) (hrep : ∀ x ∈ Msob μ E.V, ∃ f, Sob μ f ∧ cls μ f = x)
+    (hΩ : ∀ (f : Mat n → E.V) (hf : cls μ f ∈ Msob μ E.V), Sob μ f → (Ω ⟨cls μ f, hf⟩ : Lp E.V 2 μ) = cls μ (Om f))
+    (hT : ∀ x : Msob μ E.V, T ((x : Lp E.V 2 μ) + (Ω (Ω x) : Lp E.V 2 μ)) = x) (c : ℝ)
+    (hc : ∀ f : Mat n → E.V, Sob μ f → IsSec E f → (⟪cls μ (Om f), cls μ f⟫_ℂ).re ≤ c * ‖cls μ f‖ ^ 2)
+    {f : Mat n → E.V} (hf : f ∈ CE E) (hcf : Cpt f) :
+    ∃ u, IsWave E u ∧ ∀ g ∈ GLs n, u 0 g = f g :=
+  let ⟨_, _, u, _, _, hw, h0, _⟩ := coreRep E hL hU hR hSG hAC hFc hW hC hO hCp hP hCJ F hrep hΩ hT c hc hf hcf
+  ⟨u, hw, h0⟩
 
 end Main
 

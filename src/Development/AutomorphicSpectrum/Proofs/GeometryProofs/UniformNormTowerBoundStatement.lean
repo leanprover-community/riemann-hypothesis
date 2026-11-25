@@ -130,16 +130,11 @@ theorem rdU_eq_of_reads' {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (h : GenFrEx X
     ∃ w : ℂ, w ≠ 0 ∧ ∀ f ∈ Formalism.L2.Pj.sec Xo c u n, w * rdU U f k x = toC (φ (evC h Z f)) := by
   apply _root_.GlobalTheory.CompBij.rdU_eq_of_reads <;> assumption
 
-theorem fnAlgClosed_of_card {σ : c.F →+* ℂ} (V : Unf Xo c σ r) (hσ : GoodEmb c σ) (hV : IsUnf V) (h : GenFrEx Xo c)
-    (hone : ∀ k x, FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (V.un k x))
-    (hgen : GenFromTest Xo c h) (hcard : Nat.card (Comp Xo c) = Fintype.card V.Comp) : FnAlgClosed (Xo := Xo) (c := c) :=
-  GlobalTheory.CompanionTheory.Ar.Rec.CompOver.fnAlgClosed_of_card V hσ hV h hone hgen hcard
-
 theorem over_unique {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h : GenFrEx Xo c} {e : Comp Xo c → Rul Xo c}
     (hL : CompLaws U h e) {σ : c.F →+* ℂ} (hσ : GoodEmb c σ) {Z : Comp Xo c} {k k' : (U σ).Comp}
     (hk : Over (U σ) (e Z) k) (hk' : Over (U σ) (e Z) k') : k = k' := by
   have hF : FnAlgClosed (Xo := Xo) (c := c) :=
-    fnAlgClosed_of_card (U c.F.val.toRingHom) rfl (hL.unf _ rfl) h (hL.unTest _ rfl) hL.genT hL.comps
+    GlobalTheory.CompanionTheory.Ar.Rec.CompOver.fnAlgClosed_of_card (U c.F.val.toRingHom) rfl (hL.unf _ rfl) h (hL.unTest _ rfl) hL.genT hL.comps
   have hU := hL.unf σ hσ
   have key : ∀ k₁, Over (U σ) (e Z) k₁ → ∃ x : ((U σ).X k₁).dom, ∃ (φ : Om Z →ₐ[c.F] CAt σ)
       (y' : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ), FrMap φ (genFr h Z) y' ∧ FrBor t ((U σ).un k₁ x) y' := by

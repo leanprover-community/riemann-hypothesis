@@ -423,7 +423,6 @@ theorem exists_approx [IsLocalRing A] [Algebra.IsInvariant A B G] (q : Ideal B) 
       intro a ha
       exact hm a ha
     exact this hy
-  have hIpow : ∀ n, I ^ (n + 1) ≤ I := fun n => Ideal.pow_le_self (Nat.succ_ne_zero n)
 
   have stepA : ∀ r : R, ∃ a : A, r - algebraMap A R a ∈ T 1 := by
     intro r

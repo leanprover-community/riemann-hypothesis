@@ -133,42 +133,6 @@ theorem σDp_alg (g : Per.Gq l) (y : Per.AinfP l) :
       algebraMap (Per.AinfP l) (Per.BdRp l) (Per.extP (Per.σA g) y) :=
   GlobalTheory.RingIface.sigDp_alg l g y
 
-private theorem ker_evalₐ_fg {A : Type} [CommRing A] (J : Ideal A) (fg : J.FG) (n : ℕ) :
-    RingHom.ker (AdicCompletion.evalₐ J n) = (J ^ n).map (algebraMap A (AdicCompletion J A)) := by
-  ext a
-  rw [RingHom.mem_ker, ← Submodule.restrictScalars_mem A, ← Ideal.smul_top_eq_map,
-    AdicCompletion.pow_smul_top_eq_ker_eval fg, LinearMap.mem_ker]
-  have hle : (J ^ n • ⊤ : Ideal A) ≤ J ^ n := by intro x hx; simpa using hx
-  rw [← AdicCompletion.factor_eval_eq_evalₐ J a hle]
-  constructor
-  · intro h
-    obtain ⟨b, hb⟩ := Submodule.Quotient.mk_surjective _ (AdicCompletion.eval J A n a)
-    rw [← hb] at h ⊢
-    have : b ∈ J ^ n := Ideal.Quotient.eq_zero_iff_mem.mp h
-    exact (Submodule.Quotient.mk_eq_zero _).mpr (by simpa using this)
-  · intro h; rw [h, map_zero]
-
-private theorem mem_map_of_ev (n : ℕ) (w : Per.BdRp l) (h : Per.ev l n w = 0) :
-    w ∈ (Per.kerP l ^ n).map (algebraMap (Per.AinfP l) (Per.BdRp l)) := by
-  obtain ⟨ε, hε⟩ := exists_isEps l
-  have fg : (Per.kerP l).FG := by
-    rw [_root_.GlobalTheory.MemLoc.ker_localizedTheta_eq_span_xi l ε hε]
-    exact Submodule.fg_span_singleton _
-  obtain ⟨e, he, hev⟩ := GlobalTheory.RingIface.exists_bdRp_equiv l
-  have h1 : e w ∈ RingHom.ker (AdicCompletion.evalₐ (Per.kerP l) n) := by
-    rw [RingHom.mem_ker, hev, h]
-  rw [ker_evalₐ_fg _ fg] at h1
-  have h2 : (Per.kerP l ^ n).map (algebraMap (Per.AinfP l) (AdicCompletion (Per.kerP l) (Per.AinfP l))) ≤
-      ((Per.kerP l ^ n).map (algebraMap (Per.AinfP l) (Per.BdRp l))).comap e.symm.toRingHom := by
-    rw [Ideal.map_le_iff_le_comap]
-    intro a ha
-    rw [Ideal.mem_comap, Ideal.mem_comap, ← he a]
-    have := Ideal.mem_map_of_mem (algebraMap (Per.AinfP l) (Per.BdRp l)) ha
-    simpa using this
-  have h3 := h2 h1
-  rw [Ideal.mem_comap] at h3
-  simpa using h3
-
 theorem ev_σDp (g : Per.Gq l) (n : ℕ) (w : Per.BdRp l) (y : Per.AinfP l)
     (h : Per.ev l n w = Ideal.Quotient.mk _ y) :
     Per.ev l n (Per.σDp g w) = Ideal.Quotient.mk _ (Per.extP (Per.σA g) y) := by

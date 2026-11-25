@@ -272,7 +272,7 @@ theorem datumFn_eq_tensor {F : Frame S T} (hF : F.Good) {G : TypeDat D T.rank} {
   by_cases hi : IsIntM (frMapO S T F.βS F.βT x)
   · have hj := int_adj_of_int hF hi
     have k1 : IsIntM (frMapAdj S T F.βS F.βT (cA D (idem G.Pg) • x)) := by
-      rw [frMapAdj_smul]; exact isIntM_smul_cA hg' hj
+      rw [GlobalTheory.RedHalfDrop.frMapAdj_smul_eq]; exact isIntM_smul_cA hg' hj
     have k2 : IsIntM (frMapO S T F.βS F.βT (idem Q • x)) := by
       rw [frMapO_smul]; exact isIntM_smul hq hi
     rw [ite_eq_left ⟨hx, hj⟩, ite_eq_left ⟨hx, hi⟩, ite_eq_left ⟨i2, k2⟩, ite_eq_left ⟨i1, k1⟩, mul_comm]
@@ -286,7 +286,7 @@ theorem datumFn_eq_tensor {F : Frame S T} (hF : F.Good) {G : TypeDat D T.rank} {
     · refine GlobalTheory.PlaceDatum.omegaG_congr _ _ _ _ fun PP hPP => ?_
       have e : frMapAdj S T F.βS F.βT (cA D (idem G.Pg) • x) =
           frMapAdj S T F.βS F.βT x - toEAf D (cA D (idem Q)) • frMapAdj S T F.βS F.βT x := by
-        rw [← frMapAdj_smul, eq_sub_iff_add_eq, ← GlobalTheory.PlaceVec.frMapAdj_add, hxe]
+        rw [← GlobalTheory.RedHalfDrop.frMapAdj_smul_eq, eq_sub_iff_add_eq, ← GlobalTheory.PlaceVec.frMapAdj_add, hxe]
       rw [e, GlobalTheory.RedHalfDrop.redM_sub_smul PP hj (toEAf_mem_intAf_of_idem hq')
         (GlobalTheory.RedHalfDrop.resS_eq_zero_of_mul (og PP hPP).2 _ (og PP hPP).1)]
   · rw [ite_eq_right (show ¬ (IsHalf (halfIdem G.Pg Q) x ∧ IsIntM (frMapO S T F.βS F.βT x)) from fun h => hi h.2), mul_zero]

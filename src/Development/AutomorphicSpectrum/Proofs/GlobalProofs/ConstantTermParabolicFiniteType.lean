@@ -524,19 +524,6 @@ open Matrix
 
 namespace GlobalTheory.CompanionTheory.IsometricMatrix
 
-theorem exp_mulVec_of_mulVec_eq_zero {m : ℕ} (N : Matrix (Fin m) (Fin m) ℂ) (x : Fin m → ℂ)
-    (hx : N *ᵥ x = 0) : NormedSpace.exp N *ᵥ x = x := by
-  have hC : N * Matrix.replicateCol (Fin 1) x = Matrix.replicateCol (Fin 1) x * (0 : Matrix (Fin 1) (Fin 1) ℂ) := by
-    ext i j
-    have hi := congrFun hx i
-    simp only [Matrix.mulVec, dotProduct, Pi.zero_apply] at hi
-    simpa [Matrix.mul_apply, Matrix.replicateCol] using hi
-  have hE := matrix_exp_mul_eq_mul_exp_of_intertwine N _ 0 hC
-  simp only [NormedSpace.exp_zero, Matrix.mul_one] at hE
-  ext i
-  have hi := congrFun (congrFun hE i) 0
-  simpa [Matrix.mulVec, dotProduct, Matrix.mul_apply, Matrix.replicateCol] using hi
-
 theorem main {n n' : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (H' : Matrix (Fin n') (Fin n') ℂ)
     (J : Matrix (Fin n) (Fin n') ℂ)
     (hH : Hᴴ = H) (hH' : H'ᴴ = H') (hd : IsUnit H.det) (hd' : IsUnit H'.det)
@@ -573,7 +560,7 @@ theorem main {n n' : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (H' : Matrix (Fin n')
       have hfac : J * A * (H'⁻¹ * Jᴴ * H) = (J * A * H'⁻¹) * (Jᴴ * H) := by
         simp only [Matrix.mul_assoc]
       rw [hfac, ← Matrix.mulVec_mulVec, hx, Matrix.mulVec_zero]
-    apply exp_mulVec_of_mulVec_eq_zero
+    apply Formalism.FourierDecayAlt.Q.EabGlW.exp_mulVec_fix
     rw [Matrix.smul_mulVec, hB, smul_zero]
 
 end GlobalTheory.CompanionTheory.IsometricMatrix
@@ -1204,7 +1191,7 @@ theorem gelf_slices_monic : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F 
     exact hq F h1 h2 g hg
   choose q hqm hq using key
   refine ⟨fun τ k => (q τ k).roots.toList, fun ψ hψ y hy hcomm τ k => ?_⟩
-  have hsu := (GlobalTheory.T.orthogonal_subspace_unitary_embedding D V m X Y hW T V' ι hι hr s hs).1
+  have hsu := (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UEmb.range_embHom D V m X Y hW T V' ι hι hr s hs).1
   have hy' : ∀ h, s h * y = y * s h := fun h => hcomm _ (hsu h)
   let G : GlobalTheory.Mem.AutSpace.SmFun θ V := ⟨ψ, GlobalTheory.SphSmooth.mem_smFun_of_isSm hθ hψ.1.smooth⟩
   have e := foldr_slice τ k _ (fun G' => gelf_slice hθ hι hs τ hy' k G') (q τ k).roots.toList G

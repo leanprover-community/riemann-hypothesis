@@ -20,12 +20,6 @@ variable {F F' : Type} [Field F] [Field F'] (r : F ≃+* F')
   {V V' : Type} [AddCommGroup V] [Module F V] [AddCommGroup V'] [Module F' V']
   (e : V ≃+ V') (he : ∀ (c : F) (x : V), e (c • x) = r c • e x)
 
-include he in
-private theorem symm_smul (c : F') (y : V') : e.symm (c • y) = r.symm c • e.symm y := by
-  apply e.injective
-  rw [he]
-  simp
-
 private def smap (W : Submodule F V) : Submodule F' V' where
   carrier := e '' W
   add_mem' := by
@@ -82,35 +76,17 @@ private theorem charpoly_semi [FiniteDimensional F V] [FiniteDimensional F' V']
     LinearMap.charpoly g' = (LinearMap.charpoly g).map r.toRingHom := by
   classical
   let b := Module.finBasis F V
-  have hf : ∀ f : Fin (Module.finrank F V) →₀ F,
-      Finsupp.mapRange r.symm (map_zero r.symm) (Finsupp.mapRange r (map_zero r) f) = f := by
-    intro f
-    ext i
-    simp
+  have := RingHomInvPair.of_ringEquiv r
+  have := RingHomInvPair.symm (r : F →+* F') (r.symm : F' →+* F)
+  let eₛ : V ≃ₛₗ[(r : F →+* F')] V' := { e with map_smul' := he }
   let repr' : V' ≃ₗ[F'] (Fin (Module.finrank F V) →₀ F') :=
-    { toFun := fun y => Finsupp.mapRange r (map_zero r) (b.repr (e.symm y))
-      invFun := fun c => e (b.repr.symm (Finsupp.mapRange r.symm (map_zero r.symm) c))
-      map_add' := by
-        intro x y
-        ext i
-        simp
-      map_smul' := by
-        intro c y
-        ext i
-        simp [symm_smul r e he]
-      left_inv := by
-        intro y
-        show e (b.repr.symm (Finsupp.mapRange r.symm _ (Finsupp.mapRange r _ (b.repr (e.symm y))))) = y
-        rw [hf]
-        simp
-      right_inv := by
-        intro c
-        ext i
-        simp }
+    eₛ.symm.trans (b.repr.trans (Finsupp.mapRange.linearEquiv r.toSemilinearEquiv))
   let b' : Module.Basis (Fin (Module.finrank F V)) F' V' := Module.Basis.ofRepr repr'
   have hb' : ∀ j, b' j = e (b j) := by
     intro j
-    simp [b', repr']
+    change e (b.repr.symm (Finsupp.mapRange r.symm (map_zero r.symm)
+      (Finsupp.single j 1))) = e (b j)
+    rw [Finsupp.mapRange_single, map_one, Module.Basis.repr_symm_single_one]
   rw [← LinearMap.charpoly_toMatrix g b, ← LinearMap.charpoly_toMatrix g' b', ← Matrix.charpoly_map]
   congr 1
   ext i j

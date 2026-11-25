@@ -779,7 +779,6 @@ theorem kappa_spread (hj : InR D j) (τ : D.what₂.Tau) :
   rw [big 0 (by omega), big (D.R.k - 2) (by omega)]
   have a1 := (L.cloud_v τ ⟨0, by omega⟩).2
   have a2 := (L.cloud_v τ ⟨D.R.k - 2, by omega⟩).1
-  have a3 : (0 : ℝ) ≤ ((D.R.k - 2 : ℕ) : ℝ) := Nat.cast_nonneg _
   push_cast at a1 a2 ⊢
   linarith
 
@@ -832,11 +831,9 @@ theorem restAt_bounds (hj : InR D j) (τ : D.what₂.Tau) :
   change (Tp.TO : ℝ) * (ext0 ((lR Tp hK j).aP τ) (D.R.k - 1) : ℝ) ≤ _ at t2
   change (Tp.TO : ℝ) * (ext0 ((lR Tp hK j).aM τ) 0 : ℝ) ≤ _ at t3
   have c0 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast hk
-  have c1 : ((D.R.k - 2 : ℕ) : ℝ) ≤ D.R.k := by exact_mod_cast Nat.sub_le _ _
   have c2 : ((D.R.sigW j).1 : ℝ) ≤ 2 * D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).1 ≤ 2 * D.R.k)
   have c3 : ((D.R.sigW j).2 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).2 ≤ D.R.k)
   have c4 : (j : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : j ≤ D.R.k)
-  have c5 : (0 : ℝ) ≤ j := Nat.cast_nonneg _
   have c6 : (0 : ℝ) ≤ ((D.R.sigW j).2 : ℝ) := Nat.cast_nonneg _
   have hT : (0 : ℝ) ≤ Tp.TO := Nat.cast_nonneg _
   unfold restAt
@@ -866,7 +863,6 @@ theorem le_two_floor {x : ℝ} (h : 1 ≤ x) : 1 ≤ (⌊x⌋₊ : ℝ) ∧ x �
 include Tp in
 theorem sizes_le : L.Sc ≤ 2 * (numOf D L).Sc ∧ L.etaSz ≤ 2 * (numOf D L).eta ∧ (D.R.k : ℝ) ≤ (numOf D L).Sc := by
   have hT : (1 : ℝ) ≤ Tp.TO := by exact_mod_cast TO_pos Tp
-  have ht : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have hk : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 0 < D.R.m)
   obtain ⟨d1, d2⟩ := le_two_floor (x := ((D.s.Del : ℚ) : ℝ)) ((one_le_pow₀ hT).trans Tp.Del_TO)
@@ -905,7 +901,6 @@ theorem rest_degree_bounds : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterCho
   have h1 := Finset.sum_le_card_nsmul Finset.univ _ _ (fun τ _ => (restAt_bounds Tp hK j hj τ).2)
   rw [Finset.card_univ, hc, nsmul_eq_mul] at h1
   obtain ⟨s1, s2, s3⟩ := sizes_le Tp
-  have hk : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have he := L.etaSz_pos
   have h2 : L.Sc + 3 * L.etaSz + 12 * D.R.k ≤ 100 * ((numOf D L).Sc + (numOf D L).eta) := by linarith
   have h3 := mul_le_mul_of_nonneg_left h2 (by positivity : (0 : ℝ) ≤ (D.R.f : ℝ) * D.R.k)
@@ -944,7 +939,6 @@ theorem goodPage_run : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D
     exact Nat.mul_pos hf (Nat.choose_pos hr)
   have h40 := Tp.TO_40
   have hTpos : (0 : ℝ) < Tp.TO := by exact_mod_cast TO_pos Tp
-  have hx0 : 0 < L.sc.x := by linarith
   have hw'' : 0 < L.sc.w'' D.R.n := by
     unfold Scale.w'' Scale.b' Scale.a Scale.b Scale.X'
     have : (0 : ℝ) < D.R.n := by exact_mod_cast hn
@@ -1028,7 +1022,6 @@ theorem comap_liesOver {E K : Type} [Field E] [Field K] [NumberField K] (f : �
     (la : HeightOneSpectrum (𝓞 K)) :
     (la.asIdeal.comap f).LiesOver (Ideal.span {((resCharOf la : ℕ) : ℤ)}) := by
   have hl := Crude.resCharOf_prime la
-  have hP := la.isPrime
   have hmax : (Ideal.span {((resCharOf la : ℕ) : ℤ)}).IsMaximal :=
     PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hl).irreducible
   have hle : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≤ (la.asIdeal.comap f).under ℤ := by

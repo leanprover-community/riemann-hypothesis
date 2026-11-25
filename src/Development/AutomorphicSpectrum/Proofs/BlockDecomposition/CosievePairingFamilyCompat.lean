@@ -312,7 +312,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct DirectSum GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Onto CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT GlobalTheory.CompanionTheory.KunGlue
 
 noncomputable section
@@ -462,7 +461,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct DirectSum GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Onto CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT GlobalTheory.CompanionTheory.KunGlue
 
 noncomputable section
@@ -861,7 +859,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct DirectSum GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Onto CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT GlobalTheory.CompanionTheory.KunGlue
 
 namespace GlobalTheory.CompanionTheory.KunGlue
@@ -942,29 +939,8 @@ theorem reidx {V U : Type 1} [DecidableEq V] [DecidableEq U] (σ : V ≃ U) (W :
     [∀ u, AddCommGroup (W u)] [∀ u, Module K (W u)] :
     ∃ r : (⨁ v, W (σ v)) ≃ₗ[K] ⨁ u, W u,
       ∀ v x, r (DirectSum.lof K V (fun v => W (σ v)) v x) = DirectSum.lof K U W (σ v) x := by
-  let f : (⨁ v, W (σ v)) →ₗ[K] ⨁ u, W u :=
-    DirectSum.toModule K V _ fun v => DirectSum.lof K U W (σ v)
-  let g : (⨁ u, W u) →ₗ[K] ⨁ v, W (σ v) :=
-    DirectSum.toModule K U _ fun u =>
-      (DirectSum.lof K V (fun v => W (σ v)) (σ.symm u)).comp
-        ((LinearEquiv.cast (R := K) (M := W) (σ.apply_symm_apply u).symm).toLinearMap)
-  refine ⟨LinearEquiv.ofLinear f g ?_ ?_, fun v x => ?_⟩
-  · refine DirectSum.linearMap_ext K fun u => LinearMap.ext fun x => ?_
-    have key : ∀ (u' : U) (hu : u' = u) (hh : u = u'),
-        DirectSum.lof K U W u' (LinearEquiv.cast (R := K) (M := W) hh x) = DirectSum.lof K U W u x := by
-      rintro _ rfl hh
-      rfl
-    simp only [LinearMap.comp_apply, LinearMap.id_apply, f, g, DirectSum.toModule_lof, LinearEquiv.coe_coe]
-    exact key _ (σ.apply_symm_apply u) _
-  · refine DirectSum.linearMap_ext K fun v => LinearMap.ext fun x => ?_
-    have key : ∀ (v' : V) (hv : v' = v) (hh : σ v = σ v'),
-        DirectSum.lof K V (fun v => W (σ v)) v' (LinearEquiv.cast (R := K) (M := W) hh x) =
-          DirectSum.lof K V (fun v => W (σ v)) v x := by
-      rintro _ rfl hh
-      rfl
-    simp only [LinearMap.comp_apply, LinearMap.id_apply, f, g, DirectSum.toModule_lof, LinearEquiv.coe_coe]
-    exact key _ (σ.symm_apply_apply v) _
-  · simp only [LinearEquiv.ofLinear_apply, f, DirectSum.toModule_lof]
+  exact ⟨(DirectSum.lequivCongrLeft K (M := W) σ.symm).symm,
+    fun _ _ => DirectSum.lequivCongrLeft_symm_lof K⟩
 
 def KunC {P Q T : ℕ → Cx.{1} K} (pr : ∀ {a a' c : ℕ}, a + a' = c → CxPairing (P a) (Q a') (T c)) (c n : ℕ) : Prop :=
   ∃ e : (⨁ t : Idx c n, (P t.a).H t.i ⊗[K] (Q t.a').H t.j) ≃ₗ[K] (T c).H n,
@@ -1089,7 +1065,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct DirectSum GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Onto CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT GlobalTheory.CompanionTheory.KunGlue
 
 namespace GlobalTheory.CompanionTheory.KunGlue.GlueGen

@@ -681,7 +681,6 @@ theorem isCartan_conj {n : ℕ} {M θ : Matrix (Fin n) (Fin n) ℂ} (h : GlobalT
     have e2 : (θ.map conj).map star = (θ.map star).map conj := by ext i j; simp
     rw [e1, e2]; exact this
   · have e : ((θ.map conj) *ᵥ x) ⬝ᵥ (M.map conj) *ᵥ star x = conj ((θ *ᵥ star x) ⬝ᵥ M *ᵥ star (star x)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [dotProduct, Matrix.mulVec, map_sum, map_mul]
     rw [e, Complex.conj_re]
     exact h3 _ (by simpa using hx)
@@ -945,12 +944,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 open scoped ComplexConjugate
 noncomputable section
-namespace GlobalTheory.KInfLines
-end GlobalTheory.KInfLines
-namespace GlobalTheory.KInfLines
-end GlobalTheory.KInfLines
-namespace GlobalTheory.KInfLines
-end GlobalTheory.KInfLines
 namespace GlobalTheory.KInfLines
 variable {D : D7} {W : HSp D} {V : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc D.host.F D.host.E W.rank}
 theorem kInfinity_prod_lines : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (D : D7) (θ : InfFam D) (W : HSp D) (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E)

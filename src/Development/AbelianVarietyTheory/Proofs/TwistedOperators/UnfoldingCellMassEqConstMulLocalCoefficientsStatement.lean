@@ -22,56 +22,12 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PeriodIdea
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalBlockDetBlockTriangular
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealLineOfPeriodsOnLine
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WittAnisotropicGroupNormalizesFlagUnipotent
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WittAnisotropicProjectionUnitaryInvEq
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
@@ -339,10 +295,6 @@ theorem mulVec_of_cols {R : Type} [CommRing R] {n a b : Type} [Fintype n] [Finty
 
 variable {D : D7}
 
-theorem eq_zero_of_places {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {a : AE D}
-    (ha : (e + cA D e) * a = a) (h1 : ∀ w ∈ P, piAt w a = 0) (h2 : ∀ w ∈ P, piAt w (cA D a) = 0) : a = 0 := by
-  apply _root_.GlobalTheory.PrLevel.ae_zero <;> assumption
-
 theorem adj_blk (S : HSp D) (g : GA D S) {p q : ℕ} (J : Mx D S.rank p) (J' : Mx D S.rank q) :
     adj (blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J') = blk (HMul.hMul (adj J') (gA S)) (mt S g⁻¹ - 1) J := by
   have h : HMul.hMul (adj (mt S g)) (gA S) = HMul.hMul (gA S) (mt S g⁻¹) := by
@@ -359,7 +311,7 @@ theorem blk_eq_zero {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {
     (h1 : ∀ w ∈ P, piAt w (blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' i j) = 0)
     (h2 : ∀ w ∈ P, piAt w (blk (HMul.hMul (adj J') (gA S)) (mt S g⁻¹ - 1) J j i) = 0) :
     blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' i j = 0 := by
-  refine eq_zero_of_places he ?_ h1 fun w hw => ?_
+  refine GlobalTheory.PrLevel.ae_zero he ?_ h1 fun w hw => ?_
   · have h : (e + cA D e) • (mt S g - 1) = mt S g - 1 := Matrix.ext fun i j => hg i j
     have h' : (e + cA D e) • blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' =
         blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' := by
@@ -685,7 +637,6 @@ theorem diagGL_sign_mem_KO {n : Type} [Fintype n] [DecidableEq n] (p : n → Pro
     split_ifs <;> simp
   · rw [diagonal_apply_ne _ hij, diagonal_apply_ne _ hij, map_zero]
 
-
 omit [ValuativeRel k] in
 theorem diag_normalises {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} {y : GL (n ⊕ Fin c) k} {f : n ⊕ Fin c → k}
     (hy : y.val = diagonal f) (x : GL (n ⊕ Fin c) k) : x ∈ symN k n c ↔ y⁻¹ * x * y ∈ symN k n c := by
@@ -717,8 +668,6 @@ theorem conjLevel_eq (G : GridData L sc) (t : T) (w : Pl D.host.E) {j : ℕ} (h1
       (MulAut.conj (toFrame (G := locGrid G t w) one_le_sLen hj (g (D.R.m, j)))).toMonoidHom := by
   refine map_conj_map (toFrame (G := locGrid G t w) one_le_sLen hj) (fun x => (frameGL_mem_KO _ x).trans ?_) _
   exact (givenLevel_eq G t w h1 hj.le) ▸ Iff.rfl
-
-
 
 theorem idxRatio_row {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) {t : T} (ht : t ∈ U) {j : ℕ} (hi : j ∈ idx D)
     (hj : j ≤ D.R.m) (hj' : j < D.R.m)
@@ -765,8 +714,6 @@ theorem idxRatio_row {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) {t : T} 
     rw [invVol_eq_idxRatio, conjLevel_eq G t w.1 hm.1 hj']
 
 end Main
-
-
 
 theorem cell_volume_mul_coef : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
     ∀ la : Measure ((GlobalTheory.CellMass.rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
@@ -871,30 +818,6 @@ variable {D : D7}
 
 end GlobalTheory.CellIdx
 
-namespace GlobalTheory.CellIdx
-open GlobalTheory.RootEx GlobalTheory.LocGrp GlobalTheory.RowRep GlobalTheory.SplitWeil
-
-section Local
-variable {k : Type} [Field k]
-
-variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Local
-
-variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
-
-
-
-theorem vol_mul_colCoef : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
-    ∀ la : Measure ((rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
-    ∃ V₀ : ℝ, 0 < V₀ ∧ ∀ t β b, IsRep t ch.S.B s β b → ∀ hb : b j ∈ GfC _,
-      la.real {n | (⟨b j, hb⟩ : GfC _)⁻¹ * n.1 * ⟨b j, hb⟩ ∈ (latGrp ch.G j).subgroupOf (GfC _)} *
-        (GlobalTheory.RowWt.colCoef ch t β j : ℝ) = V₀ := by
-  first
-  | (exact @_root_.GlobalTheory.SymmetricJacobianSignature.cell_volume_mul_coef)
-
-end GlobalTheory.CellIdx
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -912,13 +835,12 @@ open scoped NNReal
 
 open GlobalTheory.CellMass
 
-
 theorem _root_.GlobalTheory.T.exists_haar_volume_of_conjugate_lattice : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
     ∀ la : Measure ((rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
     ∃ V₀ : ℝ, 0 < V₀ ∧ ∀ t β b, IsRep t ch.S.B s β b → ∀ hb : b j ∈ GfC _,
       la.real {n | (⟨b j, hb⟩ : GfC _)⁻¹ * n.1 * ⟨b j, hb⟩ ∈ (latGrp ch.G j).subgroupOf (GfC _)} *
         (GlobalTheory.RowWt.colCoef ch t β j : ℝ) = V₀ := by
-  first | exact @GlobalTheory.CellIdx.vol_mul_colCoef
+  first | exact @GlobalTheory.SymmetricJacobianSignature.cell_volume_mul_coef
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHaarVolumeOfConjugateLatticeStatement =====
@@ -1440,8 +1362,6 @@ noncomputable section
 
 namespace GlobalTheory.CellMass
 
-
-
 theorem cell_mass : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ)
     (ρ : ∀ j, Measure ((rowGrp ch.G j).subgroupOf (GfC _))) (μ : ∀ j, Measure (GfC (ch.G.V (.grid D.R.m j)))),
     (∀ j ∈ idx D, (ρ j).IsHaarMeasure ∧ (μ j).IsHaarMeasure) → ∀ j ∈ idx D, ∃ c : ℂ, ∀ t Φ β b, IsRep t ch.S.B s β b →
@@ -1501,7 +1421,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 open scoped NNReal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
-
 
 end -- clump:auto
 end -- clump:auto

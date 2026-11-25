@@ -175,7 +175,6 @@ theorem card_infinitePlace_add_card :
     Nat.card_eq_of_bijective (realMemberPlace S ιr hL)
       ⟨realMemberPlace_injective S ιr hL, realMemberPlace_surjective S ιr hL⟩
   have hsum := (finrank_mul_card_real_eq_sum_index S hL ιr).trans (sum_index_eq_card_top_add S hL ιr)
-  set_option synthInstance.maxHeartbeats 200000 in
   exact count_places_arith (card_infinitePlace_eq_real_add_complex K).1
     (card_infinitePlace_eq_real_add_complex L).1 htop hsum (card_infinitePlace_eq_real_add_complex K).2
     (card_infinitePlace_eq_real_add_complex L).2 (Module.finrank_mul_finrank ℚ K.1 L.1)

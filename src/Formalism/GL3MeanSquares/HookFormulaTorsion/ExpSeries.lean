@@ -243,9 +243,3 @@ theorem inLam_nsmul [IsUltrametricDist K] [Algebra ℚ K] {f : MvPowerSeries σ 
 end Normed
 
 end Formalism.HermitianLattices.ExpSeriesBivariate.ExpSeriesAddition
-
-namespace Formalism.HermitianLattices.ExpSeriesBivariate
-
-open ExpSeriesAddition
-
-end Formalism.HermitianLattices.ExpSeriesBivariate

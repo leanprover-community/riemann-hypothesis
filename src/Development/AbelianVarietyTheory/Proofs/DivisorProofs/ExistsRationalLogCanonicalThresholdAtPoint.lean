@@ -73,7 +73,6 @@ theorem exists_threshold_lcAt_not_kltAt : GlobalTheory.Published.Principalisatio
     intro z hz E hE
     obtain ⟨V, hV, hfV⟩ := hf.exists_nhds
     rw [qWeil, (hfV z (hz.mem_open V.isOpen hV)).mult_eq, ← hE.ord_eq]
-  have hm'0 : (m' : ℚ) ≠ 0 := by exact_mod_cast hm'.ne'
   obtain ⟨a, ha⟩ : ∃ a : DivOver p → ℚ, ∀ E, a E = discrep E η (m * mD) g := ⟨_, fun _ => rfl⟩
   obtain ⟨t, ht⟩ : ∃ t : DivOver p → ℚ, ∀ E, t E = (E.ord f : ℚ) / m' := ⟨_, fun _ => rfl⟩
   have hrw (c : ℚ) (E : DivOver p) :

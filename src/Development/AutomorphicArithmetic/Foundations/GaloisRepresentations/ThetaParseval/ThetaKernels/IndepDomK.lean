@@ -507,8 +507,9 @@ theorem fc_conj_k {nb : nA σ d.Y d.b → d.G} {lam : Measure (nA σ d.Y d.b)} {
       rw [map_add (f := _), cj_inv_k]
   unfold fc
   simp_rw [e1]
-  erw [← (cj_mp_k h hU hu).setIntegral_image_emb hme H 𝓖]; rw [himg,
-    hfd.setIntegral_eq h.2.2.1 (fun β₀ β => coef_periodic_k d h.1 φ hφ T g β₀ β)]; rfl
+  erw [← (cj_mp_k h hU hu).setIntegral_image_emb hme H 𝓖]
+  rw [himg]
+  exact hfd.setIntegral_eq h.2.2.1 (fun β₀ β => coef_periodic_k d h.1 φ hφ T g β₀ β)
 end PositivityTheory.SiegelWeilFormula.Act.C1
 end
 

@@ -145,8 +145,6 @@ def realVec {k : ℕ} (θ : InfFam D) (L : (Fin k → ℝ) →+ Mx D m n) : (Fin
 theorem realSize_nonneg (θ : InfFam D) (x : Mx D m n) : 0 ≤ GlobalTheory.Unf.realSize θ x :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
 
-alias realSize_le := _root_.GlobalTheory.RealParamSize.realSize_le
-
 theorem realSize_zero (θ : InfFam D) : GlobalTheory.Unf.realSize θ (0 : Mx D m n) = 0 := by
   simp [GlobalTheory.Unf.realSize, compAt]
 
@@ -193,7 +191,7 @@ theorem pure (θ : InfFam D) (hθ : IsInfFam θ) (f : SchwartzMap (D.what₂.Tau
       have h0 : realVec θ L t = 0 := by rw [← hAlt]; exact ht
       have h1 := hC₂ 0 t
       rw [zero_add, realSize_zero, add_zero] at h1
-      have h2 := realSize_le θ (L t)
+      have h2 := GlobalTheory.RealParamSize.realSize_le θ (L t)
       have h3 : (fun τ i j => compAt θ τ (L t) i j : D.what₂.Tau → Fin m → Fin n → ℂ) = 0 := h0
       rw [h3, norm_zero, mul_zero] at h2
       have h4 : GlobalTheory.Unf.realSize θ (L t) = 0 := le_antisymm h2 (realSize_nonneg θ _)

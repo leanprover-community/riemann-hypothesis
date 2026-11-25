@@ -64,9 +64,7 @@ theorem ev_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) : evalV F w (sing
   exact RestrictedProduct.single_eq_of_ne _ 1 h
 
 theorem af_ext {α β : Af F} (h : ∀ w, evalV F w α = evalV F w β) : α = β := by
-  apply RestrictedProduct.ext
-  intro w
-  exact h w
+  exact GlobalTheory.AdelicU.af_ext h
 
 end
 

@@ -21,14 +21,6 @@ noncomputable section
 
 namespace GlobalTheory.KodairaLemma
 
-theorem lineBundleGlobalSectionsDim_eq_zero_of_isEmpty (k : Type) [Field k] {Z : Scheme.{0}} [Algebra k Γ(Z, ⊤)] [IsEmpty Z]
-    (L : LB Z) : lbH0 k L = 0 := by
-  have e : (⊤ : Z.Opens) = ⊥ := Opens.ext (Set.eq_empty_of_isEmpty _)
-  have : Subsingleton Γ(Z, ⊤) := by rw [e]; infer_instance
-  have : Subsingleton L.Sec := Module.subsingleton Γ(Z, ⊤) _
-  have : Subsingleton (coh (twist (structureModule Z) L) 0) := (cohZeroTwistEquiv L).toEquiv.subsingleton
-  exact Module.finrank_zero_of_subsingleton
-
 theorem isEmpty_zeroScheme {X : Scheme.{0}} [IsIntegral X] (hd : topologicalKrullDim X ≤ 0) {L : LB X}
     (hL : L.IsLB) (t : L.Sec) (ht : genericPoint X ∈ nonzeroLocus t) :
     IsEmpty (GlobalTheory.ThickeningDetermines.secIdeal hL t).subscheme := by
@@ -83,7 +75,7 @@ theorem exists_nsmul_cls_eq_add_toPic_of_isBig : ∀ (k : Type) [Field k] [Infin
       haveI := isEmpty_zeroScheme hd0 hP t ht
       obtain ⟨m, hcm, hm⟩ := (hfreq.and_eventually (eventually_ge_atTop 1)).exists
       refine ⟨m, hm, ?_⟩
-      rw [lineBundleGlobalSectionsDim_eq_zero_of_isEmpty]
+      rw [GlobalTheory.NefGrowth.lineBundleGlobalSectionsDim_eq_zero_of_isEmpty]
       have h0 : (0 : ℝ) < lbH0 k (lbPow M m) := hc.trans_le (by simpa using hcm)
       exact_mod_cast h0
     · set ι := (secIdeal hP t).subschemeι

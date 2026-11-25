@@ -68,25 +68,16 @@ section Generic
 variable {ι X : Type} {A : ι → (X → ℂ) → (X → ℂ)} {P : (X → ℂ) → Prop}
 
 theorem foldr_mem (hA : ∀ i f, P f → P (A i f)) {f : X → ℂ} (hf : P f) (l : List ι) :
-    P (l.foldr (fun i g => A i g) f) := by
-  induction l with
-  | nil => exact hf
-  | cons i l ih => exact hA i _ ih
+    P (l.foldr (fun i g => A i g) f) := GlobalTheory.FockInj.foldr_mem hA hf l
 
 theorem foldr_perm (hA : ∀ i f, P f → P (A i f)) (hc : ∀ i j f, P f → A i (A j f) = A j (A i f))
     {f : X → ℂ} (hf : P f) {l l' : List ι} (h : l.Perm l') :
     l.foldr (fun i g => A i g) f = l'.foldr (fun i g => A i g) f := by
-  induction h with
-  | nil => rfl
-  | cons i _ ih => simp only [List.foldr_cons, ih]
-  | swap i j l => exact hc _ _ _ (foldr_mem hA hf l)
-  | trans _ _ ih ih' => exact ih.trans ih'
+  exact GlobalTheory.FockInj.foldr_perm hA hc hf h
 
 theorem pure_monomial (f : X → ℂ) (k : ι →₀ ℕ) (c : ℂ) :
     pureTensorL A f (MvPolynomial.monomial k c) = c • opPow A k f := by
-  have h : MvPolynomial.monomial k c = c • MvPolynomial.basisMonomials ι ℂ k := by
-    rw [MvPolynomial.coe_basisMonomials, MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
-  rw [h, map_smul, pureTensorL, Module.Basis.constr_basis]
+  exact GlobalTheory.FockInj.pure_monomial f k c
 
 theorem pure_one (f : X → ℂ) : pureTensorL A f 1 = f := by
   rw [MvPolynomial.one_def, pure_monomial, one_smul]
@@ -94,9 +85,7 @@ theorem pure_one (f : X → ℂ) : pureTensorL A f 1 = f := by
 
 theorem pure_mem (hadd : ∀ f f', P f → P f' → P (f + f')) (hsm : ∀ (a : ℂ) f, P f → P (a • f))
     (hA : ∀ i f, P f → P (A i f)) {f : X → ℂ} (hf : P f) (Q : MvPolynomial ι ℂ) : P (pureTensorL A f Q) := by
-  induction Q using MvPolynomial.induction_on' with
-  | monomial k c => rw [pure_monomial]; exact hsm _ _ (foldr_mem hA hf _)
-  | add p q hp hq => rw [map_add (f := _)]; exact hadd _ _ hp hq
+  exact GlobalTheory.FockInj.pure_mem hadd hsm hA hf Q
 
 theorem pure_X_mul (hadd : ∀ f f', P f → P f' → P (f + f')) (hsm : ∀ (a : ℂ) f, P f → P (a • f))
     (hA : ∀ i f, P f → P (A i f)) (hc : ∀ i j f, P f → A i (A j f) = A j (A i f))
@@ -153,9 +142,7 @@ variable {D : D7} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
 
 theorem piW_lineAt (hθ : IsInfFam θ) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) :
     piW θ T S (lineAt θ τ z 1) = (Pi.single τ z : D.what₂.Tau → Matrix (Fin T.rank) (Fin S.rank) ℂ) := by
-  funext τ'
-  refine ((isLineAt_lineAt hθ τ z).2.2 1 τ').trans ?_
-  rw [Pi.single_apply, Complex.ofReal_one, one_smul]
+  exact GlobalTheory.FockInj.pi_lineAt hθ τ z
 
 noncomputable def omDir (S T : HSp D) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) (τ' : D.what₂.Tau)
     (z' : Matrix (Fin T.rank) (Fin S.rank) ℂ) : ℝ :=

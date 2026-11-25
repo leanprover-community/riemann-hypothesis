@@ -116,21 +116,12 @@ private theorem hasDerivAt_mvPolynomial_eval_line_zero {σ : Type} [Fintype σ] 
 
 private theorem hasDerivAt_norm_sq_add_smul_zero (u w : ℂ) :
     HasDerivAt (fun t : ℝ => ‖u + (t : ℂ) * w‖ ^ 2) (2 * (star u * w).re) 0 := by
-  have h : (fun t : ℝ => ‖u + (t : ℂ) * w‖ ^ 2) =
-      fun t : ℝ => (u.re + t * w.re) * (u.re + t * w.re) + (u.im + t * w.im) * (u.im + t * w.im) := by
-    funext t
-    rw [Complex.sq_norm, Complex.normSq_apply]
-    simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, zero_mul, sub_zero, add_zero]
-  rw [h]
-  have h1 : HasDerivAt (fun t : ℝ => u.re + t * w.re) w.re 0 := by
-    simpa using ((hasDerivAt_id (0 : ℝ)).mul_const w.re).const_add u.re
-  have h2 : HasDerivAt (fun t : ℝ => u.im + t * w.im) w.im 0 := by
-    simpa using ((hasDerivAt_id (0 : ℝ)).mul_const w.im).const_add u.im
-  refine ((h1.mul h1).add (h2.mul h2)).congr_deriv ?_
-  show _ = 2 * ((starRingEnd ℂ) u * w).re
-  rw [Complex.mul_re, Complex.conj_re, Complex.conj_im]
-  ring
+  have hf : HasDerivAt (fun t : ℝ => u + (t : ℂ) * w) w 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).ofReal_comp.mul_const w).const_add u
+  refine hf.norm_sq.congr_deriv ?_
+  simp only [Complex.ofReal_zero, zero_mul, add_zero]
+  rw [Complex.inner, mul_comm w]
+  rfl
 
 private theorem hasDerivAt_gs_line_zero {m : ℕ} (c : ℝ) (U W : Matrix (Fin m) (Fin n) ℂ) :
     HasDerivAt (fun t : ℝ => gs c (U + (t : ℂ) • W))

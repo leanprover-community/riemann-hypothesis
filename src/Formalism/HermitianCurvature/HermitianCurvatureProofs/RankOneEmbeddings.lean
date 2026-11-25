@@ -74,11 +74,6 @@ lemma emb_cont : Continuous (fun μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ => 
     | exact continuous_const
     | exact (continuous_apply _).comp (continuous_apply _)
 
-lemma lmulM_cont (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  simp only [lmulM, Matrix.mul_apply, Matrix.of_apply]
-  fun_prop
-
 end Formalism.FourierDecayAlt.P.RankOneEmbeddings.Wb
 
 namespace Formalism.FourierDecayAlt.P

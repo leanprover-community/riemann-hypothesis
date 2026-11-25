@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison.Pb
 
 noncomputable section

@@ -107,12 +107,8 @@ section Levi
 variable {J : Type} [Fintype J]
 
 theorem leviForm_congr {φ ψ : (J → ℂ) → ℝ} {z : J → ℂ} (h : φ =ᶠ[𝓝 z] ψ) (w : J → ℂ) :
-    leviForm φ z w = leviForm ψ z w := by
-  have h1 : fderiv ℝ φ =ᶠ[𝓝 z] fderiv ℝ ψ := by
-    filter_upwards [h.eventuallyEq_nhds] with y hy
-    exact hy.fderiv_eq
-  unfold leviForm
-  rw [h1.fderiv_eq]
+    leviForm φ z w = leviForm ψ z w :=
+  PowerBlockMetric.leviForm_congr h w
 
 theorem eventually_differentiableAt {f : (J → ℂ) → ℝ} {z : J → ℂ} (hf : ContDiffAt ℝ 2 f z) :
     ∀ᶠ y in 𝓝 z, DifferentiableAt ℝ f y :=
@@ -222,10 +218,8 @@ theorem rename_mem {y : (Σ k, ι k) → Ω} {N : ℕ} (v : Fin N → Ω) {F : M
   rw [RingHom.mem_ker, mConeMap_rename_old, h, map_zero]
 
 theorem oldPart_mem {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {z : (Σ k, addIdx ι N k) → ℂ}
-    (hz : z ∈ mcPts (mCoordIdeal (addBlock y v))) : basePart₂ z ∈ mcPts (mCoordIdeal y) := by
-  refine ⟨fun k => hz.1 (some k), fun F hF => ?_⟩
-  rw [← eval_rename_old]
-  exact hz.2 _ (rename_mem v hF)
+    (hz : z ∈ mcPts (mCoordIdeal (addBlock y v))) : basePart₂ z ∈ mcPts (mCoordIdeal y) :=
+  PowerBlockMetric.oldPart_mem hz
 
 theorem fderiv_old_eq_zero {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {z w : (Σ k, addIdx ι N k) → ℂ}
     (hw : IsConeTangent (Int.castRingHom ℂ) (mCoordIdeal (addBlock y v)) z w) {F : MRing ι}

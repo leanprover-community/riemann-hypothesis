@@ -63,15 +63,6 @@ structure WachDatum {B : Base O A} (E : Amb B AA) (n : ℕ) (V : Type) [AddCommG
   φ_N : ∀ i, ∀ x ∈ N i, ∃ k : ℕ, B.q ^ k • φ i x ∈ N (i + 1)
   N_φ : ∀ i, ∀ y ∈ N (i + 1), ∃ k : ℕ, B.q ^ k • y ∈ Submodule.span A (φ i '' (N i : Set V))
 
-namespace WachDatum
-
-variable {B : Base O A} {E : Amb B AA} {n : ℕ}
-variable {V : Type} [AddCommGroup V] [Module AA V] [Module A V] [IsScalarTower A AA V]
-  [Module O V] [IsScalarTower O AA V]
-variable (W : WachDatum E n V)
-
-end WachDatum
-
 section Hom
 
 variable {B : Base O A} {E : Amb B AA} {n : ℕ}
@@ -85,12 +76,6 @@ structure Hom (W₁ : WachDatum E n V₁) (W₂ : WachDatum E n V₂) where
   φ_comm : ∀ i x, f (W₁.φ i x) = W₂.φ i (f x)
   γ_comm : ∀ i x, f (W₁.γ i x) = W₂.γ i (f x)
   N_le : ∀ i, ∀ x ∈ W₁.N i, f x ∈ W₂.N i
-
-namespace Hom
-
-variable {W₁ : WachDatum E n V₁} {W₂ : WachDatum E n V₂} (h : Hom W₁ W₂)
-
-end Hom
 
 end Hom
 

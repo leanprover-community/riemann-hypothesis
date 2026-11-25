@@ -756,7 +756,6 @@ theorem zId : ∀ i, constantCoeff (pt C (n := 1) dd 0 i) = 0 := fun i => by sim
 
 end SelfAdjointLinearTerm
 
-
 open SelfAdjointLinearTerm PartialDerivEval FirstUnitSeriesIntegrality MulLFrob in
 theorem linear_part_first_unit {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
     (Y : FBChart C V O dd) (v : Fin dd → C) :
@@ -783,7 +782,6 @@ theorem linear_part_first_unit {C : Type} [Field C] [CharZero C] {V : VF C} {O :
         sub_zero]),
     SelfAdjointLinearTerm.zl_sub, SelfAdjointLinearTerm.zl_smul, SelfAdjointLinearTerm.zl_hAB Y hM SelfAdjointLinearTerm.zId, SelfAdjointLinearTerm.zl_hAB Y SelfAdjointLinearTerm.zId SelfAdjointLinearTerm.zId, SelfAdjointLinearTerm.linAct_id, MulLFrob.germEval_oneStandardPoint_self, smul_neg]
   ring
-
 
 open SelfAdjointLinearTerm PartialDerivEval FirstUnitSeriesIntegrality MulLFrob in
 theorem constant_zero_first_zero_self {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
@@ -962,7 +960,6 @@ theorem linear_part_unit_frobenius (Y : FBChart C V O dd) {w : Fin dd → C} (hw
   exact hi
 
 end PairPointEvaluation
-
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ PartialDerivEval MaximalIdealCongruence FirstVanishing SelfAdjointCongruence PairPointEvaluation MvPowerSeries in
 theorem aLinAdj_holds : ALinAdjSt := by
@@ -1317,7 +1314,6 @@ theorem first_vanishing_of_unit_smul (Y : FBChart C V O dd) {c : C} (hc : ¬ V.M
 
 end SelfAdjointTop
 
-
 open SelfAdjointTop MaximalIdealCongruence in
 theorem rank_maximal_self_core (hV1 : FirstVanishingCore) (hFE : FunEqCoreSt) (hC0 : CurveLinearTermCondition) (hNL : NoLinSelfSt) :
     RankMaximalSelfOfNondegenerate := by
@@ -1647,7 +1643,6 @@ theorem onType (Y : FBChart C V O dd) (p : SelfData Y d I0) (g : Fin 2) (a0 : ZM
 end Self2
 
 end SelfLinear
-
 
 open Formalism.IncomingBounds ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ MaximalIdealCongruence RowTiePE0 RowTiePProj RowTiePLSmall SelfLinear in
 theorem noLin_self (hAdj : ALinAdjSt) (hPL : ProjLieSelfSt) {C : Type} [Field C] [CharZero C] {V : VF C}

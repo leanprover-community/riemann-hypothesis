@@ -69,10 +69,6 @@ namespace GlobalTheory.FlagUnipotent
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
-theorem hf_sub_left (L : LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (a b y : Fin n → E) :
-    hf L H (a - b) y = hf L H a y - hf L H b y := by
-  simp [hf, sub_mul, Finset.sum_sub_distrib]
-
 theorem hf_sub_right (L : LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (x a b : Fin n → E) :
     hf L H x (a - b) = hf L H x a - hf L H x b := by
   simp [hf, mul_sub, Finset.sum_sub_distrib]
@@ -103,7 +99,7 @@ theorem pow_eq_zero_of_mem_Nof {L : LocE F E} {r k : ℕ} (S : Frames L r k)
       have h3 : hf L S.Hm w (g y - y) = 0 := hw _ (h2 y ((h1 y).1 hx))
       have h4 : hf L S.Hm (g w) (g y) = hf L S.Hm w y := hiso w y
       rw [hf_sub_right] at h3
-      rw [hf_sub_left, h4]
+      rw [GlobalTheory.HL.Eichler.hf_sub_l, h4]
       linear_combination -h3
   have hc : ∀ j, j ≤ r → ∀ v ∈ S.spanTo f j, (A ^ j) v = 0 := by
     intro j

@@ -205,9 +205,6 @@ theorem exists_sab_extension {X U : Scheme.{0}} [IsLocallyNoetherian X] (hX : Ge
 
 end PositivityTheory.Member.SiegelModularCharts.K6
 
-namespace PositivityTheory.Member.SiegelModularCharts
-
-end PositivityTheory.Member.SiegelModularCharts
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

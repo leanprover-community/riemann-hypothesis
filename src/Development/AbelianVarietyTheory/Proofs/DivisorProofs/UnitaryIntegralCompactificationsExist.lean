@@ -825,7 +825,7 @@ theorem exists_affineOpen_isIntegrallyClosed_charZero (X : Scheme.{0})
       algebraMap Γ(X, V) (X.presheaf.stalk x) a := fun a =>
     X.presheaf.germ_res_apply (homOfLE (X.basicOpen_le f)) x hxU a
   have hinj : Function.Injective g := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro σ hσ
     obtain ⟨⟨r, m⟩, hrm⟩ := IsLocalization.surj (Submonoid.powers f) σ
     have hr : algebraMap Γ(X, V) (X.presheaf.stalk x) r = 0 := by

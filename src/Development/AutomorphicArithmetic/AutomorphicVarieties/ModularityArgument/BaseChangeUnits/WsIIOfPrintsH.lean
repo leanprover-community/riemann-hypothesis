@@ -820,7 +820,6 @@ private theorem alg {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] 
 
 private theorem sfinite_of_finite {X : Type} [MeasurableSpace X] (ν : Measure X) [IsFiniteMeasure ν] : SFinite ν := inferInstance
 
-set_option maxHeartbeats 1000000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
     ForAllC fun K _ _ μ _ _ _ _ _ D _ _ A A' => ∀ (θ : Twist μ) (a g : CC K (2 + 2)) (P : L2 μ →L[ℂ] L2 μ), IsOrthogonalProjectionTwoLines A.J A'.J P → θ.U ∘L P = P ∘L θ.U →
       (∀ (T : ℝ) (Λ : L2 μ →L[ℂ] L2 μ), 0 ≤ T → IsTrunc A.J A'.J T Λ → θ.U ∘L Λ = Λ ∘L θ.U) →
@@ -830,7 +829,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famTr :
           trace (Λ ∘L (Rop μ f ∘L θ.U) ∘L P ∘L Λ) = ∫ y, w y ∂quotientMeasure (Gam K (2 + 2)) μ ∧
           (∀ y, Om T (Quotient.out y) → w y = ⟪P (kv μ a (Quotient.out y)), M (P (kv μ (CuspidalProjection.ccStar g) (θ.e (Quotient.out y))))⟫_ℂ) ∧
           ∀ y, ¬ Om T (Quotient.out y) → ‖w y‖ ≤ C * (qht (Quotient.out y : G1 K (2 + 2)) ^ N')⁻¹ * ‖M‖ := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro K _ _ _ μ _ μ₂ _ τ₁ τ₂ hp D d d' A A' θ a g P hP hUP hUΛ ha hDa hg hDg N'
     classical
     haveI := Reduction.isFiniteMeasure_quotientMeasure (K := K) (n := 2 + 2) μ
@@ -1049,7 +1047,6 @@ private theorem intEst' {X : Type} [MeasurableSpace X] (ν : Measure X) [IsFinit
     (fun x hx => h2 x ((hh x).1 hx))
   rwa [integral_add hc hw, ← sub_sub] at this
 
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kernX :
     KernX := by
   intro K _ _ _ μ _ μ₂ _ τ₁ τ₂ hp D d d' A A' θ a g P hP hθ hΛθ ha haD hg hgD
@@ -1072,7 +1069,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.kernX :
       ⟪UpperTheory.ConvolutionTheory.K.kv μ a (Quotient.out y), M (UpperTheory.ConvolutionTheory.K.kv μ (CuspidalProjection.ccStar g) (θ.e (Quotient.out y)))⟫_ℂ := by
     funext y
     rw [twKQ, twK, kerId K (2 + 2) μ f a g M hf]
-  set_option synthInstance.maxHeartbeats 400000 in
   have est := intEst' (quotientMeasure (Gam K (2 + 2)) μ) _ (twKQ θ f) _ w
     (C1 * C0 ^ N1 * Real.exp ((N0 * N1 : ℕ) * T) * ‖M ∘L (1 - Pc μ - P)‖) ((C2 + C3) * Real.exp (-(N' * T)) * ‖M‖)
     (omMeas (K := K) T).2.2 hi hw (by rw [hk]; exact (ker_cont μ θ a _ M).aestronglyMeasurable) (by positivity) (by positivity)

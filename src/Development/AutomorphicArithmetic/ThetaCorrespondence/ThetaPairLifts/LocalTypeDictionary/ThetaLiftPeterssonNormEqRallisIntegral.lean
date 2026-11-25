@@ -817,12 +817,6 @@ open GlobalTheory.Core.Rk.IP
 noncomputable section
 namespace GlobalTheory.BottomRallis
 variable {D : D7}
-end GlobalTheory.BottomRallis
-namespace GlobalTheory.BottomRallis
-variable {D : D7}
-end GlobalTheory.BottomRallis
-namespace GlobalTheory.BottomRallis
-variable {D : D7}
 theorem rallis_inner_product_bottom_norm_eq (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {A B : HSp D}
     {χA χB : (AE D)ˣ →* Circle} {sA : RealMat A} {sB : RealMat B} {t : ℕ} {cA : CptF A} {a : GL (Fin A.rank) (AE D)}
     {om : WRep A B} {ν : Measure (WO A B)} {𝓕 : Set (WO A B)} (hPair : Pair ψ θ A B χA χB sA sB t cA a om ν 𝓕)
@@ -862,8 +856,6 @@ theorem rallis_inner_product_bottom_norm_eq (hP : _root_.GlobalTheory.FunPr.Thet
   simp only [rcoef_one]
   rw [integral_mul_const]
   ring
-end GlobalTheory.BottomRallis
-namespace GlobalTheory.BottomRallis
 end GlobalTheory.BottomRallis
 end
 end

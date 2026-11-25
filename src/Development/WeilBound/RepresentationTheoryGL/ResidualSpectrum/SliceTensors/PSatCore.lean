@@ -662,7 +662,7 @@ def locFn {N : ℕ} (w : HeightOneSpectrum (𝓞 E)) (F : Sm E N) (y : GA E N) :
 def locRepU {m : ℕ} (w : HeightOneSpectrum (𝓞 E)) (U : Submodule ℂ (Sm E m))
     (hst : ∀ g : GL (Fin m) (Af E), ∀ ψ ∈ U, finRep E m g ψ ∈ U) :
     Representation ℂ (GL (Fin m) (w.adicCompletion E)) U :=
-  GlobalTheory.PRep.sub ((finRep E m).comp (locGL E m w)) U fun g ψ hψ => hst _ ψ hψ
+  GlobalTheory.PRep.sub ((finRep E m).comp (locGL E m w)) U fun _ ψ hψ => hst _ ψ hψ
 
 theorem evT_piTensor_locRepU {c : ℕ} {n : Fin c → ℕ} (w : HeightOneSpectrum (𝓞 E)) (U : ∀ i, Submodule ℂ (Sm E (n i)))
     (hst : ∀ i (g : GL (Fin (n i)) (Af E)), ∀ ψ ∈ U i, finRep E (n i) g ψ ∈ U i) (x : ∀ i, GA E (n i))

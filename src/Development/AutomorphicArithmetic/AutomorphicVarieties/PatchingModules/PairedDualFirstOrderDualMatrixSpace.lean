@@ -157,9 +157,9 @@ instance : CommRing (DD X g) :=
     mul := (· * ·)
     one := 1
     left_distrib := fun x y z => by
-      ext <;> simp [mul_add, add_mul, Finset.sum_add_distrib] <;> ring
+      ext <;> simp [mul_add, Finset.sum_add_distrib] <;> ring
     right_distrib := fun x y z => by
-      ext <;> simp [mul_add, add_mul, Finset.sum_add_distrib] <;> ring
+      ext <;> simp [add_mul, Finset.sum_add_distrib] <;> ring
     zero_mul := fun x => by ext <;> simp
     mul_zero := fun x => by ext <;> simp
     mul_assoc := fun x y z => by

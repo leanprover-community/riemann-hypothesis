@@ -83,9 +83,6 @@ def gramQ (x y : Mx D m n) : Mx D n n :=
 
 def trA (z : AE D) : AF D.host.F := Algebra.trace (AF D.host.F) (AE D) z
 
-def quadTr (b : Mx D n n) (x : Mx D m n) : AF D.host.F :=
-  algebraMap D.host.F (AF D.host.F) (1 / 2) * trA (Matrix.trace (mmul b (gramQ T x x)))
-
 def pairing (ψ : AddChar (AF D.host.F) ℂ) (x y : Mx D m n) : ℂ := ψ (trA (Matrix.trace (gramQ T x y)))
 
 end Space

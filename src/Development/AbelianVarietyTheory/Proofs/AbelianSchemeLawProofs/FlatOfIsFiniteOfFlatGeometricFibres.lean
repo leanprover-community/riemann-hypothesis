@@ -61,7 +61,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.Non
 @[expose] public section
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 

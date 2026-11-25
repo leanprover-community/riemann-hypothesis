@@ -353,23 +353,18 @@ def Stable (S : Γ →* Matrix (Fin m) (Fin m) K) (P : Submodule K (Fin m → K)
 
 theorem mul_mem_augSpan (S : Γ →* Matrix (Fin m) (Fin m) K) {A C : Matrix (Fin m) (Fin m) K}
     (hA : A ∈ augSpan S) (hC : C ∈ augSpan S) : A * C ∈ augSpan S := by
-  induction hA using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨g, rfl⟩ := hx
-    induction hC using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨h, rfl⟩ := hy
-      have e : (S g - 1) * (S h - 1) = (S (g * h) - 1) - (S g - 1) - (S h - 1) := by
-        rw [map_mul]; noncomm_ring
-      rw [e]
-      exact Submodule.sub_mem _ (Submodule.sub_mem _ (Submodule.subset_span ⟨_, rfl⟩)
-        (Submodule.subset_span ⟨_, rfl⟩)) (Submodule.subset_span ⟨_, rfl⟩)
-    | zero => simp
-    | add x y _ _ hx hy => rw [mul_add]; exact Submodule.add_mem _ hx hy
-    | smul a y _ hy => rw [Matrix.mul_smul]; exact Submodule.smul_mem _ a hy
-  | zero => simp
-  | add x y _ _ hx hy => rw [add_mul]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx => rw [Matrix.smul_mul]; exact Submodule.smul_mem _ a hx
+  let mul := LinearMap.mul K (Matrix (Fin m) (Fin m) K)
+  refine (show _ ≤ augSpan S from ?_) (Submodule.apply_mem_map₂ mul hA hC)
+  unfold augSpan
+  rw [Submodule.map₂_span_span, Submodule.span_le, Set.image2_subset_iff]
+  rintro _ ⟨g, rfl⟩ _ ⟨h, rfl⟩
+  change (S g - 1) * (S h - 1) ∈ _
+  have e : (S g - 1) * (S h - 1) = (S (g * h) - 1) - (S g - 1) - (S h - 1) := by
+    rw [map_mul]
+    noncomm_ring
+  rw [e]
+  exact Submodule.sub_mem _ (Submodule.sub_mem _ (Submodule.subset_span ⟨_, rfl⟩)
+    (Submodule.subset_span ⟨_, rfl⟩)) (Submodule.subset_span ⟨_, rfl⟩)
 
 theorem augSpan_preserves (S : Γ →* Matrix (Fin m) (Fin m) K) {P : Submodule K (Fin m → K)}
     (hP : Stable S P) {T : Matrix (Fin m) (Fin m) K} (hT : T ∈ augSpan S) :

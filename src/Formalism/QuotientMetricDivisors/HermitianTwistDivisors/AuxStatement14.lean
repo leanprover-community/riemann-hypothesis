@@ -514,12 +514,6 @@ end Inv
 
 end exponent_index_lattice
 
-namespace exponent_index_lattice
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end exponent_index_lattice
-
 theorem orthogonal_projection_exists : OrthProjExists := by
   intro K _ _ _ v0 hc0 n d H hPD E hE
   have hc : ∀ a : K, v0.embedding (star a) = starRingEnd ℂ (v0.embedding a) := hc0

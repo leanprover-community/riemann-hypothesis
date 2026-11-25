@@ -22,7 +22,6 @@ theorem blk_mul_dgM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a 
   · apply Units.ext
     rw [Units.val_mul, blk_val, blk_val, dgM_val, dgMat, reindex_apply, reindex_apply, reindex_apply,
       submatrix_mul_equiv, fromBlocks_multiply]
-    have hk : (k.2⁻¹).val * k.2.val = 1 := Units.inv_mul k.2
     simp [Prod.fst_mul, Prod.snd_mul, Units.val_mul, Matrix.mul_assoc]
 
 end GlobalTheory.BCT.CtLevel

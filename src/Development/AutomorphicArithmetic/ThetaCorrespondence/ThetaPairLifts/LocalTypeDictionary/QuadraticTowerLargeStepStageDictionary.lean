@@ -139,7 +139,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (At evI realAd SIn
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.RealDict GlobalTheory.RealDict.FockMap
 
-private theorem finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
+theorem GlobalTheory.RealDict.finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
     (φ : ∀ v : HeightOneSpectrum (𝓞 F), (Fin n × Fin d → Fv F v) → ℂ) (h0 : ∀ v, φ v ≠ 0)
     (hs : ∀ᶠ v in Filter.cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1) :
     ∃ y, GlobalTheory.BigNZ.finPartFn φ y ≠ 0 := by
@@ -164,7 +164,7 @@ private theorem finPart_ne {F : Type} [Field F] [NumberField F] {n d : ℕ}
 
 
 
-private theorem fock_of {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {M X : HSp D} {Xs : Spc D.host.F D.host.E M.rank}
+theorem GlobalTheory.RealDict.fock_of {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {M X : HSp D} {Xs : Spc D.host.F D.host.E M.rank}
     {Ws : Spc D.host.F D.host.E X.rank} (Mo : Model D.sp.cm.sig Xs Ws)
     (hψ : IsStdChar D ψ (-1)) {θ : InfFam D} (hθ : IsInfFam θ) (A : Fr M) (B : Fr X)
     {τ : ∀ w : InfinitePlace D.host.F, EmbOver D.host.E w} (hCM : IsCMExt D.host.F D.host.E D.sp.cm.sig)
@@ -278,8 +278,8 @@ theorem UpperTheory.thetaLift_pure_tensor_of_isFinF :
   subst hψe
   have hψ : IsStdChar D Bs.ψ (-1) := GlobalTheory.StdCharFromIsStd.isStdChar_of_isStd D Bs.ψ hBs.std
   have hF : GlobalTheory.BigNZ.Fam M φ₀ := ⟨hφ, hφ'⟩
-  obtain ⟨Φ, h1, h2⟩ := fock_of M hψ hθ A B hBs.cm hBs.std hX hW hM (fun w => (hV.cartan w).1)
-    (fun w => (hWs.cartan w).1) hc g g0 (hF.sb hM) (finPart_ne φ₀ hφ0 (hF.std hM)) hv
+  obtain ⟨Φ, h1, h2⟩ := GlobalTheory.RealDict.fock_of M hψ hθ A B hBs.cm hBs.std hX hW hM (fun w => (hV.cartan w).1)
+    (fun w => (hWs.cartan w).1) hc g g0 (hF.sb hM) (GlobalTheory.RealDict.finPart_ne φ₀ hφ0 (hF.std hM)) hv
   refine ⟨Φ, h1, fun φ hs hs' P => ?_⟩
   have hF' : GlobalTheory.BigNZ.Fam M φ := ⟨hs, hs'⟩
   exact h2 _ (hF'.sb hM) P

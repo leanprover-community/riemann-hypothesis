@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFi
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
 
 namespace GlobalTheory.CompanionTheory.Untilt

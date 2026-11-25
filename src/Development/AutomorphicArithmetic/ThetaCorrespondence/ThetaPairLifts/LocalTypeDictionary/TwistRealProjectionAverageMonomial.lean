@@ -708,8 +708,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
-theorem _root_.GlobalTheory.T.exists_int_eq_exponent_add_half_index : ∀ (D : D7) (χ : (AE D)ˣ →* Circle) (n : ℕ) (τ : D.what₂.Tau) (a : ℚ), IsHeckeChar D χ → ResEta D χ n → HasInfExp D χ τ a → ∃ e : ℤ, (e : ℚ) = a + (n : ℚ) / 2 := by
-  first | exact @GlobalTheory.SplitParity.exists_int_add_half
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIntEqExponentAddHalfIndexStatement =====
@@ -825,7 +823,7 @@ theorem boundary_real_group_action : ∀ {D : D7} {T : Type} [Finite T] {L : Lev
     have := GlobalTheory.Mem.HeckeExp.hasInfExp_mul (hb τ)
       (GlobalTheory.Mem.HeckeExp.hasInfExp_mul (hxi t τ) (GlobalTheory.Mem.HeckeExp.hasInfExp_inv (hxi μ₀ τ)))
     simpa using this
-  choose k hk using fun τ => GlobalTheory.T.exists_int_eq_exponent_add_half_index D _ WW.rank τ (b τ) (hW μ₀).hecT (hW μ₀).resT (hb τ)
+  choose k hk using fun τ => GlobalTheory.SplitParity.exists_int_add_half D _ WW.rank τ (b τ) (hW μ₀).hecT (hW μ₀).resT (hb τ)
   refine ⟨k, GlobalTheory.RealColAct.realCol W.θ hθ A' hV, ?_, _root_.GlobalTheory.RealColAct.realCol_surjective hθ A' hV, ?_⟩
   · intro τ a c
     simp only [GlobalTheory.RealColAct.realCol_apply, Matrix.transpose_apply]
@@ -833,7 +831,7 @@ theorem boundary_real_group_action : ∀ {D : D7} {T : Type} [Finite T] {L : Lev
       ((GlobalTheory.RealWeil.continuous_mt A').2.comp continuous_subtype_val))))).measurable
   · intro t x _ h _ g P
     choose a ha using fun τ => GlobalTheory.SplitCharExp.exists_hasInfExp D W.θ _ A'.rank τ hθ (hW t).hecS (hW t).resS
-    choose e₁ he₁ using fun τ => GlobalTheory.T.exists_int_eq_exponent_add_half_index D _ A'.rank τ (a τ) (hW t).hecS (hW t).resS (ha τ)
+    choose e₁ he₁ using fun τ => GlobalTheory.SplitParity.exists_int_add_half D _ A'.rank τ (a τ) (hW t).hecS (hW t).resS (ha τ)
     have hψ : Continuous W.ψ := hX.is.isVac.1.1.1
     have es : X.rA'.s = fun _ => 1 := funext fun τ => (hX.std'.2.2 τ).1
     have eB : X.rA'.B = fun _ => 1 := funext fun τ => (hX.std'.2.2 τ).2

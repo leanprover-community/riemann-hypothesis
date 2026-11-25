@@ -42,15 +42,8 @@ theorem norm_uniformizerUnit_zpow (v : HeightOneSpectrum (𝓞 K)) (n : ℤ) :
   rw [Units.val_zpow_eq_zpow_val, norm_zpow, uniformizerUnit, Units.val_mk0, ← normalizedAbv_apply,
     normalizedAbv_of_irreducible v (irreducible_uniformizerAt v), inv_zpow', zpow_neg]
 
-theorem inv_mul_le_one_iff_withZero {b c : ℤᵐ⁰} (hc : c ≠ 0) : c⁻¹ * b ≤ 1 ↔ b ≤ c := by
-  constructor
-  · intro h
-    calc b = c * (c⁻¹ * b) := by rw [← mul_assoc, mul_inv_cancel₀ hc, one_mul]
-      _ ≤ c * 1 := by gcongr
-      _ = c := mul_one c
-  · intro h
-    calc c⁻¹ * b ≤ c⁻¹ * c := by gcongr
-      _ = 1 := inv_mul_cancel₀ hc
+theorem inv_mul_le_one_iff_withZero {b c : ℤᵐ⁰} (hc : c ≠ 0) : c⁻¹ * b ≤ 1 ↔ b ≤ c :=
+  inv_mul_le_one₀ (zero_lt_iff.2 hc)
 
 theorem inv_uniformizerUnit_zpow_mul_mem_iff (v : HeightOneSpectrum (𝓞 K)) (n : ℤ)
     (y : v.adicCompletion K) :

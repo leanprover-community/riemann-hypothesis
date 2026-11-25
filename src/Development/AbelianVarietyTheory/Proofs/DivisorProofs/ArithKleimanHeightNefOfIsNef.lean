@@ -369,7 +369,6 @@ theorem GlobalTheory.HSNef.height_generic_nonneg_of_ample : GlobalTheory.Publish
   have hg : 0 < gdeg C D := _root_.GlobalTheory.HSNef.gdeg_pos_of_ample hAr hHS k X p D hX C hA hS
   set c := h (genericPoint X) with hcdef
   set g := gdeg C D with hgdef
-  have hD' : (1 : ℝ) ≤ D := by exact_mod_cast hD
   set x : ℝ := -c / g with hx
   have hx0 : 0 < x := div_pos (by linarith) hg
   have hxg : x * g = -c := by rw [hx]; field_simp
@@ -391,7 +390,6 @@ theorem GlobalTheory.HSNef.height_generic_nonneg_of_ample : GlobalTheory.Publish
   have hS' : C'.SemiPos D := hS.shift _ _
   obtain ⟨P, hPL, -⟩ := exists_pair C' C'
   have hrep : P.Rep 1 0 C' := hPL ▸ (GlobalTheory.VolBr.Pair.rep_base k X p P).1
-  have hfac : (0 : ℝ) < ((D + 1).factorial : ℝ) := by positivity
   have hε : 0 < α / (2 * ((D + 1).factorial : ℝ)) := by positivity
   obtain ⟨m, hm, hm0⟩ := ((_root_.GlobalTheory.HSNef.lc_one_eventually_ge hHS k X p D hX P 1 0 0 0 C' α hrep hA' hS' hα' _ hε).and
     (eventually_gt_atTop 0)).exists

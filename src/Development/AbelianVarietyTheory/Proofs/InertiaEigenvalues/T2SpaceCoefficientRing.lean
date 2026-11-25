@@ -152,10 +152,6 @@ theorem exists_conj_ne (H : Host R) : ∃ x y : 𝓞 H.E, (y : H.E) = H.conj (x 
   ext z
   exact (H.conjE_apply H.φ₀ z).symm.trans (congrArg H.φ₀ (h2 z))
 
-theorem exists_int_sub_mem {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E))
-    (hv : v.asIdeal.inertiaDeg ℤ = 1) (x : 𝓞 E) : ∃ n : ℤ, x - n ∈ v.asIdeal := by
-  apply GlobalTheory.SplitFrobDense.exists_int_sub_mem <;> assumption
-
 theorem eq_univ_of_frob (hC : GlobalTheory.TwSys.Cheb) (i : N.Loc) (s : Set (GE N)) (hs : IsClosed s)
     (h : ∀ w : PlE H, SplitOut N i w → ∀ (B : ValuationSubring N.Om) (σ : GE N),
       IsPlaceOver (F := H.E) B w → IsFrob (F := H.E) B (normV w) σ → σ ∈ s) (g : GE N) : g ∈ s := by
@@ -176,7 +172,7 @@ theorem eq_univ_of_frob (hC : GlobalTheory.TwSys.Cheb) (i : N.Loc) (s : Set (GE 
   simp only [Finset.mem_union, Set.Finite.mem_toFinset, Set.mem_setOf_eq, Ideal.dvd_span_singleton,
     not_or] at hv
   obtain ⟨⟨⟨h1, h2⟩, h3⟩, h4⟩ := hv
-  obtain ⟨n, hx⟩ := exists_int_sub_mem v hf x
+  obtain ⟨n, hx⟩ := GlobalTheory.SplitFrobDense.exists_int_sub_mem v hf x
   have hsplit : IsSplitPl H v := by
     refine ⟨x - n, hx, fun z hz hzv => h1 ?_⟩
     have hz' : z = y - n := by

@@ -544,9 +544,6 @@ private theorem orderAtLeastLocus_eq_empty_of_comap_iso {k : Type u} [Field k] [
     {X Y : Scheme.{u}} (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
     (e : Y ≅ X) (J : X.IdealSheafData) (c : ℕ)
     (hJ : orderAtLeastLocus (J.comap e.hom) c = ∅) : orderAtLeastLocus J c = ∅ := by
-  have hhom : AlgebraicGeometry.Smooth e.hom := inferInstance
-  have hinv : AlgebraicGeometry.Smooth e.inv := inferInstance
-  have hp : AlgebraicGeometry.Smooth (e.hom ≫ p) := inferInstance
   have hcomp : (J.comap e.hom).comap e.inv = J := by
     rw [← Scheme.IdealSheafData.comap_comp, Iso.inv_hom_id, Scheme.IdealSheafData.comap_id]
   have key := image_orderAtLeastLocus_comap_subset k (e.hom ≫ p) e.inv (J.comap e.hom) c

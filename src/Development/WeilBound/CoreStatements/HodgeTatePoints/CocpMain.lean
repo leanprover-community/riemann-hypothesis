@@ -37,12 +37,6 @@ section -- clump:auto
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.Conj.NatAct
-
-theorem act_nat_iterated : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB R d O), B.A.act 0 = 0 ∧ (∀ n : ℕ, B.A.act ((n + 1 : ℕ) : O) = B.G.add (B.A.act (n : O)) (pt R d 0)) ∧ (∀ a b, comp1 (B.A.act a) (B.A.act b) = comp1 (B.A.act b) (B.A.act a)) ∧ ∀ n, AxOne (pow1 B n) ∧ AxOne (pow2 B n) :=
-  @PositivityTheory.HtPt.Ca.act_zero
-
-end GlobalTheory.CompanionTheory.Ar.Conj.NatAct
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalModuleActionLaws =====
@@ -71,35 +65,6 @@ theorem noConst_three {n : ℕ} {a b c : Pt R n d} (ha : ∀ i, constantCoeff (a
   intro j i
   fin_cases j
   exacts [ha i, hb i, hc i]
-
-theorem pderiv_ev_local {m n : ℕ} {a : Fin m → Pt R n d} (ha : NoConst a)
-    (f : PS R m d) (v : Fin n × Fin d) :
-    pderiv (R := R) v (ev a f) =
-      ∑ j, ∑ i, ev a (pderiv (R := R) (j, i) f) * pderiv (R := R) v (a j i) := by
-  unfold ev
-  rw [GlobalTheory.FormalCalc.pderiv_subst ha.hasSubst, Fintype.sum_prod_type]
-
-theorem pderiv_second_of_ev_first_point_local (h : PS R 1 d) (i : Fin d) :
-    pderiv (R := R) ((1 : Fin 2), i) (ev (n := 2) ![pt R d 0] h) = 0 := by
-  have hx : NoConst (![pt R (n := 2) d 0] : Fin 1 → Pt R 2 d) := noConst_one (cc_pt 0)
-  rw [pderiv_ev_local hx]
-  refine Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun k _ => ?_
-  rw [Fin.fin_one_eq_zero j]
-  show _ * pderiv (R := R) ((1 : Fin 2), i) (X ((0 : Fin 2), k)) = 0
-  rw [pderiv_X_of_ne (by simp), mul_zero]
-
-theorem dy_y_local (h : PS R 1 d) (i : Fin d) :
-    pderiv (R := R) ((1 : Fin 2), i) (ev (n := 2) ![pt R d 1] h) =
-      ev (n := 2) ![pt R d 1] (pderiv (R := R) ((0 : Fin 1), i) h) := by
-  have hy : NoConst (![pt R (n := 2) d 1] : Fin 1 → Pt R 2 d) := noConst_one (cc_pt 1)
-  rw [pderiv_ev_local hy, Fin.sum_univ_one, Finset.sum_eq_single i]
-  · show _ * pderiv (R := R) ((1 : Fin 2), i) (X ((1 : Fin 2), i)) = _
-    simp [pderiv_X_self]
-  · intro k _ hk
-    show _ * pderiv (R := R) ((1 : Fin 2), i) (X ((1 : Fin 2), k)) = 0
-    rw [pderiv_X_of_ne (by simp [hk]), mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ i) h
 
 theorem cc_ptPow {n p : ℕ} (hp : p ≠ 0) (j : Fin n) (i : Fin d) :
     constantCoeff (ptPow R d p j i : PS R n d) = 0 := by
@@ -209,7 +174,7 @@ theorem d_zero_pt (h : PS R 2 d) (j : Fin d) :
       simp
     · rw [ite_eq_right hx]
       exact pderiv_X_of_ne (by simpa using hx)
-  rw [pderiv_ev_local noConst_0x, Fin.sum_univ_two]
+  rw [GlobalTheory.DerivEndo.pderiv_ev noConst_0x, Fin.sum_univ_two]
   simp [pt, e]
 
 theorem linc (u : Fin d → R) (g : PS R 2 d) (j : Fin d) :
@@ -236,7 +201,7 @@ theorem dz {p : ℕ} [CharP R p] (G : FGLaw R d) (f : PS R 1 d) (c : PS R 2 d) (
   have nc : NoConst (![ptPow R d p 0, ptPow R d p 1] : Fin 2 → Pt R 2 d) :=
     noConst_two (cc_ptPow hp 0) (cc_ptPow hp 1)
   have hc : pderiv ((1 : Fin 2), j) (ev (n := 2) ![ptPow R d p 0, ptPow R d p 1] c) = 0 := by
-    rw [pderiv_ev_local nc]
+    rw [GlobalTheory.DerivEndo.pderiv_ev nc]
     refine Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun i _ => ?_
     have : pderiv ((1 : Fin 2), j) ((![ptPow R d p 0, ptPow R d p 1] : Fin 2 → Pt R 2 d) a i) = 0 := by
       fin_cases a
@@ -246,7 +211,7 @@ theorem dz {p : ℕ} [CharP R p] (G : FGLaw R d) (f : PS R 1 d) (c : PS R 2 d) (
   have hF : addOf G.F (pt R (n := 2) d 0) (pt R d 1) = G.F := add_pt G
   have h := congrArg (fun g => ev (n := 1) ![pt R d 0, 0] (pderiv ((1 : Fin 2), j) g)) hadd
   rw [hF] at h
-  simp only [map_add (f := _), pderiv_second_of_ev_first_point_local, dy_y_local, hc, germ_ev_restrict_axis_second_point, zero_add, pderiv_ev_local (noConst_one G.const), Fin.sum_univ_one, Matrix.cons_val_zero,
+  simp only [map_add (f := _), GlobalTheory.DerivEndo.pderiv_second_of_ev_first_point, GlobalTheory.DerivEndo.dy_y, hc, germ_ev_restrict_axis_second_point, zero_add, GlobalTheory.DerivEndo.pderiv_ev (noConst_one G.const), Fin.sum_univ_one, Matrix.cons_val_zero,
     GlobalTheory.DerivEndo.ev_sum germPointsNoConstantTerm_first_zero, GlobalTheory.DerivEndo.ev_mul germPointsNoConstantTerm_first_zero, germ_ev_restrict_axis_groupLaw, cc_pd] at h
   exact h.symm
 
@@ -288,7 +253,7 @@ theorem partial_derivative_first_evaluation (h : PS R 2 d) (b : Pt R 3 d) (hb0 :
     (hb : ∀ i l, pderiv ((0 : Fin 3), i) (b l) = 0) (i : Fin d) :
     pderiv ((0 : Fin 3), i) (ev (n := 3) ![pt R d 0, b] h) =
       ev (n := 3) ![pt R d 0, b] (pderiv ((0 : Fin 2), i) h) := by
-  rw [pderiv_ev_local (noConst_two (cc_pt 0) hb0), Fin.sum_univ_two]
+  rw [GlobalTheory.DerivEndo.pderiv_ev (noConst_two (cc_pt 0) hb0), Fin.sum_univ_two]
   simp [pt, pd_pt_eq, hb]
 
 theorem evaluation_zero_first_variable (h : PS R 2 d) (b : Pt R 3 d) (hb0 : ∀ l, constantCoeff (b l) = 0) :
@@ -331,7 +296,7 @@ theorem dxFrob {p : ℕ} (hp : p ≠ 0) (u : Fin d → R) (φ : PS R 3 d) :
       fun l => pd_ptPow_ne (by simp)
     have e2 : ∀ l, pderiv ((0 : Fin 3), i) (ptPow R d p (2 : Fin 3) l : PS R 3 d) = 0 :=
       fun l => pd_ptPow_ne (by simp)
-    rw [pderiv_ev_local nA, Fin.sum_univ_three]
+    rw [GlobalTheory.DerivEndo.pderiv_ev nA, Fin.sum_univ_three]
     simp [pt, pd_pt_eq, e1, e2]
   have hv : ∀ k : PS R 3 d, ev (n := 2) ![0, pt R d 0, pt R d 1] (ev (n := 3) ![pt R d 0, ptPow R d p 1, ptPow R d p 2] k) =
       ev (n := 2) ![ptPow R d p 0, ptPow R d p 1] (ev (n := 2) ![0, pt R d 0, pt R d 1] k) := by
@@ -373,7 +338,7 @@ theorem evaluation_zero_derivative_linear_term (V : Pt R 1 d) (i l : Fin d) :
   have n1 : NoConst (![pt R d 0] : Fin 1 → Pt R 3 d) := noConst_one (cc_pt 0)
   have h : pderiv ((0 : Fin 3), i) (ev (n := 3) ![pt R d 0] (V l)) =
       ev (n := 3) ![pt R d 0] (pderiv ((0 : Fin 1), i) (V l)) := by
-    rw [pderiv_ev_local n1, Fin.sum_univ_one]
+    rw [GlobalTheory.DerivEndo.pderiv_ev n1, Fin.sum_univ_one]
     simp [pt, pd_pt_eq]
   change ev (n := 2) ![0, pt R d 0, pt R d 1] (pderiv ((0 : Fin 3), i) (ev (n := 3) ![pt R d 0] (V l))) = _
   rw [h, GlobalTheory.DerivEndo.ev_ev no_constant_evaluation_triple n1]
@@ -399,7 +364,7 @@ theorem dxV (u : Fin d → R) (V : Pt R 1 d) (k : PS R 3 d) (hV : ∀ i, constan
       fun l => pd_pt_ne (by simp)
     have e2 : ∀ l, pderiv ((0 : Fin 3), i) (pt R d (2 : Fin 3) l : PS R 3 d) = 0 :=
       fun l => pd_pt_ne (by simp)
-    rw [pderiv_ev_local nA, Fin.sum_univ_three]
+    rw [GlobalTheory.DerivEndo.pderiv_ev nA, Fin.sum_univ_three]
     simp [e1, e2]
   simp only [hd, GlobalTheory.DerivEndo.ev_sum no_constant_evaluation_triple, GlobalTheory.DerivEndo.ev_mul no_constant_evaluation_triple, evaluation_zero_composition_invariant V hV, evaluation_zero_derivative_linear_term, Finset.mul_sum]
   rw [Finset.sum_comm]
@@ -453,7 +418,7 @@ theorem inter2 (B : FB R d O) (m : ℕ) :
     ev (n := 3) ![pt R d 0, pt R d 1] (pow1 B m) * ev (n := 3) ![pt R d 0, pt R d 2] (pow1 B m) *
         ev (n := 3) ![comp1 (B.A.act (m : O)) (pt R d 0), pt R d 1, pt R d 2] B.ph2 =
       B.ph2 ^ m * ev (n := 3) ![pt R d 0, B.G.add (pt R d 1) (pt R d 2)] (pow1 B m) := by
-  obtain ⟨h0, hs, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.NatAct.act_nat_iterated R d O B
+  obtain ⟨h0, hs, -, -⟩ := _root_.PositivityTheory.HtPt.Ca.act_zero R d O B
   have cadd : ∀ i, constantCoeff (B.G.add (pt R (n := 3) d 1) (pt R d 2) i) = 0 :=
     cc_addOf B.G.const (cc_pt 1) (cc_pt 2)
   induction m with
@@ -666,7 +631,7 @@ theorem additive {p : ℕ} (hp : p ≠ 0) (F : Fin d → PS R 2 d) (hF : ∀ i, 
   have p3 : ∀ i l, pderiv ((0 : Fin 3), i) (addOf F (pt R (n := 3) d 1) (pt R d 2) l) = 0 := by
     intro i l
     change pderiv ((0 : Fin 3), i) (ev (n := 3) ![pt R d 1, pt R d 2] (F l)) = 0
-    rw [pderiv_ev_local (noConst_two (cc_pt 1) (cc_pt 2)), Fin.sum_univ_two]
+    rw [GlobalTheory.DerivEndo.pderiv_ev (noConst_two (cc_pt 1) (cc_pt 2)), Fin.sum_univ_two]
     simp [p1, p2]
   have f1 : (fun l => ev (n := 2) ![0, pt R d 0, pt R d 1] (pt R d (1 : Fin 3) l)) = pt R d 0 :=
     funext fun l => ev_pt no_constant_evaluation_triple 1 l

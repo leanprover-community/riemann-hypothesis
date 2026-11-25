@@ -24,7 +24,3 @@ theorem sum_delta (N : ℕ) : ∑ i : Fin N, (N - 1 - (i : ℕ)) = N * (N - 1) /
     Finset.sum_range_reflect (fun j => j) N, Finset.sum_range_id]
 
 end Formalism.DegreeFormula.PermutationPointDegree
-
-namespace Formalism.DegreeFormula
-
-end Formalism.DegreeFormula

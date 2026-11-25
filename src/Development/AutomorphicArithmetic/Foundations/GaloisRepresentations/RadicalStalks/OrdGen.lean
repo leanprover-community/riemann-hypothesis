@@ -87,7 +87,7 @@ private theorem lift_frob (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
   have e₁ := GrpMor.pull_pull F' (liftMor (epsDP k) h) M (fun _ ↦ rfl) rfl c
   have e₂ := GrpMor.pull_pull (GlobalTheory.CechKS.fibMor h) F₀ N (fun _ ↦ rfl) rfl c
   have e₃ := GrpMor.pull_pull N (constMor A₀) M (fun r ↦ by
-    simp [frobR_apply, pow_dual hk r]) (by simpa using frob_sq hk hT) c
+    simp [pow_dual hk r]) (by simpa using frob_sq hk hT) c
   exact e₁.trans (e₃.symm.trans (congrArg _ e₂.symm))
 
 private theorem res_iter (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)

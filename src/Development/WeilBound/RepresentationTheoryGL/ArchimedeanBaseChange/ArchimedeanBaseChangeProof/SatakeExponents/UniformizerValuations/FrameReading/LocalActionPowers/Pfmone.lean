@@ -113,7 +113,6 @@ theorem finH_mul' {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 attribute [local instance] borelG borelF borelH
 
 theorem convMul_holds : Tail.ConvMul := by
-  set_option synthInstance.maxHeartbeats 400000 in
   intro E _ _ _ B A ψ ψ' U F hψ hψ' hU hF
   have := B.hν
   have : BorelSpace (Hf E B.a B.b) := ⟨rfl⟩

@@ -68,14 +68,6 @@ theorem quotGram_chg (hA : IsUnit A₁.det) (hH : IsUnit (subGram H).det) :
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedSpace ℝ E]
   [IsScalarTower ℝ ℂ E] {K : E → Matrix (m ⊕ l) (m ⊕ l) ℂ} {z : E}
 
-theorem extTrace_eq (h : MContDiffAt 1 K z) (hp : ∀ᶠ x in 𝓝 z, (K x).PosDef) (ξ η : E) :
-    extTrace K z ξ η = kappa * (secondForm K z ξ * secondFormAdj K z η).trace := by
-  have hh := hp.mono fun x hx => hx.isHermitian
-  have hu := hp.self_of_nhds.det_pos.ne'.isUnit
-  have hs := (posDef_subGram hp.self_of_nhds).det_pos.ne'.isUnit
-  rw [extTrace, extFormAdj_eq_neg_secondForm h hh hu hs, extForm_eq_neg_secondFormAdj h hh hu hs,
-    Matrix.neg_mul, Matrix.mul_neg, neg_neg]
-
 end HermFrame
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ σ' : k →+* ℂ}
@@ -256,30 +248,6 @@ theorem IsConj.quot {h' : Met p σ' S.X₂ (r + s)} (H : h.IsConj h') :
 
 end Met
 
-namespace Met
-
-variable {E F : X.Modules} {r s : ℕ} (h : Met p σ E r) {i : F ⟶ E}
-
-variable {h}
-
-end Met
-
-namespace Met
-
-variable {S : ShortComplex X.Modules} {r s : ℕ} (h : Met p σ S.X₂ (r + s)) (hS : S.ShortExact)
-  (h₁ : IsVB S.X₁ r) (h₃ : IsVB S.X₃ s) {y : CxPts p σ} (a a' : AdaptedChart S r s)
-  {D : ℕ} (c c' : AlgChart p σ D)
-
-
-variable {h}
-
-
-variable (h) (c c' : AlgChart p σ 1)
-
-variable {h}
-
-end Met
-
 namespace VMetric
 
 section Seq
@@ -302,9 +270,6 @@ variable {E F : X.Modules} {r s : ℕ} (h : VMetric p E r)
 variable (fl : Vert.Flag E r) (i : Fin r)
 
 abbrev stepSeq : ShortComplex X.Modules := .mk (fl.step i) (fl.π i) (Limits.cokernel.condition _)
-
-theorem stepSeq_shortExact : (stepSeq fl i).ShortExact :=
-  { exact := ShortComplex.exact_cokernel _ }
 
 variable {h}
 

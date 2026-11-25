@@ -44,13 +44,10 @@ section Helpers
 
 variable {O : Type} [CommRing O]
 
-theorem algHom_C (φ : PowerSeries O →ₐ[O] PowerSeries O) (a : O) : φ (C a) = C a := by
-  simpa [PowerSeries.algebraMap_apply] using φ.commutes a
-
 theorem algHom_eq_const_add (φ : PowerSeries O →ₐ[O] PowerSeries O) (h : PowerSeries O) :
     φ h = C (constantCoeff h) + φ X * φ (mk fun p => coeff (p + 1) h) := by
   conv_lhs => rw [PowerSeries.eq_shift_mul_X_add_const h]
-  rw [map_add (f := _), map_mul, algHom_C]
+  rw [map_add (f := _), map_mul, Formalism.ExponentWindows.E.IdempotentNormalFormsRhoFacts.alg_C]
   ring
 
 theorem order_map_toNat_of_isDistinguishedAt {I : Ideal O} (hI : I ≠ ⊤) {E : Polynomial O}
@@ -323,7 +320,6 @@ theorem gaussValUnit : GaussUnit := by
   refine le_antisymm ((iInf_le _ 0).trans ?_) (by simp)
   rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, ← hw, addVal_eq_zero_of_unit]
   simp
-
 
 end Formalism.NOK
 end -- clump:auto
@@ -1768,19 +1764,6 @@ theorem theorem_E_primitive_form : ThmEPrim := by
   · exact Prim.arcHyp hϖ hB (hN.ell_le c hc) (hA c hc)
 
 end Formalism.ExponentWindows.E
-
-namespace Formalism.ExponentWindows.E.Prim
-
-open PowerSeries IdempotentNormalFormsRhoFacts GoodPlacesAlt
-
-section p4
-variable {O : Type} [CommRing O] {B : Base O}
-
-variable {n : ℕ} [NeZero n] {V : Type} [AddCommGroup V] [Module (PowerSeries O) V]
-
-end p4
-
-end Formalism.ExponentWindows.E.Prim
 
 namespace Formalism.ExponentWindows.E
 

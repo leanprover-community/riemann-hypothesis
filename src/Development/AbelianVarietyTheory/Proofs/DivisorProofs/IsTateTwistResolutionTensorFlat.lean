@@ -211,7 +211,6 @@ theorem tens_eq_zero {I J : Cx R} (hI : ∀ s : ℤ, s ≠ 0 → IsZero (I.X s))
     (U : Scheme.{0}) (w : ℤ) (hw : w ≠ 0) (x : Tens I J U w) : x = 0 := by
   refine DFinsupp.ext fun p => ?_
   show x p = 0
-  have hp := p.2
   by_cases h1 : p.1.1 = 0
   · have h2 : p.1.2 ≠ 0 := by omega
     induction x p using TensorProduct.induction_on with

@@ -286,26 +286,6 @@ open PowerSeries
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
-theorem htform_norm_sum_lt {ι : Type} (s : Finset ι) (f : ι → K) (h : ∀ j ∈ s, ‖f j‖ < 1) :
-    ‖∑ j ∈ s, f j‖ < 1 := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    exact lt_of_le_of_lt (IsUltrametricDist.norm_add_le_max _ _)
-      (max_lt (h a (by simp)) (ih fun j hj => h j (by simp [hj])))
-
-theorem htform_norm_sum_le {ι : Type} (s : Finset ι) (f : ι → K) (h : ∀ j ∈ s, ‖f j‖ ≤ 1) :
-    ‖∑ j ∈ s, f j‖ ≤ 1 := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    exact le_trans (IsUltrametricDist.norm_add_le_max _ _)
-      (max_le (h a (by simp)) (ih fun j hj => h j (by simp [hj])))
-
 def HtSmallTo (N : ℕ) (f : K⟦X⟧) : Prop := CoefLe 1 f ∧ ∀ n < N, ‖coeff n f‖ < 1
 
 theorem HtSmallTo.mul {a b : ℕ} {f g : K⟦X⟧} (hf : HtSmallTo a f) (hg : HtSmallTo b g) :
@@ -313,13 +293,13 @@ theorem HtSmallTo.mul {a b : ℕ} {f g : K⟦X⟧} (hf : HtSmallTo a f) (hg : Ht
   constructor
   · intro n
     rw [coeff_mul]
-    apply htform_norm_sum_le
+    apply Formalism.L2.Th1.E.Ser.norm_sum_le_one
     rintro ⟨i, j⟩ _
     rw [norm_mul]
     exact mul_le_one₀ (hf.1 i) (norm_nonneg _) (hg.1 j)
   · intro n hn
     rw [coeff_mul]
-    apply htform_norm_sum_lt
+    apply Formalism.L2.Th1.E.Ser.norm_sum_lt_one
     rintro ⟨i, j⟩ hij
     have hs : i + j = n := by simpa using hij
     rw [norm_mul]
@@ -361,7 +341,7 @@ theorem htSmallTo_sum {ι : Type} (s : Finset ι) (f : ι → K⟦X⟧) (h : ∀
   intro n
 
   rw [map_sum]
-  exact htform_norm_sum_le _ _ fun j hj => (h j hj).1 n
+  exact Formalism.L2.Th1.E.Ser.norm_sum_le_one _ _ fun j hj => (h j hj).1 n
 
 theorem htSmallTo_sub {f g : K⟦X⟧} (hf : HtSmallTo 0 f) (hg : HtSmallTo 0 g) : HtSmallTo 0 (f - g) := by
   rw [htSmallTo_zero_iff]
@@ -378,7 +358,7 @@ theorem htSmallTo_inv {B : K⟦X⟧} (hB : CoefLe 1 B) (h0 : constantCoeff B = 1
   split_ifs with hn
   · simp [h0]
   · rw [h0, inv_one, neg_mul, one_mul, norm_neg]
-    apply htform_norm_sum_le
+    apply Formalism.L2.Th1.E.Ser.norm_sum_le_one
     rintro ⟨i, j⟩ _
     dsimp only
     split_ifs with hj
@@ -407,7 +387,7 @@ theorem htSmallTo_subst {A v : K⟦X⟧} (hA : CoefLe 1 A) (hv : CoefLe 1 v) (h0
   rw [htSmallTo_zero_iff]
   intro n
   rw [htform_coeff_subst A v h0]
-  apply htform_norm_sum_le
+  apply Formalism.L2.Th1.E.Ser.norm_sum_le_one
   intro d _
   rw [norm_mul]
   exact mul_le_one₀ (hA d) (norm_nonneg _) ((htSmallTo_pow ((htSmallTo_zero_iff v).2 hv) d).1 n)
@@ -466,7 +446,7 @@ theorem htform_unit_coeff_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist
     rw [hself] at hc
     have hrest : ‖∑ i ∈ (Finset.range (M + 1)).erase (M - k),
         Dp.coeff i * (if 2 * (M - i) ≤ 2 * k then coeff (2 * k - 2 * (M - i)) (A ^ i) else 0)‖ < 1 := by
-      apply htform_norm_sum_lt
+      apply Formalism.L2.Th1.E.Ser.norm_sum_lt_one
       intro i hi
       rw [Finset.mem_erase, Finset.mem_range] at hi
       split_ifs with hle
@@ -484,7 +464,7 @@ theorem htform_unit_coeff_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist
     exact lt_of_le_of_lt (IsUltrametricDist.norm_add_le_max _ _) (max_lt hc (by rw [norm_neg]; exact hrest))
   have hev : ‖Dp.eval e'‖ < 1 := by
     rw [Polynomial.eval_eq_sum_range' (n := M + 1) (by omega)]
-    apply htform_norm_sum_lt
+    apply Formalism.L2.Th1.E.Ser.norm_sum_lt_one
     intro i hi
     rw [Finset.mem_range] at hi
     have := hsmall (M - i) (by omega)
@@ -741,10 +721,6 @@ open scoped ComplexConjugate BigOperators
 
 namespace GlobalTheory.Klein
 
-private theorem ultra_add_le {K : Type*} [NormedField K] [IsUltrametricDist K] {x y : K} {C : ℝ}
-    (hx : ‖x‖ ≤ C) (hy : ‖y‖ ≤ C) : ‖x + y‖ ≤ C :=
-  (IsUltrametricDist.norm_add_le_max x y).trans (max_le hx hy)
-
 private theorem mul_le_of {K : Type*} [NormedField K] {x y : K} {C D : ℝ}
     (hx : ‖x‖ ≤ C) (hy : ‖y‖ ≤ D) : ‖x * y‖ ≤ C * D := by
   rw [norm_mul]
@@ -754,7 +730,7 @@ private theorem cubic_le {K : Type*} [NormedField K] [IsUltrametricDist K] {x k�
     (h2 : ‖(2 : K)‖ = 1) (hρ : 1 ≤ ρ) (hx : ‖x‖ ≤ ρ) (hk₂ : ‖k₂‖ ≤ 1) (hk₁ : ‖k₁‖ ≤ 1) (hk₀ : ‖k₀‖ ≤ 1) :
     ‖2 * 2 * (x * x * x) + k₂ * (x * x) + k₁ * x + k₀‖ ≤ ρ * ρ * ρ := by
   have h1 : 1 ≤ ρ * ρ := by nlinarith
-  refine ultra_add_le (ultra_add_le (ultra_add_le ?_ ?_) ?_) ?_
+  refine Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of (Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of (Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of ?_ ?_) ?_) ?_
   · simpa using mul_le_of (mul_le_of h2.le h2.le) (mul_le_of (mul_le_of hx hx) hx)
   · exact (mul_le_of hk₂ (mul_le_of hx hx)).trans (by nlinarith)
   · exact (mul_le_of hk₁ hx).trans (by nlinarith)
@@ -790,10 +766,10 @@ theorem chord_norm_le_one {K : Type*} [NormedField K] [IsUltrametricDist K] {a b
   have hN : 2 * 2 * ((a - b) * (a - b)) * X =
       2 * 2 * b * (a * (a + b)) + 2 * k₂ * b * a + k₁ * (a + b) + 2 * k₀ + 2 * B * (-A) := by
     linear_combination hX + hA + hB
-  have hs : ‖a + b‖ ≤ ρ := ultra_add_le haa (by linarith)
+  have hs : ‖a + b‖ ≤ ρ := Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of haa (by linarith)
   have hn : ‖2 * 2 * b * (a * (a + b)) + 2 * k₂ * b * a + k₁ * (a + b) + 2 * k₀ + 2 * B * (-A)‖
       ≤ ρ * ρ := by
-    refine ultra_add_le (ultra_add_le (ultra_add_le (ultra_add_le ?_ ?_) ?_) ?_) ?_
+    refine Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of (Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of (Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of (Formalism.LT.InverseIntegralClassesKeyFacts.norm_add_le_of ?_ ?_) ?_) ?_) ?_
     · simpa using mul_le_of (mul_le_of (mul_le_of h2.le h2.le) hb) (mul_le_of haa hs)
     · exact (mul_le_of (mul_le_of (mul_le_of h2.le hk₂) hb) haa).trans (by linarith)
     · exact (mul_le_of hk₁ hs).trans (by linarith)

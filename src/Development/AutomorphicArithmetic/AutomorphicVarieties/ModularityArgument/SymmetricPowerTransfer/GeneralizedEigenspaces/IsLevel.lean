@@ -134,10 +134,4 @@ abbrev Unr : Prop := ∀ w : Plc L, Algebra.IsUnramifiedAt (𝓞 (Lp L)) w.asIde
 
 end UpperTheory.V.Z.Sym.Dict
 
-namespace UpperTheory.V.Z.Sym
-
-open Dict
-
-end UpperTheory.V.Z.Sym
-
 end

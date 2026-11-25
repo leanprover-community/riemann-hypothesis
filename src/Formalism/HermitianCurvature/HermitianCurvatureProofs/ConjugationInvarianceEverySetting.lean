@@ -159,10 +159,7 @@ lemma herm_lift (k r' : ℕ) (y y' : Fin (2 * r' + k + 1) → ℂ) :
 lemma hb_rel (k r' : ℕ) (y : Fin (2 * r' + k + 1) → ℂ) (s : ℝ) :
     hb k r' y s + star (hb k r' y s) + herm (Hpk k r') y y = 0 := by
   have h := herm_symm _ (Hpk_herm k r') y y
-  have him : (herm (Hpk k r') y y).im = 0 := by
-    have := congrArg Complex.im h
-    simp only [Complex.star_def, Complex.conj_im] at this
-    linarith
+  have him : (herm (Hpk k r') y y).im = 0 := Complex.conj_eq_iff_im.1 h
   apply Complex.ext
   · simp [hb]
   · simp [hb, him]

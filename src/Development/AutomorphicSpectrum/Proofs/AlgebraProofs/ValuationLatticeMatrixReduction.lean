@@ -1037,11 +1037,6 @@ end Lattice
 
 end GlobalTheory.DetRelCompare
 
-namespace GlobalTheory.DetRelCompare
-
-open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
-
-end GlobalTheory.DetRelCompare
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSpanOfIsLatticeBasis =====
@@ -1232,16 +1227,6 @@ theorem det_append_eq_mul_det : ∀ (C : Type) [Field C] (w : Valuation C NNReal
     simp only [Real.log_pow]
   · rw [hrel, hxP, hdet]
     field_simp
-
-end GlobalTheory.FrameModel
-
-namespace GlobalTheory.FrameModel
-
-section Small
-
-variable {C : Type} [Field C] (v : Valuation C NNReal) {O : Type} [CommRing O] [Algebra O C]
-
-end Small
 
 end GlobalTheory.FrameModel
 

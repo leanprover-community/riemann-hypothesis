@@ -994,8 +994,7 @@ theorem intD_mul (hC : Q.InCurve) {f1 f2 : Lw X la G.w} (h1 : IntD G la f1) (h2 
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [hg1, hg2]
     rfl
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine ord_sum_nonneg hC ζ _ _ fun q _ => ?_
     rw [map_mul]
     exact ord_mul_nonneg hC ζ (ho1 _ ζ) (ho2 _ ζ)
@@ -1063,14 +1062,12 @@ theorem intD_sfr (hC : Q.InCurve) (u : Fin G.N → OsK X la G.w) (hu : uSpec G l
         rw [Finset.sum_mul]; exact Finset.sum_congr rfl fun k _ => by ring
       rw [e1]
       ring
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine ord_sum_nonneg hC ζ _ _ fun q _ => ?_
     have := isDVRAt_of_curve Q hC ζ
     rw [map_mul, map_mul, map_intCast]
     refine ord_mul_nonneg hC ζ (ord_nonneg ζ hU (intCast_mem _ _)) (ord_mul_nonneg hC ζ ?_ ?_)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+    · rw [map_sum]
       refine ord_sum_nonneg hC ζ _ _ fun k _ => ?_
       rw [map_smul, hfk2, hc, algebraMap_smul, Algebra.smul_def]
       exact ord_mul_nonneg hC ζ (ord_nonneg ζ hU (Subalgebra.algebraMap_mem _ _)) (ho ζ k)

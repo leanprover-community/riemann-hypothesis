@@ -230,25 +230,6 @@ theorem gaussVal_supp_eq_bot_of_supp (hv : v.supp = ⊥) :
 
 end Poly
 
-section Field
-
-open MvPolynomial
-
-variable {K Γ₀ σ τ : Type*} [Field K]
-
-section Monoid
-
-variable [LinearOrderedCommMonoidWithZero Γ₀] [Nontrivial Γ₀] (v : Valuation K Γ₀)
-
-end Monoid
-
-variable [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation K Γ₀)
-
-variable {F : Type*} [Field F] [Algebra (MvPolynomial σ K) F]
-  [IsFractionRing (MvPolynomial σ K) F]
-
-end Field
-
 section Additive
 
 open MvPolynomial
@@ -326,26 +307,6 @@ variable (b : Basis ι R M)
 
 end Content
 
-section Lattice
-
-open Module
-
-variable {R Γ₀ ι κ : Type*} [CommRing R] [LinearOrderedCommGroupWithZero Γ₀]
-  (v : Valuation R Γ₀) {M : Type*} [AddCommGroup M] [Module R M] (b : Basis ι R M)
-  {O : Type*} [CommRing O] [Algebra O R] [Module O M] [IsScalarTower O R M]
-
-end Lattice
-
-section Tensor
-
-open MvPolynomial Module
-
-variable {O R S Γ₀ ι κ σ : Type*} [CommRing O] [CommRing R] [Algebra O R] [CommRing S]
-  [Algebra O S] [LinearOrderedCommMonoidWithZero Γ₀] (v : Valuation R Γ₀)
-  {M : Type*} [AddCommGroup M] [Module O M] (b : Basis ι O M)
-
-end Tensor
-
 section AdditiveContent
 
 open MvPolynomial Module
@@ -362,18 +323,6 @@ end
 variable {O M : Type*} [CommRing O] [Algebra O R] [AddCommGroup M] [Module O M] (b : Basis ι O M)
 
 end AdditiveContent
-
-section More
-
-open MvPolynomial Module IsDedekindDomain
-
-end More
-
-section Examples
-
-open MvPolynomial
-
-end Examples
 
 end
 

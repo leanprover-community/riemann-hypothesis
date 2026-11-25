@@ -17,14 +17,6 @@ open GlobalTheory.SingleDatum
 
 
 noncomputable section
-namespace GlobalTheory.FockLetters
-variable {D : D7} {H : Geo.Tor.Host D.host.E}
-variable (Dw : Datum H) {m n : ℕ} (hΨ : ∀ τ : D.host.E →+* ℂ, InPsi H τ ↔ ∃ ρ, τ = tauE D ρ) (hm : m = Dw.p + Dw.q)
-
-
-
-
-end GlobalTheory.FockLetters
 
 noncomputable section
 namespace GlobalTheory.FockLetters
@@ -53,6 +45,3 @@ theorem isLetters_letterEquiv : IsLetters Dw (letterEquiv (n := n) Dw hΨ hm) :=
 end GlobalTheory.FockLetters
 
 noncomputable section
-namespace GlobalTheory.FockLetters
-
-end GlobalTheory.FockLetters

@@ -28,15 +28,8 @@ theorem ord_pos {n' m : ℕ} (r : ℕ) (lam : Fin n' → Fin (m + 1) → ℤ) (h
       omega
   have hcard : ((Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card : ℤ) ≤ r := by
     have : (Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card ≤ r := by
-      calc (Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card
-          ≤ (Finset.range r).card := by
-            apply Finset.card_le_card_of_injOn (fun a => a.val)
-            · intro a ha
-              simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq] at ha
-              simpa using ha
-            · intro a _ b _ hab
-              exact Fin.ext hab
-        _ = r := Finset.card_range r
+      rw [Fin.card_filter_val_lt]
+      exact min_le_right _ _
     exact_mod_cast this
   calc ∑ a : Fin (m + 1) with a.val < r, (lamAt lam s a - lamAt lam s (Fin.last m))
       ≤ ∑ _a : Fin (m + 1) with _a.val < r, (lam s 0 - lam s (Fin.last m)) := Finset.sum_le_sum fun a _ => hterm a

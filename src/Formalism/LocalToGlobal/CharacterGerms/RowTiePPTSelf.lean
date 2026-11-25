@@ -646,21 +646,6 @@ def LimSelfSt : Prop :=
   AllSelf fun C _ V _ I _ _ X => ∀ (g : Fin 2) (x : ℕ → ℕ → I g ⊕ JJ I g → C) (x' : ℕ → I g ⊕ JJ I g → C),
     (∀ k, x k ∈ X.TySet V g) → VLim V x x' → x' ∈ X.TySet V g
 
-private theorem ge_zero_mul_field {C : Type} [Field C] (V : VF C) {a b : C} (ha : V.Ge 0 a) (hb : V.Ge 0 b) :
-    V.Ge 0 (a * b) := by
-  unfold VF.Ge at *
-  rw [V.v.map_mul]
-  simp only [WithTop.coe_zero] at *
-  exact add_nonneg ha hb
-
-private theorem ge_zero_finset_sum_field {C : Type} [Field C] (V : VF C) {ι : Type} (s : Finset ι) (f : ι → C)
-    (h : ∀ i ∈ s, V.Ge 0 (f i)) : V.Ge 0 (∑ i ∈ s, f i) := by
-  refine Finset.sum_induction f (fun z => V.Ge 0 z) (fun a b ha hb => ?_) ?_ h
-  · exact le_trans (le_min ha hb) (V.v.map_add a b)
-  · show ((0 : ℝ) : WithTop ℝ) ≤ V.v 0
-    rw [AddValuation.map_zero]
-    exact le_top
-
 private theorem tyS_sub_ite_zero_eq_sub_C_mul_X {C : Type} [Field C] (l : ℕ) (a : ℕ → C) (c : C) :
     tyS l (fun s => a s - if s = 0 then c else 0) = tyS l a - PowerSeries.C c * PowerSeries.X := by
   ext m
@@ -740,12 +725,12 @@ theorem ptSelf_of (hEx : PTExSelfSt) (hAvg : PTAvgSelfSt) (hStab : HStabSelfSt) 
       refine Finset.sum_congr rfl (fun c _ => ?_)
       split_ifs <;> ring
     rw [h3]
-    refine ge_zero_finset_sum_field V _ _ (fun c _ => ?_)
+    refine IndAr.ge_sum_lemma_7 (V := V) _ (fun c _ => ?_)
     split_ifs with hne
     · show ((0 : ℝ) : WithTop ℝ) ≤ V.v 0
       rw [AddValuation.map_zero]
       exact le_top
-    · exact ge_zero_mul_field V (hw c) (hStab C V O dd Y d I0 p g c q hne)
+    · exact IndAr.valuation_ge_mul_of_nonneg (V := V) (hw c) (hStab C V O dd Y d I0 p g c q hne)
   have hyT : (fun s n => Sum.elim (fun c => x s (Sum.inl c))
       (fun q => x s (Sum.inr q) - if s = 0 then x 0 (Sum.inr q) else 0) n : ℕ → I0 ⊕ I0 → C) ∈
       (Y.rawSelf p).TySet V g := by

@@ -32,11 +32,8 @@ def SubmLB : Prop :=
 private theorem exists_clm_rightInverse_of_surjective {n m : ℕ}
     (A : (Fin n → ℝ) →L[ℝ] (Fin m → ℝ)) (hA : Function.Surjective A) :
     ∃ R : (Fin m → ℝ) →L[ℝ] (Fin n → ℝ), ∀ y, A (R y) = y := by
-  obtain ⟨g, hg⟩ := LinearMap.exists_rightInverse_of_surjective
-    (A : (Fin n → ℝ) →ₗ[ℝ] (Fin m → ℝ)) (LinearMap.range_eq_top.mpr hA)
-  refine ⟨LinearMap.toContinuousLinearMap g, fun y => ?_⟩
-  have := LinearMap.congr_fun hg y
-  simpa using this
+  obtain ⟨g, hg⟩ := A.exists_rightInverse_of_surjective (LinearMap.range_eq_top.mpr hA)
+  exact ⟨g, fun y => congr($hg y)⟩
 
 private theorem isAddHaarMeasure_map_restrict_slab {n m : ℕ} (μ : Measure (Fin n → ℝ))
     [μ.IsAddHaarMeasure] (A : (Fin n → ℝ) →L[ℝ] (Fin m → ℝ))

@@ -143,8 +143,6 @@ theorem nonempty_quot_equiv {R M : Type} [CommRing R] [AddCommGroup M] [Module R
 variable {l : ℕ} [Fact l.Prime]
 
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 400000 in
 theorem tateH2OAt_of_fund (P : LocPrime l) (K Lf : FinExt l) [CompactSpace ↥(GK K)]
     (χ : ↥(GK K) →* ℤ_[l]ˣ) (c : ↥(GK K) × ↥(GK K) → ℤ_[l])
     (hχc : Continuous (fun g => (χ g : ℤ_[l])))

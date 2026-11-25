@@ -44,6 +44,7 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PComplementLat
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PCoordEmbedBasis
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PLineNormalForm
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PReducedBasisBound
+import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 
 section -- clump:auto
 @[expose] public section
@@ -453,28 +454,17 @@ noncomputable section
 theorem inverseDifferent_multiple (E : Type*) [Field E] [NumberField E] :
     ∃ δ : ℤ, δ ≠ 0 ∧ ∀ z : E, (∀ a : 𝓞 E, ∃ n : ℤ, Algebra.trace ℚ E ((a : E) * z) = n) →
       IsIntegral ℤ ((δ : E) * z) := by
-  classical
-  set b := integralBasis E
-  set bd := (Algebra.traceForm ℚ E).dualBasis (traceForm_nondegenerate ℚ E) b
-  obtain ⟨δ, hδ, hint⟩ := exists_integral_multiples ℤ ℚ (Finset.univ.image bd)
-  refine ⟨δ, hδ, fun z hz => ?_⟩
-  have hsum := bd.sum_repr z
-  have key : (δ : E) * z = ∑ i, (bd.repr z i) • ((δ : E) * bd i) := by
-    conv_lhs => rw [← hsum]
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Algebra.smul_def, Algebra.smul_def]; ring
-  rw [key]
-  refine IsIntegral.sum _ fun i _ => ?_
-  obtain ⟨n, hn⟩ := hz (RingOfIntegers.basis E i)
-  have hr : bd.repr z i = (n : ℚ) := by
-    rw [LinearMap.BilinForm.dualBasis_repr_apply, Algebra.traceForm_apply, integralBasis_apply,
-      mul_comm, hn]
-  rw [hr, show ((n : ℚ) • ((δ : E) * bd i)) = (n : ℤ) • ((δ : E) * bd i) by
-    rw [← Int.cast_smul_eq_zsmul ℚ]]
-  refine IsIntegral.smul _ ?_
-  have := hint (bd i) (Finset.mem_image_of_mem _ (Finset.mem_univ i))
-  rwa [zsmul_eq_mul] at this
+  refine ⟨discr E, discr_ne_zero E, fun z hz => ?_⟩
+  have hdual : z ∈ Submodule.traceDual ℤ ℚ (1 : Submodule (𝓞 E) E) := by
+    rw [Submodule.mem_traceDual]
+    intro x hx
+    obtain ⟨a, rfl⟩ := Submodule.mem_one.mp hx
+    obtain ⟨n, hn⟩ := hz a
+    exact ⟨n, by simpa [Algebra.traceForm_apply, mul_comm] using hn.symm⟩
+  have h := isIntegral_discr_mul_of_mem_traceDual (1 : Submodule (𝓞 E) E)
+    (b := integralBasis E) (fun i => by rw [integralBasis_apply]; exact (RingOfIntegers.basis E i).2)
+    (show (1 : E) ∈ (1 : Submodule (𝓞 E) E) by simp) hdual
+  simpa [← NumberField.coe_discr, Algebra.smul_def] using h
 
 variable {F E : Type*} [Field F] [Field E] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E]

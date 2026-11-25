@@ -74,12 +74,6 @@ theorem lamC_div_norm {p : ℕ} [Fact p.Prime] {u₁ u₂ : ℂ} (h₁ : u₁ �
 
 end GlobalTheory.SqTop.BotConstPf
 
-namespace GlobalTheory.SqTop
-
-open BotConstPf
-
-end GlobalTheory.SqTop
-
 end
 end -- clump:auto
 end -- clump:auto

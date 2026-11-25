@@ -153,10 +153,8 @@ theorem minpoly_aeval_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
   have hu : ∀ i, ‖u i‖ ≤ δ := fun i => by rw [hu_def]; exact (hf i).le
   obtain ⟨w, hw⟩ : ∃ w : Ω, w = ∑ i ∈ Finset.range N, algebraMap F Ω (f i) * x ^ i := ⟨_, rfl⟩
   have hιw : ι w = ∑ i ∈ Finset.range N, ι (algebraMap F Ω (f i)) * ι x ^ i := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [hw]; simp only [map_sum, map_mul, map_pow]
   have hιτw : ι (τ w) = ∑ i ∈ Finset.range N, ι (algebraMap F Ω (f i)) * ι (τ x) ^ i := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [hw]; simp only [map_sum, map_mul, map_pow, AlgEquiv.commutes]
   have h1 : ι w = -∑ i ∈ Finset.range N, u i * ι x ^ i := by
     rw [hιw, eq_neg_iff_add_eq_zero, ← Finset.sum_add_distrib, ← hy0]

@@ -18,13 +18,6 @@ import Development.WeilBound.ThetaLifts.Reductions.SiegelOfCore
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.WeilThetaConv
-
-theorem weilThetaConvergence_of_siegelSet (hRT : GlobalTheory.Published.SiegelSetUnitary) :
-    GlobalTheory.Published.WeilThetaConvergence :=
-  GlobalTheory.CompanionTheory.WeilTheta.weilThetaConvergence_of_siegelSet hRT
-
-end GlobalTheory.WeilThetaConv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilThetaConvergenceOfSiegelSet =====

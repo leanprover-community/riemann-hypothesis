@@ -1191,10 +1191,6 @@ local notation "⟪" u ", " v "⟫" => herm (Hpk k r) u v
 
 lemma Hh : (Hpk k r)ᴴ = Hpk k r := B2x8.Hpk_herm k r
 
-lemma herm_bvec_right (u : Fin (2 * r + k + 1) → ℂ) (j : Fin (2 * r + k + 1)) :
-    ⟪u, bvec j⟫ = (Hpk k r *ᵥ u) j := by
-  simp [herm, bvec, Pi.star_single]
-
 lemma eI_ne_esI (a b : Fin r) : eI k r a ≠ esI k r b := by
   intro h; have := congrArg Fin.val h; simp only [eI, esI] at this; omega
 

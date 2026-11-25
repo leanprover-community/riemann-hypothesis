@@ -140,7 +140,7 @@ def relAlg (e : Fin a ⊕ Fin b ≃ Fin n) : Subalgebra ℂ (Module.End ℂ (Sm 
     ∀ m, (p.1 G).1 m = (p.2 F).1 (iota e m)}
   mul_mem' := fun hp hq F G h m => hp _ _ (hq F G h) m
   add_mem' := fun hp hq F G h m => congrArg₂ (· + ·) (hp F G h m) (hq F G h m)
-  algebraMap_mem' := fun c F G h m => congrArg (c • ·) (h m)
+  algebraMap_mem' := fun c _ _ h m => congrArg (c • ·) (h m)
 
 theorem lie_mem (e : Fin a ⊕ Fin b ≃ Fin n) (X : Lie E a) :
     ((lie E a X, lie E n (blockL e X)) : Module.End ℂ (Sm E a) × Module.End ℂ (Sm E n)) ∈ relAlg e :=

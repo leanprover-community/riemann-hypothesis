@@ -36,8 +36,6 @@ private lemma le_one_and_mem_latM_of_hasLevel {F : Type} [Field F] [NumberField 
   have std : ∀ v : Fin 2 → F, v ∈ _root_.GlobalTheory.HilbFam.stdLat F ↔
       ∀ i, v i ∈ (1 : Submodule (𝓞 F) F) := by
     intro v; simp [_root_.GlobalTheory.HilbFam.stdLat, Submodule.mem_pi]
-  have one_mem : (1 : F) ∈ (1 : Submodule (𝓞 F) F) := Submodule.mem_one.2 ⟨1, map_one _⟩
-  have zero_mem' : (0 : F) ∈ (1 : Submodule (𝓞 F) F) := Submodule.zero_mem _
   refine ⟨?_, ?_, ?_⟩
   · intro b hb
     have hv : ![b, b * x] ∈ _root_.GlobalTheory.HilbFam.split A B x :=
@@ -437,7 +435,6 @@ theorem _root_.GlobalTheory.HilbFam.ExpH.hasQ_hfun : ∀ (F : Type) [Field F] [N
   simp only [V]
   rw [hC]
   clear_value P
-  have hm : (-P ^ 2) ^ (∑ i, μ i) ≠ 0 := pow_ne_zero _ (neg_ne_zero.mpr (pow_ne_zero _ hP0))
   push_cast
   rw [Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, hsum, neg_pow (P ^ 2)]
   field_simp

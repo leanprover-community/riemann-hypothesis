@@ -117,19 +117,14 @@ theorem UpperTheory.exists_character_separation :
     rw [inv_out U₀ f₀ hinv t] at this
     exact this
   obtain ⟨ψ, hψ⟩ := exists_addChar_fourier_coeff_ne_zero_of_ne_zero F hF
-  let χ : T →* ℂˣ :=
-    { toFun := fun t => ⟨ψ (Additive.ofMul (QuotientGroup.mk t : T ⧸ U₀)),
-        ψ (-(Additive.ofMul (QuotientGroup.mk t : T ⧸ U₀))),
-        by rw [← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one],
-        by rw [← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one]⟩
-      map_one' := by ext; simp
-      map_mul' := by intro a b; ext; simp [AddChar.map_add_eq_mul] }
+  let χq : (T ⧸ U₀) →* ℂˣ := ψ.toMonoidHom.toHomUnits
+  let χ : T →* ℂˣ := χq.comp (QuotientGroup.mk' U₀)
   have hχval : ∀ t, (((χ t)⁻¹ : ℂˣ) : ℂ) = ψ (-(Additive.ofMul (QuotientGroup.mk t : T ⧸ U₀))) :=
     fun t => rfl
   have hχU₀ : ∀ u ∈ U₀, χ u = 1 := by
     intro u hu
-    ext
-    simp [χ, (QuotientGroup.eq_one_iff u).mpr hu]
+    change χq (QuotientGroup.mk u : T ⧸ U₀) = 1
+    rw [(QuotientGroup.eq_one_iff u).mpr hu, χq.map_one]
   let aV : Subgroup T → (T → ℂ) → ℂ := fun V h =>
     ∑ᶠ q : T ⧸ V, h q.out * (((χ q.out)⁻¹ : ℂˣ) : ℂ)
   have aV_lin : ∀ V : Subgroup T, V.FiniteIndex → ∀ (c : ℂ) (p p' : T → ℂ),

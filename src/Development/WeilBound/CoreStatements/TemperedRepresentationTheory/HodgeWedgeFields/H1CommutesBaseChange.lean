@@ -104,13 +104,13 @@ def H1CommutesBaseChange : Prop :=
 def boxL : CoefMap (RingHom.id R) F (box F) where
   G := CategoryTheory.Prod.fst C C
   α T := (Algebra.TensorProduct.includeLeft : F.obj T.1 →ₐ[R] F.obj T.1 ⊗[R] F.obj T.2).toRingHom
-  naturality {T T'} φ b := (congrArg (fun y ↦ mp F φ.1 b ⊗ₜ[R] y) (map_one (mp F φ.2))).symm
+  naturality {_ _} φ b := (congrArg (fun y ↦ mp F φ.1 b ⊗ₜ[R] y) (map_one (mp F φ.2))).symm
   smul T r b := map_smul (Algebra.TensorProduct.includeLeft : F.obj T.1 →ₐ[R] F.obj T.1 ⊗[R] F.obj T.2) r b
 
 def boxR : CoefMap (RingHom.id R) F (box F) where
   G := CategoryTheory.Prod.snd C C
   α T := (Algebra.TensorProduct.includeRight : F.obj T.2 →ₐ[R] F.obj T.1 ⊗[R] F.obj T.2).toRingHom
-  naturality {T T'} φ b := (congrArg (fun x ↦ x ⊗ₜ[R] mp F φ.2 b) (map_one (mp F φ.1))).symm
+  naturality {_ _} φ b := (congrArg (fun x ↦ x ⊗ₜ[R] mp F φ.2 b) (map_one (mp F φ.1))).symm
   smul T r b := map_smul (Algebra.TensorProduct.includeRight : F.obj T.2 →ₐ[R] F.obj T.1 ⊗[R] F.obj T.2) r b
 
 def evL (T₀ T : C) (ε : F.obj T₀ →ₐ[R] R) : F.obj T₀ ⊗[R] F.obj T →ₐ[R] F.obj T :=
@@ -201,7 +201,7 @@ def AllF (Q : ∀ (R : Type) [CommRing R] (C : Type) [Category.{0} C], (C ⥤ Co
 def AllFin (Q : ∀ (R : Type) [CommRing R] (C : Type) [Category.{0} C], (C ⥤ CommAlgCat.{0} R) → Prop) : Prop :=
   ∀ (R : Type) [CommRing R] (P : Type) [SemilatticeInf P] [Finite P] (F : Pᵒᵖ ⥤ CommAlgCat.{0} R), Q R Pᵒᵖ F
 
-def DictSt : Prop := AllF fun R _ C _ F ↦
+def DictSt : Prop := AllF fun R _ _ _ F ↦
   ∃ (e₀ : Cn F 0 ≃ₗ[R] C0 F) (e₁ : Cn F 1 ≃ₗ[R] C1 F) (e₂ : Cn F 2 ≃ₗ[R] C2 F) (e₃ : Cn F 3 ≃ₗ[R] C3 F),
     (∀ f T, e₀ f T = f (ComposableArrows.mk₀ T)) ∧ (∀ f T T' φ, e₁ f T T' φ = f (ComposableArrows.mk₁ φ)) ∧
     (∀ f T T' T'' φ ψ, e₂ f T T' T'' φ ψ = f (ComposableArrows.mk₂ φ ψ)) ∧

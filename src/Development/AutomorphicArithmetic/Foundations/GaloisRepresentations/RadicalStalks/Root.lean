@@ -286,7 +286,7 @@ theorem UpperTheory.Gal.Ord.dz1 :
       intro a b
       apply TrivSqZeroExt.ext
       · simp [hfst]
-      · simp [hfst, hsnd, hd, Derivation.leibniz, mul_comm, add_comm])
+      · simp [hfst, hsnd, hd, Derivation.leibniz, mul_comm])
   apply hx
   have := hv v
   simpa [v, hsnd, hd] using this

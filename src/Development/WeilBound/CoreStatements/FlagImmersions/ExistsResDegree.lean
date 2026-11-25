@@ -148,7 +148,7 @@ theorem zeros_proj {Ω₀ Ω : Type} [Field Ω₀] [Field Ω] (y₀ : (Σ k, J�
         exact Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hzc k)
       rw [pow_zero, mul_one] at hev
       exact (mul_eq_zero.1 hev).resolve_right (pow_ne_zero _ hMz)
-    · refine ⟨1, 0, isMultiHomog_one', by simp, fun z hz hzc _ => ?_⟩
+    · refine ⟨1, 0, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one, by simp, fun z hz hzc _ => ?_⟩
       exfalso
       apply hc
       intro k h
@@ -176,9 +176,9 @@ theorem birational_of_closure {Ω : Type} [Field Ω] {n : ℕ} (yf : Fin n → �
   | mem x hx =>
     obtain ⟨⟨a, b⟩, rfl⟩ := hx
     by_cases hb : yf b = 0
-    · exact ⟨0, 0, 1, _root_.GlobalTheory.CompanionTheory.Ar.AlgPoly.form_zero _, isMultiHomog_one', by simp, by simp [hb]⟩
+    · exact ⟨0, 0, 1, _root_.GlobalTheory.CompanionTheory.Ar.AlgPoly.form_zero _, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one, by simp, by simp [hb]⟩
     · exact ⟨Pi.single () 1, X ⟨(), a⟩, X ⟨(), b⟩, _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_X' _ _, _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_X' _ _, by simpa using hb, by simp [hb]⟩
-  | one => exact ⟨0, 1, 1, isMultiHomog_one', isMultiHomog_one', by simp, by simp⟩
+  | one => exact ⟨0, 1, 1, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one, by simp, by simp⟩
   | add x y _ _ hx hy =>
     obtain ⟨d, g, h, hg, hh, h0, he⟩ := hx
     obtain ⟨d', g', h', hg', hh', h0', he'⟩ := hy
@@ -192,7 +192,7 @@ theorem birational_of_closure {Ω : Type} [Field Ω] {n : ℕ} (yf : Fin n → �
   | inv x _ hx =>
     obtain ⟨d, g, h, hg, hh, h0, he⟩ := hx
     by_cases hx0 : x = 0
-    · exact ⟨0, 0, 1, _root_.GlobalTheory.CompanionTheory.Ar.AlgPoly.form_zero _, isMultiHomog_one', by simp, by simp [hx0]⟩
+    · exact ⟨0, 0, 1, _root_.GlobalTheory.CompanionTheory.Ar.AlgPoly.form_zero _, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one, by simp, by simp [hx0]⟩
     · refine ⟨d, h, g, hh, hg, by rw [he]; exact mul_ne_zero hx0 h0, ?_⟩
       rw [he]
       field_simp
@@ -462,7 +462,7 @@ theorem exists_res_degree (hRes : ResExistsStatement) {K₀ K : Type} [Fintype K
     intro f hf
     rw [Set.mem_singleton_iff] at hf
     subst hf
-    exact ⟨0, GlobalTheory.CompanionTheory.Ar.Chg.DegBlock.isMultiHomog_one'⟩
+    exact ⟨0, GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one⟩
   have hTopP : ¬ (⊤ : Ideal (MRing ι)) ≤ mCoordIdeal y := fun h =>
     not_mem_mCoordIdeal_of_aeval_ne_zero y 1 (by simp) (h Submodule.mem_top)
   obtain ⟨J', -, hJ'h, hJ'P, ⟨R⟩⟩ := hRes K ι (mCoordIdeal y) ⊤ D hA hTop hTopP

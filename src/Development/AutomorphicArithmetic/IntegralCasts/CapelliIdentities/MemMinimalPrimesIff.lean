@@ -6,7 +6,7 @@ public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yhd1.mem_minimalPrimes_iff.{u_1} :
-    ∀ {A : Type u_1} [inst : CommRing A] [IsDomain A] [IsNoetherianRing A] {z : A},
+    ∀ {A : Type u_1} [CommRing A] [IsDomain A] [IsNoetherianRing A] {z : A},
       z ≠ (0 : A) → ∀ (W : Ideal A), W ∈ (Ideal.span {z}).minimalPrimes ↔ W.IsPrime ∧ W.height = (1 : ℕ∞) ∧ z ∈ W := by
   intro A _ _ _ z hz W
   have hspan : 1 ≤ (Ideal.span {z}).height :=

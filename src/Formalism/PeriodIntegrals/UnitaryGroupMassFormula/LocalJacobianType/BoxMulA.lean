@@ -183,20 +183,6 @@ private theorem exists_unif_lemma : ∃ ϖ : Fv F v, Valued.v ϖ = WithZero.exp 
   exact ⟨(π : Fv F v), by
     rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation', hπ]⟩
 
-private theorem exp_zpow_lemma_2 (k : ℤ) :
-    (WithZero.exp (-1 : ℤ)) ^ k = WithZero.exp (-k) := by
-  have hne : (WithZero.exp (-1 : ℤ)) ≠ 0 := by
-    first
-    | exact WithZero.exp_ne_zero
-  refine Int.induction_on k ?_ (fun i ih => ?_) (fun i ih => ?_)
-  · simp [WithZero.exp_zero]
-  · rw [zpow_add_one₀ hne, ih, ← WithZero.exp_add]
-    congr 1
-    ring
-  · rw [zpow_sub_one₀ hne, ih, ← WithZero.exp_neg, ← WithZero.exp_add]
-    congr 1
-    ring
-
 theorem modF_Fv (a : Fv F v) (ha : a ≠ 0) :
     PI.NglqJacSplitW.modF (Fv F v) a = ENNReal.ofReal (absV v a) := by
   obtain ⟨ϖ, hϖ⟩ := exists_unif_lemma v
@@ -216,7 +202,8 @@ theorem modF_Fv (a : Fv F v) (ha : a ≠ 0) :
   rw [hmdef]
   have hW : Valued.v ((Units.mk0 a ha * (Units.mk0 ϖ hϖ0) ^ m : (Fv F v)ˣ) : Fv F v) = 1 := by
     rw [Units.val_mul, Units.val_zpow_eq_zpow_val, Units.val_mk0, Units.val_mk0, map_mul,
-      map_zpow₀, hϖ, exp_zpow_lemma_2, hm, ← WithZero.exp_add, add_neg_cancel, WithZero.exp_zero]
+      map_zpow₀, hϖ, ← WithZero.exp_zsmul, Int.zsmul_eq_mul, mul_neg_one, hm,
+      ← WithZero.exp_add, add_neg_cancel, WithZero.exp_zero]
   have hsplit : Units.mk0 a ha =
       (Units.mk0 a ha * (Units.mk0 ϖ hϖ0) ^ m) * (Units.mk0 ϖ hϖ0) ^ (-m) := by
     rw [mul_assoc, ← zpow_add, add_neg_cancel, zpow_zero, mul_one]

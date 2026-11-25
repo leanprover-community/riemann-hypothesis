@@ -115,12 +115,8 @@ theorem map_span {ι : Type} (g : ι → V) (h : V ≃ₗ[E] V) (Λ : Submodule 
     rw [this]; exact Λ.smul_mem c hx
 
 theorem map_spanE {ι : Type} (g : ι → V) (h : V ≃ₗ[E] V) (Λ : Submodule E V) (H : ∀ i, h (g i) ∈ Λ)
-    {x : V} (hx : x ∈ Submodule.span E (Set.range g)) : h x ∈ Λ := by
-  induction hx using Submodule.span_induction with
-  | mem x hx => obtain ⟨i, rfl⟩ := hx; exact H i
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Λ.add_mem hx hy
-  | smul c x _ hx => rw [map_smul]; exact Λ.smul_mem c hx
+    {x : V} (hx : x ∈ Submodule.span E (Set.range g)) : h x ∈ Λ :=
+  (Submodule.span_le (p := Λ.comap (h : V →ₗ[E] V))).2 (Set.range_subset_iff.2 H) hx
 
 theorem map_mem_of_mem_sup_three_submodules (A A' B Λ : Submodule O V) (h : V ≃ₗ[E] V) (H1 : ∀ x ∈ A, h x ∈ Λ)
     (H2 : ∀ x ∈ A', h x ∈ Λ) (H3 : ∀ x ∈ B, h x ∈ Λ) : ∀ x ∈ A ⊔ A' ⊔ B, h x ∈ Λ := by

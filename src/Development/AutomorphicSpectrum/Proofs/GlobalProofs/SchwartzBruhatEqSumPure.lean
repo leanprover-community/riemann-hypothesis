@@ -165,9 +165,3 @@ theorem crd_zero {R : Type} [CommRing R] [Algebra F R] (k : Fin d) :
   simp [crd]
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.Dec
-
-namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef
-
-open Dec
-
-end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef

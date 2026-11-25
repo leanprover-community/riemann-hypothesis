@@ -89,7 +89,6 @@ theorem opNorm_one_le_of_entry (M : Matrix (Fin g) (Fin g) ℂ) {E : ℝ} (hE : 
   refine opNorm_le_of_bound (by positivity) fun v => ?_
   rw [gnorm_one_eq, gnorm_one_eq]
   set S := ∑ a, ‖v a‖ ^ 2 with hS
-  have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hrw : (g : ℝ) * E * √S = √(((g : ℝ) * E) ^ 2 * S) := by
     rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
   rw [hrw]
@@ -137,7 +136,6 @@ theorem inv_entry_le (Y : Matrix (Fin g) (Fin g) ℝ) {c : ℝ} (hc : 0 < c)
   have h1 : c * N ≤ u k := by
     have := hY u
     rwa [hYu, dotProduct_single, mul_one] at this
-  have huk : 0 ≤ u k := le_trans (mul_nonneg hc.le hN0) h1
   have h2 : c ^ 2 * N ^ 2 ≤ N := by
     calc c ^ 2 * N ^ 2 = (c * N) ^ 2 := by ring
       _ ≤ u k ^ 2 := pow_le_pow_left₀ (mul_nonneg hc.le hN0) h1 2
@@ -455,11 +453,6 @@ theorem quad_abs_le {m : Type} [Fintype m] (A : Matrix m m ℝ) (E : ℝ)
         have h4 : 0 ≤ |A j k| := abs_nonneg _
         linarith [mul_le_mul h2 h3 (mul_nonneg (abs_nonneg (x j)) (abs_nonneg (x k))) (h4.trans h2)]
     _ = E * Fintype.card m * (x ⬝ᵥ x) := by
-        have h5 : ∀ j, ∑ k : m, (E / 2 * (x j) ^ 2 + E / 2 * (x k) ^ 2) =
-            Fintype.card m * (E / 2 * (x j) ^ 2) + E / 2 * ∑ k, (x k) ^ 2 := by
-          intro j
-          rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-            Finset.mul_sum]
         simp only [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
           ← Finset.mul_sum, dotProduct, sq]
         ring
@@ -782,7 +775,6 @@ theorem half_le_pdiag {n a : ℕ} (ha : a ≤ n) {ρ : ℝ} (hρ : ρ ≤ 1) {z 
     obtain ⟨hp, hl⟩ := norm_mul_tlog_lt h0 (lt_of_lt_of_le (hz.1 k) hρ)
     have hs : ‖z k‖ ^ 2 * tlog (z k) ^ 2 = (‖z k‖ * tlog (z k)) ^ 2 := by ring
     rw [hs]
-    have h2 : 0 < (‖z k‖ * tlog (z k)) ^ 2 := by positivity
     have h3 : (‖z k‖ * tlog (z k)) ^ 2 < 1 := by simpa using pow_lt_pow_left₀ hl hp.le two_ne_zero
     rw [div_le_div_iff₀ (by norm_num) (by positivity)]
     linarith
@@ -805,7 +797,6 @@ theorem poincare_bounds : ∀ (n a : ℕ) (ha : a ≤ n) (ρ : ℝ), ρ ≤ 1 �
   · have h1 := pdiag_term_le a z ξ k
     have h2 := half_le_pdiag ha hρ hz k
     have hG := gnorm_nonneg (poincareGram a z) ξ
-    have hx := norm_nonneg (ξ k)
     have h3 : ‖ξ k‖ ^ 2 ≤ 2 * gnorm (poincareGram a z) ξ ^ 2 := by linarith [mul_le_mul_of_nonneg_right h2 (sq_nonneg ‖ξ k‖)]
     exact le_of_sq_le_sq (by linarith [sq_nonneg (gnorm (poincareGram a z) ξ)] : ‖ξ k‖ ^ 2 ≤ (2 * gnorm (poincareGram a z) ξ) ^ 2) (by linarith)
   · set k := Fin.castLE ha i with hkdef
@@ -928,7 +919,6 @@ theorem hodgeChartBounds_of_schur_lemW (hS : ∀ (k l : ℕ) (a bt : Matrix (Fin
     linarith [mul_nonneg hc₁.le h2]
 
   set K₁ : ℝ := 2 * g * M / c₁ + a with hK₁
-  have hK₁0 : 0 ≤ K₁ := by positivity
   set C : ℝ := max (max C₁ β) (max (g * (2 * g * M / c₁ + W' * a)) (2 * (1 / 4 * K₁ ^ 2))) with hC
   refine ⟨ρ, c₁, C, hρ0, hρ2, hc₁, ?_, ?_, ?_, ?_⟩
   ·
@@ -1011,7 +1001,6 @@ theorem hodgeChartBounds_of_schur_lemW (hS : ∀ (k l : ℕ) (a bt : Matrix (Fin
       refine (Finset.sum_le_sum fun i _ => hs i).trans ?_
       simp
     have hC3 : g * (2 * g * M / c₁ + W' * a) ≤ C := (le_max_left _ _).trans (le_max_right _ _)
-    have hW0 : 0 ≤ W' := le_max_right _ _
     calc (g : ℝ) * (g * (M * ‖ξ‖) / c₁ + W' * ∑ i, ‖ξ (Fin.castLE ha i) /
           (2 * Real.pi * Complex.I * z (Fin.castLE ha i))‖ / (tlog (z (Fin.castLE ha i)) - T₀))
         ≤ g * (g * (M * (2 * gnorm (poincareGram a z) ξ)) / c₁ + W' * (a * gnorm (poincareGram a z) ξ)) := by
@@ -1086,7 +1075,6 @@ theorem hodgeChartBounds_of_schur_lemW (hS : ∀ (k l : ℕ) (a bt : Matrix (Fin
     have hX0 : 0 ≤ g * (M * ‖ξ‖) / c₁ + ∑ i, ‖ξ (Fin.castLE ha i) / (2 * Real.pi * Complex.I *
         z (Fin.castLE ha i))‖ / (tlog (z (Fin.castLE ha i)) - T₀) := by positivity
     have hsq := pow_le_pow_left₀ hX0 hK 2
-    have hv0 : 0 ≤ gnorm (hodgeGram ha τ₀ B z) v ^ 2 := sq_nonneg _
     have hv0' : 0 ≤ gnorm ((imPeriod ha τ₀ B z).map Complex.ofReal) v ^ 2 := sq_nonneg _
     have hstep := mul_le_mul_of_nonneg_right hsq hv0'
     linarith [hbd', hstep]

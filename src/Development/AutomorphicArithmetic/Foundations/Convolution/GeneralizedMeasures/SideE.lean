@@ -337,7 +337,7 @@ private theorem continuous_cmp' {v : Pl F} (w : PlacesOver E v) : Continuous (cm
 private theorem isCompact_iwSet (q : Pl F) : IsCompact (iwSet E n q) :=
   isCompact_compSet (R := fun w : PlacesOver E q => w.1.adicCompletion E) n
     (fun w => (GLnLocal.iwahori (w.1.adicCompletion E) n : Set (GL (Fin n) (w.1.adicCompletion E))))
-    fun w => GLnLocal.isCompact_iwahori _ n
+    fun _ => GLnLocal.isCompact_iwahori _ n
 
 private theorem isOpen_iwSet (q : Pl F) : IsOpen (iwSet E n q) := by
   simp only [iwSet, Set.setOf_forall]

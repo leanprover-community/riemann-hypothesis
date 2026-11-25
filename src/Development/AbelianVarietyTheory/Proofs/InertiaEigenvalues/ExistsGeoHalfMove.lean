@@ -34,15 +34,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 
-namespace GlobalTheory.ThetaSpanObj
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
-
-alias spanAtObj := _root_.GlobalTheory.AdSpan.spanAt
-
-end GlobalTheory.ThetaSpanObj
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -264,7 +255,7 @@ theorem exists_shift (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : 8 * D.R
       (lieFac (T.Q.Dw ((i : ℕ) + 1)) (xiR D) (wtA (κ i)) : ℂ) * (O i).phi (T.cE ((i : ℕ) + 1) (O i).s0) f h :=
     fun f h => phiC_apply hV _ f h
   obtain ⟨z, ze, hz, hzL, ⟨m, hm, hze⟩, ⟨k, hk⟩, hs⟩ := shift_central (O i) (pins i).2 hn hC.models.HV hC.models.jV hC.thP.thF_mem
-    (GlobalTheory.ThetaSpanObj.spanAtObj R hP hsz hC.lev hC.fam hC.models hC.thP i A.μ0) hrow hE0 hS fun f hf => by
+    (GlobalTheory.AdSpan.spanAt R hP hsz hC.lev hC.fam hC.models hC.thP i A.μ0) hrow hE0 hS fun f hf => by
       obtain ⟨y, hy⟩ := hev f hf
       exact ⟨_, (hC.models.HW i _).2.1.le (LinearMap.mem_range_self _ y), fun h => (congrFun hy h).trans (hphi f h)⟩
   have hzn : ‖ze‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hze hm.ne'

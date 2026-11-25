@@ -20,13 +20,13 @@ def eP (k r : ℕ) (z' ν v : Fin (2 * r + k + 1) → ℂ) : Fin (2 * r + k + 1)
 
 theorem eP_add (z' ν x y : Fin (2 * r + k + 1) → ℂ) : eP k r z' ν (x + y) = eP k r z' ν x + eP k r z' ν y := by
   unfold eP
-  rw [PRhoCut.FL.prWv_add, DU.hadd_l, add_smul]
+  rw [PRhoCut.FL.prWv_add, Formalism.FourierDecayAlt.P.Qx8.herm_add_left', add_smul]
   abel
 
 theorem eP_smul (z' ν : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (x : Fin (2 * r + k + 1) → ℂ) :
     eP k r z' ν (c • x) = c • eP k r z' ν x := by
   unfold eP
-  rw [PRhoCut.FL.prWv_smul, DU.hsmul_l, smul_sub, smul_smul]
+  rw [PRhoCut.FL.prWv_smul, Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', smul_sub, smul_smul]
 
 def ioLin (k r : ℕ) (μ : B.Mat k r) (z' ν : Fin (2 * r + k + 1) → ℂ) :
     (Fin (2 * r + k + 1) → ℂ) →ₗ[ℂ] (Fin (2 * r + k + 1) → ℂ) where

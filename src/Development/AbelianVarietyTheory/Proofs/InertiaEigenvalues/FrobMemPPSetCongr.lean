@@ -1097,7 +1097,6 @@ theorem good_fin (hφC : ∀ f : K⟦X⟧, φ₂ (C f) = C (frob K l f)) (hφX :
   have h : (fun p => if p ∈ s then w p else 0) = ∑ p ∈ s, Pi.single p (w p) := by
     funext q; rw [Finset.sum_apply]; simp [Pi.single_apply]
   have h2 : ofW t K e (fun p => if p ∈ s then w p else 0) = ∑ p ∈ s, ofW t K e (Pi.single p (w p)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [h]; exact map_sum (ofWHom (K := K) (e := e) t) _ s
   rw [h2]
   refine Finset.sum_induction _ (· ∈ GoodSet t e φ₂) (fun _ _ => good_add t) (good_zero t) fun p _ => ?_

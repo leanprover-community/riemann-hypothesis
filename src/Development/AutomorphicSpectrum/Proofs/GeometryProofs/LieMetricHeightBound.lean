@@ -854,7 +854,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 namespace GlobalTheory.CompanionTheory.Ar.QuotUnif
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem lie_frame_values_basis : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smooth G.hom] (Li : Type) [AddCommGroup Li] [Module Ω Li] (M : LieModel G ξ Li) (z₀ : Sp ℂ ⟶ X), IsCptGen ξ → genPt ξ ⤳ centre z₀ → ∃ (N : ℕ) (s : Fin N → Li), (∀ i, ∃ v : epsAt z₀ ⟶ G, M.ValAt z₀ (s i) v) ∧ ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (Mz : LieModel G z₀ V) (b : Fin N → V), (∀ i, M.ValAt z₀ (s i) (Mz.pt (b i))) → LinearIndependent ℂ b ∧ Submodule.span ℂ (Set.range b) = ⊤ := by
   intro X Ω _ ξ G _ _ _ Li _ _ M z₀ hξ h
@@ -960,12 +959,6 @@ theorem exists_preimage {n : ℕ} {t₀ t : Fin n → ℂ} (π : Equiv.Perm (Fin
     field_simp
     ring
 
-theorem smul_mem_ball {n : ℕ} {ρ : ℝ} (h0 : 0 < ρ) (h1 : ρ ≤ 1) {u : Fin n → ℂ}
-    (hu : u ∈ ball (0 : Fin n → ℂ) 1) : (ρ : ℂ) • u ∈ ball (0 : Fin n → ℂ) 1 := by
-  rw [mem_ball_zero_iff] at hu ⊢
-  rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg h0.le]
-  nlinarith [norm_nonneg u]
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H} {Xo : Moduli D l}
   {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {Ω : Type} [Field Ω] {K : Type} [Fintype K]
   {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω}
@@ -1029,7 +1022,7 @@ theorem local_bound (𝔐 : HodgeCpt Y S y) (h : LieMetric 𝔐.M y) (hpq : 1 �
     subst hz0
     have hcont : ContinuousOn (fun u : Fin n → ℂ => w' ((ρ₁ : ℂ) • u)) (ball 0 1) := by
       refine hw'd.continuousOn.comp (continuous_const_smul _).continuousOn fun u hu => ?_
-      exact smul_mem_ball hρ₁ hρ₁' hu
+      exact PositivityTheory.Xgn.QuotientUniformizationChartAt.smul_mem_ball hρ₁ hρ₁' hu
     obtain ⟨ρ₃, K₃, hρ₃, hK₃, hL⟩ := _root_.PositivityTheory.Xgn.quotient_uniformization_lower E H D l Xo _ n a₀ C 𝔐.X 𝔐.t jj m Ω 𝔐.ξ K J y 𝔐.Li 𝔐.M h N s sc _ hcont
       (fun u _ => _root_.PositivityTheory.Xgn.quotient_uniformization_model E H D l Xo _ n a₀ C u) (fun u hu => (hC u hu).1) (fun u hu i => (hC u hu).2.2 i) hfr
     have hr : 0 < min 1 (min ρ₂ ρ₃) := lt_min one_pos (lt_min hρ₂ hρ₃)
@@ -1085,7 +1078,6 @@ theorem local_bound (𝔐 : HodgeCpt Y S y) (h : LieMetric 𝔐.M y) (hpq : 1 �
     exact e2
 
 end GlobalTheory.CompanionTheory.Ar.QuotUnif
-
 
 open GlobalTheory.CompanionTheory.Ar.QuotUnif in
 theorem GlobalTheory.CompanionTheory.Ar.QuotUnif.main : Geo.ResK.ResKStatement → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (h : LieMetric 𝔐.M y), 1 ≤ D.p + D.q → ∃ K : ℝ, 1 ≤ K ∧ ∀ (z : Sp ℂ ⟶ 𝔐.X) (P : AbPart 𝔐.t z), IsPrincipal P.tB ∧ ∀ (v : epsAt (𝟙 (Sp ℂ)) ⟶ P.tK.G) (v₀ : epsAt z ⟶ 𝔐.t.G) (c : ℂ), IsTanAt _ _ v → v.left ≫ P.m.φ = v₀.left → HodgeIP P.tB.G P.tB.PP.L (𝟙 _) (v ≫ P.τ.q ≫ P.e.hom) (v ≫ P.τ.q ≫ P.e.hom) c → c.re ≤ K * (h.ip z v₀ v₀).re := by

@@ -815,10 +815,6 @@ section -- clump:auto
 
 open Finset MvPolynomial UpperTheory.Gal.Schur
 
-namespace UpperTheory.Gal.Schur
-
-end UpperTheory.Gal.Schur
-
 theorem UpperTheory.Gal.Schur.offClrRed_of :
     OffClrPow → OffClrRed := by
   intro h R _ _ n lam g y

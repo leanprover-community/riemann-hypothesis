@@ -103,36 +103,7 @@ theorem selfDualLatticeCoords_eq_std (hS : SpStd d.toColBase) (i : ℕ) (hi : i 
     CF.selfDualLatticeCoords (d.colRec a) i hi = stdLat d.X.E (d.R.N i) :=
   selfDual_map_crd_eq_std hS i hi
 
-def stepCrd (hS : SpStd d.toColBase) (hH : HostHyp d) (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) :
-    StepCrd d.Pr d.σ₀ (d.R.N i) fun c : StCl (Pr := d.Pr) d.W d.lev u i => (d.repr u i c).1.L where
-  J := CF.gramN (d.colRec a) i hi
-  f := d.R.f
-  bad := CF.badG (d.colRec a)
-  emb := CF.embT (d.colRec a)
-  lat := CF.clsCrd (d.colRec a) u i hi
-  l0 := CF.selfDualLatticeCoords (d.colRec a) i hi
-  hJ := gramN_eq a hS i hi
-  hf := d.f_eq.symm
-  hbad := badG_eq a
-  hemb := embT_eq a hH
-  hlat := funext fun c => clsCrd_eq a u i hi c
-  hl0 := selfDualLatticeCoords_eq_std a hS i hi
-
 def PtSurj (d : ColDat) : Prop := ∀ (u : d.what₂.Word) (i : ℕ), DecoPtSurj d.sp.cm (d.R.N i) (d.Pr.vT u) d.Pr.vGs
-
-def stepClsG (hS : SpStd d.toColBase) (hH : HostHyp d) (hP : PtSurj d) (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) :=
-  clsG d.sp.cm d.hX d.hPr d.σ₀ u (d.lev i) (colDia (X := d.X) (Pr := d.Pr) d.R u i) (d.repr u i) (hP u i)
-    (fun c => (stepGSD (Pr := d.Pr) d.W d.lev u i).outSec.spec c) (stepCrd a hS hH u i hi)
-
-def classAgreement (hS : SpStd d.toColBase) (hH : HostHyp d) (hP : PtSurj d) (u : d.what₂.Word) (i : ℕ) (hi : i ≤ d.R.m) :
-    CF.ClsTied (D := d.colRec a) u i hi where
-  lev := (stepClsG a hS hH hP u i hi).lev
-  y := (stepClsG a hS hH hP u i hi).y
-  y_bij := (stepClsG a hS hH hP u i hi).y_bij
-  y_lat := (stepClsG a hS hH hP u i hi).y_lat
-  stabI := (stepClsG a hS hH hP u i hi).stabI
-  stabI_inj := (stepClsG a hS hH hP u i hi).stabI_inj
-  stabI_range := (stepClsG a hS hH hP u i hi).stabI_range
 
 end Rec
 

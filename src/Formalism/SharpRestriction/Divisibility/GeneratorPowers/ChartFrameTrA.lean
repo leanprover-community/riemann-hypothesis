@@ -16,16 +16,10 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ChartFrameTrA
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace Opposite MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
-theorem glue_units {X : Scheme.{0}} {κ : Type} (U : κ → X.Opens) (hcov : ∀ x : X, ∃ i, x ∈ U i)
-    (r : ∀ i, Γ(X, U i)ˣ)
-    (hr : ∀ i j, res (inf_le_left : U i ⊓ U j ≤ U i) (r i) = res (inf_le_right : U i ⊓ U j ≤ U j) (r j)) :
-    ∃ u : Γ(X, ⊤)ˣ, ∀ i, res (le_top : U i ≤ ⊤) u = r i := by
-  apply GlobalTheory.RigNorm.glue_units <;> assumption
-
 theorem exists_ratio_gen {X : Scheme.{0}} {M : LB X} (hcov : ∀ x : X, ∃ i, x ∈ M.U i) {g₁ g₂ : LB.Gen M}
     (h₁ : g₁.IsGen) (h₂ : g₂.IsGen) : ∃ u : Γ(X, ⊤)ˣ, ∀ i, g₁.s i = res (le_top : M.U i ≤ ⊤) u * g₂.s i := by
   unfold LB.Gen.IsGen at h₁ h₂
-  obtain ⟨u, hu⟩ := glue_units M.U hcov (fun i => g₁.s i / g₂.s i) (fun i j => by
+  obtain ⟨u, hu⟩ := GlobalTheory.RigNorm.glue_units M.U hcov (fun i => g₁.s i / g₂.s i) (fun i j => by
     rw [map_div, map_div, h₁ i j, h₂ i j, mul_div_mul_left_eq_div])
   exact ⟨u, fun i => by rw [hu i, div_mul_cancel]⟩
 

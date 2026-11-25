@@ -1335,17 +1335,6 @@ private theorem cardInv {n : ℕ} {D M : Type} [Group D] [AddCommGroup M] [Modul
       left_inv := fun φ => Subtype.ext (LinearMap.ext fun m => rfl)
       right_inv := fun f => Subtype.ext (AddMonoidHom.ext fun m => rfl) }
 
-private theorem lc_orbit {D M : Type} [Group D] [TopologicalSpace D] [IsTopologicalGroup D] [AddCommGroup M]
-    (ρ : Representation ℤ D M) (h : IsOpen (ρ.ker : Set D)) (m : M) : IsLocallyConstant fun g => ρ g m := by
-  rw [IsLocallyConstant.iff_exists_open]
-  intro g
-  refine ⟨(fun y => g⁻¹ * y) ⁻¹' (ρ.ker : Set D), h.preimage (continuous_const.mul continuous_id), ?_, ?_⟩
-  · simp
-  · intro x hx
-    have hk : ρ (g⁻¹ * x) = 1 := MonoidHom.mem_ker.mp hx
-    have hx' : x = g * (g⁻¹ * x) := by group
-    rw [hx', map_mul, Module.End.mul_apply, hk, Module.End.one_apply]
-
 theorem UpperTheory.V.Z.J.leOf :
     ReciprocityTheory.Gal.LocalFiniteness → ReciprocityTheory.Gal.LocalTateDuality → ReciprocityTheory.Gal.LocalEulerChar → ∀ (l : ℕ) [Fact l.Prime] (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (A : ValuationSubring Ω) (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)), IsPlaceOver A v → ((l : ℕ) : NumberField.RingOfIntegers F) ∈ v.asIdeal → LE l (Dec (F := F) A) ((cycZ F Ω l).comp (Dec (F := F) A).subtype) (locDeg v) := by
   intro hFin hTD hEC l _ F Ω _ _ _ _ _ A v hAv hlv
@@ -1360,7 +1349,7 @@ theorem UpperTheory.V.Z.J.leOf :
     unfold ReciprocityTheory.Gal.ContAction
     rw [← IsLocallyConstant.iff_continuous, IsLocallyConstant.iff_exists_open]
     rintro ⟨g, x⟩
-    obtain ⟨U, hU, hgU, hUc⟩ := (IsLocallyConstant.iff_exists_open _).mp (lc_orbit ρ hker x) g
+    obtain ⟨U, hU, hgU, hUc⟩ := (IsLocallyConstant.iff_exists_open _).mp (lc_orb ρ hker x) g
     refine ⟨U ×ˢ {x}, hU.prod (isOpen_discrete _), ⟨hgU, rfl⟩, ?_⟩
     rintro ⟨g', x'⟩ ⟨hg', hx'⟩
     simp only [Set.mem_singleton_iff] at hx'

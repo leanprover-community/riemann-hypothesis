@@ -39,112 +39,6 @@ section TDs
 
 variable (C0 CE1 CE2 : ℝ) (X : Loc) [NeZero X.m] (j : Fin (numSeg X.TT))
 
-theorem TD_wLetBL {Cde E : ℝ} (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
-    (hk : BLk C0 Cde CE1 CE2 X E j b) :
-    TD C0 CE1 CE2 X j b (wLet X x) =
-      (if segNext X.TT j = x.1.val then hhDegs X.TT X.aT X.bT x else 0) +
-        ∑ i, (if segPos X.TT j i = x.1.val then hhDegs X.TT X.aT X.bT x else 0) := by
-  have ho : b.oPlus ≤ segAPlus X.TT X.aT j := hk.2.2.2.1
-  obtain ⟨t, bb⟩ := x
-  have hterm : ∀ i : Fin (segS X.TT j),
-      ((∑ c : Fin (X.m + 1), (b.rz i c * wLet X (t, bb) ((topOdd X j i, true), c) +
-          b.ry i c * wLet X (t, bb) ((topOdd X j i, false), c))) +
-     (X.seg C0 CE1 CE2 j).P X.p i *
-      (if (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma then
-        (coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.w i) * wLet X (t, bb) ((topOdd X j i, true), 0) +
-          b.sg i * wLet X (t, bb) ((topOdd X j i, false), 0) + b.w i * wLet X (t, bb) ((topOdd X j i, true), Fin.succ 0) +
-          (coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i - b.sg i) *
-            wLet X (t, bb) ((topOdd X j i, false), Fin.succ 0)
-       else
-        (coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.o i) * wLet X (t, bb) ((topOdd X j i, true), 0) +
-          b.o i * wLet X (t, bb) ((topOdd X j i, true), Fin.succ 0) +
-          coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i *
-            wLet X (t, bb) ((topOdd X j i, false), Fin.succ 0))) =
-      (if segPos X.TT j i = t.val then hhDegs X.TT X.aT X.bT (t, bb) else 0) := by
-    intro i
-    have hodd := (pos_mem X.TT j i).2
-    by_cases h : segPos X.TT j i = t.val
-    · have ht : topOdd X j i = t := Subtype.ext h
-      subst ht
-      rw [ite_eq_left h]
-      cases bb
-      · have w1 : ∀ c, wLet X (topOdd X j i, false) ((topOdd X j i, true), c) = 0 := fun c => ite_eq_right (by simp)
-        have w2 : ∀ c, wLet X (topOdd X j i, false) ((topOdd X j i, false), c) = 1 := fun c => ite_eq_left rfl
-        simp only [w1, w2, mul_zero, mul_one, zero_add, add_zero]
-        have hd := hk.1.2.2 i
-        have hPC : (X.seg C0 CE1 CE2 j).P X.p i * coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i =
-            segATop X.TT X.aT j i - ∑ c, b.ry i c := Nat.mul_div_cancel' hd.2
-        have hdeg : hhDegs X.TT X.aT X.bT (topOdd X j i, false) = segATop X.TT X.aT j i := by
-          show hhDeg X.aT X.bT (segPos X.TT j i) false = X.aT (segPos X.TT j i)
-          unfold hhDeg
-          simp [hodd]
-        have hin : (if (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma then
-            b.sg i + (coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i - b.sg i)
-            else coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i) =
-            coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i := by
-          split_ifs with hs
-          · have := (hk.2.2.1 i hs).2.2.1
-            omega
-          · rfl
-        rw [hin, hPC, hdeg]
-        have := hd.1
-        omega
-      · have w1 : ∀ c, wLet X (topOdd X j i, true) ((topOdd X j i, true), c) = 1 := fun c => ite_eq_left rfl
-        have w2 : ∀ c, wLet X (topOdd X j i, true) ((topOdd X j i, false), c) = 0 := fun c => ite_eq_right (by simp)
-        simp only [w1, w2, mul_zero, mul_one, add_zero]
-        have hd := hk.1.2.1 i
-        have hPA : (X.seg C0 CE1 CE2 j).P X.p i * coarseA X.p (X.seg C0 CE1 CE2 j) b i =
-            (X.seg C0 CE1 CE2 j).bTop i - ∑ c, b.rz i c := Nat.mul_div_cancel' hd.2
-        have hdeg : hhDegs X.TT X.aT X.bT (topOdd X j i, true) = (X.seg C0 CE1 CE2 j).bTop i := by
-          show hhDeg X.aT X.bT (segPos X.TT j i) true = X.bT (segPos X.TT j i)
-          unfold hhDeg
-          simp [hodd]
-        have hin : (if (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma then
-            coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.w i + b.w i
-            else coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.o i + b.o i) = coarseA X.p (X.seg C0 CE1 CE2 j) b i := by
-          split_ifs with hs
-          · have := (hk.2.2.1 i hs).2.1
-            omega
-          · have := (hk.2.1 i (not_lt.1 hs)).1
-            omega
-        rw [hin, hPA, hdeg]
-        have := hd.1
-        omega
-    · have w0 : ∀ b' c, wLet X (t, bb) ((topOdd X j i, b'), c) = 0 := fun b' c =>
-        ite_eq_right (fun e => h (congrArg (fun z : X.TT × Bool => z.1.val) e))
-      rw [ite_eq_right h]
-      simp only [w0, mul_zero, add_zero, Finset.sum_const_zero, ite_self]
-  have hend : (segAPlus X.TT X.aT j - b.oPlus) * wLet X (t, bb) ((topEnd X j, true), 0) +
-      b.oPlus * wLet X (t, bb) ((topEnd X j, true), Fin.succ 0) +
-      (X.seg C0 CE1 CE2 j).bPlus * wLet X (t, bb) ((topEnd X j, false), Fin.succ 0) =
-      (if segNext X.TT j = t.val then hhDegs X.TT X.aT X.bT (t, bb) else 0) := by
-    have hev := (next_mem X.TT j).2
-    by_cases h : segNext X.TT j = t.val
-    · have ht : topEnd X j = t := Subtype.ext h
-      subst ht
-      rw [ite_eq_left h]
-      cases bb
-      · have w1 : ∀ c, wLet X (topEnd X j, false) ((topEnd X j, true), c) = 0 := fun c => ite_eq_right (by simp)
-        have w2 : ∀ c, wLet X (topEnd X j, false) ((topEnd X j, false), c) = 1 := fun c => ite_eq_left rfl
-        simp only [w1, w2, mul_zero, mul_one, zero_add]
-        show X.bT (segNext X.TT j) = hhDeg X.aT X.bT (segNext X.TT j) false
-        unfold hhDeg
-        simp [hev]
-      · have w1 : ∀ c, wLet X (topEnd X j, true) ((topEnd X j, true), c) = 1 := fun c => ite_eq_left rfl
-        have w2 : ∀ c, wLet X (topEnd X j, true) ((topEnd X j, false), c) = 0 := fun c => ite_eq_right (by simp)
-        simp only [w1, w2, mul_zero, mul_one, add_zero]
-        rw [Nat.sub_add_cancel ho]
-        show X.aT (segNext X.TT j) = hhDeg X.aT X.bT (segNext X.TT j) true
-        unfold hhDeg
-        simp [hev]
-    · have w0 : ∀ b' c, wLet X (t, bb) ((topEnd X j, b'), c) = 0 := fun b' c =>
-        ite_eq_right (fun e => h (congrArg (fun z : X.TT × Bool => z.1.val) e))
-      rw [ite_eq_right h]
-      simp only [w0, mul_zero, add_zero]
-  unfold TD
-  rw [Finset.sum_congr rfl fun i _ => hterm i, add_assoc, add_assoc, ← add_assoc ((segAPlus X.TT X.aT j - b.oPlus) * _),
-    hend, add_comm]
-
 theorem TD_wN (b : SegBlock (segS X.TT j) X.m) :
     TD C0 CE1 CE2 X j b (wN X) = blockOrd X.p (X.seg C0 CE1 CE2 j) b := by
   unfold TD blockOrd oEff
@@ -184,7 +78,11 @@ theorem symPolBL (h2 : 2 ≤ numSeg X.TT) {E : ℝ} (β : GlobalTheory X) (hβ :
       (fun _ => rfl) rfl (s j) (fun ω' ωL h1 h2 h3 => hs j ω' ωL ⟨h1, h2, h3⟩))
   have h1 := hwh (mem_support_iff.1 (Finset.mem_coe.1 hμ))
   rw [weight_wLet] at h1
-  rw [h1, Finset.sum_congr rfl fun j _ => TD_wLetBL C0 CE1 CE2 X j x (β j) (hβ j),
+  rw [h1, Finset.sum_congr rfl fun j _ =>
+    let hk := hβ j
+    TD_wLet_of_bounds C0 CE1 CE2 X j x (β j) hk.1
+      (fun i h => (hk.2.2.1 i h).2.1) (fun i h => (hk.2.2.1 i h).2.2.1)
+      (fun i h => (hk.2.1 i h).1) hk.2.2.2.1,
     ← natPartSum X.TT h2 (fun s => if s = x.1.val then hhDegs X.TT X.aT X.bT x else 0), Finset.sum_ite_eq',
     ite_eq_left x.1.2]
 

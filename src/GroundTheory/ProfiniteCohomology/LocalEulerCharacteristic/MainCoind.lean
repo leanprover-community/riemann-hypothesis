@@ -384,12 +384,6 @@ section Main
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
-theorem eulerChar_subrepresentation_congr {A : Rep.{u} k G} {W W' : Submodule k A} (h : W = W')
-    (hW : ∀ g, W ≤ W.comap (A.ρ g)) (hW' : ∀ g, W' ≤ W'.comap (A.ρ g)) [IsDiscreteRep A] :
-    eulerChar (Rep.subrepresentation A W hW) = eulerChar (Rep.subrepresentation A W' hW') := by
-  subst h
-  rfl
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] in
 def subrepresentationTopIso (A : Rep.{u} k G)

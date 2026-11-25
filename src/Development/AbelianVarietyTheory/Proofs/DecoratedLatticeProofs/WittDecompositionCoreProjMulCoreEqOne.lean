@@ -82,7 +82,6 @@ theorem mem_splitL (d : HypDec S S₀ ρ) (L₀ : Lat S₀) (𝔟 : ℕ → FI D
 
 variable (d : HypDec S S₀ ρ)
 
-alias qX_e := _root_.GlobalTheory.MixPer.qX_e
 theorem qX_i₀ : d.qX * d.i₀ = 0 := by
   have h := congrArg Matrix.conjTranspose d.i₀e'
   simpa only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, gram_conjTranspose,
@@ -132,7 +131,7 @@ variable {d} {L₀ : Lat S₀} {𝔟 : ℕ → FI D}
 
 theorem e_mem {w : Fin ρ → D.host.E} (hw : ∀ i : Fin ρ, w i ∈ 𝔟 i) : d.e *ᵥ w ∈ splitL d L₀ 𝔟 := by
   refine (mem_splitL d L₀ 𝔟 _).2 ⟨fun i => ?_, ?_, fun i => ?_⟩
-  · rw [Matrix.mulVec_mulVec, qX_e, Matrix.one_mulVec]; exact hw i
+  · rw [Matrix.mulVec_mulVec, GlobalTheory.MixPer.qX_e, Matrix.one_mulVec]; exact hw i
   · rw [Matrix.mulVec_mulVec, wittDecomposition_coreProj_mul_e_eq_zero, Matrix.zero_mulVec]; exact zero_mem _
   · rw [Matrix.mulVec_mulVec, qY_e, Matrix.zero_mulVec]; exact zero_mem _
 
@@ -235,7 +234,7 @@ theorem line_splitL (v : Pl D) (i : Fin ρ) (a : AE D) :
       | neg z _ hz => rw [Matrix.mulVec_neg]; exact neg_mem hz
     have h := key _ ha
     rwa [colMul_eq_mulVec, Matrix.mulVec_mulVec, (show d.pX * d.jX = 1 from by
-      have h := congrArg rat (qX_e d)
+      have h := congrArg rat (GlobalTheory.MixPer.qX_e d)
       simpa only [rat, Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _), HypDec.pX, HypDec.jX] using h), Matrix.one_mulVec, Pi.single_eq_same] at h
   · intro ha
     rw [idV] at ha

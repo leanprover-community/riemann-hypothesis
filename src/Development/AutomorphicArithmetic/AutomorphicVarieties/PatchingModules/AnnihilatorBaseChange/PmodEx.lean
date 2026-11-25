@@ -131,15 +131,8 @@ open Filter UpperTheory.V.AlgebraTools
 open scoped TensorProduct
 
 private theorem tf_mem_smul_top_pi {R : Type} [CommRing R] (J : Ideal R) {r : ℕ} (x : Fin r → R) :
-    x ∈ J • (⊤ : Submodule R (Fin r → R)) ↔ ∀ i, x i ∈ J := by
-  constructor
-  · intro hx
-    refine Submodule.smul_induction_on hx (fun a ha m _ i => ?_) (fun y z hy hz i => ?_)
-    · simpa using J.mul_mem_right (m i) ha
-    · simpa using J.add_mem (hy i) (hz i)
-  · intro hx
-    rw [pi_eq_sum_univ x]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul (hx i) Submodule.mem_top
+    x ∈ J • (⊤ : Submodule R (Fin r → R)) ↔ ∀ i, x i ∈ J :=
+  Formalism.SharedLemmas.mem_smul_top_fin_pi J x
 
 private theorem tf_isPrecomplete_pi {R : Type} [CommRing R] (I : Ideal R) [IsPrecomplete I R]
     (r : ℕ) : IsPrecomplete I (Fin r → R) := by

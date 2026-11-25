@@ -276,7 +276,7 @@ theorem GlobalTheory.AV.AbVar.not_dvd_deg_of_no_torsion_in_kernel : ∀ (K : Typ
     apply Subtype.ext
     change h.hom ≫ h' = (𝟙 A.X) ^ (m : ℤ)
     simpa using hhh'
-  obtain ⟨-, hdeg⟩ := GlobalTheory.T.isIsogeny_comp_iff_and_degree_mul K A B A h g hdim hdim.symm
+  obtain ⟨-, hdeg⟩ := GlobalTheory.AV.AbVar.isIsogeny_comp_iff_and_deg_comp K A B A h g hdim hdim.symm
   obtain ⟨-, hdm⟩ := GlobalTheory.MulIsogeny.mul_isogeny K A (m : ℤ) (by exact_mod_cast hm.ne')
   rw [e1, hdm, Int.natAbs_natCast] at hdeg
   intro hdvd
@@ -358,12 +358,12 @@ theorem card_kerLPart_eq (K : Type) [Field K] (l : ℕ) [Fact l.Prime] (hl : (l 
     · rw [← map_pow, hn, map_one]
   obtain ⟨B', q, hq, hdq, hkq, huniv⟩ := _root_.GlobalTheory.AV.AbVar.exists_quot_of_galois_stable K A G hGfin hcardK hgal
   obtain ⟨h, hqh⟩ := huniv B f (kerLPart_le l f)
-  have hdAB := (GlobalTheory.T.dim_eq_flat_finrank_eq_deg_of_isIsogeny K A B f hf).1
-  have hdAB' := (GlobalTheory.T.dim_eq_flat_finrank_eq_deg_of_isIsogeny K A B' q hq).1
-  have hcomp := GlobalTheory.T.isIsogeny_comp_iff_and_degree_mul K A B' B q h hdAB' (hdAB'.symm.trans hdAB)
+  have hdAB := (GlobalTheory.AV.AbVar.isogeny_flat_finrank K A B f hf).1
+  have hdAB' := (GlobalTheory.AV.AbVar.isogeny_flat_finrank K A B' q hq).1
+  have hcomp := GlobalTheory.AV.AbVar.isIsogeny_comp_iff_and_deg_comp K A B' B q h hdAB' (hdAB'.symm.trans hdAB)
   rw [hqh] at hcomp
   have hh : IsIsogeny h := (hcomp.1.mp hf).2
-  have hsurj := (GlobalTheory.T.abVar_surjective_iff_ptMap_surjective K A B' q).1 hq.2
+  have hsurj := (GlobalTheory.AV.AbVar.surjective_iff_ptMap_surjective K A B' q).1 hq.2
   have hnot : ¬ l ∣ deg h := by
     refine _root_.GlobalTheory.AV.AbVar.not_dvd_deg_of_no_torsion_in_kernel K l hl B' B h hh ?_
     intro y hyl hyh

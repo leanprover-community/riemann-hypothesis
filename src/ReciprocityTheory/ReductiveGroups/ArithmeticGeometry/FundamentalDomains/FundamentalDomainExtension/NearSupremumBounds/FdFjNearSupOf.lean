@@ -34,11 +34,7 @@ theorem isIsoV_embV {r : ℕ} (X : Data E r) {ξ : Fin r → E} (h : X.IsIso ξ)
 
 theorem dmin_ne {r : ℕ} (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ)
     (j : Fin (r + 1)) : dmin X.Gm x τ j ≠ 0 := by
-  intro h0
-  simp only [Data.dom, GG, Set.mem_setOf_eq] at hx
-  have h1 := (hx τ).2 j
-  rw [h0, Complex.zero_re, mul_zero] at h1
-  exact lt_irrefl _ h1
+  exact ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.dmin_ne X hx τ j
 
 theorem nfac_pos {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
     0 < X.nfac la x := by

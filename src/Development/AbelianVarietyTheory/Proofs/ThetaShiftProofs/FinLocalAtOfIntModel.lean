@@ -1086,13 +1086,6 @@ theorem eval_subst {ι K₁ L K : Type} [Field K₁] [Field L] [Field K] (io : K
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 
-theorem arcNum_of_poly {K₁ : Type} [Field K₁] (P : MvPolynomial (ArcLt Dw) (LaurentSeries K₁)) :
-    arcNum (algebraMap _ (ArcS Dw K₁) P) = P := by
-  have hs : ∃ Q, algebraMap (MvPolynomial (ArcLt Dw) (LaurentSeries K₁)) (ArcS Dw K₁) Q =
-      algebraMap _ (ArcS Dw K₁) P := ⟨P, rfl⟩
-  rw [arcNum, dite_eq_left hs]
-  exact GlobalTheory.ArcConst.algebraMap_injective Dw K₁ hs.choose_spec
-
 theorem wchar_gen {S : Type} [CommRing S] (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (t : Ix Dw → Sˣ)
     (h : ∀ x, t (some x) = 1) : wchar (ex Dw a n) t = (t none : S) ^ n := by
   rw [wchar, Fintype.prod_option]
@@ -1182,7 +1175,7 @@ theorem frameBound_of_cut (hL : Out.Laws) (hL2 : Out.Laws2) {l : Level H} {Xo : 
     rw [lcoeffPoly_const_mul, map_mul, map_mul, MvPolynomial.map_C, MvPolynomial.eval_C, hco, eval_subst, hq,
       Dv.ιT_io, map_inv₀, map_pow, mul_assoc]
   have hγK : Dv.ιT γ ^ n ≠ 0 := pow_ne_zero _ ((map_ne_zero _).2 hγ)
-  rw [← hP, arcNum_of_poly]
+  rw [← hP, GlobalTheory.LetterMap.num_algebraMap]
   simp only [hterm] at hT hS
   refine ⟨?_, ?_⟩
   · have := hT.const_mul ‖Dv.ιT γ ^ n‖

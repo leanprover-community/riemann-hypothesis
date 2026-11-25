@@ -382,16 +382,3 @@ theorem regAt_iff (p : Cpt ξ) (a : Ω) :
 end Chart
 
 end GlobalTheory.CompanionTheory.Ar.TiePrimes
-
-namespace GlobalTheory.CompanionTheory.Ar.TiePrimes
-
-open MvPolynomial
-
-section Points
-
-variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {Ω : Type} [Field Ω]
-variable {Sc : Scheme.{0}} {ξ : Spec (CommRingCat.of Ω) ⟶ Sc} {y : (Σ k, J k) → Ω}
-
-end Points
-
-end GlobalTheory.CompanionTheory.Ar.TiePrimes

@@ -824,7 +824,7 @@ theorem injective_of_val (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (�
     (x' : Sp Ω ⟶ G.left) : x' ≫ G.hom = spMap φ →
     (∀ (O : G.left.Opens) (f : Γ(G.left, O)), ⊤ ≤ x' ⁻¹ᵁ O → valR x' O f = 0 → f = 0) → Function.Injective φ := by
   intro hx hv
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   have hf := hv ⊤ _ (fun _ _ => trivial) ((valR_top_comp R G Ω φ x' hx r).trans hr)
   have he : (η[G]).left ≫ G.hom = 𝟙 _ := by

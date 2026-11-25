@@ -73,9 +73,6 @@ private theorem mem_homog_iff_isHomogeneous' {σ : Type} {d : ℕ} {P : MvPolyno
     P ∈ FockH1Action.homog σ d ↔ P.IsHomogeneous d := by
   exact mem_homogeneousSubmodule d P
 
-private theorem isHomogeneous_X_complex {σ : Type} (l : σ) : (X l : MvPolynomial σ ℂ).IsHomogeneous 1 := by
-  exact isHomogeneous_X ℂ l
-
 private theorem exists_forall_isHomogeneous_monomial {σ : Type} (u : σ →₀ ℕ) :
     ∃ k : ℕ, ∀ c : ℂ, (monomial u c).IsHomogeneous k := by
   exact ⟨_, fun c => isHomogeneous_monomial c rfl⟩
@@ -104,7 +101,7 @@ private theorem homogeneousComponent_pderiv_monomial {σ : Type} (l : σ) (e : �
       rw [X, monomial_mul_monomial, huv, mul_one]
     have hu' : (monomial u a).IsHomogeneous (k + 1) := by
       rw [hmul]
-      exact (hk a).mul (isHomogeneous_X_complex l)
+      exact (hk a).mul (isHomogeneous_X ℂ l)
     rw [pderiv_monomial, homogeneousComponent_eq_ite_of_isHomogeneous (hk _), homogeneousComponent_eq_ite_of_isHomogeneous hu']
     by_cases hke : k = e
     · subst hke
@@ -125,13 +122,9 @@ theorem pderiv_homog_zero {σ : Type} (l : σ) {P : MvPolynomial σ ℂ} (h : P.
   rw [homogeneousComponent_pderiv, homogeneousComponent_eq_ite_of_isHomogeneous h,
     ite_eq_right (show ¬ (0 = e + 1) by omega), map_zero]
 
-private theorem isHomogeneous_zero_complex {σ : Type} (n : ℕ) : (0 : MvPolynomial σ ℂ).IsHomogeneous n :=
-  mem_homog_iff_isHomogeneous'.mp (Submodule.zero_mem _)
-
 private theorem isHomogeneous_pderiv_of_isHomogeneous_succ {σ : Type} (l : σ) {n : ℕ} {P : MvPolynomial σ ℂ}
     (h : P.IsHomogeneous (n + 1)) : (pderiv l P).IsHomogeneous n := by
-  have hP : homogeneousComponent (n + 1) P = P := by
-    rw [homogeneousComponent_eq_ite_of_isHomogeneous h, ite_eq_left rfl]
+  have hP : homogeneousComponent (n + 1) P = P := homogeneousComponent_eq_self h
   rw [← hP, ← homogeneousComponent_pderiv]
   exact homogeneousComponent_isHomogeneous _ _
 
@@ -140,15 +133,15 @@ theorem X_mul_pderiv_homog {σ : Type} (l l' : σ) {d : ℕ} {P : MvPolynomial �
   cases d with
   | zero =>
     rw [pderiv_homog_zero l' h, mul_zero]
-    exact isHomogeneous_zero_complex 0
+    exact isHomogeneous_zero _ ℂ 0
   | succ n =>
-    have h' := (isHomogeneous_X_complex l).mul (isHomogeneous_pderiv_of_isHomogeneous_succ l' h)
+    have h' := (isHomogeneous_X ℂ l).mul (isHomogeneous_pderiv_of_isHomogeneous_succ l' h)
     rwa [Nat.add_comm 1 n] at h'
 
 theorem pderiv_X_mul_homog {σ : Type} (l l' : σ) {d : ℕ} {P : MvPolynomial σ ℂ}
     (h : P.IsHomogeneous d) : (pderiv l (X l' * P)).IsHomogeneous d := by
   apply isHomogeneous_pderiv_of_isHomogeneous_succ
-  have h' := (isHomogeneous_X_complex l').mul h
+  have h' := (isHomogeneous_X ℂ l').mul h
   rwa [Nat.add_comm 1 d] at h'
 
 theorem blockDiagonalPreservesDegree : KCStep := by
@@ -226,7 +219,7 @@ theorem Rop_raise (M : Matrix (FockH1Action.Ln p q r s) (FockH1Action.Ln p q r s
   refine Submodule.sum_mem _ fun l _ => Submodule.sum_mem _ fun l' _ => ?_
   split_ifs
   · refine Submodule.smul_mem _ _ (mem_homog_iff_isHomogeneous'.mpr ?_)
-    have h := (isHomogeneous_X_complex l).mul ((isHomogeneous_X_complex l').mul (mem_homog_iff_isHomogeneous'.mp hP))
+    have h := (isHomogeneous_X ℂ l).mul ((isHomogeneous_X ℂ l').mul (mem_homog_iff_isHomogeneous'.mp hP))
     rwa [show 1 + (1 + d) = d + 2 by omega] at h
   · exact Submodule.zero_mem _
 

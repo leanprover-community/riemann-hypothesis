@@ -22,13 +22,7 @@ lemma isOpen_dom (L : PeriodPair) (α : ℂ) : IsOpen (dom L α) := by
   exact h1.isOpen_compl
 
 lemma isPreconnected_dom (L : PeriodPair) (α : ℂ) (hα : α ≠ 0) : IsPreconnected (dom L α) := by
-  have hc : (L.lattice : Set ℂ).Countable := by
-    have hsub : (L.lattice : Set ℂ) ⊆
-        Set.range (fun p : ℤ × ℤ => (p.1 : ℂ) * L.ω₁ + (p.2 : ℂ) * L.ω₂) := by
-      intro x hx
-      obtain ⟨m, n, h⟩ := PeriodPair.mem_lattice.mp hx
-      exact ⟨(m, n), h⟩
-    exact (Set.countable_range _).mono hsub
+  have hc : (L.lattice : Set ℂ).Countable := countable_of_Lindelof_of_discrete (X := L.lattice)
   have hc' : ((fun z => α * z) ⁻¹' (L.lattice : Set ℂ)).Countable :=
     hc.preimage (mul_right_injective₀ hα)
   have hrank : 1 < Module.rank ℝ ℂ := by

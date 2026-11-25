@@ -498,7 +498,6 @@ theorem integral_indicator_projFin_smul {D : D7} (V : HSp D) {μa : ∀ w, Measu
         a (fun w => projArch D.sp.cm.sig V.gram w g) ∂μ = (νF B).toReal • ∫ x, a x ∂Measure.pi μa :=
   _root_.GlobalTheory.TrProdInt.integral_indicatorFin_smul_arch D V μa μf μ hμ νF hF E B hB hB' a ha
 
-
 open scoped Classical in
 theorem integral_pi_dsRep {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
     (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)) [∀ w, SigmaFinite (μa w)]
@@ -539,7 +538,6 @@ theorem integral_pi_dsRep {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M :
       (∏ w, fa w (x w)) • Φ (fun τ => dsRep M τ (x (placeOf D τ)) (y τ))), ← hgen.2]
     exact integral_congr_ae (.of_forall hcomp)
 
-
 open scoped Classical in
 theorem apply_homFinDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {W : Type} [AddCommGroup W]
     [Module ℂ W] {σ : Representation ℂ (GfC V) W} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -547,7 +545,7 @@ theorem apply_homFinDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DS
     (hT : T ∈ homFinDS σ M π ⊤) (g : GA D V) (w : W) (y : ∀ τ, M.H τ) :
     π g (T w y) = T (σ (toFin V g) w) fun τ => dsRep M τ (projArch D.sp.cm.sig V.gram (placeOf D τ) g) (y τ) := by
   have h := mem_homTensorPi.1 hT
-  have e := GlobalTheory.T.infinitePart_act_discreteSeriesHom_factorwise D V S M H π ⊤ (T (σ (toFin V g) w)) (hT.1 _) g y
+  have e := GlobalTheory.TrAct.toInf_apply_homDS D V S M H π ⊤ (T (σ (toFin V g) w)) (hT.1 _) g y
   calc π g (T w y) = π (toInf V g : GA D V) (π (toFin V g : GA D V) (T w y)) := by
         conv_lhs => rw [← toInf_mul_toFin g]
         rw [map_mul]; rfl

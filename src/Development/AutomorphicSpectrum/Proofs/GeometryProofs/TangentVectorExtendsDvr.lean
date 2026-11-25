@@ -79,7 +79,7 @@ theorem tangent_vector_extends_over_integers : ∀ (O K : Type) [CommRing O] [Is
     (LieProj.lie_finite_projective_baseChange S G O x E M).2.2 (Localization.AtPrime P) EP MP β
       (fun e => by
         have h2 := hjP e
-        simp only [LieModel.Lifts, Category.comp_id] at h2
+        simp only [Category.comp_id] at h2
         exact h2)
   haveI : IsLocalizedModule P.primeCompl β :=
     (isLocalizedModule_iff_isBaseChange P.primeCompl (Localization.AtPrime P) β).2 hbc

@@ -221,8 +221,7 @@ theorem caseM (ψ : MvPolynomial (Fin (r + 1 + 1) × Fin (r + 1 + 1)) K →ₐ[K
     simp
   · rintro ⟨a, t⟩
     rcases midOf_cases t with ⟨j, rfl⟩ | ⟨ht, -⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, th_X_mid, map_sum, map_mul]
+    · simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, th_X_mid, map_sum, map_mul]
       simp only [thR, AlgHom.comp_apply, mAH_subY_mid]
       rw [← hgen b a j]
       refine Finset.sum_congr rfl fun i _ => ?_

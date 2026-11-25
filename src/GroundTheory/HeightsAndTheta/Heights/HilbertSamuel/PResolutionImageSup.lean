@@ -19,14 +19,6 @@ noncomputable section
 
 namespace ResolutionImageSup
 
-theorem analyticOnNhd_eval {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {ι : Type*} {V : Set E}
-    {g : E → ι → ℂ} (hg : ∀ i, AnalyticOnNhd ℂ (fun w => g w i) V) (f : MvPolynomial ι ℂ) :
-    AnalyticOnNhd ℂ (fun w => eval (g w) f) V := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simpa using (analyticOnNhd_const : AnalyticOnNhd ℂ (fun _ : E => a) V)
-  | add p q hp hq => exact fun w hw => by simpa using (hp w hw).fun_add (hq w hw)
-  | mul_X p i hp => exact fun w hw => by simpa using (hp w hw).fun_mul (hg i w hw)
-
 variable {D : ℕ} {Ω : Type} [Field Ω] [CharZero Ω] {κ : Type} [Fintype κ]
 
 theorem lift_ne_zero (d : HSMDatum D Ω κ) {x y : d.R.X} (hy : y ∈ d.R.U x) : d.R.lift x y ≠ 0 := by
@@ -124,7 +116,7 @@ theorem local_bound (hC : ChartSupBound.Statement) (d : HSMDatum D Ω κ) (x₀ 
     rw [ptNorm_resPt_eq d hf hw.2]
     simp only [ptNorm, MvPolynomial.map_id]
     exact (GroundTheory.Heights₂.Heights.HilbertSamuel.BlockResolutionImageSup.sq_div_pow_eq (d.m.pos _ (hLne w hw)) n).symm
-  have key := hC₀ n hn _ (analyticOnNhd_eval hLa f) (e y) (Metric.ball_subset_closedBall hy.2)
+  have key := hC₀ n hn _ (BlockResolutionImageSup.analyticOnNhd_eval hLa f) (e y) (Metric.ball_subset_closedBall hy.2)
   have hyV : e y ∈ e.target ∩ e.symm ⁻¹' d.R.U x₀ := hKV (Metric.ball_subset_closedBall hy.2)
   rw [hid _ hyV, e.left_inv hy.1] at key
   have hint : ∫⁻ z in e.target ∩ e.symm ⁻¹' d.R.U x₀,

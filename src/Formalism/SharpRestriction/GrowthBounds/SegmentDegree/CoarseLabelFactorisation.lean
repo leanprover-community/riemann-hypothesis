@@ -135,12 +135,8 @@ private theorem eq_of_posOf_eq_of_dist_lt {n' : ℕ} [NeZero n'] {x y : ℤ} (hx
     generalize y % (n' : ℤ) = b at *
     rw [Nat.mod_eq_of_lt (by omega), Nat.mod_eq_of_lt (by omega)] at h
     omega
-  obtain ⟨q, hq⟩ := (show x ≡ y [ZMOD n'] from hm).dvd
-  rcases lt_trichotomy q 0 with hq0 | hq0 | hq0
-  · nlinarith
-  · rw [hq0, mul_zero] at hq
-    linarith
-  · nlinarith
+  exact (sub_eq_zero.1 (Int.eq_zero_of_abs_lt_dvd (show x ≡ y [ZMOD n'] from hm).dvd
+    (abs_sub_lt_iff.2 ⟨h2, h1⟩))).symm
 
 private theorem eq_of_posOf_eq_of_mem_letters_not_isW {n' r : ℕ} [NeZero n'] [NeZero r] {F : Frames n' r} {L₁ N₁ : ℕ}
     (hV : F.Valid L₁ N₁) {j1 j2 : ℕ} (hj1 : j1 < F.J) (hj2 : j2 < F.J) {x1 x2 : ℤ}

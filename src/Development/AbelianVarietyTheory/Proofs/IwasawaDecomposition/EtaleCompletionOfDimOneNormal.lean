@@ -70,7 +70,6 @@ namespace GlobalTheory.CdvrExt
 
 theorem isDVR_of_ringKrullDim_eq_one {A : Type} [CommRing A] [IsLocalRing A] [IsDomain A] [IsNoetherianRing A]
     [IsIntegrallyClosed A] (hA : ringKrullDim A = 1) : IsDiscreteValuationRing A := by
-  intros
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.normal_noeth_local_dim_one_isDVR <;> assumption
+  apply GlobalTheory.CompanionTheory.Ar.Flat.normal_noeth_local_dim_one_isDVR <;> assumption
 
 end GlobalTheory.CdvrExt

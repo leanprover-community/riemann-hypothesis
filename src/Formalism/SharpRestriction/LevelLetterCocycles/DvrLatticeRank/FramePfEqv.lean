@@ -40,8 +40,7 @@ theorem framepf_Δ_cancel {a b u : LetA O n} (ha : a ∈ W.AΔ) (hb : b ∈ W.A�
   rw [← map_mul, ← map_mul, ← h1, ← h]
 
 theorem framepf_γA_Δ (g : W.Gam) {a : LetA O n} (ha : a ∈ W.AΔ) : W.γA g a ∈ W.AΔ := by
-  intro δ hδ
-  rw [_root_.Formalism.MainNotions.LiftingTheory.gammaA_comm, ha δ hδ]
+  exact Formalism.MainNotions.LiftingTheory.tr_γA_mem W g ha
 
 theorem framepf_γA_inv (g : W.Gam) (a : LetA O n) : W.γA g (W.γA g⁻¹ a) = a := by
   funext i
@@ -166,15 +165,7 @@ theorem framepf_γLA_smulLA (a : LetA O n) (x : LA W T π' c) :
 
 theorem framepf_γLA_toLA {x : LA W T π' c} (hx : x ∈ LinearMap.range (toLA W T π' c ⊤)) :
     γLA W T π' c x ∈ LinearMap.range (toLA W T π' c ⊤) := by
-  obtain ⟨t, rfl⟩ := hx
-  induction t using TensorProduct.inductionOn with
-  | tmul b s =>
-    refine ⟨(⟨W.γA W.gamK b, framepf_γA_Δ _ b.2⟩ : ↥W.AΔ) ⊗ₜ s, ?_⟩
-    show algebraMap (LetA O n) W.EE ((letE c : LetA O n) * W.γA W.gamK b) ⊗ₜ[O] (s : LcQ W T π' c) =
-      W.γE W.gamK (algebraMap (LetA O n) W.EE ((letE c : LetA O n) * b)) ⊗ₜ[O] (s : LcQ W T π' c)
-    rw [W.γE_ext, ← _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent W W.gamK c, ← map_mul, _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent]
-    rfl
-  | add x y hx hy => simp only [map_add (f := _)] at ⊢; exact Submodule.add_mem _ hx hy
+  exact Formalism.MainNotions.N.Ln34.ModelFPf.range_γ W T π' c hx
 
 theorem framepf_γD_PcS (g : W.Gam) {p : W.DD T} (hp : p ∈ PcS W T c) : W.γD T g p ∈ PcS W T c := by
   obtain ⟨⟨h1, h2⟩, h3⟩ := hp

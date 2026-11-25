@@ -128,7 +128,7 @@ theorem lev : GlobalTheory.Published.HarishChandraModules → ∀ (D : D7) (θ :
         have a2 := e₂ ⟨w, hsm τ w hw⟩
         simp only at a1 a2
         rw [LinearMap.sub_apply, LinearMap.smul_apply, a1, a2, hi, smul_eq_mul, sub_self]
-      have hz := GlobalTheory.T.sobolevForm_eq_zero_on_smooth_of_kFinite_discreteSeries hHC D V S M τ _ (sobCont_sub_smul (χ k) h₁ h₂) h0 (v τ) (v τ).2
+      have hz := GlobalTheory.KFiniteDense.eq_zero_of_kFin hHC D V S M τ _ (sobCont_sub_smul (χ k) h₁ h₂) h0 (v τ) (v τ).2
       have a1 := e₁ (v τ)
       have a2 := e₂ (v τ)
       rw [Function.update_eq_self] at a1 a2

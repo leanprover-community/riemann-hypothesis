@@ -221,7 +221,7 @@ theorem isProper_away (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] 
   rw [← Category.assoc, hxy, Category.assoc, ← hφ] at h₂
   have h₃ : Ideal.comap φ (Ideal.comap (algebraMap V K) (⊥ : Ideal K)) = ⊥ := congrArg PrimeSpectrum.asIdeal h₂
   have hinj : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have : a ∈ Ideal.comap φ (Ideal.comap (algebraMap V K) (⊥ : Ideal K)) := by simp [ha]
     rw [h₃] at this

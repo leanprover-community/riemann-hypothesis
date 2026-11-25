@@ -92,7 +92,7 @@ def PlMul : Prop :=
 def inN {r J : ℕ} (nL : ZMod J → ℕ) (x0 : TL J nL r) (j : ZMod J) (u : ℕ) : ℤ := if x0 ∈ NSet nL j u then 1 else 0
 
 def NoOpStep : Prop :=
-  ∀ (D : Formalism.BasicNotions.D7) (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+  ∀ (_ : Formalism.BasicNotions.D7) (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [CharZero (KK O)] {r J n' : ℕ} [NeZero J] [NeZero r] (K : ℕ) [NeZero K] (_S : UniformizedDVR p O) (_hR : AdmissibleDVR p n' O)
     (Dt : SignedChainData p O r J) (x0 : TL J Dt.nL r) (b : Fin K)
     (T : Module.End (KK O) (MvPolynomial (TL J Dt.nL r × Fin K) (KK O))),

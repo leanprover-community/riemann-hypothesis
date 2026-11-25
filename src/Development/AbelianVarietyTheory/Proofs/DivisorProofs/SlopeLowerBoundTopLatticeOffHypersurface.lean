@@ -1021,8 +1021,6 @@ theorem finPart_props : ∀ (E : Type) [Field E] [NumberField E] (σ τ : Type),
     exact finsum_le_finsum' (log_gaussAbs_support_finite g') (log_gaussAbs_support_finite g)
       (fun v => Real.log_le_log (gauss_abs_pos_of_ne_zero v g' hg') (hle v))
   · intro g m hm
-    have hg : g ≠ 0 := by
-      rintro rfl; exact hm (by simp)
     set c := g.coeff m with hc
     have h1 : ∑ᶠ v : FinitePlace E, Real.log (v c) ≤ ∑ᶠ v : FinitePlace E, Real.log (gaussAbs v g) :=
       finsum_le_finsum'

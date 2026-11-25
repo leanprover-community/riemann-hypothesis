@@ -41,7 +41,7 @@ theorem topBasis_disc_regular : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk 
     rwa [map_natCast] at this
   · intro F hF
     obtain ⟨_, -, -, -, -, -, -, -, hnorm⟩ := _root_.GlobalTheory.BSP.disc_coefficients l K bk A s ι TB bk.ρ₀ h0 h1 F hF
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have h := hnorm x
     rw [hx, norm_zero] at h

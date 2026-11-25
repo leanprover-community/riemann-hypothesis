@@ -377,14 +377,6 @@ variable {D cc δ}
 
 variable {LL : Type} [Field LL] [NumberField LL] {ι : LL →+* ℂ}
 
-namespace ExtraTie
-
-end ExtraTie
-
-namespace PerTie
-
-end PerTie
-
 end Comparison₂
 
 section Free

@@ -668,17 +668,6 @@ end Formalism.HermitianLatticeCounting.P
 
 namespace Formalism.HermitianLatticeCounting.P
 
-section GD
-open Formalism.HermitianLatticeCounting.ExpansionTerms
-open Finset Matrix Polynomial
-open scoped ComplexConjugate TensorProduct
-
-end GD
-
-end Formalism.HermitianLatticeCounting.P
-
-namespace Formalism.HermitianLatticeCounting.P
-
 section GE
 open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix Polynomial
 open scoped ComplexConjugate

@@ -115,7 +115,6 @@ theorem integral_split (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb �
     (Q : H E a b → ℂ) (hQ : Continuous Q) (hQs : HasCompactSupport Q) :
     Integrable (fun q : G a × RA E a b v => Q (ιA v q.1 * σA v q.2)) (μa.prod (restA μa μb ν v)) ∧
       ∫ g, Q g ∂D.μ = ∫ t, ∫ r, Q (ιA v t * σA v r) ∂restA μa μb ν v ∂μa := by
-  set_option synthInstance.maxHeartbeats 800000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance
@@ -242,7 +241,6 @@ theorem cA_props (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matri
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i j : Io Ma Mb κ) :
     Continuous (cA v ka kb ψ i j) ∧ HasCompactSupport (cA v ka kb ψ i j) := by
-  set_option synthInstance.maxHeartbeats 800000 in
     refine ⟨?_, ?_⟩
     · refine ((continuous_finsetProd _ fun w _ => ?_).mul (continuous_finsetProd _ fun w _ => ?_)).mul
         ((hψ i.2 j.2).1.comp (continuous_snd.comp continuous_snd))
@@ -273,7 +271,6 @@ theorem continuous_Rv_comp (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) {X : Type} [TopologicalSpace X] [FirstCountableTopology X]
     [LocallyCompactSpace X] {φ : X → H E a b} (hφ : Continuous φ) :
     Continuous fun z : X => Rv v μa μb ν ka kb ψ f i (φ z) := by
-  set_option synthInstance.maxHeartbeats 800000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance

@@ -164,10 +164,8 @@ theorem incl_io_φ (a : AA K LL) : inclR LL (E.io (W.φA a)) = φRW LL (inclR LL
 
 
 open GlobalTheory.IoInj in
-set_option maxHeartbeats 1000000 in
 theorem ioE_inj_inter : Function.Injective E.ioE ∧
       ∀ x : W.EE, (∃ y, inclR LL y = E.ioE x) → ∃ a : AA K LL, algebraMap _ W.EE a = x := by
-  set_option synthInstance.maxHeartbeats 200000 in
     classical
     obtain ⟨_, hc, hl0, hlu, hfree, -, -⟩ := GlobalTheory.Per.integers_completeDVR l LL
     obtain ⟨hWc, hWtf, -, hsat, hμ⟩ := GlobalTheory.HWL.TensorWitt.main l LL

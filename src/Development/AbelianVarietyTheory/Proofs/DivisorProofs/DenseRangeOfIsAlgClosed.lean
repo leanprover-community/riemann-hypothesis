@@ -48,10 +48,6 @@ theorem denseRange_of_isAlgClosed {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClo
 theorem continuous_aut (σ : PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l) : Continuous σ :=
   (AddMonoidHomClass.isometry_of_norm σ (_root_.GlobalTheory.PlaceBridge.norm_algEquiv σ)).continuous
 
-theorem norm_l : ‖(l : PadicAlgCl l)‖ < 1 := by
-  rw [← map_natCast (algebraMap ℚ_[l] (PadicAlgCl l)), norm_algebraMap']
-  exact Padic.norm_p_lt_one
-
 theorem norm_eq_of_ball {Ω : Type} [Field Ω] (i j : Ω →+* PadicAlgCl l) (h : ∀ x, ‖i x‖ ≤ 1 ↔ ‖j x‖ ≤ 1) (x : Ω) :
     ‖i x‖ = ‖j x‖ := by
   let v : AbsoluteValue Ω ℝ := (NormedField.toAbsoluteValue (PadicAlgCl l)).comp i.injective
@@ -72,7 +68,7 @@ theorem norm_eq_of_ball {Ω : Type} [Field Ω] (i j : Ω →+* PadicAlgCl l) (h 
   simp only [hv, hw, map_natCast] at h1
   have h0 : 0 < ‖(l : PadicAlgCl l)‖ := norm_pos_iff.2 (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)
   have hc1 : c = 1 := by
-    refine (Real.rpow_right_inj h0 norm_l.ne).1 ?_
+    refine (Real.rpow_right_inj h0 GlobalTheory.PlaceBridge.norm_l_lt_one.ne).1 ?_
     rw [h1, Real.rpow_one]
   have h2 := congrFun e x
   simpa only [hv, hw, hc1, Real.rpow_one] using h2
@@ -126,7 +122,7 @@ def place (τ : E →+* PadicAlgCl l) : HeightOneSpectrum (𝓞 E) where
     intro h
     have : ((l : ℕ) : 𝓞 E) ∈ (⊥ : Ideal (𝓞 E)) := by
       rw [← h, Ideal.mem_comap, ValuationSubring.valuation_lt_one_iff, valuation_ring_lt]
-      simpa using norm_l (l := l)
+      simpa using GlobalTheory.PlaceBridge.norm_l_lt_one (l := l)
     exact (Fact.out : l.Prime).ne_zero (by exact_mod_cast (Ideal.mem_bot.1 this))
 
 theorem mem_place (τ : E →+* PadicAlgCl l) (x : 𝓞 E) : x ∈ (place τ).asIdeal ↔ ‖τ (x : E)‖ < 1 := by

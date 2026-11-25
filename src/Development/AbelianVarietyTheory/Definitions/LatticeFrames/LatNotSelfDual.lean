@@ -206,13 +206,4 @@ theorem charUnramAt_of {χ : (AE D)ˣ →* Circle} {v : HeightOneSpectrum (𝓞 
 
 end GlobalTheory.SeeSaw.LevelTest
 
-section
-open Formalism.UG Formalism.L2.Forms
-
-namespace GlobalTheory.SeeSaw.BaseLatTest
-
-end GlobalTheory.SeeSaw.BaseLatTest
-
-end
-
 end

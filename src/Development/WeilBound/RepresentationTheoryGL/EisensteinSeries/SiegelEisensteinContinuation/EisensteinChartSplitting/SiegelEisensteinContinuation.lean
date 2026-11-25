@@ -307,7 +307,6 @@ open scoped NNReal Matrix TensorProduct Topology
 open Filter NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.EisCont GlobalTheory.SiegelSet GlobalTheory.UAut GlobalTheory.EisLine
 open GlobalTheory.Core.Rk.SWLaw (dblDec zeroSp)
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuesWithModerateGrowthShiftTranslatePowStatement =====
@@ -492,16 +491,11 @@ open PositivityTheory.RgEis
 
 namespace ResidueKilled.Tr
 
-theorem ext_mul' {G : Type} [Group G] (K P : Subgroup G) (f : G → ℝ) (hadd : ∀ p ∈ P, ∀ q ∈ P, f (p * q) = f p + f q)
-    (h0 : ∀ r ∈ P, r ∈ K → f r = 0) {p k : G} (hp : p ∈ P) (hk : k ∈ K) : ext K P f (p * k) = f p :=
-  by apply _root_.GlobalTheory.CompanionTheory.SiegelFrame.ext_mul <;> assumption
-
 theorem absA_pos (D : D7) (x : (AE D)ˣ) : 0 < absA D x := by
   refine pos_iff_ne_zero.2 fun h0 => ?_
   have h1 := map_mul (absA D) x x⁻¹
   rw [mul_inv_cancel, map_one, h0, zero_mul] at h1
   exact one_ne_zero h1
-
 
 theorem tTop : TTop := by
   intro hG hT hB hE hP hS hC hSc hDv D V hV a ha hI μ b hμ hb s₁ φ hφ
@@ -535,7 +529,7 @@ theorem tTop : TTop := by
   have hηQ : ∀ y ∈ A.uQ (-1) (Set.univ : Set (Fin V.rank)), ∀ k ∈ A.uK (-1) (Fin V.rank),
       η (y * k) = A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) y.1) := by
     intro y hy k hk
-    refine ext_mul' _ _ (fun q : A.U (-1) (Fin V.rank) => A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) q.1)) ?_ ?_ hy hk
+    refine GlobalTheory.CompanionTheory.SiegelFrame.ext_mul _ _ (fun q : A.U (-1) (Fin V.rank) => A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) q.1)) ?_ ?_ hy hk
     · intro q₁ h₁ q₂ h₂
       show A.lg (bdet _ (q₁.1 * q₂.1)) = _
       rw [hmul q₁.1 h₁ q₂.1 h₂, hgood.lgmul]

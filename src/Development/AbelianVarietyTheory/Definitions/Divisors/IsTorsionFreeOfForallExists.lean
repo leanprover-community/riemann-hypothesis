@@ -34,8 +34,6 @@ structure IsSubbundle (i : G ⟶ F) : Prop where
 
   isVB_cokernel : ∃ s, IsVB (cokernel i) s
 
-theorem isCohSub_id [h : IsFiniteQC F] : IsCohSub (𝟙 F) := ⟨inferInstance, h⟩
-
 theorem isCohSub_of_isZero (h : IsZero G) (i : G ⟶ F) : IsCohSub i := ⟨h.mono i, .of_isZero h⟩
 
 theorem exists_app_eq_of_epi (φ : F ⟶ G) [Epi φ] (s : Γ(G, V)) {x : X} (hx : x ∈ V) :
@@ -71,9 +69,6 @@ theorem genRank_eq_zero_iff [IsFiniteQC F] : genRank F = 0 ↔ genericPoint X �
   (Module.finrank_zero_iff (R := X.functionField)).trans QCoh.notMem_support_iff.symm
 
 theorem genRank_eq_zero_of_isZero (h : IsZero F) : genRank F = 0 := (isVB_zero_iff.2 h).genRank_eq
-
-theorem genRank_le_of_mono (i : G ⟶ F) [Mono i] [IsFiniteQC F] : genRank G ≤ genRank F :=
-  LinearMap.finrank_le_finrank_of_injective (QCoh.stalkLinear_injective i _)
 
 theorem genRank_shortExact {S : ShortComplex X.Modules} (hS : S.ShortExact) [IsFiniteQC S.X₂] :
     genRank S.X₂ = genRank S.X₁ + genRank S.X₃ := by
@@ -227,12 +222,6 @@ theorem deg_shortExact {S : ShortComplex X.Modules} (hS : S.ShortExact) [IsFinit
     deg k S.X₂ = deg k S.X₁ + deg k S.X₃ := by
   rw [deg, genRank_shortExact hS, degOfRank_shortExact hS h₁ h₃, deg, deg]
 
-theorem IsProperCurve.deg_eq_hdim (hC : IsProperCurve k X) [IsFiniteQC F] (h : genRank F = 0) :
-    deg k F = hdim k F 0 := by
-  have := hC.isNoetherian
-  rw [deg_def, h, chi_eq_hdim_zero_of_suppDim_le_zero k (suppDim_le_zero hC.dim_eq h)]
-  simp
-
 namespace IsProjCurve
 
 variable (hC : IsProjCurve k X)
@@ -241,19 +230,6 @@ include hC
 theorem deg_shortExact {S : ShortComplex X.Modules} (hS : S.ShortExact) [IsFiniteQC S.X₁]
     [IsFiniteQC S.X₂] [IsFiniteQC S.X₃] : deg k S.X₂ = deg k S.X₁ + deg k S.X₃ :=
   VB.deg_shortExact hS (hC.finiteCoh _) (hC.finiteCoh _)
-
-theorem deg_cokernel (i : G ⟶ F) [Mono i] [IsFiniteQC G] [IsFiniteQC F] :
-    deg k (cokernel i) = deg k F - deg k G :=
-  have hS : (ShortComplex.mk i (cokernel.π i) (cokernel.condition i)).ShortExact :=
-    { exact := ShortComplex.exact_cokernel i }
-  eq_sub_of_add_eq' (VB.deg_shortExact hS (hC.finiteCoh G) (hC.finiteCoh (cokernel i))).symm
-
-theorem deg_le_of_genRank_eq (i : G ⟶ F) [Mono i] [IsFiniteQC G] [IsFiniteQC F]
-    (h : genRank G = genRank F) : deg k G ≤ deg k F := by
-  have h0 := genRank_cokernel i
-  have h1 := hC.isProperCurve.deg_eq_hdim (F := cokernel i) (by omega)
-  rw [hC.deg_cokernel] at h1
-  omega
 
 end IsProjCurve
 
@@ -310,8 +286,6 @@ def subDegs (F : X.Modules) : Set ℤ :=
 variable (k) in
 def IsMaxSubDeg (F : X.Modules) (P : ℤ) : Prop := IsGreatest (subDegs k F) P
 
-theorem IsCohSub.deg_mem {i : G ⟶ F} (h : IsCohSub i) : deg k G ∈ subDegs k F := ⟨G, i, h, rfl⟩
-
 
 variable (k) in
 open ZeroObject in
@@ -329,22 +303,6 @@ end IsMaxSubDeg
 theorem exists_isMaxSubDeg_iff : (∃ P, IsMaxSubDeg k F P) ↔ BddAbove (subDegs k F) :=
   ⟨fun ⟨_, h⟩ => h.bddAbove, fun ⟨b, hb⟩ =>
     Int.exists_greatest_of_bdd ⟨b, fun _ h => hb h⟩ ⟨0, zero_mem_subDegs k F⟩⟩
-
-theorem IsProjCurve.isMaxSubDeg_of_rank_one (hC : IsProjCurve k X) (h : IsVB F 1) :
-    IsMaxSubDeg k F (max (deg k F) 0) := by
-  have := h.isFiniteQC
-  constructor
-  · rcases max_choice (deg k F) 0 with e | e <;> rw [e]
-    exacts [isCohSub_id.deg_mem, zero_mem_subDegs k F]
-  · rintro _ ⟨G, i, hi, rfl⟩
-    have := hi.mono
-    have := hi.isFiniteQC
-    have hr := genRank_le_of_mono i
-    rw [h.genRank_eq] at hr
-    by_cases h0 : genRank G = 0
-    · rw [deg_eq_zero_of_isZero k ((h.isTorsionFree.of_mono i).isZero h0)]
-      exact le_max_right _ _
-    · exact (hC.deg_le_of_genRank_eq i (by rw [h.genRank_eq]; omega)).trans (le_max_left _ _)
 
 end Degree
 

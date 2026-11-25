@@ -55,12 +55,6 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory.DominantRootSums
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
-private lemma sum_index_mul_root_eq_sub' {n : ℕ} (a b : Fin n) :
-    ∑ i : Fin n, ((i : ℕ) : ℝ) * _root_.PI.UpqRep.root a b i = ((a : ℕ) : ℝ) - ((b : ℕ) : ℝ) := by
-  simp [_root_.PI.UpqRep.root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
-
 
 open Matrix MeasureTheory Finset in
 open scoped InnerProductSpace ENNReal in

@@ -191,7 +191,7 @@ theorem densLocBound_of_tied {D : Formalism.BasicNotions.D7} (hL : Formalism.L2.
 
 def DensInputT : Prop := ∀ D : Formalism.BasicNotions.D7, Formalism.L2.SG.Pf.LocCP.LocTied D → Formalism.L2.SG.DataInst.DensInputAt D
 
-theorem densInputT_holds : DensInputT := fun D hL => Formalism.L2.SG.DataCut.densInputAt_of_loc (densLocBound_of_tied hL)
+theorem densInputT_holds : DensInputT := fun _ hL => Formalism.L2.SG.DataCut.densInputAt_of_loc (densLocBound_of_tied hL)
 
 end Formalism.L2.SG.Pf.Cnt
 end -- clump:auto

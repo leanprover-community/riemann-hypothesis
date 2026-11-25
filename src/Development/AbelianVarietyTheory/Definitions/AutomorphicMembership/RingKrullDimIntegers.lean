@@ -98,11 +98,6 @@ theorem val_cx (a : Y.Fn) (y : Y.pts σ) : val y (Y.cx σ a) = ratVal a y := by
 variable (σ) in
 def eqnSet (Δ : Y.Dv) (g : Y.Fnˣ) : Set (Y.pts σ) := {y | Δ.IsEqn (base y) g}
 
-theorem isOpen_eqnSet (Δ : Y.Dv) (g : Y.Fnˣ) : IsOpen (eqnSet σ Δ g) :=
-  isOpen_iff_forall_mem_open.2 fun _ hy =>
-    have ⟨U, hU, h⟩ := IsEqn.exists_nhds hy
-    ⟨ptsIn Y.str σ U, fun _ hz => h _ (mem_ptsIn_iff.1 hz), isOpen_ptsIn U, mem_ptsIn_iff.2 hU⟩
-
 def eqn (Δ : Y.Dv) (y : Y.pts σ) : Y.Fnˣ := (Δ.exists_isEqn (base y)).choose
 
 theorem mem_eqnSet (Δ : Y.Dv) (y : Y.pts σ) : y ∈ eqnSet σ Δ (eqn Δ y) :=
@@ -140,10 +135,6 @@ theorem tv_pow (h : y ∈ eqnSet σ Δ g) (h' : y ∈ eqnSet σ Δ g') (k : ℕ)
     tv (g ^ k) (g' ^ k) y = tv g g' y ^ k := by
   rw [tv, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, ← div_pow, map_pow]
   exact ((regC_of_val_ne_zero (tv_ne_zero h h')).hasVal.pow k).val_eq
-
-theorem holoOn_tv (Δ : Y.Dv) (g g' : Y.Fnˣ) :
-    (Y.an σ).HoloOn (eqnSet σ Δ g ∩ eqnSet σ Δ g') (tv g g') :=
-  (holoOn_val _).mono fun _ hz => regC_of_val_ne_zero (tv_ne_zero hz.1 hz.2)
 
 def SecReg (Δ : Y.Dv) (f : Y.FnC σ) (y : Y.pts σ) : Prop :=
   ∃ g, y ∈ eqnSet σ Δ g ∧ RegC y (f * Y.cx σ g)
@@ -196,21 +187,6 @@ def wt (g : Y.Fnˣ) (y : Y.pts σ) : ℝ := -Real.log (m.h g y)
 def posSet : Set (Y.pts σ) := {y | 0 < m.h (eqn Δ y) y}
 
 
-variable {m} in
-theorem mem_posSet_iff (hg : y ∈ eqnSet σ Δ g) : y ∈ m.posSet ↔ 0 < m.h g y := by
-  have := tv_ne_zero (mem_eqnSet Δ y) hg
-  rw [posSet, mem_setOf_eq, m.trans _ g y (mem_eqnSet Δ y) hg, mul_pos_iff_of_pos_left (by positivity)]
-
-
-
-variable {m} in
-theorem wt_trans (hy : y ∈ m.posSet) (hg : y ∈ eqnSet σ Δ g) (hg' : y ∈ eqnSet σ Δ g') :
-    m.wt g' y = m.wt g y + Real.log (‖tv g g' y‖ ^ 2) := by
-  have := tv_ne_zero hg hg'
-  rw [wt, wt, m.trans g g' y hg hg',
-    Real.log_mul (by positivity) ((mem_posSet_iff hg').1 hy).ne']
-  ring
-
 section Cover
 
 variable {ι : Type} (S : ι → Set (Y.pts σ)) (e : ι → Y.Fnˣ) (sub : ∀ i, S i ⊆ eqnSet σ Δ (e i))
@@ -234,18 +210,6 @@ variable {m} in
 def SmoothOn (m : Met Y σ Δ) (S : Set (Y.pts σ)) : Prop :=
   S ⊆ m.posSet ∧ ∀ g, (Y.an σ).SmoothOn (S ∩ eqnSet σ Δ g) (m.wt g)
 
-
-variable {m} in
-theorem smoothOn_of_cover {S : Set (Y.pts σ)} (hS : IsOpen S) (h0 : S ⊆ m.posSet) {ι : Type}
-    {T : ι → Set (Y.pts σ)} (hT : ∀ i, IsOpen (T i)) (hc : ∀ y, ∃ i, y ∈ T i) {e : ι → Y.Fnˣ}
-    (sub : ∀ i, T i ⊆ eqnSet σ Δ (e i)) (h : ∀ i, (Y.an σ).SmoothOn (S ∩ T i) (m.wt (e i))) :
-    m.SmoothOn S := ⟨h0, fun g => AnRead.smoothOn_of_cover hT (fun y _ => hc y) fun i =>
-  AnRead.SmoothOn.congr (f := fun y => m.wt (e i) y + Real.log (‖tv (e i) g y‖ ^ 2))
-    (fun c => ((h i).mono (fun _ (hz : _ ∈ (S ∩ eqnSet σ Δ g) ∩ T i) => ⟨hz.1.1, hz.2⟩) c).add
-      (((holoOn_tv Δ (e i) g).mono fun _ (hz : _ ∈ (S ∩ eqnSet σ Δ g) ∩ T i) => ⟨sub i hz.2, hz.1.2⟩).smoothOn_log
-        ((hS.inter (isOpen_eqnSet Δ g)).inter (hT i))
-        (fun _ hz => tv_ne_zero (sub i hz.2) hz.1.2) c))
-    fun _ hz => wt_trans (h0 hz.1.1) (sub i hz.2) hz.1.2⟩
 
 end Met
 
@@ -395,9 +359,6 @@ def jac (c : AlgChart Y.str σ Y.dim) (g : Y.Fnˣ) (s : Fin Y.dim → Y.FnC σ) 
 
 def chartAt (y : Y.pts σ) : AlgChart Y.str σ Y.dim := (AlgChart.exists_mem_source y).choose
 
-theorem mem_chartAt (y : Y.pts σ) : y ∈ (chartAt y).e.source :=
-  (AlgChart.exists_mem_source y).choose_spec
-
 variable {s : Fin Y.dim → Y.FnC σ} {c c' : AlgChart Y.str σ Y.dim}
 
 
@@ -423,13 +384,6 @@ def resNorm (m : Met Y σ Δ) (Δ' : Y.Dv) (m' : Met Y σ Δ') (s : Fin Y.dim �
 
 end GlobalTheory.ProjVar.Var
 
-namespace GlobalTheory.ProjVar
-
-open Var
-
-variable (F : Type) [Field F] (σ : F →+* ℂ) (n : ℕ)
-
-end GlobalTheory.ProjVar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -553,13 +507,6 @@ structure CxSt (F : Type) [Field F] [NumberField F] : Type 1 where
   ofWeight_eq : HEq ofWeight fun (Y : Var F) σ Δ L r => Var.ofWeight Y σ Δ L r := by rfl
 
 attribute [instance] CxSt.fnCRing CxSt.fnCAlg
-
-namespace CxSt
-
-
-variable (C : CxSt F) (Y : Var F) (σ : F →+* ℂ) (Δ : Y.Dv) (m : C.Met Y σ Δ)
-
-end CxSt
 
 abbrev below {K : Type} [Field K] {Z : Scheme.{0}} (y : Sp K ⟶ Z) : Z := y (IsLocalRing.closedPoint K)
 

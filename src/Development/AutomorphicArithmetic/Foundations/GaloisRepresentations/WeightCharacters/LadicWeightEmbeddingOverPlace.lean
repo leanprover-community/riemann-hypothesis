@@ -98,7 +98,7 @@ theorem UpperTheory.Gal.Wt.autCrit_of :
       rwa [GlobalTheory.EllU.finPart_of_finU k.2] at this
     funext g
     exact hC _ hk' g
-  · haveI := hS
+  · have := hS
     refine Submodule.finiteDimensional_of_le (S₂ := S) (Submodule.span_le.2 ?_)
     rintro _ ⟨k, rfl⟩
     exact hSub k k.2
@@ -139,13 +139,13 @@ theorem UpperTheory.Gal.Wt.autMul_of :
       change RU E a k (fun g => φ g * ψ g) = fun g => φ g * ψ g
       rw [RU_mul', h1, h2]
       rfl
-  · haveI := hφ.kfin
-    haveI := hψ.kfin
+  · have := hφ.kfin
+    have := hψ.kfin
     have f1 : (Submodule.span ℂ (Set.range fun k : infU E a => RU E a k φ)).FG :=
       Submodule.fg_iff_finiteDimensional _ |>.2 inferInstance
     have f2 : (Submodule.span ℂ (Set.range fun k : infU E a => RU E a k ψ)).FG :=
       Submodule.fg_iff_finiteDimensional _ |>.2 inferInstance
-    haveI : FiniteDimensional ℂ ↥(Submodule.span ℂ (Set.range fun k : infU E a => RU E a k φ) *
+    have : FiniteDimensional ℂ ↥(Submodule.span ℂ (Set.range fun k : infU E a => RU E a k φ) *
         Submodule.span ℂ (Set.range fun k : infU E a => RU E a k ψ)) :=
       Submodule.fg_iff_finiteDimensional _ |>.1 (f1.mul f2)
     refine Submodule.finiteDimensional_of_le (S₂ := Submodule.span ℂ (Set.range fun k : infU E a => RU E a k φ) *
@@ -564,7 +564,7 @@ theorem UpperTheory.Gal.Wt.famEx_of : NeatLev → EllC → Twist → TwistBd →
   obtain ⟨ℓ, hℓ⟩ := hE E a C hC.fin hneat
   obtain ⟨R, hR0, hR⟩ := hTB E l ι a C hC ℓ hℓ W f X b hb
   obtain ⟨κ, hκr, hκi, hκ1, hκc, hκI⟩ := hK E l ι a v' τ hτ
-  haveI : CompactSpace C := isCompact_iff_compactSpace.1 hC.compact
+  have : CompactSpace C := isCompact_iff_compactSpace.1 hC.compact
   let φ : C →* GL (Fin a) ℂ := κ.comp C.subtype
   have hφI : ∀ c : C, IntGL ι (φ c) := fun c => hκI _ (hint _ c.2)
   obtain ⟨Q, _, c, P, hQ⟩ := hP l ι a C φ (fun i j => (hκc i j).comp continuous_subtype_val) hφI
@@ -680,7 +680,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.DefU GlobalTheory.Branching
 open UpperTheory.Gal.Gen (IsLevel fixedBy)
 open UpperTheory.Gal.Wt
-
 
 theorem UpperTheory.Gal.Wt.famOf_of : ExpBasic → PevExp → SqExp → TopUp → WExp → FamOfA → FamOf := by
   intro hB hP hS hT hW hA E _ _ _ a τ C hC n hn W Q _ f hf P
@@ -799,7 +798,7 @@ theorem psum_succ {a : ℕ} (κ : DomWeight a) (i : Fin a) : psum κ (i + 1) = p
 
 theorem famWt_of : FamOff → FamSum → FamWt := by
   intro hOff hSum E _ _ _ a τ W K ν d B hB U hU hBU hne
-  obtain ⟨mu, hmu⟩ := GlobalTheory.T.exists_algebraicWeight_definiteUnitaryAutRep E a U hU
+  obtain ⟨mu, hmu⟩ := GlobalTheory.Cong.exists_weight_of_isAutRepU E a U hU
   refine ⟨mu, ⟨hU, hmu, ?_⟩, fun τ' h => hasWeightAt_unique ⟨U, hU⟩ τ' (hmu τ') (hOff E a τ W K ν d B hB U hU hBU hne τ' h),
     fun i => ?_⟩
   · obtain ⟨y₁, y₂, v, hv⟩ := hne
@@ -836,7 +835,7 @@ theorem famProj_of : EvLem → SumRep → FamProj := by
   classical
   obtain ⟨S₀, hS₀, hBS₀⟩ := hB.fin
   let S := S₀ ⊓ autU E a
-  haveI : FiniteDimensional ℂ S := Submodule.finiteDimensional_of_le inf_le_left
+  have : FiniteDimensional ℂ S := Submodule.finiteDimensional_of_le inf_le_left
   have hBS : ∀ y₁ y₂ v, B y₁ y₂ v ∈ S := fun y₁ y₂ v => ⟨hBS₀ y₁ y₂ v, hB.aut y₁ y₂ v⟩
   obtain ⟨t, ht, hind, hle⟩ := hSum E a S inferInstance fun φ hφ => hφ.2
   have hex : ∀ U : Submodule ℂ (UA E a → ℂ), ∃ p : (UA E a → ℂ) →ₗ[ℂ] (UA E a → ℂ), U ∈ t → (∀ φ, p φ ∈ U) ∧
@@ -1360,8 +1359,8 @@ theorem pieces_of (hS : SepPoly) (hN : NearSub) : Pieces := by
     intro i j
     rw [MonoidHom.mem_ker.mp hg]
     simpa using hε.le
-  haveI : Finite (Γ ⧸ K) := Subgroup.quotient_finite_of_isOpen K hKo
-  letI : Fintype (Γ ⧸ K) := Fintype.ofFinite _
+  have : Finite (Γ ⧸ K) := Subgroup.quotient_finite_of_isOpen K hKo
+  let : Fintype (Γ ⧸ K) := Fintype.ofFinite _
   let c : Γ ⧸ K → Γ := fun q => q.out
   let v : Γ → (Fin a × Fin a → Qbar l) := fun g p => ι.symm ((φ g : Matrix (Fin a) (Fin a) ℂ) p.1 p.2)
   have hv : Continuous v := continuous_pi fun p => hcont p.1 p.2
@@ -1498,7 +1497,7 @@ private theorem rFin_of_rep {a : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
   rfl
 
 private theorem rFin_delta {a : ℕ} (ν : DomWeight a) (X : GL (Fin a) ℂ) : RFin fun n => delta ν (X * n) := by
-  haveI : FiniteDimensional ℂ (nablaSq ℂ a ν) := inferInstance
+  have : FiniteDimensional ℂ (nablaSq ℂ a ν) := inferInstance
   exact rFin_of_rep (sqRep ℂ a ν) (ev1 ν) (top ν) X (GlobalTheory.BCT.TrKer.continuous_coef_sqRep a ν (top ν) (ev1 ν))
 
 theorem UpperTheory.Gal.Wt.rFinEx_of :
@@ -1742,9 +1741,9 @@ theorem twistBd_of : Twist → TwistBd := by
   classical
   obtain ⟨C₀, hC₀, hf⟩ := _root_.UpperTheory.Gal.Gen.levelEx_pf E a W f
   have hHo := isOpen_subgroupOf hC hC₀
-  haveI : CompactSpace C := isCompact_iff_compactSpace.1 hC.compact
-  haveI : Finite (C ⧸ C₀.subgroupOf C) := Subgroup.quotient_finite_of_isOpen _ hHo
-  letI := Fintype.ofFinite (C ⧸ C₀.subgroupOf C)
+  have : CompactSpace C := isCompact_iff_compactSpace.1 hC.compact
+  have : Finite (C ⧸ C₀.subgroupOf C) := Subgroup.quotient_finite_of_isOpen _ hHo
+  let := Fintype.ofFinite (C ⧸ C₀.subgroupOf C)
   have hq : ∀ q : C ⧸ C₀.subgroupOf C, ∃ R : ℝ, ∀ g i,
       ‖ι.symm (f.1 (b g i) (g * ((ℓ g)⁻¹ * q.out : C)))‖ ≤ R := by
     intro q

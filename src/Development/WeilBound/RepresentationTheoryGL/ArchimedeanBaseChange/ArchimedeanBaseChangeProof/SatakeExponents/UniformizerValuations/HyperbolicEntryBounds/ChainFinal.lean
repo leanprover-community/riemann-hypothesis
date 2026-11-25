@@ -441,9 +441,6 @@ theorem ell_mul {n : ℕ} (p₁ p₂ : E[X]) (h1 : p₁ ∈ Ell E p₁.natDegree
 
 end GlobalTheory.UnitOrbCount
 
-namespace GlobalTheory.UnitOrbCount
-
-end GlobalTheory.UnitOrbCount
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.KapOrbUnitEqOne =====

@@ -126,7 +126,7 @@ private theorem pull_sq {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C]
 
 private theorem phi_pull {P P' : PAlg l ⥤ Type} (u : P ⟶ P') (n j : ℕ) (x : MH P' n j) :
     phiH P n j (pullH u n j x) = pullH u n j (phiH P' n j x) :=
-  pull_sq (phiMor P' n) (phiMor P n) (pullMor u n) j (fun c => funext fun s => rfl) x
+  pull_sq (phiMor P' n) (phiMor P n) (pullMor u n) j (fun _ => funext fun _ => rfl) x
 
 end UpperTheory.Ru.crystallineComparison
 

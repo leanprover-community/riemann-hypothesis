@@ -49,15 +49,6 @@ def rightCoset (g : G) : RightCosets H := Quotient.mk (QuotientGroup.rightRel H)
 def invCoset : G ⧸ H → RightCosets H :=
   (QuotientGroup.quotientRightRelEquivQuotientLeftRel H).symm
 
-open MeasureTheory MeasureTheory.Measure Topology in
-open scoped ENNReal NNReal in
-variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-  [MeasurableSpace G] [BorelSpace G] (H : Subgroup G) in
-omit [MeasurableSpace G] [BorelSpace G] in
-theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.continuous_invCoset : Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.invCoset H) := by
-  refine continuous_quot_lift _ ?_
-  exact continuous_quot_mk.comp continuous_inv
-
 noncomputable def rightMeasure [MeasurableSpace (G ⧸ H)] [MeasurableSpace (RightCosets H)]
     (μ : Measure (G ⧸ H)) : Measure (RightCosets H) :=
   μ.map (invCoset H)

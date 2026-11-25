@@ -27,8 +27,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowWeightPf
 
 open PI.UnitaryGroupMassFormula.CntFormula.RowsMassW PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowMPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Form
 
 variable (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
@@ -197,8 +195,6 @@ namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowWeightPf
 
 open PI.UnitaryGroupMassFormula.CntFormula.RowsMassW PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowMPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Section
 
 variable (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
@@ -319,8 +315,6 @@ noncomputable section
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowWeightPf
 
 open PI.UnitaryGroupMassFormula.CntFormula.RowsMassW PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.RowMPf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem lift_span_eq_top_of_unimodular (D : Formalism.BasicNotions.D7) {Λ : Submodule (𝓞 D.host.E) (VS D).V}
     (hL : Λ.FG) (hU : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ) :

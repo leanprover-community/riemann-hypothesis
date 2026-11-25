@@ -14,8 +14,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding epsScale
 open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.GrpTangent GlobalTheory.CatCoh GlobalTheory.Cris
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.DeRham
 
 variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] {I : Ideal R} {I' : Ideal R'}
@@ -28,9 +26,14 @@ variable (κ : DividedPowers I) (t : S ⟶ Sp R)
 def pullOver {Y X : Over S} (f : Y ⟶ X) : Cris.H1 κ (X.hom ≫ t) →ₗ[R] Cris.H1 κ (Y.hom ≫ t) :=
   (IsMor.of_over κ (φ := f.left) (by rw [← Category.assoc, Over.w])).pull1
 
+/-- The condition cutting out `prim`. It is a separate definition so that unifying two copies of
+`prim` whose instance arguments are equal only up to unfolding compares those arguments, instead
+of unfolding this predicate and comparing the cohomology classes inside it. -/
+def IsPrimitiveClass (A : Over S) [GrpObj A] (c : Cris.H1 κ (A.hom ≫ t)) : Prop :=
+  ∀ (Y : Over S) (f g : Y ⟶ A), pullOver κ t (f * g) c = pullOver κ t f c + pullOver κ t g c
+
 def prim (A : Over S) [GrpObj A] : Submodule R (Cris.H1 κ (A.hom ≫ t)) where
-  carrier := {c | ∀ (Y : Over S) (f g : Y ⟶ A),
-    pullOver κ t (f * g) c = pullOver κ t f c + pullOver κ t g c}
+  carrier := {c | IsPrimitiveClass κ t A c}
   add_mem' {a b} ha hb Y f g := by rw [map_add (f := _), ha, hb, map_add (f := _), map_add (f := _)]; abel
   zero_mem' Y f g := by simp
   smul_mem' r c hc Y f g := by rw [map_smul, hc, map_smul, map_smul, smul_add]
@@ -463,17 +466,17 @@ theorem tanVal_mul {v w : epsR R ⟶ A} (hv : IsTangent v) (hw : IsTangent w)
         DualNumber R →+* DualNumber R) ≫ u.left = spMap (algebraMap R (DualNumber R)) ≫ η[A].left
     rw [hk, Cris.spMap_comp, Category.assoc, hu']
   have e1 : dg.comp p₁ = AlgHom.id R _ :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [dg, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [dg, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [dg, p₁, TrivSqZeroExt.fst_map]) (by simp [dg, p₁, TrivSqZeroExt.snd_map])
   have e2 : dg.comp p₂ = AlgHom.id R _ :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [dg, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [dg, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [dg, p₂, TrivSqZeroExt.fst_map]) (by simp [dg, p₂, TrivSqZeroExt.snd_map])
   have e3 : q₁.comp p₁ = AlgHom.id R _ :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₁, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [q₁, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₁, p₁, TrivSqZeroExt.fst_map]) (by simp [q₁, p₁, TrivSqZeroExt.snd_map])
   have e4 : q₁.comp p₂ = TrivSqZeroExt.map (0 : R →ₗ[R] R) :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₁, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [q₁, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₁, p₂, TrivSqZeroExt.fst_map]) (by simp [q₁, p₂, TrivSqZeroExt.snd_map])
   have e5 : q₂.comp p₁ = TrivSqZeroExt.map (0 : R →ₗ[R] R) :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₂, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [q₂, p₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₂, p₁, TrivSqZeroExt.fst_map]) (by simp [q₂, p₁, TrivSqZeroExt.snd_map])
   have e6 : q₂.comp p₂ = AlgHom.id R _ :=
-    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₂, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (by simp [q₂, p₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map])
+    AlgHom.ext fun x ↦ TrivSqZeroExt.ext (by simp [q₂, p₂, TrivSqZeroExt.fst_map]) (by simp [q₂, p₂, TrivSqZeroExt.snd_map])
   have hZd : spOver dg ≫ Z = v * w := by
     show spOver dg ≫ ((spOver p₁ ≫ v) * (spOver p₂ ≫ w)) = v * w
     rw [MonObj.comp_mul, ← Category.assoc, ← Category.assoc, spOver_comp, spOver_comp, e1, e2, specMap_id₂,
@@ -493,9 +496,9 @@ theorem tanVal_mul {v w : epsR R ⟶ A} (hv : IsTangent v) (hw : IsTangent w)
     intro φ u hπ hi hu
     rw [tanVal_apply, SqExt.val_map E (SqExt.dual R) φ (AlgHom.id R R) hπ hi Z.left (pt_w Z) u.left
       (pt_w u) (congrArg Over.Hom.left hu) f]
-  rw [key dg (v * w) (fun c ↦ by simp [E, dg, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (fun b ↦ by simp [E, dg, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) hZd,
-    key q₁ v (fun c ↦ by simp [E, q₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (fun b ↦ by simp [E, q₁, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) hZ1,
-    key q₂ w (fun c ↦ by simp [E, q₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) (fun b ↦ by simp [E, q₂, TrivSqZeroExt.fst_map, TrivSqZeroExt.snd_map]) hZ2]
+  rw [key dg (v * w) (fun c ↦ by simp [E, dg, TrivSqZeroExt.fst_map]) (fun b ↦ by simp [E, dg]) hZd,
+    key q₁ v (fun c ↦ by simp [E, q₁, TrivSqZeroExt.fst_map]) (fun b ↦ by simp [E, q₁]) hZ1,
+    key q₂ w (fun c ↦ by simp [E, q₂, TrivSqZeroExt.fst_map]) (fun b ↦ by simp [E, q₂]) hZ2]
   obtain ⟨V, hV⟩ : ∃ V : TrivSqZeroExt R (R × R), E.val Z.left (pt_w Z) f.1 = V := ⟨_, rfl⟩
   rw [hV]
   show TrivSqZeroExt.snd (TrivSqZeroExt.map (LinearMap.fst R R R + LinearMap.snd R R R) V) =

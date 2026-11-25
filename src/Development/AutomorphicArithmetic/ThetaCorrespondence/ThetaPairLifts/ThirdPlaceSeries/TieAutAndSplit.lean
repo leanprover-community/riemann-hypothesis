@@ -14,8 +14,6 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 namespace GlobalTheory.AutomorphismSplitting
@@ -50,7 +48,7 @@ theorem tieAut_and_split_alt : GlobalTheory.Published.AutomorphicFormsFiniteGL �
       (P.chr.e1 D.naut.etaT).2 _
     rw [Units.val_inv_eq_inv_val, norm_inv, h1, inv_one]
   · obtain ⟨ξ, hξ, -, hξu⟩ := GlobalTheory.T.heckeChar_localComponent_exists_unique_unitary D.host.E (P.chr.e1 (D.naut.muC i)).1 w
-    have he := _root_.GlobalTheory.T.T_e_locG_eq_rcAt_ofDet hAF hL D P (D.naut.muC i) w ξ hξ
+    have he := _root_.GlobalTheory.RankOneComp.e_locG_eq_rcAt_ofDet_of_isComp hAF hL D P (D.naut.muC i) w ξ hξ
     rw [P.T.tempered, he]
     refine GlobalTheory.WeilDeligne.WD.tempered_of_lpDim_le_one_of_norm_eig _ _ _ _ _ _ ?_ ?_
     · rw [← he, P.T.dim, D.naut.locG_dim]

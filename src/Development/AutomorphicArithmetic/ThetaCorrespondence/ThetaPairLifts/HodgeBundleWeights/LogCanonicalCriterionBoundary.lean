@@ -208,8 +208,6 @@ section -- clump:auto
 
 section
 noncomputable section
-namespace GlobalTheory.CechKS
-end GlobalTheory.CechKS
 section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj

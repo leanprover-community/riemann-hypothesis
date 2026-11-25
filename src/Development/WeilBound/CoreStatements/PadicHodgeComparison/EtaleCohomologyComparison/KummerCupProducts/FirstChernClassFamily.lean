@@ -5,9 +5,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
-
 open CategoryTheory Limits AlgebraicGeometry Opposite GroundTheory.PAdicHodge
 
 namespace CrystallineSemistableComparison.E

@@ -348,20 +348,10 @@ private theorem span_gen {La V : Type} [AddCommGroup V] [Module ℚ V] [AddCommG
     rw [this]
     exact Submodule.smul_mem _ r (h1 v)
 
-private theorem actOn_tg {C V R : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
-    [CommRing R] [Algebra ℚ R] (rep : C →ₐ[ℚ] Module.End ℚ V) (r s : R) (c : C) (v : V) :
-    actOn rep R (r ⊗ₜ[ℚ] c) (s ⊗ₜ[ℚ] v) = (r * s) ⊗ₜ[ℚ] rep c v := by
-  have hl : actOn rep R (r ⊗ₜ[ℚ] c) =
-      Algebra.ofId R (Module.End R (R ⊗[ℚ] V)) r * ((Module.End.baseChangeHom ℚ R V).comp rep) c :=
-    Algebra.TensorProduct.lift_tmul _ _ _ r c
-  rw [hl, Module.End.mul_eq_comp, LinearMap.comp_apply]
-  change r • ((rep c).baseChange R (s ⊗ₜ[ℚ] v)) = _
-  rw [LinearMap.baseChange_tmul, TensorProduct.smul_tmul', smul_eq_mul]
-
 private theorem actOn_tt {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
     (rep : C →ₐ[ℚ] Module.End ℚ V) (r s : ℝ) (c : C) (v : V) :
     actOn rep ℝ (r ⊗ₜ[ℚ] c) (s ⊗ₜ[ℚ] v) = (r * s) ⊗ₜ[ℚ] rep c v :=
-  actOn_tg rep r s c v
+  actOn_tmul rep r s c v
 
 private theorem bc_anti {R A M : Type} [CommRing R] [CommRing A] [AddCommGroup M] [Algebra R A]
     [Module R M] (B : LinearMap.BilinForm R M) (h : ∀ x y, B x y = -B y x) (x y : A ⊗[R] M) :

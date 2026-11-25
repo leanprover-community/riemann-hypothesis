@@ -670,7 +670,6 @@ theorem finrank_eig_inf_ker_le : ∀ (Γ V : Type) [Group Γ] [Fintype Γ] [AddC
     have hs : 0 ≤ s k := by
       have : 0 ≤ (Nat.card (H k) : ℝ) * s k := by rw [← hrR]; positivity
       exact le_of_mul_le_mul_left (by simpa using this) hH
-    have hd : (0 : ℝ) ≤ finrank ℂ (eig ρ Hb lam) := by positivity
     have hleR : (finrank ℂ (LinearMap.range (ρ.asAlgebraHom (b k * p))) : ℝ) ≤ n k * r := by exact_mod_cast hle
     have key : ((n k : ℝ) * r) * Nat.card Hb ≤ (c * s k * finrank ℂ (eig ρ Hb lam)) * Nat.card Hb := by
       calc ((n k : ℝ) * r) * Nat.card Hb = ((n k : ℝ) * Nat.card (H k)) * s k := by rw [mul_assoc, hrR]; ring

@@ -230,8 +230,6 @@ theorem valR_linComb_sec : ∀ {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fintype
   dsimp only [LB.LinComb]
   rw [Units.coe_prod, map_prod]
   refine Finset.prod_congr rfl fun k _ => ?_
-  have hk : ⊤ ≤ (y ≫ φ k) ⁻¹ᵁ (L.U (j k) ⊓ L.U (j' k)) := fun q _ =>
-    ⟨wchart_top_le L φ j y h k (x := q) trivial, wchart_top_le L φ j' y h' k (x := q) trivial⟩
   unfold trV
   exact valHom_res_pullU_zpow y (φ k) (L.U (j k) ⊓ L.U (j' k)) (V := LB.wchart L φ j ⊓ LB.wchart L φ j') _ hh
     (L.g (j k) (j' k)) (ε k)

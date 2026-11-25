@@ -124,6 +124,6 @@ theorem exists_SB_integral_mul_char_eq_one : ∀ (G : Type) [Group G] [Topologic
     show ∫ x, (K : Set G).indicator (fun _ => (((μ (K : Set G)).toReal : ℂ))⁻¹) x * (χ x : ℂ) ∂μ = 1
     simp only [key]
     rw [integral_indicator_const _ hKm]
-    simp [Measure.real, hpos.ne', hfin.ne, hr]
+    simp [Measure.real, hr]
 
 end GlobalTheory.CompanionTheory.FrobNz

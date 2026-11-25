@@ -68,15 +68,6 @@ theorem moves_unique {h : Matrix (Fin n) (Fin n) E} (hu : ccT h * h = 1) {B X Y 
   have key := (h1 (ccT h *ᵥ w)).symm.trans (h2 (ccT h *ᵥ w))
   rwa [hw] at key
 
-private theorem one_mem_UJset' {M : ℕ} : (1 : Matrix (Fin n) (Fin n) E) ∈ DH E n M := by
-  refine ⟨?_, 1, one_pos, Nat.coprime_one_left _, 0, fun k i => ?_, by simp⟩
-  · have h1 : ccT (1 : Matrix (Fin n) (Fin n) E) = 1 := by
-      unfold ccT
-      rw [Matrix.map_one _ (by simp [cc]) (by simp [cc]), Matrix.transpose_one]
-    rw [h1, mul_one]
-  · rw [Matrix.zero_apply]
-    exact isIntegral_zero
-
 private theorem eq_one_of_mem_DH_zero {h : Matrix (Fin n) (Fin n) E} (hh : h ∈ DH E n 0) : h = 1 := by
   obtain ⟨-, s, -, hs, y, -, e⟩ := hh
   rw [(Nat.coprime_zero_right _).1 hs] at e
@@ -215,7 +206,7 @@ private theorem exists_moves_of_cls_eq {M : ℕ} {a b : Vset E n M}
   clear e
   induction hq with
   | rel x y hxy => exact hxy
-  | refl x => exact ⟨1, one_mem_UJset', fun v => by rw [Matrix.one_mulVec]⟩
+  | refl x => exact ⟨1, Base.one_mem_DH _, fun v => by rw [Matrix.one_mulVec]⟩
   | symm x y _ ih =>
     obtain ⟨h, hh, m⟩ := ih
     exact ⟨ccT h, (eq_mul_div_mul_mul_inv_of_mul_inv_mul_eq hh).1, Nbr.move_inv (mul_eq_one_comm.1 hh.1) m⟩
@@ -1327,13 +1318,11 @@ theorem abs_norm_eq (h : IsType Ψ) (t : E) :
   · intro a _; exact star_star a
   · intro a _; simp only [ComplexEmbedding.conjugate_coe_eq, Complex.norm_conj]
 
-alias isSB_of_adm := _root_.GlobalTheory.SW.SwdHeat.isSB_member
-
 theorem bounded_of_adm {M R : ℕ} {φ : Fam E n N} (h : admitted M R φ) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ Λ ∈ Vset E n M, ∀ x, ‖φ Λ x‖ ≤ B := by
   haveI : Finite (Cls E n M) := (finite_cls_and_stab E n M h.pos.1).1
   have h1 : ∀ c : Cls E n M, ∃ B : ℝ, ∀ x, ‖φ (Quot.out c).1 x‖ ≤ B := fun c => by
-    obtain ⟨S, hS, hl⟩ := isSB_of_adm h (Quot.out c).2
+    obtain ⟨S, hS, hl⟩ := GlobalTheory.SW.SwdHeat.isSB_member h (Quot.out c).2
     exact (ip_self_nonneg_and_bounds E _ _ S _ hS hl).2.2.2.2.1
   choose b hb using h1
   obtain ⟨B, hB⟩ := (Set.finite_range b).bddAbove
@@ -1420,8 +1409,8 @@ theorem twist_swd_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   refine ⟨max C₁ 0 ^ ((n : ℝ) / 2) * (C₂ * B), fun 𝔛 hfg hag Z hZ => ?_⟩
   obtain ⟨a, ha, hidx, hadm⟩ := h1 n M R φ 𝔛 hφ hfg hag
   obtain ⟨-, -, -, hpos, ⟨R', hR'⟩, -⟩ := twist_admissible E n (N + 1) M R φ 𝔛 hφ hfg hag
-  obtain ⟨Z', hZ', e1, e2⟩ := exists_moved hΨ hn hN hφ.pos.1 (fun Λ hΛ => isSB_of_adm hR' hΛ) ha
-    (fun Λ hΛ => isSB_of_adm hadm hΛ) hZ
+  obtain ⟨Z', hZ', e1, e2⟩ := exists_moved hΨ hn hN hφ.pos.1 (fun Λ hΛ => GlobalTheory.SW.SwdHeat.isSB_member hR' hΛ) ha
+    (fun Λ hΛ => GlobalTheory.SW.SwdHeat.isSB_member hadm hΛ) hZ
   have h3 := h2 _ hadm B (fun Λ hΛ x => by
     unfold twist
     split_ifs

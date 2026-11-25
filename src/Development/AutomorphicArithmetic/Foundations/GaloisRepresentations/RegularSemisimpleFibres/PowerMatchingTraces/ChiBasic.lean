@@ -41,7 +41,7 @@ private theorem isLocallyConstant_chiAt {K : Type} [Field K] [NumberField K] (n 
 theorem chiBasic : ChiBasic := by
   intro K _ _ n χ v
   refine ⟨isLocallyConstant_chiAt n χ v, fun g => ?_, fun f hf => ?_⟩
-  · simp [chiAt, HChar.loc, ← Units.val_mul]
+  · simp [chiAt, HChar.loc]
   · exact ⟨hf.1.mul (isLocallyConstant_chiAt n χ v), hf.2.mul_right⟩
 
 end UpperTheory.Gal.InertialTypesAlt.G

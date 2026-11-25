@@ -87,9 +87,6 @@ theorem smul_piece_sub {e : A} (he : e * e = e) (x : GL n A) :
 theorem piece_apply {e : A} (he : e * e = e) (x : GL n A) (i j : n) :
     (piece he x).1 i j = e * x.1 i j + (1 - e) * (1 : Matrix n n A) i j := rfl
 
-theorem mul_one_sub_mul {e : A} (he : e * e = e) (x : A) : e * ((1 - e) * x) = 0 := by
-  linear_combination (-x) * he
-
 theorem map_mix {B : Type} [CommRing B] (ψ : A →+* B) (e m d : A) :
     ψ (e * m + (1 - e) * d) = ψ e * ψ m + (1 - ψ e) * ψ d := by
   simp only [map_add (f := _), map_mul, map_sub, map_one]

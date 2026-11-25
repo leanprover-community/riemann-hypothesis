@@ -144,10 +144,3 @@ theorem pairing (hS : HidaSetting p n' W Qq O Kf ι σ jO w) (φ : WF p n' ≃+*
 end
 
 end Formalism.MainNotions.ColumnSystems.Pf.TF
-
-namespace Formalism.MainNotions.ColumnSystems.Pf
-
-open Formalism.MainNotions.G Formalism.GradedWeylDivisibility TF
-open Formalism.L2.G.Model (dE dual_edgeBasis pQ_ne edgeBasis dual_edge Th0)
-
-end Formalism.MainNotions.ColumnSystems.Pf

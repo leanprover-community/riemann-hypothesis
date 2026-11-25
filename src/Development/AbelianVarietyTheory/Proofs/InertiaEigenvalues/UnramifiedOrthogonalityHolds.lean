@@ -40,7 +40,6 @@ theorem geo_succ (f : Module.End R M) (m : M) (k : ℕ) :
 
 theorem geo_add (f : Module.End R M) (m : M) (a b : ℕ) :
     geo f m (a + b) = geo f m a + (f ^ a) (geo f m b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [geo, Finset.sum_range_add, map_sum, pow_add, Module.End.mul_apply]
 
 theorem geo_mul (f : Module.End R M) (m : M) {N : ℕ} (hN : f ^ N = 1) (a : ℕ) :

@@ -164,7 +164,7 @@ theorem thetaPt_box : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G :
     rw [e1, e2]
     funext a b
     simp [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM]
-  have hψ : IsStdChar D W.ψ (-1) := h.ψ ▸ GlobalTheory.T.isStdChar_neg_one_of_standardTraceAdelicAddChar D Bs.ψ hT.base.std
+  have hψ : IsStdChar D W.ψ (-1) := h.ψ ▸ GlobalTheory.StdCharFromIsStd.isStdChar_of_isStd D Bs.ψ hT.base.std
   obtain ⟨ha, hi, hs⟩ := GlobalTheory.ThetaTransform.thetaTr_bij (S := S₀) (T := T₀) Γ.M.co hψ eA eB hT.geo.hM.rat
   refine ⟨ha, hi, fun f₁ f₂ hf₁ hf₂ => (hs _).1 ?_⟩
   exact isThetaFunO_mul (S := S₀) (T := T₀) (AddMonoidHom.mk' (mapV e) (mapV_add e)) (AddMonoidHom.mk' (mapW e) (mapW_add e))

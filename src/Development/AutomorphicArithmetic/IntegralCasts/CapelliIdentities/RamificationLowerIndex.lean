@@ -137,10 +137,10 @@ end UpperTheory.Reformulated.B.RamificationLowerIndex
 open Polynomial IsLocalRing ValuativeRel GroundTheory.LocalField in
 open IsDiscreteValuationRing hiding maximalIdeal in
 theorem UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_lowerIndex_restrictNormalHom.{u_1, u_2} :
-    ∀ {K : Type u_1} {L : Type u_2} [inst : Field K] [inst_1 : ValuativeRel K] [inst_2 : TopologicalSpace K]
-      [inst_3 : IsNonarchimedeanLocalField K] [inst_4 : Field L] [inst_5 : ValuativeRel L] [inst_6 : TopologicalSpace L]
-      [inst_7 : IsNonarchimedeanLocalField L] [inst_8 : Algebra K L] [inst_9 : ValuativeExtension K L]
-      [inst_10 : FiniteDimensional K L] (M : IntermediateField K L) [IsGalois K L] [inst_12 : Normal K ↥M] (σ : Gal(L/K)),
+    ∀ {K : Type u_1} {L : Type u_2} [Field K] [ValuativeRel K] [TopologicalSpace K]
+      [IsNonarchimedeanLocalField K] [Field L] [ValuativeRel L] [TopologicalSpace L]
+      [IsNonarchimedeanLocalField L] [Algebra K L] [ValuativeExtension K L]
+      [FiniteDimensional K L] (M : IntermediateField K L) [IsGalois K L] [Normal K ↥M] (σ : Gal(L/K)),
       (↑((_root_.Ideal.ramificationIdx (_root_.IsLocalRing.maximalIdeal (_root_.Valuation.integer (_root_.ValuativeRel.valuation L))) (_root_.Valuation.integer (_root_.ValuativeRel.valuation (↥M))))) : ℕ∞) *
           GroundTheory.LocalField.lowerIndex K (↥M) ((AlgEquiv.restrictNormalHom ↥M : Gal(L/K) → Gal(↥M/K)) σ) =
         ∑ τ : Gal(L/↥M), GroundTheory.LocalField.lowerIndex K L (σ * AlgEquiv.restrictScalars K τ) := by

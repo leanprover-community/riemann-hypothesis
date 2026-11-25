@@ -17,10 +17,6 @@ open PI.UpqRep (rhoC rhoN lowK nsq vNormSq)
 
 variable {n : ℕ}
 
-theorem rho_sum (ε : Fin n → Bool) (a : Fin n) :
-    rhoN ε a + rhoC ε a = ((n : ℝ) - 1) / 2 - ((a : ℕ) : ℝ) := by
-  apply GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC
-
 theorem abs_rhoC_le (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| ≤ n := by
   unfold rhoC
   have h1 : ((univ.filter fun b => a < b ∧ ε b = ε a).card : ℝ) ≤ n := by
@@ -60,7 +56,6 @@ theorem rhoC_lt (ε : Fin n → Bool) {a b : Fin n} (hab : a < b) (he : ε a = �
   have h2' : ((univ.filter fun c => c < a ∧ ε c = ε a).card : ℝ) ≤
       ((univ.filter fun c => c < b ∧ ε c = ε b).card : ℝ) := by exact_mod_cast h2
   linarith
-
 
 open Classical in
 def levS (y : ℕ → ℝ) (L : ℝ) (m : ℕ) : ℕ := ((range m).filter fun i => L ≤ y i - y (i + 1)).card
@@ -219,7 +214,7 @@ theorem farReg_of_lkt_unitIneq_farNum : LKTExists → Renumber → UnitIneq → 
     nlinarith [mul_nonneg h0 h0, mul_nonneg (mul_nonneg h0 h0) h0]
   have hlow : lowK (ε ∘ s) (xv (ε ∘ s) (γ ∘ s) - Formalism.QuantumDeterminants.rhoStd n) = γ ∘ s := by
     funext a
-    have h1 := rho_sum (ε ∘ s) a
+    have h1 := GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC (ε ∘ s) a
     simp only [lowK, xv, Formalism.QuantumDeterminants.rhoStd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
     linarith
   refine ⟨s, xv (ε ∘ s) (γ ∘ s) - Formalism.QuantumDeterminants.rhoStd n, ⟨?_, ?_⟩, hord, ?_, u, hu, ?_⟩

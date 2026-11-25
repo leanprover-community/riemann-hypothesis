@@ -507,15 +507,6 @@ theorem inv_of_UH {g : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hg : g ∈ UH (H
   rw [Matrix.inv_eq_left_inv hl]
   exact ⟨hl, mul_eq_one_comm.1 hl⟩
 
-theorem UH_mul {g h : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hg : g ∈ UH (Hb k)) (hh : h ∈ UH (Hb k)) :
-    g * h ∈ UH (Hb k) := by
-  have e1 : gᴴ * Hb k * g = Hb k := hg
-  have e2 : hᴴ * Hb k * h = Hb k := hh
-  show (g * h)ᴴ * Hb k * (g * h) = Hb k
-  rw [conjTranspose_mul]
-  calc hᴴ * gᴴ * Hb k * (g * h) = hᴴ * (gᴴ * Hb k * g) * h := by simp only [Matrix.mul_assoc]
-    _ = Hb k := by rw [e1, e2]
-
 theorem UH_inv {g : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hg : g ∈ UH (Hb k)) : g⁻¹ ∈ UH (Hb k) := by
   have hg' : gᴴ * Hb k * g = Hb k := hg
   obtain ⟨_, h2⟩ := inv_of_UH hg
@@ -742,7 +733,7 @@ theorem rotation_section_holds : GTRRSec := by
   obtain ⟨hB1, hB2⟩ := inv_of_UH hB
   have hsec := theSection_isSection k r z z' hk hz hz' hT hT'
   refine ⟨fun φ => ⟨?_, ?_⟩, ⟨?_, ?_, ?_, ?_⟩, fun φ ψ => ⟨?_, ?_⟩, ?_, ?_⟩
-  · refine (UWset_iff hz _).2 ⟨_, Formalism.FourierDecayAlt.P.GTRRSecH.UH_mul (Formalism.FourierDecayAlt.P.GTRRSecH.UH_mul hA (dOne_UH φ)) (UH_inv hA), ?_, rfl⟩
+  · refine (UWset_iff hz _).2 ⟨_, Formalism.FourierDecayAlt.P.TwoByOneBlock.UHb_mul (Formalism.FourierDecayAlt.P.TwoByOneBlock.UHb_mul hA (dOne_UH φ)) (UH_inv hA), ?_, rfl⟩
     have hinv : (gA k (wbPart k r z) (Tz k r z))⁻¹ *ᵥ wbPart k r z =
         (↑√(Tz k r z) : ℂ) • Pi.single (Fin.last k) 1 := by
       calc (gA k (wbPart k r z) (Tz k r z))⁻¹ *ᵥ wbPart k r z
@@ -750,7 +741,7 @@ theorem rotation_section_holds : GTRRSec := by
               ((↑√(Tz k r z) : ℂ) • Pi.single (Fin.last k) 1)) := by rw [hAv]
         _ = (↑√(Tz k r z) : ℂ) • Pi.single (Fin.last k) 1 := by rw [mulVec_mulVec, hA1, one_mulVec]
     rw [← mulVec_mulVec, ← mulVec_mulVec, hinv, dOne_fix_last, hAv]
-  · refine (UWset_iff hz' _).2 ⟨_, Formalism.FourierDecayAlt.P.GTRRSecH.UH_mul (Formalism.FourierDecayAlt.P.GTRRSecH.UH_mul (UH_inv hB) (dTwo_UH φ)) hB, ?_, rfl⟩
+  · refine (UWset_iff hz' _).2 ⟨_, Formalism.FourierDecayAlt.P.TwoByOneBlock.UHb_mul (Formalism.FourierDecayAlt.P.TwoByOneBlock.UHb_mul (UH_inv hB) (dTwo_UH φ)) hB, ?_, rfl⟩
     rw [← mulVec_mulVec, ← mulVec_mulVec, hBv, dTwo_fix_last hk, ← hBv, mulVec_mulVec, hB1, one_mulVec]
   · simp only [hL]
     rw [dOne_eq_one exp_zero_I, Matrix.mul_one, hA2, emb_one]
@@ -794,7 +785,7 @@ theorem rotation_section_holds : GTRRSec := by
         rw [emb_mul]
       refine ⟨hc, ?_, ?_⟩
       · rw [hprod]
-        obtain ⟨hU, hfix⟩ := emb_mem_UWb (r := r) (Formalism.FourierDecayAlt.P.GTRRSecH.UH_mul hSU (smul_one_UH φ))
+        obtain ⟨hU, hfix⟩ := emb_mem_UWb (r := r) (Formalism.FourierDecayAlt.P.TwoByOneBlock.UHb_mul hSU (smul_one_UH φ))
         exact ⟨hU, fun a _ => hfix a⟩
       · show 0 < Q.GGl k r z z' _
         simp only [Q.GGl]

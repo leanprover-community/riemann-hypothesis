@@ -30,14 +30,6 @@ theorem sliceFamJF_cpt {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace
   obtain ⟨R, hR⟩ := (hcpt.isCompact.image hcont).bddAbove
   refine ⟨R, fun g _ hg => hR ⟨g, subset_tsupport F hg, rfl⟩⟩
 
-private theorem liftVec_injective_apply {k i r' : ℕ} {v w : Fin (2 * r' + k + 1) → ℂ}
-    (h : liftVec k i r' v = liftVec k i r' w) : v = w := by
-  funext q
-  have hq := congrFun h ⟨q.1 + i, by omega⟩
-  simp only [liftVec] at hq
-  rw [dite_eq_left ⟨by simp, by simp; omega⟩, dite_eq_left ⟨by simp, by simp; omega⟩] at hq
-  simpa using hq
-
 private theorem castM_castM_eq_castM_trans {k a b c : ℕ} (h1 : a = b) (h2 : b = c) (h3 : a = c) (g : B.Mat k a) :
     D.castM h2 (D.castM h1 g) = D.castM h3 g := by
   subst h1 h2
@@ -66,11 +58,11 @@ theorem slice_family_orbital : SliceFamJF := by
   obtain ⟨hW0, hW0', hN0⟩ := hN (j + 1) hj
   refine jfStep P.k (P.r - (j + 1)) (P.r - j) e Wp Wq (T.bs j) (T.bs (j + 1)) ?_ ?_ ?_ ?_
     hW1 hW1' hW0 hW0' hN1 hN0 F f0 t ht hC ?_ γ hγ hΩ
-  · apply liftVec_injective_apply (i := j)
+  · apply Formalism.FourierDecayAlt.P.JCTx5.liftVec_inj (i := j)
     apply castV_inj (h := (by omega : j + (P.r - j) = P.r))
     rw [T.z_lev j (by omega), asm_castV_castV,
       lift_lift_V j (P.r - (j + 1)) (P.r - j) P.r (by omega) (by omega) (by omega), T.z_lev (j + 1) hj]
-  · apply liftVec_injective_apply (i := j)
+  · apply Formalism.FourierDecayAlt.P.JCTx5.liftVec_inj (i := j)
     apply castV_inj (h := (by omega : j + (P.r - j) = P.r))
     rw [T.z'_lev j (by omega), asm_castV_castV,
       lift_lift_V j (P.r - (j + 1)) (P.r - j) P.r (by omega) (by omega) (by omega), T.z'_lev (j + 1) hj]

@@ -86,7 +86,7 @@ theorem exists_point_of_val_gen {K Ω : Type} [Field K] [NumberField K] [Field �
   have hmax : (m.comap (algebraMap (𝓞 K) A)) = la.asIdeal :=
     (la.isMaximal.eq_of_le (Ideal.IsPrime.ne_top inferInstance) hlaM).symm
   have hinj' : Function.Injective (algebraMap (𝓞 K) (A ⧸ q.asIdeal)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     by_contra ha0
     have h1 : a ∈ q.asIdeal.comap (algebraMap (𝓞 K) A) :=
@@ -344,7 +344,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
 
 
-set_option maxHeartbeats 2000000 in
 set_option synthInstance.maxHeartbeats 100000 in
 theorem fin_small_gen {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (Z : Comp Xo c) (G : WTZ E)
     (hFG : (latOn U Z G).FG) (hsp : Submodule.span c.F (latOn U Z G : Set (cuspOn U Z G)) = ⊤)

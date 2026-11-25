@@ -6,6 +6,7 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Instances.Matrix
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
 
 @[expose] public section
@@ -124,19 +125,8 @@ theorem discHA_of (hT : TensTop) : DiscHA := by
     let V : Set (HR (AF F) σ J) := {g | ∀ i j,
       ((g : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) i j -
         ((x.1 : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) i j ∈ U}
-    have hVo : IsOpen V := by
-      have hc : Continuous fun g : HR (AF F) σ J =>
-          ((g : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) :=
-        Units.continuous_val.comp continuous_subtype_val
-      have : V = ⋂ i, ⋂ j, (fun g : HR (AF F) σ J =>
-          ((g : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) i j -
-            ((x.1 : GL (Fin M) (AF F ⊗[F] E)) : Matrix (Fin M) (Fin M) (AF F ⊗[F] E)) i j) ⁻¹' U := by
-        ext g
-        simp [V]
-      rw [this]
-      exact isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun j =>
-        hUo.preimage (((continuous_apply j).comp ((continuous_apply i).comp hc)).sub
-          continuous_const)
+    have hVo : IsOpen V := hUo.matrix.preimage
+      ((Units.continuous_val.comp continuous_subtype_val).sub continuous_const)
     rw [isOpen_induced_iff]
     refine ⟨V, hVo, Set.ext fun y => ?_⟩
     simp only [Set.mem_preimage, Set.mem_singleton_iff]

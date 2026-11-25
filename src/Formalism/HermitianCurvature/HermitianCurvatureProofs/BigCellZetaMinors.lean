@@ -50,9 +50,3 @@ theorem zeta_gq (D : RealPlaceData k r Wp Wq) {q : (Fin r → ℂ) × ℂ} (hq :
   exact hz
 
 end Formalism.FourierDecayAlt.P.BigCellZetaMinors
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-end Formalism.FourierDecayAlt.P

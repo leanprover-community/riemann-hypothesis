@@ -75,13 +75,6 @@ open GlobalTheory.FlagLeviGroup
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-theorem nrm_J_conj (X : Matrix (Fin n) (Fin n) ℂ) : nrm (Formalism.REAL.Jm ε * X * Formalism.REAL.Jm ε) = nrm X := by
-  unfold nrm Formalism.REAL.hs
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
-  simp only [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul]
-  split_ifs <;> simp
-
 private theorem uMat_inv_eq_Jm_conjTranspose_Jm (g : Formalism.REAL.UJ ε) :
     uMat g⁻¹ = Formalism.REAL.Jm ε * (uMat g)ᴴ * Formalism.REAL.Jm ε := by
   have hg : (uMat g)ᴴ * (Formalism.REAL.Jm ε * uMat g) = Formalism.REAL.Jm ε := by
@@ -99,7 +92,7 @@ theorem nrm_inv (g : Formalism.REAL.UJ ε) : nrm (uMat g⁻¹ - 1) = nrm (uMat g
   have e : uMat g⁻¹ - 1 = Formalism.REAL.Jm ε * (uMat g - 1)ᴴ * Formalism.REAL.Jm ε := by
     rw [uMat_inv_eq_Jm_conjTranspose_Jm, Matrix.conjTranspose_sub, Matrix.conjTranspose_one, Matrix.mul_sub, Matrix.sub_mul,
       Matrix.mul_one, _root_.GlobalTheory.IwConst.FlagMem.Jm_mul_self]
-  rw [e, nrm_J_conj, nrm_conjTranspose]
+  rw [e, GlobalTheory.IwConstApprox.nrm_conj_Jm, nrm_conjTranspose]
 
 theorem nrm_mul_sub_one (g h : Formalism.REAL.UJ ε) :
     nrm (uMat (g * h) - 1) ≤ nrm (uMat g - 1) * nrm (uMat h - 1) + nrm (uMat g - 1) + nrm (uMat h - 1) := by
@@ -475,14 +468,12 @@ theorem isCompact_body (ρ : V → ℝ) (hc : Continuous ρ) (h0 : ∀ v, 0 ≤ 
   have h4 : ρ v ≤ t := hv
   nlinarith
 
-
 omit [FiniteDimensional ℝ V] in
 theorem body_eq_smul (ρ : V → ℝ) (hs : ∀ s : ℝ, 0 ≤ s → ∀ v, ρ (s • v) = s * ρ v) {t : ℝ} (ht : 0 < t) :
     {v | ρ v ≤ t} = t • {v | ρ v ≤ 1} := by
   ext v
   rw [Set.mem_smul_set_iff_inv_smul_mem₀ ht.ne', Set.mem_setOf_eq, Set.mem_setOf_eq,
     hs _ (inv_nonneg.2 ht.le), inv_mul_le_iff₀ ht, mul_one]
-
 
 omit [NormedSpace ℝ V] [FiniteDimensional ℝ V] in
 theorem exists_cutoff (ρ : V → ℝ) (hc : Continuous ρ) {s t : ℝ} (hst : s < t) :

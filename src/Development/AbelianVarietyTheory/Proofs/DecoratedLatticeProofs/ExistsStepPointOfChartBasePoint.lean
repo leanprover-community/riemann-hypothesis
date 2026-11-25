@@ -70,7 +70,7 @@ theorem pointOf_base : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → 
       (Formalism.L2.Ker.full_of_sd ⟨p.deco.2.lat, p.deco.2.uni⟩) hqk.lat hpk.lat
   obtain ⟨r', hr'1, hr'2, hr'3⟩ := ChExM.exists_pt_inv hd ((I.stp u a i).rep c₀) q
   have hcos : cosetIn r' = cosetIn ((I.stp u a i).rep c₀) :=
-    (ChExM.cosetIn_iff hd (MemChart.hqG hPr) _ _).2 ⟨hr'2, hr'3⟩
+    (GlobalTheory.Mem.Col2.ChEx.cosetIn_eq_iff_bar_cq hd (MemChart.hqG hPr) _ _).2 ⟨hr'2, hr'3⟩
   refine ⟨c₀.1, r', ?_, ?_, ?_⟩
   · rw [hr'1]
     refine ⟨hqk.uni, hqk.lat, hqk.f, hqk.be, fun P i' j => ?_⟩

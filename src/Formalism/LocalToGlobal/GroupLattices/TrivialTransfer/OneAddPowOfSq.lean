@@ -1,10 +1,10 @@
 module
 
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.CongruenceLiftOfBasis
 public import Formalism.LocalRingCardinality.DataLevel
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneAddPowOfMulSelfEqZero
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ClosureUpperUni
 public import Lemmata.GeneralBFactLeftTail.Imports
+import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
@@ -149,7 +149,23 @@ variable {F : Type} [Field F] [NumberField F] {k : ℕ}
 
 theorem natCast_mem_max (v : HeightOneSpectrum (𝓞 F)) (g : ℕ) (hg : (g : 𝓞 F) ∈ v.asIdeal) :
     (g : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
-  apply PI.LocMassTypL.natCast_mem_max <;> assumption
+  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
+  intro hu
+  obtain ⟨w, hw⟩ := hu.exists_left_inv
+  have h := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation (K := F) v (g : 𝓞 F)
+  have h2 := (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem (K := F) v (g : 𝓞 F)).mpr hg
+  rw [← h] at h2
+  have hlt : Valued.v (g : v.adicCompletion F) < 1 := by
+    convert h2 using 2
+    simp
+  have hw1 : Valued.v (w : v.adicCompletion F) ≤ 1 := w.2
+  have e : (w : v.adicCompletion F) * (g : v.adicCompletion F) = 1 := by
+    have := congrArg (fun x : v.adicCompletionIntegers F => (x : v.adicCompletion F)) hw
+    simpa using this
+  have : Valued.v ((w : v.adicCompletion F) * (g : v.adicCompletion F)) < 1 :=
+    lt_of_le_of_lt (by rw [map_mul]; exact mul_le_of_le_one_left' hw1) hlt
+  rw [e, map_one] at this
+  exact lt_irrefl _ this
 
 theorem iwU_coprime (v : HeightOneSpectrum (𝓞 F)) (g : ℕ) (hg : g.Prime) (hgv : (g : 𝓞 F) ∈ v.asIdeal)
     (δ : GL (Fin k) (v.adicCompletion F)) (hδ : δ ∈ iwU F k v) (N : ℕ) (hc : Nat.Coprime N g) (hN : δ ^ N = 1) : δ = 1 := by

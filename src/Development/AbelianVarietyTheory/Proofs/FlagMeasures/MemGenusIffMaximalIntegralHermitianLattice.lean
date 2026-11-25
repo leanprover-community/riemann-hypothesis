@@ -231,13 +231,7 @@ theorem smul_mem_loc {p : HeightOneSpectrum (𝓞 K)} (hc : conjIdeal (K := K) p
 
 theorem val_unif {p : HeightOneSpectrum (𝓞 K)} {a : 𝓞 K} (h1 : a ∈ p.asIdeal) (h2 : a ∉ p.asIdeal ^ 2) :
     p.valuation K (algebraMap (𝓞 K) K a) = WithZero.exp (-1 : ℤ) := by
-  rw [HeightOneSpectrum.valuation_of_algebraMap]
-  have a1 := (p.intValuation_le_pow_iff_mem a 1).2 (by simpa using h1)
-  have a2 := mt (p.intValuation_le_pow_iff_mem a 2).1 h2
-  have a0 : p.intValuation a ≠ 0 := fun e => a2 (by rw [e]; exact zero_le)
-  rw [← WithZero.exp_log a0, WithZero.exp_le_exp] at a1 a2
-  rw [← WithZero.exp_log a0, WithZero.exp_inj]
-  omega
+  apply GlobalTheory.MaxLatDet.val_unif <;> assumption
 
 theorem le_of_lt_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZero.exp (-1 : ℤ) := by
   by_cases a0 : x = 0

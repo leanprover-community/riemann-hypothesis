@@ -5,7 +5,7 @@ public import Mathlib.NumberTheory.NumberField.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CommonMajorizingLattice.majLattice_common.{u_1} :
-    ∀ {K : Type u_1} [inst : Field K] [NumberField K] (t : Finset K),
+    ∀ {K : Type u_1} [Field K] [NumberField K] (t : Finset K),
     ∃ (d : ℤ), d ≠ (0 : ℤ) ∧ ∀ a ∈ t, IsIntegral ℤ ((↑d : K) * a) := by
   intro K _ _ t
   obtain ⟨d, hd, h⟩ := exists_integral_multiples ℤ ℚ t

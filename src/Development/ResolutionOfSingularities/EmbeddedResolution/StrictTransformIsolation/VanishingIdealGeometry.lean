@@ -69,7 +69,6 @@ private theorem radical_ker_eq_of_isReduced {A B : Scheme.{u}} (g : A ⟶ B)
   intro y hy
   obtain ⟨n, hn⟩ := hy
   refine (key y).2 ?_
-  have : _root_.IsReduced Γ(A, g ⁻¹ᵁ (V : B.Opens)) := inferInstance
   refine IsNilpotent.eq_zero ⟨n, ?_⟩
   rw [← map_pow]
   exact (key _).1 hn
@@ -107,8 +106,6 @@ private theorem comap_vanishingIdeal_subschemeι {X : Scheme.{u}} (H : X.IdealSh
   have : IsIso (Limits.pullback.snd H.subschemeι
       (Scheme.IdealSheafData.vanishingIdeal Z).subschemeι) :=
     isIso_pullback_snd_of_le H _ hHJ
-  have : AlgebraicGeometry.IsOpenImmersion (Limits.pullback.snd H.subschemeι
-      (Scheme.IdealSheafData.vanishingIdeal Z).subschemeι) := inferInstance
   have : AlgebraicGeometry.IsReduced (Limits.pullback H.subschemeι
       (Scheme.IdealSheafData.vanishingIdeal Z).subschemeι) :=
     AlgebraicGeometry.isReduced_of_isOpenImmersion (Limits.pullback.snd H.subschemeι
@@ -245,7 +242,6 @@ theorem smooth_comap_subschemeι_of_isOpenImmersion {X Y S : Scheme.{u}} (f : X 
     [AlgebraicGeometry.IsOpenImmersion f] (I : Y.IdealSheafData) (g : Y ⟶ S)
     (hsm : AlgebraicGeometry.Smooth (I.subschemeι ≫ g)) :
     AlgebraicGeometry.Smooth ((I.comap f).subschemeι ≫ f ≫ g) := by
-  have : AlgebraicGeometry.Smooth (Limits.pullback.snd f I.subschemeι) := inferInstance
   exact smooth_comap_subschemeι_comp_of_smooth_pullback_snd f I g hsm inferInstance
 
 theorem smooth_vanishingIdeal_comap_subschemeι {k : Type u} [Field k] {W : Scheme.{u}}

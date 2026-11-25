@@ -101,8 +101,8 @@ theorem dimPIT_fin (F : Type) [Field F] (N : ℕ) (V W : Ideal (MvPolynomial (Fi
     (hW : W ∈ (V ⊔ Ideal.span {s}).minimalPrimes) :
     ringKrullDim (MvPolynomial (Fin N) F ⧸ W) + 1 =
       ringKrullDim (MvPolynomial (Fin N) F ⧸ V) := by
-  intros
-  apply _root_.GroundTheory.Heights₂.Heights.SectionComponents.ringKrullDim_quotient_add_one_eq <;> assumption
+  apply GroundTheory.Heights₂.Heights.SectionComponents.ringKrullDim_quotient_add_one_eq <;>
+    assumption
 
 theorem dimPIT' : DimPITStatement := by
   intro F _ σ _ V W s hV hs hW

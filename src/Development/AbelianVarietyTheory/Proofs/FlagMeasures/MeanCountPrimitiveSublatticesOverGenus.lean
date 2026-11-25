@@ -580,13 +580,6 @@ theorem exists_smul_mem (L : Submodule (𝓞 K) V) (hL : Submodule.IsFullLattice
     ∃ r : 𝓞 K, r ≠ 0 ∧ r • x ∈ L :=
   _root_.GlobalTheory.SmulMemSpan.exists_smul_mem L hL x
 
-theorem latIn_isLattice (L : Submodule (𝓞 K) V) (hL : Submodule.IsLattice K L) (U : Submodule K V) :
-    Submodule.IsLattice K (latIn U L) := by
-  refine ⟨?_, ?_⟩
-  · refine Submodule.fg_of_fg_map_injective (U.subtype.restrictScalars (𝓞 K)) U.injective_subtype ?_
-    exact Submodule.FG.of_le hL.fg (Submodule.map_comap_le _ _)
-  · intro s hs hli
-    exact (LinearIndependent.iff_fractionRing _ _).mp hli
 theorem latIn_isFullLattice (L : Submodule (𝓞 K) V) (hL : Submodule.IsFullLattice K L)
     (U : Submodule K V) : Submodule.IsFullLattice K (latIn U L) := by
   apply _root_.GlobalTheory.Mass.DetAgree.isLattice_latIn <;> assumption

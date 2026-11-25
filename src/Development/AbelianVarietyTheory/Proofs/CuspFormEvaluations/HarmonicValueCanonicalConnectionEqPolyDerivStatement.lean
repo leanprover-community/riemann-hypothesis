@@ -32,66 +32,23 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Sectio
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsNatCastSmulCoeffIsIntegral
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.TaylorPSEqTay
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetC
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-import Mathlib.Tactic.ENatToNat
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.TaylorMul
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBGen
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetD
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ValAtLem
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.TaylorComp
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt
 import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -110,12 +67,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.AnVal
 
 attribute [local instance] Over.cartesianMonoidalCategory
-
-theorem chart_isHolFam_comp_clm {Y : Scheme.{0}} {g N : ℕ} (e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)) (hol : IsHolFam e)
-    (A : (Fin N → ℂ) →L[ℂ] (Fin g → ℂ)) : IsHolFam fun v => e (A v) := by
-  intro U f
-  obtain ⟨h1, h2⟩ := hol U f
-  exact ⟨h1.preimage A.continuous, h2.comp A.differentiable.differentiableOn fun _ hv => hv⟩
 
 theorem chart_holTo_of_isHolFam {Y : Scheme.{0}} {N : ℕ} {e : (Fin N → ℂ) → (Sp ℂ ⟶ Y)} (h : IsHolFam e) :
     IsHolTo Set.univ e := by
@@ -216,7 +167,7 @@ theorem AnPt.chart_pair : IsHolTo (Set.univ : Set (Fin (2 * g) → ℂ)) fun v =
   chart_holTo_of_isHolFam (isHolFam_pullback_lift _ _ _ Xo.univ.t.G.hom Xo.univ.t.G.hom (2 * g)
     (fun v => (Φ.e (anPr 0 v)).left) (fun v => (Φ.e (anPr 1 v)).left) y.x
     (fun v => Over.w (Φ.e (anPr 0 v))) (fun v => Over.w (Φ.e (anPr 1 v)))
-    (chart_isHolFam_comp_clm _ Φ.hol (anPr 0)) (chart_isHolFam_comp_clm _ Φ.hol (anPr 1)))
+    (GlobalTheory.JetLinSub.isHolFam_clm _ Φ.hol (anPr 0)) (GlobalTheory.JetLinSub.isHolFam_clm _ Φ.hol (anPr 1)))
 
 theorem AnPt.chart_law (m : ℕ) :
     homAt y.x (jetSubstP m fun p : Fin 1 × Fin g => psTrunc m (addF ℂ g p.2)) ≫ Φ.jx m =
@@ -668,13 +619,6 @@ theorem sameSum_of_jetMap {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : RigLB A}
   · rw [key _ _ (h' k)]
     split_ifs <;> simp
 
-theorem sum_two {M : Type} [AddCommMonoid M] (F : ULift.{0} (Finset (Fin 2)) → M) :
-    ∑ I, F I = F ⟨∅⟩ + F ⟨{0}⟩ + F ⟨{1}⟩ + F ⟨{0, 1}⟩ := by
-  rw [← Equiv.ulift.symm.sum_comp, show (Finset.univ : Finset (Finset (Fin 2))) = {∅, {0}, {1}, {0, 1}} by decide,
-    Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_singleton]
-  simp only [add_assoc]
-  rfl
-
 theorem sum_three {M : Type} [AddCommMonoid M] (F : thK.{0} → M) :
     ∑ I, F I = F ⟨∅⟩ + F ⟨{0}⟩ + F ⟨{1}⟩ + F ⟨{2}⟩ + F ⟨{0, 1}⟩ + F ⟨{0, 2}⟩ + F ⟨{1, 2}⟩ + F ⟨{0, 1, 2}⟩ := by
   have h := Equiv.sum_comp (Equiv.ulift.symm : Finset (Fin 3) ≃ thK.{0}) F
@@ -698,7 +642,7 @@ theorem count {g : ℕ} (P Q R : (Fin 3 → Fin g → ℂ) →ₗ[ℂ] (Fin g �
         Sum.elim (cε 2) (Sum.elim (fun k => - cε 2 k) (fun k => - cε 2 k)) k *
         f (Sum.elim (fun k => psumL 2 g k ∘ₗ LinearMap.pi ![P, Q + R])
           (Sum.elim (fun k => psumL 2 g k ∘ₗ LinearMap.pi ![P, Q]) (fun k => psumL 2 g k ∘ₗ LinearMap.pi ![P, R])) k) := by
-  rw [sum_three, Fintype.sum_sum_type, Fintype.sum_sum_type, sum_two, sum_two, sum_two]
+  rw [sum_three, Fintype.sum_sum_type, Fintype.sum_sum_type, GlobalTheory.AnVal.PrimRd.sum_ulift_finset_fin_two_expand, GlobalTheory.AnVal.PrimRd.sum_ulift_finset_fin_two_expand, GlobalTheory.AnVal.PrimRd.sum_ulift_finset_fin_two_expand]
   simp only [Sum.elim_inl, Sum.elim_inr, psumL_pi]
   simp [thε, cε, Finset.sum_insert, add_comm P, add_assoc]
   ring
@@ -734,7 +678,6 @@ theorem jetRd_pe_two (e : ∀ m, FrTy y g Φ.jx m) (he : Φ.IsAnE e) (m : ℕ) {
     Φ.toAnFr.JetRd m _ _ (pe y g Φ.jx e m ![φ, φ']) (fun k => psumL 2 g k ∘ₗ LinearMap.pi ![B, B']) :=
   jetRd_pe Φ e he m ![φ, φ'] ![B, B'] (Fin.forall_fin_two.2 ⟨h, h'⟩)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem jetRd_cube {n : ℕ} (m : ℕ) (a b d : jO y g m n ⟶ Xo.univ.t.G)
     (P Q R : (Fin n → Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ)) (ha : Φ.toAnFr.JetMap m a.left P)
     (hb : Φ.toAnFr.JetMap m b.left Q) (hd : Φ.toAnFr.JetMap m d.left R) :

@@ -192,21 +192,10 @@ theorem exists_basis [IsLocalRing R] (hG : Smooth G.hom) :
   have hb : ∀ m : TanM (𝟙 (Sp R)) G, ∃! a : Fin n → R, m = ∑ i, a i • b i := fun m => by
     obtain ⟨w', hw'⟩ := push_surj hS (tv m)
     have htan : IsTangent w' := (isTangent_iff hS w').2 (by rw [hw']; exact tv_mem m)
-    have key : ∀ a : Fin n → R, IsLieComb a v w' ↔ m = ∑ i, a i • b i := by
-      intro a
+    have key : ∀ a : Fin n → R, IsLieComb a v w' ↔ m = ∑ i, a i • b i := fun a => by
       rw [isLieComb_iff hS, hw']
-      constructor
-      · intro h
-        apply tanM_ext
-        rw [h, tv_sum]
-        refine Finset.prod_congr rfl fun i _ => ?_
-        rw [tv_smul]
-        rfl
-      · intro h
-        rw [h, tv_sum]
-        refine Finset.prod_congr rfl fun i _ => ?_
-        rw [tv_smul]
-        rfl
+      exact ⟨fun h => tanM_ext (by rw [h, tv_sum]; exact Finset.prod_congr rfl fun i _ => by rw [tv_smul]; rfl),
+        fun h => by rw [h, tv_sum]; exact Finset.prod_congr rfl fun i _ => by rw [tv_smul]; rfl⟩
     obtain ⟨C, hC, hCu⟩ := hv.2 w' htan
     exact ⟨C, (key C).1 hC, fun a ha => hCu a ((key a).2 ha)⟩
   refine ⟨n, ⟨Module.Basis.mk (v := b) ?_ ?_⟩⟩

@@ -68,14 +68,6 @@ theorem contr_eq_of_subset (c : ℝ) (p : PX m n) (S : Finset (Fin m × Fin n ×
   refine Finset.sum_subset hS fun s _ hs => ?_
   rw [notMem_support_iff.1 hs, zero_mul]
 
-theorem contr_add (c : ℝ) (p q : PX m n) : contr c (p + q) = contr c p + contr c q := by
-  classical
-  rw [contr_eq_of_subset c (p + q) (p.support ∪ q.support) support_add,
-    contr_eq_of_subset c p (p.support ∪ q.support) Finset.subset_union_left,
-    contr_eq_of_subset c q (p.support ∪ q.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun s _ => ?_
-  rw [MvPolynomial.coeff_add, add_mul]
-
 theorem contr_monomial (c : ℝ) (s : Fin m × Fin n × Bool →₀ ℕ) (r : ℂ) : contr c (monomial s r) = r * wC c s := by
   classical
   rw [contr_eq_of_subset c _ {s} support_monomial_subset, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
@@ -132,7 +124,7 @@ theorem contr_X_mul (c : ℝ) (k : Fin m × Fin n × Bool) (p : PX m n) :
       rw [X, monomial_mul, one_mul]
     rw [hX, pderiv_monomial, contr_monomial, contr_monomial, wC_rel]
     ring
-  | add P Q hP hQ => rw [mul_add, contr_add, hP, hQ, map_add (f := _), contr_add, mul_add]
+  | add P Q hP hQ => rw [mul_add, PositivityTheory.Rg.Sw.LC.Core.contr_add, hP, hQ, map_add (f := _), PositivityTheory.Rg.Sw.LC.Core.contr_add, mul_add]
 
 end PositivityTheory.Rg.Sw.LC
 end -- clump:auto
@@ -216,7 +208,6 @@ theorem phi_rel (c : ℝ) (hc : 0 < c) (u : Fin m × Fin n × Bool →₀ ℕ) (
     exact gaussian_moment_recurrence c hc _ _
 
 variable (hM : OneMom)
-
 
 include hM in
 theorem mom_pderiv (c : ℝ) (hc : 0 < c) (k : Fin m × Fin n × Bool) (Q : PX m n) :
@@ -466,7 +457,7 @@ theorem fockMom_of : FockMom := by
   refine ⟨h1, ?_⟩
   let D : PX m n → ℂ := fun p => mom c (fock c p) - mom c (1 : PX m n) * contr c p
   have hDadd : ∀ p q, D (p + q) = D p + D q := by
-    intro p q; simp only [D]; rw [hL.map_add (f := _), mom_add hM c hc, contr_add]; ring
+    intro p q; simp only [D]; rw [hL.map_add (f := _), mom_add hM c hc, PositivityTheory.Rg.Sw.LC.Core.contr_add]; ring
   have hDC : ∀ r, D (C r) = 0 := by
     intro r; simp only [D]
     rw [fock_C, contr_C, C_eq_smul_one, mom_smul]; ring
@@ -703,16 +694,12 @@ theorem cr_apply (c : ℝ) (k : Ix m n) (P : PX m n) :
   obtain ⟨a, i, b⟩ := k
   cases b <;> (simp [cr, flp]; try abel)
 
-theorem pderiv_comm' (k l : Ix m n) (P : PX m n) :
-    pderiv k (pderiv l P) = pderiv l (pderiv k P) := by
-  apply _root_.PositivityTheory.Rg.Sw.LC.PolynomialDifferentialOperators.pderiv_comm <;> assumption
-
 theorem cr_comm (c : ℝ) (k l : Ix m n) (P : PX m n) :
     cr c k (cr c l P) = cr c l (cr c k P) := by
   classical
   simp only [cr_apply, map_sub, Derivation.map_smul, Derivation.leibniz, pderiv_X, Pi.single_apply, smul_eq_mul]
   simp only [MvPolynomial.smul_eq_C_mul]
-  rw [pderiv_comm' k l P]
+  rw [PositivityTheory.Rg.Sw.LC.PolynomialDifferentialOperators.pderiv_comm k l P]
   have e : (flp l = k) ↔ (flp k = l) :=
     ⟨fun h => by rw [← h, flp_flp], fun h => by rw [← h, flp_flp]⟩
   by_cases h : flp l = k

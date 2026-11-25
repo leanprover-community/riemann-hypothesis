@@ -98,7 +98,6 @@ theorem key_identity :
       ∑ i : Fin (q + 2), ∑ k : Fin (q + 1), ∑ l : Fin (q + 1), ((-1 : ℂ) ^ (i : ℕ)) •
         capEntry E x (R i) (C 0) (if d = R (i.succAbove k) then
           ((-1 : ℂ) ^ ((k : ℕ) + (l : ℕ))) • dbl E R C x f i k l else 0) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [map_sum, Finset.smul_sum, Function.comp]
   have h2 : (∑ i : Fin (q + 2), ((-1 : ℂ) ^ (i : ℕ)) • (if d = R i then
         (∑ k : Fin (q + 1), ∑ l : Fin (q + 1), if C 0 = (R ∘ i.succAbove) k then

@@ -276,9 +276,6 @@ theorem exists_translate (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (L : Lev
 
 end GlobalTheory.RowClassSum
 
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftTwistsByLevelCharacter =====

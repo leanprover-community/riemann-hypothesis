@@ -164,7 +164,7 @@ theorem near_cusp_one (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
     (((continuous_projFin σ J).comp continuous_fst).mul ((continuous_projFin σ J).comp continuous_snd))
   let Uf : Set (GFin σ J) := ofFin σ J ⁻¹' (U : Set (GAd σ J))
   have hUf : Uf ∈ 𝓝 (1 : GFin σ J) :=
-    (hU.preimage (continuous_ofFin σ J)).mem_nhds (by simp only [Uf, Set.mem_preimage, map_one]; exact U.one_mem)
+    (hU.preimage (continuous_ofFin σ J)).mem_nhds (by simp only [Set.mem_preimage, map_one]; exact U.one_mem)
   let Wn : Set (GFin σ J) := {x | ∀ h ∈ Cf, h⁻¹ * x * h ∈ Uf}
   have hWn : Wn ∈ 𝓝 (1 : GFin σ J) := conj_mem_nhds hCf hUf
   obtain ⟨Q, hQ, hQm⟩ := _root_.GlobalTheory.CompanionTheory.StrongUnip.strong_approx_unipRad F E σ hCM n J hJ _ (pre X s) hC Wn hWn

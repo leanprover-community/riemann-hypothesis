@@ -93,7 +93,6 @@ variable (L : D S G)
 
 variable {L}
 
-
 variable {χ : (∀ v, Fin 3 → G v) → ℂ}
 
 section X
@@ -133,22 +132,10 @@ private theorem valuation_monotone_of_dom_fin_three {k : Type} [Field k] [Valuat
   unfold Dom at hx
   exact ⟨hx 0 1 (by decide), hx 1 2 (by decide)⟩
 
-private theorem valuation_unif_eq_uniformizer' (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] :
-    valuation k (unif k : k) = ValuativeRel.uniformizer k := by
-  unfold unif
-  apply Classical.epsilon_spec (p := fun x : kˣ => valuation k (x : k) = ValuativeRel.uniformizer k)
-  obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective (ValuativeRel.uniformizer k)
-  have hy0 : y ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hy
-    exact ValuativeRel.uniformizer_ne_zero hy.symm
-  exact ⟨Units.mk0 y hy0, by simpa using hy⟩
-
 private theorem valuation_unif_pos_and_lt_one (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] :
     0 < valuation k (unif k : k) ∧ valuation k (unif k : k) < 1 := by
-  rw [valuation_unif_eq_uniformizer']
+  rw [UpperTheory.V.Hi.GlAx.unif_spec]
   exact ⟨ValuativeRel.uniformizer_pos, ValuativeRel.uniformizer_lt_one⟩
 
 private theorem valuation_mul_unif_pow_inv_le_one_of_lt_sq (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
@@ -157,7 +144,7 @@ private theorem valuation_mul_unif_pow_inv_le_one_of_lt_sq (k : Type) [Field k] 
     valuation k ((t * (unif k ^ 3)⁻¹ : kˣ) : k) ≤ 1 := by
   simp only [Units.val_mul, Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val, map_mul, map_inv₀,
     map_pow]
-  rw [valuation_unif_eq_uniformizer'] at h ⊢
+  rw [UpperTheory.V.Hi.GlAx.unif_spec] at h ⊢
   have hπ0 : 0 < ValuativeRel.uniformizer k := ValuativeRel.uniformizer_pos
   have h1 : valuation k (t : k) / ValuativeRel.uniformizer k ^ 2 < 1 :=
     (div_lt_one₀ (pow_pos hπ0 2)).mpr h
@@ -836,11 +823,6 @@ private theorem dom_rev {d : Fin 3 → kˣ} (h : Dom d) : Dom ![(d 2)⁻¹, (d 1
   intro i j hij
   fin_cases i <;> fin_cases j <;> simp at hij <;> first | exact le_rfl | exact val_inv_anti (h _ _ (by decide))
 
-private theorem dom_mul {n : ℕ} {a b : Fin n → kˣ} (ha : Dom a) (hb : Dom b) : Dom (a * b) := by
-  intro i j hij
-  simp only [Pi.mul_apply, Units.val_mul, map_mul]
-  exact mul_le_mul' (ha i j hij) (hb i j hij)
-
 private theorem dom_of_val {n : ℕ} {a : Fin n → kˣ} (h : ∀ i, valuation k (a i : k) = 1) : Dom a := by
   intro i j _
   rw [h i, h j]
@@ -904,7 +886,7 @@ theorem UpperTheory.V.Z.Sym.So.gSpec :
     obtain ⟨w, hw, hwe⟩ := hev χ hχ
     apply charShape F Δ A hA (ext χ)
     · intro d d' hd hd'
-      have hdd : A.DomS (d * d') := fun v hv => dom_mul (hd v hv) (hd' v hv)
+      have hdd : A.DomS (d * d') := fun v hv => dom_mul' (hd v hv) (hd' v hv)
       rw [hext χ _ hdd, hext χ _ hd, hext χ _ hd']
       apply hcancel w hw
       rw [← hwe ⟨d * d', hdd⟩]

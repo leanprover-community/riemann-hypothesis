@@ -170,8 +170,7 @@ theorem rank_le_of_ne_zero {Z : Comp Xo c} {G : WTZ E} (hG : Even G.2) {τ₀ : 
     rw [map_pow]
     exact pow_ne_zero _ hv
   have hinj : Function.Injective (m ∘ₗ (cuspOn U Z (τ • G)).subtype) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
-      rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     have hzero : genVal Z (g ^ n * f) = 0 := hf
     rw [map_mul] at hzero

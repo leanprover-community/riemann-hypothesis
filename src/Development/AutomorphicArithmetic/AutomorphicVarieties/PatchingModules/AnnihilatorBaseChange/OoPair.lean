@@ -193,16 +193,6 @@ section -- clump:auto
 open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa UpperTheory.V.Pa.Core
 open scoped TensorProduct
 
-private theorem adic_map {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R]
-    [CommRing R'] [Algebra O R'] [IsCO O R'] (f : R →ₐ[O] R') {Γ : Type} [TopologicalSpace Γ] {a : Γ → R}
-    (ha : AdicCont (maximalIdeal R) a) : AdicCont (maximalIdeal R') fun g => f (a g) := fun N => by
-  have hle : maximalIdeal R ^ N ≤ (maximalIdeal R' ^ N).comap (f : R →+* R') := by
-    refine le_trans (Ideal.pow_right_mono (fun y hy => ?_) N) (Ideal.le_comap_pow _ N)
-    show f y ∈ maximalIdeal R'
-    rw [← res_eq_zero_iff O, res_map, res_eq_zero_iff]
-    exact hy
-  exact (ha N).comp (Ideal.quotientMap _ (f : R →+* R') hle)
-
 private theorem lam_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (D : GDet n A G) (φ : H →* G)
     (i : ℕ) (y : MonoidAlgebra A H) : (D.comap φ).lam i y = D.lam i (MonoidAlgebra.mapDomainRingHom A φ y) := by
   apply _root_.UpperTheory.V.W.FramePullback.lam_comap <;> assumption
@@ -266,7 +256,7 @@ theorem UpperTheory.V.Pa.Core.ooPair :
     funext i
     rw [c1 i]
     rfl
-  · refine ⟨adic_map f (W.t.psi v i).cont, fun g => ?_, fun g => ?_⟩
+  · refine ⟨oo_adic_map f (W.t.psi v i).cont, fun g => ?_, fun g => ?_⟩
     · rw [c2]
       exact (res_map f _).trans ((W.t.psi v i).red g)
     · rw [c3]

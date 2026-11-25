@@ -72,14 +72,12 @@ theorem exists_basicOpen_isUnit_of_notMem_map :
   let φ : (Localization.Away f₀) →ₐ[S] Localization.Away (f₀ * a) :=
     { ψ with commutes' := fun r => IsLocalization.Away.awayToAwayRight_eq f₀ a r }
   refine ⟨φ, fun i => ?_⟩
-  have hφ : ∀ x, φ x = ψ x := fun _ => rfl
 
   have hau : IsUnit (algebraMap S (Localization.Away (f₀ * a)) a) := by
     have hu : IsUnit (algebraMap S (Localization.Away (f₀ * a)) (f₀ * a)) :=
       IsLocalization.Away.algebraMap_isUnit (f₀ * a)
     rw [map_mul] at hu
     exact isUnit_of_mul_isUnit_right hu
-  have hyu' : IsUnit (φ (algebraMap S (Localization.Away f₀) y)) := hyu.map φ
   have hdu : IsUnit (φ d) := by
     have h3 : φ d * φ (algebraMap S (Localization.Away f₀) y) = algebraMap S _ a := by
       rw [← map_mul, hspec, AlgHom.commutes]

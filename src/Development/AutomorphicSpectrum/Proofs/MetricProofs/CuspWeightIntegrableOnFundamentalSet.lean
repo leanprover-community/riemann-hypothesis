@@ -433,7 +433,7 @@ theorem finite_short [Module.Free ℤ L] [Module.Finite ℤ L]
 
 theorem period_injective (him : ∀ x y, ((f x y : ℤ) : ℝ) = (inner ℂ (p y) (p x)).im)
     (hi : Function.Injective f) : Function.Injective p := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   apply hi
   rw [map_zero]

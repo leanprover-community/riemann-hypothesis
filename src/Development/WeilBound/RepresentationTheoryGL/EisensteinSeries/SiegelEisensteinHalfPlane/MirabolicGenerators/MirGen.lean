@@ -510,19 +510,6 @@ theorem leftGood_mono {f : ℂ → X} {a b : ℝ} (hab : b ≤ a) (h : LeftGood 
 
 end SlopeTestRemainingChoices
 
-section Eis
-
-variable {G : Type} [Group G] [TopologicalSpace G] {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W]
-
-theorem eis_smul (Γ K P : Subgroup G) (c : G → ℂ) (ρ : K →* (W →L[ℂ] W)) (Λ : G → ℂ) (g : G)
-    (t : ℂ) (w : W) : eis Γ K P c ρ Λ g (t • w) = t • eis Γ K P c ρ Λ g w := by
-  unfold eis
-  rw [← tsum_const_smul'']
-  refine tsum_congr fun q => ?_
-  rw [map_smul, smul_comm]
-
-end Eis
-
 theorem master : AvgMem → DGood → HGood → BGood → Master := by
   intro hM hD hH hB
   intro G _ _ _ _ _ W _ _ _ K ρ hK hρ _ _ μ hHaar hProb Γ P P' c η η' β L J R N Φ a ζ hpar hLe hR
@@ -582,7 +569,7 @@ theorem master : AvgMem → DGood → HGood → BGood → Master := by
     change (Complex.exp (z ^ 2) * (z - 1)) • avg μ ρ (fun κ => Φ z (g * κ)) (J w) =
       eis Γ K P' c ρ (fun x => β x - z * η' x) g
         (((z • T ((Complex.exp (z ^ 2) * (z - 1)) • avg μ ρ (ζ z))) w : secSp K P' c ρ) : W)
-    rw [hOp, eis_smul, hEqL z hz g (J w), smul_smul, mul_comm z]
+    rw [hOp, GlobalTheory.CompanionTheory.EisCore.eis_const_smul, hEqL z hz g (J w), smul_smul, mul_comm z]
 
 end GlobalTheory.CompanionTheory.RgEisMG
 end -- clump:auto
@@ -1007,7 +994,6 @@ theorem inv_mulVec_smul_vec (m γ : GL ι 𝔸[k]) (x : 𝔸[k]) (i : ι) :
     ((m⁻¹ : GL ι 𝔸[k]) : Matrix ι ι 𝔸[k]) *ᵥ (x • MG.vec γ i) = x • MG.vec (γ * m) i := by
   unfold MG.vec
   rw [Matrix.mulVec_smul, _root_.mul_inv_rev, Units.val_mul, Matrix.mulVec_mulVec]
-
 
 omit [Fintype ι] [DecidableEq ι] in
 theorem norm_lineZeta_le (Ψ : (ι → 𝔸[k]) → ℂ) (ω : HeckeCharacter k) (s : ℂ) (v : ι → 𝔸[k]) :

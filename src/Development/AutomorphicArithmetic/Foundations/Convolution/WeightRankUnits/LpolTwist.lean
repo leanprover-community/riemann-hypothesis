@@ -278,26 +278,8 @@ private lemma val_le_one_ae (E : Type) [Field E] [NumberField E] (e : E) :
 private lemma mem_GLint {n : ℕ} {L : Type} [Field L] (O : Subring L) (g : GL (Fin n) L)
     (h₁ : ∀ i j, (g : Matrix (Fin n) (Fin n) L) i j ∈ O)
     (h₂ : ∀ i j, ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j ∈ O) :
-    g ∈ GLint (Fin n) O := by
-  let A : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h₁ i j⟩
-  let B : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h₂ i j⟩
-  have hA : A.map O.subtype = (g : Matrix (Fin n) (Fin n) L) := by
-    ext i j; rfl
-  have hB : B.map O.subtype = ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) := by
-    ext i j; rfl
-  have hinj : Function.Injective (fun M : Matrix (Fin n) (Fin n) O => M.map O.subtype) :=
-    Matrix.map_injective Subtype.val_injective
-  have hAB : A * B = 1 := hinj (by
-    show (A * B).map O.subtype = (1 : Matrix (Fin n) (Fin n) O).map O.subtype
-    rw [Matrix.map_mul, hA, hB, Matrix.map_one _ (map_zero _) (map_one _), ← Units.val_mul,
-      mul_inv_cancel, Units.val_one])
-  have hBA : B * A = 1 := hinj (by
-    show (B * A).map O.subtype = (1 : Matrix (Fin n) (Fin n) O).map O.subtype
-    rw [Matrix.map_mul, hA, hB, Matrix.map_one _ (map_zero _) (map_one _), ← Units.val_mul,
-      inv_mul_cancel, Units.val_one])
-  refine ⟨⟨A, B, hAB, hBA⟩, ?_⟩
-  refine Units.ext (Matrix.ext fun i j => ?_)
-  rfl
+    g ∈ GLint (Fin n) O :=
+  P.satake_mem_glint O g h₁ h₂
 
 theorem UpperTheory.eventually_map_mem_maximalCompactGL :
     ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (δ : GL (Fin n) E), ∀ᶠ w : Pl E in cofinite,

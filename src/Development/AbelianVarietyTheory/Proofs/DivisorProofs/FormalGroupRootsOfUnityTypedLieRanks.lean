@@ -174,7 +174,6 @@ theorem pow_prime_pow_close : ∀ (C : Type) [Field C] (v : AddValuation C (With
     induction N with
     | zero => simpa using hε
     | succ N ih =>
-      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
       have := pow_prime_step v hp hvp (hpow x (p ^ N) hx') (hpow y (p ^ N) hy')
         (t := ((N : ℝ) + 1) * ε) (ε := ε) (by nlinarith) hε1 ih
       rw [← pow_mul, ← pow_mul, ← pow_succ] at this
@@ -1237,7 +1236,6 @@ theorem ringHom_ker_eq_iff_frobenius_twist :
   letI : Fintype (R ⧸ RingHom.ker f) := Fintype.ofFinite _
   obtain ⟨hfix, hsurj, hinj, hall⟩ := field_case (R ⧸ RingHom.ker f) k p (RingHom.kerLift f) h hh
     (by rw [← Nat.card_eq_fintype_card, hc])
-  have hmk : ∀ a, RingHom.kerLift f (Ideal.Quotient.mk _ a) = f a := RingHom.kerLift_mk f
   have hfix' : ∀ a, f a ^ p ^ h = f a := fun a => by
     have := hfix (Ideal.Quotient.mk _ a)
     exact this

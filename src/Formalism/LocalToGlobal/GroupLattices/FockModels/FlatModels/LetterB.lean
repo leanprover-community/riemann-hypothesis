@@ -193,10 +193,6 @@ theorem theta_Hd_le (R : Type) [CommRing R] (m d : ℕ) (vec : Bool) :
   unfold Finsupp.prod
   exact hmem
 
-theorem exists_succAbove {m : ℕ} (I : Fin m → Fin (m + 1)) (hI : StrictMono I) :
-    ∃ c : Fin (m + 1), I = c.succAbove := by
-  apply Formalism.FourierDecayAlt.P.CutMP.InvEig.smono_succAbove <;> assumption
-
 theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) (s : ℕ) (hs : s ≤ m + 1)
     (I : Fin s → Fin (m + 1)) (hI : StrictMono I) (h : s = 0 ∨ s = s0 m vec) :
     ∃ q ∈ Hd R (m + 1) (if s = 0 then 0 else 1), theta R m vec q = initMinor R I hs := by
@@ -209,7 +205,7 @@ theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) 
   · cases vec
     · simp only [s0, Bool.false_eq_true, ↓reduceIte] at hs0
       subst hs0
-      obtain ⟨c, rfl⟩ := exists_succAbove I hI
+      obtain ⟨c, rfl⟩ := Formalism.FourierDecayAlt.P.CutMP.InvEig.smono_succAbove I hI
       refine ⟨MvPolynomial.C ((-1 : R) ^ ((c : ℕ) + s)) * X c, ?_, ?_⟩
       · rw [ite_eq_right (by omega)]
         exact Hd_X R (s + 1) _ c

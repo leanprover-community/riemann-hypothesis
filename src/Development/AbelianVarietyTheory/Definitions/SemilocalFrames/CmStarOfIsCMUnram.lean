@@ -53,11 +53,6 @@ section Diagonal
 
 open Formalism.BasicNotions.Examples₂
 
-def wittSigns (k r : ℕ) : Fin (k + 2 * r + 1) → Bool := fun i => decide ((i : ℕ) < r + 1)
-
-def wittSpace (E : Type) [Field E] [NumberField E] [StarRing E] (k r : ℕ) : HSpace E :=
-  stdSpace star_isIntegral (k + 2 * r + 1) (wittSigns k r) (k + r) (r + 1)
-
 end Diagonal
 
 end GlobalTheory.SA

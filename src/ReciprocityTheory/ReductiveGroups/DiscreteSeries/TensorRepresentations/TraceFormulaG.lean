@@ -80,11 +80,11 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
       map_add' := fun f f' => Subtype.ext (vectorL2_ext fun c => by
         refine Eq.trans ?_ (toL2_add_smooth ε ((hce c f.1 f.2).1.2 []) ((hce c f'.1 f'.2).1.2 []))
         refine toL2_congr_of_eq_on_UJset fun g _ => ?_
-        simp [coefMap, tensGrp, sum_add_distrib])
+        simp [ReciprocityTheory.ChartRestriction.DS.occCoef, tensGrp, sum_add_distrib])
       map_smul' := fun a f => Subtype.ext (vectorL2_ext fun c => by
         refine Eq.trans ?_ (toL2_smul_smooth ε a _)
         refine toL2_congr_of_eq_on_UJset fun g _ => ?_
-        simp only [coefMap]
+        simp only [ReciprocityTheory.ChartRestriction.DS.occCoef]
         have ht : tensGrp dual σ g (fun i => ((a • f.1 i : D) : H)) =
             a • tensGrp dual σ g (fun i => ((f.1 i : D) : H)) := by
           funext i
@@ -93,7 +93,7 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
         have ht' := ht
         simp only [Submodule.coe_smul] at ht'
         rw [ht']
-        simp only [coefMap, Pi.smul_apply, inner_smul_right]
+        simp only [ReciprocityTheory.ChartRestriction.DS.occCoef, Pi.smul_apply, inner_smul_right]
         rw [← Finset.mul_sum]
         rfl) }
   have hΦE : ∀ a b (f : tensSub (n := n) (genSub E V)), smE ε (tfRdiag ε) a b (Φ f) =

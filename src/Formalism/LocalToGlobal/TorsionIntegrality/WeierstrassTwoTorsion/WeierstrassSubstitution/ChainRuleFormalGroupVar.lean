@@ -46,14 +46,6 @@ open More
 
 namespace More
 
-end More
-
-namespace More
-
-end More
-
-namespace More
-
 theorem iterate_derivative_subst {K : Type u} [Field K] [CharZero K] (W : WeierstrassCurve K)
     (n : ℕ) (f : K⟦X⟧) :
     (derivative (R := K))^[n] (f.subst (expSer W)) = ((D W)^[n] f).subst (expSer W) := by

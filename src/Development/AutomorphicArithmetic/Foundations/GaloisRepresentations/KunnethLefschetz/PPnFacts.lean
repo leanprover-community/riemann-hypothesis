@@ -74,28 +74,6 @@ open MvPolynomial
 
 namespace LateralTheory.EtaleTrace.LSmoothPf
 
-noncomputable def polyPres (k : Type) [CommRing k] (N : ℕ) :
-    Algebra.SubmersivePresentation k (MvPolynomial (Fin N) k) (Fin N) PEmpty.{1} :=
-  let P : Algebra.PreSubmersivePresentation k (MvPolynomial (Fin N) k) (Fin N) PEmpty.{1} :=
-    { toGenerators := Algebra.Generators.mvPolynomial k (Fin N)
-      relation := PEmpty.elim
-      span_range_relation_eq_ker := by
-        simp only [Set.range_eq_empty, Ideal.span_empty]
-        symm
-        rw [Algebra.Generators.ker_eq_ker_aeval_val, ← RingHom.injective_iff_ker_eq_bot]
-        first
-          | intro a b h; simpa only [MvPolynomial.aeval_X_left_apply] using h
-          | intro a b h; simpa [Algebra.Generators.mvPolynomial] using h
-          | change Function.Injective (MvPolynomial.aeval (R := k) (MvPolynomial.X : Fin N → MvPolynomial (Fin N) k))
-            intro a b h; simpa only [MvPolynomial.aeval_X_left_apply] using h
-      map := PEmpty.elim
-      map_inj a := by cases a }
-  { P with
-    jacobian_isUnit := by
-      rw [Algebra.PreSubmersivePresentation.jacobian_eq_jacobiMatrix_det]
-      rw [Matrix.det_isEmpty, map_one]
-      exact isUnit_one }
-
 open CategoryTheory AlgebraicGeometry LateralTheory.EtaleTrace.LPdCut
 attribute [local instance] MvPolynomial.gradedAlgebra
 

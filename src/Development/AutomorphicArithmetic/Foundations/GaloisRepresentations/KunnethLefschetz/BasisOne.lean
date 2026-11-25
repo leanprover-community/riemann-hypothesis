@@ -172,7 +172,7 @@ def TrComp : Prop := Comps → OffEx → Pairs → ∀ (l : ℕ) [Fact l.Prime] 
     ∃ lam : V l X (2 * d) →ₗ[ℚ_[l]] ℚ_[l], ∀ y : Pt p, lam (G.pt d y) = 1) →
   ∀ {X : Scheme.{0}} (p : X ⟶ S k), SP d p → IsProj p → ∃ lam : V l X (2 * d) →ₗ[ℚ_[l]] ℚ_[l], ∀ y : Pt p, lam (G.pt d y) = 1
 
-def DivL : Prop := ∀ (l : ℕ) [Fact l.Prime] (k : Type) [Field k] [IsAlgClosed k], (l : k) ≠ 0 → Ring l → ∀ (G : GysQ k l) {W E X : Scheme.{0}} (px : X ⟶ S k) (i : E ⟶ W) (s : W ⟶ X) (c : ℕ),
+def DivL : Prop := ∀ (l : ℕ) [Fact l.Prime] (k : Type) [Field k] [IsAlgClosed k], (l : k) ≠ 0 → Ring l → ∀ (_ : GysQ k l) {W E X : Scheme.{0}} (px : X ⟶ S k) (i : E ⟶ W) (s : W ⟶ X) (c : ℕ),
   IsPair 1 c (s ≫ px) i → IsProper (i ≫ s ≫ px) → ∀ U : W.Opens, Off i U → ∀ e : V l W 2, pb l U.ι 2 e = 0 → PBQ l (i ≫ s) (pb l i 2 e) →
   ∀ (n w : ℤ) (h : 2 + n = w) (z : V l W w), pb l U.ι w z = 0 → ∃ m : V l W n, z = cupV l W h e m
 

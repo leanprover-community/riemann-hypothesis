@@ -192,10 +192,6 @@ variable {c : Coef l} {n : ℕ} {r : Resid V0.frame c.O n} (B : UniversalOrdinar
 
 def barPt (x : B.B →ₐ[c.O] c.O) : B.Pt := (Algebra.ofId c.O (Qbar l)).comp x
 
-def LevelX (J : Ideal B.B) : Prop :=
-  ∃ b : TWBase (pairOf B.u) J Empty (n * Module.finrank ℚ (Lp L)), LevAt b ∧ (∀ k, b.wt.γ k ∈ V0.frame.Iv (b.wt.v k)) ∧
-    ∀ (x : B.B →ₐ[c.O] c.O) (h : s.Wt n), (barPt B x).Arith h → CtrlH b x
-
 end Ar
 
 def ordinaryHeckeAlgebraIntegral : Prop :=

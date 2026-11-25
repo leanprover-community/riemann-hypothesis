@@ -22,10 +22,6 @@ namespace GlobalTheory.CompanionTheory.RswPolar
 
 variable {D : D7} {n ρ p : ℕ}
 
-theorem npow_mul' {a b : ℝ≥0} (w : ℂ) : npow (a * b) w = npow a w * npow b w := by
-  simp only [npow, NNReal.coe_mul, Complex.ofReal_mul]
-  exact Complex.mul_cpow_ofReal_nonneg a.2 b.2 w
-
 theorem npow_add' {a : ℝ≥0} (ha : a ≠ 0) (v w : ℂ) : npow a (v + w) = npow a v * npow a w := by
   simp only [npow]
   exact Complex.cpow_add _ _ (by exact_mod_cast ha)
@@ -49,7 +45,7 @@ theorem isLaw_fam {H : G D n → ℝ≥0} (hH : IsHt H) {χ : (AE D)ˣ →* Circ
     congr 1
     ring
   simp only [fam]
-  rw [hH.2.2 q hq a ha g, hφ q hq a ha g, npow_mul', e]
+  rw [hH.2.2 q hq a ha g, hφ q hq a ha g, GlobalTheory.Doubling.npow_mul, e]
   ring
 
 theorem continuous_fam {H : G D n → ℝ≥0} (hH : IsHt H) {φ : G D n → ℂ} (hφ : Continuous φ) (s₁ z : ℂ) :

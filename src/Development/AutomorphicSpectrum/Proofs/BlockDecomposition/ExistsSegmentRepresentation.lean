@@ -25,7 +25,7 @@ theorem hasFiniteLength_prodIrr {k : Type} [Field k] [ValuativeRel k] [Topologic
   GlobalTheory.CompanionTheory.BZInd.inductionFiniteLength k _ _ _ _ _ _ (isSmooth_piTensor fun a => (x a).2.rep.smooth)
     (hasFiniteLength_of_isIrreducible (GlobalTheory.CompanionTheory.SocleJm.isIrreducible_piTensor hA x))
 
-theorem exists_isLSeg : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k), ∃ π : IrrRep (GL (Fin Δ.deg) k), IsLSeg Δ π.ρ := by
+theorem exists_isLSeg : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k), ∃ π : IrrRep (GL (Fin Δ.deg) k), IsLSeg Δ π.ρ := by
   intro k _ _ _ _ hA Δ
   have hd : ∑ a, (Δ.term a).1 = Δ.deg := Δ.sum_term_fst
   obtain ⟨hd', ⟨φ⟩⟩ := _root_.GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term hA Δ hd

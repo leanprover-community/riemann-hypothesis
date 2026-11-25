@@ -14,18 +14,9 @@ namespace PI.WGB
 
 open Formalism.BasicNotions MvPolynomial
 
-private theorem fockF_eq_sum_lemma {σ : Type} (f g : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ))
-    (hS : f.support ⊆ S) :
-    Formalism.REAL.fockF f g =
-      ∑ m ∈ S, f.coeff m * star (g.coeff m) * ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℂ) := by
-  unfold Formalism.REAL.fockF
-  refine Finset.sum_subset hS fun m _ hm => ?_
-  have h0 : f.coeff m = 0 := by simpa [MvPolynomial.mem_support_iff] using hm
-  simp [h0]
-
 theorem fockF_smul_left_B {σ : Type} (c : ℂ) (f g : MvPolynomial σ ℂ) :
     Formalism.REAL.fockF (c • f) g = c * Formalism.REAL.fockF f g := by
-  rw [fockF_eq_sum_lemma (c • f) g f.support MvPolynomial.support_smul]
+  rw [Formalism.REAL.fischerInner_eq_sum_of_subset (c • f) g f.support MvPolynomial.support_smul]
   unfold Formalism.REAL.fockF
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
@@ -41,13 +32,8 @@ theorem fockF_smul_right_B {σ : Type} (c : ℂ) (f g : MvPolynomial σ ℂ) :
   ring
 
 theorem fockF_add_left_B {σ : Type} [DecidableEq σ] (f f' g : MvPolynomial σ ℂ) :
-    Formalism.REAL.fockF (f + f') g = Formalism.REAL.fockF f g + Formalism.REAL.fockF f' g := by
-  rw [fockF_eq_sum_lemma (f + f') g (f.support ∪ f'.support) MvPolynomial.support_add,
-    fockF_eq_sum_lemma f g (f.support ∪ f'.support) Finset.subset_union_left,
-    fockF_eq_sum_lemma f' g (f.support ∪ f'.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_add]
-  ring
+    Formalism.REAL.fockF (f + f') g = Formalism.REAL.fockF f g + Formalism.REAL.fockF f' g :=
+  Formalism.REAL.fischerInner_add_left f f' g
 
 theorem fockF_self_re_nonneg_B {σ : Type} (f : MvPolynomial σ ℂ) : 0 ≤ (Formalism.REAL.fockF f f).re := by
   unfold Formalism.REAL.fockF

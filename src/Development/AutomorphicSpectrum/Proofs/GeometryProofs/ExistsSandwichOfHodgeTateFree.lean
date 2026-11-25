@@ -39,7 +39,6 @@ noncomputable section
 
 namespace GlobalTheory.Models.InhabZOn
 
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
 open scoped CategoryTheory.Obj TensorProduct Pointwise in
 theorem _root_.GlobalTheory.Models.InhabZOn.exists_dim_triple {E : Type} [Field E] [NumberField E]
@@ -191,7 +190,7 @@ theorem sandwich_of_htFree : FarguesHodgeTate → ∀ (E : Type) [Field E] [Numb
   letI := hchar
   have hPT : PointHT := _root_.GlobalTheory.CompanionTheory.Ar.HT.Fargues.pointHT hF
   obtain ⟨Dc, hfam, htest⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.hodgeTate_family_exists E H D l Xo c O β Y S Ω K J y 𝔐 p hpS hpq o ho'
-  obtain ⟨hproj, -, κ, hκ, hκA⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.family_proj E H D l Xo c O β Y S Ω K J y 𝔐 p hpS hpq o ho' Dc hfam hfree
+  obtain ⟨hproj, -, κ, hκ, hκA⟩ := _root_.PositivityTheory.HtPt.Famproj.family_proj E H D l Xo c O β Y S Ω K J y 𝔐 p hpS hpq o ho' Dc hfam hfree
   refine ⟨κ, hκ, fun q hq => ?_⟩
   have hover : OverZp 𝔐 p q := fun r hr hrq => inFibre_unique _ Ω 𝔐.ξ q p r Fact.out hr hq hrq
   obtain ⟨c', hc'⟩ := 𝔐.tie.cover q

@@ -129,8 +129,6 @@ theorem continuous_smul_mx {m n : ℕ} (c : AF D.host.F) : Continuous fun x : Mx
 def annSet (ψ : AddChar (AF D.host.F) ℂ) {S T : HSp D} (Γ : AddSubgroup (WO S T)) : Set (WO S T) :=
   {u' | MxAt (fun _ => True) u' ∧ ∀ u ∈ Γ, ψ (symplO S T u u') = 1}
 
-
-
 theorem isCompact_annSet (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (S T : HSp D)
     (Γ : AddSubgroup (WO S T)) (U : Set (WO S T)) (hU : IsOpen U) (h0 : (0 : WO S T) ∈ U)
     (hUΓ : ∀ a ∈ U, MxAt (fun _ => True) a → a ∈ Γ) : IsCompact (annSet ψ Γ) := by
@@ -305,8 +303,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.idempotent_smul_mem_hat_lattice : All fun {D} _ _ _ {G} _ _ => ∀ i, i < D.R.m → ∀ v : WO (G.V (.grid (i + 1) 0)) (G.V (.grid i 0)), v ∈ latO (G.V (.grid (i + 1) 0)) (G.V (.grid i 0)) (G.Λ (.grid (i + 1) 0) : Set _) (G.Λ (.grid i 0) : Set _) (fun _ => True) → v ∈ latBig G i → ∀ e : AE D, IsIdemSum e G.pl.W0 → e • v ∈ hatMx (G.modul • homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) := by
-  first | exact @GlobalTheory.DepthBig.smul_mem_hatMx_of_mem_latBig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentSmulMemHatLatticeStatement =====
@@ -347,7 +343,7 @@ theorem latRow_bidual : All fun {D} _ _ {sc} {G} W _ => ∀ i, i < D.R.m → ∀
     rcases Nat.eq_zero_or_pos i with rfl | hi1
     · exact fun v hv => GlobalTheory.T.depthLatticeGridRow_zero_le_selfDualHomLattice D hq T L μ0 hL sc G W M hM hi hv
     · exact fun v hv => GlobalTheory.T.depthLatticeGridRow_le_selfDualHomLatticeShift D hq T L μ0 hL sc G W M hM i hi1 hi hv
-  have hdep := GlobalTheory.T.idempotent_smul_mem_hat_lattice D hq T L μ0 hL sc G W M hM i hi
+  have hdep := GlobalTheory.DepthBig.smul_mem_hatMx_of_mem_latBig D hq T L μ0 hL sc G W M hM i hi
   have finO := (GlobalTheory.AscFinWit.finLat_latO
     (S := G.V (.grid (i + 1) 0)) (T := G.V (.grid i 0))
     (LS := G.Λ (.grid (i + 1) 0)) (LT := G.Λ (.grid i 0))
@@ -466,7 +462,6 @@ theorem smul_homLat_mul {m n : ℕ} (I : Ideal (𝓞 D.host.E)) {Λ : Submodule 
 
 end GlobalTheory.AscFin.SplitX
 
-
 open GlobalTheory.AscFin.SplitX in
 theorem GlobalTheory.AscFin.SplitX.latRow_extX : OnStd fun {D} _ _ {sc} {G} _ F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * σ + 2), (F.dJ (σ + 1) h).extX _ (u ⬝ (F.dJ (σ + 1) h).jX) ∈ latRow G (2 * σ + 2) := by
   intro D hq T L μ0 hL sc G W M hM F hF σ h u hu
@@ -519,7 +514,7 @@ theorem latRow_ann_open : All fun {D} _ _ {sc} {G} W _ => ∀ i, i < D.R.m → �
     | succ i => exact (G.sp.V_is (i + 1) 0 (by omega) hi (by omega)).sd
   have hS : IsSelfDualC (G.pS (.chi i 0)) (G.latS (.chi i 0)) := isSelfDualC_neg (sdG (i + 1) hi)
   have hT : IsSelfDualC (G.pT (.chi i 0)) (G.latT (.chi i 0)) := sdG i hi.le
-  have hfin := GlobalTheory.T.isFiniteAdelicMatrixLattice_depthLatticeOfPair G (.chi i 0) hS hT
+  have hfin := GlobalTheory.AscFin.DepLat.finLat_depLat G (.chi i 0) hS hT
   obtain ⟨U, hU, h0, hUA⟩ := hfin.opn
   refine ⟨U, hU, h0, fun u' hu' hfu' u hu => ?_⟩
   have hu'R : u' ∈ latRow G i := hUA u' hu' hfu'
@@ -563,10 +558,6 @@ namespace GlobalTheory.AscFin.AnnPieces
 
 variable {D : D7}
 
-theorem hO_add_right (S T : HSp D) (x y y' : WO S T) : hO S T x (y + y') = hO S T x y + hO S T x y' := by
-  unfold hO
-  simp only [Matrix.add_apply, map_add (f := _), mul_add, add_mul, Finset.sum_add_distrib]
-
 theorem hO_zero_right (S T : HSp D) (x : WO S T) : hO S T x 0 = 0 := by
   unfold hO
   simp
@@ -574,15 +565,6 @@ theorem hO_zero_right (S T : HSp D) (x : WO S T) : hO S T x 0 = 0 := by
 theorem hO_zero_left (S T : HSp D) (y : WO S T) : hO S T 0 y = 0 := by
   unfold hO
   simp
-
-theorem symplO_add_right (S T : HSp D) (x y y' : WO S T) :
-    symplO S T x (y + y') = symplO S T x y + symplO S T x y' := by
-  unfold symplO
-  rw [hO_add_right, mul_add, map_add (f := _)]
-
-theorem symplO_zero_right (S T : HSp D) (x : WO S T) : symplO S T x 0 = 0 := by
-  unfold symplO
-  rw [hO_zero_right, mul_zero, map_zero]
 
 theorem symplO_neg_right (S T : HSp D) (x y : WO S T) : symplO S T x (-y) = -symplO S T x y := by
   have h := _root_.GlobalTheory.LatVac.symplO_add_right S T x y (-y)
@@ -640,9 +622,9 @@ theorem extX_mul_jX (a : Mx D W.rank ρ) : d.extX W a ⬝ d.jX = a := by
 
 def annY : AddSubgroup (Mx D W.rank ρ) where
   carrier := {a' | MxAt (fun _ => True) a' ∧ ∀ a, d.extX W a ∈ Γ → ψ (symplO V W (d.extX W a) (d.extY W a')) = 1}
-  zero_mem' := ⟨mxAt_zero, fun a _ => by rw [map_zero, symplO_zero_right, AddChar.map_zero_eq_one]⟩
+  zero_mem' := ⟨mxAt_zero, fun a _ => by rw [map_zero, GlobalTheory.SplitScalar.symplO_zero_right, AddChar.map_zero_eq_one]⟩
   add_mem' := fun {x y} hx hy => ⟨mxAt_add hx.1 hy.1, fun a ha => by
-    rw [map_add (f := _), symplO_add_right, AddChar.map_add_eq_mul, hx.2 a ha, hy.2 a ha, one_mul]⟩
+    rw [map_add (f := _), GlobalTheory.LatVac.symplO_add_right, AddChar.map_add_eq_mul, hx.2 a ha, hy.2 a ha, one_mul]⟩
   neg_mem' := fun {x} hx => ⟨mxAt_neg hx.1, fun a ha => by
     rw [map_neg, symplO_neg_right, AddChar.map_neg_eq_inv, hx.2 a ha, inv_one]⟩
 

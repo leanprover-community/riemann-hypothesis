@@ -1171,7 +1171,3 @@ theorem dsTr {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (τ : D.w
     (X.B.σ (vOf X τ)) (X.ds (vOf X τ)) (C.Q τ) (C.Qi τ) (C.isT τ).2.1 (C.isT τ).2.2.1 P hP⟩
 
 end Formalism.L2.SG.Pf
-
-namespace Formalism.L2.SG.Pf.Choice
-
-end Formalism.L2.SG.Pf.Choice

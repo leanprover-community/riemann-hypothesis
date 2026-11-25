@@ -58,17 +58,9 @@ noncomputable section
 namespace GlobalTheory.LiftGaps
 
 theorem antitone_of_step {N : ℕ} {f : Fin N → ℤ} (h : ∀ a b : Fin N, (b : ℕ) = a + 1 → f b ≤ f a) : Antitone f := by
-  rintro ⟨a, ha⟩ ⟨b, hb⟩ hab
-  simp only [Fin.mk_le_mk] at hab
-  induction b with
-  | zero =>
-    obtain rfl : a = 0 := by omega
-    exact le_rfl
-  | succ n ih =>
-    rcases Nat.lt_or_ge a (n + 1) with h' | h'
-    · exact (h ⟨n, by omega⟩ ⟨n + 1, hb⟩ rfl).trans (ih (by omega) (by omega))
-    · obtain rfl : a = n + 1 := by omega
-      exact le_rfl
+  cases N with
+  | zero => exact fun i => Fin.elim0 i
+  | succ N => exact Fin.antitone_iff_succ_le.mpr fun i => h i.castSucc i.succ (by simp)
 
 theorem isQuot_u₁ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
     (P : WtPar Dw) (kc : ℕ) (hk : P.a + 1 = kc) : IsQuot Dw kc P.T P.c₀ P.u P.u₁ := by
@@ -213,7 +205,6 @@ theorem gapsAt (PP A M : ℝ) (hi : (i : ℕ) + 1 < D.R.m) (hw : WtNum p i PP) (
   have hcl' : ((GlobalTheory.RefSum.nCol (dat p i) : ℤ) + 1) * ((dimFlag (dat p i) : ℤ) + 3) ≤ (lenT p i PP : ℤ) := by
     rw [← dimFlag_eq]; exact_mod_cast hcl
   have hD0 : (0 : ℤ) < (dimFlag (dat p i) : ℤ) + 3 := by positivity
-  have hD1 : (1 : ℤ) ≤ (dimFlag (dat p i) : ℤ) + 3 := by omega
   have hnT : (GlobalTheory.RefSum.nCol (dat p i) : ℤ) + 1 ≤ (lenT p i PP : ℤ) := by
     have : (0 : ℤ) ≤ (GlobalTheory.RefSum.nCol (dat p i) : ℤ) + 1 := by positivity
     nlinarith

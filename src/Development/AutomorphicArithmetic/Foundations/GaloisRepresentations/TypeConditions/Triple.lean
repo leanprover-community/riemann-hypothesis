@@ -280,7 +280,7 @@ theorem exists_conj_br_alt (hF : FrobDense D) (hG : UpperTheory.GalS.GalHodgeN D
   have hj : Function.Injective (rd i j) := j.injective.comp (IsFractionRing.injective _ _)
   have h1 : Function.Injective φ := fun x y h => hj (by rw [← hι, ← hι, h])
   have h2 : Function.Injective (brEmb i v hv) :=
-    (algebraMap ↥(D.ntwbr i v hv).LL.1 (Om (D.ntw.l i))).injective.comp (GlobalTheory.EmbInj.toLL_inj _)
+    (algebraMap ↥(D.ntwbr i v hv).LL.1 (Om (D.ntw.l i))).injective.comp (Formalism.MainNotions.N.Br.toLL_inj _)
   obtain ⟨γ, hγ⟩ := exists_aut φ (brEmb i v hv) h1 h2 hφ fun z =>
     congrArg (fun y : ↥(OL (D.ntwbr i v hv).LL) => ((y : ↥(D.ntwbr i v hv).LL.1) : Om (D.ntw.l i)))
       ((D.ntwbr i v hv).eO_alg z)

@@ -394,14 +394,6 @@ theorem bind_fst (P : MvPolynomial (Fin 1 × Fin d) R) :
   change MvPolynomial.aeval (MvPolynomial.X : Fin 1 × Fin d → MvPolynomial (Fin 1 × Fin d) R) P = P
   rw [MvPolynomial.aeval_X_left_apply]
 
-theorem double_substitution_jet_inclusion (Qs : Fin d' → PS R 1 d) (m : ℕ) (i : Fin 2) :
-    (sub2 Qs m).comp (jetCopy d' m i) = (jetCopy d m i).comp (sub1 Qs m) := by
-  apply jet_hom_ext
-  rintro ⟨l, j⟩
-  simp only [AlgHom.comp_apply, jetCopy, sub1, sub2, jetSubstP, jetMap_mk, MvPolynomial.aeval_X]
-  congr 1
-  rw [cc_psIn, map_sub, psIn_eq_aeval, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc]
-
 theorem double_substitution_truncation (Qs : Fin d' → PS R 1 d) (m : ℕ) :
     (jetTrunc : Jet R (Fin 2 × Fin d) (m + 1) →ₐ[R] Jet R (Fin 2 × Fin d) m).comp (sub2 Qs (m + 1)) =
       (sub2 Qs m).comp (jetTrunc : Jet R (Fin 2 × Fin d') (m + 1) →ₐ[R] Jet R (Fin 2 × Fin d') m) := by
@@ -487,10 +479,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Sc
 
 def pushId (A : Type) [CommRing A] [Algebra k A] : Over.mk ((overAt (𝟙 (Sp k)) A).hom ≫ x) ⟶ overAt x A :=
   Over.homMk (𝟙 _) (by simp)
-
-theorem fibPt_fst {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.fst t.G.hom x = y.left :=
-  pullback.lift_fst _ _ _
 
 theorem psum_fib {A : Type} [CommRing A] [Algebra k A] {n : ℕ} (xs : Fin n → (overAt x A ⟶ t.G)) (I : Finset (Fin n)) :
     psum (GF t x) (fun i => fibPt t x (xs i)) I = fibPt t x (psum t.G xs I) := by
@@ -617,7 +605,7 @@ variable {g gB Qs}
 
 theorem jpt_q (hq : ∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) (m : ℕ) (i : Fin 2) :
     fibPt t x (jptG t x d g.x m i) ≫ Q.q = homAt (𝟙 (Sp k)) (sub2 Qs m) ≫ jptG Q.tB (𝟙 (Sp k)) d' gB.x m i := by
-  rw [jptG, jptG, fibPt_pre, Category.assoc, hq, ← Category.assoc, ← Category.assoc, Formalism.L2.Pj.homAt_comp, Formalism.L2.Pj.homAt_comp, double_substitution_jet_inclusion]
+  rw [jptG, jptG, fibPt_pre, Category.assoc, hq, ← Category.assoc, ← Category.assoc, Formalism.L2.Pj.homAt_comp, Formalism.L2.Pj.homAt_comp, GlobalTheory.CompanionTheory.Ar.Flat.FrGauge.AdRelPf.double_substitution_jet_inclusion]
 
 theorem cube_eq (hq : ∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) (m : ℕ)
     (I : ULift (Finset (Fin 2))) :
@@ -797,25 +785,6 @@ section Fibre
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} (t : SAB H X)
   {k : Type} [Field k] (x : Sp k ⟶ X)
-
-theorem fibPt_fst {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.fst t.G.hom x = y.left :=
-  pullback.lift_fst _ _ _
-
-theorem fibPt_snd {A : Type} [CommRing A] [Algebra k A] (y : overAt x A ⟶ t.G) :
-    (fibPt t x y).left ≫ pullback.snd t.G.hom x = spMap (algebraMap k A) :=
-  (pullback.lift_snd _ _ _).trans (by simp)
-
-theorem homAt_fibPt {A B : Type} [CommRing A] [Algebra k A] [CommRing B] [Algebra k B] (f : A →ₐ[k] B)
-    (y : overAt x A ⟶ t.G) : homAt (𝟙 (Sp k)) f ≫ fibPt t x y = fibPt t x (homAt x f ≫ y) := by
-  apply Over.OverMorphism.ext
-  apply pullback.hom_ext
-  · rw [Over.comp_left, Category.assoc]
-    erw [fibPt_fst, fibPt_fst]
-    rfl
-  · rw [Over.comp_left, Category.assoc]
-    erw [fibPt_snd, fibPt_snd]
-    exact spMap_comp_alg f
 
 theorem one_left_fst {T : Over (Sp k)} :
     (1 : T ⟶ GF t x).left ≫ pullback.fst t.G.hom x = T.hom ≫ x ≫ η[t.G].left := by

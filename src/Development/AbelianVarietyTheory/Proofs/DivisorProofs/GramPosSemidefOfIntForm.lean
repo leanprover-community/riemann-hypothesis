@@ -30,9 +30,6 @@ theorem gram_posSemidef_of_int_form {X : Type} [AddCommGroup X] {r : ℕ}
   have hrat : ∀ c : Fin r → ℚ, 0 ≤ ∑ i, ∑ j, (c i : ℝ) * (c j : ℝ) * G i j := by
     intro c
     set N : ℕ := ∏ i, (c i).den with hN
-    have hNpos : (0:ℝ) < N := by
-      have : 0 < N := Finset.prod_pos (fun i _ => (c i).den_pos)
-      exact_mod_cast this
     have hm : ∀ i, ∃ k : ℤ, (k : ℝ) = N * (c i : ℝ) := by
       intro i
       obtain ⟨t, ht⟩ : (c i).den ∣ N := Finset.dvd_prod_of_mem _ (Finset.mem_univ i)

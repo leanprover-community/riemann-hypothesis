@@ -295,18 +295,6 @@ end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceB2b
 
-section PieceB2c
-
-open Finset NumberField
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.HermitianLatticeCounting.ExpansionTerms Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceB2c
-
 noncomputable section PieceB1
 
 open MeasureTheory Matrix Finset
@@ -807,28 +795,6 @@ end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceB1
 
-section PieceA
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceA
-
-section PieceE92
-
-open Finset
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.HermitianLatticeCounting.P Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceE92
-
 noncomputable section PieceN92
 
 open MeasureTheory Finset
@@ -975,13 +941,3 @@ end Arith
 end Formalism.MainNotions.BesselShellMomentBounds
 
 end PieceM93
-
-section PieceZ
-
-namespace Formalism.MainNotions.BesselShellMomentBounds
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.S.Pv.Frames
-
-end Formalism.MainNotions.BesselShellMomentBounds
-
-end PieceZ

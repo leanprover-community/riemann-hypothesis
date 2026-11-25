@@ -11,10 +11,7 @@ open Formalism.FourierDecayAlt.G
 namespace Formalism.FourierDecayAlt.P.G4
 
 theorem blk_cc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i j : Fin n) :
-    blk A b a e i.castSucc j.castSucc = A i j := by
-  have h : ∀ i : Fin n, finSumFinEquiv.symm (i.castSucc : Fin (n+1)) = Sum.inl i := fun i =>
-    finSumFinEquiv_symm_apply_castAdd (n := 1) i
-  simp [blk, h]
+    blk A b a e i.castSucc j.castSucc = A i j := Formalism.FourierDecayAlt.P.G2.blk_cc A b a e i j
 
 theorem blk_cl {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i : Fin n) :
     blk A b a e i.castSucc (Fin.last n) = b i := by
@@ -53,9 +50,3 @@ theorem subSum_blk {m : ℕ} (A : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (b a :
   · rw [Fin.succ_last, blk_lc]
 
 end Formalism.FourierDecayAlt.P.G4
-
-namespace Formalism.FourierDecayAlt.P
-
-open G4
-
-end Formalism.FourierDecayAlt.P

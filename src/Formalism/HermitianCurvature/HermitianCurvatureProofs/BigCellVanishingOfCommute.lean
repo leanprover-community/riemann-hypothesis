@@ -24,9 +24,3 @@ theorem gf_cont (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : Continuous fu
 end ops
 
 end Formalism.FourierDecayAlt.P.DifferentialOperatorClasses
-
-namespace Formalism.FourierDecayAlt.P
-
-open DifferentialOperatorClasses
-
-end Formalism.FourierDecayAlt.P

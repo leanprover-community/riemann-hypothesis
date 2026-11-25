@@ -107,7 +107,7 @@ theorem infPlace_norm_le {F E : Type} [Field F] [NumberField F] [Field E] [Numbe
     _ = (c : ℝ) ^ Fintype.card (E →ₐ[F] ℂ) := by rw [Finset.prod_const, Finset.card_univ]
 
 theorem main : ∀ (D : D7) (w : InfinitePlace D.host.F) (y : D.host.E) (c : ℝ≥0), (∀ τ : GlobalTheory.AdelicU.EmbOver D.host.E w, ‖τ.1 y‖₊ ≤ c) → w (Algebra.norm D.host.F y) ≤ (c : ℝ) ^ Module.finrank D.host.F D.host.E :=
-  fun D w y c h => infPlace_norm_le w y c h
+  fun _ w y c h => infPlace_norm_le w y c h
 
 end GlobalTheory.NormInf
 end -- clump:auto

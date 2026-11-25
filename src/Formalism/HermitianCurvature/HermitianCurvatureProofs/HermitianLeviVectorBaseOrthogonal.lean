@@ -247,10 +247,6 @@ lemma levPos_inj : Function.Injective (levPos k 1 r') := by
   have h2 : a.val + 1 = b.val + 1 := congrArg Fin.val h
   exact Fin.ext (by omega)
 
-lemma levPos_mid (i : Fin (2 * r' + k + 1)) : 1 ≤ (levPos k 1 r' i).val ∧ (levPos k 1 r' i).val < 2 * r' + k + 1 + 1 := by
-  have hi := i.isLt
-  exact ⟨show 1 ≤ i.val + 1 by omega, show i.val + 1 < 2 * r' + k + 1 + 1 by omega⟩
-
 lemma lev_mul (g h : Mat k r') : ιLev k 1 r' (g * h) = ιLev k 1 r' g * ιLev k 1 r' h := by
   apply ReciprocityTheory.ChartRestriction.DS.Xi.StepA.lev_mul
 
@@ -958,10 +954,6 @@ end Formalism.FourierDecayAlt.P.B2x9.S1
 namespace Formalism.FourierDecayAlt.P.B2x9.S2
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
-
-theorem sigmaFinite_of_haar {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) : SigmaFinite μ := by
-  haveI : IsFiniteMeasureOnCompacts μ := ⟨@fun K hK => h.finite_compact K hK⟩
-  infer_instance
 
 end Formalism.FourierDecayAlt.P.B2x9.S2
 

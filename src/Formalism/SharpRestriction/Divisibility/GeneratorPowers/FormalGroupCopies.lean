@@ -56,10 +56,3 @@ def dpolyHom (g : PS R n d) : MvPolynomial ι R →+ PS R n d where
 end Fold
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-namespace Formalism.MainNotions.ModuliIntegralCharts.H1
-
-open MvPowerSeries Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
-open Formalism.MainNotions.ModuliIntegralCharts.H1.PartialDerivativeExponent Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-end Formalism.MainNotions.ModuliIntegralCharts.H1

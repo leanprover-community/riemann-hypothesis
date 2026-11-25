@@ -1228,10 +1228,6 @@ theorem chkScPsiExists (h : PI.ScPsiExists.Target) (D : Formalism.BasicNotions.D
 
 end Formalism.L2.SG.Closed.ScPsi
 
-namespace Formalism.L2.SG.Closed.ScGap
-
-end Formalism.L2.SG.Closed.ScGap
-
 namespace Formalism.L2.SG.Closed.ScMu
 
 noncomputable section
@@ -1294,8 +1290,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScRef
 
@@ -1365,8 +1359,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScXu
 

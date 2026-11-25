@@ -84,18 +84,9 @@ theorem commute_jm {R S : ℕ} {X : Mat R S} (hX : IsKC X) : Commute X (Formalis
   rcases a with a | a <;> rcases b with b | b <;>
     simp [Formalism.BasicNotions.TH.Jm, Formalism.UG.Jpq, Matrix.mul_apply, Matrix.fromBlocks, Fintype.sum_sum_type, Matrix.one_apply, h1, h2]
 
-theorem isKC_smul {R S : ℕ} {X : Mat R S} (hX : IsKC X) (c : ℂ) : IsKC (c • X) := fun a b h => by
-  simp [hX a b h]
 
-theorem isKC_zero (R S : ℕ) : IsKC (0 : Mat R S) := fun a b _ => rfl
 
-theorem isKC_add {R S : ℕ} {X X' : Mat R S} (hX : IsKC X) (hX' : IsKC X') : IsKC (X + X') := fun a b h => by
-  simp [hX a b h, hX' a b h]
 
-theorem isKC_conjTranspose {R S : ℕ} {X : Mat R S} (hX : IsKC X) : IsKC Xᴴ := fun a b h => by
-  have h' : ¬ sameBlock b a := by
-    intro h2; apply h; rcases a with a | a <;> rcases b with b | b <;> simp_all [sameBlock]
-  simp [Matrix.conjTranspose_apply, hX b a h']
 
 theorem mem_upq {R S : ℕ} {X : Mat R S} (hX : IsKC X) (hs : Xᴴ = -X) : X ∈ upq R S := by
   show Xᴴ * _ + _ * X = 0
@@ -114,20 +105,6 @@ theorem frame_inv {α : Type} [Fintype α] [DecidableEq α] {R S : ℕ} {M : Mat
       _ = Kᵀ := by rw [Matrix.mul_assoc, hA, Matrix.mul_one]
   rw [h3, h2]
 
-theorem commute_of_frame {α : Type} [Fintype α] [DecidableEq α] {R S : ℕ} {C : Matrix α (Ix R S) ℂ}
-    {A' : Matrix (Ix R S) α ℂ} (hCA : C * A' = 1) (hAC : A' * C = 1) {G θ : Matrix α α ℂ} {E : Mat R S}
-    (hG : G * C = C * E) (hθ : θ * C = C * Formalism.BasicNotions.TH.Jm R S) (hE : Commute E (Formalism.BasicNotions.TH.Jm R S)) : Commute G θ := by
-  have hG' : G = C * E * A' := by rw [← hG, Matrix.mul_assoc, hCA, Matrix.mul_one]
-  have hθ' : A' * θ = Formalism.BasicNotions.TH.Jm R S * A' := by
-    calc A' * θ = A' * θ * (C * A') := by rw [hCA, Matrix.mul_one]
-      _ = A' * (θ * C) * A' := by simp only [Matrix.mul_assoc]
-      _ = _ := by rw [hθ]; simp only [← Matrix.mul_assoc, hAC, Matrix.one_mul]
-  show G * θ = θ * G
-  rw [hG']
-  calc C * E * A' * θ = C * E * (A' * θ) := by rw [Matrix.mul_assoc]
-    _ = C * (E * Formalism.BasicNotions.TH.Jm R S) * A' := by rw [hθ']; simp only [Matrix.mul_assoc]
-    _ = (θ * C) * E * A' := by rw [hE.eq, hθ]; simp only [Matrix.mul_assoc]
-    _ = _ := by simp only [Matrix.mul_assoc]
 
 end GlobalTheory.FockKStab
 end

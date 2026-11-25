@@ -15,29 +15,10 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 private theorem orbit_finite {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     (J : Subgroup G) (x : G) (ho : IsOpen (J : Set G)) (hc : IsCompact (J : Set G)) :
     {c : G ⧸ J | ∃ k ∈ J, c = QuotientGroup.mk (k * x)}.Finite := by
-  have hd : DiscreteTopology (G ⧸ J) := by
-    refine discreteTopology_iff_isOpen_singleton.2 fun c => ?_
-    obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective c
-    have himg : ({(QuotientGroup.mk g : G ⧸ J)} : Set (G ⧸ J)) =
-        QuotientGroup.mk '' ((fun h => g⁻¹ * h) ⁻¹' (J : Set G)) := by
-      ext c
-      obtain ⟨h, rfl⟩ := QuotientGroup.mk_surjective c
-      simp only [Set.mem_singleton_iff, Set.mem_image, Set.mem_preimage, SetLike.mem_coe]
-      constructor
-      · intro e
-        exact ⟨g * (g⁻¹ * h), by simpa using QuotientGroup.eq.1 e.symm, by simp⟩
-      · rintro ⟨a, ha, e⟩
-        rw [← e]
-        exact (QuotientGroup.eq.2 ha).symm
-    rw [himg]
-    exact QuotientGroup.isOpenMap_coe _ (ho.preimage (by fun_prop))
-  have hS : {c : G ⧸ J | ∃ k ∈ J, c = QuotientGroup.mk (k * x)} =
-      (fun k => (QuotientGroup.mk (k * x) : G ⧸ J)) '' (J : Set G) := by
-    ext c
-    simp only [Set.mem_setOf_eq, Set.mem_image, SetLike.mem_coe]
-    exact ⟨fun ⟨k, hk, e⟩ => ⟨k, hk, e.symm⟩, fun ⟨k, hk, e⟩ => ⟨k, hk, e.symm⟩⟩
-  rw [hS]
-  exact (hc.image ((QuotientGroup.continuous_mk).comp (continuous_id.mul continuous_const))).finite_of_discrete
+  have : DiscreteTopology (G ⧸ J) := QuotientGroup.discreteTopology ho
+  have himg : IsCompact ((fun k : G => (QuotientGroup.mk (k * x) : G ⧸ J)) '' (J : Set G)) :=
+    hc.image (QuotientGroup.continuous_mk.comp (continuous_mul_const x))
+  exact himg.finite_of_discrete.subset fun _ ⟨k, hk, e⟩ => ⟨k, hk, e.symm⟩
 
 private theorem norm_le_one_of_adj {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [CompleteSpace H] (A B : H →L[ℂ] H) (h : ContinuousLinearMap.adjoint A = B) (hBA : B ∘L A = 1) :

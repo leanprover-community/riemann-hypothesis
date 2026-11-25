@@ -62,10 +62,7 @@ theorem tameVal_eq_of_tameRep : ∀ {E Ω : Type} [Field E] [NumberField E] [Fie
     exact P.isPrime.mul_notMem hq1 (fun h => hm (P.isPrime.mem_of_pow_mem _ h))
   have hL0 : L ≠ 0 := ne_zero_of_not_mem hL
   obtain ⟨ϖ0, hϖ0, hϖ0'⟩ : ∃ ϖ0 : 𝓞 E, ϖ0 ∈ P.asIdeal ∧ ϖ0 ∉ P.asIdeal ^ 2 := by
-    have hlt := Ideal.pow_succ_lt_pow (P := P.asIdeal) P.ne_bot 1
-    rw [pow_one] at hlt
-    obtain ⟨x, hx, hx'⟩ := SetLike.exists_of_lt hlt
-    exact ⟨x, hx, hx'⟩
+    simpa using Ideal.exists_mem_pow_notMem_pow_succ P.asIdeal P.ne_bot P.isPrime.ne_top 1
   have hϖ0ne : algebraMap E Ω (ϖ0 : E) ≠ 0 := by
     intro h
     apply hϖ0'
@@ -240,10 +237,7 @@ theorem res_zpow_eq_tameVal : GlobalTheory.Published.GlobalArtinReciprocity → 
   obtain ⟨A, hA⟩ := ReciprocityTheory.Gal.exists_isPlaceOver D.nd.Om PP
   obtain ⟨hq2, hq1⟩ := GlobalTheory.TameValChar.two_le_normV_and_not_mem PP
   obtain ⟨ϖ, hϖ1, hϖ2⟩ : ∃ ϖ0 : 𝓞 D.host.E, ϖ0 ∈ PP.asIdeal ∧ ϖ0 ∉ PP.asIdeal ^ 2 := by
-    have hlt := Ideal.pow_succ_lt_pow (P := PP.asIdeal) PP.ne_bot 1
-    rw [pow_one] at hlt
-    obtain ⟨x, hx, hx'⟩ := SetLike.exists_of_lt hlt
-    exact ⟨x, hx, hx'⟩
+    simpa using Ideal.exists_mem_pow_notMem_pow_succ PP.asIdeal PP.ne_bot PP.isPrime.ne_top 1
   obtain ⟨π, hπ⟩ := IsAlgClosed.exists_pow_nat_eq (algebraMap D.host.E D.nd.Om (ϖ : D.host.E))
     (show 0 < normV PP - 1 by omega)
   have hu0 : (u : D.host.E) ≠ 0 := fun h => hu (by

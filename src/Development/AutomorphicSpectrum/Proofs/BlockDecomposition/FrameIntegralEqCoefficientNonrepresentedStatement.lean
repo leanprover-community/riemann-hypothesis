@@ -878,11 +878,6 @@ theorem isStd_stdChar : IsStd (stdChar F) := by
 
 end GlobalTheory.SubstIntertw
 
-namespace GlobalTheory.SubstIntertw
-
-
-
-end GlobalTheory.SubstIntertw
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -381,7 +381,6 @@ theorem exists_line_upq {F E : Type} [Field F] [NumberField F] [Field E] [Number
       rw [map_sub, this, sub_self]
   exact Subtype.ext (Units.ext hmat)
 
-
 end GlobalTheory.KStableSums
 end -- clump:auto
 end -- clump:auto
@@ -784,19 +783,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-namespace GlobalTheory.PolStabInf
-
-open Formalism.BasicNotions.TH GlobalTheory.RealLift
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-theorem incM_map_piInf {n m : Type} (J : Matrix n m E) {w : InfinitePlace F} (τ : EmbOver E w) :
-    (incM F J).map (piInf τ) = J.map τ.1 := by
-  ext i j
-  simp [incM, piInf, compInf, inclR, infEmb_tmul]
-
-end GlobalTheory.PolStabInf
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -856,9 +842,9 @@ theorem exists_derivation_action_weil (hPr : _root_.GlobalTheory.FunPr.ThetaLoca
   choose A hA hAθ using fun w => _root_.GlobalTheory.RealLift.frameEx_holds _ _ _ _ _ (hg.hV.sig w) (hg.hV.cartan w)
   choose C hC hCθ using fun w => _root_.GlobalTheory.RealLift.frameEx_holds _ _ _ _ _ (hg.hW.sig w) (hg.hW.cartan w)
   have hA1 : ∀ w, IsFrame ((1 : ℂ) • (incM F G.V.J).map (piInf (B.emb w))) (A w) := fun w => by
-    rw [GlobalTheory.PolStabInf.incM_map_piInf, one_smul]; exact hA w
+    rw [GlobalTheory.PolCompact.incM_map_piInf', one_smul]; exact hA w
   have hC1 : ∀ w, IsFrame (Complex.I • (incM F G.W.J).map (piInf (B.emb w))) (C w) := fun w => by
-    rw [GlobalTheory.PolStabInf.incM_map_piInf]; exact hC w
+    rw [GlobalTheory.PolCompact.incM_map_piInf']; exact hC w
   have fr : Framed B.emb (incM F G.V.J) (incM F G.W.J) 1 Complex.I A C := ⟨one_mul _, hA1, hC1⟩
   have hD := _root_.GlobalTheory.HeisDer.derEx
   have hvl := _root_.GlobalTheory.VacLn.vacLine_of_derEx hD

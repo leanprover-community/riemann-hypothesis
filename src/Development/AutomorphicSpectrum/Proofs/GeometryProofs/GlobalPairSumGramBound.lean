@@ -432,7 +432,7 @@ theorem core {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D 
     simpa using this
   · have hz : (ρ₃ : ℂ) • u ∈ Metric.ball (0 : Fin n → ℂ) 1 := smul_mem_ball' hρ₃ hρ₃' hu.1
     obtain ⟨w, hw1, hw2⟩ := hw ((ρ₃ : ℂ) • u)
-    have hg := GlobalTheory.T.chart_lattice_tangent_coordinates E H D l Xo _ n a₀ C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M N _ x _ (L.H u) w (hR u hu) hw1 hw2
+    have hg := GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem E H D l Xo _ n a₀ C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M N _ x _ (L.H u) w (hR u hu) hw1 hw2
     have e := hpt _ hz
     rw [smul_smul] at e
     rw [show ((ρ₁ * ρ₂ * ρ₃ : ℝ) : ℂ) = ((ρ₁ * ρ₂ : ℝ) : ℂ) * (ρ₃ : ℂ) by push_cast; ring, ← e]

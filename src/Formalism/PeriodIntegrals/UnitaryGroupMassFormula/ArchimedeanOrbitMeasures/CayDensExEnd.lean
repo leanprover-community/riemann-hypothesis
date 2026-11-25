@@ -978,7 +978,6 @@ end Perm
 
 end CDX
 
-
 open CDX in
 theorem cayDensEx_holds : CayDensEx := by
   intro n ε
@@ -1162,7 +1161,6 @@ theorem expDens_gen {n : ℕ} (ε : Fin n → Bool) (r₀ : ℝ) (hr₀ : 0 < r�
   obtain ⟨-, hpres⟩ := sumLPres_holds n ε m h hmh horth ι η L₀ L₁
   set Ls := sumL ε m h hmh L₀ L₁ with hLs
   have hLc : Continuous Ls := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact Ls.continuous_of_finiteDimensional
   have hL0 : Ls 0 = 0 := map_zero Ls
   have hnorm : ∀ p, ‖Ls p‖ ≤ 2 * ‖p‖ := by
@@ -1231,11 +1229,10 @@ theorem expR_zero' {n : ℕ} (ε : Fin n → Bool) : expR ε (0 : EuclideanSpace
   split_ifs with h
   · apply Subtype.ext
     apply Units.ext
-    simp [unrealify_zero', NormedSpace.exp_zero]
+    simp [Formalism.MainNotions.S.Gauge.unrealify_zero, NormedSpace.exp_zero]
   · rfl
 
 end CVI
-
 
 open CVI in
 theorem cayValId_holds : CayValId := by

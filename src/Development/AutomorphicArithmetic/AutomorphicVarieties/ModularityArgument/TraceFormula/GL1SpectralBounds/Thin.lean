@@ -107,8 +107,7 @@ lemma exists_prime_mem (P : HeightOneSpectrum (𝓞 K)) : ∃ p : ℕ, p.Prime �
   exact ⟨q, Nat.prime_of_mem_primeFactorsList hq, hxP⟩
 
 lemma span_max {p : ℕ} (hp : p.Prime) : (Ideal.span {(p : ℤ)}).IsMaximal := by
-  haveI := Fact.mk hp
-  exact Int.ideal_span_isMaximal_of_prime p
+  exact Formalism.BasicNotions.span_prime_isMaximal p hp
 
 lemma span_eq (P : HeightOneSpectrum (𝓞 K)) {p : ℕ} (hp : p.Prime) (hm : (p : 𝓞 K) ∈ P.asIdeal) :
     Ideal.span {(p : ℤ)} = P.asIdeal.comap (algebraMap ℤ (𝓞 K)) := by

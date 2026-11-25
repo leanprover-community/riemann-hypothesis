@@ -36,7 +36,6 @@ theorem exists_congr_signVec {n : ℕ} {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.
   set c : Fin n → ℂ := fun i => ((Real.sqrt |hA.eigenvalues i|)⁻¹ : ℝ) with hc
   have hc0 : ∀ i, c i ≠ 0 := by
     intro i
-    have h1 : 0 < |hA.eigenvalues i| := abs_pos.2 (eigenvalues_ne_zero hA hd i)
     simp [hc, eigenvalues_ne_zero hA hd i]
   set V := U * diagonal c with hV
   have hVdet : V.det ≠ 0 := by
@@ -63,7 +62,6 @@ theorem exists_congr_signVec {n : ℕ} {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.
   have hpos : 0 < |hA.eigenvalues i| := abs_pos.2 hne
   have hsq : Real.sqrt |hA.eigenvalues i| * Real.sqrt |hA.eigenvalues i| = |hA.eigenvalues i| :=
     Real.mul_self_sqrt hpos.le
-  have hs0 : Real.sqrt |hA.eigenvalues i| ≠ 0 := (Real.sqrt_pos.2 hpos).ne'
   have key : (Real.sqrt |hA.eigenvalues i|)⁻¹ * hA.eigenvalues i * (Real.sqrt |hA.eigenvalues i|)⁻¹ =
       if 0 < hA.eigenvalues i then 1 else -1 := by
     rw [mul_comm, ← mul_assoc, ← mul_inv, hsq]

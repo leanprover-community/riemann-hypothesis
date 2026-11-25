@@ -18,18 +18,9 @@ variable {n : ℕ}
 
 theorem antitone_of_forall_succ_le {f : Fin n → ℤ}
     (h : ∀ i j : Fin n, (j : ℕ) = i + 1 → f j ≤ f i) : Antitone f := by
-  have key : ∀ d : ℕ, ∀ a b : Fin n, (b : ℕ) = a + d → f b ≤ f a := by
-    intro d
-    induction d with
-    | zero =>
-      intro a b hab
-      rw [show b = a from Fin.ext (by omega)]
-    | succ d ih =>
-      intro a b hab
-      have hc : (a : ℕ) + d < n := by omega
-      exact (h ⟨a + d, hc⟩ b (by simp only; omega)).trans (ih a ⟨a + d, hc⟩ rfl)
-  intro a b hab
-  exact key (b - a) a b (by have := Fin.le_def.1 hab; omega)
+  cases n with
+  | zero => exact fun i => i.elim0
+  | succ n => exact Fin.antitone_iff_succ_le.2 fun i => h i.castSucc i.succ rfl
 
 theorem lamS_apply (S : Finset (Fin n)) (i : Fin n) : lamS S i = if i ∈ S then 1 else 0 := rfl
 

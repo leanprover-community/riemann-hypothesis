@@ -51,22 +51,9 @@ variable {m n : ℕ}
 
 theorem mR_one : mR (1 : GR n) = 1 := rfl
 
-theorem cnt_add (ε : Fin m → Bool) : cnt ε true + cnt ε false = m := by
-  unfold cnt
-  rw [Finset.card_filter, Finset.card_filter, ← Finset.sum_add_distrib]
-  have h : ∀ a : Fin m, ((if ε a = true then 1 else 0) + (if ε a = false then 1 else 0) : ℕ) = 1 := by
-    intro a; cases ε a <;> simp
-  simp [h]
-
 theorem det_diag_exp (X : Fin n → ℝ) (z : ℂ) :
     (diagonal fun j => Complex.exp (-(z * X j))).det = Complex.exp (-(z * ∑ j, (X j : ℂ))) := by
   rw [det_diagonal, ← Complex.exp_sum, Finset.mul_sum, ← Finset.sum_neg_distrib]
-
-theorem det_aC (X : Fin n → ℝ) (z : ℂ) : (aC X z).det = 1 := by
-  unfold aC
-  rw [det_fromBlocks_zero₂₁, det_diagonal, det_diagonal, ← Finset.prod_mul_distrib]
-  refine Finset.prod_eq_one fun j _ => ?_
-  rw [← Complex.exp_add, add_neg_cancel, Complex.exp_zero]
 
 theorem zpow_exp_neg (w : ℂ) (p : ℕ) : Complex.exp (-w) ^ (-(p : ℤ)) = Complex.exp ((p : ℂ) * w) := by
   rw [← Complex.exp_int_mul]
@@ -78,7 +65,7 @@ theorem jC_one (e : ℤ) (p q : ℕ) (X : Fin n → ℝ) (z : ℂ) :
     jC e p q 1 X z = Complex.exp (((p : ℂ) + q) * (z * ∑ j, (X j : ℂ))) := by
   unfold jC
   simp only [mR_one, Matrix.one_mul]
-  rw [det_aC]
+  rw [PositivityTheory.Rg.Sw.Glob.DBoundH.det_aC]
   unfold aC
   simp only [toBlocks_fromBlocks₂₁, toBlocks_fromBlocks₂₂, Matrix.zero_mul, zero_add, _root_.one_zpow, one_mul]
   rw [det_diag_exp, zpow_exp_neg, zpow_exp_neg, ← Complex.exp_add]
@@ -110,7 +97,6 @@ theorem ptZ_one (X : Fin n → ℝ) (z s₀ : ℂ) :
 
 theorem gramB_diag (ε : Fin m → Bool) (b : Bool) (u : Fin m → Fin n → ℂ) (j : Fin n) :
     gramB ε b u j j = ∑ a ∈ Finset.univ.filter (fun a => ε a = b), star (u a j) * u a j := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [gramB, Qb, evX, map_sum, eval_X]
 
 theorem trace_sdiag (s₀ : ℂ) (w : Fin n → ℂ) (G : Matrix (Fin n) (Fin n) ℂ) :
@@ -127,7 +113,7 @@ theorem famC_one (ε : Fin m → Bool) (t c : ℝ) (e : ℤ) (X : Fin n → ℝ)
   rw [trace_sdiag, trace_sdiag]
   simp only [gramB_diag, evX_eq, map_one, one_mul]
   have hpq : ((cnt (epsT t ε) true : ℂ) + (cnt (epsT t ε) false : ℂ)) = (m : ℂ) := by
-    rw [← Nat.cast_add, cnt_add]
+    rw [← Nat.cast_add, PositivityTheory.Rg.Sw.Glob.GaussH.cnt_add]
   rw [hpq, ← Complex.exp_add, Complex.ofReal_exp]
   have hsum : ∀ j, (∑ a ∈ Finset.univ.filter (fun a => epsT t ε a = true), star (u a j) * u a j) +
       (∑ a ∈ Finset.univ.filter (fun a => epsT t ε a = false), star (u a j) * u a j) =
@@ -973,7 +959,6 @@ theorem isSiegel_I : IsSiegel (Complex.I • (1 : Matrix (Fin n) (Fin n) ℂ)) :
     rw [this, one_smul]
   rw [e]; exact Matrix.PosDef.one
 
-
 theorem exch (hDR : DReal) (hDB : DBound) (hDC : DCalc) (hDL : DifferenceQuotientIsometryExchange) (hCD : ContDeriv) (hSS : SchScale) (hSF : SchFP)
     (hL : IsLocFact ω τ fr ι L) (hθ : IsInfFam θ) (hfr : IsUnit fr.det) {Ψ : Mx D V.rank n → ℂ}
     (hΨ : AwayCls θ τ fr Ψ) {x₀ : Mx D V.rank n} (hx₀ : Ψ x₀ ≠ 0) {ε : Fin V.rank → Bool} {t c : ℝ} (hc : 0 < c)
@@ -1108,7 +1093,6 @@ end PositivityTheory.Rg.Sw.Glob.DilH
 namespace PositivityTheory.Rg.Sw.Glob
 
 attribute [local irreducible] famC
-
 
 open DilAH DilCH DilEH DilH in
 theorem gIdil_of' (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : DecompAway) (hAway : AwayAct) (hLF : LocFact)

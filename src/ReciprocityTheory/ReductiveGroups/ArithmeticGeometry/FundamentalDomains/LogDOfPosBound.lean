@@ -405,7 +405,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data 
 lemma norm_dOf {y : Frame X.Ψ r} (hy : y ∈ X.dom) (τ : X.Ψ) (k : Fin r) :
     ‖dOf X y τ k‖ = |(dOf X y τ k).re| := by
   have h : dOf X y τ k = ((dOf X y τ k).re : ℂ) := by
-    apply Complex.ext <;> simp [dOf_real X hy τ k]
+    apply Complex.ext <;> simp [dOf_real X (x := y) τ k]
   rw [h, Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_re]
 
 lemma ratio_eq {y : Frame X.Ψ r} (hy : y ∈ X.dom) (τ : X.Ψ) (k : Fin r) :

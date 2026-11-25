@@ -301,8 +301,6 @@ def Mv.ndSpec_alt {big} {L : LocAll (lay0 D)} (x : NdSpec A.pl M C big L.X L.T) 
     (self_good := (x.self_good))
     (nbr_iq := (x.nbr_iq))
     (bj := (x.bj))
-    (bj_span := (x.bj_span))
-    (bj_rel := (x.bj_rel))
 end
 section
 end

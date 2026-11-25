@@ -46,12 +46,6 @@ section -- clump:auto
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
 open scoped Matrix
 
-namespace GlobalTheory.CompanionTheory.Ar.GR
-
-theorem addChar_mem_hopfOrder : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (N : Type) [AddCommGroup N] [Fintype N] [DecidableEq N], ∀ AA : HopfOrder (C := C) R N, ∀ ψ : AddChar N C, (fun x => ψ x) ∈ AA.carrier :=
-  @PositivityTheory.HtPt.Ra.charmem
-
-end GlobalTheory.CompanionTheory.Ar.GR
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderContainsAddCharacters =====
@@ -296,7 +290,7 @@ theorem exists_hasColen_tens (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hp : 
   obtain ⟨e, -, -⟩ := ReciprocityTheory.PGsh.Up.U3.exists_charEquiv hζ
   let A₁ : HopfOrder (C := C) R (ZMod p) := multOrder' v hv e
   let A₂ : HopfOrder (C := C) R (ZMod p) := constOrder
-  obtain ⟨AA, hcar, -, -, -, -, hcol⟩ := GlobalTheory.T.tensor_product_hopf_orders p C v R hv hp (ZMod p) (ZMod p) A₁ A₂
+  obtain ⟨AA, hcar, -, -, -, -, hcol⟩ := PositivityTheory.HtPt.Re.tens_hopf p C v R hv hp (ZMod p) (ZMod p) A₁ A₂
   have h1 : A₁.carrier = Submodule.span R (Set.range fun (ψ : AddChar (ZMod p) C)
       (x : ZMod p) => ψ x) := by
     show Submodule.span R (Set.range fun j : ZMod p => ((e j : AddChar (ZMod p) C) : ZMod p → C)) = _
@@ -433,7 +427,7 @@ theorem ord_split : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClos
       rintro _ ⟨ψ, rfl⟩
       let χ : AddChar N C := ψ.compAddMonoidHom
         ((AddMonoidHom.fst (ZMod p) (ZMod p)).comp e.symm.toAddMonoidHom)
-      refine ⟨fun x => χ x, _root_.GlobalTheory.CompanionTheory.Ar.GR.addChar_mem_hopfOrder p C v R hv hp N AA χ, ?_⟩
+      refine ⟨fun x => χ x, _root_.PositivityTheory.HtPt.Ra.charmem p C v R hv hp N AA χ, ?_⟩
       funext z
       simp [χ, LinearMap.funLeft_apply]
     exact hle hh
@@ -501,7 +495,6 @@ theorem equation_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
   rw [WeierstrassCurve.Affine.equation_iff] at h ⊢
   have := congrArg f h
   simpa only [map_add (f := _), map_mul, map_pow, WeierstrassCurve.map_a₁, WeierstrassCurve.map_a₂, WeierstrassCurve.map_a₃, WeierstrassCurve.map_a₄, WeierstrassCurve.map_a₆] using this
-
 
 open GlobalTheory.WeierstrassCurve in
 theorem exists_polAV_of_root (p : ℕ) {R C : Type} [CommRing R] [IsDomain R] [Field C] [Algebra R C]
@@ -935,7 +928,6 @@ theorem isAlgClosed_residueField {C : Type} [Field C] [IsAlgClosed C] (v : Valua
   rw [← hG, Polynomial.eval_map, eval₂_at_apply, h0, map_zero]
 
 end GlobalTheory.CompanionTheory.Ar.GR.OrdPt
-
 
 open GlobalTheory.CompanionTheory.Ar.GR.OrdPt in
 theorem GlobalTheory.CompanionTheory.Ar.GR.exists_ord_point : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → IsAdicComplete (Ideal.span {(p : R)}) R → ∃ (P : Out.PolAV (Spec (CommRingCat.of R))) (z : sp (R₀ := R) R ⟶ P.A), P.g = 1 ∧ z ^ p = 1 ∧ ∀ (k : Type) [Field k] [Algebra R k], spMap (Algebra.ofId R k) ≫ z ≠ 1 := by

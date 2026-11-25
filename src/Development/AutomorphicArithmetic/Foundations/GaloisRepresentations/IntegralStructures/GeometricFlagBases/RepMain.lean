@@ -1024,7 +1024,6 @@ private theorem pj_tr {L L' : IntermediateField k Ω} (h : L ≤ L') :
       ← CommRingCat.ofHom_comp, pj_snd]
     rfl
 
-
 variable (k Ω) in
 private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
   obj L := geom L.unop.1 p
@@ -1044,7 +1043,6 @@ private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
       rw [Category.assoc, tr_snd, ← Category.assoc, tr_snd, Category.assoc, ← Spec.map_comp,
         ← CommRingCat.ofHom_comp]
       rfl
-
 
 variable (k Ω) in
 private def cn : Cone (Gd k Ω p) where
@@ -1545,18 +1543,12 @@ private theorem invariant_inf {Γ k : Type} [Group Γ] [Field k] {d : ℕ} {ρ :
   intro g v hv
   exact ⟨hU g v hv.1, hV g v hv.2⟩
 
-private theorem invariant_bot_alt {Γ k : Type} [Group Γ] [Field k] {d : ℕ} (ρ : Γ →* GL (Fin d) k) :
-    IsInv ρ (⊥ : Submodule k (Fin d → k)) := by
-  intro g v hv
-  rw [(Submodule.mem_bot k).1 hv, Matrix.mulVec_zero]
-  exact Submodule.zero_mem _
-
 theorem UpperTheory.Gal.Int.Geo.sSOfSum_of :
     SSOfSum := by
   intro Γ k _ _ d ρ B hB hS hT W hW
   obtain ⟨W', ⟨hinv, hdis⟩, hmax⟩ :=
     (wellFounded_gt (α := Submodule k (Fin d → k))).has_min
-      {X | IsInv ρ X ∧ Disjoint W X} ⟨⊥, invariant_bot_alt ρ, disjoint_bot_right⟩
+      {X | IsInv ρ X ∧ Disjoint W X} ⟨⊥, inv_bot ρ, disjoint_bot_right⟩
   have key : ∀ i, B i ≤ W ⊔ W' := by
     intro i
     rcases hS i (B i ⊓ (W ⊔ W')) (invariant_inf (hB i) (invariant_sup_alt hW hinv)) inf_le_left with h | h

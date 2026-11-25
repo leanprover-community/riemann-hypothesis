@@ -87,10 +87,6 @@ open scoped Formalism.Per
 
 noncomputable section
 
-namespace GlobalTheory.CocycleNat
-
-end GlobalTheory.CocycleNat
-
 noncomputable section
 
 namespace GlobalTheory.CocycleNat

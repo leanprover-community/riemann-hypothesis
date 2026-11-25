@@ -73,17 +73,7 @@ theorem pr_fst_sum (P : M.Par) {ι : Type} (s : Finset ι) (g : ι → (MA.DQ P)
 
 theorem actA_mul (P : M.Par) (a b : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (a * b) x = MA.actA P a (MA.actA P b x) := by
-  funext π
-  show ∑ π', ((a * b) π π').1 (x π') = ∑ σ, (a π σ).1 (∑ π', (b σ π').1 (x π'))
-  have e : ∀ π', ((a * b) π π').1 (x π') = ∑ i, (a π i).1 ((b i π').1 (x π')) := by
-    intro π'
-    rw [Matrix.mul_apply, pr_fst_sum]
-    first
-      | exact (LinearMap.sum_apply _ _ _).trans (Finset.sum_congr rfl fun i _ => rfl)
-  rw [Finset.sum_congr rfl fun π' _ => e π', Finset.sum_comm]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-
-  rw [map_sum]
+  exact Formalism.FourierDecayAlt.P.CutMP.Gauge.actA_mul P a b x
 
 theorem actA_smul (P : M.Par) (c : ℂ) (a : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (c • a) x = c • MA.actA P a x := by

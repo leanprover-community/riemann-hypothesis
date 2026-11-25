@@ -233,9 +233,6 @@ instance borelSpace_GLReal : BorelSpace (GL n ℝ) := borelSpace_GL
 noncomputable def haarDensityGLReal (x : Matrix n n ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal ((‖x.det‖ ^ 1)⁻¹ ^ Fintype.card n)
 
-theorem measurable_haarDensityGLReal : Measurable (haarDensityGLReal (n := n)) :=
-  measurable_haarDensityGL 1
-
 theorem haarDensityGLReal_mul (A x : Matrix n n ℝ) :
     haarDensityGLReal (A * x) = ENNReal.ofReal ((‖A.det‖ ^ 1)⁻¹ ^ Fintype.card n) *
       haarDensityGLReal x :=
@@ -261,14 +258,6 @@ theorem map_mulRight_haarReal (μ₀ : Measure (Matrix n n ℝ)) [μ₀.IsAddHaa
 noncomputable def haarGLReal (μ₀ : Measure (Matrix n n ℝ)) : Measure (GL n ℝ) :=
   Measure.comap Units.val (μ₀.withDensity haarDensityGLReal)
 
-theorem measurableEmbedding_val_GLReal :
-    MeasurableEmbedding (Units.val : GL n ℝ → Matrix n n ℝ) :=
-  Units.isOpenEmbedding_val.measurableEmbedding
-
-theorem haarGLReal_apply (μ₀ : Measure (Matrix n n ℝ)) (s : Set (GL n ℝ)) :
-    haarGLReal μ₀ s = μ₀.withDensity haarDensityGLReal (Units.val '' s) :=
-  haarGL_apply 1 μ₀ s
-
 theorem haarScaleReal_ne_zero (g : GL n ℝ) :
     ENNReal.ofReal ((‖(g : Matrix n n ℝ).det‖ ^ 1)⁻¹ ^ Fintype.card n) ≠ 0 :=
   haarScale_ne_zero 1 g
@@ -284,9 +273,6 @@ instance isMulRightInvariant_haarGLReal (μ₀ : Measure (Matrix n n ℝ)) [μ�
   ⟨fun g => map_mul_haarGL_eq_self μ₀ (continuous_id.mul continuous_const)
     (LinearMap.mulRight ℝ (g : Matrix n n ℝ)) (haarScaleReal_ne_zero g) ENNReal.ofReal_ne_top
     (image_val_preimage_mul_right g) (map_mulRight_haarReal μ₀ g) (haarDensityGLReal_mul' _)⟩
-
-theorem haarDensityGLReal_val_ne_zero (h : GL n ℝ) : haarDensityGLReal (h : Matrix n n ℝ) ≠ 0 :=
-  haarScale_ne_zero 1 h
 
 instance isHaarMeasure_haarGLReal (μ₀ : Measure (Matrix n n ℝ)) [μ₀.IsAddHaarMeasure] :
     (haarGLReal μ₀).IsHaarMeasure :=
@@ -370,9 +356,6 @@ instance isMulRightInvariant_haarGLComplex (μ₀ : Measure (Matrix n n ℂ)) [�
     ((LinearMap.mulRight ℂ (g : Matrix n n ℂ)).restrictScalars ℝ) (haarScaleComplex_ne_zero g)
     ENNReal.ofReal_ne_top (image_val_preimage_mul_right g) (map_mulRight_haarComplex μ₀ g)
     (haarDensityGLComplex_mul' _)⟩
-
-theorem haarDensityGLComplex_val_ne_zero (h : GL n ℂ) : haarDensityGLComplex (h : Matrix n n ℂ) ≠ 0 :=
-  haarScale_ne_zero 2 h
 
 instance isHaarMeasure_haarGLComplex (μ₀ : Measure (Matrix n n ℂ)) [μ₀.IsAddHaarMeasure] :
     (haarGLComplex μ₀).IsHaarMeasure :=

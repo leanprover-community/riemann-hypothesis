@@ -202,12 +202,6 @@ theorem detD_detD_comp {ιA ιB : Type} [Fintype ιA] [DecidableEq ιA] [Fintype
   refine Finset.sum_congr rfl (fun τ _ => ?_)
   ring
 
-theorem iteratedFDeriv_right {N : ℕ} (F : M2 n → ℂ) (U : Set (M2 n)) (hU : IsOpen U) (hF : ContDiffOn ℂ ∞ F U)
-    (W : Fin (N + 1) → M2 n) (hW : ∀ a b, W a * W b = 0) (x : M2 n) (hx : x ∈ U) :
-    fderiv ℂ (fun y => iteratedFDeriv ℂ N F y (fun i => y * W i.succ)) x (x * W 0) =
-      iteratedFDeriv ℂ (N + 1) F x (fun i => x * W i) :=
-  iterated_fderiv_right_translation F U hU hF W hW x hx
-
 private alias isOpen_dom_analytic_determinants := _root_.PositivityTheory.Rg.Sw.LVs.isOpen_dom
 
 private theorem mem_dom_of_inG {x : M2 n} (hx : InG x) : x ∈ Dom n := by

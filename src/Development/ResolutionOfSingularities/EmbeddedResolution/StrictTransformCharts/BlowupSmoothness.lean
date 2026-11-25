@@ -56,7 +56,6 @@ private theorem smooth_ι_comp_of_etaleChart {Y : Scheme.{u}} {K : Type u}
     [Field K] {q : Y ⟶ Spec (CommRingCat.of K)} {V : Y.Opens} {n : ℕ} (c : EtaleChart q V n) :
     Smooth (V.ι ≫ q) := by
   have := c.isEtale
-  have hsm : Smooth c.map := inferInstance
   have hsa : Smooth (affineSpaceFinToSpec K n) := affineSpaceIsSmooth K n
   rw [← c.comp_struct]
   infer_instance

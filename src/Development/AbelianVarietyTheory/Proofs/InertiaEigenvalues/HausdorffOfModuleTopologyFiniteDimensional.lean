@@ -176,7 +176,7 @@ section Concrete
 variable {l : ℕ} [Fact l.Prime]
 
 theorem zl_wcb_injective : Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra h0
   rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hx
@@ -185,7 +185,6 @@ theorem zl_wcb_injective : Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
   · exact WittVector.p_nonzero l (Cb l) (eq_zero_of_pow_eq_zero h)
 
 theorem ol_rw_injective (LL : FinExt l) : Function.Injective (algebraMap ↥(OL LL) (RW LL)) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   haveI : Module.Flat ℤ_[l] ↥(OL LL) := by
     rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout, eq_bot_iff]
     rintro x ⟨⟨a, ha⟩, hx⟩

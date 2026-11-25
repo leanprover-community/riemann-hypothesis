@@ -645,8 +645,6 @@ theorem exists_primitive_rat {K : Type} [Field K] [CharZero K] (a₁ a₂ : K) (
   have hgK : (g : K) ≠ 0 := Nat.cast_ne_zero.mpr hg
   refine ⟨((r.den : ℚ) * (s.den : ℚ)) / (g : ℚ), p, q, -Int.gcdB A B, Int.gcdA A B, ?_, ?_, ?_⟩
   · have h1 : (0 : ℚ) < r.den := Nat.cast_pos.mpr r.den_pos
-    have h2 : (0 : ℚ) < s.den := Nat.cast_pos.mpr s.den_pos
-    have h3 : (0 : ℚ) < g := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hg)
     positivity
   · apply mul_left_cancel₀ hgZ
     linear_combination -hbez - Int.gcdA A B * hp - Int.gcdB A B * hq

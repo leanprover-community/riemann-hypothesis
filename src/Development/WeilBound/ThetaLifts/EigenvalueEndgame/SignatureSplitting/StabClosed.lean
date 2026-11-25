@@ -40,7 +40,7 @@ theorem lat_of_good {J : Matrix (Fin d) (Fin d) E} [DiscreteTopology (ratU σ J)
   haveI := PositivityTheory.ThKF.countable_ratU σ J
   ⟨h.cnt, DiscreteTopology.of_continuous_injective (f := fun γ => (⟨γ.1.1, γ.2⟩ : ratU σ J))
     ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _)
-    fun a b h => Subtype.ext (Subtype.ext (congrArg Subtype.val h :)), h.cov⟩
+    fun _ _ h => Subtype.ext (Subtype.ext (congrArg Subtype.val h :)), h.cov⟩
 
 theorem conj_unipU {U : Submodule E (Fin d → E)} {γ m : UA σ W.J} (hγ : γ ∈ ratU σ W.J)
     (h1 : ∀ u ∈ U, ∃ u' ∈ U, mat γ *ᵥ incV F u = incV F u') (h2 : ∀ u ∈ U, ∃ u' ∈ U, mat γ⁻¹ *ᵥ incV F u = incV F u')

@@ -181,15 +181,12 @@ theorem anti (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a ≤ b)
 
 theorem far (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (ha : W.p ≤ (a : ℕ)) (hab : a ≠ b) :
     W.g ≤ |reWt W.u' τ a - reWt W.u' τ b| := by
-  have hk := hW.kc_lt
   rcases lt_or_gt_of_ne hab with h | h
   · have h' : (a : ℕ) < b := h
-    have hb := b.2
     have h1 := adj_ge W hW hD τ a ⟨a + 1, by omega⟩ rfl (by simp only; omega)
     have h2 := anti W hW hD τ ⟨a + 1, by omega⟩ b (show (a : ℕ) + 1 ≤ b from h')
     exact le_trans (by linarith) (le_abs_self _)
   · have h' : (b : ℕ) < a := h
-    have hb := a.2
     have h1 := adj_ge W hW hD τ ⟨a - 1, by omega⟩ a (by simp only; omega) ha
     have h2 := anti W hW hD τ b ⟨a - 1, by omega⟩ (show (b : ℕ) ≤ a - 1 by omega)
     exact le_trans (by linarith) (neg_le_abs _)
@@ -491,7 +488,6 @@ theorem l1_u_le {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.Wts
   classical
   have hkN : W.kc < N := hW.kc_lt.trans hW.p_lt
   have hc : (0 : ℝ) ≤ W.c0 := by exact_mod_cast hW.weightConst_nonneg
-  have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg _
   have key : ∀ τ, ∑ i, |(W.u τ i : ℝ)| ≤ N * W.S + ((N - W.kc : ℕ) : ℝ) * (2 * W.b) := fun τ => by
     calc ∑ i, |(W.u τ i : ℝ)| ≤ ∑ i : Fin N, (W.S + if i ∈ Finset.Ici (⟨W.kc, hkN⟩ : Fin N) then 2 * W.b else 0) := by
           refine Finset.sum_le_sum fun i _ => ?_

@@ -356,7 +356,6 @@ theorem key (P : K[X]) (hP : Irreducible P) (hm : P.Monic) (x : L) (hx : aeval x
     rw [div_pow, div_eq_one_iff_eq (pow_ne_zero _ hcL)] at hyl'
     exact hyl'
 
-
 open Classical in
 noncomputable def Bset (K : Type) [Field K] [Fintype K] (δ : ℕ) (c₀ : Kˣ) : Finset (Fin δ → K) := by
   classical
@@ -725,22 +724,9 @@ theorem primeToPart_eq_self_of_not_dvd {M : Type} [Monoid M] {l n : ℕ} (hl : l
   have h0 : (orderOf x).factorization l = 0 := Nat.factorization_eq_zero_of_not_dvd hnd
   simp only [primeToPart, h0, pow_zero, one_pow, pow_one]
 
-theorem sqWeight_irreducible {K : Type} [Field K] [Fintype K] (P : K[X]) (hP : Irreducible P)
-    (hm : P.Monic) : sqWeight P = ((Fintype.card K : ℝ) ^ P.natDegree - 1)⁻¹ := by
-  unfold sqWeight
-  classical
-  have h1 := UniqueFactorizationMonoid.normalizedFactors_irreducible hP
-  rw [hm.normalize_eq_self] at h1
-  have h2 : (Multiset.map (fun P : K[X] => ((Fintype.card K : ℝ) ^ P.natDegree - 1)⁻¹)
-      (UniqueFactorizationMonoid.normalizedFactors P)).prod =
-      ((Fintype.card K : ℝ) ^ P.natDegree - 1)⁻¹ := by
-    rw [h1]; simp
-  convert h2
-
 section sets
 
 variable (K L : Type) [Field K] [Fintype K] [Field L] [Algebra K L] [IsAlgClosed L]
-
 
 open Classical in
 noncomputable def e3A (δ l : ℕ) : Finset (Fin δ → K) := by
@@ -748,12 +734,10 @@ noncomputable def e3A (δ l : ℕ) : Finset (Fin δ → K) := by
   exact Finset.univ.filter (fun c => Irreducible (monicOf c) ∧
       ¬ Set.InjOn (primeToPart l) ((monicOf c).rootSet L))
 
-
 open Classical in
 noncomputable def e3I (δ : ℕ) : Finset (Fin δ → K) := by
   classical
   exact Finset.univ.filter (fun c => Irreducible (monicOf c) ∧ (monicOf c).coeff 0 ≠ 0)
-
 
 open Classical in
 noncomputable def e3C (δ l : ℕ) (P' : K[X]) : Finset (Fin δ → K) := by
@@ -832,7 +816,7 @@ theorem wt_caseA (N δ l : ℕ) (hl : l.Prime) (hδ : 2 ≤ δ)
         refine Finset.sum_le_sum (fun c' hc' => ?_)
         have hirr : Irreducible (monicOf c') := ((mem_e3A L).mp hc').1
         refine (wt_e3D_le K N _ (monicOf_monic c')).trans_eq ?_
-        rw [sqWeight_irreducible _ hirr (monicOf_monic c'), monicOf_natDegree]
+        rw [Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.E4.sqWeight_irred _ hirr (monicOf_monic c'), monicOf_natDegree]
     _ = ((e3A K L δ l).card : ℝ) * ((Fintype.card K : ℝ) ^ δ - 1)⁻¹ := by
         rw [Finset.sum_const, nsmul_eq_mul]
     _ ≤ _ := mul_le_mul_of_nonneg_right (same_factor_count K L δ l hl hδ hBB)
@@ -859,8 +843,8 @@ theorem wt_caseB (N δ δ' l : ℕ) (hl : l.Prime) (hδ : 1 ≤ δ) (hδ' : 1 �
           have hirr : Irreducible (monicOf c') := ((mem_e3C L).mp hc').1
           refine (wt_e3D_le K N _ ((monicOf_monic c').mul (monicOf_monic c''))).trans_eq ?_
           rw [sqWeight_mul _ _ (monicOf_monic c').ne_zero (monicOf_monic c'').ne_zero,
-            sqWeight_irreducible _ hirr (monicOf_monic c'),
-            sqWeight_irreducible _ hirr'' (monicOf_monic c''), monicOf_natDegree,
+            Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.E4.sqWeight_irred _ hirr (monicOf_monic c'),
+            Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.E4.sqWeight_irred _ hirr'' (monicOf_monic c''), monicOf_natDegree,
             monicOf_natDegree]
       _ = ((e3C K L δ l (monicOf c'')).card : ℝ) * ((G ^ δ - 1)⁻¹ * (G ^ δ' - 1)⁻¹) := by
           rw [Finset.sum_const, nsmul_eq_mul]

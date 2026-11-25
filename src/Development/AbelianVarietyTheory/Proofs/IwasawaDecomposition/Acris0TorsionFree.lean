@@ -64,21 +64,12 @@ theorem eval_eq_zero_iff (n : ℕ) (x : AdicCompletion (Ideal.span {a}) R) :
 
 theorem complete :
     IsAdicComplete (Ideal.span {algebraMap R (AdicCompletion (Ideal.span {a}) R) a})
-      (AdicCompletion (Ideal.span {a}) R) := by
-  have h := AdicCompletion.isAdicComplete (M := R) (fg a)
-  rw [← IsAdicComplete.map_algebraMap_iff (S := AdicCompletion (Ideal.span {a}) R),
-    Ideal.map_span, Set.image_singleton] at h
-  exact h
+      (AdicCompletion (Ideal.span {a}) R) := GlobalTheory.PerfectCompletion.complete a
 
 theorem dense (x : AdicCompletion (Ideal.span {a}) R) (r : ℕ) :
     ∃ (s : R) (z : AdicCompletion (Ideal.span {a}) R),
       x = algebraMap R _ s + (algebraMap R (AdicCompletion (Ideal.span {a}) R) a) ^ r * z := by
-  obtain ⟨s, hs⟩ := Submodule.Quotient.mk_surjective _ (AdicCompletion.eval (Ideal.span {a}) R r x)
-  have : AdicCompletion.eval (Ideal.span {a}) R r (x - algebraMap R _ s) = 0 := by
-    rw [map_sub, ← hs, sub_eq_zero]
-    rfl
-  obtain ⟨z, hz⟩ := (eval_eq_zero_iff a r _).1 this
-  exact ⟨s, z, by rw [← hz]; ring⟩
+  exact GlobalTheory.PerfectCompletion.dense a x r
 
 theorem dvd_iff (s : R) (r : ℕ) :
     (algebraMap R (AdicCompletion (Ideal.span {a}) R) a) ^ r ∣ algebraMap R _ s ↔ a ^ r ∣ s := by

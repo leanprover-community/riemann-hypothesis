@@ -2845,7 +2845,3 @@ theorem highest_weight_dim_monotone : WeightSpaceDimMonotone := by
   exact Subtype.ext (sub_eq_zero.mp this)
 
 end Formalism.GM.DimensionMonotonicity
-
-namespace Formalism.GM
-
-end Formalism.GM

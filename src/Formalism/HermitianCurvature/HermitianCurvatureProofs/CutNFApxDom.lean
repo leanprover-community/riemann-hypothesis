@@ -24,8 +24,6 @@ def DominatedL2TruncationBound : Prop :=
 
 section cutn
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem cutN_ckOn {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {f : B.Mat k r → E}
     (hf : B.CkOn (⊤ : ℕ∞) (B.GV k r) f) (n : ℕ) :
     B.CkOn (⊤ : ℕ∞) (B.GV k r) (fun g => cutN k r n g • f g) := by

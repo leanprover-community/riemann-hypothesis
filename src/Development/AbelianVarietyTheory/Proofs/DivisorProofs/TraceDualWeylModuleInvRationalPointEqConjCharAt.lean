@@ -208,10 +208,6 @@ end GlobalTheory.CommTriang
 
 namespace GlobalTheory.CommTriang
 
-end GlobalTheory.CommTriang
-
-namespace GlobalTheory.CommTriang
-
 theorem lift_eigen : ∀ (k ι V : Type) [Field k] [AddCommGroup V] [Module k V] (f : ι → Module.End k V) (v u : V) (χ μ r : ι → k),
     (∀ i j, f i * f j = f j * f i) → v ≠ 0 → (∀ t : k, u + t • v ≠ 0) → (∀ i, f i v = χ i • v) →
     (∀ i, f i u = μ i • u + r i • v) → ∃ x : V, x ≠ 0 ∧ ∀ i, f i x = μ i • x := by
@@ -398,8 +394,6 @@ theorem exists_triangular (k ι : Type) [Field k] [IsAlgClosed k] : ∀ (n : ℕ
 
 end GlobalTheory.CommTriang
 
-namespace GlobalTheory.CommTriang
-end GlobalTheory.CommTriang
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCommonEigenvectorCommuting =====

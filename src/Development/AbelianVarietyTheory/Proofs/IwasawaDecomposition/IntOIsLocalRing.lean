@@ -52,8 +52,6 @@ open GlobalTheory.FactorDepth
 
 namespace GlobalTheory.LatDRFree
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
   (t : SAB H X)
 

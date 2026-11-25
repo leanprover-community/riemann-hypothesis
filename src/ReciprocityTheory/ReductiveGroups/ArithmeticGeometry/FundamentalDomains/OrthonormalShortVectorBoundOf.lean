@@ -402,37 +402,12 @@ theorem Mmat_mulVec (v : Fin r → ℂ) :
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun m _ => ?_
   ring
 
-private lemma hermC_sum_smul_left {m : ℕ} (c : Fin m → ℂ) (q : Fin m → Fin r → ℂ) (v : Fin r → ℂ) :
-    hermC τ G (∑ k, c k • q k) v = ∑ k, c k * hermC τ G (q k) v := by
-  unfold hermC
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
-  calc _ = ∑ a, ∑ k, ∑ b, c k * q k a * τ (G a b) * conj (v b) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ k, ∑ a, ∑ b, c k * q k a * τ (G a b) * conj (v b) := Finset.sum_comm
-    _ = _ := by
-        refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun a _ =>
-          Finset.sum_congr rfl fun b _ => ?_
-        ring
-
-private lemma hermC_sum_smul_right {m : ℕ} (u : Fin r → ℂ) (d : Fin m → ℂ) (q : Fin m → Fin r → ℂ) :
-    hermC τ G u (∑ l, d l • q l) = ∑ l, conj (d l) * hermC τ G u (q l) := by
-  unfold hermC
-
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.mul_sum]
-  calc _ = ∑ a, ∑ l, ∑ b, u a * τ (G a b) * (conj (d l) * conj (q l b)) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ l, ∑ a, ∑ b, u a * τ (G a b) * (conj (d l) * conj (q l b)) := Finset.sum_comm
-    _ = _ := by
-        refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun a _ =>
-          Finset.sum_congr rfl fun b _ => ?_
-        ring
-
 theorem expand (q : Fin n → Fin r → ℂ) (x y : Fin r → ℂ) (c d : Fin n → ℂ)
     (hx : ∀ l, hermC τ G x (q l) = 0) (hy : ∀ k, hermC τ G (q k) y = 0) :
     hermC τ G (x + ∑ k, c k • q k) (y + ∑ l, d l • q l) =
       hermC τ G x y + ∑ k, ∑ l, c k * conj (d l) * hermC τ G (q k) (q l) := by
   rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_right, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_right]
-  simp only [hermC_sum_smul_right, hermC_sum_smul_left, hx, hy, mul_zero, Finset.sum_const_zero, add_zero,
+  simp only [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_right, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left, hx, hy, mul_zero, Finset.sum_const_zero, add_zero,
     Finset.mul_sum]
   rw [zero_add, Finset.sum_comm]
   congr 1
@@ -479,14 +454,14 @@ theorem Mmat_unitary (hgf : ∀ k, g k ∈ Submodule.span ℂ (Set.range f))
       fun l => ?_⟩
     · simp only [neg_smul, Finset.sum_neg_distrib]
       abel
-    · rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left, hermC_sum_smul_left]
+    · rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
       simp only [hf_eps τ G p f hG hf, mul_ite, mul_zero, Finset.sum_ite_eq',
         Finset.mem_univ, ite_true]
       linear_combination (-hermC τ G u (f l)) * eps_sq p l
   have hperp : ∀ x : Fin r → ℂ, (∀ l, hermC τ G x (f l) = 0) → ∀ k, hermC τ G x (g k) = 0 := by
     intro x hx k
     obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun (R := ℂ)).mp (hgf k)
-    rw [← ha, hermC_sum_smul_right]
+    rw [← ha, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_right]
     simp [hx]
   obtain ⟨xv, cv, hv, hxv⟩ := hdec v
   obtain ⟨xw, cw, hw, hxw⟩ := hdec w
@@ -972,40 +947,13 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-private lemma hermC_sum_left_lemma (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {m : ℕ} (c : Fin m → ℂ)
-    (q : Fin m → Fin r → ℂ) (v : Fin r → ℂ) :
-    hermC τ G (∑ k, c k • q k) v = ∑ k, c k * hermC τ G (q k) v := by
-  unfold hermC
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
-  calc _ = ∑ a, ∑ k, ∑ b, c k * q k a * τ (G a b) * conj (v b) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ k, ∑ a, ∑ b, c k * q k a * τ (G a b) * conj (v b) := Finset.sum_comm
-    _ = _ := by
-        refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun a _ =>
-          Finset.sum_congr rfl fun b _ => ?_
-        ring
-
-private lemma hermC_sum_right_lemma_2 (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {m : ℕ} (u : Fin r → ℂ)
-    (d : Fin m → ℂ) (q : Fin m → Fin r → ℂ) :
-    hermC τ G u (∑ l, d l • q l) = ∑ l, conj (d l) * hermC τ G u (q l) := by
-  unfold hermC
-
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul, Finset.mul_sum]
-  calc _ = ∑ a, ∑ l, ∑ b, u a * τ (G a b) * (conj (d l) * conj (q l b)) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ l, ∑ a, ∑ b, u a * τ (G a b) * (conj (d l) * conj (q l b)) := Finset.sum_comm
-    _ = _ := by
-        refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun a _ =>
-          Finset.sum_congr rfl fun b _ => ?_
-        ring
-
 lemma f_gram_re (X : Data E r) (ξ : Fin r → E) (z0 : Frame X.Ψ r) (f : X.Ψ → Fin (r - 2) → Fin r → ℂ)
     (hf : X.UBasis z0 ξ f) (τ : X.Ψ) (a : Fin (r - 2) → ℂ) :
     (hermC τ.1 X.Gm (∑ k, a k • f τ k) (∑ k, a k • f τ k)).re =
       ∑ k : Fin (r - 2), if (k : ℕ) < X.p0 - 1 then ‖a k‖ ^ 2 else -‖a k‖ ^ 2 := by
   obtain ⟨-, -, hgr, -, -⟩ := hf τ
-  rw [hermC_sum_left_lemma]
-  simp only [hermC_sum_right_lemma_2, hgr, mul_ite, mul_zero, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Complex.re_sum]
+  rw [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
+  simp only [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_right, hgr, mul_ite, mul_zero, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Complex.re_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   split_ifs <;> simp [Complex.mul_conj, Complex.normSq_eq_norm_sq] <;>
     rw [← Complex.ofReal_pow, Complex.ofReal_re]
@@ -1073,7 +1021,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
   have hfw : ∀ k, hermC τ.1 X.Gm (f τ k) w =
       conj (a k) * (if (k : ℕ) < X.p0 - 1 then 1 else -1) := by
     intro k
-    rw [hw, hermC_sum_right_lemma_2]
+    rw [hw, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_right]
     simp only [hgr, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hfp : ∀ k, hermC τ.1 X.Gm (f τ k) (v - w) = 0 := by
     intro k
@@ -1105,7 +1053,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
     have hJu : hermC τ.1 X.Gm (X.Jt z0 τ u) (Data.emb τ.1 ξ) = 0 := by rw [hskew, h1', neg_zero]
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (hspan u h0 hJu)
     show hermC τ.1 X.Gm u (v - w) = 0
-    rw [← hc, hermC_sum_left_lemma]
+    rw [← hc, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
     exact Finset.sum_eq_zero fun k _ => by rw [hfp k, mul_zero]
   obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp (mem_span_of_iInf_ker_le_ker hK)
   have hc' : ∀ u, hermC τ.1 X.Gm u (v - w) =
@@ -1139,7 +1087,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
       | exact h
 
   have hwe : hermC τ.1 X.Gm w (Data.emb τ.1 ξ) = 0 := by
-    rw [hw, hermC_sum_left_lemma]
+    rw [hw, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
     exact Finset.sum_eq_zero fun k _ => by rw [(hperp k).1, mul_zero]
   have hwP : X.ppos z0 τ w = w := ppos_of_mem (X := X.toData) hz τ w hwS
   have hp0 : ∀ τ' : X.Ψ, X.ppos z0 τ' 0 = 0 := fun τ' => by
@@ -1181,7 +1129,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
     unfold PositiveSpanMatrices.Neg
     refine Finset.sum_congr rfl fun a' _ => ?_
     rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left, perp_kap (X := X.toData) hortho τ _ hpS0 a', zero_add,
-      hermC_sum_left_lemma, hermC_sum_left_lemma]
+      ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
     congr 2
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hb]
@@ -1192,7 +1140,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
   have hnegperp : ∀ b' : Fin X.p0,
       hermC τ.1 X.Gm (∑ k, b k • f τ k) (col (mat x0 τ) (Fin.castLE X.p0_le b')) = 0 := by
     intro b'
-    rw [hermC_sum_left_lemma]
+    rw [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [hb]
     by_cases hk : (k : ℕ) < X.p0 - 1
@@ -1221,7 +1169,7 @@ theorem key (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
       (hermC τ.1 X.Gm (v - w) (v - w)).re +
         (hermC τ.1 X.Gm (∑ k, cc k • f τ k) (∑ k, cc k • f τ k)).re := by
     rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_right, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_right,
-      hermC_sum_right_lemma_2 τ.1 X.Gm (v - w), hermC_sum_left_lemma τ.1 X.Gm cc (f τ) (v - w)]
+      ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_right τ.1 X.Gm (v - w), ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left τ.1 X.Gm cc (f τ) (v - w)]
     simp only [hpf, hfp, mul_zero, Finset.sum_const_zero, add_zero, zero_add, Complex.add_re]
   have hSS := f_gram_re X.toData ξ z0 f hf τ cc
   have hPp := re_self_of_mem (X := X.toData) hortho τ hdet0 _ hpS0
@@ -1276,15 +1224,6 @@ lemma yvec_eq (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 : Frame X.Ψ r) (τ
       h1 τ *ᵥ ∑ b, u b • col (mat z0 τ) (Fin.castLE X.p0_le b) := by
   simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.col_mul, Matrix.mulVec_sum, Matrix.mulVec_smul]
 
-private lemma hermC_sum_smul_left' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {m : ℕ}
-    (c : Fin m → ℂ) (y : Fin m → Fin r → ℂ) (v : Fin r → ℂ) :
-    hermC τ G (∑ b, c b • y b) v = ∑ b, c b * hermC τ G (y b) v := by
-  simp only [hermC, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ ↦ ?_
-  conv_rhs => rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun b' _ ↦ Finset.sum_congr rfl fun b _ ↦ by ring
-
 lemma Pos_eq (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 x0 : Frame X.Ψ r) (τ : X.Ψ) (u : Fin X.p0 → ℂ) :
     Pos X x0 τ (∑ b, u b • col (h1 τ * mat z0 τ) (Fin.castLE X.p0_le b)) =
       ∑ b', ‖(Amat X h1 z0 x0 τ *ᵥ u) b'‖ ^ 2 := by
@@ -1294,7 +1233,7 @@ lemma Pos_eq (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 x0 : Frame X.Ψ r) (
       (col (h1 τ * mat z0 τ) (Fin.castLE X.p0_le b)) (col (mat x0 τ) (Fin.castLE X.p0_le b')) := by
     simp only [Matrix.mulVec, dotProduct, Amat, Matrix.of_apply]
     exact Finset.sum_congr rfl fun b _ ↦ mul_comm _ _
-  rw [hermC_sum_smul_left', h]
+  rw [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left, h]
 
 lemma Neg_eq (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 x0 : Frame X.Ψ r) (τ : X.Ψ) (u : Fin X.p0 → ℂ) :
     Neg X x0 τ (∑ b, u b • col (h1 τ * mat z0 τ) (Fin.castLE X.p0_le b)) =
@@ -1306,7 +1245,7 @@ lemma Neg_eq (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 x0 : Frame X.Ψ r) (
     simp only [Matrix.mulVec, dotProduct, Bmat, Matrix.of_apply, neg_mul, Finset.sum_neg_distrib]
     congr 1
     exact Finset.sum_congr rfl fun b _ ↦ mul_comm _ _
-  rw [hermC_sum_smul_left', h, norm_neg]
+  rw [ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left, h, norm_neg]
 
 lemma colW_expand (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 : Frame X.Ψ r) {x0 : Frame X.Ψ r}
     (hortho : X.IsOrtho x0) (τ : X.Ψ) (hdet0 : (mat x0 τ).det ≠ 0) (b : Fin X.p0) :
@@ -1326,7 +1265,7 @@ lemma colW_expand (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (z0 : Frame X.Ψ r)
     simpa [gram, Matrix.diagonal_apply] using this
   have hh : ∀ d, hermC τ.1 X.Gm y (col (mat x0 τ) d) = α d * ((sgn X.p0 (d : ℕ) : ℝ) : ℂ) := by
     intro d
-    rw [hyα, hermC_sum_smul_left']
+    rw [hyα, ReciprocityTheory.ChartRestriction.G.FD.GramMatrixExistence.hermC_sum_smul_left]
     simp only [hcd, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
       ite_true]
   rw [hyα, sum_split X.p0_le]

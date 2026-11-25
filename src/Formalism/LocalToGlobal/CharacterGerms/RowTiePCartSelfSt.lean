@@ -95,7 +95,7 @@ theorem FBChart.self_chart_exp_constantCoeff (x : Fin 2 × Fin dd) : constantCoe
 theorem FBChart.rawSelf_axis0 (e : Fin 2 × (Fin 2 × Fin dd) →₀ ℕ) (he : ∀ s ∈ e.support, s.1 ≠ 0) :
     coeff e (Y.rawSelf p).h = 0 := by
   show coeff e (∑ col, hCol col Y.h) = 0
-  exact van_sum Finset.univ _ (fun col _ => van_hCol col 0 Y.h (gauge_axes Y 0)) e he
+  exact van_sum Finset.univ _ (fun col _ => van_hCol col 0 Y.h (Formalism.L2.FormalSeriesBounds.FBChart.axisAll Y 0)) e he
 
 theorem FBChart.rawSelf_exlg (x : Fin 2 × Fin dd) :
     subst (Y.rawSelf p).lg ((Y.rawSelf p).ex x) = (X x : MvPowerSeries (Fin 2 × Fin dd) C) := by

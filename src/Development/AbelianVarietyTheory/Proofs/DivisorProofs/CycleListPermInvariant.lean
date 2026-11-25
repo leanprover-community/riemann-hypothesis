@@ -38,7 +38,3 @@ theorem exists_nat_integral {F : Type} [Field F] [NumberField F] (s : Finset F) 
     simpa [neg_mul] using this
 
 end GlobalTheory.SepModel
-
-namespace GlobalTheory.SepModel
-
-end GlobalTheory.SepModel

@@ -106,11 +106,6 @@ lemma wI_inj (i j : Fin (k + 1)) : wI k r i = wI k r j ↔ i = j := by
 lemma esI_inj (a b : Fin r) : esI k r a = esI k r b ↔ a = b := by
   rw [Fin.ext_iff, Fin.ext_iff, esI_val, esI_val]
   constructor <;> intro h <;> omega
-lemma eI_ne_wI (a : Fin r) (j : Fin (k + 1)) : eI k r a ≠ wI k r j := by
-  intro h
-  have h' := congrArg Fin.val h
-  simp only [eI_val, wI_val] at h'
-  omega
 lemma eI_ne_esI (a b : Fin r) : eI k r a ≠ esI k r b := by
   intro h
   have h' := congrArg Fin.val h
@@ -135,7 +130,7 @@ lemma Hpk_es (a b : Fin r) : Hpk k r (eI k r a) (esI k r b) = if a = b then 1 el
   · subst h; simp
   · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 lemma Hpk_we (j : Fin (k + 1)) (b : Fin r) : Hpk k r (wI k r j) (eI k r b) = 0 := by
-  simp [Hpk_apply, piI_wI, eI_ne_wI]
+  simp [Hpk_apply, piI_wI, GlobalTheory.Amp.Rad.eI_ne_wI]
 lemma Hpk_ww (i j : Fin (k + 1)) : Hpk k r (wI k r i) (wI k r j) = if i = j then hW k i else 0 := by
   simp only [Hpk_apply, piI_wI, wI_inj, epsI_wI]
   by_cases h : i = j
@@ -149,7 +144,7 @@ lemma Hpk_se (a b : Fin r) : Hpk k r (esI k r a) (eI k r b) = if a = b then 1 el
   · subst h; simp
   · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 lemma Hpk_sw (a : Fin r) (j : Fin (k + 1)) : Hpk k r (esI k r a) (wI k r j) = 0 := by
-  simp [Hpk_apply, piI_esI, (eI_ne_wI a j).symm]
+  simp [Hpk_apply, piI_esI, (GlobalTheory.Amp.Rad.eI_ne_wI a j).symm]
 lemma Hpk_ss (a b : Fin r) : Hpk k r (esI k r a) (esI k r b) = 0 := by
   simp [Hpk_apply, piI_esI, (eI_ne_esI a b).symm]
 
@@ -164,13 +159,13 @@ lemma nb_ee (a b : Fin r) : unipotentBlockMatrix k r Bm S (eI k r a) (eI k r b) 
     [unipotentBlockMatrix, Matrix.of_apply, eI_inj, dite_eq_right, add_zero]
 lemma nb_we (j : Fin (k + 1)) (b : Fin r) : unipotentBlockMatrix k r Bm S (wI k r j) (eI k r b) = 0 := by
   simp (disch := (simp only [wI_val, eI_val]; omega)) only
-    [unipotentBlockMatrix, Matrix.of_apply, ite_eq_right (eI_ne_wI b j).symm, dite_eq_right, add_zero]
+    [unipotentBlockMatrix, Matrix.of_apply, ite_eq_right (GlobalTheory.Amp.Rad.eI_ne_wI b j).symm, dite_eq_right, add_zero]
 lemma nb_se (a b : Fin r) : unipotentBlockMatrix k r Bm S (esI k r a) (eI k r b) = 0 := by
   simp (disch := (simp only [esI_val, eI_val]; omega)) only
     [unipotentBlockMatrix, Matrix.of_apply, ite_eq_right (eI_ne_esI b a).symm, dite_eq_right, add_zero]
 lemma nb_ew (a : Fin r) (j : Fin (k + 1)) : unipotentBlockMatrix k r Bm S (eI k r a) (wI k r j) = Bm a j := by
   simp (disch := (simp only [eI_val, wI_val]; omega)) only
-    [unipotentBlockMatrix, Matrix.of_apply, ite_eq_right (eI_ne_wI a j), dite_eq_left, dite_eq_right,
+    [unipotentBlockMatrix, Matrix.of_apply, ite_eq_right (GlobalTheory.Amp.Rad.eI_ne_wI a j), dite_eq_left, dite_eq_right,
       eI_back, wI_back, zero_add, add_zero]
 lemma nb_ww (i j : Fin (k + 1)) : unipotentBlockMatrix k r Bm S (wI k r i) (wI k r j) = if i = j then 1 else 0 := by
   simp (disch := (simp only [wI_val]; omega)) only
@@ -319,7 +314,7 @@ theorem nb_Nset (hS : Sᴴ = -S) : unipotentBlockMatrix k r Bm S ∈ Nset k r :=
   · intro a i _
     rcases fin_eq_eI_or_wI_or_esI i with ⟨c, rfl⟩ | ⟨j, rfl⟩ | ⟨c, rfl⟩
     · rw [nb_ee]; simp only [eI_inj]
-    · rw [nb_we, ite_eq_right (eI_ne_wI a j).symm]
+    · rw [nb_we, ite_eq_right (GlobalTheory.Amp.Rad.eI_ne_wI a j).symm]
     · rw [nb_se, ite_eq_right (eI_ne_esI a c).symm]
   · intro i j hj1 hj2 hi
     simp only [unipotentBlockMatrix, Matrix.of_apply]
@@ -393,7 +388,7 @@ theorem nb_fwd {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (n : B.Mat
   have hwe : ∀ j b, n (wI k r j) (eI k r b) = 0 := by
     intro j b
     have := b.isLt
-    rw [hcol b (wI k r j) (by rw [wI_val]; omega), ite_eq_right (eI_ne_wI b j).symm]
+    rw [hcol b (wI k r j) (by rw [wI_val]; omega), ite_eq_right (GlobalTheory.Amp.Rad.eI_ne_wI b j).symm]
   have hse : ∀ a b, n (esI k r a) (eI k r b) = 0 := by
     intro a b
     have := a.isLt

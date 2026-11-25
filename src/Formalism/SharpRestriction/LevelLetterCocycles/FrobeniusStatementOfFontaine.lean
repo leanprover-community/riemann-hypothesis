@@ -158,12 +158,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-
-omit [Algebra O LL] in
-theorem len_quot_span_ne_top_dvr [IsDomain O] [IsDiscreteValuationRing O] (t : O) (ht : t ≠ 0) :
-    Module.length O (O ⧸ Ideal.span {t}) ≠ ⊤ := by
-  apply Formalism.MainNotions.BlochKatoDuality.Br.length_quot_ne_top <;> assumption
-
 theorem colLeR_of_exponent [IsDomain O] [IsDiscreteValuationRing O] (PD : PeriodData G Qp K₀ K B BdR)
     (hp0 : ((PD.p : ℕ) : O) ≠ 0) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (g₁ e e' : ℕ)
     (hgen : ∃ s : Finset (LatticeCohomology T₂.L), Submodule.span O (s : Set (LatticeCohomology T₂.L)) = latticeFiniteCohomology PD T₂.L ∧
@@ -255,7 +249,7 @@ theorem colLeR_of_exponent [IsDomain O] [IsDiscreteValuationRing O] (PD : Period
     rw [Submodule.comap_inf, Submodule.comap_subtype_self, inf_top_eq]
   rw [hcomap] at key
   have hcol : F.col PD ≤ ((g₁ * e + Z.card * e' : ℕ) : ℕ∞) * lenOl PD (O := O) := key
-  have hlen : lenOl PD (O := O) ≠ ⊤ := len_quot_span_ne_top_dvr (O := O) _ hp0
+  have hlen : lenOl PD (O := O) ≠ ⊤ := Formalism.MainNotions.BlochKatoDuality.Br.length_quot_ne_top (O := O) _ hp0
   obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.1 hlen
   rw [← hk, ← Nat.cast_mul] at hcol
   have hcolfin : F.col PD ≠ ⊤ := fun h => ENat.coe_ne_top _ (top_le_iff.1 (h ▸ hcol))

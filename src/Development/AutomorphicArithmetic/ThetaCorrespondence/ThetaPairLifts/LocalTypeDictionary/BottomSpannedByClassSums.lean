@@ -158,10 +158,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.RowEx MeasureTheory
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_open_fixing_seesaw_vacuum_definite_bottom : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
-    {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW}, IsBottomTri W i j X → ∀ t : T,
-    ∃ U : Subgroup (GA D WW), IsOpen (U : Set (GA D WW)) ∧ ∀ κ ∈ U, κ ∈ GfC WW → X.ω t (1, κ) X.vac = X.vac := by
-  first | exact @GlobalTheory.VacFixTarget.exists_open_fix_vac_target
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenFixingSeesawVacuumDefiniteBottomStatement =====
@@ -414,78 +410,7 @@ variable {D : D7}
 
 local notation "OO" => Formalism.L2.Herm.intAf D.host.F D.host.E
 
-theorem toEAf_surj (z : EAf D) : ∃ w : AE D, infPart D w = 0 ∧ toEAf D w = z :=
-  StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.toEAf_surj z
-
-theorem finPart_eq_of_toEAf {a b : AE D} (h : toEAf D a = toEAf D b) : finPart D a = finPart D b :=
-  (Algebra.TensorProduct.comm D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.host.E).injective h
-
-theorem exists_unit {u v : EAf D} (huv : u * v = 1) :
-    ∃ x : (AE D)ˣ, infPart D (x : AE D) = 1 ∧ toEAf D (x : AE D) = u ∧ toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) = v :=
-  StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.exists_unit huv
-
-theorem isUnit_add {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) (h : toEAf D e ∈ OO) {c : ℕ}
-    (hc : ∀ P ∈ S, ((c : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) {u u' z : OO} (hu : IsUnit u)
-    (hu' : u' = u + ⟨toEAf D e, h⟩ * ((c : OO) * z)) : IsUnit u' :=
-  StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.isUnit_add he h hc hu hu'
-
-theorem det_cong_int {k : ℕ} {N N' Z : Matrix (Fin k) (Fin k) (EAf D)} (hN : IsIntM N) (hZ : IsIntM Z) {c : ℕ}
-    (h : ∀ i j, N' i j = N i j + c * Z i j) : ∃ hd : N.det ∈ OO, ∃ hd' : N'.det ∈ OO, ∃ z : OO,
-      (⟨N'.det, hd'⟩ : OO) = ⟨N.det, hd⟩ + c * z :=
-  StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.det_cong_int hN hZ h
-
 theorem coe_nat {R : Type} [CommRing R] (A : Subring R) (n : ℕ) : (((n : A)) : R) = n := map_natCast A.subtype n
-
-theorem hom_nsmul {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (n : ℕ) (a : R) : f (n • a) = n • f a :=
-  map_nsmul f n a
-
-theorem ring_id {R : Type} [CommRing R] {t t' ti ε d d' n c z : R} (a : t = 1 - ε + ε * d) (b : t' = 1 - ε + ε * d')
-    (hz : d' = d + n * c * z) (hm : t * ti = 1) : t' * ti - 1 = n * (ε * (c * z) * ti) := by
-  subst a b hz
-  linear_combination hm
-
-theorem ring_id' {R : Type} [CommRing R] {ε d d' c z : R} (hz : d' = d + c * z) :
-    1 - ε + ε * d' = (1 - ε + ε * d) + ε * (c * z) := by
-  subst hz
-  ring
-
-theorem toEAf_mem {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) : toEAf D e ∈ OO :=
-  GlobalTheory.IdemRes.toEAf_mem_of_finPart (GlobalTheory.AdIdem.idempotent_mem_intAE D _
-    (by rw [← RingHom.map_mul, GlobalTheory.PlaceDatum.idemSum_mul_self he]))
-
-theorem exists_isUnitDet {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) {c : ℕ}
-    (hc : ∀ P ∈ S, ((c : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) {k : ℕ} {N N' Z : Matrix (Fin k) (Fin k) (EAf D)}
-    (hN : IsIntM N) (hZ : IsIntM Z) (h : ∀ i j, N' i j = N i j + c * Z i j)
-    (hx : ∃ x, IsUnitDet e N x) : ∃ x, IsUnitDet e N' x := by
-  obtain ⟨x, h1, h2, h3⟩ := hx
-  have hE := toEAf_mem he
-  obtain ⟨hd, hd', z, hz⟩ := det_cong_int hN hZ h
-  have hzv : N'.det = N.det + (c : EAf D) * (z : EAf D) := by
-    have := congrArg Subtype.val hz
-    rw [← coe_nat (OO) c]
-    exact this
-  have hu : toEAf D (x : AE D) ∈ OO := by
-    rw [h2]
-    exact add_mem (sub_mem (one_mem _) hE) (mul_mem hE hd)
-  have hu' : 1 - toEAf D e + toEAf D e * N'.det ∈ OO := add_mem (sub_mem (one_mem _) hE) (mul_mem hE hd')
-  have hxx : (⟨_, hu⟩ : OO) * ⟨_, h3⟩ = 1 := Subtype.ext (by
-    change toEAf D (x : AE D) * toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) = 1
-    rw [← RingHom.map_mul, Units.mul_inv, RingHom.map_one])
-  have hU : IsUnit (⟨_, hu⟩ : OO) := IsUnit.of_mul_eq_one _ hxx
-  have hU' : IsUnit (⟨_, hu'⟩ : OO) := isUnit_add he hE hc hU (z := z) (Subtype.ext (by
-    change 1 - toEAf D e + toEAf D e * N'.det = toEAf D (x : AE D) + toEAf D e * (((c : OO) : EAf D) * (z : EAf D))
-    rw [coe_nat, h2]
-    exact ring_id' hzv))
-  obtain ⟨w, hw⟩ := hU'.exists_right_inv
-  obtain ⟨x', a, b, d⟩ := exists_unit (u := 1 - toEAf D e + toEAf D e * N'.det) (v := (w : EAf D)) (congrArg Subtype.val hw)
-  exact ⟨x', a, b, by rw [d]; exact w.2⟩
-
-theorem nu_eq {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) {n c : ℕ}
-    (hl : ∀ x, Formalism.L2.Pj.FinUnit x → (∃ y ∈ intAE D, finPart D (x : AE D) - 1 = n • y) → ν x = 1) {k : ℕ}
-    {N N' Z : Matrix (Fin k) (Fin k) (EAf D)} (hN : IsIntM N) (hZ : IsIntM Z)
-    (h : ∀ i j, N' i j = N i j + ((n * c : ℕ) : EAf D) * Z i j) {x x' : (AE D)ˣ} (hx : IsUnitDet e N x)
-    (hx' : IsUnitDet e N' x') : ν x = ν x' :=
-  _root_.StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.nu_eq he hl hN hZ h hx hx'
 
 end
 
@@ -504,7 +429,7 @@ theorem unitChar_eq_of_natCong : ∀ (D : D7) (ν : (AE D)ˣ →* Circle) (e : A
       rw [h, mul_neg, add_neg_cancel_right]
   have hl : ∀ x, Formalism.L2.Pj.FinUnit x → (∃ y ∈ intAE D, finPart D (x : AE D) - 1 = N • y) → ν x = 1 := by
     rintro x ⟨h1, -, h3⟩ ⟨y, hy, hxy⟩
-    obtain ⟨a, -, ha⟩ := GlobalTheory.UnitCharCong.toEAf_surj (D := D) (Algebra.TensorProduct.comm D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.host.E y)
+    obtain ⟨a, -, ha⟩ := StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.toEAf_surj (D := D) (Algebra.TensorProduct.comm D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.host.E y)
     have hfa : finPart D a = y := (Algebra.TensorProduct.comm D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.host.E).injective ha
     have haI : toEAf D a ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := GlobalTheory.IdemRes.toEAf_mem_of_finPart (hfa ▸ hy)
     have hvI : toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := GlobalTheory.IdemRes.toEAf_mem_of_finPart h3
@@ -517,13 +442,13 @@ theorem unitChar_eq_of_natCong : ∀ (D : D7) (ν : (AE D)ˣ →* Circle) (e : A
       rw [← RingHom.map_mul, Units.mul_inv, RingHom.map_one]
     refine hν x h1 ⟨_, haI, hu⟩ ⟨-(toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) * toEAf D a), neg_mem (mul_mem hvI haI), ?_⟩
     linear_combination hm - toEAf D ((x⁻¹ : (AE D)ˣ) : AE D) * hu
-  have f := fun hx => GlobalTheory.UnitCharCong.exists_isUnitDet he (c := N) hSf hP hZint h hx
-  have g := fun hx => GlobalTheory.UnitCharCong.exists_isUnitDet he (c := N) hSf hQint hZn h' hx
+  have f := fun hx => StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.exists_isUnitDet he (c := N) hSf hP hZint h hx
+  have g := fun hx => StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.exists_isUnitDet he (c := N) hSf hQint hZn h' hx
   have h1 : ∀ i j, Q i j = P i j + ((N * 1 : ℕ) : Lev.EAf D) * (fun a b => Z a b : Matrix (Fin k) (Fin k) (Lev.EAf D)) i j :=
     fun i j => by rw [Nat.mul_one]; exact h i j
   unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.unitChar
   by_cases hx : ∃ x, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.IsUnitDet e P x
-  · rw [dite_eq_left (f hx), dite_eq_left hx, GlobalTheory.UnitCharCong.nu_eq he (n := N) (c := 1) hl hP hZint h1 hx.choose_spec (f hx).choose_spec]
+  · rw [dite_eq_left (f hx), dite_eq_left hx, StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.nu_eq he (n := N) (c := 1) hl hP hZint h1 hx.choose_spec (f hx).choose_spec]
   · rw [dite_eq_right (fun h => hx (g h)), dite_eq_right hx]
 
 end GlobalTheory.UnitCharCong
@@ -779,7 +704,7 @@ theorem fin_vec_fix : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G :
     {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW}, IsBottomTri W i j X → ∀ t : T,
     ∃ U : Subgroup (GA D WW), IsOpen (U : Set (GA D WW)) ∧ ∀ κ ∈ U, κ ∈ GfC WW → X.ω t (1, κ) (X.f t) = X.f t := by
   intro D T L sc G W i j A A' WW X hX t
-  obtain ⟨U₁, h₁, hU₁⟩ := GlobalTheory.T.exists_open_fixing_seesaw_vacuum_definite_bottom hX t
+  obtain ⟨U₁, h₁, hU₁⟩ := GlobalTheory.VacFixTarget.exists_open_fix_vac_target hX t
   obtain ⟨U₂, h₂, hU₂⟩ := _root_.GlobalTheory.RowTest.IsBottomTri.exists_open_fix_f hX t
   exact ⟨U₁ ⊓ U₂, h₁.inter h₂, fun κ hκ hf => hU₂ κ hκ.2 hf (hU₁ κ hκ.1 hf)⟩
 
@@ -957,7 +882,6 @@ end GlobalTheory.RealRatAct
 
 namespace GlobalTheory.RealRatAct
 
-
 variable {D : D7}
 
 theorem zpow_mem' {K : IntermediateField ℚ ℂ} {z : ℂ} (hz : z ∈ K) (n : ℤ) : z ^ n ∈ K := by
@@ -989,7 +913,6 @@ end GlobalTheory.RealRatAct
 
 namespace GlobalTheory.RealRatAct
 
-
 variable {D : D7}
 
 theorem glue (θ : InfFam D) (hθ : IsInfFam θ) (V : HSp D) :
@@ -1019,7 +942,6 @@ theorem compAt_mem (θ : InfFam D) (hθ : IsInfFam θ) {V : HSp D} {γ r : GA D 
 end GlobalTheory.RealRatAct
 
 namespace GlobalTheory.RealRatAct
-
 
 variable {D : D7}
 
@@ -1130,7 +1052,6 @@ end GlobalTheory.RealRatAct
 
 namespace GlobalTheory.RealRatAct
 
-
 variable {D : D7}
 
 section Act
@@ -1194,7 +1115,6 @@ end Act
 end GlobalTheory.RealRatAct
 
 namespace GlobalTheory.RealRatAct
-
 
 end GlobalTheory.RealRatAct
 end -- clump:auto

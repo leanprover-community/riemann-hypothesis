@@ -60,7 +60,7 @@ theorem exists_periodQuot_transport {V P : Type} [AddCommGroup V] [Module ℂ V]
     rw [hφ, toMul_ofMul, ← hpow, hdiv]
     exact (hmem _).1 x.2
   have hinj : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro q hq
     obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ q
     rw [hφ] at hq

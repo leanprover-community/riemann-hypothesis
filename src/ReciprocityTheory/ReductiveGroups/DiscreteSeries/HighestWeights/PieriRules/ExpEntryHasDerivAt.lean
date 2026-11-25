@@ -74,8 +74,6 @@ theorem continuous_rhoDual (ε : Fin n → Bool) :
 
 section Deriv
 
-attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
-
 theorem exp_entry_hasDerivAt (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) (X i j) 0 := by
   apply ReciprocityTheory.ChartRestriction.DS.HW.std_exp_entry_hasDerivAt <;> assumption

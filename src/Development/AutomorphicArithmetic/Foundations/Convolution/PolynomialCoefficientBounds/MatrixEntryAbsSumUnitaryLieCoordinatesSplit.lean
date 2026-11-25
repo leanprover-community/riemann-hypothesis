@@ -29,13 +29,8 @@ private theorem intMvPolynomialCoeffAbsSum_add_le {ι : Type} (p q : MvPolynomia
   exact norm_add_le _ _
 
 private theorem intMvPolynomialCoeffAbsSum_sum_le {ι κ : Type} (s : Finset κ) (f : κ → MvPolynomial ι ℂ) :
-    l1 (∑ i ∈ s, f i) ≤ ∑ i ∈ s, l1 (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [l1]
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.sum_insert ha]
-    exact (intMvPolynomialCoeffAbsSum_add_le _ _).trans (by linarith)
+    l1 (∑ i ∈ s, f i) ≤ ∑ i ∈ s, l1 (f i) :=
+  Finset.le_sum_of_subadditive l1 (by simp [l1]) intMvPolynomialCoeffAbsSum_add_le s f
 
 private theorem intMvPolynomialCoeffAbsSum_monomial {ι : Type} (a : ι →₀ ℕ) (c : ℂ) :
     l1 (monomial a c : MvPolynomial ι ℂ) = ‖c‖ := by

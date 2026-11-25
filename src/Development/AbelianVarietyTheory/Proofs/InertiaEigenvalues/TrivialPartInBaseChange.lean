@@ -76,7 +76,3 @@ theorem mu_ralg (D : D7) (Rw : RowSide D) (j : ℕ) (σ : D.what₂.FT) (π : D.
     linear_combination hk
 
 end GlobalTheory.MuBlockLoc
-
-namespace GlobalTheory.MuBlockLoc
-
-end GlobalTheory.MuBlockLoc

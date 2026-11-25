@@ -112,8 +112,6 @@ theorem exists_injective_rows_leadingMinors_not_mem (R : Type) [CommRing R] (p :
       have hmat : (Matrix.of fun a b : Fin (n+1) => T (f (Fin.castLE hk a)) (Fin.castLE hk b)) =
           T.submatrix σ id := by
         ext a b
-        have e1 : Fin.castLE hk a = a := Fin.ext rfl
-        have e2 : Fin.castLE hk b = b := Fin.ext rfl
         simp [σ]
       rw [hmat, Matrix.det_permute]
       intro hm

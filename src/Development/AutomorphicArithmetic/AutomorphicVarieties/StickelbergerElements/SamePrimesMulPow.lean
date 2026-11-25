@@ -56,7 +56,6 @@ theorem cf_single (R : Type) [CommRing R] (g : Γ) (n : ℤ) :
 
 theorem cf_sumEl (R : Type) [CommRing R] {M : ℕ} [NeZero M] (φ : (ZMod M)ˣ →* Γ) (f : ZMod M → ℤ) :
     cf R Γ (sumEl φ f) = sumEl φ fun b => (f b : R) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [sumEl, map_sum, cf_single]
 
 theorem sumEl_add {R : Type} [CommRing R] {M : ℕ} [NeZero M] (φ : (ZMod M)ˣ →* Γ) (f g : ZMod M → R) :

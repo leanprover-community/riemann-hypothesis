@@ -73,7 +73,7 @@ theorem realPt_inj_of_grpPullback : ∀ {o₂ Ω₂ : Type} [CommRing o₂] [Fie
   intro o₂ Ω₂ _ _ _ S₂ ρ₂ T G _ f φ hφ x y hxy
   have hpt : ρ₂.pt x = ρ₂.pt y := by
     ext
-    exact hφ.1.hom_ext hxy (by simp only [Category.assoc, Over.w])
+    exact hφ.1.hom_ext hxy (by simp only [Over.w])
   have hzero : ρ₂.pt 0 = 1 := by
     have h := ρ₂.pt_add 0 0
     rw [add_zero] at h

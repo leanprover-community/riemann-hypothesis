@@ -96,14 +96,6 @@ section -- clump:auto
 
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
-namespace GlobalTheory.BigOn.Exp.TwAdmProof
-end GlobalTheory.BigOn.Exp.TwAdmProof
-namespace GlobalTheory.BigOn.Exp.TwAdmProof
-variable {D : D7}
-end GlobalTheory.BigOn.Exp.TwAdmProof
-namespace GlobalTheory.BigOn.Exp.TwAdmProof
-variable {D : D7}
-end GlobalTheory.BigOn.Exp.TwAdmProof
 open GlobalTheory.BigOn.Exp.TwAdmProof in
 theorem GlobalTheory.BigOn.Exp.twAdm_alt : _root_.GlobalTheory.BigOn.Exp.TwAdmAlt := by
   unfold _root_.GlobalTheory.BigOn.Exp.TwAdmAlt _root_.GlobalTheory.BigOn.Exp.TwistConditions _root_.GlobalTheory.BigOn.AtPtsAlt

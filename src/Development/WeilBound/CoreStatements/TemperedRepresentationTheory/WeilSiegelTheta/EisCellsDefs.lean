@@ -54,7 +54,7 @@ def Bruhat : Prop :=
   ∀ (K : Type) [Field K] (σ : K →+* K), (∀ x, σ (σ x) = x) → (2 : K) ≠ 0 → ∀ n : ℕ,
   ∀ c : ∀ U : Submodule K (Fin n → K), Matrix (Fin (Module.finrank K U)) (Fin n) K,
     (∀ U, LinearIndependent K (c U) ∧ Submodule.span K (Set.range (c U)) = U) →
-  ∀ a : ∀ U : Submodule K (Fin n → K), Matrix (Fin n) (Fin n) K, (∀ U, IsCompl (c U) (a U)) →
+  ∀ a : ∀ _ : Submodule K (Fin n → K), Matrix (Fin n) (Fin n) K, (∀ U, IsCompl (c U) (a U)) →
     (∀ (U : Submodule K (Fin n → K)) (b : Matrix (Fin (Module.finrank K U)) (Fin (Module.finrank K U)) K), cT σ b = b →
       IsUnit (repMat σ b (a U)).det ∧ IsUnitary σ (Jm K n) (repMat σ b (a U))) ∧
     ∀ g : Matrix (Fin (n + n)) (Fin (n + n)) K, IsUnit g.det → IsUnitary σ (Jm K n) g →

@@ -505,7 +505,7 @@ theorem exists_hodgeCpt_htFree : Out.WeilSt → ∀ (E : Type) [Field E] [Number
     (fun b => Module.Dual Ω (eigSp ρ (cst.comp (labelEmb c b.2))))
     (fun b => (N₁.htOm t₁.PP.L (b.1.1 ^ R b.1.1)).map (eigSp ρ (cst.comp (labelEmb c b.2))).dualRestrict)
     (fun p => (hcoh p.1 p.2).1)
-    (fun b => (_root_.GlobalTheory.CompanionTheory.Ar.coh_vb_images_sums_multiples _ Ω M₁.ξ _ _ _ (N₁.htOm t₁.PP.L (b.1.1 ^ R b.1.1)) _).2.1 _ (hcoh b.1.1 b.1.2).1)
+    (fun b => (_root_.PositivityTheory.HtPt.Mc.coh_ops _ Ω M₁.ξ _ _ _ (N₁.htOm t₁.PP.L (b.1.1 ^ R b.1.1)) _).2.1 _ (hcoh b.1.1 b.1.2).1)
     (fun p => hspan p.1 p.2)
     (fun b q => span_map_top _ _ Subspace.dualRestrict_surjective q (hspan b.1.1 b.1.2 q))
   have hg : M'.ξ ≫ g = M₁.ξ := by

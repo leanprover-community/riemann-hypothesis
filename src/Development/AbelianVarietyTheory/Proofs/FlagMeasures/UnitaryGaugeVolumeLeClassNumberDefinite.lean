@@ -95,7 +95,6 @@ theorem pos_at (v : InfinitePlace I.F) (hv : I.ε v = allPos I.n) (y : Fin I.n �
     rw [I.P_spec v, hv, GlobalTheory.UnitaryVolume.Jm_allPos]
   have hmap : I.φ v (star y ⬝ᵥ (I.J *ᵥ y)) =
       star (fun i => I.φ v (y i)) ⬝ᵥ (I.J.map (I.φ v) *ᵥ fun i => I.φ v (y i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [dotProduct, mulVec, map_sum, map_mul, Pi.star_apply, hconj, Matrix.map_apply,
       starRingEnd_apply]
   have hne : (fun i => I.φ v (y i)) ≠ 0 := by

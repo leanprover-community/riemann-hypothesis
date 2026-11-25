@@ -455,18 +455,6 @@ def specHomeomorph (C : Type) [CommRing C] [TopologicalSpace C] [IsTopologicalRi
     exact (continuous_valR_top (C := C) _).congr fun x => (preimage_apply x a).symm
   continuous_invFun := continuous_specMap A
 
-def affineHomeomorph {U : X.Opens} (hU : IsAffineOpen U) :
-    {x : Sp C ⟶ X // ⊤ ≤ x ⁻¹ᵁ U} ≃ₜ (Γ(X, U) ⟶ CommRingCat.of C) where
-  toFun x := valMap x.1 U x.2
-  invFun φ := ⟨Spec.map φ ≫ hU.fromSpec, le_preimage_specMap_fromSpec hU φ⟩
-  left_inv x := Subtype.ext (specMap_valMap_fromSpec hU x.1 x.2)
-  right_inv φ := valMap_specMap_fromSpec hU φ _
-  continuous_toFun := by
-    refine continuous_induced_rng.2 (continuous_pi fun f => ?_)
-    exact (continuousOn_iff_continuous_restrict.1 (continuousOn_valR (C := C) f)).congr
-      fun x => valR_eq x.1 U x.2 f
-  continuous_invFun := ((continuous_comp _).comp (continuous_specMap _)).subtype_mk _
-
 theorem continuous_spMap_comp {C₀ : Type} [CommRing C₀] [TopologicalSpace C₀] [IsLocalRing C₀]
     (σ : C₀ →+* C) (hσ : Continuous σ) : Continuous fun x : Sp C₀ ⟶ X => spMap σ ≫ x := by
   refine continuous_iff_continuousAt.2 fun x => ?_

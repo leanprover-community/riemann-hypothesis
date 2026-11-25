@@ -103,11 +103,8 @@ theorem isDominant_fromSpecStalk_genericPoint (U : Scheme.{u}) [IsIntegral U] :
 theorem isIso_stalkMap_fromSpecStalk_genericPoint (U : Scheme.{u}) [IsIntegral U] :
     IsIso ((U.fromSpecStalk (genericPoint U)).stalkMap (genericPoint _)) := by
   let _ : Field (U.presheaf.stalk (genericPoint U)) := inferInstanceAs (Field U.functionField)
-  have hsub : ∀ p q : Spec (U.presheaf.stalk (genericPoint U)), p = q := by
-    intro p q
-    apply PrimeSpectrum.ext
-    rw [(Ideal.eq_bot_or_top p.asIdeal).resolve_right p.isPrime.ne_top,
-      (Ideal.eq_bot_or_top q.asIdeal).resolve_right q.isPrime.ne_top]
+  have hsub : ∀ p q : Spec (U.presheaf.stalk (genericPoint U)), p = q :=
+    Subsingleton.elim (α := PrimeSpectrum (U.presheaf.stalk (genericPoint U)))
   rw [hsub (genericPoint _) (IsLocalRing.closedPoint _)]
   have e : (U.fromSpecStalk (genericPoint U)).stalkMap (IsLocalRing.closedPoint _) =
       Scheme.stalkClosedPointTo (U.fromSpecStalk (genericPoint U)) ≫
@@ -122,12 +119,8 @@ theorem existsUnique_lift_of_birational (j : U ⟶ T) [IsIntegral U] [IsIntegral
     ∃! c : T ⟶ Z, j ≫ c = a ∧ c ≫ p = b := by
   have hT : ∀ t : T, IsIntegrallyClosed (T.presheaf.stalk t) := fun t => inferInstance
   let _ : Field (U.presheaf.stalk (genericPoint U)) := inferInstanceAs (Field U.functionField)
-  have hsub : ∀ x y : Spec (U.presheaf.stalk (genericPoint U)), x = y := by
-    intro x y
-    apply PrimeSpectrum.ext
-    rw [(Ideal.eq_bot_or_top x.asIdeal).resolve_right x.isPrime.ne_top,
-      (Ideal.eq_bot_or_top y.asIdeal).resolve_right y.isPrime.ne_top]
-  have : Subsingleton (Spec (U.presheaf.stalk (genericPoint U))) := ⟨hsub⟩
+  have : Subsingleton (Spec (U.presheaf.stalk (genericPoint U))) :=
+    inferInstanceAs (Subsingleton (PrimeSpectrum (U.presheaf.stalk (genericPoint U))))
   set η := U.fromSpecStalk (genericPoint U) with hη
   have := isDominant_fromSpecStalk_genericPoint U
   have := isIso_stalkMap_fromSpecStalk_genericPoint U

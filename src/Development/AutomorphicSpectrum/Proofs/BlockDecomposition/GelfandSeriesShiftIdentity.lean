@@ -95,9 +95,6 @@ theorem _root_.GlobalTheory.Dec.GelfSepProof.gen {n : ℕ} (l : Fin n → ℂ) :
 
 end GlobalTheory.Dec.GelfSepProof
 
-namespace GlobalTheory.Dec
-
-end GlobalTheory.Dec
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -23,15 +23,12 @@ theorem ex_mem_UJset {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n)
   Formalism.REAL.exp_indefinite_unitary_holds n ε X hX t
 
 theorem inG_add {n : ℕ} {ε : Fin n → Bool} {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (hY : inG ε Y) :
-    inG ε (X + Y) := by
-  unfold inG at *
-  rw [Matrix.conjTranspose_add, Matrix.add_mul, Matrix.mul_add, add_add_add_comm, hX, hY, add_zero]
+    inG ε (X + Y) :=
+  Formalism.REAL.lie_algebra_add_mem ε hX hY
 
 theorem inG_smul {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (s : ℝ) :
-    inG ε ((s : ℂ) • X) := by
-  unfold inG at *
-  rw [Matrix.conjTranspose_smul, Matrix.smul_mul, Matrix.mul_smul, Complex.star_def, Complex.conj_ofReal,
-    ← smul_add, hX, smul_zero]
+    inG ε ((s : ℂ) • X) :=
+  Formalism.REAL.lie_algebra_real_smul_mem ε hX s
 
 theorem smLin : CompanionTheory.D.DSIC.SmLin := by
   intro n ε H _ _ σ hσ

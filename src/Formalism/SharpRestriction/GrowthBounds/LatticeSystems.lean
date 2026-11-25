@@ -4364,7 +4364,3 @@ theorem theta_kernel_expansion (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA 
   instance_of_lemma_J D G hA (restJAll G)
 
 end Formalism.MainNotions.G.LatticeSystems
-
-namespace Formalism.MainNotions.G.LatticeSystems
-
-end Formalism.MainNotions.G.LatticeSystems

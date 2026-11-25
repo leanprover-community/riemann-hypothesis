@@ -116,9 +116,6 @@ theorem sameCoset_of_mem_cosetIn {X : Fields} {Pr : Primes X} {R : Ranks} {sel :
 
 end GlobalTheory.TwU.AtTrue.Cl
 
-namespace GlobalTheory.TwU.AtTrue.Cl
-
-end GlobalTheory.TwU.AtTrue.Cl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.SameCosetOfMemCosetIn =====

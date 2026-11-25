@@ -105,7 +105,6 @@ theorem _root_.GlobalTheory.FinWeil.span_translates_vacua : ∀ {R X M : Type} [
       zero_mem' := ⟨A.zero_mem, fun t _ => hW.zero_left t⟩
       neg_mem' := fun {a} ha => ⟨A.neg_mem ha.1, fun t ht => by
         rw [hW.neg_left, ha.2 t ht, inv_one]⟩ }
-  have hSmem : ∀ a, a ∈ S ↔ a ∈ A ∧ ∀ t ∈ T, γ a t = 1 := fun a => Iff.rfl
   let T₀ : AddSubgroup X := A.toAddSubgroup ⊓ T.toAddSubgroup
   have hS : ∀ a ∈ A.toAddSubgroup, a ∈ S ↔ ∀ t ∈ T.toAddSubgroup, γ a t = 1 :=
     fun a ha => ⟨fun h => h.2, fun h => ⟨ha, h⟩⟩

@@ -59,9 +59,8 @@ theorem main (R : Type) [CommRing R] :
     intro T t
     have := congrArg (fun φ => φ.hom (ModuleCat.freeMk (ULift.up (𝟙 W) : uliftFunctor.{1, 0}.obj ((yoneda.obj W).obj (op W))))) (g'.naturality t.op)
     have key : ((freeP R).obj (yoneda.obj W)).map t.op (ModuleCat.freeMk (ULift.up (𝟙 W) : uliftFunctor.{1, 0}.obj ((yoneda.obj W).obj (op W)))) = ModuleCat.freeMk (ULift.up t : uliftFunctor.{1, 0}.obj ((yoneda.obj W).obj (op T))) := by
-      simp [freeP, ModuleCat.freeMk, ModuleCat.free]
-      erw [Finsupp.lmapDomain_apply, Finsupp.mapDomain_single]
-      rfl
+      simp only [freeP, ModuleCat.freeMk, ModuleCat.free]
+      exact (Finsupp.lmapDomain_apply _ _ _ _).trans Finsupp.mapDomain_single
     exact (congrArg (fun v => (g'.app (op T)) v) key).symm.trans this
   have h0 : ∀ (P : PSh), adj.homEquiv _ _ (0 : (presheafToSheaf _ _).obj ((freeP R).obj P) ⟶ Zs) = 0 := by
     intro P
@@ -76,9 +75,8 @@ theorem main (R : Type) [CommRing R] :
     rw [hi', h0] at h1
     have h2 := congrArg (fun φ => (φ.app (op Y)).hom (ModuleCat.freeMk (ULift.up (𝟙 Y) : uliftFunctor.{1, 0}.obj ((yoneda.obj Y).obj (op Y))))) h1
     have key : ((freeP R).map (yoneda.map i)).app (op Y) (ModuleCat.freeMk (ULift.up (𝟙 Y) : uliftFunctor.{1, 0}.obj ((yoneda.obj Y).obj (op Y)))) = ModuleCat.freeMk (ULift.up i : uliftFunctor.{1, 0}.obj ((yoneda.obj W).obj (op Y))) := by
-      simp [freeP, ModuleCat.freeMk, ModuleCat.free]
-      erw [Finsupp.lmapDomain_apply, Finsupp.mapDomain_single]
-      rfl
+      simp only [freeP, ModuleCat.freeMk, ModuleCat.free]
+      exact (Finsupp.lmapDomain_apply _ _ _ _).trans Finsupp.mapDomain_single
     rw [← hval]
     exact ((congrArg (fun v => (g'.app (op Y)) v) key).symm.trans h2.symm)
   have hz : z = 0 := sec_zero U V R Zs z (fun b => by
@@ -91,9 +89,7 @@ theorem main (R : Type) [CommRing R] :
     induction T using Opposite.rec with | op T => ?_
     apply ModuleCat.free_hom_ext
     rintro ⟨t⟩
-    erw [hval T t]
-    rw [hz, map_zero]
-    rfl
+    exact (hval T t).trans (by rw [hz, map_zero]; rfl)
   exact (adj.homEquiv _ _).injective (hg'.trans (h0 _).symm)
 
 theorem LeafFreeCov_of : LateralTheory.CohomologicalPurity.Thom.LeafFreeCov := fun R _ _ U V => main U V R

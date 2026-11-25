@@ -637,22 +637,8 @@ def e0A (k r : ℕ) (p : Fin (r + k + 1)) : Fin (2 * r + k + 1) := ⟨p.val, by 
 theorem anisotropic_index_injective : Function.Injective (e0A k r) := fun a b h => by
   simp only [e0A, Fin.ext_iff] at h; exact Fin.ext h
 
-theorem sum_embA {a b : ℕ} (f : Fin a → Fin b) (hf : Function.Injective f) (G : Fin b → ℂ)
-    (hG : ∀ q, (∀ p, f p ≠ q) → G q = 0) : ∑ p, G (f p) = ∑ q, G q := by
-  classical
-  calc ∑ p, G (f p) = ∑ q ∈ Finset.univ.map ⟨f, hf⟩, G q := by rw [Finset.sum_map]; rfl
-    _ = ∑ q, G q := Finset.sum_subset (Finset.subset_univ _) (fun q _ hq => hG q (fun p hp => hq (by
-        simp only [Finset.mem_map, Finset.mem_univ, true_and]; exact ⟨p, hp⟩)))
-
 theorem hermitian_form_column_vanishes (j y : Fin (2 * r + k + 1)) (hj : j.val ≤ r + k) (hy : y.val < r) : Hpk k r y j = 0 := by
   unfold Hpk
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem hpk_esI_right (a : Fin r) (y : Fin (2 * r + k + 1)) :
-    Hpk k r y (esI k r a) = if y = eI k r a then 1 else 0 := by
-  have ha := a.isLt
-  unfold Hpk
-  simp only [esI, eI, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
 variable {z' : Fin (2 * r + k + 1) → ℂ} {w m : B.Mat k r}
@@ -717,7 +703,7 @@ theorem inverse_product_block_zero (hw : w ∈ UWset k r z') (hm : m ∈ Nset k 
 theorem P_XX (hw : w ∈ UWset k r z') (hm : m ∈ Nset k r) (a b : Fin r) :
     ((m * w)⁻¹) (esI k r a) (esI k r b) = star ((m * w) (eI k r b) (eI k r a)) := by
   rw [P_row hw hm]
-  simp only [hpk_esI_right, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [Formalism.FourierDecayAlt.P.Qx3.hpk_col_es, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem det_inverse_product_block (hw : w ∈ UWset k r z') (hm : m ∈ Nset k r) :
     ((m * w)⁻¹).det = (((m * w)⁻¹).submatrix (e0A k r) (e0A k r)).det := by
@@ -776,7 +762,7 @@ theorem zeta_fix (hz' : inWb k r z') (hw : w ∈ UWset k r z') (hm : m ∈ Nset 
   have hq : (e0A k r q).val ≤ r + k := by simp [e0A]; omega
   rw [herm_bvec, ← zeta_full hz' hw hm _ hq]
   simp only [Matrix.vecMul, dotProduct, Matrix.submatrix_apply, herm_bvec]
-  refine sum_embA (e0A k r) anisotropic_index_injective (fun x => (star z' ᵥ* Hpk k r) x * ((m * w)⁻¹) x (e0A k r q)) (fun x hx => ?_)
+  refine Formalism.FourierDecayAlt.P.CutMP.InvEig.sum_emb (e0A k r) anisotropic_index_injective (fun x => (star z' ᵥ* Hpk k r) x * ((m * w)⁻¹) x (e0A k r q)) (fun x hx => ?_)
   have : r + k < x.val := by
     by_contra hc
     exact hx ⟨x.val, by omega⟩ (Fin.ext (by simp [e0A]))
@@ -931,7 +917,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-
 open Classical in
 theorem sum_sortM {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ} (F : (Fin t → Fin N) → M)
     (hF : ∀ (d : Fin t → Fin N) (τ : Equiv.Perm (Fin t)), F (d ∘ τ) = ((Equiv.Perm.sign τ : ℤ) : ℂ) • F d)
@@ -944,7 +929,6 @@ theorem sum_sortM {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ} (F : (
   by_cases h : StrictMono C
   · rw [ite_eq_left h, ite_eq_left (show StrictMono fun l => ((C l : Fin N) : ℕ) from h)]
   · rw [ite_eq_right h, ite_eq_right (show ¬ StrictMono fun l => ((C l : Fin N) : ℕ) from h)]
-
 
 open Classical in
 theorem collapse2 {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ}
@@ -982,7 +966,6 @@ theorem det_cols {t N : ℕ} (S : Matrix (Fin N) (Fin N) ℂ) (b d : Fin t → F
   rfl
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
 
 open Classical in
 theorem qminor_right (S : Mat k r) (hS : S ∈ GV k r) {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ)

@@ -20,13 +20,7 @@ variable {A : Type*} [CommRing A] (I : Ideal A)
 
 theorem factorPow_evalₐ {m n : ℕ} (hle : m ≤ n) (x : AdicCompletion I A) :
     Ideal.Quotient.factorPow I hle (AdicCompletion.evalₐ I n x) = AdicCompletion.evalₐ I m x := by
-  obtain ⟨c, rfl⟩ := AdicCompletion.mk_surjective I A x
-  rw [AdicCompletion.evalₐ_mk, AdicCompletion.evalₐ_mk]
-  simp only [Ideal.Quotient.factorPow, Ideal.Quotient.factor_mk]
-  rw [Ideal.Quotient.eq]
-  have h := AdicCompletion.AdicCauchySequence.mk_eq_mk hle c
-  rw [Submodule.Quotient.eq, smul_eq_mul, Ideal.mul_top] at h
-  exact h
+  exact Reformulated.AutPerF.factorPow_evalₐ I hle x
 
 end AdicCompletion
 

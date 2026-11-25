@@ -382,7 +382,7 @@ theorem unfold_k : Unfold_k := by
       rw [show γ * (nb (β + β₀ + ν.1) * x) = (γ * nb β₀ * γ⁻¹) * (γ * (nb (β + ν.1) * x)) by
         rw [show β + β₀ + ν.1 = β₀ + (β + ν.1) by abel, nb_add hnb]
         simp only [mul_assoc, inv_mul_cancel_left], hone _ t' hpar hdet]
-  obtain ⟨-, -, heq⟩ := abs_unfold lam d.nF_ 𝓖 h𝓖 act hact0 hact A hA hAact χ₀ hχc hχadd hχΛ
+  have heq := abs_unfold lam d.nF_ 𝓖 h𝓖 act hact0 hact A hA hAact χ₀ hχc hχadd hχΛ
     C hC hcov u hu hAu q₀ hinj hsmall
   show fc d.B.ψ d.b nb lam 𝓖 (cosetSum (par2 σ d.Y) d.r2 (fun y => ((d.Ht y : ℝ) : ℂ) ^ (z - s₁) * f y)) T x = _
   rw [hΦ]

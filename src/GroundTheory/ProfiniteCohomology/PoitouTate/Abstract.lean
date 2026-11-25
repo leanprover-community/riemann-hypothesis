@@ -106,19 +106,4 @@ def ptDualToGlobal {r s : ℕ} (h : r + s = 3)
     (cohomology (dualRep D M) s →+ QZ) →+ cohomology M r :=
   (ptCompactToGlobal φ M r).hom.toAddMonoidHom.comp (AddEquiv.ofBijective _ hψ).symm.toAddMonoidHom
 
-namespace PoitouTateHypotheses
-
-variable {φ D t inv} (P : PoitouTateHypotheses φ D t inv)
-
-
-
-
-
-
-
-
-
-
-end PoitouTateHypotheses
-
 end GroundTheory.ProfCoh

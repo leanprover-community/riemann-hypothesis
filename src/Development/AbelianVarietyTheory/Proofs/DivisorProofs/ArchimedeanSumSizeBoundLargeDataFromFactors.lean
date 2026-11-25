@@ -628,10 +628,6 @@ theorem test_bound (C sb : ℝ) (hm : 0 < D.R.m) (hA : 0 ≤ D.R.m * aOne ch.G C
   set eg := Real.exp (D.R.m * g p) with heg
   set eg' := Real.exp (D.R.m * g' p) with heg'
   have hea0 : 0 < ea := Real.exp_pos _
-  have hes0 : 0 < es := Real.exp_pos _
-  have he10 : 0 < e1 := Real.exp_pos _
-  have heg0 : 0 < eg := Real.exp_pos _
-  have heg'0 : 0 < eg' := Real.exp_pos _
   rcases isEmpty_or_nonempty (Fin ch.n) with h0 | ⟨⟨a0⟩⟩
   · simp [dotProduct]
   set k0 := (ch.e a0).2 with hk0
@@ -681,7 +677,6 @@ theorem test_bound (C sb : ℝ) (hm : 0 < D.R.m) (hA : 0 ≤ D.R.m * aOne ch.G C
     rw [← Nat.card_eq_fintype_card, Nat.card_prod]
     push_cast
     exact mul_le_mul hN.1 hC.1 (by positivity) hea0.le
-  have hE : 0 ≤ ea ^ 8 * es ^ 2 * e1 * eg * eg' := by positivity
   rw [hdot, ← hsum]
   calc ‖∑ b, σ (z b)‖ ^ 2 ≤ (∑ b, ‖σ (z b)‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (norm_sum_le _ _) 2
     _ ≤ (Finset.univ : Finset (TestIx ch.G)).card * ∑ b, ‖σ (z b)‖ ^ 2 := sq_sum_le_card_mul_sum_sq

@@ -107,9 +107,3 @@ theorem natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
 
 
 end GlobalTheory.IndefiniteRowSideFullHecke.CoefficientSpaceWeights
-
-namespace GlobalTheory.IndefiniteRowSideFullHecke.CoefficientSpaceWeights
-
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField
-
-end GlobalTheory.IndefiniteRowSideFullHecke.CoefficientSpaceWeights

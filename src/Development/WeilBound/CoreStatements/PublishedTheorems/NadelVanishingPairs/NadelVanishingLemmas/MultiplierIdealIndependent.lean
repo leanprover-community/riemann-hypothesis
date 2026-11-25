@@ -35,12 +35,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.CechPic
 
 namespace GlobalTheory.MultLoc
 
-theorem isProper_of_isProjOver_nadel_vanishing {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
-    (h : IsProjOver f) : IsProper f := by
-  obtain ⟨N, i, hi, rfl⟩ := h
-  have := isProper_str R N
-  infer_instance
-
 variable {Y : Scheme.{0}} [IsIntegral Y] [IsLocallyNoetherian Y]
 
 noncomputable def multHom (z : Y) : CartierDiv Y →+ ℤ :=
@@ -56,7 +50,6 @@ theorem mult_nsmul' (D : CartierDiv Y) (r : ℕ) (z : Y) : (r • D).mult z = r 
 
 end GlobalTheory.MultLoc
 
-
 open GlobalTheory.MultLoc in
 theorem GlobalTheory.Discrepancy.inMultAt_iff_regularAt_logRes : ∀ (k : Type) [Field k] [CharZero k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (n : ℕ), IsProjOver p → ∀ (η : RatForms p n) (m : ℕ) (G : CartierDiv X) (Y : Scheme.{0}) [IsIntegral Y] [IsLocallyNoetherian Y] (s : Y ⟶ X) [IsDominant s] (K : CartierDiv Y) (B : Closeds Y) (F : CartierDiv Y), η ≠ 0 → 0 < m → IsLogRes p n η m G s K B → (∀ z, F.mult z = (pullCart s G - m • K).mult z / (m : ℤ)) → ∀ (x : X) (u : X.functionFieldˣ), InMultAt p n η m G x u ↔ ∀ y : Y, s y = x → (-F).RegularAt y (functionFieldMap s (u : X.functionField)) := by
   intro k _ _ X _ p n hp η m G Y _ _ s _ K B F hη hm hres hF x u
@@ -64,8 +57,8 @@ theorem GlobalTheory.Discrepancy.inMultAt_iff_regularAt_logRes : ∀ (k : Type) 
   haveI : Smooth (s ≫ p) := SmoothOfRelativeDimension.smooth n (s ≫ p)
   haveI : GlobalTheory.IsNormalScheme Y := GlobalTheory.isNormalScheme_of_smooth (s ≫ p)
   haveI : IsProper s := by
-    haveI := isProper_of_isProjOver_nadel_vanishing hp
-    haveI := isProper_of_isProjOver_nadel_vanishing hres.proj
+    haveI := GlobalTheory.CommonModel.isProper_of_isProjOver hp
+    haveI := GlobalTheory.CommonModel.isProper_of_isProjOver hres.proj
     exact IsProper.of_comp s p
   set Γ := pullCart s G - m • K with hΓ
   set η' := EtaleKlt.ratPull p s n η with hη'def

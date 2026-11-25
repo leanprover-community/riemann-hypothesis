@@ -1218,22 +1218,13 @@ theorem finSt_relIndex_le {G : Type} [Group G] {H K L : Subgroup G} (hKL : K ≤
     Finite.of_injective _ (Subgroup.quotientSubgroupOfEmbeddingOfLE H hKL).injective
   exact Subgroup.index_ne_zero_of_finite
 
-theorem finSt_relIndex_nhds {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K H : Subgroup G}
-    (hK : IsCompact (K : Set G)) {U : Set G} (hU : U ∈ 𝓝 (1 : G)) (hH : ∀ k ∈ K, k ∈ U → k ∈ H) : H.relIndex K ≠ 0 := by
-  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
-  have ho : IsOpen ((H.subgroupOf K : Subgroup K) : Set K) :=
-    (H.subgroupOf K).isOpen_of_mem_nhds (Filter.mem_of_superset (continuous_subtype_val.continuousAt (x := (1 : K)) hU)
-      fun k hk => Subgroup.mem_subgroupOf.2 (hH k.1 k.2 hk))
-  have : Finite (K ⧸ H.subgroupOf K) := Subgroup.quotient_finite_of_isOpen _ ho
-  exact Subgroup.index_ne_zero_of_finite
-
 theorem finSt_KGL {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
     (b : GL (Fin n) (w.adicCompletion E)) :
     (KGL w (n := n) ⊓ (KGL w (n := n)).map (MulAut.conj b).toMonoidHom).relIndex (KGL w (n := n)) ≠ 0 := by
   obtain ⟨ho, hc⟩ := SatCompare.isOpen_isCompact_KGL w n
   have hcont : Continuous fun x : GL (Fin n) (w.adicCompletion E) => b⁻¹ * x * b :=
     (continuous_const.mul continuous_id).mul continuous_const
-  refine finSt_relIndex_nhds hc (U := (KGL w (n := n) : Set _) ∩ (fun x => b⁻¹ * x * b) ⁻¹' (KGL w (n := n) : Set _))
+  refine PositivityTheory.Sph.relIndex_ne_zero_of_nhds hc (U := (KGL w (n := n) : Set _) ∩ (fun x => b⁻¹ * x * b) ⁻¹' (KGL w (n := n) : Set _))
     ((ho.inter (ho.preimage hcont)).mem_nhds ⟨one_mem _, by simp [one_mem]⟩) fun k _ hk => ⟨hk.1, ?_⟩
   refine ⟨b⁻¹ * k * b, hk.2, ?_⟩
   simp [MulAut.conj_apply, mul_assoc]

@@ -83,16 +83,9 @@ theorem lminor_zero (M : Matrix (Fin r) (Fin r) ℂ) : lminor M 0 = 1 := by
   unfold lminor
   exact Matrix.det_eq_one_of_card_eq_zero (by simp; exact Fintype.card_eq_zero)
 
-theorem gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G x = x.transpose * G.map τ * x.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-    Finset.sum_mul]
-  exact Finset.sum_comm
-
 theorem det_gram (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
     (gram τ G x).det = x.det * (G.map τ).det * starRingEnd ℂ x.det := by
-  rw [gram_eq, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
+  rw [GlobalTheory.PeriodOnto.gram_eq', Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
   congr 1
   exact (RingHom.map_det (starRingEnd ℂ) x).symm
 
@@ -138,17 +131,6 @@ theorem detPow_diff (X : Data E r) (a : ℤ) : DifferentiableOn ℂ (detPow X.Ψ
   have h : ∀ τ : X.Ψ, DifferentiableAt ℂ (fun y : Frame X.Ψ r => (mat y τ).det ^ a) x :=
     fun τ => (det_diff X.Ψ τ x).zpow (Or.inl (hx τ).1)
   fun_prop
-
-theorem chi_one (X : Data E r) (la : Wt X.Ψ r) : X.χ la 1 = 1 := by
-  have h1 : (1 : GL (Fin r) E) ∈ X.Γ := X.Γ.one_mem
-  have hm := X.χ_mul la 1 h1 1 h1
-  rw [mul_one] at hm
-  obtain ⟨n, hn, hf⟩ := X.χ_fin la
-  have hne : X.χ la 1 ≠ 0 := fun h0 => by
-    have := hf 1 h1
-    rw [h0, zero_pow hn.ne'] at this
-    exact zero_ne_one this
-  exact mul_left_cancel₀ hne (hm.symm.trans (mul_one _).symm)
 
 theorem hermC_mulVec (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (P : Matrix (Fin r) (Fin r) ℂ)
     (v w : Fin r → ℂ) :
@@ -234,7 +216,7 @@ theorem detPow_mem_SS (X : Data E r) (hΓ : ∀ γ ∈ X.Γ, γ = 1) (hdef : ∀
     simp only [e1, Finset.prod_mul_distrib]
     ring
   · intro γ hγ x _
-    rw [hΓ γ hγ, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.lact_one, chi_one, one_mul]
+    rw [hΓ γ hγ, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.lact_one, GlobalTheory.Up.OrbitInterpolation.chi_one, one_mul]
 
 theorem exists_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r),
     (∀ γ ∈ X.Γ, γ = 1) → (X.p0 = 0 ∨ X.p0 = r) → ∀ s : ℕ, ∀ x ∈ X.dom,
@@ -465,7 +447,6 @@ theorem kappa_exists {r : ℕ} (X : Data E r) (x0 : Frame X.Ψ r) (h0 : IsOrth X
   congr 1
   rw [← GlobalTheory.Up.exp_neg_rhX h0 hy, ← Real.exp_mul]
   congr 1; ring
-
 
 open GlobalTheory.Up.OrbitInterpolation in
 theorem orbitInterp_small {r : ℕ} (X : Data E r) (G : Subgroup (GL (Fin r) E)) (x0 : Frame X.Ψ r)

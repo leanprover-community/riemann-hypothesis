@@ -24,7 +24,6 @@ def fbHom (m n : Type*) [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] 
   map_zero' := by simp
   map_add' p q := by simp [Matrix.fromBlocks_add]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_reindex (e : m ≃ n) (M : Matrix m m ℂ) :
     NormedSpace.exp (Matrix.reindex e e M) = Matrix.reindex e e (NormedSpace.exp M) := by
   have hc : Continuous fun M : Matrix m m ℂ => Matrix.reindexAlgEquiv ℂ ℂ e M := by
@@ -34,7 +33,6 @@ theorem exp_reindex (e : m ≃ n) (M : Matrix m m ℂ) :
   simp only [Matrix.coe_reindexAlgEquiv] at h
   exact h.symm
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_fromBlocks (A : Matrix m m ℂ) (D : Matrix n n ℂ) :
     NormedSpace.exp (Matrix.fromBlocks A 0 0 D) = Matrix.fromBlocks (NormedSpace.exp A) 0 0 (NormedSpace.exp D) := by
   have hc : Continuous fun p : Matrix m m ℂ × Matrix n n ℂ => fbHom m n p := by

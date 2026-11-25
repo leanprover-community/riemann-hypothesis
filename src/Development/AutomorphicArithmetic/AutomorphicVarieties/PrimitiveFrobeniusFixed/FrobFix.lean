@@ -118,7 +118,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf49.add_pow_nsmul :
-    ∀ {Γ W : Type} [inst : Group Γ] [inst_1 : AddCommGroup W]
+    ∀ {Γ W : Type} [Group Γ] [AddCommGroup W]
     (U : Subgroup Γ) (f : Γ → W),
     (∀ u ∈ U, ∀ v ∈ U, f (u * v) = f u + f v) → f (1 : Γ) = (0 : W) ∧ ∀ u ∈ U, ∀ (k : ℕ), f (u ^ k) = k • f u := by
   intro Γ W _ _ U f h

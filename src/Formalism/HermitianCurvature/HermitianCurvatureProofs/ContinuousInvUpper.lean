@@ -93,9 +93,3 @@ theorem mul_wMat_apply {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) 
   simp [wMat, Matrix.mul_apply, h]
 
 end Formalism.FourierDecayAlt.P.G5
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P.G5
-
-end Formalism.FourierDecayAlt.P

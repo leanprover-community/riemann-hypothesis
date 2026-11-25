@@ -301,11 +301,6 @@ theorem darbAlg_stable {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
 
 end GlobalTheory.TripleAssembly.EqFin
 
-namespace GlobalTheory.TripleAssembly.EqFin
-
-
-end GlobalTheory.TripleAssembly.EqFin
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -990,8 +985,6 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct ComplexConjugate
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-namespace GlobalTheory.TripleAssembly.Transport
-end GlobalTheory.TripleAssembly.Transport
 open GlobalTheory.TripleAssembly.Transport in
 theorem GlobalTheory.TripleAssembly.triple_twist_transport_eq : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs →
     ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ →
@@ -1080,8 +1073,6 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct ComplexConjugate
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-namespace GlobalTheory.TripleAssembly.EqFin
-end GlobalTheory.TripleAssembly.EqFin
 namespace GlobalTheory.TripleAssembly.EqFin
 
 theorem theta_triple_maps_equivariant_on_finite_vectors : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs →

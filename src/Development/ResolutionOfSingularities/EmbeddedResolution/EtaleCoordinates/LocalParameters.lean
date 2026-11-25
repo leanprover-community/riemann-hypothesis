@@ -194,8 +194,6 @@ theorem exists_local_parameters :
   classical
   have hfin : Module.Finite A ↥(IsLocalRing.maximalIdeal A) :=
     Module.Finite.iff_fg.mpr (IsNoetherian.noetherian _)
-  have hfin2 : Module.Finite (IsLocalRing.ResidueField A)
-      (IsLocalRing.ResidueField A ⊗[A] ↥(IsLocalRing.maximalIdeal A)) := inferInstance
   obtain ⟨y, hy⟩ : ∃ y : Fin (Module.finrank (IsLocalRing.ResidueField A)
       (IsLocalRing.ResidueField A ⊗[A] ↥(IsLocalRing.maximalIdeal A))) →
       ↥(IsLocalRing.maximalIdeal A),

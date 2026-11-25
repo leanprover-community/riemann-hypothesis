@@ -338,7 +338,7 @@ theorem volume_index_b_bounded (D : D7) (u u' : D.what₂.Word)
 
   obtain ⟨φ, hφ⟩ := coord_exists hf
   obtain ⟨m1, hm1, hb1⟩ := lat_fun_bdd t.lam hlat.toIsLattice φ
-  have hmc : ∀ c, ∃ m : ℕ, m ≠ 0 ∧ (m : D.host.E) • F0.fvec c ∈ t.lam := fun c => lat_smul_mem t.lam hlat _
+  have hmc : ∀ c, ∃ m : ℕ, m ≠ 0 ∧ (m : D.host.E) • F0.fvec c ∈ t.lam := fun c => Bl.general_b_fact_third_version.goal1 t.lam hlat _
   choose mc hmc0 hmcL using hmc
   set m2 : ℕ := ∏ c, mc c with hm2
   have hm20 : m2 ≠ 0 := Finset.prod_ne_zero_iff.mpr fun c _ => hmc0 c

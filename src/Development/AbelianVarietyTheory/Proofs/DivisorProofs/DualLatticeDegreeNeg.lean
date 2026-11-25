@@ -58,9 +58,3 @@ theorem actG_actAf {D : Datum p} {G : HTGroup p} (L : Link D G) (g : G.GAf) (c :
   exact LinearMap.congr_fun (key _).eq v
 
 end GlobalTheory.LKGeo
-
-namespace GlobalTheory.LKGeo
-
-variable {p : ℕ} [Fact p.Prime]
-
-end GlobalTheory.LKGeo

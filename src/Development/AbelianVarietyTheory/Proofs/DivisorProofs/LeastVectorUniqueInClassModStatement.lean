@@ -51,7 +51,6 @@ theorem least_lt_add_smul : ∀ (s : ℕ) (W : Matrix (Fin s) (Fin s) ℤ), PosW
   rw [hN']
   have hle := hmin nu hnu hnu0
   have hp := hpos nu hnu hnu0
-  have hN3 : (3 : ℤ) ≤ N₁ := by exact_mod_cast hN
   set B := cross W β mu₀ nu
   set q0 := qW W β mu₀
   set qn := qW W β nu

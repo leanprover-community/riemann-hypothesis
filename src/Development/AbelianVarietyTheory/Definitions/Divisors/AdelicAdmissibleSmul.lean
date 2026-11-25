@@ -6,39 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 
 noncomputable section
 
-open Matrix
-open scoped NNReal Classical
-
-namespace GlobalTheory.WeilM.SplitModel
-
-variable {K : Type} [Field K]
-
-variable {ι : Type} [Fintype ι] [DecidableEq ι]
-
-variable [Invertible (2 : K)]
-
-
-
-
-
-variable [Fintype K]
-
-variable [TopologicalSpace K] [DiscreteTopology K] [IsTopologicalRing K]
-
-
-
-
-
-end GlobalTheory.WeilM.SplitModel
-
-namespace GlobalTheory.WeilM.SplitModel
-
-end GlobalTheory.WeilM.SplitModel
-
-end
-
-noncomputable section
-
 open MeasureTheory Matrix ValuativeRel NumberField
 open scoped NNReal Topology
 

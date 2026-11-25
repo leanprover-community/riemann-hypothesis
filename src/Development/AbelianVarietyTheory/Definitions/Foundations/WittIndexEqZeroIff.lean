@@ -452,7 +452,7 @@ theorem conj_mem_unip {p : HA R hc.sig V.gram} (hp : p ∈ 𝔉.par hc R) (hg : 
 variable {W : Submodule E V.V} (hW : IsIsotropic V W)
 
 theorem par_single : (single hW).par hc R = parab hc V R W :=
-  Subgroup.ext fun g => mem_par.trans (Fin.forall_fin_two.trans (and_iff_right (parab_bot (hc := hc) (V := V) (R := R) ▸ trivial)))
+  Subgroup.ext fun _ => mem_par.trans (Fin.forall_fin_two.trans (and_iff_right (parab_bot (hc := hc) (V := V) (R := R) ▸ trivial)))
 
 theorem unip_single : (single hW).unip hc R = unipRad hc V R W :=
   Subgroup.ext fun g => mem_unip.trans (and_congr (Fin.forall_fin_one.trans ((mem_trivOn_iff_maps bot_le).trans

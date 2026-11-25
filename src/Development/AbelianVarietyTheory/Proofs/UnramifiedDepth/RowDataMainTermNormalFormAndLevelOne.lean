@@ -105,26 +105,14 @@ variable {C : Type} [Field C] {V : VF C}
 
 theorem mm_zero : V.MM (0 : C) := by simp [VF.MM]
 
-theorem mm_add {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) :=
-  V.v.map_lt_add ha hb
-
 theorem mm_sum {ι : Type*} {s : Finset ι} {f : ι → C} (h : ∀ i ∈ s, V.MM (f i)) :
     V.MM (∑ i ∈ s, f i) := by
   induction s using Finset.induction_on with
   | empty => simpa using mm_zero
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    exact mm_add (h a (Finset.mem_insert_self a s))
+    exact GlobalTheory.RowLaw.GoodPair.mm_add (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
-theorem mm_mul_int {a b : C} (ha : V.MM a) (hb : V.Ge 0 b) : V.MM (a * b) := by
-  unfold VF.MM at *
-  unfold VF.Ge at hb
-  rw [V.v.map_mul]
-  exact lt_of_lt_of_le ha (le_add_of_nonneg_right (by simpa using hb))
-
-theorem int_mul_mm {a b : C} (ha : V.Ge 0 a) (hb : V.MM b) : V.MM (a * b) := by
-  rw [mul_comm]; exact mm_mul_int hb ha
 
 theorem mm_l : V.MM (V.l : C) := by
   unfold VF.MM
@@ -150,7 +138,7 @@ theorem add_pow_congr {a b : C} (ha : V.Ge 0 a) (hb : V.Ge 0 b) (n : ℕ) :
   have h2 := congrArg (fun z : intRing V => (z : C)) hr
   push_cast at h2
   rw [h2, add_sub_cancel_left]
-  exact mm_mul_int mm_l r.2
+  exact GlobalTheory.RowLaw.GoodPair.mm_mul mm_l r.2
 
 theorem sum_pow_congr {ι : Type*} {s : Finset ι} {f : ι → C} (h : ∀ i ∈ s, V.Ge 0 (f i)) (n : ℕ) :
     V.MM ((∑ i ∈ s, f i) ^ (V.l ^ n) - ∑ i ∈ s, f i ^ (V.l ^ n)) := by
@@ -160,7 +148,7 @@ theorem sum_pow_congr {ι : Type*} {s : Finset ι} {f : ι → C} (h : ∀ i ∈
     rw [Finset.sum_insert ha, Finset.sum_insert ha]
     have h' := fun i hi => h i (Finset.mem_insert_of_mem hi)
     have h1 := add_pow_congr (h a (Finset.mem_insert_self a s)) (VF.Ge.sum h') n
-    have h2 := mm_add h1 (ih h')
+    have h2 := GlobalTheory.RowLaw.GoodPair.mm_add h1 (ih h')
     convert h2 using 1
     ring
 
@@ -193,7 +181,7 @@ theorem mm_of_tan {d : ℕ} {I J : Type} [Fintype I] [Fintype J] {G : Cart V d I
     simp only [this, h1, Matrix.one_apply]
     simp
   rw [h2]
-  exact mm_sum fun k _ => mm_mul_int (h k) (inv_int S.U S.U_int S.unimod k c)
+  exact mm_sum fun k _ => GlobalTheory.RowLaw.GoodPair.mm_mul (h k) (inv_int S.U S.U_int S.unimod k c)
 
 theorem rank_le : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J : Fin 2 → Type) [∀ g, Fintype (I g)] [∀ g, Fintype (J g)] (X : RowData C V d I J), X.Alt → ∀ (g : Fin 2) (a : ZMod d), X.big g a → ∀ (i : ℕ) (S : Sys (X.G g)) (Z : Type) (D : Formalism.BaseCaseIdentities.Data C Z (I g)), Adapted S D a i → ∀ s : ℕ, s + 1 < Formalism.BaseCaseIdentities.Kn i → ∀ (m : ℕ) (y : Fin m → I g → C), (∀ δ c, V.Ge 0 (y δ c)) → IndepMod V (fun δ c => if D.lev c = s then y δ c else 0) → ∀ (N : ℕ) (x : Fin N → Fin m → C), (∀ ν δ, V.Ge 0 (x ν δ)) → IndepMod V x → (∀ ν e, D.lev e = s + 1 → V.MM (∑ δ, x ν δ ^ (V.l ^ 2) * ∑ c ∈ Finset.univ.filter (fun c => D.lev c = s), (V.l : C) * D.al c 2 e * y δ c ^ (V.l ^ 2))) → N ≤ X.j' := by
   intro C _ V d _ I J _ _ X hA g a hbig i S Z D hD s hs m y hy hyi N x hx hxi hker
@@ -228,12 +216,12 @@ theorem rank_le : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J 
       simp only [Cart.V2, h1, Finset.mul_sum]
       exact Finset.sum_congr rfl fun e _ => by ring
     rw [e1]
-    refine mm_sum fun e _ => mm_mul_int ?_ (tan_int S e k)
+    refine mm_sum fun e _ => GlobalTheory.RowLaw.GoodPair.mm_mul ?_ (tan_int S e k)
     by_cases he : D.lev e = s + 1
     · have h1 := hker ν e he
       have h2 : V.MM (∑ c ∈ F, (w ν c ^ (V.l ^ 2) - ∑ δ, (x ν δ * y δ c) ^ (V.l ^ 2)) *
           ((V.l : C) * D.al c 2 e)) :=
-        mm_sum fun c hc => mm_mul_int
+        mm_sum fun c hc => GlobalTheory.RowLaw.GoodPair.mm_mul
           (sum_pow_congr (fun δ _ => (hx ν δ).mul_int (hy δ c)) 2) (hal c hc e)
       have e2 : ∑ δ, x ν δ ^ (V.l ^ 2) * ∑ c ∈ F, (V.l : C) * D.al c 2 e * y δ c ^ (V.l ^ 2) =
           ∑ c ∈ F, (∑ δ, (x ν δ * y δ c) ^ (V.l ^ 2)) * ((V.l : C) * D.al c 2 e) := by
@@ -241,15 +229,15 @@ theorem rank_le : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J 
         rw [Finset.sum_comm]
         exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun δ _ => by
           rw [mul_pow]; ring
-      convert mm_add h1 h2 using 1
+      convert GlobalTheory.RowLaw.GoodPair.mm_add h1 h2 using 1
       rw [e2, ← Finset.sum_add_distrib]
       exact Finset.sum_congr rfl fun c _ => by ring
-    · refine mm_sum fun c hc => int_mul_mm ((hw ν c).pow _) ?_
+    · refine mm_sum fun c hc => GlobalTheory.RowKernel.mm_int_mul ((hw ν c).pow _) ?_
       have hc' := (hFm c).1 hc
       rw [D.al_two c (by rw [hc', hDi]; omega) e,
         D.g_supp c (by rw [hc', hDi]; omega) e (by rw [hc']; exact he), hDl, zero_add,
         mul_inv_cancel_left₀ VF.l_ne_zero]
-      refine mm_mul_int mm_l ?_
+      refine GlobalTheory.RowLaw.GoodPair.mm_mul mm_l ?_
       have := D.lam_int c e
       rw [hDv] at this
       simpa [VF.Ge] using this
@@ -673,17 +661,6 @@ private theorem ge_coeff_rename_inr {C : Type} [Field C] (V : VF C) {ι ι' : Ty
   rw [Finsupp.degree_eq_sum, ← hν]
   simp [Finsupp.mapDomain_apply_of_injective Sum.inr_injective]
 
-private theorem constantCoeff_linPull_eq_zero {C : Type} [Field C] {σ ι : Type} [Fintype σ]
-    [Fintype ι] (e : ι → σ → C) (F : MvPowerSeries σ C)
-    (h : MvPowerSeries.constantCoeff F = 0) :
-    MvPowerSeries.constantCoeff (linPull e F) = 0 := by
-  unfold linPull
-  apply MvPowerSeries.constantCoeff_subst_eq_zero
-  · exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun x => by simp)
-  · intro x
-    simp
-  · exact h
-
 private theorem pderiv_inr_mainM_one {C : Type} [Field C] (V : VF C) {ι ι' : Type} [Fintype ι]
     [Fintype ι'] (Φ : ι' → ι → C) (b : ι') :
     MvPowerSeries.pderiv (R := C) (Sum.inr b) (mainM V 1 Φ) =
@@ -776,10 +753,10 @@ theorem mPlus_of_good_tangents : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [
       rcases h2 j g with rfl | rfl
       · simp only
         rw [h91.1, MvPowerSeries.constantCoeff_rename]
-        exact constantCoeff_linPull_eq_zero _ _ ((hT j).1 x)
+        exact GlobalTheory.MainTermWeight.constantCoeff_linPull _ _ ((hT j).1 x)
       · simp only
         rw [h91.2, MvPowerSeries.constantCoeff_rename]
-        exact constantCoeff_linPull_eq_zero _ _ ((hT (1 - g)).1 x)
+        exact GlobalTheory.MainTermWeight.constantCoeff_linPull _ _ ((hT (1 - g)).1 x)
     · rintro ⟨j, x⟩ ν hP
       rcases h2 j g with rfl | rfl
       · simp only
@@ -845,18 +822,8 @@ def intRing (V : VF C) : Subring C where
   zero_mem' := VF.Ge.zero 0
   neg_mem' := fun ha => VF.Ge.neg ha
 
-theorem mm_add {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) :=
-  V.v.map_lt_add ha hb
-
 theorem mm_zero : V.MM (0 : C) := by
   unfold VF.MM; rw [V.v.map_zero]; exact WithTop.top_pos
-
-theorem ge_of_pow {a : C} {n : ℕ} (hn : n ≠ 0) (ha : V.Ge 0 (a ^ n)) : V.Ge 0 a := by
-  unfold VF.Ge at *
-  rw [V.v.map_pow] at ha
-  rw [WithTop.coe_zero] at ha ⊢
-  by_contra h
-  exact absurd ha (not_le.mpr (nsmul_neg (not_le.mp h) hn))
 
 end GlobalTheory.FrobRoot
 end -- clump:auto
@@ -882,40 +849,24 @@ theorem mm_sum {C : Type} [Field C] {V : VF C} {ι : Type} (s : Finset ι) (f : 
     (h : ∀ i ∈ s, V.MM (f i)) : V.MM (∑ i ∈ s, f i) := by
   have mm_zero : V.MM (0 : C) := by
     unfold VF.MM; rw [V.v.map_zero]; exact WithTop.top_pos
-  have mm_add : ∀ {a b : C}, V.MM a → V.MM b → V.MM (a + b) :=
+  have GlobalTheory.RowLaw.GoodPair.mm_add : ∀ {a b : C}, V.MM a → V.MM b → V.MM (a + b) :=
     fun ha hb => V.v.map_lt_add ha hb
   induction s using Finset.induction_on with
   | empty => simpa using mm_zero
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    exact mm_add (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
-theorem mm_of_tan {C : Type} [Field C] {V : VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J]
-    {G : Cart V d I J} (S : Sys G) (w : I → C) (h : ∀ k, V.MM (∑ c, w c * S.tan c k)) (c : I) :
-    V.MM (w c) := by
-  have h1 : S.U * S.U⁻¹ = 1 := Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr S.U_det_ne)
-  have e : w c = ∑ k, (∑ b, w b * S.tan b k) * S.U⁻¹ k c := by
-    simp only [Finset.sum_mul]
-    rw [Finset.sum_comm]
-    have : ∀ b, ∑ k, w b * S.tan b k * S.U⁻¹ k c = w b * (S.U * S.U⁻¹) b c := by
-      intro b
-      rw [Matrix.mul_apply, Finset.mul_sum]
-      exact Finset.sum_congr rfl fun k _ => by simp only [Sys.U, Matrix.of_apply]; ring
-    simp only [this, h1, Matrix.one_apply]
-    simp
-  rw [e]
-  exact mm_sum _ _ fun k _ => mm_mul_int (h k) (inv_int S.U S.U_int S.unimod k c)
+    exact GlobalTheory.RowLaw.GoodPair.mm_add (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
 theorem indepMod_first_coeff : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J : Fin 2 → Type) [∀ g, Fintype (I g)] [∀ g, Fintype (J g)] (X : RowData C V d I J), X.Alt → ∀ (g : Fin 2) (a : ZMod d), X.big g a → ∀ (i : ℕ) (S : Sys (X.G g)) (Z : Type) (D : Formalism.BaseCaseIdentities.Data C Z (I g)), Adapted S D a i → ∀ s : ℕ, s < Formalism.BaseCaseIdentities.Kn i → ∀ (m : ℕ) (y : Fin m → I g → C), (∀ δ c, V.Ge 0 (y δ c)) → IndepMod V (fun δ c => if D.lev c = s then y δ c else 0) → IndepMod V (fun δ (κ : J g) => ∑ c ∈ Finset.univ.filter (fun c => D.lev c = s), y δ c ^ V.l * ((V.l : C) * S.be c 1 κ)) := by
   intro C _ V d _ I J _ _ X hA g a ha i S Z D hD s hs m y hy hind co hco hsum
-  have mm_add : ∀ {a b : C}, V.MM a → V.MM b → V.MM (a + b) :=
+  have GlobalTheory.RowLaw.GoodPair.mm_add : ∀ {a b : C}, V.MM a → V.MM b → V.MM (a + b) :=
     fun ha hb => V.v.map_lt_add ha hb
   have mm_pow : ∀ {a : C}, V.MM a → ∀ {n : ℕ}, n ≠ 0 → V.MM (a ^ n) := by
     intro a ha n hn
     unfold VF.MM at *
     rw [V.v.map_pow]
     exact nsmul_pos ha hn
-  have ge_of_pow : ∀ {a : C} {n : ℕ}, n ≠ 0 → V.Ge 0 (a ^ n) → V.Ge 0 a := by
+  have GlobalTheory.AdaptedChain.int_of_pow : ∀ {a : C} {n : ℕ}, n ≠ 0 → V.Ge 0 (a ^ n) → V.Ge 0 a := by
     intro a n hn ha
     unfold VF.Ge at *
     rw [V.v.map_pow] at ha
@@ -955,12 +906,12 @@ theorem indepMod_first_coeff : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [Ne
     | insert a s ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
       have hs : ∀ i ∈ s, V.Ge 0 (x i) := fun i hi => hx i (Finset.mem_insert_of_mem hi)
-      have h := mm_add (mm_add_pow e (hx a (Finset.mem_insert_self a s)) (VF.Ge.sum hs)) (ih hs)
+      have h := GlobalTheory.RowLaw.GoodPair.mm_add (mm_add_pow e (hx a (Finset.mem_insert_self a s)) (VF.Ge.sum hs)) (ih hs)
       convert h using 1 <;> ring
   haveI := X.algClosed
   have hl : V.l ≠ 0 := V.l_prime.ne_zero
   choose r hr using fun δ => IsAlgClosed.exists_pow_nat_eq (co δ) (Nat.pos_of_ne_zero hl)
-  have hr0 : ∀ δ, V.Ge 0 (r δ) := fun δ => ge_of_pow hl (by rw [hr]; exact hco δ)
+  have hr0 : ∀ δ, V.Ge 0 (r δ) := fun δ => GlobalTheory.AdaptedChain.int_of_pow hl (by rw [hr]; exact hco δ)
   set w : I g → C := fun c => ∑ δ, r δ * y δ c with hw
   have hw0 : ∀ c, V.Ge 0 (w c) := fun c => VF.Ge.sum fun δ _ => (hr0 δ).mul_int (hy δ c)
   set T := Finset.univ.filter (fun c => D.lev c = s) with hT
@@ -982,7 +933,7 @@ theorem indepMod_first_coeff : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [Ne
       refine mm_sum _ _ fun c _ => mm_mul_int ?_ (l_mul_be_one_int S c κ)
       have := mm_sum_pow 1 Finset.univ (fun δ => r δ * y δ c) (fun δ _ => (hr0 δ).mul_int (hy δ c))
       simpa only [pow_one] using this
-    have h2 := mm_add h1 (hsum κ)
+    have h2 := GlobalTheory.RowLaw.GoodPair.mm_add h1 (hsum κ)
     convert h2 using 1
     simp only [Finset.mul_sum]
     rw [Finset.sum_comm (s := Finset.univ) (t := T), ← Finset.sum_add_distrib]
@@ -990,7 +941,7 @@ theorem indepMod_first_coeff : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [Ne
     simp only [mul_pow, hr, sub_mul, Finset.sum_mul, mul_assoc, sub_add_cancel]
     rfl)
   have hwm : ∀ c, V.MM (if D.lev c = s then w c else 0) := by
-    refine mm_of_tan S _ fun k => ?_
+    refine GlobalTheory.ChainStep.mm_of_tan S _ fun k => ?_
     convert hR k using 1
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hT, Finset.sum_filter, ite_mul, zero_mul]
   intro δ
@@ -1207,22 +1158,10 @@ variable {C : Type} [Field C] {V : VF C}
 
 theorem mm_zero : V.MM (0 : C) := by simp [VF.MM]
 
-theorem mm_int_mul {a b : C} (ha : V.Ge 0 a) (hb : V.MM b) : V.MM (a * b) := by
-  unfold VF.MM; rw [V.v.map_mul]
-  have ha' : (0 : WithTop ℝ) ≤ V.v a := ha
-  exact lt_of_lt_of_le hb (le_add_of_nonneg_left ha')
-
 theorem mm_sub {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a - b) := by
   rw [sub_eq_add_neg]
   refine V.v.map_lt_add ha ?_
   rw [V.v.map_neg]; exact hb
-
-theorem ge_of_pow {a : C} {n : ℕ} (hn : n ≠ 0) (h : V.Ge 0 (a ^ n)) : V.Ge 0 a := by
-  have h' : (0 : WithTop ℝ) ≤ V.v (a ^ n) := h
-  show (0 : WithTop ℝ) ≤ V.v a
-  rw [V.v.map_pow] at h'
-  by_contra hc
-  exact absurd (nsmul_neg (not_le.mp hc) hn) (not_lt.mpr h')
 
 theorem ge_inv {a : C} (h : ¬ V.MM a) : V.Ge 0 a⁻¹ := by
   have h0 : a ≠ 0 := by rintro rfl; exact h mm_zero
@@ -1272,7 +1211,7 @@ theorem exists_relation {m : ℕ} {σ : Type} {Y : Fin m → σ → C} (hY : ∀
         · rfl
         · exact hc0 ε (by simp [h, hε]))
       (fun s => by
-        have h1 : V.MM (Y δ s * c δ) := mm_int_mul (hY δ s) hm
+        have h1 : V.MM (Y δ s * c δ) := GlobalTheory.RowKernel.mm_int_mul (hY δ s) hm
         convert mm_sub (hs s) h1 using 1
         rw [eq_sub_iff_add_eq, ← Finset.add_sum_erase _ _ (Finset.mem_univ δ),
           ← Finset.add_sum_erase _ (fun ε => c ε * Y ε s) (Finset.mem_univ δ)]
@@ -1287,7 +1226,7 @@ theorem exists_relation {m : ℕ} {σ : Type} {Y : Fin m → σ → C} (hY : ∀
   refine ⟨fun ε => (c δ)⁻¹ * c ε, fun ε => (ge_inv hcd).mul_int (hc ε), inv_mul_cancel₀ h0,
     fun ε h1 h2 => ?_, fun s => ?_⟩
   · simp only [hc0 ε (by simp [h1, h2]), mul_zero]
-  · convert mm_int_mul (ge_inv hcd) (hs s) using 1
+  · convert GlobalTheory.RowKernel.mm_int_mul (ge_inv hcd) (hs s) using 1
     simp only [Finset.mul_sum, mul_assoc]
 
 theorem rank_nullity : ∀ (C : Type) [Field C] [IsAlgClosed C] (V : VF C) (σ : Type) (m k Q : ℕ), 1 ≤ Q → ∀ Y : Fin m → σ → C, (∀ δ x, V.Ge 0 (Y δ x)) → (∀ (N : ℕ) (x : Fin N → Fin m → C), (∀ ν δ, V.Ge 0 (x ν δ)) → IndepMod V x → (∀ ν s, V.MM (∑ δ, x ν δ ^ Q * Y δ s)) → N ≤ k) → ∃ (m' : ℕ) (cc : Fin m' ↪ Fin m), m ≤ m' + k ∧ IndepMod V (fun ν => Y (cc ν)) := by
@@ -1316,7 +1255,7 @@ theorem rank_nullity : ∀ (C : Type) [Field C] [IsAlgClosed C] (V : VF C) (σ :
   have he : ∀ ν, e ν ∉ T := fun ν => Finset.mem_compl.1 (Finset.orderEmbOfFin_mem _ rfl ν)
   choose r hr hr1 hr0 hrs using fun ν => exists_relation hY hT' (hn _ (he ν))
   have hle := hk Tᶜ.card (fun ν δ => rt (r ν δ))
-    (fun ν δ => ge_of_pow hQ0 (by rw [hrt]; exact hr ν δ))
+    (fun ν δ => GlobalTheory.AdaptedChain.int_of_pow hQ0 (by rw [hrt]; exact hr ν δ))
     (fun c _ hs ν => by
       have h1 : V.MM (∑ b, c b * rt (r b (e ν))) := hs (e ν)
       rw [Finset.sum_eq_single ν (fun b _ hb => by

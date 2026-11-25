@@ -108,10 +108,6 @@ theorem exists_finset_rmul_near_one {r : â„•} (X : Data E r) {K : Set (Frame X.Î
 
 end CuspNet
 
-namespace CuspNet
-
-end CuspNet
-
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto

@@ -189,14 +189,17 @@ theorem nnS_app (S : C.HidaSetting E Wp Wq) (j : ℕ) (hj : j ≤ S.G.r) (H : C.
   have hG : D.ptGG (S.T * S.T') (H ++ [(1, c)]) = Complex.normSq c - S.T * S.T' := by simp [D.ptGG, D.ptLast]
   rw [hG, weight_product_indep_of_real_parameter _ _ _ (D.ptGG (S.T * S.T') H) _ H 1 le_rfl (by omega)]
 
-theorem gN_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl (D.parOf S v) (Wp (S.pl v)) (Wq (S.pl v))}
+theorem nnS_app_rr_mul {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl (D.parOf S v) (Wp (S.pl v)) (Wq (S.pl v))}
     {f : ∀ v : Fin S.f, B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))} {χ : ℝ → ℝ} {A₀ : ℝ}
     (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀)
     (F : ∀ v : Fin S.f, ℝ → B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v)))
     (v : Fin S.f) (ε : ℝ) (j : ℕ) (hj : j ≤ S.G.r) (w : List C.Letter) (h h' : C.LPt)
     (hsz : D.ptSize h = j) (hsz' : D.ptSize h' = j) (c : ℂ) (hc : c ≠ 0) :
-    KB.gN (setC S p F) v ε (j + 1) w (h ++ [(1, c)]) (h' ++ [(1, c)]) =
-      ((Kc S v j w h h' : ℝ) : ℂ) * ((KB.levW (D.parOf S v) (j + 1) ((lamS S j : ℂ) * c) : ℝ) : ℂ) *
+    ((√(nnS S (h ++ [(1, c)])) * √(nnS S (h' ++ [(1, c)])) : ℝ) : ℂ) *
+      (p v).RR (F v ε) (j + 1) w (stdS S h ++ [(1, (lamS S j : ℂ) * c)])
+        (stdS S h' ++ [(1, (lamS S j : ℂ) * c)]) =
+      ((√(nnS S h) * √(nnS S h') * rhoS S j : ℝ) : ℂ) *
+        ((KB.levW (D.parOf S v) (j + 1) ((lamS S j : ℂ) * c) : ℝ) : ℂ) *
         (p v).RR (F v ε) (j + 1) w (stdS S h ++ [(1, (lamS S j : ℂ) * c)])
           (stdS S h' ++ [(1, (lamS S j : ℂ) * c)]) := by
   have hgpos := g_pos_of_built hB
@@ -269,20 +272,29 @@ theorem gN_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl 
       rw [hnorm, ← mul_zpow]
       congr 1
       field_simp
-  rw [gN_setC hB, stdS_app S j h c hsz, stdS_app S j h' c hsz']
   have hWc := hW (stdS S h) (stdS S h') (by rw [stdS_size]; exact hsz)
+  rw [hsq]
+  simp only [hRRs] at hWc
+  push_cast at hWc ⊢
+  linear_combination ((√(nnS S h) : ℂ) * (√(nnS S h') : ℂ)) * hWc
+
+theorem gN_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl (D.parOf S v) (Wp (S.pl v)) (Wq (S.pl v))}
+    {f : ∀ v : Fin S.f, B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))} {χ : ℝ → ℝ} {A₀ : ℝ}
+    (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀)
+    (F : ∀ v : Fin S.f, ℝ → B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v)))
+    (v : Fin S.f) (ε : ℝ) (j : ℕ) (hj : j ≤ S.G.r) (w : List C.Letter) (h h' : C.LPt)
+    (hsz : D.ptSize h = j) (hsz' : D.ptSize h' = j) (c : ℂ) (hc : c ≠ 0) :
+    KB.gN (setC S p F) v ε (j + 1) w (h ++ [(1, c)]) (h' ++ [(1, c)]) =
+      ((Kc S v j w h h' : ℝ) : ℂ) * ((KB.levW (D.parOf S v) (j + 1) ((lamS S j : ℂ) * c) : ℝ) : ℂ) *
+        (p v).RR (F v ε) (j + 1) w (stdS S h ++ [(1, (lamS S j : ℂ) * c)])
+          (stdS S h' ++ [(1, (lamS S j : ℂ) * c)]) := by
+  have hmul := nnS_app_rr_mul hB F v ε j hj w h h' hsz hsz' c hc
   have hb1 : bS S (h ++ [(1, c)]) = bS S h := bSt_append_one _ _ _
   have hb2 : bS S (h' ++ [(1, c)]) = bS S h' := bSt_append_one _ _ _
-  rw [hb1, hb2]
-  rw [show √(nnS S (h ++ [(1, c)])) * √(nnS S (h' ++ [(1, c)])) /
-      (bS S h * bS S h' * ΓS S (j + 1)) / S.sizeAt v w =
-      (√(nnS S h) * √(nnS S h') / (bS S h * bS S h' * ΓS S (j + 1)) / S.sizeAt v w) * (√(xw c) * √(xw c)) by
-    rw [hsq]; ring]
-  simp only [hRRs] at hWc
+  rw [gN_setC hB, stdS_app S j h c hsz, stdS_app S j h' c hsz', hb1, hb2]
   unfold Kc
-  push_cast at hWc ⊢
-  linear_combination ((√(nnS S h) : ℂ) * (√(nnS S h') : ℂ) / ((bS S h : ℂ) * (bS S h' : ℂ) * (ΓS S (j + 1) : ℂ)) /
-    (S.sizeAt v w : ℂ)) * hWc
+  push_cast at hmul ⊢
+  linear_combination (1 / ((bS S h : ℂ) * (bS S h' : ℂ) * (ΓS S (j + 1) : ℂ)) / (S.sizeAt v w : ℂ)) * hmul
 
 end main2
 

@@ -31,7 +31,7 @@ def archV (x : κ → AdeleRing (𝓞 F) F) : κ → mixedEmbedding.mixedSpace F
 def finV (x : κ → AdeleRing (𝓞 F) F) : κ → FiniteAdeleRing (𝓞 F) F := fun i => (x i).2
 
 theorem continuous_archV : Continuous (archV F (κ := κ)) :=
-  continuous_pi fun i => (GlobalTheory.Core.Rk.RapidInt.continuous_toMixed F).comp (continuous_fst.comp (continuous_apply i))
+  continuous_pi fun i => (PositivityTheory.ThKF0.Split.continuous_toMixed F).comp (continuous_fst.comp (continuous_apply i))
 
 theorem continuous_finV : Continuous (finV F (κ := κ)) :=
   continuous_pi fun i => continuous_snd.comp (continuous_apply i)

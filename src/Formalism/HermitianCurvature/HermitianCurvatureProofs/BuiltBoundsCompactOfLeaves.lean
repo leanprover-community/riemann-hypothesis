@@ -364,7 +364,6 @@ end
 
 end Formalism.FourierDecayAlt.P.PBL
 
-
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.PBL Formalism.FourierDecayAlt.P.LiftDegreeLemmas in
 theorem Formalism.FourierDecayAlt.P.lift_local_compact_support_route : Formalism.FourierDecayAlt.P.PBL.LiftLocBC := by
   intro hA hSS hDL hFP Cb Cc E _ _ _ Wp Wq _ _ _ _ _ _ S p f χ A₀ hCc hB
@@ -526,9 +525,6 @@ open scoped ComplexConjugate ComplexOrder
 noncomputable section
 
 open Classical
-
-theorem prod_ofFn_map {K : ℕ} (f : Fin K → ℝ) (g : ℝ → ℝ) : ((List.ofFn f).map g).prod = ∏ b, g (f b) := by
-  rw [List.map_ofFn, List.prod_ofFn]; rfl
 
 section blockK
 
@@ -693,7 +689,7 @@ theorem blockK_waveC (hA : P5.ThmPActualCpt) (hPSC : StandardPairingDecay.PStdC)
     have hnorm : ‖κ‖ = Λ * T ^ K * (1 / (ΓS S j * S.sizeAt v a)) := by
       rw [hκ, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_mul, abs_div, abs_of_pos (lam_div_theta grid hinj n).1,
         (lam_div_theta grid hinj n).2, abs_of_nonneg (pow_nonneg hT0.le K), abs_of_nonneg (by positivity : (0:ℝ) ≤ c0)]
-    rw [hnorm, hQd, hcp, hcm, sizeAt_plusW, sizeAt_minusW, prod_ofFn_map, prod_ofFn_map, prod_ofFn_map]
+    rw [hnorm, hQd, hcp, hcm, sizeAt_plusW, sizeAt_minusW, Formalism.FourierDecayAlt.P.LiftDegreeLemmas.prod_ofFn_map', Formalism.FourierDecayAlt.P.LiftDegreeLemmas.prod_ofFn_map', Formalism.FourierDecayAlt.P.LiftDegreeLemmas.prod_ofFn_map']
     exact ratio_bound (fun b => grid b (n b)) (S.P v) qv Λ T (ΓS S j) (S.sizeAt v a)
       (Real.exp 1 * J.supA S.G S.de S.de' S.T S.T' S.l (decide (j = 0)) (S.pl v)) Xc hΓ hsa
       (fun b => hqpos _ (hmem b)) (fun b => (hPne b).1) (fun b => (hPne b).2)
@@ -792,15 +788,11 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePla
   {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, KB.Pl (D.parOf S v) (Wp (S.pl v)) (Wq (S.pl v))}
   {f : ∀ v : Fin S.f, B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))} {χ : ℝ → ℝ} {A₀ : ℝ}
 
-theorem glob_pos (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) : 0 < S.G.g ∧ 0 < S.G.ka := by
-  refine ⟨by unfold Sz.Glob.g; exact_mod_cast Nat.mul_pos hB.1 hB.2.1, ?_⟩
-  unfold Sz.Glob.ka; rw [S.hv]; have := PBD.rd_pos' E; positivity
-
 theorem lenI_pos (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (v : Fin S.f) : 0 < S.G.lenI := by
   apply _root_.Formalism.FourierDecayAlt.P.LiftDegreeLemmas.lenI_pos' <;> assumption
 
 theorem xw_nonneg (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (i : ℕ) (v : Fin S.f) : 0 ≤ Xw S i v := by
-  obtain ⟨hg, hk⟩ := glob_pos hB
+  obtain ⟨hg, hk⟩ := Formalism.FourierDecayAlt.P.LiftDegreeLemmas.glob_pos' hB
   have hl := lenI_pos hB v
   have hN : (0 : ℝ) ≤ S.G.N := by unfold Sz.Glob.N; positivity
   have hA := supA_nonneg S hg hk v (decide (i = 1 ∧ 0 + 1 = 1))
@@ -811,7 +803,7 @@ theorem xw_nonneg (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (i : ℕ) (
 theorem thr_wave (hCc : 28 * Real.exp 1 ≤ Cc) (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) :
     JC.HidaCurvatureBarriers S (fun i v => Xw S i v) := by
   intro i hi1 _ v
-  obtain ⟨hg, hk⟩ := glob_pos hB
+  obtain ⟨hg, hk⟩ := Formalism.FourierDecayAlt.P.LiftDegreeLemmas.glob_pos' hB
   have hl := lenI_pos hB v
   have hCA : Cc ≤ S.CA := hB.2.2.2.2.2.2.2.2.2.2.2.2.2.1
   have hN : (0:ℝ) ≤ S.G.N := by unfold Sz.Glob.N; positivity
@@ -838,7 +830,7 @@ theorem xw_K (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (v : Fin S.f) (j
     (hl1 : ∀ b, ∑ i, |F7.lagCo (grid b) i| ≤ (28 * (S.Ntop : ℝ) / (S.cutHi v - S.cutLo v)) ^ (2 * j)) :
     (∏ b, ∑ i, |F7.lagCo (grid b) i|) * (((S.g : ℝ) * lamS S j) / (2 * Real.pi)) ^ K *
       (Real.exp 1 * J.supA S.G S.de S.de' S.T S.T' S.l (decide (j = 0)) (S.pl v)) ^ K ≤ (Xw S (j + 1) v) ^ K := by
-  obtain ⟨hg, hk⟩ := glob_pos hB
+  obtain ⟨hg, hk⟩ := Formalism.FourierDecayAlt.P.LiftDegreeLemmas.glob_pos' hB
   rw [T_eq S hg j]
   have hdec : decide (j + 1 = 1 ∧ 0 + 1 = 1) = decide (j = 0) := by
     by_cases h : j = 0 <;> simp [h]
@@ -905,7 +897,6 @@ def WaveLocBPCpt : Prop :=
         (∀ v ε, 0 < ε → KB.CptCoef (p v).T.base (F v ε)) → ∀ v, KB.WaveLoc (setC S p F) v fun i => X i v
 
 end Formalism.FourierDecayAlt.P.PBL
-
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.PBL in
 theorem Formalism.FourierDecayAlt.P.wave_local_compact_support_route : Formalism.FourierDecayAlt.P.PBL.WaveLocBC := by

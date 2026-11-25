@@ -123,10 +123,6 @@ theorem multiDiff_comp_equiv {ι κ : Type*} [Fintype ι] [Fintype κ] (e : κ �
   simp only [multiDiff_eq_shiftAct, Function.comp]
   rw [Equiv.prod_comp e (fun i ↦ diffElt (g i))]
 
-theorem multiDiff_add {ι : Type*} [Fintype ι] (g : ι → G) (φ ψ : G → M) :
-    multiDiff g (φ + ψ) = multiDiff g φ + multiDiff g ψ := by
-  simp [multiDiff_eq_shiftAct]
-
 theorem multiDiff_sub {ι : Type*} [Fintype ι] (g : ι → G) (φ ψ : G → M) :
     multiDiff g (φ - ψ) = multiDiff g φ - multiDiff g ψ := by
   simp [multiDiff_eq_shiftAct]
@@ -550,12 +546,6 @@ theorem chi_shortExact (hS : S.ShortExact) (h₁ : FiniteCoh k S.X₁) (h₃ : F
 
 end ShortExact
 
-section Pi
-
-variable {ι : Type*} [Fintype ι] {E : ι → X.Modules}
-
-end Pi
-
 
 variable (k F) in
 theorem finiteCoh_of_isAffine_of_finite [IsAffine X] [Module.Finite k Γ(X, ⊤)]
@@ -795,11 +785,6 @@ theorem nonempty_twist_twist_iso_of_cls_eq (F : X.Modules) {M N P : LB X} (hM : 
     Nonempty (twist (twist F M) N ≅ twist F P) :=
   Twist.nonempty_twistTwistIso hM hN hP ((cls_eq_iff hN (Semi.LB.isLB_div hP hM)).1
     (by rw [cls_div hP hM, h, add_sub_cancel_left]))
-
-theorem nonempty_twist_iso_of_cls_eq_zero (F : X.Modules) {M : LB X} (hM : M.IsLB)
-    (h : cls M hM = 0) : Nonempty (twist F M ≅ F) :=
-  have ⟨t, ht⟩ := (cls_eq_zero_iff hM).1 h
-  ⟨(Twist.genIso F hM t ht).symm⟩
 
 end Prod
 
@@ -1051,13 +1036,6 @@ theorem interNum_cons (hM : M.IsLB) (hP : ∀ i, (P i).IsLB) :
   interNum_cons_of_cls_eq_neg k F hM hP (Twist.isLB_lbZPow hM (-1))
     (by rw [cls_lbZPow hM, neg_one_zsmul])
 
-theorem interNum_twist_cons (hM : M.IsLB) (hP : ∀ i, (P i).IsLB) :
-    interNum k (twist F M) (Fin.cons M P : Fin (d + 1) → LB X) =
-      interNum k (twist F M) P - interNum k F P := by
-  have ⟨e⟩ := nonempty_twist_twist_iso_of_cls_eq F hM (Twist.isLB_lbZPow hM (-1))
-    (LB.isLB_triv X) (by rw [cls_triv, cls_lbZPow hM, neg_one_zsmul, add_neg_cancel])
-  rw [interNum_cons k _ hM hP, interNum_congr k (e ≪≫ (Twist.trivIso F).symm)]
-
 theorem interNum_cons_of_cls_eq_add (hM : M.IsLB) (hA : A.IsLB) (hB : B.IsLB)
     (hP : ∀ i, (P i).IsLB) (h : cls M hM = cls A hA + cls B hB) :
     interNum k F (Fin.cons M P : Fin (d + 1) → LB X) =
@@ -1237,10 +1215,6 @@ variable (k : Type v) [Field k] (A : CommRingCat.{0}) [Algebra k A] [Algebra k �
 
 
 end FiniteAlgebra
-
-section Examples
-
-end Examples
 
 end GlobalTheory
 end -- clump:auto

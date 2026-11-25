@@ -93,10 +93,6 @@ theorem Nm_apply [Fintype 𝓀[k]ˣ] (P : Pair k n) : Nm φ P = ∑ c : 𝓀[k]�
 theorem mem_Mram [Fintype 𝓀[k]ˣ] : φ ∈ Mram k n M ↔ ∀ P, ∑ c : 𝓀[k]ˣ, φ (c • P) = 0 := by
   simp only [Mram, LinearMap.mem_ker, funext_iff, Nm_apply, Pi.zero_apply]
 
-theorem Gs_apply [Fintype 𝓀[k]ˣ] (P : Pair k n) : Gs χ φ P = ∑ c : 𝓀[k]ˣ, χ c • φ (c • P) := by
-  simp only [Gs, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, Pi.smul_apply, dia_apply]
-  congr!
-
 theorem GsStar_apply [Fintype 𝓀[k]ˣ] (P : Pair k n) :
     GsStar χ φ P = ∑ c : 𝓀[k]ˣ, χ (-(c : 𝓀[k])) • φ (c⁻¹ • P) := by
   simp only [GsStar, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, Pi.smul_apply, dia_apply]
@@ -109,13 +105,6 @@ theorem trKer_apply (L : Submodule 𝒪[k] (n → k)) : trKer L φ = ∑ P ∈ w
 theorem tr_apply (P : Pair k n) : tr φ P = ∑ Q ∈ withLat P.lat, φ Q := trLat_apply φ _
 
 theorem tr'_apply (P : Pair k n) : tr' φ P = ∑ Q ∈ withKer P.ker, φ Q := trKer_apply φ _
-
-open Classical in
-theorem Da_apply (a : 𝓀[k]) (P₁ : Pair k n) :
-    Da q a φ P₁ = ∑ P ∈ withLat P₁.ker with cross q P₁ P = a, φ P := by simp [Da, sumOp_apply]
-
-open Classical in
-theorem D_apply (P₁ : Pair k n) : D q φ P₁ = ∑ P ∈ withLat P₁.ker with cross q P₁ P = 1, φ P := Da_apply q φ 1 P₁
 
 open Classical in
 theorem U_apply (P : Pair k n) : U q φ P = ∑ P₁ ∈ withKer P.lat with cross q P₁ P = 1, φ P₁ := by

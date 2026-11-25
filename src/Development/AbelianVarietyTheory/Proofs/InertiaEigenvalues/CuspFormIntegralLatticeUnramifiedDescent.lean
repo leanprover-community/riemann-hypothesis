@@ -392,8 +392,7 @@ theorem inV_of_forall_emb [la'.asIdeal.LiesOver la.asIdeal] {d : ℕ} {b : Fin d
     have h3 := (GoodPtsModel.inV_iff_vV T' ((map_ne_zero i).2 h0)).1 ((GoodPtsModel.inV_iff_val T' _).2 key)
     rw [hv'] at h3
     exact (GoodPtsModel.inV_iff_vV T h0).2 ((mul_nonneg_iff_of_pos_left (by exact_mod_cast he')).1 h3)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hQl.over, Ideal.under_def, Ideal.mem_comap, map_sum]
+  · rw [hQl.over, Ideal.under_def, Ideal.mem_comap, map_sum]
     simpa only [Algebra.smul_def, map_mul, ← IsScalarTower.algebraMap_apply] using hc
   · let σ : K' →+* T'.Fr := (σ₁.comp (g : L →+* L)).comp (algebraMap K' L)
     obtain ⟨e'', ho''⟩ := exists_overLa_of_mem (la := la') (io := σ) hT' fun a => by

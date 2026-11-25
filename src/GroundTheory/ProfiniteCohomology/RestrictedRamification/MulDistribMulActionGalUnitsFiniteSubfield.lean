@@ -143,61 +143,6 @@ variable {K : FiniteSubfield} {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
   (F : FiniteSubfield) [Fact (K ≤ F)] [Normal K.1 F.1]
 
-theorem decompHom_smul_placeOfEmbedding'
-    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
-    decompHom (v.adicCompletion K.1) (embedLevel ι F) σ • placeOfEmbedding ι F =
-      placeOfEmbedding ι F := by
-  set τ := decompHom (v.adicCompletion K.1) (embedLevel ι F) σ
-  set w₀ := placeOfEmbedding ι F
-  have hu : w₀.1 = τ • (τ⁻¹ • w₀).1 := eq_smul_inv_smul v τ w₀
-  let j := σ.symm.toAlgHom.comp
-    ((completionEmbedding ι F).comp (galEquiv v τ (τ⁻¹ • w₀).1 w₀.1 hu).toAlgHom)
-  have hj : ∀ x : F.1, j (algebraMap F.1 _ x) = ι x := by
-    intro x
-    change σ.symm (completionEmbedding ι F (galEquiv v τ (τ⁻¹ • w₀).1 w₀.1 hu
-      (algebraMap F.1 _ x))) = ι x
-    rw [galEquiv_algebraMap, completionEmbedding_algebraMap]
-    have h := decompHom_apply (Kv := v.adicCompletion K.1) (embedLevel ι F) σ x
-    rw [embedLevel_apply, embedLevel_apply] at h
-    rw [h, AlgEquiv.symm_apply_apply]
-  have h := eq_placeOfEmbedding ι F j hj
-  calc τ • w₀ = τ • (τ⁻¹ • w₀) := by rw [h]
-    _ = w₀ := smul_inv_smul τ w₀
-
-def placeDecompHom :
-    Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →*
-      MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal :=
-  (decompHom (v.adicCompletion K.1) (embedLevel ι F)).codRestrict _ fun σ ↦
-    MulAction.mem_stabilizer_iff.2
-      (congrArg (fun u : PlacesOver F.1 v ↦ u.1.asIdeal) (decompHom_smul_placeOfEmbedding' ι F σ))
-
-theorem coe_placeDecompHom (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
-    (placeDecompHom ι F σ : Gal(F.1/K.1)) = decompHom (v.adicCompletion K.1) (embedLevel ι F) σ :=
-  rfl
-
-theorem ι_placeDecompHom_apply
-    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) (x : F.1) :
-    ι ((placeDecompHom ι F σ : Gal(F.1/K.1)) x : F.1) = σ (ι x) :=
-  decompHom_apply (Kv := v.adicCompletion K.1) (embedLevel ι F) σ x
-
-theorem continuous_placeDecompHom : Continuous (placeDecompHom ι F) :=
-  (continuous_decompHom (embedLevel ι F)).subtype_mk _
-
-theorem completionEmbedding_placeDecompHom_smul
-    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1))
-    (y : (placeOfEmbedding ι F).1.adicCompletion F.1) :
-    completionEmbedding ι F (placeDecompHom ι F σ • y) = σ (completionEmbedding ι F y) := by
-  have : (completionEmbedding ι F).comp
-      (decompositionAlgEquiv v (placeOfEmbedding ι F).1 (placeDecompHom ι F σ)).toAlgHom =
-      σ.toAlgHom.comp (completionEmbedding ι F) := by
-    apply algHom_ext_adicCompletion
-    intro x
-    change completionEmbedding ι F (decompositionAlgEquiv v (placeOfEmbedding ι F).1
-      (placeDecompHom ι F σ) (algebraMap F.1 _ x)) = σ (completionEmbedding ι F (algebraMap F.1 _ x))
-    rw [decompositionAlgEquiv_algebraMap, completionEmbedding_algebraMap,
-      completionEmbedding_algebraMap, ι_placeDecompHom_apply]
-  exact DFunLike.congr_fun this y
-
 section CompField
 
 @[irreducible]

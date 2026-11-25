@@ -690,10 +690,6 @@ theorem dl_X (s : ℂ) (b : Bool) (k l : Fin n) (v : Bool × Fin n × Fin n) :
     dl s b k l (X v) = if v.1 = b then k0 s b * (yv b v.2.1 k * yv b l v.2.2) else 0 := by
   simp [dl, MvPolynomial.mkDerivation_X]
 
-theorem smul_eq (c : ℂ) (p : Fm n) : c • p = MvPolynomial.C (Polynomial.C c) * p := by
-  rw [Algebra.smul_def, MvPolynomial.algebraMap_apply, Polynomial.algebraMap_apply]
-  rfl
-
 theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
     (∑ a : Fin n, ∑ d : Fin n, (-(cc s b)) • (yv b a k * yv b l d * MvPolynomial.pderiv (b, a, d) p)) = dl s b k l p := by
   let D : Derivation (Polynomial ℂ) (Fm n) (Fm n) :=
@@ -711,7 +707,7 @@ theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
 
       simp only [map_sum, Finset.sum_apply, Derivation.coeFnAddMonoidHom_apply, Derivation.smul_apply, smul_eq_mul]
     rw [this]
-    simp only [smul_eq, k0]
+    simp only [PositivityTheory.Rg.Sw.SP.smulC, k0]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun d _ => ?_
     ring
   have hDl : D = dl s b k l := by
@@ -720,7 +716,7 @@ theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
     rw [dl_X]
     have : (D : Fm n → Fm n) (X v) = ∑ a : Fin n, ∑ d : Fin n, (k0 s b * (yv b a k * yv b l d)) * MvPolynomial.pderiv (b, a, d) (X v) := by
       rw [hD]
-      simp only [smul_eq, k0]
+      simp only [PositivityTheory.Rg.Sw.SP.smulC, k0]
       refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun d _ => ?_
       ring
     rw [this]
@@ -746,7 +742,7 @@ theorem opH_apply (s : ℂ) (m : ℕ) (b : Bool) (k l : Fin n) (p : Fm n) :
   rw [← sum_eq]
   simp only [opH, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.coe_restrictScalars, LinearMap.mulLeft_apply,
     LinearMap.sum_apply, LinearMap.comp_apply, Derivation.coeFn_coe]
-  rw [smul_eq]
+  rw [PositivityTheory.Rg.Sw.SP.smulC]
   simp only [mm, k0, cc, al]
   congr 1
   split_ifs <;> ring
@@ -791,7 +787,6 @@ theorem key2 (s : ℂ) (b b' : Bool) (k l k' l' : Fin n) : ⁅dl s b k l, dl s b
   · simp [ite_eq_right h1, ite_eq_right h2]
 
 end CommPf
-
 
 open CommPf in
 theorem comm : Comm := by

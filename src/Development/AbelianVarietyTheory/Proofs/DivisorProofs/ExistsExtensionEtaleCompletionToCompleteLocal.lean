@@ -42,7 +42,6 @@ theorem formallyUnramified_quotient (hm : (maximalIdeal O).map (algebraMap O S) 
   have : Nontrivial (S ⧸ J) :=
     Ideal.Quotient.nontrivial_iff.mpr <| ne_top_of_le_ne_top (maximalIdeal.isMaximal S).ne_top hle
   have : IsLocalRing (S ⧸ J) := .of_surjective' _ Ideal.Quotient.mk_surjective
-  have hmk : IsLocalHom (Ideal.Quotient.mk J) := IsLocalHom.of_surjective _ Ideal.Quotient.mk_surjective
   have hmap : (maximalIdeal S).map (Ideal.Quotient.mk J) = maximalIdeal (S ⧸ J) :=
     IsLocalRing.map_maximalIdeal_of_surjective _ Ideal.Quotient.mk_surjective
   have H : (maximalIdeal O).map (algebraMap O (S ⧸ J)) = maximalIdeal (S ⧸ J) := by

@@ -653,13 +653,6 @@ private theorem dm_gsp {ν : k} {ν' : DualNumber k} (h1 : ν'.fst = ν) (h2 : �
   rw [h0]
   ext i j <;> by_cases hij : i = j <;> simp [dm, Matrix.one_apply, hij, h1, h2]
 
-private theorem up_mul {A B : M4 k} (hA : IsUp A) (hB : IsUp B) : IsUp (A * B) := fun i j h => by
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun m _ => ?_
-  rcases lt_or_ge m i with hm | hm
-  · rw [hA i m hm, zero_mul]
-  · rw [hB m j (lt_of_lt_of_le h hm), mul_zero]
-
 private theorem mul_adj {n : M4 k} (h : IsGSp 1 n) : n * adj n = 1 := by
   have h' : adj n * n = 1 := by simpa [IsGSp] using h
   exact mul_eq_one_comm.mp h'
@@ -708,7 +701,7 @@ private theorem dm_flag {n r r' X Y : M4 k} (hn : IsGSp 1 n) (hY : Y ∈ sp4 k) 
   apply dm_zero
   · exact h1 i j hij
   · rw [e]
-    exact up_mul h2 h1 i j hij
+    exact isUp_mul h2 h1 i j hij
 
 private def dRep {Γ : Type} [Group Γ] (r : Γ →* M4 k) (X : Γ → M4 k)
     (h : ∀ s t, X (s * t) = X s + r s * X t * r s⁻¹) : Γ →* M4 (DualNumber k) where

@@ -232,10 +232,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Cu2
 
-private theorem cls_one {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (N : ℕ) [NeZero N] (s : G ℚ Ω)
-    (hs : ∀ ζ : Ω, ζ ^ N = 1 → s ζ = ζ) : UpperTheory.V.Chr.cls ℚ Ω N s = 1 := by
-  apply _root_.cls_one <;> assumption
-
 private theorem comm_le {Γ M : Type} [Group Γ] [Monoid M] (f : Γ →* M) (h : ∀ a b, f a * f b = f b * f a) :
     commutator Γ ≤ f.ker := by
   rw [commutator_def, Subgroup.commutator_le]

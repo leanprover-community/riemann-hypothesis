@@ -25,7 +25,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
 private theorem vol_ex [LocallyCompactSpace G] [SecondCountableTopology G] (K U : Subgroup G)
     (hKc : IsCompact (K : Set G)) (hKo : IsOpen (K : Set G)) (hU : CO U) :
-    ∃ r : ℝ, r ≠ 0 ∧ ∀ (iG : MeasurableSpace G) (_ : BorelSpace G) (μ : Measure G), μ.IsHaarMeasure →
+    ∃ r : ℝ, r ≠ 0 ∧ ∀ (_ : MeasurableSpace G) (_ : BorelSpace G) (μ : Measure G), μ.IsHaarMeasure →
       μ (K : Set G) = 1 → (μ (U : Set G)).toReal = r := by
   letI iB : MeasurableSpace G := borel G
   haveI bB : BorelSpace G := ⟨rfl⟩

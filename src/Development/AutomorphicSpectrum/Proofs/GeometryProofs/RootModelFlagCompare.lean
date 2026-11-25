@@ -121,7 +121,6 @@ theorem stalk_value (hg : IsCptGen ξ) {R : Type} [CommRing R] [IsLocalRing R] (
   subst e3
   exact e2
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem spec_square {F : Type} [Field F] (θ : Ω →+* F) {A : Subring F} [IsLocalRing A]
     (z : Spec (CommRingCat.of A) ⟶ X) (h : genPt ξ ⤳ centre z)
@@ -276,7 +275,6 @@ end GlobalTheory.CompanionTheory.Ar.Rec.OS
 
 namespace GlobalTheory.CompanionTheory.Ar.Rec
 
-
 end GlobalTheory.CompanionTheory.Ar.Rec
 end -- clump:auto
 end -- clump:auto
@@ -290,24 +288,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace GlobalTheory.CompanionTheory.Ar.Ht.Diag
-
-open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
-open GlobalTheory.CompanionTheory.Ar.Flat.UnitChart
-
-section General
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
-
-theorem hasVal_unique {y : (Σ k, ι k) → Ω} {a : K → ℤ} {s : Ω} {L : Type} [Field L] {z : (Σ k, ι k) → L}
-    (hz : z ∈ ptsOver L (mCoordIdeal y)) {w w' : L} (h : HasVal y a s z w) (h' : HasVal y a s z w') : w = w' := by
-  apply (config := { allowSynthFailures := true }) GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique <;> assumption
-
-end General
-
-variable {Ψ : Type} [Fintype Ψ] {N : ℕ}
-
-end GlobalTheory.CompanionTheory.Ar.Ht.Diag
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -394,12 +374,12 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : 
 
 def evVal (hz : z ∈ ptsOver L (mCoordIdeal y)) : valRing y z →+* L where
   toFun s := Classical.choose s.2
-  map_one' := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (valRing y z).one_mem) hasVal_one
-  map_mul' s t := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (s * t).2)
+  map_one' := GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique hz (Classical.choose_spec (valRing y z).one_mem) hasVal_one
+  map_mul' s t := GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique hz (Classical.choose_spec (s * t).2)
     (hasVal_mul (Classical.choose_spec s.2) (Classical.choose_spec t.2))
-  map_zero' := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (valRing y z).zero_mem)
+  map_zero' := GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique hz (Classical.choose_spec (valRing y z).zero_mem)
     (GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_zero_of (hasVal_one (y := y) (z := z)))
-  map_add' s t := GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz (Classical.choose_spec (s + t).2)
+  map_add' s t := GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique hz (Classical.choose_spec (s + t).2)
     (GlobalTheory.CompanionTheory.Ar.Rec.OS.hasVal_add (Classical.choose_spec s.2) (Classical.choose_spec t.2))
 
 theorem hasVal_evVal (hz : z ∈ ptsOver L (mCoordIdeal y)) (s : valRing y z) :
@@ -451,7 +431,7 @@ theorem exists_localRing : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, F
     rintro rfl
     have h1 := hasVal_mul hw hw'
     rw [mul_inv_cancel₀ hs, zero_mul] at h1
-    exact zero_ne_one (GlobalTheory.CompanionTheory.Ar.Ht.Diag.hasVal_unique hz h1 hasVal_one)
+    exact zero_ne_one (GlobalTheory.CompanionTheory.Ar.Small.ReadFinTest.hasVal_unique hz h1 hasVal_one)
 
 end GlobalTheory.CompanionTheory.Ar.ClosLoc
 end -- clump:auto

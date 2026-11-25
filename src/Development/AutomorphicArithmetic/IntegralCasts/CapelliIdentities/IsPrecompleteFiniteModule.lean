@@ -19,8 +19,8 @@ private theorem UpperTheory.Reformulated.B.Qk17.pi_precomplete {R : Type*} [Comm
   exact AdicCompletion.map_of I (LinearMap.proj (R := R) (φ := N) j) r
 
 theorem UpperTheory.Reformulated.B.Qk17.isPrecomplete_finite_module.{u_1, u_2} :
-    ∀ {R : Type u_1} [inst : CommRing R] (I : Ideal R) [IsAdicComplete I R] (M : Type u_2)
-    [inst_2 : AddCommGroup M] [inst_3 : _root_.Module R M] [Module.Finite R M], IsPrecomplete I M := by
+    ∀ {R : Type u_1} [CommRing R] (I : Ideal R) [IsAdicComplete I R] (M : Type u_2)
+    [AddCommGroup M] [_root_.Module R M] [Module.Finite R M], IsPrecomplete I M := by
   intro R _ I _ M _ _ _
   obtain ⟨n, f, hf⟩ := Module.Finite.exists_fin' R M
   have := UpperTheory.Reformulated.B.Qk17.pi_precomplete I (fun _ : Fin n => R)

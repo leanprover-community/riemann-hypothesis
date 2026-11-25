@@ -887,11 +887,6 @@ theorem norm_pow_mul_le {a : Qbar l} {k : ℕ} (h : ‖a‖ ≤ (l : ℝ) ^ k) :
 
 end GlobalTheory.LambdaValuationPowers.ZetaCoef
 
-namespace GlobalTheory.LambdaValuationPowers
-
-open ZetaCoef
-
-end GlobalTheory.LambdaValuationPowers
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

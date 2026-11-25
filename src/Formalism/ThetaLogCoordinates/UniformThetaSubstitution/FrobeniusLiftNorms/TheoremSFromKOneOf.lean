@@ -1,5 +1,7 @@
 module
 
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.CyclicPowerClassOfExpEquiv
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
 import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
@@ -22,7 +24,8 @@ namespace Formalism.InvariantFactorPaths.G7
 
 open Formalism.DworkPowerSeriesWeights (Integral mvExp low_subst_of_low norm_finsum_le_of)
 open Formalism.FG.SolveVAux (Low low_pow low_one_iff)
-open Formalism.FG.IntegralSubstitution (integral_mul integral_pow integral_one integralSubstV)
+open Formalism.FG.IntegralSubstitution (integralSubstV)
+open Formalism.ELL.SubstitutionCoefficientCongruence (integral_mul integral_pow integral_one)
 
 namespace TwoS
 

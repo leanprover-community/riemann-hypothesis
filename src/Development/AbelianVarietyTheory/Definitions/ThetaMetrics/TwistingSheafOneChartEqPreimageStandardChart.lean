@@ -107,9 +107,6 @@ theorem resG_formOn (h : V ≤ U) (hf : f.IsHomogeneous n) :
 theorem ratioOn_mul_ratioOn : ratioOn U i hi j * ratioOn U j hj k = ratioOn U i hi k :=
   frac_mul_eq (by ring)
 
-theorem ratioUnit_self {hi' : U ≤ chart R N i} : ratioUnit U i i hi hi' = 1 :=
-  Units.ext (ratioOn_self (hi := hi))
-
 theorem ratioUnit_mul_ratioUnit :
     ratioUnit U i j hi hj * ratioUnit U j k hj hk = ratioUnit U i k hi hk :=
   Units.ext (ratioOn_mul_ratioOn (hi := hi) (hj := hj))
@@ -563,15 +560,6 @@ theorem baseChangeIso_isGen : (baseChangeIso N φ).IsGen := by
 
 theorem lbIso_pull_O1 : LBIso ((O1 R N).pull (baseChange N φ)) (O1 R' N) :=
   ⟨baseChangeIso N φ, baseChangeIso_isGen N φ⟩
-
-theorem baseChangeIso_coord (k i : Fin (N + 1)) (j : PUnit → Fin (N + 1)) :
-    resG _ (inf_le_left : (O1 R' N).U i ⊓ ((O1 R N).pull (baseChange N φ)).U j ≤ _) ((coord R' N k).f i) =
-      ((baseChangeIso N φ).s (i, j)).val *
-        resG _ (inf_le_right.trans (LB.wchart_le (O1 R N) (fun _ => baseChange N φ) j PUnit.unit))
-          (((baseChange N φ).app ((O1 R N).U (j PUnit.unit))).hom ((coord R N k).f (j PUnit.unit))) := by
-  have e := baseChange_app_ratioOn φ (le_refl (chart R N (j PUnit.unit))) k
-  exact (ratioOn_mul_ratioOn (hi := inf_le_left)
-    (hj := inf_le_right.trans (pull_O1_chart N φ j).le)).symm.trans (congrArg (_ * resG _ _ ·) e.symm)
 
 theorem baseChange_comp {R'' : Type} [CommRing R''] (ψ : R' →+* R'') :
     baseChange N (ψ.comp φ) = baseChange N ψ ≫ baseChange N φ := by

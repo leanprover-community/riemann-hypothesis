@@ -43,22 +43,12 @@ theorem hform_zero_right (x : n → A) : hform σ J x 0 = 0 := by
   simp [PI.SelfDualLoc.hform]
 
 theorem hform_sum_right {ι : Type} (s : Finset ι) (x : n → A) (f : ι → n → A) :
-    hform σ J x (∑ k ∈ s, f k) = ∑ k ∈ s, hform σ J x (f k) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp only [Finset.sum_empty]
-    exact hform_zero_right σ J x
-  · intro a t ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, hform_add_right, ih]
+    hform σ J x (∑ k ∈ s, f k) = ∑ k ∈ s, hform σ J x (f k) :=
+  map_sum (AddMonoidHom.mk' (hform σ J x) (hform_add_right σ J x)) f s
 
 theorem hform_sum_left {ι : Type} (s : Finset ι) (f : ι → n → A) (y : n → A) :
-    hform σ J (∑ k ∈ s, f k) y = ∑ k ∈ s, hform σ J (f k) y := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp only [Finset.sum_empty]
-    exact hform_zero_left σ J y
-  · intro a t ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, hform_add_left, ih]
+    hform σ J (∑ k ∈ s, f k) y = ∑ k ∈ s, hform σ J (f k) y :=
+  map_sum (AddMonoidHom.mk' (fun v => hform σ J v y) fun a b => hform_add_left σ J a b y) f s
 
 theorem hform_map {B : Type} [CommRing B] (τ : B →+* B) (f : A →+* B)
     (hf : ∀ a, f (σ a) = τ (f a)) (x y : n → A) :

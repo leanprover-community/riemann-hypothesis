@@ -95,9 +95,6 @@ theorem tmul_right_prop {K V U : Type*} [Field K] [AddCommGroup V] [Module K V] 
 
 end GlobalTheory.StageFinMatch
 
-namespace GlobalTheory.StageFinMatch
-
-end GlobalTheory.StageFinMatch
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareTowerStageFiniteFactor =====
@@ -117,8 +114,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 open scoped TensorProduct
-namespace GlobalTheory.StageFinMatch
-end GlobalTheory.StageFinMatch
 namespace GlobalTheory.StageFinMatch
 theorem theta_bottom_finite_match : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
     GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (p q : ℕ) (A A' WW : HSp D)

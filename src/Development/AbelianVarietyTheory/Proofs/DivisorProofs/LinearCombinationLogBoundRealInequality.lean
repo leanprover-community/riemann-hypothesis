@@ -209,7 +209,6 @@ theorem ceil_log_le (d s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (GlobalTheory.CMV
     {Λ : ℝ} (hl : 0 ≤ Real.log l) (hcΛ : c_vp 𝔣 l * Real.log l ≤ Λ) (hlΛ : Real.log l ≤ Λ) (ha : a0 𝔣 l ≤ 2) :
     ((⌈betaBound_vp d s κ 𝔣 z l / 12⌉₊ : ℕ) : ℝ) * Real.log l ≤ (cE_vp l z : ℝ) * Real.log l +
       (((2 * s * Fintype.card I : ℕ) : ℝ) + 5 * (Formalism.PairingDivisionLocalBalance.absK κ : ℝ) + 2 * (Formalism.PairingDivisionLocalBalance.wtM (2 * s) κ : ℝ) + 1) * Λ := by
-  have hΛ : 0 ≤ Λ := hl.trans hlΛ
   have hn0 := n_vp_nonneg d s κ 𝔣 l
   have hn := n_vp_log_le d s κ 𝔣 l hl hcΛ hlΛ
   rw [toricBetaDenominatorBound_div_twelve_eq, add_comm, Nat.ceil_add_natCast hn0]
@@ -389,7 +388,6 @@ theorem kap_le (large₂ : SizeData₂ D) (hR : GlobalTheory.IndefiniteRowSideFu
     linarith
   have hb : 0 ≤ large₂.sc.b := (Real.exp_pos _).le
   unfold kap
-  have hs : (0 : ℝ) ≤ s := by positivity
   rcases le_or_gt 0 ((num D 1 τ).e (j + 1) + cen D 1 τ (D.R.m - i) - s) with h | h
   · have e : (((num D 1 τ).e (j + 1) + cen D 1 τ (D.R.m - i) - s).toNat : ℝ) =
         (((num D 1 τ).e (j + 1) + cen D 1 τ (D.R.m - i) - s : ℤ) : ℝ) := by

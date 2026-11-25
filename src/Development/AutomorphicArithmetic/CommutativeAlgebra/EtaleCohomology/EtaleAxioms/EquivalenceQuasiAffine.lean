@@ -138,7 +138,7 @@ private theorem core (T C : Type) [CommRing T] [IsDomain T] [IsIntegrallyClosed 
     (IsIdempotentElem.iff_eq_one_of_isUnit (IsLocalization.Away.algebraMap_isUnit (c j))).1
       (hidem.map _)
   have hinj : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     obtain ⟨x, rfl⟩ := hsurj a
     rw [hψ] at ha
@@ -185,10 +185,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTh
 
 namespace LateralTheory.E.DescentPf
 
-theorem res_comp {R : Type} [CommRing R] {F : Shv R} {W V U : Scheme.{0}} (h : W ⟶ V) (g : V ⟶ U) (x : Sec F U) :
-    Sec.res (h ≫ g) x = Sec.res h (Sec.res g x) := by
-  simp [Sec.res]
-
 theorem val_smul {q : ℕ} [NeZero q] (i : ℤ) {U : Scheme.{0}} (c : ZMod q) (x : Sec (tw q i) U) :
     c.val • x = (ULift.up c : ULift.{1} (ZMod q)) • x := by
   rw [← Nat.cast_smul_eq_nsmul (ULift.{1} (ZMod q))]
@@ -204,7 +200,7 @@ theorem Descent_of (hAC : LateralTheory.E.LCBijPf.TwGenNZAC) : LateralTheory.E.L
       Sec.res (h ≫ g) y = c.val • twGen i ((gam ζ).map (h ≫ g).appTop.hom) := by
     intro V W g h c hc
     have hs : ∀ x : Sec (tw q i) V, Sec.res h (c.val • x) = c.val • Sec.res h x := fun x => map_nsmul _ _ x
-    rw [res_comp, hc, hs, LateralTheory.E.LCBijPf.twGen_res]
+    rw [LateralTheory.E.LCMapPf.res_comp, hc, hs, LateralTheory.E.LCBijPf.twGen_res]
     rfl
   have huniq : ∀ {V1 V2 : Scheme.{0}} (g1 : V1 ⟶ Spec (CommRingCat.of B)) (g2 : V2 ⟶ Spec (CommRingCat.of B))
       (c1 c2 : ZMod q), Sec.res g1 y = c1.val • twGen i ((gam ζ).map g1.appTop.hom) →
@@ -265,7 +261,7 @@ theorem Descent_of (hAC : LateralTheory.E.LCBijPf.TwGenNZAC) : LateralTheory.E.L
   · intro V k hk
     obtain ⟨W, h, k', hk', rfl⟩ := hk
     obtain ⟨x⟩ := hk'
-    rw [res_comp, res_comp]
+    rw [LateralTheory.E.LCMapPf.res_comp, LateralTheory.E.LCMapPf.res_comp]
     congr 1
     rw [hc x]
     obtain ⟨φ, hφ⟩ := Spec.map_surjective (g x)
@@ -824,7 +820,6 @@ noncomputable section
 open CategoryTheory Limits Opposite
 
 namespace LateralTheory.E.LocDiagPf
-
 
 open Classical in
 def g {S : Type} [CommRing S] (p : PrimeSpectrum S) (s : Finset p.asIdeal.primeCompl) : S :=
@@ -1781,7 +1776,6 @@ theorem prim_isPrimitiveRoot (z : Prim q L) : IsPrimitiveRoot z.1 q := by
   rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map, Polynomial.map_cyclotomic] at h
   exact Polynomial.isRoot_cyclotomic_iff.1 h
 
-
 open Classical in
 def lg (q : ℕ) (z x : L) : ZMod q := if h : ∃ n : ℕ, z ^ n = x then (h.choose : ZMod q) else 0
 
@@ -1792,7 +1786,6 @@ theorem lg_pow {z : L} (hz : IsPrimitiveRoot z q) (n : ℕ) : lg q z (z ^ n) = n
   have h2 := h.choose_spec
   have h3 := ((hz.isOfFinOrder (NeZero.ne q)).pow_eq_pow_iff_modEq).1 h2
   rwa [← hz.eq_orderOf] at h3
-
 
 open Classical in
 def fv (q : ℕ) (i : ℤ) (z x : L) : ZMod q :=

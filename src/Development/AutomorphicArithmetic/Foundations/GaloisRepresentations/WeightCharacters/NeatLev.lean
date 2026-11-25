@@ -115,7 +115,7 @@ theorem UpperTheory.Gal.CharacterCongruences.neatOfPlace_holds :
         (Matrix.GeneralLinearGroup.map (pFin E) x.1) :=
       Units.ext (Matrix.ext fun i j => rfl)
     rw [h1, h0, map_one]
-  haveI := GlobalTheory.InfUCompact.compactSpace_infU E a
+  have := GlobalTheory.InfUCompact.compactSpace_infU E a
   have hI : IsCompact (infU E a : Set (UA E a)) := isCompact_iff_compactSpace.2 inferInstance
   have hDc : IsCompact ((C ⊔ infU E a : Subgroup (UA E a)) : Set (UA E a)) := by
     rw [Subgroup.mul_normal]

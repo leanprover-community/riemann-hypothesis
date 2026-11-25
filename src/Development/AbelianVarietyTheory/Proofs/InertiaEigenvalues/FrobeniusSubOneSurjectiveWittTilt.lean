@@ -108,7 +108,3 @@ theorem tiltDiv : PI.ArtSch.TiltDiv := by
   exact Div.dvd_of_val_le (PadicComplexInt.integers l) x y h
 
 end GlobalTheory.ArtinSchreierTilt
-
-namespace GlobalTheory
-
-end GlobalTheory

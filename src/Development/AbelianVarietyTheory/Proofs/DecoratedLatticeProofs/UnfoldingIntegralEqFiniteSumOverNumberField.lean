@@ -304,14 +304,28 @@ theorem ch_freeMat_int (ϖ : kˣ) (hv : valuation k (ϖ : k) < 1) {B : ℕ}
 
 end Val
 
-theorem sumAgree : SumAgree := by
-  unfold SumAgree
-  intro E K k _ _ _ _ _ _ _ _ _ _ P q ι ϖ σ₀ ψ ν psi hC hU hψ hν hpsi U' U _ _ _ _ c n' c' n c₂ A B hc hc' hc₂ hA hB
-    d' d e' e hoe' hoe Φ ΦE hΦ hsupp hper x₀
-  subst c' c₂
+theorem sumAgree_core {E K k : Type} [Field E] [NumberField E] [StarRing E] [Field K]
+    [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
+    (P : HeightOneSpectrum (𝓞 E)) (q : ℕ) (ι : E →+* k) (ϖ : kˣ) (σ₀ : K →+* ℂ) (ψ : AddChar k Circle) (ν : Measure k)
+    (psi : E → K) (hC : IsCompl P q ι ϖ) (hU : GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsUnif ϖ)
+    (hψ : HasConductor ψ 1) (hν : IsUnitVol ν)
+    {U' U : Type} [Fintype U'] [DecidableEq U'] [Fintype U] [DecidableEq U] {c n' n A B : ℕ} (hc : 1 ≤ c)
+    (d' : U' ≃ Fin n') (d : U ≃ Fin n) (e' : U' ⊕ Fin (c + 1) ≃ Fin (n' + (c + 1))) (e : U ⊕ Fin c ≃ Fin (n + c))
+    (hoe' : IsOrd (yPos (fun a => (d' a).val) n') e') (hoe : IsOrd (yPos (fun a => (d a).val) n) e)
+    (Φ : Matrix (U ⊕ Fin c) (U' ⊕ Fin (c + 1)) k → ℂ) (ΦE : Loc.SF E K (n' + (c + 1)) (n + c)) (C : ℂ)
+    (hΦ : ∀ x, Φ (toLoc ι e e' x) = C * σ₀ (ΦE x))
+    (x₀ : (Fin n' → E) →ₗ[E] (Fin n → E))
+    (hF1 : ∀ u : {rs : (U ⊕ Fin c) × (U' ⊕ Fin (c + 1)) // Free 1 rs} → k,
+      Φ (affPt 1 (toLoc ι d d' x₀) u) ≠ 0 → ∀ i, valuation k (u i) ≤ valuation k (((ϖ ^ A)⁻¹ : kˣ) : k))
+    (hF2 : ∀ (u y : {rs : (U ⊕ Fin c) × (U' ⊕ Fin (c + 1)) // Free 1 rs} → k),
+      (∀ i, valuation k (y i) ≤ valuation k ((ϖ : k) ^ B)) →
+      Φ (affPt 1 (toLoc ι d d' x₀) u + freeMat y) = Φ (affPt 1 (toLoc ι d d' x₀) u))
+    (hψ_ch : ∀ t : Loc.FC n' (c + 1) n c → E, Φ (toLoc ι e e' (Loc.xx1 x₀ t)) ≠ 0 →
+      (ψ (-ι (Loc.chArg (Loc.xx1 x₀ t))) : ℂ) = σ₀ (psi (-Loc.chArg (Loc.xx1 x₀ t)))) :
+    opE ψ ν 1 Φ (toLoc ι d d' x₀) =
+      C * σ₀ (Loc.E1 (n' := n') (c' := c + 1) (n := n) (c := c) psi (LocE.valsQ E q A B) (((q : K) ^ B)⁻¹) ΦE x₀) := by
   classical
   have hq : ι (q : E) = (ϖ : k) := hC.unif.symm
-  have hq0 : (q : E) ≠ 0 := fun h0 => ϖ.ne_zero (by rw [← hq, h0, map_zero])
   obtain ⟨-, -, -, -, -, -, hres, hrep⟩ := _root_.GlobalTheory.SymBridge.ComplRes.residues E k P q ι ϖ hC hU
   have hv : valuation k (ϖ : k) < 1 := (hU ϖ).2 le_rfl
   have hψ1 : ∀ b : k, valuation k b ≤ 1 → ψ b = 1 := fun b hb =>
@@ -360,24 +374,21 @@ theorem sumAgree : SumAgree := by
   set X₀ := toLoc ι d d' x₀ with hX₀
   let F : ({rs : (U ⊕ Fin c) × (U' ⊕ Fin (c + 1)) // Free 1 rs} → k) → ℂ :=
     fun u => Φ (affPt 1 X₀ u) * (ψ (-ch (affPt 1 X₀ u)) : ℂ)
-  have hF1 : ∀ u, F u ≠ 0 → ∀ i, valuation k (u i) ≤ valuation k (((ϖ ^ A)⁻¹ : kˣ) : k) := by
-    intro u hu i
-    have h1 : Φ (affPt 1 X₀ u) ≠ 0 := left_ne_zero_of_mul hu
-    have := free_bound ϖ hv hA (hsupp _ h1) i.1 i.2
-    rwa [affPt_free] at this
-  have hF2 : ∀ u y, (∀ i, valuation k (y i) ≤ valuation k ((ϖ : k) ^ B)) → F (u + y) = F u := by
+  have hF1' : ∀ u, F u ≠ 0 → ∀ i, valuation k (u i) ≤ valuation k (((ϖ ^ A)⁻¹ : kˣ) : k) :=
+    fun u hu => hF1 u (left_ne_zero_of_mul hu)
+  have hF2' : ∀ u y, (∀ i, valuation k (y i) ≤ valuation k ((ϖ : k) ^ B)) → F (u + y) = F u := by
     intro u y hy
     simp only [F, affPt_add, ch_add]
-    rw [hper _ _ (free_small ϖ hv y hy)]
+    rw [hF2 u y hy]
     congr 1
     rw [neg_add, AddChar.map_add_eq_mul, hψ1 (-ch (freeMat y)) (by rw [Valuation.map_neg]; exact ch_freeMat_int ϖ hv y hy), mul_one]
-  have key := _root_.GlobalTheory.PeriodicIntegral.integral_eq_sum k ν hν ϖ hU A B T hT1 hT2 _ F hF1 hF2
+  have key := _root_.GlobalTheory.PeriodicIntegral.integral_eq_sum k ν hν ϖ hU A B T hT1 hT2 _ F hF1' hF2'
   have hL : opE ψ ν 1 Φ X₀ = ∫ u, F u ∂(Measure.pi fun _ => ν) := rfl
   rw [hL, key]
-
   simp only [Loc.E1, map_mul, map_pow, map_inv₀, map_natCast, map_sum, hres]
-  rw [Fintype.card_congr (freeEquiv hc hoe hoe')]
+  rw [Fintype.card_congr (freeEquiv hc hoe hoe'), mul_left_comm C]
   congr 1
+  rw [Finset.mul_sum]
   symm
   refine Finset.sum_nbij (fun t rs => ι (t (freeEquiv hc hoe hoe' rs))) ?_ ?_ ?_ ?_
   · intro t ht
@@ -397,24 +408,39 @@ theorem sumAgree : SumAgree := by
     · simp only [Equiv.symm_apply_apply, hg2]
   · intro t _
     simp only [F]
-    rw [affPt_eq ι hc hoe hoe' x₀ t, hΦ, ch_eq ι hoe hoe']
-    by_cases h0 : ΦE (Loc.xx1 x₀ t) = 0
-    · simp [h0]
+    rw [affPt_eq ι hc hoe hoe' x₀ t, hΦ, ch_eq ι hoe hoe', ← mul_assoc]
+    by_cases h0 : C * σ₀ (ΦE (Loc.xx1 x₀ t)) = 0
+    · rw [h0, zero_mul, zero_mul]
     congr 1
-    set X := Loc.xx1 x₀ t
-    have hnz : Φ (toLoc ι e e' X) ≠ 0 := by rw [hΦ]; exact (map_ne_zero σ₀).2 h0
-    have hI := hsupp _ hnz
-    have hint : ι ((q : E) * Loc.chArg X) ∈ 𝒪[k] := by
-      rw [map_mul, hq, ← ch_eq ι hoe hoe', ch, Finset.mul_sum]
-      refine sum_mem fun i _ => ?_
-      have := hI (Sum.inr i) (Sum.inr i.succ)
-      rw [coords_apply] at this
-      convert this using 1
-      simp only [wt, Sum.elim_inr, Fin.val_succ]
-      field_simp
-      ring
-    have hIA : IntAt P (-((q : E) * Loc.chArg X)) := (hC.int _).1 (by rw [map_neg]; exact neg_mem hint)
-    have h2 := hpsi _ hIA
-    rw [neg_div, mul_div_cancel_left₀ _ hq0] at h2
-    rw [← h2, map_neg]
+    exact (hψ_ch t (by rw [hΦ]; exact h0)).symm
+
+theorem sumAgree : SumAgree := by
+  unfold SumAgree
+  intro E K k _ _ _ _ _ _ _ _ _ _ P q ι ϖ σ₀ ψ ν psi hC hU hψ hν hpsi U' U _ _ _ _ c n' c' n c₂ A B hc hc' hc₂ hA hB
+    d' d e' e hoe' hoe Φ ΦE hΦ hsupp hper x₀
+  subst c' c₂
+  have hq : ι (q : E) = (ϖ : k) := hC.unif.symm
+  have hq0 : (q : E) ≠ 0 := fun h0 => ϖ.ne_zero (by rw [← hq, h0, map_zero])
+  have hv : valuation k (ϖ : k) < 1 := (hU ϖ).2 le_rfl
+  simpa only [one_mul] using sumAgree_core P q ι ϖ σ₀ ψ ν psi hC hU hψ hν hc d' d e' e hoe' hoe Φ ΦE 1
+    (fun x => by rw [one_mul]; exact hΦ x) x₀
+    (fun u hu i => by
+      have := free_bound ϖ hv hA (hsupp _ hu) i.1 i.2
+      rwa [affPt_free] at this)
+    (fun u y hy => hper _ _ (free_small ϖ hv y hy))
+    (fun t hnz => by
+      have hI := hsupp _ hnz
+      have hint : ι ((q : E) * Loc.chArg (Loc.xx1 x₀ t)) ∈ 𝒪[k] := by
+        rw [map_mul, hq, ← ch_eq ι hoe hoe', ch, Finset.mul_sum]
+        refine sum_mem fun i _ => ?_
+        have := hI (Sum.inr i) (Sum.inr i.succ)
+        rw [coords_apply] at this
+        convert this using 1
+        simp only [wt, Sum.elim_inr, Fin.val_succ]
+        field_simp
+        ring
+      have hIA : IntAt P (-((q : E) * Loc.chArg (Loc.xx1 x₀ t))) := (hC.int _).1 (by rw [map_neg]; exact neg_mem hint)
+      have h2 := hpsi _ hIA
+      rw [neg_div, mul_div_cancel_left₀ _ hq0] at h2
+      rwa [map_neg] at h2)
 end GlobalTheory.UnfoldSum

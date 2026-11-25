@@ -189,9 +189,6 @@ theorem type_part_linear_independent (H : Host E) (D : Datum H) {g : ℕ} (ty : 
   change k = finrank ℂ S
   rw [hSV, finrank_typeSupportedVectors, hcount]
 
-theorem Host_rt0_conj_eq_neg (H : Host E) : starRingEnd ℂ H.rt0 = -H.rt0 := by
-  apply Formalism.MainNotions.ModuliIntegralCharts.H1.rt0_conj_neg_ne_zero
-
 theorem Host_rt0_ne_zero (H : Host E) : H.rt0 ≠ 0 := by
   intro h
   have h1 := H.sqrt_neg_disc_sq
@@ -209,7 +206,7 @@ theorem pure_type_projection_independent : ∀ (E : Type) [Field E] [NumberField
     have : (2 : ℂ) * H.rt0 = 0 := by linear_combination h
     simpa using this
   have hcτ : (ComplexEmbedding.conjugate τ) (H.rt : E) = -H.rt0 := by
-    rw [ComplexEmbedding.conjugate_coe_eq, hτ, Host_rt0_conj_eq_neg]
+    rw [ComplexEmbedding.conjugate_coe_eq, hτ, Formalism.MainNotions.ModuliIntegralCharts.H1.rt0_conj_neg_ne_zero]
   have hrk : p + q = finrank (𝓞 E) D.La := by rw [hpq, D.rank]
   constructor
   · refine type_part_linear_independent H D ty P hP (fun a => x (.inl a)) (fun b => x (.inr b)) τ ?_ ((hty τ).1 hτ) hrk ?_
@@ -300,8 +297,6 @@ theorem mem_eigSp_iff_tyPart_eq_self {E : Type} [Field E] [NumberField E] {g : �
 end GlobalTheory.CompanionTheory.Ar.Fl
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl.Frames
-
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.cm_pack_pure_frame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n) (Z : ∀ b : Bool, Curve0 H (sgnRt H b)) (P : (FU.Di i).La →+ (Fin g → ℂ)) (hP : IsPeriod (FU.Di i) ty P) (X : CMPack Z c FU i hP) (x : Fin D.p ⊕ Fin D.q → (FU.Di i).La) (hx : IsPure hP x) (τ : E →+* ℂ), IsTypeFn H D.p D.q ty → τ (H.rt : E) = H.rt0 → LinearIndependent (𝓞 E) x → (∃ v w, X.IsCMFrame τ hx v w) ∧ ∀ v w, X.IsCMFrame τ hx v w → IsFramed (Set.range X.y) τ X.β X.y v w := by
   intro E _ _ _ H D l Xo c g ty FU i Z P hP X x hx τ hty hτ hli

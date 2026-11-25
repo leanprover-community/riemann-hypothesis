@@ -46,8 +46,4 @@ theorem IsRAct.op_of_ringAct {A : Over S} [GrpObj A] [IsCommMonObj A] (ρ : Out.
     IsRAct A (fun a : Oᵐᵒᵖ => ρ.act a.unop) :=
   ⟨fun _ => ρ.hom _, ρ.map_one, fun _ _ => ρ.map_mul _ _, fun _ _ => ρ.map_add _ _⟩
 
-def IsRAct.toOAct {O : Type} [CommRing O] {A : Over S} [GrpObj A] {act : O → (A ⟶ A)} (h : IsRAct A act) :
-    OAct O A :=
-  ⟨act, h.1, h.2.1, h.2.2.1, h.2.2.2⟩
-
 end GlobalTheory.EndLoc

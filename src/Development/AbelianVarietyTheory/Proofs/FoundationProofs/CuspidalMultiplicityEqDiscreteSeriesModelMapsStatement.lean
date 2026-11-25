@@ -169,8 +169,6 @@ open scoped Classical
 
 namespace GlobalTheory.CuspRepr
 
-
-
 theorem exists_allMaps : ∀ (D : D7) (θ : D.what₂.Tau → (TensorProduct D.host.F (Ainf D.host.F) D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant], ∀ Φ ∈ homDS M (RG V μ) (GlobalTheory.Cusp.L2cusp V μ), ∀ K : Subgroup (GfC V), IsOpen (K : Set (GfC V)) → (∀ k ∈ K, ∀ y, RG V μ (k : GA D V) (Φ y) = Φ y) → ∃ T ∈ GlobalTheory.CuspMult.allMaps θ M, ∀ v : M.Vec, lift (GQ V) (Φ fun τ => (v τ : M.H τ)) =ᵐ[μ] T v := by
   intro D θ hθ V S M μ _ _ Φ hΦ K hK hKfix
   obtain ⟨𝓕, ρ, e, hp, hρ, he, hrep⟩ := _root_.GlobalTheory.TrModel.exists_model D V μ
@@ -181,7 +179,7 @@ theorem exists_allMaps : ∀ (D : D7) (θ : D.what₂.Tau → (TensorProduct D.h
       Φ' (Function.update y τ (M.rep τ g (y τ))) = ρ (atTau θ V τ g) (Φ' y) := by
     intro τ g hg y
     rw [hΦ', hΦ', hequiv τ g hg y, he]
-  obtain ⟨r1, r2, -, r4, -, -⟩ := GlobalTheory.T.bounded_automorphic_has_representative D V μ 𝓕 ρ hp hρ
+  obtain ⟨r1, r2, -, r4, -, -⟩ := GlobalTheory.HolDict.RepresentativeL2.repr_properties D V μ 𝓕 ρ hp hρ
   let U : Subgroup (GA D V) := K.comap (GlobalTheory.AutMult.toFin V)
   have hU : IsOpen (U : Set (GA D V)) := hK.preimage (GlobalTheory.AutMult.continuous_toFin V)
   have hfix : ∀ y, ∀ k ∈ U, k ∈ GfC V → ρ k (Φ' y) = Φ' y := by
@@ -191,14 +189,14 @@ theorem exists_allMaps : ∀ (D : D7) (θ : D.what₂.Tau → (TensorProduct D.h
       rwa [show GlobalTheory.AutMult.toFin V k = ⟨k, hk'⟩ from GlobalTheory.AutMult.toFin_coe (⟨k, hk'⟩ : GfC V)] at h2
     rw [hΦ', ← he]
     exact congrArg e (hKfix _ h1 y)
-  have hsmM := GlobalTheory.T.equivariantMultilinear_maps_smoothVectors_intertwines D θ V hθ S M _ ρ Φ' e2
+  have hsmM := GlobalTheory.SmoothMultilinear.smooth_map D θ V hθ S M _ ρ Φ' e2
   choose ψ p1 p2 p3 p4 using fun y : M.Vec =>
-    GlobalTheory.T.smooth_vector_automorphic_derivatives D θ V hθ μ 𝓕 ρ hp hρ U hU (Φ' fun τ => (y τ : M.H τ)) (hsmM y).1 (hfix _)
+    GlobalTheory.SmoothRep.exists_smooth_repr D θ V hθ μ 𝓕 ρ hp hρ U hU (Φ' fun τ => (y τ : M.H τ)) (hsmM y).1 (hfix _)
   have p1' : ∀ y : M.Vec, Repr V μ 𝓕 (e (Φ fun τ => (y τ : M.H τ))) (ψ y) := fun y => hΦ' _ ▸ p1 y
-  haveI : ∀ τ, CompleteSpace (M.H τ) := fun τ => (GlobalTheory.T.discreteSeriesModel_unitary_irreducible_orthonormal D V S M τ).1
+  haveI : ∀ τ, CompleteSpace (M.H τ) := fun τ => (GlobalTheory.HolDict.ModelRep.model_rep D V S M τ).1
   have hH : ∀ τ, (gramAt D V τ).IsHermitian := GlobalTheory.SmoothAutCheck.gramAt_herm V
   have hdet : ∀ τ, (gramAt D V τ).det ≠ 0 := fun τ => (GlobalTheory.SmoothAutCheck.gramAt_unit V τ).ne_zero
-  have hsv := fun τ => GlobalTheory.T.smoothVectors_subspace_stable_sobolevForm_deriv V.rank (gramAt D V τ) (M.H τ) (M.rep τ) (hH τ) (hdet τ) (GlobalTheory.T.discreteSeriesModel_unitary_irreducible_orthonormal D V S M τ).2.1
+  have hsv := fun τ => GlobalTheory.UnitarySmVec.smoothVec_basic V.rank (gramAt D V τ) (M.H τ) (M.rep τ) (hH τ) (hdet τ) (GlobalTheory.HolDict.ModelRep.model_rep D V S M τ).2.1
   have hsm : ∀ τ, ∀ X ∈ lieAt V τ, ∀ w : M.sm τ, dRep (M.rep τ) X (w : M.H τ) ∈ M.sm τ := fun τ X hX w =>
     Submodule.subset_span (((hsv τ).2 w ((hsv τ).1 w w.2)).2.1 X hX).1
   have uniq : ∀ (y : M.Vec) f, Continuous f → Repr V μ 𝓕 (Φ' fun τ => (y τ : M.H τ)) f → ψ y = f :=
@@ -483,8 +481,6 @@ theorem coe_update [DecidableEq D.what₂.Tau] (u : M.Vec) (τ : D.what₂.Tau) 
   · subst h; simp
   · simp [Function.update_of_ne h]
 
-
-
 theorem exists_of_isMultMap (hP : GlobalTheory.Published.CuspRapidDecay) {θ : D.what₂.Tau → (TensorProduct D.host.F (Ainf D.host.F) D.host.E →+* ℂ)}
     (hθ : IsInfFam θ) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] {T : MMap M}
     (hT : IsMultMap θ M ∅ (fun _ => 1) T) :
@@ -650,7 +646,6 @@ theorem Represents.translate' (g : GfC V) {Φ Φ' : ContinuousMultilinearMap ℂ
   rw [h']
   exact (lift_R (g : GA D V) _).trans ((measurePreserving_mul_right μ (g : GA D V)).quasiMeasurePreserving.ae (h v))
 
-
 variable (μ) in
 def phiOf (T : MMap M) : ContinuousMultilinearMap ℂ M.H (DividedPowerChartLift V μ) :=
   open Classical in
@@ -668,7 +663,6 @@ theorem phiOf_eq (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ
   GlobalTheory.CuspIntertwiner.eq_of_represents (phiOf_spec hP hθ hT).2 h
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W] {σ : Representation ℂ (GfC V) W}
-
 
 variable (μ) in
 def homOf (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) (f : W →ₗ[ℂ] MMap M) (hf : ∀ w, f w ∈ allMaps θ M) :
@@ -699,7 +693,6 @@ theorem homOf_mem (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam �
   rw [phiOf_eq hP hθ hm ((phiOf_spec hP hθ (hf.1 w)).2.translate g)]
   rfl
 
-
 variable (μ) in
 def toHom (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) :
     homInto σ (finRep M) (allMaps θ M) →ₗ[ℂ] homFinDS σ M (RG V μ) (GlobalTheory.Cusp.L2cusp V μ) where
@@ -719,7 +712,6 @@ theorem toHom_injective (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsIn
   have hr := (phiOf_spec (μ := μ) hP hθ (f.2.1 w)).2
   rw [h0] at hr
   exact eq_of_represents_cont (continuous_of_mem_allMaps (f.2.1 w)) (fun _ => continuous_const) hr represents_zero
-
 
 variable (σ) in
 def stab (w : W) : Subgroup (GfC V) where
@@ -762,7 +754,6 @@ theorem toHom_surjective (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsI
 end GlobalTheory.AutMult.MultAssembly
 
 namespace GlobalTheory.AutMult
-
 
 open GlobalTheory.AutMult.MultAssembly in
 theorem cuspMult_eq_mCuspDS : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.DixmierMalliavinFactorisation → ∀ (D : D7) (θ : D.what₂.Tau → (TensorProduct D.host.F (Ainf D.host.F) D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W), GlobalTheory.PRep.IsSmooth σ → GlobalTheory.CuspMult.cuspMult θ M σ = mCuspDS μ σ M := by

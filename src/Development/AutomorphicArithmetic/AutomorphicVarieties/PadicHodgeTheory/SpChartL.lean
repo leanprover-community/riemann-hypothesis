@@ -39,11 +39,6 @@ section SlopeTestRemainingChoices
 
 variable {R R' : Type} [CommRing R] [CommRing R']
 
-private theorem adj_mul' (X Y : M4 R) : adj (X * Y) = adj Y * adj X := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [adj_apply, sgn, Fin.rev, Matrix.mul_apply, Fin.sum_univ_four] <;> ring
-
 private theorem adj_adj' (X : M4 R) : adj (adj X) = X := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [adj_apply, sgn, Fin.rev]
@@ -113,12 +108,12 @@ theorem UpperTheory.lift_symplectic_similitude_nilpotent :
     exact this
   have hadj : adj Y' = -Y' := by
     have hT : IsUnit (adj (U : M4 B')) :=
-      ⟨⟨adj (U : M4 B'), adj (↑U⁻¹ : M4 B'), by rw [← adj_mul', Units.inv_mul, adj_one'],
-        by rw [← adj_mul', Units.mul_inv, adj_one']⟩, rfl⟩
+      ⟨⟨adj (U : M4 B'), adj (↑U⁻¹ : M4 B'), by rw [← UpperTheory.V.Loc.SpFlag.adj_mul, Units.inv_mul, adj_one'],
+        by rw [← UpperTheory.V.Loc.SpFlag.adj_mul, Units.mul_inv, adj_one']⟩, rfl⟩
     rw [← add_eq_zero_iff_eq_neg, ← hT.mul_right_eq_zero, ← U.isUnit.mul_left_eq_zero]
     have : adj (U : M4 B') * (adj Y' + Y') * (U : M4 B') =
         adj (Y' * (U : M4 B')) * (U : M4 B') + adj (U : M4 B') * (Y' * (U : M4 B')) := by
-      rw [adj_mul']; noncomm_ring
+      rw [UpperTheory.V.Loc.SpFlag.adj_mul]; noncomm_ring
     rw [this, e2, hU, adj_sub', adj_add', adj_one']
     have e3 : (adj g - 1) * (1 + g) + (1 + adj g) * (g - 1) =
         (adj g * g - 1) + (adj g * g - 1) := by noncomm_ring
@@ -161,7 +156,7 @@ theorem UpperTheory.lift_symplectic_similitude_nilpotent :
     rw [one_smul, ← sub_eq_zero, ← hT.mul_right_eq_zero, ← hT'.mul_left_eq_zero]
     have : (1 + Y) * (adj h * h - 1) * (1 - Y) =
         adj (h * (1 - Y)) * (h * (1 - Y)) - (1 + Y) * (1 - Y) := by
-      rw [adj_mul', a1]
+      rw [UpperTheory.V.Loc.SpFlag.adj_mul, a1]
       simp only [mul_sub (1 + Y) (adj h * h), sub_mul _ _ (1 - Y), mul_one, mul_assoc]
     rw [this, e4, a2]
     noncomm_ring
@@ -449,7 +444,6 @@ private theorem bor_cont {X : Type} [TopologicalSpace X] [TopologicalSpace B] [I
   fin_cases i <;> fin_cases j <;> simp [bor] <;> fun_prop
 
 end UpperTheory.V.Loc.SpBor
-
 
 open UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Loc.SpBor in
 theorem UpperTheory.V.Loc.borLift (hP : LocalPublishedTheorems) {v l : ℕ} [Fact v.Prime] [Fact l.Prime] {G : Type} [Group G]

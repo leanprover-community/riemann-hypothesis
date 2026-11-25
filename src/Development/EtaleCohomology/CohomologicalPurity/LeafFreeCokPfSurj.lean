@@ -88,10 +88,10 @@ theorem exists_finset_adjoin_laurent_preimage (R : Type) [CommRing R] {A' B' A B
     have nat := NatTrans.naturality_apply (cokernel.π ((freeP R).map i)) g.op (ModuleCat.freeMk (ULift.up y))
     rcases hS' g hg with ⟨x₀, hx₀⟩ | ⟨y', hy'⟩
     · refine ⟨0, ?_⟩
-      rw [map_zero]; erw [← nat]
-      rw [freePresheaf_obj_map_freeMk]; erw [← hx₀]; rw [← freePresheaf_map_freeMk R i (op V) x₀]; exact (π_freeP_apply R i (op V) _).symm
+      rw [map_zero]; rw [← nat]
+      rw [freePresheaf_obj_map_freeMk]; rw [← hx₀]; rw [← freePresheaf_map_freeMk R i (op V) x₀]; exact (π_freeP_apply R i (op V) _).symm
     · refine ⟨_, (pcok_π_apply R i' i a b w (op V) (ModuleCat.freeMk (ULift.up y'))).trans ?_⟩
-      rw [freePresheaf_map_freeMk R b (op V) y']; erw [hy', ← freePresheaf_obj_map_freeMk R B g.op y]; exact nat
+      rw [freePresheaf_map_freeMk R b (op V) y']; rw [hy', ← freePresheaf_obj_map_freeMk R B g.op y]; exact nat
   show v ∈ N
   induction v using Finsupp.induction_linear with
   | zero => exact N.zero_mem

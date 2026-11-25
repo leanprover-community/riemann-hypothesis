@@ -44,7 +44,7 @@ variable {γ : DividedPowers I} {s : X ⟶ Sp R} {K : Type} {U : K → X.Opens}
 
 instance : Category (Tag γ s U) where
   Hom := Tag.Hom
-  id S := ⟨𝟙 _, le_rfl⟩
+  id _ := ⟨𝟙 _, le_rfl⟩
   comp f g := ⟨f.f ≫ g.f, f.le.trans g.le⟩
   id_comp _ := Tag.Hom.ext (Category.id_comp _)
   comp_id _ := Tag.Hom.ext (Category.comp_id _)

@@ -63,15 +63,9 @@ private theorem conj_mem_inertia_of_mem_inertia_smul {F Ω : Type} [Field F] [Nu
       exact hm
 
 private theorem eq_one_of_pow_coprime_in_pGroup {B : Type} [CommGroup B] {l : ℕ} (hl : l.Prime) (hB : IsPGroup l B)
-    (y : B) (n : ℕ) (hn : ¬ l ∣ n) (hy : y ^ n = 1) : y = 1 := by
-  obtain ⟨m, hm⟩ := hB y
-  have h1 := orderOf_dvd_of_pow_eq_one hm
-  have h2 := orderOf_dvd_of_pow_eq_one hy
-  have hc : Nat.Coprime (l ^ m) n := Nat.Coprime.pow_left m ((Nat.Prime.coprime_iff_not_dvd hl).2 hn)
-  have : orderOf y ∣ 1 := by
-    rw [← hc]
-    exact Nat.dvd_gcd h1 h2
-  exact orderOf_eq_one_iff.1 (Nat.dvd_one.1 this)
+    (y : B) (n : ℕ) (hn : ¬ l ∣ n) (hy : y ^ n = 1) : y = 1 :=
+  (hB.powEquiv ((Nat.Prime.coprime_iff_not_dvd hl).2 hn)).injective
+    (by rw [IsPGroup.powEquiv_apply, IsPGroup.powEquiv_apply, hy, one_pow])
 
 open UpperTheory.V.Base UpperTheory.V.Kum in
 theorem UpperTheory.V.GC.cl :

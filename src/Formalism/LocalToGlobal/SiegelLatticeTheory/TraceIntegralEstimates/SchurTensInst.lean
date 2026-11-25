@@ -778,10 +778,6 @@ theorem isSchur_of_isFdeg {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} 
     (h : IsFdeg (Formalism.REAL.muG ε) σ d) : IsSchur (Formalism.REAL.muG ε) (fun g : Formalism.REAL.UJ ε => σ (uMat g)) d :=
   ⟨h.1, fun a b a' b' => h.2 a b a' b'⟩
 
-theorem fdegOf_eq' {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {d : ℝ} (h : IsFdeg (Formalism.REAL.muG ε) σ d)
-    {w : H} (hw : w ≠ 0) : fdegOf (Formalism.REAL.muG ε) σ w = d := by
-  apply GlobalTheory.LowestVectorDegree.fdegOf_eq <;> assumption
-
 end Loc
 
 theorem stepSchurG_holds : Formalism.L2.SG.RealObj.EnergyInst.StepSchurG := by
@@ -797,7 +793,7 @@ theorem stepSchurG_holds : Formalism.L2.SG.RealObj.EnergyInst.StepSchurG := by
       have := hw v
       rw [h0, norm_zero] at this
       exact zero_ne_one this
-    have he : X.dv v = d := fdegOf_eq' hd hw0
+    have he : X.dv v = d := GlobalTheory.LowestVectorDegree.fdegOf_eq hd hw0
     rw [he]
     exact hd
   have hT : IsTensAbs (fun v (g : Formalism.REAL.UJ (X.B.I.ε v)) => X.B.σ v (uMat g)) X.B.σs X.B.tens :=

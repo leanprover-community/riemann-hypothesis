@@ -22,54 +22,6 @@ private theorem hermC_emb_emb_eq_zero_of_isIsoPair {r : ℕ} (X : Data E r) (u :
   simp only [hermC, Data.emb]
   exact h
 
-private theorem sum_gram_emb_mul_emb_eq_zero_of_isIsoPair {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E) (hiso : IsIsoPair X.Gm u)
-    (τ : E →+* ℂ) (i k : Fin 2) :
-    ∑ j, (∑ l, τ (X.Gm j l) * starRingEnd ℂ (Data.emb τ (u k) l)) * Data.emb τ (u i) j = 0 := by
-  refine Eq.trans ?_ (hermC_emb_emb_eq_zero_of_isIsoPair X u hiso τ i k)
-  simp only [hermC]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Finset.sum_mul]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  ring
-
-private theorem zmat_eq_one_sub_smul {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
-    (b : X.Ψ → Fin 2 → Fin 2 → ℂ) (τ : X.Ψ) :
-    X.zmat u b τ = 1 - (Complex.I * (X.c τ : ℂ)) •
-      ((Matrix.of fun a i => Data.emb τ.1 (u i) a) * Matrix.of (b τ) *
-        Matrix.of fun k j => ∑ l, τ.1 (X.Gm j l) * starRingEnd ℂ (Data.emb τ.1 (u k) l)) := by
-  ext a j
-  simp only [Data.zmat, Matrix.of_apply, Matrix.sub_apply, Matrix.one_apply, Matrix.smul_apply,
-    Matrix.mul_apply, smul_eq_mul, Fin.sum_univ_two]
-  ring
-
-private theorem gram_conj_emb_mul_emb_eq_zero_of_isIsoPair {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E) (hiso : IsIsoPair X.Gm u)
-    (τ : X.Ψ) :
-    (Matrix.of fun k j => ∑ l, τ.1 (X.Gm j l) * starRingEnd ℂ (Data.emb τ.1 (u k) l)) *
-      (Matrix.of fun a i => Data.emb τ.1 (u i) a) = 0 := by
-  ext k i
-  simp only [Matrix.mul_apply, Matrix.of_apply, Matrix.zero_apply]
-  exact sum_gram_emb_mul_emb_eq_zero_of_isIsoPair X u hiso τ.1 i k
-
-private theorem one_sub_smul_mul_one_sub_smul_of_mul_eq_zero {n : Type} [Fintype n] [DecidableEq n] (V : Matrix n (Fin 2) ℂ)
-    (P : Matrix (Fin 2) n ℂ) (hPV : P * V = 0) (s : ℂ) (B B' : Matrix (Fin 2) (Fin 2) ℂ) :
-    (1 - s • (V * B * P)) * (1 - s • (V * B' * P)) = 1 - s • (V * (B + B') * P) := by
-  have h : V * B * P * (V * B' * P) = 0 := by
-    calc V * B * P * (V * B' * P) = V * B * (P * V) * B' * P := by simp only [Matrix.mul_assoc]
-      _ = 0 := by rw [hPV]; simp
-  simp only [sub_mul, mul_sub, one_mul, mul_one, Matrix.smul_mul, Matrix.mul_smul, h, smul_zero,
-    Matrix.mul_add, Matrix.add_mul, smul_add, sub_zero]
-  abel
-
-private theorem det_one_sub_smul_mul_of_mul_eq_zero {n : Type} [Fintype n] [DecidableEq n] (V : Matrix n (Fin 2) ℂ)
-    (P : Matrix (Fin 2) n ℂ) (hPV : P * V = 0) (s : ℂ) (B : Matrix (Fin 2) (Fin 2) ℂ) :
-    (1 - s • (V * B * P)).det = 1 := by
-  have e : (1 : Matrix n n ℂ) - s • (V * B * P) = 1 + (-(s • (V * B))) * P := by
-    rw [Matrix.neg_mul, Matrix.smul_mul, sub_eq_add_neg]
-  have h : P * (-(s • (V * B))) = 0 := by
-    rw [Matrix.mul_neg, Matrix.mul_smul, ← Matrix.mul_assoc, hPV, Matrix.zero_mul, smul_zero,
-      neg_zero]
-  rw [e, Matrix.det_one_add_mul_comm, h, add_zero, Matrix.det_one]
-
 private theorem zmat_mulVec_eq {r : ℕ} (X : Data E r) (u : Fin 2 → Fin r → E)
     (b : X.Ψ → Fin 2 → Fin 2 → ℂ) (τ : X.Ψ) (w : Fin r → ℂ) :
     Matrix.mulVec (X.zmat u b τ) w = fun p => w p - ∑ i, (Complex.I * (X.c τ : ℂ) *

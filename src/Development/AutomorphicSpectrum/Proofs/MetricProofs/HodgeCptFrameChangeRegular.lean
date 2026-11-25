@@ -340,10 +340,6 @@ theorem pos_cover (b : Fin (p + q)) : (∃ a, b = omEmb p q a) ∨ ∃ a, b = wE
   · exact Or.inl ⟨a, (blockEquiv p q).symm.injective (h.trans (BlockEmbeddings.blockEquiv_symm_omEmb a).symm)⟩
   · exact Or.inr ⟨a, (blockEquiv p q).symm.injective (h.trans (BlockEmbeddings.blockEquiv_symm_wEmb a).symm)⟩
 
-theorem aExt_posOf (C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (s : Ψ ⊕ Ψ) (j : Fin (n s))
-    (l : Fin (rk Ψ p q s)) : aExt C s j (posOf p q s l) = C s j l := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.Inv.aExt_posOf <;> assumption
-
 theorem aExt_off (C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (s : Ψ ⊕ Ψ) (j : Fin (n s))
     (b : Fin (p + q)) (hb : ¬ ∃ l, posOf p q s l = b) : aExt C s j b = 0 :=
   Finset.sum_eq_zero fun l _ => ite_eq_right fun e => hb ⟨l, e⟩
@@ -393,7 +389,7 @@ theorem aExt_mul_tMat (A C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω)
   · obtain ⟨l', rfl⟩ := hb
     have h2 := congrFun (congrFun (hAT s) j) l'
     rw [Matrix.mul_apply, Matrix.smul_apply, smul_eq_mul] at h2
-    rw [aExt_posOf, ← h2]
+    rw [GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.Inv.aExt_posOf, ← h2]
     exact Finset.sum_congr rfl fun l _ => by rw [tMat_posOf Ts τ s hs]
   · rw [aExt_off C s j b hb, mul_zero]
     exact Finset.sum_eq_zero fun l _ => by rw [tMat_off Ts τ s hs l b hb, mul_zero]
@@ -549,7 +545,6 @@ theorem zOf_of_rk_eq_zero (A : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω)
     {s : Ψ ⊕ Ψ} (h : rk Ψ p q s = 0) : zOf A c s = 1 := by
   haveI : IsEmpty (Fin (rk Ψ p q s)) := by rw [h]; infer_instance
   exact Matrix.det_isEmpty
-
 
 open Classical in
 def stepFac (z : Ω) (s : Ψ ⊕ Ψ) : K₀ ⊕ StepIx Ψ p q → Ω :=

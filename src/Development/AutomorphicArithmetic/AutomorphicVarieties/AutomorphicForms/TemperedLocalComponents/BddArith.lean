@@ -1455,8 +1455,7 @@ private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ
     refine Fintype.sum_equiv (Equiv.mulLeft (⟨h, hh⟩ : H)) _ _ ?_
     intro k
     simp [map_mul]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+  · rw [map_smul, map_sum]
     have h1 : ∀ k : H, (Rep.Hom.hom f) (A.ρ k a) = b := by
       intro k
       rw [Rep.hom_comm_apply, ha, hb k k.2]
@@ -1818,7 +1817,6 @@ private theorem exact_of {A B C : Rep.{0} ℂ Γ} {f : A ⟶ B} {g : B ⟶ C} (w
   exact (forget₂ (Rep ℂ Γ) (ModuleCat ℂ)).reflects_exact_of_faithful _
     ((ShortComplex.moduleCat_exact_iff _).2 fun x hx => (h x).1 hx)
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem main : UpperTheory.V.Af.BA.ResOf := by
   intro Γ _ X d ε hX hε h0 hd
   have hdd : ∀ p, d (p + 1) ≫ d p = 0 := fun p => comp_zero_of (hd p)

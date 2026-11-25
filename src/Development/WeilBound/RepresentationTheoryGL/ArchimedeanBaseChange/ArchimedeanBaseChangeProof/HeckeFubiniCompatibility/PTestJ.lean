@@ -27,7 +27,7 @@ def Test2J : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b
   PositivityTheory.Rg.BcB.D4.IsTest2J (fun g : H E a b => (∏ v, fa v (gInf v g.1)) * (∏ v, fb v (gInf v g.2)) * ψ (hFin g))
     (2 * Fintype.card (InfinitePlace E) * R + r)
 
-theorem test2J : Test2J := fun E _ _ _ a b fa fb ψ R r U hR ha hb hψs hUo hψU hsz hr₁ hr₂ =>
+theorem test2J : Test2J := fun _ _ _ _ _ _ fa fb ψ R r U hR ha hb hψs hUo hψU hsz hr₁ hr₂ =>
   have h := pTest_main fa fb ψ R r U hR ha hb hψs hUo hψU hsz hr₁ hr₂
   { toIsTest2 := h.1, level := h.2 }
 

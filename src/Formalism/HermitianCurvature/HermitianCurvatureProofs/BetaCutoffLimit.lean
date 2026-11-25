@@ -52,11 +52,7 @@ theorem inner_self_real {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ
   rw [inner_self_eq_norm_sq_to_K]; norm_cast
 
 theorem bcWeight_nonneg' (T T' : ℝ) (q : (Fin r → ℂ) × ℂ) : 0 ≤ bcWeight k r T T' q := by
-  unfold bcWeight
-  split_ifs with h
-  · exact mul_nonneg (Finset.prod_nonneg fun a _ => pow_nonneg (norm_nonneg _) _)
-      (pow_nonneg (sub_nonneg.2 h) _)
-  · exact le_rfl
+  exact Formalism.FourierDecayAlt.P.B7.boundary_weight_nonneg T T' q
 
 theorem beta_cutF [FiniteDimensional ℂ Wq] (D : RealPlaceData k r Wp Wq) (χ : ℝ → ℝ)
     (F : Mat k r → (Wq →L[ℂ] Wp)) (ε : ℝ) :

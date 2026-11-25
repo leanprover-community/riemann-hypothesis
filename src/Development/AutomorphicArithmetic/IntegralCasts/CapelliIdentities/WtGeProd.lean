@@ -61,7 +61,7 @@ private theorem UpperTheory.Reformulated.B.Qk29.wtGe_mul {K : Type*} [NormedFiel
   exact mul_le_mul h1 h2 (norm_nonneg _) (Real.rpow_pos_of_pos hpi _).le
 
 theorem UpperTheory.Reformulated.B.Qk29.wtGe_prod.{u, v, w} :
-    ∀ {K : Type u} [inst : NormedField K] {ι : Type v} [IsUltrametricDist K] {pi : ℝ},
+    ∀ {K : Type u} [NormedField K] {ι : Type v} [IsUltrametricDist K] {pi : ℝ},
       (0 : ℝ) < pi →
         ∀ {r : ι → ℝ} {α : Type w} (s : Finset α) (wt : α → ℝ) (F : α → MvPowerSeries ι K),
           (∀ i ∈ s, UpperTheory.Reformulated.B.Qk29.WtGe pi r (wt i) (F i)) → UpperTheory.Reformulated.B.Qk29.WtGe pi r (∑ i ∈ s, wt i) (∏ i ∈ s, F i) := by

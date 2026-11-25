@@ -15,12 +15,6 @@ namespace PositivityTheory.ResPlug.FromRes
 
 open FunctorialResolution
 
-private theorem isIso_restrict_comp' {X Y Z : Scheme.{0}} (f : X ⟶ Y) (g : Y ⟶ Z) (V : Z.Opens)
-    (h1 : IsIso (f ∣_ (g ⁻¹ᵁ V))) (h2 : IsIso (g ∣_ V)) : IsIso ((f ≫ g) ∣_ V) := by
-  have h : IsIso (f ∣_ (g ⁻¹ᵁ V) ≫ g ∣_ V) := @IsIso.comp_isIso _ _ _ _ _ _ _ h1 h2
-  rw [morphismRestrict_comp]
-  exact h
-
 private theorem structMap_zero' {X : Scheme.{0}} (s : BlowupSequence X) : s.structMap 0 = s.isoZero.hom := by
   simp only [BlowupSequence.structMap, BlowupSequence.down]
   have : (homOfLE (Nat.zero_le 0)).op = 𝟙 (op (0 : ℕ)) := Subsingleton.elim _ _
@@ -75,10 +69,8 @@ theorem isIso_topMap_restrict_of_isPrincipalizingSequence {k : Type} [Field k] {
         exact hxV h1
       rw [htop] at hres
       have h1 : IsIso (s.blowupMap i ∣_ (s.structMap i ⁻¹ᵁ I.support.compl)) := hres.isIso_of_top
-      have key := isIso_restrict_comp' (s.blowupMap i) (s.structMap i) I.support.compl h1 h2
-      have hcomp : s.blowupMap i ≫ s.structMap i = s.structMap (i + 1) := s.structMap_down (Nat.le_succ i)
-      rw [hcomp] at key
-      exact key
+      rw [← s.structMap_down (Nat.le_succ i), morphismRestrict_comp]
+      exact @IsIso.comp_isIso _ _ _ _ _ _ _ h1 h2
   exact hiso s.length le_rfl
 
 end PositivityTheory.ResPlug.FromRes

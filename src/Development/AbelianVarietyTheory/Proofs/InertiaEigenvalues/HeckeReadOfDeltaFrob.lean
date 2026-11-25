@@ -117,7 +117,3 @@ theorem isDeltaInv_uD {D : D7} {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T 
   rfl
 
 end GlobalTheory.TwInputs.HeckePinRead
-
-namespace GlobalTheory.TwInputs
-
-end GlobalTheory.TwInputs

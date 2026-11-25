@@ -72,7 +72,7 @@ theorem A_cover (S : Finset (Pl E))
     (hfin : ∀ g : GA E k, {w | Iwasawa.iwasawaExponent _ k (cLoc w g) ≠ 0}.Finite) (g : GA E k) :
     ∃ l, g ∈ A S l :=
   ⟨Finsupp.ofSupportFinite (fun w : Off E S => Iwasawa.iwasawaExponent _ k (cLoc w.1 g))
-    ((hfin g).preimage Subtype.val_injective.injOn), fun w => rfl⟩
+    ((hfin g).preimage Subtype.val_injective.injOn), fun _ => rfl⟩
 
 theorem A_disj (S : Finset (Pl E)) : Pairwise (Function.onFun Disjoint (A (k := k) S)) := by
   intro l l' hne

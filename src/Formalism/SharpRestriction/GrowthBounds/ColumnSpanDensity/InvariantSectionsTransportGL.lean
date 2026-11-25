@@ -17,12 +17,6 @@ section Pos
 
 variable {O Kf : Type} [CommRing O] [Field Kf] [Algebra O Kf] {m : ℕ}
 
-theorem fu_colSpan_map {k : ℕ} (γ : GL (Fin k) Kf) (h : Matrix (Fin k) (Fin k) Kf) :
-    (colSpan O h).map (nt_phi O γ) = colSpan O ((γ : Matrix (Fin k) (Fin k) Kf) * h) := by
-  unfold colSpan
-  rw [Submodule.map_span, ← Set.range_comp]
-  congr 1
-
 def fuT (γ : GL (Fin (m + 1)) Kf) (lam : Fin (m + 1) → ℤ) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) Kf) :
     MvPolynomial (Fin (m + 1) × Fin (m + 1)) Kf :=
   ((γ : Matrix (Fin (m + 1)) (Fin (m + 1)) Kf).det ^ (-(lam (Fin.last m)))) •
@@ -61,7 +55,7 @@ theorem invariant_sections_transport_GL (γ : GL (Fin (m + 1)) Kf) (lam : Fin (m
   have hback : (Λ.map (nt_phi O γ)).map (nt_phi O ((γ⁻¹ : GL (Fin (m + 1)) Kf))) = Λ := by
     rw [← Submodule.map_comp, hid, Submodule.map_id]
   have hΛ' : Λ = colSpan O (((γ⁻¹ : GL (Fin (m + 1)) Kf) : Matrix (Fin (m + 1)) (Fin (m + 1)) Kf) * g) :=
-    hback.symm.trans (by rw [hg.2, fu_colSpan_map])
+    hback.symm.trans (by rw [hg.2, Formalism.MainNotions.flipOneThree.Pf.map_colSpan])
   have hdet : IsUnit (((γ⁻¹ : GL (Fin (m + 1)) Kf) : Matrix (Fin (m + 1)) (Fin (m + 1)) Kf) * g).det := by
     rw [Matrix.det_mul]
     exact ((Matrix.isUnit_iff_isUnit_det _).mp (Units.isUnit _)).mul hg.1

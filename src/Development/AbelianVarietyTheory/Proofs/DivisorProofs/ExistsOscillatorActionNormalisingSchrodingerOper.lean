@@ -290,7 +290,7 @@ theorem GlobalTheory.SchrodOsc.exists_osc_dep : ∀ (ι l : Type) [Fintype ι] [
     ∃ ω : G →* (L2 l ≃ₗᵢ[ℂ] L2 l), (∀ v, Continuous fun g => ω g v) ∧
       ∀ g c v, ω g (rho (φ c) v) = rho (φ fun w => c w * (k g w)ᵀ) (ω g v) := by
   intro ι l _ _ _ _ P Q R S φ hφ hcont G _ _ _ k hkc hk
-  obtain ⟨ω₀, hω₀c, hω₀, -⟩ := GlobalTheory.FockRep.exists_unitary_osc _ _ (L2 l)
+  obtain ⟨ω₀, hω₀c, hω₀⟩ := GlobalTheory.FockRep.exists_unitary_osc _ _ (L2 l)
     (fun z => rho (φ (GlobalTheory.SchrodOsc.coordOf z)))
     (fun v => (hcont v).comp ((LinearMap.continuous_of_finiteDimensional φ.toLinearMap).comp
       GlobalTheory.SchrodOsc.continuous_coordOf))

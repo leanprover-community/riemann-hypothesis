@@ -20,23 +20,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 
-namespace GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate
-
-theorem translate_mem_of_isHopfOrder : ∀ (R : Type) [CommRing R] (T : Type) [CommGroup T] (A : Subalgebra R (T → R)),
-    IsHopfOrder A → ∀ f ∈ A, ∀ t, (fun h => f (t * h)) ∈ A := by
-  intro R _ T _ A hA f hf t
-  have key : ∀ g ∈ prodSpan A, (fun h => g (t, h)) ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem g hg =>
-      obtain ⟨a, -, b, hb, rfl⟩ := hg
-      exact A.smul_mem hb (a t)
-    | zero => exact A.zero_mem
-    | add x y _ _ hx hy => exact A.add_mem hx hy
-    | smul r x _ hx => exact A.smul_mem hx r
-  exact key _ (hA.comul f hf)
-
-end GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderTranslationInvariant =====
@@ -55,10 +38,8 @@ section alg
 
 variable {R : Type} [CommRing R] {T : Type} [CommGroup T]
 
-
 open Classical in
 noncomputable def ind (H : Subgroup T) : T → R := fun x => if x ∈ H then 1 else 0
-
 
 open Classical in
 noncomputable def extZero (H : Subgroup T) (a : H → R) : T → R := fun x => if h : x ∈ H then a ⟨x, h⟩ else 0
@@ -213,7 +194,7 @@ theorem openImmersion_translatesCover : ∀ (R : Type) [CommRing R] [IsDomain R]
   intro R _ _ _ T _ _ Γ U hF j hj
   obtain ⟨H, A, hH, hA, hAs⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.SubOrder.hopfOrder_of_finOpenSub R T Γ U hF
   have hU := isAffineOpen_of_fin Γ hF
-  have hTr : ∀ f ∈ A, ∀ t, (fun h => f (t * h)) ∈ A := _root_.GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate.translate_mem_of_isHopfOrder R H A hA
+  have hTr : ∀ f ∈ A, ∀ t, (fun h => f (t * h)) ∈ A := _root_.PositivityTheory.HtPt.Twhopf.translate_mem R H A hA
   have hB : ∀ f : T → R, f ∈ Γ.btOrder ⊤ ↔ ∀ t, (fun h : H => f (t * h)) ∈ A := by
     intro f
     have hOrder : Γ.btOrder U = Γ.btOrder ⊤ :=

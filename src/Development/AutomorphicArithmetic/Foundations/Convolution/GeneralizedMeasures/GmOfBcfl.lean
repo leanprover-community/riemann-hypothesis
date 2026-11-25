@@ -719,7 +719,6 @@ private theorem twKQ_int (θ : Twist μ) (f : TG K n) (Z : ℝ) (h : ∀ x, Z < 
   obtain ⟨C, hC, hcov⟩ := UpperTheory.exists_compact_fundamental_set_of_height_le K n Z
   obtain ⟨M, hM⟩ := hC.exists_bound_of_continuousOn (twK_cont θ f).continuousOn
   have hm : AEStronglyMeasurable (twKQ θ f) (quotientMeasure (Gam K n) μ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact hc.aestronglyMeasurable
   refine Integrable.of_bound hm (max M 0) (Eventually.of_forall fun y => ?_)
   change ‖twK θ f (Quotient.out y)‖ ≤ _

@@ -70,15 +70,6 @@ section utrans
 
 variable {r : ℕ} {X : Type} [MeasurableSpace X]
 
-theorem ut_of_mem {A : Matrix (Fin r) (Fin r) ℂ} (hA : A ∈ C2.UTset r) : G.upper (StabilizerDisintegration.utc A) = A := by
-  ext i j
-  simp only [G.upper, G.strictUpper, StabilizerDisintegration.utc, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply]
-  rcases lt_trichotomy i j with h | h | h
-  · rw [ite_eq_right (ne_of_lt h), dite_eq_left h, zero_add]
-  · subst h
-    rw [ite_eq_left rfl, dite_eq_right (lt_irrefl _), add_zero, hA.2 i]
-  · rw [ite_eq_right (ne_of_gt h), dite_eq_right (not_lt.2 h.le), add_zero, hA.1 i j h]
-
 def uTransE (A : X → Matrix (Fin r) (Fin r) ℂ) (hA : ∀ x, A x ∈ C2.UTset r) (hAc : ∀ i j, Measurable fun x => A x i j)
     (hAi : ∀ i j, Measurable fun x => (A x)⁻¹ i j) :
     (X × (G.UT r → ℂ)) ≃ᵐ (X × (G.UT r → ℂ)) where
@@ -88,13 +79,13 @@ def uTransE (A : X → Matrix (Fin r) (Fin r) ℂ) (hA : ∀ x, A x ∈ C2.UTset
     ext
     · rfl
     · simp only
-      rw [ut_of_mem (C2x2.ut_mul (_root_.Formalism.FourierDecayAlt.P.C2x2.ut_inv (hA p.1)) (StabilizerDisintegration.UC.upper_mem _)), ← Matrix.mul_assoc,
+      rw [Formalism.FourierDecayAlt.P.StabilizerDisintegration.HC.upper_utc (C2x2.ut_mul (_root_.Formalism.FourierDecayAlt.P.C2x2.ut_inv (hA p.1)) (StabilizerDisintegration.UC.upper_mem _)), ← Matrix.mul_assoc,
         Matrix.mul_nonsing_inv _ (_root_.Formalism.FourierDecayAlt.P.C2x2.ut_unit (hA p.1)), Matrix.one_mul, StabilizerDisintegration.UC.utc_upper]
   right_inv p := by
     ext
     · rfl
     · simp only
-      rw [ut_of_mem (C2x2.ut_mul (hA p.1) (StabilizerDisintegration.UC.upper_mem _)), ← Matrix.mul_assoc,
+      rw [Formalism.FourierDecayAlt.P.StabilizerDisintegration.HC.upper_utc (C2x2.ut_mul (hA p.1) (StabilizerDisintegration.UC.upper_mem _)), ← Matrix.mul_assoc,
         Matrix.nonsing_inv_mul _ (_root_.Formalism.FourierDecayAlt.P.C2x2.ut_unit (hA p.1)), Matrix.one_mul, StabilizerDisintegration.UC.utc_upper]
   measurable_toFun := by
     refine measurable_fst.prodMk ?_
@@ -574,12 +565,9 @@ theorem Amat_inv_cont (σ : Equiv.Perm (Fin r)) (d : Fin r → ℂ) (hd : ∀ a,
     funext x; exact Dx2.SL.inv_adj _ (StabilizerDisintegration.UC.det_UT (conjS_UT hd x))
   rw [e]; exact (Amat_cont σ d).matrix_adjugate
 
-theorem norm_psi (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (g : B.Mat k r) : ‖psi k r z c g‖ = 1 := by
-  unfold psi; rw [Complex.norm_exp]; simp
-
 theorem norm_psiStar (σ : Equiv.Perm (Fin r)) (z z' : Fin (2 * (r + 0 + 0) + k + 1) → ℂ) (ξ : U.Xi k r 0 0 σ) :
     ‖U.psiStar k 0 σ z z' ξ‖ = 1 := by
-  rw [psiStar_zero, norm_mul, norm_mul, norm_psi, norm_star, norm_psi, _root_.Formalism.FourierDecayAlt.P.StationaryPhaseModel.F_norm_psi]; norm_num
+  rw [psiStar_zero, norm_mul, norm_mul, Formalism.FourierDecayAlt.P.SmoothnessOnGoodSet.norm_psi, norm_star, Formalism.FourierDecayAlt.P.SmoothnessOnGoodSet.norm_psi, _root_.Formalism.FourierDecayAlt.P.StationaryPhaseModel.F_norm_psi]; norm_num
 
 theorem psi_cont (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) : Continuous fun g : B.Mat k r => psi k r z c g := by
   unfold psi ell
@@ -667,8 +655,6 @@ theorem chiL_integrable (w0 : Equiv.Perm (Fin r)) : Integrable (chiL w0) := by
   refine (integrableOn_const (C := (1 : ℝ)) ?_).integrable_indicator (MeasurableSet.univ_pi fun _ => boxC_meas)
   rw [volume_pi, Measure.pi_pi]
   simp [boxC_vol]
-
-
 
 theorem inner_int (S : B.RealPlaceData k r Wp Wq) (z0 z0' : Fin (2 * 0 + k + 1) → ℂ)
     (hz : S.z = liftVec k r 0 z0) (hz' : S.z' = liftVec k r 0 z0')

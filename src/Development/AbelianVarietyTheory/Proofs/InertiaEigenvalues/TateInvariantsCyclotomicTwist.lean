@@ -16,13 +16,8 @@ namespace GlobalTheory.CyclotomicTowerSubgroupInclusions
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem unramified_subfield_le_Ks (K : FinExt l) (j : ℕ) : K0 K ≤ Ks K j := le_sup_left
-
 theorem Ks_le_Kinf (K : FinExt l) (j : ℕ) : Ks K j ≤ Kinf K :=
   sup_le_sup_left (IntermediateField.adjoin.mono _ _ _ (fun _ hx => Exists.intro j hx)) _
-
-theorem cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified (K : FinExt l) (j : ℕ) : Gj K j ≤ (K0 K).fixingSubgroup :=
-  fun _ hg x => hg ⟨x.1, unramified_subfield_le_Ks K j x.2⟩
 
 theorem Hinf_le_Gj (K : FinExt l) (j : ℕ) : Hinf K ≤ Gj K j :=
   fun _ hg x => hg ⟨x.1, Ks_le_Kinf K j x.2⟩
@@ -64,7 +59,7 @@ theorem invariants_twist : ∀ (l : ℕ) [Fact l.Prime] (act : GQ l →* (PadicC
     rw [hz, map_mul, map_pow, map_natCast, mul_left_comm, hy σ hσ]
   have hzO : z ∈ Ohat K := by
     refine (_root_.GlobalTheory.CycInvariants.fixed_iff_mem_Ohat l act ha K z hn).mp fun h hh => ?_
-    have h1 : χ h = 1 := (hker K h (cyclotomicTowerLevelGaloisSubgroup_le_fixingUnramified K j (Hinf_le_Gj K j hh))).2.mp hh
+    have h1 : χ h = 1 := (hker K h (GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K j (Hinf_le_Gj K j hh))).2.mp hh
     have h2 := hzinv h (_root_.GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K j hh)
     simpa [chiC, h1] using h2
   obtain ⟨a, haK, x, hx, hax⟩ := hdec z hzO

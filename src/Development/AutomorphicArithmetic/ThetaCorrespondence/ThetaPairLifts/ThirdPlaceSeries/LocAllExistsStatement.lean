@@ -974,16 +974,6 @@ end loc
 
 end GlobalTheory.HeightCounting.MtIndep
 
-namespace GlobalTheory.HeightCounting.MtIndep
-
-section loc2
-variable {D : D7} {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} {M : MtFam D}
-  {tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E} {X : LocNd (lay0 D)}
-  {iq : ∀ i : X.nd.Loc, FractionRing (X.nd.O i) →+* Qbar (X.nd.l i)} {Y : LocAut X} {Cb : LocBC Y}
-
-end loc2
-
-end GlobalTheory.HeightCounting.MtIndep
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -38,8 +38,7 @@ theorem norm_sub_tens_sq (hi : ∀ x y, ⟪tens x, tens y⟫_ℂ = ∏ v, ⟪x v
 
 theorem continuous_tens [∀ v, FiniteDimensional ℂ (V v)] (hi : ∀ x y, ⟪tens x, tens y⟫_ℂ = ∏ v, ⟪x v, y v⟫_ℂ) :
     Continuous tens := by
-  intros
-  apply _root_.GlobalTheory.HilbTensorRep.continuous_tens <;> assumption
+  apply GlobalTheory.HilbTensorRep.continuous_tens <;> assumption
 
 theorem tens_smul (hi : ∀ x y, ⟪tens x, tens y⟫_ℂ = ∏ v, ⟪x v, y v⟫_ℂ) (c : ι → ℂ) (x : ∀ v, V v) :
     tens (fun v => c v • x v) = (∏ v, c v) • tens x := by

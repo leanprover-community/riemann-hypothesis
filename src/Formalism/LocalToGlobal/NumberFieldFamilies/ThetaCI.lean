@@ -40,15 +40,9 @@ variable {D : D7}
 theorem sqrt_d_pos (D : D7) : 0 < Real.sqrt D.host.d :=
   Real.sqrt_pos.2 (Nat.cast_pos.2 (Nat.pos_of_ne_zero D.host.hyp.2.1.ne_zero))
 
-theorem delta_ne (D : D7) : D.host.sqrtMinusD ≠ 0 := by
-  intro h0
-  have h : D.host.φ₀ D.host.sqrtMinusD = Complex.I * (Real.sqrt D.host.d : ℂ) := D.host.φ₀_mem
-  rw [h0, map_zero] at h
-  exact mul_ne_zero Complex.I_ne_zero (Complex.ofReal_ne_zero.2 (sqrt_d_pos D).ne') h.symm
-
 theorem decompE (x : D.host.E) : ∃ a b : D.host.F,
     x = algebraMap D.host.F D.host.E a + algebraMap D.host.F D.host.E b * D.host.sqrtMinusD := by
-  have hd := delta_ne D
+  have hd := Formalism.L2.Fam.ThC.sd_ne D
   obtain ⟨a, ha⟩ := (D.sp.cm.fixed ((x + star x) / 2)).1 (by
     rw [star_div₀, star_add, star_star, add_comm]; simp)
   obtain ⟨b, hb⟩ := (D.sp.cm.fixed ((x - star x) / (2 * D.host.sqrtMinusD))).1 (by

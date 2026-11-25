@@ -38,55 +38,11 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ShortThetaValueComplexPointEqClassicalThetaStatement
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaHeisenbergUnitaryColumnChange
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaVacuumUnitaryColumnChangeUnitFactor
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SchwartzBruhatInvariantIntegralMatrixMul
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
@@ -576,20 +532,6 @@ private lemma qm_neg_siegel_theta_transformation {α β : Type} (M : Matrix α �
 open Matrix Complex in
 open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
-private lemma qm_transpose_siegel_theta_transformation {α β : Type} (M : Matrix α β ℚ) :
-    _root_.GlobalTheory.SW.qm Mᵀ = (_root_.GlobalTheory.SW.qm M)ᵀ := by
-  ext i j; simp [_root_.GlobalTheory.SW.qm]
-
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
-private lemma qm_zero_siegel_theta_transformation {α β : Type} :
-    _root_.GlobalTheory.SW.qm (0 : Matrix α β ℚ) = 0 := by
-  ext i j; simp [_root_.GlobalTheory.SW.qm]
-
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_one_siegel_theta_transformation : _root_.GlobalTheory.SW.qm (1 : Matrix ι ι ℚ) = 1 := by
   ext i j; by_cases h : i = j <;> simp [_root_.GlobalTheory.SW.qm, Matrix.one_apply, h]
 
@@ -617,7 +559,7 @@ private lemma isUnit_det_spDen_of_mem_siegel {σ : Matrix (ι ⊕ ι) (ι ⊕ ι
   have d2 := congrArg _root_.GlobalTheory.SW.qm s2
   have d3 := congrArg _root_.GlobalTheory.SW.qm s3
   have d4 := congrArg _root_.GlobalTheory.SW.qm s4
-  simp only [_root_.GlobalTheory.SiegelAction.qm_add, qm_neg_siegel_theta_transformation, _root_.GlobalTheory.SiegelAction.qm_mul, qm_transpose_siegel_theta_transformation, qm_zero_siegel_theta_transformation,
+  simp only [_root_.GlobalTheory.SiegelAction.qm_add, qm_neg_siegel_theta_transformation, _root_.GlobalTheory.SiegelAction.qm_mul, GlobalTheory.SW.TransComp.qm_transpose, GlobalTheory.SW.TransComp.qm_zero,
     qm_one_siegel_theta_transformation] at d1 d2 d3 d4
   have hτs : τᵀ = τ := hτ.1
   have hY := hτ.2
@@ -793,7 +735,7 @@ private lemma transS_heisS_rowAct {σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ}
   have d2 := congrArg _root_.GlobalTheory.SW.qm s2
   have d3 := congrArg _root_.GlobalTheory.SW.qm s3
   have d4 := congrArg _root_.GlobalTheory.SW.qm s4
-  simp only [_root_.GlobalTheory.SiegelAction.qm_add, qm_neg_siegel_theta_transformation, _root_.GlobalTheory.SiegelAction.qm_mul, qm_transpose_siegel_theta_transformation, qm_zero_siegel_theta_transformation,
+  simp only [_root_.GlobalTheory.SiegelAction.qm_add, qm_neg_siegel_theta_transformation, _root_.GlobalTheory.SiegelAction.qm_mul, GlobalTheory.SW.TransComp.qm_transpose, GlobalTheory.SW.TransComp.qm_zero,
     qm_one_siegel_theta_transformation] at c2 c4 d1 d2 d3 d4
   obtain ⟨A, hA⟩ : ∃ A, A = _root_.GlobalTheory.SW.qm σ.toBlocks₁₁ := ⟨_, rfl⟩
   obtain ⟨B, hB⟩ : ∃ B, B = _root_.GlobalTheory.SW.qm σ.toBlocks₁₂ := ⟨_, rfl⟩

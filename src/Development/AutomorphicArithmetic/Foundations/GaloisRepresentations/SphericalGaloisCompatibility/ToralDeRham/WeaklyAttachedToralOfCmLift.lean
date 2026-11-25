@@ -418,8 +418,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.AboveL
 
-theorem _root_.GlobalTheory.T.exists_weilGroup_restrict_extension : ∀ (K L Ω : Type) [Field Ω] [Field K] [NumberField K] [Algebra K Ω] [IsAlgClosure K Ω] [Field L] [NumberField L] [Algebra L Ω] [IsAlgClosure L Ω] [Algebra K L] [IsScalarTower K L Ω] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (v' : HeightOneSpectrum (𝓞 L)) (h : IsPlaceOver A v) (h' : IsPlaceOver A v') (σ' : Weil h'), ∃ σ : Weil h, (∀ z : Ω, (σ : G K Ω) z = (σ' : G L Ω) z) ∧ (deg σ = 0 ↔ deg σ' = 0) := by
-  first | exact @GlobalTheory.AboveL.exists_weil_restrict
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsWeilGroupRestrictExtensionStatement =====
@@ -434,8 +432,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.AboveL
 
-theorem _root_.GlobalTheory.T.mem_weilGroupAtPlace_of_fixes_extension : ∀ (K L Ω : Type) [Field Ω] [Field K] [NumberField K] [Algebra K Ω] [IsAlgClosure K Ω] [Field L] [NumberField L] [Algebra L Ω] [IsAlgClosure L Ω] [Algebra K L] [IsScalarTower K L Ω] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 K)) (v' : HeightOneSpectrum (𝓞 L)) (h : IsPlaceOver A v) (h' : IsPlaceOver A v') (σ : Weil h) (g : G L Ω), (∀ z : Ω, (σ : G K Ω) z = g z) → g ∈ Weil h' := by
-  first | exact @GlobalTheory.AboveL.mem_weil_of_fix
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemWeilGroupAtPlaceOfFixesExtensionStatement =====
@@ -449,8 +445,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.GLq
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GalCut GlobalTheory.RoadU GlobalTheory.AboveL
 
-theorem _root_.GlobalTheory.T.exists_characterSupportBaseChangeLift_degreeOne : ∀ (K M : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] [Field M] [NumberField M] [_root_.NumberField.IsTotallyComplex M] [Algebra K M], Module.finrank K M = 1 → ∀ (a : ℕ), 1 ≤ a → ∀ π : CuspSub K a, ∃ P : CuspSub M a, CharLift π P := by
-  first | (exact @GlobalTheory.DegOneChar.exists_charLift)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCharacterSupportBaseChangeLiftDegreeOneStatement =====
@@ -899,8 +893,8 @@ theorem isWeaklyAttached_of_cmBaseChange_of_finrank (hI : UpperTheory.Gal.ToralG
   intro K _ _ _ _ _ _ _ hd π χ hsc r hr N hN hS
   obtain ⟨hgal, hsol, hdec⟩ := hS
   by_cases h1 : Module.finrank K M = 1
-  · obtain ⟨P, hP⟩ := GlobalTheory.T.exists_characterSupportBaseChangeLift_degreeOne K M h1 a ha π
-    obtain ⟨⟨χ', hχ'⟩, -⟩ := GlobalTheory.T.polarizedPair_baseChange_polarized_same_weight GlobalTheory.automorphicFormsFiniteGL hI.js hI.gk K M l a ha π χ P hP.1 hsc
+  · obtain ⟨P, hP⟩ := GlobalTheory.DegOneChar.exists_charLift K M h1 a ha π
+    obtain ⟨⟨χ', hχ'⟩, -⟩ := GlobalTheory.LiftPolar.main GlobalTheory.automorphicFormsFiniteGL hI.js hI.gk K M l a ha π χ P hP.1 hsc
     exact ⟨P, χ', hχ', hP⟩
   haveI : Group.IsSolvable (M ≃ₐ[K] M) := hsol
   haveI : Nontrivial (M ≃ₐ[K] M) := by
@@ -957,8 +951,8 @@ theorem isWeaklyAttached_of_cmBaseChange_of_finrank (hI : UpperTheory.Gal.ToralG
     exact htr (_root_.GlobalTheory.SelfTwWeak.trace_eq_zero_of_selfTw Ω K K₁ hp₁ l ι a π r hr η hη hst g hgM)
   obtain ⟨P₁, hP₁⟩ := hI.ac K K₁ hp₁ a ha π hnotw
   have hc₁ : CharLift π P₁ := hI.chl K K₁ hp₁ a ha π P₁ hP₁
-  obtain ⟨⟨χ₁, hχ₁⟩, -⟩ := GlobalTheory.T.polarizedPair_baseChange_polarized_same_weight GlobalTheory.automorphicFormsFiniteGL hI.js hI.gk K K₁ l a ha π χ P₁ hP₁ hsc
-  have hr₁ : Weak P₁ ι (resTo K₁ r) := GlobalTheory.T.weaklyAttachedGaloisRepresentation_baseChange_restrict K K₁ Ω l ι a π P₁ hP₁ r hr
+  obtain ⟨⟨χ₁, hχ₁⟩, -⟩ := GlobalTheory.LiftPolar.main GlobalTheory.automorphicFormsFiniteGL hI.js hI.gk K K₁ l a ha π χ P₁ hP₁ hsc
+  have hr₁ : Weak P₁ ι (resTo K₁ r) := GlobalTheory.GalCut.weak_comp_res K K₁ Ω l ι a π P₁ hP₁ r hr
   let N₁ : Subgroup (G K₁ Ω) := N.comap (AlgEquiv.restrictScalarsHom K)
   have hS₁ : SolvDisj M N₁ := by
     refine ⟨inferInstance, ‹Group.IsSolvable (M ≃ₐ[K₁] M)›, fun g₁ => ?_⟩
@@ -1032,21 +1026,21 @@ theorem exists_cm_lift_fix_charKer : UpperTheory.Gal.ToralGalois.Inq → ∀ (Ω
   obtain ⟨N₀, hN₀o, hN₀⟩ := _root_.GlobalTheory.AboveL.exists_open_trace_ne_zero Ω E l n hn r hr.1
   obtain ⟨M₀, _, _, _, _, _, _, _, hsd₀, hfix₀, hfixR₀⟩ := _root_.GlobalTheory.AboveL.exists_cm_solvable_split Ω E A w h N₀ hN₀o
   obtain ⟨π₀, χ₀, hπ₀, hl₀⟩ := GlobalTheory.T.exists_cuspidal_charLift_of_solvable_cmExtension hI Ω E M₀ l ι n hn π χ hπ r hr N₀ hN₀ hsd₀
-  obtain ⟨v₀, h₀, -⟩ := GlobalTheory.T.exists_isPlaceOver_finiteExtension_of_isPlaceOver E M₀ Ω A w h
+  obtain ⟨v₀, h₀, -⟩ := GlobalTheory.AboveL.exists_isPlaceOver_of_tower E M₀ Ω A w h
   haveI : v₀.asIdeal.LiesOver w.asIdeal := lies h h₀
   obtain ⟨a₀, ha₀⟩ := GlobalTheory.localArtinExists_holds M₀ Ω A v₀ h₀
   have hgfix : ∀ z : M₀, (g : G E Ω) (algebraMap M₀ Ω z) = algebraMap M₀ Ω z := hfix₀ g (Weil_le_Dec h g.2)
   have hg₀ : (AlgEquiv.ofRingEquiv (f := (g : G E Ω).toRingEquiv) hgfix : G M₀ Ω) ∈ Weil h₀ :=
-    GlobalTheory.T.mem_weilGroupAtPlace_of_fixes_extension E M₀ Ω A w v₀ h h₀ g _ (fun z => rfl)
+    GlobalTheory.AboveL.mem_weil_of_fix E M₀ Ω A w v₀ h h₀ g _ (fun z => rfl)
   let g₀ : Weil h₀ := ⟨_, hg₀⟩
   have hdeg₀ : deg g₀ ≠ 0 := by
-    obtain ⟨t, ht, hd⟩ := GlobalTheory.T.exists_weilGroup_restrict_extension E M₀ Ω A w v₀ h h₀ g₀
+    obtain ⟨t, ht, hd⟩ := GlobalTheory.AboveL.exists_weil_restrict E M₀ Ω A w v₀ h h₀ g₀
     have : t = g := Subtype.ext (AlgEquiv.ext fun z => ht z)
     subst this
     exact fun h0 => hg (hd.2 h0)
   obtain ⟨V, hVo, hVc, hgV, hVine⟩ := _root_.GlobalTheory.RoadU.exists_open_sub_charKer Ω M₀ v₀ A h₀ n (fun j => (ξ j).comp (GlobalTheory.BCChar.normU w v₀))
     (fun j => GlobalTheory.BCChar.isSmoothChar_comp_normU w v₀ (hξ j)) a₀ ha₀ g₀ hdeg₀
-  have hr₀ : Weak π₀ ι (r.comp (UpperTheory.V.Af.Bc.res E Ω M₀)) := GlobalTheory.T.weaklyAttachedGaloisRepresentation_baseChange_restrict E M₀ Ω l ι n π π₀ hl₀.1 r hr
+  have hr₀ : Weak π₀ ι (r.comp (UpperTheory.V.Af.Bc.res E Ω M₀)) := GlobalTheory.GalCut.weak_comp_res E M₀ Ω l ι n π π₀ hl₀.1 r hr
   obtain ⟨N₁, hN₁o, hN₁⟩ := GlobalTheory.T.exists_open_galoisSubgroup_trace_ne_zero Ω M₀ l n hn _ hr₀.1
   obtain ⟨M₁, _, _, _, _, _, _, _, hsd₁, hV₁⟩ := _root_.GlobalTheory.AboveL.exists_cm_solvDisj_dec_eq Ω M₀ A v₀ h₀ hfixR₀ V hVo hVc N₁ hN₁o
   obtain ⟨P, χ₁, hP, hl₁⟩ := _root_.GalTw.GlobalTheory.RoadU.upWeak hI Ω M₀ M₁ l ι n hn π₀ χ₀ hπ₀ _ hr₀ N₁ hN₁ hsd₁
@@ -1065,10 +1059,10 @@ theorem exists_cm_lift_fix_charKer : UpperTheory.Gal.ToralGalois.Inq → ∀ (Ω
     rw [IsScalarTower.algebraMap_apply M₀ M₁ Ω]
     exact htfix _
   have ht₀ : (AlgEquiv.ofRingEquiv (f := (t : G E Ω).toRingEquiv) htfix₀ : G M₀ Ω) ∈ Weil h₀ :=
-    GlobalTheory.T.mem_weilGroupAtPlace_of_fixes_extension E M₀ Ω A w v₀ h h₀ t _ (fun z => rfl)
+    GlobalTheory.AboveL.mem_weil_of_fix E M₀ Ω A w v₀ h h₀ t _ (fun z => rfl)
   let t₀ : Weil h₀ := ⟨_, ht₀⟩
   have hdt₀ : deg t₀ = 0 := by
-    obtain ⟨s, hs, hd⟩ := GlobalTheory.T.exists_weilGroup_restrict_extension E M₀ Ω A w v₀ h h₀ t₀
+    obtain ⟨s, hs, hd⟩ := GlobalTheory.AboveL.exists_weil_restrict E M₀ Ω A w v₀ h h₀ t₀
     have : s = t := Subtype.ext (AlgEquiv.ext fun z => hs z)
     subst this
     exact hd.1 ht0

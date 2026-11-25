@@ -8,11 +8,11 @@ public import Mathlib.LinearAlgebra.Eigenspace.Basic
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.CharpolyPowersRatios.FreeRatios :
-    {κ ι : Type} → [inst : Field κ] → (ι → κˣ) → Prop :=
+    {κ ι : Type} → [Field κ] → (ι → κˣ) → Prop :=
     fun {κ ι : Type} [Field κ] (α : ι → κˣ) ↦ ∀ (i j : ι), i ≠ j → ∀ (m : ℕ), (0 : ℕ) < m → α i ^ m ≠ α j ^ m
 
 theorem UpperTheory.Reformulated.B.CharpolyPowersRatios.charpoly_pow :
-    ∀ {K : Type} [inst : Field K] {n : ℕ} (M : Matrix (Fin n) (Fin n) K) (a : Fin n → Kˣ),
+    ∀ {K : Type} [Field K] {n : ℕ} (M : Matrix (Fin n) (Fin n) K) (a : Fin n → Kˣ),
       M.charpoly = ∏ i : Fin n, (Polynomial.X - (Polynomial.C : K → Polynomial K) (↑(a i) : K)) →
         UpperTheory.Reformulated.B.CharpolyPowersRatios.FreeRatios a →
           ∀ (d : ℕ),

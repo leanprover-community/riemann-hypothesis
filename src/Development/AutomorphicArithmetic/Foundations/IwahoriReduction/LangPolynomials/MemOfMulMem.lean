@@ -869,16 +869,6 @@ private theorem dd_mul_eq_dd_mul_add_mul_dd {R : Type} [CommRing R] (f g : Power
     dd (f * g) = dd f * g + f * dd g := by
   simp [dd]; ring
 
-private theorem dl_mul_eq_add_of_isUnit {R : Type} [CommRing R] {f g : PowerSeries R}
-    (hf : IsUnit f) (hg : IsUnit g) : dl (f * g) = dl f + dl g := by
-  obtain ⟨u, rfl⟩ := hf
-  obtain ⟨v, rfl⟩ := hg
-  simp only [dl, ← Units.val_mul, Ring.inverse_unit]
-  simp only [Units.val_mul, mul_inv_rev, dd_mul_eq_dd_mul_add_mul_dd]
-  have h1 : (u : PowerSeries R) * ↑u⁻¹ = 1 := u.mul_inv
-  have h2 : (v : PowerSeries R) * ↑v⁻¹ = 1 := v.mul_inv
-  linear_combination (dd (u : PowerSeries R) * ↑u⁻¹) * h2 + (dd (v : PowerSeries R) * ↑v⁻¹) * h1
-
 theorem UpperTheory.Kd.C7.pRepAdd :
     UpperTheory.Kd.C7.SRepAdd := by
   intro l _ hl Ω _ _ _ A hA j Φ c β ζ hζ
@@ -957,7 +947,7 @@ theorem UpperTheory.Kd.C7.pRepAdd :
       have e₂ := hPL' i
       unfold LC at e₁ e₂ ⊢
       dsimp only
-      rw [ht, hs, dl_mul_eq_add_of_isUnit hU hU', map_add (f := _), map_add (f := _)]
+      rw [ht, hs, UpperTheory.Kd.C7.Cl1.dl_mul hU hU', map_add (f := _), map_add (f := _)]
       have f₁ := Ideal.span_singleton_le_span_singleton.mpr (pow_dvd_pow _ hc₁) e₁
       have f₂ := Ideal.span_singleton_le_span_singleton.mpr (pow_dvd_pow _ hc₂) e₂
       convert Ideal.add_mem _ f₁ f₂ using 1
@@ -1201,9 +1191,6 @@ private theorem norm_pow_anti (n' n : ℕ) (h : n' ≤ n) : ‖((l : ℕ) : Qbar
   rw [norm_pow, norm_pow]
   exact pow_le_pow_of_le_one (norm_nonneg _) GlobalTheory.LambdaValuationPowers.norm_natCast_lt_one.le h
 
-private theorem cg_mono {n' n : ℕ} (h : n' ≤ n) {x y : Qbar l} (hc : Cg n x y) : Cg n' x y :=
-  le_trans hc (norm_pow_anti n' n h)
-
 private alias cg_trans := _root_.GlobalTheory.Ord2.cg_trans
 
 private theorem cg_sub {n : ℕ} {x y x' y' : Qbar l} (h1 : Cg n x y) (h2 : Cg n x' y') : Cg n (x - x') (y - y') := by
@@ -1224,13 +1211,6 @@ private theorem cg_sum {n : ℕ} {ι : Type} (T : Finset ι) (x y : ι → Qbar 
   unfold Cg at *
   rw [← Finset.sum_sub_distrib]
   exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) h
-
-private theorem norm_nat_le (d : ℕ) : ‖(d : Qbar l)‖ ≤ 1 := by
-  have h : (d : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (d : ℚ_[l]) := by simp
-  rw [h, norm_algebraMap']
-  have h1 := PadicInt.norm_le_one (d : ℤ_[l])
-  rw [PadicInt.norm_def] at h1
-  exact_mod_cast h1
 
 private theorem norm_padic_nat (d : ℕ) (hd : ¬ l ∣ d) : ‖(d : ℚ_[l])‖ = 1 :=
   Padic.norm_natCast_eq_one_iff.2 ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 hd)
@@ -1415,7 +1395,7 @@ private theorem sum_step {m : ℕ} (ψ : DirichletCharacter (Qbar l) (l ^ m)) (d
   have e2 : ∀ b : (ZMod (l ^ m))ˣ, w * (ψ b * T b) = ψ b * (w * T b) := fun b => by ring
   simp only [e2]
   refine cg_sum _ _ _ fun b _ => cg_mul (DirichletCharacter.unit_norm_eq_one ψ b).le ?_
-  exact cg_trans (cg_sub (h1 b) (cg_mul (norm_nat_le d₀) (h1 _))) (h2 b)
+  exact cg_trans (cg_sub (h1 b) (cg_mul (nat_le_one' d₀) (h1 _))) (h2 b)
 
 theorem pCore : SCore := by
   intro l _ hl Ω _ _ _ A hA c Z a j d₀ e₀ m₀ ζ hZ ha E hj hd hζ hP

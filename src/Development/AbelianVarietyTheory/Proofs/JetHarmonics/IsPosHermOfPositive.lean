@@ -107,10 +107,6 @@ theorem evalOn_tensorCoord (B : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) (x y : Y) :
 
 end Evaluations
 
-theorem posSemidef_of_int {ι : Type} [Fintype ι] {N : Matrix ι ι ℝ} (hH : N.IsHermitian)
-    (hp : ∀ x : ι → ℤ, 0 ≤ (fun i => (x i : ℝ)) ⬝ᵥ N *ᵥ (fun i => (x i : ℝ))) : N.PosSemidef := by
-  apply GlobalTheory.ThetaCompare.posSemidef_of_int_nonneg <;> assumption
-
 theorem posDef_of_int {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℤ) (hs : ∀ i j, M i j = M j i)
     (hp : ∀ x : ι → ℤ, x ≠ 0 → 0 < x ⬝ᵥ M *ᵥ x) :
     M.det ≠ 0 ∧ (M.map (Int.cast : ℤ → ℝ)).PosDef := by
@@ -118,7 +114,7 @@ theorem posDef_of_int {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι �
     obtain ⟨v, hv, h0⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
     simpa [h0] using hp v hv
   have h1 : (M.map (Int.cast : ℤ → ℝ)).PosSemidef := by
-    refine posSemidef_of_int (by ext i j; simp [hs i j]) fun x => ?_
+    refine GlobalTheory.ThetaCompare.posSemidef_of_int_nonneg (by ext i j; simp [hs i j]) fun x => ?_
     have : (fun i => (x i : ℝ)) ⬝ᵥ M.map (Int.cast : ℤ → ℝ) *ᵥ (fun i => (x i : ℝ)) =
         ((x ⬝ᵥ M *ᵥ x : ℤ) : ℝ) := by simp [dotProduct, mulVec]
     rw [this]
@@ -146,7 +142,7 @@ theorem sum_pos_of_tensor_pos : ∀ (Y : Type) [AddCommGroup Y] [Module.Free ℤ
     refine Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun i _ => ?_
     ring).2
   let G : Matrix _ _ ℝ := Matrix.of fun p q => γ (b p) (b q)
-  have hG : G.PosSemidef := posSemidef_of_int (by ext p q; simp [G, hγ (b p) (b q)]) fun x => by
+  have hG : G.PosSemidef := GlobalTheory.ThetaCompare.posSemidef_of_int_nonneg (by ext p q; simp [G, hγ (b p) (b q)]) fun x => by
     convert h0 (∑ p, x p • b p) using 1
 
     simp only [dotProduct, mulVec, G, Matrix.of_apply, map_sum, map_zsmul, LinearMap.sum_apply,
@@ -253,7 +249,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil IsInteg
 section Lattice
 
 variable (E : Type) [Field E] {X : Type} [AddCommGroup X] [Module (𝓞 E) X]
-
 
 end Lattice
 
@@ -372,7 +367,6 @@ def rankOne (η : Module.Dual (𝓞 E) X) (τ : E →+* ℂ) : Bil X :=
 omit [IsCMField E] in
 theorem rankOne_apply (η : Module.Dual (𝓞 E) X) (τ : E →+* ℂ) (a c : X) :
     rankOne E η τ a c = (τ (η a : E) * starRingEnd ℂ (τ (η c : E))).re := rfl
-
 
 theorem bar_outer {n : ℕ} (x x' : Fin n → X) (η η' : Module.Dual (𝓞 E) X) :
     bar E (outer E x x' η η') = outer E x' x η' η := by

@@ -529,15 +529,6 @@ theorem csmul_trans {F LL V : Type} [Field F] [Field LL] [Algebra F LL] [AddComm
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem actVB_resQ (P : LocPrime l) {K : FinExt l} {LL : Type} [Field LL] [Algebra ℚ_[l] LL]
-    {V : Type} [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
-    (ρ : Representation LL ↥(GK K) V) (g : ↥(GK K)) (x : V ⊗[ℚ_[l]] P.R.B) :
-    actVB (P.PD K) (GlobalTheory.PstCoeff.resQ ρ) g x = actVB (P.PD K) ρ g x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v b => simp [actVB]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 section Coch
 variable (P : LocPrime l) {K : FinExt l} {LL : Type} [Field LL] [Algebra ℚ_[l] LL]
     {V : Type} [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
@@ -549,7 +540,7 @@ theorem mem_continuousCocycles_restrictScalars_Ql (c : ↥(GK K) → V) : c ∈ 
 theorem mem_finiteCocycles_restrictScalars_Ql (c : ↥(GK K) → V) :
     c ∈ finiteCocycles (P.PD K) (GlobalTheory.PstCoeff.resQ ρ) ↔ c ∈ finiteCocycles (P.PD K) ρ := by
   change (c ∈ continuousCocycles _ ∧ ∃ x, ∀ g, _ = _) ↔ (c ∈ continuousCocycles _ ∧ ∃ x, ∀ g, _ = _)
-  simp only [actVB_resQ, mem_continuousCocycles_restrictScalars_Ql]
+  simp only [GlobalTheory.BkCoeff.actVB_resQ, mem_continuousCocycles_restrictScalars_Ql]
 
 end Coch
 
@@ -1162,21 +1153,17 @@ variable {G : Type} [Group G] {LL : Type} [Field LL] {O : Type} [CommRing O] [Al
   {V : Type} [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V]
   {ρ : Representation LL G V}
 
-theorem liftQ_mem (L : Lattice (O := O) ρ) (I : Submodule O ↥L.T) (q : ↥L.T ⧸ I) :
-    Formalism.MainNotions.LocalSituation.liftQ L I q ∈ L.T :=
-  (Submodule.Quotient.mk_surjective I q).choose.2
-
 theorem mk_liftQ (L : Lattice (O := O) ρ) (I : Submodule O ↥L.T) (q : ↥L.T ⧸ I) :
-    (Submodule.Quotient.mk (⟨Formalism.MainNotions.LocalSituation.liftQ L I q, liftQ_mem L I q⟩ : ↥L.T) : ↥L.T ⧸ I) = q :=
+    (Submodule.Quotient.mk (⟨Formalism.MainNotions.LocalSituation.liftQ L I q, GlobalTheory.BKFinLevel.NatCup.liftQ_mem_lat L I q⟩ : ↥L.T) : ↥L.T ⧸ I) = q :=
   (Submodule.Quotient.mk_surjective I q).choose_spec
 
 theorem liftQ_sub (L : Lattice (O := O) ρ) (ϖ : O) (r : ℕ) (x : ↥L.T)
     (q : ↥L.T ⧸ (Ideal.span {ϖ ^ r} • ⊤ : Submodule O ↥L.T)) (hq : Submodule.Quotient.mk x = q) :
     ∃ t ∈ L.T, Formalism.MainNotions.LocalSituation.liftQ L _ q - (x : V) = (algebraMap O LL ϖ) ^ r • t := by
-  have h : (⟨Formalism.MainNotions.LocalSituation.liftQ L _ q, liftQ_mem L _ q⟩ : ↥L.T) - x ∈
+  have h : (⟨Formalism.MainNotions.LocalSituation.liftQ L _ q, GlobalTheory.BKFinLevel.NatCup.liftQ_mem_lat L _ q⟩ : ↥L.T) - x ∈
       (Ideal.span {ϖ ^ r} • ⊤ : Submodule O ↥L.T) :=
     (Submodule.Quotient.eq _).1 ((mk_liftQ L _ q).trans hq.symm)
-  generalize hy : (⟨Formalism.MainNotions.LocalSituation.liftQ L _ q, liftQ_mem L _ q⟩ : ↥L.T) - x = y at h
+  generalize hy : (⟨Formalism.MainNotions.LocalSituation.liftQ L _ q, GlobalTheory.BKFinLevel.NatCup.liftQ_mem_lat L _ q⟩ : ↥L.T) - x = y at h
   rw [Submodule.ideal_span_singleton_smul, Submodule.mem_smul_pointwise_iff_exists] at h
   obtain ⟨t, -, ht⟩ := h
   subst ht
@@ -1221,7 +1208,7 @@ theorem swap_cong (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ') (P : V �
       + cupLD L P.flip d (fun g => GlobalTheory.BKFinLevel.ioL L ϖ r (s g)) (g, h)
       + (χ g * swapF L P ϖ r s d h - swapF L P ϖ r s d (g * h) + swapF L P ϖ r s d g)
       = algebraMap O LL e := by
-  have huT : ∀ g, Formalism.MainNotions.LocalSituation.liftQ L _ (s g) ∈ L.T := fun g => liftQ_mem L _ (s g)
+  have huT : ∀ g, Formalism.MainNotions.LocalSituation.liftQ L _ (s g) ∈ L.T := fun g => GlobalTheory.BKFinLevel.NatCup.liftQ_mem_lat L _ (s g)
   have hmk : ∀ g, (Submodule.Quotient.mk (⟨Formalism.MainNotions.LocalSituation.liftQ L _ (s g), huT g⟩ : ↥L.T) :
       ↥L.T ⧸ (Ideal.span {ϖ ^ r} • ⊤ : Submodule O ↥L.T)) = s g :=
     fun g => mk_liftQ L _ (s g)

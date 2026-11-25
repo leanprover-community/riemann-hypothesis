@@ -1017,7 +1017,7 @@ theorem anchor_word_alt (W : _root_.GlobalTheory.MiS.RealPackAlt ex) (z : GA D (
   obtain ⟨R, hR⟩ := hR
   obtain ⟨-, -, φ₁, C₀, b₀, T₀, hT₀, hC₀, hP₀, hb₀⟩ := hA
   have hinj : Function.Injective U := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ h
     have h1 := hU φ
     rw [h, norm_zero] at h1

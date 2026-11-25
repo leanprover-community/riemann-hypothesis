@@ -101,25 +101,15 @@ private theorem flagC_reindex_iff {K ι : Type} [Field K] [Fintype ι] [Decidabl
     congr 2
     ext i
     simp [Function.comp_def]
-  have key : ∀ (x : Fin n → K) (S : Set (Fin n → K)),
-      x ∘ e.symm ∈ Submodule.span K ((fun w : Fin n → K => w ∘ e.symm) '' S) ↔ x ∈ Submodule.span K S := by
-    intro x S
-    have h1 : (fun w : Fin n → K => w ∘ e.symm) = ⇑(f.toLinearMap) := rfl
-    rw [h1, Submodule.span_image, Submodule.mem_map]
-    constructor
-    · rintro ⟨y, hy, hxy⟩
-      have hyx : y = x := f.injective hxy
-      exact hyx ▸ hy
-    · intro hx
-      exact ⟨x, hx, rfl⟩
   unfold FlagC
   refine forall_congr' fun b => ?_
   show Matrix.reindex e e M *ᵥ (v b ∘ e.symm) - v b ∘ e.symm ∈
       Submodule.span K ((fun a => v a ∘ e.symm) '' {a | a < b}) ↔ _
-  rw [hmv, show (fun a => v a ∘ e.symm) '' {a | a < b} =
-      (fun w : Fin n → K => w ∘ e.symm) '' (v '' {a | a < b}) from
-      (Set.image_image (fun w : Fin n → K => w ∘ e.symm) v {a | a < b}).symm]
-  exact key (M *ᵥ v b - v b) _
+  rw [hmv]
+  change f.toLinearMap (M *ᵥ v b - v b) ∈
+      Submodule.span K ((⇑f.toLinearMap ∘ v) '' {a | a < b}) ↔ _
+  rw [Set.image_comp, Submodule.span_image, ← Submodule.mem_comap (f := f.toLinearMap),
+    Submodule.comap_map_eq_of_injective f.injective]
 
 theorem mem_Ssub_iff_sG (hθ : ∀ t, θ (sigR R σ t) = (θ t).swap) {r k : ℕ} (e : Fin n ≃ Idx r k)
     (hJ : IsUnit (jm1 J θ).det) (P : Frame E n r) (Q : GL (Idx r k) R) (l : Fin (r + 1) → R)

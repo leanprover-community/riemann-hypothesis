@@ -267,8 +267,6 @@ theorem fourier_decay_of_iteratedDeriv {f : ℝ → ℂ} (hf : ContDiff ℝ ∞ 
       ring
     rw [e] at this
     exact this
-  have hx : 0 ≤ |ν| := abs_nonneg ν
-  have hq : 0 ≤ ‖𝓕 f ν‖ := norm_nonneg _
   have hpi : 0 < (2 * Real.pi) ^ N := by positivity
   have h3 : |ν| ^ N * ‖𝓕 f ν‖ ≤ B / (2 * Real.pi) ^ N := by
     rw [le_div_iff₀ hpi]; linarith
@@ -335,7 +333,6 @@ theorem gI_add_hI (hy : y ≠ 0) (t : ℝ) :
     gI y t + hI y t = ((2 * t / (t ^ 2 + y ^ 2) : ℝ) : ℂ) := by
   have h1 := add_I_ne hy t
   have h2 := sub_I_ne hy t
-  have h3 : ((t ^ 2 + y ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (sq_add_sq_pos hy t).ne'
   have hprod : ((t : ℂ) + (y : ℂ) * I) * ((t : ℂ) - (y : ℂ) * I) = ((t ^ 2 + y ^ 2 : ℝ) : ℂ) := by
     push_cast
     ring_nf
@@ -443,12 +440,8 @@ theorem wF_integrable (hy : y ≠ 0) (hσ : 0 < σ.re) (a b : ℕ) : Integrable 
   set K := (1 + (y ^ 2)⁻¹) * |y|⁻¹ ^ (a + b) * Real.exp (-σ.re * Real.log (y ^ 2)) with hK
   refine (integrable_inv_one_add_sq.const_mul K).mono' hc.aestronglyMeasurable
     (Filter.Eventually.of_forall fun t => ?_)
-  have hpos := sq_add_sq_pos hy t
   have hnorm : ‖(t : ℂ) + (y : ℂ) * I‖ ^ 2 = t ^ 2 + y ^ 2 := by
     rw [Complex.sq_norm, Complex.normSq_add_mul_I]
-  have hnorm' : ‖(t : ℂ) - (y : ℂ) * I‖ ^ 2 = t ^ 2 + y ^ 2 := by
-    rw [Complex.sq_norm, sub_eq_add_neg, ← neg_mul, ← Complex.ofReal_neg, Complex.normSq_add_mul_I]
-    ring
   have him : |y| ≤ ‖(t : ℂ) + (y : ℂ) * I‖ := by
     have := Complex.abs_im_le_norm ((t : ℂ) + (y : ℂ) * I)
     simpa using this
@@ -574,8 +567,6 @@ theorem norm_phi_le (σ : ℂ) (hσ : 0 < σ.re) (y : ℝ) (hy : y ≠ 0) (t : �
   rw [hre]
   have h1 : ‖w‖ ^ (-2 * σ.re) ≤ |y| ^ (-2 * σ.re) :=
     Real.rpow_le_rpow_of_nonpos hay hle (by linarith)
-  have hy2 : 0 < y ^ 2 := by positivity
-  have hm : 0 < min 1 (y ^ 2) := lt_min one_pos hy2
   have h2 : ‖w‖⁻¹ ^ 2 ≤ (min 1 (y ^ 2))⁻¹ * (1 + t ^ 2)⁻¹ := by
     rw [inv_pow, hsq, ← mul_inv]
     apply inv_anti₀ (by positivity)
@@ -1104,7 +1095,6 @@ theorem pow_mem_range (u : (𝓞 (Ext F))ˣ) :
   have hxy : x * y = 1 := by
     have := congrArg (fun z : 𝓞 (Ext F) => (z : Ext F)) u.mul_inv
     simpa [x, y] using this
-  have hx0 : x ≠ 0 := left_ne_zero_of_mul_eq_one hxy
   have hint : IsIntegral ℤ (x * conj F y) :=
     (RingOfIntegers.isIntegral_coe _).mul (isIntegral_conj F (RingOfIntegers.isIntegral_coe _))
   obtain ⟨m, hm, hpow⟩ := NumberField.Embeddings.pow_eq_one_of_norm_eq_one (Ext F) ℂ hint fun φ => by

@@ -112,9 +112,3 @@ theorem cosetIn_eq_of {u : Pr.Word} {j : ℕ} (r : PtAt R sel mu cst u j) (P : r
 end Pt
 
 end GlobalTheory.BaseCosetPt
-
-namespace GlobalTheory.BaseCosetPt
-
-open Formalism.L2.Col Formalism.MainNotions Formalism.L2.DIV
-
-end GlobalTheory.BaseCosetPt

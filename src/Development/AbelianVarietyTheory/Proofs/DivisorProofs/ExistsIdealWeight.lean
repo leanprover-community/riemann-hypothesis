@@ -288,7 +288,6 @@ theorem exists_idealWeight {c : Fin n → Fin n → ℤ} :
   have key : ∀ d : Fin n → Fin n → ℤ, (∀ i j, |d i j| ≤ M) →
       IsIdealWeight d fun i j => (M : ℤ) * (n + i.val - j.val) := by
     intro d hd
-    have hM0 : (0 : ℤ) ≤ M := Int.natCast_nonneg M
     refine ⟨fun i j _ => ?_, fun i j k h1 _ => ?_, fun i j k _ h2 => ?_⟩
     · have h1 : (1 : ℤ) ≤ n + i.val - j.val := by have := j.2; omega
       nlinarith [abs_le.1 (hd i j)]
@@ -303,7 +302,6 @@ theorem exists_idealWeight {c : Fin n → Fin n → ℤ} :
     congr 1
     omega
   · have hM0 : (0 : ℤ) ≤ M := Int.natCast_nonneg M
-    have h1 : (0 : ℤ) ≤ n := Int.natCast_nonneg n
     nlinarith
 
 theorem sum_upPairs (a : Fin n → ℤ) :

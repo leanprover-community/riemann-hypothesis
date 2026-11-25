@@ -102,13 +102,7 @@ section -- clump:auto
 @[expose] public section
 
 namespace LateralTheory.Fin.LeafBd
-theorem etale_boundary_image_hom_of_thom_isomorphism : LateralTheory.CohomologicalPurity.Bd.LeafImgHom := by
-  apply LateralTheory.CohomologicalPurity.Bd.LeafImgHom_of <;> first | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafGen_of
-theorem etale_boundary_image_of_thom_isomorphism : LateralTheory.CohomologicalPurity.Bd.LeafImg := by
-  apply LateralTheory.CohomologicalPurity.Bd.LeafImg_of <;> first | exact etale_boundary_image_hom_of_thom_isomorphism
-theorem etale_boundary_map_of_thom_isomorphism : LateralTheory.CohomologicalPurity.LeafBd := by
-  apply LateralTheory.CohomologicalPurity.Bd.goal_of <;> first | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafMono_of | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafPush_of | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafGood_of | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafDelta_of | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafExact_of | exact _root_.LateralTheory.CohomologicalPurity.Bd.LeafGen_of | exact etale_boundary_image_hom_of_thom_isomorphism | exact etale_boundary_image_of_thom_isomorphism
-alias intersectionNumber_baseChange := _root_.LateralTheory.Fin.LeafBd.etale_boundary_map_of_thom_isomorphism
+alias intersectionNumber_baseChange := _root_.LateralTheory.Fin.LeafIndExc.etale_boundary_map_of_thom_isomorphism
 end LateralTheory.Fin.LeafBd
 end -- clump:auto
 end -- clump:auto
@@ -778,7 +772,6 @@ instance sch_preservesPullbacks : PreservesLimitsOfShape WalkingCospan sch :=
 theorem pbRel_isIso_of {B G E' E Q₁ Q₀ : Spc} (g : G ⟶ B) (a : E' ⟶ E) (π' : E' ⟶ B) (π : E ⟶ B) (h : a ≫ π = π')
     {f₁ : Q₁ ⟶ E'} {z₁ : Q₁ ⟶ G} {f₀ : Q₀ ⟶ E} {z₀ : Q₀ ⟶ G} (h₁ : IsPullback f₁ z₁ π' g) (h₀ : IsPullback f₀ z₀ π g)
     (k : Q₁ ⟶ Q₀) [IsIso k] (kf : k ≫ f₀ = f₁ ≫ a) (kz : k ≫ z₀ = z₁) : IsIso (pbRel g a π' π h) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   have e : h₁.isoPullback.hom ≫ pbRel g a π' π h = k ≫ h₀.isoPullback.hom := by
     apply pullback.hom_ext
     · simp only [pbRel, Category.assoc, pullback.lift_fst, IsPullback.isoPullback_hom_fst, IsPullback.isoPullback_hom_fst_assoc, kf]
@@ -923,7 +916,6 @@ namespace LateralTheory.CohomologicalPurity.TubeCut
 abbrev levF (n : SimplexCategoryᵒᵖ) : Spc ⥤ Spc := (evaluation SimplexCategoryᵒᵖ PSh).obj n ⋙ disc
 
 theorem LeafMLev_of : LeafMLev := by
-  set_option synthInstance.maxHeartbeats 200000 in
   intro P' P φ n
   let F := levF n
   have hc : F.map (P'.hom ≫ φ.right) = F.map P'.hom ≫ F.map φ.right := F.map_comp _ _

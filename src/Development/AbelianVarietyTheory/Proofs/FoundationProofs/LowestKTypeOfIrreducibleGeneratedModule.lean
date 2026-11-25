@@ -245,7 +245,6 @@ lemma zc_eq : zc p q = ∑ i : Fin p, Eab (Sum.inl i) (Sum.inl i) := by
 
 lemma act_zc (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (x : V) :
     act (zc p q) x = ∑ i : Fin p, act (Eab (Sum.inl i) (Sum.inl i)) x := by
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [zc_eq, map_sum, LinearMap.sum_apply]
 
 lemma zc_comm {X : Mat p q} (hX : IsKC X) : zc p q * X = X * zc p q := by

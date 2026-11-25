@@ -242,7 +242,6 @@ theorem UpperTheory.exists_testFunction_integral_local_factor :
               π.integrated m (UnitaryRep.ccToL1 m g) =
                 (π.compHom (AdelicGLn.localEmbedding w) (UpperTheory.ConvolutionTheory.Tf.locEmb K n w).1).integrated mw (UnitaryRep.ccToL1 mw ψ) ∘L
                   π.integrated m (UnitaryRep.ccToL1 m e₀) := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro K _ _ n m _ w _ _ mw _ J hJ ψ hψ R hR e₀ he₀
     have hp := (UpperTheory.ConvolutionTheory.Tf.locEmb K n w).1
     obtain ⟨g, hg, -, hop⟩ := UpperTheory.ConvolutionTheory.Tf.homConv _ _ (AdelicGLn.localEmbedding w) hp m mw ψ e₀

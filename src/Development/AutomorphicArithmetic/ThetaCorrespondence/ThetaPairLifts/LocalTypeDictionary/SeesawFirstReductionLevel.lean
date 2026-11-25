@@ -235,7 +235,6 @@ theorem exists_infinite_equiv :
 
 end Inf
 
-
 open GlobalTheory.LFun in
 theorem exists_tensor_adele_equiv :
     ∃ (Φ : AF F ⊗[F] E ≃+* AdeleRing (𝓞 E) E) (j : Ainf F ⊗[F] E ≃+* InfiniteAdeleRing E),
@@ -246,7 +245,6 @@ theorem exists_tensor_adele_equiv :
   refine ⟨s.trans (j.prodCongr (finAdEquiv F E)), j, (hjc.prodMap GlobalTheory.DefU.ClassFin.continuous_finAdEquiv).comp hsc,
     hsc'.comp (hjc'.prodMap continuous_finAdEquiv_symm), hj,
     fun z => Prod.ext (congrArg j (hs z).1) (congrArg (finAdEquiv F E) (hs z).2)⟩
-
 
 open GlobalTheory.LFun in
 theorem exists_hchar (χ : (AF F ⊗[F] E)ˣ →* Circle) (hχ : IsHecke F E χ) :
@@ -1191,7 +1189,6 @@ section Planes
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-
 variable (σ) in
 def IsSum {n n₁ : ℕ} (Y : Spc F E n) (Y₁ : Spc F E n₁) (x y : Fin n → E) (ι : Matrix (Fin n) (Fin n₁) E) : Prop :=
   form σ Y.J x x = 0 ∧ form σ Y.J y y = 0 ∧ form σ Y.J x y = 1 ∧
@@ -1206,7 +1203,7 @@ theorem parts_eq_zero {n n₁ : ℕ} {J : Matrix (Fin n) (Fin n) E} {x y : Fin n
   have h0 : ∀ z, form σ J 0 z = 0 := fun z => by simp [form]
   have h1 := congrArg (fun z => form σ J z y) h
   have h2 := congrArg (fun z => form σ J z x) h
-  simp only [GlobalTheory.KTowerPlane.form_add_left, GlobalTheory.KTowerPlane.form_smul_left, hxx, hyy, hxy, ho, h0, mul_zero, mul_one, add_zero,
+  simp only [GlobalTheory.TraceCorrection.form_add_left, GlobalTheory.TraceCorrection.form_smul_left, hxx, hyy, hxy, ho, h0, mul_zero, mul_one, add_zero,
     zero_add] at h1 h2
   have ht := (mul_eq_zero.1 h2).resolve_right hyx
   rw [h1, ht, zero_smul, zero_smul, zero_add, add_zero] at h
@@ -1323,17 +1320,8 @@ theorem crd_map (ε : D.host.E →+* D.host.E) {S S₁ : HSp D} (ι : S₁.V →
 
 theorem hD_swap (S : HSp D) (u v : S.V) : S.hD v u = star (S.hD u v) := (S.herm.eq v u).symm
 
-theorem hT_sum (S : HSp D) (u v : S.V) :
-    S.hT u v = ∑ i, ∑ j, star (S.frame.equivFun u i) * S.gram i j * S.frame.equivFun v j := by
-  conv_lhs => rw [← S.frame.sum_repr u, ← S.frame.sum_repr v]
-
-  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, HSpace.gram, RingHom.id_apply,
-  starRingEnd_apply, Module.Basis.equivFun_apply, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
 theorem isomEmb_inj {S S₁ : HSp D} {ι : S₁.V →ₗ[D.host.E] S.V} (h : HSpace.IsIsomEmb S₁ S ι) : Function.Injective ι := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro u hu
   exact S₁.nondeg.1 u fun v => by rw [← h, hu, map_zero, LinearMap.zero_apply]
 
@@ -1420,7 +1408,7 @@ theorem overH_crd {c : D.host.E} {S : HSp D} {Λ} {Y : Spc D.host.F D.host.E S.r
   have hσ : ∀ a, D.sp.cm.sig a = star a := fun _ => rfl
   refine ⟨fun u v => ?_, fun z => ?_⟩
   · have hJ' : ∀ i j, Y.J i j = c * S.gram i j := fun i j => by rw [hJ]; rfl
-    rw [starRingEnd_apply, ← hD_swap, HSpace.hD, hT_sum]
+    rw [starRingEnd_apply, ← hD_swap, HSpace.hD, GlobalTheory.LineSelfDual.hT_frame]
     simp only [form, dotProduct, Matrix.mulVec, crd, hσ, hJ', Finset.mul_sum, starRingEnd_apply, star_star]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   · rw [hL]
@@ -1434,7 +1422,7 @@ theorem overW_crd {S : HSp D} {Λ} {Y : Spc D.host.F D.host.E S.rank} (h : OverW
   have hσ : ∀ a, D.sp.cm.sig a = star a := fun _ => rfl
   refine ⟨fun u v => ?_, fun z => ?_⟩
   · have hJ' : ∀ i j, Y.J i j = D.host.xi0 * S.gram j i := fun i j => by rw [hJ]; rfl
-    rw [RingHom.id_apply, HSpace.hD, hT_sum, Finset.sum_comm]
+    rw [RingHom.id_apply, HSpace.hD, GlobalTheory.LineSelfDual.hT_frame, Finset.sum_comm]
     simp only [form, dotProduct, Matrix.mulVec, crd, hσ, hJ', Finset.mul_sum, RingHom.id_apply]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
   · rw [hL]
@@ -1477,7 +1465,6 @@ theorem cast_rank (B : Base F E) {a b n : ℕ} (hn : n = b + 2) (Γ : Geo σ a n
   exact ⟨Γ, H, H', R, h1, h2, h3, h4, h5, fun _ _ h => h⟩
 
 end Cast
-
 
 end GlobalTheory.HermitianSkewAdaptation
 

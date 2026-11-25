@@ -95,12 +95,6 @@ structure System {A : FinHolAtlas D X} (R : RegChartData A) where
       TendstoUniformlyOn (fun t y => fderiv ℝ (fderiv ℝ fun y' => ph t ((A.chart k).symm y')) y)
         (fun y => fderiv ℝ (fderiv ℝ fun y' => R.φ ((A.chart k).symm y')) y) (𝓝[>] 0) K
 
-namespace System
-
-variable {A : FinHolAtlas D X} {R : RegChartData A} (S : System R)
-
-end System
-
 section Inhabitants
 
 

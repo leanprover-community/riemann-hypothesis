@@ -178,7 +178,6 @@ private lemma sum_mul_triSol_eq {R : Type*} [CommRing R] (M : ℕ → ℕ → R)
   rw [← mul_assoc, Ring.mul_inverse_cancel _ hn, one_mul]
   ring
 
-
 open PowerSeries in
 theorem _root_.GlobalTheory.ExpImage.solve_mod_pow : ∀ (l : ℕ) [Fact l.Prime] (s : ℕ), _root_.GlobalTheory.Cyc.Lev l s →
     ∀ (m : ℕ), ¬ l ∣ m → ∀ U : ℤ_[l], (l : ℤ_[l]) ^ s ∣ U - 1 →
@@ -648,7 +647,6 @@ section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
 
 namespace GlobalTheory.CompanionTheory.InertiaEigenvalues.LPow
-
 
 end GlobalTheory.CompanionTheory.InertiaEigenvalues.LPow
 
@@ -1327,21 +1325,13 @@ theorem frob_mu : WittVector.frobenius AI.μ =
     rw [WittVector.frobenius_eq_map_frobenius, WittVector.map_teichmuller, frobenius_def, map_pow]
   rw [LocAinf.μ, map_sub, map_one, h, geom_sum_mul]
 
-theorem mu_not_isUnit : ¬ IsUnit AI.μ := by
-  intro h
-  obtain ⟨θ, hθ⟩ := exists_isTheta l P AI
-  have h0 : θ AI.μ = 0 := (hθ.2.2.2.1 _).2 ⟨AI.π₁, by rw [AI.μ_eq, mul_comm]⟩
-  have := h.map θ
-  rw [h0] at this
-  exact not_isUnit_zero this
-
 theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), (∀ q : Ainf l, ∃ y : Ainf l, AI.μ * y - WittVector.frobenius (AI.μ * y) = AI.μ * q) ∧ ∀ M n : ℕ, ∃ k₀ : ℕ, ∀ k ≥ k₀, (WittVector.frobenius : Ainf l →+* Ainf l)^[k] AI.μ ∈ Ideal.span {((l : ℕ) : Ainf l) ^ n, AI.ξ ^ M} := by
   intro l _ P AI
   have hc : ∑ i ∈ Finset.range l, WittVector.teichmuller l AI.ε ^ i ∈
       Ideal.span {((l : ℕ) : Ainf l), AI.μ} := geom_mem l _
   have hφ := map_le l _ (frob_mu AI)
   refine ⟨fun q => ?_, fun M n => ⟨n + M, fun k hk => ?_⟩⟩
-  · haveI := (GlobalTheory.Per.AinfComplete.main l AI.μ (mu_not_isUnit AI)).1
+  · haveI := (GlobalTheory.Per.AinfComplete.main l AI.μ (GlobalTheory.ExpImage.EpsSolve.μ_not_unit AI)).1
     obtain ⟨y, hy⟩ := solve _ _ hφ hc q
     refine ⟨y, ?_⟩
     rw [map_mul, frob_mu, ← hy]; ring
@@ -1585,16 +1575,9 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l}
 
-theorem root_pow (AI : LocAinf l P) (m : ℕ) : AI.εroot m ^ (l ^ m) = AI.ε := by
-  induction m with
-  | zero => simp [LocAinf.εroot]
-  | succ m ih =>
-    rw [pow_succ', pow_mul, LocAinf.εroot, Function.iterate_succ_apply', frobeniusEquiv_symm_pow_p]
-    exact ih
-
 theorem epsT_pow (AI : LocAinf l P) (s : ℕ) :
     epsT AI s ^ (l ^ s) = WittVector.teichmuller l AI.ε := by
-  rw [epsT, ← map_pow, root_pow]
+  rw [epsT, ← map_pow, GlobalTheory.ExpImage.EpsSolve.εroot_pow_eq]
 
 theorem lifts_iter {AI : LocAinf l P} {K : FinExt l} {w : Ainf l} {c : ↥(K0 K)}
     (h : Lifts AI K w c) (k : ℕ) :

@@ -7,8 +7,8 @@ public import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.PrecompleteOfFiniteOverAdicComplete.curveDVR_prec_finite :
-    ∀ {O M : Type} [inst : CommRing O] [IsNoetherianRing O]
-    (I : Ideal O) [IsAdicComplete I O] [inst_3 : AddCommGroup M] [inst_4 : _root_.Module O M] [Module.Finite O M],
+    ∀ {O M : Type} [CommRing O] [IsNoetherianRing O]
+    (I : Ideal O) [IsAdicComplete I O] [AddCommGroup M] [_root_.Module O M] [Module.Finite O M],
     IsPrecomplete I M := by
   intro O M _ _ I _ _ _ _
   rw [← AdicCompletion.of_surjective_iff]

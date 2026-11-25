@@ -9,13 +9,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 
 noncomputable section
 
-namespace Formalism.MainNotions.LocalBesselAndTopKernel.TOP
-
-open ValuativeRel MeasureTheory ComplexConjugate ComplexOrder
-open Formalism.MainNotions.S.Loc
-
-end Formalism.MainNotions.LocalBesselAndTopKernel.TOP
-
 namespace Formalism.MainNotions.LocalBesselAndTopKernel.GLOB
 
 open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel

@@ -21,13 +21,6 @@ variable {F K : Type} [Field F] [Field K] {N n : ℕ}
 
 def archSize (A : Matrix (Fin N) (Fin N) ℂ) (y : Fin N → ℂ) : ℝ := Real.sqrt (∑ i, ‖∑ j, A j i * y j‖ ^ 2)
 
-theorem archSize_pos {A : Matrix (Fin N) (Fin N) ℂ} (hA : A.det ≠ 0) {y : Fin N → ℂ} (hy : y ≠ 0) :
-    0 < archSize A y := by
-  refine Real.sqrt_pos.2 ((Finset.sum_nonneg fun _ _ => sq_nonneg _).lt_of_ne' fun h => hy ?_)
-  refine Matrix.eq_zero_of_vecMul_eq_zero hA (funext fun i => ?_)
-  have := (Finset.sum_eq_zero_iff_of_nonneg fun _ _ => sq_nonneg _).1 h i (Finset.mem_univ i)
-  simpa [Matrix.vecMul, dotProduct, mul_comm] using this
-
 theorem norm_pairing_le {A : Matrix (Fin N) (Fin N) ℂ} (hA : A.det ≠ 0) (u y : Fin N → ℂ) :
     ‖∑ j, u j * y j‖ ≤ frameNorm A u * archSize A y := by
   have e : ∑ j, u j * y j = ∑ i, A⁻¹.mulVec u i * ∑ j, A j i * y j := by

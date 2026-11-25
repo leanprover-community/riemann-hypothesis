@@ -35,13 +35,6 @@ theorem isMultiHomog_iff {g : MRing (fun _ : Unit => T)} {n : ℕ} :
     cases k
     exact (weight_blockWeight (ι := fun _ : Unit => T) () m).symm.trans (h (mem_support_iff.mp hm))
 
-theorem isWH_X (c : T) :
-    IsWeightedHomogeneous (blockWeight (ι := fun _ : Unit => T) ())
-      (X ⟨(), c⟩ : MRing (fun _ : Unit => T)) 1 := by
-  have h := isWeightedHomogeneous_X ℤ (blockWeight (ι := fun _ : Unit => T) ()) ⟨(), c⟩
-  have e : blockWeight (ι := fun _ : Unit => T) () ⟨(), c⟩ = 1 := by simp [blockWeight]
-  rwa [e] at h
-
 theorem exists_homog {S : Type*} [CommRing S] (χ : MRing (fun _ : Unit => T) →+* S) (c : T)
     (hχ : χ (X ⟨(), c⟩) = 1) (f : MRing (fun _ : Unit => T)) :
     ∃ (n : ℕ) (G : MRing (fun _ : Unit => T)), IsMultiHomog G (fun _ => n) ∧ χ G = χ f := by

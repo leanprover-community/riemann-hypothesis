@@ -66,8 +66,6 @@ theorem nodes_far_and_spread : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts �
   have hpN := H.p_lt
   have hc0 : (0 : ℝ) ≤ W.c0 := by exact_mod_cast H.weightConst_nonneg
   have hT : 4 * (W.Dd : ℝ) + 4 ≤ W.T := by exact_mod_cast H.h1
-  have hD : (0 : ℝ) ≤ W.Dd := by positivity
-  have hN : (0 : ℝ) ≤ N := by positivity
   have hT0 : (0 : ℝ) < W.T := by linarith
   have hw := H.h3w τ
   have hS : 0 ≤ W.S := by
@@ -76,7 +74,6 @@ theorem nodes_far_and_spread : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts �
     linarith [this.2]
   have hr : 0 ≤ W.eta + W.S + N := (abs_nonneg _).trans (H.h3node τ ⟨W.p, hpN⟩ hkp.le)
   have hNT : 4 * (N : ℝ) ≤ N * W.T := by nlinarith
-  have hw0 : 0 ≤ W.w τ := by linarith
   obtain ⟨q, hq⟩ : ∃ q : ℝ, q = W.w τ / W.T := ⟨_, rfl⟩
   have hqT : W.w τ = q * W.T := by rw [hq]; field_simp
   have e2 : W.w τ / (2 * W.T) = q / 2 := by rw [hq]; field_simp

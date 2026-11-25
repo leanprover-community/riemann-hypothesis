@@ -14,11 +14,6 @@ attribute [local instance] SplitExt.free SplitExt.finite
 noncomputable section
 namespace GlobalTheory.ZH
 
-namespace TorusFibre
-variable {k : Type} [Field k]
-
-end TorusFibre
-
 namespace AbelianFibre
 variable {k : Type} [Field k]
 
@@ -42,11 +37,6 @@ theorem lbIso_of_gens {X : Scheme.{0}} {A B : LB X} (s : A.Gen) (hs : s.IsGen) (
       exact mul_mul_mul_comm _ _ _ _⟩
 
 end AbelianFibre
-
-namespace MonomialImmersion
-variable (k : Type) [Field k] (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
-
-end MonomialImmersion
 
 end GlobalTheory.ZH
 end

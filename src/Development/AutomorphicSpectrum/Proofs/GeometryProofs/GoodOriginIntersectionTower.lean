@@ -218,7 +218,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.projection_of_chart_analytic :
   have hH : HasFDerivAt (fun t' : Fin D.n → ℂ => s (M.proj ((D.chart a).γ t'))) (G'.comp L) t :=
     hc0.congr_of_eventuallyEq hHeq
   have hinj : Function.Injective L := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     apply (D.chart a).immersion t ht v
     refine ⟨fun kk => -(fderiv ℂ (fun t' => cf t' kk) t v) / cf t kk, ?_⟩
@@ -388,7 +388,7 @@ theorem holoMap_proj (M : XModel D) {e : ℕ} {X : Type} [TopologicalSpace X] (A
 theorem baseSide (hU : RegUnif) : BaseSide := by
   intro K _ J _ II Ψ _ Ω _ _ W _ _ D Hd M S B K' _ J' _ P' B' e R κ v Θ Mt hS hv hP hΘ hΘp hMt
   classical
-  have hpl := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap K J K' J' κ v hv
+  have hpl := _root_.PositivityTheory.UnitarySelfGeneration.j_pull K J K' J' κ v hv
   let lv : R.X → R.X → (Σ k, J k) → ℂ := fun x y p => R.lift x y (v p)
   have hm : ∀ x, ∀ y ∈ R.U x, lv x y ∈ mcPts (mCoordIdeal D.y) := fun x y hy => hP ▸ hpl.2.2.1 P' _ (R.mem x y hy)
   have ho : ∀ x, ∀ y ∈ R.U x, M.proj (lv y y) = M.proj (lv x y) := by
@@ -421,7 +421,7 @@ theorem baseSide (hU : RegUnif) : BaseSide := by
   obtain ⟨Θ', hΘ', hΘ'p, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.exists_posPot_dominating K J II Ψ Ω W D M S.R.th S.R.th_pot
   obtain ⟨-, ⟨C₂, hC₂⟩, hw⟩ := GlobalTheory.T.regularized_weight_psh_and_bounds K J _ _ M D.Xo _ S Θ' hS hΘ' hΘ'p
   obtain ⟨C₃, hC₃⟩ := exists_psh_pull hπ hΘ hΘp (pot_rsmul hΘ' 1)
-  have hreg := GlobalTheory.T.regularized_hodge_metric_smooth K J II Ψ Ω W D Hd M S B hS
+  have hreg := GlobalTheory.CompanionTheory.Ar.Cusp.muReg_smooth_log K J II Ψ Ω W D Hd M S B hS
   have hloc : ∀ x, LocRe R.A (fun y => Real.log (N₀.h (lv x y)) - S.R.th.φ (π x) (π y)) x := by
     intro x
     obtain ⟨U, hUo, hxU, -, s, hs, hs', G, hG, hG'⟩ := S.th_ref (π x) (π x) (S.R.th.mem_U _)
@@ -1173,7 +1173,6 @@ theorem term_zero (A : FinHolAtlas e X) (Θ : Fin e → LocPot X) (L : LocPot X)
     max_lt (by convert hR1 using 1; ring) (half_pos hε)
   linarith
 
-
 theorem weak_zero (A : FinHolAtlas e X) (Θ L : LocPot X) (s : X → X → ℂ) {n : ℕ} (m : Fin n → ℕ)
     (W : Fin n → Set X) (hΘ : IsPotential A Θ) (hΘp : IsPosPot A Θ) (hL : IsPotential A L)
     (hs : IsSection A L s) (hsnc : IsSNC A L s m W) (hle : ∀ y, logNormSec L s y ≤ 0) (P : Fin e → LocPot X)
@@ -1640,7 +1639,6 @@ open ReciprocityTheory.AnForm (levi)
 open ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 open SheetDecomposition.PF
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.ptsIntegral_fibre_append_eq_mul_image : ∀ (II : IntersectionSystem), IsFullIntersectionSystem II → ∀ (K : Type) [Fintype K] (ρ : K → Type) [∀ k, Fintype (ρ k)] (K' : Type) [Fintype K'] (ρ' : K' → Type) [∀ k, Fintype (ρ' k)] (κ : K → K') (v : (Σ k, ρ k) → (Σ k', ρ' k')) (P' : Ideal (MRing ρ')) (d r : ℕ) (G : GenFibre v P') (Jf : IFamily G.Φ (fibreIdx ρ' κ)) (L : Fin d → HermLine ρ) (L' : Fin d → HermLine ρ') (N : Fin r → HermLine ρ'), IsBlockMap κ v → IsArithVar P' (d + 1 + r) → IsArithVar (imageZ v P') (d + 1) → IsFieldIntersection Jf → (∀ j, IsSmoothHerm (L j)) → (∀ j, IsPullHerm κ v (L j) (L' j)) → (∀ j, IsSmoothHerm (N j)) → ptsIntegral (e := d + r) P' (fun i z => Real.log ((Fin.append L' N i).h z)) (fun _ => 1) = (Jf (fibreIdeal κ G) r (fun j => fibreDeg κ (N j).a) : ℝ) * ptsIntegral (e := d) (imageZ v P') (fun i z => Real.log ((L i).h z)) (fun _ => 1) := by
   intro II hII K _ ρ _ K' _ ρ' _ κ v P' d r G Jf L L' N hv hP' hP hJ hL hLL' hN
   have hA : IsArithVar P' (d + r + 1) := by rwa [Nat.add_right_comm] at hP'
@@ -1650,7 +1648,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.ptsIntegral_fibre_append_eq_mu
       exact GroundTheory.Heights₂.Heights.Inter.IsPullHerm.isSmoothHerm hv (hLL' j) (hL j)
     · rw [Fin.append_right]
       exact hN j
-  have h := GlobalTheory.T.projection_formula_of_arith_system ⟨II, hII⟩ II hII.1 K ρ K' ρ' κ v P' (d + 1) r G Jf
+  have h := GlobalTheory.CompanionTheory.Ar.Giv.ProjF.projFormula ⟨II, hII⟩ II hII.1 K ρ K' ρ' κ v P' (d + 1) r G Jf
     (Fin.snoc (α := fun _ => HermLine ρ) L (cst ρ)) (Fin.snoc (α := fun _ => HermLine ρ') L' (cst ρ')) N hv hP' hP hJ
     (LevelTowerAlt.snoc_cst_smooth L hL)
     (fun j => by

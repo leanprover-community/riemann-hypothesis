@@ -113,8 +113,8 @@ end
 
 section
 
-variable (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.subquoHopfOrder)
-  (hsplit : type_of% @_root_.PositivityTheory.HtPt.Rc.om_split) (hos : type_of% @_root_.GlobalTheory.CompanionTheory.Relay.stable_hopf_order_subgroup_characters)
+variable (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.PositivityTheory.HtPt.Rc.subquo)
+  (hsplit : type_of% @_root_.PositivityTheory.HtPt.Rc.om_split) (hos : type_of% @_root_.PositivityTheory.HtPt.Rc.om_step)
   (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
   (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] (hv : v.Integers R)
   (hp : v (p : C) < 1) (F : Type) [Field F] [Fintype F] [DecidableEq F] [CharP F p] (f : ℕ)
@@ -234,8 +234,8 @@ theorem prod_ext_min {n : ℕ} (s : Fin n → NNReal) (j : ℕ) :
   refine Finset.prod_congr rfl (fun i _ => ?_)
   simp
 
-theorem flag_om_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.subquoHopfOrder)
-    (hsplit : type_of% @_root_.PositivityTheory.HtPt.Rc.om_split) (hos : type_of% @_root_.GlobalTheory.CompanionTheory.Relay.stable_hopf_order_subgroup_characters) : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (F : Type) [Field F] [Fintype F] [DecidableEq F] [CharP F p] (f : ℕ), Fintype.card F = p ^ f → ∀ (N : Type) [AddCommGroup N] [Module F N] [Fintype N] [DecidableEq N] (AA : HopfOrder (C := C) R N), FStable F AA.carrier → ∀ (n : ℕ) (b : Module.Basis (Fin n) F N), ∀ (χ : MulChar F R) (s : Fin n → NNReal) (r : NNReal), (∀ i : Fin n, HasLen v R (OmType (stepOrder AA.carrier (flagSub b i) (b i)) χ) (s i)) → HasLen v R (OmType AA.carrier χ) r → ∏ i, s i ≤ r := by
+theorem flag_om_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.PositivityTheory.HtPt.Rc.subquo)
+    (hsplit : type_of% @_root_.PositivityTheory.HtPt.Rc.om_split) (hos : type_of% @_root_.PositivityTheory.HtPt.Rc.om_step) : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (F : Type) [Field F] [Fintype F] [DecidableEq F] [CharP F p] (f : ℕ), Fintype.card F = p ^ f → ∀ (N : Type) [AddCommGroup N] [Module F N] [Fintype N] [DecidableEq N] (AA : HopfOrder (C := C) R N), FStable F AA.carrier → ∀ (n : ℕ) (b : Module.Basis (Fin n) F N), ∀ (χ : MulChar F R) (s : Fin n → NNReal) (r : NNReal), (∀ i : Fin n, HasLen v R (OmType (stepOrder AA.carrier (flagSub b i) (b i)) χ) (s i)) → HasLen v R (OmType AA.carrier χ) r → ∏ i, s i ≤ r := by
   intro p _ C _ _ _ v R _ _ hR hp F _ _ _ _ f hcard N _ _ _ _ AA hst n b χ s r hs hr
   have key := chain_le hex hsq hsplit hos p C v R hR hp F f hcard χ n N AA hst (flagSub b)
     (fun i => if h : i < n then b ⟨i, h⟩ else 0) (isChain_flag b)
@@ -250,9 +250,9 @@ theorem flag_om_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fu
       exact hs ⟨i, hi⟩) hr
   rwa [prod_ext] at key
 
-theorem gr_partial_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.subquoHopfOrder)
+theorem gr_partial_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fund_ex_relay) (hsq : type_of% @_root_.PositivityTheory.HtPt.Rc.subquo)
     (hstep : type_of% @_root_.PositivityTheory.HtPt.Rc.step) (hsplit : type_of% @_root_.PositivityTheory.HtPt.Rc.om_split)
-    (hos : type_of% @_root_.GlobalTheory.CompanionTheory.Relay.stable_hopf_order_subgroup_characters) : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (F : Type) [Field F] [Fintype F] [DecidableEq F] [CharP F p] (f : ℕ), Fintype.card F = p ^ f → ∀ (N : Type) [AddCommGroup N] [Module F N] [Fintype N] [DecidableEq N] (AA : HopfOrder (C := C) R N), FStable F AA.carrier → ∀ (n : ℕ) (b : Module.Basis (Fin n) F N), ∀ (χ : MulChar F R) (s : Fin n → NNReal), (∀ i : Fin n, HasLen v R (OmType (stepOrder AA.carrier (flagSub b i) (b i)) χ) (s i)) → HasLen v R (OmType AA.carrier χ) (∏ i, s i) → ∀ j : ℕ, HasLen v R (OmType (AA.carrier.map (LinearMap.funLeft R C (Subtype.val : flagSub b j → N))) χ) (∏ i ∈ Finset.univ.filter (fun i : Fin n => (i : ℕ) < j), s i) := by
+    (hos : type_of% @_root_.PositivityTheory.HtPt.Rc.om_step) : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (F : Type) [Field F] [Fintype F] [DecidableEq F] [CharP F p] (f : ℕ), Fintype.card F = p ^ f → ∀ (N : Type) [AddCommGroup N] [Module F N] [Fintype N] [DecidableEq N] (AA : HopfOrder (C := C) R N), FStable F AA.carrier → ∀ (n : ℕ) (b : Module.Basis (Fin n) F N), ∀ (χ : MulChar F R) (s : Fin n → NNReal), (∀ i : Fin n, HasLen v R (OmType (stepOrder AA.carrier (flagSub b i) (b i)) χ) (s i)) → HasLen v R (OmType AA.carrier χ) (∏ i, s i) → ∀ j : ℕ, HasLen v R (OmType (AA.carrier.map (LinearMap.funLeft R C (Subtype.val : flagSub b j → N))) χ) (∏ i ∈ Finset.univ.filter (fun i : Fin n => (i : ℕ) < j), s i) := by
   intro p _ C _ _ _ v R _ _ hR hp F _ _ _ _ f hcard N _ _ _ _ AA hst n b χ s hs hr j
   have key := chain_partial hex hsq hsplit hos p C v R hR hp F f hcard hstep χ n N AA hst (flagSub b)
     (fun i => if h : i < n then b ⟨i, h⟩ else 0) (isChain_flag b)

@@ -75,7 +75,7 @@ theorem isNoetherianRing_chart (ξ : Spec (CommRingCat.of Ω) ⟶ X) (x : κ →
   let ρ : Γ(X, U) →+* A := (ev ξ U hη).codRestrict A
     fun s => (hreg _).2 fun q hq => ⟨_, genMap_germ hη q hq s⟩
   have hinj : Function.Injective ρ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro s hs
     have h0 : ev ξ U hη s = 0 := congrArg Subtype.val hs
     refine TopCat.Presheaf.section_ext X.sheaf U s 0 fun q hq => ?_

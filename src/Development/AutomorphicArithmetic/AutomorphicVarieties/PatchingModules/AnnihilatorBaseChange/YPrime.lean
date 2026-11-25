@@ -12,7 +12,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.PrimeApproximation.yPrime_approx :
-    ∀ {R σ : Type} [inst : CommRing R] {y : σ → R} {f : R} {BB : Type} [inst_1 : CommRing BB] [inst_2 : Algebra R BB],
+    ∀ {R σ : Type} [CommRing R] {y : σ → R} {f : R} {BB : Type} [CommRing BB] [Algebra R BB],
       UpperTheory.V.Pa.Core.IsYCpl y f BB →
         ∀ (n : ℕ) (J : Ideal R),
           ∀ x ∈ Ideal.map (Algebra.algebraMap R BB) J,

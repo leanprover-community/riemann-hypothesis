@@ -1,6 +1,6 @@
 module
 
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadJacquetOfLetterAndHead
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HpkMulSingleEsI
 public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightDerivativeRulePsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainFirstIdentity
@@ -30,10 +30,6 @@ open Formalism.FourierDecayAlt.C3 Formalism.REAL Formalism.QuantumDeterminants
 section dpsi
 
 variable {k r : ℕ}
-
-theorem hpk_col_esI (a : Fin r) (l : Fin (2 * r + k + 1)) :
-    Hpk k r l (esI k r a) = if l.val = a.val then 1 else 0 := by
-  apply _root_.Formalism.FourierDecayAlt.P.WirtingerOperators.LeviExponential.hpk_col_esI <;> assumption
 
 theorem hpk_W_row (w p : Fin (2 * r + k + 1)) (hw : r ≤ w.val ∧ w.val ≤ r + k) :
     Hpk k r w p = if p = w then Hpk k r w w else 0 := by
@@ -79,10 +75,8 @@ theorem unit_entry (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
 theorem unit_a (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (hU : Xᴴ * Hpk k r + Hpk k r * X = 0) (a : Fin r) (ha : a.val + 1 < r) :
     X (esI k r ⟨a.val + 1, ha⟩) (esI k r a) = -star (X (eI k r a) (eI k r ⟨a.val + 1, ha⟩)) := by
-  have hcol : ∀ l, Hpk k r l (esI k r a) = if l = eI k r a then 1 else 0 := by
-    intro l
-    rw [hpk_col_esI]
-    simp only [eI, Fin.ext_iff]
+  have hcol : ∀ l, Hpk k r l (esI k r a) = if l = eI k r a then 1 else 0 :=
+    fun l => SingleEntryHermitianProducts.hpk_col_esI l a
   have hrow : ∀ l, Hpk k r (eI k r ⟨a.val + 1, ha⟩) l = if l = esI k r ⟨a.val + 1, ha⟩ then 1 else 0 := by
     intro l
     unfold Hpk eI esI
@@ -96,10 +90,8 @@ theorem unit_a (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
 theorem unit_w (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (hU : Xᴴ * Hpk k r + Hpk k r * X = 0) (hr : 1 ≤ r) (w : Fin (2 * r + k + 1)) (hw : r ≤ w.val ∧ w.val ≤ r + k) :
     Hpk k r w w * X w (esI k r ⟨r - 1, by omega⟩) = -star (X (eI k r ⟨r - 1, by omega⟩) w) := by
-  have hcol : ∀ l, Hpk k r l (esI k r ⟨r - 1, by omega⟩) = if l = eI k r ⟨r - 1, by omega⟩ then 1 else 0 := by
-    intro l
-    rw [hpk_col_esI]
-    simp only [eI, Fin.ext_iff]
+  have hcol : ∀ l, Hpk k r l (esI k r ⟨r - 1, by omega⟩) = if l = eI k r ⟨r - 1, by omega⟩ then 1 else 0 :=
+    fun l => SingleEntryHermitianProducts.hpk_col_esI l ⟨r - 1, by omega⟩
   have hrow : ∀ l, Hpk k r w l = if l = w then Hpk k r w w else 0 := fun l => hpk_W_row w l hw
   have h := unit_entry X hU w (esI k r ⟨r - 1, by omega⟩)
   simp only [hcol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h

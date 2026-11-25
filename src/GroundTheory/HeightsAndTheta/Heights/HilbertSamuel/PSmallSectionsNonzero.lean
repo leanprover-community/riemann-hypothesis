@@ -20,21 +20,10 @@ namespace SmallSectionsNonzero
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
-
 omit [Fintype K] in
 theorem isMultiHomog_mul {g h : MRing ι} {a b : K → ℕ} (hg : IsMultiHomog g a)
     (hh : IsMultiHomog h b) : IsMultiHomog (g * h) (a + b) :=
   SectionBoundedMul.isMultiHomog_mul hg hh
-
-omit [Fintype K] in
-theorem isMultiHomog_monomial (e : (Σ k, ι k) →₀ ℕ) (r : ℤ) :
-    IsMultiHomog (monomial e r : MRing ι) (fun k => ∑ i, e ⟨k, i⟩) :=
-  SectionBoundedMul.isMultiHomog_monomial e r
-
-open Classical in
-theorem sum_single_apply (k' : K) (j : ι k') (b : ℕ) (k : K) :
-    ∑ i, (Finsupp.single (⟨k', j⟩ : Σ k, ι k) b) ⟨k, i⟩ = if k' = k then b else 0 :=
-  SectionBoundedMul.sum_single_apply k' j b k
 
 def chartMono (c : ∀ k, ι k) (d : K → ℕ) : MRing ι :=
   ∏ k, X ⟨k, c k⟩ ^ d k
@@ -58,7 +47,7 @@ theorem mem_mCoordIdeal_of_aeval_eq_zero (y : (Σ k, ι k) → Ω) {g : MRing ι
 
 theorem X_mem_mCoordIdeal (y : (Σ k, ι k) → Ω) (p : Σ k, ι k) (h0 : y p = 0) :
     (X p : MRing ι) ∈ mCoordIdeal y := by
-  have hX := isMultiHomog_monomial (ι := ι) (Finsupp.single p 1) 1
+  have hX := GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBoundedMul.isMultiHomog_monomial (ι := ι) (Finsupp.single p 1) 1
   rw [← X] at hX
   exact mem_mCoordIdeal_of_aeval_eq_zero y hX (by rw [aeval_X, h0])
 
@@ -73,13 +62,11 @@ theorem exists_chartForm (y : (Σ k, ι k) → Ω) (a : K → ℤ) (n : ℕ) {s 
       aeval y g = s * aeval y (chartMono c N) :=
   SectionBoundedMul.exists_chartForm y a n hs c hc
 
-
 omit [∀ k, Fintype (ι k)] in
 theorem one_mem_chartLat (y : (Σ k, ι k) → Ω) (a : K → ℤ) : (1 : Ω) ∈ chartLat y a 0 := by
   intro c _
   simp only [Nat.cast_zero, zero_mul, neg_zero, zpow_zero, Finset.prod_const_one, mul_one]
   exact one_mem _
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem mul_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n j : ℕ} {s t : Ω} (hs : s ∈ chartLat y a n)
@@ -96,7 +83,6 @@ theorem mul_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n j : ℕ} {
   rw [h, show s * t * ((∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) =
       (s * ∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * (t * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) by ring]
   exact mul_mem (hs c hc) (ht c hc)
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem pow_mem_chartLat {y : (Σ k, ι k) → Ω} {a : K → ℤ} {w : Ω} (hw : w ∈ chartLat y a 1) :
@@ -131,7 +117,6 @@ theorem isSmallH_pow {y : (Σ k, ι k) → Ω} {A : HermLine ι} {w : Ω} (hw : 
     exact isSmallH_mul (pow_mem_chartLat hw j) hw (isSmallH_pow hw hs j) hs
 
 end SmallSectionsNonzero
-
 
 open SmallSectionsNonzero in
 theorem SmallSectionsNonzero.proof : SmallSectionsNonzero.Statement := by

@@ -100,7 +100,7 @@ theorem borel_extVec (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau →
     SmoothVec (lieH (gramAt D V τ)) (M.rep τ) (v τ : M.H τ) ∧ ∀ a c : Fin V.rank, a ≤ c →
       dRepC (gramAt D V τ) (M.rep τ) (x0Mat M τ * Matrix.single a c 1 * (x0Mat M τ)⁻¹) (v τ : M.H τ) =
         if a = c then (w τ a : ℂ) • (v τ : M.H τ) else 0 := by
-  obtain ⟨hc, hU, -, hx⟩ := GlobalTheory.T.discreteSeriesModel_unitary_irreducible_orthonormal D V S M τ
+  obtain ⟨hc, hU, -, hx⟩ := GlobalTheory.HolDict.ModelRep.model_rep D V S M τ
   obtain ⟨-, hx⟩ := hx hM
   obtain ⟨hHC, p, hp, hε⟩ := hM τ
   obtain ⟨-, hlow, hwt⟩ := hv τ
@@ -136,7 +136,6 @@ theorem borel_extVec (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau →
     simp
   · have hlt : (a : ℕ) < c := lt_of_le_of_ne hac fun h' => h (Fin.ext h')
     have hq := nNeg_shape hp hε
-    have hcn := c.2
     have hsg : ∀ b : Fin V.rank, M.ε τ (arr (nNeg (M.ε τ)) b) = decide (¬ (b : ℕ) < V.rank - p) := by
       intro b
       have := b.2

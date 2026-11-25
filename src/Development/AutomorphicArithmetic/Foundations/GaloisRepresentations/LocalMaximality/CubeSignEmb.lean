@@ -19,7 +19,7 @@ noncomputable def UpperTheory.Reformulated.B.Qh71.cubeSign :
     fun {ι : Type} [LinearOrder ι] (t : Finset ι) (i : ι) ↦ (-1 : ℤ) ^ {x ∈ t | x < i}.card
 
 theorem UpperTheory.Reformulated.B.Qh71.cubeSign_emb :
-    ∀ {κ : Type} [inst : LinearOrder κ] (t : Finset κ) {n : ℕ} (h : t.card = n) (k : Fin n),
+    ∀ {κ : Type} [LinearOrder κ] (t : Finset κ) {n : ℕ} (h : t.card = n) (k : Fin n),
       UpperTheory.Reformulated.B.Qh71.cubeSign t ((t.orderEmbOfFin h : Fin n → κ) k) = (-1 : ℤ) ^ (↑k : ℕ) := by
   intro κ _ t n h k
   have key : {x ∈ t | x < t.orderEmbOfFin h k}

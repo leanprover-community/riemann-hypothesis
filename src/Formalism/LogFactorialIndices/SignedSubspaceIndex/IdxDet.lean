@@ -61,33 +61,20 @@ theorem len_span (b : Basis ι K Y) (w : ι → Y) (hw : ∀ j, w j ∈ Submodul
   have : Module.Free O L := Module.Free.of_basis bO
   have : Module.Finite O L := Module.Finite.of_basis bO
   let φ : L →ₗ[O] L := bO.constr O (fun j => ⟨w j, hw j⟩)
-  have hφ : ∀ z : L, (φ z : Y) = ∑ j, bO.equivFun z j • w j := by
-    intro z
-    simp only [φ, Basis.constr_apply_fintype, Submodule.coe_sum, Submodule.coe_smul]
   have hwK : LinearIndependent K w :=
     ((b.is_basis_iff_det).2 (by rw [Basis.det_apply]; exact isUnit_iff_ne_zero.2 hdet)).1
   have hwO : LinearIndependent O w :=
     LinearIndependent.restrict_scalars' (R := O) (K := K) hwK
-  have hinj : Function.Injective φ := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro z hz
-    have h0 : ∑ j, bO.equivFun z j • w j = 0 := by rw [← hφ, hz]; rfl
-    have h1 := Fintype.linearIndependent_iff.1 hwO _ h0
-    apply bO.equivFun.injective
-    funext j
-    simp [h1 j]
+  have hinj : Function.Injective φ :=
+    bO.injective_constr_of_linearIndependent (hwO.codRestrict L hw)
+  have hwL : Submodule.span O (Set.range w) ≤ L :=
+    Submodule.span_le.2 (Set.range_subset_iff.2 hw)
   have hrange : LinearMap.range φ = (Submodule.span O (Set.range w)).comap L.subtype := by
-    ext y
-    constructor
-    · rintro ⟨z, rfl⟩
-      show (φ z : Y) ∈ Submodule.span O (Set.range w)
-      rw [hφ]
-      exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
-    · intro hy
-      have hy' : (y : Y) ∈ Submodule.span O (Set.range w) := hy
-      obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun O).1 hy'
-      refine ⟨bO.equivFun.symm g, Subtype.ext ?_⟩
-      rw [hφ, LinearEquiv.apply_symm_apply, hg]
+    apply Submodule.map_injective_of_injective L.subtype_injective
+    dsimp only [φ]
+    rw [Basis.constr_range, Submodule.map_span, ← Set.range_comp',
+      Submodule.map_comap_subtype, inf_eq_right.mpr hwL]
+    rfl
   have hH : ∀ i j, algebraMap O K (LinearMap.toMatrix bO bO φ i j) = b.toMatrix w i j := by
     intro i j
     rw [Basis.toMatrix_apply, LinearMap.toMatrix_apply]

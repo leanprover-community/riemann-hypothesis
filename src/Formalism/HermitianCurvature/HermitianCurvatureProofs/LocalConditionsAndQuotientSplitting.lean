@@ -28,14 +28,7 @@ open scoped nonZeroDivisors
 
 theorem mem_twLat (E : Type) [Field E] [NumberField E] [IsCMField E] (A B : FI E) (s : ℕ) (t : E) :
     t ∈ twLat E A B s ↔ t ∈ A ∧ t - (-1) ^ s * complexConj E t ∈ B := by
-  unfold twLat
-  rw [Submodule.mem_inf, Submodule.mem_comap]
-  have : ((LinearMap.id : E →ₗ[ℤ] E) - ((-1 : ℤ) ^ s) • conjZ E) t
-      = t - (-1) ^ s * complexConj E t := by
-    rw [LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, zsmul_eq_mul]
-    push_cast
-    rfl
-  rw [this]; rfl
+  exact Formalism.FourierDecayAlt.P.S6x1.mem_twLat E A B s t
 
 theorem mem_idl (E : Type) [Field E] [NumberField E] (g : ℕ) (k ν : ℤ) (t : E) (hg : 0 < g) :
     t ∈ idl E g k ν ↔ t / (g : E) ^ k ∈ dd E ^ ν := by

@@ -192,14 +192,8 @@ theorem nfLeibOps_hsInner_smul_left (c : ℂ) (A B' : Wq →L[ℂ] Wp) : B.hsInn
   unfold B.hsInner
   rw [nfLeibOps_hsVec_smul, inner_smul_right]
 
-theorem nfLeibOps_hsInner_smul_right (c : ℂ) (A B' : Wq →L[ℂ] Wp) :
-    B.hsInner A (c • B') = conj c * B.hsInner A B' := by
-  unfold B.hsInner
-  rw [nfLeibOps_hsVec_smul, inner_smul_left]
-
 def nfLeibOps_sc (Bs : B.RealPlaceData k r Wp Wq) (t : ℕ × (B.Mat k r → ℂ) × ℕ × List (B.Mat k r)) (g : B.Mat k r) : ℂ :=
   t.2.1 g * ((Gf k r Bs.z Bs.z' g : ℝ) : ℂ)⁻¹ ^ t.2.2.1
-
 
 open Classical in
 def nfLeibOps_mk (Bs : B.RealPlaceData k r Wp Wq) (T : B.DTerm k r Wp Wq)
@@ -213,7 +207,7 @@ def nfLeibOps_mk (Bs : B.RealPlaceData k r Wp Wq) (T : B.DTerm k r Wp Wq)
     · simp
   adj_id x A B' := by
     simp only [ContinuousLinearMap.smul_apply]
-    rw [nfLeibOps_hsInner_smul_left, nfLeibOps_hsInner_smul_right, T.adj_id, Complex.conj_conj]
+    rw [nfLeibOps_hsInner_smul_left, Formalism.FourierDecayAlt.P.B5.hs_smul_right, T.adj_id, Complex.conj_conj]
 
 theorem nfLeibOps_ckOn_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {UU : Set (B.Mat k r)}
     {c : B.Mat k r → ℂ} {f : B.Mat k r → E} (hc : B.CkOn ⊤ UU c) (hf : B.CkOn ⊤ UU f) :

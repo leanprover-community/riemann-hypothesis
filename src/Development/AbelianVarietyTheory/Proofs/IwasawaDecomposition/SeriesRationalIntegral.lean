@@ -245,11 +245,6 @@ theorem le_vLa_of_mem {K : Type} [Field K] [NumberField K] (p : HeightOneSpectru
   simp at this
   omega
 
-theorem vLa_eq_zero_of_not_mem {K : Type} [Field K] [NumberField K] (p : HeightOneSpectrum (𝓞 K)) {t : 𝓞 K}
-    (ht : t ∉ p.asIdeal) : vLa p (t : K) = 0 := by
-  unfold vLa
-  rw [(HeightOneSpectrum.valuation_eq_one_iff_notMem p).mpr ht, WithZero.log_one, neg_zero]
-
 end GlobalTheory.ScaleInt
 
 namespace GlobalTheory.ScaleInt
@@ -283,7 +278,7 @@ theorem smul_mem_baseInt : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ (i : Fin 
     have hV := isVal_valSet la v hv
     rw [hV.smul _ _ htK]
     by_cases hlq : la.asIdeal = q
-    · have h0 : vAdd la (t : T.Q.c.F) = 0 := vLa_eq_zero_of_not_mem la (hlq ▸ htq)
+    · have h0 : vAdd la (t : T.Q.c.F) = 0 := Formalism.MainNotions.ModuliIntegralCharts.H1.RPfVal.vLa_int_not_mem la (hlq ▸ htq)
       rw [h0]
       simpa using hfv la hlq v hv
     · have hmem : la ∈ hP.toFinset.filter fun p => p.asIdeal ≠ q :=

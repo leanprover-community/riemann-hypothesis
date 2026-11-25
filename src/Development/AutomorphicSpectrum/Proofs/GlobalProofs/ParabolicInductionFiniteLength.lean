@@ -265,10 +265,6 @@ theorem hasFiniteLength_parInd (e : (Σ a, m a) ≃ n) (ρ : Representation ℂ 
 
 end GlobalTheory.BlockReorder
 
-namespace GlobalTheory
-
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

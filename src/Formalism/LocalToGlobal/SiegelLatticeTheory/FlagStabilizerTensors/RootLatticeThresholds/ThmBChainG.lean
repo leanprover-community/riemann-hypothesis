@@ -73,9 +73,3 @@ theorem jointAmplitudeRotated_generic (Y : Full X) (u : D.whatâ‚‚.Word) (largeâ‚
     exact le_rfl
 
 end Formalism.L2.SG.Pf.ThmBChainG
-
-namespace Formalism.L2.SG.Pf
-
-open Formalism.L2.SG.Pf.ThmBChainG
-
-end Formalism.L2.SG.Pf

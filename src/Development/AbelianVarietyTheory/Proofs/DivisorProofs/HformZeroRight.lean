@@ -168,7 +168,3 @@ theorem gram_entry {A : Type} [CommRing A] {n : ℕ} (τ : A →+* A) (J B : Mat
   rfl
 
 end GlobalTheory.GramFrame
-
-namespace GlobalTheory.GramFrame
-
-end GlobalTheory.GramFrame

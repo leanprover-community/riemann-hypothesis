@@ -8,7 +8,7 @@ public import Mathlib.Analysis.Matrix.PosDef
 
 open scoped ComplexOrder in
 theorem UpperTheory.Reformulated.B.CoerciveOfPositiveDefinite.exists_coercive_of_posDef.{u_1} :
-    ∀ {ι : Type u_1} [inst : Fintype ι] {P : Matrix ι ι ℂ},
+    ∀ {ι : Type u_1} [Fintype ι] {P : Matrix ι ι ℂ},
       P.PosDef → ∃ (c : ℝ), 0 < c ∧
         ∀ (z : ι → ℂ) (j : ι), c * ‖z j‖ ^ 2 ≤ (star z ⬝ᵥ P.mulVec z).re := by
   intro ι _ P hP

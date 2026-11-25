@@ -344,7 +344,6 @@ theorem idem_ne_zero {O E W : Type} [CommRing O] [CommRing E] [CommRing W] [Nont
   rwa [ZMod.natCast_zmod_val, add_sub_cancel] at this
 
 
-set_option maxHeartbeats 1000000 in
 theorem ioE_injective_saturated_inter (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l)
     (s : ℕ) (LL : FinExt l) (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R) :
     Function.Injective I.ioE ∧ (∀ x : R.EE, IsUnit (I.ioE x) → IsUnit x) ∧

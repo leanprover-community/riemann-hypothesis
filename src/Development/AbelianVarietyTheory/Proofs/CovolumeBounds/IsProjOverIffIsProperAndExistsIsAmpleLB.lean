@@ -449,8 +449,6 @@ end Twist
 
 section Summary
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem isProper_of_veryAmpleBy {R : Type} [CommRing R] {f : X ⟶ Sp R} {L : LB X} {M : ℕ}
     {s : Fin (M + 1) → L.Sec} (h : VeryAmpleBy f L s) : IsProper f :=
   ((isProjOver_iff_isProper_and_exists_isAmpleLB f).1 (isProjOver_of_veryAmpleBy h)).1

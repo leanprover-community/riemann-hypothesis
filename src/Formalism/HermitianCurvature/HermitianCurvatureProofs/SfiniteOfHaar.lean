@@ -48,7 +48,3 @@ theorem jfScale : Formalism.FourierDecayAlt.P.PTie.JFScale := by
   ring
 
 end Formalism.FourierDecayAlt.P.PTieJ
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

@@ -270,9 +270,4 @@ theorem Eword_congr {n : ℕ} (ε : Fin n → Bool) {f f' : Matrix (Fin n) (Fin 
     rw [hcurve _ hm.1, hcurve _ hm.2.1]
 
 
-namespace ProjEx
-
-
-end ProjEx
-
 end GlobalTheory.Dec

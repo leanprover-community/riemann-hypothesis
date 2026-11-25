@@ -586,9 +586,6 @@ end Discr
 
 end GlobalTheory.FlatModel.BoundProof
 
-namespace GlobalTheory.FlatModel
-
-end GlobalTheory.FlatModel
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

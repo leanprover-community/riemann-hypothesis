@@ -127,7 +127,7 @@ variable {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [S
 theorem FBChart.rawSelf_axis1 (Y : FBChart C V O dd) (p : SelfData Y d I0) (e : Fin 2 × (Fin 2 × Fin dd) →₀ ℕ)
     (he : ∀ s ∈ e.support, s.1 ≠ 1) : MvPowerSeries.coeff e (Y.rawSelf p).h = 0 := by
   show MvPowerSeries.coeff e (∑ col, hCol col Y.h) = 0
-  exact van_sum Finset.univ _ (fun col _ => van_hCol col 1 Y.h (gauge_axes Y 1)) e he
+  exact van_sum Finset.univ _ (fun col _ => van_hCol col 1 Y.h (Formalism.L2.FormalSeriesBounds.FBChart.axisAll Y 1)) e he
 
 theorem FBChart.rawSelf_basic (Y : FBChart C V O dd) (p : SelfData Y d I0) : SelfConjCharts.Basic (Y.rawSelf p) V := by
   exact

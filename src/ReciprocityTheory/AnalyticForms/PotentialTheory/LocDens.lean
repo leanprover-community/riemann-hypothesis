@@ -146,12 +146,12 @@ theorem re_star_dot_hessC {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z x : Fin D 
   have hw : star x = ∑ i, ((x i).re • E i + (-(x i).im) • (Complex.I • E i)) := by
     ext k
     rw [Finset.sum_apply, Finset.sum_eq_single k
-      (fun i _ hik => by simp [E, Pi.single_apply, hik.symm]) (by simp)]
+      (fun i _ hik => by simp [E, hik.symm]) (by simp)]
     simp [E, Complex.ext_iff]
   have hIw : Complex.I • star x = ∑ i, ((x i).im • E i + (x i).re • (Complex.I • E i)) := by
     ext k
     rw [Finset.sum_apply, Finset.sum_eq_single k
-      (fun i _ hik => by simp [E, Pi.single_apply, hik.symm]) (by simp)]
+      (fun i _ hik => by simp [E, hik.symm]) (by simp)]
     simp [E, Complex.ext_iff]
   have hL : (star x ⬝ᵥ (hessC φ z *ᵥ x)).re = ∑ i, ∑ j,
       (((x i).re * (x j).re + (x i).im * (x j).im) *

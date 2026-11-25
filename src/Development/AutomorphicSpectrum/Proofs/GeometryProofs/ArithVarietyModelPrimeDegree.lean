@@ -81,12 +81,6 @@ noncomputable section
 namespace PositivityTheory.HtPt.Ge.Fargues
 open GlobalTheory.CompanionTheory
 
-theorem lie_free_finite (S : Scheme.{0}) (G : Over S) [GrpObj G] (hG : Smooth G.hom) (R : Type) [CommRing R]
-    [IsLocalRing R] (x : Spec (CommRingCat.of R) ⟶ S) (E : Type) [AddCommGroup E] [Module R E]
-    (M : LieModel G x E) : Module.Free R E ∧ Module.Finite R E := by
-  obtain ⟨n, ⟨b⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.LieFreeSmooth.lieModel_free_of_smooth S G hG R x E M
-  exact ⟨Module.Free.of_basis b, Module.Finite.of_basis b⟩
-
 def ordTower (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal)
     (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1)
     (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (S : Scheme.{0}) [IsLocallyNoetherian S] (G : Over S) [GrpObj G]
@@ -114,12 +108,9 @@ def ordTower (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [Char
     der_zero := fun n => (h5 n).2.2.2.2.2
     der_res := h6 }
 
-theorem pointHT (hF : FarguesHodgeTate) : PointHT :=
-  _root_.GlobalTheory.CompanionTheory.Ar.HT.Fargues.pointHT hF
-
 end PositivityTheory.HtPt.Ge.Fargues
 
-theorem PositivityTheory.HtPt.Ge.pointHT_of_fargues : FarguesHodgeTate → PointHT := PositivityTheory.HtPt.Ge.Fargues.pointHT
+theorem PositivityTheory.HtPt.Ge.pointHT_of_fargues : FarguesHodgeTate → PointHT := GlobalTheory.CompanionTheory.Ar.HT.Fargues.pointHT
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -255,21 +246,6 @@ theorem pow_val_mul {G : Type} [Monoid G] (g : G) (n : ℕ) [NeZero n] (hg : g ^
     rw [← ZMod.val_natCast, Nat.cast_mul, ZMod.natCast_zmod_val]
   rw [h0, ← pow_mul, ← pow_eq_pow_mod _ hg]
 
-theorem pow_val_intCast {G : Type} [Group G] (g : G) (N : ℕ) [NeZero N] (hg : g ^ N = 1) (j : ℤ) :
-    g ^ (j : ZMod N).val = g ^ j := by
-  have h : (((j : ZMod N).val : ℕ) : ℤ) = j % N := ZMod.val_intCast j
-  rw [← zpow_natCast, h, ← zpow_eq_zpow_emod' j hg]
-
-theorem cp_descend {A Ω : Type} [CommRing A] [Field Ω] [Algebra A Ω] (hinj : Function.Injective (algebraMap A Ω))
-    (p : ℕ) (κ : A) (h : IsCp p (algebraMap A Ω κ)) :
-    if p = 2 then κ = 4 else ∃ ζ : A, IsPrimitiveRoot ζ p ∧ κ = ζ - 1 := by
-  unfold IsCp at h
-  split_ifs at h ⊢
-  · exact hinj (by rw [h, map_ofNat])
-  · obtain ⟨ζ, h1, h2⟩ := h
-    refine ⟨κ + 1, IsPrimitiveRoot.of_map_of_injective (f := algebraMap A Ω) ?_ hinj, by ring⟩
-    rwa [map_add, map_one, h2, sub_add_cancel]
-
 theorem qhom_surj {E : Type} [Field E] [NumberField E] (N n : ℕ) : Function.Surjective (qhom (E := E) N n) := by
   intro t
   choose z hz using fun i => Ideal.Quotient.mk_surjective (Multiplicative.toAdd t i)
@@ -287,7 +263,6 @@ theorem qhom_eq_one {E : Type} [Field E] [NumberField E] (N n : ℕ) (y : Fin N 
     exact ⟨y', funext fun i => by rw [hy' i]; simp⟩
   · rintro ⟨y', rfl⟩ i
     exact ⟨y' i, by simp⟩
-
 
 open PositivityTheory.HtPt.Htat in
 theorem exists_coords {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (D : Datum H) {S : Scheme.{0}}
@@ -369,7 +344,7 @@ theorem PositivityTheory.Xgn.sequence_test_function : GlobalTheory.CompanionTheo
     have h1 := (hev.weil (∑ k, x k • u k) (∑ k, x' k • u k) _ i (ψ ≫ ev _) (ψ ≫ ev _) cc rfl rfl).2 rfl
     have h2 := (G.weil x x' _ i _ _ cc (by rw [← huz]; rfl) (by rw [← huz]; rfl)).1 h1
     have h3 : ((ζ₀ ^ D.EF (∑ k, x k • u k) (∑ k, x' k • u k) : Ωˣ) : Ω) = G.ζ ^ (G.e x x').val := i.injective h2
-    rw [← pow_val_intCast ζ₀ _ hev.prim.pow_eq_one, ← he, Units.val_pow_eq_pow_val, ← haζ,
+    rw [← GlobalTheory.CompanionTheory.HtLink.pow_val_intCast ζ₀ _ hev.prim.pow_eq_one, ← he, Units.val_pow_eq_pow_val, ← haζ,
       ← pow_val_mul _ _ G.ζ_prim.pow_eq_one] at h3
     exact ZMod.val_injective _ (G.ζ_prim.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) h3.symm)
   refine hasTestPoints_of_withE P.Dh e halt hadj hes hei a hap (fun x x' => by rw [P.Dh_e, hee]) _ ?_
@@ -395,7 +370,7 @@ theorem PositivityTheory.Xgn.sequence_test_function : GlobalTheory.CompanionTheo
   refine _root_.GlobalTheory.CompanionTheory.Ar.HT.hasTestPoints_of_tate (PositivityTheory.HtPt.Ge.pointHT_of_fargues hF) E H D p (CR O y c') Ω (𝔐.R p) _ _ u hu 𝔐.X 𝔐.t P.x (relabel P.Γ₂ b) P.i₂
     ⟨P.tors₂.isOver, P.tors₂.mul, P.tors₂.inj, P.tors₂.kernel⟩ P.L P.M P.ρ P.act P.j P.j_bc π (P.ζ ^ a) _
     ⟨P.isHT.1, P.isHT.2.1, fun z => ?_⟩ hπ he ?_ (isProper_of_iso _ 𝔐.ξ _ _ hq) (fun k _ _ f => ?_)
-    (cp_descend hinj p _ hw)
+    (GlobalTheory.CompanionTheory.HtLink.cp_descend hinj p _ hw)
   · obtain ⟨χ, w₀, hχ, hh, s, hs, hHT⟩ := P.isHT.2.2 z
     refine ⟨χ.comp b.toMonoidHom, w₀, fun z' => ?_, hh, s, fun t => hs (b t), hHT⟩
     change χ (b (π _)) = (P.ζ ^ a) ^ (e z z').val
@@ -656,7 +631,6 @@ theorem isUnit_den (C : Subalgebra O Ω) {d : A} (hd : d ∉ m) (z : C) (hz : (z
   change (z : Ω) * algebraMap O Ω o = 1
   rw [hz, mul_comm, ho]
 
-
 include m in
 theorem mem_of_isIntegral_loc (s : Set Ω) (hA : ∀ a : A, algebraMap A Ω a ∈ Algebra.adjoin ℤ s)
     (hB : ∀ a : Ω, _root_.IsIntegral (Algebra.adjoin ℤ s) a → a ∈ Algebra.adjoin ℤ s) {a : Ω}
@@ -681,7 +655,6 @@ theorem mem_of_isIntegral_loc (s : Set Ω) (hA : ∀ a : A, algebraMap A Ω a �
   have : a = (w : Ω) * (((d : Algebra.adjoin ℤ s) : Ω) * a) := by rw [← _root_.mul_assoc, hw', _root_.one_mul]
   rw [this]
   exact mul_mem w.2 h1
-
 
 include m in
 theorem loc_of_contraction (s : Set Ω) (hA : ∀ a : A, algebraMap A Ω a ∈ Algebra.adjoin ℤ s)
@@ -717,7 +690,6 @@ theorem loc_of_contraction (s : Set Ω) (hA : ∀ a : A, algebraMap A Ω a ∈ A
       rw [← e, eq_mul_inv_iff_mul_eq₀ h0]; ring
     rw [this]
     exact mul_mem (mul_mem (hB _ (hA d)) (hC _ u.2)) hi
-
 
 include m in
 theorem exists_point (T : CoordTie ℤ ξ x) {c : κ} (hc : x c ≠ 0)
@@ -881,9 +853,6 @@ variable {A K : Type} [CommRing A] [Field K] [Algebra A K] {E : Type} [Field E] 
   {V : Type} [AddCommGroup V] [Module K V] [Module A V] [IsScalarTower A K V]
   (D : HTChart A K c p R N V)
 
-theorem pow_mem {x : V} (hx : x ∈ D.om) : ((p : A) ^ R) • x ∈ D.om' :=
-  Submodule.mem_sup_right ⟨x, hx, rfl⟩
-
 theorem om'_le : D.om' ≤ D.om := by
   refine sup_le (Submodule.span_le.2 ?_) ?_
   · rintro _ ⟨x, rfl⟩; exact D.h_mem x
@@ -898,11 +867,11 @@ theorem om'_stable (a : 𝓞 E) {x : V} (hx : x ∈ D.om') : D.ρΩ a x ∈ D.om
         rw [e, ← Nat.cast_pow, Nat.cast_smul_eq_nsmul]; abel
       change D.ρΩ a (D.h z) ∈ D.om'
       rw [e']
-      exact D.om'.sub_mem (Submodule.mem_sup_left (Submodule.subset_span ⟨_, rfl⟩)) (pow_mem D hw)
+      exact D.om'.sub_mem (Submodule.mem_sup_left (Submodule.subset_span ⟨_, rfl⟩)) (PositivityTheory.HtPt.Famproj.smul_mem_om' D hw)
     · rintro _ ⟨z, hz, rfl⟩
       change D.ρΩ a (((p : A) ^ R) • z) ∈ D.om'
       rw [LinearMap.map_smul_of_tower]
-      exact pow_mem D (D.om_stable a z hz)
+      exact PositivityTheory.HtPt.Famproj.smul_mem_om' D (D.om_stable a z hz)
   exact this hx
 
 theorem omHT_proj (σ : E →+* K) (hσ : ∀ k, ∃ a : A, algebraMap A K a = σ (dualInt E k))
@@ -926,7 +895,7 @@ theorem span_eq_of_notMem (hinj : Function.Injective (algebraMap A K)) (𝔮 : I
   refine le_antisymm (Submodule.span_mono (om'_le D)) (Submodule.span_le.2 fun x hx => ?_)
   obtain ⟨h0, h1⟩ := inv_mem hinj 𝔮 (v := (p : A) ^ R) fun hh => hp (h.mem_of_pow_mem _ hh)
   have h2 := Submodule.smul_mem (Submodule.span (locAt K 𝔮) (D.om' : Set V)) ⟨_, h1⟩
-    (Submodule.subset_span (pow_mem D hx))
+    (Submodule.subset_span (PositivityTheory.HtPt.Famproj.smul_mem_om' D hx))
   have e : (⟨_, h1⟩ : locAt K 𝔮) • ((p : A) ^ R) • x = x := by
     change (algebraMap A K ((p : A) ^ R))⁻¹ • ((p : A) ^ R) • x = x
     rw [← algebraMap_smul K ((p : A) ^ R) x, smul_smul, inv_mul_cancel₀ h0, one_smul]
@@ -987,12 +956,6 @@ open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.B
 
 noncomputable section
 
-namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.Lab
-
-theorem exists_labelEmbedding : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (t : CMType H ⊕ CMType H), ∃ σ : E →+* Ω, (∀ a : 𝓞 E, σ (a : E) = 𝔐.emb t a) ∧ (∀ a : 𝓞 E, (σ.comp (HT.cmConj E).toRingHom) (a : E) = 𝔐.emb t.swap a) ∧ ∀ σ' : E →+* Ω, (∀ a : 𝓞 E, σ' (a : E) = 𝔐.emb t a) → σ' = σ := by
-  apply PositivityTheory.Xgn.exists_cm_type_embedding
-
-end GlobalTheory.CompanionTheory.Ar.Num.FamEx.Lab
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1501,7 +1464,7 @@ theorem seq_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → ∀ 
   haveI := hI
   haveI := hFr
   have hc : ∀ x, HT.cmConj E (HT.cmConj E x) = x := fun x => by simp [HT.cmConj]
-  obtain ⟨σ, hσ, hσ', huniq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Num.FamEx.Lab.exists_labelEmbedding E H D l Xo c O₀ β Y S Ω K J y 𝔐 t
+  obtain ⟨σ, hσ, hσ', huniq⟩ := _root_.PositivityTheory.Xgn.exists_cm_type_embedding E H D l Xo c O₀ β Y S Ω K J y 𝔐 t
   have hd := _root_.PositivityTheory.Xgn.sequence_differentials_exist E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hA hpq p hpS hdisc A m hpm O
   have hgd : ∀ τ : E →+* Ω, HT.GeneratesDiff τ (1 : CR O y c') := fun τ =>
     generatesDiff_one _ τ (hd τ).1 (hd τ).2

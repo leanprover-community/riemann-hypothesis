@@ -181,10 +181,6 @@ theorem val_eq_one_of_pow_eq_one {K : Type} [Field K] (v : Valuation K NNReal) {
   have h : v x ^ n = 1 := by rw [← map_pow, hx, map_one]
   exact (pow_left_inj₀ zero_le zero_le_one hn).mp (by simpa using h)
 
-theorem val_sub_one_pow {K : Type} [Field K] (v : Valuation K NNReal) (p : ℕ) [Fact p.Prime]
-    {ζ : K} (hζ : IsPrimitiveRoot ζ p) : v (ζ - 1) ^ (p - 1) = v (p : K) := by
-  apply PositivityTheory.HtPt.Ra.val_prim <;> assumption
-
 def ltOneIdeal {C : Type} [Field C] (v : Valuation C NNReal) (R : Type) [CommRing R]
     [Algebra R C] (hv : v.Integers R) : Ideal R where
   carrier := {r | v (algebraMap R C r) < 1}
@@ -287,7 +283,7 @@ theorem gauss_value : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgCl
       rw [map_one]; exact hym
     rw [Valuation.map_sub_swap, Valuation.map_sub_eq_of_lt_left v h, map_one]
   rw [hsum, hG, map_mul, map_mul, hvσ, hvy, one_mul, mul_one]
-  exact val_sub_one_pow v p hζ
+  exact PositivityTheory.HtPt.Ra.val_prim v p hζ
 
 end GlobalTheory.CompanionTheory.Ar.GR
 end -- clump:auto

@@ -66,9 +66,3 @@ theorem charUnram_inv {χ : (AE D)ˣ →* Circle} {v} (h : CharUnramAt D χ v) :
   rw [MonoidHom.inv_apply, h x h1 h2 h3 h4, inv_one]
 
 end GlobalTheory.SeeSaw.WeilLines
-
-namespace GlobalTheory.SeeSaw.WeilLines
-
-open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (CharUnramAt)
-
-end GlobalTheory.SeeSaw.WeilLines

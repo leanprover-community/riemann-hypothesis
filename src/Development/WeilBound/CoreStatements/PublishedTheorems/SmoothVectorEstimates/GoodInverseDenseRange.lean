@@ -76,12 +76,8 @@ theorem denseRange_mapGL {K B : Type} [Field K] [CommRing B] [TopologicalSpace B
   let f : Matrix (Fin a) (Fin a) B → Matrix (Fin a) (Fin a) B × (Matrix (Fin a) (Fin a) B)ᵐᵒᵖ :=
     fun P => (P, MulOpposite.op P⁻¹)
   have hdet : IsUnit (M.val.det) := (Matrix.isUnit_iff_isUnit_det _).1 M.isUnit
-  have hinv : ContinuousAt (fun P : Matrix (Fin a) (Fin a) B => P⁻¹) M.val := by
-    have e : (fun P : Matrix (Fin a) (Fin a) B => P⁻¹) = fun P => Ring.inverse P.det • P.adjugate := by
-      funext P; exact Matrix.inv_def P
-    rw [e]
-    exact ((hB.2 _ hdet).comp (continuous_id.matrix_det).continuousAt).smul
-      (continuous_id.matrix_adjugate).continuousAt
+  have hinv : ContinuousAt (fun P : Matrix (Fin a) (Fin a) B => P⁻¹) M.val :=
+    continuousAt_matrix_inv _ (hB.2 _ hdet)
   have hf : ContinuousAt f M.val := continuousAt_id.prodMk (MulOpposite.continuous_op.continuousAt.comp hinv)
   have hfM : f M.val = Units.embedProduct _ M := by
     simp only [f, Units.embedProduct_apply, Matrix.coe_units_inv]

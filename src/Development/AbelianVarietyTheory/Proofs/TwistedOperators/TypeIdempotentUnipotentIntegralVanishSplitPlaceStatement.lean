@@ -686,9 +686,9 @@ theorem mem_map_iff (e : G ≃ₜ* H) (N : Subgroup G) (u : H) : u ∈ N.map (e 
 def mapSubgroupEquiv (e : G ≃ₜ* H) (N : Subgroup G) : N ≃ₜ* N.map (e : G →* H) where
   toFun := fun n => ⟨e n, Subgroup.mem_map_of_mem _ n.2⟩
   invFun := fun u => ⟨e.symm u, (mem_map_iff e N u).1 u.2⟩
-  left_inv n := Subtype.ext (e.symm_apply_apply _)
-  right_inv u := Subtype.ext (e.apply_symm_apply _)
-  map_mul' m n := Subtype.ext (map_mul e _ _)
+  left_inv _ := Subtype.ext (e.symm_apply_apply _)
+  right_inv _ := Subtype.ext (e.apply_symm_apply _)
+  map_mul' _ _ := Subtype.ext (map_mul e _ _)
   continuous_toFun := (e.continuous.comp continuous_subtype_val).subtype_mk _
   continuous_invFun := (e.symm.continuous.comp continuous_subtype_val).subtype_mk _
 

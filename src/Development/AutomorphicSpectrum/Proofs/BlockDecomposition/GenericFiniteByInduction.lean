@@ -198,7 +198,7 @@ def ctMap (L : Subgroup (GL (Fin a) (Af E))) {W : Type} [AddCommGroup W] [Module
   map_add' ψ ψ' := funext fun g =>
     integral_add (integrableOn_unip (continuous_of_level ψ.2.1.level) r g)
       (integrableOn_unip (continuous_of_level ψ'.2.1.level) r g)
-  map_smul' c ψ := funext fun g => integral_smul c _
+  map_smul' c _ := funext fun _ => integral_smul c _
 
 theorem genFin_step (hC : CuspFin E a) (hT : ∀ r, 0 < r → r < a → CTFin E a r) : GenFin E a := by
   intro L hL W _ _ _ ρ hρ J hJ

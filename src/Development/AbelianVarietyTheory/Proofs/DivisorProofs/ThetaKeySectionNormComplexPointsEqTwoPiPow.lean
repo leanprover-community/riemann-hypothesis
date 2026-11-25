@@ -86,7 +86,6 @@ theorem norm_rule_of_coord {κ : GlobalTheory.KeyCl.Rule} (hκ : GlobalTheory.Ke
   have key := hκ x u Hm W χ θ Fd 1 _ hA hR hF hD hFd hN.symm rfl
   rw [hd] at hv
   rw [hW, eq_inv_of_mul_eq_one_left hv] at key
-  have hπ := Real.pi_pos
   simp only [mul_one, one_pow] at key
   rw [← key]
   simp only [mul_pow, pow_mul']

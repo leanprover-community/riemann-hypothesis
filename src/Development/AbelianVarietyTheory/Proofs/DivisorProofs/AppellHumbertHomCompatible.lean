@@ -255,8 +255,6 @@ theorem lam_factor {M₀ M : LB A.left} (hM : M.IsLB) (u₀ : HolUnif A M₀ g) 
   rw [d0, d1, d2, d3]
   simp only [zpow_one, zpow_neg_one, sumL_empty, sumL_zero, sumL_one, sumL_both]
   rw [l1, l2, l3, k]
-  have e1 := Complex.exp_ne_zero (↑Real.pi * hf Hm (halfL g v) (halfL g w) + ↑Real.pi / 2 * hf Hm (halfL g w) (halfL g w))
-  have e2 := Complex.exp_ne_zero (↑Real.pi * hf Hm (halfR g v) (halfR g w) + ↑Real.pi / 2 * hf Hm (halfR g w) (halfR g w))
   field_simp
 
 end GlobalTheory.LamPullFrame

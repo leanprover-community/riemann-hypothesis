@@ -142,10 +142,8 @@ theorem rayUnits_one : (one : Modulus K).rayUnits = ⊤ := by
   rw [rayUnits, idelesOneMod_one, Subgroup.comap_top]
 
 theorem classGroup_mk_eq_one_iff {I : (FractionalIdeal (𝓞 K)⁰ K)ˣ} :
-    ClassGroup.mk K I = 1 ↔ I ∈ (toPrincipalIdeal (𝓞 K) K).range := by
-  rw [← (ClassGroup.equiv K).injective.eq_iff, ClassGroup.equiv_mk, map_one,
-    FractionalIdeal.canonicalEquiv_self, QuotientGroup.mk'_apply, QuotientGroup.eq_one_iff]
-  exact Iff.rfl
+    ClassGroup.mk K I = 1 ↔ I ∈ (toPrincipalIdeal (𝓞 K) K).range :=
+  _root_.GroundTheory.Global.classGroup_mk_eq_one_iff
 
 def toClassGroup : (one : Modulus K).coprimeIdeals →* ClassGroup (𝓞 K) :=
   (ClassGroup.mk K).comp (one : Modulus K).coprimeIdeals.subtype

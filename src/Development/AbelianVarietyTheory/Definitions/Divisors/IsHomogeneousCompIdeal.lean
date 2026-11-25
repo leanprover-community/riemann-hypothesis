@@ -163,9 +163,6 @@ theorem petOn_conj (Z : Comp Xo c) (G : WTZ E) (σ : c.F →+* ℂ) (f : Rul Xo 
 
 
 
-def CompShortGen (G : WTZ E) {n : ℕ} (w : Fin n → cuspW Xo c U G) (abelian₂ : ℝ) : Prop :=
-  IsShortGen (fun (k : (c.F →+* ℂ) × Comp Xo c) (f : cuspW Xo c U G) => petOn U x V dict k.2 G k.1 f) (latW U G) w abelian₂
-
 def depth_vw (G : WTZ E) (v : Rul Xo c → EReal) : EReal := ⨅ w ∈ latW U G, v w
 
 def growthOn (Z : Comp Xo c) (G : WTZ E) : ℝ≥0∞ :=

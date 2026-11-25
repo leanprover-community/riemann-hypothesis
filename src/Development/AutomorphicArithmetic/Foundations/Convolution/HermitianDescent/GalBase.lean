@@ -121,11 +121,8 @@ theorem galBase : GalBase := by
           rfl
         | add a b ha hb =>
           simp only [map_add (f := _), mul_add, ha, hb, Finset.sum_add_distrib]
-      have h2 : ∀ j : ℕ, (τ ^ j) z = z := by
-        intro j
-        induction j with
-        | zero => rfl
-        | succ j ih => rw [pow_succ, AlgEquiv.mul_apply, hz, ih]
+      have h2 : ∀ j : ℕ, (τ ^ j) z = z := fun j =>
+        (congrFun (AlgEquiv.coe_pow τ j) z).trans (Function.iterate_fixed hz j)
       refine ⟨p z, ?_⟩
       rw [h1]
       simp only [map_mul, h2, hp]

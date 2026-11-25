@@ -113,7 +113,3 @@ theorem step_cast {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ 
   · exact pairAt_tr ht hmap Φ Ψ c
 
 end Formalism.FourierDecayAlt.P.PTieL
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

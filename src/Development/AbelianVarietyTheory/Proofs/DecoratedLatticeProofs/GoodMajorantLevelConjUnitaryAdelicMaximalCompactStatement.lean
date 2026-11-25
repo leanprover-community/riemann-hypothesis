@@ -389,13 +389,10 @@ theorem exists_norm (h : IsCMExt F E σ) (hU : Algebra.Unramified (𝓞 F) (𝓞
   exact ⟨h2.unit, hp⟩
 
 theorem cT_mul {A : Type} [CommRing A] (s : A →+* A) {n : ℕ} (P Q : Matrix (Fin n) (Fin n) A) :
-    cT s (P * Q) = cT s Q * cT s P := by
-  unfold cT
-  rw [Matrix.map_mul, Matrix.transpose_mul]
+    cT s (P * Q) = cT s Q * cT s P := GlobalTheory.MajorantConj.cT_mul s P Q
 
 theorem cT_one {A : Type} [CommRing A] (s : A →+* A) {n : ℕ} : cT s (1 : Matrix (Fin n) (Fin n) A) = 1 := by
-  unfold cT
-  rw [Matrix.map_one _ (map_zero s) (map_one s), Matrix.transpose_one]
+  exact GlobalTheory.MajorantConj.cT_one s
 
 theorem exists_orthonormal_frame (h : IsCMExt F E σ) (hU : Algebra.Unramified (𝓞 F) (𝓞 E)) {n : ℕ}
     {J : Matrix (Fin n) (Fin n) E} (hJ : IsHermND σ J) (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsFullLattice E L]

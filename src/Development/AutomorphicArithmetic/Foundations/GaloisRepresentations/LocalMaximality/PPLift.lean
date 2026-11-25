@@ -47,37 +47,24 @@ private theorem exteriorAlgebra_iota_mul_mem_omB_succ {K : Type} [Field K] [Alge
     {p : Ω[K⁄ℂ]} (hp : p ∈ Submodule.span ℂ {m : Ω[K⁄ℂ] | ∃ c ∈ B, ∃ u ∈ B, m = c • D ℂ K u})
     {y : DR ℂ K} (hy : y ∈ omB ℂ K B a) :
     ExteriorAlgebra.ι K p * y ∈ omB ℂ K B (a + 1) := by
-  induction hp using Submodule.span_induction with
-  | mem q hq =>
-    obtain ⟨c, hc, u, hu, rfl⟩ := hq
-    unfold omB at hy ⊢
-    induction hy using Submodule.span_induction with
-    | mem z hz =>
-      obtain ⟨b, hb, v, hv, rfl⟩ := hz
-      apply Submodule.subset_span
-      refine ⟨c * b, B.mul_mem hc hb, Fin.cons u v, ?_, ?_⟩
-      · intro k
-        refine Fin.cases ?_ (fun k => ?_) k
-        · simpa using hu
-        · simpa using hv k
-      · rw [ExteriorAlgebra.ιMulti_succ_apply]
-        simp only [map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, Matrix.vecTail,
-          Function.comp_def, Fin.cons_succ, Fin.cons_zero]
-        rw [mul_comm b c]
-    | zero => simp
-    | add z w _ _ hz hw =>
-      rw [mul_add]
-      exact Submodule.add_mem _ hz hw
-    | smul r z _ hz =>
-      rw [mul_smul_comm]
-      exact Submodule.smul_mem _ r hz
-  | zero => simp
-  | add q q' _ _ hq hq' =>
-    rw [map_add (f := _), add_mul]
-    exact Submodule.add_mem _ hq hq'
-  | smul r q _ hq =>
-    rw [LinearMap.map_smul_of_tower, smul_mul_assoc]
-    exact Submodule.smul_mem _ r hq
+  let mul : Ω[K⁄ℂ] →ₗ[ℂ] DR ℂ K →ₗ[ℂ] DR ℂ K :=
+    (LinearMap.mul ℂ (DR ℂ K)).comp ((ExteriorAlgebra.ι K).restrictScalars ℂ)
+  have hmul := Submodule.apply_mem_map₂ mul hp hy
+  refine (show _ ≤ omB ℂ K B (a + 1) from ?_) hmul
+  unfold omB
+  rw [Submodule.map₂_span_span, Submodule.span_le, Set.image2_subset_iff]
+  rintro _ ⟨c, hc, u, hu, rfl⟩ _ ⟨b, hb, v, hv, rfl⟩
+  apply Submodule.subset_span
+  refine ⟨c * b, B.mul_mem hc hb, Fin.cons u v, ?_, ?_⟩
+  · intro k
+    refine Fin.cases ?_ (fun k => ?_) k
+    · simpa using hu
+    · simpa using hv k
+  · change ExteriorAlgebra.ι K (c • D ℂ K u) * (b • ExteriorAlgebra.ιMulti K a (fun k => D ℂ K (v k))) = _
+    rw [ExteriorAlgebra.ιMulti_succ_apply]
+    simp only [map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, Matrix.vecTail,
+      Function.comp_def, Fin.cons_succ, Fin.cons_zero]
+    rw [mul_comm b c]
 
 private theorem iotaMulti_mem_omB_of_mem_span {K : Type} [Field K] [Algebra ℂ K] (B : Subalgebra ℂ K) :
     ∀ (a : ℕ) (m : Fin a → Ω[K⁄ℂ]),

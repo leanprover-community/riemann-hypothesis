@@ -154,7 +154,7 @@ theorem ker_of_rat {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ)
   exact hψ.2.2.1 _
 
 theorem continuous_adj' : Continuous (adj : Mx D n n → Mx D n n) :=
-  (continuous_id.matrix_map GlobalTheory.AnnihBox.continuous_cA').matrix_transpose
+  (continuous_id.matrix_map GlobalTheory.FockCompare.ThetaCont.continuous_conj).matrix_transpose
 
 theorem isClosed_hermA : IsClosed ((hermA D n : AddSubgroup (Mx D n n)) : Set (Mx D n n)) := by
   obtain ⟨-, -, -, i4, -⟩ := GlobalTheory.TowerResNonzero.lattice_ratMx D n n

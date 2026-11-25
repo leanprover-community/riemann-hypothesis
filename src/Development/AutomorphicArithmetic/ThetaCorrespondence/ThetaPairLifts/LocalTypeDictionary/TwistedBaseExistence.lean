@@ -142,7 +142,7 @@ end GlobalTheory.Chain.KFinOnto
 
 namespace GlobalTheory.Chain.KFinOnto
 
-theorem itW_onto_kFin : ∀ (hD : GlobalTheory.Published.DiscreteSeriesCover) (hH : GlobalTheory.Published.HarishChandraModules) (D : D7)
+theorem itW_onto_kFin : ∀ (_ : GlobalTheory.Published.DiscreteSeriesCover) (_ : GlobalTheory.Published.HarishChandraModules) (D : D7)
     (k : Fin D.R.m) (a b : ℕ),
     a = k → b = (k : ℕ) + 1 → ∀ (V W : HSp D) (M : DSModel V (parB (Ptw D) a)) (M' : DSModel W (parB (Ptw D) b))
     (θ : InfFam D) (ψ : AddChar (AF D.host.F) ℂ), IsInfFam θ → ChainPar D k →

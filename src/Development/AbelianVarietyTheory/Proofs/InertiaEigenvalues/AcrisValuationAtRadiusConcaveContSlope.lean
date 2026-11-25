@@ -80,10 +80,6 @@ theorem continuousOn_gC (l : ℕ) [Fact l.Prime] (x : Formalism.Per.Acris l) :
       (hg.mono Set.Icc_subset_Ici_self).congr (fun y hy => hR y hy) (hR ρ₀ ⟨le_rfl, h02.le⟩)
     exact (hg'.mono_of_mem_nhdsWithin (Icc_mem_nhdsGE h02)).mono Set.inter_subset_right
 
-theorem continuousOn_gC_target :
-    ∀ (l : ℕ) [Fact l.Prime] (x : Formalism.Per.Acris l), ContinuousOn (fun ρ => gC l ρ x) (Set.Ico (l : ℝ)⁻¹ 1) :=
-  fun l _ x => continuousOn_gC l x
-
 end GlobalTheory.PMon.Gauss
 
 end
@@ -165,7 +161,7 @@ theorem vr_continuousOn_Ioc {x : Formalism.Per.Acris l} (hx : x ≠ 0) :
   have hc1 : Continuous (fun r : ℝ => (l : ℝ) ^ (-r)) :=
     Continuous.rpow continuous_const continuous_neg (fun _ => Or.inl hL0.ne')
   have hc2 : ContinuousOn (fun r : ℝ => gC l ((l : ℝ) ^ (-r)) x) (Set.Ioc 0 1) :=
-    (_root_.GlobalTheory.PMon.Gauss.continuousOn_gC_target l x).comp hc1.continuousOn hmaps
+    (_root_.GlobalTheory.PMon.Gauss.continuousOn_gC l x).comp hc1.continuousOn hmaps
   have hpos : ∀ r ∈ Set.Ioc (0 : ℝ) 1, gC l ((l : ℝ) ^ (-r)) x ≠ 0 := fun r hr =>
     (_root_.GlobalTheory.PMon.Gauss.gC_pos_of_ne_zero l x hx _ (prime_rpow_neg_mem_Ico_inv_one hr.1 hr.2).1 (prime_rpow_neg_mem_Ico_inv_one hr.1 hr.2).2).ne'
   simp only [vr, Real.logb]

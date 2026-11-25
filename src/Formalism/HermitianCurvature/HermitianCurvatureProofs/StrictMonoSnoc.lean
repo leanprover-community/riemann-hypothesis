@@ -98,7 +98,7 @@ theorem herm_bvec_sum (k r : ℕ) (yb : Fin (2 * r + k + 1) → ℂ) (hyb : inWb
       · exact absurd (Fin.ext (by simp only [Fin.val_mk]; omega)) h
     · intro b _ hb
       split_ifs with h
-      · exact absurd (Fin.ext (by simp only [Fin.ext_iff, Fin.val_mk] at h ⊢; omega)) hb
+      · exact absurd (Fin.ext (by simp only [Fin.ext_iff] at h ⊢; omega)) hb
       · exact mul_zero _
     · intro h
       exact absurd (Finset.mem_univ _) h

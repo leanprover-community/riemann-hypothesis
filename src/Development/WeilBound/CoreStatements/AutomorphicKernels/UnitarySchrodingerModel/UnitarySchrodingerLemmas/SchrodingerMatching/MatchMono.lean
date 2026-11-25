@@ -470,8 +470,6 @@ namespace PositivityTheory.PfSWUS.KFinMatch
 
 alias adj_one_k := _root_.GlobalTheory.MixModel.adj_one
 
-
-
 theorem finite_places_match : PositivityTheory.PfSWUS.SwMatch.FinMatch := by
   intro D n M a d bs g gv hP lam L hlam hL hstd
   have ha1 : a.1 * (a⁻¹).1 = 1 := a.mul_inv
@@ -860,7 +858,6 @@ theorem inv_cpow_neg' (x : ℝ≥0) {w : ℂ} (hw : w ≠ 0) : (((x : ℝ)⁻¹ 
       exact Real.pi_ne_zero.symm
     rw [Complex.ofReal_inv, Complex.inv_cpow _ _ harg, Complex.cpow_neg, inv_inv]
 
-
 theorem nu_conj {θ : InfFam D} (hRc : RealConj) (hθ : IsInfFam θ) (a : GL (Fin n) (AE D))
     (lam : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers D.host.F),
       Measure (Fin n → HeckeCharacterZeroLocus.SiegelWeilU.Fv D.host.F v ⊗[D.host.F] D.host.E))
@@ -917,9 +914,6 @@ private theorem continuous_conjH' (a : GL (Fin n) (AE D)) : Continuous (conjH (D
   have := isTopologicalRing_tens (F := D.host.F) (E := D.host.E) (R := AF D.host.F)
   exact ((continuous_const.matrix_mul continuous_subtype_val).matrix_mul continuous_const).subtype_mk _
 
-
-
-
 theorem integrable_comp_conjH (lam : Measure (hermA D n)) (hlam : lam.IsAddHaarMeasure) (a : GL (Fin n) (AE D))
     {f : hermA D n → ℂ} (hf : Integrable f lam) : Integrable (fun b => f (conjH a b)) lam := by
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D n n
@@ -961,9 +955,6 @@ private theorem sect_wn {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D
     simp [GlobalTheory.StdUnn.inner, adj, Matrix.mul_apply]
   beta_reduce
   rw [hω.unip (nb b) b.1 (hnb b), h0, Matrix.trace_zero, trA, map_zero, AddChar.map_zero_eq_one, mul_one, mul_comm]
-
-
-
 
 theorem integrable_whit_of_unfold (hU : Unfold) :
     ∀ D n V ψ χ θ μ ω H l s ν Φ, Std D n V ψ χ θ μ ω H l s ν Φ → InRange V n →
@@ -1037,9 +1028,6 @@ theorem inner_mul_right (V : HSp D) (y : Mx D V.rank n) (a : Mx D n n) :
   unfold GlobalTheory.StdUnn.inner
   rw [adj_mul]
   simp only [Matrix.mul_assoc]
-
-
-
 
 theorem jt_conj (V : HSp D) (ψ : AddChar (AF D.host.F) ℂ) (μ : Measure (Mx D V.rank n)) (𝓕 : Set (Mx D V.rank n))
     (hμ : IsCovolOne (ratMx D V.rank n) μ 𝓕) (a : GL (Fin n) (AE D)) (φ : Mx D V.rank n → ℂ) (c : hermA D n) :
@@ -1154,9 +1142,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 namespace PositivityTheory.PfSWUS.SwMatch
 
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.IwaAd GlobalTheory.CompanionTheory.SiegelND
-
-
-
 
 theorem whit_side (hRc : RealConj) (hM : ConjMod) (hU : Unfold) (hK : HeightKInv)
     {D : D7} {n : ℕ} {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)ˣ →* Circle} {θ : InfFam D}
@@ -1287,7 +1272,6 @@ namespace PositivityTheory.PfSWUS.SwMatch
 
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.IwaAd GlobalTheory.CompanionTheory.SiegelND
 
-
 theorem matchMono_of' (hψ : PsiPlaces) (hR : RealMatch) (hRc : RealConj) (hH : HeightWN) (hF : FinMatch)
     (hM : ConjMod) (hT : ValueSide) (hU : Unfold) (hK : HeightKInv) (hA : HaarFam) : MatchMono := by
   intro D n V ψ χ θ μ ω H l s ν Φ hstd hrange lam 𝓖 nb hcd w hw β hβ a k hk φ hφ
@@ -1390,7 +1374,6 @@ theorem psiPlaces : PsiPlaces := by
   obtain ⟨h1, h2, h3⟩ := infFam_spec D θ h.hθ
   exact ⟨h.hψ, h1, h3, h2, GlobalTheory.ResAniso.VacSchwartz.realPar_ne_zero D θ h.hθ ψ h.hψ l h.hl, h.hl⟩
 
-
 open GlobalTheory.CompanionTheory.SiegelND.ThetaGlue in
 theorem valueSide : ValueSide := by
   intro D r V ν hν φ β hβ μH 𝓕 hμ h𝓕
@@ -1427,7 +1410,7 @@ namespace PositivityTheory.PfSWUS.SwMatch
 
 theorem matchMono : PositivityTheory.PfSWUS.MatchMono :=
   matchMono_of' psiPlaces PositivityTheory.PfSWUS.SwSpanR.realMatch PositivityTheory.PfSWUS.SwSpan.realConj PositivityTheory.PfSWUS.SwFockk.heightWN
-    PositivityTheory.PfSWUS.KFinMatch.finite_places_match GlobalTheory.CompanionTheory.IwaRedHand.mod_of_cg valueSide GlobalTheory.T.unfolding_holds GlobalTheory.T.height_K_invariance haarFam
+    PositivityTheory.PfSWUS.KFinMatch.finite_places_match GlobalTheory.CompanionTheory.IwaRedHand.mod_of_cg valueSide GlobalTheory.CompanionTheory.SwUnf.unfold GlobalTheory.T.height_K_invariance haarFam
 
 end PositivityTheory.PfSWUS.SwMatch
 end -- clump:auto

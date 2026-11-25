@@ -871,9 +871,6 @@ theorem continuous_blocks' {k Γ : Type} [Field k] [TopologicalSpace k] [IsTopol
 
 end GlobalTheory.AbsIrrConstituents
 
-namespace GlobalTheory.AbsIrrConstituents
-
-end GlobalTheory.AbsIrrConstituents
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeGaloisLocalWeightsDeRham =====

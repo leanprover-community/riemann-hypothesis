@@ -158,16 +158,8 @@ theorem valR_pt_ratio (c : R →+* C) (v : Fin (N + 1) → C) (hv : Ideal.span (
   have h := (le_pt_preimage_chart_iff c v hv i).2 hi
   have e : ∀ a : C, (Scheme.ΓSpecIso (CommRingCat.of C)).hom.hom (fnOn ⊤ a) = a := fun a =>
     (congrArg _ (GlobalTheory.Cartier.resG_self (X := Sp C) le_top _)).trans (Iso.inv_hom_id_apply (Scheme.ΓSpecIso (CommRingCat.of C)) a)
-  have hmul : pullRatio (pt c v hv) ⊤ i h j * fnOn ⊤ (v i) = fnOn ⊤ (v j) := by
-    have hu : IsUnit (MvPolynomial.eval₂Hom c v (MvPolynomial.X i)) := by
-      simpa only [MvPolynomial.eval₂Hom_X'] using hi
-    have hpt : pt c v hv =
-        spMap (ProjPoint.awayLift (grading R N) (MvPolynomial.eval₂Hom c v) (MvPolynomial.X i) hu) ≫ _ :=
-      ProjPoint.ofHom_eq_awayι _ _ _ one_pos (X_mem R N i) hu
-    have hratio := ProjPoint.awayLift_mk_mul (grading R N) (MvPolynomial.eval₂Hom c v) hu
-      (X_mem R N i) 1 (MvPolynomial.X j) (X_mem R N j)
-    rw [pullRatio_of_eq hpt h (hpt ▸ h), pullRatio_spMap_awayι, ← map_mul]
-    exact congrArg (fnOn ⊤) (by simpa only [ratioAway, MvPolynomial.eval₂Hom_X', pow_one] using hratio)
+  have hmul : pullRatio (pt c v hv) ⊤ i h j * fnOn ⊤ (v i) = fnOn ⊤ (v j) :=
+    pullRatio_pt_top_mul c v hv i j hi h
   have h1 := congrArg (Scheme.ΓSpecIso (CommRingCat.of C)).hom.hom hmul
   rw [map_mul, e, e] at h1
   rw [valR_eq _ _ h, ← h1, mul_assoc, Ring.mul_inverse_cancel _ hi, mul_one]

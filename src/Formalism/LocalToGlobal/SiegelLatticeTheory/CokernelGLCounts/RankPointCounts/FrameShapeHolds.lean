@@ -125,8 +125,7 @@ theorem bt_sgn (uu' : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E) (j 
   linear_combination (uu' j i * (-1) ^ (D.R.rS - i.val) * (-1) ^ (D.R.rS - i.val)) * h1 + uu' j i * h2
 
 theorem star_conjF (x : D.host.E) : star x = D.conjF x := by
-  rw [D.conjF_eq]
-  exact Formalism.BasicNotions.Examples₂.star_eq_conj D.host x
+  exact (Formalism.L2.SG.Pf.AtPt.conjF_star x).symm
 
 variable (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
   (δ : ∀ p : PlF D, (D.s.atP p).Fp) (u u' : D.what₂.Word)

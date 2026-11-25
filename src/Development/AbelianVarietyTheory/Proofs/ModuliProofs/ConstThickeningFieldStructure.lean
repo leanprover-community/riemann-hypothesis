@@ -71,8 +71,7 @@ def constHom {R : Type} [CommRing R] {X : Scheme.{0}} (f : X ⟶ Sp R) (U : X.Op
 
 theorem res_app {X X' : Scheme.{0}} (f : X' ⟶ X) {U V : X.Opens} (h : V ≤ U) (h' : f ⁻¹ᵁ V ≤ f ⁻¹ᵁ U) (a : Γ(X, U)) :
     (X'.presheaf.map (homOfLE h').op).hom ((f.app U).hom a) = (f.app V).hom ((X.presheaf.map (homOfLE h).op).hom a) := by
-  rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply, Scheme.Hom.naturality]
-  rfl
+  exact GlobalTheory.RelConstThickening.res_app f h h' a
 
 theorem existsUnique_affine (H : IsPullback ρ π q (spMap (algebraMap K (DualNumber K)))) {U : Y.Opens}
     (hU : IsAffineOpen U) (F : Γ(Y', ρ ⁻¹ᵁ U)) : ∃! ab : Γ(Y, U) × Γ(Y, U),
@@ -95,9 +94,8 @@ theorem res_comb {U V : Y.Opens} (h : V ≤ U) (h' : ρ ⁻¹ᵁ V ≤ ρ ⁻¹�
         constFn π _ DualNumber.eps * (ρ.app V).hom ((Y.presheaf.map (homOfLE h).op).hom b) := by
   rw [map_add (f := _), map_mul, res_app ρ h, res_app ρ h, GlobalTheory.RelConstThickening.res_constFn]
 
-theorem le_iSup_affine (O : Y.Opens) : O ≤ ⨆ U : {U : Y.Opens // IsAffineOpen U ∧ U ≤ O}, U.1 := fun x hx => by
-  obtain ⟨_, ⟨U, hU, rfl⟩, hxU, hUO⟩ := Y.isBasis_affineOpens.exists_subset_of_mem_open hx O.isOpen
-  exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨U, hU, hUO⟩, hxU⟩
+theorem le_iSup_affine (O : Y.Opens) : O ≤ ⨆ U : {U : Y.Opens // IsAffineOpen U ∧ U ≤ O}, U.1 :=
+  GlobalTheory.RelConstThickening.le_iSup_affine O
 
 theorem unique_comb (H : IsPullback ρ π q (spMap (algebraMap K (DualNumber K)))) {O : Y.Opens} {a b a' b' : Γ(Y, O)}
     (h : (ρ.app O).hom a + constFn π _ DualNumber.eps * (ρ.app O).hom b =

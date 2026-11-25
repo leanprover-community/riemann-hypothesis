@@ -19,8 +19,6 @@ open Formalism.L2.NTheta in
 theorem lamAt_strictAnti {R : Ranks} (h : HCParam R) {n : ℕ} (hn : n = R.r) :
     StrictAnti fun a : Fin n => lamAt h a := by
   intro a b hab
-  have h1 : (a : ℕ) < b := hab
-  have h2 := b.2
   have h3 := lamAt_add_add_le h (b - a) a (by omega)
   rw [show (a : ℕ) + (b - a) = b by omega] at h3
   have h4 : (1 : ℚ) ≤ (((b : ℕ) - a : ℕ) : ℚ) := by

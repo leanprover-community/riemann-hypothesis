@@ -58,17 +58,8 @@ namespace PositivityTheory.HtPt.Mb.LMorph.ChMorph
 
 variable {X X' : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field Ω']
 
-theorem hom_eq_of_points {ξ : Spec (CommRingCat.of Ω) ⟶ X} {ξ' : Spec (CommRingCat.of Ω') ⟶ X'}
-    (hgen : IsCptGen ξ') (hall : ∀ q : X', genPt ξ' ⤳ q) {i : Ω →+* Ω'} {f g : X' ⟶ X}
-    (hf : Dominates ξ' ξ f i) (hg : Dominates ξ' ξ g i) (hb : ∀ q, f q = g q) : f = g := by
-  apply (config := { allowSynthFailures := true }) GlobalTheory.CompanionTheory.Ar.ChMorph.hom_eq_of_points <;> assumption
-
 variable {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} [Finite κ] {x : κ → Ω}
   {o' : Type} [CommRing o'] [Algebra o' Ω'] {κ' : Type} {y : κ' → Ω'}
-
-theorem specializes_of_dominates (M : PModel o x) (M' : PModel o' y) {i : Ω →+* Ω'} {f g : M'.X ⟶ M.X}
-    (hf : Dominates M'.ξ M.ξ f i) (hg : Dominates M'.ξ M.ξ g i) (q : M'.X) : g q ⤳ f q := by
-  apply GlobalTheory.CompanionTheory.Ar.ChMorph.specializes_of_dominates <;> assumption
 
 theorem existsUnique_dominates :
     ∀ (o : Type) [CommRing o] (Ω : Type) [Field Ω] [Algebra o Ω] (κ : Type) [Finite κ] (x : κ → Ω) (M : PModel o x)
@@ -78,5 +69,3 @@ theorem existsUnique_dominates :
   _root_.GlobalTheory.CompanionTheory.Ar.ChMorph.existsUnique_dominates
 
 end PositivityTheory.HtPt.Mb.LMorph.ChMorph
-
-

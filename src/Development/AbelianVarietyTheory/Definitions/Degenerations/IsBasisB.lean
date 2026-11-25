@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFram
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.ZH
@@ -79,7 +78,6 @@ def Lev (c : Sp (OO p) ⟶ u.G.left) (g : GtPtF u.D.toPre (PadicAlgCl p)) : Prop
         ⊤ ≤ ce ⁻¹ᵁ LB.wchart u.D.toPre.P.L (u.D.toPre.Oφ (u.U.gt e).pG χ) jj →
         ∃ x : OO p, (x : PadicAlgCl p) = valF (𝟙 (Sp (PadicAlgCl p))) _ ((g.s χ).s jj).val ∧
           Ideal.Quotient.mk (u.lev e) x = valR ce _ (((u.U.gt e).t χ).s jj).val
-attribute [local instance] SplitExt.free SplitExt.finite
 
 structure FibOf (N : ℕ) where
   Φ : FibPre (kb p)

@@ -442,7 +442,6 @@ private theorem hiAlg_abs {O A M ι : Type} [CommRing O] [IsLocalRing O] [Finite
     rw [IsScalarTower.algebraMap_apply O A _ (a i)]
     exact h5
 
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Hi.hiAlg :
     ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l) (H : HSet L Ω l n c), H.Ax →
     ∀ (A : Type) [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] (θ : H.X.I.T →* Aˣ), H.IsWt θ →

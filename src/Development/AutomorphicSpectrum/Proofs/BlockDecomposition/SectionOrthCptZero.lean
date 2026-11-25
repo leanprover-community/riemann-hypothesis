@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMultOfFintype
 
-set_option backward.isDefEq.respectTransparency false
-
 @[expose] public section
 
 noncomputable section

@@ -52,12 +52,8 @@ open scoped InnerProductSpace
 
 namespace GlobalTheory.SgInf
 
-theorem hpk_ne_zero (k r : ℕ) : Hpk k r ≠ 0 := by
-  intro h
-  have := congrFun (congrFun h ⟨r, by omega⟩) ⟨r, by omega⟩
-  simp only [Hpk, Matrix.zero_apply] at this
-  split_ifs at this <;> first | omega | norm_num at this
-  all_goals simp_all
+theorem hpk_ne_zero (k r : ℕ) : Hpk k r ≠ 0 :=
+  Hpk_ne_zero' k r
 
 theorem isMatGroup_of_isClosedSub {k r : ℕ} {S : Set (Mat k r)} (hS : IsClosedSub k r S) :
     PI.IsMatGroup S := by

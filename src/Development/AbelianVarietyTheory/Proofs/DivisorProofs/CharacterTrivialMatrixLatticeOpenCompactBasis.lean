@@ -15,9 +15,6 @@ noncomputable section
 
 namespace GlobalTheory.LinSchurLatt
 
-theorem eq_one_of_pow_near (z : ℂ) (h : ∀ m : ℕ, ‖z ^ m - 1‖ ≤ 1 / 2) : z = 1 := by
-  apply GlobalTheory.ConductorAdicCompletion.eq_one_of_pow_near_one <;> assumption
-
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem valuation_natCast_le_one (m : ℕ) : valuation k (m : k) ≤ 1 :=
@@ -33,10 +30,9 @@ theorem ker_int_mem_nhds (ψ0 : AddChar k ℂ) (hc : Continuous ψ0) :
   have hev : ∀ᶠ w in 𝓝 (0 : k), ∀ a ∈ {x : k | valuation k x ≤ 1}, a * w ∈ {u : k | ‖ψ0 u - 1‖ ≤ 1 / 2} := by
     refine hO.eventually_forall_of_forall_eventually fun a _ => ?_
     have hcm : Continuous fun z : k × k => z.2 * z.1 := continuous_snd.mul continuous_fst
-    have h0 : (fun z : k × k => z.2 * z.1) (0, a) = 0 := by simp
     exact hcm.continuousAt.preimage_mem_nhds (by simpa using hU)
   filter_upwards [hev] with w hw o ho
-  apply eq_one_of_pow_near
+  apply GlobalTheory.ConductorAdicCompletion.eq_one_of_pow_near_one
   intro m
   have hmo : valuation k ((m : k) * o) ≤ 1 := by
     rw [map_mul]
@@ -86,7 +82,6 @@ theorem exists_smul_int_mem' (n d : ℕ) (W : Set (Matrix (Fin n) (Fin d) k)) (h
   have hev : ∀ᶠ c in 𝓝 (0 : k), ∀ x ∈ {x : Matrix (Fin n) (Fin d) k | ∀ i j, valuation k (x i j) ≤ 1}, c • x ∈ W := by
     refine (isCompact_ball_mat n d 1).eventually_forall_of_forall_eventually fun y _ => ?_
     have hc : Continuous fun z : k × Matrix (Fin n) (Fin d) k => z.1 • z.2 := continuous_fst.smul continuous_snd
-    have h0 : (fun z : k × Matrix (Fin n) (Fin d) k => z.1 • z.2) (0, y) = 0 := by simp
     exact hc.continuousAt.preimage_mem_nhds (by simpa using hW)
   haveI := nhdsNE_neBot' (k := k)
   obtain ⟨c, hc1, hc2⟩ := ((hev.filter_mono (nhdsWithin_le_nhds (s := {(0 : k)}ᶜ))).and

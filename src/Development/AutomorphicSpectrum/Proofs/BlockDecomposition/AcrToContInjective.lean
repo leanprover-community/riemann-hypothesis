@@ -171,12 +171,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
-theorem _root_.GlobalTheory.T.idempotents_coarsen_to_lower_level : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l) (t : PAlg l) (r : ℕ → t.A), (∀ m, r (m + 1) ^ l = r m) →
-  ∀ {m n : ℕ} (h : m ≤ n) (e : ZMod (l ^ n) → t.A), CompleteOrthogonalIdempotents e →
-  (∀ c, t.sharp (e c) * (t.sharp (r n) - t.sharp (t.s (ε.e n)) ^ c.val) = 0) →
-  CompleteOrthogonalIdempotents (fun c : ZMod (l ^ m) => ∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') ∧
-  ∀ c : ZMod (l ^ m), t.sharp (∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e c') * (t.sharp (r m) - t.sharp (t.s (ε.e m)) ^ c.val) = 0 := by
-  first | exact @GlobalTheory.CompanionTheory.ContUniv.coi_descend
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentsCoarsenToLowerLevelStatement =====
@@ -674,7 +668,7 @@ theorem continuous_algebra_universal_existsUnique (ε : Eps l) {ρ : ℕ → ((b
   choose e he hrel using level ε t ht r hr hr1
   have hcomp : ∀ (m n : ℕ) (h : m ≤ n) (c : ZMod (l ^ m)),
       e m c = ∑ c' with ZMod.castHom (pow_dvd_pow l h) (ZMod (l ^ m)) c' = c, e n c' := fun m n h c => by
-    obtain ⟨h1, h2⟩ := GlobalTheory.T.idempotents_coarsen_to_lower_level ε t r hr h (e n) (he n) (hrel n)
+    obtain ⟨h1, h2⟩ := GlobalTheory.CompanionTheory.ContUniv.coi_descend ε t r hr h (e n) (he n) (hrel n)
     exact congrFun (_root_.GlobalTheory.CompanionTheory.ContUniv.idem_unique ε t m (t.sharp (r m)) (e m) _ (he m) h1 (hrel m) h2) c
   obtain ⟨ψ, ⟨hψ1, hψ2⟩, hψ⟩ := map_existsUnique A t φ e he hcomp
   have hv : ∀ (ψ' : A.cont ℤ_[l] ⟶ t) (m : ℕ), Hom.f ψ' (Hom.f (contMap A.fromBase ℤ_[l]) (ρ (m + 1))) ^ l =
@@ -838,8 +832,7 @@ theorem exists_of_lc [CompactSpace X] (hcompl : ∀ V, E V + E Vᶜ = 1) (hj : �
   · refine Ideal.sum_mem _ fun b hb => ?_
     obtain ⟨z, rfl⟩ := hf.range_finite.mem_toFinset.1 hb
     exact Ideal.mul_mem_left _ _ (hI z)
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, Finset.sum_eq_single (f z)]
+  · rw [map_sum, Finset.sum_eq_single (f z)]
     · rw [map_mul, h1 z _ ((hF z _).2 rfl), hj, one_mul]
     · intro b _ hb
       rw [map_mul, h0 z _ (fun h => hb ((hF z b).1 h).symm), zero_mul]

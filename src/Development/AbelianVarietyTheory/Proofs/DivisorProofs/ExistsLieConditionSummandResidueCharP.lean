@@ -415,7 +415,6 @@ theorem exists_eigen_coordinates_range_quot : ∀ {C : Type} [CommRing C] [IsLoc
     obtain ⟨u, hu, hxu⟩ := hD (π x) (LinearMap.mem_range_self π x)
     rw [hpx, hEu _ (LinearMap.mem_range_self π x) u hu hxu]
     exact hu i c
-  have hpe : ∀ i w, (∀ c, σb c w = χ i c • w) → e i (p i w) = p i w := fun i w _ => he2 i _ (hpE i w)
   have hpπ : ∀ i w, πb (p i w) = p i w := by
     intro i w
     simp only [p]

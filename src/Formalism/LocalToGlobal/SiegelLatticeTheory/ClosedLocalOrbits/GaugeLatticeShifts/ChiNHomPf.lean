@@ -80,10 +80,6 @@ theorem level_subgroup_norm_congruence {x : X.B.I.Gf} (hk : x ∈ X.K2) : x ∈ 
 
 end Formalism.L2.SG.Pf.ChiNHomPf
 
-namespace Formalism.L2.SG.Pf
-
-end Formalism.L2.SG.Pf
-
 namespace Formalism.L2.SG.NormCut
 
 section CarK

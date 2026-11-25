@@ -80,13 +80,12 @@ theorem pb_id (A : Over (Sp R)) (a : HO1 A.hom) : pb (𝟙 A) a = a := by
 theorem pb_one (Y A : Over (Sp R)) [GrpObj A] (u : Y ⟶ 𝟙_ (Over (Sp R))) (a : HO1 A.hom) :
     pb (u ≫ η[A]) a = 0 := by
   haveI : IsAffine (𝟙_ (Over (Sp R))).left := inferInstanceAs (IsAffine (Spec (CommRingCat.of R)))
-  rw [pb_comp, (GlobalTheory.T.abelian_square_affine_h1_vanish R).2 _ _ (pb η[A] a), map_zero]
+  rw [pb_comp, (GlobalTheory.Obs.sq_abelian_and_affine_H1 R).2 _ _ (pb η[A] a), map_zero]
 
 theorem isPullO_zero_iff {Y A : Over (Sp R)} (f : Y ⟶ A) (c : HO1 A.hom) : IsPullO (overW f) c 0 ↔ pb f c = 0 :=
   ⟨fun e ↦ e.eq_pullHO1.symm, fun e ↦ e ▸ isPullO_pullHO1 _ c⟩
 
 end Axes
-
 
 open Axes in
 theorem axesO1_of_cohomology_structure : (∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A →
@@ -95,7 +94,7 @@ theorem axesO1_of_cohomology_structure : (∀ (R : Type) [CommRing R] (A : Over 
     ∃ e : ⋀[R]^2 (HO1 A.hom) ≃ₗ[R] GlobalTheory.CatCoh.H2 (OAff A.hom), ∀ a b,
       e (exteriorPower.ιMulti R 2 ![a, b]) = GlobalTheory.CatCoh.cup (OAff A.hom) a b) → AxesVanishingStructureSheafDegOne := by
   intro hS R _ A _ g hA hg c h₁ h₂
-  obtain ⟨hA2, hg2⟩ := (GlobalTheory.T.abelian_square_affine_h1_vanish R).1 A g hA hg
+  obtain ⟨hA2, hg2⟩ := (GlobalTheory.Obs.sq_abelian_and_affine_H1 R).1 A g hA hg
   obtain ⟨⟨f1, p1, r1⟩, -⟩ := hS R A g hA hg
   obtain ⟨⟨f2, p2, r2⟩, -⟩ := hS R (A ⊗ A) (g + g) hA2 hg2
   let N : HO1 (A ⊗ A).hom →ₗ[R] HO1 A.hom × HO1 A.hom :=

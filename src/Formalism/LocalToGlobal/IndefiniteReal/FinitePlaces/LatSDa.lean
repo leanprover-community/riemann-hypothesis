@@ -32,8 +32,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.VacEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def IsDyIdem (v : HeightOneSpectrum (𝓞 D.host.F)) (e : AE D) : Prop :=

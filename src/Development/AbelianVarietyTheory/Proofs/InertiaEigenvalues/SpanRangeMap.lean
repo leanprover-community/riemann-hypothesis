@@ -711,7 +711,6 @@ theorem exists_pole_RW (AI : LocAinf l P) (LL : FinExt l) (s : ℕ) (x : RW LL) 
   exact ⟨z, by rw [crd_piR_pow, hz, pow_zero, one_mul]⟩
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_near_perfI (h : Good K s LL) (I : IoS AI R) (hI : IoW I) (x : RW LL)
     (hx : FixH AI K x) (m : ℕ) : ∃ u ∈ perfI I l, NearPi AI LL s m (x - u) := by
   obtain ⟨u, hu, hu'⟩ := exists_inv_perfI I l
@@ -1486,8 +1485,7 @@ theorem descend {r : ℕ} {ι : Type} (φ : R →ₐ[O] R) (g : ι → (R →ₐ
     exact h1.symm)
   obtain ⟨e', h1, h2⟩ := change_basis e φ Φ hΦ V F₁ hV hE
   refine ⟨e', fun s j => ?_, fun i j => ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [h1, map_sum]
+  · rw [h1, map_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [map_smul_semi, hVg, he]
   · have := hS i j
     rw [← h2] at this
@@ -1524,12 +1522,7 @@ theorem map_id_comm {Z O W : Type} [CommRing Z] [CommRing O] [CommRing W] [Algeb
 
 theorem frob_comm_gal {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (LL : FinExt l) (g : GQ l)
     (x : RW LL) : φRW LL (AI.gRW LL g x) = AI.gRW LL g (φRW LL x) := by
-  refine map_id_comm _ _ (fun w => ?_) x
-  ext n
-  change (WittVector.map (frobenius (Cb l) l)
-      (WittVector.map (autCb l (AI.actT g)).toRingHom w)).coeff n =
-    (WittVector.map (autCb l (AI.actT g)).toRingHom (WittVector.map (frobenius (Cb l) l) w)).coeff n
-  simp [WittVector.map_coeff, frobenius_def]
+  exact (GlobalTheory.Decompl.FixL.frob_comm AI LL g x).symm
 
 theorem fixH_iff {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (K : FinExt l) {LL : FinExt l}
     (x : RW LL) : FixH AI K x ↔ ∀ g : ↥(GK K), P.χQ (g : GQ l) = 1 → AI.gRW LL (g : GQ l) x = x := by

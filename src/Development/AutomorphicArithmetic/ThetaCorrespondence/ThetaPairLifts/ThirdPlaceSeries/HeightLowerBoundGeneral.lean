@@ -374,15 +374,9 @@ noncomputable section
 namespace GlobalTheory.CovHt.GeomBound
 
 theorem strictAnti_of_step {N : ℕ} {f : Fin N → ℤ} (h : ∀ a b : Fin N, (b : ℕ) = a + 1 → f b < f a) : StrictAnti f := by
-  rintro ⟨a, ha⟩ ⟨b, hb⟩ hab
-  simp only [Fin.mk_lt_mk] at hab
-  induction b with
-  | zero => omega
-  | succ n ih =>
-    rcases Nat.lt_succ_iff_lt_or_eq.1 hab with h' | h'
-    · exact (h ⟨n, by omega⟩ ⟨n + 1, hb⟩ rfl).trans (ih (by omega) h')
-    · subst h'
-      exact h ⟨a, ha⟩ ⟨a + 1, hb⟩ rfl
+  cases N with
+  | zero => exact fun i => Fin.elim0 i
+  | succ N => exact Fin.strictAnti_iff_succ_lt.mpr fun i => h i.castSucc i.succ (by simp)
 
 section Point
 

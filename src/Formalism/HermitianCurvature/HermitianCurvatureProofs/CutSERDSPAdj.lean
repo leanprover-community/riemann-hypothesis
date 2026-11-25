@@ -549,13 +549,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-theorem update_mem_OmX {c : Fin r → ℂ} (hc : c ∈ OmX r) (l : Fin r) {t : ℂ} (ht : t ≠ 0) :
-    Function.update c l t ∈ OmX r := by
-  intro j
-  by_cases hj : j = l
-  · subst hj; simpa using ht
-  · rw [Function.update_of_ne hj]; exact hc j
-
 theorem cslice_contDiffAt (Φ : RadSp k r z z' π π') (g : Mx k r) {x : Fin r → ℂ} (hx : x ∈ OmX r) :
     ContDiffAt ℝ ∞ (fun c' => (Φ : Fn k r (Wq →L[ℂ] Wp)) c' g) x := by
   by_cases hg : g ∈ Glev k r (Fin.last r) ∧ 0 < GGl k r z z' g
@@ -615,26 +608,26 @@ theorem site_p_adj_g (X : ActualOps k r z z' π π') (Φ Ψ : RadSp k r z z' π 
       · subst hj; simp only [Function.update_self]; exact contDiff_id
       · simpa [Function.update_of_ne hj] using contDiff_const
   have hAc : ContDiffOn ℝ 1 A {t | t ≠ 0} := fun t ht =>
-    (((cslice_contDiffAt Φ g (update_mem_OmX hc l ht)).comp t hupd.contDiffAt).of_le (by simp)).contDiffWithinAt
+    (((cslice_contDiffAt Φ g (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht)).comp t hupd.contDiffAt).of_le (by simp)).contDiffWithinAt
   have hBc : ContDiffOn ℝ 1 Bf {t | t ≠ 0} := fun t ht =>
-    (((cslice_contDiffAt Ψ g (update_mem_OmX hc l ht)).comp t hupd.contDiffAt).of_le (by simp)).contDiffWithinAt
+    (((cslice_contDiffAt Ψ g (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht)).comp t hupd.contDiffAt).of_le (by simp)).contDiffWithinAt
   have hpΦ : ∀ t : ℂ, t ≠ 0 → (X.op l 0 Φ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g = t • dZv A t := by
     intro t ht
     have hd := dZv_update (f := fΦ) c l t
-      ((cslice_contDiffAt Φ g (update_mem_OmX hc l ht)).differentiableAt (by simp))
+      ((cslice_contDiffAt Φ g (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht)).differentiableAt (by simp))
     rw [X.op_apply, hd.1]
     show pOp l fΦ (Function.update c l t) = _
     unfold pOp
-    rw [ite_eq_left (update_mem_OmX hc l ht), Function.update_self]
+    rw [ite_eq_left (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht), Function.update_self]
   have hpΨ : ∀ t : ℂ, t ≠ 0 → (X.op l 3 Ψ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g =
       conj t • dZbv Bf t := by
     intro t ht
     have hd := dZv_update (f := fΨ) c l t
-      ((cslice_contDiffAt Ψ g (update_mem_OmX hc l ht)).differentiableAt (by simp))
+      ((cslice_contDiffAt Ψ g (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht)).differentiableAt (by simp))
     rw [X.op_apply, hd.2]
     show pbOp l fΨ (Function.update c l t) = _
     unfold pbOp
-    rw [ite_eq_left (update_mem_OmX hc l ht), Function.update_self]
+    rw [ite_eq_left (Formalism.FourierDecayAlt.P.Qx6.update_mem_Om hc l ht), Function.update_self]
     rfl
   have e1 : (fun t : ℂ => B.hsInner ((X.op l 0 Φ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g)
       ((Ψ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g) / ((‖t‖ ^ 2 : ℝ) : ℂ)) =

@@ -56,34 +56,6 @@ theorem bwE_det_mem {M : Matrix (Fin r) (Fin r) ℂ} (h : bwE_Int O M) : M.det �
   rw [e, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
   exact Subtype.property _
 
-theorem bwE_gen_mem (p q : Fin r) {x : ℂ} (hx : x ∈ O) : (1 + Matrix.single p q x) ∈ bwA_EO O r :=
-  Submonoid.subset_closure ⟨q, p, x, hx, rfl⟩
-
-theorem bwE_prod_eq {ι : Type} [DecidableEq ι] (s : Finset ι) (X : ι → Matrix (Fin r) (Fin r) ℂ) (a : ι) (ha : a ∉ s)
-    (h0 : ∀ i ∈ insert a s, ∀ i' ∈ insert a s, X i * X i' = 0) :
-    1 + ∑ i ∈ insert a s, X i = (1 + X a) * (1 + ∑ i ∈ s, X i) := by
-  rw [Finset.sum_insert ha, mul_add, add_mul, add_mul, one_mul, mul_one, one_mul, Finset.mul_sum,
-    Finset.sum_eq_zero (fun i hi => h0 a (Finset.mem_insert_self _ _) i (Finset.mem_insert_of_mem hi)), add_zero]
-  abel
-
-theorem bwE_sum_mem {ι : Type} [DecidableEq ι] (s : Finset ι) (X : ι → Matrix (Fin r) (Fin r) ℂ)
-    (h1 : ∀ i ∈ s, 1 + X i ∈ bwA_EO O r) (h0 : ∀ i ∈ s, ∀ i' ∈ s, X i * X i' = 0) :
-    1 + ∑ i ∈ s, X i ∈ bwA_EO O r := by
-  induction s using Finset.induction_on with
-  | empty => simp only [Finset.sum_empty, add_zero]; exact (bwA_EO O r).one_mem
-  | @insert a s ha ih =>
-    rw [bwE_prod_eq s X a ha h0]
-    exact (bwA_EO O r).mul_mem (h1 a (Finset.mem_insert_self _ _))
-      (ih (fun i hi => h1 i (Finset.mem_insert_of_mem hi))
-        (fun i hi i' hi' => h0 i (Finset.mem_insert_of_mem hi) i' (Finset.mem_insert_of_mem hi')))
-
-theorem bwE_single_mul_apply (p q : Fin r) (x : ℂ) (M : Matrix (Fin r) (Fin r) ℂ) (a b : Fin r) :
-    (Matrix.single p q x * M) a b = if a = p then x * M q b else 0 := by
-  rw [Matrix.mul_apply]
-  by_cases h : a = p
-  · subst h; simp [Matrix.single_apply]
-  · simp [Ne.symm h, h]
-
 theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int O M)
     (hinv : ∃ M', bwE_Int O M' ∧ M' * M = 1) : M ∈ bwA_EO O r := by
   suffices H : ∀ d k, k + d = r → ∀ M : Matrix (Fin r) (Fin r) ℂ, bwE_Int O M →
@@ -133,28 +105,28 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
       · rw [h] at hy
         refine ⟨1 + Matrix.single kk kk (y - 1), 1 + Matrix.single kk kk (M kk kk - 1),
           bwE_Int_add bwE_Int_one (bwE_Int_single _ _ (O.sub_mem hyO O.one_mem)),
-          bwE_gen_mem _ _ (O.sub_mem (hM kk kk) O.one_mem),
+          Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_gen_mem _ _ (O.sub_mem (hM kk kk) O.one_mem),
           bwE_Int_add bwE_Int_one (bwE_Int_single _ _ (O.sub_mem (hM kk kk) O.one_mem)), ?_, ?_, ?_⟩
         · rw [add_mul, one_mul, mul_add, mul_one, Matrix.single_mul_single_same, add_assoc,
             ← Matrix.single_add, ← Matrix.single_add]
           have e : y - 1 + (M kk kk - 1 + (M kk kk - 1) * (y - 1)) = 0 := by linear_combination hy
           rw [e, Matrix.single_zero, add_zero]
-        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, ite_eq_left rfl]
+        · rw [add_mul, one_mul, Matrix.add_apply, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_single_mul_apply, ite_eq_left rfl]
           linear_combination hy
         · intro c hcl a
-          rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, hMkc c hcl, mul_zero]
+          rw [add_mul, one_mul, Matrix.add_apply, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_single_mul_apply, hMkc c hcl, mul_zero]
           split_ifs <;> simp
       · refine ⟨1 + Matrix.single kk i₀ ((1 - M kk kk) * y), 1 + Matrix.single kk i₀ (-((1 - M kk kk) * y)),
           bwE_Int_add bwE_Int_one (bwE_Int_single _ _ (O.mul_mem (O.sub_mem O.one_mem (hM kk kk)) hyO)),
-          bwE_gen_mem _ _ (O.neg_mem (O.mul_mem (O.sub_mem O.one_mem (hM kk kk)) hyO)),
+          Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_gen_mem _ _ (O.neg_mem (O.mul_mem (O.sub_mem O.one_mem (hM kk kk)) hyO)),
           bwE_Int_add bwE_Int_one (bwE_Int_single _ _ (O.neg_mem (O.mul_mem (O.sub_mem O.one_mem (hM kk kk)) hyO))),
           ?_, ?_, ?_⟩
         · rw [add_mul, one_mul, mul_add, mul_one, Matrix.single_mul_single_of_ne _ _ _ _ h, add_zero, add_assoc,
             ← Matrix.single_add, add_neg_cancel, Matrix.single_zero, add_zero]
-        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, ite_eq_left rfl]
+        · rw [add_mul, one_mul, Matrix.add_apply, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_single_mul_apply, ite_eq_left rfl]
           linear_combination (1 - M kk kk) * hy
         · intro c hcl a
-          rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, hMi₀c c hcl, mul_zero]
+          rw [add_mul, one_mul, Matrix.add_apply, Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_single_mul_apply, hMi₀c c hcl, mul_zero]
           split_ifs <;> simp
     set A := G * M with hAdef
     have hAI : bwE_Int O A := bwE_Int_mul hGI hM
@@ -166,11 +138,11 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
       rw [hX, Finset.sum_mul_sum]
       exact Finset.sum_eq_zero (fun i hi => Finset.sum_eq_zero (fun i' hi' => hXX0 i hi i' hi'))
     have hXI : bwE_Int O X := bwE_Int_sum _ _ (fun i _ => bwE_Int_single _ _ (hAI i kk))
-    have hXE : 1 + X ∈ bwA_EO O r := bwE_sum_mem _ _ (fun i _ => bwE_gen_mem _ _ (hAI i kk)) hXX0
+    have hXE : 1 + X ∈ bwA_EO O r := Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_sum_mem _ _ (fun i _ => Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_gen_mem _ _ (hAI i kk)) hXX0
     have hXmul : ∀ a b, (X * A) a b = if a ∈ Finset.univ.erase kk then A a kk * A kk b else 0 := by
       intro a b
       rw [hX, Finset.sum_mul, Matrix.sum_apply]
-      simp_rw [bwE_single_mul_apply]
+      simp_rw [Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_single_mul_apply]
       rw [Finset.sum_ite_eq]
     have h1X : (1 + X) * (1 - X) = 1 := by
       rw [mul_sub, mul_one, add_mul, one_mul, hXX]; abel

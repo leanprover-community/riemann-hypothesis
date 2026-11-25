@@ -61,19 +61,6 @@ private theorem theta_integral_smul {M X : HSp D} (ω : GlobalTheory.Grid.WRep M
     (Φ : WO M X → ℂ) : thetaInt ω ν 𝓕 (c • Φ) = c • thetaInt ω ν 𝓕 Φ := by
   funext h
   simp [thetaInt, thetaKO, integral_const_mul]
-private theorem exists_haar_fundamental_domain (V : HSp D) : ∃ (ν : Measure (GA D V)) (𝓕 : Set (GA D V)), IsHaarFD V ν 𝓕 := by
-  have := (GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D V).1
-  have := (GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D V).2.1
-  have := (GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D V).2.2
-  have : BorelSpace (GA D V) := ⟨rfl⟩
-  have : IsModuleTopology (AF D.host.F) (AF D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
-  have : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
-  have : IsTopologicalRing (AF D.host.F ⊗[D.host.F] D.host.E) :=
-    IsModuleTopology.isTopologicalRing (AF D.host.F) _
-  have : IsTopologicalGroup (GA D V) :=
-    inferInstanceAs (IsTopologicalGroup (HR (AF D.host.F) D.sp.cm.sig V.gram))
-  obtain ⟨𝓕, h𝓕⟩ := GlobalTheory.FundDomDiscrete.exists_fundDom D V (Measure.haar) inferInstance
-  exact ⟨_, 𝓕, inferInstance, h𝓕⟩
 end GlobalTheory.ThetaKFactor
 namespace GlobalTheory.ThetaKFactor
 open MeasureTheory GlobalTheory.SquareComm
@@ -96,7 +83,7 @@ theorem exists_kFactor_of_thetaIntegral (hP : _root_.GlobalTheory.FunPr.ThetaLoc
     {𝓕 : Set (GA D W)} (hν : IsHaarFD W ν 𝓕) {ωA ωB Pi rf rl p p'}
     (hM : IsMatch ψ θ A A₁ B α β ωA ωB Pi rf rl p p') :
     ∃ J₀ : Pi →ₗ[ℂ] (GA D X → ℂ), ∀ Φ ∈ algF ψ θ true A B, thetaInt ωA ν 𝓕 Φ = J₀ (p Φ) := by
-  obtain ⟨ν₁, 𝓕₁, hν₁⟩ := exists_haar_fundamental_domain W₁
+  obtain ⟨ν₁, 𝓕₁, hν₁⟩ := GlobalTheory.Ker.HypModel.exists_haar_fundDom D W₁
   obtain ⟨c, -, hc⟩ := _root_.GlobalTheory.SquareAgree.twisted_theta_integrals_agree hP hK hL D ψ θ hθ W W₁ X A A₁ B α β hT ν 𝓕 ν₁ 𝓕₁ hν hν₁
     ωA ωB Pi rf rl p p' hM
   obtain ⟨Φ₀, -, hrel, -, hI⟩ := hc 0 (Submodule.zero_mem _)

@@ -646,11 +646,6 @@ theorem TopEquiv.cp2Equiv (h : TopEquiv W Ch sel mu cst L T b hY P c) (hX : X.Ok
   rw [e1]
   rfl
 
-def topCpl (h1 : Cp1Equiv W Ch sel mu cst L T b hY) (h2 : TopEquiv W Ch sel mu cst L T b hY P c) (al : L.β m2) :
-    CplKer ((chF W sel mu L u m2).mem al) (midGSD W sel mu L u m2 b) (topGSD W Ch sel mu P u c) (ybCpl W sel mu cst L u m2 b hY) :=
-  CplKer.mk (cp1K W Ch sel mu cst L T al) (topDegreeKTwo W Ch sel mu cst T) (h1 al) h2
-
-
 open Classical in
 def matFam (hM : MatEquiv W Ch sel mu cst L T) : KerFam (chF W sel mu L u) := fun i al be =>
   if h : i < m2 then ClsKer.mk (matK W Ch sel mu cst L T i al be) (hM i h al be) else zeroKer _ _

@@ -167,7 +167,7 @@ theorem stdH_apply (L : PeriodPair) (n : Type*) [Fintype n] [DecidableEq n] (z w
     stdH L n z w = ∑ i, Formalism.L2.Th1.F.herm L (z i) (w i) := by
   rw [stdH, matH_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_eq_single i (fun j _ hj => by simp [Matrix.one_apply, Ne.symm hj]) (by simp)]
+  rw [Finset.sum_eq_single i (fun j _ hj => by simp [Ne.symm hj]) (by simp)]
   simp only [Matrix.smul_apply, Matrix.one_apply_eq, smul_eq_mul, mul_one, Formalism.L2.Th1.F.herm]
   ring
 

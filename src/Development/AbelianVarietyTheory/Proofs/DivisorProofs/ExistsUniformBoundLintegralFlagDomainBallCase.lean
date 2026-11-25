@@ -95,7 +95,6 @@ open scoped ComplexOrder
 
 theorem blkW_upper {r : ℕ} (p0 : ℕ) (w : Low r → ℂ) (i j : Fin (r - 1)) (h : i < j) :
     blkW p0 w i j = 0 := by
-  have h' : (i : ℕ) < j := h
   unfold blkW
   split_ifs
   · unfold lowMat
@@ -259,10 +258,7 @@ theorem colGram_three_unitLower : ∀ M : Matrix (Fin 3) (Fin 3) ℂ, (∀ i, M 
   intro M hd hu
   have h00 := hd 0
   have h11 := hd 1
-  have h22 := hd 2
   have h01 : M 0 1 = 0 := hu 0 1 (by decide)
-  have h02 : M 0 2 = 0 := hu 0 2 (by decide)
-  have h12 : M 1 2 = 0 := hu 1 2 (by decide)
   have e1 : lminor (Mᴴ * M) 1 = (Mᴴ * M) 0 0 := by
     unfold lminor
     exact Matrix.det_fin_one _
@@ -338,8 +334,6 @@ theorem key (A B C D : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hD : 0
   generalize (1 + D) ^ (1/3:ℝ) = δ at *
   have hx : α ^ 2 * β ≤ 1 + A + B := by have := sq_mul_le_cubes α β hα hβ; linarith
   have hy : γ ^ 2 * β ≤ 1 + C + D := by have := sq_mul_le_cubes γ β hγ hβ; linarith
-  have hp1 : 0 < α ^ 2 * β := by positivity
-  have hp2 : 0 < γ ^ 2 * β := by positivity
   have hprod : (α ^ 2 * β) ^ 2 * (γ ^ 2 * β) ^ 2 ≤ (1 + A + B) ^ 2 * (1 + C + D) ^ 2 := by
     gcongr
   have hδ4 : 0 < (δ ^ 4)⁻¹ := by positivity
@@ -671,9 +665,6 @@ theorem lintegral_hB_one_two_lt_top : ∫⁻ w : Low 2 → ℂ, hB 1 w < ⊤ := 
     rw [pi_norm_le_iff_of_nonneg zero_le_one]
     constructor
     · intro h p
-      have hp := p.2
-      have h1 : (p.1.2 : ℕ) < p.1.1 := hp
-      have h2 : (p.1.1 : ℕ) < 2 := p.1.1.isLt
       exact h p (by omega) (by omega)
     · intro h p _ _
       exact h p
@@ -1480,7 +1471,6 @@ theorem zDet_mul_colGram_le_norm_dmin : ∀ (E : Type) [Field E] [NumberField E]
     haveI : Unique {b : Fin r // (b : ℕ) < X.p0} :=
       { default := ⟨⟨0, by omega⟩, by show 0 < X.p0; omega⟩
         uniq := fun b => Subtype.ext (Fin.ext (by
-          have h1 : ((b : Fin r) : ℕ) < X.p0 := b.2
           show ((b : Fin r) : ℕ) = 0
           omega)) }
     rw [Matrix.det_unique, Matrix.det_fin_one]
@@ -1491,7 +1481,6 @@ theorem zDet_mul_colGram_le_norm_dmin : ∀ (E : Type) [Field E] [NumberField E]
         invFun := fun a => ⟨(a.1 : ℕ) - 1, by have := a.1.2; omega⟩
         left_inv := fun i => Fin.ext (by simp)
         right_inv := fun a => Subtype.ext (Fin.ext (by
-          have h1 : X.p0 ≤ ((a : Fin r) : ℕ) := a.2
           show ((a : Fin r) : ℕ) - 1 + 1 = (a : Fin r)
           omega)) }
     have key : ∀ i : Fin (r - 1), Zm i 0 = zBlock X z τ ⟨⟨(i : ℕ) + 1, by omega⟩, hmem i⟩ default := by

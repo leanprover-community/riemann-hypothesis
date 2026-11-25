@@ -271,10 +271,6 @@ private theorem exists_span_eq_maximalIdeal_card_eq_ringKrullDim (Q : Type u) [C
     ∃ (n : ℕ) (z : Fin n → Q), Ideal.span (Set.range z) = IsLocalRing.maximalIdeal Q ∧
       (n : WithBot ℕ∞) = ringKrullDim Q := by
   classical
-  have : IsLocalRing Q := inferInstance
-  have : IsNoetherianRing Q := inferInstance
-  have : Module.Finite (IsLocalRing.ResidueField Q) (IsLocalRing.CotangentSpace Q) :=
-    inferInstance
   have hsurjres : Function.Surjective (algebraMap Q (IsLocalRing.ResidueField Q)) := by
     intro x
     obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective x
@@ -329,7 +325,6 @@ theorem exists_regularSystemOfParameters_containing_etaleChartCoords (k : Type u
   set I := Ideal.map (algebraMap S A) (etaleChartCoordIdeal k m S J₀) with hIdef
   have hreg : IsRegularLocalRing (A ⧸ I) :=
     isRegularLocalRing_quotient_map_etaleChartCoordIdeal k m S q A J₀ hJ₀
-  have : IsLocalRing (A ⧸ I) := inferInstance
   obtain ⟨n, z, hzspan, hzdim⟩ := exists_span_eq_maximalIdeal_card_eq_ringKrullDim (A ⧸ I)
   have hIle : I ≤ IsLocalRing.maximalIdeal A := by
     rw [hIdef]

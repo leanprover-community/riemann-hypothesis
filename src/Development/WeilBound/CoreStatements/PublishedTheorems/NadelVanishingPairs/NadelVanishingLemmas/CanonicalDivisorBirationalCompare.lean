@@ -25,11 +25,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.CechPic
 
 namespace GlobalTheory.Discrepancy.CanonIso
 
-theorem isNormalScheme_of_smooth' {k : Type} [Field k] {Y : Scheme.{0}} (p : Y ⟶ Sp k) [Smooth p] :
-    GlobalTheory.IsNormalScheme Y :=
-  (GlobalTheory.isNormalScheme_iff Y).2 (GlobalTheory.forall_isDomain_and_isIntegrallyClosed_stalk_of_smooth p
-    ((GlobalTheory.isNormalScheme_iff _).1 inferInstance))
-
 theorem ring_ne_top' {k : Type} [Field k] {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp k}
     (E : DivOver p) : E.ring ≠ ⊤ := fun h =>
   IsDiscreteValuationRing.not_isField E.ring (by
@@ -47,7 +42,7 @@ theorem not_mem_supp_sub_pullCart : ∀ (k : Type) [Field k] [CharZero k] (Y₀ 
   haveI : Smooth q := SmoothOfRelativeDimension.smooth n q
   haveI : Smooth (t ≫ q) := SmoothOfRelativeDimension.smooth n (t ≫ q)
   haveI : GlobalTheory.IsNormalScheme Y₀ := _root_.GlobalTheory.ModifSections.isNormalScheme_of_smooth q
-  haveI : GlobalTheory.IsNormalScheme Y₁ := isNormalScheme_of_smooth' (t ≫ q)
+  haveI : GlobalTheory.IsNormalScheme Y₁ := GlobalTheory.ModifSections.isNormalScheme_of_smooth (t ≫ q)
   have hbir := _root_.GlobalTheory.Discrepancy.functionFieldMap_bijective_of_isIso_restrict Y₀ Y₁ t U hU hiso
   have hpull : EtaleKlt.ratPull q t n η ≠ 0 := fun h =>
     hη ((_root_.GlobalTheory.EtaleKlt.ratPull_bijective_of_birational k Y₀ Y₁ q t hbir n).1 (h.trans (map_zero _).symm))

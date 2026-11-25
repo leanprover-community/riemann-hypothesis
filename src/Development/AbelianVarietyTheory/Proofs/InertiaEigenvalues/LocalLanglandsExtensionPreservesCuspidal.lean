@@ -33,8 +33,4 @@ variable {a : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h a}
 
 end GlobalTheory.LocLanglands.CuspExt
 
-namespace GlobalTheory.LocLanglands
-
-end GlobalTheory.LocLanglands
-
 end

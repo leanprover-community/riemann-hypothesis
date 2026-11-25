@@ -765,10 +765,6 @@ theorem mem_latS (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.i
   rw [mem_rowLatticeYZeroFrame_iff_basis_sum X.B.I h X.ιE hId X.bas X.L_eq (rank_eq X h), Module.Basis.equivFun_symm_apply]
   simp [basY]
 
-theorem cY_mem_latS (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D) (hId : IdE X) (z : (VS D).V) :
-    GlobalTheory.Core.SBesEx.cY X h z ∈ latS D ↔ z ∈ (VS D).L0 := by
-  rw [mem_latS X h hId, cY_eq_basY, LinearEquiv.symm_apply_apply]
-
 end GlobalTheory.Core.Mi.LatMatch
 
 namespace GlobalTheory.Core.Mi.LatMatch
@@ -875,11 +871,11 @@ theorem latS_rescaled_frame : ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.Hida
     intro i; funext r; rw [hF.e']; rfl
   have colE : ∀ i (t : D.host.E), t • (fun r => B.d.e r i) ∈ latS D ↔ GlobalTheory.Core.SBesEx.scl μ lam i * t ∈ aaD D i := by
     intro i t
-    rw [hcol_e, smul_smul, hcY_smul, cY_mem_latS X h hId, smul_eX_mem_iff, mul_comm]
+    rw [hcol_e, smul_smul, hcY_smul, GlobalTheory.Core.Mi.LatMatch.SZ.cY_mem_latS_iff X h hId, smul_eX_mem_iff, mul_comm]
   have colE' : ∀ i (t : D.host.E), t • (fun r => B.d.e' r i) ∈ latS D ↔
       (star (GlobalTheory.Core.SBesEx.scl μ lam i))⁻¹ * t ∈ (aaD D i)⁻¹ := by
     intro i t
-    rw [hcol_e', smul_smul, hcY_smul, cY_mem_latS X h hId, smul_fY_mem_iff, mul_comm]
+    rw [hcol_e', smul_smul, hcY_smul, GlobalTheory.Core.Mi.LatMatch.SZ.cY_mem_latS_iff X h hId, smul_fY_mem_iff, mul_comm]
   have hdot := @star_smul_dotProduct D (D.sp.Y 0).rank
   have hqX := qX_mulVec_apply B.d
   have hqY := qY_mulVec_apply B.d

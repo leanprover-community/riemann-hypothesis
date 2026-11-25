@@ -33,14 +33,12 @@ theorem fg_of_mem {A B : Type} [CommRing A] [IsNoetherianRing A] [CommRing B] [I
       ∃ (b : B) (s : A), algebraMap A B r = α ^ (n + 1) * b + α * algebraMap A B s := fun n hn r hr => by
     have h1 : Submodule.map (Ideal.span {a}).mkQ (D n) =
         Submodule.map (Ideal.span {a}).mkQ (D (n + 1)) :=
-      (hl n hn).symm.trans (hl (n + 1) (by omega))
-    have h2 : (Ideal.span {a}).mkQ r ∈ Submodule.map (Ideal.span {a}).mkQ (D (n + 1)) :=
+      (hl n hn).symm.trans (hl (n + 1) (by lia))
+    obtain ⟨r', hr', e⟩ : (Ideal.span {a}).mkQ r ∈ Submodule.map (Ideal.span {a}).mkQ (D (n + 1)) :=
       h1 ▸ Submodule.mem_map_of_mem (Ideal.mem_comap.2 (Ideal.mem_span_singleton.2 hr))
-    obtain ⟨r', hr', e⟩ := h2
     obtain ⟨s, hs⟩ := Ideal.mem_span_singleton.1 ((Submodule.Quotient.eq _).1 e.symm)
     obtain ⟨b, hb⟩ := Ideal.mem_span_singleton.1 (Ideal.mem_comap.1 hr')
-    refine ⟨b, s, ?_⟩
-    rw [← hb, hα, ← map_mul, ← hs, ← map_add]; congr 1; ring
+    exact ⟨b, s, by rw [← hb, hα, ← map_mul, ← hs, ← map_add]; congr 1; ring⟩
   have down : ∀ (x : B) (j : ℕ),
       (∃ (b : B) (r : A), α ^ (l + j) * x = α ^ (l + j + 1) * b + algebraMap A B r) →
       ∃ (b : B) (r : A), α ^ l * x = α ^ (l + 1) * b + algebraMap A B r := fun x j => by
@@ -48,8 +46,7 @@ theorem fg_of_mem {A B : Type} [CommRing A] [IsNoetherianRing A] [CommRing B] [I
     | zero => exact id
     | succ j ih =>
       rintro ⟨b, r, h⟩
-      obtain ⟨b', s, hs⟩ := key (l + (j + 1)) (by omega) r
-        ⟨x - α * b, by rw [mul_sub, h]; ring⟩
+      obtain ⟨b', s, hs⟩ := key (l + (j + 1)) (by lia) r ⟨x - α * b, by rw [mul_sub, h]; ring⟩
       refine ih ⟨b + b', s, mul_left_cancel₀ ha ?_⟩
       rw [hs] at h; linear_combination h
   let Q : Ideal B := Ideal.span {α ^ (l + 1)}
@@ -139,11 +136,8 @@ theorem dvr_of_principal (S : Type) [CommRing S] [IsLocalRing S] (p : S)
       rw [SModEq.zero, hp, Ideal.span_singleton_pow, smul_eq_mul, Ideal.mul_top]
       exact Ideal.mem_span_singleton.2 (h n)
     have h1 := Nat.find_spec hex
-    obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero (n := Nat.find hex) fun h => by
-      rw [h] at h1; simp at h1
-    have h2 := Nat.find_min hex (m := n) (by omega)
-    push Not at h2
-    obtain ⟨u, hu⟩ := h2
+    obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero (n := Nat.find hex) fun h => by simp [h] at h1
+    obtain ⟨u, hu⟩ := not_not.1 (Nat.find_min hex (m := n) (by lia))
     refine ⟨n, u, by_contra fun hnu => h1 ?_, hu⟩
     rw [hn, hu, pow_succ]
     exact mul_dvd_mul_left _ (Ideal.mem_span_singleton.1 (hp ▸ (hnu : u ∈ maximalIdeal S)))
@@ -222,9 +216,9 @@ theorem exists_chart (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoe
   let e : Polynomial R →+* K := Polynomial.eval₂RingHom (ι.comp ψ) (ι ϖ)
   have hed : IsUnit (e d) := Ne.isUnit <| by
     simp only [e, d, map_mul, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_X, Polynomial.eval₂_C,
-      RingHom.comp_apply]
+      RingHom.comp_apply, map_prod]
     exact mul_ne_zero ((map_ne_zero_iff ι hι).2 hϖ.ne_zero)
-      ((map_ne_zero_iff ι hι).2 (by rw [map_prod]; exact Finset.prod_ne_zero_iff.2 fun i _ => hψa i))
+      (Finset.prod_ne_zero_iff.2 fun i _ => (map_ne_zero_iff ι hι).2 (hψa i))
   let φ : C →+* K := IsLocalization.Away.lift d hed
   let τ : C := algebraMap (Polynomial R) C Polynomial.X
   have hRC : ∀ r : R, algebraMap R C r = algebraMap (Polynomial R) C (Polynomial.C r) := fun r =>
@@ -235,54 +229,44 @@ theorem exists_chart (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoe
   have huτ : IsUnit τ := isUnit_of_dvd_unit (map_dvd _ (dvd_mul_right _ _)) hud
   have hua : ∀ i, IsUnit (algebraMap R C (a i)) := fun i => by
     rw [hRC]
-    exact isUnit_of_dvd_unit (map_dvd _ (Dvd.dvd.mul_left (map_dvd _
-      (Finset.dvd_prod_of_mem _ (Finset.mem_univ i))) _)) hud
+    exact isUnit_of_dvd_unit (map_dvd _ (Dvd.dvd.mul_left (map_dvd _ (Finset.dvd_prod_of_mem _ (Finset.mem_univ i))) _)) hud
   have hdiv : ∀ (x y : C) (x' y' : V), IsUnit y → φ x = ι x' → φ y = ι y' → y' ∣ x' →
       ∃ z : C, x = y * z ∧ φ z ∈ ι.range := by
     rintro x y _ y' hy hx' hy' ⟨c, rfl⟩
     obtain ⟨z, rfl⟩ := hy.dvd (a := x)
     exact ⟨z, rfl, c, mul_left_cancel₀ (hy.map φ).ne_zero (by rw [← map_mul, hx', hy', map_mul])⟩
   have hτk : ∀ i, φ (τ ^ k i) = ι (ϖ ^ k i) := fun i => by rw [map_pow, map_pow, hφτ]
-  choose u hu hu' using fun i => hdiv (algebraMap R C (a i)) (τ ^ k i) _ _ (huτ.pow _) (hφr _)
-    (hτk i) (h i).symm.dvd
-  choose w hw hw' using fun i => hdiv (τ ^ k i) (algebraMap R C (a i)) _ _ (hua i) (hτk i)
-    (hφr _) (h i).dvd
+  choose u hu hu' using fun i => hdiv (algebraMap R C (a i)) (τ ^ k i) _ _ (huτ.pow _) (hφr _) (hτk i) (h i).symm.dvd
+  choose w hw hw' using fun i => hdiv (τ ^ k i) (algebraMap R C (a i)) _ _ (hua i) (hτk i) (hφr _) (h i).dvd
   obtain ⟨s, hs⟩ := (maximalIdeal R).fg_of_isNoetherianRing
-  choose z hz hz' using fun y : s => hdiv (algebraMap R C y) τ _ _ huτ (hφr _) hφτ <| by
-    have h2 : ψ y ∈ maximalIdeal V := fun h => (hs ▸ Ideal.subset_span y.2) (hψ.1 _ h)
-    rwa [hϖ.maximalIdeal_eq, Ideal.mem_span_singleton] at h2
+  choose z hz hz' using fun y : s => hdiv (algebraMap R C y) τ _ _ huτ (hφr _) hφτ <|
+    (hϖ.maximalIdeal_eq ▸ Ideal.mem_span_singleton).1 fun h => (hs ▸ Ideal.subset_span y.2) (hψ.1 _ h)
   let S : Set C := {τ} ∪ Set.range u ∪ Set.range w ∪ Set.range z
-  have hS : S.Finite :=
-    (((Set.finite_singleton _).union (Set.finite_range _)).union (Set.finite_range _)).union
-      (Set.finite_range _)
+  have hS : S.Finite := (((Set.finite_singleton _).union (Set.finite_range _)).union (Set.finite_range _)).union
+    (Set.finite_range _)
   let A := Algebra.adjoin R S
   have : Algebra.FiniteType R A := (Subalgebra.fg_iff_finiteType A).1 (Subalgebra.fg_def.2 ⟨S, hS, rfl⟩)
-  have hN : IsNoetherianRing A := Algebra.FiniteType.isNoetherianRing R A
   have hA : ∀ x ∈ A, φ x ∈ ι.range :=
     Algebra.adjoin_le (S := ({ (ι.range.comap φ).toSubsemiring with
       algebraMap_mem' := fun r => ⟨ψ r, (hφr r).symm⟩ } : Subalgebra R C)) <| by
         rintro _ (((rfl | ⟨i, rfl⟩) | ⟨i, rfl⟩) | ⟨i, rfl⟩)
         exacts [⟨_, hφτ.symm⟩, hu' i, hw' i, hz' i]
-  refine ⟨A, inferInstance, inferInstance, hN, algebraMap R A,
-    ⟨τ, Algebra.subset_adjoin (Or.inl (Or.inl (Or.inl rfl)))⟩, ?_, ?_, ?_, ?_, ?_⟩
-  · intro x y hxy
-    have h1 : algebraMap R C x = algebraMap R C y := congrArg Subtype.val hxy
-    exact Polynomial.C_injective (hinj (by rwa [hRC, hRC] at h1))
-  · exact fun h0 => huτ.ne_zero (congrArg Subtype.val h0)
-  · intro h0
-    obtain ⟨x, hx⟩ := isUnit_iff_exists_inv.1 h0
+  refine ⟨A, inferInstance, inferInstance, Algebra.FiniteType.isNoetherianRing R A, algebraMap R A,
+    ⟨τ, Algebra.subset_adjoin (Or.inl (Or.inl (Or.inl rfl)))⟩,
+    fun x y hxy => by
+      have h1 : algebraMap R C x = algebraMap R C y := congrArg Subtype.val hxy
+      exact Polynomial.C_injective (hinj (by rwa [hRC, hRC] at h1)),
+    fun h0 => huτ.ne_zero (congrArg Subtype.val h0), fun h0 => ?_, fun r hr => ?_, fun i => associated_of_dvd_dvd
+      ⟨⟨_, Algebra.subset_adjoin (Or.inl (Or.inr ⟨i, rfl⟩))⟩, Subtype.ext (hw i)⟩
+      ⟨⟨_, Algebra.subset_adjoin (Or.inl (Or.inl (Or.inr ⟨i, rfl⟩)))⟩, Subtype.ext (hu i)⟩⟩
+  · obtain ⟨x, hx⟩ := isUnit_iff_exists_inv.1 h0
     obtain ⟨v, hv⟩ := hA x x.2
     have h2 := congrArg φ (show τ * (x : C) = 1 from congrArg Subtype.val hx)
     rw [map_mul, map_one, hφτ, ← hv, ← map_mul, ← map_one ι] at h2
     exact hϖ.not_isUnit (IsUnit.of_mul_eq_one _ (hι h2))
-  · intro r hr
-    rw [← Ideal.mem_span_singleton, ← Ideal.mem_comap]
-    refine Ideal.span_le.2 (fun y hy => Ideal.mem_comap.2 (Ideal.mem_span_singleton.2
+  · rw [← Ideal.mem_span_singleton, ← Ideal.mem_comap]
+    exact Ideal.span_le.2 (fun y hy => Ideal.mem_comap.2 (Ideal.mem_span_singleton.2
       ⟨⟨_, Algebra.subset_adjoin (Or.inr ⟨⟨y, hy⟩, rfl⟩)⟩, Subtype.ext (hz ⟨y, hy⟩)⟩)) (hs ▸ hr)
-  · intro i
-    exact associated_of_dvd_dvd
-      ⟨⟨_, Algebra.subset_adjoin (Or.inl (Or.inr ⟨i, rfl⟩))⟩, Subtype.ext (hw i)⟩
-      ⟨⟨_, Algebra.subset_adjoin (Or.inl (Or.inl (Or.inr ⟨i, rfl⟩)))⟩, Subtype.ext (hu i)⟩
 
 theorem main (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     [CharZero R] (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (ϖ : V)

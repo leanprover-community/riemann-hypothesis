@@ -23,7 +23,7 @@ namespace GlobalTheory.AV.AbVar
 theorem cancel_of_surjective : ∀ (K : Type) [Field K] (A B : AbVar K) (p : A ⟶ B), Surjective p.hom.left →
     ∀ (C : AbVar K) (f g : B ⟶ C), p ≫ f = p ≫ g → f = g := by
   intro K _ A B p hp C f g h
-  have hB : IsIntegral B.X.left := (GlobalTheory.T.abelianVariety_isIntegral_noetherian_compact K B).1
+  have hB : IsIntegral B.X.left := (GlobalTheory.AV.AbVar.isIntegral_isLocallyNoetherian_compactSpace K B).1
   have hsep : IsSeparated C.X.hom := C.ab.proper.toIsSeparated
   apply Subtype.ext
   change f.hom = g.hom

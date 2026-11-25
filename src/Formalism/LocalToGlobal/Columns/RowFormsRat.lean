@@ -72,8 +72,7 @@ theorem csum_basis (i : Fin S.dim) (x : Fin S.dim → K) :
 
 theorem repr_mem (R : S.Rat) (hb : S.HasRatBasis) (hdet : S.H.det ≠ 0) (f : S.Forms) (hf : S.IsRat (f : S.Cl → S.V))
     (i : Fin S.dim) : S.basis.repr f i ∈ cmMax K := by
-  intros
-  apply _root_.GlobalTheory.FormsDescent.repr_mem_of_isRat <;> assumption
+  apply GlobalTheory.FormsDescent.repr_mem_of_isRat <;> assumption
 
 theorem actRat_of (R : S.Rat) (hb : S.HasRatBasis) (hdet : S.H.det ≠ 0) {G : Type} [Group G] [Fintype G]
     (r : Representation K G S.Forms)

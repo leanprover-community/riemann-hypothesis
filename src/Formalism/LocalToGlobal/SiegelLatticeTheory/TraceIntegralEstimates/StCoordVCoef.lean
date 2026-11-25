@@ -27,9 +27,6 @@ namespace Formalism.L2.S.Pv.Chart
 
 variable {n r : ℕ} (ε : Fin n → Bool)
 
-theorem hJ_add (x y y' : Fin n → ℂ) : hJ ε x (y + y') = hJ ε x y + hJ ε x y' := by
-  simp only [hJ, Matrix.mulVec_add, dotProduct_add]
-
 theorem hJ_smul (x y : Fin n → ℂ) (c : ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
   simp only [hJ, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
@@ -62,8 +59,8 @@ theorem span_expand (b : ℕ) (v : Fin n → ℂ) (hv : v ∈ spanLt e b) :
     refine ⟨?_, fun c _ => hJ_zero ε _⟩
     simp_rw [hJ_zero, zero_smul, Finset.sum_const_zero]
   | add x y _ _ hx hy =>
-    refine ⟨?_, fun c hc => by rw [hJ_add, hx.2 c hc, hy.2 c hc, add_zero]⟩
-    simp_rw [hJ_add, add_smul]
+    refine ⟨?_, fun c hc => by rw [Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, hx.2 c hc, hy.2 c hc, add_zero]⟩
+    simp_rw [Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, add_smul]
     rw [Finset.sum_add_distrib, ← hx.1, ← hy.1]
   | smul a x _ hx =>
     refine ⟨?_, fun c hc => by rw [hJ_smul, hx.2 c hc, mul_zero]⟩
@@ -98,7 +95,7 @@ theorem expand {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (b : Fin (r + 1
       hJ ε (f c) ((g - 1) *ᵥ fam e z b) := by
     intro c
     split_ifs with h
-    · rw [hgw, hJ_add, hJ_fam ε e f z hdual hfz c b h, zero_add]
+    · rw [hgw, Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, hJ_fam ε e f z hdual hfz c b h, zero_add]
     · exact (hw0 c (not_lt.mp h)).symm
   simp_rw [hc]
   rw [← hw]
@@ -110,7 +107,7 @@ theorem coef_diag {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (a : Fin r) 
   have hgw : g *ᵥ e a = e a + (g - 1) *ᵥ e a := by
     rw [Matrix.sub_mulVec, Matrix.one_mulVec]
     abel
-  rw [hgw, hJ_add, hw0, hdual, ite_eq_left rfl, add_zero]
+  rw [hgw, Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, hw0, hdual, ite_eq_left rfl, add_zero]
 
 theorem coef_low {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (a c : Fin r) (h : c.1 < a.1) :
     hJ ε (f a) (g *ᵥ e c) = 0 := by
@@ -118,7 +115,7 @@ theorem coef_low {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (a c : Fin r)
   have hgw : g *ᵥ e c = e c + (g - 1) *ᵥ e c := by
     rw [Matrix.sub_mulVec, Matrix.one_mulVec]
     abel
-  rw [hgw, hJ_add, hw0, hdual, ite_eq_right (fun h' => by subst h'; exact lt_irrefl _ h), add_zero]
+  rw [hgw, Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, hw0, hdual, ite_eq_right (fun h' => by subst h'; exact lt_irrefl _ h), add_zero]
 
 theorem coef_mul {g₁ g₂ : Matrix (Fin n) (Fin n) ℂ} (h₁ : InS e z g₁) (h₂ : InS e z g₂) (a : Fin r)
     (b : Fin (r + 1)) (hab : a.1 < b.1) :
@@ -126,7 +123,7 @@ theorem coef_mul {g₁ g₂ : Matrix (Fin n) (Fin n) ℂ} (h₁ : InS e z g₁) 
       ∑ c : Fin r, if a.1 < c.1 ∧ c.1 < b.1 then hJ ε (f a) (g₁ *ᵥ e c) * hJ ε (f c) (g₂ *ᵥ fam e z b) else 0 := by
   have hx := expand ε e f z hdual hfz h₂ b
   conv_lhs => rw [← Matrix.mulVec_mulVec, hx]
-  rw [Matrix.mulVec_add, Matrix.mulVec_sum, hJ_add, hJ_sum]
+  rw [Matrix.mulVec_add, Matrix.mulVec_sum, Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.hJ_add_right, hJ_sum]
   simp_rw [Matrix.mulVec_smul, hJ_smul]
   rw [add_assoc]
   congr 1

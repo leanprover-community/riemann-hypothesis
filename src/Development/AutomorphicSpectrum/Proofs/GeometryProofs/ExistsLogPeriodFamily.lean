@@ -268,7 +268,7 @@ theorem exists_int_of_exp_eq_one {r : ℝ} {N : ℕ} (hN : 0 < N)
     linear_combination h5
   exact_mod_cast h6
 
-theorem exists_logPeriods_famExp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a), 1 ≤ D.p + D.q → σ (baseKA l).ρ = H.rt0 → ∃ (ρ : ℝ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a C.g Λ) (e : Flat.FamExp C.t.G C.M (Metric.ball 0 ρ) C.ψ), 0 < ρ ∧ ρ ≤ 1 ∧ (∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L.a_le, (∀ p, p ∈ e.per ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ↔ ∃ x, L.P w x = p) ∧ ∀ (N : ℕ) (ζ : ℂˣ) (x x' : Λ), 0 < N → GlobalTheory.UU.CubWeil C.t.cub N (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x)) (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x')) (unitOn ζ) → (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * ((L.E x x' : ℤ) : ℂ) / N)) := by
+theorem exists_logPeriods_famExp_full : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a), 1 ≤ D.p + D.q → σ (baseKA l).ρ = H.rt0 → ∃ (ρ : ℝ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a C.g Λ) (e : Flat.FamExp C.t.G C.M (Metric.ball 0 ρ) C.ψ), 0 < ρ ∧ ρ ≤ 1 ∧ (∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L.a_le, (∀ p, p ∈ e.per ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ↔ ∃ x, L.P w x = p) ∧ ∀ (N : ℕ) (ζ : ℂˣ) (x x' : Λ), 0 < N → GlobalTheory.UU.CubWeil C.t.cub N (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x)) (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x')) (unitOn ζ) → (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * ((L.E x x' : ℤ) : ℂ) / N)) ∧ ∀ z ∈ Flat.punct n a 1, C.IsRiem ((ρ : ℂ) • z) (L.H z) := by
   intro E _ _ _ H D l Xo σ n a C hpq hσ
   obtain ⟨g', ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
   obtain ⟨FU⟩ := GlobalTheory.familyUnif_of_laws GlobalTheory.abelianSchemeLaws_all.1 E H D l Xo σ g' ty hpq hσ hty
@@ -358,31 +358,38 @@ theorem exists_logPeriods_famExp : ∀ (E : Type) [Field E] [NumberField E] [IsC
       have hz' := (hopen _ hb).2.2.2 N 1 hN _ (hSp x _ hbm) _ (hSp y _ hbm) hc
       exact exists_int_of_exp_eq_one hN hz'
   obtain ⟨L, hLH, hLr⟩ := key
-  refine ⟨ρ, (FU.Di i).La, inferInstance, L, e, hρ0, hρ1, fun w hw => ?_⟩
-  have hz1 := expCover_mem_punct L.a_le hw
-  have hzρ := hU _ hz1
-  have hzb := punct_subset_ball hzρ
-  have hmem : ∀ x, L.P w x ∈ e.per ((ρ : ℂ) • expCover a w) := fun x => by
-    have h : L.P w x ∈ (L.P w).range := ⟨x, rfl⟩
-    rw [hLr w hw] at h
-    exact (hQ' _ hzb _).1 h
-  refine ⟨fun p => ⟨fun hp => ?_, ?_⟩, fun N ζ x x' hN hc => ?_⟩
-  · have h : p ∈ (L.P w).range := by
-      rw [hLr w hw]
-      exact (hQ' _ hzb _).2 hp
-    exact h
-  · rintro ⟨x, rfl⟩
-    exact hmem x
-  · have h1 := (hopen _ hzρ).2.2.2 N ζ hN _ (hmem x) _ (hmem x') hc
-    have h2 := L.im w hw x x'
-    rw [hLH] at h2
-    have h3 : ∀ r : ℝ, r = ((L.E x x' : ℤ) : ℝ) →
-        (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * (r : ℂ) / N) →
-        (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * ((L.E x x' : ℤ) : ℂ) / N) := fun r hr h => by
-      rw [h, hr]
-      push_cast
-      rfl
-    exact h3 _ h2 h1
+  refine ⟨ρ, (FU.Di i).La, inferInstance, L, e, hρ0, hρ1, fun w hw => ?_, fun z hz => ?_⟩
+  · have hz1 := expCover_mem_punct L.a_le hw
+    have hzρ := hU _ hz1
+    have hzb := punct_subset_ball hzρ
+    have hmem : ∀ x, L.P w x ∈ e.per ((ρ : ℂ) • expCover a w) := fun x => by
+      have h : L.P w x ∈ (L.P w).range := ⟨x, rfl⟩
+      rw [hLr w hw] at h
+      exact (hQ' _ hzb _).1 h
+    refine ⟨fun p => ⟨fun hp => ?_, ?_⟩, fun N ζ x x' hN hc => ?_⟩
+    · have h : p ∈ (L.P w).range := by
+        rw [hLr w hw]
+        exact (hQ' _ hzb _).2 hp
+      exact h
+    · rintro ⟨x, rfl⟩
+      exact hmem x
+    · have h1 := (hopen _ hzρ).2.2.2 N ζ hN _ (hmem x) _ (hmem x') hc
+      have h2 := L.im w hw x x'
+      rw [hLH] at h2
+      have h3 : ∀ r : ℝ, r = ((L.E x x' : ℤ) : ℝ) →
+          (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * (r : ℂ) / N) →
+          (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * ((L.E x x' : ℤ) : ℂ) / N) := fun r hr h => by
+        rw [h, hr]
+        push_cast
+        rfl
+      exact h3 _ h2 h1
+  · rw [hLH]
+    exact (hopen _ (hU z hz)).2.2.1
+
+theorem exists_logPeriods_famExp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a), 1 ≤ D.p + D.q → σ (baseKA l).ρ = H.rt0 → ∃ (ρ : ℝ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a C.g Λ) (e : Flat.FamExp C.t.G C.M (Metric.ball 0 ρ) C.ψ), 0 < ρ ∧ ρ ≤ 1 ∧ (∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L.a_le, (∀ p, p ∈ e.per ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ↔ ∃ x, L.P w x = p) ∧ ∀ (N : ℕ) (ζ : ℂˣ) (x x' : Λ), 0 < N → GlobalTheory.UU.CubWeil C.t.cub N (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x)) (e.ex ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ((N : ℂ)⁻¹ • L.P w x')) (unitOn ζ) → (ζ : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * ((L.E x x' : ℤ) : ℂ) / N)) :=
+  fun E _ _ _ H D l Xo σ n a C hpq hσ =>
+    let ⟨ρ, Λ, iΛ, L, e, hρ0, hρ1, h1, _⟩ := exists_logPeriods_famExp_full E H D l Xo σ n a C hpq hσ
+    ⟨ρ, Λ, iΛ, L, e, hρ0, hρ1, h1⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat.Link
 end -- clump:auto

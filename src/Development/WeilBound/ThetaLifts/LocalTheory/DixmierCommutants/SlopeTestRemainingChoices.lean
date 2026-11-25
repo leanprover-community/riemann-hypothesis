@@ -17,11 +17,6 @@ namespace PositivityTheory.ThKG.LocalRamifiedLeviRestriction
 section
 open Polynomial
 
-theorem dixmier_aeval_injective {V : Type} [AddCommGroup V] [Module ℂ V] (T : Module.End ℂ V)
-    (hT : ∀ c : ℂ, Function.Injective ⇑(T - c • (1 : Module.End ℂ V))) (p : ℂ[X]) (hp : p ≠ 0) :
-    Function.Injective (aeval T p) :=
-  _root_.GlobalTheory.dixmier_aeval_injective T hT p hp
-
 theorem dixmier_commutant_scalar (ι V : Type) [AddCommGroup V] [Module ℂ V] (ρ : ι → Module.End ℂ V)
     (hrank : Module.rank ℂ V ≤ Cardinal.aleph0)
     (hirr : ∀ N : Submodule ℂ V, (∀ i, ∀ x ∈ N, ρ i x ∈ N) → N = ⊥ ∨ N = ⊤)

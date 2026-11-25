@@ -68,9 +68,9 @@ theorem abelian_scheme_second_cohomology_finite_projective (R : Type) [CommRing 
     (hA : IsAbelianScheme A) (hg : SmoothOfRelativeDimension g A.hom) :
     (Module.Finite R (HO2 A.hom) ∧ Module.Projective R (HO2 A.hom)) ∧ StructureSheafH2BaseChange A.hom := by
   have hsm : Smooth A.hom := SmoothOfRelativeDimension.smooth g A.hom
-  have H := GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom hA.proper inferInstance (GlobalTheory.T.globalFunctionsConstantAfterBaseChange_of_abelianScheme R A hA) (by
+  have H := GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom hA.proper inferInstance (GlobalTheory.AbCoh.uConst_of_isAbelianScheme R A hA) (by
     intro R' _ _ _ _ k _ _ α hα X' s' φ X₀ s₀ ψ hp w
-    obtain ⟨_, -, h1, h2⟩ := GlobalTheory.T.exists_grpObj_isGrpPullback_of_isPullback' R R' (algebraMap R R') A X' s' φ hp
+    obtain ⟨_, -, h1, h2⟩ := GlobalTheory.AbCoh.exists_grpObj_isGrpPullback_of_isPullback R R' (algebraMap R R') A X' s' φ hp
     exact GlobalTheory.T.abelianSchemeSpecialFibre_cohomology_lift_artinian R' (Over.mk s' : Over (Sp R')) g (h1 hA) (h2 g hg) k (α : R' →+* k) hα X₀ s₀ ψ w)
   exact ⟨H.2.1, H.2.2.2⟩
 
@@ -79,16 +79,16 @@ theorem pull_comm {R K : Type} [CommRing R] [CommRing K] {σ : R →+* K} {A A' 
     (h' : pr' ≫ A'.hom = B'.hom ≫ spMap σ) (f : A' ⟶ A) (f' : B' ⟶ B) (e : f'.left ≫ pr = pr' ≫ f.left)
     (c : HO2 A.hom) : pullHO2 h' (structureSheafH2Pullback f c) = structureSheafH2Pullback f' (pullHO2 h c) := by
   have h'' : (pr' ≫ f.left) ≫ A.hom = B'.hom ≫ spMap σ := by rw [Category.assoc, Over.w f, h']
-  have a1 := (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R R _ _ A.hom A'.hom (RingHom.id R) f.left (ovw f) K _ B'.hom σ pr' h' σ _ h''
+  have a1 := (GlobalTheory.AbCoh.pull_comp_cup_id.1 R R _ _ A.hom A'.hom (RingHom.id R) f.left (ovw f) K _ B'.hom σ pr' h' σ _ h''
     rfl (fun _ ↦ rfl)).2.1 c
-  have a2 := (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R K _ _ A.hom B.hom σ pr h K _ B'.hom (RingHom.id K) f'.left (ovw f') σ _ h''
+  have a2 := (GlobalTheory.AbCoh.pull_comp_cup_id.1 R K _ _ A.hom B.hom σ pr h K _ B'.hom (RingHom.id K) f'.left (ovw f') σ _ h''
     e.symm (fun _ ↦ rfl)).2.1 c
   exact a1.trans a2.symm
 
 theorem noPrimO2_of_isNoetherianRing : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → NoPrimitiveStructureSheafH2 A := by
   intro R _ _ A _ g hA hg
   obtain ⟨⟨_, _⟩, bc⟩ := abelian_scheme_second_cohomology_finite_projective R A g hA hg
-  obtain ⟨hA2, hg2⟩ := (GlobalTheory.T.abelian_square_affine_h1_vanish R).1 A g hA hg
+  obtain ⟨hA2, hg2⟩ := (GlobalTheory.Obs.sq_abelian_and_affine_H1 R).1 A g hA hg
   obtain ⟨⟨_, _⟩, bc2⟩ := abelian_scheme_second_cohomology_finite_projective R (A ⊗ A) (g + g) hA2 hg2
   let D : HO2 A.hom →ₗ[R] HO2 (A ⊗ A).hom := structureSheafH2Pullback μ[A] - structureSheafH2Pullback (fst A A) - structureSheafH2Pullback (snd A A)
   have hD : Function.Injective D := by
@@ -109,7 +109,7 @@ theorem noPrimO2_of_isNoetherianRing : ∀ (R : Type) [CommRing R] [IsNoetherian
         congr 1
         simp only [D, DB, LinearMap.sub_apply, map_sub]
         rw [pull_comm p1.w p2.w _ _ eμ, pull_comm p1.w p2.w _ _ e1, pull_comm p1.w p2.w _ _ e2]
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have h0 : DB (e x) = 0 := by rw [← key, hx, map_zero]
     have h1 : e x = 0 := hN _ (by
@@ -188,7 +188,7 @@ theorem surj_of_comp {R R' : Type} [CommRing R] [CommRing R'] {X X' X₀ : Schem
     (he : e ≫ s' = s ≫ spMap (RingHom.id R)) (hψ : ψ ≫ s = s₀ ≫ spMap σ) (hc : (ψ ≫ e) ≫ s' = s₀ ≫ spMap σ) :
     (Function.Surjective (pullHO1 hc) → Function.Surjective (pullHO1 hψ)) ∧
     (Function.Surjective (pullHO2 hc) → Function.Surjective (pullHO2 hψ)) := by
-  have H := (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R R X' X s' s (RingHom.id R) e he R' X₀ s₀ σ ψ hψ σ (ψ ≫ e) hc rfl (fun _ ↦ rfl))
+  have H := (GlobalTheory.AbCoh.pull_comp_cup_id.1 R R X' X s' s (RingHom.id R) e he R' X₀ s₀ σ ψ hψ σ (ψ ≫ e) hc rfl (fun _ ↦ rfl))
   refine ⟨fun h y ↦ ?_, fun h y ↦ ?_⟩
   · obtain ⟨a, rfl⟩ := h y
     exact ⟨pullHO1 he a, H.1 a⟩
@@ -200,7 +200,7 @@ theorem fp_bc1 (R : Type) [CommRing R] [IsNoetherianRing R] (A : Over (Sp R)) [G
     (Module.Finite R (HO1 A.hom) ∧ Module.Projective R (HO1 A.hom)) ∧ StructureSheafH1BaseChange A.hom := by
   haveI : Smooth A.hom := hA.smooth
   haveI : IsProper A.hom := hA.proper
-  obtain ⟨h1, -, h3, -⟩ := GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom inferInstance inferInstance (GlobalTheory.T.globalFunctionsConstantAfterBaseChange_of_abelianScheme R A hA)
+  obtain ⟨h1, -, h3, -⟩ := GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom inferInstance inferInstance (GlobalTheory.AbCoh.uConst_of_isAbelianScheme R A hA)
     (by
       intro R' _ _ _ _ k _ _ α hα X' s' φ X₀ s₀ ψ hφ w
       obtain ⟨B, _, pr, -, hB, hBg, hpb, -⟩ := _root_.GlobalTheory.AbBaseChangeSq.exists_baseChange_and_sq R R' A g hA hg
@@ -233,9 +233,9 @@ theorem pO1_bc {R K : Type} [CommRing R] [CommRing K] [Algebra R K] {A Y : Over 
   have h1 : (f'.left ≫ pr') ≫ A.hom = Z.hom ≫ spMap (algebraMap R K) := by
     rw [Category.assoc, hpb', ← Category.assoc, Over.w]
   have h2 : (pr ≫ f.left) ≫ A.hom = Z.hom ≫ spMap (algebraMap R K) := by rw [← hc]; exact h1
-  have E1 := (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R K A.left B.left A.hom B.hom (algebraMap R K) pr' hpb' K Z.left Z.hom (RingHom.id K)
+  have E1 := (GlobalTheory.AbCoh.pull_comp_cup_id.1 R K A.left B.left A.hom B.hom (algebraMap R K) pr' hpb' K Z.left Z.hom (RingHom.id K)
     f'.left (ovw f') (algebraMap R K) (f'.left ≫ pr') h1 rfl (fun _ ↦ rfl)).1 c
-  have E2 := (GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id.1 R R A.left Y.left A.hom Y.hom (RingHom.id R) f.left (ovw f) K Z.left Z.hom (algebraMap R K)
+  have E2 := (GlobalTheory.AbCoh.pull_comp_cup_id.1 R R A.left Y.left A.hom Y.hom (RingHom.id R) f.left (ovw f) K Z.left Z.hom (algebraMap R K)
     pr hpb (algebraMap R K) (pr ≫ f.left) h2 rfl (fun _ ↦ rfl)).1 c
   unfold pO1
   rw [E1, E2]
@@ -331,7 +331,7 @@ namespace GlobalTheory.AbCoh
 
 theorem pO1_comp {R : Type} [CommRing R] {Z Y A : Over (Sp R)} (i : Z ⟶ Y) (f : Y ⟶ A) (x : HO1 A.hom) :
     pO1 i (pO1 f x) = pO1 (i ≫ f) x :=
-  ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id).1 _ _ _ _ _ _ _ _ (ovw f) _ _ _ _ _ (ovw i) _ _ (ovw (i ≫ f)) (Over.comp_left _ _ _ _ _)
+  ((GlobalTheory.AbCoh.pull_comp_cup_id).1 _ _ _ _ _ _ _ _ (ovw f) _ _ _ _ _ (ovw i) _ _ (ovw (i ≫ f)) (Over.comp_left _ _ _ _ _)
     (fun _ ↦ rfl)).1 x
 
 theorem pO1_toUnit_comp {R : Type} [CommRing R] {Y A : Over (Sp R)} (f : 𝟙_ (Over (Sp R)) ⟶ A) (x : HO1 A.hom) :
@@ -355,7 +355,7 @@ theorem cup_add_cup_swap {R : Type} [CommRing R] {C : Type*} [Category C] (F : C
 theorem cup_self_eq_zero_of_prim {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj A] (hP : StructureSheafH1Primitive A)
     (hN : NoPrimitiveStructureSheafH2 A) (x : HO1 A.hom) : cup _ x x = 0 := by
   have key : ∀ f : A ⊗ A ⟶ A, structureSheafH2Pullback f (cup _ x x) = cup _ (pO1 f x) (pO1 f x) := fun f ↦
-    ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id).2.1 _ _ _ _ _ _ _ _ (ovw f)).1 x x
+    ((GlobalTheory.AbCoh.pull_comp_cup_id).2.1 _ _ _ _ _ _ _ _ (ovw f)).1 x x
   apply hN
   rw [key, key, key, hP x]
   simp only [map_add (f := _), LinearMap.add_apply]
@@ -452,7 +452,7 @@ theorem baseChange_wedgeMap_bijective (hsq : ∀ x : HO1 s, cup _ x x = 0) (k : 
     (w : ⋀[k]^2 (CatCoh.H1 (OAff s')) ≃ₗ[k] CatCoh.H2 (OAff s'))
     (hw : ∀ a b, w (exteriorPower.ιMulti k 2 ![a, b]) = cup _ a b) :
     Function.Bijective ((wedgeMap s hsq).baseChange k) := by
-  have hcup := ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id).2.1 R k X X' s s' (algebraMap R k) φ hpb).1
+  have hcup := ((GlobalTheory.AbCoh.pull_comp_cup_id).2.1 R k X X' s s' (algebraMap R k) φ hpb).1
   let β := (GlobalTheory.TopForm.isBaseChange_exteriorPower (TensorProduct.isBaseChange R (HO1 s) k) 2).equiv
   let T : k ⊗[R] ⋀[R]^2 (HO1 s) →ₗ[k] k ⊗[R] HO2 s :=
     e2.symm.toLinearMap ∘ₗ w.toLinearMap ∘ₗ exteriorPower.map 2 e1.toLinearMap ∘ₗ β.toLinearMap
@@ -557,7 +557,7 @@ theorem fp_and_bc (R : Type) [CommRing R] [IsNoetherianRing R] (A : Over (Sp R))
       (Module.Finite R (HO2 A.hom) ∧ Module.Projective R (HO2 A.hom)) ∧ StructureSheafH1BaseChange A.hom ∧ StructureSheafH2BaseChange A.hom := by
   have := hA.proper
   have := hA.smooth
-  refine GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom inferInstance inferInstance (GlobalTheory.T.globalFunctionsConstantAfterBaseChange_of_abelianScheme R A hA) ?_
+  refine GlobalTheory.T.structure_cohomology_residue_field_fibre R A.left A.hom inferInstance inferInstance (GlobalTheory.AbCoh.uConst_of_isAbelianScheme R A hA) ?_
   intro R' _ _ _ _ k _ _ α hα X' s' φ X₀ s₀ ψ hφ w
   obtain ⟨_, hA', hg'⟩ := exists_grpObj_of_isPullback (algebraMap R R') A g s' φ hφ hA hg
   exact GlobalTheory.T.abelianSchemeSpecialFibre_cohomology_lift_artinian R' (Over.mk s') g hA' hg' k α hα X₀ s₀ ψ w

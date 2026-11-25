@@ -33,7 +33,6 @@ section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-
 end Gen
 
 section Unit
@@ -77,11 +76,6 @@ theorem compactSpace_integer (v : HeightOneSpectrum (𝓞 F)) :
   · exact (Valued.isClosed_integer (R := v.adicCompletion F)).completeSpace_coe
   · exact inferInstanceAs (IsDiscreteValuationRing (v.adicCompletionIntegers F))
 
-theorem isCompact_Ov (v : HeightOneSpectrum (𝓞 F)) :
-    IsCompact (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
-  have := compactSpace_integer v
-  exact isCompact_iff_compactSpace.mpr this
-
 def Ohat (F : Type) [Field F] [NumberField F] : Set (FiniteAdeleRing (𝓞 F) F) :=
   {a | ∀ v, a v ∈ v.adicCompletionIntegers F}
 
@@ -92,7 +86,7 @@ theorem isOpen_Ohat : IsOpen (Ohat F) :=
 
 instance compactSpace_Ov' (v : HeightOneSpectrum (𝓞 F)) :
     CompactSpace ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-  isCompact_iff_compactSpace.mp (isCompact_Ov v)
+  isCompact_iff_compactSpace.mp (PI.WAU.isCompact_Ov v)
 
 theorem isCompact_Ohat : IsCompact (Ohat F) := by
   apply _root_.PI.WAU.isCompact_Ohat <;> assumption
@@ -286,7 +280,6 @@ theorem isCompact_IntAf : IsCompact ((IntAf I.F I.E : Subring (AEf I)) : Set (AE
   refine ⟨fun j => AfT.crd I b j x, fun j _ => Wau.Cpt.mem_Bx I (by omega) ?_, (AfT.sum_crd I b x).symm⟩
   rw [nsmul_eq_mul]
   exact AfT.crd_mem I b hDb (AfT.IntAf_le_sumsInt I hx) j
-
 
 end Top
 

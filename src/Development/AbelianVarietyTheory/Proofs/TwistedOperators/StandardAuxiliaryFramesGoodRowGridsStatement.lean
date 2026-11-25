@@ -275,12 +275,6 @@ theorem heisO_comm_of (ψ : AddChar (AF D.host.F) ℂ) {S T : HSp D} {a b : WO S
   calc ψ (symplOH S T a b) = ψ ((symplOH S T a b + symplOH S T a b) + -symplOH S T a b) := by congr 1; ring
     _ = ψ (-symplOH S T a b) := by rw [AddChar.map_add_eq_mul, h, one_mul]
 
-theorem heisO_smul'' (ψ : AddChar (AF D.host.F) ℂ) {S T : HSp D} (w : WO S T) (c : ℂ) (g : WO S T → ℂ) :
-    heisO ψ S T w (c • g) = c • heisO ψ S T w g := by
-  funext z
-  simp only [heisO, Pi.smul_apply, smul_eq_mul]
-  ring
-
 theorem fin_of_mxAt {m n : ℕ} {a : Mx D m n} (h : MxAt (fun _ => True) a) : a.map (infPart D) = 0 := by
   ext i j
   simp only [Matrix.map_apply, Matrix.zero_apply]
@@ -289,10 +283,6 @@ theorem fin_of_mxAt {m n : ℕ} {a : Mx D m n} (h : MxAt (fun _ => True) a) : a.
 theorem fin_mul_left {k m n : ℕ} (M : Mx D k m) {u : Mx D m n} (hu : u.map (infPart D) = 0) :
     (M * u).map (infPart D) = 0 := by
   rw [Matrix.map_mul, hu, Matrix.mul_zero]
-
-theorem fin_mul_right {k m n : ℕ} {u : Mx D k m} (hu : u.map (infPart D) = 0) (M : Mx D m n) :
-    (u * M).map (infPart D) = 0 := by
-  rw [Matrix.map_mul, hu, Matrix.zero_mul]
 
 theorem isHalf_mul_left {e : AE D} {k m n : ℕ} (M : Mx D k m) {u : Mx D m n} (hu : IsHalf e u) : IsHalf e (M * u) := by
   intro i j
@@ -328,8 +318,8 @@ theorem mem_cls_of_comm (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ σ) (p : Pie
   obtain ⟨_, hA₁, hA₂, hB₁, hB₂, hL⟩ := hΦ
   refine ⟨hθ, fun a ha => ?_, fun a ha => ?_, fun ξ hξ => ?_, fun η hη => ?_, ?_⟩
   · rw [h₁ a ha, hA₁ a ha]
-  · rw [h₂ a ha, hA₂ a ha, heisO_smul'']
-  · rw [h₃ ξ hξ, hB₁ ξ hξ, heisO_smul'']
+  · rw [h₂ a ha, hA₂ a ha, GlobalTheory.MixUnip.heisO_smul]
+  · rw [h₃ ξ hξ, hB₁ ξ hξ, GlobalTheory.MixUnip.heisO_smul]
   · rw [h₄ η hη, hB₂ η hη]
   · unfold IsLatVac
     refine ⟨fun u hu => ?_, fun e he u hu hh => ?_⟩
@@ -357,17 +347,17 @@ theorem cls_stable : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V V₀ W W�
     intro a b
     rw [dV.wittDecomp_sympl_extAnisotropic_extAnisotropic W, dW.wittDecomp_sympl_inclAnisotropic_inclAnisotropic V₀]
   have hfin0 : ∀ u ∈ p.Γ₀, (dV.ext0 W (dW.inc0 V₀ u)).map (infPart D) = 0 := fun u hu =>
-    fin_mul_right (fin_mul_left _ (fin_of_mxAt (hp.fin₀ u hu))) _
+    GlobalTheory.MixHalf.map_infPart_mul (fin_mul_left _ (fin_of_mxAt (hp.fin₀ u hu))) _
   have comm0 : ∀ {a b : WO V W}, symplOH V W a b = 0 → Comm ψ V W a b := fun h g =>
     heisO_comm_of ψ g (by rw [h, add_zero, AddChar.map_zero_eq_one])
   refine ⟨fun w hw => ?_, fun w hw => ?_, ?_⟩
   · have cr : ∀ {a : WO V W}, a.map (infPart D) = 0 → Comm ψ V W a w := fun ha =>
       comm0 (GlobalTheory.FinTranslate.symplOH_fin_real ha hw)
     exact mem_cls_of_comm dV dW p _ y hΦ w (GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hstd hθ w)
-      (fun a ha => cr (fin_mul_right (fin_of_mxAt (hp.a₁.fin a ha)) _))
-      (fun a ha => cr (fin_mul_right (fin_of_mxAt (hp.a₂.fin a ha)) _))
-      (fun ξ hξ => cr (fin_mul_right (fin_mul_left _ (fin_of_mxAt (hp.b₁.fin ξ hξ))) _))
-      (fun η hη => cr (fin_mul_right (fin_mul_left _ (fin_of_mxAt (hp.b₂.fin η hη))) _))
+      (fun a ha => cr (GlobalTheory.MixHalf.map_infPart_mul (fin_of_mxAt (hp.a₁.fin a ha)) _))
+      (fun a ha => cr (GlobalTheory.MixHalf.map_infPart_mul (fin_of_mxAt (hp.a₂.fin a ha)) _))
+      (fun ξ hξ => cr (GlobalTheory.MixHalf.map_infPart_mul (fin_mul_left _ (fin_of_mxAt (hp.b₁.fin ξ hξ))) _))
+      (fun η hη => cr (GlobalTheory.MixHalf.map_infPart_mul (fin_mul_left _ (fin_of_mxAt (hp.b₂.fin η hη))) _))
       (fun u hu => cr (by
         rw [← map_nsmul (dV.ext0 W), ← map_nsmul (dW.inc0 V₀)]
         exact hfin0 _ (nsmul_mem hu 2)))
@@ -433,11 +423,6 @@ namespace GlobalTheory.AscFin.SplitVac
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-theorem symplO_eq_halves (x y : WO S T) : symplO S T x y = symplOH S T x y + symplOH S T x y := by
-  unfold symplOH
-  rw [← add_mul, ← map_add (f := _)]
-  norm_num
-
 theorem heisO_add_fix {f : WO S T → ℂ} {w w' : WO S T} (h : heisO ψ S T w f = f) (h' : heisO ψ S T w' f = f)
     (hc : ψ (symplOH S T w w') = 1) : heisO ψ S T (w + w') f = f := by
   have e := GlobalTheory.OrientedHeis.heisO_heisO (ψ := ψ) w w' f
@@ -448,12 +433,12 @@ theorem psi_four {t : AF D.host.F} (h : ψ (t + t) = 1) : ψ ((t + t) + (t + t))
   rw [AddChar.map_add_eq_mul, h, one_mul]
 
 theorem psi_symplO_two {x y : WO S T} (h : ψ (symplO S T x y) = 1) : ψ (symplO S T x (2 • y)) = 1 := by
-  rw [symplO_eq_halves] at h ⊢
+  rw [GlobalTheory.ThetaCoefficient.symplO_eq] at h ⊢
   rw [two_nsmul, GlobalTheory.OrientedHeis.symplOH_add_right]
   exact psi_four h
 
 theorem psi_symplOH_two {x y : WO S T} (h : ψ (symplO S T x y) = 1) : ψ (symplOH S T (2 • x) (2 • y)) = 1 := by
-  rw [symplO_eq_halves] at h
+  rw [GlobalTheory.ThetaCoefficient.symplO_eq] at h
   rw [two_nsmul, two_nsmul, GlobalTheory.OrientedHeis.symplOH_add_left, GlobalTheory.OrientedHeis.symplOH_add_right]
   exact psi_four h
 
@@ -1237,13 +1222,6 @@ namespace GlobalTheory.AscFinCond
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
-theorem symplO_extX_extY_pairS {S S₀ T : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (x y : Mx D T.rank ρ) :
-    symplO S T (d.extX T x) (d.extY T y) =
-      Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * pairS T x y) := by
-  have h := d.hO_ext T x 0 0 y 0 0
-  simp only [map_zero, zero_add, add_zero, hO_eq_trace S₀, Matrix.mul_zero, trace_zero] at h
-  rw [symplO, h, show pairS T (0 : Mx D T.rank ρ) 0 = 0 by simp [pairS], add_zero]
-
 theorem flatS_smul {V V₀ W W₀ : HSp D} {ρ σ : ℕ} (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ σ) (s : Step ψ V V₀ W W₀ ρ σ)
     (x : Mx D W.rank ρ) (y : Mx D V₀.rank σ) (a : ℂ) (Ψ : WO V W → ℂ) :
     flatS dV dW s x y (a • Ψ) = a • flatS dV dW s x y Ψ :=
@@ -1332,10 +1310,10 @@ theorem cond_of_flatS_ne : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V V₀
         rw [Matrix.smul_apply, smul_eq_mul, hε, ← GlobalTheory.FinPlLoc.mem_idAt_iff]; exact hp.a₂.fin a' ha' i j
       have hsym : symplO V W (dV.extX W (ε • (A - rat x₀))) (dV.extY W a') =
           symplO V W (dV.extX W (A - rat x₀)) (dV.extY W a') := by
-        rw [← ha'e, symplO_extX_extY_pairS, symplO_extX_extY_pairS, pairS_idem hεε hcA]
+        rw [← ha'e, GlobalTheory.FinPl.InvStep.symplO_extX_extY, GlobalTheory.FinPl.InvStep.symplO_extX_extY, pairS_idem hεε hcA]
       have hsub : symplO V W (dV.extX W (A - rat x₀)) (dV.extY W a') =
           symplO V W (dV.extX W A) (dV.extY W a') - symplO V W (dV.extX W (rat x₀)) (dV.extY W a') := by
-        rw [symplO_extX_extY_pairS, symplO_extX_extY_pairS, symplO_extX_extY_pairS, pairS_sub_left, mul_sub, map_sub]
+        rw [GlobalTheory.FinPl.InvStep.symplO_extX_extY, GlobalTheory.FinPl.InvStep.symplO_extX_extY, GlobalTheory.FinPl.InvStep.symplO_extX_extY, pairS_sub_left, mul_sub, map_sub]
       rw [hsym, hsub, sub_eq_add_neg, AddChar.map_add_eq_mul, key a' ha', ← AddChar.map_add_eq_mul, add_neg_cancel,
         AddChar.map_zero_eq_one]
     · rw [← hAdef]
@@ -1382,8 +1360,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.weil_datum_conjugation_dictionary_row_grid : GlobalTheory.SepRows.DepFixed → All fun {D} _ {L} _ {G} W _ => ∀ i, i < D.R.m → IsWeilDatumO W.ψ _ _ (G.chrS (.chi i 0))⁻¹ (G.chrT (.chi i 0))⁻¹ (omRow W i) ∧ IsWeilDatumO W.ψ _ _ (G.chrS (.core i))⁻¹ (G.chrT (.core i))⁻¹ (omCore W i) ∧ (∀ f, VacG W.ψ _ _ (latRow G i) f ↔ Dep W (.chi i 0) (star f)) ∧ (∀ f, VacG W.ψ _ _ (latCore G i) f ↔ Dep W (.core i) (star f)) ∧ (∀ g h f, omRow W i (g, h) f = star (W.om (.chi i 0) (negGA _ g, h) (star f))) ∧ (∀ g h f, omCore W i (g, h) f = star (W.om (.core i) (negGA _ g, h) (star f))) ∧ ∀ f, VacG W.ψ _ _ (latRow G i) f → ∀ k ∈ lev G (.grid i 0), omRow W i (1, k) f = f := by
-  first | exact @GlobalTheory.ConjDict.conj_dict
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilDatumConjugationDictionaryRowGridStatement =====
@@ -1444,7 +1420,7 @@ theorem std_good : GlobalTheory.SepRows.DepFixed → All fun {_} _ _ _ {G} W _ =
     ∀ (v : CoreVol G) (F : GlobalTheory.Asc.Frames G), Std F → F.Good v W (lineLat F) := by
   intro hDF D hQ T L μ0 hL sc G W M hM v F hF
   have hψ : IsStdChar D W.ψ (-1) := W.ψ_std
-  have cj := GlobalTheory.T.weil_datum_conjugation_dictionary_row_grid hDF D hQ T L μ0 hL sc G W M hM
+  have cj := GlobalTheory.ConjDict.conj_dict hDF D hQ T L μ0 hL sc G W M hM
   have gl := _root_.GlobalTheory.PlaceLevelCosets.levCoset_of_places D hQ T L μ0 hL sc G W M hM
   have kv := _root_.GlobalTheory.LevelOffS.inK_mem_lev D hQ T L μ0 hL sc G W M hM
   have lt := _root_.GlobalTheory.LastSeeSaw.lastLat_std D hQ T L μ0 hL sc G W M hM F hF

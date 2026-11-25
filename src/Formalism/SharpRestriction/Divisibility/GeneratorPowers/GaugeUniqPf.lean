@@ -390,8 +390,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.TB
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GaugeR
 
 def ExpPowSt : Prop :=

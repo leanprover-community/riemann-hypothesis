@@ -93,8 +93,6 @@ section Mat
 
 variable {m : ℕ} {ε : Fin m → Bool}
 
-alias mem_KC_of_K := _root_.GlobalTheory.Dec.FormF.K_KC
-
 alias one_mem_K := _root_.GlobalTheory.Dec.TauExt.one_mem_K
 
 theorem invT_conj {k : Matrix (Fin m) (Fin m) ℂ} (hk : k ∈ Matrix.unitaryGroup (Fin m) ℂ) :
@@ -118,7 +116,7 @@ theorem commute_factU_factK {D : D7} {m n : ℕ} (ε : D.what₂.Tau → Fin m �
     {g : D.what₂.Tau → Matrix (Fin m) (Fin m) ℂ} (hg : ∀ τ, g τ ∈ GlobalTheory.Dec.KC (ε τ)) :
     Commute (factU ε x₁ x₂ x₃ u) (factK n ε x₁ x₂ x₃ g) := by
   have hm := (_root_.GlobalTheory.JointHarm.fact_one_mul_adj D m n ε x₁ x₂ x₃).2.1
-  have h1 : ∀ τ, (1 : D.what₂.Tau → Matrix (Fin m) (Fin m) ℂ) τ ∈ GlobalTheory.Dec.KC (ε τ) := fun _ => mem_KC_of_K one_mem_K
+  have h1 : ∀ τ, (1 : D.what₂.Tau → Matrix (Fin m) (Fin m) ℂ) τ ∈ GlobalTheory.Dec.KC (ε τ) := fun _ => GlobalTheory.Dec.FormF.K_KC one_mem_K
   have h2 : ∀ τ, IsUnit ((1 : D.what₂.Tau → Matrix (Fin n) (Fin n) ℂ) τ) := fun _ => isUnit_one
   have a := hm 1 (fun τ => ((g τ)⁻¹)ᵀ) u 1 h1 (fun τ => _root_.GlobalTheory.FockHol.invT_mem_KC (hg τ)) hu h2
   have b := hm (fun τ => ((g τ)⁻¹)ᵀ) 1 1 u (fun τ => _root_.GlobalTheory.FockHol.invT_mem_KC (hg τ)) h1 h2 hu
@@ -200,10 +198,10 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
       obtain ⟨u, hu, rfl⟩ := h
       refine ⟨?_, fun u' hu' => ?_⟩
       · rw [hψ u hu]
-        exact hbK.map_of_commute fun g hg => commute_factU_factK _ _ _ _ (fun τ => (mem_KC_of_K (hu τ)).1) hg
-      · rw [← Module.End.mul_apply, ← hv1.2.2.1 u' u (fun τ => mem_KC_of_K (hu' τ)) (fun τ => mem_KC_of_K (hu τ)),
+        exact hbK.map_of_commute fun g hg => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (hu τ)).1) hg
+      · rw [← Module.End.mul_apply, ← hv1.2.2.1 u' u (fun τ => GlobalTheory.Dec.FormF.K_KC (hu' τ)) (fun τ => GlobalTheory.Dec.FormF.K_KC (hu τ)),
           hψ (u' * u) (fun τ => K_mul (hu' τ) (hu τ)), hψ u hu,
-          hhU.2.2.1 u' u (fun τ => mem_KC_of_K (hu' τ)) (fun τ => mem_KC_of_K (hu τ)), Module.End.mul_apply]
+          hhU.2.2.1 u' u (fun τ => GlobalTheory.Dec.FormF.K_KC (hu' τ)) (fun τ => GlobalTheory.Dec.FormF.K_KC (hu τ)), Module.End.mul_apply]
     | zero => exact ⟨by rw [map_zero]; exact zero_mem _, fun u _ => by simp only [map_zero]⟩
     | add a b _ _ ha hb =>
       exact ⟨by rw [map_add]; exact add_mem ha.1 hb.1, fun u hu => by simp only [map_add, ha.2 u hu, hb.2 u hu]⟩
@@ -232,8 +230,8 @@ theorem exists_io_poly (D : D7) (V W : HSp D) (θ : InfFam D) (Sp : D.what₂.Ta
   · rw [hio, hio, map_smul]
     refine congrArg (HSMul.hSMul _) ?_
     have hcm := hm1 (factU M.ε x₁ x₂ x₃ fun τ => (BS τ)⁻¹ * compAt θ τ (Formalism.L2.Theta.mt V u) * BS τ)
-      (fun k hk => commute_factU_factK _ _ _ _ (fun τ => (mem_KC_of_K (mem_K_allPos (hun τ))).1)
-        fun τ => mem_KC_of_K (hk τ)) x
+      (fun k hk => commute_factU_factK _ _ _ _ (fun τ => (GlobalTheory.Dec.FormF.K_KC (mem_K_allPos (hun τ))).1)
+        fun τ => GlobalTheory.Dec.FormF.K_KC (hk τ)) x
     rw [hj2 u hu, (key _ (hjm w)).2 _ fun τ => mem_K_allPos (hun τ)]
     exact LinearMap.congr_fun hcm.eq _
   · rw [hio, hio, map_smul]

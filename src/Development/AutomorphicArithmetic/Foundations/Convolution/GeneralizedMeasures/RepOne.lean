@@ -781,7 +781,7 @@ private theorem comm_hop (B : LL μ →L[ℂ] LL μ) (hB : ∀ h, Commute B (rho
     (J : Subgroup (GL (Fin n) (w.adicCompletion K))) (x : GL (Fin n) (w.adicCompletion K))
     (ho : IsOpen (J : Set (GL (Fin n) (w.adicCompletion K)))) (hc : IsCompact (J : Set (GL (Fin n) (w.adicCompletion K)))) :
     Commute B (Hop μ w J x) :=
-  (UpperTheory.ConvolutionTheory.Tf.hopBasic K n μ w J x ho hc).2.2.2.2.1 B fun g => hB _
+  (UpperTheory.ConvolutionTheory.Tf.hopBasic K n μ w J x ho hc).2.2.2.2.1 B fun _ => hB _
 
 private theorem comm_ev (𝔞 : Amp μ) {ev : PR K n →+* (LL μ →L[ℂ] LL μ)} (hev : 𝔞.IsEv ev)
     (B : LL μ →L[ℂ] LL μ) (hB : ∀ h, Commute B (rhoF μ h)) {w : Pl K} (hw : w ∉ 𝔞.S)

@@ -417,10 +417,6 @@ theorem GlobalTheory.FockJetBound.jetOp_norm_le : ∃ K : ℝ, 0 ≤ K ∧ ∀ (
   have cd : (∑ τ, ∑ i, ((lam τ).natW i : ℝ)) = (dn : ℝ) := by simp only [hdn, Nat.cast_sum]
   have cd' : (∑ τ, ∑ i, ((lam' τ).natW i : ℝ)) = (dn' : ℝ) := by simp only [hdn', Nat.cast_sum]
   rw [cd, cd']
-  have h0 : (0 : ℝ) ≤ dn := Nat.cast_nonneg _
-  have h0' : (0 : ℝ) ≤ dn' := Nat.cast_nonneg _
-  have ha0 : (0 : ℝ) ≤ a := Nat.cast_nonneg _
-  have hb0 : (0 : ℝ) ≤ b := Nat.cast_nonneg _
   have hc0 : (0 : ℝ) ≤ Fintype.card D.what₂.Tau := Nat.cast_nonneg _
   obtain ⟨Y, hY⟩ : ∃ Y : ℝ, Y = 2 + (dn : ℝ) + dn' + a + b + Fintype.card D.what₂.Tau := ⟨_, rfl⟩
   rw [← hY]

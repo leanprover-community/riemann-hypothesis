@@ -1462,10 +1462,6 @@ end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L3
 
 namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
 
-end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
-
-namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
-
 theorem pointwise_theta_expansion : SPois → SFin → SKern → SPoint :=
   _root_.UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L3.main_of (by intro F _ _ _ c hc A; exact slice_mem_sb hc A)
 

@@ -166,8 +166,6 @@ theorem finite_ramified_places_hecke_character {D : D7} (χ : Formalism.L2.Host.
   · exact Ideal.mul_mem_right _ _ hk
   · exact Ideal.mul_mem_left _ _ hk
 
-alias not_mem_of_prime_ne := _root_.GlobalTheory.NatCastNotMemPrimeIdeal.natCast_notMem_of_prime_ne
-
 end GlobalTheory.ChiUnit
 end -- clump:auto
 end -- clump:auto

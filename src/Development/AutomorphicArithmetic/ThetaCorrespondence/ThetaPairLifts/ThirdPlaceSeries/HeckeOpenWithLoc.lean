@@ -42,7 +42,7 @@ theorem heckeOpen_withLoc_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E �
         rw [RingHom.comp_apply, RingHom.comp_apply, e1, e2]
         exact Sp.iotaC_coh j w i h z }
   have hstd : HeckeStd cover.B := Sp.std
-  refine ⟨{ hecke := ?_, av := { S := Au.S, irr := Au.irr, inj := Au.inj, surj := Au.surj, typeV := Au.typeV, ptV := Au.ptV }, au := { A.au with }, emb := Au.emb, rational := rational_of cover, level := ?_, data := { bj := Sp.bj, bj_span := Sp.bj_span, bj_rel := fun i c => Sp.bj_rel i (sOf _ i) (sOf_spec _ i) c }, cover := cover }, fun j h1 h2 π => rfl⟩
+  refine ⟨{ hecke := ?_, av := { S := Au.S, irr := Au.irr, inj := Au.inj, surj := Au.surj, typeV := Au.typeV, ptV := Au.ptV }, au := { A.au with }, emb := Au.emb, rational := rational_of cover, level := ?_, data := { bj := Sp.bj }, cover := cover }, fun j h1 h2 π => rfl⟩
   · refine { J_hyp := fun i => ?_
              hT := hT_of cover hstd Sp.act_hK
              sameO := sameO_of cover

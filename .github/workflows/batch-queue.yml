@@ -26,6 +26,9 @@ name: batch queue
 # Commenting `aa` hands a pull request back to its author: it adds the `awaiting-author` label and
 # nothing else. The inbox workflow takes a pull request with that label out of the inbox.
 #
+# Commenting `d` defers a pull request: it adds the `deferred` label and nothing else. A pull
+# request with that label should not be merged for now, and batches leave it out (see AGENTS.md).
+#
 # Commenting `ready` hands it back to the maintainers: it takes `awaiting-author` off and nothing
 # else. The pull request's author can do this as well as maintainers. The inbox workflow counts
 # the label coming off as the pull request entering review again, and this workflow starts it for
@@ -61,7 +64,7 @@ name: batch queue
 #
 # Only a comment whose whole text is one of these counts, letter case and surrounding blank space
 # aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `p` and `p <commit>`, `-batch` or
-# `-b`, `aa` and `ready`.
+# `-b`, `aa`, `d` and `ready`.
 # Each of them needs triage access to this repository or more, except that the pull request's
 # author can comment `ready` too. Reviewers are the people given the Triage role: it lets them
 # queue pull requests and hand them back without write access. Every other comment is ignored.
@@ -92,16 +95,16 @@ permissions: {}
 
 jobs:
   label:
-    name: Act on a `batch`, `p`, `-batch`, `aa` or `ready` comment
+    name: Act on a `batch`, `p`, `-batch`, `aa`, `d` or `ready` comment
     # A first filter, so that most comments start no runner: pull requests only, and the comment
-    # has to contain one of the words. `b`, `p`, `-b` and `aa` are too short to look for anywhere
-    # in a comment, and `ready` too common, so they are only noticed at its very start. startsWith
-    # ignores letter case. The step below makes the exact comparison.
+    # has to contain one of the words. `b`, `p`, `-b`, `aa` and `d` are too short to look for
+    # anywhere in a comment, and `ready` too common, so they are only noticed at its very start.
+    # startsWith ignores letter case. The step below makes the exact comparison.
     if: >-
       ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request &&
           (contains(github.event.comment.body, 'batch') ||
            startsWith(github.event.comment.body, 'b') || startsWith(github.event.comment.body, '-b') ||
-           startsWith(github.event.comment.body, 'p') ||
+           startsWith(github.event.comment.body, 'p') || startsWith(github.event.comment.body, 'd') ||
            startsWith(github.event.comment.body, 'aa') || startsWith(github.event.comment.body, 'ready')) }}
     runs-on: ubuntu-latest
     # `contents: read` is for the log of pushes to a branch of this repository, and
@@ -128,6 +131,7 @@ jobs:
           LABEL: batch queue
           PRIORITY: priority
           WAITING: awaiting-author
+          DEFERRED: deferred
         run: |
           # The comment text arrives in an environment variable. It is compared and never run.
           text=$(printf '%s' "$BODY" | tr -d '\r' | tr '[:upper:]' '[:lower:]')
@@ -150,9 +154,9 @@ jobs:
             -b) text=-batch ;;
           esac
           case "$text" in
-            batch | -batch | aa | ready) ;;
+            batch | -batch | aa | d | ready) ;;
             *)
-              echo "The comment is not just 'batch', 'p', '-batch', 'aa' or 'ready', or 'b' or '-b': nothing to do."
+              echo "The comment is not just 'batch', 'p', '-batch', 'aa', 'd' or 'ready', or 'b' or '-b': nothing to do."
               exit 0
               ;;
           esac
@@ -178,6 +182,9 @@ jobs:
               elif [ "$text" = aa ]; then
                 echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$WAITING' needs triage access."
                 exit 0
+              elif [ "$text" = d ]; then
+                echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$DEFERRED' needs triage access."
+                exit 0
               elif [ "$text" = ready ]; then
                 echo "$AUTHOR did not open pull request $PR and has '${role:-$permission}' access. Taking '$WAITING' off someone else's pull request needs triage access."
                 exit 0
@@ -201,6 +208,18 @@ jobs:
             fi
             gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$WAITING" --silent
             echo "Added '$WAITING' to pull request $PR, as $AUTHOR asked."
+            exit 0
+          fi
+
+          if [ "$text" = d ]; then
+            # Not to be merged for now. As with `aa`, the label is all this does, and a renamed
+            # `deferred` should fail here instead of starting a second label.
+            if ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$DEFERRED" '$label | @uri')" --silent; then
+              echo "::error::There is no '$DEFERRED' label in $REPO. Was it renamed?"
+              exit 1
+            fi
+            gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$DEFERRED" --silent
+            echo "Added '$DEFERRED' to pull request $PR, as $AUTHOR asked."
             exit 0
           fi
 

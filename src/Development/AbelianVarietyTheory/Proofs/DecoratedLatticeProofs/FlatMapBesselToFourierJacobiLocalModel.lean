@@ -267,10 +267,10 @@ theorem π_c_ι (x : k) : p.π (cA D (p.ι x)) = 0 := by
   have h1 : p.π p.e = 1 := by rw [← GlobalTheory.LocChar.ι_one, p.π_ι]
   have h2 := congrArg p.π p.split.2.1
   rw [map_mul, h1, one_mul, map_zero] at h2
-  rw [← GlobalTheory.LocChar.e_mul_ι, map_mul, map_mul, h2, zero_mul]
+  rw [← GlobalTheory.LocMod.Witness.e_ι, map_mul, map_mul, h2, zero_mul]
 
 theorem eta_ι (x : k) : (1 - (p.e + cA D p.e)) * p.ι x = 0 := by
-  have h1 := GlobalTheory.LocChar.e_mul_ι p x
+  have h1 := GlobalTheory.LocMod.Witness.e_ι p x
   have h2 := p.split.2.1
   linear_combination (cA D p.e - 1) * h1 - p.ι x * h2
 
@@ -280,7 +280,7 @@ theorem eta_c_ι (x : k) : (1 - (p.e + cA D p.e)) * cA D (p.ι x) = 0 := by
 
 theorem psiE_ι {ψ : AddChar (AF D.host.F) ℂ} {ψk : AddChar k Circle} (h : p.IsChar ψ ψk) (x : k) :
     psiE ψ (p.ι (p.xi * x)) = ψk x := by
-  rw [h x, GlobalTheory.LocChar.ι_mul, Place.xi, Place.pr, p.ι_π, mul_comm p.e, mul_assoc, GlobalTheory.LocChar.e_mul_ι]
+  rw [h x, GlobalTheory.LocChar.ι_mul, Place.xi, Place.pr, p.ι_π, mul_comm p.e, mul_assoc, GlobalTheory.LocMod.Witness.e_ι]
 
 theorem one_map (φ : AE D →+* k) {ρ : ℕ} (i j : Fin ρ) : φ ((1 : Mx D ρ ρ) i j) = (1 : Matrix (Fin ρ) (Fin ρ) k) i j := by
   rw [← Matrix.map_one φ (map_zero _) (map_one _), Matrix.map_apply]
@@ -326,7 +326,7 @@ theorem levi_comp {ρ c : ℕ} (J : JacLev D ρ)
   rw [e0, Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one] at q3
   generalize (mt J.W (J.d.levi a)).map p.π = M at q1 q2 q3 ⊢
   obtain ⟨h, hI, hlo, hhi⟩ := hJ
-  have key := frame_mul h p.xi s (s * (hh / p.xi)) (GlobalTheory.LocChar.xi_ne p) M
+  have key := frame_mul h p.xi s (s * (hh / p.xi)) (GlobalTheory.LocMod.Witness.xi_ne p) M
     (J.d.jX.map p.π) (J.d.jY.map p.π) FW.β u.val h0 hb ?_ (fun i r => hlo i _ rfl r)
     (fun i r => hhi i _ (by simp only [hi]; omega) r) q1 q2
   · rw [← Matrix.mul_one M, ← FW.βγ, ← Matrix.mul_assoc, key]; rfl
@@ -455,10 +455,6 @@ theorem e_smul_map {m n : Type} (K : Matrix m n k) : p.e • K.map p.ι = K.map 
 
 theorem map_ι_π {m n : Type} (K : Matrix m n k) : (K.map p.ι).map p.π = K := by
   funext i j; exact p.π_ι (K i j)
-
-alias xi_ne := _root_.GlobalTheory.LocMod.Witness.xi_ne
-
-alias hz_ne := _root_.GlobalTheory.LocMod.Witness.hz_ne
 
 theorem char_half {ψ : AddChar (AF D.host.F) ℂ} {ψk : AddChar k Circle} (h : p.IsChar ψ ψk) {a : AE D} (ha : p.e * a = a) :
     ψ (Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * a)) = ψk (p.π a) := by
@@ -609,8 +605,7 @@ theorem core_col {ρ : ℕ} {B : BesLev D ρ} {s : k} {n : Type} [Fintype n] [De
   · rw [h.2.1, pr_eq, Matrix.map_mul, Matrix.mul_assoc,
       mul_col (a := 1) (X := B.o.iA.map (prH p) * FA.β) (i := a) (fun r => by rw [one_mul]; exact h₀.1 r a), one_mul]
     rfl
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [h.2.2.2.1 i (hq i rfl), pr_eq, Matrix.mulVec, dotProduct, map_sum, Finset.mul_sum, Matrix.mul_apply]
+  · rw [h.2.2.2.1 i (hq i rfl), pr_eq, Matrix.mulVec, dotProduct, map_sum, Finset.mul_sum, Matrix.mul_apply]
     refine Finset.sum_congr rfl fun y _ => ?_
     rw [map_mul, mul_left_comm]
     exact congrArg _ (h₀.2 y)
@@ -625,8 +620,8 @@ theorem flatBF_mul_row : ∀ (D : D7), FlatLaw D → GlobalTheory.FinPl.FlatLaws
   have hc := hJ.1
   have hi : 2 * ρ - 1 - l.val < ρ := by have := l.2; omega
   obtain ⟨i, hli⟩ : ∃ i : Fin ρ, l.val + i.val + 1 = 2 * ρ := ⟨⟨_, hi⟩, by have := l.2; simp only; omega⟩
-  have hxi := xi_ne p
-  have hhz := hz_ne p B
+  have hxi := GlobalTheory.LocMod.Witness.xi_ne p
+  have hhz := GlobalTheory.LocMod.Witness.hz_ne p B
   obtain ⟨κ, hκ⟩ : ∃ κ, κ = s * (p.hz B / p.xi) * (-1 / p.xi) ^ (ρ - 1 - i.val) := ⟨_, rfl⟩
   have hκ0 : κ ≠ 0 := by
     rw [hκ]; exact mul_ne_zero (mul_ne_zero hs (div_ne_zero hhz hxi)) (pow_ne_zero _ (div_ne_zero (by simp) hxi))
@@ -886,7 +881,7 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 
 theorem ι_sandwich (a c : AE D) (m : k) : p.ι (p.π a * m * p.π c) = a * p.ι m * c := by
   rw [GlobalTheory.LocChar.ι_mul, GlobalTheory.LocChar.ι_mul, p.ι_π, p.ι_π]
-  have h := GlobalTheory.LocChar.e_mul_ι p m
+  have h := GlobalTheory.LocMod.Witness.e_ι p m
   linear_combination (a * c * p.e + a * c) * h
 
 theorem mul_map_ι_mul {a b l m : Type} [Fintype a] [Fintype b] (A : Matrix m a (AE D)) (M : Matrix a b k)
@@ -904,7 +899,7 @@ theorem ι_mem_idAt : ∃ v, ∀ y : k, p.ι y ∈ GlobalTheory.FinPl.idAt D (·
   have hε' := GlobalTheory.AdelicU.Supp.isPlaceIdem_iff.1 hε
   subst hε'
   rw [← hsum]
-  have h1 := GlobalTheory.LocChar.e_mul_ι p y
+  have h1 := GlobalTheory.LocMod.Witness.e_ι p y
   have h2 : cA D p.e * p.e = 0 := by rw [mul_comm]; exact he
   linear_combination (1 - cA D p.e) * h1 + p.ι y * h2
 

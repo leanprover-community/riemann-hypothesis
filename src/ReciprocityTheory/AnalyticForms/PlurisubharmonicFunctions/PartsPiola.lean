@@ -14,14 +14,14 @@ noncomputable section
 theorem third_fderiv_symm_one_two {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (h : ContDiffAt ℝ 3 φ z)
     (u x : Fin D → ℂ) :
     fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z u x = fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z x u := by
-  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num)
-  exact h2.isSymmSndFDerivAt (by first | simp) u x
+  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by norm_num)
+  exact h2.isSymmSndFDerivAt (by simp) u x
 
 theorem differentiableAt_snd_fderiv {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ)
     (h : ContDiffAt ℝ 3 φ z) : DifferentiableAt ℝ (fderiv ℝ (fderiv ℝ φ)) z := by
-  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num)
-  have h1 : ContDiffAt ℝ 1 (fderiv ℝ (fderiv ℝ φ)) z := h2.fderiv_right (by first | norm_num)
-  exact h1.differentiableAt (by first | norm_num)
+  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by norm_num)
+  have h1 : ContDiffAt ℝ 1 (fderiv ℝ (fderiv ℝ φ)) z := h2.fderiv_right (by norm_num)
+  exact h1.differentiableAt (by norm_num)
 
 theorem third_fderiv_symm_two_three {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (h : ContDiffAt ℝ 3 φ z)
     (u x y : Fin D → ℂ) :
@@ -31,18 +31,18 @@ theorem third_fderiv_symm_two_three {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z 
       fderiv ℝ (⇑(evalL x y) ∘ fderiv ℝ (fderiv ℝ φ)) z =
         (evalL x y).comp (fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z) :=
     fun x y => ((evalL x y).hasFDerivAt.comp z hd.hasFDerivAt).fderiv
-  have h2 : ContDiffAt ℝ 2 φ z := h.of_le (by first | norm_num)
-  have hev : ∀ᶠ w in 𝓝 z, ContDiffAt ℝ 2 φ w := h2.eventually (by first | simp)
+  have h2 : ContDiffAt ℝ 2 φ z := h.of_le (by norm_num)
+  have hev : ∀ᶠ w in 𝓝 z, ContDiffAt ℝ 2 φ w := h2.eventually (by simp)
   have ev : (⇑(evalL x y) ∘ fderiv ℝ (fderiv ℝ φ)) =ᶠ[𝓝 z]
       (⇑(evalL y x) ∘ fderiv ℝ (fderiv ℝ φ)) := by
     filter_upwards [hev] with w hw
-    simp only [Function.comp_apply, evalL, ContinuousLinearMap.coe_comp',
+    simp only [Function.comp_apply, evalL, ContinuousLinearMap.coe_comp,
       ContinuousLinearMap.apply_apply]
-    exact hw.isSymmSndFDerivAt (by first | simp) x y
+    exact hw.isSymmSndFDerivAt (by simp) x y
   have e := Filter.EventuallyEq.fderiv_eq (𝕜 := ℝ) ev
   rw [key x y, key y x] at e
   have e2 := congrArg (fun L => L u) e
-  simpa only [evalL, ContinuousLinearMap.coe_comp', Function.comp_apply,
+  simpa only [evalL, ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearMap.apply_apply] using e2
 
 theorem dzEntry_symm {D : ℕ} (T : (Fin D → ℂ) →L[ℝ] BilinSp D) (hT : ∀ u x, T u x = T x u)
@@ -143,21 +143,19 @@ theorem dzb_congr (h : f =ᶠ[𝓝 z] g) : dzb j f z = dzb j g z := by
 
 theorem dz_add (hf : DifferentiableAt ℝ f z) (hg : DifferentiableAt ℝ g z) :
     dz j (fun y => f y + g y) z = dz j f z + dz j g z := by
-  have e : fderiv ℝ (fun y => f y + g y) z = fderiv ℝ f z + fderiv ℝ g z := by
-    first
-    | (exact (hf.hasFDerivAt.add hg.hasFDerivAt).fderiv)
+  have e : fderiv ℝ (fun y => f y + g y) z = fderiv ℝ f z + fderiv ℝ g z :=
+    (hf.hasFDerivAt.add hg.hasFDerivAt).fderiv
   unfold dz
-  rw [e, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply]
+  rw [e, add_apply, add_apply]
   ring
 
 theorem dz_mul (hf : DifferentiableAt ℝ f z) (hg : DifferentiableAt ℝ g z) :
     dz j (fun y => f y * g y) z = dz j f z * g z + f z * dz j g z := by
-  have e : fderiv ℝ (fun y => f y * g y) z = f z • fderiv ℝ g z + g z • fderiv ℝ f z := by
-    first
-    | (exact (hf.hasFDerivAt.mul hg.hasFDerivAt).fderiv)
+  have e : fderiv ℝ (fun y => f y * g y) z = f z • fderiv ℝ g z + g z • fderiv ℝ f z :=
+    (hf.hasFDerivAt.mul hg.hasFDerivAt).fderiv
   unfold dz
   rw [e]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [add_apply, smul_apply, smul_eq_mul]
   ring
 
 theorem dz_of_eventually_zero (h : f =ᶠ[𝓝 z] fun _ => 0) : dz j f z = 0 := by
@@ -172,7 +170,7 @@ theorem dzb_of_eventually_zero (h : f =ᶠ[𝓝 z] fun _ => 0) : dzb j f z = 0 :
 
 theorem differentiableAt_dzb (hf : ContDiffAt ℝ 2 f z) : DifferentiableAt ℝ (dzb j f) z := by
   have hd : DifferentiableAt ℝ (fderiv ℝ f) z :=
-    (hf.fderiv_right (m := 1) (by first | norm_num)).differentiableAt (by first | norm_num)
+    (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
   have h1 : DifferentiableAt ℝ (fun y => fderiv ℝ f y (Pi.single j 1)) z :=
     hd.clm_apply (differentiableAt_const _)
   have h2 : DifferentiableAt ℝ (fun y => fderiv ℝ f y (Complex.I • Pi.single j 1)) z :=
@@ -181,11 +179,8 @@ theorem differentiableAt_dzb (hf : ContDiffAt ℝ 2 f z) : DifferentiableAt ℝ 
     (differentiableAt_const _).mul h2
   have h4 : DifferentiableAt ℝ (fun y => fderiv ℝ f y (Pi.single j 1) +
       Complex.I * fderiv ℝ f y (Complex.I • Pi.single j 1)) z := h1.add h3
-  have h5 : DifferentiableAt ℝ (fun y => (fderiv ℝ f y (Pi.single j 1) +
-      Complex.I * fderiv ℝ f y (Complex.I • Pi.single j 1)) / 2) z := by
-    first
-      | (simpa only [div_eq_mul_inv] using h4.mul_const (2⁻¹ : ℂ))
-  exact h5
+  unfold dzb
+  simpa only [div_eq_mul_inv] using h4.mul_const (2⁻¹ : ℂ)
 
 end DzCalc
 
@@ -205,7 +200,7 @@ theorem monge_ampere_density_cofactor : MaDensCofStatement := by
     intro j k
     have hv2 : ContDiffAt ℝ 2 v z := hv.contDiffAt (hU.mem_nhds hz)
     have hDv : DifferentiableAt ℝ (fderiv ℝ v) z :=
-      (hv2.fderiv_right (m := 1) (by first | norm_num)).differentiableAt (by first | norm_num)
+      (hv2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
     have hw : ∀ w : Fin (n + 1) → ℂ, HasFDerivAt (fun y => ((fderiv ℝ v y w : ℝ) : ℂ))
         (Complex.ofRealCLM.comp
           ((ContinuousLinearMap.apply ℝ ℝ w).comp (fderiv ℝ (fderiv ℝ v) z))) z :=
@@ -217,26 +212,25 @@ theorem monge_ampere_density_cofactor : MaDensCofStatement := by
             (fderiv ℝ (fderiv ℝ v) z)) +
           Complex.I • Complex.ofRealCLM.comp
             ((ContinuousLinearMap.apply ℝ ℝ (Complex.I • Pi.single k 1)).comp
-              (fderiv ℝ (fderiv ℝ v) z)))) z := by
-      first
-        | (exact ((hw _).add ((hw _).const_mul Complex.I)).const_mul (1 / 2 : ℂ))
+              (fderiv ℝ (fderiv ℝ v) z)))) z :=
+      ((hw _).add ((hw _).const_mul Complex.I)).const_mul (1 / 2 : ℂ)
     have heq : dzb k (cplx v) =ᶠ[𝓝 z] fun y => (1 / 2 : ℂ) *
         (((fderiv ℝ v y (Pi.single k 1) : ℝ) : ℂ) +
           Complex.I * ((fderiv ℝ v y (Complex.I • Pi.single k 1) : ℝ) : ℂ)) := by
       filter_upwards [hU.mem_nhds hz] with y hy
       have hdy : DifferentiableAt ℝ v y :=
-        (hv.contDiffAt (hU.mem_nhds hy)).differentiableAt (by first | norm_num)
+        (hv.contDiffAt (hU.mem_nhds hy)).differentiableAt (by norm_num)
       have hf : fderiv ℝ (cplx v) y = Complex.ofRealCLM.comp (fderiv ℝ v y) :=
         (Complex.ofRealCLM.hasFDerivAt.comp y hdy.hasFDerivAt).fderiv
       unfold dzb
       rw [hf]
-      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, Complex.ofRealCLM_apply]
+      simp only [ContinuousLinearMap.coe_comp, Function.comp_apply, Complex.ofRealCLM_apply]
       ring
     rw [dz_congr heq]
     unfold dz
     rw [hg.fderiv]
-    simp only [hessC, ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.apply_apply,
+    simp only [hessC, smul_apply, add_apply,
+      ContinuousLinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.apply_apply,
       Complex.ofRealCLM_apply, smul_eq_mul]
     push_cast
     linear_combination ((fderiv ℝ (fderiv ℝ v) z (Complex.I • Pi.single j 1)

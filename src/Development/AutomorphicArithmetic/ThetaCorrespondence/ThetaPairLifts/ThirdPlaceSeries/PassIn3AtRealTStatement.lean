@@ -208,7 +208,6 @@ private lemma trace_leftReg_mul_mulRight_eq_sum_coeff {K G : Type} [Field K] [Gr
     LinearMap.mulLeft_apply, LinearMap.mulRight_apply, ← mul_assoc, MonoidAlgebra.single_mul_single, mul_one]
   simp [MonoidAlgebra.basis, mul_assoc]
 
-
 open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 theorem _root_.GlobalTheory.MultOneRealised.exists_rep_of_mult_one : ∀ (K : Type) [Field K] [CharZero K] (G : Type) [Group G] [Fintype G] (χ : G → K), _root_.Formalism.L2.DIV.IsAbsIrrChar χ → ∀ (P : Subgroup G) [Fintype P] (ψ : P →* Kˣ), ∑ h : P, χ (h : G) * (((ψ h)⁻¹ : Kˣ) : K) = (Fintype.card P : K) → ∃ (n : ℕ) (τ : Representation K G (Fin n → K)), 0 < n ∧ Function.Surjective τ.asAlgebraHom ∧ ∀ g, LinearMap.trace K (Fin n → K) (τ g) = χ g := by
@@ -590,7 +589,6 @@ open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR
 
 namespace GlobalTheory
 
-
 open Formalism.IndefR.Rat Formalism.IndefR.Cx.CxData in
 theorem ratMuP_of_rowTest : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.what₂.LL] (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3), Formalism.IndefR.Rat.RowTest (R.toCx3 F) → R.PrincipalLevelBijective F → (R.toCx3 F).RATmu (crdOf3 A3 ⊥ 1 F.P1 F.ψ1 F.Dc F.Sp F.Zsc) false := by
   intro D _ G _ _ Pl0 I0 T A3 Ks _ _ _ R F hT hH2
@@ -631,10 +629,6 @@ def PlaceBound : Prop :=
       (Fintype.card F : ℝ) ^ k * (1 - 1 / (Fintype.card F : ℝ)) ≤ (nPos ψ (parInd b σ) ρ k : ℝ) ∧
       (nPos ψ (parInd b σ) ρ k : ℝ) ≤ (Fintype.card F : ℝ) ^ k * (1 + (2 * (r : ℝ) - 1) / (Fintype.card F : ℝ))
 
-theorem mem_eig {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (τ : Representation ℂ G V) (S : Set G) (χ : G → ℂ)
-    (v : V) : v ∈ eig τ S χ ↔ ∀ g ∈ S, τ g v = χ g • v := by
-  simp [eig, Submodule.mem_iInf, sub_eq_zero]
-
 theorem card_mul_finrank_eig {G : Type} [Group G] {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (τ : Representation ℂ G V) (P : Subgroup G) [Fintype P] (ψ : G → ℂ) (h1 : ψ 1 = 1)
     (hm : ∀ x ∈ P, ∀ y ∈ P, ψ (x * y) = ψ x * ψ y) :
@@ -649,7 +643,7 @@ theorem card_mul_finrank_eig {G : Type} [Group G] {V : Type} [AddCommGroup V] [M
   have hp : LinearMap.IsProj (eig τ (P : Set G) ψ) e := by
     constructor
     · intro v
-      rw [mem_eig]
+      rw [GlobalTheory.FinGL.SortWh.mem_eig]
       intro g hg
       have hg' : g ∈ P := hg
 
@@ -661,7 +655,7 @@ theorem card_mul_finrank_eig {G : Type} [Group G] {V : Type} [AddCommGroup V] [M
       simp only [Equiv.coe_mulLeft, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
       rw [hm g hg' x x.2, smul_smul, mul_inv, ← mul_assoc, mul_inv_cancel₀ (h0 g hg'), one_mul]
     · intro v hv
-      rw [mem_eig] at hv
+      rw [GlobalTheory.FinGL.SortWh.mem_eig] at hv
       simp only [he, LinearMap.smul_apply, LinearMap.coe_sum, Finset.sum_apply]
       rw [Finset.sum_congr rfl (g := fun _ => v) fun x _ => by
         rw [hv x x.2, smul_smul, inv_mul_cancel₀ (h0 x x.2), one_smul]]
@@ -1145,10 +1139,6 @@ section Abstract
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
-theorem mem_eig_iff (τ : Representation ℂ G V) (S : Set G) (χ : G → ℂ) (v : V) :
-    v ∈ eig τ S χ ↔ ∀ g ∈ S, τ g v = χ g • v := by
-  simp [eig, Submodule.mem_iInf, sub_eq_zero]
-
 def proj (τ : Representation ℂ G V) (A : Subgroup G) [Fintype A] (χ : G → ℂ) : V →ₗ[ℂ] V :=
   ∑ a : A, χ (a : G)⁻¹ • τ a
 
@@ -1158,7 +1148,7 @@ theorem proj_apply (τ : Representation ℂ G V) (A : Subgroup G) [Fintype A] (�
 
 theorem proj_mem (τ : Representation ℂ G V) (A : Subgroup G) [Fintype A] (χ : G → ℂ)
     (hχ : ∀ x ∈ A, ∀ y ∈ A, χ (x * y) = χ x * χ y) (v : V) : proj τ A χ v ∈ eig τ A χ := by
-  rw [mem_eig_iff]
+  rw [GlobalTheory.FinGL.Mir.mem_eig]
   intro g hg
 
   rw [proj_apply, map_sum, Finset.smul_sum]
@@ -1183,7 +1173,7 @@ theorem proj_act (τ : Representation ℂ G V) (A : Subgroup G) [Fintype A] (χ 
 theorem proj_of_mem (τ : Representation ℂ G V) (A : Subgroup G) [Fintype A] (χ : G → ℂ)
     (hχ : ∀ x ∈ A, ∀ y ∈ A, χ (x * y) = χ x * χ y) (h1 : χ 1 = 1) {v : V} (hv : v ∈ eig τ A χ) :
     proj τ A χ v = (Fintype.card A : ℂ) • v := by
-  rw [mem_eig_iff] at hv
+  rw [GlobalTheory.FinGL.Mir.mem_eig] at hv
   rw [proj_apply, Finset.sum_congr rfl (g := fun _ => v)]
   · rw [Finset.sum_const, Finset.card_univ, Nat.cast_smul_eq_nsmul]
   · intro a _
@@ -1202,7 +1192,7 @@ theorem finrank_eig_le [FiniteDimensional ℂ V] (τ : Representation ℂ G V) (
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
   rintro ⟨v, hv⟩ h0
   have h0' : proj τ B χ v = 0 := congrArg Subtype.val h0
-  have hv' := (mem_eig_iff τ A χ v).1 hv
+  have hv' := (GlobalTheory.FinGL.Mir.mem_eig τ A χ v).1 hv
   have key : ∀ b : B, proj τ A χ (χ (b : G)⁻¹ • τ b v) =
       (if (b : G) ∈ A then (Fintype.card A : ℂ) else 0) • v := by
     intro b
@@ -1236,7 +1226,7 @@ theorem finrank_eig_conj (τ : Representation ℂ G V) (S T : Set G) (χ χ' : G
     (by rw [← Module.End.mul_eq_comp, ← map_mul, inv_mul_cancel, map_one]; rfl)
   refine (e.ofSubmodules _ _ ?_).finrank_eq
   ext v
-  rw [Submodule.mem_map_equiv, mem_eig_iff, mem_eig_iff]
+  rw [Submodule.mem_map_equiv, GlobalTheory.FinGL.Mir.mem_eig, GlobalTheory.FinGL.Mir.mem_eig]
   have he : e.symm v = τ w⁻¹ v := rfl
   rw [he]
   constructor
@@ -1730,8 +1720,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.L2.Pj Formalism.IndefR.FWT
 namespace GlobalTheory
@@ -1750,8 +1738,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PassIn3AtRealTStatement", "h": "module\n\npublic import Formalism.LocalToGlobal.Divisibility.NumericScaleExponentEqExtended\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.IndefRRealT\npublic import Formalism.LocalToGlobal.Divisibility.NumbersLemmas\npublic import Formalism.LocalToGlobal.IndefiniteReal.PrimitivePackageFullHecke\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PassIn3AtRealT\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

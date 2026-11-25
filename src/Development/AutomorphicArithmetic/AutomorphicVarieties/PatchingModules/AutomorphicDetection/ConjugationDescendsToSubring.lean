@@ -1243,17 +1243,6 @@ section -- clump:auto
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem flagBasis_diag_mul {F : Type} [Field F] {n : ℕ} {A B : Matrix (Fin n) (Fin n) F}
-    (hA : A.BlockTriangular id) (hB : B.BlockTriangular id) (i : Fin n) :
-    (A * B) i i = A i i * B i i := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single i]
-  · intro k _ hk
-    rcases lt_or_gt_of_ne hk with h | h
-    · rw [hA h, zero_mul]
-    · rw [hB h, mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ i) h
-
 private theorem flagBasis_conj {F : Type} [Field F] {n : ℕ} (b t : GL (Fin n) F)
     (hb : ∀ i j, j < i → b i j = 0) (ht : ∀ i j, j < i → t i j = 0) :
     (∀ i j, j < i → (b⁻¹ * t * b : GL (Fin n) F) i j = 0) ∧
@@ -1267,12 +1256,12 @@ private theorem flagBasis_conj {F : Type} [Field F] {n : ℕ} (b t : GL (Fin n) 
   have hdiag : ∀ i, ((b⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i i *
       (b : Matrix (Fin n) (Fin n) F) i i = 1 := by
     intro i
-    rw [← flagBasis_diag_mul hbi hbm, ← Units.val_mul, inv_mul_cancel, Units.val_one, one_apply_eq]
+    rw [← flagF_diag_mul hbi hbm, ← Units.val_mul, inv_mul_cancel, Units.val_one, one_apply_eq]
   refine ⟨fun i j hij => ?_, fun i => ?_⟩
   · rw [Units.val_mul, Units.val_mul]
     exact ((hbi.mul htm).mul hbm) hij
-  · rw [Units.val_mul, Units.val_mul, flagBasis_diag_mul (hbi.mul htm) hbm,
-      flagBasis_diag_mul hbi htm, mul_right_comm, hdiag, one_mul]
+  · rw [Units.val_mul, Units.val_mul, flagF_diag_mul (hbi.mul htm) hbm,
+      flagF_diag_mul hbi htm, mul_right_comm, hdiag, one_mul]
 
 theorem UpperTheory.V.Pa.Det.flagBasis :
     ∀ {K H : Type} [Field K] [Group H] {n a : ℕ} (r : H →* GL (Fin n) (PowerSeries K)) (ψ : Fin n → H →* (PowerSeries K)ˣ), (∀ g, mat r g ∈ Ev (PowerSeries K) (PowerSeries K) n a) → Function.Injective ψ → HasFlag (pushRep (algebraMap (PowerSeries K) (FractionRing (PowerSeries K))) r) (fun i => pushCh (algebraMap (PowerSeries K) (FractionRing (PowerSeries K))) (ψ i)) → ∃ (w : GL (Fin n) (PowerSeries K)) (ty : Fin n → Bool), (∀ i j : Fin n, decide ((i : ℕ) < a) ≠ ty j → w i j = 0) ∧ ∀ g, (∀ i j, j < i → (w⁻¹ * r g * w : GL (Fin n) (PowerSeries K)) i j = 0) ∧ ∀ i, (w⁻¹ * r g * w : GL (Fin n) (PowerSeries K)) i i = (ψ i g : PowerSeries K) := by

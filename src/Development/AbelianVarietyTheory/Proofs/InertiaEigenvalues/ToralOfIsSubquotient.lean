@@ -259,13 +259,6 @@ theorem jacobi_minor {n R : Type*} [CommRing R] [Fintype n] [DecidableEq n]
 
 end GlobalTheory.GramJacobi
 
-namespace GlobalTheory.GramJacobi
-
-end GlobalTheory.GramJacobi
-
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetEqOfColsUnit =====

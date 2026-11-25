@@ -87,12 +87,6 @@ theorem emb_injective {R : Ranks} (H : Host R) : Function.Injective H.emb := by
 theorem embT_injective {R : Ranks} (H : Host R) : Function.Injective (embT H) := fun τ τ' h =>
   Subtype.ext (emb_injective H h)
 
-theorem bb_ne_bot {R : Ranks} (H : Host R) : H.𝔟 ≠ ⊥ := by
-  intro h
-  have h1 := H.𝔟_spec.1
-  rw [h, Ideal.bot_mul] at h1
-  exact differentIdeal_ne_bot h1
-
 theorem int_mem_inverse_half_different {R : Ranks} (H : Host R) (t : 𝓞 H.E) :
     ((t : H.E)) ∈ (H.AA0 : Submodule (𝓞 H.E) H.E) := by
   first | exact _root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different | exact @_root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different | apply _root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different <;> assumption

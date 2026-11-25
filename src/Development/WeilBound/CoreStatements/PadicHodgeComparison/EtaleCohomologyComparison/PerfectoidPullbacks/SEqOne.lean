@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsStri
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section

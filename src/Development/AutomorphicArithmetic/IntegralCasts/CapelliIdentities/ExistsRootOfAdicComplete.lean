@@ -137,7 +137,7 @@ private lemma root_of_local {R : Type*} [CommRing R] [IsLocalRing R]
 end UpperTheory.Reformulated.B.AdicCompleteRootExistence
 
 theorem UpperTheory.Reformulated.B.AdicCompleteRootExistence.exists_root_of_dvd.{u_1} :
-    ∀ {K : Type u_1} [inst : Field K] [inst_1 : ValuativeRel K] [inst_2 : TopologicalSpace K] [IsNonarchimedeanLocalField K]
+    ∀ {K : Type u_1} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
       {ϖ : ↥(ValuativeRel.valuation K).integer},
       Irreducible ϖ →
         ∀ (f : Polynomial ↥(ValuativeRel.valuation K).integer) (a : ↥(ValuativeRel.valuation K).integer) (k : ℕ)

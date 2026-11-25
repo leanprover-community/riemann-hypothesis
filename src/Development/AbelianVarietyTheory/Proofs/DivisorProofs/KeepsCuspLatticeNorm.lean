@@ -162,12 +162,6 @@ structure CorePar (R : Nums E) : Type 1 where
 
   pi : Fin 2 → 𝓞 E
 
-namespace CorePar
-
-variable {F} {R : Nums E} (Q : CorePar F R)
-
-end CorePar
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ConjugateFieldNorm
 end -- clump:auto
 end -- clump:auto

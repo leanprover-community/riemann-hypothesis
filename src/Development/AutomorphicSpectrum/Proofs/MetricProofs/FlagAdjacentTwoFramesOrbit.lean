@@ -43,9 +43,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.FrameReg
 
 open GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FrameChange
 
-theorem stepCols_ne_empty {N j : ℕ} (i : Fin N) : stepCols N j i ≠ ∅ := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty <;> assumption
-
 theorem minor_singleton {R : Type} [CommRing R] {N : ℕ} (h : Matrix (Fin N) (Fin N) R) (a b : Fin N) :
     minorIJ h {a} {b} = h a b := by
   unfold minorIJ
@@ -126,7 +123,6 @@ section Model
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ]
   {y : (Σ k, ι k) → Φ} {Ψ : Type} {N j : ℕ} (M : FlagModel y Ψ N j)
   {zb : (Σ k, baseIdx ι M.blk k) → ℂ} {F₁ F₂ : FrameData ι Ψ N M.Ω M.blk}
-
 
 include M in
 theorem twist_ratio (hz : zb ∈ mcPts (mCoordIdeal M.x)) (hG₁ : M.GoodAt F₁ (mCoordIdeal zb))
@@ -243,7 +239,7 @@ theorem minor_change (hz : zb ∈ mcPts (mCoordIdeal M.x)) (hF₁ : M.IsFrame F�
           _ = _ := by rw [e]; split_ifs <;> simp
       · have h0 : minorIJ ((F₁.T p.1)⁻¹ * F₂.T p.1) I I' = 0 := by
           rw [← hmin I]
-          exact (hi.2.1 _ I (hC.mul hE) hI).resolve_right (stepCols_ne_empty p.2)
+          exact (hi.2.1 _ I (hC.mul hE) hI).resolve_right (GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty p.2)
         simp [h0]
     simp only [this]
     simp
@@ -473,7 +469,6 @@ end Values
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ}
   {Ψ : Type} {N j : ℕ} (M : FlagModel y Ψ N j) {F₁ F₂ : FrameData ι Ψ N M.Ω M.blk}
 
-
 include M in
 theorem detFac_change (h₁ : M.IsFrame F₁) (h₂ : M.IsFrame F₂) (p : Ψ × Fin N) :
     detFac j p.2 (F₂.T p.1) = detFac j p.2 (F₁.T p.1) * detFac j p.2 ((F₁.T p.1)⁻¹ * F₂.T p.1) := by
@@ -488,7 +483,6 @@ theorem prod_ratio (c₁ : ∀ k, M.x ⟨k, F₁.c k⟩ ≠ 0) (p : Ψ × Fin N)
   rw [← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun k' _ => ?_
   rw [← mul_zpow, div_mul_cancel₀ _ (c₁ k')]
-
 
 open CovMap.LocImg.FrameChange in
 theorem frame_rel (h₁ : M.IsFrame F₁) (h₂ : M.IsFrame F₂) (c₁ : ∀ k, M.x ⟨k, F₁.c k⟩ ≠ 0) (p : Ψ × Fin N) (k : K)

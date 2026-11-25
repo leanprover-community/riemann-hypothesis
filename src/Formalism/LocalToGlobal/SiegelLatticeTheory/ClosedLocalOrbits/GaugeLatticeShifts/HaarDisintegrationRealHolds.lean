@@ -70,29 +70,26 @@ variable {k r : ℕ}
 
 alias meas_invM := _root_.Formalism.FourierDecayAlt.P.B2x1.invM_meas
 
-theorem meas_mulM : Measurable (mulM : Mt k r × Mt k r → Mt k r) := by
-  apply _root_.Formalism.FourierDecayAlt.P.RankOneEmbeddings.In.mulM_meas <;> assumption
-
 def Cm (g : Mt k r) (p : SS k r) : Mt k r := mulM (mulM (mulM (mulM (p.1.1, p.1.2), g), p.2.2), p.2.1)
 
 def Tm (g : Mt k r) (p : Mt k r × Mt k r) : Mt k r := mulM (mulM (p.1, g), invM p.2)
 
 theorem meas_Cm (g : Mt k r) : Measurable (Cm g) := by
   unfold Cm
-  have hm := meas_mulM (k := k) (r := r)
+  have hm := Formalism.FourierDecayAlt.P.LongWeylElement.mulM_meas (k := k) (r := r)
   exact hm.comp ((hm.comp ((hm.comp ((hm.comp (measurable_fst.fst.prodMk measurable_fst.snd)).prodMk
     measurable_const)).prodMk measurable_snd.snd)).prodMk measurable_snd.fst)
 
 theorem meas_Tm (g : Mt k r) : Measurable (Tm g) := by
   unfold Tm
-  have hm := meas_mulM (k := k) (r := r)
+  have hm := Formalism.FourierDecayAlt.P.LongWeylElement.mulM_meas (k := k) (r := r)
   exact hm.comp ((hm.comp (measurable_fst.prodMk measurable_const)).prodMk (meas_invM.comp measurable_snd))
 
 theorem tgt_eq (A B A' : Measure (Mt k r)) [SFinite A] [SFinite B] [SFinite A']
     (hB : B.map invM = B) (hA' : A'.map invM = A') (g : Mt k r) (φ : Mt k r → ℝ≥0∞) (hφ : Measurable φ) :
     ∫⁻ s, ∫⁻ s', φ (Tm g (s, s')) ∂(Formalism.MainNotions.S.muS A' B) ∂(Formalism.MainNotions.S.muS A B) =
       ∫⁻ p, φ (Cm g p) ∂((A.prod B).prod (A'.prod B)) := by
-  have hm := meas_mulM (k := k) (r := r)
+  have hm := Formalism.FourierDecayAlt.P.LongWeylElement.mulM_meas (k := k) (r := r)
   have hi := meas_invM (k := k) (r := r)
   have hT := meas_Tm g
   have hmu : ∀ X Y : Measure (Mt k r), Formalism.MainNotions.S.muS X Y = (X.prod Y).map mulM := fun _ _ => rfl

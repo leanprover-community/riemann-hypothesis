@@ -74,7 +74,6 @@ theorem antitone_of_gapGe (hp : 1 ≤ Dw.p) (hq : 1 ≤ Dw.q) {la : AllWt.Weight
     | zero => intro a b e; rw [show b = a from Fin.ext e]
     | succ n ih =>
       intro a b e
-      have hb := b.2
       have h1 := ih a ⟨a + n, by omega⟩ rfl
       have h2 := h τ (a + n) (by omega)
       rw [gap_eq (la τ) (i := ⟨a + n, by omega⟩) (j := b) e] at h2

@@ -280,7 +280,6 @@ private lemma circleIntegral_finset_sum_of_continuousOn {E ι : Type*} [NormedAd
     simp only [Finset.sum_insert ha]
     rw [circleIntegral.integral_add (ha'.circleIntegrable hR) (hsum.circleIntegrable hR), ih hs]
 
-
 open Finset Complex in
 open scoped InnerProductSpace in
 theorem _root_.GlobalTheory.norm_sum_eigenprojector_le_of_resolvent_bound :
@@ -878,24 +877,17 @@ open scoped InnerProductSpace
 
 namespace GlobalTheory.LowCasShift
 
-theorem card_le {n : ℕ} (p : Fin n → Prop) [DecidablePred p] :
-    (0 : ℝ) ≤ ((univ.filter p).card : ℝ) ∧ ((univ.filter p).card : ℝ) ≤ n := by
-  refine ⟨Nat.cast_nonneg _, ?_⟩
-  have h : (univ.filter p).card ≤ n := by
-    simpa using card_filter_le (univ : Finset (Fin n)) p
-  exact_mod_cast h
-
 theorem rhoC_bd {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
     -((n : ℝ) / 2) ≤ rhoC ε a ∧ rhoC ε a ≤ (n : ℝ) / 2 := by
-  have h1 := card_le (fun b : Fin n => a < b ∧ ε b = ε a)
-  have h2 := card_le (fun b : Fin n => b < a ∧ ε b = ε a)
+  have h1 := GlobalTheory.card_filter_fin_bounds (fun b : Fin n => a < b ∧ ε b = ε a)
+  have h2 := GlobalTheory.card_filter_fin_bounds (fun b : Fin n => b < a ∧ ε b = ε a)
   unfold rhoC
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
 
 theorem rhoN_bd {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
     -((n : ℝ) / 2) ≤ rhoN ε a ∧ rhoN ε a ≤ (n : ℝ) / 2 := by
-  have h1 := card_le (fun b : Fin n => a < b ∧ ε b ≠ ε a)
-  have h2 := card_le (fun b : Fin n => b < a ∧ ε b ≠ ε a)
+  have h1 := GlobalTheory.card_filter_fin_bounds (fun b : Fin n => a < b ∧ ε b ≠ ε a)
+  have h2 := GlobalTheory.card_filter_fin_bounds (fun b : Fin n => b < a ∧ ε b ≠ ε a)
   unfold rhoN
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
 
@@ -940,7 +932,6 @@ theorem sqrt_step {X Y b : ℝ} (hb : 4 ≤ b) (hX : (b / 2) ^ 2 ≤ X) (hY : X 
 end GlobalTheory.LowCasShift
 
 namespace GlobalTheory
-
 
 open LowCasShift in
 theorem lowK_sub_single_and_sqrt_ckv_le :

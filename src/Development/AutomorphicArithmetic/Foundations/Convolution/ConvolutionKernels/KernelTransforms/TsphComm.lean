@@ -28,14 +28,8 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Loca
 omit [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
   [TopologicalSpace G] [MeasurableSpace G] [BorelSpace G] in
 private theorem mem_dc {x y : G} :
-    y ∈ (J : Set G) * {x} * (J : Set G) ↔ ∃ a ∈ J, ∃ b ∈ J, y = a * x * b := by
-  constructor
-  · rintro ⟨p, ⟨a, ha, q, hq, rfl⟩, b, hb, rfl⟩
-    rw [Set.mem_singleton_iff] at hq
-    subst hq
-    exact ⟨a, ha, b, hb, rfl⟩
-  · rintro ⟨a, ha, b, hb, rfl⟩
-    exact ⟨a * x, ⟨a, ha, x, rfl, rfl⟩, b, hb, rfl⟩
+    y ∈ (J : Set G) * {x} * (J : Set G) ↔ ∃ a ∈ J, ∃ b ∈ J, y = a * x * b :=
+  DoubleCoset.mem_doubleCoset
 
 omit [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] [MeasurableSpace G]
   [BorelSpace G] in

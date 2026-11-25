@@ -90,19 +90,15 @@ theorem unitB_fr (hgU : g ∈ UH (Hpk k r)) (a b : Fin k) :
 
 end Frame
 
-theorem unitB_adj {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (a b : Fin m) :
-    (Hpk k r)⁻¹ * (unitB (Hpk k r) Bs a b)ᴴ * Hpk k r = unitB (Hpk k r) Bs b a := by
-  apply Formalism.FourierDecayAlt.P.Qx8.unitB_adj
-
 theorem hpart1_self {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (a : Fin m) :
     hpart1 (Hpk k r) (unitB (Hpk k r) Bs a a) = 0 := by
   unfold hpart1
-  rw [unitB_adj Bs a a, sub_self, smul_zero]
+  rw [Formalism.FourierDecayAlt.P.Qx8.unitB_adj Bs a a, sub_self, smul_zero]
 
 theorem hpart2_self {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (a : Fin m) :
     hpart2 (Hpk k r) (unitB (Hpk k r) Bs a a) = (-Complex.I) • unitB (Hpk k r) Bs a a := by
   unfold hpart2
-  rw [unitB_adj Bs a a, ← two_smul ℂ, smul_smul]
+  rw [Formalism.FourierDecayAlt.P.Qx8.unitB_adj Bs a a, ← two_smul ℂ, smul_smul]
   congr 1
   rw [one_div, mul_inv, mul_comm, ← mul_assoc, mul_inv_cancel₀ two_ne_zero, one_mul, Complex.inv_I]
 

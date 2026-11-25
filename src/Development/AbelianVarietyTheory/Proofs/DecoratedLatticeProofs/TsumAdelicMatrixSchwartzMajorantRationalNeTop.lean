@@ -101,7 +101,6 @@ theorem realSize_zero {D : D7} (θ : InfFam D) {m n : ℕ} : realSize θ (0 : Mx
   simp only [h, norm_zero, Finset.sum_const_zero]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem tsum_maj_ne_top : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ m n : ℕ, ∃ N : ℕ, ∀ K : Set (Mx D m n), IsCompact K →
     (∑' y : ratMx D m n, ENNReal.ofReal (maj θ K N y)) ≠ ⊤ := by
   intro D θ hθ m n

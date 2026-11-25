@@ -120,9 +120,6 @@ end BaseChange
 
 end GlobalTheory.BigOn.Exp.SerBase
 
-namespace GlobalTheory.BigOn.Exp.SerBase
-
-end GlobalTheory.BigOn.Exp.SerBase
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -145,12 +142,6 @@ open Formalism.L2.Host (embLL0)
 open scoped TensorProduct
 
 
-namespace GlobalTheory.BigOn.Exp.SerBase
-section BaseChange
-variable {E K₀ K ι : Type} [Field E] [NumberField E] [Field K₀] [NumberField K₀] [Field K] [NumberField K] [Fintype ι]
-  {n : ℕ}
-end BaseChange
-end GlobalTheory.BigOn.Exp.SerBase
 namespace GlobalTheory.BigOn.Exp.SerBase
 theorem latIoAt_alt : _root_.GlobalTheory.BigOn.Exp.SerBase.LatticeInclusionAt := by
   refine _root_.GlobalTheory.BigOn.Exp.TwistConditions.of_forall fun Fm x hx i p hR hM w hw j => ?_

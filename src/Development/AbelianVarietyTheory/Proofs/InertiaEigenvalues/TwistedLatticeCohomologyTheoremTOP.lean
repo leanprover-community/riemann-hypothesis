@@ -603,7 +603,6 @@ theorem tw_crysWith (hC : S.CrysCalc) :
   have h1 := (hC.2.1 S.Γ.T₀ S.D.U S.Γ.χ₁ S.D.w hρ hχ).2
   exact (hC.2.1 S.Γ.T₀ S.D.U S.Γ.χ₁⁻¹ _ hρ h1).1
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem tw_finrank_h0V (hC : S.CrysCalc) (hV : S.Vanish) : finrank ↥S.LL.1 ↥(H0V (tw S hC).ρ) = 0 := by
   obtain ⟨⟨-, -, -, -, -, hlam⟩, -⟩ := S.hyp
   exact finrank_h0V_tw (GlobalTheory.LocalIntegers.good_integers l S.LL).1 S.Γ (cont_inv S hC) hlam hV.1
@@ -632,7 +631,6 @@ theorem fSummand_of_finrank (hC : S.CrysCalc) (hH : S.FreeH)
     (hd : finrank ↥S.LL.1 (FiniteCohomology (P.PD S.K) (tw S hC).ρ) = S.D.dsum) : S.FSummand :=
   ⟨exists_isCompl S hC hH, (finrank_hf S hC).trans hd⟩
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem fSummand_of_dim (hC : S.CrysCalc) (hV : S.Vanish) (hH : S.FreeH)
     (hd : (finrank ↥S.LL.1 (FiniteCohomology (P.PD S.K) (tw S hC).ρ) : ℤ) = (finrank ↥S.LL.1 ↥(H0V (tw S hC).ρ) : ℤ) +
       ∑ i, (Multiset.card (((S.D.U i).map (· + -S.D.w i)).filter (· < 0)) : ℤ)) : S.FSummand := by

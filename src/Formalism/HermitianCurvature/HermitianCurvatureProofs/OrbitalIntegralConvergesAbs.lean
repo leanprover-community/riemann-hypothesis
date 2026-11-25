@@ -627,7 +627,3 @@ theorem omConverges : OmConverges := by
     exact (hb (M v) (hdet v)).2.trans (hmono _ _ (norm_nonneg _) (norm_long_le z v (M v) rfl))
 
 end Formalism.FourierDecayAlt.P.G7
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

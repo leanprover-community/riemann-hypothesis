@@ -819,10 +819,6 @@ theorem thue_normSq (d e : ℕ) (he : d + 1 = 4 * e) (u v : ℤ) :
   push_cast
   linear_combination ((v : ℝ) ^ 2 / 4) * hs + ((v : ℝ) ^ 2 / 4) * he'
 
-theorem thue_norm_zc {q : ℕ} [Fact q.Prime] (a : ℤ_[q]) : ‖zc a‖ = ‖a‖ := by
-  unfold zc
-  rw [norm_algebraMap', PadicInt.padic_norm_e_of_padicInt]
-
 theorem thue_pigeon {q : ℕ} [Fact q.Prime] (a : ℤ_[q]) (k : ℕ) :
     ∃ u v : ℤ, (u ≠ 0 ∨ v ≠ 0) ∧ u ^ 2 ≤ (q : ℤ) ^ k ∧ v ^ 2 ≤ (q : ℤ) ^ k ∧
       ‖(u : ℤ_[q]) + (v : ℤ_[q]) * a‖ ≤ (q : ℝ) ^ (-(k : ℤ)) := by
@@ -884,7 +880,7 @@ theorem exists_small_in_prime_pow : ∀ (d q : ℕ) [Fact q.Prime] (ι : ℂ ≃
   · have : ι ((u : ℂ) + (v : ℂ) * wK d) = zc ((u : ℤ_[q]) + (v : ℤ_[q]) * a) := by
       rw [map_add (f := _), map_mul, ha]
       simp [zc]
-    rw [this, thue_norm_zc]
+    rw [this, GlobalTheory.MomOne.MulSeries.norm_zc]
     exact hn
   · rw [Complex.mul_conj, hN, hNe]
     simp
@@ -913,7 +909,6 @@ namespace GlobalTheory.MomOne.MulDegree
 
 section Lattice
 open Module
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem relIndex_eq_abs_det {ι : Type} [Fintype ι] [DecidableEq ι] (b₁ b₂ : Basis ι ℝ ℂ) {L₁ L₂ : AddSubgroup ℂ}
@@ -1484,15 +1479,12 @@ theorem van_mul {f g : ℂ_[q]⟦X⟧} {a b : ℕ} (hf : Bd 1 f) (hg : Bd 1 g) (
   · rw [mul_comm]
     exact norm_mul_lt_left (hb _ (by omega)) (hf _)
 
-theorem bd_pow {g : ℂ_[q]⟦X⟧} (hg : Bd 1 g) (d : ℕ) : Bd 1 (g ^ d) := by
-  apply _root_.GlobalTheory.MomOne.Triang.bd_one_pow <;> assumption
-
 theorem van_pow {g : ℂ_[q]⟦X⟧} {r : ℕ} (hg : Bd 1 g) (hr : Van r g) (d : ℕ) : Van (d * r) (g ^ d) := by
   induction d with
   | zero => intro n hn; omega
   | succ d ih =>
     rw [add_mul, one_mul, pow_succ]
-    exact van_mul (bd_pow hg d) hg ih hr
+    exact van_mul (GlobalTheory.MomOne.Triang.bd_one_pow hg d) hg ih hr
 
 theorem van_subst {f g : ℂ_[q]⟦X⟧} {m r : ℕ} (hf : Bd 1 f) (hg : Bd 1 g) (h0 : constantCoeff g = 0)
     (hm : Van m f) (hr : Van r g) : Van (m * r) (f.subst g) := by
@@ -1501,7 +1493,7 @@ theorem van_subst {f g : ℂ_[q]⟦X⟧} {m r : ℕ} (hf : Bd 1 f) (hg : Bd 1 g)
   refine finsum_induction (fun x => ‖x‖ < 1) (by simp) (fun _ _ => norm_add_lt) fun d => ?_
   rw [smul_eq_mul]
   by_cases h : d < m
-  · exact norm_mul_lt_left (hm _ h) (bd_pow hg d n)
+  · exact norm_mul_lt_left (hm _ h) (GlobalTheory.MomOne.Triang.bd_one_pow hg d n)
   · rw [mul_comm]
     exact norm_mul_lt_left (van_pow hg hr d n (hn.trans_le (Nat.mul_le_mul_right r (by omega)))) (hf d)
 

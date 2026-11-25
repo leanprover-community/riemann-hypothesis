@@ -175,13 +175,6 @@ section Minors
 
 variable {R S : Type} [CommRing R] [CommRing S] {N : ℕ}
 
-theorem minor_map (f : R →+* S) (A : Matrix (Fin N) (Fin N) R) (I J : Finset (Fin N)) :
-    minorIJ (A.map f) I J = f (minorIJ A I J) := by
-  unfold minorIJ
-  split_ifs with e
-  · rw [RingHom.map_det]; rfl
-  · rw [map_zero]
-
 theorem stepCols_ne_empty (j : ℕ) (i : Fin N) : stepCols N j i ≠ ∅ := by
   have hi := i.2
   apply Finset.Nonempty.ne_empty
@@ -293,7 +286,7 @@ theorem transPt_eq_smul_sum : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ 
       ∑ I' ∈ Finset.univ.filter (IsStepRows N j p.2),
         α (minorIJ (trMat Cv F' F p.1) I I') * minorIJ h' I' (stepCols N j p.2) := fun I => by
     rw [hmat, (_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main Φ' N j p.2 M'.j_le).1]
-    simp only [minor_map]
+    simp only [GlobalTheory.CompanionTheory.Ar.PB.MinorAny.minorIJ_map]
     refine (Finset.sum_subset (Finset.filter_subset _ _) fun I' _ hI' => ?_).symm
     rw [hv I' (by simpa using hI'), mul_zero]
   have e1 : ∀ m : ι k, d * transPt Cv ⟨k, m⟩ =

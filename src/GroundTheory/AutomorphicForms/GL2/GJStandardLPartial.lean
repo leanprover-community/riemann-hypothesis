@@ -47,7 +47,6 @@ theorem continuous_globalMatrixCoeff (hn : 0 < n) (μ : Measure (Reduction.normO
     (h₂ : φ₂ ∈ AutomorphicForm.cuspForms K n)
     (hA : ∀ (t : {r : ℝ // 0 < r}) (x : AdelicGLn.AdelicGL K n), φ₁ (Reduction.centralSection K n t * x) = φ₁ x) :
     Continuous (GJGlobal.matrixCoeff μ φ₁ φ₂) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   haveI : FirstCountableTopology (AdelicGLn.AdelicGL K n) := inferInstance
   obtain ⟨C₁, hC₁⟩ := exists_norm_le_of_cusp hn h₁ hA
   obtain ⟨C₂, hC₂⟩ := CuspidalSpectrum.exists_norm_le_of_mem_cuspForms h₂

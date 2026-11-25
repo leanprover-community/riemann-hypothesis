@@ -201,9 +201,7 @@ variable {R : Type} [CommRing R] (I : Ideal R) (G : Over (Spec (CommRingCat.of R
 
 theorem isGrpPullback_thickMap (e : ℕ) :
     IsGrpPullback (thickObj R I e G) (thickObj R I (e + 1) G) (thickTrans R I e) (thickMap R I e G) :=
-  (isGrpPullback_pullback G (thick R I (e + 1))).cancel
-    ((isGrpPullback_pullback G (thick R I e)).congr (thickTrans_comp R I e).symm
-      ((pullback.lift_fst _ _ _).trans (Category.comp_id _)).symm) (pullback.lift_snd _ _ _)
+  GlobalTheory.WeightPoint.isGrpPullback_thickMap e
 
 theorem isNilpotent_of_le_map (n : ℕ) (J : Ideal (R ⧸ I ^ n)) (hJ : J ≤ I.map (Ideal.Quotient.mk (I ^ n))) :
     IsNilpotent J := by

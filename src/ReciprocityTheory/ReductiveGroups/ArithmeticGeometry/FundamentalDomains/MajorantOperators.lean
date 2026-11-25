@@ -31,9 +31,7 @@ theorem maj_zero {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) : X.maj z τ 
 
 theorem maj_nonneg {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) (v : Fin r → ℂ) :
     0 ≤ X.maj z τ v := by
-  by_cases hv : v = 0
-  · rw [hv, maj_zero hz]
-  · exact (X.maj_pos hz τ hv).le
+  exact ReciprocityTheory.ChartRestriction.G.FD.MajorantConjugateTransfer.maj_nonneg X hz τ v
 
 theorem Hf_cs {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) (u w : Fin r → ℂ) :
     ‖X.Hf z τ u w‖ ^ 2 ≤ X.maj z τ u * X.maj z τ w :=

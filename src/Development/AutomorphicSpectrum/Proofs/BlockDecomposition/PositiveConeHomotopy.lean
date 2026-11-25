@@ -156,7 +156,6 @@ theorem hasDerivAt_A (K : (I → ℝ) × (I → ℝ) → (V →L[ℂ] V)) (S : �
   rw [map_add (f := _)] at ht
   exact ht
 
-set_option maxHeartbeats 1000000 in
 theorem fderiv_b (K : (I → ℝ) × (I → ℝ) → (V →L[ℂ] V)) (A : V →L[ℂ] V) (c : I → (V →L[ℂ] V))
     (o v w : I → ℝ) (s : ℝ) (hK : DifferentiableAt ℝ K (path o s v)) :
     fderiv ℝ (fun v => trL (A * (∑ j, (v - o) j • c j) * K (path o s v))) v w =

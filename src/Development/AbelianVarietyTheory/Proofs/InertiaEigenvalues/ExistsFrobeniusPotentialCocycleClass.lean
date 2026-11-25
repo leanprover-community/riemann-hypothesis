@@ -207,8 +207,6 @@ section -- clump:auto
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
 
-theorem _root_.GlobalTheory.T.galois_action_cyclotomic_power : ∀ (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero a] (g : GQ l), ∃ s : ZMod a, ∀ w : Wq l a, Per.σA g (wA l a w) = wA l a ((sigma l a ^ s.val) w) := by
-  first | exact @GlobalTheory.BKReal.gal_wA_pow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisActionCyclotomicPowerStatement =====
@@ -280,7 +278,7 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e]
     change h⁻¹ * (h * k) = k
     rw [inv_mul_cancel_left]
   rw [hk']
-  obtain ⟨s, hs⟩ := GlobalTheory.T.galois_action_cyclotomic_power l a k
+  obtain ⟨s, hs⟩ := GlobalTheory.BKReal.gal_wA_pow l a k
   obtain ⟨z, hz, hkz⟩ := _root_.GlobalTheory.BKReal.kummer_mem_Fq_of_mem_GKinf l a e ϖ he k hk
   exact _root_.GlobalTheory.CoverGen.exists_covers_of_sigma_teich l a e O K t ϖ k s z hz hs hkz
 
@@ -503,10 +501,6 @@ theorem isCobOf_pow {b : TW (OB l O) T} {c : G → T.V} (h : IsCobOf s T b c) (k
   have h1 := h g (n + k) x (by rw [hx, Pi.smul_apply, smul_smul, pow_add])
   rw [h1, map_nsmul, ← nsmul_sub, ← Nat.cast_smul_eq_nsmul O, smul_smul, Nat.cast_pow, pow_add]
 
-theorem exists_isEps : ∃ ε : OCb l, IsEps ε := by
-  obtain ⟨ε, h1, h2⟩ := GlobalTheory.MemLoc.Model.exists_isEps l
-  exact ⟨ε, h1, (frobeniusEquiv (Per.Fl l) l).symm ε, frobeniusEquiv_symm_pow_p _ _ _, h2⟩
-
 theorem isUnit_toB_muOf {ε : OCb l} (hε : IsEps ε) (n : ℕ) :
     IsUnit (toB l O ((1 : O) ⊗ₜ[ℤ_[l]] (muOf ε ^ n))) := by
   obtain ⟨δ, hδ, -⟩ := hε.2
@@ -579,7 +573,7 @@ variable [TameDescentExponentData K l e a] {η H : ℕ} {D : BKDat O K l e a ι 
 theorem exists_isCrisVal (R : GalDat t ϖ (sQ l) D T) {y : Vec K a ι} (hyY : y ∈ D.Y) (hy : y ∈ ME D.toPhiMod)
     (m₀ : ι → OW l O) (h : phiW t ϖ D.toPhiMod m₀ - m₀ = toW t ϖ D.toPhiMod ⟨y, hy⟩) :
     ∃ b₀, IsCrisVal t ϖ D.toPhiMod R.jB (phiW t ϖ D.toPhiMod m₀) b₀ := by
-  obtain ⟨ε, hε⟩ := exists_isEps (l := l)
+  obtain ⟨ε, hε⟩ := GlobalTheory.MuOfEps.exists_isEps (l := l)
   obtain ⟨δ, hδ, -⟩ := hε.2
   obtain ⟨c, hc⟩ := (_root_.GlobalTheory.BKGal.LiftStep.mu_pow_smul_mem l a e O K t ϖ ι D.toPhiMod T R.I η H D.upper D.lower ε δ hε hδ ⟨y, hy⟩
     hyY.1 m₀ h).2

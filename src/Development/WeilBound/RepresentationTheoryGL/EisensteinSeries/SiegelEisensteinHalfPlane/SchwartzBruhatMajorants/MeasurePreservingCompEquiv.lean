@@ -32,19 +32,6 @@ theorem measurePreserving_comp_equiv {ι κ : Type} [Fintype ι] [Fintype κ] {�
 
 noncomputable section
 
-theorem map_mulVec_fin {k : Type} [Field k] [NumberField k] {n : ℕ} (A : GL (Fin n) 𝔸[k]) :
-    (adeleMeasurePi k).map (fun x : Fin n → 𝔸[k] => (A : Matrix (Fin n) (Fin n) 𝔸[k]) *ᵥ x) =
-      ENNReal.ofReal ((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ •
-        adeleMeasurePi k (ι := Fin n) := by
-  apply GlobalTheory.CompanionTheory.LtrFourier.map_mulVec_fin
-
-theorem map_mulVec {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [DecidableEq ι]
-    (A : GL ι 𝔸[k]) :
-    (adeleMeasurePi k).map (fun x : ι → 𝔸[k] => (A : Matrix ι ι 𝔸[k]) *ᵥ x) =
-      ENNReal.ofReal ((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ •
-        adeleMeasurePi k (ι := ι) :=
-  _root_.GlobalTheory.CompanionTheory.LtrFourier.map_mulVec A
-
 theorem adelicFourierPi_ltr : ∀ {k : Type} [Field k] [NumberField k], ∀ {ι : Type} [Fintype ι] [DecidableEq ι], ∀ (A : GL ι 𝔸[k]) (F : (ι → 𝔸[k]) → ℂ), adelicFourierPi k (ltr A F) =
       (((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ : ℂ) •
         ltr (tInv A) (adelicFourierPi k F) := by

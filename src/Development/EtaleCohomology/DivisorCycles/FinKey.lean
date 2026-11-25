@@ -1004,15 +1004,6 @@ theorem ev_prod {ι : Type} (s : Finset ι) (x : Mat C N) (q : ι → MP C N) :
     ev x (∏ c ∈ s, q c) = ∏ c ∈ s, ev x (q c) := by
   simp only [ev, map_prod]
 
-theorem dAt_mul (f g : MP C N) (x Y : Mat C N) :
-    dAt (f * g) x Y = ev x f * dAt g x Y + ev x g * dAt f x Y := by
-  unfold dAt
-  rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun p _ => ?_
-  rw [Derivation.leibniz]
-  simp only [ev, smul_eq_mul, map_add (f := _), map_mul]
-  ring
-
 theorem mem_img {Γ : Type} [Group Γ] (ρ : Γ →* GL (Fin N) C) (U : Subgroup Γ) (x : Mat C N) :
     x ∈ img ρ U ↔ ∃ u ∈ U, ((ρ u : GL (Fin N) C) : Mat C N) = x := by
   simp [img, Submonoid.mem_map]
@@ -1089,7 +1080,7 @@ theorem TanIndex_of (hChain : Chain) (hMul : ZclMul) : TanIndex := by
     rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ (γ : Γ ⧸ U)), ← mul_assoc,
       ev_mul, h0, zero_mul]
   have key := hY' _ hF
-  rw [dAt_mul] at key
+  rw [LateralTheory.DivDb.ChainPf.dAt_mul] at key
   have hf1 : ev 1 f = 0 := hf 1 (img ρ U).one_mem
   have hG1 : ev 1 (∏ c, q c) ≠ 0 := by
     rw [ev_prod]; exact Finset.prod_ne_zero_iff.2 fun c _ => hq1 c

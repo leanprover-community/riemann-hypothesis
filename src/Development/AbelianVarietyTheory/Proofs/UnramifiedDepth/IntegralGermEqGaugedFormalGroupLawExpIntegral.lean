@@ -162,11 +162,6 @@ theorem log_add_const (hY : RLaw Y V) {τ : Type} {a b : κ → MvPowerSeries τ
     (hb : ∀ i, constantCoeff (b i) = 0) (x : κ) : constantCoeff (subst a (Y.lg x) + subst b (Y.lg x)) = 0 := by
   rw [map_add (f := _), constantCoeff_subst_zero ha (lg_const hY x), constantCoeff_subst_zero hb (lg_const hY x), add_zero]
 
-theorem intS_addP (hY : RLaw Y V) {τ : Type} {a b : κ → MvPowerSeries τ C} (ha : ∀ i, constantCoeff (a i) = 0)
-    (hb : ∀ i, constantCoeff (b i) = 0) (ia : ∀ i, IntS V (a i)) (ib : ∀ i, IntS V (b i)) (i : κ) :
-    IntS V (addP Y a b i) := by
-  apply GlobalTheory.RowLaw.AddCurve.intS_addP <;> assumption
-
 theorem exists_sum_point (hY : RLaw Y V) {τ ι : Type} (s : Finset ι) (a : ι → κ → MvPowerSeries τ C)
     (ha : ∀ c i, constantCoeff (a c i) = 0) (ia : ∀ c i, IntS V (a c i)) :
     ∃ Φ : κ → MvPowerSeries τ C, (∀ i, constantCoeff (Φ i) = 0) ∧ (∀ i, IntS V (Φ i)) ∧
@@ -179,7 +174,7 @@ theorem exists_sum_point (hY : RLaw Y V) {τ ι : Type} (s : Finset ι) (a : ι 
   | insert c s hc ih =>
     obtain ⟨Φ, h0, hi, hl⟩ := ih
     refine ⟨addP Y (a c) Φ, fun i => constantCoeff_subst_zero (log_add_const hY (ha c) h0) (hY.exc i),
-      intS_addP hY (ha c) h0 (ia c) hi, fun i => ?_⟩
+      GlobalTheory.RowLaw.AddCurve.intS_addP hY (ha c) h0 (ia c) hi, fun i => ?_⟩
     rw [Finset.sum_insert hc, ← hl]
     exact lg_ex hY (log_add_const hY (ha c) h0) i
 

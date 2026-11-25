@@ -843,14 +843,6 @@ open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
 
 namespace GlobalTheory.LatticeInterBaseChange
 
-end GlobalTheory.LatticeInterBaseChange
-
-namespace GlobalTheory.LatticeInterBaseChange
-
-end GlobalTheory.LatticeInterBaseChange
-
-namespace GlobalTheory.LatticeInterBaseChange
-
 open NumberField IsDedekindDomain Module in
 private theorem exists_functional_comp_eq {K F : Type} [Field K] [Field F] (e : K →+* F)
     {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module F V']

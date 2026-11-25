@@ -329,12 +329,6 @@ theorem exists_orthonormal_of_selfDual : ∀ (K : GlobalTheory.UnitLemma.UQ) (V 
   have inj : Function.Injective (algebraMap K.O K.E) := IsFractionRing.injective _ _
   obtain ⟨s, hs⟩ := GlobalTheory.UnitLemma.Witt.exists_conj K
   obtain ⟨hN, ⟨t, ht⟩, -⟩ := _root_.GlobalTheory.UnitLemma.UnramNorm.unram_quadratic_facts K
-  have hadd2 : ∀ y z z', h y (z + z') = h y z + h y z' := by
-    intro y z z'
-    rw [hsym, hadd, map_add (f := _), ← hsym, ← hsym]
-  have hlin2 : ∀ (a : K.E) y z, h y (a • z) = K.c a * h y z := by
-    intro a y z
-    rw [hsym, hlin, map_mul, ← hsym]
   have hsum1 : ∀ (S : Finset (Fin (Module.finrank K.E V))) (c : Fin (Module.finrank K.E V) → K.E) (u : Fin (Module.finrank K.E V) → V) z,
       h (∑ i ∈ S, c i • u i) z = ∑ i ∈ S, c i * h (u i) z := by
     intro S c u z

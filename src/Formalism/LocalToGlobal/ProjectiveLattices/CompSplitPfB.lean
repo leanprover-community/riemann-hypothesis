@@ -131,8 +131,7 @@ theorem cspB_genPt_mem (Z : Comp Xo c) : genPt Z ∈ (Z : Set (Xo.XF c)) := by
 
 theorem cspB_isClopen (hdisj : ∀ Z Z' : Comp Xo c, Z ≠ Z' → Disjoint (Z : Set (Xo.XF c)) Z')
     (Z : Comp Xo c) : IsClopen (Z : Set (Xo.XF c)) := by
-  intros
-  apply _root_.GlobalTheory.TrivOrderTieCompare.isClopen_comp <;> assumption
+  apply GlobalTheory.TrivOrderTieCompare.isClopen_comp
 
 
 

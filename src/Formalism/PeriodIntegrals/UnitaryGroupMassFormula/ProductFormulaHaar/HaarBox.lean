@@ -95,17 +95,13 @@ theorem zero_mem_box (b : Basis ι K E) (γ : ι → ValueGroupWithZero K) : (0 
   intro i
   simp
 
-theorem locallyCompact (b : Basis ι K E) : LocallyCompactSpace E := by
-  let e : E ≃ₜ (ι → K) :=
-    { toEquiv := b.equivFun.toEquiv
-      continuous_toFun := IsModuleTopology.continuous_of_linearMap (R := K) b.equivFun.toLinearMap
-      continuous_invFun := continuous_equivFun_symm b }
-  exact e.isOpenEmbedding.locallyCompactSpace
-
 def homeo (b : Basis ι K E) : E ≃ₜ (ι → K) where
   toEquiv := b.equivFun.toEquiv
   continuous_toFun := IsModuleTopology.continuous_of_linearMap (R := K) b.equivFun.toLinearMap
   continuous_invFun := continuous_equivFun_symm b
+
+theorem locallyCompact (b : Basis ι K E) : LocallyCompactSpace E :=
+  (homeo b).isOpenEmbedding.locallyCompactSpace
 
 theorem secondCountableE (b : Basis ι K E) : SecondCountableTopology E := by
   haveI := secondCountable K
@@ -129,16 +125,11 @@ theorem image_eq_smul (b : Basis ι K E) (μ : Measure E) [μ.IsAddHaarMeasure] 
   refine ⟨addHaarScalarFactor (μ.map L.symm) μ, fun S => ?_⟩
   have h := isAddLeftInvariant_eq_smul (μ.map L.symm) μ
   have h2 : (μ.map L.symm) S = μ (T '' S) := by
-    have hm : (μ.map L.symm) = μ.map (L.symm.toHomeomorph.toMeasurableEquiv) := rfl
-    rw [hm, MeasurableEquiv.map_apply]
-    have hL : ∀ x, L.symm x = T.symm x := fun x => rfl
-    congr 1
-    ext x
-    simp only [Set.mem_preimage, Homeomorph.toMeasurableEquiv_coe,
-      ContinuousLinearEquiv.coe_toHomeomorph, hL, Set.mem_image]
-    constructor
-    · intro hx; exact ⟨T.symm x, hx, by simp⟩
-    · rintro ⟨y, hy, rfl⟩; simpa using hy
+    rw [show μ.map L.symm = μ.map L.symm.toHomeomorph.toMeasurableEquiv from rfl,
+      MeasurableEquiv.map_apply,
+      show L.symm.toHomeomorph.toMeasurableEquiv ⁻¹' S = T.toEquiv.symm ⁻¹' S from rfl,
+      ← Equiv.image_eq_preimage_symm T.toEquiv]
+    rfl
   have h' : (μ.map L.symm) S = _ := DFunLike.congr_fun h S
   rw [← h2, h']
   first | rfl

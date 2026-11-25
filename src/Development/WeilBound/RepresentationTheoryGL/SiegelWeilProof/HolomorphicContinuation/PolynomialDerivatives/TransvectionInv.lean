@@ -146,26 +146,14 @@ theorem fix_of_exp (δ : Derivation ℂ (MvPolynomial (FinalTheorems m n) ℂ) (
       simp only [mul_add, map_add (f := _), map_mul, hΦδ, hX, hC, Polynomial.derivative_C,
         Polynomial.derivative_mul, Polynomial.derivative_X, zero_add, one_mul, mul_zero, add_zero]
       ring
-  have hev1 : ∀ q, Polynomial.eval 1 (Φ q) = φ q := by
-    intro q
-    refine MvPolynomial.induction_on (motive := fun q => Polynomial.eval 1 (Φ q) = φ q) q ?_ ?_ ?_
-    · intro a
-      simp [Φ, Polynomial.algebraMap_apply, MvPolynomial.algebraMap_eq]
-    · intro p q hp hq
-      simp only [map_add (f := _), Polynomial.eval_add, hp, hq]
-    · intro p v hp
-      rw [map_mul, map_mul, Polynomial.eval_mul, hp, hX, hφ]
-      simp
-  have hev0 : ∀ q, Polynomial.eval 0 (Φ q) = q := by
-    intro q
-    refine MvPolynomial.induction_on (motive := fun q => Polynomial.eval 0 (Φ q) = q) q ?_ ?_ ?_
-    · intro a
-      simp [Φ, Polynomial.algebraMap_apply, MvPolynomial.algebraMap_eq]
-    · intro p q hp hq
-      simp only [map_add (f := _), Polynomial.eval_add, hp, hq]
-    · intro p v hp
-      rw [map_mul, Polynomial.eval_mul, hp, hX]
-      simp
+  have hev1 : ∀ q, Polynomial.eval 1 (Φ q) = φ q := RingHom.congr_fun
+    (show (Polynomial.evalRingHom 1).comp Φ.toRingHom = φ.toRingHom from MvPolynomial.ringHom_ext
+      (fun a => by simp [Φ, Polynomial.algebraMap_apply, MvPolynomial.algebraMap_eq])
+      fun v => by simp [hX, hφ])
+  have hev0 : ∀ q, Polynomial.eval 0 (Φ q) = q := RingHom.congr_fun
+    (show (Polynomial.evalRingHom 0).comp Φ.toRingHom = RingHom.id _ from MvPolynomial.ringHom_ext
+      (fun a => by simp [Φ, Polynomial.algebraMap_apply, MvPolynomial.algebraMap_eq])
+      fun v => by simp [hX])
   have h0 : Polynomial.derivative (Φ p) = 0 := by rw [hder, hp, mul_zero, map_zero]
   have hdeg : (Φ p).natDegree = 0 := Polynomial.derivative_eq_zero.mp h0
   calc φ p = Polynomial.eval 1 (Φ p) := (hev1 p).symm

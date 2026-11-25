@@ -16,14 +16,6 @@ open NumberField
 
 namespace PositivityTheory.Rg.Sw.Glob.LocCellA
 
-end PositivityTheory.Rg.Sw.Glob.LocCellA
-
-namespace PositivityTheory.Rg.Sw.Glob
-
-end PositivityTheory.Rg.Sw.Glob
-
-namespace PositivityTheory.Rg.Sw.Glob.LocCellA
-
 theorem block_matrix_mul_comm_ring {R : Type} [Ring R] {n : ℕ} (a b c d a' b' c' d' : Matrix (Fin n) (Fin n) R) :
     blk4 a b c d * blk4 a' b' c' d' =
       blk4 (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by

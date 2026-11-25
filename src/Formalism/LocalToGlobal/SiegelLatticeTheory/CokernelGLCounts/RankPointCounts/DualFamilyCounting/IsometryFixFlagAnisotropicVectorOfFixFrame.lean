@@ -1068,7 +1068,7 @@ theorem retr_conj {X : Submodule D.host.E (VS D).V} {Λ : Submodule (𝓞 D.host
 
 theorem iso_X {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) : ∀ x ∈ F0.X, ∀ y ∈ F0.X, (VS D).hT x y = 0 := by
   intros
-  apply _root_.Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.SpanOmPf.iso_X <;> assumption
+  apply Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.SpanOmPf.iso_X <;> assumption
 
 theorem class_red (u : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Tn u)) {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V}
     (hΛ : IsRowLat D F0 Λ) (hΛ' : IsRowLat D F0 Λ') {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V}

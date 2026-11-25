@@ -228,9 +228,6 @@ def cval : H0 p B O →ₛₗ[σ] (B.ι → CxPts p σ → ℂ) where
     · exact congrArg (· * _) ((ev_res inf_le_left h _).trans (ev_algX (ptsIn_mono inf_le_left h) c))
     · simp only [Pi.smul_apply, ev_of_notMem h, mul_zero, smul_zero]
 
-theorem cval_eq_val (f : H0 p B O) (i : B.ι) (y : CxPts p σ) (hO : y ∈ ptsIn p σ O) (hi : y ∈ ptsIn p σ (B.U i)) :
-    cval σ f i y = val y.1 i hO hi f := ev_eq (mem_ptsIn_inf.2 ⟨hO, hi⟩) _
-
 theorem cval_ofSec (s : B.Sec) : cval σ (H0.ofSec p ⊤ s) = secVal p σ s := funext₂ fun i y => by
   by_cases h : y ∈ ptsIn p σ (B.U i)
   · exact ev_res inf_le_right (mem_ptsIn_inf.2 ⟨mem_ptsIn_top, h⟩) _

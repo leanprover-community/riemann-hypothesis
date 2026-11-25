@@ -74,11 +74,6 @@ section GLCong
 
 variable {B : Type} [CommRing B] (R : Subring B) {n : ℕ}
 
-theorem glcong_mem_range (A : GL (Fin n) B) (hA : ∀ i j, (A : Matrix (Fin n) (Fin n) B) i j ∈ R)
-    (hA' : ∀ i j, ((A⁻¹ : GL (Fin n) B) : Matrix (Fin n) (Fin n) B) i j ∈ R) :
-    A ∈ (GeneralLinearGroup.map (n := Fin n) R.subtype).range := by
-  apply _root_.GlobalTheory.TorCls.OpenP.mem_range_map_of_entries <;> assumption
-
 theorem glcong_entries (c : R) (h : GL (Fin n) R)
     (hh : GeneralLinearGroup.map (n := Fin n) (Ideal.Quotient.mk (Ideal.span {c * c})) h = 1)
     (P Q : Matrix (Fin n) (Fin n) B) (hP : ∀ i j, (c : B) * P i j ∈ R) (hQ : ∀ i j, (c : B) * Q i j ∈ R)
@@ -141,7 +136,7 @@ theorem glcong_relIndex_ne_zero (c : R) (hfin : Finite (R ⧸ Ideal.span {c * c}
     have hh' : ψ h⁻¹ = 1 := by rw [map_inv, hh, inv_one]
     rw [Subgroup.mem_map]
     refine ⟨g⁻¹ * φ h * g, ?_, by simp [MulAut.conj_apply, mul_assoc]⟩
-    apply glcong_mem_range
+    apply GlobalTheory.TorCls.OpenP.mem_range_map_of_entries
     · intro i j
       have := glcong_entries R c h hh _ _ hg' hg hgg i j
       rwa [Units.val_mul, Units.val_mul, hval]
@@ -254,8 +249,6 @@ section -- clump:auto
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
 open scoped TensorProduct Classical
 
-theorem _root_.GlobalTheory.T.exists_padic_pow_mul_mem_tensorUnramifiedIntegers : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ) (x : KQ p K r), ∃ k : ℕ, (p : KQ p K r) ^ k * x ∈ intKQ p K r :=
-  @_root_.GlobalTheory.TorCls.OpenP.exists_pow_mul_mem_intKQ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPadicPowMulMemTensorUnramifiedIntegersStatement =====
@@ -483,7 +476,7 @@ theorem Kres_commensurable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [Finit
     intro x k l hkl h
     rw [← Nat.add_sub_cancel' hkl, pow_add, mul_comm ((p : KQ p K r) ^ k), mul_assoc]
     exact mul_mem (pow_mem (natCast_mem _ p) _) h
-  choose f hf using GlobalTheory.T.exists_padic_pow_mul_mem_tensorUnramifiedIntegers p K r
+  choose f hf using GlobalTheory.TorCls.OpenP.exists_pow_mul_mem_intKQ p K r
   let k : ℕ := (Finset.univ.sup fun ij : Fin n × Fin n => f ((g : Matrix (Fin n) (Fin n) (KQ p K r)) ij.1 ij.2)) ⊔
     Finset.univ.sup fun ij : Fin n × Fin n => f (((g⁻¹ : GL (Fin n) (KQ p K r)) : Matrix (Fin n) (Fin n) (KQ p K r)) ij.1 ij.2)
   have hk1 : ∀ i j, (p : KQ p K r) ^ k * (g : Matrix (Fin n) (Fin n) (KQ p K r)) i j ∈ intKQ p K r :=
@@ -503,7 +496,6 @@ theorem Kres_commensurable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) [Finit
     (fun i j => by rw [hc]; exact hk2 i j)
 
 end GlobalTheory.HeckeP
-
 
 open GlobalTheory.HeckeP in
 theorem GlobalTheory.heckeOperator_integral :

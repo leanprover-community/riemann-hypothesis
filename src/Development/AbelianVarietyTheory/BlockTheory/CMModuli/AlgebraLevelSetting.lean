@@ -119,12 +119,6 @@ def Step.Compat {L₁ : Level P X f₁ G₁ F₁ h₁} {L₂ : Level P X f₂ G�
       (y ≫ r₁.toB) z ∈ M.L.L.U j → (y ≫ s.β) z ∈ L₂.D.M.L.L.U k₂ → y z ∈ L₁.D.M.L.L.U k₁ →
       gw r₁.a y z j k₁ = gw r₂.a (y ≫ s.β) z j k₂ * gw s.u y z k₂ k₁
 
-namespace Level.Red
-
-variable {L₁ : Level P X f₁ G₁ F₁ h₁} {M : CP B} (r : L₁.Red M)
-
-end Level.Red
-
 end Levels
 
 section Formal

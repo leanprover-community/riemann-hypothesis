@@ -75,8 +75,8 @@ def thPc : PDF Λ (Thick L) where
   dp_zero {T} _ hx := T.δ.dpow_zero hx
   dp_one {T} _ hx := T.δ.dpow_one hx
   dp_zero_right {T} _ hk := T.δ.dpow_eval_zero hk
-  dp_add {T} k _ _ hx hy := T.δ.dpow_add hx hy
-  dp_map φ k x hx := (φ.dp.2 x hx).symm
+  dp_add {T} _ _ _ hx hy := T.δ.dpow_add hx hy
+  dp_map φ _ x hx := (φ.dp.2 x hx).symm
 
 variable {L}
 

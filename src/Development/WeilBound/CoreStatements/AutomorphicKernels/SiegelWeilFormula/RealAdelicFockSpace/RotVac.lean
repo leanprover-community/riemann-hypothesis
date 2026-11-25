@@ -23,9 +23,6 @@ theorem cs1 (t : ℝ) : (Real.cos t : ℂ) * Real.cos t + (Real.sin t : ℂ) * R
   have := Real.cos_sq_add_sin_sq t
   exact_mod_cast (by nlinarith [this] : Real.cos t * Real.cos t + Real.sin t * Real.sin t = 1)
 
-theorem sgn_sq (s : ℤˣ) : ((s : ℤ) : ℂ) * ((s : ℤ) : ℂ) = 1 := by
-  rcases Int.units_eq_one_or s with h | h <;> simp [h]
-
 theorem det_yrotM_ne (n : ℕ) (s : ℤˣ) (t : ℝ) : (yrotM n s t).det ≠ 0 := by
   have h := congrArg Matrix.det (_root_.PositivityTheory.SiegelWeilFormula.KFP.yrotM_mul n s t (-t))
   rw [add_neg_cancel, _root_.PositivityTheory.SiegelWeilFormula.KFP.yrotM_zero, det_mul, det_one] at h
@@ -35,7 +32,7 @@ theorem rot_unit (s : ℤˣ) (t : ℝ) (a : ℂ) (ha : a = 1 ∨ a = -1) :
     ((Real.cos t : ℂ) + a * Complex.I * (((s : ℤ) : ℂ) * Real.sin t)) ≠ 0 := by
   intro h0
   have h1 := cs1 t
-  have hs := sgn_sq s
+  have hs := Formalism.FrobeniusOrbits.Misc2.int_units_sq_C s
   have ha2 : a * a = 1 := by rcases ha with rfl | rfl <;> ring
   have hp : ((Real.cos t : ℂ) + a * Complex.I * (((s : ℤ) : ℂ) * Real.sin t)) *
       ((Real.cos t : ℂ) - a * Complex.I * (((s : ℤ) : ℂ) * Real.sin t)) = 1 := by

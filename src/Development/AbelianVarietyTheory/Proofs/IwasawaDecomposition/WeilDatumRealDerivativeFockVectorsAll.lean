@@ -232,15 +232,13 @@ open Formalism.BasicNotions Formalism.IndefR.Datum Formalism.IndefR.Fock.Sk Glob
 
 def sgB {k : ℕ} (p : ℕ) (a : Fin k) : Bool := decide ((a : ℕ) < p)
 
-theorem Jm_eq' {k : ℕ} (ε : Fin k → Bool) : Formalism.REAL.Jm ε = diagonal fun a => sgn (ε a) := rfl
-
 theorem sgn_sq (e : Bool) : sgn e * sgn e = 1 := by cases e <;> simp [sgn]
 
 theorem onb_facts {k : ℕ} {G s B : Matrix (Fin k) (Fin k) ℂ} {p : ℕ} (h : IsONBasis G s B p) :
     IsUnit B.det ∧ Bᴴ * G * B = Formalism.REAL.Jm (sgB p) ∧ s * B = B * Formalism.REAL.Jm (sgB p) := by
   obtain ⟨ε, h1, h2, h3⟩ := h
   have e : (diagonal fun a => (ε a : ℂ)) = Formalism.REAL.Jm (sgB p) := by
-    rw [Jm_eq']
+    rw [GlobalTheory.LieFock.Jm_eq]
     congr 1
     funext a
     rcases h1 a with ⟨h, h'⟩ | ⟨h, h'⟩
@@ -249,7 +247,7 @@ theorem onb_facts {k : ℕ} {G s B : Matrix (Fin k) (Fin k) ℂ} {p : ℕ} (h : 
   rw [e] at h2 h3
   refine ⟨?_, h2, h3⟩
   have hJ : Formalism.REAL.Jm (sgB (k := k) p) * Formalism.REAL.Jm (sgB p) = 1 := by
-    simp only [Jm_eq', diagonal_mul_diagonal, sgn_sq, diagonal_one]
+    simp only [GlobalTheory.LieFock.Jm_eq, diagonal_mul_diagonal, sgn_sq, diagonal_one]
   refine Matrix.isUnit_det_of_left_inverse (B := Formalism.REAL.Jm (sgB p) * (Bᴴ * G)) ?_
   rw [Matrix.mul_assoc, h2, hJ]
 
@@ -353,7 +351,7 @@ theorem fCoord_conj (hS : IsUnit BS.det) (hT : IsUnit BT.det) (W : Matrix (Fin m
 
 theorem Jm_entry {a b : ℕ} (ε : Fin a → Bool) (ε' : Fin b → Bool) (W : Matrix (Fin a) (Fin b) ℂ) (i : Fin a) (j : Fin b) :
     (Formalism.REAL.Jm ε * W * Formalism.REAL.Jm ε') i j = sgn (ε i) * W i j * sgn (ε' j) := by
-  rw [Jm_eq', Jm_eq', mul_diagonal, diagonal_mul]
+  rw [GlobalTheory.LieFock.Jm_eq, GlobalTheory.LieFock.Jm_eq, mul_diagonal, diagonal_mul]
 
 theorem part_entry (X : Matrix (Fin n) (Fin n) ℂ) (Y : Matrix (Fin m) (Fin m) ℂ) (c : ℂ) (k l : Fin m × Fin n) :
     ((1 / 2 : ℂ) • ((Y * Matrix.single l.1 l.2 (1 : ℂ) - Matrix.single l.1 l.2 (1 : ℂ) * X) + c •

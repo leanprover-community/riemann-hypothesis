@@ -546,7 +546,7 @@ theorem exists_member (hR : RegGlobalStatement) (R : AnLogRes P ⊤ n) (L : LocP
     obtain ⟨line, l1, l2⟩ := hlines (fun _ => u') (Real.exp (-Real.exp 1)) (fun _ _ _ => hu') fun _ => hcp
     exact ⟨u', fun _ => u', line, C₀, C₀, _, s1, r1, c1, heq, l1, l2, fun _ _ => ⟨p2, p1⟩⟩
   · obtain ⟨B, hB⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Adapt.exists_adaptedAtlas R.A L s m W hL hs snc hn
-    obtain ⟨C₆, hg⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.gradBound_of_local_bounds n R.X R.A B L s nb m W hL hs snc hn hB u hsm fun x => by
+    obtain ⟨C₆, hg⟩ := _root_.PositivityTheory.Xgp.t_c_grad_atlas n R.X R.A B L s nb m W hL hs snc hn hB u hsm fun x => by
       obtain ⟨ψ, a, M, h, ht⟩ := hT x
       obtain ⟨V', c, h1, h2, h3, h4⟩ := local_of_tame hn h ht
       exact ⟨ψ, V', c, h.1, h1, h2, h3, fun x' a b => (h4 x' a b).2⟩

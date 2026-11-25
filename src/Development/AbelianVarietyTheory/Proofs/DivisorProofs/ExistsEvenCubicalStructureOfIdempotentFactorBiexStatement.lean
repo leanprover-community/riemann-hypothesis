@@ -802,9 +802,6 @@ theorem exists_generic_fibre_pull : ∀ (R W : Type) [CommRing R] [IsDomain R] [
     congr 2
     ext x
     simp [IsFractionRing.map]
-  have hmono : Mono (jK R) := by
-    have : IsPreimmersion (jK R) := IsPreimmersion.of_isLocalization (nonZeroDivisors R)
-    infer_instance
   let GV := (Over.pullback (spMap φ)).obj G
   have hβ := isGrpPullback_pullback G (spMap φ)
   let κ₁ : pullback GV.hom (jK W) ⟶ pullback G.hom (jK R) :=
@@ -1214,7 +1211,6 @@ namespace GlobalTheory.Mum.FactorMove
 theorem isLocalHom_of_finExt {R R' : Type} [CommRing R] [IsLocalRing R] [CommRing R'] [IsDomain R'] [IsLocalRing R']
     {ρ : R →+* R'} (h : FinExt ρ) : IsLocalHom ρ := by
   letI := ρ.toAlgebra
-  have hi : Algebra.IsIntegral R R' := ⟨fun x => h.2.2.to_isIntegral x⟩
   have hm : (maximalIdeal R').comap ρ = maximalIdeal R :=
     IsLocalRing.eq_maximalIdeal (Ideal.isMaximal_comap_of_isIntegral_of_isMaximal (R := R) (algebraMap _ _) h.2.2.to_isIntegral (maximalIdeal R'))
   exact ((IsLocalRing.local_hom_tfae ρ).out 1 5).2 hm

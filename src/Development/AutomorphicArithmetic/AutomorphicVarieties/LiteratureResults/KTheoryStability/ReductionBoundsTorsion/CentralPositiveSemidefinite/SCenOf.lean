@@ -727,20 +727,6 @@ open NumberField NumberField.InfinitePlace Matrix MeasureTheory UpperTheory.V.KT
 namespace PositivityTheory.KB.CentralizerFixed
 
 open ComplexOrder in
-theorem real_smul_posDef {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : M.PosDef) {a : ℝ} (ha : 0 < a) :
-    (a • M).PosDef := by
-  have e : a • M = (a : ℂ) • M := by ext i j; simp [Complex.real_smul]
-  rw [e]
-  exact h.smul (Complex.zero_lt_real.2 ha)
-
-open ComplexOrder in
-theorem real_smul_posSemidef {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : M.PosSemidef) {a : ℝ}
-    (ha : 0 ≤ a) : (a • M).PosSemidef := by
-  have e : a • M = (a : ℂ) • M := by ext i j; simp [Complex.real_smul]
-  rw [e]
-  exact h.smul (Complex.zero_le_real.2 ha)
-
-open ComplexOrder in
 theorem pos_convex (L : Type) [Field L] [NumberField L] (N : ℕ) : Convex ℝ (Pos L N) := by
   apply _root_.PositivityTheory.KB.JoinReconstruction.pos_convex <;> assumption
 

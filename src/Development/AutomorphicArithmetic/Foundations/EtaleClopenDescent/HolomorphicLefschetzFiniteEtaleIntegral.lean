@@ -91,6 +91,7 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
+import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.GenericGermDifferentialFormPullbackDominant, Development.AbelianVarietyTheory.Proofs.SatakeParameters.GenericGermDifferentialFormPullbackDominantStatement, Development.AutomorphicArithmetic.CommutativeAlgebra.IsAffCoverProdCechOpen, Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsDeRhamTraceOfSeparable, Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.GermComapEqAlgebraMapGermOfFiniteEtale, Development.AutomorphicArithmetic.CommutativeAlgebra.FunctionFieldOfFiniteEtaleCover, Development.AutomorphicArithmetic.GenericGermInjectivity.GermInjRangePre, Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsHodgeCohomologyEquivCechDifferentials, Development.AutomorphicArithmetic.CommutativeAlgebra.ComplexPointEvalPullbackSection, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceComplexPointsStatement, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceDifferentialsStatement, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceFieldExtensionStatement, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceSectionsStatement, Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsRegularParametersOfReducedQuotient, Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.HolomorphicLefschetzFiniteEtaleIntegral
@@ -319,7 +320,7 @@ theorem UpperTheory.isAffCover_prod_cechOpen :
   have hker : x' ∈ ((cechCube ℂ (Omega p' a) ⊤ U').d (b + 1)).ker := hdY x' w' hgm
   have hR : cechHEquivCoh ℂ hcov' haff' (Omega p' a) b
       (cechClass (cechCube ℂ (Omega p' a) ⊤ U') b ⟨x', hker⟩) = hodgePull hf a b z := by
-    refine (T.scheme_cechComparison_natural_refinement Z Z' ℂ f hσ _ _ (omegaPull hf a) ι κ U U' hcov haff hcov' haff' τ hUU' b x
+    refine (GlobalTheory.cechHEquivCoh_pull Z Z' ℂ f hσ _ _ (omegaPull hf a) ι κ U U' hcov haff hcov' haff' τ hUU' b x
       ⟨x', hker⟩ ?_ ?_).trans ?_
     · intro t s h hinj hs
       obtain ⟨s, hsc⟩ := s
@@ -751,7 +752,7 @@ theorem cmp_trace (d : ℕ) (Z : Scheme.{0}) [IsIntegral Z] (p : Z ⟶ Sp ℂ) [
     exact (GlobalTheory.T.genericGerm_differentialForm_restrict_affineOpen Y p' hinst' a _ _ _ _ _ _ (hle t.1) _).symm
   have hd := (Classical.choose_spec (cube_exists d p' hinst' hU' a b)).2.2 x0 w hx0
   let z0 : LinearMap.ker (Cube.d (cechCube ℂ (Omega p' a) ⊤ fun i => c ⁻¹ᵁ U i) (b + 1)) := ⟨x0, hd⟩
-  have key := GlobalTheory.T.scheme_cechComparison_natural_refinement Z Y ℂ c (appTop_algebraMap hc)
+  have key := GlobalTheory.cechHEquivCoh_pull Z Y ℂ c (appTop_algebraMap hc)
     ((Scheme.Modules.pushforward c).obj (Omega p' a)) (Omega p' a) (𝟙 _) ι ι U
     (fun i => c ⁻¹ᵁ U i) hU.cover (cover_biInf hU) hU'.cover (cover_biInf hU') id (fun _ => le_rfl) b
     z1 z0 (fun t s h _ e => by
@@ -1207,9 +1208,6 @@ private theorem map_upB_span_tco (K L : Type) {F : Type} [Field K] [Field L] [Fi
   funext j
   exact Subtype.ext (IsScalarTower.algebraMap_apply F K L _).symm
 
-
-
-
 private theorem upB_fu {d : ℕ} {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ}
     [SmoothOfRelativeDimension d s] [SmoothOfRelativeDimension d s'] {c : Y ⟶ Z} (h : c ≫ s = s') [IsFinite c] [Etale c]
     [instK : Algebra ℂ Z.functionField] [instL : Algebra ℂ Y.functionField] (hK : instK = ffAlg s) (hL : instL = ffAlg s')
@@ -1482,7 +1480,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsRegularParametersOfReducedQuotient =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.HolomorphicLefschetzFiniteEtaleIntegral =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.HolomorphicLefschetzFiniteEtaleIntegral", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsGaloisCover\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Edge1\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem\npublic import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsChartLiftOfFiniteCover\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteCoverProjSpaceReducedFibreOrigin\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SortSign\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.KaehlerOneFormsToExtensionDeRhamMulSelf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DlogRatioVolumeFormNeZero\npublic import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsHodgeCohomologyEquivCechDifferentials\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ComplexPointEvalPullbackSection\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ComplexPointsBijectiveAlgHomAffineOpen\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceComplexPointsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceDifferentialsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceFamilyStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceFieldExtensionStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceLocalParametersStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceSectionsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsRegularParametersOfReducedQuotient\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.FiniteDimensionalHodgeCohomologyOfSmoothProj\nimport Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsIntegralRBIff\nimport Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsSeparatedOfProj\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.HolomorphicLefschetzFiniteEtaleIntegral", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsGaloisCover\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Edge1\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem\npublic import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsChartLiftOfFiniteCover\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteCoverProjSpaceReducedFibreOrigin\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SortSign\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.KaehlerOneFormsToExtensionDeRhamMulSelf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DlogRatioVolumeFormNeZero\npublic import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsHodgeCohomologyEquivCechDifferentials\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ComplexPointEvalPullbackSection\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ComplexPointsBijectiveAlgHomAffineOpen\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceComplexPointsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceDifferentialsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceFamilyStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceFieldExtensionStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceLocalParametersStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCorrespondenceSectionsStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsRegularParametersOfReducedQuotient\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.FiniteDimensionalHodgeCohomologyOfSmoothProj\nimport Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsIntegralRBIff\nimport Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsSeparatedOfProj\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.LinearAlgebra.Matrix.SchurComplement\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1490,16 +1488,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 open GlobalTheory.PD GlobalTheory.WH
 
 namespace UpperTheory.A
-
-private theorem ring_one {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp ℂ} [Algebra ℂ X.functionField] {ι : Type} {U : ι → X.Opens}
-    {B : Finset ι → Subalgebra ℂ X.functionField} (hU : IsAffCover p U B) (i : ι) (hg : genericPoint X ∈ U i)
-    (y : X.functionField) : y ∈ B {i} ↔ ∃ f : Γ(X, U i), (X.presheaf.germ (U i) (genericPoint X) hg).hom f = y := by
-  have key : ∀ (W : X.Opens) (_ : W = ({i} : Finset ι).inf U) (hg : genericPoint X ∈ W),
-      y ∈ B {i} ↔ ∃ f : Γ(X, W), (X.presheaf.germ W (genericPoint X) hg).hom f = y := by
-    intro W hW hg
-    subst hW
-    exact hU.ring {i} ⟨i, Finset.mem_singleton_self i⟩ y
-  exact key _ (by simp) hg
 
 private theorem affine_one {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp ℂ} [Algebra ℂ X.functionField] {ι : Type} {U : ι → X.Opens}
     {B : Finset ι → Subalgebra ℂ X.functionField} (hU : IsAffCover p U B) (i : ι) : IsAffineOpen (U i) := by
@@ -1513,23 +1501,11 @@ private theorem conj_inv {d : ℕ} (A M P : Matrix (Fin d) (Fin d) ℂ) (hP : Is
     (1 - M).det = (1 - A).det ∧
       (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • M.map Polynomial.C)).coeff a =
         (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • A.map Polynomial.C)).coeff a := by
-  have hPi : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv P hP
-  have hiP : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hP
-  have hdet : P.det * P⁻¹.det = 1 := by rw [← Matrix.det_mul, hPi, Matrix.det_one]
+  subst M
   constructor
-  · have e : 1 - M = P * (1 - A) * P⁻¹ := by
-      rw [hM, Matrix.mul_sub, Matrix.sub_mul, mul_one, hPi]
-    rw [e, Matrix.det_mul, Matrix.det_mul, mul_comm, ← mul_assoc, mul_comm _ P.det, hdet, one_mul]
-  · set Q := P.map (Polynomial.C : ℂ →+* Polynomial ℂ) with hQ
-    set Q' := P⁻¹.map (Polynomial.C : ℂ →+* Polynomial ℂ) with hQ'
-    have h1 : Q * Q' = 1 := by
-      rw [hQ, hQ', ← Matrix.map_mul, hPi]; simp
-    have hd : Q.det * Q'.det = 1 := by rw [← Matrix.det_mul, h1, Matrix.det_one]
-    have e : 1 + (Polynomial.X : Polynomial ℂ) • M.map Polynomial.C =
-        Q * (1 + (Polynomial.X : Polynomial ℂ) • A.map Polynomial.C) * Q' := by
-      rw [hM, Matrix.map_mul, Matrix.map_mul, Matrix.mul_add, Matrix.add_mul, mul_one, h1,
-        Matrix.mul_smul, Matrix.smul_mul]
-    rw [e, Matrix.det_mul, Matrix.det_mul, mul_comm, ← mul_assoc, mul_comm _ Q.det, hd, one_mul]
+  · rw [Matrix.det_one_sub_mul_comm, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul P hP, one_mul]
+  · rw [Matrix.map_mul, ← Matrix.smul_mul, Matrix.det_one_add_mul_comm, Matrix.mul_smul,
+      ← Matrix.map_mul, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul P hP, one_mul]
 
 private theorem rB_map {F K L : Type} [Field F] [Field K] [Field L] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ L] [Algebra F K] [Algebra F L]
     [Algebra K L] [IsScalarTower ℂ F K] [IsScalarTower ℂ F L] [IsScalarTower ℂ K L] [IsScalarTower F K L] {d : ℕ}
@@ -1579,7 +1555,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_integral :
   have hredY := UpperTheory.etaleCorrespondence_fieldExtension_statement d Z Y s s' hP c1 c2 h1 h2 rfl rfl g1 j2 g2 F x U hx hU hred
   have hgen : ∀ i, genericPoint Y ∈ c1 ⁻¹ᵁ U i := fun i => UpperTheory.A.generic_one hUY i
   have pa := fun i => UpperTheory.complexPoints_bijective_algHom_affineOpen Y s' rfl (c1 ⁻¹ᵁ U i) (UpperTheory.A.affine_one hUY i) (hgen i) (rB ℂ Y.functionField x {i})
-    (UpperTheory.A.ring_one hUY i (hgen i))
+    (ring_single hUY i (hgen i))
   have fixI := fun i => UpperTheory.etaleCorrespondence_complexPoints_statement d Z Y s s' hP c1 c2 h1 h2 rfl rfl g1 j2 g2 F x U hx hU i (hgen i)
   have hin : ∀ y ∈ Fx, y ∈ CxPts.ptsIn s' (RingHom.id ℂ) (c1 ⁻¹ᵁ U 0) := fun y hy =>
     CxPts.mem_ptsIn.2 (CxPts.mem_ptsIn.1 (hS _ (Finset.mem_image_of_mem _ hy)).1)
@@ -1587,7 +1563,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_integral :
       ∀ j : Fin d, e ⟨_, tco_mem ℂ Y.functionField x j⟩ = 0 := by
     intro y hy e he j
     have hg0 := UpperTheory.A.generic_one hU 0
-    obtain ⟨f, hf⟩ := (UpperTheory.A.ring_one hU 0 hg0 _).1 (tco_mem ℂ Z.functionField x j)
+    obtain ⟨f, hf⟩ := (ring_single hU 0 hg0 _).1 (tco_mem ℂ Z.functionField x j)
     have hev := (hS _ (Finset.mem_image_of_mem _ hy)).2 j hg0 f hf
     have hgerm : (Y.presheaf.germ (c1 ⁻¹ᵁ U 0) (genericPoint Y) (hgen 0)).hom ((c1.app (U 0)).hom f) =
         algebraMap F Y.functionField (x j.succ / x 0) := by

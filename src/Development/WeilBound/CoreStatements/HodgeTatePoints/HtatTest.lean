@@ -522,10 +522,6 @@ theorem reduces_at_point (hPt : PointHT) (E : Type) [Field E] [NumberField E] [I
 
 end PositivityTheory.HtPt.Htat.TestPts
 
-namespace PositivityTheory.HtPt.Htat
-
-
-end PositivityTheory.HtPt.Htat
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -64,7 +64,6 @@ theorem UpperTheory.ConvolutionTheory.K.cuspTrInt :
   haveI := Reduction.isFiniteMeasure_quotientMeasure (K := K) (n := n) μ
   haveI : SigmaFinite (quotientMeasure (Gam K n) μ) := IsFiniteMeasure.toSigmaFinite _
   haveI : SFinite (quotientMeasure (Gam K n) μ) := by
-    set_option synthInstance.maxHeartbeats 400000 in
       exact inferInstance
   haveI : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by simp⟩
   haveI : SecondCountableTopology (RightCosetSpace (Gam K n)) :=

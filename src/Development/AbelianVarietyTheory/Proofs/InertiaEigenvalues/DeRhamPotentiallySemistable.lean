@@ -683,15 +683,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.Pst
-
-namespace GlobalTheory.LTChar
-
-variable {l : ℕ} [Fact l.Prime]
-
-theorem orbit_cont (y : ℂ_[l]) : Continuous fun g : GQ l => Formalism.Per.σC g y := by
-  apply GlobalTheory.PMon.FrameChange.cont_σC
-
-end GlobalTheory.LTChar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -748,7 +739,7 @@ theorem char_cont : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf 
   refine Continuous.div_const (Continuous.mul ?_ ?_) _
   · exact (continuous_algebraMap ℚ_[l] ℂ_[l]).comp
       ((GlobalTheory.Cyc.IsCyc.continuous P.χQ_cyc).comp continuous_subtype_val)
-  · exact (orbit_cont (θ u)).comp continuous_subtype_val
+  · exact (GlobalTheory.PMon.FrameChange.cont_σC (θ u)).comp continuous_subtype_val
 
 end GlobalTheory.LTChar
 end -- clump:auto

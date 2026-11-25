@@ -56,7 +56,7 @@ theorem LeafTailNerve_of (hN : LeafNerveSplit) (hU : LeafUnitsRep) : LeafTailNer
     rw [reassoc_of% w]; simp
   refine ⟨R', inferInstance, ψ, f₁, f₀, ?_⟩
   simp only [f₁, f₀, Iso.trans_hom, Iso.symm_hom, prod.mapIso_hom, Iso.refl_hom, Category.assoc]
-  erw [evalProdIso_inv_naturality, evalProdIso_hom_naturality_assoc]
+  rw [evalProdIso_inv_naturality, evalProdIso_hom_naturality_assoc]
   congr 1
   simp only [← Category.assoc]
   congr 1

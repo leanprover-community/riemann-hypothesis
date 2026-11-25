@@ -8,7 +8,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 -- `TopCat.Sheaf.instAbelian` so the kernel does not have to unfold both to compare them.
 attribute [-instance] TopCat.Sheaf.instAbelian
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TopologicalSpace Opposite Limits GroundTheory.Arith.SchemeCoh GlobalTheory.SheafPull CrystallineSemistableComparison CrystallineSemistableComparison.Om CrystallineSemistableComparison.Om.Cech
 
 namespace GlobalTheory.CompanionTheory.CechDelta

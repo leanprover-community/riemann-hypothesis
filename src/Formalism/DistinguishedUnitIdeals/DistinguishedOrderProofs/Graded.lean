@@ -716,19 +716,6 @@ namespace Formalism.ExponentWindows.G
 
 open TensorProduct SlopeTestRemainingChoices
 
-namespace SlopeTestRemainingChoices
-section
-variable {LL W : Type} [Field LL] [AddCommGroup W] [Module LL W]
-
-end
-end SlopeTestRemainingChoices
-
-end Formalism.ExponentWindows.G
-
-namespace Formalism.ExponentWindows.G
-
-open TensorProduct SlopeTestRemainingChoices
-
 theorem graded_semilinear_holds : GrdSemi := by
   intro LL Ks D _ _ _ _ _ τ a x f
   apply amb_ext
@@ -942,9 +929,5 @@ theorem descent_fixed_points_holds : DcFixOf := by
     rw [R.mem_Nl s hs] at he ⊢
     rw [R.pr_γ s hs s hs e]
     exact (xi_gamma_commute LL (Ks s) Δ D (R.lev s)).1 _ _ he
-
-end Formalism.ExponentWindows.G
-
-namespace Formalism.ExponentWindows.G
 
 end Formalism.ExponentWindows.G

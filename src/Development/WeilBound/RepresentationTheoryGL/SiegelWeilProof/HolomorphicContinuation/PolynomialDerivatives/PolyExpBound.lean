@@ -15,9 +15,6 @@ import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicC
 section -- clump:auto
 @[expose] public section
 
-theorem UpperTheory.Reformulated.B.SquareNormBound.sq_norm_le :
-    ∀ {m n : ℕ} (x : Fin m → Fin n → ℂ),
-    ‖x‖ ^ (2 : ℕ) ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := @_root_.UpperTheory.Reformulated.B.Yhb3.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SquareNormBound =====
@@ -48,18 +45,12 @@ theorem gs_eq (c : ℝ) (x : Fin m → Fin n → ℂ) : gs c x = Complex.exp (ev
   push_cast
   ring
 
-theorem continuous_evX (P : PX m n) : Continuous fun x : Fin m → Fin n → ℂ => evX P x :=
-  continuous_iff_continuousAt.2 fun x => (hasFDerivAt_evX P x).continuousAt
-
-theorem evX_bound (P : PX m n) : ∃ K : ℝ, ∃ d : ℕ, 0 ≤ K ∧ ∀ x, ‖evX P x‖ ≤ K * (1 + ‖x‖) ^ d := by
-  apply PositivityTheory.Rg.Sw.AbsSt.DF.poly_bound
-
 theorem norm_gs_le (c : ℝ) (hc : 0 < c) (x : Fin m → Fin n → ℂ) : ‖gs c x‖ ≤ Real.exp (-(c * ‖x‖ ^ 2)) := by
   unfold gs
   rw [show (-(↑(c * ∑ a, ∑ i, ‖x a i‖ ^ 2) : ℂ)) = ↑(-(c * ∑ a, ∑ i, ‖x a i‖ ^ 2)) by push_cast; ring,
     Complex.norm_exp_ofReal]
   apply Real.exp_le_exp.2
-  have := _root_.UpperTheory.Reformulated.B.SquareNormBound.sq_norm_le x
+  have := _root_.UpperTheory.Reformulated.B.Yhb3.main x
   nlinarith
 
 theorem poly_exp_bound (c : ℝ) (hc : 0 < c) (N : ℕ) (t : ℝ) (ht : 0 ≤ t) :
@@ -85,7 +76,7 @@ instance instHaarX : (volume : Measure (Fin m → Fin n → ℂ)).IsAddHaarMeasu
   MeasureTheory.Measure.pi.isAddHaarMeasure _
 
 theorem continuous_gs (c : ℝ) : Continuous fun x : Fin m → Fin n → ℂ => gs c x := by
-  simp_rw [gs_eq]; exact Complex.continuous_exp.comp (continuous_evX _)
+  simp_rw [gs_eq]; exact Complex.continuous_exp.comp (PositivityTheory.Rg.Sw.AbsSt.DF.continuous_evX _)
 
 theorem integrable_pg (c : ℝ) (hc : 0 < c) (P : PX m n) :
     Integrable (fun x : Fin m → Fin n → ℂ => evX P x * gs c x) := by

@@ -127,7 +127,3 @@ end
 
 end Commens
 
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
-

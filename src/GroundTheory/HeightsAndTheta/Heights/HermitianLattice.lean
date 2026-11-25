@@ -209,18 +209,6 @@ def HermitianBundle.standard (n : ℕ) : HermitianBundle K :=
 
 end Examples
 
-theorem HermitianMetric.standard_inner_single (K : Type*) [Field K] [NumberField K] (n : ℕ)
-    (σ : K →+* ℂ) (i : Fin n) :
-    ((HermitianMetric.standard K (Fin n)).form σ).inner (1 ⊗ₜ Pi.single i 1) (1 ⊗ₜ Pi.single i 1)
-      = 1 := by
-  rw [HermitianMetric.standard_inner, Finset.sum_eq_single i]
-  · simp only [standardCoord_tmul, Pi.single_eq_same, map_one]
-    show starRingEnd ℂ (1 * 1) * (1 * 1) = 1
-    simp
-  · intro j _ hj
-    simp [standardCoord_tmul, Pi.single_eq_of_ne hj]
-  · simp
-
 end
 
 end GroundTheory.Heights₂.Heights

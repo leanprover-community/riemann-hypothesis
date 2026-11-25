@@ -696,13 +696,6 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
 alias cT_mul := _root_.GlobalTheory.CongTrans.cT_mul
 
-theorem rmul_rmul {n m : ℕ} (x : Fin m → Fin n → E) (A B : Matrix (Fin m) (Fin m) E) :
-    rmul (rmul x A) B = rmul x (A * B) := by
-  funext j
-  simp only [rmul, Matrix.mul_apply, Finset.smul_sum, Finset.sum_smul, smul_smul]
-  rw [Finset.sum_comm]
-  simp [mul_comm]
-
 end
 
 theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (ϖ : 𝒪[F]), Irreducible ϖ → ∀ {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E), IsHermND L Hm → ∀ Λs, IsSD L Hm Λs → ∀ (m : ℕ) (Γ : Matrix (Fin m) (Fin m) E), IsHerm L Γ → IsUnit Γ.det → ∀ (Ω : Set (Fin m → Fin n → E)), (∀ y ∈ Ω, gramT L Hm y = Γ) → ∀ i i' : ℕ, 1 ≤ i → i ≤ i' → (∀ y ∈ Ω, ∀ A ∈ congK L ϖ m i, cT L A * Γ * A = Γ → rmul y A ∈ Ω) → IsCO (tupLat L Λs m) (thick L ϖ Ω i') → cont (tupLat L Λs m) (thick L ϖ Ω i) * cont (hermLat L m) (horb L ϖ Γ i') = cont (tupLat L Λs m) (thick L ϖ Ω i') * cont (hermLat L m) (horb L ϖ Γ i) := by
@@ -803,13 +796,13 @@ theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [I
     rintro p hp _ ⟨_, ⟨y, hy, B, hB, rfl⟩, rfl⟩
     have : act (B * r p) Γ ∈ P (r p) := (memP _ _).2 ⟨B, hB, rfl⟩
     rw [(hr p hp).2] at this
-    simp only [rmul_rmul, _root_.GlobalTheory.HL.ContModel.gramT_rmul, hΩ y hy]
+    simp only [GlobalTheory.ThickOrbit.rmul_rmul, _root_.GlobalTheory.HL.ContModel.gramT_rmul, hΩ y hy]
     exact this
   have hU2 : (⋃ p ∈ hfin.toFinset, T p) = thick L ϖ Ω i := by
     apply Set.Subset.antisymm
     · refine Set.iUnion₂_subset fun p hp => ?_
       rintro _ ⟨_, ⟨y, hy, B, hB, rfl⟩, rfl⟩
-      exact ⟨y, hy, B * r p, hmul _ (hsub B hB) _ (hr p (hfin.mem_toFinset.1 hp)).1, rmul_rmul _ _ _⟩
+      exact ⟨y, hy, B * r p, hmul _ (hsub B hB) _ (hr p (hfin.mem_toFinset.1 hp)).1, GlobalTheory.ThickOrbit.rmul_rmul _ _ _⟩
     · rintro _ ⟨y, hy, A, hA, rfl⟩
       have hp : P A ∈ S := ⟨A, hA, rfl⟩
       refine Set.mem_iUnion₂.2 ⟨P A, hfin.mem_toFinset.2 hp, ?_⟩
@@ -826,7 +819,7 @@ theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [I
           split_ifs <;> simp
         simp only [act, this, Matrix.one_mul, Matrix.mul_one]
       refine ⟨_, ⟨_, hst y hy _ (hmul _ hA _ (hinv _ hBa)) h5, B, hB, rfl⟩, ?_⟩
-      simp only [rmul_rmul]
+      simp only [GlobalTheory.ThickOrbit.rmul_rmul]
       rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.nonsing_inv_mul _ (hu _ hBa), Matrix.mul_one]
   have hc2 := (_root_.GlobalTheory.HL.cont_biUnion (tupLat L Λ m) hfin.toFinset T
     (fun p hp => (hT p (hfin.mem_toFinset.1 hp)).1)).2
@@ -1293,7 +1286,7 @@ theorem index_rmul : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace
     rw [Finset.sum_comm]
     simp only [mul_comm]
   have hinj : Function.Injective (Fintype.linearCombination E y).toAddMonoidHom := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     exact funext (Fintype.linearIndependent_iff.1 hy v hv)
   rw [span_eq_map, span_eq_map, ← hW0, hcomp, ← AddSubgroup.map_map,

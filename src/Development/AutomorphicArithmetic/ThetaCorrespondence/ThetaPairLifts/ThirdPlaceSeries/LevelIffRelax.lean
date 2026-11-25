@@ -470,29 +470,6 @@ section -- clump:auto
 
 section
 noncomputable section
-section LocalPart
-open NumberField IsDedekindDomain MeasureTheory ValuativeRel Matrix Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.TwBridge
-open GlobalTheory.SymBridge (toLoc IsOrd yPos xPos IsCompl)
-open GlobalTheory.PenVol GlobalTheory.TwBridge.Lev GlobalTheory.TwBridge.LevOrb
-open scoped TensorProduct
-namespace GlobalTheory.PenLoc
-section Stab
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {A : Type} [Fintype A] [DecidableEq A]
-  {J : Subgroup (GL (A ⊕ Fin 0) k)}
-end Stab
-section Read
-variable {k : Type} [Field k] {R : Type} [CommRing R] {Y : Type} [Fintype Y] [DecidableEq Y] {n : ℕ}
-end Read
-section Cong
-variable {F E k : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
-end Cong
-section Seam
-open Formalism.L2.Ker Formalism.MainNotions
-variable {D : D7} {X : Fields} (s : Seam D X) {n : ℕ}
-end Seam
-end GlobalTheory.PenLoc
-end LocalPart
 section GlobalPart
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.L2.Forms MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.LocMod GlobalTheory.MiS GlobalTheory.QPl GlobalTheory.QTw GlobalTheory.AdForm GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Fam

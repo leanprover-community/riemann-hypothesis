@@ -6,8 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Truncate
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb

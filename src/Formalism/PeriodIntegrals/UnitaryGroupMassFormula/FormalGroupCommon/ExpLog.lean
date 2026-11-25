@@ -27,19 +27,14 @@ variable {K : Type} [Field K] {σ : Type}
 
 theorem deg_eq (α : σ →₀ ℕ) : (α.sum fun _ k => k) = Finsupp.degree α := by rfl
 
-private theorem coeff_pow_eq_zero_of_degree_lt_formal_group_splitting {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) :
-    ∀ (n : ℕ) {α : σ →₀ ℕ}, Finsupp.degree α < n → coeff α (f ^ n) = 0 := by
-  intros
-  apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_eq_zero <;> assumption
-
 theorem coeff_pow_mul_pow_eq_zero {f g : MvPowerSeries σ K} (hf : constantCoeff f = 0)
     (hg : constantCoeff g = 0) {i j : ℕ} {α : σ →₀ ℕ} (h : Finsupp.degree α < i + j) :
     coeff α (f ^ i * g ^ j) = 0 := by
   apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_mul_pow_eq_zero <;> assumption
 
 theorem coeff_pow_eq_zero' {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) {n : ℕ}
-    {α : σ →₀ ℕ} (h : Finsupp.degree α < n) : coeff α (f ^ n) = 0 := by
-  exact coeff_pow_eq_zero_of_degree_lt_formal_group_splitting hf n h
+    {α : σ →₀ ℕ} (h : Finsupp.degree α < n) : coeff α (f ^ n) = 0 :=
+  _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_eq_zero hf h
 
 def expT (f : MvPowerSeries σ K) (N : ℕ) : MvPowerSeries σ K :=
   ∑ n ∈ range N, ((n.factorial : K)⁻¹) • f ^ n

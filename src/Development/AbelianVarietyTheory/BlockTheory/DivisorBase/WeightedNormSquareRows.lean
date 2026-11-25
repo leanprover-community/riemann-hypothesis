@@ -23,15 +23,13 @@ section Ev
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sg : Set ℕ)
 
-alias mem_of_mem_divs := _root_.Formalism.L2.Col.decoFin_mem_of_mem_divs
-
 theorem evOk (hX : X.Ok) (hPr : Pr.Ok) (P : LevFam X.E X.K R.r Pr.vGs) (u : Pr.Word) :
     (evGSD W Ch sel (mu0 X.F X.E X.K Sg) P u).Ok := by
   have hM := mtildeOk W Ch sel (mu0 X.F X.E X.K Sg) hX P
   have hC := colVal_eqv W hX u R.m (Pr.vT u) (rowSG Pr sel (mu0 X.F X.E X.K Sg))
   have hT : ∀ Q : Pr.vT u, cO X.E (Pr.piT u) ∉ Q.1.asIdeal := by
     intro Q hQ
-    have h1 : Pr.piT u ∈ Q.1.asIdeal := mem_of_mem_divs Q.2
+    have h1 : Pr.piT u ∈ Q.1.asIdeal := Formalism.L2.Col.decoFin_mem_of_mem_divs Q.2
     have h2 : X.conjO (Pr.piT u) ∈ Q.1.asIdeal := hQ
     obtain ⟨a, b, hab⟩ := hPr.piT_cop u
     exact Q.1.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (hab ▸ add_mem (Ideal.mul_mem_left _ _ h1) (Ideal.mul_mem_left _ _ h2)))

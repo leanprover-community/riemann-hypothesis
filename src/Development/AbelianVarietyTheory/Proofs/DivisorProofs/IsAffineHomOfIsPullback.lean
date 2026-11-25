@@ -208,7 +208,7 @@ def kMap (hp : IsPullback pr s₁ s₀ (spMap (algebraMap R₀ R₁)))
     (hp' : IsPullback pr' t₁ t₀ (spMap (algebraMap R₀ R₁))) (hf : f₁ ≫ pr = pr' ≫ f₀) :
     CoefMap (RingHom.id R₁) (ext R₁ (OPair f₀ t₀)) (preFP hp hp' hf ⋙ OPair f₁ t₁) :=
   ofNat (fun p ↦ beta hp' p.unop.1.1) (fun a x ↦ beta_nat hp' ((pairFst f₀).map a) x)
-    (fun p r x ↦ beta_smul hp' _ r x)
+    (fun _ r x ↦ beta_smul hp' _ r x)
 
 end PairMaps
 

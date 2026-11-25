@@ -142,12 +142,19 @@ theorem exists_chartForm (y : (Σ k, ι k) → Ω) (a : K → ℤ) (n : ℕ) {s 
     push_cast
     ring
 
-end SectionBoundedMul
-
-
-open SectionBoundedMul in
-theorem SectionBoundedMul.proof : SectionBoundedMul.Statement := by
-  intro K _ ι _ Ω _ y A n m C C' s t hs ht hbs hbt dg dh g h z hg hh hdeg he hz
+theorem section_mul_bound (y : (Σ k, ι k) → Ω) (a b : K → ℤ) (n m : ℕ)
+    (B₁ B₂ : ℝ) (s t : Ω) (hs : s ∈ chartLat y a n) (ht : t ∈ chartLat y b m)
+    {dg dh : K → ℕ} {g h : MRing ι} {z : (Σ k, ι k) → ℂ}
+    (hg : IsMultiHomog g dg) (hh : IsMultiHomog h dh)
+    (hdeg : ∀ k, (dg k : ℤ) = (dh k : ℤ) + (n : ℤ) * a k + (m : ℤ) * b k)
+    (he : aeval y g = (s * t) * aeval y h) (hz : z ∈ mcPts (mCoordIdeal y))
+    (hbs : ∀ (c : ∀ k, ι k) (dgs N : K → ℕ) (gs : MRing ι), IsMultiHomog gs dgs →
+      (∀ k, (dgs k : ℤ) = (N k : ℤ) + (n : ℤ) * a k) → aeval y gs = s * aeval y (chartMono c N) →
+      ‖eval z (map (Int.castRingHom ℂ) gs)‖ ≤ B₁ * ‖eval z (map (Int.castRingHom ℂ) (chartMono c N))‖)
+    (hbt : ∀ (c : ∀ k, ι k) (dgt M : K → ℕ) (gt : MRing ι), IsMultiHomog gt dgt →
+      (∀ k, (dgt k : ℤ) = (M k : ℤ) + (m : ℤ) * b k) → aeval y gt = t * aeval y (chartMono c M) →
+      ‖eval z (map (Int.castRingHom ℂ) gt)‖ ≤ B₂ * ‖eval z (map (Int.castRingHom ℂ) (chartMono c M))‖) :
+    ‖eval z (map (Int.castRingHom ℂ) g)‖ ≤ B₁ * B₂ * ‖eval z (map (Int.castRingHom ℂ) h)‖ := by
   choose c hc using hz.1
   have hy : ∀ k, y ⟨k, c k⟩ ≠ 0 := by
     intro k h0
@@ -158,11 +165,10 @@ theorem SectionBoundedMul.proof : SectionBoundedMul.Statement := by
     have hz0 := hz.2 _ hmem
     simp only [map_X, eval_X] at hz0
     exact hc k hz0
-  obtain ⟨N, dgs, gs, hgs, hdgs, hvs⟩ := exists_chartForm y A.a n hs c hy
-  obtain ⟨M, dgt, gt, hgt, hdgt, hvt⟩ := exists_chartForm y A.a m ht c hy
-  have bs := hbs dgs N gs (chartMono c N) z hgs (isMultiHomog_chartMono c N) hdgs hvs hz
-  have bt := hbt dgt M gt (chartMono c M) z hgt (isMultiHomog_chartMono c M) hdgt hvt hz
-
+  obtain ⟨N, dgs, gs, hgs, hdgs, hvs⟩ := exists_chartForm y a n hs c hy
+  obtain ⟨M, dgt, gt, hgt, hdgt, hvt⟩ := exists_chartForm y b m ht c hy
+  have bs := hbs c dgs N gs hgs hdgs hvs
+  have bt := hbt c dgt M gt hgt hdgt hvt
   have hdeq : dgs + dgt + dh = dg + (N + M) := by
     funext k
     have e1 := hdgs k
@@ -187,7 +193,6 @@ theorem SectionBoundedMul.proof : SectionBoundedMul.Statement := by
   have hz0 := hz.2 _ (mem_mCoordIdeal_of_aeval_eq_zero y hF hF0)
   simp only [map_sub, map_mul] at hz0
   rw [sub_eq_zero] at hz0
-
   set ev : MRing ι → ℂ := fun f => eval z (map (Int.castRingHom ℂ) f) with hev
   have hmz : ev (chartMono c (N + M)) = ev (chartMono c N) * ev (chartMono c M) := by
     simp only [hev, eval_chartMono, ← Finset.prod_mul_distrib]
@@ -201,16 +206,32 @@ theorem SectionBoundedMul.proof : SectionBoundedMul.Statement := by
     rw [← norm_mul, ← hmz, ← norm_mul, ← norm_mul, ← norm_mul]
     exact congrArg norm hz0.symm
   have hprod : ‖ev gs‖ * ‖ev gt‖ ≤
-      (C * ‖ev (chartMono c N)‖ * A.h z ^ n) * (C' * ‖ev (chartMono c M)‖ * A.h z ^ m) :=
+      (B₁ * ‖ev (chartMono c N)‖) * (B₂ * ‖ev (chartMono c M)‖) :=
     mul_le_mul bs bt (norm_nonneg _) ((norm_nonneg _).trans bs)
   refine le_of_mul_le_mul_right ?_ hpos
   rw [key]
   calc ‖ev gs‖ * ‖ev gt‖ * ‖ev h‖
-      ≤ (C * ‖ev (chartMono c N)‖ * A.h z ^ n) * (C' * ‖ev (chartMono c M)‖ * A.h z ^ m) * ‖ev h‖ :=
+      ≤ (B₁ * ‖ev (chartMono c N)‖) * (B₂ * ‖ev (chartMono c M)‖) * ‖ev h‖ :=
         mul_le_mul_of_nonneg_right hprod (norm_nonneg _)
-    _ = C * C' * ‖ev h‖ * A.h z ^ (n + m) * (‖ev (chartMono c N)‖ * ‖ev (chartMono c M)‖) := by
-        rw [pow_add]
-        ring
+    _ = B₁ * B₂ * ‖ev h‖ * (‖ev (chartMono c N)‖ * ‖ev (chartMono c M)‖) := by ring
+
+end SectionBoundedMul
+
+
+open SectionBoundedMul in
+theorem SectionBoundedMul.proof : SectionBoundedMul.Statement := by
+  intro K _ ι _ Ω _ y A n m C C' s t hs ht hbs hbt dg dh g h z hg hh hdeg he hz
+  have hle := section_mul_bound y A.a A.a n m (C * A.h z ^ n) (C' * A.h z ^ m) s t hs ht hg hh
+    (fun k => by have := hdeg k; push_cast at this ⊢; linear_combination this) he hz
+    (fun c dgs N gs hgs hdgs hvs => by
+      have := hbs dgs N gs (chartMono c N) z hgs (isMultiHomog_chartMono c N) hdgs hvs hz
+      linarith)
+    (fun c dgt M gt hgt hdgt hvt => by
+      have := hbt dgt M gt (chartMono c M) z hgt (isMultiHomog_chartMono c M) hdgt hvt hz
+      linarith)
+  calc ‖eval z (map (Int.castRingHom ℂ) g)‖
+      ≤ C * A.h z ^ n * (C' * A.h z ^ m) * ‖eval z (map (Int.castRingHom ℂ) h)‖ := hle
+    _ = C * C' * ‖eval z (map (Int.castRingHom ℂ) h)‖ * A.h z ^ (n + m) := by rw [pow_add]; ring
 
 end
 

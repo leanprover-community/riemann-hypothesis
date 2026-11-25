@@ -14,10 +14,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.FourierDecayAlt
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 namespace Formalism.FourierDecayAlt.P.JCx1
 
 open NumberField
@@ -31,10 +27,6 @@ theorem norm_σ {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Infi
 
 end Formalism.FourierDecayAlt.P.JCx1
 
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 
 section cutf
 

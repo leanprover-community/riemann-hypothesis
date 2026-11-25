@@ -64,8 +64,7 @@ theorem lvBasis_φ_inj : Function.Injective (φVB PD (LL := LL) (V := V)) := by
   apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.φVB_inj <;> assumption
 
 theorem lvBasis_φpow_inj (k : ℕ) : Function.Injective ((φVB PD (LL := LL) (V := V)) ^ k) := by
-  first
-  | (rw [Module.End.coe_pow]; exact (lvBasis_φ_inj PD).iterate k)
+  exact Formalism.MainNotions.UnusedSlot80.UnivF.φVB_pow_inj PD k
 
 private theorem eigen_finset_eq_zero_of_injective_embeddings {ι : Type} [DecidableEq ι] (τ : ι → (K₀ →ₐ[Qp] LL))
     (hτ : Function.Injective τ) (s : Finset ι) : ∀ (x : ι → V ⊗[Qp] B),

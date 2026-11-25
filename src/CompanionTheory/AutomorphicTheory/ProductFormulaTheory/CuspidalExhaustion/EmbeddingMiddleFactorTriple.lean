@@ -189,7 +189,7 @@ def codSub {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGrou
 theorem codSub_injective {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (f : ρ.IntertwiningMap σ) (S : Subrepresentation σ)
     (h : ∀ v, f v ∈ S.toSubmodule) (hf : Function.Injective f) : Function.Injective (codSub f S h) :=
-  fun a b hab => hf (congrArg Subtype.val hab)
+  fun _ _ hab => hf (congrArg Subtype.val hab)
 
 include hT in
 

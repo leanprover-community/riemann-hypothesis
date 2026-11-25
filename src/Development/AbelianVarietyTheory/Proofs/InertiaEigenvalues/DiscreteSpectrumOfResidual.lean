@@ -469,11 +469,6 @@ theorem lie_tensorForms : ∀ (E : Type) [Field E] [NumberField E] [_root_.Numbe
       (infGL E N (Unitary.toUnits k) * finGL E N g))) ∈ tensorForms π :=
   _root_.GlobalTheory.LieTensor.lie_tensorForms
 
-theorem exists_iwasawa : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {c N : ℕ} (n : Fin c → ℕ)
-    (h : ∑ i, n i = N) (x : GA E N), ∃ u ∈ unipRad (Ad E) (stdBlocks n h), ∃ (m : ∀ i, GA E (n i)) (k : Kinf E N)
-      (g : GL (Fin N) (Af E)), x = u * leviEmb (Ad E) (stdBlocks n h) m * (infGL E N (Unitary.toUnits k) * finGL E N g) :=
-  _root_.GlobalTheory.IwasawaAdelic.iwasawa
-
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
 theorem lie_leftInv {N : ℕ} (U : Subgroup (GA E N)) (X : Lie E N) {ψ : Sm E N}

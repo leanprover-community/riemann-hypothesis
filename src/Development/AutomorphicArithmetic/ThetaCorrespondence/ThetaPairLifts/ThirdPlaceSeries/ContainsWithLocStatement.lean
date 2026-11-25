@@ -74,12 +74,6 @@ theorem taken_iff (L : LocAll (lay0 D)) (i : L.X.nd.Loc) :
 
 end GlobalTheory.CoefDuty.MemberO
 
-namespace GlobalTheory.CoefDuty.MemberO
-
-
-
-end GlobalTheory.CoefDuty.MemberO
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -95,9 +89,6 @@ section -- clump:auto
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.CoefDuty
-namespace GlobalTheory.CoefDuty.MemberO
-variable {D : D7}
-end GlobalTheory.CoefDuty.MemberO
 namespace GlobalTheory.CoefDuty.MemberO
 
 theorem contains_fixZ_alt {D : D7} {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE} {M : MtFam D} {C : NChoice D}

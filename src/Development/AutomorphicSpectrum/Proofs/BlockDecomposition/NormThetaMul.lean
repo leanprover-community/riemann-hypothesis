@@ -186,7 +186,7 @@ private lemma key {F : Type} [Field F] [NumberField F] [NumberField.IsTotallyRea
     _ = (4 * B * N) ^ n := by rw [hC]; ring_nf
 
 theorem UpperTheory.Reformulated.B.GaloisBoundSecond.main :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F] [NumberField.IsTotallyReal F] (N : ℕ),
+    ∀ {F : Type} [Field F] [NumberField F] [NumberField.IsTotallyReal F] (N : ℕ),
       (0 : ℕ) < N →
         ∀ (I : Ideal (NumberField.RingOfIntegers F)),
           I ≠ ⊥ →

@@ -99,7 +99,6 @@ private lemma inner_dilE_dilE_neg (y : I → ℝ) (v l : EuclideanSpace ℂ I) :
     rw [← Real.exp_add, show y i / 2 + -y i / 2 = 0 by ring, Real.exp_zero]
   linear_combination ((l.ofLp i).re * (v.ofLp i).re + (l.ofLp i).im * (v.ofLp i).im) * h
 
-
 open NumberField MeasureTheory in
 open scoped RealInnerProductSpace FourierTransform in
 variable {I : Type} [Fintype I] in
@@ -351,7 +350,6 @@ private theorem fourier_pow_mul_gaussian (m : ℕ) (l : ℂ) :
   rw [neg_pow (l / 2), neg_pow Complex.I]
   ring
 
-
 open NumberField MeasureTheory in
 open scoped RealInnerProductSpace FourierTransform in
 theorem _root_.GlobalTheory.HeckeLemma.fourier_hmon_mul_gaussian : ∀ (k : ℤ) (l : ℂ),
@@ -559,9 +557,6 @@ theorem tsum_eq_sum_quotient_tsum_ideal (R : Type) [CommRing R] (M : Ideal R) [F
   rw [show (∑' c : (R ⧸ M) × ↥M, h (quotCosetProdEquiv R M c)) = ∑' p, (h ∘ quotCosetProdEquiv R M) p from rfl,
     hs'.tsum_prod, tsum_fintype]
   rfl
-
-theorem cosets_main : ∀ (R : Type) [CommRing R] (M : Ideal R) [Fintype (R ⧸ M)] (h : R → ℂ), Summable h → ∑' α, h α = ∑ c : R ⧸ M, ∑' μ : M, h (Quotient.out c + μ) :=
-  fun R _ M _ h hs => tsum_eq_sum_quotient_tsum_ideal R M h hs
 
 end GlobalTheory
 end -- clump:auto
@@ -777,7 +772,6 @@ theorem theta_poisson : ∀ (K : Type) [Field K] [NumberField K] [NumberField.Is
     refine mul_le_mul_of_nonneg_left ((norm_sum_le _ _).trans (Finset.sum_le_sum fun c _ => ?_)) (norm_nonneg _)
     rw [norm_mul, GlobalTheory.norm_cexp_two_pi_I, mul_one]
   set cI : ℝ := (Fintype.card I : ℝ) with hcI
-  have hcI0 : 0 ≤ cI := by positivity
   have hnorm : ∀ l : D, ‖(l : EuclideanSpace ℂ I)‖ ^ 2 ≤ (4 * cI + 1) * ‖half l‖ ^ 2 := by
     intro l
     have := norm_half_sq (l : EuclideanSpace ℂ I)
@@ -837,7 +831,6 @@ theorem theta_poisson : ∀ (K : Type) [Field K] [NumberField K] [NumberField.Is
       intro α
       rw [hFc α]
       exact Finset.single_le_sum (f := fun c => ‖F (Quotient.out c)‖) (fun _ _ => norm_nonneg _) (Finset.mem_univ _)
-    have hemb : ∀ α : 𝓞 K, emb φ (α : K) = WithLp.ofLp (embA φ α) := fun α => rfl
     have hsum : Summable (fun α : 𝓞 K => F α * gauss n (dil y (emb φ (α : K)))) := by
       have hT : Summable (fun x : lat φ ⊤ => BF * (C * Real.exp (-b * ‖(x : EuclideanSpace ℂ I)‖ ^ 2))) :=
         ((GlobalTheory.summable_lattice_exp_neg_mul_norm_sq (lat φ ⊤) hb).mul_left C).mul_left BF
@@ -870,7 +863,7 @@ theorem theta_poisson : ∀ (K : Type) [Field K] [NumberField K] [NumberField.Is
       rw [tsum_congr h1, tsum_mul_left,
         e.tsum_eq (fun x : L => gauss n (dil y (WithLp.ofLp ((x : EuclideanSpace ℂ I) + u c)))),
         (poisson_coset L n y (u c)).2]
-    have hLHS := _root_.GlobalTheory.cosets_main (𝓞 K) M _ hsum
+    have hLHS := _root_.GlobalTheory.tsum_eq_sum_quotient_tsum_ideal (𝓞 K) M _ hsum
     unfold GlobalTheory.HeckeTheta.theta
     rw [hLHS, Finset.sum_congr rfl (fun c _ => hcoset c)]
 

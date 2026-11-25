@@ -135,7 +135,6 @@ theorem deriv_sum' {n N M : ℕ} (J : Ideal (On p n)) (D : Derivation (O0 p) (On
   congr 1
   ring
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem coef {N M : ℕ} (m : ℕ) (a : Fin N → Fin M → O0 p) (w α β : On p (m + 1))
     (hsum : w = ∑ i : Fin N, ∑ j : Fin M,
       algebraMap (O0 p) (On p (m + 1)) (a i j) * xn p (m + 1) ^ (i : ℕ) * yn p (m + 1) ^ (j : ℕ))

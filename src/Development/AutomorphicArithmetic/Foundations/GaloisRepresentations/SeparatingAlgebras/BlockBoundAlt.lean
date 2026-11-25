@@ -38,7 +38,7 @@ def CoefLe {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {σ : Type} (R : ℝ
 
 def ToPolyX : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ)
-    (w₀ : HeightOneSpectrum (𝓞 E)) (K : Subgroup (UA E a)), K ≤ finU (E := E) (n := a) → ∀ (lam : (E →+* ℂ) → DomWeight a)
+    (_ : HeightOneSpectrum (𝓞 E)) (K : Subgroup (UA E a)), K ≤ finU (E := E) (n := a) → ∀ (lam : (E →+* ℂ) → DomWeight a)
     (P : Submodule ℂ (UA E a → ℂ) → Prop), Dense ι (Wt.ofFam lam) K P → ∀ (J : Type) (t : J → (UA E a →₀ ℂ))
     (η : Submodule ℂ (UA E a → ℂ) → J → ℂ), FramedX ι (Wt.ofFam lam) t → ActsBy K t η → ∀ U, OfType lam K U →
       PolyApprox (fun j => ι.symm (η U j)) {θ | ∃ U', OfType lam K U' ∧ P U' ∧ θ = fun j => ι.symm (η U' j)}

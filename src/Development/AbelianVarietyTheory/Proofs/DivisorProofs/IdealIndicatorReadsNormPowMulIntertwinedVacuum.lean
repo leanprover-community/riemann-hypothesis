@@ -395,7 +395,7 @@ theorem indicator_reads : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : In
   have hW := (_root_.GlobalTheory.ThetaLine.theta_line D h1 ⊤ δ hs.crv _ _ _ (klat_skew δ h𝔪 S.rank T.rank)).2.1
   have hn : 0 < Ideal.absNorm 𝔪 ^ (S.rank * T.rank) :=
     pow_pos (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.2 h𝔪)) _
-  rw [cosV, GlobalTheory.NormSum.VacMove.pt_zero, GlobalTheory.NormSum.VacMove.wd_zero, ← Nat.cast_pow]
+  rw [cosV, GlobalTheory.NormSum.VacMove.pt_zero, GlobalTheory.NormSum.wd_zero, ← Nat.cast_pow]
   generalize La0 D (tor0 D ⊤ δ) S.rank T.rank = A at hidx hA ⊢
   generalize La D (tor0 D ⊤ δ) (stdL D S.rank) (skewLat D 𝔪 T.rank) = B at hidx hB hW ⊢
   generalize Ideal.absNorm 𝔪 ^ (S.rank * T.rank) = n at hidx hn ⊢

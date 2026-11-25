@@ -852,12 +852,6 @@ theorem mem_of_map {H : Subgroup G} {θ : MulAut G} (h : H.map θ.toMonoidHom = 
   rw [← h]
   exact ⟨x, hx, rfl⟩
 
-theorem inv_mem_of_map {H : Subgroup G} {θ : MulAut G} (h : H.map θ.toMonoidHom = H) {x : G} (hx : x ∈ H) :
-    θ⁻¹ x ∈ H := by
-  rw [← h] at hx
-  obtain ⟨y, hy, rfl⟩ := hx
-  simpa using hy
-
 theorem twist_inv_apply (θ : MulAut G) (t x : G) :
     (θ * MulAut.conj t)⁻¹ x = t⁻¹ * θ⁻¹ x * t := by
   rw [mul_inv_rev, MulAut.mul_apply, ← map_inv, MulAut.conj_apply, inv_inv]
@@ -946,11 +940,11 @@ theorem killN : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
   have hψm : ∀ x ∈ J ⊓ Nlo k N, ψ⁻¹ x ∈ J ⊓ Nlo k N := by
     intro x hx
     rw [ψinv]
-    exact d2 _ ⟨inv_mem_of_map hθJ hx.1, inv_mem_of_map hθNl hx.2⟩
+    exact d2 _ ⟨GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθJ hx.1, GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθNl hx.2⟩
   have hψt : ∀ x ∈ J ⊓ Tor k N, ψ⁻¹ x ∈ J ⊓ Tor k N := by
     intro x hx
     rw [ψinv]
-    exact d3 _ ⟨inv_mem_of_map hθJ hx.1, inv_mem_of_map hθT hx.2⟩
+    exact d3 _ ⟨GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθJ hx.1, GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθT hx.2⟩
   have hψNl : ∀ x ∈ J ⊓ Nlo k N, ψ x ∈ Nlo k N := fun x hx =>
     mem_of_map hθNl (nlo t htT x hx.2)
   have hψT : ∀ x ∈ J ⊓ Tor k N, ψ x ∈ Tor k N := fun x hx =>
@@ -973,7 +967,7 @@ theorem killN : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
     obtain ⟨x, hx, e⟩ := hg (l * j)
     rw [hψ, twist_pow θ t hθl] at e
     have hn : θ⁻¹ x ∈ KN k N J (ones N) (sum_ones N) :=
-      ⟨inv_mem_of_map hθJ hx.1, inv_mem_of_map hθNu hx.2⟩
+      ⟨GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθJ hx.1, GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθNu hx.2⟩
     have := hj _ hn
     rw [show leviEmb k (stdBlocks (ones N) (sum_ones N)) s₂ = tnorm θ l t from hs₂] at this
     exact this e
@@ -983,7 +977,7 @@ theorem killN : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
     rw [← inv_inv b, eb]
     group
   set m₀ : GL (Fin N) k := θ⁻¹ am⁻¹ with hm₀
-  have hm₀J : m₀ ∈ J ⊓ Nlo k N := ⟨inv_mem_of_map hθJ (inv_mem ham.1), inv_mem_of_map hθNl (inv_mem ham.2)⟩
+  have hm₀J : m₀ ∈ J ⊓ Nlo k N := ⟨GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθJ (inv_mem ham.1), GlobalTheory.CompanionTheory.Lbc.KillNlo.inv_apply_mem hθNl (inv_mem ham.2)⟩
   have hθm : θ m₀ = am⁻¹ := by simp [hm₀]
   set c : GL (Fin N) k := (t⁻¹ * m₀ * t) * γ⁻¹ * β⁻¹ with hcdef
   have hcJ : c ∈ J := mul_mem (mul_mem (d2 _ hm₀J).1 (inv_mem hγ.1)) (inv_mem hβ.1)

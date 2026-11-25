@@ -21,7 +21,3 @@ end
 variable {g : ℕ} [Fact g.Prime]
 
 end Formalism.D.Classical
-
-namespace Formalism.D.Classical
-
-end Formalism.D.Classical

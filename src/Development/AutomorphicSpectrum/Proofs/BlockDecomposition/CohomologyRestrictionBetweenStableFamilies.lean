@@ -358,7 +358,7 @@ theorem eq_fil {Q₁ : ObjectProperty (Thick (nlFun γ p X q κ))} (h : Q₁ ≤
 
 theorem eq_o {Q₁ : ObjectProperty (Thick (nlFun γ p X q κ))} (h : Q₁ ≤ Q') :
     (incl h).o = CH.Mor.restrict (CH.modF (sP Q').A) (ObjectProperty.ιOfLE h) :=
-  mor_eq (ObjectProperty.ιOfLE h) _ _ rfl rfl fun T x => rfl
+  mor_eq (ObjectProperty.ιOfLE h) _ _ rfl rfl fun _ _ => rfl
 
 theorem bij_std (Q₀ : ObjectProperty (Thick (nlFun γ p X q κ))) (hQ : Used Q₀) (𝒱 : Set X.Opens) (h : St Q₀ 𝒱 ≤ Q')
     (h' : Q' ≤ St Q₀ {sSup 𝒱}) (hc : ∀ T T' : Thick (nlFun γ p X q κ), (T ⟶ T') → Q' T → Q₀ T' → Q' T')

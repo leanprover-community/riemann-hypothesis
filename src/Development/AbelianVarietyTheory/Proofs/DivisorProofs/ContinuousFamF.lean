@@ -576,7 +576,6 @@ theorem scale_int {ι : Type} [Fintype ι] (g : (ι → ℂ) → ℂ) (t : ℝ) 
     rw [Module.finrank_pi_fintype]
     simp [Complex.finrank_real_complex]
   rw [MeasureTheory.Measure.integral_comp_smul, hf]
-  have hs : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   have h1 : |(((Real.sqrt t)⁻¹) ^ (Fintype.card ι * 2))⁻¹| = t ^ Fintype.card ι := by
     rw [abs_of_pos (by positivity), inv_pow, inv_inv, mul_comm, pow_mul, Real.sq_sqrt ht.le]
   rw [h1, Complex.real_smul]
@@ -947,7 +946,6 @@ theorem exp_conj_entries_hasFDerivAt_zero : ∀ (n : ℕ) (ι : Type) [Fintype �
   · have hprod := (hexpN.mul' (hasFDerivAt_const s (0 : ι → ℂ))).mul' hexpA
     refine ⟨_, ?_, (Ec.hasFDerivAt).comp (0 : ι → ℂ) hprod⟩
     intro w x
-    have hA0' : A 0 = 0 := map_zero A
     simp only [Ec, E, Ac, NormedSpace.exp_zero, Pi.mul_apply, map_zero]
     change ((1 * s) * A w + (1 * 0 + (-(A w)) * s) * 1 : Matrix (Fin n) (Fin n) ℂ) (p x).1 (p x).2 = (s * A w - A w * s) (p x).1 (p x).2
     rw [one_mul, mul_zero, zero_add, mul_one, neg_mul, ← sub_eq_add_neg]

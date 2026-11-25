@@ -79,7 +79,6 @@ theorem isLoc_of_ind {H : Subgroup T} {B : Subalgebra R (T → R)}
   funext x
   simp [GlobalTheory.CompanionTheory.Ar.BT.pullFun, hbf x x.2]
 
-
 open Classical in
 def cosetInd (R : Type) [CommRing R] (H : Subgroup T) (c : T ⧸ H) : T → R :=
   fun t => if (t : T ⧸ H) = c then 1 else 0
@@ -106,7 +105,7 @@ variable [Finite T'] {H : Subgroup T} {H' : Subgroup T'} {B : Subalgebra R (T �
 
 private theorem translate_mem_of_isHopfOrder' {U : Type} [CommGroup U] {A : Subalgebra R (U → R)} (hA : IsHopfOrder A)
     {f : U → R} (hf : f ∈ A) (u : U) : (fun x => f (u * x)) ∈ A := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate.translate_mem_of_isHopfOrder <;> assumption
+  apply _root_.PositivityTheory.HtPt.Twhopf.translate_mem <;> assumption
 
 theorem res_iff_abs (hB : IsHopfOrder B) (hB' : IsHopfOrder B') (hl : IsLoc H B) (hl' : IsLoc H' B')
     (hH : ∀ t, ι t ∈ H' → t ∈ H)
@@ -281,7 +280,6 @@ theorem fac_taut {B : Type} [CommRing B] {f : Spec (CommRingCat.of B) ⟶ Z} (z 
     (h : ⊤ ≤ z.left ⁻¹ᵁ U) : fac hU z h ≫ taut hU = z :=
   Over.OverMorphism.ext (spec_valHom_fromSpec (B := B) z.left hU h)
 
-
 include hU in
 theorem val_comp {B C : Type} [CommRing B] [CommRing C] {f : Spec (CommRingCat.of B) ⟶ Z}
     {g : Spec (CommRingCat.of C) ⟶ Z} (q : Over.mk g ⟶ Over.mk f) (φ : B →+* C)
@@ -303,7 +301,6 @@ theorem val_fac {W' : Over Z} {U' : W'.left.Opens} (hU' : IsAffineOpen U') (k : 
     ∃ h', ∀ s, valHom (B := B) b.left U' h' s =
       valHom (B := B) z.left U h (valHom (B := Γ(W.left, U)) k.left U' hk s) :=
   ⟨comp_mem _ k hk b hb, fun s => val_comp (B := Γ(W.left, U)) hU' (fac hU z h) _ rfl k hk b hb _ s⟩
-
 
 include hU in
 theorem pt_ext {B : Type} [CommRing B] {f : Spec (CommRingCat.of B) ⟶ Z} (a b : Over.mk f ⟶ W)
@@ -328,8 +325,6 @@ theorem affOver_finite (h : IsFinite (U.ι ≫ W.hom)) : IsFinite (affOver hU).h
 end Pts
 
 variable {R : Type} [CommRing R] [IsLocalRing R] {W W' : Over (Spec (CommRingCat.of R))} [GrpObj W']
-
-
 
 theorem core {N : ℕ} (j : W ⟶ W') (hinj : ∀ (Y) (y y' : Y ⟶ W), y ≫ j = y' ≫ j → y = y')
     (hker : ∀ (Y) (z : Y ⟶ W'), z ^ N = 1 ↔ ∃ y, y ≫ j = z) (U : W.left.Opens) (U' : W'.left.Opens)

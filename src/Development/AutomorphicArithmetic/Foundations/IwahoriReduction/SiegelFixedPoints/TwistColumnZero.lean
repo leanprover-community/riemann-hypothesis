@@ -327,8 +327,7 @@ private theorem UpperTheory.ring_hom_eisenstein_coeff {K : Type} [Field K] [Char
   · simp only [map_div₀, map_mul, map_add (f := _), map_sub, map_one, map_ofNat, h]
   · simp only [map_ratCast]
   · simp only [map_neg, map_ratCast]
-  · set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_sub]
+  · simp only [map_sum, map_sub]
     refine Finset.sum_congr rfl fun d _ => ?_
     congr 1
     · split_ifs

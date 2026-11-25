@@ -234,7 +234,6 @@ open scoped ContDiff ENNReal
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem aprb_complement {n d : ℕ} (Lm : V n →L[ℂ] V d) (hs : Function.Surjective Lm) :
     ∃ A : V n ≃L[ℂ] V d × V (n - d), ∀ v, (A v).1 = Lm v := by
   classical

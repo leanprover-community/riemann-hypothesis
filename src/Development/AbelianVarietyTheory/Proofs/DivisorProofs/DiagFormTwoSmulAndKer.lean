@@ -87,7 +87,6 @@ theorem im_hermForm_int {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ}
   refine ⟨n, ?_⟩
   have := congrArg Complex.im hn
   simp at this
-  have hp := Real.pi_pos
   refine mul_left_cancel₀ (a := 2 * Real.pi) (by positivity) ?_
   linear_combination this
 

@@ -132,7 +132,3 @@ theorem finrank_lat (ht : IsTypeFn H D.p D.q ty) {n : ℕ} (hn : 0 < n)
   omega
 
 end GlobalTheory.CM.LatData
-
-namespace GlobalTheory.CM
-
-end GlobalTheory.CM

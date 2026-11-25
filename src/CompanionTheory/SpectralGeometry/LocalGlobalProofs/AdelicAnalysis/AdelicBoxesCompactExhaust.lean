@@ -48,11 +48,8 @@ theorem topRing : IsTopologicalRing (R ⊗[F] E) := by
   exact IsModuleTopology.isTopologicalRing R _
 
 theorem cont_repr {d : ℕ} (b : Module.Basis (Fin d) F E) (k : Fin d) :
-    Continuous fun y : R ⊗[F] E => (Algebra.TensorProduct.basis R b).repr y k := by
-  have : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩
-  have : IsTopologicalRing (R ⊗[F] E) := topRing R
-  exact IsModuleTopology.continuous_of_linearMap
-    ((Finsupp.lapply k).comp (Algebra.TensorProduct.basis R b).repr.toLinearMap)
+    Continuous fun y : R ⊗[F] E => (Algebra.TensorProduct.basis R b).repr y k :=
+  Glue.continuous_repr R b k
 
 def coordH {d : ℕ} (b : Module.Basis (Fin d) F E) : R ⊗[F] E ≃ₜ (Fin d → R) := by
   haveI : IsModuleTopology R (R ⊗[F] E) := ⟨rfl⟩

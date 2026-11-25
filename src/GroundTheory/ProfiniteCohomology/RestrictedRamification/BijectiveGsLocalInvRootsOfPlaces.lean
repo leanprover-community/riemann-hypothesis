@@ -76,7 +76,6 @@ theorem bijective_zmodMulPairing_tTop {r s : ℕ} (h : r + s = 2) :
   rw [← tensorHom_zmodDualIso_zmodMulPairing m Dl hDl, ← Category.assoc, MonoidalCategory.tensorHom_comp_tensorHom,
     Category.id_comp, Iso.inv_hom_id, MonoidalCategory.id_tensorHom_id, Category.id_comp]
 
-
 omit [TopologicalSpace H] [IsTopologicalGroup H] [CompactSpace H] [TotallyDisconnectedSpace H] [IsDiscreteRep Dl]
   [NeZero m] in
 theorem comp_eq_tensorHom_zmodMulPairing {M Dm : Rep.{0} (ULift.{0} ℤ) H} (μ : M ⊗ Dm ⟶ Dm) (ρ : Dm ⟶ Dl)
@@ -88,7 +87,6 @@ theorem comp_eq_tensorHom_zmodMulPairing {M Dm : Rep.{0} (ULift.{0} ℤ) H} (μ 
   rw [hμ, map_zsmul]
   obtain ⟨b⟩ := ι.hom a
   rw [zmodMulPairing_tmul]
-
 
 omit [CompactSpace H] [TotallyDisconnectedSpace H] [NeZero m] in
 theorem cohomologyMap_cupPairing_of_comp_eq {M Dm M' : Rep.{0} (ULift.{0} ℤ) H} [IsDiscreteRep M]
@@ -105,7 +103,6 @@ local notation "ℚ̄" => AlgebraicClosure ℚ
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n]
-
 
 omit [NeZero n] in
 theorem nsmul_galRootsOfUnity_local (v : S)
@@ -129,7 +126,6 @@ omit [NeZero n] in
 theorem bijective_zmodResToLocal (v : S) : Function.Bijective (zmodResToLocal S ιs n v).hom :=
   Function.bijective_id
 
-
 omit [NeZero n] in
 theorem pairingRes_zmodMulPairing_comp_gsRootsLocalMor (v : S) :
     pairingRes (gsFinFamily S ιs v).toMonoidHom (zmodMulPairing n (gsRoots S n) (nsmul_gsRoots S n)) ≫
@@ -140,8 +136,6 @@ theorem pairingRes_zmodMulPairing_comp_gsRootsLocalMor (v : S) :
   refine comp_eq_tensorHom_zmodMulPairing (nsmul_galRootsOfUnity_local S n v) _ _ _ fun a d => ?_
   obtain ⟨a⟩ := a
   exact zmodMulPairing_tmul n (gsRoots S n) (nsmul_gsRoots S n) a d
-
-
 
 theorem gsLocalInvRoots_cupPairing (v : S) {r s : ℕ} (h : r + s = 2)
     (ξ : cohomology (Rep.res (gsFinFamily S ιs v).toMonoidHom (zmodRep.{0} (galUnramifiedOutside K.1 ℚ̄ S) n)) r)
@@ -276,7 +270,6 @@ theorem cochainOf_revLC (n : ℕ) (x : (cochainsComplex A).X n) :
 
 variable {A}
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [IsDiscreteRep A] in
 theorem revCochain_zero (f : (Fin 0 → G) → A) : revCochain 0 f = f := by
   funext x
@@ -386,11 +379,9 @@ theorem revCochain_two_apply (x : (Fin 2 → G) → A) (a b : G) :
   have : ((-1 : k) ^ 3) = -1 := by norm_num
   rw [this, neg_one_smul]
 
-
 variable (A) in
 def revHtpyOne (f : (Fin 1 → G) → A) : (Fin 0 → G) → A :=
   fun _ => f ![1]
-
 
 variable (A) in
 def revHtpyTwo (x : (Fin 2 → G) → A) : (Fin 1 → G) → A :=
@@ -807,12 +798,10 @@ section CupReverse
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {A B C : Rep.{u} k G} [IsDiscreteRep A] [IsDiscreteRep B] [IsDiscreteRep C]
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [IsDiscreteRep A] [IsDiscreteRep B] [IsDiscreteRep C] in
 noncomputable abbrev resPairingAlong {H : Type u} [Group H] (ψ : H →* G) (μ : A ⊗ B ⟶ C) :
     Rep.res ψ A ⊗ Rep.res ψ B ⟶ Rep.res ψ C :=
   (Rep.resFunctor ψ).map μ
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [IsDiscreteRep A] [IsDiscreteRep B] [IsDiscreteRep C] in
 theorem revCochain_hom {X Y : Rep.{u} k G} (μ : X ⟶ Y) {n : ℕ} (F : (Fin n → G) → X) (σ : Fin n → G) :
@@ -830,7 +819,6 @@ theorem revLC_cupPairingCochains (μ : A ⊗ B ⟶ C) {p q n : ℕ} (h : p + q =
     cochainOf_cupPairingCochains, cochainOf_revLC, cochainOf_revLC, revCochain_hom,
     revCochain_cupCochain h h', map_smul]
   rfl
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [IsDiscreteRep A] [IsDiscreteRep B] [IsDiscreteRep C] in
 theorem braiding_comp_resPairingAlong {H : Type u} [Group H] (ψ : H →* G) (μ : A ⊗ B ⟶ C) :
@@ -855,14 +843,6 @@ noncomputable def compactCupRightRes (μ : B ⊗ A ⟶ C) {r s n : ℕ} (h : r +
     (fun v => (Rep.resFunctor (φ v).toMonoidHom).map μ)
     (fun v => resFunctor_map_comp_id (φ v).toMonoidHom μ) h
 
-noncomputable abbrev compactCupLeibnizRes (μ : A ⊗ B ⟶ C) :
-    LeibnizPairing (compactCochains φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _))
-      (cochainsComplex B) (compactCochains φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _)) :=
-  compactCupLeibniz (Aᵥ := fun v => Rep.res (φ v).toMonoidHom A) (a := fun _ => 𝟙 _)
-    (Cᵥ := fun v => Rep.res (φ v).toMonoidHom C) (c := fun _ => 𝟙 _) φ μ
-    (fun v => (Rep.resFunctor (φ v).toMonoidHom).map μ)
-    (fun v => resFunctor_map_comp_id (φ v).toMonoidHom μ)
-
 noncomputable abbrev compactCupRightLeibnizRes (μ : B ⊗ A ⟶ C) :
     LeibnizPairing (cochainsComplex B)
       (compactCochains φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _))
@@ -884,21 +864,19 @@ theorem neg_one_pow_succ_mul_mul (r s : ℕ) :
     (-1 : k) ^ ((r + 1) * s) * (-1 : k) ^ s = (-1 : k) ^ (r * s) := by
   rw [Nat.succ_mul, pow_add, mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, mul_one]
 
-
-
 theorem revCone_compactCup_succ (μ : A ⊗ B ⟶ C) {r s m : ℕ} (h : r + 1 + s = m + 1)
     (h' : s + (r + 1) = m + 1) (x : (cochainsComplex A).X (r + 1))
     (y : (piComplex fun v => cochainsComplex (Rep.res (φ v).toMonoidHom A)).X r)
     (z : (cochainsComplex B).X s) :
     ((revCone φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _)).f (m + 1)).hom
-        ((compactCupLeibnizRes φ μ).μ h
+        ((GroundTheory.ProfCoh.compactCupResLeibniz φ μ).μ h
           (compactMkSucc φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _) x y) z) =
       (-1 : k) ^ ((r + 1) * s) •
         (compactCupRightLeibnizRes φ ((β_ B A).hom ≫ μ)).μ h'
           (((revLC B).f s).hom z) (((revCone φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _)).f (r + 1)).hom
             (compactMkSucc φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _) x y)) := by
   obtain rfl : m = r + s := by omega
-  have eL : (compactCupLeibnizRes φ μ).μ h (compactMkSucc φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _) x y) z =
+  have eL : (GroundTheory.ProfCoh.compactCupResLeibniz φ μ).μ h (compactMkSucc φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _) x y) z =
       compactMkSucc φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _) (cupPairingCochains μ h x z)
         ((LeibnizPairing.pi fun v => cupLeibniz (resPairingAlong (φ v).toMonoidHom μ)).μ rfl y
           (((localRes φ B (fun v => Rep.res (φ v).toMonoidHom B) (fun _ => 𝟙 _)).f s).hom z)) :=
@@ -926,12 +904,10 @@ theorem revCone_compactCup_succ (μ : A ⊗ B ⟶ C) {r s m : ℕ} (h : r + 1 + 
   rw [e, braiding_comp_resPairingAlong, ← neg_one_pow_succ_mul_mul r s, ← smul_smul] at key
   exact key
 
-
-
 theorem revCone_compactCup_zero (μ : A ⊗ B ⟶ C) {s : ℕ} (h : 0 + s = s) (h' : s + 0 = s)
     (x : (cochainsComplex A).X 0) (z : (cochainsComplex B).X s) :
     ((revCone φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _)).f s).hom
-        ((compactCupLeibnizRes φ μ).μ h
+        ((GroundTheory.ProfCoh.compactCupResLeibniz φ μ).μ h
           (compactMkZero φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _) x) z) =
       (-1 : k) ^ (0 * s) •
         (compactCupRightLeibnizRes φ ((β_ B A).hom ≫ μ)).μ h'
@@ -956,7 +932,7 @@ theorem revCone_compactCupLeibnizRes (μ : A ⊗ B ⟶ C) {r s n : ℕ} (h : r +
     (p : (compactCochains φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _)).X r)
     (z : (cochainsComplex B).X s) :
     ((revCone φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _)).f n).hom
-        ((compactCupLeibnizRes φ μ).μ h p z) =
+        ((GroundTheory.ProfCoh.compactCupResLeibniz φ μ).μ h p z) =
       (-1 : k) ^ (r * s) • (compactCupRightLeibnizRes φ ((β_ B A).hom ≫ μ)).μ h' (((revLC B).f s).hom z)
         (((revCone φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _)).f r).hom p) := by
   cases r with
@@ -973,13 +949,13 @@ theorem compactCupRes_eq_neg_one_pow_smul_compactCupRightRes (μ : A ⊗ B ⟶ C
     {p q : ℕ} (h : p + q = 3) (h' : q + p = 3) (hp : 1 ≤ p) (hq : 1 ≤ q)
     (y : compactCohomologyRes φ A p) (x : cohomology B q) :
     compactCupRes φ μ h y x = (-1 : k) ^ (p * q) • compactCupRightRes φ ((β_ B A).hom ≫ μ) h' x y := by
-  have key := LeibnizPairing.homologyMap_homology_eq_smul (compactCupLeibnizRes φ μ)
+  have key := LeibnizPairing.homologyMap_homology_eq_smul (GroundTheory.ProfCoh.compactCupResLeibniz φ μ)
     (compactCupRightLeibnizRes φ ((β_ B A).hom ≫ μ))
     (revCone φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _)) (revLC B)
     (revCone φ A (fun v => Rep.res (φ v).toMonoidHom A) (fun _ => 𝟙 _)) (fun r s => (-1 : k) ^ (r * s))
     (fun h h' p z => revCone_compactCupLeibnizRes φ μ h h' p z) h h' y x
   have key' := (homologyMap_revCone_three φ C (fun v => Rep.res (φ v).toMonoidHom C) (fun _ => 𝟙 _) hsurj
-    ((compactCupLeibnizRes φ μ).homology h y x)).symm.trans key
+    ((GroundTheory.ProfCoh.compactCupResLeibniz φ μ).homology h y x)).symm.trans key
   obtain ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ : (p = 1 ∧ q = 2) ∨ (p = 2 ∧ q = 1) := by omega
   · exact key'.trans (congrArg₂ (fun a b => (-1 : k) ^ (1 * 2) •
       (compactCupRightLeibnizRes φ ((β_ B A).hom ≫ μ)).homology h' a b)
@@ -1075,7 +1051,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1))) [Fintype 
   (hμ : ∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ K.1) (hodd : Odd n ∨ IsTotallyComplex K.1)
   (h3 : Subsingleton (cohomology (gsRoots S n) 3))
 
-
 include ℓ k hℓ hnk hS hμ in
 theorem BaseDualityHypotheses.of_gs
     (h3Z : Subsingleton (cohomology (zmodRep.{0} (galUnramifiedOutside K.1 ℚ̄ S) n) 3))
@@ -1107,7 +1082,6 @@ theorem BaseDualityHypotheses.of_gs
       swap yc xc := congrArg (gsCompactInv S ιs n hodd h3)
         (compactCupRes_zmodMulPairingRight_swap (gsFinFamily S ιs) (gsRoots S n) (nsmul_gsRoots S n)
           (_root_.GroundTheory.ProfCoh.localToCompact_two_surjective S ιs n h3) yc xc) }
-
 
 include ℓ k hℓ hnk hS hμ in
 theorem bijective_gs_compactZmodDualityMap
@@ -1155,8 +1129,6 @@ variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
   (ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1)) (n : ℕ)
   [NeZero n] (hnS : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal)
 include hnS
-
-
 
 theorem bijective_gsRootsLocalMor_of_places (v : S) : Function.Bijective (gsRootsLocalMor S ιs n v).hom :=
   (exists_isPrimitiveRoot_maxUnramifiedOutside K S n (NeZero.ne n) hnS).elim fun _ hz =>
@@ -1207,12 +1179,10 @@ def GsPairingInput (n ℓ : ℕ) [NeZero n] : Prop :=
     (∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ L.1) → ∀ (hodd' : Odd n ∨ IsTotallyComplex L.1)
     (h3' : Subsingleton (cohomology (gsRoots S' n) 3)), GsPairingNondegenerate S' ιs' n hodd' h3'
 
-
 omit [Fintype S] [NeZero n] in
 include hnk hS in
 theorem natCast_not_mem_of_not_mem : ∀ v ∉ S, ((n : ℕ) : 𝓞 K.1) ∉ v.asIdeal :=
   fun v hv h => hv (mem_of_natCast_pow_mem S n ℓ k hnk hS v h)
-
 
 include hℓ hnk hS in
 private theorem gsLevelBijective_of_pairing [Nonempty S] (hμ : ∀ ζ : ℚ̄, ζ ^ n = 1 → ζ ∈ K.1)
@@ -1233,7 +1203,6 @@ private theorem gsLevelBijective_of_pairing [Nonempty S] (hμ : ∀ ζ : ℚ̄, 
     let args ← #[`hleft, `hright, `r, `s, `h].mapM (m := Lean.MetaM) Lean.Meta.getFVarFromUserName
     let goal ← Lean.Elab.Tactic.getMainGoal
     goal.assign (Lean.Meta.mkExpectedPropHint (Lean.mkAppN dual args) (← goal.getType))
-
 
 /-- The degree-three cores map of `gsRoots S n` to level `U` is surjective. -/
 def GsCompactCoresSurjective (U : OpenSubgroup (galUnramifiedOutside K.1 ℚ̄ S)) : Prop :=

@@ -78,18 +78,6 @@ theorem heisOp_zero {P Q R S : ℕ} : heisOp (P := P) (Q := Q) (R := R) (S := S)
 theorem Jm_transpose' (p q : ℕ) : (Jm p q)ᵀ = Jm p q := by
   simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_transpose]
 
-theorem exists_mat_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
-    {m k : Type} (z : InfinitePlace F → Matrix m k ℂ) :
-    ∃ u : Matrix m k (AE F E), At (evI F) u ∧ ∀ w, u.map (piInf (τ w)) = z w := by
-  choose a ha using fun i j => _root_.GlobalTheory.PolRangeInf.exists_at_inf_values hcm τ (fun w => z w i j)
-  refine ⟨Matrix.of a, fun x hx => ?_, fun w => ?_⟩
-  · ext i j
-    simp only [Matrix.smul_apply, Matrix.of_apply, Matrix.zero_apply]
-    exact (ha i j).1 x hx
-  · ext i j
-    simp [(ha i j).2 w]
-
 theorem polRange_of (hL : ActsLaws) (_hD : DerEx) (hV : VacLine) : PolRange := by
   apply GlobalTheory.RealLift.PolRangePf.polRange_of <;> assumption
 

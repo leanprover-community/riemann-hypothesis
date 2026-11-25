@@ -289,7 +289,6 @@ namespace GlobalTheory.ConormalFrame
 open GlobalTheory.QCoh
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isBaseChange_pullbackSections {X Y : Scheme.{0}} (f : X ⟶ Y) (G : Y.Modules)
     {U : X.Opens} {V : Y.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
     [(G.restrict hV.fromSpec).IsQuasicoherent] (e : U ≤ f ⁻¹ᵁ V) :

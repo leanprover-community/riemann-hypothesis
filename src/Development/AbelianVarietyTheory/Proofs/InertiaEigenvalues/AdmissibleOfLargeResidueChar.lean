@@ -855,7 +855,6 @@ theorem charpoly_repV (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) {
     Matrix.charpoly_toLin' _
   rw [h, Matrix.charpoly_map]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem twist_locOC (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) (θ : Br.G D.nbr i w hw →* (↥(OL C.LL))ˣ) {k : ℕ}
     (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i)) (χ : GE D.nd →* (D.nd.O i)ˣ) (g : Br.G D.nbr i w hw) :
     twistM (locOC C (twistM M χ)) θ g =
@@ -890,8 +889,6 @@ theorem chiT_val (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) (θ : 
 end Main
 
 
-set_option synthInstance.maxHeartbeats 200000 in
-set_option maxHeartbeats 800000 in
 theorem charpoly_congr : ∀ (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw) (θ : Br.G D.nbr i w hw →* (↥(OL C.LL))ˣ) (lam : ↥(OL C.LL)), Irreducible lam → TruncatedSeriesCountingIdentities.admG3 i r ρ π → ∀ (x : D.nd.X i) (g : Br.G D.nbr i w hw) (k : ℕ), ∃ y : ↥(OL C.LL), (LinearMap.charpoly (repV C (twistM (locOC C (rTwO D.nd i r x)) θ) g) - tableLineDegreeTwo.resPoly (repV C (twistM (locOC C (WpO D.nd i ρ π)) θ)) (chiT C θ) D.R.t g).coeff k = algebraMap (↥(OL C.LL)) (↥C.LL.1) (lam * y) := by
   intro D i r ρ π w hw C θ lam hlam hG3 x g k
   haveI : CharZero ↥C.LL.1 :=
@@ -1282,7 +1279,6 @@ theorem incO_div {l : ℕ} [Fact l.Prime] {LL LL' : FinExt l} (h : LL.1 ≤ LL'.
   rw [hz]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_intRetraction : ∀ {l : ℕ} [Fact l.Prime] {LL LL' : FinExt l} (h : LL.1 ≤ LL'.1),
     ∃ r : ↥(OL LL') →+ ↥(OL LL), (∀ (a : ↥(OL LL)) (x : ↥(OL LL')), r (incO h a * x) = a * r x) ∧ r 1 = 1 := by
   intro l _ LL LL' h

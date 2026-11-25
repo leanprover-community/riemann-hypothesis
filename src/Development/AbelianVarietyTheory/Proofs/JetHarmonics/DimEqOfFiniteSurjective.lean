@@ -127,12 +127,6 @@ structure CMObj (c : Coeff l) (p q : ℕ) : Type 1 where
 
 attribute [instance] CMObj.field CMObj.numberField CMObj.alg
 
-namespace CMObj
-
-variable {c : Coeff l} {p q : ℕ} (o : CMObj c p q)
-
-end CMObj
-
 end GlobalTheory.IndefiniteRowSideFullHecke.CMObjBundlePull
 end -- clump:auto
 end -- clump:auto

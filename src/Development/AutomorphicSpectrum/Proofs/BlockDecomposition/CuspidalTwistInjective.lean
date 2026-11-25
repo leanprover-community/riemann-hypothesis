@@ -43,7 +43,7 @@ theorem eq_smul_of_eigenvector {G V : Type} [Group G] [AddCommGroup V] [Module �
   have hE : E ≠ ⊥ := fun h => hw (by
     have h1 : w ∈ E.toSubmodule := by
       show w ∈ LinearMap.ker (π z - c • (1 : Module.End ℂ V))
-      simp [sub_eq_zero, hc]
+      simp [hc]
     rw [h] at h1
     exact (Submodule.mem_bot ℂ).1 h1)
   have hT : E = ⊤ := (eq_bot_or_eq_top E).resolve_left hE

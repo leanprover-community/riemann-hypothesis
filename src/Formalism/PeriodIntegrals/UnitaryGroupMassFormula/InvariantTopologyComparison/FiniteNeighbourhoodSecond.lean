@@ -15,7 +15,7 @@ open NumberField IsDedekindDomain Topology Filter
 
 theorem isOpen_intAd (F : Type) [Field F] [NumberField F] :
     IsOpen ((Formalism.UG.intAd F : Set (FiniteAdeleRing (𝓞 F) F))) :=
-  RestrictedProduct.isOpen_forall_mem fun v => Valued.isOpen_valuationSubring _
+  RestrictedProduct.isOpen_forall_mem fun _ => Valued.isOpen_valuationSubring _
 
 theorem finite_neighbourhood_first : FinNhdA := by
   intro F _ _ N hN

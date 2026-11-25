@@ -186,7 +186,7 @@ theorem cube (hP : GlobalTheory.SpreadingModels.PerfAll) (hA : IsAbelianScheme A
   rw [e] at c₀
   exact c₀
 
-theorem cubeTheorem_of_perfAll : GlobalTheory.SpreadingModels.PerfAll → GlobalTheory.Published.CubeTheorem := fun hP S A _ hA L hL T a b c =>
+theorem cubeTheorem_of_perfAll : GlobalTheory.SpreadingModels.PerfAll → GlobalTheory.Published.CubeTheorem := fun hP _ _ _ hA L hL T a b c =>
   cube hP hA L hL T a b c
 
 end GlobalTheory.CompanionTheory.CubePerf

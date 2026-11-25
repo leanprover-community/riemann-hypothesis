@@ -395,7 +395,7 @@ theorem card_span {O Λ K G ι : Type} [CommRing O] [IsDomain O] [IsDiscreteValu
       rw [this]
       exact Submodule.sum_mem _ fun i _ => Submodule.subset_span ⟨_, (β i).2, b i, fun _ _ => rfl⟩
   have hinj : Function.Injective Φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro b hb
     obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
     have hT : Module.IsTorsionBySet O K (IsLocalRing.maximalIdeal O) := fun b a => hK a.1 a.2 b
@@ -818,8 +818,6 @@ theorem noInv (h : IsotypicValuationAtRing bkP i s) (v : PlE D.host) (x : Fin D.
       Matrix (Fin D.R.r) (Fin D.R.r) (X.O0 i)).map (algebraMap (X.O0 i) (FractionRing (X.O0 i)))).mulVec x = x) : x = 0 :=
   h.2.2.1 v _ (N.plOm.2 v) x fun g hg => by rw [← Tgl_coe]; exact hx ⟨g, hg⟩
 
-set_option maxHeartbeats 8000000 in
-set_option synthInstance.maxHeartbeats 100000 in
 open Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations in
 theorem h1fDim_eq (h : GalHyp bkP i s) (u : placesOver D.host.E (X.l i)) [Fintype (EmbV bkP i u.1 u.2)] :
     (h1fDim bkP i s u : ℤ) =

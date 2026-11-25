@@ -171,27 +171,10 @@ theorem lamAt_dualW {n' m : ℕ} (lo : Fin n' → Fin (m + 1) → ℤ) (s : Fin 
   unfold lamAt dualW
   split_ifs <;> rfl
 
-theorem dualWt_anti {m : ℕ} (mu : Fin (m + 1) → ℤ) (h : Antitone mu) : Antitone (dualWt mu) := by
-  intro i j hij
-  simp only [dualWt]
-  have := h (Fin.rev_le_rev.mpr hij)
-  linarith
-
 theorem flatW_top {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be : TT → ℕ) (s : TT) :
     flatW m al be s.val = wtPQ m (al s) (be s) := by
   funext i
   simp only [flatW, wtPQ, dite_eq_left s.2]
-
-theorem flatW_off {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be : TT → ℕ) (s : Fin n') (hs : s ∉ TT) :
-    flatW m al be s = 0 := by
-  funext i
-  simp only [flatW, dite_eq_right hs, Pi.zero_apply]
-
-theorem flatW_add {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be al' be' : TT → ℕ) :
-    flatW m (fun s => al s + al' s) (fun s => be s + be' s) = flatW m al be + flatW m al' be' := by
-  funext s i
-  simp only [flatW, Pi.add_apply]
-  split_ifs <;> push_cast <;> ring
 
 theorem lo_apply (m : ℕ) (ccl P Q : ℕ) (lam : Fin (m + 1) → ℤ) (h0 : lam 0 = (P : ℤ) + ccl)
     (hl : lam (Fin.last m) = -((Q : ℤ) + ccl)) (i : Fin (m + 1)) :
@@ -332,7 +315,7 @@ theorem posOK_at_top (h1 : CloudOne) {p n' : ℕ} (R : RS p n') (mm : ℕ) (hmm 
       unfold lamAt
       rw [ite_eq_right he]
     rw [hlam']
-    refine posOK_top h1 R mm hmm a ccl (B s) (A s) _ (dualWt_anti _ (hDom s.val)) ?_ ?_ ?_ h8
+    refine posOK_top h1 R mm hmm a ccl (B s) (A s) _ (Formalism.MainNotions.flipOneThree.Pf.cc_dualWt_anti _ (hDom s.val)) ?_ ?_ ?_ h8
     · simp only [Fin.rev_zero]
       rw [tl]
       try ring
@@ -589,61 +572,6 @@ namespace Formalism.MainNotions.flipOneThree.Pf
 
 open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.CountingSumsFrames Formalism.GradedWeylDivisibility MvPolynomial Formalism.MainNotions.G.LatticeSystems
 
-private theorem sub_wtPQ_apply_eq_ite (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (h0 : lam 0 = (P : ℤ) + ccl)
-    (hl : lam (Fin.last (mm + 1)) = -((Q : ℤ) + ccl)) (i : Fin (mm + 1 + 1)) :
-    (lam - wtPQ (mm + 1) P Q) i = if i = 0 then (ccl : ℤ) else if i = Fin.last (mm + 1) then -(ccl : ℤ) else lam i := by
-  simp only [Pi.sub_apply, wtPQ]
-  split_ifs with h1 h2
-  · subst h1
-    rw [h0]
-    ring
-  · subst h2
-    rw [hl]
-    ring
-  · ring
-
-private theorem antitone_sub_wtPQ (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (hlam : Antitone lam)
-    (h0 : lam 0 = (P : ℤ) + ccl) (hl : lam (Fin.last (mm + 1)) = -((Q : ℤ) + ccl))
-    (hmid : ∀ i : Fin (mm + 1 + 1), 0 < i.val → i.val < mm + 1 → |lam i| ≤ ccl) :
-    Antitone (lam - wtPQ (mm + 1) P Q) := by
-  intro a b hab
-  rw [sub_wtPQ_apply_eq_ite mm ccl P Q lam h0 hl a, sub_wtPQ_apply_eq_ite mm ccl P Q lam h0 hl b]
-  have hlv : (Fin.last (mm + 1)).val = mm + 1 := Fin.val_last _
-  have hab' : a.val ≤ b.val := hab
-  have hc : (0 : ℤ) ≤ (ccl : ℤ) := Int.natCast_nonneg _
-  have hbl' := b.isLt
-  have hal' := a.isLt
-  by_cases ha0 : a = 0
-  · subst ha0
-    rw [ite_eq_left rfl]
-    split_ifs with hb0 hbl
-    · exact le_refl _
-    · linarith
-    · have hb1 : 0 < b.val := Nat.pos_of_ne_zero (fun h => hb0 (Fin.ext h))
-      have hb2 : b.val < mm + 1 := by
-        have : b.val ≠ mm + 1 := fun h => hbl (Fin.ext (h.trans hlv.symm))
-        omega
-      exact le_trans (le_abs_self _) (hmid b hb1 hb2)
-  · by_cases hal : a = Fin.last (mm + 1)
-    · have hb : b = Fin.last (mm + 1) := by
-        apply Fin.ext
-        rw [hal] at hab'
-        omega
-      subst hal
-      subst hb
-      exact le_refl _
-    · have ha1 : 0 < a.val := Nat.pos_of_ne_zero (fun h => ha0 (Fin.ext h))
-      have ha2 : a.val < mm + 1 := by
-        have : a.val ≠ mm + 1 := fun h => hal (Fin.ext (h.trans hlv.symm))
-        omega
-      rw [ite_eq_right ha0, ite_eq_right hal]
-      split_ifs with hb0 hbl
-      · exfalso
-        have : b.val = 0 := by rw [hb0]; rfl
-        omega
-      · linarith [neg_abs_le (lam a), hmid a ha1 ha2]
-      · exact hlam hab
-
 theorem restCloudLat_of (h1 : CloudOne) (hCO : CartanOnto) (hIso : CloudIsoP) : RestCloudLat := by
   unfold RestCloudLat
   intro p n' R mm hmm TT a ccl aw bw lam0 A B hbase hdom hoff hAB hc H Hp ze lo lo' hH hHp hze hlo hlo'
@@ -656,9 +584,9 @@ theorem restCloudLat_of (h1 : CloudOne) (hCO : CartanOnto) (hIso : CloudIsoP) : 
       rw [e]
       obtain ⟨h0, hl, hmid⟩ := (hbase s).1 hs
       obtain ⟨hA, hB⟩ := hAB ⟨s, hs⟩
-      exact antitone_sub_wtPQ mm ccl _ _ (lam0 s) (hdom s) (by rw [h0]; linarith) (by rw [hl]; linarith) hmid
+      exact Formalism.MainNotions.flipOneThree.Pf.caLo_anti mm ccl _ _ (lam0 s) (hdom s) (by rw [h0]; linarith) (by rw [hl]; linarith) hmid
     · have e : (lam0 - flatW (mm + 1) A B) s = lam0 s := by
-        rw [Pi.sub_apply, flatW_off (mm + 1) A B s hs, sub_zero]
+        rw [Pi.sub_apply, Formalism.MainNotions.flipOneThree.Pf.cc_flat_off (mm + 1) A B s hs, sub_zero]
       rw [e]
       exact hdom s
   have hdomlo' : IsDominant (dualW (lam0 - flatW (mm + 1) A B)) := by
@@ -670,7 +598,7 @@ theorem restCloudLat_of (h1 : CloudOne) (hCO : CartanOnto) (hIso : CloudIsoP) : 
     intro s
     rw [← lamAt_add']
     congr 1
-    exact flatW_add (mm + 1) A B (fun _ : TT => 2 * ccl) (fun _ : TT => 2 * ccl)
+    exact Formalism.MainNotions.flipOneThree.Pf.cc_flat_add (mm + 1) A B (fun _ : TT => 2 * ccl) (fun _ : TT => 2 * ccl)
   have hadd2 : ∀ s, lamAt lam0 s = lamAt (flatW (mm + 1) A B) s + lamAt (lam0 - flatW (mm + 1) A B) s := by
     intro s
     rw [lamAt_sub']

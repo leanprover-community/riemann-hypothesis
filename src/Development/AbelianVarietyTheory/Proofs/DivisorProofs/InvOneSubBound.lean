@@ -222,14 +222,6 @@ end GlobalTheory.HenQ.Regroup
 
 namespace GlobalTheory.HenQ.Regroup
 
-end GlobalTheory.HenQ.Regroup
-
-namespace GlobalTheory.HenQ.Regroup
-
-end GlobalTheory.HenQ.Regroup
-
-namespace GlobalTheory.HenQ.Regroup
-
 open IsDedekindDomain NumberField in
 private lemma multipliable_of_norm_sub_one_le_summable {ι : Type*} (g : ι → ℂ) (u : ι → ℝ)
     (hu : Summable u) (hg : ∀ i, ‖g i - 1‖ ≤ u i) : Multipliable g := by

@@ -360,8 +360,6 @@ section
 
 noncomputable section
 namespace GlobalTheory.CovTop.TypeLattice
-end GlobalTheory.CovTop.TypeLattice
-namespace GlobalTheory.CovTop.TypeLattice
 section Main
 open CategoryTheory AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta

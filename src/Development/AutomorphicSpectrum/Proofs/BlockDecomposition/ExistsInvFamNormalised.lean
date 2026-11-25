@@ -186,7 +186,6 @@ open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual Rec
 
 namespace GlobalTheory.CompanionTheory.TameAction
 
-
 open GlobalTheory.TameQuot GlobalTheory.WeilDeligne in
 theorem eq_zero_of_fixes_primitiveRoot : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)), IsPlaceOver A v → ∀ φ : Dec (F := F) A, IsFrob (F := F) A (normV v) (φ : G F Ω) → ∀ N : ℕ, 0 < N → ∀ ξ : Ω, IsPrimitiveRoot ξ (normV v ^ N - 1) → ∀ (a : ℕ) (t i : Dec (F := F) A), a < N → (i : G F Ω) ∈ Ine (F := F) A → ((φ ^ a * t ^ N * i : Dec (F := F) A) : G F Ω) ξ = ξ → a = 0 := by
   intro F Ω _ _ _ _ _ A v hA φ hφ N hN ξ hξ' a t i haN hi hfix
@@ -299,26 +298,6 @@ theorem isLocallyConstant_of_right_invariant {G X : Type*} [Group G] [Topologica
   have := h x _ hy
   simpa using this
 
-section Coh
-
-variable {k G : Type} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-  (A : Rep.{0} k G) [IsDiscreteRep A]
-
-theorem exists_cocycle_of_cochain (n : ℕ) (c : (Fin n → G) → A) (hc : IsLocallyConstant c)
-    (hd : (inhomogeneousCochains.d A n).hom c = 0) :
-    ∃ x : cocycles A n, cochainOf A (cocycleι A n x) = c := by
-  refine ⟨(cochainsComplex A).cyclesMk (mkCochain A c hc) (n + 1) (by simp) ?_, ?_⟩
-  · apply cochainOf_injective (A := A)
-    exact (cochainOf_d (A := A) _).trans hd
-  · exact congrArg (cochainOf A) ((cochainsComplex A).i_cyclesMk _ _ _ _)
-
-theorem cohomologyπ_succ_eq_zero_iff (n : ℕ) (x : cocycles A (n + 1)) :
-    cohomologyπ A (n + 1) x = 0 ↔ ∃ w : (Fin n → G) → A, IsLocallyConstant w ∧
-      (inhomogeneousCochains.d A n).hom w = cochainOf A (cocycleι A (n + 1) x) :=
-  by apply _root_.CompanionTheory.LocalTateOrthogonality.Gcoh.pi_succ_eq_zero_iff
-
-end Coh
-
 variable {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω]
 
 theorem exists_eq_div_of_cocycle [IsGalois K Ω] (f : (Ω ≃ₐ[K] Ω) → Ωˣ) (hf : IsLocallyConstant f)
@@ -337,10 +316,10 @@ theorem exists_eq_div_of_cocycle [IsGalois K Ω] (f : (Ω ≃ₐ[K] Ω) → Ωˣ
     rw [e]
     apply Additive.toMul.injective
     simp
-  obtain ⟨x, hx⟩ := exists_cocycle_of_cochain A 1 c hcl hd
+  obtain ⟨x, hx⟩ := CompanionTheory.LocalTateOrthogonality.Gcoh.exists_coc A 1 c hcl hd
   have h0 : cohomologyπ A 1 x = 0 :=
     (subsingleton_cohomology_one_galUnits (K := K) (L := Ω)).elim _ _
-  obtain ⟨w, hw, hwx⟩ := (cohomologyπ_succ_eq_zero_iff A 0 x).1 h0
+  obtain ⟨w, hw, hwx⟩ := (CompanionTheory.LocalTateOrthogonality.Gcoh.pi_succ_eq_zero_iff A 0 x).1 h0
   refine ⟨Additive.toMul (w Fin.elim0 : Additive Ωˣ), fun g => ?_⟩
   have e := congrFun (hwx.trans hx) (fun _ => g)
   simp only [inhomogeneousCochains.d_hom_apply] at e
@@ -1095,7 +1074,6 @@ open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual Rec
 open GroundTheory.ProfCoh GroundTheory.LocalField ValuativeRel CategoryTheory
 
 namespace GlobalTheory.CompanionTheory.LocalUnram
-
 
 open GroundTheory.LocalField.Abstract in
 theorem continuous_of_additive_of_frobenius_eq_one :

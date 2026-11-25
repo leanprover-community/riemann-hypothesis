@@ -55,7 +55,6 @@ theorem f_mul_N_le_b (P : ParameterChoice' D large₂) (h4 : 4 * placeRankTwoOne
   rw [le_div_iff₀ (by positivity)] at h
   have hN : (D.R.N D.R.m : ℝ) ≤ (D.R.N D.R.m : ℝ) ^ 3 := by
     exact_mod_cast Nat.le_self_pow (by norm_num) _
-  have hN0 : (0 : ℝ) ≤ (D.R.N D.R.m : ℝ) ^ 3 := by positivity
   unfold placeRankTwoOne.NN at h4
   have h5 : (D.R.N D.R.m : ℝ) ≤ large₂.etaSz := by linarith
   have h6 : (1 : ℝ) ≤ (D.R.t : ℝ) ^ 3 := one_le_pow₀ ht

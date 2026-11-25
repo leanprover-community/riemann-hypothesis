@@ -222,8 +222,6 @@ theorem heis_off (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S LS) (hT : IsSel
   rw [ap] at h
   rw [← h, smul_smul, mul_inv_cancel₀ hc, one_smul, h]
 
-
-
 theorem heis_model (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S LS) (hT : IsSelfDualC T LT) {e : Formalism.L2.Theta.AE D}
     {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) {vac : WO S T → ℂ} (hv : IsThetaFunO ψ S T vac)
     {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
@@ -272,8 +270,6 @@ theorem heis_model (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S LS) (hT : IsS
   have hF := dec (Tm Φ)
   rw [hm, heis_comm, h1 _ hA, AddChar.map_zero_eq_one, one_smul, hoff, heis_smul, ← hTm.trans Φ hΦ _ hA, mul_smul] at hF
   exact smul_right_injective _ hp hF
-
-
 
 theorem reads_transl : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
     D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 →
@@ -371,7 +367,6 @@ open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjIdealIndicatorUnitBlockTranslateReadsWeilOpeStatement =====
@@ -445,10 +440,6 @@ open scoped Pointwise
 
 namespace GlobalTheory.BotSmallDict
 
-
-
-
-
 theorem cosetFn_isSBHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E))
     (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
     Submodule.IsFullLattice D.host.E LS → Submodule.IsFullLattice D.host.E LT → ∀ (a : Formalism.L2.Theta.AE D), infPart D a = 0 →
@@ -520,7 +511,6 @@ open GlobalTheory.NormSum (Pair Tup)
 open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
-
 
 theorem _root_.GlobalTheory.T.halfCosetIndicatorModIdeal_isSchwartzBruhatHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (LT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
     Submodule.IsFullLattice D.host.E LS → Submodule.IsFullLattice D.host.E LT → ∀ (a : Formalism.L2.Theta.AE D), infPart D a = 0 →
@@ -652,9 +642,6 @@ theorem det_unit {D : D7} (hG : admG1 D) {N N' r : ℕ} (p : ℕ) [Fact p.Prime]
   have h0' := norm_nonneg (lamC lam (starRingEnd ℂ x))
   nlinarith
 
-theorem qbar_of_pow {x : ℂ} {n : ℕ} (hn : 0 < n) (h : x ^ n ∈ Qbar) : x ∈ Qbar :=
-  mem_algebraicClosure_iff.2 (IsAlgebraic.of_pow hn (mem_algebraicClosure_iff.1 h))
-
 theorem ratio_local {D : D7} (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} (hC : Crv D ⊤ δ)
     (ht : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0) {a d : ℕ} {e₁ e₂ : VC D a d → ℂ}
     (h₁ : oddE0 D ⊤ δ t0 a d e₁) (h₂ : oddE0 D ⊤ δ t0 a d e₂) (hne : e₁ ≠ 0) {κ : ℂ} (hκ : e₂ = κ • e₁)
@@ -693,9 +680,9 @@ theorem ratio_local {D : D7} (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} (hC
   have hκe : κ = ε₂ * c * μ / ε₁ := by rw [eq_div_iff hε0, key]
 
   obtain ⟨hxQ, hx1⟩ := det_unit hG p lam hb₁ hb₂ hl₁ hl₂
-  have hζQ : ζ ∈ Qbar := qbar_of_pow hm (by rw [hζ]; exact one_mem _)
-  have hcQ : c ∈ Qbar := qbar_of_pow two_pos (by rw [hc]; exact mul_mem hζQ hxQ)
-  have hμQ : μ ∈ Qbar := qbar_of_pow (n := 8) (by norm_num) (by rw [hμ]; exact one_mem _)
+  have hζQ : ζ ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow hm (by rw [hζ]; exact one_mem _)
+  have hcQ : c ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow two_pos (by rw [hc]; exact mul_mem hζQ hxQ)
+  have hμQ : μ ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow (n := 8) (by norm_num) (by rw [hμ]; exact one_mem _)
   have hκQ : κ ∈ Qbar := by rw [hκe]; exact div_mem (mul_mem (mul_mem hε₂ hcQ) hμQ) hε₁
   refine ⟨hκQ, ?_⟩
 
@@ -782,7 +769,6 @@ theorem expAt_succ {K : Type} [Field K] [NumberField K] {χ : Formalism.L2.Host.
     exact h' (levelLe_of_le hm (by omega)), fun hm => levelLe_of_le h hm⟩
 
 end GlobalTheory.SqTop.CondExpo
-
 
 open GlobalTheory.SqTop.CondExpo in
 theorem GlobalTheory.SqTop.CondExpo.expo_modul : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData L sc) {μ₀ : T}, L.Is μ₀ →
@@ -878,9 +864,6 @@ open GlobalTheory.NormSum (Pair Tup)
 open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
-
-
-
 
 noncomputable section
 
@@ -1183,15 +1166,6 @@ open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 
-
-theorem _root_.GlobalTheory.T.unitBlockCoset_iff_maximalLevel_congruent_conjIdeal : ∀ {D : D7} (S T : HSp D), S.gram = 1 →
-    ∀ (e : Formalism.L2.Theta.AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (c : Formalism.L2.DIV.Pl D.host.E → ℕ), IsIdemSum e P →
-    ∀ o : ℕ, o + S.rank = T.rank → ∀ k ∈ GlobalTheory.NormSum.intG D S.rank, ∀ k' ∈ GlobalTheory.NormSum.intG D S.rank, ∀ g g' : Formalism.L2.Theta.GA D S,
-    GlobalTheory.BotFormula.IsFinPt S g k → GlobalTheory.BotFormula.IsFinPt S g' k' → ∀ y : WO S T,
-    cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o) (actO S T g⁻¹ 1 y) ≠ 0 →
-    (cosetFn (cA D e) (D.host.conj • modul P c) (unitPt S T (cA D e) o) (actO S T g'⁻¹ 1 y) ≠ 0 ↔
-      CongOne D (D.host.conj • modul P c) (k'⁻¹ * k)) := by
-  first | exact @GlobalTheory.BotSmallDict.CosetCong.coset_iff_congOne
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitBlockCosetIffMaximalLevelCongruentConjIdealStatement =====
@@ -1236,7 +1210,6 @@ open GlobalTheory.NormSum (Pair Tup)
 open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
-
 
 theorem _root_.GlobalTheory.T.unitaryChar_finiteIdele_eq_heckeChar_value : ∀ {D : D7} (c : (Formalism.L2.Theta.AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq c χ →
     ∀ x y, IsFinIdl x y → ((c x : Circle) : ℂ) = ((χ.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) : ℂˣ) : ℂ) := by
@@ -1433,7 +1406,7 @@ theorem stdSnd_eq_sum (hS : S.gram = 1) (hT : T.gram = 1) (hc : D.host.ccK = ⊤
   · obtain ⟨k, hk, hk'⟩ := GlobalTheory.T.exists_maximalLevel_moves_standardPairSupport_to_unitCoset S T hS hT hc βS hβ e P c he o ho ν y h0
     obtain ⟨r, ⟨hr, hr'⟩, hu⟩ := hR' k hk
     have hi := fun r' (h' : r' ∈ R) =>
-      GlobalTheory.T.unitBlockCoset_iff_maximalLevel_congruent_conjIdeal S T hS e P c he.1 o ho k hk r' (hR r' h') (g k) (g r') (hg k) (hg r') y (hk' _ (hg k))
+      GlobalTheory.BotSmallDict.CosetCong.coset_iff_congOne S T hS e P c he.1 o ho k hk r' (hR r' h') (g k) (g r') (hg k) (hg r') y (hk' _ (hg k))
     rw [Finset.sum_eq_single_of_mem r hr, h01 _ ((hi r hr).2 hr'), key r hr ((hi r hr).2 hr'), mul_one, mul_comm]
     intro r' h' hne
     by_contra h
@@ -1515,8 +1488,6 @@ theorem weil_snd (hX : IsBottomTri W i j X) (s : T) :
     IsWeilDatumO W.ψ A' WW (L.mu s (j + 1) * L.eta ^ (rankV D i j % 2)) (G.nu s i (j + 1)) (X.ω' s) := by
   rw [← alpha_div_beta]
   exact hX.is.weil' s
-
-
 
 theorem reads_datum (hI : GlobalTheory.NormSum.Inp D) {large₂ : SizeData₂ D} (hR : GlobalTheory.SqTop.Rec large₂) (hL : L.Is μ₀) (hX : IsBottomTri W i j X)
     (hβ : X.rW.β = 1) (hB : IsBottom G s i j (GlobalTheory.SqTop.modT G s) P P') (hS : A'.rank = P'.a) (hT : WW.rank = P'.d) {κ : ℂ}
@@ -1637,10 +1608,6 @@ open Classical
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 noncomputable section
-namespace GlobalTheory.BotSmallDict
-end GlobalTheory.BotSmallDict
-namespace GlobalTheory.BotSmallDict
-end GlobalTheory.BotSmallDict
 namespace GlobalTheory.BotSmallDict
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.RowVacScalar (detIdl idemAt)

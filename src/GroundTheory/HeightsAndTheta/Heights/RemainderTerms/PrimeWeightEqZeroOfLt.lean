@@ -143,10 +143,6 @@ theorem prime_partial_le (B : ℝ) (hB : 0 < B) (K : ℕ) :
 end Elem
 
 
-namespace Elem
-
-end Elem
-
 
 end
 

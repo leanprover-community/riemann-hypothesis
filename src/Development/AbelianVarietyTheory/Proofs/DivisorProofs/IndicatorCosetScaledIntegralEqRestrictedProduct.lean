@@ -98,14 +98,7 @@ theorem indicator_cosetBoxV_mem_SB [Finite κ] {a : F} (ha : a ≠ 0) (r : κ �
       simp only [f, g]
       rw [mul_inv_cancel_left₀ ha0, sub_add_cancel]
   refine ⟨?_, ?_⟩
-  · rw [IsLocallyConstant.iff_eventually_eq]
-    intro x
-    by_cases hx : x ∈ cosetBoxV a r v
-    · filter_upwards [hcl.isOpen.mem_nhds hx] with y hy
-      rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx]
-      rfl
-    · filter_upwards [hcl.isClosed.isOpen_compl.mem_nhds hx] with y hy
-      simp only [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
+  · exact ((LocallyConstant.const _ 1).indicator hcl).isLocallyConstant
   · exact HasCompactSupport.intro' hco hcl.isClosed (fun y hy => Set.indicator_of_notMem hy _)
 
 theorem eventually_cosetBoxV_eq {a : F} (ha : a ≠ 0) (r : κ → FiniteAdeleRing (𝓞 F) F) [Finite κ] :

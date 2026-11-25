@@ -60,8 +60,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2 PositivityTheory.Rg.BcB.F.FX
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HeckeLevelFrameExistence
@@ -161,7 +159,6 @@ theorem eig_B (hG : GcHecke) (hP : PowEig) (hA : LocAlg) (hdis : ∀ w ∈ T', �
 end UpperTheory.HeckeLevelFrameExistence
 
 namespace UpperTheory.HeckeLevelFrameExistence
-
 
 theorem frameEx_of (hUS : USide) (hSph : SphOne) (hSpec : SpecTrace) (hA : LocAlg) (hTb : ExTb) (hSat : Inert.SatEx)
     (hUnif : Inert.UnifOf) (hCE : ConeEig) (hSC : SatCompAt) (hCI : CandIndep) (hCF : CandFin) (hM0 : FrameBoundModuleCondition)
@@ -442,8 +439,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem exists_ex (hE : ShufEx) (n a : ℕ) (s : Finset (Fin (n / 2))) (h : LocData.admitted n a s) :
@@ -564,8 +559,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HeckeLevelFrameExistence
@@ -608,8 +601,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.HeckeLevelFrameExistence.powEig :
@@ -645,8 +636,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.SpecModel
 
@@ -990,7 +979,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.Choice
 open scoped Classical
 
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.Tail
@@ -1063,8 +1051,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
 
-
-
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX
@@ -1096,8 +1082,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -1487,8 +1471,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.LemB
 
 section Conj
@@ -1541,14 +1523,6 @@ theorem conjU_val (b : GL (Fin n) L) (hb : cT s b.val * b.val = antiJ L n) (H : 
 
 end Conj
 
-theorem irred_comp_surj {H H' X : Type} [Group H] [Group H'] [AddCommGroup X] [Module ℂ X]
-    (ρ : Representation ℂ H X) (φ : H' →* H) (hφ : Function.Surjective φ) (h : ρ.IsIrreducible) :
-    Representation.IsIrreducible (ρ.comp φ) := by
-  obtain ⟨h0, h1⟩ := (GlobalTheory.CuspRep.isIrreducible_iff _).1 h
-  refine (GlobalTheory.CuspRep.isIrreducible_iff _).2 ⟨h0, fun W hW => h1 W fun g v hv => ?_⟩
-  obtain ⟨g', rfl⟩ := hφ g
-  exact hW g' v hv
-
 end PositivityTheory.Rg.BcB.F.LemB
 
 end
@@ -1566,8 +1540,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX
 
@@ -1615,8 +1587,8 @@ theorem satCompAt : SatCompAt := by
   have hG0 : F ≠ 0 := fun h => hF0 (LinearMap.ext fun v => congrArg Subtype.val (DFunLike.congr_fun h v))
   have hG1 : F' ≠ 0 := fun h => hF1 (LinearMap.ext fun v => congrArg Subtype.val (DFunLike.congr_fun h v))
   obtain ⟨-, h2⟩ := GlobalTheory.CuspRep.CompUniq.isotypic (UA E n) (locU n w) Ψ.V σ.V σ1.V Ψ.rep (locU n w).subtype
-    (σ.ρ.comp p0) (σ1.ρ.comp p) Ψ.isIrreducible_rep (irred_comp_surj σ.ρ p0 hps0 σ.irred)
-    (irred_comp_surj σ1.ρ p hps σ1.irred) (fun g => ⟨r g, fun y => hr g y⟩) F hG0
+    (σ.ρ.comp p0) (σ1.ρ.comp p) Ψ.isIrreducible_rep (GlobalTheory.BCT.LocCompU.isIrreducible_comp_of_surjective σ.ρ p0 hps0 σ.irred)
+    (GlobalTheory.BCT.LocCompU.isIrreducible_comp_of_surjective σ1.ρ p hps σ1.irred) (fun g => ⟨r g, fun y => hr g y⟩) F hG0
   obtain ⟨T⟩ := h2 F' hG1
 
   have hs1 : SatUL b (ϖ : w.adicCompletion E) q σ α := by
@@ -1658,8 +1630,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.Bc.ArchbcB.B
   PositivityTheory.Rg.BcB.F.Choice PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcN.F2 PositivityTheory.Rg.BcB.F.FX
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

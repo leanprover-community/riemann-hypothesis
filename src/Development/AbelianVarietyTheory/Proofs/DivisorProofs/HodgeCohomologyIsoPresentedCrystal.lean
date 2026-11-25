@@ -244,12 +244,7 @@ theorem GlobalTheory.LiftSys.cohomology_presents : ∀ (R R₀ : Type) [CommRing
   intro R R₀ _ _ I hI π hπ hk X₀ s₀ S X s i h P
   haveI : IsClosedImmersion i :=
     MorphismProperty.of_isPullback (P := @IsClosedImmersion) h.flip (IsClosedImmersion.spec_of_surjective _ hπ)
-  have hsurj : Surjective i := MorphismProperty.of_isPullback (P := @Surjective) h.flip
-    (Coh.surjective_spMap_of_sq π hπ fun a ha ↦ by
-      have ha' : a ∈ I := hk ▸ RingHom.mem_ker.2 ha
-      have h2 : a ^ 2 ∈ I ^ 2 := Ideal.pow_mem_pow ha' 2
-      rw [hI, Ideal.zero_eq_bot, Ideal.mem_bot] at h2
-      exact h2)
+  have hsurj : Surjective i := GlobalTheory.LiftSys.surjective_of_isPullback_sqZero hI hπ hk h
   refine ⟨LinearEquiv.ofLinear (Coh.toSys P).pull1 (Coh.ofSys P hsurj.surj).pull1
     (LinearMap.ext fun c ↦ Coh.toSys_ofSys P hsurj.surj c) (LinearMap.ext fun c ↦ Coh.ofSys_toSys P hsurj.surj c),
     fun m c ↦ ?_, fun c ↦ ?_⟩

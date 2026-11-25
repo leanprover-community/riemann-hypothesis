@@ -181,7 +181,7 @@ theorem descend {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (c : Fin D.R.rS → 
   have hℓe : ∀ i : Fin D.R.rS, ℓ (F0.fvec i.castSucc) = 0 := by
     intro i
     have : ℓ (F0.fvec i.castSucc) ∈ F0.X.map ℓ :=
-      Submodule.mem_map_of_mem (by rw [fvec_cs]; exact Submodule.subset_span ⟨i, rfl⟩)
+      Submodule.mem_map_of_mem (by rw [PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_castSucc]; exact Submodule.subset_span ⟨i, rfl⟩)
     rw [hℓX] at this
     exact (Submodule.mem_bot _).1 this
   have hle : Submodule.span (D.s.atP p).Ep (Set.range fun i : Fin D.R.rS => c i • baseChange₂ D p (F0.fvec i.castSucc)) ≤

@@ -401,8 +401,7 @@ theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT
         intro a _
         show mk (c a) * mk (iv (ε a) l) = mk (iv (ε a) l) * f (ef a)
         rw [hc a]; ring
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         apply Finset.sum_congr rfl
         intro a _
         rw [map_mul, iv_spec hU (hε a) hl])

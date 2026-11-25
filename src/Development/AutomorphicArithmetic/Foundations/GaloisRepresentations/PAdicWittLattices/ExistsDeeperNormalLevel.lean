@@ -485,7 +485,7 @@ theorem natAbs_det_mulLa (w : Ideal (𝓞 D.F)) (hw : w.IsMaximal) (H : ℕ) (c 
   letI := D.finLa
   letI : Module (𝓞 D.F) D.La := Module.compHom D.La (algebraMap (𝓞 D.F) D.O)
   have hinj : Function.Injective (mulLa D c) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     obtain ⟨c', n, hn, h⟩ := exists_mul_eq_nat c hc
     have h1 : (n : ℤ) • y = 0 := by

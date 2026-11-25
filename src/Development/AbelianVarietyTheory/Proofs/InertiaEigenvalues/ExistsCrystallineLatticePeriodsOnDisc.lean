@@ -75,7 +75,6 @@ theorem crys_filtered : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocA
     ext x
     simp only [Submodule.restrictScalars_mem, Dcris, Submodule.mem_iInf, LinearMap.mem_ker,
       LinearMap.sub_apply, LinearMap.id_apply, hB]
-  set_option synthInstance.maxHeartbeats 200000 in
   have hCr : finrank ↥LL.1 ↥(Dcris (P.PD K) ρ') = finrank ℚ_[l] ↥(Dcris (P.PD K) ρ) := by
     rw [← hDc, LinearEquiv.finrank_eq
       ((Submodule.restrictScalarsEquiv ℚ_[l] ↥LL.1 _ (Dcris (P.PD K) ρ')).restrictScalars ℚ_[l]),

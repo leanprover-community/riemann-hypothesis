@@ -293,7 +293,6 @@ theorem faceSucc_cone {a p : ℕ} (α : SimplexCategory.mk (p + 1) ⟶ SimplexCa
       apply Fin.ext; rw [fc_apply, faceFun_lt (by simp)]; simp
     rw [this, cone_zero, cone_zero]
   | succ j =>
-    have hj := j.isLt
     have : (fc (p + 1 + 1) (p + 1) (i + 1)).toOrderHom j.succ = ((fc (p + 1) p i).toOrderHom j).succ := by
       apply Fin.ext
       rw [Fin.val_succ, fc_apply, fc_apply, Fin.val_succ, faceFun_succ]
@@ -1337,18 +1336,6 @@ noncomputable section
 namespace GlobalTheory.EZ.Shuf
 
 theorem bop_id (n m : ℕ) : bop (𝟙 (SimplexCategory.mk n)) (𝟙 (SimplexCategory.mk m)) = 𝟙 (bo n m) := rfl
-
-theorem alt_double_sum {M : Type*} [AddCommGroup M] (n : ℕ)
-    (F : (SimplexCategory.mk n ⟶ SimplexCategory.mk (n + 2)) → M) :
-    ∑ i ∈ Finset.range (n + 3), ∑ j ∈ Finset.range (n + 2),
-      ((-1 : ℤ) ^ i * (-1) ^ j) • F (fc (n + 1) n j ≫ fc (n + 2) (n + 1) i) = 0 := by
-  apply GlobalTheory.EZ.TotSq.alt_double_sum
-
-theorem dH_comp_dH (a b x y c d : ℕ) : dH a b x y ≫ dH x y c d = 0 := by
-  apply _root_.GlobalTheory.EZ.TotSq.dH_comp_dH <;> assumption
-
-theorem dV_comp_dV (a b x y c d : ℕ) : dV a b x y ≫ dV x y c d = 0 := by
-  apply _root_.GlobalTheory.EZ.TotSq.dV_comp_dV <;> assumption
 
 theorem dH_comp_dV (c d : ℕ) :
     dH (c + 1) (d + 1) c (d + 1) ≫ dV c (d + 1) c d = dV (c + 1) (d + 1) (c + 1) d ≫ dH (c + 1) d c d := by

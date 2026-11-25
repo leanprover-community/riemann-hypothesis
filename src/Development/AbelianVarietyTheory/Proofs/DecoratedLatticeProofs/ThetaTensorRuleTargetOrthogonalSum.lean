@@ -57,8 +57,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger
 
 variable {D : D7}
 
-alias heisO_zero' := _root_.GlobalTheory.SplitScalar.heisO_zero
-
 theorem dagger_resT_symm {T A B : HSp D} (d : OrthDec T A B) (S : HSp D) (u : WO S A) (v : WO S B) :
     dagger S T ((d.resT S).symm (u, v)) = (d.resS S).symm (dagger S A u, dagger S B v) := by
   rw [d.resT_symm_apply, d.resS_symm_apply, d.pA_eq, d.pB_eq]
@@ -121,8 +119,8 @@ theorem tensorTarget : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar 
       dense := fun f hf => ?_
       om_box := ?_
       om_slice := ?_ }
-  · rw [d.heisO_boxT, AddEquiv.apply_symm_apply, heisO_zero']
-  · rw [d.heisO_boxT, AddEquiv.apply_symm_apply, heisO_zero']
+  · rw [d.heisO_boxT, AddEquiv.apply_symm_apply, GlobalTheory.SplitScalar.heisO_zero]
+  · rw [d.heisO_boxT, AddEquiv.apply_symm_apply, GlobalTheory.SplitScalar.heisO_zero]
   · have h1 := (src.slice_theta (GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.cj (dagger T S) f) ((thd S T f).2 hf)).1 (dagger S B v)
     rw [← thd S A]
     convert h1 using 1

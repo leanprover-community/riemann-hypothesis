@@ -49,18 +49,7 @@ def ptUp (h : c.F ≤ c'.F) {S : Type} [CommRing S] [Algebra c'.F S] (y : FrPt X
   s := y.s
   gen := y.gen
 
-def embRes (h : c.F ≤ c'.F) (σ' : c'.F →+* ℂ) : c.F →+* ℂ := σ'.comp (incl h)
-
 variable {r : ℕ}
-
-def unfUp (h : c.F ≤ c'.F) (σ' : c'.F →+* ℂ) (U : Unf Xo c (embRes h σ') r) : Unf Xo c' σ' r where
-  Comp := U.Comp
-  fin := U.fin
-  X := U.X
-  un k x := ptUp h (S := CAt σ') (U.un k x)
-
-def unfFamUp (h : c.F ≤ c'.F) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) : ∀ σ' : c'.F →+* ℂ, Unf Xo c' σ' r :=
-  fun σ' => unfUp h σ' (U (embRes h σ'))
 
 def ruleUp (h : c.F ≤ c'.F) : Rul Xo c →ₛₗ[incl h] Rul Xo c' where
   toFun f := fun p y => unRes (evR Xo c f (ptDown h y))
@@ -79,12 +68,5 @@ def IsComb (h : c.F ≤ c'.F) {m : ℕ} (b : Fin m → c'.F) (f : Fin m → Rul 
 
 
 variable (Xo)
-
-def ActionExtends (h : c.F ≤ c'.F) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ)
-    {G : Type} [Group G] (ρ : G →* Module.End c.F (cusp Xo c U a n))
-    (ρ' : G →* Module.End c'.F (cusp Xo c' (unfFamUp h U) a n)) : Prop :=
-  ∀ (g : G) (m : ℕ) (b : Fin m → c'.F) (f : Fin m → cusp Xo c U a n) (f' : cusp Xo c' (unfFamUp h U) a n),
-    IsComb h b (fun i => (f i : Rul Xo c)) (f' : Rul Xo c') →
-      IsComb h b (fun i => (ρ g (f i) : Rul Xo c)) (ρ' g f' : Rul Xo c')
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ComplexResidueRing

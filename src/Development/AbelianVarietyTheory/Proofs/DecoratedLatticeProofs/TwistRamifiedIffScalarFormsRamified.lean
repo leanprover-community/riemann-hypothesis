@@ -307,10 +307,6 @@ end GlobalTheory.AdForm.RdTrans
 
 namespace GlobalTheory.AdForm.RdTrans
 
-end GlobalTheory.AdForm.RdTrans
-
-namespace GlobalTheory.AdForm.RdTrans
-
 theorem atInf_mul_inv {E : Type} [Field E] {n : ℕ} {ι : Type} (emb : ι → E →+* ℂ) (γ : GL (Fin n) E) (τ : ι) :
     atInf emb γ.val τ * atInf emb (γ⁻¹).val τ = 1 := by
   unfold atInf

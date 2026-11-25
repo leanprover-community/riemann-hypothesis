@@ -209,21 +209,6 @@ open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV Uppe
 
 section SlopeTestRemainingChoices
 
-open Polynomial in
-private theorem md_intIff {l : ℕ} [Fact l.Prime] (x : PadicAlgCl l) : IsIntegral ℤ_[l] x ↔ ‖x‖ ≤ 1 := by
-  have hi : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  have h0 : ‖x‖ = spectralValue (minpoly ℚ_[l] x) := rfl
-  rw [h0, spectralValue_le_one_iff (minpoly.monic hi)]
-  constructor
-  · intro h n
-    rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h, coeff_map]
-    exact PadicInt.norm_le_one _
-  · intro h
-    have hl' : minpoly ℚ_[l] x ∈ lifts (algebraMap ℤ_[l] ℚ_[l]) :=
-      (lifts_iff_coeff_lifts _).mpr fun n => ⟨⟨_, h n⟩, rfl⟩
-    obtain ⟨q, hq, -, hqm⟩ := lifts_and_degree_eq_and_monic hl' (minpoly.monic hi)
-    exact ⟨q, hqm, by rw [← aeval_def, ← aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]⟩
-
 private theorem md_uniq {O σ K : Type} [CommRing O] [Fintype σ] [NormedField K] [IsUltrametricDist K] [Algebra O K]
     (φ ψ : MvPowerSeries σ O →ₐ[O] K) (h1 : ∀ F, ‖φ F‖ ≤ 1) (h2 : ∀ F, ‖ψ F‖ ≤ 1)
     (hz : ∀ s, ‖φ (MvPowerSeries.X s)‖ < 1) (h : ∀ s, φ (MvPowerSeries.X s) = ψ (MvPowerSeries.X s)) : φ = ψ := by
@@ -357,8 +342,8 @@ theorem UpperTheory.exists_dualNumber_point_of_pointDerivation_vanishing :
   haveI : IsLocalRing c.O := c.dvr.toIsLocalRing
   haveI : IsAdicComplete (maximalIdeal c.O) c.O := (UpperTheory.V.Base.dvrFacts l c.O).2.2.2.1
   haveI : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite _ _
-  exact md_main Subtype.val_injective (fun x => ⟨fun hx => (md_intIff x).1 (isIntegral_trans (A := c.O) x hx),
-    fun hx => ((md_intIff x).2 hx).tower_top⟩) W h qh hq g hker hM f hf D hD hDI
+  exact md_main Subtype.val_injective (fun x => ⟨fun hx => (GlobalTheory.isIntegral_padicInt_iff_norm_le_one x).1 (isIntegral_trans (A := c.O) x hx),
+    fun hx => ((GlobalTheory.isIntegral_padicInt_iff_norm_le_one x).2 hx).tower_top⟩) W h qh hq g hker hM f hf D hD hDI
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.ExistsDualNumberPointOfPointDerivationVanishing =====
@@ -991,7 +976,7 @@ private theorem pts_loc {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRi
     rw [hz, norm_zero] at hge
     linarith
   have hint : IsIntegral ℤ_[l] (f x)⁻¹ :=
-    (md_intIff _).mpr (by rw [norm_inv]; exact inv_le_one_of_one_le₀ hge)
+    (GlobalTheory.isIntegral_padicInt_iff_norm_le_one _).mpr (by rw [norm_inv]; exact inv_le_one_of_one_le₀ hge)
   exact hx (pts_sur f x h0 hint.tower_top)
 
 private theorem fg_lemma {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {K : Type} [Field K]
@@ -1004,7 +989,6 @@ private theorem fg_lemma {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {K
     rfl
   rw [he, Submodule.map_comp]
   exact h.map _
-
 
 theorem UpperTheory.exists_torus_twist_eq_localPoint_of_weightedPres :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {R S : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R] [CommRing S] [Algebra c.O S] [IsCO c.O S]

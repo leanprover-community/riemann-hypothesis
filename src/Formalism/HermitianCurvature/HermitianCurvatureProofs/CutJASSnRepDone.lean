@@ -260,13 +260,13 @@ theorem mu_frame (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' 
       rcases mul_eq_zero.1 h1 with h | h
       · exact absurd ((map_eq_zero (starRingEnd ℂ)).1 h) ht0
       · exact h
-    rw [DU.prWv_of hyi, DU.hadd_r, DU.hsmul_r, hFz' j, mul_zero, add_zero] at h2
+    rw [DU.prWv_of hyi, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hFz' j, mul_zero, add_zero] at h2
     exact h2
   refine ⟨fun j => Qx8.inWb_mulVec hG (hFr.1 j), fun i j => by rw [Qx2.herm_uh hU]; exact hFr.2.1 i j, hz0, ?_⟩
   intro j
   set s : ℂ := (((Real.sqrt (herm (Hpk k r) (SSn.prWv k r z (μ *ᵥ z')) (SSn.prWv k r z (μ *ᵥ z'))).re)⁻¹ : ℝ) : ℂ)
   have hν : SSn.nu0 k r z z' μsec ζ = s • SSn.prWv k r z (μ *ᵥ z') := rfl
-  rw [hν, DU.hsmul_r, DU.prWv_of hy, DU.hadd_r, DU.hsmul_r, hz0 j, Qx2.herm_uh hU, hFz' j]
+  rw [hν, DU.hsmul_r, DU.prWv_of hy, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hz0 j, Qx2.herm_uh hU, hFz' j]
   simp
 
 theorem frame'_exists (hk : 2 ≤ k) (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z')
@@ -461,7 +461,7 @@ theorem cz_facts {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
     (((Real.sqrt (Tz k r z))⁻¹ : ℝ) : ℂ) ≠ 0 := by
   have hs : 0 < Real.sqrt (Tz k r z) := Real.sqrt_pos.2 hT
   refine ⟨Qx8.inWb_smul hz _, ?_, by exact_mod_cast (inv_pos.2 hs).ne'⟩
-  rw [DU.hsmul_l, DU.hsmul_r, FrameEntries.herm_self, Complex.conj_ofReal]
+  rw [Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', DU.hsmul_r, FrameEntries.herm_self, Complex.conj_ofReal]
   have hsq : Real.sqrt (Tz k r z) ^ 2 = Tz k r z := Real.sq_sqrt hT.le
   have hsq' : ((Real.sqrt (Tz k r z) : ℝ) : ℂ) ^ 2 = ((Tz k r z : ℝ) : ℂ) := by exact_mod_cast hsq
   have hne : ((Real.sqrt (Tz k r z) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
@@ -474,7 +474,6 @@ end
 end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC.DT
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC
-
 
 noncomputable section
 

@@ -53,7 +53,7 @@ theorem atPrime_tensor_isDomain_isIntegrallyClosed_faithfulSMul : ∀ (R A : Typ
   refine ⟨hdom, isIntegrallyClosed_of_isLocalization B _ hle, ?_⟩
   have hAB : Function.Injective (algebraMap A B) := IsLocalization.injective B hle
   refine (faithfulSMul_iff_algebraMap_injective Rp B).mpr ?_
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨⟨r, s⟩, rfl⟩ := IsLocalization.mk'_surjective p.primeCompl x
   have hcomp : ∀ r : R, algebraMap Rp B (algebraMap R Rp r) = algebraMap A B (algebraMap R A r) := by
@@ -579,7 +579,7 @@ theorem etale_integralClosure_of_isArtinianRing : ∀ (A E : Type) [CommRing A] 
   let Φ : integralClosure A E ≃ₐ[A] ∀ I, C I := AlgEquiv.ofBijective Ψ hΨ
   have hinjF : ∀ I, Function.Injective (algebraMap A (F I)) := by
     intro I
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have hne : ψ.symm (Pi.single I 1) ≠ 0 := by
       intro h0

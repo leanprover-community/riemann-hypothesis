@@ -20,9 +20,7 @@ def tgTop (X : Loc) : TgPlace X → X.TT
   | ⟨j, some i⟩ => topOdd X j i
 
 theorem tg_end_ne_odd (X : Loc) (j : Fin (numSeg X.TT)) (i : Fin (segS X.TT j)) : topEnd X j ≠ topOdd X j i := by
-  intro h
-  have e : segNext X.TT j = segPos X.TT j i := congrArg Subtype.val h
-  exact (pos_mem X.TT j i).2 (e ▸ (next_mem X.TT j).2)
+  exact (Formalism.MainNotions.ColumnSystems.Pf.topOdd_ne_end X j i).symm
 
 theorem tgTop_mem (X : Loc) (pl : TgPlace X) (b : Bool) (c : Fin (X.m + 1)) :
     ((tgTop X pl, b), c) ∈ segVars X pl.1 := by

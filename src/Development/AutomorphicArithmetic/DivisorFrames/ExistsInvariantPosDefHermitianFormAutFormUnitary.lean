@@ -49,10 +49,6 @@ variable (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) {ι : Type} [Fintype ι] 
 
 end GlobalTheory.MultPetersson
 
-namespace GlobalTheory.MultPetersson
-
-
-end GlobalTheory.MultPetersson
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -115,26 +111,26 @@ theorem UpperTheory.exists_invariant_posDef_hermitian_form_autForm_unitary :
       rw [← integral_add (hI _ (hPN x) _ (hPN y)) (hI _ (hPN x') _ (hPN y))]
       congr 1
       funext g
-      simp only [Pi.add_apply, star_add, add_mul, mul_add])
+      simp only [Pi.add_apply, star_add, add_mul])
     (fun c x y => by
       simp only [F, map_smul, Submodule.coe_smul]
       rw [smul_eq_mul, ← integral_const_mul]
       congr 1
       funext g
-      simp only [Pi.smul_apply, smul_eq_mul, star_mul, RingHom.id_apply, starRingEnd_apply]
+      simp only [Pi.smul_apply, smul_eq_mul, star_mul, starRingEnd_apply]
       ring)
     (fun x y y' => by
       simp only [F, map_add (f := _), Submodule.coe_add]
       rw [← integral_add (hI _ (hPN x) _ (hPN y)) (hI _ (hPN x) _ (hPN y'))]
       congr 1
       funext g
-      simp only [Pi.add_apply, star_add, add_mul, mul_add])
+      simp only [Pi.add_apply, mul_add])
     (fun c x y => by
       simp only [F, map_smul, Submodule.coe_smul]
       rw [smul_eq_mul, ← integral_const_mul]
       congr 1
       funext g
-      simp only [Pi.smul_apply, smul_eq_mul, star_mul, RingHom.id_apply, starRingEnd_apply]
+      simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
       ring)
   have hB : ∀ x ∈ N, ∀ y ∈ N, B x y = ∫ g in 𝓕, star (x (j.symm g)) * y (j.symm g) ∂μ := by
     intro x hx y hy

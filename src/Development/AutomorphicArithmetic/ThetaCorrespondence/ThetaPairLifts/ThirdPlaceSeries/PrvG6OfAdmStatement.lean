@@ -634,29 +634,6 @@ def unitBall : ValuationSubring K := GlobalTheory.ClosedBallValuationSubring.clo
 
 theorem mem_unitBall (x : K) : x ∈ (unitBall : ValuationSubring K) ↔ ‖x‖ ≤ 1 := Iff.rfl
 
-theorem mem_maximalIdeal_unitBall (x : (unitBall : ValuationSubring K)) :
-    x ∈ IsLocalRing.maximalIdeal (unitBall : ValuationSubring K) ↔ ‖(x : K)‖ < 1 := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  constructor
-  · intro hx
-    refine lt_of_le_of_ne x.2 fun h1 => hx ?_
-    have hx0 : (x : K) ≠ 0 := by
-      intro h0; rw [h0, norm_zero] at h1; exact zero_ne_one h1
-    refine isUnit_iff_exists_inv.2 ⟨⟨(x : K)⁻¹, ?_⟩, Subtype.ext ?_⟩
-    · show ‖(x : K)⁻¹‖ ≤ 1
-      rw [norm_inv, h1, inv_one]
-    · show (x : K) * (x : K)⁻¹ = 1
-      exact mul_inv_cancel₀ hx0
-  · rintro hx ⟨u, hu⟩
-    have h0 : ((u : (unitBall : ValuationSubring K)) : K) *
-        (((u⁻¹ : (unitBall : ValuationSubring K)ˣ) : (unitBall : ValuationSubring K)) : K) = 1 :=
-      congrArg Subtype.val u.mul_inv
-    have h := congrArg norm h0
-    rw [norm_mul, norm_one] at h
-    have h2 : ‖((u⁻¹ : (unitBall : ValuationSubring K)ˣ) : K)‖ ≤ 1 := (u⁻¹ : (unitBall : ValuationSubring K)ˣ).1.2
-    rw [hu] at h
-    nlinarith [norm_nonneg ((u⁻¹ : (unitBall : ValuationSubring K)ˣ) : K), norm_nonneg (x : K)]
-
 theorem isOpen_unitBall : IsOpen ((unitBall : ValuationSubring K) : Set K) := by
   have : ((unitBall : ValuationSubring K) : Set K) = Metric.closedBall 0 1 := by
     ext x
@@ -670,13 +647,18 @@ theorem valRingModel : ValRingModel := by
   intro l _
   let O : ValuationSubring (Qbar l) := unitBall
   refine ⟨O, inferInstance, inferInstance, _root_.GlobalTheory.AlgClosedResidueField.isAlgClosed_residueField O, algebraMap O (Qbar l), fun a b h => Subtype.ext h,
-    ?_, fun x => mem_maximalIdeal_unitBall x, ?_⟩
+    ?_, ?_, ?_⟩
   · ext x
     constructor
     · rintro ⟨y, rfl⟩
       exact y.2
     · intro hx
       exact ⟨⟨x, hx⟩, rfl⟩
+  · intro x
+    change x ∈ IsLocalRing.maximalIdeal
+      (GlobalTheory.ClosedBallValuationSubring.closedBallSubring (Qbar l)) ↔ ‖(x : Qbar l)‖ < 1
+    rewrite [← GlobalTheory.ClosedBallValuationSubring.openBallIdeal_eq_maximalIdeal (Qbar l)]
+    exact GlobalTheory.ClosedBallValuationSubring.mem_openBallIdeal
   · intro Γ _ _ _ _ n ρ hρ
     obtain ⟨S, h1, hS⟩ := exists_cover O isOpen_unitBall ρ hρ
     exact conj O ρ S hS h1
@@ -711,7 +693,7 @@ theorem isSSRep_of_mem_twList (Pa : List (Part D.naut.CG))
     (hR : ∀ k, UpperTheory.GalS.IsStringRepN D i (Pa.get k) (R k)) : ∀ p ∈ twList D i Pa R, IsSSRep p.2 := by
   intro p hp
   obtain ⟨k, a, -, rfl⟩ := mem_twList D i hp
-  exact ss_twGL _ _ (hR k).2.1
+  exact GlobalTheory.TwistLG.isSSRep_twGL _ _ (hR k).2.1
 
 end GlobalTheory.EigenPoint
 end -- clump:auto

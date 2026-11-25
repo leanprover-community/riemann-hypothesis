@@ -23,13 +23,6 @@ set_option linter.unusedSectionVars false
 
 namespace UnitaryGroupBasics
 
-theorem incM_mul {p q r : Type} [Fintype q] (X : Matrix p q E) (Y : Matrix q r E) :
-    incM F (X * Y) = incM F X * incM F Y := by
-  unfold incM; exact Matrix.map_mul
-
-theorem incM_one {p : Type} [Fintype p] [DecidableEq p] : incM F (1 : Matrix p p E) = 1 := by
-  unfold incM; exact Matrix.map_one _ (map_zero _) (map_one _)
-
 theorem finOne_idem : finOne F * finOne F = finOne F :=
   Prod.ext (show (0 : Ainf F) * 0 = 0 from mul_zero _) (show (1 : Af F) * 1 = 1 from mul_one _)
 

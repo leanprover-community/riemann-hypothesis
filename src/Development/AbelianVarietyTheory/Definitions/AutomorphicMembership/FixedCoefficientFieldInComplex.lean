@@ -408,12 +408,6 @@ theorem hilbertField_le_torsionField : hilbertField d F ≤ torsionField d A := 
 
 theorem torsionField_le_discField : torsionField d A ≤ discField d A := le_sup_left
 
-theorem discField_le_iff {M : IntermediateField ℚ ℂ} : discField d A ≤ M ↔
-    sqrtNegNat d ∈ M ∧ F ≤ M ∧ torsionCoords (A.baseChange ℂ) 12 ⊆ M ∧ ∀ z : ℂ, z ^ 12 = (A.Δ : ℂ) → z ∈ M := by
-  simp only [discField, torsionField, hilbertField, sup_le_iff, IntermediateField.adjoin_le_iff, and_assoc,
-    Set.singleton_subset_iff, SetLike.mem_coe]
-  rfl
-
 
 variable {d A} in
 theorem hilbertField_eq (h : IsGoodCMCurve d F A) {L : PeriodPair} (hL : IsIntegersLattice d L) :
@@ -627,13 +621,6 @@ theorem KsExact.lower (h : B.KsExact D C) :
     D.ray ≤ B.KsC ∧ B.CurveIn D ∧ charField C ≤ B.KsC ∧ B.KummerIn D := by
   obtain ⟨-, h1, h2, -, h3, h4⟩ := (listField_le_iff D C).1 h.ge
   exact ⟨h2, h1, h3, h4⟩
-
-namespace FieldsOK
-
-variable (h : B.FieldsOK D C c M)
-include h
-
-end FieldsOK
 
 end GlobalTheory.Mem.Base
 

@@ -105,8 +105,3 @@ theorem thetaVector_ne_zero_of_clauses (D : D7) (G : Type) [Group G] [Fintype G]
     ((D.sp.W_rank _ (Nat.le_add_left _ _) i.2).trans_le (r_le_V i)) (hP.vP i A.μ0)
 
 end GlobalTheory.AdTh.PhaseMapFree
-
-namespace GlobalTheory.AdTh.PhaseMapFree
-open GlobalTheory.AdTh.PhaseMap
-
-end GlobalTheory.AdTh.PhaseMapFree

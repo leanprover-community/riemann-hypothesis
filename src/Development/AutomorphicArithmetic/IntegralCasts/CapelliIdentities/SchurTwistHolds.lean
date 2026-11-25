@@ -63,7 +63,7 @@ noncomputable def UpperTheory.Reformulated.B.H13.tw :
 
 noncomputable def UpperTheory.Reformulated.B.H13.SchurTw :
     Prop :=
-    ∀ (Γ Γ' k : Type) [inst : Group Γ] [inst_1 : Group Γ'] [inst_2 : Field k] [IsAlgClosed k] (n : ℕ)
+    ∀ (Γ Γ' k : Type) [Group Γ] [Group Γ'] [Field k] [IsAlgClosed k] (n : ℕ)
       (r : Γ →* GL (Fin n) k) (φ : Γ' →* Γ) (δ : Γ →* kˣ),
       UpperTheory.Reformulated.B.H13.IsIrr (r.comp φ) →
         δ.comp φ = (1 : Γ' →* kˣ) → UpperTheory.Reformulated.B.H13.RepIso r (UpperTheory.Reformulated.B.H13.tw r δ) → δ = (1 : Γ →* kˣ)

@@ -126,8 +126,8 @@ namespace GlobalTheory.HeckeEx
 theorem exists_isRigIso_of_isGen : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] (L : RigLB A) (Y : Scheme.{0})
     (x x' : Y ⟶ S) (Ψ : (Over.mk x ⊗ A).left ⟶ (Over.mk x' ⊗ A).left) (k : ℤ)
     (β : LB.Gen (isoLB A L Ψ k)), IsPointed A Ψ → β.IsGen → ∃ β', IsRigIso A L Ψ k β' := by
-  intro S A _ L Y x x' Ψ k β hΨ hβ
-  exact GlobalTheory.RigIsoDescent.exists_isRigIso_of_gen hΨ β hβ
+  intros
+  apply GlobalTheory.RigIsoDescent.exists_isRigIso_of_gen <;> assumption
 
 end GlobalTheory.HeckeEx
 end -- clump:auto

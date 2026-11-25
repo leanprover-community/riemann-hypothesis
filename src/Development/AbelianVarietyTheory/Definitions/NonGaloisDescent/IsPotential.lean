@@ -117,7 +117,6 @@ def resF {LL : FinExt l} (T : QLat LL) (F : FinExt l) : LocLat ↥(GK F) ℚ_[l]
 
 variable {e : ℕ} (a : ℕ) [NeZero a] (ϖ : PiSys l e) (Pl : LocPrime l) {LL : FinExt l}
 
-set_option synthInstance.maxHeartbeats 100000 in
 def TameType (T : QLat LL) (Sig : Finset (ZMod e)) : Prop :=
   ∀ g ∈ IK (Formalism.MainNotions.ElementDenominator.qlExt l), ∀ w : ↥LL.1, (w : Om l) * ϖ.seq 0 = (g : GQ l) (ϖ.seq 0) →
     ∀ x ∈ Dcris (Pl.PD (ϖ.field a)) (resF T (ϖ.field a)).ρ,

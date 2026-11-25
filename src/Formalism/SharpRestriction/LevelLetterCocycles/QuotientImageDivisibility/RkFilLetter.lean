@@ -47,7 +47,7 @@ theorem rk_fil_map (hK : Function.Bijective (algebraMap K₀ K)) (hE : Formalism
           rw [F.equiv, hx, map_zero])
       map_one' := LinearMap.ext fun x => Subtype.ext (by simp [LinearMap.restrict_apply])
       map_mul' := fun g h => LinearMap.ext fun x => Subtype.ext (by
-        simp [LinearMap.restrict_apply, Module.End.mul_apply]) }
+        simp [LinearMap.restrict_apply]) }
   have hι : ∀ g x, (LinearMap.ker F.f).subtype (ρ₀ g x) = T₁.ρ g ((LinearMap.ker F.f).subtype x) :=
     fun g x => rfl
   have hcr := hC (LinearMap.ker F.f) ρ₀ T₁.V T₁.ρ T₂.V T₂.ρ (LinearMap.ker F.f).subtype F.f hι

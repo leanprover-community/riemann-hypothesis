@@ -230,7 +230,3 @@ lemma lead_complex {V : Type} [AddCommGroup V] [Module ℂ V] {d : ℕ} (y : Fin
   simp
 
 end Formalism.FourierDecayAlt.P.ChebyshevExtremalPolynomials
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

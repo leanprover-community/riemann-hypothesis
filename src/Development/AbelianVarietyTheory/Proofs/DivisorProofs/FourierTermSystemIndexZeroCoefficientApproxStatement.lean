@@ -304,7 +304,6 @@ theorem map_mono_eq_zero {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W 
     rintro mu hc rfl
     have h1 := hbig 0 H.zero_mem hc (Ne.symm hmu₀0)
     have h2 : qW W β 0 = 0 := by simp [qW]
-    have h3 := hβ0 mu₀
     omega
 
   obtain ⟨c, hc⟩ := Φ.u_unit y mu₀
@@ -353,7 +352,6 @@ theorem map_mono_eq_zero {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W 
     · rw [hvmono mu hH]
       have h1 := hbig mu hH (hS1 mu hmuS) hne
       have h2 := he mu
-      have h3 := hβ0 mu₀
       exact_mod_cast (show q₀ + 1 ≤ e mu by omega)
     · rw [hout mu hH]
       simp

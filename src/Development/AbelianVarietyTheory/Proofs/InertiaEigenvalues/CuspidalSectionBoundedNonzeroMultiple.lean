@@ -950,7 +950,6 @@ theorem exists_cover_noPole : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   obtain ⟨Y, hP⟩ := hY
   obtain ⟨J, hJ, P, hC⟩ := GlobalTheory.Reg.exists_finite_pchart_cover GlobalTheory.abelianSchemeLaws_all.2.secTwist E H Dw l Xo c
     hE.bc (la.valuation c.F).valuationSubring Y hP
-  set_option synthInstance.maxHeartbeats 200000 in
   have hmem : ∀ j, ∀ e ∈ (P j).es, evR Xo c f (P j).yg ∈ (P j).R e := fun j e he => by
     rw [(hev _).1 _ ((P j).R e).val _ _ ((P j).gen e he)]
     exact (evR Xo c f ((P j).y e he)).2

@@ -16,9 +16,6 @@ variable {k : Type} [Field k] [ValuativeRel k] {a b : Type} [Fintype a]
 def Maps (Λ' : Submodule 𝒪[k] (a → k)) (Λ : Submodule 𝒪[k] (b → k)) (x : Matrix b a k) : Prop :=
   ∀ v ∈ Λ', x *ᵥ v ∈ Λ
 
-def dualStd (k : Type) [Field k] [ValuativeRel k] (a : Type) [Fintype a] : Set (a → k) :=
-  {η | ∀ y ∈ box a (1 : kˣ), η ⬝ᵥ y ∈ 𝒪[k]}
-
 def srcLat (a : Type) (ϖ : kˣ) : Submodule 𝒪[k] (a ⊕ Fin (0 + 1) → k) :=
   (box a (1 : kˣ)).comap (LinearMap.funLeft 𝒪[k] k Sum.inl) ⊓
     (box (Fin (0 + 1)) ϖ).comap (LinearMap.funLeft 𝒪[k] k Sum.inr)

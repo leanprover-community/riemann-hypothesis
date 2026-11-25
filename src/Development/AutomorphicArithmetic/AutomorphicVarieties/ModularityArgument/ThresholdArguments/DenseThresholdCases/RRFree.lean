@@ -88,9 +88,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Th
@@ -261,7 +258,7 @@ theorem UpperTheory.V.Z.Win.RR.purLocA_alt :
     have hc : ∀ σ, (a.ρ σ).charpoly = (b.ρ σ).charpoly := by
       intro σ
       rw [← WD.charPol_mk, hx, WDRep.ofChars_ρ, charpoly_diagEnd]
-    obtain ⟨e, he⟩ := GlobalTheory.T.weilRep_equiv_of_charpoly_eq F Ω A w h na n a b hc
+    obtain ⟨e, he⟩ := GlobalTheory.AboveL.weil_rep_equiv_of_charpoly_eq F Ω A w h na n a b hc
     have hes : ∀ σ z, e.symm (b.ρ σ z) = a.ρ σ (e.symm z) := by
       intro σ z
       apply e.injective

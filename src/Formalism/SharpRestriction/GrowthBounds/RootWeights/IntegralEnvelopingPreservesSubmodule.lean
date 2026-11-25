@@ -27,8 +27,7 @@ variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
 theorem mem_weightSpace_iff_diag_scalar {E : GLOps n K V} {mu : Fin n → ℤ} {x : V} :
     x ∈ weightSp E mu ↔ ∀ a, E a a x = (mu a : K) • x := by
-  unfold weightSp
-  simp [Submodule.mem_iInf, sub_eq_zero]
+  exact Formalism.MainNotions.G.GLWeightTheory.mem_weightSpace_iff_diagonal_eigen E mu x
 
 theorem inv_factorial_prod_eq_choose [CharZero K] (m : ℤ) (k : ℕ) :
     ((k.factorial : K)⁻¹) * ∏ j ∈ range k, ((m : K) - (j : K)) = ((Ring.choose m k : ℤ) : K) := by

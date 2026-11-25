@@ -1000,7 +1000,7 @@ private theorem extend {M : Type} [AddCommGroup M] [Module ℤ_[l] M] (B : Submo
       ring
   haveI : Module.IsTorsionFree ℤ_[l] (Qbar l) := by
     refine (Module.isTorsionFree_iff_algebraMap_injective).2 ?_
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have := norm_zl a
     rw [ha, norm_zero] at this

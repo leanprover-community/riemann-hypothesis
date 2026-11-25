@@ -15,13 +15,6 @@ private theorem mem_map_smul_top_iff {S R M : Type} [CommRing S] [CommRing R] [A
   rw [Submodule.restrictScalars_top] at h
   rw [← h, Submodule.restrictScalars_mem]
 
-private theorem map_mem_smul_top {S M M' : Type} [CommRing S] [AddCommGroup M] [Module S M]
-    [AddCommGroup M'] [Module S M'] (f : M →ₗ[S] M') (K : Ideal S) {m : M}
-    (h : m ∈ (K • ⊤ : Submodule S M)) : f m ∈ (K • ⊤ : Submodule S M') := by
-  have h2 : f m ∈ (K • ⊤ : Submodule S M).map f := Submodule.mem_map_of_mem h
-  rw [Submodule.map_smul''] at h2
-  exact Submodule.smul_mono (le_refl K) le_top h2
-
 private theorem mem_of_smul_mem {S M M' : Type} [CommRing S] (T : Submonoid S) [AddCommGroup M] [Module S M]
     [AddCommGroup M'] [Module S M'] (f : M →ₗ[S] M') [IsLocalizedModule T f] (K : Ideal S) (t : T) {x : M'}
     (h : (t : S) • x ∈ (K • ⊤ : Submodule S M')) : x ∈ (K • ⊤ : Submodule S M') := by
@@ -29,7 +22,7 @@ private theorem mem_of_smul_mem {S M M' : Type} [CommRing S] (T : Submonoid S) [
   have e := LinearMap.congr_fun hu.unit.inv_mul x
   rw [Module.End.mul_apply, IsUnit.unit_spec, Module.End.one_apply, Module.algebraMap_end_apply] at e
   rw [← e]
-  exact map_mem_smul_top _ K h
+  exact Submodule.smul_top_le_comap_smul_top K _ h
 
 private theorem exists_smul_mem {S M M' : Type} [CommRing S] (T : Submonoid S) [AddCommGroup M] [Module S M]
     [AddCommGroup M'] [Module S M'] (f : M →ₗ[S] M') [IsLocalizedModule T f] (K : Ideal S) {m : M}
@@ -97,6 +90,6 @@ theorem UpperTheory.V.AlgebraTools.qRegAt_map :
           ∑ β : GlobalTheory.MonoDeg σ a, (t : S) • (GlobalTheory.monoVal y (β : σ →₀ ℕ) • c β) from
         Finset.sum_congr rfl fun β _ => smul_comm _ _ _]
       exact ht)
-    have h3 := map_mem_smul_top f _ (h2 α)
+    have h3 := Submodule.mem_comap.1 (Submodule.smul_top_le_comap_smul_top _ f (h2 α))
     rw [map_smul, hc, smul_smul] at h3
     exact mem_of_smul_mem T f _ (t * s) (by rwa [Submonoid.coe_mul])

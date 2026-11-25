@@ -145,12 +145,6 @@ theorem thrX_le {n : ℕ} (ε : Fin n → Bool) (hn : (900 : ℝ) ≤ n) : thrX 
 
 end Formalism.MainNotions.GapDS
 
-namespace Formalism.MainNotions.DiscreteSeriesWeylDimension
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
-
-end Formalism.MainNotions.DiscreteSeriesWeylDimension
-
 namespace Formalism.MainNotions.TheoremBConstants
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.PlaceDegreeData
@@ -163,9 +157,3 @@ open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions
 open Formalism.QuantumDeterminants.WeylGroupFacts
 
 end Formalism.MainNotions.DiscreteSeriesInnerProducts
-
-namespace Formalism.MainNotions.GapDS
-
-open Formalism.MainNotions.PlaceDegreeData
-
-end Formalism.MainNotions.GapDS

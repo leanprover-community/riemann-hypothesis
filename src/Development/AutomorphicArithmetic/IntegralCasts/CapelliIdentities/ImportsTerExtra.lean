@@ -6,8 +6,8 @@ public import Mathlib.GroupTheory.FiniteAbelian.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Gub1.proof.{u_1, u_2} :
-    ∀ (E : Type u_1) (W : Type u_2) [inst : Field E] [inst_1 : NumberField E] [inst_2 : AddCommGroup W]
-      [inst_3 : _root_.Module E W], GroundTheory.Heights₂.Heights.FiniteCovolume.LineIndexNeZero.Statement E W := by
+    ∀ (E : Type u_1) (W : Type u_2) [Field E] [NumberField E] [AddCommGroup W]
+      [_root_.Module E W], GroundTheory.Heights₂.Heights.FiniteCovolume.LineIndexNeZero.Statement E W := by
   intro E W _ _ _ _ La x hL _ _
   have hfg : (La ⊓ (Submodule.span E {x}).toAddSubgroup).FG :=
     (Submodule.fg_iff_addSubgroup_fg (AddSubgroup.toIntSubmodule _)).1

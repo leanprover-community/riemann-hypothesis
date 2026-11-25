@@ -119,9 +119,6 @@ theorem exists_ext_of_le {K L : IntermediateField ℚ ℂ} [FiniteDimensional �
 
 end GlobalTheory.CoverExists
 
-namespace GlobalTheory.CoverExists
-
-end GlobalTheory.CoverExists
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteDimensionalZeta =====

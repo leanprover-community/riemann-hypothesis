@@ -45,22 +45,11 @@ theorem corr_smul_of (hj : IsLocIso j) (cD : D₂ ≃ D) {Λ : Submodule 𝒪[k]
 theorem corr_dual_of (hj : IsLocIso j) (cD : D₂ ≃ D) {Λ : Submodule 𝒪[k] (D → k)} {Λ₂ : Submodule 𝒪[k'] (D₂ → k')}
     (h : LatCorr j cD Λ Λ₂) : LatCorr j cD (dualLat Λ) (dualLat Λ₂) := _root_.GlobalTheory.PureMatch.Transport.dualLat_latCorr hj cD h
 
-theorem primFrame_corr (hj : IsLocIso j) (rA : A₂ ≃ A) (cD : D₂ ≃ D) {Λ : Submodule 𝒪[k] (D → k)}
-    {Λ₂ : Submodule 𝒪[k'] (D₂ → k')} (h : LatCorr j cD Λ Λ₂) (Z : Matrix A D k) :
-    IsPrimFrame Λ₂ (trM j rA cD Z) ↔ IsPrimFrame Λ Z := _root_.GlobalTheory.PureMatch.Transport.isPrimFrame_trM_iff hj rA cD h Z
-
 theorem corr_blockLat_of (hj : IsLocIso j) (cD : D₂ ≃ D) {ϖ : kˣ} {ϖ₂ : k'ˣ} (hϖ : IsUnif ϖ) (hϖ₂ : IsUnif ϖ₂)
     (e : ℕ) (P : Finset D) (P₂ : Finset D₂) (hP : ∀ c, c ∈ P₂ ↔ cD c ∈ P) :
     LatCorr j cD (blockLat ϖ e P) (blockLat ϖ₂ e P₂) := _root_.GlobalTheory.PureMatch.Transport.latCorr_blockLat hj cD hϖ hϖ₂ e P P₂ hP
 
 variable [MeasurableSpace k] [BorelSpace k] [MeasurableSpace k'] [BorelSpace k']
-
-theorem fFun_corr (hj : IsLocIso j) (rA : A₂ ≃ A) (rA' : A₂' ≃ A') (cD : D₂ ≃ D)
-    (μ₂ : MeasureTheory.Measure (GL A₂' k')) [μ₂.IsHaarMeasure] (σ₂ : A₂ ⊕ A₂' ≃ D₂) (σ : A ⊕ A' ≃ D)
-    (hσ : ∀ s, cD (σ₂ s) = σ (Sum.map rA rA' s)) (ν₂ : k'ˣ →* ℂˣ) (ν : kˣ →* ℂˣ)
-    (hν : ∀ x, ν x = ν₂ (Units.map (j : k →* k') x)) (Ψ : Matrix A₂' D₂ k' → ℂ) (Z : Matrix A D k) :
-    fFun μ₂ σ₂ ν₂ Ψ (trM j rA cD Z) = fFun (pullMeas hj rA' μ₂) σ ν (fun Y => Ψ (trM j rA' cD Y)) Z :=
-  _root_.GlobalTheory.PureMatch.Transport.fFun_trM hj rA rA' cD μ₂ σ₂ σ hσ ν₂ ν hν Ψ Z
 
 end General
 end GlobalTheory.PureMatch.Transport
@@ -117,7 +106,7 @@ theorem phiA_trM (hj : IsLocIso j) (rA : A₂ ≃ A) (rA' : A₂' ≃ A') (cD : 
       phiA (pullMeas hj rA' μ₂) σ ν ϖ e Λ (fun Y => Ψ (trM j rA' cD Y)) Z := by
   classical
   unfold phiA
-  rw [primFrame_corr hj rA cD (latCorr_latA hj cD h hϖ hϖ₂ e), fFun_corr hj rA rA' cD μ₂ σ₂ σ hσ ν₂ ν hν]
+  rw [GlobalTheory.PureMatch.Transport.isPrimFrame_trM_iff hj rA cD (latCorr_latA hj cD h hϖ hϖ₂ e), GlobalTheory.PureMatch.Transport.fFun_trM hj rA rA' cD μ₂ σ₂ σ hσ ν₂ ν hν]
 
 end General
 end GlobalTheory.PureMatch.Transport

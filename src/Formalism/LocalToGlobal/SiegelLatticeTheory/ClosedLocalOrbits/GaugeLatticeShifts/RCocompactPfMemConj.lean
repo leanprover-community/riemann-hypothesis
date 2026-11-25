@@ -19,15 +19,7 @@ variable {D : D7} (X : HidaSetting D)
 
 theorem mc_gr_mul_inv (M : GL (Fin X.B.I.n) X.B.I.E) :
     Gr X (M : Matrix _ _ _) * Gr X (↑M⁻¹ : Matrix _ _ _) = 1 := by
-  unfold Gr
-  have h1 := Bm_mul_Bm' X
-  have h2 : Bm' X * Bm X = 1 := Bm'_mul_Bm X
-  simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc (Bm X) (Bm' X), h1, Matrix.one_mul]
-  have h3 : (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) *
-      (((M⁻¹ : GL (Fin X.B.I.n) X.B.I.E) : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) * Bm X) = Bm X := by
-    rw [← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]
-  rw [h3, h2]
+  exact Formalism.L2.SG.TermOp.Vanish.gr_mul X M
 
 theorem mc_gr_unitary (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J) :
     (Gr X (M : Matrix _ _ _))ᴴ * JB X * Gr X (M : Matrix _ _ _) = JB X := by

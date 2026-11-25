@@ -24,18 +24,6 @@ theorem trace_eq_add (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : �
 
 variable (v : HeightOneSpectrum (𝓞 F))
 
-theorem trace_inclR (x : E) :
-    Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (inclR (F := F) (Fv F v) x) =
-      algebraMap F (Fv F v) (Algebra.trace F E x) := by
-  have : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  have e : Algebra.lmul (Fv F v) (Fv F v ⊗[F] E) (inclR (F := F) (Fv F v) x) =
-      (Algebra.lmul F E x).baseChange (Fv F v) := by
-    apply TensorProduct.AlgebraTensorModule.curry_injective
-    ext a
-    simp [inclR]
-  rw [Algebra.trace_apply, e, LinearMap.trace_baseChange]
-  rfl
-
 theorem trace_v (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x)
     (hfin : Module.finrank F E = 2) (w : Fv F v ⊗[F] E) :
     algebraMap (Fv F v) (Fv F v ⊗[F] E) (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) w) =

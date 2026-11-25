@@ -356,12 +356,10 @@ variable {D : D7}
 
 alias hO_smul_left := _root_.GlobalTheory.PlaceModel.hO_smul_left
 
-alias hO_smul_right := _root_.GlobalTheory.PlaceModel.hO_smul_right
-
 theorem symplO_smul_comm (S T : HSp D) {a : AE D} (ha : cA D a = a) (x y : WO S T) :
     symplO S T (a • x) y = symplO S T x (a • y) := by
   unfold symplO
-  rw [hO_smul_left, hO_smul_right, ha]
+  rw [hO_smul_left, GlobalTheory.SplitScalar.hO_smul_right, ha]
 
 
 

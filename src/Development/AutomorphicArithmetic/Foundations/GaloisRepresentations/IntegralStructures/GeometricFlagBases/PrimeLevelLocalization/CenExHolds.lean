@@ -323,11 +323,8 @@ variable {κ : Type} [Field κ] {n j : ℕ}
 
 private theorem map_finrank (g : GL (Fin n) κ) (D : Submodule κ (Fin n → κ)) :
     Module.finrank κ (D.map (g : Matrix (Fin n) (Fin n) κ).mulVecLin) = Module.finrank κ D := by
-  have hinj : Function.Injective (g : Matrix (Fin n) (Fin n) κ).mulVecLin := by
-    intro x y h
-    have := congrArg ((g⁻¹ : GL (Fin n) κ) : Matrix (Fin n) (Fin n) κ).mulVec h
-    simpa [Matrix.mulVec_mulVec] using this
-  exact (Submodule.equivMapOfInjective _ hinj D).finrank_eq.symm
+  rw [← Matrix.GeneralLinearGroup.coe_toLin]
+  exact LinearEquiv.finrank_map_eq (Matrix.GeneralLinearGroup.toLin g).toLinearEquiv D
 
 @[reducible] private def actGr (j : ℕ) : MulAction (GL (Fin n) κ) (UpperTheory.Gal.crystallineComparison.Gr κ (Fin n → κ) j) where
   smul g D := ⟨D.1.map (g : Matrix (Fin n) (Fin n) κ).mulVecLin, (map_finrank g D.1).trans D.2⟩
@@ -362,23 +359,11 @@ private theorem exists_gl (D₁ D₂ : Submodule κ (Fin n → κ))
     change (eD x : Fin n → κ) + (eC 0 : Fin n → κ) = (eD x : Fin n → κ)
     rw [eC.map_zero]
     simp only [Submodule.coe_zero, add_zero]
-  let M := LinearMap.toMatrix' (e : (Fin n → κ) →ₗ[κ] (Fin n → κ))
-  let M' := LinearMap.toMatrix' (e.symm : (Fin n → κ) →ₗ[κ] (Fin n → κ))
-  have hMM : M * M' = 1 := by
-    simp only [M, M']
-    rw [← LinearMap.toMatrix'_comp]
-    simp
-  have hMM' : M' * M = 1 := by
-    simp only [M, M']
-    rw [← LinearMap.toMatrix'_comp]
-    simp
-  refine ⟨⟨M, M', hMM, hMM'⟩, ?_⟩
-  have hlin : (M.mulVecLin) = (e : (Fin n → κ) →ₗ[κ] (Fin n → κ)) := by
-    simp only [M]
-    rw [Matrix.mulVecLin, ]
-    exact Matrix.toLin'_toMatrix' _
-  show D₁.map M.mulVecLin = D₂
-  rw [hlin]
+  let g := Matrix.GeneralLinearGroup.toLin.symm (LinearMap.GeneralLinearGroup.ofLinearEquiv e)
+  refine ⟨g, ?_⟩
+  rw [← Matrix.GeneralLinearGroup.coe_toLin, show Matrix.GeneralLinearGroup.toLin g =
+    LinearMap.GeneralLinearGroup.ofLinearEquiv e from MulEquiv.apply_symm_apply _ _]
+  change D₁.map e.toLinearMap = D₂
   apply le_antisymm
   · rintro _ ⟨x, hx, rfl⟩
     have := he ⟨x, hx⟩
@@ -402,25 +387,12 @@ private def stdU (n j : ℕ) (κ : Type) [Field κ] : Submodule κ (Fin n → κ
     simp [hx a ha]
 
 private theorem finrank_stdU (hj : j ≤ n) : Module.finrank κ (stdU n j κ) = j := by
-  let e : stdU n j κ ≃ₗ[κ] (Fin j → κ) :=
-    { toFun := fun x b => x.1 (Fin.castLE hj b)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl
-      invFun := fun y => ⟨fun a => if h : (a : ℕ) < j then y ⟨a, h⟩ else 0, by
-        intro a ha
-        simp [not_lt.2 ha]⟩
-      left_inv := by
-        intro x
-        apply Subtype.ext
-        funext a
-        by_cases h : (a : ℕ) < j
-        · simp [h, Fin.castLE]
-        · simp [h, x.2 a (not_lt.1 h)]
-      right_inv := by
-        intro y
-        funext b
-        simp [Fin.castLE] }
-  rw [e.finrank_eq]
+  have h : stdU n j κ = Pi.spanSubset κ (Set.range (Fin.castLE hj)) := by
+    ext x
+    rw [Pi.mem_spanSubset_iff, Fin.range_castLE]
+    change (∀ a : Fin n, j ≤ (a : ℕ) → x a = 0) ↔ _
+    simp only [Set.mem_setOf_eq, not_lt]
+  rw [h, Pi.dim_spanSubset, Set.ncard_range_of_injective (Fin.castLE_injective hj)]
   simp
 
 private theorem stdU_map_le (g : GL (Fin n) κ) (j : ℕ)

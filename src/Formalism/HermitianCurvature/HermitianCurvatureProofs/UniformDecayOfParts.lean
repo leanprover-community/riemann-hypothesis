@@ -597,8 +597,6 @@ theorem norm_fsv_sub_one_pow (σ t : ℂ) : ‖(fsv σ t - 1) ^ 3‖ ≤ 8 := by
   calc ‖fsv σ t - 1‖ ^ 3 ≤ 2 ^ 3 := pow_le_pow_left₀ (norm_nonneg _) this 3
     _ = 8 := by norm_num
 
-
-
 theorem decayUnif_of (hRH : KB.RadHead) (hHT : KB.HeadTop) (hWDF : WaveDiffForm) : DecayUnif := by
   intro hP Cb
   obtain ⟨CcF, hFL⟩ := Formalism.FourierDecayAlt.P.limit_of_module_forms Cb
@@ -794,10 +792,6 @@ def OnOldBound : Prop :=
       (∀ e, B.CCle (A + 3 * ((m + 1 : ℕ) : ℝ)) m (x e) c) →
       ∀ e, B.CCle A m (KB.onOld (PBO.mDiff Bs σ w) ys x e) (K * ‖σ‖ ^ 3 * c)
 
-theorem plusW_length (ys : List ℝ) (w : List C.Letter) : (KB.plusW ys w).length = ys.length + w.length := by
-  rw [Formalism.FourierDecayAlt.P.PBD.plusW_eq]
-  simp
-
 theorem waveDiffForm_of (hO : OnOldBound) : PBO.WaveDiffForm := by
   intro _hP Cb
   obtain ⟨Cs, hCs0, hSQ⟩ := Formalism.FourierDecayAlt.P.PBE.sliceQ
@@ -861,7 +855,7 @@ theorem waveDiffForm_of (hO : OnOldBound) : PBO.WaveDiffForm := by
     simp only [D.cutF, hhn]
     rw [smul_comm]
   set w' := KB.plusW ys w with hw'
-  have hw'len : w'.length ≤ N + 3 := by rw [hw', plusW_length]; omega
+  have hw'len : w'.length ≤ N + 3 := by rw [hw', Formalism.FourierDecayAlt.P.PBF.len_plusW]; omega
   have hN₂w : w'.length ≤ N₂ := by omega
   have hc : P.r - j = P.r - D.ptSize h := by rw [hh.2]
   have hQ := fun e => hSQ Cs le_rfl P.k P.r Wp Wq p.T χ (A - 1) N₂ P rfl rfl hk2 hχ hA' ε hε j hj w' hN₂w h hc hh e

@@ -101,24 +101,6 @@ variable {Ω : Type} [Field Ω] [Algebra H.E Ω] [IsAlgClosure H.E Ω]
 
 end GlobalTheory.RecT
 
-namespace GlobalTheory.RecT
-
-open GlobalTheory.RowTie
-
-section Read
-
-open Formalism.MainNotions Formalism.MainNotions.N ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
-
-end Read
-
-end GlobalTheory.RecT
-
-namespace GlobalTheory.RecT
-
-open GlobalTheory.RowTie
-
-end GlobalTheory.RecT
-
 end
 end -- clump:auto
 end -- clump:auto

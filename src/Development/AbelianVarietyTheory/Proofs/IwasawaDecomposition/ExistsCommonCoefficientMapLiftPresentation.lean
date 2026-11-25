@@ -132,8 +132,6 @@ theorem formRho_colGl {X : Formalism.L2.Col.Fields} {n : ℕ} [NeZero n] {SG : F
       ((Λ.chr (Formalism.L2.Col.redH hc n ∅ SG Λ.grp ((Bridge.colJEquiv hc n ∅ SG Λ.grp).symm k)) : X.Kˣ) : X.K) •
         C.rho (Formalism.L2.Col.ratHom hc n γ) v := rfl
 
-alias castGL_symm_castGL := _root_.GlobalTheory.Mem.R3.LiftBrg.StdGroups.castGL_symm_castGL'
-
 /-- Construct a common coefficient presentation and identify its values before and after reindexing. -/
 theorem exists_oneCoef_presStd_heq : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B px) (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (eG : Gc X.B px ≃* G0 L.Pg X.toD7.R.r), I.Ok → ValsIn I → LevOf X I U L → IsPlacewiseIdentity X (px := px) eG → ∀ (cV : ∀ i, CoefA (Vc X.toD7 i)) (i : Fin X.toD7.R.m)
     (c0L : VV X.toD7.what₂.LL (fun τ => Bridge.lamLdef (Vc X.toD7 i).rank ((i : ℕ) + 1) τ) →ₛₗ[X.toD7.what₂.embLL] (cV i).W),
@@ -207,7 +205,7 @@ theorem exists_oneCoef_presStd_heq : ∀ (X : Stages) (px : PreX X.B.toPre) (I :
       show rhoVr X.B.fields.emb (X.B.wts.lamV ((i : ℕ) + 1))
         (Formalism.L2.Col.ufGL X.toD7.host.E X.B.R.nV (Formalism.L2.Col.ratHom X.toD7.sp.cm X.B.R.nV γ)) v = _
       rw [ufGL_ratHom]
-      exact congrArg (fun g => rhoVr X.B.fields.emb (X.B.wts.lamV ((i : ℕ) + 1)) g v) (castGL_symm_castGL (LiftBrg.rkEq X i) _).symm
+      exact congrArg (fun g => rhoVr X.B.fields.emb (X.B.wts.lamV ((i : ℕ) + 1)) g v) (GlobalTheory.Mem.R3.LiftBrg.StdGroups.castGL_symm_castGL' (LiftBrg.rkEq X i) _).symm
     have e2 := hint (eΓ γ) _ (hrat γ) v
     have e4 := (congrArg c e3).trans e2
     rw [hχc k, Units.smul_def]

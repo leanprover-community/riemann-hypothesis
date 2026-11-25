@@ -846,9 +846,6 @@ theorem smoothOn_comp_compatChart (e : ℕ) (X : Type) [TopologicalSpace X] (A :
     hG.contDiffAt (hO.mem_nhds hyO)
   exact (hGat.comp y hτ).contDiffWithinAt
 
-theorem smoothOn_comp_compatChart' : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X) (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (O : Set (Fin e → ℂ)) (G : (Fin e → ℂ) → ℝ), IsCompatChart A ψ → IsOpen O → O ⊆ ψ.target → ContDiffOn ℝ ∞ G O → A.SmoothOn (ψ.source ∩ ψ ⁻¹' O) (G ∘ ψ) :=
-  fun e X _ A ψ O G h1 h2 h3 h4 => smoothOn_comp_compatChart e X A ψ O G h1 h2 h3 h4
-
 end GlobalTheory.CompanionTheory.Metric
 end -- clump:auto
 end -- clump:auto
@@ -1027,7 +1024,7 @@ theorem locExt : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas 
   refine ⟨ψ.source ∩ ψ ⁻¹' Metric.ball (ψ x) (r / 2), fun y => (G ∘ ψ) y - th.φ x y,
     ψ.isOpen_inter_preimage Metric.isOpen_ball, ⟨hxψ, Metric.mem_ball_self (half_pos hr)⟩, ?_, ?_⟩
   · intro j
-    have h1 := _root_.GlobalTheory.CompanionTheory.Metric.smoothOn_comp_compatChart' e X A ψ (Metric.ball (ψ x) (r / 2)) G hψ Metric.isOpen_ball
+    have h1 := _root_.GlobalTheory.CompanionTheory.Metric.smoothOn_comp_compatChart e X A ψ (Metric.ball (ψ x) (r / 2)) G hψ Metric.isOpen_ball
       (fun z hz => (hball (hhalf hz)).1.1) hGs
     exact (h1 j).sub ((hth.1 x j).mono fun y hy => ⟨hy.1, hNU hy.2⟩)
   · intro y hy hyb

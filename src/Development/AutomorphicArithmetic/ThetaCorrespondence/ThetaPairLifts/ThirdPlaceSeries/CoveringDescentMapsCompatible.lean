@@ -90,7 +90,7 @@ theorem finrank_le_card_mul_finrank_eigenspace_le :
             RingHom.id_apply, Finset.smul_sum]
           exact Finset.sum_congr rfl fun g _ => smul_comm _ _ _ }
     refine LinearMap.finrank_le_finrank_of_injective (f := Φ) ?_
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     apply Subtype.ext
     exact hPhi f fun h => congrArg Subtype.val (congrFun hf h)
@@ -106,7 +106,7 @@ theorem finrank_le_card_mul_finrank_eigenspace_le :
           simp only [Submodule.coe_smul, smul_mul_assoc, Pi.smul_apply,
             RingHom.id_apply, Finset.smul_sum] }
     refine LinearMap.finrank_le_finrank_of_injective (f := Ψ) ?_
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro F hF
     have := hPsi (fun h => (F h : R)) (fun h g => ((hN _).1 (F h).2).2 g)
       (congrArg Subtype.val hF)
@@ -467,10 +467,6 @@ theorem mapsCore {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor
 
 end GlobalTheory.CovTop.DescentMaps
 
-namespace GlobalTheory.CovTop.DescentMaps
-
-
-end GlobalTheory.CovTop.DescentMaps
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapsBoundOfDeepGood =====
@@ -668,8 +664,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions.TH
-namespace GlobalTheory.CovTop.DescentMaps
-end GlobalTheory.CovTop.DescentMaps
 namespace GlobalTheory.CovTop.DescentMaps
 
 theorem covering_descent_maps_compatible_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.GramCondition → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.MapsCondition := by

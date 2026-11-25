@@ -122,9 +122,6 @@ end Weights
 
 end GlobalTheory.CovTop.HodgeGapBounds
 
-namespace GlobalTheory.CovTop.HodgeGapBounds
-
-end GlobalTheory.CovTop.HodgeGapBounds
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -148,11 +145,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 noncomputable section
-namespace GlobalTheory.CovTop.HodgeGapBounds
-section Weights
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {Dw : Datum H}
-end Weights
-end GlobalTheory.CovTop.HodgeGapBounds
 namespace GlobalTheory.CovTop.HodgeGapBounds
 theorem reading_alt : _root_.GlobalTheory.CovTop.LiftsCondition fun Fm x _ ι p i _ _ => (i : ℕ) + 1 < (Fm.D x ι).R.m → LawsJ p.T ∧ 1 ≤ (dat p i).p ∧
     1 ≤ (dat p i).q ∧ 2 < Module.finrank ℚ (Fm.D x ι).host.E / 2 ∧ InR (Fm.D x ι) ((i : ℕ) + 1) ∧ Even (p.κ i).n ∧

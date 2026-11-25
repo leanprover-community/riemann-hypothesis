@@ -1374,7 +1374,6 @@ theorem _root_.GlobalTheory.LKCx.ClsReg.finite_fixed_classes_regular : ∀ (p : 
         rw [τf_val]
         change (β : G.C) * sh G (algebraMap ℚ G.C q) * ((β⁻¹ : G.Cˣ) : G.C) = algebraMap ℚ G.C q
         rw [sh_alg, ← Algebra.commutes, mul_assoc, Units.mul_inv, mul_one] }
-  have τa_apply : ∀ x, τa x = τf x := fun x => rfl
   let τe : Ec ≃ₐ[ℚ] Ec := AlgEquiv.ofAlgHom τa τa (AlgHom.ext fun x => τf_inv x) (AlgHom.ext fun x => τf_inv x)
   have τe_apply : ∀ x, τe x = τf x := fun x => rfl
   have τe_inv : ∀ x, τe (τe x) = x := fun x => τf_inv x

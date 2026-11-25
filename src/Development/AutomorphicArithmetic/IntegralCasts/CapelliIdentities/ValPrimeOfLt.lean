@@ -6,7 +6,7 @@ public import Mathlib.Data.Nat.Factorization.Induction
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi55.val_prime_of_lt :
-    ∀ {Ω : Type} [inst : Field Ω]
+    ∀ {Ω : Type} [Field Ω]
     (A : ValuationSubring Ω) (n : ℕ),
     n ≠ (0 : ℕ) →
       (A.valuation : Ω → A.ValueGroup) (↑n : Ω) < (1 : A.ValueGroup) →

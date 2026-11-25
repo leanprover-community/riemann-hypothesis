@@ -4550,7 +4550,3 @@ theorem wach_second_and_result_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf
   wach_clauses_of_admitted_inj D HW F Cm h hJ (opnPhiLinInj_holds D HW F)
 
 end Formalism.MainNotions.LiftingTheory
-
-namespace Formalism.MainNotions.LiftingTheory
-
-end Formalism.MainNotions.LiftingTheory

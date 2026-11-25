@@ -148,8 +148,6 @@ variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B] [IsCommMonObj A] 
 
 variable {Ω : Type} [Field Ω] [IsAlgClosed Ω]
 
-
-
 theorem relAmple_lPart (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) (mu : B ⟶ A) [IsMonHom mu]
     (s : Sp Ω ⟶ S) (L : LB ((Over.pullback s).obj A).left) (hL : L.IsLB)
     (ha : Out.RelAmple ((Over.pullback s).obj A) L) (hmu : IsFinite ((Over.pullback s).map mu).left) :
@@ -230,8 +228,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -332,8 +328,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -415,8 +409,6 @@ private theorem lam_eq_evc_toBase_of_LBIso [IsCommMonObj A] {P : LB (A ⊗ B).le
     cls_cube_two hL _ _ hLam
   unfold evc
   rw [h2, Over.comp_left, h1, Category.assoc, pull_comp, pull_comp, h3, h4, pull_lam, lift_fst, lift_snd]
-
-
 
 theorem ceLam_zb_pt (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A ⊗ B).left} (hD : IsDual A B P)
     (hD' : IsDual B A (swap P)) (l : A ⟶ B) [IsMonHom l] (mu : B ⟶ A) [IsMonHom mu] (α : Matrix (Fin 4) (Fin 4) ℤ)
@@ -736,8 +728,6 @@ theorem ceZcPair_eMap (hD : IsDual A B P) (hD' : IsDual B A (swap P)) (l : A ⟶
 
 end Alg
 
-
-
 theorem two_cls_eMap {Ω : Type} [Field Ω] [IsAlgClosed Ω] (hA : IsAbelianScheme A) (hB : IsAbelianScheme B)
     {P : LB (A ⊗ B).left} (hD : IsDual A B P)
     (hD' : IsDual B A (swap P)) (l : A ⟶ B) [IsMonHom l] (mu : B ⟶ A) [IsMonHom mu] (α : Matrix (Fin 4) (Fin 4) ℤ)
@@ -850,21 +840,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqT
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-namespace PositivityTheory.PrwZar
-
-variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
-
-variable {Ω : Type} [Field Ω] [IsAlgClosed Ω]
-
-theorem two_cls_pow (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A ⊗ B).left} (hD : IsDual A B P)
-    (hD' : IsDual B A (swap P)) (l : A ⟶ B) [IsMonHom l] (mu : B ⟶ A) [IsMonHom mu] (α : Matrix (Fin 4) (Fin 4) ℤ)
-    (s : Sp Ω ⟶ S) (L : LB ((Over.pullback s).obj A).left) (hL : L.IsLB)
-    (e : LBIso ((ev P (fst A A) (snd A A ≫ l)).pull (sqToBase A s)) (abelian₂ ((Over.pullback s).obj A) L))
-    (n : ℕ) (h' : ((zb mu α s P L).pull ((𝟙 ((Over.pullback s).obj (G4 (A ⊗ B)))) ^ n).left).IsLB) :
-    2 • cls _ h' = (2 * n ^ 2) • cls _ (isLB_zb mu α s hD.isLB hL) :=
-  Z2.two_cls_pow hA hB hD hD' l mu α s L hL e n h'
-
-end PositivityTheory.PrwZar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1009,7 +984,6 @@ theorem eightfold_snd_assoc (x : Fin 4 → (Y ⟶ A)) (z : Fin 4 → (Y ⟶ B)) 
     mk8 x z ≫ prj (A ⊗ B) i ≫ snd A B ≫ f = z i ≫ f := by
   rw [reassoc_of% (eightfold_snd x z i)]
 
-
 omit [GrpObj A] [GrpObj B] in
 theorem ext8 {a b : Y ⟶ G4 (A ⊗ B)} (hx : ∀ i, a ≫ prj _ i ≫ fst A B = b ≫ prj _ i ≫ fst A B)
     (hz : ∀ i, a ≫ prj _ i ≫ snd A B = b ≫ prj _ i ≫ snd A B) : a = b := by
@@ -1144,7 +1118,6 @@ theorem zcPair_positionB (hD : IsDual A B P) (l : A ⟶ B) [IsMonHom l] (mu : B 
     simp
 
 end Slots
-
 
 private theorem zpow_fin_sum_eq_prod_zpow {M : Type*} [CommGroup M] (a : M) (f : Fin 4 → ℤ) :
     a ^ (∑ k, f k) = ∏ k, a ^ f k := by
@@ -1507,7 +1480,6 @@ namespace PositivityTheory.PrwZar
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B]
 
-
 omit [GrpObj A] [GrpObj B] in
 theorem one_comp_prj {G : Over S} [GrpObj G] {Y : Over S} (i : Fin 4) : (1 : Y ⟶ G4 G) ≫ prj G i = 1 := by
   fin_cases i <;> simp [prj]
@@ -1527,7 +1499,6 @@ theorem zc_rigid {P : LB (A ⊗ B).left} (hD : IsDual A B P) (l : A ⟶ B) [IsMo
       (1 : Y ⟶ G4 (A ⊗ B)) ≫ prj _ i ≫ f = 1 := by
     intro Y i f _; rw [← Category.assoc, one_comp_prj, MonObj.one_comp]
   constructor <;>
-  set_option synthInstance.maxHeartbeats 100000 in
     · simp only [zc, zcPair, map_add (f := _), map_sum, map_nsmul, map_zsmul, pull_evc, lift_fst_assoc, lift_snd_assoc,
       Category.id_comp, o1, o2, e1, e2, smul_zero, add_zero, Finset.sum_const_zero]
 
@@ -1567,7 +1538,6 @@ theorem principal_of_quasiInverse {S : Scheme.{0}} (A B : Over S) [GrpObj A] [Gr
     relAmple_zb hA hB hD hD' l mu α Ω s L hL e ha g hgA hgB m hm h₁ h₂ hα hα',
     kTriv_zb hA hB hD hD' l mu α Ω s L hL e m hm h₁ h₂ hα hα',
     lam_zb hA hB hD hD' l mu α Ω s L hL e⟩
-
 
 open GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin in
 theorem zarhinStatement_of_dual_cube_qiR (hD : GlobalTheory.Published.DualAbelianScheme) (hC : GlobalTheory.Published.CubeTheorem)

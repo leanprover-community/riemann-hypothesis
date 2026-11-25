@@ -217,7 +217,7 @@ theorem UpperTheory.galois_character_residual_decomposition :
     have : D.th g = chiO ℚ Ω l c.O g * (D.om g)⁻¹ * D.ξ g * (chiO ℚ Ω l c.O g ^ (D.e : ℤ) * D.ψ g) := rfl
     show _ = up D.th g / (cycBar ℚ Ω l g ^ k * up D.ξ g * φ g)
     rw [hup D.th, this]
-    simp only [map_mul, map_inv, map_zpow, ← cyc_eq, ← hup]
+    simp only [map_mul, map_inv, map_zpow, ← hup]
     rfl
   · rw [rb_al T hD, hup, ← map_pow, h1, cong_iff, map_pow, map_one, ← Units.val_pow_eq_pow_val, Units.val_eq_one]
   · obtain ⟨m, hm, hx⟩ := hD.xi_ord

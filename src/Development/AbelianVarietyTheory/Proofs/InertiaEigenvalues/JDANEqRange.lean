@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlTowerGen
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
 open scoped Topology PowerSeries.WithPiTopology
-set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1600000
 namespace GlobalTheory.NL.WkRange
 
@@ -48,8 +47,7 @@ theorem jD_aN_eq_range : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : Loc
         exact (Submodule.mem_span_range_iff_exists_fun (AA K LL)).2 ⟨c, rfl⟩
       · simp only [smulA, LinearMap.smul_apply, LinearMap.id_apply, Finset.smul_sum]
         exact Finset.sum_congr rfl fun i _ => smul_comm _ _ _
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum]
+    · simp only [map_sum]
       exact Finset.sum_congr rfl fun i _ => jD_smul_letter E T _ _
 
 end GlobalTheory.NL.WkRange

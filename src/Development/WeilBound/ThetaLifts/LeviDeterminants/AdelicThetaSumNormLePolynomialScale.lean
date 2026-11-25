@@ -32,7 +32,3 @@ theorem thetaSum_norm_le_pow :
   apply GlobalTheory.LatScaleSum.thetaSum_norm_le_pow
 
 end PositivityTheory.ThKF0.LatSum
-
-namespace PositivityTheory.ThKF0
-
-end PositivityTheory.ThKF0

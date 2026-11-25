@@ -143,21 +143,9 @@ theorem weyl_pci (l : Fin r) : X.op l 0 * X.op l 2 = X.op l 2 * X.op l 0 - X.op 
   refine end_of_slices (fun f => opL l 0 (opL l 2 f)) (fun f => opL l 2 (opL l 0 f) - opL l 2 f) (fun Φ => opop_coe X l l 0 2 Φ) (fun Φ => ?_) (fun f hf => fun_pci l hf)
   rw [coe_sub, opop_coe X l l 2 0 Φ, op_coe X l 2 Φ] <;> rfl
 
-private theorem pbOp_cbiOp_eq_cbiOp_pbOp_sub (l : Fin r) {f : (Fin r → ℂ) → (Wq →L[ℂ] Wp)} (hf : f ∈ WSm r (Wq →L[ℂ] Wp)) :
-    pbOp l (cbiOp l f) = cbiOp l (pbOp l f) - cbiOp l f := by
-  have hg : cbiOp l f ∈ WSm r (Wq →L[ℂ] Wp) := presOps r _ l 5 f hf
-  have hpg : pbOp l (cbiOp l f) ∈ WSm r (Wq →L[ℂ] Wp) := presOps r _ l 3 _ hg
-  have hcpg : cbOp l (pbOp l (cbiOp l f)) ∈ WSm r (Wq →L[ℂ] Wp) := presOps r _ l 4 _ hpg
-  have w1 := (weylFun r _ l _ hg).2.2.2.2.2
-  have w2 := (weylFun r _ l f hf).2.2.2.1
-  have w3 : cbiOp l (cbOp l (pbOp l (cbiOp l f))) = pbOp l (cbiOp l f) := (weylFun r _ l _ hpg).2.2.2.2.1
-  have hadd : cbiOp l (cbOp l (pbOp l (cbiOp l f)) + f) = cbiOp l (cbOp l (pbOp l (cbiOp l f))) + cbiOp l f :=
-    (linOps r _ l 5 _ f 1 hcpg hf).1
-  rw [w2] at w1
-  rw [w1, hadd, w3, add_sub_cancel_right]
-
 theorem weyl_pbcbi (l : Fin r) : X.op l 3 * X.op l 5 = X.op l 5 * X.op l 3 - X.op l 5 := by
-  refine end_of_slices (fun f => opL l 3 (opL l 5 f)) (fun f => opL l 5 (opL l 3 f) - opL l 5 f) (fun Φ => opop_coe X l l 3 5 Φ) (fun Φ => ?_) (fun f hf => pbOp_cbiOp_eq_cbiOp_pbOp_sub l hf)
+  refine end_of_slices (fun f => opL l 3 (opL l 5 f)) (fun f => opL l 5 (opL l 3 f) - opL l 5 f)
+    (fun Φ => opop_coe X l l 3 5 Φ) (fun Φ => ?_) (fun f hf => Qx2.pb_cbi l hf)
   rw [coe_sub, opop_coe X l l 5 3 Φ, op_coe X l 5 Φ] <;> rfl
 
 theorem comm_ops (l m : Fin r) (i j : Fin 6) (h : l ≠ m ∨ (holoIdx i ↔ ¬ holoIdx j)) :

@@ -368,7 +368,6 @@ theorem l_bb (hab : (b : ℕ) = a + 1) (hL : Lo L) (hC : AL (fun i j => i = a �
   have hne : a ≠ b := fun h => absurd (congrArg Fin.val h) (by omega)
   rw [Matrix.mul_apply]
   refine Fintype.sum_eq_add a b hne fun k ⟨hka, hkb⟩ => ?_
-  have hka' : (k : ℕ) ≠ a := fun h => hka (Fin.ext h)
   have hkb' : (k : ℕ) ≠ b := fun h => hkb (Fin.ext h)
   rcases lt_or_gt_of_ne hkb' with h | h
   · rw [hC k b h (fun e => hka e.1), mul_zero]
@@ -380,7 +379,6 @@ theorem r_aa (hab : (b : ℕ) = a + 1) (hC : AL (fun i j => i = a ∧ j = b) C) 
   rw [Matrix.mul_apply]
   refine Fintype.sum_eq_add a b hne fun l ⟨hla, hlb⟩ => ?_
   have hla' : (l : ℕ) ≠ a := fun h => hla (Fin.ext h)
-  have hlb' : (l : ℕ) ≠ b := fun h => hlb (Fin.ext h)
   rcases lt_or_gt_of_ne hla' with h | h
   · rw [hR l a (Fin.lt_iff_val_lt_val.2 h), mul_zero]
   · rw [hC a l (Fin.lt_iff_val_lt_val.2 h) (fun e => hlb e.2), zero_mul]
@@ -652,8 +650,6 @@ theorem dbl_of_isClosedImmersion_lift : ∀ (F : Type) [Field F] (Y : Var F) (Z 
   intro F _ Y Z _ p₁ p₂ h hi hη
   have hp₁ : p₁ = Limits.pullback.lift p₁ p₂ h ≫ Limits.pullback.fst Y.str Y.str :=
     (Limits.pullback.lift_fst _ _ _).symm
-  have hp₂ : p₂ = Limits.pullback.lift p₁ p₂ h ≫ Limits.pullback.snd Y.str Y.str :=
-    (Limits.pullback.lift_snd _ _ _).symm
   refine ⟨?_, ?_⟩
   · rw [hp₁, Category.assoc]
     exact ProjSpace.isProjOver_comp_of_isClosedImmersion _
@@ -1002,7 +998,6 @@ theorem flag_conv : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fintype 
   have hval : (ratOf Y).val (spMap ψ₂ ≫ (ratOf Y).pt) = ψ₂ := funext (val_spMap_pt (ratOf Y) ψ₂)
   rw [hval] at hP
   have hAd : ∀ τ, (A τ).det ≠ 0 := Fr.det_ne hA
-  have hBd : ∀ τ, (B τ).det ≠ 0 := Fr.det_ne hB
   have hA'd : ∀ τ, (A' τ).det ≠ 0 := Fr.det_ne hA'
   set C : Mat m Y.Fn := A.map φ with hC
   have hCd : ∀ τ, (C τ).det ≠ 0 := fun τ => by

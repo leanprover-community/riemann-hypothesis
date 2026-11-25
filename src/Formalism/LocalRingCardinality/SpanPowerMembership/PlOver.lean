@@ -23,12 +23,6 @@ theorem liesOver_of_mem {L : Type} [Field L] [NumberField L] {p : ℕ} [Fact p.P
   · rw [Ideal.span_singleton_le_iff_mem, Ideal.under_def, Ideal.mem_comap]
     simpa using h
 
-theorem mem_of_liesOver {L : Type} [Field L] [NumberField L] {p : ℕ} (P : Ideal (𝓞 L))
-    [h : P.LiesOver (Ideal.span {(p : ℤ)})] : ((p : ℕ) : 𝓞 L) ∈ P := by
-  have h1 : (p : ℤ) ∈ P.under ℤ := by rw [← h.over]; exact Ideal.mem_span_singleton_self _
-  rw [Ideal.under_def, Ideal.mem_comap] at h1
-  simpa using h1
-
 theorem prime_unique {L : Type} [Field L] [NumberField L] {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (P : Ideal (𝓞 L))
     [hP : P.IsPrime] (hp' : ((p : ℕ) : 𝓞 L) ∈ P) (hq' : ((q : ℕ) : 𝓞 L) ∈ P) : p = q := by
   by_contra hne
@@ -64,7 +58,7 @@ theorem exists_over (p : ℕ) [Fact p.Prime] (P : Ideal (𝓞 D.what₂.LL))
   have hb : P ≠ ⊥ := Ideal.ne_bot_of_liesOver_of_ne_bot (span_ne_bot p) P
   refine ⟨⟨D.plEq.symm ⟨P, hPp, hb⟩, ?_⟩, by simp⟩
   rw [resChar_eq_iff]
-  simpa using mem_of_liesOver (p := p) P
+  simpa using Formalism.MainNotions.J.mem_of_liesOver (p := p) P
 
 theorem plNe (p : ℕ) [Fact p.Prime] : Nonempty {w : D.what₂.places.Pl // D.what₂.places.resChar w = p} := by
   have := Int.ideal_span_isMaximal_of_prime p

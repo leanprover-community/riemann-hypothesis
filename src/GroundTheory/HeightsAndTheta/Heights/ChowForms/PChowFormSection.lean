@@ -29,16 +29,8 @@ theorem mem_incIdeal_iff {P : Ideal (MvPolynomial (Fin n) F)} {k : ℕ}
 
 theorem isChowForm_iff {P : Ideal (MvPolynomial (Fin n) F)} {k : ℕ}
     {g : MvPolynomial (Fin k × Fin n) F} :
-    IsChowForm P k g ↔ g ≠ 0 ∧ incIdeal P k = Ideal.span {g} := by
-  constructor
-  · rintro ⟨h0, h⟩
-    refine ⟨h0, ?_⟩
-    ext G
-    rw [mem_incIdeal_iff, Ideal.mem_span_singleton]
-    exact h G
-  · rintro ⟨h0, h⟩
-    refine ⟨h0, fun G => ?_⟩
-    rw [← mem_incIdeal_iff, h, Ideal.mem_span_singleton]
+    IsChowForm P k g ↔ g ≠ 0 ∧ incIdeal P k = Ideal.span {g} :=
+  GlobalTheory.CompanionTheory.Ar.Short.ChowClosing.SectionAlgClosed.isChowForm_iff_span
 
 theorem dvd_of_forall_emultiplicity_le {R : Type*} [CommRing R] [IsDomain R]
     [UniqueFactorizationMonoid R] {a b : R} (ha : a ≠ 0) (hb : b ≠ 0)

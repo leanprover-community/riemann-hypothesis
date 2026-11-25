@@ -49,7 +49,6 @@ theorem massS_ratio (D : D7) (h1 : UnitaryVolumeMass.stMassRatio D) (j : ℕ) (h
   have hsym : ∀ n : ℕ, (Cnt.stdH D.host.E n).IsSymm := fun n => by
     first
       | exact ⟨fun x y => by
-          set_option synthInstance.maxHeartbeats 100000 in
             simp [Cnt.stdH, LinearMap.mk₂'ₛₗ_apply, starRingEnd_apply, map_sum, star_mul, star_star]⟩
   have hr := h1 j hj (Fin j → D.host.E) (Fin (j - 1) → D.host.E) (Cnt.stdH D.host.E j) (Cnt.stdH D.host.E (j - 1))
     (Cnt.stdLat D.host.E j) (Cnt.stdLat D.host.E (j - 1)) (hsym j) (hsym (j - 1))

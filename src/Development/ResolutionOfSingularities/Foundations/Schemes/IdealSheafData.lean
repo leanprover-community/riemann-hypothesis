@@ -477,8 +477,6 @@ theorem exists_iso_subscheme_comap_of_isIso {Y Y' : Scheme.{u}} (g : Y ⟶ Y') [
     (I : Y'.IdealSheafData) :
     ∃ m : (I.comap g).subscheme ⟶ I.subscheme,
       IsIso m ∧ m ≫ I.subschemeι = (I.comap g).subschemeι ≫ g := by
-  have : QuasiCompact (I.comap g).subschemeι := inferInstance
-  have : QuasiCompact ((I.comap g).subschemeι ≫ g) := inferInstance
   have hq := FunctorialResolution.Blowup.comap_ker_comp_of_isOpenImmersion (I.comap g).subschemeι g
   rw [Scheme.IdealSheafData.ker_subschemeι] at hq
   have e1 : ∀ J : Y'.IdealSheafData, (J.comap g).comap (inv g) = J := by

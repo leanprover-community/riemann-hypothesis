@@ -528,10 +528,6 @@ theorem blkDm_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (M : Ma
     (blkDm M).map f = blkDm (M.map f) := by
   ext i j; rfl
 
-theorem blkDm_one {R : Type} [CommRing R] : blkDm (1 : Matrix (Fin (n + n)) (Fin (n + n)) R) = 1 := by
-  unfold blkDm
-  rw [Matrix.submatrix_one_equiv, ← Matrix.fromBlocks_one, Matrix.toBlocks_fromBlocks₂₂]
-
 theorem det_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (M : Matrix (Fin n) (Fin n) R) :
     f M.det = (M.map f).det := by
   rw [RingHom.map_det]; rfl
@@ -554,7 +550,7 @@ theorem kInFin_of (hU : UnitD) (hL : LocFin) (hGL : GlueLevi) (hGW : GlueW) (hUA
   have hd : IsUnit (blkDm (mat (k * m * w))).det := by
     apply hUA D
     · intro τ
-      rw [det_map, blkDm_map, hmat, hreal τ, hmr τ, hwr τ, Matrix.mul_one, Matrix.mul_one, blkDm_one, Matrix.det_one]
+      rw [det_map, blkDm_map, hmat, hreal τ, hmr τ, hwr τ, Matrix.mul_one, Matrix.mul_one, PositivityTheory.Rg.Sw.Glob.GenInfH.blkDm_one, Matrix.det_one]
       exact one_ne_zero
     · intro v
       rw [det_map, blkDm_map, hmat, hmv v, hwv v]
@@ -583,9 +579,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AdelicU GlobalTheory.StdUnn IsDedekindDomain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 
 namespace PositivityTheory.Rg.Sw.Glob.GenGlueH
 
@@ -990,7 +983,6 @@ theorem JJ_sq : (blk4 0 1 (-1) 0 : Mx D (n + n) (n + n)) * blk4 0 1 (-1) 0 = -1 
     rw [Matrix.fromBlocks_neg]; simp, Matrix.submatrix_neg]
   rfl
 
-
 theorem rel2 (g : G D n) : mat g * blk4 0 1 (-1) 0 * adj (mat g) = blk4 0 1 (-1) 0 := by
   have hMN : mat g * mat g⁻¹ = 1 := by
     rw [show mat g * mat g⁻¹ = mat (g * g⁻¹) from rfl, mul_inv_cancel]; rfl
@@ -1015,7 +1007,6 @@ theorem rel2 (g : G D n) : mat g * blk4 0 1 (-1) 0 * adj (mat g) = blk4 0 1 (-1)
   calc M * J * adj M = -(M * J * adj M * (J * J)) := by rw [hJ, mul_neg, mul_one, neg_neg]
     _ = -((M * J * adj M * J) * J) := by rw [mul_assoc (M * J * adj M) J J]
     _ = J := by rw [h5, neg_mul, one_mul, neg_neg]
-
 
 theorem blockRels (g : G D n) :
     adj (bB (mat g)) * blkDm (mat g) = adj (blkDm (mat g)) * bB (mat g) ∧
@@ -1042,8 +1033,6 @@ theorem blockRels (g : G D n) :
 end PositivityTheory.Rg.Sw.Glob.GlobalGaussBlockRelations
 
 namespace PositivityTheory.Rg.Sw.Glob
-
-
 
 theorem unitD : UnitD := by
   intro D n g hD

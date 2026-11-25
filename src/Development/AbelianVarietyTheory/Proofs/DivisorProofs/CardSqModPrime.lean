@@ -19,7 +19,6 @@ theorem card_sq_mod_prime : ∀ (p : ℕ), p.Prime → p % 4 = 3 →
   have h2 : Fintype.card (Finset.Ico 1 p : Finset ℕ) = p - 1 := by
     simp
   rw [h2] at hc
-  have hp2 := hp.two_le
   have hsum : 2 * Fintype.card (Sq p) + 1 = p := by omega
   refine ⟨hsum, ?_⟩
   rw [Nat.odd_iff]

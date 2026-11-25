@@ -467,7 +467,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM G
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.Desc
 
@@ -1421,7 +1420,6 @@ theorem Emb.exists_locGrp : ∀ (σ : Setup) (E : Emb σ), σ.Common → ∀ x :
     ((HasRingHomProperty.Spec_iff (P := @Flat)).2 (σ.flat x))
   obtain ⟨V, hs, hq, hA, hU, e, he, pb⟩ := exists_open σ E hC x ξ' hξ
   have := E.sep
-  have hιA : IsOpenImmersion E.ιA := MorphismProperty.of_isPullback (P := @IsOpenImmersion) E.cartA.flip inferInstance
   let i : σ.A.left ⟶ V.toScheme := IsOpenImmersion.lift V.ι E.ιA (by rwa [Scheme.Opens.range_ι])
   have hi : i ≫ V.ι = E.ιA := IsOpenImmersion.lift_fac _ _ _
   have pA : IsPullback i σ.A.hom (V.ι ≫ E.p) (awayMap σ.f) := isPullback_of_mono (hi ▸ E.cartA)
@@ -1469,10 +1467,6 @@ noncomputable section
 
 namespace GlobalTheory.SemiStableId
 
-end GlobalTheory.SemiStableId
-
-namespace GlobalTheory.SemiStableId
-
 variable {S : Scheme.{0}} {G G₀ : Over S} [GrpObj G] (j : G₀ ⟶ G)
 
 abbrev RangeIsId : Prop := ∀ x : G.left, x ∈ Set.range j.left ↔
@@ -1505,17 +1499,6 @@ theorem isConnected_fibre [IsOpenImmersion j.left] (hr : RangeIsId j) (s : S) :
 
 end GlobalTheory.SemiStableId
 
-namespace GlobalTheory.SemiStableId
-
-end GlobalTheory.SemiStableId
-
-namespace GlobalTheory.SemiStableId
-
-end GlobalTheory.SemiStableId
-
-namespace GlobalTheory.SemiStableId
-
-end GlobalTheory.SemiStableId
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

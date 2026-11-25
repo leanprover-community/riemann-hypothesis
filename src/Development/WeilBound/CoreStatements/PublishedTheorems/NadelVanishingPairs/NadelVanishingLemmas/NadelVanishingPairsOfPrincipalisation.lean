@@ -52,10 +52,6 @@ theorem fnOf_map {X : Scheme.{0}} [IsIntegral X] {U V : X.Opens} (i : V ⟶ U)
 
 end GlobalTheory.Cartier.SecPowLoc
 
-namespace GlobalTheory.Cartier
-
-
-end GlobalTheory.Cartier
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

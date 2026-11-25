@@ -14,7 +14,6 @@ theorem one_le_aPl_last (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau) (p n : ℕ
     1 ≤ aPl D i p τ n := by
   subst hp
   have hk : D.R.m + 3 ≤ D.R.k := D.R.m_add_three_le_k
-  have hi : (i : ℕ) < D.R.m := i.isLt
   have hlt : n < D.R.k + (i : ℕ) := by omega
   have h1 : ¬ n < D.R.k - 1 := by omega
   have h2 : n - (D.R.k - 1) < D.R.m := by omega

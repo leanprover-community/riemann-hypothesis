@@ -69,7 +69,6 @@ private theorem continuous_height {K : Type} [Field K] [NumberField K] {n : ℕ}
 
 private theorem measurable_qht {K : Type} [Field K] [NumberField K] {n : ℕ} :
     Measurable (qht : G1 K n → ℝ) := by
-  set_option synthInstance.maxHeartbeats 400000 in
   haveI : Countable (Gam K n) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
   unfold qht
   refine Measurable.iInf fun γ => Continuous.measurable ?_

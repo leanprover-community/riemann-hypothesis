@@ -175,7 +175,6 @@ theorem sFinite_nuD (d : ℕ) : SFinite (nuD E k d) := by
 
 theorem measurable_blkMul (j : ℕ) : Measurable (fun p : (UnipotentBlockColumnIndex k j j → Ad E) × GA E k => blkU p.1 * p.2) :=
   by
-    set_option synthInstance.maxHeartbeats 400000 in
       exact (((continuous_posU _).comp continuous_fst).mul continuous_snd).measurable
 
 theorem nuD_conj (t : GA E k) (u : Fin k → (Ad E)ˣ) (ht : t.val = diagonal fun i => (u i : Ad E)) {q : ℝ} (hq : 0 < q)

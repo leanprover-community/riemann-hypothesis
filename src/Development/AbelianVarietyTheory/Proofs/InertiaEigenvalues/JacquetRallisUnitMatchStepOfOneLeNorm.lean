@@ -813,13 +813,7 @@ namespace GlobalTheory.JR.UnitGLift
 
 variable {k : Type} [CommRing k] {r : ℕ}
 
-theorem full_apply_cc (Y : Gl r k) (a b : Fin r) : full Y (Fin.castSucc a) (Fin.castSucc b) = Y.1 a b := by
-  simp [full, Matrix.reindex_apply, Matrix.submatrix_apply]
-
 theorem full_apply_cl (Y : Gl r k) (a : Fin r) : full Y (Fin.castSucc a) (Fin.last r) = Y.2.1 a := by
-  simp [full, Matrix.reindex_apply, Matrix.submatrix_apply]
-
-theorem full_apply_lc (Y : Gl r k) (b : Fin r) : full Y (Fin.last r) (Fin.castSucc b) = Y.2.2.1 b := by
   simp [full, Matrix.reindex_apply, Matrix.submatrix_apply]
 
 theorem full_apply_ll (Y : Gl r k) : full Y (Fin.last r) (Fin.last r) = Y.2.2.2 := by
@@ -835,20 +829,20 @@ theorem norm_full_le_one_iff {F : Type} [NormedField F] {r : ℕ} (Z : Gl r F) :
   constructor
   · intro h
     refine ⟨fun i j => ?_, fun i => ?_, fun j => ?_, ?_⟩
-    · simpa [full_apply_cc] using h (Fin.castSucc i) (Fin.castSucc j)
+    · simpa [GlobalTheory.JR.TransferFactor.full_cc] using h (Fin.castSucc i) (Fin.castSucc j)
     · simpa [full_apply_cl] using h (Fin.castSucc i) (Fin.last r)
-    · simpa [full_apply_lc] using h (Fin.last r) (Fin.castSucc j)
+    · simpa [GlobalTheory.JR.TransferFactor.full_lc] using h (Fin.last r) (Fin.castSucc j)
     · simpa [full_apply_ll] using h (Fin.last r) (Fin.last r)
   · rintro ⟨h1, h2, h3, h4⟩ i j
     induction i using Fin.lastCases with
     | last =>
       induction j using Fin.lastCases with
       | last => simpa [full_apply_ll] using h4
-      | cast j => simpa [full_apply_lc] using h3 j
+      | cast j => simpa [GlobalTheory.JR.TransferFactor.full_lc] using h3 j
     | cast i =>
       induction j using Fin.lastCases with
       | last => simpa [full_apply_cl] using h2 i
-      | cast j => simpa [full_apply_cc] using h1 i j
+      | cast j => simpa [GlobalTheory.JR.TransferFactor.full_cc] using h1 i j
 
 theorem norm_eL_le_one {F : Type} [NormedField F] {r : ℕ} (i : Fin (r + 1)) :
     ‖GlobalTheory.JR.Step.eL r F i‖ ≤ 1 := by
@@ -1429,10 +1423,6 @@ theorem entryBall_compact_open (K : Type) [NontriviallyNormedField K] [IsUltrame
     isOpen_set_pi Set.finite_univ fun _ _ => isOpen_set_pi Set.finite_univ fun _ _ =>
       IsUltrametricDist.isOpen_closedBall _ one_ne_zero⟩
 
-theorem norm_one_entry_le (K : Type) [NormedField K] (i j : Fin r) :
-    ‖(1 : Matrix (Fin r) (Fin r) K) i j‖ ≤ 1 := by
-  rw [Matrix.one_apply]; split_ifs <;> simp
-
 theorem glO_isCompact_isOpen (K : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [LocallyCompactSpace K] :
     IsCompact (glO r K) ∧ IsOpen (glO r K) ∧ (glO r K).Nonempty := by
   obtain ⟨hc, ho⟩ := entryBall_compact_open r K
@@ -1440,7 +1430,7 @@ theorem glO_isCompact_isOpen (K : Type) [NontriviallyNormedField K] [IsUltrametr
       (MulOpposite.unop ⁻¹' {A : Matrix (Fin r) (Fin r) K | ∀ i j, ‖A i j‖ ≤ 1})) := by
     ext g
     exact ⟨fun h => ⟨fun i j => (h i j).1, fun i j => (h i j).2⟩, fun h i j => ⟨h.1 i j, h.2 i j⟩⟩
-  refine ⟨?_, ?_, 1, fun i j => ⟨norm_one_entry_le r K i j, by rw [inv_one]; exact norm_one_entry_le r K i j⟩⟩
+  refine ⟨?_, ?_, 1, fun i j => ⟨GlobalTheory.JR.MeasExist.one_mem_intMatrix r K i j, by rw [inv_one]; exact GlobalTheory.JR.MeasExist.one_mem_intMatrix r K i j⟩⟩
   · rw [e]
     exact Units.isClosedEmbedding_embedProduct.isCompact_preimage
       (hc.prod (MulOpposite.opHomeomorph.symm.isClosedEmbedding.isCompact_preimage hc))
@@ -1459,7 +1449,7 @@ theorem uO_isCompact_isOpen (E : Type) [NontriviallyNormedField E] [StarRing E] 
     (isClosed_eq (continuous_star.mul continuous_id) continuous_const).inter
       (isClosed_eq (continuous_id.mul continuous_star) continuous_const)
   exact ⟨hcl.isClosedEmbedding_subtypeVal.isCompact_preimage hc, ho.preimage continuous_subtype_val,
-    1, fun i j => norm_one_entry_le r E i j⟩
+    1, fun i j => GlobalTheory.JR.MeasExist.one_mem_intMatrix r E i j⟩
 
 def positiveCompactsOf {X : Type} [TopologicalSpace X] (s : Set X) (h : IsCompact s ∧ IsOpen s ∧ s.Nonempty) :
     TopologicalSpace.PositiveCompacts X :=

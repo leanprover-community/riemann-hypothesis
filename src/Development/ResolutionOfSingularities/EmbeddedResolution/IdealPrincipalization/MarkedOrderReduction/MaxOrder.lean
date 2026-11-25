@@ -31,12 +31,7 @@ theorem bddAbove_setOf_le_orderAt (N : X.IdealSheafData) {B : ℕ}
 theorem orderAt_le_maxOrder (N : X.IdealSheafData) {B : ℕ}
     (hB : ∀ x : ↥X, orderAt N x ≤ (B : ℕ∞)) (x : ↥X) :
     orderAt N x ≤ ((maxOrder N : ℕ) : ℕ∞) := by
-  have hxB : orderAt N x ≤ (B : ℕ∞) := hB x
-  have hBtop : (B : ℕ∞) ≠ ⊤ := by simp
-  have hne : orderAt N x ≠ ⊤ := by
-    intro h
-    rw [h] at hxB
-    exact hBtop (top_le_iff.mp hxB)
+  have hne : orderAt N x ≠ ⊤ := ne_top_of_le_ne_top (ENat.natCast_ne_top B) (hB x)
   obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp hne
   have hmem : ∃ y : ↥X, (m : ℕ∞) ≤ orderAt N y := ⟨x, hm.le⟩
   have hle : m ≤ maxOrder N := le_csSup (bddAbove_setOf_le_orderAt N hB) hmem
@@ -55,11 +50,7 @@ theorem exists_orderAt_eq_maxOrder [Nonempty ↥X] (N : X.IdealSheafData) {B : �
   refine ⟨x, ?_⟩
   rw [hdef]
   refine le_antisymm ?_ hx
-  have hordle : orderAt N x ≤ (B : ℕ∞) := hB x
-  have hne_top : orderAt N x ≠ ⊤ := by
-    intro h
-    rw [h] at hordle
-    simp at hordle
+  have hne_top : orderAt N x ≠ ⊤ := ne_top_of_le_ne_top (ENat.natCast_ne_top B) (hB x)
   obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.mp hne_top
   have hmemn : n ∈ {n : ℕ | ∃ x : ↥X, (n : ℕ∞) ≤ orderAt N x} := ⟨x, le_of_eq hn⟩
   have hle : n ≤ sSup {n : ℕ | ∃ x : ↥X, (n : ℕ∞) ≤ orderAt N x} := le_csSup hbdd hmemn
@@ -119,11 +110,7 @@ theorem bddAbove_setOf_le_orderAt_of_mem (N : X.IdealSheafData) {B : ℕ}
 theorem orderAt_le_maxOrderOn (N : X.IdealSheafData) {B : ℕ}
     (hB : ∀ x : ↥X, orderAt N x ≤ (B : ℕ∞)) (S : Set ↥X) {x : ↥X} (hx : x ∈ S) :
     orderAt N x ≤ ((maxOrderOn N S : ℕ) : ℕ∞) := by
-  have hxB : orderAt N x ≤ (B : ℕ∞) := hB x
-  have hne : orderAt N x ≠ ⊤ := by
-    intro h
-    rw [h] at hxB
-    simp at hxB
+  have hne : orderAt N x ≠ ⊤ := ne_top_of_le_ne_top (ENat.natCast_ne_top B) (hB x)
   obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp hne
   have hmem : m ∈ {n : ℕ | ∃ y ∈ S, (n : ℕ∞) ≤ orderAt N y} := ⟨x, hx, hm.le⟩
   have hle : m ≤ maxOrderOn N S := le_csSup (bddAbove_setOf_le_orderAt_of_mem N hB S) hmem

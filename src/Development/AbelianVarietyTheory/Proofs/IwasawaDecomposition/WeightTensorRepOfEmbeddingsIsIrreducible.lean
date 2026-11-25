@@ -603,7 +603,7 @@ theorem mem_spanAlg [CharZero k] (hS : ∀ M : Submodule k (MvPolynomial (Fin N 
       (∀ g : GL (Fin N) k, ∀ f ∈ M, sqAct k N lam g f ∈ M) → M = ⊥ ∨ M = nablaSq k N lam)
     (φ : Module.End k (nablaSq k N lam)) : φ ∈ spanAlg k N lam := by
   haveI := simple k N lam hS
-  haveI := GlobalTheory.WeylDimGL.finiteDimensional_nablaSq k N lam
+  haveI := GlobalTheory.Branching.finite_nablaSq k N lam
   let F : Module.End (Module.End (spanAlg k N lam) (nablaSq k N lam)) (nablaSq k N lam) :=
     { toFun := φ
       map_add' := φ.map_add

@@ -454,12 +454,6 @@ theorem exampleChain_col_apply (hc : X.Tau → HCParam R) :
       exact this
   exact h R.m le_rfl
 
-def exampleCpl (X : Fields) {n : ℕ} (lam : X.Tau → DomWeight n) : Cpl (exampleGSD X lam) where
-  Yb := ℤˣ
-  ys _ := Set.univ
-  fin _ := Set.finite_univ
-  equiv _ _ _ := Iff.rfl
-
 abbrev UnfFam : Type :=
   ∀ i, (A.F i).Cl → (A.F (i + 1)).Cl → ((Fr X σ (R.N i) → ℂ) →ₗ[ℂ] (Fr X σ (R.N (i + 1)) → ℂ))
 

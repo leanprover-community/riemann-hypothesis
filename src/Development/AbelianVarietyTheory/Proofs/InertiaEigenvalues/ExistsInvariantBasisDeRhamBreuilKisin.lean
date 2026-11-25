@@ -229,8 +229,6 @@ section -- clump:auto
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
 open scoped Formalism.Per NNReal
 
-theorem _root_.GlobalTheory.T.isUnit_bdRPlus_matrix_of_congr_one : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d k : ℕ) (β : Matrix (Fin d) (Fin d) bk.S) (B : Matrix (Fin d) (Fin d) (Per.BdRp l)), (∀ i j, bk.E ∣ (β - (l : bk.S) ^ k • (1 : Matrix (Fin d) (Fin d) bk.S)) i j) → (∀ i j, aDp l (bk.ev (β i j)) - (l : Per.BdRp l) ^ k * B i j ∈ Per.FilP l 1) → IsUnit B := by
-  first | (exact @GlobalTheory.BKLim.UnitFil.isUnit_of_congr_one)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitBdRPlusMatrixOfCongrOneStatement =====
@@ -339,7 +337,7 @@ theorem exists_invariant_basis : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk
   intro l _ K bk τ hτ C N d ρ F Y hDR hY
   obtain ⟨B, hB⟩ := _root_.GlobalTheory.BKLim.exists_beta_limit l K bk N d ρ F hDR
   obtain ⟨k1, β1, hβ1, hB1⟩ := hB 1
-  have hBu : IsUnit B := GlobalTheory.T.isUnit_bdRPlus_matrix_of_congr_one l K bk d k1 β1 B hβ1.1 hB1
+  have hBu : IsUnit B := GlobalTheory.BKLim.UnitFil.isUnit_of_congr_one l K bk d k1 β1 B hβ1.1 hB1
   have hinv := _root_.GlobalTheory.BKLim.BinfInv.inv l K bk N d ρ F B hB
   have hφY := frob_basis_eq hτ F Y hY
   have hgal := _root_.GlobalTheory.GalPhi.galPhi l K bk τ hτ N d ρ F Y hY

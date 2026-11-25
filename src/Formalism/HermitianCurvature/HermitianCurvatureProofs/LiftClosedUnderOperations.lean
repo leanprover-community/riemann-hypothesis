@@ -80,8 +80,7 @@ theorem ddp_right (D : B.RealPlaceData k r Wp Wq) {nf nf' : ℕ} (fib : Fin nf �
 
 theorem opApply_append (Θ₁ Θ₂ : B.DiffOp k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (g : B.Mat k r) :
     B.opApply (Θ₁ ++ Θ₂) F g = B.opApply Θ₁ F g + B.opApply Θ₂ F g := by
-  unfold B.opApply
-  rw [List.map_append, List.sum_append]
+  exact Formalism.FourierDecayAlt.P.CutMP.QMinOp.opApply_append Θ₁ Θ₂ F g
 
 private theorem foldr_max_eq_max_foldr_max_zero (l : List ℕ) (b : ℕ) : l.foldr max b = max (l.foldr max 0) b := by
   apply _root_.Formalism.FourierDecayAlt.P.CutMP.QMinOp.foldr_max_init_lemma_3 <;> assumption

@@ -810,10 +810,6 @@ theorem herm_inv {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) �
     herm (Hpk k r) v (g⁻¹ *ᵥ w) = herm (Hpk k r) (g *ᵥ v) w := by
   rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
 
-theorem herm_inv' {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) (g⁻¹ *ᵥ v) w = herm (Hpk k r) v (g *ᵥ w) := by
-  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
-
 theorem of_Xst {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ Xst k r) : rE k r v = 0 ∧ rW k r v = 0 := by
   induction hv using Submodule.span_induction with
   | mem x hx =>
@@ -1050,7 +1046,7 @@ theorem gram_ne (ht : TwoFl k r z z' g) (hn : IsNormal k r β g) :
     funext a
     obtain ⟨h1, h2⟩ := of_Xst (hn.2.1 a).2
     show (g⁻¹ *ᵥ z) (esI k r a) = 0
-    rw [← herm_e (g⁻¹ *ᵥ z) a, herm_inv' hg, herm3, h1, h2, z1]
+    rw [← herm_e (g⁻¹ *ᵥ z) a, GlobalTheory.Amp.NfComp.herm_inv_left hg, herm3, h1, h2, z1]
     simp [herm]
   have real : ∀ v : Fin (k + 1) → ℂ, herm (Hb k) v v = ((herm (Hb k) v v).re : ℂ) := fun v =>
     (Complex.conj_eq_iff_re.1 (herm_star v v)).symm

@@ -242,7 +242,7 @@ theorem btot_range (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     · exact Submodule.sum_mem _ fun s' _ => hL s s' _
     · intro s' _
       exact integrable_of_cont ((hc.mul ((ffMat_continuous s s').comp hφc)).smul
-        (((hσ.2.2 _).comp_continuous hφc fun g => kset_mem_UJset (hφK g))))
+        (((hσ.2.2 _).comp_continuous hφc fun g => ReciprocityTheory.ChartRestriction.DS.closure_inUJ_of_mem_Kset (hφK g))))
   obtain ⟨x, hx, hxe⟩ := hmem
   have : tcoef ((fockBasis n).coord s) (tsubVal Y ((∫ k, c k • tOp hD hSK (φ k) ∂μ) y)) = x :=
     Subtype.ext (hxe.trans (hΨ _)).symm

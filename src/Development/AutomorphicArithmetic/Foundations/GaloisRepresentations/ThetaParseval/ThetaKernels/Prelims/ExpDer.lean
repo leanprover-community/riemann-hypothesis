@@ -54,26 +54,6 @@ namespace UpperTheory.TP.RP.Der
 
 variable {R : Type} [CommRing R] [Algebra ℂ R]
 
-theorem hasSum_cauchy {a b : ℕ → ℂ} {A B : ℂ} (ha : HasSum a A) (hb : HasSum b B) :
-    HasSum (fun k => ∑ p ∈ Finset.HasAntidiagonal.antidiagonal k, a p.1 * b p.2) (A * B) := by
-  have na := ha.summable.norm
-  have nb := hb.summable.norm
-  have e := tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm na nb
-  rw [ha.tsum_eq, hb.tsum_eq] at e
-  rw [e]
-  exact (summable_norm_sum_mul_antidiagonal_of_summable_norm na nb).of_norm.hasSum
-
-theorem fact_choose {i j : ℕ} :
-    (((i + j).factorial : ℂ))⁻¹ * ((i + j).choose i : ℂ) = ((i.factorial : ℂ))⁻¹ * ((j.factorial : ℂ))⁻¹ := by
-  have h := Nat.add_choose_mul_factorial_mul_factorial i j
-  rw [← Nat.choose_symm_add] at h
-  have h' : ((i + j).choose i : ℂ) * i.factorial * j.factorial = (i + j).factorial := by exact_mod_cast h
-  have a : (i.factorial : ℂ) ≠ 0 := by exact_mod_cast i.factorial_ne_zero
-  have b : (j.factorial : ℂ) ≠ 0 := by exact_mod_cast j.factorial_ne_zero
-  have f : ((i + j).factorial : ℂ) ≠ 0 := by exact_mod_cast (i + j).factorial_ne_zero
-  rw [inv_mul_eq_div, div_eq_iff f, ← h']
-  field_simp
-
 theorem der_pow_mul (D : Derivation ℂ R R) (k : ℕ) (P Q : R) :
     (D.toLinearMap ^ k) (P * Q) = ∑ p ∈ Finset.HasAntidiagonal.antidiagonal k,
       (k.choose p.1 : R) * ((D.toLinearMap ^ p.1) P * (D.toLinearMap ^ p.2) Q) := by
@@ -177,7 +157,7 @@ theorem Good.mul {D : Derivation ℂ R R} {P Q u v : R} (hP : Good D P u) (hQ : 
     rw [der_pow_mul, map_sum, Finset.mul_sum, Finset.sum_comm]
     refine Finset.sum_congr rfl fun p hp => ?_
     obtain rfl : p.1 + p.2 = k := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
-    rw [← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, key _ _ (pow_mem m₂ s₂ _), ← mul_assoc, fact_choose, Finset.mul_sum]
+    rw [← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, key _ _ (pow_mem m₂ s₂ _), ← mul_assoc, inv_fact_choose, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
 
@@ -204,10 +184,7 @@ attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebr
 
 theorem hasSum_exp_entry {τ : Type} [Fintype τ] [DecidableEq τ] (Y : Matrix τ τ ℂ) (a c : τ) :
     HasSum (fun n : ℕ => ((n.factorial : ℂ))⁻¹ * (Y ^ n) a c) (NormedSpace.exp Y a c) := by
-  have h := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) Y
-  have h1 := h.map (Matrix.entryAddMonoidHom ℂ a c) (continuous_id.matrix_elem a c)
-  simp only [Function.comp_def, Matrix.entryAddMonoidHom_apply, Matrix.smul_apply, smul_eq_mul] at h1
-  exact h1
+  exact UpperTheory.TP.RP.hasSum_exp_entry Y a c
 
 end Mat
 

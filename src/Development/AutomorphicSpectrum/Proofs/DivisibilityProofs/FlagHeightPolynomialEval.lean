@@ -51,7 +51,7 @@ theorem hhFl_linRoot_pow : ∀ II : IntersectionSystem, IsFullIntersectionSystem
           (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1)
           (fun k => GroundTheory.Heights₂.Heights.LowerBoundFree.xLine Ψ N (w k)) := by
     intro w
-    obtain ⟨hdeg, σ, -, hI⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII.1 _ _ (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1)
+    obtain ⟨hdeg, σ, -, hI⟩ := _root_.RootFieldNumerics.intersection_monomial_lines II hII.1 _ _ (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1)
       _ (GroundTheory.Heights₂.Heights.LowerBoundFree.xLine Ψ N) w hP
       (fun j => GroundTheory.Heights₂.Heights.LowerBoundFree.FlagHeightMultilinear.isSmoothHerm_fsHerm _)
     have hdeg' : (∑ k, Finsupp.single (w k) 1 : Ψ × Fin N →₀ ℕ).degree =

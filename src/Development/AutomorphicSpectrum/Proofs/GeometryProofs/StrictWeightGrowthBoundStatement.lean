@@ -628,16 +628,10 @@ theorem aeval_scale {R : Type*} [CommRing R] [Algebra ℤ R] (z : (Σ k, ι k) �
 
 variable {Ω : Type} [Field Ω]
 
-theorem mem_of_form (y : (Σ k, ι k) → Ω) {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d)
-    (h0 : aeval y g = 0) : g ∈ mCoordIdeal y := by
-  have h := aeval_scale (fun p => (C (y p) : MvPolynomial K Ω)) (fun k => X k) hg
-  rw [← map_aeval_int (C : Ω →+* MvPolynomial K Ω) y g, h0, map_zero, zero_mul] at h
-  exact h
-
 theorem form_vanish (y : (Σ k, ι k) → Ω) {𝕜 : Type} [Field 𝕜] {z : (Σ k, ι k) → 𝕜}
     (hz : z ∈ ptsOver 𝕜 (mCoordIdeal y)) {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d)
     (h0 : aeval y g = 0) : aeval z g = 0 :=
-  hz.2 g (mem_of_form y hg h0)
+  hz.2 g (GroundTheory.Heights₂.Heights.LowerBoundFree.mem_mCoordIdeal_of_aeval_eq_zero y hg h0)
 
 end MultiProjectiveCoordinates.Val
 end -- clump:auto

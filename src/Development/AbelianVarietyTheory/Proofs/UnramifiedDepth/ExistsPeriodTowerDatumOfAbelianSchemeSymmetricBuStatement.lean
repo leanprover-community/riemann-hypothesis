@@ -28,51 +28,9 @@ public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsComp
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.GrpPullbackSquareProductLift
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MulEqZeroOfSqZero
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TorsionInvariantDescendsFibre
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.DualLattices.CotangentSurjective
 import ReciprocityTheory.DualLattices.FormalChartAtZero
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
@@ -1344,12 +1302,6 @@ theorem prod_law₂ {T : Over S} (x y y' : T ⟶ G) {U : Type} [CommGroup U] (h 
   rw [comp_lift, comp_lift, comp_lift, b, a₀, a₁, a₂]
   simp only [_root_.zpow_neg, _root_.zpow_one]
 
-omit [IsCommMonObj G] in
-theorem comp_pow' {T T' : Over S} (ρ : T' ⟶ T) (a : T ⟶ G) (k : ℕ) : ρ ≫ a ^ k = (ρ ≫ a) ^ k := by
-  induction k with
-  | zero => simp
-  | succ k ih => rw [pow_succ, pow_succ, MonObj.comp_mul, ih]
-
 theorem exists_first {T : Over S} (x a : T ⟶ G) (n : ℕ) :
     ∃ t : LB.Gen (LB.LinComb P (K := Fin 3) ![(lift (x ^ n) a).left, (lift (x ^ 0) a).left, (lift x a).left] ![1, -1, -n]),
       t.IsGen ∧ ∀ (T' : Over S) (ρ : T' ⟶ T) (z : T'.left) (J), Good P z J → val t ρ.left z J =
@@ -1361,7 +1313,7 @@ theorem exists_first {T : Over S} (x a : T ⟶ G) (n : ℕ) :
       rw [pow_succ]) n
   refine ⟨t, ht, fun T' ρ z J hJ => (hv _ _ z J hJ).trans (Finset.prod_congr rfl fun k _ => ?_)⟩
   refine (val_pull hJ _ _ _).trans ?_
-  rw [← Over.comp_left, comp_lift, comp_lift, comp_pow']
+  rw [← Over.comp_left, comp_lift, comp_lift, GlobalTheory.SymLiftOdd.comp_pow']
 
 theorem exists_second {T : Over S} (x a : T ⟶ G) (n : ℕ) :
     ∃ t : LB.Gen (LB.LinComb P (K := Fin 3) ![(lift x (a ^ n)).left, (lift x (a ^ 0)).left, (lift x a).left] ![1, -1, -n]),
@@ -1374,7 +1326,7 @@ theorem exists_second {T : Over S} (x a : T ⟶ G) (n : ℕ) :
       rw [pow_succ]) n
   refine ⟨t, ht, fun T' ρ z J hJ => (hv _ _ z J hJ).trans (Finset.prod_congr rfl fun k _ => ?_)⟩
   refine (val_pull hJ _ _ _).trans ?_
-  rw [← Over.comp_left, comp_lift, comp_lift, comp_pow']
+  rw [← Over.comp_left, comp_lift, comp_lift, GlobalTheory.SymLiftOdd.comp_pow']
 
 theorem spread {T : Over S} (x y : T ⟶ G) (n : ℕ) (hx : x ^ n = 1) (hy : y ^ n = 1)
     (h : ∀ (z : T.left) (J), Good P z J → ∏ k ∈ Finset.range n, val β.law1 (lift (x ^ k) (lift x y)).left z J =
@@ -1436,9 +1388,9 @@ theorem main :
         ReciprocityTheory.ChartRestriction.G.Geo.Tor.val σ (r ≫ (lift (fst G (Over.mk f) * (snd G (Over.mk f) ≫ y)) (snd G (Over.mk f))).left) z J = ReciprocityTheory.ChartRestriction.G.Geo.Tor.val σ r z J) := by
   intro H S G _ _ K _ _ f N P β x hx
   obtain ⟨σ, hσ, hv⟩ := exists_sigma β (snd G (Over.mk f) ≫ x) (fst G (Over.mk f)) N
-    (by rw [← comp_pow', hx, MonObj.comp_one])
+    (by rw [← GlobalTheory.SymLiftOdd.comp_pow', hx, MonObj.comp_one])
     ((((𝟙 G) ^ N : G ⟶ G) ▷ Over.mk f).left ≫ (lift (snd G (Over.mk f) ≫ x) (fst G (Over.mk f))).left) (by
-      rw [← Over.comp_left, comp_lift, whiskerRight_fst, whiskerRight_snd_assoc, comp_pow', Category.comp_id])
+      rw [← Over.comp_left, comp_lift, whiskerRight_fst, whiskerRight_snd_assoc, GlobalTheory.SymLiftOdd.comp_pow', Category.comp_id])
   refine ⟨σ, hσ, fun y hy h Z r z J hJ => ?_⟩
   let T' : Over S := Over.mk (r ≫ (G ⊗ Over.mk f).hom)
   let ρ : T' ⟶ G ⊗ Over.mk f := Over.homMk r rfl
@@ -1457,8 +1409,8 @@ theorem main :
   exact ratio_translate (fun a b c : T' ⟶ G => val β.law1 (lift a (lift b c)).left z J)
     (fun a b c : T' ⟶ G => val β.law2 (lift a (lift b c)).left z J) c₃ c₄ c₅ ((ρ ≫ snd G (Over.mk f)) ≫ x)
     (ρ ≫ fst G (Over.mk f)) ((ρ ≫ snd G (Over.mk f)) ≫ y) N
-    ((comp_pow' _ x N).symm.trans ((congrArg _ hx).trans (MonObj.comp_one _)))
-    ((comp_pow' _ y N).symm.trans ((congrArg _ hy).trans (MonObj.comp_one _))) (spread β x y N hx hy h T' (ρ ≫ snd G (Over.mk f)) z J hJ)
+    ((GlobalTheory.SymLiftOdd.comp_pow' _ x N).symm.trans ((congrArg _ hx).trans (MonObj.comp_one _)))
+    ((GlobalTheory.SymLiftOdd.comp_pow' _ y N).symm.trans ((congrArg _ hy).trans (MonObj.comp_one _))) (spread β x y N hx hy h T' (ρ ≫ snd G (Over.mk f)) z J hJ)
 
 end GlobalTheory.TorsionGen
 

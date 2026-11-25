@@ -937,8 +937,7 @@ theorem isHerm_hform (hc : ∀ a, c (c a) = a) (hM : ∀ i j, c (M j i) = M i j)
   · simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Formalism.UG.hform, map_sum, map_mul, hc]
+  · simp only [Formalism.UG.hform, map_sum, map_mul, hc]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [hM]

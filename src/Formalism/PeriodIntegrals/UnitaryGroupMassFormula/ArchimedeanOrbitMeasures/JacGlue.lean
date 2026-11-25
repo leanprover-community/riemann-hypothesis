@@ -294,7 +294,6 @@ theorem splitAsym_good : SplitAsymFor GoodP := by
     intro n T hTW
     have h1 := (hAS n (show ((0 : EuclideanSpace ℝ ι), eH T) ∈ A n from ⟨by exact Set.mem_preimage.mpr (mem_ball_self (hρp n)), hTW⟩)).2
     simpa [eH.symm_apply_apply] using h1
-  set_option synthInstance.maxHeartbeats 100000 in
   have hΨc : ∀ n, ContinuousOn Ψ (A n) := fun n z hz =>
     ((hΨ' z (hAU n hz)).mono (hAU n)).continuousWithinAt
   have hΨm : ∀ n, MeasurableSet (Ψ '' A n) := fun n =>

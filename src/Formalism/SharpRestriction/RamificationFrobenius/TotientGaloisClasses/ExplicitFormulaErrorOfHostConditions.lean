@@ -73,34 +73,12 @@ theorem PChar.of_one (M : ℕ) [NeZero M] : PChar.of (1 : DirichletCharacter ℂ
     ⟨(1 : DirichletCharacter ℂ M).conductor_ne_zero⟩
   exact pchar_mk_eq_one_of_level_eq_one _ _ DirichletCharacter.conductor_one
 
-private theorem pchar_mk_eq_of_changeLevel_eq_of_level_eq {M d e : ℕ} [NeZero M] [NeZero d] [NeZero e]
-    (χ : DirichletCharacter ℂ M) (ψ : DirichletCharacter ℂ d) (φ : DirichletCharacter ℂ e)
-    (hd : d ∣ M) (he' : e ∣ M) (hde : d = e) (hψ : DirichletCharacter.changeLevel hd ψ = χ)
-    (hφ : DirichletCharacter.changeLevel he' φ = χ) (p1 : ψ.IsPrimitive) (p2 : φ.IsPrimitive) :
-    PChar.mk d ψ p1 = PChar.mk e φ p2 := by
-  subst hde
-  have hq : ψ = φ := DirichletCharacter.changeLevel_injective hd (hψ.trans hφ.symm)
-  subst hq
-  rfl
-
-theorem PChar.of_inv {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) : PChar.of χ⁻¹ = (PChar.of χ).inv := by
-  haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
-  haveI : NeZero χ⁻¹.conductor := ⟨χ⁻¹.conductor_ne_zero⟩
-  exact pchar_mk_eq_of_changeLevel_eq_of_level_eq χ⁻¹ χ⁻¹.primitiveCharacter χ.primitiveCharacter⁻¹ χ⁻¹.conductor_dvd_level
-    χ.conductor_dvd_level χ.conductor_inv χ⁻¹.changeLevel_primitiveCharacter
-    (by rw [map_inv, DirichletCharacter.changeLevel_primitiveCharacter]) _ _
-
 
 open Classical in
 def Level.ofSub {M : ℕ} [NeZero M] (Ξ : Subgroup (DirichletCharacter ℂ M)) : Level where
   KEPT := (Finset.univ.filter fun χ : DirichletCharacter ℂ M => χ ∈ Ξ).image PChar.of
   one_mem := Finset.mem_image.2 ⟨1, Finset.mem_filter.2 ⟨Finset.mem_univ _, Ξ.one_mem⟩, PChar.of_one M⟩
-  inv_mem := by
-    intro ψ h
-    obtain ⟨χ, h1, rfl⟩ := Finset.mem_image.1 h
-    exact Finset.mem_image.2 ⟨χ⁻¹, Finset.mem_filter.2 ⟨Finset.mem_univ _, Ξ.inv_mem (Finset.mem_filter.1 h1).2⟩, PChar.of_inv χ⟩
   psK := none
-  psK_spec := fun _ h => by cases h
   o := Nat.card Ξ
 
 theorem Level.mem_ofSub {M : ℕ} [NeZero M] (Ξ : Subgroup (DirichletCharacter ℂ M)) (ψ : PChar) :

@@ -1084,7 +1084,6 @@ theorem exists_ideal_rank_iff : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : 
   refine ⟨Ideal.span {x'}, fun T _ f hf => ?_⟩
   have hfa : ∀ a ∈ J, f a = 0 := fun a ha => RingHom.mem_ker.1 (hf ha)
   let fb : B ⧸ J →+* T := Ideal.Quotient.lift J f hfa
-  have hfb : fb.comp (Ideal.Quotient.mk J) = f := Ideal.Quotient.lift_comp_mk _ _ _
   rw [Ideal.span_singleton_le_iff_mem, RingHom.mem_ker]
   have hx' := hx T fb
   rw [show fb (Ideal.Quotient.mk J x') = f x' from Ideal.Quotient.lift_mk _ _ _] at hx'

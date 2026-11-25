@@ -21,11 +21,6 @@ import Batteries.Tactic.Lint.Misc
 section -- clump:auto
 @[expose] public section
 
-namespace MulEquivHaarCharEqOfProjection
-open MeasureTheory
-
-end MulEquivHaarCharEqOfProjection
-
 open MeasureTheory MeasureTheory.Measure in
 theorem UpperTheory.Reformulated.B.Yhb4.main :
     ∀ {H N : Type} [inst : Group H] [inst_1 : TopologicalSpace H] [inst_2 : IsTopologicalGroup H]

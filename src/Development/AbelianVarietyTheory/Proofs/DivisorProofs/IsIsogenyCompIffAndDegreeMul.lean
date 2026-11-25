@@ -63,7 +63,7 @@ theorem GlobalTheory.AV.AbVar.isIsogeny_comp_iff_and_deg_comp : ∀ (K : Type) [
     · rintro ⟨hfin, hsurj⟩
       have hs2 : Surjective (f.hom.left ≫ g.hom.left) := by rw [← hleft]; exact hsurj
       have hgs : Surjective g.hom.left := Surjective.of_comp f.hom.left g.hom.left
-      have hgf : IsFinite g.hom.left := GlobalTheory.T.isFinite_of_surjective_of_dim_eq' K B C g hBC hgs
+      have hgf : IsFinite g.hom.left := GlobalTheory.AV.AbVar.isFinite_of_surjective_of_dim_eq K B C g hBC hgs
       have hker : Finite (ptMap (f ≫ g)).ker := (GlobalTheory.T.isFinite_iff_finite_ker' K A C (f ≫ g)).1 hfin
       have hle : (ptMap f).ker ≤ (ptMap (f ≫ g)).ker := by
         intro x hx

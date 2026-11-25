@@ -76,7 +76,3 @@ theorem exp_identity (a b : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) (e mS mT : ℤ) (
       · rw [hS]; ring
 
 end GlobalTheory.KJReal
-
-namespace GlobalTheory.KJReal
-
-end GlobalTheory.KJReal

@@ -346,9 +346,6 @@ theorem fix_famSc {H : Matrix (Fin n) (Fin n) ℂ} (e : Fin r → Fin n → ℂ)
   | last => simp only [fam, Fin.snoc_last, hz]
   | cast i => simp only [fam, Fin.snoc_castSucc, he]
 
-theorem dl_top' (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) : Formalism.L2.SG.RealObj.Dl Z (r + 1) = Z.det := by
-  simp [Formalism.L2.SG.RealObj.Dl, Fin.castLE_rfl]
-
 theorem eN_ne_zero_and_eq_smul_of_unitary_column {k : ℕ} {M : Matrix (Fin k) (Fin k) ℂ} (hM : M ∈ Matrix.unitaryGroup (Fin k) ℂ) {i0 : Fin k}
     {nn : Fin k → ℂ} (h : M *ᵥ Pi.single i0 1 = ((eN nn)⁻¹ : ℂ) • nn) :
     eN nn ≠ 0 ∧ nn = (eN nn : ℂ) • (M *ᵥ Pi.single i0 1) := by

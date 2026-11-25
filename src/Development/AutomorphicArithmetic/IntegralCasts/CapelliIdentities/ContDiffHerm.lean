@@ -152,12 +152,7 @@ private theorem contDiff_det {n m : ℕ} (A : Matrix (Fin n) (Fin n) ℂ → Fin
 private theorem closed_sum {X E ι : Type*} [AddCommMonoid E] (P : (X → E) → Prop)
     (hadd : ∀ f₁ f₂, P f₁ → P f₂ → P fun x => f₁ x + f₂ x) (h0 : P fun _ => 0)
     (s : Finset ι) (F : ι → X → E) (hF : ∀ i, P (F i)) : P fun x => ∑ i ∈ s, F i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using h0
-  | insert a s ha ih =>
-    simp only [Finset.sum_insert ha]
-    exact hadd _ _ (hF a) ih
+  simpa only [Finset.sum_fn] using Finset.sum_induction F P hadd h0 fun i _ => hF i
 
 private theorem closed_foldr {Y : Type*} (P : Y → Prop) (f : Y) (hf : P f) (L : List (Y → Y))
     (hL : ∀ T ∈ L, ∀ y, P y → P (T y)) : P (L.foldr (fun T h => T h) f) := by

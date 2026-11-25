@@ -1,6 +1,7 @@
 module
 
 public import Formalism.FormalGroupWitt.SubstInjectiveV
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
 
 @[expose] public section
 
@@ -14,33 +15,14 @@ open Formalism.G
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K] {τ : Type w}
 
-theorem integral_mul {A B : MvPowerSeries τ K} (hA : IntegralMv A) (hB : IntegralMv B) :
-    IntegralMv (A * B) := by
-  classical
-  intro d
-  rw [MvPowerSeries.coeff_mul]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun p _ => ?_
-  rw [norm_mul]
-  exact mul_le_one₀ (hA _) (norm_nonneg _) (hB _)
-
-theorem integral_one : IntegralMv (1 : MvPowerSeries τ K) := by
-  classical
-  intro d
-  rw [MvPowerSeries.coeff_one]
-  split_ifs <;> simp
-
-theorem integral_pow {A : MvPowerSeries τ K} (hA : IntegralMv A) (n : ℕ) :
-    IntegralMv (A ^ n) := by
-  induction n with
-  | zero => simpa using integral_one
-  | succ n ih => rw [pow_succ]; exact integral_mul ih hA
-
 theorem integral_finsuppProd {ι : Type v} (a : ι → MvPowerSeries τ K) (ha : ∀ i, IntegralMv (a i))
     (n : ι →₀ ℕ) : IntegralMv (n.prod fun s e => (a s) ^ e) := by
   classical
   unfold Finsupp.prod
-  exact Finset.prod_induction _ (fun x => IntegralMv x) (fun _ _ hx hy => integral_mul hx hy)
-    integral_one (fun i _ => integral_pow (ha i) _)
+  exact Finset.prod_induction _ (fun x => IntegralMv x)
+    (fun _ _ hx hy => Formalism.ELL.SubstitutionCoefficientCongruence.integral_mul hx hy)
+    Formalism.ELL.SubstitutionCoefficientCongruence.integral_one
+    (fun i _ => Formalism.ELL.SubstitutionCoefficientCongruence.integral_pow (ha i) _)
 
 theorem integralSubstV {ι : Type v} [Finite ι] (g : MvPowerSeries ι K)
     (a : ι → MvPowerSeries τ K) (hg : IntegralMv g)

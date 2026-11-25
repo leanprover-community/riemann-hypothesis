@@ -100,7 +100,7 @@ theorem ll_mon_add (c : ∀ k, ι k) (d d' : K → ℕ) : llMon c (d + d') = llM
 
 theorem ll_mem_of_zero (y : (Σ k, ι k) → Ω) {F : MRing ι} {α : K → ℕ} (hF : IsMultiHomog F α)
     (h0 : aeval y F = 0) : F ∈ mCoordIdeal y :=
-  _root_.MultiProjectiveCoordinates.Val.mem_of_form y hF h0
+  _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.mem_mCoordIdeal_of_aeval_eq_zero y hF h0
 
 theorem ll_zero_of_mem (y : (Σ k, ι k) → Ω) {F : MRing ι} (hF : F ∈ mCoordIdeal y) : aeval y F = 0 := by
   have h : mConeMap y F = 0 := hF

@@ -40,9 +40,6 @@ open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
 
-
-
-
 open PositivityTheory.Rg.Rsw.L
 
 variable {D : D7} {ρ p n : ℕ}
@@ -155,9 +152,6 @@ open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 
 namespace PositivityTheory.Rg.Rsw.L.LFixTh
-
-
-
 
 open PositivityTheory.Rg.Rsw.L
 
@@ -310,12 +304,6 @@ theorem mat_inv_levi {g : G D p} {a : GL (Fin p) (AE D)} (ha : mat g = blk4 a.1 
     mat g⁻¹ = blk4 (a⁻¹).1 0 0 (adj a.1) := by
   apply _root_.GlobalTheory.CompanionTheory.EisCovar.mat_inv_levi <;> assumption
 
-private theorem matHom_proj_fst_eq_mat_map_cv (g : G D p) (v : Pl D) :
-    (GlobalTheory.AdelicU.matHom _ D.sp.cm.sig (GlobalTheory.StdUnn.Jst D p)
-      (GlobalTheory.AdelicU.proj D.sp.cm.sig (GlobalTheory.StdUnn.Jst D p) v g)).1 = (mat g).map (cv D v) := by
-  delta GlobalTheory.AdelicU.proj GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.mapH
-  rfl
-
 private theorem exists_mat_apply_eq_one_at_S_and_int_off_S {S : Finset (Pl D)} {h : G D p} (hh : h ∈ KOff D p S) :
     (∀ (w : NumberField.InfinitePlace D.host.F) (i j : Fin (p + p)),
       compInf D.host.F D.host.E w (mat h i j) = (1 : Matrix (Fin (p + p)) (Fin (p + p)) _) i j) ∧
@@ -343,13 +331,13 @@ private theorem exists_mat_apply_eq_one_at_S_and_int_off_S {S : Finset (Pl D)} {
     · rw [Matrix.one_apply_ne hij, Matrix.one_apply_ne hij, map_zero]
   · delta GlobalTheory.AdelicU.awayPts at haway
     have hker := MonoidHom.mem_ker.mp (Subgroup.mem_iInf.mp (Subgroup.mem_iInf.mp haway v) hv)
-    have h3 := matHom_proj_fst_eq_mat_map_cv h v
+    have h3 := PositivityTheory.Rg.Rsw.L.LFixTh.mat_proj h v
     rw [hker, map_one] at h3
     have h4 := congrArg (fun M : Matrix (Fin (p + p)) (Fin (p + p)) _ => M i j) h3
     exact h4.symm
   · have hs := (GlobalTheory.AdelicU.mem_stabLoc_stdLattice_iff.mp
       (Subgroup.mem_comap.mp (Subgroup.mem_iInf.mp (Subgroup.mem_iInf.mp hoff v) hv))).1 i j
-    rw [matHom_proj_fst_eq_mat_map_cv] at hs
+    rw [PositivityTheory.Rg.Rsw.L.LFixTh.mat_proj] at hs
     exact hs
 
 theorem levi_blocks {S : Finset (Pl D)} {g : G D p} (hg : g ∈ KOff D p S) {a : GL (Fin p) (AE D)}
@@ -458,7 +446,6 @@ namespace PositivityTheory.Rg.Rsw.L
 open LFixTh
 
 open Classical in
-
 
 theorem fixTh : IdemEx → GenG → GenK → FixTh := by
   intro _ hG hK D ρ p m ψ hψ χ hχ θ _ b₀ hb₀

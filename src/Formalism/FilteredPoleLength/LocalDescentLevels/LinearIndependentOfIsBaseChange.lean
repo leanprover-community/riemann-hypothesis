@@ -17,12 +17,6 @@ namespace Formalism.LatticeBaseChangeAlt
 
 open Module
 
-theorem linearIndependent_of_isBaseChange_alt {K K' V V₁ ι : Type} [Field K] [Field K'] [Algebra K K']
-    [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K' V₁] [Module K V₁]
-    [IsScalarTower K K' V₁] (j : V →ₗ[K] V₁) (hj : IsBaseChange K' j) (v : ι → V)
-    (hv : LinearIndependent K v) : LinearIndependent K' (fun i => j (v i)) := by
-  apply Formalism.LatticeBaseChangeAlt.LatticeIndexBis.indep_baseChange <;> assumption
-
 theorem span_image_span_alt {K K' V V₁ : Type} [Field K] [Field K'] [Algebra K K']
     [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K' V₁] [Module K V₁]
     [IsScalarTower K K' V₁] (j : V →ₗ[K] V₁) (s : Set V) :
@@ -50,7 +44,7 @@ theorem finrank_span_image_alt : FinrankSpanImage := by
     rw [hspan] at h2
     rw [h2, ← Set.range_comp]
     rfl
-  rw [h1, finrank_span_eq_card (linearIndependent_of_isBaseChange_alt j hj w hw), Fintype.card_fin]
+  rw [h1, finrank_span_eq_card (Formalism.LatticeBaseChangeAlt.LatticeIndexBis.indep_baseChange j hj w hw), Fintype.card_fin]
 
 theorem isLattice_span_image_alt : IsLatticeSpanImage := by
   intro O O' K K' V V₁ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ j hj M hM

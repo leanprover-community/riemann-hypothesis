@@ -59,7 +59,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainN
 
 namespace UpperTheory.N
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem invariants_killed_over_cyclotomic_subfield_of_admissible (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime]
     (hW : ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),

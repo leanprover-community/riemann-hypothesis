@@ -90,31 +90,7 @@ theorem exists_smul_mem_of_mem_span_val {C : Type} [Field C] {v : Valuation C NN
     [CommRing O] [Algebra O C] (hv : v.Integers O) {V : Type} [AddCommGroup V] [Module C V]
     [Module O V] [IsScalarTower O C V] (L : Submodule O V) {u : V}
     (hu : u ∈ Submodule.span C (L : Set V)) : ∃ c : C, c ≠ 0 ∧ c • u ∈ L := by
-  have key : ∀ (a b : C) (x : V), b ≠ 0 → v a ≤ v b → b • x ∈ L → a • x ∈ L := by
-    intro a b x hb hab hx
-    have hvb : 0 < v b := (Valuation.pos_iff v).2 hb
-    have h1 : v (a / b) ≤ 1 := by
-      rw [map_div₀]
-      exact (div_le_one hvb).2 hab
-    obtain ⟨o, ho⟩ := hv.exists_of_le_one h1
-    have h2 : a • x = o • (b • x) := by
-      rw [← IsScalarTower.algebraMap_smul C o, ho, smul_smul, div_mul_cancel₀ _ hb]
-    rw [h2]
-    exact L.smul_mem o hx
-  induction hu using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
-  | zero => exact ⟨1, one_ne_zero, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨a, ha, hx⟩ := hx
-    obtain ⟨b, hb, hy⟩ := hy
-    rcases le_total (v a) (v b) with h | h
-    · exact ⟨a, ha, by rw [smul_add]; exact L.add_mem hx (key a b y hb h hy)⟩
-    · exact ⟨b, hb, by rw [smul_add]; exact L.add_mem (key b a x ha h hx) hy⟩
-  | smul d x _ hx =>
-    obtain ⟨a, ha, hx⟩ := hx
-    by_cases hd : d = 0
-    · exact ⟨1, one_ne_zero, by simp [hd]⟩
-    · exact ⟨a / d, div_ne_zero ha hd, by rw [smul_smul, div_mul_cancel₀ _ hd]; exact hx⟩
+  apply GlobalTheory.CompanionTheory.Ar.HT.LatBasic.exists_smul_mem <;> assumption
 
 end GlobalTheory.CompanionTheory.Ar.HT
 end -- clump:auto

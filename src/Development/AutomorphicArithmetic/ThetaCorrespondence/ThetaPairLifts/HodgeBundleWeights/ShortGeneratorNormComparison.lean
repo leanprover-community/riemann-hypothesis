@@ -265,8 +265,6 @@ section -- clump:auto
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta GlobalTheory.AllWt
 
-theorem _root_.GlobalTheory.T.petersson_norm_component_add_le_of_gramFrame : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (x : ℝ) {D : D7} (V : (c.F →+* ℂ) → HSp D) (dict : ∀ σ, GA D (V σ) → Σ k, Frame ((U σ).X k).Ψ r) (Z : Comp Xo c) (G : WTZ E), GoodOn U x V dict Z G → ∀ σ (f g : cuspOn U Z G), normOn U x V dict Z G σ (f + g) ≤ normOn U x V dict Z G σ f + normOn U x V dict Z G σ g := by
-  first | exact @GlobalTheory.PetAdd.normOn_add_le
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeterssonNormComponentAddLeOfGramFrameStatement =====
@@ -356,8 +354,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 open GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.IndefiniteRowSideFullHecke.ComponentMassSum GlobalTheory.ShFam GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions.TH
-
-
 
 noncomputable section
 
@@ -1001,7 +997,6 @@ end GlobalTheory.ShortSpanComp
 
 namespace GlobalTheory.ShortSpanComp
 
-
 end GlobalTheory.ShortSpanComp
 end -- clump:auto
 end -- clump:auto
@@ -1357,7 +1352,7 @@ theorem short_generator_comparison : _root_.GlobalTheory.CovTop.PublishedHodgeBu
   obtain ⟨n, w, abelian₂, hsg, hLam, hn⟩ := _root_.GlobalTheory.exists_isShortGen_of_short_span Y.d.c₂.F _
     (normOn Y.U (xiR D) (fun _ => D.sp.W j) Y.dict Z (wtOf (T.Q.Dw j) la 0)) (latOn Y.U Z (wtOf (T.Q.Dw j) la 0)) s _
     hgood.2.1 (fun σ f => AllWt.petAt_nonneg _ _ _ _ _ _ _)
-    (fun σ a f => AllWt.petOn_smul _ _ _ _ Z _ σ a f) (GlobalTheory.T.petersson_norm_component_add_le_of_gramFrame _ _ _ _ Z _ hgood) hsL hsp hsn
+    (fun σ a f => AllWt.petOn_smul _ _ _ _ Z _ σ a f) (GlobalTheory.PetAdd.normOn_add_le _ _ _ _ Z _ hgood) hsL hsp hsn
   refine ⟨n, w, abelian₂, hsg, ?_⟩
   have hf1 : 1 ≤ D.R.f ∧ 1 ≤ D.R.r := by
     have hn : 1 ≤ D.R.ord := D.R.ord_pos

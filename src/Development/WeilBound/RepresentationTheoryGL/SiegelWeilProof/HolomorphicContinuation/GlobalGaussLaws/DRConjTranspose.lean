@@ -72,19 +72,11 @@ theorem kth_decomp (θ : Fin n → ℝ) (hc : ∀ j, Real.cos (θ j) ≠ 0) :
 
 theorem kth_half (θ : Fin n → ℝ) : kth θ = kth (fun j => θ j / 2) * kth (fun j => θ j / 2) := by
   have hc : ∀ j, Real.cos (θ j) = Real.cos (θ j / 2) * Real.cos (θ j / 2) -
-      Real.sin (θ j / 2) * Real.sin (θ j / 2) := by
-    intro j
-    have := Real.cos_two_mul (θ j / 2)
-    rw [show 2 * (θ j / 2) = θ j by ring] at this
-    rw [this]
-    linear_combination Real.sin_sq_add_cos_sq (θ j / 2)
+      Real.sin (θ j / 2) * Real.sin (θ j / 2) := fun j => by
+    rw [← Real.cos_add, add_halves]
   have hs : ∀ j, Real.sin (θ j) = Real.cos (θ j / 2) * Real.sin (θ j / 2) +
-      Real.sin (θ j / 2) * Real.cos (θ j / 2) := by
-    intro j
-    have := Real.sin_two_mul (θ j / 2)
-    rw [show 2 * (θ j / 2) = θ j by ring] at this
-    rw [this]
-    ring
+      Real.sin (θ j / 2) * Real.cos (θ j / 2) := fun j => by
+    rw [add_comm, ← Real.sin_add, add_halves]
   rw [kth_eq, kth_eq, Matrix.fromBlocks_multiply]
   simp only [dR_mul, dR_neg, dR_add]
   congr 1

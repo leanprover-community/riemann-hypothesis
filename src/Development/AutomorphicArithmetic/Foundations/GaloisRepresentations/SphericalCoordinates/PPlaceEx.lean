@@ -126,7 +126,7 @@ private theorem exists_rep {V : Type} [AddCommGroup V] [Module ℚ V] [FiniteDim
     (E F : LinearMap.BilinForm ℚ V) (hE : ∀ a, (∀ w, E a w = 0) → a = 0) :
     ∃ b : Module.End ℚ V, ∀ u w, F u w = 2 * E (b u) w := by
   have inj : Function.Injective (E : V →ₗ[ℚ] Module.Dual ℚ V) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     exact hE a fun w => by rw [ha]; rfl
   let Φ : V ≃ₗ[ℚ] Module.Dual ℚ V :=
@@ -152,7 +152,7 @@ theorem UpperTheory.exists_unitary_unit_hermitian_form_of_cm_lattice :
   have hF : ∀ u w, F u w = Y.EF.baseChange ℚ (j.symm u) (j.symm w) := fun u w => rfl
   obtain ⟨b, hb⟩ := exists_rep E F sepE
   have hinj : Function.Injective b := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro u hu
     have : j.symm u = 0 := sepY _ fun w => by
       have h := hb u (j w)
@@ -575,7 +575,7 @@ private theorem actOn_tmul {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V
 private theorem actOn_inj {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
     (rep : C →ₐ[ℚ] Module.End ℚ V) (hrep : Function.Injective rep) :
     Function.Injective (actOn rep ℝ) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   let B := Module.Free.chooseBasis ℚ ℝ
   obtain ⟨c, rfl⟩ := TensorProduct.eq_repr_basis_left B x

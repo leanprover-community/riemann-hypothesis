@@ -1117,7 +1117,3 @@ end GlobalTheory.JumpSets
 
 end
 
-namespace GlobalTheory.JumpSets
-
-end GlobalTheory.JumpSets
-

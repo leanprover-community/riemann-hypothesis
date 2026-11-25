@@ -43,10 +43,6 @@ def vecSplitPerp (h : V →ₗ⋆[K] V →ₗ[K] K) {x₀ : V} (hx : h x₀ x₀
       rw [LinearMap.mem_ker, map_sub, map_smul, smul_eq_mul, div_mul_cancel₀ _ hx, sub_self]
     · simp
 
-private theorem star_sesq_eq_swap_of_isSymm {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (a b : V) :
-    star (h a b) = h b a := by
-  first | exact hs.eq a b
-
 theorem VecSplit.finrank_add_one {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K}
     (S : VecSplit h h') : finrank K V' + 1 = finrank K V := by
   let f : K × V' →ₗ[K] V := LinearMap.coprod (LinearMap.toSpanSingleton K V S.x₀) S.ι
@@ -80,12 +76,8 @@ theorem VecSplit.isTotPosDef {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ�
   exact hd _ (fun h0 => ha (S.inj (by rw [h0, map_zero]))) φ
 
 theorem VecSplit.isSymm {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K}
-    (S : VecSplit h h') (hs : h.IsSymm) : h'.IsSymm := by
-  have H : ∀ a b : V', star (h' a b) = h' b a := by
-    intro a b
-    rw [← S.isom, ← S.isom]
-    exact star_sesq_eq_swap_of_isSymm hs _ _
-  first | exact ⟨H⟩
+    (S : VecSplit h h') (hs : h.IsSymm) : h'.IsSymm :=
+  ⟨fun _ _ => by rw [← S.isom, ← S.isom]; exact hs.eq _ _⟩
 
 theorem exists_vec_of_hermRep (hH : HermRepUnram) (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) (hV : 2 ≤ finrank K V)
@@ -103,8 +95,8 @@ theorem exists_vec_of_hermRep (hH : HermRepUnram) (hK : Formalism.HermitianLatti
     (Module.finrank_pos_iff_exists_ne_zero (R := K)).mp (by omega)
   have hy0 : y'.1 ≠ 0 := fun h0 => hy' (Subtype.ext h0)
   have hxy : h x y'.1 = 0 := LinearMap.mem_ker.mp y'.2
-  have hyx : h y'.1 x = 0 := by rw [← star_sesq_eq_swap_of_isSymm hs, hxy, star_zero]
-  obtain ⟨s, t, hst⟩ := hH K hK (h x x) (h y'.1 y'.1) n (star_sesq_eq_swap_of_isSymm hs x x) (star_sesq_eq_swap_of_isSymm hs _ _) hn
+  have hyx : h y'.1 x = 0 := by rw [← hs.eq, hxy, map_zero]
+  obtain ⟨s, t, hst⟩ := hH K hK (h x x) (h y'.1 y'.1) n (hs.eq x x) (hs.eq _ _) hn
     (fun φ => hd x hx φ) (fun φ => hd _ hy0 φ) hpos
   refine ⟨star s • x + star t • y'.1, ?_⟩
   simp only [map_add (f := _), map_smulₛₗ, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,

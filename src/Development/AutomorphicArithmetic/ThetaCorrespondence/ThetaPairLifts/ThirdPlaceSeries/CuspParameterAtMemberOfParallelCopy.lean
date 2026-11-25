@@ -85,8 +85,6 @@ theorem exists_mtInput_of_nTrue {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D
   subst hm
   exact ⟨tp.tup, C.Q, { mt with }⟩
 end GlobalTheory.HeightCounting.Up.ParCopy
-namespace GlobalTheory.HeightCounting.Up
-end GlobalTheory.HeightCounting.Up
 end
 end -- clump:auto
 end -- clump:auto

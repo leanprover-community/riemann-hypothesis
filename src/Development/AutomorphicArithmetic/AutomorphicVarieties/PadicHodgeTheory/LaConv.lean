@@ -61,6 +61,14 @@ noncomputable section
 
 section GenMat
 
+private theorem tmap_smul {Q B V : Type} [Field Q] [CommRing B] [Algebra Q B] [AddCommGroup V] [Module Q V]
+    (a : B →ₐ[Q] B) (r : V →ₗ[Q] V) (b : B) (x : B ⊗[Q] V) :
+    TensorProduct.map a.toLinearMap r (b • x) = a b • TensorProduct.map a.toLinearMap r x := by
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul c v => simp [TensorProduct.smul_tmul']
+  | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
+
 private theorem genMat {Q B G V : Type} [Field Q] [CommRing B] [IsDomain B] [Algebra Q B] [AddCommGroup V]
     [Module Q V] (a : G → B →ₐ[Q] B) (r : G → V →ₗ[Q] V) (hr : ∀ g, LinearMap.det (r g) ≠ 0)
     (hu : ∀ b : B, b ≠ 0 → (∀ g, ∃ x : Q, a g b = algebraMap Q B x * b) → IsUnit b)
@@ -86,19 +94,12 @@ private theorem genMat {Q B G V : Type} [Field Q] [CommRing B] [IsDomain B] [Alg
     smul_eq_mul, map_zero, Finsupp.zero_apply]
     rw [← this]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
-  have hs : ∀ g (b : B) (x : B ⊗[Q] V), TensorProduct.map (a g).toLinearMap (r g) (b • x) =
-      a g b • TensorProduct.map (a g).toLinearMap (r g) x := by
-    intro g b x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul c v => simp [TensorProduct.smul_tmul']
-    | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
   have hrep : ∀ g (x : B ⊗[Q] V) k, e.repr (TensorProduct.map (a g).toLinearMap (r g) x) k =
       ∑ j, algebraMap Q B (v.repr (r g (v j)) k) * a g (e.repr x j) := by
     intro g x k
     conv_lhs => rw [← e.sum_repr x]
 
-    simp only [map_sum, hs, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
+    simp only [map_sum, tmap_smul, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply,
     smul_eq_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [mul_comm]
@@ -210,13 +211,6 @@ private theorem drMat (hF : IsField BdR) (ρ : Representation Qp G V)
   rw [finrank_eq_card_basis v, Fintype.card_fin] at hr
   let e := Module.finBasisOfFinrankEq K _ hr
   let a : G → BdR →ₐ[Qp] BdR := fun g => (PD.actdR g).toAlgHom.restrictScalars Qp
-  have hσ : ∀ g (b : BdR) (w : BdR ⊗[Qp] V), TensorProduct.map (a g).toLinearMap (ρ g) (b • w) =
-      a g b • TensorProduct.map (a g).toLinearMap (ρ g) w := by
-    intro g b w
-    induction w using TensorProduct.induction_on with
-    | zero => simp
-    | tmul c v => simp [TensorProduct.smul_tmul']
-    | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
   have hc : ∀ g x, TensorProduct.map (a g).toLinearMap (ρ g) (TensorProduct.comm Qp V BdR x) =
       TensorProduct.comm Qp V BdR (actVdR PD ρ g x) := by
     intro g x
@@ -235,7 +229,8 @@ private theorem drMat (hF : IsField BdR) (ρ : Representation Qp G V)
   have hi : LinearIndependent BdR fun k => (e k : BdR ⊗[Qp] V) := by
     letI := hF.toField
     exact GlobalTheory.Per.linearIndependent_of_invariant _ _ _ _ (fun g => (a g : BdR →+* BdR))
-      (fun g => (TensorProduct.map (a g).toLinearMap (ρ g)).toAddMonoidHom) hσ _ hw
+      (fun g => (TensorProduct.map (a g).toLinearMap (ρ g)).toAddMonoidHom)
+      (fun g => tmap_smul (a g) (ρ g)) _ hw
       (fun c hcg hsum k => by
         choose x hx using fun p => PD.invdR (c p) fun g => hcg g p
         have h1 : ∑ i, x i • e i = 0 := by
@@ -631,8 +626,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 namespace UpperTheory.V.Loc.LaConv
 
 open GlobalTheory.Pst GlobalTheory.TripleGal Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Topology
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 section Char
 

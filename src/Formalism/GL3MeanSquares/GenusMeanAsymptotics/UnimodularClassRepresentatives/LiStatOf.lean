@@ -393,16 +393,9 @@ theorem red_form (h : V →ₗ⋆[K] V →ₗ[K] K) (b : Basis κ K V) {H : Matr
   calc _ = Ideal.Quotient.mk (extP K 𝔭 ^ k) (ι (c * c') * z) := congrArg _ e3
     _ = _ := by rw [map_mul, e4, one_mul]
 
-omit [Fact (IsFixF K F)] in
-theorem map_mem {h : V →ₗ⋆[K] V →ₗ[K] K} {M : Submodule (𝓞 K) V} {g : V ≃ₗ[K] V}
-    (hg : g ∈ autSub h M) {x : V} (hx : x ∈ M) : g x ∈ M := by
-  have h2 : Formalism.HermitianLatticesTheory.gmap g M = M := hg.2
-  rw [← h2]
-  exact Submodule.mem_map.mpr ⟨x, hx, rfl⟩
-
 def gM {h : V →ₗ⋆[K] V →ₗ[K] K} {M : Submodule (𝓞 K) V} {g : V ≃ₗ[K] V} (hg : g ∈ autSub h M) :
     ↥M →ₗ[𝓞 K] ↥M :=
-  ((g : V →ₗ[K] V).restrictScalars (𝓞 K)).restrict fun _ hx => map_mem hg hx
+  ((g : V →ₗ[K] V).restrictScalars (𝓞 K)).restrict fun _ hx => Formalism.HermitianLattices.Ext.L3.HU.aut_mem hg hx
 
 def gMat {h : V →ₗ⋆[K] V →ₗ[K] K} (b : Basis κ K V) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     [𝔭.IsPrime] (k : ℕ) {g : V ≃ₗ[K] V} (hg : g ∈ autSub h (locF 𝔭 (spanO b))) :
@@ -488,7 +481,6 @@ variable {K F V V' : Type} [Field K] [NumberField K] [StarRing K] [Field F] [Num
   [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
   [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
 variable {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K}
-
 
 omit [NumberField K] [FiniteDimensional K V] [FiniteDimensional K V'] in
 def prodEquiv (S : VecSplit h h') : (K × V') ≃ₗ[K] V :=

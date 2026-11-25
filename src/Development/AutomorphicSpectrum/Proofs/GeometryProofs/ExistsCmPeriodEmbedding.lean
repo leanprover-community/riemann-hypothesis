@@ -262,7 +262,7 @@ theorem exists_pack_given : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   have hK : Published.KernelFiniteFlatSt := GlobalTheory.kernelFiniteFlat_holds
   have hB := hL.polBaseChange
   obtain ⟨K₀, hK₀, y₀, _, hy₀, hy₀'⟩ := _root_.PositivityTheory.Xgf.family_pure_periods_span E H D l Xo c g ty FU i P hP n hn hy
-  obtain ⟨hg0, bb0, a0, hspan0⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_pure_vectors_periods_span_of_finite_index E H (FU.Di i) g ty P hP n hn hy
+  obtain ⟨hg0, bb0, a0, hspan0⟩ := _root_.PositivityTheory.Xgf.periods_span_pure_decomposition E H (FU.Di i) g ty P hP n hn hy
 
   obtain ⟨k₀, _, e₁, e₂, e₃, e₆⟩ : ∃ k₀ : IntermediateField ℚ ℂ, FiniteDimensional ℚ k₀ ∧ K₀ ≤ k₀ ∧
       (∀ b, (Z b).M ≤ k₀) ∧ k ≤ k₀ ∧ c.F ≤ k₀ :=
@@ -412,7 +412,7 @@ theorem exists_cmPoint_locBasis_frames :
   obtain ⟨P, hP, x, hloc, hx⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.DSplit.exists_split_period E H (FU.Di i) g ty P₀ D.p D.q ℓ hP₀ hty hsum
   obtain ⟨hli, n, hn, hspan⟩ := id hloc
   have hn0 : 0 < n := Nat.pos_of_ne_zero (by rintro rfl; exact hn (dvd_zero _))
-  obtain ⟨hsplit, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.pure_family_spans_pure_sublattice E H (FU.Di i) g ty P hP D.p D.q x n hx hspan
+  obtain ⟨hsplit, -, -⟩ := _root_.PositivityTheory.Xgf.pure_family_decomposition E H (FU.Di i) g ty P hP D.p D.q x n hx hspan
   obtain ⟨X, hkX⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.CMGiven.exists_pack_given E H D l Xo c g ty FU i Z P hP n k hk hn0 hsplit
   obtain ⟨⟨v, w, hvw⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.cm_pack_pure_frame E H D l Xo c g ty FU i Z P hP X x hx τ hty hτ hli
   exact ⟨P, hP, x, hx, X, v, w, hkX, hloc, hvw⟩

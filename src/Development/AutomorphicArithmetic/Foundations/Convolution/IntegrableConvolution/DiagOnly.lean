@@ -273,7 +273,7 @@ theorem UpperTheory.ConvolutionTheory.L1.diagOnly :
       (isSelfAdjoint_of_nonneg (hS.A_pos i))) x z
   have hpos : ∀ i x, 0 ≤ RCLike.re ⟪x, A i x⟫_ℂ := fun i x => by
     rw [inner_apply_eq_norm_sqrt_sq (hS.A_pos i) x]
-    simp only [← Complex.ofReal_pow, RCLike.re_eq_complex_re, Complex.ofReal_re]
+    simp only [RCLike.re_eq_complex_re, Complex.ofReal_re]
     positivity
   have memZ : ∀ v, v ∈ prodEig V E A (y ^ (m + 1)) ↔ (v ∈ V ∧ E v = v) ∧
       (List.ofFn A).prod v = ((y : ℂ) ^ (m + 1)) • v := by

@@ -122,8 +122,6 @@ end GlobalTheory.GalStep
 namespace GlobalTheory.GalStep
 variable {l : ℕ} [Fact l.Prime]
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 def rhoDHom {LL : FinExt l} {ι : Type} (T : QLat LL)
     (jD : (ι → OD l ↥(OL LL)) ≃ₗ[OD l ↥(OL LL)] TW (OD l ↥(OL LL)) T) (g : Gl l) :
     (ι → OD l ↥(OL LL)) →+ (ι → OD l ↥(OL LL)) :=

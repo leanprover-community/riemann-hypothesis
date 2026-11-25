@@ -94,7 +94,7 @@ theorem exists_coef_scale : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T
       obtain ⟨v, rfl⟩ := e.surjective w
       change coefLin _ (e.symm ((R.cV i).ρ h (e v))) y = coefLin _ (e.symm (e v)) _
       rw [he h h.2, e.symm_apply_apply, e.symm_apply_apply]
-      exact coefFn_translate _ _ _ _)
+      exact GlobalTheory.ExportSeries.Onto.coefFn_actP _ _ _ _)
   subst hce
   refine ⟨κ, fun h0 => hΔ0 ?_, fun y => hharm _, fun y => ?_⟩
   · have h1 := LinearMap.congr_fun hcc w₀

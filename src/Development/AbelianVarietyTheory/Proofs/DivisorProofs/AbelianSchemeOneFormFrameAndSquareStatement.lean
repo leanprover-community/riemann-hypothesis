@@ -75,7 +75,7 @@ theorem basic_of_isAbelianScheme : ∀ (R : Type) [CommRing R] (A : Over (Sp R))
   have hsq : IsPullback (𝟙 A.left) A.hom A.hom (spMap (algebraMap R R)) := by
     rw [Algebra.algebraMap_self, spMap_id]
     exact IsPullback.of_horiz_isIso ⟨by simp⟩
-  exact GlobalTheory.T.globalFunctionsConstantAfterBaseChange_of_abelianScheme R A hA R A.left A.hom (𝟙 _) hsq
+  exact GlobalTheory.AbCoh.uConst_of_isAbelianScheme R A hA R A.left A.hom (𝟙 _) hsq
 
 end GlobalTheory.AbCoh
 end -- clump:auto

@@ -260,12 +260,6 @@ structure Unf (X : Ch D u) (i : ℕ) (v : X.A.vT) where
 
 attribute [instance] Unf.fin
 
-namespace Unf
-
-variable {X : Ch D u} {i : ℕ} {v : X.A.vT} (s : Unf X i v)
-
-end Unf
-
 end
 section
 variable {D : D7} {u : D.what₂.Word} {X : Ch D u}

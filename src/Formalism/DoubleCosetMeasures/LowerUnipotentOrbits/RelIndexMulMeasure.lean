@@ -224,7 +224,3 @@ theorem congSub_open (O : Subring F) (hO : IsOpen (O : Set F)) (ϖ : F) (a : ℕ
 end Top
 
 end Formalism.DoubleCosetMeasures.P.GLRed
-
-namespace Formalism.DoubleCosetMeasures.P
-
-end Formalism.DoubleCosetMeasures.P

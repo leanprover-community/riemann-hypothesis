@@ -6,7 +6,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qm10.exists_rows_linearIndependent.{u, u_1, u_2} :
-    ∀ {K : Type u_1} [inst : Field K] {r : Type u} {c : Type u_2} [Fintype r] [inst_2 : Fintype c]
+    ∀ {K : Type u_1} [Field K] {r : Type u} {c : Type u_2} [Fintype r] [Fintype c]
     (P : Matrix r c K) {k : ℕ}, k ≤ P.rank → ∃ (I : Fin k → r), LinearIndependent K fun (p : Fin k) ↦ P (I p) := by
   intro K _ r c _ _ P k hk
   obtain ⟨κ, a, ha, hspan, hli⟩ := exists_linearIndependent' K P.row

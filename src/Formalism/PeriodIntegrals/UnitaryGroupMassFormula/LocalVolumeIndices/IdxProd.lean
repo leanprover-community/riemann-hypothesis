@@ -19,10 +19,6 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.S
   Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
 open Formalism.MainNotions.S (AutInst)
 
-theorem index_pi₂ {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] (H : ∀ i, Subgroup (G i)) :
-    (Subgroup.pi Set.univ H).index = ∏ i, (H i).index := by
-  apply GlobalTheory.index_pi_univ_dep
-
 def KsetSub (I : AutInst) : Subgroup I.Gf :=
   (Formalism.UG.stabGL I.Lf).comap (Formalism.UG.UPts I.cm.sig I.J (Af I.F)).subtype
 
@@ -149,7 +145,7 @@ theorem IP_idxProd (hS : SngSurj) (hK : X.LevelSubgroupCharacter) (hL : X.LevelS
   show gIdx X hb = ∏ p : TypX X, lIdx X hb p
   rw [IP_gIdx X hb hK]
   show ((levelSubgroupOfCharacter X hK).subgroupOf (KsetSub X.B.I)).index = _
-  rw [levelSubgroupAlt_subgroupOf_eq_comap_pi X hb hK hL, Subgroup.index_comap_of_surjective (hf := phiK_surjective X hb hS), index_pi₂]
+  rw [levelSubgroupAlt_subgroupOf_eq_comap_pi X hb hK hL, Subgroup.index_comap_of_surjective (hf := phiK_surjective X hb hS), GlobalTheory.index_pi_univ_dep]
   rfl
 
 theorem idxProdAll_of (hS : SngSurj) : IdxProdAll := by

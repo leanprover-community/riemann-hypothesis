@@ -197,8 +197,6 @@ noncomputable section
 
 namespace Formalism.MainStatements.RowRest
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem place_eq {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ)
     (wf : Fin k → Fin n → ℂ) (z : Fin n → ℂ) {T : ℝ} (hT : 0 < T)
     (hee : ∀ a b, hJ ε (e a) (e b) = 0) (hff : ∀ a b, hJ ε (f a) (f b) = 0)

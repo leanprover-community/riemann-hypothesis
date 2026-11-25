@@ -796,7 +796,3 @@ theorem isGL_sgn (p : PlF D) : IsGL (M p).R (LsDatumB.sgnP p) := by
 end Restr
 
 end Formalism.L2.SG.Pf.LocUnramB
-
-namespace Formalism.L2.SG.Pf
-
-end Formalism.L2.SG.Pf

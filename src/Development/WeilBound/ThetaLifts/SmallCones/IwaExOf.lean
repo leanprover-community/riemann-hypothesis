@@ -64,16 +64,10 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {B : Base F E} {n r s : ℕ} {X : Spc F E n} {x : Fin n → E} {v : Pl F}
 
 theorem compFin_smul (u : Pl F) (a : AF F) (z : AE F E) : compFin F E u (a • z) = evFin F u a • compFin F E u z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul b x => exact congrArg (· ⊗ₜ[F] x) (map_mul (evFin F u) a b)
-  | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
+  apply PositivityTheory.ThKG.Loc.Iwa.compFin_smul
 
 theorem compInf_smul (u : InfinitePlace F) (a : AF F) (z : AE F E) : compInf F E u (a • z) = evInf F u a • compInf F E u z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul b x => exact congrArg (· ⊗ₜ[F] x) (map_mul (evInf F u) a b)
-  | add x y hx hy => simp only [smul_add, map_add (f := _), hx, hy]
+  apply PositivityTheory.ThKG.Loc.Iwa.compInf_smul
 
 def LocIwa (σ : E →ₐ[F] E) (X : Spc F E n) (x : Fin n → E) : Prop :=
   ∀ (v : Pl F) (g : UA σ X.J), g ∈ UAt σ X (evFin F v) → ∃ p ∈ UAt σ X (evFin F v), ∃ k ∈ KAt σ X v, ∃ t : (AE F E)ˣ,

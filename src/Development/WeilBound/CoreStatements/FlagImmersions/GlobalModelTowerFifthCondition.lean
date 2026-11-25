@@ -253,15 +253,6 @@ theorem aeval_chart (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) {g : MRing ι} {
   refine Finset.prod_congr rfl fun k _ => ?_
   rw [zpow_neg, zpow_natCast]
 
-theorem aeval_eq_zero_of_mem (y : (Σ k, ι k) → Ω) {f : MRing ι} (hf : f ∈ mCoordIdeal y) : aeval y f = 0 := by
-  have h : (aeval (fun p : Σ k, ι k => C (y p) * X p.1) f : MvPolynomial K Ω) = 0 := RingHom.mem_ker.mp hf
-  have e := map_aeval_int (eval fun _ : K => (1 : Ω)) (fun p : Σ k, ι k => (C (y p) * X p.1 : MvPolynomial K Ω)) f
-  have e' : (fun p : Σ k, ι k => eval (fun _ : K => (1 : Ω)) (C (y p) * X p.1 : MvPolynomial K Ω)) = y := by
-    funext p
-    simp
-  rw [e', h, map_zero] at e
-  exact e.symm
-
 theorem coord_ne_zero (y : (Σ k, ι k) → Ω) {p : Σ k, ι k} (h : (X p : MRing ι) ∉ mCoordIdeal y) : y p ≠ 0 := by
   intro hy
   apply h
@@ -283,7 +274,7 @@ theorem ne_zero_of_genUnit {y : (Σ k, ι k) → Ω} {d : ℕ} (hA : IsArithVar 
   obtain ⟨-, ⟨-, -, hR⟩, hH, -⟩ := hA
   haveI := charZero_of_horizontal y hH
   have hy : y ∈ ptsOver Ω (mCoordIdeal y) :=
-    ⟨fun k => let ⟨i, hi⟩ := hR k; ⟨i, coord_ne_zero y hi⟩, fun f hf => aeval_eq_zero_of_mem y hf⟩
+    ⟨fun k => let ⟨i, hi⟩ := hR k; ⟨i, coord_ne_zero y hi⟩, fun f hf => GlobalTheory.CompanionTheory.Ar.JoinPts.aeval_eq_zero_of_mem y hf⟩
   obtain ⟨v, hv0, dg, dh, g, h, -, -, -, hgy, hhy, hgz⟩ := H Ω y hy
   intro hu
   rw [hu, zero_mul] at hgy
@@ -304,7 +295,7 @@ theorem exists_ratio (y : (Σ k, ι k) → Ω) (hS : IsMultiHomogIdeal (mCoordId
       obtain ⟨d, hd⟩ := hS1 f hf
       have hfP : f ∈ mCoordIdeal y := hS2 ▸ Ideal.subset_span hf
       refine RingHom.mem_ker.mpr (Subtype.ext ?_)
-      rw [hval, aeval_chart y c hd, aeval_eq_zero_of_mem y hfP]
+      rw [hval, aeval_chart y c hd, GlobalTheory.CompanionTheory.Ar.JoinPts.aeval_eq_zero_of_mem y hfP]
       simp
     rwa [← hS2] at hspan
   let z : (Σ k, ι k) → L := fun p => π (w p)
@@ -718,7 +709,7 @@ theorem exists_spec {B Ω σ : Type} [CommRing B] [IsDomain B] [IsNoetherianRing
   let I : Ideal (MvPolynomial σ B) := RingHom.ker (eval₂Hom j u)
   have : I.IsPrime := RingHom.ker_isPrime _
   have hinj : Function.Injective (algebraMap B (MvPolynomial σ B ⧸ I)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro b hb
     have h1 : Ideal.Quotient.mk I (C b) = 0 := hb
     have h2 : eval₂Hom j u (C b) = 0 := Ideal.Quotient.eq_zero_iff_mem.mp h1
@@ -1221,25 +1212,6 @@ theorem mCoordIdeal_ringHom {L Ω : Type} [Field L] [Field Ω] (j : L →+* Ω) 
   simp only [mCoordIdeal, RingHom.mem_ker, key]
   exact map_eq_zero_iff _ (MvPolynomial.map_injective j j.injective)
 
-theorem lineHt_tensor (A B : HermLine ι) (L : Type) [Field L] [NumberField L] (w : (Σ k, ι k) → L)
-    (hw : ∀ k, ∃ i, w ⟨k, i⟩ ≠ 0) :
-    lineHt (A.tensor B) L w = lineHt A L w + lineHt B L w := by
-  have hx : ∀ k, (fun i => w ⟨k, i⟩) ≠ 0 := fun k => Function.ne_iff.mpr (hw k)
-  have hfin : ∀ C : K → ℝ, ∑ᶠ v : FinitePlace L, ∑ k, C k * Real.log (⨆ i, v (w ⟨k, i⟩)) =
-      ∑ k, C k * ∑ᶠ v : FinitePlace L, Real.log (⨆ i, v (w ⟨k, i⟩)) := fun C =>
-    GroundTheory.Heights₂.Heights.finsum_sum_mul _ _
-      fun k => GroundTheory.Heights₂.Heights.support_log_iSup_place_finite (hx k)
-  have harch : ∀ σ : L →+* ℂ, Real.log ((A.tensor B).h fun p => σ (w p)) =
-      Real.log (A.h fun p => σ (w p)) + Real.log (B.h fun p => σ (w p)) := fun σ => by
-    have hσ : ∀ k, ∃ i, (fun p => σ (w p)) ⟨k, i⟩ ≠ 0 := fun k => by
-      obtain ⟨i, hi⟩ := hw k
-      exact ⟨i, (map_ne_zero _).mpr hi⟩
-    exact Real.log_mul (A.pos _ hσ).ne' (B.pos _ hσ).ne'
-  unfold lineHt ptHt
-  rw [hfin, hfin, hfin, Finset.sum_congr rfl fun σ _ => harch σ, Finset.sum_add_distrib]
-  simp only [HermLine.tensor, Pi.add_apply, Int.cast_add, add_mul, Finset.sum_add_distrib]
-  ring
-
 theorem isSmoothHerm_pushLine (e : ∀ k, ι k ≃ Fin (n k + 1)) {A : HermLine ι} (hA : IsSmoothHerm A) :
     IsSmoothHerm (pushLine e A) := by
   have hu : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Coord n → ℂ => z ∘ sig e) :=
@@ -1458,7 +1430,7 @@ theorem pointCurve_height : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k,
     have hSS := key (HermLine.sqMetric m) m hS fun _ => rfl
     obtain ⟨-, hAdd, -⟩ := hII K ι
     have hadd := hAdd (mCoordIdeal w) 0 Fin.elim0 A (HermLine.sqMetric m) hcurve (fun j => j.elim0) hA hS
-    have hten := lineHt_tensor A (HermLine.sqMetric m) L w hwb
+    have hten := CoverDenseAlt.HtF.lineHt_tensor A (HermLine.sqMetric m) L w hwb
     rw [hAS, hSS, hsnoc A, hten] at hadd
     have hpos : (0 : ℝ) < degC (mCoordIdeal w) := by exact_mod_cast hdeg
     rw [div_eq_iff hpos.ne']
@@ -1667,14 +1639,6 @@ section General
 
 variable {X : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field Ω']
 
-theorem spMap_genMap (ξ : Spec (CommRingCat.of Ω) ⟶ X) (p : Cpt ξ) :
-    Spec.map (CommRingCat.ofHom (genMap ξ p)) ≫ X.fromSpecStalk p.1 = ξ := by
-  have h1 := Spec.map_comp (X.presheaf.stalkSpecializes p.2) (Scheme.stalkClosedPointTo ξ)
-  have h2 := Scheme.SpecMap_stalkSpecializes_fromSpecStalk (X := X) p.2
-  exact (congrArg (· ≫ X.fromSpecStalk p.1) h1).trans <| (Category.assoc _ _ _).trans <|
-    (congrArg (Spec.map (Scheme.stalkClosedPointTo ξ) ≫ ·) h2).trans
-      (Scheme.Spec_stalkClosedPointTo_fromSpecStalk ξ)
-
 theorem eq_of_specializes_genPt {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     (hb : Function.Bijective (Scheme.stalkClosedPointTo ξ).hom) (x' : X) (h : x' ⤳ genPt ξ) : x' = genPt ξ := by
   have hF : IsField (X.presheaf.stalk (genPt ξ)) :=
@@ -1699,7 +1663,7 @@ theorem exists_factor {ξ : Spec (CommRingCat.of Ω) ⟶ X}
       CommRingCat.ofHom (genMap ξ' ⟨genPt ξ, h⟩) := by
     ext a
     exact congrArg (genMap ξ' ⟨genPt ξ, h⟩) (e.symm_apply_apply a)
-  have h2 := spMap_genMap ξ' ⟨genPt ξ, h⟩
+  have h2 := GlobalTheory.CompanionTheory.Ar.LieTangent.spec_genMap ξ' ⟨genPt ξ, h⟩
   have h3 := Spec.map_comp (Scheme.stalkClosedPointTo ξ)
     (CommRingCat.ofHom ((genMap ξ' ⟨genPt ξ, h⟩).comp e.symm.toRingHom))
   refine h2.symm.trans ?_

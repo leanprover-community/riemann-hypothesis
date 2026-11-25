@@ -40,8 +40,8 @@ private lemma eq_id_of_fix {F E : Type} [Field F] [Field E] [Algebra F E]
   exact LinearMap.congr_fun heq y
 
 theorem goal1 :
-  ∀ {F E : Type} [inst : Field.{0} F] [inst_1 : NumberField.{0} F] [inst_2 : Field.{0} E] [inst_3 : NumberField.{0} E]
-  [inst_4 : Algebra.{0, 0} F E] {σ : AlgHom.{0, 0, 0} F E E},
+  ∀ {F E : Type} [Field.{0} F] [NumberField.{0} F] [Field.{0} E] [NumberField.{0} E]
+  [Algebra.{0, 0} F E] {σ : AlgHom.{0, 0, 0} F E E},
   HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ →
     ∀ {x : E},
       Eq.{1} (DFunLike.coe.{1, 1, 1} σ x) x →

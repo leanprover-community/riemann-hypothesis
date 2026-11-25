@@ -242,7 +242,6 @@ theorem isCompact_setOf_trHom_mem (hH : IsUnit H.det) {C : Set (GL (Fin 𝒩') �
   let b := Module.finBasis K E
   set Ω : Set (unitaryPoints K E H 𝔸[K]) := {v | trHom b 𝔸[K] (v : GL ι (𝔸[K] ⊗[K] E)) ∈ C} with hΩ
   have hΩcl : IsClosed Ω := by
-    set_option synthInstance.maxHeartbeats 200000 in
     exact hC.isClosed.preimage ((continuous_trHom b 𝔸[K]).comp continuous_subtype_val)
   let Fc : Matrix (Fin 𝒩') (Fin 𝒩') 𝔸[K] → ι × ι × Fin (Module.finrank K E) → 𝔸[K] :=
     fun A p =>

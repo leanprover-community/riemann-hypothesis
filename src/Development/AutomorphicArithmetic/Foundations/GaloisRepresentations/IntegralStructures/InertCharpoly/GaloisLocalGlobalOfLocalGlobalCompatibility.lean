@@ -194,9 +194,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsUnlinkedLanglandsDatumGenericStatement =====
@@ -253,9 +250,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsTameOfMemWeilDeligneListSumStatement =====
@@ -305,9 +299,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 end -- clump:auto
 end -- clump:auto
@@ -365,9 +356,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupercuspidalSupportOfLengthOneLanglandsDatumStatement =====
@@ -379,9 +367,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 end -- clump:auto
 end -- clump:auto
@@ -684,13 +669,13 @@ theorem val_unif4 {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 
 theorem st4 : St4 := by
   intro k W _ _ _ _ _ _ _ n hn τ hτ ϖ hϖ c
-  haveI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
   obtain ⟨ω₀, hω₀⟩ := exists_hasCentralChar hτ
   obtain ⟨ω, hω, hωc⟩ := exists_isTameLift ω₀ (val_unif4 hϖ) c
   have hE : ExtendsCentral ω τ := hω.extendsCentral hω₀
   obtain ⟨w₀, hw₀⟩ : ∃ w₀ : W, w₀ ≠ 0 := by
     by_contra! hcon
-    haveI := hτ
+    have := hτ
     exact (bot_ne_top : (⊥ : Subrepresentation τ) ≠ ⊤) (Subrepresentation.ext (Submodule.ext fun w => by
       rw [hcon w]; exact ⟨fun _ => Submodule.zero_mem _, fun _ => Submodule.zero_mem _⟩))
   let π₀ := depthZero τ ω hE
@@ -897,10 +882,10 @@ theorem st8a : St4 → St5 → St6 → St7 → St8a := by
   have hfix : ∀ P (hP : P ∈ Lab 𝓀[k] n),
       fixed (π P hP).ρ (KOne k (Fin n)) = LinearMap.range (j P hP) := by
     intro P hP
-    haveI := GlobalTheory.SmGL.nontrivial_of_irreducible (hτ P hP).1
+    have := GlobalTheory.SmGL.nontrivial_of_irreducible (hτ P hP).1
     exact h6 k (τ P).V n (τ P).ρ (hτ P hP).2 (π P hP) (ω P hP) (hω P hP) (j P hP) (hj P hP)
   refine ⟨F, fun P hP => ?_, fun P hP P' hP' hPP => ?_⟩
-  · haveI := GlobalTheory.SmGL.nontrivial_of_irreducible (hτ P hP).1
+  · have := GlobalTheory.SmGL.nontrivial_of_irreducible (hτ P hP).1
     rw [hF P hP]
     obtain ⟨ψ⟩ : Nonempty ((π P hP).ρ.Equiv
         (IrrCl.rep (Quotient.mk _ (π P hP) : IrrCl (GL (Fin n) k))).ρ) :=
@@ -1043,14 +1028,14 @@ theorem st3a : St3a := by
   unfold St3a
   intro K _ _ n hn
   classical
-  letI : Fintype K := Fintype.ofFinite K
+  let : Fintype K := Fintype.ofFinite K
   have hq1 : 1 < Nat.card K := Finite.one_lt_card
   have hqn : 1 < Nat.card K ^ n := Nat.one_lt_pow hn.ne' hq1
   obtain ⟨N, hN⟩ : ∃ N : ℕ, N = Nat.card K ^ n - 1 := ⟨_, rfl⟩
   have hNq : Nat.card K ^ n = N + 1 := by omega
   have hNpos : 0 < N := by omega
-  haveI : NeZero N := ⟨hNpos.ne'⟩
-  haveI : NeZero ((N : ℕ) : K) := ⟨by
+  have : NeZero N := ⟨hNpos.ne'⟩
+  have : NeZero ((N : ℕ) : K) := ⟨by
     have hc : ((Nat.card K : ℕ) : K) = 0 := by
       rw [Nat.card_eq_fintype_card]; exact FiniteField.cast_card_eq_zero K
     have h4 : ((Nat.card K ^ n : ℕ) : K) = (N : K) + 1 := by
@@ -1507,7 +1492,7 @@ theorem exists_weights (ha : 1 ≤ a) (hI : InScope .all l π χ) (ι : Qbar l �
   obtain ⟨wt, hwt⟩ := GlobalTheory.PolarizedWeight.exists_isWeight E l a ha π χ hI
   have ex : ∀ τ : E →+* Qbar l, ∃ J : Multiset ℤ, J.map (fun n : ℤ => (n : ℂ)) =
       ((CG.mk π).infChar (ι.toRingHom.comp τ)).map fun z => ((a : ℂ) - 1) / 2 - z := fun τ => by
-    haveI : CanLift ℂ ℤ (fun n : ℤ => (n : ℂ)) (fun z => ∃ n : ℤ, (n : ℂ) = z) := ⟨fun _ k => k⟩
+    have : CanLift ℂ ℤ (fun n : ℤ => (n : ℂ)) (fun z => ∃ n : ℤ, (n : ℂ) = z) := ⟨fun _ k => k⟩
     refine (Multiset.canLift (fun n : ℤ => (n : ℂ)) (fun z => ∃ n : ℤ, (n : ℂ) = z)).prf _ fun y hy => ?_
     obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.1 hy
     obtain ⟨n, hn⟩ := (hI.1 (ι.toRingHom.comp τ)).2 z hz

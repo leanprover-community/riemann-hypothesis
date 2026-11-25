@@ -65,12 +65,7 @@ theorem idem_smul_eq (hε : IsPlaceIdem D v ε) {u : WO S T} (hu : u ∈ latO S 
 theorem mem_place_iff (hε : IsPlaceIdem D v ε) (u : WO S T) :
     u ∈ (latO S T LS LT fun w => w = v) ↔
       u ∈ (latO S T LS LT fun _ => True) ∧ algebraMap (AF D.host.F) (AE D) ε • u = u := by
-  constructor
-  · intro hu
-    exact ⟨GlobalTheory.PlaceModel.latO_le_top _ hu, idem_smul_eq hε hu⟩
-  · rintro ⟨hu, he⟩
-    have := GlobalTheory.PlaceModel.placeIdem_smul_mem hε hu
-    rwa [he] at this
+  exact GlobalTheory.InertVac.mem_latO_place_iff hε u
 
 theorem act_injective (g : GA D S) (h : GA D T) : Function.Injective (actO S T g h) := by
   first | exact _root_.GlobalTheory.InertVac.actO_injective | exact @_root_.GlobalTheory.InertVac.actO_injective | apply _root_.GlobalTheory.InertVac.actO_injective <;> assumption

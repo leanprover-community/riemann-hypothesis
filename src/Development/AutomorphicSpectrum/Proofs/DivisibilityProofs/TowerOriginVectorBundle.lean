@@ -82,7 +82,7 @@ theorem arMono_word (M : RootModel Ψ N) (II : IntersectionSystem) (hII : IsInte
   have e : Finsupp.mapDomain some (∑ k, Finsupp.single (w k) 1) =
       ∑ k, Finsupp.single (some (w k)) (1 : ℕ) := by
     simp [Finsupp.mapDomain_finsetSum]
-  obtain ⟨hdeg, -, -, hv⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII M.K M.ι M.P (dimFl Ψ N + 1) _ (M.line t) (fun k => some (w k))
+  obtain ⟨hdeg, -, -, hv⟩ := _root_.RootFieldNumerics.intersection_monomial_lines II hII M.K M.ι M.P (dimFl Ψ N + 1) _ (M.line t) (fun k => some (w k))
     M.arith (by rintro (_ | r); exacts [M.A_smooth, M.x_smooth t r])
   have hnone : (∑ k, Finsupp.single (some (w k)) (1 : ℕ) : Option (Ψ × Fin N) →₀ ℕ) none = 0 := by
     simp [Finsupp.finsetSum_apply]

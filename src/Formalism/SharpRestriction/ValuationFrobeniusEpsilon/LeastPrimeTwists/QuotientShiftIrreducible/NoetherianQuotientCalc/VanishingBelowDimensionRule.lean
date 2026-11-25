@@ -48,12 +48,6 @@ theorem chi_ev_zero (ts : List (Deg k × R)) : ∀ (F : GMod B R k),
     filter_upwards [ih _ h1, ih _ h2] with m a b
     simp [chi, a, b]
 
-theorem ann_le_sub (F : GMod B R k) (N : Submodule R F.M) : F.Ann ≤ (F.sub N).Ann := by
-  intro a ha
-  refine Module.mem_annihilator.mpr fun x => ?_
-  have hx : ∀ x : N, a • x = 0 := fun x => Subtype.ext (Module.mem_annihilator.mp ha x.1)
-  exact hx x
-
 theorem ann_le_quo (F : GMod B R k) (N : Submodule R F.M) : F.Ann ≤ (F.quo N).Ann := by
   apply _root_.Formalism.MainNotions.V.Pf.V2.Calc.E7.ann_le_quo <;> assumption
 
@@ -277,7 +271,8 @@ theorem dev_reduce (hGr : RuleGr) (hIrr : RuleIrr) (hIso : RuleIso) (hShift : Ru
       have g0 : ((GMod.self X.𝒜).quo (𝔮 i)).IsGr X.𝒜 :=
         ((hGr k X _ (self_isGr X.𝒜)).1 (𝔮 i) (isHomSub_of_hom X.𝒜 hh)).2
       have g3 : (((GMod.self X.𝒜).quo (𝔮 i)).shift (d i)).IsGr X.𝒜 := (hGr k X _ g0).2.1 (d i)
-      have hs := hE1 k X ts _ _ _ hv g1 g2 g3 ses (admissible_mono_ideal X.𝒜 (ann_le_sub F _) hA)
+      have hs := hE1 k X ts _ _ _ hv g1 g2 g3 ses (admissible_mono_ideal X.𝒜
+          (Formalism.MainNotions.V.Pf.V2.Calc.E7.ann_le_sub F _) hA)
       have hq : ∀ᶠ m in atTop, P (chi ts ((GMod.self X.𝒜).quo (𝔮 i)) m) := by
         by_cases hrel : Irr X.𝒜 ≤ 𝔮 i
         · have hz := chi_ev_zero ts _ (hIrr k X _ g0

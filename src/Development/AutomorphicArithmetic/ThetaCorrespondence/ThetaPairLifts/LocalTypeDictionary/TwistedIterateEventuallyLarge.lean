@@ -574,12 +574,6 @@ theorem chain_props (hP : GlobalTheory.Published.CuspRapidDecay) (G : GridData L
 
 end GlobalTheory.ChainHyp
 
-namespace GlobalTheory.ChainHyp
-
-open GlobalTheory.FunObj GlobalTheory.RowChain GlobalTheory.FlipRun GlobalTheory.Grow
-
-end GlobalTheory.ChainHyp
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -805,12 +799,6 @@ end GlobalTheory.RowChain
 
 namespace GlobalTheory.RowChain
 
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun
-
-end GlobalTheory.RowChain
-
-namespace GlobalTheory.RowChain
-
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun GlobalTheory.RowUnf GlobalTheory.RowVal
 
 theorem nIter_meas_congr {ι : Type} [DecidableEq ι] {H : ι → Type} [∀ i, Group (H i)] [∀ i, MeasurableSpace (H i)]
@@ -933,23 +921,6 @@ section
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField
 open Formalism.IndefR Formalism.IndefR.Links Formalism.L2.DIV GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
-namespace GlobalTheory.RowChain
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
-variable {D : D7}
-section Lin
-variable {ψ : AddChar (AF D.host.F) ℂ} {T₀ : HSp D}
-end Lin
-variable {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
-end GlobalTheory.RowChain
-namespace GlobalTheory.RowChain
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun
-variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
-variable (W : G.Weil) (M : Vol G) (t : T)
-variable {W M t}
-end GlobalTheory.RowChain
-namespace GlobalTheory.RowChain
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun
-end GlobalTheory.RowChain
 namespace GlobalTheory.RowChain
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun GlobalTheory.RowUnf GlobalTheory.RowVal
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)

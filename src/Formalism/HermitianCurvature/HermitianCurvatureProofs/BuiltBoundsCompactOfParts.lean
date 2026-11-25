@@ -54,14 +54,6 @@ open scoped ComplexConjugate
 noncomputable section
 open Classical
 
-theorem integrable_decay3 : Integrable (fun c : ℂ => ((1 + ‖c‖) ^ 3)⁻¹) := by
-  have hi : Integrable (fun c : ℂ => (1 + ‖c‖) ^ (-(3 : ℝ))) :=
-    integrable_one_add_norm (by rw [Complex.finrank_real_complex]; norm_num)
-  refine hi.congr (Eventually.of_forall fun c => ?_)
-  simp only
-  rw [Real.rpow_neg (by positivity)]
-  norm_cast
-
 section limB
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
@@ -216,7 +208,7 @@ theorem tendsto_Nhat (hInt : ∀ n, KB.IntAll (KB.withRR S (RR n)))
   have hgi : Integrable g := by
     refine Integrable.div_const (integrable_finsetSum _ fun h _ => integrable_finsetSum _ fun h' _ =>
       Integrable.const_mul (Integrable.fintype_prod (f := fun v c => Cb v h h' * ((1 + ‖c‖) ^ 3)⁻¹)
-        fun v => integrable_decay3.const_mul _) _) _
+        fun v => Formalism.FourierDecayAlt.P.PBC.integrable_inv_cube.const_mul _) _) _
   have hbi : Integrable (fun c : J.CV E => g (Formalism.FourierDecayAlt.P.JCx1.needs.Qm S c)) :=
     (Formalism.FourierDecayAlt.P.JCx1.needs.Qm_mp S).integrable_comp_of_integrable hgi
   refine tendsto_integral_of_dominated_convergence (fun c => g (Formalism.FourierDecayAlt.P.JCx1.needs.Qm S c)) (fun n => ?_) hbi

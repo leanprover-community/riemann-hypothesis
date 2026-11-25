@@ -188,11 +188,6 @@ variable {n : ℕ} {T : Type} [AddCommGroup T] [Module c.F T] [Module (𝓞 c.F)
 
 end Coeff
 
-def MovesDatum {n : ℕ} (J : Subgroup (UA E n)) (ψ : J →* c.Fˣ) (ph : (Fin n → ConjQ Dw l) → c.F) : Prop :=
-  ∀ (k : J) (κ : Fin n → Fin n → 𝓞 E),
-    (∀ a b, ∃ u ∈ intAd E, star (k.1.1 a b) - diagE E (κ a b : E) = (l.M : AdE E) * u) →
-      ∀ x, ph (fun a => ∑ b, κ a b • x b) = ((ψ k : c.Fˣ) : c.F) * ph x
-
 end GlobalTheory.IndefiniteRowSideFullHecke.DeterminantCharacterIdentity
 end -- clump:auto
 end -- clump:auto

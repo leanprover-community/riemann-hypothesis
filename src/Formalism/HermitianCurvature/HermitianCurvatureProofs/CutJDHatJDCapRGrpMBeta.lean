@@ -24,12 +24,6 @@ theorem eI_inj {a b : Fin r} (h : eI k r a = eI k r b) : a = b := by
 theorem esI_inj {a b : Fin r} (h : esI k r a = esI k r b) : a = b := by
   simp only [esI, Fin.ext_iff] at h; have := a.isLt; have := b.isLt; exact Fin.ext (by omega)
 
-theorem w1_mulVec_bvec_esI (a : Fin r) (c : ℂ) : Q.w1 k r a c *ᵥ bvec (esI k r a) = (star c)⁻¹ • bvec (eI k r a) := by
-  funext p
-  simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Pi.single_apply, Pi.smul_apply, smul_eq_mul]
-  rw [Formalism.FourierDecayAlt.P.Qx3.w1_apply, Formalism.FourierDecayAlt.P.Qx3.sw_es, Formalism.FourierDecayAlt.P.Qx3.dd_es]
-  split_ifs <;> simp
-
 theorem w1_mulVec_eq_self_of_eI_esI_eq_zero (b : Fin r) (c : ℂ) (v : Fin (2 * r + k + 1) → ℂ) (h1 : v (eI k r b) = 0)
     (h2 : v (esI k r b) = 0) : Q.w1 k r b c *ᵥ v = v := by
   funext p
@@ -61,7 +55,7 @@ theorem wl_es (c : Fin r → ℂ) (L : List (Fin r)) (hL : L.Nodup) (a : Fin r) 
     rw [List.map_cons, List.prod_cons, ← Matrix.mulVec_mulVec, ih hL.2]
     by_cases hab : a = b
     · subst hab
-      rw [ite_eq_right hL.1, w1_mulVec_bvec_esI, ite_eq_left List.mem_cons_self]
+      rw [ite_eq_right hL.1, Formalism.FourierDecayAlt.P.Qx6.reflection_maps_last_to_first_vector, ite_eq_left List.mem_cons_self]
     · have hmem : (a ∈ b :: L) ↔ a ∈ L := by simp [hab]
       by_cases h1 : a ∈ L
       · rw [ite_eq_left h1, ite_eq_left (hmem.2 h1), Matrix.mulVec_smul, Formalism.FourierDecayAlt.P.Qx3.reflection_fixes_basis_vector b _

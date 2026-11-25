@@ -174,9 +174,6 @@ theorem orbSpan_le (ρ : Representation ℂ H W) (y : W) (Z : Subrepresentation 
 
 end GlobalTheory.UnitarySemisimple
 
-namespace GlobalTheory.UnitarySemisimple
-
-end GlobalTheory.UnitarySemisimple
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIrreducibleSubrepFixedOfUnitary =====

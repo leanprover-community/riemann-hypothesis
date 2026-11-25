@@ -91,7 +91,7 @@ def embEquiv : InfinitePlace F ≃ (F →+* ℂ) where
   toFun v := v.embedding
   invFun φ := InfinitePlace.mk φ
   left_inv v := InfinitePlace.mk_embedding v
-  right_inv φ := InfinitePlace.embedding_mk_eq_of_isReal (InfinitePlace.isReal_mk_iff.1 (IsTotallyReal.isReal _))
+  right_inv _ := InfinitePlace.embedding_mk_eq_of_isReal (InfinitePlace.isReal_mk_iff.1 (IsTotallyReal.isReal _))
 
 theorem prod_reAt (x : F) : ∏ v, reAt v x = ((Algebra.norm ℚ x : ℚ) : ℝ) := by
   apply Complex.ofReal_injective

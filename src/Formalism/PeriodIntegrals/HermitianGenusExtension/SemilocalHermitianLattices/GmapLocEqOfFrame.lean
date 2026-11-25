@@ -16,33 +16,11 @@ noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.L3.WA
 open Formalism.HermitianLattices.Ext.L3.WA (smul_mem_loc)
+open Formalism.HermitianLatticesTheory
+  (hcompl locBasic_le_locS locBasic_locS_idem locDual_mem_dualAt)
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-private theorem mem_locR_of_unimod_lemma {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V}
-    {p : Ideal (𝓞 K)} (hu : Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) {x y : V}
-    (hx : x ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L) (hy : y ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L) :
-    h x y ∈ Formalism.HermitianLatticesTheory.locR (K := K) p := by
-  have hu' : Formalism.HermitianLatticesTheory.dualAt h p (Formalism.HermitianLatticesTheory.loc (K := K) p L) = Formalism.HermitianLatticesTheory.loc (K := K) p L := hu
-  have hy2 : y ∈ Formalism.HermitianLatticesTheory.dualAt h p (Formalism.HermitianLatticesTheory.loc (K := K) p L) := by
-    rw [hu']
-    exact hy
-  simp only [Formalism.HermitianLatticesTheory.dualAt, Submodule.mem_iInf, Submodule.mem_comap,
-    LinearMap.restrictScalars_apply] at hy2
-  exact hy2 x hx
-
-private theorem mem_loc_of_mem_lemma_3 {L : Submodule (𝓞 K) V} (p : Ideal (𝓞 K)) {x : V}
-    (hx : x ∈ L) : x ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L := by
-  show ∃ u ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p, u • x ∈ L
-  exact ⟨1, (Formalism.HermitianLatticesTheory.hcompl (K := K) p).one_mem, by rw [one_smul]; exact hx⟩
-
-private theorem mem_loc_of_smul_lemma_2 {L : Submodule (𝓞 K) V} {p : Ideal (𝓞 K)} {s : 𝓞 K}
-    (hs : s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p) {y : V}
-    (hy : s • y ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L) : y ∈ Formalism.HermitianLatticesTheory.loc (K := K) p L := by
-  obtain ⟨t, ht, hty⟩ := hy
-  show ∃ u ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) p, u • y ∈ L
-  exact ⟨t * s, (Formalism.HermitianLatticesTheory.hcompl (K := K) p).mul_mem ht hs, by rw [mul_smul]; exact hty⟩
 
 theorem gmap_loc_eq_of_frame {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V}
     {p : Ideal (𝓞 K)} (hp : p.IsPrime) (hu : Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) {n : ℕ} {e : Fin n → V}
@@ -57,7 +35,6 @@ theorem gmap_loc_eq_of_frame {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (
     simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map] at hy
     obtain ⟨x, hx, rfl⟩ := hy
     obtain ⟨s, hs, hsx⟩ := hx
-    refine mem_loc_of_smul_lemma_2 hs ?_
     have hN : Submodule.span (𝓞 K) (Set.range e) ≤
         (Formalism.HermitianLatticesTheory.loc (K := K) p L).comap ((g : V →ₗ[K] V).restrictScalars (𝓞 K)) := by
       rw [Submodule.span_le]
@@ -65,7 +42,8 @@ theorem gmap_loc_eq_of_frame {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (
       exact hge i
     have h1 := hN hsx
     rw [Submodule.mem_comap, map_smul ((g : V →ₗ[K] V).restrictScalars (𝓞 K)) s x] at h1
-    exact h1
+    rw [Formalism.HermitianLatticesTheory.loc, ← locBasic_locS_idem (hcompl (K := K) p) L]
+    exact ⟨s, hs, h1⟩
   · intro y hy
     have hz : g.symm y ∈ Submodule.span K (Set.range e) := by
       rw [hspan]
@@ -82,11 +60,11 @@ theorem gmap_loc_eq_of_frame {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (
 
         simp [map_sum, he]
       rw [e1]
-      exact mem_locR_of_unimod_lemma hu (hge j) hy
+      exact (locDual_mem_dualAt h p _ y).mp (by rw [hu]; exact hy) _ (hge j)
     have hzN : g.symm y ∈ Formalism.HermitianLatticesTheory.loc (K := K) p (Submodule.span (𝓞 K) (Set.range e)) := by
       rw [← hc]
       refine sum_mem (fun i _ => ?_)
-      exact smul_mem_loc hp (hcj i) (mem_loc_of_mem_lemma_3 p (Submodule.subset_span ⟨i, rfl⟩))
+      exact smul_mem_loc hp (hcj i) (locBasic_le_locS _ _ (Submodule.subset_span ⟨i, rfl⟩))
     simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
     exact ⟨g.symm y, hzN, by simp⟩
 

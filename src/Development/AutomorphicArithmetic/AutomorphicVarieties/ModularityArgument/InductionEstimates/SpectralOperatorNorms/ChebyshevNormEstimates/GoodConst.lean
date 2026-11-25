@@ -754,7 +754,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 private theorem memLp_out {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
     {v : L2 μ} {φ : G1 K n → ℂ} (hc : Continuous φ) (hr : Reps μ v φ) :
     MemLp (fun m : RightCosetSpace (Gam K n) => φ (Quotient.out m)) 2 (quotientMeasure (Gam K n) μ) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   have hinv : ∀ γ ∈ Gam K n, ∀ y, φ (γ * y) = φ y := fun γ hγ => by
     have h1 : (fun y => φ (γ * y)) =ᵐ[μ] φ := by
       filter_upwards [hr, (measurePreserving_mul_left μ γ).quasiMeasurePreserving.ae hr] with y a b

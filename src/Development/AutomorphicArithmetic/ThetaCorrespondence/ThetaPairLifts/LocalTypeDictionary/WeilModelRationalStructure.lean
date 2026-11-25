@@ -531,10 +531,6 @@ end Reading
 
 end GlobalTheory.RealDict.CompactCoinv
 
-namespace GlobalTheory.RealDict
-
-end GlobalTheory.RealDict
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -555,8 +551,6 @@ open GlobalTheory.SquareComm
 open scoped ComplexConjugate
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 noncomputable section
-namespace GlobalTheory.RealDict.CompactCoinv
-end GlobalTheory.RealDict.CompactCoinv
 namespace GlobalTheory.RealDict
 open GlobalTheory.RealDict.CompactCoinv
 theorem sub_mem_map_coinv_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs →

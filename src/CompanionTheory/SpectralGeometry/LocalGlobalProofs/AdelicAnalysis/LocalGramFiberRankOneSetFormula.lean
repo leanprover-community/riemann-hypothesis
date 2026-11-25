@@ -231,14 +231,8 @@ theorem coordHerm_qS (h : IsCMExt F E σ) [IsTopologicalRing R] [SecondCountable
     funext i
     obtain rfl : i = 0 := Subsingleton.elim _ _
     exact qS_hermScal R h (x.1 0)
-  have himg : ∀ s : Set (HermR R σ 1), f '' s = g ⁻¹' s := by
-    intro s
-    ext x
-    constructor
-    · rintro ⟨S, hS, rfl⟩
-      simpa [hgf S] using hS
-    · intro hx
-      exact ⟨g x, hx, hfg x⟩
+  have himg : ∀ s : Set (HermR R σ 1), f '' s = g ⁻¹' s := fun s =>
+    congrFun (Set.image_eq_preimage_of_inverse hgf hfg) s
   have hinj : Function.Injective f := Function.LeftInverse.injective hgf
   have hP : MeasurableSet {S | qS R σ S ∈ V} := (continuous_qS R htr).measurable hV
   have hset : f '' {S | qS R σ S ∈ V} = (Set.pi Set.univ fun _ : Fin 1 => V) ×ˢ Set.univ := by

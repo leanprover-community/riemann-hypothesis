@@ -48,10 +48,6 @@ theorem prW_tau {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hzz : herm 
   rw [← Matrix.mulVec_mulVec, HermitianXiVector.nEich_apply]
   simp only [prW_add, prW_smul, prW_xiV, prW_self hz hzz, smul_zero, add_zero, hW]
 
-theorem mat_ext_mulVec {n : ℕ} {M N : Matrix (Fin n) (Fin n) ℂ} (h : ∀ x, M *ᵥ x = N *ᵥ x) : M = N := by
-  ext i j
-  simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using congrFun (h (Pi.single j 1)) i
-
 theorem xiV_eq_sum (ξ : Fin r → ℂ) : C2.xiV k r ξ = ∑ a : Fin r, ξ a • ee k r a := by
   funext i
   rw [Finset.sum_apply]
@@ -92,7 +88,7 @@ theorem nEich_comm {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈
     intro x
     conv_lhs => rw [← hX]
     exact herm_m0_mulVec_invariant h hU x _
-  apply mat_ext_mulVec
+  apply Formalism.FourierDecayAlt.P.Qx8.mat_ext
   intro x
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, HermitianXiVector.nEich_apply, HermitianXiVector.nEich_apply, e1, e2]
   simp only [Matrix.mulVec_add, Matrix.mulVec_smul, hX, hZ]
@@ -171,7 +167,7 @@ theorem mX_comm {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ UW
     fun a => fix_supX hme (mX_supX vX a)
   have hB : ∀ a, h *ᵥ (C2.mX k r vX *ᵥ es k r a) = C2.mX k r vX *ᵥ es k r a :=
     fun a => fix_supXs hms (mX_supXs vX a)
-  apply mat_ext_mulVec
+  apply Formalism.FourierDecayAlt.P.Qx8.mat_ext
   intro x
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, decomp x]
   simp only [Matrix.mulVec_add, Matrix.mulVec_sum, Matrix.mulVec_smul, hme, hms, hA, hB,

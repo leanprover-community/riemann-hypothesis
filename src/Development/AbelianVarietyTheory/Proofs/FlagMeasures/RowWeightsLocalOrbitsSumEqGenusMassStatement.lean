@@ -399,12 +399,6 @@ theorem tri_trans {K W : Type} [CommSemiring K] [AddCommMonoid W] [Module K W] {
 
 end Tri
 
-theorem isTerm_move {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E]
-    [TopologicalSpace E] [MeasurableSpace E] {M : Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V]
-    (H : Formalism.MainNotions.S.Loc.HermSp M V) {r : ℕ} (g : V ≃ₗ[E] V) (t : Formalism.MainNotions.S.Loc.Term V M r)
-    (hg : Formalism.MainNotions.S.LocNG.IsUnitary H g) (ht : H.IsTerm t) : H.IsTerm (GlobalTheory.LocOver.move g t) :=
-  _root_.GlobalTheory.LocOver.isTerm_move_of_unitary H g t hg ht
-
 theorem tri_adapt_loc (Z : LocDat D) (p : PlF D) (g : GV D) {T : D.host.E} (F₁ F₂ : LFlag (D.sp.Y 0) D.R.rS T)
     (g' : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) (hg : Adapt g F₁ F₂) (he : Ext p g g') :
     GlobalTheory.LocOver.Tri (D.s.atP p).Ep (GlobalTheory.LocOver.scaled Z p (frame F₂))
@@ -448,7 +442,7 @@ theorem local_data_of_term : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u'
       (GlobalTheory.LocOver.move (gp p) (GlobalTheory.LocOver.locU Z p t.lam (lf D (X.Fu u)) t.frame (Tu D u) (Tu D u'))) := by
     intro p
     refine _root_.GlobalTheory.LocOver.TermOver.exists_datum (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS (FP p) _
-      (isTerm_move (locH Z p) (gp p) _ (hu p) (hτ p).1) (hB p).2.2.1.symm (hB p).2.2.2.symm ?_ ?_
+      (GlobalTheory.LocOver.MoveTerm.isTerm_move (locH Z p) (gp p) _ (hu p) (hτ p).1) (hB p).2.2.1.symm (hB p).2.2.2.symm ?_ ?_
     · rw [(hB p).1]
       exact tri_adapt_loc Z p g _ _ (gp p) hgF (hgp p)
     · rw [(hB p).2.1]
@@ -497,13 +491,9 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableS
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ}
 
-theorem rel_equivalence (P : Formalism.MainNotions.S.LocNG.FPair H r) :
-    Equivalence (Formalism.MainNotions.S.LocNG.Datum.Rel (P := P)) :=
-  GlobalTheory.NonGenericLocalCheck.rel_equiv P
-
 theorem relEqv : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, Formalism.MainNotions.S.LocNG.FPair (locH Z p) D.R.rS)
     (p : PlF D), Equivalence (Formalism.MainNotions.S.LocNG.Datum.Rel (P := FP p)) :=
-  fun _ _ FP p => rel_equivalence (FP p)
+  fun _ _ FP p => GlobalTheory.NonGenericLocalCheck.rel_equiv (FP p)
 
 end GlobalTheory.OrbitRel
 end -- clump:auto
@@ -529,13 +519,6 @@ theorem finrank_loc (p : PlF D) :
     Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 2 * D.R.rS + 1 :=
   GlobalTheory.RatLocMove.finrank_Vp_eq p
 
-theorem img_one {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-    {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
-    {M : Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (L : Submodule M.L.O V) :
-    LocNG.img (1 : V ≃ₗ[E] V) L = L := by
-  ext x
-  simp [LocNG.img]
-
 theorem img_lattice {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
     {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
     {M : Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (g : V ≃ₗ[E] V) (L : Submodule M.L.O V)
@@ -556,7 +539,7 @@ theorem glue_local_orbits : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
     intro p
     obtain ⟨τ, hτ1, hτ2⟩ := hτ p
     by_cases hp : y' p = y p
-    · exact ⟨1, one_mem _, fun _ => rfl, τ, hp ▸ hτ1, by rw [img_one, hτ2]⟩
+    · exact ⟨1, one_mem _, fun _ => rfl, τ, hp ▸ hτ1, by rw [GlobalTheory.NonGenericLocalCheck.img_one, hτ2]⟩
     · obtain ⟨g, hg, hm⟩ := hrel p
       exact ⟨g, hg, fun h => absurd h hp, _,
         (_root_.GlobalTheory.HL.LocalMove.main (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (finrank_loc p) (hR p) g hg
@@ -598,7 +581,7 @@ theorem glue_local_orbits : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
       apply img_lattice
       rw [← heq]
       exact GlobalTheory.T.localTermLattice_over_innerDatum_fg_span D Z FP p (y p) t ht)
-    (hfin.subset fun p hp hc => hp (by simp only [h1 p hc, img_one]))
+    (hfin.subset fun p hp hc => hp (by simp only [h1 p hc, GlobalTheory.NonGenericLocalCheck.img_one]))
   exact ⟨Λ', ⟨hΛ', fun p => ⟨τ p, hτ1 p, (hτ2 p).trans (hp p).symm⟩⟩, fun p => ⟨h p, hU p, (hp p).symm⟩⟩
 
 end GlobalTheory.Unfold.GlueOrbit

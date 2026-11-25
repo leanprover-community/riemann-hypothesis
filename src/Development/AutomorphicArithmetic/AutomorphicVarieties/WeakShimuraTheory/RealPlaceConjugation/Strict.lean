@@ -66,7 +66,6 @@ theorem UpperTheory.V.Ws.card_cocycles_vanishing_on_inertia_le_pow :
       exact Equiv.sum_comp (MulAction.toPerm h) (fun q : G F Ω ⧸ K => w q.out)
     have hexp : ∑ q : G F Ω ⧸ K, w (h * q.out) =
         Fintype.card (G F Ω ⧸ K) • w h + ρ h (∑ q : G F Ω ⧸ K, w q.out) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [hw, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, map_sum]
     rw [hsum, hS, map_zero, add_zero] at hexp
     exact eq_zero_of_nsmul_eq_zero_of_coprime_torsion l M htor _ hn (w h) hexp.symm

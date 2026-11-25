@@ -135,7 +135,7 @@ theorem acts_vacCond_of_mem_KAt : ∀ (F E : Type) [Field F] [NumberField F] [Fi
     rw [smul_zero, e0]
     funext x
     simp [Darboux.rho, schr]
-  have hrφ : Rest (evFin F v) φ r := GlobalTheory.T.complementaryAdelicSchwartz_of_nonzero_local v φ₁ φ r h0 hφ hr
+  have hrφ : Rest (evFin F v) φ r := GlobalTheory.RestCofactor.rest_of_rest v φ₁ φ r h0 hφ hr
   set γ' := actAB (cA σ) ((1 : UA σ G.V'.J), k⁻¹) γ
   have eγ' : γ' = γ * (mat k⁻¹)ᵀ := by
     simp [γ', actAB, mat]

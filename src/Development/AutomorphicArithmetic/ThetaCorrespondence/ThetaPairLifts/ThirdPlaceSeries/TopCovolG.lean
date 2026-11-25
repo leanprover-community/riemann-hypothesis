@@ -1293,9 +1293,6 @@ theorem lrd_le {PP A M : ℝ} (hH : HostNum D L PP A M) : GlobalTheory.Indefinit
 
 end GlobalTheory.FlatSplit
 
-namespace GlobalTheory.FlatSplit
-
-end GlobalTheory.FlatSplit
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1311,18 +1308,6 @@ section
 noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.FlatLine GlobalTheory.FlatTw
-namespace GlobalTheory.FlatSplit
-section Congr
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ} {D : D7}
-end Congr
-section Weights
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
-  (a : (E →+* ℂ) × ℕ → ℕ)
-end Weights
-end GlobalTheory.FlatSplit
-namespace GlobalTheory.FlatSplit
-end GlobalTheory.FlatSplit
 namespace GlobalTheory.FlatSplit
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ}
@@ -1390,8 +1375,6 @@ theorem flat_at_of_split_covering (p : PtAt ex Csz) (i : Fin D.R.m) (Y : Cov p i
     (11 * CA + 83) * unitE p ≤ _
   linarith
 end GlobalTheory.FlatSplit
-namespace GlobalTheory.FlatSplit
-end GlobalTheory.FlatSplit
 end
 end
 
@@ -1415,12 +1398,6 @@ section
 noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.FlatLine GlobalTheory.FlatTw
-namespace GlobalTheory.FlatSplit
-end GlobalTheory.FlatSplit
-namespace GlobalTheory.FlatSplit
-end GlobalTheory.FlatSplit
-namespace GlobalTheory.FlatSplit
-end GlobalTheory.FlatSplit
 namespace GlobalTheory.FlatSplit
 theorem flat_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.AnchorCondition → _root_.GlobalTheory.CovTop.FlatnessCondition := by
   intro hP hDG hFD hA

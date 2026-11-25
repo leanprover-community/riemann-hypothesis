@@ -153,7 +153,6 @@ theorem etale_morphismRestrict_comp_map (c : EtaleChart p V n) (f : Y' ⟶ Y) [I
   have h1 : IsOpenImmersion (morphismRestrict f V) :=
     IsOpenImmersion.of_comp (morphismRestrict f V) V.ι
   have h2 : Etale c.map := c.isEtale
-  have h3 : Etale (morphismRestrict f V) := inferInstance
   infer_instance
 
 def EtaleChart.pullbackOpenImmersion (c : EtaleChart p V n) (f : Y' ⟶ Y) [IsOpenImmersion f] :

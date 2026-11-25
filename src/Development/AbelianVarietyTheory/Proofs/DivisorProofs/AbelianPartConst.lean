@@ -3,18 +3,14 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidChart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.InvariantFunctionsDescend
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppEqZeroOfValR
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusInvariantHeatOperatorPreservesWeight
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WedgeOrdVpBaseChangeOfNeBot
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothRayQuotient
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsIsConstKOfLocDerK
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfIsGrpPullback
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllSixAbelianSchemeLawsHold
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.GenericIsoExtendsSemiAbelianDvrInducingFormal
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SurjectiveQuasiCompactQ
 
 @[expose] public section
@@ -51,8 +47,7 @@ theorem lift_agree {R : Type} [CommRing R] {G : Over (Sp R)} {n : ℕ} {X : Sche
   have hi' : O ≤ h.W i' := hO.trans inf_le_right
   have hle : O ≤ m ⁻¹ᵁ (L.U (h.j i) ⊓ L.U (h.j i')) := fun p hp => ⟨h.le i (hi hp), h.le i' (hi' hp)⟩
   have hg : IsUnit (pbT m (L.g (h.j i) (h.j i')).val O) := by
-    rw [pbT, dite_eq_left hle]
-    exact (Units.isUnit _).map _
+    rw [pbT, dite_eq_left hle]; exact (Units.isUnit _).map _
   have e₁ := congrArg π (h.glue 1 i i' O hO f)
   have e₀ := congrArg π (h.glue 1 i i' O hO 1)
   generalize pbT m (L.g (h.j i) (h.j i')).val O = g at hg e₁ e₀
@@ -60,58 +55,50 @@ theorem lift_agree {R : Type} [CommRing R] {G : Over (Sp R)} {n : ℕ} {X : Sche
       π g * ∑ a, π (constFn G.hom O (h.u a)) * π (dd a O f) + π f * ∑ a, π (constFn G.hom O (h.u a)) * π (dd a O g) := by
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [(hdd a).2.1 O le_top, map_add (f := _), map_mul, map_mul]
-    ring
-
+    rw [(hdd a).2.1 O le_top, map_add (f := _), map_mul, map_mul]; ring
   simp only [op, pow_one, _root_.mul_one, Nat.cast_one, one_pow, map_add (f := _), map_sub, map_mul, map_sum, hΘ, zero_mul,
-  Finset.sum_const_zero, sub_zero, map_ofNat, isField_one (hdd _) le_top, isField_one (h.lift i').1 hi', map_zero,
-  mul_zero] at e₁ e₀
+    Finset.sum_const_zero, sub_zero, map_ofNat, isField_one (hdd _) le_top, isField_one (h.lift i').1 hi', map_zero,
+    mul_zero] at e₁ e₀
   rw [hs, (h.lift i).1.2.1 O hi, map_add (f := _), map_mul, map_mul] at e₁
-  refine (h2.mul (hg.map π)).mul_left_cancel ?_
-  linear_combination e₁ - π f * e₀
+  exact (h2.mul (hg.map π)).mul_left_cancel (by linear_combination e₁ - π f * e₀)
 
 section Ray
 
 variable {R : Type} [CommRing R] [IsDomain R] {Q : DegPre R} {O : Type} [CommRing O] [StarRing O] [Module O Q.X]
   {oa : Q.OAct O} (Y : Ray oa)
 
-theorem surjective_q : Surjective Y.q.left ∧ QuasiCompact Y.q.left := by
-  apply _root_.GlobalTheory.RayEv.Ray.surjective_quasiCompact_q <;> assumption
+theorem surjective_q : Surjective Y.q.left ∧ QuasiCompact Y.q.left :=
+  _root_.GlobalTheory.RayEv.Ray.surjective_quasiCompact_q Y
 
 theorem exists_ratio {T : Over (Sp R)} (x x' : T ⟶ Y.H) (hq : x' ≫ Y.q = x ≫ Y.q) :
     ∃ u : Q.X → Γ(T.left, ⊤)ˣ, ∀ χ y J, Good Q.P.L y J →
       val ((Y.Φ _ x').s χ) (𝟙 _) y J = gm (𝟙 T.left) y ⊤ (u χ) * val ((Y.Φ _ x).s χ) (𝟙 _) y J := by
   have := Y.q_linear.isMonHom
   have w : (x⁻¹ * x') ≫ Y.q = toUnit T ≫ η[Q.P.A] := by
-    rw [MonObj.mul_comp, GrpObj.inv_comp, hq, inv_mul_cancel]
-    rfl
+    rw [MonObj.mul_comp, GrpObj.inv_comp, hq, inv_mul_cancel]; rfl
   let t := Y.isKernel.lift _ _ w
-  have ht : x * (t ≫ Y.i) = x' := by
-    rw [Y.isKernel.lift_fst, mul_inv_cancel_left]
+  have ht : x * (t ≫ Y.i) = x' := by rw [Y.isKernel.lift_fst, mul_inv_cancel_left]
   let u : Multiplicative Q.X →* Γ(T.left, ⊤) :=
     { toFun := fun χ => (Rosenlicht.coord t).hom (AddMonoidAlgebra.single χ.toAdd 1)
       map_one' := Diag.coord_single_zero t
-      map_mul' := fun a b => Diag.coord_single_add t _ _ }
+      map_mul' := fun _ _ => Diag.coord_single_add t _ _ }
   refine ⟨fun χ => u.toHomUnits (Multiplicative.ofAdd χ), fun χ y J hJ => ?_⟩
   have h1 := ((GlobalTheory.TorusModel.isAdd_iff _ _ _).1 (Y.rep.2 _ x (t ≫ Y.i))).2 χ y J hJ
   have C : IsCub (DVR.th Q (T := T) y J) := isCub_cubV Q.cub hJ
   rw [(Y.Φ_i t).1, C.face₃, _root_.mul_one, ht] at h1
-  refine h1.trans ((_root_.mul_comm _ _).trans (congrArg (· * _) (Units.ext ?_)))
-  exact ((Y.Φ_i t).2 χ y J hJ).trans (gs_unit (𝟙 _) y ⊤ trivial (u.toHomUnits (Multiplicative.ofAdd χ)))
+  exact h1.trans ((_root_.mul_comm _ _).trans (congrArg (· * _)
+    (Units.ext (((Y.Φ_i t).2 χ y J hJ).trans (gs_unit (𝟙 _) y ⊤ trivial (u.toHomUnits (Multiplicative.ofAdd χ)))))))
 
 theorem valR_eq_of_isWt {V : Y.H.left.Opens} {f : Γ(Y.H.left, V)} (hf : IsWt Y 0 V f) {S : Type} [CommRing S]
     (a a' : Sp S ⟶ Y.H.left) (h : ⊤ ≤ a ⁻¹ᵁ V) (h' : ⊤ ≤ a' ⁻¹ᵁ V) (e : a' ≫ Y.q.left = a ≫ Y.q.left) :
     valR a' V f = valR a V f := by
   obtain ⟨φ, hφ⟩ : ∃ φ : R →+* S, spMap φ = a ≫ Y.H.hom := ⟨(Spec.preimage (a ≫ Y.H.hom)).hom, Spec.map_preimage _⟩
   let x : Over.mk (spMap φ) ⟶ Y.H := Over.homMk a hφ.symm
-  let x' : Over.mk (spMap φ) ⟶ Y.H := Over.homMk a' (by
-    show a' ≫ Y.H.hom = spMap φ
-    rw [hφ, ← Over.w Y.q, reassoc_of% e])
+  let x' : Over.mk (spMap φ) ⟶ Y.H := Over.homMk a' (by show a' ≫ Y.H.hom = spMap φ; rw [hφ, ← Over.w Y.q, reassoc_of% e])
   have hq : x' ≫ Y.q = x ≫ Y.q := Over.OverMorphism.ext e
   obtain ⟨u, hu⟩ := exists_ratio Y x x' hq
   let c : Q.X → Sˣ := fun χ => Units.map (Scheme.ΓSpecIso (CommRingCat.of S)).hom.hom.toMonoidHom (u χ)
-  have hc : ∀ χ, unitOn (c χ) = u χ := fun χ =>
-    Units.ext (Iso.hom_inv_id_apply (Scheme.ΓSpecIso (CommRingCat.of S)) _)
+  have hc : ∀ χ, unitOn (c χ) = u χ := fun χ => Units.ext (Iso.hom_inv_id_apply (Scheme.ΓSpecIso (CommRingCat.of S)) _)
   have hc' : ∀ χ y J, Good Q.P.L y J → val ((Y.Φ _ x').s χ) (𝟙 _) y J =
       gm (𝟙 (Over.mk (spMap φ)).left) y ⊤ (unitOn (c χ)) * val ((Y.Φ _ x).s χ) (𝟙 _) y J := fun χ y J hJ => by
     rw [hc]; exact hu χ y J hJ
@@ -119,9 +106,7 @@ theorem valR_eq_of_isWt {V : Y.H.left.Opens} {f : Γ(Y.H.left, V)} (hf : IsWt Y 
 
 theorem exists_app_eq {V : Q.P.A.left.Opens} {f : Γ(Y.H.left, Y.q.left ⁻¹ᵁ V)} (hf : IsWt Y 0 _ f) :
     ∃ a, (Y.q.left.app V).hom a = f := by
-  have := Y.smooth_q
-  have := (surjective_q Y).1
-  have := (surjective_q Y).2
+  have := Y.smooth_q; have := (surjective_q Y).1; have := (surjective_q Y).2
   refine FunDescent.exists_app_eq Y.q.left V f fun Z g₁ g₂ h₁ h₂ e => ?_
   rw [← sub_eq_zero]
   refine InteriorKS.app_eq_zero_of_valR (𝟙 Z) ⊤ _ fun Ω _ => ?_
@@ -242,12 +227,11 @@ end Ray
 
 theorem abelian_part_const : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (k : Type) [Field k] [CharZero k] (m d : ℕ) (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (maximalIdeal (ChartRing k m d)) t) (gam : Fin m → LinearMap.BilinForm ℤ P.D.toPre.X), IsMonomial P.D.toPre (bdParam k m d) gam → LinearIndependent ℤ gam → (∀ p : Sp (ChartRing k m d), p ∈ abLocus t.G ↔ ∏ i, bdParam k m d i ∉ p.asIdeal) → letI := H.starRing; ∀ (Y : Ray P.oD) (n' : ℕ) (v' : Module.Basis (Fin n') (ChartRing k m d) (TanM (𝟙 (Sp (ChartRing k m d))) Y.H)) (dd : Fin n' → Fld Y.H.left), (∀ a, IsInv Y.H (v' a) (dd a)) → ∀ (D : Derivation ℤ (ChartRing k m d) (ChartRing k m d)) (q : Fin m → ChartRing k m d), (∀ i, D (bdParam k m d i) = q i * bdParam k m d i) → ∀ h : Heat Y.H Y.q.left P.D.toPre.P.L dd ⇑D, IsBasic Y h → HasDefect Y h (fun _ _ _ => 0) → (∀ a b, h.Θ a b ∈ maximalIdeal (ChartRing k m d)) → ∀ ρ : ChartRing k m d →+* DualNumber k, (∀ r, ρ r = TrivSqZeroExt.inl (MvPowerSeries.constantCoeff r) + TrivSqZeroExt.inr (MvPowerSeries.constantCoeff (D r))) → ∃ (B' : Over (Sp (DualNumber k))) (_ : GrpObj B') (π₁ π₂ : B'.left ⟶ P.D.toPre.P.A.left), IsGrpPullback B' P.D.toPre.P.A (spMap ρ) π₁ ∧ IsGrpPullback B' P.D.toPre.P.A (spMap (constHom ρ)) π₂ ∧ (∀ (Z : Scheme.{0}) (x : Z ⟶ B'.left) (y : Z ⟶ Sp k), x ≫ B'.hom = y ≫ spMap (TrivSqZeroExt.fstHom k k k).toRingHom → x ≫ π₁ = x ≫ π₂) := by
   intro E _ _ _ H k _ _ m d t P gam _ _ _
-  letI := H.starRing
+  let := H.starRing
   intro Y n' v' dd hdd D q _ h hB _ hΘ ρ hρ
   refine exists_const Y h (fun a => (hdd a).1) hB ρ (fun r => by simp [hρ]) fun a b => ?_
-  have h0 : MvPowerSeries.constantCoeff (h.Θ a b) = 0 := by
-    by_contra hne
-    exact hΘ a b (MvPowerSeries.isUnit_iff_constantCoeff.2 (Ne.isUnit hne))
+  have h0 : MvPowerSeries.constantCoeff (h.Θ a b) = 0 :=
+    by_contra fun hne => hΘ a b (MvPowerSeries.isUnit_iff_constantCoeff.2 (Ne.isUnit hne))
   simp [hρ, h0]
 
 end GlobalTheory.Heat.AbConst

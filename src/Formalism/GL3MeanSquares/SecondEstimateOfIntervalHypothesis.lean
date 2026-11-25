@@ -63,35 +63,9 @@ def normPrimes (d N : ℕ) (lo hi : ℝ) : Finset ℕ :=
 def rho (c Cρ B X : ℝ) : ℝ :=
   Cρ * Real.exp (-c * Real.log X / Real.log B) + Cρ * Real.exp (-c * Real.log X ^ (1 / 2 : ℝ))
 
-def BoxCountHyp (C : ℝ) : Prop :=
-  ∀ (t : ℕ) [NeZero t] (θ : DirichletCharacter ℂ t) (Q : ℝ) (S : Finset ℕ), θ.IsPrimitive → θ ^ 2 = 1 →
-    (∀ q ∈ S, ∃ _ : Fact q.Prime, q % 4 = 3 ∧ q.Coprime t ∧ ((t * q : ℕ) : ℝ) ≤ Q ∧ ¬ ZeroFreeBox Q (tw θ q)) →
-    (S.card : ℝ) ≤ C * Q ^ (1 / 4 : ℝ)
-
-def BoxTailHyp (ε C x₀ : ℝ) : Prop :=
-  ∀ (x Q : ℝ) (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), x₀ ≤ x → x ^ (ε / 6) ≤ Real.log Q →
-    Real.log Q ≤ x ^ (ε / 4) → χ ≠ 1 → GoodFor Q χ →
-    ‖(x : ℂ) * tailL χ (x ^ 400)‖ ≤ x ^ ε ∧ ‖logDerivLAtOne χ‖ ≤ C * Real.log x
-
-def IntervalHyp (C₀ c Cρ c₃ : ℝ) : Prop :=
-  ∀ (d N : ℕ) (X h : ℝ), d.Prime → d % 4 = 3 → 1 ≤ N → (4 * (d : ℝ) * (N : ℝ) ^ 2) ^ C₀ ≤ X →
-    rho c Cρ (4 * (d : ℝ) * (N : ℝ) ^ 2) X ≤ h / 100 → 0 < h → h ≤ 1 →
-    (4 * (d : ℝ) * (N : ℝ) ^ 2) ^ 7 ≤ h * X ^ (1 / 3 : ℝ) →
-    c₃ * h * (4 * (d : ℝ) * (N : ℝ) ^ 2) ^ (-6 : ℝ) * X / Real.log X ≤ ((normPrimes d N X (X * (1 + h))).card : ℝ)
-
 def GFiniteSplit : Prop :=
   ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (x z : ℝ), 0 < x → x ≤ z →
     Gchi χ x = - Sz χ x z - (x : ℂ) * tailL χ z
-
-def UnitModulusIncrementConditions : Prop :=
-  ∀ ε C : ℝ, 0 < ε → ε ≤ 1 → 0 < C → ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x →
-    x ^ 400 < X1 ε x ^ (1 / 2 : ℝ) ∧ 2 ≤ x ^ (ε / 5) ∧
-    (1 / 4) * Real.log x ^ 2 * Real.log 8 ≤ Real.log (X1 ε x) ∧
-    Real.log x ^ 2 * Real.log (8 * (x ^ 400) ^ 2) ≤ Real.log (X1 ε x) ∧
-    x ^ (ε / 6) ≤ Real.log (X1 ε x) ∧
-    x ^ (ε / 6) ≤ Real.log (8 * X1 ε x) ∧ Real.log (8 * X1 ε x) ≤ x ^ (ε / 4) ∧
-    C * x * Real.log x / (x ^ (1 / 2 + ε) / 2) ^ 2 ≤ x ^ (-ε) ∧ x ^ (-ε) ≤ 1 / 8 ∧
-    2 * (C * (8 * X1 ε x) ^ (1 / 4 : ℝ)) ≤ X1 ε x ^ (9 / 10 : ℝ) / 2
 
 def TwEval : Prop :=
   ∀ (t : ℕ) (θ : DirichletCharacter ℂ t) (q : ℕ) [Fact q.Prime] (n : ℕ),

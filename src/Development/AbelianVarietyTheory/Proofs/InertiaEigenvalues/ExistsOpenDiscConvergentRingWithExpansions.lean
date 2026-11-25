@@ -633,7 +633,6 @@ theorem ζQ_pow (P : LocPrime l) (s : ℕ) : P.ζQ s ^ l ^ s = 1 := by
   | zero => simp [P.ζQ_zero]
   | succ s ih => rw [pow_succ', pow_mul, P.ζQ_succ, ih]
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem unit_pi {AI : LocAinf l P} (T : LocTied l P AI) {R : WSer Γ} (I : IoS AI R)
     (β : RA LL →+* ↥LL.1 ⊗[ℚ_[l]] P.R.B) (hβ : IsBeta AI β) : IsUnit (β (I.io letπ)) := by
   rw [I.io_π, hβ]

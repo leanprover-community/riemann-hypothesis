@@ -26,7 +26,6 @@ theorem trace_int_mul (u : ℤ) (t : AE F E) :
 
 theorem trace_map_cA {σ : E →ₐ[F] E} {ι : Type} [Fintype ι] (M : Matrix ι ι (AE F E)) :
     (M.map (cA σ)).trace = cA σ M.trace := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [Matrix.trace, map_sum]
 
 theorem Bf_symm {σ : E →ₐ[F] E} (hσ : ∀ a, σ (σ a) = a) (J : Matrix (Fin m) (Fin m) E) (u : ℤ)

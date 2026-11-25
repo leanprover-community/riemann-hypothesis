@@ -17,51 +17,10 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] {ι : K → Type} [∀ k
 
 
 omit [Fintype K] in
-theorem RowSub.isMultiHomog_mul {f g : MRingOver S ι} {a b : K → ℕ} (hf : IsMultiHomog f a)
-    (hg : IsMultiHomog g b) : IsMultiHomog (f * g) (a + b) := by
-  classical
-  exact (Bridge.isMultiHomog_iff _ _).mp
-    (IsWeightedHomogeneous.mul ((Bridge.isMultiHomog_iff _ _).mpr hf)
-      ((Bridge.isMultiHomog_iff _ _).mpr hg))
-
-
-omit [Fintype K] in
-theorem RowSub.isMultiHomog_C (r : S) : IsMultiHomog (C r : MRingOver S ι) 0 := by
-  classical
-  exact (Bridge.isMultiHomog_iff _ _).mp (isWeightedHomogeneous_C (NumbersDVR.blockWeight ι) r)
-
-
-omit [Fintype K] in
 theorem RowSub.isMultiHomog_X [DecidableEq K] (k : K) (i : ι k) :
     IsMultiHomog (X ⟨k, i⟩ : MRingOver S ι) (Pi.single k 1) :=
   (Bridge.isMultiHomog_iff _ _).mp (isWeightedHomogeneous_X S (NumbersDVR.blockWeight ι) ⟨k, i⟩)
 
-
-omit [Fintype K] in
-theorem RowSub.isMultiHomog_pow {f : MRingOver S ι} {a : K → ℕ} (hf : IsMultiHomog f a) (n : ℕ) :
-    IsMultiHomog (f ^ n) (n • a) := by
-  classical
-  exact (Bridge.isMultiHomog_iff _ _).mp
-    (IsWeightedHomogeneous.pow ((Bridge.isMultiHomog_iff _ _).mpr hf) n)
-
-
-omit [Fintype K] in
-theorem RowSub.isMultiHomog_prod {β : Type} (s : Finset β) (f : β → MRingOver S ι) (a : β → K → ℕ)
-    (h : ∀ b ∈ s, IsMultiHomog (f b) (a b)) : IsMultiHomog (∏ b ∈ s, f b) (∑ b ∈ s, a b) := by
-  classical
-  exact (Bridge.isMultiHomog_iff _ _).mp
-    (IsWeightedHomogeneous.prod (w := NumbersDVR.blockWeight ι) s f a fun b hb =>
-      (Bridge.isMultiHomog_iff _ _).mpr (h b hb))
-
-theorem RowSub.isMultiHomog_coordProd (c : ∀ k, ι k) (d : K → ℕ) :
-    IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRingOver S ι) ^ d k) d := by
-  classical
-  have h := RowSub.isMultiHomog_prod (S := S) (ι := ι) Finset.univ (fun k => (X ⟨k, c k⟩ : MRingOver S ι) ^ d k)
-    (fun k => d k • Pi.single k 1) fun k _ => RowSub.isMultiHomog_pow (RowSub.isMultiHomog_X k (c k)) _
-  have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  rwa [e] at h
 
 variable {Ω : Type} [Field Ω] [Algebra S Ω]
 
@@ -82,26 +41,23 @@ theorem RowSub.exists_form_of_mem_chartRingOver (y : (Σ k, ι k) → Ω) (c : �
     rw [Finset.prod_eq_single p.1 (fun k _ hk => by simp [hk]) (by simp)]
     simp
   | algebraMap r =>
-    exact ⟨0, C r, RowSub.isMultiHomog_C r, by simp⟩
+    exact ⟨0, C r, Bridge.isMultiHomog_C r, by simp⟩
   | add x x' _ _ ih ih' =>
     obtain ⟨m, h, hh, rfl⟩ := ih
     obtain ⟨m', h', hh', rfl⟩ := ih'
     refine ⟨m + m', h * ∏ k, (X ⟨k, c k⟩ : MRingOver S ι) ^ m' k + h' * ∏ k, (X ⟨k, c k⟩ : MRingOver S ι) ^ m k,
       ?_, ?_⟩
-    · have h1 := RowSub.isMultiHomog_mul hh (RowSub.isMultiHomog_coordProd (S := S) c m')
-      have h2 := RowSub.isMultiHomog_mul hh' (RowSub.isMultiHomog_coordProd (S := S) c m)
+    · have h1 := Bridge.isMultiHomog_mul hh (Bridge.isMultiHomog_chartMono (R := S) c m')
+      have h2 := Bridge.isMultiHomog_mul hh' (Bridge.isMultiHomog_chartMono (R := S) c m)
       rw [add_comm m' m] at h2
-      intro d hd k
-      rcases Finset.mem_union.mp (MvPolynomial.support_add hd) with hd | hd
-      · exact h1 d hd k
-      · exact h2 d hd k
+      exact Bridge.isMultiHomog_add h1 h2
     · rw [hPadd, div_add_div _ _ (hP m) (hP m')]
       simp only [map_add (f := _), map_mul, map_prod, map_pow, aeval_X]
       ring
   | mul x x' _ _ ih ih' =>
     obtain ⟨m, h, hh, rfl⟩ := ih
     obtain ⟨m', h', hh', rfl⟩ := ih'
-    exact ⟨m + m', h * h', RowSub.isMultiHomog_mul hh hh', by rw [hPadd, map_mul, div_mul_div_comm]⟩
+    exact ⟨m + m', h * h', Bridge.isMultiHomog_mul hh hh', by rw [hPadd, map_mul, div_mul_div_comm]⟩
 
 end Forms
 
@@ -125,9 +81,9 @@ theorem RowSub.proof : RowSub.Statement := by
   set G : MRingOver S ι := h * ∏ k, (X ⟨k, c k⟩ : MRingOver S ι) ^ q k with hG
   set a : K → ℕ := n • (∑ j ∈ J.1, (Pi.single k₀ 1 : K → ℕ)) + (m + p) with ha
   have hTa : IsMultiHomog T a := by
-    refine RowSub.isMultiHomog_mul (RowSub.isMultiHomog_pow (RowSub.isMultiHomog_prod _ _ _ fun j _ =>
+    refine Bridge.isMultiHomog_mul (Bridge.isMultiHomog_pow (Bridge.isMultiHomog_prod _ _ _ fun j _ =>
       RowSub.isMultiHomog_X k₀ (e.symm j)) n) ?_
-    exact RowSub.isMultiHomog_coordProd c (m + p)
+    exact Bridge.isMultiHomog_chartMono (R := S) c (m + p)
   have hak : ∀ k, γ k + (a k : ℤ) = δ k + p k + m k := by
     intro k
     simp only [ha, hδ, Pi.add_apply, Pi.smul_apply, Finset.sum_const, smul_eq_mul,
@@ -143,7 +99,7 @@ theorem RowSub.proof : RowSub.Statement := by
       have := hpk k
       omega
     rw [e']
-    exact RowSub.isMultiHomog_mul hh (RowSub.isMultiHomog_coordProd c q)
+    exact Bridge.isMultiHomog_mul hh (Bridge.isMultiHomog_chartMono (R := S) c q)
   have hXmem : ∀ k (i : ι k), i ∈ baseCell k₀ e J.1 I k →
       (X ⟨k, i⟩ : MRingOver S ι) ∈ ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.cellMon S (baseCell k₀ e J.1 I) :=
     fun k i hi => Submonoid.subset_closure ⟨k, i, hi, rfl⟩

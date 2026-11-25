@@ -45,34 +45,4 @@ lemma awayToSection_fromZero {f : A} {m : ℕ} (hf : f ∈ 𝒜 m) (z : 𝒜 0) 
 
 end Restrict
 
-namespace Weierstrass
-
-open MvPolynomial HomogeneousLocalization
-
-variable {R : Type u} [CommRing R] (W : WeierstrassCurve R)
-
-section Scalars
-
-end Scalars
-
-end Weierstrass
-
-namespace Weierstrass
-
-open MvPolynomial HomogeneousLocalization
-
-variable {R : Type u} [CommRing R] (W : WeierstrassCurve R)
-
-section CoverFacts
-
-end CoverFacts
-
-section Genus
-
-variable {K : Type u} [Field K] (W : WeierstrassCurve K)
-
-end Genus
-
-end Weierstrass
-
 end GroundTheory.Arith.Modular

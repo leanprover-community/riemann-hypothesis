@@ -76,13 +76,9 @@ def joinCover {Z Y : Scheme.{0}} {ι : Type} (c1 c2 : Y ⟶ Z) (U : ι → Z.Ope
   fun i => Sum.elim (fun j => c1 ⁻¹ᵁ U j) (fun j => c2 ⁻¹ᵁ U j) (ofLex i)
 
 theorem generic_mem_inf {Y : Scheme.{0}} [IsIntegral Y] {κ : Type} (V : κ → Y.Opens) (h : ∀ k, genericPoint Y ∈ V k)
-    (I : Finset κ) : genericPoint Y ∈ I.inf V := by
-  classical
-  induction I using Finset.induction_on with
-  | empty => simp
-  | insert a s _ ih =>
-    rw [Finset.inf_insert]
-    exact ⟨h a, ih⟩
+    (I : Finset κ) : genericPoint Y ∈ I.inf V :=
+  Finset.inf_induction (p := (genericPoint Y ∈ ·)) trivial (fun _ h₁ _ h₂ => ⟨h₁, h₂⟩)
+    fun k _ => h k
 
 theorem generic_mem_join {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {ι : Type} (c1 c2 : Y ⟶ Z) [Etale c1] [Etale c2]
     (U : ι → Z.Opens) (hU : ∀ i, genericPoint Z ∈ U i) (k : ι ⊕ₗ ι) : genericPoint Y ∈ joinCover c1 c2 U k := by

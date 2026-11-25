@@ -4,10 +4,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 
 @[expose] public section
 
-namespace Formalism.MainNotions.Ext
-
-end Formalism.MainNotions.Ext
-
 open Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric Formalism.BasicNotions
 
 namespace Formalism.MainNotions.Ext

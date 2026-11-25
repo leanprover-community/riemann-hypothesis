@@ -38,15 +38,11 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace LateralTheory.E.E8
 
-theorem etaleFreeSheafOfRepresentable_isZero_of_isEmpty_scheme (R : Type) [CommRing R] (E : Scheme.{0}) [IsEmpty E] :
-    IsZero ((free R).obj (yoneda.obj E)) := by
-  apply LateralTheory.E.LeafVanVPf.free_empty
-
 theorem leafEmptyVanish : LeafEmptyVanish := by
   intro R _ X F n
   have hE : IsEmpty (((⊥ : X.Opens) : Scheme.{0}) : Type) := by
     change IsEmpty ((⊥ : X.Opens) : Set X); simp
-  have hfree := etaleFreeSheafOfRepresentable_isZero_of_isEmpty_scheme R ((⊥ : X.Opens) : Scheme.{0})
+  have hfree := LateralTheory.E.LeafVanVPf.free_empty R ((⊥ : X.Opens) : Scheme.{0})
   have hN : IsZero ((chainsN R).obj (sch.obj ((⊥ : X.Opens) : Scheme.{0}))) := by
     rw [IsZero.iff_id_eq_zero]
     apply HomologicalComplex.hom_ext

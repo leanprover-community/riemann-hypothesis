@@ -198,7 +198,3 @@ theorem innerXYOfReduced : InnerXYOfReduced := by
     exact (hmp.integral_comp hemb _).symm
 
 end Formalism.FourierDecayAlt.P.CuspidalIrreducibleSubrep
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

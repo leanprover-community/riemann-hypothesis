@@ -45,7 +45,7 @@ local instance neZeroTypePrime (k : Fin 2) : NeZero (D.host.g k) := ⟨(D.host.g
 
 variable {D}
 
-theorem tupOf_injective : Function.Injective (tupOf D) := fun a b h =>
+theorem tupOf_injective : Function.Injective (tupOf D) := fun _ _ h =>
   funext fun kv => PrimeDegreeVariant.Ten.monicOf_inj _ _ (congrFun (congrFun h kv.1) kv.2)
 
 theorem mem_range_tupOf {t : Tup2 D} :

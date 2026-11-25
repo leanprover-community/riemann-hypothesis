@@ -70,8 +70,4 @@ variable {D : D7}
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.WeilU
 
-namespace GlobalTheory.CompanionTheory.Hypotheses₂.WeilU
-
-end GlobalTheory.CompanionTheory.Hypotheses₂.WeilU
-
 end

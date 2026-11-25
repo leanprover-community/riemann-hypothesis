@@ -28,8 +28,7 @@ theorem abs_unfold {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologic
     (u : Q → ℝ) (hu : Summable u) (hAu : ∀ q, ∀ β ∈ C, ‖A q β‖ ≤ u q)
     (q₀ : Q) (hinj : Function.Injective (act q₀))
     (hsmall : ∀ q, (∀ ν, act q₀ ν ≠ q) → ∃ β₀, χ₀ β₀ ≠ 1 ∧ ∀ ν β, A (act q ν) (β + β₀) = A (act q ν) β) :
-    Integrable (A q₀) lam ∧ Integrable (fun β => A q₀ β * χ₀ β) lam ∧
-      ∫ β in 𝓖, (∑' q, A q β) * χ₀ β ∂lam = ∫ β, A q₀ β * χ₀ β ∂lam := by
+    ∫ β in 𝓖, (∑' q, A q β) * χ₀ β ∂lam = ∫ β, A q₀ β * χ₀ β ∂lam := by
   classical
   have hactneg : ∀ q ν, act (act q ν) (-ν) = q := fun q ν => by rw [hact, add_neg_cancel, hact0]
   have hactneg' : ∀ q ν, act (act q (-ν)) ν = q := fun q ν => by rw [hact, neg_add_cancel, hact0]
@@ -104,7 +103,6 @@ theorem abs_unfold {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologic
       (Filter.Eventually.of_forall fun β => ?_)
     rw [norm_mul, mul_comm]
     exact mul_le_mul_of_nonneg_right (hM β) (norm_nonneg _)
-  refine ⟨hint, hintχ, ?_⟩
   rw [hLHS]
 
   letI s : Setoid Q :=

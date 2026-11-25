@@ -18,8 +18,6 @@ open NumberField Formalism.BasicNotions
 
 namespace PI.UnitaryGroupMassFormula.IdCellInSW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem traceOne_holds (D : D7) : TraceOne D := by
   haveI : NumberField.IsCMField D.host.E := D.host.isCMField_hostE
 

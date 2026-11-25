@@ -145,8 +145,6 @@ open GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.
 
 namespace GlobalTheory.Mem.R3.LedSize
 
-
-
 theorem evG_exists_sizeRows : EvG fun K => ∀ X : Stages, K.Over X.B.toPre → X.V.div.etaF = 6 * K.s.x ^ (-K.C.P.CF) → (∀ w j, X.toD7.what₂.Aj j w = 0) → ∃ L : SizeData₂ X.toD7, L.sc = K.s ∧ GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows L := by
   refine ⟨1, one_pos, fun eps C8 C5 c6 Cb h0 _ h1 _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun C hC _ _ => ?_⟩⟩
   obtain ⟨c1, hN⟩ := GlobalTheory.EX.szRow_numAt eps h0 h1 C hC
@@ -240,8 +238,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
 open scoped TensorProduct
 
-theorem _root_.GlobalTheory.T.rowTest_complexSide_of_hilbert_models : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3), GlobalTheory.IndefiniteRowSideFullHecke.RationalRowTestKernel.RowTestModel R.toRealDat → Formalism.IndefR.Rat.RowTest (R.toCx3 F) := by
-  first | exact @GlobalTheory.Twist.rowTest_complexSide_of_hilbert_models.rowTest_toCx3
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowTestComplexSideOfHilbertModelsStatement =====
@@ -287,8 +283,6 @@ theorem rat_of_formula {K : Type} [Field K] (σ : K →+* ℂ) {z : K} {c c₀ �
     ring
   rw [hp]
   field_simp
-
-
 
 theorem exists_good (hP : GlobalTheory.Published.CuspRapidDecay) (R : RealDat D A Ks) (F : Face D A) (hC : GlobalTheory.Hk3.Core R F) (t : T0)
     (x : A.fam.amb.FR t) :
@@ -336,7 +330,6 @@ private theorem rowTestModel_of_scaled_values_rational {R : RealDat D A Ks} (ch 
     refine ⟨z, hz.trans ?_⟩
     exact (((LinearMap.smul_apply k (f a) _).trans (congrArg (k • ·) (hf a _))).trans (smul_eq_mul k _)).symm
 
-
 private theorem exists_embLL_mul_psiK_eq_vK_of_formulaAt (hP : GlobalTheory.Published.CuspRapidDecay) {R : RealDat D A Ks} {F : Face D A} (hC : GlobalTheory.Hk3.Core R F)
     (ch : Choice R) {κ : ℂ} {ze : T0 → D.what₂.LL} (hF : FormulaAt ch κ ze) (t : T0) (x : A.fam.amb.FR t) (a : Fin ch.n) :
     ∃ x' : A.fam.amb.FR t, D.what₂.embLL (ze t) * cTot ch t * psiK ch a (R.Th t (R.jX t x)) = κ * vK ch t x' a := by
@@ -344,8 +337,6 @@ private theorem exists_embLL_mul_psiK_eq_vK_of_formulaAt (hP : GlobalTheory.Publ
   refine ⟨x', ?_⟩
   rw [← hxx]
   exact hF.2 t x' hx' a
-
-
 
 theorem rowTest_of_choice (hP : GlobalTheory.Published.CuspRapidDecay) {R : RealDat D A Ks} {F : Face D A} (hC : GlobalTheory.Hk3.Core R F)
     (ch : Choice R) (hlin : ∀ a u, ConvK ch a u) (hinj : ∀ u, (∀ a, psiK ch a u = 0) → u = 0)
@@ -378,8 +369,6 @@ theorem rowTest_of_choice (hP : GlobalTheory.Published.CuspRapidDecay) {R : Real
         Subfield.prod_mem _ fun j _ => RingHom.mem_fieldRange.2 (hr i j t))
     exact rat_of_formula D.what₂.embLL (hz0 t) (hcT t) (hcT _) hκ hfo (hv t x' a) hrat
 
-
-
 theorem rowTestModel_of_claims : GlobalTheory.Published.CuspRapidDecay → LinK → InjK → ConstK → SumOKK → Formula2K → SumRatK → RatioK → ∃ CF0 : ℝ, ∀ ε CF : ℝ, CF0 ≤ CF → ∃ x₀ : ℝ, ∀ (D : D7) (large₂ : SizeData₂ D), large₂.sc.eps = ε → x₀ ≤ large₂.sc.x → ∀ (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.RowClaim.HidaSetting large₂ R F → (∃ ch : GlobalTheory.RowTest.Choice R, ch.Is ∧ ch.AtScale CF large₂.sc.b ∧ ch.FieldOK) → GlobalTheory.IndefiniteRowSideFullHecke.RationalRowTestKernel.RowTestModel R := by
   intro hP hL hI hC _ hF hR hRa
   obtain ⟨CF0, h⟩ := Big.and (Big.and (Big.and (Big.and (Big.and hL hI) hC) hF) hR) hRa
@@ -411,7 +400,7 @@ theorem GlobalTheory.RowTest.rowTest_realisation : GlobalTheory.Published.CuspRa
   refine ⟨CF0, fun ε CF hCF => ?_⟩
   obtain ⟨x₀, hx₀⟩ := hCF0 ε CF hCF
   refine ⟨x₀, fun D large₂ hε hx G _ _ Pl0 I0 T0 A3 Ks _ _ _ R F hSet hch => ?_⟩
-  exact GlobalTheory.T.rowTest_complexSide_of_hilbert_models D G Pl0 I0 T0 A3 Ks R F (hx₀ D large₂ hε hx G Pl0 T0 _ Ks R.toRealDat F.lv2 hSet hch)
+  exact GlobalTheory.Twist.rowTest_complexSide_of_hilbert_models.rowTest_toCx3 D G Pl0 I0 T0 A3 Ks R F (hx₀ D large₂ hε hx G Pl0 T0 _ Ks R.toRealDat F.lv2 hSet hch)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowTestAtRealisationOfHilbertModels =====
@@ -530,8 +519,6 @@ theorem ev_scale {p : ℝ → ℝ → Prop} (h : ∀ eps : ℝ, 0 < eps → ∃ 
     let ⟨x₀, hx⟩ := h eps h0
     ⟨x₀, fun _ _ _ _ hs hx' => ⟨x₀, hx', hs ▸ hx⟩⟩⟩⟩⟩⟩
 
-
-
 theorem atDat_rowTest : GlobalTheory.Published.GreenCuspidal → GlobalTheory.Published.CuspRapidDecay → LinK → InjK → ConstK → SumOKK → Formula2K → SumRatK →
     RatioK → GlobalTheory.RowEx.ExField → StepW Pinned fun _ B f T w => ∀ (Z : w.Lt) (hX : B.fields.Ok) (Wt : Set B.places.Pl)
       (z : GlobalTheory.Mem.R3.Dat (w.st Z) w.I hX T Wt), GrpTrue Z.N f → GlobalTheory.Mem.R3.GrpAt (w.st Z) w.I → z.R.toRealDat.ExAt →
@@ -548,7 +535,7 @@ theorem atDat_rowTest : GlobalTheory.Published.GreenCuspidal → GlobalTheory.Pu
   obtain ⟨Z', g1', hη, hA⟩ := LedRec.exists_bare hG (B := B) (C := w.C) Z f (6 * K.s.x ^ (-K.C.P.CF))
   obtain ⟨L, hsc, hsz⟩ := hLed (w.st Z') hO hη hA
   have s : SameGrp Z Z' := LedRec.sameGrp g1 g1'
-  exact (GlobalTheory.T.equalMultiplicities_rowTest_of_sameGroupTransfer B w.C Z Z' w.px w.I hX T Wt s z).2 (by
+  exact (GlobalTheory.Twist.multEq_rowTest_of_copy B w.C Z Z' w.px w.I hX T Wt s z).2 (by
     have hEx' := DatCopy.copy_exAt Z' s hEx
     generalize DatCopy.copy Z' s z = y at hEx' ⊢
     have hS := hSet B f T w Z' hX Wt y hO g1' hEx' L hsz
@@ -602,7 +589,6 @@ theorem injK_of_separates_linB (hS : GlobalTheory.IndefiniteRowSideFullHecke.Lev
   obtain ⟨x0, hL⟩ := hL ε CF hCF
   refine ⟨x0, fun D large₂ hε hx Γ _ _ Pl0 T A Ks _ _ _ R F hset ch hch hsc ρ ξ a u => ?_⟩
   exact hL D large₂ hε hx Γ Pl0 T A Ks R F hset (ch.withReal ρ ξ) hsc (hch.toIsBase.withReal ρ ξ) a u
-
 
 end GlobalTheory.RowEx
 
@@ -662,8 +648,6 @@ open GlobalTheory.RowEx
 open GlobalTheory.Mem GlobalTheory.Mem.Top
 
 namespace GlobalTheory.RowEx
-
-
 
 theorem exKey_of (h1 : GridEx) (h2 : IsEx) (h3 : NFAll) (cG : CarryG) (cW : CarryW) (cS : CarryS)
     (t1 : TrEasy) (t2 : TrPhase) (t3 : TrJet) (t4 : TrBot) : ExKey := by
@@ -903,12 +887,6 @@ theorem leastSplitAuxiliaryPrime_ne_typePrime_of_sizes {large₂ : SizeData₂ D
 
 end GlobalTheory.RowEx.GridExPf
 
-namespace GlobalTheory.RowEx
-
-open GlobalTheory.RowEx.GridExPf
-
-end GlobalTheory.RowEx
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -927,10 +905,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.RowEx
 noncomputable section
 open scoped TensorProduct nonZeroDivisors Pointwise
-namespace GlobalTheory.RowEx.GridExPf
-open Formalism.L2.Col GlobalTheory.GridPlaces
-variable {D : D7}
-end GlobalTheory.RowEx.GridExPf
 namespace GlobalTheory.RowEx
 open GlobalTheory.RowEx.GridExPf
 theorem twisted_grid_existence_of_identity (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) : GridEx := by
@@ -1072,7 +1046,6 @@ theorem sqRatio_mem_grid {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory
   rw [eq_div_of_mul_eq (prod_ne_zero_iff.2 fun k hk => (hP1 k hk).2) heq]
   exact div_mem (mul_mem (mul_mem (mul_mem (RingHom.mem_fieldRange.2 ⟨ζ, rfl⟩) hU) hl) (prod_mem hP2))
     (prod_mem fun k hk => (hP1 k hk).1)
-
 
 end GlobalTheory.RowClaim
 

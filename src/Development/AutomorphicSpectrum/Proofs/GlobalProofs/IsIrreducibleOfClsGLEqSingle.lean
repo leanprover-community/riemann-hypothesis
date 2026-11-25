@@ -193,13 +193,9 @@ section Monomials
 
 open MvPolynomial GlobalTheory.SmGL.Segment
 
-theorem ms_le_msum {m : Segment k →₀ ℕ} {Δ : Segment k} (h : Δ ∈ m.support) : Δ.ms ≤ msum m := by
-  have h1 : m Δ • Δ.ms ≤ msum m :=
-    Finset.single_le_sum (f := fun Γ => m Γ • Γ.ms) (fun _ _ => Multiset.zero_le _) h
-  obtain ⟨n, hn⟩ := Nat.exists_eq_succ_of_ne_zero (Finsupp.mem_support_iff.mp h)
-  refine le_trans ?_ h1
-  rw [hn, succ_nsmul]
-  exact le_add_self
+theorem ms_le_msum {m : Segment k →₀ ℕ} {Δ : Segment k} (h : Δ ∈ m.support) : Δ.ms ≤ msum m :=
+  (le_self_nsmul (Multiset.zero_le _) (Finsupp.mem_support_iff.mp h)).trans
+    (Finset.single_le_sum (f := fun Γ => m Γ • Γ.ms) (fun _ _ => Multiset.zero_le _) h)
 
 theorem eq_single_of_len {Δ : Segment k} (h : Δ.len = 1) : Δ = single Δ.first Δ.isCusp_first :=
   ext_first rfl h

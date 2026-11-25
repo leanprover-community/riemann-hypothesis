@@ -606,7 +606,7 @@ theorem exists_subspace_isometric : Out.Laws → Out.Laws2 → ∀ (E : Type) [F
   have hud := _root_.GlobalTheory.AbelianLetters.IsRatio.differentiableAt_zero a.D₀ g n Ha.ex₀ _ (hb _ _) Ha.add Ha.hol_b Ha.hol_chi u hu
   have hu1 : ∀ x, u x 0 = 1 := fun x => mul_left_cancel₀ (hu0 x 0) (by simpa using (hum x 0 0).symm)
   have hue : ∀ x z, u x z = Complex.exp (fderiv ℂ (u x) 0 z) := fun x =>
-    Doubling.eq_cexp_fderiv_of_map_add (hud x) (hu0 x 0) (hum x)
+    GlobalTheory.ExpOfFrechetDerivative.eq_exp_fderiv (hud x) (hu0 x 0) (hum x)
   obtain ⟨hz1, htor⟩ := _root_.GlobalTheory.AbelianLetters.TorusRatio.ratio_eq_torus_coord a.D₀ g n Ha.ex₀ sB hb hadd hpull Ha.add
   let p : ℂ → (Fin g ⊕ Fin g → ℤ) →+ (Fin g → ℂ) := fun w => (Ha.Pw w).comp Θ.bas.toAddMonoidHom
   have hp : ∀ w v, p w v = Ha.Pw w (Θ.bas v) := fun _ _ => rfl

@@ -30,7 +30,6 @@ section Comb
 
 variable {s t : ℕ} (u : Fin t → Fin s)
 
-
 open Classical in
 def ovr (a : Fin s → ℕ) (n : Fin t → ℕ) : Fin s → ℕ :=
   fun l => if h : ∃ i, u i = l then n (Classical.choose h) else a l
@@ -168,9 +167,6 @@ section Letters
 
 variable (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst)
 
-theorem letters_ext {N : ℕ} (L L' : Formalism.GM.M.Letters N) (h1 : L.vec = L'.vec) (h2 : L.deg = L'.deg) : L = L' := by
-  cases L; cases L'; simp_all
-
 theorem uTop_inj : Function.Injective (uTop (X.S C0 CE1 CE2)) := by
   intro i j h
   have h' := congrArg Fin.val h
@@ -243,7 +239,7 @@ theorem lLL_ovr (a : Fin X.s → ℕ) (n : Fin (X.S C0 CE1 CE2).t → ℕ) (b : 
       (lLL C0 CE1 CE2 X a b x).setTies (gT C0 CE1 CE2 X b)
         (fun i : Fin (X.S C0 CE1 CE2).t =>
           (n i - ∑ c, b.ry (uTop (X.S C0 CE1 CE2) i) c) / (X.S C0 CE1 CE2).P X.p (uTop (X.S C0 CE1 CE2) i) - x.1 i) := by
-  apply letters_ext
+  apply Formalism.GM.TM.letters_ext
   · rfl
   · funext q
     simp only [Formalism.GM.M.Letters.setTies]

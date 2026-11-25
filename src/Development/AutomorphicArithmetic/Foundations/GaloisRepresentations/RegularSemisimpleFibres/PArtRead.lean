@@ -23,12 +23,6 @@ private theorem resS_eq_resS_of_mul_sub_eq_mul {k : Type} [Field k] [ValuativeRe
     mem_nonunits_iff, (Valuation.integer.integers (valuation k)).isUnit_iff_valuation_eq_one]
   exact ne_of_lt h
 
-private theorem residue_eq_of_valuation_sub_lt_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (z₁ z₂ : A)
-    (h : A.valuation ((z₁ : Ω) - z₂) < 1) :
-    IsLocalRing.residue A z₁ = IsLocalRing.residue A z₂ := by
-  rw [← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff, ValuationSubring.valuation_lt_one_iff]
-  exact h
-
 theorem UpperTheory.Gal.InertialTypesAlt.artRead :
     ArtRead := by
   unfold ArtRead
@@ -81,7 +75,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.artRead :
       rw [hu']
       exact hEq.lt_one_iff_lt_one.2 hx
     have h2 : IsLocalRing.residue A z = IsLocalRing.residue A zx := by
-      apply residue_eq_of_valuation_sub_lt_one
+      apply DiscreteGroups.sglob.DzType.res_eq_of_cong
       show A.valuation ((z : Ω) - algebraMap E Ω x) < 1
       rw [hzdef]
       exact hx2

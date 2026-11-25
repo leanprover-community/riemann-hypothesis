@@ -113,22 +113,20 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat
 
 
 open GlobalTheory.CompanionTheory.Ar.Flat.DegZ in
-theorem germ_degZero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)) (𝓗 : HodgeLat M.lat ρ H.bar r) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O Ω] (s : X ⟶ Sp O) [IsSeparated s] [LocallyOfFiniteType s] (ϖ : O) (p : ℕ) (σ : E →+* Ω), Irreducible ϖ → p.Prime → ϖ ∣ (p : O) → ξ ≫ s = spMap (algebraMap O Ω) → IsCptGen ξ → PowFns t → S.Gives 𝓗 → (∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1) → Nat.card (E →+* Ω) = Module.finrank ℚ E → (∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap O Ω).range) → 𝓗.DegZero σ (algebraMap O Ω ϖ) := by
-  intro E _ _ _ H _ hstar X t Ω _ _ ξ d r M S ρ 𝓗 O _ _ _ _ s _ _ ϖ p σ hϖ hp hdvd hs hξ hpow hgive hfib hcard hrange
-    u hu hsp Γ
+theorem germ_degZero_of_dvd (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E)
+    [StarRing (𝓞 E)] (hstar : ∀ a : 𝓞 E, star a = H.bar a) (X : Scheme.{0}) (t : SAB H X)
+    (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω))
+    (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)) (𝓗 : HodgeLat M.lat ρ H.bar r)
+    (O : Type) [CommRing O] [Algebra O Ω] (O' : Type) [CommRing O'] (s : X ⟶ Sp O')
+    [IsSeparated s] [LocallyOfFiniteType s] (ϖ : O) (p : ℕ) (σ : E →+* Ω) (hp : p.Prime)
+    (hdvd : ϖ ∣ (p : O)) (hinj : Function.Injective (algebraMap O Ω))
+    (hreg : ∀ (q : Cpt ξ) (o : O), algebraMap O Ω o ∈ regAt ξ q) (hξ : IsCptGen ξ)
+    (hpow : PowFns t) (hgive : S.Gives 𝓗) (hfib : ∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1)
+    (hcard : Nat.card (E →+* Ω) = Module.finrank ℚ E)
+    (hrange : ∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap O Ω).range) :
+    𝓗.DegZero σ (algebraMap O Ω ϖ) := by
+  intro u hu hsp Γ
   haveI : Fact p.Prime := ⟨hp⟩
-  have hinj : Function.Injective (algebraMap O Ω) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro x hx
-    by_contra hx0
-    obtain ⟨n, w, hw⟩ := IsDiscreteValuationRing.associated_pow_irreducible hx0 hϖ
-    have h1 : algebraMap O Ω ϖ ^ n = 0 := by rw [← map_pow, ← hw, map_mul, hx, zero_mul]
-    have h0 : algebraMap O Ω ϖ = 0 := (pow_eq_zero_iff (fun hn => by simp [hn] at h1)).1 h1
-    obtain ⟨c, hc⟩ := hdvd
-    have h2 := congrArg (algebraMap O Ω) hc
-    rw [map_natCast, map_mul, h0, zero_mul] at h2
-    exact hp.ne_zero (by exact_mod_cast h2)
-  have hreg := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.RegBase.algebraMap_mem_regAt_of_base X Ω ξ O s hs
   have hσ : ∀ (q : Cpt ξ) (a : 𝓞 E), σ (a : E) ∈ regAt ξ q := fun q a => by
     obtain ⟨o, ho⟩ := hrange σ a
     exact ho ▸ hreg q o
@@ -159,7 +157,7 @@ theorem germ_degZero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     have h4 : v0 s0 = 0 := hs1
     rw [h4, zero_mul]
   haveI : CharP Γ.κ p := (CharP.charP_iff_prime_eq_zero hp).2 hpκ
-  obtain ⟨F, hF0, hFi⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.GermFam.germ_family E H hstar X t Ω ξ d M S O s _ p Γ hξ hpow hfib
+  obtain ⟨F, hF0, hFi⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.GermFam.germ_family E H hstar X t Ω ξ d M S O' s _ p Γ hξ hpow hfib
   choose hFB φ' ψ' lam' he hφ hψ hlam using hFi
   choose xs A hxs hfr hpr using _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.Frame.exists_basis_frame E H X t Ω ξ d r M S ρ 𝓗 σ u hξ hgive hσ hu hsp
   have hdet := fun q => (_root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeLat.quot_det_bundle X Ω ξ E (Fin d → Ω) M.lat ρ H.bar r 𝓗 σ u hσ hu hsp).2.2 q (A q) (hfr q)
@@ -234,5 +232,22 @@ theorem germ_degZero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
       rw [map_inv₀, WithZero.log_inv, neg_neg]
     simp only [this]
     exact hsum
+
+open GlobalTheory.CompanionTheory.Ar.Flat.DegZ in
+theorem germ_degZero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)) (𝓗 : HodgeLat M.lat ρ H.bar r) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O Ω] (s : X ⟶ Sp O) [IsSeparated s] [LocallyOfFiniteType s] (ϖ : O) (p : ℕ) (σ : E →+* Ω), Irreducible ϖ → p.Prime → ϖ ∣ (p : O) → ξ ≫ s = spMap (algebraMap O Ω) → IsCptGen ξ → PowFns t → S.Gives 𝓗 → (∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1) → Nat.card (E →+* Ω) = Module.finrank ℚ E → (∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap O Ω).range) → 𝓗.DegZero σ (algebraMap O Ω ϖ) := by
+  intro E _ _ _ H _ hstar X t Ω _ _ ξ d r M S ρ 𝓗 O _ _ _ _ s _ _ ϖ p σ hϖ hp hdvd hs hξ hpow hgive hfib hcard hrange
+  have hinj : Function.Injective (algebraMap O Ω) := by
+    refine (injective_iff_map_eq_zero (algebraMap O Ω)).2 fun x hx => ?_
+    by_contra hx0
+    obtain ⟨n, w, hw⟩ := IsDiscreteValuationRing.associated_pow_irreducible hx0 hϖ
+    have h1 : algebraMap O Ω ϖ ^ n = 0 := by rw [← map_pow, ← hw, map_mul, hx, zero_mul]
+    have h0 : algebraMap O Ω ϖ = 0 := (pow_eq_zero_iff (fun hn => by simp [hn] at h1)).1 h1
+    obtain ⟨c, hc⟩ := hdvd
+    have h2 := congrArg (algebraMap O Ω) hc
+    rw [map_natCast, map_mul, h0, zero_mul] at h2
+    exact hp.ne_zero (by exact_mod_cast h2)
+  have hreg := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.RegBase.algebraMap_mem_regAt_of_base X Ω ξ O s hs
+  exact germ_degZero_of_dvd E H hstar X t Ω ξ d r M S ρ 𝓗 O O s ϖ p σ hp hdvd hinj hreg
+    hξ hpow hgive hfib hcard hrange
 
 end GlobalTheory.CompanionTheory.Ar.Flat

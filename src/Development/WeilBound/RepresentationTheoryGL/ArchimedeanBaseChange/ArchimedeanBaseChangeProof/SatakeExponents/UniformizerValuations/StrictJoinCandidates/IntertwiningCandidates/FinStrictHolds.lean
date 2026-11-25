@@ -28,17 +28,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation.AdmDiscPf
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
 
-theorem isoV_symm {V V' : Submodule ℂ (Sm E N)} (hV : _root_.GlobalTheory.CuspRep.IsStable V) (h : SpectralAccumulation.IsoV V V') : SpectralAccumulation.IsoV V' V := by
-  obtain ⟨T, hT⟩ := h
-  refine ⟨T.symm, fun o φ ψ hψ => ?_⟩
-  set a := T.symm φ with ha
-  let b : V := ⟨act o a.1, hV o a.1 a.2⟩
-  have hb : T b = ψ := by
-    apply Subtype.ext
-    rw [hT o a b rfl, ha, LinearEquiv.apply_symm_apply]
-    exact hψ.symm
-  rw [← hb, LinearEquiv.symm_apply_apply]
-
 theorem isoV_of_map {V V' : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) (hV' : IsDiscrete V')
     (f : Sm E N →ₗ[ℂ] Sm E N) (hf : ∀ o, ∀ x ∈ V, f (act o x) = act o (f x)) (hfV : ∀ x ∈ V, f x ∈ V')
     (hne : ∃ x ∈ V, f x ≠ 0) : SpectralAccumulation.IsoV V V' := by
@@ -166,7 +155,7 @@ theorem FinIso_holds : FinIso := by
         · exact absurd rfl hij
         · simpa only [Fin.cons_zero, Fin.cons_succ] using hno' j'
         · simp only [Fin.cons_zero, Fin.cons_succ]
-          exact fun h => hno' i' (isoV_symm (hVP i').1.stable h)
+          exact fun h => hno' i' (PositivityTheory.Rg.BcB.F.F5.Bo.isoV_symm' (hVP i').1.stable h)
         · simp only [Fin.cons_succ]
           exact hVn i' j' (fun h => hij (by rw [h]))
     have := Nat.le_findGreatest (hbound _ hG) hG
@@ -189,8 +178,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
-
-
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

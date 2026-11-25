@@ -286,8 +286,8 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.UnitaryBC UpperTheory.V.Af
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Matrix UpperTheory.TNZ
 namespace UpperTheory.NonzeroTypeTheory
-abbrev _root_.UpperTheory.NonzeroTypeTheory.typeData_of_s_ty : Prop := ∀ (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis) (a1 : ArtinTransferDecompositionCharacter) (a3 : LocalArtinCharacterProduct) (a4 : FiniteDimensionalTranslationCoordinates) (a5 : TwistedSphericalRepresentative) (a6 : DistinctOnUnitsDistinctOnInertia)
-    (a7 : SmoothVectorsFixedByCongruence) (gm : _root_.UpperTheory.TNZ.GMainAlt) (ge : GEmb) (gi : ArtinInertiaProp) (cm : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → Need_CMain) (cp : Need_CProps) (gr : Need_Grp),
+abbrev _root_.UpperTheory.NonzeroTypeTheory.typeData_of_s_ty : Prop := ∀ (_ : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis) (_ : ArtinTransferDecompositionCharacter) (_ : LocalArtinCharacterProduct) (_ : FiniteDimensionalTranslationCoordinates) (_ : TwistedSphericalRepresentative) (_ : DistinctOnUnitsDistinctOnInertia)
+    (_ : SmoothVectorsFixedByCongruence) (_ : _root_.UpperTheory.TNZ.GMainAlt) (_ : GEmb) (_ : ArtinInertiaProp) (_ : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → Need_CMain) (_ : Need_CProps) (_ : Need_Grp),
     _root_.UpperTheory.NonzeroTypeTheory.TypeDataAlt
 end UpperTheory.NonzeroTypeTheory
 end
@@ -655,9 +655,9 @@ namespace GlobalTheory.LocLanglands
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
   {rc : IrrGL (k := w.adicCompletion E) → WD h}
-abbrev _root_.GlobalTheory.LocLanglands.IsRec.langlandsQuotient_s_ty : Prop := ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : _root_.UpperTheory.Zero.LLC.IsRecT h rc) {𝔪 : Multiset (Segment (w.adicCompletion E))} {s N : ℕ}
-    {δ : Fin s → IrrGL (k := w.adicCompletion E)} (hδ : LFactors 𝔪 δ) (hd : ∑ i, (δ i).1 = N)
-    {π : IrrRep (GL (Fin N) (w.adicCompletion E))} (hπ : IsCosocle π.ρ (prodIrr δ hd)),
+abbrev _root_.GlobalTheory.LocLanglands.IsRec.langlandsQuotient_s_ty : Prop := ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion E) → WD h} (_ : _root_.UpperTheory.Zero.LLC.IsRecT h rc) {𝔪 : Multiset (Segment (w.adicCompletion E))} {s N : ℕ}
+    {δ : Fin s → IrrGL (k := w.adicCompletion E)} (_ : LFactors 𝔪 δ) (hd : ∑ i, (δ i).1 = N)
+    {π : IrrRep (GL (Fin N) (w.adicCompletion E))} (_ : IsCosocle π.ρ (prodIrr δ hd)),
     rc (cls π) = sumList (List.ofFn fun i => rc (δ i))
 end GlobalTheory.LocLanglands
 end
@@ -805,10 +805,10 @@ private theorem smInd_conj {γ : ℂ ≃+* ℂ} {P : Subgroup G} {σ : Represent
     {j : V ≃+ W} (h : Cj γ σ τ j) : ∃ F, Cj γ (smInd P σ) (smInd P τ) F :=
   ⟨{ toFun := indMap h
      invFun := indMap h.symm
-     left_inv := fun φ => Subtype.ext (Subtype.ext (funext fun x => j.symm_apply_apply _))
-     right_inv := fun φ => Subtype.ext (Subtype.ext (funext fun x => j.apply_symm_apply _))
-     map_add' := fun φ ψ => Subtype.ext (Subtype.ext (funext fun x => map_add j _ _)) },
-   fun z φ => Subtype.ext (Subtype.ext (funext fun x => h.1 _ _)), fun g φ => rfl⟩
+     left_inv := fun _ => Subtype.ext (Subtype.ext (funext fun _ => j.symm_apply_apply _))
+     right_inv := fun _ => Subtype.ext (Subtype.ext (funext fun _ => j.apply_symm_apply _))
+     map_add' := fun _ _ => Subtype.ext (Subtype.ext (funext fun _ => map_add j _ _)) },
+   fun _ _ => Subtype.ext (Subtype.ext (funext fun _ => h.1 _ _)), fun _ _ => rfl⟩
 end General
 section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

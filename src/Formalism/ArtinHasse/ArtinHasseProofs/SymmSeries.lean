@@ -114,28 +114,3 @@ theorem esymm_hsymm_rel (k : ℕ) (hk : 1 ≤ k) :
   exact h
 
 end Formalism.FT.SymmetricSeries
-
-namespace Formalism.FT.SymmetricSeries
-
-variable (R : Type*) [CommRing R] (n : ℕ)
-
-variable {R n}
-
-variable (R n)
-
-variable {R n}
-
-end Formalism.FT.SymmetricSeries
-
-namespace Formalism.FT.SymmetricSeries
-
-variable {R : Type*} [CommRing R] {n : ℕ}
-
-
-end Formalism.FT.SymmetricSeries
-
-namespace Formalism.FT.SymmetricSeries
-
-variable {R : Type*} [CommRing R] {n : ℕ}
-
-end Formalism.FT.SymmetricSeries

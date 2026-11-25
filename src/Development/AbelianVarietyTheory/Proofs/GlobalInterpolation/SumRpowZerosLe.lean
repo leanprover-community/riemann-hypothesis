@@ -107,15 +107,6 @@ private lemma re_natCast_div_pow_zero_add_one (m : ℕ) (z : ℂ) :
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 open scoped Classical in
-private lemma re_lt_one_of_mem_zerosDisc {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {c w : ℂ}
-    {R : ℝ} (hw : w ∈ _root_.GlobalTheory.Lin.zerosDisc χ c R) : w.re < 1 := by
-  simp only [_root_.GlobalTheory.Lin.zerosDisc, Set.mem_setOf_eq] at hw
-  obtain ⟨-, h1, h0⟩ := hw
-  by_contra h
-  exact LFunction_ne_zero_of_one_le_re χ h1 (not_lt.mp h) h0
-
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma inv_re_nonneg_of_re_nonneg {z : ℂ} (h : 0 ≤ z.re) : 0 ≤ (z⁻¹).re := by
   rw [Complex.inv_re]
   exact div_nonneg h (Complex.normSq_nonneg _)
@@ -175,7 +166,6 @@ private lemma inv_re_ge_of_norm_sub_le {t r : ℝ} {w : ℂ} (hr : 0 < r) (hw : 
     have := mul_le_mul_of_nonneg_right hzre'.le (by positivity : (0 : ℝ) ≤ 4 * r); linarith
   linarith
 
-
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 open scoped Classical in
 theorem _root_.GlobalTheory.SmallDiscZeros.few_zeros : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (t r : ℝ), (χ ≠ 1 ∨ 2 ≤ |t|) → 0 < r → r ≤ 1 / 2 → (_root_.GlobalTheory.Lin.zerosDisc χ (1 + t * I) r).Finite ∧ (∑ᶠ w ∈ _root_.GlobalTheory.Lin.zerosDisc χ (1 + t * I) r, (_root_.GlobalTheory.Lin.ord χ w : ℝ)) ≤ C * (1 + r * Real.log (q * (|t| + 2))) := by
@@ -210,7 +200,7 @@ theorem _root_.GlobalTheory.SmallDiscZeros.few_zeros : ∃ C : ℝ, 0 < C ∧ �
       rw [finsum_mem_eq_finite_toFinset_sum _ hfin₁, Complex.re_sum]
       refine Finset.sum_nonneg fun w hw ↦ ?_
       rw [re_natCast_div_pow_zero_add_one]
-      have hw' := re_lt_one_of_mem_zerosDisc ((Set.Finite.mem_toFinset hfin₁).mp hw)
+      have hw' := GlobalTheory.NearZeroDeriv.re_lt_one ((Set.Finite.mem_toFinset hfin₁).mp hw)
       refine mul_nonneg (Nat.cast_nonneg _) (inv_re_nonneg_of_re_nonneg ?_)
       simp
       linarith
@@ -261,12 +251,12 @@ theorem _root_.GlobalTheory.SmallDiscZeros.few_zeros : ∃ C : ℝ, 0 < C ∧ �
         fun w hw _ ↦ ?_)
     · rw [re_natCast_div_pow_zero_add_one]
       have hw' := (Set.Finite.mem_toFinset hTfin).mp hw
-      refine mul_le_mul_of_nonneg_left (inv_re_ge_of_norm_sub_le hr ?_ (re_lt_one_of_mem_zerosDisc hw'))
+      refine mul_le_mul_of_nonneg_left (inv_re_ge_of_norm_sub_le hr ?_ (GlobalTheory.NearZeroDeriv.re_lt_one hw'))
         (Nat.cast_nonneg _)
       simp only [_root_.GlobalTheory.Lin.zerosDisc, Set.mem_setOf_eq] at hw'
       exact hw'.1
     · rw [re_natCast_div_pow_zero_add_one]
-      have hw' := re_lt_one_of_mem_zerosDisc ((Set.Finite.mem_toFinset hfin).mp hw)
+      have hw' := GlobalTheory.NearZeroDeriv.re_lt_one ((Set.Finite.mem_toFinset hfin).mp hw)
       refine mul_nonneg (Nat.cast_nonneg _) (inv_re_nonneg_of_re_nonneg ?_)
       simp
       linarith
@@ -299,7 +289,6 @@ open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
 open scoped Classical
 
 namespace GlobalTheory.Lin
-
 
 open ArithmeticFunction.vonMangoldt (residueClass LFunctionResidueClassAux LFunctionResidueClassAux_real
   eqOn_LFunctionResidueClassAux residueClass_apply_zero continuousOn_LFunctionResidueClassAux
@@ -399,7 +388,6 @@ private lemma integrableOn_norm_sum_primesIoc_pow_div (a : ℕ → ℂ) (x y : �
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   exact div_le_div₀ (by positivity)
     (pow_le_pow_left₀ (norm_nonneg _) (norm_sum_primesIoc_le_sum_range a x y t ht.2) k) hx ht.1
-
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 open scoped Classical in
@@ -591,7 +579,6 @@ open scoped Classical
 
 namespace GlobalTheory.Lin.NonPrimeVonMangoldt
 
-
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 open scoped Classical in
 private lemma log_div_pow_add_two_rpow_three_quarters_le (P : ℝ) (hP : 2 ≤ P) (k : ℕ) :
@@ -616,7 +603,6 @@ private lemma log_div_pow_add_two_rpow_three_quarters_le (P : ℝ) (hP : 2 ≤ P
     field_simp
   rw [hsplit, hrhs]
   exact div_le_div₀ (by positivity) hlog (mul_pos hA hC) (mul_le_mul_of_nonneg_left hCB hA.le)
-
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 open scoped Classical in

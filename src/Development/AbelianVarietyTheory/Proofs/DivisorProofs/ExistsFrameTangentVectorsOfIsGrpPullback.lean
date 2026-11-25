@@ -56,7 +56,6 @@ theorem eig_iff (hπ : IsGrpPullback A Xo.univ.t.G x π) {f : A ⟶ A} {g : Xo.u
     (hf : f.left ≫ π = π ≫ g.left) (w : epsR K ⟶ A) (s : K) :
     (w.left ≫ π) ≫ g.left = spMap (epsMul s) ≫ w.left ≫ π ↔
       w ≫ f = GlobalTheory.GrpTangent.epsScale s ≫ w := by
-  have hw : w.left ≫ A.hom = spMap (algebraMap K (DualNumber K)) := Over.w w
   have e : (w.left ≫ π) ≫ g.left = (w ≫ f).left ≫ π := by
     rw [Over.comp_left, Category.assoc, Category.assoc, hf]
   rw [e]

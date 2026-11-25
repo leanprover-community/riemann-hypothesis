@@ -425,9 +425,6 @@ end GlobalTheory.St.Lat
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
-namespace GlobalTheory.St.Lat
-end GlobalTheory.St.Lat
-
 noncomputable section
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated

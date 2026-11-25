@@ -1074,7 +1074,6 @@ theorem formal_deformation : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRin
   intro k A _ _ _ _ _ _ N I _ V D P₀ Q f₀ hN hNk hP₀ hyp
   obtain ⟨hVfin, hVD, hQmax, hQinj, hQP, hDQ, hDP, hf₀V, hf₀, hspan, hsurj⟩ := hyp
   classical
-  have hne : Ideal.span {f₀} ≠ ⊥ := by simpa [Ideal.span_singleton_eq_bot] using hf₀
   have hf₀P : f₀ ∈ P₀ := by
     have : Ideal.span {f₀} ≤ P₀ := hspan ▸ le_trans Ideal.mul_le_left Ideal.mul_le_left
     exact this (Ideal.mem_span_singleton_self f₀)

@@ -542,10 +542,6 @@ end Link
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ProGW
 
-namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
-
-end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
-
 end
 end -- clump:auto
 end -- clump:auto

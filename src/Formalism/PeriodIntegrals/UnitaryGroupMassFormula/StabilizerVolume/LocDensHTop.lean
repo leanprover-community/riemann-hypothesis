@@ -424,15 +424,6 @@ private theorem card_eq_card_sq_of_finrank_two (h2 : finrank k K = 2) :
   rw [← h2]
   exact Module.card_eq_pow_finrank
 
-theorem frob_of_ne (σ : K ≃ₐ[k] K) (h2 : finrank k K = 2) (hne : σ ≠ AlgEquiv.refl) :
-    ∀ x, σ x = x ^ Fintype.card k := by
-  apply PI.VolStabSW.FFHS.frob_of_ne <;> assumption
-
-theorem card_norm_fiber (σ : K ≃ₐ[k] K) (hfrob : ∀ x, σ x = x ^ Fintype.card k)
-    (h2 : finrank k K = 2) (d : K) (hd : σ d = d) :
-    Nat.card {t : K // t * σ t = d} = if d = 0 then 1 else Fintype.card k + 1 := by
-  apply PI.VolStabSW.FFHS.card_norm_fiber <;> assumption
-
 end field
 
 theorem fFInert_holds : FFInert := by
@@ -442,7 +433,7 @@ theorem fFInert_holds : FFInert := by
   haveI : Finite K := Module.finite_of_finite k
   letI : Fintype k := Fintype.ofFinite k
   letI : Fintype K := Fintype.ofFinite K
-  have hfrob := frob_of_ne σ hrank hne
+  have hfrob := PI.VolStabSW.FFHS.frob_of_ne σ hrank hne
   have hσr : ∀ x, (σ : K →+* K) ((σ : K →+* K) x) = x := fun x => hσ x
   have h2K : (2 : K) ≠ 0 := by
     have h2' := (algebraMap k K).injective.ne h2k
@@ -455,7 +446,7 @@ theorem fFInert_holds : FFInert := by
       Nat.card {t : K // t * (σ : K →+* K) t = d} = if d = 0 then 1 else Nat.card k + 1 := by
     intro d hd
     rw [Nat.card_eq_fintype_card (α := k)]
-    exact card_norm_fiber σ hfrob hrank d hd
+    exact PI.VolStabSW.FFHS.card_norm_fiber σ hfrob hrank d hd
   have hsV : IsHS (σ : K →+* K) (PI.VolStabS.ffH (σ : K →+* K) J) :=
     ffH_isHS hσr J hJ hJdet
   have hsU : IsHS (σ : K →+* K) (PI.VolStabS.ffH (σ : K →+* K) T) :=

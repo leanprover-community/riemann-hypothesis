@@ -1133,9 +1133,6 @@ namespace GlobalTheory.HondaFunEq
 
 variable {K : Type} [NormedField K]
 
-theorem sq_apply (σ : K →+* K) (a : K) : (σ ^ 2) a = σ (σ a) := by
-  rw [pow_two]; rfl
-
 theorem frobLift_sq [IsUltrametricDist K] {l : ℕ} {σ : K →+* K} (h : Unr K l σ) :
     Formalism.G.IsFrobLift l (l ^ 2) (σ ^ 2) := by
   obtain ⟨-, -, -, hmax, hiso, hfrob⟩ := h
@@ -1144,7 +1141,7 @@ theorem frobLift_sq [IsUltrametricDist K] {l : ℕ} {σ : K →+* K} (h : Unr K 
   have hsa : ‖σ a‖ ≤ 1 := by rw [hiso]; exact ha
   have hal : ‖a ^ l‖ ≤ 1 := by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha
   have hd : (σ ^ 2) a - a ^ (l ^ 2) = (σ (σ a) - (σ a) ^ l) + ((σ a) ^ l - (a ^ l) ^ l) := by
-    rw [sq_apply, ← pow_mul, sq]; ring
+    rw [GlobalTheory.Honda.unitFix_sq_apply, ← pow_mul, sq]; ring
   rw [hd]
   refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (key _ hsa) ?_)
   rw [← (Commute.all (σ a) (a ^ l)).geom_sum₂_mul, norm_mul]

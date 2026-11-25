@@ -796,18 +796,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL UpperTheory.Gal.TP.Loc
 
-private theorem tprod_ne_zero' {ι : Type} [Fintype ι] {X : ι → Type} [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
-    (x : ∀ i, X i) (hx : ∀ i, x i ≠ 0) : PiTensorProduct.tprod ℂ x ≠ 0 := by
-  have hl : ∀ i, ∃ l : Module.Dual ℂ (X i), l (x i) ≠ 0 := fun i => by
-    by_contra! hc
-    exact hx i ((Module.forall_dual_apply_eq_zero_iff ℂ (x i)).1 hc)
-  choose l hl using hl
-  intro h
-  have h1 := congrArg (PiTensorProduct.lift ((MultilinearMap.mkPiAlgebra ℂ ι ℂ).compLinearMap l)) h
-  rw [PiTensorProduct.lift.tprod, map_zero] at h1
-  simp only [MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply] at h1
-  exact (Finset.prod_ne_zero_iff.2 fun i _ => hl i) h1
-
 private theorem hasSat_pair {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) {d : Fin 2 → ℕ}
     {X : Fin 2 → Type} [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)]
     (π : ∀ a, Representation ℂ (GL (Fin (d a)) (w.adicCompletion K)) (X a))
@@ -832,7 +820,7 @@ private theorem hasSat_pair {K : Type} [Field K] [NumberField K] (w : HeightOneS
     refine (Submodule.ne_bot_iff _).2 ⟨f, ?_, ?_⟩
     · rw [hKO]; exact hf
     · rintro rfl
-      exact tprod_ne_zero' x (fun a => (hx a).1) h1.symm
+      exact GlobalTheory.EmptyFirstBlock.tprod_ne_zero x (fun a => (hx a).1) h1.symm
   · intro f hf h0
     obtain ⟨T, hT, hv⟩ := GlobalTheory.SatInd.exists_sat_multiProd (Fin.sum_univ_two d) hs hi hf h0
     have hTS : ∀ a, T a = S a := fun a => (hT a).unique (hS a)

@@ -1241,15 +1241,6 @@ section RootInt
 
 variable {L : Type} [Field L]
 
-theorem partner_nU (σ : L →+* L) (x : L) : partner σ (nU x) = !![1, -σ x; 0, 1] := by
-  have hi : (((nU x)⁻¹ : GL (Fin 2) L) : Matrix (Fin 2) (Fin 2) L) = !![1, -x; 0, 1] := rfl
-  have hc : cT σ (!![1, -x; 0, 1] : Matrix (Fin 2) (Fin 2) L) = !![1, 0; -σ x, 1] := by
-    ext p r
-    fin_cases p <;> fin_cases r <;> simp [cT]
-  simp only [partner, hi, hc, w2]
-  rw [Matrix.mul_fin_two, Matrix.mul_fin_two]
-  simp
-
 variable [Valued L (WithZero (Multiplicative ℤ))]
 
 theorem val_cM_conj_le_one {n : ℕ} (c : Fin 2 → Fin n) (P : Matrix (Fin 2) (Fin 2) L)
@@ -1279,7 +1270,7 @@ theorem uR_mem_KU : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative
   have hσv := hU.2.1
   have hI : Formalism.UG.P.fIwasawaInt (((uR σ hU.1 a h x : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) := by
     show Formalism.UG.P.fIwasawaInt (blockM a h (nU x : GL (Fin 2) L).val (partner σ (nU x)))
-    rw [partner_nU]
+    rw [GlobalTheory.CompanionTheory.SwapRoot.Torus.partner_nU]
     refine blockM_int a h _ _ (val_unip_sub_one_le hx) (val_unip_sub_one_le ?_)
     rw [Valuation.map_neg, hσv]
     exact hx
@@ -1310,31 +1301,7 @@ namespace GlobalTheory.CompanionTheory.SwapRoot
 
 variable {L : Type} [Field L]
 
-theorem partner_wU (σ : L →+* L) : partner σ (wU L) = w2 L := by
-  have hw : (((wU L)⁻¹ : GL (Fin 2) L) : Matrix (Fin 2) (Fin 2) L) = w2 L := rfl
-  have hc : cT σ (w2 L) = w2 L := by
-    delta cT w2
-    ext i j
-    fin_cases i <;> fin_cases j <;> simp
-  delta partner
-  rw [hw, hc, weyl_mul_weyl, one_mul]
-
 variable [Valued L (WithZero (Multiplicative ℤ))]
-
-theorem cM_conj_int {n : ℕ} (c : Fin 2 → Fin n) (P : Matrix (Fin 2) (Fin 2) L)
-    (hP : ∀ p r, Valued.v (P p r) ≤ 1) (b d : Fin n) :
-    Valued.v ((cM L c * P * (cM L c)ᵀ) b d) ≤ 1 := by
-  have hA : ∀ (x : Fin n) (p : Fin 2), Valued.v (cM L c x p) ≤ 1 := by
-    intro x p
-    show Valued.v (if x = c p then (1 : L) else 0) ≤ 1
-    split_ifs <;> simp
-  rw [Matrix.mul_apply]
-  refine Valuation.map_sum_le (Valued.v : Valuation L (WithZero (Multiplicative ℤ))) fun r _ => ?_
-  rw [Valuation.map_mul, Matrix.transpose_apply, Matrix.mul_apply]
-  refine mul_le_one' ?_ (hA d r)
-  refine Valuation.map_sum_le (Valued.v : Valuation L (WithZero (Multiplicative ℤ))) fun p _ => ?_
-  rw [Valuation.map_mul]
-  exact mul_le_one' (hA b p) (hP p r)
 
 theorem weyl_sub_one_entries_integral (p r : Fin 2) : Valued.v ((w2 L - 1) p r) ≤ 1 := by
   delta w2
@@ -1345,8 +1312,8 @@ theorem block_matrix_weyl_integral {n : ℕ} (a : ℕ) (h : 2 * (a + 2) ≤ n) :
   delta blockM
   intro i j
   simp only [Matrix.add_apply]
-  refine Valuation.map_add_le _ (Valuation.map_add_le _ ?_ (cM_conj_int _ _ weyl_sub_one_entries_integral i j))
-    (cM_conj_int _ _ weyl_sub_one_entries_integral i j)
+  refine Valuation.map_add_le _ (Valuation.map_add_le _ ?_ (GlobalTheory.CompanionTheory.SwapRoot.val_cM_conj_le_one _ _ weyl_sub_one_entries_integral i j))
+    (GlobalTheory.CompanionTheory.SwapRoot.val_cM_conj_le_one _ _ weyl_sub_one_entries_integral i j)
   rw [Matrix.one_apply]
   split_ifs <;> simp
 
@@ -1357,7 +1324,7 @@ theorem sR_mem_KU : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative
   have hval : (((sR σ hU.1 a h : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) =
       blockM a h (w2 L) (w2 L) := by
     show blockM a h (w2 L) (partner σ (wU L)) = _
-    rw [partner_wU]
+    rw [GlobalTheory.CompanionTheory.SwapRoot.Torus.partner_wU]
   have hwinv : (wU L)⁻¹ = wU L := Units.ext rfl
   have hginv : (sR σ hU.1 a h)⁻¹ = sR σ hU.1 a h := by
     show ((rootHom σ hU.1 a h) (wU L))⁻¹ = (rootHom σ hU.1 a h) (wU L)

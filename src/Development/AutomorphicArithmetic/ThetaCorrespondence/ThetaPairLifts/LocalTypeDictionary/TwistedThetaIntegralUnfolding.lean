@@ -921,7 +921,7 @@ theorem flatBF_source {ρ : ℕ} {B : BesLev D ρ} {J : JacLev D ρ} (s : StepBF
   have hmul : ∀ v : UX D ρ, psiUni ψ (v * u').1 = psiUni ψ v.1 * psiUni ψ u := fun v => by
     rw [← ThLaws.psiFlag_levi ψ J.d, ← ThLaws.psiFlag_levi ψ J.d, ← ThLaws.psiFlag_levi ψ J.d, Subgroup.coe_mul, map_mul,
       psiFlag_mul J.d ψ (J.d.levi_mem_NFlag v.2) (J.d.levi_mem_NFlag hu)]
-  have hu1 : psiUni ψ u * star (psiUni ψ u) = 1 := mul_star_psi hψ _
+  have hu1 : psiUni ψ u * star (psiUni ψ u) = 1 := GlobalTheory.ThetaSchur.mul_star_psi hψ _
   refine ⟨psiUni ψ u * k, mul_ne_zero (left_ne_zero_of_mul_eq_one hu1) (GlobalTheory.FlatRInv.addChar_ne_zero ψ _), ?_⟩
   funext w
   simp only [Pi.smul_apply, smul_eq_mul]

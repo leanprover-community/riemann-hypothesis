@@ -1019,7 +1019,6 @@ theorem gBar_iff (A : PAlg l) {R : Type} [CommRing R] (g : R →+* A.U) (r : R) 
   have e : gBar A g r = (modEquiv A).symm (Ideal.Quotient.mk _ (g r)) := rfl
   rw [e, RingEquiv.symm_apply_eq, modEquiv_mk, A.sharpMap_eq, eq_comm, Ideal.Quotient.eq, pow_one]
 
-
 open CrystallineSemistableComparison.PAlg in
 theorem core {O : Type} [CommRing O] {F : Fn O} {κ : O →+* OC l} {d : ℕ} {s : F.Small d} (𝒯 : Tower κ s) (A' : PAlg l)
     (g : s.R →+* A'.U) (hga : g.comp s.a = A'.oC.comp κ) (u : Fin d → A'.A) (hu : ∀ k, A'.sharp (u k) = g (s.T k)) :
@@ -1453,7 +1452,6 @@ theorem res_of_comp {K : Cx.{w} R} {M M' : Type*} [AddCommGroup M] [AddCommGroup
   · obtain ⟨x, hx⟩ := h2 y hy
     exact ⟨e x, hx⟩
 
-
 include hθ in
 theorem desc_of_des (s : R) (h : CrystallineSemistableComparison.D.DesJ W.ι Ff s) : Desc s Gf (jG W P) := by
   intro T
@@ -1496,7 +1494,6 @@ def stepEquiv (T : P.Elements) :
       obtain ⟨x, hx⟩ := (v_mem T _).1 y.2
       exact ⟨x, Subtype.ext hx⟩⟩
 
-
 include v_add v_smul v_inj v_mem in
 theorem desc_step (v_nat : ∀ {T T' : P.Elements} (f : T ⟶ T') (x : Ff.obj T.1),
       v T' ((Ff.map f.1).hom x) = (gG.map f).φ (v T x)) (s : Λ) (h : CrystallineSemistableComparison.D.DesJ W.ι Ff s) :
@@ -1504,12 +1501,10 @@ theorem desc_step (v_nat : ∀ {T T' : P.Elements} (f : T ⟶ T') (x : Ff.obj T.
   desc_of_des W P Ff _ (stepEquiv P c gG Ff ρ hρ μ hμ r v v_add v_smul v_inj v_mem)
     (fun f x => Subtype.ext (v_nat f x)) s h
 
-
 include hρ in
 theorem raise (T : Thick L) (ξ : Λ) (hξ : T.i (c ξ) ∈ T.J) (x : (OM L c).obj T)
     (hx : x ∈ (pdS L c (ρ r)).S T) : ξ • x ∈ (pdS L c (ρ (r + 1))).S T :=
   T.pdPow_anti (hρ.2 r) (mul_pdPow L T _ hξ hx)
-
 
 include hρ in
 theorem desc_flt {C' : Type*} [Category C'] (G : C' ⥤ P.Elements) (μ' ξ : Λ) (hμ' : μ = μ' * ξ)
@@ -1581,7 +1576,6 @@ theorem desc_fil (ε : Eps l) (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slo
 
 end Main
 
-
 theorem des_qk {l : ℕ} [Fact l.Prime] (hOut : D.Out l) (ε : Eps l)
     (h1 : D.InWm l (WittVector.teichmuller l (ε.e 1 : Ob l) - 1)) (n m : ℕ) :
     CrystallineSemistableComparison.D.Des (FilF l n m) (ε.qk 1 - 1) := by
@@ -1622,8 +1616,6 @@ theorem xi_thick (T : (F.pt κ).Elements) :
 
 end
 
-
-
 theorem main : ∀ {l : ℕ} [Fact l.Prime], D.Out l → ∀ {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) (ε : Eps l)
     (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slow ρ), (k = false ∨ ρ = 0) →
     Desc (Polynomial.X : Polynomial ℤ) (gE F κ k n ⋙ (flt F κ ε k n ρ hρ).rees) (jE (F.pt κ)) := by
@@ -1646,12 +1638,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
-theorem CrystallineSemistableComparison.B.P.eps_facts : ∀ {l : ℕ} [Fact l.Prime] (ε : Eps l), D.InWm l ((WittVector.teichmuller l (ε.e 1 : Ob l)) - 1) ∧ (∀ k, ε.qk (k + 1) ^ l = ε.qk k) ∧ (∀ (A : PAlg l) (n : ℕ), A.cris n (∑ i ∈ Finset.range l, ε.qk 1 ^ i) ∈ A.Fil n 1) ∧ ε.μ = (ε.qk 1 - 1) * ∑ i ∈ Finset.range l, ε.qk 1 ^ i ∧ ∀ m, IsPrimitiveRoot (theta0 l (WittVector.teichmuller l (ε.e m : Ob l))) (l ^ m) :=
-  @GlobalTheory.CompanionTheory.EpsFacts.eps_facts
-
-theorem CrystallineSemistableComparison.B.P.cont_line : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) (ε : Eps l) (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slow ρ), ∃ L : Line (jE (F.pt κ)) (epsU ε (F.pt κ)), ∀ T, ((flt F κ ε k n ρ hρ).comap (gE F κ k n)).FAcyc (L.i.app T) (L.γ.app T) :=
-  @GlobalTheory.CompanionTheory.ContLine.exists_line
-
 theorem CrystallineSemistableComparison.B.P.tower_ex : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} (κ : O →+* OC l) {d : ℕ} (s : F.Small d), Nonempty (Tower κ s) :=
   @GlobalTheory.CompanionTheory.TowerEx.tower_ex
 
@@ -1661,10 +1647,8 @@ theorem CrystallineSemistableComparison.B.P.tower_act : ∀ {l : ℕ} [Fact l.Pr
 theorem CrystallineSemistableComparison.B.P.theta_ex : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F : Fn O} {κ : O →+* OC l} {d : ℕ} {s : F.Small d} (𝒯 : Tower κ s) (k : Bool) (n : ℕ) (𝓛 : Lift s.a (fun k => (s.T k : s.R)) (bs l k n).R (bs l k n).I (κb κ k n)) (δ : DividedPowers ((bs l k n).I.map 𝓛.i)) (hδ : IsDPMorphism (bs l k n).γ δ 𝓛.i) (hp : (bs l k n).p ≠ 0) (hn : IsNilpotent ((bs l k n).p : (bs l k n).R)) (ε : Eps l) (A : Act (𝟭 _) (thU (Lc F κ k n) (ε.qU n) (ε.qU_mem k n)) d (liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn)) (A' : Act (jE (F.pt κ)) (epsU ε (F.pt κ)) d 𝒯.obj), (∀ (T : Thick (Lc F κ k n)) (a : Fin d → (thU (Lc F κ k n) (ε.qU n) (ε.qU_mem k n)).U T) (c : liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn ⟶ T) (j : Fin d), (A.act a c).φ (𝓛.t j) = ((a j).1 : T.B) * c.φ (𝓛.t j)) → (∀ (T : (F.pt κ).Elements) (a : Fin d → (epsU ε (F.pt κ)).U T) (φ : 𝒯.obj ⟶ T) (j : Fin d), PAlg.Hom.f (A'.act a φ).1 (𝒯.c j 0).val = ((a j).1 : T.1.A) * PAlg.Hom.f φ.1 (𝒯.c j 0).val) → ∃ θ : liftObj s (b := bs l k n) rfl 𝓛 δ hδ hp hn ⟶ (gE F κ k n).obj 𝒯.obj, (∀ j, θ.φ (𝓛.t j) = 𝒯.A.toAcr n (WittVector.teichmuller l (𝒯.c j 0 : 𝒯.A.A))) ∧ ∀ a, (A.γ a).asHom ≫ θ = θ ≫ (gE F κ k n).map (A'.γ a).asHom :=
   @GlobalTheory.CompanionTheory.ThetaEx.main
 
-
 theorem CrystallineSemistableComparison.B.P.desc : ∀ {l : ℕ} [Fact l.Prime], D.Out l → ∀ {O : Type} [CommRing O] (F : Fn O) (κ : O →+* OC l) (ε : Eps l) (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slow ρ), (k = false ∨ ρ = 0) → Desc (Polynomial.X : Polynomial ℤ) (gE F κ k n ⋙ (flt F κ ε k n ρ hρ).rees) (jE (F.pt κ)) :=
   @GlobalTheory.CompanionTheory.DescTest.main
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1705,7 +1689,7 @@ theorem local_of (hD : D.Out l) : Local l := by
   obtain ⟨A, hA⟩ := P.thick_act s (b := bs l k n) rfl 𝓛 δ hδ hp hnil (ε.qU n) (ε.qU_mem k n)
   obtain ⟨A', hA'⟩ := P.tower_act 𝒯 ε
   obtain ⟨θ, hθ, hθγ⟩ := P.theta_ex 𝒯 k n 𝓛 δ hδ hp hnil ε A A' hA hA'
-  have hε := P.eps_facts ε
+  have hε := GlobalTheory.CompanionTheory.EpsFacts.eps_facts ε
   have hq : (ε.qU n : (bs l k n).R) = (base l).cris n (ε.qk 1) ^ (bs l k n).p :=
     (ε.qU_val n).trans ((congrArg ((base l).cris n) (hε.2.1 0).symm).trans (map_pow _ _ _))
   have hμ : (base l).cris n ε.μ = (ε.qU n : (bs l k n).R) - 1 := by
@@ -1720,7 +1704,7 @@ theorem local_of (hD : D.Out l) : Local l := by
   obtain ⟨L, hL⟩ := _root_.GlobalTheory.CompanionTheory.LineUniv.exists_line (thU (Lc F κ k n) (ε.qU n) (ε.qU_mem k n)) (fun _ _ i g => (flt F κ ε k n ρ hρ).FAcyc i g)
     (P.thick_line F (bs l k n) rfl (κb κ k n) ((base l).cris n) ρ hρ ε.μ (ε.μ_mem k (base l) n) (ε.qU n) (ε.qU_mem k n)
       ((base l).cris n (ε.qk 1)) Fact.out hq hμ hξ)
-  obtain ⟨L', hL'⟩ := P.cont_line F κ ε k n ρ hρ
+  obtain ⟨L', hL'⟩ := GlobalTheory.CompanionTheory.ContLine.exists_line F κ ε k n ρ hρ
   obtain ⟨ni⟩ := _root_.GlobalTheory.CompanionTheory.TowerNI.main 𝒯 k n 𝓛 δ hδ hp hnil ε ρ hρ A.γ A'.γ ⟨fun _ => θ, fun _ _ a => hθγ a⟩ hn hθ
     (fun a j => (hA _ _ (𝟙 _) j).trans (congrArg (· * 𝓛.t j) (Units.val_pow_eq_pow_val _ _)))
     (fun a j => (hA' _ _ (𝟙 _) j).trans (congrArg (· * (𝒯.c j 0).val) (Units.val_pow_eq_pow_val _ _)))

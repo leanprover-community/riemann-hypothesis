@@ -7,8 +7,8 @@ public import Mathlib.RingTheory.Ideal.GoingUp
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.RingHomExtensionOfIntegral.exists_ringHom_extend_of_isIntegral.{u_1, u_2, u_3} :
-    ∀ {R : Type u_1} {S : Type u_2} {K : Type u_3} [inst : CommRing R] [inst_1 : CommRing S] [inst_2 : Field K]
-      [IsAlgClosed K] [inst_4 : Algebra R S] [Algebra.IsIntegral R S],
+    ∀ {R : Type u_1} {S : Type u_2} {K : Type u_3} [CommRing R] [CommRing S] [Field K]
+      [IsAlgClosed K] [Algebra R S] [Algebra.IsIntegral R S],
       Function.Injective (⇑(Algebra.algebraMap R S) : R → S) →
         ∀ (f : R →+* K), ∃ (g : S →+* K), ∀ (r : R), (g : S → K) ((Algebra.algebraMap R S : R → S) r) = (f : R → K) r := by
   intro R S K _ _ _ _ _ _ hinj f

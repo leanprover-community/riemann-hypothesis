@@ -22,7 +22,7 @@ private theorem UpperTheory.Reformulated.B.Qh47.exists_nat_mul_integral {E : Typ
     rw [h2, neg_mul]; exact hi.neg
 
 theorem UpperTheory.Reformulated.B.Qh47.m_exists_nat_smul_mem :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : StarRing E] {S : Formalism.BasicNotions.HSpace E}
+    ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E}
       (M : Submodule (NumberField.RingOfIntegers E) S.V) {x : S.V},
       x ∈ Submodule.span E (↑M : Set S.V) → ∃ (n : ℕ), (0 : ℕ) < n ∧ n • x ∈ M := by
   intro E _ _ _ S M x hx

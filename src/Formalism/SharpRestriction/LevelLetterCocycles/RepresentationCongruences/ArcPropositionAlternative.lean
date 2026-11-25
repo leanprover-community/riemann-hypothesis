@@ -529,13 +529,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     {PD : PeriodData G Qp K₀ K B BdR}
 
-theorem hmax_le' [NeZero n] (Mi hi : ZMod n → ℕ) (j : ZMod n) :
-    Mi j + hi j ≤ Formalism.MainNotions.LiftingTheory.Hmax n Mi hi := by
-  unfold Formalism.MainNotions.LiftingTheory.Hmax
-  have h := Finset.le_sup (f := fun k : ℕ => Mi k + hi k) (Finset.mem_range.2 (ZMod.val_lt j))
-  simp only [ZMod.natCast_zmod_val] at h
-  exact h
-
 theorem aI_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
     {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {b w S η m : ℕ} {up : ZMod n → Bool}
     {size Mi hi : ZMod n → ℕ} (hB : HypB PD W T₁ T₂ F b w S η m up size Mi hi)
@@ -591,7 +584,7 @@ theorem aI_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
         exact_mod_cast (by omega : size (c + 1) + S + η ≤ w + S + η)
       linarith)
     (fun a _ => by
-      have := hmax_le' Mi' hi' (c - 1 + ((a + 1 : ℕ) : ZMod n))
+      have := Formalism.MainNotions.N.FrobeniusPowerSeries.SetupA.hmax_le Mi' hi' (c - 1 + ((a + 1 : ℕ) : ZMod n))
       have h' : (((Mi' (c - 1 + ((a + 1 : ℕ) : ZMod n)) + hi' (c - 1 + ((a + 1 : ℕ) : ZMod n)) : ℕ) : ℝ)) ≤
           Formalism.MainNotions.LiftingTheory.Hmax n Mi' hi' := by exact_mod_cast this
       show _ + _ + _ ≤ _
@@ -799,10 +792,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     {PD : PeriodData G Qp K₀ K B BdR}
 
-theorem hmax_le [NeZero n] (Mi hi : ZMod n → ℕ) (j : ZMod n) :
-    Mi j + hi j ≤ Formalism.MainNotions.LiftingTheory.Hmax n Mi hi := by
-  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.ArcLengthTwo.hmax_le' <;> assumption
-
 theorem ai_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
     {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {b w S η m : ℕ} {up : ZMod n → Bool}
     {size Mi hi : ZMod n → ℕ} (hB : HypB PD W T₁ T₂ F b w S η m up size Mi hi)
@@ -867,7 +856,7 @@ theorem ai_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
   have hf0 : ∀ x, 0 ≤ fx x := fun x => by positivity
   have hfH : ∀ x, fx x ≤ (H : ℝ) + cW PD.p H + 3 := by
     intro x
-    have := hmax_le Mi' hi' (a + ((x + 1 : ℕ) : ZMod n))
+    have := Formalism.MainNotions.N.FrobeniusPowerSeries.SetupA.hmax_le Mi' hi' (a + ((x + 1 : ℕ) : ZMod n))
     have h' : (((Mi' (a + ((x + 1 : ℕ) : ZMod n)) + hi' (a + ((x + 1 : ℕ) : ZMod n)) : ℕ) : ℝ)) ≤ H := by
       exact_mod_cast this
     show _ + _ + _ ≤ _

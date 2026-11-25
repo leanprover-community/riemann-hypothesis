@@ -1325,10 +1325,6 @@ theorem level_ind (N : NF H r) (M Q : Submodule (𝓞 K) V) (w : Fin r → V)
       simpa using add_mem (ih (by omega) _ (sub_mem hyM h1) h3) h2
     · rw [Ia_bot N (by omega) hy]; exact zero_mem _
 
-theorem smul_flag_vector_mem_reference_lattice (N : NF H r) (b : Fin r) {t : K} (ht : t ∈ N.aa b) : t • N.F.e b.castSucc ∈ N.P0 :=
-  Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_left
-    (Submodule.mem_iSup_of_mem b ⟨t, ht, rfl⟩)))
-
 theorem hermForm_ist_mem_coeffIdeal_of_mem_reference (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {y : V} (hy : y ∈ N.P0) :
     H.B y (N.ist b) ∈ N.aa b := by
   have : N.P0 ≤ (N.aa b).comap ((H.B.flip (N.ist b)).restrictScalars (𝓞 K)) := by
@@ -1402,7 +1398,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
     refine level_ind N N.P0 (((u * E) • Λ).comap (γ • LinearMap.id)) (fun b => N.F.e b.castSucc)
       (fun b _ => by simp) (fun b hb y hy _ => ?_) r le_rfl y hy.1 (II_le N hy.2)
     have ht := hermForm_ist_mem_coeffIdeal_of_mem_reference N b hb hy
-    refine ⟨smul_flag_vector_mem_reference_lattice N b ht, ?_⟩
+    refine ⟨GlobalTheory.DegCnt.LiftS.hermFramePairNormalForm_smul_frame_mem_referenceLattice N b ht, ?_⟩
     generalize H.B y (N.ist b) = t at ht
     rw [← hΛ.2.1.1] at ht
     obtain ⟨l, hl, ξ, hξ, he⟩ := Submodule.mem_sup.1 ht
@@ -1432,7 +1428,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
       (fun b hb y hy hy' => ⟨hvΛ b hb y hy hy', ?_⟩) r le_rfl x hx hxI
     show (u * E) (_ • v b) ∈ N.P0
     rw [hsv b hb]
-    refine smul_flag_vector_mem_reference_lattice N b ?_
+    refine GlobalTheory.DegCnt.LiftS.hermFramePairNormalForm_smul_frame_mem_referenceLattice N b ?_
     rw [← hΛ.2.1.1]
     show H.B y (N.ist b) • N.F.e b.castSucc ∈ Λ ⊔ rs (𝓞 K) (N.F.Xa b.val)
     have := sub_mem (Submodule.mem_sup_left hy) (Submodule.mem_sup_right (S := Λ)

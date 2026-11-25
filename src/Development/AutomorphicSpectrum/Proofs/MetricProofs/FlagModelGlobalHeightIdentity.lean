@@ -172,12 +172,6 @@ theorem analytic_uncentre {n : ℕ} (w₀ : Fin n → ℂ) (ρ : ℝ) (π : Equi
   exact analyticAt_const.mul
     (((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin n => ℂ) (π.symm i)).analyticAt t).sub analyticAt_const)
 
-theorem uncentre_recentre {n : ℕ} (t₀ : Fin n → ℂ) {ρ : ℝ} (hρ : 0 < ρ) (π : Equiv.Perm (Fin n)) (t : Fin n → ℂ) :
-    uncentre t₀ ρ π (recentre t₀ ρ π t) = t := by
-  have h : (ρ : ℂ) ≠ 0 := by exact_mod_cast hρ.ne'
-  funext i
-  simp [recentre, uncentre, h]
-
 theorem recentre_mem_ball {n : ℕ} (w₀ : Fin n → ℂ) {ρ : ℝ} (hρ : 0 < ρ) (π : Equiv.Perm (Fin n)) {t : Fin n → ℂ}
     (ht : t ∈ Metric.ball (0 : Fin n → ℂ) 1) : recentre w₀ ρ π t ∈ Metric.ball w₀ ρ := by
   rw [mem_ball_zero_iff] at ht
@@ -186,10 +180,6 @@ theorem recentre_mem_ball {n : ℕ} (w₀ : Fin n → ℂ) {ρ : ℝ} (hρ : 0 <
   have h1 : ρ * ‖t ∘ π‖ < ρ := by simpa using mul_lt_mul_of_pos_left hc hρ
   rw [Metric.mem_ball, dist_eq_norm]
   simpa [recentre, norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hρ] using h1
-
-theorem exists_perm {n : ℕ} (S : Finset (Fin n)) :
-    ∃ π : Equiv.Perm (Fin n), ∀ j, ((π j : Fin n) : ℕ) < S.card ↔ j ∈ S := by
-  apply GlobalTheory.CompanionTheory.Ar.ChartGeo.exists_perm_prefix
 
 private theorem analyticAt_lift_chart_symm {P : Ideal (MRing ι)} {n : ℕ} (R : AnLogRes P ⊤ n) (B : FinHolAtlas n R.X)
     (hAB : R.A.Compatible B) (k : Fin B.n) (x₀ : R.X) {v : Fin n → ℂ} (hv : v ∈ (B.chart k).target)
@@ -233,7 +223,7 @@ theorem exists_sncChart {P : Ideal (MRing ι)} {n : ℕ} (R : AnLogRes P ⊤ n) 
     · filter_upwards [eventually_lt_nhds (norm_pos_iff.mpr hi)] with ρ h _ using h
   obtain ⟨ρ, ⟨hρρ₀, hρhalf, hρw⟩, hρpos⟩ := (hev.and self_mem_nhdsWithin).exists
   have hρ : 0 < ρ := hρpos
-  obtain ⟨π, hπ⟩ := exists_perm (S.filter fun i => w₀ i = 0)
+  obtain ⟨π, hπ⟩ := GlobalTheory.CompanionTheory.Ar.ChartGeo.exists_perm_prefix (S.filter fun i => w₀ i = 0)
   have hballW : ∀ w ∈ Metric.ball w₀ ρ, w ∈ (B.chart k).target ∧ (B.chart k).symm w ∈ R.U x₀ :=
     fun w hw => hball₀ (Metric.ball_subset_ball hρρ₀.le hw)
   have hrec : ∀ t ∈ Metric.ball (0 : Fin n → ℂ) 1, recentre w₀ ρ π t ∈ Metric.ball w₀ ρ :=
@@ -584,8 +574,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.BMx ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
-
-
 
 open PositivityTheory.Xgp.c_bm_exists_local GroundTheory.Heights₂.Heights.LowerBoundFree in
 theorem GlobalTheory.CompanionTheory.Ar.PB.BMx.exists_gram_logBounds_noGlobal : Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐 : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐), ∀ (n : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (L : LocPot Rb.X) (s : Rb.X → Rb.X → ℂ) (Bat : FinHolAtlas n Rb.X), IsPotential Rb.A L → IsSection Rb.A L s → (∀ p, logNormSec L s p ≤ 0) → IsAdaptedAtlas Rb.A Bat L s → (∀ (x : Rb.X) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X), CoordsAt 𝔐.ξ M.x z (Rb.lift x x) → (x ∉ bdry s ↔ 𝔐.Interior z)) → ∀ (F : FrameData ι (CMType H) (D.p + D.q) M.Ω M.blk), M.IsFrame F → ∀ (τ : CMType H) (k : Fin Bat.n) (w₀ : Fin n → ℂ), w₀ ∈ Metric.closedBall (0 : Fin n → ℂ) (3 / 2) → M.GoodAt F (mCoordIdeal (Rb.lift ((Bat.chart k).symm w₀) ((Bat.chart k).symm w₀))) → ∃ ε c C : ℝ, 0 < ε ∧ 0 < c ∧ 0 < C ∧ ∀ w : Fin n → ℂ, ‖w - w₀‖ < ε → (Bat.chart k).symm w ∉ bdry s → (baseGram tie F τ Rb ((Bat.chart k).symm w)).PosDef ∧ ((baseGram tie F τ Rb ((Bat.chart k).symm w))⁻¹ - (c : ℂ) • (1 : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) ℂ)).PosSemidef ∧ (((C * rW L s ((Bat.chart k).symm w) : ℝ) : ℂ) • (1 : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) ℂ) - (baseGram tie F τ Rb ((Bat.chart k).symm w))⁻¹).PosSemidef ∧ ∀ a b, ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun w' => baseGram tie F τ Rb ((Bat.chart k).symm w') a b) w ∧ ‖fderiv ℝ (fun w' => baseGram tie F τ Rb ((Bat.chart k).symm w') a b) w‖ ≤ C * Real.exp (rW L s ((Bat.chart k).symm w) / 2) := by

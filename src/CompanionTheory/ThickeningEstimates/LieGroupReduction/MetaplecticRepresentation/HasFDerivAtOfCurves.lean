@@ -88,7 +88,6 @@ theorem hasDerivAt_det_one {M : ℝ → l → l → ℝ} {X : l → l → ℝ} (
 theorem curve {g : ℝ → (l ⊕ l) → (l ⊕ l) → ℝ} {X : (l ⊕ l) → (l ⊕ l) → ℝ} (g0 : Matrix.of (g 0) = 1)
     (hg : HasDerivAt g X 0) (f : Sch l) :
     HasDerivAt (fun t => schwartzToL2 l (sec (Matrix.of (g t)) f)) (schwartzToL2 l (Qd (Matrix.of X) f)) 0 := by
-  set_option synthInstance.maxHeartbeats 200000 in
     have hd : ∀ i j : l → l ⊕ l, HasDerivAt (fun t => bl i j (Matrix.of (g t))) (bl i j (Matrix.of X)) 0 := fun i j =>
       (LinearMap.toContinuousLinearMap
         ((bl i j).comp (Matrix.ofLinearEquiv ℝ).toLinearMap)).hasFDerivAt.comp_hasDerivAt 0 hg

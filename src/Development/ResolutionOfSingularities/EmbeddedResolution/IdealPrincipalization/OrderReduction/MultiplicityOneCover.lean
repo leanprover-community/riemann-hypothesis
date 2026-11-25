@@ -236,7 +236,6 @@ theorem IsMaxContactHypersurface.comap_of_isOpenImmersionAtSource {k : Type u} [
     [AlgebraicGeometry.LocallyOfFiniteType (g ≫ p)]
     (hg : MaxContactFunctoriality.IsLocalIsomorphism g) :
     IsMaxContactHypersurface k (g ≫ p) (A.comap g) 1 (H.comap g) := by
-  have : AlgebraicGeometry.Smooth (g ≫ p) := inferInstance
   intro x'
   obtain ⟨U₀, hxU₀, hoi⟩ := hg x'
   have := hoi
@@ -260,7 +259,6 @@ theorem IsMaxContactHypersurface.comap_of_isOpenImmersionAtSource {k : Type u} [
     exact hoiV
   have : AlgebraicGeometry.IsOpenImmersion φ :=
     AlgebraicGeometry.IsOpenImmersion.of_comp φ U.ι
-  have : AlgebraicGeometry.Etale φ := inferInstance
   have hcomapres : ∀ J : P.IdealSheafData,
       restrictIdeal (J.comap g) V = (restrictIdeal J U).comap φ := by
     intro J

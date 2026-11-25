@@ -20,13 +20,7 @@ theorem constantCoeff_algHom {O : Type} [CommRing O]
     (f : PowerSeries O →ₐ[O] PowerSeries O)
     (h0 : PowerSeries.constantCoeff (f PowerSeries.X) = 0) (a : PowerSeries O) :
     PowerSeries.constantCoeff (f a) = PowerSeries.constantCoeff a := by
-  obtain ⟨b, hb⟩ : PowerSeries.X ∣ a - PowerSeries.C (PowerSeries.constantCoeff a) := by
-    rw [PowerSeries.X_dvd_iff]; simp
-  have ha : a = algebraMap O (PowerSeries O) (PowerSeries.constantCoeff a) + PowerSeries.X * b := by
-    rw [← hb, PowerSeries.algebraMap_eq]; ring
-  conv_lhs => rw [ha]
-  rw [map_add (f := _), map_mul, f.commutes, map_add (f := _), map_mul, h0, PowerSeries.algebraMap_eq]
-  simp
+  exact Formalism.MainNotions.WachCoordinates.Br.constCoeff_algHom f h0 a
 
 theorem eq_of_commute_pow {O : Type} [CommRing O] [IsDomain O] (l : ℕ) (hl0 : (l : O) ≠ 0)
     (hlu : ¬ IsUnit (l : O)) (φ f g : PowerSeries O →ₐ[O] PowerSeries O)

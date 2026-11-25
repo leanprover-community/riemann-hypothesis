@@ -584,7 +584,6 @@ theorem algHom_eq_eval : ∀ {K : Type} [inst : Field K] {P : Type} [Fintype P] 
   have hsum : ∑ p, (Pi.single p (1:K) : P → K) = 1 := by
     ext x; simp [Finset.sum_apply, Pi.single_apply]
   have h1 : ∑ p, θ (Pi.single p 1) = 1 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← map_sum, hsum, map_one]
   obtain ⟨p, -, hp⟩ : ∃ p ∈ Finset.univ, θ (Pi.single p 1) ≠ 0 := by
     by_contra! h

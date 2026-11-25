@@ -23,7 +23,7 @@ theorem aw_injective (C : Core l) (a : ℕ) [NeZero a] :
     Function.Injective ((Per.aB l).comp (wA l a).toRingHom) := by
   haveI : Nontrivial (Per.BdR l) := (GlobalTheory.MemLoc.BdRField.bdR_isField l).2.2.1.nontrivial
   haveI : Nontrivial (Per.Bcris l) := C.ι.domain_nontrivial
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra h0
   obtain ⟨m, b, rfl⟩ := WittVector.exists_eq_pow_p_mul' x h0

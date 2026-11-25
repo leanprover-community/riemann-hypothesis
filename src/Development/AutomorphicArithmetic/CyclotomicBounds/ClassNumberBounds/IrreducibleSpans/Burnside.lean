@@ -14,8 +14,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qj3.burnside_end.{u_3, u_4} :
-    ∀ {K : Type u_3} {V : Type u_4} [inst : Field K] [IsAlgClosed K] [inst_2 : AddCommGroup V]
-    [inst_3 : _root_.Module K V] [FiniteDimensional K V] (S : Subalgebra K (Module.End K V)),
+    ∀ {K : Type u_3} {V : Type u_4} [Field K] [IsAlgClosed K] [AddCommGroup V]
+    [_root_.Module K V] [FiniteDimensional K V] (S : Subalgebra K (Module.End K V)),
     (∀ (N : Submodule K V), (∀ f ∈ S, ∀ v ∈ N, (f : V → V) v ∈ N) → N = ⊥ ∨ N = ⊤) → ∀ (f : Module.End K V), f ∈ S := by
   intro K V _ _ _ _ _ S h f
   rcases subsingleton_or_nontrivial V with hV | hV

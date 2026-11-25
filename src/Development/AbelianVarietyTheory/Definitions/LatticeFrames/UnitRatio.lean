@@ -77,10 +77,6 @@ structure Off (B : Base c) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
 variable {B : Base c} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}
   (o : Off B k ι)
 
-namespace Off
-
-end Off
-
 end Off
 
 section AtLevel

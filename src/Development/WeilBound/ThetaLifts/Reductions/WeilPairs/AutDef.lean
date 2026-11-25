@@ -65,7 +65,7 @@ def finRatF {nS nT : ℕ} : Matrix (Fin nT) (Fin nS) E →ₗ[𝓞 E] XFF F E nS
 def infRatF {nS nT : ℕ} (τ : InfinitePlace F → (E →+* ℂ)) : Matrix (Fin nT) (Fin nS) E →+ (IxF F nS nT → ℂ) where
   toFun y := fun p => τ p.2 (y p.1.1 p.1.2)
   map_zero' := funext fun p => (τ p.2).map_zero
-  map_add' x y := funext fun p => (τ p.2).map_add _ _
+  map_add' _ _ := funext fun p => (τ p.2).map_add _ _
 
 def piWA {nS nT : ℕ} (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) : WOF F E nS nT →+ (IxF F nS nT → ℂ) where
   toFun := piWF θ

@@ -224,10 +224,6 @@ theorem exists_affineOpen_comap_logDerivIdealSheafIterate_eq (k : Type u) [Field
     apply AlgebraicGeometry.Scheme.exists_affineOpens_mem_le
     exact hx₁
   refine ⟨⟨V, hVaff⟩, hxV, hVU, ?_⟩
-  have : IsOpenImmersion (π ∣_ W) := inferInstance
-  have : LocallyOfFiniteType (W.ι ≫ p) := inferInstance
-  have : LocallyOfFiniteType ((π ∣_ W) ≫ (W.ι ≫ p)) := inferInstance
-  have : LocallyOfFiniteType ((π ⁻¹ᵁ W).ι ≫ (π ≫ p)) := inferInstance
   have hq : (π ∣_ W) ≫ (W.ι ≫ p) = (π ⁻¹ᵁ W).ι ≫ (π ≫ p) := by
     rw [← Category.assoc, morphismRestrict_ι, Category.assoc]
   have hP : (P.comap W.ι).comap (π ∣_ W) = (P.comap π).comap (π ⁻¹ᵁ W).ι := by

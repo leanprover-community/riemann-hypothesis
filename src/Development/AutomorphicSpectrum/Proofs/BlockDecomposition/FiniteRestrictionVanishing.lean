@@ -199,9 +199,9 @@ theorem theta_mem_Kn (hC : CjEx) {v : PlF E} {k : GL (Fin n) (Av v)} (hk : k ∈
   rw [← pn_thF hC]
   exact mem_Kf_iff.1 (GlobalTheory.EulerTwKU.thF_mem_Kglob x hx) v
 
-theorem main : RestrV := fun hC E _ _ _ a b =>
+theorem main : RestrV := fun hC _ _ _ _ a b =>
   ⟨isRestrGroup a b, fun v x => pv_thP hC a b v x,
-    fun v k hk => mem_Kv.2 ⟨theta_mem_Kn hC (mem_Kv.1 hk).1, theta_mem_Kn hC (mem_Kv.1 hk).2⟩,
+    fun _ _ hk => mem_Kv.2 ⟨theta_mem_Kn hC (mem_Kv.1 hk).1, theta_mem_Kn hC (mem_Kv.1 hk).2⟩,
     mem_prod_iff a b⟩
 
 end GlobalTheory.CompanionTheory.EulerV

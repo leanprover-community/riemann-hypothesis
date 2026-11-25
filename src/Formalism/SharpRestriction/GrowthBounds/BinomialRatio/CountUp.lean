@@ -32,12 +32,6 @@ theorem finsum_le_of_inj {α τ : Type*} (F : α → ℚ) (G : τ → ℚ) (Φ :
           finsum_eq_sum_of_support_subset G (s := hGfin.toFinset) (by intro x hx; simpa using hx)]
         exact Finset.sum_le_sum fun t _ => Set.indicator_le_self' (fun x _ => hG0 x) t
 
-theorem finsum_curry3 {α β γ : Type*} (F : α × β × γ → ℚ) (hfin : (support F).Finite) :
-    ∑ᶠ z, F z = ∑ᶠ a, ∑ᶠ b, ∑ᶠ c, F (a, b, c) := by
-  rw [finsum_curry F hfin]
-  refine finsum_congr fun a => ?_
-  exact finsum_curry (fun bc => F (a, bc)) (hfin.preimage (fun x _ y _ hxy => (Prod.mk.inj hxy).2))
-
 theorem antitone_of_adj {r : ℕ} {f : Fin r → ℤ} (h : ∀ i j : Fin r, i.val + 1 = j.val → f j ≤ f i) : Antitone f := by
   rintro ⟨i, hi⟩ ⟨j, hj⟩ hij
   change i ≤ j at hij
@@ -167,7 +161,7 @@ theorem mul_finsumQ {α : Type*} (f : α → ℚ) (c : ℚ) : c * (∑ᶠ a, f a
 open Classical in
 theorem Gt_sum (hCD : ChainDimAt) (hNB : NumBranchAt) {s r : ℕ} (hr : 1 ≤ r) (LLk : ChainLetters (2 * s + 1)) (B : ℕ) :
     ∑ᶠ t, Gt (r := r) LLk B t = (∏ i, (sdXi (r + 1) (LLk.deg i) : ℚ)) * (sd r B : ℚ) := by
-  rw [finsum_curry3 _ (Gt_support_finite hCD LLk B)]
+  rw [finsum_curry₃ _ (Gt_support_finite hCD LLk B)]
   have hin : ∀ (mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ) (lam : Fin r → ℤ),
       ∑ᶠ jp : ℕ, Gt LLk B (mu, lam, jp) =
         (if IsChain LLk mu ∧ Inter (mu (Fin.last _)) lam then wdim lam else 0) * (sd r B : ℚ) := by
@@ -341,7 +335,7 @@ theorem countUp_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ} (hCD : ChainDimAt) (
       have hjp : z.2.1.2 ≤ (X.seg C0 CE1 CE2 j).bPlus := le_trans hz'.2.1.2 (min_le_right _ _)
       unfold Fs Gt
       rw [ite_eq_left hz', ite_eq_left ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])
-  rw [chainCount_eq, ← finsum_curry3 _ hmain.1]
+  rw [chainCount_eq, ← finsum_curry₃ _ hmain.1]
   refine le_trans hmain.2 ?_
   rw [Gt_sum hCD hNB hr]
   unfold mmLetters

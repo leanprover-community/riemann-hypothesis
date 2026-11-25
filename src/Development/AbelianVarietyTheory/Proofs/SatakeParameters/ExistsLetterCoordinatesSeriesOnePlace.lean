@@ -773,10 +773,6 @@ theorem constantCoeff_psubst {K κ : Type} [CommRing K] {a : MvPowerSeries κ K}
   have h := GlobalTheory.BeProps.coeff_subst_range ha f 0
   simpa [hf] using h
 
-theorem constantCoeff_logF_C : PowerSeries.constantCoeff (Formalism.MainNotions.GL3Theta.logF p) = 0 := by
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
-  simp [Formalism.MainNotions.GL3Theta.logF]
-
 theorem map_expS {ι : Type} {f : MvPowerSeries ι (FormalGroupSystem.K0 p)} (hf : constantCoeff f = 0) :
     MvPowerSeries.map (Formalism.L2.G.Pend.k0ToC p) (FormalGroupSystem.expS p f) =
       product_zeroth_first_parts.expS ℂ_[p] (MvPowerSeries.map (Formalism.L2.G.Pend.k0ToC p) f) := by
@@ -836,7 +832,7 @@ theorem read_thOne {n' r0 r1 : ℕ} {κ : Type} (B : OmBasis p n') (be : MvPower
       (coordZ B (FormalGroupSystem.K0 p) 1 i : MvPowerSeries (Zidx n' r0 r1) (FormalGroupSystem.K0 p))) :=
     hasSubst_of_constantCoeff_zero fun i => by simp [ha0 i]
   have hη0 : ∀ i, constantCoeff (PowerSeries.subst (ξ i) (Formalism.MainNotions.GL3Theta.logF p)) = 0 :=
-    fun i => constantCoeff_psubst (hξ i) constantCoeff_logF_C
+    fun i => constantCoeff_psubst (hξ i) Formalism.L2.G.Pend.cc_logF
   have hηs : HasSubst (fun i => PowerSeries.subst (ξ i) (Formalism.MainNotions.GL3Theta.logF p)) :=
     hasSubst_of_constantCoeff_zero hη0
 
@@ -887,7 +883,7 @@ theorem read_thOne {n' r0 r1 : ℕ} {κ : Type} (B : OmBasis p n') (be : MvPower
       Formalism.L2.G.Pend.logF_map]
   have hLc : ∀ i : Eidx n' r0 r1 ⊕ Eidx n' r0 r1, constantCoeff (PowerSeries.subst
       (MvPowerSeries.X i : MvPowerSeries (Eidx n' r0 r1 ⊕ Eidx n' r0 r1) ℂ_[p]) (Formalism.MainNotions.GL3Theta.logF p)) = 0 :=
-    fun i => constantCoeff_psubst (by simp) constantCoeff_logF_C
+    fun i => constantCoeff_psubst (by simp) Formalism.L2.G.Pend.cc_logF
   have hcof : MvPowerSeries.subst ξ (MvPowerSeries.map (Formalism.L2.G.Pend.k0ToC p) (inParam p U)) =
       MvPowerSeries.subst (fun i => PowerSeries.subst (ξ i) (Formalism.MainNotions.GL3Theta.logF p))
         (MvPowerSeries.map (Formalism.L2.G.Pend.k0ToC p) U) := by

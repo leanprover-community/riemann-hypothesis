@@ -403,7 +403,7 @@ private theorem tangent (T : Submodule E (U.R →ₗ[O] E))
     rw [isLCr_iff r' h1', isLCr_iff (D.rz E) h1, ← crOn_top, ← crOn_top, hdeform,
       z1fDesc (MonoidHom.id _) (adRep (D.rz E)) D.HL γ hγ, had, MonoidHom.id_comp]
   have hinj : Function.Injective ((cochain D U E).domRestrict T) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨δ, hδ⟩ h0
     have h1 : ∀ g, (U.r.hom g).mat.map δ = 0 := fun g => by
       rw [← cochain_mul, show cochain D U E δ = 0 from h0, Pi.zero_apply, Matrix.zero_mul]

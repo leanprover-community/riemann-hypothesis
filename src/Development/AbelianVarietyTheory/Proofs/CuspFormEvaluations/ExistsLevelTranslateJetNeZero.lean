@@ -11,52 +11,10 @@ public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.CoeffEqZero
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaIdealLatticeEqSumLevelTranslates
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianFormAtFrameLaws
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockHxDifferentiable
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.ContDiffOfDifferentiableFd
 
@@ -185,12 +143,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.ThFr Globa
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r g : ℕ} {X : Data E r} {L : Lt E r}
   {𝔐 : Ideal (𝓞 E)} {M : ℕ}
 
-theorem EF_add_left (u u' v : Fin r → E) : EF X (u + u') v = EF X u v + EF X u' v := by
-  simp only [EF_eq_bilin, map_add (f := _), LinearMap.add_apply]
-
-theorem EF_add_right (u v v' : Fin r → E) : EF X u (v + v') = EF X u v + EF X u v' := by
-  simp only [EF_eq_bilin, map_add (f := _)]
-
 theorem EF_ratSmul_left (c : ℚ) (u v : Fin r → E) : EF X ((c : E) • u) v = c * EF X u v := by
   rw [Rat.cast_smul_eq_qsmul, EF_eq_bilin, EF_eq_bilin, map_smul, LinearMap.smul_apply, smul_eq_mul]
 
@@ -217,9 +169,9 @@ theorem EF_mem_mul (hL : SelfD X L) (hM : 𝔐 * conjI 𝔐 = Ideal.span {(M : �
       change _ = _ • (c : E) • x
       rw [smul_smul, mul_comm, Rat.cast_natCast]
     · rintro y y' ⟨k, hk⟩ ⟨k', hk'⟩
-      exact ⟨k + k', by rw [EF_add_right, hk, hk']; push_cast; ring⟩
+      exact ⟨k + k', by rw [GlobalTheory.SW.Lev.EF_add_right, hk, hk']; push_cast; ring⟩
   · rintro y y' ⟨k, hk⟩ ⟨k', hk'⟩
-    exact ⟨k + k', by rw [EF_add_left, hk, hk']; push_cast; ring⟩
+    exact ⟨k + k', by rw [GlobalTheory.SW.Lev.EF_add_left, hk, hk']; push_cast; ring⟩
 
 theorem mem_of_EF_mem_mul (hL : SelfD X L) (hM0 : M ≠ 0) (hM : 𝔐 * conjI 𝔐 = Ideal.span {(M : 𝓞 E)})
     {u : Fin r → E} (hu : ∀ v ∈ 𝔐 • L, ∃ k : ℤ, EF X u v = M * k) : u ∈ 𝔐 • L := by
@@ -267,8 +219,8 @@ theorem EF_quad {w : E} (hw : w + cc w = 1) (u v : Fin r → E) :
     EF X (u + v) (w • (u + v)) = EF X u (w • u) + EF X v (w • v) - EF X u v + 2 * EF X u (w • v) := by
   have h2 : EF X v (w • u) = -EF X u (cc w • v) := by rw [EF_swap, EF_smul]
   have h3 : EF X u (w • v) + EF X u (cc w • v) = EF X u v := by
-    rw [← EF_add_right, ← add_smul, hw, one_smul]
-  simp only [smul_add, EF_add_left, EF_add_right]
+    rw [← GlobalTheory.SW.Lev.EF_add_right, ← add_smul, hw, one_smul]
+  simp only [smul_add, GlobalTheory.SW.Lev.EF_add_left, GlobalTheory.SW.Lev.EF_add_right]
   linarith
 
 theorem exists_basis_smul {κ : Type} [Fintype κ] (pl : (Fin r → E) →+ (Fin g → ℂ))

@@ -100,9 +100,3 @@ theorem factor_ne_zero (hae : ∀ᶠ v in cofinite, Φv v = (latV b v).indicator
     exact one_ne_zero
 
 end PI.VolStabS.AdmissibleCompactSupport
-
-namespace PI.VolStabS
-
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.VolFromSW PI.VolStabS.AdmissibleCompactSupport
-
-end PI.VolStabS

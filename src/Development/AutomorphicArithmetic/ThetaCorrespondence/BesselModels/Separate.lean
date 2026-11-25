@@ -562,9 +562,6 @@ theorem hpk_diag (i : Fin (2 * r + m + 1)) (h1 : r ≤ i.val) (h2 : i.val < r + 
   unfold Hpk
   rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left ⟨h1, by omega, rfl⟩, ite_eq_right (by omega)]
 
-theorem hpk_ee (a b : Fin r) : Hpk m r (eI m r a) (eI m r b) = 0 := by
-  have := a.isLt; have := b.isLt
-  exact hpk_zero _ _ (by simp only [eI]; omega) (by simp only [eI]; omega) (by simp only [eI]; omega)
 theorem hpk_eb (a : Fin r) (b : Fin m) : Hpk m r (eI m r a) (PI.HwUniqW.bl m r b) = 0 := by
   have := a.isLt; have := b.isLt
   exact hpk_zero _ _ (by simp only [eI, PI.HwUniqW.bl]; omega) (by simp only [eI, PI.HwUniqW.bl]; omega) (by simp only [eI, PI.HwUniqW.bl]; omega)
@@ -606,9 +603,6 @@ theorem hpk_ww : Hpk m r (wI m r (Fin.last m)) (wI m r (Fin.last m)) = -1 := by
 theorem hpk_ws (b : Fin r) : Hpk m r (wI m r (Fin.last m)) (esI m r b) = 0 := by
   have := b.isLt
   exact hpk_zero _ _ (by simp only [wI, esI, Fin.val_last]; omega) (by simp only [wI, esI, Fin.val_last]; omega) (by simp only [wI, esI, Fin.val_last]; omega)
-theorem hpk_ss (a b : Fin r) : Hpk m r (esI m r a) (esI m r b) = 0 := by
-  have := a.isLt; have := b.isLt
-  exact hpk_zero _ _ (by simp only [esI]; omega) (by simp only [esI]; omega) (by simp only [esI]; omega)
 
 end Hpk
 
@@ -667,7 +661,7 @@ theorem exists_frame_matrix {m r : ℕ} {J : Matrix (Fin (2 * r + m + 1)) (Fin (
     rw [bf_symm hH, h, hpk_symm i j]
   have pee : ∀ a b, bf J (fun k => Q k (Formalism.QuantumDeterminants.eI m r a)) (fun k => Q k (Formalism.QuantumDeterminants.eI m r b)) =
       Formalism.QuantumDeterminants.Hpk m r (Formalism.QuantumDeterminants.eI m r a) (Formalism.QuantumDeterminants.eI m r b) := fun a b => by
-    rw [ce, ce, ← entry_eq, h2, hpk_ee]; rfl
+    rw [ce, ce, ← entry_eq, h2, Formalism.QuantumDeterminants.ggHpk_ee]; rfl
   have peb : ∀ a b, bf J (fun k => Q k (PI.HwUniqW.bl m r b)) (fun k => Q k (Formalism.QuantumDeterminants.eI m r a)) =
       Formalism.QuantumDeterminants.Hpk m r (PI.HwUniqW.bl m r b) (Formalism.QuantumDeterminants.eI m r a) := fun a b => by
     refine sym _ _ ?_
@@ -696,7 +690,7 @@ theorem exists_frame_matrix {m r : ℕ} {J : Matrix (Fin (2 * r + m + 1)) (Fin (
     rw [cs, cw, bf_symm hH, ← vec_eq, h9, hpk_ws]; simp
   have pss : ∀ a b, bf J (fun k => Q k (Formalism.QuantumDeterminants.esI m r a)) (fun k => Q k (Formalism.QuantumDeterminants.esI m r b)) =
       Formalism.QuantumDeterminants.Hpk m r (Formalism.QuantumDeterminants.esI m r a) (Formalism.QuantumDeterminants.esI m r b) := fun a b => by
-    rw [cs, cs, ← entry_eq, h3, hpk_ss]; rfl
+    rw [cs, cs, ← entry_eq, h3, Formalism.L2.SG.Pf.WFL.Hpk_ff]; rfl
   have key : Qᴴ * J * Q = Formalism.QuantumDeterminants.Hpk m r := by
     ext i j
     rw [entry_eq]

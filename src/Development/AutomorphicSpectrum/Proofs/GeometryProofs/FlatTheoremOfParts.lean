@@ -370,7 +370,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.LinePointFrame
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
-
 open LinePointFrame in
 theorem line_function_norm_zero_away : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (U : Set (Xo.XF c)) (τ : E →+* ℂ) (φ : FrameFn Xo c), τ (H.rt : E) = H.rt0 → IsOpen U → U.Nonempty → IsLineFn U τ φ → ∃ n : ℕ, 0 < n ∧ ∀ (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) (t : ℝ), ¬ (p : ℕ) ∣ n → HasFinNorm U τ φ p κ t → t = 0 := by
   intro E _ _ _ H D l Xo c U τ φ hτ hU hne hφ
@@ -447,7 +446,7 @@ theorem eq_of_clopen_irred {X : Type*} [TopologicalSpace X] {U U' : Set X} (hU :
     (hUi'.isConnected.isPreconnected.subset_isClopen hU ⟨u, hu', hu⟩)
 
 theorem finite_primes_dvd {n : ℕ} (hn : n ≠ 0) : {p : Nat.Primes | (p : ℕ) ∣ n}.Finite :=
-  ((Set.finite_Iic n).preimage Subtype.val_injective.injOn).subset fun p hp =>
+  ((Set.finite_Iic n).preimage Subtype.val_injective.injOn).subset fun _ hp =>
     Nat.le_of_dvd (Nat.pos_of_ne_zero hn) hp
 
 theorem model_hyp {K : Type} [Field K] (V : ValuationSubring K) [IsDiscreteValuationRing V] :
@@ -519,7 +518,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.TopA
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
-
 open GlobalTheory.CompanionTheory.Ar.Flat.TopA in
 theorem thmFlatA_of_parts : PartI → FlatLineGenerator → FlatLineGeneratorComponent → FinConst → ThmFlatA := by
   intro hI hA0 hA1 _ E _ _ _ H D Xo l c _ U τ g ty FU i hpq hτ hg hty hU hUi hP
@@ -549,7 +547,7 @@ theorem thmFlatA_of_parts : PartI → FlatLineGenerator → FlatLineGeneratorCom
     exact (hfin p κ).choose_spec⟩
   refine ⟨φ, N, hφ, hN, ?_⟩
   obtain ⟨n, hn, hn0⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.line_function_norm_zero_away E H D l (Xo l) c U τ φ hτ hU.isOpen hUi.nonempty hφ.line
-  have hS := _root_.GlobalTheory.CompanionTheory.Ar.Fl.finite_logIdeal_ne_zero E (differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
+  have hS := _root_.PositivityTheory.Xgf.logIdeal_support_finite E (differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
   refine (((finite_primes_dvd hn.ne').union (finite_primes_dvd H.d_prime.ne_zero)).union hS).subset ?_
   rintro p ⟨ι₀, hι⟩
   by_contra hcon

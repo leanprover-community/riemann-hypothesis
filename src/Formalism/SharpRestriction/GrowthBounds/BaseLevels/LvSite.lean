@@ -117,12 +117,10 @@ def loc (i : ℕ) (hi : i + 1 ≤ D.R.m) : LocIn X0 u w hg (Z.lv Fl ht) i (Z.Fo 
 
 theorem frRat (i : ℕ) (hi : i + 1 ≤ D.R.m) (β : (Z.Fo i hi).Ch) : FrRatJ ((Z.loc Fl ht i hi).t β) (Z.loc Fl ht i hi).B :=
   by
-    set_option backward.isDefEq.respectTransparency false in
       exact fun _ _ => rfl
 
 theorem sameU (i : ℕ) (hi : i + 1 ≤ D.R.m) (β : (Z.Fo i hi).Ch) :
     SameUlocJ hi ((Z.Fo i hi).K β).lev ((Z.loc Fl ht i hi).Uloc β) := by
-  set_option backward.isDefEq.respectTransparency false in
     exact sameU_of (Z.Fo i hi) β
 
 def st (Gt : GatTies D) (i : ℕ) (hi : i + 1 ≤ D.R.m) : StepIn M (i + 1) hi (gatJ (Z.lv Fl ht) (i + 1)) :=

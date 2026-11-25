@@ -22,12 +22,6 @@ section -- clump:auto
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open GlobalTheory.CompanionTheory.Ar.BT
 
-namespace GlobalTheory.CompanionTheory.Ar.BT
-
-theorem btOrder_eq_of_open_cover : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (A : Subalgebra R (T → R)), IsHopfOrder A → ∀ (j : Γ.G.left ⟶ Spec (CommRingCat.of A)), Γ.IsEmb A j → IsOpenImmersion j → Γ.TranslatesCover A j ⊤ → Γ.btOrder ⊤ = A :=
-  @PositivityTheory.HtPt.Mh.char
-
-end GlobalTheory.CompanionTheory.Ar.BT
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEqOfHopfEmbedding =====
@@ -240,7 +234,7 @@ end GlobalTheory.CompanionTheory.Ar.BT.BaseChangeOrder
 
 theorem GlobalTheory.CompanionTheory.Ar.BT.btOrder_baseChange : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] [IsNoetherianRing R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (R' : Type) [CommRing R'] [IsDomain R'] [Algebra R R'] (Γ' : QFGroup R' T) (F : Γ'.G.left ⟶ Γ.G.left), Γ'.IsBaseChange Γ (algebraMap R R') F → (∃ d : R, algebraMap R R' d ≠ 0 ∧ ∀ f : T → R, d • f ∈ Γ.btOrder ⊤) ∧ Γ'.btOrder ⊤ = extOrder (algebraMap R R') (Γ.btOrder ⊤) := by
   intro R _ _ _ _ T _ _ Γ R' _ _ _ Γ' F hbc
-  have hH := GlobalTheory.T.btOrder_isHopfOrder_noetherian R T Γ
+  have hH := PositivityTheory.UnitarySelfGeneration.bt_hopf R T Γ
   obtain ⟨j, hj, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.exists_unique_emb_btOrder_top R T Γ
   obtain ⟨hopen, hcov⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.isOpenImmersion_emb_and_translatesCover R T Γ j hj
   have hd : ∃ d : R, algebraMap R R' d ≠ 0 ∧ ∀ f : T → R, d • f ∈ Γ.btOrder ⊤ :=
@@ -248,7 +242,7 @@ theorem GlobalTheory.CompanionTheory.Ar.BT.btOrder_baseChange : ∀ (R : Type) [
   refine ⟨hd, ?_⟩
   obtain ⟨hH', e, he⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.ext_tensor_base_change R T R' (Γ.btOrder ⊤) hH hd
   obtain ⟨j', hj', hopen', hcov'⟩ := BaseChangeOrder.exists_emb hbc hH hH' e he hj hopen hcov
-  exact _root_.GlobalTheory.CompanionTheory.Ar.BT.btOrder_eq_of_open_cover R' T Γ' _ hH' j' hj' hopen' hcov'
+  exact _root_.PositivityTheory.HtPt.Mh.char R' T Γ' _ hH' j' hj' hopen' hcov'
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

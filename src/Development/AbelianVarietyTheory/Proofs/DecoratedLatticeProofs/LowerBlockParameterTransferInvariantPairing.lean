@@ -573,12 +573,6 @@ open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil 
 
 namespace GlobalTheory.ParHecke.CosetSubL
 
-theorem exists_equiv_map_eq {F V : Type} [Field F] [AddCommGroup V]
-    [Module F V] [FiniteDimensional F V] (W W' : Submodule F V)
-    (h : Module.finrank F W = Module.finrank F W') :
-    ∃ e : V ≃ₗ[F] V, W.map e.toLinearMap = W' := by
-  apply _root_.GlobalTheory.ParHecke.CosetSub.exists_equiv_map_eq <;> assumption
-
 theorem exists_gl_map_eq (O : Type) [CommRing O] [IsLocalRing O] (n : Type) [Fintype n] [DecidableEq n]
     (W W' : Submodule (IsLocalRing.ResidueField O) (n → IsLocalRing.ResidueField O))
     (h : Module.finrank (IsLocalRing.ResidueField O) W =

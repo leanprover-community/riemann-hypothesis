@@ -30,14 +30,6 @@ theorem conj_sqrtMinusD (D : Formalism.BasicNotions.D7) :
   rw [h2] at h
   simpa [Host.sqrtMinusD, Formalism.HC.Frame.cc, c0] using h
 
-theorem one_sub_halfSqrt_eq_conj (D : Formalism.BasicNotions.D7) :
-    ((1 - w0 D : 𝓞 D.host.E) : D.host.E) = D.host.conj (w0 D : D.host.E) := by
-  have hw : algebraMap (𝓞 D.host.E) D.host.E (w0 D) = (1 + D.host.sqrtMinusD) / 2 := rfl
-  change algebraMap (𝓞 D.host.E) D.host.E (1 - w0 D) =
-    D.host.conj (algebraMap (𝓞 D.host.E) D.host.E (w0 D))
-  rw [map_sub, map_one, hw, map_div₀, map_add (f := _), map_one, conj_sqrtMinusD, map_ofNat]
-  ring
-
 structure LocB (D : Formalism.BasicNotions.D7) {r j p : ℕ} (L : ModuliIntegralCharts.Loc D r j p) where
 
   chX : ∀ {Z : L.Mdl}, L.Pt Z → Type
@@ -167,16 +159,6 @@ attribute [instance] LocB.xAdd LocB.xMod LocB.iRr LocB.iRd LocB.iRl LocB.iRn Loc
 
 structure Prov (D : Formalism.BasicNotions.D7) (X : ModuliIntegralCharts.Prov D) where
   loc : ∀ w p, p.Prime → LocB D (X.loc w p)
-
-namespace LocB
-
-variable {D : Formalism.BasicNotions.D7} {r j p : ℕ} {L : ModuliIntegralCharts.Loc D r j p} (B : LocB D L)
-
-variable {y : L.Pt L.Xm} {nW : ℕ}
-
-variable (y nW)
-
-end LocB
 
 variable (D : Formalism.BasicNotions.D7) (X : ModuliIntegralCharts.Prov D)
 

@@ -30,7 +30,7 @@ theorem mat_mem (g : UpqT P Q) : (UpqT.mat g)ᴴ * J * UpqT.mat g = J := g.2
 theorem mat_inducing : IsInducing (UpqT.mat : UpqT P Q → MM P Q) := by
   exact Units.isOpenEmbedding_val.toIsEmbedding.toIsInducing.comp Topology.IsInducing.subtypeVal
 
-theorem mat_injective : Function.Injective (UpqT.mat : UpqT P Q → MM P Q) := fun a b h => Subtype.ext (Units.ext h)
+theorem mat_injective : Function.Injective (UpqT.mat : UpqT P Q → MM P Q) := fun _ _ h => Subtype.ext (Units.ext h)
 
 theorem mat_embedding : IsEmbedding (UpqT.mat : UpqT P Q → MM P Q) := ⟨mat_inducing P Q, mat_injective P Q⟩
 

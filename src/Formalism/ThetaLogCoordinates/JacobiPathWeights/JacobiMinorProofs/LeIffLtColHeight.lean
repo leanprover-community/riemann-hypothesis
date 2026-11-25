@@ -178,10 +178,6 @@ end Paths
 
 namespace Paths
 
-end Paths
-
-namespace Paths
-
 theorem pathWord_unchanged {R : Type*} [CommRing R] {n : ℕ} (isVec : ℕ → Bool) (μ : ℕ → Fin n → ℤ)
     (c : ℤ) (Xr : ℕ → Fin n → R) : ∀ j : ℕ,
     (∀ i < j, colHeight (μ (i + 1)) c = colHeight (μ i) c) →

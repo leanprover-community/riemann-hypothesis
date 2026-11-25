@@ -77,9 +77,7 @@ section Alg
 variable {K : Type} [Field K] {Δ τ : K}
 
 private theorem quo_mul_inv (z : (Etau K τ)ˣ) : quo z * quo z⁻¹ = 1 := by
-  have e : ∀ a b : (Etau K τ)ˣ, quo (a * b) = quo a * quo b := fun a b => by
-    simp only [quo, _root_.mul_inv_rev, Units.val_mul, star_mul]; ring
-  rw [← e, mul_inv_cancel]
+  rw [← _root_.UpperTheory.V.Z.Sym.Loc.quo_mul', mul_inv_cancel]
   simp [quo]
 
 private theorem tor_inv (z : (Etau K τ)ˣ) (x : Sp Δ τ) : tor Δ z (tor Δ z⁻¹ x) = x := by

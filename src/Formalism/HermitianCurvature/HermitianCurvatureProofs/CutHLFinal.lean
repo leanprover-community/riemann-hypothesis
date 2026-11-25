@@ -51,11 +51,6 @@ theorem dzb_smul' (c : ℂ) (f : ℂ → E) (τ : ℂ) : PBP.dzb (fun s => c •
   rw [smul_comm Complex.I c]
   congr 1 <;> exact smul_comm _ _ _
 
-theorem map_qminor' {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B) {n t : ℕ}
-    (Eu : Fin n → Fin n → A) (a b : Fin t → Fin n) (u : ℂ) :
-    φ (qminor Eu a b u) = qminor (fun p q => φ (Eu p q)) a b u := by
-  apply _root_.GlobalTheory.CompanionTheory.CapelliMap.map_qminor <;> assumption
-
 theorem map_AAv {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B) (k r : ℕ)
     (Eu : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (y : Fin r → Fin (2 * r + k + 1) → ℂ) (n : ℕ)
     (hn : n ≤ r) (ℓ : ℂ) : φ (C3.AAv k r Eu y n hn ℓ) = C3.AAv k r (fun p q => φ (Eu p q)) y n hn ℓ := by
@@ -64,7 +59,7 @@ theorem map_AAv {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (
   rw [map_sum]
   refine Finset.sum_congr rfl fun B _ => ?_
   split_ifs
-  · rw [map_smul, map_qminor']
+  · rw [map_smul, Formalism.FourierDecayAlt.P.PBN.MC.map_qminor]
   · exact map_zero φ
 
 private theorem eventually_level_point_mem_open_lemma {k r j : ℕ} (hj : j + 1 ≤ r) {Z : Matrix (Fin j) (Fin j) ℂ} (hZ : Z.det ≠ 0)

@@ -93,7 +93,6 @@ theorem map_eq_zero_of_commute_doubling {k RA RB : Type} [Field k] [CharZero k] 
         have : ((2 ^ (n + 2) - 2 : ℤ) : k) ≠ 0 := by
           rw [Int.cast_ne_zero]
           have : (2 : ℤ) ^ (n + 2) = 4 * 2 ^ n := by ring
-          have h6 : (0 : ℤ) < 2 ^ n := by positivity
           omega
         simpa using this
       have h7 := Ideal.mul_mem_left _ (algebraMap k RA (2 ^ (n + 2) - 2 : k)⁻¹) h5

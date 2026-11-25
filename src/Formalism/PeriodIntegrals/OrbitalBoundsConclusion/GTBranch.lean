@@ -1253,12 +1253,6 @@ namespace PI.WGB
 open Formalism.BasicNotions Formalism.GradedWeylDivisibility MvPolynomial
 open Formalism.REAL (fockF)
 
-theorem natW_antiC {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  intro i j hij
-  have := lam.anti hij
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (by omega)
-
 theorem twist_id (a b : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) (cF cE : ℤ) (d : ℕ) (hc : cE = cF + d) :
     a ^ cF * star (b ^ cF) * (star b * a) ^ d = a ^ cE * star (b ^ cE) := by
   subst hc
@@ -1279,7 +1273,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     ∃ φ : MvPolynomial (Fin n × Fin n) ℂ →ₗ[ℂ] MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ,
       IsEqv rfl mu lam φ ∧ φ (extremal ℂ n mu) = f := by
   have hI : Interlace rfl lam mu := (ha n (n + 1) rfl lam mu f f hf hf hfix hfix hne).2
-  have heM : extremal ℂ n mu ∈ nablaSq ℂ n mu := hwMem ℂ n n le_rfl mu.natW (natW_antiC mu)
+  have heM : extremal ℂ n mu ∈ nablaSq ℂ n mu := hwMem ℂ n n le_rfl mu.natW (PI.WHw.natW_antitone mu)
   have heN : extremal ℂ n mu ≠ 0 := hwNe ℂ n n le_rfl mu.natW
 
   have hge : 0 < n → lam.detShift ≤ mu.detShift := by
@@ -1311,7 +1305,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
     have h2 := hcE hn
     push_cast
     omega
-  have hκfA : Antitone (fun i => mu.natW i + d) := fun i j hij => Nat.add_le_add_right (natW_antiC mu hij) d
+  have hκfA : Antitone (fun i => mu.natW i + d) := fun i j hij => Nat.add_le_add_right (PI.WHw.natW_antitone mu hij) d
 
   obtain ⟨hUf, hTf⟩ := fixed_data (k := 1) f lam.detShift mu.w (fun i => mu.natW i + d) hκf
     (fun g h1 h2 => by
@@ -1353,7 +1347,7 @@ theorem realize_C (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (n : �
           ((g' : Matrix (Fin n) (Fin n) ℂ).conjTranspose * (g : Matrix (Fin n) (Fin n) ℂ))) := by
     intro g g'
     unfold veC
-    have := gram_of (k := 0) (f := extremal ℂ n mu) mu.natW (natW_antiC mu) hUe hTe
+    have := gram_of (k := 0) (f := extremal ℂ n mu) mu.natW (PI.WHw.natW_antitone mu) hUe hTe
       (g : Matrix (Fin n) (Fin n) ℂ) (g' : Matrix (Fin n) (Fin n) ℂ)
     rw [iotaC_zero, iotaC_zero] at this
     rw [sqAct_eq, sqAct_eq, fockF_smul_left, fockF_smul_right, this]
@@ -1500,12 +1494,8 @@ namespace PI.WGB
 
 open Formalism.BasicNotions MvPolynomial
 
-theorem natW_anti_D {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  intro i j hij
-  exact Int.toNat_le_toNat (sub_le_sub_right (lam.anti hij) _)
-
 theorem extremal_mem_D (n : ℕ) (mu : DomWeight n) : extremal ℂ n mu ∈ nablaSq ℂ n mu :=
-  Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl mu.natW (natW_anti_D mu)
+  Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl mu.natW (PI.WHw.natW_antitone mu)
 
 theorem extremal_ne_D (n : ℕ) (mu : DomWeight n) : extremal ℂ n mu ≠ 0 :=
   Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl mu.natW

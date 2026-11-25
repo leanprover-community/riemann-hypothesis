@@ -137,10 +137,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.HW
 
 open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.S7
 
-theorem weylRatio_rhoC_sub_ge_one {n : ℕ} (ε : Fin n → Bool) {a b : Fin n} (hab : a < b)
-    (he : ε a = ε b) : 1 ≤ rhoC ε a - rhoC ε b :=
-  by apply _root_.ReciprocityTheory.ChartRestriction.DS.HW.rhoC_sub_ge_one <;> assumption
-
 theorem weylRatio_prodW {n : ℕ} (ε : Fin n → Bool) (s : Fin n) (h : Fin n → ℝ) :
     ∏ a, ∏ b ∈ univ.filter (fun b => a < b ∧ ε a = ε b),
         (if b = s then h a else if a = s then h b else 1) =
@@ -207,10 +203,10 @@ theorem weylRatio_ell_ne {n : ℕ} (ε : Fin n → Bool) (Λ : Fin n → ℝ) (h
   intro h
   simp only [Pi.add_apply] at h
   rcases lt_or_gt_of_ne hbs with hlt | hlt
-  · have h1 := weylRatio_rhoC_sub_ge_one ε hlt he
+  · have h1 := ReciprocityTheory.ChartRestriction.DS.HW.rhoC_sub_ge_one ε hlt he
     have h2 := hΛ b s hlt he
     linarith
-  · have h1 := weylRatio_rhoC_sub_ge_one ε hlt he.symm
+  · have h1 := ReciprocityTheory.ChartRestriction.DS.HW.rhoC_sub_ge_one ε hlt he.symm
     have h2 := hΛ s b hlt he.symm
     linarith
 

@@ -680,52 +680,6 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
 open Br
 
-section ShortIntervalLowerBound
-
-variable (K0 : Type) [Field K0] [NumberField K0]
-
-variable {K0}
-
-end ShortIntervalLowerBound
-
-end Formalism.MainNotions.ShortIntervalPrimes
-
-end
-
-noncomputable section
-
-namespace Formalism.MainNotions.ShortIntervalPrimes
-
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
-
-end Formalism.MainNotions.ShortIntervalPrimes
-
-end
-
-noncomputable section
-
-namespace Formalism.MainNotions.ShortIntervalPrimes
-
-open NumberField
-
-section Deg2
-
-variable {K0 : Type} [Field K0] [NumberField K0]
-
-end Deg2
-
-end Formalism.MainNotions.ShortIntervalPrimes
-
-end
-
-noncomputable section
-
-namespace Formalism.MainNotions.ShortIntervalPrimes
-
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
-
 def lamE (D : Formalism.BasicNotions.D7) : ℝ := max 1 (Real.log (NE D))
 
 def PsiThin (D : Formalism.BasicNotions.D7) (x eps C c : ℝ) : Prop :=
@@ -1542,27 +1496,6 @@ end Formalism.MainNotions.ShortIntervalPrimes
 
 end
 
-noncomputable section
-
-namespace Formalism.MainNotions.ShortIntervalPrimes
-
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
-
-end Formalism.MainNotions.ShortIntervalPrimes
-
-end
-
-noncomputable section
-
-namespace Formalism.MainNotions.ShortIntervalPrimes
-
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
-
-end Formalism.MainNotions.ShortIntervalPrimes
-
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.SharpRestriction.GlobalSchurBounds.FirstClaimLemmaTwoFourOfLemmaTwoThree =====

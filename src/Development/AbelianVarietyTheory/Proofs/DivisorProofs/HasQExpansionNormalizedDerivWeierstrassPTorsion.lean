@@ -88,8 +88,6 @@ theorem row_eq (N : ℕ) [NeZero N] (j : ZMod N) :
       have hz : (j.val : ℤ) = n * N := by exact_mod_cast hn
       have h1 : 0 < j.val := Nat.pos_of_ne_zero (fun h => hj ((ZMod.val_eq_zero j).mp h))
       have h2 : j.val < N := ZMod.val_lt j
-      have h1' : (0 : ℤ) < j.val := by exact_mod_cast h1
-      have h2' : (j.val : ℤ) < N := by exact_mod_cast h2
       rcases le_or_gt n 0 with h | h
       · nlinarith
       · nlinarith

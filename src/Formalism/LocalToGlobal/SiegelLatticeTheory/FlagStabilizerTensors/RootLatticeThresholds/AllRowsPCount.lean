@@ -179,66 +179,12 @@ theorem part_iff_j (k : Fin 2) (x y : KSub X.B.I) :
       rw [map_mul, map_inv, Pi.mul_apply, Pi.inv_apply, inv_mul_eq_one] at hv
       exact hv
 
-theorem part_iff_k (k : Fin 2) (x y : KSub X.B.I) :
-    proj (fun kv : (Σ k', D.nd.PlG k') => kv.1 = k) (rhoX X x) =
-      proj (fun kv : (Σ k', D.nd.PlG k') => kv.1 = k) (rhoX X y) ↔
-      ((x⁻¹ * y : KSub X.B.I) : X.B.I.Gf) ∈ X.B.I.Kg (D.host.g k) := by
-  rw [← ker_part X k (x⁻¹ * y)]
-  constructor
-  · intro h v
-    have hv := congrFun h ⟨k, v⟩
-    rw [proj_apply, proj_apply, ite_eq_left rfl, ite_eq_left rfl] at hv
-    rw [map_mul, map_inv, Pi.mul_apply, Pi.inv_apply, hv, inv_mul_cancel]
-  · intro h
-    funext ⟨k', v⟩
-    simp only [proj_apply]
-    by_cases hk : k' = k
-    · subst hk
-      rw [ite_eq_left rfl, ite_eq_left rfl]
-      have hv := h v
-      rw [map_mul, map_inv, Pi.mul_apply, Pi.inv_apply, inv_mul_eq_one] at hv
-      exact hv
-    · rw [ite_eq_right hk, ite_eq_right hk]
-
-
 open Classical in
-def redD (k : Fin 2) : X.B.I.RedDatum (D.host.g (1 - k) ^ 1) (D.host.g k ^ 1) where
+def redD (k : Fin 2) : X.B.I.RedDatum where
   G₁ := ↥(Sub (fun kv : (Σ k', D.nd.PlG k') => ¬ kv.1 = k))
   G₂ := ↥(Sub (fun kv : (Σ k', D.nd.PlG k') => kv.1 = k))
-  fin₁ := Fintype.ofFinite _
-  fin₂ := Fintype.ofFinite _
   red := fun x => if hx : x ∈ X.B.I.Kset then
     (⟨proj _ (rhoX X ⟨x, hx⟩), proj_mem _ _⟩, ⟨proj _ (rhoX X ⟨x, hx⟩), proj_mem _ _⟩) else 1
-  red_mul := fun x hx y hy => by
-    have hxy : x * y ∈ X.B.I.Kset := Formalism.L2.SG.Pf.unitaryCongruence.K_mul X.B.I hx hy
-    simp only [dite_eq_left hx, dite_eq_left hy, dite_eq_left hxy]
-    have e : (⟨x * y, hxy⟩ : KSub X.B.I) = ⟨x, hx⟩ * ⟨y, hy⟩ := rfl
-    rw [e]
-    ext <;> simp [map_mul]
-  red_surj := fun ab => by
-    obtain ⟨a, b⟩ := ab
-    have hS := Formalism.L2.SG.Pf.AllRowsAdd.hS_X X
-    have hm : ((sec hS ((a : G0g D.nd) * (b : G0g D.nd)) : KSub X.B.I) : X.B.I.Gf) ∈ X.B.I.Kset := (sec hS _).2
-    refine ⟨(sec hS ((a : G0g D.nd) * (b : G0g D.nd)) : X.B.I.Gf), hm, ?_⟩
-    rw [dite_eq_left hm]
-    have e : (⟨(sec hS ((a : G0g D.nd) * (b : G0g D.nd)) : X.B.I.Gf), (sec hS _).2⟩ : KSub X.B.I) =
-        sec hS ((a : G0g D.nd) * (b : G0g D.nd)) := rfl
-    rw [e, rho_sec]
-    refine Prod.ext (Subtype.ext ?_) (Subtype.ext ?_)
-    · show proj _ ((a : G0g D.nd) * (b : G0g D.nd)) = (a : G0g D.nd)
-      rw [map_mul, proj_of_mem _ a.2,
-        proj_eq_one_of _ b.2 (fun (i : Σ k' : Fin 2, D.nd.PlG k') (hi : ¬ i.1 = k) h => hi h), mul_one]
-    · show proj _ ((a : G0g D.nd) * (b : G0g D.nd)) = (b : G0g D.nd)
-      rw [map_mul, proj_of_mem _ b.2,
-        proj_eq_one_of _ a.2 (fun (i : Σ k' : Fin 2, D.nd.PlG k') (hi : i.1 = k) h => h hi), one_mul]
-  red_fib₁ := fun x hx y hy => by
-    simp only [dite_eq_left hx, dite_eq_left hy, pow_one]
-    rw [Subtype.ext_iff]
-    exact part_iff_j X k ⟨x, hx⟩ ⟨y, hy⟩
-  red_fib₂ := fun x hx y hy => by
-    simp only [dite_eq_left hx, dite_eq_left hy, pow_one]
-    rw [Subtype.ext_iff]
-    exact part_iff_k X k ⟨x, hx⟩ ⟨y, hy⟩
 
 end Dlev
 

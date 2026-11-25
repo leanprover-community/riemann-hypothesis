@@ -86,33 +86,6 @@ def stdDatum (μ : kˣ →* ℂˣ) (ϖ : kˣ) (c : ℕ) (x : Matrix (Fin n ⊕ F
 
 end GlobalTheory.StdLocZeta
 
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
-
-namespace GlobalTheory.StdLocZeta
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n n' : ℕ}
-
-end GlobalTheory.StdLocZeta
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

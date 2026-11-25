@@ -68,9 +68,6 @@ theorem fock_letters_ccr (p q r s : ℕ) (l m : Ln p q r s) :
   have hX : ∀ (i j : Ln p q r s), pderiv i (X j : Pol p q r s) = if j = i then 1 else 0 := by
     intro i j
     rw [pderiv_X, Pi.single_apply]
-  have hne : ∀ l m : Ln p q r s, linePos l ≠ linePos m → l ≠ m := by
-    rintro l m h rfl
-    exact h rfl
   refine ⟨?_, ?_, ?_⟩
   · by_cases hlm : l = m
     · subst hlm

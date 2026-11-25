@@ -396,10 +396,6 @@ theorem herm_zero_right (x y : B.A) : B.herm x y 0 = 0 := by
   unfold InvAlg.herm
   simp
 
-theorem herm_smul_right' (x y z : B.A) (a : K.E) : B.herm x y (a • z) = K.c a * B.herm x y z := by
-  unfold InvAlg.herm
-  rw [Algebra.smul_def, map_mul B.σ, B.σ_alg, ← Algebra.smul_def, mul_smul_comm, map_smul, smul_eq_mul]
-
 theorem herm_sum_smul_left {n : ℕ} (x z : B.A) (a : Fin n → K.E) (v : Fin n → B.A) :
     B.herm x (∑ j, a j • v j) z = ∑ j, a j * B.herm x (v j) z := by
   unfold InvAlg.herm
@@ -455,7 +451,7 @@ theorem herm_basis_orthonormal : ∀ (K : UQ) (B : InvAlg K) (x w : B.A), B.σ B
     | add y z _ _ hy hz =>
       intro i; rw [add_mul, herm_add_right, hy i, hz i, map_add (f := _), Finsupp.add_apply, map_add (f := _)]
     | smul a y _ hy =>
-      intro i; rw [smul_mul_assoc, herm_smul_right', hy i, LinearEquiv.map_smul, Finsupp.smul_apply, smul_eq_mul,
+      intro i; rw [smul_mul_assoc, GlobalTheory.UnitLemma.Basic.herm_smul_right, hy i, LinearEquiv.map_smul, Finsupp.smul_apply, smul_eq_mul,
         RingEquiv.map_mul K.c]
   have hall : ∀ z, P z := by
     intro z

@@ -335,7 +335,7 @@ theorem fixed_of_near (hn : ∀ (g : GQ l) (x : Om l), ‖g x‖ = ‖x‖) (D A
   have htr : ∀ d ∈ D, d (∑ s ∈ S, s y) = ∑ s ∈ S, s y := fun d hd => by
 
     rw [map_sum]
-    refine sum_shift D A S hS.1 hS.2 (fun g => g y) ?_ d hd
+    refine GlobalTheory.TranslateSum.sum_translate_eq D A S hS.1 hS.2 (fun g => g y) ?_ d hd
     intro g v _ hv
     change g (v y) = g y
     rw [hy v hv]
@@ -431,7 +431,7 @@ theorem faithH : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P
       (le_trans hy ((le_max_left _ _).trans hra3)) (hd.2 _ fun h hh => ?_)
 
     rw [map_sum]
-    have := sum_shift A N T hT.1 hT.2 (fun g => AI.actT g x)
+    have := GlobalTheory.TranslateSum.sum_translate_eq A N T hT.1 hT.2 (fun g => AI.actT g x)
       (fun g v _ hv => by rw [map_mul AI.actT, RingAut.mul_apply, hxN v hv]) h hh
     rw [← this]
     refine Finset.sum_congr rfl fun t _ => ?_

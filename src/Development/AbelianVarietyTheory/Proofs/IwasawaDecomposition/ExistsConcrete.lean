@@ -124,20 +124,6 @@ section Adelic
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem adelic_ext {n : ℕ} (g h : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F))
-    (H : ∀ v : HeightOneSpectrum (𝓞 F), bc (prV (E := E) v) g = bc (prV (E := E) v) h) : g = h := by
-  apply Units.ext
-  ext i j
-  rw [← sub_eq_zero]
-  apply Formalism.UG.P.afsplit_inj
-  intro w
-  rw [map_sub]
-  have h1 := congrArg Units.val (H w)
-  rw [Formalism.UG.P.afsplit_coe_bc_prV, Formalism.UG.P.afsplit_coe_bc_prV] at h1
-  have := congrFun (congrFun h1 i) j
-  simp only [Matrix.map_apply] at this
-  rw [this, sub_self]
-
 theorem exists_trivial_on {n : ℕ} (σ : E →ₐ[F] E) (J : Matrix (Fin n) (Fin n) E) (s : Finset (HeightOneSpectrum (𝓞 F)))
     (g : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) (hg : g ∈ UPts σ J (FiniteAdeleRing (𝓞 F) F)) :
     ∃ k ∈ UPts σ J (FiniteAdeleRing (𝓞 F) F), (∀ v ∈ s, bc (prV (E := E) v) k = 1) ∧
@@ -245,7 +231,7 @@ theorem exists_psiTied {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad
       (∀ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∉ w.asIdeal →
         bc (prV (E := E) w) k.1 = bc (prV (E := E) w) (reGL hk _ a.1)) → κ a = k := by
     intro a k k1 k2
-    refine Subtype.ext (adelic_ext _ _ fun v => ?_)
+    refine Subtype.ext (Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0.adelic_GL_ext_local _ _ fun v => ?_)
     by_cases hv : ((p : ℕ) : 𝓞 F) ∈ v.asIdeal
     · rw [h1 a v hv, k1 v hv]
     · rw [h2 a v hv, k2 v hv]
@@ -460,7 +446,7 @@ def evalReps (Hv : P.Tup → Submodule O P.Xsp) {ι : Type} {rep : ι → P.Tup}
 
 theorem evalReps_injective (Hv : P.Tup → Submodule O P.Xsp) {ι : Type} {rep : ι → P.Tup} (hr : IsReps C rep) :
     Function.Injective (evalReps C Hv hr) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro F hF
   obtain ⟨-, h0, hγ⟩ := (mem_funMod_iff C Hv F.1).1 F.2
   apply Subtype.ext

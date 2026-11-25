@@ -111,13 +111,6 @@ theorem fixedFrameOfWord_last_eq_anisotropic : (GlobalTheory.TypeAsm.F0 X u).e (
   rw [GlobalTheory.TypeAsm.fv_last]
   exact X.flagZVector u
 
-theorem fixedFrameOfWord_isotropicSpan_eq : (GlobalTheory.TypeAsm.F0 X u).X = Submodule.span D.host.E (Set.range X.eX) := by
-  unfold Formalism.HermitianLatticeCounting.S6.FlagD.X Formalism.HermitianLatticeCounting.S6.FlagD.Xa
-  congr 1
-  ext v
-  simp only [Set.mem_image, Set.mem_setOf_eq, Set.mem_range, fixedFrameOfWord_castSucc_eq_hyperbolic]
-  exact ⟨fun ⟨b, _, h⟩ => ⟨b, h⟩, fun ⟨b, h⟩ => ⟨b, b.isLt, h⟩⟩
-
 theorem hT_span_left {v : (VS D).V} (hv : ∀ a, (VS D).hT (X.eX a) v = 0) {y : (VS D).V}
     (hy : y ∈ Submodule.span D.host.E (Set.range X.eX)) : (VS D).hT y v = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hy
@@ -232,7 +225,7 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
       · rw [fixedFrameOfWord_castSucc_eq_hyperbolic]; exact p_symm_zero (VS D) ((((x : GlobalTheory.RowsOrb.Wb X)).2 b).1)
     obtain ⟨y, ⟨w, rfl⟩, z, hz, hyz⟩ := Submodule.mem_sup.1 ((hE.2 _).1 hv)
     refine ⟨w, ?_⟩
-    rw [fixedFrameOfWord_isotropicSpan_eq] at hz
+    rw [GlobalTheory.RowsOrb.Uniq.fixedFrameOfWord_isotropicSpan_eq] at hz
     have hd : ((x : GlobalTheory.RowsOrb.Wb X) : (VS D).V) - ((g w : GlobalTheory.RowsOrb.Wb X) : (VS D).V) = 0 := by
       apply span_eq_zero X
       · rw [hg, ← hyz]
@@ -255,7 +248,7 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
     have h2 := (hXW (e x) (corr_mem X W (e y))).2
     have h3 := hT_span_span X (corr_mem X W (e x)) (corr_mem X W (e y))
     simp only [map_sub, LinearMap.sub_apply, h1, h2, h3, sub_zero]
-  · rw [hxe x, sub_sub_cancel, fixedFrameOfWord_isotropicSpan_eq]
+  · rw [hxe x, sub_sub_cancel, GlobalTheory.RowsOrb.Uniq.fixedFrameOfWord_isotropicSpan_eq]
     exact corr_mem X W (e x)
 end -- clump:auto
 end -- clump:auto

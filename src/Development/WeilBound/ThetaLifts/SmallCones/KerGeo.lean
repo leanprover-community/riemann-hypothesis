@@ -50,10 +50,8 @@ theorem hT_smul_r (a : S) (x y : Matrix (Fin n) (Fin d) S) : hTens c J J' x (a �
   simp only [mul_left_comm]
 
 theorem hT_sum_r {k : ℕ} (x : Matrix (Fin n) (Fin d) S) (y : Fin k → Matrix (Fin n) (Fin d) S) :
-    hTens c J J' x (∑ i, y i) = ∑ i, hTens c J J' x (y i) := by
-  induction (Finset.univ : Finset (Fin k)) using Finset.induction_on with
-  | empty => simp [hTens]
-  | insert a s h ih => rw [Finset.sum_insert h, Finset.sum_insert h, hT_add_r, ih]
+    hTens c J J' x (∑ i, y i) = ∑ i, hTens c J J' x (y i) :=
+  map_sum (AddMonoidHom.mk' (hTens c J J' x) (hT_add_r x)) y _
 
 theorem mid_eq (ι : Matrix (Fin n) (Fin n₁) S) (ι' : Matrix (Fin d) (Fin d₁) S) (w : Matrix (Fin n₁) (Fin d₁) S) :
     ι * w * ι'ᵀ = ∑ i, vecMulVec (ι *ᵥ Pi.single i 1) (ι' *ᵥ w i) := by

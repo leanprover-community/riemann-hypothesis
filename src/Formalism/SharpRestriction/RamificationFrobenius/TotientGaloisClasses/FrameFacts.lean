@@ -179,12 +179,6 @@ theorem hostGroup : Nat.card φ.GG = 4 * φ.ord ∧ φ.Psi.index = 2 ∧ φ.cc �
 
 theorem iota_injective : Function.Injective φ.iota := fun _ _ h => Multiplicative.ofAdd.injective h
 
-theorem iotaInv_mul (a b : φ.MA) : φ.iotaInv (a * b) = φ.iotaInv a + φ.iotaInv b := rfl
-
-theorem iotaInv_pow (a : φ.MA) (i : ℕ) : φ.iotaInv (a ^ i) = i • φ.iotaInv a := rfl
-
-theorem iotaInv_eq_zero_iff (a : φ.MA) : φ.iotaInv a = 0 ↔ a = 1 := toAdd_eq_zero
-
 theorem orderOf_iota (t : φ.A) : orderOf (φ.iota t) = addOrderOf t := orderOf_ofAdd_eq_addOrderOf t
 
 theorem addOrderOf_iotaInv (a : φ.MA) : addOrderOf (φ.iotaInv a) = orderOf a := (orderOf_ofAdd_eq_addOrderOf (Multiplicative.toAdd a)).symm
@@ -551,16 +545,6 @@ private theorem ncard_range_pow_eq_orderOf {M : Type*} [Group M] (x : M) :
   have h : Nat.card (Submonoid.powers x) = orderOf x := Nat.card_submonoidPowers
   rw [← h, ← Submonoid.coe_powers]
   exact (Nat.card_coe_set_eq _).symm
-
-theorem hostOrbitCount (g : φ.GG) (h0 : g.1 = c0) (τ : φ.GG) (hτ : τ ∈ φ.Psi) :
-    (Set.range fun i : ℕ => placeOf (g ^ i * τ)).ncard = orderOf g.2 := by
-  have hfun : (fun i : ℕ => placeOf (g ^ i * τ)) =
-      (fun y : φ.MA => ((τ.1, y * τ.2) : φ.GG)) ∘ (fun i : ℕ => g.2 ^ i) := by
-    funext i
-    obtain ⟨h1, h2, -⟩ := φ.hostOrbitsPlaces g (Or.inl h0) τ hτ i
-    exact Prod.ext (h2 h0) h1
-  rw [hfun, Set.range_comp, Set.ncard_image_of_injective _
-    (fun y y' h => mul_right_cancel (congrArg Prod.snd h)), ncard_range_pow_eq_orderOf]
 
 def InTranslate (T : Finset ℕ) (u₀ x : φ.A) : Prop := ∃ s ∈ T, x = φ.dig s + u₀
 

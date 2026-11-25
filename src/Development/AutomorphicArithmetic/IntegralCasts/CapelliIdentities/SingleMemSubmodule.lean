@@ -7,7 +7,7 @@ public import Mathlib.Data.Matrix.Mul
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SingleMemSubmodule.single_mem :
-    ∀ {K : Type} [inst : Field K] (d : Fin (3 : ℕ) → K),
+    ∀ {K : Type} [Field K] (d : Fin (3 : ℕ) → K),
     Function.Injective d →
       ∀ (W : Submodule K (Fin (3 : ℕ) → K)),
         (∀ v ∈ W, (Matrix.diagonal d).mulVec v ∈ W) →

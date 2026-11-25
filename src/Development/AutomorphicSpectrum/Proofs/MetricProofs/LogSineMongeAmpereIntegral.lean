@@ -556,10 +556,6 @@ theorem det_eq_mul_minor_of_col_zero {n : ℕ} (J : Matrix (Fin (n + 1)) (Fin (n
   rw [Matrix.det_succ_column_zero, Fin.sum_univ_succ]
   simp [h]
 
-theorem hasDerivAt_mob_line (G : Matrix (Fin 2) (Fin 2) ℂ) (a : ℂ) (h : den G a ≠ 0) :
-    HasDerivAt (fun t : ℂ => mob G (a + t)) (mobD G a) 0 := by
-  apply GlobalTheory.CompanionTheory.Ar.PB.FibPt.hasDerivAt_mob_shift <;> assumption
-
 theorem jacC_apply_of_line {D E : ℕ} (F : (Fin D → ℂ) → Fin E → ℂ) (z : Fin D → ℂ)
     (hF : DifferentiableAt ℂ F z) (a : Fin E) (k : Fin D) (c : ℂ)
     (h : HasDerivAt (fun t : ℂ => F (z + t • (Pi.single k 1 : Fin D → ℂ)) a) c 0) :
@@ -643,11 +639,11 @@ theorem det_jacobian_mobius_pair {d : ℕ} (g : (Fin d → ℂ) → Matrix (Fin 
   have hJ00 : J 0 0 = mobD (g y) a₀ := by
     refine jacC_apply_of_line _ _ hdiff 0 0 _ ?_
     simp only [mobius_pair_line_first_axis, mobius_pair_cons]
-    simpa using hasDerivAt_mob_line (g y) a₀ h₀
+    simpa using GlobalTheory.CompanionTheory.Ar.PB.FibPt.hasDerivAt_mob_shift (g y) a₀ h₀
   have hJ11 : J 1 1 = mobD (g y) a₁ := by
     refine jacC_apply_of_line _ _ hdiff 1 1 _ ?_
     simp only [mobius_pair_line_second_axis, mobius_pair_cons]
-    simpa using hasDerivAt_mob_line (g y) a₁ h₁
+    simpa using GlobalTheory.CompanionTheory.Ar.PB.FibPt.hasDerivAt_mob_shift (g y) a₁ h₁
   have hJ10 : J 1 0 = 0 := by
     refine jacC_apply_of_line _ _ hdiff 1 0 _ ?_
     simp only [mobius_pair_line_first_axis, mobius_pair_cons]
@@ -915,7 +911,6 @@ theorem dens2 : ∀ (d m : ℕ) (u : ℕ → Fin 2 → ℝ) (G g : (Fin d → �
 
 end GlobalTheory.CompanionTheory.Ar.PB.FibPt
 
-
 open GlobalTheory.CompanionTheory.Ar.PB.FibPt in
 theorem GlobalTheory.CompanionTheory.Ar.PB.FibPt.ae_den_ne (g : Matrix (Fin 2) (Fin 2) ℂ) (hg : IsUnit g.det) : ∀ᵐ a : ℂ, den g a ≠ 0 := by
   have hdet : g 0 0 * g 1 1 - g 0 1 * g 1 0 ≠ 0 := by
@@ -936,7 +931,6 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.FibPt.ae_den_ne (g : Matrix (Fin 2) (
       field_simp
       linear_combination ha'
     exact measure_mono_null hsub (by simp)
-
 
 open GlobalTheory.CompanionTheory.Ar.PB.FibPt in
 theorem GlobalTheory.CompanionTheory.Ar.PB.FibPt.fibre_integral_any_frame : GroundTheory.Heights₂.Heights.Inter.FibreLocal.Statement → ∀ (d k : ℕ), 1 ≤ k → 2 * k ≤ d + 2 → ∀ (G : (Fin d → ℂ) → Matrix (Fin 2) (Fin 2) ℂ) (α : (Fin d → ℂ) → ℝ) (y : Fin d → ℂ), (∀ᶠ y' in 𝓝 y, (G y').PosDef) → (∀ p q, ContDiffAt ℝ 2 (fun y' => G y' p q) y) → ContDiffAt ℝ 2 α y → (∑ i ∈ Finset.range k, ∫ p : ℂ × ℂ, logSin (G y) p.1 p.2 * maDens (let u : ℕ → Fin 2 → ℝ := (fun (i : ℕ) (r : ℕ) (c : Fin 2) => if r = 0 then (![1, -1] : Fin 2 → ℝ) c else if r = 1 then (![0, 1] : Fin 2 → ℝ) c else if r < 2 + 2 * i then (![1, 0] : Fin 2 → ℝ) c else (![0, 1] : Fin 2 → ℝ) c) i; (fun (r : Fin (d + 2)) (z : Fin (d + 2) → ℂ) => if (r : ℕ) < 2 * k then u r 0 * xiPot (G (Fin.tail (Fin.tail z))) (z 0) + u r 1 * xiPot (G (Fin.tail (Fin.tail z))) (z 1) else α (Fin.tail (Fin.tail z)))) (Fin.cons p.1 (Fin.cons p.2 y))) = 2 * ReciprocityTheory.ChartRestriction.G.AI.kappa k * ∫ a : ℂ, maDens (fun (r : Fin (d + 1)) (z : Fin (d + 1) → ℂ) => if (r : ℕ) < 2 * k - 1 then xiPot (G (Fin.tail z)) (z 0) else α (Fin.tail z)) (Fin.cons a y) := by

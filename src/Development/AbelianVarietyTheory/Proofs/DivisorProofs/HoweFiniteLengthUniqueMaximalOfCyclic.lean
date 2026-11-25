@@ -405,7 +405,6 @@ theorem diag_eig_le_of_cas_min : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (
       rw [Finset.card_univ] at this
       exact_mod_cast this
     have hαre : α.re ≤ ‖α‖ := Complex.re_le_norm α
-    have hr'0 : (0:ℝ) ≤ ((Finset.univ.filter fun a => s a = false).card : ℝ) := Nat.cast_nonneg _
     refine le_max_of_le_right ?_
     rw [le_div_iff₀ (by norm_num : (0:ℝ) < 4)]
     linarith

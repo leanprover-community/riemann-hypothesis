@@ -95,8 +95,8 @@ theorem inFrame_mul_k (d : SD_k σ) (x y : d.G) : inFrame d.b (x * y) = inFrame 
   d.inFrame_mul x y
 theorem matrixRep_eq_frameConj_inFrame (d : SD_k σ) (x : d.G) :
     mat2 x = incM F d.b.1 * inFrame d.b x * incM F (d.b⁻¹).1 := by
-  simp only [inFrame, ← Matrix.mul_assoc, incM_mul_inv_k d, Matrix.one_mul]
-  rw [Matrix.mul_assoc, incM_mul_inv_k d, Matrix.mul_one]
+  exact PositivityTheory.SiegelWeilFormula.KSing.UnitaryGroupBasics.matrixRep_eq_frameConj_inFrame d
+    x
 theorem inFrame_injective_k (d : SD_k σ) : Function.Injective (inFrame (σ := σ) (Y := d.Y) d.b) :=
   fun _ _ h => d.inFrame_inj h
 theorem om_mem_sch_k (d : SD_k σ) (g : d.G) {Φ : d.Fn} (h : Φ ∈ d.sch) : d.om g Φ ∈ d.sch := d.om_sch g Φ h

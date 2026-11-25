@@ -5,7 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LocalSituation.exists_smul_mem :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {r : ℕ}
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
       (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (w : Fin r → E),
       ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ c • w ∈ X.Λ := by
   intro E _ _ _ r X w

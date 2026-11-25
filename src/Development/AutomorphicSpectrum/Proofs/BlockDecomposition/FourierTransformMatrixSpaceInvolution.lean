@@ -17,9 +17,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Kloc.Fresnel
 
-theorem hasTemperateGrowth_expI : Function.HasTemperateGrowth (fun t : ℝ => cexp (I * t)) := by
-  apply GlobalTheory.ThK.Dbl.Dense.temperate_exp
-
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
@@ -30,7 +27,7 @@ def chirp (k : ℝ) (u : V) : ℂ := cexp (2 * Real.pi * I * (k : ℂ) * ((‖u�
 
 theorem hasTemperateGrowth_chirp (k : ℝ) : Function.HasTemperateGrowth (chirp k : V → ℂ) := by
   have h1 : Function.HasTemperateGrowth (fun u : V => 2 * Real.pi * k * ‖u‖ ^ 2) := by fun_prop
-  have h2 := hasTemperateGrowth_expI.comp h1
+  have h2 := GlobalTheory.CompanionTheory.OM.SchDiff.temperate_exp.comp h1
   convert h2 using 1
   funext u
   simp only [chirp, Function.comp_apply]

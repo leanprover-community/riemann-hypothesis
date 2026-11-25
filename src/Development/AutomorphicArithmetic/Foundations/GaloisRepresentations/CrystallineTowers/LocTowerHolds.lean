@@ -221,7 +221,6 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
     (A : ↥(GK K) → Matrix (Fin d) (Fin d) ↥L.1) (h₀ : ∀ g x, ρ₀ g x = (A g).mulVec x)
     (h₁ : ∀ g x i, ρ g x i = ∑ j, (if c i = c j then A g i j else 0) * x j)
     (hb : ∀ g, (A g).BlockTriangular c) (hc : IsCrys (P.PD K) ρ₀) : IsCrys (P.PD K) ρ := by
-  set_option synthInstance.maxHeartbeats 200000 in
     have hW : ∀ (v : ℕ) g, lowSub c v ≤ (lowSub (F := ↥L.1) c v).comap (ρ₀ g) := by
       intro v g x hx i hi
       show (ρ₀ g x) i = 0

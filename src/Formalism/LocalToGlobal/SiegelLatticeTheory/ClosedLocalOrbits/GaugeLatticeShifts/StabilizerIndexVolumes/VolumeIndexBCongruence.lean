@@ -700,7 +700,7 @@ theorem volume_index_b_congruence (D : D7) (u u' : D.what₂.Word)
     gram_gg_unit F0 F'.fl (star_natCast _) (star_natCast _) hZu hG
 
   obtain ⟨mc, hmc0, hmc⟩ := lat_fun_bdd t.lam hlat.toIsLattice (coordL (gg F0 F'.fl))
-  have hmgm : ∀ m, ∃ k : ℕ, k ≠ 0 ∧ (k : D.host.E) • gg F0 F'.fl m ∈ t.lam := fun m => lat_smul_mem t.lam hlat _
+  have hmgm : ∀ m, ∃ k : ℕ, k ≠ 0 ∧ (k : D.host.E) • gg F0 F'.fl m ∈ t.lam := fun m => Bl.general_b_fact_third_version.goal1 t.lam hlat _
   choose mm hmm0 hmmL using hmgm
   set mg : ℕ := ∏ m, mm m with hmg
   have hmg0 : mg ≠ 0 := Finset.prod_ne_zero_iff.mpr fun m _ => hmm0 m

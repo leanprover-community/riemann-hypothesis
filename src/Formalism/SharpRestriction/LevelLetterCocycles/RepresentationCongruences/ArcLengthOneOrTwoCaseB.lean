@@ -110,8 +110,7 @@ theorem liftΔ [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : Form
     refine ⟨?_, fun δ' hδ' => ?_⟩
     · rw [hn₁, ← algebraMap_smul (LetA O n)]
       exact (W.N T₁).smul_mem _ ((W.N T₁).sum_mem fun δ _ => W.N_Γ T₁ δ x₁ hx₁N)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hn₁, map_smul, map_sum]
+    · rw [hn₁, map_smul, map_sum]
       congr 1
       refine Finset.sum_nbij' (δ' * ·) (δ'⁻¹ * ·) (fun g hg => TypesA.delF_mul W hδ' hg)
         (fun g hg => TypesA.delF_mul W (TypesA.delF_inv W hδ') hg) (fun g _ => by simp)
@@ -180,7 +179,6 @@ theorem coeff_p1_pow_top_isUnit {O : Type*} [CommRing O] [IsDomain O] [IsDiscret
   rw [add_sub_cancel_right] at this
   exact (IsLocalRing.mem_maximalIdeal _).1 this hu
 
-
 open Formalism.MainNotions.UnusedSlot80.SatW in
 theorem isUnit_ps [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W)
     (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (s : ℕ) :
@@ -211,13 +209,6 @@ theorem phi_sq_pi0_pow_eq_pi0_lambda_sq (W : LocWach PD LL O v n) (hR : GS.RD W)
   rw [← key]
   exact W.AΔ.pow_mem (GS.φpow_mem (W := W) 2 (TypesA.pi0_mem_ADelta W)) _
 
-theorem dv_eq_sum_single (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
-    (c₀ : Fin d → LL) : dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
-  unfold dv
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp), Pi.single_eq_same,
-    one_smul]
-
 theorem filS_anti (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (a : ZMod n) (s : ℕ) {u u' : ℤ}
     (h : u ≤ u') : FilS W T a s u' ≤ FilS W T a s u :=
   Submodule.map_mono (inf_le_inf_right _ (Formalism.MainNotions.UnusedSlot80.LevR.filCris_anti T.ρ h))
@@ -244,7 +235,7 @@ theorem crisMap_dvO (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F 
     Formalism.MainNotions.TruncatedSeriesCountingBounds.crisMap B F.f (dvO W T₁ e b₁ c₁) = algebraMap O LL P • dv W T₂ e b (Pi.single k₀ 1) := by
   unfold dvO
 
-  rw [dv_eq_sum_single, map_sum]
+  rw [Formalism.MainNotions.N.FrobeniusPowerSeries.TC.dv_eq_sum, map_sum]
   simp only [map_smul, hμ]
   unfold dvO
   rw [← dv_sum W T₂ e b Finset.univ (fun m => algebraMap O LL (c₁ m)) (fun m k => algebraMap O LL (μ m k)),
@@ -440,7 +431,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hdvO0 : ∀ c' : Fin d₁ → O, dvO W T₁ L b₁ c' = 0 → c' = 0 := by
     intro c' h
     have h2 : ∑ m, algebraMap O LL (c' m) • dv W T₁ L b₁ (Pi.single m 1) = 0 := by
-      rw [← ArcLengthTwoLifting.dv_eq_sum_single]; exact h
+      rw [← Formalism.MainNotions.N.FrobeniusPowerSeries.TC.dv_eq_sum]; exact h
     have := Fintype.linearIndependent_iff.1 hlin₁.1 _ h2
     funext m; exact hinj (by rw [this m]; simp)
   have hL0 : 0 < L := by rw [hlen]; norm_num

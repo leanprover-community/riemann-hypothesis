@@ -111,11 +111,7 @@ theorem isAlgebraic_map_adjoin {R A B : Type*} [CommRing R] [CommRing A] [CommRi
     rw [← AlgHom.map_adjoin]
     exact Subalgebra.mem_map.2 ⟨y, y.2, rfl⟩
   let f : Algebra.adjoin R s →+* Algebra.adjoin R (φ '' s) :=
-    { toFun := fun y => ⟨φ y, hmem y⟩
-      map_one' := by ext; simp
-      map_mul' := by intros; ext; simp
-      map_zero' := by ext; simp
-      map_add' := by intros; ext; simp }
+    ((φ.comp (Algebra.adjoin R s).val).codRestrict _ hmem).toRingHom
   have hf : Function.Injective f := fun y z hyz => Subtype.ext (hφ (congrArg Subtype.val hyz))
   exact h.ringHom_of_comp_eq (f := f) (g := φ.toRingHom) hf (RingHom.ext fun y => rfl)
 

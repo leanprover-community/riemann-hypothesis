@@ -60,19 +60,6 @@ theorem skMat_up_om (x : UCo N) (l : {ab : Fin N × Fin N // ab.2 < ab.1}) :
   show skMat x b a = -star (x.2 ⟨(a, b), h⟩)
   simp only [skMat, ite_eq_right (ne_of_lt h), dite_eq_right (not_lt.2 h.le), dite_eq_left h]
 
-theorem skMat_conjTranspose_om (x : UCo N) : (skMat x)ᴴ = -skMat x := by
-  ext a b
-  rw [Matrix.conjTranspose_apply, Matrix.neg_apply]
-  rcases lt_trichotomy a b with h | rfl | h
-  · have h1 : skMat x b a = x.2 ⟨(b, a), h⟩ := skMat_low_om x ⟨(b, a), h⟩
-    have h2 : skMat x a b = -star (x.2 ⟨(b, a), h⟩) := skMat_up_om x ⟨(b, a), h⟩
-    rw [h1, h2, neg_neg]
-  · rw [skMat_diag_om]
-    simp [Complex.conj_ofReal]
-  · have h1 : skMat x a b = x.2 ⟨(a, b), h⟩ := skMat_low_om x ⟨(a, b), h⟩
-    have h2 : skMat x b a = -star (x.2 ⟨(a, b), h⟩) := skMat_up_om x ⟨(a, b), h⟩
-    rw [h1, h2, star_neg, star_star]
-
 theorem skMat_add_om (x y : UCo N) : skMat (x + y) = skMat x + skMat y := by
   ext a b
   simp only [skMat, Matrix.add_apply]
@@ -313,7 +300,7 @@ theorem uToLieMat_apply (x : UCo N) (i j : Fin N ⊕ Fin 0) :
 theorem uToLieMat_mem (x : UCo N) : uToLieMat x ∈ Formalism.BasicNotions.lieU N 0 := by
   rw [mem_lieU_zero_iff_om]
   ext i j
-  have h := congrFun (congrFun (skMat_conjTranspose_om x) (Equiv.sumEmpty (Fin N) (Fin 0) i))
+  have h := congrFun (congrFun (ReciprocityTheory.ChartRestriction.DS.volU_skMat_conjTranspose x) (Equiv.sumEmpty (Fin N) (Fin 0) i))
     (Equiv.sumEmpty (Fin N) (Fin 0) j)
   simp only [Matrix.conjTranspose_apply, Matrix.neg_apply] at h ⊢
   rw [uToLieMat_apply, uToLieMat_apply]

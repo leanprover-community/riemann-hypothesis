@@ -275,11 +275,7 @@ theorem gapOver_flip {S : SPar} {g : ℚ} (H : GapOver S g) : GapOver (flip S) g
   exact H (x.1, !x.2) (mem_flip.1 hx) (y.1, !y.2) (mem_flip.1 hy) fun e => hs (Bool.not_inj e)
 
 theorem GapOver.isRegular {S : SPar} {g : ℚ} (hg : 0 ≤ g) (H : GapOver S g) : IsRegular S := by
-  intro x hx y hy e
-  by_contra hne
-  have := H x hx y hy hne
-  rw [e, sub_self, abs_zero] at this
-  linarith
+  exact GlobalTheory.RemoveBlock.isRegular_of_gapOver hg H
 
 theorem flip_dualPar (S : SPar) : flip (dualPar S) = dualPar (flip S) := by
   simp only [GlobalTheory.SignedHC.flip, dualPar, Finset.image_image]

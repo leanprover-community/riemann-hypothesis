@@ -651,9 +651,6 @@ theorem sum_abs_wt_le_point {PP C A M : ℝ} (hS : SizeAt p i PP C) (hH : HostNu
 
 end GlobalTheory.CovTop.WtRun
 
-namespace GlobalTheory.CovTop.WtRun
-
-end GlobalTheory.CovTop.WtRun
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightParamCoeffSumLeAtIndex =====
@@ -676,27 +673,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 open scoped GlobalTheory.CompHt
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-variable (P : WtPar Dw)
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-end GlobalTheory.CovTop.WtRun
-namespace GlobalTheory.CovTop.WtRun
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.WtRun
 namespace GlobalTheory.CovTop.WtRun
 theorem wt_size_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ j ≤ lenT p i PP, ∑ τ, ∑ k, |((⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).wt j τ k : ℝ)| ≤ zBase (Fm.L x ι) ^ 2 * kap p i := by
   intro hS
@@ -1130,10 +1106,6 @@ theorem at_pt (PP A A' : ℝ) (hi : (i : ℕ) + 1 < D.R.m) (hS : SizeAt p i PP A
 
 end GlobalTheory.CovTop.WtSz
 
-namespace GlobalTheory.CovTop.WtSz
-
-
-end GlobalTheory.CovTop.WtSz
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1158,17 +1130,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 open scoped GlobalTheory.CompHt
 noncomputable section
-namespace GlobalTheory.CovTop.WtSz
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-end GlobalTheory.CovTop.WtSz
-namespace GlobalTheory.CovTop.WtSz
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz
 
 theorem wts_le_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ la ∈ ({(⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).u₁, (⟨uW p i, cZero (Fm.D x ι) ((i : ℕ) + 1), (Fm.D x ι).R.k - 2, lenT p i PP⟩ : WtPar (dat p i)).u₂} : Set (AllWt.Weight (dat p i))), ∑ τ, ∑ k, |(la τ k : ℝ)| ≤ zBase (Fm.L x ι) ^ 2 * (kap p i / lenT p i PP + 1) := by

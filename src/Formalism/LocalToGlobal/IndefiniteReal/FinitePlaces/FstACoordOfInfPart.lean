@@ -17,8 +17,6 @@ open Filter Topology Classical
 open scoped TensorProduct
 open Formalism.IndefR.Datum
 
-set_option synthInstance.maxHeartbeats 160000
-
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
 section Adeles

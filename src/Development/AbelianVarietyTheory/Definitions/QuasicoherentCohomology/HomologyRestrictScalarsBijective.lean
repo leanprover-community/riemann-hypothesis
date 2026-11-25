@@ -171,7 +171,7 @@ variable {f : R →+* S} {A A' : Cube.{v} ι R} {B B' : Cube.{v'} ι S} (ψ : Cu
 omit [LinearOrder ι] in
 def term (p : ℕ) : Cube.Term A p →ₛₗ[f] Cube.Term B p where
   toFun x s := ψ.app s.1 (x s)
-  map_add' x y := funext fun s => map_add _ _ _
+  map_add' _ _ := funext fun _ => map_add _ _ _
   map_smul' r x := funext fun s => map_smulₛₗ (ψ.app s.1) r (x s)
 
 

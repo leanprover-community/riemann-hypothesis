@@ -116,11 +116,6 @@ theorem form_self_re_nonneg {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     rw [Matrix.det_unique] at hp
     simpa using (Complex.pos_iff.1 hp).1.le
 
-theorem finrank_eq_two_mul_nPl' {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] :
-    Module.finrank ℚ K = 2 * Formalism.HN.nPl K := by
-  rw [IsTotallyComplex.finrank, Formalism.HN.nPl, InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
-    IsTotallyComplex.nrRealPlaces_eq_zero, zero_add]
-
 end GlobalTheory.FrameDeg
 
 namespace GlobalTheory.FrameDeg
@@ -177,7 +172,7 @@ theorem deg_eq_neg_log_ht : ∀ (K V : Type) [Field K] [NumberField K] [AddCommG
       ((Submodule.span (𝓞 K) (Set.range e)).toAddSubgroup.relIndex L.toAddSubgroup : ℝ) := by
     rw [eq_div_iff hidx'.ne', hidx, hS]
     exact Finset.prod_congr rfl fun w _ => by rw [hgram]
-  rw [hdeg, degreeOfFamily, hsum, finrank_eq_two_mul_nPl', hht, Real.log_div hprod.ne' hidx'.ne',
+  rw [hdeg, degreeOfFamily, hsum, Formalism.HN.sizeMu_finrank_eq, hht, Real.log_div hprod.ne' hidx'.ne',
     Real.log_prod (fun w _ => (hpos _).ne')]
   push_cast
   ring
@@ -229,11 +224,11 @@ theorem rkK_mul_muDef [StarRing K] {V ι : Type} [AddCommGroup V] [Module K V] [
   have hrk' : (Formalism.F.rk (Formalism.HN.zl (Formalism.HermitianLatticesTheory.realize b X) L) : ℝ) =
       2 * (Formalism.HN.nPl K : ℝ) * Formalism.HN.rkK L := by
     have : Formalism.F.rk (Formalism.HN.zl (Formalism.HermitianLatticesTheory.realize b X) L) = Module.finrank ℚ K * Formalism.HN.rkK L := hrk
-    rw [this, _root_.GlobalTheory.FrameDeg.finrank_eq_two_mul_nPl']; push_cast; ring
+    rw [this, _root_.Formalism.HN.sizeMu_finrank_eq]; push_cast; ring
   have hmu : Formalism.HN.muDef b X L = 2 * (-Real.log (Formalism.F.covol (Formalism.HN.zl (Formalism.HermitianLatticesTheory.realize b X) L)) /
       (2 * (Formalism.HN.nPl K : ℝ) * Formalism.HN.rkK L)) - Real.log 2 +
       Real.log |(NumberField.discr K : ℝ)| / (2 * (Formalism.HN.nPl K : ℝ)) := by
-    rw [Formalism.HN.muDef, Formalism.HN.slope, Formalism.F.slope, Formalism.F.deg, hrk', Formalism.HN.logDisc, _root_.GlobalTheory.FrameDeg.finrank_eq_two_mul_nPl']
+    rw [Formalism.HN.muDef, Formalism.HN.slope, Formalism.F.slope, Formalism.F.deg, hrk', Formalism.HN.logDisc, _root_.Formalism.HN.sizeMu_finrank_eq]
     push_cast; ring
   rw [hmu, hlog]
   field_simp

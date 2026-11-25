@@ -314,8 +314,3 @@ end GlobalTheory.Up.BallExPf
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up
 open scoped Matrix
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-namespace GlobalTheory.Up
-open BallExPf
-
-end GlobalTheory.Up

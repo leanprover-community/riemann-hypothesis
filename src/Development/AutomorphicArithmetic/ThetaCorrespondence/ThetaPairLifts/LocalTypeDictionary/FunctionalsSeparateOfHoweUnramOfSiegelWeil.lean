@@ -333,7 +333,6 @@ namespace WeakSepPf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil)
 
-
 variable (G) in
 theorem nonempty_coreVol : Nonempty (CoreVol G) := ⟨fun i => (GlobalTheory.Unf.Inhab.nonempty_vol (G.V (.core i))).some⟩
 
@@ -431,7 +430,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.Grow
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.SepRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -557,7 +555,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.Grow
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.SepRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -624,37 +621,19 @@ namespace GlobalTheory.RowArrow
 
 variable {D : D7}
 
-theorem unit_of_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    IsUnit b.det := by
-  have hJ : IsUnit (Formalism.REAL.Jm ε).det := by
-    unfold Formalism.REAL.Jm
-    rw [det_diagonal, isUnit_iff_ne_zero]
-    exact Finset.prod_ne_zero_iff.2 fun a _ => by split_ifs <;> norm_num
-  rw [← h, det_mul] at hJ
-  exact isUnit_of_mul_isUnit_right hJ
-
-theorem inv_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    (b⁻¹)ᴴ * Formalism.REAL.Jm ε * b⁻¹ = G := by
-  have hb := unit_of_gram h
-  have h1 : (bᴴ)⁻¹ * bᴴ = 1 := nonsing_inv_mul _ (by rw [det_conjTranspose]; exact hb.star)
-  have h2 : b * b⁻¹ = 1 := mul_nonsing_inv _ hb
-  rw [← h, conjTranspose_nonsing_inv]
-  calc (bᴴ)⁻¹ * (bᴴ * G * b) * b⁻¹ = ((bᴴ)⁻¹ * bᴴ) * G * (b * b⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = G := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
-
 theorem exists_frame (V : HSp D) (c b : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
     (h : ∀ τ, ∃ ε : Fin V.rank → Bool, (b τ)ᴴ * gramAt D V τ * b τ = Formalism.REAL.Jm ε ∧ c τ * b τ = b τ * Formalism.REAL.Jm ε) :
     ∃ A : Fr V, A.cart = c ∧ A.onb = b := by
   choose ε hε using h
-  refine ⟨⟨ε, fun τ => (b τ)⁻¹, fun τ => isUnit_nonsing_inv_iff.2 ((isUnit_iff_isUnit_det _).2 (unit_of_gram (hε τ).1)),
-    fun τ => inv_gram (hε τ).1⟩, ?_, ?_⟩
+  refine ⟨⟨ε, fun τ => (b τ)⁻¹, fun τ => isUnit_nonsing_inv_iff.2 ((isUnit_iff_isUnit_det _).2 (GlobalTheory.ConjFock.unit_of_gram (hε τ).1)),
+    fun τ => GlobalTheory.ConjFock.inv_gram (hε τ).1⟩, ?_, ?_⟩
   · funext τ
     simp only [Fr.cart]
-    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1), ← (hε τ).2, Matrix.mul_assoc,
-      mul_nonsing_inv _ (unit_of_gram (hε τ).1), Matrix.mul_one]
+    rw [nonsing_inv_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1), ← (hε τ).2, Matrix.mul_assoc,
+      mul_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1), Matrix.mul_one]
   · funext τ
     simp only [Fr.onb]
-    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1)]
+    rw [nonsing_inv_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1)]
 
 theorem lifts_neg {X : ProvA} (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (h4 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFourth X) (h5 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFifth X)
     (hP : PairLifts D X) (hE : PairEx) {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
@@ -709,7 +688,6 @@ theorem exp_att {χ η : (AE D)ˣ →* Circle} {τ : D.what₂.Tau} {c : ℚ} (h
 
 end GlobalTheory.RowArrow
 
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -725,9 +703,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.Grow
 open GlobalTheory.SepRows GlobalTheory.PairLift GlobalTheory.ChainFr GlobalTheory.Chain
-namespace GlobalTheory.RowArrow
-variable {D : D7}
-end GlobalTheory.RowArrow
 open GlobalTheory.RowArrow in
 theorem GlobalTheory.RowArrow.separatingFamily_extends_by_twisted_row : _root_.GlobalTheory.FunPr.ThetaLocalInputs → PairEx → RowModels → RowStep := by
   intro pr hE _ D _ hS T L μ0 hL sc hc G W M hM i hi S S' MA MB e e' cA cB
@@ -922,8 +897,6 @@ open GlobalTheory.DefiniteMult GlobalTheory.DefLift
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {θ : InfFam D} {c : CoefA V}
   {pr : c.W →ₗ[ℂ] SmT M →ₗ[ℂ] ℂ}
-
-
 
 theorem exists_form_triv (hθ : IsInfFam θ) (hp : AllPlus M) (hc : c.Is) (hpr : IsDualPair θ M c pr)
     (K : Subgroup (GA D V)) (J : Subgroup (Bridge.Gf V))

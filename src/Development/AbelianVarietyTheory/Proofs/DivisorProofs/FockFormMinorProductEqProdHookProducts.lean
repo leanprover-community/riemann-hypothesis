@@ -564,16 +564,12 @@ theorem fock_eq_sum (P Q : MvPolynomial σ ℂ) (s : Finset (σ →₀ ℕ)) (hs
   refine Finset.sum_subset hs fun m _ hm => ?_
   rw [MvPolynomial.notMem_support_iff.mp hm]; simp
 
-theorem fock_add_left (P P' Q : MvPolynomial σ ℂ) :
-    Formalism.E.fock (P + P') Q = Formalism.E.fock P Q + Formalism.E.fock P' Q := by
-  apply _root_.GlobalTheory.JointHarm.fock_add_left <;> assumption
-
 theorem fock_sum_left {ι : Type} (s : Finset ι) (P : ι → MvPolynomial σ ℂ) (Q : MvPolynomial σ ℂ) :
     Formalism.E.fock (∑ i ∈ s, P i) Q = ∑ i ∈ s, Formalism.E.fock (P i) Q := by
   classical
   induction s using Finset.induction_on with
   | empty => simp [Formalism.E.fock]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, fock_add_left, ih]
+  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, GlobalTheory.JointHarm.fock_add_left, ih]
 
 theorem fock_sum_right {ι : Type} (s : Finset ι) (P : MvPolynomial σ ℂ) (Q : ι → MvPolynomial σ ℂ) :
     Formalism.E.fock P (∑ i ∈ s, Q i) = ∑ i ∈ s, Formalism.E.fock P (Q i) := by
@@ -642,7 +638,7 @@ theorem fock_X_mul (v : σ) (P Q : MvPolynomial σ ℂ) :
     Formalism.E.fock (X v * P) Q = Formalism.E.fock P (pderiv v Q) := by
   classical
   induction P using MvPolynomial.induction_on' with
-  | add P₁ P₂ h₁ h₂ => simp only [mul_add, fock_add_left, h₁, h₂]
+  | add P₁ P₂ h₁ h₂ => simp only [mul_add, GlobalTheory.JointHarm.fock_add_left, h₁, h₂]
   | monomial a c =>
     rw [mul_comm, X, monomial_mul, mul_one,
       fock_eq_sum _ _ {a + Finsupp.single v 1} support_monomial_subset,

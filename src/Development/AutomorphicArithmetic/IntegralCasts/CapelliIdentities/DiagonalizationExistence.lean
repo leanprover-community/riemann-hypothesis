@@ -9,7 +9,7 @@ public import Mathlib.LinearAlgebra.Eigenspace.Basic
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DiagonalizationExistence.exists_diag :
-    ∀ {κ : Type} [inst : Field κ] {n : ℕ}
+    ∀ {κ : Type} [Field κ] {n : ℕ}
     (M : Matrix (Fin n) (Fin n) κ) (a : Fin n → κ),
     Function.Injective a →
       M.charpoly = ∏ i : Fin n, (Polynomial.X - (Polynomial.C : κ → Polynomial κ) (a i)) →

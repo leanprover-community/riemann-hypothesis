@@ -454,8 +454,7 @@ theorem heckeD_mem {ρ : Representation ℂ (GQ L n) W} {J : Subgroup (GAf L n)}
     rw [← map_smul, ← hf.2 ⟨κ, hκ⟩, rt_rt, rt_rt]
     simp
   refine ⟨⟨fun γ g => ?_, ?_⟩, key⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [heckeD_type hB hv h1 h2 hf, Finset.sum_apply, Finset.sum_apply, map_sum]
+  · rw [heckeD_type hB hv h1 h2 hf, Finset.sum_apply, Finset.sum_apply, map_sum]
     refine Finset.sum_congr rfl fun δ _ => ?_
     show f (γ * g * δ) = ρ γ (f (g * δ))
     rw [mul_assoc, hf.1.1]

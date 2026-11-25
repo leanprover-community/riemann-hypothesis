@@ -518,12 +518,6 @@ theorem oEv_basis2 (hfin : Module.finrank F E = 2) : ∃ β : Fin 2 → Fv F v �
   rw [hfin] at h
   exact h
 
-theorem sigR_smulF (c : Fv F v) (x : Fv F v ⊗[F] E) : sigR (Fv F v) σ (c • x) = c • sigR (Fv F v) σ x := by
-  induction x using TensorProduct.induction_on with
-  | zero => rw [smul_zero, map_zero, smul_zero]
-  | tmul a b => simp [sigR, TensorProduct.smul_tmul']
-  | add x y hx hy => rw [smul_add, map_add (f := _), map_add (f := _), hx, hy, smul_add]
-
 theorem hb_li {a : ℕ} (hinv : ∀ y, σ (σ y) = y) (β : Fin 2 → Fv F v ⊗[F] E) (hβ : LinearIndependent (Fv F v) β) :
     LinearIndependent (Fv F v) (hb σ v hinv β (a := a)) := by
   rw [Fintype.linearIndependent_iff]
@@ -584,7 +578,7 @@ theorem hb_mem {a : ℕ} (hcm : IsCMExt F E σ) (β : Fin 2 → Fv F v ⊗[F] E)
       simp [h, not_lt.2 h.le]
     · rw [sum_diag σ v hinv β _ i, hrT i]
       simp
-    · rw [sum_gt σ v hinv β _ h, ← hH i j, hd j i, Fin.sum_univ_two, map_add (f := _), sigR_smulF, sigR_smulF, add_comm]
+    · rw [sum_gt σ v hinv β _ h, ← hH i j, hd j i, Fin.sum_univ_two, map_add (f := _), LocMassOrdLat.sigR_smul, LocMassOrdLat.sigR_smul, add_comm]
       simp [h, not_lt.2 h.le]
   · rintro ⟨c, rfl⟩
     intro i j
@@ -596,7 +590,7 @@ theorem hb_mem {a : ℕ} (hcm : IsCMExt F E σ) (β : Fin 2 → Fv F v ⊗[F] E)
     · rw [sum_gt σ v hinv β _ h]
       have hm := b_sigR_mem v σ ((hβ ((c (j, i) : Fv F v) • β 0 + (c (i, j) : Fv F v) • β 1)).2
         ⟨![c (j, i), c (i, j)], by simp [Fin.sum_univ_two]⟩)
-      rwa [map_add, sigR_smulF, sigR_smulF, add_comm] at hm
+      rwa [map_add, LocMassOrdLat.sigR_smul, LocMassOrdLat.sigR_smul, add_comm] at hm
 
 theorem idxPiH_std (a : ℕ) (hS : StdHyp σ J ψ) : IdxPiH σ v a := by
   intro _ ϖ hϖ

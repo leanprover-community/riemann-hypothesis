@@ -30,20 +30,16 @@ theorem one_mem_Oh : (1 : Af F ⊗[F] E) ∈ Oh F E := by
 
 theorem oh_inter {e : E} (he : inclR (Af F) e ∈ Oh F E) : IsIntegral ℤ e := by
   let ψ : Af F ⊗[F] E →+* E ⊗[F] Af F := (Algebra.TensorProduct.comm F (Af F) E).toRingHom
-  have hψ : ∀ z ∈ Oh F E, ψ z ∈ Formalism.MainNotions.S.IntAf F E := by
-    intro z hz
-    induction hz using AddSubgroup.closure_induction with
-    | mem z hz =>
-      obtain ⟨a, ha, e', he', rfl⟩ := hz
+  have hψ : ∀ z ∈ Oh F E, ψ z ∈ Formalism.MainNotions.S.IntAf F E := fun _ hz =>
+    (AddSubgroup.closure_le (K := (Formalism.MainNotions.S.IntAf F E).toAddSubgroup.comap
+      ψ.toAddMonoidHom)).2 (by
+      rintro _ ⟨a, ha, e', he', rfl⟩
       have e1 : ψ (a ⊗ₜ[F] e') = (e' ⊗ₜ[F] (1 : Af F)) * ((1 : E) ⊗ₜ[F] a) := by
-        rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
-        rfl
+        rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]; rfl
+      show ψ (a ⊗ₜ[F] e') ∈ Formalism.MainNotions.S.IntAf F E
       rw [e1]
-      refine Subring.mul_mem _ (Subring.subset_closure (Or.inl ⟨⟨e', ⟨⟨e', he'⟩, rfl⟩⟩, rfl⟩))
-        (Subring.subset_closure (Or.inr ⟨⟨a, ha⟩, rfl⟩))
-    | zero => rw [map_zero]; exact Subring.zero_mem _
-    | add x y _ _ h1 h2 => rw [map_add (f := _)]; exact Subring.add_mem _ h1 h2
-    | neg x _ h1 => rw [map_neg]; exact Subring.neg_mem _ h1
+      exact Subring.mul_mem _ (Subring.subset_closure (Or.inl ⟨⟨e', ⟨⟨e', he'⟩, rfl⟩⟩, rfl⟩))
+        (Subring.subset_closure (Or.inr ⟨⟨a, ha⟩, rfl⟩))) hz
   have e2 : ψ (inclR (Af F) e) = Formalism.UG.inclE (F := F) (Af F) e := rfl
   have := PIW.AdelClassFin.dual_intersection F E e (e2 ▸ hψ _ he)
   obtain ⟨b, hb⟩ := this
@@ -96,16 +92,12 @@ theorem den_mat (g : Matrix (Fin M) (Fin M) (Af F ⊗[F] E)) :
 
 variable (σ : E →ₐ[F] E) (J : Matrix (Fin M) (Fin M) E)
 
-theorem sigR_Oh {z : Af F ⊗[F] E} (hz : z ∈ Oh F E) : sigR (Af F) σ z ∈ Oh F E := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨a, ha, e, he, rfl⟩ := hz
-    have e1 : sigR (Af F) σ (a ⊗ₜ[F] e) = a ⊗ₜ[F] σ e := by simp [sigR]
-    rw [e1]
-    exact tmul_mem_Oh ha (by simpa using int_sigma (σ : E →+* E) he)
-  | zero => rw [map_zero]; exact zero_mem _
-  | add x y _ _ h1 h2 => rw [map_add (f := _)]; exact add_mem h1 h2
-  | neg x _ h1 => rw [map_neg]; exact neg_mem h1
+theorem sigR_Oh {z : Af F ⊗[F] E} (hz : z ∈ Oh F E) : sigR (Af F) σ z ∈ Oh F E :=
+  (AddSubgroup.closure_le (K := (Oh F E).comap (sigR (Af F) σ).toAddMonoidHom)).2 (by
+    rintro _ ⟨a, ha, e, he, rfl⟩
+    change sigR (Af F) σ (a ⊗ₜ[F] e) ∈ Oh F E
+    rw [show sigR (Af F) σ (a ⊗ₜ[F] e) = a ⊗ₜ[F] σ e by simp [sigR]]
+    exact tmul_mem_Oh ha (by simpa using int_sigma (σ : E →+* E) he)) hz
 
 def hermA (X Y : Fin M → Af F ⊗[F] E) : Af F ⊗[F] E :=
   dotProduct (fun i => sigR (Af F) σ (X i)) ((JR (Af F) J).mulVec Y)

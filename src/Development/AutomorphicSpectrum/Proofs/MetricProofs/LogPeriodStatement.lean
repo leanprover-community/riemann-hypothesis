@@ -296,15 +296,6 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.PlVanish
 theorem cols_ne_empty {N j : ℕ} (hj : j ≤ N) (i : Fin N) : stepCols N j i ≠ ∅ := by
   apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty <;> assumption
 
-theorem minor_one_ne {N : ℕ} {I J : Finset (Fin N)} (h : I ≠ J) :
-    minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) I J = 0 := by
-  apply GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.minorIJ_one_ne <;> assumption
-
-theorem minor_one_same {N : ℕ} (I : Finset (Fin N)) :
-    minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) I I = 1 := by
-  unfold minorIJ
-  rw [dite_eq_left rfl, Matrix.submatrix_one _ (I.orderEmbOfFin rfl).injective, Matrix.det_one]
-
 theorem det_submatrix_eq_zero {N : ℕ} (C : Matrix (Fin N) (Fin N) ℂ) (S : Finset (Fin N))
     (f : Fin S.card → Fin N) (hf : Function.Injective f)
     (h0 : minorIJ C (Finset.univ.image f) S = 0) :
@@ -347,7 +338,7 @@ theorem quot_vanish : ∀ (N j : ℕ) (i : Fin N) (h₁ h₂ : Matrix (Fin N) (F
   let D : Matrix (Fin S.card) (Fin S.card) ℂ := C.submatrix e e
   have hD : D.det ≠ 0 := by
     have h1 := hq S
-    rw [minor_one_same, mul_one] at h1
+    rw [GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.minorIJ_one_same, mul_one] at h1
     have h2 : minorIJ C S S = D.det := dite_eq_left rfl
     rw [← h2]
     intro h0
@@ -375,7 +366,7 @@ theorem quot_vanish : ∀ (N j : ℕ) (i : Fin N) (h₁ h₂ : Matrix (Fin N) (F
       exact Finset.mem_image.2 ⟨u, Finset.mem_univ _, Function.update_self _ _ _⟩)
     have h0 : minorIJ C (Finset.univ.image f) S = 0 := by
       have h1 := hq (Finset.univ.image f)
-      rw [minor_one_ne hI, mul_zero] at h1
+      rw [GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.minorIJ_one_ne hI, mul_zero] at h1
       exact (mul_eq_zero.1 h1).resolve_left hβ
     have h2 := det_submatrix_eq_zero C S f hf h0
     have e2 : D.updateRow u v = C.submatrix f e := by
@@ -815,7 +806,7 @@ end Flags
 theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (d : ℕ) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → IsArithVar (mCoordIdeal y) (d + 2) → ∀ (F : FrameData ι Ψ N M.Ω M.blk) (z : (Σ o : Option K, ι (o.getD k₀)) → ℂ), M.IsFrame F → basePart M.blk (fstPt k₀ z) ∈ mcPts (mCoordIdeal M.x) → M.GoodAt F (mCoordIdeal (basePart M.blk (fstPt k₀ z))) → (∀ k, basePart M.blk (fstPt k₀ z) ⟨k, F.c k⟩ = 1) → (z ∈ mcPts (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ↔ ∃ (h : Ψ → Matrix (Fin N) (Fin N) ℂ) (t : ℂ), M.IsFlagOf F (fstPt k₀ z) h ∧ M.IsFlagOf F (sndPt k₀ z) (Function.update h τ (h τ * (1 + Matrix.single cb ca t)))) := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M d τ a b k₀ ca cb hb hab hk hca hcb hy F z hF hzb hG hc
   refine ⟨fun hz => ?_, fun ⟨h, t, H, H'⟩ => back M hb hab hk hca hcb hF hzb hG H H'⟩
-  have hI := (_root_.GlobalTheory.CompanionTheory.Relay.flag_adjacent_swap_varieties_arithmetic K ι Φ y Ψ N j M d τ a b k₀ ca cb hb hab hk hca hcb hy).2.2.2.2 (v₁ k₀)
+  have hI := (_root_.PositivityTheory.Xgp.t_c_w_arith K ι Φ y Ψ N j M d τ a b k₀ ca cb hb hab hk hca hcb hy).2.2.2.2 (v₁ k₀)
     (fun p hp => v₁_ne hp) (v₁_self k₀)
   have hsnd := basePart_snd M hk z
   have z₀ : fstPt k₀ z ∈ mcPts (mCoordIdeal y) :=

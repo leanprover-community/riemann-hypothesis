@@ -113,12 +113,6 @@ theorem isSmoothHerm_toGeo (A : Heights.HermLine n) : Geo.IsSmoothHerm A.toGeo :
 
 end HermLine
 
-namespace IntegralSection
-
-variable {P : ArithVariety n} {a : ι → ℤ}
-
-end IntegralSection
-
 theorem aeval_div_chart_mem {Ω : Type*} [Field Ω] (y : Coord n → Ω) (c : (k : ι) → Fin (n k + 1))
     (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (e : MvPolynomial (Coord n) ℤ) (δ : ι → ℕ)
     (he : IsWeightedHomogeneous (coordDeg n) e δ) :

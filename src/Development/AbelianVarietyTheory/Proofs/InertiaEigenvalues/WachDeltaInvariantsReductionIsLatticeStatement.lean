@@ -142,8 +142,7 @@ theorem exists_lat {l n : ℕ} {R : RingPG k l} {F : DFun R n G} {ι : k⸨X⸩ 
       · change (DΔ W T).subtype (∑ j, x j) ∈ W.N T
         rw [map_sum]
         exact sum_mem fun j _ => (W.N T).smul_mem _ (hbΔ j).1
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         exact Finset.sum_congr rfl fun j _ =>
           p.j_smul T A q hq i (fun _ => a j) (c j) (b' j) (x j) (hι j) rfl
     · rintro ⟨x, hx, rfl⟩
@@ -264,8 +263,7 @@ theorem red_lift {l : ℕ} [Fact l.Prime] [CharP k l] {R : RingPG k l} {ι : k�
       refine Finset.sum_congr rfl fun δ _ => ?_
       rw [map_mul]
       rfl
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hb, map_sum]
+    · rw [hb, map_sum]
       congr 1
       have h1 : ∀ δ ∈ W.DelF, PowerSeries.map (algebraMap O k) (W.γ₀ δ (d • b₀)) =
           ((W.DelF.card : ℕ) : k)⁻¹ • PowerSeries.map (algebraMap O k) b₀ := by

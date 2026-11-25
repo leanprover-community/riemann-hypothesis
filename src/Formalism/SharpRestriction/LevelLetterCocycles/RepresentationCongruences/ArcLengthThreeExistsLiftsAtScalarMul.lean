@@ -999,21 +999,7 @@ theorem gamma_q_expansion_of_points [IsDomain O] [IsDiscreteValuationRing O] [Ch
   have hpF : Fact PD.p.Prime := ⟨PD.hp⟩
   set χ : O := ((W.χΓ W.gam : Oˣ) : O) with hχdef
 
-  have hlm : ((PD.p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O := by
-    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-    rintro ⟨u, hu⟩
-    have h2 : algebraMap O LL ((u⁻¹ : Oˣ) : O) * ((PD.p : ℕ) : LL) = 1 := by
-      rw [← map_natCast (algebraMap O LL), ← hu, ← map_mul, Units.inv_mul, map_one]
-    have h3 := congrArg v h2
-    rw [AddValuation.map_mul, AddValuation.map_one, W.v_l] at h3
-    have h1 := hO ((u⁻¹ : Oˣ) : O)
-    generalize v (algebraMap O LL ((u⁻¹ : Oˣ) : O)) = t at h1 h3
-    induction t using WithTop.recTopCoe with
-    | top => simp at h3
-    | coe q =>
-      have e3 : q + 1 = 0 := by exact_mod_cast h3
-      have e1 : (0 : ℚ) ≤ q := by exact_mod_cast h1
-      linarith
+  have hlm : ((PD.p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O := ArcLengthOneTwo.l_mem_max W hO
 
   have hχ : χ - 1 ∈ Ideal.span {((PD.p : ℕ) : O)} := by
     have hg := W.gam_gen

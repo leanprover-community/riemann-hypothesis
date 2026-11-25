@@ -352,9 +352,6 @@ end Main
 
 end GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Pt
 
-namespace GlobalTheory.CompanionTheory.Ar.Rec.FinRd
-
-end GlobalTheory.CompanionTheory.Ar.Rec.FinRd
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

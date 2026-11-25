@@ -87,7 +87,3 @@ theorem dictExist : DictExist := by
     exact coch_succ a p s h U y
 
 end LateralTheory.KummerTheory.DE
-
-namespace LateralTheory.KummerTheory
-
-end LateralTheory.KummerTheory

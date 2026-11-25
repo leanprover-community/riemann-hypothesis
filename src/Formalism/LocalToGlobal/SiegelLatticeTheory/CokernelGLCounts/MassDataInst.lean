@@ -25,7 +25,7 @@ theorem finite_over (g : ℕ) (hg : g ≠ 0) : {v : HeightOneSpectrum (𝓞 F) |
   apply _root_.Formalism.L2.G.finite_placesOver <;> assumption
 
 theorem typed_finite (g1 g2 : ℕ) (h1 : g1 ≠ 0) (h2 : g2 ≠ 0) :
-    {v : HeightOneSpectrum (𝓞 F) | IsTyped F g1 g2 v}.Finite := ((finite_over F g1 h1).union (finite_over F g2 h2)).subset fun v hv => hv
+    {v : HeightOneSpectrum (𝓞 F) | IsTyped F g1 g2 v}.Finite := ((finite_over F g1 h1).union (finite_over F g2 h2)).subset fun _ hv => hv
 
 def typSet (g1 g2 : ℕ) : Finset (HeightOneSpectrum (𝓞 F)) :=
   if h : {v : HeightOneSpectrum (𝓞 F) | IsTyped F g1 g2 v}.Finite then h.toFinset else ∅

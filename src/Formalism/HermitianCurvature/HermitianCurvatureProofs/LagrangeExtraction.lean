@@ -54,7 +54,3 @@ theorem extractK : ExtractK := by
     simp [Fin.snocEquiv]
 
 end Formalism.FourierDecayAlt.P.LagrangeExtraction
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

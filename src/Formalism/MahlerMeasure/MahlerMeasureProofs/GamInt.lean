@@ -1164,19 +1164,6 @@ open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-section term3
-variable {N r : ℕ}
-
-end term3
-
-end Formalism.GM.gammaIntegralityLemmas
-
-namespace Formalism.GM.gammaIntegralityLemmas
-
-open MvPolynomial Finset Formalism.GM.M
-
-variable {p : ℕ} [hp : Fact p.Prime]
-
 section expand
 variable {σ : Type} [Fintype σ] [DecidableEq σ] {r : ℕ} (w e : Fin r → σ) (ρ : Fin r)
 
@@ -1260,13 +1247,3 @@ theorem tieGam_expand (LL : Letters (N + 1)) (ρ : Fin r) (z : ℕ)
 end final
 
 end Formalism.GM.gammaIntegralityLemmas
-
-namespace Formalism.GM.gammaIntegralityLemmas
-
-open MvPolynomial Finset Formalism.GM.M
-
-end Formalism.GM.gammaIntegralityLemmas
-
-namespace Formalism.GM
-
-end Formalism.GM

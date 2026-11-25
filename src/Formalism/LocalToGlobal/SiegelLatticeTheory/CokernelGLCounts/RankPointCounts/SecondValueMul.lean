@@ -101,31 +101,9 @@ theorem rhoA_apply (X : Matrix (Fin (Formalism.MainNotions.LocalModelPeriodLatti
 abbrev sbA : Fin (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1.sum → Fin (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1.sum → Bool :=
   fun x y => Loc.sameBlock a.blocks (x : ℕ) (y : ℕ)
 
-private theorem sameBlock_eq_true_iff_blk_eq {K : Type} [CommRing K] : ∀ (bs : List (Kˣ × ℕ+)) (x y : ℕ),
-    x < (List.map (fun b : Kˣ × ℕ+ => ((b.2 : ℕ+) : ℕ)) bs).sum →
-    y < (List.map (fun b : Kˣ × ℕ+ => ((b.2 : ℕ+) : ℕ)) bs).sum →
-    (Loc.sameBlock bs x y = true ↔
-      Formalism.DoubleCosetMeasures.blk (List.map (fun b : Kˣ × ℕ+ => ((b.2 : ℕ+) : ℕ)) bs) x =
-        Formalism.DoubleCosetMeasures.blk (List.map (fun b : Kˣ × ℕ+ => ((b.2 : ℕ+) : ℕ)) bs) y)
-  | [], x, y, hx, _ => by simp at hx
-  | (u, s) :: bs, x, y, hx, hy => by
-    simp only [List.map_cons, List.sum_cons] at hx hy
-    simp only [Loc.sameBlock, List.map_cons, Formalism.DoubleCosetMeasures.blk]
-    by_cases h1 : x < (s : ℕ) <;> by_cases h2 : y < (s : ℕ)
-    · simp [h1, h2]
-    · have h2' : (s : ℕ) ≤ y := by omega
-      simp [h1, h2, h2']
-      omega
-    · have h1' : (s : ℕ) ≤ x := by omega
-      simp [h1, h2, h1']
-    · have ih := sameBlock_eq_true_iff_blk_eq bs (x - s) (y - s) (by omega) (by omega)
-      have h1' : (s : ℕ) ≤ x := by omega
-      have h2' : (s : ℕ) ≤ y := by omega
-      simp [h1, h2, h1', h2', ih]
-
 theorem sbA_iff (x y : Fin (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1.sum) :
     sbA a x y = true ↔ Formalism.DoubleCosetMeasures.blk (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1 x = Formalism.DoubleCosetMeasures.blk (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1 y := by
-  exact sameBlock_eq_true_iff_blk_eq a.blocks x y x.2 y.2
+  exact Formalism.MainNotions.LocalOrbitGerms.Cls.sameBlock_iff a.blocks x y x.2 y.2
 
 theorem isCoordA : Grp.IsCoord (K := E) (PW (sbA a))
     (Formalism.DoubleCosetMeasures.lowW E (Formalism.MainNotions.LocalModelPeriodLattices.tr a).1 (Formalism.MainNotions.LocalModelPeriodLattices.tr a).2) :=

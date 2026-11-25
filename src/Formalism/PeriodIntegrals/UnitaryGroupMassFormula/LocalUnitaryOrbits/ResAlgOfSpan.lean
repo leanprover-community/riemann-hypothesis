@@ -47,11 +47,6 @@ theorem inclR_alg' (a : F) :
   rw [sc_eq', ← IsScalarTower.algebraMap_apply]
   exact (Algebra.TensorProduct.includeRight : E →ₐ[F] Fv F v ⊗[F] E).commutes a
 
-theorem sigR_sc (c : Fv F v) : sigR (Fv F v) σ (sc (E := E) v c) = sc (E := E) v c := by
-  show Algebra.TensorProduct.map (AlgHom.id F (Fv F v)) σ (c ⊗ₜ (1 : E)) = c ⊗ₜ (1 : E)
-  rw [Algebra.TensorProduct.map_tmul, map_one]
-  rfl
-
 def ThetaBas : Prop :=
   StdHyp σ J ψ → UnramAt (E := E) v → ∃ θ : 𝓞 E,
     (∀ x ∈ OEv (E := E) v, ∃ a0 a1 : v.adicCompletionIntegers F,

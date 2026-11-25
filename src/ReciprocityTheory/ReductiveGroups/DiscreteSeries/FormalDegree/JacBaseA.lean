@@ -1018,17 +1018,6 @@ theorem jac_pos' {ε : Fin n → Bool} (y : PCoord ε → ℂ) : 0 < Jac y := by
   unfold Jac
   exact Finset.prod_pos (fun a _ => Finset.prod_pos (fun b _ => _root_.ReciprocityTheory.ChartRestriction.DS.pb_shc_pos _))
 
-def pmatLin (ε : Fin n → Bool) : (PCoord ε → ℂ) →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ where
-  toFun := pmat
-  map_add' z w := by
-    ext a b
-    simp only [pmat, Matrix.add_apply]
-    split_ifs <;> simp
-  map_smul' c z := by
-    ext a b
-    simp only [pmat, Matrix.smul_apply, RingHom.id_apply]
-    split_ifs <;> simp
-
 def crdLin (ε : Fin n → Bool) : Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] (PCoord ε → ℂ) where
   toFun X := fun ab => X ab.1.1 ab.1.2
   map_add' _ _ := rfl
@@ -1107,7 +1096,7 @@ section Op
 open scoped Matrix.Norms.Operator
 
 def pmatC (ε : Fin n → Bool) : (PCoord ε → ℂ) →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
-  LinearMap.toContinuousLinearMap (pmatLin ε)
+  LinearMap.toContinuousLinearMap (ReciprocityTheory.ChartRestriction.DS.dpbE ε)
 
 def crdC (ε : Fin n → Bool) : Matrix (Fin n) (Fin n) ℂ →L[ℝ] (PCoord ε → ℂ) :=
   LinearMap.toContinuousLinearMap (crdLin ε)
@@ -1211,7 +1200,7 @@ theorem jacBase' {ε : Fin n → Bool} (y : PCoord ε → ℂ) :
     |LinearMap.det ((fderiv ℝ (actR (ε := ε) (NormedSpace.exp (pmat y))) 0 :
       (PCoord ε → ℂ) →L[ℝ] (PCoord ε → ℂ)) : (PCoord ε → ℂ) →ₗ[ℝ] (PCoord ε → ℂ))| * Jac y = 1 := by
   let S : (PCoord ε → ℂ) →L[ℝ] (PCoord ε → ℂ) :=
-    LinearMap.toContinuousLinearMap (crdLin ε ∘ₗ shcAdLin y ∘ₗ pmatLin ε)
+    LinearMap.toContinuousLinearMap (crdLin ε ∘ₗ shcAdLin y ∘ₗ ReciprocityTheory.ChartRestriction.DS.dpbE ε)
   have hS : fderiv ℝ (shcAdC y) 0 = S := S.fderiv
   have h1 := detP y
   rw [hS] at h1

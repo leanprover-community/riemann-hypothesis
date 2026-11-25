@@ -32,13 +32,13 @@ theorem vv0 {S : Type} [CommRing S] (a : Fin n → S) : vecMulVec a (0 : Fin d �
 
 def vL (n : ℕ) (b : Fin d → E) : (Fin n → E) →ₗ[E] Matrix (Fin n) (Fin d) E where
   toFun x := vecMulVec x b
-  map_add' x y := Matrix.add_vecMulVec _ _ _
-  map_smul' a x := Matrix.smul_vecMulVec _ _ _
+  map_add' _ _ := Matrix.add_vecMulVec _ _ _
+  map_smul' _ _ := Matrix.smul_vecMulVec _ _ _
 
 def vR (d : ℕ) (a : Fin n → E) : (Fin d → E) →ₗ[E] Matrix (Fin n) (Fin d) E where
   toFun y := vecMulVec a y
-  map_add' x y := Matrix.vecMulVec_add _ _ _
-  map_smul' c x := Matrix.vecMulVec_smul _ _ _
+  map_add' _ _ := Matrix.vecMulVec_add _ _ _
+  map_smul' _ _ := Matrix.vecMulVec_smul _ _ _
 
 @[simp] theorem vL_apply (b : Fin d → E) (x : Fin n → E) : vL n b x = vecMulVec x b := rfl
 @[simp] theorem vR_apply (a : Fin n → E) (y : Fin d → E) : vR d a y = vecMulVec a y := rfl

@@ -25,8 +25,8 @@ noncomputable def UpperTheory.Reformulated.B.AbsolutelyIrreducibleSpan.AbsIrr.{u
 
 noncomputable def UpperTheory.Reformulated.B.AbsolutelyIrreducibleSpan.StatOntoSpan :
     Prop :=
-    ∀ (O : Type) [inst : CommRing O] [inst_1 : IsLocalRing O] (n : Type) [inst_2 : Fintype n] [inst_3 : DecidableEq n]
-      (G : Type) [inst_4 : Monoid G] (ρ : G →* Matrix n n O),
+    ∀ (O : Type) [CommRing O] [IsLocalRing O] (n : Type) [Fintype n] [DecidableEq n]
+      (G : Type) [Monoid G] (ρ : G →* Matrix n n O),
       (UpperTheory.Reformulated.B.AbsolutelyIrreducibleSpan.AbsIrr fun (g : G) ↦
           ((ρ : G → Matrix n n O) g).map (⇑(IsLocalRing.residue O) : O → IsLocalRing.ResidueField O)) →
         Submodule.span O (Set.range (⇑ρ : G → Matrix n n O)) = ⊤

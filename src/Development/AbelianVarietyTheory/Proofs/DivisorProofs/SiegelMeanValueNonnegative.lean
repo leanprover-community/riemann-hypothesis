@@ -202,9 +202,6 @@ theorem conj_integral {A K : Type} [Ring A] [CommRing K] {n : ℕ} (R : Subring 
 
 end GlobalTheory.OrbFinAf.KottLat
 
-namespace GlobalTheory.OrbFinAf.KottLat
-
-end GlobalTheory.OrbFinAf.KottLat
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

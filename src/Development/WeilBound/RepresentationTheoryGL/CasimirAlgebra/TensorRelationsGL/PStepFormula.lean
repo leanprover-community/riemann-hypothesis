@@ -278,8 +278,7 @@ theorem one (hT : TensorGl) (hJ : JMComm) (hQ : PiQdet) (hC : Curry) (E : Fin n 
       congr 1
       refine Finset.sum_congr (Finset.filter_congr fun i _ => Iff.rfl) fun i _ => ?_
       rw [rot_nat, hsw]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hΨ, conj_xJ hT E hE, rot_last _ (by simp), map_add (f := _), hOl, sum_lt_cast _ (by simp), hQdef, map_sum, map_sum,
+    · rw [hΨ, conj_xJ hT E hE, rot_last _ (by simp), map_add (f := _), hOl, sum_lt_cast _ (by simp), hQdef, map_sum, map_sum,
           add_assoc]
       congr 2
       refine Finset.sum_congr (Finset.filter_true_of_mem fun i _ => by simp) fun i _ => ?_

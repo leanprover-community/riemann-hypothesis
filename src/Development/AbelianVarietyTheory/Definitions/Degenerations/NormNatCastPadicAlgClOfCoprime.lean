@@ -251,79 +251,7 @@ theorem exists_eq_div_bot (x : Ω) : ∃ a ∈ (⊥ : Subalgebra o Ω), ∃ b �
 variable {r N : ℕ} (hN : 2 ≤ N) (hr : 1 ≤ r) {ζ : o} (hζ : IsPrimitiveRoot ζ ((r * N) ^ 2))
   (hu : IsUnit ((r * N : ℕ) : o))
 
-def pointSys : ThetaSys o Ω where
-  g := 0
-  N := N
-  r := r
-  N_ge := hN
-  r_pos := hr
-  ζ := ζ
-  prim := hζ
-  unit := hu
-  J := Unit
-  ρ _ := 1
-  ρ_one _ _ := by convert rfl
-  ρ_mul _ _ := ⟨0, by simp⟩
-  ρ_add _ _ _ := by simp
-  th _ := 1
-  ev _ _ := 1
-  R := ⊥
-  fg := Subalgebra.fg_bot
-  frac := exists_eq_div_bot o Ω
-  th_mem _ := one_mem _
-  ev_mem _ _ := one_mem _
-  supp := by simp
-  th_ne := ⟨0, one_ne_zero⟩
-
 variable (hodd : Odd N) (ϖ : o) (hϖ : ϖ ≠ 0)
-
-def heisSys : ThetaSys o Ω :=
-  haveI : NeZero N := ⟨by omega⟩
-  haveI : NeZero (r * N) := ⟨Nat.mul_ne_zero (by omega) (by omega)⟩
-  have h1 : (ζ ^ (r ^ 2 * N)) ^ N = 1 := by
-    rw [← pow_mul, ← hζ.pow_eq_one]
-    congr 1
-    ring
-  have hh : 2 * ((N / 2 + 1 : ℕ) : ZMod N) = 1 := by
-    have : ((2 * (N / 2 + 1) : ℕ) : ZMod N) = ((N + 1 : ℕ) : ZMod N) := by
-      congr 1
-      have := Nat.odd_iff.1 hodd
-      omega
-    simpa using this
-  { g := 1
-    N := N
-    r := r
-    N_ge := hN
-    r_pos := hr
-    ζ := ζ
-    prim := hζ
-    unit := hu
-    J := ZMod N
-    ρ := fun a => heisMat (AddChar.zmodChar N h1) (N / 2 + 1 : ℕ)
-      (ZMod.castHom (dvd_mul_left N r) (ZMod N) (a (.inl 0))) (ZMod.castHom (dvd_mul_left N r) (ZMod N) (a (.inr 0)))
-    ρ_one := fun a ha => by
-      rw [(nsmul_eq_zero_iff_castHom _).1 (congrFun ha (.inl 0)), (nsmul_eq_zero_iff_castHom _).1 (congrFun ha (.inr 0))]
-      ext i j
-      simp [heisMat_zero_apply, Matrix.one_apply, eq_comm]
-    ρ_mul := fun a b => by
-      rw [heisMat_mul _ hh, AddChar.zmodChar_apply, ← pow_mul, Pi.add_apply, Pi.add_apply, map_add (f := _), map_add (f := _)]
-      exact ⟨_, rfl⟩
-    ρ_add := fun a b h => by
-      have h2 := (nsmul_eq_zero_iff_castHom _).1 h
-      rw [eStd, Fin.sum_univ_one, map_sub, map_mul, map_mul] at h2
-      rw [heisMat_mul _ hh, h2, mul_zero, AddChar.map_zero_eq_one, one_smul, Pi.add_apply, Pi.add_apply, map_add (f := _),
-        map_add]
-    th := fun x => algebraMap o Ω (ϖ ^ (x (.inl 0)).valMinAbs.natAbs ^ 2)
-    ev := fun _ j => algebraMap o Ω (ϖ ^ (r ^ 2 * N * j.valMinAbs.natAbs ^ 2))
-    R := ⊥
-    fg := Subalgebra.fg_bot
-    frac := exists_eq_div_bot o Ω
-    th_mem := fun _ => ⟨_, rfl⟩
-    ev_mem := fun _ _ => ⟨_, rfl⟩
-    supp := by
-      have h : algebraMap o Ω ϖ ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective o Ω)).2 hϖ
-      simp [h]
-    th_ne := ⟨0, by simp⟩ }
 
 end Inhabitants
 

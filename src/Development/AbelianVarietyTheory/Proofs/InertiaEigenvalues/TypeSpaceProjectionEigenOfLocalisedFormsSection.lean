@@ -33,7 +33,6 @@ theorem main : ∀ D : D7, (∀ i, Nonempty (Sec D i)) → PrType D := by
     rw [Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.EigSpan_holds D.nd i]; exact Submodule.mem_top
   obtain ⟨f, hf, hsum⟩ := (Submodule.mem_iSup_iff_exists_finsupp _ v).1 hvtop
   have hΦv : s.Φ v = ∑ y ∈ f.support, s.Φ (f y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← hsum, Finsupp.sum, map_sum]
   have hn := s.split x
   have hind := typeSum_indep D i

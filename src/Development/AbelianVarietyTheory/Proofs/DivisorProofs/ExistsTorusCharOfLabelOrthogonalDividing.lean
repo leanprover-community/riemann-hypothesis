@@ -183,7 +183,6 @@ theorem exists_torus_char : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z₁
   intro I X₁ z₁ act V _ _ _ ev X _ t δ 𝔪 τ hτ
   haveI : CharZero V := 𝔪.cn.2.2.2
   have hL : GlobalTheory.UT.LL := GlobalTheory.firstFiveLaws
-  have hB := 𝔪.D.tau_bimult
   have hkpos : 0 < X₁.S.r * X₁.S.N := Nat.mul_pos (by have := X₁.S.r_pos; omega) (by have := X₁.S.N_ge; omega)
   obtain ⟨yy, yyonto, hyy⟩ := GlobalTheory.GSep.TorPt.labels_hom I X₁ z₁ act V ev X t δ 𝔪
   obtain ⟨x₀, hx₀⟩ := X₁.div z₁

@@ -495,7 +495,6 @@ theorem unfold2_of (hM : Mahler) : Unfold2 := by
   have hφm : ∀ d, Measurable fun x => φ (twConj θ x (ι d)) := fun d =>
     (hφ.cont.comp ((continuous_inv.mul continuous_const).mul hθc)).measurable
   haveI : T2Space (GA E a × GA E b) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact inferInstance
   obtain ⟨B, hB⟩ := hφ.supp.exists_bound_of_continuous hφ.cont
   have key := unfold_abs (μ := μ₁.prod μ₂) (ι := ι) (θ := θ) (θR := θR) (cls := cls) (rep := rep) (H := H)
@@ -705,17 +704,6 @@ section Rational
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem thetaA_ratGL_eq (t : GL (Fin n) E) : thetaA E n (ratGL E n t) = ratGL E n (thetaE E n t) := by
-  refine Units.ext ?_
-  ext i j
-  have hinv : ((ratGL E n t)⁻¹ : GA E n) = ratGL E n t⁻¹ := (map_inv _ _).symm
-  rw [thetaR_val, hinv]
-  exact conjAd_algebraMap _
-
-theorem twConj_ratGL (γ d : GL (Fin n) E) :
-    twConj (thetaA E n) (ratGL E n γ) (ratGL E n d) = ratGL E n (twConj (thetaE E n) γ d) := by
-  simp only [twConj, map_mul, map_inv, thetaA_ratGL_eq]
-
 theorem twConj_mul' {G : Type*} [Group G] (θ : Monoid.End G) (a b d : G) :
     twConj θ (a * b) d = twConj θ b (twConj θ a d) := by
   simp only [twConj, map_mul, _root_.mul_inv_rev, mul_assoc]
@@ -725,13 +713,8 @@ theorem twConj_ratCent (d : GL (Fin n) E) {h : GA E n} (hh : h ∈ ratCent d) (x
   obtain ⟨t, ht, rfl⟩ := hh
   refine twConj_mul_left _ _ ?_ x
   change twConj (thetaA E n) (ratGL E n t) (ratGL E n d) = ratGL E n d
-  rw [twConj_ratGL]
+  rw [PositivityTheory.Rg.BcB.CV.AdelicTopology.twConj_ratGL]
   exact congrArg _ ht
-
-theorem countable_ratCent (d : GL (Fin n) E) : Countable (ratCent d) := by
-  haveI := PositivityTheory.Rg.BcB.CV.AdelicTopology.discrete_ratCent d
-  haveI := GlobalTheory.CuspRep.CuspidalL2GL.secondCountableTopology_GA E n
-  exact TopologicalSpace.separableSpace_iff_countable.1 inferInstance
 
 theorem continuous_twConj (δ : GA E n) : Continuous fun x : GA E n => twConj (thetaA E n) x δ :=
   (continuous_inv.mul continuous_const).mul GlobalTheory.CompanionTheory.KerTwFin.continuous_thetaA
@@ -753,7 +736,7 @@ theorem exists_compact_cover (hM : Mahler) (τ : ℝ) (d : GL (Fin n) E) {K : Se
   obtain ⟨_, ⟨γ, rfl⟩, c, hc, rfl⟩ := Set.mem_mul.1 (hcov hx)
   set δ := twConj (thetaE E n) γ d with hδ
   have hk : twConj (thetaA E n) c (ratGL E n δ) ∈ K := by
-    rw [hδ, ← twConj_ratGL, ← twConj_mul']
+    rw [hδ, ← PositivityTheory.Rg.BcB.CV.AdelicTopology.twConj_ratGL, ← twConj_mul']
     exact hxK
   have hδK : ratGL E n δ ∈ C * K * (thetaA E n '' C)⁻¹ := by
     have e : ratGL E n δ = c * twConj (thetaA E n) c (ratGL E n δ) * (thetaA E n c)⁻¹ := by
@@ -801,8 +784,8 @@ theorem sliceTerm_of (hM : Mahler) : SliceTerm := by
   haveI := GlobalTheory.CuspRep.CuspidalL2GL.locallyCompactSpace_GA E b
   haveI := PositivityTheory.Rg.BcB.CV.AdelicTopology.discrete_ratCent d₁
   haveI := PositivityTheory.Rg.BcB.CV.AdelicTopology.discrete_ratCent d₂
-  haveI := countable_ratCent d₁
-  haveI := countable_ratCent d₂
+  haveI := PositivityTheory.Rg.BcB.CV.AdelicTopology.countable_ratCent d₁
+  haveI := PositivityTheory.Rg.BcB.CV.AdelicTopology.countable_ratCent d₂
   have c₁ : Measurable (chiT τ : GA E a → ℂ) :=
     measurable_one.indicator (hM E a τ).1.measurableSet
   have c₂ : Measurable (chiT τ : GA E b → ℂ) :=

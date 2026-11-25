@@ -105,13 +105,6 @@ section -- clump:auto
 
 section
 noncomputable section
-namespace GlobalTheory.CovTop.LevelIndex
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV
-section Gen
-variable {E : Type} [Field E] [NumberField E]
-variable {F : Type} [Field F] [NumberField F] [StarRing E] [Algebra F E] {n : ℕ} {LL : Type} [CommRing LL]
-end Gen
-end GlobalTheory.CovTop.LevelIndex
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.CovTop.MeasRd
 open MeasureTheory Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.Mult Formalism.BasicNotions.TH Formalism.L2.Theta

@@ -254,7 +254,7 @@ theorem arFun_lin (hII : IsFullIntersectionSystem II) (lam : Wt Ψ N) (s t : ℝ
     (fun _ => cS lam s)
   rw [h1, Finset.sum_div]
   refine Finset.sum_congr rfl fun w _ => ?_
-  obtain ⟨hdeg, σ, -, hii⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII.1 M.K M.ι M.P (dimFl Ψ N + 1)
+  obtain ⟨hdeg, σ, -, hii⟩ := _root_.RootFieldNumerics.intersection_monomial_lines II hII.1 M.K M.ι M.P (dimFl Ψ N + 1)
     (Option (Ψ × Fin N)) (M.line t) w M.arith (smooth_line M t)
   rw [arFun_monomial, RootModel.arMono, ite_eq_left hdeg, hii, prod_cS M lam s w]
   have hp : ((M.kA : ℝ) ^ ((∑ k, Finsupp.single (w k) 1 : Option (Ψ × Fin N) →₀ ℕ) none)) ≠ 0 :=

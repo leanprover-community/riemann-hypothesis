@@ -128,10 +128,10 @@ theorem eq_dec_of_one_le_jm (hA : GlobalTheory.Published.IrreducibleAdmissibleGL
   exact funext fun a => by simpa using hdec a
 
 theorem isLSeg_of_dec : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation) (Δ : Segment k) {N : ℕ}
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (_ : GlobalTheory.Published.SegmentRepresentation) (Δ : Segment k) {N : ℕ}
     (hd : ∑ a, (dec Δ a).1 = N) {V : Type} [AddCommGroup V] [Module ℂ V]
-    (τ : Representation ℂ (GL (Fin N) k) V) (hs : IsSmooth τ) (hi : τ.IsIrreducible)
-    (f : τ.IntertwiningMap (prodIrr (dec Δ) hd)) (hf : Function.Injective f), IsLSeg Δ τ := by
+    (τ : Representation ℂ (GL (Fin N) k) V) (_ : IsSmooth τ) (_ : τ.IsIrreducible)
+    (f : τ.IntertwiningMap (prodIrr (dec Δ) hd)) (_ : Function.Injective f), IsLSeg Δ τ := by
   intro k _ _ _ _ hA hZ Δ N hd V _ _ τ hs hi f hf
   have fine : FineJac Δ := @fineJac_all k _ _ _ _ hA hZ Δ
   obtain ⟨L, hL⟩ := _root_.GlobalTheory.CompanionTheory.SegExists.exists_isLSeg hA Δ

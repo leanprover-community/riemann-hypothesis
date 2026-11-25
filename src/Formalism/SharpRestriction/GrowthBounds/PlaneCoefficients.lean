@@ -189,39 +189,7 @@ section Geo
 
 variable {n' r : ℕ} [NeZero n'] (Fr : Frames n' r)
 
-theorem llPos_mem (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) : llPos Fr j l ∈ Fr.LLset j := by
-  unfold llPos
-  have hlen : ((Fr.LLset j).sort (· ≤ ·)).length = (Fr.LLset j).card := Finset.length_sort _
-  rw [List.getD_eq_getElem _ _ (by rw [hlen]; exact hl)]
-  exact (Finset.mem_sort (· ≤ ·)).1 (List.getElem_mem _)
-
-theorem mem_LLset (j x : ℤ) : x ∈ Fr.LLset j ↔
-    (Fr.fr (j - 1) (r - 1) < x ∧ x < Fr.fr j 0) ∧ posOf n' x ∈ Fr.TT := by
-  simp [Frames.LLset]
-
 variable {Fr} {L₁ N₁ : ℕ}
-
-theorem LL_sub_letters (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j y : ℤ) (hy : y ∈ Fr.LLset j) :
-    y ∈ Fr.letters j ∧ ¬ Fr.IsW j y :=
-  _root_.Formalism.MainNotions.Proposition5Numerics.LL_sub_letters hV hr j y hy
-
-theorem posU_mem (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ) (hu : u < (Fr.LLset j).card + r) :
-    posU Fr (Fr.LLset j).card j u ∈ Fr.letters j ∧ ¬ Fr.IsW j (posU Fr (Fr.LLset j).card j u) := by
-  unfold posU
-  split_ifs with h
-  · exact LL_sub_letters hV hr j _ (llPos_mem Fr j u h)
-  · have hi : u - (Fr.LLset j).card < r := by omega
-    have h1 := hV.2.2.2.1 (j - 1)
-    rw [sub_add_cancel] at h1
-    have h2 := frame_row_monotone Fr L₁ N₁ hV (j - 1) (r - 1) (by omega)
-    have h3 := frame_row_monotone Fr L₁ N₁ hV j _ hi
-    have h4 := frame_entry_le_last Fr L₁ N₁ hV j _ hi
-    refine ⟨?_, ?_⟩
-    · unfold Frames.letters
-      simp only [Finset.mem_filter, Finset.mem_Icc]
-      exact ⟨⟨by omega, h4⟩, (hV.2.2.2.2.1 j _ hi).1⟩
-    · unfold Frames.IsW
-      omega
 
 theorem Bo_ge (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (p : ℕ) (hp : 1 ≤ p) (deg : Fin n' → ℕ) (a : ℝ)
     (hdeg : ∀ s ∈ Fr.TT, a ≤ (deg s : ℝ)) (G : ℕ) (j x : ℤ) (hG : Fr.fr j (r - 1) - Fr.fr (j - 1) 0 ≤ G)
@@ -297,7 +265,7 @@ theorem wordBoundStep (C CLa : ℝ) (hC : 16 ≤ C) : WordBoundStep C CLa := by
   obtain ⟨hTT, hV, hG, _⟩ := hF
   have hr1 : 1 ≤ r := by omega
   have ha0 : (0 : ℝ) ≤ a := by linarith [hB.two_le_a]
-  obtain ⟨hx, hW⟩ := posU_mem hV hr1 jz u hu
+  obtain ⟨hx, hW⟩ := Formalism.MainNotions.Proposition5Numerics.posU_mem' hV hr1 jz u hu
   set xx := posU F (F.LLset jz).card jz u with hxx
 
   have hw := wordLoss_le (Fr := F) l c0 hc jz u
@@ -378,7 +346,7 @@ theorem geoTouch : GeoTouch := by
   rcases hx with (⟨l, hl, hlt⟩ | ⟨m, hm, hlt⟩) | ⟨m, hm⟩
   · subst hl
     have hl' : l.val < (Fr.LLset (segZ j)).card := by rw [← hnL]; exact l.isLt
-    refine ⟨llPos Fr (segZ j) l.val, (LL_sub_letters hV hr _ _ (llPos_mem Fr (segZ j) l.val hl')).1, rfl, ?_⟩
+    refine ⟨llPos Fr (segZ j) l.val, (LL_sub_letters hV hr _ _ (Formalism.MainNotions.Proposition5Numerics.DdG.llPos_mem Fr (segZ j) l.val hl')).1, rfl, ?_⟩
     rw [← posU_ll (Fr := Fr) (segZ j) l.val hl']
     exact (posU_le_iff hV (segZ j) _ _ (by omega) hu').2 (by omega)
   · subst hm
@@ -480,18 +448,6 @@ section Lev
 variable {n' r K m : ℕ} [NeZero n'] (Fr : Frames n' r) (p : ℕ) {O : Type} [CommRing O] [IsDomain O]
   (hk : m + 1 = r + K) {J : ℕ} [NeZero J] (nL : ZMod J → ℕ)
 
-theorem levN_add (F G : MvPolynomial (TV n' (m + 1)) (KK O)) :
-    levN Fr p hk nL (F + G) = levN Fr p hk nL F + levN Fr p hk nL G := by
-  unfold levN
-  exact sumSupp_add (fun mo => (monomial (R := KK O) (noMon Fr p hk nL mo)).toAddMonoidHom) F G
-
-theorem levN_monomial (mo : TV n' (m + 1) →₀ ℕ) (c : KK O) :
-    levN Fr p hk nL (monomial mo c) = monomial (noMon Fr p hk nL mo) c := by
-  unfold levN
-  by_cases h : c = 0
-  · subst h; simp
-  · rw [support_monomial, ite_eq_right h, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
-
 def psiExp (a : TL J nL r × Fin K →₀ ℕ) : TV n' (m + 1) →₀ ℕ :=
   a.sum fun v e => Finsupp.single (noVar Fr hk nL v.1 v.2) (lowP Fr p v.1 * e)
 
@@ -539,8 +495,8 @@ theorem levN_Psi {L₁ N₁ : ℕ} (hp : 0 < p) (hV : Fr.Valid L₁ N₁) (hr : 
     (hnL : ∀ j, nL j = (Fr.LLset (segZ j)).card) (H : MvPolynomial (TL J nL r × Fin K) (KK O)) :
     levN Fr p hk nL (Psi (O := O) Fr p hk nL H) = H := by
   induction H using MvPolynomial.induction_on' with
-  | monomial a c => rw [Psi_monomial, levN_monomial, noMon_psiExp p hk hp hV hr hJ hnL]
-  | add F G hF hG => rw [map_add (f := _), levN_add, hF, hG]
+  | monomial a c => rw [Psi_monomial, Formalism.MainNotions.PairMembershipBlocks.T5.levN_monomial, noMon_psiExp p hk hp hV hr hJ hnL]
+  | add F G hF hG => rw [map_add (f := _), Formalism.MainNotions.PairMembershipBlocks.T5.levN_add, hF, hG]
 
 end Lev
 
@@ -1092,11 +1048,6 @@ theorem geZ_sum {Kf : Type} [Field Kf] {ι κ : Type} {n : ℕ} [NeZero n] (LL :
     exact geZ_mono (mul_valS_add _ _ _ _) (geZ_min (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi)))
 
-theorem le_of_geZ {x : WithTop ℤ} {t : ℝ} (h : geZ x t) : ((⌈t⌉ : ℤ) : WithTop ℤ) ≤ x := by
-  induction x using WithTop.recTopCoe with
-  | top => exact le_top
-  | coe k => exact WithTop.coe_le_coe.2 (Int.ceil_le.2 (h k rfl))
-
 theorem geZ_coe {k : ℤ} {t : ℝ} (h : t ≤ (k : ℝ)) : geZ ((k : ℤ) : WithTop ℤ) t := by
   intro k' hk'
   have : k = k' := WithTop.coe_injective hk'
@@ -1211,7 +1162,7 @@ theorem restLink_of (hNN : ValNN) (hHD : HomDec) (hLL : LinkL) (hDg : LkDeg) (hV
         omega
       exact_mod_cast h2
     have h1 : ((⌈t j u⌉ : ℤ) : WithTop ℤ) ≤ valS LZ {y | y < posU Fr (Dt.nL j) (segZ j) u} F := by
-      refine le_trans (Lk.le_of_geZ (ht j u hur)) ?_
+      refine le_trans (Formalism.MainNotions.Proposition5Numerics.ceil_le_of_geZ (ht j u hur)) ?_
       have h2 := (valComp (KK O) ℤ r LZ {y | y < posU Fr (Dt.nL j) (segZ j) u} (Ab j) δ).1
       rw [Lk.homComp_eq] at h2
       refine le_trans (le_of_eq ?_) h2

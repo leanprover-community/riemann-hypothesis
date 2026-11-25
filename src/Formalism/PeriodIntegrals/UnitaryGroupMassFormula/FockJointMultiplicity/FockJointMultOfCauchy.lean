@@ -1052,9 +1052,6 @@ theorem mem_wtSub2 (hW : FormWt2) (P : Pol p q r s) (μ : Ix r s → ℚ)
   rw [LinearMap.sub_apply, rightAction_diagonal_of hW P y W hm, hWy]
   simp
 
-theorem posC_ne {n m : ℕ} (x y : Ix n m) (h : posC x y) : x ≠ y := by
-  cases x <;> cases y <;> simp only [posC] at h <;> first | exact h.elim | (intro e; simp at e; omega)
-
 theorem isDiagonalBlockIndex_left_of_positiveRoot (x y : Ix p q) (h : posC x y) (c : Ix r s) : linePos (x, c) = linePos (y, c) := by
   cases x <;> cases y <;> cases c <;> simp only [posC] at h <;> first | exact h.elim | rfl
 
@@ -1175,7 +1172,7 @@ theorem vecHW1_of (hW : FormWt1) (hR : FormRaise1) : VecHW1 := by
   refine Submodule.mem_inf.2 ⟨mem_wtSub1 hW _ _ (wtVec1 a b c d hd), ?_⟩
   simp only [Submodule.mem_iInf, LinearMap.mem_ker]
   intro x y hxy
-  rw [hR p q r s x y (posC_ne x y hxy), leftRootOperator_eq_derivation x y (posC_ne x y hxy) (isDiagonalBlockIndex_left_of_positiveRoot x y hxy)]
+  rw [hR p q r s x y (PI.FockOneDegW.Core.posC_ne x y hxy), leftRootOperator_eq_derivation x y (PI.FockOneDegW.Core.posC_ne x y hxy) (isDiagonalBlockIndex_left_of_positiveRoot x y hxy)]
   exact vecRaise1 a b c d x y hxy
 
 theorem vecHW2_of (hW : FormWt2) (hR : FormRaise2) : VecHW2 := by
@@ -1183,7 +1180,7 @@ theorem vecHW2_of (hW : FormWt2) (hR : FormRaise2) : VecHW2 := by
   refine Submodule.mem_inf.2 ⟨mem_wtSub2 hW _ _ (wtVec2 a b c d hd), ?_⟩
   simp only [Submodule.mem_iInf, LinearMap.mem_ker]
   intro x y hxy
-  rw [hR p q r s x y (posC_ne x y hxy), rightRootOperator_eq_derivation x y (posC_ne x y hxy) (isDiagonalBlockIndex_right_of_positiveRoot x y hxy)]
+  rw [hR p q r s x y (PI.FockOneDegW.Core.posC_ne x y hxy), rightRootOperator_eq_derivation x y (PI.FockOneDegW.Core.posC_ne x y hxy) (isDiagonalBlockIndex_right_of_positiveRoot x y hxy)]
   exact vecRaise2 a b c d x y hxy
 
 end PI.FJMX

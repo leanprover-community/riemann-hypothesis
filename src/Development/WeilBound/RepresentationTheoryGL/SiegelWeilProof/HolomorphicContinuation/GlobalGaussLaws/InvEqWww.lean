@@ -111,7 +111,6 @@ theorem integrable_rho : Integrable (fun u : Fin m → Fin n → ℂ => (1 + ‖
   unfold rr; push_cast; linarith
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem hloc_away {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {fr : Matrix (Fin m) (Fin m) ℂ}
     (μ : Measure (Mx D m n)) [μ.IsAddHaarMeasure] {Ψ : Mx D m n → ℂ} (hΨ : AwayCls θ τ fr Ψ)
     (K : Set (Fin m → Fin n → ℂ)) (hK : IsCompact K) :

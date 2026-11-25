@@ -60,7 +60,6 @@ theorem exists_pow_eq_of_isAlgClosed : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj
     ∀ (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ S) (n : ℕ), 0 < n →
       ∀ g : Over.mk x ⟶ A, ∃ g' : Over.mk x ⟶ A, g' ^ n = g := by
   intro S A _ hA k _ _ x n hn g
-  have hc := hA.comm
   obtain ⟨hfin, -, hsurj⟩ := GlobalTheory.KthRoot.finite_flat_surjective_mulN_any S A hA n hn
   have : IsFinite (pullback.snd (mulN A n).left g.left) := by
     haveI := hfin; infer_instance

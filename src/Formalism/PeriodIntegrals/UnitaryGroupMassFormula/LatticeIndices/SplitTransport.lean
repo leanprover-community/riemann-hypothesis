@@ -101,23 +101,6 @@ namespace MassDataIdxRes
 
 open NumberField IsDedekindDomain Ideal
 
-private theorem comap_ringEquiv_ne_bot {A B : Type} [CommRing A] [CommRing B] (f : A ≃+* B)
-    (I : Ideal B) (hI : I ≠ ⊥) : I.comap (f : A →+* B) ≠ ⊥ := by
-  intro h
-  apply hI
-  ext y
-  constructor
-  · intro hy
-    have h1 : f.symm y ∈ I.comap (f : A →+* B) := by
-      rw [Ideal.mem_comap]
-      simpa using hy
-    rw [h, Ideal.mem_bot] at h1
-    simpa using h1
-  · intro hy
-    rw [Ideal.mem_bot] at hy
-    rw [hy]
-    exact I.zero_mem
-
 theorem split_transport {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] (e : K ≃+* L)
     (l : ℕ) (h : {w : HeightOneSpectrum (𝓞 L) | ((l : ℕ) : 𝓞 L) ∈ w.asIdeal}.ncard = Module.finrank ℚ L) :
     {w : HeightOneSpectrum (𝓞 K) | ((l : ℕ) : 𝓞 K) ∈ w.asIdeal}.ncard = Module.finrank ℚ K := by

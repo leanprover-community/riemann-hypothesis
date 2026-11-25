@@ -118,7 +118,6 @@ namespace BlockAdjoinPrime
 
 variable {R : Type*} [CommRing R] {K : Type*} {ι : K → Type*}
 
-
 open Classical in
 def killB (B : Set K) : MRing ι R →ₐ[R] MRing ι R :=
   by
@@ -344,7 +343,6 @@ instance finiteDimensional [∀ k, Fintype (ι k)] (m : K → ℕ) :
   exact Submodule.finiteDimensional_of_le (weightedHomogeneousSubmodule_le_total m)
 
 attribute [local instance] MvPolynomial.weightedGradedAlgebra
-
 
 open Classical in
 theorem component_mul {x : MRing ι F} {e : K → ℕ} (hx : IsMultiHomog x e) (y : MRing ι F)
@@ -966,11 +964,6 @@ open MvPolynomial
 
 universe u
 
-theorem finite_setOf_weight_blockWeight_eq {K : Type} [Fintype K] [DecidableEq K] (ι : K → Type)
-    [∀ k, Fintype (ι k)] (m : K → ℕ) :
-    {d : (Σ k, ι k) →₀ ℕ | Finsupp.weight (blockWeight ι) d = m}.Finite :=
-  by apply _root_.GroundTheory.Heights₂.Heights.NumbersDVR.finite_blockWeight_eq
-
 theorem mem_of_C_pow_mul_mem {O : Type u} [CommRing O] {K : Type} {ι : K → Type}
     {P : Ideal (MRing ι O)} {ϖ : O} (hP : ∀ x, C ϖ * x ∈ P → x ∈ P) :
     ∀ (n : ℕ) (y : MRing ι O), C (ϖ ^ n) * y ∈ P → y ∈ P := by
@@ -987,7 +980,7 @@ theorem GradedPieceFree.proof : GradedPieceFree.Statement := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P hP m
   have hfg : (weightedHomogeneousSubmodule O (blockWeight ι) m).FG := by
     rw [weightedHomogeneousSubmodule_eq_finsupp_supported, ← Module.Finite.iff_fg]
-    have := (finite_setOf_weight_blockWeight_eq ι m).to_subtype
+    have := (GroundTheory.Heights₂.Heights.NumbersDVR.finite_blockWeight_eq ι m).to_subtype
     exact Module.Finite.of_basis (basisRestrictSupport O _)
   have hfin : Module.Finite O (gradedPieceR P m) := Module.Finite.iff_fg.mpr (hfg.map _)
   have htf : Module.IsTorsionFree O (gradedPieceR P m) := by

@@ -454,7 +454,6 @@ def wtT (j : ℕ) (α : ChT G δ hδ η A M j) : ℂ :=
       (Nat.card {yb | SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (cosT G δ hδ η A M α) yb} : ℂ))
   else (idxT G δ hδ η (G.s + 1 + 1) : ℂ)
 
-
 open Classical in
 def epsT (j : ℕ) (α : ChT G δ hδ η A M j) : GA D (c.V j) →₀ ℂ :=
   if j = 0 then Finsupp.single 1 1 else
@@ -502,8 +501,6 @@ theorem repT_mem {D : D7} {c : Comm D} {v : VCom c} {B : GlobalTheory.Fam.Base c
   rcases α with x | o
   · exact x.1.2 d h
   · exact absurd o.2 (by omega)
-
-
 
 theorem exists_qExt_full : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.Fam.Base c) (PP : Formalism.L2.DIV.Pl D.host.E) (G : QGeo v B PP) (χ : ℕ → (AE D)ˣ →* Circle), c.Is → ∀ (δ : G.kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → G.kˣ →* ℂˣ), (∀ j, IsUnram (η j)) → (∀ j, j ≤ G.s + 1 → (ofSplit G.q).IsComp (χ j)⁻¹ (η (j + 1) * δ)) → ∀ A, (G.T δ hδ η).IsRepSystem A G.ψk G.ν → ∀ M : ℕ, (G.T δ hδ η).Adapted A (box _ (G.ϖ ^ M)⁻¹) (box _ (G.ϖ ^ M)) → ∃ E : QExt G χ, E.δ = δ ∧ E.η = η ∧ E.A = A ∧ E.M = M ∧ ∀ y, ∃ z ∈ box (XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1)) (G.ϖ ^ E.M)⁻¹, Submodule.Quotient.mk z = E.cos y := by
   intro D c v B PP G χ hc δ hδ η hη hcomp A hA M hM
@@ -704,10 +701,6 @@ theorem mulVec_mem_box {A : Matrix n n k} (hA : IntM A) {c : kˣ} {y : n → k} 
     A *ᵥ y ∈ box n c :=
   _root_.GlobalTheory.QExtEx.mulVec_mem_box hA hy
 
-theorem sameOrb_equivalence (J : Subgroup (GL (n ⊕ Fin 0) k)) (hJ : J ≤ KO k _) (c : kˣ) :
-    Equivalence (SameOrb J (box n c)) :=
-  _root_.GlobalTheory.QExtEx.sameOrb_equivalence J hJ c
-
 def orbSetoid (J : Subgroup (GL (n ⊕ Fin 0) k)) (hJ : J ≤ KO k _) (c : kˣ) : Setoid ((n → k) ⧸ box n c) :=
   _root_.GlobalTheory.QExtEx.orbSetoid J hJ c
 
@@ -812,8 +805,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open scoped TensorProduct
 
 namespace GlobalTheory.QTw.CosExt
-
-
 
 theorem exists_qExt_cos : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheory.Fam.Base c) (PP : Formalism.L2.DIV.Pl D.host.E) (G : QGeo v B PP) (χ : ℕ → (AE D)ˣ →* Circle), c.Is → ∀ (δ : G.kˣ →* ℂˣ) (hδ : IsTame δ) (η : ℕ → G.kˣ →* ℂˣ), (∀ j, IsUnram (η j)) → (∀ j, j ≤ G.s + 1 → (ofSplit G.q).IsComp (χ j)⁻¹ (η (j + 1) * δ)) → ∀ A, (G.T δ hδ η).IsRepSystem A G.ψk G.ν → ∀ M : ℕ, (G.T δ hδ η).Adapted A (box _ (G.ϖ ^ M)⁻¹) (box _ (G.ϖ ^ M)) → ∀ (C : Type) [Fintype C] (cs : C → XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1) → G.k), (∀ y y', SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (Submodule.Quotient.mk (cs y)) (Submodule.Quotient.mk (cs y')) → y = y') → (∀ z ∈ box (XIx (Fin D.R.k) (Fin D.R.t) (G.s + 1)) (G.ϖ ^ M)⁻¹, ∃ y, SameOrb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (box _ (G.ϖ ^ M)) (Submodule.Quotient.mk (cs y)) (Submodule.Quotient.mk z)) → ∃ E : QExt G χ, E.δ = δ ∧ E.η = η ∧ E.A = A ∧ E.M = M ∧ (∃ e : C ≃ E.Ch (G.s + 1), ∀ y, E.cos (e y) = Submodule.Quotient.mk (cs y)) ∧ ∀ j, G.s + 1 + 1 < j → Nonempty (Unique (E.Ch j)) := by
   intro D c v B PP G χ hc δ hδ η hη hμ A hA M hM C _ cs hinj hall
@@ -1004,7 +995,6 @@ open NumberField IsDedekindDomain MeasureTheory ValuativeRel Matrix Formalism.Ba
 
 noncomputable section
 namespace GlobalTheory.TwBridge
-
 
 open Classical in
 theorem twNext_rep_eq_of_sameDC {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
@@ -1365,8 +1355,6 @@ structure Good (P : BadPr I a) (G : QGeo v Bs PP) {χ : ℕ → (AE (I.rec7 l Z)
     ∃ γ : Formalism.L2.Col.AutY B.fields B.R (j + 1), Bdd (B.primes X) (j + 1) P.1 γ ∧
       ∃ al, Formalism.L2.Col.FiniteSumNonzeroLargeDepth I.Ch I.sel (I.tup a) (I.cst a) j P ((I.idx a).h j al P) γ
 
-
-
 theorem exists_good (hI : I.Ok) (hT : I.IsTw) (P : BadPr I a) (hP : P.1 ∉ (B.primes X).vGs) (G : QGeo v Bs PP) (heq : PP = P.1) (hc : c.Is)
     (hstd : IsStdChar (I.rec7 l Z) c.ψ (-1)) (χ : ℕ → (AE (I.rec7 l Z))ˣ →* Circle)
     (hχ : ∀ j (hj : j < B.R.m), ChrEq (D := I.rec7 l Z) (χ j) (I.C.mu0 ⟨j, hj⟩ * I.xi a)) :
@@ -1424,7 +1412,6 @@ theorem res_of_tw (hI : I.Ok) {hP : PP ∈ Formalism.L2.Col.rowSG (B.primes X) I
   exact congrArg _ ((congrArg _ (dite_eq_left h2)).trans h4)
 
 end Place
-
 
 end GlobalTheory.LowJoin
 

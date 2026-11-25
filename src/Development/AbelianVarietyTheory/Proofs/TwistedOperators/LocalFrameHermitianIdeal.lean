@@ -222,7 +222,6 @@ theorem redV_of {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (PP : Pl E) (v : Fin n → E ⊗[F] Formalism.L2.Herm.Af F) (j : Fin n)
     (h : ((β⁻¹).val *ᵥ v) j ∈ Formalism.L2.Herm.intAf F E) : redV β PP v j = resS F PP ⟨_, h⟩ := dite_eq_left h
 
-
 open Formalism.L2.SG.Pf.unitaryCongruence Formalism.L2.SG.Pf.BunEx.Unip in
 theorem coef_read : ∀ {D : D7} (g : ℕ) (e0 f0 : Fin D.R.rS → VA (II D)) (z0 : VA (II D)) (bw bwd : Fin D.R.k → VA (II D)) (ew : EAf D), Formalism.L2.SG.Pf.BunEx.Unip.FH (II D) g e0 f0 z0 bw bwd ew → ∀ (β : GL (Fin (Yc D 0).rank) (EAf D)) (PP : Pl D.host.E) (w : Bool), IsFrame β (II D).L → LocAt g e0 f0 z0 bw bwd ew β PP w → ∀ u ∈ (II D).Lf, (∀ p (h1 : hA (II D) (flagV D.R.rS D.R.k (Yc D 0).rank f0 e0 (dualOrRevBasis w bw bwd) (-z0) p) u ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), resS D.host.F PP ⟨_, h1⟩ = redV β PP u p) ∧ (∀ i (h1 : hA (II D) ((if w then bw else bwd) i) u ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), resS D.host.F PP ⟨_, h1⟩ = 0) := by
   intro D g e0 f0 z0 bw bwd ew hF β PP w hβ hL u hu
@@ -291,9 +290,6 @@ open GlobalTheory.SeeConjRead
 open GlobalTheory.SeeConjGroup Formalism.L2.SG.HidaSetting
 open scoped Matrix
 
-
-theorem _root_.GlobalTheory.T.hermitianForm_dualFlag_eq_reduced_frame_coordinates : ∀ {D : D7} (g : ℕ) (e0 f0 : Fin D.R.rS → VA (II D)) (z0 : VA (II D)) (bw bwd : Fin D.R.k → VA (II D)) (ew : EAf D), Formalism.L2.SG.Pf.BunEx.Unip.FH (II D) g e0 f0 z0 bw bwd ew → ∀ (β : GL (Fin (Yc D 0).rank) (EAf D)) (PP : Pl D.host.E) (w : Bool), IsFrame β (II D).L → LocAt g e0 f0 z0 bw bwd ew β PP w → ∀ u ∈ (II D).Lf, (∀ p (h1 : hA (II D) (flagV D.R.rS D.R.k (Yc D 0).rank f0 e0 (dualOrRevBasis w bw bwd) (-z0) p) u ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), resS D.host.F PP ⟨_, h1⟩ = redV β PP u p) ∧ (∀ i (h1 : hA (II D) ((if w then bw else bwd) i) u ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), resS D.host.F PP ⟨_, h1⟩ = 0) := by
-  first | exact @GlobalTheory.SeeConjGroup.CoefRead.coef_read
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianFormDualFlagEqReducedFrameCoordinatesStatement =====
@@ -347,9 +343,6 @@ open GlobalTheory.SeeConjRead
 open GlobalTheory.SeeConjGroup Formalism.L2.SG.HidaSetting
 open scoped Matrix
 
-
-theorem _root_.GlobalTheory.T.mem_span_add_smul_lattice_of_frame_coeffs_zmod : ∀ (I : AutInst) (g : ℕ) {r k : ℕ} (e0 f0 : Fin r → VA I) (z0 : VA I) (bw bwd : Fin k → VA I) (ew : I.E ⊗[I.F] Af I.F), Formalism.L2.SG.Pf.BunEx.Unip.FH I g e0 f0 z0 bw bwd ew → ∀ v ∈ I.Lf, ∀ (Se : Set (Fin r)) (Sb : Set (Fin k)), (∀ a, a ∉ Se → ZMod' I g (hA I (f0 a) v)) → (∀ a, ZMod' I g (hA I (e0 a) v)) → ZMod' I g (hA I z0 v) → (∀ i, i ∉ Sb → ZMod' I g (hA I (bwd i) v)) → (∀ i, ZMod' I g (hA I (bw i) v)) → v ∈ Formalism.L2.SG.Pf.unitaryCongruence.Mo I g (e0 '' Se ∪ bw '' Sb) := by
-  first | exact @GlobalTheory.mo_of_coef_mod
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemSpanAddSmulLatticeOfFrameCoeffsZmodStatement =====
@@ -566,10 +559,6 @@ theorem ew_int (h : FH I g e0 f0 z0 bw bwd ew) (i : Fin k) : ew ∈ IntAf I.F I.
 theorem sub_add_mv (y : I.Gf) (s : VA I) : (I.fmat y - 1) *ᵥ s + s = I.fmat y *ᵥ s := by
   rw [Matrix.sub_mulVec, Matrix.one_mulVec, sub_add_cancel]
 
-theorem hA_neg_left (u v : VA I) : hA I (-u) v = -hA I u v := by
-  have := hA_smul_left I u v (-1)
-  rwa [neg_one_smul, map_neg, map_one, neg_one_mul] at this
-
 theorem hA_abs (y : I.Gf) (t s : VA I) (c : I.E ⊗[I.F] Af I.F) (hs : s = c • s) :
     hA I t ((I.fmat y - 1) *ᵥ s) = c * hA I t ((I.fmat y - 1) *ᵥ s) := by
   rw [← hA_smul_right, ← Matrix.mulVec_smul, ← hs]
@@ -584,7 +573,7 @@ theorem cong_of_pairs (h : FH I g e0 f0 z0 bw bwd ew) {x : I.Gf} (hx : x ∈ I.K
   have hm := h.mem
   obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩ := hT
   refine ⟨fun a => ?_, ?_, fun i => ?_⟩
-  · have := GlobalTheory.T.mem_span_add_smul_lattice_of_frame_coeffs_zmod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx (hm.1 a).1) {b | b.1 < a.1} ∅
+  · have := GlobalTheory.mo_of_coef_mod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx (hm.1 a).1) {b | b.1 < a.1} ∅
       (fun c hc => hP _ (hm.1 c).2 _ (hm.1 a).1 (h1 a c (not_lt.1 hc)).1 (h1 a c (not_lt.1 hc)).2)
       (fun c => hP _ (hm.1 c).1 _ (hm.1 a).1 (h2 c a) (h2 a c))
       (hP _ hm.2.1 _ (hm.1 a).1 (h3 a).1 (h3 a).2)
@@ -592,7 +581,7 @@ theorem cong_of_pairs (h : FH I g e0 f0 z0 bw bwd ew) {x : I.Gf} (hx : x ∈ I.K
       (fun i => hP _ (hm.2.2 i).1 _ (hm.1 a).1 (h5 a i).1 (h5 a i).2)
     rw [Set.image_empty, Set.union_empty] at this
     exact this
-  · have := GlobalTheory.T.mem_span_add_smul_lattice_of_frame_coeffs_zmod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx hm.2.1) Set.univ ∅
+  · have := GlobalTheory.mo_of_coef_mod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx hm.2.1) Set.univ ∅
       (fun c hc => absurd (Set.mem_univ c) hc)
       (fun c => hP _ (hm.1 c).1 _ hm.2.1 (h3 c).2 (h3 c).1)
       (hP _ hm.2.1 _ hm.2.1 h6 h6)
@@ -600,7 +589,7 @@ theorem cong_of_pairs (h : FH I g e0 f0 z0 bw bwd ew) {x : I.Gf} (hx : x ∈ I.K
       (fun i => hP _ (hm.2.2 i).1 _ hm.2.1 (h8 i).1 (h8 i).2)
     rw [Set.image_empty, Set.union_empty, Set.image_univ] at this
     exact this
-  · have := GlobalTheory.T.mem_span_add_smul_lattice_of_frame_coeffs_zmod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx (hm.2.2 i).1) Set.univ {j | j.1 < i.1}
+  · have := GlobalTheory.mo_of_coef_mod I g e0 f0 z0 bw bwd ew h _ (K_sub_mv I hx (hm.2.2 i).1) Set.univ {j | j.1 < i.1}
       (fun c hc => absurd (Set.mem_univ c) hc)
       (fun c => hP _ (hm.1 c).1 _ (hm.2.2 i).1 (h5 c i).2 (h5 c i).1)
       (hP _ hm.2.1 _ (hm.2.2 i).1 (h8 i).2 (h8 i).1)
@@ -641,8 +630,8 @@ theorem core (h : FH (II D) g e0 f0 z0 bw bwd ew) (hβ : IsFrame β (II D).L) (h
     · exact (hm.2.2 _).1
   have hv : ((II D).fmat y - 1) *ᵥ s ∈ (II D).Lf := K_sub_mv (II D) hy hsL
   intro h1
-  rw [(GlobalTheory.T.hermitianForm_dualFlag_eq_reduced_frame_coordinates g e0 f0 z0 bw bwd ew h β PP w hβ hl _ hv).1 p h1]
-  obtain ⟨hadd, -, hmul⟩ := GlobalTheory.T.residueCoordinatesInFrame_linear_stabiliser β (II D).L hβ PP
+  rw [(GlobalTheory.SeeConjGroup.CoefRead.coef_read g e0 f0 z0 bw bwd ew h β PP w hβ hl _ hv).1 p h1]
+  obtain ⟨hadd, -, hmul⟩ := GlobalTheory.SeeConjGroup.redV_add_smul_stab β (II D).L hβ PP
   have hsH := (mem_hat (II D).L s).1 hsL
   have hvH := (mem_hat (II D).L _).1 hv
   have e1 := hadd _ hvH _ hsH
@@ -672,9 +661,9 @@ theorem tab_loc (h : FH (II D) g e0 f0 z0 bw bwd ew) (hβ : IsFrame β (II D).L)
   have hm := h.mem
   refine tab_of _ e0 f0 bw bwd z0 ((II D).Lf : Set (VA (II D))) (_root_.GlobalTheory.SeeConjGroup.CoefRead.rank_val D) w (fun a => (hm.1 a).1) hm.2.2 hm.2.1
     (core h hβ hl hy hyM hM hu) (fun s hs => ?_) (fun i s hs => ?_) (fun i t ht => ?_)
-  · rw [hA_neg_left] at hs
+  · rw [GlobalTheory.SeeConjGroup.CoefRead.hA_neg_left'] at hs
     exact ZD_neg hs
-  · exact (GlobalTheory.T.hermitianForm_dualFlag_eq_reduced_frame_coordinates g e0 f0 z0 bw bwd ew h β PP w hβ hl _ (K_sub_mv (II D) hy hs)).2 i
+  · exact (GlobalTheory.SeeConjGroup.CoefRead.coef_read g e0 f0 z0 bw bwd ew h β PP w hβ hl _ (K_sub_mv (II D) hy hs)).2 i
   · cases w
     · show ZD D PP (hA (II D) t (((II D).fmat y - 1) *ᵥ bw i))
       rw [hA_abs y t (bw i) _ (h.bw_w i)]

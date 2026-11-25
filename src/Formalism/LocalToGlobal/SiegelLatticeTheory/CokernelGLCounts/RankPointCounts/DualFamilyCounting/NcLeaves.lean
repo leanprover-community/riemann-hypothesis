@@ -196,7 +196,6 @@ theorem absV_nonneg (v : PlX X) : 0 ≤ absV v (dV v) := by
 
 end Loc
 
-
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem normalizing_arithmetic_holds : NcArith := by
   intro D X hb hK FdN FdN' u u' X0 ψ τ Rw I H H₁ i1 i2 i3 i4 i5 T sd C Th F0 what₂ vR Q M δ i0 i0' νq a'
@@ -424,11 +423,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.WbDefC
 
-theorem cT_eq_conjTranspose {m k : Type} (P : Matrix m k ℂ) :
-    Formalism.UG.cT (starRingEnd ℂ) P = Pᴴ := by
-  ext i j
-  simp [Formalism.UG.cT, Matrix.conjTranspose_apply]
-
 theorem jpq_mulVec_of_inr {p q : ℕ} (w : Fin p ⊕ Fin q → ℂ) (hw : ∀ j, w (Sum.inr j) = 0) :
     Formalism.UG.Jpq p q *ᵥ w = w := by
   have hr : w ∘ Sum.inr = 0 := funext hw
@@ -444,7 +438,7 @@ theorem sigNeg_card_le {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι]
     Fintype.card ι ≤ q := by
   classical
   obtain ⟨e, P, hP⟩ := hJ
-  rw [cT_eq_conjTranspose] at hP
+  rw [Formalism.UG.P.cT_conj_eq] at hP
   set Q : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := (P : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) with hQ
   set Qi : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := ((P⁻¹ : GL (Fin p ⊕ Fin q) ℂ) : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) with hQi
   have hQQi : Q * Qi = 1 := by
@@ -907,13 +901,6 @@ theorem tprod_supT {T : ℕ} (hT : 0 < T) (g : Ideal (𝓞 F) → ℝ) :
   · intro 𝔭 h𝔭
     rw [ite_eq_right (fun h => h𝔭 ((mem_supT hT 𝔭).2 h))]
 
-theorem absNorm_span_natCast (T : ℕ) :
-    Ideal.absNorm (Ideal.span {((T : ℕ) : 𝓞 F)}) = T ^ finrank ℚ F := by
-  rw [Ideal.absNorm_span_singleton]
-  have e : ((T : ℕ) : 𝓞 F) = algebraMap ℤ (𝓞 F) (T : ℤ) := by simp
-  rw [e, Algebra.norm_algebraMap, RingOfIntegers.rank]
-  simp [Int.natAbs_pow]
-
 theorem prod_absNorm_pow {T : ℕ} (hT : 0 < T) :
     ∏ P ∈ (nfT F T).toFinset, (Ideal.absNorm P : ℝ) ^ (vT F T P) = (T : ℝ) ^ finrank ℚ F := by
   have h1 : ∏ P ∈ (nfT F T).toFinset, (Ideal.absNorm P) ^ (Multiset.count P (nfT F T)) =
@@ -925,7 +912,7 @@ theorem prod_absNorm_pow {T : ℕ} (hT : 0 < T) :
   have h4 : ∏ P ∈ (nfT F T).toFinset, (Ideal.absNorm P) ^ (vT F T P) = T ^ finrank ℚ F := by
     have : ∀ P, vT F T P = Multiset.count P (nfT F T) := fun P => rfl
     simp only [this]
-    rw [h1, h2, h3, absNorm_span_natCast]
+    rw [h1, h2, h3, Formalism.HN.DualPolygon.twist_absNorm_nat]
   exact_mod_cast h4
 
 end Arith

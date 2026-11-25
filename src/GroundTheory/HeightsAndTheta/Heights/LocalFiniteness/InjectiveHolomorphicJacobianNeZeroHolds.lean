@@ -92,6 +92,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PConormal
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PJacobianRankGeneric
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PNoetherIntegralClosure
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRegularLocusDense
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimePlaceBranchExists
 
 section -- clump:auto
 @[expose] public section
@@ -111,23 +112,7 @@ theorem BranchInCurveComponent.proof (h₁ : BranchInComponent.Statement) :
   have hq : q ∈ zeroSet J := c.map_zero ▸ hmaps (Metric.mem_ball_self c.radius_pos)
   refine ⟨J, hJ, ?_, Filter.mem_of_superset (Metric.ball_mem_nhds _ c.radius_pos) hmaps⟩
   have : Nontrivial (MvPolynomial (Fin n) ℂ ⧸ J) := inferInstance
-  have hle : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) ≤ (n : ℕ) := by
-    refine (ringKrullDim_quotient_le J).trans ?_
-    rw [MvPolynomial.ringKrullDim_of_isNoetherianRing, ringKrullDim_eq_zero_of_field]
-    simp
-  obtain ⟨e, he⟩ : ∃ e : ℕ, ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = e := by
-    have h0 : (0 : WithBot ℕ∞) ≤ ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) :=
-      ringKrullDim_nonneg_of_nontrivial
-    generalize ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ J) = d at h0 hle ⊢
-    induction d using WithBot.recBotCoe with
-    | bot => simp at h0
-    | coe x =>
-      induction x using ENat.recTopCoe with
-      | top =>
-        exfalso
-        simp only [not_le.2 (show ((n : ℕ) : WithBot ℕ∞) < ((⊤ : ℕ∞) : WithBot ℕ∞) from
-          WithBot.coe_lt_coe.2 (ENat.natCast_lt_top n))] at hle
-      | coe e => exact ⟨e, rfl⟩
+  obtain ⟨e, he⟩ := PrimePlaceBranchExists.exists_nat_ringKrullDim_quotient (J := J)
   have he1 : (e : WithBot ℕ∞) ≤ 1 := by
     rw [← LocalDimDomain.proof n e J hJp he q hq, ← hdim]
     exact ringKrullDim_le_of_surjective (Ideal.Quotient.factor (Ideal.map_mono hIJ))

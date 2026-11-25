@@ -428,7 +428,7 @@ theorem _root_.GlobalTheory.T.cosetIndicator_reads_as_translate_curveTheta : ∀
   have hcurve : cosV δ 𝔪 z G =
       Formalism.MainNotions.TaylorLogMetric.U D (tor0 D ⊤ δ) (pt D (tor0 D ⊤ δ) δ ((μ : D.host.E) • z)) (cosV δ 𝔪 0 G) := by
     have hfix := GlobalTheory.NormSum.VacMove.wd_fix h1 hs.crv kB hH (pt_mem δ (mem_skewMat h𝔪 hz hμ1))
-    rw [cosV, cosV, GlobalTheory.NormSum.VacMove.pt_zero, GlobalTheory.NormSum.VacMove.wd_zero]
+    rw [cosV, cosV, GlobalTheory.NormSum.VacMove.pt_zero, GlobalTheory.NormSum.wd_zero]
     generalize Iop D (tor0 D ⊤ δ) (La0 D (tor0 D ⊤ δ) S.rank T.rank)
       (La D (tor0 D ⊤ δ) (stdL D S.rank) (skewLat D 𝔪 T.rank)) G = H at hfix ⊢
     have hW := wd_pt_mul hs.crv htop (smul_mem_skewMat μ hz1) (smul_mem_skewMat (1 - μ) hz1) H
@@ -499,7 +499,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 
@@ -1283,10 +1282,6 @@ end GlobalTheory.StdRead
 
 end
 
-namespace GlobalTheory.StdRead
-
-end GlobalTheory.StdRead
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1560,8 +1555,6 @@ section -- clump:auto
 
 section
 noncomputable section
-namespace GlobalTheory.StdRead
-end GlobalTheory.StdRead
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
 open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts

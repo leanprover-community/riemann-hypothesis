@@ -81,15 +81,8 @@ section host
 variable {R : Ranks} (H : Host R)
 
 theorem conjugate_emb (g : R.GG) :
-    ComplexEmbedding.conjugate (H.emb g) = H.emb (g * R.cc) := by
-  rw [Formalism.L2.Geo.emb_mul_cc_comp]
-  refine RingHom.ext fun x => ?_
-  have hcm := H.isCMField_hostE
-  have h : IsCMField.complexConj H.E x = H.conj x := by
-    apply H.φ₀.injective
-    rw [IsCMField.complexEmbedding_complexConj, H.conjE_apply]
-  show starRingEnd ℂ (H.emb g x) = H.emb g (H.conj x)
-  rw [← h, IsCMField.complexEmbedding_complexConj]
+    ComplexEmbedding.conjugate (H.emb g) = H.emb (g * R.cc) :=
+  _root_.GlobalTheory.Mem.BaseEx.conjugate_emb H g
 
 theorem conjugate_emb_apply (g : R.GG) (x : H.E) :
     ComplexEmbedding.conjugate (H.emb g) x = H.emb g (H.conj x) := by
@@ -100,10 +93,8 @@ theorem ex_emb_iff (g : R.GG) :
   ⟨fun ⟨t, ht⟩ => (factEmb R H).1.1 ht ▸ t.2, fun h => ⟨⟨g, h⟩, rfl⟩⟩
 
 theorem emb_cm (σ : H.E →+* ℂ) :
-    (∃ t : Tau R, H.emb t = σ) ↔ ¬ ∃ t : Tau R, H.emb t = ComplexEmbedding.conjugate σ := by
-  obtain ⟨g, rfl⟩ := (factEmb R H).1.2 σ
-  rw [conjugate_emb, ex_emb_iff, ex_emb_iff]
-  exact Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem g
+    (∃ t : Tau R, H.emb t = σ) ↔ ¬ ∃ t : Tau R, H.emb t = ComplexEmbedding.conjugate σ :=
+  _root_.GlobalTheory.Mem.BaseEx.emb_cm H σ
 
 theorem sum_emb_bijective : Function.Bijective
     (Sum.elim (fun t : Tau R => H.emb t) fun t : Tau R => ComplexEmbedding.conjugate (H.emb t)) := by
@@ -133,10 +124,8 @@ theorem prod_typeExp {M : Type} [CommMonoid M] (p q : ℕ) (F : (H.E →+* ℂ) 
 
 end host
 
-theorem isAlgebraic_exp (N : ℕ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * Complex.I / N)) := by
-  rcases Nat.eq_zero_or_pos N with rfl | h
-  · simpa using isAlgebraic_one
-  · exact ((Complex.isPrimitiveRoot_exp N h.ne').isIntegral h).tower_top.isAlgebraic
+theorem isAlgebraic_exp (N : ℕ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * Complex.I / N)) :=
+  _root_.GlobalTheory.Mem.BaseField.isAlgebraic_exp N
 
 theorem exists_gens (E : Type) [Field E] [NumberField E] : ∃ S : Finset ℂ, (∀ z ∈ S, IsAlgebraic ℚ z) ∧
     ∀ K : IntermediateField ℚ ℂ, (∀ z ∈ S, z ∈ K) → ∀ (τ : E →+* ℂ) x, τ x ∈ K := by

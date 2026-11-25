@@ -205,9 +205,6 @@ theorem wOp_cons (X : ActualOps k r z z' π π') (l : Fin r) (j : Fin 6) (js : L
     (Ψ : RadSp k r z z' π π') : wOp X l (j :: js) Ψ = X.op l j (wOp X l js Ψ) := by
   simp [wOp, List.map_cons, List.prod_cons]
 
-theorem wOp_nil (X : ActualOps k r z z' π π') (l : Fin r) (Ψ : RadSp k r z z' π π') : wOp X l [] Ψ = Ψ := by
-  simp [wOp]
-
 theorem slice_diffAt (Ψ : RadSp k r z z' π π') (g : Mx k r) {p : Fin r → ℂ} (hp : p ∈ OmX r) :
     DifferentiableAt ℝ (fun c' => (Ψ : Fn k r (Wq →L[ℂ] Wp)) c' g) p :=
   (radSp_regular Ψ g p).1 hp
@@ -480,25 +477,17 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-theorem dT_lc (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π') :
-    dT X l Ξ ∈ lcSub k r z z' π π' := by
-  simp only [dT, Module.End.mul_apply]; exact op_lc X l 2 _ (op_lc X l 0 _ h)
-
-theorem dTb_lc (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π') :
-    dTb X l Ξ ∈ lcSub k r z z' π π' := by
-  simp only [dTb, Module.End.mul_apply]; exact op_lc X l 5 _ (op_lc X l 3 _ h)
-
 theorem seven_derivatives_preserve_compact (X : ActualOps k r z z' π π') (l : Fin r) {Ξ : RadSp k r z z' π π'} (h : Ξ ∈ lcSub k r z z' π π')
     (i : Fin 7) : wd7 X l Ξ i ∈ lcSub k r z z' π π' := by
   fin_cases i <;>
     first
     | exact h
-    | exact dT_lc X l h
-    | exact dTb_lc X l h
-    | exact dT_lc X l (dT_lc X l h)
-    | exact dTb_lc X l (dT_lc X l h)
-    | exact dT_lc X l (dTb_lc X l h)
-    | exact dTb_lc X l (dTb_lc X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dT_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h)
+    | exact Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l (Formalism.FourierDecayAlt.P.CutSE.dTb_lc_OuterLeib X l h)
 
 theorem pairAt_self_real (μ : Measure (Mt k r)) (Ξ : RadSp k r z z' π π') (p : Fin r → ℂ) :
     pairAt μ Ξ Ξ p = ((‖pairAt μ Ξ Ξ p‖ : ℝ) : ℂ) := by
@@ -914,12 +903,6 @@ theorem jsl_int_norm_self (μ : Measure (Mt k r)) (i : Fin (r + 1)) (v : RadSp k
   · exact Finset.prod_nonneg fun l _ => by positivity
   · exact integral_nonneg fun g => by positivity
 
-theorem jsl_glue_self (l : Fin r) (c : Fin r → ℂ) (t : ℂ) (c' : Cf r l.succ) :
-    glue l.succ (Function.update c l t) c' l = t := by
-  unfold glue
-  rw [dite_eq_right (by simp [Fin.val_succ])]
-  simp
-
 end JSL
 
 theorem jSL2Loc_of : JSWordNF → JSRadLoc → SpectralL2Locality := by
@@ -974,7 +957,7 @@ theorem jSL2Loc_of : JSWordNF → JSRadLoc → SpectralL2Locality := by
     intro c' g
     by_cases hxo : glue l.succ (Function.update c l t) c' ∈ OmX P.r
     · have e := hE (Wn Ψ) _ hxo g
-      rw [hΨeq, jsl_glue_self] at e
+      rw [hΨeq, Formalism.FourierDecayAlt.P5.glue_succ_update] at e
       exact e
     · have h0 : ∀ w : RadSp P.k P.r z z' π π',
           (w : Fn P.k P.r (Wq →L[ℂ] Wp)) (glue l.succ (Function.update c l t) c') g = 0 :=

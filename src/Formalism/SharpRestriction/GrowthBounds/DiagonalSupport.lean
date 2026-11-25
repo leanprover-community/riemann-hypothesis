@@ -88,8 +88,6 @@ theorem valLe_perturb {O Kf : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [F
   refine ⟨a + w ^ c * z, b * ↑hu.unit⁻¹, rfl, ?_⟩
   rw [ha', mul_mul_mul_comm, IsUnit.mul_val_inv, mul_one, hab]
 
-
-
 theorem restFlat_of (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg CLa' CD Csz CH CE C6 C18 : ℝ)
     (hXi : RestXi D CLa Ck Crk Cdeg CH CE C6 C18) (hRe : RestReal D CLa Ck Crk Cdeg) :
     RestFlat D CLa Ck Crk Cdeg CLa' CD Csz CH CE C6 C18 := by
@@ -387,8 +385,6 @@ section
 variable {p n' : ℕ} [Fact p.Prime] [NeZero n'] {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W]
   [Field Qq] [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
   {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O} {m : ℕ}
-
-
 
 theorem realAt_gen (hS : HidaSetting p n' W Qq O Kf ι σ j w) (φ : WF p n' ≃+* W) (hφ : IsWittIdent σ φ)
     (hm1 : 1 ≤ m) (r : ℕ) (hr1 : 1 ≤ r) (hr2 : r < m + 1) (d : Fin n' → ℕ) (cP κ : ℕ)
@@ -717,9 +713,6 @@ theorem log_size_bound_le (p n' m : ℕ) (TT : Finset (Fin n')) (X : Fin n' → 
         rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_const, nsmul_eq_mul]
         ring
 
-theorem lastIdx_eq (m : ℕ) : lastIdx (m + 1) = Fin.last m :=
-  Fin.ext (by simp [lastIdx])
-
 theorem ellWt_zero (m : ℕ) : ellWt (0 : Fin (m + 1) → ℤ) = 0 := by
   simp [ellWt]
 
@@ -729,7 +722,7 @@ theorem ellWt_flat {n' m : ℕ} (hm : 1 ≤ m) (d : Fin n' → ℕ) (s : Fin n')
     have := congrArg Fin.val h
     simp at this
     omega
-  simp only [lamAt, flW, ellWt, lastIdx_eq]
+  simp only [lamAt, flW, ellWt, Formalism.L2.G.Model.TS.lastIdx_succ]
   split_ifs
   · simp [Pi.single_eq_same, Pi.single_eq_of_ne hne]
   · simp [Fin.rev_zero, Fin.rev_last, Pi.single_eq_same, Pi.single_eq_of_ne hne]
@@ -787,7 +780,7 @@ theorem sizeStep (C : ℝ) (hC : 2 ≤ C) : SizeStep C 4 := by
         exact_mod_cast this
       have e1 : ((ellWt (lamAt lam0 s) : ℕ) : ℝ) = ((aT s + bT s : ℤ) : ℝ) := by
         unfold ellWt
-        rw [lastIdx_eq, hzz, ← Int.cast_natCast, Int.toNat_of_nonneg (by omega)]
+        rw [Formalism.L2.G.Model.TS.lastIdx_succ, hzz, ← Int.cast_natCast, Int.toNat_of_nonneg (by omega)]
       have hbT : (bT s : ℝ) ≤ c0 := by
         have : bT s ≤ c0 := by omega
         exact_mod_cast this

@@ -124,13 +124,6 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal GlobalT
 
 namespace GlobalTheory.LatAlgebraic
 
-theorem natAbs_discr_of_finrank_one (F : Type) [Field F] [NumberField F] (h : Module.finrank ℚ F = 1) :
-    (discr F).natAbs = 1 := by
-  have hb : (⊥ : Subalgebra ℚ F) = ⊤ := Subalgebra.bot_eq_top_of_finrank_eq_one h
-  let e : ℚ ≃ₐ[ℚ] F := (Algebra.botEquiv ℚ F).symm.trans ((Subalgebra.equivOfEq _ _ hb).trans Subalgebra.topEquiv)
-  rw [← NumberField.discr_eq_discr_of_algEquiv (f := e), NumberField.discr_rat]
-  rfl
-
 theorem two_le_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] (h : UnramFin E) :
     2 ≤ Module.finrank ℚ (maximalRealSubfield E) := by
   apply _root_.GlobalTheory.LatConjOne.two_le_finrank_of_unramFin <;> assumption
@@ -964,7 +957,6 @@ theorem expansion_of_jetInt : JetInt → Expansion := by
     rw [div_mul_eq_div_div, div_eq_mul_inv (_ / _)]
   rw [e]
   refine sz_mono ?_ (GlobalTheory.LatValRam.sz_mul h1 h2)
-  have hK : (0 : ℝ) ≤ ((∑ i, κ i : ℕ) : ℝ) := Nat.cast_nonneg _
   split_ifs <;> nlinarith
 
 end GlobalTheory.JetExp

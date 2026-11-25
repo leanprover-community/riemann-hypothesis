@@ -852,8 +852,7 @@ theorem exists_pair (hS : IsHermSemilocal S) (hM : IsSelfDualMod S h M) {ι : Ty
   refine ⟨α, hα0, hrM, m₀ - ∑ i, (h (x i) m₀ * (h (x i) (x i))⁻¹) • x i, ?_, ?_, ?_⟩
   · refine M.sub_mem hm₀ (M.sum_mem fun i _ => hM.smul_mem _ ?_ _ (hxM i))
     exact S.mul_mem (hM.int _ (hxM i) _ hm₀) (hxu i).2.2
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply,
+  · simp only [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply,
         map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, RingHom.id_apply, hrx, mul_zero,
         Finset.sum_const_zero, sub_zero]
     rw [hα, inv_mul_cancel₀ hα0]

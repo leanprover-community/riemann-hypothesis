@@ -71,9 +71,6 @@ theorem finPartF_finIdem : finPartF F E (finIdem F E) = 1 := by
   rw [Algebra.TensorProduct.map_tmul]
   rfl
 
-theorem cAF_inc (e : E) : cAF σ (incAF F E e) = incAF F E (σ e) := by
-  simp [cAF, incAF, sigR, inclR]
-
 theorem finIdem_smul_of_fin {u : WOF F E nS nT} (hu : u.map (infPartF F E) = 0) : finIdem F E • u = u := by
   funext i j
   exact finIdem_mul_of_fin (congrFun (congrFun hu i) j)

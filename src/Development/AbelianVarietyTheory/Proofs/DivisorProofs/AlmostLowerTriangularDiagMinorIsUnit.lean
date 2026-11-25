@@ -43,7 +43,6 @@ theorem det_almost {K : Type} [Field K] {n : ℕ} (A : Matrix (Fin n) (Fin n) K)
         by_cases hia : i = a
         · rw [hia, hc, div_mul_cancel₀ _ hab, sub_self]
         · have hia' : i < a := by
-            have h1 : (i : ℕ) < b := hij'
             have h2 : (i : ℕ) ≠ a := fun h => hia (Fin.ext h)
             rw [Fin.lt_iff_val_lt_val]; omega
           rw [hl i a hia' (fun h => hia h.1), hl i b (lt_trans hia' hlt) (fun h => hia h.1)]; ring

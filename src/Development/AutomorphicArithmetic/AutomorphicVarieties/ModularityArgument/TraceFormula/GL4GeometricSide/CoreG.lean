@@ -230,21 +230,13 @@ theorem sgnB_sign {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) (a
   · have hn : (a, b) ∉ B := fun hm => absurd (hB _ hm) (not_lt_of_gt h)
     by_cases hm : (b, a) ∈ B <;> simp [h, h.not_gt, hn, hm] <;> norm_num
 
-theorem card_fst (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.1 = a).card = (univ.filter fun b => (a, b) ∈ B).card :=
-  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst B a
-
-theorem card_snd (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.2 = a).card = (univ.filter fun b => (b, a) ∈ B).card :=
-  _root_.GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd B a
-
 theorem sum_sgnB (B : Finset (Fin n × Fin n)) (a : Fin n) :
     ∑ b, sgnB B a b = 2 * (rhoV n a - wtB B a) := by
   unfold sgnB
   rw [Finset.sum_sub_distrib, sum_sgn, ← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_boole,
     Finset.sum_boole]
   unfold wtB
-  rw [card_fst, card_snd]
+  rw [GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst, GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd]
   ring
 
 theorem nsq_rho_sub_le {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) :

@@ -158,14 +158,7 @@ open GlobalTheory.LatVacSign in
 theorem GlobalTheory.LatVacSign.heisO_finRat_sign : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsStdChar D ψ (-1) → IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ f : WO S T → ℂ, IsLatVac (heisO ψ S T) (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) f → ∀ v : Matrix (Fin T.rank) (Fin S.rank) D.host.E, GlobalTheory.VacUnique.finRat S T (-v) ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) → ∃ k : ℤ, (k : ℚ) = Algebra.trace ℚ D.host.E (D.host.xi0 * ((1 + D.host.sqrtMinusD) / 2) ^ 2 * GlobalTheory.LatVac.hRat S T v v) ∧ heisO ψ S T (GlobalTheory.VacUnique.finRat S T (-v)) f = ((-1 : ℂ) ^ k) • f := by
   intro D ψ S T ΛS ΛT hψ hS hT f hf v hv
   have hsq : D.host.sqrtMinusD ^ 2 = -(D.host.d : D.host.E) := Formalism.BasicNotions.Host.sqrtMinusD_sq D.host
-  have hst : star D.host.sqrtMinusD = -D.host.sqrtMinusD := by
-    apply D.host.φ₀.injective
-    have h1 : D.host.φ₀ D.host.sqrtMinusD = Complex.I * (Real.sqrt D.host.d : ℂ) := D.host.φ₀_mem
-    have := D.host.isCMField_hostE
-    have h2 : D.host.φ₀ (star D.host.sqrtMinusD) = starRingEnd ℂ (D.host.φ₀ D.host.sqrtMinusD) :=
-      NumberField.IsCMField.complexEmbedding_complexConj D.host.E D.host.φ₀ D.host.sqrtMinusD
-    rw [h2, map_neg, h1]
-    simp
+  have hst : star D.host.sqrtMinusD = -D.host.sqrtMinusD := Formalism.IndefR.Fin.star_sqrt
   obtain ⟨n, hn⟩ : ∃ n : ℤ, (D.host.d : ℤ) + 1 = 8 * n :=
     ⟨((D.host.d : ℤ) + 1) / 8, by have := D.host.hyp.2.2.2.1; omega⟩
   have hnE : (D.host.d : D.host.E) = 8 * n - 1 := by

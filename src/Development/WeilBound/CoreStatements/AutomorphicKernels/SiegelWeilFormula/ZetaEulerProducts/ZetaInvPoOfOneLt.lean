@@ -541,13 +541,6 @@ theorem lOrd_even (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (S : Finset (HeightO
       · simp [hj0, hFr, hFc] <;> omega
       · simp [hj0, hFr, hFc, hj]
 
-private theorem hasProd_inv' {ι : Type} {f : ι → ℂ} {a : ℂ} (h : HasProd f a) (ha : a ≠ 0) :
-    HasProd (fun i => (f i)⁻¹) a⁻¹ := by
-  unfold HasProd at h ⊢
-  convert h.inv₀ ha using 1
-  funext t
-  exact Finset.prod_inv_distrib _
-
 theorem lOrd_odd (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (S : Finset (HeightOneSpectrum (𝓞 F))) (j : ℤ)
     (hj : ¬ Even j) :
     ∃ Z : ℂ → ℂ, MeromorphicOn Z Set.univ ∧
@@ -596,7 +589,7 @@ theorem lOrd_odd (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (S : Finset (HeightOn
     have hs0 : 0 < s.re := by linarith
     have hFinv : HasProd (fun v : HeightOneSpectrum (𝓞 F) => (1 - (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))⁻¹)
         (continuedDedekindZeta F s) := by
-      have := hasProd_inv' (zeta_euler F hs).1 (inv_ne_zero (zeta_euler F hs).2)
+      have := (zeta_euler F hs).1.inv₀ (inv_ne_zero (zeta_euler F hs).2)
       rwa [inv_inv] at this
     have hg := (zetaE_grouped (F := F) (E := E) hs).mul hFinv
     have key := hasProd_compl_finset (fun v => 1 - eSp E v * (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))

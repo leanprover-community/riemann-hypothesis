@@ -90,40 +90,6 @@ theorem restrict_restrict {X : Scheme.{0}} {U V W : X.Opens} (h : V ≤ U) (h' :
   rfl
 
 
-attribute [local instance] MvPolynomial.gradedAlgebra in
-theorem isQProjOver_id (R : Type) [CommRing R] : IsQProjOver (𝟙 (Sp R)) := by
-  classical
-  refine ⟨0, ?_⟩
-  have hX : (MvPolynomial.X 0 : MvPolynomial (Fin (0 + 1)) R) ∈ MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 1 :=
-    MvPolynomial.isHomogeneous_X R 0
-  let L : Localization.Away (MvPolynomial.X 0 : MvPolynomial (Fin (0 + 1)) R) →+* R :=
-    IsLocalization.Away.lift (MvPolynomial.X 0 : MvPolynomial (Fin (0 + 1)) R) (g := MvPolynomial.eval fun _ => (1 : R)) (by simp)
-  let φ : HomogeneousLocalization.Away (MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R) (MvPolynomial.X 0) →+* R :=
-    L.comp (algebraMap _ _)
-  have key : (φ.comp (HomogeneousLocalization.fromZeroRingHom _ _)).comp
-      (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 0)) = RingHom.id R := by
-    ext r
-    simp only [RingHom.comp_apply, φ, L, HomogeneousLocalization.algebraMap_apply, RingHom.id_apply]
-    rw [show (HomogeneousLocalization.fromZeroRingHom _ _ (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 0) r)).val =
-        algebraMap (MvPolynomial (Fin (0 + 1)) R) (Localization.Away (MvPolynomial.X 0 : MvPolynomial (Fin (0 + 1)) R))
-          (MvPolynomial.C r) from by
-      simp [HomogeneousLocalization.fromZeroRingHom]; rfl]
-    rw [IsLocalization.Away.lift_eq, MvPolynomial.eval_C]
-  let i := Spec.map (CommRingCat.ofHom φ) ≫ Proj.awayι _ _ hX one_pos
-  have hi : i ≫ Proj.toSpecZero (MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R) ≫
-      spMap (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 0)) = 𝟙 (Sp R) := by
-    simp only [i, Category.assoc, Proj.awayι_toSpecZero_assoc, spMap, ← Spec.map_comp]
-    rw [← Spec.map_id]
-    congr 1
-    ext r
-    exact congrArg (fun f => f r) key
-  have : IsClosedImmersion (i ≫ Proj.toSpecZero (MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R) ≫
-      spMap (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 0))) := by
-    rw [hi]; infer_instance
-  have : IsClosedImmersion i := IsClosedImmersion.of_comp i (Proj.toSpecZero (MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R) ≫
-    spMap (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (0 + 1)) R 0)))
-  exact ⟨i, inferInstance, inferInstance, hi⟩
-
 end OnePoint
 
 end GlobalTheory.ZM

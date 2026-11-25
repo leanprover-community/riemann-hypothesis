@@ -749,25 +749,21 @@ theorem sdd_det_mono {n : ℕ} (X Y : Matrix (Fin n) (Fin n) ℂ) (hX : X.PosDef
   rw [hdetX, hYe, sdd_det_congr, hDr, Complex.ofReal_re, ← Complex.ofReal_mul, Complex.ofReal_re]
   exact ⟨hBpos, le_mul_of_one_le_right hBpos.le hD1⟩
 
-def embM {K : Type} [Field K] [NumberField K] {r k : ℕ} (σ : K →+* ℂ) (b : Fin k → Fin r → K) :
-    Matrix (Fin r) (Fin k) ℂ :=
-  Matrix.of fun l i => σ (b i l)
-
 theorem sdd_gramX_eq {K : Type} [Field K] [NumberField K] {r k m : ℕ}
     (H : Matrix (Fin r) (Fin r) ℂ) (σ : K →+* ℂ) (b : Fin k → Fin r → K) (c : Fin m → Fin r → K) :
-    gramX H σ b c = (embM σ b)ᴴ * H * embM σ c := by
+    gramX H σ b c = (ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b)ᴴ * H * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ c := by
   ext i j
-  simp only [gramX, embM, embVec, Matrix.of_apply, Matrix.mul_apply, conjTranspose_apply, dotProduct,
+  simp only [gramX, ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat, embVec, Matrix.of_apply, Matrix.mul_apply, conjTranspose_apply, dotProduct,
     Matrix.mulVec, Pi.star_apply, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
 theorem sdd_gramC_eq {K : Type} [Field K] [NumberField K] {r k : ℕ}
     (H : Matrix (Fin r) (Fin r) ℂ) (σ : K →+* ℂ) (b : Fin k → Fin r → K) :
-    gramC H σ b = (embM σ b)ᴴ * H * embM σ b := sdd_gramX_eq H σ b b
+    gramC H σ b = (ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b)ᴴ * H * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b := sdd_gramX_eq H σ b b
 
 theorem sdd_embM_inj {K : Type} [Field K] [NumberField K] {r k : ℕ} (σ : K →+* ℂ)
-    (b : Fin k → Fin r → K) (hb : LinearIndependent K b) : Function.Injective (embM σ b).mulVec := by
+    (b : Fin k → Fin r → K) (hb : LinearIndependent K b) : Function.Injective (ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b).mulVec := by
   classical
   let M : Matrix (Fin r) (Fin k) K := Matrix.of fun l i => b i l
   have hM : Function.Injective M.mulVecLin := by
@@ -785,7 +781,7 @@ theorem sdd_embM_inj {K : Type} [Field K] [NumberField K] {r k : ℕ} (σ : K �
     rw [Matrix.toLin'_apply, Matrix.toLin'_apply, Matrix.one_mulVec, ← Matrix.mulVec_mulVec,
       LinearMap.toMatrix'_mulVec]
     exact LinearMap.congr_fun hg x
-  have hE : embM σ b = M.map σ := rfl
+  have hE : ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b = M.map σ := rfl
   intro x y hxy
   have e := congrArg ((LinearMap.toMatrix' g).map σ).mulVec hxy
   simp only [hE, Matrix.mulVec_mulVec, ← Matrix.map_mul, hLM, Matrix.map_one _ (map_zero σ) (map_one σ),
@@ -1045,34 +1041,34 @@ theorem sdd_gram_step {K : Type} [Field K] [NumberField K] {r e k₀ k₁ : ℕ}
     exact h l hl
   set D : Matrix (Fin r) (Fin r) ℂ := diagonal fun l => (d l : ℂ) with hDdef
   have hDpd : D.PosDef := posDef_diagonal_ofReal_of_pos d hd
-  have hG0 : ((embM σ b₀)ᴴ * D * embM σ b₀).PosDef :=
+  have hG0 : ((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀).PosDef :=
     hDpd.conjTranspose_mul_mul_same (sdd_embM_inj σ b₀ hb₀li)
-  have hG1 : ((embM σ b₁)ᴴ * D * embM σ b₁).PosDef :=
+  have hG1 : ((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁).PosDef :=
     hDpd.conjTranspose_mul_mul_same (sdd_embM_inj σ b₁ hb₁li)
-  have hu : IsUnit ((embM σ b₀)ᴴ * D * embM σ b₀).det := by
+  have hu : IsUnit ((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀).det := by
     first
     | exact (Matrix.isUnit_iff_isUnit_det _).mp hG0.isUnit
-  set E : Matrix (Fin r) (Fin k₁) ℂ := embM σ c - embM σ b₀ *
-    (((embM σ b₀)ᴴ * D * embM σ b₀)⁻¹ * ((embM σ b₀)ᴴ * D * embM σ c)) with hE
+  set E : Matrix (Fin r) (Fin k₁) ℂ := ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ c - ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀ *
+    (((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀)⁻¹ * ((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₀)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ c)) with hE
 
   have hq : quotGramC D σ b₀ c = Eᴴ * D * E := by
     simp only [quotGramC, sdd_gramC_eq, sdd_gramX_eq]
     exact sdd_schur _ _ _ hDpd.1 hG0.1 hu
 
   have hB1 : ∀ (l : Fin r) (j : Fin k₁),
-      embM σ b₁ l j = if e ≤ (l : ℕ) then E l j else 0 := by
+      ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁ l j = if e ≤ (l : ℕ) then E l j else 0 := by
     intro l j
     have hb1 : b₁ j l = if e ≤ (l : ℕ) then c j l else 0 := by
       rw [← hcb j]; rfl
     by_cases hl : e ≤ (l : ℕ)
     · have hz : ∀ i, b₀ i l = 0 := fun i => hcutz i l hl
       rw [ite_eq_left hl, hE]
-      simp [embM, Matrix.mul_apply, hb1, hl, hz]
+      simp [ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat, Matrix.mul_apply, hb1, hl, hz]
     · rw [ite_eq_right hl]
-      simp [embM, hb1, hl]
-  have hquad : ∀ v : Fin k₁ → ℂ, (star v ⬝ᵥ (((embM σ b₁)ᴴ * D * embM σ b₁) *ᵥ v)).re ≤
+      simp [ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat, hb1, hl]
+  have hquad : ∀ v : Fin k₁ → ℂ, (star v ⬝ᵥ (((ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁)ᴴ * D * ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁) *ᵥ v)).re ≤
       (star v ⬝ᵥ ((Eᴴ * D * E) *ᵥ v)).re :=
-    sdd_cut_quad d (fun l => (hd l).le) e E (embM σ b₁) hB1
+    sdd_cut_quad d (fun l => (hd l).le) e E (ReciprocityTheory.MultiplicativeHeights.DegAdd.embMat σ b₁) hB1
   obtain ⟨hpos, hle⟩ := sdd_det_mono _ _ hG1 (Matrix.isHermitian_conjTranspose_mul_mul E hDpd.1) hquad
   rw [sdd_gramC_eq, hq]
   exact Real.log_le_log hpos hle

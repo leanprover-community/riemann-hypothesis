@@ -35,8 +35,6 @@ def beta : I.E := (exists_beta I).choose
 
 theorem beta_int : beta I ∈ Formalism.UG.intOE I.E := (exists_beta I).choose_spec.1
 
-theorem beta_notF : beta I ∉ Set.range (algebraMap I.F I.E) := (exists_beta I).choose_spec.2
-
 theorem linIndep_one_beta : LinearIndependent I.F ![(1 : I.E), beta I] := by
   apply _root_.PI.InvTopW.linearIndependent_one_beta <;> assumption
 

@@ -406,7 +406,3 @@ theorem germLargeT : GermLargeT := by
     _ = _ := by ring
 
 end Formalism.FourierDecayAlt.P.OrbitTailEstimates
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

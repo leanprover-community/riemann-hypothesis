@@ -212,7 +212,6 @@ private theorem exists_factorizations_subscheme_restrict {Y : Scheme.{u}} (T : Y
         p ≫ (T.subschemeι ∣_ V) = (T.comap V.ι).subschemeι) ∧
       (∃ q : (T.subschemeι ⁻¹ᵁ V).toScheme ⟶ ((T.comap V.ι).subscheme),
         q ≫ (T.comap V.ι).subschemeι = T.subschemeι ∣_ V) := by
-  have : IsClosedImmersion (T.subschemeι ∣_ V) := inferInstance
   have hker : (T.subschemeι ∣_ V).ker = ((T.comap V.ι).subschemeι).ker := by
     rw [Scheme.IdealSheafData.ker_subschemeι, ← _root_.FunctorialResolution.EmbeddedResolution.ker_comap_ι_eq_ker_morphismRestrict,
       Scheme.IdealSheafData.ker_subschemeι]

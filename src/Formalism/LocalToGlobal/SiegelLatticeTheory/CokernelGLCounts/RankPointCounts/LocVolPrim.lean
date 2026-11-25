@@ -214,13 +214,8 @@ def iotaF : X.B.I.F ≃+* D.host.F :=
 private theorem dd_ne_lemma (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] :
     ((Ideal.map (algebraMap (𝓞 F) (𝓞 E)) (differentIdeal ℤ (𝓞 F)) : Ideal (𝓞 E)) :
       FractionalIdeal (𝓞 E)⁰ E) ≠ 0 := by
-  have hinj : Function.Injective (algebraMap (𝓞 F) (𝓞 E)) := by
-    intro x y hxy
-    apply RingOfIntegers.ext
-    apply (algebraMap F E).injective
-    have := congrArg (fun t : 𝓞 E => (t : E)) hxy
-    exact this
-  rw [Ne, FractionalIdeal.coeIdeal_eq_zero, Ideal.map_eq_bot_iff_of_injective hinj]
+  rw [Ne, FractionalIdeal.coeIdeal_eq_zero,
+    Ideal.map_eq_bot_iff_of_injective (FaithfulSMul.algebraMap_injective (𝓞 F) (𝓞 E))]
   exact differentIdeal_ne_bot
 
 theorem ddS_ne (D : D7) : ddS D ≠ 0 := dd_ne_lemma _ _

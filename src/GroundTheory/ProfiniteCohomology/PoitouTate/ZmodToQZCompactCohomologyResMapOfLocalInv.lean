@@ -262,12 +262,6 @@ theorem sha (hM : ∀ m : M, n • m = 0) :
 
 end PoitouTateDualityHypotheses
 
-namespace PoitouTateHypotheses
-
-variable {φ D t inv}
-
-end PoitouTateHypotheses
-
 end GroundTheory.ProfCoh
 end -- clump:auto
 end -- clump:auto

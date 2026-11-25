@@ -442,7 +442,6 @@ open IsDedekindDomain NumberField
 
 namespace GlobalTheory.CompanionTheory.EisE
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem eisMeas : IdemEx → BumpEx → Major → FixW → FixTh → ThProd → MuCell → FibEx → RCell → TopX → AlgRich → SigLaw → OrbEx →
     EisMeas := by

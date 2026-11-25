@@ -11,8 +11,8 @@ public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
 
 noncomputable def UpperTheory.Reformulated.B.Qh26.IsInfEmb :
     {F E : Type} →
-      [inst : Field F] →
-        [inst_1 : Field E] → [inst_2 : Algebra F E] → (E →+* ℂ) → (TensorProduct F (UpperTheory.Reformulated.B.Qh26.Ainf F) E →+* ℂ) → Prop :=
+      [Field F] →
+        [Field E] → [Algebra F E] → (E →+* ℂ) → (TensorProduct F (UpperTheory.Reformulated.B.Qh26.Ainf F) E →+* ℂ) → Prop :=
     fun {F E : Type} [Field F] [Field E] [Algebra F E] (τ : E →+* ℂ)
         (θ : TensorProduct F (UpperTheory.Reformulated.B.Qh26.Ainf F) E →+* ℂ) ↦
       (∀ (x : E),
@@ -21,7 +21,7 @@ noncomputable def UpperTheory.Reformulated.B.Qh26.IsInfEmb :
           (θ : TensorProduct F (UpperTheory.Reformulated.B.Qh26.Ainf F) E → ℂ) (a ⊗ₜ[F] (1 : E))
 
 theorem UpperTheory.Reformulated.B.Qh26.isInfEmb_unique :
-    ∀ {F E : Type} [inst : Field F] [NumberField F] [inst_2 : Field E] [NumberField E] [inst_4 : Algebra F E] (τ : E →+* ℂ)
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (τ : E →+* ℂ)
       {θ θ' : TensorProduct F (UpperTheory.Reformulated.B.Qh26.Ainf F) E →+* ℂ},
       UpperTheory.Reformulated.B.Qh26.IsInfEmb τ θ → UpperTheory.Reformulated.B.Qh26.IsInfEmb τ θ' → θ = θ' := by
   intro F E _ _ _ _ _ τ θ θ' h h'

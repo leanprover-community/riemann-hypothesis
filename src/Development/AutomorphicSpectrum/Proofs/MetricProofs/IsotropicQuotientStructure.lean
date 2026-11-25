@@ -76,16 +76,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.CompanionTheory.Ar.Lattice
-
-theorem exists_basis_span_eq_of_saturated (Λ : Type) [AddCommGroup Λ] [Module.Free ℤ Λ]
-    [Module.Finite ℤ Λ] (N : Submodule ℤ Λ)
-    (hN : ∀ (v : Λ) (n : ℤ), n ≠ 0 → n • v ∈ N → v ∈ N) :
-    ∃ (k n : ℕ) (b : Module.Basis (Fin n) ℤ Λ) (f : Fin k → Fin n),
-      Function.Injective f ∧ Submodule.span ℤ (Set.range fun i => b (f i)) = N :=
-  _root_.UpperTheory.Reformulated.B.Yha6.main Λ N hN
-
-end GlobalTheory.CompanionTheory.Ar.Lattice
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBasisSubsetOfSaturatedSubmodule =====
@@ -1229,7 +1219,7 @@ theorem exists_univ_quot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   haveI := R₀.free
   haveI := R₀.fin
   obtain ⟨g', Λ', i1, i2, R₀', q₀, hq₀s, hq₀k, hq₀B, hq₀r, hq₀m⟩ := _root_.LevelTowerAlt.isotropic_quotient_lattice E g Λ Unit R₀ I hsat hiso
-  obtain ⟨k, n, b, f, hf, hN⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Lattice.exists_basis_span_eq_of_saturated Λ (AddSubgroup.toIntSubmodule I.toAddSubgroup) (fun v m hm h => hsat v m hm h)
+  obtain ⟨k, n, b, f, hf, hN⟩ := _root_.UpperTheory.Reformulated.B.Yha6.main Λ (AddSubgroup.toIntSubmodule I.toAddSubgroup) (fun v m hm h => hsat v m hm h)
   have hI : ∀ v, v ∈ I ↔ v ∈ Submodule.span ℤ (Set.range fun i => b (f i)) := fun v => by
     rw [hN]; rfl
   have hLI₀ := period_facts R₀ b f hf hI hiso

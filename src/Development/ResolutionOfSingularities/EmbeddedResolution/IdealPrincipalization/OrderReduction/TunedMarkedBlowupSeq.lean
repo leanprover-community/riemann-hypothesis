@@ -133,7 +133,6 @@ theorem isOrderBoundedByMult_derivedTriple (hstar : MaxContactCoverProperties.{u
     (hVc : (MaxContactCoverData.derivedTriple S s hft extra ndrop).IsAdmissible) :
     (MaxContactCoverData.derivedTriple S s hft extra ndrop).IsOrderBoundedByMult := by
   have := hV.charZero
-  have : IsNoetherianRing S.base := inferInstance
   have hsm : AlgebraicGeometry.Smooth (s.proj s.length ≫ S.structMap) := by
     have h := hVc.smooth
     rwa [MaxContactCoverData.derivedTriple_structureMorphism S s hft extra ndrop] at h
@@ -230,7 +229,6 @@ theorem length_eq_zero_of_orderAtLeastLocus_eq_empty (hstar : MaxContactCoverPro
     (hempty : orderAtLeastLocus (s.ideal s.length) S.mult = ∅) :
     (A (MaxContactCoverData.derivedTriple S s hft extra ndrop)).toSequenceOfBlowups.length = 0 := by
   have := hV.charZero
-  have : IsNoetherianRing S.base := inferInstance
   have hsm : AlgebraicGeometry.Smooth (s.proj s.length ≫ S.structMap) := by
     have h := hVc.smooth
     rwa [MaxContactCoverData.derivedTriple_structureMorphism S s hft extra ndrop] at h

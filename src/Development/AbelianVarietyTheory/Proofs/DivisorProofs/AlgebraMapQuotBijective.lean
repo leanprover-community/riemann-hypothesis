@@ -19,15 +19,6 @@ namespace DedekindCodimG
 variable {k A : Type} [Field k] [IsAlgClosed k] [CommRing A] [IsDedekindDomain A] [Algebra k A]
   [Algebra.FiniteType k A]
 
-end DedekindCodimG
-end GlobalTheory
-
-namespace GlobalTheory
-namespace DedekindCodimG
-
-variable {k A : Type} [Field k] [IsAlgClosed k] [CommRing A] [IsDedekindDomain A] [Algebra k A]
-  [Algebra.FiniteType k A]
-
 private theorem isArtinianRing_quotient_of_ne_bot_of_isDedekindDomain (A : Type) [CommRing A] [IsDedekindDomain A]
     (I : Ideal A) (hI : I ≠ ⊥) : IsArtinianRing (A ⧸ I) := by
   have : Ring.KrullDimLE 0 (A ⧸ I) := by

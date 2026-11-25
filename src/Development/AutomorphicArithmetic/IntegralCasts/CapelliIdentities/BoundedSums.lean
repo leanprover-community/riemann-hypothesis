@@ -7,11 +7,11 @@ import Mathlib.Tactic.Linter.Style
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.BoundedSums.Bdd :
-    {C : Type} → [inst : Field C] → Formalism.L2.FormalSeriesBounds.VF C → (ℕ → C) → Prop :=
+    {C : Type} → [Field C] → Formalism.L2.FormalSeriesBounds.VF C → (ℕ → C) → Prop :=
     fun {C : Type} [Field C] (V : Formalism.L2.FormalSeriesBounds.VF C) (s : ℕ → C) ↦ ∃ (K : ℝ), ∀ (n : ℕ), V.Ge K (s n)
 
 noncomputable def UpperTheory.Reformulated.B.BoundedSums.BddS :
-    {C : Type} → [inst : Field C] → {σ : Type} → Formalism.L2.FormalSeriesBounds.VF C → (ℕ → MvPowerSeries σ C) → Prop :=
+    {C : Type} → [Field C] → {σ : Type} → Formalism.L2.FormalSeriesBounds.VF C → (ℕ → MvPowerSeries σ C) → Prop :=
     fun {C : Type} [Field C] {σ : Type} (V : Formalism.L2.FormalSeriesBounds.VF C) (f : ℕ → MvPowerSeries σ C) ↦
       ∀ (μ : σ →₀ ℕ), UpperTheory.Reformulated.B.BoundedSums.Bdd V fun (n : ℕ) ↦ (MvPowerSeries.coeff μ : MvPowerSeries σ C → C) (f n)
 
@@ -46,7 +46,7 @@ private theorem UpperTheory.Reformulated.B.BoundedSums.bddS_mul {C : Type} [Fiel
   exact hK n
 
 theorem UpperTheory.Reformulated.B.BoundedSums.prod :
-    ∀ {C : Type} [inst : Field C] {V : Formalism.L2.FormalSeriesBounds.VF C} {σ ι : Type} (S : Finset ι) {f : ι → ℕ → MvPowerSeries σ C},
+    ∀ {C : Type} [Field C] {V : Formalism.L2.FormalSeriesBounds.VF C} {σ ι : Type} (S : Finset ι) {f : ι → ℕ → MvPowerSeries σ C},
       (∀ i ∈ S, UpperTheory.Reformulated.B.BoundedSums.BddS V (f i)) → UpperTheory.Reformulated.B.BoundedSums.BddS V fun (n : ℕ) ↦ ∏ i ∈ S, f i n := by
   intro C _ V σ ι S f h
   classical

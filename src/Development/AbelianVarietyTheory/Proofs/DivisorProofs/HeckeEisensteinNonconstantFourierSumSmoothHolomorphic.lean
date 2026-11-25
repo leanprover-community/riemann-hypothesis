@@ -91,7 +91,6 @@ theorem bound_exp {ε M c L0 D : ℝ} (hc : 1 + 2 * ε ≤ c) (hM : c ≤ M) (hD
     Real.exp (-c * (L0 + D)) ≤ Real.exp (M * |L0|) * Real.exp (-(1 + ε) * D) * Real.exp (-(ε * D)) := by
   rw [← Real.exp_add, ← Real.exp_add]
   apply Real.exp_le_exp.2
-  have h1 := le_abs_self L0
   have h2 := neg_abs_le L0
   have h3 := abs_nonneg L0
   nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ c) (by linarith : 0 ≤ |L0| + L0),
@@ -127,9 +126,6 @@ theorem bound_F' {ε M : ℝ} (hε : 0 < ε) (a b : ℕ) (ν : ℝ) {y : ℝ} (h
     rw [show (Real.exp (ε * lg (t / y)))⁻¹ * lg (t / y) * ε = (ε * lg (t / y)) / Real.exp (ε * lg (t / y)) by
       field_simp]
     rw [div_le_iff₀ hp]; linarith
-  have heC : 0 ≤ Real.exp (M * |Real.log (abs y)|) := (Real.exp_pos _).le
-  have hE1 : 0 ≤ Real.exp (-(1 + ε) * lg (t / y)) := (Real.exp_pos _).le
-  have hE2p : 0 ≤ Real.exp (-(ε * lg (t / y))) := (Real.exp_pos _).le
   have hl0 := abs_nonneg (Real.log |y|)
   calc Real.exp (-((a + b : ℝ) + 2 * σ.re) * L y t) * (2 * |L y t|)
       ≤ Real.exp (M * |Real.log (abs y)|) * Real.exp (-(1 + ε) * lg (t / y)) * Real.exp (-(ε * lg (t / y))) *
@@ -314,12 +310,10 @@ theorem hasDerivAt_invpow {f : ℝ → ℂ} {c : ℂ} {y : ℝ} (hf : HasDerivAt
 
 theorem two_y_div {t y : ℝ} (hy : y ≠ 0) :
     (((2 * y / (t ^ 2 + y ^ 2) : ℝ)) : ℂ) = I * ((wt t y)⁻¹ - ((starRingEnd ℂ) (wt t y))⁻¹) := by
-  have hq := q_pos (t := t) hy
   have hw := wt_ne (t := t) hy
   have hc := conj_wt_ne (t := t) hy
   have hprod : wt t y * (starRingEnd ℂ) (wt t y) = ((t ^ 2 + y ^ 2 : ℝ) : ℂ) := by
     rw [conj_wt]; unfold wt; push_cast; ring_nf; rw [I_sq]; ring
-  have hq' : ((t ^ 2 + y ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hq.ne'
   rw [inv_sub_inv hw hc, hprod, conj_wt]
   unfold wt
   push_cast

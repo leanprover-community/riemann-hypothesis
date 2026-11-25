@@ -44,7 +44,7 @@ theorem nontrivial_of_isIrreducible {G W : Type} [Group G] [AddCommGroup W] [Mod
   exact bot_ne_top (Subrepresentation.toSubmodule_injective (Subsingleton.elim _ _) :
     (⊥ : Subrepresentation σ) = ⊤)
 
-theorem wd_wtW_of_isL : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL), LSocleGL k → LSegJacquet k → ∀ (𝔪 : Multiset (Segment k)) {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), IsL 𝔪 π → ∀ (h : ℕ) (Δ : Fin h → Segment k), IsOrderedForm Δ 𝔪 → Wd π (wtW Δ) := by
+theorem wd_wtW_of_isL : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL), LSocleGL k → LSegJacquet k → ∀ (𝔪 : Multiset (Segment k)) {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), IsL 𝔪 π → ∀ (h : ℕ) (Δ : Fin h → Segment k), IsOrderedForm Δ 𝔪 → Wd π (wtW Δ) := by
   intro k _ _ _ _ hA hS hJ 𝔪 N V _ _ π hπ h Δ hΔ
   have hmem : ∀ i, Δ i ∈ 𝔪 := fun i => hΔ.1 ▸ Multiset.mem_map_of_mem Δ (Finset.mem_univ i)
   choose x hx using fun i => SumProd.exists_isLSeg_of_isL hπ (hmem i)

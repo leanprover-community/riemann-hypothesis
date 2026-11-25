@@ -314,7 +314,7 @@ theorem countable_ratH (a b : ℕ) : Countable (ratH E a b) := by
 
 theorem measurableMul_H (a b : ℕ) : MeasurableMul (H E a b) :=
   haveI : BorelSpace (H E a b) := ⟨rfl⟩
-  ⟨fun c => (continuous_const.mul continuous_id).measurable, fun c => (continuous_id.mul continuous_const).measurable⟩
+  ⟨fun _ => (continuous_const.mul continuous_id).measurable, fun _ => (continuous_id.mul continuous_const).measurable⟩
 
 theorem mem_ratH {a b : ℕ} (δ : ratH E a b) :
     ∃ (γ₁ : GL (Fin a) E) (γ₂ : GL (Fin b) E), (δ : H E a b) = (ratGL E a γ₁, ratGL E b γ₂) := by
@@ -340,7 +340,7 @@ theorem logSize_inv {n : ℕ} (g : GA E n) : logSize g⁻¹ = logSize g := by
   unfold logSize; rw [inv_inv, add_comm]
 
 theorem redSize_nonneg (hS : SizeBasic) {n : ℕ} (g : GA E n) : 0 ≤ redSize g :=
-  le_ciInf fun γ => (hS E n).2.1 _
+  le_ciInf fun _ => (hS E n).2.1 _
 
 theorem redSize_le (hS : SizeBasic) {n : ℕ} (γ : GL (Fin n) E) (g : GA E n) :
     redSize g ≤ logSize (ratGL E n γ * g) :=

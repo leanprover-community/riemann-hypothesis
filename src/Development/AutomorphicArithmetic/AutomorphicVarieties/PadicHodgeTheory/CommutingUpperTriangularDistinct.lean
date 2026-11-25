@@ -125,7 +125,7 @@ private theorem conjugate_representation_mat {R D : Type} [CommRing R] [Group D]
 
 private theorem padic_int_ringHom_injective {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [CharZero K] (φ : ℤ_[l] →+* K) :
     Function.Injective φ := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   by_contra h0
   rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hx

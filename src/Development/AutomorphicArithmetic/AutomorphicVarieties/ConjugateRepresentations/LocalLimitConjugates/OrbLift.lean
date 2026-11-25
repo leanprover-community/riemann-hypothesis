@@ -134,7 +134,6 @@ theorem UpperTheory.V.Cj.H.orbLift :
   obtain ⟨w, hw, ew⟩ := orbSm E a u hu
   have hZ : IsClosed ((latticeGL E a : Set (GA E a)) * C) :=
     by
-      set_option synthInstance.maxHeartbeats 200000 in
         exact IsClosed.mul_right_of_isCompact Subgroup.isClosed_of_discrete hC
   have hwZ : ∀ g ∈ (latticeGL E a : Set (GA E a)) * C, w.1 g ≠ 0 := by
     rintro _ ⟨γ, hγ, c, hc, rfl⟩

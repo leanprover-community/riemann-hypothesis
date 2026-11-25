@@ -418,7 +418,7 @@ theorem isoW_gen {a : ℕ} (Y : TupV (E := E) v n a) (z : Fin a) (γ : Fv F v)
   have hconj : ∀ x y, sigR (Fv F v) σ (hR (Fv F v) σ J x y) = hR (Fv F v) σ J y x :=
     fun x y => PI.OmLocU.Orb.hR_conj σ J v hcm hJ x y
   have hsc : ∀ r : Fv F v, sigR (Fv F v) σ (sc (E := E) v r) = sc (E := E) v r :=
-    fun r => PI.OmLocU.NormOneUnitFixedPoints.sigR_sc' σ v r
+    fun r => PI.OmLocU.sigR_sc σ v r
   set G := gramR (Fv F v) σ J Y with hGdef
 
   obtain ⟨S, hSi, hTS1⟩ := hTS

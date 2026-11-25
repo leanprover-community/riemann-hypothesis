@@ -290,15 +290,6 @@ namespace GlobalTheory.TopLevelInv
 
 variable {D : D7}
 
-theorem infPart_of_isIdemSum {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) : infPart D e = 0 := by
-  obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
-  have hs := map_sum (infPart D).toAddMonoidHom es P
-  change (infPart D).toAddMonoidHom _ = 0
-  rw [hs]
-  exact Finset.sum_eq_zero fun PP hPP =>
-    (GlobalTheory.IdemSupport.delta_of_isIdemAt (GlobalTheory.StdFrames.comp_toAd D) (hes PP hPP)).1
-
-
 open Classical in
 theorem cpt_of_isIdemSum {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) (Q : Pl D.host.E) :
     GlobalTheory.StdFrames.cpt Q (toEAf D e) = if Q ∈ P then 1 else 0 := by
@@ -332,7 +323,7 @@ theorem detAt_cutPart_parts {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSu
   have hval : (GlobalTheory.VecInv.detAt e hee V (cutPart (e + cA D e) V g) : AE D) =
       e * (Formalism.L2.Theta.mt V (cutPart (e + cA D e) V g)).det + (1 - e) := rfl
   rw [hval]
-  have hinf := infPart_of_isIdemSum he
+  have hinf := Formalism.IndefR.Fin.infPart_idemSum he
   refine ⟨?_, fun Q hQ => ?_, fun Q hQ => ?_⟩
   · rw [RingHom.map_add (f := _), RingHom.map_mul, RingHom.map_sub, RingHom.map_one, hinf, zero_mul, zero_add, sub_zero]
   · let φ : AE D →+* Q.adicCompletion D.host.E := (GlobalTheory.StdFrames.cpt Q).comp (toEAf D)

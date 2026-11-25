@@ -105,8 +105,7 @@ theorem expProd_mem_UH (hG : IsUnit G) {k : ℕ} {Xs : Fin k → Matrix (Fin n) 
     exact exp_mem_UH hG (hX i) _
 
 theorem isUnit_of_mem_UH (hG : IsUnit G) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) : IsUnit g := by
-  have h : gᴴ * G * g = G := hg
-  exact isUnit_of_mul_isUnit_right (h.symm ▸ hG : IsUnit (gᴴ * G * g))
+  exact GlobalTheory.SmLinSub.isUnit_of_mem hG hg
 
 theorem inv_mem_UH (hG : IsUnit G) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) : g⁻¹ ∈ UH G := by
   have h : gᴴ * G * g = G := hg
@@ -177,13 +176,7 @@ theorem dRep_mem (hG : IsUnit G) (hπ : IsURepOn (UH G) π) {w : H} (hw : w ∈ 
   simp [List.ofFn_succ', -List.ofFn_succ]
 
 theorem prod_conj {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsUnit g) (l : List (Matrix (Fin n) (Fin n) ℂ)) :
-    g * (l.map fun x => g⁻¹ * x * g).prod = l.prod * g := by
-  have hd := (Matrix.isUnit_iff_isUnit_det g).1 hg
-  induction l with
-  | nil => simp
-  | cons x l ih =>
-    rw [List.map_cons, List.prod_cons, List.prod_cons, Matrix.mul_assoc x, ← ih]
-    simp only [← Matrix.mul_assoc, mul_nonsing_inv _ hd, Matrix.one_mul]
+    g * (l.map fun x => g⁻¹ * x * g).prod = l.prod * g := GlobalTheory.SmLinSub.prod_conj hg l
 
 theorem rep_mem (hG : IsUnit G) (hπ : IsURepOn (UH G) π) {w : H} (hw : w ∈ smSub G π)
     {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH G) : π g w ∈ smSub G π := by

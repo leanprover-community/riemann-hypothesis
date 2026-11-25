@@ -27,8 +27,6 @@ theorem isAdmissible_pullbackAlong_of_smooth (T : MarkedIdealWithBoundary.{u}) (
   have := hV.locallyOfFiniteType
   have hqc : AlgebraicGeometry.QuasiCompact q := inferInstance
   subst hq
-  have : AlgebraicGeometry.Smooth (h ≫ T.structMap) := inferInstance
-  have : AlgebraicGeometry.Flat h := inferInstance
   refine ⟨hV.charZero, ?_, ?_, hV.one_le_mult, hqc, ?_, ?_⟩
   · show AlgebraicGeometry.LocallyOfFiniteType (h ≫ T.structMap)
     infer_instance

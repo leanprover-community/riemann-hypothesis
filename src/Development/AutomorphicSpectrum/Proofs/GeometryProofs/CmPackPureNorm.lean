@@ -79,7 +79,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.RelDual
 
-
 open Classical in
 theorem sum_dual_embeddings {L E Ω : Type} [Field L] [Field E] [Algebra L E] [FiniteDimensional L E]
     [Algebra.IsSeparable L E] [Field Ω] [Algebra L Ω] [IsAlgClosed Ω] {f : ℕ} (b b' : Fin f → E)
@@ -534,7 +533,7 @@ theorem relative_dual : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     simpa only [hB] using this
   obtain ⟨-, n, hn, hspan⟩ := hb
   have hne : differentIdeal ℤ (𝓞 E) ≠ ⊥ := differentIdeal_ne_bot
-  obtain ⟨δ, hδ, hδ0, ⟨n0, hn0, hn0'⟩, hlog⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.ideal_local_generator E (differentIdeal ℤ (𝓞 E)) ℓ hne
+  obtain ⟨δ, hδ, hδ0, ⟨n0, hn0, hn0'⟩, hlog⟩ := _root_.PositivityTheory.Xgf.ideal_padic_generator_log_norm E (differentIdeal ℤ (𝓞 E)) ℓ hne
   have hrt := GlobalTheory.CompanionTheory.Ar.Fl.RelDiff.rt_ne_zero H
   have hδE : (δ : E) ≠ 0 := by simpa using hδ0
   have hjrt : ‖j (H.rt : E)‖ ≠ 0 := by simpa using hrt
@@ -849,8 +848,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_local_basis_cm_order : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (ℓ : ℕ), ℓ.Prime → ∃ (f : ℕ) (b : Fin f → 𝓞 E), 2 * f = Module.finrank ℚ E ∧ IsLocBasis (Algebra.adjoin ℤ {H.w0}) ℓ b := by
-  first | exact @PositivityTheory.Xgf.exists_local_basis_cm_order
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsLocalBasisCmOrder =====
@@ -1544,7 +1541,7 @@ theorem intFrames_fin : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   haveI : IsFractionRing V X.K := (inferInstance : IsFractionRing Vs X.K)
   have hj : ∀ a : X.K, ‖j a‖ ≤ 1 ↔ a ∈ V := hVj
   have hOK' : ∀ s : 𝓞 X.K, (s : X.K) ∈ V := hOK
-  obtain ⟨f, b, hf, hb⟩ := _root_.GlobalTheory.CompanionTheory.Relay.exists_local_basis_cm_order E H ℓ ℓ.prop
+  obtain ⟨f, b, hf, hb⟩ := _root_.PositivityTheory.Xgf.exists_local_basis_cm_order E H ℓ ℓ.prop
   obtain ⟨M, ρ, lam, hact, hIm, hsm, hadd, hrt, hCM⟩ := _root_.GlobalTheory.CompanionTheory.Relay.cm_lie_model_action E H D l Xo c g ty FU i Z P hP X
   obtain ⟨δ₀, hδ₀, hδ₀'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.RelDiff.exists_local_generator E H ℓ
   let σ : E →+* X.K := X.β.comp (tauE c τ)
@@ -1569,8 +1566,8 @@ theorem intFrames_fin : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   have hN0 : 0 < N := Nat.pos_of_ne_zero fun h => hN (h ▸ dvd_zero _)
   obtain ⟨n, hn, hnspan⟩ := hloc.2
   have hn0 : 0 < n := Nat.pos_of_ne_zero fun h => hn (h ▸ dvd_zero _)
-  have hdec := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.pure_family_spans_pure_sublattice E H (FU.Di i) g ty P hP D.p D.q x n hx hnspan).1
-  have hg := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_pure_vectors_periods_span_of_finite_index E H (FU.Di i) g ty P hP n hn0 hdec).1
+  have hdec := (_root_.PositivityTheory.Xgf.pure_family_decomposition E H (FU.Di i) g ty P hP D.p D.q x n hx hnspan).1
+  have hg := (_root_.PositivityTheory.Xgf.periods_span_pure_decomposition E H (FU.Di i) g ty P hP n hn0 hdec).1
   have hcardI : Fintype.card ((Fin D.p × Fin f) ⊕ (Fin D.q × Fin f)) = g := by
     rw [hg, (FU.sig i).1, (FU.sig i).2, ← hf, Nat.mul_div_cancel_left _ (by norm_num : 0 < 2)]
     simp only [Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]

@@ -164,7 +164,7 @@ theorem gamIsom (u : D.what₂.Word) (g : Gam X u) :
     exact hfix _ (Or.inr rfl)
 
 theorem one_mem_stabF (u : D.what₂.Word) : (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) ∈ stabF D (X.Fu u) :=
-  ⟨(Formalism.HermitianLatticesTheory.isom _).one_mem, fun j => Submodule.map_id _, rfl⟩
+  ⟨(Formalism.HermitianLatticesTheory.isom _).one_mem, fun _ => Submodule.map_id _, rfl⟩
 
 theorem gmap_one (Λ : Submodule (𝓞 D.host.E) (VS D).V) :
     Formalism.HermitianLatticesTheory.gmap (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) Λ = Λ := by

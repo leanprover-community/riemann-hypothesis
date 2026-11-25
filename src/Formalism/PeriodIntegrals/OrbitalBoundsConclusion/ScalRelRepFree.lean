@@ -563,8 +563,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem scalar_rep_free (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) : PI.ScalRelRepFree.ScalarRepFree D u u' := by
   intro F0 Λ hrow x y y' hrel hsc
   obtain ⟨n, hn, m, hm, hfr, hzt⟩ := hrel

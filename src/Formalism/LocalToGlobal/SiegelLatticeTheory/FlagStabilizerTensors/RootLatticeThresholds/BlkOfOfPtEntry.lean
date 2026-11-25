@@ -152,38 +152,15 @@ theorem cond_conj (g s : S.V ≃ₗ[E] S.V) {A₁ B₁ A₂ B₂ : Submodule E S
 
 variable {T' : E} {F₁ F₂ : LFlag S r T'} {g : S.V ≃ₗ[E] S.V}
 
-theorem e_of_frame (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (i : Fin r) :
-    F₂.fl.e i = g (F₁.fl.e i) := by
-  have := hfr (Fin.castSucc i)
-  simpa [frame, FlagG.fvec] using this
-
-theorem xflag_eq_map (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (j : ℕ) :
-    Xflag F₂ j = (Xflag F₁ j).map (g : S.V →ₗ[E] S.V) := by
-  have he : F₂.fl.e = fun i => g (F₁.fl.e i) := funext (e_of_frame hfr)
-  show Submodule.span E (F₂.fl.e '' _) = (Submodule.span E (F₁.fl.e '' _)).map _
-  rw [Submodule.map_span, Set.image_image, he]
-  rfl
-
-theorem xsp_eq_map (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) :
-    Xsp F₂ = (Xsp F₁).map (g : S.V →ₗ[E] S.V) := by
-  have he : F₂.fl.e = fun i => g (F₁.fl.e i) := funext (e_of_frame hfr)
-  show Submodule.span E (Set.range F₂.fl.e) = (Submodule.span E (Set.range F₁.fl.e)).map _
-  rw [Submodule.map_span, ← Set.range_comp, he]
-  rfl
-
-theorem orth_mem (hfr : ∀ a, frame F₂ a = g (frame F₁ a)) (hiso : g ∈ Formalism.HermitianLatticesTheory.isom S.hT)
-    (y : S.V) : y ∈ orth S (Xsp F₂) ↔ g.symm y ∈ orth S (Xsp F₁) := by
-  apply _root_.PI.DCRelEquiv.UnitaryGroupMassFormula.orth_mem_transport <;> assumption
-
 theorem nlam_conj (hg : IsAutLam S Λ g) (hfr : ∀ a, frame F₂ a = g (frame F₁ a))
     (s : S.V ≃ₗ[E] S.V) : s ∈ NLam Λ F₂ ↔ g⁻¹ * s * g ∈ NLam Λ F₁ := by
   have hA : ∀ j x, x ∈ Xflag F₂ j ↔ g.symm x ∈ Xflag F₁ j := fun j x => by
-    rw [xflag_eq_map hfr]
+    rw [PI.DCRelEquiv.UnitaryGroupMassFormula.Xflag_transport hfr]
     exact Submodule.mem_map_equiv _
   have hX : ∀ x, x ∈ Xsp F₂ ↔ g.symm x ∈ Xsp F₁ := fun x => by
-    rw [xsp_eq_map hfr]
+    rw [PI.DCRelEquiv.UnitaryGroupMassFormula.Xsp_transport hfr]
     exact Submodule.mem_map_equiv _
-  have hO : ∀ x, x ∈ orth S (Xsp F₂) ↔ g.symm x ∈ orth S (Xsp F₁) := orth_mem hfr hg.1
+  have hO : ∀ x, x ∈ orth S (Xsp F₂) ↔ g.symm x ∈ orth S (Xsp F₁) := PI.DCRelEquiv.UnitaryGroupMassFormula.orth_mem_transport hfr hg.1
   have hAut : IsAutLam S Λ s ↔ IsAutLam S Λ (g⁻¹ * s * g) := by
     constructor
     · intro h
@@ -558,7 +535,6 @@ theorem tw_inv_eq {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : �
     (hZu : IsUnit (Zhat F0 F'').det) (hGr : IsUnit (gramOf (gg F0 F'')).det) (a : GLR D) :
     tw F0 F'' L hLu hZu hGr a⁻¹ = (tw F0 F'' L hLu hZu hGr a)⁻¹ := by
   rw [eq_inv_iff_mul_eq_one, ← tw_mul, mul_inv_cancel, tw_one]
-
 
 open Formalism.L2.SG.PackageTie2 in
 theorem volume_dictionary_lu_decomposition (Y : Formalism.L2.SG.Full.Full X) {u u' : D.what₂.Word} (t : TT Y u u')
@@ -1234,7 +1210,6 @@ theorem conj_off {n : ℕ} {K : Type*} [Field K] {N Y : Matrix (Fin n) (Fin n) K
 end Helpers
 
 section Final
-
 
 open Formalism.L2.SG.PackageTie2 in
 theorem dictC_holds : DictC := by

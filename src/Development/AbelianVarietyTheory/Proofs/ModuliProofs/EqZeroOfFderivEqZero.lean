@@ -81,9 +81,7 @@ theorem eq_zero_of_fderiv_eq_zero (w : Fin g → ℂ)
 
 theorem tangent_bijective (hs : SmoothOfRelativeDimension g A.hom) :
     (∀ v, IsTangent v → ∃! w, u.IsDiff w v) ∧ (∀ w, ∃! v, IsTangent v ∧ u.IsDiff w v) :=
-  TangentOrigin.tangent_bijection_of_values valAt'_rules A L g u
-    (exists_coord_adapted (HolChart.exists_holomorphic_chart valAt'_rules existsUnique_point_of_ringHom
-      exists_holomorphic_section_of_etale) A L g u hs (eq_zero_of_fderiv_eq_zero u))
+  GlobalTheory.UnifTangent.tangent_bijection u hs
 
 end Tangent
 

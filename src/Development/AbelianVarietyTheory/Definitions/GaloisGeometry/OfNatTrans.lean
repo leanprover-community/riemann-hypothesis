@@ -74,8 +74,8 @@ variable (m : Mor F F' σ)
 
 def pullC (n : ℕ) : Cn F n →ₛₗ[σ] Cn F' n where
   toFun f s := m.τ _ (f (s ⋙ m.G))
-  map_add' f g := funext fun s => map_add (m.τ _) _ _
-  map_smul' r f := funext fun s => LinearMap.map_smulₛₗ (m.τ _) _ _
+  map_add' _ _ := funext fun _ => map_add (m.τ _) _ _
+  map_smul' _ _ := funext fun _ => LinearMap.map_smulₛₗ (m.τ _) _ _
 
 theorem d_pullC (n : ℕ) (f : Cn F n) : d F' n (m.pullC n f) = m.pullC (n + 1) (d F n f) := by
   funext s

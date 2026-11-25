@@ -25,12 +25,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem bd_le_hf (L : Lattice (O := O) ρ) : BD L ≤ HfD PD L := le_sup_right
 
-theorem len_le_torsion (L : Lattice (O := O) ρ) (c : O) :
-    Module.length O (↥(divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)) ⧸
-        (divisibleCocycles L ⊓ HfD PD L).comap (divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)).subtype) ≤
-      Module.length O ↥(Submodule.torsionBy O (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) c) :=
-  by apply _root_.GlobalTheory.TBLocal.len_le_torsion
-
 end Len
 
 end UpperTheory.N.TBLoc
@@ -75,7 +69,7 @@ theorem tbe_clauses (L : Lattice (O := O) ρ) (I J : Subgroup G) (hIJ : I = J) (
       refine ⟨x + y, fun g hg => ?_⟩
       simp only [Pi.add_apply, hx g hg, LinearMap.pi_apply, LinearMap.sub_apply, LinearMap.id_apply, map_add (f := _)]
       abel
-  · calc _ ≤ _ := len_le_torsion PD L _
+  · calc _ ≤ _ := GlobalTheory.TBLocal.len_le_torsion PD L _
       _ ≤ _ := hlen
       _ = _ := by push_cast; ring
 end Clauses

@@ -34,8 +34,7 @@ theorem intAlg_smul (a : 𝓞 c.F) {f : Rul Xo c} (hf : IntAlg f) : IntAlg (a �
   have e : (a • f : Rul Xo c) = (a : c.F) • f := rfl
   rw [e]
   by_cases ha : (a : c.F) = 0
-  · set_option synthInstance.maxHeartbeats 200000 in
-      rw [ha, zero_smul, (isVal_valSet la v hv).zero]
+  · rw [ha, zero_smul, (isVal_valSet la v hv).zero]
     exact le_top
   · rw [(isVal_valSet la v hv).smul _ _ ha]
     exact add_nonneg (by exact_mod_cast vAdd_int_nonneg la ha) (hf la v hv)

@@ -30,7 +30,6 @@ def low {R : Type} [CommRing R] {d : ℕ} (a : Fin d → R) : R[X] := ∑ j, C (
 
 theorem mon_map {R S : Type} [CommRing R] [CommRing S] {d : ℕ} (a : Fin d → R) (f : R →+* S) :
     (mon a).map f = mon fun j => f (a j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [mon, Polynomial.map_sum]
 
 theorem eval₂_low {R S : Type} [CommRing R] [CommRing S] {d : ℕ} (a : Fin d → R) (f : R →+* S) (x : S) :

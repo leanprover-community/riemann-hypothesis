@@ -102,7 +102,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.BesselData GlobalTheory.RootExch
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PosLinVec
 
@@ -163,7 +162,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.BesselData GlobalTheory.RootExch
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CoeffRational
 
@@ -308,7 +306,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.BesselData GlobalTheory.RootExch
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RootExch.Mirror
 
@@ -440,7 +437,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.BesselData GlobalTheory.RootExch
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RootExch.PosLinear
 
@@ -820,8 +816,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.TrueRecord
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 variable {θ : InfF D}
@@ -1009,7 +1003,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.PetPos
 
@@ -1059,7 +1052,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.petersson_normSq_pos_automorphicFunction_unitary : ∀ (D : D7) (V : HSp D) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)), IsQuot V μ 𝓕 → ∀ φ, IsAutFun V φ → φ ≠ 0 → IntegrableOn (fun h => star (φ h) * φ h) 𝓕 μ → 0 < (∫ h in 𝓕, star (φ h) * φ h ∂μ).re := by
   first | exact @GlobalTheory.Mem.PetPos.petersson_pos
@@ -1080,8 +1072,6 @@ open scoped TensorProduct
 namespace GlobalTheory.Mem.TrueRecordEq
 
 open GlobalTheory.Mem.TrueRecord
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {θ : InfF D}
 
@@ -1234,74 +1224,25 @@ abbrev recXE : ThetaX D where
 
 abbrev recTE : ThetaTied D (recXE hP hT hB hL hE hθ hψ Wf hW Tw Rc) where
   ev V := (AFs θ V).subtype
-  ev_inj V := Subtype.val_injective
-  ev_aut V F := (aut hθ F).toIsAutFun
-  cusp V F := mem_cuspIn hθ F
   eGf V := MulEquiv.refl _
-  actF V g F x := rfl
-  actR := ⟨⟨θ, hθ⟩, fun θ' h' V τ g hg => by
-    obtain rfl : θ' = θ := (GlobalTheory.Mem.InfFamUnique.existsUnique_infFam D).unique h' hθ
-    have h1 := (GlobalTheory.PointAtPlaceHom.atTau_laws D θ' hθ V τ).1 g hg
-    refine ⟨h1.exists, fun h hh F x => ?_⟩
-    have e : atTau θ' V τ g = h := by
-      rw [atTau, dite_eq_left h1.exists]; exact h1.unique h1.exists.choose_spec hh
-    rw [← e]
-    exact actReal_apply hθ V τ hg F x⟩
-  ksph V S g := mem_ksph
-  conj V F x := rfl
   petF := Rc.petF
-  petF_pos := Rc.petF_pos
   petR := Rc.meas.petR
-  petR_pos := Rc.meas.petR_pos
-  petR_def := Rc.meas.petR_def
-  petR_minf := Rc.meas.petR_minf
   pet V hV μ 𝓕 hμ F G := congrArg (fun z => (Rc.petC V : ℂ) * z) <|
     integral_mu hV hμ (fun h => star (F.1 h) * G.1.1 h) fun γ hγ g => by
       rw [(aut hθ F).left γ hγ, (aut hθ G.1).left γ hγ]
-  btop A B ι hB' hι μ 𝓕 hμ s hs φ F := congrArg (fun z => (Rc.petC B : ℂ) * z) <|
-    (exists_top hT hθ A B ι).choose_spec hB' hι μ 𝓕 hμ s hs φ (cuspEq θ B F)
   eChr := (chrGrp D).subtype
   eChr_inj := Subtype.val_injective
   eChr_range := Set.ext fun χ => ⟨fun ⟨x, hx⟩ => hx ▸ mem_chrGrp.1 x.2, fun h => ⟨⟨χ, mem_chrGrp.2 h⟩, rfl⟩⟩
   infTy := expo_spec
   chrOf_res := Rc.chr_res
   etaT_res := Rc.eta_res
-  etaT_unr := Rc.eta_unr
-  etaT_exp τ := expo_eq (Rc.eta_inf τ)
-  xs_pos t j hj := (Tw.Xs_sig t j hj).2
-  ys_sig t j hj := (Tw.Ys_sig t j hj).2
-  ysLow := Tw.YsLow_witt
 
 abbrev recWE : WeilTied D (recXE hP hT hB hL hE hθ hψ Wf hW Tw Rc) (recTE hP hT hB hL hE hθ hψ Wf hW Tw Rc) where
   ψ := ψ
   ψ_std := hψ
   evS V W := (ThS ψ V W).subtype
   evS_inj V W := Subtype.val_injective
-  evS_range V W _ := range_ThS V W
   om V W χ χ' := Wf.om V W χ.1 χ'.1
-  om_heis V W χ χ' h h1 h2 := Wf.om_heis V W _ _ (adm χ χ' h h1 h2)
-  om_aut V W χ χ' h h1 h2 := Wf.om_aut V W _ _ (adm χ χ' h h1 h2)
-  om_cont V W χ χ' h h1 h2 := Wf.om_cont V W _ _ (adm χ χ' h h1 h2)
-  om_unit V W χ χ' h h1 h2 := Wf.om_unit V W _ _ (adm χ χ' h h1 h2)
-  om_split V W χ χ' h h1 h2 := Wf.om_split V W _ _ (adm χ χ' h h1 h2)
-  om_tw :=
-    { twW_up := fun V W χ χ' ν h h1 h2 h3 g k x hx => by
-        have := Wf.twW V W _ _ ν.1 (adm χ χ' h.ne h1 h2) (mem_chrGrp.1 ν.2) h3 g k x hx
-        rw [ite_eq_left h] at this
-        exact this
-      twV_up := fun V W χ χ' ν h h1 h2 h3 g k x hx => by
-        have := Wf.twV V W _ _ ν.1 (adm χ χ' h.ne h1 h2) (mem_chrGrp.1 ν.2) h3 g k x hx
-        rw [ite_eq_left h] at this
-        exact this
-      twW_dn := fun V W χ χ' ν h h1 h2 h3 g k x hx => by
-        have := Wf.twW V W _ _ ν.1 (adm χ χ' h.ne' h1 h2) (mem_chrGrp.1 ν.2) h3 g k x hx
-        rw [ite_eq_right h.not_gt] at this
-        exact this
-      twV_dn := fun V W χ χ' ν h h1 h2 h3 g k x hx => by
-        have := Wf.twV V W _ _ ν.1 (adm χ χ' h.ne' h1 h2) (mem_chrGrp.1 ν.2) h3 g k x hx
-        rw [ite_eq_right h.not_gt] at this
-        exact this }
-  om_swap V W χ χ' h h1 h2 := Wf.om_swap V W _ _ (adm χ χ' h h1 h2)
   th V W χ χ' h h1 h2 hV μ 𝓕 hμ Φ F x := congrArg (fun z => (Rc.petC V : ℂ) * z) <|
     (exists_liftE hL hE hθ hψ Wf hW V W χ.1 χ'.1).choose_spec.2 (Or.inl (adm χ χ' h h1 h2)) hV μ 𝓕 hμ Φ (cuspEq θ V F) x
 

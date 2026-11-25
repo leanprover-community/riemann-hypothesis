@@ -58,16 +58,6 @@ theorem absE_eq [IsTotallyReal F] {E : Type} [Field E] [NumberField E] [Algebra 
     GlobalTheory.Doubling.absE F E t = distribHaarChar (AF F) (Units.map (Algebra.norm (AF F) : AF F ⊗[F] E →* AF F) t) :=
   NNReal.coe_injective (by rw [distrib_eq, ← _root_.GlobalTheory.absE_eq_prod_norm_fstA_sndA]; rfl)
 
-theorem continuous_toMixed : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  refine Continuous.prodMk (continuous_pi fun v => ?_) (continuous_pi fun v => ?_)
-  · exact (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal v.2).continuous.comp (continuous_apply _)
-  · exact (InfinitePlace.Completion.isometry_extensionEmbedding v.1).continuous.comp (continuous_apply _)
-
-theorem continuous_ofMixed : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm := by
-  first
-  | exact _root_.PositivityTheory.ThKF0.Split.continuous_ofMixed
-  | (apply _root_.PositivityTheory.ThKF0.Split.continuous_ofMixed <;> assumption)
-
 
 variable (F κ) in
 def glueE : (Vi F κ × Vf F κ) ≃ₜ+ (κ → AF F) where
@@ -90,10 +80,11 @@ def glueE : (Vi F κ × Vf F κ) ≃ₜ+ (κ → AF F) where
     rw [map_add (f := _), Pi.add_apply, map_add (f := _)]
     rfl
   continuous_toFun := continuous_pi fun i =>
-    (continuous_ofMixed.comp ((continuous_apply i).comp ((eI F κ).continuous.comp continuous_fst))).prodMk
+    ((PositivityTheory.ThKF0.Split.continuous_ofMixed F).comp
+      ((continuous_apply i).comp ((eI F κ).continuous.comp continuous_fst))).prodMk
       ((continuous_apply i).comp continuous_snd)
   continuous_invFun := ((eI F κ).symm.continuous.comp (continuous_pi fun i =>
-    continuous_toMixed.comp (continuous_fst.comp (continuous_apply i)))).prodMk
+    (PositivityTheory.ThKF0.Split.continuous_toMixed F).comp (continuous_fst.comp (continuous_apply i)))).prodMk
       (continuous_pi fun i => continuous_snd.comp (continuous_apply i))
 
 theorem axInt [IsTotallyReal F] : AxInt (adeleClass F) := by

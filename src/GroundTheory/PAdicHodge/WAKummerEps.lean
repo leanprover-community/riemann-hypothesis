@@ -137,13 +137,6 @@ theorem exists_tiltGal_eq_mul {x : 𝒪♭} (hx : x ≠ 0) {σ : Gal(PadicAlgCl 
   rw [OneMemClass.coe_one]
   exact (mul_eq_left₀ hx0).1 h.symm
 
-def kummerCocycle {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) (hζ : PreTilt.untilt (φi ε) ≠ 1)
-    {x : 𝒪♭} (hx : x ≠ 0)
-    (hfix : ∀ σ : Gal(PadicAlgCl p/K),
-      σ • ((PreTilt.untilt x : 𝒪) : ℂ_[p]) = ((PreTilt.untilt x : 𝒪) : ℂ_[p]))
-    (σ : Gal(PadicAlgCl p/K)) : ℤ_[p] :=
-  (exists_epsPow_eq hε hζ (exists_tiltGal_eq_mul hx (hfix σ)).choose_spec.1).choose
-
 theorem pFlat_ne_zero : pFlat p ≠ 0 := fun h => by
   have h1 := coe_untilt_pFlat (p := p)
   rw [h, IsPerfectoidField.untilt_zero] at h1
@@ -152,10 +145,6 @@ theorem pFlat_ne_zero : pFlat p ≠ 0 := fun h => by
 theorem gal_smul_coe_untilt_pFlat (σ : Gal(PadicAlgCl p/K)) :
     σ • ((PreTilt.untilt (pFlat p) : 𝒪) : ℂ_[p]) = ((PreTilt.untilt (pFlat p) : 𝒪) : ℂ_[p]) := by
   rw [coe_untilt_pFlat, ← galCp_apply, map_natCast]
-
-def kummerC {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1) (hζ : PreTilt.untilt (φi ε) ≠ 1)
-    (σ : Gal(PadicAlgCl p/K)) : ℤ_[p] :=
-  kummerCocycle hε hζ pFlat_ne_zero gal_smul_coe_untilt_pFlat σ
 
 end Cp
 

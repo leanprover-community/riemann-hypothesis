@@ -104,10 +104,6 @@ lemma herm_bvec_left (p : Fin (2 * r + k + 1)) (w : Fin (2 * r + k + 1) → ℂ)
     herm (Hpk k r) (bvec p) w = ∑ i, star (w i) * Hpk k r i p := by
   simp [herm, bvec, dotProduct, Matrix.mulVec_single]
 
-lemma herm_bvec_bvec (p q : Fin (2 * r + k + 1)) : herm (Hpk k r) (bvec p) (bvec q) = Hpk k r q p := by
-  rw [herm_bvec_left]
-  simp [bvec, Pi.single_apply]
-
 lemma hpk_col_eI (c : Fin r) (i : Fin (2 * r + k + 1)) :
     Hpk k r i (eI k r c) = if i = esI k r c then 1 else 0 := by
   have hc := c.isLt
@@ -146,16 +142,16 @@ theorem xuv_lieN (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) (v : Fin (2 * r +
   intro t
   set X := Xuv k r (bvec (eI k r a)) v with hX
   have hXa : X *ᵥ bvec (eI k r a) = 0 := by
-    rw [hX, xuv_mulVec, herm_eI_left, hv a le_rfl, herm_bvec_bvec, _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_ee]
+    rw [hX, xuv_mulVec, herm_eI_left, hv a le_rfl, Formalism.QuantumDeterminants.GBasic.herm_bvec, _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_ee]
     simp
   have hXc : ∀ c : Fin r, X *ᵥ bvec (eI k r c) = star (v (esI k r c)) • bvec (eI k r a) := by
     intro c
-    rw [hX, xuv_mulVec, herm_eI_left, herm_bvec_bvec, _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_ee]
+    rw [hX, xuv_mulVec, herm_eI_left, Formalism.QuantumDeterminants.GBasic.herm_bvec, _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_ee]
     simp
   have hXj : ∀ j : Fin (2 * r + k + 1), r ≤ j.val → j.val ≤ r + k →
       X *ᵥ bvec j = herm (Hpk k r) (bvec j) v • bvec (eI k r a) := by
     intro j hj hj'
-    rw [hX, xuv_mulVec, herm_bvec_bvec, hpk_eI_row_block a j hj hj']
+    rw [hX, xuv_mulVec, Formalism.QuantumDeterminants.GBasic.herm_bvec, hpk_eI_row_block a j hj hj']
     simp
   refine ⟨1, _root_.Formalism.FourierDecayAlt.P.C2x7.one_mem_UW z, NormedSpace.exp ((t : ℂ) • X), ⟨Formalism.FourierDecayAlt.P.B5.exp_mem (xuv_inLie _ _) t, ?_, ?_⟩,
     (Matrix.one_mul _).symm⟩

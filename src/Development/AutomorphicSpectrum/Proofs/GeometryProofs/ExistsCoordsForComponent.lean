@@ -298,7 +298,6 @@ end GlobalTheory.CompanionTheory.Ar.EigBase
 
 namespace GlobalTheory.CompanionTheory.Ar
 
-
 open EigBase in
 theorem exists_eigBase : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (Ω₀ : Type) [Field Ω₀] [CharZero Ω₀] (ξ₀ : Spec (CommRingCat.of Ω₀) ⟶ Y.X), IsCptGen ξ₀ → ∃ (K : Type) (_ : Fintype K) (J : K → Type) (_ : ∀ k, Fintype (J k)) (y : (Σ k, J k) → Ω₀) (X : Scheme.{0}) (ξ : Spec (CommRingCat.of Ω₀) ⟶ X) (f : X ⟶ Y.X) (cst : c.F →+* Ω₀) (t : SAB H X) (m : SABMap t Y.t f) (Li : Type) (_ : AddCommGroup Li) (_ : Module Ω₀ Li) (M : LieModel t.G ξ Li) (ρ : 𝓞 E →+* Module.End Ω₀ Li) (L : CMType H ⊕ CMType H → Lat ξ Li) (bd : Ideal (MRing J)), (∀ q : X, genPt ξ ⤳ q) ∧ CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) ∧ ξ ≫ f = ξ₀ ∧ ξ ≫ f ≫ Y.s = spMap (cst.comp (algebraMap (𝓞 c.F) c.F)) ∧ M.IsActOf t.act.act ρ ∧ (∀ s, (L s).IsVB (labelRk D s) (eigSp ρ (cst.comp (labelEmb c s)))) ∧ (∀ s (q : Cpt ξ), (∀ r : ℕ, r.Prime → ¬ InFibre ξ r q) → L s q = M.eigLat ρ (cst.comp (labelEmb c s)) q) ∧ Cmp.IsSncModel y D.dim bd ∧ ∀ (z : Spec (CommRingCat.of ℂ) ⟶ X) w, CoordsAt ξ y z w → (w ∈ mcPts bd ↔ f (centre z) ∉ abLocus Y.t.G) := by
   classical
@@ -341,8 +340,8 @@ theorem exists_eigBase : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   obtain ⟨π, hπ₁, hπ₂, hπ₃⟩ := exists_proj V hind htop
   let L : CMType H ⊕ CMType H → Lat ξ Li := fun s => M.lat.map (π s)
   have hcoh : ∀ s, (L s).IsCohOn Set.univ := fun s =>
-    (_root_.GlobalTheory.CompanionTheory.Ar.coh_vb_images_sums_multiples X₀ Ω₀ ξ Li Li M.lat M.lat Set.univ).2.1 (π s)
-      ((_root_.GlobalTheory.CompanionTheory.Ar.coh_vb_images_sums_multiples X₀ Ω₀ ξ Li Li M.lat M.lat Set.univ).1 _ _ hvb)
+    (_root_.PositivityTheory.HtPt.Mc.coh_ops X₀ Ω₀ ξ Li Li M.lat M.lat Set.univ).2.1 (π s)
+      ((_root_.PositivityTheory.HtPt.Mc.coh_ops X₀ Ω₀ ξ Li Li M.lat M.lat Set.univ).1 _ _ hvb)
   have hspan : ∀ s p, Submodule.span Ω₀ (L s p : Set Li) = V s := fun s p => by
     rw [span_map_eq_range (hspanTop p), hπ₃]
   have hLeq : ∀ s (p : Cpt ξ), (∀ r : ℕ, r.Prime → ¬ InFibre ξ r p) → L s p = M.lat.inter (V s) p :=

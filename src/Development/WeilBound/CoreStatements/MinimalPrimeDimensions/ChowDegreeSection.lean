@@ -108,9 +108,6 @@ theorem sectionCycleReduced_closed : SectionCycleReduced.Statement :=
 
 end GlobalTheory.CompanionTheory.Ar.Short.ChowClosing
 
-namespace GlobalTheory.CompanionTheory.Ar.Short
-
-end GlobalTheory.CompanionTheory.Ar.Short
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartResidueDegreeAlgClosedClosed =====

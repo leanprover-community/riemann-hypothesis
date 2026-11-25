@@ -585,7 +585,6 @@ open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
 
-
 theorem _root_.GlobalTheory.T.isLattice_comap_mulVecLin_of_leftInverse_matrix : ∀ (E : Type) [Field E] [NumberField E] (n n₁ : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (ι : Matrix (Fin n) (Fin n₁) E)
     (P : Matrix (Fin n₁) (Fin n) E), P * ι = 1 → L.IsLattice E →
     (L.comap ((Matrix.mulVecLin ι).restrictScalars (𝓞 E))).IsLattice E := by
@@ -637,14 +636,8 @@ theorem form_swap (h : IsCMExt F E σ) {n : ℕ} {J : Matrix (Fin n) (Fin n) E} 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem form_add_left {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (a b c : Fin n → E) :
-    form σ J (a + b) c = form σ J a c + form σ J b c := by simp [form, add_dotProduct]
-
 theorem form_sub_left {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (a b c : Fin n → E) :
     form σ J (a - b) c = form σ J a c - form σ J b c := by simp [form, sub_dotProduct]
-
-theorem form_smul_left {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (s : E) (a c : Fin n → E) :
-    form σ J (s • a) c = s * form σ J a c := by simp [form, smul_dotProduct]
 
 theorem form_add_right {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (a b c : Fin n → E) :
     form σ J c (a + b) = form σ J c a + form σ J c b := by
@@ -721,8 +714,8 @@ theorem exists_hyperbolic_split : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   have hsplit : ∀ z ∈ Y.L, ∃ u, ι *ᵥ u ∈ Y.L ∧ z = form σ Y.J z y • x + ι *ᵥ u + form σ Y.J z x • y := by
     intro z hz
     obtain ⟨u, hu⟩ := hcomp (z - form σ Y.J z y • x - form σ Y.J z x • y) (by
-        rw [form_sub_left, form_sub_left, form_smul_left, form_smul_left, hxx, hyx]; ring) (by
-        rw [form_sub_left, form_sub_left, form_smul_left, form_smul_left, hxy, hyy]; ring)
+        rw [form_sub_left, form_sub_left, GlobalTheory.TraceCorrection.form_smul_left, GlobalTheory.TraceCorrection.form_smul_left, hxx, hyx]; ring) (by
+        rw [form_sub_left, form_sub_left, GlobalTheory.TraceCorrection.form_smul_left, GlobalTheory.TraceCorrection.form_smul_left, hxy, hyy]; ring)
     refine ⟨u, ?_, ?_⟩
     · rw [← hu]; exact Y.L.sub_mem (Y.L.sub_mem hz (hL z hz).1) (hL z hz).2
     · rw [← hu]; abel

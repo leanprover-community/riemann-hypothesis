@@ -33,7 +33,7 @@ private theorem UpperTheory.Reformulated.B.G5.irr_conj {G R : Type} [Group G] [C
     rwa [mem, key] at h2
 
 theorem UpperTheory.Reformulated.B.G5.matIrr_conj :
-    ∀ {G R : Type} [inst : Group G] [inst_1 : CommRing R] {m : ℕ}
+    ∀ {G R : Type} [Group G] [CommRing R] {m : ℕ}
     {U : Subgroup G} {a a' : G → Matrix (Fin m) (Fin m) R} (h : GL (Fin m) R),
     (∀ g ∈ U, a g = (↑h⁻¹ : Matrix (Fin m) (Fin m) R) * a' g * (↑h : Matrix (Fin m) (Fin m) R)) →
       UpperTheory.V.U3.MatIrr U a → UpperTheory.V.U3.MatIrr U a' := by

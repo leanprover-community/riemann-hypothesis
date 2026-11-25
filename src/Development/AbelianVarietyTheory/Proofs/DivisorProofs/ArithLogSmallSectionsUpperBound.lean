@@ -449,7 +449,6 @@ theorem log_ncard_unit_ball_le_of_indep_bound :
   have hncard : (B 1).ncard ≤ q ^ M := by
     rw [← hfin.cast_ncard_eq] at hcard
     exact_mod_cast hcard
-  have hlogq : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ q))
   rcases Nat.eq_zero_or_pos (B 1).ncard with h0 | hpos
   · rw [h0]; simp; positivity
   · have hpos' : (0 : ℝ) < (B 1).ncard := by exact_mod_cast hpos
@@ -627,7 +626,6 @@ theorem rank_le_gdeg_of_isNef : GlobalTheory.Published.ArCalc → AmpleHS → �
     fun c => _root_.GlobalTheory.HSNef.bounded_norm k X p D hX Q 1 0 _ (hQbox c)
   choose u hu0 hu using hbd
   set t₀ : ℝ := ∑ c, u c with ht₀
-  have ht₀0 : 0 ≤ t₀ := Finset.sum_nonneg fun c _ => hu0 c
   have hBl : ∀ c, boxFam e x c ∈ Q.Bl 1 0 (Real.exp t₀) := fun c =>
     ⟨(hu c).1, fun σ y => ((hu c).2 σ y).trans
       (Real.exp_le_exp.2 (Finset.single_le_sum (fun c _ => hu0 c) (Finset.mem_univ c)))⟩
@@ -682,8 +680,6 @@ theorem rank_le_gdeg_of_isNef : GlobalTheory.Published.ArCalc → AmpleHS → �
           have hnn : 0 ≤ Q.nu 0 1 σ y g := by
             unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
           exact pow_le_one₀ hnn (hg.2 σ y)
-        have hnn' : 0 ≤ Q.nu ((n * m : ℕ) * 1) ((n * m : ℕ) * 0) σ y (v0 (Fin.cast hcard.symm i)) := by
-          unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
         have hexp : Real.exp t₀ ^ (n * m) = Real.exp ((t₀ * n) * m) := by
           rw [← Real.exp_nat_mul]; push_cast; ring_nf
         calc _ ≤ Real.exp t₀ ^ (n * m) * 1 := mul_le_mul hA1 hB1 (pow_nonneg (by unfold Pair.nu; exact mul_nonneg (norm_nonneg _) (Real.exp_pos _).le) _) (pow_nonneg (Real.exp_pos _).le _)
@@ -1613,7 +1609,6 @@ theorem GlobalTheory.HSNef.lc_le_bound : GlobalTheory.Published.ArCalc → Ample
   have hq' : (3:ℝ) ≤ q := by exact_mod_cast hq
   have hΔ : 0 < Real.log ((q:ℝ)/2) := Real.log_pos (by linarith)
   have hF : (0:ℝ) < ((D+1).factorial : ℝ) := by positivity
-  have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   have hFD : 0 < ((D+1).factorial : ℝ) * Real.log ((q:ℝ)/2) := mul_pos hF hΔ
   set g := gdeg (P.L.tens P.A) D with hgdef
   set Δ := Real.log ((q:ℝ)/2) with hΔdef

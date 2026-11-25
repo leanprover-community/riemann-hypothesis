@@ -3514,10 +3514,6 @@ theorem split_all : ∀ j ρ : ℕ, D.muN k (j + ρ) =
 
 end Formalism.FourierDecayAlt.P.Dx2.SplitF
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 end
 
 section
@@ -5128,11 +5124,6 @@ end atPoints
 
 section explicit
 open Formalism.FourierDecayAlt.P.Dx2.DF
-
-theorem smat_comm_Hpk {k r : ℕ} {ι : Type*} [Fintype ι] (u w Y : ι → Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r)
-    (hg : g ∈ UH (Hpk k r)) (hu : ∀ i, g *ᵥ u i = u i) (hw : ∀ i, g *ᵥ w i = w i) (hY : ∀ i, g *ᵥ Y i = Y i) :
-    smat (Hpk k r) u w Y * g = g * smat (Hpk k r) u w Y :=
-  smat_commutes_with_frame_stabilizer u w Y g hg hu hw hY
 
 end explicit
 

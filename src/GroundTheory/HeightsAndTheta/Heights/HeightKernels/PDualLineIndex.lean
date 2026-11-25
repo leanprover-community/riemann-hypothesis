@@ -157,12 +157,6 @@ namespace MetSpace
 
 variable (S : MetSpace E)
 
-end MetSpace
-
-namespace MetSpace
-
-variable (S : MetSpace E)
-
 def toSp (τ : InfinitePlace E) : Fib τ.embedding S.V ≃ₗ[ℂ] S.FibSp τ := LinearEquiv.refl ℂ _
 
 def fibSub (W : Submodule E S.V) (τ : InfinitePlace E) : Submodule ℂ (S.FibSp τ) :=
@@ -315,12 +309,6 @@ variable (S : MetSpace E)
 
 end MetSpace
 
-namespace MetSpace
-
-variable (S : MetSpace E)
-
-end MetSpace
-
 structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebra F E]
     [Algebra.IsQuadraticExtension F E] where
 
@@ -336,12 +324,6 @@ structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebr
   θ_θ : ∀ τ u, θ τ (θ τ u) = u
   θ_isometry : ∀ τ u v, inner ℂ (θ τ u) (θ τ v) = inner ℂ u v
   majorant : ∀ τ (y y' : S.V), inner ℂ (θ τ (S.pt τ y)) (S.pt τ y') = τ.embedding (B.toSesq y y')
-
-namespace SelfDualFrame
-
-variable {F : Type} [Field F] [Algebra F E] [Algebra.IsQuadraticExtension F E]
-
-end SelfDualFrame
 
 section Standard
 

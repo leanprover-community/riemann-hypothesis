@@ -37,7 +37,7 @@ def CotanOne : Prop :=
     ∃ t ∈ RingHom.ker ε.toRingHom, RingHom.ker ε.toRingHom ≤ Ideal.span {t} ⊔ RingHom.ker ε.toRingHom ^ 2
 
 def ChainLoc : Prop :=
-  ∀ (κ Λ : Type) [Field κ] [CommRing Λ] [IsLocalRing Λ] [Algebra κ Λ] [Module.Finite κ Λ] (ε : Λ →ₐ[κ] κ) (t : Λ),
+  ∀ (κ Λ : Type) [Field κ] [CommRing Λ] [IsLocalRing Λ] [Algebra κ Λ] [Module.Finite κ Λ] (_ : Λ →ₐ[κ] κ) (t : Λ),
     IsLocalRing.maximalIdeal Λ = Ideal.span {t} → ∀ (J : Ideal Λ) (q : ℕ), Module.finrank κ (Λ ⧸ J) = q → J = Ideal.span {t ^ q}
 
 def ChainRing : Prop :=

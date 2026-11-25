@@ -86,7 +86,6 @@ def cotRingHom {R R' : Type} [CommRing R] [CommRing R'] {σ : R →+* R'} {D D' 
   map_add' a b := by ext <;> simp
   map_mul' a b := by ext <;> simp [map_smulₛₗ]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem cotVal_pull (R R' : Type) [CommRing R] [CommRing R'] (σ : R →+* R')
     (X : Over (Sp R)) (X' : Over (Sp R')) (φ : X'.left ⟶ X.left)
     (m : IsMor (dp0 R) (X.hom ≫ 𝟙 _) (dp0 R') (X'.hom ≫ 𝟙 _) σ φ)

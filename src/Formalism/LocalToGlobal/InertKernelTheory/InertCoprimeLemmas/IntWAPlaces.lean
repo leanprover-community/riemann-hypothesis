@@ -225,13 +225,8 @@ theorem locInt_zero : LocInt v (0 : E) := by
   simpa using locInt_int (v := v) (0 : 𝓞 E)
 
 theorem locInt_sum {ι : Type} (s : Finset ι) (f : ι → E) (h : ∀ i ∈ s, LocInt v (f i)) :
-    LocInt v (∑ i ∈ s, f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using locInt_zero
-  | insert i s hi ih =>
-    rw [Finset.sum_insert hi]
-    exact locInt_add (h i (Finset.mem_insert_self i s)) (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
+    LocInt v (∑ i ∈ s, f i) :=
+  Finset.sum_induction f (LocInt v) (fun _ _ => locInt_add) locInt_zero h
 
 theorem star_phi (s : 𝓞 (fixF E)) : star (algebraMap (𝓞 E) E (phi E s)) = algebraMap (𝓞 E) E (phi E s) :=
   (s : fixF E).2

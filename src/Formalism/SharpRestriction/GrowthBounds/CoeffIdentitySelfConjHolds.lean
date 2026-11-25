@@ -364,12 +364,6 @@ namespace Formalism.L2.FormalSeriesBounds
 
 open ValuationNonnegativity
 
-namespace FrobP
-
-variable {C : Type} [Field C] {V : VF C}
-
-end FrobP
-
 
 namespace FrobP
 

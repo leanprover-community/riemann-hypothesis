@@ -209,7 +209,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.LastVertexInv
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 end -- clump:auto
 end -- clump:auto
@@ -533,10 +532,6 @@ theorem law_gen {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData 
 
 end GlobalTheory.FirstRowTermLaw
 
-namespace GlobalTheory.FirstRowTermLaw
-
-end GlobalTheory.FirstRowTermLaw
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -664,13 +659,6 @@ theorem splitScal_eq (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} 
   · rw [ite_eq_left (hpar.mpr h0), h0]
     simp [GlobalTheory.LFun.locChar, div_eq_mul_inv]
 
-theorem one_lat (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (y : Fin V.rank → TensorProduct D.host.F (Af D.host.F) D.host.E) :
-    y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) ↔
-      ((Formalism.L2.Theta.mt V 1).map (finPart D)).mulVec y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) := by
-  have h1 : Formalism.L2.Theta.mt V 1 = 1 := by simp [Formalism.L2.Theta.mt]
-  rw [h1, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec]
-
 theorem toPair_zero (G : GridData L sc) (x : GA D (G.V (.grid 0 D.R.m))) :
     G.toPair (.chi 0 D.R.m : Pair T) x 1 = (1, x) := by
   simp [GridData.toPair]
@@ -705,7 +693,7 @@ theorem vac_scalar (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} {k
   have hq := toPair_zero G x.1
   have key := GlobalTheory.RowVacScalar.vacScalar_eq_prod S hL t 0 hm (G.toPair (.chi 0 D.R.m) x.1 1)
     (by rw [hq]; exact one_mem _) (by rw [hq]; exact x.2)
-    (by rw [hq]; exact fun y => one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
+    (by rw [hq]; exact fun y => GlobalTheory.LastVertexLoc.one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
   rw [key]
   refine Finset.prod_congr rfl fun w _ => ?_
   rw [hq]
@@ -1062,14 +1050,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix ValuativeRel GlobalTheory
 open GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 noncomputable section
 namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
-end GlobalTheory.FirstRowEndLaw
-namespace GlobalTheory.FirstRowEndLaw
 
 theorem square_identity_reduction : _root_.GlobalTheory.FunPr.ThetaLocalInputs → SumOKK → Big fun {D} {_Γ} _ _ {_Pl0} {T} {_A} {_Ks} _ _ _ {R} ch =>
     ∀ (t : T) (a : Fin ch.n) (k : FinPt ch.G (.grid 0 D.R.m)), finG (ch.G.V (.grid 0 D.R.m)) k ∈ ch.S.levRow t 0 (Nat.zero_le _) →
@@ -1111,8 +1091,6 @@ section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 noncomputable section
-namespace GlobalTheory.FirstRowTermLaw
-end GlobalTheory.FirstRowTermLaw
 namespace GlobalTheory.FirstRowTermLaw
 
 theorem lift_splits_locally : _root_.GlobalTheory.FunPr.ThetaLocalInputs → SumOKK → Big fun {D} {_Γ} _ _ {_Pl0} {T} {_A} {_Ks} _ _ _ {R} ch =>

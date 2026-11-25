@@ -29,24 +29,6 @@ namespace GlobalTheory.CompanionTheory.LbElem.TorComm
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem stdBlocks_ones_eq (N : ℕ) (a : Fin N) (i : Fin (ones N a)) :
-    stdBlocks (ones N) (sum_ones N) ⟨a, i⟩ = a := by
-  have hi : (i : ℕ) = 0 := by
-    have := i.isLt
-    simp only [ones] at this
-    omega
-  apply Fin.ext
-  rw [stdBlocks_val]
-  simp [ones, hi]
-
-theorem offDiag_of_mem {N : ℕ} {x : GL (Fin N) k} (hx : x ∈ Tor k N) {i j : Fin N} (hij : i ≠ j) :
-    (x : Matrix (Fin N) (Fin N) k) i j = 0 := by
-  apply GlobalTheory.CompanionTheory.LbElem.ConjMonomial.tor_offDiag <;> assumption
-
-theorem mem_of_offDiag {N : ℕ} (x : GL (Fin N) k)
-    (h : ∀ i j : Fin N, i ≠ j → (x : Matrix (Fin N) (Fin N) k) i j = 0) : x ∈ Tor k N := by
-  apply GlobalTheory.CompanionTheory.LbElem.ConjMonomial.mem_tor_of_offDiag <;> assumption
-
 theorem eq_diagonal {N : ℕ} (M : Matrix (Fin N) (Fin N) k)
     (h : ∀ i j : Fin N, i ≠ j → M i j = 0) : M = Matrix.diagonal fun i => M i i := by
   ext a b
@@ -60,8 +42,8 @@ theorem mul_comm_of_mem {N : ℕ} {a b : GL (Fin N) k} (ha : a ∈ Tor k N) (hb 
     a * b = b * a := by
   apply Units.ext
   rw [Units.val_mul, Units.val_mul,
-    eq_diagonal (a : Matrix (Fin N) (Fin N) k) (fun i j hij => offDiag_of_mem ha hij),
-    eq_diagonal (b : Matrix (Fin N) (Fin N) k) (fun i j hij => offDiag_of_mem hb hij),
+    eq_diagonal (a : Matrix (Fin N) (Fin N) k) (fun i j hij => GlobalTheory.CompanionTheory.LbElem.ConjMonomial.tor_offDiag ha hij),
+    eq_diagonal (b : Matrix (Fin N) (Fin N) k) (fun i j hij => GlobalTheory.CompanionTheory.LbElem.ConjMonomial.tor_offDiag hb hij),
     Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
   congr 1
   funext i
@@ -74,7 +56,7 @@ theorem tor_comm_and_mem_iff : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolo
         ∀ i j : Fin N, i ≠ j → (x : Matrix (Fin N) (Fin N) k) i j = 0 := by
   intro k _ _ _ _ N
   exact ⟨fun a ha b hb => mul_comm_of_mem ha hb,
-    fun x => ⟨fun hx i j hij => offDiag_of_mem hx hij, mem_of_offDiag x⟩⟩
+    fun x => ⟨fun hx i j hij => GlobalTheory.CompanionTheory.LbElem.ConjMonomial.tor_offDiag hx hij, GlobalTheory.CompanionTheory.LbElem.ConjMonomial.mem_tor_of_offDiag x⟩⟩
 
 end GlobalTheory.CompanionTheory.LbElem.TorComm
 
@@ -106,12 +88,6 @@ theorem cj_cj' (w : Pl E) (x : w.adicCompletion E) : cj w (cj w x) = x := (Globa
 
 theorem v_cj' (w : Pl E) (x : w.adicCompletion E) : Valued.v (cj w x) = Valued.v x := (GlobalTheory.T.localConjugation_involutive_valuation_preserving E w).2 x
 
-theorem continuous_cj' (w : Pl E) : Continuous (cj w) := by
-  unfold cj
-  split_ifs with h
-  · exact h.choose_spec.1
-  · exact continuous_id
-
 theorem thL_apply (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (g : GLw n w) (i j : Fin n) :
     (thL n w g).val i j = (-1) ^ ((i : ℕ) + j) * cj w ((g⁻¹).val j.rev i.rev) := by
   rw [thL_eq_thetaGL w hw]
@@ -123,7 +99,7 @@ theorem thL_invol (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (g : GLw n w) : thL
 
 theorem continuous_thL (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) : Continuous (thL n w) := by
   rw [thL_eq_thetaGL w hw]
-  exact GlobalTheory.ThetaPull.continuous_thetaGL _ (continuous_cj' w)
+  exact GlobalTheory.ThetaPull.continuous_thetaGL _ (GlobalTheory.KapOrb.CptInt.continuous_cj w)
 
 def thLAut (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) : MulAut (GLw n w) where
   toFun := thL n w
@@ -152,9 +128,9 @@ theorem nup_entries {N : ℕ} {g : GL (Fin N) k} (hg : g ∈ PositivityTheory.Lb
   obtain ⟨h1, h2⟩ := mem_unipRad.1 hg
   refine ⟨fun i j hij => ?_, fun i => ?_⟩
   · have := (mem_parab_iff.1 h1) i j (zeroOne N i) (zeroOne N j) hij
-    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq, _root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq] at this
+    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones, _root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones] at this
   · have := h2 i (zeroOne N i) (zeroOne N i)
-    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq, Matrix.one_apply_eq] at this
+    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones, Matrix.one_apply_eq] at this
 
 theorem nlo_entries {N : ℕ} {g : GL (Fin N) k} (hg : g ∈ PositivityTheory.Lbc.Nlo k N) :
     (∀ i j : Fin N, i < j → (g : Matrix (Fin N) (Fin N) k) i j = 0) ∧
@@ -162,10 +138,9 @@ theorem nlo_entries {N : ℕ} {g : GL (Fin N) k} (hg : g ∈ PositivityTheory.Lb
   obtain ⟨h1, h2⟩ := (mem_unipRadLower k).1 hg
   refine ⟨fun i j hij => ?_, fun i => ?_⟩
   · have := ((mem_parabLower_iff k).1 h1) i j (zeroOne N i) (zeroOne N j) hij
-    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq, _root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq] at this
+    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones, _root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones] at this
   · have := h2 i (zeroOne N i) (zeroOne N i)
-    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.TorComm.stdBlocks_ones_eq, Matrix.one_apply_eq] at this
-
+    rwa [_root_.GlobalTheory.CompanionTheory.LbElem.ConjMonomial.stdBlocks_ones, Matrix.one_apply_eq] at this
 
 end Entries
 
@@ -178,7 +153,7 @@ theorem v_sign_cj (w : Pl E) (m : ℕ) (x : w.adicCompletion E) :
 
 theorem thL_mem_iwGL (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) {g : GLw n w} (hg : g ∈ iwGL n w) :
     thL n w g ∈ iwGL n w := by
-  have hE := fun x : GLw n w => (GlobalTheory.T.iwahori_and_maximal_compact_criteria E w n x).1
+  have hE := fun x : GLw n w => (GlobalTheory.CompanionTheory.IwEntries.iwGL_KGL_entries E w n x).1
   obtain ⟨g1, g2, -⟩ := (hE g).1 hg
   obtain ⟨-, -, h3⟩ := (hE g⁻¹).1 (inv_mem hg)
   refine (hE _).2 ⟨fun i j => ?_, fun i j => ?_, fun i j hij => ?_⟩

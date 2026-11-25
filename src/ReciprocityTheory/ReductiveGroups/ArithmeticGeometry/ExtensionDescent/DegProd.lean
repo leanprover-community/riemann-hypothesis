@@ -112,7 +112,7 @@ structure IsPowGrp (G' G : Over S) [GrpObj G'] [GrpObj G] (j : ℕ) where
   lim : IsLimit (Fan.mk G' pr)
 
 def powIsPowGrp (G : Over S) [GrpObj G] (n : ℕ) : IsPowGrp (powObj G n) G n :=
-  ⟨powPr G, fun i => inferInstance, powIsLimit G n⟩
+  ⟨powPr G, fun _ => inferInstance, powIsLimit G n⟩
 
 abbrev boxLB {G' G : Over S} {j : ℕ} (L : LB G.left) (pr : Fin j → (G' ⟶ G)) : LB G'.left :=
   LB.LinComb L (K := Fin j) (fun i => (pr i).left) (fun _ => 1)

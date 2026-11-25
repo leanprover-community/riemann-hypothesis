@@ -51,7 +51,7 @@ theorem leadingMinor_firstProj (hs : M.split = some g) (Zh : Matrix (Fin (r + 1)
 private theorem ph2_mapMatrix_ZZm_submatrix_eq_smul_transpose (hs : M.split = some g) (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F) :
     (ph2 g).mapMatrix ((ZZm g Zh T T').submatrix Fin.castSucc Fin.castSucc) =
       (-(g.q : F)⁻¹) • Matrix.transpose ((ph2 g).mapMatrix (Zh.submatrix Fin.castSucc Fin.castSucc)) :=
-  Matrix.ext fun a b => (ph1_ph2_ZZm_apply hs Zh T T' _ _).2
+  Matrix.ext fun _ _ => (ph1_ph2_ZZm_apply hs Zh T T' _ _).2
 
 theorem leadingMinor_secondProj (hs : M.split = some g) (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : F) :
     ph2 g ((ZZm g Zh T T').submatrix Fin.castSucc Fin.castSucc).det =

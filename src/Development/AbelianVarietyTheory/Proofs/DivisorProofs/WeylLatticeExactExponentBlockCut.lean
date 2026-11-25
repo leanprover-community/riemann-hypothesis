@@ -1062,7 +1062,6 @@ theorem intOn_divAdj (L M : Submodule ℤ V) (e : Module.End ℚ V)
       exact_mod_cast hch
     have h2 : (t.factorial : ℚ) ≠ 0 := by positivity
     have h3 : ((k - t).factorial : ℚ) ≠ 0 := by positivity
-    have h4 : (k.factorial : ℚ) ≠ 0 := by positivity
     have h5 : ((k.choose t : ℕ) : ℚ) ≠ 0 := by exact_mod_cast (Nat.choose_pos ht').ne'
     rw [← h1]
     push_cast

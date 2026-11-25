@@ -20,21 +20,6 @@ section -- clump:auto
 
 open scoped BigOperators
 
-namespace GlobalTheory
-namespace OrbitFibre
-
-open MulAction Function
-
-theorem finsum_sigma_iter {ι : Type} {κ : ι → Type} (f : (Σ i, κ i) → ℂ)
-    (hf : (support f).Finite) : ∑ᶠ p, f p = ∑ᶠ i, ∑ᶠ k, f ⟨i, k⟩ := by
-  apply UpperTheory.V.Z.Sym.Tf.finsum_sig <;> assumption
-
-variable {Γ A B J : Type} [Group Γ] [MulAction Γ A] [MulAction Γ B]
-
-
-end OrbitFibre
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumOrbitFibreSwap =====
@@ -278,7 +263,7 @@ theorem regroup_of
               (GlobalTheory.LKCx.toP1 G (Quot.out q).β) (MonoidHom.id (Gr G 1)) Kf K' 1 f f' (Quotient.out c)
         else 0)) = ∑ᶠ q : DFCls G, ∑ᶠ c : ConjClasses (GlobalTheory.LKCx.grp G (Quot.out q).β), H ⟨q, c⟩ :=
     finsum_congr fun q => finsum_congr fun c => hR q c
-  rw [hRHS, ← GlobalTheory.OrbitFibre.finsum_sigma_iter H hsuppH, hL]
+  rw [hRHS, ← UpperTheory.V.Z.Sym.Tf.finsum_sig H hsuppH, hL]
   have h1 : ∑ᶠ x, H x = ∑ᶠ x : {x // RegAt G x}, F (toCls G x) := by
     rw [← finsum_eq_mem_of_supp H (Set.range Subtype.val) ?_,
       finsum_mem_range Subtype.val_injective]

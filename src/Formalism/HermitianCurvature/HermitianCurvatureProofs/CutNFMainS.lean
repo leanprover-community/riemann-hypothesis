@@ -257,23 +257,11 @@ theorem scalar_point_measurability_holds : ScalarMeas := fun k r TT => ⟨measur
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem gN_ball_compact (k r : ℕ) (R : ℝ) : IsCompact {g : B.Mat k r | B.gN g ≤ R} := by
-  have hc : Continuous (fun g : B.Mat k r => B.gN g) := by
-    unfold B.gN
-    exact Real.continuous_sqrt.comp (continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
-      Complex.continuous_normSq.comp (continuous_id.matrix_elem i j))
-  refine Metric.isCompact_of_isClosed_isBounded (isClosed_le hc continuous_const) ?_
-  rw [isBounded_iff_forall_norm_le]
-  refine ⟨max R 0, fun g hg => ?_⟩
-  rw [Matrix.norm_le_iff (le_max_right _ _)]
-  intro i j
-  exact (_root_.Formalism.FourierDecayAlt.P.Ux5.entry_le_gN g i j).trans (le_trans hg (le_max_left _ _))
-
 theorem cptCoef_inCC {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k r Wp Wq) {X : B.Mat k r → (Wq →L[ℂ] Wp)}
     (hX : KB.CptCoef Bs X) (A : ℝ) (m : ℕ) : B.InCC A m X := by
   obtain ⟨R, hR⟩ := hX.2.1
-  exact Formalism.FourierDecayAlt.P.JFxG.cptInCC_G hX.1 (gN_ball_compact k r R)
+  exact Formalism.FourierDecayAlt.P.JFxG.cptInCC_G hX.1 (Formalism.FourierDecayAlt.P.PBE.isCompact_gN_le k r R)
     (fun g hg hgC => by by_contra h; exact hgC (hR g hg h)) A m
 
 theorem empty_list_measurability_holds : EmptyMeas := by
@@ -1133,7 +1121,6 @@ theorem domination_measurability_holds : NFDomMeas := by
   have h := hlim (P.r + 1) w hw.1 hN (TBB.bigPt P.r c) (TBB.bigPt P.r c)
   unfold topD TBB.Ew TBB.NP
   exact (Complex.continuous_re.tendsto _).comp (h.const_mul _)
-
 
 end
 

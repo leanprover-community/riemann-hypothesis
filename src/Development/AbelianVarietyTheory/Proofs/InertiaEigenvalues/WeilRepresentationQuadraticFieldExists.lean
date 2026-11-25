@@ -677,18 +677,8 @@ open GlobalTheory.JR GlobalTheory.JR.WeilQuad Matrix MeasureTheory Filter Topolo
 namespace GlobalTheory.JR.WeilQuad.NearZero
 variable {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
 
-theorem finite_E_L [Unram F E] (A : Et F E) : Module.Finite E A.L := by
-  have hE : Module.Finite F E := Module.finite_of_finrank_pos (by rw [Unram.finrank_eq (F := F) (E := E)]; norm_num)
-  have h := A.push.out
-  exact Module.Finite.equiv h.equiv
-
-theorem finite_F_L [Unram F E] (A : Et F E) : Module.Finite F A.L := by
-  have hE : Module.Finite F E := Module.finite_of_finrank_pos (by rw [Unram.finrank_eq (F := F) (E := E)]; norm_num)
-  have := finite_E_L A
-  exact Module.Finite.trans E A.L
-
 theorem finite_K_L [Unram F E] (A : Et F E) : Module.Finite A.K A.L := by
-  have := finite_F_L A
+  have := GlobalTheory.JR.EtMeas.finite_L A
   exact Module.Finite.of_restrictScalars_finite F A.K A.L
 
 theorem continuous_NL [Unram F E] (A : Et F E) (hK : IsField A.K) :
@@ -751,7 +741,7 @@ theorem main : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedF
       {y : A.L | ∀ w ∈ (Λ : Set A.L), A.kerL ψ x w y = 1} ⊆ V := by
   intro F E _ _ _ _ _ A ψ x μ ω h C hC V hV
   obtain ⟨hK, hL, hψ, -, -⟩ := h
-  haveI := FourierTest.finite_F_L A
+  haveI := GlobalTheory.JR.EtMeas.finite_L A
   haveI : IsUltrametricDist F := Unram.ultraF (F := F) (E := E)
   haveI : LocallyCompactSpace F := Unram.lcF (F := F) (E := E)
   haveI : ProperSpace F := ProperSpace.of_locallyCompactSpace F
@@ -907,7 +897,7 @@ theorem trace_NL_add [Unram F E] (A : Et F E) (hK : IsField A.K) (hL : IsField A
 
 theorem continuous_trace_NL [Unram F E] (A : Et F E) (hK : IsField A.K) (hL : IsField A.L) (x : A.K) :
     Continuous fun y : A.L => Algebra.trace F A.K (x * A.NL y) := by
-  haveI := finite_F_L A
+  haveI := GlobalTheory.JR.EtMeas.finite_L A
   haveI : CharZero F := Unram.charZero (F := F) (E := E)
   have h2 : (2 : F) ≠ 0 := two_ne_zero
   have hβc : Continuous (fun p : A.L × A.L => beta A x p.1 p.2) :=
@@ -933,11 +923,11 @@ theorem GlobalTheory.JR.WeilQuad.gaussInt_one_mul_neg_one : ∀ (F E : Type) [No
   intro F E _ _ _ _ _ A ψ x μ ω h Λ hΛo hΛc hPS hQ
   obtain ⟨hK, hL, hψ, hsd, -⟩ := h
   haveI := hsd.1
-  haveI := finite_F_L A
+  haveI := GlobalTheory.JR.EtMeas.finite_L A
   obtain ⟨hLC, hSC, hT2, hTG⟩ := GlobalTheory.JR.SelfDualLat.topo F E A.L
   haveI := hLC; haveI := hSC; haveI := hT2; haveI := hTG
   have hψ' := (_root_.GlobalTheory.StdChar.psi_conductor F E).2 ψ hψ
-  have hψc : Continuous (fun t : F => ψ t) := cont_psi hψ
+  have hψc : Continuous (fun t : F => ψ t) := GlobalTheory.JR.DualLattice.stdChar_continuous hψ
   set β := beta A (x : A.K) with hβdef
   have hβc : Continuous (fun p : A.L × A.L => β p.1 p.2) :=
     IsModuleTopology.continuous_bilinear_of_finite_left β
@@ -1127,10 +1117,6 @@ theorem nOp_smul (A : Et F E) (ψ : AddChar F ℂ) (x z : A.K) (c : ℂ) (φ : A
   funext y
   simp only [nOp, Pi.smul_apply, smul_eq_mul]
   ring
-
-end GlobalTheory.JR.WeilQuad
-
-namespace GlobalTheory.JR.WeilQuad
 
 end GlobalTheory.JR.WeilQuad
 

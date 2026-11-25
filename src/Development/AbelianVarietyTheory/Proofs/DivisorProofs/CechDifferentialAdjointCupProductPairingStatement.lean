@@ -73,7 +73,6 @@ theorem cech_adj (k : Type) [Field k] (d : ℕ) (E : Type) [AddCommGroup E] [Mod
     · rw [cech_apply_eq_zero ha (fun h => hne h.1), map_zero, LinearMap.zero_apply]
   by_cases hn : 0 ≤ n ∧ n + 1 ≤ d
   · obtain ⟨m, rfl⟩ : ∃ m : ℕ, n = m := ⟨n.toNat, (Int.toNat_of_nonneg hn.1).symm⟩
-    have hmd : m + 1 ≤ d := by exact_mod_cast hn.2
     set j : Fin (d+1) := ⟨m + 1, by omega⟩ with hj
     set j' : Fin (d+1) := ⟨m, by omega⟩ with hj'
     refine ⟨(-1 : ℤˣ) ^ ((Finset.univ.filter (· ≤ j)).filter (· < j)).card, ?_⟩

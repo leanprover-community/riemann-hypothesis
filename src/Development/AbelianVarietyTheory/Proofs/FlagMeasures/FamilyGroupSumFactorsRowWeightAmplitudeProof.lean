@@ -285,23 +285,11 @@ variable {D : D7}
 
 def cval (Z : LocDat D) (p : PlF D) : (D.s.atP p).Fp := Z.δ p * (D.s.atP p).ιF ((uP p : ℚ) : D.host.F)
 
-theorem unitAt_ne (p : PlF D) : uP p ≠ 0 := by
-  have h0 := D.host.g_prime 0
-  have h1 := D.host.g_prime 1
-  unfold uP gpart
-  refine div_ne_zero ?_ ?_
-  · split_ifs
-    · exact_mod_cast h0.ne_zero
-    · exact_mod_cast h1.ne_zero
-    · exact one_ne_zero
-  · unfold Formalism.MainNotions.S.Lat.gS
-    exact_mod_cast (Nat.mul_ne_zero h0.ne_zero h1.ne_zero)
-
 theorem cval_ne (Z : LocDat D) (p : PlF D) : cval Z p ≠ 0 := by
   obtain ⟨-, hδ, -⟩ := Z.agree p
   refine mul_ne_zero hδ ?_
   rw [map_ne_zero]
-  exact_mod_cast unitAt_ne p
+  exact_mod_cast Formalism.L2.SG.Pf.LocModel.unitAt_ne_zero₂ p
 
 theorem cval_E (Z : LocDat D) (p : PlF D) :
     algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (Z.δ p) * (D.s.atP p).ιE ((uP p : ℚ) : D.host.E) =
@@ -439,14 +427,6 @@ theorem isUnit_unitAt (D : D7) :
   rw [inv_inv]
   exact GlobalTheory.LocDiffGen.iF_int p _
 
-theorem memF_of (p : PlF D) (c : (D.s.atP p).Fp) (h : algebraMap (D.s.atP p).Fp (D.s.atP p).Ep c ∈ (D.s.atP p).O) :
-    c ∈ 𝒪[(D.s.atP p).Fp] := by
-  rw [(D.s.atP p).O_def] at h
-  have hi : IsIntegral 𝒪[(D.s.atP p).Fp] c :=
-    (isIntegral_algHom_iff (IsScalarTower.toAlgHom 𝒪[(D.s.atP p).Fp] (D.s.atP p).Fp (D.s.atP p).Ep)
-      (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep).injective).1 h
-  exact PI.UnitaryGroupMassFormula.CntFormula.DeltaC.mem_of_isIntegral_fp (D.s.atP p) hi
-
 theorem delta_unit (D : D7) (Z : LocDat D) :
     {p : PlF D | ¬ ∃ u : (𝒪[(D.s.atP p).Fp])ˣ, ((u : 𝒪[(D.s.atP p).Fp]) : (D.s.atP p).Fp) = Z.δ p}.Finite := by
   refine (Ideal.finite_factors (I := differentIdeal ℤ (𝓞 D.host.F)) ?_).subset ?_
@@ -509,7 +489,7 @@ theorem delta_unit (D : D7) (Z : LocDat D) :
     refine (Z.M p).L.O.mul_mem o.2 ?_
     rw [hO]
     exact PI.CntNotIntW.algMap_mem_O D p _ hinvx
-  exact unit_of_mem hδ (memF_of p _ hin) (memF_of p _ hinv)
+  exact unit_of_mem hδ (Formalism.L2.SG.Pf.LocFacts.lf_int_of_alg p _ hin) (Formalism.L2.SG.Pf.LocFacts.lf_int_of_alg p _ hinv)
 
 end Fin
 

@@ -59,55 +59,14 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultR
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MvEvHolds
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MvRowJ
 import Aesop.Main
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PostOnGaLMemGoodPart
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelGroupActionEqZeroOfNoLift
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.LevelSubgroupProperties
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.TypeStar
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
@@ -171,13 +130,11 @@ theorem fibre_iff (X : HidaSetting D) {red : X.B.I.Gf → G0g D.nd} (hr : IsRedH
     rw [mul_inv_cancel_left, hr1, mul_one] at h3
     exact h3
 
-theorem kg_open (X : HidaSetting D) : IsOpen (X.B.I.Kg X.B.g) := X.B.I.topf_open X.B.g (_root_.Formalism.L2.SG.PoincareInHH.Cut.one_le_g X)
-
 theorem kg_pos_fin (X : HidaSetting D) : 0 < X.B.μf (X.B.I.Kg X.B.g) ∧ X.B.μf (X.B.I.Kg X.B.g) < ⊤ := by
   have hne : (X.B.I.Kg X.B.g).Nonempty := ⟨1, by
     refine ⟨kset_one X, fun y _ => ⟨0, zero_mem _, ?_⟩⟩
     simp [Formalism.MainNotions.S.AutInst.fmat]⟩
-  refine ⟨(kg_open X).measure_pos X.B.μf hne, ?_⟩
+  refine ⟨(Formalism.L2.SG.Pf.DstarIdxPf.isOpen_Kg X).measure_pos X.B.μf hne, ?_⟩
   exact lt_of_le_of_lt (measure_mono fun x hx => hx.1) (PI.WAU.Cpt.isCompact_Kset X.B.I).measure_lt_top
 
 theorem fibre_meas (X : HidaSetting D) {red : X.B.I.Gf → G0g D.nd} (hr : IsRedHom X red) {s : X.B.I.Gf}
@@ -187,7 +144,7 @@ theorem fibre_meas (X : HidaSetting D) {red : X.B.I.Gf → G0g D.nd} (hr : IsRed
   have e : {x | x ∈ X.B.I.Kset ∧ red x = red s} = (fun x => s⁻¹ * x) ⁻¹' (X.B.I.Kg X.B.g) := by
     ext x; exact fibre_iff X hr hs x
   rw [e]
-  refine ⟨((kg_open X).preimage (continuous_const_mul s⁻¹)).measurableSet, ?_⟩
+  refine ⟨((Formalism.L2.SG.Pf.DstarIdxPf.isOpen_Kg X).preimage (continuous_const_mul s⁻¹)).measurableSet, ?_⟩
   exact measure_preimage_mul X.B.μf s⁻¹ _
 
 open scoped InnerProductSpace in
@@ -1802,7 +1759,7 @@ theorem exists_sRest_top : GlobalTheory.Dec.DSInfChar → GlobalTheory.Published
   intro hDS hHC hCusp hDSU hRF D G' _ _ Pl0 T A Ks _ _ _ R F F0 P eE hGap hph hL hR hDs hLev hGrp hPin hE0 hM hRange hNorm hDall
   obtain ⟨t, ht⟩ := GlobalTheory.T.exists_finiteAdelicPoint_carries_rowLevel D G' Pl0 T A Ks R F P.X P.inst P.pin hLev hGrp hPin hE0
   obtain ⟨v₀, hv, c, hc, hev⟩ :=
-    GlobalTheory.T.lowestVector_evaluation_identifies_levelRows_conj hDS hCusp hDSU hRF D G' Pl0 T A Ks R F P.X P.inst t P.pin hGap hLev hM.inf hM.ν0 ht
+    GlobalTheory.Mem.SRe.evalOn_all hDS hCusp hDSU hRF D G' Pl0 T A Ks R F P.X P.inst t P.pin hGap hLev hM.inf hM.ν0 ht
   have hg := GlobalTheory.T.evaluation_goodRows_to_conjugate_goodRows D G' Pl0 T A Ks R F P.X P.inst P.G t v₀ c hLev hM.inf hv ht hev
   have hle := (GlobalTheory.T.levelColumnsGoodRows_le_principal_and_finiteDimensional hHC hCusp D G' Pl0 T A Ks R F hLev hM.inf hM.ν0).1
   obtain ⟨hfr, j, hj⟩ :=

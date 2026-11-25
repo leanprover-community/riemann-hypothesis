@@ -157,7 +157,6 @@ theorem dualMap_snd {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') (
 end GlobalTheory.CompanionTheory.Ar.HtPull
 end
 
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualNumberSectionDerivation, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullTorsionPullbackPoints, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackSmooth, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiAbelianOfPullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingPullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingTransportRelation, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateWeilPullback
 
@@ -456,16 +455,6 @@ theorem spMap_comp_fields {A B C : Type} [Field A] [Field B] [Field C] (i : A �
   simp only [spMap]
   rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
 
-theorem cancel_spMap {K K' : Type} [Field K] [Field K'] (τ : K →+* K') {Z : Scheme.{0}}
-    (a b : Spec (CommRingCat.of K) ⟶ Z) (h : spMap τ ≫ a = spMap τ ≫ b) : a = b := by
-  have hd : IsSchemeTheoreticallyDominant (spMap τ) :=
-    LieEx.std_of_inj (CommRingCat.ofHom τ) τ.injective
-  have hs : Function.Surjective (spMap τ) := by
-    intro p
-    obtain ⟨x⟩ : Nonempty (Spec (CommRingCat.of K')) := inferInstance
-    exact ⟨x, Subsingleton.elim (α := PrimeSpectrum K) _ _⟩
-  exact LieEx.epi_of_surj (spMap τ) hs a b h
-
 theorem torsion_clause : ∀ (X X' : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Field Ω'] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (ξ' : Spec (CommRingCat.of Ω') ⟶ X') (f : X' ⟶ X) (i : Ω →+* Ω'), GlobalTheory.CompanionTheory.Ar.Dominates ξ' ξ f i → ∀ (G : Over X) [GrpObj G] [IsCommMonObj G] (L : LB G.left) (n : ℕ) (e : (Over.mk ξ ⟶ G) → (Over.mk ξ ⟶ G) → Ωˣ), GenWeil G L ξ n e → FullTorsion G ξ n → ∀ (G' : Over X') [GrpObj G'] [IsCommMonObj G'] (φ : G'.left ⟶ G.left), IsGrpPullback G' G f φ → FullTorsion G' ξ' n → ∀ (L' : LB G'.left) (e' : (Over.mk ξ' ⟶ G') → (Over.mk ξ' ⟶ G') → Ω'ˣ), GenWeil G' L' ξ' n e' → ∀ (y : Over.mk ξ ⟶ G) (y' : Over.mk ξ' ⟶ G'), y ^ n = 1 → y' ^ n = 1 → (∀ (g : Over.mk ξ ⟶ G) (g' : Over.mk ξ' ⟶ G'), g ^ n = 1 → g' ^ n = 1 → g'.left ≫ φ = spMap i ≫ g.left → (e' y' g' : Ω') = i (e y g)) → (∀ (g : Over.mk ξ ⟶ G), g ^ n = 1 → ∃ g' : Over.mk ξ' ⟶ G', g' ^ n = 1 ∧ g'.left ≫ φ = spMap i ≫ g.left) → (∀ (g' : Over.mk ξ' ⟶ G'), g' ^ n = 1 → ∃ g : Over.mk ξ ⟶ G, g ^ n = 1 ∧ g'.left ≫ φ = spMap i ≫ g.left) → ∀ (W : G.left.Opens) (s : Γ(G.left, W)),
   (∀ (k : Type) [Field k] [IsAlgClosed k] (τ : Ω →+* k) (xk g : Over.mk (spMap τ ≫ ξ) ⟶ G) (c : kˣ) (h : ⊤ ≤ g.left ⁻¹ᵁ W), xk.left = spMap τ ≫ y.left → g ^ n = 1 → Out.WeilIs G L n xk g (unitOn c) → secVal (B := k) g.left W h s = c) →
   (∀ (k : Type) [Field k] [IsAlgClosed k] (τ : Ω' →+* k) (xk g : Over.mk (spMap τ ≫ ξ') ⟶ G') (c : kˣ) (h : ⊤ ≤ g.left ⁻¹ᵁ (φ ⁻¹ᵁ W)), xk.left = spMap τ ≫ y'.left → g ^ n = 1 → Out.WeilIs G' L' n xk g (unitOn c) → secVal (B := k) g.left (φ ⁻¹ᵁ W) h (φ.app W s) = c) := by
@@ -481,7 +470,7 @@ theorem torsion_clause : ∀ (X X' : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [Fie
       rw [← hgU]
       exact hgn
     apply Over.OverMorphism.ext
-    apply cancel_spMap τ
+    apply GlobalTheory.CompanionTheory.Ar.TorsPull.spMap_cancel τ
     exact congrArg (fun z => z.left) e1
   obtain ⟨g₀, hg₀, hxg⟩ := hdown x' hx'n
   have hc' : (c : k) = τ (e' y' x') := (hGW'.weil y' x' hy' hx'n k τ xk g c hxk hx).1 hWeil

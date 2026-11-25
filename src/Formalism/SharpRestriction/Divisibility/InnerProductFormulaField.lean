@@ -47,12 +47,6 @@ structure Loc (D : D7) where
 
   dFin : ℕ → ℂ
 
-namespace Loc
-
-variable {D : D7} (X : Loc D) (Z : DivX D)
-
-end Loc
-
 variable (D : D7) (Z : DivX D) (T : ThetaX D) (A : TH.ProvA) (X : Loc D)
 
 section RealConstant

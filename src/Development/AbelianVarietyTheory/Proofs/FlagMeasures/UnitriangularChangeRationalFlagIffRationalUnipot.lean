@@ -70,17 +70,7 @@ theorem e_mem_Xa (F : FlagG S r T) (a : Fin r) {j : ℕ} (h : a.1 < j) : F.e a �
   Submodule.subset_span ⟨a, h, rfl⟩
 
 theorem X_orth_fvec (F : FlagG S r T) {x : S.V} (hx : x ∈ F.X) (b : Fin (r + 1)) :
-    S.hT x (F.fvec b) = 0 := by
-  induction hx using Submodule.span_induction with
-  | mem x h =>
-    obtain ⟨a, rfl⟩ := h
-    have := Formalism.L2.SG.NGCut.NormalVectorPairings.brS_fvec F b a.castSucc
-    simp only [brS, _root_.Formalism.MainNotions.BridgeLemma.geo_fvec_cast] at this
-    rw [this]
-    simp [Fin.castSucc_ne_last]
-  | zero => simp
-  | add x y _ _ hx hy => simp [map_add (f := _), hx, hy]
-  | smul c x _ hx => simp [hx]
+    S.hT x (F.fvec b) = 0 := Formalism.MainNotions.BridgeLemma.geo_X_fvec F x hx b
 
 theorem isotropicSpan_orthogonal_anisotropicVector (F : FlagG S r T) {x : S.V} (hx : x ∈ F.X) : S.hT x F.z = 0 := by
   rw [← _root_.PI.ScalarPairDr.W.fvec_last]; exact X_orth_fvec F hx _

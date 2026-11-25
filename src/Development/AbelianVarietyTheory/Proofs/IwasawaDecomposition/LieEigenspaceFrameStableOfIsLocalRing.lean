@@ -67,8 +67,7 @@ theorem basis_fixed_bc {L k : Type} [CommRing L] [CommRing k] (ψ : L →+* k) {
     simp [Finset.sum_apply, Pi.single_apply]
   have hinv : ∀ i, (fun i' => ∑ j, e i j * M j i') = Pi.single i 1 := fun i => by
     refine (hb _ (he i)).unique ?_ ?_
-    · set_option synthInstance.maxHeartbeats 100000 in
-        conv_lhs => rw [← he i, ← hs (e i), map_sum]
+    · conv_lhs => rw [← he i, ← hs (e i), map_sum]
       simp only [map_smul, hM, Finset.smul_sum, Finset.sum_smul, smul_smul]
       exact Finset.sum_comm
     · simp [Pi.single_apply]

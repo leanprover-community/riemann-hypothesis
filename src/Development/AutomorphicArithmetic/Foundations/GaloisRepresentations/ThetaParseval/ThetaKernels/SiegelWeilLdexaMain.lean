@@ -216,11 +216,7 @@ theorem nbRat_k (d : SD_k σ) {nb lam 𝓖} (hc : d.CD nb lam 𝓖) :
 def Bj_k (d : SD_k σ) (Φ : d.Fn) (p : Polynomial ℂ) (Ê : ℂ → d.G → ℂ) (j : ℕ) (g : d.G) : ℂ :=
   iteratedDeriv j (Ê · g) d.s₀ - iteratedDeriv j (fun z => p.eval z) d.s₀ * (2 * d.I Φ g)
 theorem T_sub_k (d : SD_k σ) (Φ Φ' : d.Fn) : d.T (Φ - Φ') = d.T Φ - d.T Φ' := by
-  funext X
-  simp only [SD_k.T, Pi.sub_apply]
-  rw [← map_sub]
-  congr 1; funext y
-  simp [Darboux.rho, schr, mul_sub]
+  exact PositivityTheory.SiegelWeilFormula.KFock.T_sub_k d Φ Φ'
 theorem vac_tens_k {d : SD_k σ} (R : RD_k d) (w : InfinitePlace F) (f : d.MxE → ℂ) (hf : f ∈ R.vac) :
     ∃ Ψ ∈ R.away w, f = R.tens w (fP 1) Ψ := by
   induction hf using Submodule.span_induction with

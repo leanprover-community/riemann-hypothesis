@@ -61,7 +61,7 @@ theorem gauge_left_line_holds : GLLeft := by
       rcases mul_eq_zero.1 h1 with h | h
       · exact absurd ((map_eq_zero (starRingEnd ℂ)).1 h) hsne
       · exact h
-    rw [hpdef, DU.prWv_of hy, DU.hadd_r, DU.hsmul_r, hFz a, mul_zero, add_zero] at h2
+    rw [hpdef, DU.prWv_of hy, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hFz a, mul_zero, add_zero] at h2
     exact h2
   have hmi : μ⁻¹ * μ = 1 := Gauge.GC.KLAM.inv_mul_uh hU
   have hmm : μ * μ⁻¹ = 1 := Gauge.GC.KLAM.mul_inv_uh hU

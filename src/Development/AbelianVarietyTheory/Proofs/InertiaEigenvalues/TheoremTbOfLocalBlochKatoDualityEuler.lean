@@ -271,7 +271,7 @@ section -- clump:auto
 
 noncomputable section
 
-open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.Cyc.TwistKill GlobalTheory.BdRQuot
+open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc GlobalTheory.Cyc.LogClass GlobalTheory.BdRQuot
 open scoped Formalism.Per
 
 namespace GlobalTheory.Cyc.ExpBound
@@ -381,12 +381,6 @@ theorem act_ι (σ : GQ l) (b : P.R.B) : P.actQdR σ (P.ιB b) = P.ιB (P.actQ �
   rw [P.PD_ι, P.PD_ι, P.PD_actB, P.PD_actdR] at h3
   exact h3.symm
 
-theorem actQdR_periodT_eq_cyclotomic_bottom (σ : GQ l) :
-    P.actQdR σ (P.ιB P.tB) = algebraMap ℚ_[l] P.R.BdR (P.χQ σ : ℚ_[l]) * P.ιB P.tB := by
-  have h := (P.PD (botExt l)).t_act ⟨σ, mem_GK_bot σ⟩
-  rw [P.PD_actB, P.PD_χ, P.period_datum_t_eq] at h
-  rw [act_ι, h, map_smul, Algebra.smul_def]
-
 theorem fil_mono {a : ℤ} (n : ℕ) : (P.PD (botExt l)).Fil (a + n) ≤ (P.PD (botExt l)).Fil a := by
   induction n with
   | zero => simp
@@ -452,7 +446,7 @@ def cob (P : LocPrime l) (e : ℕ) (b : P.R.BdR) (σ : GQ l) : P.R.BdR :=
 theorem twistedCoboundary_t_pow_mul (e i : ℕ) (y : P.R.BdR) (σ : GQ l) : cob P e (P.ιB P.tB ^ i * y) σ =
     P.ιB P.tB ^ i * (algebraMap ℚ_[l] P.R.BdR ((P.χQ σ ^ ((i : ℤ) - e) : ℚ_[l]ˣ) : ℚ_[l]) *
       P.actQdR σ y - y) := by
-  rw [cob, map_mul, map_pow, actQdR_periodT_eq_cyclotomic_bottom, sub_eq_add_neg (i : ℤ), zpow_add, zpow_natCast, Units.val_mul,
+  rw [cob, map_mul, map_pow, GlobalTheory.DeRhamSymbol.actQdR_periodT_eq_cyclotomic_bottom, sub_eq_add_neg (i : ℤ), zpow_add, zpow_natCast, Units.val_mul,
     Units.val_pow_eq_pow_val, map_mul, map_pow]
   ring
 

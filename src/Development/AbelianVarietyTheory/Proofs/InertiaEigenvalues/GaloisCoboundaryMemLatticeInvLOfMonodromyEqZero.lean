@@ -376,8 +376,6 @@ namespace GlobalTheory.BKGal.HatVal
 variable {l : ℕ} [Fact l.Prime] {O K : Type} [CommRing O] [Algebra ℤ_[l] O]
   [NormedField K] [NormedAlgebra ℚ_[l] K] [Algebra O K] {G : Type} [Group G] [TopologicalSpace G]
 
-alias TWincl_smul' := _root_.GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul'
-
 theorem TWincl_TWincl {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] [Algebra O R] [Algebra O R']
     [Algebra O R''] (f : R →ₐ[O] R') (g : R' →ₐ[O] R'') (T : LocLat G ℚ_[l] K O) (z : TW R T) :
     TWincl g T (TWincl f T z) = TWincl (g.comp f) T z := by
@@ -483,13 +481,13 @@ theorem GlobalTheory.BKGal.value_hat_mem_filZero : ∀ (l : ℕ) [Fact l.Prime] 
       TWincl (dRO l O) T ((v * EAD ^ H) • TWincl (toOD l O) T (z j)) := by
     intro j
     have h1 := congrArg (TWincl (iotaO O C) T) (hz j)
-    rw [TWincl_smul', iotaO_toB, TWincl_TWincl, hcomp, ← TWincl_TWincl, TWincl_smul', map_pow] at h1
+    rw [GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', iotaO_toB, TWincl_TWincl, hcomp, ← TWincl_TWincl, GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', map_pow] at h1
     calc TWincl (iotaO O C) T (R.jB fun i => toB l O (c j i))
         = dRO l O (v * toOD l O ((1 : O) ⊗ₜ[ℤ_[l]] (muOf δ ^ η))) •
             TWincl (iotaO O C) T (R.jB fun i => toB l O (c j i)) := by rw [hv, map_one, one_smul]
       _ = dRO l O v • TWincl (dRO l O) T (EAD ^ H • TWincl (toOD l O) T (z j)) := by
           rw [map_mul, mul_smul, h1]
-      _ = _ := by rw [TWincl_smul', TWincl_smul', map_mul, mul_smul]
+      _ = _ := by rw [GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', map_mul, mul_smul]
   choose z' hz' using fun j => _root_.GlobalTheory.BKGal.HatVal.iotaO_iB_eq_Epow_mul l a e O K t ϖ C η (ρ j) (hρ j)
   have hE' : dRO l O EAD ^ (H + η) =
       iotaO O C ((toB l O ((1 : O) ⊗ₜ[ℤ_[l]] ϖ.ev a (eis l a e))) ^ (H + η)) := by
@@ -497,11 +495,11 @@ theorem GlobalTheory.BKGal.value_hat_mem_filZero : ∀ (l : ℕ) [Fact l.Prime] 
   have hmain : dRO l O EAD ^ (H + η) • TWincl (iotaO O C) T (R.jB (toBcris t ϖ D.toPhiMod σ) - b₂) =
       dRO l O EAD ^ (H + η) • TWincl (dRO l O) T (∑ j, (z' j * v) • TWincl (toOD l O) T (z j)) := by
 
-    conv_lhs => rw [hE', ← TWincl_smul', key, map_sum]
+    conv_lhs => rw [hE', ← GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', key, map_sum]
 
-    conv_rhs => rw [← map_pow, ← TWincl_smul', Finset.smul_sum, map_sum]
+    conv_rhs => rw [← map_pow, ← GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', Finset.smul_sum, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [TWincl_smul', hz' j, hPsiL j, ← TWincl_smul', smul_smul, smul_smul]
+    rw [GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', hz' j, hPsiL j, ← GlobalTheory.BKGal.HatVal.BasisCoord.tWincl_smul', smul_smul, smul_smul]
     congr 2
     ring
   exact ⟨_, ((hED.pow (H + η)).smul_left_cancel.1 hmain).symm⟩
@@ -1101,15 +1099,13 @@ namespace GlobalTheory.BKGal.XiFil.ImageFil
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Algebra ℤ_[l] O]
 
-alias mul_mem_filO_zero := _root_.Bridge.mul_mem_filtration_zero
-
 theorem pow_mem_filO_zero (C : GlobalTheory.MemLoc.Core l) {x : OB l O} (hx : x ∈ filO O C 0) (n : ℕ) :
     x ^ n ∈ filO O C 0 := by
   induction n with
   | zero =>
     rw [pow_zero, ← map_one (toOB l O)]
     exact GlobalTheory.BKGal.TaylorFil.toOB_mem_filO_zero C 1
-  | succ n ih => rw [pow_succ]; exact mul_mem_filO_zero C ih hx
+  | succ n ih => rw [pow_succ]; exact Bridge.mul_mem_filtration_zero C ih hx
 
 theorem isUnit_l_BdRp : IsUnit ((l : ℕ) : Per.BdRp l) := by
   simpa using (GlobalTheory.RingBasics.isUnit_l (l := l)).map (algebraMap (Per.AinfP l) (Per.BdRp l))
@@ -1144,7 +1140,7 @@ theorem iSl_mem_filO (ϖ : PiSys l e) (C : GlobalTheory.MemLoc.Core l) (p : invL
   have h3 : ϖ.iSl O K ⟨f, n, hf⟩ = r ^ n * toOB l O (ϖ.iS O K ⟨_, hf⟩) := by
     rw [← h2, ← mul_assoc, ← mul_pow, hrl, one_pow, one_mul]
   rw [h3]
-  exact mul_mem_filO_zero C (pow_mem_filO_zero C hr n) (GlobalTheory.BKGal.TaylorFil.toOB_mem_filO_zero C _)
+  exact Bridge.mul_mem_filtration_zero C (pow_mem_filO_zero C hr n) (GlobalTheory.BKGal.TaylorFil.toOB_mem_filO_zero C _)
 
 end GlobalTheory.BKGal.XiFil.ImageFil
 
@@ -1158,7 +1154,7 @@ theorem iB_mem_filO_zero : ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [
     (C : GlobalTheory.MemLoc.Core l) (f : ZMod a → invL l (S O K e)), ϖ.iB t K f ∈ filO O C 0 := by
   intro l _ a e _ _ O K _ _ _ _ _ _ _ _ _ t ϖ C f
   rw [PiSys.iB, glue_apply]
-  refine Submodule.sum_mem _ fun τ _ => mul_mem_filO_zero C ?_ (iSl_mem_filO K ϖ C (f τ))
+  refine Submodule.sum_mem _ fun τ _ => Bridge.mul_mem_filtration_zero C ?_ (iSl_mem_filO K ϖ C (f τ))
   rw [idem, constB, AlgHom.comp_apply]
   exact GlobalTheory.BKGal.TaylorFil.toOB_mem_filO_zero C _
 

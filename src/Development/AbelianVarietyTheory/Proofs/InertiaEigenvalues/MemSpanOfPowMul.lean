@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodRingsG
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
 

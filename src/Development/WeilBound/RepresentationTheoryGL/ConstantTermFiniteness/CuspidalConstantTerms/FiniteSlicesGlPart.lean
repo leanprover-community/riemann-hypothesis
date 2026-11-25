@@ -75,23 +75,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.CoefficientSpanFinite
-
-theorem finiteDimensional_span_coefficients {G W : Type} [Group G] [AddCommGroup W] [Module ℂ W]
-    [FiniteDimensional ℂ W] (ρ : Representation ℂ G W) :
-    FiniteDimensional ℂ ↥(GlobalTheory.Published.AutFin.coeffSpan ρ) := by
-  let Φ : Module.Dual ℂ (W →ₗ[ℂ] W) →ₗ[ℂ] (G → ℂ) :=
-    { toFun := fun φ k => φ (ρ k)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  have hle : GlobalTheory.Published.AutFin.coeffSpan ρ ≤ LinearMap.range Φ := by
-    unfold GlobalTheory.Published.AutFin.coeffSpan
-    refine Submodule.span_le.2 ?_
-    rintro f ⟨ℓ, w, rfl⟩
-    exact ⟨ℓ ∘ₗ LinearMap.applyₗ w, rfl⟩
-  exact Submodule.finiteDimensional_of_le hle
-
-end GlobalTheory.CoefficientSpanFinite
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FiniteDimensionalSpanCoefficients =====
@@ -107,32 +90,12 @@ open scoped TensorProduct DirectSum Classical
 
 namespace GlobalTheory
 
-theorem exists_finset_eval_injective {Z : Type} (T : Submodule ℂ (Z → ℂ))
-    [FiniteDimensional ℂ T] :
-    ∃ Y : Finset Z, ∀ g ∈ T, (∀ y ∈ Y, g y = 0) → g = 0 := by
-  classical
-  let φ : Z → Module.Dual ℂ T := fun z => (LinearMap.proj z).comp T.subtype
-  have hfg : (Submodule.span ℂ (Set.range φ)).FG := IsNoetherian.noetherian _
-  obtain ⟨s', hs', hspan⟩ := (Submodule.fg_span_iff_fg_span_finset_subset _).1 hfg
-  rw [← Set.image_univ] at hs'
-  obtain ⟨Y, -, rfl⟩ := Finset.subset_set_image_iff.1 hs'
-  refine ⟨Y, fun g hg hY => ?_⟩
-  have hle : Submodule.span ℂ (Set.range φ) ≤ LinearMap.ker (Module.Dual.eval ℂ T ⟨g, hg⟩) := by
-    rw [hspan, Submodule.span_le]
-    intro ψ hψ
-    simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe] at hψ
-    obtain ⟨y, hy, rfl⟩ := hψ
-    simp [φ, hY y hy]
-  funext z
-  have hz := hle (Submodule.subset_span ⟨z, rfl⟩)
-  simpa [φ] using hz
-
 theorem finiteDimensional_span_separately (ι : Type) [Fintype ι] [DecidableEq ι] (X : ι → Type)
     (S : ∀ i, Submodule ℂ (X i → ℂ)) (hS : ∀ i, FiniteDimensional ℂ (S i)) :
     FiniteDimensional ℂ (Submodule.span ℂ
       {f : (∀ i, X i) → ℂ | ∀ i x, (fun y => f (Function.update x i y)) ∈ S i}) := by
   classical
-  choose Y hY using fun i => @exists_finset_eval_injective (X i) (S i) (hS i)
+  choose Y hY using fun i => @GlobalTheory.AvgCoeff.exists_finset_sep (X i) (S i) (hS i)
   let P : Submodule ℂ ((∀ i, X i) → ℂ) :=
     { carrier := {f | ∀ i x, (fun y => f (Function.update x i y)) ∈ S i}
       add_mem' := fun {f g} hf hg i x => (S i).add_mem (hf i x) (hg i x)
@@ -207,7 +170,7 @@ theorem exists_space {ι : Type} [Fintype ι] [DecidableEq ι] {G : Type} [Group
       add_mem' := fun {a b} ha hb => ⟨ha.1.add hb.1, fun τ k₀ => Submodule.add_mem _ (ha.2 τ k₀) (hb.2 τ k₀)⟩
       zero_mem' := ⟨continuous_const, fun τ k₀ => Submodule.zero_mem _⟩
       smul_mem' := fun c {a} ha => ⟨ha.1.const_smul c, fun τ k₀ => Submodule.smul_mem _ c (ha.2 τ k₀)⟩ }
-  have hfd : ∀ τ, FiniteDimensional ℂ (coeffSpan (ρ τ)) := fun τ => _root_.GlobalTheory.CoefficientSpanFinite.finiteDimensional_span_coefficients (ρ τ)
+  have hfd : ∀ τ, FiniteDimensional ℂ (coeffSpan (ρ τ)) := fun τ => _root_.GlobalTheory.CoefficientSpanFiniteDimensional.finiteDimensional_coeffSpan (ρ τ)
   have hfin := GlobalTheory.finiteDimensional_span_separately ι Γ (fun τ => coeffSpan (ρ τ)) hfd
   have hupd : ∀ (x : ∀ τ, Γ τ) τ y,
       Function.update x τ y = Function.update x τ 1 * Pi.mulSingle τ y := by
@@ -604,13 +567,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
   GlobalTheory.UAut GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability GlobalTheory.LFun.SplitTie
 open scoped ContDiff
 
-theorem _root_.GlobalTheory.T.isRealLine_blockEmbedding_exp_infinitePlace : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-    [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J →
-    ∀ (r : ℕ) (Xf Yf : Matrix (Fin n) (Fin r) E), IsWittFrame σ J Xf Yf →
-    ∀ (l d : ℕ) (h : l + d ≤ r) (ι : GlobalTheory.CuspRep.GA E d →* GAd σ J), GlobalTheory.BlockForms.IsBlockEmb σ J Xf Yf h ι →
-    ∀ (v : InfinitePlace E) (X : Matrix (Fin d) (Fin d) (GlobalTheory.CuspRep.Cinf E)), (∀ i j, ∀ u, u ≠ v → X i j u = 0) →
-      IsRealLine σ J fun t : ℝ => ι (GlobalTheory.CuspRep.infGL E d (GlobalTheory.CuspRep.expGLi d (t • X))) := by
-  first | exact @GlobalTheory.BlockRealLine.isRealLine_blockEmb_exp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRealLineBlockEmbeddingExpInfinitePlaceStatement =====
@@ -656,7 +612,7 @@ theorem mem_Sm_blockEmb : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
     choose v hv using hX
     have hγ : ∀ i, IsRealLine σ J (fun t : ℝ => g₀⁻¹ * ι (GlobalTheory.CuspRep.infGL E d (GlobalTheory.CuspRep.expGLi d (t • X i))) * g₀) :=
       fun i => GlobalTheory.EisCont.CentreFinite.isRealLine_conj hcm
-        (GlobalTheory.T.isRealLine_blockEmbedding_exp_infinitePlace F E σ hcm n J hJ r Xf Yf hW l d h ι hι (v i) (X i) (hv i)) g₀
+        (GlobalTheory.BlockRealLine.isRealLine_blockEmb_exp F E σ hcm n J hJ r Xf Yf hW l d h ι hι (v i) (X i) (hv i)) g₀
     have hs := hψ.1.smooth k _ hγ (ι (g * GlobalTheory.CuspRep.infGL E d hy.unit) * g₀)
     convert hs using 2 with t
     set P : GL (Fin d) (GlobalTheory.CuspRep.Cinf E) := (List.ofFn fun i => GlobalTheory.CuspRep.expGLi d (t i • X i)).prod
@@ -698,10 +654,8 @@ namespace GlobalTheory.EisMidHt
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-
 variable (F) in
 def adVec (z : Fin n → E) : Fin n → AF F ⊗[F] E := fun i => inclR (F := F) (AF F) (z i)
-
 
 variable (σ : E →ₐ[F] E) (J : Matrix (Fin n) (Fin n) E)
 
@@ -780,7 +734,6 @@ theorem perp_inv {X : Matrix (Fin n) (Fin r) E} {k : Fin r} {g : GAd σ J}
   rw [mulVec_mulVec, hF, ← mulVec_mulVec, hy, mulVec_zero]
 
 end GlobalTheory.FlagNorm
-
 
 open GlobalTheory.FlagNorm in
 theorem GlobalTheory.FlagNorm.conj_mem_unip : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ →
@@ -1081,7 +1034,6 @@ theorem continuous_unip (E : Type) [Field E] [NumberField E] (d r' : ℕ) :
   · exact continuous_const.add hn
   · exact continuous_const.sub hn
 
-
 open GlobalTheory.Cusp GlobalTheory.AutomorphicL2Unitary in
 theorem isCuspidal_comp_blockEmb : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] [Algebra F E]
     (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J →
@@ -1280,7 +1232,6 @@ theorem kfin_of_space {S : Submodule ℂ (K → ℂ)} [FiniteDimensional ℂ S] 
 end Rep
 
 section Main
-
 
 open GlobalTheory.CuspRep in
 theorem finite_slices_glPart : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (U : Subgroup (GA D V)), IsOpen (U : Set (GA D V)) → ∀ (ε : D.what₂.Tau → Fin V.rank → Bool) (fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ), IsFrameFam V ε fr → ∀ (W : D.what₂.Tau → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module ℂ (W τ)] [∀ τ, FiniteDimensional ℂ (W τ)] (ρ : ∀ τ, Representation ℂ (Formalism.REAL.KG (ε τ)) (W τ)), (∀ τ, IsContRep (ρ τ)) → ∀ (c : D.what₂.Tau → ℕ → ℂ) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E), GlobalTheory.SiegelSet.IsWittFrame D.sp.cm.sig V.gram X Y → ∀ T : Finset (Fin m), T.Nonempty → ∀ k ∈ T, ∀ b : GA D V, FiniteDimensional ℂ (Submodule.span ℂ (sliceSet (cuspOn θ V X Y T U ε fr ρ c) (glPart D.sp.cm.sig V.gram X Y T k) (levi D.sp.cm.sig V.gram X Y T) b)) := by

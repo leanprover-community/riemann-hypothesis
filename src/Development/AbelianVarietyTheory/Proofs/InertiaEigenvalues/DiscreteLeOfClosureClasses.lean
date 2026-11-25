@@ -56,9 +56,3 @@ def stabSub (φ : Sm E N) : Subgroup (GL (Fin N) (Af E)) where
     rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one]; rfl
 
 end GlobalTheory.DiscClosure
-
-namespace GlobalTheory.DiscClosure
-
-open GlobalTheory.PRep GlobalTheory.CuspRep.LocEx GlobalTheory.DiscLocEx
-
-end GlobalTheory.DiscClosure

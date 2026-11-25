@@ -28,7 +28,6 @@ namespace Formalism.MainNotions.N.CuspidalLatticeIdempotents
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 open scoped ComplexOrder
 
-
 theorem algBB_sub (g N : ℕ) (hg : 2 ≤ g) :
     Formalism.CyclotomicNorms.BB N g ⊆ ((Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.BB g N : Finset ℕ) : Set ℕ) := by
   intro l hl
@@ -73,17 +72,13 @@ def tens (a : ∀ i, MonoidAlgebra ℂ (G i)) : MonoidAlgebra ℂ (∀ i, G i) :
 theorem tens_coeff (a : ∀ i, MonoidAlgebra ℂ (G i)) (g : ∀ i, G i) :
     (tens a).coeff g = ∏ i, (a i).coeff (g i) := rfl
 
-theorem conv_coeff {H : Type} [Group H] [Fintype H] (x y : MonoidAlgebra ℂ H) (g : H) :
-    (x * y).coeff g = ∑ h, x.coeff h * y.coeff (h⁻¹ * g) := by
-  apply Formalism.MainNotions.PrimeDegreeVariant.Ten.conv_coeff
-
 theorem tens_mul (a b : ∀ i, MonoidAlgebra ℂ (G i)) :
     tens a * tens b = tens (fun i => a i * b i) := by
   classical
   letI : ∀ i, Fintype (G i) := fun i => Fintype.ofFinite _
   apply MonoidAlgebra.ext
   ext g
-  simp only [conv_coeff, tens_coeff]
+  simp only [Formalism.MainNotions.PrimeDegreeVariant.Ten.conv_coeff, tens_coeff]
   rw [Fintype.prod_sum]
   refine Finset.sum_congr rfl (fun h _ => ?_)
   rw [Finset.prod_mul_distrib]
@@ -253,7 +248,6 @@ section Good
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {G : ι → Type} [∀ i, Group (G i)] [∀ i, Finite (G i)]
   {P : ι → Type} [∀ i, Fintype (P i)]
 
-
 open Classical in
 def eGood (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) (good : (∀ i, P i) → Prop) :
     MonoidAlgebra ℂ (∀ i, G i) :=
@@ -271,7 +265,6 @@ theorem eGood_central (hcen : ∀ i p a, E i p * a = a * E i p) (x : MonoidAlgeb
   · simp
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W]
-
 
 open Classical in
 def onC {A : Type} [Ring A] [Algebra ℂ A] (Φ : Subalgebra.center ℂ A →ₐ[ℂ] Module.End ℂ W) (z : A) :
@@ -384,11 +377,6 @@ def ESer (kv : Σ k : Fin 2, D.nd.PlG k) (p : Fin D.R.r → ZMod (D.host.g kv.1)
 def goodVec (p : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), Fin D.R.r → ZMod (D.host.g kv.1)) : Prop :=
   D.ntypes.goodTuple (fun k v => Formalism.CyclotomicNorms.monicOf (p ⟨k, v⟩))
 
-theorem monicOf_inj {K : Type} [Field K] {N : ℕ} (a b : Fin N → K)
-    (h : Formalism.CyclotomicNorms.monicOf a = Formalism.CyclotomicNorms.monicOf b) : a = b := by
-  funext i
-  rw [← _root_.Formalism.CyclotomicNorms.Sqf.coeff_monicOf_lt a i, ← _root_.Formalism.CyclotomicNorms.Sqf.coeff_monicOf_lt b i, h]
-
 theorem ESer_idem (kv) (p) : ESer D kv p * ESer D kv p = ESer D kv p := by
   unfold ESer
   exact D.ntypes.eSer_idem _ _
@@ -404,7 +392,7 @@ theorem ESer_sum (kv : Σ k : Fin 2, D.nd.PlG k) : ∑ p, ESer D kv p = 1 := by
   have himg : ∑ p, ESer D kv p =
       ∑ f ∈ Finset.univ.image (fun p : Fin D.R.r → ZMod (D.host.g kv.1) => Formalism.CyclotomicNorms.monicOf p),
         D.ntypes.eSer kv.1 f := by
-    rw [Finset.sum_image fun a _ b _ h => monicOf_inj a b h]
+    rw [Finset.sum_image fun a _ b _ h => Formalism.MainNotions.PrimeDegreeVariant.Ten.monicOf_inj a b h]
     rfl
   rw [himg]
   symm
@@ -433,14 +421,12 @@ theorem e0_eq : D.ntypes.e0 = eGood (ESer D) (goodVec D) := by
   refine Finset.sum_congr (by first | rfl) (fun p _ => ?_)
   split_ifs <;> rfl
 
-
 theorem atPlace_eq (k : Fin 2) (v : D.nd.PlG k) (a : MonoidAlgebra ℂ (GL (Fin D.R.r) (ZMod (D.host.g k)))) :
     ArithmeticCylinders.atPlace D k v a =
       plc (G := fun kv : (Σ k : Fin 2, D.nd.PlG k) => GL (Fin D.R.r) (ZMod (D.host.g kv.1))) ⟨k, v⟩ a := by
   unfold Formalism.MainNotions.ArithmeticCylinders.atPlace
   convert mapDomain_mulSingle
     (G := fun kv : (Σ k : Fin 2, D.nd.PlG k) => GL (Fin D.R.r) (ZMod (D.host.g kv.1))) ⟨k, v⟩ a
-
 
 end Record
 
@@ -487,7 +473,7 @@ theorem idempotent_action_on_forms {W : Type} [AddCommGroup W] [Module ℂ W]
     by_contra hne
     apply hp
     have h' := h k v (Formalism.CyclotomicNorms.monicOf p) (by rwa [atPlace_eq])
-    apply monicOf_inj
+    apply Formalism.MainNotions.PrimeDegreeVariant.Ten.monicOf_inj
     rw [h', monicOf_labVec]
 
 end Record2

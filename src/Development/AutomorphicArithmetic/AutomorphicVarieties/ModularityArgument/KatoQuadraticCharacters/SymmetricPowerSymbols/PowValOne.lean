@@ -456,13 +456,6 @@ theorem spec_of_units [IsAlgClosure ℚ Ω] (X : Tower Ω ε) {M l n : ℕ} (hM 
 
 end GlobalTheory.K4.TopEta
 
-namespace GlobalTheory.K4
-
-open GlobalTheory.KZ
-
-attribute [local instance] algMdl
-
-end GlobalTheory.K4
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

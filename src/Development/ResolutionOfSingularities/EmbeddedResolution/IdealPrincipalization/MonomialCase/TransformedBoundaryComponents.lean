@@ -280,8 +280,6 @@ theorem intersectionComponents_transformedBoundary_of_isBlowupAlongIdealSheaf :
   intro T hT J₀ 𝒞 h𝒞 hop X' π hπ J C' hC' ξ' hξ'
   have : IsNoetherian T.scheme := hT.isNoetherian
   have : IsNoetherian X' := isNoetherian_of_isBlowupAlongIdealSheaf hπ
-  have : IsLocallyNoetherian X' := inferInstance
-  have : NoetherianSpace ↥X' := inferInstance
   obtain ⟨hC'irr, hC'sub, hC'max⟩ := hC'
   have hsncZ : HasStrictNormalCrossingsWith T.structMap (componentUnionIdeal T.boundary J₀ 𝒞 hop) T.boundary :=
     MonomialCenterGeometry.hasStrictNormalCrossingsWith_componentUnionIdeal T hT J₀ 𝒞 h𝒞 hop

@@ -188,7 +188,6 @@ theorem isSBHalf_cosLoc : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
       exact zero_mem _
   choose kk hkk using hc1
   set c : ℕ := N ^ (Finset.univ.sup kk) with hcdef
-  have hc0 : 0 < c := pow_pos hN _
   have hc : ∀ i j, (c : Lev.EAf D) * (toEAf D e * Comparison₂.fr βT βS (r.map (toEAf D)) i j) ∈ OA D :=
     fun i j => hkk (i, j) _ (Finset.le_sup (f := kk) (Finset.mem_univ (i, j)))
   refine ⟨fun t ht => ?_, (a * c) * (b * Ideal.absNorm (∏ w ∈ P, w.asIdeal ^ n)), by positivity,

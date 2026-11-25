@@ -10,34 +10,6 @@ open Formalism.FourierDecayAlt.LE
 open MeasureTheory Filter Topology Finset
 open scoped ComplexConjugate
 
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
-
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
-
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
-
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
-
 theorem cutTheta : CutTheta := by
   intro hC c σ ε h4 hε p
   choose Cc hCc using fun i => cutBound c 1 i le_rfl
@@ -67,19 +39,5 @@ theorem cutTheta : CutTheta := by
     · intro i _ hi
       rw [(hCc i ε₂ x h2 hx).2.2 hlt, ite_eq_right hi]; simp
     · simp
-
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
-
-end Formalism.FourierDecayAlt.P.LEx1
-
-namespace Formalism.FourierDecayAlt.P.LEx1
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 end Formalism.FourierDecayAlt.P.LEx1

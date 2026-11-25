@@ -818,10 +818,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.AffGlue
 
-end GlobalTheory.AffGlue
-
-namespace GlobalTheory.AffGlue
-
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
 open scoped TensorProduct in

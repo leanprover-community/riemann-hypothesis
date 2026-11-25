@@ -107,8 +107,6 @@ theorem ringHom_powerSeries_eq_of_rescale :
       intro f i hi; rw [map_sub, ih i hi f, sub_self]
     have Dadd : ∀ f g, D (f + g) = D f + D g := by
       intro f g; simp only [hD, map_add (f := _)]; ring
-    have Dsub : ∀ f g, D (f - g) = D f - D g := by
-      intro f g; simp only [hD, map_sub]; ring
     have Dmul : ∀ f g, D (f * g) = β (ε f) * D g + β (ε g) * D f := by
       intro f g
       have e : γ (f * g) - γ' (f * g) = γ f * (γ g - γ' g) + γ' g * (γ f - γ' f) := by

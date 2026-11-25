@@ -19,8 +19,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qg2.near_of_adjoin :
-    ∀ {P L : Type} [inst : CommRing P] [inst_1 : CommRing L]
-    [inst_2 : Algebra P L] (G : Set L),
+    ∀ {P L : Type} [CommRing P] [CommRing L]
+    [Algebra P L] (G : Set L),
     (∀ g ∈ G, IsNilpotent g) →
       ∀ x ∈ Algebra.adjoin P G, ∃ (p : P), IsNilpotent (x - (Algebra.algebraMap P L : P → L) p) := by
   intro P L _ _ _ G hG x hx

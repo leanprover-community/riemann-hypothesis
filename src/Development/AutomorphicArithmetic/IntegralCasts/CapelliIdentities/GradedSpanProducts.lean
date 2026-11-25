@@ -17,7 +17,7 @@ noncomputable def UpperTheory.Reformulated.B.GradedSpanProducts.gradedSpan.{u_1}
 @[reducible] noncomputable def UpperTheory.Reformulated.B.GradedSpanProducts.pc :
     {Ω : Type} → [inst : Field Ω] → {q : ℕ} → (Fin q → Ω) → ℕ → AddSubgroup Ω :=
     fun {Ω : Type} [Field Ω] {q : ℕ} (w : Fin q → Ω) (n : ℕ) ↦
-      UpperTheory.Reformulated.B.GradedSpanProducts.gradedSpan w (fun (x : Fin (1 : ℕ)) ↦ (0 : ℕ)) (fun (x : Fin (1 : ℕ)) ↦ (1 : Ω)) n
+      UpperTheory.Reformulated.B.GradedSpanProducts.gradedSpan w (fun (_ : Fin (1 : ℕ)) ↦ (0 : ℕ)) (fun (_ : Fin (1 : ℕ)) ↦ (1 : Ω)) n
 
 theorem UpperTheory.Reformulated.B.GradedSpanProducts.pc_mul :
     ∀ {Ω : Type} [inst : Field Ω] {q : ℕ} (w : Fin q → Ω) {a b : ℕ} {x z : Ω},

@@ -350,7 +350,6 @@ theorem exists_covol_lowC : ∃ (μ : Measure (WO (Vc D i) (Wc D i))) (𝓧 : Se
   obtain ⟨p, hp⟩ := hd.2.2.2.2.2.2.2.1.1.2.norm.1
   exact ⟨p.1, p.2, hp⟩
 
-
 include hd hν in
 theorem scalar_bound_lowC (h7 : LevelIndexNormC R F) (h8 : MassLower D) (h9 : FormalDegreeUpperC R F) {b : ℝ} (hb : Sizes D i b)
     {μ : @Measure (Datum.WO (Vc D i) (Wc D i)) (Datum.measMx _ _)} {𝓧 : Set (Datum.WO (Vc D i) (Wc D i))}
@@ -387,7 +386,6 @@ theorem scalar_bound_lowC (h7 : LevelIndexNormC R F) (h8 : MassLower D) (h9 : Fo
     (fun ρ => mul_pos (Nat.cast_pos.2 (hookOf_pos _ _)) (Nat.cast_pos.2 (hookOf_pos _ _)))
     (fun ρ => by exact_mod_cast one_le_dimK i σ ρ) (fun ρ => (a6 ρ).2.1) (fun ρ => ⟨Nat.cast_nonneg _, s5 σ ρ⟩)
     fun ρ => (a6 ρ).2.2
-
 
 include hd hν in
 theorem term_eval_lowC (h3 : InnerProductFormulaC R F) (h4 : FockCoefficientC R F)
@@ -440,7 +438,6 @@ theorem integrableOn_isLift_lowC (x : HV.H) (v : ∀ ρ, lowT (R.MW i σ) ρ) (g
   simp only [ptL_apply] at this
   convert this using 10
 
-
 include hd hν hV in
 theorem exists_isLift_lowC (h1 : LiftIsCuspC R F) : ∃ th, IsLift R i σ ω (ptAt R i σ BW f) c io ν 𝓕 HV th := by
   refine exists_linear_lift ν 𝓕 (R.HW i σ).e (fun (v : ∀ ρ, lowT (R.MW i σ) ρ) (g : GA D (Wc D i)) U => U (fun ρ => v ρ) g)
@@ -456,7 +453,6 @@ theorem exists_isLift_lowC (h1 : LiftIsCuspC R F) : ∃ th, IsLift R i σ ω (pt
     refine (congrFun (congrFun (congrArg DFunLike.coe hu) _) g).trans ((hU.2 v g).trans ?_)
     unfold Lift.thetaPInt
     rfl
-
 
 include hd hν hV in
 
@@ -511,7 +507,6 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL
     {c : CoefA (Vc D i)} {io : LowT (R.MW i σ) →ₗ[ℂ] c.W →ₗ[ℂ] PolF D (Wc D i).rank (Vc D i).rank}
     (hd : IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io)
     {ν : Measure (GA D (Vc D i))} {𝓕 : Set (GA D (Vc D i))} (hν : IsMeasDef (Vc D i) (levV R i t P m) ν 𝓕)
-
 
 include hd hν in
 theorem scalar_of_form_key_lowC (h3 : InnerProductFormulaC R F) (h4 : FockCoefficientC R F) (h5 : DeltaNorm D)
@@ -610,7 +605,6 @@ theorem prod_fin_getD (m : Multiset ℂˣ) {n : ℕ} (hn : m.card = n) (f : ℂ�
   rw [Multiset.map_coe, Multiset.prod_coe]
 
 variable {D : D7}
-
 
 open Classical in
 def zetaParams (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (B : GlobalTheory.LFun.Fam D.host.E) (cμ : (AE D)ˣ →* Circle) :
@@ -1134,7 +1128,6 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
 
 end GlobalTheory.LowRow.ParWidth
 
-
 open GlobalTheory.LowRow.ParWidth in
 theorem GlobalTheory.LowRow.lam_par_width : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Core5 R F → ∀ i σ s, IsEmbOverK D σ s → ∀ ρ, StrictAnti ((R.MW i σ).lam ρ) ∧ (∀ a, ∃ z : ℤ, (R.MW i σ).lam ρ a - (((Wc D i).rank : ℝ) - 1) / 2 = (z : ℝ)) ∧ ∀ a b, |(R.MW i σ).lam ρ a - (R.MW i σ).lam ρ b| ≤ (degAt D i σ ρ : ℝ) + D.R.nV + 3 := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F _hC i σ s hσ ρ
@@ -1212,8 +1205,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar GlobalTheory.LiftRows GlobalTheory.LowRow
 
-theorem _root_.GlobalTheory.T.standardMeasure_unitaryPQ_eq_volume_smul_compactDual : ∀ (cd : CDHaar) (p q : ℕ) (m : Measure (UpqT p q)), Lev.IsMinf m → m = ENNReal.ofReal (ReciprocityTheory.ChartRestriction.DS.volU (p + q)) • cd.cd p q := by
-  first | exact @GlobalTheory.LowRow.CompactDualScale.isMinf_eq_volU_smul_cd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardMeasureUnitaryPQEqVolumeSmulCompactDualStatement =====
@@ -1248,7 +1239,7 @@ theorem formalDegreeUpperC_of_hypotheses : GlobalTheory.Published.FormalDegreeCo
     have := D.R.m_add_three_le_k; have := D.R.two_le_m; have := D.R.three_m_lt_t
     simp only [Formalism.BasicNotions.Ranks.nV, Formalism.BasicNotions.Ranks.r]; omega
   obtain ⟨hint, hinv⟩ := _root_.GlobalTheory.LowRow.CompactDualCoef.inv_integral_coef_sq hp D.cd (Wc D i) _ (R.MW i σ) Fr hFr hsig ρ hanti hhalf _ he
-  have hm := GlobalTheory.T.standardMeasure_unitaryPQ_eq_volume_smul_compactDual D.cd _ _ mR hmR
+  have hm := GlobalTheory.LowRow.CompactDualScale.isMinf_eq_volU_smul_cd D.cd _ _ mR hmR
   rw [hsig ρ] at hm
   obtain ⟨hvol, hQpos, hlog⟩ := _root_.GlobalTheory.LowRow.formalDeg_div_volU_log_bound (Wc D i).rank D.R.nV (degAt D i σ ρ) ((R.MW i σ).lam ρ) h1 h3
     (by positivity) hanti hwid

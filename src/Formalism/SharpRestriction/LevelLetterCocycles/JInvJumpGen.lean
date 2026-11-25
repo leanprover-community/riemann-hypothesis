@@ -22,36 +22,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {LL : Type} [Field LL] [Algebra Qp LL]
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
 
-theorem inv_one_mem_all (h1 : (1 : BdR) ∈ PD.Fil 1) : ∀ a : ℤ, (1 : BdR) ∈ PD.Fil a := by
-  have hpos : ∀ n : ℕ, (1 : BdR) ∈ PD.Fil ((n : ℤ) + 1) := by
-    intro n
-    induction n with
-    | zero => simpa using h1
-    | succ n ih =>
-      have := PD.Fil_mul 1 ((n : ℤ) + 1) 1 1 h1 ih
-      rw [one_mul] at this
-      convert this using 2
-      push_cast; ring
-  have hle : ∀ (a : ℤ) (n : ℕ), PD.Fil (a + n) ≤ PD.Fil a := by
-    intro a n
-    induction n with
-    | zero => simp
-    | succ n ih =>
-      intro x hx
-      apply ih
-      have hx' : x ∈ PD.Fil (a + n + 1) := by
-        have e : a + ((n + 1 : ℕ) : ℤ) = a + n + 1 := by push_cast; ring
-        rwa [e] at hx
-      exact PD.Fil_anti (a + n) hx'
-  intro a
-  rcases le_or_gt a 1 with h | h
-  · have e : (1 : ℤ) = a + ((1 - a).toNat : ℕ) := by omega
-    have := hle a (1 - a).toNat
-    rw [← e] at this
-    exact this h1
-  · obtain ⟨n, hn⟩ : ∃ n : ℕ, a = (n : ℤ) + 1 := ⟨(a - 1).toNat, by omega⟩
-    rw [hn]; exact hpos n
-
 theorem field_inter_filtration_one_eq_zero (c : K) (hc : algebraMap K BdR c ∈ PD.Fil 1) : c = 0 := by
   apply +allowSynthFailures _root_.GlobalTheory.SplitJump.eq_zero_of_mem_fil_one <;> assumption
 

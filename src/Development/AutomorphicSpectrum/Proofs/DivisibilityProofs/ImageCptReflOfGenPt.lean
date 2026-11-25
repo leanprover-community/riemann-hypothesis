@@ -87,7 +87,3 @@ theorem imageCpt_refl_of_genPt : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   · rw [← Category.assoc, hxx]
 
 end GlobalTheory.CompanionTheory.Ar.Indep
-
-namespace GlobalTheory.CompanionTheory.Ar.Indep
-
-end GlobalTheory.CompanionTheory.Ar.Indep

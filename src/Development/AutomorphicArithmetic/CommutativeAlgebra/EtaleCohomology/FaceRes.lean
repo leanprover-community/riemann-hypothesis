@@ -95,7 +95,7 @@ def Fam.δ {E : Spc} (Z : Sub E) (p : ℕ) (M : Shv R) (η : ℤˣ) : Fam Z p M 
 def famDC {E : Spc} (Z : Sub E) (K : Cx R) (m : ℤ) : DC where
   A p s := Fam Z p (K.X (s + m))
   d p s t := Fam.map Z p (K.d (s + m) (t + m))
-  δ p s := Fam.δ Z p _ m.negOnePow
+  δ p _ := Fam.δ Z p _ m.negOnePow
 
 def Comp {E E' : Spc} (j : E ⟶ E') {Z : Sub E} {K : Cx R} {m N : ℤ} (γ : Cochain ((chains R).obj E') K N)
     (x : (famDC Z K m).Tot) : Prop :=

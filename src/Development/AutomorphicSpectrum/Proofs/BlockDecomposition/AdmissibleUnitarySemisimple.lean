@@ -18,8 +18,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf32.orbit_finite :
-    ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V] {G : Type}
-    [inst_2 : Group G] [inst_3 : TopologicalSpace G] [IsTopologicalGroup G] (ρ : Representation ℂ G V) (K : Subgroup G),
+    ∀ {V : Type} [AddCommGroup V] [_root_.Module ℂ V] {G : Type}
+    [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (ρ : Representation ℂ G V) (K : Subgroup G),
     IsCompact (↑K : Set G) →
       ∀ (w : V),
         IsOpen {g : G | ((ρ : G → V →ₗ[ℂ] V) g : V → V) w = w} →

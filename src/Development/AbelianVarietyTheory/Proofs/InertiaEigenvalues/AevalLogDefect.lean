@@ -14,7 +14,6 @@ def truncLogF {R : Type} [CommRing R] (n : ℕ) (u : R) : R :=
 
 theorem map_truncLogF {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (n : ℕ) (u : R) :
     f (truncLogF n u) = truncLogF n (f u) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [truncLogF, map_sum, map_mul, map_pow, map_neg, map_one, map_natCast]
 
 def logDefect (n : ℕ) : MvPolynomial (Fin 2) ℤ :=

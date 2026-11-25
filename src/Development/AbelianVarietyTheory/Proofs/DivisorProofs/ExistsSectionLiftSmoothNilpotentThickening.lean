@@ -1195,9 +1195,6 @@ theorem exists_pair_lift_comb : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀]
       commutes' := fun r => RingHom.congr_fun (chartHom_comp_strHom X hV _ ea heaV hea) r }
 
   obtain ⟨eP⟩ := exists_awayEquiv a b
-  have hePc : (eP.toAlgHom : Localization.Away (a * b) →+* Localization.Away (algebraMap R (Localization.Away a) b)).comp
-      (algebraMap R (Localization.Away (a * b))) = algebraMap R (Localization.Away (algebraMap R (Localization.Away a) b)) :=
-    eP.toAlgHom.comp_algebraMap
   have heP := equiv_restrict a b eP ρ hρ
   have heb' : (spMap ρ' ≫ eb) ≫ X.hom = spMap (algebraMap R (Localization.Away (a * b))) :=
     comp_over eb X.hom _ heb ρ' _ hρ'
@@ -1466,7 +1463,6 @@ theorem lift_of_nilpotent_of_sqZero :
     intro R R₀ _ _ π hπ hn X X₀ i hi hX e₀ he₀
     by_cases hn2 : n + 1 ≤ 2
     · exact H R R₀ π hπ (le_bot_iff.mp ((Ideal.pow_le_pow_right hn2).trans hn.le)) X X₀ i hi hX e₀ he₀
-    have hn1 : 1 ≤ n := by omega
     set I := RingHom.ker π with hIdef
     set J : Ideal R := I ^ n with hJdef
     have hJI : J ≤ RingHom.ker π := Ideal.pow_le_self (by omega)

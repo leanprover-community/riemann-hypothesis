@@ -460,7 +460,7 @@ theorem termC_holds : GlobalTheory.TypeAsm.TermC := by
   let S := Formalism.MainNotions.S.VS D
   have hsurj : Function.Surjective S.hT := by
     have hinj : Function.Injective S.hT := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro x hx
       exact S.nondeg.1 x (fun y => by rw [hx]; rfl)
     have hbij : Function.Bijective S.hT.rangeRestrict :=

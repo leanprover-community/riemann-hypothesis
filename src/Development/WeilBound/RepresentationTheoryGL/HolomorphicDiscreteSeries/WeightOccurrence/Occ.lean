@@ -891,9 +891,6 @@ open PositivityTheory.RgHe.Frame PositivityTheory.UnitaryDecomposition
 
 variable {n : ℕ} {e : Fin n ⊕ Unit ≃ Fin (n + 1)}
 
-theorem hs_nonneg' {m : ℕ} (A : Matrix (Fin m) (Fin m) ℂ) : 0 ≤ hs A :=
-  Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => by positivity
-
 theorem hs_emb_sub (a : Matrix (Fin n) (Fin n) ℂ) : hs (emb e a - 1) = hs (a - 1) := by
   have h1 : emb e a - 1 = Matrix.reindex e e (Matrix.fromBlocks (a - 1) 0 0 0) := by
     ext i j
@@ -992,8 +989,8 @@ theorem frame : PositivityTheory.RgHe.Frame := by
     have i1 := hAc (B - 1) hAv
     rw [key] at i1
     have i2 : hs (B * (g * δ * g⁻¹)) ≤ hs B * (hs g * hs δ * hs g⁻¹) := by
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_left ?_ (hs_nonneg' _))
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_right (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _) (hs_nonneg' _))
+      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_left ?_ (Formalism.REAL.frobenius_nonneg_matrix _))
+      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_right (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _) (Formalism.REAL.frobenius_nonneg_matrix _))
     have i3 : hs (um h - 1) = hs (B - 1) := (hs_emb_sub (e := e) (um h)).symm
     rw [i3]
     have := _root_.Formalism.REAL.frobenius_nonneg_matrix B; have := _root_.Formalism.REAL.frobenius_nonneg_matrix δ; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g⁻¹

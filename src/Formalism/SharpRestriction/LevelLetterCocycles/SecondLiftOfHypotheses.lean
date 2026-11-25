@@ -123,8 +123,7 @@ theorem sum_clK_eq_pow_smul_clK_of_level_decomposition [NeZero n] (M s σ : ℕ)
       refine (hF2 _ hw).unique ⟨?_, ?_⟩ ⟨hY2, ?_⟩
       · exact Finset.sum_induction _ _ (fun a b ha hb => Formalism.MainNotions.RamifiedCoefficientChains.S9.inPN_add W T ha hb)
           (uniformizerLattice_zero W T M) (fun c hc => (hZ c hc).1)
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, ← Finset.sum_sub_distrib, map_sum, ← Finset.sum_sub_distrib]
+      · rw [map_sum, ← Finset.sum_sub_distrib, map_sum, ← Finset.sum_sub_distrib]
         exact Finset.sum_congr rfl fun c hc => (hZ c hc).2
       · rw [← hY1]
         have hyz' : W.γ T (yz : W.DD T × W.DD T).1 - (yz : W.DD T × W.DD T).1 =

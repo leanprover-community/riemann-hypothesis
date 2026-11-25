@@ -58,7 +58,6 @@ theorem square_fibre_affine_opens_grp (K : Type) [Field K] (P₀ : Out.PolAV (Sp
     IsPullback (fst P₀.A P₀.A).left (snd P₀.A P₀.A).left P₀.A.hom P₀.A.hom ∧
     (∀ W : G.left.Opens, IsAffineOpen W → IsAffineOpen (m ⁻¹ᵁ W)) ∧
     ∀ W W' : G.left.Opens, IsAffineOpen W → IsAffineOpen W' → IsAffineOpen (W ⊓ W') := by
-  have hp₀ : IsProper P₀.A.hom := P₀.isAb.proper
   refine ⟨exists_square_of_isGrpPullback _ _ _ _ h, inferInstance,
     IsPullback.of_hasPullback _ _, fun W hW => ?_, fun W W' hW hW' => ?_⟩
   · have : IsAffineHom m :=

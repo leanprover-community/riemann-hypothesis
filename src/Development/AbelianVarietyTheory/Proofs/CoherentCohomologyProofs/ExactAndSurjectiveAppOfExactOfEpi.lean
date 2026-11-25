@@ -386,12 +386,6 @@ theorem range_kernel_ι_app (φ : M ⟶ N) (U : X.Opens) :
     LinearMap.range (appLinear (kernel.ι φ) U) = LinearMap.ker (appLinear φ U) :=
   Submodule.ext fun s ↦ (exact_kernel_ι_app φ U s).symm
 
-def kernelSectionsEquiv (φ : M ⟶ N) (U : X.Opens) :
-    Γ(kernel φ, U) ≃ₗ[Γ(X, U)] LinearMap.ker (appLinear φ U) :=
-  (LinearEquiv.ofInjective (appLinear (kernel.ι φ) U) (injective_kernel_ι_app φ U)).trans
-    (LinearEquiv.ofEq _ _ (range_kernel_ι_app φ U))
-
-
 theorem app_sum {ι : Type w} (t : Finset ι) (φ : ι → (M ⟶ N)) (U : X.Opens) (s : Γ(M, U)) :
     (∑ i ∈ t, φ i).app U s = ∑ i ∈ t, (φ i).app U s := by
   classical

@@ -404,26 +404,6 @@ end
 
 end PartG3
 
-section PartA1
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
-
-section MultOne
-
-end MultOne
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartA1
-
 section PartA2
 
 noncomputable section
@@ -615,91 +595,6 @@ end
 
 end PartG4
 
-section PartR1
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.BridgeLemma ValuativeRel IsDedekindDomain NumberField Topology
-
-section Resid
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : LocAt F E sig p)
-
-end Resid
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartR1
-
-section PartR2
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.BridgeLemma ValuativeRel IsDedekindDomain NumberField Ideal
-
-section PrimeSum
-
-end PrimeSum
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartR2
-
-section PartS1
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.LocalBesselAndTopKernel Formalism.MainNotions.BridgeLemma
-
-section S27
-
-end S27
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartS1
-
-section PartM1
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
-
-section Homog
-
-variable {k r : ℕ}
-
-end Homog
-
-section Scale
-
-variable (D : D7)
-
-end Scale
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartM1
-
 section PartM2
 
 noncomputable section
@@ -748,27 +643,3 @@ end Formalism.MainNotions.SchurRelationsDiscreteSeries
 end
 
 end PartM2
-
-section PartM3
-
-noncomputable section
-
-namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.MainNotions.UniformConstantsAndStatements ValuativeRel IsDedekindDomain NumberField
-
-section Main2
-
-variable {D : D7}
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Main2
-
-end Formalism.MainNotions.SchurRelationsDiscreteSeries
-
-end
-
-end PartM3

@@ -494,8 +494,6 @@ namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem lb_haarG : Formalism.FourierDecayAlt.B2.HaarGExists :=
   (Formalism.FourierDecayAlt.P.group_measure_from_diagonal Formalism.REAL.uJEmb Formalism.REAL.unimodular Formalism.REAL.ballFinite Formalism.REAL.volGrowth
     Formalism.QuantumDeterminants.hpkFacts Formalism.QuantumDeterminants.uHConj Formalism.FourierDecayAlt.P.haar_measure_unique_up_to_scalar Formalism.FourierDecayAlt.P.unitary_group_closed).1

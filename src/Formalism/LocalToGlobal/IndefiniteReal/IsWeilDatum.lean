@@ -23,12 +23,6 @@ variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
 
   t : R
 
-namespace HeisG
-
-variable {B : M →ₗ[R] M →ₗ[R] R} [Invertible (2 : R)]
-
-end HeisG
-
 end Law
 
 section Rat

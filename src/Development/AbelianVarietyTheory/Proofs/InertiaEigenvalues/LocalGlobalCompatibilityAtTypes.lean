@@ -50,11 +50,3 @@ theorem coprime_pred (g : ℕ) (hg : 1 ≤ g) : (g - 1).Coprime g := by
   simp
 
 end GlobalTheory.WildSetSQ
-
-namespace GlobalTheory.WildSetSQ
-
-end GlobalTheory.WildSetSQ
-
-namespace GlobalTheory.WildSetSQ
-
-end GlobalTheory.WildSetSQ

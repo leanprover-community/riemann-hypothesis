@@ -536,7 +536,7 @@ variable {O k}
 
 theorem toPi_bij : Function.Bijective (toPi O k) := by
   constructor
-  · set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  · rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ x
     have h : ∀ a, ∃ c, algebraMap O (FractionRing O) c = v a := fun a =>
@@ -758,7 +758,7 @@ theorem length_le (Q : Finset (PlE D.host))
     · trivial
     · exact cH_mem_H1ur _ _ _ _ _ _ _ hv
   refine Module.length_le_of_injective (c.restrict hc) ?_
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   refine Subtype.ext (eq_zero_of_cH (ι := Unit) (Gen.Trep i s k ψ) _ (fun _ => toPi _ _)
     (fun _ => continuous_of_discreteTopology) (fun _ => equivariant D i s k ψ) ⟨?_, ?_⟩ x.1 fun _ => ?_)
@@ -897,33 +897,6 @@ open Formalism.WeaklyAdmissibleFiltrations GlobalTheory.TwistedSelmerCompare
 
 namespace GlobalTheory.BlochKatoBaseChange
 
-section Gen
-
-variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : PeriodData G Qp K₀ K B BdR)
-    {LL : Type} [Field LL] [Algebra Qp LL]
-    {O : Type} [CommRing O] [Algebra O LL]
-    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
-    [Module O V] [IsScalarTower O LL V]
-    {ρ : Representation LL G V} [TopologicalSpace G]
-    [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
-
-theorem mem_HfD_iff (L : Lattice (O := O) ρ) (c : G → V ⧸ L.T) :
-    c ∈ HfD PD L ↔ ∃ z ∈ finiteCocycles PD ρ, ∃ v : V, ∀ g, c g = Submodule.Quotient.mk (z g + (ρ g v - v)) := by
-  constructor
-  · intro hc
-    obtain ⟨_, ⟨z, hz1, rfl⟩, _, ⟨v, rfl⟩, h⟩ := Submodule.mem_sup.1 hc
-    obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ v
-    exact ⟨z, hz1, v, fun g => (congrFun h g).symm⟩
-  · rintro ⟨z, hz, v, h⟩
-    exact Submodule.mem_sup.2 ⟨_, ⟨z, hz, rfl⟩, _, ⟨Submodule.Quotient.mk v, rfl⟩, funext fun g => (h g).symm⟩
-
-end Gen
-
 section Coord
 
 variable {O₀ O : Type} [CommRing O₀] [IsDomain O₀] [CommRing O] [IsDomain O]
@@ -1019,7 +992,7 @@ theorem coordQ_mem_HfD (hz : ∀ z : ℤ_[l], f (algebraMap ℤ_[l] O₀ z) = al
     (hc : (fun g => Br.phi B k (c (Br.ι B g))) ∈ HfD (P.PD B.Kw) (Br.lat B (mapM f M₀))) :
     (fun g => Br.phi B₀ k (coordQ p hi k (c (Br.ι B₀ g)))) ∈ HfD (P.PD B₀.Kw) (Br.lat B₀ M₀) := by
   obtain ⟨q, hq⟩ := exists_coordLL p hp B₀ B hz
-  obtain ⟨z, hz1, v, h⟩ := (mem_HfD_iff _ _ _).1 hc
+  obtain ⟨z, hz1, v, h⟩ := (GlobalTheory.BlochKatoBaseChangeLe.mem_HfD_gen _ _ _).1 hc
   let θ : ↥(GK B₀.Kw) →* ↥(GK B.Kw) := B.e.toMonoidHom.comp B₀.e.symm.toMonoidHom
   have hθ : Continuous θ := B.e_cont.comp B₀.e_symm_cont
   have hσ' : ∀ g : ↥(GK B₀.Kw), (g : GQ l) = σ⁻¹ * (θ g : GQ l) * σ⁻¹⁻¹ := by
@@ -1029,7 +1002,7 @@ theorem coordQ_mem_HfD (hz : ∀ z : ℤ_[l], f (algebraMap ℤ_[l] O₀ z) = al
     group
   have hm := coordLL_mulVec p hp B₀ B q hq M₀
   have hz2 := crystallineCocycle_transport_conjugation P B.Kw B₀.Kw B.LL B₀.LL θ hθ σ⁻¹ hσ' (Br.locM B (mapM f M₀)) (Br.locM B₀ M₀) q hm z hz1
-  refine (mem_HfD_iff _ _ _).2 ⟨_, hz2, fun j => q (v j), fun g => ?_⟩
+  refine (GlobalTheory.BlochKatoBaseChangeLe.mem_HfD_gen _ _ _).2 ⟨_, hz2, fun j => q (v j), fun g => ?_⟩
   have h3 : Br.phi B k (c (Br.ι B₀ g)) = Submodule.Quotient.mk
       (z (θ g) + ((Br.locM B (mapM f M₀) (θ g)).mulVec v - v)) := by
     have h4 : Br.ι B (θ g) = Br.ι B₀ g := B.e.symm_apply_apply _

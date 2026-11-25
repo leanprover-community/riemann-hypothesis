@@ -377,8 +377,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.DepthUnf GlobalTheory.SumSize GlobalTheory.RowClaim
 
-theorem _root_.GlobalTheory.T.flatProductDepthPeriodic_gcd : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) (t : T) (Φ : G.Datum) (β : CosFam G t) (e : AE D) (k k' : ℕ), DepthOK S t Φ β e k → DepthOK S t Φ β e k' → DepthOK S t Φ β e (Nat.gcd k k') := by
-  first | exact @GlobalTheory.DepthUnf.depthOK_gcd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatProductDepthPeriodicGcdStatement =====
@@ -397,11 +395,9 @@ namespace GlobalTheory.StairDepth
 
 variable {k : Type} [Field k] {G : Grid k}
 
-
 variable (G) in
 def wt (ϖ : kˣ) (e : ℕ) (X : ℕ × ℕ) (a : ℕ) : kˣ :=
   if X.1 = G.m ∧ X.2 + 2 ≤ G.m then ϖ ^ (e * (a + 1 - topRank G X.2)) else 1
-
 
 variable (G) in
 def dg (ϖ : kˣ) (e : ℕ) : G.VertexGroup := fun X => diagGL fun a : Fin (G.rank X) => wt G ϖ e X a
@@ -1042,7 +1038,7 @@ theorem depthK_of_hypotheses_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
   refine ⟨⟨τm, hτm⟩, fun w l hl hlw haw => ?_⟩
   have hk : 0 < expDepth ch.S.toGridChoice t Φ β := hτm.1
   obtain ⟨e', he', hexp', hdk⟩ := _root_.GlobalTheory.DepthUnf.depthOK_of_isCosetExpansion _ t Φ β _ τm hτm
-  have hg := GlobalTheory.T.flatProductDepthPeriodic_gcd _ t Φ β e' _ _ hdk (hdep e' he')
+  have hg := GlobalTheory.DepthUnf.depthOK_gcd _ t Φ β e' _ _ hdk (hdep e' he')
   obtain ⟨τg, hτg⟩ := _root_.GlobalTheory.DepthUnf.exists_cosetExpansion_of_depthOK hL _ t Φ β e' τm _ (Nat.gcd_pos_of_pos_left _ hk) he' hexp' hg
   have hle : expDepth ch.S.toGridChoice t Φ β ≤ Nat.gcd (expDepth ch.S.toGridChoice t Φ β) K := Nat.sInf_le ⟨τg, hτg⟩
   have heq := le_antisymm (Nat.le_of_dvd hk (Nat.gcd_dvd_left _ _)) hle

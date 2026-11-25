@@ -173,10 +173,6 @@ theorem kbInvHomeomorph_RCLike_equivariant (q : unitaryGroup n 𝕜 × upperPosS
   show (p.2 * q.2⁻¹)⁻¹ = q.2 * p.2⁻¹
   rw [_root_.mul_inv_rev, inv_inv]
 
-theorem kbInvHomeomorph_equivariant (q : unitaryGroup n ℝ × upperPosSubgroup n ℝ) (g : GL n ℝ) :
-    kbInvHomeomorph (Unitary.toUnits q.1 * g * ((q.2 : GL n ℝ))⁻¹) = q * kbInvHomeomorph g :=
-  kbInvHomeomorph_RCLike_equivariant q g
-
 theorem haarGL_eq_smul_map_kbHomeomorph [SecondCountableTopology (GL n 𝕜)]
     [LocallyCompactSpace (GL n 𝕜)] [SecondCountableTopology (upperPosSubgroup n 𝕜)]
     [LocallyCompactSpace (upperPosSubgroup n 𝕜)]
@@ -237,13 +233,6 @@ theorem lintegral_haarGL_iwasawa [SecondCountableTopology (GL n 𝕜)]
   simp only [Function.comp_def] at this
   rw [this, ENNReal.smul_def, smul_eq_mul]
   rfl
-
-theorem haarGLReal_eq_smul_map_kbHomeomorph (μ₀ : Measure (Matrix n n ℝ)) [μ₀.IsAddHaarMeasure]
-    (μK : Measure (unitaryGroup n ℝ)) [μK.IsHaarMeasure]
-    (μB : Measure (upperPosSubgroup n ℝ)) [μB.IsHaarMeasure] :
-    ∃ c : ℝ≥0, c ≠ 0 ∧
-      haarGLReal μ₀ = c • Measure.map kbHomeomorph (μK.prod μB.inv) :=
-  haarGL_eq_smul_map_kbHomeomorph (haarGLReal μ₀) μK μB
 
 theorem lintegral_haarGLReal_iwasawa (μ₀ : Measure (Matrix n n ℝ)) [μ₀.IsAddHaarMeasure]
     (μK : Measure (unitaryGroup n ℝ)) [μK.IsHaarMeasure]

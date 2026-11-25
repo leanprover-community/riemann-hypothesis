@@ -61,27 +61,6 @@ theorem isMGraded_shift {𝓜 : (K → ℤ) → Submodule S M} (h : KH.IsMGraded
   · have := h.2 a (d + c) p m hp hm
     rwa [add_right_comm] at this
 
-theorem cechHc_subsingleton_of_bij (hSES : KH.CechSESStatement)
-    {A B : Type} [AddCommGroup A] [Module (MRingOver S ι) A] [Module S A] [IsScalarTower S (MRingOver S ι) A]
-    [AddCommGroup B] [Module (MRingOver S ι) B] [Module S B] [IsScalarTower S (MRingOver S ι) B]
-    (𝓐 : (K → ℤ) → Submodule S A) (𝓑 : (K → ℤ) → Submodule S B) (g : A →ₗ[MRingOver S ι] B)
-    (hA : KH.IsMGraded S ι 𝓐) (hB : KH.IsMGraded S ι 𝓑) (hg : KH.IsMGradedMap S ι 𝓐 𝓑 g)
-    (hinj : Function.Injective g) (hsurj : Function.Surjective g) (c : K → ℤ) (n : ℕ)
-    (h : Subsingleton (KH.cechHc ι 𝓐 c n)) : Subsingleton (KH.cechHc ι 𝓑 c n) := by
-  have hhG : KH.IsMGradedMap S ι 𝓑 (fun _ : K → ℤ => (⊥ : Submodule S PUnit)) 0 :=
-    fun _ _ _ => Submodule.zero_mem _
-  have hex : LinearMap.range g = LinearMap.ker (0 : B →ₗ[MRingOver S ι] PUnit) := by
-    rw [LinearMap.range_eq_top.2 hsurj, LinearMap.ker_zero]
-  have hU' : Subsingleton (KH.cechHc ι (fun _ : K → ℤ => (⊥ : Submodule S PUnit)) c n) := by
-    have : Subsingleton (KH.CechC S ι PUnit n) :=
-      ⟨fun f g => funext fun I => Subsingleton.elim (α := LocalizedModule _ PUnit) _ _⟩
-    refine ⟨fun x y => ?_⟩
-    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-    rw [Subsingleton.elim x y]
-  exact (hSES S K ι A B PUnit 𝓐 𝓑 _ g 0 hA hB isMGraded_punit hg hhG hinj
-    (fun _ => ⟨0, Subsingleton.elim _ _⟩) hex c n).1 h hU'
-
 end H1VanishingDevissage
 
 theorem H1VanishingDevissage.devissage {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K]

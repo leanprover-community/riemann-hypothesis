@@ -717,7 +717,6 @@ theorem deg_tensor (II : IntersectionSystem) (hII : IsFullIntersectionSystem II)
 
 end GlobalTheory.CompanionTheory.Ar.Top.EffLat
 
-
 open GlobalTheory.CompanionTheory.Ar.Top.EffLat PositivityTheory.HtPt.Gf in
 theorem GlobalTheory.CompanionTheory.Ar.Top.eff_lat : ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ReciprocityTheory.ChartRestriction.G.Geo.DivSuppArithStatement → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (e : ℕ) (L : Fin e → HermLine ι) (A : HermLine ι) (s : Ω), IsArithVar (mCoordIdeal y) (e + 2) → Birational y → (∀ j, IsSmoothHerm (L j)) → IsSmoothHerm A → s ≠ 0 → s ∈ chartLat y A.a 1 → (∀ W, IsArithVar W (e + 1) → mCoordIdeal y ≤ W → 0 ≤ ptsIntegral W (fun j z => Real.log ((L j).h z)) (fun _ => 1)) → 0 ≤ ptsIntegral (mCoordIdeal y) (fun j z => Real.log (((Fin.snoc L A : Fin (e + 1) → HermLine ι) j).h z)) (fun _ => 1) := by
   classical
@@ -981,13 +980,6 @@ theorem comb_a {J : Type} [Fintype J] (ℓ : J → HermLine ι) (n : J → ℤ) 
 theorem exists_smooth (b : K → ℤ) : ∃ B : HermLine ι, IsSmoothHerm B ∧ B.a = b := by
   apply PositivityTheory.UnitarySelfGeneration.RC.exists_line
 
-theorem smooth_snoc {e : ℕ} {L : Fin e → HermLine ι} {X : HermLine ι} (hL : ∀ j, IsSmoothHerm (L j))
-    (hX : IsSmoothHerm X) (j : Fin (e + 1)) :
-    IsSmoothHerm ((Fin.snoc L X : Fin (e + 1) → HermLine ι) j) := by
-  refine Fin.lastCases ?_ (fun i => ?_) j
-  · simpa using hX
-  · simpa using hL i
-
 theorem last_lin (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) (P : Ideal (MRing ι)) (e : ℕ)
     (hP : IsArithVar P (e + 2)) (L : Fin e → HermLine ι) (A B C : HermLine ι) (m : ℤ)
     (hL : ∀ j, IsSmoothHerm (L j)) (hA : IsSmoothHerm A) (hB : IsSmoothHerm B) (hC : IsSmoothHerm C)
@@ -1122,10 +1114,6 @@ section Lines
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem smooth_comb {J : Type} [Fintype J] {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j))
-    (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Top.GeoMix.smooth_comb <;> assumption
-
 theorem geomDeg_comb (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) {J : Type} [Fintype J]
     {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j)) (n : J → ℤ) (W : Ideal (MRing ι))
     (hW : IsArithVar W 2) :
@@ -1141,11 +1129,6 @@ theorem geomDeg_comb (II : IntersectionSystem) (hII : IsFullIntersectionSystem I
 end Lines
 
 variable {Ψ : Type} [Fintype Ψ] {N : ℕ}
-
-theorem smooth_line (M : RootModel Ψ N) (t : ℝ) (r : Option (Ψ × Fin N)) : IsSmoothHerm (M.line t r) := by
-  cases r with
-  | none => exact M.A_smooth
-  | some r => exact M.x_smooth t r
 
 theorem coef_smul (M : RootModel Ψ N) (lam : Wt Ψ N) (s q : ℝ) (j : Option (Ψ × Fin N)) :
     M.coef (q • lam) (q * s) j = q * M.coef lam s j := by
@@ -1211,7 +1194,7 @@ theorem nef_prod (M : RootModel Ψ N) (lam : Fin (dimFl Ψ N) → Wt Ψ N) (s : 
   choose q n hq hn using fun k => _root_.RootFieldNumerics.exists_integer_coefficients_rational Ψ N M (lam k) (s k) (hr k)
   have h1 := geo_mixed II hII M _ rfl lam (fun k => s k) q n hn
   have h2 := _root_.RootFieldNumerics.arithmetic_intersection_divisor_support hK hE hS II hII M.K M.ι M.P (dimFl Ψ N) (fun k => combLine (M.line 1) (n k))
-    M.arith (fun k => smooth_comb (smooth_line M 1) _)
+    M.arith (fun k => GlobalTheory.CompanionTheory.Ar.Top.GeoMix.smooth_comb (RootFieldNumerics.GeoComb.line_smooth M 1) _)
     (fun k W hW hP => nef_comb II hII M (hn k) (hnef k) W hW hP)
   rw [h1] at h2
   have hpos : (0 : ℝ) < M.δ * ∏ k, (q k : ℝ) :=
@@ -1233,7 +1216,7 @@ theorem eff_prod (M : RootModel Ψ N) (e : ℕ) (he : dimFl Ψ N = e + 1) (lam :
     have := M.arith
     rwa [he] at this
   have h2 := _root_.RootFieldNumerics.intersection_section_log_integral hK hE hS II hII M.K M.ι M.Ω M.y e (fun k => combLine (M.line 1) (n k))
-    (combLine (M.line 1) n0) σ har M.birational (fun k => smooth_comb (smooth_line M 1) _)
+    (combLine (M.line 1) n0) σ har M.birational (fun k => GlobalTheory.CompanionTheory.Ar.Top.GeoMix.smooth_comb (RootFieldNumerics.GeoComb.line_smooth M 1) _)
     (_root_.GlobalTheory.CompanionTheory.Ar.Top.GeoMix.smooth_comb (_root_.RootFieldNumerics.GeoComb.line_smooth M 1) _) hσ0 hσ
     (fun k W hW hP => nef_comb II hII M (hn k) (hnef k) W hW hP)
   have h3 : (Fin.snoc (fun k => combLine (M.line 1) (n k)) (combLine (M.line 1) n0) :
@@ -1320,7 +1303,7 @@ theorem zhang_lower_bound_root_model : SuccessiveMinimaLowerBound → ∀ II : I
         M.arFun II t (linA lam s ^ (dimFl Ψ N + 1)) := by
   intro hZ1 II hII Ψ _ N M t lam s e hrat hsemi hnef hpts
   obtain ⟨q, n, hq, hn⟩ := _root_.RootFieldNumerics.exists_integer_coefficients_rational Ψ N M lam s hrat
-  have hp := _root_.GlobalTheory.CompanionTheory.Ar.Top.semipositive_integral_multiple Ψ N M t lam s q n hn hsemi
+  have hp := _root_.RootFieldNumerics.root_model_line_semipositive Ψ N M t lam s q n hn hsemi
   have hnf := (_root_.GlobalTheory.CompanionTheory.Ar.Top.nefFib_integral_multiple Ψ N M t lam s q n hn).2 hnef
   have hW : ∀ W, IsArithVar W 1 → M.P ≤ W →
       ((q : ℝ) * e) * degC W ≤ II M.K M.ι W 1 ![combLine (M.line t) n] := by
@@ -1365,7 +1348,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Top
 theorem zhang_upper_bound_root_model : SuccessiveMinimaUpperBound → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] (N : ℕ) (M : RootModel Ψ N) (t : ℝ) (lam : Wt Ψ N) (s : ℚ) (e : ℝ) (F : Set (Ideal (MRing M.ι))), IsRatWt lam → M.Semipos t lam s → M.NefFib lam s → IsZariskiDense M.P F → (∀ W ∈ F, M.IsPt W ∧ M.ht II t lam s W ≤ e) → M.arFun II t (linA lam s ^ (dimFl Ψ N + 1)) ≤ ((dimFl Ψ N : ℝ) + 1) * e * M.geoFun (linA lam s ^ dimFl Ψ N) := by
   intro hZ II hII Ψ _ N M t lam s e F hrat hsp hnef hF hpt
   obtain ⟨q, n, hq, hn⟩ := _root_.RootFieldNumerics.exists_integer_coefficients_rational Ψ N M lam s hrat
-  have hsemi := _root_.GlobalTheory.CompanionTheory.Ar.Top.semipositive_integral_multiple Ψ N M t lam s q n hn hsp
+  have hsemi := _root_.RootFieldNumerics.root_model_line_semipositive Ψ N M t lam s q n hn hsp
   have hnf := (_root_.GlobalTheory.CompanionTheory.Ar.Top.nefFib_integral_multiple Ψ N M t lam s q n hn).2 hnef
   have hA := _root_.GlobalTheory.CompanionTheory.Ar.Top.top_comb_eq_arFun II hII Ψ N M t lam s q n hn
   have hG := _root_.GlobalTheory.CompanionTheory.Ar.Top.geoFun_comb_mixed II hII Ψ N M t (fun _ => lam) (fun _ => (s : ℝ)) q (fun _ => n)
@@ -1596,7 +1579,6 @@ theorem three_terms {q a p cs c3 c2 cp c8 v n θ L Ls md dist s : ℝ} (hcs : 0 
   linarith
 
 end WallBound
-
 
 open WallBound in
 theorem thmW_tower : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.KleimanNefFStatement →

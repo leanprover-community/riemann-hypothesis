@@ -207,13 +207,6 @@ theorem exists_elem (d : HypDec S S₀ ρ) (y : Fin S₀.rank → AE D) {i j : F
   · rw [Decomp.mt_flag_jX, hu1]
   · rw [Matrix.mulVec_mulVec, Decomp.flag_unipotent_product_anisotropic_action, Matrix.mul_zero, Matrix.mul_zero, add_zero]
 
-theorem upSum_one : upSum (1 : Mx D ρ ρ) = 0 := by
-  unfold upSum
-  refine Finset.sum_eq_zero fun p _ => Finset.sum_eq_zero fun q _ => ?_
-  split_ifs with e
-  · exact Matrix.one_apply_ne fun e' => by subst e'; omega
-  · rfl
-
 theorem entry_rat (d : HypDec S S₀ ρ) (d' : HypDec S S₁ ρ) (p q : Fin ρ) : (d'.pX ⬝ d.jX) p q ∈ (incA D).range := by
   rw [Matrix.mul_apply]
   exact sum_mem fun l _ => mul_mem ⟨_, rfl⟩ ⟨_, rfl⟩
@@ -250,7 +243,6 @@ theorem last_row (hψ : ∃ s, psiE ψ s ≠ 1) (hz : z ≠ 0) (hz' : z' ≠ 0) 
     rw [simpleSum_eq, h1', ← hZ, h2, Matrix.mulVec_add, hZ, pX_Z, hl, d'.pX_jX, upSum_one, mulVec_single_at]
   rw [psiBes_one, psiBes_one, e1, e2] at h
   exact h.symm
-
 
 theorem keeps (hψ : ∃ s, psiE ψ s ≠ 1) (hz' : z' ≠ 0) (hZ : d.j0 *ᵥ ratV z = d'.j0 *ᵥ ratV z')
     (hN : flagN d = flagN d') (hc : ∀ n ∈ flagN d, psiBes ψ d 1 z n = psiBes ψ d' 1 z' n) :

@@ -35,15 +35,6 @@ def AdL {k r : ℕ} (p : B.SS k r) (X : B.Mat k r) : B.Mat k r := (sL p)⁻¹ * 
 
 def AdR {k r : ℕ} (p : B.SS k r) (X : B.Mat k r) : B.Mat k r := (sR p)⁻¹ * X * sR p
 
-def castW {k : ℕ} (μ : B.Mat k 0) : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ :=
-  Matrix.reindex (finCongr (by omega)) (finCongr (by omega)) μ
-
-def sliceR {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq)
-    (F : B.Mat k r → (Wq →L[ℂ] Wp)) (c : Fin r → ℂ) (μ : B.Mat k 0) : Wq →L[ℂ] Wp :=
-  ∫ nn : Mt k r × Mt k r, (psi k r D.z cStd (Matrix.of nn.1) * star (psi k r D.z' cStd (Matrix.of nn.2))) •
-    F ((Matrix.of nn.1)⁻¹ * bigCell k r c (castW μ) * Matrix.of nn.2) ∂(D.μN.prod D.μN)
-
 def TransportedAlt (k r : ℕ) (A : ℝ) (m : ℕ) : Prop :=
   ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < (A - 6 * (r : ℝ) * (m : ℝ)) / (9 * ((r : ℝ) + 1))
 

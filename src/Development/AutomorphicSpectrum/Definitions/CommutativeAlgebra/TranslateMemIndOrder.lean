@@ -74,8 +74,4 @@ theorem dlogChar_of_mem (A : Subalgebra R (T → R)) (χ : T →* Rˣ) (h : (fun
 
 end OrderApi
 
-namespace OrderEx
-
-end OrderEx
-
 end GlobalTheory.CompanionTheory.Ar.BT

@@ -155,8 +155,6 @@ theorem cex_tw (x : Letter E) (t : ℝ) : cex (tw x t) = cex x + x.1 * (Module.f
 
 theorem rexp_tw (x : Letter E) (hx : 1 ≤ x.1) (t : ℝ) : rexp (tw x t) = rexp x + t := by
   have hd : (0:ℝ) < Module.finrank ℚ E := by exact_mod_cast Module.finrank_pos
-  have ha : (0:ℝ) < x.1 := by exact_mod_cast hx
-  have hne : (x.1 : ℝ) * Module.finrank ℚ E ≠ 0 := (mul_pos ha hd).ne'
   unfold rexp
   rw [cex_tw]
   show (cex x + (x.1 : ℂ) * (Module.finrank ℚ E : ℂ) * (t : ℂ)).re / ((x.1:ℝ) * Module.finrank ℚ E) = _

@@ -26,14 +26,9 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 theorem letE_mem (a : ZMod n) : (letE a : LetA O n) ∈ W.AΔ := by
   apply _root_.Formalism.MainNotions.UnusedSlot80.SatPW.letE_mem_AΔ <;> assumption
 
-theorem lev_letE' (a : ZMod n) (ζ : LL) : W.lev a ζ (letE a : LetA O n) = 1 := by
-  have h : W.lev a ζ (1 - letE a) = 0 := W.lev_letter a ζ _ (by simp [letE])
-  rw [map_sub, map_one, sub_eq_zero] at h
-  exact h.symm
-
 theorem lev_letE_mul (a : ZMod n) (ζ : LL) (g : LetA O n) :
     W.lev a ζ ((letE a : LetA O n) * g) = W.lev a ζ g := by
-  rw [map_mul, lev_letE', one_mul]
+  rw [map_mul, Formalism.MainNotions.UnusedSlot80.LevR.lev_letE, one_mul]
 
 theorem lev_q_X (a : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) :
     ∃ R : PowerSeries LL, constantCoeff R ≠ 0 ∧ W.lev a ζ W.q = X * R := by
@@ -169,7 +164,7 @@ theorem step (hR : ToolsR.RingP W) (hpu : ¬ IsUnit ((PD.p : ℕ) : O))
     · simp [Pi.mul_apply, Pi.add_apply, Pi.smul_apply, hh, letE, Pi.single_eq_of_ne hi]
   obtain ⟨S, -, hS⟩ := lev_qP_X hR a ζ hζ
   have hL := congrArg (fun x => coeff 0 (W.lev a ζ x)) key
-  simp only [map_add (f := _), map_mul, map_smul, lev_letE', hS, one_mul] at hL
+  simp only [map_add (f := _), map_mul, map_smul, Formalism.MainNotions.UnusedSlot80.LevR.lev_letE, hS, one_mul] at hL
   rw [h0, mul_assoc, coeff_zero_X_mul, zero_add, coeff_smul, coeff_zero_eq_constantCoeff,
     map_one, Algebra.smul_def, mul_one] at hL
   have hc : r.coeff 0 = 0 := hinj (by rw [← hL, map_zero])

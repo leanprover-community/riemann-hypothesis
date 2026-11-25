@@ -47,9 +47,6 @@ theorem antiJ_eq_rev {L : Type} [Field L] {n : ℕ} (i j : Fin n) :
   show (if (i : ℕ) + j + 1 = n then (1 : L) else 0) = _
   exact if_congr key rfl rfl
 
-theorem antiJ_mul_self {L : Type} [Field L] (n : ℕ) : antiJ L n * antiJ L n = 1 :=
-  _root_.Formalism.UG.P.fIwasawa_antiJ_mul_antiJ
-
 def bM {n : ℕ} (d₁ d₂ : Fin n → R) : Matrix (Fin n) (Fin n) R :=
   fun i j => (if i = j then d₁ i else 0) + (if i = Fin.rev j then d₂ i else 0)
 
@@ -172,7 +169,7 @@ theorem wittEx : WittEx := by
     rw [WittBasisGramMatrix.gram_bM (GlobalTheory.BCT.cj w) d₁ d₂ P1 P2 P3 j k, WittBasisGramMatrix.antiJ_eq_rev]
   have hCB : (antiJ (IsDedekindDomain.HeightOneSpectrum.adicCompletion E w) n *
       ((WittBasisGramMatrix.bM d₁ d₂).map (GlobalTheory.BCT.cj w))ᵀ) * WittBasisGramMatrix.bM d₁ d₂ = 1 := by
-    rw [Matrix.mul_assoc, hG, WittBasisGramMatrix.antiJ_mul_self]
+    rw [Matrix.mul_assoc, hG, Formalism.UG.P.fIwasawa_antiJ_mul_antiJ]
   have hBC : WittBasisGramMatrix.bM d₁ d₂ * (antiJ (IsDedekindDomain.HeightOneSpectrum.adicCompletion E w) n *
       ((WittBasisGramMatrix.bM d₁ d₂).map (GlobalTheory.BCT.cj w))ᵀ) = 1 := (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp hCB
   have hd1int : ∀ j, Valued.v (d₁ j) ≤ 1 := by
@@ -256,16 +253,6 @@ private theorem infinite_of_hasDirichletDensity_pos {K : Type} [Field K] [Number
   have h0 := GroundTheory.Global.hasDirichletDensity_zero_of_finite hfin
   exact hδ.ne' (h.dirichletDensity_eq.symm.trans h0.dirichletDensity_eq)
 
-private theorem eq_one_or_eq_complexConj_of_maximalRealSubfield (E : Type) [Field E] [NumberField E] [IsCMField E]
-    (σ : Gal(E/↥(maximalRealSubfield E))) : σ = 1 ∨ σ = IsCMField.complexConj E := by
-  have hσ : σ ∈ Subgroup.zpowers (IsCMField.complexConj E) := by
-    rw [IsCMField.zpowers_complexConj_eq_top]
-    trivial
-  obtain ⟨k, rfl⟩ := Subgroup.mem_zpowers_iff.mp hσ
-  rw [← zpow_mod_orderOf, IsCMField.orderOf_complexConj]
-  push_cast
-  rcases Int.emod_two_eq_zero_or_one k with hk | hk <;> simp [hk]
-
 theorem inertSet_infinite : (inertSet E).Infinite := by
   have hcl : ∀ σ ∈ ({IsCMField.complexConj E} : Set Gal(E/↥(maximalRealSubfield E))),
       ∀ τ : Gal(E/↥(maximalRealSubfield E)), τ * σ * τ⁻¹ ∈
@@ -273,7 +260,7 @@ theorem inertSet_infinite : (inertSet E).Infinite := by
     intro σ hσ τ
     rw [Set.mem_singleton_iff] at hσ ⊢
     subst hσ
-    rcases eq_one_or_eq_complexConj_of_maximalRealSubfield E τ with h | h <;> subst h <;> group
+    rcases Formalism.FrobeniusOrbits.Eta.cases E τ with h | h <;> subst h <;> group
   have hd := GroundTheory.Global.hasDirichletDensity_chebotarevSet
     (K := ↥(maximalRealSubfield E)) (L := E) _ hcl
   apply infinite_of_hasDirichletDensity_pos hd
@@ -293,7 +280,7 @@ theorem eq_of_liesOver {v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))} (h
     Gal(E/↥(maximalRealSubfield E))
   apply IsDedekindDomain.HeightOneSpectrum.ext
   rw [← hσ]
-  rcases eq_one_or_eq_complexConj_of_maximalRealSubfield E σ with h | h
+  rcases Formalism.FrobeniusOrbits.Eta.cases E σ with h | h
   · rw [h, one_smul]
   · have hfrob := (hv w hw).2
     rw [Set.mem_singleton_iff] at hfrob

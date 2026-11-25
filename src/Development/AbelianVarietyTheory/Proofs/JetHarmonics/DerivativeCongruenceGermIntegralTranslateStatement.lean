@@ -224,7 +224,6 @@ theorem hasSubst_add_sqZero {σ τ S : Type} [Fintype σ] [CommRing S]
   have h1 : IsNilpotent (constantCoeff e) := ⟨2, by rw [pow_two, ← map_mul, he, map_zero]⟩
   exact (Commute.all _ _).isNilpotent_add (ha s) ((Commute.all _ _).isNilpotent_mul_right h1)
 
-
 open scoped MvPowerSeries.WithPiTopology in
 theorem subst_add_sqZero {σ τ S : Type} [Fintype σ] [CommRing S]
     (a b : σ → MvPowerSeries τ S) (e : MvPowerSeries τ S) (he : e * e = 0)
@@ -906,10 +905,6 @@ theorem gs_zero {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) : gs f y 
   unfold gs
   split <;> simp
 
-theorem gs_sub {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) (h : f y ∈ U) (a b : Γ(X, U)) :
-    gs f y U (a - b) = gs f y U a - gs f y U b := by
-  rw [gs_eq f y U h, gs_eq f y U h, gs_eq f y U h, map_sub, map_sub]
-
 theorem exists_defect {Y G H : Scheme.{0}} (m s : Y ⟶ G) (p : Y ⟶ H) (V : G.Opens) (t : Γ(G, V))
     (u : Γ(H, ⊤)) : ∃ f : Γ(Y, m ⁻¹ᵁ V ⊓ s ⁻¹ᵁ V), ∀ (Z : Scheme.{0}) (g : Z ⟶ Y) (z : Z),
       g z ∈ m ⁻¹ᵁ V ⊓ s ⁻¹ᵁ V → gs g z (m ⁻¹ᵁ V ⊓ s ⁻¹ᵁ V) f =
@@ -919,14 +914,11 @@ theorem exists_defect {Y G H : Scheme.{0}} (m s : Y ⟶ G) (p : Y ⟶ H) (V : G.
     (Y.presheaf.map (homOfLE hp).op).hom ((p.app ⊤).hom u) *
       (Y.presheaf.map (homOfLE inf_le_right).op).hom ((s.app V).hom t), ?_⟩
   intro Z g z hz
-  rw [gs_sub g z _ hz, gs_mul g z _ hz, gs_res g z _ hz, gs_res g z _ hz, gs_res g z _ hz,
+  rw [GlobalTheory.MixedCross.gs_sub' g z _ hz, gs_mul g z _ hz, gs_res g z _ hz, gs_res g z _ hz, gs_res g z _ hz,
     gs_pull g m z V hz.1, gs_pull g p z ⊤ trivial, gs_pull g s z V hz.2]
 
 end GlobalTheory.EigenAll
 
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.JetHarmonics.EigenEquationOfForallGeometricPoint =====

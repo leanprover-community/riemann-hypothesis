@@ -242,8 +242,4 @@ theorem densChain : DensChain := by
 
 end Formalism.FourierDecayAlt.P.DensitySumsAndDomination
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
-
 end

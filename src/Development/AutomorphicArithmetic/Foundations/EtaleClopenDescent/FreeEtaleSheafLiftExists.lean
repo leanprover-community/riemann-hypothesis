@@ -66,7 +66,7 @@ private theorem exists_cycles (K : DerivedCategory C) :
     have hm : (DerivedCategory.homologyFunctor C 0).map (NatTrans.app (𝟙 ((DerivedCategory.singleFunctors C).functor 0)) X) =
         (DerivedCategory.homologyFunctor C 0).map ((DerivedCategory.singleFunctorIsoCompQ C 0).hom.app X) := rfl
     rw [h3, DerivedCategory.singleFunctorsPostcompQIso_hom_hom]
-    erw [Category.id_comp]
+    rw [Category.id_comp]
     exact congrArg (fun t => t ≫ (DerivedCategory.homologyFunctorFactors C 0).hom.app _ ≫
       (HomologicalComplex.singleObjHomologySelfIso (ComplexShape.up ℤ) 0 X).hom) hm
   rw [h2, Functor.map_comp, Functor.map_comp]

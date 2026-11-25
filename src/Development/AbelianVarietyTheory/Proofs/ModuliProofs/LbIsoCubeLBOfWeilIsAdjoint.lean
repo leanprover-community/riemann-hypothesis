@@ -192,7 +192,3 @@ theorem exists_gen_fibre (hl : Laws) {k : Type} [Field k] [IsAlgClosed k] (P : P
     mul_inv, _root_.mul_mul_mul_comm, mul_inv_cancel, _root_.mul_one]
 
 end GlobalTheory.AdjointOfPairing
-
-namespace GlobalTheory
-
-end GlobalTheory

@@ -80,13 +80,7 @@ lemma polar_spec_pos {P : Matrix (Fin n) (Fin n) ℂ} (hP : P.PosSemidef) (hu : 
 
 lemma polar_exp_log {P : Matrix (Fin n) (Fin n) ℂ} (hP : IsSelfAdjoint P)
     (hs : ∀ x ∈ spectrum ℝ P, 0 < x) : NormedSpace.exp (CFC.log P) = P := by
-  have hlogsa : IsSelfAdjoint (CFC.log P) := cfc_predicate Real.log P
-  rw [← CFC.real_exp_eq_normedSpace_exp hlogsa]
-  show cfc Real.exp (cfc Real.log P) = P
-  rw [← cfc_comp Real.exp Real.log P hP Real.continuous_exp.continuousOn
-    (Real.continuousOn_log.mono fun x hx => (hs x hx).ne')]
-  conv_rhs => rw [← cfc_id' ℝ P hP]
-  exact cfc_congr fun x hx => Real.exp_log (hs x hx)
+  exact Formalism.REAL.exp_log_of_pos_spectrum hP hs
 
 lemma polar_gJgH {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     g * Jm ε * gᴴ = Jm ε ∧ IsUnit g := by

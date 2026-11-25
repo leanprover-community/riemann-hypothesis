@@ -167,7 +167,7 @@ theorem UpperTheory.V.Alg.chart_rank :
   apply Module.finrank_eq_of_rank_eq
   apply le_antisymm
   · have hinj : Function.Injective ψ := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       rintro ⟨_, f, hf, rfl⟩ h0
       apply Subtype.ext
       refine (Submodule.Quotient.mk_eq_zero _).2 (h.inj f hf.2 fun i => ?_)
@@ -922,7 +922,7 @@ private theorem cotangent_rank_le_weight_count [Fintype τ] (h : IsChart 𝒜 x 
   let ψ : cotLat x 𝒜 j →ₗ[O] ({i // wt i = j} → FractionRing O) :=
     LinearMap.pi fun i => ((satSq x).liftQ (powerSeriesCoefficientLinear φ i.1) (m1bLin_sat h i.1)) ∘ₗ (cotLat x 𝒜 j).subtype
   have hinj : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨_, f, hf, rfl⟩ h0
     apply Subtype.ext
     refine (Submodule.Quotient.mk_eq_zero _).2 (h.inj f hf.2 fun i => ?_)

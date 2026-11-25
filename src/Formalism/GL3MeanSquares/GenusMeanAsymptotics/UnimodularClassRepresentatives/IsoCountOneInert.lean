@@ -269,7 +269,6 @@ theorem exists_refl {n : Type*} [Fintype n] [DecidableEq n] (σ : k ≃+* k)
     rw [ha1]; exact sub_ne_zero.mpr (Ne.symm hxy)
   have hsa0 : σ a ≠ 0 := by simpa using ha0
   have hsa : σ a = 1 - ∑ i, σ (x i) * y i := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [ha1]; simp [map_sum, hσ, mul_comm]
   have hn : ∑ i, σ (u i) * u i = a + σ a := by
     rw [hsa, ha1]

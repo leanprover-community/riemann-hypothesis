@@ -102,12 +102,6 @@ namespace GlobalTheory.K5.FinLevel
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]
 
-end GlobalTheory.K5.FinLevel
-
-namespace GlobalTheory.K5.FinLevel
-
-variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]
-
 theorem sum_fixed (H : Subgroup (Gal p Ω)) (E : Finset (Gal p Ω)) (y₀ x : Ω)
     (hEH : ∀ g ∈ E, g ∈ H)
     (huniq : ∀ h ∈ H, ∃! g, g ∈ E ∧ h y₀ = g y₀ ∧ ∀ s ∈ ({x} : Finset Ω), h s = g s) :

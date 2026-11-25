@@ -357,7 +357,7 @@ theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [I
     have : hf L S.Hm (S.f a) (∑ b, P b (Fin.last r) • S.f' b) =
         L.cj ((S.Zh * P) a (Fin.last r)) := by
 
-      rw [hf_sum_right, Matrix.mul_apply, map_sum]
+      rw [GlobalTheory.HL.StdLat.hf_sum_r, Matrix.mul_apply, map_sum]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [hf_smul_right, map_mul, mul_comm, hf_symm L hh]
       rfl
@@ -368,7 +368,7 @@ theorem main : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [I
       if b = Fin.last r then 1 else 0 := fun b => by
     have : hf L S.Hm (S.f' b) (∑ a, L.cj (P (Fin.last r) a) • S.f a) =
         (P * S.Zh) (Fin.last r) b := by
-      rw [hf_sum_right, Matrix.mul_apply]
+      rw [GlobalTheory.HL.StdLat.hf_sum_r, Matrix.mul_apply]
       refine Finset.sum_congr rfl fun a _ => ?_
       rw [hf_smul_right, L.cj_cj]
       rfl

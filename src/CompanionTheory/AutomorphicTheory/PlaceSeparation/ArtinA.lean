@@ -123,10 +123,10 @@ theorem exists_lift_dec (hw : IsPlaceOver A w) {τ : L ≃ₐ[K] L}
 def intAut (L : Type) [Field L] [NumberField L] [Algebra L Ω] (σ : G K Ω) : IntCl L Ω ≃+* IntCl L Ω where
   toFun b := ⟨σ b, ((isIntegral_int_of_isIntegral b.2).map (σ.toAlgHom.restrictScalars ℤ)).tower_top⟩
   invFun b := ⟨σ.symm b, ((isIntegral_int_of_isIntegral b.2).map (σ.symm.toAlgHom.restrictScalars ℤ)).tower_top⟩
-  left_inv b := Subtype.ext (σ.symm_apply_apply _)
-  right_inv b := Subtype.ext (σ.apply_symm_apply _)
-  map_mul' a b := Subtype.ext (map_mul σ _ _)
-  map_add' a b := Subtype.ext (map_add σ _ _)
+  left_inv _ := Subtype.ext (σ.symm_apply_apply _)
+  right_inv _ := Subtype.ext (σ.apply_symm_apply _)
+  map_mul' _ _ := Subtype.ext (map_mul σ _ _)
+  map_add' _ _ := Subtype.ext (map_add σ _ _)
 
 theorem exists_lift_ine (hw : IsPlaceOver A w) {τ : L ≃ₐ[K] L} (hτ : τ ∈ w.asIdeal.inertia (L ≃ₐ[K] L)) :
     ∃ σ ∈ Ine (F := K) A, AlgEquiv.restrictNormalHom L σ = τ := by

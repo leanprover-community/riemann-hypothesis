@@ -43,62 +43,15 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KTypesUni
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LowestKTypeOfIrreducibleGeneratedModule
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SchurOrthogonalitySquareIntegrable
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsStableSubmoduleTopWeightLine
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubleCoverUpqKsetGeneratedByExp
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InstSecondCountable
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HighestWeightTensor
-import Mathlib.Topology.Compactness.Paracompact
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.CasimirScalarOnModuleGeneratedKilledByLower, Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentredHarishChandraParameterIsParamBlattner, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCentralCircleDistinctGradedEigen, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEquivariantTensorMapOfCyclicCommuting, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntertwinerMapHighestWeightVectorCompact, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSubmodule, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSubrepClosureAnalyticVectors, Development.AbelianVarietyTheory.Proofs.FoundationProofs.FockIntertwinerCommutesUnitaryAndExtends, Development.AbelianVarietyTheory.Proofs.FoundationProofs.FockTensorIntertwinerUniqueAndRange, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HarmonicHighestWeightEqLowestKTypeHighestWeight, Development.AbelianVarietyTheory.Proofs.FoundationProofs.InvariantInnerFormsProportionalWeightLine, Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemOfIsometryEigenOfDenseISup, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IrreducibleCompletionOfGradedIrreducibleGK, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IrreducibleOfWeightLine, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsKilledByLowerNilradicalActBlockDiagonal, Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemLpTwoOfCoshDecayUnitaryPQCover, Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSqCentredHarishChandraParameterSubRhoSq, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsKTranslate
@@ -1194,13 +1147,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FockIrr
 
-theorem act_diag_of_mem_wtSub {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
-    {act : Mat p q →ₗ[ℂ] Module.End ℂ V} {μ : Ix p q → ℚ} {v : V} (h : v ∈ wtSub act μ)
-    (a : Ix p q) : act (Eab a a) v = ((μ a : ℚ) : ℂ) • v := by
-  have h1 := (Submodule.mem_iInf _).1 h a
-  rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply] at h1
-  exact sub_eq_zero.1 h1
-
 theorem irreducible_of_weight_line : ∀ (p q : ℕ) (M : GKMod p q) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (E : M.V →ₗ[ℂ] H), Function.Injective E → (∀ Z x y, inner ℂ (E (M.act Z x)) (E y) = inner ℂ (E x) (E (M.act (adjZ Z) y))) → ∀ (S : Ix p q → Ix p q → Prop), Equivalence S → ∀ (μ : Ix p q → ℚ) (v : M.V) (U : Submodule ℂ M.V), v ∈ wtSub M.act μ → (∀ U' : Submodule ℂ M.V, v ∈ U' → (∀ a b, S a b → ∀ x ∈ U', M.act (Eab a b) x ∈ U') → U ≤ U') → (∀ x ∈ U, x ∈ wtSub M.act μ → ∃ c : ℂ, x = c • v) → ∀ N : Submodule ℂ M.V, N ≤ U → (∀ a b, S a b → ∀ x ∈ N, M.act (Eab a b) x ∈ N) → N = ⊥ ∨ N = U := by
   intro p q M H _ _ E hE hadj S hS μ v U hv hU hline N hNU hN
   by_cases hvN : v ∈ N
@@ -1226,7 +1172,7 @@ theorem irreducible_of_weight_line : ∀ (p q : ℕ) (M : GKMod p q) (H : Type) 
       · obtain ⟨a, ha⟩ := Function.ne_iff.1 hν
         have h1 := hadj (Eab a a) y v
         rw [GlobalTheory.FockTensor.adjZ_Eab, GlobalTheory.FockTensor.sgnIx_mul_self, one_smul,
-          act_diag_of_mem_wtSub hyν, act_diag_of_mem_wtSub hv, map_smul, map_smul,
+          GlobalTheory.FockForm.act_of_mem_wtSub hyν, GlobalTheory.FockForm.act_of_mem_wtSub hv, map_smul, map_smul,
           inner_smul_left, inner_smul_right, map_ratCast] at h1
         have hne : ((ν a : ℚ) : ℂ) - ((μ a : ℚ) : ℂ) ≠ 0 := by
           rw [sub_ne_zero]; exact_mod_cast ha
@@ -1482,8 +1428,6 @@ theorem kStable_of_units {N : Submodule ℂ V}
     (h : ∀ a b, sameBlock a b → ∀ x ∈ N, act (Eab a b) x ∈ N) : KStable act N :=
   fun _ hZ x hx => GlobalTheory.TensorHW.kc_ind act N x (fun a b hab => h a b hab x hx) hZ
 
-alias equiv_sameBlock := _root_.GlobalTheory.LowestType.same_equiv
-
 end Gen
 
 variable {p q : ℕ}
@@ -1505,13 +1449,13 @@ theorem cyclic (M : GKMod p q) (H : Type) [NormedAddCommGroup H] [InnerProductSp
   have hline : ∀ x ∈ wtSub M.act μ, ∃ c : ℂ, x = c • v := fun x hx => hU4 x (htop U hU1 hU2 trivial) hx
   refine ⟨⟨nontrivial_of_ne v 0 hv0, fun N hN => _root_.GlobalTheory.FockIrr.irreducible_of_weight_line p q M H E hE hadj _ eT μ v ⊤ hv htop
     (fun x _ hx => hline x hx) N le_top fun a b _ => hN _⟩, hline, ?_⟩
-  obtain ⟨W, hW1, hW2, hW3, -, -⟩ := _root_.GlobalTheory.ExtremalGen.exists_generated p q M.V M.act M.lie _ equiv_sameBlock r hr μ v hv
+  obtain ⟨W, hW1, hW2, hW3, -, -⟩ := _root_.GlobalTheory.ExtremalGen.exists_generated p q M.V M.act M.lie _ GlobalTheory.LowestType.same_equiv r hr μ v hv
     fun a b _ h => hup a b h
   have hmin : ∀ W' : Submodule ℂ M.V, v ∈ W' → KStable M.act W' → W ≤ W' := fun W' h1 h2 =>
-    hW3 W' h1 fun a b hab _ => h2 _ (isKC_Eab (equiv_sameBlock.symm hab))
+    hW3 W' h1 fun a b hab _ => h2 _ (isKC_Eab (GlobalTheory.LowestType.same_equiv.symm hab))
   obtain ⟨W₀, hf, h0, hs⟩ := M.kfin v
   refine ⟨W, hW1, Submodule.finiteDimensional_of_le (hmin W₀ h0 hs), kStable_of_units hW2, fun N hN hN' => ?_, hmin⟩
-  exact _root_.GlobalTheory.FockIrr.irreducible_of_weight_line p q M H E hE hadj _ equiv_sameBlock μ v W hv
+  exact _root_.GlobalTheory.FockIrr.irreducible_of_weight_line p q M H E hE hadj _ GlobalTheory.LowestType.same_equiv μ v W hv
     (fun U' h1 h2 => hmin U' h1 (kStable_of_units h2)) (fun x _ hx => hline x hx) N hN
     fun a b hab => hN' _ (isKC_Eab hab)
 

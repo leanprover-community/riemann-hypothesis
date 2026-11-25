@@ -55,14 +55,6 @@ def LayerConj : Prop :=
     (φ : L →+* ℂ) (σ : Gal(L/ℚ)),
     (∀ x : L, φ (σ x) = starRingEnd ℂ (φ x)) ↔ galMap h.1 a b σ = JJ n
 
-def LayerReal : Prop :=
-  ∀ (n q d : ℕ), 1 ≤ n → HypOdd q d →
-  ∀ (L : Type) [Field L] [NumberField L] (ζ a b : L) (h : IsLayer n q d ζ a b),
-    IsCMField L ∧
-    (∀ x : L, x ∈ maximalRealSubfield L ↔
-      ∀ σ : Gal(L/ℚ), galMap h.1 a b σ = JJ n → σ x = x) ∧
-    Module.finrank ℚ (maximalRealSubfield L) = 2 ^ n
-
 def LayerDecompTwo : Prop :=
   ∀ (n q d : ℕ), 1 ≤ n → HypQD q d →
   ∀ (L : Type) [Field L] [NumberField L] (ζ a b : L) (h : IsLayer n q d ζ a b)
@@ -93,15 +85,5 @@ def LayerFrob : Prop :=
         (((galMap h.1 a b σ).1 : ZMod (2 ^ n)) = (p : ZMod (2 ^ n)) ∧
           (((galMap h.1 a b σ).2.1 : ℤˣ) : ℤ) = jacobiSym (-(q : ℤ)) p ∧
           (((galMap h.1 a b σ).2.2 : ℤˣ) : ℤ) = jacobiSym (-(d : ℤ)) p)
-
-def LayerEFGTwo : Prop :=
-  ∀ (n q d : ℕ), 1 ≤ n → HypQD q d →
-  ∀ (L : Type) [Field L] [NumberField L] (ζ a b : L), IsLayer n q d ζ a b →
-    (span {(2 : ℤ)}).ramificationIdxIn (𝓞 L) = 2 ^ (n - 1) ∧
-    (span {(2 : ℤ)}).inertiaDegIn (𝓞 L) = 2 ∧
-    (primesOver (span {(2 : ℤ)}) (𝓞 L)).ncard = 2 ∧
-    (primesOver (span {(2 : ℤ)}) (𝓞 (maximalRealSubfield L))).ncard = 1 ∧
-    (span {(2 : ℤ)}).ramificationIdxIn (𝓞 (maximalRealSubfield L)) = 2 ^ (n - 1) ∧
-    (span {(2 : ℤ)}).inertiaDegIn (𝓞 (maximalRealSubfield L)) = 2
 
 end Formalism.TwoAdicCyclotomicDecomposition

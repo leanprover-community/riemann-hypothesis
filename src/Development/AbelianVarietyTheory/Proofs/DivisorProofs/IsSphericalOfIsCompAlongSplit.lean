@@ -95,7 +95,7 @@ theorem isSpherical_of_isCompAlong_split {E : Type} [Field E] [NumberField E] [I
       rw [htop]; exact ⟨⟨φ, hφ⟩, Submodule.mem_top, rfl⟩
     simp only [fi, LinearMap.range_comp]
     rwa [Submodule.map_iSup] at this
-  have key := GlobalTheory.InertHeckeEigen.mem_of_mem_iSup ((RU E n).comp (locU n w).subtype)
+  have key := GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range ((RU E n).comp (locU n w).subtype)
     (σ.comp ((cLoc w).comp (locU n w).subtype)) hirr fi hfi
     (((GlobalTheory.LFun.KGL w (n := n)).comap ((cLoc w).comp (locU n w).subtype) : Subgroup (locU n w)) : Set (locU n w)) ⊥
     (fun i v hv => by

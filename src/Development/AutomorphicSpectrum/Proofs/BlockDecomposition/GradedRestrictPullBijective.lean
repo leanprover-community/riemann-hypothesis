@@ -17,7 +17,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HodgeFiltration
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison
 
 namespace GlobalTheory.CompanionTheory.OmRes
@@ -32,7 +31,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison
 
 namespace GlobalTheory.CompanionTheory.OmLoc

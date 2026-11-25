@@ -70,7 +70,7 @@ theorem form_mem_lin (p : ℕ) [NeZero p] {ι : Type} [Fintype ι] (l : ι → R
     intro i
     rw [ZMod.val_add, eq_sub_iff_add_eq, ← Nat.cast_mul, ← Nat.cast_add, Nat.mod_add_div, Nat.cast_add]
   simp only [Pi.add_apply, key]
-  simp only [← map_sub, ← map_neg, ← map_natCast (algebraMap R C), ← map_mul]
+  simp only [← map_sub, ← map_natCast (algebraMap R C), ← map_mul]
   congr 1
   rw [neg_mul, Finset.sum_mul, ← Finset.sum_neg_distrib, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   exact Finset.sum_congr rfl fun i _ => by ring

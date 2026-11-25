@@ -258,7 +258,6 @@ theorem eDiag' (A : Type) [CommRing A] (d : Type) [Fintype d] [DecidableEq d] (S
   funext a
   rw [hl]
 
-set_option maxHeartbeats 8000000 in
 theorem ring_objects_of_matrix_data (hEM : StatEMat) (hSP : StatSplitPts) (hKO : StatIdemKO) : RingObjectsExist := by
   intro O _ _ _ X _ T d _ _ G _ r₀ π t ht bl χ₁ ε hP hA eB e₁ hI g₀ s hX
   obtain ⟨hloc, hpts, hG1, hbd, hc1, hχ⟩ := hP

@@ -169,7 +169,6 @@ theorem unitPart : ∀ (k : Type) [Field k] (R : Type) [CommRing R] (P : PolAV (
   have hj2 : j ≫ B'.hom = A₀.hom ≫ spMap (TrivSqZeroExt.fstHom k k k).toRingHom := HP.lift_snd _ _ _
   have hj12 : j ≫ π₁ = j ≫ pr ≫ m₀ := hagree A₀.left j A₀.hom hj2
   have hjm : j ≫ pr ≫ m₀ = m₀ := by rw [← Category.assoc, hj1, Category.id_comp]
-  have hjm1 : j ≫ π₁ = m₀ := hj12.trans hjm
   have hmj : ∀ U : P.A.left.Opens, m₀ ⁻¹ᵁ U = j ⁻¹ᵁ ((pr ≫ m₀) ⁻¹ᵁ U) := fun U => by
     conv_lhs => rw [← hjm]
     rfl

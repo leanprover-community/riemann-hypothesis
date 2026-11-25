@@ -5,7 +5,7 @@ public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.GeneralLinearGroupOverSubring.glR :
-    {K : Type} → [inst : CommRing K] → Subring K → (n : ℕ) → Subgroup (GL (Fin n) K) :=
+    {K : Type} → [CommRing K] → Subring K → (n : ℕ) → Subgroup (GL (Fin n) K) :=
   fun {K} _ R n =>
   { carrier := {g | (∀ i j, (g : Matrix (Fin n) (Fin n) K) i j ∈ R) ∧
       ∀ i j, ((g⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) i j ∈ R}

@@ -34,13 +34,6 @@ structure Link (D : D7) (u : D.what₂.Word) (W : Tower D) where
   Θ : Desc D u
   Θ_eq : ∀ F, ∃ T₀ : W.CP P 0, W.IsDn (eT F) T₀ ∧ Θ F = jE T₀
 
-namespace Link
-
-variable {D : D7} {u : D.what₂.Word} {W : Tower D} (L : Link D u W)
-
-
-end Link
-
 structure STrue (D : D7) (F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u) extends STies D where
 
   hF : FinX Y

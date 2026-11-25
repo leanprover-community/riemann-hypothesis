@@ -211,10 +211,6 @@ def volA (𝔞 : Submodule ℝ (A0 (wittIndex V))) (I : Subgroup (GA D V)) (dt :
   (quotMeasure ((GQ V).subgroupOf I) dt).real {q | ‖𝔞.starProjection (H0 Φ K (q.out : I))‖ < 1} /
     (volume : Measure (aMQ 𝔞 ∅)).real (Metric.ball 0 1)
 
-def IsMinLevi (γ : GF V) (P : Finset (SV (wittIndex V))) : Prop :=
-  IsPar P ∧ rat V γ ∈ Φ.levi D.sp.cm (AF D.host.F) P ∧
-    ∀ (g : GF V) P', IsPar P' → rat V (g * γ * g⁻¹) ∈ Φ.levi D.sp.cm (AF D.host.F) P' → P'.card ≤ P.card
-
 end GlobalTheory.TruncKer
 
 end

@@ -751,11 +751,7 @@ theorem finiteDimensional_adjoin_map {F K L : Type} [Field F] [Field K] [Field L
     rw [← h1]
     exact ⟨e, e.2, rfl⟩
   let g : E →+* E' :=
-    { toFun := fun e => ⟨algebraMap K L e, hmem e⟩
-      map_one' := by ext; simp
-      map_mul' := by intros; ext; simp
-      map_zero' := by ext; simp
-      map_add' := by intros; ext; simp }
+    (((IsScalarTower.toAlgHom F K L).comp E.val).codRestrict E'.toSubalgebra hmem).toRingHom
   letI : Algebra E E' := g.toAlgebra
   haveI : IsScalarTower E E' L := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
   haveI : Module.Finite E L := Module.Finite.trans K L
@@ -946,14 +942,6 @@ section -- clump:auto
 
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
-
-namespace GlobalTheory.KZ
-
-theorem Tower.jK_transcendental {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) :
-    Transcendental Ω X.jK := by
-  apply GlobalTheory.K4.jK_transcendental
-
-end GlobalTheory.KZ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerJInvariantTranscendental =====
@@ -1240,10 +1228,6 @@ theorem lev_sl {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : 
 end GlobalTheory.KZ.ESFun
 
 namespace GlobalTheory.KZ.ESFun
-theorem jTr : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε), Transcendental Ω X.jK := _root_.GlobalTheory.KZ.Tower.jK_transcendental
-end GlobalTheory.KZ.ESFun
-
-namespace GlobalTheory.KZ.ESFun
 
 theorem prod_mem_Un {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (m : ℕ) {ι : Type}
     (t : Finset ι) (u : ι → X.Kˣ) (h : ∀ i ∈ t, u i ∈ X.Un m) : (∏ i ∈ t, u i) ∈ X.Un m := by
@@ -1267,7 +1251,7 @@ theorem eichler_shimura_kummer : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [Is
   obtain ⟨L, hL, hjL, hfd⟩ := _root_.GlobalTheory.KZ.LevelField.exists_level_field ε X hε hj M hM
   have htr : Transcendental Ω (⟨X.jK, hjL⟩ : L) := by
     intro halg
-    exact jTr X (by simpa using halg.algHom L.val)
+    exact GlobalTheory.K4.jK_transcendental X (by simpa using halg.algHom L.val)
   obtain ⟨R, hR⟩ := _root_.GlobalTheory.KZ.FinLev.finite_mod_powers ε X hε hj M (l ^ n) hM (pow_pos hlpos n)
   have key : ∀ r : X.Kˣ, ∃ S : Finset ℕ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (r : X.K) = r) →
       (¬ ∃ c : Ω, c ≠ 0 ∧ ∃ u : X.Kˣ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (u : X.K) = u) ∧

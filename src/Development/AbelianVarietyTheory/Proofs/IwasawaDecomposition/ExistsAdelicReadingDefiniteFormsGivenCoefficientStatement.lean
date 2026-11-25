@@ -153,7 +153,7 @@ theorem exists_brgL_at : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn 
       tie := ⟨gramR, c0R, c0L,
         { ranks := ⟨rfl, rfl, rfl⟩
           v0 := rfl
-          tauL_ok := fun τ => RingHom.ext fun x => embLL_labLL_eq τ x
+          tauL_ok := fun τ => RingHom.ext fun x => GlobalTheory.CoefSpace.embLL_labLL τ x
           pl_inj := fun a b h => Subtype.ext h
           q := fun P => rfl
           S_fin := Set.toFinite _

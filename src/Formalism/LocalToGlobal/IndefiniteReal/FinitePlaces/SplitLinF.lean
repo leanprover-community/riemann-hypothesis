@@ -37,8 +37,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
@@ -87,8 +85,6 @@ theorem symplO_nsmul_right (t y : WO S T) (k : ℕ) : symplO S T t (k • y) = s
   | zero => rw [zero_smul, zero_smul, symplO_zero_right, symplO_zero_left]
   | succ n ih => rw [succ_nsmul, succ_nsmul, symplO_add_right, symplO_add_left, ih]
 
-
-
 theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g : GA D S} {h : GA D T}
     (hg : SuppAt e₁ S g) (hh : SuppAt e₁ T h) {t : WO S T} (ht : IsHalf e t) (h0 : ∀ i j, e₁ * t i j = 0) :
     actO S T g h t = t := by
@@ -122,8 +118,6 @@ theorem actO_fix {e e₁ : AE D} (he : e * cA D e = 0) (h1 : e₁ * e = e₁) {g
     rw [Matrix.mul_assoc, hinv, Matrix.mul_one]
   unfold actO
   rw [hL, hR']
-
-
 
 theorem evalYZero_zero (ψ : AddChar (AF D.host.F) ℂ) {e e₁ : AE D} (he₁ : IsSplitIdem D e₁) (h1 : e₁ * e = e₁)
     (Λ : AddSubgroup (WO S T))
@@ -443,7 +437,6 @@ theorem piK_vac {k : ℕ} [Finite (Qt k (L ⊓ X))] [Finite (Ik L Y k)] {w : V} 
     exact L.nsmul_mem (AddSubgroup.mem_inf.1 hv).1 k
   exact_mod_cast (Finset.card_pos.2 ⟨_, h0⟩).ne'
 
-
 include hY hXY hχl hχr hχ0 hLL hdY hfinX hfinY htf in
 theorem vac_eq_zero_of_mem_span (hoY : ∀ y ∈ Y, ∃ k : ℕ, 0 < k ∧ k • y ∈ L) (Θ : Set V)
     (hlev : ∀ G ∈ Θ, ∃ k : ℕ, 0 < k ∧ IsLev ρ L X Y k G) {w : V}
@@ -577,8 +570,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix
@@ -587,18 +578,6 @@ open scoped TensorProduct
 namespace Formalism.IndefR.Fin
 
 variable {D : D7} (S T : HSp D)
-
-theorem suppAt_inv_fp {e : AE D} {V : HSp D} {g : GA D V} (hg : SuppAt e V g) : SuppAt e V g⁻¹ := by
-  have hinv : HMul.hMul (mt V g⁻¹) (mt V g) = (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) := by
-    rw [← Formalism.IndefR.Eqv.mt_mul, inv_mul_cancel, Formalism.IndefR.Eqv.mt_one]
-  have hd : (mt V g⁻¹ : Matrix (Fin V.rank) (Fin V.rank) (AE D)) - 1 =
-      -(HMul.hMul (mt V g⁻¹) ((mt V g : Matrix (Fin V.rank) (Fin V.rank) (AE D)) - 1)) := by
-    rw [Matrix.mul_sub, hinv, Matrix.mul_one, neg_sub]
-  intro i j
-  rw [hd, Matrix.neg_apply, mul_neg, Matrix.mul_apply, Finset.mul_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [mul_left_comm, hg k j]
 
 theorem actO_nsmul (g : GA D S) (h : GA D T) (k : ℕ) (t : WO S T) : actO S T g h (k • t) = k • actO S T g h t := by
   induction k with
@@ -671,9 +650,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix MeasureTheory NumberField
@@ -736,7 +712,6 @@ theorem facts_at_e₁ (hPD : PlaceLatDual D) {ψ : AddChar (AF D.host.F) ℂ} (h
   · rw [symplO_right_ce₁ S T hxe]
     exact H _ (hi (cA D e₁) hc₁ y hy) (hmapH (cA D e₁) hc₁.1 y)
 
-
 open Classical in
 theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := by
   intro ψ S T χS χT om hω ΛS ΛT hS hT P e he f₀ hf₀ hvac Tm hTm e₁ he₁ h1 g h hg hh x y hx hy
@@ -752,7 +727,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
   set c : ℂ := (r : ℂ) * (splitFacO χS χT x y : ℂ) with hcdef
   have hc0 : c ≠ 0 := mul_ne_zero (by exact_mod_cast hr.ne') (Circle.coe_ne_zero _)
   obtain ⟨k₁, hk₁, h₁⟩ := hvi e₁ he₁ g h hg hh
-  obtain ⟨k₂, hk₂, h₂⟩ := hvi e₁ he₁ g⁻¹ h⁻¹ (suppAt_inv_fp hg) (suppAt_inv_fp hh)
+  obtain ⟨k₂, hk₂, h₂⟩ := hvi e₁ he₁ g⁻¹ h⁻¹ (Formalism.IndefR.Fin.PDB.supp_inv hg) (Formalism.IndefR.Fin.PDB.supp_inv hh)
   have h₁' : ∀ t ∈ latAll S T ΛS ΛT, k₁ • actO S T g⁻¹⁻¹ h⁻¹⁻¹ t ∈ latAll S T ΛS ΛT := by
     simpa only [inv_inv] using h₁
   have hSBp : ∀ Φ, IsSBHalf e (latAll S T ΛS ΛT) Φ →

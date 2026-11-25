@@ -856,10 +856,6 @@ theorem volume_mass_of_genus_rank (D : D7) (n : ℕ) (hT : VolTie D) (hG : Genus
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 
-namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ClosedKudlaFamilyStandardLattice
-
-end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ClosedKudlaFamilyStandardLattice
-
 end
 end -- clump:auto
 end -- clump:auto

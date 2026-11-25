@@ -854,63 +854,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace GlobalTheory.TypeAsm.FramePf
 
-theorem L_ratIso : ∀ {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-    (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) {r : ℕ} (e f e' f' : Fin r → V) (z z' : V),
-    (∀ a b, H.B (e a) (e b) = 0) → (∀ a b, H.B (f a) (f b) = 0) →
-    (∀ a b, H.B (e a) (f b) = if a = b then 1 else 0) →
-    (∀ a, H.B (e a) z = 0) → (∀ a, H.B (f a) z = 0) → H.B z z ≠ 0 →
-    (∀ a b, H.B (e' a) (e' b) = 0) → (∀ a b, H.B (f' a) (f' b) = 0) →
-    (∀ a b, H.B (e' a) (f' b) = if a = b then 1 else 0) →
-    (∀ a, H.B (e' a) z' = 0) → (∀ a, H.B (f' a) z' = 0) →
-    (∀ a, e' a - e a ∈ Submodule.span K (e '' {b | b < a})) →
-    z' - z ∈ Submodule.span K (Set.range e) →
-    ∃ m : V ≃ₗ[K] V, (∀ x y, H.B (m x) (m y) = H.B x y) ∧ (∀ a, m (e' a) = e a) ∧ (∀ a, m (f' a) = f a) ∧
-      m z' = z ∧ (∀ a, m (e a) - e a ∈ Submodule.span K (e '' {b | b < a})) ∧
-      (∀ y, (∀ a, H.B (e a) y = 0) → m y - y ∈ Submodule.span K (Set.range e)) ∧
-      (∀ a, m.symm (e a) - e a ∈ Submodule.span K (e '' {b | b < a})) ∧
-      (∀ y, (∀ a, H.B (e a) y = 0) → m.symm y - y ∈ Submodule.span K (Set.range e)) := _root_.GlobalTheory.RatIsoFrame.exists_isometry_frame_unipotent
-
-theorem L_nset : ∀ {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
-    (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) {k r : ℕ} (σ : K →+* ℂ) (Φ : V → Fin (2 * r + k + 1) → ℂ),
-    GlobalTheory.DegVol.IsReal H k r σ Φ → ∀ (e f : Fin r → V) (ρ ρ' : Fin r → ℂ), (∀ a, ρ a ≠ 0) → (∀ a, ρ' a ≠ 0) →
-    (∀ a, Φ (e a) = ρ a • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a)) →
-    (∀ a, Φ (f a) = ρ' a • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI k r a)) →
-    (∀ a b, H.B (e a) (f b) = if a = b then 1 else 0) →
-    ∀ m : V →ₗ[K] V, (∀ x y, H.B (m x) (m y) = H.B x y) →
-    (∀ a, m (e a) - e a ∈ Submodule.span K (e '' {b | b < a})) →
-    (∀ y, (∀ a, H.B (e a) y = 0) → m y - y ∈ Submodule.span K (Set.range e)) →
-    ∀ n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ, (∀ y, n *ᵥ Φ y = Φ (m y)) →
-    n ∈ Formalism.QuantumDeterminants.Nset k r := _root_.GlobalTheory.DegVol.FrameUnip.mem_Nset
-
-theorem L_mat : ∀ (D : D7) (X : HidaSetting D) (C : Choice X 1) (τ : D.what₂.Tau) (m : (VS D).V →ₗ[D.host.E] (VS D).V),
-    ∃ n : MatKR D.R.k D.R.rS, ∀ y, n *ᵥ GlobalTheory.TypeAsm.phiV C τ y = GlobalTheory.TypeAsm.phiV C τ (m y) := _root_.GlobalTheory.TypeAsm.phiV_linMat_all
-
-theorem L_frame : ∀ (D : D7) (X : HidaSetting D) (C : Choice X 1) (τ : D.what₂.Tau) (a : Fin D.R.rS),
-    GlobalTheory.TypeAsm.phiV C τ (X.eX a) =
-                 (((2 * D.host.v) ^ (D.R.rS - a.val) : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI D.R.k D.R.rS a) ∧
-    GlobalTheory.TypeAsm.phiV C τ (X.fY a) =
-                 ((((2 * D.host.v) ^ (D.R.rS - a.val))⁻¹ : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI D.R.k D.R.rS a) := _root_.GlobalTheory.TypeAsm.FramePf.phiV_frame
-
-theorem L_duals : ∀ {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
-    (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) {r j : ℕ} (hj : j ≤ r) (e e' s : Fin r → V),
-    (Matrix.of fun a b : Fin j => H.B (e (Fin.castLE hj a)) (e' (Fin.castLE hj b))).det ≠ 0 →
-    (∀ a b, H.B (e' a) (e' b) = 0) →
-    (∀ a b : Fin r, j ≤ a.val → b.val < j → H.B (e a) (e' b) = 0) →
-    (∀ a b : Fin r, j ≤ b.val → H.B (e a) (s b) = if a = b then 1 else 0) →
-    (∀ a b : Fin r, a.val < j → j ≤ b.val → H.B (e' a) (s b) = 0) →
-    (∀ a b : Fin r, j ≤ a.val → j ≤ b.val → H.B (s a) (s b) = 0) →
-    ∃ f : Fin r → V, (∀ a, j ≤ a.val → f a = s a) ∧
-      (∀ a, a.val < j → f a ∈ Submodule.span K (e' '' {b | b.val < j})) ∧
-      (∀ a b, H.B (e a) (f b) = if a = b then 1 else 0) ∧ (∀ a b, H.B (f a) (f b) = 0) ∧
-      (∀ a, a.val < j → e' a ∈ Submodule.span K (f '' {b | b.val < j})) := _root_.GlobalTheory.dual_vectors_in_second_flag
-
-theorem L_block : ∀ {K : Type} [Field K] {j r : ℕ} (hj : j ≤ r) (w : Formalism.MainNotions.S.Loc.Pt K j),
-    ∃ β : Fin r → ℕ, Monotone β ∧ (∀ a b : Fin r, j ≤ b.val → (β a = β b ↔ j ≤ a.val)) ∧
-      ∀ (σ : K →+* ℂ) (sgn : Fin j → ℤˣ) (ρ : ℝ), 0 < ρ →
-      GlobalTheory.Amp.BlockAnti (fun a : Fin j => β (Fin.castLE hj a))
-        (Matrix.of fun a b : Fin j => (((ρ ^ (r - b.val))⁻¹ * (ρ ^ (r - a.val))⁻¹ : ℝ) : ℂ) *
-          σ (w.mat b a * ((sgn a : ℤ) : K))) := _root_.GlobalTheory.Amp.BlockFrame.blockAnti_scaled_pairing
-
 alias herm_eI := _root_.GlobalTheory.DegVol.RealMat.herm_eI
 
 theorem uh_mul {n : ℕ} {H A B : Matrix (Fin n) (Fin n) ℂ} (hA : A ∈ Formalism.QuantumDeterminants.UH H) (hB : B ∈ Formalism.QuantumDeterminants.UH H) :
@@ -1028,7 +971,7 @@ theorem frameC_holds : FrameC := by
     have := hXX x y a 1; simpa using this
   have hBr : ∀ (x y : (VS D).V) (b : D.host.E), (HV D).B x (b • y) = star b * (HV D).B x y := fun x y b => by
     have := hXX x y 1 b; simpa using this
-  obtain ⟨fN, hfN1, hfN2, hfN3, hfN4, hfN5⟩ := L_duals (HV D) N.j_le (fun a => N.F.e a.castSucc)
+  obtain ⟨fN, hfN1, hfN2, hfN3, hfN4, hfN5⟩ := GlobalTheory.dual_vectors_in_second_flag (HV D) N.j_le (fun a => N.F.e a.castSucc)
     (fun a => N.F'.e a.castSucc) N.ist hP (fun a b => N.F'.iso a b)
     (fun a b ha _ => by
       have := N.F'.iso a b
@@ -1044,7 +987,7 @@ theorem frameC_holds : FrameC := by
       rw [Matrix.conjTranspose_apply, Matrix.of_apply, Matrix.of_apply, hherm]
     rw [e1, Matrix.det_conjTranspose]
     exact fun h => hP (star_eq_zero.1 h)
-  obtain ⟨fM, hfM1, hfM2, hfM3, hfM4, hfM5⟩ := L_duals (HV D) N.j_le (fun a => N.F'.e a.castSucc)
+  obtain ⟨fM, hfM1, hfM2, hfM3, hfM4, hfM5⟩ := GlobalTheory.dual_vectors_in_second_flag (HV D) N.j_le (fun a => N.F'.e a.castSucc)
     (fun a => N.F.e a.castSucc) (fun b => N.c • N.ist b) hP' (fun a b => N.F.iso a b)
     (fun a b ha _ => by
       show (HV D).B (N.F'.e a.castSucc) (N.F.e b.castSucc) = 0
@@ -1104,7 +1047,7 @@ theorem frameC_holds : FrameC := by
       rintro _ ⟨b, -, rfl⟩
       show (HV D).B (N.F.e b.castSucc) (N.F'.e (Fin.last _)) = 0
       rw [hsamez, hBr, N.F.zperp b, mul_zero]
-  obtain ⟨m2, hm2I, hm2e, hm2f, hm2z, hm2l, hm2p, hm2l', hm2p'⟩ := L_ratIso (HV D) X.eX X.fY
+  obtain ⟨m2, hm2I, hm2e, hm2f, hm2z, hm2l, hm2p, hm2l', hm2p'⟩ := GlobalTheory.RatIsoFrame.exists_isometry_frame_unipotent (HV D) X.eX X.fY
     (fun a => N.F.e a.castSucc) fN (X.zu u) (N.F.e (Fin.last _))
     (fun a b => X.ee b a) (fun a b => X.ff b a) hXef hXez hXfz hzz0
     (fun a b => N.F.iso a b) hfN4 hfN3 (fun a => N.F.zperp a) hfNz
@@ -1127,7 +1070,7 @@ theorem frameC_holds : FrameC := by
       erw [hxe]
       rw [map_sub, LinearEquiv.symm_apply_apply]
     rw [e1]; exact hx
-  obtain ⟨mA, hmAI, hmAe, hmAf, hmAz, hmAl, hmAp, hmAl', hmAp'⟩ := L_ratIso (HV D) X.eX X.fY
+  obtain ⟨mA, hmAI, hmAe, hmAf, hmAz, hmAl, hmAp, hmAl', hmAp'⟩ := GlobalTheory.RatIsoFrame.exists_isometry_frame_unipotent (HV D) X.eX X.fY
     (fun a => t.lin.symm (N.F'.e a.castSucc)) (fun a => t.lin.symm (fM a)) (X.zu u) (t.lin.symm (N.F'.e (Fin.last _)))
     (fun a b => X.ee b a) (fun a b => X.ff b a) hXef hXez hXfz hzz0
     (fun a b => by rw [hlinI']; exact N.F'.iso a b) (fun a b => by rw [hlinI']; exact hfM4 a b)
@@ -1142,8 +1085,8 @@ theorem frameC_holds : FrameC := by
       rw [hsetU, Set.image_univ] at this
       exact this)
 
-  obtain ⟨β, hβm, hβj, hβB⟩ := L_block N.j_le N.w
-  have hmat := L_mat D X C
+  obtain ⟨β, hβm, hβj, hβB⟩ := GlobalTheory.Amp.BlockFrame.blockAnti_scaled_pairing N.j_le N.w
+  have hmat := GlobalTheory.TypeAsm.phiV_linMat_all D X C
   choose nOf hnOf using hmat
   have hρ : 0 < 2 * D.host.v := by
     have := _root_.Formalism.MainNotions.S.rdE_pos D
@@ -1161,8 +1104,8 @@ theorem frameC_holds : FrameC := by
       (∀ a, m (X.eX a) - X.eX a ∈ Submodule.span D.host.E (X.eX '' {b | b < a})) →
       (∀ y, (∀ a, (HV D).B (X.eX a) y = 0) → m y - y ∈ Submodule.span D.host.E (Set.range X.eX)) →
       nOf τ m.toLinearMap ∈ Formalism.QuantumDeterminants.Nset D.R.k D.R.rS := fun m hI hl hp =>
-    L_nset (HV D) (embS D τ) (phiV C τ) hR X.eX X.fY _ _ hρa hρa' (fun a => (L_frame D X C τ a).1)
-      (fun a => (L_frame D X C τ a).2) hXef m.toLinearMap hI hl hp _ (hnOf τ _)
+    GlobalTheory.DegVol.FrameUnip.mem_Nset (HV D) (embS D τ) (phiV C τ) hR X.eX X.fY _ _ hρa hρa' (fun a => (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ a).1)
+      (fun a => (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ a).2) hXef m.toLinearMap hI hl hp _ (hnOf τ _)
   have hsymI : ∀ m : (VS D).V ≃ₗ[D.host.E] (VS D).V, (∀ x y, (HV D).B (m x) (m y) = (HV D).B x y) →
       ∀ x y, (HV D).B (m.symm x) (m.symm y) = (HV D).B x y := fun m hI x y => by
     rw [← hI, LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply]
@@ -1228,20 +1171,20 @@ theorem frameC_holds : FrameC := by
 
   have hA1 : ∀ a : Fin D.R.rS, n2 *ᵥ phiV C τ (N.F.e a.castSucc) =
       (((2 * D.host.v) ^ (D.R.rS - a.val) : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI D.R.k D.R.rS a) := fun a => by
-    rw [hΦ, hm2e']; exact (L_frame D X C τ a).1
+    rw [hΦ, hm2e']; exact (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ a).1
   have hA2 : ∀ a : Fin D.R.rS, g *ᵥ (n2 *ᵥ phiV C τ (N.F'.e a.castSucc)) =
       (((2 * D.host.v) ^ (D.R.rS - a.val) : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI D.R.k D.R.rS a) := fun a => by
-    rw [hgΦ, hmAe']; exact (L_frame D X C τ a).1
+    rw [hgΦ, hmAe']; exact (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ a).1
   have hA3 : ∀ b : Fin D.R.rS, N.j ≤ b.val → n2 *ᵥ phiV C τ (N.ist b) =
       ((((2 * D.host.v) ^ (D.R.rS - b.val))⁻¹ : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI D.R.k D.R.rS b) := fun b hb => by
-    rw [hΦ, ← hfN1 b hb, hm2f']; exact (L_frame D X C τ b).2
+    rw [hΦ, ← hfN1 b hb, hm2f']; exact (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ b).2
   have hA4 : ∀ b : Fin D.R.rS, N.j ≤ b.val → g *ᵥ (n2 *ᵥ phiV C τ (N.c • N.ist b)) =
       ((((2 * D.host.v) ^ (D.R.rS - b.val))⁻¹ : ℝ) : ℂ) • Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI D.R.k D.R.rS b) := fun b hb => by
-    rw [hgΦ, show N.c • N.ist b = fM b from (hfM1 b hb).symm, hmAf']; exact (L_frame D X C τ b).2
+    rw [hgΦ, show N.c • N.ist b = fM b from (hfM1 b hb).symm, hmAf']; exact (GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ b).2
   have hZ1 : n2 *ᵥ phiV C τ (N.F.e (Fin.last _)) = zB X (C.Qi τ) u τ := by rw [hΦ, hm2z]; rfl
   have hZ2 : g *ᵥ (n2 *ᵥ phiV C τ (N.F'.e (Fin.last _))) = zB X (C.Qi τ) u τ := by rw [hgΦ, hmAz]; rfl
   have hXst : ∀ b : Fin D.R.rS, b.val < N.j → phiV C τ (X.fY b) ∈ GlobalTheory.Amp.XstJ D.R.k D.R.rS N.j := fun b hb => by
-    rw [(L_frame D X C τ b).2]
+    rw [(GlobalTheory.TypeAsm.FramePf.phiV_frame D X C τ b).2]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨⟨b, hb⟩, rfl⟩)
 
   have hfun : (fun y => n2 *ᵥ phiV C τ y) = fun y => phiV C τ (m2 y) := funext hΦ

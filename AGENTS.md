@@ -73,7 +73,14 @@ it once and merges the result. If you assemble a batch, these are the rules.
 A batch takes open pull requests that change Lean files under `src/`, are not drafts, and merge
 cleanly with `main` and with the pull requests already in the batch. Take them in order of pull
 request number, and merge each one with its own merge commit, so that its commits and their
-authors stay in the history.
+authors stay in the history. Merge the pull request's own head commit, with a message such as
+`Merge PR #123 into batch`: the batch workflows count a pull request as in the batch when its
+head commit is in the branch, whatever the description says.
+
+To build a batch on top of another that has not landed yet, merge that batch's branch into
+yours, name your branch `batch/<name>-on-<N>` after it, and add `- [ ] depends on: #N` to your
+batch's description. The workflows order stacked batches by these, and label the outermost one
+`latest batch`.
 
 Try to include every pull request labelled `batch queue`: a maintainer has approved it for a
 batch. If one can't go in, because it conflicts with `main` or breaks the build, leave it out
@@ -90,18 +97,30 @@ Leave out:
 
 Check the labels when you put the batch together and again just before it is merged. If a batch
 already contains a pull request that should be left out, take it out before the batch is merged,
-by rebuilding the batch without it or by reverting the merge commit that brought it in.
+by rebuilding the batch without it and force-pushing. Don't revert the merge commit that brought
+it in: GitHub marks a pull request merged once its head commit is in `main`, so a reverted one
+would be marked merged although its changes did not land.
 
-If a pull request conflicts with `main` or a batch earlier in the queue, you may merge `main` or the earlier batch into its branch when the conflict
-is mechanical, such as one side deleting a file the other edited. Check that the changed files
-still compile and push the merge to the pull request's branch, so that the batch holds nothing
-the pull request doesn't. Otherwise leave it out. Don't settle conflicts in the batch branch.
+If a pull request conflicts with `main` or a batch earlier in the queue, you may merge `main` or
+the earlier batch into its branch when the conflict is mechanical, such as one side deleting a
+file the other edited. Check that the changed files still compile and push the merge to the pull
+request's branch, so that the batch holds nothing the pull request doesn't, and merge that new
+head into the batch. If you merge an earlier batch into it, also add `- [ ] depends on: #N`,
+naming that batch, to its description. Otherwise leave it out. A pull request in a batch should
+not get new commits: if you push to one yourself, also merge its new head into the batch, so that
+the batch lands what the pull request holds. Don't settle conflicts in the batch branch.
 
 If the batch fails to build because of how two pull requests combine, you may fix the module in
 a commit on the batch branch. Say in the commit message what you changed and why.
 
 In the batch's description, list the pull requests you left out and the reason for each, so
-that their authors can see what to do next.
+that their authors can see what to do next. The batch workflows read the description in this
+form: a heading is a line of its own that ends with a colon, and under it each pull request is a
+list entry that starts with its link (`#123` or its address), followed by the reason. Pull
+requests under a heading that says "left out" or "not included" are left out, and their authors
+read the entry there, so write the reason for them. Those under a heading that says
+"included", such as `Included:`, are the ones the batch includes. Pull requests under any other
+heading, such as `Held by the maintainers:`, are read as neither.
 
 ## Do not
 

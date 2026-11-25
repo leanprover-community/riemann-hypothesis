@@ -691,7 +691,6 @@ theorem end_ext {U P ι : Type} [AddCommGroup U] [Module ℂ U] [AddCommGroup P]
   rw [funext hφ1] at this
   exact this
 
-
 end Main
 
 end GlobalTheory.TripleAssembly.Irred
@@ -913,8 +912,8 @@ theorem theta_triple_piT_irreducible : GlobalTheory.Published.HoweDualityReal �
       (∀ᶠ v in Filter.cofinite, φ v = Γ.M.vac v) →
       ∀ᶠ v in Filter.cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers D.host.F} 1 := fun φ hφ => by
     filter_upwards [hφ, hM.std] with v a b using a.trans b
-  obtain ⟨T, hTh, hinj⟩ := GlobalTheory.T.thetaTransform_darbouxModel_linear_injective D Γ.M ψ (sgn true W).gram e (hψ' ▸ hM) hstd dV dW gA
-  have hS := GlobalTheory.T.darbouxModelAlgebraicVectors_le_adelicSchwartz _ _ _ Γ.M Bs.ψ Bs.emb hM
+  obtain ⟨T, hTh, hinj⟩ := GlobalTheory.ThetaTransformInj.linear_injective D Γ.M ψ (sgn true W).gram e (hψ' ▸ hM) hstd dV dW gA
+  have hS := GlobalTheory.TripleAssembly.darbAlg_le_schA _ _ _ Γ.M Bs.ψ Bs.emb hM
   have K : ∀ f ∈ Γ.M.Pol Bs.ψ Bs.emb, ∀ φ, (∀ v, φ v ∈ GlobalTheory.WeilM.SB _) → (∀ᶠ v in Filter.cofinite, φ v = Γ.M.vac v) →
       GlobalTheory.TripleRead.thO Γ.M ψ (sgn true W).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ) ∈ algF ψ θ true A B ∧
       mapA ψ e Bs Γ R Rf (GlobalTheory.TripleRead.thO Γ.M ψ (sgn true W).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ)) =
@@ -926,7 +925,7 @@ theorem theta_triple_piT_irreducible : GlobalTheory.Published.HoweDualityReal �
         q (GlobalTheory.TripleRead.thO Γ.M ψ (sgn true W).gram e Ψ) = liftPure Γ.M R.p Rf.p (vacIm Γ Rf) Ψ := by
       obtain ⟨q, hq⟩ := Onto.exists_factor T _ (fun x hx => hinj x (hS hx)) (liftPure Γ.M R.p Rf.p (vacIm Γ Rf))
       exact ⟨q, fun Ψ hΨ => by rw [← hTh Ψ (hS hΨ)]; exact hq Ψ hΨ⟩
-    have H' := GlobalTheory.T.weil_model_projection_factorisation _ _ _ Γ.M Bs.ψ hM _ R.p _ Rf.p (vacIm Γ Rf) (Filter.Eventually.of_forall fun _ => rfl)
+    have H' := GlobalTheory.PureLift.exists_pureLift _ _ _ Γ.M Bs.ψ hM _ R.p _ Rf.p (vacIm Γ Rf) (Filter.Eventually.of_forall fun _ => rfl)
     have e1 : mapA ψ e Bs Γ R Rf = H.choose := dite_eq_left H
     have e2 : liftPure Γ.M R.p Rf.p (vacIm Γ Rf) = H'.choose := dite_eq_left H'
     rw [e1]

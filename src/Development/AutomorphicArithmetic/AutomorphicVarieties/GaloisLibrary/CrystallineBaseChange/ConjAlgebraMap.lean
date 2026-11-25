@@ -12,10 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValSubL
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Published
 
-private theorem normV_under {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
-    (w : HeightOneSpectrum (𝓞 K')) : normV w = normV (w.under (𝓞 K)) ^ w.asIdeal.inertiaDeg (𝓞 K) := by
-  apply _root_.GlobalTheory.DelEps.WeilRes.normV_eq_pow
-
 private theorem cPl_asIdeal {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) :
     (cPl w).asIdeal = w.asIdeal.comap (RingOfIntegers.mapRingEquiv (IsCMField.complexConj E).toRingEquiv) :=
   (GlobalTheory.Mem.Chr.conjPl_iff_comap _ _ _).1 (conjPl_conjSrc _ w)
@@ -37,7 +33,7 @@ theorem UpperTheory.V.Br.bcConj0 :
   have h1 := h.unr
   have h2 := (conjSrc_injective (IsCMField.complexConj E).toRingEquiv).tendsto_cofinite.eventually h1
   filter_upwards [h1, h2] with w a b
-  obtain ⟨B, hB, hP⟩ := a (w.under (𝓞 F)) rfl _ (normV_under w)
+  obtain ⟨B, hB, hP⟩ := a (w.under (𝓞 F)) rfl _ (_root_.GlobalTheory.DelEps.WeilRes.normV_eq_pow w)
   obtain ⟨B', hB', hP'⟩ := b (w.under (𝓞 F)) (by
     have e := cPl_asIdeal w
     change _ = (cPl w).asIdeal.comap _
@@ -46,6 +42,6 @@ theorem UpperTheory.V.Br.bcConj0 :
     have e2 : RingOfIntegers.mapRingEquiv (IsCMField.complexConj E).toRingEquiv (algebraMap (𝓞 F) (𝓞 E) x) =
         algebraMap (𝓞 F) (𝓞 E) x := RingOfIntegers.ext (conj_algebraMap (x : F))
     rw [Ideal.mem_comap, Ideal.mem_comap, e2]
-    rfl) _ ((normV_cPl w).trans (normV_under w))
+    rfl) _ ((normV_cPl w).trans (_root_.GlobalTheory.DelEps.WeilRes.normV_eq_pow w))
   obtain rfl := TR.CuspSub.HasSat.unique hB hB'
   exact ⟨_, hP, hP'⟩

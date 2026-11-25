@@ -176,7 +176,6 @@ theorem exists_unit_eq_matLat : ∀ {O K : Type} [CommRing O] [IsDomain O] [IsDi
     obtain ⟨p, rfl⟩ := hv₀ u
     exact ⟨⟨aeval γ p, (memA _).2 ⟨p, rfl⟩⟩, rfl⟩
   let e : A ≃ₗ[K] (Fin n → K) := LinearEquiv.ofBijective φ ⟨hinj, hsurj⟩
-  have he : ∀ a : A, e a = (a : Matrix (Fin n) (Fin n) K) *ᵥ v₀ := fun _ => rfl
   let eO : A ≃ₗ[O] (Fin n → K) := e.restrictScalars O
   let J : Submodule O (Fin n → K) → Submodule O A := fun M => M.map (eO.symm : (Fin n → K) →ₗ[O] A)
   have memJ : ∀ M y, y ∈ J M ↔ (y : Matrix (Fin n) (Fin n) K) *ᵥ v₀ ∈ M := by
@@ -510,7 +509,7 @@ theorem exists_mul_eq_one_mem {B : Type} [Ring B] [Algebra K B] (S : Subalgebra 
     ∃ b ∈ S, a * b = 1 := by
   let f : S →ₗ[K] S := LinearMap.mulLeft K (⟨a, ha⟩ : S)
   have hinj : Function.Injective f := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     apply Subtype.ext
     exact hc x.1 (by simpa [f] using congrArg Subtype.val hx)
@@ -842,11 +841,6 @@ open Polynomial Matrix GlobalTheory.LatOrb
 
 namespace GlobalTheory.LatOrb
 
-theorem herm_mulVec_eq_adj {K : Type} [Field K] (σ : K →+* K)
-    {n : ℕ} (x : Matrix (Fin n) (Fin n) K) (y m : Fin n → K) :
-    herm σ y (x *ᵥ m) = herm σ ((x.map σ)ᵀ *ᵥ y) m := by
-  apply _root_.GlobalTheory.LatOrb.herm_mulVec_right <;> assumption
-
 theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (σ : K →+* K),
     (∀ x, σ (σ x) = x) → ∀ (n : ℕ) (x : Matrix (Fin n) (Fin n) K), IsUnit x →
     ∀ M : Submodule O (Fin n → K), SelfDual O σ M → SelfDual O σ (matLat O x M) →
@@ -858,11 +852,11 @@ theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] 
     rw [hxM y, hM ((x.map σ)ᵀ *ᵥ y)]
     constructor
     · intro h m hm
-      rw [← herm_mulVec_eq_adj]
+      rw [← GlobalTheory.LatOrb.herm_mulVec_right]
       exact h _ ((mem_matLat x M _).2 ⟨m, hm, rfl⟩)
     · intro h w hw
       obtain ⟨m, hm, rfl⟩ := (mem_matLat x M w).1 hw
-      rw [herm_mulVec_eq_adj]
+      rw [GlobalTheory.LatOrb.herm_mulVec_right]
       exact h m hm
   have hdet : IsUnit ((x.map σ)ᵀ * x).det := by
     have e : (x.map σ).det = σ x.det := (RingHom.map_det σ x).symm

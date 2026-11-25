@@ -1525,20 +1525,6 @@ theorem acts_eq {F : Type} [Field F] [NumberField F] (v : Pl (F := F)) {κ : Typ
   rw [hrx, hy] at e
   exact mul_right_cancel₀ hx₀ e
 
-theorem evFin_half_mem {F : Type} [Field F] [NumberField F] (v : Pl (F := F)) (h : (2 : 𝓞 F) ∉ v.asIdeal) :
-    evFin F v (⅟(2 : AF F)) ∈ v.adicCompletionIntegers F := by
-  have e : evFin F v (⅟(2 : AF F)) = algebraMap F (Fv F v) (2 : F)⁻¹ := by
-    have h1 : evFin F v (⅟(2 : AF F)) * 2 = 1 := by
-      have := congrArg (evFin F v) (invOf_mul_self (2 : AF F))
-      rwa [map_mul, map_ofNat, map_one] at this
-    have h2 : algebraMap F (Fv F v) (2 : F)⁻¹ * 2 = 1 := by
-      rw [← map_ofNat (algebraMap F (Fv F v)) 2, ← map_mul, inv_mul_cancel₀ two_ne_zero, map_one]
-    have h20 : (2 : Fv F v) ≠ 0 := by
-      intro h0; rw [h0, mul_zero] at h1; exact zero_ne_one h1
-    exact mul_right_cancel₀ h20 (h1.trans h2.symm)
-  rw [e]
-  exact GlobalTheory.LatVac.half_mem_adicCompletionIntegers F v h
-
 theorem vac_locVac : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ (v : Pl (F := F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → v ∉ X.T →
@@ -1557,7 +1543,7 @@ theorem vac_locVac : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, hLat, _⟩ := hC
   obtain ⟨hSB, hne, θ, _, hfix⟩ := hTr.geo.hM'.vac v
   have h2 : (2 : 𝓞 F) ∉ v.asIdeal := (hTr.base.inert v w hin).1
-  have hb := evFin_half_mem v h2
+  have hb := GlobalTheory.InertSph.evFin_invTwo_mem v h2
   obtain ⟨r, hr, x₀, hx₀⟩ := GlobalTheory.RestComplement.exists_rest_ne_zero v (G.M'.vac v) hSB
   refine ⟨⟨G.M'.vac v, hSB⟩, rfl, fun h => hne (congrArg Subtype.val h), fun u hu => ?_⟩
   have hγ : κ u ∈ latAtV G.V' G.W v := (hLat u).1 hu

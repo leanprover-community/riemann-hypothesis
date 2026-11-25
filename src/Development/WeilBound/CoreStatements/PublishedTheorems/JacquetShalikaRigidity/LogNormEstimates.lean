@@ -48,7 +48,6 @@ theorem re_eq (p : ℂ) {D : ℝ} (hD : 0 < D) (σ u : ℝ) :
     show p * (((D ^ σ : ℝ) : ℂ) * (D : ℂ) ^ ((u : ℂ) * Complex.I)) =
       ((D ^ σ : ℝ) : ℂ) * (p * (D : ℂ) ^ ((u : ℂ) * Complex.I)) by ring, Complex.re_ofReal_mul]
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem msc {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {k : ℕ} :
     MeasurableSingletonClass (GA E k) := inferInstance
 
@@ -134,7 +133,6 @@ theorem log_norm_estimate_of_Q : Q1 → D0 → N3 → C0 → D1 := by
       simp only [hO, hf, Set.mem_inter_iff, Set.mem_setOf_eq, hG0inv n g hn, hPinv n hn g, hDmul, hDUU 0 n hn,
         one_mul]
     haveI : MeasurableSingletonClass (GA E k) := LogNormEstimates.msc
-    set_option synthInstance.maxHeartbeats 400000 in
     have hμO : μ O ≠ 0 := (hOo.measure_pos μ ⟨1, h1O⟩).ne'
     have hβO : μ.withDensity β O ≠ 0 := by
       intro h0

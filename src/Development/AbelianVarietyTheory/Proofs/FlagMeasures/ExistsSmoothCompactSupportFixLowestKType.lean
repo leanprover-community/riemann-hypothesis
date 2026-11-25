@@ -75,16 +75,6 @@ private lemma hs_mul_sub_one_comm_of_mem_Kset {n : ℕ} (ε : Fin n → Bool) {k
   have hinv := (hSBall n ε).2 (y - star k) k hk
   rw [e1, e2, hinv.1, hinv.2]
 
-private lemma norm_apply_sq_le_hs {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
-    ‖A i j‖ ^ 2 ≤ Formalism.REAL.hs A := by
-  unfold Formalism.REAL.hs
-  calc ‖A i j‖ ^ 2 ≤ ∑ j', ‖A i j'‖ ^ 2 :=
-        Finset.single_le_sum (f := fun j' => ‖A i j'‖ ^ 2) (fun _ _ => by positivity)
-          (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', ‖A i' j'‖ ^ 2 :=
-        Finset.single_le_sum (f := fun i' => ∑ j', ‖A i' j'‖ ^ 2)
-          (fun _ _ => Finset.sum_nonneg fun _ _ => by positivity) (Finset.mem_univ i)
-
 private lemma contDiff_hs_sub_one {n : ℕ} :
     ContDiff ℝ ∞ (fun y : Matrix (Fin n) (Fin n) ℂ => Formalism.REAL.hs (y - 1)) := by
   unfold Formalism.REAL.hs
@@ -113,14 +103,14 @@ theorem exists_conjInvariant_bump (n : ℕ) (ε : Fin n → Bool) (U : Set (UJ �
     intro y hy
     rw [Metric.mem_ball, dist_eq_norm, hone, Matrix.norm_lt_iff hr]
     intro i j
-    exact lt_of_pow_lt_pow_left₀ 2 hr.le ((norm_apply_sq_le_hs (y - 1) i j).trans_lt hy)
+    exact lt_of_pow_lt_pow_left₀ 2 hr.le ((Formalism.REAL.f1auxiliary_entry_le (y - 1) i j).trans_lt hy)
   have hcb : {y : Matrix (Fin n) (Fin n) ℂ | Formalism.REAL.hs (y - 1) ≤ r ^ 2} ⊆
       Metric.closedBall (1 : Matrix (Fin n) (Fin n) ℂ) r := by
     intro y hy
     rw [Metric.mem_closedBall, dist_eq_norm, Matrix.norm_le_iff hr.le]
     intro i j
     exact (pow_le_pow_iff_left₀ (norm_nonneg _) hr.le two_ne_zero).mp
-      ((norm_apply_sq_le_hs (y - 1) i j).trans hy)
+      ((Formalism.REAL.f1auxiliary_entry_le (y - 1) i j).trans hy)
   have hr2 : 0 < r ^ 2 := by positivity
   refine ⟨fun y => Real.smoothTransition ((r ^ 2 - Formalism.REAL.hs (y - 1)) / r ^ 2), ?_, ?_, ?_, ?_,
     ?_, ?_⟩

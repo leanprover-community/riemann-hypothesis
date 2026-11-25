@@ -749,11 +749,6 @@ theorem offDiag_transpose {r : ℕ} {w : List (Fin r × Fin r × ℕ)} (hw : Off
   obtain ⟨y, hy, rfl⟩ := hx
   exact fun h => hw y hy h.symm
 
-theorem natW_anti {n : ℕ} (sg : DomWeight n) : Antitone sg.natW := by
-  intro i j hij
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (by linarith [sg.anti hij])
-
 theorem eqv_word (hD : EqvDiv) {n N : ℕ} (h : n + 1 = N) (mu : DomWeight n) (lam : DomWeight N)
     (φ : MvPolynomial (Fin n × Fin n) ℂ →ₗ[ℂ] MvPolynomial (Fin N × Fin N) ℂ) (hφ : IsEqv h mu lam φ)
     (w : List (Fin n × Fin n × ℕ)) (hw : OffDiag w) (s : MvPolynomial (Fin n × Fin n) ℂ)
@@ -776,11 +771,11 @@ open Fock6 in
 theorem fockDetect_of (h3 : PI.HwIrred) (hD : EqvDiv) : FockDetect := by
   intro n N h lam sg _ io0 hEqv hext u hu hort
   set E : MvPolynomial (Fin n × Fin n) ℂ := extremal ℂ n sg with hE
-  have hEmem : E ∈ nablaSq ℂ n sg := hwMem ℂ n n le_rfl sg.natW (natW_anti sg)
+  have hEmem : E ∈ nablaSq ℂ n sg := hwMem ℂ n n le_rfl sg.natW (PI.WGL.lm_natW_anti sg)
   have hErow : ∀ c : Fin n, ∃ H : ℤ, IsWeightedHomogeneous (rw1 c) E H := by
     intro c
     refine ⟨((rowNu (r := n) sg.natW c : ℕ) : ℤ), fun m hm => ?_⟩
-    have := hwRowWeight ℂ n n le_rfl sg.natW (natW_anti sg) hm
+    have := hwRowWeight ℂ n n le_rfl sg.natW (PI.WGL.lm_natW_anti sg) hm
     rw [weight_indicator_eq_degree]
     exact congrArg (fun v : Fin n → ℕ => ((v c : ℕ) : ℤ)) this
 

@@ -75,7 +75,7 @@ theorem monoAt_of_proj {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (L : L
     have hrat : d.e * d.qX + d.i₀ * d.q0 + d.e' * d.qY = 1 := by
       have h : fromRows (fromRows d.qX d.q0) d.qY * fromCols (fromCols d.e d.i₀) d.e' = 1 := by
         rw [fromRows_mul_fromCols, fromRows_mul_fromCols, fromRows_mul, mul_fromCols,
-          GlobalTheory.SeeSaw.SplitLat.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_i₀,
+          GlobalTheory.MixPer.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_i₀,
           GlobalTheory.SeeSaw.SplitLat.qX_e', GlobalTheory.SeeSaw.SplitLat.qY_e,
           GlobalTheory.SeeSaw.SplitLat.qY_i₀, GlobalTheory.SeeSaw.SplitLat.qY_e',
           GlobalTheory.SeeSaw.SplitLat.wittDecomposition_coreProj_mul_e_eq_zero,
@@ -191,7 +191,7 @@ theorem auxiliaryLattice_splitsAlongWitt_at_place {A B : HSp D} {c ρ : ℕ} (t 
   have ha := eq_idempotent_mul_add_of_mul_sub_eq t.a hc hρ s hs
   rw [← he, ← he'] at ha
   have hX : d.qX * t.a = cfE c := by
-    rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.SeeSaw.SplitLat.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_e',
+    rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.MixPer.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_e',
       Matrix.one_mul, Matrix.zero_mul, add_zero]
   have hY : d.qY * t.a = cfE' c s := by
     rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.SeeSaw.SplitLat.qY_e, GlobalTheory.SeeSaw.SplitLat.qY_e',

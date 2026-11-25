@@ -23,15 +23,11 @@ theorem lretr_cancel (d : 𝓞 E) (hd : d ≠ 0) (x y : V) (h : d • x = d • 
   rw [← algebraMap_smul E d, ← algebraMap_smul E d] at h
   exact smul_right_injective V hdE h
 
-theorem lretr_rho (Λ : Submodule (𝓞 E) V) (hfg : Λ.FG) (X : Submodule E V) :
-    ∃ ρ : Λ →ₗ[𝓞 E] Λ, (∀ l : Λ, ((ρ l : Λ) : V) ∈ X) ∧ ∀ l : Λ, (l : V) ∈ X → ρ l = l := by
-  apply PI.UnitaryGroupMassFormula.BetaModX.Iota.exists_retract <;> assumption
-
 end
 
 theorem l_retr : IntegralRetraction := by
   intro E _ _ _ S Λ X hΛ
-  obtain ⟨ρ, hρX, hρid⟩ := lretr_rho Λ hΛ.fg X
+  obtain ⟨ρ, hρX, hρid⟩ := PI.UnitaryGroupMassFormula.BetaModX.Iota.exists_retract Λ hΛ.fg X
   let N : Submodule (𝓞 E) S.V := (LinearMap.ker ρ).map Λ.subtype
   let K : Submodule E S.V := Submodule.span E (N : Set S.V)
   -- Clearing denominators reduces disjointness to the integral kernel.

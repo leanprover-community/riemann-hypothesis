@@ -97,19 +97,6 @@ def vanC (S : Set (Matrix ι ι ℂ)) : Ideal (MvPolynomial (ι × ι) ℂ) wher
 
 
 omit [DecidableEq ι] in
-lemma evC_ltr (g y : Matrix ι ι ℂ) (f : MvPolynomial (ι × ι) ℂ) : evC (ltr g f) y = evC f (g * y) := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp [evC, ltr]
-  | add p q hp hq =>
-    simp only [evC] at hp hq ⊢
-    rw [map_add (f := _), map_add (f := _), map_add (f := _), hp, hq]
-  | mul_X p ij hp =>
-    simp only [evC] at hp ⊢
-    rw [map_mul, map_mul, map_mul, hp]
-    congr 1
-    simp [ltr, Matrix.mul_apply]
-
-omit [DecidableEq ι] in
 lemma exists_rtr (h : Matrix ι ι ℂ) (f : MvPolynomial (ι × ι) ℂ) :
     ∃ f' : MvPolynomial (ι × ι) ℂ, ∀ z, evC f' z = evC f (z * h) := by
   induction f using MvPolynomial.induction_on with

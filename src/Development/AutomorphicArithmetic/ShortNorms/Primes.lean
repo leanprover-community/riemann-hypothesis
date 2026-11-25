@@ -533,7 +533,6 @@ end GlobalTheory.Hk.RayConv
 
 namespace GlobalTheory.Hk
 
-
 open RayConv in
 theorem aRay_mul_log : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (g : D.G) (n : ℕ), aRay D g n * Real.log n = ∑ h : D.G, ∑ p ∈ n.divisorsAntidiagonal, lamRay D h p.1 * aRay D (g / h) p.2 := by
   intro K _ _ M _ D g n
@@ -675,7 +674,6 @@ theorem sum_lamIdeal_le (hK : Module.finrank ℚ K = 2) (n : ℕ) (S : Finset (I
   rw [Real.log_pow] at h4
   exact_mod_cast h4
 
-
 open QuadraticZeta in
 theorem exists_gen {d : ℕ} (hp : d.Prime) (hd : d % 4 = 3) {r : K} (hr : r ^ 2 = -(d : K))
     (h2 : Module.finrank ℚ K = 2) : ∃ ω : 𝓞 K, (∀ z : 𝓞 K, ∃ a b : ℤ, z = a + b * ω) ∧
@@ -725,14 +723,11 @@ theorem normOne_span {d M : ℕ} {ω : 𝓞 K} (hgen : ∀ z : 𝓞 K, ∃ a b :
   rw [Ideal.absNorm_span_singleton, Int.natAbs_of_nonneg h0]
   linarith
 
-theorem finite_idealsIn {M : ℕ} (D : RayData K M) (g : D.G) (n : ℕ) : (idealsIn D g n).Finite :=
-  (Ideal.finite_setOf_absNorm_eq (S := 𝓞 K) n).subset fun _ h => h.2.2.1
-
 theorem lamRay_props : ∀ (K : Type) [Field K] [NumberField K] (d M : ℕ) (x : K), d.Prime → d % 4 = 3 → 100 ≤ d → x ^ 2 = -(d : K) → Module.finrank ℚ K = 2 → 3 ≤ M → ∀ D : RayData K M, (∀ g n, 0 ≤ lamRay D g n) ∧ (∀ n : ℕ, ∑ g : D.G, lamRay D g n ≤ 2 * Λ n) ∧ ∀ p : ℕ, p.Prime → lamRay D 1 p ≠ 0 → GlobalTheory.Mem.An.NormOne d M p := by
   intro K _ _ d M x hp hd _ hx hK _ D
   refine ⟨fun g n => ?_, fun n => ?_, fun p _ h => ?_⟩
   · exact finsum_nonneg fun I => finsum_nonneg fun _ => lamIdeal_nonneg I
-  · have e : ∀ g, lamRay D g n = ∑ I ∈ (finite_idealsIn D g n).toFinset, lamIdeal I := fun g =>
+  · have e : ∀ g, lamRay D g n = ∑ I ∈ (GlobalTheory.Hk.RayConv.finite_idealsIn D g n).toFinset, lamIdeal I := fun g =>
       finsum_mem_eq_finite_toFinset_sum _ _
     simp only [e]
     rw [← Finset.sum_biUnion]

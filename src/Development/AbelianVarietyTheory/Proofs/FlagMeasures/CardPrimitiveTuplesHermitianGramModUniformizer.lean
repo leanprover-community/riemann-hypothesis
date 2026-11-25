@@ -202,7 +202,6 @@ theorem norm_gauss_sum_ip_le {B : Type} [CommRing B] [Fintype B] (c : B →+* B)
   have hsq : S * (starRingEnd ℂ) S = (((q : ℝ) ^ n) ^ 2 : ℝ) := by
     calc S * (starRingEnd ℂ) S
         = ∑ y : Fin n → B, S * (starRingEnd ℂ) (χ (Q y)) := by
-          set_option synthInstance.maxHeartbeats 100000 in
             conv_lhs => rw [hS, map_sum, ← hS, Finset.mul_sum]
       _ = ∑ y : Fin n → B, ∑ z : Fin n → B, χ (Q z) * χ ((a + c a) * ip c y z) := by
           refine Finset.sum_congr rfl fun y _ => ?_

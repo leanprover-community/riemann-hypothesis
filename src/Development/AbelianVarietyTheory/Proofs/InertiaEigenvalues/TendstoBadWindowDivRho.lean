@@ -250,7 +250,6 @@ theorem main {R F : Type} [CommRing R] [Field F] [Algebra R F] {n : Type} [Finty
     rw [Matrix.trace_eq_sum_roots_charpoly]
     exact IsIntegral.multiset_sum key
   have he : Matrix.trace (φ M) = f (Matrix.trace M) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [φ, Matrix.trace, map_sum, AlgHom.mapMatrix_apply]
   rw [he] at ht
   exact (isIntegral_algHom_iff f f.toRingHom.injective).mp ht

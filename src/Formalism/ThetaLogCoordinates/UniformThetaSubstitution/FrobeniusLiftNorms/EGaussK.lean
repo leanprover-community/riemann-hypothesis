@@ -63,8 +63,7 @@ lemma inClass_map {ι : Type} (hφ : ∀ z, ‖φ z‖ = ‖z‖) (pp : F) (hh G
   refine ⟨fun i => MvPowerSeries.map φ (U i), fun i n => ?_, fun n => ?_⟩
   · rw [MvPowerSeries.coeff_map, hφ]
     exact hU i n
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [MvPowerSeries.coeff_map, hc n, map_sum]
+  · rw [MvPowerSeries.coeff_map, hc n, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, map_inv₀, map_pow, ← MvPowerSeries.coeff_map, map_mul, map_pow]
 

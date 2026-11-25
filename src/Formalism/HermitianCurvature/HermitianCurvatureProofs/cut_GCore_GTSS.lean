@@ -204,7 +204,7 @@ theorem mulQ_smul (P : M.Par) (x : (MA.DQ P).Pr) (c : ℂ) (f : MA.SmQ P.r P.TT)
 theorem second_shift_phase_holds : GTSSPhase := by
   intro Wp Wq _ _ _ _ _ _ P Bs X d hH e he hk hn s t hL hst
   classical
-  obtain ⟨hpl, hk2, hcs, hLv, hSL, hRel, hQ⟩ := hH
+  obtain ⟨hpl, hk2, hcs, hLv, _, hRel, hQ⟩ := hH
   have hP : P.OK := hpl.1
   have hTT : 0 < P.TT := mul_pos hP.T_pos hP.T'_pos
   let q0 : MA.Qp P.r P.TT := ⟨((fun _ => 1), ((Real.sqrt P.TT + 1 : ℝ) : ℂ)), ⟨fun _ => one_ne_zero, ann_pt P hTT⟩⟩
@@ -288,13 +288,13 @@ theorem second_shift_phase_holds : GTSSPhase := by
   have hIS : Wd.IsStart d.QQ (M.qC P) := by
     have h := (Formalism.FourierDecayAlt.P.actual_start Wp Wq P Bs.z Bs.z' Bs.π Bs.π' hpl X).1
     rwa [show X.QQ = d.QQ from funext hQ] at h
-  have hX := Formalism.FourierDecayAlt.P.shift_extra P _ d hP hSL hRel hIS
+  have hShift := Formalism.FourierDecayAlt.P.NFx4.SX.hyp_of_rel d hRel
   have F3 : ∀ l ∈ Icc 1 (P.k - 1), ∀ j ∈ Icc 1 (P.k - 1), j ≠ l → ∀ ρ ρl ρj ρlj : M.Ty P,
       M.Up P l ρ ρl → M.Up P j ρ ρj → M.Up P j ρl ρlj → M.Up P l ρj ρlj →
       s j ρlj ρl * s l ρl ρ * ((M.rho P ρ j - M.rho P ρ l - 1 : ℝ) : ℂ) =
         s l ρlj ρj * s j ρj ρ * ((M.rho P ρ j - M.rho P ρ l + 1 : ℝ) : ℂ) := by
     intro l hl j hj hjl ρ ρl ρj ρlj h1 h2 h3 h4
-    have hc := ((hX.2 l hl).2 j hj hjl).1
+    have hc := Formalism.FourierDecayAlt.P.NFx4.SX.ssComm hShift hP hIS hl hj hjl
     have c1 := cv_SS j hj _ _ (cv_SS l hl _ _
       (cv_K (fun σ => ((M.rho P σ j - M.rho P σ l - 1 : ℝ) : ℂ)) _ _ (cvU ρ)))
     have c2 := cv_SS l hl _ _ (cv_SS j hj _ _

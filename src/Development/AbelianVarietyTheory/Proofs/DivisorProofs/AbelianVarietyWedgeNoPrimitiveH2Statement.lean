@@ -636,7 +636,7 @@ variable {K : Type} [Field K]
 
 theorem overPullbackStructureSheaf_cohomology_cup {Y A : Over (Sp K)} (f : Y ⟶ A) (a b : HO1 A.hom) :
     structureSheafH2Pullback f (cup (OAff A.hom) a b) = cup (OAff Y.hom) (pO1 f a) (pO1 f b) :=
-  ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id).2.1 K K A.left Y.left A.hom Y.hom (RingHom.id K) f.left (ovw f)).1 a b
+  ((GlobalTheory.AbCoh.pull_comp_cup_id).2.1 K K A.left Y.left A.hom Y.hom (RingHom.id K) f.left (ovw f)).1 a b
 
 variable (A : Over (Sp K)) [GrpObj A]
 
@@ -680,7 +680,6 @@ theorem symm_of_prim [IsSeparated A.hom] [QuasiCompact A.hom] (hp : StructureShe
 
 end GlobalTheory.AbCoh.WedgeSq
 
-
 open GlobalTheory.AbCoh.WedgeSq in
 theorem GlobalTheory.AbCoh.wedgeO_noPrimO2 : ∀ (K : Type) [Field K] [IsAlgClosed K] (A : Over (Sp K)) [GrpObj A] (g : ℕ),
     IsAbelianScheme A → SmoothOfRelativeDimension g A.hom →
@@ -692,7 +691,7 @@ theorem GlobalTheory.AbCoh.wedgeO_noPrimO2 : ∀ (K : Type) [Field K] [IsAlgClos
   obtain ⟨-, hprim, -⟩ := GlobalTheory.T.abelian_variety_h1_axes_primitive_rank K A g hab hsm
   obtain ⟨n, D, hD, hcov⟩ := GlobalTheory.AbCoh.WedgeSq.exists_fin_affine_cover A.hom
   obtain ⟨⟨e1⟩, ⟨e2⟩⟩ := GlobalTheory.T.cech_cohomology_structure_sheaf_iso K A.left A.hom (Fin n) D hsep hD hcov
-  obtain ⟨hfin, h1, h2⟩ := GlobalTheory.T.cech_cohomology_trivial_bundle_abelian K A g hab hsm (Fin n) D hD hcov
+  obtain ⟨hfin, h1, h2⟩ := GlobalTheory.AbCoh.FDim.cechLB_triv_finrank_one_two K A g hab hsm (Fin n) D hD hcov
   haveI := hfin 1
   haveI := hfin 2
   haveI : Module.Finite K (HO1 A.hom) := Module.Finite.equiv e1.symm

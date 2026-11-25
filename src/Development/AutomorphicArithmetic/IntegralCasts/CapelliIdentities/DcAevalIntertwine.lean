@@ -13,13 +13,9 @@ theorem UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine.{u_1, u_2} :
         (ψ : Y → Z) (((Polynomial.aeval A : Polynomial ℂ → Module.End ℂ Y) p : Y → Y) y) =
           ((Polynomial.aeval B : Polynomial ℂ → Module.End ℂ Z) p : Z → Z) ((ψ : Y → Z) y) := by
   intro Y Z _ _ _ _ ψ A B h p y
-  have hpow : ∀ (n : ℕ) (x : Y), ψ ((A ^ n) x) = (B ^ n) (ψ x) := by
-    intro n
-    induction n with
-    | zero => intro x; simp
-    | succ n ih =>
-      intro x
-      rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih, h]
+  have hpow : ∀ (n : ℕ) (x : Y), ψ ((A ^ n) x) = (B ^ n) (ψ x) := fun n x =>
+    (LinearMap.congr_fun (Module.End.commute_pow_left_of_commute (f := ψ) (g := A) (g₂ := B)
+      (LinearMap.ext fun y => (h y).symm) n) x).symm
   induction p using Polynomial.induction_on' with
   | add p q hp hq => simp only [map_add (f := _), LinearMap.add_apply, hp, hq]
   | monomial n a =>
