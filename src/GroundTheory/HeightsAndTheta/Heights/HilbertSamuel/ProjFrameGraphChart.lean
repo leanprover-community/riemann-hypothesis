@@ -43,8 +43,7 @@ theorem frame_ne_zero {x : Ix κ → Ω} {e : Fin (D + 1) → Ix κ} (hF : IsPro
     x (e k) ≠ 0 := by
   intro h
   have hX : (X k : MvPolynomial (Fin (D + 1)) ℤ) ∈ coordIdeal ℤ (x ∘ e) := by
-    rw [coordIdeal, RingHom.mem_ker]
-    simp [coneMap, h]
+    simp [coordIdeal, RingHom.mem_ker, coneMap, h]
   rw [hF.free, Ideal.mem_bot] at hX
   exact X_ne_zero k hX
 
@@ -60,8 +59,7 @@ theorem genFibre_x'_ne_zero {x : Ix κ → Ω} {K₂ : Type} [Fintype K₂] {ι�
   have h2 : (X ⟨(), j⟩ : MvPolynomial (Ix κ) ℤ) ∈ coordIdeal ℤ x := by
     rw [← Ideal.Quotient.eq_zero_iff_mem]
     exact MvPolynomial.C_eq_zero.1 h1
-  rw [coordIdeal, RingHom.mem_ker] at h2
-  simp [coneMap] at h2
+  simp [coordIdeal, RingHom.mem_ker, coneMap] at h2
   exact hj h2
 
 def fibreChart {K₂ : Type} {ι₂ : K₂ → Type} (j : κ) :

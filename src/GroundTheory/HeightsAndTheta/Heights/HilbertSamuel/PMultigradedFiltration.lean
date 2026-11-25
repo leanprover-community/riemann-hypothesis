@@ -282,11 +282,10 @@ theorem homog_smul_mem (hM : IsMultigrading ι M piece) {f : MRing ι F} {b : K 
   have ef := f.as_sum
   rw [ef, Finset.sum_smul]
   refine Submodule.sum_mem _ fun d hd => ?_
-  have hw : Finsupp.weight (blockWeight ι) d = b := hf (mem_support_iff.mp hd)
   have e : (monomial d (AddMonoidAlgebra.coeff f d) : MRing ι F) = AddMonoidAlgebra.coeff f d • monomial d (1 : F) := by
     rw [smul_monomial, smul_eq_mul, mul_one]
   rw [e, smul_assoc]
-  exact Submodule.smul_mem _ _ (hw ▸ monomial_smul_mem hM d m x hx)
+  exact Submodule.smul_mem _ _ ((hf (mem_support_iff.mp hd)) ▸ monomial_smul_mem hM d m x hx)
 
 section Graded
 
@@ -424,13 +423,12 @@ theorem isPrime_colon (hM : IsMultigrading ι M piece) {N : Submodule (MRing ι 
     · exact Or.inr hb
     left
     rw [Submodule.mem_colon_singleton] at hb hab
-    have hbx : b • x ∈ piece (c + degZ j) := homog_smul_mem hM hj hx
     have hle : N.colon {x} ≤ N.colon {b • x} := by
       intro s hs
       rw [Submodule.mem_colon_singleton] at hs ⊢
       rw [smul_comm]
       exact N.smul_mem b hs
-    have heq := eq_of_le_of_not_lt hle (hmax _ _ hbx hb)
+    have heq := eq_of_le_of_not_lt hle (hmax _ _ (homog_smul_mem hM hj hx) hb)
     have ha : a ∈ N.colon {b • x} := by
       rwa [Submodule.mem_colon_singleton, ← mul_smul]
     rwa [← heq] at ha

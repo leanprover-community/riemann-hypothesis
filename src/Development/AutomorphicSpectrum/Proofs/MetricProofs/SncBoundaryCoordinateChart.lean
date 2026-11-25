@@ -61,15 +61,13 @@ theorem bdry_snc_chart :
   intro y hy
   have hglue := hs.2 x y y ⟨hsub hy, L.mem_U y⟩
   have hzero : s y y = 0 ↔ s x y = 0 := by
-    have e1 : Real.exp (-L.φ x y) ≠ 0 := (Real.exp_pos _).ne'
-    have e2 : Real.exp (-L.φ y y) ≠ 0 := (Real.exp_pos _).ne'
     constructor
     · intro h
       rw [h, norm_zero, zero_mul] at hglue
-      exact norm_eq_zero.mp ((mul_eq_zero.mp hglue).resolve_right e1)
+      exact norm_eq_zero.mp ((mul_eq_zero.mp hglue).resolve_right ((Real.exp_pos _).ne'))
     · intro h
       rw [h, norm_zero, zero_mul] at hglue
-      exact norm_eq_zero.mp ((mul_eq_zero.mp hglue.symm).resolve_right e2)
+      exact norm_eq_zero.mp ((mul_eq_zero.mp hglue.symm).resolve_right ((Real.exp_pos _).ne'))
   have hmem : y ∈ bdry s ↔ s y y = 0 := Iff.rfl
   rw [hmem, hzero, hfac y hy, mul_eq_zero, or_iff_right (hu y hy), Finset.prod_eq_zero_iff]
   constructor

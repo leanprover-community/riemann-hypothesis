@@ -110,8 +110,7 @@ theorem lintegral_exp_neg_quadratic {g : ℕ} {Y : Matrix (Fin g) (Fin g) ℝ} (
   have hB0 : B.det ≠ 0 := by
     intro h
     have := hY.det_pos
-    rw [hdet, h] at this
-    simp at this
+    simp [hdet, h] at this
   set M := Matrix.toLin' B with hM
   have hMdet : LinearMap.det M ≠ 0 := by rw [hM, LinearMap.det_toLin']; exact hB0
   set F : (Fin g → ℝ) → ℝ := fun w => ∏ i, Real.exp (-(2 * π) * w i ^ 2) with hF

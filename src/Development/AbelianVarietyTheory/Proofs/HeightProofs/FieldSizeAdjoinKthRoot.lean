@@ -218,8 +218,7 @@ theorem _root_.GlobalTheory.FieldSize.sz_sup_adjoin_root : ∀ (F : Intermediate
       rfl
     rw [hmap] at hw
     obtain ⟨w', hw', hww⟩ := hw
-    have hw'w : w' = w := Subtype.val_injective hww
-    exact hw'w ▸ hw'
+    exact (Subtype.val_injective hww) ▸ hw'
   have hdiff := _root_.GlobalTheory.FieldSize.natCast_mem_differentIdeal_of_root k hk y hy I hI z' hz' hL
   have hroot := _root_.GlobalTheory.log_rootDiscr_le_of_natCast_mem_differentIdeal F E k hk hdiff
   have hFE : IntermediateField.adjoin F {z'} = ⊤ := by
@@ -230,9 +229,8 @@ theorem _root_.GlobalTheory.FieldSize.sz_sup_adjoin_root : ∀ (F : Intermediate
     have h1 := IntermediateField.adjoin.finrank hz'int
     rw [hFE, IntermediateField.finrank_top'] at h1
     rw [h1]
-    have hp : (X ^ k - C y : F[X]) ≠ 0 := X_pow_sub_C_ne_zero hk y
     calc (minpoly F z').natDegree ≤ (X ^ k - C y : F[X]).natDegree :=
-          natDegree_le_of_dvd (minpoly.dvd F z' (by simp [hz'])) hp
+          natDegree_le_of_dvd (minpoly.dvd F z' (by simp [hz'])) (X_pow_sub_C_ne_zero hk y)
       _ = k := natDegree_X_pow_sub_C _
   haveI : FiniteDimensional F E := FiniteDimensional.right ℚ F E
   have hdF : 0 < Module.finrank ℚ F := Module.finrank_pos

@@ -64,8 +64,7 @@ theorem eq_of_flag_of_hermForm : ∀ {α : Type} {m : α → ℕ} {g : ℕ} (e :
           have hsub : {k : Fin (m τ) | k < j} ⊆ {k | k < i} := fun k hk => lt_trans hk hj
           exact Submodule.map_mono (Submodule.span_mono (Set.image_mono hsub)) this
         have h3 : s • bv τ j ∈ (E i).map h'.toLinearMap := by
-          have := Submodule.sub_mem _ h1 h2
-          simpa using this
+          simpa using Submodule.sub_mem _ h1 h2
         have := Submodule.smul_mem _ s⁻¹ h3
         rwa [smul_smul, inv_mul_cancel₀ hs, one_smul] at this
     intro i
@@ -95,13 +94,11 @@ theorem eq_of_flag_of_hermForm : ∀ {α : Type} {m : α → ℕ} {g : ℕ} (e :
       have hne' : u ≠ 0 := by
         intro h0'; apply hne; rw [hu] at h0'; exact sub_eq_zero.mp h0'
       have := hpos u hne'
-      rw [h0] at this
-      simp at this
+      simp [h0] at this
   apply LinearEquiv.toLinearMap_injective
   apply (Pi.basisFun ℂ (Fin g)).ext
   intro n
   rw [Pi.basisFun_apply]
-  have := key (e n).1 (e n).2
-  simpa using this
+  simpa using key (e n).1 (e n).2
 
 end GlobalTheory.FlagEq

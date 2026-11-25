@@ -86,8 +86,7 @@ theorem nontrivial_tensor_of_mem_support (R C K : Type) [CommRing R] [AddCommGro
   let g : p.asIdeal.ResidueField →+* K := Ideal.ResidueField.lift p.asIdeal (algebraMap R K)
     hp.ge (by
       intro r hr
-      have : algebraMap R K r ≠ 0 := fun h0 => hr (hp.le h0)
-      exact (isUnit_iff_ne_zero.mpr this))
+      exact (isUnit_iff_ne_zero.mpr (fun h0 => hr (hp.le h0) : algebraMap R K r ≠ 0)))
   letI : Algebra p.asIdeal.ResidueField K := g.toAlgebra
   haveI : IsScalarTower R p.asIdeal.ResidueField K := IsScalarTower.of_algebraMap_eq (by
     intro r
@@ -201,11 +200,10 @@ theorem _root_.GlobalTheory.algebraMap_bijective_of_unramified_of_unique_geometr
     apply hf
     rw [hx, hpm]
     exact hsm (Ideal.subset_span (hfb b))
-  have hb := Submodule.mem_of_span_eq_top_of_smul_pow_mem M s hs b (fun r => ⟨1, by
+  obtain ⟨a, ha⟩ := Submodule.mem_of_span_eq_top_of_smul_pow_mem M s hs b (fun r => ⟨1, by
     obtain ⟨a, ha⟩ := r.2
     rw [pow_one, ha]
     exact ⟨a, rfl⟩⟩)
-  obtain ⟨a, ha⟩ := hb
   exact ⟨a, ha⟩
 
 end GlobalTheory

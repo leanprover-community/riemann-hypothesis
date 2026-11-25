@@ -37,8 +37,7 @@ theorem finsum_log_finitePlace_natCast {K : Type*} [Field K] [NumberField K] {δ
   rw [finsum_eq_sum_of_support_subset (s := hfin.toFinset)]
   · rw [← Real.log_prod (fun v _ ↦ (map_ne_zero _).mpr hne), hprod]
     have : Algebra.norm ℚ ((δ : ℕ) : K) = (δ : ℚ) ^ (Module.finrank ℚ K) := by
-      have := Algebra.norm_algebraMap (S := K) (δ : ℚ)
-      simpa using this
+      simpa using Algebra.norm_algebraMap (S := K) (δ : ℚ)
     rw [this]
     push_cast
     rw [abs_pow, Nat.abs_cast, Real.log_inv, Real.log_pow]
@@ -133,8 +132,7 @@ theorem height_standard_le (z : Cone n (AlgebraicClosure ℚ)) (hz : BlockNonzer
       intro h
       apply hi0
       have h2 := (map_eq_zero σ).mp h
-      have := congrArg Subtype.val h2
-      simpa [coordVec] using this
+      simpa [coordVec] using congrArg Subtype.val h2
     change Real.log (∏ k, l2Norm (fun i ↦ σ (coordVec z k i))) ≤ _
     rw [Real.log_prod (fun k _ ↦ (hpos k).ne')]
     refine Finset.sum_le_sum fun k _ ↦ Real.log_le_log (hpos k) ?_

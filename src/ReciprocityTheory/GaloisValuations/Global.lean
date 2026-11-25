@@ -296,9 +296,8 @@ theorem exists_isPlaceOver (v : HeightOneSpectrum (𝓞 F)) :
     have hinv : v.valuation F ((x : F)⁻¹) ≤ 1 := by rw [map_inv₀, hx1, inv_one]
     have hmem : algebraMap F Ω ((x : F)⁻¹) ∈ B := hfx _ hinv
     rw [map_inv₀] at hmem
-    have h1 : B.valuation (algebraMap F Ω (x : F))⁻¹ ≤ 1 := (B.valuation_le_one_iff _).mpr hmem
     have h2 := (Valuation.one_lt_val_iff B.valuation (inv_ne_zero hne)).mpr (by rwa [inv_inv])
-    exact absurd h1 (not_le.mpr h2)
+    exact absurd ((B.valuation_le_one_iff _).mpr hmem) (not_le.mpr h2)
   · intro hx
     by_contra hnot
     have hxlt := (hlt x).mpr hx
@@ -307,9 +306,8 @@ theorem exists_isPlaceOver (v : HeightOneSpectrum (𝓞 F)) :
       rw [hx0, map_zero, map_zero]
       exact zero_lt_one
     have hne : algebraMap F Ω (x : F) ≠ 0 := (map_ne_zero _).mpr hx0
-    have hyB : algebraMap F Ω (x : F) ∈ B := hfx _ (hle x)
     have hyv : B.valuation (algebraMap F Ω (x : F)) = 1 :=
-      le_antisymm ((B.valuation_le_one_iff _).mpr hyB) (not_lt.mp hnot)
+      le_antisymm ((B.valuation_le_one_iff _).mpr (hfx _ (hle x))) (not_lt.mp hnot)
     have hyinvB : (algebraMap F Ω (x : F))⁻¹ ∈ B := by
       rw [← B.valuation_le_one_iff, map_inv₀, hyv, inv_one]
     have hyS : algebraMap F Ω (x : F) ∈ (v.valuation F).valuationSubring.toSubring.map (algebraMap F Ω) :=

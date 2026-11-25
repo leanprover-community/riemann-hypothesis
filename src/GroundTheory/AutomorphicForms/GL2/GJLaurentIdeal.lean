@@ -86,8 +86,7 @@ theorem eval_div_algebraMap (P Q : ℂ[X]) {x : ℂ} (hx : Q.eval x ≠ 0) :
       (RatFunc.denom_div_dvd P Q) h0
     simpa [Polynomial.eval₂_id] using this
   have hQd : ((algebraMap ℂ[X] (RatFunc ℂ) Q).denom).eval₂ (RingHom.id ℂ) x ≠ 0 := by
-    rw [RatFunc.denom_algebraMap]
-    simp
+    simp [RatFunc.denom_algebraMap]
   have hmul := RatFunc.eval_mul (RingHom.id ℂ) x hy hQd
   have hyQ : y * algebraMap ℂ[X] (RatFunc ℂ) Q = algebraMap ℂ[X] (RatFunc ℂ) P :=
     div_mul_cancel₀ _ (RatFunc.algebraMap_ne_zero hQ)
@@ -318,11 +317,10 @@ theorem existsUnique_eq_laurent_div (I : Submodule ℂ (RatFunc ℂ))
     rw [map_mul, map_mul, map_pow, RatFunc.algebraMap_X]
     field_simp at h1eq
     linear_combination h1eq
-  have hGD : G ∣ D := by
+  obtain ⟨E, hE⟩ : G ∣ D := by
     have hcop : IsCoprime G (Polynomial.X ^ k) :=
       Irreducible.coprime_pow_of_not_dvd k Polynomial.irreducible_X hGX
     exact hcop.dvd_of_dvd_mul_right ⟨H, hDXk⟩
-  obtain ⟨E, hE⟩ := hGD
   have hE0 : E ≠ 0 := by
     rintro rfl
     rw [mul_zero] at hE

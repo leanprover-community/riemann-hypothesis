@@ -78,15 +78,13 @@ theorem exists_orthogonal_projection_finite {W : Type} [AddCommGroup W] [Module 
       apply b.ext
       intro i
       simpa using hw i
-    have := LinearMap.congr_fun h0 ⟨z, hz⟩
-    simpa using this
+    simpa using LinearMap.congr_fun h0 ⟨z, hz⟩
   have hinj : Function.Injective T := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro m hm
     have h1 : ∀ i, B (b i : W) (m : W) = 0 := by
       intro i
-      have := congr_fun hm i
-      simpa [T] using this
+      simpa [T] using congr_fun hm i
     exact Subtype.ext (hB _ (key m h1 m m.2))
   have hsurj : Function.Surjective T :=
     (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
@@ -141,8 +139,7 @@ theorem exists_compl_proj (ρ : Representation ℂ H W) (B : W →ₗ⋆[ℂ] W 
   obtain ⟨K, hvK, hfd, hfin⟩ := hadm v
   have ofF : ∀ u ∈ GlobalTheory.PRep.fixed ρ K, ∀ k ∈ K, ρ k u = u := by
     intro u hu k hk
-    have := hu ⟨k, hk⟩
-    simpa using this
+    simpa using hu ⟨k, hk⟩
   have memF : ∀ u, (∀ k ∈ K, ρ k u = u) → u ∈ GlobalTheory.PRep.fixed ρ K := by
     intro u hu k
     show ρ (k : H) u = ((1 : ℂˣ) : ℂ) • u

@@ -27,8 +27,7 @@ noncomputable def crd (p : MvPolynomial σ E) (i : n) : MvPolynomial σ L :=
 lemma coeff_crd (p : MvPolynomial σ E) (i : n) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (crd b p i) m = b.repr (AddMonoidAlgebra.coeff p m) i := by
   classical
-  rw [crd, coeff_sum]
-  simp only [coeff_monomial]
+  simp only [crd, coeff_sum, coeff_monomial]
   rw [Finset.sum_ite_eq']
   split_ifs with h
   · rfl
@@ -36,8 +35,7 @@ lemma coeff_crd (p : MvPolynomial σ E) (i : n) (m : σ →₀ ℕ) :
 
 lemma eq_sum_crd (p : MvPolynomial σ E) : p = ∑ i, crd b p i • (C (b i) : MvPolynomial σ E) := by
   ext m
-  rw [coeff_sum]
-  simp only [coeff_smul_C, coeff_crd, ← Algebra.smul_def]
+  simp only [coeff_sum, coeff_smul_C, coeff_crd, ← Algebra.smul_def]
   exact (b.sum_repr (AddMonoidAlgebra.coeff p m)).symm
 
 lemma linearIndependent_C : LinearIndependent (MvPolynomial σ L) (fun i => (C (b i) : MvPolynomial σ E)) := by

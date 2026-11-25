@@ -73,10 +73,8 @@ theorem exists_const_of_section_mem_range : ∀ (n g : ℕ) (Λ : Type) [AddComm
   have hev : (fun b => s b - P b x) =ᶠ[𝓝 (b₀ : Fin n → ℂ)] 0 := by
     filter_upwards [hopen.mem_nhds ⟨b₀, hb₀, rfl⟩]
     rintro _ ⟨c, hc, rfl⟩
-    have hmem : c ∈ {b : B | s b = P b x} := interior_subset hc
-    have hc' : s c = P c x := hmem
     show s c - P c x = 0
-    exact sub_eq_zero.mpr hc'
+    exact sub_eq_zero.mpr (interior_subset hc)
   have han : AnalyticOnNhd ℂ (fun b => s b - P b x) B :=
     GlobalTheory.SCV.analyticOnNhd_of_differentiableOn hB (hs.sub (hP x))
   intro b hb

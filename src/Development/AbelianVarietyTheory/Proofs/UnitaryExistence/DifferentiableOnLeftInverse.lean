@@ -174,8 +174,7 @@ theorem _root_.GlobalTheory.RiemannRel.symm_posDef (G A τ : Matrix (Fin g) (Fin
       intro h0
       apply hx
       ext j
-      have := congrFun (Matrix.eq_zero_of_mulVec_eq_zero hA h0) j
-      simpa using this
+      simpa using congrFun (Matrix.eq_zero_of_mulVec_eq_zero hA h0) j
     have h := hpos _ hAx
     rw [_root_.GlobalTheory.RiemannRel.hermForm_mulVec] at h
     simpa [dotProduct, mulVec, Complex.re_sum, Complex.mul_re, hM, S] using h
@@ -201,8 +200,7 @@ theorem _root_.GlobalTheory.RiemannRel.symm_posDef (G A τ : Matrix (Fin g) (Fin
     linarith
   have hYs : ∀ j k, Y j k = Y k j := by
     intro j k
-    have := congrFun (congrFun hYpos.1 k) j
-    simpa using this
+    simpa using congrFun (congrFun hYpos.1 k) j
   refine ⟨Matrix.IsSymm.ext fun i j => Complex.ext ?_ ?_, hYpos⟩
   · exact hXs j i
   · exact hYs j i

@@ -22,8 +22,7 @@ namespace UnitConjugation
 lemma conj_eq_inv_of_pow_eq_one {z : ℂ} {m : ℕ} (hm : m ≠ 0) (hz : z ^ m = 1) :
     starRingEnd ℂ z = z⁻¹ := by
   have h1 : ‖z‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hz hm
-  rw [Complex.inv_def, Complex.normSq_eq_norm_sq, h1]
-  simp
+  simp [Complex.inv_def, Complex.normSq_eq_norm_sq, h1]
 
 lemma pow_eq_inv_iff {K : Type*} [Field K] {m : ℕ} [NeZero m] {ζ : K}
     (hζ : IsPrimitiveRoot ζ m) (k : ℕ) : ζ ^ k = ζ⁻¹ ↔ (k : ZMod m) = -1 := by
@@ -119,8 +118,7 @@ theorem conj_iff (hq : 0 < q) (hd : 0 < d) (h : IsLayer n q d ζ a b) (φ : L �
       · rw [h2, map_neg, phi_conj hq ha]
       · rw [h3, map_neg, phi_conj hd hb]
     intro x
-    have := congrArg (fun f => f x) heq
-    simpa using this
+    simpa using congrArg (fun f => f x) heq
 
 end UnitConjugation
 

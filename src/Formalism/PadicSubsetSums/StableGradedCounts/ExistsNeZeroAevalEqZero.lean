@@ -62,7 +62,6 @@ theorem exists_annihilator_eq {K V : Type} [Field K] [AddCommGroup V] [Module K 
   have hkill : ∀ (s t : K[X]) (x : V), aeval g s x = 0 → aeval g (t * s) x = 0 := by
     intro s t x hx
     rw [map_mul, hm, hx, map_zero]
-  have hsq : Squarefree g.charpoly := hs.squarefree
   refine WfDvdMonoid.induction_on_irreducible d ?_ ?_ ?_
   · exact fun h0 => absurd (zero_dvd_iff.1 h0) (LinearMap.charpoly_monic g).ne_zero
   · exact fun u hu _ => ⟨0, map_zero _, fun q _ => hu.dvd⟩
@@ -75,7 +74,7 @@ theorem exists_annihilator_eq {K V : Type} [Field K] [AddCommGroup V] [Module K 
       first
         | exact (Irreducible.coprime_iff_not_dvd hi).2 h
     have hcop : IsCoprime i a := hcopOf a fun hia =>
-      hi.1 (hsq i (dvd_trans (mul_dvd_mul_left i hia) hdvd))
+      hi.1 (hs.squarefree i (dvd_trans (mul_dvd_mul_left i hia) hdvd))
     refine ⟨ea + w, ?_, fun q hq => ?_⟩
     · rw [map_add (f := _), hkill a i ea hea0, mul_comm, hkill i a w hw, add_zero]
     · have hw' : aeval g (i * q) w = 0 := by
@@ -85,9 +84,8 @@ theorem exists_annihilator_eq {K V : Type} [Field K] [AddCommGroup V] [Module K 
         have h1 := hkill q i _ hq
         rwa [map_add, hw', add_zero] at h1
       have haq : a ∣ q := by
-        have h2 : a ∣ i * q := hea _ hqi
         first
-          | exact hcop.symm.dvd_of_dvd_mul_left h2
+          | exact hcop.symm.dvd_of_dvd_mul_left (hea _ hqi)
       have hea' : aeval g (a * q) ea = 0 := by
         rw [mul_comm]
         exact hkill a q ea hea0

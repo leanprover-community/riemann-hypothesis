@@ -30,8 +30,7 @@ theorem logNorm_ofWeight_one (u : ((Σ k, ι k) → ℂ) → ℝ)
 
 theorem isMultiHomog_one : IsMultiHomog (1 : MRing ι) (fun _ => 0) := by
   intro m hm k
-  rw [MvPolynomial.support_one] at hm
-  simp only [Finset.mem_singleton] at hm
+  simp only [MvPolynomial.support_one, Finset.mem_singleton] at hm
   subst hm
   simp
 
@@ -42,8 +41,7 @@ theorem metricChange : MetricChangeStatement := by
   have hlog : logNorm (HermLine.ofWeight u hu) 1 = u := funext (logNorm_ofWeight_one u hu)
   have hrec : recR I P L (HermLine.ofWeight u hu) 1 = -ptsIntegral P (pot L) u := by
     unfold recR
-    rw [divSupp_one]
-    simp only [finsum_mem_empty, zero_sub, arInt, hlog]
+    simp only [divSupp_one, finsum_mem_empty, zero_sub, arInt, hlog]
     rfl
   rw [hI.2.1 P n L A _ hP hL hA hB,
     hI.2.2 P n L _ 1 (fun _ => 0) hP hL hB (fun _ => rfl) isMultiHomog_one h1, hrec]

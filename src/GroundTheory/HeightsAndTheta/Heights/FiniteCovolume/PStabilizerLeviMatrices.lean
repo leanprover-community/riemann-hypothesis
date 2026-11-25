@@ -40,8 +40,7 @@ theorem ext_sesq {M N : Matrix κ κ ℂ}
   rw [ext_iff_mulVec]
   intro d
   funext i
-  have := h (Pi.single i 1) d
-  simpa [dotProduct, Pi.single_apply] using this
+  simpa [dotProduct, Pi.single_apply] using h (Pi.single i 1) d
 
 theorem ip_swap {H : Matrix ι ι ℂ} (hH : Hᴴ = H) (a b : ι → ℂ) :
     star b ⬝ᵥ (H *ᵥ a) = star (star a ⬝ᵥ (H *ᵥ b)) := by

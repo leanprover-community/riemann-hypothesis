@@ -96,9 +96,8 @@ theorem _root_.GlobalTheory.exists_eigen_projector_ringOfIntegers : ∀ (E K : T
   have hsep : ∀ σ σ' : E →+* K, σ θ = σ' θ → σ = σ' := by
     intro σ σ' h
     rw [hθ, map_zsmul, map_zsmul] at h
-    have h' : σ α0 = σ' α0 := smul_right_injective K (by exact_mod_cast hy0) h
     have := AlgHom.ext_of_adjoin_eq_top (φ₁ := σ.toRatAlgHom) (φ₂ := σ'.toRatAlgHom) hadj
-      (by rintro _ rfl; exact h')
+      (by rintro _ rfl; exact (smul_right_injective K (by exact_mod_cast hy0) h))
     ext z
     exact congrArg (fun φ : E →ₐ[ℚ] K => φ z) this
   have hpoly : ∀ b : 𝓞 E, ∃ D : ℤ, D ≠ 0 ∧ ∃ h : ℤ[X], (D : 𝓞 E) * b = aeval θ h := by
@@ -112,8 +111,7 @@ theorem _root_.GlobalTheory.exists_eigen_projector_ringOfIntegers : ∀ (E K : T
       (p.comp (C ((y : ℚ)⁻¹) * X)), ?_⟩
     have hy' : (y : E) ≠ 0 := by exact_mod_cast hy0
     have hθα : aeval (θ : E) (C ((y : ℚ)⁻¹) * X) = α0 := by
-      rw [hθ, zsmul_eq_mul]
-      simp only [map_mul, aeval_C, aeval_X, map_inv₀, map_intCast]
+      simp only [hθ, zsmul_eq_mul, map_mul, aeval_C, aeval_X, map_inv₀, map_intCast]
       field_simp
     apply FaithfulSMul.algebraMap_injective (𝓞 E) E
     rw [← aeval_algebraMap_apply]

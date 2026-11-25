@@ -99,17 +99,15 @@ theorem cspC_minimal_unique {q P1 P2 : Ideal S} [hq : q.IsPrime] (h1 : P1 ∈ mi
   have hQne : Q1 ≠ Q2 := fun e => hne (by rw [← hc1, ← hc2, e])
   have := cspC_artinian (P := P) (S := S)
   obtain ⟨r, hr2, hrid, hrall⟩ := IsArtinianRing.exists_not_mem_forall_mem_of_ne Q2
-  have hr1 : r ∈ Q1 := hrall Q1 hQ1 hQne
   obtain ⟨s, hs⟩ := cspC_idem_of (P := P) hrid
-  have hs1 : s ∈ P1 := by rw [← hc1, Ideal.mem_comap, hs]; exact hr1
+  have hs1 : s ∈ P1 := by rw [← hc1, Ideal.mem_comap, hs]; exact hrall Q1 hQ1 hQne
   have hs2 : s ∉ P2 := by rw [← hc2, Ideal.mem_comap, hs]; exact hr2
   have hsid : s * s = s := cspC_inj (P := P) (by rw [map_mul, hs, hrid.eq])
   have h0 : (1 - s) * s ∈ P2 := by
     rw [sub_mul, one_mul, hsid, sub_self]
     exact P2.zero_mem
-  have h1s : 1 - s ∈ P2 := (hP2.mem_or_mem h0).resolve_right hs2
   have : (1 : S) ∈ q := by
-    have := q.add_mem (hq2 h1s) (hq1 hs1)
+    have := q.add_mem (hq2 ((hP2.mem_or_mem h0).resolve_right hs2)) (hq1 hs1)
     rwa [sub_add_cancel] at this
   exact hq.ne_top ((Ideal.eq_top_iff_one _).2 this)
 

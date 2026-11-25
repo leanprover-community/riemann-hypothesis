@@ -69,8 +69,7 @@ theorem latCont_discrete {E : Type} [NormedAddCommGroup E] (H : AddSubgroup E) (
     · rintro rfl
       simpa using hr
     · intro hz
-      have := h z z.2 hz
-      simpa using this
+      simpa using h z z.2 hz
   rw [e]
   exact Metric.isOpen_ball.preimage continuous_subtype_val
 

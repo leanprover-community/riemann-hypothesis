@@ -154,8 +154,7 @@ lemma homologyFunctorIso'_moduleLeftHomologyData_apply {ιc : Type*} {c : Comple
       e.τ₂.hom ((C.sc j).iCycles.hom z) :=
     congr(($(ShortComplex.cyclesMap_i e)).hom z)
   have h4 : (C.sc' i j k).iCycles.hom ((ShortComplex.cyclesMap e).hom z) = (C.iCycles j).hom z := by
-    rw [h3]
-    simp [e]
+    simp [h3, e]
     rfl
   rw [h1]
   refine (congrArg (fun w => (moduleLeftHomologyData _ K ι hι hrange N hN).homologyIso.hom.hom w)
@@ -178,8 +177,7 @@ lemma exists_cycles_of_moduleLeftHomologyData {ιc : Type*} {c : ComplexShape ι
   have h4 : (C.sc' i j k).iCycles.hom (h.cyclesIso.inv.hom x) = ι x :=
     congr(($(h.cyclesIso_inv_comp_iCycles)).hom x)
   refine h3.trans ?_
-  rw [h4]
-  simp [e]
+  simp [h4, e]
 
 end Complexes
 

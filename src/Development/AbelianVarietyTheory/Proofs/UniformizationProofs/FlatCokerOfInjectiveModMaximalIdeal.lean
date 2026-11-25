@@ -109,11 +109,10 @@ open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem smul_mem_ideal_smul_of_mem_map {V A N : Type*} [CommRing V] [CommRing A]
     [Algebra V A] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N] (I : Ideal V)
     {r : A} (hr : r ∈ I.map (algebraMap V A)) (y : N) : r • y ∈ I • (⊤ : Submodule V N) := by
-  have hr' : r ∈ Submodule.span A (algebraMap V A '' I) := hr
   refine Submodule.span_induction
     (p := fun x _ => ∀ y : N, x • y ∈ I • (⊤ : Submodule V N))
     (fun x hx y => ?_) (fun y => by simp) (fun x x' _ _ hx hx' y => ?_)
-    (fun s x _ hx y => ?_) hr' y
+    (fun s x _ hx y => ?_) hr y
   · obtain ⟨i, hi, rfl⟩ := hx
     rw [algebraMap_smul]
     exact Submodule.smul_mem_smul hi Submodule.mem_top
@@ -139,16 +138,14 @@ private theorem mem_ideal_smul_of_smul_mem_of_flat {V N : Type*} [CommRing V] [I
   obtain ⟨k, -, hk⟩ := exists_sum_smul_of_mem_span_range_smul' g ⊤ hn
   have hrel : ∑ i : Fin (r + 1), (Fin.cons a (fun i => -g i) : Fin (r + 1) → V) i •
       (Fin.cons n k : Fin (r + 1) → N) i = 0 := by
-    rw [Fin.sum_univ_succ]
-    simp [hk, neg_smul, Finset.sum_neg_distrib]
+    simp [Fin.sum_univ_succ, hk, neg_smul, Finset.sum_neg_distrib]
   obtain ⟨p, b, y, hx, hb⟩ := Module.Flat.isTrivialRelation_of_sum_smul_eq_zero hrel
   have h0 := hx 0
   simp only [Fin.cons_zero] at h0
   rw [h0]
   refine Submodule.sum_mem _ fun j _ => Submodule.smul_mem_smul (ha _ ?_) Submodule.mem_top
   have h1 := hb j
-  rw [Fin.sum_univ_succ] at h1
-  simp only [Fin.cons_zero, Fin.cons_succ, neg_mul, Finset.sum_neg_distrib] at h1
+  simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, neg_mul, Finset.sum_neg_distrib] at h1
   have he : a * b 0 j = ∑ i, g i * b i.succ j := by linear_combination h1
   rw [he, ← hg]
   exact Submodule.sum_mem _ fun i _ => Ideal.mul_mem_right _ _ (Submodule.subset_span ⟨i, rfl⟩)

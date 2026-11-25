@@ -125,8 +125,7 @@ theorem isLocalRing_and_ker {L : Type} [Field L] (O : Subring L) (v : O →+* �
     exact fun hab => (hunit _).1 hab (by simp [ha', hb'])
   refine ⟨hloc, ?_⟩
   ext s
-  rw [RingHom.mem_ker, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, hunit]
-  simp
+  simp [RingHom.mem_ker, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, hunit]
 
 theorem exists_valuationSubring_place (L : Type) [Field L] (O : Subring L) (v : O →+* ℂ)
     (hv : ∀ s : O, v s ≠ 0 → (s : L)⁻¹ ∈ O) :

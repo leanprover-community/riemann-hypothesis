@@ -165,11 +165,9 @@ theorem HomLocRingNoetherian.proof (hmem : HomLocRingMem.Statement.{u}) :
       · intro b
         simpa using Q0
       · intro y₁ y₂ _ _ Q₁ Q₂ b
-        have := Qadd _ (b * y₁).2 _ (b * y₂).2 (Q₁ b) (Q₂ b)
-        simpa [mul_add] using this
+        simpa [mul_add] using Qadd _ (b * y₁).2 _ (b * y₂).2 (Q₁ b) (Q₂ b)
       · intro c y _ Qy b
-        have := Qy (b * c)
-        simpa [mul_assoc] using this
+        simpa [mul_assoc] using Qy (b * c)
     obtain ⟨c, f, g, hf, hg, hgW, hfg⟩ := (hmem R K ι P W hW hPW z).mp z.2
     have hfg' : (z : F) = img P f / img P g := hfg
     have hg0 := img_ne_zero hPW hgW

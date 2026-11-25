@@ -113,8 +113,7 @@ theorem nF_mul_le (hM : MulF) [IsUltrametricDist K] [Fintype ι] [Fintype ι'] [
     [DecidableEq κ] (g : Matrix ι' ι K) (A : Matrix ι κ K) (hg : ∀ i j, ‖g i j‖ ≤ 1) :
     nF (g * A) ≤ nF A := by
   refine ((hM K ι ι' κ A).1 g).trans ?_
-  have h1 : sz g ^ Fintype.card κ ≤ 1 := pow_le_one₀ (sz_nonneg' g) (sz_le_one hg)
-  simpa using mul_le_mul_of_nonneg_right h1 (nF_nonneg' A)
+  simpa using mul_le_mul_of_nonneg_right (pow_le_one₀ (sz_nonneg' g) (sz_le_one hg)) (nF_nonneg' A)
 
 theorem sel_mul [DecidableEq ι] [Fintype ι] (s : κ → ι) (M : Matrix ι ι' K) :
     (1 : Matrix ι ι K).submatrix s id * M = M.submatrix s id := by
@@ -298,7 +297,6 @@ theorem nF_quot (hM : MulF) [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] 
   have hBY : B * (Bs⁻¹ * E) = B0 * E := by rw [hB0, Matrix.mul_assoc]
   rw [hBY]
   set P := 1 - B0 * E with hP
-  have hPint : ∀ i j, ‖P i j‖ ≤ 1 := int_sub int_one (int_mul hB0int hEint)
   have hEP : E * P = 0 := by
     rw [hP, Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, hEB0, Matrix.one_mul, sub_self]
   have hPC : (P * C).submatrix s id = 0 := by
@@ -308,7 +306,7 @@ theorem nF_quot (hM : MulF) [IsUltrametricDist K] [Fintype ι] [DecidableEq ι] 
     rw [fromCols_mul_fromBlocks, Matrix.mul_zero, add_zero, Matrix.mul_one, hBs1,
       ← Matrix.mul_assoc, hP, Matrix.sub_mul, Matrix.one_mul]
     simp
-  refine ⟨?_, nF_mul_le hM _ _ hPint, ?_⟩
+  refine ⟨?_, nF_mul_le hM _ _ (int_sub int_one (int_mul hB0int hEint)), ?_⟩
   · rw [hfact, (hM K ι ι (κ ⊕ κ') _).2.1, det_fromBlocks_zero₂₁, det_one, mul_one, hs,
       nF_fromCols_of_id hM B0 (P * C) s hB0s hB0int hPC, mul_comm]
   · rw [hP, Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hEB, hBs1, sub_self]

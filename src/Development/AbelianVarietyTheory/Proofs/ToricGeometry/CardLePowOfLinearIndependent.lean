@@ -138,14 +138,13 @@ theorem card_le_pow_of_linearIndependent :
       ring
     rw [h'] at h
     change _ = _ * c F m at h
-    have hb' : b j ^ n ≠ 0 := pow_ne_zero _ (hb j)
     constructor
     · intro h0
       rw [h0, mul_zero] at h
       exact (mul_eq_zero.1 h.symm).resolve_left (Complex.exp_ne_zero _)
     · intro h0
       rw [h0, mul_zero] at h
-      exact (mul_eq_zero.1 h).resolve_left hb'
+      exact (mul_eq_zero.1 h).resolve_left (pow_ne_zero _ (hb j))
   let v : Fin N → (Fin g → Fin n) → ℂ := fun k r => c (f k) (fun i => ((r i : ℕ) : ℤ))
   have hv : LinearIndependent ℂ v := by
     rw [Fintype.linearIndependent_iff] at hli ⊢
@@ -171,7 +170,6 @@ theorem card_le_pow_of_linearIndependent :
         have hk := (hf k).1.continuous
         refine ContinuousOn.integrableOn_Icc (Continuous.continuousOn ?_)
         fun_prop
-  have := hv.fintype_card_le_finrank
-  simpa using this
+  simpa using hv.fintype_card_le_finrank
 
 end GlobalTheory.ClassicalTheta

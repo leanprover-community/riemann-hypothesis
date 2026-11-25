@@ -60,12 +60,11 @@ theorem exists_ne_zero_valuation_lt (k : Type) [Field k] [ValuativeRel k] [Valua
     · exact ⟨γ₀, h0, h⟩
     · exact ⟨γ₀⁻¹, inv_ne_zero h0, inv_lt_one_of_one_lt₀ h⟩
   obtain ⟨t, ht⟩ := valuation_surjective (K := k) (ε * γ)
-  have hpos : 0 < γ := zero_lt_iff.mpr hγ
   refine ⟨t, ?_, ?_⟩
   · rw [← (valuation k).ne_zero_iff, ht]
     exact mul_ne_zero hε0 hγ
   · rw [ht]
-    exact mul_lt_of_lt_one_left hpos hε1
+    exact mul_lt_of_lt_one_left (zero_lt_iff.mpr hγ) hε1
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -85,11 +84,10 @@ theorem isCompact_box (n : ℕ) (b : k) : IsCompact (box n b : Set (Fin n → k)
   exact isCompact_univ_pi fun _ => IsNonarchimedeanLocalField.isCompact_closedBall k _
 
 theorem isOpen_box (n : ℕ) (b : k) (hb : b ≠ 0) : IsOpen (box n b : Set (Fin n → k)) := by
-  have hvb : valuation k b ≠ 0 := (Valuation.ne_zero_iff _).2 hb
   have hU : Set.univ.pi (fun _ : Fin n => {y : k | valuation k y < valuation k b}) ∈
       nhds (0 : Fin n → k) :=
     set_pi_mem_nhds Set.finite_univ fun j _ =>
-      (IsValuativeTopology.hasBasis_nhds_zero' k).mem_of_mem hvb
+      (IsValuativeTopology.hasBasis_nhds_zero' k).mem_of_mem ((Valuation.ne_zero_iff _).2 hb)
   refine (box n b).isOpen_of_mem_nhds (g := 0) (Filter.mem_of_superset hU ?_)
   intro x hx j
   exact (hx j (Set.mem_univ j)).le

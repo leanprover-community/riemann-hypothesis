@@ -47,11 +47,10 @@ theorem FibreNormPrimeBound.exists_chart (V : ValuationSubring Ω) {y : (Σ k, �
     · exact hm i' (by simp [h])
   choose c hc0 hcm using hmax
   refine ⟨c, hc0, fun ⟨k, i⟩ => ?_⟩
-  have hv : V.valuation (y ⟨k, c k⟩) ≠ 0 := (Valuation.ne_zero_iff _).mpr (hc0 k)
   rw [← V.valuation_le_one_iff, div_eq_mul_inv, map_mul, map_inv₀]
   calc V.valuation (y ⟨k, i⟩) * (V.valuation (y ⟨k, c k⟩))⁻¹
       ≤ V.valuation (y ⟨k, c k⟩) * (V.valuation (y ⟨k, c k⟩))⁻¹ := mul_le_mul_left (hcm k i) _
-    _ = 1 := mul_inv_cancel₀ hv
+    _ = 1 := mul_inv_cancel₀ ((Valuation.ne_zero_iff _).mpr (hc0 k))
 
 theorem FibreNormPrimeBound.mem_of_isIntegral (V : ValuationSubring Ω) {S : Subalgebra ℤ Ω} (hS : ∀ s ∈ S, s ∈ V)
     {u : Ω} (hu : IsIntegral S u) : u ∈ V := by
@@ -103,7 +102,6 @@ theorem FibreNormPrimeBound.proof (hG : PullFormsGeneric.Statement) (hN : NormFo
       · exact hcV q'
       · exact hSV (Or.inl ⟨i, j, rfl⟩)
       · exact hSV (Or.inr hz)
-    have hpV : (p : Ω) ∈ V := natCast_mem V p
     obtain ⟨r, hr⟩ : ∃ r, S = M j + r :=
       ⟨S - M j, (Nat.add_sub_cancel' (Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ j))).symm⟩
     have hZY : Z * Y ^ (q * τ) = 1 := by
@@ -120,7 +118,7 @@ theorem FibreNormPrimeBound.proof (hG : PullFormsGeneric.Statement) (hN : NormFo
             rw [hZY]; ring
         _ = _ := by ring
     rw [heq]
-    exact mul_mem (mul_mem hu (pow_mem (pow_mem hpV _) _)) (pow_mem hw _)
+    exact mul_mem (mul_mem hu (pow_mem (pow_mem (natCast_mem V p) _) _)) (pow_mem hw _)
   have hint : (p : Ω) ^ (S * (q * τ)) * (s / aeval y (L j) ^ (q * τ)) ∈
       integralClosure (Subring.closure Sset) Ω := by
     have hmem : (p : Ω) ^ (S * (q * τ)) * (s / aeval y (L j) ^ (q * τ)) ∈

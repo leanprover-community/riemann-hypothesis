@@ -56,8 +56,7 @@ theorem relab_good : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
   have hinj : Function.Injective (relab c σ) := by
     intro τ₁ τ₂ h
     ext a
-    have := congrArg (fun f : E →+* ℂ => f a) h
-    exact congrArg Subtype.val (σ.injective this)
+    exact congrArg Subtype.val (σ.injective (congrArg (fun f : E →+* ℂ => f a) h))
   have h0 : H.rt0 ≠ 0 := by
     intro h
     have := H.sqrt_neg_disc_sq
@@ -68,8 +67,7 @@ theorem relab_good : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
   have hrel : ∀ τ' : E →+* ℂ, (relab c σ τ' (H.rt : E) = H.rt0 ↔ τ' (H.rt : E) = H.rt0) := by
     intro τ'
     have hE : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-      have := congrArg (fun z : 𝓞 E => (z : E)) H.rt_sq
-      simpa using this
+      simpa using congrArg (fun z : 𝓞 E => (z : E)) H.rt_sq
     have hsq : (τ' (H.rt : E)) ^ 2 = H.rt0 ^ 2 := by
       rw [H.sqrt_neg_disc_sq, ← map_pow, hE, map_neg, map_natCast]
     have hval : relab c σ τ' (H.rt : E) = σ ⟨τ' (H.rt : E), c.conj τ' _⟩ := rfl

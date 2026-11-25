@@ -103,8 +103,7 @@ theorem mem_of_mem_dehomI {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMult
   have hqm : ∀ (m : ((k : K) × ι k) →₀ ℕ) (c : ℤ),
       q (monomial m c) = (c : F) * ∏ p ∈ m.support, q (X p) ^ m p := by
     intro m c
-    rw [MvPolynomial.monomial_eq, map_mul]
-    simp only [Finsupp.prod, map_prod, map_pow]
+    simp only [MvPolynomial.monomial_eq, map_mul, Finsupp.prod, map_prod, map_pow]
     congr 1
     exact eq_intCast (q.comp MvPolynomial.C) c
   have hΘm : ∀ (m : ((k : K) × ι k) →₀ ℕ) (c : ℤ),
@@ -130,8 +129,7 @@ theorem mem_of_mem_dehomI {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMult
       refine Finset.prod_congr rfl fun k _ => ?_
       dsimp only
       rw [Finset.prod_pow_eq_pow_sum, hf m hm k]
-    rw [hΘm, hqm]
-    simp only [div_pow]
+    simp only [hΘm, hqm, div_pow]
     rw [Finset.prod_div_distrib, hcm, mul_assoc, div_mul_cancel₀ _ hC]
   have hW : W ≤ RingHom.ker Θ := by
     obtain ⟨S, hS, hWS⟩ := hWm

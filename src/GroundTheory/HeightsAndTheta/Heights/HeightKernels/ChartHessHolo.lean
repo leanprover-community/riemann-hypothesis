@@ -47,8 +47,7 @@ theorem fderiv_fderiv_I_right {F : (Fin D → ℂ) → E'} {y : Fin D → ℂ} (
     have := (hd.hasFDerivAt.clm_apply (hasFDerivAt_const v y)).const_smul Complex.I
     simpa [Pi.smul_def] using this
   have h3 := h2.congr_of_eventuallyEq ((eventually_fderiv_I_smul hF).mono fun y' hy' => hy' v)
-  have := congrArg (fun L => L u) (h1.unique h3)
-  simpa using this
+  simpa using congrArg (fun L => L u) (h1.unique h3)
 
 
 omit [NormedSpace ℂ E'] [IsScalarTower ℝ ℂ E'] in
@@ -85,8 +84,7 @@ theorem fderiv_fderiv_comp {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G
       ((fderiv ℝ (fderiv ℝ g) (F y)).comp (fderiv ℝ F y)) y :=
     hgd.hasFDerivAt.comp y (hF.differentiableAt (by norm_num)).hasFDerivAt
   have hall := (hc.clm_comp hFd.hasFDerivAt).congr_of_eventuallyEq heq
-  rw [hall.fderiv]
-  simp [add_comm]
+  simp [hall.fderiv, add_comm]
 
 theorem fderiv_fderiv_add {f₁ f₂ : (Fin D → ℂ) → ℝ} {y : Fin D → ℂ} (h₁ : ContDiffAt ℝ 2 f₁ y)
     (h₂ : ContDiffAt ℝ 2 f₂ y) :

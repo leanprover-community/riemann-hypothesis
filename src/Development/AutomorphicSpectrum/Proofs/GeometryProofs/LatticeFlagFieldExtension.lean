@@ -112,8 +112,7 @@ theorem dual_frame_ext {Ω Ω' : Type} [Field Ω] [Field Ω'] (i : Ω →+* Ω')
   refine ⟨?_, ?_⟩
   · rw [Fintype.linearIndependent_iff]
     intro g hg l
-    have := congrArg (fun v : Module.Dual Ω' W' => v (j (e l))) hg
-    simpa [hpair] using this
+    simpa [hpair] using congrArg (fun v : Module.Dual Ω' W' => v (j (e l))) hg
   · rw [eq_top_iff]
     intro v _
     have hv : v = ∑ k, v (j (e k)) • jW (b k) := by
@@ -203,10 +202,9 @@ theorem isVBOn_dual_pull : ∀ (X X' : Scheme.{0}) (Ω Ω' : Type) [Field Ω] [F
       exact key _ hin
     · rw [Submodule.span_le]
       rintro _ ⟨k, rfl⟩
-      have hin : b k ∈ (Lo.map W.dualRestrict) ⟨f q'.1, hq2⟩ := by
+      obtain ⟨w, hw, hwk⟩ : b k ∈ (Lo.map W.dualRestrict) ⟨f q'.1, hq2⟩ := by
         rw [hfrq]
         exact Submodule.subset_span ⟨k, rfl⟩
-      obtain ⟨w, hw, hwk⟩ := hin
       refine ⟨jd w, ?_, ?_⟩
       · rw [hL hr]
         exact Submodule.subset_span ⟨w, hw, rfl⟩

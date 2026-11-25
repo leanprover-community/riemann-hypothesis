@@ -99,15 +99,13 @@ theorem relLength_congr_right {A B B' : Submodule R V} (h : A ⊓ B = A ⊓ B') 
     relLength A B = relLength A B' := by
   have : B.submoduleOf A = B'.submoduleOf A := by
     ext x
-    have := SetLike.ext_iff.mp h (x : V)
-    simpa [Submodule.submoduleOf, x.2] using this
+    simpa [Submodule.submoduleOf, x.2] using SetLike.ext_iff.mp h (x : V)
   rw [relLength_def, relLength_def, this]
 
 theorem relLength_congr_left {A A' B : Submodule R V} (h : A ⊔ B = A' ⊔ B) :
     relLength A B = relLength A' B := by
   have : A.map B.mkQ = A'.map B.mkQ := by
-    have := congrArg (Submodule.map B.mkQ) h
-    simpa [Submodule.map_sup] using this
+    simpa [Submodule.map_sup] using congrArg (Submodule.map B.mkQ) h
   rw [relLength_eq_length_map_mkQ, relLength_eq_length_map_mkQ, this]
 
 @[simp] theorem relLength_inf_right (A B : Submodule R V) :

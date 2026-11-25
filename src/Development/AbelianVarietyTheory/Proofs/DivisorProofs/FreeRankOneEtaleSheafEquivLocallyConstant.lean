@@ -84,8 +84,7 @@ theorem fib_apply {V : Scheme.{0}} {α : Type} (ψ : LocallyConstant V α) (v : 
 
 theorem fib_cov {V : Scheme.{0}} {α : Type} (ψ : LocallyConstant V α) (u : V) :
     ∃ (i : V) (w : (fib ψ i).toScheme), (fib ψ i).ι w = u := by
-  have h : u ∈ Set.range (fib ψ u).ι := by rw [Scheme.Opens.range_ι]; exact rfl
-  obtain ⟨w, hw⟩ := h
+  obtain ⟨w, hw⟩ : u ∈ Set.range (fib ψ u).ι := by rw [Scheme.Opens.range_ι]; exact rfl
   exact ⟨u, w, hw⟩
 
 end GlobalTheory.EtC.GenLC
@@ -178,8 +177,7 @@ theorem mulSec_inj {S U : Scheme.{0}} (s : U ⟶ S) (g : Sec F S) (hg : Gen F S 
   ext u
   have e := mulSec_spec s g φ _ (fib φ u).ι (φ u) (fib_apply φ u)
   rw [h] at e
-  have hu : u ∈ Set.range (fib φ u).ι := by rw [Scheme.Opens.range_ι]; exact rfl
-  obtain ⟨w, -⟩ := hu
+  obtain ⟨w, -⟩ : u ∈ Set.range (fib φ u).ι := by rw [Scheme.Opens.range_ι]; exact rfl
   exact (hg (fib φ u).toScheme ((fib φ u).ι ≫ s)).2 (φ u) ⟨w⟩ (by rw [← e]; exact map_zero _)
 
 theorem mulSec_surj {S U : Scheme.{0}} (s : U ⟶ S) (g : Sec F S) (hg : Gen F S g) (x : Sec F U) :

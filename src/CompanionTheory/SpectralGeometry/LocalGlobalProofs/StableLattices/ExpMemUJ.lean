@@ -182,8 +182,7 @@ theorem stabLink : KExp → StabLink := by
         refine ⟨fun c d h => by simp [hoff a b z hab c d h, hoff b a _ hab.symm c d h], fun c d => ?_⟩
         simp only [Matrix.sub_apply, Matrix.single_apply, star_sub, apply_ite star, star_star,
           star_zero, neg_sub, and_comm]
-      have := hL _ hin
-      simpa only [Matrix.sub_apply, sub_smul, Finset.sum_sub_distrib, hs] using this
+      simpa only [Matrix.sub_apply, sub_smul, Finset.sum_sub_distrib, hs] using hL _ hin
     have h1 := hZ 1
     have h2 := hZ Complex.I
     have h3 := Submodule.add_mem _ (Submodule.smul_mem _ (1 / 2 : ℂ) h1)
@@ -197,7 +196,6 @@ theorem stabLink : KExp → StabLink := by
       · linear_combination (-1 / 2 : ℂ) * Complex.I_mul_I
     rw [e] at h3
     obtain ⟨y, hy, hye⟩ := h3
-    have : y = E a b v := Subtype.ext hye
-    exact this ▸ hy
+    exact (Subtype.ext hye : y = E a b v) ▸ hy
 
 end GlobalTheory.CompanionTheory.DSStabLink

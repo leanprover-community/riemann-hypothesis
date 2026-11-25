@@ -155,19 +155,17 @@ theorem det_genU_submatrix (φ : ∀ s, Fin (n s) → Module.Dual Ω E) (c : ∀
     rw [← map_mul_flagMat φ c s B hB]
     ext i j
     simp [Matrix.mul_apply]
-  rw [h, det_mul_eq_sum]
-  simp [Matrix.submatrix_submatrix]
+  simp [h, det_mul_eq_sum, Matrix.submatrix_submatrix]
 
 theorem ratio_update {Q : Type*} [Fintype Q] [DecidableEq Q] {T : Q → Type*} {K : Type*} [Field K]
     (D : ∀ q, T q → K) (ρ : ∀ q, T q) (hρ : ∀ q, D q (ρ q) ≠ 0) (q : Q) (f : T q) (a : K) (ha : a ≠ 0) :
     (a * ∏ q', D q' (Function.update ρ q f q')) / (a * ∏ q', D q' (ρ q')) = D q f / D q (ρ q) := by
-  have hP : (∏ q' ∈ Finset.univ.erase q, D q' (ρ q')) ≠ 0 := Finset.prod_ne_zero_iff.2 fun q _ => hρ q
   rw [mul_div_mul_left _ _ ha, ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ q),
     ← Finset.mul_prod_erase Finset.univ (fun q' => D q' (ρ q')) (Finset.mem_univ q),
     Function.update_self,
     Finset.prod_congr rfl (g := fun q' => D q' (ρ q'))
       (fun q' hq' => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hq')])]
-  exact mul_div_mul_right _ _ hP
+  exact mul_div_mul_right _ _ (Finset.prod_ne_zero_iff.2 fun q _ => hρ q)
 
 theorem exists_minor_ne_zero (φ : ∀ s, Fin (n s) → Module.Dual Ω E) (c : ∀ s, Fin (r s) → E) (s : S)
     (B : Matrix (Fin (r s)) (Fin (n s)) Ω)

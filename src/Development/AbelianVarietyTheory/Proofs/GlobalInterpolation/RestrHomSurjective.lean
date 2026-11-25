@@ -152,14 +152,12 @@ theorem exists_extend (hs : ∀ a, s (s a) = a) (hJ : ∀ i j, s (J j i) = J i j
       have := h1 x
       rw [h2, one_smul] at this
       exact Subtype.ext (by simpa using this)
-    rw [hg', LinearMap.toMatrix'_mulVec, hf, h2, this]
-    simp
+    simp [hg', LinearMap.toMatrix'_mulVec, hf, h2, this]
   · have : p y = y := by
       have := h1 y
       rw [h3, zero_smul, zero_add] at this
       exact Subtype.ext this.symm
-    rw [hg', LinearMap.toMatrix'_mulVec, hf, h3, this]
-    simp
+    simp [hg', LinearMap.toMatrix'_mulVec, hf, h3, this]
 
 end General
 

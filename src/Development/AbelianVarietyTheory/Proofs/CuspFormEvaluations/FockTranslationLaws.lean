@@ -92,8 +92,7 @@ theorem herm_sub_swap (u w : EuclideanSpace ℂ ι) :
   linear_combination -h
 
 theorem herm_self (x : EuclideanSpace ℂ ι) : Hf x x = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
-  rw [EuclideanSpace.norm_sq_eq]
-  simp only [Hf, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  simp only [EuclideanSpace.norm_sq_eq, Hf, Complex.mul_conj, Complex.normSq_eq_norm_sq]
   push_cast
   rfl
 
@@ -171,8 +170,7 @@ theorem fock_translation_laws {ι : Type} [Fintype ι] (U : ℕ → EuclideanSpa
     | succ M ih =>
       rw [Function.iterate_succ_apply', ih, h1]
       have : (Hf a ((M : ℂ) • a)).im = 0 := by
-        rw [FockTranslation.herm_smul_right]
-        simp [FockTranslation.herm_self_im]
+        simp [FockTranslation.herm_smul_right, FockTranslation.herm_self_im]
       rw [this]
       have e : a + (M : ℂ) • a = ((M + 1 : ℕ) : ℂ) • a := by
         push_cast

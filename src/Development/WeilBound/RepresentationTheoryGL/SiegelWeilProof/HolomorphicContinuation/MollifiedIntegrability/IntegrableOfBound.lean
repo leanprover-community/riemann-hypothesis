@@ -179,7 +179,6 @@ theorem integrable_mul_chr {g : E n → ℂ} (hg : Integrable g) (hc : Continuou
 theorem ibp_dir {g : E n → ℂ} (hg : ContDiff ℝ (⊤ : ℕ∞) g) (hgi : Integrable g) (w : E n)
     (hgw : Integrable fun y => fderiv ℝ g y w) (t : ℝ) (β : E n) :
     ∫ y, fderiv ℝ g y w * chr t β y = -(lf t β w) * ∫ y, g y * chr t β y := by
-  have hdiff : Differentiable ℝ g := hg.differentiable (by simp)
   have hcont : Continuous g := hg.continuous
   have hcw : Continuous fun y => fderiv ℝ g y w :=
     ((contDiff_infty_iff_fderiv.mp hg).2.continuous).clm_apply continuous_const
@@ -191,7 +190,7 @@ theorem ibp_dir {g : E n → ℂ} (hg : ContDiff ℝ (⊤ : ℕ∞) g) (hgi : In
       rw [this]
       exact (integrable_mul_chr hgi hcont t β).mul_const _)
     (integrable_mul_chr hgi hcont t β)
-    (fun x _ => hdiff x) (fun x _ => differentiable_chr t β x)
+    (fun x _ => (hg.differentiable (by simp)) x) (fun x _ => differentiable_chr t β x)
   have : (fun y => g y * fderiv ℝ (chr t β) y w) = fun y => (g y * chr t β y) * lf t β w := by
     funext y; rw [fderiv_chr]; ring
   rw [this, integral_mul_const] at H

@@ -219,8 +219,7 @@ theorem tw_coeff (g gi : Matrix (Fin n) (Fin n) L) (last : Bool) (H : MvPolynomi
 theorem sharp_sharp {g gi : Matrix (Fin n) (Fin n) L} (h : g * gi = 1) (H : MvPolynomial (LVar ι ζ n) L) :
     sharpHom isVec S g gi (sharpHom isVec S gi g H) = H := by
   suffices hh : (sharpHom (ζ := ζ) isVec S g gi).comp (sharpHom isVec S gi g) = AlgHom.id L _ from by
-    have := congrArg (fun f => f H) hh
-    simpa using this
+    simpa using congrArg (fun f => f H) hh
   apply MvPolynomial.algHom_ext
   intro x
   rcases x with ⟨i, a⟩ | z

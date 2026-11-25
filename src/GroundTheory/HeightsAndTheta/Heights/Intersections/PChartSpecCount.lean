@@ -132,8 +132,7 @@ theorem ChartSpecCount.proof (hPE : ChartPrimElt.Statement) (hLA : LocAwaySpec.S
   have hθm : mA.eval₂ f θ = 0 := by rw [hevθ, hmA, hm, minpoly.aeval]
   have hθg : ∀ q, (gA q).eval₂ f θ = r q := fun q => by rw [hevθ, hgA, hg q]
   have hθτ : (MvPolynomial.eval₂ C gA τA - X).eval₂ f θ = 0 := by
-    rw [Polynomial.eval₂_sub, eval₂_mvEval₂_C, Polynomial.eval₂_X]
-    simp only [hθg]
+    simp only [Polynomial.eval₂_sub, eval₂_mvEval₂_C, Polynomial.eval₂_X, hθg]
     rw [hτθ, sub_self]
   have hθu : (uA * derivative mA - 1).eval₂ f θ = 0 := by
     obtain ⟨c, hc⟩ := hu
@@ -186,8 +185,7 @@ theorem ChartSpecCount.proof (hPE : ChartPrimElt.Statement) (hLA : LocAwaySpec.S
       MvPolynomial.eval₂ ψ (G t) F = 0 := by
     intro t ht F hF
     have hp : (MvPolynomial.eval₂ C gA (MvPolynomial.map (algebraMap R (Localization.Away E)) F)).eval₂ f θ = 0 := by
-      rw [eval₂_mvEval₂_C]
-      simp only [hθg]
+      simp only [eval₂_mvEval₂_C, hθg]
       rwa [MvPolynomial.eval₂_map, hfφ]
     have := hDr _ hp t ht
     rwa [eval₂_mvEval₂_C, MvPolynomial.eval₂_map, hσψ] at this

@@ -119,11 +119,9 @@ theorem det_snoc {m : ℕ} (h : Pt E m) (t : Eˣ) (s : ℕ+) :
   rw [det_snoc_eq]
   rcases Int.units_eq_one_or (Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin s))) with h1 | h1
   · left
-    rw [h1]
-    simp
+    simp [h1]
   · right
-    rw [h1]
-    simp
+    simp [h1]
 
 private theorem isUnit_det_of_mem_UH_Hpk (bs : List (Eˣ × ℕ+)) :
     ∀ (n : ℕ) (hn : (bs.map (fun b => (b.2 : ℕ))).sum = n),

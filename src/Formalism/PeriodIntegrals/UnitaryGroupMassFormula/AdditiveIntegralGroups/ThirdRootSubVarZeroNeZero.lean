@@ -122,9 +122,8 @@ theorem constantCoeff_thirdRoot (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries
 
 theorem vieta1 (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
     Acf W wq * (Xv 0 + Xv 1 + Z3 W wq) = -Bcf W wq := by
-  have hA : Acf W wq * (Acf W wq)⁻¹ = 1 := MvPowerSeries.mul_inv_cancel _ (rt_Acf_ne W wq)
   unfold Z3
-  linear_combination (-(Bcf W wq)) * hA
+  linear_combination (-(Bcf W wq)) * (MvPowerSeries.mul_inv_cancel _ (rt_Acf_ne W wq))
 
 theorem var_zero_sub_var_one_ne_zero : (Xv 0 - Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) ≠ 0 := by
   have hs : Finsupp.single (0 : Fin 2) 1 ≠ Finsupp.single 1 1 := by
@@ -200,8 +199,7 @@ theorem subst_thirdRoot_wSeries {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries
     rw [hw, wser, ← PowerSeries.coe_substAlgHom ha, map_mul, map_pow, PowerSeries.coe_substAlgHom,
       PowerSeries.subst_X ha]
   have hw0 : MvPowerSeries.constantCoeff w = 0 := by
-    rw [hw', map_mul, map_pow, hz0]
-    simp
+    simp [hw', map_mul, map_pow, hz0]
   have hv0 : MvPowerSeries.constantCoeff v = 0 := by
     simp [hv, hz0, _root_.PI.AddIntG.Wk.constantCoeff_lam, rt_constantCoeff_nu]
   have hfac : G W z v - G W z w = (v - w) *

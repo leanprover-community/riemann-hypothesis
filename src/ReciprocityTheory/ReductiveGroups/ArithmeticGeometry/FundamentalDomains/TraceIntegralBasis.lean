@@ -43,8 +43,7 @@ lemma inner_iota (x y : E) :
   ring
 
 lemma norm_sq_iota (x : E) : ‖iota E x‖ ^ 2 = ∑ w : CP E, ‖w.1.embedding x‖ ^ 2 := by
-  rw [EuclideanSpace.norm_sq_eq]
-  simp only [iota_apply]
+  simp only [EuclideanSpace.norm_sq_eq, iota_apply]
 
 lemma sum_re_eq_trace (u : E) :
     ∑ w : CP E, (w.1.embedding u).re = (1 / 2 : ℝ) * (Algebra.trace ℚ E u : ℝ) := by
@@ -94,8 +93,7 @@ lemma sum_re_eq_trace (u : E) :
     rw [← eq_ratCast (algebraMap ℚ ℂ), h0, h1, h2]
     exact (Fintype.sum_equiv (Equiv.subtypeUnivEquiv hall) _ _ (fun _ => rfl)).symm
   have h4 := congrArg Complex.re h3
-  rw [Complex.re_sum] at h4
-  simp only [Complex.add_re, Complex.conj_re, Complex.ratCast_re] at h4
+  simp only [Complex.re_sum, Complex.add_re, Complex.conj_re, Complex.ratCast_re] at h4
   rw [h4, Finset.mul_sum]
   refine Finset.sum_congr rfl fun w _ => ?_
   ring

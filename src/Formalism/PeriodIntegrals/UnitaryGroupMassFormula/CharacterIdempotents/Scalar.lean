@@ -27,8 +27,7 @@ theorem act_charIdem (V W : FDRep ℂ G) :
     act W (charIdem V) = ∑ g : G,
       (((Module.finrank ℂ V : ℂ) / (Fintype.card G : ℂ)) * V.character g⁻¹) • W.ρ g := by
 
-  rw [PI.CharIdem.charIdem, map_sum]
-  simp only [act_single]
+  simp only [PI.CharIdem.charIdem, map_sum, act_single]
 
 theorem comm_of_class (W : FDRep ℂ G) (f : G → ℂ) (hf : ∀ g h : G, f (h * g * h⁻¹) = f g)
     (h : G) : W.ρ h * (∑ g : G, f g • W.ρ g) = (∑ g : G, f g • W.ρ g) * W.ρ h := by
@@ -92,8 +91,7 @@ theorem trace_act_charIdem (V W : FDRep ℂ G) [Simple V] [Simple W] :
   have horth := FDRep.char_orthonormal W V
   rw [Nat.card_eq_fintype_card] at horth
 
-  rw [act_charIdem, map_sum]
-  simp only [map_smul, smul_eq_mul]
+  simp only [act_charIdem, map_sum, map_smul, smul_eq_mul]
   have h1 : ∀ x : G, (Module.finrank ℂ V : ℂ) / (Fintype.card G : ℂ) * V.character x⁻¹ *
       LinearMap.trace ℂ W (W.ρ x) = (Module.finrank ℂ V : ℂ) *
         ((Fintype.card G : ℂ)⁻¹ * (W.character x * V.character x⁻¹)) := fun x => by

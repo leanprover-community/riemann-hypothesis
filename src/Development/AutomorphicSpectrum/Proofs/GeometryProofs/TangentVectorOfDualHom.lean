@@ -138,8 +138,7 @@ theorem tan_iff_der (S : Scheme.{0}) (G : Over S) [GrpObj G] (U : G.left.Opens) 
   · have hv' : spMap (TrivSqZeroExt.fstHom C C C).toRingHom ≫ v.left = spMap u ≫ hU.fromSpec := hv.trans h1
     have hle : ⊤ ≤ v.left ⁻¹ᵁ U := by
       refine le_preimage_of_fst v.left fun p => ?_
-      rw [hv']
-      simp only [Scheme.Hom.comp_apply]
+      simp only [hv', Scheme.Hom.comp_apply]
       exact hU.range_fromSpec.subset (Set.mem_range_self _)
     obtain ⟨φ, hφ⟩ := exists_ringHom_of_le hU v.left hle
     have hfst : (TrivSqZeroExt.fstHom C C C).toRingHom.comp φ = u := by
@@ -152,7 +151,6 @@ theorem tan_iff_der (S : Scheme.{0}) (G : Over S) [GrpObj G] (U : G.left.Opens) 
       rw [← hbase, ← spMap_fromSpec_hom G.hom hU hV hUV φ, ← Category.assoc, ← hφ]
       exact Over.w v
     refine ⟨φ, fun a => RingHom.congr_fun hfst a, fun b => ?_, hφ⟩
-    have := RingHom.congr_fun hcomp b
-    simpa [hal] using congrArg TrivSqZeroExt.snd this
+    simpa [hal] using congrArg TrivSqZeroExt.snd (RingHom.congr_fun hcomp b)
 
 end GlobalTheory.CompanionTheory.Ar.TanChart

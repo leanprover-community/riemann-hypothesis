@@ -83,9 +83,8 @@ theorem analytic_D {G : ℂ → ℂ} (hG : ∀ σ : ℝ, 0 < σ → AnalyticAt �
   | zero => exact hG
   | succ j ih =>
       intro σ hσ
-      have h1 : AnalyticAt ℂ (D G j) (1 : ℂ) := ih 1 one_pos
       rw [D]
-      exact analyticAt_dslope h1 (ih σ hσ)
+      exact analyticAt_dslope (ih 1 one_pos) (ih σ hσ)
 
 theorem factor (G : ℂ → ℂ) : ∀ j, (∀ i < j, D G i 1 = 0) → ∀ z, G z = (z - 1) ^ j * D G j z := by
   intro j
@@ -116,8 +115,7 @@ theorem removable_singularity_holds : Remov := by
       ·
         have hfac : ∀ z : ℂ, G z = (z - 1) ^ i * D G i z := factor G i hprev
         have hc : ContinuousAt (D G i) 1 := by
-          have := (han i 1 one_pos).continuousAt
-          simpa using this
+          simpa using (han i 1 one_pos).continuousAt
 
         have hb : ∀ σ : ℝ, 1 < σ → σ ≤ 2 → ‖D G i σ‖ ≤ |M| * (σ - 1) := by
           intro σ h1 h2

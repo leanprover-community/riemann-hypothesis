@@ -151,8 +151,7 @@ theorem frame_facts {E : Type} [Field E] {r p : ℕ} (τ : E →+* ℂ) (G : Mat
     have := Matrix.isUnit_det_of_right_inverse h1
     rwa [Matrix.det_transpose] at this
   have hMi : M * M⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
-  have hiM : M⁻¹ * M = 1 := Matrix.nonsing_inv_mul _ hu
-  refine ⟨hMi, hiM, ?_⟩
+  refine ⟨hMi, (Matrix.nonsing_inv_mul _ hu), ?_⟩
   have c1 : (M⁻¹)ᵀ * Mᵀ = 1 := by rw [← Matrix.transpose_mul, hMi, Matrix.transpose_one]
   have c2 : cj M * cj (M⁻¹) = 1 := by rw [← cj_mul, hMi]; simp
   rw [← h]
@@ -216,8 +215,7 @@ theorem inner_theta {ι : Type} [Fintype ι] {r : ℕ} (d : Fin r → ℝ) (hd :
       ← Finset.sum_neg_distrib]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
-  rw [PiLp.inner_apply]
-  simp only [hc]
+  simp only [PiLp.inner_apply, hc]
   rw [← Complex.re_sum, hs, Complex.neg_re]
 
 theorem mem_comap_iff {E : Type} [Field E] [NumberField E] [IsCMField E] {r p : ℕ} {Ψ : Finset (E →+* ℂ)}

@@ -163,9 +163,8 @@ theorem finrank_ker_lsmul_pow_quotient {F : Type} [Field F] (f : F[X]) (hf : f �
     · rintro ⟨y, hy⟩
       obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
       rw [h2, Ideal.Quotient.eq, Ideal.mem_span_singleton] at hy
-      have h3 : f ^ min j e ∣ f ^ j * y - x := (pow_dvd_pow f (min_le_right j e)).trans hy
       have h4 : f ^ min j e ∣ f ^ j * y := (pow_dvd_pow f (min_le_left j e)).mul_right y
-      simpa using dvd_sub h4 h3
+      simpa using dvd_sub h4 ((pow_dvd_pow f (min_le_right j e)).trans hy)
   have h1 := LinearMap.finrank_range_add_finrank_ker π
   have h2 := LinearMap.finrank_range_add_finrank_ker
     ((LinearMap.lsmul F[X] (F[X] ⧸ Ideal.span {f ^ e}) (f ^ j)).restrictScalars F)
@@ -282,12 +281,11 @@ theorem primary_conj_of_finrank_ker_eq : ∀ (F : Type) [Field F] (V : Type) [Ad
   intro F _ V _ _ _ g g' f m hf hg hg' hk
   obtain ⟨d, e, he, ⟨φ⟩, hd⟩ := _root_.GlobalTheory.CuspGL.primary_structure F V g f m hf hg
   obtain ⟨d', e', he', ⟨φ'⟩, hd'⟩ := _root_.GlobalTheory.CuspGL.primary_structure F V g' f m hf hg'
-  have hpos : 0 < f.natDegree := hf.natDegree_pos
   have hs : ∀ j : ℕ, ∑ i, min j (e i) = ∑ i, min j (e' i) := by
     intro j
     have := hk j
     rw [hd j, hd' j] at this
-    exact Nat.eq_of_mul_eq_mul_left hpos this
+    exact Nat.eq_of_mul_eq_mul_left hf.natDegree_pos this
   obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.exists_equiv_of_sum_min_eq d d' e e' he he' hs
   obtain rfl : e = fun i => e' (σ i) := funext fun i => (hσ i).symm
   exact exists_conj_of_aeval'_equiv g g' (φ.trans

@@ -174,8 +174,7 @@ theorem step_identity {a r : ℝ} (ha : 0 < a) (hr : 0 < r) {F F' : ℝ → ℂ}
   set χ' := deriv (cutoff r) with hχ'
   have hEd : ∀ t, HasDerivAt E (-a * E t) t := by
     intro t
-    have := ((hasDerivAt_id t).const_mul (-a)).exp
-    simpa [hE, mul_comm] using this
+    simpa [hE, mul_comm] using ((hasDerivAt_id t).const_mul (-a)).exp
   have hχd : ∀ t, HasDerivAt χ (χ' t) t := fun t =>
     ((contDiff_cutoff r (n := 1)).differentiable one_ne_zero t).hasDerivAt
   have hEc : Continuous E := continuous_exp.comp (continuous_const.mul continuous_id)
@@ -387,8 +386,7 @@ theorem norm_khat_sub_one_le {a r : ℝ} (ha : 0 < a) (hr : 0 < r) (ξ : ℝ) :
           rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (kern_nonneg ha.le r t)]
           by_cases ht : t ∈ Icc 0 (2 * r)
           · have h1 : ‖F t - 1‖ ≤ |-2 * π * t * ξ| := by
-              have := Real.norm_exp_I_mul_ofReal_sub_one_le (x := -2 * π * t * ξ)
-              simpa [hF, mul_comm] using this
+              simpa [hF, mul_comm] using Real.norm_exp_I_mul_ofReal_sub_one_le (x := -2 * π * t * ξ)
             have h2 : |-2 * π * t * ξ| ≤ 4 * π * r * |ξ| := by
               rw [show -2 * π * t * ξ = -(2 * π * t) * ξ by ring, abs_mul, abs_neg,
                 abs_of_nonneg (by nlinarith [ht.1, pi_pos] : (0:ℝ) ≤ 2 * π * t)]

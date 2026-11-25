@@ -112,8 +112,7 @@ theorem fderiv_lifts {E E' M : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     field_simp
     norm_num
   have hlim : Tendsto (fun n => c n • G ((c n)⁻¹ • z)) atTop (𝓝 (fderiv ℂ G 0 z)) := by
-    have := hG.hasFDerivAt.lim z hcn
-    simpa [h0] using this
+    simpa [h0] using hG.hasFDerivAt.lim z hcn
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hz.eventually (hdbl.and hev))
   have hconst : ∀ n, N ≤ n → c n • G ((c n)⁻¹ • z) = c N • G ((c N)⁻¹ • z) := by
     intro n hn

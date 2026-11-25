@@ -71,15 +71,13 @@ theorem UpperTheory.Reformulated.B.Qi29.hasStrictFDerivAt_eval :
   | C a =>
     have h : UpperTheory.Reformulated.B.Qi29.polyDeriv (MvPolynomial.C a : MvPolynomial (Fin n) ℂ) x = 0 := by
       simp [UpperTheory.Reformulated.B.Qi29.polyDeriv]
-    rw [h]
-    simp only [MvPolynomial.eval_C]
+    simp only [h, MvPolynomial.eval_C]
     exact hasStrictFDerivAt_const a x
   | add p q hp hq =>
     have h : UpperTheory.Reformulated.B.Qi29.polyDeriv (p + q) x
         = UpperTheory.Reformulated.B.Qi29.polyDeriv p x + UpperTheory.Reformulated.B.Qi29.polyDeriv q x := by
       simp only [UpperTheory.Reformulated.B.Qi29.polyDeriv, map_add (f := _), add_smul, Finset.sum_add_distrib]
-    rw [h]
-    simp only [map_add (f := _)]
+    simp only [h, map_add (f := _)]
     exact hp.add hq
   | mul_X p i hp =>
     have hi : HasStrictFDerivAt (fun y : EuclideanSpace ℂ (Fin n) ↦ y.ofLp i)
@@ -97,6 +95,5 @@ theorem UpperTheory.Reformulated.B.Qi29.hasStrictFDerivAt_eval :
       · intro b _ hb
         simp [MvPolynomial.pderiv_X_of_ne hb.symm]
       · simp
-    rw [h]
-    simp only [map_mul, MvPolynomial.eval_X]
+    simp only [h, map_mul, MvPolynomial.eval_X]
     exact hp.mul hi

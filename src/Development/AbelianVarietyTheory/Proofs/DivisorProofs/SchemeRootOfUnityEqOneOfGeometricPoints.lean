@@ -74,8 +74,7 @@ theorem eq_one_of_pow_eq_one_of_isNilpotent {A : Type*} [CommRing A] {v : A} {k 
     exact hw.isUnit_add_left_of_commute hk (Commute.all _ _)
   have h0 : (∑ i ∈ Finset.range k, v ^ i) * (v - 1) = 0 := by
     rw [geom_sum_mul, hv, sub_self]
-  have : v - 1 = 0 := (hu.mul_right_eq_zero).1 h0
-  exact sub_eq_zero.1 this
+  exact sub_eq_zero.1 ((hu.mul_right_eq_zero).1 h0 : v - 1 = 0)
 
 end GlobalTheory.RootUnitGeom
 
@@ -101,8 +100,7 @@ theorem evaluation_eq_one (R : Type) [CommRing R] (S : Scheme.{0}) (s : S ⟶ Sp
     simp [spMap]
   have h1 := h K x _ hx
   have h2 : x.appTop (u : Γ(S, ⊤)) = 1 := by
-    have := congrArg Units.val h1
-    simpa using this
+    simpa using congrArg Units.val h1
   have e : x.appTop ≫ (Scheme.ΓSpecIso _).hom = S.evaluation ⊤ q trivial ≫ f := by
     simp only [x, Scheme.Hom.comp_appTop, Category.assoc, Scheme.ΓSpecIso_naturality]
     rw [← Category.assoc, fromSpecResidueField_appTop_comp]

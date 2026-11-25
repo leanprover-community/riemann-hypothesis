@@ -24,8 +24,7 @@ theorem exists_basis_one_delta (σ : E →ₐ[F] E) {δ : E} (hδ : σ δ = -δ)
     rw [LinearIndependent.pair_iff]
     intro s t hst
     have h1 : s • (1 : E) + t • (-δ) = 0 := by
-      have := congrArg σ hst
-      simpa [map_add (f := _), map_smul, hδ] using this
+      simpa [map_add (f := _), map_smul, hδ] using congrArg σ hst
     have hs : (2 * s) • (1 : E) = 0 := by
       have : (2 * s) • (1 : E) = (s • (1 : E) + t • δ) + (s • (1 : E) + t • (-δ)) := by module
       rw [this, hst, h1, add_zero]
@@ -63,8 +62,7 @@ theorem coord_inj (b : Module.Basis (Fin 2) F E) {δ : E} (hb0 : b 0 = 1) (hb1 :
     intro p q
     have e0 : B 0 = (1 : R) ⊗ₜ[F] (1 : E) := by simp [B, hb0]
     have e1 : B 1 = (1 : R) ⊗ₜ[F] δ := by simp [B, hb1]
-    rw [e0, e1, TensorProduct.smul_tmul', TensorProduct.smul_tmul']
-    simp
+    simp [e0, e1, TensorProduct.smul_tmul', TensorProduct.smul_tmul']
   rw [e, e] at h
   have h0 := congrArg (fun y => B.repr y 0) h
   have h1 := congrArg (fun y => B.repr y 1) h
@@ -92,7 +90,7 @@ theorem algebra_tensor_invol : ∀ (F E : Type) [Field F] [NumberField F] [Field
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
     apply τ.injective
     rw [h.2.2.2, h.2.2.2, star_star]
-  have hne : ∃ x, σ x ≠ x := by
+  obtain ⟨x₀, hx₀⟩ : ∃ x, σ x ≠ x := by
     by_contra hc
     push Not at hc
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
@@ -103,7 +101,6 @@ theorem algebra_tensor_invol : ∀ (F E : Type) [Field F] [NumberField F] [Field
     have h' := h.2.2.2 τ x
     rw [hc] at h'
     simpa [ComplexEmbedding.conjugate_coe_eq] using h'.symm
-  obtain ⟨x₀, hx₀⟩ := hne
   set δ : E := x₀ - σ x₀ with hδdef
   have hδ : σ δ = -δ := by simp [hδdef, hσσ]
   have hδ0 : δ ≠ 0 := fun e => hx₀ (sub_eq_zero.1 e).symm

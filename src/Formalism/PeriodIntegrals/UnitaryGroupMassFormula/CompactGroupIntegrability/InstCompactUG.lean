@@ -165,8 +165,7 @@ lemma Sep.coord {N : ℕ} (i j : Fin N) : Sep (fun g : UG N => (g : Matrix (Fin 
     fun k y => (y : Matrix (Fin N) (Fin N) ℂ) k j, fun k => IsPD.conjEntry k i,
     fun k => (coordC k j).continuous, fun h y => ?_⟩
   show (star (h : Matrix (Fin N) (Fin N) ℂ) * (y : Matrix (Fin N) (Fin N) ℂ)) i j = _
-  rw [Matrix.mul_apply]
-  simp [Matrix.star_apply]
+  simp [Matrix.mul_apply, Matrix.star_apply]
 
 lemma Sep.conjCoord {N : ℕ} (i j : Fin N) :
     Sep (fun g : UG N => star ((g : Matrix (Fin N) (Fin N) ℂ) i j)) := by
@@ -174,8 +173,7 @@ lemma Sep.conjCoord {N : ℕ} (i j : Fin N) :
     fun k y => star ((y : Matrix (Fin N) (Fin N) ℂ) k j), fun k => IsPD.entry k i,
     fun k => (coordC k j).continuous.star, fun h y => ?_⟩
   show star ((star (h : Matrix (Fin N) (Fin N) ℂ) * (y : Matrix (Fin N) (Fin N) ℂ)) i j) = _
-  rw [Matrix.mul_apply]
-  simp [Matrix.star_apply]
+  simp [Matrix.mul_apply, Matrix.star_apply]
 
 lemma sep_of_mem {N : ℕ} {f : C(UG N, ℂ)} (hf : f ∈ algA N) : Sep (⇑f) := by
   letI : Star (Set C(UG N, ℂ)) := Set.star

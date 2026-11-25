@@ -313,8 +313,7 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.sm_iff (H : _root_.GlobalTheo
             simp [hm]
         show r • (x • Y i) = Λ (Φ (id r • Pi.single i x))
         rw [hprod, hr, mul_smul]
-      have := h1.unique (h2.congr_of_eventuallyEq hev.symm)
-      simpa using this
+      simpa using h1.unique (h2.congr_of_eventuallyEq hev.symm)
     let e : (Fin (Fintype.card b) → ℝ) ≃L[ℝ] L :=
       (B.reindex (Fintype.equivFin b)).equivFun.symm.toContinuousLinearEquiv
     have he : ∀ (i : Fin (Fintype.card b)) (x : ℝ), e (Pi.single i x) = x • Y i := by
@@ -355,8 +354,7 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.sm_iff (H : _root_.GlobalTheo
         have := h _ Y hYT g
         rwa [hfun] at this
       have hcomp : ContDiffAt ℝ ∞ (fun X => φ (g * s (Φ (Ψinv X)))) 0 := by
-        have h2 : ContDiffAt ℝ ∞ (fun t => φ (g * s (Φ t))) (Ψinv 0) := hF.contDiffAt
-        exact h2.comp 0 hinv
+        exact hF.contDiffAt.comp 0 hinv
       apply hcomp.congr_of_eventuallyEq
       filter_upwards [hright, hnear] with X hX1 hX2
       have := hX2 (isLieData_prod_exp_smul_unitary H Y _)

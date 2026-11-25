@@ -41,8 +41,7 @@ theorem inj_of_frob {ι p q : Type} [Fintype ι] [Fintype p] [Fintype q]
   rw [ht] at h
   simp only [Matrix.zero_apply, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
     Finset.sum_const_zero] at h
-  have h2 : ‖t‖ ^ 2 = 0 := h.symm
-  exact norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp h2)
+  exact norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp h.symm)
 
 def congL {m : ℕ} (B : Matrix (Fin m) (Fin m) ℂ) : Matrix (Fin m) (Fin m) ℂ →ₗ[ℝ] Matrix (Fin m) (Fin m) ℂ where
   toFun M := Bᴴ * M * B
@@ -119,8 +118,7 @@ theorem cong_factor {m : ℕ} {η : Type} [Fintype η] (H : EuclideanSpace ℝ �
       Complex.star_def, Complex.normSq_conj]
   have key : ∀ z : EuclideanSpace ℝ η × EuclideanSpace ℝ η, psiLp H (Prod.map C C z) = mL (mR (psiLp H z)) := by
     intro z
-    rw [hmLf, hmRf]
-    simp only [psiLp_apply, Prod.map_fst, Prod.map_snd, hspec]
+    simp only [hmLf, hmRf, psiLp_apply, Prod.map_fst, Prod.map_snd, hspec]
     have e1 : ∀ M : Matrix (Fin m) (Fin m) ℂ, (reimE (r := m) (m := m)).symm (reim M) = M :=
       fun M => (reimE (r := m) (m := m)).symm_apply_apply M
     rw [e1, e1]

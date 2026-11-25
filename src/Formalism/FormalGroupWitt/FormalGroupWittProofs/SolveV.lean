@@ -126,7 +126,6 @@ theorem low_pow_sub_succ {M : ℕ} {k k' : ι → MvPowerSeries τ R} (hk : ∀ 
   have hdeg : e.degree = e'.degree + 1 := by
     conv_lhs => rw [hsplit]
     rw [map_add (f := _), Finsupp.degree_single]
-  have h1 : Low 1 (P k' e') := low_mono (by omega) (low_P hk' e')
   rw [hsplit, P_add, P_add, P_single, P_single, pow_one, pow_one]
   have e2 : P k e' * k i - P k' e' * k' i =
       (P k e' - P k' e') * k i + P k' e' * (k i - k' i) := by
@@ -134,7 +133,7 @@ theorem low_pow_sub_succ {M : ℕ} {k k' : ι → MvPowerSeries τ R} (hk : ∀ 
   rw [e2]
   refine low_add (low_mul (low_pow_sub₂ hkk e') (hk i)) ?_
   rw [add_comm]
-  exact low_mul h1 (hkk i)
+  exact low_mul (low_mono (by omega) (low_P hk' e')) (hkk i)
 
 end Prod
 
@@ -163,8 +162,7 @@ theorem low_subst_sub {M : ℕ} {k k' : ι → MvPowerSeries τ R} (hk : ∀ i, 
   rcases lt_or_ge e.degree 2 with he | he
   · rw [hg e he, zero_smul]
   · have := low_pow_sub_succ hk hk' hkk e he d hd
-    rw [map_sub] at this
-    simp only [P] at this
+    simp only [map_sub, P] at this
     rw [this, smul_zero]
 
 end Subst

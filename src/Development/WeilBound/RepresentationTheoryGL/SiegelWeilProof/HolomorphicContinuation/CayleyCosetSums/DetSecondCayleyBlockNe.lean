@@ -86,10 +86,9 @@ theorem continuous_rhoP {Kg : Type} [TopologicalSpace Kg] (ι : Kg → M2 n) (h�
     refine (continuousAt_matrix_inv _ ?_).comp hu2.continuousAt
     rw [Ring.inverse_eq_inv']
     exact continuousAt_inv₀ (_root_.PositivityTheory.Rg.Sw.LVs.det_second_cayley_block_ne_zero (hK k))
-  have hdet : Continuous fun k => (ι k).det := hι.matrix_det
   unfold rhoP fz
   simp only [neg_zero, Complex.cpow_zero, mul_one]
-  refine Continuous.star (Continuous.mul (Continuous.mul (hdet.zpow₀ e ?_) ?_)
+  refine Continuous.star (Continuous.mul (Continuous.mul (hι.matrix_det.zpow₀ e ?_) ?_)
     (Continuous.matrix_trace ((hinv.matrix_mul continuous_const).matrix_mul hu1)))
   · exact fun k => Or.inl (LVs.isUnit_det_of_inG' (hK k)).ne_zero
   · exact (hu1.matrix_det).zpow₀ _ fun k => Or.inl (LVs.det_first_cayley_block_ne_zero (hK k))
@@ -145,8 +144,7 @@ theorem asmLT : AsmLT := by
         · subst hz
           simp [hc0]
         · simp [hβ, Complex.zero_cpow (neg_ne_zero.mpr hz)]
-      rw [h0]
-      simp
+      simp [h0]
     · have hg : HasDerivAt (fun z : ℂ => K0 * β ^ (-z)) (K0 * (β ^ (-(0 : ℂ)) * Complex.log β * (-1))) 0 :=
         (((hasDerivAt_id' (0 : ℂ)).neg).const_cpow (Or.inl hβ)).const_mul K0
       have h := ((hc 0).hasDerivAt.mul hg).deriv

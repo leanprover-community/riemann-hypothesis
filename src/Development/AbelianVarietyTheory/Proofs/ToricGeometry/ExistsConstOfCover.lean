@@ -99,8 +99,7 @@ theorem top_le_wchart_iff {X Y Z : Scheme.{0}} (L : LB X) {K : Type} [Fintype K]
   unfold LB.wchart
   constructor
   · intro h k z _
-    have hz : x z ∈ ⋂ k, ⇑(φ k) ⁻¹' ↑(L.U (j k)) := h (show z ∈ (⊤ : Z.Opens) from trivial)
-    exact Set.mem_iInter.mp hz k
+    exact Set.mem_iInter.mp (h (show z ∈ (⊤ : Z.Opens) from trivial)) k
   · intro h z _
     show x z ∈ ⋂ k, ⇑(φ k) ⁻¹' ↑(L.U (j k))
     exact Set.mem_iInter.mpr fun k => h k (show z ∈ (⊤ : Z.Opens) from trivial)

@@ -178,8 +178,7 @@ theorem perm_expand (w : List (Fin n × Fin n)) :
   rw [count_expand, Multiset.toFinsupp_apply]
 
 theorem length_expand (m : Fin n × Fin n →₀ ℕ) : (expand m).length = m.degree := by
-  rw [Finsupp.degree_eq_sum, expand, List.length_flatMap]
-  simp only [List.length_replicate]
+  simp only [Finsupp.degree_eq_sum, expand, List.length_flatMap, List.length_replicate]
   have : (letters n).toFinset = Finset.univ :=
     Finset.eq_univ_of_forall fun a => List.mem_toFinset.2 (mem_letters a)
   rw [← this, List.sum_toFinset _ nodup_letters]
@@ -256,8 +255,7 @@ theorem word_mem_canonSpan {P : Fin n × Fin n → Prop} (hP : Closed P) :
 theorem span_canon_eq_top : Submodule.span ℂ (Set.range (canon (n := n))) = ⊤ := by
   have hword : ∀ w : List (Fin n × Fin n), word w ∈ Submodule.span ℂ (Set.range (canon (n := n))) := by
     intro w
-    have := word_mem_canonSpan closed_true w (fun _ _ => trivial)
-    refine (Submodule.span_le.2 ?_) this
+    refine (Submodule.span_le.2 ?_) (word_mem_canonSpan closed_true w (fun _ _ => trivial))
     rintro _ ⟨m, -, -, -, rfl⟩
     exact Submodule.subset_span ⟨m, rfl⟩
   set S := Submodule.span ℂ (Set.range (canon (n := n)))

@@ -38,8 +38,7 @@ theorem primeOrderFinrank : PrimeOrderFinrank := by
     have h1 := Polynomial.natDegree_le_of_dvd (LinearMap.minpoly_dvd_charpoly f) (LinearMap.charpoly_monic f).ne_zero
     rw [LinearMap.charpoly_natDegree] at h1
     have h2 : Module.finrank ℚ (Fin n → K) = Module.finrank ℚ K * n := by
-      rw [Module.finrank_pi_fintype]
-      simp [mul_comm]
+      simp [Module.finrank_pi_fintype, mul_comm]
     omega
   by_cases hc : Polynomial.cyclotomic g ℚ ∣ minpoly ℚ f
   · have := Polynomial.natDegree_le_of_dvd hc hm0
@@ -59,7 +58,6 @@ theorem primeOrderFinrank : PrimeOrderFinrank := by
     apply Matrix.toLin'.injective
     rw [Matrix.toLin'_one]
     refine LinearMap.ext fun v => ?_
-    have := LinearMap.congr_fun hf1 v
-    simpa [f] using this
+    simpa [f] using LinearMap.congr_fun hf1 v
 
 end Formalism.LogVandermondeBounds.StandardLattice

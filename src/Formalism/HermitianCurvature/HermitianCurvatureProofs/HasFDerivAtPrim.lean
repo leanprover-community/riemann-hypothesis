@@ -78,8 +78,7 @@ theorem hasFDerivAt_prim (hS : IsOpen S) (hc : Convex ℝ S) (hw₀ : w₀ ∈ S
     have hs := hmemK x hx t ht
     have hc1 : HasFDerivAt (fun y => ω (seg w₀ y t)) ((fderiv ℝ ω (seg w₀ x t)).comp ((t : ℂ) • ContinuousLinearMap.id ℝ ℂ)) x :=
       (hdiff _ (hKS hs)).comp x (hasFDerivAt_seg x t)
-    have hu : HasFDerivAt (fun y : ℂ => y - w₀) (ContinuousLinearMap.id ℝ ℂ) x := (hasFDerivAt_id x).sub_const w₀
-    have h := hc1.clm_apply hu
+    have h := hc1.clm_apply ((hasFDerivAt_id x).sub_const w₀)
     refine h.congr_fderiv ?_
     ext h'
     simp only [hF', ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
@@ -148,7 +147,6 @@ theorem hasFDerivAt_prim (hS : IsOpen S) (hc : Convex ℝ S) (hw₀ : w₀ ∈ S
       have := norm_sub_le_norm_sub_add_norm_sub x w w₀
       have hxw : ‖x - w‖ ≤ δ' := by rw [← dist_eq_norm]; exact mem_closedBall.mp hxc
       linarith
-    have hM₂0 : 0 ≤ M₂ := le_trans (norm_nonneg _) h2
     simp only [hF']
     calc ‖ω (seg w₀ x t) + t • (fderiv ℝ ω (seg w₀ x t)).flip (x - w₀)‖
         ≤ ‖ω (seg w₀ x t)‖ + ‖t • (fderiv ℝ ω (seg w₀ x t)).flip (x - w₀)‖ := norm_add_le _ _
@@ -158,7 +156,7 @@ theorem hasFDerivAt_prim (hS : IsOpen S) (hc : Convex ℝ S) (hw₀ : w₀ ∈ S
         have hf : ‖(fderiv ℝ ω (seg w₀ x t)).flip (x - w₀)‖ ≤ M₂ * (δ' + ‖w - w₀‖) := by
           refine ((fderiv ℝ ω (seg w₀ x t)).flip.le_opNorm (x - w₀)).trans ?_
           rw [ContinuousLinearMap.opNorm_flip]
-          exact mul_le_mul h2 h3 (norm_nonneg _) hM₂0
+          exact mul_le_mul h2 h3 (norm_nonneg _) (le_trans (norm_nonneg _) h2)
         have ht1 : ‖t‖ ≤ 1 := by rw [Real.norm_eq_abs, abs_of_nonneg ht'.1]; exact ht'.2
         calc ‖t‖ * ‖(fderiv ℝ ω (seg w₀ x t)).flip (x - w₀)‖ ≤ 1 * (M₂ * (δ' + ‖w - w₀‖)) :=
               mul_le_mul ht1 hf (norm_nonneg _) zero_le_one

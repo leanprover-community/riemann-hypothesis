@@ -92,8 +92,7 @@ theorem hasDerivAt_of_continuous_of_map_add (χ : ℝ → ℂ) (hc : Continuous 
       simp only [hadd]
       rw [intervalIntegral.integral_const_mul]
     have h2 : ∫ t in (0 : ℝ)..η, χ (x + t) = ∫ t in x..(x + η), χ t := by
-      rw [intervalIntegral.integral_comp_add_left]
-      simp
+      simp [intervalIntegral.integral_comp_add_left]
     rw [← h1, h2, hF]
     simp only
     rw [intervalIntegral.integral_interval_sub_left (hc.intervalIntegrable _ _)
@@ -108,8 +107,7 @@ theorem hasDerivAt_of_continuous_of_map_add (χ : ℝ → ℂ) (hc : Continuous 
   have hd0 : HasDerivAt χ (deriv χ 0) (s - s) := by
     rw [sub_self]
     exact (hdiff 0).hasDerivAt
-  have hcomp : HasDerivAt (fun y => χ (y - s)) (deriv χ 0) s := hd0.comp_sub_const s s
-  have hmul := hcomp.const_mul (χ s)
+  have hmul := (hd0.comp_sub_const s s).const_mul (χ s)
   have hfun : (fun y => χ s * χ (y - s)) = χ := by
     funext y
     rw [← hadd]

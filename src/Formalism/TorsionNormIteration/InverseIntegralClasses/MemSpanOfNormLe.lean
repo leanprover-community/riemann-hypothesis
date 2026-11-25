@@ -72,12 +72,11 @@ theorem natCast_coe (p : ℕ) : (((p : unitBall K)) : K) = (p : K) := by
 theorem norm_le_of_mem_span {p : ℕ} (x : unitBall K)
     (hx : x ∈ Ideal.span {((p : ℕ) : unitBall K)}) : ‖(x : K)‖ ≤ ‖(p : K)‖ := by
   obtain ⟨y, rfl⟩ := Ideal.mem_span_singleton'.mp hx
-  have hy : ‖(y : K)‖ ≤ 1 := y.2
   have e : ((y * ((p : ℕ) : unitBall K) : unitBall K) : K) = (y : K) * (p : K) := by
     rw [← natCast_coe p]
     rfl
   rw [e, norm_mul]
-  calc ‖(y : K)‖ * ‖(p : K)‖ ≤ 1 * ‖(p : K)‖ := mul_le_mul_of_nonneg_right hy (norm_nonneg _)
+  calc ‖(y : K)‖ * ‖(p : K)‖ ≤ 1 * ‖(p : K)‖ := mul_le_mul_of_nonneg_right y.2 (norm_nonneg _)
     _ = ‖(p : K)‖ := one_mul _
 
 theorem mem_span_of_norm_le {p : ℕ} (hp0 : (p : K) ≠ 0) (x : unitBall K)
@@ -177,7 +176,6 @@ open Formalism.G
 theorem FrobCongr_valid : Formalism.LT.FrobCongr.{u, v} := by
   intro K _ _ _ p q hq σ hset ι A hA
   obtain ⟨hpr, ⟨h, _, rfl⟩, hp, hσ⟩ := hset
-  have hp0 : (p : K) ≠ 0 := Nat.cast_ne_zero.mpr hpr.ne_zero
-  exact FrobP.main p h hpr σ hp0 hp hσ A hA
+  exact FrobP.main p h hpr σ (Nat.cast_ne_zero.mpr hpr.ne_zero) hp hσ A hA
 
 end Formalism.LT

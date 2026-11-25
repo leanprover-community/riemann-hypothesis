@@ -121,12 +121,10 @@ theorem exists_finset {w : σ → ℂ} (hN : IsNoetherianRing (holGerms w)) (X :
     filter_upwards [hfg] with z h hz
     rw [mul_comm]
     exact h hz
-  have hfw : f w = 0 := apply_eq_zero_of_not hf hfg hng
-  have hgw : g w = 0 := apply_eq_zero_of_not hg hgf hnf
   obtain ⟨s₁, hs₁, W₁, hW₁, hX₁⟩ := ih _ (hJ ▸ vanishingIdeal_lt hf hnf) _ rfl
-    (isAnalyticNear_inter_zero hX hf) ⟨hw, hfw⟩
+    (isAnalyticNear_inter_zero hX hf) ⟨hw, (apply_eq_zero_of_not hf hfg hng)⟩
   obtain ⟨s₂, hs₂, W₂, hW₂, hX₂⟩ := ih _ (hJ ▸ vanishingIdeal_lt hg hng) _ rfl
-    (isAnalyticNear_inter_zero hX hg) ⟨hw, hgw⟩
+    (isAnalyticNear_inter_zero hX hg) ⟨hw, (apply_eq_zero_of_not hg hgf hnf)⟩
   refine ⟨s₁ ∪ s₂, ?_, W₁ ∩ W₂ ∩ {z | z ∈ X → f z * g z = 0}, inter_mem (inter_mem hW₁ hW₂) hfg, ?_⟩
   · intro Y hY
     rcases Finset.mem_union.1 hY with h | h

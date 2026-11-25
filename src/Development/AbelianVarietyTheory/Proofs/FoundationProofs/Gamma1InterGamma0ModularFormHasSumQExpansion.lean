@@ -57,11 +57,9 @@ theorem one_mem_strictPeriods_lev (N l : ℕ) :
   · exact AddSubgroup.mem_zmultiples 1
   · refine ⟨?_, ?_⟩
     · show ModularGroup.T ∈ Gamma1 N
-      rw [CongruenceSubgroup.Gamma1_mem]
-      simp [ModularGroup.T]
+      simp [CongruenceSubgroup.Gamma1_mem, ModularGroup.T]
     · show ModularGroup.T ∈ Gamma0 l
-      rw [CongruenceSubgroup.Gamma0_mem]
-      simp [ModularGroup.T]
+      simp [CongruenceSubgroup.Gamma0_mem, ModularGroup.T]
 
 theorem lev_hasSum_coef : ∀ (N l : ℕ) (k : ℤ), 0 < N → ∀ (f : ModularForm (lev N l) k) (τ : ℍ),
     HasSum (fun m => coef ⇑f m • Function.Periodic.qParam 1 τ ^ m) (f τ) := by

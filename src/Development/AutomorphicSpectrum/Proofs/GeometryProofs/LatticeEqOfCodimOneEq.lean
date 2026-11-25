@@ -211,18 +211,16 @@ theorem regAt_prime_generisation : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (
     rw [hρ, ← hσ, ← hσ, hσg, hσg, ← hbc, map_mul, mul_comm]
   · rintro ⟨s, hs, t, ht⟩
     obtain ⟨r, rfl⟩ := hρs s
-    have hrJ : r ∉ J := hs
     obtain ⟨b, c, hb, hbc⟩ := hPs r
     have hbu := (hPu b).2 hb
     have hcJ : X.presheaf.germ U p.1 hpU c ∉ J := by
       rw [← hbc]
       intro h
-      exact (hJ.mem_or_mem h).elim hrJ (hunitJ _ hbu)
+      exact (hJ.mem_or_mem h).elim hs (hunitJ _ hbu)
     have hcu := (hQu c).2 hcJ
-    have hσr : IsUnit (σ r) := by
+    obtain ⟨u, hu⟩ : IsUnit (σ r) := by
       rw [← hσg, ← hbc, map_mul] at hcu
       exact isUnit_of_mul_isUnit_left hcu
-    obtain ⟨u, hu⟩ := hσr
     refine ⟨(↑u⁻¹ : X.presheaf.stalk q.1) * σ t, ?_⟩
     have hne : genMap ξ q (σ r) * genMap ξ q (↑u⁻¹ : X.presheaf.stalk q.1) = 1 := by
       rw [← map_mul, ← hu, Units.mul_inv, map_one]

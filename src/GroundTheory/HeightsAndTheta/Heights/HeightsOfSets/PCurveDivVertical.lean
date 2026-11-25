@@ -84,8 +84,7 @@ theorem proj_univ (f : MRing ι) : proj Finset.univ f = C (constantCoeff f) := b
 theorem proj_X_of_mem {T : Finset K} {k : K} (hk : k ∈ T) (i : ι k) :
     proj T (X ⟨k, i⟩ : MRing ι) = 0 := by
   ext d
-  rw [coeff_proj, coeff_X]
-  simp only [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
+  simp only [coeff_proj, coeff_X, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
   split_ifs with h1 h2
   · subst h2
     exact absurd hk (h1 ⟨k, i⟩ (by simp))
@@ -139,10 +138,9 @@ theorem isHomogeneous_of_mem_minimalPrimes (T : Finset K) {J V : Ideal (MRing ι
     V.IsHomogeneous (weightedHomogeneousSubmodule ℤ (wt (ι := ι) T)) := by
   set 𝒜 := weightedHomogeneousSubmodule ℤ (wt (ι := ι) T)
   replace hV : Minimal (fun q : Ideal (MRing ι) ↦ q.IsPrime ∧ J ≤ q) V := hV
-  have hcore : (V.homogeneousCore 𝒜).toIdeal.IsPrime := hV.prop.1.homogeneousCore
   have hJc : J ≤ (V.homogeneousCore 𝒜).toIdeal :=
     hJ.toIdeal_homogeneousCore_eq_self.symm.trans_le (Ideal.homogeneousCore_mono _ hV.prop.2)
-  have heq := hV.eq_of_le ⟨hcore, hJc⟩ (Ideal.toIdeal_homogeneousCore_le 𝒜 V)
+  have heq := hV.eq_of_le ⟨hV.prop.1.homogeneousCore, hJc⟩ (Ideal.toIdeal_homogeneousCore_le 𝒜 V)
   rw [← heq]
   exact (V.homogeneousCore 𝒜).isHomogeneous
 

@@ -215,9 +215,8 @@ theorem exists_min {E : Type} [Field E] [NumberField E] (S : Set E) (d : ℤ) (h
       rw [map_mul, norm_mul, map_intCast, Complex.norm_intCast]
       exact mul_le_of_le_one_right (abs_nonneg _) this
     · exact fun x _ y _ h => mul_left_cancel₀ (Int.cast_ne_zero.2 hd) h
-  have hone : ‖canonicalEmbedding E 1‖ ≤ 1 := (canonicalEmbedding.norm_le_iff 1 1).2 (by simp)
   obtain ⟨α, hα, hmin⟩ := Set.exists_min_image _ (fun x => ‖canonicalEmbedding E x‖) hfin
-    ⟨1, h1, hone⟩
+    ⟨1, h1, ((canonicalEmbedding.norm_le_iff 1 1).2 (by simp))⟩
   refine ⟨α, hα.1, hα.2, fun x hx => ?_⟩
   by_cases h : ‖canonicalEmbedding E x‖ ≤ 1
   · exact hmin x ⟨hx, h⟩
@@ -241,8 +240,7 @@ theorem exists_den {E : Type} [Field E] [NumberField E] {k : ℕ} {m : Type} [Fi
   refine IsIntegral.sum _ fun j _ => ?_
   rw [map_smul, Pi.smul_apply, smul_eq_mul, mul_left_comm]
   refine (hs j).mul ?_
-  have := hint _ (Finset.mem_image.2 ⟨(j, i), Finset.mem_univ _, rfl⟩)
-  simpa [zsmul_eq_mul] using this
+  simpa [zsmul_eq_mul] using hint _ (Finset.mem_image.2 ⟨(j, i), Finset.mem_univ _, rfl⟩)
 
 theorem exists_rows {E : Type} [Field E] [NumberField E] {k : ℕ} (L : AddSubgroup (Fin k → E))
     (hO : ∀ s : Fin k → E, (∀ i, IsIntegral ℤ (s i)) → s ∈ L) (d : ℤ) (hd : d ≠ 0)

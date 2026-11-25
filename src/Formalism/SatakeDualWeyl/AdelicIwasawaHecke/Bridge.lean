@@ -43,8 +43,7 @@ theorem hform_single {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq
     · subst hk
       simp
     · simp [hk]
-  rw [hs]
-  simp [mulVec_single]
+  simp [hs, mulVec_single]
 
 theorem hform_gram {K : Type} [Field K] [StarRing K] {n : Type} [Fintype n] [DecidableEq n]
     (h : (n → K) →ₗ⋆[K] (n → K) →ₗ[K] K) (x y : n → K) :
@@ -74,11 +73,10 @@ theorem hermitian_lattice_correspondence_holds : Formalism.UG.HermBridge := by
     rw [glEquiv_apply', glEquiv_apply', hform_gram h ((g : Matrix n n K) *ᵥ x) ((g : Matrix n n K) *ᵥ y),
       hform_gram h x y, hform_mulVec, hg']
   · intro hg
-    have hg' : ∀ x y : n → K, h (Formalism.UG.glEquiv g x) (Formalism.UG.glEquiv g y) = h x y := hg
     show Formalism.UG.cT (starRingEnd K) (g : Matrix n n K) * Formalism.UG.gram h * (g : Matrix n n K)
         = Formalism.UG.gram h
     ext i j
-    have := hg' (Pi.single i 1) (Pi.single j 1)
+    have := hg (Pi.single i 1) (Pi.single j 1)
     rw [glEquiv_apply', glEquiv_apply',
       hform_gram h ((g : Matrix n n K) *ᵥ Pi.single i 1) ((g : Matrix n n K) *ᵥ Pi.single j 1),
       hform_gram h (Pi.single i 1) (Pi.single j 1), hform_mulVec, hform_single, hform_single] at this

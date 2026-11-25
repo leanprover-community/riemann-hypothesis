@@ -157,8 +157,7 @@ theorem mapBaseChange_bijective_of_basis
         (S ⊗[MvPolynomial ι k] KaehlerDifferential k (MvPolynomial ι k)) →ₗ[S]
           KaehlerDifferential k S) := by
     refine (tensorKaehlerBasis k ι S).ext fun i => ?_
-    rw [tensorKaehlerBasis_mapBaseChange]
-    simp [hb i]
+    simp [tensorKaehlerBasis_mapBaseChange, hb i]
   have hx : ∀ x, KaehlerDifferential.mapBaseChange k (MvPolynomial ι k) S x =
       ((tensorKaehlerBasis k ι S).equiv b (Equiv.refl ι)) x := by
     intro x
@@ -501,8 +500,7 @@ private theorem repr_map_basisKaehler
     intro j _
     rw [map_smul, hb j]
     exact algebra_compatible_smul S' ((basisKaehler k ι S).repr ω j) (basisKaehler k ι S' j)
-  rw [key]
-  simp only [Module.Basis.repr_sum_self]
+  simp only [key, Module.Basis.repr_sum_self]
 
 theorem algebraMap_det_basisKaehler (v : ι → S) :
     algebraMap S S' ((basisKaehler k ι S).det fun i : ι => KaehlerDifferential.D k S (v i)) =

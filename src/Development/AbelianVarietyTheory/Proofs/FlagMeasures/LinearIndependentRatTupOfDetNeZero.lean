@@ -103,8 +103,7 @@ theorem linearIndependent_ratTup_of_det_ne_zero (R : Type) [CommRing R] [Algebra
     exact Finset.sum_congr rfl fun b _ => by ring
   have hinj := Matrix.mulVec_injective_of_isUnit
     ((Matrix.isUnit_iff_isUnit_det _).2 hu)
-  have : c = 0 := hinj (by rw [h0, Matrix.mulVec_zero])
-  exact fun b => congrFun this b
+  exact fun b => congrFun (hinj (by rw [h0, Matrix.mulVec_zero]) : c = 0) b
 
 theorem det_gram_append_ne_zero (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i j) {r : ℕ}
     (y : Fin (r + 1) → Fin n → E) (f : Fin r → Fin n → E) (t : E) (ht : t ≠ 0)
@@ -127,8 +126,7 @@ theorem det_gram_append_ne_zero (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (
     rw [Fin.sum_univ_add, Fin.sum_univ_castSucc] at this
     simpa only [Fin.append_left, Fin.append_right] using this
   have h1 : ∀ a : Fin r, c (Fin.natAdd (r + 1) a) = 0 := fun a => by
-    have := row (Fin.castAdd r a.castSucc)
-    simpa [Fin.append_left, hy', hf, Fin.castSucc_ne_last] using this
+    simpa [Fin.append_left, hy', hf, Fin.castSucc_ne_last] using row (Fin.castAdd r a.castSucc)
   have h2 : c (Fin.castAdd r (Fin.last r)) = 0 := by
     have := row (Fin.castAdd r (Fin.last r))
     simpa [Fin.append_left, hy', h1, Fin.castSucc_ne_last, ht] using this

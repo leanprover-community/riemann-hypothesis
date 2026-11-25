@@ -112,8 +112,7 @@ private theorem exists_normalized_weight_of_closedEmbedding
   have hS_meas : MeasurableSet S := by
     have hSU : S = ⋃ n, N ⁻¹' {n} ∩ E (n + 1) := by
       ext x
-      rw [hS]
-      simp only [Set.mem_iUnion, Set.mem_inter_iff, Set.mem_preimage, Set.mem_singleton_iff]
+      simp only [hS, Set.mem_iUnion, Set.mem_inter_iff, Set.mem_preimage, Set.mem_singleton_iff]
       exact ⟨fun hx => ⟨_, rfl, hx⟩, by rintro ⟨n, rfl, hx⟩; exact hx⟩
     rw [hSU]
     exact MeasurableSet.iUnion fun n =>
@@ -189,10 +188,9 @@ private theorem exists_normalized_weight_of_closedEmbedding
             Finset.single_le_sum (f := fun n => (c n)⁻¹) (fun _ _ => bot_le)
               (Finset.mem_range.2 (Nat.lt_succ_of_le hNk))
     · intro hne
-      have hNk : N k ≤ M := (hN k M).2 (hE_A M (hM hk))
       have hmem := (hS _).1 (hψS _ (left_ne_zero_of_mul hne))
       rw [hN_mul] at hmem
-      exact E.subset (Nat.succ_le_succ hNk) hmem
+      exact E.subset (Nat.succ_le_succ ((hN k M).2 (hE_A M (hM hk)))) hmem
 
 
 open MeasureTheory in

@@ -95,8 +95,7 @@ theorem ker_eq_of_submonoid {H G : Type*} [CommGroup H] [Group G] [Finite G] (M 
   rw [MonoidHom.mem_ker, ← h1, h m hm]
   constructor
   · intro hp
-    have := P.mul_mem (P.inv_mem h2) hp
-    simpa using this
+    simpa using P.mul_mem (P.inv_mem h2) hp
   · intro hp
     simpa using P.mul_mem hp h2
 
@@ -228,8 +227,7 @@ theorem isFrob_unique [IsAbelianGalois K L] {𝔭 : HeightOneSpectrum (𝓞 K)} 
     rwa [smul_smul, mul_comm' τ g, mul_smul, ← smul_pow', ← smul_sub, Ideal.smul_mem_pointwise_smul_iff] at this
   have : σ * τ⁻¹ = 1 := by
     refine hu _ ⟨P, hP, hPl, fun x => ?_⟩
-    have := P.sub_mem (hs (τ⁻¹ • x)) (ht' (τ⁻¹ • x))
-    simpa [mul_smul] using this
+    simpa [mul_smul] using P.sub_mem (hs (τ⁻¹ • x)) (ht' (τ⁻¹ • x))
   exact mul_inv_eq_one.1 this
 
 theorem heckeVal_eq [IsAbelianGalois K L] {𝔭 : HeightOneSpectrum (𝓞 K)} (hu : UnramIn L 𝔭)

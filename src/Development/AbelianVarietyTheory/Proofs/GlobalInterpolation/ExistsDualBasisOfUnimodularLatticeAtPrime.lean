@@ -101,8 +101,7 @@ theorem hf_conj {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian) (z w : F
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   have h : Hm j i = conj (Hm i j) := by
-    have := congrFun (congrFun hH j) i
-    simpa [Matrix.conjTranspose_apply] using this.symm
+    simpa [Matrix.conjTranspose_apply] using (congrFun (congrFun hH j) i).symm
   rw [h]; ring
 
 theorem hf_self_ne {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.PosDef) {z : Fin g → ℂ} (hz : z ≠ 0) : hf Hm z z ≠ 0 := by
@@ -199,14 +198,12 @@ theorem dual_basis : ∀ (q : ℕ) [Fact q.Prime] (g : ℕ) (S : Setup g) (r : �
       intro i
       have huv' : Matrix.vecMul u A = Matrix.vecMul v A := huv
       rw [← hvm, Matrix.sub_vecMul, huv', sub_self]; rfl
-    have := Fintype.linearIndependent_iff.mp hlin (u - v) h0
-    funext i; exact sub_eq_zero.mp (this i)
+    funext i; exact sub_eq_zero.mp ((Fintype.linearIndependent_iff.mp hlin (u - v) h0) i)
   have hinv : A⁻¹ * A = 1 := Matrix.nonsing_inv_mul A ((Matrix.isUnit_iff_isUnit_det A).mp hA)
   obtain ⟨bs, hbsdef⟩ : ∃ bs : Fin r → Fin g → ℂ, bs = fun j => ∑ k, ((ρ : ℂ)⁻¹ * A⁻¹ j k) • b k := ⟨_, rfl⟩
   have hbs : ∀ j i, (ρ : ℂ) * hf S.Hm (bs j) (b i) = if j = i then 1 else 0 := by
     intro j i
-    rw [hbsdef]
-    simp only [hf_sum_left]
+    simp only [hbsdef, hf_sum_left]
     have := congrFun (congrFun hinv j) i
     rw [Matrix.mul_apply, Matrix.one_apply] at this
     rw [← this, Finset.mul_sum]

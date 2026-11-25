@@ -25,8 +25,7 @@ section
 variable {A : Type*} [CommRing A] [IsDomain A] [IsNoetherianRing A]
 
 theorem krullDimLE_one_of_krullDim_eq (h : ringKrullDim A = 1) : Ring.KrullDimLE 1 A := by
-  rw [Ring.krullDimLE_iff, h]
-  simp
+  simp [Ring.krullDimLE_iff, h]
 
 theorem krullDim_quotient_eq_one_iff_eq_bot [Ring.KrullDimLE 1 A] (h : ringKrullDim A = 1) (p : PrimeSpectrum A) :
     ringKrullDim (A ⧸ p.asIdeal) = 1 ↔ p.asIdeal = ⊥ := by
@@ -58,7 +57,6 @@ theorem length_coker_ne_top (M : Type*) [AddCommGroup M] [Module A M] [Module.Fi
   haveI : Ring.KrullDimLE 0 (A ⧸ Ideal.span {x}) := by
     rw [Ring.krullDimLE_zero_iff]
     intro P hP
-    have hc : (Ideal.comap (Ideal.Quotient.mk (Ideal.span {x})) P).IsPrime := Ideal.IsPrime.comap _
     have hne : Ideal.comap (Ideal.Quotient.mk (Ideal.span {x})) P ≠ ⊥ := by
       intro h0
       have hxm : x ∈ Ideal.comap (Ideal.Quotient.mk (Ideal.span {x})) P := by
@@ -66,7 +64,7 @@ theorem length_coker_ne_top (M : Type*) [AddCommGroup M] [Module A M] [Module.Fi
         exact P.zero_mem
       rw [h0, Ideal.mem_bot] at hxm
       exact hx hxm
-    haveI hm := Ideal.IsPrime.isMaximal_of_ne_bot hc hne
+    haveI hm := Ideal.IsPrime.isMaximal_of_ne_bot (Ideal.IsPrime.comap _) hne
     have hsurj : Function.Surjective (Ideal.Quotient.mk (Ideal.span {x})) := Ideal.Quotient.mk_surjective
     have hmap := Ideal.IsMaximal.map_of_surjective_of_ker_le hsurj
       (m := Ideal.comap (Ideal.Quotient.mk (Ideal.span {x})) P) (by

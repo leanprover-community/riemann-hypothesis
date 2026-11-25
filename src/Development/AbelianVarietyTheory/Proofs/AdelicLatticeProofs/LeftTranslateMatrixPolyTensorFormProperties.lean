@@ -76,8 +76,7 @@ theorem exists_monomial_eq_prod_X {σ : Type} (n : ℕ) : ∀ d : σ →₀ ℕ,
       omega
     obtain ⟨a, ha⟩ := ih d' hd'
     refine ⟨Fin.cons i a, ?_⟩
-    rw [Fin.prod_univ_succ]
-    simp only [Fin.cons_zero, Fin.cons_succ]
+    simp only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
     rw [← ha, MvPolynomial.X, MvPolynomial.monomial_mul, one_mul]
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
@@ -100,8 +99,7 @@ theorem evC_ext {f f' : MvPolynomial (ι × ι) ℂ} (h : ∀ y, evC f y = evC f
 theorem tpow_mul_complex (n : ℕ) (y z : Matrix ι ι ℂ) : tpow n (y * z) = tpow n y * tpow n z := by
   ext a b
   simp only [tpow, Matrix.mul_apply, Matrix.of_apply]
-  rw [Finset.prod_univ_sum]
-  simp [Finset.prod_mul_distrib]
+  simp [Finset.prod_univ_sum, Finset.prod_mul_distrib]
 
 noncomputable def tensorForm (n : ℕ) (b : Fin n → ι) : ((Fin n → ι) → ℂ) →ₗ[ℂ] MvPolynomial (ι × ι) ℂ :=
   ∑ a : Fin n → ι, (LinearMap.proj a).smulRight (∏ k, MvPolynomial.X (a k, b k))

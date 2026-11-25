@@ -175,8 +175,7 @@ theorem isNoetherianRing_holGerms_option (hD : WeierstrassDivision.Statement)
       have hι : ∀ j, ((ι (a' j) : holGerms (0 : Option σ → ℂ)) : Germ (𝓝 (0 : Option σ → ℂ)) ℂ) =
           ↑(a j ∘ Pl) := fun j => germPull_coe _ _ _ (a' j) (a j) rfl
       simp only [Φ, Subring.coe_add, Subring.coe_mul, ← hfφ, ← hgψ]
-      rw [AddSubmonoidClass.coe_finsetSum]
-      simp only [Subring.coe_mul, Subring.coe_pow, hι]
+      simp only [AddSubmonoidClass.coe_finsetSum, Subring.coe_mul, Subring.coe_pow, hι]
       change (↑g : Germ (𝓝 (0 : Option σ → ℂ)) ℂ) = Germ.coeRingHom _ (q ∘ A.symm) * Germ.coeRingHom _ f +
         ∑ j : Fin d, Germ.coeRingHom _ (a j ∘ Pl) * Germ.coeRingHom _ (Tl : (Option σ → ℂ) → ℂ) ^ (j : ℕ)
 

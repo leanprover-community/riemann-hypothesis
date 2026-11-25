@@ -133,13 +133,12 @@ theorem mem_map_ker_of_isPushout {R A K P : CommRingCat.{u}} {φ : R ⟶ A} {ψ 
 theorem isIso_of_isPushout_of_faithfullyFlat {R A K P : CommRingCat.{u}} {φ : R ⟶ A} {ψ : R ⟶ K}
     {inl : A ⟶ P} {inr : K ⟶ P} (H : IsPushout φ ψ inl inr) (hψ : ψ.hom.FaithfullyFlat)
     [IsIso inr] : IsIso φ := by
-  have hb : Function.Bijective inr.hom := ConcreteCategory.bijective_of_isIso inr
   algebraize [φ.hom, ψ.hom, inl.hom, inr.hom, (φ ≫ inl).hom]
   have : IsScalarTower R A P := .of_algebraMap_eq' rfl
   have : IsScalarTower R K P := .of_algebraMap_eq' congr($(H.w).hom)
   have : Algebra.IsPushout R A K P := CommRingCat.isPushout_iff_isPushout.mp H
   have := RingHom.FaithfullyFlat.codescendsAlong_bijective (R := R) (S := A) (R' := K) (S' := P)
-    hψ hb
+    hψ (ConcreteCategory.bijective_of_isIso inr)
   exact (ConcreteCategory.isIso_iff_bijective φ).mpr this
 
 end Algebra

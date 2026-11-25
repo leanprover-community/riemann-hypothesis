@@ -120,16 +120,14 @@ theorem isSD_stdLat (L : LocE F E) {n : ℕ} (H K : Matrix (Fin n) (Fin n) E) (h
           split_ifs
           · exact one_mem _
           · exact zero_mem _
-        have := h _ hs
-        simpa [hf, Pi.single_apply, Matrix.mulVec, dotProduct] using this
+        simpa [hf, Pi.single_apply, Matrix.mulVec, dotProduct] using h _ hs
       have hcK : (fun k => L.cj (y k)) = Matrix.mulVec K (Matrix.mulVec H fun k => L.cj (y k)) := by
         rw [Matrix.mulVec_mulVec, hKH, Matrix.one_mulVec]
       have hcj : (Matrix.mulVec K (Matrix.mulVec H fun k => L.cj (y k))) j ∈ L.O := by
         simp only [Matrix.mulVec, dotProduct]
         exact Subring.sum_mem _ fun i _ => mul_mem (hK j i) (hrow i)
       rw [← hcK] at hcj
-      have := cj_int L hcj
-      simpa [L.cj_cj] using this
+      simpa [L.cj_cj] using cj_int L hcj
     · intro h x hx
       rw [mem_stdLat] at hx
       exact Subring.sum_mem _ fun i _ => Subring.sum_mem _ fun j _ =>

@@ -79,10 +79,9 @@ theorem _root_.GlobalTheory.GenericFlat.apply_eq_genericPoint {O : Type} [CommRi
     {t : T} (ht : t ∈ genericPoints T) : s t = genericPoint (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp O) := by
   obtain ⟨t', hspec, heq⟩ := Flat.generalizingMap s
     ((genericPoint_spec (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp O)).specializes (Set.mem_univ (s t)))
-  have hsub : closure {t} ⊆ closure {t'} := specializes_iff_closure_subset.mp hspec
   have hcl : closure {t} = closure {t'} :=
     (show closure {t} ∈ irreducibleComponents T from ht).eq_of_le
-      isIrreducible_singleton.closure hsub
+      isIrreducible_singleton.closure (specializes_iff_closure_subset.mp hspec)
   have hback : t ⤳ t' := specializes_iff_closure_subset.mpr hcl.ge
   rw [← heq, (hspec.antisymm hback).eq]
 

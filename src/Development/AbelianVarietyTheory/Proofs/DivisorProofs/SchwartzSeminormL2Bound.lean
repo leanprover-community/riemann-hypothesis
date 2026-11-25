@@ -555,8 +555,7 @@ theorem norm_le_lintegral_ray_iteratedFDeriv
   have hdec' : ∀ j ≤ m, Tendsto (iteratedDeriv j h) atTop (𝓝 0) := by
     intro j hj
     refine squeeze_zero_norm (fun t => bound j t) ?_
-    have := ((hdec j hj).norm).mul_const (‖v‖ ^ j)
-    simpa using this
+    simpa using ((hdec j hj).norm).mul_const (‖v‖ ^ j)
   have h0 : h 0 = G x := by simp [hh, hGx, hLt]
   have main := _root_.GlobalTheory.taylorTail_bound h m hhs hdec'
   rw [h0] at main
@@ -688,8 +687,7 @@ theorem weighted_lintegral_sobolev_pointwise : ∀ {E : Type} [NormedAddCommGrou
   have hae : ∀ᵐ v ∂(μ.restrict S), a ≤ ENNReal.ofReal (1 / (m.factorial : ℝ)) * H v := by
     rw [ae_restrict_iff' hSmeas]
     have h0 : ∀ᵐ v ∂μ, v ≠ (0:E) := by
-      rw [ae_iff]
-      simp [measure_singleton]
+      simp [ae_iff, measure_singleton]
     filter_upwards [h0] with v hv0 hvS
     exact hpt v hvS hv0
   have hI : ∫⁻ y, Ψ y ∂μ = ∫⁻ z, ENNReal.ofReal (‖z‖ ^ k * ‖iteratedFDeriv ℝ (m + 1) G z‖) ∂μ :=

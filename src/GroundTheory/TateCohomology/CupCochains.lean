@@ -42,8 +42,7 @@ theorem partialProd_contractNth_of_lt {m p : ℕ} (x : Fin (m + 1) → M) (j : F
     (hp : p ≤ m) (hj : (j : ℕ) < p) :
     Fin.partialProd (Fin.contractNth j (· * ·) x) ⟨p, by omega⟩ =
       Fin.partialProd x ⟨p + 1, by omega⟩ := by
-  rw [Fin.partialProd_contractNth]
-  simp only [Function.comp_apply]
+  simp only [Fin.partialProd_contractNth, Function.comp_apply]
   congr 1
   rw [Fin.succAbove_of_le_castSucc]
   · rfl
@@ -53,8 +52,7 @@ theorem partialProd_contractNth_of_le {m p : ℕ} (x : Fin (m + 1) → M) (j : F
     (hp : p ≤ m) (hj : p ≤ (j : ℕ)) :
     Fin.partialProd (Fin.contractNth j (· * ·) x) ⟨p, by omega⟩ =
       Fin.partialProd x ⟨p, by omega⟩ := by
-  rw [Fin.partialProd_contractNth]
-  simp only [Function.comp_apply]
+  simp only [Fin.partialProd_contractNth, Function.comp_apply]
   congr 1
   rw [Fin.succAbove_of_castSucc_lt]
   · rfl

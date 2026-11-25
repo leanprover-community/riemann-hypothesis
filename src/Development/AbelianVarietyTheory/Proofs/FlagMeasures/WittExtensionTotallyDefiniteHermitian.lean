@@ -141,8 +141,7 @@ theorem isCompl_perp [FiniteDimensional K V] (h : V →ₗ⋆[K] V →ₗ[K] K)
     rw [mem_perp]
     intro x hx
     have hv' : ∀ i, h (bU i : V) v = 0 := fun i => by
-      have := congrFun (LinearMap.mem_ker.mp hv) i
-      simpa [T] using this
+      simpa [T] using congrFun (LinearMap.mem_ker.mp hv) i
     have hx' : x = ∑ i, (bU.repr ⟨x, hx⟩ i) • (bU i : V) := by
       have e := congrArg Subtype.val (bU.sum_repr ⟨x, hx⟩)
       simp only [Submodule.coe_sum, Submodule.coe_smul] at e

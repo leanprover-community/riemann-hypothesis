@@ -81,14 +81,12 @@ theorem exists_away_isDomain {A O : Type*} [CommRing A] [IsNoetherianRing A] [Co
   intro x y
   constructor
   · intro e
-    have := congrArg (IsLocalization.Away.lift (S := P) s hu) e
-    simpa using this
+    simpa using congrArg (IsLocalization.Away.lift (S := P) s hu) e
   · intro e
     have h1 : x - y ∈ RingHom.ker (algebraMap A O) := by
       rw [RingHom.mem_ker, map_sub, e, sub_self]
-    have h2 : s * (x - y) = 0 := h _ h1
     rw [← sub_eq_zero, ← map_sub]
-    exact (IsLocalization.map_eq_zero_iff (.powers s) P _).2 ⟨⟨s, Submonoid.mem_powers s⟩, h2⟩
+    exact (IsLocalization.map_eq_zero_iff (.powers s) P _).2 ⟨⟨s, Submonoid.mem_powers s⟩, (h _ h1)⟩
 
 theorem exists_mul_mem_range {A O K B : Type*} [CommRing A] [IsDomain A] [CommRing O]
     [Algebra A O] (S : Submonoid A) [IsLocalization S O] [IsDomain O] [IsIntegrallyClosed O]

@@ -83,7 +83,6 @@ theorem exists_ringHom_comp_algebraMap_eq {R : Type u_1} {S : Type u_2} {K : Typ
       have : r = 0 := hinj (by simpa using h0)
       simp [this])
   let f : R ⧸ RingHom.ker ψ →+* S ⧸ Q := Ideal.quotientMap Q (algebraMap R S) hQp.ge
-  have hf : Function.Injective f := Ideal.quotientMap_injective' hQp.le
   letI : Algebra (R ⧸ RingHom.ker ψ) (S ⧸ Q) := f.toAlgebra
   letI : Algebra (R ⧸ RingHom.ker ψ) K := (RingHom.kerLift ψ).toAlgebra
   haveI : Algebra.IsIntegral (R ⧸ RingHom.ker ψ) (S ⧸ Q) := by
@@ -98,11 +97,10 @@ theorem exists_ringHom_comp_algebraMap_eq {R : Type u_1} {S : Type u_2} {K : Typ
       rfl
     rw [Polynomial.eval₂_map, hc, ← Polynomial.hom_eval₂, hs, map_zero]
   obtain ⟨g⟩ : Nonempty ((S ⧸ Q) →ₐ[R ⧸ RingHom.ker ψ] K) :=
-    exists_algHom_of_injective hf (RingHom.kerLift_injective ψ)
+    exists_algHom_of_injective (Ideal.quotientMap_injective' hQp.le) (RingHom.kerLift_injective ψ)
   refine ⟨(g : (S ⧸ Q) →+* K).comp (Ideal.Quotient.mk Q), ?_⟩
   ext r
-  have := g.commutes (Ideal.Quotient.mk _ r)
-  exact this
+  exact g.commutes (Ideal.Quotient.mk _ r)
 
 end GlobalTheory.InjectiveAlgebraHomExistence
 end -- clump:auto

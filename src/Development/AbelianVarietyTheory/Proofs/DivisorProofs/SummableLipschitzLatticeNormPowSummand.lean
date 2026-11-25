@@ -103,8 +103,7 @@ theorem exists_lower_norm [IsTotallyReal F] (M : FractionalIdeal (𝓞 F)⁰ F) 
   have hy0 : y ≠ 0 := by
     intro h; apply mul_ne_zero hd0 ha0; rw [← hy', h]; simp
   have h1 := one_le_abs_prod_int y hy0
-  rw [hy'] at h1
-  simp only [map_mul, Finset.prod_mul_distrib, abs_mul] at h1
+  simp only [hy', map_mul, Finset.prod_mul_distrib, abs_mul] at h1
   rw [div_le_iff₀ hP]
   linarith [mul_comm (|∏ τ : F →+* ℝ, τ (d : F)|) (|∏ τ : F →+* ℝ, τ a|)]
 
@@ -113,8 +112,7 @@ theorem exists_lower_one_add (w : ℂ) (hw : w.im ≠ 0) :
   have him : 0 < |w.im| := abs_pos.2 hw
   refine ⟨|w.im| / (|w.im| + 1 + ‖w‖), by positivity, fun t => ?_⟩
   have h1 : |w.im| ≤ ‖w + (t : ℂ)‖ := by
-    have := Complex.abs_im_le_norm (w + (t : ℂ))
-    simpa using this
+    simpa using Complex.abs_im_le_norm (w + (t : ℂ))
   have h2 : |t| ≤ ‖w + (t : ℂ)‖ + ‖w‖ := by
     have := norm_sub_le (w + (t : ℂ)) w
     simpa only [add_sub_cancel_left, Complex.norm_real, Real.norm_eq_abs] using this

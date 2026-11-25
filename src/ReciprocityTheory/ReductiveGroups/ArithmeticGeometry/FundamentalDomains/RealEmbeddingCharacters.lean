@@ -164,8 +164,7 @@ lemma restrict_inj {τ τ' : X.Ψ} (h : ∀ a : E, cc a = a → τ.1 a = τ'.1 a
     have e1 := hexp τ.1 a
     have e2 := hexp τ'.1 a
     rw [h (a + cc a) (hf a), h _ (hh a), h1] at e1
-    have e3 : (2 : ℂ) * τ.1 a = 2 * τ'.1 a := e1.trans e2.symm
-    exact mul_left_cancel₀ two_ne_zero e3
+    exact mul_left_cancel₀ two_ne_zero (e1.trans e2.symm)
   · exfalso
     have hconj : ∀ a : E, τ'.1 a = starRingEnd ℂ (τ.1 a) := by
       intro a
@@ -270,8 +269,7 @@ lemma periods_span : Submodule.span ℝ (X.periods la : Set (X.Ψ → ℝ)) = �
   have hsum : ∑ τ : X.Ψ, ((f (fun j => if τ = j then 1 else 0) : ℝ) : ℂ) •
       (((resChar X τ).comp G.subtype : G →* ℂ) : G → ℂ) = 0 := by
     funext g
-    rw [Finset.sum_apply]
-    simp only [Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
     exact hvan _ g.1.2 g.2
   have hzero := Fintype.linearIndependent_iff.mp hLI _ hsum
   apply hf0

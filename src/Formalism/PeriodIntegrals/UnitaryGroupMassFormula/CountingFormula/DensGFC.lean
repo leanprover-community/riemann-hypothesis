@@ -77,8 +77,7 @@ theorem coord_unique {n : ℕ} {b : Fin n → V} (hb : LinearIndependent E b) {c
 theorem comb_mem {n : ℕ} {b : Fin n → V} {Λ : Submodule M.L.O V} (hbΛ : ∀ k, b k ∈ Λ)
     (c : Fin n → E) (hc : ∀ k, c k ∈ M.L.O) : ∑ k, c k • b k ∈ Λ := by
   refine Λ.sum_mem fun k _ => ?_
-  have := Λ.smul_mem (⟨c k, hc k⟩ : M.L.O) (hbΛ k)
-  exact this
+  exact Λ.smul_mem (⟨c k, hc k⟩ : M.L.O) (hbΛ k)
 
 end FC
 
@@ -141,8 +140,7 @@ theorem red_lincomb (hR : RedData ϖ k r n b Λ) {ι : Type} [Fintype ι] (h : �
     rfl
   simp only [red, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
 
-  rw [h2, map_sum]
-  simp only [map_mul]
+  simp only [h2, map_sum, map_mul]
 
 end FC
 

@@ -89,8 +89,7 @@ private theorem homogeneousComponent_pderiv_monomial {σ : Type} (l : σ) (e : �
   by_cases hu : u l = 0
   · obtain ⟨k, hk⟩ := exists_forall_isHomogeneous_monomial u
     have h0 : pderiv l (monomial u a) = 0 := by
-      rw [pderiv_monomial, hu]
-      simp
+      simp [pderiv_monomial, hu]
     rw [h0, map_zero, homogeneousComponent_eq_ite_of_isHomogeneous (hk a)]
     split_ifs
     · exact h0.symm
@@ -152,8 +151,7 @@ theorem pderiv_X_mul_homog {σ : Type} (l l' : σ) {d : ℕ} {P : MvPolynomial �
 theorem blockDiagonalPreservesDegree : KCStep := by
   intro p q r s M hM d P hP
   have hP' : P.IsHomogeneous d := mem_homog_iff_isHomogeneous'.mp hP
-  rw [omAct_eq_sum]
-  simp only [LinearMap.sum_apply, LinearMap.smul_apply]
+  simp only [omAct_eq_sum, LinearMap.sum_apply, LinearMap.smul_apply]
   refine Submodule.sum_mem _ fun l _ => Submodule.sum_mem _ fun l' _ => ?_
   by_cases h0 : M l l' = 0
   · rw [h0, zero_smul]

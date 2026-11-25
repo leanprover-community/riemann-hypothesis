@@ -79,8 +79,7 @@ theorem foldUnfold_main : PI.FoldUnfold.FoldUnfold := by
     filter_upwards [ae_restrict_of_ae hpt] with x hx
     exact hx.symm
   · intro γ
-    have h1 : AEMeasurable (F.indicator f) μ := hf.aemeasurable.indicator₀ hF.nullMeasurableSet
-    exact (h1.comp_quasiMeasurePreserving
+    exact ((hf.aemeasurable.indicator₀ hF.nullMeasurableSet).comp_quasiMeasurePreserving
       (measurePreserving_mul_left μ (γ : G)).quasiMeasurePreserving).restrict
 
 end PI.FoldUnfold.UnitaryGroupMassFormula

@@ -61,8 +61,7 @@ theorem cyc_cond (A : Type) [CommRing A] (q : ℕ) [NeZero q] (hq : IsUnit (q : 
     ∃ p₁ p₂ : A[X], derivative (cyc A q) * p₁ + cyc A q * p₂ = 1 := by
   obtain ⟨h, hh⟩ := cyclotomic.dvd_X_pow_sub_one q ℤ
   have hh' : (X ^ q - 1 : A[X]) = cyc A q * h.map (Int.castRingHom A) := by
-    have := congrArg (Polynomial.map (Int.castRingHom A)) hh
-    simpa [Polynomial.map_mul] using this
+    simpa [Polynomial.map_mul] using congrArg (Polynomial.map (Int.castRingHom A)) hh
   set H := h.map (Int.castRingHom A)
   have hd : (C (q : A)) * X ^ (q - 1) = derivative (cyc A q) * H + cyc A q * derivative H := by
     have := congrArg derivative hh'

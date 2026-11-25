@@ -196,10 +196,9 @@ theorem value_lt_one_of_continuous (τ : E ≃ₐ[k] E) (hτ : Continuous τ) {x
     (IsValuativeTopology.hasBasis_nhds_zero' E).mem_of_mem one_ne_zero
   obtain ⟨n, hn, hn0⟩ := ((ht.eventually hmem).and (eventually_gt_atTop 0)).exists
   by_contra hc
-  have h1 : 1 ≤ valuation E (τ x) ^ n := one_le_pow₀ (not_lt.1 hc)
   have h2 : valuation E (τ (x ^ n)) < 1 := hn
   rw [map_pow, map_pow] at h2
-  exact absurd h2 (not_lt.2 h1)
+  exact absurd h2 (not_lt.2 (one_le_pow₀ (not_lt.1 hc)))
 
 theorem value_le_one_of_continuous (hc : ∀ τ : E ≃ₐ[k] E, Continuous τ) (τ : E ≃ₐ[k] E) {x : E}
     (hx : valuation E x ≤ 1) : valuation E (τ x) ≤ 1 := by
@@ -262,8 +261,7 @@ theorem unramifiedDictionary_a : PositivityTheory.Rg.Tf.Loc.D0a := by
   have hval := value_map_eq hc h0 h1 hmax
   have hint : ∀ a : k, algebraMap k E a ∈ intO E ↔ a ∈ intO k := by
     intro a
-    have := value_algebraMap_le_iff (E := E) a 1
-    simpa [Valuation.mem_integer_iff] using this
+    simpa [Valuation.mem_integer_iff] using value_algebraMap_le_iff (E := E) a 1
   refine ⟨hval, hint, ?_, ?_, hcont, ?_⟩
   · intro n g
     rw [mem_unitGL_iff, mem_unitGL_iff, ← map_inv]

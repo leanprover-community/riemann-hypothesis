@@ -66,8 +66,7 @@ theorem satake_qbinom (q : ℤ) {α : Type} [LinearOrder α] (s : Finset α) :
     | zero => simp [satakeInv]
     | succ k =>
       have h1 : powersetCard (k + 1) (∅ : Finset α) = ∅ := powersetCard_eq_empty.2 (by simp)
-      rw [h1, sum_empty, zero_mul, prod_range_succ']
-      simp
+      simp [h1, sum_empty, zero_mul, prod_range_succ']
   next m s' hm ih =>
     have hmS' : m ∉ s' := fun h => lt_irrefl m (hm m h)
     intro j
@@ -104,8 +103,7 @@ theorem satake_qbinom (q : ℤ) {α : Type} [LinearOrder α] (s : Finset α) :
           = (∏ i ∈ range k, (q ^ (i + 1) - 1)) * (q ^ (k + 1) - 1) := prod_range_succ _ _
       have hR : ∏ i ∈ range (k + 1), (q ^ (s'.card + 1 - i) - 1)
           = (∏ i ∈ range k, (q ^ (s'.card - i) - 1)) * (q ^ (s'.card + 1) - 1) := by
-        rw [prod_range_succ']
-        simp only [Nat.add_sub_add_right, Nat.sub_zero]
+        simp only [prod_range_succ', Nat.add_sub_add_right, Nat.sub_zero]
       have hRk : ∏ i ∈ range (k + 1), (q ^ (s'.card - i) - 1)
           = (∏ i ∈ range k, (q ^ (s'.card - i) - 1)) * (q ^ (s'.card - k) - 1) :=
         prod_range_succ _ _

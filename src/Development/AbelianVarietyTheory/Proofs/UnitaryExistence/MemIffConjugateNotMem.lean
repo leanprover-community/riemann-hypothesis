@@ -188,8 +188,7 @@ private lemma mem_iff_conjugate_not_mem (H : _root_.ReciprocityTheory.ChartRestr
     τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ := by
   have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
   have hrt : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-    have := congrArg (fun y : 𝓞 E => (y : E)) H.rt_sq
-    simpa using this
+    simpa using congrArg (fun y : 𝓞 E => (y : E)) H.rt_sq
   have hw : (τ (H.rt : E)) ^ 2 = -(H.d : ℂ) := by
     rw [← map_pow, hrt]; simp
   have h0 := H.sqrt_neg_disc_sq

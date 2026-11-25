@@ -91,8 +91,7 @@ theorem isClopen_basicOpen_of_forall_isMaximal
   refine ⟨(basicOpen t : Set (PrimeSpectrum R)), ?_, (basicOpen t).isOpen, ht⟩
   intro y hy hya
   rw [SetLike.mem_coe, PrimeSpectrum.mem_basicOpen] at hy hya
-  have : t * a ^ n ∈ y.asIdeal := htn ▸ y.asIdeal.zero_mem
-  rcases y.isPrime.mem_or_mem this with h | h
+  rcases y.isPrime.mem_or_mem (htn ▸ y.asIdeal.zero_mem : t * a ^ n ∈ y.asIdeal) with h | h
   · exact hy h
   · exact hya (y.isPrime.mem_of_pow_mem n h)
 
@@ -161,8 +160,7 @@ theorem free_of_invertible_of_forall_isMaximal
         simp only [e']; linear_combination Q l * (he l).eq
       linear_combination (b l * l.1 l.2) * h1 + e' l * h2 + h3
     · intro k hk hkl
-      have := horth l hl k hk (Ne.symm hkl)
-      linear_combination (b k * k.1 l.2) * this
+      linear_combination (b k * k.1 l.2) * (horth l hl k hk (Ne.symm hkl))
     · intro h; exact absurd hl h
   have hsum : ∑ l ∈ S, e' l = 1 - ∏ i ∈ S, (1 - e i) := by
     rw [Finset.prod_one_sub_ordered S e]; ring

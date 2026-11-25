@@ -67,8 +67,7 @@ theorem rootOfUnity_eq_one_of_val {K Γ : Type*} [Field K] [LinearOrderedCommGro
   by_contra hne
   apply hm
   have hv : v η = 1 := by
-    have := v.map_one_add_of_lt h1
-    simpa using this
+    simpa using v.map_one_add_of_lt h1
   have hi : ∀ i : ℕ, v (1 - η ^ i) < 1 := by
     intro i
     induction i with

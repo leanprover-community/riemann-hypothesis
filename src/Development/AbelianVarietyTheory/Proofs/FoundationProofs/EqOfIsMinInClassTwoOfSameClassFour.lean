@@ -174,8 +174,7 @@ theorem gram_eq_of_comp {Q : QuadraticMap ℤ X ℝ} {P : QuadraticForm ℝ V} (
 theorem dotProduct_gram_mulVec [Fintype ι] (P : QuadraticForm ℝ V) (v : ι → V) (x : ι → ℝ) :
     x ⬝ᵥ (gram P v *ᵥ x) = 2 * P (∑ i, x i • v i) := by
   have := polar_sum_smul P v x x
-  rw [polar_self, two_smul] at this
-  simp only [Algebra.algebraMap_self, RingHom.id_apply] at this
+  simp only [polar_self, two_smul, Algebra.algebraMap_self, RingHom.id_apply] at this
   rw [← this, two_mul]
 
 theorem gram_posDef_of_linearIndependent [Finite ι] {P : QuadraticForm ℝ V} (hP : P.PosDef)
@@ -207,8 +206,7 @@ theorem two_mul_eq_dotProduct [Fintype ι] (Q : QuadraticMap ℤ X ℝ) (e : Mod
     2 * Q a = (fun i => (e.repr a i : ℝ)) ⬝ᵥ (gram Q e *ᵥ fun i => (e.repr a i : ℝ)) := by
   have := polar_sum_smul Q e (e.repr a) (e.repr a)
   rw [e.sum_repr, polar_self, two_smul] at this
-  rw [two_mul, this]
-  simp
+  simp [two_mul, this]
 
 end Gram
 

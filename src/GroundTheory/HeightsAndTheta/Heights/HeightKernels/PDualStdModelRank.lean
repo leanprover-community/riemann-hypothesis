@@ -105,8 +105,7 @@ theorem indep_int {n : ℕ} (B : Module.Basis (Fin n) ℚ K) (q : Fin n → MvPo
   intro k
   ext m
   have hm := congrArg (AddMonoidAlgebra.coeff · m) h'
-  rw [coeff_sum, AddMonoidAlgebra.coeff_zero] at hm
-  simp only [coeff_C_mul, coeff_map, eq_intCast] at hm
+  simp only [coeff_sum, AddMonoidAlgebra.coeff_zero, coeff_C_mul, coeff_map, eq_intCast] at hm
   have := Fintype.linearIndependent_iff.mp hB (fun k => AddMonoidAlgebra.coeff (q k) m) (by simpa [zsmul_eq_mul, mul_comm] using hm) k
   simpa using this
 
@@ -296,8 +295,7 @@ theorem DualStdModelRank.proof : DualStdModelRank.Statement := by
       exact (map_ne_zero_iff _ (embK K i).injective).mpr (Int.cast_ne_zero.mpr hN)
     have he : embK K i a =
         algebraMap Φ₀ _ ((N : Φ₀)⁻¹) * ∑ t, (n t : dualStdModelField K i) * (w b t * (w b c)⁻¹) := by
-      rw [map_inv₀, map_intCast]
-      simp only [← mul_assoc, ← Finset.sum_mul, hn]
+      simp only [map_inv₀, map_intCast, ← mul_assoc, ← Finset.sum_mul, hn]
       field_simp [w_ne_zero b c]
     rw [he]
     exact Subalgebra.mul_mem _ (Subalgebra.algebraMap_mem _ _) (Subalgebra.sum_mem _ fun t _ =>

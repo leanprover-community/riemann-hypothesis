@@ -77,8 +77,7 @@ theorem mem_saturation_iff' {N : Submodule R M} {x : M} :
 
 theorem mem_saturation_iff [IsDomain R] {N : Submodule R M} {x : M} :
     x ∈ saturation N ↔ ∃ a : R, a ≠ 0 ∧ a • x ∈ N := by
-  rw [mem_saturation_iff']
-  simp only [mem_nonZeroDivisors_iff_ne_zero]
+  simp only [mem_saturation_iff', mem_nonZeroDivisors_iff_ne_zero]
 
 theorem le_saturation (N : Submodule R M) : N ≤ saturation N := fun x hx => mem_saturation_iff'.2 ⟨1, one_mem _, by rwa [one_smul]⟩
 
@@ -114,8 +113,7 @@ theorem isSaturatedSubmodule_iff' {N : Submodule R M} :
 
 theorem isSaturatedSubmodule_iff [IsDomain R] {N : Submodule R M} :
     IsSaturatedSubmodule N ↔ ∀ a : R, a ≠ 0 → ∀ x : M, a • x ∈ N → x ∈ N := by
-  rw [isSaturatedSubmodule_iff']
-  simp only [mem_nonZeroDivisors_iff_ne_zero]
+  simp only [isSaturatedSubmodule_iff', mem_nonZeroDivisors_iff_ne_zero]
 
 theorem isSaturatedSubmodule_iff_torsion_eq_bot {N : Submodule R M} :
     IsSaturatedSubmodule N ↔ Submodule.torsion R (M ⧸ N) = ⊥ := by

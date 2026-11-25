@@ -69,8 +69,7 @@ theorem _root_.GlobalTheory.ThetaSeparation.dense_ne_zero {E : Type*} [NormedAdd
     Dense {x | f x ≠ 0} := by
   by_contra hd
   obtain ⟨x₀, hx₀⟩ := h0
-  rw [dense_iff_inter_open] at hd
-  simp only [not_forall] at hd
+  simp only [dense_iff_inter_open, not_forall] at hd
   obtain ⟨U, hUo, hUne, hU⟩ := hd
   have hEq : Set.EqOn f (fun _ => (0 : ℂ)) Set.univ :=
     _root_.GlobalTheory.SCV.eqOn_of_eqOn_open (g := fun _ => (0 : ℂ)) isOpen_univ isPreconnected_univ
@@ -207,10 +206,9 @@ private lemma exists_multiplier_of_level_sections_lemma {g : ℕ} {τ : Matrix (
       Continuous.ext_on hdense (((hNumD b).mul (hDenD b')).continuous)
         (((hNumD b').mul (hDenD b)).continuous) (by
           intro x hx
-          have hx' : t x ≠ 0 := hx
           have r₁ := hRel b x
           have r₂ := hRel b' x
-          apply mul_left_cancel₀ hx'
+          apply mul_left_cancel₀ hx
           linear_combination Den b x * r₂ - Den b' x * r₁)
     exact fun x => congrFun hfun x
   refine ⟨fun x => Num (B x) x / Den (B x) x, ?_, fun x => div_ne_zero (hB x).2 (hB x).1, ?_⟩

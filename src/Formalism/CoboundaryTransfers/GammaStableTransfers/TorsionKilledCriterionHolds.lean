@@ -193,8 +193,7 @@ lemma claim_fin (W : WachMod B M D) (δ : D →ₗ[O] D) (R : Polynomial O) (a :
     simp only [WachMod.d1, e3]
     have e4 : (R.eval 0 * cΓ) • (B.X • w) = cΓ • (B.X • ((R.eval 0) • w)) := by
       rw [mul_comm, mul_smul, smul_comm (R.eval 0) B.X]
-    rw [e4, eD, smul_sub, smul_sub, hc2, h73]
-    simp only [h2, map_sub, LinearMap.map_smul, smul_sub]
+    simp only [e4, eD, smul_sub, smul_sub, hc2, h73, h2, map_sub, LinearMap.map_smul, smul_sub]
     abel
 
 theorem torsionKilledCriterion_holds : CoboundaryTransfer := by

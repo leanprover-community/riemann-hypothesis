@@ -103,8 +103,7 @@ theorem SegreFlagClosureBirational.proof : SegreFlagClosureBirational.Statement 
       algebraMap Ω Φ D * (algebraMap Ω Φ (φ l (w i0)) * algebraMap Ω Φ (φ' m (w i0))) =
         algebraMap Ω Φ G * (algebraMap Ω Φ (α l) * algebraMap Ω Φ (β m)) := by
     intro l m
-    have := congrArg (algebraMap Ω Φ) (hprod l m)
-    simpa only [map_mul] using this
+    simpa only [map_mul] using congrArg (algebraMap Ω Φ) (hprod l m)
 
   set T : Φ := ∑ i, t i * algebraMap Ω Φ (w.repr (e i) i0) with hT
   have hfc : ∀ j : Fin N, j ≠ i0 → flagCoord w e t 1 j = 0 := by

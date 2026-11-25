@@ -76,15 +76,13 @@ private lemma coeff_eS_X (i : Fin 2) (e : Fin 2 →₀ ℕ) :
       rw [ite_eq_right]
       intro h'
       apply hd
-      rw [h']
-      simp
+      simp [h']
   · apply finsum_eq_zero_of_forall_eq_zero
     intro d
     rw [ite_eq_right]
     intro h'
     apply h
-    rw [h']
-    simp
+    simp [h']
 
 theorem eS_X_add_X : eS (X 0 + X 1 : MvPowerSeries (Fin 2) K) = eS (X 0) * eS (X 1) := by
   ext e

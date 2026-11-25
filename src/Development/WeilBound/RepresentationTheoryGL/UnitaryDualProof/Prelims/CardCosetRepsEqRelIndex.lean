@@ -63,9 +63,7 @@ theorem card_eq_relIndex (X : Type) [AddCommGroup X] (A L : AddSubgroup X) (T : 
         push_cast
         abel
       obtain ⟨u, _, hu'⟩ := hu t (hT t ht)
-      have e1 : t = u := hu' t ⟨ht, by simp⟩
-      have e2 : t' = u := hu' t' ⟨ht', hL⟩
-      exact Subtype.ext (e1.trans e2.symm)
+      exact Subtype.ext ((hu' t ⟨ht, by simp⟩).trans (hu' t' ⟨ht', hL⟩).symm)
     · intro q
       obtain ⟨a, rfl⟩ := QuotientAddGroup.mk_surjective q
       obtain ⟨t, ⟨ht, hat⟩, _⟩ := hu a.1 a.2

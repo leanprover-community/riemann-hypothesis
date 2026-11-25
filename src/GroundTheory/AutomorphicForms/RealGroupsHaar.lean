@@ -205,8 +205,7 @@ instance isMulRightInvariant_haarGLReal (μ₀ : Measure (Matrix n n ℝ)) [μ�
   exact h2
 
 theorem haarDensityGLReal_val_ne_zero (h : GL n ℝ) : haarDensityGLReal (h : Matrix n n ℝ) ≠ 0 := by
-  have := haarScaleReal_ne_zero h
-  simpa [haarDensityGLReal] using this
+  simpa [haarDensityGLReal] using haarScaleReal_ne_zero h
 
 instance isHaarMeasure_haarGLReal (μ₀ : Measure (Matrix n n ℝ)) [μ₀.IsAddHaarMeasure] :
     (haarGLReal μ₀).IsHaarMeasure where
@@ -348,8 +347,7 @@ instance isMulRightInvariant_haarGLComplex (μ₀ : Measure (Matrix n n ℂ)) [�
   exact h2
 
 theorem haarDensityGLComplex_val_ne_zero (h : GL n ℂ) : haarDensityGLComplex (h : Matrix n n ℂ) ≠ 0 := by
-  have := haarScaleComplex_ne_zero h
-  simpa [haarDensityGLComplex] using this
+  simpa [haarDensityGLComplex] using haarScaleComplex_ne_zero h
 
 instance isHaarMeasure_haarGLComplex (μ₀ : Measure (Matrix n n ℂ)) [μ₀.IsAddHaarMeasure] :
     (haarGLComplex μ₀).IsHaarMeasure where

@@ -151,12 +151,11 @@ theorem valuation_det_cosetCoordinateMatrix_add (hv : v.Integers R) (AA : HopfOr
     ext l l'
     simp [h3T, Matrix.mulVec, dotProduct, Matrix.mul_apply]
   rw [hT, Matrix.det_transpose, Matrix.det_mul, Matrix.det_permute, Matrix.det_nonsing_inv]
-  have hd : β.det ≠ 0 := hβ.ne_zero
   have hs : v ((Equiv.Perm.sign (Equiv.addLeft k) : ℤ) : C) = 1 := by
     rcases Int.units_eq_one_or (Equiv.Perm.sign (Equiv.addLeft k)) with h | h <;>
       simp [h, Valuation.map_neg]
   rw [Ring.inverse_eq_inv', map_mul, map_mul, hs, one_mul, map_inv₀, inv_mul_cancel₀]
-  exact (Valuation.ne_zero_iff v).mpr hd
+  exact (Valuation.ne_zero_iff v).mpr hβ.ne_zero
 
 def hopfOrderSubgroup (AA : HopfOrder (C := C) R N) : Subring (N → C) where
   carrier := AA.carrier

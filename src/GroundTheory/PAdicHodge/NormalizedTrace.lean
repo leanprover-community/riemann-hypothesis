@@ -244,8 +244,7 @@ theorem normTrace_eq_of_finrank_sup {k A B : IntermediateField B₀ Ω} (hA : k 
     normTrace B z = normTrace k z := by
   haveI := finiteDimensional_of_le hA
   have hz0 : IsIntegral B₀ z := by
-    have := IsIntegral.of_finite B₀ (⟨z, hz⟩ : A)
-    exact this.map (IsScalarTower.toAlgHom B₀ A Ω)
+    exact (IsIntegral.of_finite B₀ (⟨z, hz⟩ : A)).map (IsScalarTower.toAlgHom B₀ A Ω)
   have hzk : IsIntegral k z := hz0.tower_top
   have hzB : IsIntegral B z := hz0.tower_top
   letI : Algebra k B := (IntermediateField.inclusion hB).toAlgebra

@@ -241,8 +241,7 @@ lemma sum_type (H : Host E) {p q g : ℕ} {ty : Fin g → (E →+* ℂ)} (hty : 
   have h0 : H.rt0 ≠ -H.rt0 := fun h => by
     have h1 : H.rt0 = 0 := by linear_combination h / 2
     have := H.sqrt_neg_disc_sq
-    rw [h1] at this
-    simp at this
+    simp [h1] at this
     simp [this] at hd
   have hsq : ∀ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := fun τ => by
     apply sq_eq_sq_iff_eq_or_eq_neg.1
@@ -306,8 +305,7 @@ theorem exists_isPeriod (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
     rw [hP, e.map_eq_zero_iff] at hx
     apply b.ext_elem
     intro i
-    have := congrArg (fun v => (b.baseChange ℝ).repr v i) hx
-    simpa using this
+    simpa using congrArg (fun v => (b.baseChange ℝ).repr v i) hx
   · rw [hrange]; infer_instance
   · rw [eq_top_iff, ← c.span_eq]
     apply Submodule.span_mono
@@ -333,8 +331,7 @@ theorem exists_isPeriod (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
       (fun x y => halt _ _) (fun x y => by simp [hs, hinv])
       (fun x hx => by simpa [hs] using hpos (e.symm x) (by simpa using hx))
     refine ⟨Hm, h1, h2, fun x y => ?_⟩
-    rw [h3]
-    simp [hP]
+    simp [h3, hP]
 
 end
 

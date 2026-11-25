@@ -135,8 +135,7 @@ theorem relationsLift_pow {π : A} (h : RelationsLift (Ideal.span {π}) M)
       (Submodule.smul_mono_left (Ideal.pow_le_self k.succ_ne_zero) hx)
     let G : Submodule A (F × A) := ker (f ∘ₗ fst A F A - π • snd A F A)
     have hG : ∀ g : G, f g.1.1 = π * g.1.2 := fun g => by
-      have : f g.1.1 - π * g.1.2 = 0 := g.2
-      exact sub_eq_zero.mp this
+      exact sub_eq_zero.mp (g.2 : f g.1.1 - π * g.1.2 = 0)
     let s : G →ₗ[A] F := fst A F A ∘ₗ G.subtype
     let g : G →ₗ[A] A := snd A F A ∘ₗ G.subtype
     have hs : range s = Submodule.comap f (Ideal.span {π}) := by
@@ -147,10 +146,9 @@ theorem relationsLift_pow {π : A} (h : RelationsLift (Ideal.span {π}) M)
         exact ⟨_, hG y⟩
       · rintro ⟨c, hc⟩
         exact ⟨⟨(v, c), by simp [G, hc]⟩, rfl⟩
-    have hx₂ : x ∈ range (s.lTensor M) := by
+    obtain ⟨x₂, rfl⟩ : x ∈ range (s.lTensor M) := by
       rw [lTensor_range, hs]
       exact ⟨x₁, hx₁⟩
-    obtain ⟨x₂, rfl⟩ := hx₂
     have hfs : f ∘ₗ s = π • g := by
       ext y
       exact hG y

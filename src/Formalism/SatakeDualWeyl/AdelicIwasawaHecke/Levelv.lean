@@ -189,11 +189,10 @@ theorem levelv_denom (y : E ⊗[F] v.adicCompletion F) : ∃ N : ℕ, N ≠ 0 �
     intro x
     obtain ⟨b, hb, hbx⟩ :=
       IsDedekindDomain.HeightOneSpectrum.adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v x
-    have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
     obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp (Ideal.absNorm_mem (Ideal.span {b}))
     refine ⟨Ideal.absNorm (Ideal.span {b}), ?_, ?_⟩
     · rw [Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
-      exact hb0
+      exact nonZeroDivisors.ne_zero hb
     · have hcv : algebraMap (𝓞 F) (v.adicCompletion F) c ∈ v.adicCompletionIntegers F :=
         (algebraMap (𝓞 F) (v.adicCompletionIntegers F) c).2
       have key : Ideal.absNorm (Ideal.span {b}) • x = algebraMap (𝓞 F) (v.adicCompletion F) c *

@@ -260,10 +260,9 @@ theorem norm_sqrt_apply (C : H →L[ℂ] K) (x : H) :
     (nonneg_iff_isPositive).2 (isPositive_adjoint_comp_self C)
   set A : H →L[ℂ] H := CFC.sqrt (adjoint C ∘L C)
   have hA : IsSelfAdjoint A := IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg _)
-  have h2 : A * A = adjoint C ∘L C := CFC.sqrt_mul_sqrt_self _ hp
   have h3 : ⟪A x, A x⟫_ℂ = ⟪C x, C x⟫_ℂ := by
     rw [← adjoint_inner_right, hA.adjoint_eq, ← adjoint_inner_right C]
-    exact congrArg (fun S : H →L[ℂ] H => ⟪x, S x⟫_ℂ) h2
+    exact congrArg (fun S : H →L[ℂ] H => ⟪x, S x⟫_ℂ) (CFC.sqrt_mul_sqrt_self _ hp)
   rw [@norm_eq_sqrt_re_inner ℂ, h3, ← @norm_eq_sqrt_re_inner ℂ]
 
 theorem IsHilbertSchmidt.isTraceClass_comp {B : K →L[ℂ] H} {C : H →L[ℂ] K}

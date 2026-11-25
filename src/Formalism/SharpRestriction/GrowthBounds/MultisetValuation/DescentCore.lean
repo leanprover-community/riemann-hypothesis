@@ -98,16 +98,14 @@ private theorem coeff_mem_range_algebraMap_of_linearIndependent {K Kc V Vc M : T
       intro m; simp [φ, T, Pi.single_apply, ite_smul]
     simp only [Finsupp.sum, LinearMap.sum_apply, LinearMap.smul_apply,
       LinearMap.proj_apply, hT, smul_eq_mul] at h3
-    rw [h3, Pi.single_apply]
-    simp [eq_comm]
+    simp [h3, Pi.single_apply, eq_comm]
   have hy' : ι y = ∑ k : s, a k • ι (z k) := by
     rw [hy]; exact (Finset.sum_coe_sort s (fun k => a k • ι (z k))).symm
   have e1 : ∀ m, algebraMap K Kc (π m y) = ∑ k : s, a k * algebraMap K Kc (π m (z k)) := by
     intro m; rw [← hπ, hy', map_sum]; simp [hπ]
   refine ⟨∑ m ∈ l.support, l m * π m y, ?_⟩
 
-  rw [map_sum]
-  simp only [map_mul, e1, Finset.mul_sum]
+  simp only [map_sum, map_mul, e1, Finset.mul_sum]
   rw [Finset.sum_comm]
   have h4 : ∀ k : s, ∑ m ∈ l.support, algebraMap K Kc (l m) * (a k * algebraMap K Kc (π m (z k))) =
       a k * algebraMap K Kc (if k = k0 then 1 else 0) := by

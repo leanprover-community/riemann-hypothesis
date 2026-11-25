@@ -85,12 +85,10 @@ theorem conj_mem_Kset {ε : Fin (2 * r + k + 1) → Bool} {P g : Matrix (Fin (2 
     calc P * g * Pᴴ * (P * Hpk k r * Pᴴ) = P * g * (Pᴴ * P) * Hpk k r * Pᴴ := by
           simp only [Matrix.mul_assoc]
       _ = P * (g * Hpk k r) * Pᴴ := by
-          rw [hsP, Matrix.mul_one]
-          simp only [Matrix.mul_assoc]
+          simp only [hsP, Matrix.mul_one, Matrix.mul_assoc]
       _ = P * (Hpk k r * g) * Pᴴ := by rw [hcomm]
       _ = P * Hpk k r * (Pᴴ * P) * g * Pᴴ := by
-          rw [hsP, Matrix.mul_one]
-          simp only [Matrix.mul_assoc]
+          simp only [hsP, Matrix.mul_one, Matrix.mul_assoc]
       _ = P * Hpk k r * Pᴴ * (P * g * Pᴴ) := by simp only [Matrix.mul_assoc]
   · calc Pᴴ * (P * g * Pᴴ) * P = (Pᴴ * P) * g * (Pᴴ * P) := by simp only [Matrix.mul_assoc]
       _ = g := by rw [hsP, Matrix.one_mul, Matrix.mul_one]

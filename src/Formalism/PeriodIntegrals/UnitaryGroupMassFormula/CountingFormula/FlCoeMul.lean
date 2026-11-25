@@ -94,7 +94,7 @@ theorem fl_local {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [C
         simpa [map_sub, map_mul, map_pow, map_add (f := _)] using this
       have hfac : (x - algebraMap F E (a : F)) * (x - (algebraMap F E (t : F) - algebraMap F E (a : F))) = 0 := by
         linear_combination hquad - hrootE
-      have hxF : ∃ b : 𝒪[F], x = algebraMap F E (b : F) := by
+      obtain ⟨b, rfl⟩ : ∃ b : 𝒪[F], x = algebraMap F E (b : F) := by
         by_cases hxa : x - algebraMap F E (a : F) = 0
         · exact ⟨a, sub_eq_zero.1 hxa⟩
         · obtain ⟨u, hu⟩ := hE _ hxa
@@ -106,10 +106,8 @@ theorem fl_local {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [C
           refine ⟨t - a, ?_⟩
           rw [sub_eq_zero.1 this]
           simp
-      obtain ⟨b, rfl⟩ := hxF
       have hcj : L.cj (algebraMap F E (b : F)) = algebraMap F E (b : F) := L.cj.commutes _
       rw [hcj, ← map_mul, ← fl_coe_mul] at hn
-      have hbn : b * b = n := Subtype.val_injective (hinj hn).symm
-      exact hnd (fl_sq_div L hl ϖ hϖ b n hbn hnm)
+      exact hnd (fl_sq_div L hl ϖ hϖ b n (Subtype.val_injective (hinj hn).symm) hnm)
 
 end PI.UnitaryGroupMassFormula.CntFormula

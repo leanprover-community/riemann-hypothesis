@@ -184,8 +184,7 @@ theorem exists_graph (Γ : AddSubgroup (Matrix κ ι ℚ × ℚ)) (M : AddSubgro
 omit [Fintype κ] [Fintype ι] in
 theorem intM_smul {x : Matrix κ ι ℚ} (n : ℕ) (h : IntM x) : IntM ((n : ℚ) • x) := by
   intro k i
-  have := (h k i).nsmul n
-  simpa [nsmul_eq_mul] using this
+  simpa [nsmul_eq_mul] using (h k i).nsmul n
 
 theorem exists_den (x : Matrix κ ι ℚ) : ∃ N : ℕ, 0 < N ∧ IntM ((N : ℚ) • x) := by
   classical
@@ -366,8 +365,7 @@ theorem vacuum (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι] (A : Ad
     rw [this, mul_one]
   have hv0 : ∀ x, (¬ ∃ y ∈ A, x = x₀ + y.2) → v x = 0 := fun x h => dite_eq_right h
   have hvx : v x₀ = 1 := by
-    have := hv 0 A.zero_mem
-    simpa [fac, h0, pr_zero_right, ex_zero] using this
+    simpa [fac, h0, pr_zero_right, ex_zero] using hv 0 A.zero_mem
   have hfix : ∀ y ∈ A, ∀ x, fac ε y x * v (x - y.2) = v x := by
     intro y hy x
     by_cases h : ∃ y' ∈ A, x = x₀ + y'.2

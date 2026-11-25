@@ -61,15 +61,13 @@ theorem NormalModel.exists_clear_denominators {n : ℕ} {J : Ideal (MvPolynomial
                 (rename Sum.inl (B ^ N) * p - rename Sum.inl r) +
               rename Sum.inl Cᵢ * rename Sum.inl r *
                 (rename Sum.inl (b i) * X (Sum.inr i) - rename Sum.inl (a i)) := by
-          rw [pow_succ, hBC]
-          simp only [map_mul, map_pow]
+          simp only [pow_succ, hBC, map_mul, map_pow]
           ring
         rw [hid]
         exact M.ideal.add_mem (M.ideal.mul_mem_left _ h) (M.ideal.mul_mem_left _ (hab i))
       · rw [eval_mul, eval_mul, eval_mul, eval_X, pow_succ, hBC]
         have e' : eval x r = eval x (b i * Cᵢ) ^ N * eval w p := by rw [← hBC]; exact e
-        rw [e']
-        simp only [hw, Sum.elim_inr, eval_mul]
+        simp only [e', hw, Sum.elim_inr, eval_mul]
         field_simp [hb i]
 
 theorem NormalModel.graph_mem_zeroSetIn {n : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)}

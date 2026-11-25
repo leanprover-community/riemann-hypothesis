@@ -96,15 +96,13 @@ theorem isAdicComplete_span_singleton [CompleteSpace K] {a : normInteger K}
       x ≡ y [SMOD (Ideal.span {a} ^ n • ⊤ : Submodule (normInteger K) (normInteger K))] ↔
         ‖(x : K) - y‖ ≤ ‖(a : K)‖ ^ n := by
     intro n x y
-    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, mem_span_singleton_pow_iff]
-    simp
+    simp [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, mem_span_singleton_pow_iff]
   refine { haus' := ?_, prec' := ?_ }
   · intro x hx
     simp only [hmem, ZeroMemClass.coe_zero, sub_zero] at hx
     have ht : Filter.Tendsto (fun n : ℕ => ‖(a : K)‖ ^ n) Filter.atTop (nhds 0) :=
       tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg _) ha
-    have : ‖(x : K)‖ ≤ 0 := ge_of_tendsto' ht hx
-    ext; simpa using this
+    ext; simpa using (ge_of_tendsto' ht hx : ‖(x : K)‖ ≤ 0)
   · intro f hf
     simp only [hmem] at hf
     have ht : Filter.Tendsto (fun n : ℕ => ‖(a : K)‖ ^ n) Filter.atTop (nhds 0) :=

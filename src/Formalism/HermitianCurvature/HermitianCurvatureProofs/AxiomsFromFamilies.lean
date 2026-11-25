@@ -328,8 +328,7 @@ theorem top_pullback : TopPullback := by
       intro t ht t' ht' e
       apply hR0 t ht t' ht'
       show (u : K) * σ (t - t') ∈ R
-      have e' : (u : K) * σ t - τ₀ = (u : K) * σ t' - τ₀ := e
-      have e'' : (u : K) * σ t = (u : K) * σ t' := sub_left_injective e'
+      have e'' : (u : K) * σ t = (u : K) * σ t' := sub_left_injective e
       rw [map_sub, mul_sub, e'', sub_self]; exact R.zero_mem
     have h1 := Jx9.clauseF R (F.image η) Θ
       (fun h h' => ((A5.cSize R h ^ 1 * A5.cSize R h' ^ 1 : ℝ) : ℂ) * A5.N0 R ψ h h') p1 p2

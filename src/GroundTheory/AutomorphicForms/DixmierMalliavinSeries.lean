@@ -96,11 +96,9 @@ theorem dirDeriv_eq_zero_of_notMem {f : G → ℂ} (X : 𝔤) (p : ℕ) {x : G}
     simp only [zero_smul]; rw [h.expG_zero, one_mul]
   have hev : (fun t : ℝ => f (h.expG (t • X) * x)) =ᶠ[𝓝 0] fun _ => (0 : ℂ) := by
     have := hc.continuousAt (x := 0)
-    rw [ContinuousAt] at this
-    simp only [h0] at this
+    simp only [ContinuousAt, h0] at this
     exact this.eventually (notMem_tsupport_iff_eventuallyEq.1 hx)
-  rw [dirDeriv, hev.iteratedDeriv_eq]
-  simp
+  simp [dirDeriv, hev.iteratedDeriv_eq]
 
 theorem contDiff_dirDeriv_mul_expG {f : G → ℂ} (hf : letI := h.chartedSpace;
     ContMDiff 𝓘(ℝ, 𝔤) 𝓘(ℝ, ℂ) ∞ f) (X : 𝔤) (p : ℕ) (g : G) :

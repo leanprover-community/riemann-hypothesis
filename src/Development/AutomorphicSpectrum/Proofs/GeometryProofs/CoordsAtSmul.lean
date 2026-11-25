@@ -106,13 +106,11 @@ theorem val_inv {a : Ω} {r : Rˣ} (h : ValAt ξ z a r) : ValAt ξ z a⁻¹ (↑
 theorem val_ne_zero (hξ : IsCptGen ξ) [Nontrivial R] {a : Ω} {r : Rˣ} (h : ValAt ξ z a r) : a ≠ 0 := by
   rintro rfl
   obtain ⟨hz, -⟩ := val_spec h
-  have := val_unique hξ h (val_zero hz)
-  exact r.ne_zero this
+  exact r.ne_zero (val_unique hξ h (val_zero hz))
 
 theorem val_inv₀ {F : Type} [Field F] {z : Sp F ⟶ X} {a : Ω} {r : F} (hr : r ≠ 0) (h : ValAt ξ z a r) :
     ValAt ξ z a⁻¹ r⁻¹ := by
-  have := val_inv (r := Units.mk0 r hr) h
-  simpa using this
+  simpa using val_inv (r := Units.mk0 r hr) h
 
 theorem val_zpow {F : Type} [Field F] {z : Sp F ⟶ X} {a : Ω} {r : F} (hr : r ≠ 0) (h : ValAt ξ z a r) (n : ℤ) :
     ValAt ξ z (a ^ n) (r ^ n) := by

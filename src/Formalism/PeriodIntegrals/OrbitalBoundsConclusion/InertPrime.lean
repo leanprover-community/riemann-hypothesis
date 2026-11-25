@@ -101,8 +101,7 @@ theorem inert (K : Type) [Field K] [NumberField K] (hK : Module.finrank ℚ K = 
     push_cast
     simp
   · rw [← hnormI] at hPk
-    have hPI : P ∣ Ideal.span {(p : 𝓞 K)} := Ideal.dvd_iff_le.2 hIP
-    obtain ⟨J, hJ⟩ := hPI
+    obtain ⟨J, hJ⟩ : P ∣ Ideal.span {(p : 𝓞 K)} := Ideal.dvd_iff_le.2 hIP
     have hJ1 : Ideal.absNorm J = 1 := by
       have h2 := congrArg Ideal.absNorm hJ
       rw [map_mul, hPk] at h2

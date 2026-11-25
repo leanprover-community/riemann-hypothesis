@@ -156,12 +156,11 @@ private theorem isDomain_integers : IsDomain O := by
 private theorem dvd_of_coeff_zero (pflat : PreTilt O p) (hpf : pflat.untilt = (p : O))
     (c : PreTilt O p) (hc : PreTilt.coeff 0 c = 0) : ∃ d, c = pflat * d := by
   have := isDomain_integers C v hv
-  have hpn : (p : O) ≠ 0 := p_ne_zero C v hv
   have hpi : ∀ n, sh pflat n ≠ 0 := by
     intro n h0
     have h1 := sh_pow pflat n
     rw [h0, zero_pow (pow_ne_zero n hp.out.ne_zero), hpf] at h1
-    exact hpn h1.symm
+    exact (p_ne_zero C v hv) h1.symm
   obtain ⟨u, hu⟩ : (p : O) ∣ c.untilt := by
     rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq_zero_iff_mem]
     exact (mk_sh c 0).trans hc
@@ -172,8 +171,7 @@ private theorem dvd_of_coeff_zero (pflat : PreTilt O p) (hpf : pflat.untilt = (p
         v (algebraMap O C (sh pflat n)) ^ (p ^ n) := by
       rw [← map_pow, ← map_pow, ← map_pow, ← map_pow, sh_pow, sh_pow, hpf, hu, map_mul, map_mul]
       exact mul_le_of_le_one_right zero_le (hv.map_le_one u)
-    have hn : p ^ n ≠ 0 := pow_ne_zero n hp.out.ne_zero
-    exact (pow_le_pow_iff_left₀ zero_le zero_le hn).1 h1
+    exact (pow_le_pow_iff_left₀ zero_le zero_le (pow_ne_zero n hp.out.ne_zero)).1 h1
   choose D hD using hdvd
   have hDp : ∀ n, D (n + 1) ^ p = D n := by
     intro n

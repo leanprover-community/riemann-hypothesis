@@ -73,8 +73,7 @@ theorem tseq_step (τ : K →+* ℂ_[p]) (hq : ∀ b : 𝓞 K, (p : 𝓞 K) ∣ 
     (k : ℕ) : ‖tseq τ a (k + 1) - tseq τ a k‖ ≤ (p : ℝ)⁻¹ ^ (k + 1) := by
   have h1 := dvd_pow_q_sub (a ^ (p ^ 2)) a (hq a) k
   rw [← pow_mul, ← pow_succ'] at h1
-  have := norm_tau_dvd τ h1
-  simpa [tseq, map_sub] using this
+  simpa [tseq, map_sub] using norm_tau_dvd τ h1
 
 theorem teich_spec (τ : K →+* ℂ_[p]) (hq : ∀ b : 𝓞 K, (p : 𝓞 K) ∣ b ^ (p ^ 2) - b) (a : 𝓞 K) :
     Tendsto (tseq τ a) atTop (𝓝 (teich τ a)) ∧

@@ -117,7 +117,6 @@ theorem exists_eq_mul_of_integral_relation {S : Type*} [CommRing S] [IsDomain S]
 theorem proof (hRueckert : RueckertNullstellensatz.Statement)
     (hZariski : ZariskiAnalyticNormality.Statement) : NormalGermIntegrallyClosed.Statement := by
   intro σ _ I w N F G d a hI hIc hw hN hwN hF hG ha hGnz hrel
-  have hFa : AnalyticAt ℂ F w := analyticAt_of_differentiableOn hN hF hwN
   have hGa : AnalyticAt ℂ G w := analyticAt_of_differentiableOn hN hG hwN
   have haa : ∀ j, AnalyticAt ℂ (a j) w := fun j => analyticAt_of_differentiableOn hN (ha j) hwN
 
@@ -143,7 +142,7 @@ theorem proof (hRueckert : RueckertNullstellensatz.Statement)
   have hπeq : ∀ u v : anFun w, (u : (σ → ℂ) → ℂ) =ᶠ[𝓝 w] v → π u = π v := fun u v h => by
     simp only [π, RingHom.comp_apply, toGerm_eq_iff.2 h]
 
-  let FA : anFun w := ⟨F, hFa⟩
+  let FA : anFun w := ⟨F, (analyticAt_of_differentiableOn hN hF hwN)⟩
   let GA : anFun w := ⟨G, hGa⟩
   let aA : Fin d → anFun w := fun j => ⟨a j, haa j⟩
   let PA : anFun w := FA ^ d + ∑ j, aA j * FA ^ (j : ℕ) * GA ^ (d - (j : ℕ))

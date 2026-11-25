@@ -82,8 +82,7 @@ theorem exists_local_basis {R L : Type} [CommRing R] [IsDomain R] [AddCommGroup 
   have hfun : (β.unitsSMul u : _ → Lp) = f ∘ m := funext hβ
   have hli : LinearIndependent R m := by
     have h1 : LinearIndependent Rp (f ∘ m) := hfun ▸ (β.unitsSMul u).linearIndependent
-    have h2 : LinearIndependent R (f ∘ m) := h1.restrict_scalars' R
-    exact h2.of_comp f
+    exact (h1.restrict_scalars' R).of_comp f
   have hsp : ∀ x : L, ∃ s : R, s ∉ p ∧ s • x ∈ Submodule.span R (Set.range m) := by
     intro x
     have h1 : f x ∈ (Submodule.span R (Set.range m)).localized' Rp p.primeCompl f := by
@@ -198,7 +197,6 @@ theorem locFree_of_projective : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algeb
   obtain ⟨k, c, g, hg⟩ := Submodule.mem_span_set'.1 h1
   refine ⟨k, fun l => ((g l : R) : Ω), fun l => (c l : Ω), fun l => (g l : R).2, fun l => (c l).2, ?_,
     fun l => (g l).2⟩
-  have := congrArg (fun z : R => (z : Ω)) hg
-  simpa using this
+  simpa using congrArg (fun z : R => (z : Ω)) hg
 
 end GlobalTheory.CompanionTheory.Ar.Num.LocFreeProj

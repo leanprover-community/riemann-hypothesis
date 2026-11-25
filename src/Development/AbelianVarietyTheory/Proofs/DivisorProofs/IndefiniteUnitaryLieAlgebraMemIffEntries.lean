@@ -62,16 +62,14 @@ theorem pcLieEntry : ∀ (n : ℕ) (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fi
   constructor
   · intro h a b
     have hb := congrFun (congrFun h b) a
-    rw [key] at hb
-    simp only [Matrix.zero_apply] at hb
+    simp only [key, Matrix.zero_apply] at hb
     rcases Bool.eq_false_or_eq_true (ε a) with ha | ha <;>
       rcases Bool.eq_false_or_eq_true (ε b) with hb' | hb' <;>
       simp only [ha, hb', ite_true, Bool.false_eq_true, ite_false] at hb ⊢ <;>
       first | linear_combination hb | linear_combination -hb
   · intro h
     ext a b
-    rw [key]
-    simp only [Matrix.zero_apply]
+    simp only [key, Matrix.zero_apply]
     have hb := h b a
     rcases Bool.eq_false_or_eq_true (ε a) with ha | ha <;>
       rcases Bool.eq_false_or_eq_true (ε b) with hb' | hb' <;>

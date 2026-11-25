@@ -90,9 +90,8 @@ private theorem eq_diagonal_of_commute_diagonal_injective {L : Type} [Field L] {
   · subst h
     simp
   · rw [Matrix.diagonal_apply_ne _ h]
-    have hne : μ j - μ i ≠ 0 := sub_ne_zero.mpr fun e => h (hμ e).symm
     have : m i j * (μ j - μ i) = 0 := by rw [mul_sub, hij, mul_comm]; ring
-    exact (mul_eq_zero.mp this).resolve_right hne
+    exact (mul_eq_zero.mp this).resolve_right (sub_ne_zero.mpr fun e => h (hμ e).symm)
 
 open Matrix Polynomial in
 private theorem commute_of_commute_of_charpoly_separable_of_isAlgClosed {L : Type} [Field L]
@@ -124,8 +123,7 @@ private theorem commute_of_commute_of_charpoly_separable_of_isAlgClosed {L : Typ
   have hyP : y * P = P * diagonal μ := by
     ext i j
     rw [Matrix.mul_diagonal]
-    have := congrFun (hv j) i
-    simpa [hP, Matrix.mul_apply, Matrix.mulVec, dotProduct, mul_comm] using this
+    simpa [hP, Matrix.mul_apply, Matrix.mulVec, dotProduct, mul_comm] using congrFun (hv j) i
   have hD : Q * y * P = diagonal μ := by
     rw [Matrix.mul_assoc, hyP, hQP']
   have hcomm : ∀ m : Matrix (Fin n) (Fin n) L, m * y = y * m →

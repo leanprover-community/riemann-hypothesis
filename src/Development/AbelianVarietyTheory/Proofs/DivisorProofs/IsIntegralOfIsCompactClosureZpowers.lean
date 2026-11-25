@@ -118,11 +118,9 @@ private theorem exists_smul_pow_entry_mem_adicCompletionIntegers (E : Type) [Fie
     rintro ⟨a, ha, ha0⟩ ⟨b, hb, hb0⟩
     refine ⟨⟨a * b, mul_mem ha hb, mul_ne_zero ha0 hb0⟩, ?_, ?_⟩
     · intro x hx
-      have := mul_mem hb (show a * x ∈ O from hx)
-      simpa [U, mul_assoc, mul_comm, mul_left_comm] using this
+      simpa [U, mul_assoc, mul_comm, mul_left_comm] using mul_mem hb (show a * x ∈ O from hx)
     · intro x hx
-      have := mul_mem ha (show b * x ∈ O from hx)
-      simpa [U, mul_assoc] using this
+      simpa [U, mul_assoc] using mul_mem ha (show b * x ∈ O from hx)
   haveI : Nonempty {a : w.adicCompletion E // a ∈ O ∧ a ≠ 0} := ⟨⟨1, O.one_mem, one_ne_zero⟩⟩
   obtain ⟨a, hSa⟩ := hS.elim_directed_cover U hUo hcov hdir
   refine ⟨a.1, a.2.2, fun k i j => hSa ?_⟩

@@ -66,12 +66,10 @@ theorem UpperTheory.invariant_sesquilinearForm_eq_smul_of_irreducible :
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro a ha
     have h0 : B a = 0 := e.ext (fun j => by
-      have := congrFun ha j
-      simpa [φB] using this)
+      simpa [φB] using (congrFun ha j))
     by_contra hne
     have := hp a hne
-    rw [h0] at this
-    simp at this
+    simp [h0] at this
   have hsurj : Function.Surjective φB :=
     (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (by rw [Module.finrank_fin_fun])).mp hinj
   let E := LinearEquiv.ofBijective φB ⟨hinj, hsurj⟩
@@ -79,7 +77,6 @@ theorem UpperTheory.invariant_sesquilinearForm_eq_smul_of_irreducible :
   obtain ⟨c, hc⟩ := Module.End.exists_eigenvalue T
   obtain ⟨v, hv⟩ := hc.exists_hasEigenvector
   have hTv : T v = c • v := hv.apply_eq_smul
-  have hv0 : v ≠ 0 := hv.2
   have key : B₁ v = c • B v := by
     apply e.ext
     intro j
@@ -106,7 +103,7 @@ theorem UpperTheory.invariant_sesquilinearForm_eq_smul_of_irreducible :
   · have hvW : v ∈ W := by
       rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, key, sub_self]
     rw [h] at hvW
-    exact absurd ((Submodule.mem_bot ℂ).mp hvW) hv0
+    exact absurd ((Submodule.mem_bot ℂ).mp hvW) hv.2
   · refine ⟨c, fun a b => ?_⟩
     have ha : a ∈ W := h ▸ Submodule.mem_top
     rw [LinearMap.mem_ker] at ha

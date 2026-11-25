@@ -99,8 +99,7 @@ theorem main {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimens
   have hEΦ : ∀ p y, Φ (Jm p) y = Complex.I * Φ p y := fun p y => by rw [hΦ, hΦ]; exact hE p y
   have hΦ0 : ∀ w y, Φ (0, w) y = (-(2 * Real.pi * Complex.I)) * ((T y w : ℝ) : ℂ) * f₀ y := by
     intro w y
-    rw [hΦ]
-    simp only [map_zero, zero_add]
+    simp only [hΦ, map_zero, zero_add]
   let Q : V × V →ₗ[ℝ] V × V :=
     (LinearMap.inr ℝ V V) ∘ₗ (LinearMap.fst ℝ V V) + Jm ∘ₗ (LinearMap.inr ℝ V V) ∘ₗ (LinearMap.snd ℝ V V)
   let Θ : V × V →ₗ[ℝ] (V → ℂ) := Φ ∘ₗ Q
@@ -138,9 +137,8 @@ theorem main {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimens
     have e1 := eq_zero_of_forall_nhds T hT y₀ _ hU w₁ fun y hy => (hsplit y hy).1
     have e2 := eq_zero_of_forall_nhds T hT y₀ _ hU w₂ fun y hy => (hsplit y hy).2
     rw [e1, e2]; rfl
-  have hle : LinearMap.range Θ ≤ LinearMap.range Φ := LinearMap.range_comp_le_range Q Φ
   have hrange : LinearMap.range Θ = LinearMap.range Φ := by
-    apply Submodule.eq_of_le_of_finrank_le hle
+    apply Submodule.eq_of_le_of_finrank_le (LinearMap.range_comp_le_range Q Φ)
     rw [LinearMap.finrank_range_of_inj hinj]
     exact LinearMap.finrank_range_le Φ
   have hmem : ∀ a, (Φ ∘ₗ LinearMap.inl ℝ V V) a ∈ LinearMap.range Θ := fun a => by

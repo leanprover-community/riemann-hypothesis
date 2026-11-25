@@ -151,8 +151,7 @@ theorem norm_iteratedDeriv_rem_le {t : ℝ} (ht0 : t ≠ 0) (ht1 : |t| ≤ 1) (i
         rw [mul_pow, ← sq_abs t]; field_simp
       _ ≤ 3 * |t| * (1 + |y|) ^ 2 := by gcongr
   | 1 =>
-    rw [iteratedDeriv_one, hd1]
-    simp only
+    simp only [iteratedDeriv_one, hd1]
     have e : (t : ℂ)⁻¹ * (I * t) * Complex.exp ((I * t) * y) + (-I)
         = I * (Complex.exp (((t * y : ℝ) : ℂ) * I) - 1) := by
       rw [hexp]; field_simp; ring
@@ -169,8 +168,7 @@ theorem norm_iteratedDeriv_rem_le {t : ℝ} (ht0 : t ≠ 0) (ht1 : |t| ≤ 1) (i
     have hd2 : deriv (deriv (rem t)) = fun y : ℝ =>
         ((t : ℂ)⁻¹ * (I * t) * (I * t)) * Complex.exp ((I * t) * y) := by
       rw [hd1', deriv_affine_cexp]; funext y; ring
-    rw [iteratedDeriv_succ', iteratedDeriv_succ', hd2, iteratedDeriv_const_mul_cexp]
-    simp only
+    simp only [iteratedDeriv_succ', iteratedDeriv_succ', hd2, iteratedDeriv_const_mul_cexp]
     rw [norm_mul, hnexp, mul_one]
     simp only [norm_mul, norm_pow, norm_inv, Complex.norm_I, Complex.norm_real, Real.norm_eq_abs, one_mul]
     have hp : |t| ^ m ≤ 1 := pow_le_one₀ habs.le ht1

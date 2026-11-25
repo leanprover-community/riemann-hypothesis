@@ -71,8 +71,7 @@ theorem exists_eq_one_tmul_of_commute [Algebra.IsCentral K A] (x : A ⊗[K] B)
   have hc : ∀ i, ∃ k : K, φ x i = algebraMap K A k := fun i ↦ by
     rw [← Algebra.IsCentral.mem_center_iff (K := K), Subalgebra.mem_center_iff]
     intro a
-    have := congrArg (fun y ↦ φ y i) (h a)
-    simpa only [φ, coeff_tmul_one_mul, coeff_mul_tmul_one] using this
+    simpa only [φ, coeff_tmul_one_mul, coeff_mul_tmul_one] using congrArg (fun y ↦ φ y i) (h a)
   choose k hk using hc
   refine ⟨(φ x).sum fun i _ ↦ k i • 𝒞 i, ?_⟩
   conv_lhs => rw [← φ.symm_apply_apply x]
@@ -98,8 +97,7 @@ theorem center_tensorProduct_eq_map_includeRight [Algebra.IsCentral K A] :
       have hinj : Function.Injective (includeRight : B →ₐ[K] A ⊗[K] B) :=
         Algebra.TensorProduct.includeRight_injective (algebraMap K A).injective
       apply hinj
-      have := hx ((1 : A) ⊗ₜ[K] c)
-      simpa [Algebra.TensorProduct.tmul_mul_tmul] using this
+      simpa [Algebra.TensorProduct.tmul_mul_tmul] using hx ((1 : A) ⊗ₜ[K] c)
     exact ⟨b, hb, rfl⟩
 
 theorem center_tensorProduct_eq_map_includeLeft [Algebra.IsCentral K A] :

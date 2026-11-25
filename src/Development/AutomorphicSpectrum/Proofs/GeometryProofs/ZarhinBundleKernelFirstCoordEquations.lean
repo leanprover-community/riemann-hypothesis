@@ -89,9 +89,8 @@ theorem regAt_push (η : Spec (CommRingCat.of Ω) ⟶ Y) (f : Y ⟶ X) [IsOpenIm
 theorem genMap_push_injective (η : Spec (CommRingCat.of Ω) ⟶ Y) (f : Y ⟶ X) [IsOpenImmersion f]
     (p : Cpt η) (h : Function.Injective (genMap η p)) :
     Function.Injective (genMap (η ≫ f) (push η f p)) := by
-  have hb : Function.Bijective (f.stalkMap p.1).hom := ConcreteCategory.bijective_of_isIso _
   rw [genMap_push]
-  exact h.comp hb.1
+  exact h.comp (ConcreteCategory.bijective_of_isIso _).1
 
 end OpenImm
 
@@ -124,8 +123,7 @@ theorem aeval_mul_of_isHomogeneous {B : Type} [CommRing B] [Algebra o B] (x : κ
   rw [aeval_def, aeval_def, eval₂_eq, eval₂_eq, Finset.mul_sum]
   refine Finset.sum_congr rfl fun d hd => ?_
   have h : ∑ i ∈ d.support, d i = n := by
-    have := hg (mem_support_iff.1 hd)
-    simpa [Finsupp.weight_apply, Finsupp.sum] using this
+    simpa [Finsupp.weight_apply, Finsupp.sum] using hg (mem_support_iff.1 hd)
   simp only [mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, h]
   ring
 

@@ -107,7 +107,7 @@ theorem mem_of_map_mem {M' : Type*} [AddCommGroup M'] [Module (MRingOver S ι) M
     (h𝓜 : KH.IsMGraded S ι 𝓜) {g : M' →ₗ[MRingOver S ι] M} (hg : KH.IsMGradedMap S ι 𝓜' 𝓜 g)
     (hinj : Function.Injective g) {c : K → ℤ} {m' : M'} (hm : g m' ∈ 𝓜 c) : m' ∈ 𝓜' c := by
   classical
-  have key : ∃ y ∈ 𝓜' c, g m' - g y ∈ ⨆ (j) (_ : j ≠ c), 𝓜 j := by
+  obtain ⟨y, hy, hd⟩ : ∃ y ∈ 𝓜' c, g m' - g y ∈ ⨆ (j) (_ : j ≠ c), 𝓜 j := by
     have hx : m' ∈ ⨆ j, 𝓜' j := by
       rw [h𝓜'.1.submodule_iSup_eq_top]
       exact Submodule.mem_top
@@ -130,7 +130,6 @@ theorem mem_of_map_mem {M' : Type*} [AddCommGroup M'] [Module (MRingOver S ι) M
         abel
       rw [this]
       exact add_mem e₁ e₂
-  obtain ⟨y, hy, hd⟩ := key
   have hc : g m' - g y ∈ 𝓜 c := sub_mem hm (hg c y hy)
   have h0 : g m' - g y = 0 := Submodule.disjoint_def.mp (h𝓜.1.submodule_iSupIndep c) _ hc hd
   rw [sub_eq_zero] at h0

@@ -204,8 +204,7 @@ theorem traceStep : TraceStep := by
     have hcp := hy3 hy0
     rw [hdeg] at hcp
     have hch := aeval_self_charpoly A
-    rw [hcp] at hch
-    simp only [map_pow, map_sub, aeval_X, map_one] at hch
+    simp only [hcp, map_pow, map_sub, aeval_X, map_one] at hch
     have hA1 := eq_one_of_unipotent A (ℓ ^ a) (pow_pos hℓ.pos a) hAn hch
     ext i j
     have hij := congrFun (congrFun hA1 i) j
@@ -301,8 +300,7 @@ noncomputable def schurPoly (N ℓ m : ℕ) : ℤ[X] :=
 theorem schurPoly_eval_top (N ℓ m : ℕ) :
     (schurPoly N ℓ m).eval (N : ℤ) = ((ℓ ^ m * m.factorial : ℕ) : ℤ) := by
   unfold schurPoly
-  rw [eval_prod]
-  simp only [eval_sub, eval_X, eval_C, sub_sub_cancel]
+  simp only [eval_prod, eval_sub, eval_X, eval_C, sub_sub_cancel]
   rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_range, ← Nat.cast_prod,
     Finset.prod_range_add_one_eq_factorial]
   push_cast

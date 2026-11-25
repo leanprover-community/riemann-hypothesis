@@ -285,8 +285,7 @@ theorem unfold_stab (x0 : X) (hc : Continuous fun g : G => g • x0) (μ : Measu
     exact avg_mul_mem (MulAction.stabilizer G x0) ν f q.out ⟨_, hk⟩
   have hinner : ∀ k : MulAction.stabilizer G x0, ∫⁻ g, f (g * k) ∂μ = ∫⁻ g, f g ∂μ := fun k =>
     lintegral_mul_right_of_mem μ (MulAction.stabilizer G x0) ν h0 hfin k hf
-  rw [hmap, hπ.lintegral_map]
-  simp only [hFs]
+  simp only [hmap, hπ.lintegral_map, hFs]
   rw [lintegral_map (meas_avg_q (MulAction.stabilizer G x0) ν hf) hmk]
   simp only [avg_out]
   rw [lintegral_lintegral_swap (f := fun (g : G) (h : MulAction.stabilizer G x0) => f (g * (h : G)))

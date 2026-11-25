@@ -104,7 +104,7 @@ theorem exists_sep {F : Type} [Field F] [IsAlgClosed F] (W : ValuationSubring F)
   set g : A := ((M.filter (fun r => ¬ IsUnit r)).map (fun r => t - algebraMap W A r)).prod with hg
   have hsg : s * g = 0 := by
     rw [hs, hg, ← Multiset.prod_add, ← Multiset.map_add (f := _), Multiset.filter_add_not, h0]
-  have hcop : IsCoprime s g := by
+  obtain ⟨b, a, hab⟩ : IsCoprime s g := by
     rw [hs]
     refine Multiset.prod_induction (fun x => IsCoprime x g) _
       (fun a b ha hb => ha.mul_left hb) isCoprime_one_left ?_
@@ -129,7 +129,6 @@ theorem exists_sep {F : Type} [Field F] [IsAlgClosed F] (W : ValuationSubring F)
     have := congrArg (algebraMap W A) hu
     rw [map_mul, map_sub, map_one] at this
     linear_combination this
-  obtain ⟨b, a, hab⟩ := hcop
   refine ⟨s, b, ?_, ?_, ?_⟩
   · rw [hs, map_multiset_prod]
     refine Multiset.prod_induction IsUnit _ (fun a b ha hb => ha.mul hb) isUnit_one ?_

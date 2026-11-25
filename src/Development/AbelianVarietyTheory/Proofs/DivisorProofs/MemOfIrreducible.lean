@@ -83,8 +83,7 @@ theorem mem_of_irreducible {K : Type u_1} {V : Type u_2} [Field K] [IsAlgClosed 
     obtain ⟨r, hr⟩ := jacobson_density F (Finset.univ.image b)
     have hfr : f = (r : Module.End K V) := by
       refine b.ext fun i => ?_
-      have := hr (b i) (Finset.mem_image_of_mem b (Finset.mem_univ i))
-      exact this
+      exact hr (b i) (Finset.mem_image_of_mem b (Finset.mem_univ i))
     rw [hfr]
     exact r.2
 

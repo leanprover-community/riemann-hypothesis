@@ -155,8 +155,7 @@ theorem idealOrder_le_of_le {I J : Ideal R} (h : I ≤ J) : idealOrder J ≤ ide
   rw [hI, hJ]
   apply sSup_le
   rintro x ⟨n, hn, rfl⟩
-  have hn' : I ≤ IsLocalRing.maximalIdeal R ^ n := le_trans h hn
-  exact le_sSup ⟨n, hn', rfl⟩
+  exact le_sSup ⟨n, (le_trans h hn), rfl⟩
 
 theorem idealOrder_sup (I J : Ideal R) :
     idealOrder (I ⊔ J) = min (idealOrder I) (idealOrder J) := by
@@ -214,10 +213,9 @@ theorem mul_idealOrder_le_idealOrder_pow (I : Ideal R) (c : ℕ) :
       rw [htop]
       exact le_top
     · obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp hI
-      have hIk : I ≤ IsLocalRing.maximalIdeal R ^ k := (le_idealOrder_iff I k).mp hk.le
       rw [← hk, ← Nat.cast_mul, le_idealOrder_iff]
       calc I ^ c ≤ (IsLocalRing.maximalIdeal R ^ k) ^ c :=
-            Ideal.pow_right_mono hIk c
+            Ideal.pow_right_mono ((le_idealOrder_iff I k).mp hk.le) c
         _ = IsLocalRing.maximalIdeal R ^ (c * k) := by rw [← pow_mul, mul_comm k c]
 
 private theorem map_maximalIdeal_pow_le_pow (f : R →+* S)

@@ -187,7 +187,6 @@ theorem sub_proj_of_unitary (hJ : Graded lv T J) (hJ' : Graded lv T J') (h : J' 
     InPat lv (k + k) ((x - 1) - proj J J' (x - 1)) := by
   obtain ⟨Z, rfl⟩ : ∃ Z, x = Z + 1 := ⟨x - 1, (sub_add_cancel x 1).symm⟩
   rw [add_sub_cancel_right] at hx1 ⊢
-  have hA : InPat lv k (sharp J J' Z) := inPat_sharp hJ hJ' hx1
   have h0 := sharp_mul_self h hx
   rw [sharp_add, sharp_one h] at h0
   have e : sharp J J' Z * Z + sharp J J' Z + Z = 0 := by
@@ -203,7 +202,7 @@ theorem sub_proj_of_unitary (hJ : Graded lv T J) (hJ' : Graded lv T J') (h : J' 
           rw [half_add_half]
       _ = (⅟2 : K) • sharp J J' Z + (⅟2 : K) • Z := by abel
   rw [key]
-  exact inPat_smul _ (inPat_neg (inPat_mul hA hx1))
+  exact inPat_smul _ (inPat_neg (inPat_mul (inPat_sharp hJ hJ' hx1) hx1))
 
 end Sharp
 
@@ -223,8 +222,7 @@ theorem inPat_geo {Z : Matrix ι ι K} (hZ : InPat lv k Z) (N : ℕ) : InPat lv 
 
 theorem geo_succ (N : ℕ) (Y : Matrix ι ι K) : geo (N + 1) Y = Y * geo N Y + 1 := by
   unfold geo
-  rw [Finset.sum_range_succ', Finset.mul_sum]
-  simp only [pow_succ', pow_zero]
+  simp only [Finset.sum_range_succ', Finset.mul_sum, pow_succ', pow_zero]
 
 theorem cay_sub (N : ℕ) {Z : Matrix ι ι K} (hZ : InPat lv k Z) : InPat lv (k + k) (cay (N + 1) Z - 1 - Z) := by
   unfold cay

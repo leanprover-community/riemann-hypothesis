@@ -45,11 +45,9 @@ theorem meansq_expand (PP I : Finset ℕ) (c : ℕ → ℝ) (hc : ∀ n, 0 ≤ c
           RCLike.norm_conj, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hc n),
           abs_of_nonneg (hc n')]
         have h2 : ‖κ n‖ * ‖κ n'‖ ≤ 1 := by
-          have := mul_le_mul (hκ n) (hκ n') (norm_nonneg _) zero_le_one
-          simpa using this
-        have h3 : 0 ≤ c n * c n' := mul_nonneg (hc n) (hc n')
+          simpa using mul_le_mul (hκ n) (hκ n') (norm_nonneg _) zero_le_one
         have h4 : c n * c n' * (‖κ n‖ * ‖κ n'‖) ≤ c n * c n' := by
-          simpa using mul_le_mul_of_nonneg_left h2 h3
+          simpa using mul_le_mul_of_nonneg_left h2 (mul_nonneg (hc n) (hc n'))
         exact mul_le_mul_of_nonneg_right h4 (abs_nonneg _)
 
 end Formalism.HermitianLattices.Ext.LogarithmicIntegralBounds

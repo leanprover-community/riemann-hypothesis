@@ -171,8 +171,7 @@ theorem exists_fundamentalDomain_mean_norm_sq_thetaChar :
     · rintro ⟨m, n, hmn⟩ i
       have hPq : periodMap τ (Sum.elim (fun i => (m i : ℝ)) (fun i => (n i : ℝ))) =
           (fun i => (m i : ℂ)) + τ *ᵥ (fun i => (n i : ℂ)) := by
-        rw [periodMap_apply]
-        simp
+        simp [periodMap_apply]
       have hΦq : Φ (Sum.elim (fun i => (m i : ℝ)) (fun i => (n i : ℝ))) = lam := by
         have e : h *ᵥ Φ (Sum.elim (fun i => (m i : ℝ)) (fun i => (n i : ℝ))) = h *ᵥ lam := by
           rw [F1, hPq, hmn]

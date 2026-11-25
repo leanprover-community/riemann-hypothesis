@@ -23,8 +23,7 @@ theorem prodSplit_closed (x : ℝ) (hx : x ≠ 0) (M : ℕ) : ∀ a, a ≤ M →
   | succ a ih =>
     intro ha
     obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le ha
-    rw [Fin.prod_univ_castSucc]
-    simp only [Fin.val_castSucc, Fin.val_last]
+    simp only [Fin.prod_univ_castSucc, Fin.val_castSucc, Fin.val_last]
     rw [ih (by omega), show a + 1 + m - a + 1 = m + 1 + 1 by omega,
       show a + 1 + m - (a + 1) + 1 = m + 1 by omega,
       ← Finset.insert_Icc_add_one_left_eq_Icc (by omega : m + 1 ≤ a + 1 + m), Finset.prod_insert (by simp),
@@ -45,8 +44,7 @@ theorem prodInert_closed (x : ℝ) (hx : x ≠ 0) (M : ℕ) : ∀ a, a ≤ M →
   | succ a ih =>
     intro ha
     obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le ha
-    rw [Fin.prod_univ_castSucc]
-    simp only [Fin.val_castSucc, Fin.val_last]
+    simp only [Fin.prod_univ_castSucc, Fin.val_castSucc, Fin.val_last]
     rw [ih (by omega), show a + 1 + m - a + 1 = m + 1 + 1 by omega,
       show a + 1 + m - (a + 1) + 1 = m + 1 by omega,
       ← Finset.insert_Icc_add_one_left_eq_Icc (by omega : m + 1 ≤ a + 1 + m), Finset.prod_insert (by simp),

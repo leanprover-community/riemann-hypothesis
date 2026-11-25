@@ -98,8 +98,7 @@ theorem integral_cube_succ_last (N : ℕ) (s : ℝ) (f : (Fin (N + 1) → ℝ) �
         e ⁻¹' (Set.Icc (0 : ℝ) s ×ˢ T) := by
       ext x
       simp only [Set.mem_preimage, Set.mem_prod, hT, Set.mem_pi, Set.mem_univ, true_implies]
-      rw [Fin.forall_fin_succ', and_comm]
-      simp [e, Fin.init]
+      simp [Fin.forall_fin_succ', and_comm, e, Fin.init]
     have hsw : (fun z : (Fin N → ℝ) × ℝ => f (e.symm z.swap)) =
         fun z => f (Fin.snoc (α := fun _ => ℝ) z.1 z.2) := by
       funext z
@@ -107,8 +106,7 @@ theorem integral_cube_succ_last (N : ℕ) (s : ℝ) (f : (Fin (N + 1) → ℝ) �
       rfl
     calc ∫ t in Set.pi Set.univ (fun _ : Fin (N + 1) => Set.Icc (0 : ℝ) s), f t
         = ∫ t in e ⁻¹' (Set.Icc (0 : ℝ) s ×ˢ T), f (e.symm (e t)) := by
-          rw [hS]
-          simp only [MeasurableEquiv.symm_apply_apply]
+          simp only [hS, MeasurableEquiv.symm_apply_apply]
       _ = ∫ z in Set.Icc (0 : ℝ) s ×ˢ T, f (e.symm z) ∂((volume : Measure ℝ).prod volume) :=
           hp.setIntegral_preimage_emb e.measurableEmbedding (fun z => f (e.symm z)) _
       _ = ∫ z in T ×ˢ Set.Icc (0 : ℝ) s, f (e.symm z.swap)

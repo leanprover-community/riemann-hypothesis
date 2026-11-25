@@ -97,8 +97,7 @@ def absFrob (X : Scheme.{0}) (p r : ℕ) (hp : p.Prime) (h : (p : Γ(X, ⊤)) = 
 theorem absFrob_appLE (X : Scheme.{0}) (p r : ℕ) (hp : p.Prime) (h : (p : Γ(X, ⊤)) = 0) (U : X.Opens)
     (e : U ≤ absFrob X p r hp h ⁻¹ᵁ U) (f : Γ(X, U)) :
     ((absFrob X p r hp h).appLE U U e).hom f = f ^ p ^ r := by
-  have := Scheme.Hom.appLE_eq_app (absFrob X p r hp h) (U := U)
-  exact congrArg (fun φ => φ.hom f) this
+  exact congrArg (fun φ => φ.hom f) (Scheme.Hom.appLE_eq_app (absFrob X p r hp h) (U := U))
 
 theorem absFrob_nat {X Y : Scheme.{0}} (f : X ⟶ Y) (p r : ℕ) (hp : p.Prime) (hX : (p : Γ(X, ⊤)) = 0)
     (hY : (p : Γ(Y, ⊤)) = 0) : absFrob X p r hp hX ≫ f = f ≫ absFrob Y p r hp hY := by
@@ -257,8 +256,7 @@ theorem good_of_isPullback {X G S T : Scheme.{0}} [IsAffine S] [IsAffine T] {g :
   refine good_of_cover (pow_pos hp.pos r) (fun x => ?_) U hU f
   obtain ⟨_, ⟨V, hV, rfl⟩, hx, -⟩ := G.isBasis_affineOpens.exists_subset_of_mem_open
     (Set.mem_univ (g x)) isOpen_univ
-  have : IsAffineHom b := inferInstance
-  have : IsAffineHom g := MorphismProperty.of_isPullback H.flip this
+  have : IsAffineHom g := MorphismProperty.of_isPullback H.flip (inferInstance : IsAffineHom b)
   refine ⟨g ⁻¹ᵁ V, hx, IsAffineOpen.preimage hV g, fun f => ?_⟩
   have hF : g ⁻¹ᵁ V = F.asHom ⁻¹ᵁ g ⁻¹ᵁ V := by
     rw [← Scheme.Hom.comp_preimage, hg]; rfl

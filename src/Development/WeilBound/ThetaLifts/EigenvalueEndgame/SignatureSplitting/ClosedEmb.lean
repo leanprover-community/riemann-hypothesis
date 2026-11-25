@@ -198,8 +198,7 @@ theorem bump_ex [T2Space R] {V Λ : Type} [NormedCommRing V] [CommRing Λ] [Topo
     exact ε0.ne'
   rw [hη, hη]
   refine (abs_max_sub_max_le_abs _ _ _).trans ?_
-  rw [sub_sub_sub_cancel_left]
-  simp only [he, ← Finset.sum_sub_distrib]
+  simp only [sub_sub_sub_cancel_left, he, ← Finset.sum_sub_distrib]
   refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum fun i _ => (Finset.abs_sum_le_sum_abs _ _).trans
     (Finset.sum_le_sum (g := fun _ => b) fun j _ => ?_)).trans_eq (by simp; ring))
   have e2 : (y.1 - 1) i j - (y'.1 - 1) i j = (y.1 - y'.1) i j := by rw [← Matrix.sub_apply, sub_sub_sub_cancel_right]
@@ -223,8 +222,7 @@ theorem lip_of [T2Space R] {V Λ : Type} [NormedCommRing V] [CommRing Λ] [Topol
     rw [funext hT0]
     have c : Continuous (Subtype.val : SL(2, R) → Matrix (Fin 2) (Fin 2) R) := continuous_subtype_val
     have c1 : Continuous fun z : SL(2, R) × SL(2, R) => (z.1⁻¹).1 := c.comp (continuous_inv (G := SL(2, R)) |>.comp continuous_fst)
-    have c2 : Continuous fun z : SL(2, R) × SL(2, R) => (z.1 * z.2).1 := c.comp (continuous_mul (M := SL(2, R)))
-    exact (c1.matrix_mul continuous_const).matrix_mul c2
+    exact (c1.matrix_mul continuous_const).matrix_mul (c.comp (continuous_mul (M := SL(2, R))))
   have hC : IsCompact (⋃ i, ⋃ j, (fun z => T z i j) '' Ω ×ˢ tsupport η) :=
     isCompact_iUnion fun i => isCompact_iUnion fun j => (hΩ.prod hη.cpt).image (Tc.matrix_elem i j)
   obtain ⟨D₁, hD₁⟩ := hC.exists_bound_of_continuousOn hp.continuousOn

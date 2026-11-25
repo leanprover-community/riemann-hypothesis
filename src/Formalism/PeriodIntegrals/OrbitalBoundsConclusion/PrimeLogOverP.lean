@@ -178,11 +178,9 @@ theorem S_le_large (n : ℕ) (hn : 64 ≤ n) : S n ≤ Real.log (n : ℝ) := by
   have hL1 : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9
   have hL0 : 0.6931471803 < Real.log 2 := Real.log_two_gt_d9
   have h3 : (19 : ℝ) / 12 * Real.log 2 ≤ Real.log 3 := by
-    have := le_log_of_pow_le 3 19 12 (by norm_num) (by norm_num)
-    simpa using this
+    simpa using le_log_of_pow_le 3 19 12 (by norm_num) (by norm_num)
   have h5 : (51 : ℝ) / 22 * Real.log 2 ≤ Real.log 5 := by
-    have := le_log_of_pow_le 5 51 22 (by norm_num) (by norm_num)
-    simpa using this
+    simpa using le_log_of_pow_le 5 51 22 (by norm_num) (by norm_num)
   have h64 : Real.log 64 = 6 * Real.log 2 := by
     rw [show (64 : ℝ) = 2 ^ 6 by norm_num, Real.log_pow]
     norm_num

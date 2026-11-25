@@ -49,8 +49,7 @@ theorem levTower_bs_z_eq_castV_liftVec (T : D.LevTower k r Wp Wq) (j : ℕ) (hj 
   funext i
   have hi := i.isLt
   have hi' : i.val ≤ 2 * (r - j) + k := by omega
-  have := congrFun e3 ⟨i.val + j, by omega⟩
-  simpa [liftVec, hi'] using this
+  simpa [liftVec, hi'] using congrFun e3 ⟨i.val + j, by omega⟩
 
 theorem levTower_bs_z'_eq_castV_liftVec (T : D.LevTower k r Wp Wq) (j : ℕ) (hj : j + 1 ≤ r) :
     (T.bs j).z' = D.castV (by omega : 1 + (r - (j + 1)) = r - j) (liftVec k 1 (r - (j + 1)) (T.bs (j + 1)).z') := by
@@ -61,8 +60,7 @@ theorem levTower_bs_z'_eq_castV_liftVec (T : D.LevTower k r Wp Wq) (j : ℕ) (hj
   funext i
   have hi := i.isLt
   have hi' : i.val ≤ 2 * (r - j) + k := by omega
-  have := congrFun e3 ⟨i.val + j, by omega⟩
-  simpa [liftVec, hi'] using this
+  simpa [liftVec, hi'] using congrFun e3 ⟨i.val + j, by omega⟩
 
 theorem tower_π (T : D.LevTower k r Wp Wq) (j : ℕ) (hj : j + 1 ≤ r) (y : B.Mat k (r - (j + 1))) :
     (T.bs (j + 1)).π y = (T.bs j).π (D.castM (by omega : 1 + (r - (j + 1)) = r - j) (ιLev k 1 (r - (j + 1)) y)) := by

@@ -68,9 +68,8 @@ theorem exp_le_inv_pow {c : ℝ} (hc : 0 < c) (R : ℝ) (n : ℕ) {t : ℝ} (ht 
     exact Real.exp_le_exp.mpr (by linarith)
   have h2 : Real.exp (-t) ≤ (n.factorial : ℝ) * t⁻¹ ^ n := by
     have hpos : 0 < t ^ n / (n.factorial : ℝ) := by positivity
-    have hle : t ^ n / (n.factorial : ℝ) ≤ Real.exp t := Real.pow_div_factorial_le_exp t ht.le n
     rw [Real.exp_neg, inv_pow, ← div_eq_mul_inv, ← inv_div]
-    exact inv_anti₀ hpos hle
+    exact inv_anti₀ hpos (Real.pow_div_factorial_le_exp t ht.le n)
   calc Real.exp (-c * t ^ 2 + R * t)
       ≤ Real.exp ((R + 1) ^ 2 / (4 * c)) * Real.exp (-t) := h1
     _ ≤ Real.exp ((R + 1) ^ 2 / (4 * c)) * ((n.factorial : ℝ) * t⁻¹ ^ n) := by gcongr
@@ -87,10 +86,8 @@ theorem summable_lattice {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
   have hfin : {z : L | (z : V) = x}.Finite := by
     exact Set.Subsingleton.finite (fun a ha b hb => Subtype.ext (ha.trans hb.symm))
   filter_upwards [hfin.compl_mem_cofinite] with z hz
-  have hne : (z : V) ≠ x := hz
-  have hpos : 0 < ‖(z : V) - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hne)
   rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-  exact exp_le_inv_pow hc R (Module.finrank ℤ L + 1) hpos
+  exact exp_le_inv_pow hc R (Module.finrank ℤ L + 1) (norm_pos_iff.mpr (sub_ne_zero.mpr hz))
 
 theorem discrete_of_finite {V : Type} [NormedAddCommGroup V] (L : AddSubgroup V)
     (h : {v : V | v ∈ L ∧ ‖v‖ ≤ 1}.Finite) : DiscreteTopology L := by

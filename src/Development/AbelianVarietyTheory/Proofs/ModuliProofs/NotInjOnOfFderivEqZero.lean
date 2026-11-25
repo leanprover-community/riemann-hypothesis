@@ -105,8 +105,7 @@ theorem analyticAt_det {X : Type u_1} {E : Type u_2} [NormedAddCommGroup X] [Nor
     funext z
     rw [← LinearMap.det_toMatrix b, Matrix.det_apply]
     refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [Units.smul_def, zsmul_eq_mul]
-    simp [LinearMap.toMatrix_apply]
+    simp [Units.smul_def, zsmul_eq_mul, LinearMap.toMatrix_apply]
   rw [hfun]
   refine Finset.analyticAt_fun_sum _ fun σ _ => ?_
   refine analyticAt_const.mul (Finset.analyticAt_fun_prod _ fun i _ => ?_)
@@ -343,9 +342,8 @@ theorem exists_regular_of_zero {E : Type*} [NormedAddCommGroup E] [NormedSpace �
     refine ⟨b, (hU b hbU).2, hb, hUa b hbU, fun z => A (iteratedFDeriv ℂ j h z),
       (A.analyticAt _).comp hj, fun h0 => hm ?_, ?_⟩
     · have := (A.hasFDerivAt.comp b hj.differentiableAt.hasFDerivAt).fderiv
-      have h2 : A.comp (fderiv ℂ (iteratedFDeriv ℂ j h) b) = 0 := this.symm.trans h0
       rw [iteratedFDeriv_succ_apply_left]
-      exact congrArg (fun T => T (m 0)) h2
+      exact congrArg (fun T => T (m 0)) (this.symm.trans h0)
     · filter_upwards [hUo.mem_nhds hbU] with z hz hz0
       have := hmin j (Nat.lt_succ_self j)
       push Not at this

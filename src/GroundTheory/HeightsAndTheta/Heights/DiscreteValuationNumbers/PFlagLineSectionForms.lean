@@ -112,8 +112,7 @@ theorem IsChartForm.pad {y : (Σ k, ι k) → Ω} {w : Module.Basis (Fin N) Ω E
     rwa [← liftN_add] at this
   · rw [map_mul, h.2, projMap_chartMon]
     have e : (fun _ : K => n + m) = (fun _ => n) + (fun _ => m) := rfl
-    rw [e, tMon_add]
-    simp only [segreVec, pow_add, Finset.prod_pow, map_mul]
+    simp only [e, tMon_add, segreVec, pow_add, Finset.prod_pow, map_mul]
     ring
 
 theorem exists_chartForm (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω E)
@@ -151,8 +150,7 @@ theorem exists_chartForm (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω 
       rwa [← liftN_add] at this
     · rw [map_mul, h₁.2, h₂.2]
       have e : (fun _ : K => n₁ + n₂) = (fun _ => n₁) + (fun _ => n₂) := rfl
-      rw [e, tMon_add, pow_add]
-      simp only [map_mul]
+      simp only [e, tMon_add, pow_add, map_mul]
       ring
 
 theorem exists_chartForm_family (y : (Σ k, ι k) → Ω) (w : Module.Basis (Fin N) Ω E)

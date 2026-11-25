@@ -174,10 +174,9 @@ theorem exists_holomorphic_chart :
     hX.exists_isStandardSmoothOfRelativeDimension (e' (default : PrimeSpectrum ℂ))
   have hU₀ : U₀ = ⊤ := by
     refine eq_top_iff.2 fun y _ => ?_
-    have h1 : X.hom (e' (default : PrimeSpectrum ℂ)) ∈ U₀ := hle hp
     have h2 : y = X.hom (e' (default : PrimeSpectrum ℂ)) :=
       Subsingleton.elim (α := PrimeSpectrum ℂ) _ _
-    rw [h2]; exact h1
+    rw [h2]; exact hle hp
   subst hU₀
   let c : ℂ →+* Γ(X.left, U) :=
     (X.hom.appLE ⊤ U hle).hom.comp (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom

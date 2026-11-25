@@ -158,8 +158,7 @@ theorem GlobalTheory.offDiag_zero_iff_mem_K : ∀ (n : ℕ) (ε : Fin n → Bool
   · intro h0
     have hTF : ∀ a b, ε a = true → ε b = false → toM g a b = 0 := by
       intro a b ha hb
-      have := congrFun h0 ⟨(a, b), ha, hb⟩
-      simpa using this
+      simpa using congrFun h0 ⟨(a, b), ha, hb⟩
     have hFT := offdiag_zero ε _ hg hTF
     have hc := comm_of ε _ hTF hFT
     refine ⟨?_, hc⟩
@@ -173,8 +172,7 @@ theorem GlobalTheory.offDiag_zero_iff_mem_K : ∀ (n : ℕ) (ε : Fin n → Bool
     obtain ⟨⟨a, b⟩, ha, hb⟩ := z
     simp only at ha hb
     have e := congrFun (congrFun hc a) b
-    rw [Jm_eq, Matrix.mul_diagonal, Matrix.diagonal_mul] at e
-    simp only [sgn, ha, hb] at e
+    simp only [Jm_eq, Matrix.mul_diagonal, Matrix.diagonal_mul, sgn, ha, hb] at e
     push_cast at e
     have h0 : toM g a b = 0 := by linear_combination (-1/2 : ℂ) * e
     simp [h0]

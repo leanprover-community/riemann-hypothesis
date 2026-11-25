@@ -107,17 +107,15 @@ theorem contDiffOn_potOf (R : AnLogRes P J e) {L : HermLine ι} (hL : IsSmoothHe
   have hmaps : Set.MapsTo (fun y => R.lift x ((R.A.chart j).symm y))
       ((R.A.chart j).target ∩ (R.A.chart j).symm ⁻¹' R.U x) {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} :=
     fun y hy => (R.mem x _ hy.2).1
-  have hL' : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) L.h {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := hL
-  exact (hL'.comp hl hmaps).log fun y hy => (L.pos _ (hmaps hy)).ne'
+  exact (hL.comp hl hmaps).log fun y hy => (L.pos _ (hmaps hy)).ne'
 
 theorem smooth_diag (R : AnLogRes P J e) {B : HermLine ι} (hB : IsSmoothHerm B) (hB0 : B.a = 0) :
     R.A.Smooth (fun x => Real.log (B.h (R.lift x x))) := by
   intro j
   apply contDiffOn_of_locally_contDiffOn
   intro y hy
-  have hyt : y ∈ (R.A.chart j).target := hy.1
   refine ⟨(R.A.chart j).target ∩ (R.A.chart j).symm ⁻¹' R.U ((R.A.chart j).symm y),
-    (R.A.chart j).isOpen_inter_preimage_symm (R.isOpen_U _), ⟨hyt, R.mem_U _⟩, ?_⟩
+    (R.A.chart j).isOpen_inter_preimage_symm (R.isOpen_U _), ⟨hy.1, R.mem_U _⟩, ?_⟩
   have hc := contDiffOn_potOf R hB ((R.A.chart j).symm y) j
   refine (hc.mono Set.inter_subset_right).congr fun y' hy' => ?_
   change Real.log (B.h (R.lift ((R.A.chart j).symm y') ((R.A.chart j).symm y'))) =

@@ -58,11 +58,9 @@ theorem cartanInvolution_conj_of_posDef (ι : Type) [Fintype ι] [DecidableEq ι
     ∃ a : Matrix ι ι ℂ, aᴴ * s * a = s ∧ a * s = s' * a := by
   set M := s * s' with hMdef
   have hMpsd : M.PosSemidef := hM.posSemidef
-  have hM0 : 0 ≤ M := Matrix.nonneg_iff_posSemidef.mpr hMpsd
   set R := CFC.sqrt M with hRdef
-  have hR0 : 0 ≤ R := CFC.sqrt_nonneg M
-  have hRpsd : R.PosSemidef := Matrix.nonneg_iff_posSemidef.mp hR0
-  have hRR : R * R = M := CFC.sqrt_mul_sqrt_self M hM0
+  have hRpsd : R.PosSemidef := Matrix.nonneg_iff_posSemidef.mp (CFC.sqrt_nonneg M)
+  have hRR : R * R = M := CFC.sqrt_mul_sqrt_self M (Matrix.nonneg_iff_posSemidef.mpr hMpsd)
   have hRh : Rᴴ = R := hRpsd.isHermitian
   have hsM : s * M = s' := by rw [hMdef, ← Matrix.mul_assoc, hss, Matrix.one_mul]
   have hMinv : M⁻¹ = s * M * s := by

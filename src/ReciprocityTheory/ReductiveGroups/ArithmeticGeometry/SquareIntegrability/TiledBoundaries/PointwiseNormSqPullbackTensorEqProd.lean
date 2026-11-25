@@ -94,8 +94,7 @@ theorem pi_bij (X : PT E) {q : ℕ} {π : Vsp X.dim →ₗ[ℂ] Vsp X.dim} (hq :
       simp [Hf]
     have h1 : Hf v v = 0 := (mul_eq_zero.1 h0).resolve_left hq
     have h2 : ∑ i, Complex.normSq (v i) = 0 := by
-      have := congrArg Complex.re h1
-      simpa [Hf, Complex.mul_conj, Complex.re_sum] using this
+      simpa [Hf, Complex.mul_conj, Complex.re_sum] using congrArg Complex.re h1
     ext i
     have h3 := (Finset.sum_eq_zero_iff_of_nonneg (fun i _ => Complex.normSq_nonneg (v i))).1 h2 i
       (Finset.mem_univ _)

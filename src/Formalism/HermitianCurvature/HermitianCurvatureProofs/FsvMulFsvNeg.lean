@@ -106,8 +106,7 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 theorem radSp_regular (Φ : RadSp k r z z' π π') (g : Mx k r) (c : Fin r → ℂ) :
     (c ∈ OmX r → DifferentiableAt ℝ (fun c' => (Φ : Fn k r (Wq →L[ℂ] Wp)) c' g) c) ∧
       (c ∉ OmX r → (Φ : Fn k r (Wq →L[ℂ] Wp)) c g = 0) := by
-  have hΦm : (Φ : Fn k r (Wq →L[ℂ] Wp)) ∈ RadSp k r z z' π π' := Φ.2
-  obtain ⟨h0, hs, -⟩ := hΦm
+  obtain ⟨h0, hs, -⟩ : (Φ : Fn k r (Wq →L[ℂ] Wp)) ∈ RadSp k r z z' π π' := Φ.2
   refine ⟨fun hc => ?_, fun hc => h0 (c, g) (fun hx => hc (by
     simp only [DomR, Set.mem_setOf_eq] at hx
     exact hx.1))⟩
@@ -122,8 +121,7 @@ theorem radSp_regular (Φ : RadSp k r z z' π π') (g : Mx k r) (c : Fin r → �
       exact hΦ (c', g) hc' hg.1
     have hFd : DifferentiableAt ℝ F (c, g) := (hF.contDiffAt (hU.mem_nhds hxU)).differentiableAt (by simp)
     have hpair : DifferentiableAt ℝ (fun c' : Fin r → ℂ => (c', g)) c := by fun_prop
-    have hcomp : DifferentiableAt ℝ (fun c' => F (c', g)) c := hFd.comp c hpair
-    exact hcomp.congr_of_eventuallyEq hev
+    exact (hFd.comp c hpair).congr_of_eventuallyEq hev
   · have hz : (fun c' => (Φ : Fn k r (Wq →L[ℂ] Wp)) c' g) = fun _ => 0 := by
       funext c'
       refine h0 (c', g) (fun hx => hg ?_)

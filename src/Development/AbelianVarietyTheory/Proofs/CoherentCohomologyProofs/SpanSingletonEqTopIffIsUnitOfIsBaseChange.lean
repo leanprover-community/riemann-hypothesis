@@ -82,13 +82,12 @@ theorem finitePresentation [Module.FinitePresentation A' (A' ⊗[A] M)] :
   have : Module.Finite A M := finite A'
   obtain ⟨n, f, hf⟩ := Module.Finite.exists_fin' A M
   refine Module.finitePresentation_of_free_of_surjective f hf (fg_of_baseChange A' ?_)
-  have hf' : Function.Surjective (f.baseChange A') := LinearMap.lTensor_surjective A' hf
   have hker : (LinearMap.ker f).baseChange A' = LinearMap.ker (f.baseChange A') := by
     have hex : Function.Exact ((LinearMap.ker f).subtype.baseChange A') (f.baseChange A') :=
       lTensor_exact A' (LinearMap.exact_subtype_ker_map f) hf
     exact (LinearMap.exact_iff.mp hex).symm
   rw [hker]
-  exact Module.FinitePresentation.fg_ker _ hf'
+  exact Module.FinitePresentation.fg_ker _ (LinearMap.lTensor_surjective A' hf)
 
 theorem projective [Module.Finite A' (A' ⊗[A] M)] [Module.Projective A' (A' ⊗[A] M)] :
     Module.Projective A M := by
@@ -237,8 +236,7 @@ theorem sectionHom_app (W : (U : Scheme.{u}).Opens) (a : Γ(X, U.ι ''ᵁ W)) :
     exact this.symm
   have h2 := Scheme.Modules.Hom.app_smul (sectionHom (s := s)) (U := W) a
     (1 : Γ((U : Scheme.{u}), W))
-  have h3 : a = a * 1 := (mul_one a).symm
-  refine (congrArg ((sectionHom (s := s)).app W) h3).trans (h2.trans ?_)
+  refine (congrArg ((sectionHom (s := s)).app W) ((mul_one a).symm)).trans (h2.trans ?_)
   rw [h1]
   change ((U.ι.appIso W).inv a) • F.presheaf.map (homOfLE (U.ι_image_le W)).op s = _
   rw [Scheme.Opens.ι_appIso]

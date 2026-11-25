@@ -108,10 +108,9 @@ theorem toQ_injective (𝔞 𝔟 : Frac F) : Function.Injective (toQ 𝔞 𝔟) 
     rw [← Quotient.out_eq c, ← Quotient.out_eq c']
     exact Quotient.sound ⟨ε, h2⟩
   subst hc
-  have hne : c.out.1 ≠ 0 := c.out.2.2
   have hε : ((ε : 𝓞 F) : F) = 1 := by
     have h3 : (((ε : 𝓞 F) : F) - 1) * c.out.1 = 0 := by linear_combination -h2
-    exact sub_eq_zero.1 ((mul_eq_zero.1 h3).resolve_right hne)
+    exact sub_eq_zero.1 ((mul_eq_zero.1 h3).resolve_right c.out.2.2)
   have hε' : (((ε⁻¹ : (𝓞 F)ˣ) : 𝓞 F) : F) = 1 := by
     have := unit_inv_mul ε; rw [hε, mul_one] at this; exact this
   rw [hε', one_mul] at h1
@@ -128,7 +127,6 @@ theorem toQ_surjective [IsTotallyReal F] (𝔞 𝔟 : Frac F) : Function.Surject
   have hνb : ν * b ≠ 0 := by
     intro h0; have := hpos τ₀; rw [h0, map_zero] at this; exact lt_irrefl _ this
   have hb0 : b ≠ 0 := right_ne_zero_of_mul hνb
-  have hν0 : ν ≠ 0 := left_ne_zero_of_mul hνb
   set c : Quotient (unitRel (𝔟 : FractionalIdeal (𝓞 F)⁰ F)) := Quotient.mk _ ⟨b, hb, hb0⟩ with hcdef
   obtain ⟨ε, hε⟩ := Quotient.exact (Quotient.out_eq c : Quotient.mk _ c.out = Quotient.mk _ ⟨b, hb, hb0⟩)
   dsimp only at hε
@@ -137,7 +135,7 @@ theorem toQ_surjective [IsTotallyReal F] (𝔞 𝔟 : Frac F) : Function.Surject
     rw [Algebra.smul_def] at this
     exact this
   have hne : ((ε : 𝓞 F) : F) * ν ≠ 0 := by
-    refine mul_ne_zero ?_ hν0
+    refine mul_ne_zero ?_ (left_ne_zero_of_mul hνb)
     intro h0
     have := unit_inv_mul ε; rw [h0, mul_zero] at this; exact zero_ne_one this
   have hprod : ((ε : 𝓞 F) : F) * ν * c.out.1 = ν * b := by rw [hε]; ring

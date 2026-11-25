@@ -72,8 +72,7 @@ theorem exists_gen {F : Type} [Field F] [NumberField F] [IsCMField F] (Kq : Subf
   simp only [Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
     Matrix.head_cons, Matrix.tail_cons] at hg
   have hgF : (g 0 : F) + g 1 * x0 + g 2 * (x0 * x0) = 0 := by
-    have := congrArg (fun w : Kq => (w : F)) hg
-    simpa [Rat.smul_def, x] using this
+    simpa [Rat.smul_def, x] using congrArg (fun w : Kq => (w : F)) hg
 
   have hnr : ∀ a b : ℚ, b ≠ 0 → (a : F) + b * x0 ≠ 0 := by
     intro a b hb h
@@ -85,8 +84,7 @@ theorem exists_gen {F : Type} [Field F] [NumberField F] [IsCMField F] (Kq : Subf
     · exact hx0 h3
   have hg2 : g 2 ≠ 0 := by
     intro h2
-    rw [h2] at hgF
-    simp only [Rat.cast_zero, zero_mul, add_zero] at hgF
+    simp only [h2, Rat.cast_zero, zero_mul, add_zero] at hgF
     by_cases h1 : g 1 = 0
     · rw [h1] at hgF
       simp only [Rat.cast_zero, zero_mul, add_zero, Rat.cast_eq_zero] at hgF

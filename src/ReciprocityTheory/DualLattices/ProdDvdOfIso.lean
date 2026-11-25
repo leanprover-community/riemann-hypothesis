@@ -180,12 +180,11 @@ private lemma prod_mem_span_prod_of_linearEquiv_pi_quotient {R : Type} [CommRing
     ext j1 j2
     simp only [Matrix.mul_apply, Matrix.submatrix_apply]
     rfl
-  have hdetA' : IsUnit A'.det := by
+  obtain ⟨u, hu⟩ : IsUnit A'.det := by
     have h := congrArg Matrix.det hBA'
     rw [Matrix.det_submatrix_equiv_self, Matrix.det_mul] at h
     rw [← h] at hdetBA
     exact isUnit_of_mul_isUnit_right hdetBA
-  obtain ⟨u, hu⟩ := hdetA'
   rw [Ideal.mem_span_singleton']
   refine ⟨↑u⁻¹ * X'.det, ?_⟩
   calc ↑u⁻¹ * X'.det * ∏ j, d j = ↑u⁻¹ * (A'.det * ∏ i, c i) := by rw [hdet]; ring
@@ -233,8 +232,7 @@ theorem hasLen_unique {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [
     exact lt_irrefl _ h2
   have h1 := prod_dvd_of_iso c d (φ.symm.trans ψ)
   have h2 := prod_dvd_of_iso d c (ψ.symm.trans φ)
-  rw [Ideal.mem_span_singleton, hv.dvd_iff_le] at h1 h2
-  simp only [map_prod] at h1 h2
+  simp only [Ideal.mem_span_singleton, hv.dvd_iff_le, map_prod] at h1 h2
   exact le_antisymm h1 h2
 
 end ReciprocityTheory.PGsh.Up

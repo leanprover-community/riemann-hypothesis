@@ -202,8 +202,7 @@ private theorem eq_zero_at_zero_of_tsum_mul_pow_eq_zero (b : ℕ → ℂ) (hb : 
       exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ ht.le hle i) (norm_nonneg _)
     have hGn : Summable fun i => ‖b i * (t : ℂ) ^ i‖ :=
       Summable.of_nonneg_of_le (fun i => norm_nonneg _) hbd hb
-    have hG : Summable fun i => b i * (t : ℂ) ^ i := hGn.of_norm
-    have hsplit := hG.tsum_eq_zero_add
+    have hsplit := hGn.of_norm.tsum_eq_zero_add
     rw [h0 t ht hle, pow_zero, mul_one] at hsplit
     have hb0 : b 0 = -∑' i, b (i + 1) * (t : ℂ) ^ (i + 1) := by linear_combination -hsplit
     have hGn1 : Summable fun i => ‖b (i + 1) * (t : ℂ) ^ (i + 1)‖ :=
@@ -268,8 +267,7 @@ private theorem coeff_eq_zero_of_ev_eq_zero_of_lower_eq_zero {f : PowerSeries �
       rw [← tsum_mul_left]
       exact tsum_congr fun i => by ring
     rw [e1, e2] at hev
-    have htn : (t : ℂ) ^ n ≠ 0 := pow_ne_zero _ (by exact_mod_cast ht.ne')
-    exact (mul_eq_zero.mp hev).resolve_left htn
+    exact (mul_eq_zero.mp hev).resolve_left (pow_ne_zero _ (by exact_mod_cast ht.ne'))
 
 theorem eq_zero_of_ev_eq_zero {f : PowerSeries ℂ} (hf : Conv f)
     (h : ∀ x : ℂ, 0 < ‖x‖ → ‖x‖ < 1 → ev f x = 0) : f = 0 := by

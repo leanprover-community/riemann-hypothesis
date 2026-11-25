@@ -69,8 +69,7 @@ theorem card_hom_vanishing_of_diag_basis {M A ι : Type} [AddCommGroup M] [AddCo
       simp [h, hy, -Basis.constr_apply_fintype]
     exact LinearMap.congr_fun this ⟨x, hx⟩
   · intro hy i
-    have := hy _ (c i).2
-    simpa [h, -Basis.constr_apply_fintype] using this
+    simpa [h, -Basis.constr_apply_fintype] using hy _ (c i).2
 
 theorem card_ker_int_matrix_four (G : Type) [CommGroup G] (m r : ℕ)
     (al : Matrix (Fin 4) (Fin 4) ℤ) (hm : 1 ≤ m)
@@ -150,7 +149,6 @@ theorem card_ker_int_matrix_four (G : Type) [CommGroup G] (m r : ℕ)
         rw [LinearMap.comp_apply, h4, hξ]; rfl
     exact LinearMap.congr_fun this x
   · intro hξ j
-    have := hξ (f (b0 j)) ⟨_, rfl⟩
-    exact ofMul_eq_zero.mp ((h4 j).symm.trans this)
+    exact ofMul_eq_zero.mp ((h4 j).symm.trans (hξ (f (b0 j)) ⟨_, rfl⟩))
 
 end GlobalTheory

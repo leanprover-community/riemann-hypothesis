@@ -204,8 +204,7 @@ theorem constantCoeff_mvExp {f : MvPowerSeries σ K} (hf : MvPowerSeries.constan
   rw [subst_C] at h
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   unfold mvExp
-  rw [h]
-  simp
+  simp [h]
 
 theorem pderiv_mvExp {f : MvPowerSeries σ K} (hf : MvPowerSeries.constantCoeff f = 0) (i : σ) :
     MvPowerSeries.pderiv (R := K) i (mvExp f) = mvExp f * MvPowerSeries.pderiv (R := K) i f := by
@@ -275,10 +274,9 @@ theorem expIntegralDeriv' : LGDeriv := by
   have h0 := constantCoeff_mvExp hf.1
   have hne : MvPowerSeries.constantCoeff (mvExp f) ≠ 0 := by rw [h0]; exact one_ne_zero
   have hinv : mvExp f * (mvExp f)⁻¹ = 1 := MvPowerSeries.mul_inv_cancel _ hne
-  have hV : IntMv R (mvExp f)⁻¹ := intMv_of_mul_eq_one hf.2 h0 hinv
   have : MvPowerSeries.pderiv (R := K) i f = (mvExp f)⁻¹ * MvPowerSeries.pderiv (R := K) i (mvExp f) := by
     rw [pderiv_mvExp hf.1, ← mul_assoc, mul_comm _ (mvExp f), hinv, one_mul]
   rw [this]
-  exact intMv_mul hV (intMv_pderiv hf.2 i)
+  exact intMv_mul (intMv_of_mul_eq_one hf.2 h0 hinv) (intMv_pderiv hf.2 i)
 
 end Formalism.L2.Th1.C

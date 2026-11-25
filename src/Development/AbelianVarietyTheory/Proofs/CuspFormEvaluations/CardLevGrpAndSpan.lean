@@ -90,8 +90,7 @@ theorem orderOf_transvectionUnit {R : Type} [CommRing R] (q : ℕ) [CharP R q] {
       transvectionUnit_pow_val, Units.val_one]
     constructor
     · intro hn
-      have := congrFun (congrFun hn i) j
-      simpa [transvection, one_apply_ne h] using this
+      simpa [transvection, one_apply_ne h] using congrFun (congrFun hn i) j
     · intro hn
       rw [hn, transvection_zero]
   exact Nat.dvd_antisymm ((key q).2 dvd_rfl) ((key _).1 dvd_rfl)
@@ -169,9 +168,8 @@ theorem nonempty_equiv_mod (O M : Type) [CommRing O] [IsDomain O] [AddCommGroup 
 
 theorem nonempty_aut_equiv (O N : Type) [CommRing O] [AddCommGroup N] [Module O N] (I : Ideal O) (r : ℕ)
     (e : N ≃ₗ[O] (Fin r → O ⧸ I)) : Nonempty ((N ≃ₗ[O] N) ≃ GL (Fin r) (O ⧸ I)) := by
-  have hs : Function.Surjective (algebraMap O (O ⧸ I)) := Ideal.Quotient.mk_surjective
   let e1 : (N ≃ₗ[O] N) ≃ ((Fin r → O ⧸ I) ≃ₗ[O ⧸ I] (Fin r → O ⧸ I)) :=
-    { toFun := fun g => (e.symm ≪≫ₗ g ≪≫ₗ e).extendScalarsOfSurjective hs
+    { toFun := fun g => (e.symm ≪≫ₗ g ≪≫ₗ e).extendScalarsOfSurjective Ideal.Quotient.mk_surjective
       invFun := fun g => e ≪≫ₗ g.restrictScalars O ≪≫ₗ e.symm
       left_inv := fun g => by ext x; simp
       right_inv := fun g => by ext x; simp }

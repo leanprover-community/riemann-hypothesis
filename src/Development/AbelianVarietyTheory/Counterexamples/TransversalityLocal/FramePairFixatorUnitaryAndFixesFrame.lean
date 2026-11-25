@@ -124,10 +124,9 @@ theorem framePairFixator_unitary_and_fixes_frame (P : FPair H r) {g : V ≃ₗ[E
     · change x (y _) = _
       rw [(hy.2 b).2, (hx.2 b).2]
   | inv x _ hx =>
-    have hxu : ∀ u w, H.h (x u) (x w) = H.h u w := hx.1
     refine ⟨fun u w => ?_, fun b => ⟨?_, ?_⟩⟩
     · change H.h (x.symm u) (x.symm w) = H.h u w
-      have key := hxu (x.symm u) (x.symm w)
+      have key := hx.1 (x.symm u) (x.symm w)
       rw [LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply] at key
       exact key.symm
     · change x.symm _ = _
@@ -143,13 +142,12 @@ theorem perp_stable {g : V ≃ₗ[E] V} (hu : IsUnitary H g) (f : Fin (r + 1) �
     refine Submodule.span_le.mpr ?_
     rintro _ ⟨a, rfl⟩
     exact LinearMap.mem_eqLocus.mpr (hf _)
-  have hv' : ∀ x ∈ H.X f, H.h v x = 0 := hv
   have hu' : ∀ x y, H.h (g x) (g y) = H.h x y := hu
   show ∀ x ∈ H.X f, H.h (g v) x = 0
   intro x hx
   have hx' : g x = x := LinearMap.mem_eqLocus.mp (hfix hx)
   rw [← hx', hu']
-  exact hv' x hx
+  exact hv x hx
 
 theorem rel_equiv (P : FPair H r) : Equivalence (Datum.Rel (P := P)) := by
   constructor

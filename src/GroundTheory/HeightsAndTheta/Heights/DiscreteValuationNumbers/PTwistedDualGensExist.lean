@@ -53,8 +53,7 @@ theorem TwistedDualGensExist.exists_pow_combination (A : Subalgebra O Ω) {k : �
     rw [h2]; trivial
   obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 h3
   refine ⟨fun l => g l, fun l => (g l).2, ?_⟩
-  have := congrArg Subtype.val hg
-  simpa [f'] using this
+  simpa [f'] using congrArg Subtype.val hg
 
 theorem TwistedDualGensExist.latSub_fg {x : τ → Ω} (B : ChartBundle O x r E) {c : τ} (hc : x c ≠ 0) :
     (TwistedDualGensExist.latSub B c).FG := by

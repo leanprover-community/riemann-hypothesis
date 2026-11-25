@@ -298,10 +298,9 @@ private theorem ringKrullDim_le_zero_of_maximalIdeal_minimal {R : Type*} [CommRi
   show Order.krullDim (PrimeSpectrum R) ≤ 0
   rw [Order.krullDim_nonpos_iff_forall_isMax]
   intro q r _
-  have h1 : r.asIdeal ≤ maximalIdeal R := IsLocalRing.le_maximalIdeal r.isPrime.ne_top
   have h2 : maximalIdeal R ≤ q.asIdeal :=
     le_of_le_of_mem_minimalPrimes h q.isPrime (IsLocalRing.le_maximalIdeal q.isPrime.ne_top)
-  exact h1.trans h2
+  exact (IsLocalRing.le_maximalIdeal r.isPrime.ne_top).trans h2
 
 theorem isDomain_of_forall_spanFinrank_lt (R : Type u) [CommRing R]
     [IsRegularLocalRing R]
@@ -343,11 +342,10 @@ theorem isDomain_of_forall_spanFinrank_lt (R : Type u) [CommRing R]
   obtain ⟨p, hp, hpx⟩ := Ideal.exists_minimalPrimes_le
     (show (⊥ : Ideal R) ≤ Ideal.span ({x} : Set R) from bot_le)
   have hpP := isPrime_of_mem_minimalPrimes hp
-  have hxp' : x ∉ p := hxp p hp
   have hle : p ≤ Ideal.span ({x} : Set R) • p := by
     intro z hz
     obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp (hpx hz)
-    have ha : a ∈ p := (hpP.mem_or_mem hz).resolve_right hxp'
+    have ha : a ∈ p := (hpP.mem_or_mem hz).resolve_right (hxp p hp)
     have hs : x * a ∈ Ideal.span ({x} : Set R) • p :=
       Submodule.smul_mem_smul (Ideal.mem_span_singleton_self x) ha
     rwa [mul_comm a x]

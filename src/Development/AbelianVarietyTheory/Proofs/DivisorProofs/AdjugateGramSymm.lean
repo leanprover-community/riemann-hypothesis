@@ -99,8 +99,7 @@ theorem det_smul_eq_sum (x : Module.Basis (Fin r) ℤ O) (b : LinearMap.BilinFor
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => ?_
       rw [hA]; ring
-    rw [e, adjugate_mul]
-    simp [Matrix.smul_apply, Matrix.one_apply]
+    simp [e, adjugate_mul, Matrix.smul_apply, Matrix.one_apply]
   rw [Finset.sum_comm]
   simp_rw [← Finset.sum_smul, key]
   conv_lhs => rw [hv]
@@ -196,7 +195,6 @@ theorem posDef_gram (x : Module.Basis (Fin r) ℤ O) (b : LinearMap.BilinForm �
   refine posDef_of_int _ (by ext i j; simp [hb]) fun v hv => ?_
   rw [quad_eq]
   refine hpos _ fun h => hv ?_
-  have := (Fintype.linearIndependent_iff.1 x.linearIndependent) v h
-  exact funext this
+  exact funext ((Fintype.linearIndependent_iff.1 x.linearIndependent) v h)
 
 end GlobalTheory.CasimirOrder

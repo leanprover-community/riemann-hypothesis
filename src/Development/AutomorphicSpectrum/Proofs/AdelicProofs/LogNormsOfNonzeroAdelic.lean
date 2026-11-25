@@ -91,11 +91,10 @@ theorem isAdelic_ofElt (k : Type) [Field k] [NumberField k] (x : k) (hx : x ≠ 
   have hnm : ¬ ((p : ℕ) : ℤ) ∣ n * m := fun h => hp (Int.natCast_dvd.1 h)
   have hpn : ¬ ((p : ℕ) : ℤ) ∣ n := fun h => hnm (h.mul_right m)
   have hpm : ¬ ((p : ℕ) : ℤ) ∣ m := fun h => hnm (h.mul_left n)
-  have h1 : ‖ι x‖ ≤ 1 := norm_le_one_of_mul p ι ha hpn
   have h2 : ‖ι x⁻¹‖ ≤ 1 := norm_le_one_of_mul p ι hb hpm
   have h0 : 0 < ‖ι x‖ := norm_pos_iff.2 ((map_ne_zero ι).2 hx)
   rw [map_inv₀, norm_inv] at h2
-  have h3 : ‖ι x‖ = 1 := le_antisymm h1 ((inv_le_one₀ h0).1 h2)
+  have h3 : ‖ι x‖ = 1 := le_antisymm (norm_le_one_of_mul p ι ha hpn) ((inv_le_one₀ h0).1 h2)
   apply hι
   change Real.log ‖ι x‖ = 0
   rw [h3, Real.log_one]

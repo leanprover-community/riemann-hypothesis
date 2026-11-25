@@ -96,8 +96,7 @@ theorem quad_eq_GG {μ μS ν μS' ν' : Measure G} [SFinite μS] [SFinite ν] [
     exact weil_inv hWe' hinv' (fun y => PhiGG σ w W W' γ a y) (hΦ.comp (measurable_const.prodMk measurable_id))
   simp only [hy]
 
-  have hmy : Measurable (fun a => ∫⁻ y, PhiGG σ w W W' γ a y ∂μ) := hΦ.lintegral_prod_right'
-  exact weil_inv hWe hinv (fun a => ∫⁻ y, PhiGG σ w W W' γ a y ∂μ) hmy
+  exact weil_inv hWe hinv (fun a => ∫⁻ y, PhiGG σ w W W' γ a y ∂μ) hΦ.lintegral_prod_right'
 
 theorem triple_lintegral_eq {μ μS ν : Measure G} [SFinite μS] [SFinite ν] {S : Set G} {σ : G → (HH →L[ℂ] HH)}
     (hσ : IsUnitRep σ) (w : HH) {W : G → V} (hWc : Continuous W)
@@ -125,8 +124,7 @@ theorem triple_lintegral_eq {μ μS ν : Measure G} [SFinite μS] [SFinite ν] {
     ring
   simp only [hin]
   have hmeas : Measurable (fun z' : G => ∫⁻ s, H (s * z') ∂μS) := by
-    have h2 : Measurable (fun p : G × G => H (p.2 * p.1)) := hHm.comp (measurable_snd.mul measurable_fst)
-    exact h2.lintegral_prod_right'
+    exact (hHm.comp (measurable_snd.mul measurable_fst)).lintegral_prod_right'
   rw [lintegral_const_mul (‖W z‖ₑ) (f := fun z' => ∫⁻ s, H (s * z') ∂μS) hmeas]
   congr 1
   exact (hWe H hHm).symm

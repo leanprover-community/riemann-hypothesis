@@ -126,11 +126,9 @@ theorem sum_translate {G X : Type*} [Group G] [AddCommMonoid X] (N : Subgroup G)
   refine Finset.sum_nbij' (fun s => π (σ * s)) (fun t => π (σ⁻¹ * t)) (fun s _ => (hπ _).1)
     (fun s _ => (hπ _).1) (fun s hs => ?_) (fun t ht => ?_) (fun s _ => ?_)
   · refine (huniq _ s ⟨hs, ?_⟩).symm
-    have := N.inv_mem (hπ (σ * s)).2
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using N.inv_mem (hπ (σ * s)).2
   · refine (huniq _ t ⟨ht, ?_⟩).symm
-    have := N.inv_mem (hπ (σ⁻¹ * t)).2
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using N.inv_mem (hπ (σ⁻¹ * t)).2
   · have := hf (π (σ * s)) _ (hπ (σ * s)).2
     rw [← this]; simp
 
@@ -178,8 +176,7 @@ theorem avg_step (amul : ∀ g h β, a (g * h) β = a g (a h β))
       rw [sum_translate N S hS (fun g => a g β) hβ' σ, hsum]
     have h2 : c σ - (ρ σ (-∑ s ∈ S, a s β • c s) - -∑ s ∈ S, a s β • c s) =
         ∑ s ∈ S, a (σ * s) β • c (σ * s) - ∑ s ∈ S, a s β • c s := by
-      rw [map_neg, hρ]
-      simp only [hc, smul_add, Finset.sum_add_distrib, ← Finset.sum_smul, h1, one_smul]
+      simp only [map_neg, hρ, hc, smul_add, Finset.sum_add_distrib, ← Finset.sum_smul, h1, one_smul]
       abel
     rw [h2, ← QuotientAddGroup.eq_iff_sub_mem]
     have h3 := sum_translate N S hS

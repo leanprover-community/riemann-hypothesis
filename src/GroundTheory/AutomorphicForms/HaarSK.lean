@@ -83,9 +83,8 @@ variable {hSK}
 theorem lift_mulMap {u : S → ℝ} (hu : ∀ s, ∀ m ∈ inter S K, u (s * m) = u s) (p : S × K) :
     lift hSK u (mulMap S K p) = u p.1 := by
   set q := hSK.hasRightInverse.choose (mulMap S K p)
-  have hq : mulMap S K q = mulMap S K p := hSK.hasRightInverse.choose_spec _
   obtain ⟨m, hm, he⟩ := exists_mem_inter_of_mul_eq (s := p.1) (s' := q.1) (k := p.2) (k' := q.2)
-    hq.symm
+    (hSK.hasRightInverse.choose_spec _).symm
   change u q.1 = u p.1
   rw [he, hu _ _ hm]
 
@@ -386,8 +385,7 @@ theorem exists_lintegral_eq [MeasurableSpace G] [BorelSpace G] [T2Space G]
     rfl
   refine ⟨c, fun h0 => ?_, hform⟩
   have h1 := hform 1 measurable_const
-  rw [h0, ENNReal.coe_zero, zero_mul] at h1
-  simp only [Pi.one_apply, lintegral_const, one_mul] at h1
+  simp only [h0, ENNReal.coe_zero, zero_mul, Pi.one_apply, lintegral_const, one_mul] at h1
   exact (IsOpenPosMeasure.open_pos univ isOpen_univ univ_nonempty) h1
 
 end HaarSK

@@ -88,8 +88,7 @@ theorem inPar_iff (x : GL (Fin (a + b)) F) :
     obtain ⟨i', rfl⟩ : ∃ i' : Fin b, Fin.natAdd a i' = i :=
       ⟨⟨i - a, by omega⟩, Fin.ext (by simp; omega)⟩
     obtain ⟨j', rfl⟩ : ∃ j' : Fin a, Fin.castAdd b j' = j := ⟨⟨j, hj⟩, rfl⟩
-    have := congrFun (congrFun h i') j'
-    simpa [sm, Matrix.toBlocks₂₁] using this
+    simpa [sm, Matrix.toBlocks₂₁] using congrFun (congrFun h i') j'
 
 theorem sm_eq {M : Matrix (Fin (a + b)) (Fin (a + b)) F} (h : (sm M).toBlocks₂₁ = 0) :
     sm M = Matrix.fromBlocks (tl a M) (sm M).toBlocks₁₂ 0 (br a b M) := by
@@ -137,8 +136,7 @@ theorem inPar_inv (x : GL (Fin (a + b)) F) (h : InPar a x) : InPar a x⁻¹ := b
   let β : Fin (a + b) → Bool := fun i => decide (a ≤ (i : ℕ))
   have hb : (x : Matrix (Fin (a + b)) (Fin (a + b)) F).BlockTriangular β := by
     intro i j hij
-    rw [Bool.lt_iff] at hij
-    simp only [β, decide_eq_false_iff_not, decide_eq_true_eq, not_le] at hij
+    simp only [Bool.lt_iff, β, decide_eq_false_iff_not, decide_eq_true_eq, not_le] at hij
     exact h i j hij.1 hij.2
   haveI := x.invertible
   have hb' := Matrix.blockTriangular_inv_of_blockTriangular hb

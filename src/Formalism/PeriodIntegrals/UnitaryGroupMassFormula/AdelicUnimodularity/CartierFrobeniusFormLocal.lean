@@ -22,8 +22,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem val_algebraMap_F (v : HeightOneSpectrum (𝓞 F)) (t : F) :
     Valued.v (algebraMap F (v.adicCompletion F) t) = v.valuation F t := by
-  rw [algebraMap_adicCompletion]
-  simp
+  simp [algebraMap_adicCompletion]
 
 theorem exists_int_near (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F)
     (hx : Valued.v x ≤ 1) :
@@ -101,8 +100,7 @@ theorem compactSpace_integer (v : HeightOneSpectrum (𝓞 F)) :
 
 theorem isCompact_Ov (v : HeightOneSpectrum (𝓞 F)) :
     IsCompact (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
-  have := compactSpace_integer v
-  exact isCompact_iff_compactSpace.mpr this
+  exact isCompact_iff_compactSpace.mpr (compactSpace_integer v)
 
 def Ohat (F : Type) [Field F] [NumberField F] : Set (FiniteAdeleRing (𝓞 F) F) :=
   {a | ∀ v, a v ∈ v.adicCompletionIntegers F}

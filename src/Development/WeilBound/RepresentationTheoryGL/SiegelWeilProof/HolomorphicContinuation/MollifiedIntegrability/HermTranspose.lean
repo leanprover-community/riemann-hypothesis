@@ -162,8 +162,7 @@ theorem integral_unitary (U : Matrix (Fin n) (Fin n) ℂ) (hU : U ∈ Matrix.uni
         (((eC : (Fin n → ℂ) →ₗ[ℂ] (Fin n → ℂ)).restrictScalars ℝ) : (Fin n → ℂ) → (Fin n → ℂ)) := by
       funext r; rw [hcoe r]; simp [eC, Matrix.toLin'_apply]
     rw [this, hmap]
-  have := hpres.integral_comp' g
-  simpa [hcoe] using this
+  simpa [hcoe] using hpres.integral_comp' g
 
 theorem gauss_row (c τ : ℝ) (hc : 0 < c) (H : Matrix (Fin n) (Fin n) ℂ) (hH : H.IsHermitian) :
     ∫ r : Fin n → ℂ, cexp (-(((c * ∑ k, ‖r k‖ ^ 2 : ℝ)) : ℂ) +

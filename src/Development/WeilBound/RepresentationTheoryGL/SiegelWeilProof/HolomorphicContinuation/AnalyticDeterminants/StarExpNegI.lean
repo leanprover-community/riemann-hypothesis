@@ -105,8 +105,7 @@ theorem prod_conjDiag (d1 d2 : Fin n → ℂ) (h1 : ∀ a, d1 a ≠ 0) (h2 : ∀
   calc Cm n * D * CmI n * (Cm n * D' * CmI n) = Cm n * D * (CmI n * Cm n) * D' * CmI n := by
         simp only [Matrix.mul_assoc]
     _ = Cm n * (D * D') * CmI n := by
-        rw [cmI_mul_cm, Matrix.mul_one]
-        simp only [Matrix.mul_assoc]
+        simp only [cmI_mul_cm, Matrix.mul_one, Matrix.mul_assoc]
     _ = 1 := by rw [hDD, Matrix.mul_one, cm_mul_cmI]
 
 theorem inv_conjDiag (d1 d2 : Fin n → ℂ) (h1 : ∀ a, d1 a ≠ 0) (h2 : ∀ a, d2 a ≠ 0) :
@@ -208,8 +207,7 @@ theorem rot_conj (j : ℕ) (θ : ℝ) (r s : Fin n) :
     push_cast
     ring
   have hu0 : Complex.exp (θ * Complex.I) ≠ 0 := Complex.exp_ne_zero _
-  rw [he]
-  simp only [dA, dB, zLow, zMid, zTop, blkB, Finset.mem_compl, exp_neg_I]
+  simp only [he, dA, dB, zLow, zMid, zTop, blkB, Finset.mem_compl, exp_neg_I]
   by_cases hr : r ∈ blkA j <;> by_cases hs : s ∈ blkA j <;>
     simp [hr, hs, fromBlocks_smul, fromBlocks_add, fromBlocks_neg, smul_single, fromBlocks_inj]
   all_goals constructor <;> congr 1 <;> field_simp

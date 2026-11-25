@@ -111,9 +111,8 @@ theorem hasDerivAt_lineInv (X : Mat n) : HasDerivAt (fun t : ℝ => (1 + t • X
     have hdet : ContinuousAt Ring.inverse ((1 : Mat n) + (0:ℝ) • X).det := by
       rw [Ring.inverse_eq_inv']
       exact continuousAt_inv₀ (by simp)
-    have h2 : ContinuousAt (fun t : ℝ => (1 : Mat n) + t • X) 0 := hline.continuousAt
     exact ContinuousAt.comp (g := Inv.inv) (f := fun t : ℝ => (1 : Mat n) + t • X)
-      (continuousAt_matrix_inv _ hdet) h2
+      (continuousAt_matrix_inv _ hdet) hline.continuousAt
   have hlim : Tendsto (fun t => -(B t * X)) (𝓝[≠] (0:ℝ)) (𝓝 (-X)) := by
     have h1 : Tendsto (fun t => -(B t * X)) (𝓝 (0:ℝ)) (𝓝 (-(B 0 * X))) :=
       ((hcont.mul continuousAt_const).neg)

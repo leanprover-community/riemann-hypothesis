@@ -112,8 +112,7 @@ lemma hermND (H : HermSp M V) {n : ℕ} (b : Module.Basis (Fin n) E V) :
     set G : Matrix (Fin n) (Fin n) E := Matrix.of fun i j => H.h (b i) (b j) with hGdef
     have hvec : ∀ (v : Fin n → E) j, (Matrix.vecMul v G) j = H.h (∑ i, v i • b i) (b j) := by
       intro v j
-      rw [h_sum_left]
-      simp only [Matrix.vecMul, dotProduct, hGdef, Matrix.of_apply]
+      simp only [h_sum_left, Matrix.vecMul, dotProduct, hGdef, Matrix.of_apply]
     have hright : ∀ x y : V, H.h x y = ∑ j, M.L.cj (b.repr y j) * H.h x (b j) := by
       intro x y
       conv_lhs => rw [← b.sum_repr y]

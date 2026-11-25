@@ -111,10 +111,8 @@ theorem exists_tensor_equiv_of_semilinear :
     have h0 : Finsupp.linearCombination Ω (fun i => j (B i)) (C.repr x) = 0 := by
       rw [← hx]
       conv_rhs => rw [← C.linearCombination_repr x]
-      rw [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply, map_finsuppSum]
-      simp [hC]
-    have h1 : C.repr x = 0 := hli (h0.trans (map_zero _).symm)
-    simpa using h1
+      simp [Finsupp.linearCombination_apply, Finsupp.linearCombination_apply, map_finsuppSum, hC]
+    simpa using hli (h0.trans (map_zero _).symm)
   exact ⟨LinearEquiv.ofBijective L ⟨hinj, hsurj⟩, fun e => hL e⟩
 
 end GlobalTheory.CompanionTheory.Ar.FlagStep

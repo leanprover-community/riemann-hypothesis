@@ -82,16 +82,14 @@ theorem weighted_sum_piFinset_fin {α K : Type} [CommRing K] (G : (α → K) →
       intro a
       refine ih (fun t => F (Fin.cons a t)) ?_
       intro t i
-      have := hF (Fin.cons a t) i.succ
-      simpa only [← Fin.cons_update] using this
+      simpa only [← Fin.cons_update] using hF (Fin.cons a t) i.succ
     have h2 : ∀ t : Fin n → α, w * ∑ a ∈ S, F (Fin.cons a t) =
         w' * ∑ a ∈ S', F (Fin.cons a t) := by
       intro t
       rcases isEmpty_or_nonempty α with hα | ⟨⟨a0⟩⟩
       · simp [Finset.eq_empty_of_isEmpty S, Finset.eq_empty_of_isEmpty S']
       · refine h _ ?_
-        have := hF (Fin.cons a0 t) 0
-        simpa only [Fin.update_cons_zero] using this
+        simpa only [Fin.update_cons_zero] using hF (Fin.cons a0 t) 0
     rw [sum_piFinset_fin_succ_cons, sum_piFinset_fin_succ_cons]
     calc w ^ (n + 1) * ∑ a ∈ S, ∑ t ∈ Fintype.piFinset (fun _ : Fin n => S), F (Fin.cons a t)
         = w * ∑ a ∈ S, w ^ n * ∑ t ∈ Fintype.piFinset (fun _ : Fin n => S), F (Fin.cons a t) := by

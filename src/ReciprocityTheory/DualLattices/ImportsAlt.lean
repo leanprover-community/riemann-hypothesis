@@ -110,8 +110,7 @@ theorem e_zero (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h * e h') 
   rw [add_zero] at h0
   ext a
   have ha : e 0 a = e 0 a * e 0 a := by
-    have := congrArg (fun ψ : AddChar N C => ψ a) h0
-    simpa only [AddChar.mul_apply] using this
+    simpa only [AddChar.mul_apply] using congrArg (fun ψ : AddChar N C => ψ a) h0
   rw [AddChar.one_apply]
   exact mul_left_cancel₀ (addChar_apply_ne_zero_dual_lattices (e 0) a) (by rw [mul_one]; exact ha.symm)
 
@@ -193,8 +192,7 @@ theorem comul_fourier (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h *
       ∑ i, fun p : H × H => fourier (R := R) (fun h a => e h a) (fun a => u a * B a i) p.1 *
         fourier (R := R) (fun h a => e h a) (fun x => B⁻¹ i x) p.2 := by
     funext p
-    rw [Finset.sum_apply]
-    simp only [addPull, LinearMap.funLeft_apply]
+    simp only [Finset.sum_apply, addPull, LinearMap.funLeft_apply]
     calc fourier (R := R) (fun h a => e h a) u (p.1 + p.2)
         = ∑ a, u a * e p.1 a *
             ∑ i, fourier (R := R) (fun h a => e h a) (fun x => B⁻¹ i x) p.2 * B a i := by

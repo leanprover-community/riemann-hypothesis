@@ -86,8 +86,7 @@ theorem sum_emb_mul_dual {E : Type} [Field E] [NumberField E] {ι : Type} [Finty
     simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
       smul_eq_mul, LinearMap.zero_apply, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul,
       Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-    rw [h1, sub_eq_zero]
-    simp only [Finset.sum_mul, map_mul]
+    simp only [h1, sub_eq_zero, Finset.sum_mul, map_mul]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
@@ -225,8 +224,7 @@ theorem log_discr_div_le (F F' L : Type) [Field F] [Field F'] [Field L]
       Real.log |((discr F : ℤ) : ℝ)| / Module.finrank ℚ F + Real.log |((discr F' : ℤ) : ℝ)| / Module.finrank ℚ F' := by
   have h1 := natAbs_discr_le_of_map_different_le F F' L h
   have h2 : |((discr L : ℤ) : ℝ)| ≤ |((discr F' : ℤ) : ℝ)| ^ Module.finrank F' L * |((discr F : ℤ) : ℝ)| ^ Module.finrank F L := by
-    have := (Nat.cast_le (α := ℝ)).2 h1
-    simpa [Nat.cast_natAbs] using this
+    simpa [Nat.cast_natAbs] using (Nat.cast_le (α := ℝ)).2 h1
   have p : ∀ (K : Type) [Field K] [NumberField K], (0 : ℝ) < |((discr K : ℤ) : ℝ)| := fun K _ _ =>
     abs_pos.2 (Int.cast_ne_zero.2 (discr_ne_zero K))
   have h3 := Real.log_le_log (p L) h2

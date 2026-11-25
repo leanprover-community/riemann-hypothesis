@@ -252,8 +252,7 @@ theorem _root_.GlobalTheory.SW.SplitPrime.exists_degree_one {E : Type} [Field E]
     intro k hk hkP
     obtain ⟨v, hv⟩ := hcop k hk
     exact hP.ne_top ((Ideal.eq_top_iff_one _).mpr (by
-      have := P.sub_mem (P.mul_mem_left (v : 𝓞 E) hkP) hv
-      simpa using this))
+      simpa using (P.sub_mem (P.mul_mem_left (v : 𝓞 E) hkP) hv)))
   refine ⟨P, hP, hnot N (fun h => hpM (Dvd.dvd.mul_right h d)), fun y => ?_⟩
   obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective y
   obtain ⟨g, hg⟩ := hden a
@@ -345,8 +344,7 @@ theorem _root_.GlobalTheory.SW.SplitPrime.exists_goodPrime : ∀ (E : Type) [Fie
   · rw [Ideal.isCoprime_iff_sup_eq]
     by_contra hne
     have hle : _root_.GlobalTheory.SW.conjI P ≤ P := by
-      have := hP.eq_of_le hne le_sup_left
-      exact le_sup_right.trans this.symm.le
+      exact le_sup_right.trans (hP.eq_of_le hne le_sup_left).symm.le
     obtain ⟨n0, hn0⟩ := hs (Ideal.Quotient.mk P θ)
     have h1 : θ - (n0 : 𝓞 E) ∈ P := by
       rw [← Ideal.Quotient.eq, ← hn0, eq_intCast, map_intCast]

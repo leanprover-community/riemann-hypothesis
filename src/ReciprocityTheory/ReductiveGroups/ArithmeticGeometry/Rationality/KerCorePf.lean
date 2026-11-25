@@ -366,8 +366,7 @@ theorem kerCore_holds : KerCoreStatement := by
       rw [LinearMap.mem_ker]
       have hsp : Submodule.span L t' ≤ LinearMap.ker (Module.Dual.eval L (L ⊗[K] V) x) := by
         refine Submodule.span_le.mpr fun φ hφ => ?_
-        have := h (eT ⟨φ, hφ⟩)
-        simpa [cfL] using this
+        simpa [cfL] using h (eT ⟨φ, hφ⟩)
       have hmem : gh p ∈ Submodule.span L t' := ht'span ▸ Submodule.subset_span ⟨p, rfl⟩
       simpa using hsp hmem
     · intro hx i
@@ -384,8 +383,7 @@ theorem kerCore_holds : KerCoreStatement := by
     · intro h φ hφ
       have hsp : Submodule.span L t' ≤ LinearMap.ker (Module.Dual.eval L (L ⊗[K] V) x) := by
         refine Submodule.span_le.mpr fun ψ hψ => ?_
-        have := h (eT ⟨ψ, hψ⟩)
-        simpa [cfL] using this
+        simpa [cfL] using h (eT ⟨ψ, hψ⟩)
       simpa using hsp hφ
   have hWfd : FiniteDimensional K W := inferInstance
   have hdim : Module.finrank K W + ρ = Module.finrank K V := by

@@ -301,8 +301,7 @@ theorem MeanLogPlus.proof (h1 : TailBound.Statement.{u}) : MeanLogPlus.Statement
       ext z; exact lt_max_zero_log_div_iff ht h.r_pos (h.lam_pos z)
     rw [hset, ← ofReal_measureReal]
     apply ENNReal.ofReal_le_ofReal
-    have := h1 X μ lam cnt a ka r h t (le_of_lt ht)
-    simpa [hg, neg_mul] using this
+    simpa [hg, neg_mul] using h1 X μ lam cnt a ka r h t (le_of_lt ht)
 
   have hexp : IntegrableOn (fun t => C * exp (-ka * t)) (Ioi x0) :=
     (exp_neg_integrableOn_Ioi x0 hk0).const_mul C
@@ -499,8 +498,7 @@ theorem TailBound.proof (h1 : MeanCountBound.Statement.{u}) :
       _ ≤ exp (-(ka * x)) * (2 * 36 ^ a) :=
           mul_le_mul_of_nonneg_left hmean (exp_pos _).le
       _ = 2 * 36 ^ a * exp (-(ka * x)) := by ring
-  have hone : μ.real {z | lam z < t} ≤ 1 := measureReal_le_one
-  exact le_min hone hbound
+  exact le_min measureReal_le_one hbound
 
 end GroundTheory.Heights₂.Heights.LowerBound
 end -- clump:auto

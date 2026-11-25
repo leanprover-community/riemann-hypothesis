@@ -34,8 +34,7 @@ theorem one_add_one_le : (1 : ℕ∞ω) + 1 ≤ (∞ : ℕ∞ω) := by
 
 theorem two_le_smooth : minSmoothness ℝ 2 ≤ (∞ : ℕ∞ω) := by
   rw [minSmoothness_of_isRCLikeNormedField]
-  have : (((2 : ℕ) : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω) := WithTop.coe_le_coe.mpr le_top
-  exact this
+  exact WithTop.coe_le_coe.mpr le_top
 
 theorem top_ne_zero' : (∞ : ℕ∞ω) ≠ 0 := WithTop.coe_ne_zero.mpr (by simp)
 

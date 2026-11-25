@@ -82,8 +82,7 @@ theorem wt_rel (G : Type) [Group G] {α : Type} [MulAction G α] (X : Set α) (h
     · intro hy
       rw [← hg]; exact hX g y hy
   unfold wt
-  rw [hc]
-  simp only [hm]
+  simp only [hc, hm]
 
 variable {Γ G G' α β : Type} [Group Γ] [Group G] [Group G'] [MulAction G α] [MulAction G' β]
   [MulAction Γ (α × β)] (φ : Γ ≃* G × G')
@@ -99,8 +98,7 @@ theorem rel_iff (p q : α × β) : MulAction.orbitRel Γ (α × β) p q ↔
     exact ⟨⟨_, rfl⟩, ⟨_, rfl⟩⟩
   · rintro ⟨⟨g, hg⟩, ⟨g', hg'⟩⟩
     refine ⟨φ.symm (g, g'), ?_⟩
-    rw [hφ]
-    simp [hg, hg']
+    simp [hφ, hg, hg']
 
 def stabEquiv (p : α × β) : MulAction.stabilizer Γ p ≃
     MulAction.stabilizer G p.1 × MulAction.stabilizer G' p.2 where

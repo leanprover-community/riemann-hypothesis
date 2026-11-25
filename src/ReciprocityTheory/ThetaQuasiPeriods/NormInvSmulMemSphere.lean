@@ -57,8 +57,7 @@ theorem quad_lower {X : Type*} [TopologicalSpace X] (Mf : X → Matrix ι ι ℝ
     have hq0S : q0.2 ∈ Metric.sphere (0 : ι → ℝ) 1 := hq0.2
     have hne0 : q0.2 ≠ 0 := by
       intro h
-      rw [h] at hq0S
-      simp at hq0S
+      simp [h] at hq0S
     have hmpos : 0 < q0.2 ⬝ᵥ (Mf q0.1 *ᵥ q0.2) := by
       simpa using (Matrix.posDef_iff_dotProduct_mulVec.mp (hpos q0.1 hq0.1)).2 hne0
     refine ⟨q0.2 ⬝ᵥ (Mf q0.1 *ᵥ q0.2) / (Fintype.card ι + 1), by positivity, fun p hp x => ?_⟩
@@ -268,10 +267,9 @@ theorem thetaMTest_holds : ThetaMTestStatement := by
   · intro b p hp l
     refine term_bound a b p.1 (of p.2) l c (max C 0) hc0 (le_max_right _ _) (fun i => ?_)
       (fun x => hcK p hp x)
-    have h1 : ‖p.1‖ ≤ C := hC p hp
     calc |(p.1 i).im| ≤ ‖p.1 i‖ := Complex.abs_im_le_norm _
       _ ≤ ‖p.1‖ := norm_le_pi_norm p.1 i
-      _ ≤ C := h1
+      _ ≤ C := hC p hp
       _ ≤ max C 0 := le_max_left _ _
 
 theorem thetaSummable_holds : ThetaSummableStatement := by

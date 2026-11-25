@@ -115,14 +115,12 @@ theorem root_eq (l : ℕ) [hp : Fact l.Prime] {x₀ y w : O} (hx : x₀ ≠ 0)
       set v := ∑ i ∈ Finset.range (j + 1), (1 + x₀) ^ i with hv
       have hSv0 : x₀ * (S * v - 1) = 0 := by linear_combination S * e2 + e1
       have hSv : S * v = 1 := by
-        have := (mul_eq_zero.1 hSv0).resolve_left hx
-        linear_combination this
+        linear_combination ((mul_eq_zero.1 hSv0).resolve_left hx)
       have hvu : IsUnit v := ⟨⟨v, S, by rw [mul_comm]; exact hSv, hSv⟩, rfl⟩
       have hwz : x₀ * (w - (1 + x₀) * v) = 0 := by
         linear_combination -hyw - hi - (1 + x₀) * e2
       have hw' : w = (1 + x₀) * v := by
-        have := (mul_eq_zero.1 hwz).resolve_left hx
-        linear_combination this
+        linear_combination ((mul_eq_zero.1 hwz).resolve_left hx)
       exact hwu (hw' ▸ hζu.mul hvu)
 
 end Roots

@@ -113,11 +113,10 @@ theorem _root_.GlobalTheory.exists_measurable_lintegral_coset_eq_one
       intro n
       have hsub : (fun h => j h * g) ⁻¹' K n ⊆ j ⁻¹' (K (max n m) * (K (max n m))⁻¹) := by
         intro h hh
-        have h1 : j h * g ∈ K (max n m) := K.subset (le_max_left n m) hh
         have h2 : g ∈ K (max n m) := K.subset (le_max_right n m) hm
         have e : j h = (j h * g) * g⁻¹ := by group
         rw [Set.mem_preimage, e]
-        exact Set.mul_mem_mul h1 (Set.inv_mem_inv.2 h2)
+        exact Set.mul_mem_mul (K.subset (le_max_left n m) hh) (Set.inv_mem_inv.2 h2)
       have hle : ν ((fun h => j h * g) ⁻¹' K n) ≤ a n + a m := by
         refine (measure_mono hsub).trans ?_
         rcases le_total n m with hnm | hnm

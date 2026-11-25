@@ -64,7 +64,6 @@ theorem evalDuality : EV := by
   intro K hK m e e' D M F F' h hrel hF' z hz
   have hdz : z.det ≠ 0 := hz.ne_zero
   set ρ : Fin (m + 1) × Fin (m + 1) → K := fun x => z x.1 x.2 with hρ
-  have hrel0 : dualSub K (m + 1) F' = (genM K (m + 1)).det ^ M * F := hrel
   have hmap : (MvPolynomial.eval ρ).mapMatrix (genM K (m + 1)) = z := by
     ext i j
     simp [genM, hρ]
@@ -89,8 +88,7 @@ theorem evalDuality : EV := by
       first
       | rfl
     simp only [dualM, Matrix.of_apply]
-    rw [h1, hmap, hadj]
-    simp [revCol]
+    simp [h1, hmap, hadj, revCol]
   have hcomp : ∀ (g : Fin (m + 1) × Fin (m + 1) → MvPolynomial (Fin (m + 1) × Fin (m + 1)) K)
       (p : MvPolynomial (Fin (m + 1) × Fin (m + 1)) K),
       MvPolynomial.eval ρ (aeval g p) = MvPolynomial.eval (fun v => MvPolynomial.eval ρ (g v)) p := by
@@ -128,7 +126,7 @@ theorem evalDuality : EV := by
     exact hscale (fun x => revCol (z⁻¹)ᵀ x.1 x.2) z.det
   have hrel' : z.det ^ D * MvPolynomial.eval (fun x => revCol (z⁻¹)ᵀ x.1 x.2) F' =
       z.det ^ M * MvPolynomial.eval ρ F := by
-    have h1 := congrArg (MvPolynomial.eval ρ) hrel0
+    have h1 := congrArg (MvPolynomial.eval ρ) hrel
     rw [heval, map_mul, map_pow, hgen] at h1
     exact h1
   rw [PI.OddDualWeyl.EvA.arith _ _ hdz (PI.OddDualWeyl.EvA.sgn_sq m) e e' D M h, ← hrel', hdetW,

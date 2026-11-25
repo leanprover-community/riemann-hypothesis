@@ -62,8 +62,7 @@ variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup
 private lemma quotient_mk_eq_mk_iff_sub_mem (A B : Submodule R X) (x y : B.toAddSubgroup) :
     ((x : B.toAddSubgroup ⧸ A.toAddSubgroup.addSubgroupOf B.toAddSubgroup) = y) ↔
       (y : X) - x ∈ A := by
-  rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf]
-  simp [neg_add_eq_sub]
+  simp [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf, neg_add_eq_sub]
 
 open Classical in
 open scoped BigOperators in
@@ -72,9 +71,8 @@ private lemma heis_apply_eq_of_sub_mem_of_fixes {σ : R →+* R} {w : R} {γ : X
     (h : _root_.GlobalTheory.FinWeil.IsHeis σ w γ W) {A B : Submodule R X}
     (hB : _root_.GlobalTheory.FinWeil.SelfDual γ B) {v : M} (hv : _root_.GlobalTheory.FinWeil.Fixes W A v) {x y : X}
     (hx : x ∈ B) (hy : y ∈ B) (hxy : y - x ∈ A) : W y v = W x v := by
-  have hyx : y - x ∈ B := B.sub_mem hy hx
   calc W y v = W (x + (y - x)) v := by rw [add_sub_cancel]
-    _ = W x (W (y - x) v) := (h.comp_of_mem hB hx hyx v).symm
+    _ = W x (W (y - x) v) := (h.comp_of_mem hB hx (B.sub_mem hy hx) v).symm
     _ = W x v := by rw [hv _ hxy]
 
 open Classical in

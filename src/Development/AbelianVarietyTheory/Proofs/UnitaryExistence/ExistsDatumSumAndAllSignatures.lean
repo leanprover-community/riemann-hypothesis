@@ -95,17 +95,14 @@ theorem sumForm_bijective {L M : Type} [AddCommGroup L] [AddCommGroup M] (B : Li
   · intro x y h
     refine Prod.ext (hB.1 ?_) (hC.1 ?_)
     · ext z
-      have := LinearMap.congr_fun h (z, 0)
-      simpa [sumForm_apply] using this
+      simpa [sumForm_apply] using LinearMap.congr_fun h (z, 0)
     · ext z
-      have := LinearMap.congr_fun h (0, z)
-      simpa [sumForm_apply] using this
+      simpa [sumForm_apply] using LinearMap.congr_fun h (0, z)
   · intro φ
     obtain ⟨x, hx⟩ := hB.2 (φ ∘ₗ LinearMap.inl ℤ L M)
     obtain ⟨y, hy⟩ := hC.2 (φ ∘ₗ LinearMap.inr ℤ L M)
     refine ⟨(x, y), LinearMap.ext fun z => ?_⟩
-    rw [sumForm_apply, hx, hy]
-    simp [← map_add (f := _)]
+    simp [sumForm_apply, hx, hy, ← map_add (f := _)]
 
 theorem sumForm_baseChange {L M : Type} [AddCommGroup L] [AddCommGroup M] (B : LinearMap.BilinForm ℤ L)
     (C : LinearMap.BilinForm ℤ M) (x y : ℝ ⊗[ℤ] (L × M)) :

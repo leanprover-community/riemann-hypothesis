@@ -78,8 +78,7 @@ theorem strictMono_of_locallyQuasiFinite {X Y : Scheme.{0}} (f : X ⟶ Y) [Local
   have e : f y = f x := ((h.map f.continuous).antisymm h').eq
   have hd := (f.isDiscrete_preimage_singleton (f x)).to_subtype
   have h2 : (⟨y, e⟩ : f ⁻¹' {f x}) ⤳ ⟨x, rfl⟩ := (subtype_specializes_iff _ _).mpr h
-  have : y = x := congrArg Subtype.val h2.eq
-  exact this.le
+  exact (congrArg Subtype.val h2.eq : y = x).le
 
 theorem apply_genericPoint {X : Scheme.{0}} [IrreducibleSpace X] [IsLocallyNoetherian X]
     (f : X ⟶ X) [LocallyQuasiFinite f] {o : X} (ho : f o = o) :

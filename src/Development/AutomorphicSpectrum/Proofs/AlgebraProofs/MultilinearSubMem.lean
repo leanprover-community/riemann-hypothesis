@@ -68,8 +68,7 @@ theorem multilinear_sub_mem {O V W ι : Type*} [CommRing O] [AddCommGroup V] [Mo
     (x y : ι → V) (hx : ∀ i, x i ∈ Λ) (hxy : ∀ i, y i - x i ∈ 𝔞 • Λ) :
     f y - f x ∈ 𝔞 • I := by
   have hy : ∀ i, y i ∈ Λ := fun i => by
-    have h1 : y i - x i ∈ Λ := Submodule.smul_le_right (hxy i)
-    simpa using Λ.add_mem h1 (hx i)
+    simpa using Λ.add_mem (Submodule.smul_le_right (hxy i)) (hx i)
   have hupd : ∀ (z : ι → V), (∀ i, z i ∈ Λ) → ∀ i, ∀ w ∈ 𝔞 • Λ,
       f (Function.update z i w) ∈ 𝔞 • I := by
     intro z hz i w hw

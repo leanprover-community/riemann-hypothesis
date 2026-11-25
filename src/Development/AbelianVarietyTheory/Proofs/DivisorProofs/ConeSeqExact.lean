@@ -92,8 +92,7 @@ theorem GlobalTheory.EtC.coneSeq_exact : ∀ (R : Type) [CommRing R] {K L : Cx R
       change CohomologyClass.mk (zcomp _ _ _) = _
       refine ConeSeq.cls_eq _ _ (n - 1) (by omega) (-((mappingCone.inl f).comp γ (by omega))) ?_
       have key := δ_comp (mappingCone.inl f) γ (show -1 + n = n - 1 by omega) 0 (n + 1) n (by omega) (by omega) rfl
-      rw [hγ] at key
-      simp [zcomp] at key
+      simp [hγ, zcomp] at key
       simp [zcomp, key]
     · rintro ⟨z, rfl⟩
       obtain ⟨b, rfl⟩ := z.mk_surjective
@@ -112,8 +111,7 @@ theorem GlobalTheory.EtC.coneSeq_exact : ∀ (R : Type) [CommRing R] {K L : Cx R
       set a : Cochain K I n := (mappingCone.inl f).comp (c : Cochain _ I (n + 1)) (by omega) +
         n.negOnePow • (Cochain.ofHom f).comp β (zero_add n) with ha_def
       have hsnd := δ_comp (mappingCone.snd f) β (zero_add n) 1 (n + 1) (n + 1) rfl (zero_add 1) rfl
-      rw [hβ] at hsnd
-      simp [zcomp] at hsnd
+      simp [hβ, zcomp] at hsnd
       have hdec : (c : Cochain _ I (n + 1)) = (mappingCone.fst f).1.comp a (by omega) +
           δ n (n + 1) ((mappingCone.snd f).comp β (zero_add n)) := by
         rw [mappingCone.ext_cochain_from_iff f n (n + 1) rfl]

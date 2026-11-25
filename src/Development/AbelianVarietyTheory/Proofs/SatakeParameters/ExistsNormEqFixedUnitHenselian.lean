@@ -124,17 +124,15 @@ theorem exists_norm_eq : ∀ (R : Type) [CommRing R] (I : Ideal R) [HenselianRin
     (by rw [hmk, hcu]) (hu.map _)
   obtain ⟨x₀, rfl⟩ := Ideal.Quotient.mk_surjective xb
   rw [hmk, ← map_mul] at hxb
-  have hmem : x₀ * c x₀ - u ∈ I := Ideal.Quotient.eq.mp hxb
   obtain ⟨U, rfl⟩ := hu
   have hcU : c ↑U⁻¹ = ↑U⁻¹ := by
     have h : (U : R) * c ↑U⁻¹ = 1 := by
       rw [← hcu, ← map_mul, U.mul_inv, map_one]
     exact (Units.inv_eq_of_mul_eq_one_right h).symm
   obtain ⟨a, ha⟩ : ∃ a, a = (x₀ * c x₀ - ↑U) * ↑U⁻¹ := ⟨_, rfl⟩
-  have haI : a ∈ I := ha ▸ I.mul_mem_right _ hmem
+  have haI : a ∈ I := ha ▸ I.mul_mem_right _ (Ideal.Quotient.eq.mp hxb)
   have hca : c a = a := by
-    rw [ha]
-    simp only [map_mul, map_sub, hc, hcu, hcU]
+    simp only [ha, map_mul, map_sub, hc, hcu, hcU]
     ring
   obtain ⟨V, hV⟩ := (Ring.mem_jacobson_iff.mp (HenselianRing.jac haI)) 1
   have hcV : c ↑V = ↑V := by rw [hV, map_add (f := _), map_mul, map_one, hca]

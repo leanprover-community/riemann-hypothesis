@@ -71,8 +71,7 @@ theorem pmap_comp (P : Scheme.{0}ᵒᵖ ⥤ AddCommGrpCat.{1}) {W V U : Scheme.{
 
 theorem nat_apply {V U : Scheme.{0}} (g : V ⟶ U) (x : P.obj (op U)) :
     (φ.app (op V)).hom ((P.map g.op).hom x) = (Q.map g.op).hom ((φ.app (op U)).hom x) := by
-  have := congrArg (fun f => f.hom x) (φ.naturality g.op)
-  simpa using this
+  simpa using congrArg (fun f => f.hom x) (φ.naturality g.op)
 
 section Main
 variable {S : Type} [CommRing S] {P Q : Scheme.{0}ᵒᵖ ⥤ AddCommGrpCat.{1}} (φ : P ⟶ Q) (M : Shv S)
@@ -148,8 +147,7 @@ theorem ch_add {U : Scheme.{0}} (y y' : Q.obj (op U)) (a a' : Sec M U) (ha : Ch 
   rw [pmap_comp] at e1 e2
   rw [res_res, res_add, ha W (k ≫ g) x1 e1, ha' W (k ≫ g) x2 e2, hb, ← map_add (f := _)]
   apply key φ M b hb h2
-  rw [nat_apply, hx, pmap_comp]
-  simp only [map_add (f := _), e1, e2]
+  simp only [nat_apply, hx, pmap_comp, map_add (f := _), e1, e2]
 
 theorem ch_res {U V : Scheme.{0}} (h : V ⟶ U) (y : Q.obj (op U)) (a : Sec M U) (ha : Ch φ M b U y a) :
     Ch φ M b V ((Q.map h.op).hom y) (Sec.res h a) := by

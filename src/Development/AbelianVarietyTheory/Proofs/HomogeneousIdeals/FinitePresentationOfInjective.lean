@@ -212,8 +212,7 @@ theorem formallyUnramified_of_isUnit (n : ℕ) (hn : IsUnit (n : R)) (hX : ∀ x
   have h3 := key n
   rw [pow_succ b, hp f, hp g] at h3
   have h4 : (n : B) * (a - b) = 0 := by linear_combination -h3
-  have h5 : a - b = 0 := (hB.mul_right_eq_zero).1 h4
-  exact sub_eq_zero.1 h5
+  exact sub_eq_zero.1 ((hB.mul_right_eq_zero).1 h4)
 
 theorem etale_of_isUnit_card [Finite X] (hn : IsUnit (Nat.card X : R)) : Algebra.Etale R R[X] := by
   have := formallyUnramified_of_isUnit R (X := X) _ hn fun x => card_nsmul_eq_zero'

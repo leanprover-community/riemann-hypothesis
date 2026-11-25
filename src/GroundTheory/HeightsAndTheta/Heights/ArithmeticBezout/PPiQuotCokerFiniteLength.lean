@@ -35,9 +35,8 @@ theorem PiQuotCokerFiniteLength.proof : PiQuotCokerFiniteLength.Statement := by
     rcases hQ Q hQp (P.2.1.2.trans hPQ) with hmin | hm
     · exfalso
       apply hne
-      have e1 : (P : Ideal B) = Q := le_antisymm hPQ (hmin.2 P.2.1 hPQ)
       have e2 : (P' : Ideal B) = Q := le_antisymm hP'Q (hmin.2 P'.2.1 hP'Q)
-      exact Subtype.ext (e1.trans e2.symm)
+      exact Subtype.ext ((le_antisymm hPQ (hmin.2 P.2.1 hPQ)).trans e2.symm)
     · exact hm
   let IP : J.minimalPrimes → Ideal B := fun P =>
     (Finset.univ.filter (· ≠ P)).inf fun P' : J.minimalPrimes => (P' : Ideal B)

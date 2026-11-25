@@ -58,21 +58,19 @@ private theorem algHom_coe_polynomial_eq_of_X_eq {A B : Type} [CommRing A] [Comm
      simpa using AlgHom.congr_fun e r)
 
 theorem Zp_natDegree : (Zp (O := O) p m).natDegree = p ^ m := by
-  have hpm : 0 < p ^ m := pow_pos (Fact.out : p.Prime).pos m
   unfold Zp
   rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt, pow_natDegree']
-  rw [Polynomial.natDegree_one, pow_natDegree']; exact hpm
+  rw [Polynomial.natDegree_one, pow_natDegree']; exact pow_pos (Fact.out : p.Prime).pos m
 
 variable (hlm : ((p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O)
 include hlm
 
 theorem Zs_res : PowerSeries.map (IsLocalRing.residue O) (Zs p m) = PowerSeries.X ^ (p ^ m) := by
-  have hpp : p.Prime := Fact.out
   have hp : ((p : ℕ) : IsLocalRing.ResidueField O) = 0 := by
     simpa using (IsLocalRing.residue_eq_zero_iff ((p : ℕ) : O)).mpr hlm
   haveI hk : CharP (IsLocalRing.ResidueField O) p := by
     first
-    | exact (CharP.charP_iff_prime_eq_zero hpp).mpr hp
+    | exact (CharP.charP_iff_prime_eq_zero Fact.out).mpr hp
   haveI : CharP (PowerSeries (IsLocalRing.ResidueField O)) p := by
     first
     | exact charP_of_injective_algebraMap' (IsLocalRing.ResidueField O) p

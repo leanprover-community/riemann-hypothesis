@@ -155,8 +155,7 @@ theorem _root_.GlobalTheory.exists_herm_coord_of_datum :
       have := h.fintype_card_le_finrank
       simp [hrk] at this
     obtain ⟨g, hg, i, hi⟩ := Fintype.not_linearIndependent_iff.1 hnot
-    rw [Fin.sum_univ_castSucc] at hg
-    simp only [Fin.snoc_castSucc, Fin.snoc_last] at hg
+    simp only [Fin.sum_univ_castSucc, Fin.snoc_castSucc, Fin.snoc_last] at hg
     refine ⟨g (Fin.last r), fun hg0 => hi ?_, fun j => -g j.castSucc, ?_⟩
     · rw [hg0, zero_smul, add_zero] at hg
       have := Fintype.linearIndependent_iff.1 hl _ hg

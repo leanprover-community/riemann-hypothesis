@@ -64,8 +64,7 @@ theorem solv_pow : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](S : Type
   intro p _ A _ S _ _ B _ _ i I m n a c hp hPQ hS
   obtain ⟨y, hy⟩ := hS
   have hpS : (p : S) = 0 := by
-    have := congrArg (algebraMap A S) hp
-    simpa using this
+    simpa using congrArg (algebraMap A S) hp
   choose k₀ x hx using fun j => hPQ.pow (y j)
   obtain ⟨K, hK⟩ : ∃ K, K = Finset.univ.sup k₀ := ⟨_, rfl⟩
   let s : Fin n → S := fun j => x j ^ p ^ (K - k₀ j)
@@ -75,8 +74,7 @@ theorem solv_pow : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](S : Type
     have hpow : p ^ K = p ^ k₀ j * p ^ (K - k₀ j) := by
       rw [← pow_add]; congr 1; omega
     have hxj : y j ^ p ^ k₀ j = i (x j) := hx j
-    rw [hpow, pow_mul, hxj]
-    simp [s, map_pow]
+    simp [hpow, pow_mul, hxj, s, map_pow]
   obtain ⟨fB, hfB⟩ := exists_frobenius_iterate p B hPQ.pf.char K
   have he : ∀ t, i (∑ j, a t j ^ p ^ K • s j - algebraMap A S (c t ^ p ^ K)) = 0 := by
     intro t

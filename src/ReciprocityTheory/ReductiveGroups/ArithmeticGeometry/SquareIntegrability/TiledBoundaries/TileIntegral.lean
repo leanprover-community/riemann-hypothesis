@@ -169,10 +169,9 @@ theorem tile_integral (bA bB : Basis ι ℝ V) (hAB : span ℤ (range bA) ≤ sp
   have hT := tile_fund bA bB hAB μ
   have hperA : ∀ (g : (span ℤ (range bA)).toAddSubgroup) (x : V), h (g +ᵥ x) = h x := by
     intro g x
-    have hg : (g : V) ∈ span ℤ (range bA) := g.2
     change h ((g : V) + x) = h x
     rw [add_comm]
-    exact hper _ (hAB hg) x
+    exact hper _ (hAB g.2) x
   rw [hA.setIntegral_eq hT hperA]
   unfold tileT
   rw [setIntegral_finset_biUnion_of_pairwise_disjoint μ h (fun c => (fun x => x - c) ⁻¹' ZSpan.fundamentalDomain bB)

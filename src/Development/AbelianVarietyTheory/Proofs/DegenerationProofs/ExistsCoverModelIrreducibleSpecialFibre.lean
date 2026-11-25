@@ -138,8 +138,7 @@ theorem exists_cover_irr : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsDiscret
   have hmem : ∀ i z, f.fiberι c z ∈ U i ↔ z ∈ (σ.symm i).1 := by
     intro i z
     show f.fiberι c z ∉ f.fiberι c '' (σ.symm i).1ᶜ ↔ _
-    rw [hcl.injective.mem_set_image]
-    simp
+    simp [hcl.injective.mem_set_image]
   refine ⟨n, fun i => restrictModel M (U i) (hU i), fun i => Over.homMk (U i).ι rfl,
     fun i => ⟨?_, inferInstanceAs (IsOpenImmersion (U i).ι), restrictModel_j M (U i) (hU i)⟩, ?_⟩
   · have hi : IsIrreducible (f.fiberι c '' (σ.symm i).1) :=

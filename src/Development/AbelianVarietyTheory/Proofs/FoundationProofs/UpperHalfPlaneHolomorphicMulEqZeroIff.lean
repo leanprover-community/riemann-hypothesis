@@ -68,11 +68,9 @@ theorem fn_mul_eq_zero_dom : ∀ f g : ℍ → ℂ, MDifferentiable 𝓘(ℂ) �
   rcases AnalyticOnNhd.eq_zero_or_eq_zero_of_mul_eq_zero hF hG (fun z _ => by simp [Function.comp_apply, hfg]) hU with h | h
   · left
     funext τ
-    have := h (τ : ℂ) τ.im_pos
-    simpa [Function.comp_apply, UpperHalfPlane.ofComplex_apply] using this
+    simpa [Function.comp_apply, UpperHalfPlane.ofComplex_apply] using h (τ : ℂ) τ.im_pos
   · right
     funext τ
-    have := h (τ : ℂ) τ.im_pos
-    simpa [Function.comp_apply, UpperHalfPlane.ofComplex_apply] using this
+    simpa [Function.comp_apply, UpperHalfPlane.ofComplex_apply] using h (τ : ℂ) τ.im_pos
 
 end GlobalTheory

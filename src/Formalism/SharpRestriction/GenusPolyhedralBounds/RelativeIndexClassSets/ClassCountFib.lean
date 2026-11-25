@@ -69,8 +69,7 @@ theorem smul_mk (Γ K U : Subgroup G) (g : G) (x : Gam Γ K g) (k : K) :
 
 theorem mk_eq_iff {K U : Subgroup G} {k k' : K} :
     (k : K ⧸ U.subgroupOf K) = (k' : K ⧸ U.subgroupOf K) ↔ (k : G)⁻¹ * k' ∈ U := by
-  rw [QuotientGroup.eq, Subgroup.mem_subgroupOf]
-  simp
+  simp [QuotientGroup.eq, Subgroup.mem_subgroupOf]
 
 def stabEquiv {Γ K U : Subgroup G} (hUK : U ≤ K) (g : G) (k : K) :
     stabilizer (Gam Γ K g) (k : K ⧸ U.subgroupOf K) ≃* Gam Γ U (g * k) where
@@ -166,8 +165,7 @@ theorem total_injective {Γ K U : Subgroup G} (hUK : U ≤ K) (rep : DoubleCoset
   simp only [Sigma.mk.inj_iff, heq_eq_eq, true_and]
   refine Quotient.sound ⟨⟨h⁻¹, hx⟩, ?_⟩
   show (⟨h⁻¹, hx⟩ : Gam Γ K (rep c)) • ((k' : K) : K ⧸ U.subgroupOf K) = ((k : K) : K ⧸ U.subgroupOf K)
-  rw [smul_mk, mk_eq_iff]
-  simp only [Subgroup.coe_mul, toK_coe]
+  simp only [smul_mk, mk_eq_iff, Subgroup.coe_mul, toK_coe]
   rw [e1]
   convert U.inv_mem hu using 1
   group

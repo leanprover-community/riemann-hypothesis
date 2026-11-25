@@ -82,8 +82,7 @@ theorem B_eq_ex {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (B : Fin n → ℂ) (
 
 theorem x_eq_ex {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (B : Fin n → ℂ) (k : Fin n) :
     xOf X B k = ex (blk X B 0 0) k (k + 1) := by
-  have := ex_fin (blk X B 0 0) k.castSucc k.succ
-  simpa [xOf] using this.symm
+  simpa [xOf] using (ex_fin (blk X B 0 0) k.castSucc k.succ).symm
 
 theorem key (m : ℕ) (z : ℂ) (X : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (B : Fin (m + 1) → ℂ)
     (hX : IsStrictUpper X) (hx : ∀ k, xOf X B k = z) (j : ℕ) :

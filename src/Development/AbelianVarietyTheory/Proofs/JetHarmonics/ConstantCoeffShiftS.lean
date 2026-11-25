@@ -227,8 +227,7 @@ lemma DT_shiftS {ζ : ℂ_[q]} (h : ‖ζ - 1‖ < 1) {f : ℂ_[q]⟦X⟧} (hf :
   have s4 : Summable fun m : ℕ => coeff m f * (m : ℂ_[q]) * coeff n (sS ζ ^ (m - 1)) := by
     refine (summable_nat_add_iff 1).mp ?_
     simpa using s3
-  rw [coeff_DT, coeff_shiftS, coeff_shiftS, coeff_shiftS]
-  simp only [coeff_DT, add_mul]
+  simp only [coeff_DT, coeff_shiftS, coeff_shiftS, coeff_shiftS, coeff_DT, add_mul]
   calc (∑' m, coeff m f * coeff (n + 1) (sS ζ ^ m)) * ((n : ℂ_[q]) + 1) +
         (∑' m, coeff m f * coeff n (sS ζ ^ m)) * n
       = ∑' m, (coeff m f * coeff (n + 1) (sS ζ ^ m) * ((n : ℂ_[q]) + 1) +
@@ -241,8 +240,7 @@ lemma DT_shiftS {ζ : ℂ_[q]} (h : ‖ζ - 1‖ < 1) {f : ℂ_[q]⟦X⟧} (hf :
           ∑' m, coeff m f * (m : ℂ_[q]) * coeff n (sS ζ ^ m) := s4.tsum_add s2
     _ = ∑' m, coeff (m + 1) f * ((m : ℂ_[q]) + 1) * coeff n (sS ζ ^ m) +
           ∑' m, coeff m f * (m : ℂ_[q]) * coeff n (sS ζ ^ m) := by
-        rw [s4.tsum_eq_zero_add]
-        simp
+        simp [s4.tsum_eq_zero_add]
     _ = _ := (s3.tsum_add s2).symm
 
 theorem shift_laws : ∀ (q : ℕ) [Fact q.Prime] (ζ : ℂ_[q]), ‖ζ - 1‖ < 1 → (∀ (f : ℂ_[q]⟦X⟧) (B : ℝ), Bd B f → Bd B (shiftS ζ f)) ∧ (∀ f g : ℂ_[q]⟦X⟧, Bdd f → Bdd g → shiftS ζ (f + g) = shiftS ζ f + shiftS ζ g ∧ shiftS ζ (f * g) = shiftS ζ f * shiftS ζ g) ∧ (∀ c : ℂ_[q], shiftS ζ (C c) = C c) ∧ shiftS ζ X = C ζ * (1 + X) - 1 ∧ (∀ f : ℂ_[q]⟦X⟧, constantCoeff (shiftS ζ f) = ev f (ζ - 1)) ∧ (∀ f : ℂ_[q]⟦X⟧, Bdd f → DT (shiftS ζ f) = shiftS ζ (DT f)) ∧ (∀ f : ℂ_[q]⟦X⟧, shiftS 1 f = f) := by

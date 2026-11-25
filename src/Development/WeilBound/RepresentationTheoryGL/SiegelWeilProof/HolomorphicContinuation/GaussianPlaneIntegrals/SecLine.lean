@@ -90,13 +90,12 @@ theorem one_add_pow_mul_exp_neg_le_of_mul_le (K : ℕ) {a β s : ℝ} (ha : 0 < 
     have : (K : ℝ) * (a * s) = ((K : ℝ) * a) * s := by ring
     rw [this]
     nlinarith [mul_le_mul_of_nonneg_right hKa hs]
-  have hc : 0 ≤ (1 + 1 / a) ^ K := pow_nonneg (by linarith) K
   have hE : 0 ≤ Real.exp (-β * s) := (Real.exp_pos _).le
   calc (1 + s) ^ K * Real.exp (-β * s)
       ≤ (1 + 1 / a) ^ K * Real.exp (a * s) ^ K * Real.exp (-β * s) :=
         mul_le_mul_of_nonneg_right h3 hE
     _ = (1 + 1 / a) ^ K * (Real.exp (a * s) ^ K * Real.exp (-β * s)) := by ring
-    _ ≤ (1 + 1 / a) ^ K * 1 := mul_le_mul_of_nonneg_left h5 hc
+    _ ≤ (1 + 1 / a) ^ K * 1 := mul_le_mul_of_nonneg_left h5 (pow_nonneg (by linarith) K)
     _ = (1 + 1 / a) ^ K := mul_one _
 
 theorem PositivityTheory.Rg.Sw.FFTSteps.SecondLineEstimates.pow_mul_exp_le :
