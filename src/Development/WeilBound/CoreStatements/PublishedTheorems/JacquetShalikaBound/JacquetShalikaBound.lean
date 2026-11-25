@@ -754,8 +754,7 @@ theorem sphSpan_le (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : sphSpan
 
 theorem exists_translate_ne_zero : G2 := by
   intro E _ _ _ a π w B hB l hl
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨x, hx⟩ := hB.exists_vec
   have hfix : ∀ v : π.V, IsFix π w v → v ≠ 0 → IsSatVecGL w (π.locRep w) v B := fun v hv h0 =>
     hB.2 v (GlobalTheory.LGrp.mem_fixed.2 hv) h0

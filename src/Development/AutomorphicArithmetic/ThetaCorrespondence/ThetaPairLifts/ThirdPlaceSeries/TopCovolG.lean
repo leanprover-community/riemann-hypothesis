@@ -692,8 +692,7 @@ theorem selfAdj_of_pyth (hv : v.IsComplex) (e : V →ₗ[K] V)
     have h2 := h x y
     linarith
   obtain ⟨a, ha⟩ : ∃ a : K, (v.embedding a).im ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply InfinitePlace.isComplex_iff.mp hv
     first
     | (rw [ComplexEmbedding.isReal_iff]; ext t; exact Complex.conj_eq_iff_im.mpr (hcon t))

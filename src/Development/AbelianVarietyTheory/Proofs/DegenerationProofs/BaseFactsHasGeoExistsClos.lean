@@ -537,8 +537,7 @@ theorem sec_unit (hB : BaseFacts S M U₀ EE) (Q : Clos ρ M U₀ EE) {l : Q.Λ}
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [smul_dotProduct, Subalgebra.smul_def, smul_eq_mul, mul_div_assoc]
   rw [e] at hu
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   refine (IsLocalRing.mem_maximalIdeal _).1 (Ideal.sum_mem _ fun k _ => Ideal.mul_mem_left _ _ ?_) hu
   exact (IsLocalRing.mem_maximalIdeal _).2 (hn k)
 

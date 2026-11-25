@@ -321,8 +321,7 @@ theorem degRatio_holds : DegRatio := by
   intro n e ε lam ε' mu B hP H H' _ _ _ _ π σ hπ hσ
   obtain ⟨i0, hi0⟩ := hP.neg
   have hε't : ∃ a, ε' a = true := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 := hP.pos
     have h0 : (univ.filter fun i => ε' i = true) = ∅ := by
       ext i
@@ -397,8 +396,7 @@ theorem hsn_sq_le {m : ℕ} (g : Mat m) : hsn g ^ 2 ≤ m * Real.exp (2 * Global
 theorem hsn_pos {m : ℕ} (hm : 1 ≤ m) {ε : Fin m → Bool} {g : Mat m} (hg : g ∈ UJset ε) : 0 < hsn g := by
   unfold hsn
   apply Real.sqrt_pos.2
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hsum : ∑ a, ∑ b, ‖g a b‖ ^ 2 = 0 := le_antisymm hle (by positivity)
   have hg0 : g = 0 := by
     ext a b
@@ -1156,8 +1154,7 @@ theorem hsn_pos (hm : 0 < m) {x : Mat m} (hx : x ∈ UJset ε) : 0 < hsn x := by
   haveI : Nonempty (Fin m) := ⟨⟨0, hm⟩⟩
   have hne : x ≠ 0 := (isUnit_of_mem hx).ne_zero
   obtain ⟨i, j, hij⟩ : ∃ i j, x i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (Matrix.ext h)
   have h1 : ‖x i j‖ ^ 2 ≤ ∑ b, ‖x i b‖ ^ 2 :=
     Finset.single_le_sum (f := fun b => ‖x i b‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ j)

@@ -71,7 +71,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.LatMove
@@ -157,7 +156,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 noncomputable section
@@ -264,7 +262,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.Core.LocFromGlob
@@ -325,7 +322,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 
@@ -344,7 +340,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.Core.Rk.LatMove
@@ -380,7 +375,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.Core.Rk.IP
@@ -430,7 +424,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 

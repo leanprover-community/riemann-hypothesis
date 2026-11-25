@@ -117,8 +117,7 @@ theorem Factor.isConst [Nonempty T] {lam : T → ℂ} (h : Factor X ψ θ lam) :
   obtain ⟨P, hPP⟩ := hp (p' P')
   unfold Tri.IsConst
   refine ⟨⟨Classical.arbitrary T, hlam _⟩, P, P', fun t => ⟨fun h => ⟨hint t P h, hint' t h⟩, ?_, fun h => ?_⟩⟩
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     apply hP'
     apply hJ t
     rw [map_zero, ← hI' t P' (hint' t)]

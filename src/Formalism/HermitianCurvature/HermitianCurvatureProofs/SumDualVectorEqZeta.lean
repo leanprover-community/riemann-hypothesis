@@ -667,8 +667,7 @@ theorem lc_self {t : ℕ} (a : Fin t → Fin (mdim k r i)) (ha : Function.Inject
   · simp
   · intro σ _ hσ
     obtain ⟨l, hl⟩ : ∃ l, σ l ≠ l := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hσ (Equiv.ext hc)
     rw [Finset.prod_eq_zero (Finset.mem_univ l) (if_neg fun e => hl (ha (posL_inj i e))), mul_zero]
   · intro h

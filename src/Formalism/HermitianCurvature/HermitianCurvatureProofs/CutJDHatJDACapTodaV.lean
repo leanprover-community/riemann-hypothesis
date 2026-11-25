@@ -31,8 +31,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.TVG
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem tVGrp_of (hRR : RightRuleEv) (hLR : LeftRuleCellv) (hTC : TorusCellv) (hCh : MirrorChainExpansion) : TVGrp := by
   intro Wp Wq _ _ _ _ _ _ P Bs hpl hk y J hJ c hc g hg hcg
   have hGG := JDAToda.gg_pos Bs hc hg hcg

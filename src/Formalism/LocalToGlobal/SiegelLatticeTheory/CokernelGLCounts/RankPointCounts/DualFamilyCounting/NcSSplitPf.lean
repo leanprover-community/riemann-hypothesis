@@ -757,12 +757,10 @@ private theorem eq_zero_of_mem_of_disjoint {V : Type*} [AddCommGroup V] [Module 
 private theorem exists_not_mem_of_ne_top_of_ne_top {V : Type*} [AddCommGroup V] [Module K V]
     (U W : Submodule K V) (hU : U ≠ ⊤) (hW : W ≠ ⊤) : ∃ v, v ∉ U ∧ v ∉ W := by
   obtain ⟨u, hu⟩ : ∃ u, u ∉ U := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hU (Submodule.eq_top_iff'.mpr hcon)
   obtain ⟨w, hw⟩ : ∃ w, w ∉ W := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hW (Submodule.eq_top_iff'.mpr hcon)
   by_cases huW : u ∈ W
   · by_cases hwU : w ∈ U

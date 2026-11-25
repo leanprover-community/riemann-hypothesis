@@ -481,8 +481,7 @@ theorem charSum {F : Type} [Field F] [Fintype F] (ψ₀ : AddChar F ℂ) (hψ : 
   · subst hν
     simp
   · obtain ⟨i, hi⟩ : ∃ i, ν i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hν (funext h)
     exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
 
@@ -555,8 +554,7 @@ open Classical
 theorem rowExists : RowExists := by
   intro F _ _ n r hr
   obtain ⟨k, hk⟩ : ∃ k, r k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hr (funext h)
   set σ : Equiv.Perm (Fin (n + 1)) := Equiv.swap k (Fin.last n) with hσ
   set A : Matrix (Fin (n + 1)) (Fin (n + 1)) F :=
@@ -934,12 +932,10 @@ theorem generic_iff_criterion : GenericIff := by
     rw [← this, LinearMap.zero_apply]
   · intro hQ
     obtain ⟨v, hv⟩ : ∃ v, projQ ψ₀ π v ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hQ (LinearMap.ext h)
     obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ V, f (projQ ψ₀ π v) ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 h)
     refine ⟨f ∘ₗ (projQ ψ₀ π ∘ₗ π (sgn k)), ?_, isWhit_of_dual ψ₀ π f⟩
     intro h0

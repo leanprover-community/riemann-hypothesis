@@ -720,8 +720,7 @@ theorem charSum_detects_multiple : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ)
     rw [Finset.sum_congr rfl h1]; simp
   · intro hnot
     have hex : ∃ r₀ ∈ R, ψ (symplO S T t r₀) ≠ 1 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hnot
       set a : AE D := algebraMap D.host.F (AE D) ((k : D.host.F)⁻¹) with ha
       have hka : k • a = 1 := by

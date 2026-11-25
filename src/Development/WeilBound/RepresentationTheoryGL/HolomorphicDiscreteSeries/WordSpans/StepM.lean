@@ -369,8 +369,7 @@ open Formalism.REAL Formalism.MainNotions.S PositivityTheory.UnitaryDecompositio
 
 theorem irr : Irr := by
   intro m ε K _ _ σ hU hI u w hu hw
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hJ : PI.UpqRep.Jm ε * PI.UpqRep.Jm ε = 1 := by
     unfold PI.UpqRep.Jm
     rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
@@ -629,8 +628,7 @@ theorem nonvan (hKey : KeyId) {N : ℕ} {ε : Fin (N + 2) → Bool} {ε' : Fin (
   have hK : ∀ v : S, cG • f v = -∑ c : Fin (N + 1),
       (Th E' (-mσ j)) (fun l => f ((E (ι l) z) ((E z (ι c)) v))) c :=
     fun v => hKey S S' N E E' ι z f hS.gl hιinj hιz hf (-mσ j) cG (fun x => hcapπ _ x) hw0 v
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   let lift : (Fin (N + 1) → H') → Fin (N + 1) → S' := fun y l =>
     if h : y l ∈ S' then ⟨y l, h⟩ else 0
   have hlift : ∀ y ∈ SmT ε' σ, ∀ l, ((lift y l : S') : H') = y l := by
@@ -901,8 +899,7 @@ theorem stepM_of (hKey : KeyId) (hZ : Zero) (hPhi : PhiEq) (hIrr : Irr) :
   have hφ₀ := (hPhi (N + 1) ε ε' e H H' π σ S E P hG.fits hS hUπ hP η₀ hη₀).1
   have hx₀ := X.p_sm j hj _ hφ₀
   obtain ⟨l, hl⟩ : ∃ l, X.p j (phi E e P η₀) l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hy := smT_single (hx₀ l) l
   have hform := X.form j hj _ hφ₀ _ hy

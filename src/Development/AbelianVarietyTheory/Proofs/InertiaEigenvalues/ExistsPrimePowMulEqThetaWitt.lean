@@ -104,8 +104,7 @@ theorem norm_pi_lt {K : FinExt l} (bk : BK K) : ‖((Per.θ l (bk.ev X) : OC l) 
     exact (mul_le_of_le_one_right (norm_nonneg _) (pow_le_one₀ (norm_nonneg _) hπ1)).trans
       (hcoef i (Finset.mem_range.1 hi))
   rw [norm_l_C] at h4
-  by_contra h5
-  push_neg at h5
+  by_contra! h5
   have h6 := one_le_pow₀ (n := bk.Ep.natDegree) h5
   have h7 : (l : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ hl1
   linarith
@@ -183,8 +182,7 @@ theorem step {K : FinExt l} (bk : BK K) (y : Om l) (hyK : y ∈ K.1) (hyU : y �
     obtain ⟨k, hk⟩ := Formalism.MainNotions.N.PreambleDegrees.Loc.norm_Kur_zpow hdU h0
     rw [hk] at hd1 ⊢
     have hk0 : k < 0 := by
-      by_contra hk0
-      push_neg at hk0
+      by_contra! hk0
       exact absurd hd1 (not_lt.2 (one_le_zpow₀ hl1.le hk0))
     calc (l : ℝ) ^ k ≤ (l : ℝ) ^ (-1 : ℤ) := zpow_le_zpow_right₀ hl1.le (by omega)
       _ = (l : ℝ)⁻¹ := zpow_neg_one _

@@ -418,8 +418,7 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
     have hd : l ≠ D.host.d := fun h => hqd (Or.inr h)
     have h5l := Nat.Prime.five_le_of_ne_two_of_ne_three hp h2 h3
     have hle : (l : ℝ) ≤ lStar L ∨ l ∈ tb.exc := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact he ⟨hc.1, hc.2⟩
     have hBB := h5 i hti ⟨hsm, hq, hd, hlg⟩
     have hBB' : tb.BB i ≤ bbB L C := by unfold bbB; exact hBB
@@ -475,8 +474,7 @@ theorem loc_le_lamB (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (hC : 0 < C)
           nlinarith
         · push_neg at hc
           have hord : ordH D l ≤ 4 * D.host.Lw := by
-            by_contra ho
-            push_neg at ho
+            by_contra! ho
             exact hb ⟨hc, ho⟩
           have := hD i hti ⟨hin, hc, hord, hlg⟩ lam (hmemT lam hlam)
           have : C * ((nLam D lam : ℝ) + 1) * D.R.r * flatCD L tb i lam l ≤

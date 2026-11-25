@@ -10,8 +10,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def ChainBd : Prop :=
   ∀ (k r : ℕ) (V E' : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V]
     [NormedAddCommGroup E'] [NormedSpace ℂ E'] (Ψ : V → E'), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Ψ →

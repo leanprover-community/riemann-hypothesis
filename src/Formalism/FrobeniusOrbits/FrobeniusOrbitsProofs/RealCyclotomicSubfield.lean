@@ -148,8 +148,7 @@ private lemma finrank_adjoin_add_inv_eq_two_of_isPrimitiveRoot {M : Type*} [Fiel
       ring
     rw [← hdeg]
     exact natDegree_le_natDegree (minpoly.min _ z hmon hroot)
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     have hpos := minpoly.natDegree_pos hint
     have h1 : (minpoly ℚ⟮z + z⁻¹⟯ z).natDegree = 1 := by omega
     obtain ⟨k, hk⟩ := minpoly.natDegree_eq_one_iff.mp h1

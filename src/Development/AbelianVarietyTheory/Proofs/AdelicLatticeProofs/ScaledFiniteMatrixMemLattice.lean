@@ -112,8 +112,7 @@ theorem AA_ne_zero (D : D7) : D.host.AA ≠ 0 := by
 theorem exists_nsmul_finRat_mem : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), Submodule.IsFullLattice D.host.E ΛS → Submodule.IsFullLattice D.host.E ΛT → ∀ γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E, ∃ N : ℕ, 0 < N ∧ N • finRat S T γ ∈ (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) := by
   intro D S T ΛS ΛT hS hT γ
   obtain ⟨a, ha, ha0⟩ : ∃ a ∈ D.host.AA, a ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact AA_ne_zero D (FractionalIdeal.eq_zero_iff.2 hc)
   rw [Matrix.matrix_eq_sum_single γ]
   simp_rw [← Finset.sum_product']

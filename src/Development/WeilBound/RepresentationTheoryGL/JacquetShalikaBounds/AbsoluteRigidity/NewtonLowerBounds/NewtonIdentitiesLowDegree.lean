@@ -91,12 +91,10 @@ theorem newton_identities_low_degree : NewtonLow := by
   intro N hN
   refine ⟨1 / 4, by norm_num, fun A _ a hA hprod => ?_⟩
   classical
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hp : ∀ k, 1 ≤ k → k ≤ N → ‖∑ i, a i ^ k‖ ≤ 1 / 2 := by
     intro k hk1 hkN
-    by_contra hk
-    push_neg at hk
+    by_contra! hk
     have hle : ‖∑ i, a i ^ k‖ ^ 2 ≤ ∑ m ∈ range N, ‖∑ i, a i ^ (m + 1)‖ ^ 2 := by
       have hmem : k - 1 ∈ range N := by
         rw [Finset.mem_range]

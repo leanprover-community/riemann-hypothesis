@@ -319,7 +319,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.FrameOf
 open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.GradedWeylDivisibility MvPolynomial
 open GlobalTheory.FrameRead
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

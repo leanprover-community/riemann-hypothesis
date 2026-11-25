@@ -14,8 +14,6 @@ namespace Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 private def gAlast (k r : ℕ) : Fin (2 * r + k + 1) := ⟨r + k, by omega⟩

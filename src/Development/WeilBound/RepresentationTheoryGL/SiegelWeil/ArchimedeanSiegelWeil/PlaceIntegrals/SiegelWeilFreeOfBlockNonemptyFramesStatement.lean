@@ -1452,8 +1452,7 @@ theorem exists_value (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {n : ℕ}
   obtain ⟨hσ, δ, hδ, hδs⟩ := HaarCoord.conj_facts hCM
   have hherm := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.WittOne.hE_herm σ hσ T hT
   have hne : ∃ x, hE σ T x x ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have key : ∀ x y, hE σ T x y + hE σ T y x = 0 := by
       intro x y
       have h := hall (x + y)
@@ -1508,8 +1507,7 @@ theorem split_hyp (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {M : ℕ}
   have hherm := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.WittOne.hE_herm σ hσ J hJ.1
 
   have hex : ∃ y₀, hE σ J x y₀ ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hv : Matrix.vecMul (fun i => σ (x i)) J = 0 := by
       funext j
       have := hall (Pi.single j 1)

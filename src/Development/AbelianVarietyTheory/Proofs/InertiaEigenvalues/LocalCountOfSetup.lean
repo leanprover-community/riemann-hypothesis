@@ -180,8 +180,7 @@ theorem exists_not_pow {l : ℕ} [Fact l.Prime] (K : IntermediateField ℚ_[l] (
 
 theorem exists_root {Ω : Type} [Field Ω] [IsAlgClosed Ω] (A : ValuationSubring Ω) (u : Ω) {m : ℕ} (hm : 0 < m) :
     ∃ y : Ω, y ^ (m + 1) + y ^ m + u = 0 ∧ 1 ≤ A.valuation y := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set Q : Polynomial Ω := X ^ (m + 1) + X ^ m + C u with hQ
   have hdeg : Q.natDegree = m + 1 := by
     rw [hQ]; compute_degree!
@@ -225,8 +224,7 @@ theorem norm_le_one {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [NumberFiel
     [IsAlgClosure E Ω] {A : ValuationSubring Ω} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
     (Bw : Formalism.BasicNotions.LocBridge l E Ω (ReciprocityTheory.Gal.Dec A) O) (u : E)
     (hu : A.valuation (algebraMap E Ω u) < 1) : ‖Bw.j (algebraMap E Ω u)‖ ≤ 1 := by
-  by_contra h1
-  push_neg at h1
+  by_contra! h1
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed E
   haveI := Bw.Kw.2
   obtain ⟨m, hm, hK⟩ := exists_not_pow Bw.Kw.1 _ (Bw.j_E u) h1
@@ -266,8 +264,7 @@ theorem norm_le_one {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [NumberFiel
     have : w = -(z ^ m * (z + 1)) := by linear_combination hz
     rw [this, norm_neg, norm_mul, norm_pow]
   have hz1 : 1 < ‖z‖ := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have h5 : ‖z + 1‖ ≤ 1 := (IsUltrametricDist.norm_add_le_max z 1).trans (max_le hle (by simp))
     have h6 : ‖z‖ ^ m ≤ 1 := pow_le_one₀ (norm_nonneg _) hle
     have := mul_le_one₀ h6 (norm_nonneg _) h5

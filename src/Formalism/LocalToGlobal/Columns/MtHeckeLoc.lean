@@ -127,14 +127,12 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarR
 theorem mhl_over_eq (hc : Formalism.BasicNotions.CMData F E) {v : HeightOneSpectrum (𝓞 F)} {Pb : Pl E} (hov : IsOver v Pb) :
     ∀ Q : Pl E, IsOver v Q → Q = Pb ∨ Q = conjPrime₂ Pb := by
   intro Q hQ
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h1 : ¬ Q.asIdeal ≤ Pb.asIdeal := fun h => hne.1 (HeightOneSpectrum.ext (Q.isMaximal.eq_of_le Pb.isPrime.ne_top h))
   have h2 : ¬ Q.asIdeal ≤ (conjPrime₂ Pb).asIdeal := fun h =>
     hne.2 (HeightOneSpectrum.ext (Q.isMaximal.eq_of_le (conjPrime₂ Pb).isPrime.ne_top h))
   obtain ⟨a, haQ, ha⟩ : ∃ a ∈ Q.asIdeal, a ∉ Pb.asIdeal ∧ a ∉ (conjPrime₂ Pb).asIdeal := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hsub : (Q.asIdeal : Set (𝓞 E)) ⊆ (Pb.asIdeal : Set (𝓞 E)) ∪ ((conjPrime₂ Pb).asIdeal : Set (𝓞 E)) := by
       intro x hx
       by_cases h : x ∈ Pb.asIdeal
@@ -181,8 +179,7 @@ theorem mhl_exists_unif {Q P : Pl E} (hQP : Q ≠ P) :
     (Ideal.pow_lt_self Q.asIdeal Q.ne_bot Q.isPrime.ne_top 2 le_rfl).not_ge h
   have h2 : ¬ Q.asIdeal ≤ P.asIdeal := fun h => hQP (HeightOneSpectrum.ext (Q.isMaximal.eq_of_le P.isPrime.ne_top h))
   obtain ⟨π, hπQ, hπ⟩ : ∃ π ∈ Q.asIdeal, π ∉ Q.asIdeal ^ 2 ∧ π ∉ P.asIdeal := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hsub : (Q.asIdeal : Set (𝓞 E)) ⊆ ((Q.asIdeal ^ 2 : Ideal (𝓞 E)) : Set (𝓞 E)) ∪ (P.asIdeal : Set (𝓞 E)) := by
       intro x hx
       by_cases h : x ∈ Q.asIdeal ^ 2

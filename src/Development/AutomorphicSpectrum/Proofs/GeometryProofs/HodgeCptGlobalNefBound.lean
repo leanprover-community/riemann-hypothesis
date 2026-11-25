@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModelOnHodgeFromFamily
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.HopfAlgebra.Basic
@@ -862,16 +863,8 @@ theorem deg_one {G G' : Lat ξ Ω} {T : Set (Cpt ξ)} {a : K → ℤ} {e : Ω} (
 theorem deg_neg_one {G G' : Lat ξ Ω} {T : Set (Cpt ξ)} {a : K → ℤ} {e : Ω} (hG : G.IsVBOn Set.univ 1 ⊤)
     (hd : (Lat.tens (fun _ : Unit => G) fun _ => (-1 : ℤ)).IsDegOn Set.univ y a e) (h : ∀ q ∈ T, G' q = G q) :
     G'.IsDegOn T y (-a) e⁻¹ := by
-  refine ⟨inv_ne_zero hd.1, fun q hq c hc => ?_⟩
-  obtain ⟨s, hs⟩ := exists_gen hG (Set.mem_univ q)
-  have ht := tens_gen hG (-1) (Set.mem_univ q) hs
-  have h1 := hd.2 q (Set.mem_univ q) c hc
-  rw [ht.2, zpow_neg_one] at h1
-  have h2 := span_inv (regAt ξ q) hs.1 h1
-  have e1 : (∏ k, y ⟨k, c k⟩ ^ (-a) k) • e⁻¹ = ((∏ k, y ⟨k, c k⟩ ^ a k) • e)⁻¹ := by
-    simp [Pi.neg_apply, zpow_neg, Finset.prod_inv_distrib, mul_comm]
-  rw [h q hq, hs.2, e1]
-  exact h2
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.TwoLevelLat.isDegOn_of_tens_neg_one <;> assumption
 
 theorem natCast_residue_eq_zero (q : Cpt ξ) {p : ℕ} (h : InFibre ξ p q) : (p : X.residueField q.1) = 0 := by
   by_contra hne

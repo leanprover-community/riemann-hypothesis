@@ -108,8 +108,7 @@ theorem fixed_cycMod_of_fixed_cycZ : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [F
     refine ⟨⟨h0, ?_⟩, h2⟩
     simp only [Set.mem_setOf_eq] at h1 ⊢
     rw [← PadicInt.zmod_cast_comp_toZModPow m k hmk, RingHom.comp_apply, h1, map_one]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hCn : ∀ m, (C m).Nonempty := by
     intro m
     obtain ⟨s, ⟨hs1, hs2, hs3⟩, hs4⟩ := hne m

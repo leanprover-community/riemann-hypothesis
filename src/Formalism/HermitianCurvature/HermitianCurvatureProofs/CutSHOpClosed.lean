@@ -317,8 +317,7 @@ theorem family_orbital_derivative : CutSH.FamJFDeriv := by
       · intro γ hγ'
         have hφne : φ γ ≠ 0 := fun h => hγ' (by simp [h])
         have hlt : Metric.infDist γ C₃ < 1 := by
-          by_contra hh
-          push_neg at hh
+          by_contra! hh
           exact hφne (max_eq_left (by linarith))
         obtain ⟨y, hy, hdy⟩ := (Metric.infDist_lt_iff ⟨1, Set.mem_insert _ _⟩).mp hlt
         exact Metric.mem_cthickening_of_dist_le γ y 1 C₃ hy hdy.le

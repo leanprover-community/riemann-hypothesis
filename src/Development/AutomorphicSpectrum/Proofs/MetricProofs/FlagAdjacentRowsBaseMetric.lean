@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackSecond
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryTwistMinorOtherSteps
@@ -365,22 +366,8 @@ theorem holoOn_prod (A : FinHolAtlas e S) {U : Set S} {κ : Type} (s : Finset κ
 theorem holoOn_minor (A : FinHolAtlas e S) {U : Set S} {N : ℕ} {H : S → Matrix (Fin N) (Fin N) ℂ}
     (hH : ∀ r s, A.HoloOn U fun w => H w r s) (I J : Finset (Fin N)) :
     A.HoloOn U fun w => minorIJ (H w) I J := by
-  have h := StepW.ValHolo.holoOn_eval A (b := fun w (q : Fin N × Fin N) => H w q.1 q.2) (fun q => hH q.1 q.2)
-    (minorIJ (Matrix.of fun r s => (MvPolynomial.X (r, s) : MvPolynomial (Fin N × Fin N) ℤ)) I J)
-  have e : (fun w => minorIJ (H w) I J) = fun w => eval (fun q : Fin N × Fin N => H w q.1 q.2)
-      (map (Int.castRingHom ℂ)
-        (minorIJ (Matrix.of fun r s => (MvPolynomial.X (r, s) : MvPolynomial (Fin N × Fin N) ℤ)) I J)) := by
-    funext w
-    let f : MvPolynomial (Fin N × Fin N) ℤ →+* ℂ :=
-      (eval fun q : Fin N × Fin N => H w q.1 q.2).comp (map (Int.castRingHom ℂ))
-    have hm : (Matrix.of fun r s => (MvPolynomial.X (r, s) : MvPolynomial (Fin N × Fin N) ℤ)).map f = H w := by
-      ext r s
-      simp [f]
-    have := minorIJ_map f (Matrix.of fun r s => (MvPolynomial.X (r, s) : MvPolynomial (Fin N × Fin N) ℤ)) I J
-    rw [hm] at this
-    exact this
-  rw [e]
-  exact h
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.PshW.holoOn_minorIJ <;> assumption
 
 theorem prod_local (A : FinHolAtlas e S) {V : Set S} {y₀ : S} {N : ℕ} (hV : IsOpen V) (hy : y₀ ∈ V)
     (g : Fin N → S → ℂ) (n : Fin N → ℤ)
@@ -848,22 +835,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.SncProd
 theorem holoOn_comp {e n : ℕ} {X Z : Type} [TopologicalSpace X] [TopologicalSpace Z] (A : FinHolAtlas e X)
     (B : FinHolAtlas n Z) (pr : X → Z) (hp : HoloMap A B pr) (S : Set Z) (g : Z → ℂ) (hg : B.HoloOn S g) :
     A.HoloOn (pr ⁻¹' S) (fun y => g (pr y)) := by
-  rintro j z ⟨hzt, hzS⟩
-  obtain ⟨k, hk⟩ := B.cover (pr ((A.chart j).symm z))
-  have h1 : AnalyticAt ℂ (B.chart k ∘ pr ∘ (A.chart j).symm) z := hp.2 j k z ⟨hzt, hk⟩
-  have h2 : AnalyticAt ℂ (g ∘ (B.chart k).symm) ((B.chart k ∘ pr ∘ (A.chart j).symm) z) := by
-    refine hg k _ ⟨(B.chart k).map_source hk, ?_⟩
-    have : (B.chart k).symm ((B.chart k) (pr ((A.chart j).symm z))) = pr ((A.chart j).symm z) :=
-      (B.chart k).left_inv hk
-    simpa [this] using hzS
-  have h3 := h2.comp h1
-  refine h3.congr ?_
-  have hc : ContinuousAt (pr ∘ (A.chart j).symm) z :=
-    hp.1.continuousAt.comp ((A.chart j).continuousAt_symm hzt)
-  filter_upwards [hc.preimage_mem_nhds ((B.chart k).open_source.mem_nhds hk)] with w hw
-  have : (B.chart k).symm ((B.chart k) (pr ((A.chart j).symm w))) = pr ((A.chart j).symm w) :=
-    (B.chart k).left_inv hw
-  simp [this]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.PshW.holoOn_comp <;> assumption
 
 theorem snoc_inj {r n e : ℕ} (σb : Fin r → Option (Fin n)) (s : Fin n ↪ Fin e) (i₀ : Fin e)
     (hne : ∀ i, s i ≠ i₀) (hσ : ∀ k k' i, σb k = some i → σb k' = some i → k = k') (k k' : Fin (r + 1)) (i : Fin e)

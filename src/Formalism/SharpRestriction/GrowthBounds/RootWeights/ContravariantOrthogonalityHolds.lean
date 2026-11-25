@@ -94,8 +94,7 @@ theorem hwv_orthogonal_lowering_span [CharZero K] {E : GLOps n K V} (B : V →�
     | one =>
       rw [Module.End.one_apply]
       obtain ⟨a, ha⟩ : ∃ a, lam a ≠ mu a := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hne (funext h)
       have h1 := hB a a v w
       rw [(mem_weightSpace_iff_diagonal_rep E lam v).1 hv.2.1 a, (mem_weightSpace_iff_diagonal_rep E mu w).1 hw.2.1 a, map_smul, map_smul,

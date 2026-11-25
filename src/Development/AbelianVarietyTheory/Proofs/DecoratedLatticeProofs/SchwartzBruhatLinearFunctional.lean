@@ -89,8 +89,7 @@ theorem exists_dot_ne_one {ψ : AddChar k Circle} {c : kˣ} (h : HasConductor ψ
     (s : kˣ) {y : n → k} (hy : y ∉ box n s) : ∃ b ∈ box n (c * s⁻¹), ψ (b ⬝ᵥ y) ≠ 1 := by
   classical
   obtain ⟨i, hi⟩ : ∃ i, y i ∉ cball s := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hy fun i _ => hne i
   have hcs : c * (c * s⁻¹)⁻¹ = s := by
     rw [_root_.mul_inv_rev, inv_inv, mul_comm s, mul_inv_cancel_left]

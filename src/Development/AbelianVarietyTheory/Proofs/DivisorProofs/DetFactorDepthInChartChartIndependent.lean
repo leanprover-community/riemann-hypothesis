@@ -217,7 +217,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp GlobalTheory.CharDepth ReciprocityTheory.PGsh GlobalTheory.FGDepth GlobalTheory.LawLog
 
 theorem detDepth_le_of_charts {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}

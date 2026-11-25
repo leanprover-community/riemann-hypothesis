@@ -294,8 +294,7 @@ theorem step (L : IsLoc O Δ) (M : Submodule O (Fin 3 → Lsq K Δ)) (hfg : M.FG
     intro x y hya hyb
     rw [B_sub_left, B_sub_left, B_smul_left, B_smul_left, ← B_star y a, ← B_star y b, hya, hyb, star_zero,
       mul_zero, mul_zero, sub_zero, sub_zero]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hq : ∀ y ∈ M, B y a = 0 → B y b = 0 → IsInt O (c * B y y) := by
     intro y hy hya hyb
     obtain ⟨r, hr⟩ := step_lemma_3 L (B y y) ((hd y).1 hy y hy) (B_star y y)

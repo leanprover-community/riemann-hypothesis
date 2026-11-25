@@ -85,8 +85,7 @@ theorem inWb_smul (c : ℂ) {x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) 
 
 theorem perp_nonneg {b v : Fin (2 * r + k + 1) → ℂ} (hb : inWb k r b) (hbn : (herm (Hpk k r) b b).re < 0)
     (hv : inWb k r v) (hvb : herm (Hpk k r) v b = 0) : 0 ≤ (herm (Hpk k r) v v).re := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have h := reverse_cauchy_schwarz_holds k r v b hv hb hneg hbn
   have h0 : herm (Hpk k r) b v = 0 := by rw [hb_symm _ (hpk_herm k r) v b, hvb, star_zero]
   rw [h0, map_zero] at h

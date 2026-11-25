@@ -11,8 +11,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.CutSE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem radial_orbital_niceness : RDJNice := by
   intro k r Wp Wq _ _ _ _ _ _ D F hF
   obtain ⟨ε, hε, hN⟩ := hF

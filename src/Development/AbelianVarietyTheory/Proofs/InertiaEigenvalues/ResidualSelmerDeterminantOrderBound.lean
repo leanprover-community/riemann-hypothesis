@@ -444,8 +444,7 @@ theorem finrank_le_of_first_order_kernel (k V U : Type) [Field k] [AddCommGroup 
     (LinearMap.range t).mkQ ∘ₗ u ∘ₗ (LinearMap.ker t).subtype
 
   have hq : Module.finrank k (LinearMap.ker q) ≤ e := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨f, hf⟩ := exists_linearIndependent_of_le_finrank (R := k) (M := LinearMap.ker q)
       (n := e + 1) hlt
     have hmem : ∀ j, u ((f j : LinearMap.ker t) : V) ∈ LinearMap.range t := by

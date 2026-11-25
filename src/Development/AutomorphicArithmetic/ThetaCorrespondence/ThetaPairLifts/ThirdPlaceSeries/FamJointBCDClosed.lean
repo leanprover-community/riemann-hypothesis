@@ -822,8 +822,7 @@ theorem _root_.GlobalTheory.noThree_of_windowTwo : ∀ {n : ℕ} (th : ZMod n �
     simp only [Nat.cast_zero, add_zero, Nat.cast_one, Nat.cast_ofNat] at this
     exact this h
   refine ⟨key, ?_⟩
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   exact key 0 ⟨hall _, hall _, hall _⟩
 
 end GlobalTheory

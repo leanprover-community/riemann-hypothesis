@@ -180,8 +180,7 @@ theorem hilbert90_baseChange : ∀ (F E K : Type) [Field F] [CharZero F] [Field 
     rw [h1, hΘ]
     exact (add_right_cancel h2).symm
   obtain ⟨c, hc⟩ := exists_isUnit_of_forall_maximal Θ (fun 𝔪 h𝔪 => by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     letI : Field ((K ⊗[F] E) ⧸ 𝔪) := Ideal.Quotient.field 𝔪
     let ι : E →+* (K ⊗[F] E) ⧸ 𝔪 :=
       (Ideal.Quotient.mk 𝔪).comp Algebra.TensorProduct.includeRight.toRingHom

@@ -708,8 +708,7 @@ theorem cre_ann_ne (i k : Lt n) (x : Cq n V) (A : Finset (Lt n))
 theorem lFq_ne (s : Bool) (p q : Fin n) (x : Cq n V) (A : Finset (Lt n)) (h : lFq E1 E2 s p q x A ≠ 0) :
     x A ≠ 0 ∨ ∃ (t : Bool) (i k : Pos n), adC p q i k ≠ 0 ∧
       (creq ((s == t), k) * annq (t, i) : Module.End ℂ (Cq n V)) x A ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨h0, h1⟩ := hc
   apply h
   have hs : adLq s p q x A = 0 := by

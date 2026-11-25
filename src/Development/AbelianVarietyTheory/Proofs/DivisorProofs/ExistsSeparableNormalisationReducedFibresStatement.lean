@@ -325,8 +325,7 @@ theorem aeval_injective_of_finite_of_not_isField : ∀ (k A : Type) [Field k] [C
     (Polynomial.aeval (R := k) y).Finite → ¬ IsField A → Function.Injective (Polynomial.aeval (R := k) y) := by
   intro k A _ _ _ _ y hy hA
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨p, hp, hp0⟩ := hne
   have hyi : IsIntegral k y := (show IsAlgebraic k y from ⟨p, hp0, hp⟩).isIntegral
   set B : Subalgebra k A := (Polynomial.aeval (R := k) y).range with hB
@@ -358,8 +357,7 @@ theorem exists_D_algebraMap_fractionRing_ne_zero : ∀ (k A : Type) [Field k] [C
     ∃ a : A, D k (FractionRing A) (algebraMap A (FractionRing A) a) ≠ 0 := by
   intro k A _ _ _ _ _
   have hnt := kaehlerDifferential_nontrivial (k := k) (K := FractionRing A)
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hall : ∀ x : FractionRing A, D k (FractionRing A) x = 0 := by
     intro x
     obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := A) x

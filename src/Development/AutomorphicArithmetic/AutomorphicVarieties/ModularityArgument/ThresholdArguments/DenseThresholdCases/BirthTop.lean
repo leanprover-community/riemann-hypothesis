@@ -193,7 +193,7 @@ theorem rhoExP (h1 : ExistsSplittingAuxiliaryCharacterForTower) (h2 : PhiFacts) 
   have e : ∀ g, (cycBar ℚ Ω l ^ (k - 1) * toB (phi D T₀.pr)) g =
       Units.map (algebraMap c.O (PadicAlgCl l)).toMonoidHom (Phi D T₀.pr k g) := by
     intro g
-    simp only [MonoidHom.mul_apply, MonoidHom.pow_apply, Phi, map_mul, map_pow]
+    simp only [MonoidHom.mul_apply, MonoidHom.pow_apply, UpperTheory.V.Cu.Phi, map_mul, map_pow]
     rw [← toB_chi c g]
     rfl
   have hI : IrrOpen ρ := by

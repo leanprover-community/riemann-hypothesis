@@ -252,8 +252,7 @@ theorem hasSum_Sum_prodCoeff (hn : n ≠ 0) (ha : ∑ i, a i = 0) (v : A.V) :
 
 theorem exists_Sum_ne_zero_of_prod_ne_zero (hn : n ≠ 0) (ha : ∑ i, a i = 0) {v : A.V}
     (hv : ∏ i, A.Sum 1 0 th w (v + a i) ≠ 0) : ∃ α, ∃ th' ∈ A.Theta n α, A.Sum n α th' w v ≠ 0 := by
-  by_contra h0
-  push_neg at h0
+  by_contra! h0
   have h1 := hasSum_Sum_prodCoeff hT h hw hn ha v
   simp only [h0 _ _ (prodCoeff_mem_Theta hT h hw ha _)] at h1
   exact hv (h1.unique hasSum_zero)

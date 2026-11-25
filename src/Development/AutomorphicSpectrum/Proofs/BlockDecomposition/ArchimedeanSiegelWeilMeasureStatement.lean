@@ -1449,8 +1449,7 @@ theorem avgInf_tendsto : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
         change ‖κ (al (t a) * (eT.symm X) a i) w‖ ≤ r a w at h3
         rw [hκn] at h3
         have := hr a w
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         nlinarith
     rw [himg] at h1
     have hconst : (((∏ a, ((P a)⁻¹) ^ (2 * M))⁻¹ * ∏ a, ((P a)⁻¹) ^ (2 * n) : ℝ≥0) : ℝ≥0∞) * C₀ =

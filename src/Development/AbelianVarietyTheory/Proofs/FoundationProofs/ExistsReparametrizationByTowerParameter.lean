@@ -86,8 +86,7 @@ theorem bddBelow_support_primePowerComponent_coeff (a : Lau p) (j : ℤ) : BddBe
   · refine ⟨min 0 (a.order - j), fun i hi => ?_⟩
     have h1 := HahnSeries.order_le_of_coeff_ne_zero hi
     have h2 := pn_pos p n
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : i < 0 := lt_of_lt_of_le h (min_le_left _ _)
     have h4 : i < a.order - j := lt_of_lt_of_le h (min_le_right _ _)
     have h5 : (p : ℤ) ^ n * i ≤ i := by nlinarith

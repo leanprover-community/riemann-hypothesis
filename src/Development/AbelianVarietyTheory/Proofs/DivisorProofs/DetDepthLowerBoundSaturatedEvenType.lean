@@ -1009,8 +1009,7 @@ theorem _root_.GlobalTheory.RootFin.root_fin : _root_.ReciprocityTheory.ChartRes
   · intro a ha haD
     set w := e.symm ⟨a, ha⟩ with hw
     have hjw : j ≤ (w : ℕ) := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact haD (Finset.mem_image.mpr ⟨w, by simp [hlt], by simp [hw]⟩)
     have key := hTzero w hjw
     have hp0 : p ^ n ≠ 0 := pow_ne_zero _ hp.ne_zero

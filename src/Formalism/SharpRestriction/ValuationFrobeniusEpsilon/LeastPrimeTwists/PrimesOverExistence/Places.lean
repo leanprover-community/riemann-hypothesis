@@ -62,8 +62,7 @@ theorem exists_over_iff : (∃ v : HeightOneSpectrum (𝓞 K), Formalism.Conjuga
         simp at h1
       · rw [mem_ltIdeal, mem_ltIdeal]
         rw [mem_ltIdeal] at hxy
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have hx1 : A.valuation (algebraMap K Ω' (x : K)) = 1 := le_antisymm (val_le_one A x) hc.1
         have hy1 : A.valuation (algebraMap K Ω' (y : K)) = 1 := le_antisymm (val_le_one A y) hc.2
         have e : ((x * y : 𝓞 K) : K) = (x : K) * (y : K) := by norm_cast

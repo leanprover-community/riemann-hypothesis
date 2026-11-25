@@ -343,8 +343,7 @@ private lemma case_two_finite_lemma
     rw [← trdeg_eq_zero_iff, hFΩ]
     exact one_ne_zero
   obtain ⟨t, ht⟩ : ∃ t : Ω, Transcendental F t := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hnalg ⟨fun a => not_not.1 (h a)⟩
   have htinv : Transcendental F t⁻¹ := fun h => ht (by simpa using h.inv)
   refine ((H2 F Ω t hfgF hFΩ ht g hg).union (H2 F Ω t⁻¹ hfgF hFΩ htinv g hg)).subset ?_
@@ -470,8 +469,7 @@ private lemma polynomial_value_over_prime_lemma_4 {K Ω : Type} [Field K] [Numbe
     refine sum_mem fun m _ => mul_mem ?_ ?_
     · rw [mem_vRing_iff_nonneg]; exact addValuation_algebraMap_ringOfIntegers_nonneg v _
     · rw [mem_vRing_iff_nonneg]; exact hmono m
-  · by_contra hnot
-    push_neg at hnot
+  · by_contra! hnot
     obtain ⟨m, hm⟩ := hnot
     set a := p.coeff m
     have ha0 : v (algebraMap K Ω a) = 0 :=

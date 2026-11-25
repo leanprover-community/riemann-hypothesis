@@ -71,8 +71,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
   AlgebraicGeometry
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationEtaleTorsion
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
@@ -100,8 +98,6 @@ noncomputable section
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
   AlgebraicGeometry
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.MulLawsCompare
 
@@ -158,7 +154,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
-attribute [local instance] Over.cartesianMonoidalCategory
 open scoped CategoryTheory.Obj
 
 noncomputable section

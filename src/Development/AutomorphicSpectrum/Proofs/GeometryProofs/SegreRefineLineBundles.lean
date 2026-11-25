@@ -51,8 +51,7 @@ theorem exists_unit_gen {B : Type} [Fintype B] (A : Subring Ω) [IsLocalRing A] 
     have h2 := mul_right_cancel₀ hf h1
     exact Subtype.ext (by simpa using h2)
   obtain ⟨l, hl⟩ : ∃ l, IsUnit (a l) := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     have h1 : (1 : A) ∈ IsLocalRing.maximalIdeal A := by
       rw [← hsum]
       exact Ideal.sum_mem _ fun i _ => Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 (hn i))

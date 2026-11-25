@@ -80,8 +80,7 @@ theorem exists_two_primes_of_isFrob_one (K F : Type) [Field K] [NumberField K] [
         Ideal.absNorm P.asIdeal = Ideal.absNorm v.asIdeal ∧ Ideal.absNorm Q.asIdeal = Ideal.absNorm v.asIdeal := by
   let e : 𝓞 F ≃ₐ[𝓞 K] 𝓞 F := RingOfIntegers.mapAlgEquiv σ
   obtain ⟨θ, hθ⟩ : ∃ θ : 𝓞 F, e θ - θ ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hσ
     ext x
     obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 F) x

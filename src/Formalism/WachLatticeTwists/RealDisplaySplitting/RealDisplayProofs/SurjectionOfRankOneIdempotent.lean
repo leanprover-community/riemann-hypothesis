@@ -44,8 +44,7 @@ theorem rank_one_factor (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuatio
     rintro rfl
     simp at hrk
   obtain ⟨i1, j1, h1⟩ : ∃ i j, e i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact he0 (Matrix.ext h)
   obtain ⟨⟨i0, j0⟩, -, hp0⟩ := Finset.exists_min_image (Finset.univ : Finset (n × n))
     (fun p => IsDiscreteValuationRing.addVal O (e p.1 p.2)) ⟨(i1, j1), Finset.mem_univ _⟩

@@ -62,8 +62,7 @@ theorem exists_pow_mul (v : HeightOneSpectrum (𝓞 F)) {D : Ideal (𝓞 F)} (hD
     ∃ (m : ℕ) (B : Ideal (𝓞 F)), D = v.asIdeal ^ m * B ∧ ¬ B ≤ v.asIdeal := by
   have hv : v.asIdeal ≠ ⊤ := v.isPrime.ne_top
   have hex : ∃ m : ℕ, ¬ D ≤ v.asIdeal ^ (m + 1) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hD
     have h' : D ≤ ⨅ i : ℕ, v.asIdeal ^ i := by
       refine le_iInf fun i => ?_
@@ -87,8 +86,7 @@ theorem exists_pow_mul (v : HeightOneSpectrum (𝓞 F)) {D : Ideal (𝓞 F)} (hD
 
 theorem exists_mem_pow_not_mem {v w : HeightOneSpectrum (𝓞 F)} (hw : w ≠ v) (k : ℕ) :
     ∃ e ∈ v.asIdeal ^ k, e ∉ w.asIdeal := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hle : v.asIdeal ^ k ≤ w.asIdeal := fun e he => h e he
   have hvw : v.asIdeal ≤ w.asIdeal := w.isPrime.le_of_pow_le hle
   exact hw (HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top hvw).symm)

@@ -258,8 +258,7 @@ theorem exists_dual_lt (hl : 1 ≤ l) (D : ZMod d → ℝ) (hD : 0 ≤ D) {v : �
     simp [Pi.single_apply]
   have ha : ∀ t, 0 ≤ a t := by
     intro t
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have hq : ((u / a t) • ((Pi.single t (1 : ℝ) : ZMod d → ℝ), (0 : ℝ))) ∈ Kset l d := by
       refine hrec _ (fun s => ?_) (by simp)
       simp only [Prod.smul_fst, Pi.smul_apply, smul_eq_mul]
@@ -280,8 +279,7 @@ theorem exists_dual_lt (hl : 1 ≤ l) (D : ZMod d → ℝ) (hD : 0 ≤ D) {v : �
   have hcpos : 0 < -c := neg_pos.2 hc
   have hw : ∀ s, ∀ i ∈ oddLevels d, 0 ≤ (l : ℝ) ^ i * a s + a (s + (i : ZMod d)) + c := by
     intro s i hi
-    by_contra hw0
-    push_neg at hw0
+    by_contra! hw0
     obtain ⟨W, hW⟩ : ∃ W : ℝ, W = (l : ℝ) ^ i * a s + a (s + (i : ZMod d)) + c := ⟨_, rfl⟩
     rw [← hW] at hw0
     have hτ : 0 < u / W := div_pos_iff.2 (Or.inr ⟨hu, hw0⟩)

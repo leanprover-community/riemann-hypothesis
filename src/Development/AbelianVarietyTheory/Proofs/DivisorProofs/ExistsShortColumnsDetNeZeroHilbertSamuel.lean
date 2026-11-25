@@ -445,8 +445,7 @@ theorem avoid : ∀ (E : Type) [Field E] [Infinite E] (N δ : ℕ) (y : Fin δ �
     have h1 := congrArg (eval (Pi.single k 1)) h
     simpa [Pi.single_apply] using h1
   have hx : ∃ x : Fin N → E, eval x P ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hP (MvPolynomial.funext fun x => by rw [hne x, map_zero])
   obtain ⟨x, hx⟩ := hx
   refine ⟨x, fun p => ?_⟩

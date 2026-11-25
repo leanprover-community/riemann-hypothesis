@@ -97,8 +97,7 @@ theorem exists_nhds_kernel_eq_zero {G : Set A} (hc : IsClosed G) (h1 : (1 : A) �
     {S : Submodule ℝ A} (hS : ∀ X, X ∈ S ↔ ∀ t : ℝ, NormedSpace.exp (t • X) ∈ G)
     (p : A →L[ℝ] A) (hp : ∀ Z ∈ S, p Z = Z) :
     ∃ W₀ ∈ 𝓝 (0 : A), ∀ Y ∈ W₀, NormedSpace.exp Y ∈ G → p Y = 0 → Y = 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hseq : ∀ k : ℕ, ∃ Y : A, ‖Y‖ < 1 / ((k : ℝ) + 1) ∧ NormedSpace.exp Y ∈ G ∧ p Y = 0 ∧ Y ≠ 0 := by
     intro k
     obtain ⟨Y, hY, hYG, hYp, hY0⟩ :=

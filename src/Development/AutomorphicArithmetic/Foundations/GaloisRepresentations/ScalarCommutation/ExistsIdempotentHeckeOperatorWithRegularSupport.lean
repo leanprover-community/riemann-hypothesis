@@ -660,8 +660,7 @@ namespace UpperTheory.Gal.W2.Seed
 
 theorem pConvSupp : ConvSupp := by
   intro X _ K f f' g h
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   unfold conv
   apply finsum_eq_zero_of_forall_eq_zero

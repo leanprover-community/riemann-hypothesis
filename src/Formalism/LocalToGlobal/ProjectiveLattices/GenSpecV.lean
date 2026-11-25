@@ -25,11 +25,6 @@ namespace Formalism.L2.Pj.GSR
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Chart
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Corr
 
 variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {G' : Over S'} [GrpObj G'] {f : S' ⟶ S} {F : G'.left ⟶ G.left}

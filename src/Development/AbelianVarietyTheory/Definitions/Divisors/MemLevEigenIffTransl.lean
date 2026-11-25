@@ -60,8 +60,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
   Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj Formalism.IndefR.Mult
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def stabLat (V : HSp D) : Subgroup (GA D V) where
@@ -353,8 +351,6 @@ section Adelic
 
 open Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.IndefiniteRowSideFullHecke.LiftedCharacterResidue (stabLat prinLev)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} (V : HSp D)
   (ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E))

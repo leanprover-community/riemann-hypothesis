@@ -610,8 +610,7 @@ theorem exists_GL_conj_eq_diagonal_of_charpoly_eq_prod :
     exact key (P a) b
   have hex : ∀ a, ∃ i j, IsUnit (aeval A (P a) i j) := by
     intro a
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨u, hu⟩ := hq a
     set E := ((u⁻¹ : Cˣ) : C) • aeval A (P a) with hE
     have hEn : ∀ i j, ¬ IsUnit (E i j) := by

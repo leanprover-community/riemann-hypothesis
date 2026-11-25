@@ -36,8 +36,7 @@ theorem sum_small (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime ∧ l ≠ 2 ∧ l 
   have hd := sum_rowd L hC P hPar hL (T.filter (cD L)) (fun l hl => by
     obtain ⟨hlT, hcd⟩ := Finset.mem_filter.1 hl
     refine ⟨by have := h5 l hlT; omega, (hT l hlT).1.odd_of_ne_two (hT l hlT).2.1, ?_⟩
-    by_contra ho
-    push_neg at ho
+    by_contra! ho
     exact hcd.2.1 ⟨hcd.2.2, ho⟩)
   have hfl := sum_flat L hC P hPar hL T hT2
   have hpt : ∀ l ∈ T, Real.log l * (bbB L C + lenB L C l) ≤ Real.log l * bbB L C +

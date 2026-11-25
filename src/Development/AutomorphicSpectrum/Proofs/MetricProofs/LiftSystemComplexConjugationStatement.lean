@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.ContinuousAtOfClosedRel
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
@@ -34,19 +35,8 @@ theorem sameOrbit_of_cross {z z' : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z �
     (hz' : ∀ k, ∃ i, z' ⟨k, i⟩ ≠ 0)
     (h : ∀ (k : K) (a b : ι k), z ⟨k, a⟩ * z' ⟨k, b⟩ = z ⟨k, b⟩ * z' ⟨k, a⟩) :
     SameOrbit z z' := by
-  choose j hj using hz'
-  refine ⟨fun k => z ⟨k, j k⟩ / z' ⟨k, j k⟩, fun k => ?_, ?_⟩
-  · obtain ⟨i, hi⟩ := hz k
-    refine div_ne_zero (fun h0 => ?_) (hj k)
-    have := h k i (j k)
-    rw [h0, zero_mul] at this
-    exact (mul_ne_zero hi (hj k)) this
-  · funext ⟨k, a⟩
-    have := h k a (j k)
-    have hjk := hj k
-    simp only
-    field_simp
-    linear_combination this
+  intros
+  apply _root_.PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.so_of_minors <;> assumption
 
 theorem continuousAt_of_holo {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
     {U : Set X} {g : X → ℂ} (hg : A.HoloOn U g) {y : X} (hy : y ∈ U) : ContinuousAt g y := by

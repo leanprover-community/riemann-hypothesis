@@ -373,8 +373,7 @@ theorem exists_lagrange_resolvent : ∀ (L : Type) [Field L] (p : ℕ), p.Prime 
   have hli : LinearIndependent L (fun g : G => ((f g : L →* L) : L → L)) :=
     (linearIndependent_monoidHom L L).comp f hf
   have hex : ∃ x : L, ∑ g : G, ψ g⁻¹ * (g • x) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h0 : ∑ g : G, ψ g⁻¹ • ((f g : L →* L) : L → L) = 0 := by
       funext x
       simpa [f, Finset.sum_apply] using hcon x
@@ -650,8 +649,7 @@ theorem kummer_approx_critical : ∀ (L : Type) [Field L] (v : Valuation L ℝ�
   by_cases hα0 : α = 0
   · refine ⟨0, F.zero_mem, ?_⟩
     simp [hα0, zero_pow hp1]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hs0 : (0 : ℝ≥0) < s := zero_lt_one.trans hs
   have ha : 0 < v α := (Valuation.pos_iff v).2 hα0
   set a := v α with ha_def
@@ -795,8 +793,7 @@ theorem moves_fix_of_moves : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) 
     ∀ σ : G, Moves v ⊤ σ → Moves v (Fix L N) σ := by
   intro L _ v G _ _ _ hinv N i hi hN σ hσ r hr
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   haveI := Fintype.ofFinite G
   set n := Fintype.card N with hn_def
   have hn : n ≠ 0 := Fintype.card_ne_zero
@@ -886,8 +883,7 @@ theorem natCast_eq_one_of_coprime :
     ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p l : ℕ), v (p : L) < 1 → Nat.Coprime l p → v (l : L) = 1 := by
   intro L _ v p l hp hlp
   refine le_antisymm (valuation_nnreal_natCast_le_one v l) ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hb : ((Nat.gcd l p : ℕ) : ℤ) = (l : ℤ) * Nat.gcdA l p + (p : ℤ) * Nat.gcdB l p := Nat.gcd_eq_gcd_ab l p
   rw [hlp, Nat.cast_one] at hb
   have hL : (1 : L) = (l : L) * (Nat.gcdA l p : L) + (p : L) * (Nat.gcdB l p : L) := by
@@ -928,8 +924,7 @@ theorem moves_top_of_coprime_order : ∀ (L : Type) [Field L] (v : Valuation L �
     _root_.GlobalTheory.AlmostEt.klc_scale L v p hp F hF hp0 hp1 r hr (σ • y - y) (sub_ne_zero.mpr hy)
   set x := (σ • y - y) * d ^ p with hxdef
   refine ⟨x, Subfield.mem_top x, hx1, ?_⟩
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hfix : ∀ j : ℕ, (σ ^ j) • d = d := by
     intro j
     induction j with
@@ -1002,8 +997,7 @@ theorem moves_of_ne_one : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p 
     have hl : ((τ : G) ^ (p ^ k)) ^ (n / p ^ k) = 1 := by
       rw [← pow_mul, Nat.mul_div_cancel' (Nat.ordProj_dvd n p), hn, pow_orderOf_eq_one]
     obtain ⟨y, hy⟩ : ∃ y : L, ((τ : G) ^ (p ^ k)) • y ≠ y := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne' (eq_of_smul_eq_smul (α := L) (fun y => by rw [h y, one_smul]))
     exact (hNmem _).1 hτ' (_root_.GlobalTheory.AlmostEt.moves_top_of_coprime_order L v p hp (Fix L N) hF hp0 hp1 G hinv _ (hfixN _ hτ') _ hcop hl ⟨y, hy⟩)
   haveI : Nontrivial N := ⟨⟨⟨σ, hσN⟩, 1, fun h => hσ (congrArg Subtype.val h)⟩⟩

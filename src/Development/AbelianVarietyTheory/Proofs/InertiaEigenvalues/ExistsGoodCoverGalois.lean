@@ -210,8 +210,6 @@ noncomputable section
 
 namespace GlobalTheory.CoverFrameArith
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem arch_rat {D : D7} (V : HSp D) {r : ℕ} (hr : V.rank = r) (ρ : GA D V) (hρ : ρ ∈ GQ V) :
     ∃ R : GL (Fin r) D.host.E, ∀ (τ : D.host.E →+* ℂ) (θ : Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ),
       Formalism.MainNotions.StandardLattice.IsInfEmb τ θ → ∀ u : GA D V,

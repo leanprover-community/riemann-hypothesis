@@ -127,8 +127,7 @@ theorem growth_spherical_bound : Formalism.FourierDecayAlt.ThreeDimData.GrowthS 
   have hqG := s3dx1S_quot_pos hG hq hae
   obtain ⟨n, hn⟩ : ∃ n : ℕ,
       νq {x : Mt k r | Matrix.of x ∈ UH (Hpk k r) ∧ Formalism.FourierDecayAlt.B.gN (Matrix.of x) ≤ (n : ℝ) + 1} ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hqG
     have hU : {x : Mt k r | Matrix.of x ∈ UH (Hpk k r)} =
         ⋃ n : ℕ, {x : Mt k r | Matrix.of x ∈ UH (Hpk k r) ∧ Formalism.FourierDecayAlt.B.gN (Matrix.of x) ≤ (n : ℝ) + 1} := by

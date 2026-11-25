@@ -954,8 +954,7 @@ theorem isSBHalf_sub_smul {m n : ℕ} {e : AE D} {Λ : AddSubgroup (Mx D m n)} {
   obtain ⟨f1, k, hk, f2, f3⟩ := hf
   obtain ⟨g1, l, hl, g2, g3⟩ := hg
   have hne : ∀ t, (f - c • g) t ≠ 0 → f t ≠ 0 ∨ g t ≠ 0 := fun t ht => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ht (by rw [Pi.sub_apply, Pi.smul_apply, h.1, h.2, smul_zero, sub_zero])
   have hh : ∀ (j : ℕ) (u : Mx D m n), IsHalf e u → IsHalf e (j • u) := fun j u hu => by
     rw [GlobalTheory.SplitScalar.isHalf_iff] at hu ⊢

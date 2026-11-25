@@ -67,8 +67,6 @@ section
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem exists_mul_of_isGrpPullback {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S} [GrpObj G]
     {f : S' ⟶ S} {m : G'.left ⟶ G.left} (hm : IsGrpPullback G' G f m) (T : Over S') (x y : T ⟶ G')
     (s : T.left ⟶ S) (hs : s = T.hom ≫ f) :

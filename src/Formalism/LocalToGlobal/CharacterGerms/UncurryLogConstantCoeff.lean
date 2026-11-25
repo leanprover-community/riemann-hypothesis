@@ -202,8 +202,7 @@ theorem lgS_lin (Y : FBChart C V O dd) (p : SelfData Y d I0) (x : Fin 2 × Fin d
         rintro rfl
         simp at h1
       obtain ⟨c, hc⟩ : ∃ c, μ c ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hne (Finsupp.ext h)
       refine ⟨c, ?_⟩
       have hle : Finsupp.single c 1 ≤ μ := by

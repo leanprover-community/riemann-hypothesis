@@ -334,8 +334,7 @@ theorem exists_chi_ne_one (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {n : ℕ} {N :
     ∃ l ∈ box k n (addCharConductor ψ - N), chi k ψ (Multiplicative.toAdd l) x ≠ 1 := by
   classical
   have hx' : ∃ i, x.toAdd i ∉ valBall k N := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hx hcon
   obtain ⟨i, hi⟩ := hx'
   have hnt : ¬ IsTrivialOn (ψ.mulShift (x.toAdd i)) (addCharConductor ψ - N) := by
@@ -668,8 +667,7 @@ theorem exists_derivative_nontrivial (k : Type) [Field k] [ValuativeRel k] [Topo
     by_cases h1 : v ∈ twKer τ (MirUin k (m + 1)) 1
     · have hex : ∃ g : GL (Fin (m + 1)) k,
           τ (levi k (m + 1) g) v ∉ twKer τ (MirUin k (m + 1)) (mirChar k ψ m) := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hv (_root_.GlobalTheory.CompanionTheory.MirFourier.eq_zero_of_forall_twKer k ψ hψc hψ m V τ hτ v h1 hcon)
       obtain ⟨g, hg⟩ := hex
       haveI := nontrivial_quot_of_not_mem _ _ hg

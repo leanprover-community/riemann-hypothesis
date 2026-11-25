@@ -292,8 +292,7 @@ theorem exists_of_mem_support_lin {σ τ : Type} (T : MvPolynomial σ K →ₗ[K
     (Z : MvPolynomial σ K) {ζ' : τ →₀ ℕ} (h : ζ' ∈ (T Z).support) :
     ∃ ζ ∈ Z.support, ζ' ∈ (T (monomial ζ 1)).support := by
   rw [lin_eq_sum T Z] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   rw [mem_support_iff, coeff_sum] at h
   apply h
   refine Finset.sum_eq_zero fun ζ hζ => ?_
@@ -448,8 +447,7 @@ theorem inv_start (v : AddValuation K (WithTop ℚ)) (p : ℕ) (θ : Fin D.J →
       exact le_top
   · intro ζ hζ
     have hex : ∃ u ∈ Gt.support, Finsupp.mapDomain (Prod.map D.iotaL id) u = ζ := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       rw [mem_support_iff] at hζ
       apply hζ
       apply coeff_rename_eq_zero

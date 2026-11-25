@@ -116,10 +116,8 @@ theorem map_eq_of_graded_surjective {F : ℕ → Subgroup G} {E : ℕ → Subgro
   obtain ⟨y, hy⟩ := hG x hC
   obtain ⟨M0, hM0⟩ := hy k
   have hyk : y ∈ F k := by
-    have e : (x M0 / y)⁻¹ * x M0 = y := by
-      simp only [div_eq_mul_inv, mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel, mul_one]
-    rw [← e]
-    exact (F k).mul_mem ((F k).inv_mem (hM0 M0 le_rfl)) (hxk M0)
+    simpa only [div_eq_mul_inv, (F k).mul_mem_cancel_left (hxk M0), (F k).inv_mem_iff]
+      using hM0 M0 le_rfl
   refine ⟨y, hyk, ?_⟩
   have h1 : h / f y = 1 := by
     apply hH

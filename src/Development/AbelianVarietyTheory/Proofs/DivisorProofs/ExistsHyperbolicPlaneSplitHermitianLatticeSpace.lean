@@ -112,8 +112,7 @@ theorem exists_scale_integral_not_le_maximal :
   have key : ∀ P : Ideal (𝓞 E), P ≠ ⊤ →
       ∃ s ∈ F⁻¹, ∃ a ∈ I, ∃ o : 𝓞 E, (o : E) = s * a ∧ o ∉ P := by
     intro P hP
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hP
     have hle : ((F * F⁻¹ : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) : Submodule (𝓞 E) E) ≤
         Submodule.map (Algebra.linearMap (𝓞 E) E) P := by
@@ -130,8 +129,7 @@ theorem exists_scale_integral_not_le_maximal :
   choose! sf hsf af haf of hof hof' using key
   have hc : ∀ P' P : Ideal (𝓞 E), P'.IsMaximal → P.IsMaximal → P' ≠ P → ∃ c ∈ P', c ∉ P := by
     intro P' P hP' hP hne'
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne' (hP'.eq_of_le hP.ne_top h)
   choose! c hc1 hc2 using hc
   obtain ⟨M0, hM0⟩ := Ideal.exists_maximal (𝓞 E)
@@ -498,8 +496,7 @@ theorem exists_isotropic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
     have hne0 : τ (g 0) ≠ 0 := (map_ne_zero τ).2 (hz 0)
     by_cases hp : 0 < (τ (g 0)).re
     · obtain ⟨k, hk⟩ : ∃ k, ¬ 0 < (τ (g k)).re := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         have h' : (Finset.univ.filter fun k => 0 < (τ (g k)).re) = Finset.univ :=
           Finset.filter_true_of_mem fun k _ => hall k
         rw [h', Finset.card_univ, Fintype.card_fin] at hcount
@@ -513,8 +510,7 @@ theorem exists_isotropic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
         · exact h
         · exact absurd (Complex.ext (by simpa using h) (by simpa using him)) hne0
       obtain ⟨k, hk⟩ : ∃ k, 0 < (τ (g k)).re := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         have h' : (Finset.univ.filter fun k => 0 < (τ (g k)).re) = ∅ :=
           Finset.filter_false_of_mem fun k _ => not_lt.2 (hall k)
         rw [h', Finset.card_empty] at hcount

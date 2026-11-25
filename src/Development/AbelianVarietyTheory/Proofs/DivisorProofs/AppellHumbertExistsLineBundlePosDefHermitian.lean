@@ -64,8 +64,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AHPos
 
 theorem smoothOfRelativeDimension_of_holUnif {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] (hA : IsAbelianScheme A)

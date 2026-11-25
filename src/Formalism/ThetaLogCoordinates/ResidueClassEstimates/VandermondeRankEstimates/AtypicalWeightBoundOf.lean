@@ -519,13 +519,11 @@ theorem pathWeightBound_of :
   · push_neg at hc1
     obtain ⟨i, hi1, hiN, hvi, hgt⟩ := hc1
     have hir : D.r < i := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have := hvr i hi1 h
       simp [this] at hvi
     have hin0 : i ≤ D.n0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have := hvn i h hiN
       simp [this] at hvi
     have hX : D.XT p La b i = La * b i / (p * D.k) := rfl

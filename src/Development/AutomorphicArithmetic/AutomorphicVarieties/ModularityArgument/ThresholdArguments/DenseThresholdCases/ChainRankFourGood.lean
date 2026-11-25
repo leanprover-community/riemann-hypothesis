@@ -294,8 +294,7 @@ private lemma pow_mem_of_alg {O R : Type} [CommRing O] [IsDomain O] [IsDiscreteV
     rw [hPQ, map_mul, map_pow, aeval_C] at hPx
     exact (mul_eq_zero.mp hPx).resolve_left (pow_ne_zero _ hp0)
   have hex : ∃ i, ¬ ϖ ∣ Q.coeff i := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ ((Polynomial.C_dvd_iff_dvd_coeff _ _).mpr hcon)
   have hn : ¬ ϖ ∣ Q.coeff (Nat.find hex) := Nat.find_spec hex
   have hlow : ∀ i < Nat.find hex, ϖ ∣ Q.coeff i := fun i hi =>
@@ -765,8 +764,7 @@ theorem UpperTheory.V.Z.Desc.V0.unramified_at_of_dense_purity_num_e_power_series
   have hdense : ∀ a : B.B, (∀ y ∈ {y : B.Pt | J ≤ RingHom.ker y ∧ y.Good w}, y a = 0) → a ∈ J :=
     fun a ha => hD w hA.1 a fun y hy hg => ha y ⟨hy, hg⟩
   have hex : ∃ y : B.Pt, (J ≤ RingHom.ker y ∧ y.Good w) ∧ y b₀ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hb₀ (hJ (hdense b₀ hcon))
   obtain ⟨y₀, hy₀, hyb₀⟩ := hex
   have hone := (hmu x y₀ w hJ hy₀.1 hA hy₀.2 hI (hopen y₀ w hy₀.1 hy₀.2 hyb₀)).1

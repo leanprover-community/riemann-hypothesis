@@ -446,8 +446,7 @@ theorem orbitSums_of_classSums : ∀ (O : Type) [CommRing O] (bar : O → O) (q 
   refine ⟨hSfin.toFinset, fun μ hμ => (hSfin.mem_toFinset.1 hμ).1, fun μ hμ hμS => ?_, ?_⟩
   · rw [hSfin.mem_toFinset] at hμS
     obtain ⟨i, hi⟩ : ∃ i, (fun u => μ (i, u)) ∉ T := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hμS ⟨hμ, hcon⟩
     have h1 : R < ((qW W (Φ.β y) (fun u => μ (i, u)) : ℤ) : ℝ) := by
       by_contra hcon

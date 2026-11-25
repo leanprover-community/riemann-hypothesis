@@ -114,7 +114,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 noncomputable section
@@ -247,7 +246,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 namespace GlobalTheory
@@ -277,7 +275,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 noncomputable section
@@ -323,7 +320,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 namespace GlobalTheory.MuNPi
@@ -361,7 +357,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 noncomputable section
@@ -404,7 +399,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.SG.Pf.AmpWinLoc
 
 namespace GlobalTheory
@@ -470,7 +464,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ProductL2
 open Formalism.L2.SG.Pf.AmpWinLoc
@@ -563,7 +556,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -634,7 +626,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -980,7 +971,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SlocTie
 
@@ -1111,7 +1101,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1249,7 +1238,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AmpLoc
 
@@ -1292,7 +1280,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -1305,7 +1292,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
@@ -1324,7 +1310,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -1361,7 +1346,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RelPtLift
 
@@ -1467,7 +1451,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.LocWSOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.StabInv
 
@@ -1630,7 +1613,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.JFactTie
 

@@ -148,8 +148,7 @@ theorem gN_le_inv {g : Mat k r} (hg : g ∈ GV k r) : gN g ≤ KH k r * gN g⁻�
 theorem rpow_neg_le {x y c b : ℝ} (hy : 0 < y) (hc : 0 < c) (hb : 0 ≤ b) (h : y ≤ c * x) :
     x ^ (-b) ≤ c ^ b * y ^ (-b) := by
   have hx : 0 < x := by
-    by_contra hx
-    push_neg at hx
+    by_contra! hx
     nlinarith
   have hA : 0 < x ^ b := Real.rpow_pos_of_pos hx b
   have hB : 0 < y ^ b := Real.rpow_pos_of_pos hy b
@@ -210,8 +209,7 @@ theorem C_nonneg {E : Type} [NormedAddCommGroup E] {f : Mat k r → E} {C e : �
     (h : ∀ x ∈ GV k r, ‖f x‖ ≤ C * gN x ^ e) : 0 ≤ C := by
   have h1 := h 1 gv_one
   have hp : 0 < gN (1 : Mat k r) ^ e := Real.rpow_pos_of_pos gN_one_pos e
-  by_contra hC
-  push_neg at hC
+  by_contra! hC
   have h2 : C * gN (1 : Mat k r) ^ e < 0 := mul_neg_of_neg_of_pos hC hp
   linarith [norm_nonneg (f 1)]
 

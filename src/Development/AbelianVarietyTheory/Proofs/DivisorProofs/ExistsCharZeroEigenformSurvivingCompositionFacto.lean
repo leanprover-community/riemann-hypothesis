@@ -368,8 +368,7 @@ theorem unitBall_prime (R : Type) [CommRing R] (l : ℕ) [Fact l.Prime] (χ : R 
       have hab' : ‖χ a‖ * ‖χ b‖ < 1 := by
         have : ‖χ (a * b)‖ < 1 := hab
         simpa [map_mul, norm_mul] using this
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       have : 1 * 1 ≤ ‖χ a‖ * ‖χ b‖ := mul_le_mul hno.1 hno.2 zero_le_one (norm_nonneg _)
       linarith
 
@@ -402,8 +401,7 @@ theorem core (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] (emb : O →+* Pad
     fun χ hχ => unitBall_prime R l χ (hXle χ hχ)
   choose! P hPprime hPmem using hP
   have key : ∃ χ ∈ X, m ≤ P χ := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨p, hpm, hpX⟩ : ∃ p ∈ m, ∀ χ ∈ X, ¬ ‖χ p‖ < 1 := by
       rcases X.eq_empty_or_nonempty with hX | ⟨χ0, hχ0⟩
       · exact ⟨0, m.zero_mem, by simp [hX]⟩

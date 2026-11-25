@@ -269,8 +269,7 @@ private theorem norm_coe_coef_integer_le_one {l : ℕ} [Fact l.Prime] (c : Coef 
     | smul a z _ hz =>
       rw [Subalgebra.coe_smul, Algebra.smul_def, norm_mul]
       exact (mul_le_of_le_one_left (norm_nonneg _) (norm_algebraMap_padicInt_padicAlgCl_le_one' a)).trans hz
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt (1 + ∑ t ∈ s, ‖(t : PadicAlgCl l)‖) h
   have := hM (x ^ k)
   rw [SubmonoidClass.coe_pow, norm_pow] at this

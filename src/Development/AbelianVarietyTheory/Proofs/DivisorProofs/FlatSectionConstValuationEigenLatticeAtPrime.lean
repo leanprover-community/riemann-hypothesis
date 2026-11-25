@@ -612,8 +612,7 @@ theorem exists_isLieBasis_span : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   intro E _ _ _ H K _ _ B F 𝔓 T iK hiK ρV hρV G n
   obtain ⟨N, r, M, hr, hM, -, hloc⟩ := _root_.GlobalTheory.CM.LieGlue.exists_cover_lieLat K B.pol F
   obtain ⟨i, hi⟩ : ∃ i, r i ∉ 𝔓.asIdeal := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     refine 𝔓.isPrime.ne_top ?_
     rw [eq_top_iff, ← hr]
     exact Ideal.span_le.2 (by rintro _ ⟨j, rfl⟩; exact h j)

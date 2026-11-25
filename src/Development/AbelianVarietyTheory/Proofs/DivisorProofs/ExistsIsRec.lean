@@ -71,7 +71,6 @@ open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMas
 open GlobalTheory.FormTies
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 2000] Submodule.module
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
@@ -339,8 +338,6 @@ open Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.BasicNotions.TH Formalis
 open GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.FormTies GlobalTheory.BigOn GlobalTheory.RunDepth
 
 namespace GlobalTheory.BigOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem eq_kaR {D : D7} {L : SizeData₂ D} {Pm : ParameterChoice' D L} (Tp : ParamsT D L Pm) (hK : DV.KapDef D) (i : Fin D.R.m)
     (w : WeightFamilies.Wt D ((i : ℕ) + 1))

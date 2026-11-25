@@ -86,8 +86,7 @@ theorem r_pos (X : Data E r) (Xa : ArchInM X) : 0 < r := by
 
 theorem lam_ne (X : Data E r) (Xa : ArchInM X) : ∃ v ∈ X.Λ, v ≠ 0 := by
   have hr := r_pos X Xa
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : Submodule.span E (X.Λ : Set (Fin r → E)) ≤ ⊥ := by
     rw [Submodule.span_le]
     intro v hv

@@ -47,8 +47,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PolDeg.Taut
 
 end GlobalTheory.PolDeg.Taut

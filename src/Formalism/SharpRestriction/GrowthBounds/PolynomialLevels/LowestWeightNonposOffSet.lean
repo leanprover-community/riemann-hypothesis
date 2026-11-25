@@ -88,8 +88,7 @@ private theorem posTL_injective (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, nL j = (
   have hsm := fr_last_strictMono hV
   have hseg : ∀ t t' : TL J nL r, posTL Fr t = posTL Fr t' → segZ t.1 ≤ segZ t'.1 := by
     intro t t' h
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 := posTL_mem_Ioc_fr_last hV hnL t
     have h2 := posTL_mem_Ioc_fr_last hV hnL t'
     have h3 : Fr.fr (segZ t'.1) (r - 1) ≤ Fr.fr (segZ t.1 - 1) (r - 1) := hsm.monotone (by omega)

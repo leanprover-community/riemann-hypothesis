@@ -1076,8 +1076,7 @@ theorem card_add_le {σ : Type} [Fintype σ] (p : σ → Prop) [DecidablePred p]
       rw [h4, h5] at h3
       linear_combination h3
     have h6 : ∀ ν, g (Sum.inl ν) = 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨ν1, hν1⟩ := hc
       obtain ⟨ν0, -, hmin⟩ := Finset.exists_min_image Finset.univ (fun ν => V.v (g (Sum.inl ν)))
         ⟨ν1, Finset.mem_univ _⟩

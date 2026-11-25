@@ -19,8 +19,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace QrCap
 
 theorem exp_eig {W : Type} [NormedAddCommGroup W] [NormedSpace ℂ W] [FiniteDimensional ℂ W] (A : W →L[ℂ] W) (μ : ℂ)

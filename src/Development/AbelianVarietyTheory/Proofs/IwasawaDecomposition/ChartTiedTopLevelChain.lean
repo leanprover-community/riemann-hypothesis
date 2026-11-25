@@ -568,8 +568,6 @@ theorem cosetIn_of_zero_mem (h : j + 1 = R.m) (p : PtAt R sel mu cst u j) (h0 : 
 
 end Coset
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
-
 section Read
 
 variable {B : Base} {X : PreX B.toPre} {I : TC B X} {u : B.Word} {j : ℕ} {Ch : Type} {chOf : (I.stp u I.mu0 j).Cl → Ch}

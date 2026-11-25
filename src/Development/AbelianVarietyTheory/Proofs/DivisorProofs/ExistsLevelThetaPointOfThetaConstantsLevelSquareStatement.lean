@@ -64,8 +64,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory.UPoinc GlobalTheory.Ex.OneGen
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.UMin
 
 theorem nonempty_level_algClosed (hL : Laws) (K : Type) [Field K] [IsAlgClosed K] (P : PolAV (Sp K)) (M : ℕ)

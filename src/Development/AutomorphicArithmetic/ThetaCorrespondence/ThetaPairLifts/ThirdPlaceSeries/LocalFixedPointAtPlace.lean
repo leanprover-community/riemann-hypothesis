@@ -61,7 +61,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.PlaceRead
@@ -105,7 +104,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.PlaceRead
@@ -159,7 +157,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ)
 open Formalism.L2.Host (embLL0)
 open Formalism.IndefR.RecTie (Used0)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.PlaceRead

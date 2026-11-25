@@ -703,8 +703,7 @@ theorem ratio_local {D : D7} (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} (hC
       (pullB D (tor0 D ⊤ δ) b₁ (GL3Theta.th0 (lamOf D ⊤ δ) t0)) z)) := by
     rw [he₂, hpull, GlobalTheory.RatEquiv.Iop_smul, hIμ]
   obtain ⟨z, hz⟩ : ∃ z, e₁ z ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hz' := hz
   rw [he₁] at hz'

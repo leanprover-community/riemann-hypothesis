@@ -838,8 +838,7 @@ lemma eval_base {d c : ℕ} (hcd : c < d) (i0 : Fin k) {g : Pol K k} (hg : g ∈
     (hxi : p (Sum.inr i0) = 0) : eval p g = 0 := by
   apply eval_eq_zero_of_support
   intro m hm
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hzero : ∀ b, b ≠ i0 → m (Sum.inl b) = 0 := by
     intro b hb
     by_contra h0
@@ -949,8 +948,7 @@ theorem vanishingOnQuadric : Vanish := by
     intro m hm
     have hsum := xdeg_of_bihom (hW hf) hm
     have hex : ∃ a, m (Sum.inl a) ≠ 0 := by
-      by_contra h0
-      push_neg at h0
+      by_contra! h0
       simp [h0] at hsum
       omega
     obtain ⟨a, ha⟩ := hex

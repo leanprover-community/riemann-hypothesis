@@ -455,8 +455,7 @@ theorem norm_eq_one_of_compact {G : Type*} [Group G] [TopologicalSpace G] [Compa
     | succ n ih => rw [pow_succ, hmul, ih, pow_succ]
   have hle : ∀ a, ‖f a‖ ≤ 1 := by
     intro a
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt M h
     have := hb (a ^ n)
     rw [hpow, norm_pow] at this

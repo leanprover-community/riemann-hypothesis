@@ -703,8 +703,7 @@ theorem lie_glueFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Dat
   have L1j := fun j ↦ _root_.GlobalTheory.HTGlueLie.fo_summand_coords k o₀.A o₀.ab (f j) (E' j) (hcompl j) (hred j) (hlift j)
   have hχ : ∀ i i', i ≠ i' → ∃ c : 𝓞 D.F, tk (b.t i c) ≠ tk (b.t i' c) := by
     intro i i' hii'
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : Ideal.span (Set.range fun x ↦ b.t i x - b.t i' x) ≤ RingHom.ker tk := by
       rw [Ideal.span_le]
       rintro _ ⟨x, rfl⟩

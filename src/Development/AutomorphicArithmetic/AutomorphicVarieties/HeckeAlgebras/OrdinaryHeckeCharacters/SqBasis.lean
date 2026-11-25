@@ -162,8 +162,7 @@ theorem UpperTheory.bideterminant_antidiag_eval_weight_unit_support :
       fun h0 => hne (Finset.prod_eq_zero (Finset.mem_univ k) h0)
     have hlow : ∀ p : Fin (sz k), n ≤ (I k p : ℕ) + sz k := by
       intro p
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       apply hdet
       apply Matrix.det_eq_zero_of_row_eq_zero p
       intro q
@@ -525,8 +524,7 @@ theorem sqBasis (O K : Type) [CommRing O] [IsDomain O] [Field K] [Algebra O K] (
     rw [← hb.2.1, Set.range_eq_empty, Submodule.span_empty] at h1
     exact hwNe O n n le_rfl _ h1
   obtain ⟨k0, hk0⟩ : ∃ k0, ℓ (b k0) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨m⟩ := hne
     let I' : ∀ k, Fin (sz m k) → Fin n := fun k p => ⟨n - sz m k + p, by have := hsz m k; have := p.2; omega⟩
     have h0 : ℓ = 0 := b.ext h

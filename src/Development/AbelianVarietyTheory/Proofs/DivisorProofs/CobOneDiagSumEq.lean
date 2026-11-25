@@ -124,8 +124,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent IsGrp
 open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB CubicalStr Theta thφ thε thK x3)
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PtExt
 
 theorem cobOne_diagSum_eq (p : ℕ) (R : Type) [CommRing R] (G : PDivGroup p R) (n m : ℕ) (hm : (m : R) = 0) :

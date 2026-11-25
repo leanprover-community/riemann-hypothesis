@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeStableUnderAction
 public import Mathlib.AlgebraicGeometry.Stalk
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Data.Nat.Factorization.Induction
@@ -195,17 +196,8 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : S
 theorem lat_stable (M : LieModel G ξ E) {O : Type} [CommRing O] (act : ReciprocityTheory.ChartRestriction.G.Geo.Tor.OAct O G)
     (ρ : O →+* Module.End Ω E) (h : M.IsActOf act.act ρ) (q : Cpt ξ) (a : O) {e : E} (he : e ∈ M.lat q) :
     ρ a e ∈ M.lat q := by
-  obtain ⟨v, hv⟩ := (M.mem_lat_iff q e).1 he
-  refine (M.mem_lat_iff q _).2 ⟨v ≫ act.act a, ?_⟩
-  unfold LieModel.Extends at hv ⊢
-  have := act.hom a
-  refine ⟨?_, ?_⟩
-  · have h1 := hv.1
-    rw [LieTangent.isTanAt_iff] at h1 ⊢
-    rw [← Category.assoc, h1, MonObj.one_comp]
-  · have hpt := congrArg (fun f => f.left) (h a e)
-    simp only [Over.comp_left] at hpt ⊢
-    rw [hpt, hv.2, Category.assoc]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.LieStable.lat_stable <;> assumption
 
 end Stable
 

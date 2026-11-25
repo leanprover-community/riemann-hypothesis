@@ -747,8 +747,7 @@ theorem repL_LRep : ∀ L q : ℕ, q.Prime → ¬ q ∣ L → LRep L (DT L q) (r
         · rw [Ne, ZMod.natCast_eq_zero_iff]; exact hqL
         · have := congrArg (fun x : ℤ => (x : ZMod q)) hdet
           simpa using this
-        · by_contra hn
-          push_neg at hn
+        · by_contra! hn
           exact hbd ⟨(ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp hn.1,
             (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp hn.2⟩
       obtain ⟨u, hu0, hu1⟩ := hu

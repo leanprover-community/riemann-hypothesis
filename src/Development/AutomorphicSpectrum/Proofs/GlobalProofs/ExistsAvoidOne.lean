@@ -65,8 +65,7 @@ theorem mul_sub_mul_add_ne_zero (f : Polynomial ℤ) (hf : 0 < f.natDegree) (c :
 
 theorem exists_nat_eval_mul_ne_zero (P : Polynomial ℤ) (hP : P ≠ 0) (a : ℤ) (ha : a ≠ 0) :
     ∃ t : ℕ, P.eval (a * (t : ℤ)) ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hP
   apply Polynomial.eq_zero_of_infinite_isRoot
   apply Set.infinite_of_injective_forall_mem (f := fun t : ℕ => a * (t : ℤ))
@@ -120,8 +119,7 @@ theorem exists_prime_gt_dvd_eval_of_natDegree_pos (f : Polynomial ℤ) (hf : 0 <
         (1 + (N.factorial : ℤ) * ((t : ℤ) * k)) :=
       Int.ofNat_dvd_left.mpr (Nat.minFac_dvd _)
     refine ⟨_, f.eval 0 * (N.factorial : ℤ) * (t : ℤ), hp, ?_, ?_⟩
-    · by_contra hle
-      push_neg at hle
+    · by_contra! hle
       have hpN : ((1 + (N.factorial : ℤ) * ((t : ℤ) * k)).natAbs.minFac) ∣ N.factorial :=
         Nat.dvd_factorial hp.pos hle
       have hpN' : ((((1 + (N.factorial : ℤ) * ((t : ℤ) * k)).natAbs.minFac : ℕ)) : ℤ) ∣
@@ -468,8 +466,7 @@ theorem continuation_of_two_relations :
   · intro c s hs
     have hs1 : s ≠ 1 := hs
     have hor : efac l (orderOf τ) s ≠ 0 ∨ efac l' (orderOf τ') s ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact no_common_zero hl hl' hne hh hh' hs1 hcon.1 hcon.2
     exact (glue_differentiableAt hEd hEd' (hWd c) (hWd' c) (hcross c) hor).differentiableWithinAt
   · intro c s hs

@@ -132,8 +132,7 @@ theorem exists_basis_dvr {W W' : Type} [CommRing W] [IsDomain W] [IsDiscreteValu
   let e := Module.finBasis W W'
   have hs : ∀ y, y = ∑ k, io (e.repr y k) * e k := fun y => (e.sum_repr y).symm
   have hk : ∃ k, IsUnit (e.repr 1 k) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible W
     have hd : ∀ k, ϖ ∣ e.repr 1 k := fun k => by
       rw [← Ideal.mem_span_singleton, ← hϖ.maximalIdeal_eq]; exact h k

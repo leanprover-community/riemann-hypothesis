@@ -258,8 +258,7 @@ theorem cC_bound {d Q o mm₀ : ℕ} {A₀ : ℝ} {φ : B.Mat k (j + ρ) → ℂ
     have h := hWB [] [] (by simp) (by simp) (by simp) 1 h1
     have hX := Real.rpow_pos_of_pos (gN_pos h1)
       ((0 : ℝ) + ((([] ++ [] : List (B.Mat k (j + ρ))).map (fun X => costP k j ρ X + d)).sum : ℕ))
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_neg_of_neg_of_pos hneg hX
     linarith [norm_nonneg (B.dLR [] [] φ 1)]
   have hw'lie : ∀ X ∈ w.map nrm, B.unitLie k (j + ρ) X := by
@@ -465,8 +464,7 @@ theorem cD_delta {χ : ℂ → ℂ} (hχ : IsCutC χ) : ∃ δ : ℝ, 0 < δ ∧
   have ho : IsOpen (tsupport χ)ᶜ := (isClosed_tsupport χ).isOpen_compl
   obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp ho 0 h0
   refine ⟨ε, hε, fun z hz => ?_⟩
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact hball (by simpa [Metric.mem_ball, dist_zero_right] using hlt) hz
 
 end cDsec
@@ -615,8 +613,6 @@ namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem star_estimate_unitary : CoreStar :=
   coreStar_of polynomial_bound determinant_derivative_polynomial determinant_curve_derivative
 
@@ -686,8 +682,6 @@ noncomputable section
 namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem unitary_corollary_both_forms : Formalism.FourierDecayAlt.U.StarBoundOfCutoffOperator ∧ Formalism.FourierDecayAlt.U.StarBoundOfTwoCutoffOperator :=
   unitary_corollary_of_estimates star_estimate_unitary (djWB_of determinant_curve_derivative polynomial_bound determinant_derivative_polynomial compact_curve_estimate)

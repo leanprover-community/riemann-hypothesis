@@ -1341,8 +1341,7 @@ theorem tailP_of_gap : GlobalTheory.GapIn.Hyp → TailP := by
   have hTrpos : ∀ w, 0 < Tr D w := by
     intro w
     have hk : 0 ≤ Formalism.MainNotions.S.Bridge.kaS D ^ (2 * D.R.rS) := (even_two_mul _).pow_nonneg _
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h0 : Tr D w * Formalism.MainNotions.S.Bridge.kaS D ^ (2 * D.R.rS) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg hneg hk
     linarith [hTr w]

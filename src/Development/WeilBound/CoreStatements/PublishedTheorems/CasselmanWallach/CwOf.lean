@@ -1100,8 +1100,7 @@ end ExistsFunctional
 theorem e1b : faceMap_comp_succAbove_castSucc := by
   unfold faceMap_comp_succAbove_castSucc AllTgt
   intro n ε H _ _ _ σ hU hI E _ _ _ _ _ _ p π dπ hrep T hT i w₀ hw₀ hp u hu hu0
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   obtain ⟨φ, hφ0, hφ⟩ := ExistsFunctional.exists_functional (p i) hp
   let ℓ : H →ₗ[ℂ] ℂ := φ ∘ₗ T
   have hlie : ((GlobalTheory.LowTypeDetermined.lie (Jm ε) : Set (Mx n))) = lieSet ε := rfl

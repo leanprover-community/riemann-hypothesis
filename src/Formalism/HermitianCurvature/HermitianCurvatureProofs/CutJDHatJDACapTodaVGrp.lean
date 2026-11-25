@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.TVG
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section loc
 
 variable {r : ℕ} {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]

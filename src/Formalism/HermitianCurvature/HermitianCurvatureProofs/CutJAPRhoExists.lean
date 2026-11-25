@@ -633,8 +633,7 @@ theorem generic (P : M.Par) : ∃ Y : ℂ, ∀ (ρ : M.Ty P) (σ : M.Ty (Qx8.P2 
     · exact one_ne_zero
     · exact sub_ne_zero.mpr h
   obtain ⟨Y, hY⟩ : ∃ Y, D.eval Y ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hD (Polynomial.funext fun y => by rw [hcon y, Polynomial.eval_zero])
   refine ⟨Y, fun ρ σ hex hEq => ?_⟩
   obtain ⟨Y', hY'⟩ := hex
@@ -688,8 +687,7 @@ theorem lagrange_annihilation : Lagrange := by
       v ∈ K P.k P.r z e π (fun w' => M.xC P ρ (w' - ((P.k : ℂ) - 2) / 2)) := by
     intro σ heq v hv
     have hfun : ∀ Y', M.xC (Qx8.P2 P) σ Y' = M.xC P ρ Y' := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hY ρ σ hc heq
     refine Submodule.subset_span (fun Fr' hFr' w' => ?_)
     show capRep P.k P.r π Fr' w' v = M.xC P ρ (w' - ((P.k : ℂ) - 2) / 2) • v

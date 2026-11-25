@@ -37,8 +37,7 @@ theorem constantCoeff_inCol (col : Fin 2) (f : MvPowerSeries (Fin dd) C) (hf : c
   · simp [hf]
   · intro d hd
     obtain ⟨i, hi⟩ : ∃ i, d i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     have h0 : constantCoeff (d.prod fun s e => (MvPowerSeries.X (col, s) : MvPowerSeries (Fin 2 × Fin dd) C) ^ e) = 0 := by
       rw [Finsupp.prod, map_prod]

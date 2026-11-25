@@ -9,16 +9,14 @@ public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
-import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 import Mathlib.Analysis.Fourier.FourierTransform
+import Mathlib.Analysis.Fourier.FourierTransformDeriv
 import Mathlib.Analysis.Fourier.Inversion
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.MeasureTheory.Integral.Prod
 
 namespace GroundTheory.Automorphic
@@ -31,9 +29,9 @@ noncomputable section
 /-! ### Elementary products, symmetric coefficients, and partial fractions -/
 
 private lemma geom_sum_le_inv_one_sub {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (N : ℕ) :
-    ∑ k ∈ Finset.range N, r ^ k ≤ (1 - r)⁻¹ := by
-  rw [geom_sum_eq hr1.ne, ← neg_div_neg_eq, neg_sub, neg_sub, ← one_div]
-  exact div_le_div_of_nonneg_right (sub_le_self 1 (pow_nonneg hr0 N)) (sub_pos.2 hr1).le
+    ∑ k ∈ Finset.range N, r ^ k ≤ (1 - r)⁻¹ :=
+  ((summable_geometric_of_lt_one hr0 hr1).sum_le_tsum _ fun _ _ => pow_nonneg hr0 _).trans_eq
+    (tsum_geometric_of_lt_one hr0 hr1)
 
 private def bN (lam : ℕ → ℝ) : ℕ → ℕ → ℝ
   | 0, 0 => 1
@@ -238,15 +236,11 @@ private lemma two_factor_pf {a b x : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) (h1 : 1 
     (h2 : 1 + x / b ≠ 0) (h3 : 1 - a / b ≠ 0) :
     (1 + x / a)⁻¹ * (1 + x / b)⁻¹ =
       (1 - a / b)⁻¹ * (1 + x / a)⁻¹ + (1 - b / a)⁻¹ * (1 + x / b)⁻¹ := by
-  have h1' : a + x ≠ 0 := fun h => h1 (by field_simp [ha]; linarith)
-  have h2' : b + x ≠ 0 := fun h => h2 (by field_simp [hb]; linarith)
-  have h3' : b - a ≠ 0 := fun h => h3 (by field_simp [hb]; linarith)
+  have h1' : a + x ≠ 0 := fun h => h1 (by field_simp; linarith)
+  have h2' : b + x ≠ 0 := fun h => h2 (by field_simp; linarith)
+  have h3' : b - a ≠ 0 := fun h => h3 (by field_simp; linarith)
   have h4' : a - b ≠ 0 := fun h => h3' (by linarith)
-  rw [show (1 + x / a)⁻¹ = a / (a + x) by field_simp [ha, h1, h1'],
-    show (1 + x / b)⁻¹ = b / (b + x) by field_simp [hb, h2, h2'],
-    show (1 - a / b)⁻¹ = b / (b - a) by field_simp [hb, h3, h3'],
-    show (1 - b / a)⁻¹ = a / (a - b) by field_simp [ha, h4']]
-  field_simp [h1', h2', h3', h4']; ring
+  field_simp; ring
 
 private lemma inv_prodPoly_eq_sum {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k) (hmono : StrictMono lam) :
     ∀ {N : ℕ}, 1 ≤ N → ∀ {x : ℝ}, (∀ k < N, 1 + x / lam k ^ 2 ≠ 0) →
@@ -437,58 +431,46 @@ private lemma fourierInv_inv_one_add_sq {a : ℝ} (ha : 0 < a) (t : ℝ) :
   simp only [smul_eq_mul, RCLike.inner_apply, conj_trivial]
   rw [mul_comm _ (Complex.exp _), mul_assoc (2 * π)]
 
-private lemma hasDerivAt_fourierInv_pow {f : ℝ → ℂ} {k : ℕ}
-    (h0 : Integrable (fun ξ : ℝ => (2 * π * I * ξ) ^ k * f ξ))
-    (h1 : Integrable (fun ξ : ℝ => (2 * π * I * ξ) ^ (k + 1) * f ξ)) (t : ℝ) :
-    HasDerivAt
-      (fun s : ℝ => ∫ ξ : ℝ, (2 * π * I * ξ) ^ k * f ξ * Complex.exp (↑(2 * π * s * ξ) * I))
-      (∫ ξ : ℝ, (2 * π * I * ξ) ^ (k + 1) * f ξ * Complex.exp (↑(2 * π * t * ξ) * I)) t := by
-  have hmeas : ∀ s : ℝ, AEStronglyMeasurable
-      (fun ξ : ℝ => (2 * π * I * ξ) ^ k * f ξ * Complex.exp (↑(2 * π * s * ξ) * I)) volume :=
-    fun _ => h0.aestronglyMeasurable.mul (by fun_prop)
-  refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (F := fun s ξ => (2 * π * I * ξ) ^ k * f ξ * Complex.exp (↑(2 * π * s * ξ) * I))
-    (F' := fun s ξ => (2 * π * I * ξ) ^ (k + 1) * f ξ * Complex.exp (↑(2 * π * s * ξ) * I))
-    (s := Set.univ) Filter.univ_mem (Eventually.of_forall hmeas)
-    (h0.norm.mono' (hmeas t) (Eventually.of_forall fun ξ => by
-      rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]))
-    (h1.aestronglyMeasurable.mul (by fun_prop))
-    (Eventually.of_forall fun ξ s _ => by rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one])
-    h1.norm (Eventually.of_forall fun ξ s _ => ?_)).2
-  have hd : HasDerivAt (fun s : ℝ => (↑(2 * π * s * ξ) : ℂ) * I) (2 * π * I * ξ) s := by
-    convert (Complex.ofRealCLM.hasDerivAt (x := s)).const_mul (2 * π * I * (ξ : ℂ)) using 1
-    · funext u; simp only [Complex.ofRealCLM_apply]; push_cast; ring
-    · simp only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one]
-  convert (hd.cexp).const_mul ((2 * π * I * ξ) ^ k * f ξ) using 1; rw [pow_succ]; ring
+private lemma fourierInv_eq_integral (f : ℝ → ℂ) :
+    (fun s : ℝ => ∫ ξ : ℝ, f ξ * Complex.exp (↑(2 * π * s * ξ) * I)) = 𝓕 (fun x => f (-x)) := by
+  ext s
+  rw [← Real.fourierInv_eq_fourier_comp_neg, Real.fourierInv_eq']
+  refine integral_congr_ae (Eventually.of_forall fun ξ => ?_)
+  simp only [smul_eq_mul, RCLike.inner_apply, conj_trivial]
+  rw [mul_comm _ (Complex.exp _), mul_assoc (2 * π), mul_comm s ξ]
+
+private lemma integrable_pow_smul_comp_neg {f : ℝ → ℂ} {k : ℕ}
+    (h : Integrable (fun ξ : ℝ => (2 * π * I * ξ) ^ k * f ξ)) :
+    Integrable (fun x : ℝ => x ^ k • f (-x)) := by
+  have hc : (-2 * π * I : ℂ) ≠ 0 := by simp [Real.pi_ne_zero, Complex.I_ne_zero]
+  refine (h.comp_neg.const_mul (((-2 * π * I : ℂ) ^ k)⁻¹)).congr (Eventually.of_forall fun x => ?_)
+  dsimp only
+  rw [show (2 * π * I * ((-x : ℝ) : ℂ)) ^ k = (-2 * π * I : ℂ) ^ k * (x : ℂ) ^ k by
+      rw [← mul_pow]; congr 1; push_cast; ring,
+    ← mul_assoc, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero k hc), one_mul,
+    Complex.real_smul, Complex.ofReal_pow]
 
 private lemma iteratedDeriv_fourierInv_eq {f : ℝ → ℂ} {n : ℕ}
     (hf : ∀ k ≤ n, Integrable (fun ξ : ℝ => (2 * π * I * ξ) ^ k * f ξ)) :
     ∀ k ≤ n, iteratedDeriv k (fun s : ℝ => ∫ ξ : ℝ, f ξ * Complex.exp (↑(2 * π * s * ξ) * I)) =
       fun t => ∫ ξ : ℝ, (2 * π * I * ξ) ^ k * f ξ * Complex.exp (↑(2 * π * t * ξ) * I) := by
-  intro k hk; induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [iteratedDeriv_succ, ih (by lia)]
-    exact funext fun t => (hasDerivAt_fourierInv_pow (hf k (by lia)) (hf (k + 1) hk) t).deriv
+  intro k hk
+  rw [fourierInv_eq_integral, Real.iteratedDeriv_fourier (N := (k : ℕ∞))
+    (fun m hm => integrable_pow_smul_comp_neg (hf m ((WithTop.coe_le_coe.1 hm).trans hk))) le_rfl]
+  ext t
+  rw [Real.fourier_real_eq_integral_exp_smul, ← integral_neg_eq_self]
+  refine integral_congr_ae (Eventually.of_forall fun ξ => ?_)
+  simp only [neg_neg, smul_eq_mul]
+  rw [show (-2 * π * I * ((-ξ : ℝ) : ℂ)) ^ k = (2 * π * I * (ξ : ℂ)) ^ k by congr 1; push_cast; ring,
+    show ((-2 * π * (-ξ) * t : ℝ) : ℂ) = ↑(2 * π * t * ξ) by push_cast; ring,
+    mul_comm (Complex.exp _)]
 
 private lemma contDiff_fourierInv {f : ℝ → ℂ}
     (hf : ∀ k : ℕ, Integrable (fun ξ : ℝ => (2 * π * I * ξ) ^ k * f ξ)) :
     ContDiff ℝ ∞ (fun s : ℝ => ∫ ξ : ℝ, f ξ * Complex.exp (↑(2 * π * s * ξ) * I)) := by
-  let Φ : ℕ → ℝ → ℂ := fun k s =>
-    ∫ ξ : ℝ, (2 * π * I * ξ) ^ k * f ξ * Complex.exp (↑(2 * π * s * ξ) * I)
-  have hΦd : ∀ k t, HasDerivAt (Φ k) (Φ (k + 1) t) t :=
-    fun k t => hasDerivAt_fourierInv_pow (hf k) (hf (k + 1)) t
-  have hcd : ∀ m k : ℕ, ContDiff ℝ m (Φ k) := by
-    intro m; induction m with
-    | zero => intro k; exact contDiff_zero.2 ((fun t => (hΦd k t).differentiableAt) |> Differentiable.continuous)
-    | succ m ih =>
-      intro k
-      rw [show ((m + 1 : ℕ) : WithTop ℕ∞) = (m : WithTop ℕ∞) + 1 by norm_cast, contDiff_succ_iff_deriv]
-      exact ⟨fun t => (hΦd k t).differentiableAt, by simp,
-        by rw [show deriv (Φ k) = Φ (k + 1) from funext fun t => (hΦd k t).deriv]; exact ih (k + 1)⟩
-  rw [show (fun s : ℝ => ∫ ξ : ℝ, f ξ * Complex.exp (↑(2 * π * s * ξ) * I)) = Φ 0 from
-    funext fun s => by simp [Φ]]
-  exact contDiff_infty.2 fun m => hcd m 0
+  rw [fourierInv_eq_integral]
+  refine Real.contDiff_fourier fun k _ => ?_
+  simpa only [norm_smul, norm_pow] using (integrable_pow_smul_comp_neg (hf k)).norm
 
 private lemma integrable_pow_div_prodPoly {lam : ℕ → ℝ} (hpos : ∀ k, 0 < lam k)
     (hmono : Monotone lam) {k N : ℕ} (hkN : k + 1 ≤ N) :
@@ -842,27 +824,19 @@ private lemma norm_iteratedDeriv_commutator_le {χ E : ℝ → ℂ} {C : ℕ →
   have heq : (fun s => iteratedDeriv (2 * m) (χ * E) s - χ s * iteratedDeriv (2 * m) E s) =
       fun s => ∑ j ∈ Finset.Icc 1 (2 * m), (((2 * m).choose j : ℕ) : ℂ) *
         iteratedDeriv j χ s * iteratedDeriv (2 * m - j) E s := funext fun s => by
-    rw [iteratedDeriv_mul (hcdAt hχ_cd _ s) (hcdAt hE_cd _ s),
-      Finset.sum_range_succ' (f := fun j => ((2 * m).choose j : ℂ) *
-        iteratedDeriv j χ s * iteratedDeriv (2 * m - j) E s)]
-    simp only [Nat.choose_zero_right, Nat.cast_one, one_mul, iteratedDeriv_zero, Nat.sub_zero,
-      add_sub_cancel_right]
-    refine Finset.sum_bij (fun j _ => j + 1)
-      (fun j hj => by simp only [Finset.mem_range, Finset.mem_Icc] at hj ⊢; lia)
-      (fun _ _ _ _ h => by lia)
-      (fun j hj => ⟨j - 1, by simp only [Finset.mem_Icc, Finset.mem_range] at hj ⊢; lia,
-        by simp only [Finset.mem_Icc] at hj; lia⟩) (fun _ _ => rfl)
+    rw [iteratedDeriv_mul (hcdAt hχ_cd _ s) (hcdAt hE_cd _ s), ← Nat.Ico_zero_eq_range,
+      Finset.sum_eq_sum_Ico_succ_bot (Nat.succ_pos _)]
+    simp [Finset.Ico_add_one_right_eq_Icc]
   rw [heq, iteratedDeriv_fun_sum fun j _ =>
     (contDiffAt_const.mul (hcdAt (contDiff_iteratedDeriv_infty hχ_cd j) r t)).mul
       (hcdAt (contDiff_iteratedDeriv_infty hE_cd _) r t)]
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j hj => ?_)
   have hj1 : 1 ≤ j := (Finset.mem_Icc.1 hj).1
   have hj2 : j ≤ 2 * m := (Finset.mem_Icc.1 hj).2
-  rw [show (fun s => (((2 * m).choose j : ℕ) : ℂ) *
-        iteratedDeriv j χ s * iteratedDeriv (2 * m - j) E s) =
-      fun s => (((2 * m).choose j : ℕ) : ℂ) * (iteratedDeriv j χ * iteratedDeriv (2 * m - j) E) s from
-        funext fun s => by simp only [Pi.mul_apply]; ring,
-    iteratedDeriv_const_mul_field, norm_mul, Complex.norm_natCast,
+  simp_rw [mul_assoc ((((2 * m).choose j : ℕ) : ℂ))]
+  rw [iteratedDeriv_const_mul_field, norm_mul, Complex.norm_natCast,
+    show (fun x => iteratedDeriv j χ x * iteratedDeriv (2 * m - j) E x) =
+      iteratedDeriv j χ * iteratedDeriv (2 * m - j) E from rfl,
     iteratedDeriv_mul (hcdAt (contDiff_iteratedDeriv_infty hχ_cd j) r t)
       (hcdAt (contDiff_iteratedDeriv_infty hE_cd _) r t)]
   refine mul_le_mul_of_nonneg_left ((norm_sum_le _ _).trans (Finset.sum_le_sum fun i hi => ?_))

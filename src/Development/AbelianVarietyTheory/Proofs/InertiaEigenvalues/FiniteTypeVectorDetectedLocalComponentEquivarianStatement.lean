@@ -300,8 +300,7 @@ theorem main : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) 
       · left; apply Subrepresentation.ext; have h' := congrArg Subrepresentation.toSubmodule h; exact h'
       · right; apply Subrepresentation.ext; have h' := congrArg Subrepresentation.toSubmodule h; exact h'
   have hV : ∃ a : τ.V, a ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨P1, P2, hne⟩ := τ.irr.exists_pair_ne
     apply hne
     apply Subrepresentation.ext

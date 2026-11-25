@@ -73,7 +73,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -360,7 +359,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -669,7 +667,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GridJoin.ArrX
 

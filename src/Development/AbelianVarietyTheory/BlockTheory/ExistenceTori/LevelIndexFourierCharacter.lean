@@ -13,8 +13,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.LevelSpanSeparation
 open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 def conjHalf (l : Level H) : Ideal (𝓞 E) := l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E)

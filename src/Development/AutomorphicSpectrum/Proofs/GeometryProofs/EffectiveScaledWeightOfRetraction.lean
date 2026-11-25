@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.UniformIntegrabilityStatementHolds
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StandardSmoothChartOfNonzero
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SplitComps
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EmbedsGeneric
@@ -28,6 +30,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChartConstantsDetermined
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgebraicConstantsInRange, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MatchStatement, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordRelationsHomogeneous, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AmpleOfSingleCoordBlock, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicInverseChartValue, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SameOrbitOfProportionalCoords, Development.AutomorphicSpectrum.Proofs.GeometryProofs.EffectiveScaledWeightOfRetraction
@@ -245,18 +248,7 @@ theorem ne_zero_of_pt {L : Type} [Field L] {z : (Σ k, J k) → L}
 theorem aeval_ratio_eq_zero (c : ∀ k, J k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : MRing J}
     (hf : f ∈ mCoordIdeal y) :
     aeval (fun p : Σ k, J k => y p / y ⟨p.1, c p.1⟩) f = 0 := by
-  have h0 : mConeMap y f = 0 := hf
-  have h1 := congrArg (eval (fun k => (y ⟨k, c k⟩)⁻¹)) h0
-  rw [map_zero] at h1
-  have h2 := ringHom_aevalZ (eval (fun k => (y ⟨k, c k⟩)⁻¹))
-    (fun p : Σ k, J k => (C (y p) * X p.1 : MvPolynomial K Ω)) f
-  have h3 : (fun p : Σ k, J k => eval (fun k => (y ⟨k, c k⟩)⁻¹)
-      (C (y p) * X p.1 : MvPolynomial K Ω)) = fun p => y p / y ⟨p.1, c p.1⟩ := by
-    funext p
-    simp [div_eq_mul_inv]
-  rw [h3] at h2
-  rw [← h2]
-  exact h1
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.ChartConstantsDetermined.aeval_chart_eq_zero <;> assumption
 
 theorem ratio_pt_mem (W : ValuationSubring Ω) (c : ∀ k, J k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0)
     (hcW : ∀ p : Σ k, J k, y p / y ⟨p.1, c p.1⟩ ∈ W) :
@@ -456,8 +448,7 @@ theorem exists_finset_at [CharZero Ω] (k₀ : K) (hy : ∀ k, ∃ j, y ⟨k, j�
   obtain ⟨T, hT, rfl⟩ := Finset.subset_set_image_iff.1 hs
   refine ⟨T, hT, ?_⟩
   intro L _ _ z hz hzi
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   have key : ∀ b ∈ Ideal.span ((T.image fun f => aeval (ratioA y k₀ i) f :
       Finset (chartSub y k₀ i)) : Set (chartSub y k₀ i)),
       ∃ (N : ℕ) (G : MvPolynomial (J k₀) ℤ), N ≠ 0 ∧ (N : Ω) * (b : Ω) = aeval (ratio y k₀ i) G ∧
@@ -878,16 +869,8 @@ namespace GlobalTheory.CompanionTheory.Ar.OrbitBlock
 theorem aeval_smul_of_homog {σ A : Type} [Fintype σ] [CommRing A] [Algebra ℤ A] {n : ℕ}
     {F : MvPolynomial σ ℤ} (hF : F.IsHomogeneous n) (t : A) (b : σ → A) :
     MvPolynomial.aeval (fun i => t * b i) F = t ^ n * MvPolynomial.aeval b F := by
-  classical
-  simp only [MvPolynomial.aeval_def]
-  rw [MvPolynomial.eval₂_eq', MvPolynomial.eval₂_eq', Finset.mul_sum]
-  refine Finset.sum_congr rfl fun d hd => ?_
-  have hdeg : ∑ i, d i = n := by
-    have h := hF (MvPolynomial.mem_support_iff.1 hd)
-    rw [← h, Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp)]
-    simp
-  simp only [mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, hdeg]
-  ring
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.SncRes.SegreForm.aeval_const_mul <;> assumption
 
 variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {Ω : Type} [Field Ω]
 
@@ -1269,18 +1252,8 @@ theorem holoOn_comp {e e' : ℕ} {M M' : Type} [TopologicalSpace M] [Topological
     {A : ReciprocityTheory.AnForm.M.FinHolAtlas e M} {B : ReciprocityTheory.AnForm.M.FinHolAtlas e' M'} {h : M' → M}
     (hh : ReciprocityTheory.AnForm.M.HoloMap B A h) {V : Set M} {g : M → ℂ} (hg : A.HoloOn V g) :
     B.HoloOn (h ⁻¹' V) (g ∘ h) := by
-  intro j z hz
-  obtain ⟨k, hk⟩ := A.cover (h ((B.chart j).symm z))
-  have h1 := hh.2 j k z ⟨hz.1, hk⟩
-  have h2 := hg k ((A.chart k) (h ((B.chart j).symm z)))
-    ⟨(A.chart k).map_source hk, by
-      simpa [(A.chart k).left_inv hk] using hz.2⟩
-  have h3 := h2.comp_of_eq h1 rfl
-  refine h3.congr ?_
-  have hc : ContinuousAt (h ∘ (B.chart j).symm) z :=
-    hh.1.continuousAt.comp ((B.chart j).continuousAt_symm hz.1)
-  filter_upwards [hc.preimage_mem_nhds ((A.chart k).open_source.mem_nhds hk)] with w hw
-  exact congrArg g ((A.chart k).left_inv hw)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.Restrict.holoOn_comp <;> assumption
 
 end Main
 

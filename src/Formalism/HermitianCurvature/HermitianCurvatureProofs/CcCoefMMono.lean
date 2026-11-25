@@ -37,8 +37,6 @@ namespace Formalism.FourierDecayAlt.P.LastBlockContinuity
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.JCTx6 Formalism.FourierDecayAlt.P.JCTx6.Pos Formalism.FourierDecayAlt.P.PBE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem continuous_unipotent_vector_scalar (n : ℕ) (v : G.UT (n + 1) → ℂ) : Continuous (fun t : ℂ => Zv n t v) := by
   show Continuous (fun t : ℂ => fun i j => (G.ptLong (n + 1) t * G.upper v) i j)
   have h : Continuous (fun t : ℂ => (G.ptLong (n + 1) t * G.upper v : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) := by
@@ -396,8 +394,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.LastBlockContinuity
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]

@@ -104,8 +104,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (powObj powPr powIsLimit)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 noncomputable section
 
 namespace GlobalTheory.LowChart

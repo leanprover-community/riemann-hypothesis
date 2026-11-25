@@ -1357,8 +1357,7 @@ theorem pow_dvd_of_specialisations (F : Type) [Field F] [CharZero F] (D N δ b :
   have hf0 : f ≠ 0 := hirr.ne_zero
 
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, eval x₀ f ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf0 (MvPolynomial.funext fun x => by simp [h x])
   set l₀ : Fin N → F := fun j => x₀ (Fin.last D, j) with hl₀
   set g := aeval (lastSubst l₀) f with hg
@@ -1541,8 +1540,7 @@ theorem slopeBound : SlopeBound := by
     have := congrArg (fun g => g x) (hc i)
     simpa using this
   have hex : ∃ s : Fin S.D → Fin S.N → F, eval (fun p => s p.1 p.2) Q ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hQ
     apply MvPolynomial.funext
     intro x

@@ -45,15 +45,13 @@ open scoped Classical TensorProduct
 namespace GlobalTheory.BCT.CtReg
 
 theorem exists_ne_of_avg_ne {H : Type} [Group H] {u : H → ℂ} (h : avg u ≠ 0) : ∃ x, u x ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   rw [avg, finsum_eq_zero_of_forall_eq_zero (fun q => hc _), mul_zero]
 
 theorem exists_ne_of_hint_ne {H : Type} [Group H] {K : Subgroup H} {u : H → ℂ} (h : hint K u ≠ 0) :
     ∃ x, u x ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   rw [hint, finsum_eq_zero_of_forall_eq_zero (fun q => hc _), mul_zero]
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallDomainOpenConvexZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExists
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
@@ -151,16 +152,8 @@ theorem form_one_sub (Z : Matrix a b ℂ) (x : b → ℂ) :
 
 theorem posDef_iff_norm (Z : Matrix a b ℂ) :
     (1 - Zᴴ * Z).PosDef ↔ ∀ x : b → ℂ, x ≠ 0 → ‖WithLp.toLp 2 (Z *ᵥ x)‖ < ‖WithLp.toLp 2 x‖ := by
-  rw [Matrix.posDef_iff_dotProduct_mulVec]
-  constructor
-  · rintro ⟨-, h⟩ x hx
-    have h1 := h hx
-    rw [form_one_sub, Complex.zero_lt_real] at h1
-    exact lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) (sub_pos.1 h1)
-  · intro h
-    refine ⟨Matrix.isHermitian_one.sub (Matrix.isHermitian_conjTranspose_mul_self _), fun x hx => ?_⟩
-    rw [form_one_sub, Complex.zero_lt_real]
-    exact sub_pos.2 (pow_lt_pow_left₀ (h x hx) (norm_nonneg _) two_ne_zero)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.BallConvex.posDef_iff <;> assumption
 
 theorem convex_ball_mat : Convex ℝ {Z : Matrix a b ℂ | (1 - Zᴴ * Z).PosDef} := by
   rw [convex_iff_forall_pos]
@@ -184,16 +177,8 @@ section Dom
 variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
 
 theorem convex_ballDom (q : Ψ × Fin j × Fin j' ≃ Fin n) : Convex ℝ (ballDom q) := by
-  have hset : ballDom q = ⋂ τ, (fun t => ballMat q t τ) ⁻¹' {Z | (1 - Zᴴ * Z).PosDef} := by
-    ext t
-    simp [ballDom]
-  rw [hset]
-  refine convex_iInter fun τ => ?_
-  let L : (Fin n → ℂ) →ₗ[ℝ] Matrix (Fin j) (Fin j') ℂ :=
-    { toFun := fun t => ballMat q t τ
-      map_add' := fun s t => by ext a b; simp [ballMat]
-      map_smul' := fun c t => by ext a b; simp [ballMat] }
-  exact convex_ball_mat.linear_preimage L
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.BallConvex.convex_ballDom <;> assumption
 
 theorem zero_mem (q : Ψ × Fin j × Fin j' ≃ Fin n) : (0 : Fin n → ℂ) ∈ ballDom q := by
   intro τ

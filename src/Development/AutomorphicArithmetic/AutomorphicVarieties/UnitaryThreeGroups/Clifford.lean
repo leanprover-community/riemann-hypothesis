@@ -107,8 +107,7 @@ private theorem exists_compl {Γ κ V : Type*} [Group Γ] [Field κ] [AddCommGro
   obtain ⟨U, ⟨hU0, hUt, hUst⟩, hmax⟩ := (wellFounded_gt (α := Submodule κ V)).has_min
     {F | F ≠ ⊥ ∧ F ≠ ⊤ ∧ ∀ g ∈ H, ∀ v ∈ F, σ g v ∈ F} ⟨W₀, hb, ht, h0⟩
   have hex : ∃ g, ¬ W ≤ U.comap (σ g) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     rcases hirr (⨅ g, U.comap (σ g)) (fun g v hv => by
       rw [Submodule.mem_iInf] at hv ⊢
       intro k

@@ -376,8 +376,7 @@ private theorem prime_pow_le_sum_mul_pow_of_modEq (p f n : ℕ) (hp : p.Prime) (
   have hS2 : 2 ≤ S := by
     refine le_trans he (Finset.sum_le_sum (fun i _ => ?_))
     exact Nat.le_mul_of_pos_right _ (pow_pos (by omega) _)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   unfold Nat.ModEq at hS1
   rcases Nat.lt_or_ge S M with h | h
   · rw [Nat.mod_eq_of_lt h] at hS1

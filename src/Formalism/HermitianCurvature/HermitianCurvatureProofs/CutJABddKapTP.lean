@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def kcut (t : ℝ) : ℝ := Real.smoothTransition (6 * t - 2)
 
 theorem kcut_contDiff : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) kcut :=

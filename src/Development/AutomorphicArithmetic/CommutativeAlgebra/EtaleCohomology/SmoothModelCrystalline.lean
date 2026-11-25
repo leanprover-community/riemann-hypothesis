@@ -626,8 +626,7 @@ private theorem inj_conn (hF : R.Facts) (hS : EtSide G) (hL : D.Laws G) (e : EMa
     rintro _ rfl; exact (hC _).top hF hS hL hM hd
   obtain ⟨w, φ, hw⟩ := htop _ hj'
   have hg : ∃ s, C (j + j') (g s) φ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hw' : w ∈ Submodule.span ℚ_[l] (Set.range g) := by rw [hspan]; trivial
     refine hw (Submodule.span_induction (p := fun w _ => C (j + j') w φ = 0) ?_ (by simp) ?_ ?_ hw')
     · rintro _ ⟨s, rfl⟩; exact hcon s

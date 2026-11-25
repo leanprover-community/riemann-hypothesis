@@ -548,8 +548,7 @@ theorem exists_bound_half_lt : GlobalTheory.Published.CuspRapidDecay → ∀ (D 
   set φ := t (PiTensorProduct.tprod ℂ w) with hφ
   have hφ0 : φ ≠ 0 := fun h => ht0 (GlobalTheory.T.multiplicitySpace_eq_zero_of_apply_nonzero_tensor_zero θ M J 1 vol.μ vol.𝓕 hθ vol.haar vol.fund hS t ht _ hw' h)
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, φ x₀ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ0 (funext h)
   have hR := (GlobalTheory.ChainOnto.MultRapid.multT_apply_rapidDec hP D V S M θ hθ J 1 t ht
     (PiTensorProduct.tprod ℂ w)).2.2

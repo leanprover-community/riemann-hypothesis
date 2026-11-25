@@ -173,8 +173,7 @@ theorem absBound :
     rw [← Matrix.mulVec_smul, ← heig h, Matrix.mulVec_sum]
 
   obtain ⟨g0, i0, h0⟩ : ∃ g i, Nf g i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hF
     funext g
     have : F g = R g *ᵥ Nf g := by
@@ -250,8 +249,7 @@ theorem absBound :
     have := hit n [] (by simp) i0
     simpa [hN] using this
   have hd : 0 < nu ι (Nf g0 i0) := nu_pos' ι h0
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   rcases hc.eq_or_lt with h0c | hcpos
   · have := hfinal 1
     rw [← h0c] at this hlt

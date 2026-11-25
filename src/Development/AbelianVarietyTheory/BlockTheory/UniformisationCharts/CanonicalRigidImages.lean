@@ -13,8 +13,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.CanonicalRigidImages
 
 def fnSec {Z Y : Scheme.{0}} (L : LB Z) (f : Γ(Y, ⊤)) :

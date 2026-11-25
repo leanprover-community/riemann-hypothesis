@@ -149,7 +149,6 @@ section Jets
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem exists_isChartJ {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] {d : ℕ} (x : JetSer.Fam G (Fin d))
     (hx : Chart.IsUnivChart G d x) (F : FGLaw R d) (hF : JetSer.IsLawOf x F.F) : ∃ x', IsChartJ G F x' := by
@@ -326,7 +325,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
-attribute [local instance] Over.cartesianMonoidalCategory
 open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotions.ModuliIntegralCharts.H1.BidegreeTwoJet GlobalTheory GlobalTheory.PowGerm
 open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
 open IsDedekindDomain

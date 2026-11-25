@@ -1620,7 +1620,6 @@ section -- clump:auto
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm GlobalTheory.TypeAsm.PerRow
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypeAsm.PerRow
 

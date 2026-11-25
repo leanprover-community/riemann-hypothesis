@@ -143,7 +143,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
 noncomputable section
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SymLB
 

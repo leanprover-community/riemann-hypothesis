@@ -593,8 +593,7 @@ theorem exists_locus_of_span : ∀ (R₁ F : Type) [CommRing R₁] [Field F] (Y 
   have hsec : ∀ i, RegAt y (t i * g) := fun i => by
     have : t i ∈ Sec D₁ k := by rw [hS k]; exact subset_spanBy _ _ (ht i)
     exact hg.regularAt_iff.1 (this y)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply (zeroAt_iff.1 ?_).2 hunit
   rw [Finset.sum_mul]
   refine Finset.sum_induction _ (ZeroAt y) (fun _ _ => ZeroAt.add) (zeroAt_zero y) fun i _ => ?_
@@ -934,8 +933,7 @@ theorem cover (z : Proj (piece hN)) : ∃ k, 1 ≤ k ∧ ∃ b ∈ N k, z ∈ Dp
   classical
   obtain ⟨y, hy, hyz⟩ := Set.not_subset.1 z.not_irrelevant_le
   have : ∃ j, (DirectSum.decompose (piece hN) y j : ring hN) ∉ z.asHomogeneousIdeal := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hyz
     rw [← DirectSum.sum_support_decompose (piece hN) y]
     exact Ideal.sum_mem _ fun j _ => hc j

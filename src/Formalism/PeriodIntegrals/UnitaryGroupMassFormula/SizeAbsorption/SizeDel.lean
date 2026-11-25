@@ -260,8 +260,7 @@ theorem stepA : StepA := by
     have h3 : L.sc.eps * (L.sc.x ^ L.sc.eps / L.sc.eps) = L.sc.x ^ L.sc.eps := by
       first
         | (field_simp; done)
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h4 := mul_lt_mul_of_pos_left hc he0
     rw [h3] at h4
     linarith

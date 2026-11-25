@@ -119,8 +119,7 @@ theorem algIndep_of_der {E : Type} [Field E] [CharZero E] [Algebra E F] {N : ℕ
       intro s hs
       by_contra hpos
       obtain ⟨l, hl⟩ : ∃ l, s l ≠ 0 := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         have h0 : s = 0 := Finsupp.ext fun a => by simp [hall a]
         simp [h0] at hpos
       have hs' : s - Finsupp.single l 1 + Finsupp.single l 1 = s := by

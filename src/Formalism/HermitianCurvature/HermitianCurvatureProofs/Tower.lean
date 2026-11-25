@@ -13,8 +13,6 @@ namespace Formalism.FourierDecayAlt.P.PBH
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k : ℕ}
 
 theorem lift_lift_V (j ρ n r : ℕ) (hn : 1 + ρ = n) (h1 : j + n = r) (h2 : j + 1 + ρ = r)

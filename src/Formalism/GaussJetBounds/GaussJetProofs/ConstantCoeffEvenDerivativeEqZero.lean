@@ -38,8 +38,7 @@ theorem asmS_integral_sub_one {K : Type u} [NormedField K] {ι : Type} {pi ρ : 
     rw [h00, norm_zero]
     exact (Real.rpow_pos_of_pos h0 _).le
   · obtain ⟨i, hi⟩ : ∃ i, n i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext h)
     have hd : ρ ≤ dot n (fun _ => ρ) := by
       unfold dot Finsupp.sum
@@ -71,8 +70,7 @@ theorem asmS_cc_subst {K : Type u} [Field K] {d : ℕ} [NeZero d] {be : MvPowerS
   · subst hn
     rw [coeff_zero_eq_constantCoeff_apply, hbe0, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, n s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext h)
     have hp : constantCoeff (n.prod fun s e => a s ^ e) = 0 := by
       simp only [Finsupp.prod, map_prod]

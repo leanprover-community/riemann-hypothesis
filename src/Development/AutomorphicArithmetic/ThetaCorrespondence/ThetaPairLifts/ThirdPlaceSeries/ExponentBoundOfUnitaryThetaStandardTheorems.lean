@@ -915,8 +915,7 @@ theorem other_of_not_thick (L : Formalism.BasicNotions.SizeData₂ D) (P5 : Form
     have hLa : 0 < L.LaG := by
       have h1 := P5.S_le
       have h2 := L.Sc_pos
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       have : L.LaG * L.sc.b' / D.R.k ≤ 0 :=
         div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg hn hb0.le) hk0.le
       linarith

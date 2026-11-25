@@ -43,8 +43,7 @@ theorem coeff_zero_of_dd {σ : Type*} (v : MvPolynomial σ ℂ) (i j : σ) (hij 
     (h : pderiv i (pderiv j v) = 0) (α : σ →₀ ℕ) (hα : AddMonoidAlgebra.coeff v α ≠ 0) :
     α i = 0 ∨ α j = 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨hi, hj⟩ := hcon
   have hsplit : α = (α - Finsupp.single i 1 - Finsupp.single j 1) + Finsupp.single i 1 +
       Finsupp.single j 1 := by

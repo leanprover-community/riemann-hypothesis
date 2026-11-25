@@ -388,7 +388,6 @@ end General
 
 open IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Mult
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end GlobalTheory.LevDet
 end -- clump:auto
@@ -408,8 +407,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.IndefR.Lev GlobalTheory.OnTies
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level)
 open scoped TensorProduct Matrix nonZeroDivisors
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem det_baseChange_lift {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (I : Ideal R)
     (γ : (M ⧸ I • (⊤ : Submodule R M)) ≃ₗ[R] (M ⧸ I • (⊤ : Submodule R M))) (f : M →ₗ[R] M)

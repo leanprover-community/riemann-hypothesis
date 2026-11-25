@@ -804,8 +804,7 @@ theorem UpperTheory.V.Pa.B2.genTrick :
       congr 1
       omega
     rw [hp, mul_smul, hm, smul_zero]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set e := C + 1 with he
   have hem : e ≤ m := by omega
   let φ : (Fin (g + 1) → A) →ₗ[A] H := Fintype.linearCombination A ξ
@@ -1010,8 +1009,7 @@ private theorem low_ann {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} (x : N
   classical
   have hne : ∀ (v : F.Vl) (i j : Fin n), i ≠ j → ∃ g : F.Gv v, x.ψ v i g ≠ x.ψ v j g := by
     intro v i j hij
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact (x.N1 v).1 i j hij (MonoidHom.ext hc)
   let fac : F.Vl → Fin n → Fin n → PowerSeries x.K := fun v i j =>
     if h : i = j then 1 else

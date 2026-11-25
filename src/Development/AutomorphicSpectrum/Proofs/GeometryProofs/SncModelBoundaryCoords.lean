@@ -201,8 +201,7 @@ theorem points_of_isEmpty [IsEmpty K] [∀ k, Fintype (J k)] {Ω : Type} [Field 
   rw [hr] at hf ha hS
   rw [Algebra.adjoin_empty] at hf ha
   obtain ⟨l, hl⟩ : ∃ l, f l ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     simp [hall] at hsum
   obtain ⟨hsm, zz, n, hn, hli, hspan, hq⟩ := hS l hl _ rfl
   set S : Subalgebra ℚ Ω := Algebra.adjoin ℚ (insert (f l)⁻¹ ∅) with hSdef
@@ -221,8 +220,7 @@ theorem points_of_isEmpty [IsEmpty K] [∀ k, Fintype (J k)] {Ω : Type} [Field 
   have hcl := hq ⊥ Ideal.isPrime_bot
   obtain ⟨g, hg, s, hs1, hs0⟩ : ∃ g ∈ bd, ∃ s : S, (s : Ω) = aeval (fun p : Σ k, J k => y p / y ⟨p.1, c p.1⟩) g ∧
       s ∉ (⊥ : Ideal S) := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     obtain ⟨i, -⟩ := hcl.1 hall
     exact isEmptyElim i
   constructor

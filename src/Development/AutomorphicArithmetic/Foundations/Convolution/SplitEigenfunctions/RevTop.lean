@@ -61,8 +61,7 @@ namespace UpperTheory.ConvolutionTheory.RankTwoDescent.UnitaryMatrixFamily
 private theorem char_int (r : ℚ) (hr : r ≠ 0) :
     ∫ b in fundamentalSet ℚ, ψ (b * rt r) ∂(adeleMeasure ℚ) = 0 := by
   obtain ⟨x, hx⟩ : ∃ x : A ℚ, adelicChar ℚ x ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact adelicChar_ne_one (K := ℚ) (DFunLike.ext _ _ fun x => by simpa using h x)
   have hx' : ψ x ≠ 1 := fun h => hx (Circle.ext (by simpa [ψ] using h))
   have hper : ∀ (k : ℚ) (y : A ℚ), ψ ((rt k + y) * rt r) = ψ (y * rt r) := by

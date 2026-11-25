@@ -939,8 +939,7 @@ theorem mem_of_mem_doubleOrth : ∀ (F : Type) [Field F] [NumberField F] (v : Pl
   obtain ⟨y', hyA, hyt⟩ := exists_integral_form_separating M hMfg _ hz t htA
   simp only [hrange] at hyA hyt
   obtain ⟨b, hb, hbψ⟩ : ∃ b ∈ O, ψ₀ ((t ⬝ᵥ y') * b) ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hyt ((hψ _).mp h)
   apply hbψ
   have := ht (b • y') (fun s hs => by

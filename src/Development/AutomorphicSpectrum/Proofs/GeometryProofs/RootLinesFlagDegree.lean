@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeTensorPowerLineBundle
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 import Mathlib.Tactic.Linter.Style
@@ -105,17 +106,7 @@ theorem zpow_ratio (Λ : Lat ξ Ω) (p : Cpt ξ) (s t : Ω) (hs : Λ.IsGenAt p s
 
 theorem tens_isGenAt {I : Type} [Fintype I] (Λ : I → Lat ξ Ω) (a : I → ℤ) (p : Cpt ξ) (s : I → Ω)
     (hs : ∀ i, (Λ i).IsGenAt p (s i)) : (Lat.tens Λ a).IsGenAt p (∏ i, s i ^ a i) := by
-  refine ⟨Finset.prod_ne_zero_iff.mpr fun i _ => zpow_ne_zero _ (hs i).1, le_antisymm ?_ ?_⟩
-  · refine Submodule.span_le.mpr ?_
-    rintro t ⟨s', hs', rfl⟩
-    have hr : ∏ i, (s' i / s i) ^ a i ∈ regAt ξ p :=
-      prod_mem fun i _ => zpow_ratio (Λ i) p (s i) (s' i) (hs i) (hs' i) (a i)
-    refine Submodule.mem_span_singleton.mpr ⟨⟨_, hr⟩, ?_⟩
-    show (∏ i, (s' i / s i) ^ a i) * ∏ i, s i ^ a i = ∏ i, s' i ^ a i
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [← mul_zpow, div_mul_cancel₀ _ (hs i).1]
-  · exact Submodule.span_mono (Set.singleton_subset_iff.mpr ⟨s, hs, rfl⟩)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.LatTens.isGenAt_tens <;> assumption
 
 end GlobalTheory.CompanionTheory.Ar.FlagModel
 end -- clump:auto

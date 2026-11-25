@@ -766,8 +766,7 @@ private lemma fieldCase (K : Type) [Field K] [CharZero K] {ι : Type} (s : Finse
 
 private lemma rowUnit {R : Type} [CommRing R] [IsLocalRing R] {a b c d : R}
     (h : a * d - b * c = 1) : IsUnit c ∨ IsUnit d := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have hc : c ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal c).2 hn.1
   have hd : d ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal d).2 hn.2
   have h1 : (1 : R) ∈ IsLocalRing.maximalIdeal R := by
@@ -836,8 +835,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
     refine fieldCase w.Completion s (fun g => (g 1 0).1 w) (fun g => (g 1 1).1 w) fun g _ => ?_
     have hdet : (g 0 0).1 w * (g 1 1).1 w - (g 0 1).1 w * (g 1 0).1 w = 1 :=
       congrArg (fun x : A F => x.1 w) (row g)
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
     exact zero_ne_one hdet
   let G : HeightOneSpectrum (𝓞 F) → Prop := fun v =>
@@ -863,8 +861,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
         (fun g => (g 1 1).2 v) (fun g _ => by
           have hdet : (g 0 0).2 v * (g 1 1).2 v - (g 0 1).2 v * (g 1 0).2 v = 1 :=
             congrArg (fun x : A F => x.2 v) (row g)
-          by_contra hn
-          push_neg at hn
+          by_contra! hn
           simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
           exact zero_ne_one hdet)
       exact ⟨t, fun h => absurd h hv, fun g hg => ⟨ht g hg, fun h => absurd h hv⟩⟩

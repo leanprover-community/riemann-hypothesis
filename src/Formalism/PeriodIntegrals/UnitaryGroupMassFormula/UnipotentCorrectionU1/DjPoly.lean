@@ -13,8 +13,6 @@ namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def djVarMat (k j ρ : ℕ) :
     Matrix (Fin j) (Fin j)
       (MvPolynomial ((Fin (2 * (j + ρ) + k + 1) × Fin (2 * (j + ρ) + k + 1)) ⊕

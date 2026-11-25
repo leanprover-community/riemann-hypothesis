@@ -201,8 +201,7 @@ theorem exists_jacobian_minor_not_mem_charZero {F : Type} [Field F] [CharZero F]
       rw [hQd]
       exact Nat.find_min' hex ⟨Q', h1, h2, h3, rfl⟩
     have hpos : 0 < degreeOf j Q := by
-      by_contra h0
-      push_neg at h0
+      by_contra! h0
       apply hQ0
       apply hind Q _ hQp
       intro i hi

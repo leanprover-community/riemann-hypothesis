@@ -12,6 +12,7 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
 
 @[expose] public section
 
@@ -36,18 +37,7 @@ theorem genMap_germ (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 �
 
 theorem isUnit_iff_unitAt {q : Cpt ξ} (hi : Function.Injective (genMap ξ q)) (s : X.presheaf.stalk q.1) :
     IsUnit s ↔ unitAt ξ q (genMap ξ q s) := by
-  constructor
-  · intro hs
-    have hu := hs.map (genMap ξ q)
-    refine ⟨hu.ne_zero, ⟨s, rfl⟩, ?_⟩
-    obtain ⟨u, rfl⟩ := hs
-    refine ⟨(u⁻¹ : (X.presheaf.stalk q.1)ˣ).1, ?_⟩
-    have : genMap ξ q u.1 * genMap ξ q (u⁻¹ : (X.presheaf.stalk q.1)ˣ).1 = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one]
-    exact eq_inv_of_mul_eq_one_right this
-  · rintro ⟨h0, -, ⟨s', hs'⟩⟩
-    have : s * s' = 1 := hi (by rw [map_mul, hs', map_one, mul_inv_cancel₀ h0])
-    exact IsUnit.of_mul_eq_one _ this
+  apply _root_.GlobalTheory.CompanionTheory.Ar.ChartPrimes.isUnit_iff_unitAt <;> assumption
 
 theorem mem_basicOpen_iff (hg : IsCptGen ξ) (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 ∈ U)
     (t : Γ(X, U)) : q.1 ∈ X.basicOpen t ↔ unitAt ξ q (secVal ξ U h t) := by

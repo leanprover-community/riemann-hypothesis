@@ -82,8 +82,7 @@ theorem colT_ne_zero_of_good : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ
     ∀ (m : ℕ) (f : GA E a → ℂ), m + 1 < a → Good ψ (m + 1) f → f ≠ 0 → colT ψ (m + 1) f ≠ 0 := by
   intro E _ _ a ψ hψ m f hma hG hf
   obtain ⟨g₀, hg₀⟩ : ∃ g₀, f g₀ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf (funext h)
   have hPer : Per (ratV E (UnipotentBlockColumnIndex a (m + 1) (m + 1))) (fun x => f (blkU x * g₀)) :=
     per_blk hG.cont (fun c g => hG.left _ (isMir_blkU c) g) g₀
@@ -96,8 +95,7 @@ theorem colT_ne_zero_of_good : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ
     rw [e, one_mul] at h1
     exact h1
   obtain ⟨ξ, hξ⟩ : ∃ ξ : UnipotentBlockColumnIndex a (m + 1) (m + 1) → E, coefF ψ (m + 1) ξ f g₀ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hΦ0 (GlobalTheory.T.periodic_eq_zero_of_fourier_coefficients_zero E _ ψ hψ _ hPer h)
   have hξ0 : ξ ≠ 0 := by
     rintro rfl

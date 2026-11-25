@@ -1661,8 +1661,7 @@ theorem exists_idealSheaf_comap_uValThru : ∀ (E : Type) [Field E] [NumberField
         exact h1
       · right
         refine ⟨X₁.M.stalkHom z₀ h, ⟨(X₁.M.stalkEquiv z₀ h).2, ?_⟩, ?_⟩
-        · by_contra hne
-          push_neg at hne
+        · by_contra! hne
           apply (IsLocalRing.mem_maximalIdeal _).1 hh
           have hu : IsUnit (X₁.M.stalkEquiv z₀ h) :=
             (RatModel.isUnit_O_iff _).2 ⟨hne.1, hne.2⟩

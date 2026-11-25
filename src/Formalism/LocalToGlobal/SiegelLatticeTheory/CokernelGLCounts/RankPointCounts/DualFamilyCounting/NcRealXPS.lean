@@ -44,8 +44,7 @@ theorem exists_box_alt (μ : ∀ i, Measure (α i)) [∀ i, SigmaFinite (μ i)] 
     ∃ S : ∀ i, Set (α i), (∀ i, MeasurableSet (S i)) ∧ (∀ i, μ i (S i) ≠ 0) ∧ ∀ i, μ i (S i) ≠ ∞ := by
   have key : ∀ i, ∃ s : Set (α i), MeasurableSet s ∧ μ i s ≠ 0 ∧ μ i s ≠ ∞ := by
     intro i
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hne i
     have hz : ∀ n, μ i (spanningSets (μ i) n) = 0 := fun n => by
       by_contra h0

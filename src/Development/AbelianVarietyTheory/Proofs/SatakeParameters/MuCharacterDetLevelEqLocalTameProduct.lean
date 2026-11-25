@@ -425,8 +425,6 @@ section Host
 
 open Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Fields} (s : Seam D X)
 
 theorem conjP_seamP (hs : s.Ok) (P : HeightOneSpectrum (𝓞 X.E)) : conjPrime₂ (seamP s P) = seamP s (conjPrime₂ P) := by

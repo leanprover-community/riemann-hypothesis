@@ -82,8 +82,7 @@ theorem vmul_le_iff {a b c : ValueGroupWithZero k} (hc : c ≠ 0) : c * a ≤ c 
 theorem near_id {j : ℕ} (E : Fin j → Fin j → k) (hE : ∀ a b, valuation k (E a b) < 1)
     (t : Fin j → k) (γ : ValueGroupWithZero k)
     (h : ∀ a, valuation k (t a + ∑ b, E a b * t b) ≤ γ) (a : Fin j) : valuation k (t a) ≤ γ := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨a0, -, ha0⟩ := Finset.exists_max_image Finset.univ (fun b => valuation k (t b))
     ⟨a, Finset.mem_univ _⟩
   have hm : γ < valuation k (t a0) := hne.trans_le (ha0 a (Finset.mem_univ _))
@@ -212,8 +211,7 @@ theorem sumJ (hjr : j ≤ r) (f : Fin r → k) (hf : ∀ l : Fin r, j ≤ l.val 
   apply Finset.sum_subset (Finset.subset_univ _)
   intro l _ hl
   apply hf
-  by_contra h
-  push_neg at h
+  by_contra! h
   exact hl (Finset.mem_map.2 ⟨⟨l.val, h⟩, Finset.mem_univ _, Fin.ext rfl⟩)
 
 def Mr (j : ℕ) (w c : k) (L : 𝓀[k] → 𝒪[k]) (ρ : Fin j → {l : Fin r // j ≤ l.val} → 𝓀[k]) :

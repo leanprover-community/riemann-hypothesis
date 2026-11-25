@@ -1119,8 +1119,7 @@ theorem inner_sig_left (X : SigData k r) (hG : IsClosedSubgroup (GV k r)) {h : M
 
 theorem exists_inner_ne (X : SigData k r) (hG : IsClosedSubgroup (GV k r)) (v : X.Hs) (hv : v ≠ 0) :
     ∃ g ∈ GV k r, ⟪v, X.σ g X.w⟫_ℂ ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let S : Submodule ℂ X.Hs :=
     { carrier := {u | ∀ g ∈ GV k r, ⟪v, X.σ g u⟫_ℂ = 0}
       add_mem' := by

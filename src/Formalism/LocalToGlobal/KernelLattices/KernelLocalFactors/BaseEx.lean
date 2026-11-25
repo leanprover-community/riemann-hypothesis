@@ -244,8 +244,7 @@ theorem detOrdIndep : DetOrdIndep := by
     rw [hid, LinearMap.det_id]
   have hv1 : 𝔭.valuation K (LinearMap.det u) = 1 := by
     refine le_antisymm h1 ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h3 : 𝔭.valuation K (LinearMap.det u) * 𝔭.valuation K (LinearMap.det u') ≤ 𝔭.valuation K (LinearMap.det u) :=
       mul_le_of_le_one_right' h2
     rw [mul_comm, ← map_mul, hprod, map_one] at h3

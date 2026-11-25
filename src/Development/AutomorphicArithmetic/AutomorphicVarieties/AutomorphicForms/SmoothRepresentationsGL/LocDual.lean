@@ -74,8 +74,7 @@ theorem UpperTheory.V.Af.Smo.locDual :
     UpperTheory.V.Af.Smo.LocDual := by
   intro E _ _ w ψ hψ V hV
   obtain ⟨a, ha⟩ : ∃ a, ψ a ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hψ (AddChar.ext _ _ fun x => by simpa using h x)
   have ha0 : a ≠ 0 := by
     rintro rfl
@@ -120,8 +119,7 @@ theorem UpperTheory.V.Af.Smo.locDual :
   · intro x hx
     by_contra hxV
     have hxg : (γ : _) ≤ Valued.v.restrict x := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hxV (hγ h)
     have hx0 : x ≠ 0 := by
       rintro rfl

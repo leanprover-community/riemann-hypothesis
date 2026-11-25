@@ -1181,8 +1181,7 @@ theorem pi_selfDual (F E : Type) [NontriviallyNormedField F] [NontriviallyNormed
     · intro h
       rw [hmem]
       intro i
-      by_contra hi
-      push_neg at hi
+      by_contra! hi
       obtain ⟨x0, hx0, hx0'⟩ := hψ.2
       have hyi : y i ≠ 0 := by intro h0; rw [h0, norm_zero] at hi; linarith
       have hsmall : ‖(y i)⁻¹‖ < 1 := by rw [norm_inv]; exact inv_lt_one_of_one_lt₀ hi
@@ -1306,8 +1305,7 @@ theorem descent : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNorm
   have hsupp : ∀ g : GL (Fin r) F, (∃ v w : Fin r → F, fourG M ψ f' ((g : Matrix (Fin r) (Fin r) F) * companion p * ((g⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F), v, w, lam) ≠ 0) →
       ∃ v w : Fin r → F, f' ((g : Matrix (Fin r) (Fin r) F) * companion p * ((g⁻¹ : GL (Fin r) F) : Matrix (Fin r) (Fin r) F), v, w, lam) ≠ 0 := by
     intro g ⟨v, w, h⟩
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     simp only [fourG, hc, zero_mul, MeasureTheory.integral_zero]
   have hsw : LinDesc.desc A M hG lam α (fourG M ψ f') = A.fourK m.μK ψ (LinDesc.desc A M hG lam α f') :=

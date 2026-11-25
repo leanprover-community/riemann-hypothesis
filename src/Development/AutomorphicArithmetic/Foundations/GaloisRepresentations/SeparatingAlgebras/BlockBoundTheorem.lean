@@ -1739,8 +1739,7 @@ theorem UpperTheory.Gal.Gen.twistPart_pf :
     rw [hlaw k hkC v g, e]
     simp
   obtain ⟨v, hv⟩ : ∃ v, (G π).1 v ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact h0 (Subtype.ext (LinearMap.ext hcon))
   have hP : GlobalTheory.CongW.HasTypeVec w₀ K J θ χ π.V :=
     ⟨(G π).1 v, AutSub.mem_finPart.1 (h1 π hπ) v, hv, fun x hx => funext fun g => hfix x hx v g,

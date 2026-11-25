@@ -211,8 +211,7 @@ theorem v_natCast_of_not_dvd (hD : DVRHyp v p) {m : ℕ} (h : ¬ p ∣ m) : v (m
     rw [v.map_mul, hD.vp]
     exact lt_of_lt_of_le h01 (le_add_of_nonneg_left (v_intCast_nonneg v b))
   have ham : v ((a : K) * m) ≤ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact absurd h1 (not_le.mpr (lt_min hc hbp))
   rw [v.map_mul] at ham
   exact le_antisymm (le_trans (le_add_of_nonneg_left (v_intCast_nonneg v a)) ham)

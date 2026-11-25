@@ -190,8 +190,7 @@ theorem det_ne_zero_of_monomial {K : Type} [Field K] {m : ℕ} (M : Matrix (Fin 
     rcases Int.units_eq_one_or (Equiv.Perm.sign σ⁻¹) with h | h <;> rw [h] <;> simpa using hp
   · intro τ _ hτ
     have : ∃ i, σ (τ i) ≠ i := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply hτ
       refine Equiv.ext fun i => ?_
       show τ i = σ⁻¹ i
@@ -1358,8 +1357,7 @@ theorem zh_split (l : Fin (r + 2)) (hl : S.D l ≠ 0) (x y : Fin (r + 1))
     fun a b => S.relevant a b
   have hA : ∀ a : Fin (r + 1), (a : ℕ) < l → GlobalTheory.FrameBasic.sig S.w.blocks a < l := by
     intro a ha
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hl
     unfold Frames.D lead
     apply Matrix.det_eq_zero_of_row_eq_zero (⟨a, ha⟩ : Fin l)
@@ -1506,8 +1504,7 @@ theorem local_pattern : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Nu
     beta_reduce
     rcases lt_trichotomy i j with hlt | rfl | hgt
     · have hex : ∃ l : Fin (r + 2), (i : ℕ) < l ∧ (l : ℕ) ≤ j ∧ G.D l ≠ 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hij ⟨hlt, fun l h1 h2 => hc l h1 h2⟩
       obtain ⟨l, h1, h2, h3⟩ := hex
       rw [if_neg hlt.ne, m_zero (G.S p) m m' hm' heq l (D_ne G p l h3) i j h1 h2]

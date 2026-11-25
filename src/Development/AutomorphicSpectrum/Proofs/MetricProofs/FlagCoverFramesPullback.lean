@@ -9,6 +9,8 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeScalarFactor
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMinorSumFrameIdentity, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesPullback
@@ -84,8 +86,7 @@ theorem minorIJ_moveMat (I C I' : Finset (Fin N)) (e : I.card = C.card) :
     unfold minorIJ
     split_ifs with e'
     · have hex : ∃ a ∈ I', a ∉ I := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hI (Finset.eq_of_subset_of_card_le hc (by rw [e, e']))
       obtain ⟨a, ha, haI⟩ := hex
       have hr : a ∈ Set.range (I'.orderEmbOfFin e') := by
@@ -99,31 +100,11 @@ theorem minorIJ_moveMat (I C I' : Finset (Fin N)) (e : I.card = C.card) :
 
 theorem stepRows_same (j : ℕ) (hj : j ≤ N) (i : Fin N) {I : Finset (Fin N)} (hI : IsStepRows N j i I) :
     ∀ a ∈ I, ∀ b ∈ stepCols N j i, ((a : ℕ) < N - j ↔ (b : ℕ) < N - j) := by
-  intro a ha b hb
-  have hi := i.2
-  have ha' := hI.2 ha
-  simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and] at hb
-  by_cases c : (i : ℕ) + 1 ≤ j
-  · rw [if_pos c] at ha' hb
-    simp only [wIdx, Finset.mem_filter, Finset.mem_univ, true_and] at ha'
-    omega
-  · rw [if_neg c] at ha' hb
-    simp only [omIdx, Finset.mem_filter, Finset.mem_univ, true_and] at ha'
-    omega
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FrameChange.stepRows_same_side <;> assumption
 
 theorem stepCols_nonempty (j : ℕ) (hj : j ≤ N) (i : Fin N) (hp : IsProperStep N j i) :
     stepCols N j i ≠ ∅ := by
-  have hi := i.2
-  obtain ⟨h1, h2⟩ := hp
-  by_cases c : (i : ℕ) + 1 ≤ j
-  · refine Finset.Nonempty.ne_empty ⟨⟨N - j, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [if_pos c]
-    omega
-  · refine Finset.Nonempty.ne_empty ⟨⟨0, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [if_neg c]
-    omega
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.UnitComb.stepCols_ne_empty <;> assumption
 
 theorem coeff_eq (j : ℕ) (hj : j ≤ N) (i : Fin N) (T : Matrix (Fin N) (Fin N) R) (c u : Finset (Fin N) → R) (D P : R)
     (H : ∀ h : Matrix (Fin N) (Fin N) R, IsBlockDiag j h →

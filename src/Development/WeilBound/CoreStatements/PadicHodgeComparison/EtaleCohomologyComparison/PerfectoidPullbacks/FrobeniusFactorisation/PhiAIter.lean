@@ -318,8 +318,7 @@ theorem isAdicComplete_tensor_finite : ∀ (W : Type) [CommRing W] [IsDomain W]
     rintro rfl
     exact hl.ne_zero Nat.cast_zero
   obtain ⟨p, hpmem, hpu⟩ : ∃ p ∈ l.primeFactorsList, ¬IsUnit (p : W) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hl.1
     rw [← Nat.prod_primeFactorsList hl0, Nat.cast_list_prod]
     refine List.prod_isUnit (fun m hm => ?_)

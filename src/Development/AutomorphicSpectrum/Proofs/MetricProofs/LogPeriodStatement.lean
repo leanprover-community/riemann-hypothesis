@@ -294,17 +294,7 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.PB.PlVanish
 
 theorem cols_ne_empty {N j : ℕ} (hj : j ≤ N) (i : Fin N) : stepCols N j i ≠ ∅ := by
-  intro e
-  have hi := i.2
-  by_cases h : (i : ℕ) + 1 ≤ j
-  · have : (⟨N - j, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos h]
-      omega
-    simp [e] at this
-  · have : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg h]
-      omega
-    simp [e] at this
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty <;> assumption
 
 theorem minor_one_ne {N : ℕ} {I J : Finset (Fin N)} (h : I ≠ J) :
     minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) I J = 0 := by

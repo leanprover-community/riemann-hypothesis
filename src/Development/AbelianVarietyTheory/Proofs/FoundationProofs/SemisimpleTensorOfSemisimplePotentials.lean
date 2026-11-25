@@ -620,8 +620,7 @@ theorem eventually_ne_zero {b : ℂ → ℂ} (hb : DifferentiableOn ℂ b Hs) (h
     ∀ᶠ z in Filter.codiscreteWithin Hs, b z ≠ 0 := by
   have hA : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_Hs
   obtain ⟨z0, hz0, hbz0⟩ : ∃ z0 ∈ Hs, b z0 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hb0 (Filter.Germ.coe_eq.2 (Filter.eventually_of_mem (Filter.self_mem_codiscreteWithin Hs) h))
   have h0 : analyticOrderAt b z0 ≠ ⊤ := by
     rw [(hA z0 hz0).analyticOrderAt_eq_zero.2 hbz0]; exact ENat.zero_ne_top

@@ -95,8 +95,7 @@ theorem pGenEx : SGenEx := by
     intro k h
     exact hnd0 ((Nat.dvd_add_left (dvd_mul_right l k)).mp h)
   have hc2 : 2 ≤ c0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h01 : c0 = 0 ∨ c0 = 1 := by omega
     rcases h01 with h0 | h1
     · exact hnd0 (h0 ▸ dvd_zero l)

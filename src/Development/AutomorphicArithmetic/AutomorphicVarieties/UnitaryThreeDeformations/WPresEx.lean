@@ -310,8 +310,7 @@ private theorem eq_zero_or_exists_eq_single_of_degree_lt_two {τ : Type} (d : τ
   · exact Or.inl h0
   right
   obtain ⟨j, hj⟩ : ∃ j, d j ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (Finsupp.ext hc)
   have hle : Finsupp.single j 1 ≤ d := by
     rw [Finsupp.single_le_iff]
@@ -438,8 +437,7 @@ theorem zpow_indep {A : Type} [CommRing A] (t : (PowerSeries A)ˣ) (ht : (t : Po
     (T : Finset ℤ) (b : ℤ → A) (h : ∑ j ∈ T, ((t ^ j : (PowerSeries A)ˣ) : PowerSeries A) * PowerSeries.C (b j) = 0) :
     ∀ j ∈ T, b j = 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨j1, hj1T, hj1⟩ := hcon
   set S := T.filter (fun j => b j ≠ 0) with hS
   have hSne : S.Nonempty := ⟨j1, by simp [hS, hj1T, hj1]⟩

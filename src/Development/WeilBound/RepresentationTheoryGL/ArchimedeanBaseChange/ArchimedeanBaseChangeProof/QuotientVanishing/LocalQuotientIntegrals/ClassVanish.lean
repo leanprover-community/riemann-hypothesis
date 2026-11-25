@@ -898,8 +898,7 @@ theorem nrmC_locGL (v : InfinitePlace E) (d : GL (Fin n) E) :
 theorem nonEllFlag : PositivityTheory.Rg.BcB.D4.NonEllFlag := by
   intro E _ _ _ n d hreg hell
   have hnot : ∃ (τ : E →+* ℂ) (z : ℂ), ((nrm d).val.charpoly.map τ).IsRoot z ∧ ‖z‖ ≠ 1 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hell ⟨hreg, fun τ z hz => hno τ z hz⟩
   obtain ⟨τ, z, hz, hz1⟩ := hnot
   refine ⟨InfinitePlace.mk τ, ?_⟩

@@ -131,8 +131,7 @@ theorem exists_notMem_span {F M : Type} [Field F] [AddCommGroup M] [Module F M] 
     {r k : ℕ} (q : Fin r → M) (w : Fin (k + 1) → M) (hw : LinearIndependent F w) :
     ∃ l, w l ∉ Submodule.span F (q '' {a : Fin r | (a : ℕ) < k}) := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let q' : Fin k → M := fun j => if hj : (j : ℕ) < r then q ⟨j, hj⟩ else 0
   have hS : Submodule.span F (q '' {a : Fin r | (a : ℕ) < k}) ≤ Submodule.span F (Set.range q') := by
     apply Submodule.span_le.mpr

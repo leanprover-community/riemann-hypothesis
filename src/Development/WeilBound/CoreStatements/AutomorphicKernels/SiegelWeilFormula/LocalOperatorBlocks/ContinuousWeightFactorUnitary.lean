@@ -279,8 +279,7 @@ theorem det_poly (C D : Matrix (Fin n) (Fin n) ℂ) :
   ring
 
 theorem exists_real_ne {p : Polynomial ℂ} (hp : p ≠ 0) : ∃ k : ℕ, p.eval (k : ℂ) ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hp
   apply Polynomial.eq_zero_of_infinite_isRoot
   refine Set.Infinite.mono (fun x hx => ?_) (Set.infinite_range_of_injective (Nat.cast_injective (R := ℂ)))

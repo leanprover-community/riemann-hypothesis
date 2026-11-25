@@ -73,8 +73,7 @@ theorem dom_iff {n : ℕ} (A B : Finset (Fin n)) :
   · intro h
     have key : ∀ y ≤ n, cnt B y ≤ cnt A y := by
       intro y hy
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have h1 : nthElt B (cnt A y) < y := (nthElt_lt_iff B (cnt A y) y hy).2 hlt
       have h2 : cnt A y < B.card := lt_of_lt_of_le hlt (cnt_le_card B y)
       have h4 : nthElt A (cnt A y) < y := lt_of_le_of_lt (h _ h2) h1

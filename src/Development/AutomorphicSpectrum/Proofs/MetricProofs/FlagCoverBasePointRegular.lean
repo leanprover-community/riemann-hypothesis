@@ -4,6 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriod
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
 
 @[expose] public section
 
@@ -35,20 +36,7 @@ theorem sum_mapDomain_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (
 
 theorem isMultiHomog_rename_block {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hb : IsBlockMap κ v) {f : MRing ι}
     {b : K → ℕ} (hf : IsMultiHomog f b) : IsMultiHomog (rename v f) (Function.extend κ b 0) := by
-  intro m hm k'
-  rw [support_rename_of_injective hb.2.1, Finset.mem_image] at hm
-  obtain ⟨m0, hm0, rfl⟩ := hm
-  rw [sum_mapDomain_block hb.2.2.1]
-  by_cases hk : ∃ k, κ k = k'
-  · obtain ⟨k, rfl⟩ := hk
-    rw [hb.1.extend_apply, ← hf m0 hm0 k]
-    simp only [hb.1.eq_iff]
-    rw [Fintype.sum_sigma, Finset.sum_eq_single k (fun b _ hb' => by simp [hb']) (by simp)]
-    simp
-  · rw [Function.extend_apply' _ _ _ hk, Pi.zero_apply]
-    apply Finset.sum_eq_zero
-    intro p _
-    rw [if_neg (fun h => hk ⟨p.1, h⟩)]
+  apply _root_.GroundTheory.Heights₂.Heights.Inter.ArithmeticIntersectionHorizontal.isMultiHomog_rename <;> assumption
 
 theorem mConeMap_rename {Ω : Type} [Field Ω] {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hb : IsBlockMap κ v)
     (y : (Σ k, ι' k) → Ω) (g : MRing ι) : mConeMap y (rename v g) = rename κ (mConeMap (y ∘ v) g) := by

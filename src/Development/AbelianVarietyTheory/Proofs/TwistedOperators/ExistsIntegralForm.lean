@@ -89,8 +89,6 @@ open GlobalTheory.Chain.IoLift
 
 namespace GlobalTheory.Chain.IoLift.Factor
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem kerLe_finset {A B Z₁ Z₂ σ : Type} [AddCommMonoid Z₁] [AddCommMonoid Z₂] {q₁ : A → B → Z₁} {q₂ : A → B → Z₂}
     (h : KerLe q₁ q₂) (s : Finset σ) (a : σ → A) (b : σ → B) (h0 : ∑ r ∈ s, q₁ (a r) (b r) = 0) :
     ∑ r ∈ s, q₂ (a r) (b r) = 0 := by
@@ -220,8 +218,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxC
 open scoped TensorProduct InnerProductSpace Classical
 
 namespace GlobalTheory.Chain.IoLift
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Algebra
 

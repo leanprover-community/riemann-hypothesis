@@ -480,8 +480,7 @@ private theorem core (a₀ : A) (x : B) {ρ : ℝ} (ha : p a₀ = 1) (hρ : 0 < 
   have hKc : IsCompact {χ : X | ρ' ≤ ‖Φ x χ‖} :=
     (isClosed_le continuous_const (continuous_norm.comp (map_continuous _))).isCompact
   obtain ⟨c, hc, δ, hδ, hcK⟩ := exists_sep Φ A p hKc (fun χ hχ => by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact absurd (hg χ hne) (not_lt.2 hχ))
   obtain ⟨b, hbdef⟩ : ∃ b : A, b = a₀ - 1 := ⟨_, rfl⟩
   have hb : p b = 0 := by rw [hbdef, map_sub, map_one, ha, sub_self]
@@ -563,14 +562,12 @@ private theorem core (a₀ : A) (x : B) {ρ : ℝ} (ha : p a₀ = 1) (hρ : 0 < 
     have hc0 := (hc.2 χ).2
     have hdt := hdχ χ
     have hxl : ‖Φ x χ‖ < ρ' := by
-      by_contra hx
-      push_neg at hx
+      by_contra! hx
       have := hcK χ hx
       have := sq_nonneg ‖Φ (b : B) χ‖
       linarith
     have hbl : ‖Φ (b : B) χ‖ ≤ ε := by
-      by_contra hbe
-      push_neg at hbe
+      by_contra! hbe
       have : ε ^ 2 < ‖Φ (b : B) χ‖ ^ 2 := by
         have := hε.le
         gcongr

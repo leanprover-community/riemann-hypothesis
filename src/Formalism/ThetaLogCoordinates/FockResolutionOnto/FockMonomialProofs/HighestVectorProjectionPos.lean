@@ -85,8 +85,7 @@ theorem move_mem (i0 : Fin N) (t : Fin r) (d : ℕ) (S : Submodule ℚ_[p] (MvPo
   | succ n ih =>
     intro m hm hs
     obtain ⟨a, hat, ha⟩ : ∃ a, a ≠ t ∧ m (i0, a) ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hsum : ∑ c, m (i0, c) = m (i0, t) :=
         Finset.sum_eq_single t (fun c _ hc => hne c hc) (fun hn => absurd (Finset.mem_univ t) hn)
       omega

@@ -575,8 +575,7 @@ theorem exists_carried_agree : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl
   classical
   obtain ⟨hCore, -, -, -⟩ := GlobalTheory.CoreOfWeak.core_of_weak R F hP.char hH.aux.ex
   have hinj := (hCore.models.HW i (sg0 D A3.A)).1
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   set J := levS _ (R.βW i) (R.datWp i R.triv) with hJ
   set χ := levChi _ (R.βW i) (R.datWp i R.triv) with hχ
   let κ := {t : Pl D.host.E × List ℤ × Finset (GA D (Wc D i)) // Hecke₂ (Wc D i) J χ R.SF t.1 t.2.1 t.2.2}

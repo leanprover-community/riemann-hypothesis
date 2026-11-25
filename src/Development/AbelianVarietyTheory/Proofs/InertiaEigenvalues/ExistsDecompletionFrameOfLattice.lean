@@ -1170,8 +1170,7 @@ theorem sq_dvd_choose_prime_pow (l : ℕ) (hl : l.Prime) (b k : ℕ) (hb : 1 ≤
     rw [hm]; exact Nat.add_one_mul_choose_eq m j
 
   have hv : padicValNat l (j + 1) < b - 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 : l ^ padicValNat l (j + 1) ≤ j + 1 :=
       Nat.le_of_dvd (Nat.succ_pos j) (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _))
     have h2 : l ^ (b - 1) ≤ l ^ padicValNat l (j + 1) := Nat.pow_le_pow_right hl.pos hcon

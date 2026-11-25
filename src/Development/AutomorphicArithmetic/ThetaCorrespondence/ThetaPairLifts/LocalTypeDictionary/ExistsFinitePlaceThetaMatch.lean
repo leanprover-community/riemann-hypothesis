@@ -161,7 +161,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.shellSum_eq_const_of_twist_eq_indicator_double_coset :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ϖ : kˣ), GlobalTheory.SplitFlip.IsUnif ϖ →
@@ -371,7 +370,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.bigZeta_stdSchwartz_translate_eq_smallZeta :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ϖ : kˣ), GlobalTheory.SplitFlip.IsUnif ϖ →
@@ -399,7 +397,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem fmFst_mat {k : Type} [Field k] {a n d : ℕ} (e : Fin n ≃ Fin d) (B G Gi : Matrix (Fin a) (Fin a) k) (hG : Gi * G = 1)
     (W Wi : Matrix (Fin d) (Fin d) k) (hW : Wi * W = 1) (m : GL (Fin n) k) (hm : m.1 = W.submatrix e e)
@@ -550,7 +547,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem stdB_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (ν : kˣ →* ℂˣ) (ϖ : kˣ) (hϖ : ValuativeRel.valuation k (ϖ : k) ≤ 1) (c a a' : ℕ)
@@ -726,7 +722,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HermitianLatticeSelfDual
 
@@ -960,7 +955,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem ptO_smul' {D : D7} {m k d : ℕ} (G : Matrix (Fin m) (Fin m) D.host.E) (e : Fin k ≃ Fin d) (a : AF D.host.F)
     (x : Mx D d m) : ptO G e (a • x) = a • ptO G e x := by
@@ -1104,7 +1098,7 @@ section Local
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM GlobalTheory.SplitFlip GlobalTheory.StdPairCone
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv
+attribute [local instance] GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 private theorem linear_model_smul {n d : ℕ} {X : Spc F E n} {W : Spc F E d} {M : Model σ X W} {ψ : AddChar (AF F) ℂ} {v : Pl F}
     {π₁ π₀ : AE F E →+* Fv F v} {co ι} (h : M.IsLin ψ π₁ π₀ co ι) {c : ℂ} (hc : c ≠ 0) : M.IsLin ψ π₁ π₀ co (c • ι) := by
@@ -1203,7 +1197,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 variable {D : D7}
 private theorem fock_vector_of_theta_at_lattice {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {S X : HSp D} {d : ℕ} {e : Fin d ≃ Fin X.rank}
     {Bs : Base D.host.F D.host.E} {Vs : Spc D.host.F D.host.E S.rank} {Ws : Spc D.host.F D.host.E d}
@@ -1259,7 +1252,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 variable {D : D7}
 
@@ -1394,7 +1386,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 namespace GlobalTheory.FinMatch
 private theorem hecke_character_pow_apply {E : Type} [Field E] [NumberField E] (χ : HChar E) (a : ℕ) (x) : (χ ^ a).1 x = χ.1 x ^ a := by

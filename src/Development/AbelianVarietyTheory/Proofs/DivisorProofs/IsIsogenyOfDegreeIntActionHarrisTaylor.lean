@@ -94,7 +94,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AbEnd
 
@@ -294,7 +293,6 @@ namespace GlobalTheory.TateHondaBridge
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open GlobalTheory.AV GlobalTheory.AV.AbVar ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Published.AbVarRed
 
@@ -373,7 +371,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -521,7 +518,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.IwLevel
 
@@ -572,7 +568,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HTTors
 

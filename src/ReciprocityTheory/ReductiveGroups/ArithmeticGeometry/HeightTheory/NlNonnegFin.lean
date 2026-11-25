@@ -37,12 +37,8 @@ import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
 import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAC
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.KTFiniteDimensional
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValNorm
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValuationResidueLemmas
-import ReciprocityTheory.SemistableReduction.AlgAll
 import Mathlib.Algebra.Algebra.Field
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.PicardGroup
@@ -110,8 +106,7 @@ theorem finite_height_fraction_repr (hd : d.AxH 𝒜) (h : d.S1) :
     intro x hx
     obtain ⟨hp, hn⟩ := hmemS x hx
     refine (d.good_primes_properties hd h x.1).2.1 x.2 hp ?_
-    by_contra hw
-    push_neg at hw
+    by_contra! hw
     apply hn
     simp [nP, hw]
   have halg : ∀ x ∈ Finset.univ.sigma T,
@@ -957,116 +952,7 @@ theorem de_local (hd : d.AxH 𝒜) (h : d.S1) {p : Ideal (KTp K d.D d.N)} (hp : 
       simp only [hg, hg1, if_true]
       rfl
     · simp only [hg, if_false, mul_zero, ite_self]
-  open IsDedekindDomain IsLocalRing Module in
-  have disc_local {R F : Type} [CommRing R] [IsDomain R] [UniqueFactorizationMonoid R] [Field F]
-        [Algebra R F] [IsFractionRing R F] {ι : Type} [Fintype ι] [DecidableEq ι]
-        {L : ι → Type} [∀ c, Field (L c)] [∀ c, Algebra F (L c)]
-        [∀ c, FiniteDimensional F (L c)] [∀ c, Algebra.IsSeparable F (L c)] (p : Ideal R) [p.IsPrime] (hp : p.height = 1) (g : R) (hg : p = Ideal.span {g})
-      (n : ∀ c, AddValuation (L c) (WithTop ℤ) → ℤ)
-      {m : ℕ} (hm : m = ∑ c, finrank F (L c)) (b : Fin m → ∀ c, L c) (hli : LinearIndependent F b)
-      (hb : ∀ k c, ∀ w ∈ HNm.OverR (R := R) (F := F) (L := L c) p,
-        0 ≤ w (b k c) + (n c w : WithTop ℤ)) :
-      ∃ a s : R, s ∉ p ∧
-        (Matrix.of fun k l : Fin m => ∑ c, Algebra.trace F (L c) (b k c * b l c)).det *
-          algebraMap R F g ^ (2 * ∑ c, ∑ᶠ (w : AddValuation (L c) (WithTop ℤ))
-            (_ : w ∈ HNm.OverR (R := R) (F := F) (L := L c) p), (HNm.fz (F := F) w : ℤ) * n c w) *
-          algebraMap R F s =
-          algebraMap R F a := by
-    classical
-    let O := Localization.AtPrime p
-    letI : Algebra O F := IsLocalization.localizationAlgebraOfSubmonoidLe O F p.primeCompl
-      (nonZeroDivisors R) (Ideal.primeCompl_le_nonZeroDivisors p)
-    haveI : IsScalarTower R O F := IsLocalization.localization_isScalarTower_of_submonoid_le O F
-      p.primeCompl (nonZeroDivisors R) (Ideal.primeCompl_le_nonZeroDivisors p)
-    haveI : IsFractionRing O F :=
-      IsFractionRing.isFractionRing_of_isDomain_of_isLocalization p.primeCompl O F
-    obtain ⟨hdvr, hirr⟩ := ValUFD.loc_dvr p hp g hg
-    haveI := hdvr
-    letI : ∀ c, Algebra O (L c) := fun c => ((algebraMap F (L c)).comp (algebraMap O F)).toAlgebra
-    haveI : ∀ c, IsScalarTower O F (L c) := fun c => IsScalarTower.of_algebraMap_eq' rfl
-    letI : ∀ c, Algebra R (L c) := fun c => ((algebraMap F (L c)).comp (algebraMap R F)).toAlgebra
-    haveI : ∀ c, IsScalarTower R O (L c) := fun c => IsScalarTower.of_algebraMap_eq (fun x => by
-      show algebraMap F (L c) (algebraMap R F x) =
-        algebraMap F (L c) (algebraMap O F (algebraMap R O x))
-      rw [IsScalarTower.algebraMap_apply R O F x])
-    have hded : ∀ c, IsDedekindDomain (integralClosure O (L c)) := fun c =>
-      (ReciprocityTheory.MultiplicativeHeights.Closed.dedekindRank O F (L c)).1
-    have hfr : ∀ c, IsFractionRing (integralClosure O (L c)) (L c) := fun c =>
-      integralClosure.isFractionRing_of_finite_extension F (L c)
-    have hset : ∀ c, ValPl.PlacesOver O (L c) = HNm.OverR (R := R) (F := F) (L := L c) p := fun c => by
-      ext w
-      simp only [ValPl.PlacesOver, HNm.OverR, Set.mem_ofPred_eq]
-      rw [← ValPl.placesOver_iff_loc (R := R) p w]
-      rfl
-    have hG : ∀ c, ∃ gc : L c, gc ≠ 0 ∧ (∀ w ∈ ValPl.PlacesOver O (L c), w gc = n c w) ∧
-        ∀ y, (∀ w ∈ ValPl.PlacesOver O (L c), 0 ≤ w y + (n c w : WithTop ℤ)) ↔
-          gc * y ∈ integralClosure O (L c) := fun c => by
-      haveI := hded c
-      haveI := hfr c
-      obtain ⟨gc, hg0, hgv⟩ := HDiscVal.exists_val_eq O F (n c)
-      refine ⟨gc, hg0, hgv, fun y => ?_⟩
-      rw [HDiscVal.mem_integralClosure_iff O F]
-      refine forall₂_congr fun w hw => ?_
-      rw [AddValuation.map_mul, hgv w hw, add_comm]
-    choose gc hgc0 hgcv hgciff using hG
-    have hbI : ∀ k c, gc c * b k c ∈ integralClosure O (L c) := fun k c =>
-      (hgciff c _).mp (fun w hw => hb k c w (hset c ▸ hw))
-    obtain ⟨nn, t, u, -, hdisc⟩ := HDiscLat.lattice_main (R := O) (F := F) hirr gc hgc0 hm b hbI hli
-    set Nc : ι → ℤ := fun c => ∑ᶠ (w : AddValuation (L c) (WithTop ℤ))
-      (_ : w ∈ HNm.OverR (R := R) (F := F) (L := L c) p), (HNm.fz (F := F) w : ℤ) * n c w with hNc
-    have hN : ∀ c, ∃ uc : O, IsUnit uc ∧ Algebra.norm F (gc c) =
-        algebraMap R F g ^ Nc c * algebraMap O F uc := fun c => by
-      haveI := hded c
-      haveI := hfr c
-      obtain ⟨uc, huc, hn⟩ := ValPl.norm_eq_places (O := O) (F := F) (gc c) (hgc0 c) hirr
-      refine ⟨uc, huc, ?_⟩
-      rw [hn, ← IsScalarTower.algebraMap_apply R O F g, hset c]
-      congr 2
-      refine finsum_congr fun w => finsum_congr fun hw => ?_
-      rw [← hset c] at hw
-      rw [hgcv c w hw, WithTop.untopD_coe]
-      rfl
-    choose uc huc hNe using hN
-    set X := algebraMap R F g with hX
-    have hX0 : X ≠ 0 := by
-      rw [hX, map_ne_zero_iff _ (IsFractionRing.injective R F)]
-      rintro rfl
-      have : p = ⊥ := by rw [hg, Ideal.span_singleton_eq_bot]
-      subst this
-      simp at hp
-    let U : Oˣ := ∏ c, (huc c).unit
-    have hprod : ∏ c, Algebra.norm F (gc c) = X ^ (∑ c, Nc c) * algebraMap O F (U : O) := by
-      rw [Finset.prod_congr rfl fun c _ => hNe c, Finset.prod_mul_distrib, HDiscOmL.prod_zpow hX0,
-        ← map_prod]
-      congr 2
-      simp only [U, Units.coe_prod, IsUnit.unit_spec]
-    rw [hprod] at hdisc
-    set Dt := (Matrix.of fun k l : Fin m => ∑ c, Algebra.trace F (L c) (b k c * b l c)).det with hDt
-    obtain ⟨⟨a, s⟩, has⟩ := IsLocalization.mk'_surjective p.primeCompl
-      ((u : O) * ((algebraMap R O g) ^ (2 * nn + t)) * ((U⁻¹ : Oˣ) : O) * ((U⁻¹ : Oˣ) : O))
-    refine ⟨a, s, s.2, ?_⟩
-    have hsF : algebraMap O F (IsLocalization.mk' O a s) * algebraMap R F s = algebraMap R F a := by
-      rw [IsScalarTower.algebraMap_apply R O F s, IsScalarTower.algebraMap_apply R O F a, ← map_mul,
-        IsLocalization.mk'_spec]
-    simp only at has
-    rw [← hsF, has]
-    congr 1
-    set V := algebraMap O F (U : O)
-    set V' := algebraMap O F ((U⁻¹ : Oˣ) : O)
-    have hU : V * V' = 1 := by
-      simp only [V, V']
-      rw [← map_mul, Units.mul_inv, map_one]
-    have h2 : X ^ (2 * ∑ c, Nc c) = (X ^ (∑ c, Nc c)) ^ 2 := by
-      rw [mul_comm, zpow_mul]
-      norm_cast
-    have e1 : algebraMap O F ((u : O) * (algebraMap R O g) ^ (2 * nn + t) * ((U⁻¹ : Oˣ) : O) *
-        ((U⁻¹ : Oˣ) : O)) = algebraMap O F ((u : O) * (algebraMap R O g) ^ (2 * nn + t)) * V' * V' := by
-      simp only [V', map_mul]
-    rw [h2, e1, ← hdisc]
-    calc Dt * (X ^ ∑ c, Nc c) ^ 2 = Dt * (X ^ ∑ c, Nc c) ^ 2 * (V * V') * (V * V') := by
-          rw [hU]; ring
-      _ = Dt * ((X ^ ∑ c, Nc c) * V) ^ 2 * V' * V' := by ring
-  obtain ⟨a, s, hs, he⟩ := disc_local (R := KTp K d.D d.N) (F := KTf K d.D d.N)
+  obtain ⟨a, s, hs, he⟩ := HDiscOmL.disc_local (R := KTp K d.D d.N) (F := KTf K d.D d.N)
     (L := fun c => OmS (Ω c) d.D d.N) p hp.2 (d.gen p) (d.gen_span hp) n (d.del_eq hd h)
     (d.bvecG hd.sel hd.a4.choose) (d.b_linIndep hd h) hb
   refine ⟨a, s, hs, ?_⟩
@@ -1526,8 +1412,7 @@ theorem disc_one (hd : d.AxH 𝒜) (h : d.S1) (hI2et : d.HeightIntegralEstimateT
     apply (hgf.union hNef).subset
     intro la hla
     simp only [Function.mem_support, Set.mem_union] at hla ⊢
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h2 := (hloc la).2
     rw [hc.1, hc.2] at h2
     push_cast at h2

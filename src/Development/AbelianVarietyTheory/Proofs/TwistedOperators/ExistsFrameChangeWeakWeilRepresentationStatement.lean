@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.F
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.AdSpan
 
 variable {D : D7}

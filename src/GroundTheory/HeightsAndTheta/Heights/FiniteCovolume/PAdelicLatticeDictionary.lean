@@ -579,8 +579,7 @@ theorem isUnit_det_traceGram_of_isUnit (hH : IsUnit H.det) : IsUnit (traceGram H
     funext a
     simp [vecCoords]
   obtain ⟨i, hi⟩ : ∃ i, X i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hX0 (funext hc)
   have hci : conjBase K E K (X i) ≠ 0 := by
     intro h

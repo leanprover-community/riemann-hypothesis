@@ -38,17 +38,7 @@ theorem transv_isBlockDiag {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hab : (
 
 theorem transv_det_one {ca cb : Fin N} (hc : (cb : ℕ) = ca + 1) (t : ℂ) :
     (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ).det = 1 := by
-  have hne : ca ≠ cb := fun e => by rw [e] at hc; omega
-  have hlt : ca < cb := by rw [Fin.lt_def]; omega
-  rw [Matrix.det_of_lowerTriangular _ fun r c h => ?_]
-  · refine Finset.prod_eq_one fun c _ => ?_
-    rw [Matrix.add_apply, Matrix.one_apply_eq, Matrix.single_apply_of_ne, add_zero]
-    rintro ⟨rfl, e⟩
-    exact hne e
-  · have h' : r < c := h
-    rw [Matrix.add_apply, Matrix.one_apply_ne h'.ne, Matrix.single_apply_of_ne, add_zero]
-    rintro ⟨rfl, rfl⟩
-    exact lt_asymm h' hlt
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Pts.transv_det <;> assumption
 
 end Mat
 

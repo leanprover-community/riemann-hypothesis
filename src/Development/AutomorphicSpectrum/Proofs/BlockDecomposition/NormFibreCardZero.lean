@@ -59,8 +59,7 @@ theorem exists_idem (h : ResAlg E τ q ε) (hf : ¬ IsField E) :
     ∃ e : E, e * e = e ∧ τ e = 1 - e := by
   haveI := nontrivial_of_resAlg h
   obtain ⟨a, ha0, hau⟩ : ∃ a : E, a ≠ 0 ∧ ¬ IsUnit a := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     refine hf ⟨exists_pair_ne E, mul_comm, fun {a} ha => ?_⟩
     obtain ⟨b, hb⟩ := (hc a ha).exists_right_inv
     exact ⟨b, hb⟩

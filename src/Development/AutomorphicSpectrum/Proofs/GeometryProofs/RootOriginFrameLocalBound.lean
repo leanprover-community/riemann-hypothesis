@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftLeftFst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFrameVec
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBijective
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
@@ -38,17 +39,8 @@ theorem one_left_pull {G : CategoryTheory.Over S} [GrpObj G] (a : T' ⟶ T) (x :
 theorem one_left_grp {G' : CategoryTheory.Over S'} [GrpObj G'] {G : CategoryTheory.Over S} [GrpObj G] {f : S' ⟶ S} {φ : G'.left ⟶ G.left}
     (h : IsGrpPullback G' G f φ) (x' : T ⟶ S') (x : T ⟶ S) (e : x' ≫ f = x) :
     (1 : CategoryTheory.Over.mk x' ⟶ G').left ≫ φ = (1 : CategoryTheory.Over.mk x ⟶ G).left := by
-  subst e
-  have hw : ((1 : CategoryTheory.Over.mk x' ⟶ G').left ≫ φ) ≫ G.hom = (CategoryTheory.Over.mk (x' ≫ f)).hom := by
-    have h1 := CategoryTheory.Over.w (1 : CategoryTheory.Over.mk x' ⟶ G')
-    rw [Category.assoc, h.1.w, ← Category.assoc, h1]
-    rfl
-  let x₀ : CategoryTheory.Over.mk (x' ≫ f) ⟶ G := CategoryTheory.Over.homMk _ hw
-  have h2 := h.2 (CategoryTheory.Over.mk x') 1 1 x₀ x₀ rfl rfl
-  rw [_root_.mul_one] at h2
-  have h3 : x₀ * x₀ = x₀ := CategoryTheory.Over.OverMorphism.ext h2
-  have h4 : x₀ = 1 := mul_eq_left.1 h3
-  exact congrArg (fun q => q.left) h4
+  intros
+  apply _root_.GlobalTheory.AbDual.one_left_comp <;> assumption
 
 end Grp
 

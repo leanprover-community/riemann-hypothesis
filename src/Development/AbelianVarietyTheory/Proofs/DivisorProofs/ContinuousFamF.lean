@@ -948,8 +948,7 @@ theorem stConst_holds : StConst := by
     intro w hw
     rw [Metric.mem_closedBall, dist_zero_right, not_le] at hw
     have : ∃ x, 1 < ‖w x‖ := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact absurd ((pi_norm_le_iff_of_nonneg zero_le_one).2 h) (not_le.2 hw)
     obtain ⟨x, hx⟩ := this
     apply hf0

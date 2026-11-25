@@ -476,8 +476,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
       rw [hQ] at hQ0
       by_cases hks : k ∈ be.support
       · have h1 := (Finset.prod_ne_zero_iff.1 hQ0) k (Finset.mem_erase.2 ⟨hk, hks⟩)
-        by_contra hlt
-        push_neg at hlt
+        by_contra! hlt
         exact h1 (Nat.choose_eq_zero_of_lt hlt)
       · have h0 : be k = 0 := by
           by_contra h0
@@ -500,8 +499,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
         rw [hx, hc]
     · have hQ0 : Q ≠ 0 := right_ne_zero_of_mul h1
       have hab : b + 1 ≤ m a := by
-        by_contra hlt
-        push_neg at hlt
+        by_contra! hlt
         exact h1 (by rw [Nat.choose_eq_zero_of_lt hlt, zero_mul])
       have hx1 : m + Finsupp.single a 1 - be = m - be + Finsupp.single a 1 := Finsupp.ext fun k => by
         simp only [Finsupp.coe_add, Finsupp.coe_tsub, Pi.add_apply, Pi.sub_apply, Finsupp.single_apply]
@@ -560,8 +558,7 @@ theorem flt_tay_monomial (R : Type*) [CommRing R] {σ : Type*} (m : σ →₀ �
     · subst h
       simp [← MvPolynomial.C_apply]
     · obtain ⟨k, hk⟩ : ∃ k, be k ≠ 0 := by
-        by_contra hne
-        push_neg at hne
+        by_contra! hne
         exact h (by ext k; simp [hne k])
       have h0 : (be.prod fun k j => ((0 : σ →₀ ℕ) k).choose j) = 0 :=
         Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hk)
@@ -570,8 +567,7 @@ theorem flt_tay_monomial (R : Type*) [CommRing R] {σ : Type*} (m : σ →₀ �
   | succ d ih =>
     intro m hm be
     obtain ⟨a, ha⟩ : ∃ a, m a ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have h0 : m = 0 := by ext k; simp [hne k]
       subst h0
       simp at hm
@@ -609,8 +605,7 @@ theorem flt_tay_coeff (R : Type*) [CommRing R] {σ : Type*} (F : MvPolynomial σ
   split_ifs with h
   · rfl
   · have hex : ∃ k, m k < be k := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact h fun k => hne k
     obtain ⟨k, hk⟩ := hex
     have h0 : (be.prod fun k j => (m k).choose j) = 0 :=

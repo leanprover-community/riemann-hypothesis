@@ -342,14 +342,7 @@ theorem pos_cover (b : Fin (p + q)) : (∃ a, b = omEmb p q a) ∨ ∃ a, b = wE
 
 theorem aExt_posOf (C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (s : Ψ ⊕ Ψ) (j : Fin (n s))
     (l : Fin (rk Ψ p q s)) : aExt C s j (posOf p q s l) = C s j l := by
-  have hi := (BlockEmbeddings.posOf_strictMono (p := p) (q := q) s).injective
-  simp only [aExt]
-  rw [Finset.sum_eq_single l]
-  · rw [if_pos rfl]
-  · intro b _ hb
-    rw [if_neg fun e => hb (hi e)]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.Inv.aExt_posOf <;> assumption
 
 theorem aExt_off (C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (s : Ψ ⊕ Ψ) (j : Fin (n s))
     (b : Fin (p + q)) (hb : ¬ ∃ l, posOf p q s l = b) : aExt C s j b = 0 :=

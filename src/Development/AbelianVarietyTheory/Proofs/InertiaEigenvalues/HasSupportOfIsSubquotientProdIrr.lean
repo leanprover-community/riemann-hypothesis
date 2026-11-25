@@ -454,8 +454,7 @@ theorem exists_hasSupport (hZ : GlobalTheory.Published.ZelevinskyPolynomialRing)
     exact Finset.prod_induction _ Q qm q1 fun Δ _ => qp Δ _
   set P := Ψ (Finsupp.single x 1) with hP
   have h1 : ∃ m, Ψ.symm (MvPolynomial.monomial m 1) x ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h2 : Finsupp.single x (1 : ℤ) = Ψ.symm P := (Ψ.symm_apply_apply _).symm
     have h3 : Ψ.symm P x = 0 := by
 

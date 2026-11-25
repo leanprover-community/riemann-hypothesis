@@ -369,8 +369,7 @@ theorem unipFlag_castLE_le_unip : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   · obtain ⟨m, hmS, hmax⟩ : ∃ m ∈ S, ∀ k ∈ S, k ≤ m := ⟨S.max' hne, S.max'_mem hne, fun k hk => S.le_max' k hk⟩
     have hsm : s = m.val + 1 := by
       apply le_antisymm
-      · by_contra hlt
-        push_neg at hlt
+      · by_contra! hlt
         obtain ⟨k, hk, hle⟩ := (hS ⟨m.val + 1, by omega⟩).1 (by simp only; omega)
         have h2 := hmax k hk
         rw [Fin.le_def] at hle h2

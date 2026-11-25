@@ -338,8 +338,7 @@ theorem norm_two_cp (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
   exact_mod_cast h
 
 theorem norm_le_one_of_quad (x : ℂ_[p]) (t n : ℤ) (h : x ^ 2 = t * x - n) : ‖x‖ ≤ 1 := by
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   have h1 : ‖(t : ℂ_[p]) * x‖ ≤ ‖x‖ := by
     rw [norm_mul]
     exact mul_le_of_le_one_left (norm_nonneg _) (norm_int_cp_le t)
@@ -418,8 +417,7 @@ theorem pick_c (hp : p ≠ 2) (x y : ℂ_[p]) (hx : ‖x‖ ≤ 1) (hy : ‖y‖
   have hnm1 : ‖(-1 : ℂ_[p])‖ = 1 := by rw [norm_neg, norm_one]
   have hboth : ∀ z : ℂ_[p], ‖z‖ ≤ 1 → ‖z - 1‖ = 1 ∨ ‖z - (-1)‖ = 1 := by
     intro z hz
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : ‖z - 1‖ < 1 := lt_of_le_of_ne (sub_le_lemma z 1 hz hn1) hc.1
     have h2 : ‖z - (-1)‖ < 1 := lt_of_le_of_ne (sub_le_lemma z (-1) hz hnm1) hc.2
     have h3 : ‖(2 : ℂ_[p])‖ ≤ max ‖z - (-1)‖ ‖-(z - 1)‖ := by
@@ -429,8 +427,7 @@ theorem pick_c (hp : p ≠ 2) (x y : ℂ_[p]) (hx : ‖x‖ ≤ 1) (hy : ‖y‖
     rw [norm_neg, norm_two_cp hp] at h3
     exact absurd h3 (not_le.mpr (max_lt h2 h1))
   have hxy' : ‖x‖ < 1 ∨ ‖y‖ < 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hxy ⟨le_antisymm hx hc.1, le_antisymm hy hc.2⟩
   rcases hxy' with hx1 | hy1
   · rcases hboth y hy with h | h

@@ -583,8 +583,7 @@ theorem modDepthGE_two_of_isSMulRegular_of_quotSMulTop :
       ReciprocityTheory.CA.ModDepthGE S M 2 := by
   intro S _ _ _ M _ _ _ _ x hxm hreg hsoc
   obtain ⟨y, hym, hyreg⟩ : ∃ y ∈ maximalIdeal S, IsSMulRegular (QuotSMulTop x M) y := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hfin := associatedPrimes.finite S (QuotSMulTop x M)
     have hsub : (maximalIdeal S : Set S) ⊆
         ⋃ p ∈ associatedPrimes S (QuotSMulTop x M), (p : Set S) := by

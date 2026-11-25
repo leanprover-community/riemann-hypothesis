@@ -172,8 +172,7 @@ theorem rank_hom_le_killed [IsSimpleModule Rg S] {s : S} (hs : s ≠ 0) (hI : �
 theorem exists_ne_zero_of_rank_eq {A B : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup B]
     [Module ℂ B] (h : Module.rank ℂ A = Module.rank ℂ B) {a : A} (ha : a ≠ 0) :
     ∃ b : B, b ≠ 0 := by
-  by_contra hb
-  push_neg at hb
+  by_contra! hb
   exact ha (rank_zero_iff_forall_zero.1 (h.trans (rank_zero_iff_forall_zero.2 hb)) a)
 
 theorem exists_simple {A : Type} [AddCommGroup A] [Module Rg A] [IsSemisimpleModule Rg A]

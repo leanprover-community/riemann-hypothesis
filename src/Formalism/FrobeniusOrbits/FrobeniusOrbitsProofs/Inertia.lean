@@ -169,8 +169,7 @@ theorem hcl_eq_one (h : IsLayer (e + 2) q d ζ a b) (p : ℕ) (hp : p.Prime) (hp
   rw [hdiff] at hmem
   have hQ : Q.IsPrime := inferInstance
   have key : u = 1 ∨ u = -1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply h2Q
     rcases hQ.mem_or_mem hmem with h12 | h3
     · rcases hQ.mem_or_mem h12 with h1 | h2

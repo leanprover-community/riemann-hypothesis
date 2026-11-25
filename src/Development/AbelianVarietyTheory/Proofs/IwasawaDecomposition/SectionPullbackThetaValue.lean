@@ -49,7 +49,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.RayEv
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

@@ -66,8 +66,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory.Twist GlobalTheory.ChowHt GlobalTheory.CompHt GlobalTheory.QCoh
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 section Algebra
 
 variable {k K σ : Type} [Field k] [Field K] [Algebra k K]

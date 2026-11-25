@@ -276,8 +276,7 @@ theorem kinj_of_form {m : ℕ} (α : Fin m → ℂˣ)
     rw [map_sub, map_smul, hK g g.2 w]
     simp
   obtain ⟨w, hw, hlw⟩ : ∃ w ∈ fixed (iP (k := k) α) (KO k (Fin m)), l w ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hl
     ext x
     obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.1 (hc.sup_eq_top ▸ Submodule.mem_top (x := x))
@@ -534,8 +533,7 @@ theorem wt_swap {n : ℕ} (σ : Equiv.Perm (Fin n)) (i j : Fin n) (hij : (j : �
 
 theorem exists_descent {n : ℕ} (σ : Equiv.Perm (Fin n)) (h1 : σ ≠ 1) :
     ∃ i j : Fin n, (j : ℕ) = i + 1 ∧ σ j < σ i := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h1
   cases n with
   | zero => exact Subsingleton.elim _ _

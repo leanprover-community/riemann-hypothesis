@@ -66,8 +66,7 @@ theorem t_BoxSumLattice : BoxSumLattice := by
   have hPpos : 0 < ∏ w, x w := Finset.prod_pos (fun w _ => hxpos w)
   have haΘ : 0 < (a / Θ) ^ Fintype.card (InfinitePlace E) := pow_pos (div_pos hapos hΘpos) _
   have hNpos : 0 < √(FractionalIdeal.absNorm aa : ℝ) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     nlinarith [haΘ, hPpos, hprod, hcon]
   set n := Fintype.card (InfinitePlace E) with hn
   set P := ∏ w, x w with hP

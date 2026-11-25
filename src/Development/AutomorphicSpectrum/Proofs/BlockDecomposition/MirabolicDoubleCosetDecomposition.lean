@@ -200,8 +200,7 @@ theorem core (i t : ℕ) (p : Mir k ((i + 1) + t + 1)) (X B : GL (Fin ((i + 1) +
         rw [← e3, ← e1, map_inv]; simp only [mul_assoc]
 
 theorem row_ne_zero {ι : Type} [Fintype ι] [DecidableEq ι] (g : GL ι k) (r : ι) : ∃ c, g.val r c ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 := Matrix.det_eq_zero_of_row_eq_zero r hc
   exact (Matrix.GeneralLinearGroup.det g).ne_zero (by simpa using h0)
 

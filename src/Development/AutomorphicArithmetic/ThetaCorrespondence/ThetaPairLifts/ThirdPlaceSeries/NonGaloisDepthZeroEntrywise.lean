@@ -325,8 +325,7 @@ theorem exists_eigen_local_sum : ∀ (L : Type) [Field L] [NumberField L] [IsCMF
 
       rw [Finset.sum_congr rfl fun j _ => hint j x hx (y j.1), ← map_sum, hsum, hfx])
   rw [hsum] at hus
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hz
   have key : ∀ j, ∑ m, z m • σ.ρ (Matrix.GeneralLinearGroup.map c.toRingHom (s.loc n (xs m))) (u j) = 0 := by
     intro j
@@ -1230,8 +1229,7 @@ theorem isSubquotient_of_empty_second_block : ∀ (F : Type) [Field F] [Valuativ
   haveI := nontrivial_of_irreducible (s true).irr
   obtain ⟨w0, hw0⟩ := exists_ne (0 : (s true).V)
   obtain ⟨ψ0, hψ0⟩ : ∃ ψ0 : Module.Dual ℂ (s true).V, ψ0 w0 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hw0 ((Module.forall_dual_apply_eq_zero_iff ℂ w0).1 h)
   let ψ : ∀ j, (s j).V →ₗ[ℂ] ℂ := fun j => Bool.rec (motive := fun j => (s j).V →ₗ[ℂ] ℂ) 0 ((ψ0 w0)⁻¹ • ψ0) j
   let K : Representation.IntertwiningMap ((piTensor fun j => (s j).ρ).comp ι : Representation ℂ (GL (Fin r) F) _)

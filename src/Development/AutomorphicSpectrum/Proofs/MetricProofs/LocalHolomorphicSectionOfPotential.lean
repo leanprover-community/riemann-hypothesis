@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
@@ -21,18 +22,8 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X]
 
 theorem holoOn_continuousOn' {A : FinHolAtlas e X} {W : Set X} {f : X → ℂ} (h : A.HoloOn W f) :
     ContinuousOn f W := by
-  intro z hz
-  obtain ⟨j, hj⟩ := A.cover z
-  have h1 : (A.chart j).symm (A.chart j z) = z := (A.chart j).left_inv hj
-  have hu : A.chart j z ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' W :=
-    ⟨(A.chart j).map_source hj, by rw [Set.mem_preimage, h1]; exact hz⟩
-  have hc : ContinuousAt (f ∘ (A.chart j).symm) (A.chart j z) := (h j _ hu).continuousAt
-  have hc2 : ContinuousAt ((f ∘ (A.chart j).symm) ∘ (A.chart j)) z :=
-    ContinuousAt.comp hc ((A.chart j).continuousAt hj)
-  have hev : ((f ∘ (A.chart j).symm) ∘ (A.chart j)) =ᶠ[𝓝 z] f := by
-    filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-    simp [(A.chart j).left_inv hy]
-  exact (hc2.congr hev).continuousWithinAt
+  intros
+  apply _root_.GroundTheory.Heights₂.Heights.AnalyticLimit.continuousOn_of_holoOn <;> assumption
 
 end General
 

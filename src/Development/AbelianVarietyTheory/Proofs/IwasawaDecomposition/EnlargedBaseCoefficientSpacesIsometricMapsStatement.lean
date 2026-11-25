@@ -76,7 +76,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.Mem GlobalTheory.Mem.R3
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.GsdIso
 
@@ -88,8 +87,7 @@ theorem exists_isom_vec : ∀ {K : Type} [Field K] [NumberField K] [StarRing K] 
   intro K _ _ _ S ok G Γ W _ _ _ _ ι σ ρ J χ P c d H hne
   obtain ⟨φ, hφ⟩ := hne
   obtain ⟨k, hk⟩ : ∃ k, φ.1 (S.outSec.rep k) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ ((S.res ok).map_eq_zero_iff.1 (Subtype.ext (funext h)))
   set x := φ.1 (S.outSec.rep k) with hx
   have vi := (S.res ok φ).2 k
@@ -129,7 +127,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.L2.Theta Formalism.L2.Col Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.R3
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.StdUnique
 
@@ -185,7 +182,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.Mem GlobalTheory.Mem.R3
 open scoped InnerProductSpace ComplexOrder Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.CoefIso
 
@@ -376,7 +372,7 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Cx Formalism.IndefR.RecTie
 open scoped TensorProduct InnerProductSpace ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.principalLevelFrame.instCMHostI
+attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 
 noncomputable section
@@ -585,7 +581,7 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Cx Formalism.IndefR.RecTie
 open scoped TensorProduct InnerProductSpace ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.principalLevelFrame.instCMHostI
+attribute [local instance] Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 
 end -- clump:auto

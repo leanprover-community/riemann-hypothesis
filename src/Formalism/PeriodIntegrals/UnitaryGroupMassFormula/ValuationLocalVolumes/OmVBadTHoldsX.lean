@@ -431,8 +431,7 @@ theorem fixed_mem_range {k K : Type} [Field k] [Fintype k] [Field K] [Fintype K]
     rw [← Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank, h2]
   have hall : ∀ τ : K ≃ₐ[k] K, τ = AlgEquiv.refl ∨ τ = σ := by
     intro τ
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : ({AlgEquiv.refl, σ, τ} : Finset (K ≃ₐ[k] K)).card ≤ 2 := hcard ▸ Finset.card_le_univ _
     rw [Finset.card_insert_of_notMem (by simp [Ne.symm hne, Ne.symm h.1]), Finset.card_pair (Ne.symm h.2)] at h3
     omega

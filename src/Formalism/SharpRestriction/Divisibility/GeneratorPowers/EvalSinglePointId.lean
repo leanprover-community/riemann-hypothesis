@@ -130,8 +130,7 @@ private theorem const_ev_lemma {R : Type} [CommRing R] {e m n : ℕ} (a : Fin m 
   · subst hx
     simp [hf]
   · obtain ⟨s, hs'⟩ : ∃ s, x s ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hx (Finsupp.ext hc)
     rw [Finsupp.prod, map_prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs')]
     · simp

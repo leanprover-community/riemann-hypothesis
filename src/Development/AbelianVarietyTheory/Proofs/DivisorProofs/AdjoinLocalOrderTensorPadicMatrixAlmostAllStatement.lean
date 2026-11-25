@@ -407,15 +407,13 @@ theorem isSimpleRing_of_isAzumaya (k B : Type) [Field k] [Ring B] [Algebra k B]
   · exact Or.inl h
   right
   obtain ⟨z, hzI, hz0⟩ : ∃ z ∈ I, z ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     ext x
     rw [TwoSidedIdeal.mem_bot]
     exact ⟨hc x, fun hx => hx ▸ I.zero_mem⟩
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual k B, φ z ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hz0 ((Module.forall_dual_apply_eq_zero_iff k z).1 hc)
   let f : B →ₗ[k] B := (φ z)⁻¹ • φ.smulRight (1 : B)
   have hf : f z = 1 := by

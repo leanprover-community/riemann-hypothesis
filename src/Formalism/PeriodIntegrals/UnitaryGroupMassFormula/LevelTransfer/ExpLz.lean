@@ -14,8 +14,6 @@ namespace PIQnLT
 
 open Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k i r' : ℕ}
 
 set_option backward.isDefEq.respectTransparency false in

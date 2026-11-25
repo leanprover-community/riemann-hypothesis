@@ -680,8 +680,7 @@ theorem norm_pw_mono {F : Type*} [NormedField F] (p : ℕ) [Fact p.Prime] [CharP
     have hN : p ^ m ≠ 0 := pow_ne_zero _ (Fact.out : p.Prime).ne_zero
     have e1 := iter_frobSymm_pow p m y
     have e2 := iter_frobSymm_pow p m y'
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := pow_lt_pow_left₀ hc (norm_nonneg _) hN
     rw [← norm_pow, ← norm_pow, e1, e2] at this
     linarith
@@ -1346,8 +1345,7 @@ theorem winThm : WinThm := by
     have hsub : ∀ x : {x : Fin (k + 1) → F // (∀ j, ‖x j‖ ≤ ‖π j‖) ∧ ∀ r, rowS p ϖ lam 2 2 x r = 0},
         ∀ j, ‖x.1 j‖ ≤ ‖π j‖ ^ p ^ (k + 1) := by
       intro x
-      by_contra hx
-      push_neg at hx
+      by_contra! hx
       exact hcon ⟨x.1, x.2.1, hx, x.2.2⟩
     haveI : Finite {x : Fin (k + 1) → F // (∀ j, ‖x j‖ ≤ ‖π j‖ ^ p ^ (k + 1)) ∧
         ∀ r, rowT p ϖ lam 2 x r = 0} := Nat.finite_of_card_ne_zero (by rw [cI]; positivity)
@@ -1515,8 +1513,7 @@ theorem tilt_orth_of_untilt_orth : ∀ (l : ℕ) [Fact l.Prime] (h : ℕ) (m : F
   have ho := horth (fun i => ((n i : ℕ) : ℚ_[l])) j
   simp only [hnj, one_mul] at ho
 
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set b := sh (∑ i, (c i : Fl l) * m i)
   set a := ∑ i, algebraMap ℚ_[l] ℂ_[l] ((n i : ℕ) : ℚ_[l]) * sh (m i)
   have : ‖a‖ ≤ max ‖b‖ ‖b - a‖ := by

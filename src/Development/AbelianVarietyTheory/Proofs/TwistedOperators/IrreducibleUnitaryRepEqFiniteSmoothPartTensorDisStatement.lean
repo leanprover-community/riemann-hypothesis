@@ -59,7 +59,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped InnerProductSpace
 
 namespace GlobalTheory.TensorHom
@@ -301,13 +300,11 @@ theorem exists_stage_insert (hδ : ∀ i, IsIrrUnitary (δ i)) (hρ : IsUnitaryR
     ∃ Φ ∈ stage e δ ρ (insert σ s), Φ ≠ 0 := by
   have hnt : ∀ i, Nontrivial (Hs i) := fun i => (hδ i).irred.1
   obtain ⟨x0, hx0⟩ : ∃ x, S x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hS0 (ContinuousLinearMap.ext h)
 
   obtain ⟨Φ, hΦ, y, hy⟩ : ∃ Φ ∈ stage e δ ρ s, ∃ y, ⟪S x0, Φ y⟫_ℂ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 : vals e δ ρ s ≤ (ℂ ∙ S x0)ᗮ :=
       Submodule.topologicalClosure_minimal _ (Submodule.span_le.2 (by
         rintro _ ⟨Φ, hΦ, y, rfl⟩
@@ -396,8 +393,7 @@ theorem exists_ne_zero_homPi (hδ : ∀ i, IsIrrUnitary (δ i)) (hρ : IsIrrUnit
   haveI : Nontrivial K := hρ.irred.1
   haveI : ∀ i, Nontrivial (Hs i) := fun i => (hδ i).irred.1
   have hne : ∀ Φ : ContinuousMultilinearMap ℂ Hs K, Φ ≠ 0 → ∃ y, Φ y ≠ 0 := fun Φ hΦ0 => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hΦ0 (ContinuousMultilinearMap.ext h)
   have key : ∀ s : Finset ι, vals e δ ρ s = ⊤ := by
     intro s
@@ -411,8 +407,7 @@ theorem exists_ne_zero_homPi (hδ : ∀ i, IsIrrUnitary (δ i)) (hρ : IsIrrUnit
       · obtain ⟨y, hy⟩ := hne Φ hΦ0
         exact absurd ((Submodule.mem_bot ℂ).1 (h ▸ apply_mem_vals hΦ y)) hy
       · exact h
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : vals e δ ρ Finset.univ ≤ ⊥ :=
     Submodule.topologicalClosure_minimal _ (Submodule.span_le.2 (by
       rintro _ ⟨Φ, hΦ, y, rfl⟩
@@ -471,7 +466,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped InnerProductSpace
 
 noncomputable section
@@ -605,7 +599,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped InnerProductSpace
 
 theorem GlobalTheory.TrCopy.isCopyFinDS_finPartDSSm : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (π : GA D V →* (H →L[ℂ] H)), IsIrrUnitary π → HasDSComp M π → ∀ hU : IsSubrep π ⊤, IsCopyFinDS (finPartDSSm M hU) M π ⊤ := by
@@ -654,7 +647,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped InnerProductSpace
 
 theorem _root_.GlobalTheory.T.irreducibleUnitaryRep_eq_finiteSmoothPart_tensor_discreteSeries : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (π : GA D V →* (H →L[ℂ] H)), IsIrrUnitary π → HasDSComp M π → ∀ hU : IsSubrep π ⊤, IsCopyFinDS (finPartDSSm M hU) M π ⊤ := by

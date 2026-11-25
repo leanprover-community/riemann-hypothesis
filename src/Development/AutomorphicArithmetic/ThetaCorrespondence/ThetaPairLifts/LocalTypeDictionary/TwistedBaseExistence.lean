@@ -94,8 +94,7 @@ theorem span_eq_top
   classical
 
   have hne : ∃ p y, multi I p y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (span_multi I fun p y => by rw [← multi_apply]; exact hc p y)
 
   have hsrc : ∀ τ (X : lieAt V τ) (q : D.what₂.Tau → LPol W.rank V.rank) (w : KVec M'),
@@ -186,8 +185,7 @@ theorem itW_onto_kFin : ∀ (hD : GlobalTheory.Published.DiscreteSeriesCover) (h
         (GlobalTheory.SmoothAverage.kMean_smooth D W _ M' τ (c i) (hc.1 i) (v τ) (v τ).2).1⟩,
         fun i => kMean_mem_kFin_of_coefFam D W _ M' τ n c hc (v τ) i, ?_⟩
       exact it_eq_sum_kMean D V W _ _ M M' θ ω (ptOf ψ θ M M' f) It hIt τ n c φ φs v _ hc.1 hωc fun i => rfl
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hspan : Submodule.span ℂ {z | ∃ φ y, It φ (inclK h' y) = z} = ⊥ := by
       rw [Submodule.span_eq_bot]
       rintro _ ⟨φ, y, rfl⟩
@@ -350,8 +348,7 @@ theorem exists_inclK_ne {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V 
 
 theorem exists_ne_of_mem_span {E F : Type*} [AddCommGroup E] [Module ℂ E] [AddCommGroup F] [Module ℂ F]
     (L : E →ₗ[ℂ] F) {s : Set E} {x : E} (hx : x ∈ Submodule.span ℂ s) (h : L x ≠ 0) : ∃ z ∈ s, L z ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   exact h ((Submodule.span_le (p := LinearMap.ker L)).2 (fun z hz => hn z hz) hx)
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}

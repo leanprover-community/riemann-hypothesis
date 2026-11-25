@@ -87,8 +87,7 @@ theorem val_xi (q : SplitPt D k) (h : q.UnitAA) : valuation k ((ofSplit q).xi) =
   have v3 := congrArg (valuation k) hprod
   rw [map_mul, map_one] at v3
   refine le_antisymm v1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have := mul_lt_mul_of_le_of_lt_of_nonneg_of_pos v2 hlt zero_le' zero_lt_one
   rw [v3, mul_one] at this
   exact lt_irrefl _ this

@@ -924,8 +924,7 @@ theorem UpperTheory.tangent_space_deformation_dual_numbers :
     apply IsFractionRing.injective c.O E
     rw [← hχ, ← hχ, h]
   have hs : ∃ s ∈ D.Ip q, D.ψ s ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hmap : Subgroup.map D.ψ (D.Ip q) = ⊥ := by
       rw [eq_bot_iff]
       rintro _ ⟨s, hs, rfl⟩

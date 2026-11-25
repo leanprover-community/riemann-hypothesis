@@ -108,8 +108,7 @@ theorem continuous_toBlocks₂₂ : Continuous fun M : M2 n => M.toBlocks₂₂ 
   continuous_pi fun i => continuous_pi fun j => (continuous_apply (Sum.inr j)).comp (continuous_apply (Sum.inr i))
 
 theorem zpow_cond {a : ℂ} {k : ℤ} (h : a ^ k ≠ 0) : a ≠ 0 ∨ 0 ≤ k := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨rfl, hk⟩ := hc
   exact h (zero_zpow k (ne_of_lt hk))
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LowerBoundHeightOnBoundary
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HasStepCharts
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockMetricExplicitMatrixForm
@@ -63,16 +64,7 @@ theorem holo_prod {T : Type} (s : Finset T) {F : T → X → ℂ} (h : ∀ a ∈
     exact holo_mul (h a (Finset.mem_insert_self _ _)) (ih fun b hb => h b (Finset.mem_insert_of_mem hb))
 
 theorem holo_continuousOn (hW : IsOpen W) (h : A.HoloOn W f) : ContinuousOn f W := by
-  intro t ht
-  obtain ⟨j, hj⟩ := A.cover t
-  have h1 : AnalyticAt ℂ (f ∘ (A.chart j).symm) (A.chart j t) :=
-    h j _ ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using ht⟩
-  have h2 : ContinuousAt ((f ∘ (A.chart j).symm) ∘ A.chart j) t :=
-    ContinuousAt.comp h1.continuousAt ((A.chart j).continuousAt hj)
-  have h3 : ((f ∘ (A.chart j).symm) ∘ A.chart j) =ᶠ[𝓝 t] f := by
-    filter_upwards [(A.chart j).open_source.mem_nhds hj] with u hu
-    simp [(A.chart j).left_inv hu]
-  exact (h2.congr h3).continuousWithinAt
+  apply _root_.PositivityTheory.Xgp.c_bm_exists_boundary.holo_continuousOn <;> assumption
 
 end Holo
 

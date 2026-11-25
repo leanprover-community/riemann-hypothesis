@@ -5,6 +5,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullba
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedB
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
 
 @[expose] public section
 
@@ -34,17 +35,7 @@ theorem minors_of_sameOrbit_inv {a z : (Σ k, ι k) → ℂ} (h : SameOrbit a z)
 theorem sameOrbit_of_minors_inv {a z : (Σ k, ι k) → ℂ} (ha : ∀ k, ∃ i, a ⟨k, i⟩ ≠ 0)
     (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0)
     (h : ∀ (k : K) (i i' : ι k), a ⟨k, i⟩ * z ⟨k, i'⟩ = a ⟨k, i'⟩ * z ⟨k, i⟩) : SameOrbit a z := by
-  choose q hq using hz
-  refine ⟨fun k => a ⟨k, q k⟩ / z ⟨k, q k⟩, fun k => ?_, ?_⟩
-  · obtain ⟨i, hi⟩ := ha k
-    refine div_ne_zero (fun h0 => hi ?_) (hq k)
-    have h1 := h k i (q k)
-    rw [h0, zero_mul] at h1
-    exact (mul_eq_zero.mp h1).resolve_right (hq k)
-  · funext ⟨k, i⟩
-    show a ⟨k, i⟩ = a ⟨k, q k⟩ / z ⟨k, q k⟩ * z ⟨k, i⟩
-    rw [div_mul_eq_mul_div, eq_div_iff (hq k)]
-    exact h k i (q k)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.Proj.orbit_of_cross <;> assumption
 
 end Inverse
 

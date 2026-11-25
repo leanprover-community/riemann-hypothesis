@@ -234,8 +234,7 @@ open Classical in
 theorem prim_div {w : O} (hw : Irreducible w) {n : ℕ} (a : Fin n → O) (ha : a ≠ 0) :
     ∃ (k : ℕ) (a' : Fin n → O), (∀ i, a i = w ^ k * a' i) ∧ ∃ i0, IsUnit (a' i0) := by
   obtain ⟨j, hj⟩ : ∃ j, a j ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact ha (funext hne)
   let S := Finset.univ.filter fun i => a i ≠ 0
   have hS : S.Nonempty := ⟨j, by simp [S, hj]⟩

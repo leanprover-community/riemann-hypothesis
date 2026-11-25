@@ -99,8 +99,7 @@ end Slice
 
 lemma exists_ne_mul {f g : ℂ → ℂ} (hf : Differentiable ℂ f) (hg : Differentiable ℂ g)
     (h₁ : ∃ z, f z ≠ 0) (h₂ : ∃ z, g z ≠ 0) : ∃ z, f z * g z ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨z₀, hz₀⟩ := h₁
   obtain ⟨z₁, hz₁⟩ := h₂
   have hev : ∀ᶠ z in 𝓝 z₀, f z ≠ 0 := hf.continuous.continuousAt.eventually_ne hz₀

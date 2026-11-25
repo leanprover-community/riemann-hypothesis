@@ -550,8 +550,7 @@ theorem exists_pos_complex_structure : ∀ (F E : Type) [Field F] [NumberField F
     subst hw'
     rw [pair_Psi, key]
     have hex : ∃ v, a.map (piInf (B.emb v)) ≠ 0 := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       have ha0 : a = 0 := eq_of_map_piInf hcm B.emb hat (fun c _ => smul_zero c)
         fun v => by rw [hn v, Matrix.map_zero _ (map_zero _)]
       exact hw (by rw [ha0, hPsi0])
@@ -1788,8 +1787,7 @@ theorem exists_algebraic_vector_definite_theta_ne (hP : _root_.GlobalTheory.FunP
     {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} (hT : IsTriple B G X om om') (hDec : Decay B G om om')
     {Φ' : (Fin a' × Fin (a + a') → AF F) → ℂ} (hΦ' : Φ' ∈ G.M'.So B.ψ B.τ₁) (hne : G.M'.I om' Φ' ≠ 0) :
     ∃ ΦD ∈ GlobalTheory.SquareAgree.algD G.M' B.ψ B.emb, G.M'.I om' ΦD ≠ 0 := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hne
   clear hne
   funext h

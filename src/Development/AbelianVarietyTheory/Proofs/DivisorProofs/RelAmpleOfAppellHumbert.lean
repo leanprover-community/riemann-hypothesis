@@ -88,8 +88,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SemicharShift
 
 def imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
@@ -238,8 +236,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
 
 open scoped nonZeroDivisors
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Overlattice
 
@@ -492,8 +488,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LiftAffine
 
 section
@@ -578,7 +572,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LocalFramePowerSections
 
@@ -613,7 +606,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.FrameCompare
@@ -665,8 +657,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
 
 open scoped nonZeroDivisors
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LefschetzAmple
 

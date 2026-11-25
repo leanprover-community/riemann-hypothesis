@@ -347,8 +347,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def qOf (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) : (Fin r → ℂ) × ℂ :=
   (fun a => Formalism.QuantumDeterminants.cmin k r z z' g a, Formalism.QuantumDeterminants.zeta k r z z' g)
 
@@ -514,8 +512,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 open Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.SSTr
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem radial_section_holds : SARadSec := by
   intro Wp Wq _ _ _ _ _ _ P Bs hpl e he U

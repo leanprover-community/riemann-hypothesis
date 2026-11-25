@@ -124,8 +124,7 @@ theorem fn_hahnSeries_inv_converges : ∀ (Ω : Type) [Field Ω] (ε : Ω →+* 
   refine ⟨?_, ?_⟩
   · rw [hg]
     refine ⟨N, hN, fun r hr => ?_⟩
-    by_contra H
-    push_neg at H
+    by_contra! H
     exact hr (hgz r fun k hk => H _ hk)
 
   set A : ℕ → ℂ := fun k => ε (a k) with hAdef

@@ -383,8 +383,7 @@ end Bnd
 
 lemma quad_step {x y A B : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hA : 0 ≤ A) (hB : 0 ≤ B)
     (h : x ^ 2 ≤ y * (A * y + B * x)) : x ≤ (√A + B) * y := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hs0 := Real.sqrt_nonneg A
   have hss : √A * √A * (y * y) = A * (y * y) := by rw [Real.mul_self_sqrt hA]
   have hx1 : √A * y ≤ x := by nlinarith [mul_nonneg hB hy]

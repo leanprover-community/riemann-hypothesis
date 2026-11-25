@@ -63,8 +63,7 @@ theorem UpperTheory.V.KT.spanpsd :
     rw [LinearMap.pi_apply_eq_sum_univ]
     rfl
   have hc0 : ∃ i, c i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hf0
     refine LinearMap.ext fun x => ?_
     rw [hfc]

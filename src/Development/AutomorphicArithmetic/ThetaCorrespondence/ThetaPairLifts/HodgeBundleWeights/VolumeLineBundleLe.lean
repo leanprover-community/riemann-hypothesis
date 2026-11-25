@@ -1118,8 +1118,7 @@ theorem exists_ne_zero_of_rel {K V : Type} [Field K] [AddCommGroup V] [Module K 
         exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
     rw [h4] at h2
     simpa [h3] using h2
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h0 : Matrix.vecMul (Matrix.vecMul w (c.map σ)) A = 0 := by
     rw [Matrix.vecMul_vecMul]
     funext a
@@ -1242,8 +1241,7 @@ theorem linComb_ratio_and_vanish : ∀ (K Ω : Type) [Field K] [NumberField K] [
     ring
   refine ⟨hA, fun hy lam hsum => ?_⟩
   obtain ⟨k₀, hk₀⟩ : ∃ k₀, y k₀ ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hy (funext hc)
   apply GlobalTheory.LB.f_injective
   funext i

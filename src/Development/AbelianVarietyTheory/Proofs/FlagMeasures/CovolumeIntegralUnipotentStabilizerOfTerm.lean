@@ -717,8 +717,6 @@ theorem Dr1_ne_zero {T' : ℕ} (F : LFlag S r T) (F' : LFlag S r (T' : E)) (τ :
 
 end Det
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem frame_mem_of_XS (D : D7) (Λ : LatV D) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (hz : F.fl.z ∈ Λ)
     (hX : XLam Λ F = XS D F.fl) (b : Fin (D.R.rS + 1)) : frame F b ∈ Λ := by
   refine Fin.lastCases ?_ (fun i => ?_) b
@@ -837,7 +835,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.congruence_stabU_from_integral_unipotent_isometry : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ F' : FlagU D u', IsTermF D Λ (lf D F0) F' → ∃ I : Ideal (𝓞 D.host.E), I ≠ ⊥ ∧ (Ideal.absNorm I : ℝ) ≤ (∏ τ, ‖embS D τ (Gval (lf D F0) F')‖) ^ 4 * ∏ τ, ‖embS D τ (Dr1 (lf D F0) F')‖ ^ 2 ∧ ∀ a ∈ GlobalTheory.LoopV.stabU (ZhatL (lf D F0) F'), GlobalTheory.LoopV.EntIn I (a - 1) → ∃ n ∈ NLam Λ (lf D F0) ∩ NLam Λ F', ∀ c, n (frame F' c) = ∑ i, a i c • frame F' i := by
   first | exact @GlobalTheory.LoopV.Cong.congruence_mem
@@ -852,7 +849,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopC.CovTerm
 

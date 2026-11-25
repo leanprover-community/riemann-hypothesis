@@ -740,8 +740,6 @@ open Matrix
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace S5
 
 variable {k r : ℕ}
@@ -1320,8 +1318,6 @@ open Formalism.QuantumDeterminants PI.UnitaryGroupMassFormula.GsFr
 open scoped Matrix
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace S2
 

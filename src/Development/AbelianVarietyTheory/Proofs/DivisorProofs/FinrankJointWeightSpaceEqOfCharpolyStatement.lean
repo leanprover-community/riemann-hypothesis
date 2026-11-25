@@ -189,8 +189,7 @@ theorem ringHom_sep_of_finite_range (k : Type) [Field k] (C : Type) [CommRing C]
   obtain ⟨g, hg0, hgen⟩ := ringHom_exists_generator_of_finite_range χ₀
   have hsep : ∀ χ ∈ S, χ ≠ χ₀ → χ g = χ₀ g → ∃ a, χ a = 0 ∧ χ₀ a ≠ 0 := by
     intro χ hχ hne hgeq
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hχ' : χ ∈ insert χ₀ S := Finset.mem_insert_of_mem hχ
     have hk : ∀ b, χ₀ b = 0 → χ b = 0 := by
       intro b hb

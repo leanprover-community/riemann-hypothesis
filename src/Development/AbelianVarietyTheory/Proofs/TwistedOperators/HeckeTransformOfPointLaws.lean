@@ -589,8 +589,7 @@ theorem algHom_eq_eval : ∀ {K : Type} [inst : Field K] {P : Type} [Fintype P] 
     set_option synthInstance.maxHeartbeats 100000 in
       rw [← map_sum, hsum, map_one]
   obtain ⟨p, -, hp⟩ : ∃ p ∈ Finset.univ, θ (Pi.single p 1) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [Finset.sum_eq_zero h] at h1
     exact zero_ne_one h1
   refine ⟨p, fun z => ?_⟩

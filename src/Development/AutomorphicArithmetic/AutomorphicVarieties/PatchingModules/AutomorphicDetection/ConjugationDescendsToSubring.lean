@@ -87,8 +87,7 @@ private theorem intertwiner_of_ker {F : Type} [Field F] {σ : Type} (d : σ → 
     simp only [Pi.mul_apply, hx0, zero_mul, Finset.sum_const_zero, Pi.one_apply] at h1
     exact zero_ne_one h1
   obtain ⟨a, b, hab⟩ : ∃ a b, xx i0 s a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (Matrix.ext h)
   refine ⟨Matrix.of fun u j => xx j s u b, ?_, ?_⟩
   · intro hV
@@ -117,8 +116,7 @@ private theorem separate {F : Type} [Field F] {σ : Type} (d : σ → Type)
     (hk : ∃ x ∈ S, x t = 0 ∧ x s ≠ 0) : ∃ x ∈ S, x t = 0 ∧ x s = 1 := by
   obtain ⟨x, hxS, hxt, hxs⟩ := hk
   obtain ⟨a, b, hab⟩ : ∃ a b, x s a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hxs (Matrix.ext h)
   choose p hpS hps using fun i => hs (Matrix.single i a (x s a b)⁻¹)
   choose q hqS hqs using fun i => hs (Matrix.single b i (1 : F))
@@ -173,8 +171,7 @@ theorem UpperTheory.V.AlgebraTools.density_prod :
   have hsep : ∀ s t, s ≠ t → ∃ x ∈ S, x t = 0 ∧ x s = 1 := by
     intro s t hst
     apply separate d S s t (hsurj s)
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨V, hV0, hV⟩ := intertwiner_of_ker d S s t (hsurj t) hno
     exact hV0 (hint s t hst V fun g => hV _ (hmem g))
   have he : ∀ s, ∃ e ∈ S, e s = 1 ∧ ∀ t, t ≠ s → e t = 0 := by
@@ -291,8 +288,7 @@ theorem UpperTheory.V.AlgebraTools.intertwiner_iso :
       simpa using h2
     have surj : Function.Surjective (Matrix.toLin' V) := by
       obtain ⟨i0, k0, h0⟩ : ∃ i k, V i k ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hV0 (Matrix.ext fun i k => by simp [h i k])
       intro y
       let A : Matrix m m F := Matrix.of fun i a => if a = i0 then y i * (V i0 k0)⁻¹ else 0

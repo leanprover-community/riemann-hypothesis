@@ -151,8 +151,7 @@ theorem subset_row_star : SsetRowStar := by
   have ha := a.isLt
   have hjl := j.isLt
   apply lf_S_rowStar k r z s hs a j
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hb : 2 * r + k - j.val < a.val := by omega
   apply hj ⟨2 * r + k - j.val, by omega⟩ hb
   apply Fin.ext
@@ -227,8 +226,7 @@ theorem subset_inverse_column : SsetInvCol := by
   unfold SsetInvCol
   intro k r z s hs a i hi
   apply lf_S_invCol k r z s hs a i
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have ha := a.isLt
   exact hi ⟨i.val, by omega⟩ hlt (Fin.ext (lf_eI_val k r ⟨i.val, by omega⟩).symm)
 

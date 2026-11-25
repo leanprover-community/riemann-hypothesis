@@ -166,8 +166,7 @@ theorem exists_point (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (hε : ε * ε 
     fun _ => Set.infinite_range_of_injective hinj
   obtain ⟨x, hx, hx0⟩ : ∃ x ∈ Set.univ.pi (fun _ => Set.range (fun a : F => φ (algebraMap F (AE F E) a))),
       MvPolynomial.eval x (P true * P false) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hPP (MvPolynomial.funext_set _ hs fun x hx => by rw [hcon x hx, map_zero])
   choose s hsx using fun i => hx i (Set.mem_univ i)
   have hxs : x = fun i => φ (algebraMap F (AE F E) (s i)) := funext fun i => (hsx i).symm

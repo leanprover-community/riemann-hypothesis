@@ -140,8 +140,7 @@ lemma polydiscCutoff_eq_zero_of_not_mem_ball {e : ℕ} {z : Fin e → ℂ} (hz :
   unfold cutP
   rw [mem_ball_zero_iff, not_lt] at hz
   obtain ⟨i, hi⟩ : ∃ i, 9 / 8 ≤ ‖z i‖ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h3 : ‖z‖ < 9 / 8 := (pi_norm_lt_iff (by norm_num)).mpr hcon
     linarith
   apply Finset.prod_eq_zero (Finset.mem_univ i)

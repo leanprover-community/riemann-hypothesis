@@ -386,8 +386,7 @@ theorem finite_bi {H : Set G} (hHm : MeasurableSet H) (hinvH : ∀ h ∈ H, h⁻
     by_contra hinf
     rw [not_lt, top_le_iff] at hinf
     obtain ⟨i, hi⟩ : ∃ i, μ (spanningSets μ i) ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       have h0 : μ Set.univ = 0 := by
         rw [← iUnion_spanningSets μ]
         exact measure_iUnion_null hall

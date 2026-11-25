@@ -125,7 +125,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.inertPlace_homLattice_components_scaled_integral : ∀ (D : D7) (S T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)), w.under (𝓞 D.host.F) = v → IsInertAt D.host.F D.host.E v w → ∀ a : GL (Fin T.rank) (w.adicCompletion D.host.E), IsFrameAt w (frameLat T) a → ∃ (c₀ : w.adicCompletion D.host.E) (b : GL (Fin S.rank) (w.adicCompletion D.host.E)), c₀ ≠ 0 ∧ ∀ X : Matrix (Fin T.rank) (Fin S.rank) (w.adicCompletion D.host.E), X ∈ (GlobalTheory.FinWeilO.latF S T (frameLat S) (frameLat T)).toAddSubgroup.map (GlobalTheory.InertHomIdx.matW S T w) ↔ c₀ • ((a⁻¹ : GL (Fin T.rank) (w.adicCompletion D.host.E)).1 * X * b.1) ∈ GlobalTheory.InertHomIdx.intMat (w.adicCompletion D.host.E) T.rank S.rank := by
   first | exact @GlobalTheory.InertHomLattice.mem_map_latF_iff
@@ -145,7 +144,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
 theorem GlobalTheory.InertHomIdx.idx_moved_inert : ∀ (D : D7) (S T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)) (h : w.under (𝓞 D.host.F) = v), IsInertAt D.host.F D.host.E v w → ∀ c ϖ e, IsUnramInv ϖ c (qV D.host.F v) → IsInertChart D.sp.cm.sig T.gram (frameLat T) h c e → ∀ (d : Fin T.rank → ℤ) (t : GU c T.rank), t.1.1 = Matrix.diagonal (fun i => ϖ ^ d i) → ∀ k₁ ∈ KU c T.rank, ∀ k₂ ∈ KU c T.rank, GlobalTheory.FinWeil.idx (GlobalTheory.FinWeilO.latF S T (frameLat S) (frameLat T)) ((GlobalTheory.FinWeilO.latF S T (frameLat S) (frameLat T)).map (GlobalTheory.FinWeilO.rhoF S T (1, embV T v (e.symm (k₁ * t * k₂))))) = qV D.host.E w ^ (S.rank * (∑ i, max (d i) 0).toNat) := by
@@ -240,7 +238,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -271,7 +268,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -398,7 +394,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -419,7 +414,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -655,7 +649,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -678,7 +671,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.SplitHecke GlobalTheory.LFun.ConjPlace GlobalTheory.AdelicU GlobalTheory.LFun.SplitTie
 
@@ -709,7 +701,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -828,7 +819,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -866,7 +856,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.DetVal
 
@@ -1000,7 +989,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped Pointwise
 
 noncomputable section
@@ -1054,7 +1042,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.split_place_eigenvalue_is_sqrt_norm : ∀ (D : D7) (lam : ℕ →* ℂ), (∀ n : ℕ, n ≠ 0 → (∀ q : ℕ, q.Prime → Formalism.MainNotions.StandardLatticesGL3.InertQ D q → ¬ q ∣ n) → lam n = (Real.sqrt n : ℂ)) → ∀ (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)), w.under (𝓞 D.host.F) = v → IsSplit (E := D.host.E) v → ∀ m : ℕ, lam (qV D.host.E w ^ m) = (Real.sqrt ((qV D.host.E w ^ m : ℕ) : ℝ) : ℂ) := by
   first | exact @GlobalTheory.FinZeta.SplitNorm.lam_qV_pow
@@ -1074,7 +1061,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.VacCoef

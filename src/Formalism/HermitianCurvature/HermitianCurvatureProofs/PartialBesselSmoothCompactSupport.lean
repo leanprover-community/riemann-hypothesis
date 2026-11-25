@@ -441,8 +441,7 @@ theorem ck_at (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq)
       refine (mul_le_of_le_one_left (norm_nonneg _) (Formalism.FourierDecayAlt.P.B7.norm_pi_le Bj hxK.2.1)).trans ?_
       exact hcw w hw _ ⟨(x, y), ⟨hxK, hmemKc Y hY⟩, rfl⟩
     · have hx' : x ∉ K ∨ ¬ PBQ.GoodP Bj x := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hxK ⟨hc.1, hc.2⟩
       have h0 : dLR (w.map Formalism.FourierDecayAlt.P.Ux1.Lt) [] (fam Bj e Φt x) y = 0 := by
         rw [Formalism.FourierDecayAlt.P.B4.dLR_eq]

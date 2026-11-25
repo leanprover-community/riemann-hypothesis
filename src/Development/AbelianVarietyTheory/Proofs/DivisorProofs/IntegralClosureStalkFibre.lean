@@ -70,7 +70,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Points RatModel
 
 namespace GlobalTheory.Poinc
@@ -153,7 +152,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.Poinc.FinPts
@@ -377,8 +375,7 @@ theorem maximal_point (hN : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNorma
   have fwd : ∀ b : integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂, b ∈ 𝔷 →
       ((b : Ω₂) = 0 ∨ (b : Ω₂)⁻¹ ∉ M₂.O z₂) := by
     intro b hb
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨hb0, hbinv⟩ := hcon
     obtain ⟨c, hc, d, hd, hd0, hdinv, hcd⟩ := GlobalTheory.T.exists_fraction_ringOn_of_mem_modelLocalRing _ _ M₂ _ hU₂ z₂ hz₂U _ hbinv
     have e : ψ ⟨d, hd⟩ = ψ ⟨c, hc⟩ * b := by

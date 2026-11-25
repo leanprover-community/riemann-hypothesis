@@ -98,7 +98,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
@@ -188,7 +187,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 noncomputable section
@@ -223,7 +221,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 noncomputable section
@@ -489,7 +486,6 @@ section -- clump:auto
 
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 namespace GlobalTheory.RationalFrame
@@ -561,7 +557,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 namespace GlobalTheory.ZhatRat
@@ -617,7 +612,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 namespace GlobalTheory.CoverAct
@@ -655,7 +649,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 namespace GlobalTheory.LoopVol
@@ -697,7 +690,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 noncomputable section
@@ -779,7 +771,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Matrix
 
 noncomputable section
@@ -851,7 +842,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Matrix
 
@@ -1310,7 +1300,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RootsBijection
 
@@ -1398,7 +1387,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopVol
 
@@ -1435,7 +1423,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open MeasureTheory
 
@@ -1500,7 +1487,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open MeasureTheory in
@@ -1607,8 +1593,6 @@ noncomputable section
 namespace GlobalTheory.LoopVol
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hhz_dcrel {D : D7} (Λ : Submodule (NumberField.RingOfIntegers D.host.E) (VS D).V) {T T' : D.host.E}
     (F : LFlag (D.sp.Y 0) D.R.rS T) (F₁ F₂ : LFlag (D.sp.Y 0) D.R.rS T') (h : Formalism.L2.SG.TermDef.DCRel Λ F F₁ F₂) (b C : ℝ) :

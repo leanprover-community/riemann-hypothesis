@@ -412,8 +412,7 @@ theorem generic_lu_decomposition_exists (n : ℕ) : ∀ (K L : Type) [Field K] [
       simp [u']
     have hp : M 0 0 ≠ 0 := by
       have hne : A 0 0 ≠ 0 ∨ ∃ j, A 0 (Fin.succ j) ≠ 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         apply hA
         apply Matrix.det_eq_zero_of_row_eq_zero 0
         intro j

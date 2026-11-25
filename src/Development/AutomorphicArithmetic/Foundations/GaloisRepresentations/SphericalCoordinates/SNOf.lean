@@ -54,8 +54,7 @@ theorem sN_of : SN := by
     rw [map_one] at h1
     exact one_ne_zero h1
   obtain ⟨a, b, hab⟩ : ∃ a b, ψ (Matrix.single i0 i0 1) a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP (Matrix.ext h)
   have hL : ∀ i k, ψ (Matrix.single i k 1) * (∑ j, ψ (Matrix.single j i0 1) * Matrix.single b j 1) =
       ψ (Matrix.single i i0 1) * Matrix.single b k 1 := by

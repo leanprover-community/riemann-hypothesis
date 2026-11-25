@@ -96,7 +96,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowLin
 
@@ -193,7 +192,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -227,8 +225,7 @@ theorem partAt_finW_off_mem_hatA : ∀ (D : D7) (S T : HSp D) (Pg Q : Finset (Fo
     have hex : ∀ PP ∈ Pg ∪ Q, ∃ s : 𝓞 D.host.F,
         algebraMap (𝓞 D.host.F) (𝓞 D.host.E) s ∈ PP.asIdeal ∧ s ∉ w.asIdeal := by
       intro PP hPP
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply hw PP hPP
       have hle : (HeightOneSpectrum.under (𝓞 D.host.F) PP).asIdeal ≤ w.asIdeal := fun s hs => hcon s hs
       exact HeightOneSpectrum.ext ((HeightOneSpectrum.isMaximal _).eq_of_le w.isPrime.ne_top hle)
@@ -259,7 +256,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -472,7 +468,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SW.Lev
 
@@ -524,7 +519,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LiftDat
 
@@ -587,7 +581,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -672,7 +665,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LiftDatComb
 
@@ -937,7 +929,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LiftLevel.InfMem
 
@@ -987,7 +978,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.mem_conjugatePlacesProductIdeal_of_forall_conj_place : ∀ (D : D7) (Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)) (x : 𝓞 D.host.E), (∀ PP ∈ Pg ∪ Q, x ∈ conjI PP.asIdeal) → x ∈ GlobalTheory.LiftLevel.liftI Pg Q := by
@@ -1006,7 +996,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1292,7 +1281,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

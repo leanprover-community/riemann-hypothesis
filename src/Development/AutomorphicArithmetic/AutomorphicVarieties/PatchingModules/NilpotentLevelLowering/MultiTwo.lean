@@ -64,8 +64,7 @@ section -- clump:auto
 open MvPolynomial Equiv UpperTheory.V.AlgebraTools.Hk
 
 private theorem exists_lt_apply {n : ℕ} (w : Perm (Fin n)) (hw : w ≠ 1) : ∃ i, i < w i := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hw
   have hs : ∑ i, (w i).val = ∑ i : Fin n, i.val := Equiv.sum_comp w (fun i => i.val)
   have hle : ∀ i ∈ (Finset.univ : Finset (Fin n)), (w i).val ≤ i.val := fun i _ => h i

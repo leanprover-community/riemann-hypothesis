@@ -608,8 +608,7 @@ theorem exists_near {X : Scheme.{0}} {V : X.Opens} (hV : IsAffineOpen V) {d : �
     (hpW : p ∈ W) {ε : ℝ} (hε : 0 < ε) :
     ∃ z ∈ ball (0 : Fin d → ℂ) 1, z ∈ ball (0 : Fin d → ℂ) ε ∧ ⊤ ≤ (spMap (ψ z) ≫ hV.fromSpec) ⁻¹ᵁ W := by
   obtain ⟨g, hg, hpg⟩ := hV.exists_basicOpen_le (V := W) ⟨p, hpW⟩ hpV
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hz : ∀ z ∈ ball (0 : Fin d → ℂ) 1, z ∈ ball (0 : Fin d → ℂ) ε → ψ z g = 0 := by
     intro z h₁ h₂
     by_contra hne

@@ -6,6 +6,7 @@ public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
 import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
 
 @[expose] public section
 
@@ -25,22 +26,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : 
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 theorem ratioField_eq_blockFnField (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) :
     ratioField y c = blockFnField y := by
-  apply le_antisymm
-  · refine IntermediateField.adjoin_le_iff.mpr ?_
-    rintro _ ⟨p, rfl⟩
-    exact IntermediateField.subset_adjoin _ _ ⟨p, ⟨p.1, c p.1⟩, rfl, rfl⟩
-  · refine IntermediateField.adjoin_le_iff.mpr ?_
-    rintro _ ⟨p, q, hpq, rfl⟩
-    have hp : y p / y ⟨p.1, c p.1⟩ ∈ ratioField y c := IntermediateField.subset_adjoin _ _ ⟨p, rfl⟩
-    have hq : y q / y ⟨q.1, c q.1⟩ ∈ ratioField y c := IntermediateField.subset_adjoin _ _ ⟨q, rfl⟩
-    have key : y p / y q = (y p / y ⟨p.1, c p.1⟩) / (y q / y ⟨q.1, c q.1⟩) := by
-      rw [← hpq]
-      have h0 := hc p.1
-      by_cases hq0 : y q = 0
-      · simp [hq0]
-      · field_simp
-    rw [key]
-    exact div_mem hp hq
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.CoordArithOfFnField.ratioField_eq <;> assumption
 
 theorem ringKrullDim_coord (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) :
     ringKrullDim (MRing ι ⧸ mCoordIdeal y) =

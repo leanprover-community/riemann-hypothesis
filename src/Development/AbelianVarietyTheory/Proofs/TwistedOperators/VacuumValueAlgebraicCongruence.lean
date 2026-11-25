@@ -104,7 +104,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 
 
@@ -159,7 +158,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section
@@ -312,8 +310,7 @@ theorem exists_level_fix {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T :
   have hcont : Continuous fun p : GA D S × GA D T => om p f w₀ := hW.om_cont _ hf.2.theta w₀
   have key : ∃ n : ℕ, ∀ k ∈ GfC S, ∀ k' ∈ GfC T, GlobalTheory.Member.FinCong S (N₁ * N₂ * n.factorial) k →
       GlobalTheory.Member.FinCong T (N₁ * N₂ * n.factorial) k' → om (k, k') f = f := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose k hk k' hk' hkc hkc' hkne using hne
     have hpow : ∀ n, ∃ m : ℕ, ∃ c : ℂ, om ((k n, k' n) ^ m) f = c • f ∧ ¬ ‖c - 1‖ ≤ 1 / 2 := by
       intro n

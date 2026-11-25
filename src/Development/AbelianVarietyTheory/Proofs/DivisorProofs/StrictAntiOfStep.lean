@@ -70,12 +70,10 @@ theorem divided_strictAnti : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts ι 
       have ha : ¬ ((b : ℕ) < W.p) := by omega
       have ha' : (a : ℕ) < W.p := by omega
       have p1 : 0 < W.u1 τ a - W.u1 τ b := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         nlinarith
       have p2 : 0 < W.u1 τ a - W.u1 τ b - 3 * N := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         nlinarith
       refine ⟨by omega, ?_⟩
       simp only [Wts.u', if_pos ha', if_neg ha]

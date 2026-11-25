@@ -17,12 +17,6 @@ private lemma lenQuotSpan {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValua
   exact (Order.height_enat _).trans <| (IsDiscreteValuationRing.addVal_eq_iff_associated _ _).2
     (Submodule.IsPrincipal.associated_generator_span_self x)
 
-private lemma addValProd {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    {ι : Type*} (s : Finset ι) (g : ι → O) :
-    IsDiscreteValuationRing.addVal O (∏ i ∈ s, g i) =
-      ∑ i ∈ s, IsDiscreteValuationRing.addVal O (g i) :=
-  map_prod (AddValuation.toValuation (IsDiscreteValuationRing.addVal O)) g s
-
 theorem goal1 :
   ∀ {O : Type u_1} {M : Type u_2} [inst : CommRing.{u_1} O] [inst_1 : IsDomain.{u_1} O]
   [inst_2 : IsDiscreteValuationRing.{u_1} O] [inst_3 : AddCommGroup.{u_2} M] [inst_4 : Module.{u_1, u_2} O M]
@@ -54,20 +48,16 @@ theorem goal1 :
     rw [Module.Basis.equiv_apply, Equiv.refl_apply]
     exact ab_eq i
   have hdet : LinearMap.det f = ∏ i, a i := by
-    rw [← LinearMap.det_toMatrix b', ← Matrix.det_diagonal]
-    congr 1
-    ext i j
-    rw [LinearMap.toMatrix_apply, ha, map_smul, Module.Basis.repr_self, Finsupp.smul_single,
-      smul_eq_mul, mul_one]
-    by_cases hij : i = j
-    · rw [hij, Matrix.diagonal_apply_eq, Finsupp.single_eq_same]
-    · rw [Matrix.diagonal_apply_ne _ hij, Finsupp.single_eq_of_ne hij]
+    have hf : f ∘ b' = fun i => a i • b' i := funext ha
+    simpa only [← hf, Module.Basis.det_comp, Module.Basis.det_self, smul_eq_mul, mul_one] using
+      b'.det.map_smul_univ a b'
   have hval : IsDiscreteValuationRing.addVal O (LinearMap.det φ) =
       IsDiscreteValuationRing.addVal O (∏ i, a i) := by
     rw [← hdet]
     exact (IsDiscreteValuationRing.addVal_eq_iff_associated _ _).2 hassoc
   rw [(Submodule.quotientEquivPiSpan (LinearMap.range φ) b h).length_eq,
-    Module.length_pi_of_fintype, hval, addValProd]
-  exact Finset.sum_congr rfl fun i _ => lenQuotSpan (a i)
+    Module.length_pi_of_fintype, hval]
+  exact (Finset.sum_congr rfl fun i _ => lenQuotSpan (a i)).trans
+    (map_prod (AddValuation.toValuation (IsDiscreteValuationRing.addVal O)) a Finset.univ).symm
 
 end Bl.DiscreteValuationQuotients

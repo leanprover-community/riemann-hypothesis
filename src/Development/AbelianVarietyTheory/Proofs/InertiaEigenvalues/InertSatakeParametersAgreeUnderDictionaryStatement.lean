@@ -1204,8 +1204,7 @@ theorem GlobalTheory.InertFrameConj.conj_and_surjective : ∀ (L : Type) [Field 
       have := hpair (y + 1) hy1
       simpa only [map_add (f := _), map_one] using this
     obtain ⟨t, ht⟩ : ∃ t : L, t ≠ IsCMField.complexConj L t := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact IsCMField.complexConj_ne_one L (AlgEquiv.ext fun t => (hc t).symm)
     intro x
     by_cases hx : x = IsCMField.complexConj L x
@@ -1393,8 +1392,7 @@ theorem eq_of_sum_abs_le_one (κ : Fin m → ℤ) (h : ∑ i, |κ i| ≤ 1) :
   · exact Or.inl h0
   right
   obtain ⟨k, hk⟩ : ∃ k, κ k ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (funext hc)
   have hsplit := Finset.add_sum_erase Finset.univ (fun i => |κ i|) (Finset.mem_univ k)
   have hk1 : 1 ≤ |κ k| := Int.one_le_abs hk

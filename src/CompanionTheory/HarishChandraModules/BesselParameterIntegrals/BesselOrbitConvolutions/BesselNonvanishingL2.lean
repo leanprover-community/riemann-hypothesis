@@ -139,8 +139,7 @@ theorem bessel_nonvanishing_from_L2 : CompanionTheory.D.Upq.BesselFunctionalCons
   classical
   intro hSch hNI hGS hGG hDD hBC hInp _ k r ε lam h H _ _ _ σ w0 Wp _ _ _ _ z c u π μW μN μG νq hS W hWc hWeq
     hRe hpos hfin
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨hlam, hσ, hgap, hGapOK, hw0, hz, hT, hc, hπ, hWh, hNh, hGh, hq⟩ := hS
   have hS' : Side k r ε lam h σ w0 z c u π μW μN μG νq :=
     ⟨hlam, hσ, hgap, hGapOK, hw0, hz, hT, hc, hπ, hWh, hNh, hGh, hq⟩

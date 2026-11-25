@@ -1454,8 +1454,7 @@ theorem core (h1 : SliceU) (h2 : Blocks) (h3 : Leaf) (h4 : Node) (h6 : TwConc) (
   obtain ⟨T, hT, hTφ⟩ := h1 E r s hr hs (tw U w) hU'.1 hU'.2.1 hsplit hU'.2.2.2.2.2 _ hφ' _ hc'
   obtain ⟨J, P, W₁, W₂, hW, hP, hsum, hind⟩ := h2 E r s τ hr hs (tw U w) hU' hsplit _ T hT hpc'
   obtain ⟨j, hj, hPj⟩ : ∃ j ∈ J, P j (T (mulChi (r + s) (Model.absC E w) φ)) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hTφ
     rw [← hsum _ hφ']
     exact Finset.sum_eq_zero hcon
@@ -1535,8 +1534,7 @@ theorem separation_of_six_inputs (h1 : SliceU) (h2 : Blocks) (h3 : Leaf) (h4 : N
   obtain ⟨S, hSty, hSU, hSmin⟩ := hS
 
   obtain ⟨φ, hφS, hne⟩ : ∃ φ ∈ S, φ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hbot : _root_.GlobalTheory.CuspRep.IsStable (⊥ : Submodule ℂ (Sm E N)) := by
       intro o ψ hψ
       rw [Submodule.mem_bot] at hψ ⊢

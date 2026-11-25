@@ -786,15 +786,12 @@ theorem charpoly_conj_tmul (C : Type) [Ring C] [Algebra ℚ C] [FiniteDimensiona
     [Algebra ℚ A] (y : C) (u : (A ⊗[ℚ] C)ˣ) :
     LinearMap.charpoly (LinearMap.mulLeft A ((u : A ⊗[ℚ] C) * ((1 : A) ⊗ₜ[ℚ] y) * ((u⁻¹ : (A ⊗[ℚ] C)ˣ) : A ⊗[ℚ] C))) =
       (LinearMap.charpoly (LinearMap.mulLeft ℚ y)).map (algebraMap ℚ A) := by
-  let e : (A ⊗[ℚ] C) ≃ₗ[A] (A ⊗[ℚ] C) :=
-    { LinearMap.mulLeft A (u : A ⊗[ℚ] C) with
-      invFun := fun z => ((u⁻¹ : (A ⊗[ℚ] C)ˣ) : A ⊗[ℚ] C) * z
-      left_inv := fun z => by simp [← mul_assoc]
-      right_inv := fun z => by simp [← mul_assoc] }
   have h1 : LinearMap.mulLeft A ((u : A ⊗[ℚ] C) * ((1 : A) ⊗ₜ[ℚ] y) * ((u⁻¹ : (A ⊗[ℚ] C)ˣ) : A ⊗[ℚ] C)) =
-      e.conj (LinearMap.mulLeft A ((1 : A) ⊗ₜ[ℚ] y)) := by
-    ext z
-    simp [e, LinearEquiv.conj_apply, mul_assoc]
+      (u.mulLeftLinearEquiv A (A ⊗[ℚ] C)).conj (LinearMap.mulLeft A ((1 : A) ⊗ₜ[ℚ] y)) := by
+    refine LinearMap.ext fun z => ?_
+    change (↑u * ((1 : A) ⊗ₜ[ℚ] y) * ↑(u⁻¹)) * z =
+      ↑u * (((1 : A) ⊗ₜ[ℚ] y) * (↑(u⁻¹) * z))
+    simp only [mul_assoc]
   have h2 : LinearMap.mulLeft A ((1 : A) ⊗ₜ[ℚ] y) = (LinearMap.mulLeft ℚ y).baseChange A := by
     ext c
     simp [Algebra.TensorProduct.tmul_mul_tmul]
@@ -1118,8 +1115,7 @@ theorem valued_snd_eq_one {p : ℕ} [Fact p.Prime] (G : HTGroup p) (K : Subgroup
     | succ n ih => rw [pow_succ, hmul, ih, pow_succ]
   have hle : ∀ a ∈ K, F a ≤ 1 := by
     intro a ha
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt C hlt
     have h1 := hC (a ^ n) (K.pow_mem ha n)
     rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)] at h1

@@ -1353,8 +1353,7 @@ theorem pi_kills {D : D7} {u : D.what₂.Word} {A : AtTTied u} {i : ℕ} {hi : i
     (m : K.lev.fM (A.eV v).1 (A.eV v).2) : a • m = 0 := by
   obtain ⟨c, -⟩ := K.y_bij.2 (Quotient.mk'' 1)
   obtain ⟨x, hx⟩ : ∃ x, (D.fm u).fv i v c x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact (D.fm u).fv_ne i v c (LinearMap.ext hc)
   obtain ⟨z, rfl⟩ := P.pr_surj v c x
   have hin : ∀ z : ↥(Ld D u i hi c), ((bc (prV (E := D.host.E) (A.eV v).1) (K.y c).1)⁻¹).1 *ᵥ

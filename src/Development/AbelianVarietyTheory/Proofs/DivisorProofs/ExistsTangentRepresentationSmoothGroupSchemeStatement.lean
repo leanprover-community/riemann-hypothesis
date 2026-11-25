@@ -82,7 +82,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqZeroPt
 
@@ -125,7 +124,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 open GlobalTheory.LieVB GlobalTheory.Conormal
@@ -168,7 +166,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh GlobalTheory.AbTan
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -208,7 +205,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -385,7 +381,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap resG)
 open GlobalTheory.LieVB GlobalTheory.Conormal
 open GlobalTheory.LB (resG_resG resG_self)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqZeroPt
 
@@ -833,7 +828,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -920,7 +914,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh GlobalTheory.AbTan
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PinchUniq
 
@@ -1061,7 +1054,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh GlobalTheory.AbTan
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Pinch
 
@@ -1138,8 +1130,6 @@ open GlobalTheory.SqZeroPt GlobalTheory.PDivGroup GlobalTheory.DeRham
 open GlobalTheory.LieVB GlobalTheory.Conormal
 open GlobalTheory.LB (resG_self)
 open GlobalTheory.DualPull (appLE_resG resG_appLE)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqZeroPt
 
@@ -1362,7 +1352,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh GlobalTheory.AbTan
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

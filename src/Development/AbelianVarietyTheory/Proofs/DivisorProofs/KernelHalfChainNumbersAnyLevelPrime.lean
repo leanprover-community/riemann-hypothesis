@@ -505,12 +505,10 @@ open GlobalTheory.ColNorms GlobalTheory.ColNorms.NumMean
 
 theorem exists_le_wtSum {α : Type} [Fintype α] (w f : α → ℝ) (h0 : ∀ a, 0 ≤ w a) (h1 : ∑ a, w a = 1) :
     ∃ a, w a ≠ 0 ∧ f a ≤ ∑ b, w b * f b := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h2 : ∑ a, w a * (∑ b, w b * f b) < ∑ a, w a * f a := by
     obtain ⟨a, ha⟩ : ∃ a, w a ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       simp [h] at h1
     refine Finset.sum_lt_sum (fun b _ => ?_) ⟨a, Finset.mem_univ _, ?_⟩
     · by_cases hb : w b = 0

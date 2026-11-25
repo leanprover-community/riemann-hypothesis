@@ -179,7 +179,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HeatMod.TorTensor
 
@@ -313,7 +312,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HeatMod
 
@@ -379,7 +377,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HeatMod
 
 namespace GlobalTheory.HeatMod
@@ -544,7 +541,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -620,7 +616,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -659,7 +654,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -775,7 +769,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.HeatMod.TorUniq
 open GlobalTheory.ZH.CrdCalc (valR_res valR_spMap)
@@ -841,7 +834,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1097,7 +1089,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1158,7 +1149,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.FourierDescent
 
@@ -1216,7 +1206,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.raynaudProjection_sectionValues_identity : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (O : Type) [CommRing O] [StarRing O] [Module O Q.X] (oa : Q.OAct O) (Y : Ray oa) (k : ℕ) (α : Q.X) (σ σ' σ'' : Q.SecB k α) (C : R), (∀ (y : Y.H.left) J, Good Q.P.L y J → sval σ' Y.q.left y J = sval σ'' Y.q.left y J + gs (𝟙 _) y ⊤ (scal Y.H.hom C) * sval σ Y.q.left y J) → ∀ (T : Over (Sp R)) (x : T ⟶ Q.P.A) z J, Good Q.P.L z J → sval σ' x.left z J = sval σ'' x.left z J + gs (𝟙 _) z ⊤ (scal T.hom C) * sval σ x.left z J := by
   first | exact @GlobalTheory.FourierDescent.values_identity
@@ -1237,7 +1226,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Heat
 
@@ -1283,7 +1271,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.heat_operator_fourier_term_values_eq_of_local_identity : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (O : Type) [CommRing O] [StarRing O] [Module O Q.X] (oa : Q.OAct O) (Y : Ray oa) (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (v a) (dd a)) → ∀ (D : Derivation ℤ R R) (h h' : Heat Y.H Y.q.left Q.P.L dd ⇑D), IsBasic Y h → IsBasic Y h' → ∀ c : ℕ → Q.X → R, (∀ (i : h.J) (i' : h'.J) (k : ℕ) (α : Q.X) (V : Q.P.A.left.Opens), Y.q.left ⁻¹ᵁ V ≤ h.W i ⊓ h'.W i' → ∀ f, IsWt Y α (Y.q.left ⁻¹ᵁ V) f → op Y.H dd h.Θ h.u (h.d i) (h.p i) (h.p' i) k (Y.q.left ⁻¹ᵁ V) (pbT Y.q.left (Q.P.L.g (h.j i) (h'.j i')).val (Y.q.left ⁻¹ᵁ V) ^ k * f) = pbT Y.q.left (Q.P.L.g (h.j i) (h'.j i')).val (Y.q.left ⁻¹ᵁ V) ^ k * (op Y.H dd h'.Θ h'.u (h'.d i') (h'.p i') (h'.p' i') k (Y.q.left ⁻¹ᵁ V) f + constFn Y.H.hom _ (c k α) * f)) → ∀ (k : ℕ) (α : Q.X) (σ σ' σ'' : Q.SecB k α), TActs Y h k α σ σ' → TActs Y h' k α σ σ'' → ∀ (T : Over (Sp R)) (x : T ⟶ Q.P.A) z J, Good Q.P.L z J → sval σ' x.left z J = sval σ'' x.left z J + gs (𝟙 _) z ⊤ (scal T.hom (c k α)) * sval σ x.left z J := by
   first | exact @GlobalTheory.Heat.sval_eq_of_localIdentity
@@ -1304,7 +1291,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1366,7 +1352,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HeatDefect
 

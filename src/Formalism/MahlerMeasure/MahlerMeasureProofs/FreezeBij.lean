@@ -323,8 +323,7 @@ theorem vanish (LL : Letters N) (n : ℕ) (ρ : Fin r) (G : MvPolynomial (Fin (N
     by_contra h
     exact Nat.find_min hex hν ⟨ν, rfl, h⟩
   obtain ⟨c, hcρ, hc⟩ : ∃ c, c ≠ ρ ∧ m (Fin.last N, c) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hm
     apply h0
     simp only [kk]

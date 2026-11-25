@@ -133,18 +133,14 @@ namespace GlobalTheory
 
 theorem exists_common_den_nonneg (q₁ q₂ : ℚ) (h₁ : 0 ≤ q₁) (h₂ : 0 ≤ q₂) :
     ∃ a b M : ℕ, 0 < M ∧ q₁ = a / M ∧ q₂ = b / M := by
+  have scaled (q : ℚ) (hq : 0 ≤ q) {d : ℕ} (hd : d ≠ 0) :
+      q = (↑(q.num.toNat * d) : ℚ) / ↑(q.den * d) := by
+    have hnum : (q.num.toNat : ℚ) = q.num := by
+      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 hq)
+    rw [Nat.cast_mul, Nat.cast_mul, hnum, mul_div_mul_right _ _ (Nat.cast_ne_zero.mpr hd), Rat.num_div_den]
   refine ⟨q₁.num.toNat * q₂.den, q₂.num.toNat * q₁.den, q₁.den * q₂.den,
-    Nat.mul_pos q₁.den_pos q₂.den_pos, ?_, ?_⟩
-  · have e : ((q₁.num.toNat : ℕ) : ℚ) = q₁.num := by
-      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 h₁)
-    have hd : (q₂.den : ℚ) ≠ 0 := by exact_mod_cast q₂.den_ne_zero
-    push_cast
-    rw [e, mul_div_mul_right _ _ hd, Rat.num_div_den]
-  · have e : ((q₂.num.toNat : ℕ) : ℚ) = q₂.num := by
-      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 h₂)
-    have hd : (q₁.den : ℚ) ≠ 0 := by exact_mod_cast q₁.den_ne_zero
-    push_cast
-    rw [e, mul_comm (q₁.den : ℚ) (q₂.den : ℚ), mul_div_mul_right _ _ hd, Rat.num_div_den]
+    Nat.mul_pos q₁.den_pos q₂.den_pos, scaled q₁ h₁ q₂.den_ne_zero, ?_⟩
+  simpa only [Nat.mul_comm q₂.den q₁.den] using scaled q₂ h₂ q₁.den_ne_zero
 
 theorem exists_eff_off_pt_ample_class : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ), IsProjOver p → letI := algebraΓOfHom p; ∀ (N₀ : LB X) (A : CartierDiv X) (x : X) (r : ℕ) (lam μ : ℚ), N₀.IsLB → IsNef ℂ N₀ → IsAmpleLB (toLB A) → 0 < r → lam ≤ 1 → 0 < μ → ∃ (M : ℕ) (E : CartierDiv X), 0 < M ∧ E.Eff ∧ x ∉ E.supp ∧ ∀ C : Closeds X, IsCompleteCurve ℂ C → (interNumRed ℂ C ![toLB E] : ℚ) / M = (1 - lam) * interNumRed ℂ C ![N₀] / r + μ * interNumRed ℂ C ![toLB A] := by
   intro X _ _ p hp
@@ -530,8 +526,7 @@ theorem logCanonicalCut_lowers_centre_dimension : GlobalTheory.Published.Princip
     have hye : (((e : ℝ) ^ e * (r : ℝ) ^ e / I) ^ ((e : ℝ)⁻¹)) ^ e = (e : ℝ) ^ e * (r : ℝ) ^ e / I :=
       Real.rpow_inv_natCast_pow hx0 he0
     have hyc : ((e : ℝ) ^ e * (r : ℝ) ^ e / I) ^ ((e : ℝ)⁻¹) < e / c' := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h1 := pow_le_pow_left₀ (by positivity) hcon e
       rw [hye, div_pow, div_le_div_iff₀ hc'e hIpos] at h1
       nlinarith [mul_lt_mul_of_pos_left hIr hee]

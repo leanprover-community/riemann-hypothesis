@@ -181,8 +181,7 @@ theorem isStrict_face_of_isCone : ∀ (O : Type) [CommRing O] [IsDedekindDomain 
         have hs : 0 ≤ ∑ i, c i • (if i ∈ T then (1 : ℤ) else 0) :=
           Finset.sum_nonneg fun i _ => by split_ifs <;> simp
         rw [← e, nsmul_eq_mul] at hs
-        by_contra hneg
-        push_neg at hneg
+        by_contra! hneg
         have : (k : ℤ) * h u < 0 := mul_neg_of_pos_of_neg (by exact_mod_cast hk) hneg
         linarith
       have e1 : (ℓ u : ℝ) = N * n := by exact_mod_cast heq
@@ -348,8 +347,7 @@ theorem exists_prim [Module.Finite ℤ O] {β : LinearMap.BilinForm ℤ X} (hβ 
     ∃ (n : ℕ) (u : LinearMap.BilinForm ℤ X) (hu : u ∈ balForms bar X), 0 < n ∧ β = (n : ℤ) • u ∧ IsPrim bar ⟨u, hu⟩ := by
   classical
   obtain ⟨a, b, hab⟩ : ∃ a b, β a b ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (by ext a b; simpa using hc a b)
   have bound : ∀ (n : ℕ) (u : LinearMap.BilinForm ℤ X), β = (n : ℤ) • u → n ≤ (β a b).natAbs := by
     intro n u hn
@@ -580,8 +578,7 @@ theorem ray_of_mem_cone : ∀ (O : Type) [CommRing O] (bar : O → O) (φ : InvF
     exact h3 _ (hγ'.mem i) (hγ'.nonneg i) (by linarith)
   have hγj : γ j ≠ 0 := hγ.linearIndependent.ne_zero j
   obtain ⟨i, hai, hγi⟩ : ∃ i, a j i ≠ 0 ∧ γ' i ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hγj
     apply toReal_injective
     rw [hsum j]

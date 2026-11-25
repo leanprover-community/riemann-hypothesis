@@ -1273,8 +1273,7 @@ private lemma num_core {s : ℕ} (k m : Fin s → ℕ) (N : ℕ) (hm : ∀ i, 1 
     · simp [h0]
     · exact Nat.mul_le_mul_right _ (hle i hp)
   have h2 : ∑ i, k i ≤ 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : N * 2 ≤ N * ∑ i, k i := Nat.mul_le_mul_left _ hc
     omega
   have h3 : k i0 ≤ ∑ i, k i := Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_univ i0)
@@ -1388,8 +1387,7 @@ theorem UpperTheory.V.Z.Desc.V0.unrAlgW :
     obtain ⟨y, hy𝒢, hyd, hye⟩ : ∃ y ∈ 𝒢,
         y ((derivative (g i)).eval₂ (lam : Λ →+* B) t) ≠ 0 ∧
           y ((∏ j ∈ Finset.univ.erase i, g j).eval₂ (lam : Λ →+* B) t) ≠ 0 := by
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       have hmem : (derivative (g i)).eval₂ (lam : Λ →+* B) t * b₀ ∈ UpperTheory.V.J.cmp lam J t g i := by
         rw [UpperTheory.V.J.mem_cmp, mul_right_comm]
         apply hG0

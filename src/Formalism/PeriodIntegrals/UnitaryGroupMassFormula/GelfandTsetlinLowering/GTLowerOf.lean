@@ -1160,8 +1160,7 @@ theorem scalar_vanishing_criterion : ZScalarVanish := by
     unfold D0
     rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib, hsum]
   obtain ⟨i, hi⟩ : ∃ i, mu.w i ≠ sg.w i := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne (funext hc)
   have hmem : mu.w i ∈ Rset h lam sg i := by
     have hm := PI.GTNum.sg_mem_R h lam mu hmu i

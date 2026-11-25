@@ -71,8 +71,7 @@ theorem trace_pairing_nondeg : ∀ (F E : Type) [Field F] [NumberField F] [Field
   intro F E _ _ _ _ _ ψ hψ m hm
   haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
   haveI : Algebra.IsSeparable F E := Algebra.IsAlgebraic.isSeparable_of_perfectField
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hm
   refine eq_zero_of_trace_mul m fun z => ?_
   apply GlobalTheory.DiagNonvan.eq_zero_of_psi_mul hψ

@@ -1,5 +1,8 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenOfUnit
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmPointObjectExistsOfLaws
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFFCurve
 public import GroundTheory.FunctionField.DivisorDegree
 public import GroundTheory.FunctionField.Divisor
@@ -235,15 +238,8 @@ namespace PositivityTheory.HtPt.Ch
 theorem unitAt_div {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     {Λ : Lat ξ Ω} {p : Cpt ξ} {s t : Ω} (hs : Λ.IsGenAt p s) (ht : Λ.IsGenAt p t) :
     unitAt ξ p (s / t) := by
-  have key : ∀ {s t : Ω}, Λ.IsGenAt p s → Λ.IsGenAt p t → s / t ∈ regAt ξ p := by
-    intro s t hs ht
-    have : s ∈ Submodule.span (regAt ξ p) {t} := by
-      rw [← ht.2, hs.2]; exact Submodule.mem_span_singleton_self s
-    obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.1 this
-    have ha' : (a : Ω) * t = s := ha
-    rw [← ha', mul_div_cancel_right₀ _ ht.1]
-    exact a.2
-  exact ⟨div_ne_zero hs.1 ht.1, key hs ht, by rw [inv_div]; exact key ht hs⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.DetNef.gen_unit <;> assumption
 
 theorem isdeg_unique : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Field K] (C : ACurve K) (z : Spec (CommRingCat.of K) ⟶ X) (Y : CurveIn C z) (Λ : Lat ξ Ω) (n n' : ℤ), IsCptGen ξ → Y.IsDeg Λ n → Y.IsDeg Λ n' → n = n' := by
   intro X Ω _ ξ K _ C z Y Λ n n' hξ ⟨h₀, h, s₀, s, r, g₀, g, hr, hf, e⟩

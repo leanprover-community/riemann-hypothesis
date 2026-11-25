@@ -624,8 +624,7 @@ theorem geo_gram_unit (F : FlagG S r T) (F' : FlagG S r T') (hj : j ≤ r + 1)
       · exact Matrix.eq_zero_of_mulVec_eq_zero h hMv
       · exact lead M v hMv hvl h
     have hor : Dl F F' (r + 1) ≠ 0 ∨ Dl F F' r ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hG
       rw [hc.1, hc.2]
       ring

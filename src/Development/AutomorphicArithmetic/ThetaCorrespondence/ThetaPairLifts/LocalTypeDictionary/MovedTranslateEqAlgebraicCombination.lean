@@ -249,8 +249,7 @@ theorem moved_vacuum_jet_ne_zero : ∀ {D : D7} {T : Type} [Finite T] {L : LevCh
   have hsW : ∀ τ, X.rW.s τ = 1 := fun τ => (hX.stdW.2.2 τ).1
   have hBA : ∀ τ, X.rA.B τ = 1 := fun τ => by rw [(hX.std.2.2 τ).2]
   obtain ⟨k₀, hk₀⟩ := vac_jet_ne_zero hI hX
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   set γs := (ofSgn true A).symm γ with hγs
   have hγsQ : γs ∈ GQ (neg A) :=
     (GlobalTheory.SgnIdent.mem_GQ_sgn true A γs).2 (by rw [hγs, MulEquiv.apply_symm_apply]; exact hγ)

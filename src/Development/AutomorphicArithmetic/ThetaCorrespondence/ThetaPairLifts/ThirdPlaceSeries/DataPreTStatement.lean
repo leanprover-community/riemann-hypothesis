@@ -502,8 +502,7 @@ theorem val_pr_eq_one (p : SplitPt D k) {w : HeightOneSpectrum (𝓞 D.host.E)} 
   have e3 := congrArg (valuation k) hmul
   rw [map_mul, map_one] at e3
   refine le_antisymm e1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : valuation k (p.pr (incA D (y : D.host.E))) * valuation k (p.pr (incA D ((y : D.host.E))⁻¹)) < 1 :=
     mul_lt_one_of_lt_of_le hlt e2
   rw [e3] at this

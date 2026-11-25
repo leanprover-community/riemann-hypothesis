@@ -333,8 +333,7 @@ theorem noBase : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartIndepSt2 →
     have e1 : WeightAlgebra.DF w + 2 ≤ D.host.g 1 := le_trans hDF (min_le_right _ _)
     nlinarith [Nat.mul_le_mul e0 e1]
   obtain ⟨f, ⟨x, P, hP, hfP⟩, hf0⟩ := _root_.GlobalTheory.noCommonZero_of_chartIndep hC D T h j hj w hr hlast hM hα σ hσ k x0 hx0
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   obtain ⟨N, cf, g, hsum⟩ := Submodule.mem_span_set'.1 (mem_span_short D T h large₂ j hj w hrows hL hr P hP)
   choose gi hgi using fun i => (existsUnique_thRule _ _ _ hT x (g i).2.1).exists
   have hlin := (_root_.GlobalTheory.ThetaRule.isThRule_linear_and_congr hC D.host.E T.Q.H (T.Q.Dw j) T.Q.l (T.Q.Xo j) T.Q.c (T.nab j) hnab (wtA w) w.n).1

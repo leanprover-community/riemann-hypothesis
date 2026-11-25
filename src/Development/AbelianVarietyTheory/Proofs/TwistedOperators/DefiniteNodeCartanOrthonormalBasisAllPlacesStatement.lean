@@ -59,8 +59,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.RowReal
@@ -120,8 +118,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
 open scoped TensorProduct Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.definiteNode_cartan_orthonormalBasis_allPlaces : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ0 : T}, L.Is μ0 →
     ∀ (W : G.Weil) (X : Node), DefNode D.R.m X → ∀ ρ,

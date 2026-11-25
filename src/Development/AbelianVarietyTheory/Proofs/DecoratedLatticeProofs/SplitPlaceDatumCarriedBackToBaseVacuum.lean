@@ -76,8 +76,7 @@ theorem ind_nsmul_mem_of_ne_zero {G : Type} [AddCommGroup G] {χ : G → G → �
     rintro _ ⟨u, hu, rfl⟩
     exact nsmul_mem hu k
   obtain ⟨t₀, ht₀⟩ : ∃ t₀, Φ t₀ ≠ 0 := by
-    by_contra hh
-    push_neg at hh
+    by_contra! hh
     exact h0 (funext hh)
   set Φ₁ : G → ℂ := fun t => Φ (t + t₀) with hΦ₁
   have hM1 : Φ₁ ∈ M := hMX Φ hΦ t₀ (h1 t₀ ht₀)

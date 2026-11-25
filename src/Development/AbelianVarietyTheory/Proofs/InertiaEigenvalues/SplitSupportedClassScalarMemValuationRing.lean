@@ -628,8 +628,7 @@ theorem val_le_one_of_mem {k : Type} [Field k] [NumberField k] (σ : k →+* ℂ
     simp only [map_mul, map_pow, hw1 a' ha', hw1 b' hb', mul_one] at e2
     exact e2.symm
   have hle : mb ≤ ma := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 : A.valuation (σ (α : k)) ^ ma ≤ A.valuation (σ (α : k)) ^ mb := by
       rw [← key]
       exact mul_le_of_le_one_left' (pow_le_one' hz e)

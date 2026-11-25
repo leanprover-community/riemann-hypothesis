@@ -98,8 +98,7 @@ set_option synthInstance.maxHeartbeats 200000
 private theorem ls_le {A T K : Type} [CommRing A] [CommRing T] [Algebra A T] [Algebra.IsIntegral A T] [NormedField K]
     [IsUltrametricDist K] (z : T →+* K) (h1 : ∀ b, ‖z (algebraMap A T b)‖ ≤ 1) (s : T) : ‖z s‖ ≤ 1 := by
   obtain ⟨p, hpm, hp⟩ := Algebra.IsIntegral.isIntegral (R := A) s
-  by_contra hgt
-  push_neg at hgt
+  by_contra! hgt
   have hev := congrArg z hp
   rw [Polynomial.hom_eval₂, map_zero, Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ,
     ← Polynomial.leadingCoeff, hpm.leadingCoeff, map_one, one_mul] at hev

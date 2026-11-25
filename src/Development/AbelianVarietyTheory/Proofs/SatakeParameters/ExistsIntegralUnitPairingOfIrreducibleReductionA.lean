@@ -212,8 +212,7 @@ theorem main (B : Matrix (Fin a) (Fin a) R)
     exact (W.smul_mem_iff ((map_ne_zero_iff _ hinj).mpr hd)).mp hdy
 
   have hnot : ∃ v ∈ redLattice L, (B.map (residue R)).mulVec v ∉ redLattice L := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     rcases hB _ hcon with h | h
     · exact hA h
     · exact hT h
@@ -233,8 +232,7 @@ theorem main (B : Matrix (Fin a) (Fin a) R)
     simp [hϖres]
   let b := Module.Free.chooseBasis R ((Fin a → R) ⧸ L)
   have hj : ∃ j, b.repr (Submodule.Quotient.mk (B.mulVec w)) j ∉ maximalIdeal R := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hdv : ∀ j, ϖ ∣ b.repr (Submodule.Quotient.mk (B.mulVec w)) j := fun j => by
       have := hcon j
       rwa [hϖ, Ideal.mem_span_singleton] at this

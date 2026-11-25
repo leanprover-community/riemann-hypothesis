@@ -1001,8 +1001,7 @@ variable {ι : Type} [Fintype ι]
 theorem exists_unitary_eval_ne {a d : ℕ} (h : a ≤ d) (P : Pol ι d a) (hP : P ≠ 0) :
     ∃ κ : ι → Matrix.unitaryGroup (Fin d) ℂ,
       eval (basePt ι d a) (rowSub (fun τ => (κ τ : Matrix (Fin d) (Fin d) ℂ)) P) ≠ 0 := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hP
   let f : Var ι d a → MvPolynomial (ι × Fin d × Fin d) ℂ := fun y => X (y.1, Fin.castLE h y.2.2, y.2.1)
   have key : ∀ (Q : Pol ι d a) (w : ι × Fin d × Fin d → ℂ),
@@ -1478,8 +1477,7 @@ theorem quot_minor_eq_const_smul_compl : ∀ (D : D7) {a a' d : ℕ} (had : a + 
       inv_mul_cancel₀ (detChar_unitary_ne_zero n₀ κ), one_smul]
 
   have hF : ∃ P ∈ inv (ι := D.what₂.Tau) a d n₀, F P ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨x, hx⟩ := exists_ne (0 : Pr)
     obtain ⟨P', rfl⟩ := hq's x
     obtain ⟨P₀, hP₀, he⟩ := _root_.GlobalTheory.MinorFrame.exists_mem_inv_eq_of_twisted a' d n₀ Pr q' hq' P'

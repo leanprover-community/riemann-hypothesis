@@ -119,8 +119,7 @@ theorem beK_posDef (k : ℕ) (c : (Σ _ : Fin k, Module.Free.ChooseBasisIndex �
   obtain ⟨⟨m0, t0⟩, h0⟩ := Function.ne_iff.mp hc
   have key : ∃ σ : D.host.E →ₐ[ℚ] ℂ,
       ∑ i, (c i : ℂ) * σ ((bK D k i m0 : 𝓞 D.host.E) : D.host.E) ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     let B := NumberField.integralBasis D.host.E
     have hred : ∀ σ : D.host.E →ₐ[ℚ] ℂ, ∑ t, (c ⟨m0, t⟩ : ℂ) * σ (B t) = 0 := by
       intro σ

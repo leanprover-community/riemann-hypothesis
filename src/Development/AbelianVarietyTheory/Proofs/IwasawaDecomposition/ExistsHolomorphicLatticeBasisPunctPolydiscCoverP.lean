@@ -575,8 +575,7 @@ theorem cay_bound {z : ℂ} (hz : z.re ≤ -1 / 2) :
     simp; ring
   have hA0 : 0 ≤ A := norm_nonneg _
   have hB0 : 0 < B := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h0 : B = 0 := le_antisymm hc (norm_nonneg _)
     rw [h0] at hAB
     linarith [sq_nonneg A]
@@ -599,8 +598,7 @@ theorem cay_bound {z : ℂ} (hz : z.re ≤ -1 / 2) :
 
 theorem re_le_of_exp {z : ℂ} (h : ‖Complex.exp z‖ ≤ 1 / 2) : z.re ≤ -1 / 2 := by
   rw [Complex.norm_exp] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 := Real.exp_lt_exp.mpr hc
   have h2 := Real.add_one_le_exp (-1 / 2 : ℝ)
   linarith

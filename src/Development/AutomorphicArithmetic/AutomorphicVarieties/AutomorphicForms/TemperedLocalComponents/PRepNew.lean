@@ -832,8 +832,7 @@ theorem UpperTheory.V.Af.Rs.wTop :
   have hnn : ∀ (s : ℝ) (x : Fin 2 → ℤ), 0 ≤ ‖x‖ ^ (-(2 * s)) :=
     fun s x => Real.rpow_nonneg (norm_nonneg _) _
   obtain ⟨F, hF⟩ : ∃ F : Finset (Fin 2 → ℤ), M < ∑ x ∈ F, ‖x‖ ^ (-(2 * (1 : ℝ))) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact not_summable_two (summable_of_sum_le (hnn 1) h)
   have ht : Tendsto (fun s : ℝ => ∑ x ∈ F, ‖x‖ ^ (-(2 * s))) (𝓝 1)
       (𝓝 (∑ x ∈ F, ‖x‖ ^ (-(2 * (1 : ℝ))))) := by
@@ -908,8 +907,7 @@ theorem UpperTheory.V.Af.Rs.core :
   have hNF0 := hNP k L g.f g.f
   obtain ⟨hQ1, -, hQ3⟩ := hCP L _ _ G0 hG0
   have hfz : ∃ z, g.f z ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have h0 : (⇑g.f : ℍ → ℂ) = 0 := funext hall
     have := g.one
     rw [h0] at this

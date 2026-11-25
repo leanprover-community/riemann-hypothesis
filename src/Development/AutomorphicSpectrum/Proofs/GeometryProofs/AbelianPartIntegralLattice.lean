@@ -157,8 +157,7 @@ theorem eq_zero_of_mem_finset (ρ : O →+* Module.End k V) (σ : O →+* k)
     rw [Finset.iSup_insert, Submodule.mem_sup] at hxs
     obtain ⟨y, hy, z, hz, hyz⟩ := hxs
     obtain ⟨a, ha⟩ : ∃ a, σ a ≠ τ.1 a := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact τ.2 (RingHom.ext fun a => (h a).symm)
     have hzs : ∀ b : O, ρ b z ∈ ⨆ i ∈ t, eigSp ρ i.1 := by
       intro b

@@ -609,8 +609,7 @@ theorem minpoly_eq_of_aeval_of_linearIndependent {L A : Type} [Field L] [Ring A]
   have hi : IsIntegral L y := ⟨p, hm, by rwa [← aeval_def]⟩
   have hdvd : minpoly L y ∣ p := minpoly.dvd L y hy
   have hle : p.natDegree ≤ (minpoly L y).natDegree := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hsum := aeval_eq_sum_range' hlt y
     rw [minpoly.aeval, ← Fin.sum_univ_eq_sum_range (fun i => (minpoly L y).coeff i • y ^ i)] at hsum
     have hc := hind (fun i => (minpoly L y).coeff i) hsum.symm

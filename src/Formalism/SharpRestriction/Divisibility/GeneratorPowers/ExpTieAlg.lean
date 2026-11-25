@@ -82,8 +82,7 @@ theorem const_subst0 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ S} 
   · simp
   · intro e he
     obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     have hp : constantCoeff (e.prod fun s n => a s ^ n) = 0 := by
       rw [Finsupp.prod, map_prod]
@@ -117,8 +116,7 @@ private theorem subst_zero_lemma_3 {σ τ : Type} [Finite σ] (g : MvPowerSeries
   · by_cases he : e = 0 <;> simp [coeff_C, coeff_one, he]
   · intro n hn
     obtain ⟨s, hs⟩ : ∃ s, n s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext h)
     have hp : (n.prod fun _ k => (0 : MvPowerSeries τ S) ^ k) = 0 := by
       rw [Finsupp.prod]

@@ -205,8 +205,7 @@ theorem exists_loc (hE : Emb p s) {x : Fin m → ℂ} (hx : x ≠ 0)
     (h : ∀ q ∈ ptIdeal p s (genericPoint Z), eval₂ σ x q = 0) :
     ∃ (y : CxPts p σ) (c : ℂ), c ≠ 0 ∧ x = c • loc p s σ (pick hE.isLB y) y := by
   obtain ⟨k, hk⟩ : ∃ k, x k ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hx (funext hne)
   obtain ⟨hU, t, hsurj, ht⟩ := hE.chart k
   have hgen : genericPoint Z ∈ nonzeroLocus (s k) := by
@@ -284,8 +283,7 @@ theorem eval₂_loc_ne_zero (hy : under y = genericPoint Z) (hj : y ∈ ptsIn p 
     {q : MvPolynomial (Fin m) R} (hn : q.IsHomogeneous n) (hq : q ∉ ptIdeal p s (genericPoint Z)) :
     eval₂ σ (loc p s σ j y) q ≠ 0 := by
   have hq' : ∃ i, ∃ hU : genericPoint Z ∈ B.U i, coneHom p s (genericPoint Z) i hU q ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hq (mem_ptIdeal_iff.mpr hc)
   obtain ⟨i, hU, hne⟩ := hq'
   have hyi : y ∈ ptsIn p σ (B.U i) := by

@@ -81,8 +81,7 @@ private lemma core {n : ℕ} (M J : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) (ht : 
     have h2 := hneg _ hv0
     linarith
   · rintro ⟨z, hz⟩
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have h0 : ∀ x, x - t • J *ᵥ x = 0 := by
       intro x
       by_contra hv0

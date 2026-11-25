@@ -1470,8 +1470,7 @@ theorem UpperTheory.Lit.HoweDuality.radIrr :
     · exact h
     · exact absurd h hne
   obtain ⟨s, hs⟩ : ∃ s, s ∉ relFin om v := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hne
     rw [hK, eq_top_iff]
     intro x _

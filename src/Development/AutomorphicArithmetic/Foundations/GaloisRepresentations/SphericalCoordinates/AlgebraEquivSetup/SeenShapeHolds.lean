@@ -1184,8 +1184,7 @@ private lemma ω_in_uId {p : ℕ} [Fact p.Prime] (D : Datum p) (q : ℕ) (r : �
 
 private lemma exists_not_mem_of_sup {E : Type} [Field E] [NumberField E] (w : Plc E) {𝔞 : Ideal (𝓞 E)} (h : 𝔞 ⊔ w.asIdeal = ⊤) :
     ∃ t ∈ 𝔞, t ∉ w.asIdeal := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : 𝔞 ≤ w.asIdeal := hc
   rw [sup_eq_right.2 h1] at h
   exact w.isPrime.ne_top h

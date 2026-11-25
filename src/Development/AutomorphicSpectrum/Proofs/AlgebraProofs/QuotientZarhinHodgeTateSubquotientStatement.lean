@@ -571,8 +571,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.torsion_points_homomorphism_co
       by_contra hx
       have hne : ∀ k ∈ K, ∃ c : T.A, φ k c ≠ φ x c := by
         intro k hk
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         have e1 : φ k = φ x := AlgHom.ext hall
         have e2 : pt k = pt x := by rw [← hφ k, ← hφ x, e1]
         exact hx (hpt.inj e2 ▸ hk)

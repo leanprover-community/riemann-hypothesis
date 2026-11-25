@@ -1511,8 +1511,7 @@ theorem sup_rat [TopologicalSpace R] {ε : ℤˣ} (A : Ad E R) (ν : 𝔸[F] →
     rw [← e1, ← hG, Matrix.GeneralLinearGroup.val_det_apply, RingHom.map_det]
     rfl
   obtain ⟨m, n, hmn⟩ : ∃ m n, (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E) m n ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hdn
     rw [det_two i hi]
     simp [hc]

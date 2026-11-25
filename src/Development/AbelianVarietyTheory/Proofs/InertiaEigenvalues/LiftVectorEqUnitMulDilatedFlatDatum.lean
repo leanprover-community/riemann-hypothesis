@@ -456,8 +456,7 @@ theorem factor_prim : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (Q : Finset 
       exact one_ne_zero h3
     obtain ⟨Z', hZ'e, hZ'I, hne⟩ : ∃ Z' : AE D, e * Z' = Z' ∧ toEAf D Z' ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ∧
         ψ (Algebra.trace (AF D.host.F) (AE D) (incA D D.host.xi0 * ((m1 : AE D) * Z'))) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hnI ((H m1 m1.2.1).2 hcon)
     let m2 : supG D e ϖ := ⟨(m1 : AE D) * Z', by rw [← mul_assoc, m1.2.1],
       by rw [← mul_assoc, map_mul]; exact mul_mem m1.2.2 hZ'I⟩

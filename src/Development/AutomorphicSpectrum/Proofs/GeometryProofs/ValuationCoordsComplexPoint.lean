@@ -3,6 +3,9 @@ module
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBoundedMul
+import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumMem
 
 @[expose] public section
 
@@ -65,51 +68,16 @@ theorem homog_pow {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (n : �
 
 theorem homog_coordProd (C : ∀ k, ι k) (d : K → ℕ) :
     IsMultiHomog (∏ k, (X ⟨k, C k⟩ : MRing ι) ^ d k) d := by
-  classical
-  have key : ∀ s : Finset K, IsMultiHomog (∏ k ∈ s, (X ⟨k, C k⟩ : MRing ι) ^ d k)
-      (∑ k ∈ s, d k • Pi.single k 1) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using (homog_one (ι := ι))
-    | insert k s hk ih =>
-      rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      exact homog_mul (homog_pow (homog_X k (C k)) _) ih
-  have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  have := key Finset.univ
-  rwa [e] at this
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.LocalRep.isMultiHomog_chartMono <;> assumption
 
 theorem aeval_scale {A : Type} [CommRing A] [Algebra ℤ A] {g : MRing ι} {a : K → ℕ} (hg : IsMultiHomog g a)
     (c : K → A) (z : (Σ k, ι k) → A) :
     aeval (fun p => c p.1 * z p) g = (∏ k, c k ^ a k) * aeval z g := by
-  simp only [aeval_def, eval₂_eq', Finset.mul_sum]
-  refine Finset.sum_congr rfl fun d hd => ?_
-  have h1 : ∏ p, (c p.1 * z p) ^ d p = (∏ p, c p.1 ^ d p) * ∏ p, z p ^ d p := by
-    rw [← Finset.prod_mul_distrib]
-    simp_rw [mul_pow]
-  have h2 : ∏ p : (Σ k, ι k), c p.1 ^ d p = ∏ k, c k ^ a k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ y, c k ^ d ⟨k, y⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hg d hd k]
-  rw [h1, h2]
-  ring
+  apply _root_.GroundTheory.Heights₂.Heights.Inter.regularityLocalResidue_holds.aeval_blockScale_int <;> assumption
 
 theorem mem_mCoordIdeal_of_aeval_eq_zero (y : (Σ k, ι k) → Ω) {f : MRing ι} {d : K → ℕ}
     (hf : IsMultiHomog f d) (h0 : aeval y f = 0) : f ∈ mCoordIdeal y := by
-  rw [mCoordIdeal, RingHom.mem_ker]
-  show aeval (fun p => MvPolynomial.C (y p) * MvPolynomial.X p.1) f = 0
-  have e : (fun p : (Σ k, ι k) => (MvPolynomial.C (y p) * MvPolynomial.X p.1 : MvPolynomial K Ω)) =
-      fun p => MvPolynomial.X p.1 * MvPolynomial.C (y p) := by
-    funext p
-    exact mul_comm _ _
-  rw [e, aeval_scale hf]
-  have e2 : aeval (fun p => (MvPolynomial.C (y p) : MvPolynomial K Ω)) f =
-      (MvPolynomial.C : Ω →+* MvPolynomial K Ω).toIntAlgHom (aeval y f) := by
-    rw [MvPolynomial.comp_aeval_apply]
-    rfl
-  rw [e2, h0, map_zero, mul_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBoundedMul.mem_mCoordIdeal_of_aeval_eq_zero <;> assumption
 
 variable (y : (Σ k, ι k) → Ω) (w : (Σ k, ι k) → ℂ)
 

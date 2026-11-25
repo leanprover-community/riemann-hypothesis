@@ -1349,8 +1349,7 @@ theorem padicGe_sum {p : ℕ} [Fact p.Prime] {ι : Type*} (s : Finset ι) (f : �
 
 theorem padicValNat_lt_of_lt_pow {p : ℕ} [hp : Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
     padicValNat p y ≤ t := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : p ^ (t + 1) ∣ y := (pow_dvd_pow p (Nat.succ_le_of_lt hc)).trans (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _))
   have h2 := Nat.le_of_dvd hy h1
   omega

@@ -121,8 +121,7 @@ variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] [Algeb
 theorem exists_mem_comap_not_mem (v : HeightOneSpectrum (𝓞 E)) (w : HeightOneSpectrum (𝓞 K))
     (hw : w.asIdeal.comap (algebraMap (𝓞 E) (𝓞 K)) ≠ v.asIdeal) :
     ∃ e : 𝓞 E, algebraMap (𝓞 E) (𝓞 K) e ∈ w.asIdeal ∧ e ∉ v.asIdeal := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hmax : (w.asIdeal.comap (algebraMap (𝓞 E) (𝓞 K))).IsMaximal :=
     haveI := w.isMaximal; Ideal.isMaximal_under_of_isIntegral_of_isMaximal (R := 𝓞 E) w.asIdeal
   exact hw (hmax.eq_of_le v.isPrime.ne_top fun e he => h e he)

@@ -341,8 +341,7 @@ theorem exists_multiplier_descend_of_closed {σ X : Type} [Fintype σ] [Nonempty
   obtain ⟨b, hb, hbs⟩ := _root_.GlobalTheory.exists_common_denominator_of_isNilpotent B A Subtype.val_injective (s.image π) hnil
   obtain ⟨b, c, rfl⟩ := b
   refine ⟨c, ?_, fun f hf => ?_⟩
-  · by_contra hc
-    push_neg at hc
+  · by_contra! hc
     exact hb (Subtype.ext (Subtype.ext (funext fun x => hc x)))
   · obtain ⟨⟨b', c', rfl⟩, hb'⟩ := hbs (π f) (Finset.mem_image_of_mem _ hf)
     exact ⟨c', fun x => congrFun (congrArg Subtype.val hb') x⟩

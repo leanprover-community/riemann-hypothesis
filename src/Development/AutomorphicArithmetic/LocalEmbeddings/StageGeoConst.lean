@@ -159,7 +159,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime IsSplitBasis)
 open GlobalTheory.BotMatch (evW)
 open GlobalTheory.StageGeo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.exists_local_zeta_data_realizing_standard_pair :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (a a' : ℕ)
@@ -211,7 +210,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime IsSplitBasis)
 open GlobalTheory.BotMatch (evW)
 open GlobalTheory.StageGeo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem fmFst_mat {k : Type} [Field k] {a n d : ℕ} (e : Fin n ≃ Fin d) (B G Gi : Matrix (Fin a) (Fin a) k) (hG : Gi * G = 1)
     (W Wi : Matrix (Fin d) (Fin d) k) (hW : Wi * W = 1) (m : GL (Fin n) k) (hm : m.1 = W.submatrix e e)
@@ -339,7 +337,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime IsSplitBasis)
 open GlobalTheory.BotMatch (evW)
 open GlobalTheory.StageGeo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem piW_cA' {D : D7} {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := D.host.F)} (t : D.host.E →ₐ[D.host.F] Fv D.host.F v) (w : AE D) :
     piW t (cA D w) = piW (t.comp D.sp.cm.sig) w := by
@@ -496,7 +493,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime IsSplitBasis)
 open GlobalTheory.BotMatch (evW)
 open GlobalTheory.StageGeo
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.StageGeo
 

@@ -95,7 +95,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat 
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 
 end -- clump:auto
@@ -114,7 +113,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat 
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 
 noncomputable section
@@ -538,7 +536,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat 
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 
 theorem iwasawa_inert : ∀ (D : D7) (T T₀ : HSp D) (r : ℕ) (d : HypDec T T₀ r) (v : FinPl D), ¬ Formalism.MainNotions.SchurIrreducible.IsSplit (E := D.host.E) v → ∀ y : Gv T v, ∃ q k : Gv T v, emb D.sp.cm.sig T.gram v q ∈ stab d ∧ k ∈ stabLoc D.sp.cm.sig T.gram (frameLat T) v ∧ y = q * k := by

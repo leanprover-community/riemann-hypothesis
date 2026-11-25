@@ -347,8 +347,7 @@ lemma exists_pt_of_isLocalRing {A : Type} [CommRing A] [IsLocalRing A]
 
 lemma exists_of_finite {α : Type} {S : Set α} (hS : S.Finite) {Q : α → ι → Prop}
     (H : ∀ᶠ i in (U : Filter ι), ∃ W ∈ S, Q W i) : ∃ W ∈ S, ∀ᶠ i in (U : Filter ι), Q W i := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have : ∀ᶠ i in (U : Filter ι), ∀ W ∈ S, ¬ Q W i :=
     (Filter.eventually_all_finite hS).2 fun W hW => hcon W hW
   obtain ⟨i, ⟨W, hW, h1⟩, h2⟩ := (H.and this).exists
@@ -876,13 +875,11 @@ theorem properSpreads : GlobalTheory.SpreadingModels.Spreads (fun _ _ f => IsPro
     obtain ⟨F, hF⟩ := h
     exact ⟨lvl φ S₀ F, inferInstance, lvlHom φ hS₀ F, (lvl φ S₀ F).val.toRingHom, rfl,
       finiteType_lvl φ hS₀f F, hF⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hS : ∀ F, ∃ S : ValuativeCommSq (pullback.snd f₀ (Spec.map (CommRingCat.ofHom
       (lvlHom φ hS₀ F)))), ¬ Nonempty (Unique S.commSq.LiftStruct) := by
     intro F
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hcon F
     rw [IsProper.eq_valuativeCriterion]
     exact ⟨⟨⟨h, inferInstance⟩, inferInstance⟩, inferInstance⟩

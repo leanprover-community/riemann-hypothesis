@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem lintegral_base_measure_le {r : ℕ} {TT : ℝ} (H : MA.E r → ENNReal) :
     ∫⁻ q : MA.Qp r TT, H q.1 ∂MA.mu0 r TT ≤ ∫⁻ x in MA.Qset r TT, MA.dens0 x * H x := by
   have hQ : MeasurableSet (MA.Qset r TT) := (MA.Qset_open r TT).measurableSet

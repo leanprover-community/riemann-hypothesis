@@ -300,8 +300,7 @@ theorem coefB {n : ℕ} (γ γ' : Fin (n + 2) → ℂ) (hγ : ∀ j : Fin (n + 2
     (i i' : Fin (n + 2)) (h : i < i') (hne : ¬ (i = 0 ∧ i' = 1)) :
     γ i * γ' i' - γ i' * γ' i = 0 := by
   have hi' : 2 ≤ i'.val := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     apply hne
     have h1 : i.val < i'.val := h
     refine ⟨Fin.ext ?_, Fin.ext ?_⟩ <;> simp only [Fin.val_zero, Fin.val_one] <;> omega

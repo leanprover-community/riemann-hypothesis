@@ -823,8 +823,7 @@ theorem trBasis_mod_irreducible : ∀ (k F : Type) [Field k] [Field F] [Algebra 
     rw [h, hc, map_zero]
   | succ m =>
     obtain ⟨i, hi⟩ : ∃ i, (hu.aevalEquiv.symm t).degreeOf i ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h0 : (hu.aevalEquiv.symm t).totalDegree = 0 := by
         rw [MvPolynomial.totalDegree_eq_zero_iff]
         intro mm hmm x
@@ -1471,8 +1470,7 @@ theorem pow_dvd_differentIdeal_iff_pow_succ_dvd_map : ∀ (A B : Type) [CommRing
     intro k
     constructor
     · intro h
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have h3 : Q ^ e * Q ∣ Q ^ e * R := by
         rw [← pow_succ, ← h₂]
         exact (pow_dvd_pow Q hlt).trans h

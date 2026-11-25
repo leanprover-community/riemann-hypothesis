@@ -467,8 +467,7 @@ theorem pointSum_eq_pointSide_of_commensurable : ∀ {Γ G₁ G₂ : Type} [Grou
       rw [← hFinv h (hΓT hh) x k hk, ← he]
       exact hne _
     have hor : (∀ x₁ : G₁, f₁ (x₁⁻¹ * γ * x₁) = 0) ∨ (∀ x₂ : G₂, φ (x₂⁻¹ * δ * θ x₂) = 0) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ := hc
       exact mul_ne_zero ha hb (hF0 (a, b))
     rw [hPS]

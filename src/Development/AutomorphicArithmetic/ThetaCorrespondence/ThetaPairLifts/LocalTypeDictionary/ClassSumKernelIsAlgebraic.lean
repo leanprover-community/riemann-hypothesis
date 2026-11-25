@@ -1093,8 +1093,7 @@ theorem real_average_kernel_isAlgebraic : ∀ {D : D7} {T : Type} [Finite T] {L 
     by_cases hex : ∃ d : D.what₂.Tau →₀ ℕ, ∀ τ, c τ * Complex.exp Complex.I ^ d τ = 1
     · obtain ⟨d₀, hd₀⟩ := hex
       refine ⟨d₀, fun d hd => ?_⟩
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       refine hd (Finsupp.ext fun τ => ?_)
       have hc0 : c τ ≠ 0 := fun h0 => by have := hd₀ τ; rw [h0, zero_mul] at this; exact zero_ne_one this
       exact GlobalTheory.ExpPow.pow_exp_I_or_inv_injective _ _ _ (Or.inl rfl)

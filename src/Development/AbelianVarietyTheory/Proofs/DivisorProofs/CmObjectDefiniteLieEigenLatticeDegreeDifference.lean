@@ -289,8 +289,7 @@ theorem idx_mul_map_bar_eq : ∀ (E : Type) [Field E] [NumberField E] (bar : �
       simp
     obtain ⟨k, hk0, hk⟩ := bdd_of_fg hfg
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hw0 (funext hne)
     have hdi : d i ≠ 0 := fun h => hi (by rw [← hbd i, h, map_zero])
     have hkE : (k : E) ≠ 0 := by exact_mod_cast hk0
@@ -1311,8 +1310,7 @@ theorem deg_iSup_map_of_gram : ∀ (K : Type) [Field K] [NumberField K] (W V : T
   haveI : FiniteDimensional K (Submodule.span K (ℓ : Set W)) :=
     Module.finite_of_finrank_pos (by rw [hr]; norm_num)
   obtain ⟨c, hcℓ, hc0⟩ : ∃ c ∈ ℓ, c ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h0 : Submodule.span K (ℓ : Set W) = ⊥ := by
       rw [Submodule.span_eq_bot]; intro x hx; exact hne x hx
     rw [h0, finrank_bot] at hr; exact zero_ne_one hr

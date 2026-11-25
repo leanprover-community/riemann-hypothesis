@@ -938,8 +938,7 @@ theorem uModel : UModel := by
       rw [LinearMap.toMatrix_mulVec_repr, (hy i₀ w rfl).2]
     have hne : ∀ w, ∃ x, a i₀ w x ≠ 0 := by
       intro w
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply (hy i₀ w rfl).1
       apply (bs i₀ w).repr.map_eq_zero_iff.mp
       ext x

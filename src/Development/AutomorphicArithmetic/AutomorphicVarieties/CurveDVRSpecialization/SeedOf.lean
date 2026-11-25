@@ -440,8 +440,7 @@ theorem cone_of_integral (hF : F.Ok C₀) (hn : n = 2 ∨ n = 3) (C : Type) [Com
     (fun _ _ ⟨x, hx, hx0⟩ => ⟨x, hrev hx, hx0⟩)
     (fun p => ⟨1, hone p, one_ne_zero⟩)
     (by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hT.1
       change Ideal.span _ ≤ ⊥
       rw [Ideal.span_le]
@@ -449,8 +448,7 @@ theorem cone_of_integral (hF : F.Ok C₀) (hn : n = 2 ∨ n = 3) (C : Type) [Com
       rw [SetLike.mem_coe, Ideal.mem_bot]
       exact hc i j hji _ (hgen g i j))
     (by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hT.2
       change Ideal.span _ ≤ ⊥
       rw [Ideal.span_le]

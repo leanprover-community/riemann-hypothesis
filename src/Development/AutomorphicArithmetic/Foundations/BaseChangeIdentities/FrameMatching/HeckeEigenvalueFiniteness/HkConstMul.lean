@@ -280,8 +280,7 @@ theorem isHk_cosetFn {K L : Subgroup (GL ι F)} [Fintype (K ⧸ L.subgroupOf K)]
     refine HasCompactSupport.of_support_subset_isCompact hC fun x hx => ?_
     obtain ⟨q, hq⟩ : ∃ q : K ⧸ L.subgroupOf K,
         (QuotientGroup.mk x : GL ι F ⧸ K) = QuotientGroup.mk (((q.out : K) : GL ι F) * g) := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       refine (Function.mem_support.1 hx) ?_
       unfold cosetFn
       exact Finset.sum_eq_zero fun q _ => if_neg (h q)

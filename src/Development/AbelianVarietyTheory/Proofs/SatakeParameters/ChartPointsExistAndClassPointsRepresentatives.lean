@@ -497,8 +497,6 @@ noncomputable section
 
 namespace GlobalTheory.FrameLat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def seamVec {D : D7} {X : Fields} (s : Seam D X) (n : ℕ) :
     Sp X.E n →ₛₗ[(RingOfIntegers.mapRingEquiv s.iE : 𝓞 X.E →+* 𝓞 D.host.E)] (Fin n → D.host.E) where
   toFun x l := s.iE (x l)
@@ -621,7 +619,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.BaseFrameLat
 
@@ -689,7 +686,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 end -- clump:auto
@@ -703,7 +699,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -924,7 +919,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -948,7 +942,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.TwU.Approx
@@ -1141,8 +1134,6 @@ open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.FrameShift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_glint_nearAt {D : D7} {X : Fields} (s : Seam D X) {n : ℕ} (P : HeightOneSpectrum (𝓞 X.E)) (d : ℕ)
     (k : GL (Fin n) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F))
     (hk : CongAt (seamP s P) 0 k) (hk' : CongAt (seamP s P) 0 k⁻¹) :
@@ -1261,8 +1252,6 @@ noncomputable section
 
 namespace GlobalTheory.TwV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem isPtAd_mul_lev : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (i : ℕ) (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x' : UA D i hi) p (κ : ((St i hi).K β).lev.U), x'.1 = x.1 * κ.1 → IsPtAd A a i hi β x p → ∃ p', IsPtAd A a i hi β x' p') := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP H i hi β x x' p κ hx hp
   obtain ⟨p', hN, hf, hfr⟩ := _root_.GlobalTheory.FrameShift.exists_pt_mul A dtU a hP H i p
@@ -1333,10 +1322,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.TwRat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 theorem ratPt : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (i : ℕ) (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x' : UA D i hi) p, ∀ γ ∈ Formalism.UG.UJ (Formalism.L2.Forms.sigD D : D.host.E →+* D.host.E) (Formalism.L2.Forms.gramN D i hi), x'.1 = ratA D.host.F γ * x.1 → IsPtAd A a i hi β x p → ∃ p', IsPtAd A a i hi β x' p') := by
   intro D _ _ _ _ _ _ _ _ t u μ St A dtU a hP _ i hi β x x' p γ hγ hx hp
   obtain ⟨g, hg⟩ := _root_.GlobalTheory.TwU.UnitaryFrom.exists_uf_seamGL_eq t.seam t.seam_ok (A.crd i hi * γ * (A.crd i hi)⁻¹) (_root_.GlobalTheory.unitary_conj_orthonormal D _ _ _ (hP.crd_orth i hi) hγ)
@@ -1385,8 +1370,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 noncomputable section
 
 namespace GlobalTheory.TwV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Cls
 

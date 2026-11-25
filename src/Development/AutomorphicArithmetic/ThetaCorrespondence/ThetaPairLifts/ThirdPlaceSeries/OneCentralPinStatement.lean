@@ -221,8 +221,7 @@ theorem commute_of_skew {R : Type} [CommRing R] (ψ : E →+* R) (σ : E →+* E
     (Z : Matrix n n R) (hZ : ∀ g ∈ UJ σ J, Commute Z ((g : Matrix n n E).map ψ))
     (A : Matrix n n E) (hA : cT σ A * J + J * A = 0) : Commute Z (A.map ψ) := by
   obtain ⟨k, hk⟩ : ∃ k : ℕ, (A.charpoly).eval (((k + 1 : ℕ) : E)) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hfin : {x : E | A.charpoly.IsRoot x}.Finite :=
       Polynomial.finite_setOf_isRoot A.charpoly_monic.ne_zero
     have hsub : Set.range (fun k : ℕ => (((k + 1 : ℕ) : E))) ⊆ {x | A.charpoly.IsRoot x} := by
@@ -426,8 +425,7 @@ theorem finE_center_scalar : ∀ {D : D7} (V : Formalism.BasicNotions.TH.HSp D) 
   set σ : D.host.E →+* D.host.E := (D.sp.cm.sig : D.host.E →+* D.host.E) with hσdef
   have hσσ : ∀ x, σ (σ x) = x := fun x => star_star x
   obtain ⟨x, hx⟩ : ∃ x, σ x ≠ x := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have htop : (⊥ : Subalgebra D.host.F D.host.E) = ⊤ := by
       rw [eq_top_iff]
       intro y _
@@ -783,8 +781,7 @@ theorem sc_mul_mu {c : Comm D} {v : VCom c} (G : GLoc v) (μ lam : D.host.E) (h�
     rw [hτ] at b
     exact ((map_mul π _ _).symm.trans b).trans a
   have h3 : ∃ i, (c.bes G.s 0 h).ζ i ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     have a := G.hz_unit G.s 0 h
     have b : (c.B G.s 0 h).ζ = 0 := funext hn
     rw [Place.hz, b, hπ] at a

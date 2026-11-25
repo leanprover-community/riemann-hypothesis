@@ -127,7 +127,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.datumLevel_hyperspecial_off_finite_places : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (Lv : LevDat D.host.E ℂ V.rank) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))), IsBaseFrame V β Λ 1 → (∀ PP, PP ∈ Lv.Pg ∨ PP ∈ Lv.Q → (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP) ∈ Sb) → SphOff (levG V β Lv : Set (GA D V)) (levChi V β Lv) Sb ∧ (∀ g ∈ GfC V, g ∈ levG V β Lv ↔ (∃ k ∈ levG V β Lv, ∀ v ∈ Sb, projV V v g = projV V v k) ∧ ∀ v ∉ Sb, projV V v g ∈ Kv V v) ∧ (∀ g : GA D V, {v | projV V v g ∉ Kv V v}.Finite) ∧ ∀ k ∈ levG V β Lv, ‖levChi V β Lv k‖ = 1 := by
   first | exact @GlobalTheory.FinZeta.LevelOff.level_offS
@@ -147,7 +146,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.finiteLevelDatumVector_transforms_by_levelCharacter : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) i t σ s P cμ cη m ω BW f₀ f c io, IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io → ∀ k ∈ levG (Wc D i) (R.βW i) (R.datWp i P), ω (1, k) f = levChi (Wc D i) (R.βW i) (R.datWp i P) k • f := by
   first | exact @GlobalTheory.ZetaLaw.zeta_law
@@ -169,7 +167,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinZeta
 
@@ -663,7 +660,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinZeta
 
@@ -752,7 +748,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocZetaSplit
 
@@ -852,7 +847,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ZetaGL
 
@@ -887,7 +881,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.sphericalZetaKernelGL_right_invariant_integral : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r N : ℕ) (z : ℂˣ) (φ : GL (Fin r) (w.adicCompletion E) → ℂ), KerGL w N z φ → ∀ g k : GL (Fin r) (w.adicCompletion E), k ∈ KGL w (n := r) → φ (g * k) = φ g := by
@@ -927,7 +920,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.LocZeta
@@ -1089,7 +1081,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.levelFiniteDatum_isSchwartzBruhat_half : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D)) (LT : LevDat D.host.E ℂ T.rank) (Q : Finset (Pl D.host.E)) (m : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (Z : Finset (Pl D.host.E)) (e : AE D), IsSelfDualC S ΛS → IsSelfDualC T ΛT → IsFrame βS ΛS → IsFrame βT ΛT → IsIdemSum e Z → IsSBHalf (cA D e) (latO S T ΛS ΛT fun _ => True) (levDatum S T βS βT LT Q m e) := by
   first | exact @GlobalTheory.FinZeta.isSBHalf_levDatum
@@ -1109,7 +1100,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.levelVector_finiteDatum_isTheta_vacuum_off : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) i t σ s P cμ cη m ω BW f₀ f c io, IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io → IsThetaFunO R.ψ (Vc D i) (Wc D i) f ∧ ∀ v ∉ finS R t, VacFin R.ψ (Vc D i) (Wc D i) v f := by
   first | exact @GlobalTheory.FinZeta.levVec_vacFin
@@ -1129,7 +1119,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1217,7 +1206,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.principalLevel_relIndex_liftLevel_eq_card : ∀ (D : D7) (T0 : Type) (C : LevCh D T0) (μ0 : T0), C.Is μ0 → ∀ (Z : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Z → C.Pg ⊆ Z → ∀ (i : Fin D.R.m) (P : LevelP C.Pg D.R.r ℂ), levG (Wc D i) (C.βW i) (C.datWp i C.triv) ≤ levG (Wc D i) (C.βW i) (C.datWp i P) ∧ (levG (Wc D i) (C.βW i) (C.datWp i C.triv)).relIndex (levG (Wc D i) (C.βW i) (C.datWp i P)) = Nat.card P.H ∧ Nat.card P.H ≠ 0 := by
   first | exact @GlobalTheory.LevIdx.levidx
@@ -1237,7 +1225,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.thetaTranslate_orthogonal_of_support_moved_off : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → ∀ (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → ∀ (Z : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Z → ∀ (f₀ Φ f : WO S T → ℂ), IsSBHalf (cA D e) (latO S T ΛS ΛT fun _ => True) Φ → IsThetaAt ψ (symplO S T) (heisO ψ S T) (cA D e) (latO S T ΛS ΛT fun _ => True) 1 f₀ Φ f → IsThetaFunO ψ S T f → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ g ∈ GfC T, (∀ x, Φ x ≠ 0 → Φ (actO S T 1 g x) = 0) → l2 μ 𝓕 (om (1, g) f) f = 0 := by
   first | exact @GlobalTheory.ThetaOrth.orth
@@ -1259,7 +1246,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinZeta.MoveVac
 
@@ -1310,7 +1296,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinZeta
 
@@ -1484,8 +1469,7 @@ theorem finiteZetaL : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Pub
   obtain ⟨x, hx, hx0⟩ := (Submodule.ne_bot_iff _).1 hne
   have hU0 : (R.HW i σ).e x ≠ 0 := fun h => hx0 ((hC.models.HW i σ).1 (h.trans (map_zero _).symm))
   obtain ⟨v₀, hv₀⟩ : ∃ v₀, (R.HW i σ).e x v₀ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hU0 (MultilinearMap.ext h)
   obtain ⟨m1, m2⟩ := mult_values hP hC.models.inf hx.1 v₀
   obtain ⟨B, hB, hb⟩ := GlobalTheory.T.exists_satake_parameters_bounded_eigenfunction D (Wc D i) _ _ (finS R t) hs _ m1 hv₀ m2 ev (part_eigen hx v₀)
@@ -1525,7 +1509,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.finiteZetaIntegral_thetaLift_eq_partialLValue : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.BernsteinZelevinskyFiniteness → GlobalTheory.Published.UnramifiedDoublingGL → ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), FiniteZetaL R F := by
   first | exact @GlobalTheory.FinZeta.finiteZetaL

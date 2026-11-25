@@ -14,8 +14,7 @@ private theorem UpperTheory.V.AlgebraTools.exists_unit_entry {R : Type} [CommRin
     [Fintype ι] [DecidableEq ι] (e : Matrix ι ι R) (he : IsIdempotentElem e) (h0 : e ≠ 0) :
     ∃ a b, IsUnit (e a b) := by
   classical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hm : ∀ a b, e a b ∈ maximalIdeal R := fun a b => (mem_maximalIdeal _).2 (h a b)
   have hmap : (1 - e).map (residue R) = 1 := by
     ext a b

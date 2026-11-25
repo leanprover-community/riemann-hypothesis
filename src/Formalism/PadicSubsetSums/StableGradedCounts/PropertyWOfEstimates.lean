@@ -967,8 +967,7 @@ theorem mem_e3SB {N : ℕ} {c : Fin N → K} (hc : c ∈ sqSet K N) {l : ℕ} (h
   have hxp := pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi' h0' hx
   have hyp := pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi'' h0'' hy
   have hldiv : l ∣ Fintype.card K ^ δ - 1 ∨ l ∣ Fintype.card K ^ δ' - 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hne
     calc x = primeToPart l x := (primeToPart_eq_self_of_not_dvd hl (hn δ hδ1) hxp hcon.1).symm
       _ = primeToPart l y := hxy
@@ -1001,8 +1000,7 @@ theorem square_set_mem_exceptional_union {N : ℕ} {c : Fin N → K} (hc : c ∈
       l ^ (4 * padicValNat l (Fintype.card K ^ d - 1)) ≤ Fintype.card K ^ d := by
     intro d hd
     have hd' := Finset.mem_Icc.1 hd
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hqd : 1 ≤ Fintype.card K ^ d := Nat.one_le_pow _ _ (by omega)
     have hv : padicValNat l (Fintype.card K ^ d - 1) ≠ 0 := by
       intro hv
@@ -1158,8 +1156,7 @@ theorem local_estimate_second : LocalEstimateII := by
     rw [hsdef, show (4 : ℝ)⁻¹ = ((4 : ℕ) : ℝ)⁻¹ by norm_num]
     exact Real.rpow_inv_natCast_pow hQ0 (by norm_num)
   have hs8 : 8 ≤ s := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 : s ^ 2 < 64 := by nlinarith
     have h4 : s ^ 4 < 4096 := by
       nlinarith [mul_pos (by linarith : (0 : ℝ) < 64 - s ^ 2) (by positivity : (0 : ℝ) < 64 + s ^ 2)]

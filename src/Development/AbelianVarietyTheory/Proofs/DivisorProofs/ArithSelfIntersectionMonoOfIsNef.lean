@@ -151,8 +151,7 @@ theorem monotone_form_along_segment : ∀ (D : ℕ) (Φ : MvPolynomial (Fin 2) �
     exact mul_nonneg (pow_nonneg (by positivity) _) (hyp _ _)
   have hfpos : ∀ τ ∈ Set.Ioo (0 : ℝ) 1, 0 ≤ f τ := by
     intro τ hτ
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have hev : ∀ᶠ t in 𝓝 τ, f t < 0 := hfc.continuousAt.eventually (Iio_mem_nhds hneg)
     obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.mp hev
     obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show max 0 (τ - ε) < τ from

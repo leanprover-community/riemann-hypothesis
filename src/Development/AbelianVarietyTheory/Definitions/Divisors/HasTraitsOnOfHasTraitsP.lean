@@ -97,8 +97,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.GSep
 
 structure GSet where

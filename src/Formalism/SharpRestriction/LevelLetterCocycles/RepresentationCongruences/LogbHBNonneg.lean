@@ -1119,8 +1119,7 @@ theorem padicValNat_eq_card_dvd_pows (l : ℕ) (hl : 2 ≤ l) (N b : ℕ) (hN : 
     exact hfin.pow_dvd_iff_le_multiplicity
   have hv : padicValNat l N < b := by
     have h1 : l ^ padicValNat l N ≤ N := Nat.le_of_dvd hN0 ((key _).2 le_rfl)
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : l ^ b ≤ l ^ padicValNat l N := Nat.pow_le_pow_right (by omega) hc
     omega
   have hset : (Ico 1 b).filter (fun i => l ^ i ∣ N) = Icc 1 (padicValNat l N) := by

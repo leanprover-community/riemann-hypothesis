@@ -15,8 +15,6 @@ namespace PI.UnitaryGroupMassFormula.UsCompose
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 abbrev Vr (N : ℕ) : Type := (Fin N × Fin N) ⊕ (Fin N × Fin N)
 
 def vars {N : ℕ} (g : Matrix (Fin N) (Fin N) ℂ) : Vr N → ℂ :=

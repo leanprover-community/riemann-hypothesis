@@ -1034,8 +1034,7 @@ private theorem pts_sur {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] [
 private theorem pts_loc {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R] [IsLocalRing R]
     (f : R →ₐ[c.O] PadicAlgCl l) : IsLocPt f := by
   intro x hx
-  by_contra hge
-  push_neg at hge
+  by_contra! hge
   have h0 : f x ≠ 0 := by
     intro hz
     rw [hz, norm_zero] at hge

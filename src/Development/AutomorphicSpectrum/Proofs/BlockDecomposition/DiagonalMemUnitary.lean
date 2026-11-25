@@ -1415,8 +1415,7 @@ theorem finiteDimensional_of_hom (W H : Type) [AddCommGroup W] [Module ℂ W]
     FiniteDimensional ℂ H := by
   obtain ⟨w, hw⟩ := exists_ne (0 : W)
   have hex : ∃ φ : Module.Dual ℂ W, φ w ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hw ((Module.forall_dual_apply_eq_zero_iff ℂ w).1 hcon)
   obtain ⟨φ, hφ⟩ := hex
   let j : H →ₗ[ℂ] (W →ₗ[ℂ] H) :=
@@ -1768,8 +1767,7 @@ theorem countG : CountG := by
   · rw [hse, Finset.mem_image] at hμ
     obtain ⟨ν, hν, rfl⟩ := hμ
     exact ⟨hA _, hfd ⟨ν, hν⟩⟩
-  · by_contra hno
-    push_neg at hno
+  · by_contra! hno
     apply hne
     refine (Submodule.eq_bot_iff _).2 fun t ht => hinj t ht fun μ hμ ξ hξ => ?_
     have h1 := hmaps t ht _ ξ hξ

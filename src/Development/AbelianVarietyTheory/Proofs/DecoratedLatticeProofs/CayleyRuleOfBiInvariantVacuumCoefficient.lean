@@ -61,7 +61,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -79,8 +78,7 @@ theorem heisInv_forms_proportional : ∀ (L : Type) [Field L] [Valued L (WithZer
     split_ifs with hx
     · rw [h.fixes x hx]
     · have : ∃ i j, x i j ∉ Formalism.UG.intL L := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hx hc
       obtain ⟨i, j, hij⟩ := this
       obtain ⟨u, hu, hne⟩ := GlobalTheory.SphTheta.exists_pairing_single_ne h.1.unr h.v_two h.1.delta.1 h.1.psi_ne x hij
@@ -126,7 +124,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -291,7 +288,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

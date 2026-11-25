@@ -275,8 +275,7 @@ theorem apply_eq_zero (h : NADual V χ μ) {T : (V → ℂ) → (V → ℂ)}
         simp only [Set.mem_setOf_eq, Set.mem_compl_iff, add_sub_cancel] at this
         exact this hs
       have hz : ∃ z ∈ perp χ L, χ z (s - x) ≠ 1 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hsL (hpp fun z hz => hcon z hz)
       obtain ⟨z, hzL, hzne⟩ := hz
       have hzne' : χ (s - x) z ≠ 1 := by rwa [hsymm]

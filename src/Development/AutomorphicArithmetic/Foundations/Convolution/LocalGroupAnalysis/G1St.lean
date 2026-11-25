@@ -387,8 +387,7 @@ private theorem exists_bump {X : Type} [Group X] [TopologicalSpace X] [IsTopolog
       (Finset.range N).isCompact_biUnion fun m _ => hfc m, ?_⟩
     intro h hh x hx hne
     obtain ⟨m, hm⟩ : ∃ m, f m (h * x) ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hne (finsum_eq_zero_of_forall_eq_zero hall)
     have hmN : m < N := by
       by_contra hmN

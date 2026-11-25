@@ -79,7 +79,6 @@ namespace GlobalTheory.ClsVal.Reach
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.IndefiniteRowSideFullHecke.DeltaDatumCombinedCoefficient (fnAt basePt)
 open GlobalTheory.LevelCoverCompare (fnRule evR_fnRule fnRule_mem fnAt_comp)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l l₂ : Geo.Tor.Level H}
 

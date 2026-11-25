@@ -164,8 +164,7 @@ theorem exists_local_nonnorm : ∀ (p : ℕ) (F : Type) [Field F] [NumberField F
     ∃ c : (v.adicCompletion F)ˣ, c ∉ kNorm p (RingHom.id (v.adicCompletion F))
       (algebraMap F (v.adicCompletion F) δ) := by
   intro p F _ _ ζ δ v hp hζ hδ
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   haveI : CharZero (v.adicCompletion F) :=
     charZero_of_injective_algebraMap (algebraMap F (v.adicCompletion F)).injective
   have hζ' : IsPrimitiveRoot (algebraMap F (v.adicCompletion F) ζ) p :=

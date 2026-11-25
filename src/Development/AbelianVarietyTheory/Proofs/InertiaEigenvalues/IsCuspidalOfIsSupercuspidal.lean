@@ -82,8 +82,7 @@ theorem exists_dual_infinite {Q : Type} [AddCommGroup Q] [Module ℂ Q] (w : ℕ
   · haveI : Finite s := hfin.to_subtype
     have hne : ∀ r, ∃ i, B.repr ⟨w r, hmem r⟩ i ≠ 0 := by
       intro r
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hw r
       have h0 : B.repr ⟨w r, hmem r⟩ = B.repr 0 := by rw [map_zero]; exact Finsupp.ext hc
       simpa using congrArg Subtype.val (B.repr.injective h0)

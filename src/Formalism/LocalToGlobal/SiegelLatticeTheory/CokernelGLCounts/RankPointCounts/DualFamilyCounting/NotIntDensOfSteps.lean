@@ -71,8 +71,7 @@ def GaPlusIntMM : Prop :=
 
 theorem notIntDens_of (h1 : LocSelfDual) (hG : GaPlusIntMM) : NotIntDens := by
   intro D δ M hA L u u' hT F0 what₂ hR ϖ hϖ Z F' hz hZ hP hI
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hI
   refine hG D δ M hA L u u' hT F0 what₂ hR Z F' hz hZ hP fun p a b => ?_
   by_contra hab

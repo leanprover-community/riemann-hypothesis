@@ -11,8 +11,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out IsLocalRing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.GeneratorValues
 
 variable {R : Type} [CommRing R] [IsDomain R]

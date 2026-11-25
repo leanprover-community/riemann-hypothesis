@@ -208,8 +208,7 @@ theorem isModel_boxT : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topol
       funext w
       simp [heisO]
     have ht₀ : ∃ t₀, Φ.1 t₀ ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hΦ (Subtype.ext (funext hc))
     obtain ⟨t₀, ht₀⟩ := ht₀
     have hU : {t | Φ.1 t = Φ.1 t₀} ∩ {t | Φ'.1 t = Φ'.1 t₀} ∈ nhds t₀ :=

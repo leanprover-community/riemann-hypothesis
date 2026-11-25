@@ -874,8 +874,7 @@ theorem sum_prod_fixed_place_average {ι : Type} [Fintype ι] [DecidableEq ι] {
       · simp [c]
       · intro γ _ hγ
         obtain ⟨i, hi⟩ : ∃ i, γ i ≠ 1 := by
-          by_contra hcon
-          push_neg at hcon
+          by_contra! hcon
           exact hγ (funext hcon)
         have : c ∅ γ = 0 := Finset.prod_eq_zero (mem_univ i) (by simp [hi])
         rw [this, zero_smul]

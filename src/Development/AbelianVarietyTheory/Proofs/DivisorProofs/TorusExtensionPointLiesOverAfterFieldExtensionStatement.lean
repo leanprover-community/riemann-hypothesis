@@ -67,7 +67,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open GlobalTheory.ZH
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -133,7 +132,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open GlobalTheory.ZH
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 noncomputable section
 namespace GlobalTheory.ValuePullback
@@ -200,7 +198,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open GlobalTheory.ZH
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section

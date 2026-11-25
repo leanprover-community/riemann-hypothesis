@@ -61,7 +61,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Mem.Th GlobalTheory.Cusp
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Cusp
 
@@ -90,7 +89,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Mem.Th GlobalTheory.Cusp
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 end -- clump:auto

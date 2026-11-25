@@ -148,7 +148,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -220,7 +219,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -424,7 +422,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -508,7 +505,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -562,7 +558,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.GridJoin
 
 theorem isVacO_transport {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) :
@@ -607,7 +602,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -655,7 +649,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -698,7 +691,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GridJoin.VacX
 
@@ -756,7 +748,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -830,7 +821,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.JoinArrows
 
@@ -885,7 +875,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -932,7 +921,6 @@ section Gen
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Matrix
 open GlobalTheory.Chain GlobalTheory.Chain.RealIt
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowThetaIt
 
@@ -964,7 +952,6 @@ section Par
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid GlobalTheory.PairLift GlobalTheory.SignedHC GlobalTheory.RemoveBlock
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowThetaIt
 
@@ -1067,7 +1054,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowThetaIt
 
@@ -1104,7 +1090,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GridJoin
 

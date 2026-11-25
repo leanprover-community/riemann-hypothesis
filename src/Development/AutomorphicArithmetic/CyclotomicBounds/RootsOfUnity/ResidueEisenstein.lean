@@ -130,8 +130,7 @@ theorem tame_ext : ∀ (L : Type) [Field L] [NumberField L] (v : HeightOneSpectr
   have hq : 2 ≤ Nat.card ((𝓞 L ⧸ v.asIdeal)ˣ ⧸ f.range) := by
     have h := f.range.card_eq_card_quotient_mul_card_subgroup
     rw [hG, hS] at h
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     interval_cases hc : Nat.card ((𝓞 L ⧸ v.asIdeal)ˣ ⧸ f.range) <;> omega
   have hker : 2 ≤ Nat.card (MonoidHom.domRestrictHom f.range ℂˣ).ker := by
     rw [CommGroup.card_domRestrictHom_ker]

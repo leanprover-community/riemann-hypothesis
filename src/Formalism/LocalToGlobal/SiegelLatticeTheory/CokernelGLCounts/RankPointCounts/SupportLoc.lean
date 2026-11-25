@@ -278,8 +278,7 @@ theorem det_uUp {n : ℕ} (w : Loc.Pt E n) (y : Loc.IN w → E) : (Loc.uUp w y).
 theorem bb_ne (Mo : Loc.Model F E) {m : ℕ} (w : Loc.Pt E (m + 1)) (c : Mo.Cls m) (h : Mo.BB w c ≠ 0) :
     ∃ ZZ : Mo.Mat (m + 1), (ZZ.Z.map Mo.R.subtype).det = w.mat.det ∧ Nonempty (Mo.Iso ZZ (Quotient.out c)) := by
   obtain ⟨xy, hxy⟩ : ∃ xy, Mo.bbIntegrand w c xy ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     unfold Loc.Model.BB
     simp [hc]

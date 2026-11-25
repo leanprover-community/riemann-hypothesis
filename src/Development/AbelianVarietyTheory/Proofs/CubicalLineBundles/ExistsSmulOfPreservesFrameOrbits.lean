@@ -298,8 +298,7 @@ theorem _root_.GlobalTheory.OrbitScalar.exists_smul_of_orbits : ∀ (E : Type) [
     rw [h0, Matrix.det_zero] at h
     exact not_isUnit_zero h
   obtain ⟨k, l, hkl⟩ : ∃ k l, ((g : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) k l ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne0 g (Matrix.ext hcon)
   set u0 : E := (γ : Matrix (Fin r) (Fin r) E) k l /
     ((g : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) k l with hu0def

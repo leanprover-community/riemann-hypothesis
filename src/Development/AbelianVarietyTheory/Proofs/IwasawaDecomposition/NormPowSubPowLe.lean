@@ -83,8 +83,7 @@ lemma norm_eval_sub_le (Q : C[X]) (hc : ∀ i, ‖Q.coeff i‖ ≤ 1) {y a : C} 
 
 lemma norm_le_one_of_root (Q : C[X]) (hm : Q.Monic) (hc : ∀ i, ‖Q.coeff i‖ ≤ 1) {a : C}
     (h : Q.eval a = 0) : ‖a‖ ≤ 1 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set n := Q.natDegree
   have hpos : 0 < ‖a‖ := lt_trans zero_lt_one hlt
   have hs : ‖∑ i ∈ Finset.range n, Q.coeff i * a ^ i‖ ≤ ‖a‖ ^ n / ‖a‖ := by

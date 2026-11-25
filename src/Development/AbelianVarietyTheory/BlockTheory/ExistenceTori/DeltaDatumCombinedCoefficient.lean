@@ -13,8 +13,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.DeltaDatumCombinedCoefficient
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke.LevelSpanSeparation
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 structure IsAuxiliarySplitSquarefreeLevel (l : Level H) where

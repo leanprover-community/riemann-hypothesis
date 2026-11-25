@@ -8,8 +8,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Meas
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 def RhoUni : Prop :=

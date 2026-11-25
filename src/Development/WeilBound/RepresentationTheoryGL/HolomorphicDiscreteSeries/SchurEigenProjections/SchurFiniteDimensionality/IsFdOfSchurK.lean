@@ -601,8 +601,7 @@ theorem bigProjP_of (hg0 : PositivityTheory.UnitaryDecomposition.X4.IntegralGerm
           mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hx16 hA0) hC0
       _ = x ^ (1 + 67 * (n + 1) ^ 2 + 24 * (n + 1) ^ 3) := by rw [pow_add, pow_add, pow_one]
       _ ≤ x ^ (100 * (n + 1) ^ 3 * 2) := pow_le_pow_right₀ (by linarith) hnat
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hsq : ‖ContinuousLinearMap.adjoint i (π (um g₀) v)‖ ^ 2 < ((x ^ (100 * (n + 1) ^ 3))⁻¹) ^ 2 :=
     pow_lt_pow_left₀ hlt ht0 (by norm_num)
   have hp : 0 < 16 * x ^ (67 * (n + 1) ^ 2) * x ^ (24 * (n + 1) ^ 3) :=

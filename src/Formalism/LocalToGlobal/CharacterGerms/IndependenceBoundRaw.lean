@@ -43,8 +43,7 @@ theorem mm_mul_int {a b : C} (ha : V.Ge 0 a) (hb : V.MM b) : V.MM (a * b) := by
 theorem mm_of_pow {a : C} {n : ℕ} (h : V.MM (a ^ n)) : V.MM a := by
   unfold VF.MM at *
   rw [V.v.map_pow] at h
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   exact absurd h (not_lt.mpr (nsmul_nonpos hle n))
 
 theorem mm_pow {a : C} (ha : V.MM a) {n : ℕ} (hn : n ≠ 0) : V.MM (a ^ n) := by
@@ -57,8 +56,7 @@ theorem valuation_nonneg_of_pow {a : C} {n : ℕ} (h : V.Ge 0 (a ^ n)) (hn : n �
   rw [valuation_nonneg_iff] at *
   rw [V.v.map_pow] at h
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   rw [succ_nsmul] at h
   have h1 : m • V.v a ≤ 0 := nsmul_nonpos hlt.le m
   exact absurd h (not_le.mpr (lt_of_le_of_lt (le_of_le_of_eq (add_le_add h1 le_rfl) (zero_add _)) hlt))
@@ -67,8 +65,7 @@ theorem valuation_nonneg_div {x y : C} (hy : y ≠ 0) (h : V.v y ≤ V.v x) : V.
   obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.mp (fun h' => hy ((V.v.top_iff).mp h'))
   have hx : x = (x / y) * y := by field_simp
   rw [valuation_nonneg_iff]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨s, hs⟩ := WithTop.ne_top_iff_exists.mp (ne_top_of_lt hlt)
   have h2 : V.v x = ((s + r : ℝ) : WithTop ℝ) := by
     rw [hx, V.v.map_mul, ← hs, ← hr, WithTop.coe_add]

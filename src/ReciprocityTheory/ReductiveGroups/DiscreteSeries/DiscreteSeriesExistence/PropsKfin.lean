@@ -88,8 +88,7 @@ theorem kfin_wt_orth (hσ : IsURepOn (UJset ε) σ) {μ ν : Fin n → ℝ} {v w
     (hne : μ ≠ ν) : inner ℂ v w = 0 := by
   classical
   obtain ⟨a, ha⟩ : ∃ a, μ a ≠ ν a := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hd : ν a - μ a ≠ 0 := sub_ne_zero.mpr (Ne.symm ha)
   set c : ℝ := Real.pi / (ν a - μ a) with hc
@@ -176,8 +175,7 @@ theorem kfin_key (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     rw [hy]
     exact Submodule.sub_mem _ (hS hx) (hFcl (Fm.starProjection_apply_mem x))
   obtain ⟨z0, hz0M, hz0⟩ : ∃ z0 : D, z0 ∈ genSub E V ∧ inner ℂ (z0 : H) y ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hyo : y ∈ ((genSub E V).map D.subtype)ᗮ := by
       rw [Submodule.mem_orthogonal]
       rintro u ⟨z1, hz1, rfl⟩

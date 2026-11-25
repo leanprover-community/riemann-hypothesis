@@ -395,8 +395,7 @@ private theorem unit_alt {F : Type} [Field F] [NumberField F] (g : G1 F)
     (h00 : Dv 1 (g 0 0)) (h01 : Dv 1 (g 0 1)) (h10 : Dv 1 (g 1 0)) (h11 : Dv 1 (g 1 1))
     (v : HeightOneSpectrum (𝓞 F)) :
     Valued.v ((g 1 0).2 v) = 1 ∨ Valued.v ((g 1 1).2 v) = 1 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨hc, hd⟩ := hcon
   have le1 : ∀ {x : A F}, Dv 1 x → Valued.v (x.2 v) ≤ 1 := fun {x} hx => by
     have := hx v

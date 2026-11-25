@@ -29,15 +29,7 @@ theorem log_add_sum_of_sameOrbit {α : Type} (T : Finset α) {A : HermLine ι} (
     (hw : ∀ k, ∃ i, w ⟨k, i⟩ ≠ 0) :
     Real.log (A.h z) + ∑ j ∈ T, Real.log ((B j).h z) =
       Real.log (A.h w) + ∑ j ∈ T, Real.log ((B j).h w) := by
-  obtain ⟨c, hc, rfl⟩ := h
-  simp only [log_h_torus _ hc hw, Finset.sum_add_distrib]
-  have h1 : ∑ k, (A.a k : ℝ) * Real.log ‖c k‖ =
-      -∑ j ∈ T, ∑ k, ((B j).a k : ℝ) * Real.log ‖c k‖ := by
-    rw [Finset.sum_comm, ← Finset.sum_neg_distrib]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [hA, Pi.neg_apply, Finset.sum_apply, Int.cast_neg, Int.cast_sum, neg_mul, Finset.sum_mul]
-  rw [h1]
-  ring
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Chg.log_sum_orbit <;> assumption
 
 end Lines
 

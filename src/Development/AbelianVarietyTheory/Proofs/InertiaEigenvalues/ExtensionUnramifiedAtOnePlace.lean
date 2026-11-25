@@ -121,8 +121,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Polynomial ValuativeRel
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.LocalFieldIso
 
 theorem resCard_padic (g : ℕ) [Fact g.Prime] : GlobalTheory.SplitWeil.resCard ℚ_[g] = g := by

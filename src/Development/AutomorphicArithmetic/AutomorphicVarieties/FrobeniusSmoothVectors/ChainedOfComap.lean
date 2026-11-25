@@ -103,8 +103,7 @@ private theorem ann_of_flat {A R : Type} [CommRing A] [CommRing R] [IsLocalRing 
     exact ha
   obtain ⟨k, c, y, hy, hc⟩ := Module.Flat.isTrivialRelation_of_sum_smul_eq_zero
     (R := A) (M := R) (f := fun _ : Fin 1 => a) (x := fun _ : Fin 1 => (1 : R)) h0
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h1 : (1 : R) = ∑ j, c 0 j • y j := hy 0
   have hone : (1 : R) ∈ maximalIdeal R := by
     rw [h1]
@@ -620,8 +619,7 @@ theorem UpperTheory.V.CA.g_homprime :
     apply hP.ne_top
     rw [← hcomap, htop, Ideal.comap_top]
   · intro F G hFG
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨hF, hG⟩ := hne
     rw [key] at hF hG hFG
     push_neg at hF hG

@@ -42,8 +42,7 @@ theorem exists_deriv (α : K) (ε : ℝ) (hε : 0 < ε) (m : ℕ) (c : ℝ) (hc 
         refine ⟨ε * δ₁ ^ 2, by positivity, fun P hP => ?_⟩
         rw [Function.iterate_succ_apply]
         apply h₁
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         have h2 : δ₁ ^ 2 ≤ ‖aeval α (derivative P)‖ ^ 2 := pow_le_pow_left₀ hδ₁.le hle 2
         have h3 := H P
         have h4 := mul_le_mul_of_nonneg_left h2 hε.le
@@ -245,8 +244,7 @@ theorem eventually_root (hH : HenselN K) {π : K} (h0 : π ≠ 0) (h1 : ‖π‖
       lt_of_le_of_lt (norm_nonneg _) hE2
     rw [le_div_iff₀ hwpos] at hyb
     rw [add_sub_cancel_left, norm_mul]
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have h1' := mul_le_mul_of_nonneg_right hge hwpos.le
     have h2' := mul_le_mul_of_nonneg_left hyb (norm_nonneg l)
     nlinarith

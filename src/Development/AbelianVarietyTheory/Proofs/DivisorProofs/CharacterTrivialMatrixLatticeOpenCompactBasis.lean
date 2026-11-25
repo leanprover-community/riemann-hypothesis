@@ -90,8 +90,7 @@ theorem ker_int_mem_nhds (ψ0 : AddChar k ℂ) (hc : Continuous ψ0) :
 
 theorem ker_int_lt {ψ0 : AddChar k ℂ} {t : k} (ht : ψ0 t ≠ 1) {u : k}
     (hu : ∀ o : k, valuation k o ≤ 1 → ψ0 (o * u) = 1) : valuation k u < valuation k t := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hu0 : u ≠ 0 := by
     rintro rfl
     apply ht
@@ -144,8 +143,7 @@ namespace GlobalTheory.LinSchurLatt
 theorem latt_open_compact_basis : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n d : ℕ) (ψ0 : AddChar k ℂ), Continuous ψ0 → ψ0 ≠ 1 → (∀ s : k, s ≠ 0 → IsOpen (GlobalTheory.LinSchur.latt ψ0 n d s : Set (Matrix (Fin n) (Fin d) k)) ∧ IsCompact (GlobalTheory.LinSchur.latt ψ0 n d s : Set (Matrix (Fin n) (Fin d) k))) ∧ ∀ W ∈ 𝓝 (0 : Matrix (Fin n) (Fin d) k), ∃ s : k, s ≠ 0 ∧ (GlobalTheory.LinSchur.latt ψ0 n d s : Set (Matrix (Fin n) (Fin d) k)) ⊆ W := by
   intro k _ _ _ _ n d ψ0 hc hne
   obtain ⟨t, ht⟩ : ∃ t, ψ0 t ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (AddChar.ext _ _ fun x => by rw [h x, AddChar.one_apply])
   have ht0 : t ≠ 0 := by
     rintro rfl

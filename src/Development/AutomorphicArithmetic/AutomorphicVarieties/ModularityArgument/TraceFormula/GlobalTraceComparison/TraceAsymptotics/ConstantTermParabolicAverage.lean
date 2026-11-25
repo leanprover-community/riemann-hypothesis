@@ -74,8 +74,7 @@ private theorem exists_aff {ι : Type} (x y : ι → ℂ) (i : ι) (h : x i ≠ 
 private theorem sep_one (n : ℕ) (w : Pl E) {A A' : Multiset ℂˣ} (h : A.card = n) (h' : A'.card = n)
     (hne : A' ≠ A) : ∃ e : Ex (Fin (n + 1)), ev1 n w e A = 1 ∧ ev1 n w e A' = 0 := by
   have hex : ∃ j, j ≤ n ∧ satEig (qV E w) n A j ≠ satEig (qV E w) n A' j := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne (eq_of_satEig_eq (qV_ne_zero w) h h' hc).symm
   obtain ⟨j, hj, hj'⟩ := hex
   exact exists_aff (fun j : Fin (n + 1) => satEig (qV E w) n A j)

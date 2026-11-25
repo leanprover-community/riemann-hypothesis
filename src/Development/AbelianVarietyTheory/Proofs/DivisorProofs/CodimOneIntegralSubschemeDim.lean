@@ -241,8 +241,7 @@ theorem dim_eq_of_coheight_eq_one : ∀ (k : Type) [CommRing k] (X : Scheme.{0})
     j.isOpenEmbedding.isInducing.specializes_iff.trans (PrimeSpectrum.le_iff_specializes u v).symm
   have hmin : ∀ q' : Ideal A, q'.IsPrime → q' ≤ q → q' = ⊥ ∨ q' = q := by
     intro q' hq'p hle
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     let b' : PrimeSpectrum A := ⟨q', hq'p⟩
     let g : PrimeSpectrum A := ⟨⊥, Ideal.isPrime_bot⟩
     have h₁ : z < j b' := by

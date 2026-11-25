@@ -119,8 +119,7 @@ theorem exists_exchange {E : Type} [Field E] {a d : ℕ} (γ : Matrix (Fin d) (F
     have := Matrix.linearIndependent_rows_iff_isUnit.1 hli'
     exact ((Matrix.isUnit_iff_isUnit_det _).1 this).ne_zero
   refine ⟨s, ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hv
   set B := γ.submatrix s id with hB
   have hz : Bᵀ.cramer v = 0 := by
@@ -211,8 +210,7 @@ theorem one_le_mul_norm_rowMap (R : Subring E) [Nonempty ι] (ε : ι → E →+
     calc (1 : ℝ) ≤ ∏ i, ‖ε i z‖ := hprod z hzR hz0
       _ ≤ ∏ _i : ι, L := Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) fun i _ => hbound i
       _ = L ^ Fintype.card ι := by simp [Finset.card_univ]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact absurd h6 (not_le.2 (pow_lt_one₀ hL0 hlt Fintype.card_ne_zero))
 
 theorem card_le_of_rows_le (R : Subring E) [Nonempty ι] (ε : ι → E →+* ℂ)

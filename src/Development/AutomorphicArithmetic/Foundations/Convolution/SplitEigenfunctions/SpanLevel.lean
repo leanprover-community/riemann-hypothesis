@@ -91,8 +91,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.infPair :
     InfPair := by
   intro E _ _ _ V Q B hB hne τ m m' hc hm hm'
   obtain ⟨x, y, hxy⟩ : ∃ x y, B x y ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (LinearMap.ext fun x => LinearMap.ext fun y => hcon x y)
   let S := GlobalTheory.CapPair.adjPairs V Q.V B
   have h1 : ∀ i j z, (GlobalTheory.CuspRep.lieS E 2 i j (GlobalTheory.CuspRep.atEmb τ z),
@@ -537,8 +536,7 @@ private theorem coef_zero (D : Dat ℚ E) {Φ : GL (Fin 2) (A E) → ℂ} (hL : 
   obtain ⟨a, ha⟩ : ∃ a : ℚ, 2 * a = -ξ 0 := ⟨-ξ 0 / 2, by ring⟩
   obtain ⟨b, hb⟩ : ∃ b : ℚ, 2 * (D.δ * b) = -ξ 1 := ⟨-ξ 1 / (2 * D.δ), by field_simp⟩
   have hab : a ≠ 0 ∨ b ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨h1, h2⟩ := hc
     refine hξ (funext fun i => ?_)
     fin_cases i
@@ -1036,8 +1034,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.satPair :
   have hβ : ∀ x y, β x (TC.toDual Q y) = B x y := fun x y => by simp [β]
   have hβ' : ∀ x, β x Y = B x ((TC.toDual Q).symm Y) := fun _ => rfl
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, β x₀ Y ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     refine hY.1 ?_
     have h0 := hker0 ((TC.toDual Q).symm Y) hn
     have h1 := congrArg (TC.toDual Q) h0

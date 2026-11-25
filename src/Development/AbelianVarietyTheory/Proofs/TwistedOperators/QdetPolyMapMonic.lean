@@ -104,8 +104,7 @@ theorem qdet_polyMap_monic (A : Type) [Ring A] [Algebra ℂ A] (n : ℕ) (E : Fi
     intro σ hσ
     rw [hct σ]
     obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hσ (Equiv.ext hne)
     apply List.prod_eq_zero
     rw [List.mem_ofFn]

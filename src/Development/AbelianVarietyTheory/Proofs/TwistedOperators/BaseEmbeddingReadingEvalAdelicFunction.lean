@@ -291,7 +291,7 @@ theorem hkSupAt_of_readsCusp (hI : GlobalTheory.IndefiniteRowSideFullHecke.Unuse
     (hR : ∀ hV : T.V ((i : ℕ) + 1) (res T (sg0 D A)) = Wc D i, ReadsCusp T R κ i _ hV) :
     HkSupAt T R i := by
   intro P k α Rc hd hL hH hW la hla
-  refine keeps_of _ la hL hW ?_ (comm_rho_cl hβ hSb hHW hgW _ hd hinj hρ hH)
+  refine ⟨?_, comm_rho_cl hβ hSb hHW hgW _ hd hinj hρ hH⟩
   have hV : T.V ((i : ℕ) + 1) (res T (sg0 D A)) = Wc D i :=
     fw.laws.spaceW _ (inR i) _ (base_embedding_good T R fw.alg_eq fw.laws.pins.2.2.1)
   obtain ⟨p, m, hp, hpP, hq⟩ := exists_prime_under P

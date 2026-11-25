@@ -127,8 +127,7 @@ private theorem exists_ne_zero_act_eq_mul_of_cocycle {K : Type} [Field K] {Q : T
     simp only [tt, dif_pos h]
     exact hwd _ _ h.choose_spec
   obtain ⟨y, hy⟩ : ∃ y : E, ∑ s ∈ S, tt s * s y ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hli := linearIndependent_iff'.1 (linearIndependent_monoidHom E K) S (fun s => tt s) (by
       funext y
       simpa [Finset.sum_apply, smul_eq_mul] using hcon y)

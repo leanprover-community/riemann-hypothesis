@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
@@ -300,18 +301,8 @@ theorem gr_scale (L : Lat ξ E) {r : ℕ} {b₁ b₂ : Fin r → E} (j : Fin r) 
   rwa [inv_mul_cancel_left₀ hμ] at this
 
 theorem mem_span_iff {R : Subring Ω} {g a : Ω} (hg : g ≠ 0) : a ∈ Submodule.span R {g} ↔ a / g ∈ R := by
-  rw [Submodule.mem_span_singleton]
-  constructor
-  · rintro ⟨c, rfl⟩
-    have : c • g / g = (c : Ω) := by
-      show (c : Ω) * g / g = c
-      field_simp
-    rw [this]
-    exact c.2
-  · intro h
-    refine ⟨⟨_, h⟩, ?_⟩
-    show a / g * g = a
-    field_simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeDeterminantLattice.mem_span_iff <;> assumption
 
 theorem span_eq_iff {R : Subring Ω} {g g' : Ω} (hg : g ≠ 0) (hg' : g' ≠ 0) :
     Submodule.span R {g} = Submodule.span R {g'} ↔ g / g' ∈ R ∧ g' / g ∈ R := by

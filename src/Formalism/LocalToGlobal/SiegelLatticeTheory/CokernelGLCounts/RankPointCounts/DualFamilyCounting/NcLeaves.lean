@@ -459,8 +459,7 @@ theorem sigNeg_card_le {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι]
         ← Matrix.star_mulVec, hv, Matrix.reindex_apply, Matrix.submatrix_mulVec_equiv]
     simp only [dotProduct]
     exact Fintype.sum_equiv e _ _ (fun i => by simp [Function.comp_def])
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   let L : (ι → ℂ) →ₗ[ℂ] (Fin q → ℂ) :=
     (LinearMap.funLeft ℂ ℂ Sum.inr) ∘ₗ (Matrix.mulVecLin Qi) ∘ₗ
       (LinearMap.funLeft ℂ ℂ e.symm) ∘ₗ (Fintype.linearCombination ℂ u)
@@ -1160,8 +1159,7 @@ theorem exists_one {K : Type} [Field K] [NumberField K] [StarRing K]
           star (algebraMap (𝓞 K) K (a * b))
         rw [map_mul, star_mul'] }
   have memI : ∀ o : 𝓞 K, o ∈ I ↔ ∃ m ∈ M, h m z = star (o : K) := fun o => Iff.rfl
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hI : I ≠ ⊤ := by
     intro htop
     have h1 : (1 : 𝓞 K) ∈ I := by rw [htop]; exact Submodule.mem_top

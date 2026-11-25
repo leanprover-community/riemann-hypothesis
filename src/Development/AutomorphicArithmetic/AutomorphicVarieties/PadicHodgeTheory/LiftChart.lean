@@ -266,8 +266,7 @@ private theorem gc_mem_pow_iff {E σ : Type} [Field E] [Finite σ] (N : ℕ) (g 
         have hpick : ∀ e : σ →₀ ℕ, e ≠ 0 → e (pick e) ≠ 0 := by
           intro e he
           have h : ∃ i, e i ≠ 0 := by
-            by_contra hh
-            push_neg at hh
+            by_contra! hh
             exact he (Finsupp.ext hh)
           simp only [pick, dif_pos h]
           exact Classical.choose_spec h

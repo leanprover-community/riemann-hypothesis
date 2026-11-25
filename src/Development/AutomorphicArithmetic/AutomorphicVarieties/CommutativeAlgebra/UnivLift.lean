@@ -910,8 +910,7 @@ theorem UpperTheory.V.Alg.univ_lift :
   have hne : ∀ p : {p : Lift O rbar (DualNumber (ResidueField O)) × Lift O rbar (DualNumber (ResidueField O)) //
       p.1 ≠ p.2}, ∃ g, p.1.1.hom g ≠ p.1.2.hom g := by
     intro p
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact p.2 (Lift.ext (MonoidHom.ext hcon))
   have hs : Seps rbar (fun p => (hne p).choose) := by
     intro r r' h

@@ -21,8 +21,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.RadAdj
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section hs
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

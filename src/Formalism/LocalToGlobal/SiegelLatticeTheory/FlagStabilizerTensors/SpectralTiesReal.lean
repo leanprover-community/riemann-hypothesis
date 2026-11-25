@@ -96,8 +96,7 @@ theorem kv_nonneg {E : Type} [Field E] {H : Type} [NormedAddCommGroup H] [InnerP
   have h1 : 0 ≤ B.c0 * B.c0' * B.KV := by
     rw [hI.2]
     exact mul_nonneg hn.le (tsum_nonneg fun _ => by positivity)
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have h2 := mul_neg_of_pos_of_neg hc hneg
   linarith
 

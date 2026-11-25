@@ -1534,8 +1534,6 @@ open GlobalTheory.Desc
 
 namespace GlobalTheory.OpenSubgrp
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S P : Scheme.{0}} {H₁ H₂ : Over S} [GrpObj H₁] [GrpObj H₂] {h₁ : H₁.left ⟶ P} {h₂ : H₂.left ⟶ P}
   {pS : P ⟶ S}
 
@@ -1562,8 +1560,6 @@ theorem mul_mem_range (e₁ : h₁ ≫ pS = H₁.hom) (e₂ : h₂ ≫ pS = H₂
 end GlobalTheory.OpenSubgrp
 
 namespace GlobalTheory.OpenSubgrp
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem range_subset : ∀ (S P : Scheme.{0}) (H₁ H₂ : Over S) [GrpObj H₁] [GrpObj H₂] (h₁ : H₁.left ⟶ P)
     (h₂ : H₂.left ⟶ P), ∀ pS : P ⟶ S, h₁ ≫ pS = H₁.hom → h₂ ≫ pS = H₂.hom → IsOpenImmersion h₁ →

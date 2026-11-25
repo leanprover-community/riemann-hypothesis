@@ -49,8 +49,7 @@ theorem HasDens.const_mul (c : ℝ) {φ : V → ℝ} {g : X → ℝ} (h : HasDen
 theorem nonneg_of_setIntegral [LocallyCompactSpace X] [IsFiniteMeasureOnCompacts ν]
     [ν.IsOpenPosMeasure] (D : X → ℝ) (hD : Continuous D)
     (h0 : ∀ S, IsCompact S → 0 ≤ ∫ b in S, D b ∂ν) (b0 : X) : 0 ≤ D b0 := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have hU : {b | D b < D b0 / 2} ∈ 𝓝 b0 :=
     (isOpen_lt hD continuous_const).mem_nhds (by show D b0 < D b0 / 2; linarith)
   obtain ⟨K, hKn, hKU, hKc⟩ := local_compact_nhds hU

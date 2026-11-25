@@ -128,12 +128,10 @@ private theorem weight_components_mem_of_sum_mem {n : ℕ} {K V : Type*} [Field 
         rw [Finsupp.sum, Finset.sum_subset hone (fun x _ hx => by simpa using hx), Finset.sum_singleton]
       rw [← hsum]; exact hs
     obtain ⟨nu, hnu, hne⟩ : ∃ nu ∈ f.support, nu ≠ mu := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hone fun x hx => Finset.mem_singleton.2 (hc x hx)
     obtain ⟨a, ha⟩ : ∃ a, mu a ≠ nu a := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hne (funext fun a => (hc a).symm)
     let g : (Fin n → ℤ) →₀ V := Finsupp.onFinset f.support
       (fun mu' => (((mu' a : ℤ) : K) - ((nu a : ℤ) : K)) • f mu')

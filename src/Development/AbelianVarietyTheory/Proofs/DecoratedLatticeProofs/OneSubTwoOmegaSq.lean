@@ -213,8 +213,7 @@ theorem norm_eq_one_of_quad_root {l : ℕ} [Fact l.Prime] (x : ℂ_[l]) (N : ℕ
     exact (Nat.Prime.coprime_iff_not_dvd Fact.out).mpr hN
   have hle : ∀ y : ℂ_[l], y ^ 2 - y + (N : ℂ_[l]) = 0 → ‖y‖ ≤ 1 := by
     intro y hy
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 : y ^ 2 = y - N := by linear_combination hy
     have h2 : ‖y - (N : ℂ_[l])‖ ≤ max ‖y‖ ‖(N : ℂ_[l])‖ := by
       rw [sub_eq_add_neg, ← norm_neg (N : ℂ_[l])]
@@ -420,8 +419,7 @@ theorem htform_constantCoeff_subst (A v : K⟦X⟧) (h0 : constantCoeff v = 0) :
 
 theorem htform_unit_coeff_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (A v : K⟦X⟧) (e e' : K) (M : ℕ) (Dp Np : Polynomial K), CoefLe 1 A → constantCoeff A = 1 → CoefLe 1 v → constantCoeff v = 0 → ‖e‖ ≤ 1 → ‖e'‖ ≤ 1 → Np.Monic → Np.natDegree = M + 1 → (∀ i, ‖Np.coeff i‖ ≤ 1) → Dp.natDegree ≤ M → ‖Dp.eval e'‖ = 1 → (A.subst v - C e * v ^ 2) * (∑ i ∈ Finset.range (M + 1), C (Dp.coeff i) * A ^ i * X ^ (2 * (M - i))) * X ^ 2 = v ^ 2 * ∑ i ∈ Finset.range (M + 2), C (Np.coeff i) * A ^ i * X ^ (2 * (M + 1 - i)) → ∃ n, n ≤ M + 1 ∧ ‖coeff n v‖ = 1 := by
   intro K _ _ _ A v e e' M Dp Np hA hA0 hv hv0 he he' _ _ hNc hDdeg hDe heq
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hvs : HtSmallTo (M + 2) v := ⟨hv, fun n hn => lt_of_le_of_ne (hv n) (hcon n (by omega))⟩
   have hA' : HtSmallTo 0 A := (htSmallTo_zero_iff A).2 hA
   have hB : HtSmallTo 0 (A.subst v - C e * v ^ 2) :=
@@ -802,8 +800,7 @@ theorem chord_norm_le_one {K : Type*} [NormedField K] [IsUltrametricDist K] {a b
     · exact (mul_le_of h2.le hk₀).trans (by linarith)
     · exact (mul_le_of (mul_le_of h2.le hB1) ((norm_neg A).le.trans hA1)).trans (by linarith)
   rw [← hN, norm_mul, norm_mul, norm_mul, norm_mul, h2, hab] at hn
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   nlinarith
 
 theorem norm_two_of_ne {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
@@ -1661,8 +1658,7 @@ theorem unr_of_unrOK (l : ℕ) (σ : K →+* K) (h : Formalism.InvariantFactorPa
     obtain ⟨k, hk⟩ := hval x hx0
     rw [hnl, hk]
     have hkneg : k ≤ -1 := by
-      by_contra hk1
-      push_neg at hk1
+      by_contra! hk1
       have : (1 : ℝ) ≤ (l : ℝ) ^ k := one_le_zpow₀ hl1.le (by omega)
       rw [← hk] at this
       linarith
@@ -1748,8 +1744,7 @@ theorem norm_natCast_eq_one {K : Type} [NormedField K] [IsUltrametricDist K] (l 
     exact this
   have hle : ‖(n : K)‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one K n
   refine le_antisymm hle ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have ha : ‖(n.gcdA l : K)‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one K _
   have hb' : ‖(n.gcdB l : K)‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one K _
   have e1 : ‖(n : K) * (n.gcdA l : K)‖ < 1 := by

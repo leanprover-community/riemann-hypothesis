@@ -545,8 +545,7 @@ theorem mem_geoTop_iff (T : Tower p Ω) (g : Gal p Ω) :
 theorem exists_moved (T : Tower p Ω) {g : Gal p Ω} (hg : g ∉ Ggeo p Ω ⊓ ⨅ n, Gn T n) :
     ∃ a : Ω, g a ≠ a ∧ ∀ h ∈ Ggeo p Ω ⊓ ⨅ n, Gn T n, h a = a := by
   rw [mem_geoTop_iff] at hg
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   apply hg
   refine ⟨fun x hx => ?_, fun n => ⟨?_, ?_⟩⟩
   · by_contra hne

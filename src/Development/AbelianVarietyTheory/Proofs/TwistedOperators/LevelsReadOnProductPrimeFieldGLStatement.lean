@@ -62,7 +62,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevelsProd
 

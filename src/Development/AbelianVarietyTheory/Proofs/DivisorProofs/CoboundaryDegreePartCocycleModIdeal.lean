@@ -129,8 +129,7 @@ theorem coeff_subst_of_degree_le_one {σ τ : Type} [Fintype σ] {a : σ → MvP
       apply hD
       rw [coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
     have h1 : D.degree ≤ 1 := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       apply hD
       rw [coeff_of_lt_order (lt_of_lt_of_le ?_ (le_order_prod_pow ha D)), smul_zero]
       exact_mod_cast lt_of_le_of_lt hβ hlt

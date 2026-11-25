@@ -2228,8 +2228,7 @@ theorem rho_int (h : P.OK) (π : Ty P) (i : ℕ) (hi : i ∈ Finset.Icc 1 (P.k -
     exact ⟨n₂ + ((π ⟨i - 1, by omega⟩ : Fin _) : ℕ), by push_cast; linarith⟩
 
 theorem xC_sep (h : P.OK) {σ σ₀ : Ty P} (hne : σ ≠ σ₀) : ∃ Y, xC P σ Y ≠ xC P σ₀ Y := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   exact hne ((types_complete P h).2 σ σ₀
     (prod_match _ _ _ (rho_anti h σ) (rho_anti h σ₀) hcon))
 

@@ -91,8 +91,7 @@ variable (v : HeightOneSpectrum (𝓞 F))
 
 theorem exists_ne_zero_mem_nhds {U : Set (Fv F v)} (hU : U ∈ 𝓝 (0 : Fv F v)) :
     ∃ t ∈ U, t ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 : ({0} : Set (Fv F v)) ∈ 𝓝 (0 : Fv F v) := Filter.mem_of_superset hU fun t ht => h t ht
   have hop : IsOpen ({0} : Set (Fv F v)) := by
     refine isOpen_iff_mem_nhds.mpr fun x hx => ?_

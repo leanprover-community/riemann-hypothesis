@@ -200,8 +200,7 @@ private theorem flag_match {H k : Type} [Field k] (T : H → Matrix (Fin 3) (Fin
     (tri : ∀ g, (Q.val * T g * (Q⁻¹).val).BlockTriangular id)
     (dg : ∀ g i, (Q.val * T g * (Q⁻¹).val) i i = D i g)
     (ord : ∀ g, Fr.ordProd T ψ g = 0) (b : Fin 3) : ∃ a, ∀ g, D b g = ψ a g := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   choose g hg using hne
   let U : Fin 3 → Matrix (Fin 3) (Fin 3) k := fun a => Q.val * (T (g a) - ψ a (g a) • 1) * (Q⁻¹).val
   have hQ : (Q⁻¹).val * Q.val = 1 := Units.inv_mul Q

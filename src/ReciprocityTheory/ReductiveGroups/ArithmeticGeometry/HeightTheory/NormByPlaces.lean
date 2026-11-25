@@ -87,8 +87,7 @@ private lemma span_singleton_mem_htOne_of_prime {π : KTp K d.D d.N} (hπ : Prim
           conv_rhs => rw [ht, hr]
           ring
         exact hπ.not_unit (isUnit_iff_exists_inv.mpr ⟨r, mul_left_cancel₀ hπ'.ne_zero e⟩)
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     have h0 : (Ideal.span {π}).height ≤ ((0 : ℕ) : ℕ∞) := by
       simpa using ENat.lt_one_iff_eq_zero.mp hlt
     rw [Ideal.height_le_iff] at h0

@@ -421,8 +421,7 @@ theorem exists_family : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSp
 
   let P : ℕ → Prop := fun j => ∃ y ∈ S.sat Λ, S.levC d Λ y = j
   obtain ⟨y0, hy0A, hy0M⟩ : ∃ y ∈ S.sat Λ, y ∉ S.M d Λ := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hB.1 (le_antisymm hMA h)
   let J := Nat.findGreatest P r
   have hle : ∀ y ∈ S.sat Λ, S.levC d Λ y ≤ J := fun y hy =>

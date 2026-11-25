@@ -1041,8 +1041,7 @@ theorem transport : Transport := by
     simp only [← Finset.sum_smul, h1]
     simp
   obtain ⟨p0, hp0⟩ : ∃ p, θ p φ ∉ W'' := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     refine hφZ ((hZmem φ).2 ⟨hφ, fun i => ?_⟩)
     rw [hcomp]
     exact W''.sum_mem fun p _ => W''.smul_mem _ (hc p)

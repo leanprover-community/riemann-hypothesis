@@ -1095,8 +1095,7 @@ theorem trace_inner_pos_of_orthonormal_pair (hK : IsCMUnram K) (h : V →ₗ⋆[
   obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hli hsp x
   rw [inner_sum_orthonormal_pair h e he a a]
   have hi : ∃ i, a i ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hx
     simp [hne]
   obtain ⟨i, hi⟩ := hi
@@ -1352,8 +1351,7 @@ theorem second_orthogonal_vector_holds (K : Type) [Field K] [NumberField K] [Sta
       have hv : v = 0 := by
         by_contra hv
         obtain ⟨i, hi⟩ : ∃ i, b.repr v i ≠ 0 := by
-          by_contra hn
-          push_neg at hn
+          by_contra! hn
           apply hv
           apply b.repr.injective
           ext i

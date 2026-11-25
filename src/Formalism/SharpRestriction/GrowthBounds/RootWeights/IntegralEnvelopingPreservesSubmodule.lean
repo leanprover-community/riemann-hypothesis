@@ -94,8 +94,7 @@ theorem lattice_stable_weight_separator [CharZero (KK O)] (E : GLOps n (KK O) V)
       (∀ mu, ∀ x ∈ weightSp E mu, T x = ((g mu : ℤ) : KK O) • x) ∧
       ∀ M : Submodule O V, UZStable (O := O) E M → ∀ x ∈ M, T x ∈ M := by
   have hex : ∃ a, nu a ≠ lam a := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (funext hc)
   obtain ⟨a, ha⟩ := hex
   rcases lt_or_gt_of_ne ha with hlt | hgt

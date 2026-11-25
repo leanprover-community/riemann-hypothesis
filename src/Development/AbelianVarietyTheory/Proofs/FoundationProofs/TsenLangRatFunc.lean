@@ -101,8 +101,7 @@ theorem exists_ne_zero_common_zero_of_constantCoeff_eq_zero :
     intro h
     rw [h, hmh] at hht
     exact absurd (by exact_mod_cast hht : n ≤ r) (not_le.mpr hrn)
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hPne
   have hsub : MvPolynomial.zeroLocus k P ⊆ {0} := by
     intro x hx

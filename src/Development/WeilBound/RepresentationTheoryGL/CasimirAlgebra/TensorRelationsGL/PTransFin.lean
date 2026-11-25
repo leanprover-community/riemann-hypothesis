@@ -525,8 +525,7 @@ theorem transFin_of : TensorGl → JMComm → StepFormula → QdetFacts → Spec
       Algebra.algebraMap_eq_smul_one, LinearMap.comp_smul,
       show φ ∘ₗ (1 : Module.End ℂ (TV n M (Fin m))) = φ from rfl, hφc i hi, smul_zero]
   obtain ⟨v0, hv0⟩ : ∃ v, φ v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hg0 (LinearMap.ext h)
   haveI hQfin : FiniteDimensional ℂ (Subalgebra.toSubmodule (B ⊓ A)) :=
     Submodule.finiteDimensional_of_le (S₂ := Subalgebra.toSubmodule B) (fun x hx => hx.1)

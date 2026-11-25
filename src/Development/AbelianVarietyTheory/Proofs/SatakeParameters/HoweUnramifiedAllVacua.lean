@@ -56,8 +56,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.Hk3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Hk3
 
 theorem comb_of_scalar {X A M : Type} [AddCommGroup M] [Module ℂ M] (vac : M → Prop) (r : X → Module.End ℂ M)

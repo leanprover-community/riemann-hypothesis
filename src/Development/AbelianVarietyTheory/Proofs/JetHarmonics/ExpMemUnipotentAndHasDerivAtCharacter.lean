@@ -92,8 +92,6 @@ theorem exp_apply_of_pattern {n : ℕ} (P : Fin n → Fin n → Prop)
   rw [h2.unique h3]
   simp [Matrix.one_apply]
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem hasDerivAt_exp_apply {k r : ℕ} (X : Mx k r) (i j : Fin (2 * r + k + 1)) :
     HasDerivAt (fun t : ℝ => NormedSpace.exp ((t : ℂ) • X) i j) (X i j) 0 := by
   have hγ := Formalism.REAL.hasDerivAt_mul_exp_smul_zero (1 : Mx k r) X

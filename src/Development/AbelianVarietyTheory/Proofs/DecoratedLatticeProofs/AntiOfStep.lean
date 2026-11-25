@@ -80,8 +80,7 @@ theorem lamS_node (R : Ranks) (P : HCParam R) (j : ℕ) (hj : j < R.m) (hi : R.k
   simp only [e, dif_pos hj]
 
 theorem node_of_sign (R : Ranks) (a b : Fin R.r) (hab : a < b) (hne : epsS R a ≠ epsS R b) : R.k ≤ b.1 := by
-  by_contra hb
-  push_neg at hb
+  by_contra! hb
   apply hne
   have ha : a.1 < R.k - 1 := by
     have : a.1 < b.1 := hab

@@ -339,8 +339,7 @@ theorem teichmuller_distinguished_span_isPrime : ∀ (l : ℕ) [Fact l.Prime] (O
     exact hnot 0 (by rw [h]; exact Submodule.mem_top)
   refine ⟨(Ideal.isPrime_iff).mpr ⟨hI, ?_⟩, ?_⟩
   · intro a b hab
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨y, N, hy, u, hu, hya⟩ := hform a hne.1
     obtain ⟨y', N', hy', u', hu', hyb⟩ := hform b hne.2
     obtain ⟨s, hs⟩ := mul_dvd_mul hy hy'

@@ -580,8 +580,7 @@ theorem UpperTheory.V.AlgebraTools.IsCplAt.dvr :
     intro x hx
     classical
     have hex : ∃ n : ℕ, x ∉ maximalIdeal B ^ n := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hx
       have hin : x ∈ ⨅ i : ℕ, maximalIdeal B ^ i := Submodule.mem_iInf _ |>.mpr hc
       rw [hK] at hin
@@ -609,8 +608,7 @@ theorem UpperTheory.V.AlgebraTools.IsCplAt.dvr :
     exact ⟨c, by ring⟩
   haveI : IsDomain B := by
     have hnzd : NoZeroDivisors B := ⟨fun {a b} hab => by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨i, u, hu, rfl⟩ := hfac a hc.1
       obtain ⟨j, v, hv, rfl⟩ := hfac b hc.2
       apply hnil (i + j)

@@ -91,8 +91,7 @@ theorem _root_.GlobalTheory.CM.GenFib.exists_lieRep_eigLat (K : Type) [Field K]
     by_contra hne
     obtain ⟨φ, hφ0, hle⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.2 hne)
     obtain ⟨x, hx⟩ : ∃ x, φ x ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hφ0 (LinearMap.ext h)
     have hM : F.IsDiffOf F (act.act 1) (1 + φ.smulRight x) := by
       intro u c h

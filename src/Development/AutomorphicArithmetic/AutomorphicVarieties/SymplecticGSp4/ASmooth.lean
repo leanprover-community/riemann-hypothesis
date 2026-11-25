@@ -263,8 +263,7 @@ private lemma split_mono {σ : Type} (wt : σ → ℤ × ℤ) (hw : ∀ i, (wt i
       · exact absurd h this
       · exact Or.inl h
     obtain ⟨s, hs, hs1⟩ : ∃ s ∈ m.support, (wt s).1 = 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hlt : ∑ i ∈ m.support, (m i : ℤ) * (wt i).1 < 0 := by
         refine Finset.sum_neg (fun i hi => ?_) hne
         rcases hpm i hi with h | h
@@ -274,8 +273,7 @@ private lemma split_mono {σ : Type} (wt : σ → ℤ × ℤ) (hw : ∀ i, (wt i
           linarith
       linarith
     obtain ⟨t, ht, ht1⟩ : ∃ t ∈ m.support, (wt t).1 = -1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hlt : 0 < ∑ i ∈ m.support, (m i : ℤ) * (wt i).1 := by
         refine Finset.sum_pos (fun i hi => ?_) hne
         rcases hpm i hi with h | h

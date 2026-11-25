@@ -19,8 +19,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGA
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)]
 variable {S : Type} [CommRing S] [Algebra c.F S] [Algebra ℚ S] {y : FrPt Xo c S}

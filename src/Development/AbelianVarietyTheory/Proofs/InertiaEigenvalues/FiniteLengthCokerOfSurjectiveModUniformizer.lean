@@ -402,8 +402,7 @@ theorem norm_coeff_le_one_of_mul {x g : K⟦X⟧} (hx : ∃ B : ℝ, ∀ n, ‖c
     exact (hgx _).trans (le_max_left _ _)
   have hSM : S ≤ Mx := ciSup_le key
   have hS1 : S ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 : S ≤ θ * S := by
       rcases le_total 1 ((θ : ℝ) * S) with h3 | h3
       · rwa [hMx, max_eq_right h3] at hSM
@@ -1162,8 +1161,7 @@ theorem exists_primitive_generator : ∀ (K : Type) [NormedField K] [IsUltrametr
   · exact ⟨q, hq1, by rw [hqr, hr, add_zero, mul_comm]⟩
   exfalso
   have hex : ∃ n, coeff n r ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hr (PowerSeries.ext fun n => by simpa using hne n)
   obtain ⟨n0, hn0⟩ := hex
   have hn0d : n0 < Nat.find hS := by

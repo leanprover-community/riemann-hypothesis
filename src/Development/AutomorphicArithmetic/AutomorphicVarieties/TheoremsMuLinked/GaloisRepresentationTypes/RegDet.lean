@@ -457,8 +457,7 @@ private theorem cf_small {l : ℕ} [hl : Fact l.Prime] (C : ℝ) : ∃ N : ℕ, 
 private theorem padicAlgCl_norm_le_one_of_isIntegral {l : ℕ} [Fact l.Prime] (x : PadicAlgCl l) (hx : IsIntegral ℤ_[l] x) :
     ‖x‖ ≤ 1 := by
   obtain ⟨p, hpm, hp⟩ := hx
-  by_contra h
-  push_neg at h
+  by_contra! h
   rw [← Polynomial.aeval_def, Polynomial.aeval_eq_sum_range, Finset.sum_range_succ,
     hpm.coeff_natDegree, one_smul] at hp
   have hn0 : p.natDegree ≠ 0 := by

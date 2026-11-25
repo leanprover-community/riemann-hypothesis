@@ -84,8 +84,7 @@ theorem exists_unit_sub_one_unit (p : ℕ) [Fact p.Prime] :
     simp [Polynomial.IsRoot] at hu
     linear_combination hu
   have hle : ‖u‖ ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : ‖u‖ ^ 2 ≤ max ‖u‖ ‖(1 : PadicAlgCl p)‖ := by
       rw [← norm_pow, h2]; exact IsUltrametricDist.norm_add_le_max _ _
     rw [norm_one, max_eq_left h.le] at h3

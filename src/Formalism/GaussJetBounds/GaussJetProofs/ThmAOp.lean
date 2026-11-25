@@ -122,8 +122,7 @@ lemma shape_minor {R : Type u} [CommRing R] {J : Type} [Fintype J] [DecidableEq 
     · exact Or.inr hd
     · left
       refine ⟨τ, hinj, ?_, rfl⟩
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       apply hd
       rw [Matrix.det_apply]
       refine Finset.sum_eq_zero fun π _ => ?_

@@ -256,8 +256,6 @@ theorem fact_diff {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {z : E} 
     · exact (dk _ _ _).mul ((du _).inv (hu _) _ _)
     · exact ((dk _).inv (hk _).1 _ _).mul (du _ _ _)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem main : ∀ (D : D7) (m n : ℕ) (ε : D.what₂.Tau → Fin m → Bool) (x₁ x₂ x₃ : D.what₂.Tau → ℤ),
     IsHolFam ε fockL (factK n ε x₁ x₂ x₃) ∧ IsHolFam (fun _ => allPos n) fockL (factU (n := n) ε x₁ x₂ x₃) := by
   intro D m n ε x₁ x₂ x₃

@@ -937,8 +937,7 @@ theorem placeIn_unique : ∀ (Λ : Subring ℂ) [IsDiscreteValuationRing Λ] (l 
     exact Λ.mul_mem (hint a) hw'
   have hsub : ∀ x : L, ι x ∈ Λ → la.valuation L x ≤ 1 := by
     intro x hx
-    by_contra hv
-    push_neg at hv
+    by_contra! hv
     have hx0 : x ≠ 0 := by rintro rfl; simp at hv
     have hy : la.valuation L x⁻¹ < 1 := by rw [map_inv₀]; exact inv_lt_one_of_one_lt₀ hv
     obtain ⟨a, s, h⟩ := la.exists_primeCompl_mul_eq_of_integer (K := L) x⁻¹ hy.le

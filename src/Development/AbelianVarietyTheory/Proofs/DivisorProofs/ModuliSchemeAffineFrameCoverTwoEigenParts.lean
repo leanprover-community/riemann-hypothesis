@@ -61,8 +61,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.HermitianCompactForm (epsAt IsEigBa
 open scoped CategoryTheory.Obj Matrix
 open ReciprocityTheory.ChartRestriction.G.Chart (IsUnivChart sp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {S : Scheme.{0}} {t : SAB H S}
 
 theorem exists_eigBasisAt {R : Type} [CommRing R] {x : Sp R ⟶ S} {n : ℕ}

@@ -111,8 +111,7 @@ theorem form_bound {k σ : Type} [Field k] [Infinite k] [Fintype σ] (n : ℕ)
     · intro h
       exact absurd hm0 h
   obtain ⟨lam, hlam⟩ : ∃ lam : σ → k, MvPolynomial.eval lam G ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hG0 (MvPolynomial.funext fun x => by simpa using hall x)
   refine ⟨c, lam, ?_, ?_⟩
   · intro d p hp

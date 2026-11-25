@@ -97,8 +97,7 @@ theorem exists_minimal_ge_of_disjoint {R : Type} [CommRing R] [IsReduced R] [IsN
     rw [mem_nonZeroDivisors_iff] at hnz
     push_neg at hnz
     obtain ⟨b, hba, hb⟩ : ∃ b, b * a = 0 ∧ b ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       obtain ⟨x, hx, hx0⟩ := hnz (fun x hx => h x (by rw [mul_comm]; exact hx))
       exact hx0 (h x hx)
     have hb' : b ∉ sInf (minimalPrimes R) := by

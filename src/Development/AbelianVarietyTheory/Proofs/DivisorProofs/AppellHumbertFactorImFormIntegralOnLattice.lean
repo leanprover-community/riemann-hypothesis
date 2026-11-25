@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.TorusRM
 
 theorem ahFactor_im_int_chart {X : Scheme.{0}} (L : LB X) (hL : L.IsLB) (y : Sp ℂ ⟶ X) :

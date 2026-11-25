@@ -444,8 +444,7 @@ theorem span_singleton_eq_maximalIdeal_pow {L : Type} [CommRing L] [IsLocalRing 
   classical
   have hK := Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal L) (maximalIdeal.isMaximal L).ne_top
   have hex : ∃ n, x ∉ maximalIdeal L ^ (n + 1) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hx
     have : x ∈ ⨅ i, maximalIdeal L ^ i := by
       rw [Ideal.mem_iInf]; intro i

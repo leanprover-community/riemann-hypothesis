@@ -207,8 +207,7 @@ theorem herm_cplx_pos [Fintype ι] (c : ι → Matrix (Ix P Q) (Ix R S) ℂ) (hc
     rcases lineSign_cases a b with h | h <;> simp [cplx_apply, h, Complex.normSq_apply]
   simp only [Complex.im_sum, h, Finset.sum_neg_distrib]
   obtain ⟨w, a, b, hw⟩ : ∃ w a b, c w a b ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hc (by ext w a b; exact h0 w a b)
   have : 0 < ∑ w, ∑ a, ∑ b, Complex.normSq (c w a b) :=
     Finset.sum_pos' (fun _ _ => Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _)

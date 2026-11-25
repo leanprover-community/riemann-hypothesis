@@ -172,8 +172,7 @@ theorem exists_hwD (hn : Nontrivial M.V) : ∃ μ, ∃ y ∈ hwSub M.act μ, y �
   classical
   obtain ⟨v, hv⟩ := exists_ne (0 : M.V)
   obtain ⟨μ₀, y₀, hy₀, hy₀0⟩ : ∃ μ₀, ∃ y₀ ∈ wtSub M.act μ₀, y₀ ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : (⨆ μ, wtSub M.act μ) = ⊥ := iSup_eq_bot.2 fun μ => (Submodule.eq_bot_iff _).2 (hc μ)
     exact hv ((Submodule.mem_bot ℂ).1 (this ▸ M.wts v))
   obtain ⟨W, hWf, hyW, hWs⟩ := M.kfin y₀

@@ -65,8 +65,7 @@ theorem UpperTheory.HF.loc_onto :
       have hab' : ‖J (a : L)‖ * ‖J (b : L)‖ < 1 := by
         rw [← norm_mul, ← map_mul]
         exact hab
-      by_contra h
-      push_neg at h
+      by_contra! h
       nlinarith [h.1, h.2]
   have hlI : ((l : ℤ) : 𝓞 L) ∈ I := by
     rw [hmem]

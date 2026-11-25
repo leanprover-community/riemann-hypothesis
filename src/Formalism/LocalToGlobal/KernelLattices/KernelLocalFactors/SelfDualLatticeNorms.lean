@@ -399,8 +399,7 @@ theorem card_SA_SB {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (α :
       Real.pi * Complex.I * ((-altE H x y : ℝ) : ℂ)) = 0 by push_cast; ring, Complex.exp_zero]
   have F4 : ∀ x, x ∉ B → ∃ y ∈ B, E x y ≠ 1 := by
     intro x hx
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hx
     rw [← hB']
     show ∀ y ∈ B, ∃ m : ℤ, altE H x y = (m : ℝ)
@@ -408,8 +407,7 @@ theorem card_SA_SB {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (α :
     exact Eone x y (hcon y hy)
   have F5 : ∀ y ∈ B, y ∉ Λ → ∃ x ∈ Λ ⊓ A, E x y ≠ 1 := by
     intro y hy hyΛ
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hyΛ
     apply h5 y hy
     intro x hxA hxΛ
@@ -530,8 +528,7 @@ theorem posDef_hSc (sc : ℝ) (hsc : 0 < sc) : IsPosDef (matH (hSc T a b sc)) :=
   rw [hsum, ← Complex.ofReal_mul, Complex.ofReal_re]
   apply mul_pos hsc
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (funext h)
   exact Finset.sum_pos' (fun j _ => Complex.normSq_nonneg _) ⟨i, Finset.mem_univ _, Complex.normSq_pos.mpr hi⟩
 

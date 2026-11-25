@@ -78,7 +78,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 
 namespace GlobalTheory.UniversalConstants
@@ -102,7 +101,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 
 set_option backward.isDefEq.respectTransparency false
@@ -193,7 +191,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.AbLaw.CubeOpen
 
@@ -339,7 +336,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw GlobalTheory.AbLaw.CubeGen
 noncomputable section
 namespace GlobalTheory.CubeLocal
@@ -582,7 +578,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 
 namespace GlobalTheory.CubeGlue

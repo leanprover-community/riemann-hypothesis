@@ -229,8 +229,7 @@ theorem exists_approx_notMem : ∀ (F : Type) [Field F] [NumberField F], ∀ (S�
     exact hcont.continuousAt.eventually_mem (by simpa using hV₂)
   obtain ⟨f₂, hf₂, hf₂M⟩ := exists_small_adele F S₁ S₂ ε hε hS _ hM₂
   obtain ⟨q, hq, hqZ⟩ : ∃ q ∈ Finset.range (n + 1), f * t₀ + (q : F) * f₂ ∉ Z := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hinj : Set.InjOn (fun q : ℕ => f * t₀ + (q : F) * f₂) (Finset.range (n + 1) : Set ℕ) := by
       intro a _ b _ hab
       have : (a : F) * f₂ = (b : F) * f₂ := add_left_cancel hab

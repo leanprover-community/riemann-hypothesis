@@ -58,8 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelSpanSeparation hiding zetaM
 open GlobalTheory.IndefiniteRowSideFullHecke.DeltaDatumCombinedCoefficient
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Calc
 
 variable {X X' Y Y' : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {q : Y ⟶ X} {q' : Y' ⟶ X'} {pm : Y' ⟶ Y}

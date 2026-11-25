@@ -37,8 +37,7 @@ lemma y_int (W : WeierstrassCurve K)
   obtain ⟨h1, h2, h3, h4, h6⟩ := hW
   have h' : y ^ 2 + W.a₁ * x * y + W.a₃ * y = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ :=
     (WeierstrassCurve.Affine.equation_iff _ _).mp h
-  by_contra hy
-  push_neg at hy
+  by_contra! hy
   have hR : ‖x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆‖ ≤ 1 := by
     have hx2 : ‖x ^ 2‖ ≤ 1 := by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hx
     have hx3 : ‖x ^ 3‖ ≤ 1 := by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hx
@@ -60,16 +59,14 @@ lemma y_sq_le (W : WeierstrassCurve K) (hW : IntegralModel W) {x y : K}
   obtain ⟨h1, h2, h3, h4, h6⟩ := hW
   have h' : y ^ 2 + W.a₁ * x * y + W.a₃ * y = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ :=
     (WeierstrassCurve.Affine.equation_iff _ _).mp h
-  by_contra hy
-  push_neg at hy
+  by_contra! hy
   have hx0 : (0 : ℝ) < ‖x‖ := by linarith
   have hx2 : ‖x‖ ^ 2 < ‖x‖ ^ 3 := by
     linarith [mul_pos (mul_pos hx0 hx0) (by linarith : (0 : ℝ) < ‖x‖ - 1)]
   have hx1 : ‖x‖ ≤ ‖x‖ ^ 3 := by
     linarith [mul_pos hx0 (by linarith : (0 : ℝ) < ‖x‖ - 1), hx2]
   have hxy : ‖x‖ < ‖y‖ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := mul_le_mul hc hc (norm_nonneg y) hx0.le
     linarith
   have hR : ‖x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆‖ ≤ ‖x‖ ^ 3 := by

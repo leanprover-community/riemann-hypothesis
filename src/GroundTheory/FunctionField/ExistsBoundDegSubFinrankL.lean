@@ -41,23 +41,8 @@ theorem finiteDimensional_map_mkQ_trans {S T U : Submodule R M} (hST : S ≤ T) 
       Submodule.factor_comp_mk]
   have hTU' : T.map S.mkQ ≤ U.map S.mkQ := Submodule.map_mono hTU
   have hker : LinearMap.ker f = (T.map S.mkQ).comap (U.map S.mkQ).subtype := by
-    ext ⟨w, hw⟩
-    simp only [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply, f,
-      LinearMap.coe_comp, Function.comp_apply]
-    obtain ⟨m, -, rfl⟩ := Submodule.mem_map.1 hw
-    rw [Submodule.mkQ_apply,
-      show Submodule.factor hST (Submodule.Quotient.mk m) = Submodule.Quotient.mk m from rfl,
-      Submodule.Quotient.mk_eq_zero]
-    constructor
-    · intro hm
-      exact Submodule.mem_map_of_mem hm
-    · intro hm
-      obtain ⟨m', hm', he⟩ := Submodule.mem_map.1 hm
-      have : m' - m ∈ S := (Submodule.Quotient.eq S).1 he
-      have := hST this
-      have h2 : m = m' - (m' - m) := by abel
-      rw [h2]
-      exact T.sub_mem hm' this
+    dsimp only [f]
+    rw [LinearMap.ker_comp, Submodule.factor, Submodule.ker_mapQ, Submodule.comap_id]
   have ek : LinearMap.ker f ≃ₗ[R] T.map S.mkQ :=
     (LinearEquiv.ofEq _ _ hker).trans (Submodule.comapSubtypeEquivOfLe hTU')
   have er : LinearMap.range f ≃ₗ[R] U.map T.mkQ := LinearEquiv.ofEq _ _ hrange

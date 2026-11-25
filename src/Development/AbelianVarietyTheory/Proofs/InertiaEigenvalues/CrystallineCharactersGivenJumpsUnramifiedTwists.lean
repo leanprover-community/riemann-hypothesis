@@ -696,8 +696,7 @@ theorem norm_le_one (l : ℕ) [Fact l.Prime] (K : FinExt l) (c : ↥(GK K) →* 
     ‖(((c g : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l)‖ ≤ 1 := by
   haveI := GlobalTheory.BlochKatoIntegralScalars.compactSpace_GK K
   obtain ⟨B, hB⟩ := (isCompact_univ (X := ↥(GK K))).exists_bound_of_continuousOn hc.continuousOn
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt B h
   have hpow : (((c (g ^ n) : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l) = ((((c g : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l)) ^ n := by
     simp [map_pow]

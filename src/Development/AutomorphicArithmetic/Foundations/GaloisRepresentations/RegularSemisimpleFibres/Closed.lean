@@ -288,8 +288,7 @@ private theorem trace_one (σ : F₁ ≃ₐ[F₀] F₁) (d : ℕ) (hG : UpperThe
     rw [Finset.sum_comm, Finset.sum_congr rfl fun j hj => h j (Finset.mem_range.1 hj)]
     simp [hG.pos]
   obtain ⟨i, hi⟩ : ∃ i, T (y i) ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     simp [hn] at hs
   refine ⟨y i * (T (y i))⁻¹, ?_⟩
   simp only [map_mul, map_inv₀, hTj]

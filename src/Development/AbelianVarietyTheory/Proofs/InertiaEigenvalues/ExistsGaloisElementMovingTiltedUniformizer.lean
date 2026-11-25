@@ -283,8 +283,7 @@ theorem fixed_twist (ϖ : PiSys l e) (H : Subgroup (GQ l))
 theorem exists_move (a : ℕ) [NeZero a] (ϖ : PiSys l e) :
     ∃ g : GQ l, g ∈ GK (ϖ.field a) ∧ (∀ (n : ℕ) (y : Om l), y ^ l ^ n = 1 → g y = y) ∧
       ∃ n, g (ϖ.seq n) ≠ ϖ.seq n := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have h0 : ∀ σ ∈ GK (ϖ.field a), σ (ϖ.seq 0) = ϖ.seq 0 := fun σ hσ => ϖ.gal_pi a ⟨σ, hσ⟩
   have hcomm : ∀ σ ∈ GK (ϖ.field a), ∀ τ ∈ GK (ϖ.field a), ∀ n : ℕ, σ (τ (ϖ.seq n)) = τ (σ (ϖ.seq n)) := by
     intro σ hσ τ hτ n

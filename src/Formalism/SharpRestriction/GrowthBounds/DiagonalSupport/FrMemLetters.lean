@@ -64,8 +64,7 @@ theorem posU_lt_iff (hV : Fr.Valid L₁ N₁) (j : ℤ) (a b : ℕ) (ha : a < (F
     (hb : b < (Fr.LLset j).card + r) :
     posU Fr (Fr.LLset j).card j a < posU Fr (Fr.LLset j).card j b ↔ a < b := by
   refine ⟨fun h => ?_, fun h => posU_lt hV j a b h hb⟩
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   rcases hn.lt_or_eq with h2 | h2
   · exact lt_asymm h (posU_lt hV j b a h2 ha)
   · subst h2

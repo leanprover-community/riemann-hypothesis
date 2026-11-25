@@ -221,13 +221,6 @@ theorem PH.costly_succ (h : PH vecc B ka nu) (i : Fin N) (c : ℤ) :
         split_ifs <;> omega
       · split_ifs <;> omega
 
-theorem PH.oc_eq (h : PH vecc B ka nu) (om : Fin (N + 1) → ℕ) (c : ℤ) :
-    oc om (muP nu ka) c = ∑ i : Fin N, if colH (ka i.castSucc) c < colH (ka i.succ) c then om i.succ else 0 := by
-  classical
-  unfold oc
-  rw [Fin.sum_univ_succ, if_neg (h.not_costly_zero c), zero_add]
-  exact Finset.sum_congr rfl fun i _ => if_congr (h.costly_succ i c) rfl rfl
-
 theorem PH.dom (h : PH vecc B ka nu) (t : Fin (N + 1 + 1)) : Dominant (muP nu ka t) := by
   have hv : Antitone (kaS ka t) := by
     induction t using Fin.cases with

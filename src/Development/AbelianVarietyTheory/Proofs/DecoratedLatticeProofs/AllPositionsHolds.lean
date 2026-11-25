@@ -304,8 +304,7 @@ theorem opE_translate_free (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaa
 theorem exists_affPt_ne_zero (ψ : AddChar k Circle) (ν : Measure k) (p : ℕ)
     {Ψ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ} {x₀ : Matrix n n' k} (h : opE ψ ν p Ψ x₀ ≠ 0) :
     ∃ e, Ψ (affPt p x₀ e) ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   apply h
   simp [opE, hn]
 
@@ -600,13 +599,11 @@ theorem oneIndexAt_of_classAt_supportAt : ∀ (k : Type) [Field k] [ValuativeRel
     funext y
     simp [om]
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, opE S.ψ ν p (om (S.μ (j + 1)) 1 u ((S.T t).Phi j c H)) x₀ ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne (funext hc)
   classical
   obtain ⟨e, he⟩ : ∃ e, om (S.μ (j + 1)) 1 u ((S.T t).Phi j c H) (affPt p x₀ e) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hx₀
     simp [opE, hc]
   have hΦ : (S.T t).Phi j c H ((u⁻¹).val * affPt p x₀ e) ≠ 0 := by

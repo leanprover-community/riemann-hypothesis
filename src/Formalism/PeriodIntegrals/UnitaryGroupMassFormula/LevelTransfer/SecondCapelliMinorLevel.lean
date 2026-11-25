@@ -15,8 +15,6 @@ namespace PIQnLT
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k i r' : ℕ}
 
 theorem mulVec_liftVec (M : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (v : Fin (2 * r' + k + 1) → ℂ) :

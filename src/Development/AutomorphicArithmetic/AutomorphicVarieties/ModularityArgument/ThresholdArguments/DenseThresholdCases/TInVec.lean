@@ -242,8 +242,7 @@ private theorem cv_ne : ∃ x, cv lam hj x ≠ 0 := by
     rw [D_coe] at this
     simp [lin] at this
   have hl : ∀ v, ∃ l : Module.Dual ℂ (nablaSq ℂ 2 (lam v)), l (D (lam v) (hj v) 1 0) ≠ 0 := fun v => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne v ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 hc)
   choose l hl using hl
   refine ⟨fun p => if p.2 = 0 then 1 else 0, fun h => ?_⟩

@@ -548,8 +548,7 @@ namespace Formalism.L2.SG.Pf.Tau
 open Size Formalism.MainNotions.S
 
 theorem exists_ne_zero_mem_L (I : AutInst) (hn : 1 ≤ I.n) : ∃ l ∈ I.L, l ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have h := I.L_span
   have h0 : Submodule.span I.E (I.L : Set (Fin I.n → I.E)) = ⊥ := by
     rw [Submodule.span_eq_bot]

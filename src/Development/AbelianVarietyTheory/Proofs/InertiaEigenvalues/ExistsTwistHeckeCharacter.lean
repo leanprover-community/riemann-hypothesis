@@ -66,8 +66,6 @@ noncomputable section
 
 namespace GlobalTheory.NormOneHilbert90Units
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_ne_zero_mul_conj_eq_of_unitary (D : D7) (z : unitary D.host.E) :
     ∃ w : D.host.E, w ≠ 0 ∧ (z : D.host.E) * D.host.conj w = w := by
   have hz : (z : D.host.E) * star (z : D.host.E) = 1 := z.2.2
@@ -76,8 +74,7 @@ theorem exists_ne_zero_mul_conj_eq_of_unitary (D : D7) (z : unitary D.host.E) :
     rw [star_add, star_mul, star_star]
     linear_combination a * hz
   obtain ⟨x, hx⟩ : ∃ x : D.host.E, star x ≠ x := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply NumberField.IsCMField.complexConj_ne_one D.host.E
     refine AlgEquiv.ext fun x => ?_
     rw [← Formalism.BasicNotions.Examples₂.cmStar_apply]
@@ -111,7 +108,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

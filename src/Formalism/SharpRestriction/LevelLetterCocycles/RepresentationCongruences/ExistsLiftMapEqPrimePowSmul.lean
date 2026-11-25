@@ -408,12 +408,10 @@ private theorem card_filter_dvd_sub_mul_le_Icc_length_add (q : ℤ) (hq : 0 < q)
     have hlt : q * (v - u) < q := by linarith
     have hgt : -q < q * (v - u) := by linarith
     have h1' : v - u < 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     have h2' : -1 < v - u := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     have hvu : v = u := by omega
     subst hvu

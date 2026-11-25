@@ -809,8 +809,7 @@ theorem hasse_norm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r :
   · exact ⟨0, by simp [hx]⟩
   obtain ⟨θ, h0, hθ⟩ : ∃ θ : E, θ ≠ 0 ∧ IsCMField.complexConj E θ = -θ := by
     obtain ⟨w, hw⟩ : ∃ w : E, IsCMField.complexConj E w ≠ w := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact IsCMField.complexConj_ne_one E (AlgEquiv.ext h)
     exact ⟨w - IsCMField.complexConj E w, sub_ne_zero.mpr hw.symm, by simp⟩
   let x' : plus Q := ⟨x, hxx⟩
@@ -971,8 +970,7 @@ theorem exists_sq_of_split (E : Type) [Field E] [NumberField E] [IsCMField E]
     ∃ s : v.adicCompletion (maximalRealSubfield E),
       s * s = algebraMap (maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E)) d := by
   classical
-  by_contra hns
-  push_neg at hns
+  by_contra! hns
   obtain ⟨w, w', hne, hw, hw'⟩ := hv
   obtain ⟨ψ, -, hb, -⟩ := GlobalTheory.TraceClasses.exists_finite_decomp (maximalRealSubfield E) E
   have hθF : ∀ a : maximalRealSubfield E, (a : E) ≠ θ := by

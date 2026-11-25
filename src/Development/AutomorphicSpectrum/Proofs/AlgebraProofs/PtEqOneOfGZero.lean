@@ -48,6 +48,7 @@ import ReciprocityTheory.DualLattices.ExistsPrimitiveRoot
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsMonHomOfMul
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.NotGoodClassZeroSucc
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSepClosedResidueFieldOfModuleFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.TorsrepEx, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AbelianSchemeTorsionRepresentation, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AbelianSchemeTorsionRepresentationStatement, Development.WeilBound.CoreStatements.HodgeTatePoints.IsLocalHomOfFinite, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualTowerHodgeTateDatum, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualTowerHodgeTateDatumStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalGroupChartFamily, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalGroupChartFamilyStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateDatumReduceScalars, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateDatumReduceScalarsStatement, Development.WeilBound.CoreStatements.HodgeTatePoints.RiOact, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedVarietyIntegerAction, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedVarietyIntegerActionStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TrivialPolarizedAbelianPointEqOne, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TrivialPolarizedAbelianPointEqOneStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PtEqOneOfGZero
@@ -223,15 +224,7 @@ end Pull
 
 theorem isLocalHom_of_finite (O S : Type) [CommRing O] [IsLocalRing O] [CommRing S] [IsLocalRing S]
     [Algebra O S] [Module.Finite O S] : IsLocalHom (algebraMap O S) := by
-  constructor
-  intro a ha
-  by_contra hna
-  have hm : (IsLocalRing.maximalIdeal S).comap (algebraMap O S) = IsLocalRing.maximalIdeal O :=
-    IsLocalRing.eq_maximalIdeal (Ideal.isMaximal_comap_of_isIntegral_of_isMaximal (algebraMap _ _) (RingHom.Finite.to_isIntegral (RingHom.finite_algebraMap.mpr inferInstance)) (IsLocalRing.maximalIdeal S))
-  have hmem : a ∈ (IsLocalRing.maximalIdeal S).comap (algebraMap O S) := by
-    rw [hm]
-    exact hna
-  exact (IsLocalRing.mem_maximalIdeal _).mp hmem ha
+  apply _root_.GlobalTheory.isLocalHom_algebraMap_of_moduleFinite <;> assumption
 
 theorem e_pow {R₀ : Type} [CommRing R₀] {B : BX R₀} {G : Over (Spec (CommRingCat.of R₀))} [GrpObj G]
     {e : ∀ R : LAlg R₀, B.G R → (sp (R₀ := R₀) (R : Type) ⟶ G)}

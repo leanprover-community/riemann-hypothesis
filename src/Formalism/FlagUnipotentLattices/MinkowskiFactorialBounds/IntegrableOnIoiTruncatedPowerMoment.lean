@@ -288,8 +288,7 @@ lemma gf_lower_sub {R : Type*} [CommRing R] {d : ℕ} {α β β' : Type*} [Finty
   rw [← e1]
   refine (Finset.sum_subset (Finset.subset_univ _) fun x _ hx => ?_).symm
   have hlt : ρ a < x := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     obtain ⟨b, hb⟩ := hdown a x hle
     exact hx (Finset.mem_image.mpr ⟨b, Finset.mem_univ _, hb⟩)
   rw [hl.2 _ _ hlt, zero_mul]
@@ -306,8 +305,7 @@ lemma gf_upper_sub {R : Type*} [CommRing R] {d : ℕ} {α β β' : Type*} [Finty
   rw [← e1]
   refine (Finset.sum_subset (Finset.subset_univ _) fun x _ hx => ?_).symm
   have hlt : ρ a < x := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     obtain ⟨b, hb⟩ := hdown a x hle
     exact hx (Finset.mem_image.mpr ⟨b, Finset.mem_univ _, hb⟩)
   rw [hu.2 _ _ hlt, mul_zero]

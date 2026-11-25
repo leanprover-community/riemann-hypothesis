@@ -188,8 +188,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.rig_sep :
           rw [Matrix.diagonal_apply_ne _ hab, sub_zero] at this
           simpa [Matrix.one_apply_ne hab] using this
     rw [hdet, norm_prod, Fin.prod_univ_three] at hsmall
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have := one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le (hne 0) (hne 1)) (hne 2)
     linarith
   choose φ hφ using ht2

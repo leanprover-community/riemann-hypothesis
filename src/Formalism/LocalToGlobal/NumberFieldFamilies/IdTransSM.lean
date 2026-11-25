@@ -70,8 +70,7 @@ theorem eq_one_of_pow {a : ℂ} (h : ∀ n : ℤ, ‖a ^ n - 1‖ < 1) (ha : a �
       have h6 : 3 * (1 - (a ^ (2 ^ n)).re) ≤ 2 * (1 - (a ^ (2 ^ n)).re) * (1 + (a ^ (2 ^ n)).re) := by nlinarith
       nlinarith
   have hd0 : 1 - a.re ≤ 0 := by
-    by_contra hpos0
-    push_neg at hpos0
+    by_contra! hpos0
     obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (1 / (1 - a.re)) (by norm_num : (1 : ℝ) < 3)
     have h2 := hd n
     have h5 := hre n

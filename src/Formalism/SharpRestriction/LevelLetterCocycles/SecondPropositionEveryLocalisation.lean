@@ -1060,8 +1060,7 @@ theorem exists_nonfixed_twisted_vector
     (x : N.X i) (hx : x ∉ N.Z i) (η : Fin R.nV → KK N i) (hη : η ≠ 0) :
     ∃ g : GE N, toK N i (((chiU N i 1 g)⁻¹ : (N.O i)ˣ) : N.O i) •
       (mapM (toK N i) (rO N i r x) g).mulVec η ≠ η := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   apply hG6 x
   refine ⟨η, hη, fun g => ?_⟩

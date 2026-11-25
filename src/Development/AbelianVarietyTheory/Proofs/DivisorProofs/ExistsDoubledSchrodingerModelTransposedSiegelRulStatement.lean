@@ -111,8 +111,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open MeasureTheory
 
 noncomputable section
@@ -250,8 +248,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.IndefR.Datum GlobalTheory.Doubling
 
@@ -494,8 +490,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.DblTargetSiegel
@@ -605,8 +599,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.DblRestrictChar
@@ -704,7 +696,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 noncomputable section
@@ -855,7 +846,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 
@@ -874,7 +864,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 namespace GlobalTheory.DblBoxTheta
@@ -942,7 +931,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 
@@ -961,7 +949,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 open MeasureTheory
@@ -1075,7 +1062,6 @@ open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorMode
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 open Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 
@@ -1093,7 +1079,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [-instance] GlobalTheory.SplitWeil.matrixMeasurableSpace
 open Formalism.IndefR.Datum
 
@@ -1165,9 +1150,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 theorem _root_.GlobalTheory.T.doubledWeilDatum_diag_thetaProduct_eq_scalar_smul : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (χS χT : (AE D)ˣ →* Circle)
       (ω : GA D S × GA D T →* Module.End ℂ (Formalism.IndefR.Datum.WO S T → ℂ)),
@@ -1194,8 +1176,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1256,9 +1236,6 @@ open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 theorem _root_.GlobalTheory.T.thetaTransform_doubledCoords_boxProduct : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)
       (ξ : AF D.host.F ⊗[D.host.F] D.host.E) (hA : JA = T.gramᵀ) (κ : Type) [Fintype κ]
@@ -1282,8 +1259,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1361,8 +1336,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.WeilSchrodinger.DblTarget
 

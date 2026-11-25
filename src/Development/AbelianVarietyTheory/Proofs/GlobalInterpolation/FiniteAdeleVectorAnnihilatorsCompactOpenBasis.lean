@@ -215,8 +215,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem local_bound (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (hv : ∃ y, psiV F ψ v y ≠ 1) :
     ∃ R : ℝ, ∀ y : Fv F v, (∀ t ∈ v.adicCompletionIntegers F, psiV F ψ v (y * t) = 1) → ‖y‖ ≤ R := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨z, hz⟩ := hv
   obtain ⟨y, hy, hyz⟩ := hcon ‖z‖
   have hy0 : y ≠ 0 := by

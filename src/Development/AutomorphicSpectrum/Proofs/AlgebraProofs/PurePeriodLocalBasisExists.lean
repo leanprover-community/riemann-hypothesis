@@ -940,8 +940,7 @@ theorem per_discrete (hn0 : 0 < n) (hc : ∀ y, c y = 0 → y = 0) : DiscreteTop
     intro y hy
     have hcy : c y ≠ 0 := fun h => hy (by rw [hc y h, map_zero])
     obtain ⟨m, hm⟩ : ∃ m, c y m ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hcy (Finsupp.ext hcon)
     have hk : ∃ k, blk hty k = m ∧ 1 ≤ ‖ty k (c y m : E)‖ := by
       rcases m with i | j

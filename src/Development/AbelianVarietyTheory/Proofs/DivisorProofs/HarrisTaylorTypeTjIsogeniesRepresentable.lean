@@ -944,8 +944,6 @@ open GlobalTheory.AbDual GlobalTheory.CechPic GlobalTheory.AbLaw
 
 namespace GlobalTheory.KerCalc
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem evc_pow_left {S : Scheme.{0}} {A B Y : Over S} [GrpObj A] [GrpObj B] {P : LB (A ⊗ B).left}
     (hP : P.IsLB) (h : IsAdditive P) (a : Y ⟶ A) (b : Y ⟶ B) (n : ℕ) :
     evc hP (a ^ n) b = n • evc hP a b := by

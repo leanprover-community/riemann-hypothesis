@@ -693,8 +693,7 @@ theorem UQ.norm_of_fixed_unit {F E : Type} [NontriviallyNormedField F] [Nontrivi
   have hprod : ‖w‖ * ‖w'‖ = 1 := by rw [← norm_mul, hww, norm_one]
   have hwn : ‖w‖ = 1 := by
     refine le_antisymm h1 ?_
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : ‖w‖ * ‖w'‖ < 1 :=
       calc ‖w‖ * ‖w'‖ ≤ ‖w‖ * 1 := by gcongr
         _ < 1 := by simpa using h
@@ -820,8 +819,7 @@ theorem selfDual_orthogonal_unit_step : ∀ (K : GlobalTheory.UnitLemma.UQ) (V :
     rw [Set.finrank, htop, finrank_top, Fintype.card_fin] at h1
     omega
   obtain ⟨l, hl, hlnot⟩ : ∃ l ∈ L, l ∉ Submodule.span K.E (Set.range f) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hspan
     rw [eq_top_iff, ← hLspan]
     exact Submodule.span_le.2 (fun x hx => hcon x hx)
@@ -831,8 +829,7 @@ theorem selfDual_orthogonal_unit_step : ∀ (K : GlobalTheory.UnitLemma.UQ) (V :
     rw [hb] at hpM
     exact hp0 hlnot ((Submodule.mem_bot _).1 hpM)
 
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   let Q : Submodule K.O K.E := Submodule.map (Algebra.linearMap K.O K.E) (IsLocalRing.maximalIdeal K.O)
   have hQsmul : ∀ (o : K.O) x, x ∈ Q → algebraMap K.O K.E o * x ∈ Q := by
     intro o x hx

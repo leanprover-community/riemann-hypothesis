@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsTorusStableGoodOpenOfWeightUnits
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypothesesAndConclusion
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartId
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpecHomCompCoaction
@@ -426,17 +427,7 @@ theorem hasAffineChart_of_open (V : X.left.Opens)
   let Z : Over S := Over.mk (V.ι ≫ X.hom)
   let m : Z ⟶ X := Over.homMk V.ι rfl
   have P : IsPullback (G ◁ m) (snd G Z) (snd G X) m := by
-    refine ⟨⟨by simp⟩, ⟨PullbackCone.IsLimit.mk _ (fun s => lift (s.fst ≫ fst G X) s.snd) ?_ ?_ ?_⟩⟩
-    · intro s
-      apply CartesianMonoidalCategory.hom_ext
-      · simp
-      · simpa using s.condition.symm
-    · intro s
-      simp
-    · intro s t h1 h2
-      apply CartesianMonoidalCategory.hom_ext
-      · rw [lift_fst, ← h1]; simp
-      · rw [lift_snd, h2]
+    apply _root_.GlobalTheory.SS.TorusSlice.isPullback_whiskerLeft <;> assumption
   have P' : IsPullback (G ◁ m).left (snd G Z).left (snd G X).left V.ι := P.map (Over.forget S)
   have Q := (isPullback_morphismRestrict (snd G X).left V).flip
   let ε := P'.isoIsPullback _ _ Q

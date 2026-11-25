@@ -59,8 +59,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.InertLocalIndices
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def InertOver (v : HeightOneSpectrum (𝓞 D.host.F)) (P : Formalism.L2.DIV.Pl D.host.E) : Prop :=
@@ -95,8 +93,6 @@ open Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism
 open scoped TensorProduct
 
 namespace GlobalTheory.HeckeRowsCompare
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Generic
 

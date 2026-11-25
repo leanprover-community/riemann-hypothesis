@@ -54,8 +54,7 @@ theorem exists_flag_dual (y : (Σ k, ι k) → Ω) (B : ChartBundle R (segreVec 
     intro m hm
     simp only [Finset.mem_coe, Finsupp.mem_support_iff] at hm
     simp only [Set.mem_setOf_eq]
-    by_contra hjm
-    push_neg at hjm
+    by_contra! hjm
     apply hm
     rcases hjm.lt_or_eq with h | h
     · have hne : j ≠ m := fun h' => (ne_of_lt h) (congrArg Fin.val h')

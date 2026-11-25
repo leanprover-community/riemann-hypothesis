@@ -617,8 +617,7 @@ theorem generates_of_close : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra 
       exact hbk.le
     · rw [← hGb']
       refine (IsUltrametricDist.nnnorm_add_le_max _ _).trans (max_le le_rfl ?_)
-      by_contra h
-      push_neg at h
+      by_contra! h
       have := (IsUltrametricDist.nnnorm_add_le_max (M.val y G) (M.val y b)).trans
         (max_le h.le le_rfl)
       rw [hGb'] at this

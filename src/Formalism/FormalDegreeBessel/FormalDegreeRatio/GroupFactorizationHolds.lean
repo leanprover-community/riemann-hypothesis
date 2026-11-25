@@ -16,8 +16,7 @@ theorem sum_fin_castLE {m l : ℕ} (h : l ≤ m) (f : Fin m → ℂ)
   rw [show (∑ j : Fin l, f (Fin.castLE h j)) = ∑ j ∈ Finset.univ.map (Fin.castLEEmb h), f j from
     (Finset.sum_map Finset.univ (Fin.castLEEmb h) f).symm]
   refine (Finset.sum_subset (Finset.subset_univ _) fun j _ hj => hf j ?_).symm
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact hj (Finset.mem_map.mpr ⟨⟨j.val, hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩)
 
 theorem minor_eq_of_mul {m : ℕ} (L U X Y : Matrix (Fin m) (Fin m) ℂ)

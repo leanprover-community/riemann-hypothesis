@@ -550,8 +550,7 @@ theorem fixed_nat (p : ℕ) [hp : Fact p.Prime] [CharP k p] (a : k) (ha : a ^ p 
     intro b hb
     rw [Multiset.mem_toFinset, Polynomial.mem_roots hP]
     simp [hb]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hnotin : a ∉ Finset.univ.image φ := by
     intro h
     obtain ⟨i, -, hi⟩ := Finset.mem_image.1 h

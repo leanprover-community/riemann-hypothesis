@@ -799,8 +799,7 @@ theorem one_tmul_inj {O : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Free �
     {x y : Ainf l} (h : (1 : O) ⊗ₜ[ℤ_[l]] x = (1 : O) ⊗ₜ[ℤ_[l]] y) : x = y := by
   set b := Module.Free.chooseBasis ℤ_[l] O
   obtain ⟨i, hi⟩ : ∃ i, b.repr 1 i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact one_ne_zero (b.repr.injective (by ext i; simp [hc i]))
   have h1 := congrArg (fun w => TensorProduct.lid ℤ_[l] (Ainf l) ((b.coord i).rTensor (Ainf l) w)) h
   simp only [LinearMap.rTensor_tmul, TensorProduct.lid_tmul, Module.Basis.coord_apply] at h1

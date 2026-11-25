@@ -103,8 +103,7 @@ variable [OpensMeasurableSpace X] [T2Space X] [LocallyCompactSpace X]
 
 private theorem nonneg_of_setIntegral_compact_nonneg {g : X → ℝ} (hg : Continuous g)
     (h : ∀ S, IsCompact S → 0 ≤ ∫ b in S, g b ∂ν) (b0 : X) : 0 ≤ g b0 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hcneg : g b0 / 2 < 0 := by linarith
   have hW : {b | g b < g b0 / 2} ∈ 𝓝 b0 :=
     (isOpen_lt hg continuous_const).mem_nhds (show g b0 < g b0 / 2 by linarith)

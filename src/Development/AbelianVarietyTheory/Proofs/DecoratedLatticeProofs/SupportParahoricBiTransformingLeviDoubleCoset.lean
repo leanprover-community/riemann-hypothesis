@@ -475,8 +475,7 @@ theorem eq_zero_of_mixed (ξ : kˣ →* ℂˣ) (hξ : ¬ IsUnram ξ) (φ : GL (A
     (m : GL (A ⊕ D) k) (τ : Equiv.Perm (A ⊕ D)) (hm : ∀ x y, y ≠ τ x → (m : Matrix (A ⊕ D) (A ⊕ D) k) x y = 0)
     (p : A ⊕ D) (hp : (τ p).isRight ≠ p.isRight) : φ m = 0 := by
   obtain ⟨u, hu1, hu⟩ : ∃ u : kˣ, valuation k (u : k) = 1 ∧ ξ u ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hξ h
   have hv : ∀ q : A ⊕ D, ∀ i, valuation k ((Pi.mulSingle q u : A ⊕ D → kˣ) i : k) = 1 := fun q i => by
     rw [Pi.mulSingle_apply]
@@ -604,8 +603,7 @@ theorem support_levi : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
     rw [hgm, (hφ j' hj' (Units.mk0 _ hd') rfl _).2, (hφ j hj (Units.mk0 _ hd) rfl _).1, h0]
     simp
   have hτ : ∀ p, (τ p).isRight = p.isRight := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨p, hp⟩ := h
     exact hφm (eq_zero_of_mixed ξ hξ φ hφ m τ hm p hp)
   obtain ⟨x, y, hxy⟩ := exists_emb₂ m τ hm hτ

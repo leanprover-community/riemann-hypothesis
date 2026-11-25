@@ -100,8 +100,7 @@ theorem exists_nat_weight_sub_eq_of_highest_vector_in_stable (hF : Formalism.REA
       push_cast
       module
   have hex : ∃ k, vk k = 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hli : LinearIndependent ℂ vk :=
       Module.End.eigenvectors_linearIndependent' (F a a) (fun k : ℕ => la - k)
         (by

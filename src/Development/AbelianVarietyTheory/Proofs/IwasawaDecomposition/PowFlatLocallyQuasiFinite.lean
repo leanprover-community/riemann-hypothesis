@@ -84,7 +84,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped TensorProduct
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SemiAbMulFlat
 

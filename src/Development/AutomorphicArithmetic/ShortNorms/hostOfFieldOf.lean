@@ -876,8 +876,7 @@ private theorem UpperTheory.Top.realBox_main (M : ℕ) (φ : Frame) (H : HostRaw
   have hi01 : i = 0 ∨ i = 1 := by fin_cases i <;> simp
   have hj01 : j = 0 ∨ j = 1 := by fin_cases j <;> simp
   have hij : i ≠ 0 ∨ j ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨rfl, rfl⟩ := hc
     rw [show H.q ^ ((0 : Fin 2) : ℕ) = 1 by simp, show H.d ^ ((0 : Fin 2) : ℕ) = 1 by simp,
       mul_one, mul_one] at hN
@@ -1079,8 +1078,7 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.thickFrame2 :
   have hLw2 : (2:ℝ) ≤ Lw := by exact_mod_cast hLw
   have hLwpos : (0:ℝ) < Lw := by linarith
   have hCL : 0 < CL := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_le_mul_of_nonneg_right hneg hypos.le
     linarith
   have hb : Real.log Lw ≤ Real.log CL + Real.log (Real.log x) := by
@@ -1367,8 +1365,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 
 private theorem lt_of_classC0' {R : Ranks} (H : Host R) {p : ℕ} {y : ℝ} (hp : p.Prime) (hc : H.cls p = PrimeClass.inertClass)
     (hs : ∀ p : ℕ, p.Prime → (p : ℝ) ≤ y → GlobalTheoryTheory.kronSym (-(H.d : ℤ)) p = 1) : y < p := by
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hk := hs p hp hle
   have hc' := hc
   simp only [Host.cls, primeClass] at hc'

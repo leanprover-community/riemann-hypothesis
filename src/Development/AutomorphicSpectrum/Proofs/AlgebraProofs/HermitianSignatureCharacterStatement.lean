@@ -141,8 +141,7 @@ theorem charpoly_lmul [Fintype (E →+* K)] (h : Nat.card (E →+* K) = Module.f
     Module.finrank_pos_iff_exists_ne_zero.mpr
       ⟨⟨_, eigProj_mem _ s 1⟩, fun h0 => reg_ne s (congrArg Subtype.val h0)⟩
   have hone : ∀ s, Module.finrank K (HT.eigSp (regAct K E) s) = 1 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     obtain ⟨t, ht⟩ := hn
     have hlt : ∑ _s : E →+* K, 1 < ∑ s, Module.finrank K (HT.eigSp (regAct K E) s) :=
       Finset.sum_lt_sum (fun s _ => hpos s)

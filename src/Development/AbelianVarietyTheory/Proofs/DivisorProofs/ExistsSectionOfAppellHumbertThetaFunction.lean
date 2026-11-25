@@ -58,8 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ThetaGAGA
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {M : LB A.left} {g : ℕ}

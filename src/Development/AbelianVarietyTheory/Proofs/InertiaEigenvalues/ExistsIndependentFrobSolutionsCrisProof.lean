@@ -389,8 +389,7 @@ theorem multiset_many_separated_points : ∀ (K : Type) [NormedAddCommGroup K] (
   have hZs : ∀ W ∈ Z, W ∈ s := fun W hW => Multiset.mem_toFinset.mp (hZsub hW)
   have hcov : ∀ z ∈ s, ∃ W ∈ Z, ‖z - W‖ ≤ ρ := by
     intro z hz
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hzZ : z ∉ Z := by
       intro hzZ
       have := h z hzZ
@@ -672,8 +671,7 @@ theorem window_around_last_max : ∀ (β : ℤ → ℝ) (c : ℝ) (h : ℕ), 0 <
   rw [hx]
   refine ⟨by omega, by omega, hc₀, fun k => hN ▸ hmax k, fun k hk => hNlast k hk, ?_⟩
   intro k hk
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have := hFB k hlt.le
   omega
 
@@ -787,8 +785,7 @@ theorem poly_root_mod_l : ∀ (l : ℕ) [Fact l.Prime] (h : ℕ) (μ : Fin h →
       (mul_nonneg hP0.le (norm_nonneg _)) hS (by
         intro j hj
         have hj' : j < -(D:ℤ) ∨ (E:ℤ) - D < j := by
-          by_contra hc
-          push_neg at hc
+          by_contra! hc
           apply hj
           rw [Finset.mem_image]
           exact ⟨(j + D).toNat, Finset.mem_range.2 (by omega), by omega⟩
@@ -869,8 +866,7 @@ theorem GlobalTheory.oneVarCount_onto_independentZeros : ∀ (l : ℕ) [Fact l.P
       have hmem' : ‖sh (v W - v W')‖ ≤ ‖(l : ℂ_[l])‖ ^ l ^ h := hmem
       rw [hvd, shmul, shpow, hσ, norm_mul, norm_pow, ← hρD] at hmem'
       have hd : ‖sh (u W - u W')‖ ≤ ρ := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have h1 : ρ ^ l ^ D < ‖sh (u W - u W')‖ ^ l ^ D := pow_lt_pow_left₀ hcon hρ0.le (hlD D)
         have h2 := mul_lt_mul_of_pos_left h1 hl0
         linarith

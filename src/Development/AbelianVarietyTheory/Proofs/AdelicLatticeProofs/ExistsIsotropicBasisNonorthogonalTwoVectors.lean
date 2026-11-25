@@ -87,8 +87,7 @@ theorem hf_symm {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E} (hG : IsHerm σ 
 
 theorem hfL_ne {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E} (hG : IsHerm σ G) {y : Fin n → E}
     (hy : y ≠ 0) : ∃ x, hfL σ G y x ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hy
   have h0 : G.mulVec (fun b => σ (y b)) = 0 := by
     funext a
@@ -131,8 +130,7 @@ theorem exists_isotropic_avoid [CharZero E] {σ : E →+* E} {G : Matrix (Fin n)
   let bad : ι → E := fun i => (hf σ G u u / 2 - a * f i u / f i w) / δ
   have hfin : (Set.range bad).Finite := Set.finite_range bad
   obtain ⟨t, ht⟩ : ∃ t : ℕ, (t : E) ∉ Set.range bad := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact (Set.infinite_of_injective_forall_mem (f := fun t : ℕ => (t : E)) Nat.cast_injective h) hfin
   refine ⟨a • u + (-(hf σ G u u) / 2 + δ * t) • w, ?_, fun i => ?_⟩
   · rw [hf_comb, hw, ← ha, ← hσa]
@@ -160,8 +158,7 @@ theorem exists_isotropic_basis (E : Type) [Field E] [CharZero E] (n : ℕ) (σ :
     obtain ⟨z, hz0, hz1⟩ := exists_isotropic_avoid hG hz ![g, hfL σ G x, hfL σ G y] (by
       intro i
       fin_cases i
-      · by_contra h
-        push_neg at h
+      · by_contra! h
         exact hg0 (LinearMap.ext h)
       · exact hfL_ne hG hx
       · exact hfL_ne hG hy)

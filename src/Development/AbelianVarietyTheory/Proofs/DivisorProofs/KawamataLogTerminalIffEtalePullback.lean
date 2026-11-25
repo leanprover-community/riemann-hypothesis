@@ -1418,8 +1418,7 @@ theorem dvrSubring_factor {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuat
   have hinf := Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal V)
     (maximalIdeal.isMaximal V).ne_top
   have : ∃ N : ℕ, s ∉ (maximalIdeal V) ^ N := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : s ∈ ⨅ i : ℕ, (maximalIdeal V) ^ i := Ideal.mem_iInf.2 hc
     rw [hinf, Ideal.mem_bot] at this
     exact h0 this

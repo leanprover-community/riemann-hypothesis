@@ -781,8 +781,7 @@ theorem isoPeel_of_valCount (hv : ValCount) : IsoPeel := by
     simp only [hS, Finset.mem_filter, Finset.mem_univ, true_and] at hx
     obtain ⟨hxW, hx0, hxx⟩ := hx
     have hex : ∃ v ∈ W, hf q M x v ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hx0 (hW x hxW h)
     obtain ⟨v, hvW, hv⟩ := hex
     obtain ⟨y, hy⟩ : ∃ y : Fin n → L, y = ((hf q M x v)⁻¹ ^ q) • v := ⟨_, rfl⟩

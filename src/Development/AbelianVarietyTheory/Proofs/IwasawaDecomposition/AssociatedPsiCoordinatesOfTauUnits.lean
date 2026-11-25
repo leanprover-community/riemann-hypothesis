@@ -64,7 +64,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing Topological
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
 open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef
 open MonoidalCategory CartesianMonoidalCategory MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

@@ -616,7 +616,6 @@ theorem locP_latAd_le {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
 end GlobalTheory.LatAway
 
 namespace GlobalTheory.LatAway
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Forms
 
 def placeUnder {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

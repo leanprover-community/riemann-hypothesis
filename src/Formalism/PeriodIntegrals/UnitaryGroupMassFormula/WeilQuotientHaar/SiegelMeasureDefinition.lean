@@ -34,8 +34,7 @@ lemma eq_one_of_mul_self {c : ℝ≥0∞} (h : c * c = 1) : c = 1 := by
 
 lemma exists_pos_fin (μ : Measure G) [SigmaFinite μ] (h0 : μ ≠ 0) :
     ∃ A : Set G, μ A ≠ 0 ∧ μ A ≠ ⊤ := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h0
   rw [← Measure.measure_univ_eq_zero, ← iUnion_spanningSets μ]
   apply measure_iUnion_null

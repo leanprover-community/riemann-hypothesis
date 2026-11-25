@@ -138,8 +138,7 @@ theorem map_star_of_continuous {ι : Type} [Fintype ι] (ψ : (ι → ℂ) →+*
     (z : ι → ℂ) : ψ (star z) = star (ψ z) := by
   classical
   obtain ⟨i, hi⟩ : ∃ i, ψ (Pi.single i 1) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : ψ 1 = ∑ i, ψ (Pi.single i 1) := by
 
       rw [← map_sum]

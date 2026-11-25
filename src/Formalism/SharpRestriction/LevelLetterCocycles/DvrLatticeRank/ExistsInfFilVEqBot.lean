@@ -37,8 +37,7 @@ theorem smulS_eq_sum {m : ℤ} {f : ℤ → V} (hf : LB m f) (g : PowerSeries LL
   intro j hj
   rw [Function.mem_support] at hj
   rw [Finset.coe_range, Set.mem_Iio]
-  by_contra hjN
-  push_neg at hjN
+  by_contra! hjN
   apply hj
   rw [hf (k - j) (by omega), smul_zero]
 

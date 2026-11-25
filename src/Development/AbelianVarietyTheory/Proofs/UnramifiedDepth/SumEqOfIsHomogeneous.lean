@@ -476,8 +476,7 @@ theorem _root_.GlobalTheory.newtonBound_pos_and_newtonStep : _root_.Formalism.L2
     nlinarith [mul_lt_mul_of_pos_left key hpos]
   · unfold _root_.Formalism.L2.FormalSeriesBounds.P7
     intro C _ v S a hS ha0 hpos Y0
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hadd : ∀ x y : C, 0 < v x → 0 < v y → 0 < v (x + y) := fun x y hx hy =>
       lt_of_lt_of_le (lt_min hx hy) (v.map_add x y)
     have hsub : ∀ x y : C, 0 < v x → 0 < v y → 0 < v (x - y) := fun x y hx hy => by
@@ -1717,8 +1716,7 @@ namespace GlobalTheory.OddBlock.BlockContent
 variable {C : Type} [Field C] (v : AddValuation C (WithTop ℝ))
 
 theorem val_coprime_le {l m : ℕ} (hv : v (l : C) = 1) (h : Nat.Coprime l m) : v (m : C) ≤ 0 := by
-  by_contra hm
-  push_neg at hm
+  by_contra! hm
   have hb : (1 : ℤ) = l * Nat.gcdA l m + m * Nat.gcdB l m := by
     have := Nat.gcd_eq_gcd_ab l m
     rw [h] at this

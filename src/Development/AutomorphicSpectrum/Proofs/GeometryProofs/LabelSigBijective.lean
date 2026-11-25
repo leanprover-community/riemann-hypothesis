@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.VerticalBoundHeightCompare
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CInfGood
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.OverLaUnique
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.ReadsRootsFinZero
@@ -105,21 +106,8 @@ theorem hv_one : Small.HasVal y (0 : K → ℤ) (1 : Ω) z (1 : 𝕜) :=
 
 theorem hv_inv (hz : z ∈ Small.ptsOver 𝕜 (mCoordIdeal y)) {a : K → ℤ} {s : Ω} {w : 𝕜}
     (h : Small.HasVal y a s z w) (hs : s ≠ 0) (hw : w ≠ 0) : Small.HasVal y (-a) s⁻¹ z w⁻¹ := by
-  obtain ⟨dg, dh, g, f, hg, hf, hd, e, hz0, ez⟩ := h
-  have hfy : MvPolynomial.aeval y f ≠ 0 := fun h0 => hz0 (hz.2 f (by
-    show mConeMap y f = 0
-    rw [mConeMap_form y hf, h0]
-    simp))
-  refine ⟨dh, dg, f, g, hf, hg, fun k => ?_, ?_, ?_, ?_⟩
-  · have := hd k
-    simp only [Pi.neg_apply]
-    omega
-  · rw [e]
-    field_simp
-  · rw [ez]
-    exact mul_ne_zero hw hz0
-  · rw [ez]
-    field_simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Ht.UnitHt.hasVal_inv_section <;> assumption
 
 theorem hv_pow {a : K → ℤ} {s : Ω} {w : 𝕜} (h : Small.HasVal y a s z w) (n : ℕ) :
     Small.HasVal y (n • a) (s ^ n) z (w ^ n) := by

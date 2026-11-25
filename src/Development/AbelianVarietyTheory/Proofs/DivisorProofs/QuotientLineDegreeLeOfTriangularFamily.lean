@@ -706,8 +706,7 @@ theorem val_aeval_le (t : F) (p : k[X]) (v : Place k F) :
 theorem val_le_of_monic (t y : F) (P : F[X]) (hP : P.Monic) (hy : P.eval y = 0) (c : ℕ)
     (v : Place k F) (hc : ∀ i < P.natDegree, v.1 (P.coeff i) ≤ Mx t v ^ c) :
     v.1 y ≤ Mx t v ^ c := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hM : 1 ≤ Mx t v ^ c := one_le_pow₀ (one_le_Mx t v)
   have hy1 : 1 < v.1 y := lt_of_le_of_lt hM hlt
   have hy0 : v.1 y ≠ 0 := ne_of_gt (lt_trans zero_lt_one hy1)
@@ -1598,8 +1597,7 @@ theorem GlobalTheory.Nef.deg_le_two_mul_of_triangular : ∀ (k F : Type) [Field 
     push_cast at hreal
     have hm1 : (0 : ℝ) ≤ (m : ℝ) + 1 := by positivity
     nlinarith
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hpos : (0 : ℝ) < (deg g : ℝ) - 2 * b := by linarith
   obtain ⟨m, hm⟩ := exists_nat_gt (2 * (1 + γ) / ((deg g : ℝ) - 2 * b))
   have hk := key m

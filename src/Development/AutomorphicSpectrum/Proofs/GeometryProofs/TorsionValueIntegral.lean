@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionValueUniqueBaseChange
+
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsIsUUOver
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsFrameIff
@@ -657,42 +659,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Sl.IntTors
 theorem torsVal_map {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] (P : RigLB G) (s : H0 P.L 1) {F F' : Type}
     [Field F] [Field F'] (f : F →+* F') {b : Sp F ⟶ S} (y : Over.mk b ⟶ G) (y' : Over.mk (spMap f ≫ b) ⟶ G)
     (hy : y'.left = spMap f ≫ y.left) (N : ℕ) (T : F) (h : TorsVal P s y N T) : TorsVal P s y' N (f T) := by
-  obtain ⟨hN, hyN, wg, i₀, i, hg, h₀, h₁, heq⟩ := h
-  let hh : Over.mk (spMap f ≫ b) ⟶ Over.mk b := Over.homMk (spMap f) rfl
-  have eY : y' = hh ≫ y := Over.OverMorphism.ext hy
-  have hone : (1 : Over.mk (spMap f ≫ b) ⟶ G).left = spMap f ≫ (1 : Over.mk b ⟶ G).left := by
-    rw [GlobalTheory.TorsFrame.one_left, GlobalTheory.TorsFrame.one_left]
-    exact Category.assoc _ _ _
-  have a₀ : (1 : Over.mk b ⟶ G).left ≫ ((𝟙 G : G ⟶ G) ^ N).left = (1 : Over.mk b ⟶ G).left := by
-    rw [← Over.comp_left, MonObj.comp_pow, Category.comp_id, one_pow]
-  have b₀ : y.left ≫ ((𝟙 G : G ⟶ G) ^ N).left = (1 : Over.mk b ⟶ G).left := by
-    rw [← Over.comp_left, MonObj.comp_pow, Category.comp_id, hyN]
-  have mem₂ : ∀ (r : (Over.mk b).left ⟶ G.left) (p : (Over.mk b).left) (c d : P.L.ι),
-      (r ≫ ((𝟙 G : G ⟶ G) ^ N).left) p ∈ P.L.U c → r p ∈ P.L.U d →
-      r p ∈ LB.wchart P.L (![((𝟙 G : G ⟶ G) ^ N).left, 𝟙 G.left] : Fin 2 → _) ![c, d] := fun r p c d hc hd => Set.mem_iInter.2 fun k => by
-    fin_cases k
-    · exact hc
-    · exact hd
-  have mo : ∀ p, (1 : Over.mk b ⟶ G).left p ∈ P.L.U i₀ := fun p => h₀ (show p ∈ (⊤ : (Over.mk b).left.Opens) from trivial)
-  have my : ∀ p, y.left p ∈ P.L.U i := fun p => h₁ (show p ∈ (⊤ : (Over.mk b).left.Opens) from trivial)
-  have wA : ⊤ ≤ (1 : Over.mk b ⟶ G).left ⁻¹ᵁ (LB.LinComb P.L (![((𝟙 G : G ⟶ G) ^ N).left, 𝟙 G.left] : Fin 2 → _) ![1, -((N : ℤ) ^ 2)]).U ![i₀, i₀] := fun p _ =>
-    mem₂ _ p i₀ i₀ (by rw [a₀]; exact mo p) (mo p)
-  have wY : ⊤ ≤ y.left ⁻¹ᵁ (LB.LinComb P.L (![((𝟙 G : G ⟶ G) ^ N).left, 𝟙 G.left] : Fin 2 → _) ![1, -((N : ℤ) ^ 2)]).U ![i₀, i] := fun p _ =>
-    mem₂ _ p i₀ i (by rw [b₀]; exact mo p) (my p)
-  have wS : ⊤ ≤ y.left ⁻¹ᵁ (LB.LinComb P.L (K := Fin 1) (fun _ => 𝟙 G.left) (fun _ => ((1 : ℕ) : ℤ))).U (fun _ => i) := fun p _ =>
-    Set.mem_iInter.2 fun _ => my p
-  have wR : ⊤ ≤ b ⁻¹ᵁ (P.L.pull (eSec G)).U (fun _ => i₀) := fun p _ => Set.mem_iInter.2 fun _ => mo p
-  refine ⟨hN, ?_, wg, i₀, i, hg, ?_, ?_, ?_⟩
-  · rw [eY, ← MonObj.comp_pow, hyN]
-    exact Over.OverMorphism.ext hone.symm
-  · rw [hone]
-    exact fun p _ => mo (spMap f p)
-  · rw [hy]
-    exact fun p _ => my (spMap f p)
-  · rw [hone, hy, GlobalTheory.ArcExt.valF_ext f _ _ wA, GlobalTheory.ArcExt.valF_ext f _ _ wR, GlobalTheory.ArcExt.valF_ext f _ _ wS,
-      GlobalTheory.ArcExt.valF_ext f _ _ wY]
-    have := congrArg f heq
-    simpa only [map_mul, map_pow] using this
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Sl.TorsExist.torsVal_map <;> assumption
 
 end GlobalTheory.CompanionTheory.Ar.Sl.IntTors
 

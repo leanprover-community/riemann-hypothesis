@@ -36,8 +36,7 @@ theorem exists_avg (H : Subgroup G) (σ : Representation ℂ H Z) (L : Subgroup 
   obtain ⟨ι, _, r, c, h1, h2⟩ := GlobalTheory.CompanionTheory.TwAvgInd.exists_finite_average (cInd H σ)
     (GlobalTheory.CompanionTheory.BZFun.isSmooth_cInd H σ) hL θ hθ f
   refine ⟨_, h1, h2, fun x hx => ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   let E : cIndSpace H σ →ₗ[ℂ] Z := (GlobalTheory.CompanionTheory.TwAvgInd.evalAt H σ x) ∘ₗ (cIndSpace H σ).subtype
   have hz : ∀ i, E (GlobalTheory.CompanionTheory.TwistedAverage.twOrbit (cInd H σ) L θ f (r i)) = 0 := by

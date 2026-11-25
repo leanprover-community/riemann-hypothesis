@@ -216,8 +216,7 @@ theorem GlobalTheory.LocFlat.contr_support_finite_cells :
   refine ⟨Finset.univ.biUnion Ti, fun y hy => ?_⟩
   obtain ⟨X, hX⟩ : ∃ X, GlobalTheory.LocFlat.contr ψ ν (GlobalTheory.LocFlat.flCol ψ ν (ρ + 1) Φ₁'.1)
       (GlobalTheory.LocFlat.flRow ψ ν ρ (om μ' x y Φ₂.1)) X ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy (funext h)
   let Φ₂' : SB (Matrix (n₂ ⊕ Fin c) (n₁ ⊕ Fin (c + 1)) k) := ⟨om μ' x y Φ₂.1, om_mem_SB μ' x y Φ₂.2⟩
   have hid := (GlobalTheory.LocFlat.ContrSum.contr_flat_eq_sum k ψ hψc hψ1 ν hsd n₀ n₁ n₂ c ρ hcρ μ Φ₁' Φ₂').2.2.2.2
@@ -252,7 +251,6 @@ open GlobalTheory.PosOne (toOne Covers TriPos)
 open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (app HasTensorVal fl opEFJ IsQuotIntFJ RFJ)
 open GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum (IsCO)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.QPl.FinOneProof
 
@@ -395,7 +393,6 @@ open GlobalTheory.PosOne (toOne Covers TriPos)
 open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (app HasTensorVal fl opEFJ IsQuotIntFJ RFJ)
 open GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum (IsCO)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.splitPlaceDoubleStepFinitelyManyCellsUniform_proof : ∀ D : D7, FinOne D := by
   first | exact @GlobalTheory.QPl.FinOneProof.finOne

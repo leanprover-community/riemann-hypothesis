@@ -461,8 +461,7 @@ theorem GlobalTheory.CharIndepAt.main : ∀ (X : Scheme.{0}) [IsIntegral X] (U :
     have := (residue_liftStalk_eq_iff (σ i₀) (h1 i₀)).2 hi₀
     ext a
     exact RingHom.congr_fun this (g a)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hsum : ∀ a : Γ(X, U), ∑ i, res (t i) * χ i a = 0 := by
     intro a
     by_contra hz

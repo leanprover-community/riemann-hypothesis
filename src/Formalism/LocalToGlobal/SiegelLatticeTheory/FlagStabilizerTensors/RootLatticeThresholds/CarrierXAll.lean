@@ -305,8 +305,7 @@ theorem rZero_carrierInT (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃
         (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE) (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE)
         (Tw (D := D) u * Tw (D := D) u') (by rw [hcl]; simp)
       rw [Formalism.L2.SG.Pf.CarrierTop.zx_sc, hGd, hZ1] at hv1
-      by_contra hpos
-      push_neg at hpos
+      by_contra! hpos
       have hrd := Formalism.MainNotions.LocalModelPeriodLattices.rdE_pos D
       have hne : (∏ i : Fin D.R.rS, Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE (Fin.castLE (Nat.le_succ D.R.rS) i)) ≠ 0 :=
         Finset.prod_ne_zero_iff.mpr fun i _ => by
@@ -316,8 +315,7 @@ theorem rZero_carrierInT (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃
         pow_pos (mul_pos (norm_pos_iff.mpr hne) (norm_pos_iff.mpr hne)) 2
       have := mul_pos hc hpos
       linarith
-    · by_contra hall
-      push_neg at hall
+    · by_contra! hall
       obtain ⟨γ, hγ, -⟩ := hPRE w (fun v => by have := hall v; unfold Gv; exact this)
       exact hrep ⟨γ, hγ⟩
   refine ⟨(tauE X e).symm v, Or.inr ?_⟩

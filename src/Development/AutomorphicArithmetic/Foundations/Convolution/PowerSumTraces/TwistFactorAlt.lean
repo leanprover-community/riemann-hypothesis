@@ -49,13 +49,11 @@ theorem UpperTheory.exists_scalar_of_twisted_intertwiner_commuting_algebras :
   have hE : ∀ i, ∃ E : Module.End ℂ (P i), LinearMap.trace ℂ (P i) (E * J i) = 1 := by
     intro i
     have hx : ∃ x, J i x ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hJ i (LinearMap.ext hne)
     obtain ⟨x₀, hx₀⟩ := hx
     have hφ : ∃ φ : Module.Dual ℂ (P i), φ (J i x₀) ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hx₀ ((Module.forall_dual_apply_eq_zero_iff ℂ (J i x₀)).1 hne)
     obtain ⟨φ, hφ⟩ := hφ
     refine ⟨((φ (J i x₀))⁻¹ • φ).smulRight x₀, ?_⟩

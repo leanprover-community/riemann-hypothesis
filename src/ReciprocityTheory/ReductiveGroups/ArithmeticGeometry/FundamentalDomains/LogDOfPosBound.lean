@@ -145,8 +145,7 @@ private lemma sum_eq_add_sum_castLE_of_vanish_above {n : ℕ} (k : Fin n) (f : F
     omega
   calc ∑ j, f j = ∑ j ∈ insert k (Finset.univ.map e), f j := by
         refine (Finset.sum_subset (Finset.subset_univ _) fun j _ hj => hf j ?_).symm
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         rcases lt_or_eq_of_le hle with hlt | heq
         · exact hj (Finset.mem_insert_of_mem
             (Finset.mem_map.mpr ⟨⟨(j : ℕ), hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩))

@@ -380,8 +380,7 @@ theorem comp_eigProj_eq {E : Type} [Field E] [NumberField E] {C : Type} [Field C
     intro t ht
     have hmem := HT.LatBasic.mem_eigSp.1 (HT.LatBasic.eigProj_mem ρ t y)
     have hex : ∃ a : 𝓞 E, t (a : E) ≠ s' (a : E) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact ht (IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (RingHom.ext hc))
     obtain ⟨a, ha⟩ := hex
     have h1 := LinearMap.congr_fun (hφ a) (HT.eigProj ρ t y)

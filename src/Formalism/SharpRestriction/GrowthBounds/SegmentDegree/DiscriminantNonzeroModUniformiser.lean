@@ -181,8 +181,7 @@ theorem late_vectors_distinct_tops : LateVectorsDistinctLeadingTerms := by
       · rw [h]
       · rw [hget _ hm, hget _ hk2]
         exact (hpw _ _ hm hk2 h).le
-    · by_contra hz
-      push_neg at hz
+    · by_contra! hz
       have hy1S := hinS _ hm
       have hzS := hinS _ hk2
       obtain ⟨hy1lo, -, -⟩ := hSlo _ hy1S
@@ -209,8 +208,7 @@ theorem late_vectors_distinct_tops : LateVectorsDistinctLeadingTerms := by
           rw [hT, Finset.mem_filter] at hs
           obtain ⟨k', hk', rfl⟩ := List.getElem_of_mem ((hmem _).2 hs.1)
           refine Finset.mem_image.2 ⟨k', Finset.mem_Ico.2 ⟨?_, hk'⟩, hget k' hk'⟩
-          by_contra hlt2
-          push_neg at hlt2
+          by_contra! hlt2
           have h3 := hpw k' _ hk' hm hlt2
           have h2 := hs.2
           rw [hy1, hget _ hm] at h2

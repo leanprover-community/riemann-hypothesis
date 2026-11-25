@@ -97,8 +97,7 @@ theorem minor_lemma {n m : ℕ} (hmn : m < n) (x w y : Matrix (Fin n) (Fin n) K)
     show ∑ k, x (r i) k * (w * y) k (c j) = ∑ k, x (r i) (r k) * (w * y) (r k) (c j)
     refine sum_sub r hr (fun k => x (r i) k * (w * y) k (c j)) (fun k hk => ?_)
     have hkm : m < k.val := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hk (Set.mem_range.2 ⟨⟨k.val, Nat.lt_succ_of_le hc⟩, Fin.ext rfl⟩)
     have hlt : r i < k := by
       show i.val < k.val
@@ -210,8 +209,7 @@ theorem Formalism.FourierDecayAlt.P.added_block_kernel_support : Formalism.Fouri
     unfold Ns
     rw [h0, mul_zero]
   obtain ⟨q, hq⟩ : ∃ q, pairTerm R ψ (addBlock h s t) (addBlock h' s t') q ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hK
     unfold Kp
     simp only [hc, finsum_zero]

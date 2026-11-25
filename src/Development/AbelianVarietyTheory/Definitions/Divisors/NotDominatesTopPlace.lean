@@ -88,8 +88,7 @@ theorem _root_.GlobalTheory.FieldPair.nonUnit_iff {R : Subring K} (f : R) :
       exact hinv (u⁻¹ : Rˣ).1.2
   · intro hnu
     refine ⟨f.2, ?_⟩
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hnu
     exact IsUnit.of_mul_eq_one (b := (⟨_, h.2⟩ : R)) (Subtype.ext (by simp [h.1]))
 

@@ -59,7 +59,6 @@ section -- clump:auto
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open scoped Matrix
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -230,8 +229,7 @@ theorem pureA_ind_add (v : Pl (F := F)) (f : (ι → mixedEmbedding.mixedSpace F
 
 theorem exists_arch : ∃ f : SchwartzMap (ι ⊕ ι → mixedEmbedding.mixedSpace F) ℂ,
     SchwartzMap.integralCLM ℂ (volume : Measure (Vi F ι)) (compD F ι f) ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨φ, hφ, h0⟩ := exists_lDiag_ne (F := F) (κ := ι)
   refine h0 ((Submodule.span_le (p := LinearMap.ker (lDiag F ι))).2 ?_ hφ)
   rintro _ ⟨f, g, hg, rfl⟩

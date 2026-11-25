@@ -985,8 +985,7 @@ theorem _root_.GlobalTheory.DegCnt.NF.geometry : ∀ (K V : Type) [Field K]
     intro τ x hx
     have hx' : (x : V) ≠ 0 := fun h => hx (Subtype.ext h)
     exact _root_.GlobalTheory.DegCnt.NFGeom.Wt_pos N τ x.2 hx'
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     have hT0 : N.T = 0 := by omega
     apply N.F.hT
     rw [N.hT, hT0, Nat.cast_zero]

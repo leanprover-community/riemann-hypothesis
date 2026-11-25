@@ -1197,8 +1197,6 @@ namespace GlobalTheory.UPel.HT.LieLin
 
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.PullbackSections
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {S : Scheme.{0}}
@@ -1502,7 +1500,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 noncomputable section
 namespace GlobalTheory.UPel.HT.LieLin.LieAlgebraMultiplication
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {k : Type} [Field k] (t : Sp k ⟶ S)
@@ -1552,7 +1549,6 @@ theorem tang_iff (v : epsPt t ⟶ G) :
 end GlobalTheory.UPel.HT.LieLin.LieAlgebraMultiplication
 
 namespace GlobalTheory.UPel.HT.LieLin.LieAlgebraMultiplication
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {k : Type} [Field k] (t : Sp k ⟶ S)
@@ -1874,8 +1870,7 @@ theorem lieHer_closed (b : Base D R) (s : S ⟶ Sp R) (A : Over S) [GrpObj A] [I
         exact h
     · intro k _ _ g' i
       have hex : ∃ r ∈ t, g' (g r) ≠ 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have : Ideal.span (t : Set R') ≤ RingHom.ker (g'.comp g) :=
           Ideal.span_le.2 fun r hr => by simpa using hcon r hr
         rw [ht] at this

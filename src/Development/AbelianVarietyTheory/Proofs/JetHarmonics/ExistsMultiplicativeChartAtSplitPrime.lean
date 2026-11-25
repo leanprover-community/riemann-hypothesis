@@ -849,8 +849,7 @@ theorem thue_pigeon {q : ℕ} [Fact q.Prime] (a : ℤ_[q]) (k : ℕ) :
     refine le_trans ?_ hm2
     apply sq_le_sq' <;> omega
   refine ⟨((x.1 : ℕ) : ℤ) - ((y.1 : ℕ) : ℤ), ((x.2 : ℕ) : ℤ) - ((y.2 : ℕ) : ℤ), ?_, hb _ _, hb _ _, ?_⟩
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     apply hxy
     ext
     · have := h.1; omega

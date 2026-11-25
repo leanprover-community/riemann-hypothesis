@@ -675,8 +675,7 @@ private theorem UpperTheory.V.Alg.M.fin_gen {O A K : Type} [CommRing O] [CommRin
     (𝒜 : ℤ → Submodule O A) [GradedAlgebra 𝒜] [Field K] [Algebra O K] (ξ : A →ₐ[O] K) (j : ℤ) (s : Finset A)
     (hs : Submodule.span (𝒜 0) (s : Set A) = oz 𝒜 j) (h : ∃ f ∈ 𝒜 j, ξ f ≠ 0) : ∃ f ∈ s, ξ f ≠ 0 := by
   obtain ⟨f, hf, hξ⟩ := h
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hf' : f ∈ Submodule.span (𝒜 0) (s : Set A) := by
     rw [hs]
     exact (mem_oz 𝒜).2 hf

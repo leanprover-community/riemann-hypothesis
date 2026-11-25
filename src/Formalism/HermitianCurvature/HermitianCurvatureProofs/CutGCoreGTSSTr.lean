@@ -20,8 +20,6 @@ noncomputable section
 
 open Formalism.FourierDecayAlt.P.CutMP.Gauge Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 

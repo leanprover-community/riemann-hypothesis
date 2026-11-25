@@ -805,8 +805,6 @@ namespace Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section SpecAux
 
 variable {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -962,8 +960,6 @@ namespace Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 private theorem linearMap_coeAddMonoidHom_eq_mapRange_smul {ι : Type*} [DecidableEq ι] {W : Type*} [AddCommGroup W] [Module ℂ W]
     (S : ι → Submodule ℂ W) (L : W →ₗ[ℂ] W) (a : ι → ℂ) (hL : ∀ i, ∀ y ∈ S i, L y = a i • y)
     (f : DirectSum ι (fun i => S i)) :
@@ -1031,8 +1027,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
     (h : IsFrameOf k r vs Bs) (hs : ∀ v ∈ vs', v ∈ vs) : IsFrameOf k r vs' Bs :=

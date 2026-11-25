@@ -84,8 +84,7 @@ theorem exists_emb (w : HeightOneSpectrum (𝓞 LL)) (hw : (p : 𝓞 LL) ∈ w.a
   classical
   haveI : CharZero (Om p n) :=
     charZero_of_injective_algebraMap (algebraMap (KO p n) (Om p n)).injective
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   let τ0 : LL →ₐ[ℚ] Om p n := (by
     refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
     solve_by_elim* (maxDepth := 2) only [*,
@@ -102,8 +101,7 @@ theorem exists_emb (w : HeightOneSpectrum (𝓞 LL)) (hw : (p : 𝓞 LL) ∈ w.a
     apply HeightOneSpectrum.ext
     exact ((w.isMaximal).eq_of_le (placeOf σ.toRingHom).isPrime.ne_top hle).symm
   obtain ⟨e, hew, hen⟩ : ∃ e ∈ w.asIdeal, ∀ σ : LL →ₐ[ℚ] Om p n, e ∉ placeIdeal σ.toRingHom := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hav (fun x hx => by
       obtain ⟨σ, hσ⟩ := h x hx
       exact Set.mem_biUnion (Finset.mem_coe.2 (Finset.mem_univ σ)) hσ)

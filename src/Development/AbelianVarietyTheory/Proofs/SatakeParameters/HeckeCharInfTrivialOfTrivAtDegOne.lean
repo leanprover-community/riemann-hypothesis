@@ -623,8 +623,7 @@ theorem infinitePlace_eq_of_embedding_comp_algebraMap_eq (F E : Type) [Field F] 
   have hcard : Fintype.card (E →ₐ[F] ℂ) = 2 := by
     rw [AlgHom.card, Algebra.IsQuadraticExtension.finrank_eq_two]
   have hcab : c = a ∨ c = b := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h3 : ({a, b, c} : Finset (E →ₐ[F] ℂ)).card = 3 := by
       rw [Finset.card_insert_of_notMem, Finset.card_pair]
       · exact fun e => hne.2 e.symm

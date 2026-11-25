@@ -311,8 +311,7 @@ theorem eEp3_eq (R : RealDat3 D A3 Ks)
 
 theorem exists_carries (R : RealDat3 D A3 Ks) {p : A3.fam3.base3.Ix} (h : R.EEp3 p ≠ ⊥) :
     ∃ c, R.Carries p c := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   apply h
   unfold RealDat3.EEp3
   exact iSup₂_eq_bot.2 fun c hc => absurd hc (hn c)

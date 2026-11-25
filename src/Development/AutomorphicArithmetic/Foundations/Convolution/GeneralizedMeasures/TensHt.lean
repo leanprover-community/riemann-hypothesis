@@ -180,8 +180,7 @@ theorem UpperTheory.ConvolutionTheory.GM.tensHt : TensHt := by
   refine ⟨?_, he0⟩
   have hk := left_ne_zero_of_mul hg'
   obtain ⟨s, hs⟩ : ∃ s, β (infPart E n (g : AdelicGLn.AdelicGL E n) * zInf E n s) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hk (by simp [kbar, hc])
   set x := finPart E n (g : AdelicGLn.AdelicGL E n) with hx
   set G := infEmb E n (infPart E n (g : AdelicGLn.AdelicGL E n)) with hG

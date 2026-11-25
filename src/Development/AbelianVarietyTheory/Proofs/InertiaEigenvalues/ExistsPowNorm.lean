@@ -64,8 +64,7 @@ theorem le_of_homog {A : Type} [CommRing A] (N : A → ℝ) (h01 : ∀ x, 0 ≤ 
     (hmul : ∀ x y, N (x * y) = N x * N y) (a b : A) (d : ℕ) (c : ℕ → A)
     (h : a ^ d + ∑ i ∈ Finset.range d, c i * a ^ i * b ^ (d - i) = 0) (hA : N 1 = 1) :
     N a ≤ N b := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have ha : 0 < N a := lt_of_le_of_lt (h01 b).1 hlt
   have hb1 : N b < 1 := lt_of_lt_of_le hlt (h01 a).2
   have h0 : N 0 = 0 := by

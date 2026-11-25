@@ -277,8 +277,7 @@ private theorem sDegs_rename_subset_sDegs_preimage {R : Type} [CommRing R] {ι �
   intro k hk
   simp only [Finset.mem_biUnion, MvPolynomial.mem_support_iff, Finsupp.mem_support_iff] at hk ⊢
   obtain ⟨m, -, hk⟩ := hk
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hk
 
   rw [B.as_sum, map_sum, coeff_sum]

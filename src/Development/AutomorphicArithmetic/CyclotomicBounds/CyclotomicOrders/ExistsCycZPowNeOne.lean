@@ -120,8 +120,7 @@ theorem le_nuOf_iff (h : ∃ g, ε g ^ n ≠ 1) (k : ℕ) :
   · intro hk g
     exact (pow_dvd_pow _ hk).trans (pow_nuOf_dvd l ε n g)
   · intro hk
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨g, hg⟩ := nuOf_mem l ε n h
     exact hg ((pow_dvd_pow _ hlt).trans (hk g))
 
@@ -199,8 +198,7 @@ private theorem totient_le_of_cyc_pow_eq_one (l : ℕ) [Fact l.Prime] (E Ω : Ty
 theorem exists_cyc_pow_ne_one (l : ℕ) [Fact l.Prime] (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
     [IsAlgClosure E Ω] (n : ℕ) (hn : n ≠ 0) : ∃ g : Ω ≃ₐ[E] Ω, cyc l E Ω g ^ n ≠ 1 := by
   have hl := (Fact.out : l.Prime)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have key := totient_le_of_cyc_pow_eq_one l E Ω n hn hne (Module.finrank ℚ E * n + 1)
   rw [Nat.totient_prime_pow_succ hl] at key
   have h1 : Module.finrank ℚ E * n < l ^ (Module.finrank ℚ E * n) := Nat.lt_pow_self hl.one_lt

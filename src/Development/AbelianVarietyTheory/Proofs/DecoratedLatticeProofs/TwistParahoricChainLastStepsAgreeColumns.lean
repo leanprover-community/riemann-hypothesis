@@ -228,8 +228,7 @@ theorem _root_.GlobalTheory.StepData.mul_mem_of_hat_cosetInd_ne_zero : ∀ (k : 
   haveI := sigmaCompactSpace_of_isNonarchimedeanLocalField' k
   by_contra hx
   obtain ⟨t, ht, hψt⟩ : ∃ t ∈ 𝒪[k], ψ (t * (ε * η i * c)) ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (_root_.GlobalTheory.RootEx.Unram.mem_of_psi hψ h)
   have hvmem : Pi.single i ((c : k) * t) ∈ _root_.GlobalTheory.StepData.box n c := by
     show ∀ j, valuation k (Pi.single (M := fun _ => k) i ((c : k) * t) j) ≤ valuation k (c : k)

@@ -17,8 +17,7 @@ noncomputable section
 namespace Formalism.ZeroFreeDirichlet
 
 lemma three_le_modulus_of_ne_one {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) : 3 ≤ q := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hq0 : 0 < q := Nat.pos_of_ne_zero (NeZero.ne q)
   interval_cases q
   all_goals

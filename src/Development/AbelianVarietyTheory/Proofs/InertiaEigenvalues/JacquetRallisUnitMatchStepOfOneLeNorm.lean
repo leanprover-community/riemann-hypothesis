@@ -654,8 +654,7 @@ theorem omega_act (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F] (
     rw [← norm_mul, ← Matrix.det_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.det_one, norm_one]
   have hkinv : ‖((k⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F).det‖ = 1 := by
     apply le_antisymm hb
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have : ‖(k : Matrix (Fin n) (Fin n) F).det‖ * ‖((k⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F).det‖ < 1 :=
       lt_of_le_of_lt (mul_le_of_le_one_left (norm_nonneg _) ha) hlt
     linarith

@@ -634,8 +634,7 @@ theorem exists_pair_of_annihilator_any : ∀ (F : Type) [Field F] [NumberField F
   intro F _ _ v κ _ ψ hcont hnorm hne Λ c hc hself hbd η hη
   classical
   have hne' : ∃ t, ψ t ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (by ext t; simpa using h t)
   obtain ⟨n, hn⟩ := _root_.GlobalTheory.ConductorAdicCompletion.exists_conductor_adicCompletion F v ψ hcont hnorm hne'
   obtain ⟨a, ha⟩ := exists_valuation_eq F v n

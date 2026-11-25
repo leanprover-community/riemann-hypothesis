@@ -390,8 +390,7 @@ theorem poincare_sum_bound : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (
   have hP : ∀ x : GA D V, 0 < ∏ τ, ((1 + hsn (cmp θ τ x)) ^ (2 * V.rank ^ 2 + 1))⁻¹ := fun x =>
     Finset.prod_pos fun τ _ => inv_pos.2 (pow_pos (add_pos_of_pos_of_nonneg zero_lt_one (Real.sqrt_nonneg _)) _)
   have hC0 : 0 ≤ C := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := hle 1
     have := hu 1
     have := mul_neg_of_neg_of_pos h (hP 1)

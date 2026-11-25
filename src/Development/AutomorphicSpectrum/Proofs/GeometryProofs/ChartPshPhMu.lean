@@ -1,5 +1,7 @@
 module
 
+import Development.WeilBound.CoreStatements.CentralCharts.AnalyticAtEval
+
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import Mathlib.Analysis.Matrix.Hermitian
 
@@ -19,19 +21,7 @@ open _root_.Metric
 theorem analyticAt_eval {A : Type} {n : ℕ} {q : (Fin n → ℂ) → A → ℂ} {t₀ : Fin n → ℂ}
     (hq : ∀ i, AnalyticAt ℂ (fun t => q t i) t₀) (p : MvPolynomial A ℤ) :
     AnalyticAt ℂ (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) t₀ := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simpa using analyticAt_const
-  | add p r hp hr =>
-    have e : (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) (p + r))) =
-        (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) +
-          fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) r) := by
-      funext t; simp
-    rw [e]; exact hp.add hr
-  | mul_X p i hp =>
-    have e : (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) (p * MvPolynomial.X i))) =
-        (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) * fun t => q t i := by
-      funext t; simp
-    rw [e]; exact hp.mul (hq i)
+  apply _root_.AnalyticReference.An.analyticAt_eval <;> assumption
 
 
 open scoped ComplexOrder in

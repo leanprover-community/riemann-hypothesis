@@ -814,8 +814,7 @@ theorem geo_chain (hV : Fr.Valid L₁ N₁) (hT : TieS Fr Dt) (j : ZMod J) (i : 
   · rw [hm, chain_mem Dt hT]
     have hl := l.isLt
     refine ⟨⟨fun h => Or.inr ⟨l, rfl, ?_⟩, ?_⟩, ?_⟩
-    · by_contra hc
-      push_neg at hc
+    · by_contra! hc
       have hi' : i.val < Dt.nL j := lt_of_le_of_lt hc hl
       rw [Formalism.MainNotions.Proposition5Numerics.posU_ll' (Fr := Fr) (segZ j) (Dt.nL j) i.val hi'] at h
       rcases Nat.eq_or_lt_of_le hc with he | hlt

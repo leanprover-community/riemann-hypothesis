@@ -178,8 +178,7 @@ theorem map_maximal_ne_top {O E R : Type} [CommRing O] [IsNoetherianRing O] [Com
       (sInf_le ⟨bot_le, hm⟩)
   have hrad : (Ideal.span {(p : E)}).radical ≤ m := hm.isPrime.radical_le_iff.2 hpm
   obtain ⟨i, hi⟩ : ∃ i, a (letE i) ∉ m := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 : ∑ i, (letE i : LetA O n) = 1 := by
       funext k
       simp [letE, Finset.sum_apply, Pi.single_apply]

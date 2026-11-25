@@ -464,8 +464,7 @@ private theorem count (L : IsLoc O Δ) {π : O} {n : ℕ} {e : Oˣ} {h : O} {x :
     simpa [r, map_sub, map_mul, map_pow] using this
   have hnz : ∀ g, r (A g) ≠ 0 ∨ r (B g) ≠ 0 := by
     intro g
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hN' g
     rw [hcon.1, hcon.2]
     ring

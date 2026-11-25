@@ -608,8 +608,7 @@ lemma xn_sum_castLE {A : Type*} [AddCommMonoid A] {k : ℕ} (hk : k ≤ r) (g : 
   refine Finset.sum_subset (Finset.subset_univ _) ?_
   intro b _ hb
   apply hg
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact hb (Finset.mem_image.2 ⟨⟨b.val, hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩)
 
 lemma xn_sum_rows {k : ℕ} (hk : k ≤ r) {f : MvPolynomial (Fin r × Fin n) ℂ}

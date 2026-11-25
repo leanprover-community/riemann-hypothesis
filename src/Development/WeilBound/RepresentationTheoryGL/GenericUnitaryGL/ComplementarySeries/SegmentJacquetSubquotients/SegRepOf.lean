@@ -487,16 +487,14 @@ theorem entries_zero_or_d {d l : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)) 
     (hs : ∀ i, IsSubquotient (piTensor fun j => (s i j).ρ) (jac (f i) (segTerm σ.ρ l i))) :
     ∀ i j, b.1 i j = 0 ∨ b.1 i j = d := by
   intro i j
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨h0, hdj⟩ := hne
   have hcusp : IsCuspidal (segTerm σ.ρ l i) :=
     GlobalTheory.LocGL.isCuspidal_twist hσ (GlobalTheory.LocGL.isSmoothChar_absPow _)
   have hsum := b.2.1 i
   simp only [Fintype.card_fin] at hsum
   obtain ⟨j', hj'ne, hj'0⟩ : ∃ j', j' ≠ j ∧ b.1 i j' ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hdj
     rw [Finset.sum_eq_single j (fun j' _ hj' => hall j' hj') (by simp)] at hsum
     exact hsum

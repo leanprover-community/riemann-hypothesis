@@ -84,8 +84,7 @@ theorem natDegree_minpoly_le_tmul {F A : Type} [Field F] [Ring A] [Algebra F A] 
     convert h using 1
     funext j
     simp [hx, Algebra.TensorProduct.tmul_pow]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hsum := Polynomial.aeval_eq_sum_range' hlt x
   rw [minpoly.aeval, ← Fin.sum_univ_eq_sum_range (fun i => (minpoly K x).coeff i • x ^ i)] at hsum
   have hc := Fintype.linearIndependent_iff.mp hli (fun i => (minpoly K x).coeff i) hsum.symm

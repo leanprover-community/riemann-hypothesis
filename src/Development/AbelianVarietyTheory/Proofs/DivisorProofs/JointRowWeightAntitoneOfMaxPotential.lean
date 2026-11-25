@@ -249,8 +249,7 @@ theorem antitone_of_pot_max : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscre
   intro O _ _ _ _ N ι _ _ lam Gm _ _ w hw hmax τ
   apply antitone_of_adj
   intro a b hab
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h1 := hmax _ (jointWt_perm O N lam Gm w hw τ (Equiv.swap a b))
   have h2 := pot_lt_swap w τ a b hab hlt
   omega

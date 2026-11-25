@@ -547,8 +547,7 @@ theorem mmap_eq_zero (M : DSModel V S) (hv : ¬ ∃ v : M.Vec, ∏ τ, ⟪(v τ 
     T = 0 := by
   classical
   have : ∃ τ, ∀ w : M.sm τ, w = 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose w hw using hne
     refine hv ⟨w, Finset.prod_ne_zero_iff.2 fun τ _ => ?_⟩
     rw [inner_self_ne_zero]

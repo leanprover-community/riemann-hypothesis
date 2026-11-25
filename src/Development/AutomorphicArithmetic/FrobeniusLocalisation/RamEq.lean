@@ -65,8 +65,7 @@ private theorem tower_le {φ : Frame} (H : HostRaw φ) : φ.e + 2 ≤ H.condE.fa
   have hodd : ¬ 2 ∣ H.condN / 2 ^ H.condN.factorization 2 := Nat.not_dvd_ordCompl h2 hN
   have haN : H.condN / 2 ^ H.condN.factorization 2 * 2 ^ H.condN.factorization 2 = H.condN :=
     Nat.div_mul_cancel (Nat.ordProj_dvd _ _)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hbot := ((layer_bot H h2 (j := φ.e + 1) (by omega)).1).2 (by omega)
   generalize ha : H.condN / 2 ^ H.condN.factorization 2 = a at hbot hodd haN
   have hf : a * 2 ^ (φ.e + 1) ∣ H.condN := by

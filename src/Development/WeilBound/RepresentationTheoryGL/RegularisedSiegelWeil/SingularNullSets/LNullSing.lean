@@ -1017,8 +1017,7 @@ theorem net : ∀ {A : Type} [CommRing A] [TopologicalSpace A] [IsTopologicalRin
     · exact ⟨c, hcP, 0, mem_of_mem_nhds hU, by simp, by simp⟩
     · obtain ⟨p, hp, hpc⟩ : ∃ p ∈ P, ¬ Disjoint ((fun x : A => p + (u : A) * x) '' K)
           ((fun x : A => c + (u : A) * x) '' K) := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hQ : (∀ p ∈ insert c P, f * p = p ∧ p ∈ C) ∧ ∀ p ∈ insert c P, ∀ q ∈ insert c P,
             p ≠ q → Disjoint ((fun x : A => p + (u : A) * x) '' K)
               ((fun x : A => q + (u : A) * x) '' K) := by

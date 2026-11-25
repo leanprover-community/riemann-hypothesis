@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.Imports
 public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends
@@ -1293,33 +1294,8 @@ theorem baseChange_alt {R A W : Type} [CommRing R] [CommRing A] [Algebra R A] [A
 theorem baseChange_perfect {R W : Type} [CommRing R] [AddCommGroup W] [Module.Free ℤ W]
     [Module.Finite ℤ W] (B : LinearMap.BilinForm ℤ W) (h : ∀ x, B x x = 0) (hb : Function.Bijective B) :
     Function.Bijective (LinearMap.BilinForm.baseChange R B) := by
-  classical
-  have hs : ∀ x y, B x y = - B y x := fun x y => by
-    have := h (x + y)
-    simp only [map_add (f := _), LinearMap.add_apply, h, zero_add, add_zero] at this
-    exact eq_neg_of_add_eq_zero_right this
-  let b := Module.finBasis ℤ W
-  let bR := Algebra.TensorProduct.basis R b
-  have hbR : ∀ i, bR i = 1 ⊗ₜ b i := fun i => by simp [bR]
-  choose d hd using fun i => hb.2 (b.coord i)
-  have hdb : ∀ i k, B (d i) (b k) = if k = i then 1 else 0 := fun i k => by
-    rw [hd]; simp [Module.Basis.coord_apply, Finsupp.single_apply]
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro x hx
-    refine bR.ext_elem fun k => ?_
-    have h1 := LinearMap.congr_fun hx (1 ⊗ₜ d k)
-    rw [← bR.sum_repr x] at h1
-
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hbR,
-    LinearMap.BilinForm.baseChange_tmul, hs (b _), hdb] at h1
-    simpa [Finset.sum_ite_eq] using h1
-  · intro f
-    refine ⟨∑ i, f (1 ⊗ₜ b i) • ((1 : R) ⊗ₜ[ℤ] d i), bR.ext fun k => ?_⟩
-
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hbR,
-    LinearMap.BilinForm.baseChange_tmul, hdb]
-    simp [Finset.sum_ite_eq]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.UnimodularBaseChange.bijective_baseChange <;> assumption
 
 theorem span_gen_baseChange {R O W T : Type} [CommRing R] [CommRing O] [Algebra R O] [AddCommGroup W]
     [AddCommGroup T] [Module R T] (j : R ⊗[ℤ] W ≃ₗ[R] T) :

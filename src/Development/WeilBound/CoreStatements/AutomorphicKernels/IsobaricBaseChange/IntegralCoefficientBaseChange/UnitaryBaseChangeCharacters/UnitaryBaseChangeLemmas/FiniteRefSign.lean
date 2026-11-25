@@ -1111,8 +1111,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr 
   obtain ⟨ψ, hinj, hαψ, hrange⟩ := exists_psi Q γ₀.val hsep hQ
   obtain ⟨θ, h0, hθ⟩ : ∃ θ : E, θ ≠ 0 ∧ IsCMField.complexConj E θ = -θ := by
     obtain ⟨z, hz⟩ : ∃ z : E, IsCMField.complexConj E z ≠ z := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact IsCMField.complexConj_ne_one E (AlgEquiv.ext h)
     exact ⟨z - IsCMField.complexConj E z, sub_ne_zero.mpr hz.symm, by simp⟩
   obtain ⟨b, B, hB⟩ := GlobalTheory.TraceClasses.exists_bases Q h0 hθ

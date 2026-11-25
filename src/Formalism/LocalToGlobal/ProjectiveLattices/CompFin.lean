@@ -13,8 +13,6 @@ namespace Formalism.L2.Pj.CompFin
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 theorem finiteType_zero (R : Type) [CommRing R] (N : ℕ) :
     Algebra.FiniteType (MvPolynomial.homogeneousSubmodule (Fin (N + 1)) R 0) (MvPolynomial (Fin (N + 1)) R) := by
   classical

@@ -590,8 +590,7 @@ private theorem finrank_quotient_le_of_forall_dependent_mod {F V : Type} [Field 
     (g : ℕ) (U : Submodule F V)
     (h : ∀ z : Fin (g + 1) → V, ∃ c : Fin (g + 1) → F, c ≠ 0 ∧ ∑ i, c i • z i ∈ U) :
     Module.finrank F (V ⧸ U) ≤ g := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   let b := Module.finBasis F (V ⧸ U)
   let y : Fin (g + 1) → V ⧸ U := fun i => b (Fin.castLE hlt i)
   have hli : LinearIndependent F y := b.linearIndependent.comp _ (Fin.castLE_injective hlt)

@@ -364,11 +364,9 @@ theorem finrank_le_natDegree_minpoly (K V : Type) [Field K] [IsAlgClosed K] [Add
   have hcard : f.roots.toFinset.card = f.natDegree := by
     rw [Multiset.toFinset_card_of_nodup (Polynomial.nodup_roots hs)]
     exact ((IsAlgClosed.splits f).natDegree_eq_card_roots).symm
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨μ, hμ, h2⟩ : ∃ μ ∈ f.roots.toFinset, 2 ≤ Module.finrank K (T.eigenspace μ) := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have : ∑ z ∈ f.roots.toFinset, Module.finrank K (T.eigenspace z) ≤
         ∑ z ∈ f.roots.toFinset, 1 :=
       Finset.sum_le_sum fun z hz => Nat.lt_succ_iff.mp (hno z hz)

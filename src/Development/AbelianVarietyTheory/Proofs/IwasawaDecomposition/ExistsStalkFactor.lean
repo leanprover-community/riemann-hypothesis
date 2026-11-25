@@ -59,8 +59,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap eigLat IsUnivChart scaleD sp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem finrank_range_idem' {V k : Type} [CommRing V] [IsLocalRing V] [CommRing k] [IsLocalRing k] [CharZero k]
     (f : V →+* k) {n : ℕ} (e : Module.End V (Fin n → V)) (e' : Module.End k (Fin n → k)) (he : IsIdempotentElem e)
     (he' : IsIdempotentElem e') (h : ∀ c, e' (f ∘ c) = f ∘ e c) :

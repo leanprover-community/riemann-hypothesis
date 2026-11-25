@@ -1107,8 +1107,7 @@ theorem mem_iwU_of_diag {L : Type} [Field L] [Valued L (WithZero (Multiplicative
   have hm := congrArg Valued.v hmul
   rw [map_mul, map_one] at hm
   refine le_antisymm h1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : Valued.v (((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i) *
       Valued.v (((((k : GL (Fin n) L))⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i) < 1 :=
     mul_lt_one_of_lt_of_le hlt h2

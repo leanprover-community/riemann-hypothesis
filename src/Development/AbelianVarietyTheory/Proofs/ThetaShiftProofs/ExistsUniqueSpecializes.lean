@@ -52,8 +52,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
   TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Specialise
 
 open GlobalTheory.Points GlobalTheory.AmpleSpan

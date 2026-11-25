@@ -1353,8 +1353,7 @@ theorem wV_idx {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (v : InfiniteP
 
 theorem perpPosV : PerpPosV := by
   intro D X u' ψ hT μinf νinf fibInf hP v z hz hzo
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hzo' : ∀ b, hJ (X.B.I.ε v) (wV X u' v b) z = 0 := hzo
   have he : ∀ a : Fin D.R.rS, hJ (X.B.I.ε v) (rv X.B.I v (X.eR a)) z = 0 := by
     intro a

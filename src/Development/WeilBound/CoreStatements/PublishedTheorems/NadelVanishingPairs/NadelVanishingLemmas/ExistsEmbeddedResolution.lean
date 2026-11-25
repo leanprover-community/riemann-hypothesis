@@ -190,8 +190,7 @@ theorem regAt_and_unitAt_div_gen : ∀ (Y₀ Y₁ : Scheme.{0}) [IsIntegral Y₁
       exact Finset.sum_congr rfl fun k _ => by rw [hcβ k, smul_eq_mul, mul_assoc]
     exact mul_right_cancel₀ hg0 this
   obtain ⟨k, hk⟩ : ∃ k, IsUnit (c k) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : (1 : R) ∈ IsLocalRing.maximalIdeal R := hsum ▸ Ideal.sum_mem _ fun k _ =>
       Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 (hcon k))
     exact (Ideal.ne_top_iff_one _).1 (IsLocalRing.maximalIdeal.isMaximal R).ne_top this

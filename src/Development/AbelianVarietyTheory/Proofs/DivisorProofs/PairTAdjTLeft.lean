@@ -88,7 +88,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
 open GlobalTheory.KernelNoTorsion
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt.IndepPoint
 
@@ -156,7 +155,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.ChTor GlobalTheory.HTLat GlobalTheory.KernelNoTorsion GlobalTheory.HodgeTateTest GlobalTheory.PDiv GlobalTheory.SplitTorusPow
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorusTateLie
 
@@ -208,7 +206,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.CompHt GlobalTheory.CM
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PointMap
 

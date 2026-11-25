@@ -1183,8 +1183,7 @@ private theorem over_mul {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (m n :
   simp only [Over, Nat.cast_mul, map_mul]
   constructor
   · intro h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : A.valuation (m : Ω) = 1 := le_antisymm hm hc.1
     have h2 : A.valuation (n : Ω) = 1 := le_antisymm hn hc.2
     rw [h1, h2, one_mul] at h

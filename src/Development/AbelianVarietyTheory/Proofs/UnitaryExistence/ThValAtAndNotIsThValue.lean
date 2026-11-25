@@ -52,8 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.O
 open GlobalTheory.VVRank (pullS isPullSec_pullS)
 open GlobalTheory.TwistBaseChange (eq_pullS_of_isPullSec)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ThetaRuleCompare
 
 section Descent

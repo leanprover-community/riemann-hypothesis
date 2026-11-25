@@ -279,8 +279,7 @@ theorem _root_.GlobalTheory.exists_summation_kernel_periodic : ∀ (G : Type) [A
     | H x =>
     induction q using QuotientAddGroup.induction_on with
     | H y =>
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hpq
     rw [QuotientAddGroup.eq]
     apply (hχΓ (-x + y)).mp

@@ -1454,8 +1454,7 @@ theorem norm_pow_natDegree_eq_of_eisenstein {R : Type*} [CommRing R] (P : Polyno
     rw [hzpow, norm_neg]
     refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hc0.le hSl)
   have hzlt : ‖z‖ < 1 := by
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have : 1 ≤ ‖z‖ ^ (m + 1) := one_le_pow₀ hge
     rw [norm_pow] at hup
     linarith

@@ -344,8 +344,7 @@ theorem normOrd_length_succ (O B : Type) [CommRing O] [CommRing B] [IsDedekindDo
     length O (B ⧸ P ^ (n + 1)) = length O (B ⧸ P) + length O (B ⧸ P ^ n) := by
   classical
   obtain ⟨a, ha, ha'⟩ : ∃ a ∈ P ^ n, a ∉ P ^ (n + 1) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : P ^ n ≤ P ^ (n + 1) := hcon
     have hPprime : Prime P := Ideal.prime_of_isPrime hP0 hP.isPrime
     have hPnu : ¬ IsUnit P := by rw [Ideal.isUnit_iff]; exact hP.ne_top

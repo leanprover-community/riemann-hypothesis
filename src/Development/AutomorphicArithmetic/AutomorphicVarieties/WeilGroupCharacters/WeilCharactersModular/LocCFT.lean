@@ -365,8 +365,7 @@ theorem UpperTheory.exists_principal_units_retraction_localField :
     have hunit : IsUnit ((Nat.card 𝓀[K] - 1 : ℕ) : ℤ_[l]) := by
       rw [PadicInt.isUnit_iff]
       apply le_antisymm (PadicInt.norm_le_one _)
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have h : l ∣ Fintype.card 𝓀[K] - 1 := by simpa using hlt
       rw [← Nat.card_eq_fintype_card] at h
       exact (hl.coprime_iff_not_dvd.mp hcop.symm) h

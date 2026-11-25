@@ -161,7 +161,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.LineNorm
-attribute [local instance] Over.cartesianMonoidalCategory
 attribute [local instance] algPadicInt algPadicField towerPadic factPadic GlobalTheory.PadicComplexHost.isAdicComplete
 open GlobalTheory.FlatModel
 
@@ -393,7 +392,6 @@ section Tan
 
 open MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv actR)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
   {t : SAB H X} {S : Type} [CommRing S] {x : Sp S ⟶ X} {m : ℕ} {v : Fin m → (Sp (DualNumber S) ⟶ t.G.left)}
@@ -643,7 +641,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.LineNorm
-attribute [local instance] Over.cartesianMonoidalCategory
 attribute [local instance] algPadicInt algPadicField towerPadic factPadic GlobalTheory.PadicComplexHost.isAdicComplete
 open GlobalTheory.FlatModel
 
@@ -677,7 +674,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.LineNorm
-attribute [local instance] Over.cartesianMonoidalCategory
 attribute [local instance] algPadicInt algPadicField towerPadic factPadic GlobalTheory.PadicComplexHost.isAdicComplete
 open GlobalTheory.FlatModel
 
@@ -710,8 +706,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Chart (tvec IsUnivChart sp fB)
 
 namespace GlobalTheory.LineNorm
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} (t : SAB H X)
 

@@ -89,14 +89,12 @@ theorem exists_lb (a : K.O) (ha : K.Small a) (T : K.E) (hT : T ≠ 0) :
   have hinf := Ideal.iInf_pow_eq_bot_of_isLocalRing (IsLocalRing.maximalIdeal K.O)
     (IsLocalRing.maximalIdeal.isMaximal K.O).ne_top
   obtain ⟨m0, hm0⟩ : ∃ m : ℕ, x ∉ IsLocalRing.maximalIdeal K.O ^ m := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hx0
     rw [← Ideal.mem_bot, ← hinf, Ideal.mem_iInf]
     exact h
   refine ⟨1 - m0, fun n hn => ?_⟩
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨m, rfl⟩ := Int.exists_eq_neg_ofNat (show n ≤ 0 by omega)
   obtain ⟨o, ho⟩ := hn
   have hinv : al K a ^ (-(m : ℤ)) * al K a ^ m = 1 := by

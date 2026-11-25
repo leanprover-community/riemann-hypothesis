@@ -31,8 +31,7 @@ theorem v2rep_comp_mem [CharZero K] (E : GLOps n K V) (Z : Submodule K V) (hZ : 
   by_cases hs : ∃ ν ∈ s, ν ≠ μ
   · obtain ⟨ν, hν, hne⟩ := hs
     obtain ⟨a, ha⟩ : ∃ a, μ a ≠ ν a := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (funext h).symm
     let g' : (Fin n → ℤ) → V := fun ρ => (((ρ a - ν a : ℤ) : K)) • g ρ
     have hZ' : (E a a - (ν a : K) • (1 : Module.End K V)) (∑ ρ ∈ s, g ρ) ∈ Z := by
@@ -116,8 +115,7 @@ theorem v2rep_exists_hwv [CharZero K] (E : GLOps n K V) (hR : SatisfiesGLRelatio
   obtain ⟨x, hxZ, hx0⟩ := (Submodule.ne_bot_iff Z).mp hne
   have hgr := v2rep_graded E Z (fun a x hx => hZ a a x hx) x hxZ (hw hxZ)
   obtain ⟨ν0, hν0⟩ : ∃ ν, weightSp E ν ⊓ Z ≠ ⊥ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     simp [hc] at hgr
     exact hx0 hgr
   obtain ⟨v0, hv0m, hv00⟩ := (Submodule.ne_bot_iff _).mp hν0

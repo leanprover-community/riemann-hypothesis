@@ -51,8 +51,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 open scoped nonZeroDivisors
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.TorusRM
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ}

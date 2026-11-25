@@ -177,8 +177,7 @@ theorem exists_monomial_weight {σ ι : Type*} [Fintype σ]
     (hw : ∀ a, (T a - ((μ a : ℚ) : ℂ) • (LinearMap.id : Module.End ℂ (MvPolynomial σ ℂ))) P = 0) :
     ∃ α : σ →₀ ℕ, ∑ i, α i = d ∧ ∀ a, μ a = f a α := by
   obtain ⟨α, hα⟩ : ∃ α, AddMonoidAlgebra.coeff P α ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact h0 (MvPolynomial.ext _ _ fun β => by simp [hne β])
   refine ⟨α, ?_, fun a => ?_⟩
   · have hh : MvPolynomial.IsHomogeneous P d := (MvPolynomial.mem_homogeneousSubmodule d P).1 hP

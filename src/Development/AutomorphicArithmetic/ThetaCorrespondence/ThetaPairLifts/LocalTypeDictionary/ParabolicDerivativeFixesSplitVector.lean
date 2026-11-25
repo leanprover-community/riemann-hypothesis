@@ -322,8 +322,7 @@ theorem parabolic_derivative_fixes_split_vector : _root_.GlobalTheory.FunPr.Thet
     GlobalTheory.SchwartzBox.boxFun_mem_schA F _ _ Ψ hΨ _ (GlobalTheory.SchAConj.star_mem_schA F _ Ψ hΨ)
   have hV := hTr.geo.hM'.vac v
   obtain ⟨y, hy⟩ : ∃ y, G.M'.vac v y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hV.2.1 (funext h)
   have hΨne : Ψ ≠ 0 := by
     intro h0

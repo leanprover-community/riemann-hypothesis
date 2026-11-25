@@ -243,8 +243,7 @@ private theorem exists_mon (ρ : NRep F 3 K) (P : Ideal K) [hP : P.IsPrime] (h :
   obtain ⟨⟨hP', hM'⟩, hee⟩ := h
   have ex : ∀ {S : Set K}, ¬ Ideal.span S ≤ P → ∃ s ∈ S, s ∉ P := by
     intro S hS
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hS (Ideal.span_le.mpr hc)
   have hmul : ∀ {a b : K}, a ∉ P → b ∉ P → a * b ∉ P := fun ha hb hm =>
     (hP.mem_or_mem hm).elim ha hb
@@ -489,8 +488,7 @@ private theorem norm_lt_of_mem {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O) (
     rw [h2, hcast]
     calc _ ≤ ‖((l : ℕ) : Qbar l)‖ * 1 := by gcongr
       _ < 1 := by simpa using hlt
-  by_contra hge
-  push_neg at hge
+  by_contra! hge
   exact absurd h4 (not_lt.mpr (one_le_pow₀ hge))
 
 private theorem map_mem_max {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [IsLocalRing R] [Algebra O R]

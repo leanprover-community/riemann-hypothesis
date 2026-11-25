@@ -124,8 +124,7 @@ theorem GlobalTheory.SeriesIdem.exists_simple_of_eSerO_pair : ∀ (g : ℕ) [Fac
   classical
   obtain ⟨W, hWs, rfl⟩ := (PI.SerBridgeGLW.irrCharIff_of PI.SerBridgeGLW.conjugate_character_formula _ ψ).1 hψ
   haveI := hWs
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hnt : Nontrivial W := by
     by_contra hn
     rw [not_nontrivial_iff_subsingleton] at hn
@@ -467,8 +466,7 @@ theorem tprod_update_injective (v : ∀ i, M i) (hv : ∀ i, v i ≠ 0) (i : ι)
     · rw [Function.update_of_ne hj]; exact hv j
   have hφ : ∀ j, ∃ φ : Module.Dual ℂ (M j), φ (Function.update v i x j) ≠ 0 := by
     intro j
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hw j ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 hc)
   choose φ hφ using hφ
   have h1 := congrArg (PiTensorProduct.lift ((MultilinearMap.mkPiAlgebra ℂ ι ℂ).compLinearMap φ)) hx
@@ -655,8 +653,7 @@ theorem eq_bot_or_top_of_map_stable [∀ i, FiniteDimensional ℂ (V i)]
   let e := fun c => Module.finBasis ℂ (V c)
   let B := Basis.piTensorProduct e
   obtain ⟨I, hI⟩ : ∃ I, B.repr x I ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hx0 (B.repr.map_eq_zero_iff.1 (Finsupp.ext hc))
   have hJ : ∀ J, B J ∈ W := by
     intro J
@@ -1174,8 +1171,7 @@ theorem exists_factor [DecidableEq ι] {χ : (∀ i, G i) → ℂ} (hχ : IsIrrC
     simp only [← Finset.mul_sum, hdelta]
     simp
   obtain ⟨p, hp, hne⟩ : ∃ p ∈ Fintype.piFinset Z, ∑ x, χ x * ∏ i, (p i).coeff (x i) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact irr_one_ne_zero hχ (hkey.trans (Finset.sum_eq_zero hno))
   have hτ : ∀ i, ∃ τ : FDRep ℂ (G i), Simple τ ∧ zIdem τ = p i := fun i => by
     have := Fintype.mem_piFinset.1 hp i

@@ -53,7 +53,6 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent IsGrpPullback)
 open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB RigLB CubicalStr Theta thφ thε thK x3)
 open GlobalTheory GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.PDiv GlobalTheory.PtExt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem GlobalTheory.PtExt.exists_hodge_to_omega : ∀ (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] (N : ℕ), (p : R) ^ N = 0 →
     ∀ (A : Over (Sp R)) [GrpObj A], IsAbelianScheme A →

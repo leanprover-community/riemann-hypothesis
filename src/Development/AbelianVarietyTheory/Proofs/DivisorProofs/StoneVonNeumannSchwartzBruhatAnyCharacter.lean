@@ -69,8 +69,7 @@ namespace GlobalTheory.CondRescale
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem norm_le_one_of_pow_near (z : ℂ) (h : ∀ n : ℕ, ‖z ^ n - 1‖ < 1) : ‖z‖ ≤ 1 := by
-  by_contra hz
-  push_neg at hz
+  by_contra! hz
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (2 : ℝ) hz
   have h1 := h n
   have h2 : ‖z ^ n‖ ≤ ‖z ^ n - 1‖ + ‖(1 : ℂ)‖ := by
@@ -110,16 +109,14 @@ theorem exists_rescale_conductor_integers [CharZero k]
   classical
   let P : k → Prop := fun a => ∀ y ∈ 𝒪[k], ψ0 (a * y) = 1
   obtain ⟨t, ht⟩ : ∃ t : k, ψ0 t ≠ 1 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (AddChar.ext _ _ fun s => by simpa using hall s)
   have ht0 : t ≠ 0 := by
     rintro rfl
     exact ht (AddChar.map_zero_eq_one _)
   have hbd : ∀ a, P a → a ≠ 0 → valuation k a < valuation k t := by
     intro a ha ha0
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply ht
     have hmem : t / a ∈ 𝒪[k] := by
       rw [Valuation.mem_integer_iff, map_div₀]

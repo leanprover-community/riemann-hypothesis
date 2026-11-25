@@ -99,8 +99,7 @@ theorem cas_diag_unitOn (ι M : Type) [Fintype ι] [DecidableEq ι] [AddCommGrou
     · rcases mul_eq_zero.mp e1 with h | h
       · exact h
       · exact absurd h (ne_of_gt rp)
-    · by_contra hneg
-      push_neg at hneg
+    · by_contra! hneg
       nlinarith
   refine ⟨first, fun hne => ?_⟩
   have hcU : ∀ x ∈ U, cas s F x ∈ U := by

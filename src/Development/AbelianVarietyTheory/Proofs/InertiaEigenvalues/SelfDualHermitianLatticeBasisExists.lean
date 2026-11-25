@@ -95,8 +95,7 @@ theorem exists_unit_pair (h : V → V → E)
     (hdual : ∀ y ∈ W, (y ∈ L ↔ ∀ z ∈ L, h y z ∈ (algebraMap O E).range))
     (hne : L ≠ ⊥) :
     ∃ x ∈ L, ∃ y ∈ L, ∃ a : Oˣ, h x y = algebraMap O E a := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hne
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   have hmax : IsLocalRing.maximalIdeal O = Ideal.span {ϖ} :=
@@ -133,8 +132,7 @@ theorem exists_unit_norm (c : E ≃+* E) (hcc : ∀ x, c (c x) = x)
     (L : Submodule O V) (hint : ∀ x ∈ L, ∀ y ∈ L, h x y ∈ (algebraMap O E).range)
     (x y : V) (hx : x ∈ L) (hy : y ∈ L) (a : Oˣ) (ha : h x y = algebraMap O E a) :
     ∃ e ∈ L, ∃ u : Oˣ, h e e = algebraMap O E u := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have nu : ∀ e ∈ L, ∀ o : O, algebraMap O E o = h e e → o ∈ IsLocalRing.maximalIdeal O := by
     intro e he o ho
     rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]

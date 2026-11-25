@@ -101,8 +101,7 @@ theorem GlobalTheory.exists_trait_nonlocal_torusExtension : ∀ (R : Type) [Comm
   set p : Ideal R := Ideal.comap g (maximalIdeal W) with hp
   haveI : p.IsPrime := Ideal.comap_isPrime g (maximalIdeal W)
   obtain ⟨r₀, hr₀u, hr₀⟩ : ∃ r, IsUnit (g r) ∧ ¬ IsUnit r := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hg ⟨fun r hr => h r hr⟩
   have hr₀p : r₀ ∉ p := fun h => ((mem_maximalIdeal _).1 (Ideal.mem_comap.1 h)) hr₀u
   have hpm : p ≤ maximalIdeal R := le_maximalIdeal (Ideal.IsPrime.ne_top inferInstance)

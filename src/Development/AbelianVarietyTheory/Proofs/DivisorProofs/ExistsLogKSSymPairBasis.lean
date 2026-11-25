@@ -151,8 +151,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 theorem ksb_exists_ne {s t : E →+* ℂ} (h : t ≠ ksbConj s) :
     ∃ a : 𝓞 E, s (a : E) ≠ starRingEnd ℂ (t (a : E)) := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   have : s = ksbConj t := IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (RingHom.ext fun a => hc a)
   rw [this, ksbConj_ksbConj]

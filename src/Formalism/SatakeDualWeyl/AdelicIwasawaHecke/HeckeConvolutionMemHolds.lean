@@ -63,8 +63,7 @@ theorem conv_finDosetSupp {k : Type} [CommRing k] {K : Subgroup G} (hK : IsComme
       (finite_cosets_in_doset hK t).biUnion fun y _ => Set.finite_singleton _
   refine ⟨hT.toFinset, fun g hg => ?_⟩
   obtain ⟨x, hx⟩ : ∃ x : G ⧸ K, f₁ x.out * f₂ (x.out⁻¹ * g) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hg (finsum_eq_zero_of_forall_eq_zero h)
   have h1 : f₁ x.out ≠ 0 := left_ne_zero_of_mul hx
   have h2 : f₂ (x.out⁻¹ * g) ≠ 0 := right_ne_zero_of_mul hx

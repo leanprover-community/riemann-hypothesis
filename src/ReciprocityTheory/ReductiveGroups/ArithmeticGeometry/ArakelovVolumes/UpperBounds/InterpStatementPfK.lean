@@ -206,8 +206,7 @@ theorem nbhd_avoid (x0 : Frame X.Ψ r) (hx0 : ∀ τ, (mat x0 τ).det ≠ 0) {K 
   have hx1P : ∀ z ∈ K, ∃ (τ : X.Ψ) (a c : Fin r), c < a ∧
       ((mat (cpt X x0 z) τ).adjugate * mat x1 τ) a c ≠ 0 := by
     intro z hz
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have hdc : ∀ τ, (mat (cpt X x0 z) τ).det ≠ 0 := fun τ => by
       rw [det_cpt X x0 z τ]
       exact hx0 τ

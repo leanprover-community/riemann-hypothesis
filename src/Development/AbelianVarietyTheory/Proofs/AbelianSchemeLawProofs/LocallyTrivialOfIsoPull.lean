@@ -52,8 +52,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
   AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CubeLawCompare
 
 section General

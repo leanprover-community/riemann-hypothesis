@@ -448,8 +448,6 @@ noncomputable section
 
 namespace GlobalTheory.GrpMulSpread
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem isPullback_pullbackMap {S S' : Scheme.{0}} {G' : Over S'} {G : Over S} {f : S' ⟶ S}
     {F : G'.left ⟶ G.left} (cart : IsPullback F G'.hom G.hom f) :
     IsPullback (pullback.map G'.hom G'.hom G.hom G.hom F F f cart.w.symm cart.w.symm)

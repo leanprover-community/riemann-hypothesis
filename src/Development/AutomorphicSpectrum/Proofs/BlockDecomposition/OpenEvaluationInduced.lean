@@ -1327,8 +1327,7 @@ theorem eO_supp (ψ : AddChar k Circle) (τ : MRep k (i + 1)) (σ : GRep k (t + 
     unfold eO
     rw [show wEl k i t * sEmb k ((i + 1) + t) (castM k (by omega) g) = y from rfl, h0, map_zero, smul_zero])
   obtain ⟨d, hd⟩ : ∃ d, evX f (dEmb k i t d * y) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hne
     unfold intO
     rw [show (fun d => evX f (dEmb k i t d * y)) = fun _ => 0 from funext hcon]

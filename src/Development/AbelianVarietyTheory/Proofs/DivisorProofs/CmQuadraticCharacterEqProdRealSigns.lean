@@ -122,8 +122,7 @@ theorem mem_normGroup_iff_pos {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {w : I
       0 < InfinitePlace.Completion.ringEquivRealOfIsReal hw (x : w.Completion) := by
   have hinv : ∀ x, σ (σ x) = x := fun x => τ.1.injective (by rw [hcm.2.2.2, hcm.2.2.2, star_star])
   have hne : ∃ x, σ x ≠ x := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     haveI := hcm.2.1
     refine (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex (InfinitePlace.mk τ.1)))
       (InfinitePlace.isReal_mk_iff.2 (ComplexEmbedding.isReal_iff.2 (RingHom.ext fun x => ?_)))

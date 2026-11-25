@@ -229,8 +229,7 @@ theorem exists_unit_minor {ι : Type} [Fintype ι] (U : ι → I → C) (w : I �
     (hU : ∀ c x, V.Ge 0 (U c x)) (hw : ∀ x c, V.Ge 0 (w x c))
     (h : ∀ c c', ∑ x, U c x * w x c' = if c = c' then 1 else 0) :
     ∃ f : ι → I, V.v (Matrix.of fun c' c => U c (f c')).det = 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have h1 : (Matrix.of fun c' => ∑ x, w x c' • (fun c => U c x) : Matrix ι ι C) = 1 := by
     ext c' c
     simp only [Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Matrix.one_apply]

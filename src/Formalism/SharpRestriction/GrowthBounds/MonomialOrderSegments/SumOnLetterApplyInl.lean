@@ -45,8 +45,7 @@ theorem ddiv_monomial' (M α : σ →₀ ℕ) (c : K) :
   · rw [if_pos h, finsupp_prod_choose_eq_bin_of_le M α h]
   · rw [if_neg h]
     obtain ⟨x, hx⟩ : ∃ x, α x < M x := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply h
       exact Finsupp.le_def.2 hc
     have h0 : (bin M α : K) = 0 := by

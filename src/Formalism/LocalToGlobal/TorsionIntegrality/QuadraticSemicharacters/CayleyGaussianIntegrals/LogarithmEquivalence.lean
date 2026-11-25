@@ -174,8 +174,7 @@ theorem characterSum : CharSum := by
   · rw [if_neg hy₁]
     have hy₁' : y ∉ dualLat H Λ₁ := by rw [h₁']; exact hy₁
     have hx' : ∃ x' ∈ Λ₁, Complex.exp (-(2 * (Real.pi : ℂ)) * Complex.I * (altE H x' y : ℂ)) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply hy₁'
       show ∀ x ∈ Λ₁, ∃ m : ℤ, altE H y x = m
       intro x hx

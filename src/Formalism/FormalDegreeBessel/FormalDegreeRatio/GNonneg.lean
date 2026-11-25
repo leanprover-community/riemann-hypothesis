@@ -258,8 +258,7 @@ lemma gn_sum_neg {ι : Type*} [Fintype ι] [DecidableEq ι] (lam : ι → ℝ)
     (v : {i // lam i < 0} → ℂ) (hv : v ≠ 0) :
     ∑ i, lam i * Complex.normSq ((gnExt (fun i => lam i < 0) *ᵥ v) i) < 0 := by
   obtain ⟨j, hj⟩ : ∃ j, v j ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hv (funext hcon)
   calc ∑ i, lam i * Complex.normSq ((gnExt (fun i => lam i < 0) *ᵥ v) i) < ∑ _i : ι, (0 : ℝ) := by
         apply Finset.sum_lt_sum
@@ -280,8 +279,7 @@ lemma gn_sum_pos {ι : Type*} [Fintype ι] [DecidableEq ι] (lam : ι → ℝ)
     (v : {i // 0 < lam i} → ℂ) (hv : v ≠ 0) :
     0 < ∑ i, lam i * Complex.normSq ((gnExt (fun i => 0 < lam i) *ᵥ v) i) := by
   obtain ⟨j, hj⟩ : ∃ j, v j ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hv (funext hcon)
   calc (0 : ℝ) = ∑ _i : ι, (0 : ℝ) := by simp
     _ < ∑ i, lam i * Complex.normSq ((gnExt (fun i => 0 < lam i) *ᵥ v) i) := by

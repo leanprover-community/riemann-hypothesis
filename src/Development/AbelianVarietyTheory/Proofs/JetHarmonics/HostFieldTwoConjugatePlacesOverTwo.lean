@@ -390,8 +390,7 @@ theorem UpperTheory.discr_CMDatum_eq_prod_places :
       Sum.elim (fun a => (t k.1 a : 𝓞 E →+* O)) (fun a => (t k.1 a : 𝓞 E →+* O).comp (starRingEnd (𝓞 E))) k.2
     have hsurj : ∀ τ : 𝓞 E →+* O, ∃ k, ρ k = τ := by
       intro τ
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have he0 : ∀ i, tauExt τ (w i).e = 0 := by
         intro i
         rcases eq_zero_or_one_of_idempotent_integers hv (tauExt τ (w i).e) (by rw [← map_mul, (w i).idem]) with h | h

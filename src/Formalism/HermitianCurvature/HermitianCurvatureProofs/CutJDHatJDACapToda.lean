@@ -24,8 +24,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JDAToda
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
@@ -175,8 +173,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JDAToda
 namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem jda_capelli_toda_proof : JDACapToda := by
   intro Wp Wq _ _ _ _ _ _ P Bs hpl hk y J hJ c hc g hg hcg

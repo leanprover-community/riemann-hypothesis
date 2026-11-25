@@ -1004,8 +1004,7 @@ theorem complement_minor_order_pos (hV : Fr.Valid L₁ N₁) (hn : Even n') (hr 
   have hfr := hV.2.2.2.2.1
 
   obtain ⟨c, hcI, hc⟩ : ∃ c ∈ I, c ∉ Ifirst r k := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : I ∩ Ifirst r k = I := Finset.inter_eq_left.2 hcon
     rw [this] at hIi
     omega

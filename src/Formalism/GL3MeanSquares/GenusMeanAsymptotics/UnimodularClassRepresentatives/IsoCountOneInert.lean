@@ -99,8 +99,7 @@ theorem exists_norm [Fintype k] (σ : k ≃+* k) (hσ : ∀ x, σ (σ x) = x) (h
   · have h := Formalism.HermitianLattices.Ext.L3.FiniteNormFibres.card_norm_fibre σ hσ hne q hq c hc
     rw [if_neg h0] at h
     have hpos : 0 < (Finset.univ.filter fun y : k => σ y * y = c).card := by
-      by_contra hz
-      push_neg at hz
+      by_contra! hz
       have hz' : (Finset.univ.filter fun y : k => σ y * y = c).card = 0 := by omega
       simp only [hz'] at h
       push_cast at h

@@ -265,8 +265,7 @@ theorem exists_cong_fix_vac (hW : IsWeilDatumO ψ S T χS χT om)
       ∀ u ∈ (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True),
         actO S T 1 x u ∈
           (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose k hk hkc u hu hu' using hne
     have ht := GlobalTheory.SplitCharTrivial.tendsto_one_of_finCong hk hkc
     obtain ⟨n, hn⟩ := (ht.eventually hev').exists
@@ -296,8 +295,7 @@ theorem exists_cong_fix_vac (hW : IsWeilDatumO ψ S T χS χT om)
   have hcont : Continuous fun k : GA D T => om (1, k) f₀ w₀ :=
     (hW.om_cont _ hvac.2.theta w₀).comp (continuous_const.prodMk continuous_id)
   have key : ∃ n : ℕ, ∀ k ∈ GfC T, GlobalTheory.Member.FinCong T (n₁.factorial * n.factorial) k → om (1, k) f₀ = f₀ := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose k hk hkc hkne using hne
     have hpow : ∀ n, ∃ m : ℕ, ∃ c : ℂ, om (1, k n ^ m) f₀ = c • f₀ ∧ ¬ ‖c - 1‖ ≤ 1 / 2 := by
       intro n
@@ -305,8 +303,7 @@ theorem exists_cong_fix_vac (hW : IsWeilDatumO ψ S T χS χT om)
       have hc1 : c ≠ 1 := by
         rintro rfl
         exact hkne n (by rw [hc, one_smul])
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hc1 (GlobalTheory.Doubling.eq_one_of_forall_norm_pow_sub_one_le (A := ℂ) fun m =>
         h m (c ^ m) (GlobalTheory.VacFixTarget.om_pow_eq_snd _ (k n) _ c hc m))
     choose m c hmc hc using hpow
@@ -372,8 +369,7 @@ theorem eventually_fix (hW : IsWeilDatumO ψ S T χS χT om)
 
 theorem exists_cong_of_eventually {P : GA D T → Prop} (h : ∀ᶠ k in 𝓝 (1 : GA D T), k ∈ GfC T → P k) :
     ∃ N : ℕ, 0 < N ∧ ∀ k ∈ GfC T, GlobalTheory.Member.FinCong T N k → P k := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   choose k hk hkc hP using fun n : ℕ => hne n.factorial n.factorial_pos
   obtain ⟨n, hn⟩ := ((GlobalTheory.SplitCharTrivial.tendsto_one_of_finCong hk hkc).eventually h).exists
   exact hP n (hn (hk n))

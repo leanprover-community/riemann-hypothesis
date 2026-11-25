@@ -403,8 +403,7 @@ theorem _root_.GlobalTheory.QNorm.exists_auxiliary_places : ∀ (F : Type) [Fiel
       set KT := ⨅ v ∈ T, _root_.GlobalTheory.QNorm.sqSub (algebraMap F (v.adicCompletion F)) with hKTdef
       have hKT : KT.relIndex G ≤ 2 ^ k := hTk ▸ relIndex_iInf_sqSub_le_two_pow_card hS T hTS
       have hex : ∃ u ∈ KT ⊓ G, u ∉ _root_.GlobalTheory.QNorm.adjoinRoot Q δ hdd := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hQK : Q ≤ KT ⊓ G := by
           refine le_inf (fun x hx => ?_) hQG
           obtain ⟨a, -, rfl⟩ := (hQmap x).1 hx

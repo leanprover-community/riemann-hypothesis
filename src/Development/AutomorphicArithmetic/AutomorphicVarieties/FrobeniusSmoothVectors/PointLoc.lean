@@ -98,8 +98,7 @@ private theorem two_zero {K : Type} [Field K] {x y s t : K} (h : s ≠ t) (h1 : 
 
 private theorem or_zero {G K : Type} [Field K] {a b : G → K} (h : ∀ g g', a g * b g' = 0) :
     (∀ g, a g = 0) ∨ ∀ g, b g = 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨⟨g, hg⟩, ⟨g', hg'⟩⟩ := hc
   exact mul_ne_zero hg hg' (h g g')
 

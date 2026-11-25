@@ -63,8 +63,7 @@ theorem bwA_val_nat_eq_zero (s : ℕ) (hs : ¬ Pl.resChar w ∣ s) : Pl.val w (s
     exact this
   have hnn := bwA_val_nat_nonneg Pl w s
   refine le_antisymm ?_ hnn
-  by_contra hpos
-  push_neg at hpos
+  by_contra! hpos
   have hvp : (0 : WithTop ℤ) < Pl.val w (Pl.resChar w : LL) := by
     rw [Pl.val_resChar w]
     have := Pl.ramIdx_pos w
@@ -85,8 +84,7 @@ theorem bwA_val_nat_eq_zero (s : ℕ) (hs : ¬ Pl.resChar w ∣ s) : Pl.val w (s
 
 theorem bwA_val_integral_nonneg (x : LL) (hx : IsIntegral ℤ x) : (0 : WithTop ℤ) ≤ Pl.val w x := by
   classical
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   obtain ⟨z, hz⟩ := WithTop.ne_top_iff_exists.mp (ne_top_of_lt hneg)
   have hz0 : z < 0 := by
     rw [← hz] at hneg

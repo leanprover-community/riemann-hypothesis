@@ -360,8 +360,7 @@ theorem UpperTheory.V.Ws.Po.dimOne :
     exact map_nonunit (algebraMap O B) x hx
   have hex : ∃ Q : Ideal B, Q.IsPrime ∧ (maximalIdeal O).map (algebraMap O B) ≤ Q ∧
       Q ≠ maximalIdeal B := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨n, hn⟩ := pow_le_of_primes _ (fun Q hQ hIQ => hcon Q hQ hIQ)
     exact hnf (UpperTheory.V.Ws.Po.finPow hIm IsCO.res_surj n hn)
   obtain ⟨P, ⟨hP, hIP, hPm⟩, hmax⟩ :=
@@ -941,8 +940,7 @@ private theorem xr_agree {O R X K : Type} [CommRing O] [CommRing R] [Algebra O R
   refine Ideal.mul_mem_left _ _ ?_
   obtain ⟨-, hm2⟩ := hμ (Finset.mem_coe.2 hm)
   have hex : ∃ s0, k < m s0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hm2 (Finsupp.le_def.2 fun s => by simpa [n'] using hcon s)
   obtain ⟨s0, hs0⟩ := hex
   exact prod_pow_mem_ideal_pow_of_mem_of_le_exponent I _ hz m k s0 hs0.le
@@ -1196,8 +1194,7 @@ theorem UpperTheory.V.Ws.Po.nonAlg :
       ∀ u ∈ Algebra.adjoin O (mono ρ 0), y u ∈ maximalIdeal V → y u ≠ 0 →
       ∃ x ∈ mono (mapRep y ρ) 0, ∀ n : ℕ, 0 < n → x ^ l ^ n ≠ x := by
   intro l _ O _ _ _ Γ _ R _ _ ρ V _ _ _ y hy u hu hum hu0
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have key : ∀ v ∈ Algebra.adjoin O (mono ρ 0), ∃ n : ℕ, 0 < n ∧ (y v) ^ l ^ n = y v := by
     intro v hv
     induction hv using Algebra.adjoin_induction with

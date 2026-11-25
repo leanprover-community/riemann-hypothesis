@@ -145,8 +145,7 @@ private theorem eq_zero_of_forall_pderiv_eq_self {σ : Type} {u : MvPowerSeries 
   | succ N ih =>
     intro n hn
     obtain ⟨i, hi⟩ : ∃ i, n i ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have : n = 0 := by
         ext j
         exact hc j

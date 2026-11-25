@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualMapComp
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftToLogResolutionAnalytic
@@ -447,16 +448,8 @@ theorem fibreLatVec_comp {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
 
 theorem exists_tr {Ω Li : Type} [Field Ω] [AddCommGroup Li] [Module Ω Li] {r : ℕ} (b b₀ : Fin r → Li)
     (h : ∀ i, flagStep Ω b i = flagStep Ω b₀ i) (i : Fin r) : ∃ t : Ω, b i - t • b₀ i ∈ flagStep Ω b₀ i := by
-  have h1 : b i ∈ flagStep Ω b₀ (i + 1) := by
-    rw [← h]
-    exact Submodule.subset_span ⟨i, Nat.lt_succ_self _, rfl⟩
-  have h2 : {k : Fin r | (k : ℕ) < i + 1} = insert i {k : Fin r | (k : ℕ) < i} := by
-    ext k
-    simp only [Set.mem_ofPred_eq, Set.mem_insert_iff, Fin.ext_iff]
-    omega
-  rw [flagStep, h2, Set.image_insert_eq, Submodule.mem_span_insert] at h1
-  obtain ⟨a, w, hw, e⟩ := h1
-  exact ⟨a, by rw [e, add_sub_cancel_left]; exact hw⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.OrVert.flag_coef <;> assumption
 
 theorem leadMinor_smul {r : ℕ} (c : ℝ) (Γ : Matrix (Fin r) (Fin r) ℂ) (k : ℕ) :
     leadMinor ((c : ℂ) • Γ) k = c ^ k * leadMinor Γ k := by

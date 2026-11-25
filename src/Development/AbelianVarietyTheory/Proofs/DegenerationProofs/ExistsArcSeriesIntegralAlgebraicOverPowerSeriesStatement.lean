@@ -679,8 +679,7 @@ theorem hasSum_zpow_of_form_le {O C X : Type} [CommRing O] [NontriviallyNormedFi
     intro χ
     have h := hE χ
     have h' := hB0 (y + m • χ)
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     nlinarith
   have hinj : Function.Injective (fun χ : X => y + m • χ) := by
     intro a b h
@@ -757,8 +756,7 @@ theorem form_le_exponent {O : Type} [CommRing O] {N : NumD O} {k : ℕ} (β : N.
     have key : 0 ≤ (j : ℤ) ^ 2 * (β.be x x + 4 * (m : ℤ) ^ 2 * c + 4 * (m : ℤ) ^ 2 * s) := by
       nlinarith [hexp, h5]
     have hX : 0 ≤ β.be x x + 4 * (m : ℤ) ^ 2 * c + 4 * (m : ℤ) ^ 2 * s := by
-      by_contra hneg
-      push_neg at hneg
+      by_contra! hneg
       have := mul_neg_of_pos_of_neg (by positivity : (0 : ℤ) < (j : ℤ) ^ 2) hneg
       linarith
     nlinarith [hX, hq]

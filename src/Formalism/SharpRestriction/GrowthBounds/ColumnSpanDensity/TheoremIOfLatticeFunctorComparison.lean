@@ -237,8 +237,7 @@ theorem latRetract : LatRetract := by
     rw [LinearMap.mem_ker] at hF
     by_contra hne
     obtain ⟨i, hi⟩ : ∃ i, b.repr F i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (b.ext_elem (fun j => by simp [h j]))
     obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
     have hϖ0 : algebraMap O K ϖ ≠ 0 := fun h0 =>

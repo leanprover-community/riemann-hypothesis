@@ -95,8 +95,7 @@ theorem exists_sep (U : Submodule ℂ (Formalism.AUTREP.GAf L n → ℂ)) (f : F
   have hq : U.mkQ f ≠ 0 := by
     rwa [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ ((Formalism.AUTREP.GAf L n → ℂ) ⧸ U), φ (U.mkQ f) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hq ((Module.forall_dual_apply_eq_zero_iff ℂ (U.mkQ f)).mp hcon)
   refine ⟨φ.comp U.mkQ, fun u hu => ?_, hφ⟩
   rw [LinearMap.comp_apply, Submodule.mkQ_apply, (Submodule.Quotient.mk_eq_zero U).mpr hu, map_zero]

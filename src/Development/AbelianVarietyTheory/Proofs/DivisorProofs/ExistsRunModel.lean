@@ -111,7 +111,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalThe
 
 noncomputable section
 namespace GlobalTheory.ShareOn
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem isTransp_one : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (ψ : ∀ k : (uAt r v i).Comp, LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] latQ p r i v k) (k : (uAt r v i).Comp), IsTransp p r i v ψ 1 k k 1 := by
   intro D L hT Gi Gl Kc Y cX ex Csz p hm r h ho i v ψ k
@@ -208,8 +207,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem isTransp_comp : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (ψ : ∀ k : (uAt r v i).Comp, LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] latQ p r i v k) (γ γ' : LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l) (k k₁ k₂ : (uAt r v i).Comp) (a a' : GL (Fin D.R.r) D.host.E), IsTransp p r i v ψ γ' k k₁ a' → IsTransp p r i v ψ γ k₁ k₂ a → IsTransp p r i v ψ (γ' * γ) k k₂ (a * a') := by
   intro D L hT Gi Gl Kc Y cX ex Csz p _ r h _ i v ψ γ γ' k k₁ k₂ a a' h₁ h₂
@@ -387,8 +384,6 @@ namespace GlobalTheory.ShareOn
 
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mem_Γ_of_cong_half {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L}
     {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX}
     {Csz : ℝ} (p : PtAt ex Csz) (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r) (i : Fin D.R.m)
@@ -504,7 +499,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped Matrix TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LatHatCong
 
@@ -569,7 +563,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped Matrix TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -682,7 +675,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalTheory.ShareOn
 
 noncomputable section
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped Matrix TensorProduct Pointwise
 
@@ -991,7 +983,6 @@ theorem exists_const_of_forall_unit_mul {V : Type} [NormedAddCommGroup V] [Norme
 end GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -1215,8 +1206,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalThe
 
 namespace GlobalTheory.ShareOn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sub_mem_half_smul_latP : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)), ∀ (k : (uAt r v i).Comp), ∀ γ ∈ ((uAt r v i).X k).Γ, ∀ w ∈ lattice₂ D ((uAt r v i).X k).Λ, Matrix.mulVec (γ : Matrix (Fin D.R.r) (Fin D.R.r) D.host.E) w - w ∈ p.T.Q.l.Mb • lattice₂ D ((uAt r v i).X k).Λ := by
   intro D L hT Gi Gl Kc Y cX ex Csz p _ r h _ i v k γ hγ w hw
   have hL := (h.laws v).p.toLawsCore
@@ -1291,8 +1280,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalThe
 
 namespace GlobalTheory.ShareOn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem uAt_chi_eq_one : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)), ∀ (k : (uAt r v i).Comp) (la : Wt ((uAt r v i).X k).Ψ D.R.r), ∀ γ ∈ ((uAt r v i).X k).Γ, ((uAt r v i).X k).χ la γ = 1 := by
   intro D L hT Gi Gl Kc Y cX ex Csz p _ r h _ i v k la γ hγ
   exact GlobalTheory.OneEmbeddingProbe.chi_eq_one (uAt r v i)
@@ -1316,7 +1303,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem comps_share : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)), ∀ k k' : (uAt r v i).Comp, ((uAt r v i).X k).Ψ = ((uAt r v i).X k').Ψ ∧ ((uAt r v i).X k).p0 = ((uAt r v i).X k').p0 ∧ ((uAt r v i).X k).Gm = ((uAt r v i).X k').Gm ∧ ((uAt r v i).X k).ξ0 = ((uAt r v i).X k').ξ0 := by
   intro D L hT Gi Gl Kc Y cX ex Csz p _ r h _ i v k k'
@@ -1347,8 +1333,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA
 
 namespace GlobalTheory.ShareOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Build
 

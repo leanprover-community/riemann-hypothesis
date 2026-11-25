@@ -137,8 +137,7 @@ theorem norm_leading_minor_monomial {j l : ℕ} (hl : l ≤ j) (Z : Matrix (Fin 
     rw [hi]
   · intro σ _ hσ
     obtain ⟨i, hi⟩ : ∃ i, w' (σ i) ≠ i := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hσ (Equiv.ext fun i => w'.eq_symm_apply.2 (hne i))
     apply mul_eq_zero_of_right
     apply Finset.prod_eq_zero (Finset.mem_univ i)
@@ -154,8 +153,7 @@ theorem blockAnti_perm_partialProd : ∀ (j : ℕ) (β : Fin j → ℕ) (Z : Mat
 
   have hrow : ∀ a, ∃ b, Z a b ≠ 0 := by
     intro a
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hdet (Matrix.det_eq_zero_of_row_eq_zero a hne)
   choose f hf using hrow
   have huniq : ∀ a b, Z a b ≠ 0 → b = f a := fun a b hab =>
@@ -426,8 +424,7 @@ lemma sEl_pair (k r j : ℕ) (β : Fin r → ℕ) (q : PSec k r j × (UToff β �
 
 lemma upperOff_ne {r : ℕ} {β : Fin r → ℕ} (hβ : Monotone β) (x : UToff β → ℂ) (a b : Fin r)
     (h : upperOff β x a b ≠ 0) : a = b ∨ β a < β b := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   unfold upperOff upper
   by_cases h1 : a < b

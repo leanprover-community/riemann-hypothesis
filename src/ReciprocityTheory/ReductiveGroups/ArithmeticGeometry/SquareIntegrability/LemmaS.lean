@@ -558,8 +558,7 @@ lemma firstMinimum_pos (Y : GT ι) (hN : 0 < Fintype.card ι) : 0 < Y.la1 := by
   unfold GT.la1
   refine lt_of_lt_of_le hε (le_csInf hne ?_)
   rintro t ⟨x, hx, hx0, rfl⟩
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hmem : (⟨x, hx⟩ : lat Y.b) ∈ Metric.ball (0 : lat Y.b) ε := by
     simpa [Metric.mem_ball, dist_zero_right] using hlt
   have h0 := hball hmem

@@ -202,8 +202,7 @@ theorem cc_atPt {n : ℕ} (b : Fin n) {g : MvPowerSeries (Fin 1 × Fin (dL Dw)) 
   · subst hd
     simp [hg]
   · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     rw [Finsupp.prod, map_prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs), smul_zero]
     simp [MvPowerSeries.constantCoeff_X, zero_pow hs]

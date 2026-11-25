@@ -623,8 +623,7 @@ theorem exists_field (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) (i : D.ntw.Tw) 
   have hcop : (D.ntw.l i ^ a).Coprime N := Nat.Coprime.pow_left _ hNl.symm
   obtain ⟨q, hq, hq2, hqm⟩ : ∃ q, q.Prime ∧ q ≠ 2 ∧ q ∣ m'' := by
     obtain ⟨k, hk⟩ : ∃ k : Fin 2, D.host.g k ≠ D.ntw.l i := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact D.host.g_ne (by rw [h 0, h 1])
     refine ⟨D.host.g k, D.host.g_prime k, Formalism.L2.Pj.g_ne_two D k, ?_⟩
     have h1 : D.host.g k ∣ m := (show D.host.g k ∣ D.host.g 0 * D.host.g 1 by fin_cases k <;> simp).trans hm

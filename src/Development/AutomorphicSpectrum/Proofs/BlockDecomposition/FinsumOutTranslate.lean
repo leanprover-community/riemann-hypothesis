@@ -63,8 +63,7 @@ theorem support_hconv (K : Subgroup (GL ι F)) (e₁ e₂ : GL ι F → ℂ) :
     Function.support (hconv K e₁ e₂) ⊆ tsupport e₁ * tsupport e₂ := by
   intro g hg
   obtain ⟨q, hq⟩ : ∃ q : GL ι F ⧸ K, e₁ q.out * e₂ (q.out⁻¹ * g) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     refine (Function.mem_support.1 hg) ?_
     unfold hconv
     simp only [h]

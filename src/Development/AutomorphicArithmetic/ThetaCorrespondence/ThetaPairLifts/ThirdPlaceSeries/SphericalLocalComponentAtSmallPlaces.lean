@@ -363,8 +363,7 @@ theorem valued_le_one_of_map {F E : Type} [Field F] [NumberField F] [Field E] [N
     {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)}
     (c : v.adicCompletion F ≃+* w.adicCompletion E) (hc : Continuous c) (y : v.adicCompletion F)
     (hy : Valued.v y ≤ 1) : Valued.v (c y) ≤ 1 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hy0 : y ≠ 0 := by
     rintro rfl
     rw [map_zero, map_zero] at hne
@@ -662,8 +661,7 @@ theorem exists_fixed_of_level (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 
   obtain ⟨b, hb⟩ := principalLevelFrame.rowRepR_occ R.θ (Y.eFT σ)
   set π := principalLevelFrame.rowRepR R.θ (Y.eFT σ) with hπ
   obtain ⟨y, hy, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hb
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hfixY : ∀ κ ∈ U, actM Y.PY (R.MY 0) κ y = y := by
     intro κ hκ
     obtain ⟨hJ, hχ⟩ := hU b κ hκ

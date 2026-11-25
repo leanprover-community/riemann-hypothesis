@@ -691,8 +691,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
   obtain ⟨j, hj, hjnd⟩ : ∃ j < G₀ - η, ¬ ϖ ^ (eO (O := O) PD.p * (2 * σ + 1)) ∣
       PowerSeries.coeff j (PowerSeries.C (((PD.p : ℕ) : O) ^ (2 * σ)) * 1 *
         (PowerSeries.X - PowerSeries.C ((PD.p : ℕ) : O)) ^ AI * PowerSeries.X ^ (G₀ - wa)) := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hnot (ArcLengthFourSecond.mem_span_of_coeff _ _ _ hall)
   rw [mul_one, mul_assoc, ← hΦ, PowerSeries.coeff_C_mul] at hjnd
   set t := PowerSeries.coeff j Φ with ht

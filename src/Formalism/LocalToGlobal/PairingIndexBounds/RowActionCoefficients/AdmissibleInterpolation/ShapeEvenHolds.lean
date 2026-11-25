@@ -34,8 +34,7 @@ theorem colH_le_of (hν : Antitone ν) {k : ℕ} (t : Fin n) (h : ν t ≤ k) : 
   intro s hs
   rw [Finset.mem_filter] at hs
   rw [Finset.mem_Iio]
-  by_contra hst
-  push_neg at hst
+  by_contra! hst
   exact absurd (lt_of_lt_of_le hs.2 (hν hst)) (not_lt.mpr h)
 
 theorem lt_colH_iff (hν : Antitone ν) (k : ℕ) (t : Fin n) : t.val < colH ν k ↔ k < ν t := by

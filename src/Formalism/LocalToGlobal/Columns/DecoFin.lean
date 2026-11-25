@@ -54,8 +54,7 @@ theorem hStd_pos (hE : PosStar E) (x : Sp E n) (hx : x ≠ 0) :
 
   simp only [hStd, LinearMap.mk₂'ₛₗ_apply, map_sum]
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (funext h)
   refine lt_of_lt_of_le (hE (x i) hi) ?_
   refine Finset.single_le_sum (f := fun j => Algebra.trace ℚ E (star (x j) * x j)) ?_ (Finset.mem_univ i)
@@ -511,8 +510,7 @@ theorem conjIdeal_asIdeal (P : HeightOneSpectrum (𝓞 E)) :
 
 theorem exists_mem_notMem {P Q : HeightOneSpectrum (𝓞 E)} (h : P ≠ Q) :
     ∃ s ∈ P.asIdeal, s ∉ Q.asIdeal := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   exact HeightOneSpectrum.ext (P.isMaximal.eq_of_le Q.isPrime.ne_top hc)
 

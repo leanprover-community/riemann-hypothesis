@@ -765,8 +765,7 @@ theorem shortIntervalImpliesProgressions_statement : ShortIntervalImpliesProgres
   have hY13 : 0 ≤ Y ^ ((1 : ℝ) / 3) := Real.rpow_nonneg hYpos.le _
   have h47 : 0 < (4 * (m : ℝ)) ^ (7 : ℝ) := Real.rpow_pos_of_pos (by linarith) _
   have hpos : 0 < h := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     linarith [mul_nonpos_of_nonpos_of_nonneg hneg hY13]
   have hfl1 : 1 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY1)
   have hfl2 : ⌊Y⌋₊ ≤ ⌊Y * (1 + h)⌋₊ := Nat.floor_mono (le_mul_of_one_le_right hYpos.le (by linarith))
@@ -885,8 +884,7 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
       (hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P = P)
       (hu : ∃ θ t : 𝓞 K, algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K θ) ∧ θ - t ∉ P) :
       residueCharacteristic P ^ 2 ≤ Ideal.absNorm P := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨θ, t, ht, hθt⟩ := hu
     obtain ⟨k, hk1, hk⟩ := abs_norm_eq_prime_pow P hP
     have hp := residue_characteristic_prime P hP

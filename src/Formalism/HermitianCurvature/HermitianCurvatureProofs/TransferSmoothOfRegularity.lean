@@ -134,8 +134,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section ellw
 
 variable {d : ℕ}

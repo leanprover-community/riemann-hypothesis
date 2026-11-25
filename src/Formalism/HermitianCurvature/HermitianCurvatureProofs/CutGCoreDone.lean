@@ -886,8 +886,6 @@ namespace Formalism.FourierDecayAlt.P.Qx8
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem frameG_exists {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z) :
     ∃ g : Mx k r, g ∈ UH (Hpk k r) ∧
       (∀ a : Fin r, g *ᵥ bvec (eI k r a) = bvec (eI k r a) ∧ g *ᵥ bvec (esI k r a) = bvec (esI k r a)) ∧
@@ -922,8 +920,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD Formalism.FourierDecayAlt.P
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GTRIntPf
 

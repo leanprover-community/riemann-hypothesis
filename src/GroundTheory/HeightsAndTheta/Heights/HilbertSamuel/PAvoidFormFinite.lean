@@ -224,8 +224,7 @@ theorem rel_one {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → �
   refine ⟨r * ∑ k, Fintype.card (ι k), fun M hM μ hμ => ?_⟩
   have hc : ∀ k, ∃ i, r ≤ μ ⟨k, i⟩ := by
     intro k
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 : bdeg μ k ≤ Fintype.card (ι k) * r := by
       calc bdeg μ k = ∑ i, μ ⟨k, i⟩ := rfl
         _ ≤ ∑ _i : ι k, r := Finset.sum_le_sum fun i _ => (hne i).le
@@ -412,8 +411,7 @@ theorem exists_sep {e : K → ℕ} (he : ∀ k, 1 ≤ e k) {z w : (Σ k, ι k) �
     ∃ Q : MRingOver ℂ ι, IsMultiHomog Q e ∧ eval w Q = 0 ∧ eval z Q ≠ 0 := by
   classical
   have hmin : ∃ k a b, z ⟨k, a⟩ * w ⟨k, b⟩ ≠ z ⟨k, b⟩ * w ⟨k, a⟩ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hn
     choose i hi using hw
     refine ⟨fun k => z ⟨k, i k⟩ / w ⟨k, i k⟩, fun k h0 => ?_, ?_⟩

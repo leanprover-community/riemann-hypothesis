@@ -541,8 +541,7 @@ theorem isField (hB0 : B 0 = 1) (hBD : B 1 * B 1 = algebraMap K A D)
       conv_lhs => rw [← B.sum_repr x]
       rw [Fin.sum_univ_two, hB0, Algebra.smul_def, Algebra.smul_def, mul_one]
     have hpq : B.repr x 0 ≠ 0 ∨ B.repr x 1 ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hx
       rw [hxpq, hc.1, hc.2]
       simp
@@ -578,8 +577,7 @@ theorem exists_factor (hϖ : w ϖ = WithZero.exp (-1 : ℤ)) (hB0 : B 0 = 1)
     rw [Fin.sum_univ_two, hB0, Algebra.smul_def, Algebra.smul_def, mul_one]
   subst hxpq
   have hpq : p ≠ 0 ∨ q ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hx0
     rw [hc.1, hc.2]
     simp
@@ -650,8 +648,7 @@ theorem exists_factor (hϖ : w ϖ = WithZero.exp (-1 : ℤ)) (hB0 : B 0 = 1)
 theorem le_of_eq_mul (hϖ : w ϖ = WithZero.exp (-1 : ℤ)) (hB0 : B 0 = 1) {i j : ℕ} {u : A}
     (hu : ∀ l, w (B.repr u l) ≤ 1)
     (h : (algebraMap K A ϖ) ^ i = (algebraMap K A ϖ) ^ j * u) : j ≤ i := by
-  by_contra hji
-  push_neg at hji
+  by_contra! hji
   obtain ⟨k, rfl⟩ : ∃ k, j = i + (k + 1) := ⟨j - i - 1, by omega⟩
   have hϖ0 : ϖ ≠ 0 := by
     intro h0

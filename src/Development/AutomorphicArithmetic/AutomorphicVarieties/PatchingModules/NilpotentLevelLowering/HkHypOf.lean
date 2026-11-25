@@ -128,8 +128,7 @@ theorem UpperTheory.V.AlgebraTools.hkFaith :
   have hD := UpperTheory.V.AlgebraTools.hkDedekind R n K _ key
   by_contra hne
   obtain ⟨w0, hw0⟩ : ∃ w, c w ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (funext hall)
   obtain ⟨w, hwS, hmax⟩ := (Finset.univ.filter (fun u => c u ≠ 0)).exists_max_image invN
     ⟨w0, by simp [hw0]⟩

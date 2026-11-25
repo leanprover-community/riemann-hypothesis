@@ -19,8 +19,7 @@ theorem circle_eq_one_of_forall_re_pow_pos (z : Circle)
     nlinarith
   by_contra hz
   have ha0 : (z : ℂ).re < 1 := by
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have h2 := hsq z
     have him : (z : ℂ).im = 0 := by nlinarith [sq_nonneg (z : ℂ).im, sq_nonneg ((z : ℂ).re - 1)]
     have hre : (z : ℂ).re = 1 := by

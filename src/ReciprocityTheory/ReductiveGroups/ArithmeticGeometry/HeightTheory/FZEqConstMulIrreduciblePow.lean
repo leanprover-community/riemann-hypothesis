@@ -249,8 +249,7 @@ theorem fZ_factor_positive_places (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (F : KTp
   refine ⟨κ, hP0fin.toFinset, fun p => (Nn p).toNat, hκ, hTS,
     IsFractionRing.injective _ _ hF', ?_⟩
   intro p hpT hpos
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hz : Nn p = 0 := by
     rw [hNn]
     refine (finsum_mem_congr rfl fun w hw => ?_).trans (finsum_mem_zero _)

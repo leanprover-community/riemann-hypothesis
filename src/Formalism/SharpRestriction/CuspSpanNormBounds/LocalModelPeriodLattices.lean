@@ -432,8 +432,7 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableS
 
 theorem exists_mul_eq_zero_of_not_isUnit [Module.Finite F E] (y : E) (hy : ¬ IsUnit y) :
     ∃ a : E, a ≠ 0 ∧ y * a = 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hy
   have hinj : Function.Injective (LinearMap.mulLeft F y) := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']

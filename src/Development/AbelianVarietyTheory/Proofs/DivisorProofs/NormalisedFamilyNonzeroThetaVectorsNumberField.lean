@@ -68,8 +68,7 @@ theorem GlobalTheory.ColNorms.familyVectors : GlobalTheory.ColNorms.FamilyVector
   have ht : ∀ α, Formalism.MainNotions.TaylorLogMetric.taylor D (B.eNat χ N N' L L') α = c * Formalism.MainNotions.TaylorLogMetric.taylor D (e N N' L L') α := fun α => by
     rw [hE, GlobalTheory.ProdThetaConj.taylor_const_mul e1.1]
   obtain ⟨α, hα⟩ : ∃ α, Formalism.MainNotions.TaylorLogMetric.taylor D (e N N' L L') α ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply e2
     funext z
     rw [← GlobalTheory.ProdThetaConj.tsum_taylor_mono D e1.1 z]

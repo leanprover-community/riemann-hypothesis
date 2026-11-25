@@ -265,7 +265,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj Pointwise
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open IsDedekindDomain
 
@@ -430,8 +429,7 @@ theorem div_uniformiser_mem : ∀ (R K L : Type) [CommRing R] [IsDomain R] [IsDi
   have hlt : P.valuation L y < 1 := by
     rcases (ValuationSubring.mem_nonunits_iff_or W).1 hyW with h | h
     · rw [h, map_zero]; exact zero_lt_one
-    · by_contra hge
-      push_neg at hge
+    · by_contra! hge
       apply h
       rw [hWv, map_inv₀]
       have h1 : P.valuation L y ≤ 1 := (hWv y).1 ((W.valuation_le_one_iff y).1 (le_of_lt (W.mem_nonunits_iff.1 hyW)))

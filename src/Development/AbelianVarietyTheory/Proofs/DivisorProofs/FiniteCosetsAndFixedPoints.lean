@@ -589,8 +589,7 @@ theorem rho_charpoly_sep (G : HTGroup p) (w : Fin G.m) (y : G.C) (hdeg : (minpol
     apply hΦinj
     rw [map_zero, ← Polynomial.aeval_algHom_apply, hΦz, minpoly.aeval]
   have hdegQ : G.n ≤ (minpoly (G.Fw w) M).natDegree := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     rw [Polynomial.aeval_eq_sum_range' hlt, Finset.sum_range] at hzQ
     have hc := Fintype.linearIndependent_iff.1 hliC (fun i => (minpoly (G.Fw w) M).coeff i) hzQ
     apply hQ0

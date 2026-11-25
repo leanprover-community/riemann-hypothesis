@@ -980,8 +980,7 @@ theorem cycloSq_le_of_ne_zero {l : ℕ} (hl : 1 < l) {ζ : ℂ} (hζ : IsPrimiti
     (f : ℕ → ℤ) (hc : ∑ a ∈ Finset.range l, (f a : ℂ) * ζ ^ a ≠ 0) :
     (l : ℤ) ≤ ∑ a ∈ Finset.range l, ∑ b ∈ Finset.range l, (f a - f b) ^ 2 := by
   have hne : ∃ x ∈ Finset.range l, f x ≠ f 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hc
     rw [Finset.sum_congr rfl (fun a ha => by rw [hall a ha]), ← Finset.mul_sum,
       hζ.geom_sum_eq_zero hl, mul_zero]
@@ -1054,8 +1053,7 @@ theorem cyclo_sum_mul_star_eq_one_single : ∀ (l : ℕ) (ζ : ℂ), l.Prime →
   have hQnn : ∀ i ∈ S, 0 ≤ ∑ a ∈ Finset.range l, ∑ b ∈ Finset.range l, (n i a - n i b) ^ 2 :=
     fun i _ => Finset.sum_nonneg (fun a _ => Finset.sum_nonneg (fun b _ => sq_nonneg _))
   obtain ⟨i₀, hi₀, hc₀⟩ : ∃ i₀ ∈ S, ∑ a ∈ Finset.range l, (n i₀ a : ℂ) * ζ ^ a ≠ 0 := by
-    by_contra H
-    push_neg at H
+    by_contra! H
     rw [Finset.sum_eq_zero (fun i hi => by rw [H i hi, zero_mul])] at hsum
     exact zero_ne_one hsum
   refine ⟨i₀, hi₀, fun i hi hne => ?_⟩

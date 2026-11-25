@@ -619,8 +619,7 @@ theorem isUnit_blockB_of_solution (β : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (hβ : 
   refine (injective_iff_map_eq_zero (blockB J)).mpr ?_
   intro q hq
   apply hβ q
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨x₀, hx₀⟩ := hne
   have hzero : ∀ x, β x q ≠ 0 → g x = 0 := by
     intro x hx
@@ -664,8 +663,7 @@ theorem schwartz_gaussian_form_re_neg {V : Type} [NormedAddCommGroup V] [NormedS
     apply hg
     ext x
     rw [hform x, h0]; simp
-  by_contra hre
-  push_neg at hre
+  by_contra! hre
   obtain ⟨C, hC, hdec⟩ := g.decay 1 0
   have hgn : 0 < ‖g 0‖ := norm_pos_iff.mpr hg0
   have hvn : 0 < ‖v‖ := norm_pos_iff.mpr hv
@@ -1331,7 +1329,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Classical
@@ -1492,7 +1489,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Classical

@@ -1348,8 +1348,7 @@ theorem UpperTheory.V.Pa.BC.oprime :
   have hfac : ∀ x : AdjoinRoot P, x ≠ 0 → ∃ n : ℕ, ∃ u : AdjoinRoot P, IsUnit u ∧ x = π ^ n * u := by
     intro x hx
     have hex : ∃ i : ℕ, x ∉ M ^ i := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply hx
       have hmem : x ∈ ⨅ i : ℕ, M ^ i := Submodule.mem_iInf _ |>.mpr h
       rw [hKrull] at hmem
@@ -1372,8 +1371,7 @@ theorem UpperTheory.V.Pa.BC.oprime :
     rw [hMspan, Ideal.span_singleton_pow, Ideal.mem_span_singleton']
     exact ⟨c, by rw [← hu, ← hc]; ring⟩
   haveI : NoZeroDivisors (AdjoinRoot P) := ⟨fun {x y} hxy => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨a, u, hu, rfl⟩ := hfac x h.1
     obtain ⟨b, v, hv, rfl⟩ := hfac y h.2
     have h0 : π ^ (a + b) * (u * v) = 0 := by rw [← hxy]; ring

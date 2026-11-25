@@ -109,8 +109,7 @@ theorem exists_eigen_of_sum {M : Type} [AddCommGroup M] [Module ℂ M]
       simp only [F, map_smul, ← Finset.smul_sum, hf, smul_smul]
       rw [inv_mul_cancel₀ (Units.ne_zero _), one_smul]
     simp only [this, Finset.sum_const, Finset.card_univ, Nat.cast_smul_eq_nsmul]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hz : ∀ i ∈ s, e (u i) = 0 := by
     intro i hi
     by_contra h0

@@ -426,8 +426,7 @@ theorem sum_tors (F X : Type) [Field F] [IsAlgClosed F] [CharZero F] [AddCommGro
   · obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot F N
     have : ∃ t₀ : Multiplicative X →* Fˣ, t₀ ^ N = 1 ∧
         t₀ (Multiplicative.ofAdd α) ≠ t₀ (Multiplicative.ofAdd β) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (GlobalTheory.exists_eq_add_nsmul_of_torsion_characters_eq F X N ζ hN hζ α β hc)
     obtain ⟨t₀, h₀, hne⟩ := this
     have h₀' : t₀⁻¹ ^ N = 1 := by rw [inv_pow, h₀, inv_one]

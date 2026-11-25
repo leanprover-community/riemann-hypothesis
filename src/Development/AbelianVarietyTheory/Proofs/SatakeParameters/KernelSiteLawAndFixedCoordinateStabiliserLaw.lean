@@ -583,8 +583,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions F
 
 namespace GlobalTheory.XiGen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem resV_linSub_sum {σ κ ι R : Type} [Fintype σ] [Field R] (f : κ → σ) (B : σ → σ → R) (s : Finset ι)
     (d : ι → R) (G : ι → MvPowerSeries σ R) :
     ∑ i ∈ s, d i • resV f (linSub B (G i)) = resV f (linSub B (∑ i ∈ s, d i • G i)) := by
@@ -630,8 +628,6 @@ theorem lamC_ratCast_mul (q : ℚ) {x : ℂ} (hx : x ∈ TaylorLogMetric.Qbar) :
 end GlobalTheory.XiGen
 
 namespace GlobalTheory.XiGen
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem subBG_congr {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7} (E : CEmb X.G) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)
     (fd : FData X D) (j : ℕ) {La Lb : X.Lt j} {La' Lb' : X.Lt (j + 1)} (h1 : fd.frM j La = fd.frM j Lb)
@@ -874,10 +870,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.Ker Formalism.L2.G.Pend Formalism.L2.KerInert GlobalTheory.TwV
 
 namespace GlobalTheory.TwV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 
 theorem site_law_xiIn : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S =>
     S.Pair → S.Pos → S.Move → S.Away → S.Law ∧

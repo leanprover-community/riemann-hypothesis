@@ -119,8 +119,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.FlagMod (GChart ev tau tau_le le_preimage_comp)
 open scoped LaurentSeries
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.RigRescale
 
 open GlobalTheory GlobalTheory.ArchMetricCompare
@@ -431,8 +429,6 @@ open MonoidalCategory CartesianMonoidalCategory MonObj
 noncomputable section
 
 namespace GlobalTheory.ArcLieCoord
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem zeroPt_sc {S : Type} [CommRing S] (c : S) : GlobalTheory.PowLie.zeroPt S ≫ GlobalTheory.PowLie.sc c = GlobalTheory.PowLie.zeroPt S := by
   ext1
@@ -936,8 +932,7 @@ theorem exists_chart_theta_unit : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   obtain ⟨hA, hB⟩ := GlobalTheory.theta_generates_along_arc hL.globalFns hL.secBaseChange Y a χ W
   have hw0 : Ha.T < ((Ha.T + 1 : ℝ) * Complex.I : ℂ).im := by simp
   have hne : ∃ j, th.f j ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨hs, hp⟩ := Θ.pos _ hw0
     have h7 := (GlobalTheory.ThetaBlock.thetaCharOff_ne_zero_differentiable_quasiPeriodic g Θ.S (Θ.τ ((Ha.T + 1 : ℝ) * Complex.I)) Θ.c₁ Θ.c₂ hs hp Θ.half₁ Θ.half₂ Θ.c₁_S).1
     apply h7

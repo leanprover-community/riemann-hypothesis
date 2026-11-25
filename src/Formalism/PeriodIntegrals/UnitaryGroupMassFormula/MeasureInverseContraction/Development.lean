@@ -222,8 +222,7 @@ theorem haarOn_conj (N : Subgroup G) (hN : IsClosed (N : Set G)) {μ : Measure G
     (by ext x; simp) (fun x hx => h1 x hx) (fun s hs => ⟨a⁻¹ * s * a, h2 s hs, fun x => by group⟩)
 
 theorem le_one_of_pow_le {x B : ℝ≥0∞} (hB : B ≠ ⊤) (h : ∀ p : ℕ, x ^ p ≤ B) : x ≤ 1 := by
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   have hxt : x ≠ ⊤ := by
     rintro rfl
     have h1 := h 1

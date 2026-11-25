@@ -72,8 +72,7 @@ theorem charpoly_of_isRhoOf (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd �
     refine IsTopologicalAddGroup.t2Space_of_zero_sep ?_
     intro y hy
     obtain ⟨n, hn⟩ : ∃ n, y ∉ (IsLocalRing.maximalIdeal (D.nd.O i)) ^ n := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply hy
       refine (D.nd.O_complete i).toIsHausdorff.haus y fun n => ?_
       rw [SModEq.zero, Ideal.smul_eq_mul, Ideal.mul_top]

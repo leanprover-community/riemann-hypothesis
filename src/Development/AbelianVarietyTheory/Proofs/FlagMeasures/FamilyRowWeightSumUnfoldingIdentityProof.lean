@@ -62,8 +62,6 @@ section -- clump:auto
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc Formalism.L2.SG.NGLocModel Formalism.L2.SG.FamDefs Formalism.FourierDecayAlt GlobalTheory.Unfold
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Unfold.Tied
 
 theorem infinite_finPl (K : Type) [Field K] [NumberField K] : Infinite (IsDedekindDomain.HeightOneSpectrum (𝓞 K)) := by
@@ -132,8 +130,7 @@ theorem unfold_tied : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wh
   subst hγ
   haveI := infinite_finPl D.host.F
   obtain ⟨p0, hp0⟩ : ∃ p, p ∉ Fm.P := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact Set.infinite_univ (α := PlF D) (Fm.P.finite_toSet.subset fun p _ => h p)
   have hBased : Based (zOf Y) Fm.FP (Tu D u) (Tu D u') F00 F'0 := fun p => hFP p
   have hG : Gval F00 F'0 ≠ 0 := by
@@ -209,8 +206,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
   Formalism.L2.SG.FamDefs Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory.SnFam
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem setQ_locClosed {D : D7} {X : HidaSetting D} (Y : Full X) (u u' : D.what₂.Word) (S : Prop → Prop)
     (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))

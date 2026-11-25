@@ -36,8 +36,7 @@ theorem exists_prim {m : ℕ} (c : Fin m → 𝓞 K) (hc : c ≠ 0) (𝔭 : Idea
   classical
   obtain ⟨𝔪, h𝔪, hp𝔪⟩ := Ideal.exists_le_maximal 𝔭 h𝔭
   obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hc (funext h)
   have hJ0 : Ideal.span (Set.range c) ≠ ⊥ := by
     intro h
@@ -46,8 +45,7 @@ theorem exists_prim {m : ℕ} (c : Fin m → 𝓞 K) (hc : c ≠ 0) (𝔭 : Idea
     exact hj hmem
   have hJF : ((Ideal.span (Set.range c) : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K) ≠ 0 :=
     FractionalIdeal.coeIdeal_ne_zero.mpr hJ0
-  by_contra H
-  push_neg at H
+  by_contra! H
   have hle : ((Ideal.span (Set.range c) : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K) *
       ((Ideal.span (Set.range c) : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K)⁻¹ ≤
       ((𝔪 : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K) := by
@@ -108,8 +106,7 @@ private theorem card_le_card_pow_of_not_linearIndependent {k V : Type*} [Field k
     Nat.card V ≤ Nat.card k ^ n := by
   classical
   have hd : Module.finrank k V ≤ n := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact h (Module.finBasis k V ∘ Fin.castLE hlt)
       ((Module.finBasis k V).linearIndependent.comp _ (Fin.castLE_injective hlt))
   rw [Nat.card_congr (Module.finBasis k V).equivFun.toEquiv, Nat.card_fun]
@@ -135,8 +132,7 @@ theorem card_quot_le (𝔭 : Ideal (𝓞 K)) [h𝔭 : 𝔭.IsMaximal] (n : ℕ)
   obtain ⟨t, ht, i₀, hi₀⟩ := exists_prim c hc0 𝔭 h𝔭.ne_top
   choose o ho using ht
   obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hc0 (funext h)
   have hoc : ∀ i, o i * c j = o j * c i := by
     intro i

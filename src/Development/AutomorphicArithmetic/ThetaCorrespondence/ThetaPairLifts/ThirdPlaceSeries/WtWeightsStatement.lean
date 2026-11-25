@@ -113,8 +113,7 @@ theorem injective_of_finite_dvr {A B : Type} [CommRing A] [IsDomain A] [IsPrinci
     [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Algebra A B] [Module.Finite A B] :
     Function.Injective (algebraMap A B) := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨a, ha, ha0⟩ := hne
   have hker : (⊥ : Ideal B).comap (algebraMap A B) ≠ ⊥ := by
     intro h
@@ -186,8 +185,7 @@ theorem eval_specAt (τ₀ : ι) (y : ι × Fin n × Fin n → K) (z : Fin n × 
 
 theorem exists_specAt_ne [Infinite K] (τ₀ : ι) (w : Formalism.L2.DIV.Pol K ι n) (hw : w ≠ 0) :
     ∃ y, specAt τ₀ y w ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hw
   apply MvPolynomial.funext
   intro z

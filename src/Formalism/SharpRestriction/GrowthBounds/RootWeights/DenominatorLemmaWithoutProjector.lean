@@ -753,8 +753,6 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
 private theorem E_apply_mem_weightSp_add_rootW_of_ne {E : GLOps n K V} (hE : IsGLRep E) {a b : Fin n} (hab : a ≠ b)
@@ -986,8 +984,7 @@ private theorem degreeZeroWeightsBounded_ellOf {n : ℕ} {K V : Type*} [Field K]
     · linarith
     · push_neg at h0
       obtain ⟨b, hb, hbpos⟩ : ∃ b ∈ Finset.univ.erase a, 0 < ν b := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have := Finset.sum_nonpos hc
         linarith
       have hba : b ≠ a := Finset.ne_of_mem_erase hb
@@ -997,8 +994,7 @@ private theorem degreeZeroWeightsBounded_ellOf {n : ℕ} {K V : Type*} [Field K]
     · linarith
     · push_neg at h0
       obtain ⟨b, hb, hbneg⟩ : ∃ b ∈ Finset.univ.erase a, ν b < 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have := Finset.sum_nonneg hc
         linarith
       have hab : a ≠ b := (Finset.ne_of_mem_erase hb).symm

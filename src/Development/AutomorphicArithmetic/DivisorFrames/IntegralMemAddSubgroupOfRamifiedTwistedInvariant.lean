@@ -537,8 +537,7 @@ theorem UpperTheory.integral_mem_addSubgroup_of_ramified_twisted_invariant :
         ring
     · by_cases hm' : ∀ i, -(a : ℤ) ≤ m i
       · have : ∃ i, (0 : ℤ) ≤ m i := by
-          by_contra h
-          push_neg at h
+          by_contra! h
           exact hm fun i => ⟨hm' i, h i⟩
         rw [h2 0 hP m this z]; exact M.zero_mem
       · rw [h3 a hS m hm' z]; exact M.zero_mem

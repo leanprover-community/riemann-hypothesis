@@ -180,8 +180,7 @@ theorem nonempty_muFrameAt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     exact sub_eq_zero.mp h2.symm
   obtain ⟨l0, hl0⟩ : ∃ l, MvPolynomial.aeval
       (fun c' => (∏ k, w ⟨k, c' k⟩) / ∏ k, w ⟨k, ch k⟩) (P l) ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     rw [Finset.sum_eq_zero (fun l _ => by rw [hne l, MulZeroClass.mul_zero])] at hW
     exact zero_ne_one hW
   have hunit : IsUnitAt Dc.y (f l0) w := by

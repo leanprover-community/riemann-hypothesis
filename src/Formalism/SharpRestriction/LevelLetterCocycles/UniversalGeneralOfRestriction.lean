@@ -2455,8 +2455,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
   · rw [hty] at hJ
     refine ⟨?_, fun bs h => absurd h (by simp)⟩
     simp only [eMM]
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     refine hzero (filS_bot W T₂ c s (filCris_bot W hCA T₂ _ _ fun a ha => ?_))
     have := hJ a ha
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_Icc] at this
@@ -2465,8 +2464,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
     refine ⟨?_, fun bs' h => absurd h (by simp)⟩
     simp only [eMM]
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     refine hzero (filS_bot W T₂ c s (filCris_bot W hCA T₂ _ _ fun a ha => ?_))
     have := hJ a ha
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at this
@@ -2475,8 +2473,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
   · rw [hty] at hJ hok
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
     have hb : (bs : ℤ) ≤ α s := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hle : FilS W T₂ c s (-(α s)) ≤ FilS W T₂ c s (-(A.η : ℤ)) := by
         apply filS_mono_le
         rcases le_or_gt (-(α s)) (-(A.η : ℤ)) with h | h

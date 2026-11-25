@@ -127,8 +127,7 @@ private lemma linearIndependent_map_of_linearIndependent (h : _root_.Reciprocity
   obtain ⟨s⟩ : Nonempty (K' →+* ℂ) := inferInstance
   rw [Fintype.linearIndependent_iff]
   intro c hc
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hpd := h.posDef (s.comp j) r v hv
   have hx : (fun a => s (c a)) ≠ 0 := by
     obtain ⟨a, ha⟩ := hne

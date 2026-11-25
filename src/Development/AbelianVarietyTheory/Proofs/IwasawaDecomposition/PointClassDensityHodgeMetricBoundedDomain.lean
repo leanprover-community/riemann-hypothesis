@@ -921,8 +921,7 @@ theorem tc_monomial_glue (D : ι → (γ × γ →₀ ℕ)) :
     exact Finset.prod_eq_one fun τ _ => if_pos (congrFun hD τ)
   · rw [if_neg hD]
     obtain ⟨τ, hτ⟩ : ∃ τ, D τ ≠ graph (σ τ) := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hD (funext hall)
     symm
     exact Finset.prod_eq_zero (Finset.mem_univ τ) (if_neg hτ)

@@ -15,8 +15,6 @@ open scoped ComplexConjugate
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem orbital_integrand_linear {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k r Wp Wq) (γ : B.Mat k r)
     (H₁ H₂ : B.Mat k r → (Wq →L[ℂ] Wp)) (a b : ℂ) (p : B.SS k r) :
@@ -130,16 +128,3 @@ theorem vector_valued_orbital_linear : ∃ c₃ : ℝ, ∀ (k r : ℕ) (Wp Wq : 
 end
 
 end Formalism.FourierDecayAlt.P.CutBP.PolTop
-
-namespace Formalism.FourierDecayAlt.P.CutBP
-
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-
-noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-
-end
-
-end Formalism.FourierDecayAlt.P.CutBP

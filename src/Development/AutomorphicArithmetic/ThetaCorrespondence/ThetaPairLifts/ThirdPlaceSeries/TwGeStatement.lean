@@ -567,8 +567,7 @@ theorem readExt_scalar_mem_range
     rw [e3, r₁, r₂, h, smul_smul, smul_smul, inv_mul_cancel_right₀ (hδ _ hd₂), sub_self]
   have hc := Fintype.linearIndependent_iff.1 (hF _ v v.linearIndependent) _ h0
   obtain ⟨a, ha⟩ : ∃ a, c₂ a ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply h₂
     have : δ₂ • readExt rd eL hL x₂ = 0 := by rw [← r₂]; simp [hne]
     exact (smul_eq_zero.1 this).resolve_left (hδ _ hd₂)

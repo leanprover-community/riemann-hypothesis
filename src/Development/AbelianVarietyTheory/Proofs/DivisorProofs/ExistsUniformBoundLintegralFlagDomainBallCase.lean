@@ -1781,8 +1781,7 @@ theorem norm_dmin_zero (X : Data E r) (x : Frame X.Ψ r) (τ : X.Ψ) (h : 0 < r 
 
 theorem ball_cases {X : Data E r} (h1 : 0 < X.p0) (h2 : X.p0 < r) (h3 : X.p0 * (r - X.p0) ≤ 3) :
     X.p0 = 1 ∨ X.p0 + 1 = r := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have ha : 2 ≤ X.p0 := by omega
   have hb : 2 ≤ r - X.p0 := by omega
   have := Nat.mul_le_mul ha hb

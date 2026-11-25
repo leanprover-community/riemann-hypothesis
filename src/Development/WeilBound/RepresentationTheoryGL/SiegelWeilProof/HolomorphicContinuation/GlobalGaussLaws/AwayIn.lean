@@ -93,8 +93,7 @@ theorem tr_re_nonneg {m n : ℕ} {A : Matrix (Fin m) (Fin m) ℂ} (hA : A.PosDef
     · exact (hA.re_dotProduct_pos hv).le
   refine ⟨hsum ▸ Finset.sum_nonneg (fun j _ => hnn j), fun hM => ?_⟩
   obtain ⟨j, hj⟩ : ∃ j, (fun a => M a j) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hM
     ext a j
     exact congrFun (hc j) a
@@ -174,8 +173,7 @@ theorem Qf_pos (A : T → Matrix (Fin m) (Fin m) ℂ) (hA : ∀ t, t ≠ τ → 
   have hnn : ∀ t : {τ' : T // τ' ≠ τ}, 0 ≤ w t.1 * (trace ((of (b t))ᴴ * A t.1 * of (b t))).re :=
     fun t => mul_nonneg (hw t.1 t.2).le (tr_re_nonneg (hA t.1 t.2) _).1
   obtain ⟨t, ht⟩ : ∃ t, b t ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hb (funext hc)
   have hof : of (b t) ≠ 0 := by
     intro h0

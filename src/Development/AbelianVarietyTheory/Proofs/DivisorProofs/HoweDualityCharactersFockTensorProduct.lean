@@ -420,8 +420,7 @@ theorem tensAll_sup_le {T : Type} [Fintype T] [DecidableEq T] {V : T → Type} [
     congr 1
     simp
   · obtain ⟨w, hw⟩ : ∃ w, w ∉ s := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hs (Finset.eq_univ_of_forall h)
     refine Submodule.mem_sup_right (Submodule.subset_span ⟨s.piecewise u c, ⟨w, ?_⟩, rfl⟩)
     rw [Finset.piecewise_eq_of_notMem _ _ _ hw]

@@ -96,8 +96,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.Ad
 
 namespace GlobalTheory.TransportUnique
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {A : Type} [CommRing A]
@@ -296,8 +294,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
 open scoped nonZeroDivisors
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem GlobalTheory.Twist.isCStable_inv_different_and_norm_ideal : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents.IsCStable (D := D) ((D.host.ddE : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E))⁻¹ ∧ GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents.IsCStable (D := D) (FractionalIdeal.spanSingleton (𝓞 D.host.E)⁰ (((D.host.g 0 * D.host.g 1 : ℕ) : D.host.E))⁻¹ * D.host.AA * D.host.AAbar) := by
   intro D
   haveI : IsCMField D.host.E := D.host.isCMField_hostE
@@ -337,7 +333,6 @@ open Formalism.L2.DIV (Pl)
 open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -357,8 +352,6 @@ open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
 
 namespace GlobalTheory.GluedCmp
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Algebra
 
@@ -521,8 +514,6 @@ open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
 
 namespace GlobalTheory.GlueVecLattice
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {Y X : HSp D} {ι : X.V →ₗ[D.host.E] Y.V} {z : Y.V} {u : D.what₂.Word}
 
@@ -784,7 +775,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
 open scoped nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.StdIsom
@@ -949,7 +939,6 @@ open Formalism.L2.DIV (Pl)
 open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdIsom.SelfDualGlue
 
@@ -1114,7 +1103,6 @@ open Formalism.L2.DIV (Pl)
 open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdIsom.GlueBase
 
@@ -1225,7 +1213,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
 open scoped nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Proof.normLineDecompositionsOfBaseSpace_proof
 
@@ -1315,7 +1302,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
 open scoped nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.normLineDecompositionsOfBaseSpace_proof : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents.RecordDecSt D := by
   first | exact @GlobalTheory.Proof.normLineDecompositionsOfBaseSpace_proof.recordDec
@@ -1356,7 +1342,6 @@ open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
 open scoped nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdIsom.Unglue
 
@@ -1504,7 +1489,6 @@ open Formalism.L2.DIV (Pl)
 open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -1523,8 +1507,6 @@ open Formalism.IndefR.Datum (IsSelfDualC)
 open scoped TensorProduct nonZeroDivisors Pointwise
 
 namespace GlobalTheory.AdIsom
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents
 open GlobalTheory.StdFrames hiding OA

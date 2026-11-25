@@ -285,8 +285,6 @@ theorem exists_isometry (hc : Formalism.HermitianLatticesTheory.IsCMUnram E) (W�
 
 end CM
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_isometry_host : ∀ (D : D7) (W₁ W₂ : HSpace D.host.E), W₁.SigOK → W₂.SigOK → W₁.rank = W₂.rank →
     (∀ τ, W₁.sig τ = W₂.sig τ) →
     ∃ φ : W₁.V ≃ₗ[D.host.E] W₂.V, ∀ x y, W₂.hT (φ x) (φ y) = W₁.hT x y := fun D =>

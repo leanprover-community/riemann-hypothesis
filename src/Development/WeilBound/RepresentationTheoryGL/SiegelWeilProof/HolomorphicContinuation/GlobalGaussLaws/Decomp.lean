@@ -131,8 +131,7 @@ theorem det_sub_I_smul_ne_zero {A B C D : Matrix (Fin n) (Fin n) ℂ} (h : InG (
 theorem exists_real_det_ne_zero {A C : Matrix (Fin n) (Fin n) ℂ} (h : (A - Complex.I • C).det ≠ 0) :
     ∃ t : ℝ, (A - (t : ℂ) • C).det ≠ 0 := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set p : Polynomial ℂ :=
     ((Polynomial.X : Polynomial ℂ) • (-C).map Polynomial.C + A.map Polynomial.C).det with hp
   have heval : ∀ z : ℂ, p.eval z = (A - z • C).det := by

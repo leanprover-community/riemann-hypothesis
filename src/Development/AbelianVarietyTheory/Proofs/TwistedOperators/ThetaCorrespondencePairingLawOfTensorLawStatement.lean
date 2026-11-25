@@ -62,7 +62,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.SpanMod
@@ -87,7 +86,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto
@@ -109,7 +107,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.PairOfTens

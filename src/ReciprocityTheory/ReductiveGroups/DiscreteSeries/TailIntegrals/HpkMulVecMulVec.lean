@@ -139,8 +139,7 @@ theorem sub_mul_tri {n m : ℕ} (h : m ≤ n) (A B : Matrix (Fin n) (Fin n) ℂ)
   refine Finset.sum_subset (Finset.subset_univ _) ?_
   intro l _ hl
   have hlm : m ≤ l.val := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hl (Finset.mem_map.mpr ⟨⟨l.val, hc⟩, Finset.mem_univ _, Fin.ext rfl⟩)
   have hjl : id (Fin.castLE h j) < id l := by
     show (Fin.castLE h j).val < l.val
@@ -163,8 +162,7 @@ theorem sub_tri_mul {n m : ℕ} (h : m ≤ n) (A B : Matrix (Fin n) (Fin n) ℂ)
   refine Finset.sum_subset (Finset.subset_univ _) ?_
   intro l _ hl
   have hlm : m ≤ l.val := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hl (Finset.mem_map.mpr ⟨⟨l.val, hc⟩, Finset.mem_univ _, Fin.ext rfl⟩)
   have hil : id (Fin.castLE h i) < id l := by
     show (Fin.castLE h i).val < l.val

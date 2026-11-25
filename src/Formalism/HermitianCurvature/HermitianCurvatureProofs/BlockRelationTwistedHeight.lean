@@ -22,8 +22,6 @@ namespace Formalism.FourierDecayAlt.P.PBH
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k ρ : ℕ}
 
 section rel
@@ -278,8 +276,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.PBH
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section aux
 

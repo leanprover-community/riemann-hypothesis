@@ -671,8 +671,7 @@ private lemma two_mul_lt_pow_mul_of_le (a t t' c : ℚ) (k : ℕ) (ha : 0 ≤ a)
     (h : 2 * a < t ^ k * c) : 2 * a < t' ^ k * c ∧ a < t' ^ k * c := by
   have htk : 0 < t ^ k := pow_pos ht k
   have hc : 0 < c := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : t ^ k * c ≤ 0 := mul_nonpos_of_nonneg_of_nonpos htk.le hc
     linarith
   have hpow : t ^ k ≤ t' ^ k := by
@@ -691,8 +690,7 @@ theorem twoPoint_step : GlobalTheory.Published.Principalisation → GlobalTheory
 
   have hex : ∃ z, z ⤳ x ∧ ¬ KltAt p n (Δ + D) z ∧
       ¬ topologicalKrullDim (closure ({z} : Set X)) ≤ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply h0
     unfold LcCut
     refine ⟨hlcx, hnkx, fun z hz hkz => ?_⟩

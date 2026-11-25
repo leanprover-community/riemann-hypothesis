@@ -113,15 +113,13 @@ theorem _root_.GlobalTheory.NormBall.val_trace_sq_le {d : F} (hd : ∀ r : F, r 
     valuation F (2 * a) ^ 2 ≤ valuation F (a ^ 2 - d * b ^ 2) := by
   rcases eq_or_ne (2 * a) 0 with h2a | h2a
   · simp [h2a]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set e := a ^ 2 - d * b ^ 2 with he
   have ha : a ≠ 0 := right_ne_zero_of_mul h2a
   have h2 : (2 : F) ≠ 0 := left_ne_zero_of_mul h2a
   have het : e = e / (2 * a) ^ 2 * (2 * a) ^ 2 := by field_simp
   have ht : valuation F (e / (2 * a) ^ 2) < 1 := by
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have hv : valuation F e = valuation F (e / (2 * a) ^ 2) * valuation F (2 * a) ^ 2 := by
       rw [← map_pow, ← map_mul, ← het]
     have : valuation F (2 * a) ^ 2 ≤ valuation F e := by

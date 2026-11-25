@@ -179,8 +179,7 @@ theorem coeff_cg_of_values : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (F : Powe
   have hlP : l.Prime := Fact.out
   unfold Cg
   rw [sub_zero]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨ϖ, s, hs, hls, hdisc⟩ := exists_unif c
   set q := ‖ϖ‖ with hq
   have hlpos : (0 : ℝ) < (l : ℝ)⁻¹ := by have := hlP.pos; positivity
@@ -188,8 +187,7 @@ theorem coeff_cg_of_values : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (F : Powe
   have hl0 : 0 < q ^ s := by rw [← hls, _root_.GlobalTheory.CycTrace.norm_l]; exact hlpos
   have hl1 : q ^ s < 1 := by rw [← hls, _root_.GlobalTheory.CycTrace.norm_l]; exact hlone
   have hq0 : 0 < q := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h0 : q = 0 := le_antisymm hc (norm_nonneg _)
     rw [h0, zero_pow hs.ne'] at hl0
     exact lt_irrefl _ hl0
@@ -243,8 +241,7 @@ theorem coeff_cg_of_values : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (F : Powe
       _ ≤ l ^ M * (l - 1) := Nat.le_mul_of_pos_right _ h2
   have htpos : 0 < Nat.totient (l ^ (M + 1)) := by omega
   have ha0 : 0 < a := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h0 : a = 0 := le_antisymm hc (norm_nonneg _)
     rw [h0, zero_pow htpos.ne'] at hphi
     rw [← hphi] at hl0
@@ -253,8 +250,7 @@ theorem coeff_cg_of_values : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (F : Powe
     have : a ^ Nat.totient (l ^ (M + 1)) < 1 := by rw [hphi]; exact hl1
     exact (pow_lt_one_iff_of_nonneg ha0.le htpos.ne').1 this
   have hqa : q < a ^ d := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : a ^ (d * s) ≤ a ^ Nat.totient (l ^ (M + 1)) := by
       rw [hphi, pow_mul]; exact pow_le_pow_left₀ (by positivity) hc s
     have := (pow_le_pow_iff_right_of_lt_one₀ ha0 ha1).1 h1

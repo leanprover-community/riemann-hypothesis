@@ -224,8 +224,7 @@ theorem UpperTheory.V.HV.gdLoc :
   refine ⟨?_, ?_, ?_⟩
   · intro A hA
     refine ⟨ine_le Ω K hp hdisc A hA, ?_⟩
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hG.gen
     apply hOm.2.2.2.2.2.2.1 A hA (2 * (e + a))
     intro σ hσ
@@ -246,8 +245,7 @@ theorem UpperTheory.V.HV.gdLoc :
     · have := Ideal.add_mem _ hm1 hm2
       rw [sub_add_sub_cancel] at this
       simpa using this
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     have hθ := key (e + 1) (fun σ hσ => by
         have h1 := hcon σ hσ
         have h2 : (((w ^ (e + 1) * D) σ : (c.O)ˣ) : c.O) - ((w σ * Chr.Psi l e D σ : (c.O)ˣ) : c.O)
@@ -267,8 +265,7 @@ theorem UpperTheory.V.HV.gdLoc :
       rw [pow_one, pow_add w (e + 1) a, mul_comm D, ← mul_assoc, mul_inv_cancel_right]
     rw [hθ, hg]
     exact hCF.1.refl _
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     obtain ⟨e', he⟩ : ∃ e', e = e' + 1 := ⟨e - 1, by have := hG.e_pos; omega⟩
     have hθ := key e' (fun σ hσ => by
         have h1 := hcon σ hσ

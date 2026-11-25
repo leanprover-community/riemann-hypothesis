@@ -354,8 +354,7 @@ theorem satakeHom_injective : Function.Injective (satakeHom μ (F := F) (n := n)
   intro h h0
   by_contra hne
   obtain ⟨g, hg⟩ : ∃ g, (h : HeckeAlgebra μ) g ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (HeckeAlgebraLevel.ext _ _ (HeckeAlgebra.ext fun x => by
       rw [hall x, HeckeAlgebraLevel.val_zero, HeckeAlgebra.coe_zero, Pi.zero_apply]))
   set D := (cosetSupport h).filter fun x => (h : HeckeAlgebra μ) x.out ≠ 0

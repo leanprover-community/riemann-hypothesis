@@ -265,8 +265,7 @@ theorem nonnil_of_pow (ρ : Representation ℂ (GL ι F) V) (K : Subgroup (GL ι
   · refine ⟨u, hu, fun h0 => hne ?_⟩
     have : m = (m - r) + r := (Nat.sub_add_cancel hr).symm
     rw [this, Function.iterate_add_apply, h0, hk_iter_zero]
-  · by_contra hall
-    push_neg at hall
+  · by_contra! hall
     set T := hkEnd ρ K e he
     have hker : LinearMap.ker (T ^ r) = ⊤ := by
       rw [eq_top_iff]

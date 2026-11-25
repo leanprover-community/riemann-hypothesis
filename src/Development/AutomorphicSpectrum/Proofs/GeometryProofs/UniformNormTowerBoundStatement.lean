@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvRFrMapOfIsReduced
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsBijectiveKappa
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CInfGood
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompHt
 public import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.DeltaDatumCombinedCoefficient
@@ -126,24 +128,7 @@ theorem rdU_eq_of_reads' {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (h : GenFrEx X
     (Z : Comp Xo c) (x : (U.X k).dom) (φ : Om Z →ₐ[c.F] CAt σ) (y' : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ)
     (hm : FrMap φ (genFr h Z) y') (hb : FrBor t (U.un k x) y') (u : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) :
     ∃ w : ℂ, w ≠ 0 ∧ ∀ f ∈ Formalism.L2.Pj.sec Xo c u n, w * rdU U f k x = toC (φ (evC h Z f)) := by
-  letI : Field (CAt σ) := inferInstanceAs (Field ℂ)
-  obtain ⟨hL, -, -, -⟩ := GlobalTheory.Reg.evLaws_genFr_atlas E H Dw l Xo c
-  have h3 : wchar (ex Dw u n) t ≠ 0 :=
-    Finset.prod_ne_zero_iff.2 fun i _ => pow_ne_zero _ (t i).ne_zero
-  refine ⟨toC (wchar (ex Dw u n) t), h3, fun f hf => ?_⟩
-  have h1 : evR Xo c f y' = φ (evC h Z f) := by
-    obtain ⟨q, χ, y₀, hy₀⟩ := hL.test (Om Z) (genFr h Z)
-    unfold evC
-    rw [GlobalTheory.Reg.evR_eq_map_of_test_point hL hf q χ y₀ _ hy₀,
-      GlobalTheory.Reg.evR_eq_map_of_test_point hL hf q (φ.comp χ) y₀ y' (ReciprocityTheory.ChartRestriction.G.PullbackSections.frMap_trans χ φ hy₀ hm)]
-    rfl
-  have h2 : evR Xo c f y' = wchar (ex Dw u n) t * evR Xo c f (U.un k x) :=
-    hL.wt u n f hf (CAt σ) t _ _ (hL.test _ _) (hL.test _ _) hb
-  have h4 : rdU U f k x = toC (evR Xo c f (U.un k x)) := by
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk]
-    rw [dite_eq_left x.2]
-  rw [h4, ← h1, h2]
-  rfl
+  apply _root_.GlobalTheory.CompBij.rdU_eq_of_reads <;> assumption
 
 theorem fnAlgClosed_of_card {σ : c.F →+* ℂ} (V : Unf Xo c σ r) (hσ : GoodEmb c σ) (hV : IsUnf V) (h : GenFrEx Xo c)
     (hone : ∀ k x, FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (V.un k x))
@@ -263,16 +248,8 @@ theorem evR_map (hL : GlobalTheory.Reg.EvLaws Xo c) {f : Rul Xo c}
     (hf : IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f)
     {S T : Type} [CommRing S] [IsReduced S] [Algebra c.F S] [CommRing T] [Algebra c.F T] (φ : S →ₐ[c.F] T)
     {y : FrPt Xo c S} {z : FrPt Xo c T} (hyz : FrMap φ y z) : evR Xo c f z = φ (evR Xo c f y) := by
-  have key : ∀ {S' : Type} [CommRing S'] [Algebra c.F S'] (p : TRing c.F) (χ : p.R →ₐ[c.F] S') (y₀ : FrPt Xo c p.R)
-      (w : FrPt Xo c S'), FrMap χ y₀ w → evR Xo c f w = χ (f p y₀) := by
-    intro S' _ _ p χ y₀ w hw
-    have h : FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) w := ⟨p, χ, y₀, hw⟩
-    unfold evR evalAt
-    rw [dite_eq_left h]
-    exact hL.wd f hf S' _ p _ χ _ y₀ w h.choose_spec.choose_spec.choose_spec hw
-  obtain ⟨q, χ, y₀, hy₀⟩ := hL.test S y
-  rw [key q χ y₀ y hy₀, key q (φ.comp χ) y₀ z (PullbackSections.frMap_trans χ φ hy₀ hyz)]
-  rfl
+  intros
+  apply _root_.GlobalTheory.FlagMod.FlagCover.evR_frMap_of_isReduced <;> assumption
 
 end Main
 

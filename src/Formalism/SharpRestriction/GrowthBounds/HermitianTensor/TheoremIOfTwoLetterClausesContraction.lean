@@ -519,8 +519,7 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
           exact Finset.prod_congr rfl fun s _ => by rw [map_mul, mul_comm]
         · rw [if_neg hab]
           have hex : ∃ s, e a' s ≠ e b s := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hab (e.injective (funext hcon))
           obtain ⟨s0, hs0⟩ := hex
           apply Finset.prod_eq_zero (Finset.mem_univ s0)

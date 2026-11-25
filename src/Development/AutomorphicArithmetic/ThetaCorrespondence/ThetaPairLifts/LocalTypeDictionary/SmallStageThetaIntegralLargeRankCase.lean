@@ -855,8 +855,7 @@ theorem prod_mul_sum_mixS_le : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ), Is
     simp only [hc'] at hb
     have hcol : ∀ i, ∃ j, ξ j i ≠ 0 := by
       intro i
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       refine h0 (hvan _ i fun j => ?_)
       rw [hc', Matrix.mul_diagonal]
       have : compAt θ τ₀ (ξ.map (incA D) : Mx D X.rank r) j i = 0 := by

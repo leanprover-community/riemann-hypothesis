@@ -511,8 +511,7 @@ end
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.nonZ_of :
     NonZ := by
   intro E _ _ _ D P ω χ hcen hω hχ hAll L N φ hG hW k s hs
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hχ1 := unit_of hω hχ
   have hA : admitted D ω φ := hAll φ hG.mem
   have hzero : ∀ u : ℝ, ∫ y : ℝ, GG D χ k s φ y * Complex.exp (2 * Real.pi * Complex.I * ((y * u : ℝ) : ℂ)) = 0 := by

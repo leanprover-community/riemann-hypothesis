@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
@@ -25,23 +26,8 @@ namespace GlobalTheory.CompanionTheory.Ar.Cusp.WeightSheet
 theorem coordsAt_torusSmul {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) {K : Type} [Fintype K]
     {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω} {z : Spec (CommRingCat.of ℂ) ⟶ X} {w : (Σ k, J k) → ℂ}
     (h : CoordsAt ξ y z w) {a : K → ℂ} (ha : ∀ k, a k ≠ 0) : CoordsAt ξ y z (torusSmul a w) := by
-  have hs : ∀ q : Σ k, J k, torusSmul a w q = a q.1 * w q := fun q => rfl
-  refine ⟨fun k => ?_, fun k c hc => ?_⟩
-  · obtain ⟨c, hc⟩ := h.1 k
-    refine ⟨c, ?_⟩
-    rw [hs]
-    exact (isUnit_iff_ne_zero.2 (ha k)).mul hc
-  · have hc' : IsUnit (w ⟨k, c⟩) := by
-      rw [hs] at hc
-      exact isUnit_of_mul_isUnit_right hc
-    obtain ⟨hy, hv⟩ := h.2 k c hc'
-    refine ⟨hy, fun i => ?_⟩
-    obtain ⟨r, hr, he⟩ := hv i
-    refine ⟨r, hr, ?_⟩
-    rw [hs, hs]
-    show a k * w ⟨k, i⟩ = r * (a k * w ⟨k, c⟩)
-    rw [he]
-    ring
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.coordsAt_smul <;> assumption
 
 theorem valAt_eq {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (hξ : IsCptGen ξ)
     {R : Type} [CommRing R] [IsLocalRing R] {z : Spec (CommRingCat.of R) ⟶ X} (h : genPt ξ ⤳ centre z) {a : Ω} {r r' : R}

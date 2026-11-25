@@ -92,11 +92,9 @@ theorem mem_smul_of_forall_char_pow_eq_one
     ∃ z : X, d = k • z := by
   classical
   let b := Module.Free.chooseBasis ℤ X
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hex : ∃ i, ¬ (k : ℤ) ∣ b.repr d i := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hne (∑ i, (b.repr d i / k) • b i)
     apply b.repr.injective
     ext j

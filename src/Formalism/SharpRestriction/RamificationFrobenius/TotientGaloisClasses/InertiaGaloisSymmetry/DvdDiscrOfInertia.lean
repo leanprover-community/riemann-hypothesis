@@ -121,8 +121,7 @@ theorem log_index_le : Real.log U.index ≤ 2 * SS U := by
           rw [Finset.mem_filter, Nat.mem_divisors] at hm
           have hmN : N / m ∣ N := Nat.div_dvd_of_dvd hm.1.1
           have hex' : ∃ u ∈ KK N (N / m), u ∉ U := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hm.2 (hcdvd _ hmN hcon)
           have h12 := half_le_rho U hmN hex'
           have hΛ : 0 ≤ vonMangoldt m := vonMangoldt_nonneg

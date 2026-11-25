@@ -87,8 +87,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem _root_.GlobalTheory.T.haar_fundamentalDomain_map_isometry_conj : ∀ {D : D7} {S S' : HSp D} (I : GlobalTheory.Mem.Isom.IsoMat S S') (m : MeasureTheory.Measure (GA D S)) (fd : Set (GA D S)),
   m.IsHaarMeasure ∧ MeasureTheory.IsFundamentalDomain (GQ S) fd m →
   (m.map I.kap).IsHaarMeasure ∧ MeasureTheory.IsFundamentalDomain (GQ S') (I.kap.symm ⁻¹' fd) (m.map I.kap) := by
@@ -130,8 +128,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section SlopeTestRemainingChoices
 
@@ -313,8 +309,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 open MeasureTheory GlobalTheory.TriMove GlobalTheory.Mem.Isom
@@ -450,8 +444,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open MeasureTheory Matrix GlobalTheory.Mem.Isom GlobalTheory.TriMove
 open Formalism.UG (cT cT_mul cT_one)
@@ -786,8 +778,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf MeasureTheory
@@ -1055,15 +1045,11 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Datum NumberField Matrix
 open GlobalTheory.Mem.Isom
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Rig)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped ComplexOrder
 
@@ -1268,8 +1254,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.TriMove.StdFstMove
@@ -1372,8 +1356,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1541,8 +1523,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

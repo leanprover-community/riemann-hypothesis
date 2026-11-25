@@ -306,8 +306,7 @@ theorem pos_of_inner {n : ℕ} (Y : InfinitePlace K → Matrix (Fin n) (Fin n) �
   rw [hw2, hm, ← Complex.ofReal_mul, Complex.ofReal_inj] at h
   have hpos : 0 < ‖w‖ ^ 2 := by have := norm_pos_iff.mpr hw; positivity
   have hs0 : 0 ≤ ∑ i, ‖Formalism.HermitianLatticesTheory.fcoord (Pi.basisFun K _) Y v x i‖ ^ 2 := Finset.sum_nonneg fun i _ => by positivity
-  by_contra hl
-  push_neg at hl
+  by_contra! hl
   have := mul_nonpos_of_nonpos_of_nonneg hl hs0
   linarith
 

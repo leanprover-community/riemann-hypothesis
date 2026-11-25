@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicAdaptedFrameOnBall
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Mathlib.Analysis.Matrix.Order
@@ -166,16 +167,7 @@ theorem logBound_entry {g m : ℕ} (u : Fin m → Fin g → ℂ) (H A W : Matrix
 theorem logBound_det_diffOn {n k : ℕ} {S : Set (Fin n → ℂ)} (B : (Fin n → ℂ) → Matrix (Fin k) (Fin k) ℂ)
     (hB : ∀ i j, DifferentiableOn ℂ (fun z => B z i j) S) :
     DifferentiableOn ℂ (fun z => (B z).det) S := by
-  simp only [Matrix.det_apply']
-  refine DifferentiableOn.fun_sum fun σ _ => ?_
-  have hp : ∀ s : Finset (Fin k), DifferentiableOn ℂ (fun z => ∏ i ∈ s, B z (σ i) i) S := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using differentiableOn_const _
-    | insert a s ha ih =>
-      simp only [Finset.prod_insert ha]
-      exact (hB _ _).mul ih
-  exact (differentiableOn_const _).mul (hp _)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.differentiableOn_det' <;> assumption
 
 theorem logBound_inv_diffOn {n k : ℕ} {S : Set (Fin n → ℂ)} (A : (Fin n → ℂ) → Matrix (Fin k) (Fin k) ℂ)
     (hA : ∀ i j, DifferentiableOn ℂ (fun z => A z i j) S) (hd : ∀ z ∈ S, (A z).det ≠ 0) (i j : Fin k) :

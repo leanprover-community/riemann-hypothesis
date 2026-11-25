@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.DualLattices.ValuationDetLeOneOfEntriesIntegral
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Valuation.Integers
 public import ReciprocityTheory.DualLattices.TensorSpan
@@ -78,22 +79,8 @@ variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
 
 theorem translate_mem (AA : HopfOrder (C := C) R N) (y : N) {g : N → C} (hg : g ∈ AA.carrier) :
     (fun x => g (x + y)) ∈ AA.carrier := by
-  have key : ∀ F ∈ tensorSpan R AA.carrier, (fun x => F (x, y)) ∈ AA.carrier := by
-    intro F hF
-    induction hF using Submodule.span_induction with
-    | mem F hF =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := hF
-      obtain ⟨r, hr⟩ := AA.le_int hb y
-      have h : (fun x => a x * b y) = r • a := by
-        funext x
-        simp [Algebra.smul_def, hr, mul_comm]
-      show (fun x => a x * b y) ∈ AA.carrier
-      rw [h]
-      exact AA.carrier.smul_mem r ha
-    | zero => exact AA.carrier.zero_mem
-    | add F G _ _ hF hG => exact AA.carrier.add_mem hF hG
-    | smul c F _ hF => exact AA.carrier.smul_mem c hF
-  exact key _ (AA.comul g hg)
+  intros
+  apply _root_.ReciprocityTheory.PGsh.L2.hopfOrder_translate_mem <;> assumption
 
 def nearZero (v : Valuation C NNReal) (AA : HopfOrder (C := C) R N) : AddSubgroup N where
   carrier := {x | ∀ g ∈ AA.carrier, v (g x - g 0) < 1}
@@ -114,8 +101,7 @@ def nearZero (v : Valuation C NNReal) (AA : HopfOrder (C := C) R N) : AddSubgrou
 theorem exists_sep {v : Valuation C NNReal} (hv : v.Integers R) (AA : HopfOrder (C := C) R N)
     {y : N} (hy : y ∉ nearZero v AA) : ∃ h ∈ AA.carrier, h y = 0 ∧ v (h 0) = 1 := by
   have hy' : ∃ g ∈ AA.carrier, ¬ v (g y - g 0) < 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hy fun g hg => hcon g hg
   obtain ⟨g, hg, hn⟩ := hy'
   obtain ⟨r, hr⟩ := AA.le_int hg y
@@ -364,8 +350,7 @@ theorem ord_split : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClos
   have hcoset : ∀ y : N, (fun x => Set.indicator (K : Set N) (1 : N → C) (x + y)) ∈ AA.carrier :=
     fun y => translate_mem AA y (indicator_mem hv AA)
   have hKne : ∃ k ∈ K, k ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hint : intFun R N ≤ AA.carrier := by
       rw [intFun_eq_span, Submodule.span_le]
       rintro _ ⟨j, rfl⟩
@@ -860,8 +845,7 @@ private theorem coeff_prod_lt (S : Multiset C) (hS : ∀ r ∈ S, 1 < v r) :
 theorem exists_root_of_isUnit_coeff [IsAlgClosed C] {R : Type} [CommRing R] [Algebra R C]
     (hv : v.Integers R) (f : R[X]) {d : ℕ} (hd : 0 < d) (hu : IsUnit (f.coeff d)) :
     ∃ x : R, (f.map (algebraMap R C)).eval (algebraMap R C x) = 0 := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   set g := f.map (algebraMap R C) with hg
   have hgd : v (g.coeff d) = 1 := by
     rw [hg, Polynomial.coeff_map]
@@ -933,8 +917,7 @@ theorem exists_ordinary (p : ℕ) [Fact p.Prime] {R : Type} [CommRing R] [IsLoca
     have := congrArg (eval 0) h
     simp at this
   obtain ⟨τ, hτ⟩ : ∃ τ, (c * (X * (Polynomial.C 432 * X + 1))).eval τ ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact mul_ne_zero hc hq (Polynomial.funext fun x => by simpa using hno x)
   rw [eval_mul] at hτ
   have hτ1 := left_ne_zero_of_mul hτ
@@ -1122,8 +1105,7 @@ theorem exists_far {p : ℕ} {C : Type} [Field C] [Algebra R C] {v : Valuation C
       pt_zero hpt]
     exact MonObj.comp_one _
   obtain ⟨a, ha⟩ : ∃ a, (Algebra.ofId R k) (φ t a) ≠ (Algebra.ofId R k) (φ 0 a) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (AlgHom.ext hcon)
   refine ⟨t, fun x => algebraMap R C (φ x a), ⟨a, fun x ψ h => ?_⟩, ?_⟩
   · rw [hφu x ψ h]

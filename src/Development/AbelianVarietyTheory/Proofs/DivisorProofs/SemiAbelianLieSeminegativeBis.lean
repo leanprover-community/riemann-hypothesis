@@ -107,10 +107,7 @@ open Matrix
 
 lemma det_one_add_vmv {R : Type} [CommRing R] {n : ℕ} (a b : Fin n → R) :
     (1 + Matrix.vecMulVec a b).det = 1 + b ⬝ᵥ a := by
-  have h := Matrix.det_one_add_replicateCol_mul_replicateRow (ι := Unit) a b
-  have e : Matrix.replicateCol Unit a * Matrix.replicateRow Unit b = Matrix.vecMulVec a b := by
-    ext i j; simp [Matrix.mul_apply, Matrix.vecMulVec_apply]
-  rwa [e] at h
+  rw [Matrix.vecMulVec_eq Unit, Matrix.det_one_add_replicateCol_mul_replicateRow]
 
 variable {k F : Type} [Field k] [Field F] [Algebra k F]
 
@@ -140,9 +137,9 @@ lemma exists_u (v : Place k F) {r : ℕ} (y : Fin (r+1) → F) (hy : y ≠ 0) :
       exact div_le_one_of_le₀ (hle j) zero_le'
   have hu0y : ∀ j, (u0 *ᵥ y) j = y j - c j * y i := by
     intro j
-    simp only [hu0, Matrix.add_mulVec, Matrix.one_mulVec, Pi.add_apply]
-    simp [Matrix.mulVec, dotProduct, Matrix.vecMulVec_apply, Pi.single_apply, ite_mul]
-    ring
+    simp only [hu0, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.vecMulVec_mulVec,
+      Pi.add_apply, single_dotProduct, one_mul, Pi.smul_apply, op_smul_eq_mul,
+      Pi.neg_apply, neg_mul, sub_eq_add_neg]
   refine ⟨u0.submatrix (Equiv.swap 0 i) id, ⟨?_, ?_⟩, ?_⟩
   · intro a b
     simp only [Matrix.submatrix_apply, id, hu0, Matrix.add_apply, Matrix.vecMulVec_apply]
@@ -1001,8 +998,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.NeronCurve GlobalTheory.Published
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 noncomputable section
 
 namespace GlobalTheory.NeronCurve.LieDescent
@@ -1260,8 +1255,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace Limits MonoidalCategory C
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.NeronCurve GlobalTheory.Published
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SemiNegFieldChange
 

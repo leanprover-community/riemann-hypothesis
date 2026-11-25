@@ -467,8 +467,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (HypH)
 open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem GlobalTheory.SplitFlag.isParabRad_parAt : ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F))
     (s : SplitAt D.sp.cm.sig V.gram (frameLat V) v) (𝔉 : IsoFlag V), GlobalTheory.IndefiniteRowSideFullHecke.StandardMaximalParabolic.IsParabRad (parAt 𝔉 s)
       ((NLoc 𝔉 v).map (s.equiv : GLoc D.sp.cm.sig V.gram v →* GL (Fin V.rank) (Fv D.host.F v))) := by
@@ -509,8 +507,6 @@ open MeasureTheory IsDedekindDomain NumberField GlobalTheory.AdelicU GlobalTheor
 open GlobalTheory.AutomorphicL2Unitary (starFn)
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (HypH)
 open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocConst
 
@@ -580,8 +576,6 @@ open ValuativeRel
 
 section Residue
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F : Type} [Field F] [NumberField F]
 
 theorem mem_integers_iff (v : HeightOneSpectrum (𝓞 F)) (z : Fv F v) :
@@ -635,8 +629,6 @@ namespace GlobalTheory.LocConst
 open ValuativeRel GlobalTheory.IndefiniteRowSideFullHecke.StandardMaximalParabolic
 
 section Transport
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {F : Type} [Field F] [NumberField F] {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {L : Submodule (𝓞 E) (Fin n → E)} {v : HeightOneSpectrum (𝓞 F)}

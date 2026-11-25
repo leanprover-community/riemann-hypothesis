@@ -62,7 +62,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc Formalism.L2.Pj
-attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
 noncomputable section
@@ -105,7 +104,6 @@ open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFa
 open scoped CategoryTheory.Obj
 open GlobalTheory.UPoinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 open GlobalTheory
-attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
 noncomputable section

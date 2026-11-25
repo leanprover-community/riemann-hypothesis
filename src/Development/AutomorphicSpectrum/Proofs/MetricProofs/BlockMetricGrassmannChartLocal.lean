@@ -8,6 +8,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseP
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesValueAtPoint
 
 @[expose] public section
 
@@ -17,18 +18,7 @@ open scoped ComplexOrder Classical
 namespace GlobalTheory.CompanionTheory.Ar.PB.StepW.FlagPoint
 
 theorem stepCols_ne_empty {N j : ℕ} (hj : j ≤ N) (i : Fin N) : stepCols N j i ≠ ∅ := by
-  intro h
-  have hi' := i.2
-  by_cases hi : (i : ℕ) + 1 ≤ j
-  · have hm : (⟨N - j, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos hi]
-      constructor <;> simp
-    simp [h] at hm
-  · have hm : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg hi]
-      show 0 < (i : ℕ) + 1 - j
-      omega
-    simp [h] at hm
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.stepCols_ne_empty <;> assumption
 
 theorem val_sum {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     {x : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x)) {α : Type} (s : Finset α)

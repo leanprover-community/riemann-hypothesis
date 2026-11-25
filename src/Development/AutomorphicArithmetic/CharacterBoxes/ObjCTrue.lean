@@ -147,8 +147,7 @@ theorem levelPrimeN :
   have hxe : 0 < x ^ eps := Real.rpow_pos_of_pos hxpos _
   have hlogT0 : 0 < Real.log Ts := lt_of_lt_of_le (mul_pos (mul_pos hcs hm0) hxe) hlogT
   have hTs1 : 1 < Ts := by
-    by_contra hh
-    push_neg at hh
+    by_contra! hh
     have := Real.log_nonpos hTs.le hh
     linarith
   have hsq : Real.sqrt cs * x ^ (1 / 6 + eps / 2) ≤ Real.sqrt (Real.log Ts) := by

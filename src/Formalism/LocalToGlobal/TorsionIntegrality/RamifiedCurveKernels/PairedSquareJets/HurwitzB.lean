@@ -93,8 +93,7 @@ theorem exists_of_coeff_inBlock_ne_zero {K : Type} [Field K] {ι B : Type} (k : 
     (f : MvPowerSeries ι K) (x : B × ι →₀ ℕ) (h : MvPowerSeries.coeff x (inBlock k f) ≠ 0) :
     ∃ m : ι →₀ ℕ, x = Finsupp.embDomain (blockEmb B ι k) m := by
   rw [inBlock_eq_rename] at h
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   apply h
   apply MvPowerSeries.coeff_rename_eq_zero
   rintro ⟨m, rfl⟩

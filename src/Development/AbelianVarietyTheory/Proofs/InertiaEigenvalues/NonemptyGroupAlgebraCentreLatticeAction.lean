@@ -83,8 +83,7 @@ theorem addValuation_nonneg_of_ringOfIntegers :
     | pred k ih =>
       rw [Int.cast_sub, Int.cast_one]
       exact AddValuation.map_le_sub v ih (by rw [AddValuation.map_one])
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   obtain ⟨f, hm, hf⟩ := NumberField.RingOfIntegers.isIntegral_coe a
   set x : L := (a : L) with hx
   have hxtop : v x ≠ ⊤ := ne_top_of_lt hneg

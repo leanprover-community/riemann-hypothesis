@@ -116,8 +116,7 @@ theorem sdFromAnn_holds : SdFromAnn := by
       ring
     rw [← htr]; exact h2
   have hnt : ∃ r : Fv F v, psiV F ψ v r ≠ 1 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     obtain ⟨t0, ht0⟩ := PI.UnitaryGroupMassFormula.LocJacTyp.Sd.exists_not_mem_oev (E := E) v
     have h1 := (hann ((d⁻¹ ⊗ₜ[F] (1 : E)) * t0)).mp (fun x _ => hall _)
     rw [← mul_assoc, hinv, one_mul] at h1

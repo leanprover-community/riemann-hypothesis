@@ -622,8 +622,7 @@ theorem cc_msubst {φ : Fin 2 → MvPowerSeries (Fin 2) ℂ_[p]} (hφ : MvPowerS
   · simp
   · intro d hd
     obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     have h0 : MvPowerSeries.constantCoeff (d.prod fun s e => φ s ^ e) = 0 := by
       rw [Finsupp.prod, map_prod]

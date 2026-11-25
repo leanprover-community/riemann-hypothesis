@@ -73,8 +73,7 @@ theorem exists_isSMulRegular_notMem_sq {B M : Type} [CommRing B] [IsLocalRing B]
     [IsNoetherianRing B] [AddCommGroup M] [Module B M] [Module.Finite B M]
     (hass : maximalIdeal B ∉ associatedPrimes B M) (hsq : ¬ maximalIdeal B ≤ maximalIdeal B ^ 2) :
     ∃ x ∈ maximalIdeal B, x ∉ maximalIdeal B ^ 2 ∧ IsSMulRegular M x := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hsub : ((maximalIdeal B : Ideal B) : Set B) ⊆
       ⋃ p ∈ insert (maximalIdeal B ^ 2) (associatedPrimes B M), (id p : Set B) := by
     intro z hz

@@ -1038,8 +1038,7 @@ theorem UpperTheory.Comparison₂.Gz_eq :
     have hy : (n : ℝ) ≤ y := by
       have hk : 0 < ⌊y⌋₊ := lt_of_lt_of_le Nat.zero_lt_one (le_trans hn.1 hn.2)
       have hy0 : 0 ≤ y := by
-        by_contra hneg
-        push_neg at hneg
+        by_contra! hneg
         rw [Nat.floor_eq_zero.2 (lt_trans hneg zero_lt_one)] at hk
         exact lt_irrefl 0 hk
       exact le_trans (by exact_mod_cast hn.2) (Nat.floor_le hy0)

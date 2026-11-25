@@ -41,8 +41,7 @@ theorem UpperTheory.ConvolutionTheory.Dp.sSatEx :
     exact h2 _ ⟨u, by exact (PositivityTheory.JacquetShalikaLocal.SatakeEigenvalues.KGL_eq w n).le hu, rfl⟩
   have hs : GlobalTheory.LGrp.IsSpherical (π.locRep w) (GlobalTheory.LFun.KGL w (n := n)) := by
     refine (Submodule.ne_bot_iff _).2 ?_
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hsub : J '' {x | ∀ u ∈ GlobalTheory.LFun.KGL w (n := n), π.locRep w u x = x} ⊆ {0} := by
       rintro _ ⟨x, hx, rfl⟩
       rw [hno x (GlobalTheory.LGrp.mem_fixed.2 hx), map_zero]

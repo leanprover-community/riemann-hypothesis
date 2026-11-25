@@ -95,8 +95,7 @@ theorem decomp (y : Fin S.rank → D.host.E) : y = d.e *ᵥ (d.qX *ᵥ y) + d.i�
     d.sum_eq_one_rat, Matrix.one_mulVec]
 
 theorem exists_ne_zero {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ b ∈ 𝔟, b ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact h (FractionalIdeal.eq_zero_iff.2 hc)
 
 theorem dualC_le_span {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ γ : D.host.E, dualC 𝔟 ≤ Submodule.span (𝓞 D.host.E) {γ} := by

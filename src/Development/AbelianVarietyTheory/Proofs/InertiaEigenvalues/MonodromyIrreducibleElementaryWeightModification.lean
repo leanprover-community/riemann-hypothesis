@@ -1182,8 +1182,7 @@ theorem splits_of_stable_rat_subspace : ∀ (l : ℕ) [Fact l.Prime] (n : Type) 
     fun c hc => ⟨fun i => ⟨c i, hc i⟩, rfl⟩
   have hW'0 : W' ≠ ⊥ := by
     obtain ⟨c, hcW, hc0⟩ : ∃ c ∈ W, c ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hW0 ((AddSubgroup.eq_bot_iff_forall W).2 h)
     obtain ⟨c', rfl⟩ := lift c (hWE c hcW)
     intro h
@@ -1447,8 +1446,7 @@ theorem modStep_holds : ModStep := by
     obtain ⟨a, ha, ha'⟩ := hval 1 one_ne_zero
     exact ha' (by simpa using hmul a 1 1 1 ha h)
   have hcol : ∃ i, (U x.1 : Matrix n n P.R.BdR) i x.2 ∉ Fil P 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hinv : (((U x.1)⁻¹ : GL n P.R.BdR) : Matrix n n P.R.BdR) * (U x.1 : Matrix n n P.R.BdR) = 1 := by
       rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
     have he := congrFun (congrFun hinv x.2) x.2

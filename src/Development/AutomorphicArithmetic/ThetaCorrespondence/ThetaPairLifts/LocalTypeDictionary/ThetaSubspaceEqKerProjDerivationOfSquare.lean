@@ -233,8 +233,7 @@ theorem exists_finset_sep (S : Submodule ℂ (SchwartzMap Y ℂ)) [FiniteDimensi
   refine ⟨P, fun s hs h0 => ?_⟩
   by_contra hne
   obtain ⟨y, hy⟩ : ∃ y, s y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (SchwartzMap.ext h)
   have hlt : zeroOn S (insert y P) < zeroOn S P := by
     refine lt_of_le_of_ne (fun a ha z hz => ha z (Finset.mem_insert_of_mem hz)) fun heq => ?_
@@ -1271,8 +1270,7 @@ theorem exists_finset_sep (C : Submodule ℂ (α → ℂ)) [FiniteDimensional �
   refine ⟨P, fun s hs h0 => ?_⟩
   by_contra hne
   obtain ⟨y, hy⟩ : ∃ y, s y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hlt : zeroOnF C (insert y P) < zeroOnF C P := by
     refine lt_of_le_of_ne (fun a ha z hz => ha z (Finset.mem_insert_of_mem hz)) fun heq => ?_

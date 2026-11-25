@@ -1394,8 +1394,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace CapWP
 
 theorem sum_filter' {α M : Type*} [AddCommMonoid M] (l : List α) (p : α → Bool) (φ : α → M) :

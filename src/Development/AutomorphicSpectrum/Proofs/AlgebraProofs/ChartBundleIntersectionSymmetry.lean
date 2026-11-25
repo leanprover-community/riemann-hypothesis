@@ -28,6 +28,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagComparison
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
 import Mathlib.Tactic.Linter.HaveILetI
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinJoinPull
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleShortExact, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagFrameBaseExtension, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XPullFlagpair, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagPairBaseExtension, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubQuotientStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvrBundleStatementB, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleIntersectionNumbers, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleQuotientEquivalence, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleIntersectionSymmetry
@@ -62,19 +63,7 @@ theorem mseg_join (x : (Σ k, ι k) → Ω) (z : (Σ k, ι' k) → Ω)
 theorem chartRing_le (x : (Σ k, ι k) → Ω) (z : (Σ k, ι' k) → Ω)
     (s : ∀ k : K ⊕ K', Sum.elim ι ι' k) (hs : mseg (joinCoord x z) s ≠ 0) :
     chartRing O (mseg x) (restrictChart s) ≤ chartRing O (mseg (joinCoord x z)) s := by
-  have hw : mseg z (fun k => s (.inr k)) ≠ 0 := by
-    rw [mseg_join] at hs
-    exact right_ne_zero_of_mul hs
-  unfold chartRing
-  apply Algebra.adjoin_le
-  rintro _ ⟨t, rfl⟩
-  have h : mseg x t / mseg x (restrictChart s) =
-      mseg (joinCoord x z) (comb t s) / mseg (joinCoord x z) s := by
-    rw [mseg_join x z (comb t s), mseg_join x z s]
-    exact (mul_div_mul_right _ _ hw).symm
-  have h2 := div_mem_chartRing (o := O) (mseg (joinCoord x z)) s (comb t s)
-  rw [← h] at h2
-  exact h2
+  apply _root_.GroundTheory.Heights₂.Heights.NumbersDVR.JoinPullbackAlt.chartRing_le_join <;> assumption
 
 theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (Ω : Type) [Field Ω] [Algebra O Ω] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (x : (Σ k, ι k) → Ω) (N N₁ N₂ : ℕ) (V : Type) [AddCommGroup V] [Module Ω V] (V₁ : Type) [AddCommGroup V₁] [Module Ω V₁] (V₂ : Type) [AddCommGroup V₂] [Module Ω V₂] (E : ChartBundle O (mseg x) N V) (i : V₁ →ₗ[Ω] V) (p : V →ₗ[Ω] V₂) (E₁ : ChartBundle O (mseg x) N₁ V₁) (E₂ : ChartBundle O (mseg x) N₂ V₂), IsSubQuot O x E i p E₁ E₂ → ∀ (K' : Type) [Fintype K'] [DecidableEq K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (z : (Σ k, ι' k) → Ω) (EB : ChartBundle O (mseg (joinCoord x z)) N V) (EB₁ : ChartBundle O (mseg (joinCoord x z)) N₁ V₁) (EB₂ : ChartBundle O (mseg (joinCoord x z)) N₂ V₂), IsPull O x z E EB → IsPull O x z E₁ EB₁ → IsPull O x z E₂ EB₂ → IsSubQuot O (joinCoord x z) EB i p EB₁ EB₂ := by
   intro O _ _ _ Ω _ _ K _ _ ι _ x N N₁ N₂ V _ _ V₁ _ _ V₂ _ _ E i p E₁ E₂ h K' _ _ ι' _ z EB EB₁ EB₂ hE hE₁ hE₂
@@ -121,8 +110,7 @@ theorem tri_solve {F : Type} [Field F] {N : ℕ} (T : Fin N → Fin N → F) (a 
     (hT : ∀ j l, j < l → T j l = 0) (hd : ∀ j, T j j ≠ 0) (i : Fin N)
     (h : ∀ l, i < l → ∑ j, a j * T j l = 0) : ∀ j, i < j → a j = 0 := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨j₀, hj₀, ha₀⟩ := hne
   let S := Finset.univ.filter (fun j => i < j ∧ a j ≠ 0)
   have hS : S.Nonempty := ⟨j₀, by simp [S, hj₀, ha₀]⟩

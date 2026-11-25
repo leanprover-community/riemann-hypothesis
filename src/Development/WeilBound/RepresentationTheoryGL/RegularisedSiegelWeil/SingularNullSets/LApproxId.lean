@@ -268,8 +268,7 @@ theorem kdata (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) {S S' : Finset (He
     ring
 
   obtain ⟨h₀, hh₀⟩ : ∃ h₀ : fixE ε, tR ρ S' U h₀.1 ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     apply hIHr0.ne'
     rw [hIHr]
     simp [hn]

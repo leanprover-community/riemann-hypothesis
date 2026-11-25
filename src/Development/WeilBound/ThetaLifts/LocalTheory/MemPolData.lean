@@ -142,8 +142,7 @@ theorem bump_pt {χX χW : Chr F E} {r s r' s' : ℕ} (H : Hyp) (hp : IsPair B M
     obtain ⟨T, hT, -⟩ := H.op F E σ B _ _ _ _ M₁ _ _ om₁ _ _ _ _ hp g hg 1 uat_one
     rw [(s₁.uniq f f₁ (T f)).1 _ ac (hT.2 f), hl, hl, ← s₁.arch a hT,
       H.unim F E σ B _ _ _ _ M₁ _ _ om₁ _ _ _ _ hp _ (admissible_pure_tensor_schwartz hp.good f ⟨fun v => s₁.le v (a.1 v), a.2⟩)]
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have : (l.comp L : _ → ℂ) = fun _ => 0 := (l.comp L).continuous.ext_on dn continuous_const fun g hg => by
     show l (L g) = 0
     rw [hl, s₁.kill _ (pol g hg) φ a (Or.inl (hn g hg))]; rfl
@@ -151,8 +150,7 @@ theorem bump_pt {χX χW : Chr F E} {r s r' s' : ℕ} (H : Hyp) (hp : IsPair B M
 
 theorem nz_pure (s₁ : Side B M₁ om₁ pi₁ p₁ S₁) (𝓖 : Set (Fn F n₁ d₁)) (h : ∀ Φ ∈ 𝓖, ∃ (f : SInf F _) (φ : _), admitted M₁ S₁ φ ∧ Φ = pure f φ)
     {Φ} (hΦ : Φ ∈ Submodule.span ℂ 𝓖) (h0 : M₁.I om₁ Φ ≠ 0) : ∃ (f : SInf F _) (φ : _), admitted M₁ S₁ φ ∧ M₁.I om₁ (pure f φ) ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   obtain ⟨𝓒, h1, h2⟩ := s₁.cls
   have : Φ ∈ 𝓒 ∧ M₁.I om₁ Φ = 0 := by
     clear h0

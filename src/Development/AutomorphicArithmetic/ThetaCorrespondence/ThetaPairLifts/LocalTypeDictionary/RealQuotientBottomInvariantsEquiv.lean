@@ -111,8 +111,7 @@ open scoped TensorProduct
 theorem GlobalTheory.RealQuotBot.tmul_ne_zero {Pr Pf : Type} [AddCommGroup Pr] [Module ℂ Pr] [AddCommGroup Pf] [Module ℂ Pf] {x : Pr} {y : Pf}
     (hx : x ≠ 0) (hy : y ≠ 0) : x ⊗ₜ[ℂ] y ≠ 0 := by
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ Pf, φ y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hy ((Module.forall_dual_apply_eq_zero_iff ℂ y).1 hc)
   intro h0
   have := congrArg ((TensorProduct.rid ℂ Pr).toLinearMap ∘ₗ LinearMap.lTensor Pr φ) h0

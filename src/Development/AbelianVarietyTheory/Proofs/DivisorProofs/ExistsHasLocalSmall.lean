@@ -69,8 +69,6 @@ namespace GlobalTheory.FunObj.LocTensor
 
 open GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV ValuativeRel GlobalTheory.PlaceModel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_finsupp {X Y V₁ V₂ ι : Type} [AddCommGroup V₁] [Module ℂ V₁] (S : Submodule ℂ (X → ℂ)) (Q : (Y → ℂ) → Prop)
     (T₁ : (X → ℂ) →ₗ[ℂ] V₁) (T₂ : (Y → ℂ) → V₂) {h : X → ℂ} (hS : h ∈ S) (h0 : T₁ h ≠ 0) (s : Finset ι)
     (a : ι → X → ℂ) (b : ι → Y → ℂ) (ha : ∀ i ∈ s, a i ∈ S) (hb : ∀ i ∈ s, Q (b i)) :

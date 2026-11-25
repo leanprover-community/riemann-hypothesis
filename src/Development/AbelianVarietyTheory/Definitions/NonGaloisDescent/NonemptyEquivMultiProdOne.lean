@@ -750,8 +750,7 @@ theorem embeds_detRep_segment {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l :
   choose w hw using hw
   have ht0ne : PiTensorProduct.tprod ℂ w ≠ 0 := by
     have hφ : ∀ a, ∃ φ : Module.Dual ℂ (x a).2.rep.V, φ (w a) ≠ 0 := fun a => by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hw a ((Module.forall_dual_apply_eq_zero_iff ℂ (w a)).1 h)
     choose φ hφ using hφ
     intro h0

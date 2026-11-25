@@ -343,8 +343,7 @@ private theorem frat (l : ℕ) [Fact l.Prime] {G : Type} [Group G] [TopologicalS
   by_contra hne
   have hne' : Multiplicative.toAdd (ψ v) ≠ 0 := fun h0 => hne (by simpa using congrArg Multiplicative.ofAdd h0)
   have hf : ∃ f : M →ₗ[ZMod l] ZMod l, f (Multiplicative.toAdd (ψ v)) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne' (dual_zero (ZMod l) M _ hc)
   obtain ⟨f, hf⟩ := hf
   let φ : H →* Multiplicative (ZMod l) := (AddMonoidHom.toMultiplicative f.toAddMonoidHom).comp ψ

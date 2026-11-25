@@ -32,13 +32,11 @@ theorem div_mul_sub_le_div_sub_div (n s P Q ee kk rr : ℕ) (hP : 0 < P) (hQ : 0
   set U : ℤ := (((n - s) / P : ℕ) : ℤ)
   set W : ℤ := ((((n - s) / P - ee) / Q : ℕ) : ℤ)
   have st1 : A * Q - kk < U + 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := mul_le_mul_of_nonneg_left hc hP'.le
     nlinarith
   have st2 : A - rr - kk < W + 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 := mul_le_mul_of_nonneg_left hc (by linarith : (0 : ℤ) ≤ Q)
     have hk0 : (0 : ℤ) ≤ kk := by positivity
     have h2 := mul_le_mul_of_nonneg_left hQ' hk0

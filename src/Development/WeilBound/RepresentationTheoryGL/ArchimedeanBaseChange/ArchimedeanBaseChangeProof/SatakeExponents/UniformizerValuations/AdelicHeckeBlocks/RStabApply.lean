@@ -307,8 +307,7 @@ theorem hintProd : HintProd := by
       exact finprod_eq_one_of_forall_eq_one fun i => Set.indicator_of_mem ((hK x).1 hx i) _
     · rw [Set.indicator_of_notMem (show x ∉ (K : Set Γ) from hx)]
       obtain ⟨i, hi⟩ : ∃ i, p i x ∉ KH i := by
-        by_contra hn
-        push_neg at hn
+        by_contra! hn
         exact hx ((hK x).2 hn)
       refine finprod_eq_zero _ i (Set.indicator_of_notMem hi _) ?_
       refine (Filter.eventually_cofinite.1 (hfin x)).subset fun j hj => ?_

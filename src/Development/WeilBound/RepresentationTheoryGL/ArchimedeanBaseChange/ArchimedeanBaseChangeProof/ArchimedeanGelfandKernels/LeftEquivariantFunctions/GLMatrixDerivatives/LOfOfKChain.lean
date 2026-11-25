@@ -435,8 +435,7 @@ theorem lAsm : LAsm := by
     intro x hx hlt
     by_contra hne
     have hle : lg (x⁻¹ * diagonal z * xᴴ⁻¹) ≤ R := by
-      by_contra hgt
-      push_neg at hgt
+      by_contra! hgt
       exact hne (hd ▸ hsuppk _ (hd ▸ tw_mem_GLs hx hdG) hgt)
     have := hR' 1 ⟨zero_le_one, le_refl _⟩ x hx x hx (by simp) hle
     linarith

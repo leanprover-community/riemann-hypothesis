@@ -308,8 +308,7 @@ open Polynomial
 theorem exists_zmod_cast_eq_of_pow_sub_self {p : ℕ} [hp : Fact p.Prime] {Ω : Type} [Field Ω] [CharP Ω p]
     (y : Ω) (hy : y ^ p - y = 0) : ∃ a : ZMod p, ZMod.castHom (dvd_refl p) Ω a = y := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set f := ZMod.castHom (dvd_refl p) Ω
   set P : Polynomial Ω := X ^ p - X
   have hP : P ≠ 0 := Polynomial.X_pow_sub_X_ne_zero hp.out.one_lt

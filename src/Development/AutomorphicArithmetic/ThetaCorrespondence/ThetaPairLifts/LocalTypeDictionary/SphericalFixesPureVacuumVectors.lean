@@ -984,8 +984,7 @@ theorem two_three_of_six {F : Type} [Field F] [NumberField F] (v : GlobalTheory.
   have ho : Ideal.absNorm v.asIdeal ≠ 1 := by
     rw [Ne, Ideal.absNorm_eq_one_iff]
     exact v.isPrime.ne_top
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   generalize hN : Ideal.absNorm v.asIdeal = N at hmem hz ho hle
   interval_cases N
   · exact hz rfl

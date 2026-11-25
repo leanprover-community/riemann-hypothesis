@@ -1193,8 +1193,7 @@ theorem log_sum_le {S k fr L : ℝ} (hS0 : 0 ≤ S) (hSk : S ≤ (fr * L) ^ 2 * 
   · rw [← h, Real.log_zero]; linarith
   have hZ : 0 < fr * L := by positivity
   have hk0 : 0 < k := by
-    by_contra hk0
-    push_neg at hk0
+    by_contra! hk0
     have : (fr * L) ^ 2 * k ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (by positivity) hk0
     linarith
   have hlogL : Real.log L ≤ L := (Real.log_le_sub_one_of_pos (by linarith)).trans (by linarith)

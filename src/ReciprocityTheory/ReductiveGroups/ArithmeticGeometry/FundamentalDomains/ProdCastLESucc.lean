@@ -92,8 +92,7 @@ lemma sgn_dOf_pos {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (k : Fin r) 
   rw [dmin_succ X hx τ k, Complex.mul_re, dOf_real X hx τ k, mul_zero, sub_zero] at h2
   rw [Fin.val_succ, psgn_succ] at h2
   rw [Fin.coe_castSucc] at h1
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   nlinarith
 
 def sOf (x : Frame X.Ψ r) (τ : X.Ψ) (k : Fin r) : ℂ := ((Real.sqrt |(dOf X x τ k).re|)⁻¹ : ℝ)

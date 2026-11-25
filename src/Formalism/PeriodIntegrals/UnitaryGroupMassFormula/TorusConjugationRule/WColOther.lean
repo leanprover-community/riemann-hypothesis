@@ -12,8 +12,6 @@ public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 open Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace PI.QnRT

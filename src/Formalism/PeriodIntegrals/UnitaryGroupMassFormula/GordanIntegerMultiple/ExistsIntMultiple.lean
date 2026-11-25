@@ -103,8 +103,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
         rw [mul_left_comm, mul_inv_cancel₀ hp, mul_one]⟩
     have key : ∀ p ∈ P, ∀ q ∈ P, 0 < c p → c q < 0 → b p ≤ b q := by
       intro p hp q hq hcp hcq
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have e1 : c p * b p * c q = -u p * c q := by rw [eb p hcp.ne']
       have e2 : c q * b q * c p = -u q * c p := by rw [eb q hcq.ne]
       have hm := mul_pos (mul_pos hcp (neg_pos.2 hcq)) (sub_pos.2 hlt)

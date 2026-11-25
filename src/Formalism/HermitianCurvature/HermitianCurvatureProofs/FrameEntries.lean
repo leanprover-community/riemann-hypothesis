@@ -19,8 +19,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace FrameEntries
 
 section Hom

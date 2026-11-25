@@ -272,8 +272,7 @@ namespace GlobalTheory
 theorem inZl_of_twisted_difference {G : Type} [CommGroup G] [Finite G] (l : ℕ) [Fact l.Prime]
     (g : G) (q : ℕ) (hq : l ∣ q) (x : G → ℚ)
     (hx : ∀ C, InZl l (x C - (q : ℚ) * x (C * g))) : ∀ C, InZl l (x C) := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨C0, hC0⟩ := h
   obtain ⟨C, hC⟩ := Finite.exists_max (fun C => ‖((x C : ℚ) : ℚ_[l])‖)
   have h0 : 1 < ‖((x C0 : ℚ) : ℚ_[l])‖ := by
@@ -666,8 +665,7 @@ theorem exists_pow_ne_one_mod (l n : ℕ) (hl : l.Prime) (hn : ¬ (l - 1) ∣ n)
     rw [orderOf_eq_card_of_forall_mem_zpowers hg, Nat.card_eq_fintype_card, ZMod.card_units_eq_totient,
       Nat.totient_prime hl]
   refine ⟨(g : ZMod l).val, ?_, ZMod.val_coe_unit_coprime g, ?_⟩
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     interval_cases hv : (g : ZMod l).val
     · have : (g : ZMod l) = 0 := (ZMod.val_eq_zero _).mp hv
       exact (Units.ne_zero g) this

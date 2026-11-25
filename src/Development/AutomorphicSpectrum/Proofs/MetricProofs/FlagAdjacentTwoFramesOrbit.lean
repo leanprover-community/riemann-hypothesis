@@ -44,17 +44,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.FrameReg
 open GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FrameChange
 
 theorem stepCols_ne_empty {N j : ℕ} (i : Fin N) : stepCols N j i ≠ ∅ := by
-  intro e
-  have hi := i.2
-  by_cases h : (i : ℕ) + 1 ≤ j
-  · have : (⟨N - j, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos h]
-      omega
-    simp [e] at this
-  · have : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg h]
-      omega
-    simp [e] at this
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty <;> assumption
 
 theorem minor_singleton {R : Type} [CommRing R] {N : ℕ} (h : Matrix (Fin N) (Fin N) R) (a b : Fin N) :
     minorIJ h {a} {b} = h a b := by
@@ -1543,8 +1533,7 @@ theorem minor_one (S : Finset (Fin N)) : minorIJ (1 : Matrix (Fin N) (Fin N) ℂ
 
 theorem exists_minor_ne (hj : j ≤ N) (i : Fin N) {h : Matrix (Fin N) (Fin N) ℂ} (hd : h.det ≠ 0) :
     ∃ I, minorIJ h I (stepCols N j i) ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have e := (_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main ℂ N j i hj).1 h⁻¹ h (stepCols N j i) (stepCols N j i)
   rw [Matrix.nonsing_inv_mul _ hd.isUnit, minor_one, Finset.sum_eq_zero fun I _ => by rw [hc I, mul_zero]] at e
   exact one_ne_zero e

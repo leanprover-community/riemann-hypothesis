@@ -474,8 +474,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CM
 
 private theorem isLieComb_one_iff {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] (r : R)

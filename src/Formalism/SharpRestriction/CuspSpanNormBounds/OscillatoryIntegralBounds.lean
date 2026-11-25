@@ -243,8 +243,7 @@ theorem wI_inj (k r : ℕ) : Function.Injective (wI k r) := by
 
 theorem not_range_wI (k r : ℕ) (i : Fin (2 * r + k + 1)) (hi : i ∉ Set.range (wI k r)) :
     i.val < r ∨ r + k < i.val := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply hi
   refine ⟨⟨i.val - r, by omega⟩, ?_⟩
   unfold wI

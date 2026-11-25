@@ -234,8 +234,7 @@ theorem densChain : DensChain := by
     rw [← Real.exp_sum, Real.exp_le_exp, ← Finset.mul_sum]
     linarith
   have hmain : sd ≤ Real.exp (12 * (f : ℝ) * ((2 : ℝ) ^ (k - 2 * r - 2))⁻¹) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨x, hx1, hx2⟩ := exists_between hc
     obtain ⟨S, hS⟩ := hsd x hx2
     linarith [hB S]

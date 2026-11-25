@@ -771,8 +771,7 @@ theorem exists_primitive_of_aeval_eq_zero {S : Type*} [CommRing S] [IsDomain S] 
       rw [hgd, map_mul] at hg
       simpa using hg
     exact (mul_eq_zero.mp h1).resolve_left (by exact_mod_cast hd0)
-  · by_contra hall
-    push_neg at hall
+  · by_contra! hall
     obtain ⟨l, hl⟩ := (IsPrincipalIdealRing.principal I).principal
     have hdvd : l ∣ g.support.gcd b := Finset.dvd_gcd fun v hv => by
       have := hall v

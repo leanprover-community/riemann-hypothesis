@@ -24,8 +24,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.GrpMA
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def LvlA : Prop :=
   ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
     (k r : ℕ) (hr : 1 ≤ r) (z z' : Fin (2 * r + k + 1) → ℂ) (π : Q.Mx k r → (Wp →L[ℂ] Wp))
@@ -211,8 +209,6 @@ end Formalism.FourierDecayAlt.P.CutMP.GrpMA
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 

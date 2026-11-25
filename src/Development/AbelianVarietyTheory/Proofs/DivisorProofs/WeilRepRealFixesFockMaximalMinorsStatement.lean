@@ -65,8 +65,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.NormDict
 
 theorem vacuum_smul_realA : ∀ {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ} (P : Pair D cc δ t0 Q) (X : Data P), IsDict P X →
@@ -141,9 +139,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 theorem _root_.GlobalTheory.T.norm_pair_real_points_smul_adelic_vacuum_det_pow : ∀ {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ} (P : Pair D cc δ t0 Q) (X : Data P), IsDict P X →
     (∀ τ, HasInfExp D X.χB τ (-((P.n τ : ℚ) + (P.d : ℚ) / 2))) →
     ∀ g ∈ GinfC X.A, X.om (g, 1) X.vac = (∏ τ, (compAt X.θ τ (Formalism.L2.Theta.mt X.A g)).det ^ P.n τ) • X.vac := by
@@ -162,8 +157,6 @@ open scoped Classical
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormDict
 
@@ -228,9 +221,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
 theorem _root_.GlobalTheory.T.substitution_inverse_transpose_maximalMinorProduct : ∀ {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ} (P : Pair D cc δ t0 Q) (X : Data P)
     (T : Tup D P.a P.d P.n) (G : D.what₂.Tau → Matrix (Fin X.A.rank) (Fin X.A.rank) ℂ),
     GlobalTheory.CompactHowe.substF (fun _ => (1 : Matrix (Fin X.B.rank) (Fin X.B.rank) ℂ)) (fun τ => (G τ)⁻¹.transpose)
@@ -251,8 +241,6 @@ open scoped Classical
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormDict
 
@@ -297,9 +285,6 @@ open scoped Classical
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
 open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.weilRep_real_fixes_fock_maximal_minors : ∀ {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ} (P : Pair D cc δ t0 Q) (X : Data P), IsDict P X →
   (∀ τ, HasInfExp D X.χB τ (-((P.n τ : ℚ) + (P.d : ℚ) / 2))) →

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsDifferentiableOnTransfer
+
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
@@ -23,18 +25,7 @@ open GlobalTheory.CompanionTheory.Ar.Flat Metric
 theorem isHolTo_comp {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup V'] [NormedSpace ℂ V']
     {X : Scheme.{0}} {A : Set V'} {y : V' → (Sp ℂ ⟶ X)} (hy : IsHolTo A y) {B' : Set V} (hB' : IsOpen B')
     {φ : V → V'} (hφ : DifferentiableOn ℂ φ B') (hmap : Set.MapsTo φ B' A) : IsHolTo B' (fun b => y (φ b)) := by
-  intro U f
-  obtain ⟨h₁, h₂⟩ := hy U f
-  have hset : {b ∈ B' | ⊤ ≤ y (φ b) ⁻¹ᵁ U} = B' ∩ φ ⁻¹' {v ∈ A | ⊤ ≤ y v ⁻¹ᵁ U} := by
-    ext b
-    constructor
-    · rintro ⟨hb, hU⟩
-      exact ⟨hb, hmap hb, hU⟩
-    · rintro ⟨hb, _, hU⟩
-      exact ⟨hb, hU⟩
-  rw [hset]
-  refine ⟨hφ.continuousOn.isOpen_inter_preimage hB' h₁, ?_⟩
-  exact h₂.comp (hφ.mono Set.inter_subset_left) (fun b hb => hb.2)
+  apply _root_.GlobalTheory.HolPeriods.isHolTo_comp <;> assumption
 
 section Exp
 

@@ -60,7 +60,6 @@ open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.Aut
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S
 
 namespace GlobalTheory.TrExt

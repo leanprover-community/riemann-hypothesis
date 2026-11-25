@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugateUniversalFamily
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsDefiniteDatumGoodObj
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FamilyPeriodRiemannLattice
@@ -67,29 +69,7 @@ theorem mem_eigSp_iff {g : ℕ} {O : Type} [CommRing O] (ρ : O →+* Module.End
 
 theorem finrank_eigSp_conj {g : ℕ} {O : Type} [CommRing O] (ρ : O →+* Module.End ℂ (Fin g → ℂ)) (σ : O →+* ℂ) :
     Module.finrank ℂ (eigSp ((conjEnd g).comp ρ) σ) = Module.finrank ℂ (eigSp ρ ((starRingEnd ℂ).comp σ)) := by
-  have h1 : ∀ x, x ∈ eigSp ((conjEnd g).comp ρ) σ → star x ∈ eigSp ρ ((starRingEnd ℂ).comp σ) := by
-    intro x hx
-    rw [mem_eigSp_iff] at hx ⊢
-    intro a
-    have := congrArg star (hx a)
-    simpa [conjEnd_apply, star_smul] using this
-  have h2 : ∀ y, y ∈ eigSp ρ ((starRingEnd ℂ).comp σ) → star y ∈ eigSp ((conjEnd g).comp ρ) σ := by
-    intro y hy
-    rw [mem_eigSp_iff] at hy ⊢
-    intro a
-    simp [conjEnd_apply, hy a, star_smul]
-  let j : eigSp ((conjEnd g).comp ρ) σ ≃+ eigSp ρ ((starRingEnd ℂ).comp σ) :=
-    { toFun := fun x => ⟨star x.1, h1 _ x.2⟩
-      invFun := fun y => ⟨star y.1, h2 _ y.2⟩
-      left_inv := fun x => Subtype.ext (star_star _)
-      right_inv := fun y => Subtype.ext (star_star _)
-      map_add' := fun x y => Subtype.ext (star_add _ _) }
-  have hr := rank_eq_of_equiv_equiv (R := ℂ) (R' := ℂ) (starRingEnd ℂ) j
-    (Function.Involutive.bijective (f := starRingEnd ℂ) (fun z => by simp)) (fun r m => by
-      apply Subtype.ext
-      change star (r • m.1) = star r • star m.1
-      exact star_smul r m.1)
-  exact congrArg Cardinal.toNat hr
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.ConjFam.finrank_eigSp_conj <;> assumption
 
 theorem star_herm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
     star z ⬝ᵥ Hm.map (starRingEnd ℂ) *ᵥ star (star w) = star (z ⬝ᵥ Hm *ᵥ star w) := by
@@ -137,41 +117,7 @@ def conjLat {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : Ri
 
 theorem conj_rt_iff (H : Host E) (s : E →+* ℂ) :
     ((starRingEnd ℂ).comp s) (H.rt : E) = H.rt0 ↔ ¬ s (H.rt : E) = H.rt0 := by
-  have hdpos : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have h2 : s (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-    have h := congrArg (fun a : 𝓞 E => s (a : E)) H.rt_sq
-    simpa using h
-  have h0 := H.sqrt_neg_disc_sq
-  have hre : H.rt0.re = 0 := by
-    have hi := congrArg Complex.im h0
-    have hr := congrArg Complex.re h0
-    simp [pow_two] at hi hr
-    rcases (by
-      have : H.rt0.re * H.rt0.im = 0 := by nlinarith
-      exact mul_eq_zero.1 this) with h | h
-    · exact h
-    · exfalso; rw [h] at hr; nlinarith [mul_self_nonneg H.rt0.re]
-  have hconj : starRingEnd ℂ H.rt0 = -H.rt0 := by
-    apply Complex.ext <;> simp [hre]
-  have hne : H.rt0 ≠ 0 := by
-    intro h
-    rw [h] at h0
-    simp at h0
-    exact H.d_prime.ne_zero h0
-  have hpm : s (H.rt : E) = H.rt0 ∨ s (H.rt : E) = -H.rt0 := by
-    have : (s (H.rt : E) - H.rt0) * (s (H.rt : E) + H.rt0) = 0 := by
-      linear_combination h2 - h0
-    rcases mul_eq_zero.1 this with h | h
-    · exact Or.inl (sub_eq_zero.1 h)
-    · exact Or.inr (eq_neg_of_add_eq_zero_left h)
-  have hneg : -H.rt0 ≠ H.rt0 := by
-    intro h
-    exact hne (by linear_combination -(1 / 2 : ℂ) * h)
-  rcases hpm with h | h
-  · simp only [RingHom.comp_apply, h, hconj]
-    simpa using hneg
-  · simp only [RingHom.comp_apply, h, map_neg, hconj, neg_neg]
-    simpa using hneg
+  apply _root_.GlobalTheory.UPel.conj_mem_type_iff <;> assumption
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.FamEx.PeriodConj
 

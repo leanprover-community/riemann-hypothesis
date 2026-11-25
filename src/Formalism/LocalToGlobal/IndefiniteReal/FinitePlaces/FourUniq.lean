@@ -162,8 +162,7 @@ theorem chi_sum {k : ℕ} (hk : 0 < k) {t : W} (ht : t ∈ L ⊓ X) :
     rw [Finset.sum_congr rfl (fun g _ => h1 g), Finset.sum_const, Finset.card_univ,
       Nat.card_eq_fintype_card, nsmul_eq_mul, mul_one]
   · have hne : ∃ g : Gk L Y k, χ t (g : QY L Y).out ≠ 1 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hts
       have htX : t ∈ X := (AddSubgroup.mem_inf.mp ht).2
       obtain ⟨s, hsX, hks⟩ := hdivX k hk t htX

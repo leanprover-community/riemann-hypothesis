@@ -764,8 +764,7 @@ theorem zed_size_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.Globa
   have hb1 := e1.1
   have hbk := e1.2.2.2.2.2.1
   refine ⟨by linarith, ?_⟩
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have : 1 / 2 * ((Fm.parT x hx ι).PP * kap p i) < _ * ((Fm.parT x hx ι).PP * kap p i) :=
     mul_lt_mul_of_pos_right hc (by linarith)
   linarith

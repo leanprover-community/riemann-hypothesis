@@ -380,8 +380,6 @@ section Global
 
 open Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {k : Type} [Field k] [NumberField k]
 
 def comp (w : HeightOneSpectrum (𝓞 k)) : Ideles k →* (w.adicCompletion k)ˣ :=

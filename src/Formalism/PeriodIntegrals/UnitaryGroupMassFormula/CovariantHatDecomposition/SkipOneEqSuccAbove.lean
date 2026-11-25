@@ -28,8 +28,7 @@ theorem inj_decomp {m : ℕ} (c : Fin m → Fin (m + 1)) (hc : Function.Injectiv
     ∃ i : Fin (m + 1), ∃ σ : Equiv.Perm (Fin m), c = i.succAbove ∘ σ := by
   classical
   have hex : ∃ i, i ∉ Set.range c := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hs : Function.Surjective c := fun y => h y
     have := Fintype.card_le_of_surjective c hs
     simp at this

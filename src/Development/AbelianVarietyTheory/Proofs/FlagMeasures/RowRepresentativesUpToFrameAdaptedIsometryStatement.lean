@@ -204,8 +204,6 @@ namespace GlobalTheory.RowRep
 open Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData
   Formalism.L2.SG.TermLoc GlobalTheory.Unfold
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section D7
 
 variable {D : D7} {X : HidaSetting D} (Y : Full X) (u : D.what₂.Word)

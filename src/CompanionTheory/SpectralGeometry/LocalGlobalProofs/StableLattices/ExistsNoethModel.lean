@@ -70,8 +70,7 @@ theorem relAmple_of_span {S S' : Type} [CommRing S] [CommRing S'] (τ : S →+* 
     fun s => ?_
   let s' : PrimeSpectrum S' := s
   obtain ⟨r, hr, hs⟩ : ∃ r ∈ T, τ r ∉ s'.asIdeal := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     refine s'.isPrime.ne_top (top_le_iff.1 (h ▸ Ideal.span_le.2 ?_))
     rintro _ ⟨r, hr, rfl⟩
     exact hc r hr

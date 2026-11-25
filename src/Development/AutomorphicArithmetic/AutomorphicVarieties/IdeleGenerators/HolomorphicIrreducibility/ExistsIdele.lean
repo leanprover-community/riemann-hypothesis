@@ -222,8 +222,7 @@ theorem UpperTheory.addChar_inverseDifferent_and_residue_sum_eq_zero :
     have e : a = b + (a - b) := by ring
     rw [e, hadd, hker _ hab, mul_one]
   obtain ⟨b0, hb0⟩ : ∃ b0 : 𝓞 F, ψ b0 ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hdual := (UpperTheory.mem_dual_one_iff_trace_mul_int F η).mpr (fun b => (key _).mpr (hcon b))
     exact UpperTheory.false_of_mem_dual_of_valuation_eq_different_succ F η w hdual hw
   have hsum : ψ b0 * ∑ r, ψ (s r) = ∑ r, ψ (s r) := by

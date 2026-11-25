@@ -15,8 +15,6 @@ namespace PI.QnHermHaar
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Gen
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {i : Fin (r + 1)} {μ : Measure (Mt k r)}
 
 theorem repTm (H : Hyp k r z z' i μ) (w : ℂ) (a b : Fin (mdim k r i)) :

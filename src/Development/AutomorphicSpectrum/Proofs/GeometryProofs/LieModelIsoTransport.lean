@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyHomFixRepTrivial
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingPullbackIff
@@ -190,19 +191,8 @@ theorem model (hφ : IsGrpPullback G' G f φ) (hψ : IsGrpPullback G G' g ψ) (f
     show (M.pt (c • e)).left ≫ ψ = _ ≫ (M.pt e).left ≫ ψ
     rw [M.smul, Category.assoc]
 
-theorem grp_id (G : Over X) [GrpObj G] : IsGrpPullback G G (𝟙 X) (𝟙 G.left) := by
-  refine ⟨IsPullback.id_horiz G.hom, ?_⟩
-  intro T x y x₀ y₀ hx hy
-  have key : ∀ (t : T.left ⟶ X), t = T.hom → ∀ (a b : Over.mk t ⟶ G),
-      a.left = x.left → b.left = y.left → (a * b).left = (x * y).left := by
-    intro t ht
-    subst ht
-    intro a b ha hb
-    have e1 : a = x := Over.OverMorphism.ext ha
-    have e2 : b = y := Over.OverMorphism.ext hb
-    rw [e1, e2]
-  exact (key _ (Category.comp_id _) x₀ y₀ (hx.trans (Category.comp_id _)) (hy.trans (Category.comp_id _))).trans
-    (Category.comp_id _).symm
+theorem grp_id (G : Over X) [GrpObj G] : IsGrpPullback G G (𝟙 X) (𝟙 G.left) :=
+  _root_.GlobalTheory.EndLoc.isGrpPullback_id G
 
 end Isomove
 

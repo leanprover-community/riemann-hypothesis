@@ -280,8 +280,7 @@ theorem exists_component_ne (z : (Σ k, ι k) → ℂ) (q : MvPolynomial (Σ k, 
     (hq : eval z (MvPolynomial.map (Int.castRingHom ℂ) q) ≠ 0) :
     ∃ a : K → ℕ, eval z (MvPolynomial.map (Int.castRingHom ℂ)
       (weightedHomogeneousComponent (blockWeight ι) a q)) ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hq
   have hfin := weightedHomogeneousComponent_finsupp (w := blockWeight ι) q
   rw [← sum_weightedHomogeneousComponent (blockWeight ι) q]
@@ -338,8 +337,7 @@ theorem PositivityTheory.Xgn.finite_nonvanishing_selection : ∀ (σ : Type) [Fi
   obtain ⟨T, hTF, hT⟩ := (Submodule.fg_span_iff_fg_span_finset_subset F).1 hfg
   refine ⟨T, hTF, fun z hz => ?_⟩
   obtain ⟨s, hsF, hs⟩ := hz
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   let φ : MvPolynomial σ ℤ →+* ℂ := (eval z).comp (MvPolynomial.map (Int.castRingHom ℂ))
   have hle : Ideal.span (T : Set (MvPolynomial σ ℤ)) ≤ RingHom.ker φ := by
     rw [Ideal.span_le]
@@ -551,8 +549,7 @@ theorem PositivityTheory.Xgn.relevant_prime_orbit_closure : ∀ (K : Type) [Fint
     rw [RingHom.mem_ker]
     simp [PositivityTheory.Xgn.MultihomogeneousOrbit.orb, p.prop.ne_zero]
   · intro s hs
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hs (RingHom.mem_ker.mpr (PositivityTheory.Xgn.MultihomogeneousOrbit.orb_eq_zero z s hne))
 end -- clump:auto
 end -- clump:auto
@@ -616,8 +613,7 @@ theorem twist_line : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type
         eval z (MvPolynomial.map (Int.castRingHom ℂ) v) ≠ 0 := by
     intro z hc hz
     have : ∃ q ∈ P, eval z (MvPolynomial.map (Int.castRingHom ℂ) q) ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hz ⟨hc, hne⟩
     obtain ⟨q, hq, hqz⟩ := this
     obtain ⟨a, b, u, v, hu, hv, hab, huP, hvP, huz, hvz⟩ := _root_.PositivityTheory.Xgn.multihomogeneous_nonvanishing_off K ι P bf bg z q hPh' hc hq hqz

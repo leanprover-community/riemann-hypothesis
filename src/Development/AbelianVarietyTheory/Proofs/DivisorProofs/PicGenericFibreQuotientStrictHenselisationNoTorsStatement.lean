@@ -111,8 +111,7 @@ theorem eq_of_le_of_comap_eq_of_indEtale : ∀ (B O : Type) [CommRing B] [CommRi
   intro B O _ _ _ ⟨ι, _, _, _, Si, _, hcov, hloc⟩ p p' hp hp' hle hcomap
   by_contra hne
   obtain ⟨x, hx', hx⟩ : ∃ x, x ∈ p' ∧ x ∉ p := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (le_antisymm hle h)
   obtain ⟨i, hi⟩ := hcov x
   obtain ⟨E, _, _, _, P, _, ⟨e⟩⟩ := hloc i

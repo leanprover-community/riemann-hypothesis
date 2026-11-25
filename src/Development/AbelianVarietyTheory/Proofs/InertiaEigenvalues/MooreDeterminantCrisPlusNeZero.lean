@@ -324,8 +324,7 @@ theorem lead (c : ℕ → ℝ) (h0 : ∀ n, 0 ≤ c n) (h1 : ∀ n, c n ≤ 1) {
   set ρm := (ρ₁ + ρ₂) / 2 with hρm
   have hm : ρm ∈ Set.Ioo ρ₁ ρ₂ := ⟨by rw [hρm]; linarith, by rw [hρm]; linarith⟩
   have hex : ∃ m : ℕ, (m : ℤ) = e ∧ c m = C := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hle : ∀ n : ℕ, (n : ℤ) = e → c n ≤ C := by
       intro n hn
       have := hb ρ₁ ⟨le_rfl, h12.le⟩ n
@@ -1076,8 +1075,7 @@ theorem root_cancel_pow_eq_self : ∀ (l : ℕ) [Fact l.Prime] (h s : ℕ), s < 
     nlinarith [hr₀mem.1]
   have hcover : ∀ r ∈ Set.Ioc (0 : ℝ) 1, ∃ i, 0 < fv i r := by
     intro r hr
-    by_contra H
-    push_neg at H
+    by_contra! H
     have hs := hsum r hr
     rw [hn r hr] at hs
     have : ∑ i ∈ Finset.range o', fv i r ≤ 0 := Finset.sum_nonpos (fun i _ => H i)
@@ -1240,8 +1238,7 @@ theorem GlobalTheory.PMon.Gauss.one_digit : ∀ (l : ℕ) [Fact l.Prime] (h s : 
   have hmono := gC_eq_zpow_mul_of_vr l _ w' hw1 hw' n hn
   have hρ₀ : 0 < ρ₀ := (inv_pos.2 hl0).trans hρ₀l
   have hn1 : 1 ≤ n := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : n ≤ 0 := by omega
     have e := hmono ρ₀ hρ₀l.le hρ₀1
     rw [← hc] at hlt

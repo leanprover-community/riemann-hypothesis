@@ -36,8 +36,6 @@ open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.CutBP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 theorem ccleQ_nonneg {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {A : ℝ} {m : ℕ}
@@ -145,8 +143,6 @@ namespace Formalism.FourierDecayAlt.P.CutBP
 open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 def bcE (r : ℕ) : (Fin (r + 1) → ℂ) ≃ᵐ (Fin r → ℂ) × ℂ :=
   (MeasurableEquiv.piFinSuccAbove (fun _ => ℂ) (Fin.last r)).trans MeasurableEquiv.prodComm
@@ -320,8 +316,6 @@ open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology Mea
 open scoped ENNReal
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section general
 

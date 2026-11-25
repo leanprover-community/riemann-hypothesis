@@ -272,8 +272,7 @@ theorem charpoly_rho_eq_map_pol (G : HTGroup p) (P : DPair G) (w : Fin G.m) :
   set q := minpoly (G.Fw w) (G.rho w γ) with hq
   have hqm : q.Monic := minpoly.monic hint
   have hqdeg : G.n ≤ q.natDegree := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h0 : aeval (G.rho w γ) q = 0 := minpoly.aeval _ _
     rw [Polynomial.aeval_eq_sum_range' hlt, Finset.sum_range] at h0
     have h1 := Fintype.linearIndependent_iff.1 hM (fun i => q.coeff i) h0 ⟨q.natDegree, hlt⟩

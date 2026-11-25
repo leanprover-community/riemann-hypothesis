@@ -33,6 +33,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardFilterValLt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.FlagImmersions.PartialSumOrderedBounds, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.DominantPartialSumBounds, Development.WeilBound.CoreStatements.FlagImmersions.CoeffShift, Development.WeilBound.CoreStatements.FlagImmersions.AltEqZero, Development.WeilBound.CoreStatements.FlagImmersions.SumChooseLe, Development.WeilBound.CoreStatements.FlagImmersions.RestDegreePowerBound, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LieTermFlagBound, Development.WeilBound.CoreStatements.FlagImmersions.TwoMulThreePowLeFactorial, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LinRootRemainderBound, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PowerSumDeltaDecomposition, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerIdentityAtCutoff, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT2
@@ -1109,15 +1110,7 @@ def lieRank {Ψ : Type} (N j : ℕ) (s : Ψ ⊕ Ψ) : ℝ := if s.isLeft then (j
 
 theorem delta_card_filter_lt {N j : ℕ} (hj : j ≤ N) :
     (Finset.univ.filter (fun i : Fin N => (i : ℕ) < j)).card = j := by
-  have h : (Finset.univ.filter (fun i : Fin N => (i : ℕ) < j)).map Fin.valEmbedding = Finset.range j := by
-    ext a
-    simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and, Fin.valEmbedding_apply, Finset.mem_range]
-    constructor
-    · rintro ⟨i, hi, rfl⟩
-      exact hi
-    · intro ha
-      exact ⟨⟨a, lt_of_lt_of_le ha hj⟩, ha, rfl⟩
-  rw [← Finset.card_map Fin.valEmbedding, h, Finset.card_range]
+  apply _root_.GlobalTheory.CardFilterLt.card_filter_val_lt <;> assumption
 
 theorem delta_card_filter_ge {N j : ℕ} (hj : j ≤ N) :
     (Finset.univ.filter (fun i : Fin N => j ≤ (i : ℕ))).card = N - j := by

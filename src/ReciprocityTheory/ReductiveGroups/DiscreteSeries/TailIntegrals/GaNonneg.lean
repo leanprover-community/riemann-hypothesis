@@ -218,8 +218,7 @@ theorem rpow_bd (a b K s : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hK : 1 ≤ K) (hs
     have h4 : 0 ≤ (0:ℝ) ^ (-s) := Real.rpow_nonneg le_rfl _
     nlinarith
   · have hbpos : 0 < b := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     rw [Real.rpow_neg ha, Real.rpow_neg hb]
     have hbs : b ^ s ≤ K ^ s * a ^ s := by

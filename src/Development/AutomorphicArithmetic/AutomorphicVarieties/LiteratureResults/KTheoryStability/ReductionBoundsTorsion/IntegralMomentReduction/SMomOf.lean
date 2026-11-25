@@ -584,8 +584,7 @@ theorem local_decomp {ι : Type*} [Fintype ι] [Nonempty ι] {N : ℕ} (hN : 1 �
     obtain ⟨w⟩ := ‹Nonempty ι›
     have h1 := hbM w ⟨0, hN⟩ ⟨0, hN⟩
     have h2 := hbm w ⟨0, hN⟩
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : 1 < M⁻¹ := (one_lt_inv₀ hM).mpr h
     linarith
   have hlogM : 0 ≤ Real.log M := Real.log_nonneg hM1

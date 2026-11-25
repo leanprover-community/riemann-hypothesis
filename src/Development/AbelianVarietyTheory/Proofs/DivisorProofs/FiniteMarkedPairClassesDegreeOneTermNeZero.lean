@@ -148,8 +148,7 @@ theorem roots_eig : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) (v
     exact h
   have hroot : Q.IsRoot w := by
     rw [Polynomial.IsRoot, hQ, Polynomial.eval_map]; exact hw
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hdet : (Γ - algebraMap ℂ (Matrix (Fin G.n) (Fin G.n) ℂ) w).det ≠ 0 := by
     intro h0
     obtain ⟨x, hx0, hx⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h0
@@ -715,8 +714,7 @@ theorem integral_of_term_ne_zero' : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p)
   · exact absurd rfl hP
   rw [Pair.termAt, pointSum] at hP
   have exists_nonzero {α : Type} (F : α → ℂ) (hF : ∑ᶠ x, F x ≠ 0) : ∃ x, F x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hF (finsum_eq_zero_of_forall_eq_zero hc)
   obtain ⟨q, hq⟩ := exists_nonzero _ hP
   have hq2 := (mul_ne_zero_iff.1 hq).2

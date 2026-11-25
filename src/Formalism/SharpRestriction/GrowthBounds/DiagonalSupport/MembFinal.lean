@@ -64,8 +64,7 @@ theorem exists_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (N : ℕ)
     unfold posU llPos
     rw [if_pos (by omega), List.getD_eq_getElem _ _ hu, hux]
   · have key : ∃ i, i < r ∧ Fr.fr j i = x := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hall : ∀ i, i < r → Fr.fr j i < x := by
         intro i
         induction i with
@@ -73,8 +72,7 @@ theorem exists_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (N : ℕ)
         | succ k ih =>
           intro hk
           have h1 := ih (by omega)
-          by_contra h2
-          push_neg at h2
+          by_contra! h2
           have h3 : x < Fr.fr j (k + 1) := lt_of_le_of_ne h2 (fun h' => hne (k + 1) hk h'.symm)
           exact hV.2.2.2.2.2.1 j k x hk h1 h3 hxT
       have h4 := hall (r - 1) (by omega)
@@ -172,8 +170,7 @@ variable {O : Type} [CommRing O] {r K : ℕ}
 
 theorem exists_of_rename {σ τ : Type} (f : σ → τ) (A : MvPolynomial σ O) (a : τ →₀ ℕ) (ha : a ∈ (rename f A).support) :
     ∃ u ∈ A.support, Finsupp.mapDomain f u = a := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 : (rename f A).coeff a = 0 := MvPolynomial.coeff_rename_eq_zero f A a (fun u hu => by
     by_contra hu0
     exact hc u (MvPolynomial.mem_support_iff.mpr hu0) hu)
@@ -1147,8 +1144,7 @@ theorem labO_apply (hinj : Function.Injective fun x : TL J nL r => posOf n' (pos
 theorem labO_support (rho : TL J nL r × Fin (r + K) → ℕ) (v : Fin n' × Fin (r + K))
     (hv : v ∈ (labO Fr K nL rho).support) : ∃ x : TL J nL r, v.1 = posOf n' (posTL Fr x) := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply Finsupp.mem_support_iff.mp hv
   simp only [labO, Finsupp.finsetSum_apply, Finsupp.single_apply]
   apply Finset.sum_eq_zero

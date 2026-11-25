@@ -45,8 +45,7 @@ private lemma exists_local_level (μ : Measure (normOneGL (K := K) (n := n))) [�
         exact ⟨1, Subgroup.one_mem _⟩ }
   obtain ⟨⟨σ, f, hf0, hfV, hfe⟩, -, -⟩ := _root_.PositivityTheory.TfC.OccursBasics_holds K n μ V w (Measure.haarMeasure P) hV
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf0 (LinearMap.ext h)
   let U : Subgroup (Gw n w) := stabilizerOf σ.ρ x ⊓ GLnLocal.integralGL (w.adicCompletion K) n
   have hUo : IsOpen (U : Set (Gw n w)) := by

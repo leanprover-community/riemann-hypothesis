@@ -351,18 +351,9 @@ theorem rank_span_le {A : Type} [AddCommGroup A] [inst : Module ℤ A] (S : Set 
       _ ≤ Module.rank ℝ (ι → ℝ) := Submodule.rank_le _
       _ = Fintype.card ι := by simp
   have hmem : ∀ x ∈ Submodule.span ℤ S, (1 : ℝ) ⊗ₜ[ℤ] x ∈ LinearMap.range θ := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem s hs =>
-      obtain ⟨z, hz⟩ := hS s hs
-      exact ⟨z, hz⟩
-    | zero => simp
-    | add x y _ _ hx hy =>
-      rw [TensorProduct.tmul_add]
-      exact add_mem hx hy
-    | smul n x _ hx =>
-      rw [TensorProduct.tmul_smul]
-      exact zsmul_mem hx n
+    show Submodule.span ℤ S ≤ ((LinearMap.range θ).restrictScalars ℤ).comap
+      (TensorProduct.mk ℤ ℝ A 1)
+    exact Submodule.span_le.2 hS
   apply rank_le
   intro s hs
   have hA : LinearIndependent ℤ (fun i : s => ((i : Submodule.span ℤ S) : A)) :=
@@ -518,19 +509,17 @@ theorem sBStarOdd_of : SBStarOdd := by
     obtain ⟨cc, a, ha, hdec⟩ := hτ N ω hωI
     have hazero : ∀ j ∈ Finset.Icc 2 (k + 1), ∀ y ∈ C,
         a j (lev l n k) (y : Chn (GL (Fin (lev l n k)) (𝓞 L)) (k + 1)) = 0 := by
-      intro j hj y hy
-      induction hy using Submodule.span_induction with
-      | mem x hx =>
-        obtain ⟨z0, hz0, hx⟩ := hx
-        rw [hx, PrimeModuloFree.wsys_zc (R := 𝓞 L) hC (ha j hj) hl hz0 k]
-        apply mul_eq_zero_of_left
-        rw [Finset.mem_Icc] at hj
-        apply Finset.prod_eq_zero (i := j - 2)
-        · rw [Finset.mem_range]; omega
-        · rw [Nat.sub_add_cancel hj.1, sub_self]
-      | zero => simp
-      | add x y _ _ hx hy => simp [hx, hy]
-      | smul r x _ hx => simp [hx]
+      intro j hj
+      show C ≤ LinearMap.ker ((a j (lev l n k)).comp (bd (GL (Fin (lev l n k)) (𝓞 L)) k).ker.subtype)
+      refine Submodule.span_le.2 ?_
+      rintro y ⟨z0, hz0, hy⟩
+      show a j (lev l n k) y.1 = 0
+      rw [hy, PrimeModuloFree.wsys_zc (R := 𝓞 L) hC (ha j hj) hl hz0 k]
+      apply mul_eq_zero_of_left
+      rw [Finset.mem_Icc] at hj
+      apply Finset.prod_eq_zero (i := j - 2)
+      · rw [Finset.mem_range]; omega
+      · rw [Nat.sub_add_cancel hj.1, sub_self]
     apply hcne
     rw [hω _ hz'c, hdec _ hz'c]
     have h1 : ∀ w, τ w N (cmap (stab (𝓞 L) (lev l n k) N hMN) (k + 1)
@@ -832,8 +821,7 @@ theorem conj_rot {q : ℕ} (σ : Equiv.Perm (Fin q)) (h : ncyc σ = 1) :
       rw [h1] at h01
       simp at h01
     obtain ⟨x, hx⟩ : ∃ x, σ x ≠ x := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hne (Equiv.ext hc)
     have hall : ∀ y, σ y ≠ y := fun y hy => hx (((hsc x y).apply_eq_self_iff).mpr hy)
     have hcyc : σ.IsCycle := ⟨x, hx, fun y _ => hsc x y⟩

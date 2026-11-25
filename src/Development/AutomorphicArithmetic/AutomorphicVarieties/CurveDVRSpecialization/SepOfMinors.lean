@@ -188,8 +188,7 @@ private lemma Lead.mul (hv : ∀ a b, v (a * b) = v a + v b) {f g : ℕ → κ} 
 
 private lemma Lead.ne {f : ℕ → κ} {β : κˣ} (h : Lead v f β) : ∃ m, f m ≠ 0 := by
   obtain ⟨c, hc, g, hg, rfl⟩ := h
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h0 : c • ch β + g = 0 := funext hne
   have hm : ch β ∈ Lt v (v β) := by
     have h1 : c • ch β ∈ Lt v (v β) := by

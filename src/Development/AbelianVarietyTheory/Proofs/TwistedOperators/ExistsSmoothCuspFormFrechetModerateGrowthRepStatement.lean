@@ -86,8 +86,6 @@ open scoped ENNReal
 
 namespace GlobalTheory.GrowthComplete
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {θ : InfFam D} {V : HSp D} {N : ℕ} {ψ : ℕ → GA D V → ℂ} {f : GA D V → ℂ}
 
 theorem locUnif {ι : Type} {l : Filter ι} {u : ι → GA D V → ℂ}
@@ -344,7 +342,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -358,7 +355,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace Filter
 open scoped ENNReal NNReal Topology
 
@@ -481,7 +477,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace Filter
 open scoped ENNReal NNReal Topology
 
@@ -636,7 +631,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FrameHeight
 
@@ -735,8 +729,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Matrix Filter
 open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace GlobalTheory.Mem.RealTranslate GlobalTheory.PointAtPlaceHom
 open scoped ENNReal NNReal Topology
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CuspFrechet
 
@@ -1189,7 +1181,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

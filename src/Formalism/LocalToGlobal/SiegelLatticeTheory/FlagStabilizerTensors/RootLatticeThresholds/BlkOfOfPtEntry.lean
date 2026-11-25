@@ -867,8 +867,7 @@ theorem conjW_blk {w : Point D.host.E (D.R.rS + 1)} {β : GLR D} (hβ : β ∈ S
   have e1 := hWi c c' h1
   have e2 := hWb d' d h2
   have hlt : c' < d' := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have := blkOf_mono w.1 d'.1 c'.1 hle
     omega
   rw [(hlo c' d').1 hlt, mul_zero, zero_mul]
@@ -1179,8 +1178,7 @@ theorem Alin_shear {N : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ} (hN : 
       have h2 : d.val ≤ p.1.2.val := hdb
       have h3 : c.val < d.val := hcd.1
       have h4 : c.val ≠ p.1.1.val ∨ d.val ≠ p.1.2.val := by
-        by_contra hh
-        push_neg at hh
+        by_contra! hh
         exact hne (Prod.ext (Fin.ext hh.1) (Fin.ext hh.2))
       show d.val - c.val < p.1.2.val - p.1.1.val
       omega

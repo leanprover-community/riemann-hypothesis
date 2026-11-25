@@ -176,8 +176,7 @@ theorem linMon_aeval_monomial {ι : Type} [Fintype ι] [DecidableEq ι] (cp : ι
     split_ifs with h0
     · have hle : α ≤ a := tsub_eq_zero_iff_le.mp h0
       obtain ⟨l, hl⟩ : ∃ l, α l < a l := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hEq (le_antisymm (Finsupp.le_def.mpr hcon) hle)
       exact Finset.prod_eq_zero (Finset.mem_univ l)
         (by rw [Nat.descFactorial_eq_zero_iff_lt.mpr hl, Nat.cast_zero])

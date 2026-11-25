@@ -7,6 +7,7 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackSecond
 
 @[expose] public section
 
@@ -27,17 +28,7 @@ theorem pot_holoOn_mono {V W : Set X} {g : X → ℂ} (h : A.HoloOn V g) (hW : W
 
 theorem pot_holoOn_continuousOn {V : Set X} (hV : IsOpen V) {g : X → ℂ} (h : A.HoloOn V g) :
     ContinuousOn g V := by
-  intro y hy
-  obtain ⟨j, hj⟩ := A.cover y
-  have hw : A.chart j y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' V :=
-    ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hy⟩
-  have h1 := (h j _ hw).continuousAt
-  have h2 : ContinuousAt (A.chart j) y := (A.chart j).continuousAt hj
-  have h3 : ContinuousAt (fun y' => (g ∘ (A.chart j).symm) (A.chart j y')) y :=
-    ContinuousAt.comp (g := g ∘ (A.chart j).symm) h1 h2
-  refine (h3.congr ?_).continuousWithinAt
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y' hy'
-  simp [(A.chart j).left_inv hy']
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.PshW.continuousOn_of_holoOn <;> assumption
 
 theorem pot_holoOn_sub_add {V : Set X} {g₁ g₂ g₃ : X → ℂ} (h₁ : A.HoloOn V g₁)
     (h₂ : A.HoloOn V g₂) (h₃ : A.HoloOn V g₃) :

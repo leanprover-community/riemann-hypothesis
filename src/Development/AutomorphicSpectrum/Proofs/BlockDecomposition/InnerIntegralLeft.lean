@@ -67,8 +67,7 @@ theorem pair_general (K : Γ → V →L[ℂ] V) (F H : Γ → V) (hK : Continuou
       exact c1.inner c2
     · refine HasCompactSupport.intro (cH.isCompact.prod cK.isCompact) (fun p hp => ?_)
       have : H p.1 = 0 ∨ K p.2 = 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hp ⟨subset_tsupport _ hc.1, subset_tsupport _ hc.2⟩
       rcases this with h0 | h0 <;> simp [Function.uncurry, h0]
   have jB : Integrable (Function.uncurry fun x y : Γ => ⟪F x, K y (H (x * y))⟫_ℂ) (μ.prod μ) := by
@@ -78,8 +77,7 @@ theorem pair_general (K : Γ → V →L[ℂ] V) (F H : Γ → V) (hK : Continuou
       exact (hF.comp continuous_fst).inner c2
     · refine HasCompactSupport.intro (cF.isCompact.prod cK.isCompact) (fun p hp => ?_)
       have : F p.1 = 0 ∨ K p.2 = 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hp ⟨subset_tsupport _ hc.1, subset_tsupport _ hc.2⟩
       rcases this with h0 | h0 <;> simp [Function.uncurry, h0]
   calc ∫ x, ⟪∫ y, ContinuousLinearMap.adjoint (K y⁻¹) (F (x * y)) ∂μ, H x⟫_ℂ ∂μ

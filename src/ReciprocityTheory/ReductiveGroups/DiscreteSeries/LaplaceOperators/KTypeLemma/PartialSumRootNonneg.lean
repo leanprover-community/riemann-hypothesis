@@ -125,8 +125,7 @@ theorem highestWeight_dominant {N : Type*} [NormedAddCommGroup N] [InnerProductS
     first
     | exact (Complex.ofReal_injective (by simpa using key))
   have hpos : 0 < ‖y‖ ^ 2 := pow_pos (norm_pos_iff.mpr hy0) 2
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have := mul_neg_of_neg_of_pos (sub_neg.mpr hlt) hpos
   nlinarith [sq_nonneg ‖A b a y‖]
 
@@ -209,8 +208,7 @@ theorem exists_minimal_kStable {X : Type*} [AddCommGroup X] [Module ℂ X] {ε :
     ⟨_, S, le_rfl, hne, hS, rfl⟩
   obtain ⟨W, hWS, hW0, hWst, hWd⟩ := Nat.find_spec hex
   refine ⟨W, hWS, hW0, hWst, fun W' hW'W hW'st => ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨h1, h2⟩ := hcon
   have hlt : W' < W := lt_of_le_of_ne hW'W h2
   haveI : FiniteDimensional ℂ W := Submodule.finiteDimensional_of_le hWS

@@ -907,8 +907,7 @@ theorem fibre_param_continuous : ∀ (V H Y P : Type) [TopologicalSpace V] [T2Sp
   have hsupp : ∀ z : P × H, (∫ v, ψ (z.1, v) ∂(fam z.2)) ≠ 0 →
       ∃ v, ψ (z.1, v) ≠ 0 ∧ q v = z.2 := by
     intro z hz
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     apply hz
     have h1 : f ⁻¹' {ι z.2} ∩ U ∈ ae (fam z.2) := mem_ae_iff.2 (h.1 z.2)
     have h2 : (fun v => ψ (z.1, v)) =ᵐ[fam z.2] 0 := by

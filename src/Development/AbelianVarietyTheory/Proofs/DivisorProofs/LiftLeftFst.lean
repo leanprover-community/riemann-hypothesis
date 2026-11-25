@@ -47,8 +47,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AbDual
 
 variable {S S' : Scheme.{0}} {b : S' ⟶ S}

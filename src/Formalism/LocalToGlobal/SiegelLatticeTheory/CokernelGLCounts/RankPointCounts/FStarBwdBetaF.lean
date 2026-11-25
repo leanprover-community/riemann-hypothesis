@@ -989,8 +989,7 @@ theorem localLattice_preserves_cofinite (g : (VS D).V ≃ₗ[D.host.E] (VS D).V)
   refine (s.finite_toSet.biUnion fun v _ => CohIntPf.bcP_mem_cof Zd hΛ (g v)).subset ?_
   intro p hp
   simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hp
   have hloc : ∀ v ∈ Λ, g v ∈ Formalism.HermitianLattices.Ext.L3.locF p.asIdeal Λ := by
     intro v hv
@@ -1022,8 +1021,7 @@ theorem localLattice_preserves_cofinite_symm (g : (VS D).V ≃ₗ[D.host.E] (VS 
   refine (s.finite_toSet.biUnion fun v _ => CohIntPf.bcP_mem_cof Zd hΛ (g.symm v)).subset ?_
   intro p hp
   simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hp
   have hloc : ∀ v ∈ Λ, g.symm v ∈ Formalism.HermitianLattices.Ext.L3.locF p.asIdeal Λ := by
     intro v hv

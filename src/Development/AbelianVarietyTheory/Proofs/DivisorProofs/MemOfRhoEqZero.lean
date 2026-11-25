@@ -315,7 +315,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G Reciproci
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Semi
 open scoped TensorProduct Matrix
 open GlobalTheory.ShortMove GlobalTheory.ShortMoveIso GlobalTheory.TwistTie
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (V : HSp D) {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H}
   {l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ}
@@ -422,7 +421,6 @@ section Value
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.Datum
 open scoped TensorProduct Matrix
 open GlobalTheory.GeoLevel GlobalTheory.DatumInverseCharacter GlobalTheory.PinnedClassSum Formalism.L2.Host
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_isometry_inGam {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
     {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ} (d : DeltaDat Xo c n) (hd : d.IsLev)
@@ -511,7 +509,6 @@ section Move
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.Datum
 open scoped TensorProduct Matrix
 open GlobalTheory.GeoLevel GlobalTheory.DatumInverseCharacter GlobalTheory.PinnedClassSum Formalism.L2.Host
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H}
 
@@ -832,7 +829,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.IndefR.Datum Formalism.IndefR.Lev
 open GlobalTheory.FormTies GlobalTheory.OnTies GlobalTheory.TraceClassRank
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OnCmp GlobalTheory.BigOn GlobalTheory.RealIndexBound
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 

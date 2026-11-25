@@ -57,8 +57,6 @@ open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open scoped TensorProduct
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.OriginChartMultiplication
 
 def jetOfSeries {R : Type} [CommRing R] {κ : Type} [Finite κ] (m : ℕ) (f : MvPowerSeries κ R) :
@@ -102,8 +100,6 @@ open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF GlobalTheory.IndefiniteRowSideFullHecke.OriginChartMultiplication
 open scoped TensorProduct
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsionCompare
 

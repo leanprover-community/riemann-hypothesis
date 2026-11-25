@@ -63,8 +63,7 @@ private theorem pivot {R : Type} [CommRing R] [IsLocalRing R] {ι : Type} [Finty
     ∃ Q : Matrix ι ι R, IsUnit Q.det ∧ IsUnit ((Qᵀ * H * Q) i i) := by
   classical
   obtain ⟨j, hj⟩ : ∃ j, IsUnit (H i j) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have key : ∑ j, H i j * adjugate H j i = H.det := by
       have := congrFun (congrFun (mul_adjugate H) i) i
       simpa [Matrix.mul_apply] using this

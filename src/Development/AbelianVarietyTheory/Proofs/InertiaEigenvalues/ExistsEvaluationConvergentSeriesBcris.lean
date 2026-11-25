@@ -488,8 +488,7 @@ theorem _root_.GlobalTheory.AwayNorm.exists_normed_away : ∀ (p : ℕ) (R : Typ
     linarith
   have hnz : nrm 0 = 0 := by
     refine le_antisymm ?_ (hnn 0)
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one h hp1
     have := hle1 0 n (hzero n)
     rw [zpow_natCast] at this

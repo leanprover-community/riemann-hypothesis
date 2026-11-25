@@ -56,7 +56,6 @@ import ReciprocityTheory.DualLattices.FormalChartAtZero
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

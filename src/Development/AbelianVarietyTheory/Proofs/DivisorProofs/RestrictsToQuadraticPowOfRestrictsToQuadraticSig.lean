@@ -120,8 +120,7 @@ theorem sq_mem_normGrp {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (a : (AF F)ˣ) 
 theorem exists_isEtaF {σ : E →ₐ[F] E} (h : IsCMExt F E σ) :
     ∃ η : (AF F)ˣ →* Circle, Formalism.IndefR.DatumF.IsEtaF E η := by
   obtain ⟨a, ha⟩ : ∃ a, a ∉ normGrp F E := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact normGrp_ne_top h (eq_top_iff.2 fun a _ => hc a)
   obtain ⟨η, h1, h2⟩ := GlobalTheory.VolHeckeCompare.exists_char_of_not_mem _ (sq_mem_normGrp h) a ha
   refine ⟨η, ?_, fun b => h1 (Subgroup.mem_sup_left ⟨b, rfl⟩), fun x => h1 (Subgroup.mem_sup_right ⟨x, rfl⟩),

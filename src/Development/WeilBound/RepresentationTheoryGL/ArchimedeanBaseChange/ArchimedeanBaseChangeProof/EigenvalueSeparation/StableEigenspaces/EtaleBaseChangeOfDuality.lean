@@ -298,8 +298,7 @@ theorem exists_finset_separating {Y : Type} (Ψ : Submodule ℂ (Y → ℂ)) [Fi
   refine ⟨Function.argmin f, fun ψ hψ h0 => ?_⟩
   by_contra hne
   obtain ⟨y, hy⟩ : ∃ y, ψ y ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (funext hall)
   set t := Function.argmin f with ht
   have hlt : K (insert y t) < K t := by
@@ -988,8 +987,7 @@ theorem centReGlue_holds : CentReGlue := by
   obtain ⟨C, M, hC⟩ := hL Measure.haar inferInstance
   by_contra ha
   obtain ⟨x₀, hx₀⟩ : ∃ x, φ x ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (funext hcon)
   obtain ⟨Q, hQ, hQn⟩ := exists_compact_mem_nhds x₀
   obtain ⟨n, hn⟩ := hM E N Q hQ

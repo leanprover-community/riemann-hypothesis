@@ -57,8 +57,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open MonoidalCategory CartesianMonoidalCategory
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 noncomputable section
 
 namespace GlobalTheory.PeriodBalance

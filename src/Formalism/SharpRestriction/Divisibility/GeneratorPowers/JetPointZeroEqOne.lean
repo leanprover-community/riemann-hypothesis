@@ -17,8 +17,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem jet_zero_hom_ext {S : Type} [CommRing S] {κ κ' : Type} (f g : Jet S κ 0 →ₐ[S] Jet S κ' 0) : f = g := by
   apply jet_hom_ext
   intro i

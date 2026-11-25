@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBlockDiagMapGenBlock
 public import Development.WeilBound.CoreStatements.MultihomogeneousSquares.AntisymmetryFibreSquares
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HodgeComponentFactorPoint
@@ -444,7 +445,6 @@ def overCpt {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D :
   tors := A.tors
   vb := A.vb
 
-
 theorem stBase : StBase := by
   intro hRes hW E _ _ _ H D l Xo c Y S Ω₀ _ ξ₀ hξ₀ hS hSd
   obtain ⟨Ω, _, _, K₁, _, J₁, _, y₁, M₁, f₁, z₀, i, ⟨k₁⟩, hfin, hN, hz₀, hdomi, htors, hroot, hsnc₁, htr⟩ :=
@@ -527,21 +527,8 @@ def extDeg (b : NonPluckerBlocks blk → ℕ) : K → ℕ := fun k => if h : ∀
 
 theorem isMultiHomog_rename_baseInc {β : MRing (baseIdx ι blk)} {b : NonPluckerBlocks blk → ℕ} (hβ : IsMultiHomog β b) :
     IsMultiHomog (rename (baseInc (ι := ι) blk) β) (extDeg blk b) := by
-  classical
-  intro m hm k
-  rw [support_rename_of_injective (baseInc_injective blk)] at hm
-  obtain ⟨m₀, hm₀, rfl⟩ := Finset.mem_image.1 hm
-  by_cases h : ∀ p, blk p ≠ some k
-  · have e : ∀ i : ι k, (Finsupp.mapDomain (baseInc blk) m₀) ⟨k, i⟩ = m₀ ⟨⟨k, h⟩, i⟩ := fun i =>
-      Finsupp.mapDomain_apply_of_injective (baseInc_injective blk) m₀ (⟨⟨k, h⟩, i⟩ : Σ k, baseIdx ι blk k)
-    simp only [e, extDeg, dif_pos h]
-    exact hβ m₀ hm₀ ⟨k, h⟩
-  · have e : ∀ i : ι k, (Finsupp.mapDomain (baseInc blk) m₀) ⟨k, i⟩ = 0 := fun i =>
-      Finsupp.mapDomain_of_notMem_range _ _ (by
-        rintro ⟨q, hq⟩
-        have : q.1.1 = k := congrArg Sigma.fst hq
-        exact h (this ▸ q.1.2))
-    simp only [e, extDeg, dif_neg h, Finset.sum_const_zero]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.isMultiHomog_rename_base <;> assumption
 
 omit [Fintype K] [∀ k, Fintype (ι k)] in
 theorem evC_rename_baseInc (z : (Σ k, ι k) → ℂ) (β : MRing (baseIdx ι blk)) :

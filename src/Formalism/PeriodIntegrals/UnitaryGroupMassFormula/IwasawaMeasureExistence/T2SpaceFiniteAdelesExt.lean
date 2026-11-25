@@ -368,8 +368,7 @@ theorem t2Space_finite_adeles_ext : @T2Space (AEf I) (tAf I) := by
   haveI := isTopologicalRing_tAf I
   apply IsTopologicalAddGroup.t2Space_of_zero_sep
   intro x hx
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   apply eq_zero_of_forall_bsub I x
   intro N hN

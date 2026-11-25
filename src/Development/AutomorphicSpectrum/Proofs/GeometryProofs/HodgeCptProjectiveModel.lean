@@ -41,6 +41,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagModelStatementHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.MkWeil, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullTorsionWeilPullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptProjectiveModel
@@ -245,16 +246,7 @@ variable {X X' : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of �
 
 theorem pull_map (L : Lat ξ E) (ξ' : Spec (CommRingCat.of Ω) ⟶ X') (g : X' ⟶ X) (φ : E →ₗ[Ω] E') :
     (L.map φ).pull ξ' g (AddMonoidHom.id E') = (L.pull ξ' g (AddMonoidHom.id E)).map φ := by
-  funext p
-  show Submodule.span _ _ = Submodule.map _ (Submodule.span _ _)
-  rw [Submodule.map_span]
-  congr 1
-  ext w
-  constructor
-  · rintro ⟨h, e, ⟨u, hu, rfl⟩, rfl⟩
-    exact ⟨u, ⟨h, u, hu, rfl⟩, rfl⟩
-  · rintro ⟨u, ⟨h, e, he, hu⟩, rfl⟩
-    exact ⟨h, φ e, ⟨e, he, rfl⟩, congrArg φ hu⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagModel.pull_map <;> assumption
 
 theorem span_of_isVBOn {L : Lat ξ E} {T : Set (Cpt ξ)} {r : ℕ} {V : Submodule Ω E} (h : L.IsVBOn T r V)
     {p : Cpt ξ} (hp : p ∈ T) : Submodule.span Ω (L p : Set E) = V := by

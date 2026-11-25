@@ -86,7 +86,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.ChartCmp.PushAd
@@ -289,7 +288,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 namespace GlobalTheory.ChartCmp.Coord
 open Formalism.MainNotions.ModuliIntegralCharts.H1
@@ -631,7 +629,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 open Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdJet Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 open Formalism.MainNotions.ModuliIntegralCharts.H1.ExpChartJetA Formalism.MainNotions.ModuliIntegralCharts.H1.ExpChartJet
@@ -799,7 +796,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.ChartCmp
@@ -856,7 +852,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.ChartCmp
@@ -933,7 +928,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 namespace GlobalTheory.PushSym
 
@@ -1018,7 +1012,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.PushFirstLaw
@@ -1218,7 +1211,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.PushSecondLaw
@@ -1356,7 +1348,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.ChartCmp

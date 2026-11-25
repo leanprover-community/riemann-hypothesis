@@ -94,8 +94,7 @@ theorem genFibre_prime_meets_polynomial :
   intro T _ _ _ hA O _ _ _ _ _ _ hind P hP hne
   haveI : IsDomain (Localization (Algebra.algebraMapSubmonoid O (nonZeroDivisors T))) :=
     (locIndEtale_isDomain_isIntegrallyClosed T O 1 ⟨inferInstance, hA⟩ (by simp) one_pos hind).1
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
 
   obtain ⟨y, hyP, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
   obtain ⟨⟨o, s⟩, rfl⟩ := IsLocalization.mk'_surjective (Algebra.algebraMapSubmonoid O (nonZeroDivisors T)) y

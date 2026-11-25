@@ -1102,8 +1102,7 @@ lemma schur_vanish {W : Type} [AddCommGroup W] [Module ℂ W] [Nontrivial W] [Fi
     (hEorth : ∀ χ : W →ₗ[ℂ] H, (∀ g w, χ (ρ g w) = act g (χ w)) →
       ∀ w, ∀ e ∈ E, inner ℂ (χ w) e = 0)
     (φ : H →ₗ[ℂ] W) (hφ : ∀ g, ∀ e ∈ E, φ (act g e) = ρ g (φ e)) : ∀ e ∈ E, φ e = 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨e₀, he₀E, he₀⟩ := hne
   let K : Submodule ℂ H := LinearMap.ker φ ⊓ E
   have hK : ∀ g, ∀ k ∈ K, act g k ∈ K := by

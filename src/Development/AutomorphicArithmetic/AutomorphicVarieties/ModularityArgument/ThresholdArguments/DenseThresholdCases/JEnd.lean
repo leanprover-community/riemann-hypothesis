@@ -483,8 +483,7 @@ private theorem trace_of_flag {r : H →* GL (Fin n) k} {ψ : Fin n → H →* k
 private theorem mem_range_of_sum [CharZero k] (a b : Fin n → H →* kˣ) (h : ∀ s, ∑ i, (a i s : k) = ∑ i, (b i s : k)) (i : Fin n) :
     ∃ j, a i = b j := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let c : (H →* kˣ) → (H →* k) := fun x => (Units.coeHom k).comp x
   have hc : Function.Injective c := fun x y e => MonoidHom.ext fun s => Units.ext (DFunLike.congr_fun e s)
   let L : (H →* k) →₀ k := ∑ j, Finsupp.single (c (a j)) 1 - ∑ j, Finsupp.single (c (b j)) 1

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataIntersectionSum
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsValues
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
@@ -503,32 +504,7 @@ theorem div_mem_of_span_eq (R : Subring Ω) {t g : Ω} (ht : t ≠ 0) (hg : g �
 theorem detLat_isGenAt {E : Type} [AddCommGroup E] [Module Ω E] (V : Lat ξ E) {r : ℕ} {s b : Fin r → E}
     {T : Matrix (Fin r) (Fin r) Ω} {p : Cpt ξ} (hs : LinearIndependent Ω s) (hb : V.IsFrameAt b p)
     (hT : ∀ k, b k = ∑ k', T k' k • s k') (hdet : T.det ≠ 0) : (detLat V s).IsGenAt p T.det := by
-  refine ⟨hdet, le_antisymm (Submodule.span_le.2 ?_) (Submodule.span_mono ?_)⟩
-  · rintro t ⟨b₂, T₂, hb₂, hT₂, rfl⟩
-    have hch : ∀ q, ∃ c : Fin r → regAt ξ p, b₂ q = ∑ i, (c i : Ω) • b i := fun q => by
-      have hm : b₂ q ∈ V p := by rw [hb₂.2]; exact Submodule.subset_span ⟨q, rfl⟩
-      rw [hb.2] at hm
-      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hm
-      exact ⟨c, hc.symm⟩
-    choose c hc using hch
-    let M : Matrix (Fin r) (Fin r) (regAt ξ p) := Matrix.of fun i q => c q i
-    have hM : T₂ = T * M.map (regAt ξ p).subtype := by
-      ext k' q
-      have e : ∑ k', T₂ k' q • s k' = ∑ k', (T * M.map (regAt ξ p).subtype) k' q • s k' := by
-        rw [← hT₂ q, hc q]
-        simp only [hT, Finset.smul_sum, smul_smul, Matrix.mul_apply, Finset.sum_smul]
-        rw [Finset.sum_comm]
-        refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-        simp [M, _root_.mul_comm]
-      have e' : ∑ k', (T₂ k' q - (T * M.map (regAt ξ p).subtype) k' q) • s k' = 0 := by
-        simp only [sub_smul, Finset.sum_sub_distrib, e, sub_self]
-      exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hs _ e' k')
-    refine Submodule.mem_span_singleton.2 ⟨M.det, ?_⟩
-    show (M.det : Ω) * T.det = T₂.det
-    have e : (M.det : Ω) = (M.map (regAt ξ p).subtype).det := RingHom.map_det (regAt ξ p).subtype M
-    rw [hM, Matrix.det_mul, e, _root_.mul_comm]
-  · rintro _ rfl
-    exact ⟨b, T, hb, hT, rfl⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.BigBlock.detLat_isGenAt <;> assumption
 
 end Det
 
@@ -691,12 +667,7 @@ theorem val_descend (ξ : Sp Ω ⟶ X) (zL : Sp L ⟶ X) (e : L →+* ℂ) {a : 
 theorem coords_field_map (ξ : Sp Ω ⟶ X) {K : Type} {J : K → Type} {y : (Σ k, J k) → Ω} {zL : Sp L ⟶ X}
     {w : (Σ k, J k) → L} (hw : CoordsAt ξ y zL w) (e : L →+* ℂ) :
     CoordsAt ξ y (spMap e ≫ zL) (fun p => e (w p)) := by
-  refine ⟨fun k => (hw.1 k).imp fun c hc => hc.map e, fun k c hc => ?_⟩
-  have hne : w ⟨k, c⟩ ≠ 0 := fun h0 => by simp [h0] at hc
-  obtain ⟨hy, hi⟩ := hw.2 k c (isUnit_iff_ne_zero.2 hne)
-  refine ⟨hy, fun i => ?_⟩
-  obtain ⟨ρ, hρ, hr⟩ := hi i
-  exact ⟨e ρ, valAt_of_field_map ξ zL _ e rfl hρ, by simp only [hr, map_mul]⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.Vert.coords_map <;> assumption
 
 theorem not_inFibre [CharZero Ω] [CharZero L] (ξ : Sp Ω ⟶ X) (zL : Sp L ⟶ X) (h : genPt ξ ⤳ centre zL) {p : ℕ}
     (hp : p ≠ 0) : ¬ InFibre ξ p ⟨centre zL, h⟩ := by

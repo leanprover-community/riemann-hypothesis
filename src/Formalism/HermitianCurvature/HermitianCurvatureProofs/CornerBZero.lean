@@ -19,8 +19,6 @@ namespace Formalism.FourierDecayAlt.P.LeftFubiniLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section vars
 
 variable (k p ρ : ℕ) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

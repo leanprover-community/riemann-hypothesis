@@ -404,8 +404,7 @@ theorem exists_irreducible_sub_inl : ∀ {G H V : Type} [Group G] [TopologicalSp
   intro G H V _ _ _ _ _ _ _ _ hG hH ρ hadm hi
   haveI : IsSimpleOrder (Subrepresentation ρ) := hi
   obtain ⟨v, hv0⟩ : ∃ v : V, v ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply (bot_ne_top : (⊥ : Subrepresentation ρ) ≠ ⊤)
     apply Subrepresentation.ext
     ext x

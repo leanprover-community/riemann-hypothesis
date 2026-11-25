@@ -116,8 +116,7 @@ theorem firstMinimum_pos_bis [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) 
 
 theorem threshold_le_firstMinimum [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) (h0 : P.ph = 0) :
     th (E := E) P.q P.R0 ≤ X.la1 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hp : P.ph = 2 * PT.f E / (PT.rd E ^ 2 * X.la1 ^ 2) := by
     simp only [Par.ph, PT.ph, if_pos hlt]
   rw [hp] at h0

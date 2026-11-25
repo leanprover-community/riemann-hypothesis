@@ -313,8 +313,7 @@ theorem top_piece_exponent_lt_one : ∀ (α r : ℝ) (d l0 l1 : ℕ), 0 < α →
   have hlt : α ^ (d * ((l0 + l1) * l0 * l1)) < 1 :=
     pow_lt_one₀ hα0.le hα1
       (Nat.mul_pos (by omega) (Nat.mul_pos (Nat.mul_pos (by omega) (by omega)) (by omega))).ne'
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : 1 ≤ (r ^ l0 * α ^ (d * S)) ^ (2 * (l0 + l1)) := one_le_pow₀ hc
   rw [hpow] at h1
   exact absurd hlt (not_lt.mpr h1)

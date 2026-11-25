@@ -919,8 +919,7 @@ theorem nat_bound (r f T : ℕ) (hr : 100 ≤ r) (hf : 5 ≤ f) (hT : 11 * (f * 
   omega
 
 theorem five_le_of_pow (r f : ℕ) (hr : 100 ≤ r) (h : (r : ℝ) / 2 * (7 / 8 : ℝ) ^ f ≤ 1 / 16) : 5 ≤ f := by
-  by_contra hf
-  push_neg at hf
+  by_contra! hf
   have h1 : (7 / 8 : ℝ) ^ 4 ≤ (7 / 8 : ℝ) ^ f := pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
   have h2 : (100 : ℝ) ≤ r := by exact_mod_cast hr
   nlinarith [pow_pos (show (0:ℝ) < 7/8 by norm_num) f]

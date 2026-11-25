@@ -206,8 +206,7 @@ private theorem valuation_sub_one_eq_one_of_lt_one {C : Type} [Field C] (v : Val
   apply le_antisymm
   · calc v (q - 1) ≤ max (v q) (v 1) := Valuation.map_sub v q 1
       _ ≤ 1 := by rw [v.map_one]; exact max_le hq.le le_rfl
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     have h2 := Valuation.map_sub v q (q - 1)
     rw [sub_sub_cancel, v.map_one] at h2
     exact absurd h2 (not_le.mpr (max_lt hq h))

@@ -1229,8 +1229,7 @@ theorem pair_dichotomy : Dichotomy := by
       haveI : Nontrivial R := nontrivial_of_ne _ _ hne
       haveI : NoZeroDivisors R := by
         refine ⟨fun {x y} hxy => ?_⟩
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         obtain ⟨m, u, hu, rfl⟩ := hval x hc.1
         obtain ⟨n, v, hv, rfl⟩ := hval y hc.2
         have h1 : (ϖ : R) ^ (m + n) * (u * v) = 0 := by

@@ -60,8 +60,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.TrueCx
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r j : ℕ} {Tau : Type}
 
 section Std

@@ -1483,8 +1483,7 @@ theorem lintegral_le_sum_types : ∀ (B : RowsAut) (p q : ℕ), SigIs B p q → 
     have hae : ∀ᵐ x ∂((B.I.muA B.μf).restrict Pᶜ), Φ x = 0 := by
       rw [ae_restrict_iff' hPm.compl]
       refine ae_of_all _ fun x hx => hΦ x ?_
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       obtain ⟨J, hJ, c, τ, hτ⟩ := GlobalTheory.TypeDecomp.exists_type B p q hs hn x hlt
       apply hx
       simp only [hP, Set.mem_iUnion, Set.mem_setOf_eq]

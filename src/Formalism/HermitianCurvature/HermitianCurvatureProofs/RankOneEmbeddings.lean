@@ -995,8 +995,7 @@ namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.Nm
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem exists_pos {k r : ℕ} (μ : Measure (Mt k r)) (h0 : μ ≠ 0) : ∃ K : Set (Mt k r), IsCompact K ∧ μ K ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply h0
   rw [← Measure.measure_univ_eq_zero, ← iUnion_compactCovering]
   exact measure_iUnion_null fun n => hcon _ (isCompact_compactCovering _ n)

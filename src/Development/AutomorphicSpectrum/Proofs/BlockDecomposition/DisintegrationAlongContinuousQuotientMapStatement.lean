@@ -194,8 +194,7 @@ theorem fibre_le [ν.IsOpenPosMeasure] [IsFiniteMeasureOnCompacts ν]
   have hlin : ∀ b, ∫⁻ X, ENNReal.ofReal (g X) ∂(m b) = ENNReal.ofReal (G b) := fun b =>
     (ofReal_integral_eq_lintegral_ofReal (hint b trivial) (Eventually.of_forall hg0)).symm
   rw [hlin c]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨e', he1, he2⟩ := exists_between hlt
   have hO : IsOpen {b | e' < ENNReal.ofReal (G b)} :=
     isOpen_lt continuous_const (ENNReal.continuous_ofReal.comp hG)

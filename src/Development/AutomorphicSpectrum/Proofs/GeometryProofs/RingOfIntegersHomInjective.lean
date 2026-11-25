@@ -6,6 +6,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColengthDvdOfNeZero
 
 @[expose] public section
 
@@ -19,15 +20,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Cusp.FamEx
 
 theorem ringOfIntegers_hom_injective {F : Type} [Field F] [NumberField F] {R : Type} [Field R] [CharZero R]
     (a : 𝓞 F →+* R) : Function.Injective a := by
-  have hI : (RingHom.ker a).comap (algebraMap ℤ (𝓞 F)) = ⊥ := by
-    rw [eq_bot_iff]
-    intro n hn
-    have h0 : ((n : ℤ) : R) = 0 := by
-      have h1 : a (algebraMap ℤ (𝓞 F) n) = 0 := hn
-      simpa using h1
-    have h2 : n = 0 := by exact_mod_cast h0
-    simp [h2]
-  exact (RingHom.injective_iff_ker_eq_bot a).2 (Ideal.eq_bot_of_comap_eq_bot hI)
+  apply _root_.GlobalTheory.ColengthDifferent.injective_of_charZero <;> assumption
 
 theorem exists_ringHom_extend {F : Type} [Field F] [NumberField F] {R : Type} [Field R] [CharZero R]
     (a : 𝓞 F →+* R) : ∃ κ : F →+* R, κ.comp (algebraMap (𝓞 F) F) = a :=

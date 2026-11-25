@@ -492,8 +492,7 @@ theorem dense : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFiel
         one_smul])
 
   obtain ⟨y, hy⟩ : ∃ y : E, σ y ≠ y := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact GlobalTheory.HeckeObjectExamples.sigma_ne_id hσ (AlgHom.ext h)
   have hinv : ∀ z, σ (σ z) = z := GlobalTheory.HeckeObjectExamples.sigma_invol hσ
   have hcincl : ∀ z : E, cA σ (inclR (F := F) (AF F) z) = inclR (F := F) (AF F) (σ z) := fun z => by

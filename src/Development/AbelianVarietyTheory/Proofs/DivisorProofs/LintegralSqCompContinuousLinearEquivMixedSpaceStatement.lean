@@ -60,7 +60,6 @@ open IsDedekindDomain NumberField MeasureTheory
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Matrix ENNReal Classical
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Chr incM)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory
 
 theorem lintegral_sq_comp_linearEquiv_mixed (F : Type) [Field F] [NumberField F] (κ : Type)

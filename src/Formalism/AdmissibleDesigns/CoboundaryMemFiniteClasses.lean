@@ -285,8 +285,7 @@ theorem finK' [Module.Finite (FractionRing O) VT] (hP : PerfectRight Dat.bT) :
 theorem nondeg_left (hP : PerfectRight Dat.bT) (x : VT) (hx : ∀ y, Dat.bT x y = 0) : x = 0 := by
   by_contra hne
   obtain ⟨ψ, hψ⟩ : ∃ ψ : VT →ₗ[FractionRing O] FractionRing O, ψ x ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne ((Module.forall_dual_apply_eq_zero_iff (FractionRing O) x).1 hall)
   obtain ⟨f, hf, _⟩ := hP ψ
   exact hψ ((hf x).symm.trans (hx f))

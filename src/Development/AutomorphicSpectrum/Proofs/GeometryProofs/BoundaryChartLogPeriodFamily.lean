@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGeneric
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatFirstFromResolutionAndGaga
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsValLineLogNormAtIffEmbedding
@@ -42,23 +44,7 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.StarRingEndRootEqNeg.rt0_conj_neg_ne_zero :
     ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]
-      (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E), (starRingEnd ℂ : ℂ → ℂ) H.rt0 = -H.rt0 := by
-  intro E _ _ _ H
-  have hd : (0 : ℝ) < (H.d : ℝ) := by exact_mod_cast H.d_prime.pos
-  have h := H.sqrt_neg_disc_sq
-  have hre : H.rt0.re * H.rt0.re - H.rt0.im * H.rt0.im = -(H.d : ℝ) := by
-    simpa [pow_two, Complex.mul_re] using congrArg Complex.re h
-  have him : H.rt0.re * H.rt0.im + H.rt0.im * H.rt0.re = 0 := by
-    simpa [pow_two, Complex.mul_im] using congrArg Complex.im h
-  have ha : H.rt0.re = 0 := by
-    by_contra ha
-    have hm : H.rt0.re * H.rt0.im = 0 := by linarith
-    have hb : H.rt0.im = 0 := (mul_eq_zero.mp hm).resolve_left ha
-    rw [hb] at hre
-    nlinarith [mul_self_nonneg H.rt0.re]
-  apply Complex.ext
-  · simp [ha]
-  · simp
+      (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E), (starRingEnd ℂ : ℂ → ℂ) H.rt0 = -H.rt0 := @_root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.rt0_conj_neg_ne_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ConjugateRootZeroThird =====
@@ -132,29 +118,7 @@ theorem exists_conjUnif (h : IsGrpPullback A' A cj ψ) (hM : M.IsLB) (u : HolUni
   exact key _ (Category.comp_id _).symm
 
 theorem isHodgeGram_conj : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (L : LB G.left) (x x' : Spec (CommRingCat.of ℂ) ⟶ S) (n : ℕ) (v : Fin n → (epsAt x ⟶ G)) (v' : Fin n → (epsAt x' ⟶ G)) (Γ : Matrix (Fin n) (Fin n) ℂ), x' = spMap (starRingEnd ℂ) ≫ x → (∀ i, (v' i).left = spMap (dualMap (starRingEnd ℂ)) ≫ (v i).left) → Fl.IsHodgeGram G L x v Γ → Fl.IsHodgeGram G L x' v' (Γ.map (starRingEnd ℂ)) := by
-  rintro S G _ L x x' n v v' Γ rfl hv' ⟨Q, ψ, vo, u, Hm, χ, W, hP, hLB, hAH, hvo, hΓ⟩
-  have hc := isGrpPullback_pullback Q.A cj
-  haveI := (Out.TLinPf.isAb_pullback cj Q.A Q.isAb).comm
-  obtain ⟨u', χ', hAH', hex⟩ := exists_conjUnif hc Q.isLB u hAH
-  have sq : ∀ i, (spMap (dualMap (starRingEnd ℂ)) ≫ (vo i).left) ≫ Q.A.hom = (epsR ℂ).hom ≫ cj := fun i => by
-    rw [Category.assoc, Over.w]
-    change Spec.map _ ≫ Spec.map _ = Spec.map _ ≫ Spec.map _
-    rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp]
-    congr 2
-    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-  let t : ∀ i, epsR ℂ ⟶ (Over.pullback cj).obj Q.A := fun i => Over.homMk (hc.1.lift _ _ (sq i)) (hc.1.lift_snd _ _ _)
-  have et : ∀ i, (t i).left ≫ pullback.fst Q.A.hom cj = spMap (dualMap (starRingEnd ℂ)) ≫ (vo i).left :=
-    fun i => hc.1.lift_fst _ _ _
-  refine ⟨GlobalTheory.TorsionTauCompare.polOfPullback Q _ hc, pullback.fst Q.A.hom cj ≫ ψ, t, u', Hm.map star, χ',
-    fun i => star (W i), hc.comp hP, ?_, hAH', fun i => ⟨?_, isDiff_conj hc u u' hex (et i) (hvo i).2⟩, fun i j => ?_⟩
-  · exact LBIso.symm (Cusp.FibreMove.lbIso_pull (LBIso.symm hLB) _)
-  · exact ((Category.assoc _ _ _).symm.trans (congrArg (· ≫ ψ) (et i))).trans
-      (((Category.assoc _ _ _).trans (congrArg _ (hvo i).1)).trans (hv' i).symm)
-  · rw [Matrix.map_apply, hΓ, map_mul, Complex.conj_ofReal]
-    congr 1
-    refine Eq.trans ?_ (GlobalTheory.ArchMetricCompare.star_form Hm (star (W i)) (star (W j)))
-    rw [star_star (W i), star_star (W j)]
-    rfl
+  exact @_root_.GlobalTheory.CompanionTheory.Ar.Flat.isHodgeGram_conj
 
 end GlobalTheory.CompanionTheory.Ar.GramConj
 end -- clump:auto
@@ -180,15 +144,8 @@ variable {n a g : ℕ} {Λ : Type} [AddCommGroup Λ]
 
 theorem add_single_mem_logCover (h : a ≤ n) {w : Fin n → ℂ} (hw : w ∈ logCover h) (i : Fin a) :
     w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I) ∈ logCover h := by
-  refine ⟨fun j => ?_, fun k hk => ?_⟩
-  · by_cases hj : Fin.castLE h j = Fin.castLE h i
-    · simpa [hj, Pi.single_apply] using (by simpa [hj] using hw.1 j)
-    · simpa [Pi.single_apply, hj] using hw.1 j
-  · have hki : k ≠ Fin.castLE h i := by
-      rintro rfl
-      simp at hk
-      omega
-    simpa [Pi.single_apply, hki] using hw.2 k hk
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.QuotLoc.add_single_mem_logCover <;> assumption
 
 theorem expCover_add_single (h : a ≤ n) (w : Fin n → ℂ) (i : Fin a) :
     expCover a (w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I)) = expCover a w := by

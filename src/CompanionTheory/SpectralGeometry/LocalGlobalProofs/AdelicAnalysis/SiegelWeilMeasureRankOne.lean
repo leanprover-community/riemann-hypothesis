@@ -493,8 +493,7 @@ theorem fibre_lintegral_eq_density {V X Y : Type}
   have hLB : L ⊆ B := hLO.trans hOB
 
   have hex : ∃ b₁ ∈ L, ∫⁻ v, w v ∂(fib b₁) < ∞ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 : ∫⁻ v in g ⁻¹' L, w v ∂μ = ∫⁻ b in L, ∫⁻ v, w v ∂(fib b) ∂ν :=
       FibreDensity.lintegral_preimage hι hf hg hfib hLc hLB hw
     have h2 : ∫⁻ b in L, ∫⁻ v, w v ∂(fib b) ∂ν = ∞ := by

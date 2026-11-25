@@ -1116,8 +1116,7 @@ variable {K : Type} [Field K] [NumberField K] {I : Type} [Fintype I]
 
 theorem exists_one_le_norm {φ : I → K →+* ℂ} (hφ : GlobalTheory.CMVal.IsCMType φ) {α : 𝓞 K} (hα : α ≠ 0) :
     ∃ i, 1 ≤ ‖φ i (α : K)‖ := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hlt : ∀ w : InfinitePlace K, w (α : K) < 1 := by
     intro w
     obtain ⟨i, hi, -⟩ := hφ w.embedding

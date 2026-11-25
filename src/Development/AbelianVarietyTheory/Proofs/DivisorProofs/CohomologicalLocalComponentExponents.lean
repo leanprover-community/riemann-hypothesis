@@ -656,8 +656,6 @@ section Completion
 
 open NumberField IsDedekindDomain Formalism.UG GlobalTheory.LFun
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {V : Type} [AddCommGroup V] [Module ℂ V]
 
 theorem norm_eq_one_of_deg_one {N : ℕ} (hN : N = 1) {ρ : Representation ℂ (GL (Fin N) (w.adicCompletion E)) V}
@@ -716,8 +714,6 @@ end Completion
 section Global
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 

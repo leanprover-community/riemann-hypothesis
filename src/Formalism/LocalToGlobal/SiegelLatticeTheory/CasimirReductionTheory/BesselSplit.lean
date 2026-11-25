@@ -108,8 +108,6 @@ namespace Formalism.L2.SG.BesselSplit
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature MeasureTheory Finset
 open scoped InnerProductSpace
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Period
 
 variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]

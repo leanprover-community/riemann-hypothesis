@@ -205,14 +205,12 @@ theorem v_gamma (hv : v.Integers R) (hpv : v (p : C) < 1) {ω : ZMod p → C} (h
     v (∑ a, u0 ω a * ζ ^ a.val) ^ (p - 1) = v (p : C) := by
   have hpp : 2 ≤ p := hp.out.two_le
   have hζ1 : v ζ ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 := one_lt_pow₀ h (show p ≠ 0 by omega)
     rw [← map_pow, hζ.pow_eq_one, map_one] at h2
     exact lt_irrefl _ h2
   have hπ1 : v (ζ - 1) < 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 := one_le_pow₀ (n := p - 1) h
     rw [val_prim_root hζ] at h2
     exact absurd hpv (not_lt.mpr h2)

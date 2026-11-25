@@ -757,8 +757,7 @@ theorem main_gen {O K : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_
     suffices hv : n + m ≤ (φ x').valuation by
       rw [hspec]
       exact Dvd.dvd.mul_left (pow_dvd_pow _ hv) _
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨X, hX⟩ := hfin φ hφ
     set v := (φ x').valuation
     have hzA : algebraMap ℤ_[l] (Per.Acris l) (φ x') =

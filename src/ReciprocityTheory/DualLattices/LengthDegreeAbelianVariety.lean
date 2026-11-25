@@ -541,8 +541,7 @@ theorem infinite_residueField [IsAlgClosed C] :
     Polynomial.eval_add, Polynomial.eval_C] at hα
   have hαq : α ^ q = α + 1 := sub_eq_zero.mp hα
   have hle : v α ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 : v (α + 1) ≤ v α := by
       calc v (α + 1) ≤ max (v α) (v 1) := v.map_add _ _
         _ = v α := by rw [map_one]; exact max_eq_left h.le
@@ -580,8 +579,7 @@ theorem v_eq_one_of_residue_ne_zero {x : v.valuationSubring}
       v (((u⁻¹ : (v.valuationSubring)ˣ) : v.valuationSubring) : C) = 1 := by
     rw [← map_mul, hmul, map_one]
   refine le_antisymm h1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : v ((u : v.valuationSubring) : C) *
       v (((u⁻¹ : (v.valuationSubring)ˣ) : v.valuationSubring) : C) ≤
       v ((u : v.valuationSubring) : C) := mul_le_of_le_one_right zero_le h2
@@ -651,8 +649,7 @@ theorem exists_generic [IsAlgClosed C] {ι σ T : Type} [Fintype ι] [DecidableE
     exact zero_ne_one h1'
   have hP : ∏ t, p t ≠ 0 := Finset.prod_ne_zero_iff.mpr fun t _ => hp t
   obtain ⟨z, hz⟩ : ∃ z, MvPolynomial.eval z (∏ t, p t) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP (MvPolynomial.funext fun x => by rw [h x, map_zero])
   rw [map_prod] at hz
   have hzt : ∀ t, MvPolynomial.eval z (p t) ≠ 0 :=

@@ -380,8 +380,7 @@ private lemma coeff_lin_form {A ι : Type} [CommRing A] [Fintype ι] (a : ι →
 theorem UpperTheory.Gal.crystallineComparison.matchStep_of :
     GaussLin → SameNormBasic → LinFactor → MatchStep := by
   intro hG hS hL B _ ϖ hϖ hnu ι _ N m hm u u' hcard hsame x hx hchain hdich
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hex : ∀ y : ι → B, ∃ c : B, ∃ e : ι → B,
       y ∈ u' → c ∣ ϖ ^ m ∧ (∃ k₀, e k₀ = 1) ∧ ∀ k, x k - y k = c * e k := by
     intro y
@@ -606,8 +605,7 @@ private theorem UpperTheory.Gal.crystallineComparison.one_not_mem {B : Type} [Co
 
 private theorem UpperTheory.Gal.crystallineComparison.good_or {B : Type} [CommRing B] {𝔪 : Ideal B} (h𝔪 : 𝔪.IsPrime) (e : B) :
     e ∉ 𝔪 ∨ 1 - e ∉ 𝔪 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   exact one_not_mem h𝔪 (by simpa using 𝔪.add_mem h.1 h.2)
 
 private theorem UpperTheory.Gal.crystallineComparison.mul_not_mem {B : Type} [CommRing B] {𝔪 : Ideal B} (h𝔪 : 𝔪.IsPrime)

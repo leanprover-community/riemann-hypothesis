@@ -12,8 +12,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.TVG
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def RightRuleEv : Prop :=
   ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ)
     (D : Set (Q.Mx k r)) (f : Q.Mx k r → E), inWb k r z' → IsOpen D → Q.SmoothLev k r 0 D f →

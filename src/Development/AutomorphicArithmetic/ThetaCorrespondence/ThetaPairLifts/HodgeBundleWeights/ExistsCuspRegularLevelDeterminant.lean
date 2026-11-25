@@ -819,8 +819,7 @@ theorem exists_vec_det_ne_zero (F : Type) [Field F] [CharZero F] [Algebra F ℂ]
   have hQ : (∏ i, P i) ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hPi i
   obtain ⟨x, hx, hQx⟩ : ∃ x ∈ Set.pi Set.univ (fun _ : (Σ i, Fin (n i)) => Set.range (algebraMap F ℂ)),
       MvPolynomial.eval x (∏ i, P i) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ (MvPolynomial.funext_set (fun _ => Set.range (algebraMap F ℂ))
       (fun _ => Set.infinite_range_of_injective (algebraMap F ℂ).injective)
       fun x hx => by rw [hcon x hx, map_zero])

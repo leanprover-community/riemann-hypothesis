@@ -110,8 +110,7 @@ theorem exists_common_eigenvector_in_submodule {W : Type} [AddCommGroup W] [Modu
 theorem exists_hasEigenvalue_ne_zero {W : Type} [AddCommGroup W] [Module ℂ W]
     [FiniteDimensional ℂ W] (T : End ℂ W) (v : W) (m : ℕ) (hm : finrank ℂ W ≤ m)
     (hv : (T ^ m) v ≠ 0) : ∃ μ : ℂ, μ ≠ 0 ∧ T.HasEigenvalue μ := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hbot : ∀ μ : ℂ, μ ≠ 0 → T.maxGenEigenspace μ = ⊥ := by
     intro μ hμ
     by_contra hne

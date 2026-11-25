@@ -318,14 +318,12 @@ private theorem lt_colH_iff_le {n : ℕ} {mu : Fin n → ℤ} (hmu : Antitone mu
   unfold colH
   constructor
   · intro h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hsub : (Finset.univ.filter fun m : Fin n => c ≤ mu m) ⊆ Finset.Iio t := by
       intro m hm
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hm
       rw [Finset.mem_Iio]
-      by_contra hmt
-      push_neg at hmt
+      by_contra! hmt
       have := hmu hmt
       omega
     exact absurd (lt_of_lt_of_le h ((Finset.card_le_card hsub).trans (Fin.card_Iio t).le)) (lt_irrefl _)

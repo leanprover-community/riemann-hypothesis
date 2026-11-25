@@ -76,8 +76,6 @@ namespace GlobalTheory.TanBaseChange
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem list_prod_comp' {X0 : Scheme.{0}} {G : Over X0} [MonObj G] {T T' : Over X0} (f : T' ⟶ T)
     (L : List (T ⟶ G)) : (L.map (f ≫ ·)).prod = f ≫ L.prod := by
   induction L with

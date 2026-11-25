@@ -60,8 +60,7 @@ theorem supp_aeval_pow (g : σ → τ) (e : σ → ℕ) (x : MvPolynomial σ R) 
     (hm' : m' ∈ (aeval (fun v => (X (g v) : MvPolynomial τ R) ^ e v) x).support) :
     ∃ m ∈ x.support, m' = imgMon g e m := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply MvPolynomial.mem_support_iff.mp hm'
 
   rw [x.as_sum, map_sum, MvPolynomial.coeff_sum]
@@ -107,13 +106,11 @@ theorem posOf_injOn {n' : ℕ} [NeZero n'] (a : ℤ) :
   obtain ⟨c, hc⟩ := Int.ModEq.dvd hmod
   have hn : (0 : ℤ) < n' := by exact_mod_cast NeZero.pos n'
   have hc1 : c < 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : (n' : ℤ) * 1 ≤ n' * c := mul_le_mul_of_nonneg_left h hn.le
     omega
   have hc2 : -1 < c := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : (n' : ℤ) * c ≤ n' * (-1) := mul_le_mul_of_nonneg_left h hn.le
     omega
   have : c = 0 := by omega

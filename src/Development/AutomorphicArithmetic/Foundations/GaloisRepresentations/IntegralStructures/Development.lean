@@ -587,8 +587,7 @@ open UpperTheory.Gal.Int.Div
 
 private theorem two_cases {R : Type} [CommRing R] (T : R → Prop) (hT : ∀ a b, T a → T b → T (a + b))
     (I J : Ideal R) (h : ∀ y, T y → y ∈ I ∨ y ∈ J) : (∀ y, T y → y ∈ I) ∨ (∀ y, T y → y ∈ J) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨⟨a, ha, haI⟩, b, hb, hbJ⟩ := hcon
   have haJ : a ∈ J := (h a ha).resolve_left haI
   have hbI : b ∈ I := (h b hb).resolve_right hbJ

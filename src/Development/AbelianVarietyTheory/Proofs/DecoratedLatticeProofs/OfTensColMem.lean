@@ -60,8 +60,7 @@ theorem of_tensCol_mem {Ψ : Matrix n n' k → ℂ} {a : (n → k) → ℂ}
     (h : tensCol Ψ a ∈ SB (Matrix n (n' ⊕ Fin 1) k)) (ha : a ≠ 0) : Ψ ∈ SB (Matrix n n' k) := by
   haveI := Comm.t2Space_matrix_of_isNonarchimedeanLocalField (k := k) (n := n) (n' := n')
   obtain ⟨y₀, hy₀⟩ : ∃ y₀, a y₀ ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact ha (funext h0)
   have hg := Comm.comp_mem_SB h
     (p := fun x₀ : Matrix n n' k => Matrix.of fun i j => Sum.elim (x₀ i) (fun _ => y₀ i) j)
@@ -82,8 +81,7 @@ theorem of_tensRow_mem {Ψ : Matrix n n' k → ℂ} {b : (n' → k) → ℂ}
     (h : tensRow Ψ b ∈ SB (Matrix (n ⊕ Fin 1) n' k)) (hb : b ≠ 0) : Ψ ∈ SB (Matrix n n' k) := by
   haveI := Comm.t2Space_matrix_of_isNonarchimedeanLocalField (k := k) (n := n) (n' := n')
   obtain ⟨η₀, hη₀⟩ : ∃ η₀, b η₀ ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hb (funext h0)
   have hg := Comm.comp_mem_SB h
     (p := fun x₀ : Matrix n n' k => Matrix.of fun i j => Sum.elim (fun i => x₀ i j) (fun _ => η₀ j) i)

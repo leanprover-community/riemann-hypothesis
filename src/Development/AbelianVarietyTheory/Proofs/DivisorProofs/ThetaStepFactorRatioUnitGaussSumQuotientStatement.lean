@@ -93,8 +93,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (gauss unifAt PsiUnr)
 
 noncomputable section
@@ -164,7 +162,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
 
 namespace GlobalTheory.SqStepArith
@@ -239,8 +236,6 @@ theorem condExp_comp_eq_two {F E : Type} [Field F] [NumberField F] [Field E] [Nu
 end GlobalTheory.SqStepArith
 
 namespace GlobalTheory.SqStepArith
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem factor_unr {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) {v : HeightOneSpectrum (𝓞 F)}
     (ν₀ ξ : (Fv F v)ˣ →* ℂˣ)
@@ -460,7 +455,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
 
 namespace GlobalTheory.TwistGaussInt
@@ -531,7 +525,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
 
 namespace GlobalTheory.TwistUnr
@@ -578,8 +571,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (gauss unifAt PsiUnr)
 
 open Classical
@@ -697,8 +688,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (gauss unifAt PsiUnr)
 
 theorem GlobalTheory.Square.isAwayUnit_of_unitOff_embedding : ∀ {K : Type} [Field K] [NumberField K] (σ : K →+* ℂ) (x : K) (q m : ℕ), 0 < q → q ∣ m →
@@ -743,7 +732,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
 
 namespace GlobalTheory.TwistStepVal
@@ -818,9 +806,7 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.TwistCond
 
@@ -881,7 +867,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Chars Base stepFac chrW eps idealVal gauss unifAt PsiUnr)
 
 namespace GlobalTheory.SqTwist
@@ -982,8 +967,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SqStepArith
 

@@ -215,8 +215,7 @@ theorem sig_ne_id (A : Places F E sig) : ¬ ∀ y, sig y = y := by
   norm_num at this
 
 theorem fix_mem (A : Places F E sig) (s : E) (hs : sig s = s) : ∃ t : F, algebraMap F E t = s := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   apply sig_ne_id A
   have hli : LinearIndependent F ![(1 : E), s] := by
     rw [LinearIndependent.pair_iff]

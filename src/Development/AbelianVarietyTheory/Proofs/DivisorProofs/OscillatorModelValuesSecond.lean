@@ -87,7 +87,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj GlobalTheory.Dict GlobalTheory.Dict.Lift
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {r g : ℕ} {X : Data E r} {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ}

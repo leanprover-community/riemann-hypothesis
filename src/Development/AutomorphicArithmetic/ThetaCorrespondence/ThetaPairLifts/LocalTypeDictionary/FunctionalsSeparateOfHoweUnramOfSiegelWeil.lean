@@ -373,8 +373,7 @@ theorem integrableOn_corePeriod_rapidlyDecreasing {M : Vol G} (hM : M.IsRow) {F 
 theorem exists_reach_of_span {M : Vol G} (hM : M.IsRow) {v : CoreVol G}
     {u : GA D (Yc D 0) → ℂ} (hu : RapidDec (Yc D 0) u) {F : Fn G (.core 0)} (hF : F ∈ Submodule.span ℂ (Reach W v))
     (h0 : per0 G M F u ≠ 0) : ∃ F' ∈ Reach W v, per0 G M F' u ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have key : IntegrableOn (fun h => F (stabilizerEmbedding G.sp.dec0 h) * u h) (M.fd (.grid 0 0)) (M.ν (.grid 0 0)) ∧
       per0 G M F u = 0 := by
     clear h0

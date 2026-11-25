@@ -116,8 +116,6 @@ open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.KerPhase
 
 variable {D : D7}
@@ -414,8 +412,6 @@ open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem _root_.GlobalTheory.T.exists_adelicForm_eq_rationalPhase_kernelSeries : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →
   ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m)
     (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (Rl : RealDat3 D A3 T.Q.c.F) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd)
@@ -449,8 +445,6 @@ open scoped TensorProduct
 namespace GlobalTheory.PlaceValues
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (i : Fin D.R.m)
@@ -486,7 +480,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.IndefR.Links IsDedekindDomain NumberField GlobalTheory.ExportSeries Formalism.L2.Pj GlobalTheory.CoverRead GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels GlobalTheory.ConjTwist
 open Formalism.L2.Host (embLL0)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -602,8 +595,6 @@ open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.E
 open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PhaseOneOnto
 
@@ -871,7 +862,6 @@ open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 800000
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.BigOn.Exp.SerBase
 
@@ -978,7 +968,6 @@ open GlobalTheory.BigOn.Exp.SerBase
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.SerBase
 open GlobalTheory.RealGeo GlobalTheory.Unframe GlobalTheory.UnframePt in
 theorem kerRatAt_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →

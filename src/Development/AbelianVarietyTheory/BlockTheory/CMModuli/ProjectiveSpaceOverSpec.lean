@@ -16,8 +16,6 @@ noncomputable section
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveSpaceOverSpec
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 def IsIndEtale {A S : Type} [CommRing A] [CommRing S] (φ : A →+* S) : Prop :=
   MorphismProperty.ind.{0} (RingHom.toMorphismProperty @RingHom.Etale) (CommRingCat.ofHom φ)
 

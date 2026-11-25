@@ -96,7 +96,6 @@ open MonoidalCategory CartesianMonoidalCategory MonObj
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.KerConst
 

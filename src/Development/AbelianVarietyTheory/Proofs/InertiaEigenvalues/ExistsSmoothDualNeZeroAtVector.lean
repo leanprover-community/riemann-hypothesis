@@ -60,8 +60,7 @@ theorem exists_smooth_form_ne_zero : ∀ (G V : Type) [Group G] [TopologicalSpac
   have hq : (twKer ρ K 1).mkQ v ≠ 0 := by
     rwa [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
   obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ (V ⧸ twKer ρ K 1), f ((twKer ρ K 1).mkQ v) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hq ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 hc)
   refine ⟨f ∘ₗ (twKer ρ K 1).mkQ, ?_, hf⟩
   have hinv : ∀ g ∈ K, ρ.dual g (f ∘ₗ (twKer ρ K 1).mkQ) = f ∘ₗ (twKer ρ K 1).mkQ := by

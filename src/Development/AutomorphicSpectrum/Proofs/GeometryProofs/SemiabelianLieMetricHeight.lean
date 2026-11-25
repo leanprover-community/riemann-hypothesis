@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ToXQFst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsClosureCoords
 public import Mathlib.Analysis.Polynomial.CauchyBound
@@ -1429,21 +1430,8 @@ theorem noeth_good {T : Type} [TopologicalSpace T] [TopologicalSpace.NoetherianS
 theorem isGrpPullback_comp {S S' S'' : Scheme.{0}} {G : Over S} {G' : Over S'} {G'' : Over S''} [GrpObj G] [GrpObj G'] [GrpObj G'']
     {f : S' ⟶ S} {g : S'' ⟶ S'} {φ : G'.left ⟶ G.left} {ψ : G''.left ⟶ G'.left} (h : IsGrpPullback G' G f φ)
     (h' : IsGrpPullback G'' G' g ψ) : IsGrpPullback G'' G (g ≫ f) (ψ ≫ φ) := by
-  refine ⟨h'.1.paste_horiz h.1, fun T x y x₀ y₀ hx hy => ?_⟩
-  have key : ∀ (c : T.left ⟶ S) (_ : (T.hom ≫ g) ≫ f = c) (x₀ y₀ : Over.mk c ⟶ G), x₀.left = x.left ≫ ψ ≫ φ →
-      y₀.left = y.left ≫ ψ ≫ φ → (x₀ * y₀).left = (x * y).left ≫ ψ ≫ φ := by
-    rintro _ rfl x₀ y₀ hx hy
-    let x₁ : Over.mk (T.hom ≫ g) ⟶ G' := Over.homMk (x.left ≫ ψ) (by
-      have := h'.1.w
-      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc, Over.w])
-    let y₁ : Over.mk (T.hom ≫ g) ⟶ G' := Over.homMk (y.left ≫ ψ) (by
-      have := h'.1.w
-      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc, Over.w])
-    have e₁ := h'.2 T x y x₁ y₁ rfl rfl
-    have e₂ := h.2 (Over.mk (T.hom ≫ g)) x₁ y₁ x₀ y₀ (by simpa [x₁] using hx) (by simpa [y₁] using hy)
-    rw [e₂, e₁]
-    exact CategoryTheory.Category.assoc _ _ _
-  exact key _ (Category.assoc _ _ _) x₀ y₀ hx hy
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsGrpPullback.comp <;> assumption
 
 theorem dual_inl {A B : Type} [CommRing A] [CommRing B] (σ : A →+* B) (a : A) :
     dualMap σ (algebraMap A (DualNumber A) a) = algebraMap B (DualNumber B) (σ a) := by

@@ -1306,8 +1306,7 @@ theorem asmL_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a
   · intro δ hδ hne
     rw [Pi.one_apply, one_mul] at hne
     obtain ⟨p, hp⟩ : ∃ p, phiX n w b ϖ x a (p⁻¹ * δ * θ p) ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hne (_root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.twisted_orbital_integral_eq_zero_of_vanish θ _ δ _ hcon)
     have hyS := hinv δ hδ p
     rw [hval _ hyS] at hp
@@ -1359,8 +1358,7 @@ variable {G : Type} [Group G] [TopologicalSpace G]
 
 theorem meets_of_ne (K : Subgroup G) (δ : G) (f : G → ℂ) (h : twOrb (MonoidHom.id G) K δ f ≠ 0) :
     ∃ p : G, f (p⁻¹ * δ * p) ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   exact h (_root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.twisted_orbital_integral_eq_zero_of_vanish (MonoidHom.id G) K δ f (fun p => by simpa using hcon p))
 
 end

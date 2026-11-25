@@ -304,8 +304,7 @@ theorem galdiv : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)) (z
   have hk2 : 2 ≤ k := by omega
   have hzk : ‖omC (z k)‖ ≤ 1 := (hz1 k).le
   have hnorm : ‖omC (z k)‖ ≤ ‖u k‖ := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have e : omC (z k) = sh (u k) - (sh (u k) - omC (z k)) := by ring
     have h3 : ‖omC (z k)‖ ≤ max ‖sh (u k)‖ ρ := by
       conv_lhs => rw [e, sub_eq_add_neg]

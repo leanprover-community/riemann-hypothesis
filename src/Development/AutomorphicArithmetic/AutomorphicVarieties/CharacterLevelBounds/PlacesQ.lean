@@ -130,8 +130,7 @@ private theorem val_lt_one_iff (A : ValuationSubring Ω) (n : ℕ) (hn : n ≠ 0
         A.valuation (a : Ω) < 1 ∨ A.valuation (b : Ω) < 1 := by
       constructor
       · intro h
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have e1 : A.valuation (a : Ω) = 1 := le_antisymm (val_natCast_le_one A a) hc.1
         have e2 : A.valuation (b : Ω) = 1 := le_antisymm (val_natCast_le_one A b) hc.2
         rw [e1, e2, one_mul] at h

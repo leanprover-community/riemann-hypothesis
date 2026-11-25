@@ -111,8 +111,7 @@ theorem seg_num {k Q a b' Y E0 N1 La m cm A0 mN e1 e2 : ℝ} (hk5 : 5 ≤ k) (hQ
   have hkQm0 : 0 ≤ k * Q * m := mul_nonneg hkQ.le hm
   have hA0a : a ≤ A0 * (2 * Q) := (div_le_iff₀ (by linarith)).mp hA0lo
   have hA0 : 0 < A0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := mul_le_mul_of_nonneg_right hc (by linarith : (0 : ℝ) ≤ 2 * Q)
     linarith
   have hkm1 : k * (m + 1) < A0 := by

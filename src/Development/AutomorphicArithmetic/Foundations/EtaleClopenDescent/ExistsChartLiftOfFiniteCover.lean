@@ -85,61 +85,8 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.WdUniImpliesMJ
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.WeightInverseContinuity
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.YbValTensor
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.PWdBasic
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.PWdUni
@@ -1018,24 +965,20 @@ private lemma omB_mono {B B' : Subalgebra ℂ L} (h : B ≤ B') (q : ℕ) : omB 
   rintro _ ⟨b, hb, v, hv, rfl⟩
   exact ⟨b, h hb, v, fun j => h (hv j), rfl⟩
 
+open scoped Pointwise in
 private lemma ι_mul_mem (B : Subalgebra ℂ L) (q : ℕ) {w : Ω[L⁄ℂ]} (hw : w ∈ om1 B) {y : DR ℂ L}
     (hy : y ∈ omB ℂ L B q) : ExteriorAlgebra.ι L w * y ∈ omB ℂ L B (q + 1) := by
-  induction hw using Submodule.span_induction with
-  | mem w hw =>
-    obtain ⟨b, hb, u, hu, rfl⟩ := hw
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨c, hc, v, hv, rfl⟩ := hy
-      refine Submodule.subset_span ⟨b * c, B.mul_mem hb hc, Fin.cons u v, fun j => ?_, ?_⟩
-      · exact Fin.cases hu hv j
-      · rw [ExteriorAlgebra.ιMulti_succ_apply]
-        simp [Matrix.vecTail, mul_smul, Function.comp_def, smul_comm b c]
-    | zero => simp
-    | add a a' _ _ h h' => rw [mul_add]; exact Submodule.add_mem _ h h'
-    | smul t a _ h => rw [mul_smul_comm]; exact Submodule.smul_mem _ t h
-  | zero => simp
-  | add a a' _ _ h h' => rw [map_add (f := _), add_mul]; exact Submodule.add_mem _ h h'
-  | smul t a _ h => rw [LinearMap.map_smul_of_tower, smul_mul_assoc]; exact Submodule.smul_mem _ t h
+  let inc : Ω[L⁄ℂ] →ₗ[ℂ] DR ℂ L := (ExteriorAlgebra.ι L).restrictScalars ℂ
+  have hmul : (om1 B).map inc * omB ℂ L B q ≤ omB ℂ L B (q + 1) := by
+    rw [om1, Submodule.map_span, omB, Submodule.span_mul_span]
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨w, hw, y, hy, rfl⟩
+    obtain ⟨_, ⟨b, hb, u, hu, rfl⟩, rfl⟩ := hw
+    obtain ⟨c, hc, v, hv, rfl⟩ := hy
+    refine Submodule.subset_span ⟨b * c, B.mul_mem hb hc, Fin.cons u v, fun j => Fin.cases hu hv j, ?_⟩
+    rw [ExteriorAlgebra.ιMulti_succ_apply]
+    simp [inc, Matrix.vecTail, mul_smul, Function.comp_def, smul_comm b c]
+  exact hmul (Submodule.mul_mem_mul (Submodule.mem_map_of_mem hw) hy)
 
 private lemma ιMulti_mem (B : Subalgebra ℂ L) (q : ℕ) (w : Fin q → Ω[L⁄ℂ]) (hw : ∀ j, w j ∈ om1 B) :
     ExteriorAlgebra.ιMulti L q w ∈ omB ℂ L B q := by

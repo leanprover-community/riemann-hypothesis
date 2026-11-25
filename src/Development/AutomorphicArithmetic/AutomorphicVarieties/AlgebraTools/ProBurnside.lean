@@ -153,8 +153,7 @@ private theorem count_step (l : ℕ) [hl : Fact l.Prime] (G : Type) [Group G] :
     push_neg at htriv
     obtain ⟨f₀, hf₀, hne⟩ := htriv
     obtain ⟨g, hg⟩ : ∃ g, f₀ g ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hne (MonoidHom.ext hc)
     let ev : S →* Multiplicative (ZMod l) :=
       { toFun := fun f => (f : G →* Multiplicative (ZMod l)) g

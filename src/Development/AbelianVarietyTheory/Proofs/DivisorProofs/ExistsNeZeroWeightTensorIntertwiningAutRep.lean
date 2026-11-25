@@ -87,8 +87,7 @@ theorem exists_ne_zero_wsp_intertwining : ∀ (E : Type) [Field E] [NumberField 
     simp only [T, LinearMap.comp_apply, PiTensorProduct.lift.tprod]
     rfl
   obtain ⟨u0, hu0⟩ : ∃ u, F u ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hF0 (MultilinearMap.ext h)
   refine ⟨T, fun h => hu0 ?_, fun w => (PiTensorProduct.lift F w).2, fun x hx w => ?_⟩
   · apply Subtype.ext

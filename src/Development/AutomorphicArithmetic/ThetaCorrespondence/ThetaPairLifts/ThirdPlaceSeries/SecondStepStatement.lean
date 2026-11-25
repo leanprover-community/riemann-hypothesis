@@ -483,8 +483,7 @@ theorem exists_root_congr_unit : ∀ {E Ω : Type} [Field E] [NumberField E] [Fi
     simp only [hp, Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X,
       Polynomial.eval_C, Function.comp_def] at this
     rw [this]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hall : ∀ ζ ∈ p.roots, 1 ≤ A.valuation (a - ζ) := by
     intro ζ hζ
     have hroot : ζ ^ n = 1 := by

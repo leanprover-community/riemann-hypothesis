@@ -916,8 +916,7 @@ theorem bound_of_over (K : Ctx) (B : Pre) (h : K.Over B) (i : Fin 2) :
         have : K.P.R.k ≤ 4 := by omega
         exact_mod_cast this
       have hy12 : y ≤ 1.2 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have : (1.2 : ℝ) ^ 8 < y ^ 8 := pow_lt_pow_left₀ hc (by norm_num) (by norm_num)
         norm_num at this
         linarith

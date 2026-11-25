@@ -143,8 +143,7 @@ theorem eq_std {ψ : AddChar (AF F) ℂ} (hψ : PsiUnr ψ v) {Φ : (κ → Fv F 
   · rw [Pi.smul_apply, Set.indicator_of_notMem (show x ∉ {x : κ → Fv F v | ∀ i, x i ∈ v.adicCompletionIntegers F} from hx), smul_zero]
     obtain ⟨i, hi⟩ := not_forall.1 hx
     obtain ⟨y, hy, hne⟩ : ∃ y ∈ v.adicCompletionIntegers F, psiLoc ψ v (x i * y) ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hi ((hψ _).1 hc)
     have := congrFun (h (0, Pi.single i y) ⟨fun _ => zero_mem _, fun j => by
       by_cases e : j = i

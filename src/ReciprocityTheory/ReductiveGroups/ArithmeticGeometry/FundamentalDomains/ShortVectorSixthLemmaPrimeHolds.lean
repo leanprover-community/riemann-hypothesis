@@ -106,8 +106,7 @@ theorem offdiag_le {M : Fin 2 → Fin 2 → ℂ} (hM : (Matrix.of M).PosSemidef)
     have h' := h
     simp only [Complex.sub_re, Complex.re_ofReal_mul, Complex.add_re,
       Complex.ofReal_re] at h'
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hm := mul_lt_mul_of_pos_left hlt (pow_pos hn 2)
     nlinarith
 
@@ -478,8 +477,7 @@ private lemma prod_le_one_of_sum_le_card {ι : Type} [Fintype ι] [Nonempty ι] 
   rw [Real.finsetProd_rpow _ _ (fun i _ => (hv i).le), ← Finset.mul_sum] at key
   have h3 : 1 / (Fintype.card ι : ℝ) * ∑ i, v i ≤ 1 := by
     rw [one_div, inv_mul_le_iff₀ hn]; linarith
-  by_contra hgt
-  push_neg at hgt
+  by_contra! hgt
   have := Real.one_lt_rpow hgt (by positivity : (0 : ℝ) < 1 / (Fintype.card ι : ℝ))
   linarith
 
@@ -660,8 +658,7 @@ theorem coefficient_index_lower_bound (h2 : UnipotentLatticeLift (E := E)) (h3d 
   have hprod : 1 ≤ ∏ τ : X.Ψ, (((X.g : ℝ) * dE E ^ 2) ^ 2 * (Matrix.of (χ τ)).det.re) := by
     have hnn : 0 ≤ ∏ τ : X.Ψ, (((X.g : ℝ) * dE E ^ 2) ^ 2 * (Matrix.of (χ τ)).det.re) :=
       Finset.prod_nonneg fun τ _ => by have := (hdpos τ).1; positivity
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have := pow_lt_one₀ hnn hlt (two_ne_zero)
     linarith
 
@@ -1136,12 +1133,10 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
 lemma exists_minor {u : Fin 2 → Fin r → E} (hu : LinearIndependent E u) :
     ∃ a b : Fin r, u 0 a * u 1 b - u 0 b * u 1 a ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hu0 : u 0 ≠ 0 := hu.ne_zero 0
   obtain ⟨a, ha⟩ : ∃ a, u 0 a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu0 (funext h)
   have key := Fintype.linearIndependent_iff.1 hu ![u 1 a, -(u 0 a)] (by
     funext b

@@ -86,7 +86,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 noncomputable section
 
@@ -218,7 +217,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 open scoped Topology
@@ -265,8 +263,7 @@ theorem exists_open_fix_vac_neg : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : 
     (hW.om_cont _ hvac.2.theta w₀).comp (continuous_id.prodMk continuous_const)
   have key : ∃ n : ℕ, ∀ k ∈ GfC (neg A), GlobalTheory.Member.FinCong (neg A) (N₁ * n.factorial) k →
       om' (k, 1) X.vac = X.vac := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose k hk hkc hkne using hne
     have hpow : ∀ n, ∃ m : ℕ, ∃ c : ℂ, om' (k n ^ m, 1) X.vac = c • X.vac ∧ ¬ ‖c - 1‖ ≤ 1 / 2 := by
       intro n
@@ -274,8 +271,7 @@ theorem exists_open_fix_vac_neg : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : 
       have hc1 : c ≠ 1 := by
         rintro rfl
         exact hkne n (by rw [hc, one_smul])
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hc1 (GlobalTheory.Doubling.eq_one_of_forall_norm_pow_sub_one_le (A := ℂ) fun m =>
         h m (c ^ m) (GlobalTheory.VacFixSource.om_pow_eq_fst _ (k n) _ c hc m))
     choose m c hmc hc using hpow
@@ -327,7 +323,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 open scoped Topology
 
@@ -442,7 +437,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section

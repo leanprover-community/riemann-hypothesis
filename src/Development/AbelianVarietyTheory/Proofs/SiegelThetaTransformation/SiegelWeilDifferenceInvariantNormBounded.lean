@@ -751,8 +751,7 @@ theorem exists_imag : ∃ (ξ : E) (D : ℕ), ξ ≠ 0 ∧ cc ξ = -ξ ∧ 0 < D
     IsIntegral ℤ ((D : E) * ξ⁻¹) := by
   classical
   obtain ⟨x, hx⟩ : ∃ x : E, cc x ≠ x := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact IsCMField.complexConj_ne_one E (AlgEquiv.ext h)
   obtain ⟨y, hy, h⟩ := exists_integral_multiples ℤ ℚ ({x - cc x, (x - cc x)⁻¹} : Finset E)
   have key : ∀ t : E, IsIntegral ℤ (y • t) → IsIntegral ℤ ((y.natAbs : E) * t) := fun t ht => by

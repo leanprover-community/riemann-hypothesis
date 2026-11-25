@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutSH
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P.PBH
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem fsv_zero' (t : ℂ) : fsv 0 t = 1 := by simp [fsv]
 
 theorem fsv_mul' (s s' t : ℂ) : fsv s t * fsv s' t = fsv (s + s') t := by

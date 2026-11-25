@@ -754,8 +754,6 @@ namespace GlobalTheory.Eis
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sphConv : ∀ (D : D7) (V : HSp D) (a : GL (Fin V.rank) (AE D)),
     GlobalTheory.Doubling.HasIwasawa D.sp.cm.sig (GlobalTheory.Doubling.dblSp V).gram (GlobalTheory.Doubling.Khat V a) → GlobalTheory.Eis.SphConv V a := by
   intro D V a hI σ hσ

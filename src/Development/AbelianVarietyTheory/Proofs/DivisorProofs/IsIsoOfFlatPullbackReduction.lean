@@ -55,8 +55,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.C
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open CategoryTheory.Limits
 open scoped TensorProduct
 

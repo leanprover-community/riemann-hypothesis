@@ -110,8 +110,7 @@ lemma dim_bound {E : Type*} [Field E] [Algebra ℚ E] [FiniteDimensional ℚ E]
     have h0 : aeval M (X - 1 : E[X]) = 0 := by rw [hq, map_mul, minpoly.aeval, zero_mul]
     simpa [sub_eq_zero] using h0
   obtain ⟨f, hf, hfm, hfΦ⟩ : ∃ f : E[X], Irreducible f ∧ f ∣ minpoly E M ∧ f ∣ cyclotomic g E := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hcop : IsCoprime (minpoly E M) (cyclotomic g E) :=
       isCoprime_of_irreducible_dvd (fun h => hm0 h.1) (fun z hz hzm hzΦ => hcon z hz hzm hzΦ)
     exact hnd (hcop.dvd_of_dvd_mul_right hdvd)

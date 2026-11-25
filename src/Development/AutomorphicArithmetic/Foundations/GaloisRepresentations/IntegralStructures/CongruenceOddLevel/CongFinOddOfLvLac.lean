@@ -693,8 +693,7 @@ theorem finU_holds : FinU := by
   have hφ : IsAutFormU φ := hU.aut.aut φ hφU
   have heig : ∀ j, opOf (RU E a) (t j) φ = η U j • φ := fun j => hact U hU.aut φ hφU hφK j
   obtain ⟨g₀, hg₀, hφg₀⟩ : ∃ g ∈ finU (E := E) (n := a), φ g ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ0 (eq_zero_of_finU hφ h)
   choose φ' hφ' hφ'eq using fun σ : ℂ ≃+* ℂ => exists_conj_isAutFormU E a σ φ hφ
   obtain ⟨M, hMfin, hM⟩ := _root_.GlobalTheory.ConjSpan.conj_span_finite E a φ hφ

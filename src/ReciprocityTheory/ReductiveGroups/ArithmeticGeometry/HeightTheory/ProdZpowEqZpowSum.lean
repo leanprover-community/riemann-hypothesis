@@ -289,8 +289,7 @@ theorem sigF_cMM (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (b : Fin (d.D + 1)) (u : 
     have hpH := hS p hp
     have hne : d.nPMM h c (d.w (d.jc c) c) p ≠ 0 := ((Set.Finite.mem_toFinset _).1 hp).2
     have hg : ∃ w, w ∈ d.GoodP c p := by
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       have hG : d.GoodP c p = ∅ := Set.eq_empty_iff_forall_notMem.mpr hno
       apply hne
       unfold nPMM

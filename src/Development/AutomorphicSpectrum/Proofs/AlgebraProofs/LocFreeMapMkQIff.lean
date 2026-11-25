@@ -63,15 +63,7 @@ theorem locFree_stdLat (R : Subalgebra o Ω) (m : ℕ) : LocFree R m (stdLat R (
 
 theorem locFree_divLat (R : Subalgebra o Ω) {E : Type} [AddCommGroup E] [Module Ω E] {c : Ω}
     (hc : c ≠ 0) {r : ℕ} {L : AddSubgroup E} (h : LocFree R r L) : LocFree R r (divLat c L) := by
-  have := locFree_map_equiv R (LinearEquiv.smulOfNeZero Ω E c⁻¹ (inv_ne_zero hc)) h
-  convert this using 1
-  ext v
-  constructor
-  · intro hv
-    exact ⟨c • v, hv, by simp [smul_smul, hc]⟩
-  · rintro ⟨x, hx, rfl⟩
-    show c • (c⁻¹ • x) ∈ L
-    simpa [smul_smul, hc] using hx
+  apply _root_.PositivityTheory.Xgn.LocallyFreeLatticeSpans.locFree_div <;> assumption
 
 theorem locFree_map_mkQ_iff (R : Subalgebra o Ω) {E E₂ : Type} [AddCommGroup E] [Module Ω E]
     [AddCommGroup E₂] [Module Ω E₂] (q : E →ₗ[Ω] E₂) (hq : Function.Surjective q) {r : ℕ}

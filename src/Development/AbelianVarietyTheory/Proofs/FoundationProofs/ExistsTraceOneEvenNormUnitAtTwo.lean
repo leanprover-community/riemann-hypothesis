@@ -54,8 +54,7 @@ namespace GlobalTheory.EvenTheta
 
 theorem norm_eq_one_or_of_add_eq_one {L : Type*} [NormedField L] [IsUltrametricDist L] {b c : L}
     (h : b + c = 1) (hn : ‖b * c‖ < 1) : ‖b‖ = 1 ∨ ‖c‖ = 1 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨hb, hc⟩ := hne
   rw [norm_mul] at hn
   have h1 : ‖c‖ = max 1 ‖b‖ := by

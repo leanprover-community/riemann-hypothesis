@@ -241,12 +241,10 @@ theorem matrix_intertwiner_descends : ∀ (K : Type) [Field K] (e : K →+* ℂ)
   intro K _ e Γ m p _ _ A B ⟨X, hX, hXc⟩
   letI := e.toAlgebra
   obtain ⟨a, b, hab⟩ : ∃ a b, X a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hX (Matrix.ext h)
   obtain ⟨ℓ, hℓ⟩ : ∃ ℓ : Module.Dual K ℂ, ℓ (X a b) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hab ((Module.forall_dual_apply_eq_zero_iff K (X a b)).1 h)
   have h1 : ∀ (x : ℂ) (c : K), ℓ (x * e c) = ℓ x * c := by
     intro x c

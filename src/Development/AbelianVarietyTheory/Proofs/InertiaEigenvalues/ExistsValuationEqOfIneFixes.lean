@@ -188,8 +188,7 @@ theorem ramificationIdx_eq_one {K Ω L : Type} [Field K] [NumberField K] [Field 
     rw [h0] at hpos
     simp at hpos
   have hle : w.asIdeal.ramificationIdx (𝓞 K) ≤ 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : 2 * P.ramificationIdx (𝓞 L) ≤ w.asIdeal.ramificationIdx (𝓞 K) * P.ramificationIdx (𝓞 L) :=
       Nat.mul_le_mul_right _ hc
     omega

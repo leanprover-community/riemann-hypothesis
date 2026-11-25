@@ -1025,8 +1025,7 @@ theorem UpperTheory.heckeEigenspace_descent_of_equivariant_equiv :
   · intro μ hμ
     obtain ⟨σ, hσ, rfl⟩ := Finset.mem_image.1 hμ
     rw [Set.Finite.mem_toFinset] at hσ
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     refine hno ⟨σ, hσ.1, hσ.2, fun k P a1 a2 a3 a4 => ?_⟩
     have := hne (k, P) ⟨a1, a2, a3, a4⟩
     simp only [sys, hrd] at this

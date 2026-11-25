@@ -111,8 +111,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
 namespace GlobalTheory.ChowDegree
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 theorem degree_eq_hilbertDegree_of_isChowForm : ∀ (F : Type) [Field F] [CharZero F] (D N δ : ℕ) (I : Ideal (MvPolynomial (Fin N) F)) (f : MvPolynomial (Fin (D + 1) × Fin N) F), IsChowForm I D δ f → I.IsPrime → (∀ g ∈ I, ∀ n : ℕ, homogeneousComponent n g ∈ I) → δ = hilbertDegree I := by
   intro F _ _ D N δ I f hf hp hI
   haveI := hp
@@ -130,7 +128,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial GlobalTheory.ChowHt
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ChowSection
 
@@ -155,8 +152,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
 namespace GlobalTheory.HSElim
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem aeval_eq_zero_of_point {F K : Type} [Field F] [Field K] [Algebra F K] [IsAlgClosure F K]
     {N e δ : ℕ} {P : Ideal (MvPolynomial (Fin N) F)} {f : MvPolynomial (Fin (e + 1) × Fin N) F}
@@ -282,8 +277,7 @@ theorem exists_elim_form_of_field : ∀ (F : Type) [Field F] [CharZero F] (D N d
         have := h' _ (Or.inr (Or.inl ⟨i, rfl⟩))
         simpa using this)
   obtain ⟨j0, hj0⟩ : ∃ j0, y j0 ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hy (funext hcon)
   let z : Fin N → K := fun j => if j = j0 then (y j0)⁻¹ else 0
   let x0 : (Fin D × Fin N) ⊕ (Fin N ⊕ Fin N) → K := Sum.elim (fun p => s p.1 p.2) (Sum.elim y z)
@@ -735,8 +729,7 @@ namespace GlobalTheory.ConeOnto
 theorem exists_pt_of_mem_cone_of_isAlgClosed : ∀ (F : Type) [Field F] (S : LinSys F), S.IsVariety → S.BasePointFree → ∀ (K : Type) [Field K] [Algebra F K] [IsAlgClosed K] (y : Fin S.N → K), y ≠ 0 → (∀ g ∈ S.imageIdeal, aeval y g = 0) → ∃ (x : S.Pt K) (c : K), c ≠ 0 ∧ S.coords x.1 = c • y := by
   intro F _ S hS hb K _ _ _ y hy hI
   classical
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hT : (S.baseChange K).IsVariety := hS.baseChange K
   have hbT : (S.baseChange K).BasePointFree := hb.baseChange K
   obtain ⟨i₀, hi₀⟩ := Function.ne_iff.1 hy
@@ -746,8 +739,7 @@ theorem exists_pt_of_mem_cone_of_isAlgClosed : ∀ (F : Type) [Field F] (S : Lin
     simp [u, sub_mul, Finset.sum_sub_distrib, Pi.single_apply]
 
   have hcov : ∀ z : (S.baseChange K).Y, ∃ j, z ∈ nonzeroLocus ((S.baseChange K).comb (u j)) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨z, hz⟩ := hc
     have := hT.smooth
     have : Smooth (S.baseChange K).str := SmoothOfRelativeDimension.smooth (S.baseChange K).D _

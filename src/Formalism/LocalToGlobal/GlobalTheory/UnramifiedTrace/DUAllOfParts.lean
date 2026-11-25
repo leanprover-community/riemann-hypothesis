@@ -23,8 +23,7 @@ namespace Formalism.L2.GlobalTheoryTheory.UnramifiedTrace
 private theorem eq_pow_sub_of_mul_pow_eq_pow {c q k n : ℕ} (hq : 1 < q) (hc : 1 ≤ c) (h : c * q ^ k = q ^ n) :
     c = q ^ (n - k) := by
   have hkn : k ≤ n := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 : q ^ n < q ^ k := Nat.pow_lt_pow_right hq hlt
     have h2 : q ^ k ≤ c * q ^ k := Nat.le_mul_of_pos_left _ hc
     omega
@@ -66,8 +65,7 @@ variable {K X : Type*} [Field K] [Fintype K] [DecidableEq K] [AddCommGroup X] [M
 theorem exists_dual_one {Y : Type*} [AddCommGroup Y] [Module K Y] [FiniteDimensional K Y] (y : Y) (hy : y ≠ 0) :
     ∃ g : Module.Dual K Y, g y = 1 := by
   have h1 : ∃ g : Module.Dual K Y, g y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy ((Module.forall_dual_apply_eq_zero_iff K y).1 h)
   obtain ⟨g, hg⟩ := h1
   exact ⟨(g y)⁻¹ • g, by simp [hg]⟩

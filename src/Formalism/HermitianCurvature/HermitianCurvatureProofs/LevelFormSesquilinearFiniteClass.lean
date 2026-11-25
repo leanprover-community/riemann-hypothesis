@@ -3073,8 +3073,7 @@ theorem pd_nonneg_of_approx (z : ℂ) (M : ℝ) (h : ∀ R : ℝ, 1 ≤ R → �
       linarith [le_abs_self M]
     linarith
   have hre : 0 ≤ z.re := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have hpos : 0 < -z.re := by linarith
     obtain ⟨w, hw, hzw⟩ := h (max 1 ((|M| + 1) / (-z.re))) (le_max_left _ _)
     have hwre : 0 ≤ w.re := (Complex.nonneg_iff.1 hw).1

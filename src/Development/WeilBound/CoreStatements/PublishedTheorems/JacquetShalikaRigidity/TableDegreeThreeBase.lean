@@ -68,8 +68,7 @@ theorem avg_char {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) (ζ : ι → E) :
     rw [setIntegral_const]
     simp [Measure.real, vecMeasure_vecDomain]
   · obtain ⟨t, ht⟩ : ∃ t, ζ t ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (funext hc)
     obtain ⟨a, ha⟩ := exists_ne_one hψ
     set y : ι → Ad E := Pi.single t (algebraMap E (Ad E) (ζ t)⁻¹ * a)

@@ -4,6 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Lat
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DifferentGeneratorDualIntegral
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RelatedPairsOrbitalTermEq
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
 
 @[expose] public section
 
@@ -51,20 +52,7 @@ theorem eigSub_eq_different_smul_eigQuot : ∀ (A K : Type) [CommRing A] [Field 
   obtain ⟨he1, he2, -, he4⟩ := ProjEig.eigProj_spec K V E ρ σ
   obtain ⟨hd0, hd1, u, hu⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.different_generator_dualInt A K E σ d hinj hσ hd
   have hQ : eigQuot ρ σ X = Submodule.span A (Set.range fun i => eigProj ρ σ (t i)) := by
-    apply le_antisymm
-    · unfold eigQuot
-      rw [hX.2.2, Submodule.map_span_le]
-      rintro _ ⟨⟨i, k⟩, rfl⟩
-      obtain ⟨a, ha⟩ := hσ (RingOfIntegers.basis E k)
-      have : eigProj ρ σ (ρ (RingOfIntegers.basis E k) (t i)) = a • eigProj ρ σ (t i) := by
-        rw [← Module.End.mul_apply, he4, Module.End.mul_apply,
-          apply_of_mem_eigSp ρ σ (he1 _), ← ha, IsScalarTower.algebraMap_smul]
-      simp only [LinearMap.restrictScalars_apply]
-      rw [this]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-    · rw [Submodule.span_le]
-      rintro _ ⟨i, rfl⟩
-      exact ⟨t i, mem_of_isFreeOn ρ X t hX i, rfl⟩
+    apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeDeterminantLattice.eigQuot_eq_span <;> assumption
   have hli : LinearIndependent K (fun i => eigProj ρ σ (t i)) := by
     rw [Fintype.linearIndependent_iff]
     intro y hy i

@@ -52,8 +52,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (Gm)
 open GlobalTheory.DeRham (spOver spOver_comp GrpMor)
 open GlobalTheory.Cris (dp0)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory
 
 namespace PDiv

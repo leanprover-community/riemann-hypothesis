@@ -160,8 +160,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ActMatrix
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
@@ -208,8 +206,6 @@ namespace GlobalTheory.LogKSDiv.GenUniq
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (spMap_comp_spMap)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem dualMap_injective {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
     (hf : Function.Injective f) : Function.Injective (Formalism.L2.Pj.dualMap f) := by

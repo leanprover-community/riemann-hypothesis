@@ -204,8 +204,7 @@ theorem idx_ne {Λ : Type} [Group Λ] {B E K : Subgroup Λ} (hBE : B ≤ E) (hEK
 
 theorem exists_not_mem {Λ : Type} [Group Λ] {B E : Subgroup Λ} (h : 25 ≤ (B.subgroupOf E).index) :
     ∃ g ∈ E, g ∉ B := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have htop : B.subgroupOf E = ⊤ := Subgroup.subgroupOf_eq_top.mpr (fun g hg => hc g hg)
   rw [htop, Subgroup.index_top] at h
   omega
@@ -239,8 +238,7 @@ theorem t_trick {I X Y : ℝ} (hX : 0 ≤ X) (hY : 0 ≤ Y) (h : ∀ t : ℝ, 0 
       rw [hYr, div_div_eq_mul_div, div_le_iff₀ ha]
       nlinarith [mul_nonneg hb.le hr, mul_nonneg (mul_nonneg hb.le hr) hδ.le]
     nlinarith
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   set δ := (|I| - 1 / 5 * (s * r)) * 10 / (r + s + 1) with hδ_def
   have hpos : 0 < r + s + 1 := by linarith
   have hδ : 0 < δ := by

@@ -399,8 +399,6 @@ section Rec
 
 open Formalism.MainNotions.S.Cnt GlobalTheory.Mass
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {Λ : LatV D}
 
 theorem frame_mem_of_XS {T : D.host.E} (F : Fg D T) (hL : IsLift Λ F) (hX : XLam Λ F = XS D F.fl)

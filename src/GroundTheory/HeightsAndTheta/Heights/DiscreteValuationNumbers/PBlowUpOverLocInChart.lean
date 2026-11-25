@@ -297,8 +297,7 @@ theorem BlowUpOverLocInChart.proof : BlowUpOverLocInChart.Statement.{u} := by
     rw [Ideal.mem_comap] at hg
     by_contra hgW
     obtain ⟨c, hc⟩ : ∃ c, weightedHomogeneousComponent (blockWeight ι) c g ∉ W := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hgW
       rw [← sum_weightedHomogeneousComponent (blockWeight ι) g,
         finsum_eq_sum _ (weightedHomogeneousComponent_finsupp g)]

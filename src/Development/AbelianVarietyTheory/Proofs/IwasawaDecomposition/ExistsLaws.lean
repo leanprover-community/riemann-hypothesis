@@ -62,8 +62,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 universe u
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S : Scheme.{u}} (G : Over S) [GrpObj G]
 
 def lawε : ULift.{u} (Fin 3) → ℤ := fun k => ![1, -1, -1] k.down
@@ -130,8 +128,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 universe u
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.BiextSignTwist
 
 section
@@ -177,8 +173,6 @@ namespace GlobalTheory.LamBiext
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Nest
 

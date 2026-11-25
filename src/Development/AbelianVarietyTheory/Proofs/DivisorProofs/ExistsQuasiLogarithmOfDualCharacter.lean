@@ -204,8 +204,7 @@ variable {p : ℕ} {O : Type} [CommRing O] {G : PDivGroup p O} {d : ℕ}
 theorem exists_eq_add_single {α : Fin d →₀ ℕ} (h : α ≠ 0) :
     ∃ (i : Fin d) (β : Fin d →₀ ℕ), α = β + Finsupp.single i 1 ∧ α.degree = β.degree + 1 := by
   obtain ⟨i, hi⟩ : ∃ i, α i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (Finsupp.ext hc)
   have hle : Finsupp.single i 1 ≤ α := by
     intro j

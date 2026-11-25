@@ -34,8 +34,7 @@ theorem valb_le_of_coeff_eq_zero (r : OCb l) (n : ℕ) (hr : PreTilt.coeff n r =
   by_cases h0 : r = 0
   · rw [h0, map_zero]; exact zero_le
   have hex : ∃ m, PreTilt.coeff m r ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact h0 (Perfection.ext fun m => (hall m).trans (map_zero _).symm)
   obtain ⟨N, hM⟩ : ∃ N, PreTilt.coeff (N + n) r ≠ 0 :=
     ⟨_, PreTilt.coeff_nat_find_add_ne_zero (h := hex) n⟩
@@ -89,8 +88,7 @@ theorem tiltGlue : TiltGlue := by
     lt_of_le_of_lt (valb_le_of_coeff_eq_zero rr n hcr) hn
   obtain ⟨e, he⟩ := hD l rr ((s : OCb l) ^ l) hvr.le
   have hve : valb l e < 1 := by
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have h3 : valb l ((s : OCb l) ^ l) ≤ valb l rr := by
       rw [he, map_mul]
       exact le_mul_of_one_le_right zero_le hge

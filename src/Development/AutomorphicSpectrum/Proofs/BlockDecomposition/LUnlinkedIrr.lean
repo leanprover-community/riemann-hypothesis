@@ -331,8 +331,7 @@ theorem exists_intertwiningMap_ne_zero {G V W : Type} [Group G] [Subsingleton G]
   obtain ⟨v, hv⟩ := exists_ne (0 : V)
   obtain ⟨w, hw⟩ := exists_ne (0 : W)
   obtain ⟨l, hl⟩ : ∃ l : Module.Dual ℂ V, l v ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ v).1 hc)
   refine ⟨⟨l.smulRight w, fun g => ?_⟩, v, smul_ne_zero hl hw⟩
   rw [Subsingleton.elim g 1, map_one, map_one]

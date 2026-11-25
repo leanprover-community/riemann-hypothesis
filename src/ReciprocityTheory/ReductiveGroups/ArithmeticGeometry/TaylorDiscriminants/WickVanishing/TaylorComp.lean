@@ -179,8 +179,7 @@ theorem cc_subst {σ τ : Type} [Fintype σ] {L : σ → MvPowerSeries τ ℂ} (
   · simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   · intro e he
     obtain ⟨p, hp⟩ : ∃ p, e p ≠ 0 := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       exact he (Finsupp.ext hn)
     have hz : constantCoeff (e.prod fun s n => L s ^ n) = 0 := by
       rw [Finsupp.prod, map_prod]

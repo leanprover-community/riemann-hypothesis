@@ -256,8 +256,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data 
 
 theorem exists_s_ne {Xa : ArchInM X} (Fl : FlatM X Xa) (x0 : Frame X.Ψ r) (hx0 : IsOrth X x0) :
     ∃ k0 : Fin (nd X), ∃ z ∈ OmF X x0, Fl.s k0 (cpt X x0 z) ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hall : ∀ k, ∀ x ∈ X.dom, Fl.s k x = 0 := fun k =>
     bigCell_of lu_holds r X x0 hx0 Xa.L (Fl.s k) ⟨(Fl.s_van k).1.1.1.1, (Fl.s_van k).1.1.1.2.1⟩ (hcon k)
   have hx0d := IW.orth_mem_dom X x0 hx0
@@ -436,8 +435,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data 
 
 theorem s_not_ev_zero {Xa : ArchInM X} (Fl : FlatM X Xa) (j : Fin Fl.δ) :
     ∃ k, ¬ (fun z => Fl.s k (cpt X (Fl.xs j) z)) =ᶠ[𝓝 (0 : V (nd X))] 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hc := Fl.coord j
   have hev : (fun z : V (nd X) => (WithLp.toLp 2 fun k =>
       Fl.s k (cpt X (Fl.xs j) z) / Fl.w0 (cpt X (Fl.xs j) z) : V (nd X))) =ᶠ[𝓝 0] fun _ => 0 := by
@@ -1266,8 +1264,7 @@ theorem zero_null {U : Set (V n)} (hU : IsOpen U) (hUc : IsPreconnected U) {g : 
     obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU z hz
     by_contra hne
     have hex : ∃ z0 ∈ ball z (r / 4), g z0 ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (Metric.eventually_nhds_iff_ball.mpr ⟨r / 4, by linarith, h⟩)
     obtain ⟨z0, hz0, hgz0⟩ := hex
     rw [Metric.mem_ball] at hz0
@@ -1306,8 +1303,7 @@ theorem zero_null {U : Set (V n)} (hU : IsOpen U) (hUc : IsPreconnected U) {g : 
   obtain ⟨hzU, hgz⟩ := hz
   obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU z hzU
   have hex : ∃ z0 ∈ ball z (r / 4), g z0 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hWempty z hzU (Metric.eventually_nhds_iff_ball.mpr ⟨r / 4, by linarith, h⟩)
   obtain ⟨z0, hz0, hgz0⟩ := hex
   rw [Metric.mem_ball] at hz0

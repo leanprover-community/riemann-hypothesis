@@ -123,8 +123,7 @@ private lemma kd_abs (x : Fin 2 → ℤ) (i : Fin 2) : |(x i : ℝ)| ≤ ‖x‖
 
 private lemma kd_one {x : Fin 2 → ℤ} (hx : x ≠ 0) : 1 ≤ ‖x‖ := by
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (funext h)
   have h1 : (1 : ℝ) ≤ |((x i : ℤ) : ℝ)| := by
     rw [← Int.cast_abs]

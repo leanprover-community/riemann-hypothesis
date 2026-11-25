@@ -118,8 +118,7 @@ theorem bd_one_of_inv {q : ℕ} [Fact q.Prime] (f g : ℂ_[q]⟦X⟧) (hf : Bdd 
     split_ifs <;> simp
   have hm := (sup_norm_laws q).2.2.2.1 f g 1 hf hg h1
   intro i
-  by_contra hi
-  push_neg at hi
+  by_contra! hi
   have hp : 0 < ‖coeff i f‖ := lt_trans one_pos hi
   have hb : Bd (1 / ‖coeff i f‖) g := fun j => by
     rw [le_div_iff₀ hp, mul_comm]; exact hm i j

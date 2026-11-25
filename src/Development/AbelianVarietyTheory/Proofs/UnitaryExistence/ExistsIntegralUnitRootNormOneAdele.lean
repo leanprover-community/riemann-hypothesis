@@ -328,8 +328,7 @@ theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [
     Pint a ∧ Valued.v (a v) < 1
   have hkey : ∀ v, ∃ ij : Option (Fin n) × Option (Fin n), ¬ Valued.v (p ij.1 ij.2 v) < 1 := by
     intro v
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     choose cy hcy using fun j => _root_.GlobalTheory.AdLat.UnitRoot.conj_mem c _ ⟨Y j, rfl⟩
     have h1 : ∑ i, ρ (Y i) * m i = 1 := by
 

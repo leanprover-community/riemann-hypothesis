@@ -118,7 +118,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -301,7 +300,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -493,7 +491,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -583,8 +580,7 @@ theorem exists_addChar_completion_lift_residue : ∀ (K : Type) [Field K] [Numbe
     show ψ' (red ⟨x, hx1⟩) = 1
     rw [e2, AddChar.map_zero_eq_one]
   · obtain ⟨y, hy⟩ : ∃ y, ψ' y ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hne
       ext y
       rw [hc y, AddChar.one_apply]
@@ -638,7 +634,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -670,7 +665,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -690,7 +684,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -724,7 +717,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -747,7 +739,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -878,7 +869,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -909,7 +899,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -959,7 +948,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -989,7 +977,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1059,7 +1046,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1108,7 +1094,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1130,7 +1115,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1186,7 +1170,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1248,7 +1231,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1329,7 +1311,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp

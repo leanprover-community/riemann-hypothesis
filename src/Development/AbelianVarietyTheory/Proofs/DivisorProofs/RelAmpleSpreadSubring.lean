@@ -58,7 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZM GlobalTheory.SiegelTor
 
 noncomputable section
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AmpleApprox
 
@@ -116,8 +115,7 @@ theorem relAmple_spread_subring (hM : M.IsLB) (hφ : IsPullback φ B.hom A₀.ho
   refine GlobalTheory.AmpleLocal.relAmple_of_locally _ B₂ (M.pull π) (pull_isLB hM π) inferInstance inferInstance
     fun s => ?_
   obtain ⟨x, -, hxs⟩ : ∃ x ∈ c.support, Subring.inclusion h (r x) ∉ (s : PrimeSpectrum R₂).asIdeal := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have key : (∑ y ∈ c.support.attach, (⟨c y, hcR y y.2⟩ : R₂) * Subring.inclusion h (r y)) = 1 := by
       apply Subtype.ext
       rw [AddSubmonoidClass.coe_finsetSum, OneMemClass.coe_one, ← hc, Finsupp.sum]

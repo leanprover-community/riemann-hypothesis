@@ -215,8 +215,7 @@ theorem real_step (ep x w₁ w₂ W₁ W₂ D D₀ D₁ D₂ : ℝ) (h0 : 0 ≤ 
   have hc := (abs_le.mp h₁).2
   have hd := (abs_le.mp h₂).2
   have hx : 0 ≤ x := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     nlinarith
   have hpos : 0 < 1 - ep := by linarith
   have hxD : x ≤ D / (1 - ep) := by

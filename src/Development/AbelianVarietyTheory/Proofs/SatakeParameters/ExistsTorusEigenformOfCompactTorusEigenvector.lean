@@ -115,8 +115,7 @@ theorem exists_eigenform {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (hl :
     rwa [LinearMap.mem_ker, map_sub, map_smul, sub_eq_zero] at this
   refine ⟨μ, l, hl0, hle, fun h hh => ?_⟩
   obtain ⟨v, hv⟩ : ∃ v, l v ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     exact hl0 (LinearMap.ext hn)
   have h1 : ρ' h v - v ∈ T.toSubmodule := Submodule.subset_span ⟨⟨h, hh⟩, v, by simp⟩
   have h2 := hlM (hTM h1)

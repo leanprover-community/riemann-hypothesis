@@ -152,8 +152,7 @@ theorem eq_zero_of_mem_eigenSub_of_sum {O k N : Type} [CommRing O] [Field k] [Ad
   | insert j s hj ih =>
     intro m y hm hy h
     obtain ⟨c, hc⟩ : ∃ c, χ j c ≠ σ c := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hχ j (RingHom.ext hcon)
     let f : Module.End k N := ρ c - χ j c • LinearMap.id
     have hfm : f m = (σ c - χ j c) • m := by
@@ -226,8 +225,7 @@ theorem exists_ringHom_avoid {F : Type} [Field F] [NumberField F] [IsCMField F] 
     · intro τ _; ext z; simp [hcc]
   have htot : T.card + Tc.card = Module.finrank ℚ F := by
     rw [Finset.card_filter_add_card_filter_not, Finset.card_univ, NumberField.Embeddings.card]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hsub : T.image (fun τ => τ.comp (algebraMap (𝓞 F) F)) ⊆ Finset.univ.image χ := by
     intro σ hσ
     obtain ⟨τ, hτ, rfl⟩ := Finset.mem_image.1 hσ
@@ -525,8 +523,7 @@ theorem exists_unit_coeff {W V ι : Type} [CommRing W] [IsDomain W] [IsDiscreteV
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hv i]; ring
   refine ⟨v, ?_, ?_⟩
-  · by_contra hnu
-    push_neg at hnu
+  · by_contra! hnu
     have h1 : (1 : W) ∈ IsLocalRing.maximalIdeal W := by
       rw [← hsum]
       exact Ideal.sum_mem _ fun i _ =>
@@ -543,8 +540,7 @@ theorem exists_vecMul_eq_zero {W Ω ι κ : Type} [CommRing W] [IsDomain W] [Fie
     (A : Matrix ι κ W) (x : ι → Ω) (hx : x ≠ 0) (h : x ᵥ* A.map f = 0) :
     ∃ w : ι → W, w ≠ 0 ∧ w ᵥ* A = 0 := by
   classical
-  by_contra H
-  push_neg at H
+  by_contra! H
   let L := FractionRing W
   let g : L →+* Ω := IsFractionRing.lift hf
   have hg : ∀ r, g (algebraMap W L r) = f r := fun r => IsFractionRing.lift_algebraMap hf r
@@ -902,7 +898,6 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory
 section
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace TorusTangent
 
 variable {k : Type} [Field k] {X : Type} [AddCommGroup X]

@@ -240,8 +240,7 @@ theorem exists_section : GlobalTheory.UT.LL → ∀ (o Ω : Type) [CommRing o] [
     obtain ⟨K, _, y, rfl⟩ := exists_field_point w
     obtain ⟨ψ, -, hψ⟩ := hval y
     have : ∃ k, valR (y ≫ W.ι) W (f k) ≠ 0 := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       simp [hn, Matrix.mulVec, dotProduct] at hψ
     obtain ⟨k, hk⟩ := this
     exact TopologicalSpace.Opens.mem_iSup.2 ⟨k, (CrdCalc.top_le_iff y _).1

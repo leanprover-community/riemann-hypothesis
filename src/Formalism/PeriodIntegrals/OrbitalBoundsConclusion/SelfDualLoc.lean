@@ -354,8 +354,7 @@ theorem nondeg : Nondeg := by
   intro F E _ _ _ _ _ n σ J Lb T hfin hT hT0 y hy
   by_contra hne
   obtain ⟨j, hj⟩ : ∃ j, y j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   obtain ⟨d, hd0, hd⟩ := exists_den Lb (Module.Finite.iff_fg.1 hfin)
   obtain ⟨t, ht⟩ := exists_not_mem_intOE (E := E)

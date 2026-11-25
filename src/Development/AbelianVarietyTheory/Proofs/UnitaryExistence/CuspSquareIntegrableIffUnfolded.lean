@@ -782,8 +782,7 @@ theorem hermitian_eq_smul_of_const_on_unitary_orbit :
   obtain ⟨t, ht, hAB⟩ := form_eq_smul_of_const_on_orbit (matForm A) (matForm B)
     (matForm_symm hA) (matForm_symm hB) (Pi.single i 1) e he
     (by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply hdet
       refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
       rw [← matForm_single B i j, hcon])
@@ -1196,8 +1195,6 @@ namespace GlobalTheory.PeterssonCompare
 open MeasureTheory Topology Matrix NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2
 open scoped ENNReal TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

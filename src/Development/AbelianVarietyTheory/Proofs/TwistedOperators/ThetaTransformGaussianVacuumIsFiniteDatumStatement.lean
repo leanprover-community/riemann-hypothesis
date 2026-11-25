@@ -280,7 +280,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 noncomputable section
 
@@ -558,7 +557,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
@@ -710,7 +708,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section

@@ -109,8 +109,7 @@ private theorem triple_entry_products_mem_of_trace_regular_diag {Γ K : Type} [G
 private theorem exists_entry_ne_zero_of_irr {Γ K : Type} [Group Γ] [Field K] (r : Γ →* Matrix (Fin 4) (Fin 4) K)
     (hr : Irr r) : ∀ i j, ∃ g, r g i j ≠ 0 := by
   intro i j
-  by_contra h
-  push_neg at h
+  by_contra! h
   let W : Submodule K (Matrix (Fin 4) (Fin 4) K) :=
     { carrier := {M | M i j = 0}
       add_mem' := by

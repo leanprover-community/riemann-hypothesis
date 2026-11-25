@@ -84,8 +84,7 @@ theorem exists_transcendental_norm_gt (p : ℕ) [Fact p.Prime] :
   have htr : ∀ y : ℂ_[p], y ∉ algebraicClosure ℚ ℂ_[p] → Transcendental ℚ y :=
     fun y hy h => hy (mem_algebraicClosure_iff.2 h)
   obtain ⟨x, hx⟩ : ∃ x : ℂ_[p], x ∉ algebraicClosure ℚ ℂ_[p] := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 : #ℂ_[p] ≤ #(algebraicClosure ℚ ℂ_[p]) :=
       Cardinal.mk_le_of_injective (f := fun y : ℂ_[p] => (⟨y, h y⟩ : algebraicClosure ℚ ℂ_[p]))
         (fun a b hab => congrArg Subtype.val hab)
@@ -106,8 +105,7 @@ theorem exists_transcendental_norm_gt (p : ℕ) [Fact p.Prime] :
       have : x = (x + (p : ℂ_[p])⁻¹) - (p : ℂ_[p])⁻¹ := by ring
       rw [this]
       exact sub_mem hm (inv_mem (natCast_mem _ p))
-    · by_contra hle
-      push_neg at hle
+    · by_contra! hle
       have e : (p : ℂ_[p])⁻¹ = (x + (p : ℂ_[p])⁻¹) + -x := by ring
       have := IsUltrametricDist.norm_add_le_max (x + (p : ℂ_[p])⁻¹) (-x)
       rw [← e, norm_neg] at this

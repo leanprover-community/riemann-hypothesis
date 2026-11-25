@@ -1,5 +1,8 @@
 module
 
+import Development.WeilBound.CoreStatements.PluriharmonicCharts.PullDegSome
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsMultiHomogIdealMap
+
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Mathlib.FieldTheory.RatFunc.AsPolynomial
@@ -20,23 +23,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Pr
 theorem holoMap_comp' {e₁ e₂ e₃ : ℕ} {X Y Z : Type} [TopologicalSpace X] [TopologicalSpace Y]
     [TopologicalSpace Z] {C : FinHolAtlas e₁ Z} {B : FinHolAtlas e₂ Y} {A : FinHolAtlas e₃ X}
     {g : Z → Y} {f : Y → X} (hg : HoloMap C B g) (hf : HoloMap B A f) : HoloMap C A (f ∘ g) := by
-  refine ⟨hf.1.comp hg.1, fun j k t ht => ?_⟩
-  obtain ⟨ht1, ht2⟩ := ht
-  obtain ⟨m, hm⟩ := B.cover (g ((C.chart j).symm t))
-  have h1 : AnalyticAt ℂ (B.chart m ∘ g ∘ (C.chart j).symm) t := hg.2 j m t ⟨ht1, hm⟩
-  have hu : (B.chart m).symm ((B.chart m ∘ g ∘ (C.chart j).symm) t) = g ((C.chart j).symm t) :=
-    (B.chart m).left_inv hm
-  have h2 : AnalyticAt ℂ (A.chart k ∘ f ∘ (B.chart m).symm)
-      ((B.chart m ∘ g ∘ (C.chart j).symm) t) :=
-    hf.2 m k _ ⟨(B.chart m).map_source hm, by
-      rw [Set.mem_preimage, hu]; exact ht2⟩
-  refine (h2.comp h1).congr ?_
-  have hc : ContinuousAt (g ∘ (C.chart j).symm) t :=
-    hg.1.continuousAt.comp ((C.chart j).continuousAt_symm ht1)
-  filter_upwards [hc ((B.chart m).open_source.mem_nhds hm)] with t' ht'
-  have ht'' : g ((C.chart j).symm t') ∈ (B.chart m).source := ht'
-  simp only [Function.comp]
-  rw [(B.chart m).left_inv ht'']
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.holoMap_comp <;> assumption
 
 theorem injective_of_degree_one {e : ℕ} {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
     {A : FinHolAtlas e X} {B : FinHolAtlas e Y} {π : Y → X} (hd : IsDegreeOff A B π 1 ∅) :
@@ -72,48 +59,7 @@ theorem isBlockMap_v₀ (k₀ : K) :
 def κ₁ (k₀ k : K) : Option K := if k = k₀ then none else some k
 
 theorem isBlockMap_v₁ (k₀ : K) : IsBlockMap (κ₁ k₀) (v₁ (ι := ι) k₀) := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro u w h
-    by_cases hu : u = k₀ <;> by_cases hw : w = k₀ <;> simp_all [κ₁]
-  · rintro ⟨k, m⟩ ⟨k', m'⟩ h
-    by_cases hk : k = k₀
-    · subst hk
-      by_cases hk' : k' = k
-      · subst hk'
-        rw [v₁_self, v₁_self] at h
-        have h2 : m = m' := eq_of_heq (Sigma.mk.inj h).2
-        rw [h2]
-      · rw [v₁_self, v₁_ne (p := ⟨k', m'⟩) hk'] at h
-        exact absurd (congrArg Sigma.fst h) (by simp)
-    · by_cases hk' : k' = k₀
-      · subst hk'
-        rw [v₁_self, v₁_ne (p := ⟨k, m⟩) hk] at h
-        exact absurd (congrArg Sigma.fst h) (by simp)
-      · rw [v₁_ne (p := ⟨k, m⟩) hk, v₁_ne (p := ⟨k', m'⟩) hk'] at h
-        have h1 : k = k' := Option.some.inj (congrArg Sigma.fst h)
-        subst h1
-        have h2 : m = m' := eq_of_heq (Sigma.mk.inj h).2
-        rw [h2]
-  · rintro ⟨k, m⟩
-    by_cases hk : k = k₀
-    · subst hk
-      rw [v₁_self]
-      simp [κ₁]
-    · rw [v₁_ne (p := ⟨k, m⟩) hk]
-      simp [κ₁, hk]
-  · rintro ⟨o, m⟩ ⟨k, hk⟩
-    by_cases e : k = k₀
-    · subst e
-      have ho : o = none := by
-        have hk' : κ₁ k k = o := hk
-        rw [← hk']; simp [κ₁]
-      subst ho
-      exact ⟨⟨k, m⟩, v₁_self k m⟩
-    · have ho : o = some k := by
-        have hk' : κ₁ k₀ k = o := hk
-        rw [← hk']; simp [κ₁, e]
-      subst ho
-      exact ⟨⟨k, m⟩, v₁_ne (p := ⟨k, m⟩) e⟩
+  apply _root_.PositivityTheory.Xgp.c_algsq.isBlockMap_v₁ <;> assumption
 
 theorem basePart_orbit {σ : Type} (blk : σ → Option K) {z z' : (Σ k, ι k) → ℂ}
     (h : SameOrbit z z') : SameOrbit (basePart blk z) (basePart blk z') := by

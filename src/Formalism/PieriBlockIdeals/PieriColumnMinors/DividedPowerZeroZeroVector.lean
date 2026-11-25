@@ -35,8 +35,7 @@ theorem muSupport : MuSupport := by
   intro p w i q lam2 c hw hmu
   unfold mu at hmu
   obtain ⟨tau, htau, hne⟩ : ∃ tau ∈ shapes p w i lam2, boxesOfContent lam2 tau c ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hmu (Nat.eq_zero_of_le_zero (Finset.sup_le fun t ht => (hcon t ht).le))
   unfold boxesOfContent at hne
   obtain ⟨a, ha⟩ := Finset.card_pos.mp (Nat.pos_of_ne_zero hne)
@@ -92,8 +91,7 @@ theorem muRange : MuRange := by
   intro p w i q m lam2 c hlam hmu
   unfold mu at hmu
   obtain ⟨tau, htau, hne⟩ : ∃ tau ∈ shapes p w i lam2, boxesOfContent lam2 tau c ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hmu (Nat.eq_zero_of_le_zero (Finset.sup_le fun t ht => (hcon t ht).le))
   unfold boxesOfContent at hne
   obtain ⟨a, ha⟩ := Finset.card_pos.mp (Nat.pos_of_ne_zero hne)
@@ -107,8 +105,7 @@ theorem muRange : MuRange := by
   have h3 := a.isLt
   constructor
   · omega
-  · by_contra hc
-    push_neg at hc
+  · by_contra! hc
     exact hna ⟨by omega, by omega⟩
 
 theorem dnDvd : DnDvd := by

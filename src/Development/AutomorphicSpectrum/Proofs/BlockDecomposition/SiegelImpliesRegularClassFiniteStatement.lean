@@ -1041,8 +1041,7 @@ theorem exists_least {r : ℕ} {S : Finset (Fin r)} {i : Fin r} (h : cnt S i < S
 
 theorem exists_between {r : ℕ} {S : Finset (Fin r)} {i k : Fin r} (h : cnt S i < cnt S k) :
     ∃ t ∈ S, i ≤ t ∧ t < k := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have hsub : S.filter (· < k) ⊆ S.filter (· < i) := by
     intro t ht
     obtain ⟨htS, htk⟩ := Finset.mem_filter.mp ht
@@ -1472,8 +1471,7 @@ theorem block_diagonal_bound_weighted : ∀ {ι : Type} [Fintype ι] [DecidableE
   have hB0 : 0 ≤ B := (norm_nonneg _).trans (hBM u u)
   have hR0 : 0 ≤ R := by
     have h1 := hR u u rfl
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     nlinarith [hw u]
   rw [bd_mul (hP.mul hT) hP', bd_mul hP hT]
   have hbP : ∀ x y, ‖bd b P x y‖ ≤ B := fun x y => by

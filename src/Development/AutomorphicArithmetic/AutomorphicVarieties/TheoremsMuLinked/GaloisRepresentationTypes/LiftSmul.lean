@@ -705,8 +705,7 @@ theorem UpperTheory.V.Th.Coc.idemDiag :
     split_ifs <;> simp
   have hc : ∀ i, ∃ c, IsUnit (e i c c) := by
     intro i
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hmem : (e i).trace ∈ IsLocalRing.maximalIdeal O :=
       Ideal.sum_mem _ (fun c _ => (IsLocalRing.mem_maximalIdeal _).mpr (hne c))
     rw [htr i] at hmem

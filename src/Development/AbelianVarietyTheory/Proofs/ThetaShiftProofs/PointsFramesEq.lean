@@ -670,8 +670,7 @@ theorem level_eq (h₁ : Out.Laws) (h₂ : Out.Laws2) {D : Datum H} {l : Level H
     (fun n hn u hu => Θ.sep n hn u fun v j hj => by
       rw [MulZeroClass.zero_mul]; exact hu v j (by rwa [fib_fst] at hj))
     (by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       obtain ⟨j, hj⟩ := exists_chart_pt hL (Θ.x z₀).left
       have e := Θ.val k hk i₁ z₀ j (by rw [fib_fst]; exact hj)
       rw [sval_of_zero _ hne] at e

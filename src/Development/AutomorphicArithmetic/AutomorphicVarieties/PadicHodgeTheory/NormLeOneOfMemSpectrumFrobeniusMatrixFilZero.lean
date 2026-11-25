@@ -163,8 +163,7 @@ theorem UpperTheory.exists_square_submatrix_det_ne_zero_of_left_inverse :
     ∀ {B : Type} [CommRing B] [IsDomain B] {d r : ℕ} (X : Matrix (Fin d) (Fin r) B) (Z : Matrix (Fin r) (Fin d) B), Z * X = 1 → ∃ s : Fin r → Fin d, (X.submatrix s id).det ≠ 0 := by
   intro B _ _ d r X Z hZX
   classical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hM : (Z * X) = fun a => ∑ k, Z a k • X k := by
     funext a b
     simp [Matrix.mul_apply, Finset.sum_apply, smul_eq_mul]

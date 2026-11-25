@@ -384,8 +384,7 @@ theorem exists_hom_near :
           rw [e] at h
           exact h
       have h1 : ∃ y ∈ B, (toMat f)ᵀ *ᵥ y ≠ 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have : Matrix.toLin' (toMat f)ᵀ = 0 := LinearMap.ext_on hBs fun x hx => hcon x hx
         have h0 : (toMat f)ᵀ = 0 := by simpa using this
         apply hf

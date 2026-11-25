@@ -1204,8 +1204,7 @@ theorem GlobalTheory.SquareAgree.kernel_maximal_theta_subspace : _root_.GlobalTh
     intro hK
     have hnt := hm.irred.1
     have : ∃ Φ ∈ algF Bs.ψ θ true A B, p Φ ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hb : (algF Bs.ψ θ true A B).map p = ⊥ := by
         rw [eq_bot_iff]
         rintro _ ⟨Φ, hΦ, rfl⟩

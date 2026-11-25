@@ -407,8 +407,7 @@ theorem UpperTheory.V.AlgebraTools.permChar :
       have hm' := hker hm
       rwa [MonoidHom.mem_ker, map_pow] at hm'
   have hall : (∀ g : G, χ g ^ 3 = 1) ∨ (∀ g : G, χ g ^ 4 = 1) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨⟨g, hg⟩, ⟨g', hg'⟩⟩ := hne
     have h4 : χ g ^ 4 = 1 := (hχ g).resolve_left hg
     have h3 : χ g' ^ 3 = 1 := (hχ g').resolve_right hg'

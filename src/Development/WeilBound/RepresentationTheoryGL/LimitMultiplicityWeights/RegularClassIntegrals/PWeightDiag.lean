@@ -37,8 +37,7 @@ theorem N_smul {n : ℕ} (c : ℂ) (M : Matrix (Fin n) (Fin n) ℂ) : N (c • M
 
 theorem N_pos {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (hM : M ≠ 0) : 0 < N M := by
   obtain ⟨a, b, hab⟩ : ∃ a b, M a b ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hM (Matrix.ext hc)
   have h1 : 0 < Complex.normSq (M a b) := Complex.normSq_pos.mpr hab
   have h2 : Complex.normSq (M a b) ≤ ∑ b', Complex.normSq (M a b') :=
@@ -272,13 +271,11 @@ theorem MainStatements.WeightKernel.weightDiag : Lagr → ShiftT → BoundT → 
         rwa [mul_assoc, inv_mul_cancel₀ hMpos.ne', mul_one] at h5
       constructor
       · rw [div_le_iff₀ (by positivity)]
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have h6 : ‖ι (t * t'⁻¹) i i‖ * M < 1 / 2 := by linarith
         have h7 : ‖ι (t * t'⁻¹) i i‖ < 1 / 2 := by nlinarith
         nlinarith
-      · by_contra hc
-        push_neg at hc
+      · by_contra! hc
         have h8 : 2 * M * (2 * M) < ‖ι (t * t'⁻¹) i i‖ * ‖ι (t * t'⁻¹) i i‖ :=
           mul_self_lt_mul_self (by positivity) hc
         nlinarith

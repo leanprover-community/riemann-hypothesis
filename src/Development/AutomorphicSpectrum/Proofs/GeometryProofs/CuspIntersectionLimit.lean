@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionFinite
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 public import Mathlib.Analysis.SpecialFunctions.Integrals.PosLog
@@ -645,8 +646,7 @@ theorem lattice_lower {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogP
   obtain ⟨av, hav⟩ : ∃ av : Fin g → ℤ, av = fun i => bas.repr v (.inl i) := ⟨_, rfl⟩
   obtain ⟨nv, hnv⟩ : ∃ nv : Fin g → ℤ, nv = fun i => bas.repr v (.inr i) := ⟨_, rfl⟩
   have hne : av ≠ 0 ∨ nv ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hv
     have : bas.repr v = 0 := by
       ext x
@@ -1103,8 +1103,7 @@ theorem eig_indep {E : Type} [Field E] [NumberField E] {g r : ℕ} {Λ : Type} [
     simp only [map_sum, map_zsmul, LinearMap.sum_apply, LinearMap.smul_apply, Finset.smul_sum, mul_smul,
     Int.cast_smul_eq_zsmul]
   have hk : ∃ k, γ k ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     apply h0
     rw [← hc3 x₀ hx₀, hγ]
     simp [hn]
@@ -1321,17 +1320,7 @@ open GroundTheory.Heights₂.Heights.Regular (logCover expCover)
 
 theorem exists_lift {n a : ℕ} (h : a ≤ n) {z : Fin n → ℂ} (hz : z ∈ Flat.punct n a 1) :
     ∃ w ∈ logCover h, expCover a w = z := by
-  have h1 : ∀ k, ‖z k‖ < 1 := (pi_norm_lt_iff one_pos).1 (mem_ball_zero_iff.1 hz.1)
-  refine ⟨fun k => if k.val < a then Complex.log (z k) else z k, ⟨fun i => ?_, fun k hk => ?_⟩, ?_⟩
-  · have hi : (Fin.castLE h i).val < a := i.isLt
-    simp only [if_pos hi, Complex.log_re]
-    exact Real.log_neg (norm_pos_iff.mpr (hz.2 _ hi)) (h1 _)
-  · simp only [if_neg (not_lt.mpr hk)]
-    exact h1 k
-  · funext k
-    by_cases hk : k.val < a
-    · simp only [expCover, if_pos hk, Complex.exp_log (hz.2 k hk)]
-    · simp only [expCover, if_neg hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.GVal.Val.exists_lift <;> assumption
 
 theorem isPsh_comp_aff {n : ℕ} (t₀ : Fin n → ℂ) (ρ : ℝ) (π : Equiv.Perm (Fin n)) {U V : Set (Fin n → ℂ)}
     {f : (Fin n → ℂ) → ℝ} (h : IsPsh V f) (hUV : ∀ u ∈ U, aff t₀ ρ π u ∈ V) :

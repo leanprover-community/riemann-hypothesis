@@ -1361,8 +1361,7 @@ private theorem power_series_exists_ultrafilter_limit {K : Type} [Field K] [Fini
     ∃ c0 : PowerSeries K, ∀ j, ∀ᶠ m in (U : Filter ℕ), (PowerSeries.X : PowerSeries K) ^ j ∣ c m - c0 := by
   have hv : ∀ i : ℕ, ∃ v : K, {m | PowerSeries.coeff i (c m) = v} ∈ (U : Filter ℕ) := by
     intro i
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hall : ∀ v : K, {m | PowerSeries.coeff i (c m) = v}ᶜ ∈ U := fun v =>
       Ultrafilter.compl_mem_iff_notMem.2 (hno v)
     have hinter : (⋂ v : K, {m | PowerSeries.coeff i (c m) = v}ᶜ) ∈ (U : Filter ℕ) :=
@@ -1420,8 +1419,7 @@ theorem UpperTheory.V.Pa.secondCohomologyBound_of_boundaryBound :
   choose c0 hc0 using fun i : Fin (k.g + 1) => power_series_exists_ultrafilter_limit U (fun m => cm m i)
   choose idx hidx using hcu
   have hi0 : ∃ i0, ∀ᶠ m in (U : Filter ℕ), idx m = i0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hinter : ∀ᶠ m in (U : Filter ℕ), ∀ i, ¬ idx m = i :=
       Filter.eventually_all.2 fun i => by simpa using hno i
     obtain ⟨m, hm⟩ := hinter.exists

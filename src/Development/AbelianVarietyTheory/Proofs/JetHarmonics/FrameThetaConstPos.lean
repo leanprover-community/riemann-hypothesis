@@ -376,8 +376,7 @@ open NumberField Topology in
 open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.two_le_r {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} (hn : 2 ≤ _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X) : 2 ≤ r := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hempty : IsEmpty (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent X) := by
     unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent
     refine ⟨fun ⟨_, ⟨p, hp⟩⟩ => ?_⟩

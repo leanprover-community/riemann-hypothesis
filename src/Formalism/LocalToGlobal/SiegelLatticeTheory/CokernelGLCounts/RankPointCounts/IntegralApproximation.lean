@@ -46,8 +46,7 @@ theorem exists_int_approx (x : F) (hx : p.valuation F x ≤ 1) :
   have hp0 : p.asIdeal ≠ ⊥ := p.ne_bot
   have htop : p.asIdeal ≠ ⊤ := p.isPrime.ne_top
   have hex : ∃ n : ℕ, (s : 𝓞 F) ∉ p.asIdeal ^ (n + 1) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hs0
     have hmem : (s : 𝓞 F) ∈ ⨅ i, p.asIdeal ^ i := by
       rw [Ideal.mem_iInf]

@@ -551,8 +551,7 @@ theorem const_one' {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ} (fF : Fin d �
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_zero_one, hc', sub_self] at he
     exact he rfl
   obtain ⟨i, hi⟩ : ∃ i, e i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (Finsupp.ext hcon)
   exact ⟨i, Set.mem_univ _, hi⟩
 

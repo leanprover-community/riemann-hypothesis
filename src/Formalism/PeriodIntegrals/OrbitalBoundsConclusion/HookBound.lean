@@ -469,8 +469,7 @@ theorem diagHom_monomial {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (c : ℚ) :
       exact (Finsupp.mem_support_iff.1 hv) (h v hne)
     rw [if_pos this]
   · have : ∃ v, v.1 ≠ v.2 ∧ m v ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h fun v hv => by_contra fun h0 => h0 (hc v hv)
     obtain ⟨v, hv, hmv⟩ := this
     rw [Finsupp.prod, Finset.prod_eq_zero (i := v) (Finsupp.mem_support_iff.2 hmv), mul_zero]

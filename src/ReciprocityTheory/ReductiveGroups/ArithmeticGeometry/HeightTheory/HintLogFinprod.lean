@@ -139,8 +139,7 @@ theorem hint_good_split (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (e : Ideal (KTp K 
 theorem hint_good_of_ne (c : ι) (p : Ideal (KTp K d.D d.N)) {f : AddValuation (OmS (Ω c) d.D d.N) (WithTop ℤ) → ℤ}
     (hp : (∑ᶠ (w : AddValuation (OmS (Ω c) d.D d.N) (WithTop ℤ)) (_ : w ∈ d.GoodP c p), f w) ≠ 0) :
     ∃ w, w ∈ d.GoodP c p := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hp
   simp [hne]
 

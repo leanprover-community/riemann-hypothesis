@@ -41,8 +41,7 @@ theorem diag_compare_of_triIn : ∀ (V F EC : Type) [CommRing V] [Field F] [Alge
     intro m
     exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hu _ h1 m)
   have hzero : ∀ j, i < j → algebraMap V F (e j) = 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     set S := Finset.univ.filter (fun j => i < j ∧ algebraMap V F (e j) ≠ 0) with hSdef
     have hS : S.Nonempty := by
       obtain ⟨j, hj⟩ := hcon

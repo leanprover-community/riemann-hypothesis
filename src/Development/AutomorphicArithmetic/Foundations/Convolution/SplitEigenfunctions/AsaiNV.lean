@@ -144,8 +144,7 @@ private theorem card_heckeT1_cosets (w : HeightOneSpectrum (𝓞 E)) (ϖ : w.adi
   exact_mod_cast e
 
 private theorem sq_le_of_bound {t r : ℝ} (ht : 1 ≤ t) (hr : 0 < r) (h : t * (r + r⁻¹) ≤ t ^ 2 + 1) : r ^ 2 ≤ t ^ 2 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hrt : t < r := lt_of_pow_lt_pow_left₀ 2 hr.le hlt
   have h5 : t * r ^ 2 + t ≤ (t ^ 2 + 1) * r := by
     have := mul_le_mul_of_nonneg_right h hr.le

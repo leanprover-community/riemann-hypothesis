@@ -125,8 +125,7 @@ private theorem fourB_eq_zero_of_not_mem_annihilator (μ : Measure V)
     (hi : ∀ x, ∀ m ∈ M, f (x + m) = f x) (y : V) (hy : y ∉ N) :
     _root_.GlobalTheory.JR.fourB μ B f y = 0 := by
   have hex : ∃ m ∈ M, B m y ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy ((hN y).2 h)
   obtain ⟨m, hm, hBm⟩ := hex
   unfold _root_.GlobalTheory.JR.fourB
@@ -156,8 +155,7 @@ private theorem integral_indicator_bicharacter_eq_indicator (μ : Measure V) [μ
     rw [hfun, integral_indicator_const _ hNo.measurableSet, Complex.real_smul, mul_one]
   · rw [Set.indicator_of_notMem hw]
     have hex : ∃ n ∈ N, B w n ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hw ((hM w).2 h)
     obtain ⟨n, hn, hBn⟩ := hex
     apply _root_.GlobalTheory.JR.AbsInv.integral_eq_zero_of_translate μ _ n (B w n) hBn

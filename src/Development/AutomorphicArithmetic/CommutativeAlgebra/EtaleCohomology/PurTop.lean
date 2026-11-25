@@ -1081,8 +1081,7 @@ theorem quotC_bij (d : ℕ) (R : Type) [CommRing R] :
     refine ⟨MvPolynomial.constantCoeff p, ?_⟩
     rw [RingHom.comp_apply, Ideal.Quotient.eq, hJ, MvPolynomial.mem_ideal_span_X_image]
     intro m hm
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : m = 0 := Finsupp.ext fun i => hcon i (Set.mem_univ i)
     subst this
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl,

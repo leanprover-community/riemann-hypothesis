@@ -81,7 +81,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory.LocStdInt
@@ -185,7 +184,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory.GramDet
@@ -273,7 +271,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory.NFrameTri
@@ -428,7 +425,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 end -- clump:auto
@@ -442,7 +438,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory.MinorTri
@@ -542,7 +537,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 end -- clump:auto
@@ -556,7 +550,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 namespace GlobalTheory
@@ -628,7 +621,6 @@ noncomputable section
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocNoDef
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
@@ -750,7 +742,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -844,8 +835,7 @@ theorem fibre : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (lo
   have hLG := LatLoc.lattices_local_global D Z
   haveI : Infinite (PlF D) := GlobalTheory.LvT.Inh.ResFin.infinite_places D.host.F
   obtain ⟨p₀, hp₀⟩ : ∃ p : PlF D, p ∉ P := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact Set.infinite_univ (α := PlF D) (P.finite_toSet.subset fun p _ => h p)
   have hΛ₀full : Submodule.IsFullLattice D.host.E Λ₀ :=
     full_of_local_span Z Λ₀ hΛ₀ p₀ (isLat D Z FP p₀ (d0 p₀) _ (hΛ₀t p₀ hp₀)).2

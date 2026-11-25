@@ -128,7 +128,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 namespace GlobalTheory.GSep
@@ -199,7 +198,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -316,7 +314,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -631,8 +628,7 @@ theorem exists_classSum_fun : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z�
       · have hd' : d ∉ X₁.S.perp (X₁.S.TT X₁.M z₁) := by
           rwa [show X₁.S.TT X₁.M z₁ = X₁.S.perp (X₁.S.HH X₁.M z₁) from rfl, TestBasis.perp_perp]
         have hex' : ∃ τ ∈ X₁.S.TT X₁.M z₁, eStd X₁.S.g _ d τ ≠ 0 := by
-          by_contra hc
-          push_neg at hc
+          by_contra! hc
           exact hd' hc
         obtain ⟨τ₀, hτ₀, h₀⟩ := hex'
         have h₀' : eStd X₁.S.g _ τ₀ d ≠ 0 := by
@@ -691,7 +687,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 
@@ -747,7 +742,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 namespace GlobalTheory.GSep.TraitLift
@@ -777,7 +771,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 namespace GlobalTheory.GSep
@@ -831,7 +824,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.Poinc.Eq8 GlobalTheory.Poinc.Sep.Spz Classical
 
@@ -1119,7 +1111,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -1301,7 +1292,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section

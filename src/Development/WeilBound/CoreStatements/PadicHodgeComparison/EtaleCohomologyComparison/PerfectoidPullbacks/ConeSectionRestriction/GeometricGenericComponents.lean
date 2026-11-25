@@ -162,8 +162,7 @@ theorem exists_homogeneous_relation {K σ ι : Type*} [Field K] (I : Ideal (MvPo
     have := comp_aeval_apply (R := K) (f := l) (Ideal.Quotient.mkₐ K I) F
     simpa using this
   obtain ⟨n, hn⟩ : ∃ n, homogeneousComponent n F ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hF0 (by rw [← sum_homogeneousComponent F]; simp [hc])
   exact ⟨n, _, hn, homogeneousComponent_isHomogeneous n F, by
     rw [← homogeneousComponent_aeval l hl]; exact hI _ hmem n⟩

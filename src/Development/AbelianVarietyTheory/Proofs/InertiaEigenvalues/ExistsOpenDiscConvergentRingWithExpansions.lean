@@ -89,8 +89,7 @@ private lemma norm_le_one_of_mem_integralClosure_padicInt {l : ℕ} [Fact (Nat.P
     show ‖((algebraMap ℤ_[l] ↥LL.1 c : ↥LL.1) : PadicAlgCl l)‖ ≤ 1
     rw [h, PadicAlgCl.norm_extends]
     exact PadicInt.norm_le_one c
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨p, hpm, hp⟩ := hx
   have hsum : x ^ p.natDegree =
       -∑ i ∈ Finset.range p.natDegree, algebraMap ℤ_[l] ↥LL.1 (p.coeff i) * x ^ i := by

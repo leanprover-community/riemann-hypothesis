@@ -49,8 +49,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CechDR
 open MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LieDual
 
 variable {R R' : Type} [CommRing R] [CommRing R']

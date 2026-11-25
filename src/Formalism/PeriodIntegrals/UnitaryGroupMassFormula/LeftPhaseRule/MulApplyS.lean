@@ -10,8 +10,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
 
 variable {k r : ℕ}

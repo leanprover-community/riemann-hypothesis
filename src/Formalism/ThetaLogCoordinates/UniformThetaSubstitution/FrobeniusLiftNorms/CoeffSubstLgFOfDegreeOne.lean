@@ -285,8 +285,7 @@ theorem norm_ratCast_le_one {K : Type} [NormedField K] [IsUltrametricDist K] {p 
       have h1' := congrArg (Int.cast : ℤ → K) hab
       push_cast at h1'
       exact h1'.symm
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hm := IsUltrametricDist.norm_add_le_max ((r.den : K) * ((Nat.gcdA r.den p : ℤ) : K))
       ((p : K) * ((Nat.gcdB r.den p : ℤ) : K))
     rw [← h1, norm_one, norm_mul, norm_mul] at hm

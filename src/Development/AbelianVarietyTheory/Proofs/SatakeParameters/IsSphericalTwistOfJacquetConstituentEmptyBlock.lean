@@ -205,8 +205,7 @@ section Tensor
 theorem tprod_ne_zero {ι : Type} [Fintype ι] {X : ι → Type} [∀ i, AddCommGroup (X i)]
     [∀ i, Module ℂ (X i)] (x : ∀ i, X i) (hx : ∀ i, x i ≠ 0) : PiTensorProduct.tprod ℂ x ≠ 0 := by
   have : ∀ i, ∃ φ : Module.Dual ℂ (X i), φ (x i) ≠ 0 := fun i => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx i ((Module.forall_dual_apply_eq_zero_iff ℂ (x i)).1 h)
   choose φ hφ using this
   intro h0

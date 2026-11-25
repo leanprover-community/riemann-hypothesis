@@ -155,8 +155,7 @@ private theorem unram_bound (K M : Type) [Field K] [NumberField K] [Field M] [Nu
   have hqv : ((Nat.minFac (Ideal.absNorm (w.under (𝓞 K)).asIdeal) : ℕ) : 𝓞 K) ∈ (w.under (𝓞 K)).asIdeal :=
     natCast_mem _ hq (Nat.minFac_dvd _)
   have hqN : N < Nat.minFac (Ideal.absNorm (w.under (𝓞 K)).asIdeal) := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hw
     obtain ⟨k, hk⟩ := Nat.dvd_factorial hq.pos hle
     rw [hk, Nat.cast_mul]

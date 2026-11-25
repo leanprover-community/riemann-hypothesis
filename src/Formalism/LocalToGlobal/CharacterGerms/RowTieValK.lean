@@ -92,8 +92,7 @@ private theorem coeff_single_one_ev_eq_sum (f : PS C 1 dd) (ψ : Pt C 1 dd) (hψ
   refine (finsum_eq_sum_of_support_subset _ (s := Finset.univ.image fun s => Finsupp.single s 1) ?_).trans ?_
   · intro d hd
     simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range]
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hd
     try dsimp only
     rw [(constantCoeff_and_linear_coeff_finsupp_prod_pow _ (fun s => hψ s.2) _ d).2 (fun s h => hne s h.symm), smul_zero]

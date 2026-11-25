@@ -56,8 +56,7 @@ theorem exists_isPrim_smul {x : balForms bar X} (hx : x ≠ 0) :
     ∃ (g : ℕ) (v : balForms bar X), 0 < g ∧ x = g • v ∧ IsPrim bar v := by
   classical
   obtain ⟨a, b, hab⟩ : ∃ a b, (x : LinearMap.BilinForm ℤ X) a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (Subtype.ext (LinearMap.ext₂ h))
   let S : Set ℕ := {g | 0 < g ∧ ∃ v : balForms bar X, x = g • v}
   have hS1 : 1 ∈ S := ⟨one_pos, x, (one_smul _ _).symm⟩

@@ -242,13 +242,11 @@ private theorem flag_block {k H : Type} [Field k] (R : H → Matrix (Fin 3) (Fin
     rw [Matrix.mul_apply, Fin.sum_univ_three, ht1, Matrix.one_apply_eq] at h
     linear_combination h
   have hx : I 0 0 ≠ 0 ∨ I 2 0 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [hc.1, hc.2] at e00
     simp at e00
   have hp : P 2 0 ≠ 0 ∨ P 2 2 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [hc.1, hc.2] at e22
     simp at e22
   refine tri_of_lines (fun s => corner (R s)) a c (I 0 0) (I 2 0) (P 2 0) (P 2 2) hx hp e20 (fun s => ?_) (fun s => ?_)

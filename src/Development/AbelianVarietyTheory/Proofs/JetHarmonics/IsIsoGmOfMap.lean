@@ -944,8 +944,7 @@ namespace GlobalTheory.ConvSer.TowerNorm
 theorem norm_natCast_eq_one {K : Type} [NormedField K] [IsUltrametricDist K] {p : ℕ}
     (hp : p.Prime) (h : ‖(p : K)‖ < 1) {j : ℕ} (hj : ¬ p ∣ j) : ‖(j : K)‖ = 1 := by
   refine le_antisymm (IsUltrametricDist.norm_natCast_le_one K j) ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hc : IsCoprime (p : ℤ) (j : ℤ) :=
     Nat.isCoprime_iff_coprime.2 ((Nat.Prime.coprime_iff_not_dvd hp).2 hj)
   obtain ⟨u, v, huv⟩ := hc

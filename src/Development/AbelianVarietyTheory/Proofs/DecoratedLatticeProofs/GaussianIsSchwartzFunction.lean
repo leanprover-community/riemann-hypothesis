@@ -227,8 +227,7 @@ theorem re_trace_nonneg {M : Matrix (Fin m) (Fin m) ℂ} (hM : M.PosDef) (Z : Ma
 theorem re_trace_pos {M : Matrix (Fin m) (Fin m) ℂ} (hM : M.PosDef) {Z : Matrix (Fin m) (Fin n) ℂ} (hZ : Z ≠ 0) :
     0 < (Matrix.trace (Zᴴ * M * Z)).re := by
   obtain ⟨j, hj⟩ : ∃ j, (fun a => Z a j) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hZ
     ext a j
     exact congrFun (h j) a

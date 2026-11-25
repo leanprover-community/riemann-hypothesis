@@ -98,8 +98,7 @@ theorem kaehler_atPrime_of_away (K A : Type) [Field K] [CommRing A] [Algebra K A
       Module.Finite (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] ∧
       Module.finrank (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] = D := by
   obtain ⟨t, ht, htP⟩ : ∃ t ∈ s, t ∉ P := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact (‹P.IsPrime›).ne_top (top_le_iff.1 (hs ▸ Ideal.span_le.2 hc))
   have hle : Submonoid.powers t ≤ P.primeCompl := by
     rintro _ ⟨n, rfl⟩

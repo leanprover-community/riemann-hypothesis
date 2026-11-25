@@ -796,8 +796,7 @@ theorem shiftBound : ShiftBound := by
   have hEn0 : 0 ≤ S.En ε σ (Y + s) := integral_nonneg (fun ω => mul_nonneg (th_nonneg B ε σ hε ω)
         (Finset.sum_nonneg (fun a _ => mul_nonneg (hW.2 _ hYs ω a).le (by positivity))))
   have hE0 : 0 ≤ S.Esup ε σ := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     nlinarith
   have h3 : S.Esup ε σ * |S.P (Y + s)| ≤ S.Esup ε σ * (CP * |S.P Y|) := mul_le_mul_of_nonneg_left (hPR Y s hY hYs) hE0
   have hk : 0 ≤ (1 + CR) ^ 2 * Cd := by positivity
@@ -946,8 +945,7 @@ private theorem le_constSign_proof : Formalism.FourierDecayAlt.LE.ConstSign := b
       · rw [abs_of_pos (by linarith [hY.1])]
         ring
       · have hb : β < -lam s := by
-          by_contra hc
-          push_neg at hc
+          by_contra! hc
           exact hs ⟨not_lt.mp hlt, hc⟩
         rw [abs_of_neg (by linarith [hY.2])]
         ring
@@ -1252,8 +1250,7 @@ theorem Formalism.FourierDecayAlt.P.ratio_middle_range : Formalism.FourierDecayA
       linarith
     · push_neg at h
       have hb : β ≤ -lam t := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact ht ⟨h, hc⟩
       rw [abs_of_neg (by linarith)]
       linarith

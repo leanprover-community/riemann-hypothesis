@@ -73,8 +73,7 @@ theorem exists_fixed_of_stable {F ι : Type} [Field F] [Fintype ι] [DecidableEq
   have hsupp : ∀ j, v j ≠ 0 ↔ w j ≠ 0 := by
     intro j; simp [hv, hj₀]
   refine ⟨v, hvN, fun h => by simp [h] at hvj, fun σ hσ => ?_⟩
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set u : ι → F := (fun j => σ (v j)) - v with hu
   have huN : u ∈ N := N.sub_mem (hN σ hσ v hvN) hvN
   have hu0 : u ≠ 0 := by

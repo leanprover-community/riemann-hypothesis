@@ -75,8 +75,7 @@ theorem exists_rank_one_isAvg : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [
   obtain ⟨m, a, c, ha, haK, hcK, hQ⟩ := _root_.GlobalTheory.TypeSum.kAvg_finite_rank n ε H σ h _ he
   have hQavg := A4 _ (by obtain ⟨F, -, h1, h2, -⟩ := he; exact h2 _ h1)
   have hc : ∃ k, c k ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply B2 b hb0
     rw [hQ]; simp [hc]
   obtain ⟨k, hk⟩ := hc

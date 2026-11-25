@@ -111,8 +111,7 @@ theorem type_part_linear_independent (H : Host E) (D : Datum H) {g : ℕ} (ty : 
 
   have hmult : ∀ v : D.La, ∃ a : 𝓞 E, a ≠ 0 ∧ a • v ∈ Submodule.span (𝓞 E) (Set.range (Sum.elim y z)) := by
     intro v
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hli2 : LinearIndependent (𝓞 E) (fun o : Option (Fin k ⊕ Fin k') => o.elim v (Sum.elim y z)) := by
       rw [Fintype.linearIndependent_iff]
       intro c hc

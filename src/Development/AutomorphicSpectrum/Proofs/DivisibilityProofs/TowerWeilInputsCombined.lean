@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFourth
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HasBaseDegreeSetting
 public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightPolynomialEval
@@ -159,16 +160,8 @@ theorem yFl_coordMap (σ : Equiv.Perm Ψ) (p : Σ q : FlBlock Ψ N, FlIdx Ψ N q
 
 theorem mCoordIdeal_ringHom {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {Ω₀ Ω : Type} [Field Ω₀] [Field Ω]
     (i : Ω₀ →+* Ω) (y₀ : (Σ k, J k) → Ω₀) : mCoordIdeal (fun p => i (y₀ p)) = mCoordIdeal y₀ := by
-  have key : ∀ f : MRing J, mConeMap (fun p => i (y₀ p)) f = MvPolynomial.map i (mConeMap y₀ f) := by
-    intro f
-    induction f using MvPolynomial.induction_on with
-    | C a => simp [mConeMap]
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p n hp => simp only [map_mul, hp]; simp [mConeMap]
-  ext f
-  show mConeMap _ f = 0 ↔ mConeMap _ f = 0
-  rw [key]
-  exact map_eq_zero_iff _ (MvPolynomial.map_injective i i.injective)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.BaseCount.mCoordIdeal_map <;> assumption
 
 theorem imageZ_PFl (σ : Equiv.Perm Ψ) : imageZ (coordMap σ) (PFl Ψ N) = PFl Ψ N := by
   unfold PFl

@@ -1419,7 +1419,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.ZM GlobalTheory.SiegLev GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.ArtinPicGlue
@@ -1521,7 +1520,6 @@ open GlobalTheory.AbLaw
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 namespace GlobalTheory.SharpLift
@@ -1615,7 +1613,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZM GlobalTheory.SiegLev GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
 open GlobalTheory.CechPic GlobalTheory.PrincipalIntegral
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

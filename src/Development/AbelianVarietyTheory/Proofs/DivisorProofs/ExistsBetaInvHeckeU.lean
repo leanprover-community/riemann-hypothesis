@@ -246,8 +246,6 @@ open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.FunObj.SqNum
 
 theorem conj_smul_int {D : D7} (x : 𝓞 D.host.E) : (D.host.conj • x : 𝓞 D.host.E) = Formalism.L2.Col.cO _ x := by

@@ -192,8 +192,7 @@ theorem vGeK_iff_of_rep (hfr : IsFractionRing X.G.O X.G.Kf) {x : X.G.Kf} {N : �
   · intro h
     obtain ⟨a, ha⟩ := (vGeK_iff X).1 h
     rw [vsc_def] at ha
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hc : N < ⌈g * (X.eO : ℝ)⌉ := Int.lt_ceil.mpr hlt
     obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le (sub_nonneg.mpr hc.le)
     have e : ⌈g * (X.eO : ℝ)⌉ = N + k := by omega
@@ -226,8 +225,7 @@ theorem vEqK_iff_of_rep (hfr : IsFractionRing X.G.O X.G.Kf) {x : X.G.Kf} {N : �
       linarith
     refine ⟨he, le_antisymm h1 ?_⟩
     have hepos : (0 : ℝ) < X.eO := by exact_mod_cast he
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h5 : (N : ℝ) / X.eO * X.eO = N := by field_simp
     linarith [h2 ((N : ℝ) / X.eO) (by rw [lt_div_iff₀ hepos]; exact hlt)]
   · rintro ⟨he, h⟩

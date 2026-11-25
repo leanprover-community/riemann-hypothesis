@@ -63,8 +63,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 namespace GlobalTheory.TwInputs.Move.Forms
 
@@ -243,7 +241,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2 (NExpTied)
 open Formalism.AUTREP (GAf)
 open GlobalTheory.HeightCounting GlobalTheory.HeightCounting.SideCopy GlobalTheory.TwInputs.Move.Forms
@@ -392,7 +389,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2 (NExpTied)
 open Formalism.AUTREP (GAf)
 open GlobalTheory.HeightCounting GlobalTheory.HeightCounting.SideCopy GlobalTheory.TwInputs.Move.Forms

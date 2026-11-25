@@ -130,8 +130,7 @@ theorem blockHom_out (e : Fin m ↪ Fin n) (g : Matrix (Fin m) (Fin m) L) {i j :
 
 theorem cases_range (e : Fin m ↪ Fin n) (i j : Fin n) :
     (∃ a b, i = e a ∧ j = e b) ∨ (∀ a, i ≠ e a) ∨ ∀ a, j ≠ e a := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨h1, ⟨a, ha⟩, b, hb⟩ := h
   exact h1 a b ha hb
 

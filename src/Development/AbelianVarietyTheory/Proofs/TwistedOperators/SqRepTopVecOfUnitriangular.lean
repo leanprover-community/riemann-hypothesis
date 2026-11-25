@@ -360,8 +360,7 @@ theorem exists_stable_disjoint (n n' : ℕ) (M : Submodule ℂ (MvPolynomial (Fi
       ∀ p : GL (Fin n) ℂ × GL (Fin n') ℂ, ∀ v ∈ N, matRep n n' p v ∈ N := by
   classical
   obtain ⟨p, hp⟩ : ∃ p, p ∉ M := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hM (eq_top_iff.2 fun x _ => hc x)
 
   let U := restrictTotalDegree (Fin n' × Fin n) ℂ p.totalDegree

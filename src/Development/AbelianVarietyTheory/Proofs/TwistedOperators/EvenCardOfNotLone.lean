@@ -244,8 +244,7 @@ private lemma not_nm_of_valuation_eq_exp_neg_one {K : Type} [Field K] (w : Valua
     (hE : EvenNorms w B) (hz : w z = WithZero.exp (-1)) : ¬ Nm B z := by
   rintro ⟨x, y, rfl⟩
   have hne : x ≠ 0 ∨ y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [hc.1, hc.2] at hz
     have h0 : w ((0 : K) ^ 2 - B * 0 ^ 2) = 0 := by simp
     rw [h0] at hz
@@ -382,8 +381,7 @@ theorem exists_not_mem_nrm {p : Place F} {b : Fˣ} (h : b ∉ sqr p) : ∃ a : F
   | inr σ =>
     have hb : ¬ IsSquare (σ (b : F)) := fun hs => h ((mem_sqSub _ _).2 hs)
     have hneg : σ (b : F) < 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hb ⟨Real.sqrt _, (Real.mul_self_sqrt hc).symm⟩
     refine ⟨-1, fun hmem => ?_⟩
     obtain ⟨c, d, hcd⟩ : ∃ c d : ℝ, σ ((-1 : Fˣ) : F) = c ^ 2 - σ (b : F) * d ^ 2 := hmem

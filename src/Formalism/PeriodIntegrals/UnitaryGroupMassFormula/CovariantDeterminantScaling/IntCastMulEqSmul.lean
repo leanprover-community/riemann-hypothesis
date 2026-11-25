@@ -98,8 +98,7 @@ theorem qnCovDet_of_lin (h : PI.QnCovLin) : PI.QnCovDet := by
   intro A _ _ n E P Q hE hQP hPQ u
   have hrep : ∀ c : Fin n → Fin n, ¬ Function.Injective c → ∃ p q, p ≠ q ∧ c p = c q := by
     intro c hc
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hc (fun p q hpq => by_contra fun h => hne p q h hpq)
   have hrow : ∀ c d : Fin n → Fin n, ¬ Function.Injective c → qminor E c d u = 0 := by
     intro c d hc

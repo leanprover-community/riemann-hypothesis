@@ -100,8 +100,7 @@ theorem first_gap (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) : Fr.fr (j 
   have hfin := hgap _ hyl hxI.1.1 ?_
   · omega
   intro z hz hzx
-  by_contra hzy
-  push_neg at hzy
+  by_contra! hzy
   unfold Frames.letters at hz
   rw [Finset.mem_filter, Finset.mem_Icc] at hz
   apply hmin z _ hzx
@@ -126,8 +125,7 @@ private theorem llPos_zero_le_of_mem (j : ℤ) (hc : 0 < (Fr.LLset j).card) :
     ∀ z ∈ Fr.LLset j, llPos Fr j 0 ≤ z := by
   classical
   intro z hz
-  by_contra hzx
-  push_neg at hzx
+  by_contra! hzx
   have hx := llPos_mem_LLset (Fr := Fr) j 0 hc
   have hf := filt_card (Fr := Fr) j 0 hc
   have hsub : ({z, llPos Fr j 0} : Finset ℤ) ⊆ (Fr.LLset j).filter (· ≤ llPos Fr j 0) := by
@@ -150,8 +148,7 @@ private theorem lt_sort_getD_of_le_card_filter_gt (S : Finset ℤ) (c : ℤ) (k 
   have hpw : s.Pairwise (· ≤ ·) := Finset.pairwise_sort _ _
   have hi : s.length - k < s.length := by omega
   rw [List.getD_eq_getElem _ _ hi]
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hsub : S.filter (c < ·) ⊆ (s.drop (s.length - k + 1)).toFinset := by
     intro z hz
     rw [Finset.mem_filter] at hz
@@ -159,8 +156,7 @@ private theorem lt_sort_getD_of_le_card_filter_gt (S : Finset ℤ) (c : ℤ) (k 
     obtain ⟨m, hm, rfl⟩ := List.getElem_of_mem hzs
     rw [List.mem_toFinset]
     have hmk : s.length - k < m := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have h1 : s[m] ≤ s[s.length - k] := by
         rcases hc.lt_or_eq with hlt | heq
         · exact List.pairwise_iff_getElem.mp hpw m _ hm hi hlt

@@ -751,8 +751,7 @@ theorem exists_rat {D : D7} (x : (AfE D)ˣ) (a : D.host.E) (h : (x : AfE D) = 1 
       rw [this]
       exact IsCMField.complexConj_ne_one _
     obtain ⟨z, hz⟩ : ∃ z, cF D z ≠ z := by
-      by_contra h0
-      push_neg at h0
+      by_contra! h0
       exact hc (AlgEquiv.ext h0)
     refine key (z - cF D z) (sub_ne_zero.2 hz.symm) ?_
     rw [hx, ← map_mul, map_sub, _root_.GlobalTheory.XiCounterexample.conj_conj]

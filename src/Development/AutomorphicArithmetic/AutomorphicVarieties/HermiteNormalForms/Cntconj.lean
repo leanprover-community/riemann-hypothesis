@@ -71,8 +71,7 @@ theorem UpperTheory.V.KT.cntconj :
       have hn : ‖embO w x‖ = w (x : L) := InfinitePlace.norm_embedding_eq w (x : L)
       rw [hn] at h1
       push_cast at h1
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have : (2 * (R : ℝ) + 1) * 1 ≤ (2 * (R : ℝ) + 1) * w (x : L) :=
         mul_le_mul_of_nonneg_left hc (by positivity)
       linarith

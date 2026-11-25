@@ -29,8 +29,7 @@ theorem IsSB.add {Φ Φ' : W → ℂ} (h : IsSB L X Φ) (h' : IsSB L X Φ') : Is
   obtain ⟨hs', k', hk', hi', hl'⟩ := h'
   have hor : ∀ t, (Φ + Φ') t ≠ 0 → Φ t ≠ 0 ∨ Φ' t ≠ 0 := by
     intro t ht
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply ht
     simp [hc.1, hc.2]
   refine ⟨fun t ht => (hor t ht).elim (hs t) (hs' t), k * k', Nat.mul_pos hk hk', fun u hu t => ?_,
@@ -241,8 +240,7 @@ theorem coef_ne_zero {Φ : W → ℂ} (h : IsSB L X Φ) {k : ℕ} (hk : 0 < k) (
   have hS : ∑ q : Qt hex.choose (L ⊓ X), G ((q.out : ↥(L ⊓ X)) : W) ≠ 0 := by
     intro h0; apply hc; rw [h0, mul_zero]
   refine ⟨?_, ?_⟩
-  · by_contra hno
-    push_neg at hno
+  · by_contra! hno
     apply hS
     refine Finset.sum_eq_zero fun q _ => ?_
     simp only [hG]

@@ -17,8 +17,6 @@ open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalC
 open MvPolynomial Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqJet
 open ReciprocityTheory.ChartRestriction.G.Chart (JetR zR IsUnivChart sp spMap spMap_comp comp_one')
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {R : Type} [CommRing R]
 
 section Maps

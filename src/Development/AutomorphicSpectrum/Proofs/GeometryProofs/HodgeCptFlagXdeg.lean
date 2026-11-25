@@ -10,6 +10,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalRingPointsExistsUnique
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompDescentFourth
 
 @[expose] public section
 
@@ -279,16 +280,7 @@ theorem exists_gen {Λ : Lat ξ Ω} {σ : ℤ} {g : Ω} (hg : g ≠ 0)
     rw [h]
     exact Submodule.mem_span_singleton_self g
   have hne : ∃ t₀, Λ.IsGenAt p t₀ := by
-    by_contra hn
-    have he : {t | ∃ s : Unit → Ω, (∀ i, Λ.IsGenAt p (s i)) ∧ t = ∏ i, s i ^ σ} = ∅ := by
-      ext t
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
-      rintro ⟨s, hs, -⟩
-      exact hn ⟨_, hs ()⟩
-    have hm2 : g ∈ Submodule.span (regAt ξ p) {t | ∃ s : Unit → Ω, (∀ i, Λ.IsGenAt p (s i)) ∧ t = ∏ i, s i ^ σ} :=
-      hmem
-    rw [he, Submodule.span_empty, Submodule.mem_bot] at hm2
-    exact hg hm2
+    apply _root_.GlobalTheory.CompanionTheory.Ar.ChgUnit.exists_gen_of_tens <;> assumption
   obtain ⟨t₀, ht₀⟩ := hne
   have ht₀σ : t₀ ^ σ ≠ 0 := zpow_ne_zero _ ht₀.1
   have hle : Lat.tens (fun _ : Unit => Λ) (fun _ => σ) p ≤ Submodule.span (regAt ξ p) {t₀ ^ σ} := by

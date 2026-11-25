@@ -1640,8 +1640,7 @@ private theorem subgroup_eq_of_chr_hasLevel (E : Type) [Field E] [NumberField E]
 private theorem exists_coprime_modEq_one_chi_ne_one_of_primitive {Q p : ℕ} [NeZero Q] (χ : DirichletCharacter ℂ Q)
     (hχ : χ.IsPrimitive) (hp : p.Prime) (hpQ : p ∣ Q) :
     ∃ w : ℕ, w.Coprime Q ∧ w ≡ 1 [MOD Q / p] ∧ χ (w : ZMod Q) ≠ 1 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hd : Q / p ∣ Q := Nat.div_dvd_of_dvd hpQ
   have hft : χ.FactorsThrough (Q / p) := by
     rw [DirichletCharacter.factorsThrough_iff_ker_unitsMap hd]
@@ -1843,8 +1842,7 @@ theorem UpperTheory.V.HV.hostCond :
     by_contra hnd
     rw [← Nat.factorization_le_iff_dvd hN0 hM.ne'] at hnd
     obtain ⟨p, hp⟩ : ∃ p, M.factorization p < h.N.factorization p := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hnd (Finsupp.le_def.2 hcon)
     have hpp : p.Prime := by
       by_contra hnp

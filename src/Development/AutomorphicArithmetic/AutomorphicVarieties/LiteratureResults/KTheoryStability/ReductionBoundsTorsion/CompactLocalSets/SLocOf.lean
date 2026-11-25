@@ -879,8 +879,7 @@ lemma pt_eqA {q : ℕ} (A : Fin (q + 1) → V ≃L[ℝ] V) (t : Fin q → ℝ) (
   pt_eq t (fun j => A j (y j))
 
 lemma exists_big {q : ℕ} (τ : Fin (q + 1) → ℝ) (hs : ∑ j, τ j = 1) : ∃ i, 1 / ((q : ℝ) + 1) ≤ τ i := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hlt : ∑ j, τ j < ∑ _j : Fin (q + 1), 1 / ((q : ℝ) + 1) :=
     Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty fun j _ => h j
   rw [hs, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at hlt

@@ -152,8 +152,7 @@ private theorem isDomain_of_span {A : Type} [CommRing A] [IsNoetherianRing A] [I
   have hfac : ∀ a : A, a ≠ 0 → ∃ (k : ℕ) (u : A), IsUnit u ∧ a = π ^ k * u := by
     intro a ha
     have hex : ∃ n : ℕ, a ∉ (IsLocalRing.maximalIdeal A) ^ n := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply ha
       have hmem : a ∈ ⨅ i : ℕ, (IsLocalRing.maximalIdeal A) ^ i := Submodule.mem_iInf _ |>.2 h
       rwa [hkrull, Ideal.mem_bot] at hmem
@@ -177,8 +176,7 @@ private theorem isDomain_of_span {A : Type} [CommRing A] [IsNoetherianRing A] [I
     exact ⟨c, by rw [← hu, ← hc, pow_succ]; ring⟩
   have hnzd : NoZeroDivisors A := by
     refine ⟨fun {a b} hab => ?_⟩
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨k, u, hu, rfl⟩ := hfac a h.1
     obtain ⟨l, v, hv, rfl⟩ := hfac b h.2
     have h1 : (u * v) * π ^ (k + l) = 0 := by rw [← hab]; ring

@@ -174,8 +174,7 @@ theorem maximal_compact_isCompact : KCompact := by
     mem_closedBall_zero_iff.2 (entry_norm_bound_of_unitary hu' i j)
 
 lemma pow_bdd_le_one {x M : ℝ} (hx : 0 < x) (h : ∀ n : ℕ, x ^ n ≤ M) : x ≤ 1 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt M hlt
   exact absurd (h n) (not_le.2 hn)
 

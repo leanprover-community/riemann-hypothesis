@@ -988,8 +988,7 @@ theorem GlobalTheory.JR.descFn_isTest : ∀ (F E : Type) [NontriviallyNormedFiel
     by_contra hne
     rw [hdesc] at hne
     have : ∃ g, Φ (y, g) ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hne
       have : (fun g => Φ (y, g)) = fun _ => 0 := funext hall
       rw [this]

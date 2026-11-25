@@ -223,8 +223,7 @@ theorem exists_tF_ne (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {h : Matr
     (hh : ct σ h = h) (h0 : h ≠ 0) : ∃ k ∈ hermF σ r, (tF h k : F) ≠ 0 := by
   classical
   obtain ⟨i, j, hij⟩ : ∃ i j, h i j ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (Matrix.ext hc)
   obtain ⟨z, hz⟩ := Algebra.trace_surjective F E 1
   let s : E ≃ₐ[F] E := AlgEquiv.ofAlgHom σ σ (AlgHom.ext hσ) (AlgHom.ext hσ)

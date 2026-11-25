@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartEighth
+
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
@@ -27,22 +29,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : 
 
 theorem continuousWithinAt_valAt {x : (Σ k, ι k) → Ω} {b₀ : (Σ k, ι k) → ℂ} (hb : b₀ ∈ mcPts (mCoordIdeal x)) {s : Ω}
     (hs : RegAt x (mCoordIdeal b₀) s) : ContinuousWithinAt (valAt x s) (mcPts (mCoordIdeal x)) b₀ := by
-  obtain ⟨d, g, h, hg, hh, hn, heq⟩ := hs
-  have hx := ValRing.aeval_ne_zero_of_notMem hb hh hn
-  have h0 := ValRing.eval_ne_zero_of_notMem hh hn
-  have cg : Continuous fun b : (Σ k, ι k) → ℂ => eval b (map (Int.castRingHom ℂ) g) :=
-    MvPolynomial.continuous_eval _
-  have ch : Continuous fun b : (Σ k, ι k) → ℂ => eval b (map (Int.castRingHom ℂ) h) :=
-    MvPolynomial.continuous_eval _
-  have hne : ∀ᶠ b in 𝓝 b₀, eval b (map (Int.castRingHom ℂ) h) ≠ 0 := ch.continuousAt.eventually_ne h0
-  have key : valAt x s =ᶠ[𝓝[mcPts (mCoordIdeal x)] b₀]
-      fun b => eval b (map (Int.castRingHom ℂ) g) / eval b (map (Int.castRingHom ℂ) h) := by
-    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds hne] with b hbm hbn
-    exact valAt_eq hbm ⟨d, g, h, hg, hh, hx, heq, hbn, rfl⟩
-  have hq : ContinuousWithinAt
-      (fun b : (Σ k, ι k) → ℂ => eval b (map (Int.castRingHom ℂ) g) / eval b (map (Int.castRingHom ℂ) h))
-      (mcPts (mCoordIdeal x)) b₀ := (cg.continuousAt.div ch.continuousAt h0).continuousWithinAt
-  exact hq.congr_of_eventuallyEq key (key.self_of_nhdsWithin hb)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.continuousWithinAt_valAt_of_regAt <;> assumption
 
 end Values
 

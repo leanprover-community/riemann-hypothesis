@@ -575,8 +575,7 @@ private theorem pair_count {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} (x 
     exact this
   have hne : ∃ g, ((χ g : x.Aˣ) : x.A) ≠
       algebraMap ℤ_[l] x.A ((F.ε.comp (F.η.ker.subtype.comp (F.φ v)) g : ℤ_[l]ˣ) : ℤ_[l]) := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply (x.N1 v).2 i j hij
     refine MonoidHom.ext fun g => Units.ext ?_
     have h1 := hall g

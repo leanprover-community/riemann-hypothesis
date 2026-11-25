@@ -205,8 +205,7 @@ theorem eq_bot_or_eq_top : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] (n 
   right
   obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW0
   obtain ⟨i, hi⟩ : ∃ i, (bVV K lam).repr w i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hw0 ((bVV K lam).ext_elem fun k => by simp [h k])
   have hproj : ∀ S : Finset ι, (∑ k ∈ Finset.univ.filter (fun k : VVIdx lam => ∀ τ ∈ S, k τ = i τ),
       (bVV K lam).repr w k • bVV K lam k) ∈ W := by

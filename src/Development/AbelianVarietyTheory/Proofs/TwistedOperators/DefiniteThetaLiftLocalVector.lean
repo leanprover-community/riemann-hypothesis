@@ -353,8 +353,7 @@ theorem prod_redFun (s : Finset (Formalism.L2.DIV.Pl D.host.E)) (es : Formalism.
     rw [h2, one_mul] at this
     exact this
   · have : ∃ PP ∈ s, ¬ IsIntM (toEAf D (es PP) • frMapAdj S T βS βT x) := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       refine hi fun i j => ?_
 
       rw [← frMapAdj_half S T βS βT hx i j, map_sum, Finset.sum_mul]

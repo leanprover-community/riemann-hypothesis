@@ -315,8 +315,7 @@ theorem snd_nonneg (hf : ContDiffAt ℝ 2 f 0) (hm : IsLocalMin f 0) (v : Fin n 
   set B := fderiv ℝ ψ 0 with hB
   have hψd : DifferentiableAt ℝ ψ 0 := (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
   have hψ0 : ψ 0 = 0 := hm.fderiv_eq_zero
-  by_contra hq
-  push_neg at hq
+  by_contra! hq
   set q := B v v with hqe
   set η := -q / (2 * (‖v‖ ^ 2 + 1)) with hη
   have hηpos : 0 < η := div_pos (by linarith) (by positivity)

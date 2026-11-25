@@ -232,8 +232,7 @@ theorem mem_pow_of (hp : (Ideal.absNorm P.asIdeal).Prime) {α : 𝓞 E} {K : ℕ
 
 theorem exists_not_int (hp : (Ideal.absNorm P.asIdeal).Prime) {α : 𝓞 E} (hα : α ≠ 0) :
     ∃ K : ℕ, ¬ IntAt P (algebraMap (𝓞 E) E α / (qOf P : E) ^ K) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hall : ∀ K, α ∈ P.asIdeal ^ K := fun K => mem_pow_of P hp (hcon K)
   have hbot := Ideal.iInf_pow_eq_bot_of_isDomain P.asIdeal P.isPrime.ne_top
   have hin : α ∈ (⨅ i, P.asIdeal ^ i) := Ideal.mem_iInf.mpr hall
@@ -305,8 +304,7 @@ theorem integer_integral_iff_dvd : IntegerIntegralIffDvd := by
       exact hnd (dvd_zero _)
     obtain ⟨f, j, hj, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hi0 (qOf P) hp.one_lt.ne'
     have hfe : f < e := by
-      by_contra hfe
-      push_neg at hfe
+      by_contra! hfe
       exact hnd (Dvd.dvd.mul_right (pow_dvd_pow _ hfe) _)
     have h1 : IntAt P ((((qOf P ^ f * j : ℕ) : E) / (qOf P : E) ^ e) * (j : E)⁻¹ *
         (qOf P : E) ^ (e - f - 1)) :=

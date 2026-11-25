@@ -79,12 +79,10 @@ theorem ip_self (u : X.Ψ → Fin r → ℂ) : ip X u u = ∑ τ, X.c τ * ∑ a
 theorem ip_pos {u : X.Ψ → Fin r → ℂ} (hu : u ≠ 0) : 0 < ip X u u := by
   rw [ip_self]
   obtain ⟨τ, hτ⟩ : ∃ τ, u τ ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu (funext h)
   obtain ⟨a, ha⟩ : ∃ a, u τ a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hτ (funext h)
   apply Finset.sum_pos' (fun i _ => mul_nonneg (c_pos X i).le
     (Finset.sum_nonneg fun b _ => sq_nonneg _))

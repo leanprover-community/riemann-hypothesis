@@ -1085,8 +1085,7 @@ theorem hart_of_local : ∀ (A O M : Type) [CommRing A] [CommRing O] [Algebra A 
   intro A O M _ _ _ _ _ hH a ha m hloc
   apply hH a ha m
   intro p hp hpht
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let J : Ideal O :=
     { carrier := {o | ∃ m' : M, o • m = algebraMap A O a • m'}
       add_mem' := by

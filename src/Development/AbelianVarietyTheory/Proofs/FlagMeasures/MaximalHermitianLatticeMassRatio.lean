@@ -491,8 +491,7 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
 
   have hle1 : ∀ i, vF p (a i) ≤ 1 := by
     intro i
-    by_contra hgt
-    push_neg at hgt
+    by_contra! hgt
     have h1 : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       have e : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) =
           h x x * (((if i = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b i) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) + c i * (h (b i) x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) := by
@@ -535,8 +534,7 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     rw [hext] at h2
     exact hP.ne_top ((Ideal.eq_top_iff_one P).2 (Ideal.pow_le_self (by omega) h2))
   have hex : ∃ i, vF p (a i) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hPb.2
     have hinv : ∀ i, algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := fun i =>
       (LocalProofs.div_mem_SP_iff hp (ha i) 1).2 (by rw [hcon i, pow_zero, Ideal.one_eq_top]; exact Submodule.mem_top)

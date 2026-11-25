@@ -1365,8 +1365,7 @@ private theorem dim_unique {X Y : Scheme.{0}} (f : X ⟶ Y) {a b : ℕ} (x : X)
   haveI : Nonempty V := ⟨⟨x, hx⟩⟩
   obtain ⟨m, hm⟩ := Ideal.exists_maximal Γ(X, V)
   obtain ⟨t, ht, htm⟩ : ∃ t ∈ s, t ∉ m := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hm.ne_top (top_le_iff.1 (hs ▸ Ideal.span_le.2 hc))
   have h1 := hl t ht
   have h0 : (algebraMap Γ(X, V) (Localization.Away t)).IsStandardSmoothOfRelativeDimension 0 :=

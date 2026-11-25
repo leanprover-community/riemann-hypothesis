@@ -47,8 +47,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.O
 open GlobalTheory.KS (rsT pbT)
 open GlobalTheory.LogKS (IsField)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Heat.Gauge
 
 variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] {n : ℕ} {X : Scheme.{0}}

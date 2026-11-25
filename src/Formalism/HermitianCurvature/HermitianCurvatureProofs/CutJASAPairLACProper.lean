@@ -12,8 +12,6 @@ open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem averaging_properness_holds : ACProper := by
   intro k r Wp Wq _ _ _ _ D C C' hC hC' hC'O
   have hW : IsCompact (UWset k r D.z) := Formalism.FourierDecayAlt.P.weyl_subgroup_compact k r D.z D.z_mem D.T_pos

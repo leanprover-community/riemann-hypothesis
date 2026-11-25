@@ -127,7 +127,6 @@ section -- clump:auto
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt Formalism.L2.SG.NGData Formalism.L2.SG.NGLocModel Formalism.L2.SG.FamDefs GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormCong
 
@@ -234,7 +233,6 @@ section -- clump:auto
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
 open ValuativeRel
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.GlueCount
@@ -324,8 +322,7 @@ theorem glueSum_le : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wha
     exact lt_irrefl _ hpos
   have hrow : ∃ Λ₁ ∈ Y.what₂ u,
       (Formalism.L2.SG.CntLocal.EZ (Formalism.L2.SG.CntLocal.Tn u') (X.Fu u) Λ₁ (ZhatL (lf D (X.Fu u)) G')).Nonempty := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     apply hnu
     unfold Formalism.L2.SG.CntLocal.nu
     rw [Finset.sum_eq_zero (fun Λ₁ h1 => by simp [Formalism.L2.SG.CntLocal.cntE, hno Λ₁ h1]), zero_div]
@@ -587,7 +584,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.WtPos
 
@@ -631,7 +627,6 @@ noncomputable section
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt Formalism.L2.SG.NGData Formalism.L2.SG.NGLocModel Formalism.L2.SG.FamDefs GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinitePlaceMassFactors
 
@@ -840,7 +835,6 @@ section -- clump:auto
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CountConst
 
@@ -916,7 +910,6 @@ section -- clump:auto
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1047,7 +1040,6 @@ section -- clump:auto
 
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt Formalism.L2.SG.NGData Formalism.L2.SG.NGLocModel Formalism.L2.SG.FamDefs GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.WeightsFamPf
 
 theorem weightsFam_of (hS : PI.VolStabS.MassDataS.SWXS) : GlobalTheory.SnFam.WeightsFam := by
@@ -1147,8 +1139,7 @@ theorem weightsFam_of (hS : PI.VolStabS.MassDataS.SWXS) : GlobalTheory.SnFam.Wei
       _ = _ := by rw [← mul_assoc 2, mul_assoc (2 * _), mul_comm (Formalism.L2.SG.MassDataConc.ngFac D), hLam]; ring
   have hc0 : 0 ≤ 2 * (bkU X hb Y u u' X0 ψ sd C Th vR Q i0 i0' νq).AA *
       PN.abelian₂ (2 * D.host.v) D.R.rS D.R.k D.R.f := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h1 : HP ^ (3 * (D.R.rS + 1) ^ 2) * (2 * (bkU X hb Y u u' X0 ψ sd C Th vR Q i0 i0' νq).AA *
         PN.abelian₂ (2 * D.host.v) D.R.rS D.R.k D.R.f) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hHa.le hneg.le
     have h2 := mul_nonpos_of_nonpos_of_nonneg h1 hY0

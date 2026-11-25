@@ -68,8 +68,7 @@ theorem total_trace_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {
     (hm : ∀ τ, HasInfCharGL V τ (m τ)) : ∑ τ, (m τ).sum = 0 := by
   obtain ⟨φ, hφ, hφ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hV.ne_bot
   obtain ⟨g, hg⟩ : ∃ g, φ.1 g ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hφ0 (Subtype.ext (funext hcon))
   have hlie : lie E N (oneL E N) φ = (∑ τ, (m τ).sum) • φ := by
     rw [GlobalTheory.CompanionTheory.ClozelLie.lie_oneL_eq_sum_Eop, LinearMap.sum_apply, Finset.sum_smul]

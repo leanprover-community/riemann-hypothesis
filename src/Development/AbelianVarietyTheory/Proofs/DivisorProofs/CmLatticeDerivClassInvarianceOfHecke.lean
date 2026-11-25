@@ -552,8 +552,7 @@ theorem riemannCl_linInd (ξ : E) (hξ : ξ ≠ 0) :
     funext j
     have := LinearMap.congr_fun hc (Module.finBasis ℚ E j)
     simpa [Matrix.vecMul, dotProduct, Gc, gram_apply, riemannCl_apply] using this
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨i, hi⟩ := h
   exact hdet (Matrix.exists_vecMul_eq_zero_iff.mp ⟨c, fun h0 => hi (by simp [h0]), hv⟩)
 

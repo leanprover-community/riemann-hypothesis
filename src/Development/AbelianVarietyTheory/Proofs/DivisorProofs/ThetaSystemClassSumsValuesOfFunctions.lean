@@ -171,8 +171,7 @@ theorem isClassSum_of_sumI {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {
   let L := (PreModel.low_finite Φ y P j).toFinset
   let T := S₀ ∪ L
   refine ⟨T.filter P, fun mu hmu => (Finset.mem_filter.1 hmu).2, fun mu hP hn => ?_, ?_⟩
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     exact hn (Finset.mem_filter.2 ⟨Finset.mem_union_right _ ((Set.Finite.mem_toFinset _).2 ⟨hP, hlt⟩), hP⟩)
   · have h1 := hS₀ T Finset.subset_union_left
     have h2 : ∑ mu ∈ T, f mu = io (∑ mu ∈ T.filter P, Φ.term y mu c) := by

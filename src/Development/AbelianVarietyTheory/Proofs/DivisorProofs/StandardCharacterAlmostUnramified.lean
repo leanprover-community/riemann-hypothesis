@@ -65,8 +65,7 @@ theorem psi_std_conductor : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddCh
     by_contra h
     exact hv (GlobalTheory.StdCharUnrF.psiUnr_of_not_le F ψ hψ v fun h' => h (Ideal.dvd_iff_le.2 h'))
   · intro v
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨π, hπ⟩ := HeightOneSpectrum.valuation_exists_uniformizer F v
     set c : ℤ := FractionalIdeal.count F v (GlobalTheory.StdDual.codiff F) with hc
     set x : Fv F v := algebraMap F (Fv F v) (π ^ (c - 1)) with hx

@@ -62,8 +62,7 @@ theorem norm_psiAt_le {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) 
   have hK := (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v).image
     (f := fun t : Fv F v => ‖GlobalTheory.LatVac.psiAt ψ v (y * t)‖) ((hc.comp (continuous_const.mul continuous_id)).norm)
   obtain ⟨C, hC⟩ := hK.bddAbove
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt C h
   have hle : ‖GlobalTheory.LatVac.psiAt ψ v y‖ ^ n ≤ C := by
     refine hC ⟨(n : Fv F v), natCast_mem _ n, ?_⟩

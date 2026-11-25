@@ -832,8 +832,7 @@ theorem root_mem_intW (D : D7) (w : D.what₂.places.Pl) (r : D.what₂.LL) (n :
   show (0 : WithTop ℤ) ≤ D.what₂.places.val w r
   have h1 : D.what₂.places.val w (r ^ n) = 0 := by rw [h, AddValuation.map_one]
   rw [AddValuation.map_pow] at h1
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have : n • D.what₂.places.val w r < 0 := by
     obtain ⟨k, hk⟩ : ∃ k : ℤ, D.what₂.places.val w r = k := by
       rcases h2 : D.what₂.places.val w r with _ | k

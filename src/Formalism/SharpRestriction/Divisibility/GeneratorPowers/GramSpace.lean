@@ -558,8 +558,7 @@ theorem lower_bound {cj : E → E} (hcj : ∀ (φ : E →+* ℂ) (z : E), φ (cj
     ext a
     simpa using LinearMap.congr_fun h a
   obtain ⟨a₀, ha₀⟩ : ∃ a, (etil ν a : E) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hP : Pm hcj (Algebra.linearMap ℤ ℝ ∘ₗ ν) (Algebra.linearMap ℤ ℝ ∘ₗ ν) ≠ 0 := by
       first | exact Pm_ne_zero hcj hη
     apply hP

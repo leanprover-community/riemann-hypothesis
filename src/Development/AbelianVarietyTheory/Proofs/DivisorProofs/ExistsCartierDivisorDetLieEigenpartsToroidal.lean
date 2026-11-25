@@ -194,8 +194,6 @@ open GlobalTheory.FlagMod GlobalTheory.ShFam
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem gm_val_stalk {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) (h : f y ∈ U) (a : Γ(X, U)ˣ) :
     (gm f y U a).val = (f.stalkMap y).hom ((X.presheaf.germ U (f y) h).hom a.val) := by
   rw [gm, dite_eq_left h]

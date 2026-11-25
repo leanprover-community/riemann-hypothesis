@@ -21,8 +21,7 @@ namespace GlobalTheory.CompanionTheory.SegNu
 
 theorem exists_ne_zero_of_irr {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
     {π : Representation ℂ G V} (hi : π.IsIrreducible) : ∃ v : V, v ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   haveI := hi
   refine (bot_ne_top : (⊥ : Subrepresentation π) ≠ ⊤) (Subrepresentation.toSubmodule_injective ?_)
   show (⊥ : Submodule ℂ V) = ⊤

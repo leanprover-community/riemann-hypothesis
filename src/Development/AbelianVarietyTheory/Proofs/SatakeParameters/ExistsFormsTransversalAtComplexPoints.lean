@@ -428,8 +428,7 @@ theorem eq_top_of_forall_cxPts_mem : ∀ (X : Scheme.{0}) (p : X ⟶ Sp ℂ) [Lo
   intro X p _ U hall
   by_contra hU
   obtain ⟨x, hx⟩ : ∃ x : X, x ∉ U := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hU (eq_top_iff.2 fun y _ => h y)
   obtain ⟨V, hV, hxV, -⟩ := (TopologicalSpace.Opens.isBasis_iff_nbhd.1 X.isBasis_affineOpens) (show x ∈ (⊤ : X.Opens) from trivial)
   have hV : IsAffineOpen V := hV
@@ -681,8 +680,7 @@ theorem exists_transversal_forms_first_separate (X : Scheme.{0}) [IsIntegral X] 
       refine MeasureTheory.measure_union_null hE (MeasureTheory.measure_iUnion_null fun j => ?_)
       rw [MeasureTheory.volume_pi]
       exact MeasureTheory.Measure.pi_hyperplane (μ := fun _ : Fin d => (MeasureTheory.volume : MeasureTheory.Measure ℂ)) j (a j)
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hu : (Set.univ : Set (Fin d → ℂ)) ⊆ E ∪ ⋃ j, {c : Fin d → ℂ | c j = a j} := by
       intro c _
       by_cases hc : c ∈ E

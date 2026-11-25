@@ -61,8 +61,6 @@ namespace Formalism.FourierDecayAlt.P5.HerD
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P5.HerA Formalism.FourierDecayAlt.P5.HerB Formalism.FourierDecayAlt.P5.HerC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Meas
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp]

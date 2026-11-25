@@ -911,8 +911,7 @@ theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ)
   · intro hle
     exact lt_of_le_of_lt hle key.1
   · intro hlt
-    by_contra hgt
-    push_neg at hgt
+    by_contra! hgt
     exact key.2 y hy hgt hlt
 
 theorem oldest_pred (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ) (h1 : 1 ≤ u) (hu : u < (Fr.LLset j).card + r)

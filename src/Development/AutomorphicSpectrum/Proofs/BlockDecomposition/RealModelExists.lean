@@ -1470,8 +1470,7 @@ theorem model_of_ops (lam : Fin n → ℤ) (lev : Fin n → ℕ) (hlev : IsLev l
         simp [yZ]
       simp only [kF, LinearMap.add_apply, map_add (f := _), h1, hm]
       linear_combination -h2
-    · by_contra hcon
-      push_neg at hcon
+    · by_contra! hcon
       obtain ⟨S₁, fd₁, hx₁, st₁⟩ := lf x
       have hstab : ∀ T ∈ A, ∀ w ∈ S₁, T w ∈ S₁ := by
         intro T hT

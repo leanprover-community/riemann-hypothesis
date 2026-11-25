@@ -1509,8 +1509,7 @@ theorem exists_intertwiningMap_piTensor_ofChar {k : Type} [Field k] [ValuativeRe
         rw [hfe]
         exact (mul_smul _ _ _).trans (piTensor_detRep_apply ξ t (f w • o)).symm }
   obtain ⟨w, hw⟩ : ∃ w, f w ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf (LinearMap.ext h)
   refine ⟨E.toIntertwiningMap.comp g₀, w, fun h => ?_⟩
   have h1 : E.toLinearEquiv (f w • o) = 0 := h

@@ -412,8 +412,7 @@ theorem b_nums {D : D7} {T g1 g2 : ℕ} {Cn x b L b' Sc eta : ℝ} (h : Nums D T
     have h2 : Real.log 8 ≤ Real.log (x * b * D.host.v) := Real.log_le_log (by norm_num) h8
     linarith
   have hCn : 0 ≤ Cn := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : Cn * L < 0 := mul_neg_of_neg_of_pos hc (by linarith)
     linarith [abs_nonneg (dlogL D 1)]
   have hNb : (D.R.N D.R.m : ℝ) ≤ b' := by

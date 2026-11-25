@@ -50,8 +50,6 @@ open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 structure ValExt (T : CDVR) (p : ℕ) [Fact p.Prime] : Type 1 where
   C : Type
   [fld : Field C]

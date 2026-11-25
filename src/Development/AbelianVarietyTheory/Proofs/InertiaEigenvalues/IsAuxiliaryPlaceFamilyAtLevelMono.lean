@@ -263,8 +263,7 @@ theorem _root_.GlobalTheory.exists_low_coeff_not_dvd_of_congr_mul : ∀ (O : Typ
     rw [(IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ,
       Ideal.mem_span_singleton] at hmax
     exact hmax
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hDg : ∀ i ≤ (v + 1) * m₀, ϖ ^ (v + 1) ∣ PowerSeries.coeff i (D * g) := by
     intro i hi
     have h1 := dvd_trans (pow_dvd_pow ϖ hv) (hf i (hi.trans hM))

@@ -201,8 +201,7 @@ private theorem Dz.all {E : Type} [Field E] [StarRing E] [CharZero E] :
   · subst h0
     exact ⟨1, by simp, 0, by ext i j; simp [Matrix.diagonal]⟩
   obtain ⟨i, j, hij⟩ : ∃ i j, T i j ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (by ext a b; simpa using hc a b)
   have hne : j ≠ i := by
     rintro rfl
@@ -308,8 +307,7 @@ theorem UpperTheory.Reformulated.B.Gka4.diag_hermitian :
     rw [NumberField.InfinitePlace.isComplex_mk_iff] at this
     exact this hr
   obtain ⟨α, hα⟩ : ∃ α, σ α ≠ α := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hnr
     rw [NumberField.ComplexEmbedding.isReal_iff]
     ext x

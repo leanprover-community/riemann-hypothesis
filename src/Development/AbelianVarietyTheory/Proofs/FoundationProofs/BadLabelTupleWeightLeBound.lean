@@ -1463,8 +1463,7 @@ theorem exchange (M : Type) [AddCommGroup M] [Module ℂ M] [FiniteDimensional �
       · rw [Matrix.vecMulVec_apply, Pi.smul_apply, Pi.single_eq_of_ne hb, smul_zero, mul_zero]
     have hm : L.Mem (y⁻¹ * x⁻¹ * y * x) := by
       refine mem_of_val L _ _ hc (fun a b hab => hD a b ?_) (fun a b ha _ _ => hD a b (Or.inl ?_))
-      · by_contra hcon
-        push_neg at hcon
+      · by_contra! hcon
         rw [hcon.1, hcon.2, Fin.le_def] at hab
         omega
       · intro e; rw [e] at ha; omega

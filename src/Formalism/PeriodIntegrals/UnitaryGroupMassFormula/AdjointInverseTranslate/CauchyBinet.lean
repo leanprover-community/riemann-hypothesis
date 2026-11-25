@@ -33,8 +33,7 @@ theorem collapse {A : Type*} [AddCommGroup A] [Module ℂ A] {N r m : ℕ} (hm :
   · intro c _ hc
     by_cases hinj : Function.Injective c
     · have hex : ∃ j, w (c j) (φ (Fin.castLE hm j)) = 0 := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         apply hc
         funext j
         obtain ⟨k, hk⟩ := j

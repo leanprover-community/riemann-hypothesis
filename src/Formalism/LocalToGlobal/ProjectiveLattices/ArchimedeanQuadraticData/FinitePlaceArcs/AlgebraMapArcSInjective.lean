@@ -54,8 +54,7 @@ theorem zpow_bound {α : Type} (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1) (o vth : �
     rw [Finset.sum_mul]
     exact Finset.sum_congr rfl fun _ _ => by ring
   push_cast at hlog
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hm := mul_lt_mul_of_neg_right hc hL
   linarith
 

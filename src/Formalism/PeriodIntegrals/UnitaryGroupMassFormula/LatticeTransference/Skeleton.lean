@@ -23,8 +23,7 @@ lemma succMin_nonneg (M : Submodule ℤ (EuclideanSpace ℝ (Fin N))) (i : ℕ) 
 
 lemma finrank_span_lt_succMin (M : Submodule ℤ (EuclideanSpace ℝ (Fin N))) (i : ℕ) (hi : 1 ≤ i) :
     finrank ℝ (Submodule.span ℝ {x : EuclideanSpace ℝ (Fin N) | x ∈ M ∧ ‖x‖ < succMin M i}) < i := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨b, hbS, hbspan, hbli⟩ := exists_linearIndependent ℝ
     {x : EuclideanSpace ℝ (Fin N) | x ∈ M ∧ ‖x‖ < succMin M i}
   have hbfin : b.Finite := hbli.setFinite
@@ -105,8 +104,7 @@ theorem minima_of_key (h : TransferenceKey) : TransferenceMinima := by
     have hge : ‖u‖ ≤ ‖u - l‖ := by nlinarith [norm_nonneg (u - l), norm_nonneg u]
     linarith
   have hlA : A ≤ ‖l‖ := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hlV (Submodule.subset_span ⟨hlM, hlt⟩)
   have htri : ‖l‖ ≤ ‖u‖ + ‖u - l‖ := by
     calc ‖l‖ = ‖u - (u - l)‖ := by rw [sub_sub_cancel]

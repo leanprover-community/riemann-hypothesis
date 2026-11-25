@@ -62,8 +62,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.DeRham
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AbelianBaseChange
 
 variable {R R' : Type} [CommRing R] [CommRing R'] [Algebra R R'] {X X' : Scheme.{0}}

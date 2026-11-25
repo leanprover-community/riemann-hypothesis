@@ -481,8 +481,7 @@ theorem parD_fix : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
     GlobalTheory.SchwartzBox.boxFun_mem_schA F _ _ Ψ hΨ _ (_root_.GlobalTheory.ConjSch.star_mem_schA _ Ψ hΨ)
   have hV := hTr.geo.hM'.vac v
   obtain ⟨y, hy⟩ : ∃ y, G.M'.vac v y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hV.2.1 (funext h)
   have hΨne : Ψ ≠ 0 := by
     intro h0

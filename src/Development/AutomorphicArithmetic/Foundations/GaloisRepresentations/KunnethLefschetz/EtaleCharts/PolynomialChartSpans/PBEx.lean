@@ -958,8 +958,7 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemista
 
 private theorem exists_basicOpen_of_span {V : Scheme.{0}} {d : ℕ} (v : Fin d → Γ(V, ⊤))
     (h : Ideal.span (Set.range v) = ⊤) (x : V) : ∃ k, x ∈ V.basicOpen (v k) := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   let φ : Γ(V, ⊤) →+* V.presheaf.stalk x := (V.presheaf.germ ⊤ x trivial).hom
   have hle : Ideal.span (Set.range v) ≤ (IsLocalRing.maximalIdeal (V.presheaf.stalk x)).comap φ := by
     rw [Ideal.span_le]

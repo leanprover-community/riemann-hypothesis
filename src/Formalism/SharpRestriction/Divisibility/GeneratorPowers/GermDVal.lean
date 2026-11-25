@@ -16,8 +16,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory TopologicalSpace Opposite
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S0 : Scheme.{0}} (A : Over S0) [GrpObj A] (L : LB A.left)
 
 theorem exists_pullSec (a : ℤ) {T T' : Over S0} (h : T' ⊗ A ⟶ T ⊗ A) (hh : h ≫ snd T A = snd T' A)

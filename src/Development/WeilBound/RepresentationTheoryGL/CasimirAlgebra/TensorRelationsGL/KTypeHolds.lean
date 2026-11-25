@@ -945,8 +945,7 @@ theorem base (E : ι → Fin n → Fin n → Module.End ℂ M) (l : ι → Fin n
     ext σ
     simp [colG, Subsingleton.elim σ 1]
   obtain ⟨m, hm⟩ : ∃ m, ℓ m ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hℓ (LinearMap.ext h)
   refine ⟨1, Subalgebra.one_mem _, ?_, ?_⟩
   · intro h
@@ -1253,8 +1252,7 @@ theorem zero_case (E : Fin 0 → Fin 0 → Module.End ℂ M) (l : Fin 0 → ℤ)
     intro u
     simp [qdet, qminor]
   obtain ⟨v, hv⟩ : ∃ v, ℓ v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hℓ (LinearMap.ext h)
   refine ⟨1, Subalgebra.one_mem _, fun h0 => hv ?_, fun u => ?_⟩
   · have := LinearMap.congr_fun h0 (fun _ => v)

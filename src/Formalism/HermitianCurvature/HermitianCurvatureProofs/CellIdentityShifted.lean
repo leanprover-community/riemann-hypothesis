@@ -18,8 +18,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDe
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section swap
 
 variable {k r : ℕ} {Wp Wq Wq' : Type}

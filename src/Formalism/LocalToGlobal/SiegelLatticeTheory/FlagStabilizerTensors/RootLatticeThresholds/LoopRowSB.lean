@@ -1137,8 +1137,7 @@ theorem coords_psL {u : Fin e → S.V} (hu : LinearIndependent E u) (I : Fin e �
   exact Submodule.comap_map_eq_of_injective (f := j_iotaO u) (j_iota_inj hu) _
 
 theorem exists_ne_mem {J : FractionalIdeal (𝓞 E)⁰ E} (hJ : J ≠ 0) : ∃ x ∈ J, x ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hJ
   ext x
   constructor

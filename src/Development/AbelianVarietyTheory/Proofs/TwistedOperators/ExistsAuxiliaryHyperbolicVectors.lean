@@ -66,8 +66,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.DetNorm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Local
 
 open Formalism.BasicNotions.Examples₂
@@ -381,7 +379,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.StandardGramVectors
 

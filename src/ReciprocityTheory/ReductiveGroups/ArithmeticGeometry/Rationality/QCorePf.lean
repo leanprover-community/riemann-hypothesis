@@ -62,8 +62,7 @@ theorem exists_length_quotient_span_le (hL : QuotLocalStatement) {R F : Type} [C
 
   have hne : ∀ i, ∃ q, c i q ≠ 0 := by
     intro i
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hdet (Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [h])
 
   have hex : ∀ i, ∃ μ : ℤ, (∃ q, c i q ≠ 0 ∧ ordAt v (c i q) = μ) ∧

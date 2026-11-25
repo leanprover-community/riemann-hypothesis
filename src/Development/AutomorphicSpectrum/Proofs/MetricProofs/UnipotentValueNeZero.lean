@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsFibreChartIff
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
@@ -31,19 +32,8 @@ private theorem aeval_eq_eval_map_intCast {K : Type} {ι : K → Type} (w : (Σ 
 theorem exists_isValueAt_of_regAt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     {x : (Σ k, ι k) → Ω} {t : Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x))
     (ht : RegAt x (mCoordIdeal z) t) : ∃ v, IsValueAt x t z v := by
-  obtain ⟨d, g, h, hg, hh, hQ, he⟩ := ht
-  have hz0 : MvPolynomial.eval z (MvPolynomial.map (Int.castRingHom ℂ) h) ≠ 0 := by
-    intro h0
-    apply hQ
-    rw [mCoordIdeal, RingHom.mem_ker, _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.mConeMap_of_isMultiHomog z hh, aeval_eq_eval_map_intCast, h0, map_zero, zero_mul]
-  have hx0 : MvPolynomial.aeval x h ≠ 0 := by
-    intro h0
-    apply hz0
-    exact hz.2 h (by rw [mCoordIdeal, RingHom.mem_ker, _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.mConeMap_of_isMultiHomog x hh, h0, map_zero, zero_mul])
-  refine ⟨MvPolynomial.eval z (MvPolynomial.map (Int.castRingHom ℂ) g) /
-    MvPolynomial.eval z (MvPolynomial.map (Int.castRingHom ℂ) h), ?_⟩
-  unfold IsValueAt
-  exact ⟨d, g, h, hg, hh, hx0, he, hz0, rfl⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.ValRing.exists_isValueAt <;> assumption
 
 theorem valAt_ne_zero_of_regAt_inv : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
     (x : (Σ k, ι k) → Ω) (s : Ω) (z : (Σ k, ι k) → ℂ), z ∈ mcPts (mCoordIdeal x) → s ≠ 0 →

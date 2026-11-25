@@ -409,8 +409,7 @@ theorem norm_iotaO_le_one (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero a] (w : Wq 
     have hω : ω ^ l ^ a = ω := by
       simp only [ω]
       rw [← map_pow, ← map_pow, Fq.pow_card]
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 : 1 < l ^ a := Nat.one_lt_pow (NeZero.ne a) (Fact.out : l.Prime).one_lt
     have h3 : ‖ω‖ ^ 1 < ‖ω‖ ^ l ^ a := pow_lt_pow_right₀ h h2
     rw [pow_one, ← norm_pow, hω] at h3
@@ -434,8 +433,7 @@ theorem norm_lt_one_of_isRoot : ∀ (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero a
   · have : P = 1 := Polynomial.eq_one_of_monic_natDegree_zero hP h0
     rw [this, Polynomial.map_one] at hx
     simp [Polynomial.IsRoot] at hx
-  by_contra hge
-  push_neg at hge
+  by_contra! hge
   have hlpos : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
   have hl1 : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
 
@@ -627,8 +625,7 @@ theorem isUnit_of_frob_dvd : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : B
       obtain ⟨c, hc⟩ := h2
       rw [Polynomial.IsRoot, hc, Polynomial.map_mul, Polynomial.eval_mul, h4.eq_zero, zero_mul]
     have hyr : r < ‖y‖ := by
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       have h5 : ‖y‖ ^ l = r := by rw [← norm_pow, hy, hnz']
       have h6 : r ^ l < r := pow_lt_self_of_lt_one₀ hr0 hr1 (Fact.out : l.Prime).one_lt
       have h7 : ‖y‖ ^ l ≤ r ^ l := pow_le_pow_left₀ (norm_nonneg _) hle l

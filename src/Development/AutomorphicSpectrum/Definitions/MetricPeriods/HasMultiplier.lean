@@ -57,11 +57,4 @@ structure IsNefH (P : Ideal (MRing ι)) (M : HermLine ι) : Prop where
   conj : IsConjInvariantH M
   nef : NefOnFibres P M.a
 
-structure IsGenH (P : Ideal (MRing ι)) (L : HermLine ι) (Λ : ℝ) : Prop where
-  pos : 0 < Λ
-  semipos : ∃ P0, P0 ≤ P ∧ IsSemipositiveRel P0 P L
-  conj : IsConjInvariantH L
-  mono : ∃ a : K → ℕ, (L.a = fun k => (a k : ℤ)) ∧ ∀ z ∈ mcPts P, ∀ μ : (Σ k, ι k) →₀ ℕ,
-    (∀ k, ∑ i, μ ⟨k, i⟩ = a k) → ‖∏ p, z p ^ μ p‖ ≤ Λ * L.h z
-
 end GlobalTheory.CompanionTheory.Ar.Small

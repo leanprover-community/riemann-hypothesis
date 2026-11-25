@@ -317,7 +317,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory
@@ -527,7 +526,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory
@@ -564,7 +562,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory
@@ -689,7 +686,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory
@@ -886,7 +882,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory
@@ -927,7 +922,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1067,7 +1061,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open GlobalTheory

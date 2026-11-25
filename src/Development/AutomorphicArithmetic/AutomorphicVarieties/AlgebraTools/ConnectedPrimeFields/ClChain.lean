@@ -753,8 +753,7 @@ private theorem base_exists_prime {R : Type} [CommRing R] (b : Ideal R)
 private theorem base_exists_out {A R : Type} [CommRing A] [IsLocalRing A] [CommRing R]
     [Algebra A R] [Module.Finite A R] (P : Ideal R) (hP : P.IsPrime) (hm : ¬ P.IsMaximal) :
     ∃ y ∈ maximalIdeal A, algebraMap A R y ∉ P := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   haveI := hP
   have hle : maximalIdeal A ≤ P.comap (algebraMap A R) := fun y hy => hcon y hy
   have hne : P.comap (algebraMap A R) ≠ ⊤ := (Ideal.comap_isPrime (algebraMap A R) P).ne_top

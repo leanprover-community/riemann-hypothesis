@@ -22,8 +22,6 @@ namespace Formalism.FourierDecayAlt.P.JCTx5
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section typ
 
 variable {k i r' : ℕ}

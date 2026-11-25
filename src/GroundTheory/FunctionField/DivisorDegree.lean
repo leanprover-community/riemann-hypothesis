@@ -2,6 +2,7 @@ module
 
 public import GroundTheory.FunctionField.Divisor
 import GroundTheory.FunctionField.Approximation
+import Mathlib.Algebra.Polynomial.Basis
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
@@ -21,25 +22,10 @@ variable {k K : Type*} [Field k] [Field K] [Algebra k K]
 
 theorem linearIndependent_pow_of_transcendental {x : K} (hx : Transcendental k x) (N : ℕ) :
     LinearIndependent k fun i : Fin N => x ^ (i : ℕ) := by
-  classical
-  rw [Fintype.linearIndependent_iff]
-  intro g hg i
-  set p : k[X] := ∑ j : Fin N, monomial (j : ℕ) (g j) with hp
-  have hpx : aeval x p = 0 := by
-
-    rw [hp, map_sum, ← hg]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [aeval_monomial, Algebra.smul_def]
-  have hp0 : p = 0 := by
-    by_contra h
-    exact hx ⟨p, h, hpx⟩
-  have h := congrArg (fun q : k[X] => q.coeff i) hp0
-  simp only [hp, finsetSum_coeff, coeff_monomial, coeff_zero] at h
-  rw [Finset.sum_eq_single i] at h
-  · simpa using h
-  · intro j _ hj
-    exact Finsupp.single_eq_of_ne' (fun h' => hj (Fin.ext h'))
-  · intro h'; exact absurd (Finset.mem_univ i) h'
+  have h := (basisMonomials k).linearIndependent.map' (aeval x).toLinearMap
+    (LinearMap.ker_eq_bot.mpr (transcendental_iff_injective.mp hx))
+  simpa [Function.comp_def, aeval_monomial] using
+    h.comp (fun i : Fin N => (i : ℕ)) Fin.val_injective
 
 theorem adjoin_inv_eq {x : K} :
     IntermediateField.adjoin k {x⁻¹} = IntermediateField.adjoin k {x} := by

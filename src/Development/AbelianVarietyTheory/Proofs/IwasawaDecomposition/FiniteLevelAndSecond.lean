@@ -70,10 +70,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.TwistChoice
 open GlobalTheory.Mem.Top.TwChar (plUnder RootIso FrobPick avoidPlaces subset_avoidPlaces)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 namespace GlobalTheory.HeightCounting.Up
 
 theorem pass_of {Q : V4.Slot} {p q r : AtP} (hp : Step KPx (fun _ _ _ _ => True) p) (hq : Step KPx (fun _ _ _ _ => True) q)

@@ -226,8 +226,7 @@ theorem continuous_of_weak {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
   rcases lt_or_ge y 0 with hy0 | hy0
   · exact Eventually.of_forall fun f => lt_of_lt_of_le hy0 (apply_nonneg _ _)
   have hex : ∃ L : StrongDual ℂ (GlobalTheory.DiffDecay.WithSemi p), y * ‖L‖ < ‖L (j (A f₀))‖ := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 : ‖NormedSpace.inclusionInDoubleDual ℂ (GlobalTheory.DiffDecay.WithSemi p) (j (A f₀))‖ ≤ y :=
       ContinuousLinearMap.opNorm_le_bound _ hy0 fun L => by
         rw [NormedSpace.dual_def]; exact hne L
@@ -240,8 +239,7 @@ theorem continuous_of_weak {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
   change y < p (A f)
   have h2 : ‖L (j (A f))‖ ≤ ‖L‖ * p (A f) := by rw [← hnorm]; exact L.le_opNorm _
   have h4 : y * ‖L‖ < ‖L‖ * p (A f) := lt_of_lt_of_le hf h2
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   nlinarith [norm_nonneg L]
 
 theorem exists_adm (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] (T : SInf F κ →L[ℂ] ℂ) :

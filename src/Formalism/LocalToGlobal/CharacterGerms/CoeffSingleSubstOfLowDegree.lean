@@ -49,8 +49,7 @@ private theorem cs_prod_lemma_2 {σ τ : Type} (a : σ → MvPowerSeries τ C)
     (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) (e : σ →₀ ℕ) (he : e ≠ 0) :
     MvPowerSeries.constantCoeff (e.prod fun s n => a s ^ n) = 0 := by
   obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact he (Finsupp.ext h)
   rw [map_finsuppProd]
   simp only [map_pow, ha0, Finsupp.prod]
@@ -64,8 +63,7 @@ private theorem cs_prod_lemma_3 {σ τ : Type} (a : σ → MvPowerSeries τ C)
     rintro rfl
     simp at he
   obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (Finsupp.ext h)
   have hle : Finsupp.single s 1 ≤ e := by
     rw [Finsupp.single_le_iff]
@@ -119,8 +117,7 @@ theorem subst_zero_of_const {σ τ : Type} [Finite σ] (f : MvPowerSeries σ C)
   · simp [hf]
   · intro e he
     obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     simp only [Pi.zero_apply, Finsupp.prod]
     rw [Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (zero_pow hs)]

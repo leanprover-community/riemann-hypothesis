@@ -127,8 +127,7 @@ theorem IotaOK_proof : IotaOK := by
   have hx2 : ι (omegaK d) ^ 2 = ι (omegaK d) - (((d + 1) / 4 : ℕ) : ℂ_[p]) := by
     rw [← map_pow, hω2, map_sub, map_natCast]
   have hx : ‖ι (omegaK d)‖ ≤ 1 := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 : ‖ι (omegaK d)‖ ^ 2 ≤ ‖ι (omegaK d)‖ := by
       rw [← norm_pow, hx2, sub_eq_add_neg]
       refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le le_rfl ?_)

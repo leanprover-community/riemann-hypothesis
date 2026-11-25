@@ -523,8 +523,7 @@ theorem main : PI.FlagGramNonneg := by
       rfl
 
     have hs : (T : ℝ) * T' ≤ Complex.normSq (τ (sval hT e e' z z')) := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       set y : Fin r ⊕ Fin 2 → V :=
         Sum.elim (yv hT e e') ![zt hT e e' z, zt' hT e e' z'] with hy
       have hyz : ∀ a, hT (zt hT e e' z) (yv hT e e' a) = 0 := fun a => by

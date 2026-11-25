@@ -57,7 +57,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap IsGrpPullback)
 open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB mulN)
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 open GlobalTheory.DeRham (spOver)
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 

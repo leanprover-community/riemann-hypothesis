@@ -55,8 +55,7 @@ theorem offS_iff (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (P : HeightOne
     obtain ⟨x, hx, hy⟩ := h _ hP
     exact hy (algebraMap _ _ x) rfl hx
   · intro h v hv
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     have hle : v.asIdeal ≤ (P.under (𝓞 D.host.F)).asIdeal := by
       intro x hx

@@ -141,8 +141,7 @@ private lemma hensel_root (p : ℕ) [Fact p.Prime] (tr nm r : ℤ) (hd : ¬ (p :
   have hn1 : ‖Polynomial.aeval (r : ℤ_[p]) (Polynomial.derivative F)‖ = 1 := by
     rw [hder]
     refine le_antisymm (PadicInt.norm_le_one _) ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hF1 ((PadicInt.norm_int_lt_one_iff_dvd _).1 hlt)
   have hn0 : ‖Polynomial.aeval (r : ℤ_[p]) F‖ < 1 := by
     rw [hval]
@@ -746,8 +745,7 @@ private theorem laurent_adjoin_eq_of_image_eq {E : Type} [Field E] [NumberField 
     push_cast
     ring
   obtain ⟨b, hb⟩ : ∃ b : E, Algebra.trace ℚ E (A.δ * ((A.hd n i : 𝓞 E) : E) * (x i : E) * b) ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hw ((traceForm_nondegenerate ℚ E).1 _ fun b => by simpa [Algebra.traceForm_apply] using hall b)
   obtain ⟨m, hm, hy⟩ := IsAlgebraic.exists_integral_multiple (R := ℤ) ((IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic b))
   obtain ⟨c, hc⟩ : ∃ c : 𝓞 E, (c : E) = (m : ℚ) • b := by

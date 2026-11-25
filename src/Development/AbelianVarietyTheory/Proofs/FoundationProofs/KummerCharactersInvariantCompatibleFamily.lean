@@ -702,8 +702,7 @@ theorem kum_near : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* �
 
   have nz : ∀ u : ℂ → ℂ, DifferentiableOn ℂ u Hs → (u : Mero) ≠ 0 → ∃ z ∈ Hs, u z ≠ 0 := by
     intro u hu hu0
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hu0 (((G1 u (fun _ => 0) hu (differentiableOn_const 0)).2 hc).trans Filter.Germ.coe_zero)
 
   have unz : ∀ (h : X.Kˣ) (u : ℂ → ℂ) (v : Mero) (k : ℕ), k ≠ 0 → X.an (h : X.K) * (u : Mero) ^ k = v →
@@ -724,8 +723,7 @@ theorem kum_near : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* �
   have nzmul : ∀ u v : ℂ → ℂ, DifferentiableOn ℂ u Hs → DifferentiableOn ℂ v Hs → (∃ z ∈ Hs, u z ≠ 0) →
       (∃ z ∈ Hs, v z ≠ 0) → ∃ z ∈ Hs, u z * v z ≠ 0 := by
     rintro u v hu hv ⟨z1, hz1, h1⟩ ⟨z2, hz2, h2⟩
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rcases G2 u v hu hv hc with h | h
     · exact h1 (h z1 hz1)
     · exact h2 (h z2 hz2)

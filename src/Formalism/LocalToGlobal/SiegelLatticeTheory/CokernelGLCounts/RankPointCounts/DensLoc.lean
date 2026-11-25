@@ -614,8 +614,7 @@ theorem densLocBound_at {D : Formalism.BasicNotions.D7} (h5 : DensAllAt D) : Den
       _ ≤ Real.exp (4 * y) * alpD u u' p := mul_le_mul_of_nonneg_left hαl (Real.exp_pos _).le
   · refine (qP_lt_three_finite D).subset fun p hp => ?_
     simp only [Set.mem_setOf_eq] at hp ⊢
-    by_contra h3
-    push_neg at h3
+    by_contra! h3
     obtain ⟨-, -, hlo⟩ := key p
     obtain ⟨hαl, hαu⟩ := hα p
     have hαpos : 0 < alpD u u' p := lt_of_lt_of_le (Real.exp_pos _) hαl

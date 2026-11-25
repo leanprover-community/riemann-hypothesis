@@ -128,8 +128,7 @@ theorem exists_inverse_conj_mem_closure_of_isCompact :
     refine (hC.prod hC).inter_right ?_
     exact (isClosed_eq (continuous_fst.mul continuous_snd) continuous_const).inter
       (isClosed_eq (continuous_snd.mul continuous_fst) continuous_const)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hcont : Continuous fun z : X × (X × X) => z.2.1 * z.1 * z.2.2 :=
     ((continuous_snd.fst).mul continuous_fst).mul continuous_snd.snd
   have hP : ∀ y ∈ K, ∀ᶠ z : X × (X × X) in 𝓝 (g, y), z.2.1 * z.1 * z.2.2 ∈ (closure H)ᶜ := by

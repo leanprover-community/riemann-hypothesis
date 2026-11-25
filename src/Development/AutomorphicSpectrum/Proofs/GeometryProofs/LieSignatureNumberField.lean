@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsCommonAlgClosedExtension
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Mathlib.AlgebraicGeometry.Birational.RationalMap
@@ -443,18 +444,7 @@ namespace PositivityTheory.Xgn.ModelSectionsTransport
 
 theorem exists_common {F K L : Type} [Field F] [Field K] [Field L] (g : F →+* K) (h : F →+* L) :
     ∃ (Ω : Type) (_ : Field Ω) (_ : IsAlgClosed Ω) (i : K →+* Ω) (j : L →+* Ω), i.comp g = j.comp h := by
-  letI := g.toAlgebra
-  letI := h.toAlgebra
-  obtain ⟨m, hm⟩ := Ideal.exists_maximal (K ⊗[F] L)
-  letI : Field ((K ⊗[F] L) ⧸ m) := Ideal.Quotient.field m
-  let q : K ⊗[F] L →+* AlgebraicClosure ((K ⊗[F] L) ⧸ m) :=
-    (algebraMap ((K ⊗[F] L) ⧸ m) (AlgebraicClosure ((K ⊗[F] L) ⧸ m))).comp (Ideal.Quotient.mk m)
-  refine ⟨AlgebraicClosure ((K ⊗[F] L) ⧸ m), inferInstance, inferInstance,
-    q.comp Algebra.TensorProduct.includeLeftRingHom,
-    q.comp (Algebra.TensorProduct.includeRight : L →ₐ[F] K ⊗[F] L).toRingHom, ?_⟩
-  have e := Algebra.TensorProduct.includeLeftRingHom_comp_algebraMap (R := F) (A := K) (B := L)
-  rw [RingHom.comp_assoc, RingHom.comp_assoc]
-  exact congrArg (q.comp ·) e
+  apply _root_.GlobalTheory.CommonAlgClosedExtension.exists_common_algClosed_extension <;> assumption
 
 theorem exists_transport {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (D : Datum H)
     {F K L : Type} [Field F] [Field K] [Field L] [IsAlgClosed K] [IsAlgClosed L] [CharZero F]

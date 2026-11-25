@@ -260,8 +260,7 @@ theorem comp_proof : SqId → Comp := by
       exact heig χ (some a)
     · rw [real_of_eigen (hsa _) (heig χ none) (hne χ hχ)]
       exact heig χ none
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hlt : ∀ χ ∈ s, S * ‖c χ‖ ^ 2 < qf E μ (c χ) := fun χ hχ => hcon _ _ _ (hgood χ hχ)
   have hsne : s.Nonempty := by
     rw [Finset.nonempty_iff_ne_empty]

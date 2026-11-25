@@ -537,8 +537,7 @@ theorem hasDerivAt_of_continuous_hom :
     intervalIntegral.integral_hasDerivAt_right (hc.intervalIntegrable _ _)
       (hc.stronglyMeasurableAtFilter _ _) hc.continuousAt
   obtain ⟨δ, hI⟩ : ∃ δ : ℝ, (∫ s in (0 : ℝ)..δ, χ s) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hz : (fun y : ℝ => ∫ s in (0 : ℝ)..y, χ s) = fun _ => (0 : ℂ) := funext h
     have h1 := hP 0
     rw [hz] at h1

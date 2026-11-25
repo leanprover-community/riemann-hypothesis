@@ -861,8 +861,7 @@ theorem germ_origin : Out.Laws → ∀ (K : Type) [Field K] [IsAlgClosed K] (P :
     rw [← Category.comp_id ρ, ← ρ₃, ← Category.assoc, e, Category.id_comp]
   haveI : IsIso ρ'.left := ⟨_, ρ₂, ρ₃⟩
   refine ⟨?_, fun y k l hk hl => ?_⟩
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     have hz : Out.SecM.ofSec P.A th = 0 := by
       refine Subtype.ext (funext fun j => ?_)
       obtain ⟨k, rfl⟩ : ∃ k, j = fun _ => k := ⟨j 0, funext fun q => by rw [Subsingleton.elim q 0]⟩

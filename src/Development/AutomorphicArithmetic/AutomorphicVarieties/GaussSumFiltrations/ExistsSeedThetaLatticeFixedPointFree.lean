@@ -459,8 +459,7 @@ theorem gaussSum_dual_shift : ∀ (F : Type) [Field F] [NumberField F] (κ : Typ
   · have h0 : oneL y = 0 := by simp [oneL, hyL]
     rw [h0, zero_mul]
     obtain ⟨w, hw, hnot⟩ : ∃ w ∈ dualL F G, et (BF G y w) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hyL (hdd y (fun ν hν => (etiff _).1 (hcon ν hν)))
     have hs : c • w ∈ aL κ (1 : F) := (hB1 _).2 (hcw w hw)
     have hf : ∀ x ∈ aL κ (1 : F), ∀ m ∈ aL κ c,

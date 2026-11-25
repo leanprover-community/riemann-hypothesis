@@ -344,8 +344,7 @@ theorem norm_eigenvalue_le_one_of_integral_matrix (O K : Type) [CommRing O] [Nor
     (M : Matrix (Fin n) (Fin n) O) (μ : K) (c : Fin n → K) (hc : c ≠ 0)
     (hM : (M.map emb).mulVec c = μ • c) : ‖μ‖ ≤ 1 := by
   obtain ⟨j₀, hj₀⟩ : ∃ j, c j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hc (funext h)
   obtain ⟨k, -, hk⟩ := Finset.exists_max_image Finset.univ (fun j => ‖c j‖) ⟨j₀, Finset.mem_univ _⟩
   have hpos : 0 < ‖c k‖ :=
@@ -510,8 +509,7 @@ theorem maximal_ideal_eq_joint_eigen : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [
     · intro a b hab
       rw [hJmem θ hθ, eval₂_mul, norm_mul] at hab
       rw [hJmem θ hθ, hJmem θ hθ]
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have := mul_le_mul hc.1 hc.2 zero_le_one (norm_nonneg _)
       linarith
   by_cases hex : ∃ θ ∈ Θ, m ≤ J θ
@@ -640,8 +638,7 @@ private lemma coeffs_eq_zero_of_linearIndependent_of_injective {O K X : Type} [C
     intro α hα c hc
     have h0 : α 0 ≠ 0 := hα.ne_zero 0
     obtain ⟨x0, hx0⟩ : ∃ x0, α 0 x0 ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact h0 (funext h)
     have hea : emb (α 0 x0) ≠ 0 := fun h => hx0 (hemb (by rw [h, map_zero]))
     let β : Fin n → X → O := fun j x => α 0 x0 * α j.succ x - α j.succ x0 * α 0 x

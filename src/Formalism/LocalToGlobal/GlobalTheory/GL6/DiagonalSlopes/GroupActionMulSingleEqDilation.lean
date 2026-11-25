@@ -309,8 +309,7 @@ theorem local_multiplier_congr_one (S : StepLevel F E σ J T f bad) (hT : T.Prim
   rw [S.UlocAlt v hv] at hU
   obtain ⟨_, hg', hfix⟩ := hU
   obtain ⟨y, hy⟩ : ∃ y, S.fT v hv y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact S.fT_ne v hv (LinearMap.ext hc)
   have e1 := h3 y
   rw [hfix y] at e1

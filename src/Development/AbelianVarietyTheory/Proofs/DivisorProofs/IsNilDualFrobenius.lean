@@ -213,8 +213,7 @@ theorem coeff_integral_of_QL : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [Comm
   · refine ⟨0, ?_⟩
     rw [h0, coeff_zero_eq_constantCoeff_apply, hl.1, map_zero]
   obtain ⟨k, hk⟩ : ∃ k, α k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact h0 (Finsupp.ext h)
   have hkle : α k ≤ p := (Finsupp.le_degree k α).trans hdeg
   have hklt : α k < p := by
@@ -442,8 +441,7 @@ theorem _root_.GlobalTheory.LawDer.Kernel.constantCoeff_iterate_invDer_mem : ∀
     · apply coeff_subst_X_comp_eq_zero_of_not_mem_range
       rintro ⟨e, he⟩
       obtain ⟨k, hk⟩ : ∃ k, β k ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hβ (Finsupp.ext h)
       have h := congrArg (fun x => x (Sum.inl k)) he
       rw [Finsupp.mapDomain_notin_range _ _ (by simp)] at h
@@ -508,8 +506,7 @@ theorem constantCoeff_atZero (H : MvPowerSeries (Fin d ⊕ Fin d) R) :
   · simp
   · intro e he
     obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     have : constantCoeff (e.prod fun s n =>
         (Sum.elim (fun i => (X i : MvPowerSeries (Fin d) R)) (fun _ : Fin d => 0) s) ^ n) = 0 := by
@@ -644,8 +641,7 @@ theorem invDer_monomial (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R)
   | succ n ih =>
     intro α hα
     obtain ⟨i, hi⟩ : ∃ i, α i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : α = 0 := Finsupp.ext h
       subst this
       simp at hα

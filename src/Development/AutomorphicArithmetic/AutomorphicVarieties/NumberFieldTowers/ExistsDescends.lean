@@ -502,8 +502,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 private theorem exists_level_pow_dvd_of_not_finOrder (l : ℕ) [hl : Fact l.Prime] (u : ℤ_[l]ˣ) (hu : ¬ IsOfFinOrder u) (a : ℕ) :
     ∃ j : ℕ, ∀ m : ℤ, PadicInt.toZModPow j ((u ^ m : ℤ_[l]ˣ) : ℤ_[l]) = 1 → (l : ℤ) ^ (a + 1) ∣ m := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hu
   have hK : 0 < l ^ a * (l - 1) :=
     Nat.mul_pos (pow_pos hl.out.pos a) (Nat.sub_pos_of_lt hl.out.one_lt)
@@ -536,8 +535,7 @@ private theorem exists_level_pow_dvd_of_not_finOrder (l : ℕ) [hl : Fact l.Prim
       rw [← Nat.dvd_gcd_mul_iff_dvd_mul] at hcard
       obtain ⟨b, -, hb⟩ := (Nat.dvd_prime_pow hl.out).mp (Nat.gcd_dvd_right (orderOf w) (l ^ i))
       have hba : b ≤ a := by
-        by_contra hba
-        push_neg at hba
+        by_contra! hba
         apply hnd
         have h1 : (l : ℤ) ^ b ∣ m := by
           have : l ^ b ∣ orderOf w := hb ▸ Nat.gcd_dvd_left _ _

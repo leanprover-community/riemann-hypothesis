@@ -36,8 +36,7 @@ theorem sylvester_le {n k : Type} [Fintype n] [DecidableEq n] [Fintype k] [Decid
   classical
   obtain ⟨e, P, hP⟩ := hJ
   rw [cT_conj_eq] at hP
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let T : (k → ℂ) →ₗ[ℂ] (Fin q → ℂ) := (LinearMap.funLeft ℂ ℂ Sum.inr) ∘ₗ
     (Matrix.mulVecLin ((P⁻¹ : GL (Fin p ⊕ Fin q) ℂ) : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)) ∘ₗ
     (LinearMap.funLeft ℂ ℂ e.symm) ∘ₗ (Matrix.mulVecLin B)
@@ -69,8 +68,7 @@ theorem sylvester_le {n k : Type} [Fintype n] [DecidableEq n] [Fintype k] [Decid
     rw [h, Matrix.mulVec_zero] at h3
     simpa using h3
   obtain ⟨i, hi⟩ : ∃ i, y (Sum.inl i) ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hyne
     funext s
     cases s with

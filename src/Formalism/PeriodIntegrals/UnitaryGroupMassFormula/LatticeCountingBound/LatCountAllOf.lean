@@ -84,8 +84,7 @@ theorem latCountAll_of (hB : BoxBound) (hLM : LatMap) (hLS : LatSub) (hS : Sep) 
       exact hLS I x _ _ (hlat γ hγ u hu) (hlat γ' hγ' u hu)
     have hineq := hS I x y hx hy _ hδ hmap
     rw [← hρdef] at hineq
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hprod : ∏ v, hsN (g γ v - g γ' v) < ρ ^ I.f := by
       rw [← hC I, ← Finset.card_univ, ← Finset.prod_const]
       by_cases h0 : ∃ v, hsN (g γ v - g γ' v) = 0

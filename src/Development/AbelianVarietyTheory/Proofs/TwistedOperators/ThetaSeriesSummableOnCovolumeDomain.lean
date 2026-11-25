@@ -103,8 +103,7 @@ theorem hasSum_coefficients (G : Type) [AddCommGroup G] [TopologicalSpace G] [Is
     simp only [S, hperχ _ γ hγ]
   have horth : ∀ d, d ≠ 0 → ∫ x in 𝓕, χ d x ∂μ = 0 := fun d hd => by
     obtain ⟨x₀, hx₀⟩ : ∃ x₀, χ d x₀ ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hd (hinj d hcon)
     have e := GlobalTheory.HeisOrtho.setIntegral_add_right Γ μ 𝓕 h𝓕 (χ d) (hperχ d) x₀
     simp only [hx, integral_mul_const] at e
@@ -436,8 +435,7 @@ theorem exists_coords (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1
     have h3 : Λ.toRatLinearMap = 0 := e.ext fun i => h2 i
     have h4 : ∀ l, Λ l = 0 := fun l => LinearMap.congr_fun h3 l
     obtain ⟨i, j, hij⟩ : ∃ i j, (y - y') i j ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hd (Matrix.ext hcon)
     obtain ⟨_, ⟨g, rfl⟩, hγ⟩ := GlobalTheory.RatAnnih.exists_symplO_eq S T (rat (y - y')) i j ((y - y') i j)⁻¹
     have h5 : symplO S T (rat (y - y')) (rat g) = algebraMap D.host.F (AF D.host.F) 2 := by

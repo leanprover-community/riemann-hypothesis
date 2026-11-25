@@ -130,8 +130,7 @@ theorem exists_integral_poly_of_primitiveRoot_totally_ramified :
     apply hvl0
     rw [← hζv, h, zero_pow he.ne']
   have hγ1 : γ < 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : 1 ≤ γ ^ e := one_le_pow₀ hc
     rw [hζv] at h1
     exact absurd hl (not_lt.2 h1)
@@ -210,8 +209,7 @@ theorem exists_integral_poly_of_primitiveRoot_totally_ramified :
     rw [Finset.mem_range] at hi
     have hi' : (i : ℤ) < e := by exact_mod_cast hi
     have hk0 : 0 ≤ k := by
-      by_contra hneg
-      push_neg at hneg
+      by_contra! hneg
       have h1 : v (c i * w ^ i) = γ ^ ((e : ℤ) * k + i) := by
         rw [Valuation.map_mul, Valuation.map_pow, hk, zpow_add₀ hγ0, zpow_natCast]
       have h2 : (e : ℤ) * k + i < 0 := by

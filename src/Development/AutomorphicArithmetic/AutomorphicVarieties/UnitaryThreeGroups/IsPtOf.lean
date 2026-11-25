@@ -56,8 +56,7 @@ private theorem ipo_mul {f : R →ₐ[O] K} (hf : IsLocPt f) (x : R) {z : R} (hz
   · simp [h0]
   have hpos : 0 < ‖f z‖ := norm_pos_iff.mpr h0
   suffices hx : ‖f x‖ ≤ 1 by nlinarith [norm_nonneg (f x)]
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (‖f z‖⁻¹) hx
   have hmem : x ^ n * z ∈ maximalIdeal R := Ideal.mul_mem_left _ _ hz
   have h1 := hf _ hmem

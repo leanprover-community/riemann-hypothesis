@@ -136,8 +136,7 @@ theorem classGroup_nthPower_of_codim_one_mod : ∀ (k A : Type) [Field k] [IsAlg
     haveI : IsJacobsonRing A := isJacobsonRing_of_finiteType (A := k) (B := A)
     have hj : (⊥ : Ideal A).jacobson = ⊥ :=
       IsJacobsonRing.out' _ (Ideal.isPrime_bot).isRadical
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hx
     have : x ∈ (⊥ : Ideal A).jacobson := by
       rw [Ideal.jacobson]
@@ -1237,8 +1236,7 @@ theorem formal_deformation : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRin
     rw [hΔ, hσπ, hX, ← PowerSeries.coe_substAlgHom (hsub i), map_one]
   · intro j; exact (b j).2
   · exact b.linearIndependent.map' V.subtype (Submodule.ker_subtype V)
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     have hz : ∀ j, y₀ j = 0 := by
       intro j
       have := hcon j

@@ -639,22 +639,6 @@ theorem change_count (h : PH vecc B ka nu) (S : Finset ℤ) (hS : colRange ka �
     congr 1
     exact Finset.filter_congr fun c _ => ne_comm
 
-theorem oc_sum (h : PH vecc B ka nu) (S : Finset ℤ) (hS : colRange ka ⊆ S) (om : Fin (N + 1) → ℕ) :
-    ∑ c ∈ S, oc om (muP nu ka) c = ∑ i : Fin N, om i.succ * (if vecc i then B i else 0) := by
-  rw [Finset.sum_congr rfl fun c _ => h.oc_eq om c, Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  by_cases hv : vecc i = true
-  · rw [if_pos hv, ← change_count h S hS i, Finset.card_filter, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun c _ => ?_
-    have := (h.stepV i hv c).1
-    by_cases hlt : colH (ka i.castSucc) c < colH (ka i.succ) c
-    · rw [if_pos hlt, if_pos (by omega), mul_one]
-    · rw [if_neg hlt, if_neg (by omega), mul_zero]
-  · rw [if_neg hv, mul_zero]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    have := (h.stepC i (by simpa using hv) c).1
-    rw [if_neg (by omega)]
-
 theorem pl_sum {σ : Type*} (nu : ℕ → ℤ) (h0 : 0 ≤ nu 0) (hm : ∀ t, nu t ≤ nu (t + 1)) (n : ℕ) (S : Finset ℤ)
     (hS : Finset.Icc 1 (nu n) ⊆ S) (v : Fin n → σ) (P : Fin n → ℕ) :
     ∑ c ∈ S, ∑ t : Fin n, (if nu t.val < c ∧ c ≤ nu (t.val + 1) then Finsupp.single (v t) (P t) else 0) =
@@ -729,12 +713,6 @@ theorem PS_even (l : Fin (segS X.TT j)) :
   congr 1
   unfold zS
   omega
-
-theorem PS_last : PS X j (⟨2 * segS X.TT j, by omega⟩ : Fin (2 * segS X.TT j + 1)).succ = 1 := by
-  unfold PS
-  rw [posS_succ_ge X j _ (by simp)]
-  unfold zS
-  simp
 
 theorem nuS_zero : nuS C0 CE1 CE2 mu X β j 0 = 0 := by
   unfold nuS
@@ -821,29 +799,6 @@ theorem plSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2
   show (Finsupp.single _ (_ * (nuS C0 CE1 CE2 mu X β j (2 * l.val + 1 + 1 + 1) -
     nuS C0 CE1 CE2 mu X β j (2 * l.val + 1 + 1)).toNat) : MonH X) = 0
   rw [nuS_cov, sub_self, Int.toNat_zero, mul_zero, Finsupp.single_zero]
-
-theorem oSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 mu X β j)) :
-    ∑ c ∈ colsS C0 CE1 CE2 mu X β j y.1.1.mu, oCS C0 CE1 CE2 mu X β j y.1.1.mu c =
-      (∑ i : Fin (segS X.TT j), (X.seg C0 CE1 CE2 j).P X.p i *
-        (L.LL j).deg ⟨2 * (i : ℕ), by have := i.2; omega⟩) + (L.LL j).deg ⟨2 * segS X.TT j, by omega⟩ := by
-  have hsub : colRange y.1.1.mu ⊆ colsS C0 CE1 CE2 mu X β j y.1.1.mu := by
-    unfold colsS
-    exact Finset.subset_union_left
-  refine Eq.trans (oc_sum h _ hsub (PS X j)) ?_
-  rw [sum_fin_odd]
-  have v3 : (L.LL j).vec ⟨2 * segS X.TT j, by omega⟩ = true := by
-    show decide ((2 * segS X.TT j) % 2 = 0) = true
-    simp
-  rw [if_pos v3, PS_last, one_mul]
-  congr 1
-  refine Finset.sum_congr rfl fun l _ => ?_
-  have v1 : (L.LL j).vec ⟨2 * l.val, by have := l.2; omega⟩ = true := by
-    show decide ((2 * l.val) % 2 = 0) = true
-    simp
-  have v2 : (L.LL j).vec ⟨2 * l.val + 1, by have := l.2; omega⟩ = false := by
-    show decide ((2 * l.val + 1) % 2 = 0) = false
-    simp
-  rw [if_pos v1, if_neg (by rw [v2]; simp), mul_zero, add_zero, PS_even C0 CE1 CE2]
 
 theorem dKsum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 mu X β j))
     (i : Fin (2 * segS X.TT j + 1)) :
@@ -1457,11 +1412,7 @@ theorem colsAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hNum : ColumnNumericsA
     plSum := by
       rw [Finset.sum_coe_sort (colsS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu)
         (fun c => plS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j c)]
-      exact plSum_seg L j y h
-    oSum := by
-      rw [Finset.sum_coe_sort (colsS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu)
-        (fun c => oCS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu c)]
-      exact oSum_seg L j y h }⟩
+      exact plSum_seg L j y h }⟩
 
 theorem restCols : RestCols :=
   TransportedAlt.mono (fun _ _ _ _ _ _ _ _ _ _ h => colsAt_of h) column_numerics_holds

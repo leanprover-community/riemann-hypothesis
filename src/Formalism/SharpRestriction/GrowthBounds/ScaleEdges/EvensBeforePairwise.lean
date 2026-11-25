@@ -14,15 +14,13 @@ open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning Formalism.Main
 
 theorem getElem_ge_of_many (D : List ℤ) (hD : D.Pairwise (· > ·)) (T : Finset ℤ) (b : ℤ)
     (hT : ∀ z ∈ T, z ∈ D ∧ b ≤ z) (l : ℕ) (hl : l < T.card) (hlen : l < D.length) : b ≤ D[l] := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hsub : T ⊆ (D.take l).toFinset := by
     intro z hz
     obtain ⟨hzD, hbz⟩ := hT z hz
     obtain ⟨i, hi, rfl⟩ := List.getElem_of_mem hzD
     have hil : i < l := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       rcases h.lt_or_eq with h | h
       · have := List.pairwise_iff_getElem.1 hD l i hlen hi h
         linarith
@@ -87,14 +85,12 @@ theorem seg_of {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (hr 
   have hB : ∃ b : ℤ, ∀ j : ℤ, s ≤ F.fr j (r - 1) → b ≤ j := by
     refine ⟨-(((F.fr 0 (r - 1) - s + 1).toNat : ℤ) * F.J), fun j hj => ?_⟩
     have h1 := hdown (F.fr 0 (r - 1) - s + 1).toNat
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h2 : F.fr j (r - 1) < F.fr (-(((F.fr 0 (r - 1) - s + 1).toNat : ℤ) * F.J)) (r - 1) := hmono hlt
     omega
   obtain ⟨j, hj, hmin⟩ := Int.exists_least_of_bdd hB hP
   refine ⟨j, ?_, hj⟩
-  by_contra h
-  push_neg at h
+  by_contra! h
   have := hmin (j - 1) h
   omega
 

@@ -153,8 +153,7 @@ theorem tt_ne_zero (K : Type) [Field K] [CharZero K] (k : ℕ) (hk : 0 < k) : tt
 
 theorem pairingWeightCancel : TTWt := by
   intro K _ _ k c g h m hm a
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨n, hn⟩ : ∃ n : ℤ, n = (m (Sum.inl a) : ℤ) - m (Sum.inr a) := ⟨_, rfl⟩
   have hwm : weight (va k a) m = n := by rw [weight_va, hn]
   have hk : 0 < k := Fin.pos a

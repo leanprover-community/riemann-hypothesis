@@ -1135,8 +1135,7 @@ theorem not_intertwine : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalS
   classical
 
   have hbad : ∃ a b : Fin n, a < b ∧ ¬ Triv (ψ a / ψ b) (y.val a b) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hny ⟨hy, fun i j hij => h i j hij⟩
   let S : Finset (Fin n) := Finset.univ.filter (fun a => ∃ b, a < b ∧ ¬ Triv (ψ a / ψ b) (y.val a b))
   have hS : S.Nonempty := by

@@ -286,8 +286,7 @@ theorem GlobalTheory.PerfectCompl.exists_dual_complement : ∀ (D : D7) (V W : H
   · rintro γ ⟨g, rfl⟩ h
     by_contra hne
     have hex : ∃ i j, g i j ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hne
       ext i j
       show incA D (g i j) = 0
@@ -326,7 +325,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -399,8 +397,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.IsoMeanSmear
 
@@ -507,8 +503,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.IsoMean
 

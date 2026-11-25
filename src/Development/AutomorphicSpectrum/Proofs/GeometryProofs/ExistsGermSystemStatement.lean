@@ -338,17 +338,7 @@ theorem sq_of {κ κ' : Type} {m m' : ℕ} (α : Jet S κ m →ₐ[S] Jet S κ' 
 theorem sq_subst {κ κ' : Type} (m : ℕ) (φ : κ → MvPolynomial κ' S) (φ' : κ → MvPolynomial κ' S₂)
     (h : ∀ i, φ' i = MvPolynomial.map f (φ i)) :
     homAt (spMap f ≫ x) (jetSubstP m φ') ≫ cO f x κ m = cO f x κ' m ≫ homAt x (jetSubstP m φ) := by
-  obtain rfl : φ' = _ := funext h
-  apply sq_of
-  apply Ideal.Quotient.ringHom_ext
-  apply MvPolynomial.ringHom_ext
-  · intro r
-    simp only [RingHom.coe_comp, Function.comp_apply, AlgHom.coe_toRingHom, jetSubstP,
-      jetMap_mk, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, jetCoef_mk, MvPolynomial.map_C]
-  · intro i
-    simp only [RingHom.coe_comp, Function.comp_apply, AlgHom.coe_toRingHom, jetSubstP,
-      jetMap_mk, MvPolynomial.aeval_X, jetCoef_mk, MvPolynomial.map_X]
-    rw [map_sub (MvPolynomial.map f), MvPolynomial.map_C, MvPolynomial.constantCoeff_map]
+  apply _root_.PositivityTheory.HtPt.Ce.sq_subst <;> assumption
 
 variable {d : ℕ} (y : ∀ m, jOG x d m 1 ⟶ t.G)
 

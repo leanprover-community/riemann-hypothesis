@@ -532,8 +532,7 @@ theorem main_alt_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7
       rw [iSup_neg (show Q ∉ {P | D.naut.ptV i P = some x} from h), Submodule.mem_bot] at this
       exact hQ this
   obtain ⟨Q0, hQ0⟩ : ∃ Q, g Q ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hf0
     rw [← hgsum, show g = 0 from Finsupp.ext h, Finsupp.sum_zero_index]
   set G : D.naut.AV i → (GAf D.host.E D.R.nV → (P.M.loc i).wt.W) := fun Q => (P.M.loc i).real (g Q) with hGdef

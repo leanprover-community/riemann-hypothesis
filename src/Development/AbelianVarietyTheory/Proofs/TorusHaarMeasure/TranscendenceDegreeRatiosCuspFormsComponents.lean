@@ -1113,8 +1113,7 @@ theorem trdeg_ratios_record : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (
     have hg : evC hG Z (G.w i1).1 ≠ 0 := fun h0' => hi1 ((hk _ _).mp h0' x1 hx1)
     have het : evC hG Z G.et.1 ≠ 0 := evC_ne_zero_of_nonZeroComp h hj hG G.et hnz Z (G.w i1) hg
     have het0 : ∃ x ∈ ((T.U j σ).X k).dom, rdU (T.U j σ) G.et.1 k x ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact het ((hk _ _).mpr hcon)
     have hr : 0 < g0 D := by
       have hr0 : 0 < D.R.r := by

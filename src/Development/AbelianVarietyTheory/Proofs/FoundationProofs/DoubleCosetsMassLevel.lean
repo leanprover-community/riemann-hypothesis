@@ -212,8 +212,6 @@ theorem finite_and_mass (hc : CMData F E) (W : HSpace E) (hW : W.SigOK) (hs : �
 
 end Space
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem defClassDecomp : ∀ D : D7, DefClassDecomp D := by
   intro D W hW hs θ hθ A hA
   rw [GlobalTheory.DecompCompare.KSub_eq D W hW hs θ hθ A hA]

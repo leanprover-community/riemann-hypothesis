@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsEigenComponentPolynomial
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
@@ -50,24 +51,7 @@ theorem toChar_injective : Function.Injective (toChar (E := E)) := by
   exact DFunLike.congr_fun h a
 
 theorem span_charVec : Submodule.span ℂ (Set.range (charVec (E := E))) = ⊤ := by
-  classical
-  by_contra hne
-  obtain ⟨f, hf0, hf⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.2 hne)
-  apply hf0
-  have li := (linearIndependent_monoidHom (𝓞 E) ℂ).comp _ (toChar_injective (E := E))
-  rw [Fintype.linearIndependent_iff] at li
-  have hl := li (fun s => f fun j => if s = j then 1 else 0) (by
-    funext a
-    have h1 : f (charVec a) = 0 := hf (Submodule.subset_span ⟨a, rfl⟩)
-    rw [LinearMap.pi_apply_eq_sum_univ] at h1
-    simp only [Finset.sum_apply, Pi.smul_apply, Function.comp, smul_eq_mul, Pi.zero_apply]
-    refine Eq.trans ?_ h1
-    refine Finset.sum_congr rfl fun s _ => ?_
-    rw [smul_eq_mul]
-    exact mul_comm (_ : ℂ) _)
-  refine LinearMap.ext fun v => ?_
-  rw [LinearMap.pi_apply_eq_sum_univ f v, LinearMap.zero_apply]
-  exact Finset.sum_eq_zero fun s _ => (congrArg (v s • ·) (hl s)).trans (smul_zero _)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.EigCoef.span_charVec <;> assumption
 
 
 open Classical in
@@ -153,12 +137,10 @@ open NumberField Matrix Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTh
 
 theorem _root_.GlobalTheory.T.continuous_cusp_norm_family : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (X : Type) [TopologicalSpace X] (R : X → RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (I : Submodule (𝓞 E) Λ), (∀ v, Continuous fun x => (R x).P v) → (Continuous fun x => (R x).Hm) → Continuous fun x => (R x).nz σ I := by
   intro E _ _ _ g Λ _ _ Ψ _ X _ R σ I hP hH
-  by_cases h : ∃ r v, GroundTheory.Heights₂.Heights.LowerBoundFree.IsNzFamily I r v
-  · have hcont : Continuous fun x => (R x).nzOf σ I h.choose_spec.choose :=
-      GlobalTheory.CompanionTheory.Ar.Cusp.NzCont.continuous_nzOf R hP hH σ I _
-    simpa only [RiemLat.nz, dite_eq_left h] using hcont
-  · simpa only [RiemLat.nz, dite_eq_right h] using
-      (continuous_const : Continuous fun _ : X => (1 : ℝ))
+  unfold RiemLat.nz
+  split_ifs with h
+  · exact _root_.GlobalTheory.CompanionTheory.Ar.Cusp.NzCont.continuous_nzOf R hP hH σ I _
+  · exact continuous_const
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousCuspNormFamilyStatement =====

@@ -71,8 +71,7 @@ theorem sum_irr_coeff (h : H) :
 
 theorem exists_irr_sum_ne_zero (F : H → ℂ) (hF : F 1 ≠ 0) :
     ∃ σ : H → ℂ, IsIrr σ ∧ ∑ h, F h * σ h⁻¹ ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply hF
   set s := (irr_finite_and_finsum_zOf_eq_one H).1.toFinset with hs
   have h0 : ∑ σ ∈ s, σ 1 / (Fintype.card H : ℂ) * ∑ h, F h * σ h⁻¹ = 0 := by

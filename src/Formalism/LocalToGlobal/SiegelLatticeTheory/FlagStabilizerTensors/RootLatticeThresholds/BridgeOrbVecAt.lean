@@ -188,8 +188,7 @@ theorem orbVec_data (sc : ℝ) (hsc : 0 < sc) (i0 i0' : ∀ _ : InfinitePlace X.
     have hGd := Bridge.G_diag D.R.rS (ZX X u u' 1 γ v) (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE)
       (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE) (Tw (D := D) u * Tw (D := D) u') (by rw [hcl]; simp)
     rw [Formalism.L2.SG.Pf.CarrierTop.zx_sc, hGd] at hGX
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have : (‖∏ i : Fin D.R.rS, Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE (Fin.castLE (Nat.le_succ D.R.rS) i)‖ *
         ‖∏ i : Fin D.R.rS, Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE (Fin.castLE (Nat.le_succ D.R.rS) i)‖) ^ 2 *
         (‖RealObj.Dl (ZX X u u' 1 γ v) (D.R.rS + 1)‖ ^ 2 -

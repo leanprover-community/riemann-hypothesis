@@ -80,7 +80,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped Pointwise TensorProduct InnerProductSpace ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Grid GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle GlobalTheory.ConstRatio
 
 namespace GlobalTheory.SumSig
@@ -106,8 +105,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SqTower.TopExists
 

@@ -91,7 +91,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
 open Classical
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ThetaSpan
 
@@ -248,7 +247,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
 open Classical
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ThetaReal
 
 noncomputable section
@@ -463,7 +461,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 

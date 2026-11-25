@@ -311,8 +311,7 @@ theorem eq_zero_of (ψ : AddChar (AF F) ℂ) (a : Fin N → F) (hψ : IsCharAF F
       rw [QuotientAddGroup.eq, show -x + x' = -(x - x') by abel]
       exact neg_mem h
     obtain ⟨ξ, hξ⟩ : ∃ ξ, ψ (-(Bd (AF F) a (x - x') (rat ξ))) ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hnot (mem_of_chi hann ha _ h)
     refine ⟨chiC a hL hψ ξ, ⟨chiC a hL hψ ξ, Submodule.subset_span ⟨ξ, rfl⟩, rfl⟩, ?_⟩
     intro heq

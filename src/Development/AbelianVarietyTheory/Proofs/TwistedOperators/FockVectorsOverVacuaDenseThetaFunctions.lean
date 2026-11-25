@@ -929,8 +929,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.RealWeil GlobalTheory.Mem.Lift GlobalTheory.Size GlobalTheory.ChainFr GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 open scoped ENNReal Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ Formalism.L2.Theta.AE D} {ψ : AddChar (AF D.host.F) ℂ} {V W : HSp D}
 
 def coeL (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) : BB ψ V W →ₗ[ℂ] (WO V W → ℂ) where

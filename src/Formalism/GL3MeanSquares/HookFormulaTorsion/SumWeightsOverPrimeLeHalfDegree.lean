@@ -99,8 +99,7 @@ private lemma inert_prime_norm_ge_sq (P : Ideal (𝓞 K)) (hP : P.IsMaximal)
     (hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P = P)
     (hu : ∃ θ t : 𝓞 K, algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K θ) ∧ θ - t ∉ P) :
     residueCharacteristic K P ^ 2 ≤ Ideal.absNorm P := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨θ, t, ht, hθt⟩ := hu
   obtain ⟨k, hk1, hk⟩ := abs_norm_eq_prime_pow K P hP
   have hp := residue_characteristic_prime K P hP

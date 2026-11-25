@@ -701,8 +701,6 @@ namespace Formalism.FourierDecayAlt.P.CutSE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem spectral_pairing_orbital_membership : RDSPJFMem := by
   intro k r Wp Wq _ _ _ _ _ _ D F hF hcs hts
   have hpos : ∀ g ∈ tsupport F, (0 : ℝ) < Gf k r D.z D.z' g := fun g hg => (hts hg).2.2
@@ -716,8 +714,7 @@ theorem spectral_pairing_orbital_membership : RDSPJFMem := by
       exact hεle g (subset_tsupport _ hg)
   refine ⟨(radial_orbital_niceness k r Wp Wq D F hnice).1, ?_⟩
   intro g _ hne
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   apply hne
   show ∫ p, _ ∂D.μSS = 0
   refine integral_eq_zero_of_ae ?_
@@ -766,8 +763,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutSE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section Help
 
@@ -873,8 +868,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutSE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem spectral_pairing_zero_right : RDSPZeroR := by
   intro k r Wp Wq _ _ _ _ _ _ D X Y hX hY hxy g hg

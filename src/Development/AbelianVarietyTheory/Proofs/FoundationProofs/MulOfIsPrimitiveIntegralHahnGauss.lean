@@ -83,8 +83,7 @@ theorem Prim.mul {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (P Q : HahnSer
     rw [HahnSeries.map_mul]
     exact mul_ne_zero (hred P hPA rP hrP0 hrPi) (hred Q hQA rQ hrQ0 hrQi)
   obtain ⟨r, hr⟩ : ∃ r, ((P' * Q').map π).coeff r ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (HahnSeries.ext (funext h))
   have hr' : IsLocalRing.residue A ((P' * Q').coeff r) ≠ 0 := hr
   rw [Ne, IsLocalRing.residue_eq_zero_iff, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, not_not] at hr'

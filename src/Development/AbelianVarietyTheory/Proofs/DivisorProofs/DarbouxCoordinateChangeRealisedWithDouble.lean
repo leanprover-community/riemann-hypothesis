@@ -654,8 +654,7 @@ private theorem exists_symm_isUnit_det_sub_mul_of_finrank_ker (b : Matrix κ κ 
   have hdx : d *ᵥ x = 0 := by simpa using hxk
   have hbx : b *ᵥ x ≠ 0 := fun h0 => hx0 (hinj x h0 hdx)
   obtain ⟨i, hi⟩ : ∃ i, (b *ᵥ x) i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hbx (funext hc)
   have key : ∀ y, (b *ᵥ x) ⬝ᵥ (d *ᵥ y) = 0 := by
     intro y

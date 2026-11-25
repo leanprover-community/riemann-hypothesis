@@ -97,8 +97,7 @@ private theorem cc_lemma_3 {σ τ : Type} [Finite σ] {f : MvPowerSeries σ C}
   by_cases he : e = 0
   · rw [he, coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext fun s => by simpa using h s)
     have hp : constantCoeff (e.prod fun s n => a s ^ n) = 0 := by
       rw [Finsupp.prod, map_prod]
@@ -148,8 +147,7 @@ theorem lgCurve_zero (G : LogFGL v d) (a : Fin d) : G.lgCurve 0 a = 0 := by
   by_cases hn : n = 0
   · rw [hn, coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, n s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext fun s => by simpa using h s)
     have hp : (n.prod fun s k => (0 : Fin d → PowerSeries C) s ^ k) = 0 := by
       rw [Finsupp.prod]

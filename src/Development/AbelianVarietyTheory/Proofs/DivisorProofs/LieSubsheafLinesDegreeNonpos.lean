@@ -656,16 +656,14 @@ theorem exists_annihilator (N : ℕ) (hN : ∀ n, N ≤ n → hankel c n = 0) :
     · rw [show q0 * C (q0.leadingCoeff)⁻¹ * X ^ j = (q0.leadingCoeff)⁻¹ • (q0 * X ^ j) by
         rw [smul_eq_C_mul]; ring, map_smul, smul_eq_mul]
   refine ⟨q, hqm.ne_zero, ?_⟩
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hs : ev c (q * X ^ Nat.find hne) ≠ 0 := Nat.find_spec hne
   have hlt : ∀ j < Nat.find hne, ev c (q * X ^ j) = 0 := fun j hj => by
     by_contra h; exact Nat.find_min hne hj h
   generalize Nat.find hne = s at hs hlt
   generalize Nat.find hex = d at hmin hqd hdN
   have hNs : N < s := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hs
     rw [hqe, hq0 s h, mul_zero]
   obtain ⟨r, hr0, hrd, hr⟩ := exists_kill c s (hN s hNs.le)
@@ -898,8 +896,7 @@ theorem isRat_of_adelic : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k
   push_cast at hsum
   have h6 : (n + 1 : ℤ) * (n * D - 2 * δ) ≤ 0 := by linarith [hsum]
   have h7 : (n : ℤ) * D - 2 * δ ≤ 0 := by
-    by_contra h8
-    push_neg at h8
+    by_contra! h8
     have : (0 : ℤ) < (n + 1 : ℤ) * (n * D - 2 * δ) := mul_pos (by positivity) h8
     linarith
   have h9 : (n : ℤ) ≤ n * D := by nlinarith [(Nat.cast_nonneg n : (0 : ℤ) ≤ n)]
@@ -950,8 +947,7 @@ theorem isRatPath_of_integral_at_places : ∀ (k K E : Type) [Field k] [IsAlgClo
   choose b ζ hb hpath hξ using hloc
   have hFF : IsFF k E := (_root_.GlobalTheory.Nef.isFF_main k K (_root_.GlobalTheory.Nef.CurveFF.isFF_of_isGenOver k K C x hx)).2 E
   obtain ⟨p₀, -⟩ : ∃ p, ord p (u p) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [finsum_eq_zero_of_forall_eq_zero hc] at hpos
     exact lt_irrefl _ hpos
   apply _root_.GlobalTheory.Nef.isRatPath_of_isRat E G.left ξ
@@ -1819,8 +1815,7 @@ theorem linesLE_zero_of_sub_lie : ∀ (k K : Type) [Field k] [IsAlgClosed k] [Ch
   intro k K _ _ _ _ _ C _ x hx G _ hG W r i hi V₀ s g hV₀ hs hg hloc
   intro E _ _ _ _ _ ρ hρ w hw
   simp only [zero_mul]
-  by_contra hpos
-  push_neg at hpos
+  by_contra! hpos
   have hpos' : 0 < degLine (pullAd ρ g) w := by exact_mod_cast hpos
   haveI : CharZero E := charZero_of_injective_algebraMap (algebraMap k E).injective
   letI : Algebra ℚ E := DivisionRing.toRatAlgebra

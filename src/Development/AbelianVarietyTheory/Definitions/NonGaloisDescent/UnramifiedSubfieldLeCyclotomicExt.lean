@@ -66,8 +66,7 @@ theorem _root_.GlobalTheory.NL.Model.conv_finite (e : PowerSeries L) {u : â„¤ â†
   refine (Set.finite_Iic (k - m).toNat).subset fun j hj => ?_
   simp only [Function.mem_support] at hj
   simp only [Set.mem_Iic]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact hj (by rw [hm _ (by omega), smul_zero])
 
 open TensorProduct in

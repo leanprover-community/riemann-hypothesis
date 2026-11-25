@@ -119,8 +119,7 @@ theorem af_algebraMap_apply {F : Type} [Field F] [NumberField F] (r : F) (w : He
 theorem additive_character_nontrivial : PsiNT := by
   intro F _ _ ψ v hψ hstd hTR
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
 
   let U : Set (Af F) := {y | ‖ψ (pairA F 0 y) - 1‖ < 1}
   have hc : Continuous (fun y : Af F => ψ (pairA F 0 y)) :=

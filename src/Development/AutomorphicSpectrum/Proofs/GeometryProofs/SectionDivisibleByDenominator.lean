@@ -395,8 +395,7 @@ theorem exists_maximal_not_mem {R B : Type} [CommRing R] [CommRing B] (u : R →
   haveI : IsJacobsonRing (B ⧸ p.map u) := hq.isJacobsonRing
   have hj : (⊥ : Ideal (B ⧸ p.map u)).jacobson = ⊥ :=
     IsJacobsonRing.out inferInstance Ideal.isPrime_bot.isRadical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hmem : Ideal.Quotient.mk (p.map u) g ∈ (⊥ : Ideal (B ⧸ p.map u)).jacobson := by
     refine (Ideal.mem_sInf).2 ?_
     rintro J ⟨-, hJ⟩

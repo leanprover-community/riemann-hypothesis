@@ -296,8 +296,7 @@ theorem prod_det_funMat {s : ℕ} (σ : Equiv.Perm (Fin n)) (φ : Fin n → Fin 
         fun l => map_list_prod (Matrix.detMonoidHom) l, List.map_map]
     try rfl
   · have hex : ∃ b, φ (σ b) ≠ φ b := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (funext hc)
     obtain ⟨b, hb⟩ := hex
     apply Finset.prod_eq_zero (Finset.mem_univ (φ b))

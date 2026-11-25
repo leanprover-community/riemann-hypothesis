@@ -127,8 +127,7 @@ theorem lminor_mul_upper {n : ℕ} (A N : Matrix (Fin n) (Fin n) ℂ) (hN : N.Bl
     simp only [Matrix.submatrix_apply, Matrix.mul_apply]
     refine (Fintype.sum_of_injective e (Fin.castLE_injective _) _ _ (fun k hk => ?_) (fun k => rfl)).symm
     have hk' : (i : ℕ) ≤ k := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hk ⟨⟨k, h⟩, Fin.ext rfl⟩
     apply mul_eq_zero_of_right
     apply hN

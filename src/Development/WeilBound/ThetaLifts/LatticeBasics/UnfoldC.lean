@@ -5,6 +5,7 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.OffOpenAlt
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.UnipUGood
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TsumSetIntegralFundamentalDomainEqZeroByOrbits
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnfoldingZeroMeanNormalizedSubgroup
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.AbsEDetUnitary
 import Development.WeilBound.ThetaLifts.LatticeBasics.FdEqZero
 import Mathlib.Tactic.Linter.HaveILetI
 
@@ -23,20 +24,9 @@ open PositivityTheory.ThKEnd (unipU IsCusp)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {Y : Spc F E n}
   {χ : Chr F E} {z : ℂ} {f : G2 σ Y → ℂ} {e : UA σ Y.J × UA σ Y.J →* G2 σ Y}
 
-theorem absE_det' (d0 : Y.J.det ≠ 0) (h : UA σ Y.J) : absE F E (Matrix.GeneralLinearGroup.det h.1) = 1 := by
-  have u : IsUnit (incM F Y.J).det := by
-    rw [incM, ← RingHom.mapMatrix_apply, ← RingHom.map_det]; exact d0.isUnit.map _
-  have e := congrArg Matrix.det (show (mat h)ᵀ * incM F Y.J * (mat h).map (cA σ) = incM F Y.J from h.2)
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, mul_right_comm, u.mul_eq_right,
-    show ((mat h).map (cA σ)).det = sigR (AF F) σ (mat h).det from (RingHom.map_det (sigR (AF F) σ) _).symm] at e
-  have e2 : Matrix.GeneralLinearGroup.det h.1 * GlobalTheory.Doubling.conjUnit σ (Matrix.GeneralLinearGroup.det h.1) = 1 := Units.ext e
-  have e3 := congrArg (absE F E) e2
-  rw [map_mul, GlobalTheory.Doubling.absE_conjUnit, map_one] at e3
-  exact (pow_eq_one_iff_of_nonneg zero_le two_ne_zero).1 (by rw [sq, e3])
-
 theorem Law.diag' (h : Law χ z f) (d0 : Y.J.det ≠ 0) (he : ∀ h h', IsEmb h h' (e (h, h'))) (g : UA σ Y.J) (x) :
     f (e (g, g) * x) * detInv χ g = f x := by
-  rw [h _ _ x (he g g).par, absE_det' d0, detInv, mul_right_comm]; simp
+  rw [h _ _ x (he g g).par, GlobalTheory.WeilEx.Jac.absE_det_unitary d0, detInv, mul_right_comm]; simp
 
 
 variable (σ Y) in

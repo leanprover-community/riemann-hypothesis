@@ -17,8 +17,6 @@ namespace Formalism.FourierDecayAlt.P.ParameterFamilyAlgebra
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem psi_cont_of {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) :
     Continuous (fun g : B.Mat k r => psi k r z c g) := by
   have hl : Continuous fun g : B.Mat k r => ell k r z g := Formalism.FourierDecayAlt.P.B7.continuous_ell (k := k) (r := r) z

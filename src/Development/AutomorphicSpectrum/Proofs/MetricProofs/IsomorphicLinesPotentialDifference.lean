@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.PointsIntegralSmallLimit
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffOnFubiniStudyProfileInvNormSqFirst
@@ -256,17 +257,7 @@ theorem samePot_line {D : ℕ} {σ : Type} {S : AnSys D σ} {P : Ideal (MRing ι
 
 theorem isC2At_of_isPotential {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) {Q : LocPot X}
     (h : IsPotential A Q) (x : X) : IsTwiceDifferentiableAt A Q x := by
-  intro j hj
-  have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Q.U x) :=
-    (A.chart j).isOpen_inter_preimage_symm (Q.isOpen_U x)
-  have hmem : A.chart j x ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' Q.U x :=
-    ⟨(A.chart j).map_source hj, by
-      show (A.chart j).symm (A.chart j x) ∈ Q.U x
-      rw [(A.chart j).left_inv hj]
-      exact Q.mem_U x⟩
-  exact ((h.1 x j).contDiffAt (hopen.mem_nhds hmem)).of_le (by
-    have h2 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.2 le_top
-    exact h2)
+  apply _root_.PositivityTheory.Xgn.SmallPotentialLimit.isC2At_of_isPotential <;> assumption
 
 theorem continuous_of_smooth {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) {f : X → ℝ}
     (h : A.Smooth f) : Continuous f := by

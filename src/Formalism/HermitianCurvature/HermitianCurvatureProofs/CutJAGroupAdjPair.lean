@@ -24,8 +24,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.GA
 
 open Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA Formalism.FourierDecayAlt.P.CutMP.En
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem group_action_pairing_holds : GAPair := by
   intro Cc E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top A₀ hB v e hFr X Y F F' hX hY hF hF' hae
   have hplace : Q.IsPlace (D.parOf S v) (T v).base.z (T v).base.z' (T v).base.π (T v).base.π' :=

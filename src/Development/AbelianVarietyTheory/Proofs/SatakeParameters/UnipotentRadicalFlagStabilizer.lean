@@ -98,13 +98,11 @@ theorem exists_sub (k : Type) [Field k] (a s : ℕ) (d : Fin s → ℕ) (e : (Σ
       (∀ v, ((g : Matrix (Fin a) (Fin a) k) - 1).mulVec v ∈ W) →
       (∀ v ∈ W, ((g : Matrix (Fin a) (Fin a) k) - 1).mulVec v = 0) → g ∈ GlobalTheory.SmGL.unipRad k e := by
   have hex : ∃ u ∈ GlobalTheory.SmGL.unipRad k e, u ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne ((Subgroup.eq_bot_iff_forall _).2 h)
   obtain ⟨u, hu, hu1⟩ := hex
   have hij : ∃ i j, (u : Matrix (Fin a) (Fin a) k) i j ≠ (1 : Matrix (Fin a) (Fin a) k) i j := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu1 (Units.ext (Matrix.ext h))
   obtain ⟨i, j, hij⟩ := hij
   obtain ⟨hp, hd⟩ := GlobalTheory.SmGL.mem_unipRad.1 hu

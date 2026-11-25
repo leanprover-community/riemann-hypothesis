@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameHeightFormula
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecializesOfUnits
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
@@ -101,15 +102,7 @@ theorem le_span_frame {r' : ℕ} {L : Lat ξ V} {U : Submodule Ω V} (hL : L.IsV
 
 theorem span_eq_of_unit {p : Cpt ξ} {a b : Ω} (hb : b ≠ 0) (h : unitAt ξ p (a / b)) :
     Submodule.span (regAt ξ p) {a} = Submodule.span (regAt ξ p) {b} := by
-  obtain ⟨h0, h1, h2⟩ := h
-  have ha : a ≠ 0 := by
-    rintro rfl
-    simp at h0
-  apply le_antisymm
-  · rw [Submodule.span_singleton_le_iff_mem, Submodule.mem_span_singleton]
-    exact ⟨⟨a / b, h1⟩, by show a / b * b = a; field_simp⟩
-  · rw [Submodule.span_singleton_le_iff_mem, Submodule.mem_span_singleton]
-    exact ⟨⟨(a / b)⁻¹, h2⟩, by show (a / b)⁻¹ * a = b; field_simp⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.Roots.span_eq_of_unit <;> assumption
 
 private theorem isLocalRing_regAt' {p : Cpt ξ} : IsLocalRing (regAt ξ p) :=
   IsLocalRing.of_surjective' (genMap ξ p).rangeRestrict (genMap ξ p).rangeRestrict_surjective
@@ -129,8 +122,7 @@ private theorem unitAt_of_isUnit' {p : Cpt ξ} (z : regAt ξ p) (hu : IsUnit z) 
 theorem exists_unit_of_sum {p : Cpt ξ} {m : ℕ} {f cc : Fin m → Ω} (hf : ∀ l, f l ∈ regAt ξ p)
     (hc : ∀ l, cc l ∈ regAt ξ p) (h : ∑ l, cc l * f l = 1) : ∃ l, unitAt ξ p (f l) := by
   haveI := isLocalRing_regAt' (ξ := ξ) (p := p)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hnu : ∀ l, ¬ IsUnit (⟨f l, hf l⟩ : regAt ξ p) :=
     fun l hu => hne l (unitAt_of_isUnit' _ hu)
   have hsum : (∑ l, (⟨cc l, hc l⟩ : regAt ξ p) * ⟨f l, hf l⟩) = 1 := by

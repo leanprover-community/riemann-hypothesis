@@ -65,7 +65,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopC.GramSize
 
@@ -100,8 +99,7 @@ theorem det_up {U : Matrix (Fin N) (Fin N) K} (h : IsUpUni U) (I : Fin n → Fin
 theorem lt_of_not_range (hn : n ≤ N) (i : Fin n) (k : Fin N) (hk : k ∉ Set.range (Fin.castLE hn)) :
     Fin.castLE hn i < k := by
   have hk' : n ≤ k.val := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hk ⟨⟨k.val, hlt⟩, Fin.ext rfl⟩
   rw [Fin.lt_iff_val_lt_val, Fin.coe_castLE]
   exact lt_of_lt_of_le i.isLt hk'
@@ -224,8 +222,7 @@ theorem cell_minor {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (p : Poi
       exact absurd hval.symm ht
   have hσfirst : ∀ i : Fin (r + 1), i.val < l → (σ i).val < l := by
     intro i hi
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hz := h0 i.val (σ i).val hi hc
     rw [← hent, hw, if_pos rfl] at hz
     exact hd i hz
@@ -588,7 +585,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopC.TermsOver
 

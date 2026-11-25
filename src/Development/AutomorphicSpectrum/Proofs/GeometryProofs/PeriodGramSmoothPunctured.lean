@@ -4,6 +4,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUnce
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.CasChainA
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsConjugateLogPeriods
 
 @[expose] public section
 
@@ -215,16 +216,7 @@ theorem exists_basis {n a : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeri
   simpa using hdet
 
 theorem isOpen_cover {n a : ℕ} (h : a ≤ n) : IsOpen (logCover h) := by
-  have e : logCover h = (⋂ i : Fin a, {w : Fin n → ℂ | (w (Fin.castLE h i)).re < 0}) ∩
-      ⋂ k : Fin n, {w : Fin n → ℂ | a ≤ k.val → ‖w k‖ < 1} := by
-    ext w
-    simp [logCover]
-  rw [e]
-  refine (isOpen_iInter_of_finite fun i => ?_).inter (isOpen_iInter_of_finite fun k => ?_)
-  · exact isOpen_lt (by fun_prop) continuous_const
-  · by_cases hk : a ≤ k.val
-    · simpa [hk] using isOpen_lt (f := fun w : Fin n → ℂ => ‖w k‖) (by fun_prop) continuous_const
-    · simp [hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.ConjPeriods.isOpen_logCover <;> assumption
 
 theorem contDiffAt_period {n a : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) (x : Λ)
     {w : Fin n → ℂ} (hw : w ∈ logCover L.a_le) : ContDiffAt ℝ ∞ (fun w => L.P w x) w :=

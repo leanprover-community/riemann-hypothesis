@@ -203,8 +203,7 @@ theorem UpperTheory.Gal.Int.Div.charOfZeta_of :
   choose c hc using hsc
   obtain ⟨φ₀, h₀, hne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hU.ne_bot
   obtain ⟨g₀, hg₀⟩ : ∃ g, φ₀ g ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hval : ∀ z, φ₀ (g₀ * ζ z) = c z * φ₀ g₀ := fun z => by
     have := congrFun (hc z φ₀ h₀) g₀
@@ -1366,13 +1365,9 @@ theorem UpperTheory.Gal.Int.Div.schurU_of :
   have hφS : φ ∈ S := Submodule.subset_span ⟨1, by simp⟩
   have hSst : ∀ x : infU E a, ∀ v ∈ S, RU E a x v ∈ S := by
     intro x v hv
-    induction hv using Submodule.span_induction with
-    | mem v hv =>
-      obtain ⟨k, rfl⟩ := hv
-      exact Submodule.subset_span ⟨x * k, by simp only [Subgroup.coe_mul, GlobalTheory.DefU.RU_RU]⟩
-    | zero => rw [map_zero]; exact S.zero_mem
-    | add p q _ _ hp hq => rw [map_add (f := _)]; exact S.add_mem hp hq
-    | smul c p _ hp => rw [map_smul]; exact S.smul_mem c hp
+    refine (Submodule.map_span_le (RU E a x) _ S).2 ?_ (Submodule.mem_map_of_mem hv)
+    rintro _ ⟨k, rfl⟩
+    exact Submodule.subset_span ⟨x * k, by simp only [Subgroup.coe_mul, GlobalTheory.DefU.RU_RU]⟩
   let ρ : infU E a → Module.End ℂ S := fun x => (RU E a x).restrict (hSst x)
   let K : Subgroup (finU (E := E) (n := a)) :=
     { carrier := {k | RU E a k φ = φ}
@@ -1393,14 +1388,10 @@ theorem UpperTheory.Gal.Int.Div.schurU_of :
   have hKS : ∀ k ∈ K, ∀ v ∈ S, RU E a (k : finU (E := E) (n := a)) v = v := by
     intro k hk v hv
     have hk' : RU E a k φ = φ := hk
-    induction hv using Submodule.span_induction with
-    | mem v hv =>
-      obtain ⟨x, rfl⟩ := hv
-      change RU E a k (RU E a x φ) = RU E a x φ
-      rw [GlobalTheory.DefU.RU_RU, GlobalTheory.DefU.fin_mul_inf k.2 x.2, ← GlobalTheory.DefU.RU_RU, hk']
-    | zero => rw [map_zero]
-    | add p q _ _ hp hq => rw [map_add (f := _), hp, hq]
-    | smul c p _ hp => rw [map_smul, hp]
+    refine LinearMap.eqOn_span (f := RU E a k) (g := LinearMap.id) ?_ hv
+    rintro _ ⟨x, rfl⟩
+    change RU E a k (RU E a x φ) = RU E a x φ
+    rw [GlobalTheory.DefU.RU_RU, GlobalTheory.DefU.fin_mul_inf k.2 x.2, ← GlobalTheory.DefU.RU_RU, hk']
   let M : Submodule ℂ (S →ₗ[ℂ] (UA E a → ℂ)) :=
     { carrier := {f | (∀ v, f v ∈ U) ∧ (∀ (x : infU E a) v, f (ρ x v) = RU E a x (f v)) ∧
         ∀ k ∈ K, ∀ v, RU E a (k : finU (E := E) (n := a)) (f v) = f v}
@@ -1431,8 +1422,7 @@ theorem UpperTheory.Gal.Int.Div.schurU_of :
   have hTf : ∀ v, RU E a z (f.1 v) = c • f.1 v := fun v =>
     LinearMap.congr_fun (congrArg Subtype.val hf.apply_eq_smul) v
   have hfne : ∃ v, f.1 v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf.2 (Subtype.ext (LinearMap.ext h))
   obtain ⟨v, hv⟩ := hfne
   let W : Submodule ℂ (UA E a → ℂ) :=

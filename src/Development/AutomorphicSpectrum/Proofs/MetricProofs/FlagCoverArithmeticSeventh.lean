@@ -12,6 +12,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphFibreRatio
 
 @[expose] public section
 
@@ -469,14 +470,7 @@ theorem exists_form_local_inverse [CharZero Ω] (hv : IsBlockMap κ v) (x' : (Σ
     exact hu.symm.trans (div_eq_inv_mul _ _)
 
 theorem aeval_eq_zero_of_mem {x : (Σ k, ι k) → Ω} {f : MRing ι} (hf : f ∈ mCoordIdeal x) : aeval x f = 0 := by
-  have h : mConeMap x f = 0 := hf
-  have e : ((aeval (fun _ => (1 : Ω)) : MvPolynomial K Ω →ₐ[Ω] Ω).restrictScalars ℤ).comp (mConeMap x) =
-      aeval x := by
-    apply MvPolynomial.algHom_ext
-    intro p
-    simp [mConeMap]
-  have h2 := DFunLike.congr_fun e f
-  rw [← h2, AlgHom.comp_apply, h, map_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockGraphFibreRatio.aeval_eq_zero_of_mem <;> assumption
 
 end General
 

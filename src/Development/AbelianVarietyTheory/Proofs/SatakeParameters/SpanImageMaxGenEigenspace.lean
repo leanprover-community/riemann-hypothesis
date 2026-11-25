@@ -274,8 +274,7 @@ theorem span_image_eigAt_of_basis : ∀ {K V W I ι : Type} [Field K] [AddCommGr
     · refine iSup₂_le fun y hy => ?_
       obtain ⟨s, hs, rfl⟩ := hy
       exact le_iSup₂_of_le (f := fun (s : I → K) (_ : Q s) => eigAt opC (fun i => σ (s i))) s hs le_rfl
-  · by_contra hno
-    push_neg at hno
+  · by_contra! hno
     have hcC : PairComm opC := by
       intro i k
       show opC i * opC k = opC k * opC i

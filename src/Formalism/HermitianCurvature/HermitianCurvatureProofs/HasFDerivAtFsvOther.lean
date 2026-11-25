@@ -10,8 +10,6 @@ import Mathlib.Tactic.TypeStar
 open scoped ComplexConjugate ContDiff
 open Filter Topology
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P5

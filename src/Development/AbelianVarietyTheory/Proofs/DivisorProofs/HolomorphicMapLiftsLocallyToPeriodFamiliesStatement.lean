@@ -212,8 +212,7 @@ theorem gram_re_posdef_adj : ∀ (O : Type) [Ring O] (bar : O → O) (g : ℕ) (
       ring
     rw [hq, ← hexp, ← hexp]
     have hor : (fun i => (z i).re) ≠ 0 ∨ (fun i => (z i).im) ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply hz
       funext i
       exact Complex.ext (congrFun h.1 i) (congrFun h.2 i)

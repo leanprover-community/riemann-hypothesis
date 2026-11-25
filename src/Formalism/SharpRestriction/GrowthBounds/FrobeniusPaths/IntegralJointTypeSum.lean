@@ -601,8 +601,7 @@ lemma eval_Tev (hd2 : ∀ c a, dcd c = some a → c = e a) (z : Fin N × Fin k �
 
 lemma exists_Tev_ne [Infinite F] (hd2 : ∀ c a, dcd c = some a → c = e a) (x : MvPolynomial (Fin N × Fin k) F)
     (hx : x ≠ 0) : ∃ y, Tev dcd y x ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   apply MvPolynomial.funext
   intro z

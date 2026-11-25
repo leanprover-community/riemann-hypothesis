@@ -108,8 +108,7 @@ theorem GlobalTheory.QSA.exists_idem_pick_unit : ∀ (F : Type) [Field F] [Numbe
     · rw [Finset.univ_eq_empty, Finset.sum_empty]; exact hs
   have hinf : ∀ w, ∃ i, compInf w (n i) ≠ 0 := by
     intro w
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply (hs.map (compInf w)).ne_zero
 
     rw [map_sum]

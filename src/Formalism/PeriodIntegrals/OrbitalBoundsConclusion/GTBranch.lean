@@ -1070,8 +1070,7 @@ theorem highestVec_B : HighestVec := by
     ∃ g ∈ W, g ≠ 0 ∧ ∃ m, IsWeightedHomogeneous (wnB n N) g m ∧ PsiB n m = k
   have hex : ∃ k, Pk k := by
     obtain ⟨f, hfW, hf0⟩ := (Submodule.ne_bot_iff W).mp hne
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     apply hf0
     rw [← comp_sum_B (wnB n N) f (f.support.image (Finsupp.weight (wnB n N)))
       (fun e he => Finset.mem_image_of_mem _ he)]
@@ -1112,8 +1111,7 @@ theorem highestVec_B : HighestVec := by
     exact sub_eq_zero.mp hR
   have hdom : ∀ (i : ℕ) (hi : i + 1 < n), m ⟨i + 1, hi⟩ ≤ m ⟨i, by omega⟩ := by
     intro i hi
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     let σ := Equiv.swap (⟨i, by omega⟩ : Fin n) ⟨i + 1, hi⟩
     have hσ : ∀ j, σ (σ j) = j := fun j => Equiv.swap_apply_self _ _ j
     have hgt := PsiB_swap_B m i hi hlt

@@ -366,8 +366,7 @@ theorem exists_adapted_family (F : ℤ → Submodule k M) (hF : Antitone F) :
     rw [this, ← Submodule.map_span, bC.span_eq, Submodule.map_top, Submodule.range_subtype]
   have hdeg' : ∀ j, a₀ + 1 ≤ h j := by
     intro j
-    by_contra hj
-    push_neg at hj
+    by_contra! hj
     have hvj : v j ∈ D' := hspan ▸ Submodule.subset_span ⟨j, rfl⟩
     exact (hdeg j).2 (hF (show h j + 1 ≤ a₀ + 1 by omega) (Submodule.mem_inf.mp hvj).2)
   refine ⟨ι ⊕ Fin (Module.finrank k C), inferInstance, Sum.elim v c,
@@ -637,11 +636,9 @@ theorem exists_hodge : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P : LocPrime
   obtain ⟨hlo, hhi⟩ := _root_.GlobalTheory.DRMat.invariant_coord_bounds l P K d ρ N h1 h2 _ (hbinv i) hne
   rw [abs_le]
   constructor
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     exact (hbF i).2 (hF (show h i + 1 ≤ -(N : ℤ) by omega) ((hmemF _ _).2 hlo))
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     exact hhi ((hmemF _ _).1 (hF (show (N : ℤ) + 1 ≤ h i by omega) (hbF i).1))
 
 end GlobalTheory.HodgeEx

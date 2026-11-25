@@ -104,8 +104,7 @@ private theorem exists_mem_col_fiber_eq_of_isTab_of_le (col : X → C) (b : X �
     ∃ x, col x = c ∧ b x = j := by
   have hinj := injOn_col_fiber_of_isTab col b hT c
   unfold IsTab at hT
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hsub : (Finset.univ.filter (fun y => col y = c)).image b ⊆ Finset.Ioi j := by
     intro i hi
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hi
@@ -125,12 +124,10 @@ theorem exists_perm (col : X → C) (b : X → Fin n) (hT : IsTab col b) (ζ : E
     (hJ : ColInj col (b ∘ ζ)) : ∃ π ∈ colG col, b ∘ π = b ∘ ζ := by
   unfold ColInj at hJ
   have key : ∀ p, ∃ q, col q = col p ∧ b q = b (ζ p) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨p0, hp0⟩ := hne
     have hsmall : (Finset.univ.filter (fun y => col y = col p0)).card < n - (b (ζ p0) : ℕ) := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       obtain ⟨q, hq, hbq⟩ := exists_mem_col_fiber_eq_of_isTab_of_le col b hT (col p0) (b (ζ p0)) (by omega)
       exact hp0 q hq hbq
     have hfib : ∀ s : Finset X,
@@ -397,8 +394,7 @@ private theorem sum_ite_mul_mul_eq_pos_of_subgroup_transversal {Γ : Type} [Grou
   have hc : (0 : ℤ) < C.card := by exact_mod_cast Finset.card_pos.2 ⟨1, hC1⟩
   have hcc : (0 : ℤ) < (C.card : ℤ) * C.card := mul_pos hc hc
   rw [h1, h2] at h3
-  by_contra hK0
-  push_neg at hK0
+  by_contra! hK0
   have := mul_nonpos_of_nonneg_of_nonpos hcc.le hK0
   linarith
 

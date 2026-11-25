@@ -98,8 +98,7 @@ theorem UpperTheory.V.Pr.linClosedOfAdic :
     (M := (Fin n × Fin n → A) ⧸ K) (maximalIdeal A) (maximalIdeal.isMaximal A).ne_top
   obtain ⟨N, hN⟩ : ∃ N : ℕ, K.mkQ (y g0) ∉
       (maximalIdeal A ^ N • ⊤ : Submodule A ((Fin n × Fin n → A) ⧸ K)) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hK
     have hm : K.mkQ (y g0) ∈
         (⨅ i : ℕ, maximalIdeal A ^ i • ⊤ : Submodule A ((Fin n × Fin n → A) ⧸ K)) :=

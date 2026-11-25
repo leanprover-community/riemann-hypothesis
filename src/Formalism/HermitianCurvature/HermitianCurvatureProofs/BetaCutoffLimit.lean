@@ -21,8 +21,6 @@ namespace Formalism.FourierDecayAlt.P.JCTx2
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section beta
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]

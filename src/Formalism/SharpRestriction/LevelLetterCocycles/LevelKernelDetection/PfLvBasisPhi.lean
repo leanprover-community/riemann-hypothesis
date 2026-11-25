@@ -101,8 +101,7 @@ private theorem eigen_finset_eq_zero_of_injective_embeddings {ι : Type} [Decida
       intro i hi
       have hij : τ i ≠ τ j := fun h => hj (by rw [← hτ h]; exact hi)
       obtain ⟨c, hc⟩ : ∃ c, τ i c ≠ τ j c := by
-        by_contra hne
-        push_neg at hne
+        by_contra! hne
         exact hij (AlgHom.ext hne)
       exact (smul_eq_zero.mp (key c i hi)).resolve_left (sub_ne_zero.mpr hc)
     intro i hi

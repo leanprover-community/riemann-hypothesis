@@ -785,8 +785,7 @@ theorem exists_finite_fix {φ : UA E a → ℂ} (hφ : IsAutFormU φ) :
       ⋃ u, {k : finU (E := E) (n := a) | cLoc u k.1 ≠ 1} := by
     rintro k ⟨-, hk⟩
     simp only [Set.mem_iUnion, Set.mem_setOf_eq]
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hk
     show RU E a k.1 φ = φ
     rw [eq_one_of_forall_cLoc k.2 hne, map_one]

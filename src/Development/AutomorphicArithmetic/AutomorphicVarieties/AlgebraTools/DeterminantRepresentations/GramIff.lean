@@ -45,8 +45,7 @@ private theorem linearIndependent_iff_det_trace_gram_ne_zero {K ι : Type} [Fiel
   · intro hdet
     rw [Fintype.linearIndependent_iff]
     intro c hc
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨i, hi⟩ := hne
     apply hdet
     rw [← Matrix.exists_mulVec_eq_zero_iff]

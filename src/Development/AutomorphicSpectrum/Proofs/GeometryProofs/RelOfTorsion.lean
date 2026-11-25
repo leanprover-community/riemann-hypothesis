@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DerRingInjective
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValues
@@ -215,21 +216,7 @@ theorem unit_j (hj : Γ.IsEmb (Γ.btOrder ⊤) j) :
 
 theorem zsec_surj : Function.Surjective (Spec.map (CommRingCat.ofHom
     (TrivSqZeroExt.fstHom R R V).toRingHom)) := by
-  intro p
-  let q : PrimeSpectrum R := PrimeSpectrum.comap (algebraMap R (TrivSqZeroExt R V)) p
-  refine ⟨q, PrimeSpectrum.ext (Ideal.ext fun a => ?_)⟩
-  change algebraMap R (TrivSqZeroExt R V) a.fst ∈ p.asIdeal ↔ a ∈ p.asIdeal
-  set b := algebraMap R (TrivSqZeroExt R V) a.fst with hb
-  have h0 : (b - a).fst = 0 := by simp [hb, TrivSqZeroExt.algebraMap_eq_inl]
-  have hm : b - a ∈ p.asIdeal := by
-    refine p.isPrime.mem_of_pow_mem 2 ?_
-    have : (b - a) ^ 2 = 0 := by
-      rw [pow_two]
-      refine TrivSqZeroExt.ext ?_ ?_ <;> simp [h0]
-    rw [this]; exact zero_mem _
-  constructor
-  · intro h; simpa using p.asIdeal.sub_mem h hm
-  · intro h; simpa using p.asIdeal.add_mem hm h
+  apply _root_.GlobalTheory.CompanionTheory.Ar.LieVB.surj_fst <;> assumption
 
 theorem spec_fst_comp (ψ : omega (Γ.btOrder ⊤) →ₗ[R] V) :
     Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R V).toRingHom) ≫

@@ -212,8 +212,7 @@ namespace Regular
 
 theorem nonneg_of_tendsto {X : Type} [AddCommGroup X] [Module.Free ℤ X] (q : QuadraticMap ℤ X ℝ)
     (h : Filter.Tendsto q Filter.cofinite Filter.atTop) (x : X) : 0 ≤ q x := by
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   have hx0 : x ≠ 0 := by
     rintro rfl
     simp at hx

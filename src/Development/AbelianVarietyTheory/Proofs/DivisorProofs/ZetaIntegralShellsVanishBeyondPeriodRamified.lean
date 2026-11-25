@@ -430,8 +430,7 @@ theorem shell_lemma : ShellLemma := by
   have h2 : ∀ M : ℤ, IsPeriodic ϖ M φ → ∀ n : Fin a → ℤ, (∃ i, M ≤ n i) → ∀ z : ℂ, shell μ ϖ ν z φ n = 0 := by
     rintro M hM n ⟨i, hi⟩ z
     obtain ⟨u, hu1, hu2⟩ : ∃ u : kˣ, valuation k (u : k) = 1 ∧ ν u ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hram h
     obtain ⟨t, htK, heq, hdisj⟩ := _root_.GlobalTheory.ShellCosets.shell_cosets k ϖ a n
     rw [shell, heq, integral_biUnion_finset t]

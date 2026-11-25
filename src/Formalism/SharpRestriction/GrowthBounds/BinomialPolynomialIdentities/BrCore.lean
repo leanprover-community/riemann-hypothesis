@@ -51,14 +51,12 @@ lemma qh_lt_colH_iff {mu : Fin n → ℤ} (hmu : Dominant mu) (t : Fin n) (c : �
   unfold colH
   constructor
   · intro h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hsub : (univ.filter fun m : Fin n => c ≤ mu m) ⊆ Finset.Iio t := by
       intro m hm
       rw [Finset.mem_filter] at hm
       rw [Finset.mem_Iio]
-      by_contra hmt
-      push_neg at hmt
+      by_contra! hmt
       exact (not_le.mpr hc) (hm.2.trans (hmu hmt))
     have hcard := Finset.card_le_card hsub
     rw [Fin.card_Iio] at hcard

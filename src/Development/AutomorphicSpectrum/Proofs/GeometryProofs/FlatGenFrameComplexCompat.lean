@@ -15,6 +15,7 @@ public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahle
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FramedPointSpecialization
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LeftEqOfIsLieCombSingle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatGenFrameIndependent, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatGenFrameComplexCompat
@@ -256,22 +257,7 @@ theorem comp_one_over {Y Z M : Over S} [GrpObj M] (f : Y ⟶ Z) : f ≫ (1 : Z �
 
 theorem prod_ofFn_single {M : Type*} [Monoid M] : ∀ {n : ℕ} (u : Fin n → M) (j : Fin n),
     (∀ i, i ≠ j → u i = 1) → (List.ofFn u).prod = u j := by
-  intro n
-  induction n with
-  | zero => intro u j; exact j.elim0
-  | succ n ih =>
-    intro u j hu
-    rw [List.ofFn_succ, List.prod_cons]
-    by_cases hj : j = 0
-    · subst hj
-      have h1 : (List.ofFn fun i : Fin n => u i.succ).prod = 1 := List.prod_eq_one fun x hx => by
-        simp only [List.mem_ofFn] at hx
-        obtain ⟨i, rfl⟩ := hx
-        exact hu _ (Fin.succ_ne_zero i)
-      rw [h1, _root_.mul_one]
-    · obtain ⟨j', rfl⟩ := Fin.exists_succ_eq.2 hj
-      rw [hu 0 (Fin.succ_ne_zero j').symm, _root_.one_mul]
-      exact ih (fun i => u i.succ) j' fun i hi => hu _ fun h => hi (Fin.succ_injective _ h)
+  apply _root_.GlobalTheory.LamF.LetterEigen.prod_ofFn_eq_single <;> assumption
 
 theorem isComb_single {G : Over S} [GrpObj G] {x : Sp R ⟶ S} {n : ℕ} (w : Fin n → (epsAt x ⟶ G))
     (hw : ∀ i, GlobalTheory.CompanionTheory.Ar.IsTanAt G x (w i)) (j : Fin n) : GlobalTheory.CompanionTheory.Ar.Fl.IsComb (Pi.single j 1) w (w j) := by

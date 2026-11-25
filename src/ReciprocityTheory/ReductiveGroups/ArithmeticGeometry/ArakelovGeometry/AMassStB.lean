@@ -52,8 +52,7 @@ theorem gb_mcPts_eq (P : Ideal (MRing (GlobalTheory κ))) : mcPts P = pts P := b
   refine and_congr_left' ⟨fun h h0 => ?_, fun h k => ?_⟩
   · obtain ⟨i, hi⟩ := h ()
     exact hi (congrFun h0 _)
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     exact h (funext fun p => hne p.2)
 
 theorem gb_fibre_eq (x : Ix κ → Ω) (e : Fin (D + 1) → Ix κ) (y : Fin D → ℂ) :
@@ -129,8 +128,7 @@ theorem gb_exists_scale {Δ : MvPolynomial (Fin (D + 1)) ℂ} (hΔ : Δ ≠ 0) :
     ∃ c : ℂ, c ≠ 0 ∧ ∃ y₀ : Fin D → ℂ, eval (c • (Fin.cons 1 y₀ : Fin (D + 1) → ℂ)) Δ ≠ 0 := by
   have h1 : Δ * X 0 ≠ 0 := mul_ne_zero hΔ (X_ne_zero _)
   obtain ⟨w, hw⟩ : ∃ w, eval w (Δ * X 0) ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact h1 (MvPolynomial.funext (fun w => by simpa using hne w))
   rw [eval_mul, eval_X] at hw
   have hw0 : w 0 ≠ 0 := right_ne_zero_of_mul hw

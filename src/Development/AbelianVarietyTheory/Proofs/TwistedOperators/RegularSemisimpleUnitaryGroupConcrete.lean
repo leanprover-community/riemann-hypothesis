@@ -1503,8 +1503,7 @@ theorem exists_sq_of_not_isField_tensor {F E K : Type} [Field F] [CommRing E] [A
     [Field K] [Algebra F K] (b : Module.Basis (Fin 2) F E) (d : F) (h0 : b 0 = 1)
     (h1 : b 1 * b 1 = algebraMap F E d) (h : ¬ IsField (K ⊗[F] E)) :
     ∃ c : K, c * c = algebraMap F K d := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   let B := Algebra.TensorProduct.basis K b
   have hB0 : B 0 = 1 := by simp [B, h0, Algebra.TensorProduct.one_def]

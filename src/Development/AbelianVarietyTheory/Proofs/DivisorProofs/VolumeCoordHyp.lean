@@ -68,8 +68,7 @@ lemma _root_.GlobalTheory.GoodTop.offHyp_ae_eq {n : ℕ} (S : Finset (Fin n))
       ?_ ?_
     · intro v hv
       simp only [Set.mem_iUnion, Set.mem_setOf_eq, Finset.mem_coe, exists_prop]
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hv.2 (mem_offHyp_iff.2 ⟨hv.1, h⟩)
     · refine (measure_biUnion_null_iff S.countable_toSet).2 fun a _ => ?_
       let L : _root_.ReciprocityTheory.L2DbarEstimates.V n →ₗ[ℝ] ℂ :=

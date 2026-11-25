@@ -223,8 +223,7 @@ theorem incf_frame (p : PP Lc n) {x : Fin n → Lc.K} (hx : p.1.f x = 1) :
   have hq := Lc.q_ne
   have hqO : (q : Lc.K) ∈ Lc.O := natCast_mem _ _
   obtain ⟨j, hj⟩ : ∃ j, Lc.res ⟨u j, hu j⟩ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     choose y hy using fun k => (Lc.res_ker _).1 (hcon k)
     have : u = (q : Lc.K) • fun k => (y k : Lc.K) := funext fun k => by simpa using hy k
     rw [this, Matrix.mulVec_smul, incf_f_q p ((hh _).2 ((incf_mem_std _).2 fun k => (y k).2))] at hx

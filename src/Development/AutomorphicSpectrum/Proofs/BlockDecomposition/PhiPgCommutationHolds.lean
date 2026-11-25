@@ -1234,8 +1234,7 @@ theorem exists_avg (H : Subgroup G) (σ : Representation ℂ H Z) {L : Subgroup 
     GlobalTheory.CompanionTheory.TwAvgInd.exists_finite_average (cInd H σ) (GlobalTheory.CompanionTheory.BZFun.isSmooth_cInd H σ) hL χ hχ f
   refine ⟨_, h1, ?_, h2⟩
   intro x hx
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   have hz : ∀ i, evC H σ x (twOrbit (cInd H σ) L χ f (r i)) = 0 := by
     intro i

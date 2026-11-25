@@ -196,8 +196,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem locAdd_thr (k r : ℕ) {A : ℝ} (hA : 10 * ((r : ℝ) + 1) * nDim k r ^ 2 ≤ A) : JF.TransportedAlt k r A 0 := by
   unfold JF.TransportedAlt
   have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
@@ -404,8 +402,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 open Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem local_square_integrable_transfer : LocalSquareIntegrableTransfer := by
   refine ⟨3, ?_⟩
   intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top Cb A₀ hB v Bg A ε J e hFr hBg hε hA hJ π
@@ -554,8 +550,6 @@ open scoped ContDiff
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.LT
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section op
 

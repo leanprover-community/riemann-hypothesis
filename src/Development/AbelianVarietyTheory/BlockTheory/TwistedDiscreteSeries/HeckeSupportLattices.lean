@@ -9,7 +9,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.HeckeJ
 noncomputable section
 
 open NumberField IsDedekindDomain
-open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LatticesOverBalls
 
@@ -23,55 +22,11 @@ variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] 
   {W : (LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
   {G : Type} [Group G] [Fintype G] (Φ : FormsL LL Ks WL W G)
 
-def ball (la : HeightOneSpectrum (𝓞 Ks)) : Set Φ.WK := {f | ∀ y : Φ.Pt la, Φ.nrm la y f ≤ 1}
-
-def resW (hL : WL →ₗ[LL] WL) (hW : ∀ x ∈ Φ.WK, hL x ∈ Φ.WK) : Φ.WK →ₗ[Ks] Φ.WK :=
-  (hL.restrictScalars Ks).restrict hW
-
-def LiesOver (la : HeightOneSpectrum (𝓞 Ks)) {K' : Type} [Field K'] [Algebra Ks K'] (O : ValuationSubring K') : Prop :=
-  ∀ x : Ks, algebraMap Ks K' x ∈ O ↔ FinitePlace.mk la x ≤ 1
-
-def latK (la : HeightOneSpectrum (𝓞 Ks)) {K' : Type} [Field K'] [Algebra Ks K'] (O : ValuationSubring K') :
-    Submodule O (K' ⊗[Ks] Φ.WK) :=
-  Submodule.span O ((fun f : Φ.WK => (1 : K') ⊗ₜ[Ks] f) '' ball Φ la)
-
-def latKIn (la : HeightOneSpectrum (𝓞 Ks)) {K' : Type} [Field K'] [Algebra Ks K'] (O : ValuationSubring K')
-    (V : Submodule LL WL) : Submodule O (K' ⊗[Ks] Φ.WK) :=
-  latK Φ la O ⊓ (((V.restrictScalars Ks).comap Φ.WK.subtype).baseChange K').restrictScalars O
-
-def latL (la : HeightOneSpectrum (𝓞 Ks)) {K' : Type} [Field K'] [Algebra LL K'] (O : ValuationSubring K') :
-    Submodule O (K' ⊗[LL] WL) :=
-  Submodule.span O ((fun f : Φ.WK => (1 : K') ⊗ₜ[LL] (f : WL)) '' ball Φ la)
-
-def latLIn (la : HeightOneSpectrum (𝓞 Ks)) {K' : Type} [Field K'] [Algebra LL K'] (O : ValuationSubring K')
-    (V : Submodule LL WL) : Submodule O (K' ⊗[LL] WL) :=
-  latL Φ la O ⊓ (V.baseChange K').restrictScalars O
-
 structure Keeps (la : HeightOneSpectrum (𝓞 Ks)) (hL : WL →ₗ[LL] WL) (hW : ∀ x ∈ Φ.WK, hL x ∈ Φ.WK) : Prop where
 
   sup : ∀ f : Φ.WK, (∀ y : Φ.Pt la, Φ.nrm la y f ≤ 1) → ∀ y : Φ.Pt la, Φ.nrm la y ⟨hL f, hW f f.2⟩ ≤ 1
 
   rho : ∀ g : G, hL ∘ₗ Φ.ρ g = Φ.ρ g ∘ₗ hL
-
-  eOp : ∀ eC : G → LL, hL ∘ₗ Φ.eOp eC = Φ.eOp eC ∘ₗ hL
-
-  typeP : ∀ (J : Subgroup G) (lam : J →* LLˣ), ∀ x ∈ Φ.typeP J lam, hL x ∈ Φ.typeP J lam
-
-  good : ∀ eC : G → LL, ∀ x ∈ Φ.good eC, hL x ∈ Φ.good eC
-
-  overK : ∀ (K' : Type) [Field K'] [Algebra Ks K'] (O : ValuationSubring K'), LiesOver la O →
-    (∀ x ∈ latK Φ la O, (resW Φ hL hW).baseChange K' x ∈ latK Φ la O) ∧
-    ∀ (J : Subgroup G) (lam : J →* LLˣ),
-      (∀ x ∈ latKIn Φ la O (Φ.typeP J lam), (resW Φ hL hW).baseChange K' x ∈ latKIn Φ la O (Φ.typeP J lam)) ∧
-      ∀ eC : G → LL, ∀ x ∈ latKIn Φ la O (Φ.Wgood J lam eC),
-        (resW Φ hL hW).baseChange K' x ∈ latKIn Φ la O (Φ.Wgood J lam eC)
-
-  overL : ∀ (K' : Type) [Field K'] [Algebra LL K'] [Algebra Ks K'] [IsScalarTower Ks LL K'] (O : ValuationSubring K'),
-    LiesOver la O →
-    (∀ x ∈ latL Φ la O, hL.baseChange K' x ∈ latL Φ la O) ∧
-    ∀ (J : Subgroup G) (lam : J →* LLˣ),
-      (∀ x ∈ latLIn Φ la O (Φ.typeP J lam), hL.baseChange K' x ∈ latLIn Φ la O (Φ.typeP J lam)) ∧
-      ∀ eC : G → LL, ∀ x ∈ latLIn Φ la O (Φ.Wgood J lam eC), hL.baseChange K' x ∈ latLIn Φ la O (Φ.Wgood J lam eC)
 
 end Forms
 

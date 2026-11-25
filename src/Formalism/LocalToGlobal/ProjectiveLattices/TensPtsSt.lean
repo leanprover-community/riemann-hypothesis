@@ -11,8 +11,6 @@ namespace Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {X : Scheme.{0}} (A : Over X)
 
 def powO : ℕ → Over X
