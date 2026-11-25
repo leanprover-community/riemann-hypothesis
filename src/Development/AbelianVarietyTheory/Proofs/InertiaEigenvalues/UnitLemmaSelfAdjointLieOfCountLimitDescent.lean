@@ -47,9 +47,6 @@ theorem exists_small (K : UQ) : ∃ a : K.O, K.Small a := by
 
 variable {K : UQ}
 
-theorem mulLeft_prod (B₁ B₂ : InvAlg K) (x : B₁.A × B₂.A) :
-    LinearMap.mulLeft K.E x = (LinearMap.mulLeft K.E x.1).prodMap (LinearMap.mulLeft K.E x.2) := LinearMap.ext fun y => Prod.ext (by simp) (by simp)
-
 alias prod_P := _root_.GlobalTheory.UnitLemma.Orbit.prod_P
 
 theorem trace_prod (B₁ B₂ : InvAlg K) (x : B₁.A × B₂.A) :

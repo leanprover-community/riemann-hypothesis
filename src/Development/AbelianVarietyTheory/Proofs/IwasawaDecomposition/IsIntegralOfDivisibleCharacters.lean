@@ -50,20 +50,6 @@ open Polynomial
 
 namespace GlobalTheory.IntegralOfPointValues
 
-theorem mem_intO_of_isIntegral {C : Type} [NormedField C] [IsUltrametricDist C] {z : C}
-    (hz : IsIntegral ↥(intO C) z) : z ∈ intO C := by
-  let V : ValuationSubring C :=
-    { intO C with
-      mem_or_inv_mem' := fun x => by
-        change ‖x‖ ≤ 1 ∨ ‖x⁻¹‖ ≤ 1
-        rcases le_total ‖x‖ 1 with h | h
-        · exact Or.inl h
-        · exact Or.inr (by rw [norm_inv]; exact inv_le_one_of_one_le₀ h) }
-  have hz' : IsIntegral V z := hz
-  obtain ⟨v, rfl⟩ := (IsIntegrallyClosed.isIntegral_iff (R := V) (K := C)).1 hz'
-  exact v.2
-
-
 open Polynomial in
 theorem _root_.GlobalTheory.IntegralOfPointValues.isIntegral_inv_smul_of_closed {O C B₀ B₁ : Type*} [CommRing O] [Field C] [IsAlgClosed C]
     [Algebra O C] (hinj : Function.Injective (algebraMap O C))
@@ -158,10 +144,5 @@ theorem _root_.GlobalTheory.IntegralOfPointValues.isIntegral_inv_smul_of_closed 
     simp only [Function.comp_apply, eval₂_sub, eval₂_X, eval₂_C]
     rw [IsScalarTower.algebraMap_apply O C B₁, hf α hα, Algebra.smul_def, map_mul, mul_sub]
   rw [Multiset.map_congr rfl hfac, Multiset.prod_map_mul, hzero, mul_zero]
-
-theorem isIntegral_inv_smul : ∀ (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [IsAlgClosed C] (B₀ B₁ : Type) [CommRing B₀] [Algebra ↥(intO C) B₀] [Module.Finite ↥(intO C) B₀] [CommRing B₁] [Algebra C B₁] [Algebra ↥(intO C) B₁] [IsScalarTower ↥(intO C) C B₁] (j : B₀ →ₐ[↥(intO C)] B₁) (x : B₀) (q : ↥(intO C)), q ≠ 0 → (∀ χ : B₀ →ₐ[↥(intO C)] ↥(intO C), q ∣ χ x) → IsIntegral ↥(intO C) (((q : C)⁻¹) • j x) := by
-  intro C _ _ _ B₀ B₁ _ _ _ _ _ _ _ j x q hq h
-  exact isIntegral_inv_smul_of_closed (O := ↥(intO C)) (C := C) Subtype.val_injective
-    (fun z hz => ⟨⟨z, mem_intO_of_isIntegral hz⟩, rfl⟩) j x q hq h
 
 end GlobalTheory.IntegralOfPointValues

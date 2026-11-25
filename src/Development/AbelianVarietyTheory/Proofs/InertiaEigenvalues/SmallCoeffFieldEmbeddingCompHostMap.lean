@@ -486,7 +486,6 @@ private theorem exists_rayPair_inf_of_rayPair (hu : ∀ u : (𝓞 K)ˣ, u = 1 �
     rw [mul_assoc, mul_comm (Ideal.span {δ}), ← mul_assoc, e₁, Ideal.span_singleton_mul_span_singleton,
       Ideal.span_singleton_mul_span_singleton, hmul]
 
-
 open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.RayCompositum.fieldRange_sup_eq_top : ∀ {K H H₁ H₂ : Type} [Field K] [NumberField K] [Field H] [NumberField H]
@@ -561,17 +560,10 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
-
 open NumberField IsDedekindDomain Formalism.BasicNotions GlobalTheory.SeriesTie GlobalTheory.FieldSize
 open Formalism.L2.Host (embLL0)
 
 namespace GlobalTheory.RayInFrac
-
-theorem exists_isPrimitiveRoot_of_isRay {K H : Type} [Field K] [NumberField K] [Field H] [NumberField H] [Algebra K H]
-    [IsAbelianGalois K H] {n : ℕ} (hn : n ≠ 0) (h : IsRay H (Ideal.span {(n : 𝓞 K)})) : ∃ ζ : H, IsPrimitiveRoot ζ n :=
-  _root_.GlobalTheory.RayRootOfUnity.exists_isPrimitiveRoot_of_isRay hn h
 
 abbrev phiK (D : D7) : ↥D.host.K →+* ℂ := D.host.φ₀.comp (algebraMap D.host.K D.host.E)
 

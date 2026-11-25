@@ -237,19 +237,6 @@ theorem normOne_detIdeal_transportedLattice (hs : s.Ok) {n : ℕ} {N : Submodule
 
 end Chi
 
-section Parts
-
-variable {D : D7} {Z : Dat} {s : Seam D Z.X} {χ : TaylorLogMetric.IdE D → ℂ}
-  {sel : HeightOneSpectrum (𝓞 Z.X.F) → HeightOneSpectrum (𝓞 Z.X.E)} {S : Set ℕ}
-  {mu : Tup Z.X.F Z.X.E Z.X.K S} {cst : LocCst Z.X (rowSG Z.Pr sel mu)}
-
-theorem T_mem (hZ : Z.Ok) {u : Z.Pr.Word} {P : HeightOneSpectrum (𝓞 Z.X.E)} (hP : P ∈ Z.Pr.vT u) :
-    ((Z.Pr.T u : ℕ) : 𝓞 Z.X.E) ∈ P.asIdeal := by
-  rw [← hZ.primes.piT_norm u]
-  exact Ideal.mul_mem_right _ _ (decoFin_mem_of_mem_divs hP)
-
-end Parts
-
 end GlobalTheory.CharValCompare
 end -- clump:auto
 end -- clump:auto
@@ -396,8 +383,6 @@ theorem n1_detStd (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) {n : ℕ
   have h := GlobalTheory.CharValCompare.normOne_detIdeal_transportedLattice (seamOf_ok B (I.cols l) Z.W Z.V Z.S Z.N Z.G) hN
   rwa [seamOf_lat] at h
 
-
-
 theorem jetsRat_chi (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (hJ : ColIn.JetsIn I)
     (χ : Submodule (𝓞 B.host.E) B.host.E → ℂ) (hχ : ∀ 𝔞, TaylorLogMetric.N1 (I.rec7 l Z) 𝔞 → χ 𝔞 = I.chi 𝔞) (a : I.ι) (u : B.Word)
     (i : ℕ) (hi : i < B.R.m) :
@@ -457,8 +442,6 @@ end GlobalTheory.Mem.Col2.TC.RcHyp
 namespace GlobalTheory.Mem.Col2.TC.RcHyp
 
 variable {B : Base} {X : PreX B.toPre}
-
-
 
 theorem chTh_ok_chi (I : TC B X) (h : I.Ok) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (hJ : ColIn.JetsIn I) (χ : Submodule (𝓞 B.host.E) B.host.E → ℂ) (hχ : ∀ 𝔞, TaylorLogMetric.N1 (I.rec7 l Z) 𝔞 → χ 𝔞 = I.chi 𝔞)

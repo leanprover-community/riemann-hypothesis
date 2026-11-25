@@ -471,37 +471,6 @@ theorem eq_zero_of_cH {ι : Type} (u : ι → (M' →ₗ[R] M)) (hu : ∀ i, Con
 
 end Coh
 
-section Main
-
-open Formalism.MainNotions.BlochKatoReduction.Gen
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-  (bkP : BKPh X) (i : X.Tw) (s : X.Sig i) (k k' : ℕ)
-
-theorem trep_one_apply (g : Gen.GE N) (m : Fin D.R.r → KmodO (X.Ok i k)) (a : Fin D.R.r) :
-    Trep i s k 1 g m a = ∑ j, phiK X i k (Tmat i s g a j) • m j := by
-  simp [Trep, twRep, matAct, Tmat, Finset.smul_sum, smul_smul]
-
-variable [Algebra (X.Ok i k) (X.Ok i k')] [IsScalarTower (X.O i) (X.Ok i k) (X.Ok i k')]
-
-theorem phiK_eq (a : X.O0 i) :
-    phiK X i k' a = algebraMap (X.Ok i k) (X.Ok i k') (phiK X i k a) :=
-  IsScalarTower.algebraMap_apply (X.O i) (X.Ok i k) (X.Ok i k') _
-
-variable (p : KmodO (X.Ok i k') →ₗ[X.Ok i k] KmodO (X.Ok i k))
-
-theorem equivariant (g : Gen.GE N) (m : Fin D.R.r → KmodO (X.Ok i k')) :
-    p.compLeft (Fin D.R.r) (Trep i s k' 1 g m) = Trep i s k 1 g (p.compLeft (Fin D.R.r) m) := by
-  funext a
-  show p (Trep i s k' 1 g m a) = _
-
-  rw [trep_one_apply, trep_one_apply, map_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [phiK_eq i k k', algebraMap_smul, map_smul]
-  rfl
-
-end Main
-
 end GlobalTheory.SelBaseChange
 end -- clump:auto
 end -- clump:auto
@@ -595,8 +564,6 @@ section Lift
 variable {l : ℕ} [Fact l.Prime] (P : LocPrime l) {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
   {Gw : Subgroup (Ω ≃ₐ[E] Ω)}
   {O : Type} [CommRing O] [IsDomain O] [Algebra ℤ_[l] O] [TopologicalSpace O] (B : LocBridge l E Ω Gw O)
-
-
 
 theorem exists_lift {k : ℕ} (M : ↥Gw →* Matrix (Fin k) (Fin k) O) (hM : ∀ a b, Continuous fun g => M g a b)
     (c : ↥(Z1 (WKG M))) (hc : Submodule.Quotient.mk c ∈ Br.bkG B P (WKG M) M) :
@@ -694,8 +661,6 @@ theorem rep_eq (v : PlE D.host) (hv : v ∈ placesOver D.host.E (D.ntw.l i)) :
   change _ = (Matrix.scalar (Fin D.R.r) ((Gen.chiS i s γ)⁻¹).val * (D.ntw.rhoS i s γ).val :
     Matrix (Fin D.R.r) (Fin D.R.r) (D.ntw.O0 i)) a b
   simp [latT, twistM, Gen.chiS]
-
-
 
 theorem cond_le (v : PlE D.host) (hv : v ∈ placesOver D.host.E (D.ntw.l i))
     (hψ : ∀ σ ∈ Dec (F := D.host.E) (D.nd.plOm.1 v), ψ σ = 1)
@@ -820,7 +785,6 @@ namespace Comp
 
 variable (S : Comp b A A')
 
-
 def Compat (N : Submodule O A) (N' : Submodule O' A') : Prop := ∀ x, x ∈ N' ↔ ∀ a, S.p a x ∈ N
 
 variable {S}
@@ -944,7 +908,6 @@ theorem exists_coordLL (hz : ∀ z : ℤ_[l], f (algebraMap ℤ_[l] O₀ z) = al
   change q (r • Br.toLLK B x) = r • q (Br.toLLK B x)
   rw [Algebra.smul_def, Algebra.smul_def, ← φ.commutes, ← hy, hφ, ← map_mul, hq, hq, hp, map_mul]
 
-
 theorem phi_coordQ {k : ℕ} (q : ↥B.LL.1 →ₗ[ℚ_[l]] ↥B₀.LL.1)
     (hq : ∀ x, q (Br.toLLK B x) = Br.toLLK B₀ (p x)) (x : KOG O k) (w : Fin k → Br.LLw B)
     (h : Br.phi B k x = Submodule.Quotient.mk w) :
@@ -1047,8 +1010,6 @@ theorem exists_coords {O₀ O : Type} [CommRing O₀] [IsDomain O₀] [IsDiscret
     exact ⟨d, hd.symm⟩
   · simp only [he]
     exact (SelmerLevel.fracComp b).sum_p x
-
-
 
 theorem bkG_le_extCond (l : ℕ) [Fact l.Prime] (P : LocPrime l) (E Ω : Type) [Field E] [Field Ω] [Algebra E Ω]
     (Gw : Subgroup (Ω ≃ₐ[E] Ω)) (O₀ O : Type) [CommRing O₀] [IsDomain O₀] [IsDiscreteValuationRing O₀]
@@ -1233,7 +1194,6 @@ variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E 
   {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
   (Bw : LocBridge l E Ω Gw O) [IsDomain O]
 
-
 theorem phi_qMat {k : ℕ} (U : Matrix (Fin k) (Fin k) O) (x : KOG O k) :
     Br.phi Bw k (qMat (FractionRing O) U x) =
       qMat (Br.LLw Bw) (U.map Bw.eO.toRingHom) (Br.phi Bw k x) := by
@@ -1247,7 +1207,6 @@ theorem phi_qMat {k : ℕ} (U : Matrix (Fin k) (Fin k) O) (x : KOG O k) :
   rw [RingHom.map_mulVec]
   congr 1
   exact Matrix.ext fun a b => Br.toLLK_alg Bw (U a b)
-
 
 theorem bk_map (P : LocPrime l) {k : ℕ} (rho rho' : Representation O ↥Gw (KOG O k))
     (M M' : ↥Gw →* Matrix (Fin k) (Fin k) O) (U : Matrix (Fin k) (Fin k) O)

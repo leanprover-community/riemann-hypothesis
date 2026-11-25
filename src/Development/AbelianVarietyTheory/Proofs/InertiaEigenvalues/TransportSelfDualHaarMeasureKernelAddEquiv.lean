@@ -19,22 +19,6 @@ theorem map_map_equiv_left {α β γ : Type} [MeasurableSpace α] [MeasurableSpa
       rw [Measure.map_of_not_aemeasurable_of_ne_zero hg heμ,
         Measure.map_of_not_aemeasurable_of_ne_zero hg' hμ]
 
-open scoped Classical in
-theorem map_map_equiv_right {α β γ : Type} [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
-    (μ : Measure α) (T : α → β) (e : β ≃ᵐ γ) :
-    (if AEMeasurable T μ then μ.map T else 0).map e =
-      (if AEMeasurable (e ∘ T) μ then μ.map (e ∘ T) else 0) := by
-  by_cases hT : AEMeasurable T μ
-  · have hT' := e.measurable.comp_aemeasurable hT
-    simpa only [ite_eq_left hT, ite_eq_left hT'] using
-      AEMeasurable.map_map_of_aemeasurable e.measurable.aemeasurable hT
-  · have hT' : ¬ AEMeasurable (e ∘ T) μ := by
-      intro h
-      apply hT
-      have := e.symm.measurable.comp_aemeasurable h
-      simpa [Function.comp_def] using this
-    simp only [ite_eq_right hT, ite_eq_right hT', Measure.map_zero]
-
 end GlobalTheory.TransportSD
 
 open GlobalTheory.TransportSD in

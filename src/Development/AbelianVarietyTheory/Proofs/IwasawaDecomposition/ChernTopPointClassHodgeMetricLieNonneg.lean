@@ -281,7 +281,6 @@ end GlobalTheory.PointFormSign.DomCurv
 
 namespace GlobalTheory.PointFormSign
 
-
 open DomCurv in
 theorem curv_domGram_isNegSq (m r : ℕ) (x : Fin m → Fin r → ℂ)
     (hx : (1 - Matrix.of x * (Matrix.of x)ᴴ).PosDef) : IsNegSq (curv (domGram m r) x) r := by
@@ -441,7 +440,6 @@ theorem eventually_differentiableAt_of_forms {V : Type} [NormedAddCommGroup V] [
   filter_upwards [hJb.continuousAt.eventually (Units.isOpen.mem_nhds hUb)] with b' hb'
   have := congrArg (fun T : (Fin g → ℂ) →L[ℂ] (Fin g → ℂ) => T (W b')) (Ring.inverse_mul_cancel _ hb')
   exact this.symm
-
 
 open GlobalTheory.TangentOrigin GlobalTheory.HolLieFrame in
 theorem exists_hol_snd_ev {V R : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [CommRing R] {X : Scheme.{0}}
@@ -704,7 +702,6 @@ open ReciprocityTheory.L2DbarEstimates (V)
 noncomputable section
 
 namespace GlobalTheory.LieBase
-
 
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem isCombAtG_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}}
@@ -1201,8 +1198,6 @@ noncomputable section
 namespace GlobalTheory.UnifSlice
 
 open Matrix Formalism.DegreeFormula GlobalTheory.TrueCx ReciprocityTheory.ChartRestriction.G.FD
-
-theorem locInj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r j : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (hj : j ≤ r) (Tau : Type) [Fintype Tau] (κ : Tau ≃ X.Ψ), X.p0 = r - j → ∀ z₀ ∈ Formalism.DegreeFormula.DomI Tau j (r - j), ∃ O : Set (Tau → Matrix (Fin j) (Fin (r - j)) ℂ), IsOpen O ∧ z₀ ∈ O ∧ ∀ z ∈ O ∩ Formalism.DegreeFormula.DomI Tau j (r - j), ∀ z' ∈ O ∩ Formalism.DegreeFormula.DomI Tau j (r - j), ∀ γ ∈ X.Γ, z' = Formalism.DegreeFormula.moebI (GlobalTheory.TrueCx.toUpq X hj κ γ) z → z = z' := _root_.GlobalTheory.LocInj.locInj
 
 theorem domPt_rel_of_pt_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
     {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} (U : Formalism.L2.PjFree.Unf Xo c σ r)

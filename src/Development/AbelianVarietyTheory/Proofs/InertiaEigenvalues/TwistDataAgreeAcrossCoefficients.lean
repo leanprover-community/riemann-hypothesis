@@ -77,8 +77,6 @@ structure SameForms {D D' : D7} {N : NData D.R D.host D.what₂} {N' : NData D'.
   thP : HEq Y.thP Y'.thP
   hkF : HEq Y.hkF Y'.hkF
 
-
-
 private abbrev G0gRaw (R : Ranks) (H : Host R) (PlG : Fin 2 → Type) : Type :=
   ∀ kv : (Σ k : Fin 2, PlG k), GL (Fin R.r) (ZMod (H.g kv.1))
 
@@ -542,9 +540,6 @@ structure SameExport (D D' : D7) : Prop where
   frm : SameForms D.nexp D'.nexp
   br : HEq D.ntwbr D'.ntwbr
   av : avPrimes D = avPrimes D'
-
-theorem SameExport.refl (D : D7) : SameExport D D :=
-  ⟨by constructor <;> rfl, by constructor <;> rfl, by constructor <;> rfl, HEq.rfl, rfl⟩
 
 theorem SameExport.trans {D D' D'' : D7} (h : SameExport D D') (h' : SameExport D' D'') : SameExport D D'' :=
   ⟨⟨h.gal.R.trans h'.gal.R, h.gal.host.trans h'.gal.host, h.gal.loc.trans h'.gal.loc, h.gal.Om.trans h'.gal.Om, h.gal.instOm.trans h'.gal.instOm, h.gal.algOm.trans h'.gal.algOm, h.gal.plOm.trans h'.gal.plOm, h.gal.PlG.trans h'.gal.PlG⟩,

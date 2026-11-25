@@ -74,178 +74,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 noncomputable section
 
-namespace GlobalTheory.PairEpsTransport
-
-section Maps
-variable {R S : Type} [CommRing R] [CommRing S] (f : R →+* S)
-
-theorem map_longElt (n : ℕ) : GeneralLinearGroup.map f (longElt n R) = longElt n S := by
-  ext i j; simp [longElt, GeneralLinearGroup.map]
-
-theorem map_invT (n : ℕ) (g : GL (Fin n) R) :
-    GeneralLinearGroup.map f (GlobalTheory.CuspRep.invT n R g) = GlobalTheory.CuspRep.invT n S (GeneralLinearGroup.map f g) := by
-  ext i j
-  have h := congrArg (fun h : GL (Fin n) S => (h : Matrix (Fin n) (Fin n) S) j i)
-    (map_inv (GeneralLinearGroup.map f) g)
-  exact h
-
-theorem map_tilde {n : ℕ} (g : GL (Fin n) R) :
-    GeneralLinearGroup.map f (tilde g) = tilde (GeneralLinearGroup.map f g) := by
-  rw [tilde, tilde, map_mul, map_longElt, map_invT]
-
-theorem map_corner {m : ℕ} (g : GL (Fin m) R) :
-    GeneralLinearGroup.map f (corner g) = corner (GeneralLinearGroup.map f g) := by
-  ext i j
-  show f ((emb₂ R (stdSum (rfl : m + 1 = m + 1)) (g, 1) : Matrix _ _ R) i j) =
-    (emb₂ S (stdSum (rfl : m + 1 = m + 1)) (GeneralLinearGroup.map f g, 1) : Matrix _ _ S) i j
-  rw [val_emb₂, val_emb₂]
-  obtain ⟨i, rfl⟩ := (stdSum (rfl : m + 1 = m + 1)).surjective i
-  obtain ⟨j, rfl⟩ := (stdSum (rfl : m + 1 = m + 1)).surjective j
-  rcases i with i | i <;> rcases j with j | j <;>
-    simp [Matrix.one_apply, GeneralLinearGroup.map]
-
-theorem superDiag_map {n : ℕ} (g : GL (Fin n) R) :
-    GlobalTheory.Whittaker.superDiag (GeneralLinearGroup.map f g) = f (GlobalTheory.Whittaker.superDiag g) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [GlobalTheory.Whittaker.superDiag, map_sum, GeneralLinearGroup.map]
-
-theorem map_mem_unipB {n : ℕ} {g : GL (Fin n) R} (hg : g ∈ unipB R (Fin n)) :
-    GeneralLinearGroup.map f g ∈ unipB S (Fin n) := by
-  rw [mem_unipB] at hg ⊢
-  refine ⟨fun i j h => ?_, fun i => ?_⟩
-  · simp [GeneralLinearGroup.map, hg.1 i j h]
-  · simp [GeneralLinearGroup.map, hg.2 i]
-
-end Maps
-
-section Core
-
-variable {k k' : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k]
-  [Field k'] [TopologicalSpace k'] [IsTopologicalRing k']
-
-theorem map_map_symm {n : ℕ} (i : k ≃+* k') (g : GL (Fin n) k') :
-    GeneralLinearGroup.map i.toRingHom (GeneralLinearGroup.map i.symm.toRingHom g) = g := by
-  ext a b; simp [GeneralLinearGroup.map]
-
-theorem map_symm_map {n : ℕ} (i : k ≃+* k') (g : GL (Fin n) k) :
-    GeneralLinearGroup.map i.symm.toRingHom (GeneralLinearGroup.map i.toRingHom g) = g := by
-  ext a b; simp [GeneralLinearGroup.map]
-
-theorem continuous_mapGL {n : ℕ} (i : k ≃+* k') (hi : Continuous i) :
-    Continuous (GeneralLinearGroup.map (n := Fin n) i.toRingHom) := by
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · exact Units.continuous_val.matrix_map hi
-  · exact Units.continuous_coe_inv.matrix_map hi
-
-end Core
-
-section Transport
-
-variable {k k' : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k]
-  [Field k'] [TopologicalSpace k'] [IsTopologicalRing k']
-
-theorem isTestFun_comp {m : ℕ} (i : k ≃+* k') (hi : Continuous i) (hi' : Continuous i.symm)
-    {f : GL (Fin m) k → ℂ} (hf : IsTestFun f) :
-    IsTestFun (fun g => f (GeneralLinearGroup.map i.symm.toRingHom g)) := by
-  obtain ⟨h1, h2, C, hC, h3⟩ := hf
-  refine ⟨fun u hu g => ?_, h2.comp_continuous (continuous_mapGL i.symm hi'), ?_⟩
-  · show f (GeneralLinearGroup.map i.symm.toRingHom (u * g)) = f (GeneralLinearGroup.map i.symm.toRingHom g)
-    rw [map_mul]
-    exact h1 _ (map_mem_unipB _ hu) _
-  · refine ⟨GeneralLinearGroup.map i.toRingHom '' C, hC.image (continuous_mapGL i hi), fun g hg => ?_⟩
-    obtain ⟨u, hu, c, hc, he⟩ := h3 _ hg
-    refine ⟨GeneralLinearGroup.map i.toRingHom u, map_mem_unipB _ hu, GeneralLinearGroup.map i.toRingHom c,
-      ⟨c, hc, rfl⟩, ?_⟩
-    rw [← map_mul, ← he, map_map_symm]
-
-variable {m : ℕ} {V V' W W' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
-  [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
-
-theorem hasPairEps_of_equiv (i : k ≃+* k') (hi : Continuous i) (hi' : Continuous i.symm)
-    {ψ : AddChar k Circle} {ψ' : AddChar k' Circle} (hψ : ∀ x, ψ' (i x) = ψ x)
-    {π : Representation ℂ (GL (Fin (m + 1)) k) V} {π' : Representation ℂ (GL (Fin (m + 1)) k') V'}
-    {τ : Representation ℂ (GL (Fin m) k) W} {τ' : Representation ℂ (GL (Fin m) k') W'}
-    (A : V ≃ₗ[ℂ] V') (hA : ∀ g v, A (π g v) = π' (GeneralLinearGroup.map i.toRingHom g) (A v))
-    (B : W ≃ₗ[ℂ] W') (hB : ∀ g v, B (τ g v) = τ' (GeneralLinearGroup.map i.toRingHom g) (B v))
-    {c : ℂ} (H : HasPairEps ψ π τ c) : HasPairEps ψ' π' τ' c := by
-  intro ω' hω' l' L' hl' hL' I' hI' v' w'
-  have hψinv : ∀ x, (ψ'⁻¹) (i x) = (ψ⁻¹) x := by
-    intro x; simp only [AddChar.inv_apply]; rw [← map_neg, hψ]
-  have hω : HasCentralChar τ (ω'.comp (Units.map i.toRingHom.toMonoidHom)) := by
-    intro z w
-    apply B.injective
-    rw [hB, GeneralLinearGroup.map_scalar, hω', map_smul]
-    rfl
-  have hl : GlobalTheory.Whittaker.IsFunctional ψ π (l'.comp A.toLinearMap) := by
-    intro u hu v
-    simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
-    rw [hA, hl' _ (map_mem_unipB _ hu), superDiag_map]
-    simp [hψ]
-  have hL : GlobalTheory.Whittaker.IsFunctional ψ⁻¹ τ (L'.comp B.toLinearMap) := by
-    intro u hu v
-    simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
-    rw [hB, hL' _ (map_mem_unipB _ hu), superDiag_map]
-    have := hψinv (GlobalTheory.Whittaker.superDiag u)
-    simp only [RingEquiv.toRingHom_eq_coe, RingHom.coe_coe]
-    rw [this]
-  have hI : IsInvIntegral (I'.comp (LinearMap.funLeft ℂ ℂ (GeneralLinearGroup.map (n := Fin m) i.symm.toRingHom))) := by
-    intro f hf x
-    change I' (fun g => f (GeneralLinearGroup.map i.symm.toRingHom g * x)) =
-      I' (fun g => f (GeneralLinearGroup.map i.symm.toRingHom g))
-    have := hI' _ (isTestFun_comp i hi hi' hf) (GeneralLinearGroup.map i.toRingHom x)
-    refine Eq.trans ?_ this
-    congr 1
-    funext g
-    rw [map_mul, map_symm_map]
-  have key := H _ hω _ _ hl hL _ hI (A.symm v') (B.symm w')
-  have e1 : LinearMap.funLeft ℂ ℂ (GeneralLinearGroup.map (n := Fin m) i.symm.toRingHom)
-      (fun g => (l'.comp A.toLinearMap) (π (tilde (corner g)) (A.symm v')) *
-        (L'.comp B.toLinearMap) (τ (tilde g) (B.symm w'))) =
-      fun g => l' (π' (tilde (corner g)) v') * L' (τ' (tilde g) w') := by
-    funext g
-    simp only [LinearMap.funLeft_apply, LinearMap.comp_apply, LinearEquiv.coe_coe, hA, hB,
-      map_tilde, map_corner, map_map_symm, LinearEquiv.apply_symm_apply]
-  have e2 : LinearMap.funLeft ℂ ℂ (GeneralLinearGroup.map (n := Fin m) i.symm.toRingHom)
-      (fun g => (l'.comp A.toLinearMap) (π (corner g) (A.symm v')) *
-        (L'.comp B.toLinearMap) (τ g (B.symm w'))) =
-      fun g => l' (π' (corner g) v') * L' (τ' g w') := by
-    funext g
-    simp only [LinearMap.funLeft_apply, LinearMap.comp_apply, LinearEquiv.coe_coe, hA, hB,
-      map_corner, map_map_symm, LinearEquiv.apply_symm_apply]
-  have e3 : (ω'.comp (Units.map i.toRingHom.toMonoidHom)) (-1) = ω' (-1) := by
-    simp
-  rw [LinearMap.comp_apply, LinearMap.comp_apply, e1, e2, e3] at key
-  exact key
-end Transport
-
-section Main
-
-theorem equiv_apply_rep {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (φ : ρ.Equiv σ) (g : G) (v : V) :
-    φ.toLinearEquiv (ρ g v) = σ g (φ.toLinearEquiv v) :=
-  LinearMap.congr_fun (φ.toIntertwiningMap.isIntertwining' g) v
-
-variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
-
-theorem exists_equiv_of_repRel (i : k ≃+* k') {n : ℕ} {π : IrrRep (GL (Fin n) k)} {π' : IrrRep (GL (Fin n) k')}
-    (h : RepRel i (cls π) (cls π')) :
-    ∃ E : π.V ≃ₗ[ℂ] π'.V, ∀ g v, E (π.ρ g v) = π'.ρ (GeneralLinearGroup.map i.toRingHom g) (E v) := by
-  obtain ⟨n₀, π₀, π₀', e, h1, h2, he⟩ := h
-  obtain ⟨rfl, h1⟩ := Sigma.mk.inj_iff.1 h1
-  obtain ⟨-, h2⟩ := Sigma.mk.inj_iff.1 h2
-  obtain ⟨φ⟩ := IrrRep.cl_eq_iff.1 (eq_of_heq h1)
-  obtain ⟨φ'⟩ := IrrRep.cl_eq_iff.1 (eq_of_heq h2)
-  refine ⟨φ.toLinearEquiv ≪≫ₗ e ≪≫ₗ φ'.toLinearEquiv.symm, fun g v => ?_⟩
-  apply φ'.toLinearEquiv.injective
-  simp only [LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
-  rw [equiv_apply_rep φ, he, equiv_apply_rep φ', LinearEquiv.apply_symm_apply]
-
-end Main
-
-end GlobalTheory.PairEpsTransport
-
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -269,18 +97,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Published
 
-namespace GlobalTheory.LocLanglands.DegreeOne
-
-theorem classOfDegreeOne_eq_ofChar : BernsteinZelevinskyFiniteness → ∀ (k : Type) [Field k] [ValuativeRel k]
-    [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k] (x : IrrGL (k := k)), x.1 = 1 →
-    ∃ (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ), x = IrrGL.ofChar χ hχ := by
-  intro _ k _ _ _ _ _ x hx
-  obtain ⟨n, c⟩ := x
-  obtain rfl : n = 1 := hx
-  obtain ⟨θ, hθ, ⟨e⟩⟩ := RankLeOne.exists_equiv_detRep k (Fin 1) _ c.rep.ρ c.rep.smooth c.rep.irr
-  exact ⟨θ, hθ, congrArg (Sigma.mk 1) (c.cl_rep.symm.trans (IrrRep.cl_eq_iff.2 ⟨e⟩))⟩
-
-end GlobalTheory.LocLanglands.DegreeOne
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IrreducibleGL1IsCharacter =====
@@ -292,8 +108,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Published
 
-theorem _root_.GlobalTheory.T.irreducible_GL1_is_character : BernsteinZelevinskyFiniteness → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k] (x : IrrGL (k := k)), x.1 = 1 → ∃ (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ), x = IrrGL.ofChar χ hχ := by
-  first | exact @GlobalTheory.LocLanglands.DegreeOne.classOfDegreeOne_eq_ofChar
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IrreducibleGL1IsCharacterStatement =====
@@ -306,88 +120,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Published
 
 noncomputable section
-
-namespace GlobalTheory.LocLanglands.Unique
-
-variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-  {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-
-theorem segSum_congr (rc rc' : IrrGL (k := w.adicCompletion E) → WD h) (l : List (Segment (w.adicCompletion E)))
-    (H : ∀ Δ ∈ l, rc Δ.first = rc' Δ.first) : segSum rc l = segSum rc' l := by
-  unfold segSum
-  congr 1
-  exact List.map_congr_left fun Δ hΔ => by rw [H Δ hΔ]
-
-theorem first_fst_le_of_isL {k V : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    [AddCommGroup V] [Module ℂ V] {N : ℕ} {π : Representation ℂ (GL (Fin N) k) V} {𝔪 : Multiset (Segment k)}
-    (hL : IsL 𝔪 π) {Δ : Segment k} (hΔ : Δ ∈ 𝔪) : Δ.first.1 ≤ N := by
-  obtain ⟨_, xs, hd, ⟨Δs, ⟨hmap, -⟩, hLs⟩, -⟩ := hL
-  rw [← hmap] at hΔ
-  obtain ⟨i, -, rfl⟩ := Multiset.mem_map.1 hΔ
-  have h1 := (hLs i).deg_eq
-  have h2 : (xs i).1 ≤ ∑ a, (xs a).1 := Finset.single_le_sum (f := fun a => (xs a).1) (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
-  have h3 : (Δs i).d ≤ (Δs i).deg := Nat.le_mul_of_pos_left _ (Δs i).len_pos
-  show (Δs i).d ≤ N
-  omega
-
-theorem eq_of_isCusp (hLC : LocalConverseGL) (hBZ : BernsteinZelevinskyFiniteness)
-    {a : Weil h →* (w.adicCompletion E)ˣ} {ha : IsLocalArtin h a}
-    {e e' : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ} {rc rc' : IrrGL (k := w.adicCompletion E) → WD h}
-    {ψ : AddChar (w.adicCompletion E) Circle} (hψc : Continuous ψ) (hψ : ψ ≠ 1) (he : e ψ = e' ψ)
-    (H : LawsMin a ha e rc) (H' : LawsMin a ha e' rc') (x : IrrGL (k := w.adicCompletion E)) (hx : x.IsCusp)
-    (ih : ∀ y : IrrGL (k := w.adicCompletion E), y.1 < x.1 → rc y = rc' y) : rc x = rc' x := by
-  haveI : CharZero (w.adicCompletion E) :=
-    charZero_of_injective_algebraMap (algebraMap E (w.adicCompletion E)).injective
-  obtain ⟨n, c⟩ := x
-  obtain ⟨hn, hc⟩ := hx
-  rcases n with _ | m
-  · exact absurd hn (lt_irrefl 0)
-  rcases m with _ | m
-  · obtain ⟨χ, hχ, hx⟩ := GlobalTheory.T.irreducible_GL1_is_character hBZ _ ⟨1, c⟩ rfl
-    rw [hx, H.one, H'.one]
-  · obtain ⟨x', hx'⟩ := H'.bij.2 (rc ⟨m + 2, c⟩)
-    have hd : x'.1 = m + 2 := by
-      have := H'.dim x'
-      rw [hx', H.dim] at this
-      exact this.symm
-    have hcx' : x'.IsCusp := (H'.cusp x').2 (hx' ▸ (H.cusp _).1 ⟨hn, hc⟩)
-    obtain ⟨n', c'⟩ := x'
-    obtain rfl : n' = m + 2 := hd
-    have hcls : ∀ d : IrrCl (GL (Fin (m + 2)) (w.adicCompletion E)), cls d.rep = ⟨m + 2, d⟩ := fun d => by
-      simp [cls, IrrCl.cl_rep]
-    have key : c = c' := by
-      rw [← c.cl_rep, ← c'.cl_rep]
-      refine IrrRep.cl_eq_iff.2 ?_
-      refine hLC _ ψ hψc hψ (m + 1) (Nat.succ_pos m) c.rep c'.rep hc hcx'.2 fun τ => ?_
-      have h2 : rc (cls τ) = rc' (cls τ) := ih _ (by show m + 1 < m + 2; omega)
-      refine ⟨_, H.eps ψ hψc hψ (m + 1) c.rep τ hc, ?_⟩
-      have h1 := H'.eps ψ hψc hψ (m + 1) c'.rep τ hcx'.2
-      rw [hcls] at h1 ⊢
-      rw [he, ← hx', h2]
-      exact h1
-    subst key
-    exact hx'.symm
-
-theorem eq_of_lawsMin : LocalConverseGL → LanglandsExhaustionGL → BernsteinZelevinskyFiniteness → ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (a : Weil h →* (w.adicCompletion E)ˣ) (ha : IsLocalArtin h a) (e : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ) (rc : IrrGL (k := w.adicCompletion E) → WD h) (rc' : IrrGL (k := w.adicCompletion E) → WD h) (ψ : AddChar (w.adicCompletion E) Circle) (e' : AddChar (w.adicCompletion E) Circle → WD h → ℂˣ), Continuous ψ → ψ ≠ 1 → e ψ = e' ψ → LawsMin a ha e rc → LawsMin a ha e' rc' → rc = rc' := by
-  intro hLC hEx hBZ E Ω _ _ _ _ _ A w h a ha e rc rc' ψ e' hψc hψ he H H'
-  haveI : CharZero (w.adicCompletion E) :=
-    charZero_of_injective_algebraMap (algebraMap E (w.adicCompletion E)).injective
-  have main : ∀ n, ∀ x : IrrGL (k := w.adicCompletion E), x.1 = n → rc x = rc' x := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | _ n ih =>
-      intro x hxn
-      obtain ⟨𝔪, h𝔪⟩ := hEx _ x
-      have hL : IsL ((𝔪.toList : List _) : Multiset _) x.rep := by rwa [Multiset.coe_toList]
-      rw [H.langlands _ x hL, H'.langlands _ x hL]
-      refine segSum_congr rc rc' _ fun Δ hΔ => ?_
-      have hle : Δ.first.1 ≤ n := hxn ▸ first_fst_le_of_isL h𝔪 (Multiset.mem_toList.1 hΔ)
-      exact eq_of_isCusp hLC hBZ hψc hψ he H H' Δ.first Δ.isCusp_first
-        fun y hy => ih y.1 (by omega) y rfl
-  funext x
-  exact main _ x rfl
-
-end GlobalTheory.LocLanglands.Unique
 
 end
 end -- clump:auto
@@ -431,10 +163,6 @@ theorem repRel_symm {i : k ≃+* k'} {x : IrrGL (k := k)} {x' : IrrGL (k := k')}
   rw [LinearEquiv.symm_apply_eq, e.symm_apply_apply, he, hg]
 
 theorem cls_rep (x : IrrGL (k := k)) : cls x.2.rep = x := congrArg (Sigma.mk x.1) x.2.cl_rep
-
-theorem exists_cls {x : IrrGL (k := k)} {n : ℕ} (hn : x.1 = n) : ∃ π : IrrRep (GL (Fin n) k), cls π = x := by
-  subst hn
-  exact ⟨x.2.rep, cls_rep x⟩
 
 theorem isSmoothChar_comp (i : k' ≃+* k) (hi : Continuous i) {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) :
     IsSmoothChar (χ.comp (Units.map i.toRingHom.toMonoidHom)) := by

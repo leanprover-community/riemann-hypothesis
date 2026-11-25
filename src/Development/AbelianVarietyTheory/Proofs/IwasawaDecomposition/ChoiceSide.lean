@@ -98,8 +98,6 @@ def Mv.cg {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} (x : C
     (tw := (x.tw))
     (inf := (x.inf))
     (csd := (x.csd))
-theorem Mv.au {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} (x : AUTrue hL D A.wdT A.au) : AUTrue hL m.D (m.sideA A).wdT (m.sideA A).au := (x)
-theorem Mv.row {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} {rep} (x : RowTrue hL D rep (fun σ w ↦ (A.wdT.e w) (A.row.locR σ w)) A.row.satR) : RowTrue hL m.D rep (fun σ w ↦ ((m.sideA A).wdT.e w) ((m.sideA A).row.locR σ w)) (m.sideA A).row.satR := (x)
 
 section
 variable {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} {M : Formalism.L2.MtFam D} {C : NChoice D} {tp : TupTied D cf C}
