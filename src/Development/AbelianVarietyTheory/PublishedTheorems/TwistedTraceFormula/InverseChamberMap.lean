@@ -140,9 +140,6 @@ def weylPar (π : Equiv.Perm (Fin k)) (ε : Fin k → SignTypeˣ) : Finset (SV k
 
 def Regular (c : ℝ) (T : A0 k) : Prop := (∀ i j, i < j → c ≤ T i - T j) ∧ ∀ i, c ≤ T i
 
-theorem mem_parF {𝔞 : Submodule ℝ (A0 k)} {R Q : Finset (SV k)} : Q ∈ parF 𝔞 R ↔ IsPar Q ∧ aP Q ≤ 𝔞 ∧ R ⊆ Q := by
-  simp [parF]
-
 theorem isPar_stdPar (J : Finset (Fin k)) : IsPar (stdPar J) := by
   refine ⟨fun h => ?_, fun u hu u' hu' => ?_⟩
   · obtain ⟨j, -, e⟩ := mem_image.1 h

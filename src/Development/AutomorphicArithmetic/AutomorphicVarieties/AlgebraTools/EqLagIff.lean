@@ -77,7 +77,4 @@ def pat {ι : Type*} (R : Type*) [CommRing R] (p : ι → ι → Prop) : Submodu
   zero_mem' := fun _ _ _ => rfl
   smul_mem' := fun c X hX i j h => by simp [hX i j h]
 
-theorem mem_pat {ι R : Type*} [CommRing R] {p : ι → ι → Prop} {X : Matrix ι ι R} :
-    X ∈ pat R p ↔ ∀ i j, ¬ p i j → X i j = 0 := Iff.rfl
-
 end UpperTheory.V.AlgebraTools

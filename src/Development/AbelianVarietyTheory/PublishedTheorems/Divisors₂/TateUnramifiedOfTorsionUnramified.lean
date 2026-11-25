@@ -191,14 +191,4 @@ variable {R K Ω : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [
 
 end Consequences
 
-namespace AbVarRed
-
-open GlobalTheory.WeierstrassCurve
-
-theorem factPrimeFive : Fact (Nat.Prime 5) := ⟨by norm_num⟩
-
-attribute [local instance] factPrimeFive
-
-end AbVarRed
-
 end GlobalTheory.Published

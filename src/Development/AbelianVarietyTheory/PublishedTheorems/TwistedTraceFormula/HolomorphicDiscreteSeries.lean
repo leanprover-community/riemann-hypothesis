@@ -95,17 +95,6 @@ open Formalism.L2.NTheta
 
 variable {n : ℕ}
 
-theorem single_mem_pPlus {ε : Fin n → Bool} {a b : Fin n} (ha : ε a = true) (hb : ε b = false) (z : ℂ) :
-    Matrix.single a b z ∈ pPlus ε := by
-  intro c d h
-  rw [Matrix.single_apply, if_neg]
-  rintro ⟨rfl, rfl⟩
-  exact h ⟨ha, hb⟩
-
-theorem IsHolChamber.lt {ε : Fin n → Bool} {lam : Fin n → ℝ} (h : IsHolChamber ε lam) (hl : StrictAnti lam)
-    {a b : Fin n} (ha : ε a = true) (hb : ε b = false) : a < b :=
-  hl.lt_iff_gt.1 (h a b ha hb)
-
 variable {p q : ℕ} {κ : Fin p ⊕ Fin q → ℤ}
 
 theorem strictAnti_holEnt (h : HolOK p q κ) :

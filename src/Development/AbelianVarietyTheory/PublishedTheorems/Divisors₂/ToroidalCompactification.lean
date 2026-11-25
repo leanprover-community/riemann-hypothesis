@@ -113,16 +113,6 @@ attribute [instance] Chart.ring Chart.alg Chart.grp
 
 variable {t : SAB H X} {V : X.Opens}
 
-theorem exists_chart (t : SAB H X) (U : X.affineOpens) (h : IsAffineOpen (U.1 ⊓ V)) :
-    ∃ c : Chart t V, c.U = U := by
-  let _ : Algebra Γ(X, U.1) Γ(X, U.1 ⊓ V) := (resG X inf_le_left).toAlgebra
-  have e : spMap (algebraMap Γ(X, U.1) Γ(X, U.1 ⊓ V)) ≫ chart U = h.fromSpec :=
-    U.2.map_fromSpec h (homOfLE inf_le_left).op
-  refine ⟨{ U := U, S := Γ(X, U.1 ⊓ V), isOpenImmersion := ?_, range := ?_
-            A := (Over.pullback _).obj t.G, φ := _, cart := isGrpPullback_pullback t.G _ }, rfl⟩
-  · rw [e]; infer_instance
-  · rw [e]; exact h.range_fromSpec
-
 namespace Chart
 
 variable (c : Chart t V)
@@ -131,7 +121,6 @@ def HasImage (h : HdR c.A) (v : Sp (DualNumber Γ(X, c.U.1)) ⟶ t.G.left) : Pro
   ∃ w : epsR c.S ⟶ c.A,
     w.left ≫ c.φ = spMap (_root_.GlobalTheory.CompanionTheory.Ar.dualMap (algebraMap Γ(X, c.U.1) c.S)) ≫ v ∧
     IsLieImage h w
-
 
 def coLie (ψ : LinearMap.BilinForm c.S (HdR c.A)) : Submodule Γ(X, c.U.1) (HdR c.A) where
   carrier := {f | f ∈ Fil c.A ∧ ∀ h v, IsTanAtG t (chart c.U) v → c.HasImage h v →

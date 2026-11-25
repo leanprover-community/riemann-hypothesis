@@ -71,15 +71,6 @@ def IsHecke (ι : Γ →* H) (K : Subgroup H) (ξ : Representation ℂ Γ V) (F 
 def heckeTrace (ι : Γ →* H) (K : Subgroup H) (ξ : Representation ℂ Γ V) (F : H → ℂ) : ℂ :=
   if h : ∃ T, IsHecke ι K ξ F T then LinearMap.trace ℂ (forms ι K ξ) h.choose else 0
 
-theorem heckeTrace_zero (ι : Γ →* H) (K : Subgroup H) (ξ : Representation ℂ Γ V) :
-    heckeTrace ι K ξ (fun _ => 0) = 0 := by
-  have h0 : IsHecke ι K ξ (fun _ => 0) 0 := fun φ g => by simp
-  have h : ∃ T, IsHecke ι K ξ (fun _ => 0) T := ⟨0, h0⟩
-  have hT : h.choose = 0 := by
-    apply LinearMap.ext; intro φ; apply Subtype.ext; funext g
-    rw [h.choose_spec φ g]; simp
-  rw [heckeTrace, dite_eq_left h, hT, map_zero]
-
 end HeckeTraceForms
 
 variable {p : ℕ} [Fact p.Prime]

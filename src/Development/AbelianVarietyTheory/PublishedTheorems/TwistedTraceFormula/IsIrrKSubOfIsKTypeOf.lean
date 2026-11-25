@@ -73,22 +73,11 @@ def kIsotypic (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L
     Submodule ℂ H :=
   ⨆ T : {T : S →ₗ[ℂ] H // IsKMapFrom ε σ S T}, LinearMap.range T.1
 
-theorem range_le_kIsotypic {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {S : Submodule ℂ H}
-    {T : S →ₗ[ℂ] H} (hT : IsKMapFrom ε σ S T) : LinearMap.range T ≤ kIsotypic ε σ S :=
-  le_iSup (fun T : {T : S →ₗ[ℂ] H // IsKMapFrom ε σ S T} => LinearMap.range T.1) ⟨T, hT⟩
-
 def IsAdmissible (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
   ∀ S : Submodule ℂ H, IsIrrKSub ε σ S → FiniteDimensional ℂ (kIsotypic ε σ S)
 
 def IsLieStable (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (S : Submodule ℂ H) : Prop :=
   ∀ X, inG ε X → ∀ v ∈ S, dRep σ X v ∈ S
-
-theorem isIrrKSub_of_isKTypeOf {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {Λ : Fin n → ℝ}
-    {S : Submodule ℂ H} (h : IsKTypeOf ε σ Λ S) : IsIrrKSub ε σ S := by
-  refine ⟨h.1, ?_, h.2.1, h.2.2.1⟩
-  rintro rfl
-  obtain ⟨v, hv, hv0, -⟩ := h.2.2.2.1
-  exact hv0 ((Submodule.mem_bot ℂ).1 hv)
 
 end GlobalTheory.KFinVec
 
