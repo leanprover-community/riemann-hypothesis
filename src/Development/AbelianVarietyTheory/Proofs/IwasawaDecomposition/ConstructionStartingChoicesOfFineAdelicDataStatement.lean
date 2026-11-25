@@ -1264,8 +1264,8 @@ theorem exists_pre2_of_fine_of_resChar_mem : GlobalTheory.Published.WeilRepresen
       DV.KapDef (w.D Z) → Fine z → (∀ v ∈ z.W1 (F0K K.s (w.D Z)), B.places.resChar v ∈ T.pl) →
       (∀ v, v ∉ z.W1 (F0K K.s (w.D Z)) → T.psi v = 1) →
       ∃ P : Pre2 K w, P.Z₀ = Z ∧ P.Wt = z.W1 (F0K K.s (w.D Z)) ∧ Ext z P.z := by
-  intro hWe hDS hHC hCR hHW
-  have hInp := GlobalTheory.LinksInputs.inputs_of_hypotheses hWe hDS hHC hCR
+  intro hWe _ hHC hCR hHW
+  have hInp := GlobalTheory.LinksInputs.inputs_of_hypotheses hWe hHC hCR
   have hId : StepW Start Start := StepW.of_all fun _ _ _ _ _ _ _ h => h
   have hAll := hId.and (hHW.and (stepW_keep_of_ev GlobalTheory.Mem.HostFrames.hostHyp_frames_ev Start))
   refine hAll.trans (StepW.of_all fun K B f T w hO _ H => ?_)

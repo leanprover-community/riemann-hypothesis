@@ -274,8 +274,8 @@ theorem hDivG_linked_of_mIstar2 (h1 : GlobalTheory.Published.DiscreteSeriesCover
     (hM : _root_.GlobalTheory.Fc.RL.LinkedAt p fun Q L => Row Q L (AtAll fun _ _ _ (b : _root_.GlobalTheory.Fc.BundleCondition _ _ _) =>
       (b.B.Q.Rl.toCx3 b.B.Q.F).MIstar2 (b.B.Q.F.eV (b.B.Q.Rl.toCx3 b.B.Q.F).zs) b.B.Q.sEE)) : _root_.GlobalTheory.Fc.RL.LinkedAt p _root_.GlobalTheory.Fc.R1.SlotDivisorCondition :=
   _root_.GlobalTheory.Fc.DivLinked.linked_atAll_of_imp (R := _root_.GlobalTheory.Fc.R1.DivisorBundleCondition) (fun K q _ _ w h => _root_.GlobalTheory.Fc.DivLinked.hDivG_of_mIstar2 ⟨h1, h2, h3, h4, h5⟩ w (hB K q) h) hM
-theorem at_hDivG_main_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), (∀ (K : Ctx) (q : WPt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S).s K), GlobalTheory.Mem.R3.Rw.BkLaw (q.w.D q.Z)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) (fun Q L => Row Q L (AtAll fun _ _ _ (b : _root_.GlobalTheory.Fc.BundleCondition _ _ _) => (b.B.Q.Rl.toCx3 b.B.Q.F).MIstar2 (b.B.Q.F.eV (b.B.Q.Rl.toCx3 b.B.Q.F).zs) b.B.Q.sEE)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotDivisorCondition :=
-  fun _ _ h3 h4 h5 h6 h7 _ _ _ hB hM => _root_.GlobalTheory.Fc.DivLinked.hDivG_linked_of_mIstar2 h5 h6 h7 h3 h4 _ hB hM
+theorem at_hDivG_main_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), (∀ (K : Ctx) (q : WPt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S).s K), GlobalTheory.Mem.R3.Rw.BkLaw (q.w.D q.Z)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) (fun Q L => Row Q L (AtAll fun _ _ _ (b : _root_.GlobalTheory.Fc.BundleCondition _ _ _) => (b.B.Q.Rl.toCx3 b.B.Q.F).MIstar2 (b.B.Q.F.eV (b.B.Q.Rl.toCx3 b.B.Q.F).zs) b.B.Q.sEE)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotDivisorCondition :=
+  fun _ h3 h4 h5 h6 h7 _ _ _ hB hM => _root_.GlobalTheory.Fc.DivLinked.hDivG_linked_of_mIstar2 h5 h6 h7 h3 h4 _ hB hM
 end GlobalTheory.Fc.DivLinked
 end
 end
@@ -784,8 +784,8 @@ section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.RT GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
 namespace GlobalTheory.Fc.RL
-theorem at_tie_alt : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), (∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (_root_.GlobalTheory.HeightCounting.Up.extensionWithLaw hL K B f T w Z Wt p0 t nch n xd c)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.RL.Row_tie_alt := by
-  intro _ _ _ _ _ _ _ hL N S _
+theorem at_tie_alt : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), (∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (_root_.GlobalTheory.HeightCounting.Up.extensionWithLaw hL K B f T w Z Wt p0 t nch n xd c)) → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.RL.Row_tie_alt := by
+  intro _ _ _ _ _ _ hL N S _
   exact _root_.GlobalTheory.Fc.RL.LinkedAt.of_row (RowE.row (_root_.GlobalTheory.Fc.TieOfLink.hasTie_of_linked _ _))
 end GlobalTheory.Fc.RL
 end
@@ -973,11 +973,11 @@ theorem linked_atAll_of_imp {A R : BdP _root_.GlobalTheory.Fc.BundleCondition}
   obtain ⟨κ, -, -, t⟩ := s Fm hc
   exact _root_.GlobalTheory.Fc.JoinLinked.of_built_of_bWit (R := fun D O c b => A D O c b → R D O c b) h (t x hx i).1 (H Fm hc x hx i)
 end Constructions₂
-theorem at_selJ_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.DiscreteSeriesCover →
+theorem at_selJ_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesCover →
     GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay →
     ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotPrimitivityCondition →
     _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotDecompositionPointCondition → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.RL.Row_tie_alt → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotSelectionJumpCondition :=
-  fun _ _ h1 h2 h3 h4 h5 _ _ _ _ _ hT =>
+  fun _ h1 h2 h3 h4 h5 _ _ _ _ _ hT =>
     _root_.GlobalTheory.Fc.JoinLinked.linked_atAll_of_imp (A := _root_.GlobalTheory.Fc.HasCompatibility) (R := _root_.GlobalTheory.Fc.R1.SelectionJumpBundleCondition) (fun _ _ _ _ w ht => _root_.GlobalTheory.Fc.JoinLinked.selJ_of_bWit ⟨h1, h2, h3, h4, h5⟩ w (Classical.choice ht)) hT
 end GlobalTheory.Fc.JoinLinked
 end
@@ -1412,7 +1412,7 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.RT GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
 namespace GlobalTheory.Fc.RL.LamLinked
 
-theorem isotRank_of_wit_alt (h1 : GlobalTheory.Published.WeilRepresentationUnitaryPair) (h2 : GlobalTheory.Published.DiscreteSeriesExists)
+theorem isotRank_of_wit_alt (h1 : GlobalTheory.Published.WeilRepresentationUnitaryPair)
     (h3 : GlobalTheory.Published.HarishChandraFinite) (h4 : GlobalTheory.Published.CuspRapidDecay)
     (a2 : GlobalTheory.Published.DiscreteSeriesClassification) (a5 : GlobalTheory.Published.CuspTraceClass)
     (a6 : GlobalTheory.Published.DixmierMalliavinFactorisation)
@@ -1432,7 +1432,7 @@ theorem isotRank_of_wit_alt (h1 : GlobalTheory.Published.WeilRepresentationUnita
   have hME := _root_.GlobalTheory.MultEqFinal.twisted_multiplicity_eq a2 h4 h3 a5 a6 a12 a13 hG q.x.what₂.r.z.R q.x.what₂.r.z.F q.x.what₂.r.intersectionNumber_baseChange.ok
     q.x.what₂.r.z.pins.char q.x.what₂.exAt hH hp q.B.ccK_top q.x.what₂.r.z.pins.keep.guard
     (GlobalTheory.LiftRows.Inh.goodTypes_of_typesTrue q.x.what₂.r.z.pins.char.base.lev hT)
-  exact GlobalTheory.Mem.R3.isotRank_of_multEq h1 h2 h3 h4 _ _ _ _ _ _ _ q.x.what₂.r.z.R q.x.what₂.r.z.F q.x.what₂.r.z.cG _ q.x.what₂.r.Y q.x.what₂.r.z.pins
+  exact GlobalTheory.Mem.R3.isotRank_of_multEq h1 h3 h4 _ _ _ _ _ _ _ q.x.what₂.r.z.R q.x.what₂.r.z.F q.x.what₂.r.z.cG _ q.x.what₂.r.Y q.x.what₂.r.z.pins
     q.x.what₂.r.intersectionNumber_baseChange hH hGS (GlobalTheory.CuspDec.cuspDecomp h3 h4 _) hME
 end GlobalTheory.Fc.RL.LamLinked
 namespace GlobalTheory.Fc.RL
@@ -1456,18 +1456,18 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.RT Globa
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Fc.RL
 
-theorem at_row_hLamP_alt_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.CuspTraceClass → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.ZelevinskyPolynomialRing → GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.GreenCuspidal → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotLambdaPrimeCondition := by
-  intro h1 h2 h3 h4 a2 a5 a6 a12 a13 hG hL N S
+theorem at_row_hLamP_alt_alt : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.CuspTraceClass → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.ZelevinskyPolynomialRing → GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.GreenCuspidal → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotLambdaPrimeCondition := by
+  intro h1 h3 h4 a2 a5 a6 a12 a13 hG hL N S
   refine _root_.GlobalTheory.Fc.RL.LinkedAt.of_row (RowE.row (EvP.mono (fun κ K _ H β _ c b hl => ?_) LamLinked.evP_params))
   obtain ⟨q, b', ⟨w⟩, he⟩ := hl
   have e1 := congrArg (fun s : Σ (D : D7) (O : Obj D), _root_.GlobalTheory.Fc.BundleCondition D O c => Nonempty (ParameterChoice' s.1 s.2.1.L)) he
   have e2 := congrArg (fun s : Σ (D : D7) (O : Obj D), _root_.GlobalTheory.Fc.BundleCondition D O c => _root_.GlobalTheory.Fc.R1.LambdaPrimeBundleCondition s.1 s.2.1 c s.2.2) he
   refine cast e2.symm ?_
-  have hIR := _root_.GlobalTheory.Fc.RL.LamLinked.isotRank_of_wit_alt h1 h2 h3 h4 a2 a5 a6 a12 a13 hG q w.y.y.host ⟨_, cast e1 (H β)⟩
+  have hIR := _root_.GlobalTheory.Fc.RL.LamLinked.isotRank_of_wit_alt h1 h3 h4 a2 a5 a6 a12 a13 hG q w.y.y.host ⟨_, cast e1 (H β)⟩
   show Formalism.L2.Rows.RowsHoldLam3 b'.P
   rw [show b'.P = R3.divisionPairOfAdelicFormsFaceColumnsData w.x from congrArg _root_.GlobalTheory.Mem.Top.Bl.RealPackage.P w.y.eq]
   exact (GlobalTheory.Mem.R3.rowConditions_at_companion_from_readings _ _ _ _ _ _ _ _ _ w.x).1
-    (_root_.GlobalTheory.Mem.R3.finiteTypes_of_full_heckeAlgebra_eigensystems h1 h2 h3 h4 _ _ _ _ _ w.x.A3 _ w.x.R w.x.F w.x.cG q.O.ex.p0 w.x.Y w.x.Z w.x.pins w.y.intersectionNumber_baseChange w.y.y.host hIR)
+    (_root_.GlobalTheory.Mem.R3.finiteTypes_of_full_heckeAlgebra_eigensystems h1 h3 h4 _ _ _ _ _ w.x.A3 _ w.x.R w.x.F w.x.cG q.O.ex.p0 w.x.Y w.x.Z w.x.pins w.y.intersectionNumber_baseChange w.y.y.host hIR)
 end GlobalTheory.Fc.RL
 
 end
@@ -1607,16 +1607,16 @@ theorem open_orbit_of_unramified_exponents_alt : _root_.GlobalTheory.Fc.S0.Unita
   have hPA := _root_.GlobalTheory.Fc.RL.PrimAt.linkedAt_hPA hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none
   have hDc := _root_.GlobalTheory.Fc.RL.linkedAt_hDcPtG hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none
   have hTie := _root_.GlobalTheory.Fc.RL.at_tie_alt P.discreteSeriesCover P.harishChandraModules P.casselmanWallach P.weilRepresentationUnitaryPair
-    P.discreteSeriesExists P.harishChandraFinite P.cuspRapidDecay hL _ SExt.none hNE
-  have hJ := _root_.GlobalTheory.Fc.JoinLinked.at_selJ_alt P.weilRepresentationUnitaryPair P.discreteSeriesExists P.discreteSeriesCover P.harishChandraModules
+    P.harishChandraFinite P.cuspRapidDecay hL _ SExt.none hNE
+  have hJ := _root_.GlobalTheory.Fc.JoinLinked.at_selJ_alt P.weilRepresentationUnitaryPair P.discreteSeriesCover P.harishChandraModules
     P.casselmanWallach P.harishChandraFinite P.cuspRapidDecay hL _ SExt.none hPA hDc hTie
   have hMi := _root_.GlobalTheory.miStarRow_alt_alt P.harishChandraFinite P.cuspRapidDecay P.discreteSeriesCover P.harishChandraModules P.casselmanWallach
     GlobalTheory.Hk3.howeUnram_holds P.weilRepresentationUnitaryPair P.weilSiegelFormulaUnitary P.siegelWeilUnitaryConvergent
     P.doublingMethod P.unramifiedDoublingGL P.discreteSeriesClassification P.strongApproxSU P.siegelWeilUnitaryConvergent2
     hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none
-  have hDiv := _root_.GlobalTheory.Fc.DivLinked.at_hDivG_main_alt P.weilRepresentationUnitaryPair P.discreteSeriesExists P.harishChandraFinite P.cuspRapidDecay
+  have hDiv := _root_.GlobalTheory.Fc.DivLinked.at_hDivG_main_alt P.weilRepresentationUnitaryPair P.harishChandraFinite P.cuspRapidDecay
     P.discreteSeriesCover P.harishChandraModules P.casselmanWallach hL _ SExt.none hB hMi.1
-  have hLam := _root_.GlobalTheory.Fc.RL.at_row_hLamP_alt_alt P.weilRepresentationUnitaryPair P.discreteSeriesExists P.harishChandraFinite P.cuspRapidDecay
+  have hLam := _root_.GlobalTheory.Fc.RL.at_row_hLamP_alt_alt P.weilRepresentationUnitaryPair P.harishChandraFinite P.cuspRapidDecay
     P.discreteSeriesClassification P.cuspTraceClass P.dixmierMalliavinFactorisation
     P.zelevinskyPolynomialRing P.geometricLemma P.greenCuspidal hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none
   have hKap := _root_.GlobalTheory.Fc.KapLinked.row_kap_of_row_lam_alt_alt P.harishChandraFinite P.cuspRapidDecay P.discreteSeriesCover P.harishChandraModules
@@ -1626,7 +1626,7 @@ theorem open_orbit_of_unramified_exponents_alt : _root_.GlobalTheory.Fc.S0.Unita
   have hGood := _root_.GlobalTheory.Fc.GoodLinked.row_good_alt_alt (GlobalTheory.GreenBridge.green_of_regular P.greenRegularCharacters) P.zelevinskyPolynomialRing hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none hNE
   have hLab := _root_.GlobalTheory.Fc.LabLinked.row_lab_of_layer_alt_alt (GlobalTheory.GreenBridge.green_of_regular P.greenRegularCharacters) P.zelevinskyPolynomialRing hL _ SExt.none hNE hGood.1
   have hGeo := _root_.GlobalTheory.Fc.GeoZeroAt.geometricWeakTies_of_linked_ties P.rayClassFieldSt hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none hNE hDiv hTie
-  have hDf := _root_.GlobalTheory.Fc.RL.linkedAt_prmR_df_of_cuspRapidDecay P.weilRepresentationUnitaryPair P.discreteSeriesExists P.harishChandraFinite P.cuspRapidDecay
+  have hDf := _root_.GlobalTheory.Fc.RL.linkedAt_prmR_df_of_cuspRapidDecay P.weilRepresentationUnitaryPair P.harishChandraFinite P.cuspRapidDecay
     hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none
   exact ⟨hPA, hLam, hDiv, hDc, hJ, hTie, hLab, hGood.2, hGeo, hMi.2, hKap, hDf⟩
 end GlobalTheory.Fc.S0.Open0ProofU

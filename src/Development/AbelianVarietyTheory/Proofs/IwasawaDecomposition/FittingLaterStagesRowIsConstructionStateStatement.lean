@@ -28,10 +28,10 @@ noncomputable section
 namespace GlobalTheory.Mem.R3.Rw
 
 theorem st_of_fits : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (P : Pre2 K w), ∀ o : P.q.Over, o.Fits → o.G = P.Z₀.G → o.V.div.etaF = 6 * K.s.x ^ (-K.C.P.CF) → BkLaw (w.D o.Z) → ∃ x : St P, x.o = o := by
-  intro hW hD hH hC K B f T w P o hfit hG heta hbk
+  intro hW _ hH hC K B f T w P o hfit hG heta hbk
   obtain ⟨m, hcopy, hcoh⟩ := _root_.GlobalTheory.Mem.R3.Rw.Mv.exists_moved B f T w P.Z₀ P.hX P.Wt P.z P.q o P.intersectionNumber_baseChange P.exAt P.inGeo P.grp hfit
   obtain ⟨s, r, hpin⟩ := GlobalTheory.T.exists_reading_of_rowLiftFamily_movedData B f T w P.Z₀ P.hX P.Wt P.z P.q o
-    (GlobalTheory.LinksInputs.inputs_of_hypotheses hW hD hH hC (w.D o.Z)) hfit m
+    (GlobalTheory.LinksInputs.inputs_of_hypotheses hW hH hC (w.D o.Z)) hfit m
   exact ⟨⟨o, hfit, hG, heta, hbk, m, hcopy, hcoh, s, r, hpin⟩, rfl⟩
 
 end GlobalTheory.Mem.R3.Rw

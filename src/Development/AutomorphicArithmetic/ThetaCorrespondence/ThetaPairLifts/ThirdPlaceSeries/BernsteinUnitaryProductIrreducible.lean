@@ -84,7 +84,6 @@ structure UnitaryGroupThirdPlaceHypotheses : Prop where
   harishChandraModules : GlobalTheory.Published.HarishChandraModules
   casselmanWallach : GlobalTheory.Published.CasselmanWallach
   weilRepresentationUnitaryPair : GlobalTheory.Published.WeilRepresentationUnitaryPair
-  discreteSeriesExists : GlobalTheory.Published.DiscreteSeriesExists
   discreteSeriesClassification : GlobalTheory.Published.DiscreteSeriesClassification
   strongApproxSU : GlobalTheory.Published.StrongApproxSU
   siegelWeilUnitaryConvergent2 : HeckeCharacterZeroLocus.SiegelWeilU.SiegelWeilUnitaryConvergent

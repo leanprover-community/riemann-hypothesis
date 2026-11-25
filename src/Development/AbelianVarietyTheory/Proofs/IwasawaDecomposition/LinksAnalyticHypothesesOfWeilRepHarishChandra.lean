@@ -183,9 +183,9 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.LinksInputs
 
-theorem inputs_of_hypotheses : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists →
+theorem inputs_of_hypotheses : GlobalTheory.Published.WeilRepresentationUnitaryPair →
     GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, Inputs D := by
-  intro hW _ hH hC D
+  intro hW hH hC D
   obtain ⟨hcart, hsd, hsp, hdim, hpet, hsm⟩ := GlobalTheory.Mem.EasyInputs.easy_inputs D
   exact
     { weil := Formalism.IndefR.WeilFull.weilExistsFull_of (hW D) (_root_.GlobalTheory.InertAll.inertAllO D) (_root_.GlobalTheory.WeilReal.realAllO D)

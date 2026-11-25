@@ -1567,7 +1567,7 @@ theorem datExS_evLg (h1 : GlobalTheory.Published.DiscreteSeriesCover) (h2 : Glob
   have hGeoEx := GlobalTheory.T.geometricExistence_core_forms_analytic_phaseOne h3 X.toD7 _ _ _ _ _ C (face0 X I hX (usedOf I T Wt) Xg tr₀).lv2 hVol hLJ hLC hAT
     hfinT hVS hnV
   obtain ⟨tr, dict, mu, chiW, x₀, cE, R, cG', hPins, hEx, hLevEq, hEG, hCG, -, hmuEq, htw, hBrgI, hGeo⟩ :=
-    GlobalTheory.StandardWeightCharacter.charW_seed_std X w.px I hX (usedOf I T Wt) Xg tr₀ C R₀ cG (GlobalTheory.T.linksAnalyticHypotheses_of_weilRep_harishChandra h5 h6 h7 h3 X.toD7) hIdem hExAt hGeoEx
+    GlobalTheory.StandardWeightCharacter.charW_seed_std X w.px I hX (usedOf I T Wt) Xg tr₀ C R₀ cG (GlobalTheory.T.linksAnalyticHypotheses_of_weilRep_harishChandra h5 h7 h3 X.toD7) hIdem hExAt hGeoEx
       hValR hpbR hPre0 hIn hTup hAll hKeep
   have hPg : R.Pg = R₀.Pg := congrArg LevCh.Pg hLevEq
   have hRC : R.C = R₀.C := congrArg LevCh.C hLevEq

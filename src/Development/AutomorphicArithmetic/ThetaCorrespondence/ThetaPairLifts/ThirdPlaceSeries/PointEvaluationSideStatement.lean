@@ -1372,10 +1372,10 @@ theorem linkedAt_df_of_parameters {hL : _root_.UpperTheory.Zero.LLC.RecTExists} 
   exact hc0 Fm.CYL Fm.CTu _ _ _ (σ Fm (w3_a hc) x hx i) C CH (hs x hx i).2 z1 z2 z3 z4 z5 (Fm.nprimeDef x hx i)
     (hF x e1 i) (hR x e2 i) hC'
 end GlobalTheory.Fc.RL.DefSide
-theorem GlobalTheory.Fc.RL.linkedAt_prmR_df_of_cuspRapidDecay : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists →
+theorem GlobalTheory.Fc.RL.linkedAt_prmR_df_of_cuspRapidDecay : GlobalTheory.Published.WeilRepresentationUnitaryPair →
     GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay →
     ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.RL.RowDefectCondition :=
-  fun _ _ _ _ _ N S => _root_.GlobalTheory.Fc.RL.DefSide.linkedAt_df_of_parameters (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S)
+  fun _ _ _ _ N S => _root_.GlobalTheory.Fc.RL.DefSide.linkedAt_df_of_parameters (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S)
 end
 end
 end -- clump:auto

@@ -1018,7 +1018,6 @@ theorem UpperTheory.LiteratureTheorems.published_results_eigen (hLiteratureRow :
     harishChandraModules := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_modules_of_literature),
     casselmanWallach := (_root_.UpperTheory.LiteratureTheorems.casselman_wallach_of_literature),
     weilRepresentationUnitaryPair := (_root_.UpperTheory.LiteratureTheorems.weil_representation_unitary_pair_of_literature),
-    discreteSeriesExists := (_root_.UpperTheory.LiteratureTheorems.discrete_series_exists_of_literature),
     discreteSeriesClassification := (_root_.UpperTheory.LiteratureTheorems.discrete_series_classification_of_literature),
     strongApproxSU := (_root_.UpperTheory.LiteratureTheorems.strong_approx_su_of_literature),
     siegelWeilUnitaryConvergent2 := (_root_.UpperTheory.LiteratureTheorems.siegelWeilU_unitary_convergent_of_literature),

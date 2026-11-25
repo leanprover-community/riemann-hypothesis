@@ -27,11 +27,11 @@ theorem adj_eig {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [F
     rw [LinearMap.adjoint_inner_left, h, inner_smul_left, Complex.conj_ofReal]
   rw [ha, map_smul]
 
-theorem eigenvalue_eq_of_label : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (X0 : BaseLevelRowSide D) (Y : Read (A3 := A3) R.toRealDat F.lv2 X0) (Z : ReadL R F X0 Y), Pins R F cG → Holds R F → HostHyp D → ∀ (σ : D.what₂.FT) (p : A3.fam3.base3.Ix) (i : Fin D.R.m) (t : T), HasLab Y σ p → (Y.tup t = D.what₂.mu0 ∨ ∃ w, Y.tup t = D.what₂.muAt w) → D.what₂.isot ((i : ℕ) + 1) σ ≠ ⊥ → D.what₂.lamP (Y.tup t) ((i : ℕ) + 1) σ = (s0Of R F).lam i t p A3.fam3.base3.v0 := by
-  intro h1 h2 h3 h4 D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH hD σ p i t hL hU hne
+theorem eigenvalue_eq_of_label : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T : Type) (A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (X0 : BaseLevelRowSide D) (Y : Read (A3 := A3) R.toRealDat F.lv2 X0) (Z : ReadL R F X0 Y), Pins R F cG → Holds R F → HostHyp D → ∀ (σ : D.what₂.FT) (p : A3.fam3.base3.Ix) (i : Fin D.R.m) (t : T), HasLab Y σ p → (Y.tup t = D.what₂.mu0 ∨ ∃ w, Y.tup t = D.what₂.muAt w) → D.what₂.isot ((i : ℕ) + 1) σ ≠ ⊥ → D.what₂.lamP (Y.tup t) ((i : ℕ) + 1) σ = (s0Of R F).lam i t p A3.fam3.base3.v0 := by
+  intro h1 h3 h4 D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH hD σ p i t hL hU hne
   refine Y.tied.lift.lamP (Y.tup t) hU i σ _ hne fun y hy => ?_
   set θ := D.what₂.thetaP (Y.tup t) ((i : ℕ) + 1) with hθ
-  obtain ⟨x, rfl⟩ := _root_.GlobalTheory.Mem.LiftOnto.thetaMap_surjective h1 h2 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hD i t hU y
+  obtain ⟨x, rfl⟩ := _root_.GlobalTheory.Mem.LiftOnto.thetaMap_surjective h1 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hD i t hU y
   set K := (LinearMap.ker θ)ᗮ
   have hx0 : x - K.starProjection x ∈ LinearMap.ker θ := by
     have := K.sub_starProjection_mem_orthogonal x
@@ -40,7 +40,7 @@ theorem eigenvalue_eq_of_label : GlobalTheory.Published.WeilRepresentationUnitar
     rw [LinearMap.mem_ker, map_sub, sub_eq_zero] at hx0; exact hx0.symm
   have hW : Y.mj.eW i (θ (K.starProjection x)) ∈ R.Wp3 i p := by
     rw [he]; exact hL.1 i ⟨θ x, hy, rfl⟩
-  have key := _root_.GlobalTheory.Mem.R3.LamMetric.inner_theta_eq_lam h1 h2 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hD i t p hU (K.starProjection x)
+  have key := _root_.GlobalTheory.Mem.R3.LamMetric.inner_theta_eq_lam h1 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hD i t p hU (K.starProjection x)
     (K.starProjection_apply_mem x) hW
   have := adj_eig θ (R.lam3 i t p A3.A.v0) _ key
   rw [he] at this

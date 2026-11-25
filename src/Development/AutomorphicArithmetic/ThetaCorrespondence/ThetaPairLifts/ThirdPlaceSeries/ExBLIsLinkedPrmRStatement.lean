@@ -900,9 +900,9 @@ private theorem logLam_of_part_pz : GlobalTheory.Published.WeilRepresentationUni
     ∀ (X : DivX D), LamAre Z X → ∀ (i : Fin D.R.m) π (c : A3.fam3.base3.Ix) (e : D.what₂.LL →+* ℂ), e ≠ D.what₂.embLL →
     D.what₂.isot ((i : ℕ) + 1) π ≠ ⊥ → D.what₂.isot ((i : ℕ) + 1) π ≤ (R.Wp3 i c).comap (Y.mj.eW i) →
     X.logLam ((i : ℕ) + 1) π e = Real.log (R.lam3 i A3.A.μ0 c (InfinitePlace.mk e)) ∧ R.EEp3 c ≠ ⊥ := by
-  intro h1 h2 h3 h4 D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH hHost X hX i π c e he hne hle
-  have rat := _root_.GlobalTheory.Mem.R3.RatSpan.span_jW_wp h1 h2 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hHost
-  obtain ⟨p, hp⟩ := _root_.GlobalTheory.Mem.R3.LabProof.hasLab_exists h1 h2 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hHost π
+  intro h1 _ h3 h4 D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH hHost X hX i π c e he hne hle
+  have rat := _root_.GlobalTheory.Mem.R3.RatSpan.span_jW_wp h1 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hHost
+  obtain ⟨p, hp⟩ := _root_.GlobalTheory.Mem.R3.LabProof.hasLab_exists h1 h3 h4 D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH hHost π
   obtain ⟨lab, hl, hv⟩ := hX
   have hov : OverIx Z π (lab π) := hl π ⟨p, fun j => by
     rw [rat j p]

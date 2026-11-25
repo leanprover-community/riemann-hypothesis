@@ -1188,7 +1188,7 @@ theorem lambdaAdic_components_over_base_alt : _root_.GlobalTheory.HeightCounting
     hN.what₂.geo hN.greenC z.R z.F hHo.ok z.pins.char hEx hH hp B.ccK_top z.pins.keep.guard
     (GlobalTheory.LiftRows.Inh.goodTypes_of_typesTrue z.pins.char.base.lev hT)
   have hIR : Formalism.BasicNotions.Rows.IsotRank (w.st Z).toD7.what₂ :=
-    GlobalTheory.Mem.R3.isotRank_of_multEq hPX.weil hPX.ds hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG _ Y z.pins hHo hH hGS
+    GlobalTheory.Mem.R3.isotRank_of_multEq hPX.weil hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG _ Y z.pins hHo hH hGS
       (GlobalTheory.CuspDec.cuspDecomp hN.hc hN.decay _) hME
   obtain ⟨hIsotypic, hScalar⟩ := L0.parts_positive_scalars_without_congruence_lengths
     hPX.weil hPX.ds hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG p0 Y { hRd with } z.pins hHo hH

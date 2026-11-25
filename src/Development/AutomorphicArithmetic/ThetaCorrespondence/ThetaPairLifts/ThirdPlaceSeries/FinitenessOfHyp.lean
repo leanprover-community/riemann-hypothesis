@@ -629,13 +629,13 @@ theorem nonempty_allL_of_archCmp (hP : _root_.GlobalTheory.HeightCounting.Up.Pub
   exact ⟨⟨a, h1, h2, h3, h4, h5, h6, h7⟩⟩
 omit l in
 variable (x L) in
-theorem exists_base_level_rXs_and_yRel (hW : GlobalTheory.Published.WeilRepresentationUnitaryPair) (hD : GlobalTheory.Published.DiscreteSeriesExists) (hP : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt) (hR : RowsAt P)
+theorem exists_base_level_rXs_and_yRel (hW : GlobalTheory.Published.WeilRepresentationUnitaryPair) (_hD : GlobalTheory.Published.DiscreteSeriesExists) (hP : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt) (hR : RowsAt P)
     (he : ∀ j v, 1 ≤ j → j ≤ B.R.m → etaL x L j v = P.q.eta j v) :
     ∃ (p : BaseLevelRowSide (w.D (oL x L).Z)) (t : RowsT K w (oL x L).Z P.Wt p), Nonempty (RXs t) ∧
       ∃ Y₁ : YT x L p, YRel L Y₁ ∧ HEq t.r.z (datL x L) ∧ HEq t.r.Y Y₁ := by
   obtain ⟨m, hm, hc, hco⟩ := GlobalTheory.T.exists_movedData_state_localisations x L
   obtain ⟨s, r, hpin⟩ := GlobalTheory.T.exists_reading_of_rowLiftFamily_movedData B f T w P.Z₀ P.hX P.Wt P.z P.q (oL x L)
-    (GlobalTheory.LinksInputs.inputs_of_hypotheses hW hD hP.hc hP.decay (w.D (oL x L).Z)) (fitsL L) m
+    (GlobalTheory.LinksInputs.inputs_of_hypotheses hW hP.hc hP.decay (w.D (oL x L).Z)) (fitsL L) m
   obtain ⟨t, rx, -, hz, hy, -⟩ := hR ⟨oL x L, fitsL L, x.G_eq, x.etaF, bkL L, m, hc, hco, s, r, hpin⟩ he
   obtain ⟨Y₁, h1⟩ := _root_.GlobalTheory.HeightCounting.Fin3.exists_read_heq_of_eq hm r.Y
   exact ⟨s.p0, t, rx, Y₁, GlobalTheory.HeightCounting.Fin3.yRel_of_pin x L m hm hco s r hpin Y₁ h1, hz.trans (heq_of_eq hm), hy.trans h1.symm⟩

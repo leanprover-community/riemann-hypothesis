@@ -119,7 +119,7 @@ theorem isotInternal_of_multEq : GlobalTheory.Published.WeilRepresentationUnitar
     apply (w.st Z).B.embLL.injective
     rw [z.good.2, z.good.2, map_inv, GlobalTheory.Mem.R3.GoodDual.goodIdempotent_coeff_inv_eq_coeff hI]
   have hIR : Formalism.BasicNotions.Rows.IsotRank (w.st Z).toD7.what₂ :=
-    GlobalTheory.Mem.R3.isotRank_of_multEq hW hDS hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG _ Y z.pins hHo hH hGS
+    GlobalTheory.Mem.R3.isotRank_of_multEq hW hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG _ Y z.pins hHo hH hGS
       (GlobalTheory.CuspDec.cuspDecomp hN.hc hN.decay _) hME
   exact (GlobalTheory.NRows.L0.parts_positive_scalars_without_congruence_lengths hW hDS hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG p0 Y hRd z.pins hHo hH).1 hIR
 
