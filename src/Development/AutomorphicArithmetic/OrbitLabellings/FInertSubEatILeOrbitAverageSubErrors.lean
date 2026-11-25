@@ -27,7 +27,7 @@ theorem UpperTheory.fInert_sub_eatI_le_orbit_average_sub_errors :
   have eF : FInert D (i + 1) p = (∑ z ∈ kindA D p, FOrb D (i + 1) p z) / (nP D p : ℝ) +
       (∑ z ∈ kindBC D p, FOrb D (i + 1) p z) / (nP D p : ℝ) := by
     unfold FInert
-    rw [if_neg (fun h => hcs.2.2 h.2), ← add_div]
+    rw [ite_eq_right (fun h => hcs.2.2 h.2), ← add_div]
     congr 1
     have e : kindBC D p = (kindA D p)ᶜ := by
       ext z; rw [Finset.mem_compl]; exact OrbitPlaces.memBC_iff p z
@@ -69,6 +69,6 @@ theorem UpperTheory.fInert_sub_eatI_le_orbit_average_sub_errors :
   have hm := le_max_right (0 : ℝ) ((∑ z ∈ kindA D p, FOrb D (i + 1) p z) / (nP D p : ℝ))
   rw [eF]
   unfold EatI EatX
-  rw [if_pos hcs, eT]
+  rw [ite_eq_left hcs, eT]
   simp only [Finset.card_empty, Nat.cast_zero, mul_zero, zero_mul, add_zero]
   linarith

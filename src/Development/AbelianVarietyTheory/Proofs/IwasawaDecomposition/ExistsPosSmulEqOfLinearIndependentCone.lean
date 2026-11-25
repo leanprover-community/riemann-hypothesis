@@ -88,7 +88,7 @@ theorem exists_pos_smul_eq_of_linearIndependent_cone {L : Type} [AddCommGroup L]
   let g : Fin m → ℤ := fun l => (N l : ℤ) - (if l = i then ((K * k : ℕ) : ℤ) else 0)
   have hg : ∑ l, g l • δ l = 0 := by
     simp only [g, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq',
-      mem_univ, if_true, natCast_zsmul]
+      mem_univ, ite_true, natCast_zsmul]
     rw [key]; exact sub_self _
   have hg0 := Fintype.linearIndependent_iff.mp hδ g hg
   have hN : ∀ l, N l = if l = i then K * k else 0 := by
@@ -96,13 +96,13 @@ theorem exists_pos_smul_eq_of_linearIndependent_cone {L : Type} [AddCommGroup L]
     have := hg0 l
     simp only [g] at this
     split_ifs at this ⊢ <;> omega
-  have hNi : N i ≠ 0 := by rw [hN i, if_pos rfl]; exact (Nat.mul_pos hKpos hk).ne'
+  have hNi : N i ≠ 0 := by rw [hN i, ite_eq_left rfl]; exact (Nat.mul_pos hKpos hk).ne'
   obtain ⟨j, -, hj⟩ := Finset.exists_ne_zero_of_sum_ne_zero hNi
   have haj : 0 < a j := Nat.pos_of_ne_zero (fun h => hj (by simp [h]))
   have hbji : 0 < b j i := Nat.pos_of_ne_zero (fun h => hj (by simp [h]))
   have hbjl : ∀ l, l ≠ i → b j l = 0 := by
     intro l hl
-    have h0 : N l = 0 := by rw [hN l, if_neg hl]
+    have h0 : N l = 0 := by rw [hN l, ite_eq_right hl]
     have := (Finset.sum_eq_zero_iff.mp h0) j (mem_univ j)
     rcases Nat.mul_eq_zero.mp this with h | h
     · rcases Nat.mul_eq_zero.mp h with h | h

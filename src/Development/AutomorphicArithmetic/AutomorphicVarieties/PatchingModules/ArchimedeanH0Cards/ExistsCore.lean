@@ -104,7 +104,7 @@ private theorem odd_kill {A : Type} [CommRing A] [IsDomain A] {n : ℕ} (a : ℕ
     set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
     intro Z hZ
     have od : ∀ i j : Fin n, (((i : ℕ) < a) ↔ ((j : ℕ) < a)) → (Z - evP A n a Z) i j = 0 := fun i j e => by
-      rw [Matrix.sub_apply, localComponent_apply₂, if_pos e, sub_self]
+      rw [Matrix.sub_apply, localComponent_apply₂, ite_eq_left e, sub_self]
     have h1 : evP A n a Z = 0 := by
       ext i j
       by_cases e : ((i : ℕ) < a) ↔ ((j : ℕ) < a)
@@ -119,7 +119,7 @@ private theorem odd_kill {A : Type} [CommRing A] [IsDomain A] {n : ℕ} (a : ℕ
           by_cases e' : ((i : ℕ) < a) ↔ ((k : ℕ) < a)
           · rw [od k j (by tauto), mul_zero]
           · rw [ev i k e', zero_mul]
-      · rw [localComponent_apply₂, if_neg e]; rfl
+      · rw [localComponent_apply₂, ite_eq_right e]; rfl
     rw [hΦ, h1, sub_zero, add_zero, sub_eq_zero] at hZ
     rw [h1, sub_zero] at od
     exact odd_comm a S Z al hal hS ev od hZ

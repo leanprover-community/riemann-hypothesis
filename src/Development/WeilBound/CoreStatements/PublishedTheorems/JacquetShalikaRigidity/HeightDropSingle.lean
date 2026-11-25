@@ -74,7 +74,7 @@ theorem short_rows_embedding_of : D0 → MinkowskiBoundAlt → K1 → CornerEmbe
       rw [hx, Units.val_mul, Matrix.mul_apply, Finset.sum_eq_single (Fin.last n)]
       · rw [hu.2.1, one_mul, hι g]
         have hk' : ¬ ((Fin.last n : ℕ) < k ∧ (c : ℕ) < k) := by simp; omega
-        simp only [embM, Matrix.of_apply, dif_neg hk', Matrix.one_apply, Pi.single_apply, eq_comm]
+        simp only [embM, Matrix.of_apply, dite_eq_right hk', Matrix.one_apply, Pi.single_apply, eq_comm]
       · intro j _ hj
         rw [hu.1 _ _ (lt_of_le_of_ne (Fin.le_last j) hj), zero_mul]
       · simp
@@ -91,12 +91,12 @@ theorem short_rows_embedding_of : D0 → MinkowskiBoundAlt → K1 → CornerEmbe
       rw [hx, Units.val_mul, Matrix.mul_apply, Finset.sum_eq_single p]
       · rw [hι g]
         have hk' : ¬ ((p : ℕ) < k ∧ (p : ℕ) < k) := by simp [p]
-        simp only [embM, Matrix.of_apply, dif_neg hk', Matrix.one_apply_eq, mul_one]
+        simp only [embM, Matrix.of_apply, dite_eq_right hk', Matrix.one_apply_eq, mul_one]
         exact hu.2.2 i p (by simp [p])
       · intro j _ hj
         rw [hι g]
         have hk' : ¬ ((j : ℕ) < k ∧ (p : ℕ) < k) := by simp [p]
-        simp only [embM, Matrix.of_apply, dif_neg hk', Matrix.one_apply_ne hj, mul_zero]
+        simp only [embM, Matrix.of_apply, dite_eq_right hk', Matrix.one_apply_ne hj, mul_zero]
       · simp
     set M' : Matrix (Fin n) (Fin n) (Ad E) := x.val.submatrix p.succAbove p.succAbove with hM'
     have hdet : M'.det = x.val.det := by

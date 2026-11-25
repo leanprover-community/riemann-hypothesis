@@ -150,16 +150,16 @@ theorem sum_gap_tail (g : ℕ → ℕ) (hg : Antitone g) (m i : ℕ) (hi : i < m
     intro n hn
     induction n, hn using Nat.le_induction with
     | base =>
-      rw [Finset.sum_eq_zero fun j hj => if_neg (by have := Finset.mem_range.1 hj; omega), zero_add]
+      rw [Finset.sum_eq_zero fun j hj => ite_eq_right (by have := Finset.mem_range.1 hj; omega), zero_add]
     | succ n hn ih =>
       have := hg (Nat.le_succ n)
-      rw [Finset.sum_range_succ, if_pos (by omega), ← ih]
+      rw [Finset.sum_range_succ, ite_eq_left (by omega), ← ih]
       simp only [Nat.succ_eq_add_one] at this
       omega
-  rw [Finset.sum_range_succ, if_pos hi, if_neg (lt_irrefl _), Nat.sub_zero, ← key k (by omega)]
+  rw [Finset.sum_range_succ, ite_eq_left hi, ite_eq_right (lt_irrefl _), Nat.sub_zero, ← key k (by omega)]
   congr 1
   refine Finset.sum_congr rfl fun j hj => ?_
-  rw [if_pos (show j + 1 < k + 1 by have := Finset.mem_range.1 hj; omega)]
+  rw [ite_eq_left (show j + 1 < k + 1 by have := Finset.mem_range.1 hj; omega)]
 
 
 open Classical in
@@ -172,7 +172,7 @@ theorem sum_gap_row {a : (E →+* ℂ) × ℕ → ℕ} (ha : ∀ τ, Antitone fu
     refine Finset.sum_congr rfl fun j _ => ?_
     simp only [true_and, gap, rk]
   · intro σ _ hσ
-    exact Finset.sum_eq_zero fun j _ => if_neg fun h => hσ h.1
+    exact Finset.sum_eq_zero fun j _ => ite_eq_right fun h => hσ h.1
   · intro h; exact absurd (Finset.mem_univ τ) h
 
 def prodP (C : Type) [Field C] (cx : Lt1 Dw → ℕ) :

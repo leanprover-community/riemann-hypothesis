@@ -533,7 +533,7 @@ theorem exists_dual (k : Type) [Field k] : ∃ (x : Jet k Unit 1) (θ : DualNumb
   · rw [DualNumber.lift_apply_apply, TrivSqZeroExt.fst_inr, map_zero, zero_add, TrivSqZeroExt.snd_inr,
       Algebra.smul_def, Algebra.ofId_apply]
   · have h5 : (jetTan () : Jet k Unit (0 + 1) →ₐ[k] DualNumber k) (Ideal.Quotient.mk _ (MvPolynomial.X ())) =
-        DualNumber.eps := (MvPolynomial.aeval_X _ _).trans (if_pos rfl)
+        DualNumber.eps := (MvPolynomial.aeval_X _ _).trans (ite_eq_left rfl)
     have h4 := congrArg (jetTan () : Jet k Unit (0 + 1) →ₐ[k] DualNumber k) hc
     rw [map_smul, h5, map_zero] at h4
     simpa using congrArg TrivSqZeroExt.snd h4

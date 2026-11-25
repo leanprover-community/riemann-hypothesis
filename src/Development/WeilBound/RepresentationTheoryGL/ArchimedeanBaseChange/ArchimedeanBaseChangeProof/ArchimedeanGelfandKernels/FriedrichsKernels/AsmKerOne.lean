@@ -576,7 +576,7 @@ theorem abs_calc (Z : A) (hn : IsStarNormal Z) (hsp : Z - star Z = (-2 * I) • 
         ring_nf
         simp
         ring
-      simp only [lift, h0, if_false, hg]
+      simp only [lift, h0, ite_false, hg]
       rw [Complex.ofReal_inv, h5, map_inv₀]
       field_simp
   · intro g h hh
@@ -592,7 +592,7 @@ theorem abs_calc (Z : A) (hn : IsStarNormal Z) (hsp : Z - star Z = (-2 * I) • 
     by_cases h0 : z = 0
     · simp [lift, h0]
     · have h3 := circ_inv h0 (hK z hz)
-      simp only [lift, h0, if_false, hh, smul_eq_mul]
+      simp only [lift, h0, ite_false, hh, smul_eq_mul]
       have h4 : z * ((yOf z : ℂ) + I) = 1 := by
         rw [← h3]
         exact mul_inv_cancel₀ h0
@@ -1858,7 +1858,7 @@ theorem wvAlg : WvAlg := by
   refine ⟨?_, ?_, ?_, ?_⟩
   · have h2 : Even 2 := ⟨1, rfl⟩
     have h0 : Even 0 := ⟨0, rfl⟩
-    simp only [PositivityTheory.RgBcC.Fc.wv, PositivityTheory.RgBcC.Fc.chj, h2, h0, if_true, hsq, pow_zero, one_mul]
+    simp only [PositivityTheory.RgBcC.Fc.wv, PositivityTheory.RgBcC.Fc.chj, h2, h0, ite_true, hsq, pow_zero, one_mul]
     first
       | ring
   · simp [PositivityTheory.RgBcC.Fc.wv, PositivityTheory.RgBcC.Fc.chj]

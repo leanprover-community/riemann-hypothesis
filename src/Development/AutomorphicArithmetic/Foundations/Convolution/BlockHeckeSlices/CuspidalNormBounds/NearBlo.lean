@@ -1348,7 +1348,7 @@ theorem UpperTheory.ConvolutionTheory.BW.nearBlo :
       rw [h1, b.inf]
     · change hk r w j b.f = (_ * GlobalTheory.LFun.satEig _ r (q.2 w) j) • b.f
       rw [(hkOps E r w j).1, (b.isSat w hw).2.2.2 _ (GlobalTheory.LFun.exists_isUnifV w).choose_spec j (Nat.lt_succ_iff.1 j.2), smul_smul,
-        h2, if_neg hw]
+        h2, ite_eq_right hw]
   have himg : (lam '' P).Finite := by
     have hex : ∀ x : lam '' P, ∃ b : Blo S r, Killed ρ.ρ b.f.1 ∧ (∀ τ i, ‖b.Λ τ i‖ ≤ B) ∧ ∀ i, T i b.f = x.1 i • b.f := by
       rintro ⟨_, q, ⟨b, h1, h2, h3, h4⟩, rfl⟩
@@ -1370,9 +1370,9 @@ theorem UpperTheory.ConvolutionTheory.BW.nearBlo :
     obtain ⟨k, -, hk⟩ := h
     exact ⟨k, (neg_add_eq_zero.1 hk).symm⟩
   · by_cases hw : w ∈ S
-    · rw [h4, h4', if_pos hw, if_pos hw]
-    · have c1 : (q'.2 w).card = r := by rw [h4', if_neg hw]; exact (b'.isSat w hw).2.2.1
-      have c2 : (q.2 w).card = r := by rw [h4, if_neg hw]; exact (b.isSat w hw).2.2.1
+    · rw [h4, h4', ite_eq_left hw, ite_eq_left hw]
+    · have c1 : (q'.2 w).card = r := by rw [h4', ite_eq_right hw]; exact (b'.isSat w hw).2.2.1
+      have c2 : (q.2 w).card = r := by rw [h4, ite_eq_right hw]; exact (b.isSat w hw).2.2.1
       have hq : Formalism.UG.qV E w ≠ 0 := GlobalTheory.LFun.qV_ne_zero w
       refine GlobalTheory.LFun.eq_of_satEig_eq hq c1 c2 fun j hj => ?_
       have h := congrFun he (Sum.inr (⟨w, hw⟩, ⟨j, Nat.lt_succ_iff.2 hj⟩))

@@ -33,8 +33,6 @@ open IsDedekindDomain NumberField CategoryTheory MonoidalCategory GroundTheory.G
 
 noncomputable section
 
-attribute [local instance 2000] Rep.hV2
-
 section CompLinear
 
 variable {n : ℕ} {R : Type*} [CommRing R]
@@ -1009,8 +1007,6 @@ namespace GroundTheory.ProfCoh
 open CategoryTheory MonoidalCategory
 
 universe u
-
-attribute [local instance 2000] Rep.hV2
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {ι : Type u} {H : ι → Type u} [∀ v, Group (H v)] [∀ v, TopologicalSpace (H v)]

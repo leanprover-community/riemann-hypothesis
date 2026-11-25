@@ -106,7 +106,7 @@ theorem rho_bounds {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.
     refine ⟨(div_pos d2 d1).le, ?_⟩
     by_cases hc : (a : ℕ) < W.p ∧ W.p ≤ l
     · have e : (W.u' τ a : ℝ) - W.u' τ l = (W.u1 τ a : ℝ) - W.u1 τ l - 3 * N := by
-        simp only [GlobalTheory.MeanTop.Wts.u', if_pos hc.1, if_neg (not_lt.2 hc.2)]; push_cast; ring
+        simp only [GlobalTheory.MeanTop.Wts.u', ite_eq_left hc.1, ite_eq_right (not_lt.2 hc.2)]; push_cast; ring
       have g := ((hG τ ⟨W.p - 1, by omega⟩ ⟨W.p, hp2⟩ (by simp only; omega)).2.1 rfl).1
       have m1 := (hA τ).1.antitone (show a ≤ ⟨W.p - 1, by omega⟩ from by rw [Fin.le_def]; simp only; omega)
       have m2 := (hA τ).1.antitone (show (⟨W.p, hp2⟩ : Fin N) ≤ l from hc.2)
@@ -195,7 +195,7 @@ theorem e_le_row (hp : (dat p i).p = (D.R.sigW ((i : ℕ) + 1)).1) (τ : Psi p.T
   have e1 : laOf (dat p i) (wtA (p.κ i)) (p.κ i).n τ k0 =
       (aPl D i (D.R.sigW ((i : ℕ) + 1)).1 t 0 : ℤ) + ((D.R.nV / 2 : ℕ) : ℤ) := by
     simp only [laOf, weightOf, k0]
-    rw [if_pos (by omega), ht, hn, GlobalTheory.Shares.WtDic.wtA_tau]
+    rw [ite_eq_left (by omega), ht, hn, GlobalTheory.Shares.WtDic.wtA_tau]
     unfold ext0
     rw [dite_eq_left h0, (p.fw.kap i t).1 ⟨0, h0⟩, GlobalTheory.RecGaps.sig_Wc]
   have e2 := Finset.single_le_sum (f := fun k => |(laOf (dat p i) (wtA (p.κ i)) (p.κ i).n τ k : ℝ)|)
@@ -212,7 +212,7 @@ theorem e_le_row (hp : (dat p i).p = (D.R.sigW ((i : ℕ) + 1)).1) (τ : Psi p.T
   have e7 : (((D.hc t).v ⟨0, by omega⟩ : ℚ) : ℝ) + (((D.hc t).e i : ℚ) : ℝ) - (((D.R.sigW ((i : ℕ) + 1)).1 : ℝ) - 1) -
       ((D.R.t : ℝ) + 1) / 2 - 1 ≤ (aPl D i (D.R.sigW ((i : ℕ) + 1)).1 t 0 : ℝ) := by
     unfold aPl
-    rw [if_pos h0, e4]
+    rw [ite_eq_left h0, e4]
     refine le_trans (le_of_eq ?_) (e6 _)
     push_cast; ring
   have e8 : ((D.R.r : ℝ) + D.R.t - 1) ≤ 2 * ((D.R.nV / 2 : ℕ) : ℝ) := by

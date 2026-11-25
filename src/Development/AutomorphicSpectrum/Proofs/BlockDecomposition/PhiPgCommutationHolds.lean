@@ -140,22 +140,6 @@ theorem conj_mem_MirUin {n : ℕ} (h : Mir k n) (u : MirUin k n) : h * (u : Mir 
 
 end Alg
 
-section Seq
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-section Beta
-
-variable {V : Type} [AddCommGroup V] [Module ℂ V] (ψ : AddChar k Circle) {n : ℕ}
-  (τ : Representation ℂ (Mir k (n + 1)) V)
-
-end Beta
-
-variable (hI : BetaInd k) (hS : BetaSmooth k) (hC : BetaCompact k)
-
-
-end Seq
-
 end GlobalTheory.CompanionTheory.BZMirSeq
 
 end
@@ -863,12 +847,12 @@ theorem pgProj_fst (i t : ℕ) (c : Fin (i + 1) → k) :
   · simp only [colMat]
     by_cases hb : b = Fin.last (i + 1)
     · subst hb
-      rw [if_pos (ePG_false_last _ _), if_pos rfl]
+      rw [ite_eq_left (ePG_false_last _ _), ite_eq_left rfl]
       induction a using Fin.lastCases with
       | last => rw [ePG_false_last, Fin.lastCases_last, Fin.lastCases_last]
       | cast a =>
         rw [GlobalTheory.CompanionTheory.BZPhiPG.LocO.ePG_false_eq, Fin.lastCases_castSucc, Fin.lastCases_castSucc, cVec, Fin.append_left]
-    · rw [if_neg (fun h => hb ((ePG_false_eq_last_iff _ _ _).1 h)), if_neg hb]
+    · rw [ite_eq_right (fun h => hb ((ePG_false_eq_last_iff _ _ _).1 h)), ite_eq_right hb]
 
 theorem pgProj_snd (i t : ℕ) (c : Fin (i + 1) → k) :
     (pgProj k (i + 1) (t + 1) ⟨uM k _ (cVec i t c), uM_mem_HPG i t c⟩).2 = 1 := by
@@ -879,7 +863,7 @@ theorem pgProj_snd (i t : ℕ) (c : Fin (i + 1) → k) :
   rw [unip_entry]
   have h0 : colMat k _ (cVec i t c) (ePG (i + 1) (t + 1) ⟨true, a⟩) (ePG (i + 1) (t + 1) ⟨true, b⟩) = 0 := by
     simp only [colMat]
-    rw [if_neg (ePG_true_ne_last _ _ _)]
+    rw [ite_eq_right (ePG_true_ne_last _ _ _)]
   rw [h0, add_zero]
   by_cases hab : a = b
   · subst hab; simp

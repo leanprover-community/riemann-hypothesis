@@ -211,9 +211,9 @@ theorem appLE_coord (B : BlowupChart π c S s) (i : Fin m) :
     (π.appLE U B.domain B.domain_le).hom (c.coord i) =
       if i ∈ S ∧ i ≠ s then B.chart.coord i * B.chart.coord s else B.chart.coord i := by
   by_cases h : i ∈ S ∧ i ≠ s
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     exact B.appLE_coord_of_mem i h.1 h.2
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     by_cases hi : i ∈ S
     · have hieq : i = s := by
         by_contra hne
@@ -254,9 +254,9 @@ theorem coordEvalHom_coordRelation (B : BlowupChart π c S s) (i : Fin m) :
     B.coordEvalHom (B.coordRelation i) = 0 := by
   rw [coordRelation_def]
   by_cases h : i ∈ S ∧ i ≠ s
-  · rw [if_pos h, map_sub, map_mul, coordEvalHom_X, coordEvalHom_X, coordEvalHom_C, B.appLE_coord i,
-      if_pos h, sub_self]
-  · rw [if_neg h, map_sub, coordEvalHom_X, coordEvalHom_C, B.appLE_coord i, if_neg h, sub_self]
+  · rw [ite_eq_left h, map_sub, map_mul, coordEvalHom_X, coordEvalHom_X, coordEvalHom_C, B.appLE_coord i,
+      ite_eq_left h, sub_self]
+  · rw [ite_eq_right h, map_sub, coordEvalHom_X, coordEvalHom_C, B.appLE_coord i, ite_eq_right h, sub_self]
 
 theorem coordEvalHom_eq_zero_of_mem_span (B : BlowupChart π c S s)
     (a : MvPolynomial (ULift.{u} (Fin m)) Γ(X, U))
@@ -503,16 +503,16 @@ private theorem appTop_comp_affineSectionsToCoordRelationQuotient (B : BlowupCha
       · subst hjs
         rw [coordBlowupSubstMap_appTop_coord_self, affineSectionsToCoordRelationQuotient_coord]
         have hrel := mk_eq_mk_C_coord B j
-        rw [if_neg (by simp)] at hrel
+        rw [ite_eq_right (by simp)] at hrel
         exact hrel
       · rw [coordBlowupSubstMap_appTop_coord_of_mem k m S s j hjS hjs, map_mul, affineSectionsToCoordRelationQuotient_coord,
           affineSectionsToCoordRelationQuotient_coord, ← map_mul]
         have hrel := mk_eq_mk_C_coord B j
-        rw [if_pos ⟨hjS, hjs⟩] at hrel
+        rw [ite_eq_left ⟨hjS, hjs⟩] at hrel
         exact hrel
     · rw [coordBlowupSubstMap_appTop_coord_of_notMem k m S s j hjS, affineSectionsToCoordRelationQuotient_coord]
       have hrel := mk_eq_mk_C_coord B j
-      rw [if_neg (by tauto)] at hrel
+      rw [ite_eq_right (by tauto)] at hrel
       exact hrel
 
 private theorem bijective_coordEvalQuotientHom_of_isPullback (B : BlowupChart π c S s)

@@ -96,7 +96,7 @@ theorem isId_of_lin {t : GTerm X u u F0 F0 what₂ what₂} (h : t.lin ∈ NLam 
   refine ⟨t.frame, ⟨t.rep.2.2.2.2, rfl⟩, ?_⟩
   unfold Formalism.L2.SG.FourParts.IsIdF
   have hi : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
-  have hf : mapLF t.lin (lf D F0) = _ := dif_pos hi
+  have hf : mapLF t.lin (lf D F0) = _ := dite_eq_left hi
   rw [show t.frame = mapLF t.lin (lf D F0) from rfl, hf]
   refine ⟨t.lin, h, fun a => rfl, ?_⟩
   have hz : (mapFlag t.lin hi (lf D F0).fl).z = t.lin (lf D F0).fl.z := rfl

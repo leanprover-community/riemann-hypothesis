@@ -68,7 +68,7 @@ theorem twist_places_under_split_coprime_conductor : ∀ {D : Formalism.BasicNot
         rw [G.pl.w_Q t P hP'.1 h1]
         exact Finset.mem_image_of_mem _ h
     have h0 := GlobalTheory.FunObj.SqNum.Model.expIn_condF G.pl (P.under (𝓞 D.host.F))
-    rw [if_neg hS] at h0
+    rw [ite_eq_right hS] at h0
     have hne : GlobalTheory.FunObj.SqNum.condF G.pl ≠ 0 :=
       Finset.prod_ne_zero_iff.2 fun u _ => pow_ne_zero _ u.ne_bot
     exact (multiplicity_eq_zero (FiniteMultiplicity.of_prime_left (P.under (𝓞 D.host.F)).prime hne)).1 h0

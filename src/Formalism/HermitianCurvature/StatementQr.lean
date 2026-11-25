@@ -103,11 +103,11 @@ def cutF (k r : ℕ) (i : Fin (r + 1)) (D : Set (Mx k r)) (f : Mx k r → E) : M
 
 theorem cutF_of_mem {f : Mx k r → E} {g : Mx k r} (hg : g ∈ Glev k r i ∩ D) : cutF k r i D f g = f g := by
   unfold cutF
-  exact if_pos hg
+  exact ite_eq_left hg
 
 theorem cutF_of_not_mem {f : Mx k r → E} {g : Mx k r} (hg : g ∉ Glev k r i ∩ D) : cutF k r i D f g = 0 := by
   unfold cutF
-  exact if_neg hg
+  exact ite_eq_right hg
 
 theorem cutF_smooth (hD : IsOpen D) {f : Mx k r → E} (hf : SmoothLev k r i D f) :
     SmoothLev k r i D (cutF k r i D f) := by

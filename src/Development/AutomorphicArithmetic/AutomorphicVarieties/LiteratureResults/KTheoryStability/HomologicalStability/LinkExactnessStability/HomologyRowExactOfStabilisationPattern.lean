@@ -28,7 +28,7 @@ theorem main : ∀ (k G : Type) [CommRing k] [Group G] (C : ℕ → Rep k G) (d 
   · have hnot : ¬ Even (p + 1) := by
       rw [Nat.even_add_one]
       exact not_not.2 hev
-    rw [rel p q (by omega), if_pos hev]
+    rw [rel p q (by omega), ite_eq_left hev]
     constructor
     · intro h0
       have h1 : (s p q).hom m = 0 := by
@@ -42,7 +42,7 @@ theorem main : ∀ (k G : Type) [CommRing k] [Group G] (C : ℕ → Rep k G) (d 
     · rintro ⟨z, hz⟩
       obtain ⟨w, rfl⟩ := (bij (p + 2) q hp).2 z
       have hw := rel (p + 1) q (by omega) w
-      rw [if_neg hnot] at hw
+      rw [ite_eq_right hnot] at hw
       have hm : (e (p + 1) q).hom m = 0 := by
         rw [← hz]
         exact hw
@@ -50,12 +50,12 @@ theorem main : ∀ (k G : Type) [CommRing k] [Group G] (C : ℕ → Rep k G) (d 
       rw [hm0, map_zero]
   · have hnot : ¬ Even p := Nat.not_even_iff_odd.2 hod
     have hev1 : Even (p + 1) := hod.add_one
-    rw [rel p q (by omega), if_neg hnot]
+    rw [rel p q (by omega), ite_eq_right hnot]
     constructor
     · intro _
       obtain ⟨w, hw⟩ := hsurj hod m
       refine ⟨(e (p + 2) q).hom w, ?_⟩
-      rw [rel (p + 1) q (by omega), if_pos hev1, ← hw]
+      rw [rel (p + 1) q (by omega), ite_eq_left hev1, ← hw]
       rfl
     · intro _
       rfl

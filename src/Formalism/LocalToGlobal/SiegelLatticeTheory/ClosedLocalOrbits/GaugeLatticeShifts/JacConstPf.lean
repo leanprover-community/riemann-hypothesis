@@ -306,7 +306,7 @@ theorem aemeas_F {φ : Mt k r → ℝ≥0∞} (hφ : Measurable φ) (μW μW' : 
       simp only [hU, Set.mem_setOf_eq, not_lt] at hin
       exact lt_of_le_of_ne hin hne
     have h0 : bcWeight k r (Tz k r z) (Tz k r z') q = 0 := by
-      unfold bcWeight; rw [if_neg (not_le.2 hlt)]
+      unfold bcWeight; rw [ite_eq_right (not_le.2 hlt)]
     simp [h0]
 
 theorem lhs_c {φ : Mt k r → ℝ≥0∞} (hφ : Measurable φ) (hW : WbHaar) {z z' : Fin (2 * r + k + 1) → ℂ} (hk : 1 ≤ k)

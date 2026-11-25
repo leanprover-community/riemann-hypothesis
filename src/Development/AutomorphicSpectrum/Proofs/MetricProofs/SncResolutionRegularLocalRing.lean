@@ -307,7 +307,7 @@ theorem aeval_dual (σ : Type) [Fintype σ] (w v : σ → ℂ) (g : MvPolynomial
           ring
         · simp [pderiv_X_of_ne (Ne.symm hq), hq]
           ring
-      simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, ← Finset.mul_sum]
+      simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, ← Finset.mul_sum]
       ring
 
 theorem card_le_finrank_add (σ : Type) [Fintype σ] (V : Submodule ℂ (σ → ℂ)) (e : ℕ) (b : Fin e → σ → ℂ)

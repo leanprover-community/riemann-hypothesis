@@ -38,7 +38,7 @@ theorem nu_le_comb {S : Scal B} {c : ℝ} {nus : HeightOneSpectrum (𝓞 B.KO) �
     rw [← EReal.coe_toReal (hTie ζ).1 (hTie ζ).2.1, EReal.coe_le_coe_iff] at h1
     have h2 : c / (2 * (G.iet : ℝ)) * (X.vAt la (Q.y ζ) (X.inc _ G.et)).toReal = c * vEt Q ζ := by
       unfold vEt
-      rw [if_pos hj]
+      rw [ite_eq_left hj]
       ring
     rw [h2] at h1
     unfold LocalPointData.nu

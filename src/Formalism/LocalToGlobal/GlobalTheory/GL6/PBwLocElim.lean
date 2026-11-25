@@ -107,10 +107,10 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
     have hrow : ∀ c : Fin r, c.val < k → M' kk c = 0 := by
       intro c hcl
       have h1 := congrFun (congrFun hM'M kk) c
-      rw [Matrix.mul_apply, Matrix.one_apply, if_neg (hne c hcl)] at h1
+      rw [Matrix.mul_apply, Matrix.one_apply, ite_eq_right (hne c hcl)] at h1
       rw [← h1, Finset.sum_eq_single c]
-      · rw [hc c hcl c, if_pos rfl, mul_one]
-      · intro b _ hb; rw [hc c hcl b, if_neg hb, mul_zero]
+      · rw [hc c hcl c, ite_eq_left rfl, mul_one]
+      · intro b _ hb; rw [hc c hcl b, ite_eq_right hb, mul_zero]
       · intro h; exact absurd (Finset.mem_univ c) h
     have hsum : ∑ i ∈ Finset.univ.filter (fun i : Fin r => k ≤ i.val), M' kk i * M i kk = 1 := by
       have h1 := congrFun (congrFun hM'M kk) kk
@@ -123,9 +123,9 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
     obtain ⟨i₀, hi₀s, y, hyO, hy⟩ := hL r _ (fun i => M' kk i) (fun i => M i kk) (fun i => hM' kk i)
       (fun i => hM i kk) hsum
     have hi₀ : k ≤ i₀.val := (Finset.mem_filter.1 hi₀s).2
-    have hMkc : ∀ c : Fin r, c.val < k → M kk c = 0 := fun c hcl => by rw [hc c hcl kk, if_neg (hne c hcl)]
+    have hMkc : ∀ c : Fin r, c.val < k → M kk c = 0 := fun c hcl => by rw [hc c hcl kk, ite_eq_right (hne c hcl)]
     have hMi₀c : ∀ c : Fin r, c.val < k → M i₀ c = 0 := fun c hcl => by
-      rw [hc c hcl i₀, if_neg]; intro h; rw [h] at hi₀; omega
+      rw [hc c hcl i₀, ite_eq_right]; intro h; rw [h] at hi₀; omega
     obtain ⟨G, G', hGI, hG', hG'I, hG'G, hA1, hAc⟩ : ∃ G G' : Matrix (Fin r) (Fin r) ℂ, bwE_Int O G ∧
         G' ∈ bwA_EO O r ∧ bwE_Int O G' ∧ G' * G = 1 ∧ (G * M) kk kk = 1 ∧
         ∀ c : Fin r, c.val < k → ∀ a, (G * M) a c = M a c := by
@@ -139,7 +139,7 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
             ← Matrix.single_add, ← Matrix.single_add]
           have e : y - 1 + (M kk kk - 1 + (M kk kk - 1) * (y - 1)) = 0 := by linear_combination hy
           rw [e, Matrix.single_zero, add_zero]
-        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, if_pos rfl]
+        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, ite_eq_left rfl]
           linear_combination hy
         · intro c hcl a
           rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, hMkc c hcl, mul_zero]
@@ -151,7 +151,7 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
           ?_, ?_, ?_⟩
         · rw [add_mul, one_mul, mul_add, mul_one, Matrix.single_mul_single_of_ne _ _ _ _ h, add_zero, add_assoc,
             ← Matrix.single_add, add_neg_cancel, Matrix.single_zero, add_zero]
-        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, if_pos rfl]
+        · rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, ite_eq_left rfl]
           linear_combination (1 - M kk kk) * hy
         · intro c hcl a
           rw [add_mul, one_mul, Matrix.add_apply, bwE_single_mul_apply, hMi₀c c hcl, mul_zero]
@@ -194,7 +194,7 @@ theorem bwE_elim (hL : bwE_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwE_Int
         by_cases ha : a = kk
         · subst ha; simp [hA1]
         · have : a ∈ Finset.univ.erase kk := Finset.mem_erase.2 ⟨ha, Finset.mem_univ _⟩
-          rw [if_pos this, hA1, mul_one, sub_self, if_neg ha]
+          rw [ite_eq_left this, hA1, mul_one, sub_self, ite_eq_right ha]
     have hCE := ih (k + 1) (by omega) C hCI hCinv hCc
     have eM : M = G' * ((1 + X) * C) := by
       rw [hCdef, ← Matrix.mul_assoc (1 + X), h1X, Matrix.one_mul, hAdef, ← Matrix.mul_assoc, hG'G, Matrix.one_mul]

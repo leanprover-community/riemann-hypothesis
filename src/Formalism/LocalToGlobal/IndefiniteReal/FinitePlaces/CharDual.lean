@@ -14,12 +14,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace Formalism.IndefR.Fin
 
-section Tate
-
-variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
-
-end Tate
-
 section Matrix
 
 variable {D : D7} (S T : HSp D)

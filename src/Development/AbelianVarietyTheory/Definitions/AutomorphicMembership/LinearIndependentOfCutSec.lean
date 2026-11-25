@@ -298,12 +298,6 @@ def resSt (C : CxSt F) : ResSt C where
   resFull := fun Y E _ _ _ _ w c M0 ι₀ A => resFull Y E w c M0 ι₀ A
   resDeg := fun Y E _ _ _ _ w c M0 ι₀ A => resDeg Y E w c M0 ι₀ A
 
-section OnePoint
-
-variable {Y E w c} [Unique (cutSet Y E w c)]
-
-end OnePoint
-
 end GlobalTheory.TrueGeo
 end -- clump:auto
 end -- clump:auto

@@ -37,7 +37,7 @@ theorem shearGL_mulVec_and_nabs_det : ∀ {k : Type} [Field k] [ValuativeRel k] 
     exact zero_ne_one hv
   have hcoe : ((GlobalTheory.CompanionTheory.MirPair.shearGL n b : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) =
       1 + vecMulVec (GlobalTheory.BZMir.eLast k n) b := by
-    simp only [GlobalTheory.CompanionTheory.MirPair.shearGL, dif_pos hunit, IsUnit.unit_spec]
+    simp only [GlobalTheory.CompanionTheory.MirPair.shearGL, dite_eq_left hunit, IsUnit.unit_spec]
   refine ⟨fun x => ?_, ?_⟩
   · rw [hcoe, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.vecMulVec_mulVec, op_smul_eq_smul]
   · apply GlobalTheory.SplitWeil.nabs_eq_one_of_valuation_eq_one

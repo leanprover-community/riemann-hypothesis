@@ -40,14 +40,14 @@ theorem strSat : StrSat := by
     if h : ∃ k, spehExp d k = s then ν h.choose else χ0 s
   have hμ : ∀ s, (μ s).IsAbsPow s := fun s => by
     by_cases h : ∃ k, spehExp d k = s
-    · simp only [μ, dif_pos h]
+    · simp only [μ, dite_eq_left h]
       have := hν h.choose
       rwa [h.choose_spec] at this
-    · simp only [μ, dif_neg h]
+    · simp only [μ, dite_eq_right h]
       exact hχ0 s
   have hμk : ∀ k, μ (spehExp d k) = ν k := fun k => by
     have h : ∃ k', spehExp d k' = spehExp d k := ⟨k, rfl⟩
-    simp only [μ, dif_pos h]
+    simp only [μ, dite_eq_left h]
     rw [spehExp_injective d h.choose_spec]
   filter_upwards [GlobalTheory.SpehPair.eventually_spherical hV] with w hw
   have hsph := hw (σ w) (hloc w)

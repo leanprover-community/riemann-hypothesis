@@ -175,13 +175,13 @@ theorem exists_extend (hv : AI.I1.IsBlockMap κ v) (c' : ∀ k', J' k') (d' : �
       ((hv.2.2.1 ⟨h.choose, d' h.choose⟩).trans h.choose_spec) ▸ (v ⟨h.choose, d' h.choose⟩).2 else c' k', ?_, ?_⟩
   · intro k
     have h : ∃ k₀, κ k₀ = κ k := ⟨k, rfl⟩
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     rw [hs]
     have : h.choose = k := hv.1 h.choose_spec
     rw [this]
   · intro k' hk
     have : ¬ ∃ k, κ k = k' := hk
-    simp only [dif_neg this]
+    simp only [dite_eq_right this]
 
 variable {Ω Ω' : Type} [Field Ω] [Field Ω'] {i : Ω →+* Ω'} {y : (Σ k, J k) → Ω} {y' : (Σ k, J' k) → Ω'}
 

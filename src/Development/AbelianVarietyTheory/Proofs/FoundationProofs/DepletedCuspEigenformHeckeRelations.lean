@@ -67,7 +67,7 @@ theorem eig_at (h : Prim k N χ g) {q : ℕ} (hq : q.Prime) (hqN : ¬ q ∣ N) (
 theorem pow_rec (h : Prim k N χ g) {p : ℕ} (hp : p.Prime) (hpN : ¬ p ∣ N) (r : ℕ) :
     g (p ^ (r + 2)) = g p * g (p ^ (r + 1)) - χ p * (p : ℂ) ^ (k - 1) * g (p ^ r) := by
   have e := eig_at h hp hpN (p ^ (r + 1))
-  rw [if_pos (dvd_pow_self p (Nat.succ_ne_zero r)), pow_succ' p r,
+  rw [ite_eq_left (dvd_pow_self p (Nat.succ_ne_zero r)), pow_succ' p r,
     Nat.mul_div_cancel_left _ hp.pos, ← pow_succ', ← pow_succ'] at e
   exact e
 
@@ -86,7 +86,7 @@ theorem ppow_mul (h : Prim k N χ g) {p : ℕ} (hp : p.Prime) {n : ℕ} (hn : ¬
     induction r with
     | zero =>
       refine ⟨by simp [h.one], ?_⟩
-      rw [zero_add, pow_one, eig_at h hp hpN n, if_neg hn, mul_zero, sub_zero]
+      rw [zero_add, pow_one, eig_at h hp hpN n, ite_eq_right hn, mul_zero, sub_zero]
     | succ r ih =>
       refine ⟨ih.2, ?_⟩
       have hd : p ∣ p ^ (r + 1) * n := dvd_mul_of_dvd_left (dvd_pow_self p (Nat.succ_ne_zero r)) n
@@ -94,7 +94,7 @@ theorem ppow_mul (h : Prim k N χ g) {p : ℕ} (hp : p.Prime) {n : ℕ} (hn : ¬
       have hq : p ^ (r + 1) * n / p = p ^ r * n := by
         rw [pow_succ', mul_assoc, Nat.mul_div_cancel_left _ hp.pos]
       have hy : p ^ (r + 1 + 1) * n = p * (p ^ (r + 1) * n) := by ring
-      rw [if_pos hd, hq] at e
+      rw [ite_eq_left hd, hq] at e
       rw [hy, e, pow_rec h hp hpN r, ih.1, ih.2]
       ring
 

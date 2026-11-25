@@ -70,7 +70,7 @@ theorem cosetInd_mem {S : Finset (G ⧸ K)} (hS : ∀ x ∈ K, ∀ c ∈ S, x �
     simp only [cosetInd, e, this]
   · have h : (g : G ⧸ K) ∈ S := by
       by_contra h
-      exact hg (if_neg h)
+      exact hg (ite_eq_right h)
     obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul K g
     exact ⟨_, Finset.mem_image_of_mem _ h, 1, k⁻¹, by rw [hk]; simp⟩
 

@@ -38,12 +38,11 @@ theorem injOn_nhds_of_strict {E F : Type} [NormedAddCommGroup E] [NormedSpace �
   exact sub_eq_zero.1 (norm_eq_zero.1 this)
 
 
-set_option backward.isDefEq.respectTransparency false in
+open scoped Matrix.Norms.Operator in
 theorem exp_mul_injOn {ι V : Type} [Fintype ι] [Fintype V] {n : ℕ}
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (V → Matrix (Fin n) (Fin n) ℂ)) (P : V → Matrix (Fin n) (Fin n) ℂ)
     (hker : ∀ x, (∀ v, L x v * P v = 0) → x = 0) :
     ∃ r : ℝ, 0 < r ∧ InjOn (fun x => fun v => NormedSpace.exp (L x v) * P v) (ball 0 r) := by
-  open scoped Matrix.Norms.Operator in
   let Lc : EuclideanSpace ℝ ι →L[ℝ] (V → Matrix (Fin n) (Fin n) ℂ) := L.toContinuousLinearMap
   let R : V → (Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ) :=
     fun v => (ContinuousLinearMap.mul ℝ (Matrix (Fin n) (Fin n) ℂ)).flip (P v)
@@ -51,10 +50,7 @@ theorem exp_mul_injOn {ι V : Type} [Fintype ι] [Fintype V] {n : ℕ}
     ContinuousLinearMap.pi fun v => (R v).comp ((ContinuousLinearMap.proj v).comp Lc)
   have hf' : ∀ x v, f' x v = L x v * P v := fun x v => rfl
   have hd : HasStrictFDerivAt (fun x => fun v => NormedSpace.exp (L x v) * P v) f' 0 := by
-    letI : NormedAddCommGroup (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAddCommGroup
-    letI : NormedSpace ℝ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedSpace
-    rw [hasStrictFDerivAt_pi]
-    intro v
+    refine hasStrictFDerivAt_pi.2 fun v => ?_
     have h0 : HasStrictFDerivAt (fun x : EuclideanSpace ℝ ι => L x v)
         ((ContinuousLinearMap.proj v).comp Lc) 0 :=
       ((ContinuousLinearMap.proj v).comp Lc).hasStrictFDerivAt
@@ -66,7 +62,7 @@ theorem exp_mul_injOn {ι V : Type} [Fintype ι] [Fintype V] {n : ℕ}
         ((R v).comp ((1 : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ).comp
           ((ContinuousLinearMap.proj v).comp Lc))) 0 :=
       (R v).hasStrictFDerivAt.comp 0 (he.comp 0 h0)
-    convert h2 using 1 <;> rfl
+    exact h2
   have hinj : Function.Injective f' := by
     intro x y hxy
     have : x - y = 0 := hker (x - y) fun v => by

@@ -119,10 +119,10 @@ theorem exists_isSymm_mulVec_add_diag_mod_two :
       by_cases hi : i = p
       · subst hi
         simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, add_mul, Finset.sum_add_distrib,
-          if_true, hm', h2, hk]
+          ite_true, hm', h2, hk]
         exact ⟨m + n' i * k + n' i, by ring⟩
       · simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, add_mul, Finset.sum_add_distrib,
-          if_neg hi, h2, hk, zero_mul, Finset.sum_const_zero]
+          ite_eq_right hi, h2, hk, zero_mul, Finset.sum_const_zero]
         exact ⟨n' i * k, by ring⟩
 
 end GlobalTheory
@@ -369,7 +369,7 @@ theorem exists_block_basis {G' G : Over (Sp R)} [GrpObj G'] [IsCommMonObj G'] [G
             (finProdFinEquiv (i', k'))) ≫ u (finProdFinEquiv (i', k'))) =
           sc (if i = i' then M k k' else 0) ≫ v k' := fun k' => by
         change (sc _ ≫ u _) ≫ p.pr i' = _
-        rw [Category.assoc, hu', if_pos rfl]
+        rw [Category.assoc, hu', ite_eq_left rfl]
         congr 2
         simp [e, Matrix.blockDiagonal_apply]
       rw [Finset.prod_congr rfl fun k' _ => h₁ k']
@@ -379,7 +379,7 @@ theorem exists_block_basis {G' G : Over (Sp R)} [GrpObj G'] [IsCommMonObj G'] [G
     · intro i'' _ hi
       refine Finset.prod_eq_one fun k' _ => ?_
       change (sc _ ≫ u _) ≫ p.pr i' = _
-      rw [Category.assoc, hu', if_neg hi, comp_one]
+      rw [Category.assoc, hu', ite_eq_right hi, comp_one]
     · simp
   · rw [Matrix.det_reindex_self, Matrix.det_blockDiagonal]
     simp

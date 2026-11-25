@@ -39,7 +39,7 @@ theorem isSectionOn_inv_one {P : Ideal (MRing ι)} (hP : P.IsPrime) {B : HermLin
   · intro m hm k
     have hm0 : m = 0 := by
       by_contra h
-      exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_one, if_neg (Ne.symm h)])
+      exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_one, ite_eq_right (Ne.symm h)])
     subst hm0
     simp
   · intro h

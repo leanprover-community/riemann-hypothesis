@@ -191,7 +191,7 @@ private lemma nsq_add_root_sub_nsq (w : Fin n → ℝ) {r s : Fin n} (hrs : r �
       · simp [h1, h2]
   unfold nsq dot
   rw [← Finset.sum_sub_distrib]
-  simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 private lemma abs_rhoN_le_half (ε : Fin n → Bool) (a : Fin n) :

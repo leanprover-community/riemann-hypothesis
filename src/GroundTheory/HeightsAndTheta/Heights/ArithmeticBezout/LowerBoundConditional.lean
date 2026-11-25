@@ -102,7 +102,7 @@ theorem isProjPrime_of_mem_support_fundCycle {J : Ideal (MvPolynomial (Fin n) R)
     by_contra h
     apply hval
     unfold fundCycle
-    rw [Finsupp.onFinset_apply, if_neg h]
+    rw [Finsupp.onFinset_apply, ite_eq_right h]
   obtain ⟨hmin, hW'⟩ := hrel
   have hprime : W.IsPrime := hmin.1.1
   have hJh := (isHomogIdeal_iff J).mp hJ

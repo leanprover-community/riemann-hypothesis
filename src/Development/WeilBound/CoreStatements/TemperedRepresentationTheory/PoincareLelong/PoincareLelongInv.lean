@@ -403,7 +403,7 @@ theorem maDens_log_all {e : ℕ} (p : (Fin (e + 1) → ℂ) → ℝ) (y : Fin (e
   have key := MaDensLogPow.mdisc_expand (a : ℂ) (b : ℂ) H G hG Finset.univ (fun _ => H) (fun _ _ => rfl)
   rw [Finset.sum_congr rfl fun i _ => mdisc_update_const G H i, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, Nat.add_sub_cancel, nsmul_eq_mul] at key
-  simp only [Finset.mem_univ, if_true] at key
+  simp only [Finset.mem_univ, ite_true] at key
   have hfam3 : (fun i => hessC ((fun _ : Fin e => p) i) y) = fun _ : Fin e => H := rfl
   unfold maDens gradDens
   simp only [hlog]

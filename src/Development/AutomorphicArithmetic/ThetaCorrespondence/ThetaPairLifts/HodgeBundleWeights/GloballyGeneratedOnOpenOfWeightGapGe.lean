@@ -573,7 +573,7 @@ namespace GlobalTheory.HSApp
 theorem gapGe_stdWt {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H) :
     GapGe 1 (GlobalTheory.CompHt.stdWt (Psi H) (Dw.p + Dw.q) : AllWt.Weight Dw) := by
   intro τ k hk
-  simp only [gap, dif_pos hk, GlobalTheory.CompHt.stdWt]
+  simp only [gap, dite_eq_left hk, GlobalTheory.CompHt.stdWt]
   push_cast
   omega
 
@@ -582,7 +582,7 @@ theorem gapGe_sub_smul {E : Type} [Field E] [NumberField E] [IsCMField E] {H : R
     GapGe 0 (b - m • (GlobalTheory.CompHt.stdWt (Psi H) (Dw.p + Dw.q) : AllWt.Weight Dw)) := by
   intro τ k hk
   have h1 := h τ k hk
-  simp only [gap, dif_pos hk, Pi.sub_apply, Pi.smul_apply, GlobalTheory.CompHt.stdWt] at h1 ⊢
+  simp only [gap, dite_eq_left hk, Pi.sub_apply, Pi.smul_apply, GlobalTheory.CompHt.stdWt] at h1 ⊢
   rw [nsmul_eq_mul, nsmul_eq_mul]
   push_cast
   linarith
@@ -701,7 +701,7 @@ theorem globally_generated_on_open_of_weight_gap_ge : _root_.GlobalTheory.CovTop
   obtain ⟨ω⟩ := GlobalTheory.CompHS.canId_nonempty hP.p5 E H Dw l Xo c TF.Y TF.X Z M (fun K _ _ y => _root_.GlobalTheory.FlagTan.kodaira_spencer_iso_flag_tangent_psi_set hP hG E H Dw l Xo c K y hpq)
   intro y hy
   rw [mem_support_baseIdeal]
-  push_neg
+  push Not
   obtain ⟨g, hgy⟩ := _root_.GlobalTheory.HSApp.exists_canonical_section_ne_zero_at hP hQ.nef hNa hT hL E H Dw l Xo c TF Z hF hD hV la hg y hy
   haveI := hV.1
   haveI : SmoothOfRelativeDimension (dimFlag Dw) (𝟙 (Y₀ TF.X Z) ≫ str₀ TF.X Z) := M.smooth

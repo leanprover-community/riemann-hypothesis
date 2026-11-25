@@ -1498,10 +1498,10 @@ theorem _root_.GlobalTheory.FlagPush.MultiLevel.antisymm_of_multilinear : ∀ (�
             · subst hi
               simp [Y, K]
             · have hik : (i : ℕ) ≠ k := fun e => hi (Fin.ext e)
-              simp only [Y, Function.update_apply, hi, if_false]
+              simp only [Y, Function.update_apply, hi, ite_false]
               by_cases hlt : (i : ℕ) < k
-              · rw [if_pos hlt, if_pos (by omega)]
-              · rw [if_neg hlt, if_neg (by omega)]
+              · rw [ite_eq_left hlt, ite_eq_left (by omega)]
+              · rw [ite_eq_right hlt, ite_eq_right (by omega)]
           have e0 : Y k = Function.update (Y k) K (v (s K)) := by
             rw [eq_comm, Function.update_eq_self_iff]
             simp [Y, K]
@@ -1717,7 +1717,7 @@ theorem shear_apply_of_ne {ι : Type} {m : ι → ℕ} (τ : ι) (a b : Fin (m �
     {σ : ι} (h : σ ≠ τ) : shear τ a b t σ = 1 := by
   ext i k
   simp only [shear, Matrix.add_apply, Matrix.of_apply]
-  rw [if_neg, add_zero]
+  rw [ite_eq_right, add_zero]
   rintro ⟨h1, -⟩
   exact h (congrArg Sigma.fst h1)
 
@@ -1731,7 +1731,7 @@ theorem shear_self_mul_apply {ι : Type} {m : ι → ℕ} (τ : ι) (a b : Fin (
     by_cases h1 : i = a <;> by_cases h2 : k = b <;> simp [h1, h2]
   rw [Matrix.mul_apply]
   simp only [e, add_mul, Finset.sum_add_distrib, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   by_cases h1 : i = a <;> simp [h1]
 
 theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : Fin (m τ)), (b : ℕ) = a + 1 →
@@ -1757,8 +1757,8 @@ theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : F
     have h1 := hz τ a b hab'
     have h2 := hdiag τ b
     rw [shear_self_mul_apply] at h1 h2
-    rw [if_pos rfl, hmap, h0, map_zero, zero_add] at h1
-    rw [if_neg hba, add_zero] at h2
+    rw [ite_eq_left rfl, hmap, h0, map_zero, zero_add] at h1
+    rw [ite_eq_right hba, add_zero] at h2
     exact h2 ((mul_eq_zero.1 h1).resolve_left ht)
   · intro σ i c hic hn
     refine (map_eq_zero j).1 ?_
@@ -1776,10 +1776,10 @@ theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : F
           have : (c : ℕ) ≠ b := fun h => hcb (Fin.ext h)
           omega
         have h2 := hz σ b c hbc
-        rw [shear_self_mul_apply, if_neg hba, add_zero] at h2
-        rw [if_pos rfl, h2, mul_zero, add_zero] at h1
+        rw [shear_self_mul_apply, ite_eq_right hba, add_zero] at h2
+        rw [ite_eq_left rfl, h2, mul_zero, add_zero] at h1
         exact h1
-      · rw [if_neg hi, add_zero] at h1
+      · rw [ite_eq_right hi, add_zero] at h1
         exact h1
     · have h1 := hz σ i c hic
       rw [shear_apply_of_ne τ a b t hσ, one_mul] at h1

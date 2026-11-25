@@ -28,10 +28,4 @@ theorem mem_of_mirProj_eq_one (n : ℕ) (y : Mir k n) (hy : mirabolicProjection 
 
 end Alg
 
-section Rep
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Rep
-
 end GlobalTheory.CompanionTheory.BZMirAdj

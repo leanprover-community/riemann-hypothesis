@@ -84,13 +84,6 @@ open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.LatPair GlobalTheor
 
 namespace GlobalTheory.PlaceCompare.Spherical
 
-section Local
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n'' n' n : Type} [Fintype n''] [DecidableEq n''] [Fintype n'] [DecidableEq n'] [Fintype n] [DecidableEq n]
-
-end Local
-
 section Global
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum IsDedekindDomain NumberField
@@ -241,7 +234,7 @@ theorem resEta_of_isWeilSch {D : D7} {n : ℕ} (hn : 0 < n) {V : HSp D} {ψ : Ad
     · subst hij
       by_cases hi : i = i₀
       · subst hi
-        simp only [if_true, Function.update_self]
+        simp only [ite_true, Function.update_self]
         exact _root_.GlobalTheory.IdemSupport.cA_algebraMap _
       · simp [Function.update_of_ne hi]
     · simp [hij, Ne.symm hij]

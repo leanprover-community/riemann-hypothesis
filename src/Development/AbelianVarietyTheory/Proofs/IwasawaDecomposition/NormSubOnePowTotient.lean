@@ -282,7 +282,7 @@ theorem GlobalTheory.CycTrace.normalised_trace_bound (l : ℕ) [hl : Fact l.Prim
     · intro i _ hi
       rw [coeff_mul_X_pow']
       split_ifs with h
-      · rw [coeff_expand hM, if_neg]
+      · rw [coeff_expand hM, ite_eq_right]
         intro hd
         have : l ^ m ∣ (i : ℕ) := by
           have := (Nat.dvd_sub_iff_right h (Dvd.intro_left j rfl)).1 hd

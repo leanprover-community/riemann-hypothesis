@@ -35,7 +35,7 @@ theorem rr_top_eq (hVT : Top.VecVTypes) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r �
     (P1 Q1 : C.LPt) (hP : D.IsLocPt P1 (P.r + 1)) (hQ : D.IsLocPt Q1 (P.r + 1)) :
     p.RR F (P.r + 1) w P1 Q1 = Top.topOf P p.l0 p.T p.ν' p.m₀ p.Θ p.TP F w P1 Q1 := by
   unfold KB.Pl.RR D.RRplace
-  rw [dite_eq_left ⟨hP, hQ⟩, dite_eq_right (by omega), if_pos rfl]
+  rw [dite_eq_left ⟨hP, hQ⟩, dite_eq_right (by omega), ite_eq_left rfl]
   split_ifs with hw
   · subst hw
     set TT := Tz P.k P.r p.T.base.z * Tz P.k P.r p.T.base.z' with hTT
@@ -115,7 +115,7 @@ theorem gN_top (hVT : Top.VecVTypes) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
           (stdS S (Q ++ [(s, t)])))) := by
       intro e ρ
       unfold gramH vecT
-      rw [if_pos hPl, if_pos hQl]
+      rw [ite_eq_left hPl, ite_eq_left hQl]
       rfl
     simp only [hgr]
     rw [eP, eQ, hPQ]
@@ -132,8 +132,8 @@ theorem gN_top (hVT : Top.VecVTypes) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
       intro e ρ
       unfold gramH vecT
       by_cases h1 : D.IsLocPt (P ++ [(s, t)]) (S.G.r + 1)
-      · rw [if_neg (fun h2 => hloc ⟨h1, h2⟩), inner_zero_left]
-      · rw [if_neg h1, inner_zero_right]
+      · rw [ite_eq_right (fun h2 => hloc ⟨h1, h2⟩), inner_zero_left]
+      · rw [ite_eq_right h1, inner_zero_right]
     simp [hz]
 
 theorem hsVec_sum {Wp' Wq' : Type} [NormedAddCommGroup Wp'] [InnerProductSpace ℂ Wp'] [NormedAddCommGroup Wq']
@@ -194,8 +194,8 @@ theorem vecT_deg (hDT : KB.DegTop) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
             (stdS S P ++ [(s, τ)]) := by
       rw [← h1, smul_smul, inv_mul_cancel₀ hc0, one_smul]
     unfold vecT
-    rw [if_pos hloc]
-    simp only [if_pos hloc]
+    rw [ite_eq_left hloc]
+    simp only [ite_eq_left hloc]
     rw [eP]
     change B.hsVec (((p v).TP.E ρ).comp ((p v).V ((p v).Θ.Θ w e (F v ε)) (stdS S P ++ [(s, τ)]))) = _
     have hcomp (a : Finset (Fin K → Fin (d + 1)))
@@ -210,7 +210,7 @@ theorem vecT_deg (hDT : KB.DegTop) {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq}
     rw [ContinuousLinearMap.comp_smul, _root_.PI.UnitaryGroupMassFormula.UsCompose.hsVec_smul]
     rfl
   · unfold vecT
-    simp only [if_neg hloc, smul_zero, Finset.sum_const_zero]
+    simp only [ite_eq_right hloc, smul_zero, Finset.sum_const_zero]
 
 end gramtop
 

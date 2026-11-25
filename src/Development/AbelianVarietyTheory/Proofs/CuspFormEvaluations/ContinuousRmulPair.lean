@@ -76,13 +76,13 @@ theorem bor_eq_pi (Ψ : Finset (E →+* ℂ)) (r : ℕ) :
     have hu : ∀ a c : Fin r, c < a → b τ a c = 0 := by
       intro a c hc
       have := h a c
-      rwa [if_pos hc] at this
+      rwa [ite_eq_left hc] at this
     have hbt : (mat b τ).BlockTriangular id := fun i j h => hu i j h
     refine ⟨?_, hu⟩
     rw [Matrix.det_of_upperTriangular hbt, Finset.prod_ne_zero_iff]
     intro a _
     have := h a a
-    rwa [if_neg (lt_irrefl a), if_pos rfl] at this
+    rwa [ite_eq_right (lt_irrefl a), ite_eq_left rfl] at this
 
 
 omit [NumberField E] [IsCMField E] in

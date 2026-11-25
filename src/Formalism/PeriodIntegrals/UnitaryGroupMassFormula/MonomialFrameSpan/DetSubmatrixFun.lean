@@ -45,7 +45,7 @@ theorem det_submatrix_fun {R : Type*} [CommRing R] {p n : ℕ} (M : Matrix (Fin 
     rw [e, Matrix.det_permute']
   · left
     rw [Function.Injective] at hf
-    push_neg at hf
+    push Not at hf
     obtain ⟨i, j, hij, hne⟩ := hf
     exact Matrix.det_zero_of_column_eq hne (fun a => by simp [hij])
 

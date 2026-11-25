@@ -172,7 +172,7 @@ theorem exists_ev {p : ℕ} [hp : Fact p.Prime] {K : Type} [Field K] [Algebra �
     exact absurd (hπ ▸ one_le_pow₀ (not_le.1 h).le) (not_le.2 (hwp ▸ h1))
   choose lam hlam using fun r => hsp ⟨j (C.coeff r), hmem _ (hC r).2⟩ ((hv _).2 (hC r).1)
   let a : Fin F × Fin E → Lau p := fun i =>
-    ⟨fun r => if C.coeff r = 0 then 0 else lam r i.1 i.2, C.isPWO_support.mono fun r hr h => hr (if_pos h)⟩
+    ⟨fun r => if C.coeff r = 0 then 0 else lam r i.1 i.2, C.isPWO_support.mono fun r hr h => hr (ite_eq_left h)⟩
   refine ⟨_, _, EvRing.ev_of_fintype ψ _ _ _ (fun i : Fin F × Fin E => ((κ i.1 * π ^ (i.2 : ℕ) : L) : Ω)) a
     (fun i => ⟨(hv _).1 ?_, hL _⟩) (fun r => ?_) rfl rfl⟩
   · rw [← hw, map_mul, map_pow]
@@ -181,7 +181,7 @@ theorem exists_ev {p : ℕ} [hp : Fact p.Prime] {K : Type} [Field K] [Algebra �
     · simp [a, h, hzp]
     · have := congrArg (fun x : L => (x : Ω)) (hlam r)
       push_cast at this
-      simp only [a, if_neg h, Fintype.sum_prod_type]
+      simp only [a, ite_eq_right h, Fintype.sum_prod_type]
       push_cast
       simpa only [hf] using this
 

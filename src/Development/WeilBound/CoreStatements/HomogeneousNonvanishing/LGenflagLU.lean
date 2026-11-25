@@ -59,19 +59,19 @@ theorem trunc_mul (k : Fin r) (A C : Matrix (Fin r) (Fin r) R) (hC : Up C) :
   simp only [trunc, of_apply, Matrix.mul_apply]
   by_cases hi : i ≤ k
   · by_cases hj : j ≤ k
-    · simp only [hi, hj, and_self, if_true, true_and, and_true]
+    · simp only [hi, hj, and_self, ite_true, true_and, and_true]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases hl : l ≤ k
       · simp [hl]
       · have h1 : j < l := lt_of_le_of_lt hj (not_le.1 hl)
         simp [hl, hC l j h1, h1.ne']
     · have hij : i ≠ j := fun e => hj (e ▸ hi)
-      simp only [hi, hj, and_false, if_false, true_and, hij]
+      simp only [hi, hj, and_false, ite_false, true_and, hij]
       refine (Finset.sum_eq_zero fun l _ => ?_).symm
       by_cases hl : l = j
       · subst hl; simp [hj, hij]
       · simp [hl]
-  · simp only [hi, false_and, if_false]
+  · simp only [hi, false_and, ite_false]
     rw [Finset.sum_eq_single i]
     · simp [hi]
     · intro l _ hl; simp [Ne.symm hl]
@@ -100,7 +100,7 @@ theorem exists_lu (A : Matrix (Fin r) (Fin r) F) (h : ∀ k, (trunc k A).det ≠
   have hup : ∀ l k, k < l → x k l = 0 := by
     intro l k hkl
     have := congrFun (hx k) l
-    simp only [mulVec, dotProduct, trunc, of_apply, not_le.2 hkl, false_and, if_false] at this
+    simp only [mulVec, dotProduct, trunc, of_apply, not_le.2 hkl, false_and, ite_false] at this
     rw [Finset.sum_eq_single l] at this
     · simpa [hkl.ne'] using this
     · intro b _ hb; simp [Ne.symm hb]

@@ -180,9 +180,9 @@ theorem integrableOn_poinVol {n : ℕ} (S : Finset (Fin n)) (K : Set (V n)) (hK 
   have hg : ∀ a, Integrable (g a) := by
     intro a
     by_cases h : a ∈ S
-    · simp only [g, h, if_true]
+    · simp only [g, h, ite_true]
       exact (integrable_indicator_iff measurableSet_closedBall).2 _root_.GlobalTheory.GoodTop.integrableOn_poincare_disc
-    · simp only [g, h, if_false]
+    · simp only [g, h, ite_false]
       exact (integrable_indicator_iff measurableSet_closedBall).2
         (continuousOn_const.integrableOn_compact (isCompact_closedBall _ _))
   have h1 : Integrable (fun x : Fin n → ℂ => ∏ a, g a (x a)) := Integrable.fintype_prod hg
@@ -194,11 +194,11 @@ theorem integrableOn_poinVol {n : ℕ} (S : Finset (Fin n)) (K : Set (V n)) (hK 
   by_cases h : a ∈ S
   · have : v.ofLp a ∈ Metric.closedBall (0 : ℂ) (1 / 2) := by
       simpa using hS v hv a h
-    simp only [g, h, if_true, poinWt]
+    simp only [g, h, ite_true, poinWt]
     exact Set.indicator_of_mem this _
   · have : v.ofLp a ∈ Metric.closedBall (0 : ℂ) R := by
       simpa using (PiLp.norm_apply_le v a).trans (hR v hv)
-    simp only [g, h, if_false, poinWt, inv_one, one_pow]
+    simp only [g, h, ite_false, poinWt, inv_one, one_pow]
     exact Set.indicator_of_mem this _
 
 end GlobalTheory.GoodTop

@@ -101,6 +101,6 @@ theorem cusp_le_span_shortGen : Formalism.MainNotions.ModuliIntegralCharts.H1.Ch
     (U σ) hU a n).1
   refine mem_span_of_map_mem_span_image (Formalism.L2.PjFree.rdU (U σ)) (sec Xo c a n) hind (shortGen Xo c nab bad nV a n (dδ n)) (fun g hg => hg.1) hf'.1 (hsp ?_)
   refine ⟨hf'.2 σ hσ, fun k x hx => ?_⟩
-  exact dif_neg hx
+  exact dite_eq_right hx
 
 end GlobalTheory

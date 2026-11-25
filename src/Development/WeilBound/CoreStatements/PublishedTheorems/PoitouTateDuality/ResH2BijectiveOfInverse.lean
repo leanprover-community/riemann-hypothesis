@@ -14,8 +14,6 @@ open CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 theorem resH2_bijective_of_inverse {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [Group H] [TopologicalSpace H] [IsTopologicalGroup H] {R M : Type} [CommRing R]
     [AddCommGroup M] [Module R M] [TopologicalSpace M] [DiscreteTopology M]

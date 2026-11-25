@@ -130,7 +130,7 @@ theorem GlobalTheory.FiniteOrderRule.unitC_of_cmp : ∀ (E : Type) [Field E] [Nu
     d.c₂.F.val.toRingHom d.cδ hC.1.1 (Nat.card Cls) (fun z => by
       have h2 := hC.2 z
       unfold evR at h2
-      rw [h2, if_neg Bool.false_ne_true, ← map_pow, ← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one', map_one,
+      rw [h2, ite_eq_right Bool.false_ne_true, ← map_pow, ← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one', map_one,
         Units.val_one, map_one])
   have h3 := @GlobalTheory.FiniteOrderRule.evalAt_pow_eq_one d.c₂.F _ (fun S _ _ => FrPt d.Xo₂ d.c₂ S)
     (fun φ y z => FrMap φ y z) d.cδ (Nat.card Cls) h1 ℂ _ A y

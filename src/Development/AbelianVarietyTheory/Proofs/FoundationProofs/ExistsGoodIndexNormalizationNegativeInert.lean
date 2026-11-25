@@ -61,12 +61,12 @@ noncomputable def ofPrimeValues (u : ℕ → ℂ) : ℕ →* ℂ where
     · simp [ha]
     by_cases hb : b = 0
     · simp [hb]
-    rw [if_neg (mul_ne_zero ha hb), if_neg ha, if_neg hb, Nat.factorization_mul ha hb,
+    rw [ite_eq_right (mul_ne_zero ha hb), ite_eq_right ha, ite_eq_right hb, Nat.factorization_mul ha hb,
       Finsupp.prod_add_index' (by simp) (fun q k l => pow_add _ _ _)]
 
 theorem ofPrimeValues_prime (u : ℕ → ℂ) {q : ℕ} (hq : q.Prime) : ofPrimeValues u q = u q := by
   show (if q = 0 then 0 else q.factorization.prod fun q k => u q ^ k) = u q
-  rw [if_neg hq.ne_zero, hq.factorization, Finsupp.prod_single_index (by simp), pow_one]
+  rw [ite_eq_right hq.ne_zero, hq.factorization, Finsupp.prod_single_index (by simp), pow_one]
 
 theorem sqrt_pow_nat (q f : ℕ) : ((Real.sqrt q : ℝ) : ℂ) ^ f = (Real.sqrt ((q ^ f : ℕ) : ℝ) : ℂ) := by
   induction f with
@@ -97,7 +97,7 @@ theorem exists_lam (S : ℕ → Prop) (f : ℕ → ℕ) :
       rw [map_mul]
       exact mul_ne_zero (ha (left_ne_zero_of_mul h)) (hb (right_ne_zero_of_mul h))
   · rw [map_pow, ofPrimeValues_prime u hq]
-    simp only [u, if_pos hS]
+    simp only [u, ite_eq_left hS]
     have hf' : (f q : ℂ) ≠ 0 := by exact_mod_cast hf
     rw [mul_pow, sqrt_pow_nat, ← Complex.exp_nat_mul, mul_div_cancel₀ _ hf', Complex.exp_pi_mul_I]
     ring
@@ -108,7 +108,7 @@ theorem exists_lam (S : ℕ → Prop) (f : ℕ → ℕ) :
       intro _ h
       have hS : ¬ S q := fun hS => h q hq hS dvd_rfl
       rw [ofPrimeValues_prime u hq]
-      simp only [u, if_neg hS, mul_one]
+      simp only [u, ite_eq_right hS, mul_one]
     | mul a b ha hb =>
       intro h h'
       rw [map_mul, ha (left_ne_zero_of_mul h) fun q hq hS hd => h' q hq hS (hd.mul_right _),

@@ -387,12 +387,6 @@ theorem tSet_same (s s' : SplitPlace L) (hv : s'.v = s.v) {ϖ' : s'.v.adicComple
 
 end Same
 
-section Int
-
-variable {R : Type} [CommRing R] [Algebra R ℂ]
-
-end Int
-
 end CompanionTheory.L3H
 end -- clump:auto
 end -- clump:auto

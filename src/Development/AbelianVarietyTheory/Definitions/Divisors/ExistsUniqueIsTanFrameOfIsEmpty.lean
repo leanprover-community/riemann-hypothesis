@@ -209,8 +209,8 @@ theorem IsHalf.card {Φ : Finset (E →+* ℂ)} (h : IsHalf Φ) : Φ.card = Modu
 theorem mult_conj (τ : E →+* ℂ) : (Dw.mult τ = Dw.p ∧ Dw.mult (conjEmb τ) = Dw.q) ∨
     (Dw.mult τ = Dw.q ∧ Dw.mult (conjEmb τ) = Dw.p) := by
   by_cases h : τ (H.rt : E) = H.rt0
-  · exact .inl ⟨if_pos h, if_neg (conj_not_mem ⟨τ, h⟩)⟩
-  · exact .inr ⟨if_neg h, if_pos (conj_mem h)⟩
+  · exact .inl ⟨ite_eq_left h, ite_eq_right (conj_not_mem ⟨τ, h⟩)⟩
+  · exact .inr ⟨ite_eq_right h, ite_eq_left (conj_mem h)⟩
 
 theorem card_HIx {Φ : Finset (E →+* ℂ)} (h : IsHalf Φ) : Fintype.card (HIx Dw Φ) = Dw.dim := by
   have : ∀ τ : Φ, Dw.mult (conjEmb τ.1) * Dw.mult τ.1 = Dw.p * Dw.q := fun τ => by
@@ -255,18 +255,18 @@ theorem exOf_kap : exOf Dw (kap Dw) 0 = detTanEx Dw := by
   have hi := i.2
   simp only [detTanEx, Fin.card_Iio, Fin.card_Ioi]
   by_cases h : σ (H.rt : E) = H.rt0
-  · have a : Dw.mult σ = Dw.p := if_pos h
-    have b : Dw.mult (conjEmb σ) = Dw.q := if_neg (conj_not_mem ⟨σ, h⟩)
+  · have a : Dw.mult σ = Dw.p := ite_eq_left h
+    have b : Dw.mult (conjEmb σ) = Dw.q := ite_eq_right (conj_not_mem ⟨σ, h⟩)
     have hp : (i : ℕ) < Dw.p := by omega
     rw [wtOf_big _ 0 ⟨σ, h⟩ i hp]
-    simp only [kap, hp, if_true]
+    simp only [kap, hp, ite_true]
     omega
-  · have a : Dw.mult σ = Dw.q := if_neg h
-    have b : Dw.mult (conjEmb σ) = Dw.p := if_pos (conj_mem h)
+  · have a : Dw.mult σ = Dw.q := ite_eq_right h
+    have b : Dw.mult (conjEmb σ) = Dw.p := ite_eq_left (conj_mem h)
     have e := wtOf_small (kap Dw) 0 ⟨conjEmb σ, conj_mem h⟩ i (a ▸ hi)
     simp only [conjEmb_conjEmb] at e
     rw [e]
-    simp only [kap, add_lt_iff_neg_left, Nat.not_lt_zero, if_false]
+    simp only [kap, add_lt_iff_neg_left, Nat.not_lt_zero, ite_false]
     omega
 
 end Index
@@ -410,7 +410,7 @@ theorem KSIso.der_eq {Φ : Finset (E →+* ℂ)} {y : FrPt Xo c K} (h : KSIso Φ
   choose C' a' hC' using fun k => key _ _ (hv.1 k).1 (hv.1 k).2
   refine ⟨fun j => C j - ∑ k, M k * C' k j, a - ∑ k, M k * a' k, fun s hs => ?_⟩
   rw [hC s hs, Finset.sum_congr rfl fun k _ => congrArg (M k * ·) (hC' k s hs)]
-  simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, mul_add,
+  simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, mul_add,
     Finset.sum_add_distrib, sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, Finset.mul_sum, mul_assoc]
   rw [Finset.sum_comm (s := (Finset.univ : Finset (VIx Dw)))]
   simp only [mul_comm _ (M _)]
@@ -554,7 +554,7 @@ variable {Φ}
 
 theorem wedgeOrd_ne_bot_iff {n : ℕ} {φ : CoefHom c io K₀} {y : IntFr Xo c T io} {s : ι → RulK Xo c K₀} :
     wedgeOrd Φ n φ y s ≠ ⊥ ↔ ∃! w, IsWedgeOrd Φ n φ y s w := by
-  refine ⟨fun h => by_contra fun h' => h (dif_neg h'), fun h => ?_⟩
+  refine ⟨fun h => by_contra fun h' => h (dite_eq_right h'), fun h => ?_⟩
   obtain ⟨o, d, -, e⟩ := h.choose_spec.1
   rw [wedgeOrd, dite_eq_left h, e]
   exact nval_ne_bot _ _

@@ -244,7 +244,7 @@ lemma det_minor {n α : Type*} [Fintype n] [DecidableEq n] [Fintype α] (t : n �
     ext a a'
     simp only [Matrix.submatrix_apply, Matrix.mul_apply, Matrix.transpose_apply, hT,
       Matrix.diagonal_apply, Matrix.map_apply, ite_mul, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [← Finset.sum_subtype (Finset.univ.filter p) (by simp)
       (fun c => S c a * ((d c : ℂ) * (starRingEnd ℂ) (S c a')))]
     symm
@@ -603,7 +603,7 @@ theorem fn_continuousOn_good {E : Type} [Field E] [NumberField E] [IsCMField E] 
     else φ x₀
   have hψ' : ∀ b ∈ B, ∀ a, Formalism.L2.PjFree.toC (ψ' b a) = ψ b a := by
     intro b hb a
-    simp only [ψ', dif_pos hb]
+    simp only [ψ', dite_eq_left hb]
     rfl
   choose z hz using fun b => GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c A (CAt σ) (ψ' b) yA
   have hcont := _root_.GlobalTheory.FrameNorm.fn_continuousOn_hol E H Dw l Xo c r U hU xR fn hx hfn σ hσ A yA m B ψ' z hB
@@ -642,7 +642,7 @@ theorem fn_continuousOn_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   · have hσ' : Formalism.L2.PjFree.GoodEmb c ((starRingEnd ℂ).comp σ) := by
       have := Formalism.L2.PjFree.goodEmb_goodOf c σ
       unfold Formalism.L2.PjFree.goodOf at this
-      rwa [if_neg hσ] at this
+      rwa [ite_eq_right hσ] at this
     choose z hz using fun x => GlobalTheory.Frames.FramedBaseChange.exists_frMap GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c (CAt σ)
       (CAt ((starRingEnd ℂ).comp σ)) (conjAlg σ) (y x)
     have h := fn_continuousOn_good U hU xR fn hx hfn _ hσ' A yA X W (fun x => (conjAlg σ).comp (φ x)) z

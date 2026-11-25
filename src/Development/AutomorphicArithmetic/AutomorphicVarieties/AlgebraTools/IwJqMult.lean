@@ -274,7 +274,7 @@ private theorem exists_perm {n : ℕ} (b : SizeMatrix (fun _ : Fin n => Unit) (f
     have hsum : ∑ j, b.1 i j = 1 := by simpa using b.2.1 i
     obtain ⟨j, -, hj⟩ := Finset.exists_ne_zero_of_sum_ne_zero (hsum.trans_ne one_ne_zero)
     refine ⟨j, by_contra fun h => hj ?_⟩
-    rw [hw, if_neg (Ne.symm h)]
+    rw [hw, ite_eq_right (Ne.symm h)]
   exact ⟨Equiv.ofBijective w ⟨Finite.injective_iff_surjective.2 hs, hs⟩, fun i j => hw j i⟩
 
 private theorem tri_prin (hG : JacquetOfInducedFiltration k) {n : ℕ} {ψ : Fin n → kˣ →* ℂˣ}
@@ -297,7 +297,7 @@ private theorem tri_prin (hG : JacquetOfInducedFiltration k) {n : ℕ} {ψ : Fin
     rw [h]
   · obtain ⟨φ⟩ := h4 t (b t).nonempty_rows.some (b t).nonempty_cols.some
     have he : ∀ i j, i ≠ w (b t) j → IsEmpty (Fin ((b t).1 i j)) := fun i j h => by
-      rw [hw, if_neg h]; infer_instance
+      rw [hw, ite_eq_right h]; infer_instance
     exact cell (w (b t)) he _ _ ψ _ (fun t v => ofChar_apply _ _ _) φ
 
 private theorem sq_jac {n : ℕ} {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]

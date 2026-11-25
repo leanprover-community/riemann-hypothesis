@@ -290,13 +290,13 @@ variable {Li : Type} [AddCommGroup Li] [Module Ω Li] {I : Type} [Fintype I] {r 
 
 theorem deltaLat_off {q : Cpt ξ} (hq : ¬ InFibre ξ p q) :
     deltaLat ξ r V W p q = Submodule.span (regAt ξ q) {1} := by
-  simp only [deltaLat, if_neg hq]
+  simp only [deltaLat, ite_eq_right hq]
 
 theorem deltaLat_fibre {q : Cpt ξ} (hq : InFibre ξ p q) {b b' : ∀ i, Fin (r i) → Li}
     {T : ∀ i, Matrix (Fin (r i)) (Fin (r i)) Ω} (hb : ∀ i, (V i).IsFrameAt (b i) q)
     (hb' : ∀ i, (W i).IsFrameAt (b' i) q) (hT : ∀ i k, b' i k = ∑ k', T i k' k • b i k') :
     deltaLat ξ r V W p q = Submodule.span (regAt ξ q) {∏ i, (T i).det} := by
-  simp only [deltaLat, if_pos hq]
+  simp only [deltaLat, ite_eq_left hq]
   apply le_antisymm
   · refine Submodule.span_le.2 ?_
     rintro t ⟨b₂, b₂', T₂, h1, h2, h3, rfl⟩

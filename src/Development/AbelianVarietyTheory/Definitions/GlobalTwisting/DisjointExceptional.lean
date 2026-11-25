@@ -95,12 +95,12 @@ theorem Val.mem_box {C : FC} {cD ch : ℝ} {D : D7} {L : SizeData₂ D} (h : Val
   constructor
   · refine Fintype.mem_piFinset.2 fun t => ?_
     by_cases ht : t ∈ D.host.TT
-    · simp only [G.aL, ht, dif_pos, if_true, G.winA, Finset.mem_Icc, Int.ceil_le, Int.le_floor]
+    · simp only [G.aL, ht, dite_eq_left, ite_true, G.winA, Finset.mem_Icc, Int.ceil_le, Int.le_floor]
       exact L.aT_win ⟨t, ht⟩
     · simp [G.aL, ht]
   · refine Fintype.mem_piFinset.2 fun t => ?_
     by_cases ht : t ∈ D.host.TT
-    · simp only [G.bL, ht, dif_pos, if_true, G.winB, Finset.mem_Icc, Int.ceil_le, Int.le_floor, G.Nstar]
+    · simp only [G.bL, ht, dite_eq_left, ite_true, G.winB, Finset.mem_Icc, Int.ceil_le, Int.le_floor, G.Nstar]
       exact ⟨L.bT_ge ⟨t, ht⟩, h.La_eq ▸ h.bT_le ⟨t, ht⟩⟩
     · simp [G.bL, ht]
 

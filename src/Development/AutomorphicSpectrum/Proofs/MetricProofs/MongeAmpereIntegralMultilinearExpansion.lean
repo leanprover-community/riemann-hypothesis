@@ -102,7 +102,7 @@ theorem mInt_sumPot_expand (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpa
     refine Finset.sum_congr rfl fun w _ => ?_
     ring
   · have h : Nonempty (ChartPartition A) := existsPartition A
-    simp only [mInt, dif_pos h, integralWith]
+    simp only [mInt, dite_eq_left h, integralWith]
     simp only [Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => ?_

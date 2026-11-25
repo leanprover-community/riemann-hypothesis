@@ -83,11 +83,4 @@ theorem pow_intertwine {U : Module.End A M} {U' : Module.End A' M'} {f : M →�
 
 end Map
 
-section Lim
-
-variable {R : Type*} [CommRing R] {P : ℕ → Type*} [∀ b, AddCommGroup (P b)] [∀ b, Module R (P b)]
-  {Q : ℕ → Type*} [∀ b, AddCommGroup (Q b)] [∀ b, Module R (Q b)]
-
-end Lim
-
 end UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite

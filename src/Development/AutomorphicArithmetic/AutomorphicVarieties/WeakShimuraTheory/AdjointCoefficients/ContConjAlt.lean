@@ -171,15 +171,15 @@ theorem UpperTheory.V.Ws.X1.gspLift :
   let y0 : S → M4 A := fun s => Matrix.of fun i j => if ∀ t, x t i j = 0 then 0 else z i j s
   have b0 : ∀ i j, AdicCont (maximalIdeal A) fun s => y0 s i j := fun i j => by
     by_cases e : ∀ t, x t i j = 0
-    · simp only [y0, Matrix.of_apply, if_pos e]
+    · simp only [y0, Matrix.of_apply, ite_eq_left e]
       exact fun _ => IsLocallyConstant.const _
-    · simp only [y0, Matrix.of_apply, if_neg e]
+    · simp only [y0, Matrix.of_apply, ite_eq_right e]
       exact z1 i j
   have b1 : ∀ s, (y0 s).map p = x s := fun s => by
     ext i j
     by_cases e : ∀ t, x t i j = 0
-    · simp only [y0, Matrix.map_apply, Matrix.of_apply, if_pos e, map_zero, e s]
-    · simp only [y0, Matrix.map_apply, Matrix.of_apply, if_neg e, z2]
+    · simp only [y0, Matrix.map_apply, Matrix.of_apply, ite_eq_left e, map_zero, e s]
+    · simp only [y0, Matrix.map_apply, Matrix.of_apply, ite_eq_right e, z2]
   obtain ⟨u, hu⟩ := h2.exists_right_inv
   have hk : ∀ a b : A, p a = 0 → p b = 0 → a * b = 0 := fun a b ha hb => by
     have ha' : a ∈ maximalIdeal A := fun h => by
@@ -227,7 +227,7 @@ theorem UpperTheory.V.Ws.X1.gspLift :
     have g := hg s
     unfold IsGSp at g
     rw [this, b1, corr, g, p.commutes (ν s), sub_self, smul_zero, sub_zero, mul_one]
-  · simp only [y0, Matrix.of_apply, if_pos fun t => h t i j e]
+  · simp only [y0, Matrix.of_apply, ite_eq_left fun t => h t i j e]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdjointCoefficients.GspLift =====

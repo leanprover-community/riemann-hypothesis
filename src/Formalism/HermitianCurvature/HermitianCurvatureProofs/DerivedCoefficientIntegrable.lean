@@ -885,14 +885,14 @@ private theorem degreeOf_C_mul_prod_X_add_C_le (N m : ℕ) (c : ℝ) (lam : Fin 
     have hai : a ≠ i := Finset.ne_of_mem_erase ha
     refine Nat.eq_zero_of_le_zero ((degreeOf_prod_le_sum_degreeOf i _ _).trans (le_of_eq (Finset.sum_eq_zero (fun s _ => ?_))))
     refine Nat.eq_zero_of_le_zero ((MvPolynomial.degreeOf_add_le _ _ _).trans ?_)
-    rw [MvPolynomial.degreeOf_X, MvPolynomial.degreeOf_C, if_neg (Ne.symm hai)]
+    rw [MvPolynomial.degreeOf_X, MvPolynomial.degreeOf_C, ite_eq_right (Ne.symm hai)]
     simp
   rw [h1, zero_add]
   refine (degreeOf_prod_le_sum_degreeOf i _ _).trans ?_
   calc ∑ s : Fin m, MvPolynomial.degreeOf i (MvPolynomial.X i + MvPolynomial.C (lam s))
       ≤ ∑ _s : Fin m, 1 := Finset.sum_le_sum (fun s _ => by
         refine (MvPolynomial.degreeOf_add_le _ _ _).trans ?_
-        rw [MvPolynomial.degreeOf_X, MvPolynomial.degreeOf_C, if_pos rfl]
+        rw [MvPolynomial.degreeOf_X, MvPolynomial.degreeOf_C, ite_eq_left rfl]
         simp)
     _ = m := by simp
 
@@ -1243,7 +1243,7 @@ theorem Formalism.FourierDecayAlt.P.ratio_middle_range : Formalism.FourierDecayA
     by_cases h : -lam t ≤ α
     · rw [abs_of_pos (by linarith)]
       linarith
-    · push_neg at h
+    · push Not at h
       have hb : β ≤ -lam t := by
         by_contra! hc
         exact ht ⟨h, hc⟩

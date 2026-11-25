@@ -65,12 +65,6 @@ open scoped ContDiff
 
 namespace GlobalTheory.HenQ
 
-section Fin
-
-variable {K : Type} [Field K] [NumberField K] {n : ℕ}
-
-end Fin
-
 section Inf
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}

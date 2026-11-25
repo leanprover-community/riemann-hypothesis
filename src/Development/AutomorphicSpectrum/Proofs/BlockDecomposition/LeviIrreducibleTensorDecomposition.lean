@@ -508,7 +508,7 @@ theorem finiteDimensional_of_smInd_fixed {G W : Type} [Group G] [TopologicalSpac
   let pick : G → H := fun x => if h : S x then h.choose else 1
   have pick_spec : ∀ x, S x → ((pick x : H) : G)⁻¹ * x ∈ K := by
     intro x h
-    simp only [pick, dif_pos h]
+    simp only [pick, dite_eq_left h]
     exact h.choose_spec
   let F : A →ₗ[ℂ] (G → W) := LinearMap.pi fun x =>
     if S x then (σ (pick x)).comp A.subtype else 0

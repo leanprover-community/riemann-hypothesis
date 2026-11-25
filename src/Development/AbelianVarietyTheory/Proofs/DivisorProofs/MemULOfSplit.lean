@@ -81,7 +81,7 @@ namespace GlobalTheory.BCT.CtLevel
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem mem_UL_of_split {n : ℕ} {w : Pl E} (hw : IsSplitAt w) (x : GLw n w) : x ∈ UL n w := by
-  rw [UL, if_pos hw]; exact Subgroup.mem_top x
+  rw [UL, ite_eq_left hw]; exact Subgroup.mem_top x
 
 theorem toSub_eq {G : Type} [Group G] (H : Subgroup G) (g : G) (hg : g ∈ H) : toSub H g = ⟨g, hg⟩ := by
   simp [toSub, hg]

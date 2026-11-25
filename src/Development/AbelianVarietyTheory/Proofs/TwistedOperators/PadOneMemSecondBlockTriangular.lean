@@ -241,25 +241,6 @@ theorem isLattice_of_isFrame {β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)}
 
 end Frame
 
-section Mat
-
-open GlobalTheory.StepLaw.TypeDatum
-
-variable {κ : Type} [CommRing κ] {r a b : ℕ}
-
-end Mat
-
-section Dat
-
-open GlobalTheory.StepLaw.TypeDatum
-
-variable {D : D7} {a b : ℕ} (L : LevDat D.host.E ℂ a) (hL : L.P = LevelP.triv L.Pg L.r ℂ)
-  (χj : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (y : ∀ PP : Pl D.host.E, Matrix (Fin b) (Fin a) (kP PP))
-
-include hL
-
-end Dat
-
 section Dual
 
 open GlobalTheory.PlaceModel GlobalTheory.PlaceDatum GlobalTheory.SplitHecke
@@ -345,9 +326,9 @@ theorem halfInd_dualLat (hc : a * cA D a = 0) : halfInd a (dualLat ψ a Λ) = ha
   by_cases ht : IsHalf a t
   · have e := mem_dualLat_half (ψ := ψ) (Λ := Λ) hc ht
     by_cases h : t ∈ Λ
-    · rw [if_pos ⟨e.2 h, ht⟩, if_pos ⟨h, ht⟩]
-    · rw [if_neg (fun h' => h (e.1 h'.1)), if_neg (fun h' => h h'.1)]
-  · rw [if_neg (fun h' => ht h'.2), if_neg (fun h' => ht h'.2)]
+    · rw [ite_eq_left ⟨e.2 h, ht⟩, ite_eq_left ⟨h, ht⟩]
+    · rw [ite_eq_right (fun h' => h (e.1 h'.1)), ite_eq_right (fun h' => h h'.1)]
+  · rw [ite_eq_right (fun h' => ht h'.2), ite_eq_right (fun h' => ht h'.2)]
 
 theorem isPlaceModel_dualLat (hc : a * cA D a = 0) {f₀ : WO S T → ℂ} {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
     (h : IsPlaceModel ψ (symplO S T) (heisO ψ S T) a Λ 1 f₀ Tm) :
@@ -494,7 +475,7 @@ theorem latO_bidual (hψ : IsStdChar D ψ (-1)) (hS : Submodule.IsFullLattice D.
     have hnot : ¬ ∀ y ∈ (latO S T (GlobalTheory.PlaceModel.latFrame S : Set (Fin S.rank → D.host.E))
         (GlobalTheory.PlaceModel.latFrame T : Set (Fin T.rank → D.host.E)) fun _ => True), IsHalf (cA D a) y →
           ψ (symplO S T ((M1 * M2) • x) y) = 1 := fun h => hxM ⟨hbid _ (hXo _ hMx) h, hMx⟩
-    push_neg at hnot
+    push Not at hnot
     obtain ⟨y, hyL, hyY, hy1⟩ := hnot
     refine ⟨(M1 * M2) • y, ?_, ?_, ?_⟩
     · exact (GlobalTheory.PlaceModel.isHalf_iff S T).2 (AddSubgroup.nsmul_mem _ ((GlobalTheory.PlaceModel.isHalf_iff S T).1 hyY) _)

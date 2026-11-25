@@ -41,7 +41,7 @@ theorem ll_C (n : ℤ) : IsMultiHomog (C n : MRing ι) 0 := by
   intro m hm k
   have : m = 0 := by
     by_contra h
-    rw [mem_support_iff, coeff_C, if_neg (Ne.symm h)] at hm
+    rw [mem_support_iff, coeff_C, ite_eq_right (Ne.symm h)] at hm
     exact hm rfl
   simp [this]
 

@@ -35,8 +35,8 @@ theorem rkF_sigmaS (hd : ZMod d) (X : RowData C V d (fun _ => Σ a : ZMod d, Fin
   simp only [Finset.mem_univ, true_and]
   unfold idxS
   by_cases hg : g = 0
-  · simp only [if_pos hg]
-  · simp only [if_neg hg]
+  · simp only [ite_eq_left hg]
+  · simp only [ite_eq_right hg]
     exact eq_sub_iff_add_eq.symm
 
 def stdFlagS (hd : ZMod d) (X : RowData C V d (fun _ => Σ a : ZMod d, Fin (m a)) J)

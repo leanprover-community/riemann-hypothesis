@@ -389,10 +389,10 @@ theorem nuGe_basis (r : ℚ) (hrc : (r : WithTop ℚ) ≤ v c) (j : S.J) (σ : F
       pow_mul, S.prim.pow_eq_one, one_pow]
   have hcomb : IsComb (fun _ : Unit => t) (fun _ => y₀ (algebraMap o S.R (S.ζ ^ (e * ((S.r * S.N) ^ 2 - 1))))) (Φ.s j) :=
     (isComb_iff _ _ _).2 fun m => by
-      rw [Fintype.sum_unique, (isComb_iff _ _ _).1 ht m, Finset.sum_eq_single j, hae, if_pos rfl, ← _root_.mul_assoc,
+      rw [Fintype.sum_unique, (isComb_iff _ _ _).1 ht m, Finset.sum_eq_single j, hae, ite_eq_left rfl, ← _root_.mul_assoc,
         ← map_mul, ← map_mul, ← map_mul, hz, map_one, map_one, map_one, _root_.one_mul]
       · intro b _ hb
-        rw [hae, if_neg hb, map_zero, map_zero, map_zero, zero_mul]
+        rw [hae, ite_eq_right hb, map_zero, map_zero, map_zero, zero_mul]
       · exact fun h => absurd (Finset.mem_univ _) h
   have := hnu Unit _ _ _ 0 r hcomb (fun _ => val_nonneg hnv hint _)
     (fun _ σ' hσ' => GlobalTheory.ZH.nuGe_translate_pull_smul hLL hT hVR hTW hUU u.V u.complete ϖ hϖ u.D Q hQ (PadicAlgCl p) v hv u.A u.G

@@ -120,7 +120,7 @@ theorem exists_ker_int_matrix_four_of_torsion_lift {G G' : Type} [CommGroup G] [
         simp only [Fin.prod_univ_four, Fin.sum_univ_four, zpow_add]
       rw [h4, h3]
       split_ifs <;> simp
-    simp only [h2, Finset.prod_ite_eq', Finset.mem_univ, if_true] at h1
+    simp only [h2, Finset.prod_ite_eq', Finset.mem_univ, ite_true] at h1
     obtain ⟨q, rfl⟩ := hm
     rw [pow_mul, h1, one_pow]
   choose a ha using fun I r => hψ.2 ⟨(e I).1 r, htor I r⟩

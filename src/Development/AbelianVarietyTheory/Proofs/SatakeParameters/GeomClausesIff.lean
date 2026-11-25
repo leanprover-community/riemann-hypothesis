@@ -76,11 +76,6 @@ structure RActPre (X : Scheme.{0}) (Γ : Type) [Group Γ] where
 variable {X : Scheme.{0}} (E : Type) [CommRing E] [TopologicalSpace E] [IsTopologicalRing E]
   {ι : Type} [Fintype ι] [DecidableEq ι] {Γ : Type} [Group Γ]
 
-section
-variable {E} (Q : RActPre X Γ) (ξ : Γ →* GL ι E)
-
-end
-
 end GlobalTheory.Et.Rel
 
 namespace GlobalTheory.Et.Rel

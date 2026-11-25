@@ -32,16 +32,4 @@ def sdR' {p : ℕ} [Fact p.Prime] (g : G1 p) {κ ι ι' : Type*} [Fintype κ] [F
 
 end A
 
-section C
-
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 Classical
-
-end C
-
-section Z
-
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric
-
-end Z
-
 end Formalism.MainNotions.GL3r7

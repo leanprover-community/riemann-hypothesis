@@ -1481,16 +1481,16 @@ theorem vol_level_wt_const_alt : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toP
     else if h' : j + 1 = B.R.m then Classical.choose (_root_.GlobalTheory.PenVol.pen_vol_alt W hW u a ha haT j h') else 1, VT, ?_, hVT, ?_⟩
   · intro j hj
     by_cases h : j + 2 ≤ B.R.m
-    · simp only [dif_pos h]; exact (Classical.choose_spec (_root_.GlobalTheory.Fam.volLev_mul_wt_mid_alt W hW u a ha haT j h)).1
+    · simp only [dite_eq_left h]; exact (Classical.choose_spec (_root_.GlobalTheory.Fam.volLev_mul_wt_mid_alt W hW u a ha haT j h)).1
     · have h' : j + 1 = B.R.m := by omega
-      simp only [dif_neg h, dif_pos h']; exact (Classical.choose_spec (_root_.GlobalTheory.PenVol.pen_vol_alt W hW u a ha haT j h')).1
+      simp only [dite_eq_right h, dite_eq_left h']; exact (Classical.choose_spec (_root_.GlobalTheory.PenVol.pen_vol_alt W hW u a ha haT j h')).1
   · intro t J hJ
     refine ⟨?_, hT3 t J hJ⟩
     intro j hj α
     by_cases h : j + 2 ≤ B.R.m
-    · simp only [dif_pos h]; exact (Classical.choose_spec (_root_.GlobalTheory.Fam.volLev_mul_wt_mid_alt W hW u a ha haT j h)).2 t J hJ α
+    · simp only [dite_eq_left h]; exact (Classical.choose_spec (_root_.GlobalTheory.Fam.volLev_mul_wt_mid_alt W hW u a ha haT j h)).2 t J hJ α
     · have h' : j + 1 = B.R.m := by omega
-      simp only [dif_neg h, dif_pos h']; exact (Classical.choose_spec (_root_.GlobalTheory.PenVol.pen_vol_alt W hW u a ha haT j h')).2 t J hJ α
+      simp only [dite_eq_right h, dite_eq_left h']; exact (Classical.choose_spec (_root_.GlobalTheory.PenVol.pen_vol_alt W hW u a ha haT j h')).2 t J hJ α
 end GlobalTheory.Fam
 end
 end -- clump:auto

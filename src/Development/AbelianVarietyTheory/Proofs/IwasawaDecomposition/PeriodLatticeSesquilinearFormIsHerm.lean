@@ -358,7 +358,7 @@ theorem std_line {ω₀ : ℂ} (h0 : ω₀ / 2 ∉ L.lattice) {α : (n → ℂ) 
     | empty => simp
     | insert i s hi ih =>
       intro z
-      rw [ih z, one _ i, Finset.prod_insert hi, if_neg hi, mul_assoc]
+      rw [ih z, one _ i, Finset.prod_insert hi, ite_eq_right hi, mul_assoc]
       congr 2
       funext j
       by_cases h : j = i
@@ -366,7 +366,7 @@ theorem std_line {ω₀ : ℂ} (h0 : ω₀ / 2 ∉ L.lattice) {α : (n → ℂ) 
       · simp [h]
   funext z
   rw [all Finset.univ z]
-  simp only [Finset.mem_univ, if_true]
+  simp only [Finset.mem_univ, ite_true]
   rfl
 
 end Std
@@ -411,9 +411,9 @@ theorem ins_mem {h : Matrix n n ℂ} {Λ : AddSubgroup (n → ℂ)} {α : (n →
   refine ⟨fun x _ => ?_, fun y hy x => ?_⟩
   · refine (hP.1 _ trivial).comp (f := ins z) (analyticAt_pi_iff.2 fun w => ?_)
     by_cases hw : w.1 = 0
-    · simp only [ins, hw, if_true]
+    · simp only [ins, hw, ite_true]
       exact (ContinuousLinearMap.proj w.2 : (n → ℂ) →L[ℂ] ℂ).analyticAt x
-    · simp only [ins, hw, if_false]
+    · simp only [ins, hw, ite_false]
       exact analyticAt_const
   · have h1 := hP.2 (ins 0 y) (fun a => by rw [slice_ins]; split_ifs; exacts [hy, Λ.zero_mem]) (ins z x)
     have h2 : ins z x + ins 0 y = ins z (x + y) := by
@@ -455,7 +455,7 @@ theorem fourthRoot : FourthRoot := by
       have hs : ∀ b, slice b (fun w : Fin 4 × n => a w.2) = a := fun _ => rfl
       rw [← hP4] at this
       simp only [tens4, Pi.smul_apply, smul_eq_mul, Fin.prod_univ_four, slice_ins, hs] at this
-      simp only [Fin.isValue, if_true, Fin.reduceEq, if_false, Matrix.cons_val] at this
+      simp only [Fin.isValue, ite_true, Fin.reduceEq, ite_false, Matrix.cons_val] at this
       apply mul_right_cancel₀ (pow_ne_zero 3 ha)
       rw [Pi.smul_apply, smul_eq_mul]
       linear_combination this

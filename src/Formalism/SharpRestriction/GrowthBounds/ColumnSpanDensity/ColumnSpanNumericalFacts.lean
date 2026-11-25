@@ -94,8 +94,8 @@ theorem kText_cast (K : Cst) (X : Dat) (R : RS X.p X.n') (hbl : 0 ≤ X.bl) (A B
     funext s; omega
   simp only [Dat.kText]
   by_cases hc : ∀ s, X.a + X.ccl ≤ A s ∧ X.lb + X.ccl ≤ B s
-  · rw [if_pos (hIn.mpr hc), if_pos hc, h1, h2, h3, h4]
-  · rw [if_neg (mt hIn.mp hc), if_neg hc, h3, h4]
+  · rw [ite_eq_left (hIn.mpr hc), ite_eq_left hc, h1, h2, h3, h4]
+  · rw [ite_eq_right (mt hIn.mp hc), ite_eq_right hc, h3, h4]
 
 theorem sum_of_meanN {ι : Type} [Fintype ι] [DecidableEq ι] (Sa Sb : Finset ℕ) (f : (ι → ℕ) → (ι → ℕ) → ℝ) (M : ℝ)
     (ha : 0 < Sa.card) (hb : 0 < Sb.card) (h : meanN Sa Sb f ≤ M) :

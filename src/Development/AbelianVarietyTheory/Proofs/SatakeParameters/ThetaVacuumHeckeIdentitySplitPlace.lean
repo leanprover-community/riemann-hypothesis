@@ -169,9 +169,9 @@ theorem opOf_trunc (n k : ℕ) (d : ℕ → List ℤ) (z : ℕ → ℂ) (u : M) 
   refine (Finset.sum_congr rfl fun j hj => ?_).trans
     (Finset.sum_subset (Finset.range_subset_range.2 (by omega)) fun j hj hj' => ?_)
   · rw [Finset.mem_range] at hj
-    rw [if_pos (by omega), LinearMap.smul_apply]
+    rw [ite_eq_left (by omega), LinearMap.smul_apply]
   · rw [Finset.mem_range] at hj hj'
-    rw [if_neg (by omega), zero_smul, LinearMap.zero_apply]
+    rw [ite_eq_right (by omega), zero_smul, LinearMap.zero_apply]
 
 end
 

@@ -30,6 +30,6 @@ theorem kapW_supp (m : ℕ) {ι : Type} (s : ι → Bool) (ξa ξb : ι → (Fin
     (h : kapW m s ξa ξb l l' ≠ 0) : s l = true ∧ s l' = false := by
   unfold kapW at h
   by_contra hc
-  exact h (if_neg hc)
+  exact h (ite_eq_right hc)
 
 end ReciprocityTheory.ChartRestriction.G.TB.SCPf

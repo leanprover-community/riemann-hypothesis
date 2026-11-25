@@ -608,7 +608,7 @@ theorem twS : TwS' := by
   have hram := _root_.GlobalTheory.AdForm.ram_iff_scalar_ram I hOk hPins l Z u a Ch A hA θ hθ k ι p β Q L hStd j hj φ hφ.1
   refine ⟨fun b y => ⟨hram.1 b y, fun i => hram.2.1 hφ b y i⟩, fun η => ?_⟩
   have h : j ≤ B.R.m ∧ RamT (I := I) (l := l) (u := u) (a := a) j φ := ⟨hj, hφ⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact (key j hj φ hφ η).choose_spec
 
 end GlobalTheory.AdForm.TwSProof

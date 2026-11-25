@@ -613,7 +613,7 @@ theorem mul_krylov_eq {F : Type} [Field F] {r : ℕ} (y : Matrix (Fin r) (Fin r)
     simp [Matrix.mul_apply, krylov_apply, Matrix.mulVec, dotProduct]
   rw [hl, Matrix.mul_apply]
   by_cases hj : (j : ℕ) + 1 < r
-  · simp only [companion, Matrix.of_apply, hj, if_true]
+  · simp only [companion, Matrix.of_apply, hj, ite_true]
     rw [Finset.sum_eq_single (⟨(j : ℕ) + 1, hj⟩ : Fin r)]
     · simp [krylov_apply]
     · intro k _ hk
@@ -621,7 +621,7 @@ theorem mul_krylov_eq {F : Type} [Field F] {r : ℕ} (y : Matrix (Fin r) (Fin r)
       simp [this]
     · intro h; exact absurd (Finset.mem_univ _) h
   · have hr : (j : ℕ) + 1 = r := by omega
-    simp only [companion, Matrix.of_apply, hj, if_false]
+    simp only [companion, Matrix.of_apply, hj, ite_false]
     rw [hr, pow_dim_eq_neg_sum_charpoly_coeff y, Matrix.neg_mulVec, Matrix.sum_mulVec]
     simp [krylov_apply, Finset.sum_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -738,7 +738,7 @@ theorem charpoly_blk_separable (E : Type) [Field E] [NumberField E] (n a b : ℕ
       Matrix.reindex (finSumFinEquiv.trans (finCongr h)) (finSumFinEquiv.trans (finCongr h))
         (Matrix.fromBlocks m.1.val (m.1.val * (0 : Matrix (Fin a) (Fin b) (w.adicCompletion E))) 0 m.2.val) := by
     simp only [blk]
-    rw [dif_pos hM]
+    rw [dite_eq_left hM]
     rfl
   rw [hval, Matrix.charpoly_reindex, Matrix.mul_zero, Matrix.charpoly_fromBlocks_zero₁₂]
   exact hs
@@ -770,10 +770,10 @@ theorem fin_doubleCosets : ∀ (E : Type) [Field E] [NumberField E] (n a b : ℕ
     rw [← mul_assoc, ← hq, mul_inv_cancel_right]
   refine Set.Finite.of_injOn (f := fun d => if hd : ∃ t, Q d t then hd.choose else 1) (t := T) ?_ ?_ hT
   · intro d hd
-    simp only [dif_pos (hex d hd)]
+    simp only [dite_eq_left (hex d hd)]
     exact (hex d hd).choose_spec.1
   · intro d₁ hd₁ d₂ hd₂ heq
-    simp only [dif_pos (hex d₁ hd₁), dif_pos (hex d₂ hd₂)] at heq
+    simp only [dite_eq_left (hex d₁ hd₁), dite_eq_left (hex d₂ hd₂)] at heq
     obtain ⟨-, z₁, hz₁, k₁, hk₁, hp₁⟩ := (hex d₁ hd₁).choose_spec
     obtain ⟨-, z₂, hz₂, k₂, hk₂, hp₂⟩ := (hex d₂ hd₂).choose_spec
     rw [heq] at hp₁
@@ -1025,8 +1025,6 @@ theorem eq_zero_of_intertwine_of_isCoprime_charpoly {K : Type} [Field K] {a b : 
     _ = (aeval B u * aeval B A.charpoly) * C := by rw [h1]
     _ = aeval B u * (aeval B A.charpoly * C) := Matrix.mul_assoc _ _ _
     _ = 0 := by rw [h2, Matrix.mul_zero]
-
-alias main := _root_.GlobalTheory.IntertwinerCoprimeCharpoly.eq_zero_of_intertwine_of_isCoprime_charpoly
 
 end GlobalTheory.IntertwinerCoprimeCharpoly
 end -- clump:auto

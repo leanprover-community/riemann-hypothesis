@@ -96,7 +96,7 @@ theorem expand (hB : ∀ i k, (B i * (B k)ᴴ).trace = if i = k then 1 else 0) (
   | mem x hx =>
     obtain ⟨j, hj, rfl⟩ := hx
     refine ⟨by simp [hB], fun i hi => ?_⟩
-    rw [hB, if_neg]
+    rw [hB, ite_eq_right]
     rintro rfl
     exact hi hj
   | zero => simp

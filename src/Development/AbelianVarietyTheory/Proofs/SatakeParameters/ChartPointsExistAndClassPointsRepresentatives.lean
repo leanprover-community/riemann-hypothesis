@@ -174,15 +174,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.ExistsSmulMem
-
-theorem exists_smul_mem {E : Type} [inst : Field E] [NumberField E] {N : ℕ}
-    (Lb : Submodule (NumberField.RingOfIntegers E) (Fin N → E))
-    (h : Submodule.span E (↑Lb : Set (Fin N → E)) = ⊤) (v : Fin N → E) :
-    ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ c • v ∈ Lb := by
-  apply ReciprocityTheory.MultiplicativeHeights.sc_scale <;> assumption
-
-end GlobalTheory.ExistsSmulMem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ImportsRest =====
@@ -213,7 +204,7 @@ theorem dualSet_le_fg {E : Type} [Field E] [NumberField E] {N : ℕ} (σ : E →
     (J : Matrix (Fin N) (Fin N) E) (hJ : IsUnit J.det) (Lb : Submodule (𝓞 E) (Fin N → E))
     (hsp : Submodule.span E (Lb : Set (Fin N → E)) = ⊤) :
     ∃ M : Submodule (𝓞 E) (Fin N → E), M.FG ∧ dualSet σ J Lb ⊆ M := by
-  choose c hc0 hcm using fun i : Fin N => _root_.GlobalTheory.ExistsSmulMem.exists_smul_mem Lb hsp (Pi.single i 1)
+  choose c hc0 hcm using fun i : Fin N => _root_.Bl.general_b_fact_second.goal1 Lb hsp (Pi.single i 1)
   refine ⟨Submodule.span (𝓞 E) (Set.range fun i => (σ (c i : E))⁻¹ • (J⁻¹ *ᵥ Pi.single i 1)),
     Submodule.fg_span (Set.finite_range _), ?_⟩
   intro y hy
@@ -249,7 +240,6 @@ theorem dualSet_le_fg {E : Type} [Field E] [NumberField E] {N : ℕ} (σ : E →
 end GlobalTheory.CompanFG
 
 namespace GlobalTheory
-
 
 open GlobalTheory.CompanFG in
 theorem compan_fg {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
@@ -644,7 +634,6 @@ theorem span_mvL {E : Type} [Field E] [NumberField E] [StarRing E] {N : ℕ} (c 
 
 end GlobalTheory.BaseFrameLat
 
-
 open GlobalTheory.BaseFrameLat in
 theorem GlobalTheory.TwV.baseFrame_std_eq_compan : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (i : ℕ) (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x : UA D i hi) p, IsPtAd A a i hi β x p → ∀ P : SB t μ, mvL (A.fb i hi β P) (stdAt D.host.E (D.R.N i) (seamP t.seam P.1)) = Formalism.HermitianLatticesTheory.localization₂ (seamP t.seam P.1).asIdeal (compan (sp := D.sp) (gramN D i hi) a ((St i hi).K β).lev.Lb)) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hpins htie i hi β x p hp P
@@ -687,7 +676,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChartBaseFrameBadPrimeEqCompanionLatticeStatement =====
@@ -723,15 +711,6 @@ theorem lev_mulVec_mem (S : StepLevel F E σ J T f bad) (g : GL (Fin n) (E ⊗[F
     exact RingHom.map_mulVec (prV (E := E) v) (g : Matrix (Fin n) (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) z i
   rw [e]
   exact h3
-
-theorem hatStab_lev (S : StepLevel F E σ J T f bad) (κ : S.U) : HatStab S.Lb κ.1 := by
-  intro z
-  constructor
-  · intro hz
-    have := lev_mulVec_mem S κ.1 κ.2 _ hz
-    rwa [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec] at this
-  · intro hz
-    exact lev_mulVec_mem S κ.1⁻¹ (S.U.inv_mem κ.2) z hz
 
 end HatS
 
@@ -850,7 +829,7 @@ theorem globLat_compan_of_lev {D : D7} (i : ℕ) (hi : i ≤ D.R.m) {T : ℕ} {b
   have hLb : Formalism.L2.GlobalTheoryTheory.Comp.IsLat lev.Lb := ⟨lev.Lb_fin, lev.Lb_span⟩
   have hU : g ∈ UPts (sigD D) (gramN D i hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F) := ((lev.U_eq g).1 hg).1
   have hL : Formalism.UG.CS.globLat g lev.Lb = lev.Lb := by
-    have h1 := latAd_stab 1 g lev.Lb (GlobalTheory.LevStab.hatStab_lev lev ⟨g, hg⟩)
+    have h1 := latAd_stab 1 g lev.Lb (GlobalTheory.TwU.hatStab_of_lev lev ⟨g, hg⟩)
     rw [one_mul, GlobalTheory.SDCompan.latAd_eq, GlobalTheory.SDCompan.latAd_eq] at h1
     rw [h1]
     exact Formalism.UG.P.global_lattice_one_holds _ _ _ _ lev.Lb_fin lev.Lb_span
@@ -983,7 +962,7 @@ theorem intAtA_of_val {ι : AfE F E ≃+* FiniteAdeleRing (𝓞 E) E} (hι : IsA
   have hsP : s ∉ P.asIdeal := by
     intro hm
     have h1 := hs P (Finset.mem_insert_self _ _)
-    simp only [if_true, pow_one] at h1
+    simp only [ite_true, pow_one] at h1
     apply P.isPrime.ne_top
     rw [Ideal.eq_top_iff_one]
     have := P.asIdeal.sub_mem hm h1
@@ -1204,8 +1183,6 @@ noncomputable section
 
 namespace GlobalTheory
 
-
-
 theorem funMoved_mul_level : ∀ {D : Formalism.BasicNotions.D7} {X : Fields} (s : Seam D X) {i : ℕ} {hi : i ≤ D.R.m} {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (lev : StepLevel D.host.F D.host.E (sigD D) (gramN D i hi) T D.R.f bad) {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))} (P : ST) (v : HeightOneSpectrum (𝓞 D.host.F)) (h : (T : 𝓞 D.host.F) ∈ v.asIdeal) (ι : lev.fM v h →+ 𝓞 X.E ⧸ P.1.asIdeal) (y : GL (Fin (D.R.N i)) (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)) (κ : lev.U) (d : Deco X.E (D.R.N i) ST SG), FunMoved s lev P v h ι y d → FunMoved s lev P v h ι (y * κ.1) d := by
   intro D X s i hi T bad lev ST SG P v h ι x κ d
   unfold FunMoved
@@ -1338,8 +1315,8 @@ theorem ratPt : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀
     rw [hx, hmv, mul_assoc (ratA D.host.F (seamGL t.seam g.1))]
     by_cases hPg : P.1 ∈ t.Pr.vGs
     · have hD : (t.cst μ).D P = 1 := (t.idx_ok μ).depthG P hPg
-      have e0 : frsF t.sel (t.tup μ) p P = p.deco.1.liftFr ⟨P.1, hPg⟩ := dif_pos hPg
-      have e1 : frsF (R := D.R) t.sel (t.tup μ) (a' • p) P = ((g, (1 : GLG (E := t.X.E) (n := D.R.N i) (SG := t.Pr.vGs))) • p.deco).1.liftFr ⟨P.1, hPg⟩ := dif_pos hPg
+      have e0 : frsF t.sel (t.tup μ) p P = p.deco.1.liftFr ⟨P.1, hPg⟩ := dite_eq_left hPg
+      have e1 : frsF (R := D.R) t.sel (t.tup μ) (a' • p) P = ((g, (1 : GLG (E := t.X.E) (n := D.R.N i) (SG := t.Pr.vGs))) • p.deco).1.liftFr ⟨P.1, hPg⟩ := dite_eq_left hPg
       rw [hD, e0] at hb
       rw [hD, e1]
       exact _root_.GlobalTheory.FrameRat.nearAt_liftFr_smul t.seam p.deco ⟨P.1, hPg⟩ g (mq_rowSG_unif (t.tup μ) hP.fields.ok t.pr_ok hP.sel P) _ hb

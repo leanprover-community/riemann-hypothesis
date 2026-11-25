@@ -103,7 +103,7 @@ theorem map_Nv {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (m : �
     map f (Nv R m vec c) = Nv R' m vec c := by
   simp only [Nv]
   cases vec
-  · simp only [Bool.false_eq_true, if_false]
+  · simp only [Bool.false_eq_true, ite_false]
     have h1 : (MvPolynomial.map f).mapMatrix (genM R m) = genM R' m := by
       ext i j
       simp [genM]

@@ -57,7 +57,7 @@ def absHom (p : ℕ) [hp : Fact p.Prime] (la : HeightOneSpectrum (𝓞 c.F)) (T 
     · simp [absT, hx]
     by_cases hy : y = 0
     · simp [absT, hy]
-    simp only [absT, if_neg hx, if_neg hy, if_neg (mul_ne_zero hx hy)]
+    simp only [absT, ite_eq_right hx, ite_eq_right hy, ite_eq_right (mul_ne_zero hx hy)]
     rw [← Real.rpow_add hp0, vV_mul hx hy]
     congr 1
     push_cast
@@ -82,7 +82,7 @@ theorem absT_of_nval {p : ℕ} [hp : Fact p.Prime] {la : HeightOneSpectrum (𝓞
     exact_mod_cast hs
   have hag : absT p la T e g = (p : ℝ) ^ (-s) := by
     unfold absT
-    rw [if_neg hg0]
+    rw [ite_eq_right hg0]
     congr 1
     rw [← div_div, hv]
     field_simp

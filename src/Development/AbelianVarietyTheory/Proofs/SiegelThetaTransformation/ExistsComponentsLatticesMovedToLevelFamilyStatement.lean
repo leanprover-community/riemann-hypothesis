@@ -276,7 +276,7 @@ theorem exists_cong (D : SW.Level X) {L : Lt E r} {u : Fin r → Fin r → E} (h
       Matrix.mulVec, dotProduct, ← e]
     rw [← Finset.sum_sub_distrib, Finset.smul_sum, Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [Finset.sum_eq_single k (fun k' _ hk => by rw [if_neg (Ne.symm hk), mul_zero]) (by simp), if_pos rfl]
+    rw [Finset.sum_eq_single k (fun k' _ hk => by rw [ite_eq_right (Ne.symm hk), mul_zero]) (by simp), ite_eq_left rfl]
     change (s : E) * _ = _
     ring
   rw [e2]
@@ -511,8 +511,8 @@ theorem GlobalTheory.Dict.exists_components_tied : ∀ (E : Type) [Field E] [Num
   · rw [AdmX, eq_top_iff]
     refine hb.ge.trans (sup_le_sup_right (Submodule.span_mono ?_) _)
     rintro _ ⟨i, rfl⟩
-    exact ⟨Fin.castLE hn i, Or.inr (hU.1 ▸ i.2), dif_pos i.2⟩
-  · have e : (if h : ((Fin.castLE hn i : Fin n) : ℕ) < r then b ⟨Fin.castLE hn i, h⟩ else 0) = b i := dif_pos i.2
+    exact ⟨Fin.castLE hn i, Or.inr (hU.1 ▸ i.2), dite_eq_left i.2⟩
+  · have e : (if h : ((Fin.castLE hn i : Fin n) : ℕ) < r then b ⟨Fin.castLE hn i, h⟩ else 0) = b i := dite_eq_left i.2
     beta_reduce
     rw [e, ← Nat.cast_smul_eq_nsmul (𝓞 E)]
     exact hcg k i

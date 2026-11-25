@@ -79,7 +79,7 @@ private theorem orbit_of_sums (hn : 0 < n) (θ θ' : Kˣ →* ℂˣ)
   have he : l1 = l2 := hv.finsuppLinearCombination_injective hl
   have h1 : l1 θ' = 0 := by
     simp only [l1, Finsupp.finsetSum_apply, Finsupp.single_apply]
-    exact Finset.sum_eq_zero fun i hi => if_neg fun e => hne i (Finset.mem_range.mp hi) e.symm
+    exact Finset.sum_eq_zero fun i hi => ite_eq_right fun e => hne i (Finset.mem_range.mp hi) e.symm
   have h2 : l2 θ' ≠ 0 := by
     simp only [l2, Finsupp.finsetSum_apply, Finsupp.single_apply]
     rw [Finset.sum_boole]

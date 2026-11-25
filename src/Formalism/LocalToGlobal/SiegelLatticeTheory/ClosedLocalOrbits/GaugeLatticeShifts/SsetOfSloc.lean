@@ -196,7 +196,7 @@ theorem bvec_supSub (a : ℕ) (b : Fin D.R.rS) (hb : b.val < a) :
     change i.val = b.val at this
     omega
   show (Pi.single (eI D.R.k D.R.rS b) (1:ℂ) : Fin (2 * D.R.rS + D.R.k + 1) → ℂ) i = 0
-  simp only [Pi.single_apply, hne, if_false]
+  simp only [Pi.single_apply, hne, ite_false]
 
 theorem qics_span (C : Choice X θ) (τ : D.what₂.Tau) (a : ℕ) (w : Fin X.B.I.n → ℂ)
     (hw : w ∈ spanLt (fun b => rv X.B.I (vOf X τ) (X.eR b)) a) :

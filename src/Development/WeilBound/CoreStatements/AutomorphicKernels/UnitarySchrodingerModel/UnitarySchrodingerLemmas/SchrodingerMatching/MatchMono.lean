@@ -744,20 +744,20 @@ theorem realMatch : RealMatch := by
         refine Finset.prod_congr rfl fun k _ => ?_
         by_cases h : k.1 = τ
         · subst h
-          rw [if_pos rfl, if_pos rfl]
+          rw [ite_eq_left rfl, ite_eq_left rfl]
           have := evX_lz (frM k.1) (((frG k.1)⁻¹).1 * compAt θ k.1 (HMul.hMul x a.1 : Mx D V.rank n)) k.2
           unfold PositivityTheory.Rg.Sw.evX at this
           rw [this, hZ k.1, hf]
           simp only [starRingEnd_apply]
-        · rw [if_neg h, if_neg h, map_one]
+        · rw [ite_eq_right h, ite_eq_right h, map_one]
       simp only [hτ]
-      rw [Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ τ0, if_pos (Finset.mem_univ _), Finset.prod_comm]
+      rw [Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ τ0, ite_eq_left (Finset.mem_univ _), Finset.prod_comm]
       unfold evalPoly
       rw [MvPolynomial.eval_monomial]
       congr 1
       refine Finset.prod_congr rfl fun k _ => ?_
       simp only [ite_pow, one_pow]
-      rw [Finset.prod_ite_eq Finset.univ k.1, if_pos (Finset.mem_univ _)]
+      rw [Finset.prod_ite_eq Finset.univ k.1, ite_eq_left (Finset.mem_univ _)]
       simp only [hf, ite_pow]
     unfold PositivityTheory.SiegelWeilFormula.Gen.phiInf
     simp only [hY]

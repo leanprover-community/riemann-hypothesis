@@ -24,25 +24,4 @@ def linMap (U : Matrix (Fin d) (Fin d) k) : Pt k 1 d :=
 
 end Chart
 
-section Gauges
-
-variable {R : Type} [CommRing R] {d : ℕ} (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
-
-variable {O : Type} [CommRing O] [StarRing O]
-
-end Gauges
-
-section Integrality
-
-variable {C : Type} [NormedField C] {d : ℕ}
-
-end Integrality
-
-section Letters
-
-variable {C : Type} [NormedField C] [IsUltrametricDist C] [CharZero C]
-  {E : Type} [Field E] [NumberField E] [IsCMField E] [StarRing (𝓞 E)] {d : ℕ}
-
-end Letters
-
 end GlobalTheory.IndefiniteRowSideFullHecke.LogExpAdaptedGauge

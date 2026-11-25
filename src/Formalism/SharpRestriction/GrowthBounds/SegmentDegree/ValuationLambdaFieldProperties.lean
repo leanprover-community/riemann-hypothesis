@@ -142,8 +142,8 @@ theorem vg_X (v : ℤ × Fin n) :
   by_cases hv : v.1 ∈ S
   · have hc := coord_clauses (R := R) LZ S v.1 hv v.2
     by_cases he : Even v.1
-    · rw [if_pos he]; exact (hc.1 (by simp [LZ, he])).1
-    · rw [if_neg he]; exact (hc.2 (by simp [LZ, he])).1
+    · rw [ite_eq_left he]; exact (hc.1 (by simp [LZ, he])).1
+    · rw [ite_eq_right he]; exact (hc.2 (by simp [LZ, he])).1
   · refine (le_valS_iff LZ S _ _).mpr fun k hk => ?_
     have := sDegs_X_out (R := R) LZ S _ v hv k hk
     simp at this
@@ -155,8 +155,8 @@ theorem lg_X (v : ℤ × Fin n) :
   by_cases hv : v.1 ∈ S
   · have hc := coord_clauses (R := R) LZ S v.1 hv v.2
     by_cases he : Even v.1
-    · rw [if_pos he]; exact (hc.1 (by simp [LZ, he])).2
-    · rw [if_neg he]; exact (hc.2 (by simp [LZ, he])).2
+    · rw [ite_eq_left he]; exact (hc.1 (by simp [LZ, he])).2
+    · rw [ite_eq_right he]; exact (hc.2 (by simp [LZ, he])).2
   · refine (lowest_degree_le_iff LZ S _ _).mpr fun k hk => ?_
     have := sDegs_X_out (R := R) LZ S _ v hv k hk
     simp at this

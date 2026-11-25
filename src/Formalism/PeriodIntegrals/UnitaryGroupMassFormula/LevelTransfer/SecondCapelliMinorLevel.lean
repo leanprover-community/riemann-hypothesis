@@ -64,7 +64,7 @@ theorem bvec_lev (q : Fin (2 * r' + k + 1)) : bvec (levPos k i r' q) = liftVec k
     simp only [bvec, Pi.single_apply, lev_inj.eq_iff]
   · rw [liftVec_out _ _ hp]
     simp only [bvec, Pi.single_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact hp (lev_in q)
 

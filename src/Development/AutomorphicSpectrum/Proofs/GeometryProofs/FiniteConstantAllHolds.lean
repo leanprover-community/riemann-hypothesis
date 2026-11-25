@@ -146,7 +146,7 @@ theorem mem_or_inv_mem {F : Type} [Field F] {O : Type} [CommRing O] (β : O →+
   · right
     apply (h _).1
     rw [map_inv₀, norm_inv]
-    push_neg at hx
+    push Not at hx
     exact inv_le_one_of_one_le₀ hx.le
 
 theorem exists_frac {F : Type} [Field F] {O : Type} [CommRing O] [IsDomain O] (β : O →+* F)

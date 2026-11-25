@@ -98,7 +98,7 @@ theorem hcL_single (d : ℕ) (χ : Gn g d → ℂ) (hχ : IsClass χ) : hcL [⟨
   have hcard : (Finset.univ.filter fun p : Gn g d => InPar d (p : Mt g d)) = Finset.univ :=
     Finset.filter_true_of_mem (fun p _ => hP _)
   rw [hcard]
-  simp only [hP, if_true, htl, hcL_nil, mul_one, Finset.card_univ]
+  simp only [hP, ite_true, htl, hcL_nil, mul_one, Finset.card_univ]
   have hc : ∀ y : Gn g d, χ (y⁻¹ * x * y) = χ x := fun y => by
     simpa using hχ x y⁻¹
   simp only [hc, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
@@ -135,7 +135,7 @@ theorem ip_sub_cusp (L : List (Pc g)) (hc : ∀ p ∈ L, IsCusp p.2) (a : ℕ) (
     ip (hcL ((I.sort (· ≤ ·)).map L.get) a) ψ = if ∃ i, I = {i} ∧ L.get i = ⟨a, ψ⟩ then 1 else 0 := by
   have hcI : ∀ p ∈ (I.sort (· ≤ ·)).map L.get, IsCusp p.2 := fun p hp => hc p (mem_sort_map hp)
   by_cases h2 : 2 ≤ I.card
-  · rw [if_neg]
+  · rw [ite_eq_right]
     · exact ip_long_cusp a ψ hψ _ (by simpa using h2) ((_root_.GlobalTheory.GLq.ResCuspProd.degL_sort_map L I).trans hI) hcI
     · rintro ⟨i, rfl, -⟩
       simp at h2
@@ -151,8 +151,8 @@ theorem ip_sub_cusp (L : List (Pc g)) (hc : ∀ p ∈ L, IsCusp p.2) (a : ℕ) (
       simp only [Finset.sum_singleton] at hI
       rw [ip_single_cusp a ψ hψ _ (hc _ (List.get_mem L i)) hI]
       by_cases h : L.get i = ⟨a, ψ⟩
-      · rw [if_pos h, if_pos ⟨i, rfl, h⟩]
-      · rw [if_neg h, if_neg]
+      · rw [ite_eq_left h, ite_eq_left ⟨i, rfl, h⟩]
+      · rw [ite_eq_right h, ite_eq_right]
         rintro ⟨j, hj, h'⟩
         rw [Finset.singleton_inj] at hj
         subst hj
@@ -222,7 +222,7 @@ theorem finiteRing_sq_sub_mul_sq_eq_of_card : ∀ (L' L : List (Pc g)) (n : ℕ)
           (fun I => ∑ i ∈ I, (L.get i).1 = a) := by
         simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.sum_singleton, hi₀]
       rw [Finset.sum_eq_single_of_mem _ hmem]
-      · rw [ip_sub_cusp L hc a ψ hψ _ (Finset.mem_filter.1 hmem).2, if_pos ⟨i₀, rfl, hi₀⟩, one_mul]
+      · rw [ip_sub_cusp L hc a ψ hψ _ (Finset.mem_filter.1 hmem).2, ite_eq_left ⟨i₀, rfl, hi₀⟩, one_mul]
         obtain ⟨hp, hd⟩ := hrest i₀ hi₀
         have hp' : ((({i₀} : Finset _)ᶜ.sort (· ≤ ·)).map L.get).Perm M := (hp.symm.trans hperm).cons_inv
         have hnd' := (List.nodup_cons.1 (hp.nodup_iff.1 hnd)).2

@@ -164,7 +164,7 @@ theorem good_ftY (hc : cst.Ok) (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs) {n : 
     rw [mul_left_comm]
     exact he.mul this
   unfold ftY
-  simp only [if_pos hP]
+  simp only [ite_eq_left hP]
   refine ⟨fun η h => (inDual_iff η).2 (ne_of_ite h), fun η z hz => ?_, fun η => ?_⟩
   · have hz' := (inDual_iff z).1 hz
     refine ite_eq_ite_zero (forall_congr' fun i => intAt_add_q (hz' i)) fun h => ?_
@@ -197,7 +197,7 @@ theorem good_PhiTop {m2 : ℕ} (hm : R.m = m2 + 2) (sharp : Bool) {P : HeightOne
     omega
   rw [← lamY_zero fun i => i + 1]
   unfold PhiTop
-  rw [if_pos hP]
+  rw [ite_eq_left hP]
   split_ifs
   · exact good_PhiGS _ _ h1 (by omega) h3 h4
   · exact good_PhiG _ _ h1 (by omega) h3 h4
@@ -217,10 +217,10 @@ theorem good_omPhi {m2 : ℕ} (hm : R.m = m2 + 2) (P : rowSG Pr sel mu) (hP : P.
     rw [hm, add_mul m2]
     omega
   unfold lamYat at hh
-  rw [if_pos hP] at hh
+  rw [ite_eq_left hP] at hh
   refine good_om ?_ _ _ _ hh
   unfold PhiAt
-  rw [if_pos hP]
+  rw [ite_eq_left hP]
   split_ifs
   · exact good_PhiGS _ _ h1 h2 h3 h4
   · exact good_PhiG _ _ h1 h2 h3 h4
@@ -302,7 +302,7 @@ theorem q_smul_repY {n : ℕ} {N : Submodule (𝓞 X.E) (Sp X.E n)} {Y : Set (Sp
   rw [hY] at h0
   have h1 := (mem_locLat _ _ _ _).1 hy P
   have h2 := (mem_locLat _ _ _ _).1 h0 P
-  rw [if_pos hP] at h1 h2
+  rw [ite_eq_left hP] at h1 h2
   simp only [zpow_neg, zpow_one, inv_inv, zpow_zero, inv_one, one_smul] at h1 h2
   have h3 := add_mem (smul_mem_locP (intAt_nat (qOf P.1)) h2) h1
   rwa [← smul_add, sub_add_cancel] at h3

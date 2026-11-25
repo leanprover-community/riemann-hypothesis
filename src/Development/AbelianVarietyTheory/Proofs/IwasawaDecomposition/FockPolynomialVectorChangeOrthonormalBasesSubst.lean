@@ -146,7 +146,7 @@ theorem aPlus_unitMap_mul {ε : Fin T.rank → Bool} {B' k : Matrix (Fin T.rank)
   by_cases h : ε a = ε i
   · rw [h]
   · have h0 : k a i = 0 := by
-      cases h1 : ε a <;> cases h2 : ε i <;> simp only [h1, h2, not_true, if_true, Bool.false_eq_true, if_false] at h hc
+      cases h1 : ε a <;> cases h2 : ε i <;> simp only [h1, h2, not_true, ite_true, Bool.false_eq_true, ite_false] at h hc
       · linear_combination hc / 2
       · linear_combination -hc / 2
     simp [h0]

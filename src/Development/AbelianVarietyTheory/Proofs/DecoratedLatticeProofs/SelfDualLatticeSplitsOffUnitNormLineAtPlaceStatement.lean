@@ -114,7 +114,7 @@ theorem eps_mem_idV (v : GlobalTheory.FinPl.Pl D) :
     · exact one_mem _
     · exact zero_mem _
   · intro w hw
-    rw [GlobalTheory.SelfDualAt.evalV_indP, if_neg hw]
+    rw [GlobalTheory.SelfDualAt.evalV_indP, ite_eq_right hw]
   · exact FractionalIdeal.one_mem_one _
   · rw [Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply]
     rfl

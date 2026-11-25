@@ -171,10 +171,10 @@ theorem univCoef_eq (β : DetBases k r n) (κ : kˣ →* Multiplicative C) (c : 
       by_cases hE : ∃ u : kˣ, (u : k) = dU β U y ∧ Multiplicative.toAdd (κ u) = c
       · obtain ⟨u, hu, hc⟩ := hE
         have hmk : Units.mk0 _ ((dU_ne_zero_iff β U y).2 hC) = u := Units.ext (by simp [hu])
-        rw [hmk, if_pos hc, if_pos ⟨u, hu, hc⟩]
-      · rw [if_neg hE, if_neg]
+        rw [hmk, ite_eq_left hc, ite_eq_left ⟨u, hu, hc⟩]
+      · rw [ite_eq_right hE, ite_eq_right]
         exact fun hc => hE ⟨_, rfl, hc⟩
-    · rw [dite_eq_right hC, if_neg, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero, Pi.zero_apply]
+    · rw [dite_eq_right hC, ite_eq_right, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero, Pi.zero_apply]
       rintro ⟨u, hu, -⟩
       exact hC ((dU_ne_zero_iff β U y).1 (hu ▸ u.ne_zero))
   unfold univCoef univ

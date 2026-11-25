@@ -25,25 +25,13 @@ theorem dvd_norm_sub_one (E : Type) [Field E] [NumberField E] (σ : E ≃ₐ[ℚ
     (hT : (π : E) * σ (π : E) = (T : E)) (hπ : (π - 1) ∈ Ideal.span {((M : ℕ) : 𝓞 E)}) :
     (M : ℤ) ∣ (T : ℤ) - 1 := by
   rw [Ideal.mem_span_singleton] at hπ
-  obtain ⟨α, hα⟩ := hπ
-  have hint : IsIntegral ℤ (σ (α : E)) := map_isIntegral_int σ (RingOfIntegers.isIntegral_coe α)
-  set α' : 𝓞 E := ⟨σ (α : E), hint⟩ with hα'
-  have e1 : (π : E) = 1 + (M : E) * (α : E) := by
-    have := congrArg (fun z : 𝓞 E => (z : E)) hα
-    simp only [map_sub, map_one, map_mul, map_natCast] at this
-    linear_combination this
-  have e2 : σ (π : E) = 1 + (M : E) * (α' : E) := by
-    have hc : (α' : E) = σ (α : E) := rfl
-    rw [e1, hc]; simp
-  have e3 : (T : E) - 1 = (M : E) * ((α : E) + (α' : E) + (M : E) * (α : E) * (α' : E)) := by
-    rw [← hT, e2, e1]; ring
-  have h5 : ((M : ℤ) : 𝓞 E) ∣ (((T : ℤ) - 1 : ℤ) : 𝓞 E) := by
-    refine ⟨α + α' + (M : 𝓞 E) * α * α', ?_⟩
-    apply RingOfIntegers.ext
-    simp only [map_mul, map_add (f := _), map_natCast, map_intCast]
-    push_cast
-    exact e3
-  exact intCast_dvd_of_dvd_integers E _ _ h5
+  let f := RingOfIntegers.mapRingHom σ.toRingHom
+  have hprod : π * f π = (T : 𝓞 E) := RingOfIntegers.ext (by simpa [f] using hT)
+  have hf : (M : 𝓞 E) ∣ f π - 1 := by simpa using map_dvd f hπ
+  apply intCast_dvd_of_dvd_integers E
+  push_cast
+  rw [← hprod, show π * f π - 1 = (π - 1) * f π + (f π - 1) by ring]
+  exact dvd_add (dvd_mul_of_dvd_left hπ _) hf
 
 namespace D7
 

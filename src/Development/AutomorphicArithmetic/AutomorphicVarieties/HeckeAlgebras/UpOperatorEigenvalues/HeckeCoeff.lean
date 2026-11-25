@@ -57,9 +57,9 @@ theorem hecke_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (n q : 
 private theorem hecke_coeff {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) (j : ℕ) (hj : j ≤ n) :
     (heckePol n q a).coeff (n - j) = (-1) ^ j * (q : A) ^ (j * (j - 1) / 2) * a j := by
   rw [heckePol, finsetSum_coeff, Finset.sum_eq_single j]
-  · rw [coeff_C_mul_X_pow, if_pos rfl]
+  · rw [coeff_C_mul_X_pow, ite_eq_left rfl]
   · intro i hi hij
-    rw [coeff_C_mul_X_pow, if_neg]
+    rw [coeff_C_mul_X_pow, ite_eq_right]
     have := Finset.mem_range.1 hi
     omega
   · intro h

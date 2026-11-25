@@ -209,7 +209,7 @@ theorem norm_skMat_sq (x : UCo k) :
     rw [← Fintype.sum_prod_type' (f := fun a b => if h : b < a then ‖x.2 ⟨(a, b), h⟩‖ ^ 2 else 0),
       ← Fintype.sum_subtype_add_sum_subtype (fun ab : Fin k × Fin k => ab.2 < ab.1)]
     have h1 : ∀ i : {ab : Fin k × Fin k // ¬ (ab.2 < ab.1)},
-        (if h : i.1.2 < i.1.1 then ‖x.2 ⟨(i.1.1, i.1.2), h⟩‖ ^ 2 else 0) = 0 := fun i => dif_neg i.2
+        (if h : i.1.2 < i.1.1 then ‖x.2 ⟨(i.1.1, i.1.2), h⟩‖ ^ 2 else 0) = 0 := fun i => dite_eq_right i.2
     have h2 : ∀ i : Low k,
         (if h : i.1.2 < i.1.1 then ‖x.2 ⟨(i.1.1, i.1.2), h⟩‖ ^ 2 else 0) = ‖x.2 i‖ ^ 2 :=
       fun i => by rw [dite_eq_left i.2]
@@ -217,7 +217,7 @@ theorem norm_skMat_sq (x : UCo k) :
   rw [RLk_sq]
   simp only [key, Finset.sum_add_distrib]
   rw [Finset.sum_comm (f := fun a b => if h : a < b then ‖x.2 ⟨(b, a), h⟩‖ ^ 2 else 0), hL]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   ring
 
 end Formalism.L2.SG.Pf.GV

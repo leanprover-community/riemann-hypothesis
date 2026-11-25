@@ -115,7 +115,7 @@ private lemma exists_eq_one_and_eq_zero_of_ne_algHom {C V : Type} [Field C] [Com
   have hu : ∀ z', z (u z') = 1 := by
     intro z'
     by_cases h : z' ≠ z
-    · simp only [u, dif_pos h, map_smul, map_sub, AlgHom.commutes, Algebra.algebraMap_self,
+    · simp only [u, dite_eq_left h, map_smul, map_sub, AlgHom.commutes, Algebra.algebraMap_self,
         RingHom.id_apply, smul_eq_mul]
       exact inv_mul_cancel₀ (sub_ne_zero.mpr (hsep z' h).choose_spec)
     · simp only [u]
@@ -123,7 +123,7 @@ private lemma exists_eq_one_and_eq_zero_of_ne_algHom {C V : Type} [Field C] [Com
   have hu' : ∀ z', z' ≠ z → z' (u z') = 0 := by
     intro z' h
     simp only [u]
-    rw [dif_pos h]
+    rw [dite_eq_left h]
     simp
   refine ⟨∏ z' ∈ Finset.univ.erase z, u z', ?_, ?_⟩
   · rw [map_prod]

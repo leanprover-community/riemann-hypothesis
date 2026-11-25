@@ -22,12 +22,12 @@ theorem serC_mul {LL V' : Type} [Field LL] [AddCommGroup V'] [Module LL V'] (f g
       rw [Finset.mem_range] at hk
       have h1 : 0 ≤ i - (k : ℤ) := by omega
       have h2 : (i - (k : ℤ)).toNat = i.toNat - k := by omega
-      simp only [serC, if_pos h1, h2, mul_smul]
+      simp only [serC, ite_eq_left h1, h2, mul_smul]
     rw [Finset.sum_congr rfl hsum, ← Finset.sum_smul]
-    simp only [serC, if_pos hi]
+    simp only [serC, ite_eq_left hi]
     rw [PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   · have h0 : i.toNat = 0 := by omega
-    simp only [serC, if_neg hi, h0, zero_add, Finset.range_one, Finset.sum_singleton, CharP.cast_eq_zero,
+    simp only [serC, ite_eq_right hi, h0, zero_add, Finset.range_one, Finset.sum_singleton, CharP.cast_eq_zero,
       sub_zero, smul_zero]
 
 section Generic

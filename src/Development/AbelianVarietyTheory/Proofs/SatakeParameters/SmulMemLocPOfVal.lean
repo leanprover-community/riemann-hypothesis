@@ -275,22 +275,6 @@ theorem coeff_subGen_mem {ν : Fin a → ℕ} {ν' : Fin b → ℕ} (hν : Antit
 
 end Generic
 
-section Integral
-
-variable {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]}
-
-variable {D : D7} {N : ℕ} {wt : D.what₂.Tau → DomWeight N}
-
-variable {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {O : LiftObj D (D.chTw u μ)} {i : ℕ}
-
-end Integral
-
-section Subst
-
-variable {D : D7} {N N' : ℕ}
-
-end Subst
-
 section Lift
 
 variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup}
@@ -361,7 +345,7 @@ theorem subD_ten [DecidableEq ι] (h : a ≤ b) (F : ι → MvPolynomial (Fin a 
     congr 2
     funext v
     have hv : (v.2 : ℕ) < b := lt_of_lt_of_le v.2.2 h
-    simp only [Function.comp_apply, dif_pos hv]
+    simp only [Function.comp_apply, dite_eq_left hv]
     rfl
   rw [e1]
   refine (Finset.prod_congr rfl fun τ _ => aeval_subGen h

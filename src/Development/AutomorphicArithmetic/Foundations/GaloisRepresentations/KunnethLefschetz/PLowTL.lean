@@ -204,7 +204,7 @@ theorem ps_split {q : ℕ} [NeZero q] {A : Type} [CommRing A] {ζ ξ : A} (hq : 
         fun k hk => by
           rw [← hT k hk]; exact Finset.sum_congr rfl fun i _ => by ring
       rw [Finset.sum_congr rfl hT2]
-      rw [Finset.sum_ite_eq' (Finset.range q) 0, if_pos (Finset.mem_range.2 hq0)]
+      rw [Finset.sum_ite_eq' (Finset.range q) 0, ite_eq_left (Finset.mem_range.2 hq0)]
     rw [hsum, hc]
   · have h1 : c * S i * η i = c * S i := by rw [mul_assoc, hSη]
     calc c * S i * ξ = c * S i * ξ * (w * ζ) ^ (i : ℕ) := by rw [hw, one_pow, mul_one]

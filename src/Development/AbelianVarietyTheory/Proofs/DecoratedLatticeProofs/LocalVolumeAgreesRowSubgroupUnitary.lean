@@ -101,7 +101,7 @@ theorem vol_agree : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X P
   have hN1 := _root_.GlobalTheory.UnipRead.mem_N1_iff_local_hom ι e hcc heR
   have hlam : lamYat (Pr := Pr) (R := R) j P.1 = stdAt X.E _ P.1 := by
     ext v
-    simp only [lamYat, if_neg hat.nmem, LocE.lamY, LocE.sclLat, Submodule.mem_comap]
+    simp only [lamYat, ite_eq_right hat.nmem, LocE.lamY, LocE.sclLat, Submodule.mem_comap]
     congr! 1
     funext l
     simp [LocE.scE]

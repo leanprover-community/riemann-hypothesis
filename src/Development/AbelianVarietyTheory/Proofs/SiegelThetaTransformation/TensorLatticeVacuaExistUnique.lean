@@ -569,15 +569,15 @@ theorem Good.overlap (hA : Good X w A) (hA' : Good X w A') {v v' : TF n g}
       Good.rho_rho idx hs hn hA (neg_mem ha) hb hv's]
     have hc : -a + b ∈ A := add_mem (neg_mem ha) hb
     by_cases h : -a + b ∈ A'
-    · rw [hv'.2.2 _ h, hv'.2.1, if_pos (((hfeq a ha b hb).2 h).symm)]
-    · rw [Good.ip_eq_zero idx hs hn hA' hv' h, if_neg]
+    · rw [hv'.2.2 _ h, hv'.2.1, ite_eq_left (((hfeq a ha b hb).2 h).symm)]
+    · rw [Good.ip_eq_zero idx hs hn hA' hv' h, ite_eq_right]
       intro he
       exact h ((hfeq a ha b hb).1 he.symm)
   obtain ⟨hS, -⟩ := sum_sb_ip T hmemT hv's
   have hSψ : ∀ ψ ∈ T, SW.ip (∑ χ ∈ T, χ) ψ = 1 := by
     intro ψ hψ
     rw [(sum_sb_ip T hmemT (hmemT ψ hψ)).2, Finset.sum_congr rfl fun χ hχ => horth χ hχ ψ hψ,
-      Finset.sum_ite_eq', if_pos hψ]
+      Finset.sum_ite_eq', ite_eq_left hψ]
   have hSS : SW.ip (∑ χ ∈ T, χ) (∑ χ ∈ T, χ) = T.card := by
     rw [(sum_sb_ip T hmemT hS).2, Finset.sum_congr rfl fun ψ hψ => by
       rw [ip_conj hS (hmemT ψ hψ), hSψ ψ hψ, map_one], Finset.sum_const, nsmul_eq_mul, mul_one]

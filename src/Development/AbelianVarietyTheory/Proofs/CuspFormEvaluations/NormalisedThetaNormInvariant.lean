@@ -203,7 +203,7 @@ theorem hermC_eq_zero_of_mem_span (X : Data E r) (τ : X.Ψ) (e : Fin r → Fin 
   obtain ⟨β, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hy
   rw [hermC_sum_left]
   refine Finset.sum_eq_zero fun a _ => ?_
-  rw [hermC_smul_left, he, if_neg, mul_zero]
+  rw [hermC_smul_left, he, ite_eq_right, mul_zero]
   intro h
   have h1 := congrArg Fin.val h
   have h2 := a.2
@@ -245,7 +245,7 @@ theorem exists_unit_of_flag (X : Data E r) (τ : X.Ψ) (e e' : Fin r → Fin r �
   refine ⟨_, ?_, h1⟩
   generalize ((sgn X.p0 a : ℝ) : ℂ) * hermC τ.1 X.Gm (e' a) (e a) = u at h1
   have h2 := he' a a
-  rw [h1, hermC_smul_left, hermC_smul_right, he, if_pos rfl] at h2
+  rw [h1, hermC_smul_left, hermC_smul_right, he, ite_eq_left rfl] at h2
   have h3 : u * conj u = 1 := by
     have := TorusAtDataPf.sgn_sq X a
     linear_combination ((sgn X.p0 a : ℝ) : ℂ) * h2 + (1 - u * conj u) * this

@@ -122,7 +122,7 @@ theorem finprod_mem_SB : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [F
     rw [heq z hz, heq y hy]
     exact hz'
   ·
-    push_neg at hy
+    push Not at hy
     obtain ⟨v, hvS, hvL⟩ := hy
     have hφ : φ v = Set.indicator (L v) 1 := not_not.1 hvS
     let U : Set (κ → FiniteAdeleRing (𝓞 F) F) := {z | ev z v ∉ L v}

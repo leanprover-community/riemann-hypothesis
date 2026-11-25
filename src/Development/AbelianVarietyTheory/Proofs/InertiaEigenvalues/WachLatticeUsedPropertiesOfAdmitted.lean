@@ -1018,7 +1018,7 @@ theorem spanIsLines_of_coeff (j : M →ₗ[F] M') (ex : N → ℤ → M) (hex : 
     exact ⟨⟨m, fun k hk => show j (f k) = 0 by rw [hm k hk, map_zero]⟩, fun k => ⟨f k, h k, rfl⟩⟩
   · rintro ⟨⟨m, hm⟩, h⟩
     choose f hf hfy using h
-    refine ⟨fun k => if k < m then 0 else f k, (hG _).2 ⟨⟨m, fun k hk => if_pos hk⟩, fun k => ?_⟩, ?_⟩
+    refine ⟨fun k => if k < m then 0 else f k, (hG _).2 ⟨⟨m, fun k hk => ite_eq_left hk⟩, fun k => ?_⟩, ?_⟩
     · split_ifs
       · exact zero_mem _
       · exact hf k

@@ -40,9 +40,9 @@ private lemma prime_dvd_coeff_one_add_X_pow_sub_one_sub_X_pow (n : ℕ) :
   · by_cases hnp : n = p
     · subst hnp; simp [hp.out.ne_zero]
     · by_cases hlt : n < p
-      · rw [if_neg hn.ne', if_neg hnp, sub_zero, sub_zero]
+      · rw [ite_eq_right hn.ne', ite_eq_right hnp, sub_zero, sub_zero]
         exact Nat.cast_dvd_cast (Nat.Prime.dvd_choose_self hp.out hn.ne' hlt)
-      · rw [Nat.choose_eq_zero_of_lt (by omega), if_neg hn.ne', if_neg hnp]
+      · rw [Nat.choose_eq_zero_of_lt (by omega), ite_eq_right hn.ne', ite_eq_right hnp]
         simp
 
 open PowerSeries in

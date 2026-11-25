@@ -124,7 +124,7 @@ theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G
       exact GlobalTheory.IdemIntegral.toEAf_mem_of_finPart (GlobalTheory.SplitIndex.finPart_incA_mem ϖ)
     have hint : eToEAf D (ϖ : D.host.E) * frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) z k l ∈
         Formalism.L2.Herm.intAf D.host.F D.host.E := mul_mem hϖi (hM k l)
-    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dif_pos hint]
+    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dite_eq_left hint]
     refine (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, hint⟩).2 ?_
     change Valued.v (cpt PP (eToEAf D (ϖ : D.host.E) * _)) < 1
     rw [RingHom.map_mul, Valuation.map_mul, val_cpt_eToEAf, GlobalTheory.HeckeDetChar.val_unif (hϖ PP hPP).1 (hϖ PP hPP).2]
@@ -138,7 +138,7 @@ theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G
         Formalism.L2.Herm.intAf D.host.F D.host.E := fun k l => hN k l
     refine (hI z hz).1 fun k l => mem_int_of_mul he hϖ (frMapO_half i _ _ hz k l) (hN' k l) fun PP hPP => ?_
     have h1 := congrFun (congrFun (hred PP hPP) k) l
-    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dif_pos (hN' k l)] at h1
+    simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dite_eq_left (hN' k l)] at h1
     exact (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, hN' k l⟩).1 h1
 
 end GlobalTheory.DilKer

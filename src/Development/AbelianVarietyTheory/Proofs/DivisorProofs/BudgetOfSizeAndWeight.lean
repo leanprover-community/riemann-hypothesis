@@ -145,13 +145,13 @@ theorem adj_ge (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : �
   · have := g_le_of W hW (h2 hp).2
     have ha : (a : ℕ) < W.p := by omega
     have hb' : ¬ (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_true, if_false]
+    simp only [reWt, Wts.u', ha, hb', ite_true, ite_false]
     push_cast at this ⊢
     linarith
   · have := g_le_of W hW (h3 hp (by omega))
     have ha : ¬ (a : ℕ) < W.p := by omega
     have hb' : ¬ (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_false]
+    simp only [reWt, Wts.u', ha, hb', ite_false]
     push_cast at this ⊢
     linarith
 
@@ -166,7 +166,7 @@ theorem adj_lt (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (b : �
     have h' : W.u1 τ b < W.u1 τ a := by omega
     have ha : (a : ℕ) < W.p := by omega
     have hb' : (b : ℕ) < W.p := by omega
-    simp only [reWt, Wts.u', ha, hb', if_true]
+    simp only [reWt, Wts.u', ha, hb', ite_true]
     exact_mod_cast h'
 
 theorem regular (hW : W.Hyp) (hD : W.IsDiv) (τ : ι) (a b : Fin N) (hab : a < b) :

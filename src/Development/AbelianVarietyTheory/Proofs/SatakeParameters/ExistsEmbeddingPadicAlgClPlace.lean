@@ -74,8 +74,6 @@ theorem norm_sum_lt {K : Type u_1} [NormedField K] [IsUltrametricDist K] (s : Fi
     have h2 : ‖∑ i ∈ s, f i‖ < r := ih (fun i hi => h i (Finset.mem_insert_of_mem hi))
     exact lt_of_le_of_lt (IsUltrametricDist.norm_add_le_max _ _) (max_lt h1 h2)
 
-alias main := _root_.GlobalTheory.NormSumLt.norm_sum_lt
-
 end GlobalTheory.NormSumLt
 end -- clump:auto
 end -- clump:auto

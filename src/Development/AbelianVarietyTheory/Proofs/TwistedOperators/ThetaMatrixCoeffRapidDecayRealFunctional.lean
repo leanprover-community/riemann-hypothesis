@@ -80,7 +80,7 @@ theorem omO_piW_lineAt {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D} 
     linarith
   have hL := GlobalTheory.OrientedHeis.isLineAt_lineAt h.inf (m := W.rank) (n := V.rank) τ z
   have hc : ∀ b, GlobalTheory.FockCompare.piW θ W V (lineAt θ τ z 1) b = compAt θ b (lineAt θ τ z 1) := fun b => rfl
-  rw [skew, omO_of_single V W τ _ _ (fun b hb => by rw [hc, hL.2.2 1 b, if_neg hb]; rfl), hc, hL.2.2 1 τ, if_pos rfl,
+  rw [skew, omO_of_single V W τ _ _ (fun b hb => by rw [hc, hL.2.2 1 b, ite_eq_right hb]; rfl), hc, hL.2.2 1 τ, ite_eq_left rfl,
     Complex.ofReal_one, one_smul]
   exact congrArg Neg.neg (GlobalTheory.OrientedRealForm.formAt_eq V W τ z (compAt θ τ ξ))
 

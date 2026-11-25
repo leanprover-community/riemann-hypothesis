@@ -80,7 +80,7 @@ theorem labExists : LabExists D := by
       exact D.eTau.injective (Subtype.ext (mul_left_cancel (mul_right_cancel e1)))
     refine ⟨⟨Equiv.ofBijective f (Finite.injective_iff_bijective.mp hf), false⟩, fun τ => ?_⟩
     rw [hlab τ, ArchLab.emb_eq]
-    simp only [Equiv.ofBijective_apply, f, Equiv.apply_symm_apply, Bool.false_eq_true, if_false]
+    simp only [Equiv.ofBijective_apply, f, Equiv.apply_symm_apply, Bool.false_eq_true, ite_false]
     rw [mul_assoc (γ * (D.eTau τ).1), cc_mul_cc, mul_one]
 
 end Formalism.IndefR.Conj

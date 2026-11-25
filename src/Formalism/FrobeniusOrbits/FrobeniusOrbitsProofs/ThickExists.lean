@@ -211,7 +211,7 @@ theorem hostThickExists : HostThickExists := by
         exact absurd (hs₁.trans hs₂.symm) h12
       · rw [Finset.card_singleton, Nat.cast_one]
         exact hsmall
-  push_neg at hsmall
+  push Not at hsmall
   have hnpos : (0 : ℝ) < n := by
     rcases Nat.eq_zero_or_pos n with hn | hn
     · rw [hn] at hsmall

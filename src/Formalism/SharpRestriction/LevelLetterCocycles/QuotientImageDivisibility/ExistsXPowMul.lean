@@ -33,7 +33,7 @@ theorem exists_X_pow_mul (f : PowerSeries LL) (hf : f ≠ 0) :
   have hdvd : PowerSeries.X ^ w ∣ f := PowerSeries.X_pow_dvd_iff.2 hmin
   obtain ⟨u, hu⟩ := hdvd
   refine ⟨w, u, ?_, hu⟩
-  rw [hu, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+  rw [hu, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
     PowerSeries.coeff_zero_eq_constantCoeff_apply] at h1
   exact h1
 

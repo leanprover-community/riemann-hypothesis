@@ -246,7 +246,7 @@ lemma eq_sum_gramSchmidt_coeff {r : ℕ} (a : Fin r → U) (n : Fin r) :
     · simp [h, h.ne]
     · simp [h]
     · simp [not_lt.2 h.le, h.ne']
-  simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [← Finset.sum_filter]
   have hf : Finset.univ.filter (fun i => i < n) = Finset.Iio n := by ext i; simp
   rw [hf]; exact h0

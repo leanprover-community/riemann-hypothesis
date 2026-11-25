@@ -67,7 +67,7 @@ theorem exists_congr_one : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ
     by_cases h : i = j
     · subst h
       simp
-    · rw [if_neg (Ne.symm h), if_neg h]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
   exact ⟨_, Matrix.isUnit_det_of_left_inverse hg, hg⟩
 
 end GlobalTheory.CompanionTheory.UnrDens

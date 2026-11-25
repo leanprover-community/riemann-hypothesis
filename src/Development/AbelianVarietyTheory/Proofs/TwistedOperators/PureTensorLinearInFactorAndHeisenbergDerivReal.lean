@@ -81,7 +81,7 @@ private theorem lineAt_fin_eq_zero_and_inf_other_eq_zero {D : D7} {θ : InfFam D
   set_option synthInstance.maxHeartbeats 200000 in
     refine ⟨by simpa using congrFun (congrFun (hfin t) i) j, fun ρ hρ => ?_⟩
   have h := congrFun (congrFun (hcomp t ρ) i) j
-  simp only [hρ, if_false] at h
+  simp only [hρ, ite_false] at h
   simpa [compAt] using h
 
 private theorem ae_eq_zero_of_fin_zero_of_theta_inf_zero {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) (a : AE D) (h1 : finPart D a = 0)

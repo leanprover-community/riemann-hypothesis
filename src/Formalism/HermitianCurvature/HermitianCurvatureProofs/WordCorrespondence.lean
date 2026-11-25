@@ -40,7 +40,7 @@ theorem phi_top_cont (hTC : TopContOn) {Wp Wq : Type} [NormedAddCommGroup Wp] [I
       ((Complex.continuous_normSq.sub continuous_const).pow _).continuousAt
     refine ((Complex.continuous_ofReal.continuousAt.comp hz).mul hR).congr ?_
     filter_upwards [hU.mem_nhds hc0] with c hc
-    simp only [Pi.mul_apply, Function.comp_apply, B2.zWeight, if_pos (le_of_lt hc)]
+    simp only [Pi.mul_apply, Function.comp_apply, B2.zWeight, ite_eq_left (le_of_lt hc)]
   · push Not at hc0
     have hU : IsOpen {c : ℂ | Complex.normSq c - P.T * P.T' < δ} :=
       isOpen_lt (Complex.continuous_normSq.sub continuous_const) continuous_const

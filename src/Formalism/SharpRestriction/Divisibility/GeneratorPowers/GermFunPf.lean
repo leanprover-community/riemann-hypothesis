@@ -93,16 +93,16 @@ theorem gen_eq_of_corr {X Y : Scheme.{0}} (L : LB X) (hL : L.IsLB) (ψ : Y ⟶ X
     have hc : ∀ φ : Y ⟶ X, φ p ∈ L.U (c φ) := by
       intro φ
       by_cases hφ : φ = ψ
-      · simp only [c, if_pos hφ]
+      · simp only [c, ite_eq_left hφ]
         rw [hφ]
         exact hψ
-      · simp only [c, if_neg hφ]
+      · simp only [c, ite_eq_right hφ]
         exact Classical.choose_spec (exists_chart L hL (φ p))
     have hcoh : L.Coh φ' (fun k' => c (φ' k')) := fun k₁ k₂ h => congrArg c h
     have hcomp : ∀ (k : Fin 1) (k' : K'), ψ = φ' k' → j k = c (φ' k') := by
       intro k k' hk
       rw [← hk, Subsingleton.elim k 0]
-      simp only [c, if_pos rfl]
+      simp only [c, ite_eq_left rfl]
     rw [TopologicalSpace.Opens.mem_iSup]
     refine ⟨⟨fun k' => c (φ' k'), hcoh, hcomp⟩, hp, ?_⟩
     show p ∈ L.wchart φ' (fun k' => c (φ' k'))
@@ -206,9 +206,9 @@ theorem coeff_psTrunc {R ι : Type} [CommRing R] [Fintype ι] [DecidableEq ι] (
     AddMonoidAlgebra.coeff (psTrunc m f) e = MvPowerSeries.coeff e f := by
   unfold psTrunc
   rw [MvPolynomial.coeff_sum, Finset.sum_eq_single e]
-  · rw [MvPolynomial.coeff_monomial, if_pos rfl]
+  · rw [MvPolynomial.coeff_monomial, ite_eq_left rfl]
   · intro d _ hde
-    rw [MvPolynomial.coeff_monomial, if_neg hde]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right hde]
   · intro he'
     exfalso
     apply he'

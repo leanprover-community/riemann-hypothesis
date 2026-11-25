@@ -794,8 +794,8 @@ theorem UpperTheory.V.Pa.hat_ex :
     rw [hrep, map_one, map_one, Matrix.smul_apply, Matrix.algebraMap_matrix_apply]
     by_cases hij : i = j
     · subst hij
-      rw [Matrix.one_apply_eq, if_pos rfl, hB, smul_eq_mul, mul_one]
-    · rw [Matrix.one_apply_ne hij, if_neg hij, smul_zero, map_zero]
+      rw [Matrix.one_apply_eq, ite_eq_left rfl, hB, smul_eq_mul, mul_one]
+    · rw [Matrix.one_apply_ne hij, ite_eq_right hij, smul_zero, map_zero]
   have hφ : PhiCond G.frame.G₀ l := phi_fg _ P.fg
   have hn : 1 ≤ n := le_trans x.a_pos x.a_le
   haveI : IsAdicComplete (maximalIdeal B) B := IsCO.complete (O := O)

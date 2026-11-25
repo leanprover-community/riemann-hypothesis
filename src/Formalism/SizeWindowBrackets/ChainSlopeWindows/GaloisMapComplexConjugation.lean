@@ -274,16 +274,6 @@ lemma sgn2_toAdd_eq_ite (s : ℤˣ) : Multiplicative.toAdd (sgn2 s) = if (s : �
 
 alias zmod_two_eq_zero_or_eq_one := _root_.Formalism.LFunctionChainParameters.characterSumData.PB.zmod_two_cases_bis
 
-section
-variable {e q d : ℕ} [Fact q.Prime] [Fact d.Prime]
-
-end
-
-section
-variable {e q d : ℕ} [Fact q.Prime] [Fact d.Prime]
-
-end
-
 section Field
 
 open NumberField Ideal

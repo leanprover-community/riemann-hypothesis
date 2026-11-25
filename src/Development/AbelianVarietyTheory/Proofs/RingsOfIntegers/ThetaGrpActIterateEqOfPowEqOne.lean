@@ -240,9 +240,9 @@ theorem thetaGrp_act_iterate_eq_of_pow_eq_one : ∀ (S : Scheme.{0}) (A : Over S
     · have hx' : x ∈ L.wchart (fun _ : Fin 1 => (snd T A).left) (fun _ => c) := hx
       unfold LB.wchart at hx'
       simp only [TopologicalSpace.Opens.mem_mk, Set.mem_iInter, Set.mem_preimage] at hx'
-      simp only [J, hψ, if_true]
+      simp only [J, hψ, ite_true]
       exact hx' 0
-    · simp only [J, hψ, if_false]
+    · simp only [J, hψ, ite_false]
       exact (hcov ψ).choose_spec
   have hJc : J (𝟙 _ ≫ (snd T A).left) = c := by
     simp [J]

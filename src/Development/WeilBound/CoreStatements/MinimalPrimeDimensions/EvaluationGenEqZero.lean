@@ -172,7 +172,7 @@ theorem eval₂_loc_eq_zero (hi : y ∈ ptsIn p σ (B.U i)) {q : MvPolynomial (F
   have hi' : ⊤ ≤ (y : Sp ℂ ⟶ Z) ⁻¹ᵁ B.U i := hi
   obtain ⟨φ, hφ⟩ : ∃ φ : Γ(Z, B.U i) →+* ℂ, ∀ f, φ f = ev p σ (B.U i) f y :=
     ⟨(Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom.comp (Scheme.Hom.appLE y.1 (B.U i) ⊤ hi').hom,
-      fun f => by simp only [ev, valR, dif_pos hi']; rfl⟩
+      fun f => by simp only [ev, valR, dite_eq_left hi']; rfl⟩
   have h0 : under y ∈ B.U i := hi (Set.mem_univ _)
   have hU : genericPoint Z ∈ B.U i :=
     (genericPoint_spec Z).mem_open_set_iff (B.U i).isOpen |>.mpr ⟨_, Set.mem_univ _, h0⟩

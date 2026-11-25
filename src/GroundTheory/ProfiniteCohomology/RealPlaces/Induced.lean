@@ -93,9 +93,9 @@ theorem exists_norm_eq_res_coind (hfree : ∀ (x : G) (h : H), x * ι h * x⁻¹
     change (if InOutCoset U ι ((u : G) * y) then f.1 ((u : G) * y) else 0) =
       N.ρ u (if InOutCoset U ι y then f.1 y else 0)
     by_cases hy : InOutCoset U ι y
-    · rw [if_pos ((inOutCoset_mul_left_iff U ι u y).2 hy), if_pos hy]
+    · rw [ite_eq_left ((inOutCoset_mul_left_iff U ι u y).2 hy), ite_eq_left hy]
       exact f.2 u y
-    · rw [if_neg (mt (inOutCoset_mul_left_iff U ι u y).1 hy), if_neg hy, map_zero]
+    · rw [ite_eq_right (mt (inOutCoset_mul_left_iff U ι u y).1 hy), ite_eq_right hy, map_zero]
   refine ⟨⟨_, hmem⟩, Subtype.ext (funext fun y => ?_)⟩
   have hnorm : ((Rep.res ι (Rep.coind U.subtype N)).ρ.norm ⟨_, hmem⟩).1 y =
       ∑ h : H, (if InOutCoset U ι (y * ι h) then f.1 (y * ι h) else 0) := by
@@ -110,11 +110,11 @@ theorem exists_norm_eq_res_coind (hfree : ∀ (x : G) (h : H), x * ι h * x⁻¹
   have hinv : ∀ h : H, f.1 (y * ι h) = f.1 y := fun h =>
     congrArg (fun g : Rep.res ι (Rep.coind U.subtype N) => g.1 y) (hf h)
   rw [Finset.sum_eq_single h₀⁻¹]
-  · rw [if_pos, hinv]
+  · rw [ite_eq_left, hinv]
     refine ⟨u₀, ?_⟩
     rw [hD, ← hx, e₀, mul_assoc, ← map_mul, mul_inv_cancel, map_one, mul_one]
   · intro h _ hne
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨u, hu⟩
     rw [hD, ← hx] at hu
     apply hne

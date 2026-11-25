@@ -372,8 +372,8 @@ theorem step_law (hW : IsWeilDatumO ψ S T χS χT om) (kS : S.SigOK) (kT : T.Si
   have sg := parLev_St hg.2.1
   have sh := parLev_St hh.2.1
   let a : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ := fun PP => if PP ∈ Pg then (χ (k + 1) PP)⁻¹ else ξ PP
-  have a1 : ∀ PP ∈ Pg, a PP = (χ (k + 1) PP)⁻¹ := fun PP hP => if_pos hP
-  have a2 : ∀ PP ∈ Q, a PP = ξ PP := fun PP hP => if_neg (Finset.disjoint_right.1 hd hP)
+  have a1 : ∀ PP ∈ Pg, a PP = (χ (k + 1) PP)⁻¹ := fun PP hP => ite_eq_left hP
+  have a2 : ∀ PP ∈ Q, a PP = ξ PP := fun PP hP => ite_eq_right (Finset.disjoint_right.1 hd hP)
   have hres : ∀ PP ∈ Pg ∪ Q, ResAt χS PP (a PP) ∧ ResAt χT PP (a PP) := fun PP hP => by
     rcases Finset.mem_union.1 hP with hP | hP
     · rw [a1 PP hP]; exact hG PP hP
@@ -393,10 +393,10 @@ theorem step_law (hW : IsWeilDatumO ψ S T χS χT om) (kS : S.SigOK) (kT : T.Si
           fun H => GlobalTheory.SplitHecke.isHalf_actO _ _ H⟩
       by_cases hx : IsHalf e x ∧ IsIntM (frMapO S T βS βT x)
       · beta_reduce
-        rw [if_pos hx, if_pos ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2)]
+        rw [ite_eq_left hx, ite_eq_left ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2)]
         exact (congrArg₂ (· * ·) (hoG _) (hoQ _)).trans (mul_mul_mul_comm _ _ _ _)
       · beta_reduce
-        rw [if_neg hx, if_neg fun H => hx ⟨i0.1 H.1, i1.1 H.2⟩, mul_zero])
+        rw [ite_eq_right hx, ite_eq_right fun H => hx ⟨i0.1 H.1, i1.1 H.2⟩, mul_zero])
   rw [h2, smul_smul]
   congr 1
   unfold levChi

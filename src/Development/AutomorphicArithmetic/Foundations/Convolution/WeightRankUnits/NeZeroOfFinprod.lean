@@ -268,7 +268,7 @@ theorem UpperTheory.ConvolutionTheory.G2.realProd :
     by_cases h : ε v j = 1
     · simp [s, h]
     · have h' := (hε v j).resolve_left h
-      simp only [s, if_neg h]
+      simp only [s, ite_eq_right h]
       rw [h']; simp
   refine ⟨∀ v, ι v, inferInstance, fun i v => l₁ v (i v), fun i v => l₂ v (i v), fun i => ∏ v, s v (i v),
     fun i v => hinf v (i v), ?_⟩
@@ -645,9 +645,9 @@ theorem UpperTheory.ConvolutionTheory.G3.polFin :
   obtain ⟨y, hy, e⟩ := hPS w hw
   rw [← e]
   by_cases h : C w ⊆ GlobalTheory.LFun.KGL w (n := n)
-  · simp only [g, if_pos h, inv_one]
+  · simp only [g, ite_eq_left h, inv_one]
     exact GlobalTheory.BCT.GeoFin.charpoly_nrmL_integral E n w (hlev w) y (h hy)
-  · simp only [g, if_neg h]
+  · simp only [g, ite_eq_right h]
     exact hγ w y hy
 end -- clump:auto
 end -- clump:auto

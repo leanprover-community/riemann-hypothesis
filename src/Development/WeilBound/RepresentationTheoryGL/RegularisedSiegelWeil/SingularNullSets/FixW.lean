@@ -321,16 +321,16 @@ theorem cv_sub_plc (z : AE D) (B : Finset (Pl D)) (z' : AE D) (hz' : z' = z - �
 
   rw [hz', RingHom.map_sub, map_sum]
   by_cases hw : w ∈ B
-  · rw [if_pos hw, Finset.sum_eq_single w (fun v _ hv => compFin_plc_ne (Ne.symm hv) _) (fun h => absurd hw h),
+  · rw [ite_eq_left hw, Finset.sum_eq_single w (fun v _ hv => compFin_plc_ne (Ne.symm hv) _) (fun h => absurd hw h),
       compFin_plc_self, sub_self]
-  · rw [if_neg hw, Finset.sum_eq_zero (fun v hv => compFin_plc_ne (fun h => hw (by rw [h]; exact hv)) _), sub_zero]
+  · rw [ite_eq_right hw, Finset.sum_eq_zero (fun v hv => compFin_plc_ne (fun h => hw (by rw [h]; exact hv)) _), sub_zero]
 
 open Classical in
 theorem finite_part_mem_integral_adeles (z z' : AE D) (hz : ∀ v, cv D v z ∈ intLoc D.host.F D.host.E v)
     (hfin : {x | ¬IsGood D.host.F D.host.E x}.Finite) (B : Finset (Pl D)) (hB : B = hfin.toFinset)
     (hcv : ∀ w, cv D w z' = if w ∈ B then 0 else cv D w z) : finPart D z' ∈ intAE D := by
   refine finPart_mem_of_good (fun v hv => ?_) (fun v => ?_)
-  · rw [hcv, if_pos (by rw [hB]; exact (Set.Finite.mem_toFinset hfin).2 hv)]
+  · rw [hcv, ite_eq_left (by rw [hB]; exact (Set.Finite.mem_toFinset hfin).2 hv)]
   · rw [hcv]
     split_ifs
     · exact zero_mem _
@@ -602,7 +602,7 @@ theorem fixW : IdemEx → GenK → WMaj → FixW := by
     show ω g (ω x Φ) = Φ
     rw [hx']
     rcases hcases with hN | hM | ⟨w, u', hw, hu', hu'K, rfl⟩
-    · exact hS1 S h1 n θ μ ω χ hω g hg hN Φ (fun y hy => by rw [hΦ y, if_neg hy])
+    · exact hS1 S h1 n θ μ ω χ hω g hg hN Φ (fun y hy => by rw [hΦ y, ite_eq_right hy])
     · exact LFixW.fixM V hω he (hS3 S h3) hg hM Φ hΦ
     · exact hS2 S h2 e he n θ μ ω χ hω hHaar w u' hw hu' hu'K Φ hΦ)
   exact key hu

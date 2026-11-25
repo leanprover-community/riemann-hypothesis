@@ -49,7 +49,7 @@ private theorem exists_notMem {σ : T ≃ₐ[S] T} {q : ℕ} (h : IsGal σ q) (a
     rw [this, Finset.sum_eq_single 0]
     · rw [hxy 0 h.pos]; simp [c]
     · intro j hj hj0
-      rw [hxy j (Finset.mem_range.1 hj), if_neg hj0, mul_zero]
+      rw [hxy j (Finset.mem_range.1 hj), ite_eq_right hj0, mul_zero]
     · intro h0
       exact absurd (Finset.mem_range.2 h.pos) h0
   by_contra hcon

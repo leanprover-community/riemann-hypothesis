@@ -870,7 +870,7 @@ private theorem span_pi {I : Type} [Finite I] {M : I → Type} [∀ i, AddCommGr
   have hm : S.mkQ.compMultilinearMap (PiTensorProduct.mapMultilinear ℂ M M) = 0 := by
     refine MultilinearMap.ext_of_span_eq_top (g := fun i (x : H i) => ρ i x) h fun y => ?_
     obtain ⟨x, hx, hx'⟩ := hx y Finset.univ
-    simp only [Finset.mem_univ, if_true] at hx'
+    simp only [Finset.mem_univ, ite_true] at hx'
     refine (Submodule.Quotient.mk_eq_zero S).2 (Submodule.subset_span ⟨⟨x, hx⟩, ?_⟩)
     simp only [hx']
     rfl

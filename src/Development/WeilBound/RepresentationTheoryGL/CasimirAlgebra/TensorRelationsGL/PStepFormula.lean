@@ -122,12 +122,12 @@ theorem sum_swap {X : Type} [AddCommGroup X] [Module ℂ X] (h : (Fin n → Fin 
         simp only [Function.comp_apply, Equiv.swap_apply_def]
         by_cases h1 : x = a
         · subst h1
-          rw [if_pos rfl, Function.update_of_ne hne, Function.update_of_ne (Ne.symm hne), hab]
-        · rw [if_neg h1]
+          rw [ite_eq_left rfl, Function.update_of_ne hne, Function.update_of_ne (Ne.symm hne), hab]
+        · rw [ite_eq_right h1]
           by_cases h2 : x = b
           · subst h2
-            rw [if_pos rfl, Function.update_self, Function.update_self]
-          · rw [if_neg h2, Function.update_of_ne h2, Function.update_of_ne h1]
+            rw [ite_eq_left rfl, Function.update_self, Function.update_self]
+          · rw [ite_eq_right h2, Function.update_of_ne h2, Function.update_of_ne h1]
       rw [hc, hanti _ a b hne, hab]
       simp
     · rintro c ⟨hca, hcb⟩
@@ -205,7 +205,7 @@ theorem ext_of_alt {W : Type} [AddCommGroup W] [Module ℂ W] {X Y : Module.End 
     · simp [g]
     · intro σ _ hσ
       have hs : (id ∘ ⇑σ) ≠ id := fun h' => hσ (Equiv.ext fun x => congrFun h' x)
-      simp only [g, if_neg hs, smul_zero]
+      simp only [g, ite_eq_right hs, smul_zero]
     · simp
   have := congrArg (fun T : Module.End ℂ (TV n W (Fin n)) => T g id) h
   simpa only [Module.End.mul_apply, lift_apply, hg] using this

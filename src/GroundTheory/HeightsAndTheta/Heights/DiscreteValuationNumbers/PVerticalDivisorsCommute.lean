@@ -128,7 +128,7 @@ theorem VerticalDivisorsCommute.proof (h1 : CutByEffectiveDivisor.Statement.{u})
         by_cases hW : ratDiv P f' g' W = 0
         · simp [hW]
         · beta_reduce
-          rw [if_pos (hD'.vertical W hW)]
+          rw [ite_eq_left (hD'.vertical W hW)]
 
 end
 

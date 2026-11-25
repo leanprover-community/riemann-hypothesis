@@ -205,7 +205,7 @@ theorem UpperTheory.Gal.productCup_of_system.valG_of :
       have h2 := (hz _ _ (hval k S (hP hS)).1).1
       have hcard : S.card = T.card := (hP hS).trans (hP hT).symm
       have h3 : Val (rB ℂ K' (xv x) {0}) e.1 (c T S) (μ T S) := by
-        simp only [μ, dif_pos hcard]
+        simp only [μ, dite_eq_left hcard]
         exact hv T S hcard
       exact (hr _ _ _ _ (hr _ _ _ _ h1 h3).2 h2).2)
   rw [sum_delta _ n α β μ fun S hS T hT => hδ S T (hP hS) (hP hT)] at hV

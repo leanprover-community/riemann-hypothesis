@@ -72,8 +72,8 @@ theorem entry_of_inG {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ 
 theorem sg_swap (ε : Fin n → Bool) (a b : Fin n) : sg ε (b, a) = sg ε (a, b) := by
   simp only [sg]
   by_cases h : ε a = ε b
-  · rw [if_pos h.symm, if_pos h]
-  · rw [if_neg (fun h' => h h'.symm), if_neg h]
+  · rw [ite_eq_left h.symm, ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h h'.symm), ite_eq_right h]
 
 theorem gen_apply_zero (ε : Fin n → Bool) (p : Fin n × Fin n) (i j : Fin n) (h1 : p ≠ (i, j)) (h2 : p ≠ (j, i)) :
     gen ε p i j = 0 := by
@@ -93,7 +93,7 @@ theorem eq_sum_gen {ε : Fin n → Bool} {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : 
     simp [coord, gen, h, h.ne, h.ne', not_lt.mpr h.le]
   · rw [Fintype.sum_eq_single (i, i) (fun q hq => by rw [gen_apply_zero ε q i i hq hq, mul_zero])]
     have he := entry_of_inG hZ i i
-    simp only [sg, if_true] at he
+    simp only [sg, ite_true] at he
     have hre : (Z i i).re = 0 := by
       have h2 := congrArg Complex.re he
       simp at h2
@@ -276,7 +276,7 @@ theorem integral_sumCoef {ι : Type} [Fintype ι] [DecidableEq ι] {σ : Matrix 
           refine Finset.sum_congr rfl fun i _ => ?_
           exact integral_finsetSum _ fun j _ => hint i j
       _ = _ := by
-          simp only [hij, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_const,
+          simp only [hij, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_const,
             Finset.card_univ, nsmul_eq_mul]
           ring
 
@@ -563,11 +563,11 @@ theorem gen_inK (p : Fin n × Fin n) (hp : ε p.1 = ε p.2) : inK ε (gen ε p) 
     ext k l
     simp only [Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
     by_cases h : i = k ∧ j = l
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       obtain ⟨rfl, rfl⟩ := h
       rw [hij]
       ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       ring
   have hI : star Complex.I = -Complex.I := Complex.conj_I
   unfold gen

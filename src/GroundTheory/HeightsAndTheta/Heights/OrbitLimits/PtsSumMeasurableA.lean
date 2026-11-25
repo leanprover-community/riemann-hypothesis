@@ -115,7 +115,7 @@ theorem exists_lift_family {P : Ideal (MRing ι)}
     obtain ⟨m, hm⟩ := hf (some t)
     refine ⟨m, ?_, ?_⟩
     · show y ∈ Bo (f m)
-      rw [hm, hBsome, if_pos hL]
+      rw [hm, hBsome, ite_eq_left hL]
       exact hyB
     · show segre (γo (f m) y) = w
       rw [hm, hγsome t hL, (hL.choose_spec y hyB).2.2]

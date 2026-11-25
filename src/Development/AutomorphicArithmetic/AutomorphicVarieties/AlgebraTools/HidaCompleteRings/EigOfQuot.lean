@@ -24,7 +24,7 @@ private theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.common_ker_
   by_cases hall : ∀ i, ∀ y ∈ V, T i y = 0
   · obtain ⟨y, hyV, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hV
     exact ⟨y, hy0, fun i => hall i y hyV⟩
-  push_neg at hall
+  push Not at hall
   obtain ⟨i, z, hzV, hz⟩ := hall
   have hpowmem : ∀ k : ℕ, (T i ^ k) z ∈ V := by
     intro k
@@ -86,7 +86,7 @@ private theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.common_ker_
     exact ⟨u, huV, fun h0 => hu (by rw [h0, map_zero])⟩
   by_cases hall : ∀ i, ∀ y ∈ V, ∃ n : ℕ, (T i ^ n) y = 0
   · exact UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.common_ker_of_nilpotent T hc V hVne hinv hall
-  push_neg at hall
+  push Not at hall
   obtain ⟨i, z, hzV, hz⟩ := hall
   let f : Module.End K V := (T i).restrict (hinv i)
   obtain ⟨n, hn⟩ := Filter.eventually_atTop.mp (LinearMap.eventually_codisjoint_ker_pow_range_pow f)

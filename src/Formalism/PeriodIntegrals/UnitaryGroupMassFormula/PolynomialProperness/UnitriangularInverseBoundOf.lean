@@ -25,10 +25,10 @@ theorem isMonomial_conjT {m : ℕ} {P : Matrix (Fin m) (Fin m) ℂ} (h : IsMonom
   simp only [monoP, conjTranspose_apply, of_apply]
   by_cases h : a = w i
   · have h' : i = w.symm a := by rw [h, Equiv.symm_apply_apply]
-    rw [if_pos h, if_pos h', h']
+    rw [ite_eq_left h, ite_eq_left h', h']
   · have h' : ¬ i = w.symm a := by
       intro h'; apply h; rw [h', Equiv.apply_symm_apply]
-    rw [if_neg h, if_neg h', star_zero]
+    rw [ite_eq_right h, ite_eq_right h', star_zero]
 
 theorem mx_inv_conjT {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) : mx (Mᴴ)⁻¹ = mx M⁻¹ := by
   rw [← conjTranspose_nonsing_inv, GN.mx_conjTranspose]

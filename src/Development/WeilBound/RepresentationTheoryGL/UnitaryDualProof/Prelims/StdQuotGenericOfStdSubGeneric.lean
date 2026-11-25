@@ -65,16 +65,6 @@ theorem whitChar_inv (ψ : AddChar k Circle) (u : unipB k (Fin N)) :
 
 end Theta
 
-section Main
-
-variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-variable {k}
-
-variable (k)
-
-end Main
-
 end GlobalTheory.CompanionTheory.StdQuot
 
 end

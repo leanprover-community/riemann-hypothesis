@@ -92,9 +92,9 @@ theorem analyticAt_minorIJ_of_entries {E : Type} [NormedAddCommGroup E] [NormedS
     (A : E → Matrix (Fin N) (Fin N) ℂ) (x : E) (h : ∀ r s, AnalyticAt ℂ (fun u => A u r s) x)
     (I J : Finset (Fin N)) : AnalyticAt ℂ (fun u => minorIJ (A u) I J) x := by
   by_cases e : I.card = J.card
-  · simp only [minorIJ, dif_pos e]
+  · simp only [minorIJ, dite_eq_left e]
     exact analyticAt_det_of_entries _ x fun r s => h _ _
-  · simp only [minorIJ, dif_neg e]
+  · simp only [minorIJ, dite_eq_right e]
     exact analyticAt_const
 
 theorem analyticAt_flagAt_entry {Ψ : Type} [DecidableEq Ψ] {N d : ℕ} (H : Ψ → (Fin d → ℂ) → Matrix (Fin N) (Fin N) ℂ)
@@ -107,12 +107,12 @@ theorem analyticAt_flagAt_entry {Ψ : Type} [DecidableEq Ψ] {N d : ℕ} (H : Ψ
     (ContinuousLinearMap.proj 0 : (Fin (d + 1) → ℂ) →L[ℂ] ℂ).analyticAt _
   unfold flagAt
   by_cases h : τ' = τ
-  · simp only [if_pos h, Matrix.mul_apply, Matrix.add_apply]
+  · simp only [ite_eq_left h, Matrix.mul_apply, Matrix.add_apply]
     refine Finset.analyticAt_fun_sum _ fun t _ => (hHt _ _ _).mul (analyticAt_const.add ?_)
     by_cases e : cb = t ∧ ca = s
-    · simpa only [Matrix.single_apply, if_pos e] using h0
-    · simpa only [Matrix.single_apply, if_neg e] using analyticAt_const
-  · simp only [if_neg h]
+    · simpa only [Matrix.single_apply, ite_eq_left e] using h0
+    · simpa only [Matrix.single_apply, ite_eq_right e] using analyticAt_const
+  · simp only [ite_eq_right h]
     exact hHt _ _ _
 
 theorem sameOrbit_basePart {K : Type} {ι : K → Type} {σ : Type} (blk : σ → Option K) {z z' : (Σ k, ι k) → ℂ}

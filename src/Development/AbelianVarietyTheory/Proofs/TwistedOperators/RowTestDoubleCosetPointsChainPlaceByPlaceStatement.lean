@@ -378,31 +378,31 @@ theorem points : Big fun {D} _ _ _ _ {T} _ _ _ _ _ _ ch => ∀ (s : ℤˣ) (t : 
       dsimp only
       by_cases hj0 : j = 0
       · subst hj0
-        rw [if_pos rfl, if_neg h0i, map_one, map_one]
+        rw [ite_eq_left rfl, ite_eq_right h0i, map_one, map_one]
         exact ⟨suppAt_one_twisted_operators, rfl⟩
-      · rw [if_neg hj0]
+      · rw [ite_eq_right hj0]
         by_cases hji : j ∈ idx D
         · obtain ⟨-, -, e, -, -, hloc⟩ := (hX j).1 hji
-          rw [if_pos hji, inBasis_cut (hL w), hloc hj w]
+          rw [ite_eq_left hji, inBasis_cut (hL w), hloc hj w]
           exact ⟨suppAt_cutPart hw1 hw2 _ _, rfl⟩
-        · rw [if_neg hji, (hX j).2 hji, cut_one hfw, map_one, map_one]
+        · rw [ite_eq_right hji, (hX j).2 hji, cut_one hfw, map_one, map_one]
           exact ⟨suppAt_one_twisted_operators, rfl⟩
     · intro j hj
       dsimp only
       by_cases hj0 : j = 0
       · subst hj0
-        rw [if_pos rfl, if_pos rfl, inBasis_cut (hL w), hl₀ w]
+        rw [ite_eq_left rfl, ite_eq_left rfl, inBasis_cut (hL w), hl₀ w]
         exact ⟨suppAt_cutPart hw1 hw2 _ _, rfl⟩
-      · rw [if_neg hj0, if_neg hj0, map_one, map_one]
+      · rw [ite_eq_right hj0, ite_eq_right hj0, map_one, map_one]
         exact ⟨suppAt_one_twisted_operators, rfl⟩
     · intro j _
       dsimp only
       by_cases hj0 : j = 0
       · subst hj0
         refine ⟨1, isTilt_one ch.G h0i, ?_⟩
-        rw [if_pos rfl, inv_one, one_mul]
+        rw [ite_eq_left rfl, inv_one, one_mul]
         exact mul_mem (real_mem_grpOff _ _ (hp.1 0)) (cutS_mem he₀ hL (Finset.notMem_erase w Sᶜ) _)
-      · rw [if_neg hj0]
+      · rw [ite_eq_right hj0]
         by_cases hji : j ∈ idx D
         · obtain ⟨δ, hδ, hb₀f, a, ha, rfl⟩ := hbI j hji
           refine ⟨a * b₀ j, hδ, ?_⟩

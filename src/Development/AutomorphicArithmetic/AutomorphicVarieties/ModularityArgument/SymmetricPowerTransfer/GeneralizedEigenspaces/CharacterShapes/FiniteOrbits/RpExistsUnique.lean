@@ -65,7 +65,7 @@ private theorem rp_exists_unique {I : Type} {Gv Hv : I → Type} [∀ v, Group (
     exact hv (by simp [x, h, one_mem])
   refine ⟨⟨x, hx⟩, ⟨fun v h => ?_, fun v h => ?_⟩, ?_⟩
   · show e v h (x v) = w v
-    simp only [x, dif_pos h]
+    simp only [x, dite_eq_left h]
     exact Function.surjInv_eq _ _
   · show x v = 1
     simp [x, h]
@@ -76,7 +76,7 @@ private theorem rp_exists_unique {I : Type} {Gv Hv : I → Type} [∀ v, Group (
     · apply (he v h).1
       rw [h1 v h]
       show w v = e v h (x v)
-      simp only [x, dif_pos h]
+      simp only [x, dite_eq_left h]
       exact (Function.surjInv_eq _ _).symm
     · rw [h2 v h]
       show 1 = x v

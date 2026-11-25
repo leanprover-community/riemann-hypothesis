@@ -48,11 +48,11 @@ theorem mulL_apply (Y z : Matrix (Fin n) (Fin n) ℂ) : mulL Y z = Y * z := rfl
 
 theorem lop_on {Y : Matrix (Fin n) (Fin n) ℂ} {F : Matrix (Fin n) (Fin n) ℂ → ℂ}
     {z : Matrix (Fin n) (Fin n) ℂ} (hz : z ∈ OmegaSet n) : lop Y F z = -(fderiv ℂ F z (Y * z)) :=
-  if_pos hz
+  ite_eq_left hz
 
 theorem lop_off {Y : Matrix (Fin n) (Fin n) ℂ} {F : Matrix (Fin n) (Fin n) ℂ → ℂ}
     {z : Matrix (Fin n) (Fin n) ℂ} (hz : z ∉ OmegaSet n) : lop Y F z = 0 :=
-  if_neg hz
+  ite_eq_right hz
 
 theorem contDiffOn_dir (Y : Matrix (Fin n) (Fin n) ℂ) {F : Matrix (Fin n) (Fin n) ℂ → ℂ}
     (hF : ContDiffOn ℂ ⊤ F (OmegaSet n)) :
@@ -128,19 +128,19 @@ theorem lead_scale (a : Fin n) (s : ℂ) (z : Matrix (Fin n) (Fin n) ℂ) {j : �
   rw [key, Matrix.det_mul, Matrix.det_diagonal]
   congr 1
   by_cases h : (a : ℕ) < j
-  · rw [if_pos h, Finset.prod_eq_single (⟨a, h⟩ : Fin j)]
+  · rw [ite_eq_left h, Finset.prod_eq_single (⟨a, h⟩ : Fin j)]
     · simp
     · intro r _ hr
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       apply hr
       ext
       simpa [Fin.ext_iff] using congrArg Fin.val e
     · simp
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.prod_eq_one
     intro r _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     apply h
     have h1 := r.isLt
@@ -206,10 +206,10 @@ theorem sum_tele (μ : Fin n → ℤ) (a : Fin n) :
     induction N, hN using Nat.le_induction with
     | base =>
       rw [sub_self]
-      refine Finset.sum_eq_zero fun i hi => if_neg ?_
+      refine Finset.sum_eq_zero fun i hi => ite_eq_right ?_
       have := Finset.mem_range.1 hi
       omega
-    | succ N hN ih => rw [Finset.sum_range_succ, ih, if_pos hN]; ring
+    | succ N hN ih => rw [Finset.sum_range_succ, ih, ite_eq_left hN]; ring
   rw [key n a.isLt.le]
   simp [hmdef]
 
@@ -222,9 +222,9 @@ theorem PhiM_scale (μ : Fin n → ℤ) (a : Fin n) {s : ℂ} (z : Matrix (Fin n
     rw [lead_scale a s z (i.isLt : (i : ℕ) + 1 ≤ n)]
     by_cases h : a ≤ i
     · have h' : (a : ℕ) < (i : ℕ) + 1 := Nat.lt_succ_of_le (Fin.le_def.1 h)
-      rw [if_pos h', if_pos h, mul_zpow]
+      rw [ite_eq_left h', ite_eq_left h, mul_zpow]
     · have h' : ¬ (a : ℕ) < (i : ℕ) + 1 := fun e => h (Fin.le_def.2 (Nat.le_of_lt_succ e))
-      rw [if_neg h', if_neg h]
+      rw [ite_eq_right h', ite_eq_right h]
       simp
   simp_rw [key]
   rw [Finset.prod_mul_distrib, prod_zpow_eq _ _ hs, sum_tele]

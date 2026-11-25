@@ -63,7 +63,7 @@ theorem interNum_top_pos_of_isAmpleLB : ∀ (k : Type) [Field k] (X : Scheme.{0}
     ((Polynomial.natDegree_sub_le _ _).trans (max_le hdeg
       ((Polynomial.natDegree_C_mul_X_pow_le c D))))
     (by
-      rw [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X_pow, if_pos rfl]
+      rw [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl]
       linarith)
   obtain ⟨m, h1, h2, h3⟩ := (hfreq.and_eventually (hchi.and hq)).exists
   rw [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,

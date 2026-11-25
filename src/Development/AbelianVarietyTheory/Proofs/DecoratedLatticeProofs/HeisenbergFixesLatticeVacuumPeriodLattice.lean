@@ -81,14 +81,14 @@ theorem toMatrix_smul_eq (S T : HSp D) (hS : S.gram = 1) {n : ℕ} (s s' : Fin n
     intro j; funext a
     have := hd a j
     rw [hS] at this
-    simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+    simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply]
     rw [← this]
     refine Finset.sum_congr rfl fun i _ => by ring
   ext a j
   rw [LinearMap.toMatrix'_apply, Matrix.sum_apply]
   simp only [GlobalTheory.LatVac.genMap, Matrix.of_apply, hS, Matrix.one_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
 
   rw [← hd' j, map_sum]
   simp only [map_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]

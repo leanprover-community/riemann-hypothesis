@@ -81,20 +81,20 @@ private theorem mvPowerSeries_mem_span_X_of_constantCoeff_zero {σ R : Type} [Fi
     · subst hd
       rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, h0]
       refine (Finset.sum_eq_zero fun s _ => ?_).symm
-      rw [if_neg]
+      rw [ite_eq_right]
       simp
     · obtain ⟨s0, hs0, hds0⟩ := hsel d hd
       have hle0 : Finsupp.single s0 1 ≤ d := Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hds0)
       rw [Finset.sum_eq_single s0]
-      · rw [if_pos hle0]
+      · rw [ite_eq_left hle0]
         show _ = (if sel (d - Finsupp.single s0 1 + Finsupp.single s0 1) = some s0 then
           MvPowerSeries.coeff (d - Finsupp.single s0 1 + Finsupp.single s0 1) h else 0)
-        rw [tsub_add_cancel_of_le hle0, if_pos hs0]
+        rw [tsub_add_cancel_of_le hle0, ite_eq_left hs0]
       · intro s _ hs
         split_ifs with hle
         · show (if sel (d - Finsupp.single s 1 + Finsupp.single s 1) = some s then
             MvPowerSeries.coeff (d - Finsupp.single s 1 + Finsupp.single s 1) h else 0) = 0
-          rw [tsub_add_cancel_of_le hle, hs0, if_neg]
+          rw [tsub_add_cancel_of_le hle, hs0, ite_eq_right]
           intro h'
           exact hs (Option.some_injective _ h').symm
         · rfl

@@ -288,8 +288,8 @@ theorem twist (hψ : IsStdChar D ψ (-1)) {V W : HSp D} {χ χ' ν ν' : IdC D} 
     (H' : IsWeilOn ψ V W (χ * ν) (χ' * ν') om') {g h x y} (hx : IsDetRoot V g x) (hy : IsDetRoot W h y) :
     om' (g, h) = (((if V.rank < W.rank then (ν' x)⁻¹ * ν y else (ν y)⁻¹ * ν' x : Circle) : ℂ)) • om (g, h) := by
   rcases ha.1.lt_or_gt with hr | hr
-  · rw [if_pos hr]; exact twist_small hψ ha hr h1 h2 r1 r2 H H' hx hy
-  · rw [if_neg hr.not_gt]
+  · rw [ite_eq_left hr]; exact twist_small hψ ha hr h1 h2 r1 r2 H H' hx hy
+  · rw [ite_eq_right hr.not_gt]
     obtain ⟨o, ho, e⟩ := exists_swap hψ ha.1 H
     obtain ⟨o', ho', e'⟩ := exists_swap hψ ha.1 H'
     refine LinearMap.ext fun Φ => (WeilSwap.trEquiv ψ ha.1).injective ?_
@@ -767,7 +767,7 @@ theorem weilOnEqEx_of_weilRepresentation : GlobalTheory.Published.WeilRepresenta
     (fun g h x => (GlobalTheory.OrientedSmall.bridgeSmall D V W hr.le).2 g h x) (fun _ a _ b => ⟨a, b⟩)
     fun e g h hg hh x y hx hy => ⟨x, y, hg, hh, hx, hy, ?_⟩
   unfold splitFacO splitFac
-  rw [if_pos hr.le]
+  rw [ite_eq_left hr.le]
 
 end GlobalTheory.Mem.WeilEqRank
 
@@ -875,7 +875,7 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
 theorem mem_cc (b : Bool) (μ : D.what₂.Tup) {k : ℕ} (hk : k < D.R.m) (x : SmT (R.MY k) →ₗ[ℂ] GA D (Yc D k) → ℂ) :
     x ∈ (toChainReal R F tupT hm hTop).CC b μ k ↔ x ∈ R.CC (tupT μ) k := by
   show x ∈ MultT R.θ (R.MY k) (if k < D.R.m then _ else Set.univ) (if k < D.R.m then _ else 0) ↔ _
-  rw [if_pos hk, if_pos hk]
+  rw [ite_eq_left hk, ite_eq_left hk]
 
 theorem ioC_coe (b : Bool) (μ : D.what₂.Tup) (k : ℕ) (hk : k + 1 < D.R.m)
     (z : (toChainReal R F tupT hm hTop).CC b μ (k + 1)) :
@@ -883,7 +883,7 @@ theorem ioC_coe (b : Bool) (μ : D.what₂.Tup) (k : ℕ) (hk : k + 1 < D.R.m)
         SmT (R.MY k) →ₗ[ℂ] GA D (Yc D k) → ℂ) =
       (((R.ioY (tupT μ) k ⟨(z.1 : SmT (R.MY (k + 1)) →ₗ[ℂ] GA D (Yc D (k + 1)) → ℂ),
         (mem_cc R F tupT hm hTop b μ hk _).1 z.2⟩).1 : _)) := by
-  simp only [toChainReal, dif_pos hk]
+  simp only [toChainReal, dite_eq_left hk]
   rfl
 
 theorem ioOK (hC : R.IsChain) (b : Bool) (μ : D.what₂.Tup) : (toChainReal R F tupT hm hTop).IoOK b μ := by
@@ -932,7 +932,7 @@ def eXW (μ : D.what₂.Tup) (hμ : Used0 D μ) :
 theorem eW_pos (μ : D.what₂.Tup) (hμ : Used0 D μ) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m - 1) (x : D.what₂.Mult μ j) :
     ((eW R F tupT hm hTop I μ hμ j x).1 : SmT (R.MY j) →ₗ[ℂ] GA D (Yc D j) → ℂ) = (I.jM μ hμ j h1 h2 x).1 := by
   obtain ⟨j, rfl⟩ : ∃ i, j = i + 1 := ⟨j - 1, by omega⟩
-  simp only [eW, dif_pos h2]
+  simp only [eW, dite_eq_left h2]
   rfl
 
 theorem nuW_pos (t : T) (j : ℕ) (h1 : 1 ≤ j) : nuW R F t j = R.νY t j := by

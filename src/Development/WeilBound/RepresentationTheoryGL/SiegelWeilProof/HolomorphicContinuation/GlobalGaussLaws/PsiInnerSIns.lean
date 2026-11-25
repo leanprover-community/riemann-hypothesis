@@ -69,7 +69,7 @@ theorem psi_inner_sIns {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.h
   rw [psi_trA_tau hθ hl τ]
   · congr 2
     · simp only [tLoc]; push_cast; ring
-    · rw [psiT_trace, map_inner, hins, if_pos rfl]
+    · rw [psiT_trace, map_inner, hins, ite_eq_left rfl]
       congr 2
       obtain ⟨hdet, hg, -⟩ := hfr
       have hx : Matrix.of (piF θ τ fr x) = fr⁻¹ * x.map (psiT D τ) := by
@@ -80,7 +80,7 @@ theorem psi_inner_sIns {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.h
       simp only [Matrix.mul_assoc]
       rw [← Matrix.mul_assoc (fr⁻¹)ᴴ frᴴ, hinv, Matrix.one_mul]
   · intro τ' hne
-    rw [psiT_trace, map_inner, hins, if_neg hne, Matrix.mul_zero, Matrix.mul_zero, Matrix.trace_zero]
+    rw [psiT_trace, map_inner, hins, ite_eq_right hne, Matrix.mul_zero, Matrix.mul_zero, Matrix.trace_zero]
   · rw [finPart_trace, finMap_inner V x (sIns τ fr u) (finMap_insT τ (fr * Matrix.of u)), Matrix.trace_zero]
 
 end PositivityTheory.Rg.Sw.Glob.FTP

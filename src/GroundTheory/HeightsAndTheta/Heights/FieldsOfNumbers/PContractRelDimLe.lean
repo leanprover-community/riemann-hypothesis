@@ -47,11 +47,11 @@ theorem ringKrullDim_killIdeal_add_card_le {Q : Ideal (MRing ι F)} [Q.IsPrime]
       (hmono (Finset.subset_insert k T)) (f := X ⟨k, i k⟩)
       (by
         change killBlocks T (X ⟨k, i k⟩) ∉ Q
-        rw [killBlocks_X, if_neg hk]
+        rw [killBlocks_X, ite_eq_right hk]
         exact hi k)
       (by
         change killBlocks (insert k T) (X ⟨k, i k⟩) ∈ Q
-        rw [killBlocks_X, if_pos (Finset.mem_insert_self k T)]
+        rw [killBlocks_X, ite_eq_left (Finset.mem_insert_self k T)]
         exact Q.zero_mem)
     calc ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + ((insert k T).card : WithBot ℕ∞)
         = (ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + 1) + (T.card : WithBot ℕ∞) := by
@@ -92,8 +92,8 @@ theorem exists_rename_eq_killBlocks_compl (x : MRing ι' F) :
     obtain ⟨k', i⟩ := v
     rw [map_mul, killBlocks_X, ← ha]
     by_cases h : k' ∈ (Finset.univ.map j)ᶜ
-    · exact ⟨0, by rw [if_pos h, mul_zero, map_zero]⟩
-    · rw [if_neg h]
+    · exact ⟨0, by rw [ite_eq_left h, mul_zero, map_zero]⟩
+    · rw [ite_eq_right h]
       simp only [Finset.mem_compl, Finset.mem_map, Finset.mem_univ, true_and, not_not] at h
       obtain ⟨k, rfl⟩ := h
       exact ⟨a * X ⟨k, i⟩, by rw [map_mul, rename_X]; rfl⟩

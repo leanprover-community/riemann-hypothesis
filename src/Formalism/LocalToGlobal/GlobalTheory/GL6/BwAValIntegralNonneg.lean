@@ -705,10 +705,10 @@ theorem bwA_ten_intSpan (D : D7) (w : D.what₂.places.Pl) {N : ℕ} (lam : D.wh
     refine ⟨r', Function.update f τv g, hr', fun τ => ?_, rfl⟩
     by_cases h : τ = τv
     · subst h
-      rw [Function.update_apply, if_pos rfl]
+      rw [Function.update_apply, ite_eq_left rfl]
       simp only [delSq]
       exact hg
-    · rw [Function.update_apply, if_neg h]
+    · rw [Function.update_apply, ite_eq_right h]
       exact hf τ
   have hq' := hle hq
   rw [hR]

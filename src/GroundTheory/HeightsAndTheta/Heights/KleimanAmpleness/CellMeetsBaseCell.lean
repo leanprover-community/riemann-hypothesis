@@ -44,14 +44,14 @@ theorem ModelCechRefine.proof (hC : CechContract.Statement) (hR : ModelRowExact.
   have hM0 : ∀ (J : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) I, ¬ CellMeets y I →
       cellSec F y γ (baseCell k₀ e J.1 I) = ⊥ := fun J I hI => by
     unfold cellSec
-    rw [if_neg fun h => hI fun k i hi => h k i (subset_baseCell k₀ e J.1 I k hi)]
+    rw [ite_eq_right fun h => hI fun k i hi => h k i (subset_baseCell k₀ e J.1 I k hi)]
   have hMJ : ∀ (J J' : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) I, J.1 ⊆ J'.1 →
       cellSec F y γ (baseCell k₀ e J.1 I) ≤ cellSec F y γ (baseCell k₀ e J'.1 I) := fun J J' I h => by
     by_cases hI : CellMeets y I
     · exact cellSec_mono y γ (baseCell_mono k₀ e h fun _ => subset_rfl) (cellMeets_baseCell y k₀ e J' hI)
     · rw [hM0 J I hI]; exact bot_le
   refine (hD F K ι Ω y N _ T (cellSec F y γ) (fun J I => cellSec F y γ (baseCell k₀ e J.1 I)) hM.1 ?_
-    (fun I hI => by unfold cellSec; rw [if_neg hI]) hM0 hMJ
+    (fun I hI => by unfold cellSec; rw [ite_eq_right hI]) hM0 hMJ
     (fun J I I' h hI' => cellSec_mono y γ (baseCell_mono k₀ e subset_rfl h) (cellMeets_baseCell y k₀ e J hI'))
     ?_ ?_ n)
   · obtain ⟨i, hi⟩ := hM.1 k₀

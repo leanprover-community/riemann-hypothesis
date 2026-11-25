@@ -962,7 +962,7 @@ theorem approx {F E K : Type} [Field F] [Field E] [Algebra F E] [Field K] [Algeb
       · have : Valued.v w = 0 := by
           rw [hu, Valuation.map_zero] at hw; exact le_antisymm hw zero_le'
         rw [this, zero_mul]; exact hr0
-      · rw [if_neg hu] at hz
+      · rw [ite_eq_right hu] at hz
         have hu0 : (0 : ℤᵐ⁰) < Valued.v u := by rw [pos_iff_ne_zero]; simpa using hu
         calc Valued.v w * Valued.v z ≤ Valued.v u * Valued.v z := by gcongr
           _ < Valued.v u * Valued.v (r * u⁻¹) := mul_lt_mul_of_pos_left hz hu0

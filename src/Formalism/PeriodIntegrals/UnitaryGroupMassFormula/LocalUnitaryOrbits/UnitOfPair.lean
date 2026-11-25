@@ -94,7 +94,7 @@ theorem partner (hL : ∃ L : Submodule (𝓞 E) (Fin n → E), Submodule.IsLatt
     ∃ q ∈ PerpG σ J v Λ X, sc (E := E) v (π⁻¹) * hR (Fv F v) σ J q p ∉ OEv (E := E) v := by
   have h1 : ¬ ∀ x ∈ latLoc (E := E) v Λ, hR (Fv F v) σ J x (sc (E := E) v (π⁻¹) • p) ∈ OEv (E := E) v :=
     fun h => hpn ((hsd _).2 h)
-  push_neg at h1
+  push Not at h1
   obtain ⟨x, hx, hxn⟩ := h1
   obtain ⟨c, -, hc⟩ := splitG σ J v Λ hL hsd X hX hU x hx
   refine ⟨_, hc, ?_⟩

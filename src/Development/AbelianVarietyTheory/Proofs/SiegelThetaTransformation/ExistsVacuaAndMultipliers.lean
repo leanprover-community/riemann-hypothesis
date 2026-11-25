@@ -95,7 +95,7 @@ theorem exists_vacua_and_multipliers : ∀ (E : Type) [Field E] [NumberField E] 
   have hv₀ : ∀ L ∈ D.lats, IsVac X bas D.w (tens (stdL E n) (D.sh L)) (v₀ L) := by
     intro L hL
     have h := (hvac _ (hlats L hL).1).1
-    rw [show v₀ L = h.choose from dif_pos h]
+    rw [show v₀ L = h.choose from dite_eq_left h]
     exact h.choose_spec
 
   let μ : GL (Fin r) E → Lt E r → ℂ := fun γ L =>
@@ -140,7 +140,7 @@ theorem exists_vacua_and_multipliers : ∀ (E : Type) [Field E] [NumberField E] 
       ∃ c : ℂ, wG X bas idx γ (v₀ L) = c • v₀ (mapL γ L) := ⟨⟨k, hk⟩, hex⟩
 
   have hk' : hcond.1.choose = k := Subtype.ext (huniq _ _ _ hcond.1.choose_spec hk)
-  have hμ : μ γ L = hcond.2.choose * (((D.lam hcond.1.choose)⁻¹ : ℂˣ) : ℂ) := dif_pos hcond
+  have hμ : μ γ L = hcond.2.choose * (((D.lam hcond.1.choose)⁻¹ : ℂˣ) : ℂ) := dite_eq_left hcond
   rw [hμ, hk', mul_assoc, Units.inv_mul, mul_one]
   exact hcond.2.choose_spec
 

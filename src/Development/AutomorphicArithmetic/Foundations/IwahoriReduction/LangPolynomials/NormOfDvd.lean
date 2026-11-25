@@ -27,16 +27,8 @@ private theorem exists_natCast_add_mul_of_frobenius_fixed {R : Type} [CommRing R
     exact (sub_eq_zero.mp h2).symm
   have hf : Function.Injective f := f.injective
   let q : Polynomial K := Polynomial.X ^ p - Polynomial.X
-  have hdeg : q.natDegree = p := by
-    have h1 : (Polynomial.X : Polynomial K).natDegree < (Polynomial.X ^ p : Polynomial K).natDegree := by
-      rw [Polynomial.natDegree_X_pow, Polynomial.natDegree_X]
-      exact hp.out.one_lt
-    rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt h1, Polynomial.natDegree_X_pow]
-  have hq : q ≠ 0 := by
-    intro h
-    have := hdeg
-    rw [h, Polynomial.natDegree_zero] at this
-    exact hp.out.ne_zero this.symm
+  have hdeg : q.natDegree = p := Polynomial.natDegree_X_pow_sub_X hp.out.one_lt
+  have hq : q ≠ 0 := Polynomial.X_pow_sub_X_ne_zero hp.out.one_lt
   have hroot : ∀ t : K, t ^ p = t → t ∈ q.roots.toFinset := by
     intro t ht
     rw [Multiset.mem_toFinset, Polynomial.mem_roots hq]
@@ -137,17 +129,11 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
 
 private theorem zero_one_mem_gammaSet_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {q : ℕ} (hq2 : 2 ≤ q) {a : Ω} (ha : a ^ q = a) : a ∈ A := by
-  rcases eq_or_ne a 0 with rfl | h0
-  · exact A.zero_mem
-  rcases A.mem_or_inv_mem a with h | h
-  · exact h
-  · have h1 : a * a ^ (q - 2) = 1 := by
-      rw [← pow_succ', show q - 2 + 1 = q - 1 by omega]
-      have : a ^ q = a ^ (q - 1) * a := by rw [← pow_succ, Nat.sub_add_cancel (by omega)]
-      rw [this] at ha
-      exact (mul_eq_right₀ h0).1 ha
-    rw [eq_inv_of_mul_eq_one_left h1, ← inv_pow]
-    exact A.pow_mem h _
+  rw [← A.valuation_le_one_iff]
+  by_contra h
+  have := congrArg A.valuation ha
+  rw [map_pow] at this
+  exact (lt_self_pow₀ (not_le.1 h) (by omega)).ne' this
 
 private theorem eq_of_pow_eq_self_of_valuation_sub_lt_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {q : ℕ} (hq : A.valuation (q : Ω) < 1) {a b : Ω} (ha : a ∈ A) (hb : b ∈ A) (ha' : a ^ q = a) (hb' : b ^ q = b) (hab : A.valuation (a - b) < 1) : a = b := by
   by_contra hne

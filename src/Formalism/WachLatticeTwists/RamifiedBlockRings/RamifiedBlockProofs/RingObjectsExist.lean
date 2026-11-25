@@ -459,9 +459,9 @@ theorem splitPts : StatSplitPts := by
   have hle : PT.natDegree ≤ t := by
     rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
     intro N hN
-    rw [hcoef, if_neg (by omega)]
+    rw [hcoef, ite_eq_right (by omega)]
   have hone : PT.coeff t = 1 := by
-    rw [hcoef, if_pos le_rfl]
+    rw [hcoef, ite_eq_left le_rfl]
     refine Subtype.ext (funext fun x => ?_)
     have := (hmonP x).coeff_natDegree
     rw [hdegP] at this

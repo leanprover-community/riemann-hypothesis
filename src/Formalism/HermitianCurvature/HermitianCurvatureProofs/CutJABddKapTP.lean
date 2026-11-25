@@ -139,13 +139,13 @@ theorem typeProj_of (hPE : PRho.PRhoExists) (hGL : PRho.GaugeLines) (hDU : SSn.R
       simp only [Complex.ofReal_one, one_smul]
       by_cases hσ : σ = ρ
       · subst hσ
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         ext y
         exact hfix y
-      · rw [if_neg hσ]
+      · rw [ite_eq_right hσ]
         ext y
         have horth := (hrest n0 (by rw [hN0]; norm_num)).2.2.1 σ ρ
-        rw [if_neg hσ] at horth
+        rw [ite_eq_right hσ] at horth
         rw [ContinuousLinearMap.comp_apply, ← hfix y, ← ContinuousLinearMap.comp_apply (Pr σ n0), horth]
         rfl
   ·
@@ -159,7 +159,7 @@ theorem typeProj_of (hPE : PRho.PRhoExists) (hGL : PRho.GaugeLines) (hDU : SSn.R
     refine ⟨fun _ _ => ContinuousLinearMap.id ℂ _, fun σ => contDiff_const, fun σ a A B' => rfl,
       fun σ h _ h' _ a X => rfl, ?_⟩
     intro x _ σ ρ
-    rw [if_pos (hsub σ ρ)]
+    rw [ite_eq_left (hsub σ ρ)]
     rfl
 
 end

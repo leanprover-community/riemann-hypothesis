@@ -718,7 +718,7 @@ theorem Slab.ooLintSum_of {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting 
     have e : ∀ t : GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u'),
         J t = ∑ Λ ∈ Y.what₂ u, if t.lam = Λ then J t else 0 := by
       intro t
-      rw [Finset.sum_eq_single_of_mem t.lam t.mem (fun b _ hb => if_neg (fun h => hb h.symm)), if_pos rfl]
+      rw [Finset.sum_eq_single_of_mem t.lam t.mem (fun b _ hb => ite_eq_right (fun h => hb h.symm)), ite_eq_left rfl]
     rw [tsum_congr e, Summable.tsum_finsetSum (fun _ _ => ENNReal.summable)]
     refine Finset.sum_congr rfl fun Λ _ => ?_
     have hs := tsum_subtype {t | t.lam = Λ} J
@@ -822,7 +822,7 @@ theorem Slab.isSFund_fundOf {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSettin
     Formalism.L2.SG.HidaSetting.IsSFund X.B.I (ROinf t) (FundOf t) := by
   have h := fundExistsC_holds D X Y u u' t
   unfold FundOf
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   exact h.choose_spec
 
 theorem termsLEC_of (hMaj : MajPtC) (hInv : RInvC) (hCnt : CountC) : TermsLEC := by
@@ -866,7 +866,7 @@ theorem termsLEC_of (hMaj : MajPtC) (hInv : RInvC) (hCnt : CountC) : TermsLEC :=
   have hEt : ∀ t, t.lam = Λ → IsRightTransversal (NOlam X u Λ)
       (ROsub X (X.Fu u) (X.Fu u') t.lam t.lam' t.lin) (E t) := by
     intro t h
-    simp only [hE, dif_pos h]
+    simp only [hE, dite_eq_left h]
     exact Classical.choose_spec (PI.FoldDCUnfold.W.translation_exists X.B.I.Ginf (NOlam X u Λ)
       (ROsub X (X.Fu u) (X.Fu u') t.lam t.lam' t.lin) (hle t h))
   set a := aB Y u Λ with ha

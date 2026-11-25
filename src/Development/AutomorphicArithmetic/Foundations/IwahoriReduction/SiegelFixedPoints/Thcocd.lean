@@ -426,17 +426,6 @@ theorem exists_pow_eq {p : ℕ} [Fact p.Prime] (hp2 : p ≠ 2) {m n i : ℕ} (hm
 
 end GlobalTheory.K5.MonX
 
-namespace GlobalTheory.K5.MonX
-
-open GlobalTheory.K5 GlobalTheory.KumDlog
-
-end GlobalTheory.K5.MonX
-
-namespace GlobalTheory.K5.MonX
-
-open GlobalTheory.K5 GlobalTheory.KumDlog
-
-end GlobalTheory.K5.MonX
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1444,12 +1433,12 @@ private theorem exists_series (A : ValuationSubring Ω) (f : ℚ → Ω) (hf : �
     exact (Set.isPWO_of_wellQuasiOrderedLE _).image_of_monotone Nat.mono_cast
   refine ⟨⟨fun r => if r ∈ Set.range (Nat.cast : ℕ → ℚ) then f r else 0, hpwo.mono fun r hr => ?_⟩, fun r => ?_, fun i => ?_⟩
   · by_contra h
-    exact hr (if_neg h)
+    exact hr (ite_eq_right h)
   · show (if r ∈ Set.range (Nat.cast : ℕ → ℚ) then f r else 0) ∈ A
     split_ifs
     · exact hf r
     · exact A.zero_mem
-  · exact if_pos ⟨i, rfl⟩
+  · exact ite_eq_left ⟨i, rfl⟩
 
 end Helpers
 

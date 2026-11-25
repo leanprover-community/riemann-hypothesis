@@ -1754,9 +1754,9 @@ theorem galois_clause_iff_reduced (i : N.Loc) (hDel : Del N i) : ConclusionG5 N 
       exact Y_of_b N r hG w hl Pp hu hk c φ hφ γ hγ
     · refine Y_of_a N r hG w hl (hDel w hS hp) (ha ?_) c φ hφ γ hγ
       by_cases hlp : N.l i = H.pde
-      · rw [if_pos hlp] at hp
+      · rw [ite_eq_left hlp] at hp
         exact Or.inr (Or.inr ⟨hlp, hp⟩)
-      · rw [if_neg hlp] at hp
+      · rw [ite_eq_right hlp] at hp
         exact Or.inr (Or.inl hp)
 
 end At

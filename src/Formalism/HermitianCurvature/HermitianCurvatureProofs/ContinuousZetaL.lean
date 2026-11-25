@@ -100,7 +100,7 @@ theorem map_levM_eq {z z' : Fin (2 * ρ + k + 1) → ℂ} {μ : Measure (Mt k (1
       exact h1
     have hc1 : (c : ℝ≥0∞) = 1 := (ENNReal.mul_left_inj hR (hfin R).ne).mp h2
     rw [hc, ENNReal.coe_eq_one.mp hc1, one_smul]
-  · push_neg at hR
+  · push Not at hR
     have h0 : ∫⁻ ζ, wt ζ = 0 := by
       rw [← setLIntegral_univ, ← Metric.iUnion_closedBall_nat (0 : ℂ)]
       refine le_antisymm ((lintegral_iUnion_le _ _).trans ?_) zero_le'

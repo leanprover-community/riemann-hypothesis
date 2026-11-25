@@ -35,7 +35,7 @@ theorem VS_eq (Kf : Type) [Field Kf] {n' m : ℕ} (d : Fin n' → ℕ) :
   unfold VS Vsp
   congr 1
   funext s
-  rw [flat_lam (vecE n') d (flW d) (isFlat_flW d) s, if_pos (letterWt_anti _ _ _)]
+  rw [flat_lam (vecE n') d (flW d) (isFlat_flW d) s, ite_eq_left (letterWt_anti _ _ _)]
 
 theorem Hten_flW (O : Type) {Kf : Type} [CommRing O] [Field Kf] [Algebra O Kf] {n' m : ℕ} (d : Fin n' → ℕ)
     (Λ : Fin n' → Submodule O (Fin (m + 1) → Kf)) :

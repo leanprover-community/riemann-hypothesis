@@ -81,7 +81,7 @@ theorem UpperTheory.V.Lit.Bor.tformPos :
           intro i
           rw [← hinv, Matrix.mul_apply]
         simp only [this, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq,
-          Finset.mem_univ, if_true]
+          Finset.mem_univ, ite_true]
       rw [e]
       simp [hzero]
     rw [← sum_cmp x]

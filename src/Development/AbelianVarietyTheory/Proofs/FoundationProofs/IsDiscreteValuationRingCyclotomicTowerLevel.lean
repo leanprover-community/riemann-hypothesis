@@ -134,13 +134,13 @@ theorem irreducible_X_pow_sub_param (K : Type*) [Field K] (N : ℕ) (hN : 1 ≤ 
       have hi' : i ≠ N := by
         have : i < N := by exact_mod_cast hi
         omega
-      rw [coeff_sub, coeff_X_pow, if_neg hi', coeff_C]
+      rw [coeff_sub, coeff_X_pow, ite_eq_right hi', coeff_C]
       split_ifs
       · simp
       · simp
     · rw [degree_X_pow_sub_C (by omega)]
       exact_mod_cast hN
-    · rw [coeff_sub, coeff_X_pow, if_neg (by omega), coeff_C, if_pos rfl, zero_sub, neg_mem_iff,
+    · rw [coeff_sub, coeff_X_pow, ite_eq_right (by omega), coeff_C, ite_eq_left rfl, zero_sub, neg_mem_iff,
         Ideal.span_singleton_pow, Ideal.mem_span_singleton, PowerSeries.X_pow_dvd_iff]
       intro h
       have := h 1 (by norm_num)

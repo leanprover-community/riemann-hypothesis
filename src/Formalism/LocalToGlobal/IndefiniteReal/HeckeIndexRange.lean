@@ -12,14 +12,6 @@ namespace Formalism.IndefR.Bridge
 
 open Formalism.L2.DIV
 
-section Comap
-
-variable {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G}
-variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end Comap
-
 section Tie3
 
 open Formalism.L2.Theta

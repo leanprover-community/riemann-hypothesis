@@ -52,9 +52,9 @@ theorem Dm_apply (e : κ → α) (a b : α) :
   · subst h
     rw [Matrix.diagonal_apply_eq]
     by_cases h2 : a ∈ Set.range e
-    · rw [if_pos h2, if_neg fun hh => hh.2 h2]
-    · rw [if_neg h2, if_pos ⟨rfl, h2⟩]
-  · rw [Matrix.diagonal_apply_ne _ h, if_neg fun hh => h hh.1]
+    · rw [ite_eq_left h2, ite_eq_right fun hh => hh.2 h2]
+    · rw [ite_eq_right h2, ite_eq_left ⟨rfl, h2⟩]
+  · rw [Matrix.diagonal_apply_ne _ h, ite_eq_right fun hh => h hh.1]
 
 theorem Pmt_Pm {e : κ → α} (he : Function.Injective e) : (Pm R e)ᵀ * Pm R e = 1 := by
   ext x y
@@ -63,12 +63,12 @@ theorem Pmt_Pm {e : κ → α} (he : Function.Injective e) : (Pm R e)ᵀ * Pm R 
 
 theorem Pmt_Dm (e : κ → α) : (Pm R e)ᵀ * Dm R e = 0 := by
   ext x a
-  rw [Pmt_mul, Dm_apply, if_neg fun hh => hh.2 ⟨x, rfl⟩]
+  rw [Pmt_mul, Dm_apply, ite_eq_right fun hh => hh.2 ⟨x, rfl⟩]
   rfl
 
 theorem Dm_Pm (e : κ → α) : Dm R e * Pm R e = 0 := by
   ext a x
-  rw [mul_Pm, Dm_apply, if_neg fun hh => hh.2 ⟨x, hh.1.symm⟩]
+  rw [mul_Pm, Dm_apply, ite_eq_right fun hh => hh.2 ⟨x, hh.1.symm⟩]
   rfl
 
 theorem Dm_Dm (e : κ → α) : Dm R e * Dm R e = Dm R e := by

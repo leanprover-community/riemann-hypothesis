@@ -428,7 +428,7 @@ theorem pow_card_le {R Q : Type} [CommRing R] [AddCommGroup Q] [Module R Q] [Fin
     choose c hc using fun b => Ideal.Quotient.mk_surjective (I := I) (t b)
     have hx : ∃ c' : Fin n → R, ∑ b, c' b • q b = ∑ b, c b • q b := ⟨c, rfl⟩
     refine ⟨∑ b, c b • q b, ?_⟩
-    simp only [f, dif_pos hx]
+    simp only [f, dite_eq_left hx]
     funext b
     rw [key _ c hx.choose_spec b, hc]
   have hle := Nat.card_le_card_of_surjective f hf

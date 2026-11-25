@@ -22,11 +22,11 @@ private theorem UpperTheory.Reformulated.B.Gr28.exists_fun
       have := K.mul_mem hh (K.inv_mem h1)
       simpa [mul_assoc] using this
     have h3 := hw _ h2
-    have h4 : f g = σ hg.choose w := dif_pos hg
+    have h4 : f g = σ hg.choose w := dite_eq_left hg
     rw [h4]
     conv_rhs => rw [← h3]
     rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel_left]
-  have neg : ∀ g : G, (¬ ∃ h : H, (h : G)⁻¹ * g ∈ K) → f g = 0 := fun g hg => dif_neg hg
+  have neg : ∀ g : G, (¬ ∃ h : H, (h : G)⁻¹ * g ∈ K) → f g = 0 := fun g hg => dite_eq_right hg
   refine ⟨f, ?_, ?_, ?_⟩
   · rw [pos 1 1 (by simp)]
     simp

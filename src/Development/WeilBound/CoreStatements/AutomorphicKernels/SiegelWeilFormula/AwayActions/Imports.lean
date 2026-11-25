@@ -69,7 +69,7 @@ theorem span_fam (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (δ : E) (hδ0 : δ
   have key : ∀ j k : Fin n, (1 / 2 : Ω) • (fam σ ε δ (j, k, false)).map ψ' +
       (1 / (2 * ψ' δ)) • (fam σ ε δ (j, k, true)).map ψ' = Matrix.single j k 1 := by
     intro j k
-    simp only [fam, Bool.false_eq_true, if_false, if_true]
+    simp only [fam, Bool.false_eq_true, ite_false, ite_true]
     rw [Matrix.map_sub _ (map_sub ψ'), Matrix.map_sub _ (map_sub ψ'), mapSmulE₀, mapSmulE₀, mapSmulE₀, mapSmulE₀,
       mapSingleE₀, mapSingleE₀]
     simp only [map_mul, map_intCast, map_one, hδ, map_neg, smul_sub, smul_smul]
@@ -81,7 +81,7 @@ theorem span_fam (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (δ : E) (hδ0 : δ
   rw [Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Fintype.sum_bool]
-  simp only [if_true, Bool.false_eq_true, if_false]
+  simp only [ite_true, Bool.false_eq_true, ite_false]
   have e1 : Matrix.single j k (T j k) = T j k • Matrix.single j k (1 : Ω) := by
     rw [Matrix.smul_single, smul_eq_mul, mul_one]
   rw [e1, ← key j k, smul_add, mul_smul, mul_smul, add_comm]
@@ -367,19 +367,19 @@ theorem free_etale_sheaf_zmod_exists_hom_sending_generator (hcm : IsCMExt F E σ
       rw [← map_mul, hfo o o' h, map_zero]) (by rw [← map_sum, hf1, map_one]) Mo
     rw [← hsum, Fintype.sum_option] at hdet
     have hAeq : A = ∑ b : Bool, (ae (if b then e else 1 - e)) • (if b then (1 : Matrix (Fin n) (Fin n) (AE F E)) else A) := by
-      simp only [Fintype.sum_bool, if_true, Bool.false_eq_true, if_false, hae, algebraMap_smul]
+      simp only [Fintype.sum_bool, ite_true, Bool.false_eq_true, ite_false, hae, algebraMap_smul]
       rw [← heA, sub_smul, one_smul, add_sub_cancel]
     have hA2 := det_idem_sum (fun b : Bool => ae (if b then e else 1 - e)) (fun b => by
       rw [← map_mul]; cases b <;> simp [he, h1e]) (fun b b' h => by
       rw [← map_mul]
       cases b <;> cases b'
       · exact absurd rfl h
-      · simp only [if_true, Bool.false_eq_true, if_false]; rw [mul_comm, hee, map_zero]
-      · simp only [if_true, Bool.false_eq_true, if_false]; rw [hee, map_zero]
+      · simp only [ite_true, Bool.false_eq_true, ite_false]; rw [mul_comm, hee, map_zero]
+      · simp only [ite_true, Bool.false_eq_true, ite_false]; rw [hee, map_zero]
       · exact absurd rfl h) (by
       rw [Fintype.sum_bool]; simp) (fun b => if b then (1 : Matrix (Fin n) (Fin n) (AE F E)) else A)
     rw [← hAeq, Fintype.sum_bool] at hA2
-    simp only [if_true, Bool.false_eq_true, if_false, Matrix.det_one, mul_one] at hA2
+    simp only [ite_true, Bool.false_eq_true, ite_false, Matrix.det_one, mul_one] at hA2
     have heA' : ae e * A.det = ae e := by
       calc ae e * A.det = ae e * (ae e + ae (1 - e) * A.det) := by rw [← hA2]
         _ = ae (e * e) + ae (e * (1 - e)) * A.det := by rw [map_mul, map_mul]; ring

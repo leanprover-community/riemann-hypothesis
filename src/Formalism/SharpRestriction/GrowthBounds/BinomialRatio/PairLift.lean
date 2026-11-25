@@ -59,7 +59,7 @@ private theorem vO_eq_addVal_div_ramE_of_ne_zero' {O : Type*} [CommRing O] [IsDo
     intro h
     exact hz ((IsFractionRing.to_map_eq_zero_iff).mp h)
   have hspec := Classical.choose_spec (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z))
-  simp only [vO, vK, ordW, if_neg hz']
+  simp only [vO, vK, ordW, ite_eq_right hz']
   generalize Classical.choose (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z)) = ab at hspec ⊢
   rw [← map_mul] at hspec
   have hmul : z * (ab.2 : O) = ab.1 := IsFractionRing.injective O (KK O) hspec
@@ -150,10 +150,10 @@ theorem liftVecAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ct Cc H : ℝ}
     by_cases hIJ : I = J
     · subst hIJ
       simp
-    · rw [if_neg hIJ]
+    · rw [ite_eq_right hIJ]
       obtain ⟨j0, hj0⟩ := Function.ne_iff.mp hIJ
       have h0 : (∏ j, if I j = J j then z j (I j) else 0) = 0 :=
-        Finset.prod_eq_zero (Finset.mem_univ j0) (if_neg hj0)
+        Finset.prod_eq_zero (Finset.mem_univ j0) (ite_eq_right hj0)
       rw [h0, mul_zero]
       simp
 

@@ -186,8 +186,8 @@ theorem level_of (hC : CoefEq) (hF : FourierInj) (hB : CoefBd) : Level := by
         Matrix.transpose_one, Matrix.mul_one]
     have b := hb f f₀ z
     have b' := hb f f₀ (z * (mat u⁻¹)ᵀ)
-    rw [maj, if_neg a, mul_zero, norm_le_zero_iff] at b
-    rw [maj, if_neg a', mul_zero, norm_le_zero_iff] at b'
+    rw [maj, ite_eq_right a, mul_zero, norm_le_zero_iff] at b
+    rw [maj, ite_eq_right a', mul_zero, norm_le_zero_iff] at b'
     rw [b, b']
   have h4 : (starRingEnd ℂ) (om (1, u) (pureA F f₀ φ) y) ≠ 0 := fun h => by
     have := key f₀ y

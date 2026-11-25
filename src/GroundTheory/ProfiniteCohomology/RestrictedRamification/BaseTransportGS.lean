@@ -326,8 +326,6 @@ universe u
 
 noncomputable section
 
-attribute [local instance 2000] Rep.hV2
-
 section ZModRes
 
 variable {G G' : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group G']

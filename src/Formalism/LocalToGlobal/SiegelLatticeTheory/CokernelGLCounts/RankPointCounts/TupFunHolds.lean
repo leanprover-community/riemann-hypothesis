@@ -126,9 +126,9 @@ theorem cong_at (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (G :
     rw [Matrix.sub_apply, Matrix.mul_apply, Finset.sum_eq_single (Fin.last D.R.rS)]
     · rw [(hNU _ _).2 rfl, one_mul, Matrix.one_apply]
       by_cases hb : Fin.last D.R.rS = b
-      · rw [(hMU _ _).2 hb, if_pos hb, sub_self]
+      · rw [(hMU _ _).2 hb, ite_eq_left hb, sub_self]
       · have hlt : b < Fin.last D.R.rS := lt_of_le_of_ne (Fin.le_last b) (Ne.symm hb)
-        rw [(hMU _ _).1 hlt, if_neg hb, sub_self]
+        rw [(hMU _ _).1 hlt, ite_eq_right hb, sub_self]
     · intro c _ hc
       have hlt : c < Fin.last D.R.rS := lt_of_le_of_ne (Fin.le_last c) hc
       rw [(hNU _ _).1 hlt, zero_mul]
@@ -143,7 +143,7 @@ theorem cong_at (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (G :
   have hcoef := coef_intP_g P hC hP hg hYLg hYX d
   have hYd : G.fl.coefX Y d = (fmat D G n * fmat D G₁ m - 1) d.castSucc b := by
     rw [hYsum, coefX_finset_sum _ _ _ (fun d' => Submodule.smul_mem _ _ (e_mem_X _ d'))]
-    simp only [coefX_smul_e, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [coefX_smul_e, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [hYd] at hcoef
   exact hcoef
 
@@ -371,7 +371,7 @@ theorem modeG (hs : (Z.M p).split = some g) (u u' : D.what₂.Word)
   obtain ⟨hL0, hL1⟩ := lmat_low Z p g hl0low.1 hl0low.2 hM0 hM1
   obtain ⟨hR0, hR1⟩ := lmat_up Z p g hl0low.1 hl0low.2 hM0 hM1
   have hcorner := corner_fix p hL0 hL1 hR0 hR1 (C := Cm) (fun a b h => by
-    simp only [hCm, Matrix.of_apply]; rw [if_neg h])
+    simp only [hCm, Matrix.of_apply]; rw [ite_eq_right h])
   have hmain : Formalism.L2.SG.CntLocal.ZZP (M := Z.M) Z.δ u u' p Z₂ =
       lmat Z p g K⁻¹ Ml * Formalism.L2.SG.CntLocal.ZZP (M := Z.M) Z.δ u u' p Z₁ * lmat Z p g Ml K⁻¹ := by
     rw [hZZ, hZZ, hY, emap_mul, Matrix.mul_sub, Matrix.sub_mul, hcorner]
@@ -543,9 +543,9 @@ theorem nm_last (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (G :
   rw [Matrix.sub_apply, Matrix.mul_apply, Finset.sum_eq_single (Fin.last D.R.rS)]
   · rw [(hNU _ _).2 rfl, one_mul, Matrix.one_apply]
     by_cases hb : Fin.last D.R.rS = b
-    · rw [(hMU _ _).2 hb, if_pos hb, sub_self]
+    · rw [(hMU _ _).2 hb, ite_eq_left hb, sub_self]
     · have hlt : b < Fin.last D.R.rS := lt_of_le_of_ne (Fin.le_last b) (Ne.symm hb)
-      rw [(hMU _ _).1 hlt, if_neg hb, sub_self]
+      rw [(hMU _ _).1 hlt, ite_eq_right hb, sub_self]
   · intro c _ hc
     have hlt : c < Fin.last D.R.rS := lt_of_le_of_ne (Fin.le_last c) hc
     rw [(hNU _ _).1 hlt, zero_mul]

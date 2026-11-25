@@ -183,7 +183,7 @@ theorem colE_inv_val_eq_zero (ρ : ℕ) (β : n → k) (t s : n ⊕ Fin c) (h : 
   rcases t with t | t <;> rcases s with s | s
   · exact absurd rfl h
   · simp only [colE, upU, Units.inv_mk, fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.of_apply]
-    rw [if_neg, neg_zero]
+    rw [ite_eq_right, neg_zero]
     intro hs; apply h; simp [lev, hs]
   · simp [colE, upU]
   · have : t ≠ s := by rintro rfl; exact h rfl

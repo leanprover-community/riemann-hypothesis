@@ -357,7 +357,7 @@ theorem std_mult (L : Submodule (𝓞 E) (Fin n → E)) (hL : Submodule.span E (
   have e : N • μ = ∑ j, a j • (N • (Pi.single j (1 : E) : Fin n → E)) := by
     ext k
     simp only [Pi.smul_apply, Finset.sum_apply, Pi.single_apply, smul_ite, smul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [← ha k, Algebra.linearMap_apply]
     simp only [Algebra.smul_def, mul_one, eq_intCast]
     ring

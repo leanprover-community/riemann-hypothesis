@@ -243,7 +243,7 @@ theorem tendsto_comb {ST : Finset (HeightOneSpectrum (𝓞 E))} (e : ST → ℕ 
     · subst h
       exact tendsto_iff_norm_sub_tendsto_zero.2 h1
     · exact tendsto_zero_iff_norm_tendsto_zero.2 (h0 P h)
-  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at t
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at t
   exact tendsto_iff_norm_sub_tendsto_zero.1 t
 
 theorem exists_unitary_carries {ST : Finset (HeightOneSpectrum (𝓞 E))} (hST : GlobalTheory.IndefiniteRowSideFullHecke.StandardDeterminantUnit.SplitNonConj ST)

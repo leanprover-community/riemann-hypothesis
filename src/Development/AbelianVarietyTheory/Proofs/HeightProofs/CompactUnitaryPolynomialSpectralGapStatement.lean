@@ -485,16 +485,16 @@ theorem hs_toMK_sub_one {n : ℕ} (ε : Fin n → Bool) (k : KG ε) :
     intro i j
     by_cases hij : i = j
     · subst hij
-      rw [Matrix.sub_apply, Matrix.one_apply_eq, if_pos rfl, Complex.sq_norm, Complex.sq_norm,
+      rw [Matrix.sub_apply, Matrix.one_apply_eq, ite_eq_left rfl, Complex.sq_norm, Complex.sq_norm,
         Complex.normSq_sub]
       simp
       ring
-    · rw [Matrix.sub_apply, Matrix.one_apply_ne hij, if_neg hij, sub_zero, add_zero]
+    · rw [Matrix.sub_apply, Matrix.one_apply_ne hij, ite_eq_right hij, sub_zero, add_zero]
   unfold Formalism.REAL.hs
   simp_rw [hentry]
   rw [Finset.sum_comm]
   simp_rw [Finset.sum_add_distrib, hcol]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul, mul_one, Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [Matrix.trace, Complex.re_sum]
   simp [Matrix.diag]
@@ -539,7 +539,7 @@ theorem hs_toMK_sub_one_le {n : ℕ} (ε : Fin n → Bool) (k : KG ε) :
     have : ∀ i j : Fin n, ‖(1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ^ 2 = if i = j then 1 else 0 := by
       intro i j
       by_cases h : i = j <;> simp [Matrix.one_apply, h]
-    simp only [this, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ,
+    simp only [this, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin, nsmul_eq_mul, mul_one]
   have key : ∀ a b : ℂ, ‖a - b‖ ^ 2 ≤ 2 * ‖a‖ ^ 2 + 2 * ‖b‖ ^ 2 := by
     intro a b
@@ -582,7 +582,7 @@ theorem retr_mem {n : ℕ} (ε : Fin n → Bool) :
     rw [Complex.re_eq_add_conj]
     simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, coord]
 
-    simp only [if_true, Bool.false_eq_true, if_false, Matrix.trace, Matrix.diag, map_sum,
+    simp only [ite_true, Bool.false_eq_true, ite_false, Matrix.trace, Matrix.diag, map_sum,
     ← Finset.sum_add_distrib, Finset.sum_div, Complex.star_def]
     refine Finset.sum_congr rfl fun a _ => ?_
     ring

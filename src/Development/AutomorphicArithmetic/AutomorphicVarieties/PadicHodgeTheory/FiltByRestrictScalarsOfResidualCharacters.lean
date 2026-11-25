@@ -30,10 +30,10 @@ private theorem reach_step {G A V : Type} [Group G] [CommRing A] [AddCommGroup V
   rcases Nat.lt_succ_iff_lt_or_eq.mp hi with hi | rfl
   · have h1 : i ≤ n := hi.le
     have h2 : i + 1 ≤ n := hi
-    simp only [h1, h2, if_true]
+    simp only [h1, h2, ite_true]
     exact hs i hi
   · have h2 : ¬ (i + 1 ≤ i) := by omega
-    simp only [h2, le_refl, if_true, if_false, hn]
+    simp only [h2, le_refl, ite_true, ite_false, hn]
     exact ⟨le_sup_left, κ, hκ, x, rfl, hx⟩
 
 private theorem reach_fin {G A V : Type} [Group G] [CommRing A] [AddCommGroup V] [Module A V]

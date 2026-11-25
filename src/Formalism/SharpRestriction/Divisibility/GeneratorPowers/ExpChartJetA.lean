@@ -59,7 +59,7 @@ theorem aeval_inr {κ : Type} [Fintype κ] [DecidableEq κ] (g : κ → R) (P : 
       by_cases h : q = n
       · subst h
         simp
-      · rw [if_neg h, if_neg]
+      · rw [ite_eq_right h, ite_eq_right]
         rw [Finsupp.support_single_ne_zero _ one_ne_zero, Finset.mem_singleton]
         exact fun h' => h h'.symm
     have h0 : AddMonoidAlgebra.coeff (p * MvPolynomial.X n) 0 = 0 := by
@@ -95,8 +95,8 @@ theorem jetTan_eq_tp {κ : Type} [DecidableEq κ] (ℓ : κ) :
       (MvPolynomial.X i)
   rw [MvPolynomial.aeval_X, MvPolynomial.aeval_X]
   by_cases h : i = ℓ
-  · (simp only [if_pos h]) <;> rfl
-  · simp only [if_neg h, TrivSqZeroExt.inr_zero]
+  · (simp only [ite_eq_left h]) <;> rfl
+  · simp only [ite_eq_right h, TrivSqZeroExt.inr_zero]
 
 theorem tp_comp_jetMap {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (h : κ' → R) (a : κ → MvPowerSeries κ' R)
     (ha : ∀ p, MvPowerSeries.constantCoeff (a p) = 0) :

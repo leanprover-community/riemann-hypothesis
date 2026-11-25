@@ -392,7 +392,7 @@ theorem detShift_aeval_coeff (Q : MvPolynomial (Fin 2) ℂ) (t j : ℕ) (hj : j 
   conv_lhs => rw [Q.as_sum]
 
   rw [map_sum, Polynomial.finsetSum_coeff, Finset.sum_eq_single D]
-  · rw [hterm, hD0, hD1, if_pos rfl, mul_comm]
+  · rw [hterm, hD0, hD1, ite_eq_left rfl, mul_comm]
   · intro d hd hne
     rw [hterm]
     split_ifs with h0
@@ -764,14 +764,14 @@ theorem nilpotent_of_char_poly : NilOfCharpoly := by
     ext i
     rw [Polynomial.coeff_X_pow]
     rcases lt_trichotomy i n with hi | hi | hi
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       have := h (n - i) (by omega) (by omega)
       rwa [show n - (n - i) = i by omega] at this
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       have h1 := hmon.coeff_natDegree
       rw [hdeg] at h1
       rw [hi]; exact h1
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       exact Polynomial.coeff_eq_zero_of_natDegree_lt (by omega)
   refine ⟨n, ?_⟩
   have := Matrix.aeval_self_charpoly M
@@ -1392,10 +1392,10 @@ theorem symbol_operator_lift_holds : SOpLift := by
   · intro i w
     change ContDiffOn ℝ ∞ (liftA a m' i w) O
     by_cases h : (i : ℕ) ≤ o
-    · have e : liftA a m' i w = a ⟨i, by omega⟩ w := funext fun x => dif_pos h
+    · have e : liftA a m' i w = a ⟨i, by omega⟩ w := funext fun x => dite_eq_left h
       rw [e]
       exact hS (⟨i, Nat.lt_succ_of_le h⟩ : Fin (o + 1)) w
-    · have e : liftA a m' i w = fun _ => 0 := funext fun x => dif_neg h
+    · have e : liftA a m' i w = fun _ => 0 := funext fun x => dite_eq_right h
       rw [e]
       exact contDiffOn_const
   · intro u x
@@ -1413,7 +1413,7 @@ theorem symbol_operator_lift_holds : SOpLift := by
         ∑ k : Fin (o + 1), F k := by
       refine Finset.sum_congr rfl fun k _ => ?_
       simp only [F]
-      rw [dif_pos (by omega)]
+      rw [dite_eq_left (by omega)]
     rw [h1, h2, Fin.sum_univ_eq_sum_range F, Fin.sum_univ_eq_sum_range F]
     symm
     apply Finset.sum_subset
@@ -1423,19 +1423,19 @@ theorem symbol_operator_lift_holds : SOpLift := by
     · intro n hn hn'
       simp only [Finset.mem_range] at hn hn'
       simp only [F]
-      rw [dif_neg (by omega)]
+      rw [dite_eq_right (by omega)]
   · intro x ξ
     simp only [SOp.symb]
     by_cases h : o = m'
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       refine Finset.sum_congr rfl fun w _ => ?_
       simp only [liftA]
-      rw [dif_pos (by simp)]
-    · rw [if_neg h]
+      rw [dite_eq_left (by simp)]
+    · rw [ite_eq_right h]
       refine Finset.sum_eq_zero fun w _ => ?_
       simp only [liftA]
-      rw [dif_neg (by simp; omega)]
+      rw [dite_eq_right (by simp; omega)]
       simp
 
 end
@@ -1733,7 +1733,7 @@ theorem word_family_symbol_holds : WFamSymb := by
   intro d α L F c j x ξ τ hj hτ
   have h0 : ¬ (0 = j) := by omega
   simp only [wfam, WOp.symb, List.map_append, List.sum_append, List.map_map, List.map_cons, List.map_nil,
-    List.sum_cons, List.sum_nil, List.length_nil, h0, if_false, add_zero]
+    List.sum_cons, List.sum_nil, List.length_nil, h0, ite_false, add_zero]
   congr 1
   refine List.map_congr_left (fun t ht => ?_)
   simp only [Function.comp_apply, List.length_map]

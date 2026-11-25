@@ -19,7 +19,7 @@ private def lv (X : M4 k) : M4 k := Matrix.of fun i j => if (i.1 < 2 ↔ j.1 < 2
 private theorem lv_apply (X : M4 k) (i j : Fin 4) : lv X i j = if (i.1 < 2 ↔ j.1 < 2) then X i j else 0 := rfl
 
 private theorem lv_diag (X : M4 k) (i : Fin 4) : lv X i i = X i i := by
-  rw [lv_apply, if_pos Iff.rfl]
+  rw [lv_apply, ite_eq_left Iff.rfl]
 
 end UpperTheory.V.Ws.Chain.Levi
 
@@ -188,6 +188,6 @@ theorem UpperTheory.V.Ws.Chain.levi :
     exact suppM_neg_wAl_levi_lv_of_apply_eq_zero_of_lt _ (hNL v)
   · refine ⟨fun g => ?_, fun v => ?_⟩
     · show c.r g 1 0 = lv (c.r g) 1 0
-      rw [lv_apply, if_pos (by decide)]
+      rw [lv_apply, ite_eq_left (by decide)]
     · show c.n v 1 0 = lv (c.n v) 1 0
-      rw [lv_apply, if_pos (by decide)]
+      rw [lv_apply, ite_eq_left (by decide)]

@@ -50,8 +50,8 @@ theorem blk_injective (e : Fin a × ι ≃ Fin n) : Function.Injective (blk e) :
     rw [Matrix.one_apply_ne h]
     by_cases h2 : (e.symm i).2 = (e.symm j).2
     · have h1 : (e.symm i).1 ≠ (e.symm j).1 := fun h1 => h' (Prod.ext h1 h2)
-      rw [if_pos h2, Matrix.one_apply_ne h1, Pi.zero_apply]
-    · rw [if_neg h2]
+      rw [ite_eq_left h2, Matrix.one_apply_ne h1, Pi.zero_apply]
+    · rw [ite_eq_right h2]
 
 theorem atPlace_mul (M N : Matrix (Fin a) (Fin a) (ι → ℂ)) (w : ι) :
     atPlace (M * N) w = atPlace M w * atPlace N w := by
@@ -84,17 +84,17 @@ theorem atPlace_mul (M N : Matrix (Fin a) (Fin a) (ι → ℂ)) (w : ι) :
   ext i j
   rw [Matrix.conjTranspose_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply, GlobalTheory.CompanionTheory.AdmGL.blk_apply]
   by_cases h : (e.symm i).2 = (e.symm j).2
-  · rw [if_pos h, if_pos h.symm, Matrix.conjTranspose_apply, Pi.star_apply, h]
-  · rw [if_neg h, if_neg (Ne.symm h), star_zero]
+  · rw [ite_eq_left h, ite_eq_left h.symm, Matrix.conjTranspose_apply, Pi.star_apply, h]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), star_zero]
 
 theorem continuous_blk (e : Fin a × ι ≃ Fin n) : Continuous (blk e) := by
   apply continuous_matrix
   intro i j
   simp only [GlobalTheory.CompanionTheory.AdmGL.blk_apply]
   by_cases h : (e.symm i).2 = (e.symm j).2
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     exact (continuous_apply _).comp (continuous_id.matrix_elem _ _)
-  · simp only [if_neg h]
+  · simp only [ite_eq_right h]
     exact continuous_const
 
 theorem continuous_unblk (e : Fin a × ι ≃ Fin n) : Continuous (unblk e) := by

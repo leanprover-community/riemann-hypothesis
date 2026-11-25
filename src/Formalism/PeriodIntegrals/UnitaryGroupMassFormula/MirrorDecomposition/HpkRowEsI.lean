@@ -68,7 +68,7 @@ theorem maps_low {n : B.Mat k r} (hn : ∀ (a : Fin r) (i : Fin (2 * r + k + 1))
     have hle : (eI k r ⟨l.val, hlr⟩) = l := Fin.ext rfl
     have := hn ⟨l.val, hlr⟩ i (by simp; omega)
     rw [hle] at this
-    rw [this, if_neg (by intro h; rw [h] at hi; omega), zero_mul]
+    rw [this, ite_eq_right (by intro h; rw [h] at hi; omega), zero_mul]
 
 theorem onto_low {g : B.Mat k r} (hg : g⁻¹ * g = 1) {a : ℕ} (hmaps : ∀ y ∈ lowS k r a, g *ᵥ y ∈ lowS k r a) :
     ∀ y ∈ lowS k r a, ∃ x ∈ lowS k r a, g *ᵥ x = y := by

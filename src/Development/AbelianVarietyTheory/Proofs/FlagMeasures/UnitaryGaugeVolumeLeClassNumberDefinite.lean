@@ -220,7 +220,7 @@ theorem covol_le {r : ℕ} (h : HasSig I r 0) (μf : Measure I.Gf) [SigmaFinite 
     intro z _
     have hq : ∃ x, Quot.mk (Isom I.E I.n) (latOf I h x) = Quot.mk (Isom I.E I.n) (latOf I h z) :=
       ⟨z, rfl⟩
-    have hpt : pt (Quot.mk (Isom I.E I.n) (latOf I h z)) = hq.choose := dif_pos hq
+    have hpt : pt (Quot.mk (Isom I.E I.n) (latOf I h z)) = hq.choose := dite_eq_left hq
     have e : Isom I.E I.n (latOf I h z) (latOf I h hq.choose) :=
       (isom_equivalence I.E I.n).symm
         ((Equivalence.eqvGen_iff (isom_equivalence I.E I.n)).1 (Quot.eqvGen_exact hq.choose_spec))

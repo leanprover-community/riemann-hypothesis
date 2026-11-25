@@ -40,24 +40,4 @@ def omRow (μz : kˣ →* ℂˣ) (h : GL n k) (φ' : (n → k) → ℂ) : (n →
 
 end Line
 
-section Pen
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [MeasurableSpace k] [BorelSpace k]
-variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-
-
-end Pen
-
-section Top
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [MeasurableSpace k] [BorelSpace k]
-variable {s : ℕ} {X : ℕ → Type} [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] {Z : Type} [Fintype Z] [DecidableEq Z]
-
-end Top
-
-section Checks
-variable {k : Type} [Field k] [ValuativeRel k] {ι n : Type} [Fintype n] [DecidableEq n]
-
-end Checks
-
 end GlobalTheory.IndefiniteRowSideFullHecke.OmegaColumnSlices

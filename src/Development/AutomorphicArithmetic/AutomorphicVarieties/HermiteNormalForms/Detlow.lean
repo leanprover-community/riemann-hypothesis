@@ -116,7 +116,7 @@ theorem UpperTheory.V.KT.gramdet :
   have hA1 : ∀ w : InfinitePlace L, A w.embedding = mat h w := by
     intro w; simp [A, InfinitePlace.mk_embedding]
   have hA2 : ∀ w : InfinitePlace L, A (ComplexEmbedding.conjugate w.embedding) = (mat h w)ᵀ := by
-    intro w; simp only [A, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg (hne w)]
+    intro w; simp only [A, InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, ite_eq_right (hne w)]
   have key := UpperTheory.V.KT.blockdet (BI L) N
     (Matrix.of fun k i : BI L => ((equivReindex L).symm k) (RingOfIntegers.basis L i : L))
     (fun k => A ((equivReindex L).symm k))

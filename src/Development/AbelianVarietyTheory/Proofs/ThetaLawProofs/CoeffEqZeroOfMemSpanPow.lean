@@ -206,7 +206,7 @@ theorem mem_span_X_of_coeff (S : Finset σ) : ∀ p : MvPowerSeries σ k,
         exacts [h, hm j hj]
       · rfl
     have h2 : (X i : MvPowerSeries σ k) ∣ p - q :=
-      X_dvd_iff.2 fun m hm => by rw [map_sub, hq, if_pos hm, sub_self]
+      X_dvd_iff.2 fun m hm => by rw [map_sub, hq, ite_eq_left hm, sub_self]
     obtain ⟨r, hr⟩ := h2
     rw [eq_add_of_sub_eq hr]
     exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ (Ideal.subset_span ⟨i, by simp, rfl⟩)) h1

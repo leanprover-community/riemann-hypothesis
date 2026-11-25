@@ -114,13 +114,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 
 def CountAt {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K → Type} {y : (Σ k, J k) → Ω} (𝔐 : HodgeCpt Y ∅ y)
     (Fl : 𝔐.Flag) (U : 𝔐.X.Opens) : Prop :=
-  ∀ (b : ∀ s, Fin (labelRk D s) → 𝔐.Li) (g : ℕ) (Λ : Type) [AddCommGroup Λ]
-      [Module (𝓞 E) Λ] (R : RiemLat E g Λ) (F : CMType H ⊕ CMType H → ℕ → Submodule ℂ (Fin g → ℂ)),
-      (∀ s i, flagStep Ω (b s) i = flagStep Ω (Fl.b s) i) →
-      {z : Sp ℂ ⟶ 𝔐.X | centre z ∈ U ∧ 𝔐.Interior z ∧ (∀ s, (𝔐.V s).IsFrameAt (b s) ⟨centre z, 𝔐.all _⟩) ∧
-        ∃ (x : (Σ s, Fin (labelRk D s)) → Fin g → ℂ) (v : (Σ s, Fin (labelRk D s)) → (epsAt z ⟶ 𝔐.t.G)),
-          (∀ a, 𝔐.M.ValAt z (b a.1 a.2) (v a)) ∧ FibreLatVec 𝔐.t z R x v ∧
-          ∀ s k, flagStep ℂ (fun i => x ⟨s, i⟩) k = F s k}.Countable
+  RootFieldNumerics.Un.CountAt 𝔐 Fl U
 
 theorem locChart (hLP : LocPer) (hT : Transport) (hFV : FrameVals) (hPM : PerMat) (hG : Top.Given)
     (hN : 1 ≤ D.p + D.q) (Gr : RefGeo Y) (An : Gr.An)
@@ -135,86 +129,10 @@ theorem locChart (hLP : LocPer) (hT : Transport) (hFV : FrameVals) (hPM : PerMat
       (∀ t₁ ∈ V, ∀ p : RootIx D, ∃ G : (Fin (Top.dimFl (CMType H) (D.p + D.q)) → ℂ) → ℂ, AnalyticAt ℂ G t₁ ∧ ∀ᶠ t in 𝓝 t₁,
         (An.Sys.potH (some p)).φ ((An.Sys.A.chart k).symm t₁) ((An.Sys.A.chart k).symm t) =
           stepPot (D.p + D.q) D.p p.2 (gm p.1 t) + (G t).re) ∧
-      (CountAt Gr.𝔐 Gr.Fl U → ∀ t ∈ V, {t' ∈ V | SameFl (fun τ => gm τ t) fun τ => gm τ t'}.Countable) := by
-  classical
-  set ch := An.Sys.A.chart k with hch
-  let t₀ := ch x₀
-  have hs₀ : ch.symm t₀ = x₀ := ch.left_inv hk
-  have hop : IsOpen An.Sys.open' := (_root_.GlobalTheory.CompanionTheory.Ar.Bdry.bdry_isClosed_dense_compl _ _ An.Sys.A An.Sys.L An.Sys.s _ An.Sys.m An.Sys.W An.Sys.sec An.Sys.snc).1.isOpen_compl
-  let V₁ := ch.target ∩ ch.symm ⁻¹' An.Sys.open'
-  have hV₁ : IsOpen V₁ := ch.isOpen_inter_preimage_symm hop
-  have ht₁ : t₀ ∈ V₁ := ⟨ch.map_source hk, by show ch.symm t₀ ∈ An.Sys.open'; rwa [hs₀]⟩
-  let z' := fun t => z (ch.symm t)
-  have hz₁ : IsHolTo V₁ z' := SheetDecomposition.vecMono hzh hV₁ Set.inter_subset_left
-  have hint : ∀ t ∈ V₁, Gr.𝔐.Interior (z' t) := fun t ht =>
-    (An.interior _ _ (hzc _)).2 (by rw [hπ]; exact ht.2)
-  choose Us hUs b hb hfr using fun s => Gr.Fl.sub s ⟨centre (z' t₀), Gr.𝔐.all _⟩ trivial
-  obtain ⟨g, Λ, _, _, R, V₂, σ, hV₂, ht₂, h21, hfam, hlab, hvec⟩ :=
-    hLP hG E H D l Xo c Y ∅ Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 _ V₁ z' hN hV₁ hz₁ hint t₀ ht₁
-  let I := Σ s : CMType H ⊕ CMType H, Fin (labelRk D s)
-  let e := Fintype.equivFin I
-  obtain ⟨xF, hxa, hxe⟩ := hvec _ (fun a => b (e.symm a).1 (e.symm a).2) fun a =>
-    (hFV hG E H D l Xo c Y Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 (z' t₀) _ (b _) hN (hint _ ht₁) (hfr _ _ trivial (hUs _))).1 _
-  let x : I → (Fin (Top.dimFl (CMType H) (D.p + D.q)) → ℂ) → Fin g → ℂ := fun a => xF (e a)
-  have hev : ∀ᶠ t in 𝓝 t₀, t ∈ V₂ ∧ (∀ s, centre (z' t) ∈ Us s) ∧ centre (z' t) ∈ U ∧ (∀ a, AnalyticAt ℂ (x a) t) ∧
-      ∃ v : I → (epsAt (z' t) ⟶ Gr.𝔐.t.G), (∀ a, Gr.𝔐.M.ValAt (z' t) (b a.1 a.2) (v a)) ∧
-        FibreLatVec Gr.𝔐.t (z' t) (R t) (fun a => x a t) v := by
-    filter_upwards [hV₂.mem_nhds ht₂, Filter.eventually_all.2 fun s => RootFieldNumerics.Un.eventually_centre hz₁ ht₁ (Us s) (hUs s),
-      RootFieldNumerics.Un.eventually_centre hz₁ ht₁ U (by show centre (z (ch.symm t₀)) ∈ U; rwa [hs₀]),
-      Filter.eventually_all.2 fun a : I => (hxa (e a)).eventually_analyticAt, hxe] with t h1 h2 h3 h4 ⟨v, hv, hf⟩
-    refine ⟨h1, h2, h3, h4, fun a => v (e a), fun a => ?_, RootFieldNumerics.Un.fibreLatVec_comp hf e⟩
-    have := hv (e a)
-    rwa [e.symm_apply_apply] at this
-  obtain ⟨V₃, h3, hV₃, ht₃⟩ := eventually_nhds_iff.1 hev
-  have hfr₃ : ∀ t ∈ V₃, ∀ s, (Gr.𝔐.V s).IsFrameAt (b s) ⟨centre (z' t), Gr.𝔐.all _⟩ := fun t ht s =>
-    hfr s _ trivial ((h3 t ht).2.1 s)
-  have hval : ∀ t ∈ V₃, ∀ s, LinearIndependent ℂ (fun i => x ⟨s, i⟩ t) ∧
-      Submodule.span ℂ (Set.range fun i => x ⟨s, i⟩ t) = eigSp (R t).B (σ s) ∧
-      Gr.𝔐.M.GramAt Gr.𝔐.t.PP.L (z' t) (b s) ((Real.pi : ℂ) • (R t).gram fun i => x ⟨s, i⟩ t) ∧
-      ((R t).gram fun i => x ⟨s, i⟩ t).PosDef := fun t ht s => by
-    obtain ⟨h1, -, -, -, v, hv, hf⟩ := h3 t ht
-    exact (hFV hG E H D l Xo c Y Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 (z' t) s (b s) hN (hint _ (h21 h1)) (hfr₃ t ht s)).2 g Λ (R t) σ
-      _ (fun i => v ⟨s, i⟩) (hlab t h1) (fun i => hv ⟨s, i⟩) (RootFieldNumerics.Un.fibreLatVec_comp hf fun i => ⟨s, i⟩)
-  obtain ⟨σ', -, hσu, -, -, -, hσ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.LabPt.exists_labVal E H D l Xo c Y ∅ Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 ℂ (z' t₀)
-  obtain rfl := hσu σ (hlab _ ht₂)
-  obtain ⟨hcm, -, hconj⟩ := hσ (RingHom.id ℂ)
-  simp only [RingHom.id_comp] at hcm hconj
-  have hfam₃ : IsHolFam V₃ R := ⟨fun t ht t' ht' => hfam.1 t (h3 t ht).1 t' (h3 t' ht').1,
-    fun a => (hfam.2 a).mono fun t ht => (h3 t ht).1⟩
-  obtain ⟨V, gm, hV, ht, hV3, hga, hgp, hrig⟩ := hPM E (CMType H) g _ D.p D.q Λ V₃ R (fun τ => σ (.inl τ))
-    (fun τ i => x ⟨.inl τ, i⟩) (fun τ i => x ⟨.inr τ, i⟩) hV₃ hfam₃ hcm
-    ⟨fun τ i t ht => (h3 t ht).2.2.2.1 _, fun τ i t ht => (h3 t ht).2.2.2.1 _, fun t ht τ =>
-      ⟨⟨(hval t ht (.inl τ)).1, (hval t ht (.inl τ)).2.1⟩, (hval t ht (.inr τ)).1, by
-        rw [← hconj]; exact (hval t ht (.inr τ)).2.1⟩⟩ t₀ ht₃
-  have hV1 : V ⊆ V₁ := fun t ht => h21 (h3 t (hV3 ht)).1
-  refine ⟨V, gm, hV, ht, fun t ht => (hV1 ht).1, fun t ht => (hV1 ht).2, hga, fun t ht τ => (hgp t ht τ).1,
-    fun t₁ ht₁ p => ?_, fun hC t ht => ?_⟩
-  · choose tr htr using fun a : I => RootFieldNumerics.Un.exists_tr (b a.1) (Gr.Fl.b a.1) (hb a.1) a.2
-    let Γ := fun t s => (R t).gram fun i => x ⟨s, i⟩ t
-    let nu : I → (Fin (Top.dimFl (CMType H) (D.p + D.q)) → ℂ) → ℝ := fun a t =>
-      Real.sqrt (leadMinor ((Real.pi : ℂ) • Γ t a.1) (a.2 + 1) / leadMinor ((Real.pi : ℂ) • Γ t a.1) a.2)
-    obtain ⟨G, hGa, hGe⟩ := potLoc Gr An ψ k V z' (fun r => tr (HodgeCpt.rootIdx D r))
-      (fun r => nu (HodgeCpt.rootIdx D r)) hψ hπ hV (fun t ht => (hV1 ht).1) (fun t ht => ⟨(hV1 ht).2, hzc _, fun r =>
-        ⟨Gr.𝔐.all _, b _, _, hb _, hfr₃ t (hV3 ht) _, htr _, (hval t (hV3 ht) _).2.2.1,
-          (hval t (hV3 ht) _).2.2.2.smul (by exact_mod_cast Real.pi_pos), rfl⟩⟩) t₁ ht₁ p
-    let C : ℝ := ∑ i ∈ Finset.Iic p.2, (HodgeCpt.rootSgn D (p.1, i) : ℝ) * Real.log (Real.sqrt Real.pi)
-    refine ⟨fun t => G t + C, hGa.add analyticAt_const, ?_⟩
-    filter_upwards [hGe, hV.mem_nhds ht₁] with t h1 h2
-    rw [h1, (hgp t h2 p.1).2 p.2, Complex.add_re, Complex.ofReal_re]
-    have := fun i => RootFieldNumerics.Un.root_log (Γ t) (fun s => (hval t (hV3 h2) s).2.2.2) p.1 i
-    rw [Finset.sum_congr rfl fun i _ => this i, Finset.sum_add_distrib]
-    exact (add_right_comm _ _ _).trans (add_assoc _ _ _)
-  · refine Set.MapsTo.countable_of_injOn (f := z') ?_ ?_ (hC b g Λ (R t) (fun s k => flagStep ℂ (fun i => x ⟨s, i⟩ t) k) hb)
-    · rintro t' ⟨ht', hs⟩
-      obtain ⟨h, hP, hfl⟩ := hrig t ht t' ht' hs
-      obtain ⟨h1, -, hU', -, v, hv, hf⟩ := h3 t' (hV3 ht')
-      refine ⟨hU', hint _ (hV1 ht'), hfr₃ t' (hV3 ht'), fun a => h.symm (x a t'), v, hv,
-        hT E H _ _ _ g Λ (R t) (R t') h I _ v (hfam₃.1 t (hV3 ht) t' (hV3 ht')) hP hf, ?_⟩
-      rintro (τ | τ) k
-      · exact (hfl τ k).1
-      · exact (hfl τ k).2
-    · intro t₁ h₁ t₂ h₂ e
-      exact ch.symm.injOn (hV1 h₁.1).1 (hV1 h₂.1).1 (hzi e)
+      (CountAt Gr.𝔐 Gr.Fl U → ∀ t ∈ V, {t' ∈ V | SameFl (fun τ => gm τ t) fun τ => gm τ t'}.Countable) :=
+  RootFieldNumerics.Un.locChart_of hLP hT hFV hPM hG hN Gr.𝔐 Gr.Fl An.Sys An.Re.R An.Re.π (fun _ _ h => (An.interior _ _ h).2) ψ hπ z hzi hzc k hzh
+    (fun V tr nu => potLoc Gr An ψ k V (fun t => z ((An.Sys.A.chart k).symm t)) tr nu hψ hπ)
+    U x₀ hx₀ hk hU
 
 end AnalyticReference
 end -- clump:auto
@@ -251,27 +169,11 @@ theorem unif_of (hLP : LocPer) (hT : Transport) (hFV : FrameVals) (hPM : PerMat)
     IsUniformised An.Sys.A An.Sys.open' D.p fun p => An.Sys.potH (some p) := by
   obtain ⟨ψ, hψ, hπ, hπ'⟩ := exists_inv An.Sys.A An.Re.R.A An.Re.π An.Re.br An.Re.holo (An.deg_one ▸ An.Re.degree) An.π_bij
   obtain ⟨z, hzi, hzc, hzh, hzU⟩ := ptsFam Gr An ψ hψ hπ hπ'
-  constructor
-  · intro x hx
-    obtain ⟨k, hk⟩ := An.Sys.A.cover x
-    obtain ⟨V, gm, hV, hxV, -, -, ha, hfd, hp, -⟩ :=
-      locChart hLP hT hFV hPM hG hN Gr An ψ hψ hπ z hzi hzc k (hzh k) ⊤ x hx hk trivial
-    obtain ⟨W, hW⟩ := RootFieldNumerics.Un.periodChart An.Sys.A (fun p => An.Sys.potH (some p)) k hV hk hxV ha hfd fun p => by
-      have := hp _ hxV p
-      rwa [(An.Sys.A.chart k).left_inv hk] at this
-    exact ⟨W, _, hW⟩
-  · obtain ⟨U, hU, hcnt⟩ := hC hG E H D l Xo c Y Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 Gr.Fl hN Gr.deg_one
-    obtain ⟨x, hx, hxU⟩ := hzU U hU
-    obtain ⟨k, hk⟩ := An.Sys.A.cover x
-    obtain ⟨V, gm, hV, hxV, hVt, hVo, ha, hfd, hp, hcV⟩ :=
-      locChart hLP hT hFV hPM hG hN Gr An ψ hψ hπ z hzi hzc k (hzh k) U x hx hk hxU
-    obtain ⟨t, ht, him⟩ := hFI (CMType H) _ _ V gm hV ⟨_, hxV⟩ ha (fun t ht τ => (hfd t ht τ).1) (hcV hcnt)
-    have e : An.Sys.A.chart k ((An.Sys.A.chart k).symm t) = t := (An.Sys.A.chart k).right_inv (hVt ht)
-    have hs := (An.Sys.A.chart k).map_target (hVt ht)
-    obtain ⟨W, hW⟩ := RootFieldNumerics.Un.periodChart An.Sys.A (fun p => An.Sys.potH (some p)) k hV hs (by rwa [e]) ha hfd fun p => by
-      rw [e]
-      exact hp t ht p
-    exact ⟨_, hVo t ht, W, _, hW, RootFieldNumerics.Un.flagImmersion An.Sys.A k hs (fun τ a b => by rw [e]; exact ha τ a b t ht) (by rwa [e])⟩
+  obtain ⟨U, hU, hcnt⟩ := hC hG E H D l Xo c Y Gr.Ω Gr.K Gr.J Gr.y Gr.𝔐 Gr.Fl hN Gr.deg_one
+  obtain ⟨x, hx, hxU⟩ := hzU U hU
+  exact RootFieldNumerics.Un.unif_of_core hFI Gr.𝔐 Gr.Fl An.Sys z
+    (fun k U x₀ hx₀ hk hU => locChart hLP hT hFV hPM hG hN Gr An ψ hψ hπ z hzi hzc k (hzh k) U x₀ hx₀ hk hU)
+    hcnt hx hxU
 
 end AnalyticReference
 end -- clump:auto
@@ -365,9 +267,9 @@ theorem tele (F : ℕ → ℤ) (k M : ℕ) (hk : k ≤ M) :
     rw [Finset.sum_eq_zero]
     · simp
     · intro n hn
-      rw [if_neg (by simpa using hn)]
+      rw [ite_eq_right (by simpa using hn)]
   | succ M hM ih =>
-    rw [Finset.sum_range_succ, ih, if_pos hM]
+    rw [Finset.sum_range_succ, ih, ite_eq_left hM]
     ring
 
 theorem abel (N : ℕ) (f x : Fin N → ℤ) :
@@ -555,7 +457,7 @@ theorem exists_eff : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsC
         by_contra h
         exact ha ⟨τ, i, by have := i.2; omega, rfl⟩
       have := hν τ i ⟨i + 1, hi⟩ (by simp [Fin.lt_def])
-      simp only [gapN, dif_pos hi]
+      simp only [gapN, dite_eq_left hi]
       omega
   obtain ⟨-, h2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.nefPol hIn _ _ A.Sys Fl hFl G.K G.J G.Ω G.y A.Re A.J_top hb
     (fun V _ L => GroundTheory.Heights₂.Heights.NumbersDVR.intNum ℚ V L) (GroundTheory.Heights₂.Heights.NumbersDVR.IntNumIsFieldIntersection.full ℚ G.K G.J) (gapN ν) hn

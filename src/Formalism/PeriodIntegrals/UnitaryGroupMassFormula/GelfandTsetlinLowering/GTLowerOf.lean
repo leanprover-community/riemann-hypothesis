@@ -876,22 +876,22 @@ theorem io_fixed_up {n : ℕ} (lam : DomWeight (n + 1)) (f : MvPolynomial (Fin (
     intro m
     rw [Submodule.mem_bot, Polynomial.eval_sub, Polynomial.eval_C, PI.WHw.eval_rowGen, sub_eq_zero]
     have hdet : (1 + Matrix.single a b (m : ℂ)).det ≠ 0 := by
-      rw [det_one_add_single, if_neg hne]; exact one_ne_zero
+      rw [det_one_add_single, ite_eq_right hne]; exact one_ne_zero
     let g := Matrix.GeneralLinearGroup.mkOfDetNeZero _ hdet
     have hgv : (g : Matrix (Fin n) (Fin n) ℂ) = 1 + Matrix.single a b (m : ℂ) := rfl
     have hup : ∀ i j, j < i → g i j = 0 := by
       intro i j hji
       have hij : i ≠ j := ne_of_gt hji
       show (1 + Matrix.single a b (m : ℂ)) i j = 0
-      simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, if_neg hij, zero_add]
-      rw [if_neg]
+      simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, ite_eq_right hij, zero_add]
+      rw [ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact absurd (lt_trans hab hji) (lt_irrefl _)
     have hdiag : ∀ i, g i i = 1 := by
       intro i
       show (1 + Matrix.single a b (m : ℂ)) i i = 1
-      simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, if_true]
-      rw [if_neg]; · simp
+      simp only [Matrix.add_apply, Matrix.one_apply, Matrix.single_apply, ite_true]
+      rw [ite_eq_right]; · simp
       rintro ⟨rfl, h⟩; exact hne h.symm
     have h1 := hU g hup hdiag
     have hT := embGL_transvec g a b (m : ℂ) hgv
@@ -899,14 +899,14 @@ theorem io_fixed_up {n : ℕ} (lam : DomWeight (n + 1)) (f : MvPolynomial (Fin (
       unfold detPow
       have hd : Matrix.GeneralLinearGroup.det (embGL ℂ n (n + 1) rfl g) = 1 := Units.ext (by
         rw [Matrix.GeneralLinearGroup.val_det_apply, ← Matrix.det_transpose, hT, det_one_add_single,
-          if_neg (fun h => hne (Fin.castSucc_injective _ h).symm)]
+          ite_eq_right (fun h => hne (Fin.castSucc_injective _ h).symm)]
         rfl)
       rw [hd, one_zpow, Units.val_one]
     unfold sqAct at h1
     rw [hdet1, one_smul, hT] at h1
     exact h1
   have := PI.WHw.coeff_mem_of_eval ⊥ _ key 1
-  rw [Submodule.mem_bot, Polynomial.coeff_sub, Polynomial.coeff_C, if_neg (by omega), sub_zero] at this
+  rw [Submodule.mem_bot, Polynomial.coeff_sub, Polynomial.coeff_C, ite_eq_right (by omega), sub_zero] at this
   rw [pol_eq_rowDiv]
   exact this
 
@@ -933,7 +933,7 @@ theorem io_torus_diag {n : ℕ} (lam : DomWeight (n + 1)) (sg : DomWeight n)
         ((m : ℂ) + 1) ^ lam.detShift := by
       unfold detPow
       rw [Units.val_zpow_eq_zpow_val, Matrix.GeneralLinearGroup.val_det_apply, ← Matrix.det_transpose, hTr,
-        det_one_add_single, if_pos rfl]
+        det_one_add_single, ite_eq_left rfl]
     have hprod : ((∏ j, t j ^ sg.w j : ℂˣ) : ℂ) = ((m : ℂ) + 1) ^ sg.w a := by
       rw [Finset.prod_eq_single a (fun j _ hj => by simp [t, hj]) (by simp), Units.val_zpow_eq_zpow_val]
       simp [t]
@@ -978,14 +978,14 @@ theorem capXi (hx : XiFacts) {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg
       have e : pol ℂ (Fin.castLE (by omega : n ≤ n + 1) a') (Fin.castLE (by omega : n ≤ n + 1) a')
           (xi ℂ rfl lam sg) = ((sg.w a' - lam.detShift : ℤ) : ℂ) • xi ℂ rfl lam sg :=
         io_torus_diag lam sg (xi ℂ rfl lam sg) hT a' hd
-      rw [capE_apply, if_pos rfl, e, ← add_smul]
+      rw [capE_apply, ite_eq_left rfl, e, ← add_smul]
       congr 1
       push_cast
       ring
     · have e : pol ℂ (Fin.castLE (by omega : n ≤ n + 1) a') (Fin.castLE (by omega : n ≤ n + 1) b')
           (xi ℂ rfl lam sg) = 0 :=
         io_fixed_up lam (xi ℂ rfl lam sg) hU a' b' hab
-      rw [capE_apply, if_neg (ne_of_lt hab), e, add_zero]
+      rw [capE_apply, ite_eq_right (ne_of_lt hab), e, add_zero]
   rw [Formalism.REAL.quantumDetHighestWeight_holds _ n (capE rfl lam) _ _ (capE_glRel rfl lam) hHW u]
   rfl
 
@@ -1253,16 +1253,16 @@ theorem rowAct_xi {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeigh
     intro p b hb
     by_cases hp : p.1 = i.1
     · have e : rowsZ h i p = ⟨n, by omega⟩ := by
-        simp only [rowsZ, hp, if_true]; ext; simp; omega
+        simp only [rowsZ, hp, ite_true]; ext; simp; omega
       rw [e] at hb
       have hbn : b.1 = n := by
         by_contra hne
         exact hb (hG.2 b hne)
       refine ⟨⟨i.1, by omega⟩, ?_⟩
-      simp only [rowsZ, if_true]
+      simp only [rowsZ, ite_true]
       ext; simp; omega
     · have e : rowsZ h i p = ⟨p.1, by omega⟩ := by
-        simp only [rowsZ, hp, if_false]
+        simp only [rowsZ, hp, ite_false]
       rw [e] at hb
       have hle : b.1 ≤ p.1 := by
         by_contra hlt
@@ -1271,7 +1271,7 @@ theorem rowAct_xi {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeigh
       have hpi : p.1 < i.1 := by have := p.2; omega
       refine ⟨⟨b.1, by omega⟩, ?_⟩
       have : b.1 ≠ i.1 := by omega
-      simp only [rowsZ, this, if_false]
+      simp only [rowsZ, this, ite_false]
   unfold xi xiScal
   rw [map_prod, map_prod, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl (fun i _ => ?_)
@@ -1351,8 +1351,8 @@ theorem tele_sum (ℓ : ℕ → ℤ) (n t : ℕ) (ht : t ≤ n) :
       · ring
       · intro i hi
         rw [Finset.mem_range] at hi
-        rw [if_neg (by omega)]
-    · rw [Finset.sum_range_succ, ih h, if_pos h]
+        rw [ite_eq_right (by omega)]
+    · rw [Finset.sum_range_succ, ih h, ite_eq_left h]
       ring
 
 end PI.WGL.XiA
@@ -1409,7 +1409,7 @@ theorem diag_scalar {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWei
     rw [← Fin.prod_univ_eq_prod_range]
     refine Finset.prod_congr rfl (fun p _ => ?_)
     have : p.1 < n + 1 := by omega
-    simp only [hv, dif_pos this]
+    simp only [hv, dite_eq_left this]
     rfl
   have hPs : ∀ k, P (k + 1) = P k * v k := fun k => by simp only [hP, Finset.prod_range_succ]
   have hdet : Matrix.GeneralLinearGroup.det (diagGL ℂ (n + 1) s) = P n * w := by
@@ -1441,9 +1441,9 @@ theorem diag_scalar {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWei
       congr 1
       · refine Finset.prod_congr rfl (fun p _ => ?_)
         have : (Fin.castSucc p).1 ≠ i.1 := by simp; omega
-        simp only [rowsZ, this, if_false]
+        simp only [rowsZ, this, ite_false]
         rfl
-      · simp only [rowsZ, Fin.val_last, if_true, hw]
+      · simp only [rowsZ, Fin.val_last, ite_true, hw]
         congr 2
     rw [e1, e2, ← Units.val_pow_eq_pow_val, ← Units.val_pow_eq_pow_val, ← Units.val_mul]
     congr 1
@@ -1465,9 +1465,9 @@ theorem diag_scalar {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWei
       rw [← Fin.sum_univ_eq_sum_range ℓ (n + 1), ← Fin.sum_univ_eq_sum_range σ n]
       congr 1
       · refine Finset.sum_congr rfl (fun p _ => ?_)
-        simp only [hℓ]; rw [dif_pos p.2]
+        simp only [hℓ]; rw [dite_eq_left p.2]
       · refine Finset.sum_congr rfl (fun p _ => ?_)
-        simp only [hσ]; rw [dif_pos p.2]
+        simp only [hσ]; rw [dite_eq_left p.2]
   unfold detPow
   rw [hx, hdet, hshift, htarget, ← Units.val_mul, teleM n P (by simp [hP]) w ℓ σ]
 
@@ -1545,22 +1545,22 @@ theorem xi_unitri {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeigh
     rw [hGdef, XiA.embGL_apply]
     by_cases hb : b.1 < n
     · have ha : a.1 < n := by omega
-      rw [dif_pos hb, dif_pos ha]
+      rw [dite_eq_left hb, dite_eq_left ha]
       exact hlow _ _ (Fin.mk_lt_mk.mpr hab')
     · have hbN := b.isLt
-      rw [dite_eq_right hb, if_pos (by omega)]
+      rw [dite_eq_right hb, ite_eq_left (by omega)]
   have hcol : ∀ b : Fin N, b.1 ≠ n → G b ⟨n, by omega⟩ = 0 := by
     intro b hb
     have hbN := b.isLt
     have hb' : b.1 < n := by omega
-    rw [hGdef, XiA.embGL_apply, dif_pos hb', dite_eq_right (lt_irrefl n)]
+    rw [hGdef, XiA.embGL_apply, dite_eq_left hb', dite_eq_right (lt_irrefl n)]
   have hdg : ∀ a : Fin N, G a a = 1 := by
     intro a
     rw [hGdef, XiA.embGL_apply]
     by_cases ha : a.1 < n
-    · rw [dif_pos ha, dif_pos ha]
+    · rw [dite_eq_left ha, dite_eq_left ha]
       exact hdiag ⟨a.1, ha⟩
-    · rw [dite_eq_right ha, if_neg ha]
+    · rw [dite_eq_right ha, ite_eq_right ha]
   have hgood : XiA.GoodG n h G := by
     unfold XiA.GoodG
     exact ⟨hlowG, hcol⟩
@@ -1589,7 +1589,7 @@ theorem nu_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n)
   have hnat : ((lam.natW t : ℕ) : ℤ) = lam.w t - lam.w ⟨n, by omega⟩ := by
     have hle : t ≤ ⟨n, by omega⟩ := by rw [Fin.le_def]; have := t.2; simp; omega
     have := lam.anti hle
-    simp only [DomWeight.natW, DomWeight.detShift, dif_pos (show 0 < n + 1 by omega)]
+    simp only [DomWeight.natW, DomWeight.detShift, dite_eq_left (show 0 < n + 1 by omega)]
     rw [Int.toNat_of_nonneg (by simp; omega)]
     simp
   rw [hnat]
@@ -1597,18 +1597,18 @@ theorem nu_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n)
   rw [Finset.sum_congr rfl (g := fun i : Fin n => (fun k : ℕ => if t.1 ≤ k then ℓ k - ℓ (k + 1) else 0) i.1)]
   · rw [Fin.sum_univ_eq_sum_range (fun k : ℕ => if t.1 ≤ k then ℓ k - ℓ (k + 1) else 0) n,
       XiA.tele_sum ℓ n t.1 (by have := t.2; omega)]
-    simp only [hℓ, dif_pos t.2, dif_pos (show n < n + 1 by omega)]
+    simp only [hℓ, dite_eq_left t.2, dite_eq_left (show n < n + 1 by omega)]
   · intro i _
     have hi := i.2
     have hA : 0 ≤ aa rfl lam sg i := by have := (hI i).2; unfold aa; omega
     have hB : 0 ≤ bb rfl lam sg i := by have := (hI i).1; unfold bb; omega
     rw [Int.toNat_of_nonneg hA, Int.toNat_of_nonneg hB]
-    simp only [hℓ, dif_pos (show i.1 < n + 1 by omega), dif_pos (show i.1 + 1 < n + 1 by omega)]
+    simp only [hℓ, dite_eq_left (show i.1 < n + 1 by omega), dite_eq_left (show i.1 + 1 < n + 1 by omega)]
     by_cases hti : t.1 ≤ i.1
-    · rw [if_pos (by omega), if_pos hti]
+    · rw [ite_eq_left (by omega), ite_eq_left hti]
       unfold aa bb
       ring
-    · rw [if_neg (by omega), if_neg hti]
+    · rw [ite_eq_right (by omega), ite_eq_right hti]
       ring
 
 theorem xi_mem {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight n) (hI : Interlace h lam sg) :
@@ -1645,8 +1645,8 @@ theorem initMinor_ne {N s : ℕ} (I : Fin s → Fin N) (hI : Function.Injective 
       Matrix.one_apply, v]
     by_cases hpq : p = q
     · subst hpq
-      rw [if_pos ⟨p, rfl, rfl⟩, if_pos rfl]
-    · rw [if_neg hpq, if_neg]
+      rw [ite_eq_left ⟨p, rfl, rfl⟩, ite_eq_left rfl]
+    · rw [ite_eq_right hpq, ite_eq_right]
       rintro ⟨p', h2, h3⟩
       have h4 : p' = p := hI h2
       subst h4

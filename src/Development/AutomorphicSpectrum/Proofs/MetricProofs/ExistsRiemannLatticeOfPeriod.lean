@@ -102,9 +102,9 @@ theorem riemLat_of_period : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   · show Module.finrank ℂ (eigSp (diagAct ty) (s.comp (algebraMap (𝓞 E) E))) = _
     rw [finrank_eigSp_diagAct]
     by_cases h : s (H.rt : E) = H.rt0
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       exact (hty s).1 h
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       exact (hty s).2 h
 
 end GlobalTheory.CompanionTheory.Ar.Cusp

@@ -136,8 +136,8 @@ theorem exists_nchart (A : FinHolAtlas n X) (L : LocPot X) (s : X → X → ℂ)
           _ = ∑ i : Fin n, (if i ∈ S then Real.log (1 / ‖t (σ i)‖ ^ 2) else 0) :=
               Finset.sum_congr rfl fun i _ => by
                 by_cases hi : i ∈ S
-                · rw [if_pos ((hσ i).1 hi), if_pos hi]
-                · rw [if_neg (fun h => hi ((hσ i).2 h)), if_neg hi]
+                · rw [ite_eq_left ((hσ i).1 hi), ite_eq_left hi]
+                · rw [ite_eq_right (fun h => hi ((hσ i).2 h)), ite_eq_right hi]
           _ = ∑ i ∈ S, Real.log (1 / ‖t (σ i)‖ ^ 2) := by
               rw [Finset.sum_ite_mem, Finset.univ_inter]
       rw [hsum]

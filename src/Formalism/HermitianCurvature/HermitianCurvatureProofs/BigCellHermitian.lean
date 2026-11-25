@@ -27,15 +27,15 @@ lemma bigCell_mulVec_jV (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k +
   by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
   · have hj1 : ¬ j.val < r := by omega
     have e : bigCell k r c μ i j = Formalism.FourierDecayAlt.B2.embWb k r μ i j := by
-      simp only [bigCell, Formalism.FourierDecayAlt.B2.embWb, dif_neg hj1, dif_pos hj.2]
+      simp only [bigCell, Formalism.FourierDecayAlt.B2.embWb, dite_eq_right hj1, dite_eq_left hj.2]
       by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
-      · rw [dif_pos hi, dif_pos ⟨hi, hj⟩]
-      · rw [dif_neg hi, dif_neg (fun h => hi h.1)]
-        rw [if_neg]
+      · rw [dite_eq_left hi, dite_eq_left ⟨hi, hj⟩]
+      · rw [dite_eq_right hi, dite_eq_right (fun h => hi h.1)]
+        rw [ite_eq_right]
         rintro ⟨rfl, h2⟩
         exact h2 hj
     rw [e]
-  · have h0 : jV k r u j = 0 := by simp only [jV, dif_neg hj]
+  · have h0 : jV k r u j = 0 := by simp only [jV, dite_eq_right hj]
     rw [h0, mul_zero, mul_zero]
 
 lemma herm_bigCell (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) {z z' : Fin (2 * r + k + 1) → ℂ}

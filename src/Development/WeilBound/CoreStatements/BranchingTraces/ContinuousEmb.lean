@@ -229,7 +229,7 @@ theorem fdeg_shift {m : ℕ} {lam : Fin m → ℝ} (s : Fin m) (h : Formalism.Qu
                     split_ifs <;> nlinarith
             _ = 2 ^ (2 * m) := by
                 simp only [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
-                  Finset.prod_pow, hc, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+                  Finset.prod_pow, hc, Finset.prod_ite_eq', Finset.mem_univ, ite_true]
                 ring
   · refine Finset.prod_nonneg fun a _ => Finset.prod_nonneg fun b hb => ?_
     exact sub_nonneg.mpr (Nat.cast_le.mpr (le_of_lt (Finset.mem_filter.mp hb).2))

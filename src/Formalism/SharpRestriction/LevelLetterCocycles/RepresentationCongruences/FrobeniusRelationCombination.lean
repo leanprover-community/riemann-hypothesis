@@ -541,13 +541,13 @@ theorem arc_length_three_representation_of [NeZero n] [Fintype (K →ₐ[Qp] LL)
   have h0 : ∀ s, s < 2 → A.Hs c 3 s = A.h := by
     intro s hs
     unfold ArcP.Hs
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro (h | h)
     · exact hth _ h
     · omega
   have h2 : A.Hs c 3 2 = A.G₀ := by
     unfold ArcP.Hs
-    rw [if_pos (Or.inr (by omega))]
+    rw [ite_eq_left (Or.inr (by omega))]
   have hLam : abelian₂ W A c 3 = ps W 0 ^ A.h * ps W 1 ^ A.h * ps W 2 ^ A.G₀ := by
     unfold abelian₂
     rw [Finset.prod_range_succ, Finset.prod_range_succ, Finset.prod_range_one, h0 0 (by norm_num),
@@ -622,7 +622,7 @@ theorem arc_length_three_representation_of [NeZero n] [Fintype (K →ₐ[Qp] LL)
   let Y : Fin d → ℕ → Fin d → O := fun k r mm => if h : r < A.M PD.p then yy k ⟨r, h⟩ mm else 0
   have hY : ∀ k, ∀ r < A.M PD.p, ∀ mm, algebraMap O LL (Y k r mm) = (PD.p : LL) ^ (κ + t) * sol k r mm := by
     intro k r hr mm
-    simp only [Y, dif_pos hr]
+    simp only [Y, dite_eq_left hr]
     exact hyy k ⟨r, hr⟩ mm
   let Hh' : Fin d → W.DD T₂ := fun k =>
     ∑ r ∈ Finset.range (A.M PD.p), W.π₀ ^ r • Formalism.MainNotions.LiftingTheory.vecB W T₂ bb (Y k r)
@@ -654,10 +654,10 @@ theorem arc_length_three_representation_of [NeZero n] [Fintype (K →ₐ[Qp] LL)
       aa = fun k => if k = k₀ then lA W ^ A.σ PD.p * a₀ else 0 := ⟨_, rfl⟩
   have hsum : ∑ k, aa k • ((W.φD T₂) ^ 3) (Hh' k) =
       (lA W ^ A.σ PD.p * a₀) • ((W.φD T₂) ^ 3) (lA W ^ t • Hh) := by
-    rw [Finset.sum_eq_single k₀ (fun k _ hk => by rw [haa]; dsimp only; rw [if_neg hk, zero_smul])
+    rw [Finset.sum_eq_single k₀ (fun k _ hk => by rw [haa]; dsimp only; rw [ite_eq_right hk, zero_smul])
       (fun h => absurd (Finset.mem_univ k₀) h), haa]
     dsimp only
-    rw [if_pos rfl, hk₀']
+    rw [ite_eq_left rfl, hk₀']
   have hΛx : abelian₂ W A c 3 • (f₂ • W.φD T₂ lam) = a₀ • W.φD T₂ lam := by
     rw [← algebraMap_smul W.EE (abelian₂ W A c 3), smul_smul, hΛf, algebraMap_smul]
   have hφy : W.φD T₂ y₂ ∈ Pp W T₂ c' 3 := DFE.Pp_φ W T₂ c' 2 y₂ hy₂P
@@ -1123,7 +1123,7 @@ theorem arc_length_three_final_bound [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     rwa [e1] at h
   have hhB : Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size = b + η + S := by
     unfold Formalism.MainNotions.TruncatedSeriesCountingBounds.hB
-    rw [if_pos ⟨c - 1, ht1⟩]
+    rw [ite_eq_left ⟨c - 1, ht1⟩]
   have hSgEq : Formalism.MainNotions.N.Ln17.Sg PD.p b w S η size = Formalism.MainNotions.N.FrobeniusPowerSeries.Sg PD.p (b + η + S) w S η := by
     unfold Formalism.MainNotions.N.Ln17.Sg Formalism.MainNotions.N.FrobeniusPowerSeries.Sg
     rw [hhB]

@@ -72,26 +72,26 @@ theorem gaL_finSum {D : D7} {G : Type} [Group G] [Fintype G] (V : HSp D) (β : G
     intro F
     funext h
     by_cases hx : ∃ κ, IsLevelLift V β L (eG g) κ
-    · have e1 : a g = c0 g * (levChi V β (flagL L) hx.choose)⁻¹ := dif_pos hx
-      have e2 : k g = hx.choose := dif_pos hx
+    · have e1 : a g = c0 g * (levChi V β (flagL L) hx.choose)⁻¹ := dite_eq_left hx
+      have e2 : k g = hx.choose := dite_eq_left hx
       rw [e1, e2]
       show c0 g * actG0 V β L (eG g) F h = c0 g * (levChi V β (flagL L) hx.choose)⁻¹ * F (h * hx.choose)
       unfold actG0
-      rw [dif_pos hx, mul_assoc]
-    · have e1 : a g = 0 := dif_neg hx
+      rw [dite_eq_left hx, mul_assoc]
+    · have e1 : a g = 0 := dite_eq_right hx
       rw [e1, zero_smul]
       show c0 g * actG0 V β L (eG g) F h = 0
       unfold actG0
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
       simp
   refine ⟨Finset.univ.image k, fun x => ∑ g ∈ Finset.univ.filter (fun g => k g = x), a g, ?_, ?_⟩
   · intro x hx
     obtain ⟨g, -, rfl⟩ := Finset.mem_image.1 hx
     by_cases h : ∃ κ, IsLevelLift V β L (eG g) κ
-    · have e2 : k g = h.choose := dif_pos h
+    · have e2 : k g = h.choose := dite_eq_left h
       rw [e2]
       exact h.choose_spec.1
-    · have e2 : k g = 1 := dif_neg h
+    · have e2 : k g = 1 := dite_eq_right h
       rw [e2]
       exact one_mem _
   · have e0 : gaL V β L eG c0 = ∑ g, a g • principalLevelFrame.rtA (k g) := by

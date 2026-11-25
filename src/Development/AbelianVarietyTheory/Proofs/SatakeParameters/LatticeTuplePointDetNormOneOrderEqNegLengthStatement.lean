@@ -341,7 +341,7 @@ theorem cpAt_y_succ (i : ℕ) (hi : i + 1 ≤ D.R.m) (La : (sysAt Ch std vp unif
           (basesAt Ch std vp unif eO eO_spec dG dG_spec om (i + 1) La.2) x ∧
           x ∈ Formalism.UG.UPts (sigD D) (gramN D (i + 1) hi) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) := by
   show (chAt Ch std vp unif eO eO_spec dG dG_spec om I A0 J0 Lb0 Uloc0 (i + 1) La).y = _
-  simp only [chAt, dif_pos hi]
+  simp only [chAt, dite_eq_left hi]
 
 end GlobalTheory.TwV.Xc.PtOrd
 end

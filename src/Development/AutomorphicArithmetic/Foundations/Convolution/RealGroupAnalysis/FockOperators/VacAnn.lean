@@ -17,12 +17,12 @@ private theorem hasDerivAt_sumq {ι : Type} [Fintype ι] [DecidableEq ι] (K b r
     intro w' _
     by_cases hw : w' = w
     · subst hw
-      simp only [Pi.single_eq_same, if_true]
+      simp only [Pi.single_eq_same, ite_true]
       have h0 : HasDerivAt (fun t : ℝ => b w' + t) 1 0 := (hasDerivAt_id (0 : ℝ)).const_add (b w')
       refine (((h0.fun_pow 2).const_mul (K w')).add_const (r w')).congr_deriv ?_
       simp only [add_zero, Nat.add_one_sub_one, pow_one, mul_one, Nat.cast_ofNat]
       ring
-    · simp only [Pi.single_eq_of_ne hw, if_neg hw]
+    · simp only [Pi.single_eq_of_ne hw, ite_eq_right hw]
       exact hasDerivAt_const _ _
   have := HasDerivAt.fun_sum h
   simpa using this

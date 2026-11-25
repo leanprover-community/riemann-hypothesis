@@ -245,32 +245,32 @@ lemma ck_all : Formalism.FourierDecayAlt.Q.CkLev k r 0 m (Formalism.FourierDecay
       dLR u' v' (hK' p) = if p ∈ P0 then dLR u' v' (rho D p F) else fun _ => 0 := by
     intro p u' v'
     by_cases hp : p ∈ P0
-    · simp only [hK'def, if_pos hp]
-    · simp only [hK'def, if_neg hp, dLR_zero]
+    · simp only [hK'def, ite_eq_left hp]
+    · simp only [hK'def, ite_eq_right hp, dLR_zero]
   have hAL := int_chart_loc (xiP D) (fun p => norm_xiP D p) (continuous_xiP D).aestronglyMeasurable hK' m
     (fun p => by
       by_cases hp : p ∈ P0
-      · simp only [hK'def, if_pos hp]; exact ckOn_rho D hp.1 hFm
-      · simp only [hK'def, if_neg hp]; exact ckOn_zero _)
+      · simp only [hK'def, ite_eq_left hp]; exact ckOn_rho D hp.1 hFm
+      · simp only [hK'def, ite_eq_right hp]; exact ckOn_zero _)
     hg0G hδp hcl
     (fun w hw Y hY => by
       refine (hDom1 (w.map Formalism.FourierDecayAlt.P.Ux1.Lt) [] (hunit w) (by simp) (by simpa using hw) _
         (hKOm (hmemK Y hY))).congr ?_
       filter_upwards [goodae] with p hp
-      rw [hsel, if_pos hp, dLR_rho D hp.1])
+      rw [hsel, ite_eq_left hp, dLR_rho D hp.1])
     (fun p => ‖bd p‖) hbdI.norm
     (fun w hw Y hY p => by
       rw [hsel]
       by_cases hp : p ∈ P0
-      · rw [if_pos hp]; exact (hp.2 _ ⟨w, hw, rfl⟩ _ (hmemK Y hY)).trans (Real.le_norm_self _)
-      · rw [if_neg hp, norm_zero]; exact norm_nonneg _)
+      · rw [ite_eq_left hp]; exact (hp.2 _ ⟨w, hw, rfl⟩ _ (hmemK Y hY)).trans (Real.le_norm_self _)
+      · rw [ite_eq_right hp, norm_zero]; exact norm_nonneg _)
   have hAL' : ContDiffOn ℝ ((m : ℕ) : WithTop ℕ∞) (fun Y => JF D F (Formalism.FourierDecayAlt.P.Ux1.chart g0 Y))
       (Metric.ball 0 δ) := by
     refine hAL.congr fun Y _ => ?_
     show ∫ p, xiP D p • rho D p F _ ∂D.μSS = _
     refine integral_congr_ae ?_
     filter_upwards [goodae] with p hp
-    simp only [hK'def, if_pos hp]
+    simp only [hK'def, ite_eq_left hp]
   obtain ⟨U, F', hU, hgU, hF', hUF⟩ := ck_at_of_chart hg0G hδp hAL'
   exact ⟨U, F', hU, hgU, hF', fun g hg hgl => hUF g hg hgl.1⟩
 

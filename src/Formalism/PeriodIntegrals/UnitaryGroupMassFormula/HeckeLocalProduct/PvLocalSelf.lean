@@ -64,7 +64,7 @@ theorem chi_unit (χ : HChar L) (u : Ideles L) (h1 : (u : AdeleRing (𝓞 L) L).
   have hu : u = Phi L y := Units.ext (Prod.ext (h1.trans rfl) (Subtype.ext (funext fun v => rfl)))
   set p : Pu L := ∏ v ∈ T, Pi.mulSingle v (y v) with hp
   have hpv : ∀ v ∈ T, p v = y v := fun v hv => by
-    rw [hp, Finset.prod_apply, Finset.prod_pi_mulSingle, if_pos hv]
+    rw [hp, Finset.prod_apply, Finset.prod_pi_mulSingle, ite_eq_left hv]
   have hsplit : y = p * (p⁻¹ * y) := by rw [mul_inv_cancel_left]
   have hrest : χ.1 (Phi L (p⁻¹ * y)) = 1 :=
     hT _ fun v hv => by rw [Pi.mul_apply, Pi.inv_apply, hpv v hv, inv_mul_cancel]

@@ -64,19 +64,10 @@ variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 open Polynomial NumberField IsDedekindDomain in
 open scoped Pointwise in
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] in
-private lemma smul_mem_smul_valuationSubring_iff (h : _root_.Formalism.ConjugateSelfDual.G F Ω) (B : ValuationSubring Ω) (y : Ω) :
-    h • y ∈ h • B ↔ y ∈ B := by
-  refine ⟨fun hy => ?_, ValuationSubring.smul_mem_pointwise_smul h y B⟩
-  have := ValuationSubring.smul_mem_pointwise_smul h⁻¹ _ _ hy
-  simpa [smul_smul] using this
-
-open Polynomial NumberField IsDedekindDomain in
-open scoped Pointwise in
-variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] in
 private lemma valuation_smul_smul_lt_one_iff (h : _root_.Formalism.ConjugateSelfDual.G F Ω) (B : ValuationSubring Ω) (y : Ω) :
     (h • B).valuation (h • y) < 1 ↔ B.valuation y < 1 := by
-  rw [valuation_lt_one_iff', valuation_lt_one_iff', smul_mem_smul_valuationSubring_iff,
-    ← smul_inv'', smul_mem_smul_valuationSubring_iff]
+  rw [valuation_lt_one_iff', valuation_lt_one_iff', ValuationSubring.smul_mem_pointwise_smul_iff,
+    ← smul_inv'', ValuationSubring.smul_mem_pointwise_smul_iff]
   simp
 
 
@@ -100,12 +91,6 @@ theorem _root_.GlobalTheory.ParamRepCompare.conj_mem_Ine_of_smul_eq {A A' : Valu
     simp [AlgEquiv.smul_def]
 
 end Inertia
-
-section Clauses
-
-variable (D : D7)
-
-end Clauses
 
 end GlobalTheory.ParamRepCompare
 

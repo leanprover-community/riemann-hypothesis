@@ -125,10 +125,10 @@ theorem extFun_wr (p : SplitPt D k) {n n' : Type} [Fintype n] [DecidableEq n] [F
   funext t
   unfold extFun
   by_cases ht : IsHalf p.e t
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     beta_reduce
     rw [HalfInd.wr_rd α β ht]
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     by_contra h
     exact ht (hΦ t (Ne.symm h))
 

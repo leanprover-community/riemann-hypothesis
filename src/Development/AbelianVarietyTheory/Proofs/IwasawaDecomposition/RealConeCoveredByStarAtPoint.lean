@@ -170,7 +170,7 @@ theorem star_cover : ∀ (X : Type) [AddCommGroup X] (m : ℕ) (γ : Fin m → L
     by_contra hno
     rw [Finset.not_nonempty_iff_eq_empty, Finset.filter_eq_empty_iff] at hno
     have hneg : (-1 : ℝ) • Ev ∈ rcone T := (hA _).mpr fun a ha => by
-      rw [dotR_smul]; have := hno ha; push_neg at this; linarith
+      rw [dotR_smul]; have := hno ha; push Not at this; linarith
     obtain ⟨r, hr, hrEq⟩ := exists_of_mem_rcone_image u _ hneg
     have hzero : ∀ x y, ∑ j, (r j + c j) * (γ j x y : ℝ) = 0 := hp _ fun k => by
       have := congrFun hrEq k
@@ -204,7 +204,7 @@ theorem star_cover : ∀ (X : Type) [AddCommGroup X] (m : ℕ) (γ : Fin m → L
     · have := hamin a' (Finset.mem_filter.mpr ⟨ha', hpos⟩)
       rw [le_div_iff₀ hpos] at this
       linarith
-    · push_neg at hpos; nlinarith [hAB a' ha']
+    · push Not at hpos; nlinarith [hAB a' ha']
   have hB'a : dotR a (EB - ts • Ev) = 0 := by
     rw [dotR_sub, dotR_smul, hts]; field_simp; ring
   obtain ⟨d, hd, hdEq⟩ := exists_of_mem_rcone_image u _ hB'T

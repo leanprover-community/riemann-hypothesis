@@ -642,8 +642,8 @@ private theorem valAt'_prod_res_pullU_eq_prod {Z Y : Scheme.{0}} {n : ℕ} (q : 
     valAt' q W (∏ i, res (e1 i) (res (e2 i) (pullU (ψ i) (V i) (u i)))).val =
       ∏ i, valAt' (q ≫ ψ i) (V i) (u i).val := by
   unfold valAt'
-  rw [dif_pos h]
-  simp only [dif_pos (h' _)]
+  rw [dite_eq_left h]
+  simp only [dite_eq_left (h' _)]
   unfold valAt res pullU
   simp only [Units.coe_prod, map_prod, Units.coe_map, MonoidHom.coe_coe]
   refine Finset.prod_congr rfl (fun i _ => ?_)
@@ -696,7 +696,7 @@ theorem thConst_pow : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMonObj
   have h1 : Φ.GenRd _ _ (LB.oneGen L.L) (ptSecT A (Φ.e 0)).left (fun e => e.elim) 1 := by
     refine ⟨fun kk => kk.elim, fun j' hj' => ?_⟩
     unfold valAt'
-    rw [dif_pos hj']
+    rw [dite_eq_left hj']
     unfold valAt LB.oneGen
     simp only [Units.val_one, Fintype.prod_empty, _root_.mul_one]
     exact (congrArg (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom (map_one _)).trans (map_one _)

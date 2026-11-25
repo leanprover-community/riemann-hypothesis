@@ -271,9 +271,9 @@ theorem chiMu_frob_all_alt : ∀ (hArt : GlobalTheory.Published.GlobalArtinRecip
     have hdel : (cf.delAt (X.nd.l i)).UnrAt w := by
       unfold CharFrame.delAt
       split_ifs with h
-      · rw [if_pos h] at hd
+      · rw [ite_eq_left h] at hd
         exact cf.isDel'.unr w hd
-      · rw [if_neg h] at hd
+      · rw [ite_eq_right h] at hd
         exact cf.isDel.unr w hd
     have hmem : i ∈ X.nd.locs (X.nd.j i) (X.nd.w i) := (X.nd.locs_mem _ _ i).2 ⟨rfl, rfl⟩
     have hQ : X.nd.Q i = C.Q (X.nd.w i) := (Sp.Q_eq _ _ i hmem).trans (Sp.Qc_eq _ _)
@@ -445,8 +445,8 @@ theorem tupEtaInv_unrAt_splitOut_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.h
     rw [X.nd.w_l i]
     unfold CharFrame.delAt
     split_ifs with h
-    · exact cf.isDel'.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [if_pos h]; exact hp))))
-    · exact cf.isDel.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [if_neg h]; exact hp))))
+    · exact cf.isDel'.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [ite_eq_left h]; exact hp))))
+    · exact cf.isDel.unr w (fun hp => hS' (Or.inr (Or.inr (by rw [ite_eq_right h]; exact hp))))
   have hxi : (tp.xi (X.nd.mu i)).UnrAt w := by
     rw [X.nd.mu_w i, tp.xi_tw]
     exact HChar.UnrAt.mul hdel hpsi

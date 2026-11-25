@@ -696,7 +696,7 @@ theorem flag_basis [FiniteDimensional K V] (F : ℤ → Submodule K V) (hF : Ant
       | mem g hg =>
         have hgN : g ∈ (S N).s := hmono j N (by omega) hg
         have : g = B0 ⟨g, hgN⟩ := by simp [B0, Module.Basis.mk_apply]
-        rw [this, Module.Basis.repr_self, Finsupp.single_apply, if_neg]
+        rw [this, Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right]
         intro heq
         apply hkj
         rw [← hmem_iff, ← heq]
@@ -1165,7 +1165,7 @@ theorem cv_mem (S : Submodule L M) (g : PowerSeries L) (y : ℤ → M) (m : ℤ)
   exact Submodule.sum_mem _ fun j _ => S.smul_mem _ (hS _)
 
 theorem coeff_X_pow_mul_lt (e j : ℕ) (hj : j < e) (f : PowerSeries L) : coeff j (X ^ e * f) = 0 := by
-  rw [PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+  rw [PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
 end CV
 
@@ -1277,7 +1277,7 @@ theorem lead_F_span (hR : BT.Ring9 W) (hA : Formalism.MainNotions.LiftingTheory.
   rw [cv_lead _ _ (k' : ℤ) (fun j hj => (hv j).2 hj) M (fun j hj => by
     rw [map_pow, hlqp, mul_pow, mul_comm]; exact coeff_X_pow_mul_lt M j hj _)] at c4
   have hcoef : coeff M (W.lev i ζ (Formalism.MainNotions.LiftingTheory.qp W ^ M)) = constantCoeff uq ^ M := by
-    rw [map_pow, hlqp, mul_pow, mul_comm, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+    rw [map_pow, hlqp, mul_pow, mul_comm, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
       PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow]
   rw [hcoef] at c4
   beta_reduce at c4
@@ -1564,7 +1564,7 @@ theorem exponent (hR : BT.Ring9 W) (hA : Formalism.MainNotions.LiftingTheory.Cas
           Matrix.one_apply]
         by_cases hll : ℓ = ℓ'
         · subst hll; simp
-        · rw [if_neg hll, if_neg]
+        · rw [ite_eq_right hll, ite_eq_right]
           intro hq
           exact hll (congrArg Subtype.val hq).symm
       have hdetM : M'.det = 1 := by

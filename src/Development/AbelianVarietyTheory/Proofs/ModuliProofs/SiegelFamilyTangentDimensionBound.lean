@@ -386,7 +386,7 @@ theorem exists_basis_matrixRep [Module.Finite K V] {h : ℕ} (ρ : Matrix (Fin (
     (LinearMap.pi fun u => (e 0 u).codRestrict V₀ fun y => ⟨e 0 u y, by simp [he]⟩)
     (LinearMap.ext fun y => by
       refine (LinearMap.sum_apply _ _ _).trans (Eq.trans (Finset.sum_congr rfl fun u _ => ?_) (hs y))
-      exact (he u 0 0 u y).trans (if_pos rfl))
+      exact (he u 0 0 u y).trans (ite_eq_left rfl))
     (LinearMap.ext fun z => funext fun u => Subtype.ext (by
       show e 0 u ((∑ u, e u 0 ∘ₗ V₀.subtype ∘ₗ LinearMap.proj u : (Fin (n + 1) → V₀) →ₗ[K] V) z) = z u
       simp [he, h₀]))

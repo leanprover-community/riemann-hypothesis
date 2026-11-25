@@ -94,48 +94,4 @@ end Classes
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-section Data
-
-variable {R : Type} [CommRing R] [IsDomain R] {D : Datum H} {P : DegPre R} [Module (𝓞 E) P.X]
-  {oa : letI := H.starRing; P.OAct (𝓞 E)} {F : Type} [Field F] [Algebra (FractionRing R) F]
-
-
-variable (hB : P.TauBimult)
-
-
-end Data
-
-section Lev
-
-variable (D : Datum H) (l : Level H)
-
-end Lev
-
-section Level
-
-variable {R : Type} [CommRing R] [IsDomain R] {D : Datum H} {l : Level H} {P : DegPre R} [Module (𝓞 E) P.X]
-  {oa : letI := H.starRing; P.OAct (𝓞 E)} {F F' : Type} [Field F] [Algebra (FractionRing R) F] [Field F']
-  [Algebra (FractionRing R) F'] (hB : P.TauBimult)
-
-
-variable (f : F →+* F') (hf : f.comp (algebraMap (FractionRing R) F) = algebraMap (FractionRing R) F')
-
-
-end Level
-
-section ThetaShiftProofs
-
-variable {D : Datum H} {l : Level H} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
-  {O' : Type} [CommRing O'] [IsDomain O'] {b : O →+* O'}
-
-
-end ThetaShiftProofs
-
-section Main
-
-variable {D : Datum H} {l : Level H} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
-  {O' : Type} [CommRing O'] [IsDomain O'] {b : O →+* O'}
-
-end Main
-
 end GlobalTheory.ArcInputCompare

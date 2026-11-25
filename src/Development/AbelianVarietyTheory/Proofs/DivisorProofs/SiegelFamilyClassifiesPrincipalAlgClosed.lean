@@ -394,9 +394,9 @@ theorem altLagr : ∀ (R : Type) [CommRing R] (I : Ideal R) (D : Type) [AddCommG
     intro i j
     simp only [M]
     rcases lt_trichotomy i j with h | rfl | h
-    · rw [if_pos h, if_neg (lt_asymm h), sub_zero]
-    · rw [if_neg (lt_irrefl _), sub_zero, hBalt]
-    · rw [if_neg (lt_asymm h), if_pos h, zero_sub, hBskew, neg_neg]
+    · rw [ite_eq_left h, ite_eq_right (lt_asymm h), sub_zero]
+    · rw [ite_eq_right (lt_irrefl _), sub_zero, hBalt]
+    · rw [ite_eq_right (lt_asymm h), ite_eq_left h, zero_sub, hBskew, neg_neg]
   let β : D →ₗ[R] D →ₗ[R] R :=
     ∑ i, ∑ j, M i j • (LinearMap.mul R R).compl₁₂ ((LinearMap.proj i).comp s) ((LinearMap.proj j).comp s)
   have hβ : ∀ x y, β x y = ∑ i, ∑ j, M i j * (s x i * s y j) := by

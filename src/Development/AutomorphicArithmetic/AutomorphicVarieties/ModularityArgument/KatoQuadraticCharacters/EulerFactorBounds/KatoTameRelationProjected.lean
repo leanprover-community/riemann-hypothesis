@@ -591,7 +591,7 @@ private theorem main (hA : SApi) (hC : SCohApi) (hM : SXiMul) (hX : SXiCoh) (hD 
   simp only [rdH_comp] at TC
   have hlu : IsUnit (l : ZMod p) := (ZMod.isUnit_iff_coprime l p).mpr hpl.symm
   have hinv : ((inv1 p l : (ZMod p)ˣ) : ZMod p) * l = 1 := by
-    simp only [inv1, dif_pos hlu]
+    simp only [inv1, dite_eq_left hlu]
     exact hlu.val_inv_mul
   have hν1 : (((rdH l n r N p (ZMod.unitOfCoprime k kcM)).1 : (ZMod p)ˣ) : ZMod p) = l := by
     show ZMod.castHom (Dvd.intro_left _ rfl : p ∣ lvT l n r N p) (ZMod p) (k : ZMod (lvT l n r N p)) = _

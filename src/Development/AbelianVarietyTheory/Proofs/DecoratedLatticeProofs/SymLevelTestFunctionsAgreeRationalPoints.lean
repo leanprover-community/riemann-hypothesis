@@ -88,15 +88,15 @@ theorem patOfPlaces : ∀ (F : Type) [Zero F] [One F] (κ ρ s τ j : ℕ) (R : 
     by_cases h : i.val = i'.val
     · have : i = i' := Fin.ext h
       subst this
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (h1 _ (by omega)).1
-    · rw [if_neg (by intro e; simp only [Sum.inl.injEq] at e; exact h (congrArg Fin.val e))]
+    · rw [ite_eq_right (by intro e; simp only [Sum.inl.injEq] at e; exact h (congrArg Fin.val e))]
       refine (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inr (Or.inl ?_))
       simp only [symIdx]; split_ifs <;> omega
   ·
     simp only [FreeIx, FreeTop, not_lt] at hab
     simp only [zPos]
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
     rcases Nat.lt_or_eq_of_le hab with hl | hl
     · refine (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inr (Or.inl ?_))
       simp only [symIdx]; split_ifs <;> omega
@@ -105,7 +105,7 @@ theorem patOfPlaces : ∀ (F : Type) [Zero F] [One F] (κ ρ s τ j : ℕ) (R : 
   ·
     simp only [FreeIx, FreeTop, not_lt] at hab
     simp only [zPos]
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
     refine (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inr (Or.inl ?_))
     simp only [symIdx]; split_ifs <;> omega
   ·
@@ -114,25 +114,25 @@ theorem patOfPlaces : ∀ (F : Type) [Zero F] [One F] (κ ρ s τ j : ℕ) (R : 
     by_cases h : i.val = i'.val
     · have : i = i' := Fin.ext h
       subst this
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact (h1 _ (by omega)).1
-    · rw [if_neg (by intro e; simp only [Sum.inl.injEq, Sum.inr.injEq] at e; exact h (congrArg Fin.val e))]
+    · rw [ite_eq_right (by intro e; simp only [Sum.inl.injEq, Sum.inr.injEq] at e; exact h (congrArg Fin.val e))]
       refine (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inr (Or.inl ?_))
       simp only [symIdx]; split_ifs <;> omega
   · simp [FreeIx] at hab
   ·
     simp only [zPos]
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
     have := hA i u
     exact (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inl (by omega))
   · simp only [zPos]
-    rw [if_neg (by simp)]
+    rw [ite_eq_right (by simp)]
     have := hA i u
     exact (h1 _ (by omega)).2 _ (by omega) (by omega) (Or.inl (by omega))
   ·
     simp only [FreeIx, not_le, Fin.lt_def] at hab
     simp only [zPos]
-    rw [if_neg (by intro e; simp only [Sum.inr.injEq, Prod.mk.injEq] at e; rw [e.1] at hab; omega)]
+    rw [ite_eq_right (by intro e; simp only [Sum.inr.injEq, Prod.mk.injEq] at e; rw [e.1] at hab; omega)]
     have hu := hA i u
     have hu' := hA i' u'
     apply h2 _ _ (by omega) (by omega) (by omega)

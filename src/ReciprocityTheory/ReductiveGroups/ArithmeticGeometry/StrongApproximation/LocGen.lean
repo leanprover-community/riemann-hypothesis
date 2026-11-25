@@ -202,7 +202,7 @@ theorem OFam.extend {r : ℕ} (F : OFam (σ := σ) (J := J) e f r) (hns : ¬ F.S
     ring
   have horth := fun t => OFam.sub_proj_orth hσ hJ he hff hef F t
   unfold OFam.Spans at hns
-  push_neg at hns
+  push Not at hns
   obtain ⟨x, hx⟩ := hns
   have key : ∃ t : ι → K, hf σ J (t - F.proj t) (t - F.proj t) ≠ 0 := by
     by_cases hyy : hf σ J (x - F.proj x) (x - F.proj x) = 0

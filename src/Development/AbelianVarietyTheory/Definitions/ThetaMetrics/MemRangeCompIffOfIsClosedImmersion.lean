@@ -24,7 +24,7 @@ def valMap (x : Sp C ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) : Γ(X, U) 
   x.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of C)).hom
 
 theorem valR_eq (x : Sp C ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
-    valR x U f = (valMap x U h).hom f := dif_pos h
+    valR x U f = (valMap x U h).hom f := dite_eq_left h
 
 theorem valF_eq_valR {F : Type} [Field F] (x : Sp F ⟶ X) (U : X.Opens) (f : Γ(X, U)) :
     valF x U f = valR x U f := rfl
@@ -574,7 +574,7 @@ theorem isEmbedding_of_isPullback {P S : Scheme.{0}} {fst : P ⟶ X} {snd : P �
     if h : ⊤ ≤ (y ≫ fst) ⁻¹ᵁ U ∧ ⊤ ≤ (y ≫ snd) ⁻¹ᵁ V then pushout.desc _ _ (hcond y h.1 h.2)
     else pushout.desc _ _ (hcond z hzU hzV)
   have hψ : ∀ (y : Sp C ⟶ P) (h1 : ⊤ ≤ (y ≫ fst) ⁻¹ᵁ U) (h2 : ⊤ ≤ (y ≫ snd) ⁻¹ᵁ V),
-      ψ y = pushout.desc _ _ (hcond y h1 h2) := fun y h1 h2 => dif_pos ⟨h1, h2⟩
+      ψ y = pushout.desc _ _ (hcond y h1 h2) := fun y h1 h2 => dite_eq_left ⟨h1, h2⟩
   have hlim : Tendsto ψ l (𝓝 (ψ z)) := by
     rw [(isEmbedding_pushout (R := CommRingCat.of C) a b).tendsto_nhds_iff]
     refine Tendsto.prodMk_nhds ?_ ?_

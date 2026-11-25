@@ -144,7 +144,7 @@ theorem triVal_rel (c : CC F 2) (hc : δ F 2 c = 0) (X : (NE κ)ᵒᵖ) {w x y z
   have hwx := h1.ne; have hwy := (h1.trans h2).ne; have hwz := (h1.trans (h2.trans h3)).ne
   have hxy := h2.ne; have hxz := (h2.trans h3).ne; have hyz := h3.ne
   simp only [GlobalTheory.cubeSign, Finset.filter_insert, Finset.filter_singleton, h1, h2, h3, h1.trans h2,
-    h1.trans (h2.trans h3), h2.trans h3, lt_irrefl, not_lt_of_gt, if_true, if_false] at e'
+    h1.trans (h2.trans h3), h2.trans h3, lt_irrefl, not_lt_of_gt, ite_true, ite_false] at e'
   simp only [Finset.insert_empty, Finset.card_empty, Finset.card_singleton,
     Finset.card_pair hwx, Finset.card_insert_of_notMem (show w ∉ ({x, y} : Finset κ) by simp [hwx, hwy]),
     Finset.card_pair hxy] at e'
@@ -194,7 +194,7 @@ theorem e2_mem_Z2_of_delta_eq_zero (F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R) (c :
   rcases hdg.lt_or_eq with h1 | rfl <;> rcases hbd.lt_or_eq with h2 | rfl <;>
     rcases hab.lt_or_eq with h3 | rfl <;>
     simp_all [le_of_lt]
-  rw [if_pos (h2.trans h3), if_pos (h1.trans h2)]
+  rw [ite_eq_left (h2.trans h3), ite_eq_left (h1.trans h2)]
   linear_combination -hrel
 end GlobalTheory.CechPoset
 end -- clump:auto
@@ -665,7 +665,7 @@ theorem sum3 {M : Type} [AddCommGroup M] (W : κ → M) {a b c : κ} (hab : a < 
   rw [Finset.sum_insert (by simp [hab.ne, hac.ne]), Finset.sum_insert (by simp [hbc.ne]),
     Finset.sum_singleton]
   obtain ⟨s1, s2, s3⟩ := sign3 hab hbc
-  simp only [term3, if_neg hab.ne', if_neg hac.ne', if_neg hbc.ne', s1, s2, s3, one_smul, neg_smul]
+  simp only [term3, ite_eq_right hab.ne', ite_eq_right hac.ne', ite_eq_right hbc.ne', s1, s2, s3, one_smul, neg_smul]
   norm_num
 
 theorem part1 (f : Z1 F) : δ F 1 (zc f) = 0 := by
@@ -686,13 +686,13 @@ theorem part1 (f : Z1 F) : δ F 1 (zc f) = 0 := by
     rcases hx with rfl | rfl | rfl
     · obtain ⟨h1, h2⟩ := pair_min_max (s := (GlobalTheory.Cube.eraseIdx ⟨{x, b, c}, hs⟩ ⟨x, by simp⟩).1) e1' hbc
         (card_nonempty _)
-      rw [h1, h2, term3, if_pos rfl]
+      rw [h1, h2, term3, ite_eq_left rfl]
     · obtain ⟨h1, h2⟩ := pair_min_max (s := (GlobalTheory.Cube.eraseIdx ⟨{a, x, c}, hs⟩ ⟨x, by simp⟩).1) e2' hac
         (card_nonempty _)
-      rw [h1, h2, term3, if_neg hab.ne', if_pos rfl]
+      rw [h1, h2, term3, ite_eq_right hab.ne', ite_eq_left rfl]
     · obtain ⟨h1, h2⟩ := pair_min_max (s := (GlobalTheory.Cube.eraseIdx ⟨{a, b, x}, hs⟩ ⟨x, by simp⟩).1) e3' hab
         (card_nonempty _)
-      rw [h1, h2, term3, if_neg hac.ne', if_neg hbc.ne']
+      rw [h1, h2, term3, ite_eq_right hac.ne', ite_eq_right hbc.ne']
   · refine (Finset.sum_coe_sort ({a, b, c} : Finset κ)
       (term3 (V F f (ne {a, b, c} (card_nonempty ⟨_, hs⟩))) a b c)).trans ?_
     exact sum3 _ hab hbc
@@ -1064,17 +1064,17 @@ theorem orderedCechToCatCochainsOne_coboundary_comm {κ : Type} [LinearOrder κ]
   funext a b d f g
   rw [d1_apply, orderedCechToCatCochainsOne_apply_valueAtSubset, orderedCechToCatCochainsOne_apply_valueAtSubset, orderedCechToCatCochainsOne_apply_valueAtSubset, alternatingToOrderedCechDegreeTwo_apply_valueAtSubset]
   rcases (mn_le_of_hom f).lt_or_eq with h₂ | h₂ <;> rcases (mn_le_of_hom g).lt_or_eq with h₁ | h₁
-  · rw [if_pos h₂, if_pos h₁, if_pos (h₁.trans h₂), if_pos ⟨h₁, h₂⟩, map_neg,
+  · rw [ite_eq_left h₂, ite_eq_left h₁, ite_eq_left (h₁.trans h₂), ite_eq_left ⟨h₁, h₂⟩, map_neg,
       mp_val F c _ g (Finset.card_pair h₂.ne) (pair_subset f),
       val_δ_three F c h₁ h₂ d (triple_subset f g)]
     ring
-  · rw [if_pos h₂, if_neg h₁.not_lt, if_pos (h₁ ▸ h₂), if_neg (fun h => h₁.not_lt h.1), map_neg,
+  · rw [ite_eq_left h₂, ite_eq_right h₁.not_lt, ite_eq_left (h₁ ▸ h₂), ite_eq_right (fun h => h₁.not_lt h.1), map_neg,
       mp_val F c _ g (Finset.card_pair h₂.ne) (pair_subset f), h₁]
     ring
-  · rw [if_neg h₂.not_lt, if_pos h₁, if_pos (h₂ ▸ h₁), if_neg (fun h => h₂.not_lt h.2), map_zero, h₂]
+  · rw [ite_eq_right h₂.not_lt, ite_eq_left h₁, ite_eq_left (h₂ ▸ h₁), ite_eq_right (fun h => h₂.not_lt h.2), map_zero, h₂]
     ring
-  · rw [if_neg h₂.not_lt, if_neg h₁.not_lt, if_neg (h₁.trans h₂).not_lt,
-      if_neg (fun h => h₂.not_lt h.2), map_zero]
+  · rw [ite_eq_right h₂.not_lt, ite_eq_right h₁.not_lt, ite_eq_right (h₁.trans h₂).not_lt,
+      ite_eq_right (fun h => h₂.not_lt h.2), map_zero]
     ring
 
 end GlobalTheory.CechPosetDegreeOne

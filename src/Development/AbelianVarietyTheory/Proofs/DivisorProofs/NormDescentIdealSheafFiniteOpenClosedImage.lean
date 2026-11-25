@@ -669,7 +669,7 @@ theorem famIdeal_map_basicOpen : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsFinite
           (algebraMap Γ(Y, π ⁻¹ᵁ U.1) Γ(Y, π ⁻¹ᵁ Z.basicOpen f)) :=
       (I.map_ideal (U := ⟨π ⁻¹ᵁ (Z.affineBasicOpen f).1, (Z.affineBasicOpen f).2.preimage π⟩)
         (V := ⟨π ⁻¹ᵁ U.1, U.2.preimage π⟩) hleY).symm
-    simp only [famIdeal, dif_pos hζU, dif_pos hD']
+    simp only [famIdeal, dite_eq_left hζU, dite_eq_left hD']
     rw [hJ]
     exact _root_.GlobalTheory.NormSheaf.normIdeal_map_away Γ(Z, U) (Z.presheaf.stalk (genPt π)) Y.functionField Γ(Y, π ⁻¹ᵁ U.1)
       Γ(Z, Z.basicOpen f) Γ(Y, π ⁻¹ᵁ Z.basicOpen f) f h1 h2 h3 h4 h5 _
@@ -807,7 +807,7 @@ theorem descendedIdealSheaf_exists : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsFi
     · ext a
       exact Scheme.Hom.germ_stalkMap_apply π U.1 (genericPoint Y) h a
     · rw [hJ U hUW]
-      simp only [GlobalTheory.NormSheafDescent.famIdeal, dif_pos h]
+      simp only [GlobalTheory.NormSheafDescent.famIdeal, dite_eq_left h]
 
 end GlobalTheory.NormSheafDescent
 end -- clump:auto

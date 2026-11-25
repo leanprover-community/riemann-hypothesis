@@ -85,11 +85,11 @@ theorem norm_euclideanEmbedding_eq_netNorm (σ : B.KO →+* ℂ) (F : B.Cusp j k
   rw [Fintype.sum_sigma, Finset.sum_eq_single σ]
   · rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun y _ => ?_
-    rw [Nt.goodRowsProjector_apply_eq_sum, if_pos rfl, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs, ← Nt.cf_sq]
+    rw [Nt.goodRowsProjector_apply_eq_sum, ite_eq_left rfl, norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs, ← Nt.cf_sq]
     ring
   · intro τ _ hτ
     refine Finset.sum_eq_zero fun y _ => ?_
-    rw [Nt.goodRowsProjector_apply_eq_sum, if_neg hτ, norm_zero]
+    rw [Nt.goodRowsProjector_apply_eq_sum, ite_eq_right hτ, norm_zero]
     ring
   · intro h
     exact absurd (Finset.mem_univ σ) h

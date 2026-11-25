@@ -21,12 +21,6 @@ namespace UnipotentUpperFacts
 
 open C2x5 C2x6 C2x7 HermitianProjections FixedPointsGramVector
 
-section gen
-
-variable {n ι : Type*} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι]
-
-end gen
-
 variable {k r : ℕ}
 
 lemma N_upper {g : B.Mat k r} (hg : g ∈ Nset k r) (i j : Fin (2 * r + k + 1)) (hji : j ≤ i) :
@@ -44,13 +38,13 @@ lemma N_upper {g : B.Mat k r} (hg : g ∈ Nset k r) (i j : Fin (2 * r + k + 1)) 
     rw [hinv] at hci
     have hsj := GBasic.sig_val k r j
     have hsi := GBasic.sig_val k r i
-    rw [if_pos (Or.inr hj)] at hsj
-    rw [if_pos (Or.inr (by omega))] at hsi
+    rw [ite_eq_left (Or.inr hj)] at hsj
+    rw [ite_eq_left (Or.inr (by omega))] at hsi
     have h := hci (GBasic.sig k r j) (GBasic.sig k r i) (by omega) (Or.inl (by omega))
     rw [Matrix.mul_assoc, Hpk_mul_apply, mul_Hpk_apply, Matrix.conjTranspose_apply, GBasic.sig_sig,
       GBasic.sig_sig] at h
-    have hs1 : GBasic.sgn k r (GBasic.sig k r j) = 1 := by unfold GBasic.sgn; rw [if_neg (by omega)]
-    have hs2 : GBasic.sgn k r (GBasic.sig k r i) = 1 := by unfold GBasic.sgn; rw [if_neg (by omega)]
+    have hs1 : GBasic.sgn k r (GBasic.sig k r j) = 1 := by unfold GBasic.sgn; rw [ite_eq_right (by omega)]
+    have hs2 : GBasic.sgn k r (GBasic.sig k r i) = 1 := by unfold GBasic.sgn; rw [ite_eq_right (by omega)]
     rw [hs1, hs2, one_mul, mul_one] at h
     have hiff : (GBasic.sig k r j = GBasic.sig k r i) ↔ (i = j) := by
       constructor
@@ -60,8 +54,8 @@ lemma N_upper {g : B.Mat k r} (hg : g ∈ Nset k r) (i j : Fin (2 * r + k + 1)) 
     rw [star_star] at h2
     rw [h2]
     by_cases e : i = j
-    · rw [if_pos (hiff.mpr e), if_pos e, star_one]
-    · rw [if_neg (fun e' => e (hiff.mp e')), if_neg e, star_zero]
+    · rw [ite_eq_left (hiff.mpr e), ite_eq_left e, star_one]
+    · rw [ite_eq_right (fun e' => e (hiff.mp e')), ite_eq_right e, star_zero]
 
 lemma N_unip {g : B.Mat k r} (hg : g ∈ Nset k r) : (g - 1) ^ (2 * r + k + 1) = 0 := by
   apply strict_pow_eq_zero

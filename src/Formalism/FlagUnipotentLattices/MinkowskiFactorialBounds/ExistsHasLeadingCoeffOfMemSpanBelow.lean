@@ -251,7 +251,7 @@ theorem wedgeMapInLieAlgebra : Formalism.HermitianLatticeCounting.S6.Y1 := by
       by_cases hba : b ≤ a
       · rw [hv b hba, zero_smul]
         exact Submodule.zero_mem _
-      · push_neg at hba
+      · push Not at hba
         exact Submodule.smul_mem _ _ ((Xa_mono F) (by have := Fin.lt_iff_val_lt_val.1 hba; omega) hx1)
     · rw [hperp y hy]
       exact Submodule.smul_mem _ _ hxI
@@ -265,12 +265,12 @@ theorem wedgeMapInLieAlgebra : Formalism.HermitianLatticeCounting.S6.Y1 := by
       have h0 : H.B (F.e b.succ) v = 0 := by
         rw [hb1]
         exact hv _ (Fin.le_iff_val_le_val.2 (show b.val + 1 ≤ a.val by omega))
-      rw [h0, if_neg (ne_of_lt hba)]
+      rw [h0, ite_eq_right (ne_of_lt hba)]
       simp
     · subst hba
-      rw [if_pos rfl, mul_comm, ← smul_smul, ← smul_sub]
+      rw [ite_eq_left rfl, mul_comm, ← smul_smul, ← smul_sub]
       exact Submodule.smul_mem _ _ hxa
-    · rw [if_neg (ne_of_gt hba), zero_smul, sub_zero]
+    · rw [ite_eq_right (ne_of_gt hba), zero_smul, sub_zero]
       exact Submodule.smul_mem _ _ ((Xa_mono F) (by have := Fin.lt_iff_val_lt_val.1 hba; omega) hx1)
 
 theorem lastVectorNotMemSup : Formalism.HermitianLatticeCounting.S6.LastVectorNotMemSup := by
@@ -1156,7 +1156,7 @@ theorem normalFormZero : Formalism.HermitianLatticeCounting.S6.NFJZero := by
           have h3 := Submodule.sub_mem _ hx1' ((Xa_mono F') (Nat.le_succ n) hxa2)
           rw [sub_sub_cancel] at h3
           exact (Submodule.smul_mem_iff _ hal).1 h3
-      · push_neg at hnr
+      · push Not at hnr
         rw [Xa_of_ge F (a := n + 1) (by omega),
           Xa_of_ge F' (a := n + 1) (by omega), hII]
   have hstep : ∀ a : Fin r, F'.e a.castSucc - c • F.e a.castSucc ∈ F.Xa a.val := by
@@ -1455,12 +1455,6 @@ theorem existsNormalForm : Formalism.HermitianLatticeCounting.S6.NormalForm := b
       rfl
   · obtain ⟨j, c, hj, hS⟩ := normalFormMeetNeBot K V H r F F' hμ hrel hm
     exact ⟨j, hj.le, c, nf_full F F' hA hA' j hj.le c hS⟩
-
-section DetBlocks
-
-variable {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n]
-
-end DetBlocks
 
 theorem eichlerMapIsometry : Formalism.HermitianLatticeCounting.S6.EichlerIsom := by
   intro K V _ _ _ _ H x v c hxx hxv hc

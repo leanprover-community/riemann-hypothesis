@@ -99,7 +99,7 @@ theorem core {R : Type} [CommRing R] (σ : R →+* R) (hσ : ∀ x, σ (σ x) = 
         have : (d + c * ((↑h2.unit⁻¹ : R) • (B' + cj σ B'))).map π = d.map π + c.map π * B := by
           rw [← hmap]; simp [Matrix.map_add (f := _), Matrix.map_mul]
         rw [this]; exact hBd
-    · push_neg at hst
+    · push Not at hst
       obtain ⟨y, hy, hσy⟩ := hst
       obtain ⟨r, i, hi, hri⟩ := h𝔭.exists_inv hσy
       obtain ⟨B, hBd⟩ := fieldB _ _ _ _ hXY'

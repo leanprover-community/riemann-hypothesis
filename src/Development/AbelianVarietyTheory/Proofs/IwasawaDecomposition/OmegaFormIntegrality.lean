@@ -109,8 +109,8 @@ theorem negM_eq (τ : D.what₂.Tau) :
   have := c.2
   rw [nNeg_eq M hpq hε, hε, arr, sgn]
   by_cases h : (c : ℕ) < q
-  · rw [dite_eq_left h, if_pos h, if_neg (by simp only [decide_eq_true_eq]; omega)]; simp
-  · rw [dite_eq_right h, if_neg h, if_pos (by simp only [decide_eq_true_eq]; omega)]; simp
+  · rw [dite_eq_left h, ite_eq_left h, ite_eq_right (by simp only [decide_eq_true_eq]; omega)]; simp
+  · rw [dite_eq_right h, ite_eq_right h, ite_eq_left (by simp only [decide_eq_true_eq]; omega)]; simp
 
 theorem isONeg_x0Mat : IsONeg V q (x0Mat M) := by
   intro τ

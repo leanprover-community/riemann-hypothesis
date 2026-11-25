@@ -32,12 +32,12 @@ theorem wt_self {D : D7} (L : SizeData₂ D) (TTn : Finset ℕ) (bTop : ℝ) (hT
     rw [← hTT] at hv
     obtain ⟨t, ht, rfl⟩ := Finset.mem_image.1 hv
     have h : ∃ t' : D.host.TT, (t' : D.R.A).val = t.val := ⟨⟨t, ht⟩, rfl⟩
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     exact ⟨L.aT_win _, L.bT_ge _, hb _⟩
   · intro t
     have h : ∃ t' : D.host.TT, (t' : D.R.A).val = (t : D.R.A).val := ⟨t, rfl⟩
     have e := hinj _ _ h.choose_spec
-    refine ⟨?_, ?_⟩ <;> simp only [dif_pos h, e]
+    refine ⟨?_, ?_⟩ <;> simp only [dite_eq_left h, e]
 
 def artNum {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (p : ℕ) : Formalism.FrobeniusOrbits.G0 × ℕ :=
   if h : Nat.Coprime p H.condN then

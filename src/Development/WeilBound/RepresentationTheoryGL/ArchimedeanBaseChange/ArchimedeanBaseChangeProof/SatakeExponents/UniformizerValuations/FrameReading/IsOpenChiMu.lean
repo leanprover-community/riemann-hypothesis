@@ -851,7 +851,7 @@ theorem core {n a b : ℕ} (h : a + b = n) (w : Pl E) (μ : (w.adicCompletion E)
     intro y hy
     refine mem_fixed_iff'.2 fun g hg => ?_
     have hGy : G ⟨y, hy⟩ ∈ fixed (pairRt a b w) L := (hG ⟨y, hy⟩).2
-    simp only [v, dif_pos hy]
+    simp only [v, dite_eq_left hy]
     rw [hρτ, ← heq j g _ (hG ⟨y, hy⟩).1 ⟨L, hLo, hGy⟩, mem_fixed_iff'.1 hGy g (Subgroup.mem_inf.1 hg).1,
       MonoidHom.mem_ker.1 (Subgroup.mem_inf.1 hg).2, Units.val_one, one_smul]
   obtain ⟨u₁, hu₁, hu₁x⟩ := key_ind h w K' hK'o hK'le hnorm X hXK hX ρ e hHk (L ⊓ χμ.ker) (hLo.inter hχμo) v hv
@@ -874,7 +874,7 @@ theorem core {n a b : ℕ} (h : a + b = n) (w : Pl E) (μ : (w.adicCompletion E)
         Function.iterate_zero_apply, hu₁x x x.2 lw, ← Finset.sum_coe_sort X]
       congr 1
       refine Finset.sum_congr rfl fun y _ => ?_
-      simp only [v, dif_pos y.2]
+      simp only [v, dite_eq_left y.2]
     | succ i ih =>
       intro x
       refine eq_of_dual fun lw => ?_

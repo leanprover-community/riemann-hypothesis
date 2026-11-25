@@ -63,7 +63,7 @@ theorem jumpsOf_map (lam : DomWeight a) :
   rw [jumpsOf, Multiset.map_map]
   refine Multiset.map_congr rfl fun z hz => ?_
   have h := int_of_mem_inf hz
-  simp only [Function.comp_apply, dif_pos h]
+  simp only [Function.comp_apply, dite_eq_left h]
   exact h.choose_spec.symm
 
 theorem eq_jumpsOf {lam : DomWeight a} {J : Multiset ℤ}

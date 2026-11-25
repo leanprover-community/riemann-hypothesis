@@ -156,7 +156,7 @@ theorem unitOff_val : ∀ (L : Type) [Field L] [NumberField L] (χ : Formalism.L
   have hfp : (∏ᶠ (w : HeightOneSpectrum (𝓞 L)) (_ : w ∉ S), χ.val w ^ ordF w k) =
       χ.val v ^ ordF v k := by
     rw [finprod_eq_single _ v (fun w hw => by simp only [hord w hw, zpow_zero, finprod_one]),
-      finprod_eq_if, if_pos hvS]
+      finprod_eq_if, ite_eq_left hvS]
   have e1 : ∀ (w : HeightOneSpectrum (𝓞 L)) (x : L),
       Valued.v (algebraMap L (w.adicCompletion L) x) = w.valuation L x := fun w x =>
     HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (v := w) x

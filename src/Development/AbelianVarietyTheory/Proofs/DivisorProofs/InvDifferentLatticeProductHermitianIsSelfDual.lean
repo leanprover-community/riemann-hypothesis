@@ -168,7 +168,7 @@ theorem lsB_sd (D : Formalism.BasicNotions.D7) (cc : Ideal (𝓞 D.host.K)) (r :
     intro j
     by_cases hj : j = i
     · subst hj; simpa using hu
-    · simp only [Pi.single_apply, hj, if_false]; exact zero_mem _
+    · simp only [Pi.single_apply, hj, ite_false]; exact zero_mem _
   rw [GlobalTheory.InertSign.sd_iff]
   refine ⟨?_, ?_, ?_⟩
   · obtain ⟨x₀, hx₀, hne⟩ := exists_ne_zero D cc r hn hs

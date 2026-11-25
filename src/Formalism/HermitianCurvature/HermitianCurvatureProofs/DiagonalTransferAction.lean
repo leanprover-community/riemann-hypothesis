@@ -181,7 +181,7 @@ theorem sep_real {P : M.Par} (hP : P.OK) :
   refine ⟨(Y₀ : ℂ), ?_, Complex.ofReal_re Y₀⟩
   simp only [Finset.mem_biUnion, Finset.mem_univ, true_and]
   refine ⟨(σ, σ'), ?_⟩
-  rw [if_neg hss, Multiset.mem_toFinset, Polynomial.mem_roots (hne σ σ' hss), Polynomial.IsRoot.def,
+  rw [ite_eq_right hss, Multiset.mem_toFinset, Polynomial.mem_roots (hne σ σ' hss), Polynomial.IsRoot.def,
     Polynomial.eval_sub, LieAlgebraWeightVectors.cb_eval_xPoly, LieAlgebraWeightVectors.cb_eval_xPoly, sub_eq_zero]
   exact h
 
@@ -197,7 +197,7 @@ theorem interp_exists {ι : Type} [Fintype ι] (node : ι → ℂ) (hinj : Funct
     show Polynomial.eval (id (node i)) (Lagrange.interpolate s id val) = f i
     rw [Lagrange.eval_interpolate_at_node val (Set.injOn_id _) hi]
     have hex : ∃ j, node j = node i := ⟨i, rfl⟩
-    simp only [val, dif_pos hex]
+    simp only [val, dite_eq_left hex]
     rw [hinj hex.choose_spec]
   · intro μ hμ
     show 0 < Polynomial.eval (id μ) (Lagrange.interpolate s id val)

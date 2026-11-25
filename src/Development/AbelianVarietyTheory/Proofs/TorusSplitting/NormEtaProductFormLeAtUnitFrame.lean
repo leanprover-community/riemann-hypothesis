@@ -175,7 +175,7 @@ theorem norm_productForm_le_at_unit_frame : ∀ (E : Type) [Field E] [NumberFiel
   haveI : Finite (LevGrp Dw (R ^ 4)) := (GlobalTheory.EtaCard.card_levGrp_and_span E H Dw R h1R).1
   haveI := Fintype.ofFinite (LevGrp Dw (R ^ 4))
   have hval : rdU U f k x.1 = ∏ g : LevGrp Dw (R ^ 4), ∑ j, (cf j : ℂ) * ∏ b, toC (w (g (xs j b))) := by
-    have e₁ : rdU U f k x.1 = toC (evR Xo c f (U.un k x)) := dif_pos x.2
+    have e₁ : rdU U f k x.1 = toC (evR Xo c f (U.un k x)) := dite_eq_left x.2
     rw [e₁, ArchPt.evR_eq hA hR hf (U.un k x) ev w hev hw, etaExpr, finprod_eq_prod_of_fintype]
     rfl
   obtain ⟨P, hq, hR0', hm'⟩ := hrun T hr (hdim m hm)

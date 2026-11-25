@@ -72,18 +72,7 @@ theorem card_quotient_succ {r : ℕ} (E : Submodule (𝓞 K) (Fin (r + 1) → �
     have hπ : Function.Surjective π := fun a ↦ ⟨fun _ ↦ a, rfl⟩
     have hφ : Function.Surjective φ := (Submodule.mkQ_surjective _).comp hπ
     have hker : LinearMap.ker φ = S := by
-      ext x
-      simp only [φ, LinearMap.mem_ker, LinearMap.coe_comp, Function.comp_apply,
-        Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Submodule.mem_map, S,
-        Submodule.mem_sup]
-      constructor
-      · rintro ⟨e, he, hex⟩
-        refine ⟨e, he, x - e, ?_, add_sub_cancel _ _⟩
-        show π (x - e) = 0
-        rw [map_sub, hex, sub_self]
-      · rintro ⟨e, he, k, hk, rfl⟩
-        refine ⟨e, he, ?_⟩
-        rw [map_add (f := _), LinearMap.mem_ker.mp hk, add_zero]
+      simp only [φ, S, LinearMap.ker_comp, Submodule.ker_mkQ, Submodule.comap_map_eq]
     rw [← hker]
     exact Nat.card_congr (φ.quotKerEquivOfSurjective hφ).toEquiv
 

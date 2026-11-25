@@ -872,7 +872,7 @@ theorem psi_of_shift (hG : GoodAt dV dW x ψ LV LV₀ LW LW₀ v) (hS : StdAt dV
       simp only [HypDec.extX_apply, Matrix.mul_assoc, Matrix.mul_one])
   have e2 : upSum (u.1 ⬝ (Matrix.single i j s : Mx D ρ ρ)) = s := by
     unfold upSum
-    rw [Finset.sum_eq_single i, Finset.sum_eq_single j, if_pos hij, Matrix.mul_single_apply_same, (hU i i).2, one_mul]
+    rw [Finset.sum_eq_single i, Finset.sum_eq_single j, ite_eq_left hij, Matrix.mul_single_apply_same, (hU i i).2, one_mul]
     · intro l _ hl; rw [Matrix.mul_single_apply_of_ne _ _ _ _ _ hl, ite_self]
     · intro h; exact absurd (Finset.mem_univ _) h
     · intro k _ hk

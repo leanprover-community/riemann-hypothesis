@@ -501,7 +501,7 @@ theorem exists_param_bounded : ∀ (D : D7) (V : HSp D) (J : Set (GA D V)) (χ :
       (h : w.under (𝓞 D.host.F) = v) => exists_param_at D V J χ Sb hJ f hfm hf0 hlev c hc v hv w h
   let B : Fam D.host.E := fun w =>
     if hw : w.under (𝓞 D.host.F) ∉ Sb then (key _ hw w rfl).choose else 0
-  have hB : ∀ w (hw : w.under (𝓞 D.host.F) ∉ Sb), B w = (key _ hw w rfl).choose := fun w hw => dif_pos hw
+  have hB : ∀ w (hw : w.under (𝓞 D.host.F) ∉ Sb), B w = (key _ hw w rfl).choose := fun w hw => dite_eq_left hw
   refine ⟨B, ?_, ?_⟩
   · intro v hv w h
     subst h

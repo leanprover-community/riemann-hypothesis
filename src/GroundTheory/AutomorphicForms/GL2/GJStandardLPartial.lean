@@ -77,12 +77,6 @@ theorem hasProd_compl_of_hasProd {ι : Type*} {f : ι → ℂ} {a : ℂ} (h : Ha
     ← div_eq_mul_one_div] at hg
   exact (hasProd_subtype_iff_mulIndicator (s := {i | i ∉ S})).2 hg
 
-section Partial
-
-variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
-
-end Partial
-
 section Main
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}

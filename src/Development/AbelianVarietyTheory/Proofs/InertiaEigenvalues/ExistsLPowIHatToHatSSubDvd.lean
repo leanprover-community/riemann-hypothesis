@@ -32,7 +32,7 @@ theorem norm_tail_mul_rad_le {f : K⟦X⟧} {b : ℝ} (hb : 0 ≤ b)
 
 theorem coeff_sub_E_mul_quotE_of_lt [CompleteSpace K] {f : K⟦X⟧} (hf : f ∈ Rpi O K l e) {n : ℕ}
     (hn : n < e) : coeff n (f - E K l e * quotE l e f) = tail l e f n := by
-  rw [tail_rec l e hf n, map_sub, E, add_mul, map_add (f := _), coeff_X_pow_mul', if_neg (by omega),
+  rw [tail_rec l e hf n, map_sub, E, add_mul, map_add (f := _), coeff_X_pow_mul', ite_eq_right (by omega),
     ← map_natCast (C : K →+* K⟦X⟧) l, coeff_C_mul, quotE, coeff_mk]
   ring
 

@@ -62,6 +62,6 @@ theorem nuD_card_eq_sum_nuRow : ∀ (D : D7), NuRowOK D → ∀ (u : D.what₂.W
   intro D hD u j hj z
   rw [youngDiagram_card_eq_sum_rowLen_range _ _ (nuD_rows D u j z), Nat.cast_sum]
   refine Finset.sum_congr rfl fun r hr => ?_
-  rw [hD u j hj z r, if_pos (Finset.mem_range.1 hr)]
+  rw [hD u j hj z r, ite_eq_left (Finset.mem_range.1 hr)]
 
 end GlobalTheory

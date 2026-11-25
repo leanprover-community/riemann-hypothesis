@@ -84,13 +84,13 @@ theorem sum_quad_rows (h0 : q 0 = 0) (hq : ∀ x y, q (x + y) = q x + q y + B x 
   | insert d s hd ih =>
     simp only [Finset.sum_insert hd, hq, Finset.sum_add_distrib, ih, quad_zsmul h0 hq h2, smul_add]
     have e₁ : ∑ r, (al r d * al r d) • q (y d) = m • q (y d) := by
-      rw [← Finset.sum_smul, hal, if_pos rfl]
+      rw [← Finset.sum_smul, hal, ite_eq_left rfl]
     have e₂ : ∑ r, B (al r d • y d) (∑ c ∈ s, al r c • y c) = 0 := by
 
       simp only [map_sum, map_zsmul, AddMonoidHom.zsmul_apply, smul_smul]
       rw [Finset.sum_comm]
       refine Finset.sum_eq_zero fun c hc => ?_
-      rw [← Finset.sum_smul, hal, if_neg (fun e : c = d => hd (e ▸ hc)), zero_smul]
+      rw [← Finset.sum_smul, hal, ite_eq_right (fun e : c = d => hd (e ▸ hc)), zero_smul]
     rw [e₁, e₂, add_zero]
 
 theorem sum_quad_rows_add (h0 : q 0 = 0) (hq : ∀ x y, q (x + y) = q x + q y + B x y)

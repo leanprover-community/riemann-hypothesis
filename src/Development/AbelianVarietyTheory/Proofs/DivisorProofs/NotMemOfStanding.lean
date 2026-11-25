@@ -1530,7 +1530,7 @@ theorem fourierSum_ind (ψ : AddChar k Circle) {ϖ : kˣ} (hϖ : IsUnif ϖ) (P :
     exact this
   · haveI : Subsingleton (Res k 0) := Ideal.Quotient.subsingleton_iff.2 (by simp)
     haveI : Unique (A → P → Res k 0) := ⟨⟨0⟩, fun _ => Subsingleton.elim _ _⟩
-    rw [fourierSum_apply, if_pos (by simp), Fintype.sum_unique, Pi.smul_apply, Set.indicator_of_mem]
+    rw [fourierSum_apply, ite_eq_left (by simp), Fintype.sum_unique, Pi.smul_apply, Set.indicator_of_mem]
     · simp [pairCols]
     · intro r s
       simp only [setCols, Matrix.of_apply]

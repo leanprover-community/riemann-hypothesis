@@ -655,7 +655,7 @@ theorem theta_pure_tensor_gaussian_mem_fockAlgebraic : GlobalTheory.Published.Ho
     (fun w => by
       obtain ⟨τ, h1, -, h3, h4⟩ := h.cart w
       exact ⟨τ, h1, by simpa using h3, h4⟩)
-    Γ.M' hM.triple.geo.hM' (crd W₁ X e) (fun u => by simp only [Bool.false_eq_true, if_false, one_smul]; rfl)
+    Γ.M' hM.triple.geo.hM' (crd W₁ X e) (fun u => by simp only [Bool.false_eq_true, ite_false, one_smul]; rfl)
     f₀ φ hg hφ hvac
   have e1 : GlobalTheory.TripleRead.thO Γ.M' ψ (sgn false W₁).gram e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f₀ φ) = f := by
     funext x

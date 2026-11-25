@@ -78,13 +78,13 @@ lemma qa_cum {n : ℕ} [NeZero n] {mu : Fin n → ℤ} (I : TIdx mu) (a p : Fin 
     rw [Finset.sum_eq_single ⟨p.val, hq⟩]
     · simp [hp]
     · intro q _ hq'
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h2, _⟩
       exact hq' (Fin.ext h2)
     · simp
   · apply Finset.sum_eq_zero
     intro q _
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨h2, h3⟩
     exact hp (h2 ▸ h3)
 

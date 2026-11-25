@@ -39,13 +39,6 @@ open IsDiscreteValuationRing Pointwise
 
 namespace GlobalTheory
 
-section TorsionFree
-
-variable {R V : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup V]
-  [Module R V] [Module.IsTorsionFree R V]
-
-end TorsionFree
-
 section Span
 
 variable {R : Type*} (K : Type*) {V : Type*} [CommRing R] [IsDomain R] [Field K] [Algebra R K]

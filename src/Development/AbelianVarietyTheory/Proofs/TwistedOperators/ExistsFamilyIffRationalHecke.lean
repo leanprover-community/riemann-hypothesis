@@ -94,18 +94,9 @@ theorem exists_family (t : ∀ i : Fin D.R.m, ℕ → PlE D.host → Module.End 
   refine ⟨fun j => match j with
     | 0 => fun _ _ => 0
     | n + 1 => fun k P => if h : n < D.R.m then (e ⟨n, h⟩).symm.conj (t ⟨n, h⟩ k P) else 0, fun i k P => ?_⟩
-  simp only [dif_pos i.2]
+  simp only [dite_eq_left i.2]
   exact (e i).conj.apply_symm_apply (t i k P)
 
 end Local
-
-section Comparison₂
-
-variable (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A)
-  (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec)
-  {WL : ℕ → Type} [∀ j, AddCommGroup (WL j)] [∀ j, Module D.what₂.LL (WL j)]
-  (e : ∀ i : Fin D.R.m, WL ((i : ℕ) + 1) ≃ₗ[D.what₂.LL] (Fin (R.nW i) → D.what₂.LL))
-
-end Comparison₂
 
 end GlobalTheory.HeckeTieCompare

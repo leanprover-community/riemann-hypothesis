@@ -342,11 +342,6 @@ theorem datum_gram_spec (D : Datum H) {φ : D.La →ₗ[𝓞 E] (Fin r → E)} (
     IsLatticeEmb.EF_int_of_eq (h.EFf_gram h0 hβ),
     (h.EF_perf_iff (h.EFf_gram h0 hβ)).mpr D.unimod.2⟩
 
-section
-variable (D : Datum H) {ξ0 : E}
-
-end
-
 end Datum
 
 namespace SkewModel

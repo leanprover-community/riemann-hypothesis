@@ -1591,7 +1591,7 @@ theorem modelsOK_of_joints : Lt.AdmAtEnt2 → Lt.CurveEx → ∀ {D : D7} {L : S
     exact _root_.GlobalTheory.TwV.site_cmpLite_siteAdm hA hC t
       (Classical.choose_spec (Classical.choose_spec (Classical.choose_spec (Classical.choose_spec (hJ μ hP.1 u w hg hP.2))))).some
       hU hS hk
-  exact key _ (dif_pos hP)
+  exact key _ (dite_eq_left hP)
 
 end GlobalTheory.TwV
 end -- clump:auto

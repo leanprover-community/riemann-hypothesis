@@ -27,7 +27,7 @@ private theorem half (M : ℕ) [NeZero M] (hM : 2 < M) (s : (ZMod M)ˣ) :
     haveI : Fact (1 < M) := ⟨by omega⟩
     exact s.ne_zero
   refine ⟨hs0, ?_⟩
-  rw [ZMod.neg_val, if_neg hs0]
+  rw [ZMod.neg_val, ite_eq_right hs0]
   have hlt := ZMod.val_lt (s : ZMod M)
   have hne : 2 * (s : ZMod M).val ≠ M := by
     intro h
@@ -54,14 +54,14 @@ theorem UpperTheory.V.FW.thetaFull :
     obtain ⟨hs0, hiff⟩ := half M hM s
     rw [coeff_thetaH, Units.val_neg]
     by_cases h : 2 * (s : ZMod M).val < M
-    · rw [if_neg (fun h' => hiff.mp h' h), if_pos h]
-    · rw [if_pos (hiff.mpr h), if_neg h, gcNeg M c _ hc hodd hs0]
+    · rw [ite_eq_right (fun h' => hiff.mp h' h), ite_eq_left h]
+    · rw [ite_eq_left (hiff.mpr h), ite_eq_right h, gcNeg M c _ hc hodd hs0]
   constructor
   · rw [mul_sub, mul_one, sub_eq_iff_eq_add]
     refine MonoidAlgebra.ext (Finsupp.ext fun s => ?_)
     rw [MonoidAlgebra.coeff_add, Finsupp.add_apply, coeff_mul_J, key, coeff_thetaH]
     classical
-    simp only [MonoidAlgebra.coeff_sum, MonoidAlgebra.coeff_single, Finsupp.finsetSum_apply, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [MonoidAlgebra.coeff_sum, MonoidAlgebra.coeff_single, Finsupp.finsetSum_apply, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     split_ifs <;> simp
   · intro s
     rw [mul_add, mul_one, MonoidAlgebra.coeff_add, Finsupp.add_apply, coeff_mul_J, key, coeff_thetaH]

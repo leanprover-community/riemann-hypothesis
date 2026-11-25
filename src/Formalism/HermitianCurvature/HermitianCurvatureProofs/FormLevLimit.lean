@@ -119,18 +119,18 @@ theorem sliceQ : ∃ Cs : ℝ, 0 ≤ Cs ∧ ∀ Cc : ℝ, Cs ≤ Cc →
       have hc0 : 0 ≤ c := Formalism.FourierDecayAlt.P.JCx2.pd_ccle_nonneg hcl
       rw [hfun h]
       by_cases ha : a = Wd.e1
-      · rw [if_pos ha]
+      · rw [ite_eq_left ha]
         obtain ⟨q1, q2⟩ := hQ h c (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_m hmmM hcl)
         exact ⟨⟨q1.1, ⟨_, q1⟩, q2⟩, q1⟩
-      · rw [if_neg ha]
+      · rw [ite_eq_right ha]
         have hz : B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (0 : B.Mat k (0 + ρ - 0) → (Wq →L[ℂ] Wp)) (C * c) :=
           Formalism.FourierDecayAlt.P.JCx2.pd_ccle_mono_c Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_zero (mul_nonneg hC0 hc0)
         exact ⟨⟨hz.1, ⟨_, hz⟩, fun g _ hne => (hne rfl).elim⟩, hz⟩
     · intro h₁ h₂ c₁ c₂ _ _ _ _ γ _
       rw [hfun h₁, hfun h₂, hfun (fun g => h₁ g - h₂ g)]
       by_cases ha : a = Wd.e1
-      · simp only [if_pos ha, D.cutF, smul_sub]
-      · simp only [if_neg ha, Pi.zero_apply, sub_zero]
+      · simp only [ite_eq_left ha, D.cutF, smul_sub]
+      · simp only [ite_eq_right ha, Pi.zero_apply, sub_zero]
   · obtain ⟨ε', K, hε', hK, hQ1, hQ2⟩ := hL Cc (le_trans (le_max_right _ _) hCc) k r Wp Wq T χ A₀ N P0 hPk hPr hk2 hχ
       hA₀ ε hε i hi h1 w hw p hc hp a
     exact ⟨ε', K, hε', hK, hQ1, hQ2⟩

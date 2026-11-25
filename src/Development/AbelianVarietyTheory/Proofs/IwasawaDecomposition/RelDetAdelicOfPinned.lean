@@ -92,8 +92,6 @@ theorem span_valuation_le {L : Type} [Field L] [NumberField L] {S : Set L}
         ≤ 1 * γ := mul_le_mul' (HeightOneSpectrum.valuation_le_one w a) hy
       _ = γ := one_mul γ
 
-alias main := _root_.GlobalTheory.SpanValuationBound.span_valuation_le
-
 end GlobalTheory.SpanValuationBound
 end -- clump:auto
 end -- clump:auto

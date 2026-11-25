@@ -174,21 +174,6 @@ variable {C} {p : ℕ} [Fact p.Prime]
 
 end Torus
 
-section AtPoint
-
-variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C] [CharZero C] {v : Valuation C ℝ≥0}
-  {O : Type} [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
-  {Λ : Type} [CommRing Λ] [StarRing Λ] (P : Point p v O Λ) (φ : GmO O ⟶ P.Gt) [IsMonHom φ]
-  (ζ : Tate p (specO O O ⟶ GmO O)) (hζ : Tate.map p (evalChar C (ULift.up (1 : ℤ))) ζ = P.eps.1)
-
-include hζ
-
-variable [Algebra ℤ_[p] O]
-
-variable [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
-
-end AtPoint
-
 end GlobalTheory.TorusTateLie
 end -- clump:auto
 end -- clump:auto

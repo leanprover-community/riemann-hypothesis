@@ -237,7 +237,7 @@ theorem replaceTail_eq (hx : ∀ k, x k = b (tailIdx hj k) + ∑ a, C a k • b 
   · rw [blockEquiv_inl, replaceTail_head]
     simp [blk_hh, blk_th]
   · rw [blockEquiv_inr, replaceTail_tail, hx]
-    simp only [blk_ht, blk_tt, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [blk_ht, blk_tt, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact add_comm _ _
 
 theorem replaceTail_linearIndependent (hb : LinearIndependent Ω b)

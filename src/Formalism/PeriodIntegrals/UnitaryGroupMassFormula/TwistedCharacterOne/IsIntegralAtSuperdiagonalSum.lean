@@ -175,12 +175,12 @@ private lemma intAt_inv_absNorm_mul_apply_of_mem_JQ {r : Sp E (N + c) ≃ₗ[E] 
     · have hlj : l.1 ≠ j.1 := fun h => hj (h ▸ hl)
       exact ⟨0, by simp [Loc.eN, hlj]⟩
     · refine ⟨if l.1 = j.1 then 1 else 0, ?_⟩
-      simp only [Loc.eN, if_neg hl, zpow_zero, inv_one, one_mul]
+      simp only [Loc.eN, ite_eq_right hl, zpow_zero, inv_one, one_mul]
       split_ifs <;> simp
   have h1 := (Subgroup.mem_inf.1 hr).2 _ |>.2 hej
   rw [mem_parL] at h1
   have h2 := int_of_mem_stdAt P h1 i
-  simpa only [if_pos (And.intro hi1 hi2), zpow_one] using h2
+  simpa only [ite_eq_left (And.intro hi1 hi2), zpow_one] using h2
 
 private lemma redP_eq_zero_of_intAt_inv_absNorm_mul {a : E} (h : IntAt P (((Ideal.absNorm P.asIdeal : ℕ) : E)⁻¹ * a)) :
     redP P a = 0 := by
@@ -287,7 +287,7 @@ lemma inX_eN {j : ℕ} (hj : j < N) : Loc.inX E N c (Loc.eN E N j) = Loc.eN E (N
     rfl
   · rw [dite_eq_right hl, LinearMap.zero_apply]
     unfold Loc.eN
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
 
 variable {K : Type} [Field K]
 

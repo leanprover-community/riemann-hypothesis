@@ -103,7 +103,7 @@ theorem core (hR : RSPole) {E : Type} [Field E] [NumberField E] [_root_.NumberFi
       have hσ0 : σ₀ < σ := lt_of_le_of_lt (le_max_left _ _) hσ
       have h1 : ZS σ ≠ 0 := by simpa using hne σ (by linarith)
       have h2 := heq σ (by simpa using hσ0)
-      rw [if_pos ⟨hP1, rfl⟩]
+      rw [ite_eq_left ⟨hP1, rfl⟩]
       simp only [Complex.ofReal_zero, zero_mul, add_zero]
       rw [h2]
       field_simp
@@ -124,7 +124,7 @@ theorem core (hR : RSPole) {E : Type} [Field E] [NumberField E] [_root_.NumberFi
         have hne1 : (σ : ℂ) ≠ 1 := by
           intro h; have := congrArg Complex.re h; simp at this; linarith
         have hsub : (σ : ℂ) - 1 ≠ 0 := sub_ne_zero.2 hne1
-        rw [if_neg hP]
+        rw [ite_eq_right hP]
         simp only [Complex.ofReal_zero, zero_mul, add_zero, one_mul]
         rw [dslope_of_ne _ hne1, slope_def_field, h2, hz1]
         field_simp
@@ -148,7 +148,7 @@ theorem core (hR : RSPole) {E : Type} [Field E] [NumberField E] [_root_.NumberFi
           intro h; have := congrArg Complex.im h; simp at this; exact hu this
         have h1 := hne σ (by linarith)
         have h2 := heq ((σ : ℂ) + u * Complex.I) (by rw [re_shift]; exact hσ0)
-        rw [if_neg hP, one_mul]
+        rw [ite_eq_right hP, one_mul]
         show Z ((σ : ℂ) + u * Complex.I) / (((σ : ℂ) + u * Complex.I - 1) * ZS ((σ : ℂ) + u * Complex.I)) = _
         rw [h2]
         field_simp
@@ -190,17 +190,17 @@ theorem rankin_selberg_unitary_of_pole : NormEx → SatTw → RSPole → RSU := 
       rw [hQ, eq_of_heq h3]
     refine ⟨fun s => (if Q ∧ ¬ P then s - 1 else 1) * G s, σ₀, fun σ hσ => ?_, fun σ hσ => ?_⟩
     · by_cases hc' : Q ∧ ¬ P
-      · simp only [if_pos hc']
+      · simp only [ite_eq_left hc']
         exact (analyticAt_id.sub analyticAt_const).mul (hG σ hσ)
-      · simp only [if_neg hc', one_mul]
+      · simp only [ite_eq_right hc', one_mul]
         exact hG σ hσ
     · show (if Q ∧ ¬ P then (σ : ℂ) - 1 else 1) * G σ = _
       rw [hGe σ hσ, ← LS_shift α β _ _ τ τ' (hval τ) (hval τ') σ]
       by_cases hq : Q <;> by_cases hp : P
-      · rw [if_neg (fun h => h.2 hp), if_pos hp, if_pos hq, one_mul]
-      · rw [if_pos ⟨hq, hp⟩, if_neg hp, if_pos hq, one_mul]
+      · rw [ite_eq_right (fun h => h.2 hp), ite_eq_left hp, ite_eq_left hq, one_mul]
+      · rw [ite_eq_left ⟨hq, hp⟩, ite_eq_right hp, ite_eq_left hq, one_mul]
       · exact absurd (hPQ hp) hq
-      · rw [if_neg (fun h => hq h.1), if_neg hp, if_neg hq, one_mul]
+      · rw [ite_eq_right (fun h => hq h.1), ite_eq_right hp, ite_eq_right hq, one_mul]
   · obtain ⟨S₀, hc⟩ := core hR k m π₀' π₀ (τ' - τ) hm hmk.le hn' hn
     refine ⟨S₀, fun S hS α β hα hβ => ?_⟩
     obtain ⟨G, σ₀, hG, hGe⟩ := hc S hS _ _ (transfer hT _ (ν τ') S (hunr τ') β hβ)
@@ -215,9 +215,9 @@ theorem rankin_selberg_unitary_of_pole : NormEx → SatTw → RSPole → RSU := 
       rw [hQ, eq_of_heq h3]
     refine ⟨fun s => (if Q ∧ ¬ P then s - 1 else 1) * conj (G (conj s)), σ₀, fun σ hσ => ?_, fun σ hσ => ?_⟩
     · by_cases hc' : Q ∧ ¬ P
-      · simp only [if_pos hc']
+      · simp only [ite_eq_left hc']
         exact (analyticAt_id.sub analyticAt_const).mul (analyticAt_conj (hG σ hσ))
-      · simp only [if_neg hc', one_mul]
+      · simp only [ite_eq_right hc', one_mul]
         exact analyticAt_conj (hG σ hσ)
     · show (if Q ∧ ¬ P then (σ : ℂ) - 1 else 1) * conj (G (conj (σ : ℂ))) = _
       rw [Complex.conj_ofReal, hGe σ hσ, map_mul]
@@ -236,9 +236,9 @@ theorem rankin_selberg_unitary_of_pole : NormEx → SatTw → RSPole → RSU := 
         split_ifs <;> simp [Complex.conj_ofReal]
       rw [hcif]
       by_cases hq : Q <;> by_cases hp : P
-      · rw [if_neg (fun h => h.2 hp), if_pos hp, if_pos hq, one_mul]
-      · rw [if_pos ⟨hq, hp⟩, if_neg hp, if_pos hq, one_mul]
+      · rw [ite_eq_right (fun h => h.2 hp), ite_eq_left hp, ite_eq_left hq, one_mul]
+      · rw [ite_eq_left ⟨hq, hp⟩, ite_eq_right hp, ite_eq_left hq, one_mul]
       · exact absurd (hPQ hp) hq
-      · rw [if_neg (fun h => hq h.1), if_neg hp, if_neg hq, one_mul]
+      · rw [ite_eq_right (fun h => hq h.1), ite_eq_right hp, ite_eq_right hq, one_mul]
 
 end PositivityTheory.RgJS

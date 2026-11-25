@@ -122,9 +122,9 @@ theorem UpperTheory.ConvolutionTheory.evEx :
     (by
       rintro o ⟨w, i⟩
       by_cases h : w ∈ 𝔞.S
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         exact Commute.one_right _
-      · simp only [h, if_false]
+      · simp only [h, ite_false]
         rcases o with _ | x
         · exact (hT w h i).1
         · exact (hT w h i).2 x)
@@ -147,7 +147,7 @@ theorem UpperTheory.ConvolutionTheory.evEx :
       · exact one_mem _
       · exact (UpperTheory.ConvolutionTheory.evEx_sub μ).smul_mem
           (iH w _ _ (GLnLocal.isOpen_integralGL _ n) (GLnLocal.isCompact_integralGL _ n)) _)
-  exact ⟨ev, ⟨e1, e2 none, fun x => e2 (some x), fun w h i => (e3 (w, i)).trans (if_neg h)⟩, e4⟩
+  exact ⟨ev, ⟨e1, e2 none, fun x => e2 (some x), fun w h i => (e3 (w, i)).trans (ite_eq_right h)⟩, e4⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.EvExSub =====

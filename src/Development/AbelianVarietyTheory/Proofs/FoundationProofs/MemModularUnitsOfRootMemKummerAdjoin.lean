@@ -85,8 +85,6 @@ theorem eq_one_of_pow_eq_one {F : Type} [Field F] (V : ValuationSubring F) {m : 
     (h1 : V.valuation (ζ - 1) < 1) : ζ = 1 := by
   apply GlobalTheory.eq_one_of_pow_eq_one_of_val_sub_lt <;> assumption
 
-alias main := _root_.GlobalTheory.RootOfUnityEqOne.eq_one_of_pow_eq_one
-
 end GlobalTheory.RootOfUnityEqOne
 end -- clump:auto
 end -- clump:auto

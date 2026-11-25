@@ -234,7 +234,7 @@ theorem norm_cof {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalis
   have h1 : leadMinorE (Zhat F F') (r + 1) = (Zhat F F').det := by
     simp [leadMinorE]
   have h2 : leadMinorE (Zhat F F') r = ((Zhat F F').submatrix Fin.castSucc Fin.castSucc).det := by
-    simp only [leadMinorE, dif_pos (Nat.le_succ r)]; rfl
+    simp only [leadMinorE, dite_eq_left (Nat.le_succ r)]; rfl
   rw [h1, h2, ← h]
   have h3 : ((-1 : E) ^ r) * (-1) ^ r = 1 := by rw [← mul_pow]; simp
   simp only [LinearMap.flip_apply, map_smul, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,

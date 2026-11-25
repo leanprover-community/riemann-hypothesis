@@ -61,13 +61,9 @@ theorem prod_eq_partial_fraction {m : ℕ} (d : Fin (m + 1) → ℝ) (d' : Fin m
     refine Finset.sum_eq_zero fun j _ => ?_
     rw [coeff_C_mul]
     have hL : (∏ k ∈ univ.erase j, (X - C (d' k)) : ℝ[X]).natDegree < n := by
-      rw [natDegree_prod_of_monic _ _ fun i _ => monic_X_sub_C _]
-      have hj : (univ.erase j).card + 1 = m := by
-        rw [Finset.card_erase_of_mem (mem_univ j)]
-        have : 0 < m := j.pos
-        simp only [card_univ, Fintype.card_fin]
-        omega
-      simp only [natDegree_X_sub_C, sum_const, smul_eq_mul, mul_one]
+      rw [natDegree_finsetProd_X_sub_C_eq_card (univ.erase j) d', Finset.card_erase_of_mem (mem_univ j),
+        card_univ, Fintype.card_fin]
+      have := j.pos
       omega
     rw [coeff_eq_zero_of_natDegree_lt hL, mul_zero]
   have hcard : (#(univ : Finset (Fin m)) : ℕ) = m := by simp

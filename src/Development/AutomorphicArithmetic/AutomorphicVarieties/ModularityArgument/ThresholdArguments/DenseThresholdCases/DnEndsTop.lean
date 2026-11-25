@@ -259,7 +259,7 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 private theorem untwist (k N : ℕ) [NeZero N] (hk : 1 ≤ k) (χ ψ : DirichletCharacter ℂ N) (g : Eigenform k N χ) :
     ∃ (χ' : DirichletCharacter ℂ (N * N)) (g' : Eigenform k (N * N) χ'), ∀ p : ℕ, p.Prime → ¬ p ∣ N →
       g'.a p * ψ (p : ZMod N) = g.a p ∧ χ' (p : ZMod (N * N)) * ψ (p : ZMod N) ^ 2 = χ (p : ZMod N) := by
-  haveI : NeZero (N * N) := ⟨mul_ne_zero (NeZero.ne N) (NeZero.ne N)⟩
+  have : NeZero (N * N) := ⟨mul_ne_zero (NeZero.ne N) (NeZero.ne N)⟩
   obtain ⟨h, hc, hn⟩ := clTwist N k χ ψ⁻¹ g.f g.char
   have h0 : h ≠ 0 := by
     rintro rfl
@@ -285,10 +285,10 @@ private theorem untwist (k N : ℕ) [NeZero N] (hk : 1 ≤ k) (χ ψ : Dirichlet
     rw [e, hn, hn n, Nat.cast_mul, map_mul, Eigenform.a]
     by_cases hpn : p ∣ n
     · obtain ⟨m, rfl⟩ := hpn
-      rw [if_pos (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hp.pos] at this ⊢
+      rw [ite_eq_left (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hp.pos] at this ⊢
       rw [hn, Nat.cast_mul, map_mul]
       linear_combination ψ⁻¹ (p : ZMod N) * (ψ⁻¹ (p : ZMod N) * ψ⁻¹ (m : ZMod N)) * this
-    · rw [if_neg hpn] at this ⊢
+    · rw [ite_eq_right hpn] at this ⊢
       linear_combination ψ⁻¹ (p : ZMod N) * ψ⁻¹ (n : ZMod N) * this
   · rw [e]
     linear_combination χ (p : ZMod N) * (ψ⁻¹ (p : ZMod N) * ψ (p : ZMod N) + 1) * e1
@@ -301,7 +301,7 @@ private theorem level_zero_eq_maximal_compact {F : Type} [Field F] [NumberField 
     K1 w 0 = GlobalTheory.LFun.KGL w (n := 2) := by
   ext g
   refine ⟨fun ⟨k, _, e⟩ => ⟨k, e⟩, fun ⟨k, e⟩ => ⟨k, ?_, e⟩⟩
-  haveI : Subsingleton (w.adicCompletionIntegers F ⧸ IsLocalRing.maximalIdeal (w.adicCompletionIntegers F) ^ 0) :=
+  have : Subsingleton (w.adicCompletionIntegers F ⧸ IsLocalRing.maximalIdeal (w.adicCompletionIntegers F) ^ 0) :=
     Ideal.Quotient.subsingleton_iff.2 (by simp)
   exact Subsingleton.elim _ _
 private theorem lie_one (φ : TR.Sm ℚ 2) (h : ∀ v, TR.Eop v 0 0 φ + TR.Eop v 1 1 φ = 0) : TR.lie ℚ 2 (TR.oneL ℚ 2) φ = 0 := by
@@ -334,7 +334,7 @@ theorem UpperTheory.V.Br.repEig_of_printsH_of_hermEx :
   obtain ⟨H, hH⟩ := hH ℚ 2 one_le_two π fun φ hφ => lie_one φ fun v => by
     rw [(capTwo ℚ π v _ _ (hπ v) φ hφ).1, add_neg_cancel, zero_smul]
   obtain ⟨N, ψ, ν, hN, hν, φ, hφ, h0, hlow, hfix⟩ := levelVec k π (holVec k hk π hπ H hH)
-  haveI : NeZero N := ⟨by omega⟩
+  have : NeZero N := ⟨by omega⟩
   obtain ⟨ω, hω, -⟩ := _root_.UpperTheory.V.Sd.Wc.centChar_alt P.toClassicalTheorems ℚ (π.twist ν)
   have hc := fun z g => hω z φ hφ g
   obtain ⟨χ, hχ⟩ := charOf N hN ω φ h0 hlow.one hfix hc
@@ -632,8 +632,8 @@ open Formalism.GaloisCohomology UpperTheory.V.Base in
 theorem UpperTheory.V.Z.Win.Dn.hostEnd_of_loc3_frame_linkedEnd_downCsdK (h3 : Dn.Loc3) (hK3 : Dn.LocalConditionRankThreeEvenLevel) :
     HostFrameEx → _root_.UpperTheory.V.Z.Sym.Pl.LinkedEndEAlt → _root_.UpperTheory.V.Z.Win.Dn.DownCsdKAlt → _root_.UpperTheory.V.Pr.HostEndAlt := by
   intro hF hL hD K _ _ _ hK Ω _ _ _ l hl ι c N _ e ψ o₁ hd σ hσ B hB
-  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
-  haveI : CharP (ResidueField c.O) l := by
+  have : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
+  have : CharP (ResidueField c.O) l := by
     rw [CharP.charP_iff_prime_eq_zero hl.out, ← map_natCast (residue c.O), residue_eq_zero_iff,
       mem_maximalIdeal, mem_nonunits_iff, ← map_natCast (algebraMap ℤ_[l] c.O)]
     intro hu
@@ -678,7 +678,7 @@ theorem UpperTheory.V.Z.Win.Dn.hostEnd_of_loc3_frame_linkedEnd_downCsdK (h3 : Dn
     rw [hm, Nat.cast_mul, map_mul]
     exact lt_of_le_of_lt (mul_le_of_le_one_right' hm') h2
   obtain ⟨hfin, haut, -⟩ := hL Ω l ι c N e ψ hd.e_pos hd.N_even (UnitaryThreeInertia.eta4 Ω) σ g₁ B (l * N) dvd_rfl hram L Φ C₀ k hB ok big sc
-  haveI : IsAlgClosure L Ω := Th.Db.algClo L Ω
+  have : IsAlgClosure L Ω := Th.Db.algClo L Ω
   have hLk : LinkHyp c N e (UnitaryThreeInertia.eta4 Ω) σ B (l * N) := ⟨hd.e_pos, dvd_rfl, mul_ne_zero hl.out.ne_zero (NeZero.ne N), hram, hB, hσ⟩
   have hker : ∀ [Algebra K Ω], Base.galOf ℚ K Ω = (UnitaryThreeInertia.eta4 Ω).ker := by
     intro _
@@ -686,7 +686,7 @@ theorem UpperTheory.V.Z.Win.Dn.hostEnd_of_loc3_frame_linkedEnd_downCsdK (h3 : Dn
     exact (UnitaryThreeInertia.gaussian_field_range_eq_ker_quartic_char.2 Ω K hK).1
   exact ⟨g₁, marks_of_link k ok (dvd_mul_right l N) hsq hΨ, finEnd_of_finPt k ok (dvd_mul_right l N) hsq hfin,
     _root_.UpperTheory.V.Z.Win.Dn.autEnd3_alt hD k ok (dvd_mul_right l N) hσ ι K hker (fun A _ _ r hr hi _ _ _ ρ hρ => by
-    haveI : IsAlgClosure K Ω := Th.Db.algClo K Ω
+    have : IsAlgClosure K Ω := Th.Db.algClo K Ω
     have t := h3 Ω l c N e ψ _ _ g₁ B _ hLk L Φ C₀ k ok A r hr K hker.symm ρ hρ
     exact ⟨t.1, t.2, hK3 Ω l c N e ψ hd.N_even _ _ g₁ B _ hLk L Φ C₀ k ok big sc A r hr hi K hker.symm ρ hρ⟩) haut⟩
 end
@@ -810,7 +810,7 @@ theorem UpperTheory.V.Z.Bc.automorphic_rank_two_of_automorphic_restrict_of_finit
       (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (r : G ℚ Ω →* GL (Fin 2) (Qbar l)) (hr : Continuous r)
       (hirr : IsIrr (r.comp (resG ℚ M Ω))) (hfin : ∃ N : ℕ, 0 < N ∧ ∀ s, Matrix.GeneralLinearGroup.det (r s) ^ N = 1), IsAut ι (r.comp (resG ℚ M Ω)) → IsAut ι r := by
   intro H cyc hG hR M Ω _ _ _ _ _ _ _ _ hp hM l _ ι r hr hirr hfin
-  haveI : Algebra.IsQuadraticExtension ℚ M := ⟨hp⟩
+  have : Algebra.IsQuadraticExtension ℚ M := ⟨hp⟩
   have hK : IsTotallyReal ℚ := inferInstance
   have hdown := cyc M hp inferInstance
   have hss : IsSSRep (r.comp (resG ℚ M Ω)) := (Bc.irrBasic.1 _ Unit _ 2 _).2.1 hirr
@@ -895,16 +895,16 @@ noncomputable section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp UpperTheory.V.Base UpperTheory.V.Af
 open scoped Matrix
 private theorem cc_ex (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] : ∃ c : G ℚ Ω, IsConjEl c := by
-  haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
-  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  have : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
   let j : Ω →ₐ[ℚ] ℂ := (by
     refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
     solve_by_elim* (maxDepth := 2) only [*,
       @_root_.DivisionSemiring.to_moduleIsTorsionFree,
       @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
-  letI : Algebra Ω ℂ := j.toRingHom.toAlgebra
-  haveI : IsScalarTower ℚ Ω ℂ := IsScalarTower.of_algebraMap_eq fun x => (j.commutes x).symm
-  haveI : Normal ℚ Ω := IsAlgClosure.normal ℚ Ω
+  let : Algebra Ω ℂ := j.toRingHom.toAlgebra
+  have : IsScalarTower ℚ Ω ℂ := IsScalarTower.of_algebraMap_eq fun x => (j.commutes x).symm
+  have : Normal ℚ Ω := IsAlgClosure.normal ℚ Ω
   let τ : ℂ ≃ₐ[ℚ] ℂ := AlgEquiv.ofRingEquiv (f := starRingAut) fun x => by simp
   exact ⟨τ.restrictNormal Ω, algebraMap Ω ℂ, fun x => AlgEquiv.restrictNormal_commutes τ Ω x⟩
 private theorem cc_mu {Ω : Type} [Field Ω] [CharZero Ω] {c : G ℚ Ω} (hc : IsConjEl c) {M : ℕ} (hM : 1 ≤ M) {ζ : Ω}
@@ -922,8 +922,8 @@ private theorem kills_cc {Ω : Type} [Field Ω] [CharZero Ω] {C : Type} [CommGr
   exact this
 private theorem kills_pow {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {C : Type} [CommGroup C] {M : ℕ} (hM : 1 ≤ M)
     {χ : G ℚ Ω →* C} (hχ : KillsMu M χ) : ∃ k : ℕ, 0 < k ∧ ∀ s, χ s ^ k = 1 := by
-  haveI : NeZero M := ⟨by omega⟩
-  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  have : NeZero M := ⟨by omega⟩
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
   obtain ⟨μ, hμ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω M
   refine ⟨Fintype.card (ZMod M)ˣ, Fintype.card_pos, fun s => ?_⟩
   rw [← map_pow]
@@ -959,9 +959,9 @@ private theorem via (P : _root_.UpperTheory.V.Af.HypothesesH') (cyc : Z.Bc.CycC)
     (W : G ℚ Ω →* GL (Fin 2) (Qbar l)) (hW : Continuous W) (hirr : IsIrr (W.comp (resG ℚ L Ω))) (hpol : Sol.Pol ι W)
     (hfin : ∃ N : ℕ, 0 < N ∧ ∀ s, Matrix.GeneralLinearGroup.det (W s) ^ N = 1)
     (haut : IsAut ι (W.comp (resG ℚ L Ω))) : IsAut ι W := by
-  haveI : IsAlgClosure K Ω := algClosure_up K Ω
-  haveI : IsAlgClosure L Ω := algClosure_up L Ω
-  haveI a : IsAbelianGalois K L := IsAbelianGalois.tower_top ℚ K L
+  have : IsAlgClosure K Ω := algClosure_up K Ω
+  have : IsAlgClosure L Ω := algClosure_up L Ω
+  have a : IsAbelianGalois K L := IsAbelianGalois.tower_top ℚ K L
   have e : (W.comp (resG ℚ K Ω)).comp (resG K L Ω) = W.comp (resG ℚ L Ω) := MonoidHom.ext fun _ => rfl
   rw [← e] at hirr haut
   have h1 := (_root_.UpperTheory.V.Z.Bc.solC_alt P cyc K L Ω (isSolvable_of_comm a.is_comm.comm) hC hL l ι 2 one_le_two (W.comp (resG ℚ K Ω))
@@ -975,7 +975,7 @@ theorem UpperTheory.V.Z.Bc.isAutR_of_isAutC_comp_galEmb_of_odd_quadratic_char (P
     (∃ (η : G ℚ Ω →* ℤˣ) (σ : G ℚ Ω), Sd.IsCC σ ∧ η σ = -1 ∧ ∀ s : G L Ω, η (galEmb ℚ L Ω s) = 1) →
     Sd.IsAutC ι (W.comp (galEmb ℚ L Ω)) → IsAutR ι W := by
   intro L Ω _ _ _ _ _ _ _ _ l _ ι W hW hdet hirr ⟨η, σ, hσ, hησ, hηL⟩ haut
-  haveI : IsAlgClosure L Ω := algClosure_up L Ω
+  have : IsAlgClosure L Ω := algClosure_up L Ω
   obtain ⟨M, χ, hM, hχ, hθ⟩ := hdet
   rw [zpow_zero, one_mul] at hθ
   have hcont : Continuous (Matrix.GeneralLinearGroup.det.comp W) :=
@@ -1350,7 +1350,7 @@ private theorem de_core {O R G Γ ι : Type} [CommRing O] [IsLocalRing O] [Finit
         · obtain ⟨h, hh, hD⟩ := (hr.loc v).2.1 hv
           exact ⟨h, hh, hD.toTriIn⟩
       exact (key r hr hd).trans (key ρ hρ hd').symm
-    · haveI := Fintype.ofFinite (ResidueField O)
+    · have := Fintype.ofFinite (ResidueField O)
       have hmem : s ^ Fintype.card (ResidueField O)ˣ ∈ F.Nv v := by
         refine ⟨⟨pow_mem hs _, pow_mem (show s ∈ (F.ηv v).ker from hη) _⟩, ?_⟩
         show ((Units.map (residue O).toMonoidHom).comp (F.Ψv v)) _ = 1
@@ -1487,11 +1487,11 @@ theorem UpperTheory.V.UnitaryThreeInertia.universal_diagonal_of_triangular_point
     rw [h2]
     simpa using h1
   · intro A _ _ _ f hf hA
-    letI iLA : IsLocalRing A := inferInstance
-    haveI iDA : IsDomain A := inferInstance
-    haveI iNA : IsNoetherianRing A := inferInstance
-    haveI : IsLocalHom (algebraMap O A) := IsCD.isLocalHom
-    haveI := hf
+    let iLA : IsLocalRing A := inferInstance
+    have iDA : IsDomain A := inferInstance
+    have iNA : IsNoetherianRing A := inferInstance
+    have : IsLocalHom (algebraMap O A) := IsCD.isLocalHom
+    have := hf
     have hpt : F.IsPt g₁ (push f u) := isPt_push F f g₁ u hu.pt
     have htr := htri A hA (push f u) hpt
     have hdiag : ∀ (g : Γ) (a : Fin 3), ((push f u) g).mat a a = ((F.rz A) g).mat a a :=
@@ -1570,7 +1570,7 @@ private theorem tri_of_char {O G A : Type} [CommRing O] [IsLocalRing O] [Finite 
     (U : Subgroup G) (hU : U.FiniteIndex)
     (hch : ∀ g ∈ U, η g = 1 → (r g).mat.charpoly = (((r0 η Ψ g).mat).map (algebraMap O A)).charpoly) :
     Upper η r ∨ Lower η r := by
-  letI : Algebra (ResidueField O) A := (Ideal.Quotient.lift _ (algebraMap O A) h0).toAlgebra
+  let : Algebra (ResidueField O) A := (Ideal.Quotient.lift _ (algebraMap O A) h0).toAlgebra
   let Φ : G →* (ResidueField O)ˣ := (Units.map (residue O).toMonoidHom).comp Ψ
   have e : ∀ g, ((r0 η Φ g).mat).map (algebraMap (ResidueField O) A) = ((r0 η Ψ g).mat).map (algebraMap O A) := by
     intro g
@@ -1600,18 +1600,18 @@ theorem UpperTheory.V.Pr.symmetric_cube_theorem_of_endomorphisms_alt :
   have hΨ : ∀ g, F.Ψ (toGS Ω _ g) = Chr.Psi l e (Chr.dirG ℚ Ω ψ) g := fun g => by rw [← hF.Ψ, hF.π]; rfl
   rw [hF.π] at hc
   have hg : F.Marked (toGS Ω _ g₁) := ⟨(hη g₁).trans hM.ηg, by rw [hΨ]; exact hM.Ψg⟩
-  haveI : IsGalois ℚ Ω := IsAlgClosure.isGalois ℚ Ω
-  haveI hcl := isClosed_NS Ω (S : Set UnitaryThreeInertia.Pl)
-  haveI : CompactSpace (UnitaryThreeInertia.Gam Ω S) := inferInstance
-  haveI : T2Space (UnitaryThreeInertia.Gam Ω S) := inferInstance
-  haveI : TotallyDisconnectedSpace (UnitaryThreeInertia.Gam Ω S) := totDisc_quot _ hcl
+  have : IsGalois ℚ Ω := IsAlgClosure.isGalois ℚ Ω
+  have hcl := isClosed_NS Ω (S : Set UnitaryThreeInertia.Pl)
+  have : CompactSpace (UnitaryThreeInertia.Gam Ω S) := inferInstance
+  have : T2Space (UnitaryThreeInertia.Gam Ω S) := inferInstance
+  have : TotallyDisconnectedSpace (UnitaryThreeInertia.Gam Ω S) := totDisc_quot _ hcl
   have hOk := UnitaryThreeInertia.hostFrame_ok Ω c e ψ o₁ hd S A F hF
   have hsurj : ∀ x : UnitaryThreeInertia.Gam Ω S, ∃ s, toGS Ω _ s = x := fun x => QuotientGroup.mk_surjective x
   refine ⟨_, hg, fun R _ _ _ u hu => ?_⟩
   have hM2 : Module.Finite c.O (UnitaryThreeInertia.wpart c.O u 0) := by
     refine UnitaryThreeInertia.universal_diagonal_of_triangular_points F hOk (UnitaryThreeInertia.frame_class_one Ω c e ψ o₁ hd S A F hF) _ hg u hu fun B _ _ hB h0 r hr => ?_
-    haveI := hB.toIsDomain
-    haveI := hB.toIsDiscreteValuationRing
+    have := hB.toIsDomain
+    have := hB.toIsDiscreteValuationRing
     have ho := ordPt_of_isPt Ω c e ψ o₁ hd S A F hF σ g₁ hc r hr
     refine (tri_of_char hOk.two h0 hM ho.red ho.norm U hU (hfin B h0 _ ho)).imp (fun h g hg => ?_) fun h g hg => ?_
     · obtain ⟨s, rfl⟩ := hsurj g
@@ -1629,8 +1629,8 @@ theorem UpperTheory.V.Pr.symmetric_cube_theorem_of_endomorphisms_alt :
       tor _ t * (r (toGS Ω _ s)).left * (tor _ t)⁻¹ := fun s hs => by
     rw [← conj_left r _ _ ((hm s).trans hs), ← ht]
     rfl
-  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
-  letI : Algebra K Ω := (IsAlgClosed.lift : K →ₐ[ℚ] Ω).toRingHom.toAlgebra
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  let : Algebra K Ω := (IsAlgClosed.lift : K →ₐ[ℚ] Ω).toRingHom.toAlgebra
   have hker : ∀ s : G K Ω, Base.galEmb ℚ K Ω s ∈ (UnitaryThreeInertia.eta4 Ω).ker := fun s => by
     rw [← (UnitaryThreeInertia.gaussian_field_range_eq_ker_quartic_char.2 Ω K hK).1]
     exact ⟨s, rfl⟩

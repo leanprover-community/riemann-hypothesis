@@ -68,8 +68,8 @@ theorem card_cycleType_cons_mul (N p : ℕ) (hp : 2 ≤ p) (hpN : p ≤ N) (m : 
     rcases Multiset.mem_cons.1 ha with rfl | ha
     · exact hp
     · exact h2 a ha
-  rw [if_pos hcA] at hA
-  rw [if_pos ⟨hs, h2⟩] at hB
+  rw [ite_eq_left hcA] at hA
+  rw [ite_eq_left ⟨hs, h2⟩] at hB
   have hsum : N - (p ::ₘ m).sum = N - p - m.sum := by
     rw [Multiset.sum_cons, Nat.sub_sub]
   have hfac : ∏ n ∈ (p ::ₘ m).toFinset, ((p ::ₘ m).count n).factorial =

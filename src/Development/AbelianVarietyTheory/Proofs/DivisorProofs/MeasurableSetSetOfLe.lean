@@ -158,8 +158,8 @@ theorem gdet_eq (ϖ : kˣ) (a a' : ℤ) (g : G.VertexGroup) (hg : ∀ j, g (G.m,
     (hg' : ∀ i j, i ≠ G.m → g (i, j) = 1) (X : ℕ × ℕ) : gdet (g X) = ϖ ^ vtxDet G a a' X := by
   obtain ⟨i, j⟩ := X
   by_cases hi : i = G.m
-  · rw [show (i, j) = (G.m, j) by rw [hi], hg, vtxDet, if_pos rfl, colDiag, gdet, det_diagGL, prod_zpow_units]
-  · rw [hg' i j hi, vtxDet, if_neg hi]
+  · rw [show (i, j) = (G.m, j) by rw [hi], hg, vtxDet, ite_eq_left rfl, colDiag, gdet, det_diagGL, prod_zpow_units]
+  · rw [hg' i j hi, vtxDet, ite_eq_right hi]
     simp
 
 end Expo

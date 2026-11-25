@@ -19,10 +19,4 @@ def DDsp {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Mx k r → (H →L[ℂ] H)) (w0 : H) : Submodule ℂ H :=
   Submodule.span ℂ ((fun g => σ g w0) '' UH (Hpk k r))
 
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Family
-
 end Formalism.MainNotions.BridgeLemma₄

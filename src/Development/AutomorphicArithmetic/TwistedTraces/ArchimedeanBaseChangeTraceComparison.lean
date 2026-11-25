@@ -47,7 +47,7 @@ private theorem exists_ext {ι α : Type} {P : α → Type} (f : ι → α) (hf 
     obtain rfl := hf e
     rfl
   have h : ∃ j, f j = f i := ⟨i, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact aux _ _
 
 private theorem prod_mem_of {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (W : Submodule ℂ H)

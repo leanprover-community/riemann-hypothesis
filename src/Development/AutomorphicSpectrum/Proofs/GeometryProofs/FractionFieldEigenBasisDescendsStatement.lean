@@ -106,7 +106,7 @@ theorem exists_integral_leftInverse {V K : Type} [CommRing V] [IsDomain V]
     rw [hr', hrep, Finsupp.single_apply]
     by_cases h : i = i'
     · subst h; simp
-    · rw [if_neg (Ne.symm h), if_neg h]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
   have hsum : F i (β i') = ∑ k, β i' k * F i (fun j => if k = j then 1 else 0) := by
     rw [LinearMap.pi_apply_eq_sum_univ (F i) (β i')]
     simp only [smul_eq_mul]

@@ -34,7 +34,7 @@ theorem combD_apply (J : ∀ k, Finset (ι k)) (n : ℕ) (f : CombC S J n) (I : 
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => ?_
   by_cases h : FaceOK J n (Function.update I.1.1 k ((I.1.1 k).erase i))
   · rw [dite_eq_left h, dite_eq_left h]; rfl
-  · rw [dif_neg h, dif_neg h]; rfl
+  · rw [dite_eq_right h, dite_eq_right h]; rfl
 
 theorem cell_ext {J : ∀ k, Finset (ι k)} {n : ℕ} {I₁ I₂ : CombCell ι J n} (h : I₁.1.1 = I₂.1.1) : I₁ = I₂ :=
   Subtype.ext (Subtype.ext h)
@@ -123,7 +123,7 @@ theorem block_pair (J : ∀ k, Finset (ι k)) (n : ℕ) (f : CombC S J n) (I : C
     · rw [faceSign_pair I.1.1 k h he, neg_smul, add_neg_cancel]
     · rw [faceSign_pair I.1.1 k h (he.trans (Finset.pair_comm a b)), neg_smul, neg_add_cancel]
   · simp only [t]
-    rw [dif_neg hOK, dif_neg (fun h => hOK (hiff.mpr h)), add_zero]
+    rw [dite_eq_right hOK, dite_eq_right (fun h => hOK (hiff.mpr h)), add_zero]
 
 
 open Classical in
@@ -138,7 +138,7 @@ theorem singOne_cocycle (J : ∀ k, Finset (ι k)) (n : ℕ) (hJ : ∀ k, J k = 
           singOne S J n ⟨⟨_, hi'.1⟩, hi'.2⟩ = 1 := by
         intro i hi hi'
         simp only [singOne]
-        rw [if_pos]
+        rw [ite_eq_left]
         intro m hm
         by_cases hmk : m = k
         · rw [hmk, Function.update_self, Finset.card_erase_of_mem hi, hc.1]
@@ -150,7 +150,7 @@ theorem singOne_cocycle (J : ∀ k, Finset (ι k)) (n : ℕ) (hJ : ∀ k, J k = 
       split_ifs with h
       · have h0 : singOne S J n ⟨⟨_, h.1⟩, h.2⟩ = 0 := by
           simp only [singOne]
-          rw [if_neg]
+          rw [ite_eq_right]
           intro hall
           apply hc
           have hpos : 0 < (I.1.1 k).card := Finset.card_pos.mpr ⟨i, hi⟩
@@ -161,7 +161,7 @@ theorem singOne_cocycle (J : ∀ k, Finset (ι k)) (n : ℕ) (hJ : ∀ k, J k = 
           rwa [Function.update_of_ne hm] at this
         rw [h0, smul_zero]
       · rfl
-  · refine Finset.sum_eq_zero fun i hi => dif_neg fun h => ?_
+  · refine Finset.sum_eq_zero fun i hi => dite_eq_right fun h => ?_
     have hiJ : i ∈ J k := by rw [hk]; exact Finset.mem_univ i
     have := h.2 k hiJ
     rw [Function.update_self] at this
@@ -195,8 +195,8 @@ theorem contract_cocycle (J : ∀ k, Finset (ι k)) (n : ℕ) (k : K) (i₀ : ι
     refine Eq.trans ?_ hφI'
     have hI'k : (I'.1.1 k).card = 1 := by rw [hI', Function.update_self, Finset.card_singleton]
     congr 1
-    · rw [Finset.sum_eq_zero fun i hi => dif_neg (not_faceOK_of_card_one _ k hi h1),
-        Finset.sum_eq_zero fun i hi => dif_neg (not_faceOK_of_card_one _ k hi hI'k)]
+    · rw [Finset.sum_eq_zero fun i hi => dite_eq_right (not_faceOK_of_card_one _ k hi h1),
+        Finset.sum_eq_zero fun i hi => dite_eq_right (not_faceOK_of_card_one _ k hi hI'k)]
     refine Finset.sum_congr rfl fun l hlm => ?_
     have hl : l ≠ k := Finset.ne_of_mem_erase hlm
     have hset : I.1.1 l = I'.1.1 l := by rw [hI', Function.update_of_ne hl]
@@ -223,7 +223,7 @@ theorem contract_cocycle (J : ∀ k, Finset (ι k)) (n : ℕ) (k : K) (i₀ : ι
       show I''.1.1 = Function.update I'.1.1 l ((I'.1.1 l).erase i)
       rw [hF', Function.eq_update_iff]
       exact ⟨hk'', fun m hm => ho'' m hm⟩
-    · rw [dif_neg hc, dif_neg (fun h => hc (hiff.mpr h))]
+    · rw [dite_eq_right hc, dite_eq_right (fun h => hc (hiff.mpr h))]
   · by_cases h2 : (I.1.1 k).card = 2
     · rw [Finset.sum_eq_zero fun l hlm => Finset.sum_eq_zero fun i hi => hz l i hi (by
         rw [Function.update_of_ne (Ne.symm (Finset.ne_of_mem_erase hlm)), h2]; omega), add_zero]
@@ -327,9 +327,9 @@ theorem cyclic_cohom (hC : KHCombContract.Statement) (J : ∀ k, Finset (ι k)) 
     simp only [Pi.smul_apply, singOne, smul_eq_mul]
     by_cases hI : ∀ k ∈ E, (I.1.1 k).card = 1
     · have h : ∃ I : CombCell ι J n, ∀ k ∈ E, (I.1.1 k).card = 1 := ⟨I, hI⟩
-      rw [dite_eq_left h, if_pos (fun k hk => hI k ((hE k).mpr hk)), mul_one]
+      rw [dite_eq_left h, ite_eq_left (fun k hk => hI k ((hE k).mpr hk)), mul_one]
       exact hval I h.choose hI h.choose_spec
-    · rw [if_neg (fun h => hI fun k hk => h k ((hE k).mp hk)), mul_zero]
+    · rw [ite_eq_right (fun h => hI fun k hk => h k ((hE k).mp hk)), mul_zero]
       exact (hφI I).2 hI
   rw [← hφs]
   exact hfφ

@@ -376,7 +376,7 @@ theorem core {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [A
       rw [← hQo P'' hPP, mul_one]
       simp_rw [map_mul, adAt_of_off hmoff hPnot]
       simp only [Units.val_one, Matrix.one_apply, apply_ite (adAt F P''.1), map_one, map_zero, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       exact hp.fr P'' r s
 
 theorem mul_conj {G : Type} [Group G] (y x k : G) : y * k * (k⁻¹ * x * k) = y * x * k := by group

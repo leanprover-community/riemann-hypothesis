@@ -167,7 +167,7 @@ theorem cc_span_partFull : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7,
   obtain ⟨hLU, -, hH⟩ := hops
   by_cases hsm : ∀ τ, s.M.sm τ ≠ ⊥
   swap
-  · push_neg at hsm
+  · push Not at hsm
     obtain ⟨τ, hτ⟩ := hsm
     refine Submodule.eq_top_iff'.2 fun u => ?_
     have h0 : PiTensorProduct.lift.symm (u : SmT s.M →ₗ[ℂ] (GA D s.V → ℂ)) = 0 := by

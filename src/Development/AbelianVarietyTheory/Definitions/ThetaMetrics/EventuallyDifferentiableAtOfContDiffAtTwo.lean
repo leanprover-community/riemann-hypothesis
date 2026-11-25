@@ -638,11 +638,5 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedSpa
 
 end Psh
 
-section Circle
-
-open Real MeasureTheory Set Metric
-
-end Circle
-
 
 end GlobalTheory

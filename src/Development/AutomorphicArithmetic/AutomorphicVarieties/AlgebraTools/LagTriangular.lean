@@ -94,11 +94,11 @@ theorem UpperTheory.V.AlgebraTools.lag_triangular :
     · simpa using h
     · intro j hj
       refine ⟨_, hu c j (h1 j hj).symm, ?_⟩
-      simp only [Function.update_apply, if_neg (ne_of_lt hj)]
+      simp only [Function.update_apply, ite_eq_right (ne_of_lt hj)]
       exact hl c j
     · intro j hj
       refine ⟨_, hu d j (h2 j hj).symm, ?_⟩
-      simp only [Function.update_apply, if_neg (ne_of_gt hj)]
+      simp only [Function.update_apply, ite_eq_right (ne_of_gt hj)]
       exact hr d j
   have hmid : ∀ (r : R) (c d : Fin n), lag (fun i => χ i z) (ρ z) c * algebraMap R E r *
       lag (fun i => χ i z) (ρ z) d =

@@ -30,11 +30,4 @@ theorem base_cutoff_is_truncation : C6.IsCut0 chi0 := by
 
 end helpers
 
-section diff
-
-variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-end diff
-
 end Formalism.FourierDecayAlt.P.Topx2

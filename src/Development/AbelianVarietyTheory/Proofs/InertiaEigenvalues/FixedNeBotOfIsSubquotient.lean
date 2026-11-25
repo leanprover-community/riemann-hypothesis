@@ -450,7 +450,7 @@ theorem jMinus_contract (e : (Σ a, m a) ≃ n) : ∀ U ∈ 𝓝 (1 : GL n k), �
     · subst h
       rw [leviEmb_apply_same]
       simp [S, T, Matrix.scalar_apply, diagonal_pow, diagonal_apply, inv_pow]
-    · rw [leviEmb_apply_ne k e _ h, if_neg fun h' => h (congrArg Sigma.fst (e.injective h'))]
+    · rw [leviEmb_apply_ne k e _ h, ite_eq_right fun h' => h (congrArg Sigma.fst (e.injective h'))]
   have hcomm : ∀ x (d : Levi k m), d * S x = S x * d := fun x d => funext fun a => Units.ext
     ((Matrix.scalar_commute _ (fun _ => Commute.all _ _) _).eq).symm
   let F : Filter (kˣ × jMinus k e) := (comap (fun x : kˣ => (x : k)) (𝓝 0)) ×ˢ ⊤

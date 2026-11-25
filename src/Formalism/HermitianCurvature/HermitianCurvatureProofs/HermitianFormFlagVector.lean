@@ -70,15 +70,15 @@ lemma uMap_eq {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (s : B.Mat 
     simp only [herm_f_es hz.1]
     rw [Finset.sum_eq_single a]
     · simp
-    · intro c _ hc; rw [if_neg (fun e => hc (Fin.ext e)), mul_zero]
+    · intro c _ hc; rw [ite_eq_right (fun e => hc (Fin.ext e)), mul_zero]
     · simp
   · rw [herm_sum_smul]
     simp only [hermitian_form_flag_vector hz.1]
     rw [Finset.sum_eq_single a]
-    · rw [if_pos (by have := a.isLt; omega)]
+    · rw [ite_eq_left (by have := a.isLt; omega)]
       field_simp [hzz_ne hz.2]
     · intro c _ hc
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       intro e; apply hc; apply Fin.ext; have := a.isLt; omega
     · simp
 

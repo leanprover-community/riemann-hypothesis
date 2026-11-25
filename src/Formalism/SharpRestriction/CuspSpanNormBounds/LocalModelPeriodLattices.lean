@@ -215,19 +215,19 @@ theorem ptEntryL_eq : ∀ (bs : List (Eˣ × ℕ+)) (a b : ℕ), a < (bs.map (fu
     simp only [List.map_cons, List.sum_cons] at h
     simp only [ptEntryL, List.map_cons, revIn, blk]
     by_cases ha : a < (s : ℕ)
-    · simp only [ha, true_and, if_true]
+    · simp only [ha, true_and, ite_true]
       by_cases hb : b < (s : ℕ)
-      · simp only [hb, if_true, List.getD_cons_zero]
+      · simp only [hb, ite_true, List.getD_cons_zero]
         congr 1
         exact propext ⟨fun _ => by omega, fun _ => by omega⟩
       · have h1 : ¬ ((s : ℕ) ≤ a ∧ (s : ℕ) ≤ b) := by omega
         have h2 : ¬ (b = (s : ℕ) - 1 - a) := by omega
         simp [hb, h1, h2]
     · have h1 : ¬ (a < (s : ℕ) ∧ b < (s : ℕ)) := by omega
-      simp only [ha, false_and, if_false]
+      simp only [ha, false_and, ite_false]
       by_cases hb : (s : ℕ) ≤ b
       · have h2 : (s : ℕ) ≤ a ∧ (s : ℕ) ≤ b := ⟨by omega, hb⟩
-        simp only [h2, and_self, if_true]
+        simp only [h2, and_self, ite_true]
         rw [ptEntryL_eq bs (a - s) (b - s) (by omega)]
         have h3 : (b - (s : ℕ) = revIn (bs.map (fun b => (b.2 : ℕ))) (a - s)) ↔
             (b = (s : ℕ) + revIn (bs.map (fun b => (b.2 : ℕ))) (a - s)) := by omega

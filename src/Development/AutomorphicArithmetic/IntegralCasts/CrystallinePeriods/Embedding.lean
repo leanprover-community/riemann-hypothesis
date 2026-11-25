@@ -39,26 +39,7 @@ theorem ker_thetaC : RingHom.ker (thetaC p O) = RingHom.ker (theta p O) := by
 
 variable [IsAlgClosed C]
 
-section General
-
-variable {F : Type v} {L : Type w} [Field F] [Field L] [Algebra F L] [CharZero F]
-  [Algebra.IsAlgebraic F L]
-
-end General
-
 end BdRPlus
-
-section Padic
-
-variable [NormedAlgebra ℚ_[p] C]
-
-
-
-variable [IsAlgClosed C] {L : Type w} [Field L] [Algebra ℚ_[p] L] [Algebra.IsAlgebraic ℚ_[p] L]
-
-variable {p O}
-
-end Padic
 
 section Witt
 

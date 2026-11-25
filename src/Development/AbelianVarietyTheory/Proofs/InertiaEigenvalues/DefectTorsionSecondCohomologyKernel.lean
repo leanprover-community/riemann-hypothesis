@@ -1109,29 +1109,6 @@ theorem finiteDimensional_Ks (K : FinExt l) (s : ℕ) : FiniteDimensional ℚ_[l
 
 def KsFin (K : FinExt l) (s : ℕ) : FinExt l := ⟨Ks K s, finiteDimensional_Ks K s⟩
 
-section Ring
-
-variable {P : LocPrime l} (AI : LocAinf l P)
-
-end Ring
-
-section Generic
-
-variable {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp] [Field LL]
-  [Algebra Qp LL] [CommRing O] [Algebra O LL] [TopologicalSpace LL]
-  {R : Type} [CommRing R] [Algebra O R]
-
-end Generic
-
-section Hyp
-
-variable {K LL : FinExt l}
-
-variable {P : LocPrime l} (AI : LocAinf l P)
-
-
-end Hyp
-
 end GlobalTheory.IndefiniteRowSideFullHecke.LevelConstants
 end -- clump:auto
 end -- clump:auto

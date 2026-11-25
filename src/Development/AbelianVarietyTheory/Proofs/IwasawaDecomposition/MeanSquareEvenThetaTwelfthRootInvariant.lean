@@ -359,8 +359,8 @@ theorem lamConj_spec {Λ : AddSubgroup ℂ} (h : TaylorLogMetric.discr Λ = 1) (
   obtain ⟨L, e2, e3⟩ := GlobalTheory.LatticeInvariants.exists_periodPair_of_invariants (a := ρ ⟨_, h2⟩) (b := ρ ⟨_, h3⟩)
     (by rw [h1]; exact one_ne_zero)
   have hd := GlobalTheory.LatticeInvariants.invariants_dictionary L L.lattice.toAddSubgroup (fun _ => Iff.rfl)
-  have l2 : liftM M (g2 Λ) = ⟨_, h2⟩ := dif_pos h2
-  have l3 : liftM M (g3 Λ) = ⟨_, h3⟩ := dif_pos h3
+  have l2 : liftM M (g2 Λ) = ⟨_, h2⟩ := dite_eq_left h2
+  have l3 : liftM M (g3 Λ) = ⟨_, h3⟩ := dite_eq_left h3
   have hs := Classical.epsilon_spec (p := fun Λ' : AddSubgroup ℂ =>
     g2 Λ' = ρ (liftM M (g2 Λ)) ∧ g3 Λ' = ρ (liftM M (g3 Λ)))
     ⟨L.lattice.toAddSubgroup, by rw [hd.1, e2, l2], by rw [hd.2.1, e3, l3]⟩
@@ -470,7 +470,7 @@ theorem thOne_sq (hF : FieldOK D.host D.what₂.embLL D.embE) (h : IsDiscriminan
     rw [e, meanSquare_evenTheta_twelfthRoot_invariant hd hζ, normSq1_eq_nrm1Sq, thetaZero_eq_of_isThetaZero hc hM ρ ((hT v).1 hε) ht]
   have hp := normSq_thetaZero_pos hc hM ρ ht
   change posOr1 (thAt D.host D.what₂.embLL s) ^ 2 = _
-  rw [posOr1, hv, if_pos (Real.sqrt_pos.2 hp), Real.sq_sqrt hp.le]
+  rw [posOr1, hv, ite_eq_left (Real.sqrt_pos.2 hp), Real.sq_sqrt hp.le]
 
 theorem perTie_retie (hF : FieldOK D.host D.what₂.embLL D.embE) (h : IsDiscriminantTwelfthRootOfIdealLattice D D.host.ccK δ)
     (h2 : g2 (lamOf D D.host.ccK δ) ∈ coefM D) (h3 : g3 (lamOf D D.host.ccK δ) ∈ coefM D) :

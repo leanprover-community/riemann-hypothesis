@@ -996,7 +996,7 @@ theorem entry_comm (Hm : Matrix (Fin g) (Fin g) ℂ) (t : Fin g → ℂ)
     have := h (Pi.single i s) (Pi.single j 1)
     rw [hermForm_eq_sum, hermForm_eq_sum] at this
     simp only [Pi.mul_apply, Pi.single_apply, Pi.star_apply, mul_ite, mul_zero, _root_.mul_one, ite_mul, zero_mul,
-      apply_ite (starRingEnd ℂ), map_zero, map_one, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      apply_ite (starRingEnd ℂ), map_zero, map_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       RCLike.star_def, Complex.conj_conj] at this
     convert this using 2 <;> ring
   have h1 := key 1

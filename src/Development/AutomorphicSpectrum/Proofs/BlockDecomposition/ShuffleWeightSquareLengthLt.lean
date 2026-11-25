@@ -457,7 +457,7 @@ theorem sum_wd (l : ℕ) : ∑ d ∈ Finset.range (l + 1), wd d = 2 * l + 1 := b
   induction l with
   | zero => simp [wd]
   | succ l ih =>
-    rw [Finset.sum_range_succ, ih, wd, if_neg (Nat.succ_ne_zero l)]
+    rw [Finset.sum_range_succ, ih, wd, ite_eq_right (Nat.succ_ne_zero l)]
     ring
 
 theorem sum_sub_wd (l : ℕ) : ∑ d ∈ Finset.range l, (l - d) * wd d = l ^ 2 := by
@@ -526,9 +526,9 @@ theorem sqLen_eq {s : T → T} (hs : Function.Injective s)
       unfold rank
       rw [Multiset.countP_cons]
       by_cases hc : Con s q.1 q.2 (Δ.dec s)
-      · rw [if_pos hc, if_pos hc]
+      · rw [ite_eq_left hc, ite_eq_left hc]
         ring
-      · rw [if_neg hc, if_neg hc]
+      · rw [ite_eq_right hc, ite_eq_right hc]
         ring
     have hfil : ∑ q ∈ P, (if Con s q.1 q.2 (Δ.dec s) then wd q.2 else 0) = Δ.len ^ 2 := by
       rw [← Finset.sum_filter, ← sum_pairs hs hp Δ]

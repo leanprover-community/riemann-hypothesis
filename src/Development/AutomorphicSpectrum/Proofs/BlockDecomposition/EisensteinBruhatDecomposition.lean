@@ -257,14 +257,14 @@ theorem span_range_eId_mul {n r : ℕ} (hr : r ≤ n) {c : Matrix (Fin r) (Fin n
     rintro _ ⟨i, rfl⟩
     rw [row i]
     by_cases hi : (i : ℕ) < r
-    · rw [if_pos hi, h.2 i hi]
+    · rw [ite_eq_left hi, h.2 i hi]
       exact Submodule.subset_span ⟨_, rfl⟩
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       exact Submodule.zero_mem _
   · rw [Submodule.span_le]
     rintro _ ⟨j, rfl⟩
     refine Submodule.subset_span ⟨⟨j, j.2.trans_le hr⟩, ?_⟩
-    rw [row, if_pos j.2, h.2 ⟨j, j.2.trans_le hr⟩ j.2]
+    rw [row, ite_eq_left j.2, h.2 ⟨j, j.2.trans_le hr⟩ j.2]
 
 theorem span_range_lowerLeft : ∀ {K : Type} [Field K] {n r : ℕ}, r ≤ n →
     ∀ (c : Matrix (Fin r) (Fin n) K) (a p : Matrix (Fin n) (Fin n) K), IsCompl c a → IsUnit p.det →

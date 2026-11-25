@@ -167,7 +167,7 @@ theorem latIdx_le_of_ker : ∀ (L : Type) [Field L] [Valued L (WithZero (Multipl
     refine ⟨_, ⟨u, rfl⟩, ?_⟩
     have hc : ∃ u' : intVec L b, (QuotientAddGroup.mk (Matrix.mulVec x (u' : Fin b → L)) : (Fin a → L) ⧸ intVec L a) =
         QuotientAddGroup.mk (Matrix.mulVec x (u : Fin b → L)) := ⟨u, rfl⟩
-    simp only [h, dif_pos hc]
+    simp only [h, dite_eq_left hc]
     have he := hc.choose_spec
     set u' := hc.choose
     rw [QuotientAddGroup.eq] at he ⊢

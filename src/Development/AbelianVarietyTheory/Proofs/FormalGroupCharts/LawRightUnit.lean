@@ -151,7 +151,7 @@ theorem dof_hom (G G' : FGLaw k d) (α : Pt k 1 d) (hα : ∀ i, constantCoeff (
       simp [dLin]
     rw [pderiv_ev _ hΦ, Fin.sum_univ_two]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, pderiv_comp_pt,
-      one_ne_zero, if_false, if_true, mul_zero, Finset.sum_const_zero, zero_add]
+      one_ne_zero, ite_false, ite_true, mul_zero, Finset.sum_const_zero, zero_add]
     rw [ev_sum _ axis_GP]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [gt_ev_mul _ axis_GP, eval_comp, eval_linear, mul_comm]

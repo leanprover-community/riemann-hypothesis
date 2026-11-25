@@ -469,8 +469,8 @@ theorem value_move {H : Geo.Tor.Host D.host.E} {Dw : Datum H} {W₀ W : HSp D} (
       rw [e₀, hm2, hm2, Module.End.mul_apply, Module.End.mul_apply, hvac, map_smul, map_smul, Pi.smul_apply,
         GlobalTheory.WeilRat.om_rat_actO D ψ hP.weil.std V W₀ χV χW om hP.weil 1 (one_mem _) _ hγ _ (hP.weil.om_pres _ _ hf₀)]
       rfl) hν hm hf
-  have u₁ : rdU U f' (dict h).1 (dict h).2 = toC (evR Xo c f' (U.un _ ⟨_, hdom h⟩)) := dif_pos (hdom h)
-  have u₂ : rdU U f (dict (h * κ)).1 (dict (h * κ)).2 = toC (evR Xo c f (U.un _ ⟨_, hdom (h * κ)⟩)) := dif_pos (hdom _)
+  have u₁ : rdU U f' (dict h).1 (dict h).2 = toC (evR Xo c f' (U.un _ ⟨_, hdom h⟩)) := dite_eq_left (hdom h)
+  have u₂ : rdU U f (dict (h * κ)).1 (dict (h * κ)).2 = toC (evR Xo c f (U.un _ ⟨_, hdom (h * κ)⟩)) := dite_eq_left (hdom _)
   rw [u₁, u₂, hv]
   apply mul_left_cancel₀ (mul_ne_zero (hmu0 h) (hmu0 κ))
   rw [hmu] at key

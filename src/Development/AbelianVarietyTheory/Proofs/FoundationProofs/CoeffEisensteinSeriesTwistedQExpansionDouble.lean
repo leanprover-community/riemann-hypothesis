@@ -58,7 +58,7 @@ theorem eis_norm_le (j : ℕ) (c : ℂ) (a b : ℤ → ℂ) (Ca Cb : ℝ) (ha : 
     ‖eis j c a b n‖ ≤ Ca * Cb * n.divisors.card * (n : ℝ) ^ (j - 1) := by
   have hCa : 0 ≤ Ca := (norm_nonneg _).trans (ha 0)
   have hCb : 0 ≤ Cb := (norm_nonneg _).trans (hb 0)
-  simp only [eis, if_neg hn]
+  simp only [eis, ite_eq_right hn]
   refine (norm_sum_le _ _).trans ?_
   have hcard : n.divisorsAntidiagonal.card = n.divisors.card := by
     rw [← Nat.map_div_right_divisors, Finset.card_map]
@@ -122,7 +122,7 @@ theorem eis_qseries : ∀ (j : ℕ) (c : ℂ) (a b : ℤ → ℂ), (∃ C : ℝ,
       simp only [Function.comp, sigmaAntidiagonalEquivProd, divisorsAntidiagonalFactors, PNat.mk_coe,
         Equiv.coe_fn_mk, Finset.univ_eq_attach, hHdef]
       rw [(n : ℕ).divisorsAntidiagonal.sum_attach (fun y : ℕ × ℕ => a (y.1 : ℤ) * ((y.1 : ℕ) : ℂ) ^ (j - 1) * b (y.2 : ℤ) * q ^ (y.1 * y.2))]
-      simp only [eis, if_neg n.ne_zero, Finset.sum_mul]
+      simp only [eis, ite_eq_right n.ne_zero, Finset.sum_mul]
       refine Finset.sum_congr rfl fun p hp => ?_
       rw [(Nat.mem_divisorsAntidiagonal.1 hp).1]
     have h4 : HasSum (fun n : ℕ => eis j c a b n * q ^ n) (c + ∑' d, H d) := by

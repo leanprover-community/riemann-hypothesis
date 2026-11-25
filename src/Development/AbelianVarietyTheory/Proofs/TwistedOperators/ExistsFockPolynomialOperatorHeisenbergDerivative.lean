@@ -177,7 +177,7 @@ theorem omDir_cplx :
     omDir S T τ (cplxO sS sT z) τ (cplxO sS sT z') = omDir S T τ z τ z' ∧
     omDir S T τ z τ (cplxO sS sT z') = -omDir S T τ (cplxO sS sT z) τ z' := by
   unfold omDir
-  simp only [if_true]
+  simp only [ite_true]
   refine ⟨by rw [GlobalTheory.RealSymplForm.tr_J_J hS hT], ?_⟩
   rw [← GlobalTheory.RealSymplForm.tr_J_J hS hT z, GlobalTheory.RealSymplForm.cplxO_cplxO hS.1 hT.1]
   simp

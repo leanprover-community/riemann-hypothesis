@@ -39,7 +39,7 @@ theorem diffExists_main {F : Type} [Field F] [NumberField F]
   let f : 𝓞 F → ℕ := fun x =>
     if hx : x = 0 then 0 else (-(Multiplicative.toAdd (WithZero.unzero (hne x hx)))).toNat
   have hfdef : ∀ z (hz : z ≠ 0), f z = (-(Multiplicative.toAdd (WithZero.unzero (hne z hz)))).toNat :=
-    fun z hz => dif_neg hz
+    fun z hz => dite_eq_right hz
   have key : ∀ z : 𝓞 F, ∀ hz : z ≠ 0,
       v.intValuation z = ((Multiplicative.ofAdd (-(f z : ℤ)) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
     intro z hz

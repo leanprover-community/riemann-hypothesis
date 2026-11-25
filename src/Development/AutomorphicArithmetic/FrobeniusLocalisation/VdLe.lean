@@ -73,9 +73,9 @@ theorem UpperTheory.HF.vd_le :
     rw [hm, Finset.sum_range_add]
     have h2 : ∑ x ∈ Finset.range m,
         (if e + x < e then 1 - ((l ^ (e + x)).totient : ℝ) / ((l ^ e).totient : ℝ) else 0) = 0 :=
-      Finset.sum_eq_zero (fun x _ => if_neg (by omega))
+      Finset.sum_eq_zero (fun x _ => ite_eq_right (by omega))
     rw [h2, add_zero]
-    exact Finset.sum_congr rfl (fun j hj => if_pos (Finset.mem_range.1 hj))
+    exact Finset.sum_congr rfl (fun j hj => ite_eq_left (Finset.mem_range.1 hj))
   rw [hS] at hsum
   have hle : ∑ j ∈ Finset.range e, (1 - ((l ^ j).totient : ℝ) / ((l ^ e).totient : ℝ)) ≤ (e : ℝ) := by
     calc _ ≤ ∑ j ∈ Finset.range e, (1 : ℝ) :=

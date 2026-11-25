@@ -209,16 +209,16 @@ theorem intSer_of_funEq (f h A B : K⟦X⟧) (N : ℕ) (hf : constantCoeff f = 1
     · simp
   have hPs : IntSer (P : K⟦X⟧) := fun i => by rw [Polynomial.coeff_coe]; exact hPi i
   have hP0 : constantCoeff (P : K⟦X⟧) = 1 := by
-    rw [← coeff_zero_eq_constantCoeff_apply, Polynomial.coeff_coe, hP, coeff_trunc, if_pos hn,
+    rw [← coeff_zero_eq_constantCoeff_apply, Polynomial.coeff_coe, hP, coeff_trunc, ite_eq_left hn,
       coeff_zero_eq_constantCoeff_apply, hf]
   obtain ⟨Q, hQ⟩ : (X : K⟦X⟧) ^ n ∣ f - P := by
     rw [X_pow_dvd_iff]
     intro m hm
-    rw [map_sub, Polynomial.coeff_coe, hP, coeff_trunc, if_pos hm, sub_self]
+    rw [map_sub, Polynomial.coeff_coe, hP, coeff_trunc, ite_eq_left hm, sub_self]
   have hX : ∀ g : K⟦X⟧, coeff n (X ^ n * g) = constantCoeff g := fun g => by
     simpa using coeff_X_pow_mul g n 0
   have hQ0 : constantCoeff Q = coeff n f := by
-    rw [← hX, ← hQ, map_sub, Polynomial.coeff_coe, hP, coeff_trunc, if_neg (lt_irrefl n), sub_zero]
+    rw [← hX, ← hQ, map_sub, Polynomial.coeff_coe, hP, coeff_trunc, ite_eq_right (lt_irrefl n), sub_zero]
   obtain ⟨h', hh'⟩ : (X : K⟦X⟧) ∣ h := X_dvd_iff.2 hh0
   have h'0 : constantCoeff h' = coeff 1 h := by
     rw [hh', coeff_succ_X_mul, coeff_zero_eq_constantCoeff_apply]
@@ -493,7 +493,7 @@ theorem exists_evenTheta_translate_mul_sq_comb (h : IsLat Λ) {t s : ℂ} (ht : 
     ring
   have e2 : sgStar Λ (w + 2 * t) * E w ^ 2 = -K * sgStar Λ w := by
     have hl := h.sg_law h2 w
-    rw [if_neg (by simpa using ht)] at hl
+    rw [ite_eq_right (by simpa using ht)] at hl
     rw [show -K * sgStar Λ w = (-1 * sgStar Λ w) * K by ring, ← hl]
     simp only [U1, hE, hK]
     rw [mul_assoc (sgStar Λ _), sq, ← Complex.exp_add, ← Complex.exp_add]

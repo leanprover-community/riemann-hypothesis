@@ -155,10 +155,6 @@ def GoodLands (F : Face D A) : Prop :=
     (∀ t, ∀ u ∈ R.CC t 0, postOn (R.MY 0) R.e0 (PiTensorProduct.lift.symm u) ∈ R.EEat R.triv) ∧
       ∀ i, ∀ u ∈ R.Wall i (sg0 D A), postOn _ (R.eWf i (sg0 D A)) u ∈ R.Wall i (sg0 D A)
 
-def IoWExists (F : Face D A) : Prop :=
-  ∀ R : RealDat D A Ks, R.Pre1 F → R.KerP → ∀ i, ∃ io, ∀ t,
-    IsIoW R.θ (R.MW i (sg0 D A)) (R.cV i) (R.ωP i t) (R.ptP i t) (RealDat.Delta i) io
-
 variable {D A Ks}
 
 theorem exists_factor {X Y Z : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y] [AddCommGroup Z] [Module ℂ Z]

@@ -141,7 +141,7 @@ theorem fn_eq {p : DecoF E n ST SG Q} {k : GL (Fin n) (AfE F E)} (h : IsPtOf hc 
   choose ρ hρ hv using hrow
   refine ⟨∑ i, ρ i * x i, ?_, ?_⟩
 
-  · simp only [map_sum, map_mul, hρ, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  · simp only [map_sum, map_mul, hρ, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
   · simp only [Col2.pullV, Matrix.mulVec, dotProduct, map_sum, map_mul, adAt_inclE]
     rw [← Finset.sum_sub_distrib]
@@ -743,10 +743,10 @@ theorem datJ_cons : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologi
   have hprod : (J.map fun j => Ψ j (rd (α j) (β j) (t - (p i).e • t))).prod = (J.map fun j => Ψ j (rd (α j) (β j) t)).prod := by
     congr 1
     exact List.map_congr_left fun j hj => by rw [hrdj j hj]
-  simp only [datJ, tens, extFun, if_pos hself, hrdi, List.map_cons, List.prod_cons]
+  simp only [datJ, tens, extFun, ite_eq_left hself, hrdi, List.map_cons, List.prod_cons]
   by_cases h : IsHalf (eSum p J) (t - (p i).e • t)
-  · rw [if_pos (hhalf.2 h), if_pos h, hprod, mul_comm]
-  · rw [if_neg (fun h' => h (hhalf.1 h')), if_neg h, zero_mul]
+  · rw [ite_eq_left (hhalf.2 h), ite_eq_left h, hprod, mul_comm]
+  · rw [ite_eq_right (fun h' => h (hhalf.1 h')), ite_eq_right h, zero_mul]
 
 end GlobalTheory.FinPl.PutIn
 end
@@ -885,8 +885,8 @@ theorem datJ_nil (p : ι → SplitPt D k) {S T : HSp D} (α : ∀ i, Frame (p i)
     rw [this]; exact zero_mem _
   unfold datJ halfInd
   by_cases ht : IsHalf (0 : AE D) t
-  · rw [if_pos (by simpa [eSum] using ht), if_pos ⟨h0 ht, ht⟩]; rfl
-  · rw [if_neg (by simpa [eSum] using ht), if_neg fun h => ht h.2]
+  · rw [ite_eq_left (by simpa [eSum] using ht), ite_eq_left ⟨h0 ht, ht⟩]; rfl
+  · rw [ite_eq_right (by simpa [eSum] using ht), ite_eq_right fun h => ht h.2]
 
 theorem datJ_SB (p : ι → SplitPt D k) {S T : HSp D} (α : ∀ i, Frame (p i) S n') (β : ∀ i, Frame (p i) T n)
     (Ψ : ι → Matrix n n' k → ℂ) (LS : Lat S) (LT : Lat T) (hSD : IsSelfDualC S LS) (hTD : IsSelfDualC T LT)
@@ -966,7 +966,7 @@ theorem ratDatum_of_overAll : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k]
     have hh : IsHalf (eSum p J) (γ.map fun a => eSum p J * incA D a) := fun i j => by
       rw [Matrix.map_apply, ← mul_assoc, hid]
     unfold datJ
-    rw [if_pos hh]
+    rw [ite_eq_left hh]
     congr 1
     refine List.map_congr_left fun i hi => ?_
     congr 1

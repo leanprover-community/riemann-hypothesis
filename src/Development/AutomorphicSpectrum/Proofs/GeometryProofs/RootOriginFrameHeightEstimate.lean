@@ -353,7 +353,7 @@ theorem absT_add_le (p : ℕ) [hp : Fact p.Prime] (la : HeightOneSpectrum (𝓞 
       FinRd.absT p la T e (x + y) ≤ FinRd.absT p la T e u := by
     intro u hu h
     unfold FinRd.absT
-    rw [if_neg hxy, if_neg hu]
+    rw [ite_eq_right hxy, ite_eq_right hu]
     refine Real.rpow_le_rpow_of_exponent_le hp1 (neg_le_neg ?_)
     exact div_le_div_of_nonneg_right (by exact_mod_cast h) hd.le
   rcases min_le_iff.1 (min_le_vV_add (V := T.V) hx hy hxy) with h | h
@@ -378,7 +378,7 @@ theorem absT_natCast (p : ℕ) [hp : Fact p.Prime] (la : HeightOneSpectrum (𝓞
   have he' : (e : ℝ) ≠ 0 := by exact_mod_cast ho.1.ne'
   have hr' : (ramOverZ la : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
   unfold FinRd.absT
-  rw [if_neg hne, ho.2, hv, Real.rpow_neg hpos.le]
+  rw [ite_eq_right hne, ho.2, hv, Real.rpow_neg hpos.le]
   have : (((e : ℤ) * (ramOverZ la : ℤ) : ℤ) : ℝ) / ((e : ℝ) * (ramOverZ la : ℝ)) = 1 := by
     push_cast
     field_simp

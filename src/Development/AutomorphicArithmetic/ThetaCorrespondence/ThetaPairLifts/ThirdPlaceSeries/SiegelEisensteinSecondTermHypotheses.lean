@@ -243,16 +243,16 @@ theorem evLgG_gridA_of_exGrid : ExGrid → ∃ CF0 : ℝ, ∀ CF, CF0 ≤ CF →
     simp at hz
   · intro B f F F₀ Ξ z hz
     by_cases hΞ : Ξ.Finite
-    · simp only [dif_pos hΞ] at hz
+    · simp only [dite_eq_left hΞ] at hz
       exact (Classical.choose_spec (hS B f Ξ hΞ)).1 z hz
-    · simp [dif_neg hΞ] at hz
+    · simp [dite_eq_right hΞ] at hz
   · intro B f T _ hHas _ _ C W V S N G
     have hfin := (GlobalTheory.Mem.Top.TwFin.tw_fin B f T).1
     have hspec := (Classical.choose_spec (hS B.toPre f (T.set f) hfin)).2
     refine hspec ⟨B, C, W, V, S, N, G⟩ f (T.set f) rfl HEq.rfl HEq.rfl ?_
     intro z hz
     have h2 := hHas.2 z
-    simp only [dif_pos hfin] at h2
+    simp only [dite_eq_left hfin] at h2
     exact h2 hz
 
 end GlobalTheory.Mem.LiteralAutomorphy
@@ -444,11 +444,11 @@ theorem prod_localIdele_comp (z : ∀ v : HeightOneSpectrum (𝓞 L), (v.adicCom
       rw [e2, e, ih.2 w]
       by_cases hw : w = a
       · subst hw
-        rw [localIdele_snd_self, if_neg ha, if_pos (Finset.mem_insert_self _ _), mul_one]
+        rw [localIdele_snd_self, ite_eq_right ha, ite_eq_left (Finset.mem_insert_self _ _), mul_one]
       · rw [(localIdele_isSupportedAt L a (z a)).2 w hw, one_mul]
         by_cases hF : w ∈ F
-        · rw [if_pos hF, if_pos (Finset.mem_insert_of_mem hF)]
-        · rw [if_neg hF, if_neg (fun h => (Finset.mem_insert.1 h).elim hw hF)]
+        · rw [ite_eq_left hF, ite_eq_left (Finset.mem_insert_of_mem hF)]
+        · rw [ite_eq_right hF, ite_eq_right (fun h => (Finset.mem_insert.1 h).elim hw hF)]
 
 theorem tendsto_prod_localIdele (z : ∀ v : HeightOneSpectrum (𝓞 L), (v.adicCompletion L)ˣ) (hz : ∀ v, IsUnitAt v (z v))
     (c : Ideles L) (hc1 : (c : AdeleRing (𝓞 L) L).1 = 1)
@@ -467,7 +467,7 @@ theorem tendsto_prod_localIdele (z : ∀ v : HeightOneSpectrum (𝓞 L), (v.adic
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_ge_atTop {w}] with F hF
     have hw : w ∈ F := hF (Finset.mem_singleton_self w)
-    simp only [g, o, if_pos hw]
+    simp only [g, o, ite_eq_left hw]
   have h2 := ((RestrictedProduct.isEmbedding_structureMap (A := A) (𝓕 := cofinite)).continuous.tendsto o).comp hg
   have h3 : Tendsto (fun F : Finset (HeightOneSpectrum (𝓞 L)) =>
       ((∏ v ∈ F, localIdele L v (z v) : Ideles L) : AdeleRing (𝓞 L) L).2) atTop (𝓝 (c : AdeleRing (𝓞 L) L).2) := by
@@ -479,8 +479,8 @@ theorem tendsto_prod_localIdele (z : ∀ v : HeightOneSpectrum (𝓞 L), (v.adic
     show ((g F w : A w) : w.adicCompletion L) = _
     refine Eq.trans ?_ ((prod_localIdele_comp z F).2 w).symm
     by_cases hw : w ∈ F
-    · simp only [g, if_pos hw]
-    · simp only [g, if_neg hw]
+    · simp only [g, ite_eq_left hw]
+    · simp only [g, ite_eq_right hw]
   have h4 := (tendsto_const_nhds (x := (1 : InfiniteAdeleRing L))).prodMk_nhds h3
   have ec : (c : AdeleRing (𝓞 L) L) = ((1 : InfiniteAdeleRing L), (c : AdeleRing (𝓞 L) L).2) := Prod.ext hc1 rfl
   rw [ec]
@@ -1753,9 +1753,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.RowEx GlobalTheory.Mem.LiteralAutomorphy
 open GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.ChiGrid
 namespace GlobalTheory.Mem.LiteralAutomorphy.GridRow
-section Transfer
-variable {D : Formalism.BasicNotions.D7} {T : Type} {Lc : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts}
-end Transfer
 variable {D : Formalism.BasicNotions.D7} {L : Formalism.BasicNotions.SizeData₂ D} {hT : Formalism.BasicNotions.GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D}
   {Kc : Formalism.MainNotions.G.Consts} {Y : Formalism.BasicNotions.DivX D} {cX : Formalism.BasicNotions.ExtraC} {ex : Formalism.BasicNotions.Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 theorem hasGrid_of_full_field_lamTie (p : PtAt ex Csz) (CF : ℝ) (hp : p.CompatibilityConditions)

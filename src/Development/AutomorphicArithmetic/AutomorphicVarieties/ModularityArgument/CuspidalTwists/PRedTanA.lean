@@ -64,7 +64,7 @@ theorem zeroA {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] {Φ : 
     (h1 : i ≠ j) (h2 : wt i j ∉ S) (g : Γ) : x.1 g i j = 0 := by
   have := hx.2.2.2.2.2.1 g i j h1 h2
   rw [hc, Matrix.mul_apply] at this
-  simp only [Fr.split_r_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+  simp only [Fr.split_r_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
   exact (mul_eq_zero.1 this).resolve_right ((Φ.χ j g).isUnit.map a).ne_zero
 
 theorem limRA {O Γ : Type} [CommRing O] [Group Γ] {Φ : Fr O Γ} {k : Type} [Field k] {a : O →+* k} {c : PD Φ.ι Γ k}
@@ -231,17 +231,17 @@ theorem rank_A {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] (Φ :
   have hM : ∀ p, Module.rank k (M p) ≤ C := by
     intro p
     by_cases h : wt p.1.1 p.1.2 ∈ oddRoots
-    · rw [show M p = _ from if_pos h]
+    · rw [show M p = _ from ite_eq_left h]
       exact hb.str _ (Finset.mem_union_left _ h)
-    · rw [show M p = _ from if_neg h]
+    · rw [show M p = _ from ite_eq_right h]
       have : ∀ i j, wt i j ∉ oddRoots → wt i j ∈ [0, wPs, -wPs] := by decide
       exact hb.even _ (this _ _ h)
   have mem : ∀ (x : LinearMap.ker E3) (p : P), E p.1.1 p.1.2 x.1 ∈ M p := by
     intro x p
     by_cases h : wt p.1.1 p.1.2 ∈ oddRoots
-    · rw [show M p = _ from if_pos h]
+    · rw [show M p = _ from ite_eq_left h]
       exact ⟨ent _ x.1.2 _ _, H _ x.1.2 (kz x).1 (kz x).2.1 (kz x).2.2 _ _ p.2 h⟩
-    · rw [show M p = _ from if_neg h]
+    · rw [show M p = _ from ite_eq_right h]
       exact ent _ x.1.2 _ _
   let F : LinearMap.ker E3 →ₗ[k] (∀ p : P, M p) × (Φ.ι × Q → k) :=
     { toFun := fun x => (fun p => ⟨_, mem x p⟩, fun z => (adj (c.n z.1) * x.1.1.2 z.1 * c.n z.1) z.2.1.1 z.2.1.2)

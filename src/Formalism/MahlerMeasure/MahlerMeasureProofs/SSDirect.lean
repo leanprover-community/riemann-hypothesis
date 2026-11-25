@@ -437,10 +437,10 @@ lemma good_tie (i : Fin (t + 1)) (e : MvPolynomial (BVar N r t) ℚ_[p]) (he : S
   refine ⟨?_, ?_⟩
   · funext k
     simp only [sd, Finsupp.add_apply, Finsupp.single_apply]
-    rw [if_neg (scalZ_ne_scalS i k)]
+    rw [ite_eq_right (scalZ_ne_scalS i k)]
     by_cases h : i = k
     · subst h; simp
-    · rw [if_neg (fun h' => h (scalS_inj h')), Pi.single_apply, if_neg (Ne.symm h)]; rfl
+    · rw [ite_eq_right (fun h' => h (scalS_inj h')), Pi.single_apply, ite_eq_right (Ne.symm h)]; rfl
   · have : X (scalZ N r t i) * X (scalS N r t i) + e -
         monomial (Finsupp.single (scalZ N r t i) 1 + Finsupp.single (scalS N r t i) 1) (1 : ℚ_[p]) = e := by
       rw [X, X, monomial_mul, mul_one, add_sub_cancel_left]

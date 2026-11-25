@@ -144,7 +144,7 @@ theorem exists_finiteLevel_subset {W : Set (FiniteAdeleRing (𝓞 K) K)ˣ} (hW :
   have hz := htW (show (z : Π v : HeightOneSpectrum (𝓞 K), (v.adicCompletion K)ˣ) ∈ t from
     hIu fun v hv ↦ by
       have := hx v
-      simp only [Finset.mem_coe.1 hv, if_true] at this
+      simp only [Finset.mem_coe.1 hv, ite_true] at this
       exact hNu v (by rw [← finiteUnitsEquiv_apply_eq] at this; exact this))
   have hzx : _root_.RestrictedProduct.inclusion _ _ hS z = e x := rfl
   rw [Set.mem_preimage, Set.mem_preimage, hzx] at hz

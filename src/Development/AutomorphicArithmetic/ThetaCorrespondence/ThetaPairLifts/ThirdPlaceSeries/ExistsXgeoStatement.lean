@@ -1230,8 +1230,8 @@ theorem entry_inl {E k : Type} [Field E] [Field k] (f : E → k) (hf0 : f 0 = 0)
     (fun b _ hb => by rw [Matrix.submatrix_apply, id, Matrix.one_apply_ne hb, mul_zero]) (by simp)]
   rw [Matrix.submatrix_apply, id, Matrix.one_apply_eq, mul_one, Matrix.map_apply, hA, Matrix.one_apply]
   by_cases h : (eT c : ℕ) = r
-  · rw [if_pos h, hf1, if_pos (Fin.ext (h.symm.trans hm.symm))]
-  · rw [if_neg h, hf0, if_neg (fun h' => h (hm.symm.trans (congrArg Fin.val h'.symm)))]
+  · rw [ite_eq_left h, hf1, ite_eq_left (Fin.ext (h.symm.trans hm.symm))]
+  · rw [ite_eq_right h, hf0, ite_eq_right (fun h' => h (hm.symm.trans (congrArg Fin.val h'.symm)))]
 
 theorem entry_inr {E k : Type} [Field E] [Field k] (f : E → k) (hf0 : f 0 = 0) (hf1 : f 1 = 1) {n N : ℕ}
     (iB : Matrix (Fin N) (Fin 1) E) (hB : ∀ b a, iB b a = if n = (b : ℕ) then 1 else 0) (z : Fin 1 → E) (x : E)
@@ -1239,8 +1239,8 @@ theorem entry_inr {E k : Type} [Field E] [Field k] (f : E → k) (hf0 : f 0 = 0)
     (1 : Matrix (Fin N) (Fin N) k) r m * f x = (iB.map f *ᵥ fun i => f (z i)) r := by
   rw [Matrix.mulVec, dotProduct, Fin.sum_univ_one, Matrix.map_apply, hB, hz, Matrix.one_apply]
   by_cases h : n = (r : ℕ)
-  · rw [if_pos h, hf1, if_pos (Fin.ext (h.symm.trans hm.symm))]
-  · rw [if_neg h, hf0, if_neg (fun h' => h (hm.symm.trans (congrArg Fin.val h'.symm)))]
+  · rw [ite_eq_left h, hf1, ite_eq_left (Fin.ext (h.symm.trans hm.symm))]
+  · rw [ite_eq_right h, hf0, ite_eq_right (fun h' => h (hm.symm.trans (congrArg Fin.val h'.symm)))]
 
 end GlobalTheory.XGeoStd.Frames
 
@@ -1406,8 +1406,8 @@ theorem GlobalTheory.XGeoStd.exists_xgeo_alt : GlobalTheory.Published.StrongAppr
       ⟨hψ, hθ, fun j _ => ⟨rfl, rfl, fun z => ?_⟩, fun j _ => hvac j, fun j hj => ?_⟩, rfl, fun r s => by
       show (if ((s : ℕ) = r) then (1 : (I.rec7 l Z).host.E) else 0) = if (r : ℕ) = s then 1 else 0
       by_cases h : (r : ℕ) = s
-      · rw [if_pos h.symm, if_pos h]
-      · rw [if_neg (fun h' => h h'.symm), if_neg h], rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · rw [ite_eq_left h.symm, ite_eq_left h]
+      · rw [ite_eq_right (fun h' => h h'.symm), ite_eq_right h], rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · rw [← lat_X hI j]; exact Iff.rfl
     · rw [dite_eq_left hj]; exact hc j hj
     case refine_3 => exact isLineVec_zeta l Z u
@@ -1425,8 +1425,8 @@ theorem GlobalTheory.XGeoStd.exists_xgeo_alt : GlobalTheory.Published.StrongAppr
         change _ ↔ (r : ℕ) + 1 = (I.rec7 l Z).R.N (I.rec7 l Z).R.m
         constructor <;> intro h <;> omega
       by_cases h : (I.rec7 l Z).sp.X'.rank = (r : ℕ)
-      · rw [if_pos h, if_pos (e.1 h), one_mul]
-      · rw [if_neg h, if_neg (fun h' => h (e.2 h')), zero_mul]
+      · rw [ite_eq_left h, ite_eq_left (e.1 h), one_mul]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (e.2 h')), zero_mul]
     case refine_7 =>
       intro n h x
       refine ⟨GlobalTheory.PlaceModel.latFrame _, GlobalTheory.PlaceModel.isSelfDualC_latFrame _, ?_⟩

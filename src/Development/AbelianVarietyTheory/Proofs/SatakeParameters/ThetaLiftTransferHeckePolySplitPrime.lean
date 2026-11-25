@@ -86,11 +86,11 @@ theorem poly_id (q r t : ℕ) (u v : ℂ) (a : ℕ → ℂ) :
       (if j ≤ k then (q : ℂ) ^ ((r - j) * (k - j)) * (gaussBin q t (k - j) : ℂ) * u⁻¹ ^ k * v ^ j else 0) * a j) =
     (heckePolyOf r q a).comp (C (u⁻¹ * v) * X) * blockPoly (u⁻¹ * (q : ℂ) ^ r) q t := by
   have key := GlobalTheory.KerRangeCount.card_ker_and_heckePolyOf_conv.2 ℂ q r t (fun j => if j ≤ r then a j else 0) u⁻¹ (u⁻¹ * v)
-    (fun j hj => if_neg (by omega))
+    (fun j hj => ite_eq_right (by omega))
   have h1 : heckePolyOf r q (fun j => if j ≤ r then a j else 0) = heckePolyOf r q a := by
     unfold heckePolyOf
     refine Finset.sum_congr rfl fun j hj => ?_
-    simp only [if_pos (show j ≤ r by simpa [Nat.lt_succ_iff] using hj)]
+    simp only [ite_eq_left (show j ≤ r by simpa [Nat.lt_succ_iff] using hj)]
   rw [h1] at key
   rw [← key]
   congr 1

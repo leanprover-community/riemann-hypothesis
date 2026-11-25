@@ -79,7 +79,7 @@ private theorem integral_moll_mul_eq_of_differentiableOn_ball {n : ℕ} {a : ℝ
       have hhc : ContinuousAt h (x + circleMap 0 1 θ0 • z0) :=
         (hh.differentiableAt (isOpen_ball.mem_nhds hmem)).continuousAt
       exact hmc.continuousAt.mul (hhc.comp_of_eq hg.continuousAt rfl)
-    · push_neg at hz0
+    · push Not at hz0
       have hopen : IsOpen {p : ℝ × V n | a / 2 < ‖p.2‖} :=
         isOpen_lt continuous_const (continuous_norm.comp continuous_snd)
       have hmem : (θ0, z0) ∈ {p : ℝ × V n | a / 2 < ‖p.2‖} := by
@@ -110,7 +110,7 @@ private theorem integral_moll_mul_eq_of_differentiableOn_ball {n : ℕ} {a : ℝ
       rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, norm_circleMap_zero,
         abs_one, one_mul]
       exact hp
-    · push_neg at hp
+    · push Not at hp
       rw [_root_.ReciprocityTheory.L2DbarEstimates.C.moll_eq_zero_of_lt ha hp]
       simp
   have hswap := integral_integral_swap hInt
@@ -121,7 +121,7 @@ private theorem integral_moll_mul_eq_of_differentiableOn_ball {n : ℕ} {a : ℝ
     rw [integral_const_mul]
     by_cases hz : ‖z‖ ≤ a / 2
     · rw [← intervalIntegral.integral_of_le Real.two_pi_pos.le, ReciprocityTheory.L2DbarEstimates.C.integral_circleMap_smul_eq_two_pi_mul hh (by linarith)]
-    · push_neg at hz
+    · push Not at hz
       rw [_root_.ReciprocityTheory.L2DbarEstimates.C.moll_eq_zero_of_lt ha hz]
       simp
   rw [← intervalIntegral.integral_of_le Real.two_pi_pos.le,

@@ -261,8 +261,8 @@ theorem semiChar_periodPairOfTau (τ : UpperHalfPlane) (m k : ℤ) :
       exact ⟨p, q, by push_cast; ring⟩
   rw [exp_pi_I_int, semiChar]
   by_cases h : Even m ∧ Even k
-  · rw [if_pos (hmem.2 h), if_pos (hpar.2 h)]
-  · rw [if_neg (fun h' => h (hmem.1 h')), if_neg (fun h' => h (hpar.1 h'))]
+  · rw [ite_eq_left (hmem.2 h), ite_eq_left (hpar.2 h)]
+  · rw [ite_eq_right (fun h' => h (hmem.1 h')), ite_eq_right (fun h' => h (hpar.1 h'))]
 
 def expOddTheta (τ : UpperHalfPlane) (z : ℂ) : ℂ :=
   cexp ((Real.pi : ℂ) * z ^ 2 / (2 * ((τ.im : ℝ) : ℂ))) * GlobalTheory.ThetaWeberRoad.oddTheta τ z

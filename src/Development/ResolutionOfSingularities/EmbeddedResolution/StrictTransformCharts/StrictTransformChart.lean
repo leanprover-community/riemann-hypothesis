@@ -300,10 +300,10 @@ theorem restrictToSubscheme_map_comp_coordBlowupSubstMap (B : BlowupChart π c S
     rw [coordBlowupSubstMap_appTop_coord, hM i₀, hstar, hkeyfun,
       BlowupChart.appLE_coord B (complOrderEmb m {a} i₀)]
     by_cases hP : complOrderEmb m {a} i₀ ∈ S ∧ complOrderEmb m {a} i₀ ≠ s
-    · rw [if_pos hP, if_pos (hcond.mp hP)]
+    · rw [ite_eq_left hP, ite_eq_left (hcond.mp hP)]
       simp only [map_mul]
       rw [hL i₀, hL s', hs']
-    · rw [if_neg hP, if_neg (fun hh => hP (hcond.mpr hh))]
+    · rw [ite_eq_right hP, ite_eq_right (fun hh => hP (hcond.mpr hh))]
       exact hL i₀
 
 def BlowupChart.restrictToStrictTransform (B : BlowupChart π c S s)

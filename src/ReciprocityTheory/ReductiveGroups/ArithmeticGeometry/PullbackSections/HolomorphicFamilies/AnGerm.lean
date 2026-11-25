@@ -17,12 +17,6 @@ open AlgebraicGeometry CategoryTheory Opposite Limits MonoidalCategory Cartesian
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open scoped ContDiff
 
-section Pt
-
-variable {K : Type} [Field K] {ι : Type} {m : ℕ}
-
-end Pt
-
 section PullSec
 
 variable {S : Scheme.{0}} (A : Over S) [GrpObj A] (L : LB A.left) (a : ℤ) {T T' : Over S} (h : T' ⊗ A ⟶ T ⊗ A)

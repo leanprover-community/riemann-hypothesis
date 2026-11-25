@@ -72,7 +72,7 @@ variable (S : Set (HeightOneSpectrum (𝓞 K)))
 theorem placeUnit_mem {v : HeightOneSpectrum (𝓞 K)} (hv : v ∈ S) : placeUnit v ∈ S.unit K := by
   intro w hw
   have hwv : w ≠ v := fun h => hw (h ▸ hv)
-  rw [← valuationOfNeZero_eq, valuationOfNeZero_placeUnit, if_neg hwv, WithZero.coe_one]
+  rw [← valuationOfNeZero_eq, valuationOfNeZero_placeUnit, ite_eq_right hwv, WithZero.coe_one]
 
 open scoped Classical in
 theorem valuationVector_placeUnit (v : S) :

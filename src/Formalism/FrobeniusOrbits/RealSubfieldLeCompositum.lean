@@ -44,7 +44,7 @@ private lemma sgn_eq_one_iff_apply_eq {M : Type*} [Field M] [Algebra ℚ M] (σ 
   unfold Formalism.TwoAdicCyclotomicDecomposition.sgn
   by_cases hx : σ x = x
   · simp [hx]
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     exact iff_of_false (by decide) hx
 
 theorem galE_mem_Psi_iff (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
@@ -165,9 +165,9 @@ theorem galE_aE (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b)
   dsimp only
   unfold Formalism.TwoAdicCyclotomicDecomposition.sgn
   by_cases hx : σ (aE ζ a b) = aE ζ a b
-  · rw [if_pos hx, hx]
+  · rw [ite_eq_left hx, hx]
     simp [aE]
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     rcases hor with h1 | h1
     · exact absurd h1 hx
     · rw [h1]
@@ -187,9 +187,9 @@ theorem galE_bE (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b)
   dsimp only
   unfold Formalism.TwoAdicCyclotomicDecomposition.sgn
   by_cases hx : σ (bE ζ a b) = bE ζ a b
-  · rw [if_pos hx, hx]
+  · rw [ite_eq_left hx, hx]
     simp [bE]
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     rcases hor with h1 | h1
     · exact absurd h1 hx
     · rw [h1]

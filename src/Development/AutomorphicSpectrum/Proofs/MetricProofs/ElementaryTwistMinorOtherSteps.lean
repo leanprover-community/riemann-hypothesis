@@ -50,7 +50,7 @@ private lemma det_submatrix_mul_transvection_eq {N k : ℕ} (h : Matrix (Fin N) 
   · congr 1
     ext p q
     have hq : g q ≠ ca := fun hh => hca ⟨q, hh⟩
-    simp only [Matrix.submatrix_apply, mul_transv_apply, hq, if_false, add_zero]
+    simp only [Matrix.submatrix_apply, mul_transv_apply, hq, ite_false, add_zero]
 
 theorem minorIJ_transv {N : ℕ} (h : Matrix (Fin N) (Fin N) ℂ) (t : ℂ) (ca cb : Fin N) (hne : ca ≠ cb)
     (I J : Finset (Fin N)) (hJ : ca ∈ J ↔ cb ∈ J) :

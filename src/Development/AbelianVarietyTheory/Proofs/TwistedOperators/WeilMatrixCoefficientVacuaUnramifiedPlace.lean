@@ -1136,7 +1136,7 @@ theorem vac_coef : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (
     fun a f₁ f₂ h₁ h₂ => ?_⟩
   · intro ϖ hϖ d t ht k₁ hk₁ k₂ hk₂
     have hν : ν (e.symm (k₁ * t * k₂)) = ((val χS w : ℂˣ) : ℂ) ^ (∑ i, d i) := by
-      simp only [ν, if_pos hs]
+      simp only [ν, ite_eq_left hs]
       rw [locChar_eq hom lam w₀ Om hL hlam hsq hs hw₁ h]
       exact detval D T χS v w h (hunr w h).1 e he ϖ hϖ d t ht k₁ hk₁ k₂ hk₂
     have hI : I (e.symm (k₁ * t * k₂)) = qV D.host.E w ^ (S.rank * (∑ i, |d i|).toNat) :=
@@ -1156,7 +1156,7 @@ theorem vac_coef : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (
     ring
   · intro d t ht k₁ hk₁ k₂ hk₂
     have hns : ¬ IsSplit (E := D.host.E) v := not_isSplit_of_isInertAt hw
-    have hν : ν (e.symm (k₁ * t * k₂)) = 1 := if_neg hns
+    have hν : ν (e.symm (k₁ * t * k₂)) = 1 := ite_eq_right hns
     have hI : I (e.symm (k₁ * t * k₂)) = qV D.host.E w ^ (S.rank * (∑ i, max (d i) 0).toNat) :=
       GlobalTheory.T.index_moved_homLattice_inertPlace D S T v w h hw c ϖ e hϖ he d t ht k₁ hk₁ k₂ hk₂
     have hval := val_inert D χS S.rank hom.resS v w hw (hunr w h).1
@@ -1178,10 +1178,10 @@ theorem vac_coef : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (
       (ν a * (lam (I a))⁻¹) * l2 μ 𝓕 (g₁ : WO S T → ℂ) (g₂ : WO S T → ℂ)
     by_cases hs : IsSplit (E := D.host.E) v
     · rw [hn.1 hs, l2_smul, hc]
-      simp only [ν, if_pos hs, I]
+      simp only [ν, ite_eq_left hs, I]
       ring
     · rw [hn.2 (hin₁ hs) (hunr w₁ hw₁).1 (hunr w₁ hw₁).2, hc]
-      simp only [ν, if_neg hs, I]
+      simp only [ν, ite_eq_right hs, I]
       ring
 
 end GlobalTheory.VacCoef

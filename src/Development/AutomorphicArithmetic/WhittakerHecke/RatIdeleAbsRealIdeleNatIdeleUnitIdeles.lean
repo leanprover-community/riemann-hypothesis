@@ -98,7 +98,7 @@ private theorem re_one_of {x : A ℚ} (h : x.1 = 1) : re x = 1 := by
   rfl
 
 private theorem iy_val {r : ℝ} (hr : r ≠ 0) : ∃ d : (TR.Rinf ℚ)ˣ, iy r = TR.infId ℚ d ∧ ∀ w, d.val w = r :=
-  ⟨_, dif_neg hr, fun _ => rfl⟩
+  ⟨_, dite_eq_right hr, fun _ => rfl⟩
 
 private theorem re_iy {r : ℝ} (hr : r ≠ 0) : re (iy r : A ℚ) = r := by
   obtain ⟨d, hd, hw⟩ := iy_val hr

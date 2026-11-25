@@ -140,7 +140,7 @@ theorem first_col {K : Type} [CommRing K] {σ : ℕ} (T S : Matrix (Fin (σ + 1)
   have tri : ∀ j : Fin (σ + 1), ∀ b, j < b → T b j = 0 := fun j => by
     induction j using Fin.reverseInduction with
     | last => exact fun b hb => absurd (Fin.le_last b) (not_le.2 hb)
-    | cast j ih => exact fun b hb => by rw [key j.castSucc j.succ rfl ih b hb.le, if_neg hb.ne']
+    | cast j ih => exact fun b hb => by rw [key j.castSucc j.succ rfl ih b hb.le, ite_eq_right hb.ne']
   have triS : S.BlockTriangular id := by
     letI := invertibleOfLeftInverse T S h
     rw [← Matrix.inv_eq_left_inv h]
@@ -150,9 +150,9 @@ theorem first_col {K : Type} [CommRing K] {σ : ℕ} (T S : Matrix (Fin (σ + 1)
     | last => exact hl
     | cast j ih =>
       have h1 := hs j.castSucc j.succ rfl
-      rw [Finset.sum_eq_single j.castSucc, Finset.sum_eq_single j.succ, if_pos (show j.succ.1 = j.castSucc.1 + 1 from rfl)] at h1
-      · rw [key j.castSucc j.succ rfl (tri _) _ le_rfl, if_pos rfl, h1, ih, one_mul]
-      · exact fun b _ hb => if_neg fun e => hb (Fin.ext e)
+      rw [Finset.sum_eq_single j.castSucc, Finset.sum_eq_single j.succ, ite_eq_left (show j.succ.1 = j.castSucc.1 + 1 from rfl)] at h1
+      · rw [key j.castSucc j.succ rfl (tri _) _ le_rfl, ite_eq_left rfl, h1, ih, one_mul]
+      · exact fun b _ hb => ite_eq_right fun e => hb (Fin.ext e)
       · exact fun h => absurd (Finset.mem_univ _) h
       · intro a _ ha
         refine Finset.sum_eq_zero fun b _ => ?_
@@ -252,7 +252,7 @@ theorem first_eq {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {�
     rw [dotProduct, Finset.sum_eq_single (Fin.last σ)]
     · simp [ell]
     · intro b _ hb
-      rw [ell, if_neg fun e => hb (Fin.ext (by simpa using e)), zero_mul]
+      rw [ell, ite_eq_right fun e => hb (Fin.ext (by simpa using e)), zero_mul]
     · exact fun h => absurd (Finset.mem_univ _) h
   have hA : ∀ (j j' : Fin (σ + 1)) (t : AE D), j'.1 = j.1 + 1 → ∃ u ∈ UX D (σ + 1), u.1 = 1 + Matrix.single j j' t ∧
       blockX d (d'.levi u) = 1 + Matrix.of fun a b => t * incA D (T a j * S' j' b) := fun j j' t e => by
@@ -271,7 +271,7 @@ theorem first_eq {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {�
     · exact fun h => absurd (Finset.mem_univ _) h
   have H := first_col T S' hST ?_ ?_ ?_
   · rw [e1, Matrix.mul_apply]
-    simp only [H, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [H, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   · refine eq_of_psiE hne fun t => ?_
     obtain ⟨b, hb⟩ := exists_b hz' (Fin.last σ) t
     have h1 := hc _ ((hN _).2 (d'.nB_mem_NFlag b))
@@ -307,8 +307,8 @@ theorem first_eq {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {�
         · rw [Matrix.add_apply, Matrix.one_apply_ne (by rintro rfl; omega), zero_add]
         · rfl
     have h5 : upSum (Matrix.single j j' t : Mx D (σ + 1) (σ + 1)) = t := by
-      rw [upSum, Finset.sum_eq_single j, Finset.sum_eq_single j', if_pos e, Matrix.single_apply_same]
-      · exact fun b _ hb => if_neg fun e' => hb (Fin.ext (e'.trans e.symm))
+      rw [upSum, Finset.sum_eq_single j, Finset.sum_eq_single j', ite_eq_left e, Matrix.single_apply_same]
+      · exact fun b _ hb => ite_eq_right fun e' => hb (Fin.ext (e'.trans e.symm))
       · exact fun h => absurd (Finset.mem_univ _) h
       · exact fun a _ ha => Finset.sum_eq_zero fun b _ => by
           rw [Matrix.single_apply_of_row_ne ha.symm, ite_self]

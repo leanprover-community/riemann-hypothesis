@@ -39,7 +39,7 @@ theorem harmSecond_holds : HarmSecondSt := by
   unfold secondOrder
   simp_rw [Fintype.sum_prod_type]
   simp only [apply_ite MvPolynomial.C, ite_mul, map_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true]
+    ite_true]
   apply Finset.sum_eq_zero
   intro l _
   rw [Finset.sum_comm]

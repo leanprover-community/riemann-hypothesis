@@ -64,14 +64,6 @@ noncomputable section
 
 namespace GlobalTheory.BigRec
 
-section Inst
-
-variable {D : D7} {T : Top D}
-
-variable (h : LawsP T) {j : ℕ} (hj : InR D j)
-
-end Inst
-
 
 
 

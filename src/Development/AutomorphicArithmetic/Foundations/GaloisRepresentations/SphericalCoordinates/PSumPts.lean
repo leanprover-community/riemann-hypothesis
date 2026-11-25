@@ -95,25 +95,25 @@ theorem UpperTheory.Gal.W2.sumPts_of :
     show tm v c K S (Quot.out q) (Quot.out pt) = _
     rw [tm_eq v c K S _ _ (hK _ _)]
     by_cases hxF : x ∈ Fb
-    · rw [if_pos hxF]
+    · rw [ite_eq_left hxF]
       obtain ⟨y, hy⟩ := hFb.1 hxF
       have hy' := ((hE1 y).1).1 hy
       rw [finsum_eq_single _ (E y)]
-      · rw [if_pos hy', ((hE1 y).2 hy).1, ((hE1 y).2 hy).2, hw y hy]
+      · rw [ite_eq_left hy', ((hE1 y).2 hy).1, ((hE1 y).2 hy).2, hw y hy]
       · intro y' hne
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hs
         exact hne (hS _ _ _ _ hs hy')
-    · rw [if_neg hxF]
+    · rw [ite_eq_right hxF]
       apply finsum_eq_zero_of_forall_eq_zero
       intro y'
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hs
       exact hxF (hFb.2 ⟨E' y', ((hE2 y').1).1 hs⟩)
   have hsupp : Function.support (fun x => g (Φ x)) ⊆ ↑Fb := by
     intro x hx0
     by_contra hn
-    exact hx0 (by show g (Φ x) = 0; rw [key x, if_neg (show x ∉ Fb from hn)])
+    exact hx0 (by show g (Φ x) = 0; rw [key x, ite_eq_right (show x ∉ Fb from hn)])
   have hfin : (Function.support g).Finite := by
     apply ((Fb.finite_toSet).image Φ).subset
     intro s hs
@@ -126,4 +126,4 @@ theorem UpperTheory.Gal.W2.sumPts_of :
     rw [finsum_sigma g hfin]
     rfl
   rw [h1, ← finsum_comp_equiv Φ, finsum_eq_sum_of_support_subset (fun x => g (Φ x)) hsupp]
-  exact Finset.sum_congr rfl (fun x hx => by rw [key, if_pos hx])
+  exact Finset.sum_congr rfl (fun x hx => by rw [key, ite_eq_left hx])

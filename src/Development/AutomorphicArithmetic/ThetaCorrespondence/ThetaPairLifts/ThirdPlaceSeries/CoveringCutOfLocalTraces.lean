@@ -355,13 +355,6 @@ structure ActsUnitarily (R : RealDat D A Ks) : Prop where
 
 end Statement
 
-section Basic₂
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-end Basic₂
-
 end GlobalTheory.IndefiniteRowSideFullHecke.DefiniteUnitaryAction
 
 end

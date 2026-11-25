@@ -387,7 +387,7 @@ theorem rows_fixed : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : T
       intro i i' hij
       exfalso
       unfold blkOf at hij
-      rw [if_pos (hr i), if_pos (hr i')] at hij
+      rw [ite_eq_left (hr i), ite_eq_left (hr i')] at hij
       exact lt_irrefl 0 hij
     · exact absurd hP (Finset.notMem_empty PP)
     · generalize hγ : GlobalTheory.GoodTypes.facHom D k v (GlobalTheory.GLp.red (D.host.g k) D.R.r y) = γ

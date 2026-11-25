@@ -75,7 +75,7 @@ theorem card_le_ringKrullDim (W : Ideal (MRing ι)) [W.IsPrime] (hWh : IsMultiHo
       simp [killBlocks]
     · intro h
       rw [Ideal.mem_comap] at h
-      simp only [killBlocks, aeval_X, if_neg hk] at h
+      simp only [killBlocks, aeval_X, ite_eq_right hk] at h
       exact hj k h
   have chain : ∀ S : Finset K, (S.card : WithBot ℕ∞) + ringKrullDim (MRing ι ⧸ Q S) ≤
       ringKrullDim (MRing ι ⧸ Q ∅) := by

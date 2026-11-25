@@ -315,7 +315,7 @@ theorem ct_gconv {n a b : ℕ} (h : a + b = n) (w : Pl E) {f₁ f₂ : GLw n w �
 
 theorem ctMul : CtMul := by
   intro E _ _ _ n a ha w hw μ hμ f g hf hg
-  have hU : UL n w = ⊤ := if_pos hw
+  have hU : UL n w = ⊤ := ite_eq_left hw
   funext m
   set h := Nat.add_sub_cancel' ha with hh
   let c : GLw a w × GLw (n - a) w → ℂ := fun m =>

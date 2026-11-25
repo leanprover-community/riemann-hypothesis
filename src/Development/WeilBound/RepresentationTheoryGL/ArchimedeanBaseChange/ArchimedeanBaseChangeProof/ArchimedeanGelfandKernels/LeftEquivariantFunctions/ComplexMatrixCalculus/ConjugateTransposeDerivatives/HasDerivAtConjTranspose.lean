@@ -186,7 +186,7 @@ theorem cf_hbM (m : Md n) : cf n (hbM m) = Pi.single m 1 := by
   rw [cf_apply, (hbOrtho n).1, Pi.single_apply]
   by_cases h : m = m'
   · subst h; simp
-  · rw [if_neg h, if_neg (Ne.symm h)]; simp
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]; simp
 
 end PositivityTheory.RgBcC.Cxa
 

@@ -121,12 +121,12 @@ theorem vandLamLower : VandLamLower := by
   have hlam1 : ∀ i, i ≤ c.k - 1 → c.lam i = c.v i := by
     intro i hi
     have hi' : i < c.k := by omega
-    simp only [Cfg.lam, if_pos hi']
+    simp only [Cfg.lam, ite_eq_left hi']
   have hlam2 : ∀ j, 1 ≤ j → c.lam (j + (c.k - 1)) = -c.b j := by
     intro j hj
     have h1 : ¬ (j + (c.k - 1) < c.k) := by omega
     have h2 : j + (c.k - 1) + 1 - c.k = j := by omega
-    simp only [Cfg.lam, if_neg h1, h2]
+    simp only [Cfg.lam, ite_eq_right h1, h2]
   have eqn : Vand (c.k + c.m - 1) c.lam = Vand (c.k - 1) c.v *
       (∏ i ∈ Icc 1 (c.k - 1), ∏ j ∈ Icc 1 c.m, (c.v i + c.b j)) * Vand c.m (fun j => -c.b j) := by
     rw [hkm, vand_split (c.k - 1) c.m c.lam]

@@ -166,7 +166,7 @@ theorem local_mass_le : ∀ (B : RowsAut) (U : Set B.I.GA), 1 ≤ B.I.n → IsCo
     intro y
     have h := hfund.2.1 y
     have e : B.I.rep B.fund y = h.choose * y := by
-      unfold AutInst.rep; exact dif_pos h
+      unfold AutInst.rep; exact dite_eq_left h
     have hm : h.choose ∈ (Γ : Set B.I.GA) := by
       have k := h.choose_spec.1
       generalize h.choose = z at k ⊢
@@ -456,7 +456,7 @@ theorem exists_retraction {n : ℕ} {ε : Fin n → Bool} (x : UJ ε) :
     if h : (1 + skew ε (cay (t Y))).det ≠ 0 then (hex Y h).choose else 1
   have hr : ∀ Y, (1 + skew ε (cay (t Y))).det ≠ 0 → uMat (r Y) = cay (skew ε (cay (t Y))) := by
     intro Y hY
-    simp only [r, dif_pos hY]
+    simp only [r, dite_eq_left hY]
     exact (hex Y hY).choose_spec
   refine ⟨fun Y => x * r Y, ?_⟩
   filter_upwards [hev.eventually_nhds] with Y hY

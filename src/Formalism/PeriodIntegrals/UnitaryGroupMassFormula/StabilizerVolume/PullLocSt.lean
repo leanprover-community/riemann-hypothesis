@@ -75,8 +75,8 @@ theorem pullLoc_of (hC : CompG) (hI : FibInvInf) (hV : FibInvV) : PullLoc := by
     funext Y
     simp only [hv1, Set.indicator, Pi.one_apply]
     by_cases hY : Y ∈ latV b v
-    · rw [if_pos ((hv2 Y).2 hY), if_pos hY]
-    · rw [if_neg (fun h => hY ((hv2 Y).1 h)), if_neg hY]
+    · rw [ite_eq_left ((hv2 Y).2 hY), ite_eq_left hY]
+    · rw [ite_eq_right (fun h => hY ((hv2 Y).1 h)), ite_eq_right hY]
   · intro X
     show Φ (g • X) = Φinf (hInf • projInf X) * ∏ᶠ v, Φv v (hv v • projV v (projFin X))
     rw [hprod (g • X), h1 X, hpure.2.2]

@@ -105,16 +105,16 @@ private theorem cr_set (p₀ : ℕ) (hp₀ : p₀ ≠ 0) [CharP (ResidueField O)
   have hA : ∀ v, IsPlaceOver (A v) v := by
     intro v
     by_cases h : (l : 𝓞 (W.Lp L)) ∈ v.asIdeal
-    · simp only [A, dif_pos h]
+    · simp only [A, dite_eq_left h]
       exact he ⟨v, h⟩
     · by_cases h' : v = v0
-      · simp only [A, dif_neg h, if_pos h']
+      · simp only [A, dite_eq_right h, ite_eq_left h']
         rw [h']
         exact hA0
-      · simp only [A, dif_neg h, if_neg h']
+      · simp only [A, dite_eq_right h, ite_eq_right h']
         exact isPlaceOver_placeOf Ω v
   have hAl : ∀ v : W.Vl l L, A ↑v = k.pl (e v) := fun v => by
-    simp only [A, dif_pos v.2]
+    simp only [A, dite_eq_left v.2]
   have hAv0 : A v0 = A0 := by simp [A, hlv0]
   have hA_ne_top (v : W.Plc (W.Lp L)) : A v ≠ ⊤ := by
     intro htop

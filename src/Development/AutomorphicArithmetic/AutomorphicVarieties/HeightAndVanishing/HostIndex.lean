@@ -43,7 +43,7 @@ private theorem index_zpowers_neg_one_units_zmod_two_pow_dvd (e : ℕ) :
   have h := Subgroup.index_mul_card (Subgroup.zpowers (-1 : (ZMod (2 ^ (e + 2)))ˣ))
   rw [Nat.card_zpowers, ← orderOf_units, Units.val_neg, Units.val_one, orderOf_neg_one,
     ZMod.ringChar_zmod_n, Nat.card_eq_fintype_card, ZMod.card_units_eq_totient,
-    Nat.totient_prime_pow_succ Nat.prime_two, if_neg (by omega)] at h
+    Nat.totient_prime_pow_succ Nat.prime_two, ite_eq_right (by omega)] at h
   have h' : 2 ^ (e + 1) * (2 - 1) = 2 ^ e * 2 := by ring
   rw [h'] at h
   rw [Nat.eq_of_mul_eq_mul_right (by norm_num) h]

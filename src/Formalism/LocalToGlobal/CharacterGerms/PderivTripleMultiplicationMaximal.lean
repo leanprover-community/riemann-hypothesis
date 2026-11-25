@@ -109,9 +109,9 @@ theorem pderiv_triple_multiplication (Y : FBChart C V O dd) (k i : Fin dd) :
   show pderiv (R := C) ((0 : Fin 3), i) (ev ![(p3 0 : Pt C 3 dd)] (mulL Y.B.G.F V.l k)) = _
   rw [pderiv_eval_single (P := (p3 0 : Pt C 3 dd)) (z0p3 0), Finset.sum_eq_single i (fun j _ hj => by
       show _ * pderiv (R := C) _ (pt C (n := 3) dd 0 j) = 0
-      rw [LiftedCoordinateEvaluation.pderiv_pt_same, if_neg hj, mul_zero]) (fun h => absurd (Finset.mem_univ i) h)]
+      rw [LiftedCoordinateEvaluation.pderiv_pt_same, ite_eq_right hj, mul_zero]) (fun h => absurd (Finset.mem_univ i) h)]
   show _ * pderiv (R := C) _ (pt C (n := 3) dd 0 i) = _
-  rw [LiftedCoordinateEvaluation.pderiv_pt_same, if_pos rfl, mul_one]
+  rw [LiftedCoordinateEvaluation.pderiv_pt_same, ite_eq_left rfl, mul_one]
   rfl
 
 theorem pderiv_triple_multiplication_maximal (Y : FBChart C V O dd) (k i : Fin dd) : MaximalIdealCongruence.MMS V (pderiv (R := C) ((0 : Fin 3), i) (m3 Y.B.G V.l k)) := by

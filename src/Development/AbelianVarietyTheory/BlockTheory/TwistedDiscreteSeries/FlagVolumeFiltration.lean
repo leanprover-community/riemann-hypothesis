@@ -62,9 +62,4 @@ variable [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (ν : Measur
 
 end Statements
 
-section Examples
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : Type} {c : ℕ}
-
-end Examples
-
 end GlobalTheory.IndefiniteRowSideFullHecke.FlagVolumeFiltration

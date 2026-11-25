@@ -139,13 +139,6 @@ namespace GlobalTheory.TrivialValuationTest
 
 open Formalism.L2.Pj Formalism.L2.PjFree NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-section Ring
-
-variable {V F : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field F] [Algebra V F]
-  [IsFractionRing V F]
-
-end Ring
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
@@ -272,7 +265,7 @@ theorem exists_dvr (hv : ∃ x : K, v x ≠ 0 ∧ v x < 1) :
       have := (WithZero.log_le_log ((v.ne_zero_iff).2 hy') one_ne_zero).2 ((v.mem_valuationSubring_iff _).1 y.2)
       rwa [WithZero.log_one] at this
     have hm0 : m ≤ 0 := by
-      by_contra h; push_neg at h
+      by_contra h; push Not at h
       have : (0 : ℤ) < d * m := mul_pos hdz h
       omega
     set n := (-m).toNat with hn
@@ -810,12 +803,6 @@ theorem functionalValues_nonempty (h : IsConj cj) (b : SymB cj Y) : (functionalV
   obtain ⟨l, hi, hp⟩ := GlobalTheory.PointStepCompare.exists_admissible E (isBalancedSpace (Y := Y) h)
   exact ⟨l b, l, ⟨hi, hp⟩, rfl⟩
 
-section Host
-
-open Formalism.BasicNotions
-
-end Host
-
 end GlobalTheory.LeastExponentCompare
 
 end
@@ -1011,15 +998,6 @@ end GlobalTheory.DegVal
 end
 end
 
-section
-open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
-open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.HermTools GlobalTheory.Adelic GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop
-open GlobalTheory.FlagMod (FlagCover)
-open GlobalTheory.FlagTan (dimFlag)
-open GlobalTheory.HSApp
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.CentredPointPhiPositive =====

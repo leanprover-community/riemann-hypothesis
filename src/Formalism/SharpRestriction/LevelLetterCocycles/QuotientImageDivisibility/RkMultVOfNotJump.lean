@@ -104,7 +104,7 @@ theorem rk_fildR_hi (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ 
 theorem rk_multV_of_not_jump (τ : K →ₐ[Qp] LL) (a : ℤ) (h : ¬ IsJumpV PD ρ τ a) :
     multV PD ρ τ a = 0 := by
   unfold IsJumpV at h
-  push_neg at h
+  push Not at h
   unfold multV
   rw [h, sub_self]
 

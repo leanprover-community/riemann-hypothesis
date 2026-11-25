@@ -89,12 +89,6 @@ def IsGermN {V : Type} [CommRing V] [IsDomain V] {I : Ideal V} {t : SAB H (Sp V)
 
 end GermN
 
-section St
-
-open IsLocalRing
-
-end St
-
 end ExpBijectiveUniformisation
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1

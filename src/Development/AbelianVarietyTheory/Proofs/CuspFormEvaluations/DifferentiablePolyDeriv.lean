@@ -137,12 +137,12 @@ theorem eigen_of_triangular (f : (J → V) → ℂ) (lt : J → J → Prop) (rk 
       funext j
       by_cases hj : j = a
       · subst hj
-        rw [Function.update_self, if_pos (Finset.mem_insert_self _ _), if_neg ha,
+        rw [Function.update_self, ite_eq_left (Finset.mem_insert_self _ _), ite_eq_right ha,
           ← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
         congr 1
         refine Finset.sum_congr rfl fun i hi => ?_
         by_cases h : lt i j
-        · rw [if_neg fun hS => (hmin i hS).not_gt (hrk i j h)]
+        · rw [ite_eq_right fun hS => (hmin i hS).not_gt (hrk i j h)]
         · rw [hN i j (Finset.ne_of_mem_erase hi) h, zero_smul, zero_smul]
       · simp [hj]
   simpa using key Finset.univ
@@ -176,7 +176,7 @@ theorem polyDeriv_triangular {T κ W : Type*} [Fintype T] [Fintype κ] {p q : �
     by_cases e : t' = t ∧ r'' = r'
     · obtain ⟨rfl, rfl⟩ := e
       simp
-    · rw [Function.update_of_ne (by simpa using e), if_neg e]
+    · rw [Function.update_of_ne (by simpa using e), ite_eq_right e]
       simp
   · rintro ⟨t, r⟩ s w
     rw [← polyDeriv_smul_letter P (fun l => if l.1 = t ∧ l.2.1 = r then s else 1) _ fun m hm => ?_]
@@ -185,7 +185,7 @@ theorem polyDeriv_triangular {T κ W : Type*} [Fintype T] [Fintype κ] {p q : �
       by_cases e : t' = t ∧ r'' = r
       · obtain ⟨rfl, rfl⟩ := e
         simp
-      · rw [Function.update_of_ne (by simpa using e), if_neg e]
+      · rw [Function.update_of_ne (by simpa using e), ite_eq_right e]
         simp
     · rw [← hdeg t r (mem_support_iff.1 hm), Finsupp.weight_apply, Finsupp.sum,
         ← Finset.prod_pow_eq_pow_sum]

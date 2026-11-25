@@ -110,7 +110,7 @@ theorem main : ∀ {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} 
       by_cases e : a = b
       · subst e; simp
       · have e' : (⟨a.val, hab.1⟩ : Fin r) ≠ ⟨b.val, hab.2⟩ := fun h2 => e (Fin.ext (by simpa using congrArg Fin.val h2))
-        rw [if_neg e, if_neg e']
+        rw [ite_eq_right e, ite_eq_right e']
     · rw [dite_eq_right hab] at this
       refine ⟨?_, fun _ => this⟩
       rw [Matrix.sub_apply, this, Matrix.one_apply]
@@ -137,10 +137,10 @@ theorem main : ∀ {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} 
     · refine (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 (hint _ _ ?_ (hone' a b))
       rw [← Matrix.sub_apply]; exact hKi a b
     · have hne : a ≠ b := fun e => by rw [e] at ha; omega
-      rw [(hent a b).2 (by omega), if_neg hne, map_zero]; exact zero_lt_one
+      rw [(hent a b).2 (by omega), ite_eq_right hne, map_zero]; exact zero_lt_one
     · have hne : a ≠ b := fun e => by rw [e] at hlt; omega
       have := (hent a b).1
-      rwa [Matrix.sub_apply, Matrix.one_apply, if_neg hne, sub_zero] at this
+      rwa [Matrix.sub_apply, Matrix.one_apply, ite_eq_right hne, sub_zero] at this
     · subst he
       have := (hent a a).1
       rwa [Matrix.sub_apply, Matrix.one_apply_eq] at this
@@ -159,7 +159,7 @@ theorem main : ∀ {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} 
     split_ifs with hab
     · have hne : a ≠ b := fun e => by rw [e] at hab; omega
       have := (hent a b).1
-      rwa [Matrix.sub_apply, Matrix.one_apply, if_neg hne, sub_zero] at this
+      rwa [Matrix.sub_apply, Matrix.one_apply, ite_eq_right hne, sub_zero] at this
     · rw [map_zero]; exact zero_lt_one)
   refine ⟨hpJ, Units.ext ?_⟩
   rw [hchr, hsup, map_one, one_mul, Units.val_one]

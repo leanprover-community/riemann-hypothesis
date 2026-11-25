@@ -723,7 +723,7 @@ theorem lattice_sum {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
   have he : ∀ ξ : Matrix (Fin n) (Fin 1) E, ξ.map (fun x => (1 : Af F) ⊗ₜ[F] x) ∈ L → ∀ i,
       ((e ξ i : 𝓞 E) : E) = ((d * d : ℕ) : E) * (R * ξ) i 0 := fun ξ hξ i => by
     have h := hint ξ hξ i
-    simp only [e, dif_pos h]
+    simp only [e, dite_eq_left h]
     exact h.choose_spec.symm
   let κ := Module.Free.ChooseBasisIndex ℤ (𝓞 E)
   let m : Matrix (Fin n) (Fin 1) E → ι × κ → ℤ := fun ξ p => (RingOfIntegers.basis E).repr (e ξ p.1) p.2
@@ -1120,7 +1120,7 @@ theorem pure_le_colMajorant (D : D7) (θ : InfFam D) (hθ : IsInfFam θ) (V : HS
       Set.indicator_of_mem (hall j) _
     refine le_trans ?_ (le_of_eq h1.symm)
     exact Set.indicator_le_self' (fun _ _ => zero_le_one) _ |>.trans le_rfl
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨j, hj⟩ := hall
     have hz : ‖pureT θ f g (HMul.hMul (mt V y⁻¹) x : Matrix (Fin V.rank) (Fin n) (AE D))‖ₑ = 0 := by
       refine le_antisymm ((h0 y hy x).trans (le_of_eq ?_)) bot_le

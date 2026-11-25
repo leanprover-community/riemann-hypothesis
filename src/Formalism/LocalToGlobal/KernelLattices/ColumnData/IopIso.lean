@@ -237,7 +237,7 @@ theorem Phi_smul_eq {N N' : ℕ} (δ : ℂ) (M : ℤ) (hM : M ≠ 0) (n : ℕ)
     intro j0 hj0
     simp [FL.ins, Ne.symm hj0]
   have h3 : FL.ins D i j (fun τ => δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) τ i j =
-      δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E) := if_pos ⟨rfl, rfl⟩
+      δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E) := ite_eq_left ⟨rfl, rfl⟩
   rw [Fintype.sum_eq_single i h1, Fintype.sum_eq_single j h2, h3]
   show ((n : ℤ) * M) • (δ / M * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) = _
   rw [zsmul_eq_mul]

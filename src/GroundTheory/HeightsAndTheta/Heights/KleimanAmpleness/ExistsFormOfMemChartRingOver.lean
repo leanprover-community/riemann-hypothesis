@@ -195,7 +195,7 @@ theorem RowSub.proof : RowSub.Statement := by
     linear_combination (-(Kleiman.xProd J ^ n * t * ∏ k, y ⟨k, c k⟩ ^ m k)) * e2
   show t ∈ cellSec S y γ (baseCell k₀ e J.1 I)
   unfold cellSec
-  rw [if_pos hmeet]
+  rw [ite_eq_left hmeet]
   exact Submodule.subset_span ⟨G, T, a, hTmem, hTa, fun k => by rw [hak k]; have := hpk k; have := hqk k; omega,
     hGa, hval⟩
 

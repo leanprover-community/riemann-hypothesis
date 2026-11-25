@@ -1021,7 +1021,7 @@ theorem square_set_mem_exceptional_union {N : ℕ} {c : Fin N → K} (hc : c ∈
       Finset.mem_filter.2 ⟨Finset.mem_range.2 (by omega), hl, d, hd, hlt⟩
     convert hmem
   simp only [Set.InjOn] at hninj
-  push_neg at hninj
+  push Not at hninj
   obtain ⟨x, hxr, y, hyr, hxy, hne⟩ := hninj
   have hxa : aeval x (monicOf c) = 0 := (mem_rootSet.1 hxr).2
   have hya : aeval y (monicOf c) = 0 := (mem_rootSet.1 hyr).2

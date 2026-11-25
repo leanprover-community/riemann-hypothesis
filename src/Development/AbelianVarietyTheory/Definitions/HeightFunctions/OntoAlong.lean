@@ -71,12 +71,6 @@ def sidePt {D : D7} {O : Obj D} {c : ℝ} (b : BdPt D O c) : Side D O.ex.nch :=
   { G := b.P.Gp, Pl0 := b.P.Pl0, I0 := b.P.I0, T := b.P.T, A3 := b.P.A3, J := b.T, R := b.R, P0 := b.P.P0, ψ0 := b.P.ψ0, cG := b.cG,
     v₀ := b.v₀, S := b.Sx, YS := b.nexp, cf := b.R.C, tp := b.Tp }
 
-section Wit
-
-variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)}
-
-end Wit
-
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {𝒮 : Slots}
 
 def RayRec (D : D7) (nch : NChoice D) : Prop :=

@@ -78,13 +78,6 @@ theorem homologyMap_pi_bijective (p : ∀ i, K ⟶ L i)
 
 end Complex
 
-section GroupCohomology
-
-variable {k G : Type u} [CommRing k] [Group G] {ι : Type*} {P : Rep.{u} k G}
-  {A : ι → Rep.{u} k G}
-
-end GroupCohomology
-
 end GroundTheory.ProfCoh
 end -- clump:auto
 end -- clump:auto

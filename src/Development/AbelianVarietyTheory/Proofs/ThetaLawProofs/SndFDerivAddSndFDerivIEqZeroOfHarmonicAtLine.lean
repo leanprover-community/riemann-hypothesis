@@ -57,12 +57,6 @@ namespace GlobalTheory
 
 open ReciprocityTheory.PTheta ReciprocityTheory.ChartRestriction.G.Key
 
-section General
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end General
-
 variable {g : ℕ}
 
 

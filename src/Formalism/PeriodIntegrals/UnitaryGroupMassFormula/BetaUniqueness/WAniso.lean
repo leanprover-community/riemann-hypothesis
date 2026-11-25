@@ -165,7 +165,7 @@ theorem wa_indep {m : ℕ} (u : Fin m → S.V) (hu : LinearIndependent E u) (x :
     refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun i _ => ?_))
     ring
   rw [h3] at h0
-  simp only [key, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h0
+  simp only [key, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h0
   simpa using h0
 
 end Emb

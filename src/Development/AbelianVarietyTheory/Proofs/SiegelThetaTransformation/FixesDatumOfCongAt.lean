@@ -119,7 +119,7 @@ theorem fixesDatum_of_congAt (c : Coeff l) {n b : ℕ} (hb : l.M ∣ b) {g : Mat
   have key : ((t : 𝓞 E) * k) • (q' i - q i) = 0 := by
     rw [smul_sub, mul_smul, hq i, Finset.smul_sum]
     simp only [smul_smul, hent, add_smul, mul_smul _ (l.M : 𝓞 E), level_smul, smul_zero, add_zero, ite_smul,
-      zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+      zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
   have hco : IsCoprime ((t * k : ℕ) : 𝓞 E) (l.M : 𝓞 E) :=
     (ht.coprime_mul_right_right.mul_left hk).cast
   obtain ⟨x, y, hxy⟩ := hco
@@ -142,7 +142,7 @@ theorem isBeta_cover (hK : KPsiIn (Dw := Dw) c) {bad : ℕ} (hb : bad ≠ 1) (Λ
     (hT : Λ.TrivAt bad) : IsBeta Dw d.c₂ Λ (d.eF (betaH (Dw := Dw) c Λ)) := by
   have hex := GlobalTheory.betaExists_of_ne_one E H Dw l c n bad hb hK Λ hU hT
   have hs := hex.choose_spec
-  have e : betaH (Dw := Dw) c Λ = hex.choose := dif_pos hex
+  have e : betaH (Dw := Dw) c Λ = hex.choose := dite_eq_left hex
   rw [e]
   refine ⟨by simpa using hs.1, (PlaceInt.eF_transfer E H Dw l Xo c n d Λ).1 _ hs.2.1, fun s => ?_⟩
   exact hs.2.2 (s.comp (d.eF : c.F →+* d.c₂.F))

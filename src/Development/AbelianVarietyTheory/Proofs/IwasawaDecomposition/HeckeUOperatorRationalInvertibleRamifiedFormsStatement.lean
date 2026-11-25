@@ -207,7 +207,7 @@ theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [Decidab
         Finset.sum_comm]
       refine Finset.sum_eq_zero fun x _ => ?_
       by_cases hx : g x = 0
-      · simp only [hx, if_true]; exact h2 x
+      · simp only [hx, ite_true]; exact h2 x
       · simp [hx]
     · by_cases hg : g = 0
       · subst hg
@@ -240,15 +240,15 @@ theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [Decidab
     rw [← mul_smul]
     by_cases hx : x = x0
     · subst hx
-      simp only [sub_self, map_zero, Finset.filter_true, Finset.card_univ, if_true, hr]
+      simp only [sub_self, map_zero, Finset.filter_true, Finset.card_univ, ite_true, hr]
       rw [← add_smul]; congr 1; ring
     · have := card_annihilator_mul k W (x - x0) (sub_ne_zero.mpr hx)
-      rw [if_neg hx, add_zero, hN, ← this]
+      rw [ite_eq_right hx, add_zero, hN, ← this]
       congr!
   have D := congrArg (fun m => Fintype.card k • m) B
   simp only [Finset.smul_sum, C] at D
   simp only [smul_zero, Finset.sum_add_distrib, ← Finset.smul_sum, T,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, zero_add] at D
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, zero_add] at D
   exact hcancel _ _ (Nat.mul_ne_zero (show r ≠ 0 by omega) Fintype.card_ne_zero) D
 
 end GlobalTheory.FiniteRadon
@@ -388,13 +388,13 @@ theorem eq_zero_of_upSum_of_norm : ∀ (R V k W M : Type) [CommRing R] [AddCommG
   let ψ : W → M := fun w => if h : ∃ q, Rel res t Λ π q w then Φ h.choose else 0
   have ψ1 : ∀ q w, Rel res t Λ π q w → ψ w = Φ q := fun q w h => by
     have h0 : ∃ q, Rel res t Λ π q w := ⟨q, h⟩
-    simp only [ψ, dif_pos h0]
+    simp only [ψ, dite_eq_left h0]
     rw [rel_inj hs ht htf hsat hr h0.choose_spec h]
-  have ψ0 : ∀ w, (¬ ∃ q, Rel res t Λ π q w) → ψ w = 0 := fun w h => dif_neg h
+  have ψ0 : ∀ w, (¬ ∃ q, Rel res t Λ π q w) → ψ w = 0 := fun w h => dite_eq_right h
   let j : Pr R V k → W := fun q => if h : ∃ w, Rel res t Λ π q w then h.choose else 0
   have j1 : ∀ q : Pr R V k, q.Ok res → q.IsKer Λ → Rel res t Λ π q (j q) := fun q ho hk => by
     have h0 : ∃ w, Rel res t Λ π q w := rel_ex hs ho hk
-    simp only [j, dif_pos h0]
+    simp only [j, dite_eq_left h0]
     exact h0.choose_spec
   have key := _root_.GlobalTheory.FiniteRadon.eq_zero_of_hyperplane_sums k W M ψ (fun g hg => ?_) (fun w => ?_)
   · intro q ho hk
@@ -936,10 +936,6 @@ noncomputable section
 namespace GlobalTheory.LevelIndexCompare
 
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.IndefiniteRowSideFullHecke.IndexAtLevelRanks
-
-section General
-
-end General
 
 variable (D : D7) (u : D.what₂.Word)
 

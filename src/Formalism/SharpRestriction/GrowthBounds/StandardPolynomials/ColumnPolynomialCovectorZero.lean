@@ -451,7 +451,7 @@ theorem level_degree_covector_zero (j : Fin (numSeg X.TT)) (i : Fin (BDk C0 CE1 
 
 theorem monomial_mem_support (M : MonH X) : M ∈ (monomial M (1 : KK O) : RHH O X).support := by
   classical
-  rw [support_monomial, if_neg one_ne_zero]
+  rw [support_monomial, ite_eq_right one_ne_zero]
   exact Finset.mem_singleton_self _
 
 def lemmaRData (S : UniformizedDVR X.p O) (hS : S.SqP) (hD : D1num X) (h2 : 2 ≤ numSeg X.TT) (hGle : ∀ j, segG X.TT j ≤ X.G')

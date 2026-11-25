@@ -167,7 +167,7 @@ theorem detachedCoprod_succ_hom_ext (i : ℕ) {T : Scheme.{u}}
 theorem detachedToCoprod_succ_of_lt (s i : ℕ) (h : s < i) :
     S.detachedToCoprod s (i + 1) (Nat.lt_succ_of_lt h) = S.detachedToCoprod s i h ≫ S.detachedCoprodInl i := by
   have hne : ¬ (s = i) := by omega
-  exact dif_neg hne
+  exact dite_eq_right hne
 
 theorem detachedToCoprod_self (i : ℕ) :
     S.detachedToCoprod i (i + 1) (Nat.lt_succ_self i) = S.detachedCoprodInr i := by

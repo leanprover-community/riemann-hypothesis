@@ -76,7 +76,7 @@ theorem exists_isChart (L : Flat.LogPeriods n a g Λ) : ∃ bas A T0 B c ρ, IsC
       funext k
       by_cases hk : k.val < a
       · have := hl ⟨k.val, hk⟩
-        simp only [expCover, hk, if_true, w, dif_pos]
+        simp only [expCover, hk, ite_true, w, dite_eq_left]
         rw [this]
         rfl
       · simp [expCover, hk, w]
@@ -87,7 +87,7 @@ theorem exists_isChart (L : Flat.LogPeriods n a g Λ) : ∃ bas A T0 B c ρ, IsC
         rw [Complex.norm_exp] at h1
         exact Real.exp_lt_one_iff.1 h1
       · have hk' : ¬ k.val < a := not_lt.2 hk
-        simp only [w, hk', dif_neg, not_false_eq_true]
+        simp only [w, hk', dite_eq_right, not_false_eq_true]
         exact hz1 k
     have h1 := (hb w hw (by rw [hexp]; exact Metric.ball_subset_closedBall hz)).1
     rw [hτ w hw] at h1

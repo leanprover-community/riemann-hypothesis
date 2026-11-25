@@ -64,9 +64,9 @@ private theorem adEx_ext {l : ℕ} [Fact l.Prime] (F : GFrame l) {M : Type} [Mon
     rw [map_mul, h2, F.η_c, one_mul] at h
     exact absurd h (by decide)
   let f : F.Γ → M := fun γ => if h : γ ∈ F.η.ker then a ⟨γ, h⟩ else a ⟨γ * F.c, hm γ h⟩ * t
-  have f1 : ∀ g : F.G₀, f g = a g := fun g => by simp only [f, dif_pos g.2]
+  have f1 : ∀ g : F.G₀, f g = a g := fun g => by simp only [f, dite_eq_left g.2]
   have f2 : ∀ g : F.G₀, f (g * F.c) = a g * t := fun g => by
-    simp only [f, dif_neg (hn g), mul_assoc, hcc, mul_one]
+    simp only [f, dite_eq_right (hn g), mul_assoc, hcc, mul_one]
   have cases : ∀ γ : F.Γ, ∃ g : F.G₀, γ = g ∨ γ = g * F.c := by
     intro γ
     by_cases h : γ ∈ F.η.ker

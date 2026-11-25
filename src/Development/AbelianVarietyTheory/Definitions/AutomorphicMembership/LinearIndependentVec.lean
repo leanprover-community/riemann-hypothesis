@@ -51,7 +51,7 @@ def oneAt (σ : E →+* ℂ) (n : ℕ) (σ' : E →+* ℂ) (a : Fin (Dw.mult σ'
 
 theorem oneAt_eq_zero {σ : E →+* ℂ} {n : ℕ} (h : Dw.mult σ ≤ n) : oneAt Dw σ n = 0 := by
   funext σ' a
-  refine if_neg ?_
+  refine ite_eq_right ?_
   rintro ⟨rfl, rfl⟩
   exact a.2.not_ge h
 
@@ -181,7 +181,7 @@ theorem tr_neg_oneAt (σ : E →+* ℂ) (a : Fin (Dw.mult σ)) :
     (c.tr c' hZ (-oneAt Dw σ a)).val = resG _ (inf_comm c.U c'.U).le (c'.chg c hZ σ a a) := by
   rw [tr, Finset.prod_eq_single σ (fun σ' _ h => by simp [oneAt, h]) (by simp),
     Finset.prod_eq_single a (fun a' _ h => by simp [oneAt, Fin.val_inj, h]) (by simp)]
-  simp only [oneAt, Pi.neg_apply, and_self, if_true, zpow_neg, zpow_one]
+  simp only [oneAt, Pi.neg_apply, and_self, ite_true, zpow_neg, zpow_one]
   refine Units.inv_eq_of_mul_eq_one_right (fn_ext Z fun k _ x h _ => ?_)
   have hi := le_preimage_mono x inf_le_left h
   rw [valR_mul x _ h, valR_res x _ h, valR_one x _ h, IsUnit.unit_spec,
@@ -339,12 +339,12 @@ end At
 
 def embOf (D : D7) (τ : PsiT D) : D.host.E →+* ℂ := DV.tauEmb D (D.eTau.symm τ)
 
-theorem mult_embOf (S : Sig A N j) (τ : PsiT D) : S.Dw.mult (embOf D τ) = j := (if_pos (A.cm _)).trans S.p_eq
+theorem mult_embOf (S : Sig A N j) (τ : PsiT D) : S.Dw.mult (embOf D τ) = j := (ite_eq_left (A.cm _)).trans S.p_eq
 
 theorem mult_conj_embOf (S : Sig A N j) (τ : PsiT D) : S.Dw.mult (conjEmb (embOf D τ)) = N - j := by
   have h₁ := S.p_eq
   have h₂ := S.rank_eq
-  refine (if_neg fun h => ?_).trans (by omega)
+  refine (ite_eq_right fun h => ?_).trans (by omega)
   have h₃ : starRingEnd ℂ A.H.rt0 = A.H.rt0 := (congrArg _ (A.cm (D.eTau.symm τ)).symm).trans h
   obtain ⟨x, hx⟩ := Complex.conj_eq_iff_real.1 h₃
   have h₄ := A.H.sqrt_neg_disc_sq
@@ -373,9 +373,9 @@ theorem expo_indWt_apply (τ : PsiT D) (i : ℕ) (σ : D.host.E →+* ℂ) (a : 
   rw [sub_eq_add_neg]
   change (ite (σ = embOf D τ) _ _) + ite (σ = conjEmb (embOf D τ)) _ _ = _
   congr 1
-  · by_cases h : σ = embOf D τ <;> simp only [h, indWt, Equiv.apply_symm_apply, true_and, false_and, if_true, if_false]
+  · by_cases h : σ = embOf D τ <;> simp only [h, indWt, Equiv.apply_symm_apply, true_and, false_and, ite_true, ite_false]
   · by_cases h : σ = conjEmb (embOf D τ) <;>
-      simp only [h, indWt, Equiv.apply_symm_apply, true_and, false_and, if_true, if_false, neg_zero]
+      simp only [h, indWt, Equiv.apply_symm_apply, true_and, false_and, ite_true, ite_false, neg_zero]
 
 theorem expo_indWt (τ : PsiT D) {i : ℕ} (h₁ : 1 ≤ i) (h₂ : i ≤ N) :
     ct.expo (indWt τ i) = oneAt S.Dw (embOf D τ) (i - 1) - oneAt S.Dw (conjEmb (embOf D τ)) (N - i) := by

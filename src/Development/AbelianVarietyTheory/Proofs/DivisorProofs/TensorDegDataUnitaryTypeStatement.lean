@@ -978,7 +978,7 @@ theorem form_cx_baseChange_pos (S : Matrix (Fin r) (Fin r) ℤ) (hS : (S.map (In
       ∑ α, v α ⬝ᵥ ((S.map (Int.cast : ℤ → ℝ)).mulVec (v α)) := by
     rw [key, Finset.sum_comm]
     simp only [Fintype.sum_prod_type, Int.cast_ite, Int.cast_zero, mul_ite, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, dotProduct, Matrix.mulVec,
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, dotProduct, Matrix.mulVec,
       Matrix.map_apply, Finset.mul_sum, hv]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun α _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -992,7 +992,7 @@ theorem form_cx_baseChange_pos (S : Matrix (Fin r) (Fin r) ℤ) (hS : (S.map (In
   have hne : c ≠ 0 := by
     intro h; apply hx; rw [hx']; simp [h]
   obtain ⟨⟨i, α⟩, hp⟩ : ∃ p, c p ≠ 0 := by
-    by_contra h; push_neg at h; exact hne (Finsupp.ext h)
+    by_contra h; push Not at h; exact hne (Finsupp.ext h)
   have hα : v α ≠ 0 := fun h => hp (by simpa [hv] using congrFun h i)
   have hpos : 0 < v α ⬝ᵥ ((S.map (Int.cast : ℤ → ℝ)).mulVec (v α)) := by
     simpa using hS.dotProduct_mulVec_pos hα

@@ -174,7 +174,7 @@ theorem toFrame_aaElt (w : Pl D.host.E) (hs : 1 ≤ (bareGrid w).s) {j : ℕ} (h
     rw [show aaExp w j (Sum.inr p) = FractionalIdeal.count D.host.E w D.host.AA * ((D.R.m - 1 - j - p.val : ℕ) : ℤ) -
       FractionalIdeal.count D.host.E w D.host.AAbar * (p.val + 1) from rfl]
     simp only [Function.comp_apply, frame, Equiv.trans_apply, finSumFinEquiv_apply_right, finCongr_apply, Fin.val_cast,
-      Fin.val_natAdd, le_add_iff_nonneg_right, zero_le, if_true, Nat.add_sub_cancel_left, genAt]
+      Fin.val_natAdd, le_add_iff_nonneg_right, zero_le, ite_true, Nat.add_sub_cancel_left, genAt]
     congr 1
     rw [e, e, ← _root_.zpow_neg, ← _root_.zpow_add]
     congr 1

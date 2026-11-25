@@ -70,10 +70,10 @@ private lemma sum_evFull {F : Type} [Field F] [NumberField F] {g : ℕ} (ty : Fi
     rw [Finset.sum_comm, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_eq_single (ComplexEmbedding.conjugate (ty i))]
-    · rw [if_pos (cc _).symm, ComplexEmbedding.conjugate_coe_eq]
+    · rw [ite_eq_left (cc _).symm, ComplexEmbedding.conjugate_coe_eq]
       simp
     · intro τ _ hτ
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hc
       apply hτ
       rw [hc, cc]

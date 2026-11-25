@@ -63,8 +63,8 @@ theorem poly_ne_zero (K : Type) [Field K] (B : Bk Dw n) : B.poly K ≠ 0 := by
     ext a b
     simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, MvPolynomial.eval_X, v, Matrix.one_apply]
     by_cases hab : a = b
-    · subst hab; rw [if_pos ⟨a, rfl⟩, if_pos rfl]
-    · rw [if_neg hab, if_neg]
+    · subst hab; rw [ite_eq_left ⟨a, rfl⟩, ite_eq_left rfl]
+    · rw [ite_eq_right hab, ite_eq_right]
       rintro ⟨d, hd⟩
       simp only [Sigma.mk.injEq, heq_eq_eq, true_and, Prod.mk.injEq] at hd
       have h1 : a = d := Fin.castLE_injective _ hd.1

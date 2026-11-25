@@ -146,8 +146,8 @@ def fillsRec (D : D7) (u : D.what₂.Word) (h : D.R.MA)
     (fun v s => if ((posG (zPsi D.R.toFrame h) ⟨v, s⟩ : D.R.Psi) : D.R.GG) ∈ D.host.topPlaces then
       -lamRec D u (posG (zPsi D.R.toFrame h) ⟨v, s⟩) (Fin.last (D.R.k - 1)) else 0)
     c
-    (fun v s => ⟨fun hs => ⟨(if_pos (Finset.mem_filter.1 hs).2).symm,
-        ((congrArg Neg.neg (if_pos (Finset.mem_filter.1 hs).2)).trans (neg_neg _)).symm, fun i h0 h1 =>
+    (fun v s => ⟨fun hs => ⟨(ite_eq_left (Finset.mem_filter.1 hs).2).symm,
+        ((congrArg Neg.neg (ite_eq_left (Finset.mem_filter.1 hs).2)).trans (neg_neg _)).symm, fun i h0 h1 =>
         hc.top _ (Finset.mem_filter.1 hs).2 i h0 h1⟩,
       fun hs i => hc.off _ (fun ht => hs (Finset.mem_filter.2 ⟨Finset.mem_univ _, ht⟩)) i⟩)
     D.R.t D.R.m

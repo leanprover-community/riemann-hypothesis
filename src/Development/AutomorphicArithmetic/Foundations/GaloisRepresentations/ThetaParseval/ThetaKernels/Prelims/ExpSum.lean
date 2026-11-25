@@ -230,7 +230,7 @@ private theorem isExp_partial (L U : ∀ i, Module.End ℂ (V i)) (hL : ∀ i, L
   | empty =>
     have : (PiTensorProduct.map fun i =>
         if i ∈ (∅ : Finset ι) then U i else (LinearMap.id : V i →ₗ[ℂ] V i)) = 1 := by
-      simp only [Finset.notMem_empty, if_false]
+      simp only [Finset.notMem_empty, ite_false]
       exact PiTensorProduct.map_id
     rw [this, Finset.sum_empty]
     exact isExp_zero_one

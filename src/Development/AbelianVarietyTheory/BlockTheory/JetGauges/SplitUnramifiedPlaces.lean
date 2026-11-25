@@ -47,10 +47,4 @@ def toOw (w : Place p OE) : OE →+* w.Ow :=
 
 end Place
 
-section Gauss
-
-variable {p : ℕ} [Fact p.Prime]
-
-end Gauss
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces

@@ -92,7 +92,7 @@ theorem prWv_inWb {z y : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hy : in
   intro i hi
   have h1 : SSn.wbP k r y i = 0 := by
     simp only [SSn.wbP]
-    rw [if_neg]
+    rw [ite_eq_right]
     omega
   simp only [SSn.prWv, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hz i hi, h1, mul_zero, add_zero]
 

@@ -1151,7 +1151,7 @@ theorem shortRule_value : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartInd
     exact RingHom.ext hcomp
   rw [hgt N hN Y hY, theta_smul₂, hmap] at hval
   beta_reduce
-  rw [hfv, hval, if_pos hs]
+  rw [hfv, hval, ite_eq_left hs]
   ring
 
 end GlobalTheory.Dict.ShortPt

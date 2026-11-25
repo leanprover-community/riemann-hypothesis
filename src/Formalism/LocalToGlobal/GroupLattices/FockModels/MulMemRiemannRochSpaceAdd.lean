@@ -61,9 +61,9 @@ theorem mul_mem_riemannRochSpace_add (O Kf : Type*) [CommRing O] [Field Kf] [Alg
     (hF : F ∈ H0 O m lam Λ) (hG : G ∈ H0 O m mu Λ) : F * G ∈ H0 O m (lam + mu) Λ := by
   have hlm : Antitone (lam + mu) := hl.add hm
   unfold H0 at hF hG ⊢
-  rw [if_pos hl] at hF
-  rw [if_pos hm] at hG
-  rw [if_pos hlm]
+  rw [ite_eq_left hl] at hF
+  rw [ite_eq_left hm] at hG
+  rw [ite_eq_left hlm]
   simp only [Submodule.mem_iInf] at hF hG ⊢
   intro g hg
   exact nablaLTw_mul O Kf m lam mu hl hm g hg.1 (hF g hg) (hG g hg)

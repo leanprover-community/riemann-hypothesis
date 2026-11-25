@@ -415,7 +415,7 @@ theorem meanEmb_eq_meanLog [_root_.NumberField.IsTotallyComplex K] (κ : Infinit
       intro σ hσ
       rw [hg σ, (Finset.mem_filter.1 hσ).2]
     rw [Finset.sum_congr rfl e1, Finset.sum_const, nsmul_eq_mul, InfinitePlace.card_filter_mk_eq,
-      InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v))]
+      InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v))]
     norm_num
   have hpos : (0 : ℝ) < (Formalism.HN.nPl K : ℝ) := by
     unfold Formalism.HN.nPl

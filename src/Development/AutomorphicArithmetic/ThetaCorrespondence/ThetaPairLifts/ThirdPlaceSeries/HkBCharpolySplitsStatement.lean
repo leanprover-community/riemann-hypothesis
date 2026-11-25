@@ -110,7 +110,7 @@ theorem charpoly_eq_prod_of_iSup_eigenspace {K V : Type} [Field K] [AddCommGroup
     rw [hy, hev, ← hy, map_smul, bb.repr_self, Matrix.diagonal_apply]
     by_cases hxy : x = y
     · subst hxy; simp
-    · rw [Finsupp.smul_apply, Finsupp.single_apply, if_neg (Ne.symm hxy), if_neg hxy, smul_zero]
+    · rw [Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hxy), ite_eq_right hxy, smul_zero]
   refine ⟨Finset.univ.val.map (fun x : (Σ r : s, Module.Free.ChooseBasisIndex K (E r)) => ((x.1 : s) : K)), ?_⟩
   rw [← LinearMap.charpoly_toMatrix f bb, hdiag, Matrix.charpoly_diagonal, Multiset.map_map,
     Finset.prod_eq_multiset_prod]

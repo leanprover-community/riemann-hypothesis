@@ -33,7 +33,7 @@ theorem chi_conj (hσ : IsCMExt F E σ) {χ : Chr F E} {k : ℕ}
     (h : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χ k) (t : (AE F E)ˣ) :
     χ (GlobalTheory.Doubling.conjUnit σ t) = (χ t)⁻¹ := by
   have h1 := h (Units.map (Algebra.norm (AF F) : AE F E →* AF F) t)
-  rw [if_pos (Subgroup.mem_sup_right (MonoidHom.mem_range.mpr ⟨t, rfl⟩)), Circle.coe_eq_one,
+  rw [ite_eq_left (Subgroup.mem_sup_right (MonoidHom.mem_range.mpr ⟨t, rfl⟩)), Circle.coe_eq_one,
     show Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E) (Units.map (Algebra.norm (AF F) : AE F E →* AF F) t) =
       t * GlobalTheory.Doubling.conjUnit σ t from Units.ext (GlobalTheory.Doubling.algebraMap_norm_eq hσ (R := AF F) t.1), map_mul] at h1
   exact eq_inv_of_mul_eq_one_right h1

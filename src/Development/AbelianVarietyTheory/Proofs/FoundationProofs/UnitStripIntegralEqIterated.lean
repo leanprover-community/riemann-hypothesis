@@ -68,7 +68,7 @@ theorem measurable_ofComplex_hp : Measurable (ofComplex : ℂ → ℍ) := by
     funext w
     by_cases hw : 0 < w.im
     · simp [hw, ofComplex_apply_of_im_pos hw]
-    · simp only [Function.comp, hw, if_false]
+    · simp only [Function.comp, hw, ite_false]
       rw [ofComplex_apply_of_im_nonpos (not_lt.mp hw),
         ofComplex_apply_of_im_nonpos (le_refl _ : (0 : ℂ).im ≤ 0)]
   rw [h]

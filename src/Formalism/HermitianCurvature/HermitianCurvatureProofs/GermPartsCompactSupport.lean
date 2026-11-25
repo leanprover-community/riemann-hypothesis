@@ -83,7 +83,7 @@ theorem inv_sqrt_mul (d : ℝ) (hd : 0 < d) : (d : ℂ) * (((√d)⁻¹ * (√d)
 theorem bz_btOf (s : ℕ) (hs : s ≠ 0) (dl : ℝ) (Vec : C.LPt → H) (h : C.LPt) (z : ℂ) (hz : z ≠ 0) :
     bz s (btOf s dl Vec h) z = (((√dl)⁻¹ : ℝ) : ℂ) • Vec (h ++ [(s, z)]) := by
   unfold bz btOf
-  rw [if_neg hz, smul_smul, ← Complex.ofReal_mul, ← mul_assoc, mul_inv_cancel₀, one_mul]
+  rw [ite_eq_right hz, smul_smul, ← Complex.ofReal_mul, ← mul_assoc, mul_inv_cancel₀, one_mul]
   have : (0 : ℝ) < ‖z‖ ^ (s - 1) := pow_pos (norm_pos_iff.mpr hz) _
   have hs' : (0 : ℝ) < s := by exact_mod_cast Nat.pos_of_ne_zero hs
   positivity

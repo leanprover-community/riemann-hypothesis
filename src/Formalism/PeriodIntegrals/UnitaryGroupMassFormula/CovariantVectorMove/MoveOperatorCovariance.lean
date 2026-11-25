@@ -47,16 +47,16 @@ theorem midC (hη : ∀ a b c, E a b * η c - η c * E a b = if b = c then η a 
   have hk : η c * E x d = E x d * η c - (if c = d then η x else 0) := by
     have e : (if c = d then η x else 0) = (if d = c then η x else 0) := by
       by_cases hcd : c = d
-      · rw [if_pos hcd, if_pos hcd.symm]
-      · rw [if_neg hcd, if_neg (Ne.symm hcd)]
+      · rw [ite_eq_left hcd, ite_eq_left hcd.symm]
+      · rw [ite_eq_right hcd, ite_eq_right (Ne.symm hcd)]
     rw [e, ← h]
     abel
   simp only [Tm, symC, mul_add, add_mul, hk]
   by_cases hxd : x = d
-  · simp only [if_pos hxd]
+  · simp only [ite_eq_left hxd]
     rw [hc, map_add (f := _), map_one, add_mul, one_mul]
     abel
-  · simp only [if_neg hxd, mul_zero, zero_mul, zero_add]
+  · simp only [ite_eq_right hxd, mul_zero, zero_mul, zero_add]
     abel
 
 private lemma list_prod_eq_take_mul_pair_mul_drop {M : Type*} [Monoid M] (l : List M) (i : ℕ) (h : i + 1 < l.length) :
@@ -111,10 +111,10 @@ theorem stepC (hη : ∀ a b c, E a b * η c - η c * E a b = if b = c then η a
   have hoff : ∀ (τ : Equiv.Perm (Fin (m + 1))) (q : Fin (m + 1)), (q : ℕ) ≠ p → (q : ℕ) ≠ p + 1 →
       Fc E η a b w (p + 1) τ q = Fc E η a b w p (τ * s) q := by
     intro τ q h1 h2
-    simp only [Fc, Equiv.Perm.mul_apply, hsq q h1 h2, if_neg h1, if_neg h2]
+    simp only [Fc, Equiv.Perm.mul_apply, hsq q h1 h2, ite_eq_right h1, ite_eq_right h2]
     by_cases hq : (q : ℕ) < p
-    · rw [if_pos hq, if_pos (show (q : ℕ) < p + 1 by omega)]
-    · rw [if_neg hq, if_neg (show ¬ (q : ℕ) < p + 1 by omega)]
+    · rw [ite_eq_left hq, ite_eq_left (show (q : ℕ) < p + 1 by omega)]
+    · rw [ite_eq_right hq, ite_eq_right (show ¬ (q : ℕ) < p + 1 by omega)]
   have hoff2 : ∀ (τ : Equiv.Perm (Fin (m + 1))) (q : Fin (m + 1)), (q : ℕ) ≠ p → (q : ℕ) ≠ p + 1 →
       Fc E η a b w (p + 1) (τ * s) q = Fc E η a b w (p + 1) τ q := by
     intro τ q h1 h2
@@ -221,14 +221,14 @@ theorem Nc_zero : Nc E η a b w 0 = ∑ j : Fin (m + 1),
   have hs : ((Equiv.Perm.sign (j.cycleRange.symm * Equiv.Perm.decomposeFin.symm (0, σ)) : ℤˣ) : ℤ) =
       (-1 : ℤ) ^ (j : ℕ) * ((Equiv.Perm.sign σ : ℤˣ) : ℤ) := by
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_symm, Fin.sign_cycleRange, Equiv.Perm.decomposeFin.symm_sign,
-      if_pos rfl, one_mul, Units.val_mul, Units.val_pow_eq_pow_val, Units.val_neg, Units.val_one]
+      ite_eq_left rfl, one_mul, Units.val_mul, Units.val_pow_eq_pow_val, Units.val_neg, Units.val_one]
   have h0 : Fc E η a b w 0 (j.cycleRange.symm * Equiv.Perm.decomposeFin.symm (0, σ)) 0 = η (a j) := by
     simp [Fc, Equiv.Perm.decomposeFin_symm_apply_zero, Fin.cycleRange_symm_zero]
   have h1 : (fun i : Fin m => Fc E η a b w 0 (j.cycleRange.symm * Equiv.Perm.decomposeFin.symm (0, σ)) i.succ) =
       fun k : Fin m => Tm E (w - 1 - ((k : ℕ) : ℂ)) ((a ∘ j.succAbove) (σ k)) (b k) := by
     funext k
     have hw : w - ((((k : ℕ) + 1 : ℕ)) : ℂ) = w - 1 - ((k : ℕ) : ℂ) := by push_cast; ring
-    simp only [Fc, Fin.val_succ, if_neg (Nat.succ_ne_zero _), if_neg (Nat.not_lt_zero _),
+    simp only [Fc, Fin.val_succ, ite_eq_right (Nat.succ_ne_zero _), ite_eq_right (Nat.not_lt_zero _),
       Nat.add_sub_cancel, hw, extN_lt, Equiv.Perm.mul_apply, Equiv.Perm.decomposeFin_symm_apply_succ,
       Equiv.swap_self, Equiv.refl_apply, Fin.cycleRange_symm_succ, Function.comp_apply]
   rw [List.ofFn_succ, List.prod_cons, hs, sgnlem, h0, h1]
@@ -243,7 +243,7 @@ theorem Nc_last : Nc E η a b w m = ∑ j : Fin (m + 1),
   have hu : Equiv.Perm.sign (j.cycleRange.symm * Equiv.Perm.decomposeFin.symm (0, σ) * finRotate (m + 1)) =
       (-1) ^ (m - (j : ℕ)) * Equiv.Perm.sign σ := by
     rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_mul, Equiv.Perm.sign_symm, Fin.sign_cycleRange,
-      Equiv.Perm.decomposeFin.symm_sign, if_pos rfl, one_mul, sign_finRotate, Nat.add_sub_cancel, mul_right_comm, ← pow_add,
+      Equiv.Perm.decomposeFin.symm_sign, ite_eq_left rfl, one_mul, sign_finRotate, Nat.add_sub_cancel, mul_right_comm, ← pow_add,
       show (j : ℕ) + m = (m - (j : ℕ)) + 2 * (j : ℕ) by omega, pow_add, pow_mul, Int.units_sq, one_pow,
       mul_one]
   have hs : ((Equiv.Perm.sign (j.cycleRange.symm * Equiv.Perm.decomposeFin.symm (0, σ) * finRotate (m + 1)) : ℤˣ) : ℤ) =
@@ -261,7 +261,7 @@ theorem Nc_last : Nc E η a b w m = ∑ j : Fin (m + 1),
       ext
       rw [coe_finRotate_of_ne_last (Fin.castSucc_lt_last k).ne]
       simp
-    simp only [Fc, Fin.coe_castSucc, if_neg (Nat.ne_of_lt hk), if_pos hk, extN_lt, Equiv.Perm.mul_apply, hr,
+    simp only [Fc, Fin.coe_castSucc, ite_eq_right (Nat.ne_of_lt hk), ite_eq_left hk, extN_lt, Equiv.Perm.mul_apply, hr,
       Equiv.Perm.decomposeFin_symm_apply_succ, Equiv.swap_self, Equiv.refl_apply, Fin.cycleRange_symm_succ,
       Function.comp_apply]
   rw [List.ofFn_succ', List.concat_eq_append, List.prod_append, List.prod_cons, List.prod_nil, mul_one,

@@ -68,21 +68,21 @@ theorem UpperTheory.V.Af.Smo.rowStep :
   · have him : i = m := Fin.ext h.symm
     rw [him]
     have k := key m m
-    rw [if_pos rfl, if_pos le_rfl, zero_add] at k
+    rw [ite_eq_left rfl, ite_eq_left le_rfl, zero_add] at k
     have hQ : Q m m = 1 := by linear_combination (-t) * k + (1 - Q m m) * hu
     refine ⟨hQ, fun j hj => ?_⟩
     have k2 := key m j
-    rw [if_neg (ne_of_lt hj), if_pos (le_of_lt hj), hQ, one_mul] at k2
+    rw [ite_eq_right (ne_of_lt hj), ite_eq_left (le_of_lt hj), hQ, one_mul] at k2
     linear_combination -k2
   · have hi1 : (m : ℕ) + 1 ≤ (i : ℕ) := h
     obtain ⟨hpi, hpj⟩ := hp i hi1
     have hmi : m < i := h
     have k := key i m
-    rw [if_pos rfl, if_pos le_rfl, zero_add, hpj m hmi] at k
+    rw [ite_eq_left rfl, ite_eq_left le_rfl, zero_add, hpj m hmi] at k
     have hQm : Q i m = 0 := by linear_combination (-Q i m) * hu - t * k
     constructor
     · have k2 := key i i
-      rw [if_neg (ne_of_gt hmi), if_neg (not_le.mpr hmi), mul_zero, add_zero, hpi] at k2
+      rw [ite_eq_right (ne_of_gt hmi), ite_eq_right (not_le.mpr hmi), mul_zero, add_zero, hpi] at k2
       exact k2.symm
     · intro j hj
       have k2 := key i j
@@ -90,5 +90,5 @@ theorem UpperTheory.V.Af.Smo.rowStep :
       by_cases hjm : j = m
       · rw [hjm]
         exact hQm
-      · rw [if_neg hjm, hQm, zero_mul, add_zero] at k2
+      · rw [ite_eq_right hjm, hQm, zero_mul, add_zero] at k2
         exact k2.symm

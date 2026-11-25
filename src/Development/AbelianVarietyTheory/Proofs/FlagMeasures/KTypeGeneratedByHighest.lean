@@ -231,7 +231,7 @@ theorem inK_single {a b : Fin n} (hab : ε a = ε b) (c : ℂ) :
     simp only [e1, e2]
     split_ifs <;> simp [star_sub]
   · simp only [Matrix.sub_apply, Matrix.single_apply]
-    rw [if_neg, if_neg, sub_zero]
+    rw [ite_eq_right, ite_eq_right, sub_zero]
     · rintro ⟨rfl, rfl⟩; simp_all
     · rintro ⟨rfl, rfl⟩; simp_all
 

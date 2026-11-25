@@ -1312,7 +1312,7 @@ theorem proj_eq {j : Fin d' → κ} (hj : Function.Injective j) (t : κ → C) (
     U.submatrix id j * L.submatrix j id = U * Matrix.diagonal t * L := by
   ext a b
   simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.diagonal_apply, mul_ite, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine Finset.sum_of_injOn j hj.injOn (fun _ _ => by simp) (fun ℓ _ hℓ => ?_) fun b' _ => by rw [h1, mul_one]
   rw [h0 ℓ (by simpa using hℓ), mul_zero, zero_mul]
 
@@ -1482,7 +1482,7 @@ theorem typedPartAt (hp : UnramIn E p) (τ : E →+* ℂ) : TypedPartAt Ch X τ 
       rw [Matrix.of_apply, frame, hco', hr, Matrix.one_apply]
       simp [eq_comm]
     rw [this]; simp
-  · rw [frame, hco', if_neg]
+  · rw [frame, hco', ite_eq_right]
     intro hb'
     exact hb (hinj ((congrArg Sigma.fst hb').trans hf))
   · exact _root_.GlobalTheory.DepthMono.detDepth_le_of_isIntHom X.C _ _ _ _ k _ _ _ _ hπ _

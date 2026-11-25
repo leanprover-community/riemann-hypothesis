@@ -444,10 +444,6 @@ end
 section
 
 
-section
-
-end
-
 private theorem rootSum_lemma (f : ℕ) (hf : 0 < f) (β B : Multiset ℂ)
     (h : Multiset.map (fun x => x ^ f) B = β) :
     B ∈ (Multiset.map (fun y => Polynomial.nthRoots f y) β).Sections := by

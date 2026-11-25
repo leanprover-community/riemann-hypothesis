@@ -469,7 +469,7 @@ theorem isQuasiRegularSeq_X (ι : Type*) [Finite ι] :
     obtain rfl : x = 0 := (Finsupp.degree_eq_zero_iff x).mp (by omega)
     simpa [MvPolynomial.coeff_monomial_mul'] using h1
   · intro β _ hβ
-    rw [MvPolynomial.coeff_monomial_mul', if_neg]
+    rw [MvPolynomial.coeff_monomial_mul', ite_eq_right]
     intro hle
     obtain ⟨γ, hγ⟩ := exists_add_of_le hle
     have hd := congrArg Finsupp.degree hγ

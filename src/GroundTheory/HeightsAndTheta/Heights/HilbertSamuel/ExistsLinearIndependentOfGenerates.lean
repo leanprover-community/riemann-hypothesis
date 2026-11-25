@@ -22,13 +22,6 @@ theorem isProjVarF_map_of_isArithVar {K : Type} [Fintype K] {ι : K → Type} [�
   have h := GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter.isProjVarQ_of_isArithVar hP
   exact ⟨(GroundTheory.Heights₂.Heights.NumbersDVR.Objects.isMultiProjPrime_iff _).mp h.1, h.2⟩
 
-section Basis
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω] [CharZero Ω]
-
-
-end Basis
-
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

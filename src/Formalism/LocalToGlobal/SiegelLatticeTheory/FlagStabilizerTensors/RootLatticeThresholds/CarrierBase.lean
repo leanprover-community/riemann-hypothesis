@@ -240,7 +240,7 @@ theorem isBaseFrame_of (hr : r = D.R.rS) (hQ : IsTransp X v g k r Qm Qim) {Wp Wq
     exact (PtRepPf.frU X u' v).zw i
   · rw [herm_Qi X v hQ]
     have := (PtRepPf.frU X u' v).ww i i
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     exact this
   · exact ⟨transportMatrix_unitary_form X u u' v hQ, fun a _ => transportMatrix_fixes_isotropic X u u' v hr hQ a⟩
   · rw [hz, hz', tz_Qi X v hQ, tz_Qi X v hQ]

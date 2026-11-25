@@ -284,13 +284,13 @@ theorem locProb_push (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (n' : ℕ) {K d :
       split_ifs
       exacts [thGrid_nonneg grid j, le_refl 0]
   · unfold pushTh
-    refine Finset.sum_eq_zero fun j _ => if_neg fun h => ha ?_
+    refine Finset.sum_eq_zero fun j _ => ite_eq_right fun h => ha ?_
     rw [← h]
     exact Finset.mem_image_of_mem _ (Finset.mem_univ j)
   · unfold pushTh
     rw [Finset.sum_comm, ← thGrid_sum grid hinj]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [Finset.sum_ite_eq, if_pos (by unfold pushU; exact Finset.mem_image_of_mem _ (Finset.mem_univ j))]
+    rw [Finset.sum_ite_eq, ite_eq_left (by unfold pushU; exact Finset.mem_image_of_mem _ (Finset.mem_univ j))]
   · obtain ⟨j, -, rfl⟩ := Finset.mem_image.1 ha
     exact hmk j
 

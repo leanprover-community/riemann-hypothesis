@@ -191,20 +191,20 @@ theorem pairEquiv_realAll : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar
       intro w
       have h0 : (fun ρ => unfr M ρ (us ∅ ρ)) = 1 := by
         funext ρ
-        have : us ∅ ρ = 1 := if_neg (Finset.notMem_empty ρ)
+        have : us ∅ ρ = 1 := ite_eq_right (Finset.notMem_empty ρ)
         rw [this, OneMemClass.coe_one, Pi.one_apply]
         exact GlobalTheory.CoefPairTens.unfr_one M ρ
       have h1 : (fun ρ => F ρ (us ∅ ρ)⁻¹) = fun ρ => LinearMap.id := by
         funext ρ
-        have : us ∅ ρ = 1 := if_neg (Finset.notMem_empty ρ)
+        have : us ∅ ρ = 1 := ite_eq_right (Finset.notMem_empty ρ)
         show ((M.σ ρ ((us ∅ ρ)⁻¹ : Matrix.unitaryGroup (Fin V.rank) ℂ) : M.H ρ →L[ℂ] M.H ρ) : M.H ρ →ₗ[ℂ] M.H ρ) = _
         rw [this, inv_one, OneMemClass.coe_one, GlobalTheory.CoefPairTens.sigma_one]
         rfl
       rw [h0, realAll_one hθ, map_one, Module.End.one_apply, h1, PiTensorProduct.map_id, LinearMap.comp_id]
     | insert τ s hτ ih =>
       intro w
-      have hs : us s τ = 1 := if_neg hτ
-      have h3 : us (insert τ s) τ = u τ := if_pos (Finset.mem_insert_self τ s)
+      have hs : us s τ = 1 := ite_eq_right hτ
+      have h3 : us (insert τ s) τ = u τ := ite_eq_left (Finset.mem_insert_self τ s)
       have h4 : ∀ ρ, ρ ≠ τ → us (insert τ s) ρ = us s ρ := fun ρ h => by
         simp only [us, Finset.mem_insert, h, false_or]
       rw [realAll_eq_atTau_mul hθ (hM (insert τ s)) τ]
@@ -224,7 +224,7 @@ theorem pairEquiv_realAll : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar
         rw [inv_one, OneMemClass.coe_one, GlobalTheory.CoefPairTens.sigma_one]
         rfl
       · rw [Function.update_of_ne h, h4 ρ h, LinearMap.comp_id]
-  have huniv : us Finset.univ = u := funext fun ρ => if_pos (Finset.mem_univ ρ)
+  have huniv : us Finset.univ = u := funext fun ρ => ite_eq_left (Finset.mem_univ ρ)
   have := ind Finset.univ w
   rw [huniv] at this
   exact this
@@ -274,11 +274,11 @@ theorem base_mem_Dpar (D : D7) (C : ℝ) (τ : D.what₂.Tau) :
   rcases hx with ⟨i, rfl⟩ | ⟨j, h | h⟩
   · refine ⟨true, Finset.mem_image.2 ⟨((Ptw D).v τ i, true), ?_, ?_⟩⟩
     · exact Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_image_of_mem _ (Finset.mem_univ i)))
-    · simp only [hodd, if_false, add_zero]
+    · simp only [hodd, ite_false, add_zero]
       exact Prod.ext (hv i) rfl
   · refine ⟨decide ((j : ℕ) ≤ D.R.m ∨ Even ((j : ℕ) - D.R.m)), Finset.mem_image.2 ⟨(-(Ptw D).b τ j, decide ((j : ℕ) ≤ D.R.m ∨ Even ((j : ℕ) - D.R.m))), ?_, ?_⟩⟩
     · exact Finset.mem_union_left _ (Finset.mem_union_right _ (Finset.mem_image_of_mem _ (Finset.mem_univ j)))
-    · simp only [hodd, if_false, add_zero]
+    · simp only [hodd, ite_false, add_zero]
       refine Prod.ext ?_ rfl
       rw [h]
       show -(D.hc τ).b j = _
@@ -292,7 +292,7 @@ theorem base_mem_Dpar (D : D7) (C : ℝ) (τ : D.what₂.Tau) :
         rw [he j]; rfl
       rw [this]
       exact hx'
-    · simp only [hodd, if_false, add_zero]
+    · simp only [hodd, ite_false, add_zero]
 
 end GlobalTheory.RowReal.BaseWeights
 

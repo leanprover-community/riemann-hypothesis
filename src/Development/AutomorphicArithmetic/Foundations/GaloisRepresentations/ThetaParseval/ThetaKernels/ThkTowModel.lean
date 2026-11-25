@@ -63,8 +63,6 @@ end
 noncomputable section
 open Classical Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain Matrix MeasureTheory
   NumberField
-namespace Tw.RatDarboux
-end Tw.RatDarboux
 open GlobalTheory in
 theorem Tw.RatDarboux.exists_rational_darboux_k : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
   [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)

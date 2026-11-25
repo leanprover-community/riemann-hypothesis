@@ -174,8 +174,8 @@ theorem y_br_lat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : R
     have hn := n.2
     unfold towerWt
     split_ifs with hp
-    · rw [hab τ.1 n (by rw [Datum.mult, if_pos τ.2]; exact hp)]
-    · rw [hab (conjEmb τ.1) _ (by rw [Datum.mult, if_neg (GlobalTheory.AllWt.conj_not_mem τ)]; omega)]
+    · rw [hab τ.1 n (by rw [Datum.mult, ite_eq_left τ.2]; exact hp)]
+    · rw [hab (conjEmb τ.1) _ (by rw [Datum.mult, ite_eq_right (GlobalTheory.AllWt.conj_not_mem τ)]; omega)]
   · unfold Rec.latOn; rw [h4 Z]
 
 end PositivityTheory.UnitarySelfGeneration
@@ -494,7 +494,7 @@ theorem bounded_section_smooth_metric (y : (Σ k, ι k) → Ω) (A : HermLine ι
         split_ifs with hc'
         · exact mul_nonneg (hB0 c' hc') (pow_nonneg hM0 τ)
         · exact le_rfl) (Finset.mem_univ c)
-    simpa only [dif_pos hyc] using this
+    simpa only [dite_eq_left hyc] using this
   have hAh : 0 ≤ A.h z ^ τ := pow_nonneg (A.pos z hz.1).le τ
   calc ‖eval z (map (Int.castRingHom ℂ) g)‖
       ≤ B c hyc * ‖eval z (map (Int.castRingHom ℂ) h)‖ * ∏ k, ‖z ⟨k, c k⟩‖ ^ ((τ : ℤ) * A.a k) := h1

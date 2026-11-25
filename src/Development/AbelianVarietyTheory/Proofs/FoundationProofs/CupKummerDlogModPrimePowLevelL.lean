@@ -327,7 +327,7 @@ def ext0 {M : Type} [Zero M] (H : Subgroup (Gal p Ω)) (a : Gal p Ω → M) (g :
   if g ∈ H then a g else 0
 
 theorem cochainExtendByZeroSubgroup_of_mem {M : Type} [Zero M] {H : Subgroup (Gal p Ω)} (a : Gal p Ω → M) {g : Gal p Ω}
-    (hg : g ∈ H) : ext0 H a g = a g := if_pos hg
+    (hg : g ∈ H) : ext0 H a g = a g := ite_eq_left hg
 
 theorem matrixExtendByZero_add {T : Tower p Ω} {n : ℕ} {r : Ω} (hr : r ≠ 0) {a : Gal p Ω → ZMod (p ^ n)}
     (ha : IsKum T n (Gn T n) r a) : ∀ g ∈ Gn T n, ∀ h ∈ Gn T n,
@@ -342,7 +342,7 @@ theorem cochainExtendByZero_kummer_congr_of_action {T : Tower p Ω} {n : ℕ} {r
   by_cases hg : g ∈ Gn T n
   · rw [cochainExtendByZeroSubgroup_of_mem a hg, cochainExtendByZeroSubgroup_of_mem a (hiff.mpr hg), kum_eq hr ha hg (hiff.mpr hg) e]
   · unfold ext0
-    rw [if_neg hg, if_neg (fun hh => hg (hiff.mp hh))]
+    rw [ite_eq_right hg, ite_eq_right (fun hh => hg (hiff.mp hh))]
 
 theorem kummerTower_coboundaryOne_prime_smul {k : ℕ} {H : Subgroup (Gal p Ω)} {f f' : Gal p Ω → Ω} (hf : Cob1 k H f)
     (e : ∀ g ∈ H, f' g = (p : Ω) * f g) : Cob1 k H f' := by

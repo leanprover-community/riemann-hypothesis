@@ -68,10 +68,10 @@ theorem kg_cas_shift {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (F : Fin n �
     intro i j
     by_cases hij : i = j
     · subst hij
-      simp only [if_true, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one]
+      simp only [ite_true, add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one]
       module
     · simp [hij, Ne.symm hij]
-  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.smul_sum,
+  simp only [h, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.smul_sum,
     Finset.sum_const, Finset.card_univ, Fintype.card_fin]
   rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
   abel

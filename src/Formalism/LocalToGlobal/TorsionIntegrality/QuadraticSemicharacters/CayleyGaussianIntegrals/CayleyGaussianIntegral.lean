@@ -137,7 +137,7 @@ theorem form_of_diag {n : Type*} [Fintype n] [DecidableEq n] (H : Sesq V) (b : M
   rw [Module.Basis.equivFun_symm_apply]
 
   simp only [map_sum, map_smul, hL, smul_smul, LinearMap.sum_apply, LinearMap.smul_apply, map_smulₛₗ, hb, smul_eq_mul, mul_ite, mul_one, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine Finset.sum_congr rfl fun i _ => ?_
   have h := Complex.mul_conj (w i)
   rw [Complex.normSq_eq_norm_sq] at h

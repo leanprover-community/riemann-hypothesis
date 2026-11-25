@@ -744,15 +744,15 @@ theorem pq_val (k r : ℕ) (i : Fin (2 * r + k + 1)) :
     (pq k r i).val = if i.val ≤ r ∨ r + k ≤ i.val then 2 * r + k - i.val else i.val := by
   unfold pq
   by_cases h : outer k r i
-  · rw [if_pos h, if_pos (show i.val ≤ r ∨ r + k ≤ i.val from h), Fin.val_rev]; omega
-  · rw [if_neg h, if_neg (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
+  · rw [ite_eq_left h, ite_eq_left (show i.val ≤ r ∨ r + k ≤ i.val from h), Fin.val_rev]; omega
+  · rw [ite_eq_right h, ite_eq_right (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
 
 theorem bq_eq (k r : ℕ) (i : Fin (2 * r + k + 1)) :
     bq k r i = if i.val ≤ r ∨ r + k ≤ i.val then 2 * (i.val : ℤ) - (2 * r + k) else 0 := by
   unfold bq
   by_cases h : outer k r i
-  · rw [if_pos h, if_pos (show i.val ≤ r ∨ r + k ≤ i.val from h)]
-  · rw [if_neg h, if_neg (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
+  · rw [ite_eq_left h, ite_eq_left (show i.val ≤ r ∨ r + k ≤ i.val from h)]
+  · rw [ite_eq_right h, ite_eq_right (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
 
 theorem adapted_pq (k r : ℕ) : Adapted (pq k r) (bq k r) (fun _ => 1) := by
   constructor
@@ -793,9 +793,9 @@ theorem Hq_eq_dp (k r : ℕ) : Hq k r = dp (pq k r) 0 (fun _ => 1) := by
   have hi := i.2
   simp only [Hq, dp, Matrix.of_apply, Pi.zero_apply, ite_self, zero_add, Fin.ext_iff, pq_val]
   by_cases h : outer k r i
-  · rw [if_pos h, if_pos (show i.val ≤ r ∨ r + k ≤ i.val from h)]
+  · rw [ite_eq_left h, ite_eq_left (show i.val ≤ r ∨ r + k ≤ i.val from h)]
     exact if_congr (by omega) rfl rfl
-  · rw [if_neg h, if_neg (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
+  · rw [ite_eq_right h, ite_eq_right (show ¬ (i.val ≤ r ∨ r + k ≤ i.val) from h)]
     exact if_congr eq_comm rfl rfl
 
 theorem iwaQ : IwaQ := by

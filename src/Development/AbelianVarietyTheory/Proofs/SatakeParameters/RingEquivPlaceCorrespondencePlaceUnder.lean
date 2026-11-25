@@ -59,7 +59,7 @@ variable {E : Type} [Field E]
 
 theorem coord_embedding (w : InfinitePlace E) (x : Cinf E) : coord w.embedding x = x w := by
   unfold coord
-  rw [InfinitePlace.mk_embedding, if_pos rfl]
+  rw [InfinitePlace.mk_embedding, ite_eq_left rfl]
   rfl
 
 theorem ext_coord {x y : Cinf E} (h : ∀ τ, coord τ x = coord τ y) : x = y :=
@@ -94,9 +94,9 @@ theorem coord_conj (τ : E →+* ℂ) (x : Cinf E) :
   unfold coord
   rw [InfinitePlace.mk_conjugate_eq]
   rcases InfinitePlace.embedding_mk_eq τ with h | h
-  · rw [if_neg (fun h' => hne (h'.symm.trans h)), if_pos h]
+  · rw [ite_eq_right (fun h' => hne (h'.symm.trans h)), ite_eq_left h]
     rfl
-  · rw [if_pos h, if_neg (fun h' => hne (h.symm.trans h'))]
+  · rw [ite_eq_left h, ite_eq_right (fun h' => hne (h.symm.trans h'))]
     simp
 
 end Coord

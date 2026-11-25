@@ -178,12 +178,6 @@ theorem application_window : ApplicationWindow := by
   push_cast
   linarith
 
-section SizeData₂
-
-open Formalism.RankGapBounds.ChebyshevFactorialBounds
-
-end SizeData₂
-
 section Subquotients
 
 open CategoryTheory CategoryTheory.Limits
@@ -316,7 +310,7 @@ theorem tensor_weight_kill_holds : TensorWeightKill := by
     intro τ
     by_cases h : τ = a
     · subst h
-      simp only [Function.update_self, chainB, if_neg ha]
+      simp only [Function.update_self, chainB, ite_eq_right ha]
       exact hp _
     · rw [Function.update_of_ne h]
       have h1 := hx τ
@@ -334,9 +328,9 @@ theorem chain_monotone_holds : ChainMono := by
   have h1 := hx τ
   simp only [chainB] at h1 ⊢
   by_cases h : τ ∈ s
-  · rw [if_pos (hss h)]
+  · rw [ite_eq_left (hss h)]
     trivial
-  · rw [if_neg h] at h1
+  · rw [ite_eq_right h] at h1
     split_ifs
     · trivial
     · exact h1
@@ -460,7 +454,7 @@ theorem theorem_w_central_of_simple_quotients (hSS : SimpleSubquotOfPower) (hIso
       rw [hc]
       exact hkill _ (hex a)
     have hc : cTau T2 ex c' a = c' a := by
-      simp only [cTau, haT, if_true]
+      simp only [cTau, haT, ite_true]
       omega
     rw [hc]
     let E : Submodule A (⨂[O] τ, Nb τ) :=

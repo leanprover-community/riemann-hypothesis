@@ -160,10 +160,10 @@ theorem label_ops_comm : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), ∀ c c', �
     intro d d'
     by_cases hd : IsLab V P d
     swap
-    · simp [Hk3.rep, dif_neg hd]
+    · simp [Hk3.rep, dite_eq_right hd]
     by_cases hd' : IsLab V P d'
     swap
-    · simp [Hk3.rep, dif_neg hd']
+    · simp [Hk3.rep, dite_eq_right hd']
     obtain ⟨x, hx, rA, A', rA'⟩ := reps d hd
     obtain ⟨y, hy, rB, -⟩ := reps d' hd'
     simp only [LinearMap.sum_apply]

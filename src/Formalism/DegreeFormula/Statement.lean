@@ -50,12 +50,6 @@ def DomFlat (ι : Type) (p q : ℕ) : Set (ι × Fin p × Fin q → ℂ) := {v |
 
 end Two
 
-section Three
-
-variable {ι : Type} [Fintype ι] {p q r : ℕ}
-
-end Three
-
 section Four
 
 variable {ι : Type} [Fintype ι] {p q r : ℕ}
@@ -71,12 +65,6 @@ def IsFD (Γ : Subgroup (ι → GL (Fin p ⊕ Fin q) ℂ)) (F : Set (ι × Fin p
 
 end Four
 
-section Five
-
-variable {ι : Type} [Fintype ι] {p q r : ℕ} {G Gf : Type} [Group G] [Group Gf]
-
-end Five
-
 section CompanionTheory
 
 variable {E : Type} [Field E] {n : Type} [Fintype n] [DecidableEq n] {ι : Type} {p q : ℕ}
@@ -88,12 +76,5 @@ def embI (τ : ι → E →+* ℂ) (e : ι → n ≃ Fin p ⊕ Fin q) (P : ι �
       (Units.map (Matrix.reindexAlgEquiv E E (e i)).toMonoidHom)))
 
 end CompanionTheory
-
-section LateralTheory
-
-variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
-  [MeasurableSpace V] [BorelSpace V]
-
-end LateralTheory
 
 end Formalism.DegreeFormula

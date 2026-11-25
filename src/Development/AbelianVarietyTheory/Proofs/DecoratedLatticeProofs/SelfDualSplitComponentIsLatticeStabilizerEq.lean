@@ -158,7 +158,7 @@ theorem exists_expansion (hL : IsSelfDualC S L) :
     · rw [RingHom.map_zero, zero_mul]
   simp only [pairing, Finset.sum_mul]
   rw [Finset.sum_comm]
-  simp only [h1, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [h1, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem mem_of_pairing (hL : IsSelfDualC S L) {v : Pl D} {y : Fin S.rank → AE D} (hy : ∀ i, y i ∈ idAt D (· = v))
     (h : ∀ s ∈ L, finPart D (pairing S s y) ∈ intAE D) : y ∈ latV S L (· = v) := by

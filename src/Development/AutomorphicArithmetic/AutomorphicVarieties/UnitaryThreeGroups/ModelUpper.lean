@@ -611,7 +611,7 @@ private theorem exists_irred {α : Type} (R : α → α → Prop) (htr : ∀ a b
   | H T₁ ih =>
     by_cases hirr : ∀ f ∈ T₁, ∀ f' ∈ T₁, R f f' → f = f'
     · exact ⟨T₁, h, hirr⟩
-    · push_neg at hirr
+    · push Not at hirr
       obtain ⟨f, hf, f', hf', hR, hne⟩ := hirr
       apply ih (T₁.erase f') (Finset.erase_ssubset hf')
       refine ⟨fun g hg => h.1 g (Finset.mem_of_mem_erase hg), fun g hg => ?_⟩
@@ -837,7 +837,7 @@ theorem UpperTheory.V.U3.model_upper :
     have hne : UpperTheory.V.Base.eO l c.O ≠ ⊤ := ne_top_of_le_ne_top (ENat.coe_ne_top _) hefin
     have hz : (UpperTheory.V.Base.eO l c.O).toNat ≠ 0 := by
       rw [Ne, ENat.toNat_eq_zero]
-      push_neg
+      push Not
       exact ⟨he0, hne⟩
     exact_mod_cast Nat.pos_of_ne_zero hz
   rw [UpperTheory.V.Chr.nrm, div_le_iff₀ hepos]

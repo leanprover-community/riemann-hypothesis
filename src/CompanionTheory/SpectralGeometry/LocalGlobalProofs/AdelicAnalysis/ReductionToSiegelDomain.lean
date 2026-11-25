@@ -197,7 +197,7 @@ theorem GlobalTheory.CompanionTheory.SW.Core.exists_finset_row_completion :
     if h : ∃ r, Adapted (A g) r then h.choose else 1
   have hr : ∀ g, (∃ r, Adapted (A g) r) → Adapted (A g) (r g) := by
     intro g h
-    simp only [r, dif_pos h]
+    simp only [r, dite_eq_left h]
     exact h.choose_spec
   refine ⟨Finset.univ.image r, ∑ g, (Ideal.absNorm (J g : Ideal (𝓞 F)) : ℝ), ?_⟩
   intro c d hcd

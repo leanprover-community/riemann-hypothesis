@@ -212,7 +212,7 @@ lemma qh_count_all [NeZero n] {mu : Fin n → ℤ} (hmu : Dominant mu) (k : ℕ)
       exact (card_filter _ _).symm
     rw [h1, hR, key, Int.card_Ioc]
     omega
-  · push_neg at htn
+  · push Not at htn
     have a : ∀ κ : {κ // 0 < sz κ}, ¬ t < sz κ.1 := by
       intro κ
       have := hsz κ.1
@@ -561,9 +561,9 @@ lemma qh_phi_coeff (Q : MvPolynomial (Fin n × Fin n) R) (d0 : Fin n × Fin n �
     rw [qh_phi_mono]
     by_cases h : d = d0
     · subst h; simp
-    · rw [coeff_monomial, coeff_monomial, if_neg h]
+    · rw [coeff_monomial, coeff_monomial, ite_eq_right h]
       split_ifs
-      · rw [coeff_monomial, if_neg h]
+      · rw [coeff_monomial, ite_eq_right h]
       · simp
   | add p q hp hq => rw [map_add (f := _), MvPolynomial.coeff_add, MvPolynomial.coeff_add, MvPolynomial.coeff_add, hp, hq]
 
@@ -609,7 +609,7 @@ lemma qh_homog [IsDomain R] (Q : MvPolynomial (Fin n × Fin n) R) (ν : Fin n �
     intro heq
     apply hne
     rw [← heq]; rfl
-  rw [← qh_phi_coeff, h, coeff_monomial, if_neg hne']
+  rw [← qh_phi_coeff, h, coeff_monomial, ite_eq_right hne']
   simp
 
 lemma qh_invariant [IsDomain R] (Q : MvPolynomial (Fin n × Fin n) R) (ν : Fin n → ℕ)
@@ -637,9 +637,9 @@ lemma qh_invariant [IsDomain R] (Q : MvPolynomial (Fin n × Fin n) R) (ν : Fin 
         Matrix (Fin n) (Fin n) (MvPolynomial (Option (Fin n × Fin n)) R)) v.2 v.1) Q := by
     rw [Formalism.GradedWeylDivisibility.colAddGen]; congr 2; funext v
     by_cases hv : v.2 = j
-    · rw [if_pos hv, hv, Matrix.transvection_mul_apply_same]
+    · rw [ite_eq_left hv, hv, Matrix.transvection_mul_apply_same]
       simp [← hv]
-    · rw [if_neg hv, Matrix.transvection_mul_apply_of_ne _ _ _ _ hv]
+    · rw [ite_eq_right hv, Matrix.transvection_mul_apply_of_ne _ _ _ _ hv]
       simp
   rw [e1, h, ← aeval_X_left_apply (rename some Q), aeval_rename]
   rfl
@@ -900,7 +900,7 @@ theorem qn_divide (n : ℕ) [NeZero n] (ν' : Fin n → ℕ) :
     have h4 := congrFun h3 t
     have h5 : initW n (sz k0) t = 1 := by
       unfold initW
-      rw [hsz0, if_pos t.isLt]
+      rw [hsz0, ite_eq_left t.isLt]
     rw [Pi.add_apply, h5] at h4
     omega
   refine ⟨ε • ∏ k ∈ Finset.univ.erase k0, initMinor ℤ (I k) (hsz k), Submodule.smul_mem _ _ hrest, ?_⟩
@@ -1100,7 +1100,7 @@ theorem qn_mem_otherWts' (n : ℕ) (ν : Fin n → ℕ) (g : MvPolynomial (Fin n
     have := congrFun hwt a
     simp only [qn_wt] at this
     exact_mod_cast this
-  rw [coeff_weightedHomogeneousComponent, if_pos hw, coeff_transposeVariables] at h1
+  rw [coeff_weightedHomogeneousComponent, ite_eq_left hw, coeff_transposeVariables] at h1
   exact (mem_support_iff.mp hm) (by simpa using h1)
 
 theorem qn_otherWts_coeff' (n : ℕ) (ν : Fin n → ℕ) (z : MvPolynomial (Fin n × Fin n) ℚ)
@@ -1164,7 +1164,7 @@ theorem qn_comp (n : ℕ) (ν : Fin n → ℕ) (hν : Antitone ν) (F : MvPolyno
     hHW (by rw [hH1]; exact one_ne_zero)
   have h1 : AddMonoidAlgebra.coeff F (lhwline_mnu (le_refl n) ν) = c := by
     have e : AddMonoidAlgebra.coeff F (lhwline_mnu (le_refl n) ν) = AddMonoidAlgebra.coeff G (lhwline_mnu (le_refl n) ν) := by
-      rw [hGdef, coeff_weightedHomogeneousComponent, if_pos hwt]
+      rw [hGdef, coeff_weightedHomogeneousComponent, ite_eq_left hwt]
     rw [e, hc, MvPolynomial.coeff_smul, hH1, smul_eq_mul, mul_one]
   rw [qn_eval_eq_coeff n ν F (qn_colHom ℚ n ν F hF), h1, hc]
 
@@ -1441,10 +1441,10 @@ theorem qn_coeff_pt (n : ℕ) (ν : Fin n → ℕ) (F : MvPolynomial (Fin n × F
   rw [aeval_def, eval₂_eq', coeff_sum]
   simp only [algebraMap_eq, coeff_C_mul, qn_prod_pt]
   rw [Finset.sum_eq_single e]
-  · rw [if_pos he, coeff_monomial, if_pos rfl, mul_one]
+  · rw [ite_eq_left he, coeff_monomial, ite_eq_left rfl, mul_one]
   · intro m hm hne
     split_ifs with hl
-    · rw [coeff_monomial, if_neg, mul_zero]
+    · rw [coeff_monomial, ite_eq_right, mul_zero]
       intro hoff
       apply hne
       refine qn_off_inj ν m e hl he ?_ hec hoff
@@ -1658,12 +1658,6 @@ open MvPolynomial Finset
 
 namespace Formalism.MainNotions.G.ColumnFamilies
 
-section B1
-end B1
-
-section B2
-end B2
-
 section B9
 theorem global_sections_schur (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur D := fun n _ mu R _ _ hR =>
   Formalism.InvariantFactorPaths.ColumnFamilies.highest_weight_corollary_one n mu R hR
@@ -1673,13 +1667,6 @@ section lowerOffDiagonalCoeff
 theorem bracket_polynomial_span (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan D := fun n _ mu hmu =>
   Formalism.InvariantFactorPaths.ColumnFamilies.highest_weight_corollary_two n mu hmu
 end lowerOffDiagonalCoeff
-
-section Mod
-
-end Mod
-
-section B6
-end B6
 
 end Formalism.MainNotions.G.ColumnFamilies
 end -- clump:auto

@@ -307,7 +307,7 @@ theorem exists_int {M : ℕ} {Λ Λ' : Lt E n} (hΛ : Λ ∈ Vset E n M) (hΛ' :
     refine ⟨c, fun i => ?_⟩
     have hci := congrFun hc i
     simp only [Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_ite, smul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, mulVec_smul, mulVec_single_one] at hci
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, mulVec_smul, mulVec_single_one] at hci
     rw [Algebra.smul_def, _root_.mul_one] at hci
     rw [show (c i : E) = algebraMap (𝓞 E) E (c i) from rfl, hci]
     simp only [smul_eq_mul, Matrix.col_apply]

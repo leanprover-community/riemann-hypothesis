@@ -235,9 +235,9 @@ theorem cont_ell (z : Fin (2 * r + k + 1) → ℂ) : Continuous (ell k r z) := b
   unfold ell
   refine continuous_finsetSum _ fun a _ => ?_
   by_cases h : a.val + 1 < r
-  · simp only [h, dif_pos]
+  · simp only [h, dite_eq_left]
     fun_prop
-  · simp only [h, dif_neg, not_false_eq_true, mulVec, dotProduct]
+  · simp only [h, dite_eq_right, not_false_eq_true, mulVec, dotProduct]
     fun_prop
 
 theorem cont_psiD : Continuous (psiD D) := by

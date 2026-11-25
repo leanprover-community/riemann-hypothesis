@@ -106,7 +106,7 @@ lemma ballFiniteVG (ε : Fin n → Bool) (ν : Measure (UJ ε)) [ν.IsHaarMeasur
       have h0 := norm_nonneg (M i j)
       by_cases hc : ‖M i j‖ ≤ 1
       · exact le_trans hc (le_max_left _ _)
-      · push_neg at hc
+      · push Not at hc
         have : ‖M i j‖ ≤ ‖M i j‖ ^ 2 := by nlinarith
         exact le_trans (le_trans this h1) (le_max_right _ _)
   let e : UJ ε → Matrix (Fin n) (Fin n) ℂ × (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=

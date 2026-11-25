@@ -25,13 +25,6 @@ variable [TopologicalSpace R] {M n : ℕ}
 
 end Local
 
-section Global
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
-  {d : ℕ} {b : Module.Basis (Fin d) F E} {M n : ℕ}
-
-end Global
-
 end GlobalTheory.SWC
 
 end

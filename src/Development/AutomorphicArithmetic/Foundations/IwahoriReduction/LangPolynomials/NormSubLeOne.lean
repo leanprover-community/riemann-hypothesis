@@ -101,26 +101,26 @@ private theorem rootBd (l : ℕ) [Fact l.Prime] (r : ℕ) (z : OO l) (hz : z ^ l
   exact (pow_le_pow_left₀ (norm_nonneg _) h1 _).trans
     (pow_le_pow_of_le_one (norm_nonneg _) hl (Nat.lt_pow_self hp.one_lt).le)
 
+private theorem map_sb {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (b : ℕ) (h : PowerSeries R) :
+    PowerSeries.map f (sb b h) = sb b (PowerSeries.map f h) := by
+  have key := PowerSeries.map_subst (hasSubst_pow (R := R) b) (h := f) h
+  unfold sb
+  rw [PowerSeries.coe_substAlgHom, PowerSeries.coe_substAlgHom]
+  have e : MvPowerSeries.map f (((1 + PowerSeries.X : PowerSeries R) ^ b) - 1) = (((1 + PowerSeries.X : PowerSeries S) ^ b) - 1) := by
+    change PowerSeries.map f _ = _
+    simp
+  rw [e] at key
+  exact key
+
 private theorem tvalShift (l : ℕ) [Fact l.Prime] (H : PowerSeries (Qbar l)) (hH : ∀ n, ‖H.coeff n‖ ≤ 1) (g r : ℕ)
     (z : Qbar l) (hz : z ^ l ^ r = 1) :
     ‖tval (sb g H) (l ^ (3 * r)) z - tval H (l ^ (3 * r)) (z ^ g)‖ ≤ ‖(l : Qbar l) ^ (2 * r)‖ := by
-  have hp : l.Prime := Fact.out
-  have hz1 : ‖z‖ ≤ 1 := by
-    have := congrArg norm hz
-    rw [norm_pow, norm_one] at this
-    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) (pow_pos hp.pos r).ne').1 this).le
+  have hz1 : ‖z‖ ≤ 1 := (isOfFinOrder_iff_pow_eq_one.2 ⟨_, pow_pos (Fact.out : l.Prime).pos r, hz⟩).norm_eq_one.le
   let z' : OO l := ⟨z, hz1⟩
   let H' : PowerSeries (OO l) := PowerSeries.mk fun n => ⟨H.coeff n, hH n⟩
   have hm : PowerSeries.map (OO l).subtype H' = H := by
     ext n; simp [H']
-  have hs : PowerSeries.map (OO l).subtype (sb g H') = sb g H := by
-    rw [← hm]
-    unfold sb
-    rw [PowerSeries.coe_substAlgHom, PowerSeries.coe_substAlgHom]
-    refine Eq.trans (PowerSeries.map_subst (hasSubst_pow (R := OO l) g) (h := (OO l).subtype) H') ?_
-    congr 1
-    change PowerSeries.map (OO l).subtype _ = _
-    simp
+  have hs : PowerSeries.map (OO l).subtype (sb g H') = sb g H := by rw [map_sb, hm]
   obtain ⟨y, hy⟩ := truncSub H' g (l ^ (3 * r)) (z' - 1)
   have h2 := congrArg (OO l).subtype hy
   have h3 : tval (sb g H) (l ^ (3 * r)) z - tval H (l ^ (3 * r)) (z ^ g) = (z - 1) ^ l ^ (3 * r) * (y : Qbar l) := by
@@ -191,10 +191,7 @@ theorem UpperTheory.Kd.C7.pIntShift :
   have hp : l.Prime := Fact.out
   have hq : 0 < l ^ r := pow_pos hp.pos r
   obtain ⟨M, a, ha, hM⟩ := tvalExp l H hH (l ^ (3 * r))
-  have hξ1 : ‖ξ‖ ≤ 1 := by
-    have := congrArg norm hξ.pow_eq_one
-    rw [norm_pow, norm_one] at this
-    exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hq.ne').1 this).le
+  have hξ1 : ‖ξ‖ ≤ 1 := (hξ.isOfFinOrder hq.ne').norm_eq_one.le
   have hA := sumJ l φ k r ξ hξ M g a
   have hB := sumJ l φ k r ξ hξ M 1 a
   simp only [← hM, pow_one] at hA hB
@@ -242,17 +239,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 noncomputable section
 namespace UpperTheory.Kd.C7.C2
 
-private theorem map_sb {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (b : ℕ) (h : PowerSeries R) :
-    PowerSeries.map f (sb b h) = sb b (PowerSeries.map f h) := by
-  have key := PowerSeries.map_subst (hasSubst_pow (R := R) b) (h := f) h
-  unfold sb
-  rw [PowerSeries.coe_substAlgHom, PowerSeries.coe_substAlgHom]
-  have e : MvPowerSeries.map f (((1 + PowerSeries.X : PowerSeries R) ^ b) - 1) = (((1 + PowerSeries.X : PowerSeries S) ^ b) - 1) := by
-    change PowerSeries.map f _ = _
-    simp
-  rw [e] at key
-  exact key
-
 private theorem sb_C {R : Type} [CommRing R] (b : ℕ) (x : R) (h : PowerSeries R) :
     sb b (PowerSeries.C x * h) = PowerSeries.C x * sb b h := by
   rw [map_mul]
@@ -271,24 +257,13 @@ private theorem nmul {K : Type} [NormedField K] {a b : K} (ha : ‖a‖ ≤ 1) (
 private theorem npow {K : Type} [NormedField K] {a : K} (ha : ‖a‖ ≤ 1) (n : ℕ) : ‖a ^ n‖ ≤ 1 := by
   rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha
 
-private theorem norm_root {K : Type} [NormedField K] {a : K} {n : ℕ} (hn : n ≠ 0) (h : a ^ n = 1) : ‖a‖ ≤ 1 := by
-  have : ‖a‖ ^ n = 1 := by rw [← norm_pow, h, norm_one]
-  exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).1 this).le
-
-private theorem norm_chi (φ : DirichletCharacter (Qbar l) l) (x : ZMod l) : ‖φ x‖ ≤ 1 := by
-  by_cases hx : IsUnit x
-  · obtain ⟨u, rfl⟩ := hx
-    refine norm_root (n := Fintype.card (ZMod l)ˣ) Fintype.card_ne_zero ?_
-    rw [← map_pow, ← Units.val_pow_eq_pow_val, pow_card_eq_one, Units.val_one, map_one]
-  · rw [φ.map_nonunit hx, norm_zero]; exact zero_le_one
-
 private theorem intg_lin (φ : DirichletCharacter (Qbar l) l) (k r : ℕ) (ξ : Qbar l) (hξ : IsPrimitiveRoot ξ (l ^ r)) :
     ∃ a : ℕ → Qbar l, (∀ n, ‖a n‖ ≤ 1) ∧ ∀ L, intg φ k L r ξ = ∑ n ∈ Finset.range (l ^ (3 * r)), a n * L.coeff n := by
-  have h1 : ‖ξ‖ ≤ 1 := norm_root (pow_ne_zero r (Fact.out : l.Prime).ne_zero) hξ.pow_eq_one
+  have h1 : ‖ξ‖ ≤ 1 := (hξ.isOfFinOrder (pow_ne_zero r (Fact.out : l.Prime).ne_zero)).norm_eq_one.le
   refine ⟨fun n => ∑ x ∈ (Finset.range (l ^ r)).filter (fun x => ¬ l ∣ x), ∑ i ∈ Finset.range (l ^ r),
     φ (x : ZMod l) * ((x : Qbar l) ^ k) * (ξ ^ (l ^ r - (i * x) % l ^ r) * (ξ ^ i - 1) ^ n), fun n => ?_, fun L => ?_⟩
   · refine norm_sum_le_one _ _ fun x _ => norm_sum_le_one _ _ fun i _ => ?_
-    exact nmul (nmul (norm_chi φ _) (npow (IsUltrametricDist.norm_natCast_le_one _ _) _))
+    exact nmul (nmul (φ.norm_le_one _) (npow (IsUltrametricDist.norm_natCast_le_one _ _) _))
       (nmul (npow h1 _) (npow (_root_.Formalism.InvariantFactorPaths.G7.LemTwo.norm_sub_le_one (npow h1 _) norm_one.le) _))
   · simp only [intg, mass, tval, Finset.mul_sum, Finset.sum_mul]
     symm

@@ -55,11 +55,11 @@ theorem exists_genTriv {W : Type} (s : W → H.Sec) (t : W → Ω)
     have hi : (H.U i : Set M.Z).Nonempty := ⟨z, hz.1⟩
     have hj : (H.U j : Set M.Z).Nonempty := ⟨z, hz.2⟩
     have h : ((H.U i ⊓ H.U j : M.Z.Opens) : Set M.Z).Nonempty := ⟨z, hz⟩
-    rw [if_pos hi, if_pos hj, valF_compat (s w₀) h]
+    rw [ite_eq_left hi, ite_eq_left hj, valF_compat (s w₀) h]
     have := h1 j hj
     have := valF_unit_ne_zero h (H.g i j)
     field_simp
-  · simp only [if_pos hi]
+  · simp only [ite_eq_left hi]
     have := h1 i hi
     have e := hr w w₀ i hi
     field_simp

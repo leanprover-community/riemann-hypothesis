@@ -45,17 +45,6 @@ variable {tk g}
 
 end Corr
 
-section Count
-
-variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {G' : Over S'} [GrpObj G'] {f : S' ⟶ S} {F : G'.left ⟶ G.left}
-  (hc : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsGrpPullback G' G f F) {k : Type} [CommRing k] {tk : Spec (CommRingCat.of k) ⟶ S'}
-  {g : Spec (CommRingCat.of k) ⟶ S} (hg : tk ≫ f = g)
-
-
-
-
-end Count
-
 end Formalism.L2.Pj.GSR
 end -- clump:auto
 end -- clump:auto

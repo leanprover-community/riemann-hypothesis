@@ -885,7 +885,7 @@ theorem countConst_eq_unscaledConst : PI.VolStabS.MassDataS.SWXS → ∀ (Cg cb 
   refine ⟨hng, ?_⟩
   set B0 := Formalism.L2.SG.MassDataConc.bCF X hb Y.hK (Y.FN u) (Y.FN u') u u' X0 ψ (Y.tO u u') 0 0 1 vR0 Q0 Y.M Y.δ i0 i0' νq
     with hB0
-  have eU : kapU D = Formalism.L2.SG.MassDataConc.kapN D := if_pos hκ
+  have eU : kapU D = Formalism.L2.SG.MassDataConc.kapN D := ite_eq_left hκ
   have eA : (bkU X hb Y u u' X0 ψ sd C Th vR Q i0 i0' νq).AA = B0.AA / kapU D := by
     show B0.volB * (B0.Coo / kapU D) * (B0.MM / B0.volZZ) / B0.μK =
       B0.volB * B0.Coo * (B0.MM / B0.volZZ) / B0.μK / kapU D

@@ -21,7 +21,7 @@ def sect {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (y : TupI X) : GI X 
 theorem sect_spec {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (y : TupI X) (hy : ∃ g : GI X, orbM X u' g = y) :
     orbM X u' (sect X u' y) = y := by
   classical
-  simp only [sect, dif_pos hy]
+  simp only [sect, dite_eq_left hy]
   exact hy.choose_spec
 
 def kerI {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (y : TupI X) : Measure (GI X) :=

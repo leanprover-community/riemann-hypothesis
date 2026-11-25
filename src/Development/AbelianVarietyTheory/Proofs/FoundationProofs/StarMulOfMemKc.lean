@@ -232,9 +232,9 @@ theorem sum_sum_ite_lt (m : ℕ) (s : ℕ → ℝ) :
   | zero => simp
   | succ m ih =>
     rw [Finset.sum_range_succ, Finset.sum_eq_zero (s := Finset.range (m + 1))
-      (fun j hj => if_neg (by have := Finset.mem_range.1 hj; omega)), add_zero]
+      (fun j hj => ite_eq_right (by have := Finset.mem_range.1 hj; omega)), add_zero]
     simp only [Finset.sum_range_succ, Finset.sum_add_distrib, ih]
-    rw [Finset.sum_congr rfl (fun i hi => if_pos (Finset.mem_range.1 hi)), Finset.sum_add_distrib]
+    rw [Finset.sum_congr rfl (fun i hi => ite_eq_left (Finset.mem_range.1 hi)), Finset.sum_add_distrib]
     simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     push_cast; ring
 

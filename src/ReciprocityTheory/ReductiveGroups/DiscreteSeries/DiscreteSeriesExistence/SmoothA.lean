@@ -189,7 +189,7 @@ theorem Tm_apply (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ}
     (v : smSub ε σ) : ((Tm hσ X v : smSub ε σ) : H) = dS σ X v := by
   first
     | (simp only [Tm, dif_pos hX]; done)
-    | (simp only [Tm, dif_pos hX]; rfl)
+    | (simp only [Tm, dite_eq_left hX]; rfl)
 
 theorem Tm_add (hσ : IsURepOn (UJset ε) σ) {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X)
     (hY : inG ε Y) : Tm hσ (X + Y) = Tm hσ X + Tm hσ Y := by
@@ -394,8 +394,8 @@ theorem cas_pair_lt (ε : Fin n → Bool) {a b : Fin n} (hab : a < b) :
   have hsym : casSg ε (b, a) = casSg ε (a, b) := by
     unfold casSg
     by_cases h : ε a = ε b
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (Ne.symm h)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
   have hw1 : casWt (a, b) = 1 / 2 := by simp [casWt, hne]
   have hw2 : casWt (b, a) = 1 / 2 := by simp [casWt, Ne.symm hne]
   have hg1 : casGen ε (a, b) = Matrix.single a b 1 - casSg ε (a, b) • Matrix.single b a 1 := by

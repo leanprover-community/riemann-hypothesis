@@ -210,8 +210,8 @@ private theorem coord {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalR
   let wt : (F.G0 × Fin n × Fin n) ⊕ (Σ v : F.V, Fin n × F.Gv v) → ℤ := Sum.elim
     (fun p => w n p.2.1 - w n p.2.2) (fun _ => 0)
   have eon : ∀ g i, e (Sum.inl (g, i, i)) = S.ρ.r g i i - algebraMap O S.R (a (S.ρ.r g i i)) :=
-    fun g i => if_pos rfl
-  have eoff : ∀ g i j, i ≠ j → e (Sum.inl (g, i, j)) = S.ρ.r g i j := fun g i j h => if_neg h
+    fun g i => ite_eq_left rfl
+  have eoff : ∀ g i j, i ≠ j → e (Sum.inl (g, i, j)) = S.ρ.r g i j := fun g i j h => ite_eq_right h
   have eψ : ∀ v i g, e (Sum.inr ⟨v, i, g⟩) =
       (S.ρ.ψ v i g : S.R) - algebraMap O S.R (a (S.ρ.ψ v i g)) := fun v i g => rfl
   have hoff : ∀ g i j, i ≠ j → S.ρ.r g i j ∈ maximalIdeal S.R := fun g i j h =>

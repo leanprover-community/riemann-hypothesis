@@ -30,7 +30,7 @@ theorem UpperTheory.Comparison₂.gChi_eq :
   unfold An.gChi Deduction.Gchi
   rw [UpperTheory.Comparison₂.gChi_eq_ramp]
   by_cases h : ψ.χ = 1
-  · rw [if_pos h, if_pos h]
+  · rw [ite_eq_left h, ite_eq_left h]
     have hN : ψ.N = 1 := by
       have hp : ψ.χ.conductor = ψ.N := ψ.prim
       rw [h, DirichletCharacter.conductor_one] at hp
@@ -43,5 +43,5 @@ theorem UpperTheory.Comparison₂.gChi_eq :
     simp only [h2, An.G, mul_one]
     push_cast
     ring
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_right h, ite_eq_right h]
     rfl

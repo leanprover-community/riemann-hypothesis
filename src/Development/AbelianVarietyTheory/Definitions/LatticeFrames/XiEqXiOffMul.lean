@@ -141,7 +141,7 @@ theorem ownVec_mem (P : BadPr I a) (hP : P.1 ∉ (B.primes X).vGs)
   rw [hY] at h0
   have h1 := (Formalism.L2.Col.mem_locLat _ _ _ _).1 hy P
   have h2 := (Formalism.L2.Col.mem_locLat _ _ _ _).1 h0 P
-  simp only [if_neg hP] at h1 h2
+  simp only [ite_eq_right hP] at h1 h2
   have hq : ((Formalism.L2.Col.qOf P.1 : ℕ) : B.fields.E) ≠ 0 := fun h => G.ϖ.ne_zero (by rw [hc.unif, h, map_zero])
   have h3 : ((Formalism.L2.Col.qOf P.1 : ℕ) : B.fields.E) ^ (I.cst a).M • z ∈ Formalism.HermitianLatticesTheory.localization₂ P.1.asIdeal (A.p0 (G.s + 1) β).1.1.deco.1.N := by
     have h4 := add_mem h1 (Submodule.smul_mem _ (((Formalism.L2.Col.qOf P.1 : ℕ) : 𝓞 B.fields.E) ^ (2 * (I.cst a).M)) h2)

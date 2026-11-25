@@ -44,7 +44,7 @@ theorem aug_comp_eq (f : Jet S κ 0 →ₐ[S] Jet S κ' 0) :
 
 theorem cc_psTrunc' (m : ℕ) (f : MvPowerSeries κ S) :
     MvPolynomial.constantCoeff (psTrunc m f) = MvPowerSeries.constantCoeff f := by
-  rw [FBIdJet.psTrunc_eq, MvPowerSeries.constantCoeff_truncTotal_eq_ite, if_pos (Nat.succ_pos m)]
+  rw [FBIdJet.psTrunc_eq, MvPowerSeries.constantCoeff_truncTotal_eq_ite, ite_eq_left (Nat.succ_pos m)]
 
 private theorem jetSubstPS_mk_lemma (n : ℕ) (g : κ → MvPowerSeries κ' S) (P : MvPolynomial κ S) :
     (jetSubstPS (m := n) g) (Ideal.Quotient.mk (orig S κ ^ (n + 1)) P) =

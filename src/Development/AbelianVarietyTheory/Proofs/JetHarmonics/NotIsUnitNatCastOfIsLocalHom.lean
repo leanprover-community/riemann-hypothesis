@@ -79,10 +79,6 @@ def IsOriginChart {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] {d : ℕ}
 def mulSeries {R : Type} [CommRing R] {d : ℕ} (F : FGLaw R d) (n : ℕ) : Pt R 1 d :=
   Nat.rec (motive := fun _ => Pt R 1 d) 0 (fun _ a => F.add a (pt R d 0)) n
 
-def torsionIdeal {T O : Type} [CommRing T] [CommRing O] (f : T →+* O) {d : ℕ} (F : FGLaw T d)
-    (n : ℕ) : Ideal (PS O 1 d) :=
-  Ideal.span (Set.range fun i : Fin d => MvPowerSeries.map f (mulSeries F n i))
-
 end GlobalTheory.IndefiniteRowSideFullHecke.OriginChartMultiplication
 end -- clump:auto
 end -- clump:auto
@@ -148,7 +144,7 @@ theorem psJet_eq_jetOfSeries {n d : ℕ} [Nonempty (Fin n × Fin d)] (m : ℕ) (
   rw [Ideal.Quotient.eq, MvPolynomial.mem_pow_idealOfVars_iff']
   intro x hx
   rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_trunc, MvPowerSeries.coeff_truncTotal _ hx,
-    if_pos, sub_self]
+    ite_eq_left, sub_self]
   have hle : ∀ q, x q < m + 1 := fun q => lt_of_le_of_lt (Finsupp.le_degree q x) hx
   refine lt_of_le_of_ne (fun q => by simpa using (hle q).le) fun h => ?_
   obtain ⟨q⟩ := ‹Nonempty (Fin n × Fin d)›

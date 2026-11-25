@@ -147,11 +147,11 @@ lemma swapHom_rai (i : Fin b) (j : Fin a) (Q : LPol b a) :
   unfold rai
   have hs := C_sg_mul_self (σ := Fin a × Fin b) (ε j)
   by_cases h : ε' i = ε j
-  · rw [if_pos h, if_pos h.symm]
+  · rw [ite_eq_left h, ite_eq_left h.symm]
     simp only [LinearMap.smul_apply, LinearMap.mulLeft_apply, swapHom_C, map_mul, swapHom_X, conj_sg,
       swSign, smul_eq_C_mul, Prod.swap_prod_mk]
     linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * X (j, i) * swapHom ε ε' Q) * hs
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
     simp only [LinearMap.smul_apply, LinearMap.neg_apply, Derivation.coeFn_coe, map_neg, swapHom_C,
       swapHom_pderiv, map_mul, conj_sg, swSign, smul_eq_C_mul, Prod.swap_prod_mk]
     linear_combination (-(C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * pderiv (j, i) (swapHom ε ε' Q))) * hs
@@ -161,11 +161,11 @@ lemma swapHom_low (i : Fin b) (j : Fin a) (Q : LPol b a) :
   unfold low
   have hs := C_sg_mul_self (σ := Fin a × Fin b) (ε j)
   by_cases h : ε' i = ε j
-  · rw [if_pos h, if_pos h.symm]
+  · rw [ite_eq_left h, ite_eq_left h.symm]
     simp only [LinearMap.smul_apply, Derivation.coeFn_coe, swapHom_C, swapHom_pderiv, map_mul, conj_sg,
       swSign, smul_eq_C_mul, Prod.swap_prod_mk]
     linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * pderiv (j, i) (swapHom ε ε' Q)) * hs
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
     simp only [LinearMap.smul_apply, LinearMap.mulLeft_apply, swapHom_C, map_mul, swapHom_X, conj_sg,
       swSign, smul_eq_C_mul, Prod.swap_prod_mk]
     linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * X (j, i) * swapHom ε ε' Q) * hs

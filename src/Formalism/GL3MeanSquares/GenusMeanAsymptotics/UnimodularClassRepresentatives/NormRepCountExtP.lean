@@ -56,11 +56,11 @@ theorem normRepCount_extP (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   have hd := localDensity K hK P hP 1 j le_rfl hj 1 (map_one _) h1
   rw [alphaStd_one, etaF_comap hK hF hP]
   by_cases hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P = P
-  · rw [map_comap_eq_of_inert hK hF hP hc, hd.1 hc, if_pos hc, ← absNorm_comap_inert hK hF hP hc]
+  · rw [map_comap_eq_of_inert hK hF hP hc, hd.1 hc, ite_eq_left hc, ← absNorm_comap_inert hK hF hP hc]
     push_cast
     rw [Real.sqrt_sq (Nat.cast_nonneg _)]
     simp
-  · rw [extP_split hK hF hP hc, hd.2 hc, if_neg hc, absNorm_comap_split hK hF hP hc]
+  · rw [extP_split hK hF hP hc, hd.2 hc, ite_eq_right hc, absNorm_comap_split hK hF hP hc]
     simp
 
 end Formalism.HermitianLattices.Ext.L3.ThirdPropositionSlot

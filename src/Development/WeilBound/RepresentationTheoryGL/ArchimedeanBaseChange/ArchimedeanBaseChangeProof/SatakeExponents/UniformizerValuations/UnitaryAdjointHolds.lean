@@ -433,7 +433,7 @@ theorem surjective_of_cLoc (n : ℕ) (w : Pl E) (p : locU n w →* UL n w) (hp :
   · obtain ⟨h1, h2⟩ := cj_props hs
     obtain ⟨e, he⟩ := GlobalTheory.DefU.Inert.locU_equiv E n w (cj w) h1 h2
     have hg : g.1 ∈ UJ (cj w) (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) := by
-      have h : UL n w = UJ (cj w) 1 := if_neg hs
+      have h : UL n w = UJ (cj w) 1 := ite_eq_right hs
       have key : ∀ y : GLw n w, y ∈ UL n w → y ∈ UJ (cj w) (1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) :=
         fun y hy => by rwa [h] at hy
       exact key g.1 g.2
@@ -490,8 +490,8 @@ theorem cT_antiJ (σ : L →+* L) : cT σ (antiJ L n) = antiJ L n := by
   ext i j
   simp only [cT, Matrix.transpose_apply, Matrix.map_apply, antiJ]
   by_cases h : i.val + j.val + 1 = n
-  · rw [if_pos h, if_pos (by omega)]; simp
-  · rw [if_neg h, if_neg (by omega)]; simp
+  · rw [ite_eq_left h, ite_eq_left (by omega)]; simp
+  · rw [ite_eq_right h, ite_eq_right (by omega)]; simp
 
 theorem wJ_mem_GU (σ : L →+* L) : wJ L n ∈ GU σ n := by
   change cT σ (antiJ L n) * antiJ L n * antiJ L n = antiJ L n
@@ -584,7 +584,7 @@ theorem relIndex_conj_KL_ne_zero (n : ℕ) (w : Pl E) (g : UL n w) :
 
 theorem gelPair_split (n : ℕ) (w : Pl E) (hw : IsSplitAt w) : GelPair (KL n w) := by
   have hmem : ∀ x : GLw n w, x ∈ UL n w := fun x => by
-    have h : UL n w = ⊤ := if_pos hw
+    have h : UL n w = ⊤ := ite_eq_left hw
     rw [h]
     exact Subgroup.mem_top x
   refine ⟨relIndex_conj_KL_ne_zero n w, fun g => ⟨Formalism.UG.P.heckecomm_tr g.1, hmem _⟩, ?_, ?_, ?_, ?_⟩
@@ -1038,13 +1038,13 @@ theorem pu_prod (hL : LocAlg) (h1 : SphOne) (hC : CompUnit) (hS : SphStarU) (hE 
             simp [show w0 ∈ S \ ↑B from ⟨hw0, hw0B⟩]
           · refine (Set.finite_singleton w0).subset fun w hw => ?_
             by_contra hne
-            exact hw.2 (if_neg hne)
+            exact hw.2 (ite_eq_right hne)
         · intro w hw
           rcases eq_or_ne w w0 with rfl | hne
-          · rw [if_pos rfl, pu_sph_self]
+          · rw [ite_eq_left rfl, pu_sph_self]
             exact (pu_tw h1 hC hS hE hB i w hw.1 hw.2 h _ hh (pu_sph_hecke hL hB l (fun y hy => hl y
               (List.mem_cons_of_mem _ hy)) w hw.2)).1
-          · rw [if_neg hne, one_mul, pu_sph_ne _ _ _ _ (Ne.symm hne)]
+          · rw [ite_eq_right hne, one_mul, pu_sph_ne _ _ _ _ (Ne.symm hne)]
       rw [List.map_cons, List.prod_cons, ih']
       show t0 * (UGen.sc l * _) = (1 * UGen.sc l) * _
       rw [hP, one_mul, mul_left_comm]
@@ -1069,19 +1069,19 @@ theorem uWordOfU : DiagAlg → LocAlg → SphOne → CompUnit → SphStarU → U
   have hT : IsTest (KL n) K' (fam B K' g k l) := by
     refine ⟨fun w => ?_, ?_⟩
     · by_cases hw : w ∈ B
-      · rw [fam, if_pos hw]
+      · rw [fam, ite_eq_left hw]
         exact (pu_lpow hL w (K' w) (hB.2.1.1 w) (g w) (hg w hw) (SmIrr.triv _) k).1
-      · rw [fam, if_neg hw, hB.2.2 w hw]
+      · rw [fam, ite_eq_right hw, hB.2.2 w hw]
         exact pu_sph_hecke hL hB l hl w hw
     · rw [Filter.eventually_cofinite]
       refine (B ∪ pu_pls l).finite_toSet.subset fun w hw => ?_
       by_contra hc
       simp only [Finset.coe_union, Set.mem_union, Finset.mem_coe, not_or] at hc
-      exact hw (by rw [fam, if_neg hc.1, pu_sph_off l w hc.2])
+      exact hw (by rw [fam, ite_eq_right hc.1, pu_sph_off l w hc.2])
   refine ⟨hT, fun hreg => ?_⟩
   have hloc : ∀ i, ∀ w ∈ B, locOp (F.σ i w) (K' w) (fam B K' g k l w) = locOp (F.σ i w) (K' w) (g w) ^ k :=
     fun i w hw => by
-      rw [fam, if_pos hw]
+      rw [fam, ite_eq_left hw]
       exact (pu_lpow hL w (K' w) (hB.2.1.1 w) (g w) (hg w hw) (F.σ i w) k).2
   have e1 := R.tr k _ hT hloc
   rw [F.tf _ hT hreg] at e1
@@ -1090,7 +1090,7 @@ theorem uWordOfU : DiagAlg → LocAlg → SphOne → CompUnit → SphStarU → U
     funext i
     rw [Pi.mul_apply, pu_prod hL h1 hC hS hE hB i l hl]
     congr 1
-    exact finprod_mem_congr rfl fun w hw => by rw [fam, if_neg (show w ∉ B from hw.2)]
+    exact finprod_mem_congr rfl fun w hw => by rw [fam, ite_eq_right (show w ∉ B from hw.2)]
   rw [pu_opprod hD R l, e2, (hD F.ι R.d R.blk (fun _ => UGen.sc l) _ 0).1, (hD F.ι R.d R.blk 0 0 (UGen.sc l)).2.2.1,
     smul_mul_assoc, one_mul, mul_smul_comm, ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul, e1]
 

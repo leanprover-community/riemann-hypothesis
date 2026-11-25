@@ -68,14 +68,14 @@ theorem _root_.GlobalTheory.BiextInhab.laK_idMod2 (hl : l.Prime) :
   refine ⟨fun j => ?_, fun j i => ?_⟩
   · show _root_.GlobalTheory.BiextInhab.laK K l d j 0 = 0
     unfold _root_.GlobalTheory.BiextInhab.laK
-    refine Finset.sum_eq_zero fun e _ => if_neg fun h => ?_
+    refine Finset.sum_eq_zero fun e _ => ite_eq_right fun h => ?_
     exact pow_ne_zero _ hl.ne_zero (Finsupp.single_eq_zero.mp h.symm)
   · show _root_.GlobalTheory.BiextInhab.laK K l d j (Finsupp.single i 1) = _
     unfold _root_.GlobalTheory.BiextInhab.laK
     rw [Finset.sum_eq_single 0]
     · simp [Finsupp.single_left_inj one_ne_zero]
     · intro e _ he
-      refine if_neg fun h => he ?_
+      refine ite_eq_right fun h => he ?_
       have h1 := congrArg (fun f : ZMod d →₀ ℕ => f.sum fun _ k => k) h
       simp only [Finsupp.sum_single_index] at h1
       rcases Nat.pow_eq_one.mp h1.symm with h2 | h2
@@ -87,16 +87,6 @@ theorem _root_.GlobalTheory.BiextInhab.laK_idMod2 (hl : l.Prime) :
 variable [NeZero d]
 
 end Field
-
-section Padic
-
-open Formalism.G
-
-variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ} {τ : Type}
-
-variable [NeZero d]
-
-end Padic
 
 section Main
 
@@ -128,12 +118,8 @@ variable [NeZero d] in
 private theorem coeff_mapDomain_rename_of_injective {σ τ R : Type} [CommSemiring R] (f : σ → τ)
     [Filter.TendstoCofinite f] (hf : Function.Injective f) (p : MvPowerSeries σ R)
     (n : σ →₀ ℕ) : coeff (Finsupp.mapDomain f n) (rename f p) = coeff n p := by
-  rw [coeff_rename, Finset.sum_eq_single n]
-  · intro y hy hne
-    simp only [Set.Finite.mem_toFinset] at hy
-    exact absurd (Finsupp.mapDomain_injective hf hy) hne
-  · intro hn
-    exact absurd (by simp) hn
+  have h := MvPowerSeries.coeff_embDomain_rename ⟨f, hf⟩ p n
+  rwa [Finsupp.embDomain_eq_mapDomain] at h
 
 
 open MvPowerSeries in
@@ -176,7 +162,7 @@ theorem _root_.GlobalTheory.BiextInhab.bridge (l : ℕ) [Fact l.Prime] (d : ℕ)
     unfold _root_.Formalism.BasicNotions.jetLogG
     dsimp only
     symm
-    refine Finset.sum_eq_zero fun e _ => if_neg ?_
+    refine Finset.sum_eq_zero fun e _ => ite_eq_right ?_
     rintro rfl
     exact hm ⟨_, (hsingle e).symm⟩
 

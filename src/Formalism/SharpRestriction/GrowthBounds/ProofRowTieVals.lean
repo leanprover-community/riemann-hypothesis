@@ -110,7 +110,7 @@ theorem tcoord_abs {V : VF C} {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I 
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun c' _ => Finset.sum_congr rfl fun j _ => by ring
     rw [e]
-    simp only [hw, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hw, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hts := MvPowerSeries.hasSubst_of_constantCoeff_zero ht0
   have ht₂s := MvPowerSeries.hasSubst_of_constantCoeff_zero ht₂0
   have heq : ∀ k, MvPowerSeries.subst t (φ k) = MvPowerSeries.subst t₂ (MvPowerSeries.X k : MvPowerSeries (I g) C) := by
@@ -530,7 +530,7 @@ theorem main_cg :
       HK Y p (ind s) (if t = (s.1, 1 - s.2) then lamAct Y p Y.w0 * ind t else 0)) =
       HK Y p (ind s) (lamAct Y p Y.w0 * ind (s.1, 1 - s.2)) := by
     intro s
-    simp only [apply_ite (HK Y p (ind s)), HK_zeroR, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [apply_ite (HK Y p (ind s)), HK_zeroR, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have e4 : (∑ s : Orb × Fin 2, HK Y p (ind s) (lamAct Y p Y.w0 * ind (s.1, 1 - s.2))) =
       ∑ o : Orb, (HK Y p (ind (o, 0)) (lamAct Y p Y.w0 * ind (o, 1)) +
         HK Y p (ind (o, 1)) (lamAct Y p Y.w0 * ind (o, 0))) := by
@@ -548,7 +548,7 @@ theorem main_cg :
     have hμ : GK Y p (1 * ind (o, 1)) := by rw [one_mul]; exact GK_ind hs hG (o, 1)
     have e := HK_gram hs hG o o 0 1 hμ
     have hc : ((o, (1 : Fin 2)) = (o, 1 - 0)) := by simp
-    rw [if_pos hc] at e
+    rw [ite_eq_left hc] at e
     simp only [one_mul] at e
     exact e
   have e23 := e2

@@ -268,7 +268,7 @@ private theorem gc_mem_pow_iff {E σ : Type} [Field E] [Finite σ] (N : ℕ) (g 
           have h : ∃ i, e i ≠ 0 := by
             by_contra! hh
             exact he (Finsupp.ext hh)
-          simp only [pick, dif_pos h]
+          simp only [pick, dite_eq_left h]
           exact Classical.choose_spec h
         let gi : σ → MvPowerSeries σ E := fun i e =>
           if pick (e + Finsupp.single i 1) = i then coeff (e + Finsupp.single i 1) g else 0
@@ -286,7 +286,7 @@ private theorem gc_mem_pow_iff {E σ : Type} [Field E] [Finite σ] (N : ℕ) (g 
               intro i hle
               have := hle i
               simp at this
-            simp only [hz, if_false, Finset.sum_const_zero]
+            simp only [hz, ite_false, Finset.sum_const_zero]
             exact hg 0 (by simp)
           · have hle : Finsupp.single (pick e) 1 ≤ e := by
               intro k
@@ -294,13 +294,13 @@ private theorem gc_mem_pow_iff {E σ : Type} [Field E] [Finite σ] (N : ℕ) (g 
               · subst hk
                 simp only [Finsupp.single_eq_same]
                 exact Nat.one_le_iff_ne_zero.mpr (hpick e he)
-              · rw [Finsupp.single_apply, if_neg (Ne.symm hk)]
+              · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hk)]
                 exact Nat.zero_le _
             rw [Finset.sum_eq_single (pick e)]
-            · rw [if_pos hle, hgi, tsub_add_cancel_of_le hle, if_pos rfl]
+            · rw [ite_eq_left hle, hgi, tsub_add_cancel_of_le hle, ite_eq_left rfl]
             · intro i _ hi
               split_ifs with hle'
-              · rw [hgi, tsub_add_cancel_of_le hle', if_neg (fun h => hi h.symm)]
+              · rw [hgi, tsub_add_cancel_of_le hle', ite_eq_right (fun h => hi h.symm)]
               · rfl
             · intro h
               exact absurd (Finset.mem_univ _) h
@@ -471,9 +471,9 @@ private theorem wcomp_monomial_eq_ite_weight {A σ' Y' : Type} [CommRing A] [Add
   rw [coeff_wcomp, coeff_monomial]
   by_cases hn : n = m
   · subst hn
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs <;> simp
-  · rw [if_neg hn]
+  · rw [ite_eq_right hn]
     split_ifs <;> simp [coeff_monomial, hn]
 
 private lemma gc_graded [IsDomain O] [IsFractionRing O E] [Finite τ] (W : WPres O Y R) (h : W.HasOrigin)
@@ -503,7 +503,7 @@ private lemma gc_graded [IsDomain O] [IsFractionRing O E] [Finite τ] (W : WPres
         by_cases hk : k = i
         · subst hk
           simp
-        · rw [Finsupp.single_apply, if_neg (Ne.symm hk)]
+        · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hk)]
           exact Nat.zero_le _
       have := congrArg Finsupp.degree (tsub_add_cancel_of_le hs)
       rw [map_add (f := _), Finsupp.degree_single] at this
@@ -530,7 +530,7 @@ private lemma gc_graded [IsDomain O] [IsFractionRing O E] [Finite τ] (W : WPres
 
     rw [map_sub, map_sub, map_sum, map_sum, map_smul, map_smul, map_sub, map_sum, hcs]
     simp only [map_smul, hψ, hcs, coeff_monomial, smul_ite, smul_zero]
-    rw [Finset.sum_ite_eq T e'' (fun e' => a e' • (1 : E)), if_pos (hTmem e'' he''),
+    rw [Finset.sum_ite_eq T e'' (fun e' => a e' • (1 : E)), ite_eq_left (hTmem e'' he''),
       ← Algebra.algebraMap_eq_smul_one, ha e'' (hTmem e'' he''), sub_self]
   have hwP : ∀ e', wcomp O W.wt (Finsupp.weight (fun i => W.wt (u i)) e) (Pm e') =
       if Finsupp.weight (fun i => W.wt (u i)) e' = Finsupp.weight (fun i => W.wt (u i)) e
@@ -556,7 +556,7 @@ private lemma gc_graded [IsDomain O] [IsFractionRing O E] [Finite τ] (W : WPres
   have heT : e ∈ T.filter (fun e' => Finsupp.weight (fun i => W.wt (u i)) e' =
       Finsupp.weight (fun i => W.wt (u i)) e) :=
     Finset.mem_filter.mpr ⟨hTmem e (by omega), rfl⟩
-  rw [if_pos heT, ← Algebra.algebraMap_eq_smul_one, ha e (hTmem e (by omega)), Algebra.smul_def] at hc
+  rw [ite_eq_left heT, ← Algebra.algebraMap_eq_smul_one, ha e (hTmem e (by omega)), Algebra.smul_def] at hc
   exact (mul_eq_zero.mp hc).resolve_left (fun h0 => hd0 (hinj (by rw [h0, map_zero])))
 
 private lemma gc_deg_single {σ : Type} (i : σ) : (Finsupp.single i 1 : σ →₀ ℕ).degree < 2 := by simp
@@ -587,7 +587,7 @@ private lemma gc_span [IsDomain O] [FaithfulSMul O E] {n : ℕ} (W : WPres O Y R
     intro r
     funext j
     rw [hlin, MvPowerSeries.algebraMap_apply, coeff_C,
-      if_neg (fun h => one_ne_zero (Finsupp.single_eq_zero.mp h))]
+      ite_eq_right (fun h => one_ne_zero (Finsupp.single_eq_zero.mp h))]
     rfl
   have key : ∀ g, lin (φ (W.π g)) ∈ Submodule.span E (Set.range v) := by
     intro g
@@ -621,7 +621,7 @@ private lemma gc_span [IsDomain O] [FaithfulSMul O E] {n : ℕ} (W : WPres O Y R
         by_cases hjk : j = k
         · subst hjk
           simp
-        · rw [if_neg, if_neg hjk]
+        · rw [ite_eq_right, ite_eq_right hjk]
           intro h
           exact hjk ((Finsupp.single_left_inj one_ne_zero).mp h).symm
       rw [hX] at h1
@@ -782,8 +782,8 @@ private lemma gc_count [IsDomain O] [IsFractionRing O E] [Fintype τ] (x : R →
     show Dv (z i.1) = v i
     rw [hDv, hz]
     simp [coeff_X, Finsupp.single_left_inj one_ne_zero]
-    rw [Finset.sum_eq_single i (fun b _ hb => if_neg (fun h => hb (Subtype.ext h)))
-      (fun h => absurd (Finset.mem_univ _) h), if_pos rfl]
+    rw [Finset.sum_eq_single i (fun b _ hb => ite_eq_right (fun h => hb (Subtype.ext h)))
+      (fun h => absurd (Finset.mem_univ _) h), ite_eq_left rfl]
   let e := LinearEquiv.ofBijective L ⟨hinjL, hsurjL⟩
   rw [e.finrank_eq, Module.finrank_fintype_fun_eq_card, Nat.card_eq_fintype_card]
 

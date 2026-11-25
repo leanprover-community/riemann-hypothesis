@@ -163,12 +163,12 @@ theorem aP_split (k N t : ℕ) (hk : k + 1 ≤ N) (v : PlX X) :
     aP (E := X.B.I.E) v k N t = (∏ i ∈ Finset.Icc (k + 1) N, fac X i v) * tf X k t v := by
   unfold aP tf
   by_cases ht : ((t : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdeal
-  · rw [if_pos ht, if_pos ht, Finset.Icc_eq_cons_Ioc (show k ≤ N by omega), Finset.prod_cons]
+  · rw [ite_eq_left ht, ite_eq_left ht, Finset.Icc_eq_cons_Ioc (show k ≤ N by omega), Finset.prod_cons]
     have hIo : Finset.Ioc k N = Finset.Icc (k + 1) N := by
       ext i; simp only [Finset.mem_Ioc, Finset.mem_Icc]; omega
     rw [hIo, mul_comm]
     rfl
-  · rw [if_neg ht, if_neg ht, mul_one]
+  · rw [ite_eq_right ht, ite_eq_right ht, mul_one]
     rfl
 
 theorem aPlus_pos (k N t : ℕ) (hk : 1 ≤ k) (v : PlX X) : 0 < aP (E := X.B.I.E) v k N t := by
@@ -242,9 +242,9 @@ theorem normalizing_arithmetic_holds : NcArith := by
   have hSf := finite_dvd X (Tw u) hT0
   have hSf' := finite_dvd X (Tw u') hT0'
   have hTHPf : HasProd (tf X D.R.k (Tw u)) (∏ v ∈ hSf.toFinset, tf X D.R.k (Tw u) v) :=
-    hasProd_of_finite_support _ hSf (fun v hv => by simp only [tf, Set.mem_ofPred_eq] at hv ⊢; rw [if_neg hv])
+    hasProd_of_finite_support _ hSf (fun v hv => by simp only [tf, Set.mem_ofPred_eq] at hv ⊢; rw [ite_eq_right hv])
   have hTHP' : HasProd (tf X D.R.k (Tw u')) (∏ v ∈ hSf'.toFinset, tf X D.R.k (Tw u') v) :=
-    hasProd_of_finite_support _ hSf' (fun v hv => by simp only [tf, Set.mem_ofPred_eq] at hv ⊢; rw [if_neg hv])
+    hasProd_of_finite_support _ hSf' (fun v hv => by simp only [tf, Set.mem_ofPred_eq] at hv ⊢; rw [ite_eq_right hv])
   have hPTpos : 0 < PT := by
     rw [hTHP.unique hTHPf]
     exact Finset.prod_pos fun v _ => tf_pos X D.R.k (Tw u) (by omega) v
@@ -278,10 +278,10 @@ theorem normalizing_arithmetic_holds : NcArith := by
   have hal_def : (bCF X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq).al =
       (∏ p : TypX X, alX X u u' p.1) * ∏' v : OrdX X, alX X u u' v.1 := rfl
   have halT : ∀ v : PlX X, TypAt X v → alX X u u' v = aP (E := X.B.I.E) v D.R.k X.B.I.n (Tw u) := by
-    intro v hv; unfold alX; rw [if_pos hv]
+    intro v hv; unfold alX; rw [ite_eq_left hv]
   have halO : ∀ v : PlX X, ¬ TypAt X v → alX X u u' v =
       aP (E := X.B.I.E) v D.R.k X.B.I.n (Tw u) * aP (E := X.B.I.E) v D.R.k X.B.I.n (Tw u') := by
-    intro v hv; unfold alX; rw [if_neg hv]
+    intro v hv; unfold alX; rw [ite_eq_right hv]
   have hordHP := hasProd_compl_of' (typSet X.B.I.F (D.host.g 0) (D.host.g 1)) (hATHP.mul hA'HP)
     (fun v _ => (mul_pos (aPlus_pos X D.R.k X.B.I.n (Tw u) (by omega) v)
       (aPlus_pos X D.R.k X.B.I.n (Tw u') (by omega) v)).ne')
@@ -340,8 +340,8 @@ theorem normalizing_arithmetic_holds : NcArith := by
         (if TypAt X v then (gAt X v : ℝ) ^ ((D.R.rS + 1) * (2 * D.R.rS + 3)) else 1) := by
     intro v
     by_cases hv : TypAt X v
-    · rw [if_pos hv, ← div_eq_mul_inv, hVt hχ hstd hcong v hv, htδ ⟨v, hv⟩, Real.one_rpow, one_mul]
-    · rw [if_neg hv, ← div_eq_mul_inv, hVo hχ hstd v hv, mul_one]
+    · rw [ite_eq_left hv, ← div_eq_mul_inv, hVt hχ hstd hcong v hv, htδ ⟨v, hv⟩, Real.one_rpow, one_mul]
+    · rw [ite_eq_right hv, ← div_eq_mul_inv, hVo hχ hstd v hv, mul_one]
   have hgHP : HasProd (fun v : PlX X => if TypAt X v then (gAt X v : ℝ) ^ ((D.R.rS + 1) * (2 * D.R.rS + 3)) else 1)
       (∏ p : TypX X, (gAt X p.1 : ℝ) ^ ((D.R.rS + 1) * (2 * D.R.rS + 3))) := by
     have h0 := hasProd_of_compl' (typSet X.B.I.F (D.host.g 0) (D.host.g 1))
@@ -350,10 +350,10 @@ theorem normalizing_arithmetic_holds : NcArith := by
         convert (hasProd_one : HasProd (fun _ : {i // i ∉ typSet X.B.I.F (D.host.g 0) (D.host.g 1)} => (1 : ℝ)) 1)
           using 1
         funext v
-        exact if_neg v.2)
+        exact ite_eq_right v.2)
     convert h0 using 1
     rw [one_mul]
-    exact Fintype.prod_congr _ _ (fun p => (if_pos p.2).symm)
+    exact Fintype.prod_congr _ _ (fun p => (ite_eq_left p.2).symm)
   have hδX := hasProd_rpow' (-(((D.R.rS : ℝ) + 1) * (8 * (D.R.rS : ℝ) ^ 2 + 10 * D.R.rS + 3) / 3))
     (fun v => absV_nonneg X v) hDP (inv_ne_zero hdX.ne')
   have hval : HasProd (fun v : PlX X => localVolumeUnit X ψ v * (ZZX X u u' ψ v)⁻¹)
@@ -903,9 +903,9 @@ theorem tprod_supT {T : ℕ} (hT : 0 < T) (g : Ideal (𝓞 F) → ℝ) :
     rw [Finset.prod_subtype_eq_prod_filter (f := fun P => if ((T : ℕ) : 𝓞 F) ∈ P then g P else 1)]
     rw [Finset.filter_true_of_mem (fun P hP => isMaximal_of_mem_nfT hT (Multiset.mem_toFinset.1 hP))]
     refine Finset.prod_congr rfl fun P hP => ?_
-    rw [if_pos ((mem_nfT_iff hT P).1 (Multiset.mem_toFinset.1 hP)).2]
+    rw [ite_eq_left ((mem_nfT_iff hT P).1 (Multiset.mem_toFinset.1 hP)).2]
   · intro 𝔭 h𝔭
-    rw [if_neg (fun h => h𝔭 ((mem_supT hT 𝔭).2 h))]
+    rw [ite_eq_right (fun h => h𝔭 ((mem_supT hT 𝔭).2 h))]
 
 theorem absNorm_span_natCast (T : ℕ) :
     Ideal.absNorm (Ideal.span {((T : ℕ) : 𝓞 F)}) = T ^ finrank ℚ F := by
@@ -1063,9 +1063,9 @@ theorem glued_lattice_mass_formula {h1 : V1 →ₗ⋆[K] V1 →ₗ[K] K} {z : V1
       have hiff : vF 𝔭.1 (-((t : ℕ) : 𝓞 F)) ≠ 0 ↔ ((t : ℕ) : 𝓞 F) ∈ 𝔭.1 := by
         rw [vF_neg, ← Nat.one_le_iff_ne_zero, ← Formalism.L2.SG.Pf.G1.mem_pow_iff 𝔭.2 ht0 1, pow_one]
       by_cases h : ((t : ℕ) : 𝓞 F) ∈ 𝔭.1
-      · rw [if_pos h, Finset.filter_true_of_mem (fun i _ => hiff.2 h), Finset.card_univ,
+      · rw [ite_eq_left h, Finset.filter_true_of_mem (fun i _ => hiff.2 h), Finset.card_univ,
           Fintype.card_fin, h1r]
-      · rw [if_neg h, Finset.filter_false_of_mem (fun i _ => fun hh => h (hiff.1 hh)),
+      · rw [ite_eq_right h, Finset.filter_false_of_mem (fun i _ => fun hh => h (hiff.1 hh)),
           Finset.card_empty]
   have hnM : Formalism.L2.SG.Pf.Cnt.nM F h1 (Submodule.span K {z}) (Submodule.span (𝓞 K) {z}) =
       (t : ℝ) ^ finrank ℚ F := by
@@ -1076,8 +1076,8 @@ theorem glued_lattice_mass_formula {h1 : V1 →ₗ⋆[K] V1 →ₗ[K] K} {z : V1
     refine tprod_congr fun 𝔭 => ?_
     rw [(hJ 𝔭).1]
     by_cases h : ((t : ℕ) : 𝓞 F) ∈ 𝔭.1
-    · rw [if_pos h]
-    · rw [if_neg h, ← vF_eq_vT 𝔭.2 ht, Formalism.L2.SG.Pf.G1.vF_of_notMem 𝔭.2 h, pow_zero]
+    · rw [ite_eq_left h]
+    · rw [ite_eq_right h, ← vF_eq_vT 𝔭.2 ht, Formalism.L2.SG.Pf.G1.vF_of_notMem 𝔭.2 h, pow_zero]
   have hratio : (∏' 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, alphaStd K 𝔭.1 k /
       alphaStd K 𝔭.1 (k - Formalism.L2.SG.Pf.Cnt.cJ h1 (Submodule.span K {z}) (Submodule.span (𝓞 K) {z}) 𝔭.1)) =
       ∏' 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, (if ((t : ℕ) : 𝓞 F) ∈ 𝔭.1 then
@@ -1085,8 +1085,8 @@ theorem glued_lattice_mass_formula {h1 : V1 →ₗ⋆[K] V1 →ₗ[K] K} {z : V1
     refine tprod_congr fun 𝔭 => ?_
     rw [(hJ 𝔭).2]
     by_cases h : ((t : ℕ) : 𝓞 F) ∈ 𝔭.1
-    · rw [if_pos h, if_pos h, alphaStd_ratio hK hF 𝔭.2 hk]
-    · rw [if_neg h, if_neg h, Nat.sub_zero, div_self (alphaStd_pos hK hF 𝔭.2 k).ne']
+    · rw [ite_eq_left h, ite_eq_left h, alphaStd_ratio hK hF 𝔭.2 hk]
+    · rw [ite_eq_right h, ite_eq_right h, Nat.sub_zero, div_self (alphaStd_pos hK hF 𝔭.2 k).ne']
   rw [hnM, hratio, ← pow_mul, mul_comm (finrank ℚ F) k]
 
 end GluedLatticeMass
@@ -1342,18 +1342,6 @@ noncomputable section
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
 open Formalism.HermitianLattices.Ext.L3
-
-section Pos
-
-end Pos
-
-section Generic
-
-variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
-variable {V1 : Type} [AddCommGroup V1] [Module K V1] [FiniteDimensional K V1] [Module (𝓞 K) V1]
-  [IsScalarTower (𝓞 K) K V1]
-
-end Generic
 
 section Bridge
 

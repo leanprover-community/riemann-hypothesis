@@ -116,10 +116,10 @@ theorem _root_.GlobalTheory.HeightStep.height_update : (∀ (r : ℕ) (X : _root
     intro τ
     by_cases h : τ = τ0
     · subst h
-      rw [if_pos rfl, hx']
+      rw [ite_eq_left rfl, hx']
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.mat
       exact @Function.update_self _ (fun _ => Fin r → Fin r → ℂ) (Classical.decEq _) _ _ _
-    · rw [if_neg h, hx']
+    · rw [ite_eq_right h, hx']
       unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.mat
       exact @Function.update_of_ne _ (fun _ => Fin r → Fin r → ℂ) (Classical.decEq _) _ _ h _ _
   have hx'det : ∀ τ : X.Ψ, (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x' τ).det ≠ 0 := by

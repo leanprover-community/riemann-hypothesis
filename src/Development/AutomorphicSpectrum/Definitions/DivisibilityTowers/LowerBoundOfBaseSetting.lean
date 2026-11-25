@@ -20,7 +20,7 @@ theorem hhFl_monomial (II : IntersectionSystem) (m : Ψ × Fin N →₀ ℕ) (a 
 
 theorem hhFl_monomial_of_ne (II : IntersectionSystem) (m : Ψ × Fin N →₀ ℕ) (a : ℝ)
     (h : m.degree ≠ GlobalTheory.CompanionTheory.Ar.Top.dimFl Ψ N + 1) : hhFl Ψ N II (monomial m a) = 0 := by
-  rw [hhFl_monomial, hFlMono, if_neg]
+  rw [hhFl_monomial, hFlMono, ite_eq_right]
   · simp
   · exact h
 

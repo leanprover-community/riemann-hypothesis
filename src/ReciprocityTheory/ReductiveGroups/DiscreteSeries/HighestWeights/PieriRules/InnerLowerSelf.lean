@@ -130,7 +130,7 @@ theorem inner_lower_self {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
     ⟪A b a w, A b a w⟫_ℂ = (((Λ a - Λ b : ℝ)) : ℂ) * ⟪w, w⟫_ℂ := by
   have hba : b ≠ a := ne_of_gt hab
   have hc := hR a b b a he he.symm
-  simp only [if_true] at hc
+  simp only [ite_true] at hc
   have hx := congrArg (fun F : Module.End ℂ V => F w) hc
   simp only [LinearMap.sub_apply, Module.End.mul_apply, hw.2 a b hab he, map_zero, sub_zero] at hx
   have h1 := hU b a he.symm w (A b a w)

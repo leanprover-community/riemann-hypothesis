@@ -94,12 +94,12 @@ theorem liesUnder_of_tie (hG : IsGalois ℚ ↥D.LL0) {c : NChoice D} (h : NChTi
   rw [hleft]
   cases hs : c.sd w
   · obtain ⟨x', hx'⟩ := exists_star hG (x : ↥D.LL0)
-    rw [if_neg (by simp), D.conj_val, ← hx']
+    rw [ite_eq_right (by simp), D.conj_val, ← hx']
     refine (key x' ?_).symm
-    rw [hs, if_neg (by simp)]
+    rw [hs, ite_eq_right (by simp)]
     exact D.ntw.restX_coefficientEmbedding_conj _ _ _ (by rw [hx', star_star])
-  · rw [if_pos rfl]
-    exact (key x (by rw [hs, if_pos rfl])).symm
+  · rw [ite_eq_left rfl]
+    exact (key x (by rw [hs, ite_eq_left rfl])).symm
 
 theorem atPlace_of_tie (hG : IsGalois ℚ ↥D.LL0) {c : NChoice D} (h : NChTie D c) : AtPlace (recorded c) := by
   intro w _

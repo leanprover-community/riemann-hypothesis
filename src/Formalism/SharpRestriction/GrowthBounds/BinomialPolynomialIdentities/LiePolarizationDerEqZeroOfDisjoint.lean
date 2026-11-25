@@ -47,7 +47,7 @@ theorem dominanceOrder_add_negative_root {n : ℕ} (ν : Fin n → ℤ) {c d : F
     · omega
     · omega
   · simp only [Pi.add_apply, rootW, Pi.sub_apply, Finset.sum_add_distrib, Finset.sum_sub_distrib, Pi.single_apply,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     omega
 
 theorem lowering_weight_dominated {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V) (hR : SatisfiesGLRelations E)
@@ -227,9 +227,9 @@ theorem lie_polarizationDer_eq_zero_of_disjoint (S T : Set (Fin N)) (hd : ∀ l,
   rw [Derivation.commutator_apply]
   by_cases hS : l ∈ S
   · have hT := hd l hS
-    simp only [isoPolDer_X, hS, hT, if_true, if_false, map_zero]
+    simp only [isoPolDer_X, hS, hT, ite_true, ite_false, map_zero]
     split_ifs <;> simp [isoPolDer_X, hT]
-  · simp only [isoPolDer_X, hS, if_false, map_zero]
+  · simp only [isoPolDer_X, hS, ite_false, map_zero]
     split_ifs <;> simp [isoPolDer_X, hS]
 
 theorem glAct_commute_of_disjoint (S T : Set (Fin N)) (hd : ∀ l, l ∈ S → l ∉ T) (a b c d : Fin n)

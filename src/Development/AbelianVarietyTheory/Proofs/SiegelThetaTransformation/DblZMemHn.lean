@@ -56,13 +56,13 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data 
 theorem aLin_mulVec_of_lt (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (w : Fin r → ℂ) {a : Fin r}
     (h : (a : ℕ) < X.p0) :
     (aLin X x₁ x₂ τ *ᵥ w) a = hermC τ.1 X.Gm w (FD.col (mat x₂ τ) a) := by
-  simp only [aLin, mulVec, dotProduct, of_apply, if_pos h, hermC, FD.col, mat, Finset.sum_mul]
+  simp only [aLin, mulVec, dotProduct, of_apply, ite_eq_left h, hermC, FD.col, mat, Finset.sum_mul]
   refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => by ring
 
 theorem aLin_mulVec_of_not_lt (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (w : Fin r → ℂ) {a : Fin r}
     (h : ¬ (a : ℕ) < X.p0) :
     (aLin X x₁ x₂ τ *ᵥ w) a = ((mat x₁ τ)⁻¹ *ᵥ w) a := by
-  simp only [aLin, mulVec, dotProduct, of_apply, if_neg h]
+  simp only [aLin, mulVec, dotProduct, of_apply, ite_eq_right h]
 
 variable {X}
 
@@ -152,9 +152,9 @@ theorem re_hermC_invol_neg {x₁ x₂ : Frame X.Ψ r} (h₁ : x₁ ∈ X.dom) (h
     simp [Matrix.mulVec_diagonal, hyp, hym, sgn]
     split_ifs <;> simp
   have p₁ : d₁ ≠ 0 → 0 < (hermC τ.1 X.Gm d₁ d₁).re := fun h =>
-    pos_of_upper h₁ x₂ τ h fun a ha => by rw [← hA, e₁]; simp only [hyp, if_neg ha]
+    pos_of_upper h₁ x₂ τ h fun a ha => by rw [← hA, e₁]; simp only [hyp, ite_eq_right ha]
   have p₂ : d₂ ≠ 0 → (hermC τ.1 X.Gm d₂ d₂).re < 0 := fun h =>
-    neg_of_lower x₁ h₂ τ h fun a ha => by rw [← hA, e₂]; simp only [hym, if_pos ha]
+    neg_of_lower x₁ h₂ τ h fun a ha => by rw [← hA, e₂]; simp only [hym, ite_eq_left ha]
   have hc : (hermC τ.1 X.Gm d₁ d₂).re = (hermC τ.1 X.Gm d₂ d₁).re := by
     rw [← hermC_conj τ.1 X.Gm_herm d₁ d₂, Complex.conj_re]
   have key : (hermC τ.1 X.Gm (d₂ - d₁) (d₁ + d₂)).re =

@@ -171,7 +171,7 @@ theorem stdBlocks_lt {s r : ℕ} (d : Fin s → ℕ) (hd : ∑ i, d i = r) {a b 
     rw [← Fin.sum_univ_eq_sum_range]
     refine Finset.sum_congr rfl fun x _ => ?_
     have hx : (x : ℕ) < s := x.2.trans c.2
-    simp only [f, hx, dif_pos]
+    simp only [f, hx, dite_eq_left]
     rfl
   rw [Fin.lt_def, stdBlocks_val, stdBlocks_val, key, key]
   have h1 : ∑ x ∈ Finset.range (b + 1), f x ≤ ∑ x ∈ Finset.range a, f x :=
@@ -251,7 +251,7 @@ theorem exists_lift_unipRad (k : Type) [Field k] [ValuativeRel k] [TopologicalSp
   refine ⟨GlobalTheory.LocGL.toKO k n u, CuspMax.mem_unipRad_iff_entries.2 fun i j hij => ?_, Units.ext ?_⟩
   · change algebraMap 𝒪[k] k ((u : Matrix n n 𝒪[k]) i j) = _
     rw [hu]
-    simp only [B, Matrix.of_apply, if_neg hij, Matrix.one_apply]
+    simp only [B, Matrix.of_apply, ite_eq_right hij, Matrix.one_apply]
     split_ifs <;> simp
   · simp only [GlobalTheory.LocGL.redK, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulEquiv.symm_apply_apply]
     rw [← h1, ← hu]; rfl

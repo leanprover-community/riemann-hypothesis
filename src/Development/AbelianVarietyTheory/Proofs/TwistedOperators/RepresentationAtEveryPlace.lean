@@ -667,9 +667,9 @@ theorem locAt_tilt (S : GridChoice W U) {t : T} (ht : t ∈ U) {w : Pl D.host.E}
     have hc : σ ≤ D.R.m - 1 - j := by clear hp; omega
     refine Eq.trans ?_ (congrArg (incA D) (mul_diagonal _ _ _ _).symm)
     by_cases hp' : p.1 < σ
-    · rw [if_pos hp']
+    · rw [ite_eq_left hp']
       exact (congrFun (congrFun b r) ⟨p.1, hp'⟩).trans (congrArg (incA D) (mul_diagonal _ _ _ _))
-    · rw [if_neg hp']
+    · rw [ite_eq_right hp']
       obtain ⟨q, rfl⟩ : ∃ q : Fin σ, p = (Fin.castLE hc q).rev :=
         ⟨⟨2 * σ - 1 - p.1, by omega⟩, Fin.ext (by simp only [Fin.val_rev, Fin.val_castLE]; omega)⟩
       rw [show 2 * σ - 1 - (Fin.castLE hc q).rev.1 = q.1 by

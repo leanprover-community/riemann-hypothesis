@@ -673,14 +673,14 @@ theorem weight_difference_le_ell [CharZero (KK O)] [FiniteDimensional (KK O) V] 
     generalize ((E a c) ^ j) x = y at hy0 hytop hyw
     have hmu : (nu + (j : ℤ) • rootW a c) a - (nu + (j : ℤ) • rootW a c) c = nu a - nu c + 2 * j := by
       simp only [rootW, Pi.add_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul, Pi.single_apply, hac,
-        Ne.symm hac, if_true, if_false]
+        Ne.symm hac, ite_true, ite_false]
       ring
     obtain ⟨N, hN⟩ : ∃ N : ℕ, (N : ℤ) = nu a - nu c + 2 * j :=
       ⟨(nu a - nu c + 2 * j).toNat, Int.toNat_of_nonneg (by omega)⟩
     have hcomm : ∀ w : V, E a c (E c a w) = E c a (E a c w) + (E a a w - E c c w) := by
       intro w
       have h1 := hE.1 a c c a
-      rw [if_pos rfl, if_pos rfl] at h1
+      rw [ite_eq_left rfl, ite_eq_left rfl] at h1
       have h2 := LinearMap.congr_fun h1 w
       first
         | simp only [LinearMap.sub_apply, Module.End.mul_apply] at h2
@@ -754,7 +754,7 @@ theorem weight_difference_le_ell [CharZero (KK O)] [FiniteDimensional (KK O) V] 
       exact le_csSup (root_differences_bddAbove E hE ⊤) hmem
     have hle' : (N : ℤ) ≤ (ellOf E ⊤ : ℤ) := by exact_mod_cast hle
     omega
-  · push_neg at hpos
+  · push Not at hpos
     have : (0 : ℤ) ≤ (ellOf E ⊤ : ℤ) := Nat.cast_nonneg _
     omega
 

@@ -220,7 +220,7 @@ theorem UpperTheory.V.Z.Sym.Al.spanSph :
     have h := key t
     rw [Finset.sum_eq_zero fun g hg => by rw [hall g hg]; simp] at h
     exact (mul_eq_zero.1 h).resolve_left hcard
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨g, hg, hne⟩ := hall
     refine ⟨A g, hne, ?_, ?_⟩
     · have e : A g = ∑ q : K ⧸ K', fun t => φ (t * (rep q * x g)) := by

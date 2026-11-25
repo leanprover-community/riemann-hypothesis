@@ -74,44 +74,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 end Valued
 
 namespace StepInh
-section Series
-variable {k K X : Type} [CommRing k] [Field K] (i : PowerSeries k →+* K)
-
-end Series
-
-section Terms
-variable {F : Type} [Field F]
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (l : Geo.Tor.Level H)
-
-variable (k : Type) [CommRing k] [IsDomain k] [Algebra (FractionRing k) F]
-
-end Terms
-
-section ToricLift
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Geo.Tor.Level H}
-  (c : Coeff l) (k : Type) [CommRing k] [IsDomain k] (bF : c.F →+* k) {O : Type} [CommRing O] (β : O →+* c.F)
-  {F : Type} [Field F] [IsAlgClosed F] [Algebra (FractionRing k) F] (ζ : ℕ → Fˣ)
-  (hp : ∀ n, 0 < n → IsPrimitiveRoot (ζ n) n) (hc : ∀ n m, 0 < n → 0 < m → ζ (n * m) ^ m = ζ n)
-  (hζ : ∀ n, 0 < n → ∀ z : c.F, (z : ℂ) = zeta n → (ζ n : F) = algebraMap (FractionRing k) F (algebraMap k _ (bF z)))
-
-
-end ToricLift
-
-section ToricSer
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Geo.Tor.Level H}
-  {k : Type} [Field k] {K : Type} [Field K] (i : PowerSeries k →+* K) {ζ r : ℕ → Kˣ}
-  (hp : ∀ n, 0 < n → IsPrimitiveRoot (ζ n) n) (hr : ∀ n, 0 < n → (r n : K) ^ n = i PowerSeries.X)
-
-
-
-
-end ToricSer
-
-section SerInh
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Geo.Tor.Level H}
-
-end SerInh
 
 section Settings
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -130,18 +92,7 @@ theorem exists_cExt (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W] (h : CD
   rw [map_mul, map_mul, norm_mul, h2]
   linarith
 
-section Tate
-variable {R : Type} [CommRing R] [IsDomain R] (q : (FractionRing R)ˣ) (F : Type) [Field F] [Algebra (FractionRing R) F]
-
-end Tate
-
 end Settings
-
-section GoodMdl
-open UnifModel
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
-
-end GoodMdl
 
 end StepInh
 end GlobalTheory.Ex

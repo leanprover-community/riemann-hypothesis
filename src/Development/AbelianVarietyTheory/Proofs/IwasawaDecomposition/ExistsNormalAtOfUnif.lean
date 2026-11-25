@@ -937,7 +937,7 @@ theorem exists_chart_theta_unit : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     have e := hv j z hU
     have e0 : valAt' (show Sp ℂ ⟶ _ from (Ha.ex₀ z).b.left) (a.D₀.P.L.U j) (th.f j) = 0 := by
       rw [hc j]
-      exact (dif_pos hU).trans ((congrArg _ (map_zero _)).trans (map_zero _))
+      exact (dite_eq_left hU).trans ((congrArg _ (map_zero _)).trans (map_zero _))
     rw [e0] at e
     have := (mul_eq_zero.1 e.symm).resolve_right (n j z hU)
     exact (mul_eq_zero.1 this).resolve_left Θ.κ_ne
@@ -1257,7 +1257,7 @@ theorem main_of_lemmas (hFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
       yF ≫ pullback.snd _ _ = spMap c.F.val.toRingHom ∧ y w = yF ≫ Y.j := by
     intro w hw
     have h := hlift w hw
-    exact ⟨h.choose, h.choose_spec.1, h.choose_spec.2, dif_pos h⟩
+    exact ⟨h.choose, h.choose_spec.1, h.choose_spec.2, dite_eq_left h⟩
   refine ⟨y, fun U f hUf => ?_, ?_⟩
   · obtain ⟨T', hT'⟩ := Ha.point U f hUf
     refine ⟨max T' Ha.T, fun w hw => ?_⟩

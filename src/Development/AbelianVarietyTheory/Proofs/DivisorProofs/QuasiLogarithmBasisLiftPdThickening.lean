@@ -714,7 +714,7 @@ theorem GlobalTheory.basis_lift : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [C
     · refine ⟨0, fun g hg => ⟨0, ?_⟩⟩
       rw [hα, coeff_zero_eq_constantCoeff_apply, hg.1]; simp
     · obtain ⟨i, hi⟩ : ∃ i, α i ≠ 0 := by
-        by_contra h; push_neg at h; exact hα (Finsupp.ext fun i => by simp [h i])
+        by_contra h; push Not at h; exact hα (Finsupp.ext fun i => by simp [h i])
       obtain ⟨v, n, hn, hαi⟩ := Nat.exists_eq_pow_mul_and_not_dvd hi p (Fact.out : p.Prime).one_lt.ne'
       have hcop : Nat.Coprime n p := Nat.Coprime.symm (((Fact.out : p.Prime).coprime_iff_not_dvd).2 hn)
       obtain ⟨w, hw⟩ := hF.unit_coprime n hcop

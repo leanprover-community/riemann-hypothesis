@@ -31,7 +31,7 @@ theorem lowest_invariant_le_delta {O Kf : Type} [CommRing O] [Field Kf] [Algebra
     (hlam : Antitone lam) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) Kf) (hg : IsUnit g.det) :
     Dl0 O m lam (colSpan O g) ≤ deltaLTw O Kf m lam g := by
   unfold Dl0
-  rw [if_pos hlam]
+  rw [ite_eq_left hlam]
   exact iInf₂_le g ⟨hg, rfl⟩
 
 variable {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
@@ -57,7 +57,7 @@ theorem vt_HtenW_le (P : Places p O Kf) (v : Fin P.nV) (Lv : Submodule (P.W v) (
     refine ⟨F, fun s => ?_, rfl⟩
     have hanti := kp_lamAt_antitone (P.lam0 v) (P.dom v) s
     beta_reduce
-    rw [if_pos hanti]
+    rw [ite_eq_left hanti]
     have h1 := hF s
     beta_reduce at h1
     have e : extO O (P.ι v) (P.σ v) s.val (colSpan (P.W v) g) = colSpan O (la_tw (P.ι v) (P.σ v) s.val g) :=

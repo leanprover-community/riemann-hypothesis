@@ -13,12 +13,6 @@ open Matrix Topology Filter ValuativeRel GlobalTheory.SplitWeil GlobalTheory.BZM
 
 namespace PositivityTheory.PfBern.cocyclesToWachVectorsExponent
 
-section Levi
-
-variable {k : Type} [Field k]
-
-end Levi
-
 section Top
 
 variable {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalDivisionRing k] {m : ℕ}

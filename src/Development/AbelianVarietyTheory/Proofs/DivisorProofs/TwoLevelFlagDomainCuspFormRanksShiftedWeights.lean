@@ -680,7 +680,7 @@ theorem block_fst (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (a s : �
   intro τ i j hij hj
   have hij' : (i : ℕ) ≤ j := hij
   have hd := drop_of_gaps hg τ (j - i) i j (by omega) (Or.inr hj)
-  rw [wt_apply, wt_apply, if_pos hj, if_pos (by omega)]
+  rw [wt_apply, wt_apply, ite_eq_left hj, ite_eq_left (by omega)]
   have e : (((j - i : ℕ) : ℤ)) = (j : ℤ) - (i : ℤ) := by push_cast [Nat.cast_sub hij']; ring
   rw [e] at hd
   have ha : (0 : ℤ) ≤ a := Nat.cast_nonneg _
@@ -693,7 +693,7 @@ theorem block_snd (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (a s : �
   intro τ i j hi hij
   have hij' : (i : ℕ) ≤ j := hij
   have hd := drop_of_gaps hg τ (j - i) i j (by omega) (Or.inl hi)
-  rw [wt_apply, wt_apply, if_neg (by omega), if_neg (by omega)]
+  rw [wt_apply, wt_apply, ite_eq_right (by omega), ite_eq_right (by omega)]
   have e : (((j - i : ℕ) : ℤ)) = (j : ℤ) - (i : ℤ) := by push_cast [Nat.cast_sub hij']; ring
   rw [e] at hd
   have ha : (0 : ℤ) ≤ a := Nat.cast_nonneg _
@@ -712,7 +712,7 @@ theorem cross (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) {T : ℕ} (h
   have hD : (1.9 * T : ℝ) ≤ ((L τ j - L τ i : ℤ) : ℝ) := hpp.trans (by exact_mod_cast hsp)
   have ha : (0 : ℝ) ≤ a := Nat.cast_nonneg _
   have hm := mul_le_mul_of_nonneg_left hD ha
-  rw [wt_apply, wt_apply, if_pos hi, if_neg (by omega)]
+  rw [wt_apply, wt_apply, ite_eq_left hi, ite_eq_right (by omega)]
   have hq0 : s / 2 * 2 ≤ T := (Nat.div_mul_le_self s 2).trans hs
   generalize s / 2 = q at hq0 ⊢
   have hq : (q : ℝ) * 2 ≤ T := by exact_mod_cast hq0
@@ -739,11 +739,11 @@ theorem gaps_G (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (n s : ℕ)
   have hm : (0 : ℤ) ≤ (n : ℤ) * (L τ i - L τ j) := mul_nonneg hn (by linarith)
   rw [e, e]
   by_cases hi : (i : ℕ) < X.p0
-  · rw [if_pos hi, if_pos (by omega)]
+  · rw [ite_eq_left hi, ite_eq_left (by omega)]
     have : (0 : ℤ) ≤ (n : ℤ) * L τ i - 2 * -((s / 2 : ℕ) : ℤ) - ((n : ℤ) * L τ j - 2 * -((s / 2 : ℕ) : ℤ)) := by
       linarith
     exact_mod_cast this
-  · rw [if_neg hi, if_neg (by omega)]
+  · rw [ite_eq_right hi, ite_eq_right (by omega)]
     have : (0 : ℤ) ≤ (n : ℤ) * L τ i - 2 * ((s / 2 : ℕ) : ℤ) - ((n : ℤ) * L τ j - 2 * ((s / 2 : ℕ) : ℤ)) := by
       linarith
     exact_mod_cast this
@@ -760,7 +760,7 @@ theorem pair_G (X : Data E r) {L : Wt X.Ψ r} {T : ℕ} (hp : PairGe L (1.9 * T)
     simp only [nsmul_eq_mul, deMul]
     push_cast
     ring
-  rw [e, e, if_pos (show (i0 : ℕ) < X.p0 by omega), if_neg (show ¬ (i1 : ℕ) < X.p0 by omega)]
+  rw [e, e, ite_eq_left (show (i0 : ℕ) < X.p0 by omega), ite_eq_right (show ¬ (i1 : ℕ) < X.p0 by omega)]
   have hq0 : s / 2 * 2 ≤ T := (Nat.div_mul_le_self s 2).trans hs
   generalize s / 2 = q at hq0 ⊢
   have hq : (q : ℝ) * 2 ≤ T := by exact_mod_cast hq0
@@ -1333,7 +1333,7 @@ theorem lower_cusp [Finite C] (M : TwoLevels E r U C) (la : Wt M.Ψ r) [Module.F
     by_cases hc : c' = c
     · subst hc
       simpa [F] using hg q
-    · simp only [F, if_neg hc]
+    · simp only [F, ite_eq_right hc]
       exact (ReciprocityTheory.ChartRestriction.G.FD.siegelSpaceAlgebra_holds r (M.comp c').toData _ 0 0).1.1
   refine ⟨fun q => M.res (F q), fun q => Submodule.subset_span ⟨F q, hF q, rfl⟩, ?_, ?_⟩
   · intro q c' hc'
@@ -1398,7 +1398,7 @@ theorem ranks : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
   refine ⟨f0, f2, ?_, ?_, fm⟩
   · by_cases hε : 1 - (n : ℝ) * (n + 6) / T ≤ 0
     · exact le_trans (mul_nonpos_of_nonpos_of_nonneg hε (Nat.cast_nonneg _)) (Nat.cast_nonneg _)
-    · push_neg at hε
+    · push Not at hε
       have r0' : (finrank ℂ (M.cusp (Fp + T • L)) : ℝ) ≤ ∑ c, (δ c : ℝ) * ((T + 2 * n + 6).choose n : ℕ) := by
         exact_mod_cast r0
       have l0' : ∑ c, (δ c : ℝ) * ((T + n).choose n : ℕ) ≤

@@ -231,9 +231,9 @@ theorem io_comm_vlet (σ : Site A) (x : A) (h : ∀ y ∈ ops σ, Commute y x) (
   have hφ : ∀ (k : K) (r : A), Commute ((RingHom.id A) (algebraMap K A k)) r :=
     fun k r => Algebra.commutes k r
   by_cases hl : l.plus = true
-  · rw [if_pos hl]
+  · rw [ite_eq_left hl]
     exact (comm_Ts (RingHom.id A) hφ σ x h l.pt i j).symm
-  · rw [if_neg hl]
+  · rw [ite_eq_right hl]
     exact (comm_Ts_star (RingHom.id A) hφ σ x h l.pt i j).symm
 
 theorem io_comm_bT (σ : Site A) (x : A) (h : ∀ y ∈ ops σ, Commute y x) (w : List (Letter K S)) :
@@ -430,9 +430,9 @@ private theorem ent_comm_lemma (σ : Site A) (l : Letter K S) (x : A)
   have hφ : ∀ (k : K) (r : A), Commute ((RingHom.id A) (algebraMap K A k)) r :=
     fun k r => Algebra.commutes k r
   by_cases hl : l.plus = true
-  · rw [if_pos hl]
+  · rw [ite_eq_left hl]
     exact comm_Ts (RingHom.id A) hφ σ x h l.pt i j
-  · rw [if_neg hl]
+  · rw [ite_eq_right hl]
     exact comm_Ts_star (RingHom.id A) hφ σ x h l.pt i j
 
 private theorem vlet_comm_lemma {σ τ : Site A} (h : SitesCommute σ τ) (l' l : Letter K S)
@@ -517,7 +517,7 @@ theorem word_product_formula_general (sites : List (Site A)) (w : List (Letter K
         (w'.map fun l' => (sites.map (lm l')).prod (z l'.intersection_update_fsHerm_neg_one) 0).prod := fun j => by
       congr 1
       refine List.map_congr_left fun l' hl' => ?_
-      rw [Function.update_apply, if_neg (hne l' hl')]
+      rw [Function.update_apply, ite_eq_right (hne l' hl')]
     have hc1 : ¬ ∀ c, c ∉ w'.map Letter.intersection_update_fsHerm_neg_one → Function.update z l.intersection_update_fsHerm_neg_one 1 c = 0 := fun h => by
       have h1 := h l.intersection_update_fsHerm_neg_one hnd.1
       simp at h1
@@ -527,32 +527,32 @@ theorem word_product_formula_general (sites : List (Site A)) (w : List (Letter K
       · intro h c hc
         simp only [List.map_cons, List.mem_cons, not_or] at hc
         have h1 := h c hc.2
-        rwa [Function.update_apply, if_neg hc.1] at h1
+        rwa [Function.update_apply, ite_eq_right hc.1] at h1
       · intro h c hc
         rw [Function.update_apply]
         by_cases hca : c = l.intersection_update_fsHerm_neg_one
-        · rw [if_pos hca]
-        · rw [if_neg hca]
+        · rw [ite_eq_left hca]
+        · rw [ite_eq_right hca]
           exact h c (by simp only [List.map_cons, List.mem_cons, not_or]; exact ⟨hca, hc⟩)
-    rw [hexp, Fin.sum_univ_two, ih', ih', if_neg hc1, mul_zero, add_zero, hval]
+    rw [hexp, Fin.sum_univ_two, ih', ih', ite_eq_right hc1, mul_zero, add_zero, hval]
     by_cases hP : ∀ c, c ∉ (l :: w').map Letter.intersection_update_fsHerm_neg_one → z c = 0
-    · rw [if_pos (hc0.mpr hP), if_pos hP, List.map_cons, List.prod_cons]
-    · rw [if_neg (fun h => hP (hc0.mp h)), if_neg hP, mul_zero]
+    · rw [ite_eq_left (hc0.mpr hP), ite_eq_left hP, List.map_cons, List.prod_cons]
+    · rw [ite_eq_right (fun h => hP (hc0.mp h)), ite_eq_right hP, mul_zero]
 
 theorem uwProduct : UwProduct := by
   intro K A S _ _ _ _ _ _ _ _ QQ sites w hOK hw z
   rw [word_product_formula_general sites w hOK.2 hw.1 z]
   by_cases hc : ∀ c, c ∉ w.map Letter.intersection_update_fsHerm_neg_one → z c = 0
-  · rw [if_pos hc, if_pos hc]
+  · rw [ite_eq_left hc, ite_eq_left hc]
     congr 1
     refine List.map_congr_left fun l _ => ?_
     by_cases h : l.plus = true
-    · have e : lm l = fun σ : Site A => Ts σ l.pt := funext fun σ => if_pos h
-      rw [e, if_pos h]
+    · have e : lm l = fun σ : Site A => Ts σ l.pt := funext fun σ => ite_eq_left h
+      rw [e, ite_eq_left h]
       rfl
-    · have e : lm l = fun σ : Site A => (Ts σ l.pt).map star := funext fun σ => if_neg h
-      rw [e, if_neg h]
-  · rw [if_neg hc, if_neg hc]
+    · have e : lm l = fun σ : Site A => (Ts σ l.pt).map star := funext fun σ => ite_eq_right h
+      rw [e, ite_eq_right h]
+  · rw [ite_eq_right hc, ite_eq_right hc]
 
 end Product
 

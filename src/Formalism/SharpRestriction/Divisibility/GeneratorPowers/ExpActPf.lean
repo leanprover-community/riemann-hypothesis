@@ -60,7 +60,7 @@ theorem coeff_single_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Decidab
         · have he0 : e = 0 := by
             have : e.degree = 0 := by omega
             exact (Finsupp.degree_eq_zero_iff e).1 this
-          rw [he0, Finsupp.prod_zero_index, coeff_one, if_neg]
+          rw [he0, Finsupp.prod_zero_index, coeff_one, ite_eq_right]
           exact Finsupp.single_ne_zero.2 one_ne_zero
         · obtain ⟨p, rfl⟩ := degree_eq_one e (by omega)
           exact absurd (Finset.mem_coe.2 (Finset.mem_image_of_mem _ (Finset.mem_univ p))) hne
@@ -83,7 +83,7 @@ theorem eq_linear {N : ℕ} (g : MvPowerSeries (Fin 1 × Fin N) S)
     rw [Finset.sum_eq_single q]
     · simp [coeff_X]
     · intro b _ hb
-      rw [coeff_C_mul, coeff_X, if_neg, mul_zero]
+      rw [coeff_C_mul, coeff_X, ite_eq_right, mul_zero]
       intro e
       apply hb
       have := Finsupp.single_left_injective one_ne_zero e
@@ -94,7 +94,7 @@ theorem eq_linear {N : ℕ} (g : MvPowerSeries (Fin 1 × Fin N) S)
     symm
     apply Finset.sum_eq_zero
     intro q _
-    rw [coeff_C_mul, coeff_X, if_neg, mul_zero]
+    rw [coeff_C_mul, coeff_X, ite_eq_right, mul_zero]
     rintro rfl
     exact hn (by simp [Finsupp.degree_single])
 
@@ -170,7 +170,7 @@ theorem expAct_core {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
     have hd : ∀ k, coeff (Finsupp.single ((0 : Fin 1), k) 1) (ℓ i) = (1 : Matrix (Fin d) (Fin d) S) i k := by
       intro k; rw [← hℓ1]; rfl
     simp only [fam1, hlin, hd, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true]
+      ite_true]
 
   have hε0 : ∀ i, constantCoeff (ε i) = 0 := hinv.1
   have hεℓ : ∀ k, subst (fam1 ℓ) (ε k) = X ((0 : Fin 1), k) := by

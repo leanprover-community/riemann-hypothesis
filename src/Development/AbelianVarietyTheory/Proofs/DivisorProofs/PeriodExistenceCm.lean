@@ -95,7 +95,7 @@ theorem eq_one_of_mem_connectedComponent_one (y : GlobalTheory.HeckeGal.Gab K Ω
     rw [← e] at h
     exact hx h
   rw [Subgroup.mem_sInf] at hx'
-  push_neg at hx'
+  push Not at hx'
   obtain ⟨M, ⟨hMo, hNM⟩, hxM⟩ := hx'
   let V : Subgroup (GlobalTheory.HeckeGal.Gab K Ω) := M.map (QuotientGroup.mk' N)
   have hVo : IsOpen (V : Set (GlobalTheory.HeckeGal.Gab K Ω)) := by

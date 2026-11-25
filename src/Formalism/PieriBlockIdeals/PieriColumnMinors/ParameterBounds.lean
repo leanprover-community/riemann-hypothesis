@@ -874,7 +874,7 @@ theorem thinSum_holds : SumA := by
       rw [(hA τ hτ l (hQ l hl)).1 (by linarith), Nat.cast_zero, zero_mul]
     rw [this]
     exact hRHS
-  · push_neg at hw1
+  · push Not at hw1
     have hlogpos : 0 < Real.log (D.hw τ) := Real.log_pos hw1
     have hC := choose_two_le_sq_div_two P.Nr
     have hC0 : (0 : ℝ) ≤ (P.Nr.choose 2 : ℝ) := Nat.cast_nonneg _
@@ -970,7 +970,7 @@ theorem ex_mul_log_le_of_thinA {P : Par} (H : P.Hyp) (G : P.Large) {ι : Type} {
   by_cases hlw : D.hw τ < l
   · rw [h1 hlw, Nat.cast_zero, zero_mul]
     exact mul_nonneg (sq_nonneg _) (by linarith)
-  · push_neg at hlw
+  · push Not at hlw
     have hhw := hw_le_two_mul_b' H G hW hτ
     have hbb := smaller_exponent_lt H G
     have hb := b_pos' P
@@ -1032,7 +1032,7 @@ theorem thickTerm_holds : TermC := by
     have e3 : indexDenominator P * l ≤ indexDenominator P * P.lJ := mul_le_mul_of_nonneg_left hlJ hJpos.le
     have e4 := mul_le_mul_of_nonneg_right e2 hl0.le
     linarith
-  · push_neg at hbig
+  · push Not at hbig
     have hl3 : (l : ℝ) < 3 * P.η := by linarith
     obtain ⟨c1, c2⟩ := log_h_pos_and_le H G
     have hC := choose_two_le_sq_div_two P.Nr
@@ -1311,7 +1311,7 @@ theorem sum_J_mul_log_le_totalBound (rs3 : PrimeCountingBound) {P : Par} (H : P.
   have memW : ∀ l ∈ W, l.Prime ∧ P.lJ < (l : ℝ) ∧ ¬ P.Excl l ∧ l ∉ D.Sp := by
     intro l hl
     rw [hWd, Finset.mem_filter, hBd, Finset.mem_filter] at hl
-    push_neg at hl
+    push Not at hl
     exact ⟨hQ l hl.1.1, hl.1.2, hl.2.1, hl.2.2⟩
   have hdisj : Disjoint A W := by
     rw [Finset.disjoint_left]
@@ -1375,7 +1375,7 @@ theorem sum_J_mul_log_le_totalBound (rs3 : PrimeCountingBound) {P : Par} (H : P.
       XC + (XD + 2 * (P.k : ℝ) * (P.S + 1) * (P.L + 2)) := by
     intro τ hτ
     have e : ∑ l ∈ W, (if τ ∈ D.T2 then min (D.ex τ l : ℝ) (D.cW P τ l) else (D.ex τ l : ℝ)) * Real.log (l : ℝ) = ∑ l ∈ W, min (D.ex τ l : ℝ) (D.cW P τ l) * Real.log (l : ℝ) :=
-      Finset.sum_congr rfl (fun l _ => by rw [if_pos hτ])
+      Finset.sum_congr rfl (fun l _ => by rw [ite_eq_left hτ])
     rw [e]
     exact add_le_add (hXC τ hτ A memA)
       (hXD τ hτ W (fun l hl => ⟨(memW l hl).1, (memW l hl).2.1, (memW l hl).2.2.1⟩))
@@ -1383,7 +1383,7 @@ theorem sum_J_mul_log_le_totalBound (rs3 : PrimeCountingBound) {P : Par} (H : P.
       1.3 * (P.Nr : ℝ) ^ 2 * P.b' := by
     intro τ hτ
     have e : ∑ l ∈ W, (if τ ∈ D.T2 then min (D.ex τ l : ℝ) (D.cW P τ l) else (D.ex τ l : ℝ)) * Real.log (l : ℝ) = ∑ l ∈ W, (D.ex τ l : ℝ) * Real.log (l : ℝ) :=
-      Finset.sum_congr rfl (fun l _ => by rw [if_neg hτ])
+      Finset.sum_congr rfl (fun l _ => by rw [ite_eq_right hτ])
     rw [e, ← Finset.sum_union hdisj]
     refine thinSum_holds rs3 P H G ι D I.thinA I.widths τ hτ (A ∪ W) (fun l hl => ?_)
     rcases Finset.mem_union.1 hl with h | h

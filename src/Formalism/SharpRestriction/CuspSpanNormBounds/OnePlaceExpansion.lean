@@ -67,20 +67,6 @@ namespace Formalism.MainNotions.OnePlaceExpansion
 
 open MeasureTheory Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.MainNotions.BesselShellMomentBounds
 
-section OnePl
-
-variable (D : D7)
-
-variable {D}
-
-end OnePl
-
-section ThmB
-
-variable {D : D7}
-
-end ThmB
-
 section Frames
 
 

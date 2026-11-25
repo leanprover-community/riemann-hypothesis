@@ -138,13 +138,13 @@ private theorem UpperTheory.V.Ws.red_eii {Γ K : Type} [Group Γ] [Field K] (r :
   · subst hab
     by_cases hai : i = a
     · subst hai
-      simp only [and_self, if_true]
+      simp only [and_self, ite_true]
       rw [Finset.prod_eq_one]
       intro j hj
       exact div_self (sub_ne_zero.2 (hne _ _ (Finset.ne_of_mem_erase hj).symm))
-    · simp only [hai, and_self, if_false, if_true]
+    · simp only [hai, and_self, ite_false, ite_true]
       exact (Finset.prod_eq_zero (Finset.mem_erase.2 ⟨Ne.symm hai, Finset.mem_univ a⟩) (by simp)).symm
-  · simp only [hab, if_false]
+  · simp only [hab, ite_false]
     split_ifs with h'
     · exact absurd (h'.1.symm.trans h'.2) hab
     · rfl
@@ -286,7 +286,7 @@ theorem nice {R : Type} [CommRing R] [IsNoetherianRing R] [IsLocalRing R] (ϖ : 
   obtain ⟨q, hq, hqp⟩ := Ideal.exists_minimalPrimes_le hk
   by_cases hqa : ∀ i, ¬ a i ≤ q
   · exact hav (Sum.inr ⟨k, q, hq, hqa⟩) hqp
-  · push_neg at hqa
+  · push Not at hqa
     obtain ⟨i, hi⟩ := hqa
     exact hav (Sum.inl i) (hi.trans hqp)
 

@@ -54,7 +54,7 @@ theorem ellL_eq (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k (p + �
   have hP : PBQ.GoodP Bj (x.1, x.2.1) := hx
   have hs : sxL Bj σ x * U.mMap k p ρ (U.hMat σ d) g =
       D.castM rfl (PBQ.sP Bj (x.1, x.2.1)) * U.mMap k p ρ (lhOf σ x.2.2.2 * U.hMat σ d) g := by
-    rw [Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl, sxL, if_pos hx, PBQ.sP, if_pos hP]
+    rw [Formalism.FourierDecayAlt.P.Dx2.MN.castM_rfl, sxL, ite_eq_left hx, PBQ.sP, ite_eq_left hP]
     have e := embedding_map_lower_unipotent k p ρ (lhOf σ x.2.2.2) (U.hMat σ d) 1 g (lh_unit σ x.2.2.2)
     rw [Matrix.mul_one, Formalism.FourierDecayAlt.P.PBM.muP_one, Matrix.mul_one] at e
     rw [e]

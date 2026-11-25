@@ -418,7 +418,7 @@ variable {L : Type} [Field L] {G : Type} [Group G] [MulSemiringAction G L]
 theorem not_moves_top_iff (v : Valuation L ℝ≥0) (σ : G) :
     ¬ Moves v ⊤ σ ↔ ∃ r : ℝ≥0, r < 1 ∧ ∀ x : L, v x ≤ 1 → v (σ • x - x) ≤ r := by
   unfold Moves
-  push_neg
+  push Not
   constructor
   · rintro ⟨r, hr, h⟩
     exact ⟨r, hr, fun x hx => h x (Subfield.mem_top x) hx⟩

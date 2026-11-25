@@ -63,10 +63,4 @@ attribute [instance] SmRep.acg SmRep.mod
 def SmRep.ofIrr {G : Type} [Group G] [TopologicalSpace G] (σ : IrrRep G) : SmRep G :=
   ⟨σ.V, σ.ρ, σ.smooth⟩
 
-section Inhabitant
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end Inhabitant
-
 end GlobalTheory.SmGL

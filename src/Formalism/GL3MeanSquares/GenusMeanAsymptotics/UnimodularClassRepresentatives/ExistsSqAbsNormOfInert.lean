@@ -169,10 +169,10 @@ theorem etaF_comap (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : �
   unfold etaF
   by_cases hc : P.comap (conjO K) = P
   · obtain ⟨θ, hθ⟩ := exists_sub_conjO_notMem hK hP
-    rw [SplitPrimeIdeals.map_comap_of_inert conjO_conjO (conjO_eq_iff_mem_range hF) hP hc hθ, if_pos hP.isPrime,
-      if_pos hc]
-  · rw [if_neg (SplitPrimeIdeals.not_isPrime_map_of_split conjO_conjO (conjO_eq_iff_mem_range hF) hP hc),
-      if_neg hc]
+    rw [SplitPrimeIdeals.map_comap_of_inert conjO_conjO (conjO_eq_iff_mem_range hF) hP hc hθ, ite_eq_left hP.isPrime,
+      ite_eq_left hc]
+  · rw [ite_eq_right (SplitPrimeIdeals.not_isPrime_map_of_split conjO_conjO (conjO_eq_iff_mem_range hF) hP hc),
+      ite_eq_right hc]
 
 end WithF
 

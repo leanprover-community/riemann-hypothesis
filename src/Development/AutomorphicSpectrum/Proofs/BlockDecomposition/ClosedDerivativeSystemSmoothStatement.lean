@@ -110,12 +110,6 @@ end Norm
 
 end Chart
 
-section Orbit
-
-variable {ι : Type} [Fintype ι] {a : ℕ} {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]
-
-end Orbit
-
 end GlobalTheory.CompanionTheory.SmoothVectors
 
 end

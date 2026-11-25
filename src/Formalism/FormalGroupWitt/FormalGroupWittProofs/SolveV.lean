@@ -292,7 +292,7 @@ theorem solve_exists_vector : Formalism.FG.SolveExistsV.{u, v, w} := by
     · have : d = 0 := (Finsupp.degree_eq_zero_iff d).1 (by omega)
       subst this
       rw [coeff_zero_eq_constantCoeff_apply, hf0 j, coeff_X,
-        if_neg (fun h => (Finsupp.single_ne_zero.2 one_ne_zero) h.symm), sub_zero]
+        ite_eq_right (fun h => (Finsupp.single_ne_zero.2 one_ne_zero) h.symm), sub_zero]
     · obtain ⟨i, rfl⟩ := degree_eq_one d h1
       rw [hf1 j i, coeff_X]
       by_cases hij : i = j

@@ -75,7 +75,7 @@ theorem exists_ne_zero_inclK : GlobalTheory.Published.HarishChandraModules → �
   intro hHC D V W S S' M M' θ ω pt It hIt h'
   apply Classical.byContradiction
   intro hcon
-  push_neg at hcon
+  push Not at hcon
   apply hIt.ne
   have key : ∀ φ (w : ∀ τ, M.H τ) (s : Finset D.what₂.Tau) (v : M'.Vec),
       (∀ τ ∉ s, (v τ : M'.H τ) ∈ GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.kFin M' τ) →

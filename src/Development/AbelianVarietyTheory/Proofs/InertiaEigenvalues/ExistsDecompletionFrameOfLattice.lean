@@ -1198,7 +1198,7 @@ theorem one_add_X_pow_prime_pow_sub_one_mem_span (l : ℕ) [Fact l.Prime] (b : �
     rw [hc, Nat.cast_mul, Nat.cast_pow, mul_left_comm]
     exact Ideal.mul_mem_right _ _ (Ideal.subset_span (Set.mem_insert _ _))
   ·
-    push_neg at hi
+    push Not at hi
     obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le hi
     rw [hd, pow_add, mul_assoc]
     exact Ideal.mul_mem_right _ _

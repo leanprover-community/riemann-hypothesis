@@ -56,7 +56,7 @@ theorem exists_equiv_tensor {α : Type} [Fintype α] [DecidableEq α] (X : α �
         · subst h
           simp [d]
         · have h' : i ≠ i₀ := fun e => h e.symm
-          simp only [d, dif_neg h', Function.update_of_ne h']
+          simp only [d, dite_eq_right h', Function.update_of_ne h']
           exact ((hc i h').2 (f i)).symm
       have e2 : PiTensorProduct.tprod ℂ f =
           (∏ i, d i) • PiTensorProduct.tprod ℂ (Function.update x i₀ (f i₀)) := by

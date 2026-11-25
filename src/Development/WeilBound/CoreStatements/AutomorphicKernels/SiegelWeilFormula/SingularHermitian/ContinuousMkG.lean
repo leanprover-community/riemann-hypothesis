@@ -41,7 +41,7 @@ theorem mR_mkG (M : M2 n) (hM : InG M) : mR (mkG M hM) = M := rfl
 
 theorem mkG_mR (y : GR n) : mkG (mR y) y.2 = y := Subtype.ext (Units.ext rfl)
 
-theorem toGR'_of {M : M2 n} (hM : InG M) : toGR' M = mkG M hM := dif_pos hM
+theorem toGR'_of {M : M2 n} (hM : InG M) : toGR' M = mkG M hM := dite_eq_left hM
 
 theorem toGR'_mR (y : GR n) : toGR' (mR y) = y := (toGR'_of (M := mR y) y.2).trans (mkG_mR y)
 

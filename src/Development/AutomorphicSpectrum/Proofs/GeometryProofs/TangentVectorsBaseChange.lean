@@ -274,7 +274,7 @@ theorem tangent_vectors_base_change : ∀ (E : Type) [Field E] [NumberField E] [
     rw [hv'eq, hveq, ((lie_model_eigenvectors_action S F t.G x _ M).2 _ t.act ρ τ hρ).2 n u,
       ((lie_model_eigenvectors_action S F' t.G x' _ M').2 _ t.act ρ' (f.comp τ) hρ').2 n (fun k => f ∘ u k)]
     exact EigenspaceComposition.core (τ := τ) hc u
-  · push_neg at hT
+  · push Not at hT
     obtain ⟨k, hk⟩ := hT
     constructor
     · intro h

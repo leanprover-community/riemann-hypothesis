@@ -419,7 +419,7 @@ theorem V_eq (s : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ) (hq : unitAt 𝔐.ξ 
       field_simp
     rw [e]
     exact mul_mem (natCast_mem _ t) hq.2.2
-  exact if_neg hn
+  exact ite_eq_right hn
 
 theorem mem_regAt_gen (hgen : IsCptGen 𝔐.ξ) (a : Ω) :
     a ∈ regAt 𝔐.ξ (⟨genPt 𝔐.ξ, specializes_rfl⟩ : Cpt 𝔐.ξ) := by

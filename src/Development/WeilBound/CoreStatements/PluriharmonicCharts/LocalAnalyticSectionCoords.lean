@@ -298,7 +298,7 @@ theorem exists_relW_lift_of_isImg (Cv : FlagCover M' M) (S : Sw M τ a b k₀ ca
     · simp only [Pts.snd_fst_ne e]
       by_cases hk : ∀ p, M'.blk p ≠ some k'
       · exact blocks_of_orbit (orbit_symm ho) ⟨k', hk⟩
-      · push_neg at hk
+      · push Not at hk
         obtain ⟨p, hp⟩ := hk
         obtain ⟨k, hk⟩ := blk_cover M M' hp
         have hne : k ≠ k₀ := fun e' => e (by
@@ -369,7 +369,7 @@ theorem local_analytic_section_coords (Cv : FlagCover M' M) (S : Sw M τ a b k�
       have h2 := congrFun (LocImg.img_base Cv F' F (sndPt k₀' u)) ⟨⟨k, hkb⟩, m⟩
       rw [hsb] at h2
       exact h1.trans h2.symm
-    · push_neg at hkb
+    · push Not at hkb
       obtain ⟨p, hp⟩ := hkb
       obtain ⟨k', hk'⟩ := blk_cover M' M hp
       have hne : k' ≠ k₀' := fun e' => hk (by

@@ -29,20 +29,12 @@ private theorem theta_locGL {E : Type} [Field E] [NumberField E] [IsCMField E] {
   refine Units.ext (Matrix.ext fun i j => FiniteAdeleRing.ext _ fun v => ?_)
   exact congrArg (fun u : GL (Fin a) (v.adicCompletion E) => u.val i j) (key2 v)
 
-private theorem conjLoc_surjective {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) :
-    Function.Surjective (conjLoc (IsCMField.complexConj E).toRingEquiv w) := fun y => by
-  classical
-  refine ⟨pLoc E _ (GlobalTheory.ThetaPull.cFin E (sLoc E w y)), ?_⟩
-  rw [← pLoc_conjFin]
-  exact (congrArg (pLoc E w) (GlobalTheory.ThetaPull.cFin_cFin _)).trans
-    (Pi.single_eq_same (M := fun v : HeightOneSpectrum (𝓞 E) => v.adicCompletion E) w y)
-
 theorem UpperTheory.theta_satake_parameters_inverse :
     UpperTheory.V.Af.Bc.ThetaSat := by
   intro E _ _ _ n P w B h
   rw [CG.hasSat_mk] at h ⊢
   let c : (cPl w).adicCompletion E ≃+* w.adicCompletion E :=
-    RingEquiv.ofBijective (conjLoc _ w) ⟨(conjLoc _ w).injective, conjLoc_surjective w⟩
+    RingEquiv.ofBijective (conjLoc _ w) ⟨(conjLoc _ w).injective, GlobalTheory.ThetaSatake.conjLoc_surj w⟩
   have hq : Formalism.UG.qV E w = Formalism.UG.qV E (cPl w) := by
     change Ideal.absNorm w.asIdeal = Ideal.absNorm (conjSrc (IsCMField.complexConj E).toRingEquiv w).asIdeal
     rw [(GlobalTheory.Mem.Chr.conjPl_iff_comap _ _ _).1 (conjPl_conjSrc (IsCMField.complexConj E).toRingEquiv w)]

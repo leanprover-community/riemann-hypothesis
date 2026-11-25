@@ -150,12 +150,12 @@ private theorem frame_expand_lemma {p k : ℕ} (e f : Fin p → Fin n → ℂ) (
   have ex1 : ∀ c (x1 x2 : Fin p → ℂ) (x3 : ℂ) (x4 : Fin k → ℂ),
       hJ ε (f c) (∑ a, x1 a • e a + ∑ a, x2 a • f a + x3 • z + ∑ b, x4 b • w b) = x1 c := by
     intro c x1 x2 x3 x4
-    simp only [hadd, hsmul, hsum, hfe, hff, hfz, hfw, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const_zero, add_zero]
+    simp only [hadd, hsmul, hsum, hfe, hff, hfz, hfw, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_const_zero, add_zero]
   have ex2 : ∀ c (x1 x2 : Fin p → ℂ) (x3 : ℂ) (x4 : Fin k → ℂ),
       hJ ε (e c) (∑ a, x1 a • e a + ∑ a, x2 a • f a + x3 • z + ∑ b, x4 b • w b) = x2 c := by
     intro c x1 x2 x3 x4
     simp only [hadd, hsmul, hsum, hee, hef, hez, hew, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.sum_const_zero, add_zero, zero_add]
+      Finset.mem_univ, ite_true, Finset.sum_const_zero, add_zero, zero_add]
   have ex3 : ∀ (x1 x2 : Fin p → ℂ) (x3 : ℂ) (x4 : Fin k → ℂ),
       hJ ε z (∑ a, x1 a • e a + ∑ a, x2 a • f a + x3 • z + ∑ b, x4 b • w b) = x3 * hJ ε z z := by
     intro x1 x2 x3 x4
@@ -164,7 +164,7 @@ private theorem frame_expand_lemma {p k : ℕ} (e f : Fin p → Fin n → ℂ) (
       hJ ε (w c) (∑ a, x1 a • e a + ∑ a, x2 a • f a + x3 • z + ∑ b, x4 b • w b) = x4 c := by
     intro c x1 x2 x3 x4
     simp only [hadd, hsmul, hsum, hwe, hwf, hwz, hww, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.sum_const_zero, add_zero, zero_add]
+      Finset.mem_univ, ite_true, Finset.sum_const_zero, add_zero, zero_add]
   let Ψ : ((Fin p → ℂ) × (Fin p → ℂ) × ℂ × (Fin k → ℂ)) →ₗ[ℂ] (Fin n → ℂ) :=
     { toFun := fun x => ∑ a, x.1 a • e a + ∑ a, x.2.1 a • f a + x.2.2.1 • z + ∑ b, x.2.2.2 b • w b
       map_add' := by
@@ -220,7 +220,7 @@ theorem frame_bounded {p k : ℕ} (e f : Fin p → Fin n → ℂ) (z : Fin n →
     simp only [h1, h2, h3, zero_smul, Finset.sum_const_zero, zero_div, zero_add] at hexp
     have hnorm : ∑ c, hJ ε (w c) (g *ᵥ w b) * starRingEnd ℂ (hJ ε (w c) (g *ᵥ w b)) = 1 := by
       have h := hJ_inUJ ε hg (w b) (w b)
-      rw [hww b b, if_pos rfl] at h
+      rw [hww b b, ite_eq_left rfl] at h
       rw [← h]
       conv_rhs => arg 3; rw [hexp]
       rw [hJ_sum_right']

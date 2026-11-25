@@ -249,8 +249,8 @@ theorem shear_mem (κ : K ≃+* (W → ℂ)) (w : W) (a : Fin n) (s t : Fin n �
               rw [norm_mul]
               have h3 : ‖(if c = b then 0 else t c - s c : ℂ)‖ ≤ 2 / L := by
                 by_cases hc : c = b
-                · simp only [hc, if_true, norm_zero]; positivity
-                · simp only [hc, if_false]; rw [norm_sub_rev]; exact hst c
+                · simp only [hc, ite_true, norm_zero]; positivity
+                · simp only [hc, ite_false]; rw [norm_sub_rev]; exact hst c
               exact mul_le_mul h3 (hX c i v) (norm_nonneg _) (by positivity)
           _ = n * (2 / L * R) := by simp
           _ ≤ ε := by

@@ -12,12 +12,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.PairingFromOuterAgreement
 
 open NumberField IsLocalRing ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
 
-section Lattice
-
-variable (E : Type) [Field E] {X : Type} [AddCommGroup X] [Module (𝓞 E) X]
-
-end Lattice
-
 section PhiC
 
 variable (E : Type) [Field E] [NumberField E] [IsCMField E] {X : Type} [AddCommGroup X] [Module (𝓞 E) X]

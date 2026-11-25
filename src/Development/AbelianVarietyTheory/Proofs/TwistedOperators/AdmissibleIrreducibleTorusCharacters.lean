@@ -196,12 +196,12 @@ theorem relation_gl (hI : IwahoriTrace) (hE : ExponentsSeparate) (ϖ : kˣ)
   let rep : Fin n → Fin n := fun i => if hi : i ∈ P then (P.filter fun j => iso j i).min' (hne i hi) else i
   have rep_spec : ∀ i ∈ P, rep i ∈ P ∧ iso (rep i) i := fun i hi => by
     have := Finset.min'_mem _ (hne i hi)
-    simp only [rep, dif_pos hi]
+    simp only [rep, dite_eq_left hi]
     exact Finset.mem_filter.1 this
   have rep_eq : ∀ i ∈ P, ∀ j ∈ P, iso i j → rep i = rep j := fun i hi j hj h => by
     have e : (P.filter fun l => iso l i) = P.filter fun l => iso l j :=
       Finset.filter_congr fun l _ => ⟨fun h' => iso_trans h' h, fun h' => iso_trans h' (iso_symm h)⟩
-    simp only [rep, dif_pos hi, dif_pos hj]
+    simp only [rep, dite_eq_left hi, dite_eq_left hj]
     congr 1
   let R : Finset (Fin n) := P.image rep
   have hRP : ∀ j ∈ R, j ∈ P ∧ rep j = j := fun j hj => by

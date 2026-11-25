@@ -638,7 +638,7 @@ theorem integral_levelGroupAction_pairing_invariant {V : HSp D} (β : GL (Fin V.
   have key : (fun g => star (actG0 V β L g0 F g) * actG0 V β L g0 S g) =
       fun g => star (F (g * hk.choose)) * S (g * hk.choose) := by
     funext g
-    simp only [actG0, dif_pos hk]
+    simp only [actG0, dite_eq_left hk]
     rw [star_mul', ← ha_def]
     linear_combination (star (F (g * hk.choose)) * S (g * hk.choose)) * haa
   rw [key]
@@ -679,7 +679,7 @@ theorem integral_eWf_move : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T
       exact integral_levelGroupAction_pairing_invariant _ _ _ _ _ h2 hk Φ _ hΦ (hL _) (hi _)
     · have h0 : ∀ z : (R.HW i σ).H, (R.HW i σ).e z (fun ρ => v ρ) = 0 := fun z => by
         rw [hS g z]
-        simp only [actG0, dif_neg hk]
+        simp only [actG0, dite_eq_right hk]
       constructor
       · simp only [h0, Pi.zero_apply, mul_zero]
         exact integrableOn_zero

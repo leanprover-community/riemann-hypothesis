@@ -371,13 +371,13 @@ theorem gridHeightBoundIndexed : GridHeightBoundIndexed := by
     ⟨_, fun _ _ _ => rfl⟩
   have hN1in : ∀ ij (s : ℤ) l, 1 ≤ s → s ≤ (hh ij : ℤ) → l ∈ S → N1 ij s l = N0 ij s l := by
     intro ij s l a1 a2 a3
-    rw [hN1, if_pos ⟨a1, a2, a3⟩]
+    rw [hN1, ite_eq_left ⟨a1, a2, a3⟩]
   have hN1S : ∀ ij (s : ℤ) l, l ∉ S → N1 ij s l = 0 := by
     intro ij s l a3
-    rw [hN1, if_neg (fun h => a3 h.2.2)]
+    rw [hN1, ite_eq_right (fun h => a3 h.2.2)]
   have hN1s : ∀ ij (s : ℤ) l, ¬ (1 ≤ s ∧ s ≤ (hh ij : ℤ)) → N1 ij s l = 0 := by
     intro ij s l a3
-    rw [hN1, if_neg (fun h => a3 ⟨h.1, h.2.1⟩)]
+    rw [hN1, ite_eq_right (fun h => a3 ⟨h.1, h.2.1⟩)]
   have hN1nn : ∀ ij s l, 0 ≤ N1 ij s l := by
     intro ij s l
     rw [hN1]
@@ -395,8 +395,8 @@ theorem gridHeightBoundIndexed : GridHeightBoundIndexed := by
         apply Finset.sum_congr rfl
         intro l _
         by_cases hl : l ∈ S
-        · rw [if_pos hl, hN1in ij s l hs.1 hs.2 hl]
-        · rw [if_neg hl, hN1S ij s l hl, zero_mul]
+        · rw [ite_eq_left hl, hN1in ij s l hs.1 hs.2 hl]
+        · rw [ite_eq_right hl, hN1S ij s l hl, zero_mul]
       rw [h1]
       apply Finset.sum_le_sum_of_subset_of_nonneg
       · intro l hl
@@ -439,8 +439,8 @@ theorem gridHeightBoundIndexed : GridHeightBoundIndexed := by
         rw [Finset.mem_Icc] at hs
         rw [j3Wt K ell hell S (N0 ij s) hS w]
         by_cases hl : ell w ∈ S
-        · rw [if_pos hl, hN1in ij s _ hs.1 hs.2 hl]
-        · rw [if_neg hl, hN1S ij s _ hl]
+        · rw [ite_eq_left hl, hN1in ij s _ hs.1 hs.2 hl]
+        · rw [ite_eq_right hl, hN1S ij s _ hl]
       rw [hs3, j3Wt K ell hell Se (fun l => 1 / (l : ℝ) ^ 2) hSe w] at h0
       simp only [habs]
       have hs1 : ∑ s ∈ Icc (1 : ℤ) (hh ij),

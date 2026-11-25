@@ -66,10 +66,10 @@ theorem sum_tel (A : ℕ → ℤ) (i n : ℕ) (h : i ≤ n) :
     rw [Finset.sum_eq_zero]
     · simp
     · intro j hj
-      rw [if_neg]
+      rw [ite_eq_right]
       simpa using hj
   | succ n hn ih =>
-    rw [Finset.sum_range_succ, ih, if_pos hn]
+    rw [Finset.sum_range_succ, ih, ite_eq_left hn]
     ring
 
 theorem exists_lamOf (N : ℕ) (hN : 1 ≤ N) (a : Fin N → ℤ) (ha : Antitone a) :
@@ -139,7 +139,7 @@ theorem cartan_cover : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
     if hc : ∃ w, red k N m w = c then hc.choose else 1
   have hσ : ∀ u, red k N m (σ (red k N m u)) = red k N m u := fun u => by
     have hc : ∃ w, red k N m w = red k N m u := hsec u
-    simp only [σ, dif_pos hc]
+    simp only [σ, dite_eq_left hc]
     exact hc.choose_spec
   let f : GL (Fin N) (𝒪[k] ⧸ Ideal.span {Zls.unif k ^ m}) × GL (Fin N) (𝒪[k] ⧸ Ideal.span {Zls.unif k ^ m}) →
       GL (Fin N) k × GL (Fin N) k := fun c => (incl k N (σ c.1), incl k N (σ c.2))

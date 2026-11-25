@@ -304,7 +304,7 @@ theorem classes_finite : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 �
   obtain ⟨a', ha', b, hD⟩ := key y hy a.1.1 (left_ne_zero_of_mul ha)
   have hex : ∃ y, D (a', b) y := ⟨y, hD⟩
   refine ⟨ρ (a', b), Finset.mem_image_of_mem _ (Finset.mem_product.2 ⟨ha', Finset.mem_univ _⟩), ?_⟩
-  have hρ : ρ (a', b) = hex.choose := dif_pos hex
+  have hρ : ρ (a', b) = hex.choose := dite_eq_left hex
   rw [hρ]
   obtain ⟨c', r', e', hc', he', hb', hre'⟩ := hex.choose_spec
   dsimp only at hb' hre'
@@ -502,7 +502,7 @@ theorem _root_.GlobalTheory.finite_monic_coeff_bdd_mul_isIntegral (K : Type) [Fi
     ext n
     by_cases hn : n ≤ d
     · exact congrFun hPQ ⟨n, Nat.lt_succ_of_le hn⟩
-    · push_neg at hn
+    · push Not at hn
       rw [Polynomial.coeff_eq_zero_of_natDegree_lt (hP.2.1.trans_lt hn),
         Polynomial.coeff_eq_zero_of_natDegree_lt (hQ.2.1.trans_lt hn)]
 
@@ -1139,7 +1139,7 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : G.Level) (f : G
     eq_of_valuations hM.1 hex.choose_spec.1 (fun w => by rw [hM.2.1 w, hex.choose_spec.2.1 w])
       (by exact_mod_cast hM.2.2.trans hex.choose_spec.2.2.symm)
   have hg : ((((y : G.Cˣ × ℚˣ).2 : ℚˣ) : ℚ) : ℝ) = g σ σ' := by
-    simp only [g, dif_pos hex, heq]
+    simp only [g, dite_eq_left hex, heq]
   rw [hg]
   calc g σ σ' ≤ ∑ σ'' ∈ T', g σ σ'' :=
         Finset.single_le_sum (f := fun σ'' => g σ σ'') (fun i _ => g_nonneg σ i) hσ'
@@ -1317,7 +1317,7 @@ theorem class_summand_eq_term_of_a_one : ∀ (p : ℕ) [Fact p.Prime] (G : HTGro
   intro p _ G hG v hv wt Kf f K' f' hf hf' P x t hx r hr
   have hiff := fix_iff_mark G hG v hv P r hr
   by_cases hm : ∃ μ, P.Mark μ
-  · rw [if_pos (hiff.2 hm), if_pos hm]
+  · rw [ite_eq_left (hiff.2 hm), ite_eq_left hm]
     obtain ⟨μ, hμ⟩ := hm
     have hpos := cent_sim_pos p G P μ hG hμ
     set e := centEquiv G P hpos r hr with he
@@ -1339,7 +1339,7 @@ theorem class_summand_eq_term_of_a_one : ∀ (p : ℕ) [Fact p.Prime] (G : HTGro
     have h5 : minpoly G.F (((r : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C) = P.pol := by
       rw [hr]; rfl
     rw [h1, h2, h3, h4, h5, GlobalTheory.pointSum_comp_mulEquiv, _root_.GlobalTheory.LKMid.Pair.term_one_eq_pointSum p G P Kf f K' f' hf hf' x t hx]
-  · rw [if_neg (fun h => hm (hiff.1 h)), if_neg hm]
+  · rw [ite_eq_right (fun h => hm (hiff.1 h)), ite_eq_right hm]
 
 end GlobalTheory.LKCx.CxReg
 

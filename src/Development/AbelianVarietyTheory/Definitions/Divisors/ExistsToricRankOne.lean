@@ -132,10 +132,4 @@ structure LabCover {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (D : Deg
 
 attribute [instance] LabCover.grp LabCover.comm
 
-section Inhabitants
-
-variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
-
-end Inhabitants
-
 end GlobalTheory.Mum

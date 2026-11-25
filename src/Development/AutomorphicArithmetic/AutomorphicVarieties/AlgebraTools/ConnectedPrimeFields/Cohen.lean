@@ -151,7 +151,7 @@ theorem UpperTheory.V.CA.inj_dim :
   by_contra hni
   obtain ⟨r, hr, hr0⟩ : ∃ r : A, algebraMap A B r = 0 ∧ r ≠ 0 := by
     rw [injective_iff_map_eq_zero] at hni
-    push_neg at hni
+    push Not at hni
     exact hni
   have hrz : r ∈ nonZeroDivisors A := mem_nonZeroDivisors_of_ne_zero hr0
   let g : (A ⧸ Ideal.span {r}) →+* B := Ideal.Quotient.lift (Ideal.span {r}) (algebraMap A B) (by

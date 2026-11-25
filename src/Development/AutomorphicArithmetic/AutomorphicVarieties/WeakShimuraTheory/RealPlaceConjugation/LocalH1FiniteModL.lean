@@ -50,7 +50,7 @@ theorem UpperTheory.V.Ws.local_h1_finite_mod_l :
       _ = Nat.card M := natCard_dual_eq_natCard_of_finite _ _
   refine ⟨hf1, ?_⟩
   by_cases hl : ((l : ℕ) : 𝓞 F) ∈ v.asIdeal
-  · rw [if_pos hl, hEram hl, pow_add, pow_one (Nat.card M), ← mul_assoc]
+  · rw [ite_eq_left hl, hEram hl, pow_add, pow_one (Nat.card M), ← mul_assoc]
     exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left _ hH2)
-  · rw [if_neg hl, hEun hl, add_zero, pow_one (Nat.card M)]
+  · rw [ite_eq_right hl, hEun hl, add_zero, pow_one (Nat.card M)]
     exact Nat.mul_le_mul_left _ hH2

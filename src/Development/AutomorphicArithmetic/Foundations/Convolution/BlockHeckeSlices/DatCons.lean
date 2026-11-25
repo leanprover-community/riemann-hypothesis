@@ -47,14 +47,14 @@ theorem sat_succ (j : Fin d.len) : (cons b d).sat (sc b d j) = d.sat j := rfl
 theorem sum_zero {M : Type} [AddCommMonoid M] (f : Fin (r + s) → M) :
     ∑ i ∈ Finset.univ.filter (fun i => (cons b d).idx i = z0 b d), f i = ∑ i : Fin r, f (Fin.castAdd s i) := by
   rw [Finset.sum_filter, Fin.sum_univ_add]
-  rw [Finset.sum_congr rfl fun i _ => if_pos (idx_left b d i), Finset.sum_eq_zero fun i _ => if_neg ?_, add_zero]
+  rw [Finset.sum_congr rfl fun i _ => ite_eq_left (idx_left b d i), Finset.sum_eq_zero fun i _ => ite_eq_right ?_, add_zero]
   rw [idx_right]
   exact sc_ne b d _
 
 theorem sum_succ {M : Type} [AddCommMonoid M] (f : Fin (r + s) → M) (j : Fin d.len) :
     ∑ i ∈ Finset.univ.filter (fun i => (cons b d).idx i = sc b d j), f i =
       ∑ i ∈ Finset.univ.filter (fun i => d.idx i = j), f (Fin.natAdd r i) := by
-  rw [Finset.sum_filter, Fin.sum_univ_add, Finset.sum_filter, Finset.sum_eq_zero fun i _ => if_neg ?_, zero_add]
+  rw [Finset.sum_filter, Fin.sum_univ_add, Finset.sum_filter, Finset.sum_eq_zero fun i _ => ite_eq_right ?_, zero_add]
   · refine Finset.sum_congr rfl fun i _ => if_congr ?_ rfl rfl
     rw [idx_right]
     exact sc_inj b d

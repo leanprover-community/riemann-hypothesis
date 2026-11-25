@@ -30,24 +30,15 @@ theorem gradNPf_tf (a : LetA O n) (ha : IsUnit (algebraMap (LetA O n) W.EE a)) (
   calc x = (↑(u⁻¹) : W.EE) • ((↑u : W.EE) • x) := by rw [smul_smul, Units.inv_mul, one_smul]
     _ = 0 := by rw [hu, h1, smul_zero]
 
-private theorem mem_DelS_iff_forall_gammaD_fixed {x : W.DD T} : x ∈ DelS W T ↔ ∀ δ ∈ W.DelF, W.γD T δ x = x := by
-  first
-  | exact mem_DelS W T x
-
 theorem gradNPf_DelS_γ (g : W.Gam) {x : W.DD T} (hx : x ∈ DelS W T) : W.γD T g x ∈ DelS W T := by
-  have hx' := (mem_DelS_iff_forall_gammaD_fixed W T).mp hx
-  refine (mem_DelS_iff_forall_gammaD_fixed W T).mpr fun δ hδ => ?_
+  have hx' := (mem_DelS W T _).mp hx
+  refine (mem_DelS W T _).mpr fun δ hδ => ?_
   rw [← W.γD_mul, mul_comm, W.γD_mul, hx' δ hδ]
-
-private theorem mem_letS_iff_letE_smul_eq (c : ZMod n) {x : W.DD T} :
-    x ∈ letS W T c ↔ (letE c : LetA O n) • x = x := by
-  first
-  | exact mem_letS W T c x
 
 theorem gradNPf_letS_γ (g : W.Gam) (c : ZMod n) {x : W.DD T} (hx : x ∈ letS W T c) :
     W.γD T g x ∈ letS W T c := by
-  have hx' := (mem_letS_iff_letE_smul_eq W T c).mp hx
-  refine (mem_letS_iff_letE_smul_eq W T c).mpr ?_
+  have hx' := (mem_letS W T c _).mp hx
+  refine (mem_letS W T c _).mpr ?_
   rw [← _root_.Formalism.MainNotions.LiftingTheory.gammaA_letter_idempotent W g c, ← _root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear W T g (letE c) x, hx']
 
 theorem gradNPf_PiNS_DelS (π' : LetA O n) (k : ℕ) {x : W.DD T} (hx : x ∈ PiNS W T π' k) :
@@ -107,7 +98,7 @@ theorem gradNPf_coker (π' f t : LetA O n) (c₀ : O) (hf : W.γA W.gam π' = π
       Submodule.mem_map] at hrP'
     obtain ⟨⟨r', hr'N, hr'eq⟩, hrΔ⟩ := hrP'
     have hr'eq' : π' ^ k • r' = R := hr'eq
-    have hΔr := (mem_DelS_iff_forall_gammaD_fixed W T).mp hrΔ
+    have hΔr := (mem_DelS W T _).mp hrΔ
     have hr'Δ : r' ∈ W.NΔ T := by
       show r' ∈ W.N T ∧ ∀ δ ∈ W.DelF, W.γD T δ r' = r'
       refine ⟨hr'N, fun δ hδ => ?_⟩

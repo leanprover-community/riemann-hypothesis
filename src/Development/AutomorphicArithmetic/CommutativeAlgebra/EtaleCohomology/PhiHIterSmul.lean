@@ -720,7 +720,7 @@ theorem wEx : WEx := by
     · intro x hx
       by_cases h : ∀ q, x ∉ O q
       · exact Or.inl ((memD x).2 ⟨hx, h⟩)
-      · push_neg at h
+      · push Not at h
         obtain ⟨q, hq⟩ := h
         exact Or.inr ((le_iSup O q) hq)
   have hDD' : D ⊓ D' = ⊥ := by

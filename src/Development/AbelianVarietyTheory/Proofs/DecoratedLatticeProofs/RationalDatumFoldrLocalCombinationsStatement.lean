@@ -276,8 +276,8 @@ theorem theta_of_facts (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-
         exact mi this
     unfold halfInd
     by_cases ht : t ∈ Λ ∧ IsHalf E₂ t
-    · rw [if_pos (hiff.2 ht), if_pos ht]
-    · rw [if_neg (fun h' => ht (hiff.1 h')), if_neg ht]
+    · rw [ite_eq_left (hiff.2 ht), ite_eq_left ht]
+    · rw [ite_eq_right (fun h' => ht (hiff.1 h')), ite_eq_right ht]
   have hspan := Four.model_mem_span hχl hχr hχ0 hLL' hdX' hdivX hdivY hfinX hfinY htf T' htr hmo hva
     (isSB_congr hLX.symm (isSB_of_half hΦ))
   have hzero : IsThetaFunO ψ S T 0 := by

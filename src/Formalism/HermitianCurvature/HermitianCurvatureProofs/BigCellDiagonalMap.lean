@@ -58,7 +58,7 @@ theorem leviElement_nset (p : Matrix (Fin j) (Fin j) ℂ) (hp : Formalism.Double
     · have : x = y := Fin.ext h.symm
       subst this; simp [hp.2]
     · have hne : x ≠ y := fun e => by subst e; omega
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       exact hp.1 (show y < x from h)
   · intro i c hc1 hc2 hi
     obtain ⟨x, rfl⟩ := (eB k j ρ).surjective i

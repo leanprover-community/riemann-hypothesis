@@ -89,7 +89,7 @@ theorem lrb_rowGen (b b' : Fin q) :
   simp only [AlgHom.comp_apply, lrb_res_X]
   rw [rowGen, aeval_X]
   refine Fin.addCases (fun a => ?_) (fun c => ?_) x
-  · rw [if_neg (lrb_cast_ne_nat p q a b'), add_zero, lrb_mapC]
+  · rw [ite_eq_right (lrb_cast_ne_nat p q a b'), add_zero, lrb_mapC]
     refine Fin.addCases (fun s' => ?_) (fun t => ?_) s
     · rw [lrb_var_ll]
       split_ifs <;> simp
@@ -135,11 +135,11 @@ theorem res_eval_id (f : MvPolynomial (Fin (p + q) × Fin (p + q)) R) :
     · rw [lrb_var_lr]
       have := a.isLt
       simp only [idFrame, Fin.val_castAdd, Fin.val_natAdd, map_zero]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     · rw [lrb_var_rl]
       have := s'.isLt
       simp only [idFrame, Fin.val_castAdd, Fin.val_natAdd, map_zero]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     · rw [lrb_var_rr, aeval_X]
       simp only [idFrame, Fin.val_natAdd, add_right_inj]
   have h2 := congrArg (fun φ => φ f) h
@@ -258,7 +258,7 @@ theorem lrb_resO_colAdd (l j : Fin q) :
   simp only [AlgHom.comp_apply, lrb_res_X]
   rw [colAddGen, aeval_X]
   refine Fin.addCases (fun a => ?_) (fun c => ?_) x <;> refine Fin.addCases (fun s' => ?_) (fun t => ?_) s
-  · rw [if_neg (lrb_cast_ne_nat p q s' j), lrb_resO_some, lrb_var_ll]
+  · rw [ite_eq_right (lrb_cast_ne_nat p q s' j), lrb_resO_some, lrb_var_ll]
     split_ifs <;> simp
   · simp only [Fin.natAdd_inj]
     split_ifs
@@ -266,7 +266,7 @@ theorem lrb_resO_colAdd (l j : Fin q) :
       simp
     · rw [lrb_resO_some, lrb_var_lr]
       simp
-  · rw [if_neg (lrb_cast_ne_nat p q s' j), lrb_resO_some, lrb_var_rl]
+  · rw [ite_eq_right (lrb_cast_ne_nat p q s' j), lrb_resO_some, lrb_var_rl]
     simp
   · simp only [Fin.natAdd_inj]
     rw [lrb_var_rr, colAddGen, aeval_X]
@@ -353,7 +353,7 @@ theorem lrc_inv_mem {l : ℕ} (hl : l.Prime) (m : ℤ) (hm : ¬ (l : ℤ) ∣ m)
     rintro rfl
     exact hm (dvd_zero _)
   have h : ((m : ℚ)⁻¹).den = m.natAbs := by
-    rw [Rat.inv_intCast_den, if_neg hm0]
+    rw [Rat.inv_intCast_den, ite_eq_right hm0]
   rw [h, lrc_coprime_iff hl, Int.dvd_natAbs]
   exact hm
 

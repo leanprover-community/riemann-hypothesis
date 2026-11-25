@@ -161,7 +161,7 @@ theorem raw_ev (Φ : RadSp k n z z' π π') {τ : ℂ} (hτ : τ ≠ 0) :
   filter_upwards [isOpen_ne.mem_nhds hτ] with σ hσ
   have hσ' : σ ≠ 0 := hσ
   have hn0 : ‖σ‖ ^ (2 * n + k) ≠ 0 := pow_ne_zero _ (norm_ne_zero_iff.2 hσ')
-  simp only [rdL, LinearMap.coe_mk, AddHom.coe_mk, rdF, off0, hσ', if_false, smul_smul, ← Complex.ofReal_mul,
+  simp only [rdL, LinearMap.coe_mk, AddHom.coe_mk, rdF, off0, hσ', ite_false, smul_smul, ← Complex.ofReal_mul,
     mul_inv_cancel₀ hn0, Complex.ofReal_one, one_smul]
 
 theorem rd_diff (Φ : RadSp k n z z' π π') {τ : ℂ} (hτ : τ ≠ 0) :
@@ -179,7 +179,7 @@ theorem rd_op_p (Φ : RadSp k n z z' π π') (τ : ℂ) :
   have hf : DifferentiableAt ℝ (fun c' => (Φ : Fn k n (Wq →L[ℂ] Wp)) c' (D.castM hn (ιLev k 1 ρ y.2)))
       (pt0 hn y.1 τ) := PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ)
   rw [rd_apply_ne hn y hc hdom _ hτ, X.op_apply]
-  simp only [off0, hτ, if_false]
+  simp only [off0, hτ, ite_false]
   change ((((‖τ‖ ^ (2 * n + k))⁻¹ : ℝ)) : ℂ) • opL (⟨0, by omega⟩ : Fin n) 0
       (fun c' => (Φ : Fn k n (Wq →L[ℂ] Wp)) c' (D.castM hn (ιLev k 1 ρ y.2))) (pt0 hn y.1 τ) = _
   rw [(operators_at_base_point hn hc hτ _ hf).1, dz_congr (raw_ev hn y hdom Φ hτ),
@@ -195,7 +195,7 @@ theorem rd_op_pb (Φ : RadSp k n z z' π π') (τ : ℂ) :
   have hf : DifferentiableAt ℝ (fun c' => (Φ : Fn k n (Wq →L[ℂ] Wp)) c' (D.castM hn (ιLev k 1 ρ y.2)))
       (pt0 hn y.1 τ) := PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ)
   rw [rd_apply_ne hn y hc hdom _ hτ, X.op_apply]
-  simp only [off0, hτ, if_false]
+  simp only [off0, hτ, ite_false]
   change ((((‖τ‖ ^ (2 * n + k))⁻¹ : ℝ)) : ℂ) • opL (⟨0, by omega⟩ : Fin n) 3
       (fun c' => (Φ : Fn k n (Wq →L[ℂ] Wp)) c' (D.castM hn (ιLev k 1 ρ y.2))) (pt0 hn y.1 τ) = _
   rw [(operators_at_base_point hn hc hτ _ hf).2.2.2.1, dzb_congr (raw_ev hn y hdom Φ hτ),

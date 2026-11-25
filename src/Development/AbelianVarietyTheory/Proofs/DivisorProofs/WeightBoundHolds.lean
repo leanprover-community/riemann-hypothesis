@@ -202,7 +202,7 @@ theorem wtNum_at (P : ParameterChoice' D L) (T : ParamsT D L P) (hS : SizesAt L)
       have hp' : (b : ℕ) = (dat p i).p := hp
       have := sgR_step_low D L P t a (by omega) (by omega)
       rw [h0_eq p] at this
-      rw [if_pos (by omega)] at hd
+      rw [ite_eq_left (by omega)] at hd
       have c6 : (6 : ℝ) ≤ D.R.r := by exact_mod_cast six_le_r D.R
       have h2 : (p.h0 : ℝ) ≤ ((uW p i τ a - uW p i τ b : ℤ) : ℝ) := by linarith
       exact_mod_cast h2

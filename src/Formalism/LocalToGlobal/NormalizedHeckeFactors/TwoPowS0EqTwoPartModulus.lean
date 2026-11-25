@@ -107,16 +107,6 @@ theorem mem_Q_iff (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) :
 
 end Record
 
-section Good
-
-open Polynomial
-
-end Good
-
-section Tame
-
-end Tame
-
 def latRel {O : Type} [CommRing O] {φ : O →+* ℂ} {V : Type} [AddCommGroup V] [Module ℂ V] (L : Rows.OLat O φ V) :
     Set (L.gen → O) :=
   {r | ∑ g : L.gen, φ (r g) • (g : V) = 0}

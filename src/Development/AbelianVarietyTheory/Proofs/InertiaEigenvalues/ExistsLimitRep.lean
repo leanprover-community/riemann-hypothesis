@@ -230,7 +230,7 @@ private theorem alt_cons_cons_lemma_5 {M A : Type*} [Monoid M] [CommRing A] (T :
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l = i
     · subst hl; simp [mul_assoc]
-    · rw [if_neg hl, if_neg hl, zero_add, Function.update_of_ne hl]
+    · rw [ite_eq_right hl, ite_eq_right hl, zero_add, Function.update_of_ne hl]
   simp only [← Fin.cons_update, pseudo_character_sum_cons_expand, Finset.sum_sub_distrib]
   simp only [hin, Finset.sum_add_distrib, ← Finset.mul_sum]
   ring
@@ -248,7 +248,7 @@ private theorem pseudo_character_sum_swap_head_pair {M A : Type*} [Monoid M] [Co
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l = i
     · simp [hl]
-    · rw [if_neg (Ne.symm hl), if_neg hl, Function.update_comm (Ne.symm hl)]
+    · rw [ite_eq_right (Ne.symm hl), ite_eq_right hl, Function.update_comm (Ne.symm hl)]
   rw [hoff]
   ring
 
@@ -379,13 +379,13 @@ theorem _root_.GlobalTheory.PsChar.cayleyHamilton (k R : Type) [Field k] [CharZe
       refine ⟨fun j => if j = 0 then _root_.GlobalTheory.PsChar.alt (fun r : R => T r) (m + 1)
         (fun _ => x) else -((m : k) + 1) * c (j - 1), fun y => ?_, ?_⟩
       · rw [hrec, hc1, Finset.sum_range_succ' _ (m + 1)]
-        simp only [Nat.add_one_ne_zero, if_false, if_true, Nat.add_sub_cancel, pow_zero, mul_one,
+        simp only [Nat.add_one_ne_zero, ite_false, ite_true, Nat.add_sub_cancel, pow_zero, mul_one,
           pow_succ', ← mul_assoc, Finset.mul_sum]
         rw [sub_eq_add_neg, add_comm, ← Finset.sum_neg_distrib]
         congr 1
         · exact Finset.sum_congr rfl fun j _ => by ring
         · ring
-      · simp only [Nat.add_one_ne_zero, if_false, Nat.add_sub_cancel, hc2, Nat.factorial_succ]
+      · simp only [Nat.add_one_ne_zero, ite_false, Nat.add_sub_cancel, hc2, Nat.factorial_succ]
         push_cast
         ring
   obtain ⟨c, hc1, hc2⟩ := hcoef d
@@ -461,7 +461,7 @@ theorem linearForm_matrix_eq_smul_trace_of_comm (k : Type) [Field k] (m : ℕ)
     conv_lhs => rw [hx]
 
     simp only [map_sum, map_smul, key, smul_eq_mul, mul_ite, mul_zero, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
     rw [trace, Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
     simp [mul_comm]

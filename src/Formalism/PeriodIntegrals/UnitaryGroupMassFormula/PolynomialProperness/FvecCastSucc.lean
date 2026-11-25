@@ -19,11 +19,11 @@ lemma xiV_eq_sum (k r : ℕ) (p : Fin r → ℂ) : xiV k r p = ∑ a, p a • bv
     mul_one, mul_zero]
   split_ifs with h
   · rw [Finset.sum_eq_single ⟨i.val, h⟩]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       ext
       simp [eI]
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro he
       apply hb
       ext
@@ -35,7 +35,7 @@ lemma xiV_eq_sum (k r : ℕ) (p : Fin r → ℂ) : xiV k r p = ∑ a, p a • bv
   · symm
     apply Finset.sum_eq_zero
     intro b _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro he
     apply h
     rw [he]

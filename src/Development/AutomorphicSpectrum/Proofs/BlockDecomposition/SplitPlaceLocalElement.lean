@@ -26,7 +26,7 @@ theorem ratW_mul_thetaGL : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     ratW n w δ * thetaGL n (RingHom.id _) (ratW n w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ)) = locEl n w δ := by
   intro E _ _ _ n w δ hs
   unfold locEl
-  rw [if_pos hs, map_mul]
+  rw [ite_eq_left hs, map_mul]
   congr 1
   unfold thE
   rw [thetaGL_eq_id_map n (IsCMField.complexConj E).toRingEquiv.toRingHom δ]

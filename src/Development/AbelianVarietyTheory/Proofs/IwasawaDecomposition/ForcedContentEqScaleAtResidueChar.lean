@@ -56,8 +56,8 @@ theorem fvalP_eq_FK (D : D7) (L : SizeData₂ D) (j p : ℕ) :
       fin_cases i <;> simp
   unfold FvalP FK
   by_cases h : ∃ i, p = D.host.g i
-  · rw [if_pos (hg.mpr h), if_pos h]
-  · rw [if_neg (fun h' => h (hg.mp h')), if_neg h]
+  · rw [ite_eq_left (hg.mpr h), ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h (hg.mp h')), ite_eq_right h]
 
 theorem Fval_eq_FK : ∀ (D : D7) (L : SizeData₂ D) (j : ℕ) (v : D.what₂.places.Pl),
     Fval L j v = FK L.sc D j (D.what₂.places.resChar v) := by

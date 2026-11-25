@@ -1111,15 +1111,15 @@ lemma phi_X : φ PowerSeries.X = PowerSeries.X ^ l := by
   rw [hφ, PowerSeries.coeff_X_pow]
   by_cases h1 : l ∣ m
   · obtain ⟨q, rfl⟩ := h1
-    rw [if_pos (dvd_mul_right l q), Nat.mul_div_cancel_left q (by omega), PowerSeries.coeff_X]
+    rw [ite_eq_left (dvd_mul_right l q), Nat.mul_div_cancel_left q (by omega), PowerSeries.coeff_X]
     by_cases hq : q = 1
     · subst hq; simp
-    · rw [if_neg hq, if_neg]
+    · rw [ite_eq_right hq, ite_eq_right]
       intro h2
       apply hq
       have : l * q = l * 1 := by simpa using h2
       exact Nat.eq_of_mul_eq_mul_left (by omega) this
-  · rw [if_neg h1, if_neg]
+  · rw [ite_eq_right h1, ite_eq_right]
     rintro rfl
     exact h1 dvd_rfl
 
@@ -1130,7 +1130,7 @@ lemma comps_X_pow (t : ℕ) :
       if j = (⟨t % l, Nat.mod_lt _ (Nat.lt_of_lt_of_le (by norm_num) hl)⟩ : Fin l) then PowerSeries.X ^ (t / l) else 0 := by
     apply comps_eq
     simp only [apply_ite φ, map_zero, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true]
+      ite_true]
     rw [map_pow, phi_X l hl φ hφ, ← pow_mul, ← pow_add, Nat.mod_add_div]
   rw [this]; simp
 
@@ -1660,7 +1660,7 @@ theorem psi_frob_mul (l : ℕ) [Fact l.Prime] (g h : K⟦X⟧) :
       ∑ p ∈ (Finset.HasAntidiagonal.antidiagonal n).map ⟨_, hinj⟩, coeff p.1 (frob K l g) * coeff p.2 h := by
     rw [Finset.sum_map]
     refine Finset.sum_congr rfl fun p _ => ?_
-    simp only [Function.Embedding.coeFn_mk, coeff_frob, coeff_psi, dvd_mul_right, if_true,
+    simp only [Function.Embedding.coeFn_mk, coeff_frob, coeff_psi, dvd_mul_right, ite_true,
       Nat.mul_div_cancel_left _ hl]
   rw [h1]
   refine (Finset.sum_subset ?_ ?_).symm
@@ -1671,7 +1671,7 @@ theorem psi_frob_mul (l : ℕ) [Fact l.Prime] (g h : K⟦X⟧) :
     simp only [Function.Embedding.coeFn_mk]
     rw [← mul_add, hq]
   · intro p hp hp'
-    rw [coeff_frob, if_neg, zero_mul]
+    rw [coeff_frob, ite_eq_right, zero_mul]
     rintro ⟨c, hc⟩
     apply hp'
     rw [Finset.HasAntidiagonal.mem_antidiagonal] at hp
@@ -1687,7 +1687,7 @@ theorem psi_frob_mul (l : ℕ) [Fact l.Prime] (g h : K⟦X⟧) :
 
 theorem psi_frob (l : ℕ) [Fact l.Prime] (g : K⟦X⟧) : psi l (frob K l g) = g := by
   ext n
-  rw [coeff_psi, coeff_frob, if_pos (dvd_mul_right _ _),
+  rw [coeff_psi, coeff_frob, ite_eq_left (dvd_mul_right _ _),
     Nat.mul_div_cancel_left _ (Fact.out : l.Prime).pos]
 
 theorem psi_mulVec {ι κ : Type} [Fintype ι] (l : ℕ) [Fact l.Prime] (Y : Matrix κ ι K⟦X⟧)

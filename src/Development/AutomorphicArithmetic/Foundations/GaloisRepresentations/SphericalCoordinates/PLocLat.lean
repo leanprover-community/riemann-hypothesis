@@ -128,7 +128,7 @@ private theorem exists_gl {K : Type} [Field K] (f : K → ℝ) (h0 : f 0 = 0)
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [ite_smul, zero_smul]
-      rw [Finset.sum_ite_eq, if_pos (hbs i)]
+      rw [Finset.sum_ite_eq, ite_eq_left (hbs i)]
   · rintro ⟨a, ha1, rfl⟩ i
     choose! C hC1 hC2 using hcoord
     have hz : ∑ y ∈ s, a y • y = colM b *ᵥ ∑ y ∈ s, a y • C y := by

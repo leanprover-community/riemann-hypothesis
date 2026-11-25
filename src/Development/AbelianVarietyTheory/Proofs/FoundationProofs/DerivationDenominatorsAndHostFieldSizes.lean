@@ -253,7 +253,7 @@ theorem exists_letters (D : D7) : ∃ (S : Finset ℕ) (dl : ℕ → ℝ), Lette
     simp only [hinj] at h2
     simp only [coordV, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Matrix.single_apply]
     by_cases hst : k.2.1 = s ∧ k.2.2 = t
-    · simp only [hst, and_self, if_true, and_true]
+    · simp only [hst, and_self, ite_true, and_true]
       exact h2.symm
     · have : ¬ (τ = k.1 ∧ s = k.2.1 ∧ t = k.2.2) := fun h => hst ⟨h.2.1.symm, h.2.2.symm⟩
       simp [hst, this]

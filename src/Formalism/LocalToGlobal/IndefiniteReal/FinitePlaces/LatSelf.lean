@@ -801,7 +801,7 @@ lemma exists_finset_half_decomp {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (
   refine ⟨(RL.filter G).image pick, fun u hu hhalf => ?_⟩
   obtain ⟨ρ, hρ, Z, hZ, hEq⟩ := hRL (c' • u) (hup u hu)
   have hG : G ρ := ⟨u, hu, hhalf, Z, hZ, hEq⟩
-  have hpick : pick ρ = hG.choose := dif_pos hG
+  have hpick : pick ρ = hG.choose := dite_eq_left hG
   obtain ⟨hu₀, hh₀, Z₀, hZ₀, hEq₀⟩ := hG.choose_spec
   have hZZ : ∀ i j, IntF ((Z - Z₀) i j) := fun i j => by
     rw [Matrix.sub_apply, sub_eq_add_neg]; exact intF_add (hZ i j) (intF_neg (hZ₀ i j))

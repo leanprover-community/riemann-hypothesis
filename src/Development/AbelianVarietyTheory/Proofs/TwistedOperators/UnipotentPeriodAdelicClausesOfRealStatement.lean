@@ -544,10 +544,10 @@ theorem one_clause (θ : InfFam D) {Y V : HSp D} (d : HermitianOrthogonalExtensi
     rw [coef_split θ d M K u 1 q.1 q.2, one_mul, one_mul, Set.indicator_apply]
     by_cases hq : q.2 ∈ K'
     · have hq' := (hK' q.2).1 hq
-      rw [if_pos hq', if_pos hq, ← mul_assoc x, hinv q.2 hq]
+      rw [ite_eq_left hq', ite_eq_left hq, ← mul_assoc x, hinv q.2 hq]
       ring
     · have hq' : Lev.finE V (stabilizerEmbedding d (q.2 : GA D Y)) ∉ K := fun h => hq ((hK' q.2).2 h)
-      rw [if_neg hq', if_neg hq]
+      rw [ite_eq_right hq', ite_eq_right hq]
       ring
   simp_rw [pw]
   rw [integral_prod_mul (fun a : GinfC Y => coefR θ M u u (stabilizerEmbedding d a) * φ (x * a)) (K'.indicator (fun _ => (1 : ℂ))), hrep,

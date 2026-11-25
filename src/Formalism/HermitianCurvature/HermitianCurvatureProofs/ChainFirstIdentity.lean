@@ -89,7 +89,7 @@ theorem chain_first_identity : LastColumnChain := by
         intro h'; have := congrArg Fin.val h'; simp [eI, xR] at this
       rw [tm_offdiag _ _ hne]
       have hx : xR k r (m + 1) (by omega) (Fin.last m) = eI k r ⟨m, by omega⟩ := by ext; simp [xR, eI]
-      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨m, by omega⟩ (by simp), if_pos rfl]
+      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨m, by omega⟩ (by simp), ite_eq_left rfl]
       have hcs2 : xR k r (m + 1) (by omega) ∘ Fin.castSucc = xR k r m (by omega) := by funext q; ext; simp [xR, eI]
       rw [hcs2, smul_smul, smul_smul]
       congr 1
@@ -105,7 +105,7 @@ theorem chain_first_identity : LastColumnChain := by
         intro h'; have := congrArg Fin.val h'; rw [hqv] at this; simp [eI] at this; omega
       rw [tm_offdiag _ _ hne]
       have hx : xR k r (m + 1) (by omega) (Fin.castSucc q) = eI k r ⟨q.val, by omega⟩ := by ext; simp [xR, eI]
-      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨q.val, by omega⟩ (by simp), if_neg (by simp <;> omega), zero_smul, smul_zero]
+      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨q.val, by omega⟩ (by simp), ite_eq_right (by simp <;> omega), zero_smul, smul_zero]
   have hmT : La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u *
       Tm E (u - ((m + 1 : ℕ) : ℂ)) (a (Fin.castSucc (Fin.last m))) (a (Fin.last (m + 1)))) =
       La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u) := by

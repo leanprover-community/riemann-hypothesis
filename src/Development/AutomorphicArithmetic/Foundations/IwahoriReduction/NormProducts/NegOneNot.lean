@@ -108,7 +108,7 @@ private lemma vand (l : ℕ) [Fact l.Prime] (w : ℕ) : ∃ (c : ℕ) (E : Fin (
   rw [h3, ← h1]
   by_cases hii : i = i'
   · subst hii
-    simp only [Matrix.smul_apply, Matrix.one_apply_eq, smul_eq_mul, mul_one, if_true]
+    simp only [Matrix.smul_apply, Matrix.one_apply_eq, smul_eq_mul, mul_one, ite_true]
     exact (Units.inv_mul_eq_iff_eq_mul _).2 h2
   · simp [Matrix.smul_apply, Matrix.one_apply_ne hii, hii]
 

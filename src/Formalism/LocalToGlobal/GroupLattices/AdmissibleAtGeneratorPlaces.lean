@@ -119,10 +119,10 @@ theorem ETDef_of {X : ErrX D} {K : Formalism.MainNotions.G.Consts} {c : ErrC} (P
       rintro ⟨h | h, _⟩
       · exact absurd (hs.symm.trans h) (fun h => by cases h)
       · exact absurd (hs.symm.trans h) (fun h => by cases h)
-    rw [if_neg h1, if_neg h2, if_neg h3]
+    rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3]
   · rw [hE u j hj w]
     unfold Eval
-    simp only [hw', if_true]
+    simp only [hw', ite_true]
 
 end Formalism.MainNotions.J
 
@@ -201,7 +201,7 @@ theorem servedModel_of_params (P : ParameterChoice' D L) (X : Inst D L) (K : Con
   refine Formalism.BasicNotions.gIdx_of_cand P K h3 u _ ?_ hw
   unfold VV at hV
   by_contra hc
-  exact hV (if_neg (fun h => hc h.1))
+  exact hV (ite_eq_right (fun h => hc h.1))
 
 end Formalism.MainNotions.J
 end -- clump:auto

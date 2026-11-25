@@ -142,8 +142,8 @@ theorem exists_cos_cosetSet_eq : ∀ {D : D7} {T T' : Type} {L : LevCh D T} {L' 
     rw [hv0]
   have hexp : ∀ w, cosExp G' w = cosExp G w := fun w => by
     by_cases hm : w ∈ G.pl.W0
-    · rw [cosExp, cosExp, if_pos (by rw [hW0]; exact hm), if_pos hm, hdep]
-    · rw [cosExp, cosExp, if_neg (by rw [hW0]; exact hm), if_neg hm]
+    · rw [cosExp, cosExp, ite_eq_left (by rw [hW0]; exact hm), ite_eq_left hm, hdep]
+    · rw [cosExp, cosExp, ite_eq_right (by rw [hW0]; exact hm), ite_eq_right hm]
   obtain ⟨y', hy'⟩ := Submodule.Quotient.mk_surjective _ κ'
   have hint : ∀ i j, ∃ s ∈ idS D.host.F ⊤, s.1 = fr (B'.β 0 0) (B'.β 1 0) (y'.1.map (eToEAf D)) i j :=
     fr_mem_idS h1' h0' (by rw [Submodule.top_smul]; exact y'.2)
@@ -320,7 +320,7 @@ theorem sameD_of_cosZero (hz : CosZero) : SameD := by
     rcases b with ⟨_ | i, j⟩ | ⟨_ | i, _ | j⟩
     · rfl
     · rfl
-    · simp only [givenDatum, dif_pos hm]
+    · simp only [givenDatum, dite_eq_left hm]
       exact congrArg (fun s => Set.indicator s 1) (hκ0 t (ι t) w)
     · rfl
     · simp only [givenDatum]

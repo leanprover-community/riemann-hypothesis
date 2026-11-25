@@ -227,11 +227,11 @@ variable (S : C.HidaSetting E Wp Wq) (T : ∀ v : Fin S.f, D.LevTower S.G.k S.G.
 
 theorem datumCoef_pos (Φ : FMap S v) {g : B.Mat S.G.k S.G.r} (hg : g ∈ B.GPos (T v).base) :
     datumCoef S T v Φ a a' ι g = Φ (a g) (a' g) (ι g) := by
-  unfold datumCoef; rw [if_pos hg]
+  unfold datumCoef; rw [ite_eq_left hg]
 
 theorem datumCoef_neg (Φ : FMap S v) {g : B.Mat S.G.k S.G.r} (hg : g ∉ B.GPos (T v).base) :
     datumCoef S T v Φ a a' ι g = 0 := by
-  unfold datumCoef; rw [if_neg hg]
+  unfold datumCoef; rw [ite_eq_right hg]
 
 theorem kap_hsVec_zero : B.hsVec (0 : Wq (S.pl v) →L[ℂ] Wp (S.pl v)) = 0 := by
   unfold B.hsVec; ext i; simp
@@ -405,12 +405,12 @@ theorem kapRep_of_typeProj (h : TypeProj) : KapRep := by
       congr 1
       have := hadj ρ (SSn.phD x.1 • SSn.nu0 S.G.k S.G.r (T v).base.z (T v).base.z' (T v).base.μsec x.2) A (e ρ x.2)
       unfold B.hsInner at this
-      rw [this, hline x hx ρ ρ, if_pos rfl]
+      rw [this, hline x hx ρ ρ, ite_eq_left rfl]
     · intro σ _ hσ
       rw [Formalism.FourierDecayAlt.P.JCTx2.hsVec_smul', inner_smul_right]
       have := hadj σ (SSn.phD x.1 • SSn.nu0 S.G.k S.G.r (T v).base.z (T v).base.z' (T v).base.μsec x.2) A (e ρ x.2)
       unfold B.hsInner at this
-      rw [this, hline x hx σ ρ, if_neg hσ, kap_hsVec_zero, inner_zero_left, mul_zero]
+      rw [this, hline x hx σ ρ, ite_eq_right hσ, kap_hsVec_zero, inner_zero_left, mul_zero]
     · intro h; exact absurd (Finset.mem_univ ρ) h
 
 theorem kapRealiser_of_typeProj (hB : DatumBd) (hG : SSn.SSnGeom) (hP : TypeProj) : KapRealiser :=

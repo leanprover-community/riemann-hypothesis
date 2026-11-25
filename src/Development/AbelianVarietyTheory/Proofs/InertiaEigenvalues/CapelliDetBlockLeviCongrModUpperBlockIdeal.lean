@@ -42,7 +42,7 @@ theorem levi_mul_mem {r m : ℕ} {X : Fin (r + m) → Fin (r + m) → A} (hX : G
     have h := hX (Fin.natAdd r s) (Fin.natAdd r t) (Fin.castAdd m p) (Fin.natAdd r q)
     have hne : Fin.natAdd r t ≠ Fin.castAdd m p := by
       intro h; have := congrArg Fin.val h; simp at this; omega
-    rw [if_neg hne] at h
+    rw [ite_eq_right hne] at h
     have h' : X (Fin.natAdd r s) (Fin.natAdd r t) * X (Fin.castAdd m p) (Fin.natAdd r q) =
         X (Fin.castAdd m p) (Fin.natAdd r q) * X (Fin.natAdd r s) (Fin.natAdd r t) +
           (0 - if Fin.natAdd r q = Fin.natAdd r s then X (Fin.castAdd m p) (Fin.natAdd r t) else 0) := by
@@ -117,7 +117,7 @@ theorem Tm_upper_mem {r m : ℕ} (X : Fin (r + m) → Fin (r + m) → A) (w : �
   unfold Tm
   have hne : Fin.castAdd m p ≠ Fin.natAdd r q := by
     intro h; have := congrArg Fin.val h; simp at this; omega
-  rw [if_neg hne, zero_add]
+  rw [ite_eq_right hne, zero_add]
   exact Submodule.subset_span ⟨p, q, y, rfl⟩
 
 theorem two_block {r m : ℕ} (X : Fin (r + m) → Fin (r + m) → A) (hX : GlRel X) (u : ℂ) :
@@ -207,7 +207,7 @@ theorem entry_comm {r m : ℕ} {X : Fin (r + m) → Fin (r + m) → A} (hX : GlR
     intro h; have := congrArg Fin.val h; simp at this; omega
   have h2 : Fin.castAdd m q ≠ Fin.natAdd r s := by
     intro h; have := congrArg Fin.val h; simp at this; omega
-  rw [if_neg h1, if_neg h2, sub_zero] at h
+  rw [ite_eq_right h1, ite_eq_right h2, sub_zero] at h
   exact sub_eq_zero.1 h
 
 theorem ite_algebraMap_comm (P : Prop) [Decidable P] (c : ℂ) (z : A) :
@@ -234,18 +234,18 @@ theorem modExp_castSucc {c : ℕ} (n : Fin (c + 1) → ℕ) (j : Fin c) :
       modExp (fun i => Fin (n (Fin.castSucc i))) j + n (Fin.last c) := by
   unfold modExp
   simp only [Fintype.card_fin, Finset.sum_filter, Fin.sum_univ_castSucc, Fin.castSucc_lt_castSucc_iff,
-    Fin.castSucc_lt_last, if_true]
+    Fin.castSucc_lt_last, ite_true]
   have : ¬ Fin.last c < Fin.castSucc j := not_lt.2 (Fin.castSucc_lt_last j).le
-  simp only [this, if_false]
+  simp only [this, ite_false]
   ring
 
 theorem modExp_last {c : ℕ} (n : Fin (c + 1) → ℕ) :
     modExp (fun i => Fin (n i)) (Fin.last c) = -((∑ i : Fin c, n (Fin.castSucc i) : ℕ) : ℤ) := by
   unfold modExp
-  simp only [Fintype.card_fin, Finset.sum_filter, Fin.sum_univ_castSucc, Fin.castSucc_lt_last, if_true,
-    lt_irrefl, if_false]
+  simp only [Fintype.card_fin, Finset.sum_filter, Fin.sum_univ_castSucc, Fin.castSucc_lt_last, ite_true,
+    lt_irrefl, ite_false]
   have : ∀ i : Fin c, ¬ Fin.last c < Fin.castSucc i := fun i => not_lt.2 (Fin.castSucc_lt_last i).le
-  simp only [this, if_false, Finset.sum_const_zero]
+  simp only [this, ite_false, Finset.sum_const_zero]
   push_cast
   ring
 

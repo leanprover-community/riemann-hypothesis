@@ -48,12 +48,6 @@ open NumberField Matrix Formalism.BasicNotions GlobalTheory.IndefiniteRowSideFul
 
 namespace GlobalTheory.CuspCharLattice
 
-section General
-
-variable {K : Type} [Field K] [NumberField K]
-
-end General
-
 variable {R : Ranks} {H : Host R} {n : ℕ}
 
 theorem host_AA_ne_zero (H : Host R) : H.AA ≠ 0 := by

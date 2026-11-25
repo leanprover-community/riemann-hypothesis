@@ -221,7 +221,7 @@ theorem stab_iff (A : Matrix (Fin n) (Fin n) E) (X : Matrix (Fin n) (Fin r) E) (
       _ = ∑ m, X a m * b l.1 l.2 m := h1
       _ = _ := h2
   · rintro ⟨C, hC⟩ l hl
-    refine ⟨fun m => if h : m ≤ j then C ⟨m, h⟩ ⟨l, hl⟩ else 0, ?_, fun m hm => dif_neg (not_le.mpr hm)⟩
+    refine ⟨fun m => if h : m ≤ j then C ⟨m, h⟩ ⟨l, hl⟩ else 0, ?_, fun m hm => dite_eq_right (not_le.mpr hm)⟩
     funext a
     have h1 := congrFun (congrFun hC a) ⟨l, hl⟩
     have h2 := sum_trunc (j := j) (fun m => X a m * (if h : m ≤ j then C ⟨m, h⟩ ⟨l, hl⟩ else 0))

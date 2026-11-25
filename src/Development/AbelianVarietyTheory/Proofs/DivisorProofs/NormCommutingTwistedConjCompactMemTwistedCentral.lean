@@ -57,8 +57,8 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
   intro E _ _ _ hU n w y hy C hC
   by_cases hs : IsSplitAt w
   · refine ⟨{1}, isCompact_singleton, fun z hz _ => ⟨z, ?_, 1, rfl, (mul_one z).symm⟩⟩
-    have h1 : thL n w = MonoidHom.id _ := by rw [thL, if_pos hs]
-    have h2 : nrmL n w y = y := by rw [nrmL, if_pos hs]
+    have h1 : thL n w = MonoidHom.id _ := by rw [thL, ite_eq_left hs]
+    have h2 : nrmL n w y = y := by rw [nrmL, ite_eq_left hs]
     rw [h2] at hz
     change z * y = y * thL n w z
     rw [h1, MonoidHom.id_apply, hz]
@@ -70,11 +70,11 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
         star_mul := fun a b => by rw [map_mul, mul_comm]
         star_add := map_add (cj w) }
     have hse : starRingEnd K = cj w := RingHom.ext fun _ => rfl
-    have hθ : thL n w = thetaGL n (starRingEnd K) := by rw [thL, if_neg hs, hse]
+    have hθ : thL n w = thetaGL n (starRingEnd K) := by rw [thL, ite_eq_right hs, hse]
     have hθv : ∀ g : GLw n w, (thL n w g).val = GlobalTheory.Tw.theta g.val := fun g => by
       rw [hθ]; exact thetaGL_val g
     have hN : (nrmL n w y).val = GlobalTheory.Tw.nrm y.val := by
-      rw [nrmL, if_neg hs, ← hse, Units.val_mul, thetaGL_val]; rfl
+      rw [nrmL, ite_eq_right hs, ← hse, Units.val_mul, thetaGL_val]; rfl
     have hReg : GlobalTheory.Tw.Reg (y.val) := ⟨y.isUnit, by rw [← hN]; exact hy⟩
     have TC := GlobalTheory.Tw.twisted_centraliser n K y.val hReg
     letI : NontriviallyNormedField K := Valued.toNontriviallyNormedField _ _

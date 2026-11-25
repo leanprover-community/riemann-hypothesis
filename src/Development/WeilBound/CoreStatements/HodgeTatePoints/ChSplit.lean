@@ -36,7 +36,7 @@ theorem split_ses : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommG
 
     rw [hes, LinearMap.sum_apply, map_sum]
     simp only [LinearMap.smul_apply, map_smul, hg]
-    rw [h1, hc s, if_pos rfl, map_one, one_smul]
+    rw [h1, hc s, ite_eq_left rfl, map_one, one_smul]
   have hA : ∀ x, x ∈ eig ρ (fun a => algebraMap k K (χ s a)) ↔
       f x ∈ eig (fun a => ρ' a) (fun a => algebraMap k K (χ s a)) := by
     intro x
@@ -122,7 +122,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
     by_cases hall : ∀ s, eig (fun a => ρ a) (fun a => algebraMap k K (χ s a)) = ⊥
     · exact subDeg_top_eq_sum_subDeg_of_all_eq_bot C L (fun s => eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) e he_mem
         he_sum hall
-    push_neg at hall
+    push Not at hall
     obtain ⟨s0, hs0⟩ := hall
     have hcomm : ∀ s a x, e s (ρ a x) = ρ a (e s x) := by
       intro s a x
@@ -142,7 +142,7 @@ private theorem subDeg_top_eq_sum_subDeg_eig_of_ncard_le (K : Type) [Field K] (C
         comb_eig (fun a => ρ a) (fun a => χ t a) hx c b
       rw [hes, LinearMap.sum_apply]
       simp only [LinearMap.smul_apply]
-      rw [h1, hc t, if_neg hts, map_zero, zero_smul]
+      rw [h1, hc t, ite_eq_right hts, map_zero, zero_smul]
     set W0 := eig (fun a => ρ a) (fun a => algebraMap k K (χ s0 a)) with hW0
     set K0 := LinearMap.ker (e s0) with hK0
     have hidem : ∀ x, e s0 (e s0 x) = e s0 x := fun x => he_id s0 _ (he_mem s0 x)

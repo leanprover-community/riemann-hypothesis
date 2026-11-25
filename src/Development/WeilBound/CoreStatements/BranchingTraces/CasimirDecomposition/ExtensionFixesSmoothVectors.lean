@@ -131,7 +131,7 @@ theorem cay_two {P Q : Mx k r} (hP : IsCayleyU k r ε P) (hQ : IsCayleyU k r ε 
 
 theorem act_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 1)) :
     (CompanionTheory.Zuck.act (vr k r true, U) g x c : U.R.H) = ∑ d, g⁻¹ d c • U.R.σ g (x d) := by
-  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, vr, if_true, BranchingSupport.dualM, CompanionTheory.Zuck.URep.sig, dif_pos hg,
+  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, vr, ite_true, BranchingSupport.dualM, CompanionTheory.Zuck.URep.sig, dite_eq_left hg,
     LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.compLeft_apply, LinearMap.sum_apply,
     LinearMap.smul_apply, LinearMap.proj_apply, Function.comp_apply, transpose_apply, Submodule.coe_sum,
     Submodule.coe_smul]
@@ -139,7 +139,7 @@ theorem act_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (vr k r t
 
 theorem act_one_coe (U : URep k r) {g : Mx k r} (hg : g ∈ GG k r) (x : M (one U)) :
     (CompanionTheory.Zuck.act (one U) g x () : U.R.H) = U.R.σ g (x ()) := by
-  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, CompanionTheory.Zuck.one, CompanionTheory.Zuck.triv, CompanionTheory.Zuck.URep.sig, dif_pos hg,
+  simp only [CompanionTheory.Zuck.act, CompanionTheory.Zuck.mAct, CompanionTheory.Zuck.dOp, CompanionTheory.Zuck.one, CompanionTheory.Zuck.triv, CompanionTheory.Zuck.URep.sig, dite_eq_left hg,
     LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.compLeft_apply, LinearMap.sum_apply,
     LinearMap.smul_apply, LinearMap.proj_apply, Function.comp_apply, Submodule.coe_sum,
     Submodule.coe_smul]
@@ -159,7 +159,7 @@ theorem extension_one_coe (T : URep k r) (y : M (one T)) : ext1 T (y ()) = y := 
   simp [ext1, h]
 
 theorem extendHalfPlane_coe_point (T : URep k r) {x : T.R.H} (h : x ∈ T.R.sm) : (ext1 T x () : T.R.H) = x := by
-  rw [ext1, dif_pos h]
+  rw [ext1, dite_eq_left h]
 
 theorem one_ext (T : URep k r) {y y' : M (one T)} (h : (y () : T.R.H) = y' ()) : y = y' :=
   funext fun _ => Subtype.ext h

@@ -144,7 +144,7 @@ theorem value_half_period : ∀ (Λ : AddSubgroup ℂ), (∃ w₁ w₂ : ℂ, Li
       have e1 := hwp (z + t) t hz' ht
       rw [(hw _ hz').1, (hw t ht).1] at e1
       have e2 := hU (2 * t) h2 z
-      rw [if_neg (by simpa using ht)] at e2
+      rw [ite_eq_right (by simpa using ht)] at e2
       have e3 : -(Real.pi : ℂ) * z * (starRingEnd ℂ) (2 * t) / (area Λ : ℂ) -
           (Real.pi : ℂ) * (2 * t) * (starRingEnd ℂ) (2 * t) / (2 * (area Λ : ℂ)) =
           -(2 * k * z + 2 * k * t) := by

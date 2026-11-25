@@ -120,7 +120,7 @@ lemma rot (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {φ 
     congr 1
     by_cases h : i = iK k
     · simp [hudef, h]
-    · simp only [hudef, h, if_false]
+    · simp only [hudef, h, ite_false]
       rw [Complex.normSq_mul, Complex.normSq_inv,
         show Complex.normSq (star c) = Complex.normSq c from Complex.normSq_conj c]
       ring
@@ -135,7 +135,7 @@ lemma rot (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {φ 
       by_cases h : i = iK k
       · subst h; simp [hudef, bvec]
       · rw [hudef]
-        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, if_neg h, bvec, Pi.single_apply,
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, ite_eq_right h, bvec, Pi.single_apply,
           mul_zero, add_zero]
         rw [mul_inv_cancel_left₀ hcs]
     have h1 : Rᴴ *ᵥ u = bvec (iW k) := by
@@ -152,7 +152,7 @@ lemma rot (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {φ 
     intro x hx
     have hx0 : x (iK k) (iW k) = 0 := by
       have h := fixedUnitary_apply_fixedIndex_left hx (iW k)
-      rw [if_neg hWK] at h
+      rw [ite_eq_right hWK] at h
       exact h
     show ((R * Matrix.of x)ᴴ *ᵥ v) (iW k) = _
     rw [Matrix.conjTranspose_mul, ← Matrix.mulVec_mulVec, hRv, Matrix.mulVec_add,
@@ -237,7 +237,7 @@ lemma bnd (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {s :
     have hv0 : ∀ i, i ≠ iK k → v i = 0 := by
       intro i hi
       have h3 := (Finset.sum_eq_zero_iff_of_nonneg hnn).mp hS i (Finset.mem_univ i)
-      rw [if_neg hi] at h3
+      rw [ite_eq_right hi] at h3
       exact Complex.normSq_eq_zero.mp h3
     calc ∫⁻ x, ENNReal.ofReal (lam * ‖((Matrix.of x)ᴴ *ᵥ v) (iW k) + b‖) ^ (-s) ∂ν
         = ∫⁻ _x, ENNReal.ofReal (lam * ‖b‖) ^ (-s) ∂ν := by
@@ -245,7 +245,7 @@ lemma bnd (hk : 1 ≤ k) {ν : Measure (Mt k 0)} (hν : IsHaarOn (U0 k) ν) {s :
           filter_upwards [ae_mem_fixedUnitary hν] with x hx
           have hx0 : x (iK k) (iW k) = 0 := by
             have h := fixedUnitary_apply_fixedIndex_left hx (iW k)
-            rw [if_neg hWK] at h
+            rw [ite_eq_right hWK] at h
             exact h
           have hz : ((Matrix.of x)ᴴ *ᵥ v) (iW k) = 0 := by
             first

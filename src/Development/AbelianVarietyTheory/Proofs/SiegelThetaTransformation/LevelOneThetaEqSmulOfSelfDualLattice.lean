@@ -371,7 +371,7 @@ theorem exists_eq_smul_of_isTheta1 : ∀ (E : Type) [Field E] [NumberField E] [I
       · exact hlaw θ h1
       · exact hlaw θ' h2)
   rw [LinearIndependent.pair_iff] at hnot
-  push_neg at hnot
+  push Not at hnot
   obtain ⟨s, t, hst, hne⟩ := hnot
   by_cases hs0 : s = 0
   · subst hs0

@@ -25,32 +25,32 @@ theorem subRel : SubRel := by
   · unfold IsCov
     intro a b c
     have h := hE a.castSucc b.castSucc c.castSucc (Fin.last n)
-    rw [if_neg (Fin.castSucc_lt_last a).ne', sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last a).ne', sub_zero] at h
     simp only [subA, etaK]
     rw [h]
     by_cases hbc : b = c
     · subst hbc; simp
-    · rw [if_neg (fun e => hbc (Fin.castSucc_injective _ e)), if_neg hbc]
+    · rw [ite_eq_right (fun e => hbc (Fin.castSucc_injective _ e)), ite_eq_right hbc]
   · unfold IsVec
     intro a b c
     have h := hE a.castSucc b.castSucc (Fin.last n) c.castSucc
-    rw [if_neg (Fin.castSucc_lt_last b).ne, zero_sub] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last b).ne, zero_sub] at h
     simp only [subA, yK]
     rw [h]
     by_cases hac : a = c
     · subst hac; simp
-    · rw [if_neg (fun e => hac (Fin.castSucc_injective _ e).symm), if_neg hac, neg_zero]
+    · rw [ite_eq_right (fun e => hac (Fin.castSucc_injective _ e).symm), ite_eq_right hac, neg_zero]
   · intro a b
     have h := hE a.castSucc (Fin.last n) b.castSucc (Fin.last n)
-    rw [if_neg (Fin.castSucc_lt_last b).ne', if_neg (Fin.castSucc_lt_last a).ne', sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last b).ne', ite_eq_right (Fin.castSucc_lt_last a).ne', sub_zero] at h
     exact sub_eq_zero.mp h
   · intro a b
     have h := hE (Fin.last n) a.castSucc (Fin.last n) b.castSucc
-    rw [if_neg (Fin.castSucc_lt_last a).ne, if_neg (Fin.castSucc_lt_last b).ne, sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last a).ne, ite_eq_right (Fin.castSucc_lt_last b).ne, sub_zero] at h
     exact sub_eq_zero.mp h
   · intro a b
     have h := hE (Fin.last n) (Fin.last n) a.castSucc b.castSucc
-    rw [if_neg (Fin.castSucc_lt_last a).ne', if_neg (Fin.castSucc_lt_last b).ne, sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last a).ne', ite_eq_right (Fin.castSucc_lt_last b).ne, sub_zero] at h
     exact sub_eq_zero.mp h
 
 section alg
@@ -175,12 +175,12 @@ theorem comm_last {n : ℕ} (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ 
   have hc : ∀ a b : Fin n, Commute (E (Fin.last n) (Fin.last n)) (subA E a b) := by
     intro a b
     have h := hE (Fin.last n) (Fin.last n) a.castSucc b.castSucc
-    rw [if_neg (Fin.castSucc_lt_last a).ne', if_neg (Fin.castSucc_lt_last b).ne, sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last a).ne', ite_eq_right (Fin.castSucc_lt_last b).ne, sub_zero] at h
     exact sub_eq_zero.mp h
   have hT : ∀ w (a b : Fin n), Commute (Tm E c (Fin.last n) (Fin.last n)) (Tm (subA E) w a b) := by
     intro w a b
     unfold Tm
-    rw [if_pos (rfl : Fin.last n = Fin.last n)]
+    rw [ite_eq_left (rfl : Fin.last n = Fin.last n)]
     apply Commute.add_left
     · exact Algebra.commute_algebraMap_left _ _
     · apply Commute.add_right

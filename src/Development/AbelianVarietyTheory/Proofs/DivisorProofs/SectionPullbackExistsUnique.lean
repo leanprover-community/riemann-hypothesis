@@ -234,7 +234,7 @@ theorem ruleUp_eq (d : DeltaDat Xo c n) (f : Rul Xo c) (p : TRing d.c₂.F) (y�
   letI := algBelow d p.R
   intro y h
   have hx : ∃ y : FrPt Xo c p.R, FrOver d y₂ y := ⟨y, h⟩
-  have e : ruleUp d f p y₂ = evR Xo c f hx.choose := dif_pos hx
+  have e : ruleUp d f p y₂ = evR Xo c f hx.choose := dite_eq_left hx
   rw [e, frOver_unique d GlobalTheory.abelianSchemeLaws_all.1.globalFns hx.choose_spec h]
 
 theorem wtRed (Xo : Moduli Dw l) (c : Coeff l) : ReciprocityTheory.ChartRestriction.G.PullbackSections.WtRed Xo c :=

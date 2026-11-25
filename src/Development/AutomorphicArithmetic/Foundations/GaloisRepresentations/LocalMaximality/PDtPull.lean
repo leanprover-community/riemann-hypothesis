@@ -150,14 +150,14 @@ theorem UpperTheory.Gal.productCup_of_system.dtPull_of :
         Finset.sum_subtype (Finset.univ.powersetCard T.card) (p := fun S => S.card = T.card)
           (by simp [Finset.mem_powersetCard])]
       refine Finset.sum_congr rfl fun S _ => ?_
-      simp only [dif_pos S.2]
+      simp only [dite_eq_left S.2]
       rw [iM_cast S.1 T.card S.2 (fun l => D ℂ K' (tt K' x l))]
       unfold dtS
       congr 1
       exact ((loc (rB ℂ K' (xv x) {0}) e.1).val.map_det
         (ah.submatrix (T.orderEmbOfFin rfl) (S.1.orderEmbOfFin S.2))).symm
     · intro S hS
-      simp only [dif_pos hS]
+      simp only [dite_eq_left hS]
       refine (hev _ _).2 ⟨SetLike.coe_mem _, ?_⟩
       change ev (ah.submatrix (T.orderEmbOfFin rfl) (S.orderEmbOfFin hS)).det = _
       rw [AlgHom.map_det, ← hAh]

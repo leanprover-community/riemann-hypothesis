@@ -340,8 +340,8 @@ theorem isNum_one : IsNum (1 : SlopeTestRemainingChoices S (Pr (RadSp k r z z' �
 theorem isNum_eU (s : S) (i j : Fin 2) : IsNum (eU s i j : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) := by
   intro a b
   by_cases h : a s = i ∧ b s = j ∧ ∀ c, c ≠ s → a c = b c
-  · exact ⟨1, by simp only [eU, Matrix.of_apply, if_pos h, map_one]⟩
-  · exact ⟨0, by simp only [eU, Matrix.of_apply, if_neg h, map_zero]⟩
+  · exact ⟨1, by simp only [eU, Matrix.of_apply, ite_eq_left h, map_one]⟩
+  · exact ⟨0, by simp only [eU, Matrix.of_apply, ite_eq_right h, map_zero]⟩
 
 theorem isNum_mul {M N : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))} (hM : IsNum M) (hN : IsNum N) : IsNum (M * N) := by
   choose qM hqM using hM
@@ -389,7 +389,7 @@ theorem comm_eU_vlet (σ : Site A) (le : Letter ℂ S) {a : S} (ha : le.intersec
       by_cases h1 : x a = i
       · have e1 : (∀ b, b ≠ a → x b = Function.update x a j b) := fun b hb => by
           rw [Function.update_of_ne hb]
-        rw [if_pos ⟨h1, trivial, e1⟩, one_mul]
+        rw [ite_eq_left ⟨h1, trivial, e1⟩, one_mul]
         by_cases h2 : y a = j ∧ x s = p ∧ y s = q ∧ ∀ b, b ≠ a → b ≠ s → x b = y b
         · obtain ⟨h2a, h2b, h2c, h2d⟩ := h2
           have e2 : ∀ b, b ≠ s → Function.update x a j b = y b := by
@@ -397,18 +397,18 @@ theorem comm_eU_vlet (σ : Site A) (le : Letter ℂ S) {a : S} (ha : le.intersec
             by_cases hba : b = a
             · subst hba; rw [Function.update_self, h2a]
             · rw [Function.update_of_ne hba]; exact h2d b hba hb
-          rw [if_pos ⟨h2b, h2c, e2⟩, if_pos ⟨h1, h2a, h2b, h2c, h2d⟩]
-        · rw [if_neg (fun h => h2 ⟨?_, h.1, h.2.1, fun b hba hbs => ?_⟩), if_neg (fun h => h2 h.2)]
+          rw [ite_eq_left ⟨h2b, h2c, e2⟩, ite_eq_left ⟨h1, h2a, h2b, h2c, h2d⟩]
+        · rw [ite_eq_right (fun h => h2 ⟨?_, h.1, h.2.1, fun b hba hbs => ?_⟩), ite_eq_right (fun h => h2 h.2)]
           · have := h.2.2 a hsa
             rw [Function.update_self] at this
             exact this.symm
           · have := h.2.2 b hbs
             rw [Function.update_of_ne hba] at this
             exact this
-      · rw [if_neg (fun h => h1 h.1), zero_mul, if_neg (fun h => h1 h.1)]
+      · rw [ite_eq_right (fun h => h1 h.1), zero_mul, ite_eq_right (fun h => h1 h.1)]
     · intro w _ hw
       simp only [eU, Matrix.of_apply]
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rintro ⟨_, hwa, hwb⟩
       apply hw
       funext b
@@ -582,8 +582,8 @@ theorem expansion_site_zero_induction : ExpansionByLetterInduction := by
       apply List.sum_eq_zero
       intro q hq
       obtain ⟨τ, hτ, rfl⟩ := List.mem_map.mp hq
-      rw [if_neg (hr τ hτ).1, mul_zero]
-    rw [h0, add_zero, if_pos rfl, one_mul]
+      rw [ite_eq_right (hr τ hτ).1, mul_zero]
+    rw [h0, add_zero, ite_eq_left rfl, one_mul]
     rfl
 
 end Formalism.FourierDecayAlt.P.CutSE

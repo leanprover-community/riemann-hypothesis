@@ -308,15 +308,15 @@ theorem wn_mono (ζ0 : ℂ) (j l a b : ℕ) :
   · simp only [Prod.mk.injEq] at hab
     obtain ⟨rfl, rfl⟩ := hab
     simp [Nat.descFactorial_self, mul_comm]
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     simp only [Prod.mk.injEq, not_and_or] at hab
     have h : (l.descFactorial b : ℂ) * (j.descFactorial a : ℂ) * (if j - a = 0 ∧ l - b = 0 then 1 else 0) = 0 := by
       rcases hab with ha | hb
       · rcases Nat.lt_or_gt_of_ne ha with ha | ha
-        · rw [if_neg (by omega)]; ring
+        · rw [ite_eq_right (by omega)]; ring
         · rw [Nat.descFactorial_eq_zero_iff_lt.mpr ha]; simp
       · rcases Nat.lt_or_gt_of_ne hb with hb | hb
-        · rw [if_neg (by omega)]; ring
+        · rw [ite_eq_right (by omega)]; ring
         · rw [Nat.descFactorial_eq_zero_iff_lt.mpr hb]; simp
     simpa [mul_comm, mul_left_comm, mul_assoc] using h
 
@@ -344,8 +344,8 @@ theorem jet_zero (hU : IsOpen U) (h0 : ζ0 ∈ U) {Λ : (ℂ → ℂ) → E} (h�
       intro i
       rw [wd_eq hU (contDiff_mono ζ0 c.1 c.2).contDiffOn (w i) h0, wn_mono]
       by_cases hi : cnt i = c
-      · rw [if_pos hi, if_pos (by rw [← hi])]
-      · rw [if_neg hi, if_neg (by intro h'; exact hi (by rw [h'])), zero_smul]
+      · rw [ite_eq_left hi, ite_eq_left (by rw [← hi])]
+      · rw [ite_eq_right hi, ite_eq_right (by intro h'; exact hi (by rw [h'])), zero_smul]
     rw [Finset.sum_congr rfl (fun i _ => e1 i), ← Finset.sum_filter, ← Finset.smul_sum] at hc
     have hne : ((c.1.factorial * c.2.factorial : ℕ) : ℂ) ≠ 0 := by
       exact_mod_cast (Nat.mul_pos (Nat.factorial_pos _) (Nat.factorial_pos _)).ne'
@@ -398,8 +398,8 @@ theorem jet_sum {κ : Type*} (s : Finset κ) {Λ : κ → (ℂ → ℂ) → E} (
 theorem jet_ite {Λ : (ℂ → ℂ) → E} (h : JetT U ζ0 Λ) (p : Prop) [Decidable p] :
     JetT U ζ0 (fun f => if p then Λ f else 0) := by
   by_cases hp : p
-  · simpa only [if_pos hp] using h
-  · simpa only [if_neg hp] using (jet_zero' (U := U) (ζ0 := ζ0) (E := E))
+  · simpa only [ite_eq_left hp] using h
+  · simpa only [ite_eq_right hp] using (jet_zero' (U := U) (ζ0 := ζ0) (E := E))
 
 theorem jet_val (A : E) : JetT U ζ0 (fun f => f ζ0 • A) :=
   ⟨Unit, inferInstance, fun _ => [], fun _ => A, fun f _ => by simp [wd]⟩
@@ -445,7 +445,7 @@ def MF (hD : IsOpen D) (f : ℂ → ℂ) : Module.End ℂ (VS k r i D E) :=
   if h : SmoothLev k r i D (fun g => f (zetaL k r z z' i g)) then Mh hD _ h else 0
 
 theorem MF_eq (hD : IsOpen D) {f : ℂ → ℂ} (h : SmoothLev k r i D (fun g => f (zetaL k r z z' i g))) :
-    MF (E := E) z z' hD f = Mh hD _ h := dif_pos h
+    MF (E := E) z z' hD f = Mh hD _ h := dite_eq_left h
 
 theorem ev_MF (hD : IsOpen D) {f : ℂ → ℂ} (h : SmoothLev k r i D (fun g => f (zetaL k r z z' i g)))
     (v : VS k r i D E) {g : Mx k r} (hg : g ∈ Glev k r i ∩ D) :
@@ -532,7 +532,7 @@ theorem exp_Eh (hD : IsOpen D) (hU : IsOpen U) (hDU : ∀ g ∈ D, zetaL k r z z
       Eh hD a b * Mh hD _ (sm_zb z z') - Mh hD _ (sm_zb z z') * Eh hD a b], fun f hf => ?_⟩
   rw [Fin.sum_univ_three]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons,
-    Matrix.tail_cons, wd, Bool.false_eq_true, if_false, if_true]
+    Matrix.tail_cons, wd, Bool.false_eq_true, ite_false, ite_true]
   rw [add_assoc, ← comm_EMF (E := E) z z' hD hU hDU hf a b]
   abel
 
@@ -696,15 +696,15 @@ theorem diagonal_monomial_action (j l : ℕ) :
       if j = 0 ∧ l = 0 then tL k r z z' i Y 1 1 h g else 0 := by
   by_cases hjl : j = 0 ∧ l = 0
   · obtain ⟨rfl, rfl⟩ := hjl
-    rw [fm_zero, if_pos ⟨rfl, rfl⟩]
-  · rw [if_neg hjl, diagonal_monomial_vanish z z' hD hh hg Y j l (by omega)]
+    rw [fm_zero, ite_eq_left ⟨rfl, rfl⟩]
+  · rw [ite_eq_right hjl, diagonal_monomial_vanish z z' hD hh hg Y j l (by omega)]
 
 theorem lower_left_monomial_action (j l : ℕ) :
     tL k r z z' i Y 1 0 (fun y => mono (zetaL k r z z' i g) j l (zetaL k r z z' i y) • h y) g =
       if j = 0 ∧ l = 0 then tL k r z z' i Y 1 0 h g else if j = 1 ∧ l = 0 then -tL k r z z' i Y 1 1 h g else 0 := by
   rcases j with _ | j
   · rcases l with _ | l
-    · rw [fm_zero, if_pos ⟨rfl, rfl⟩]
+    · rw [fm_zero, ite_eq_left ⟨rfl, rfl⟩]
     · rw [fm_succ_l, (peel z z' hD (smooth_mul (sm_mono z z' _ 0 l) hh) hg Y _).2.2.2.2.1, sub_self, zero_smul]
       simp
   · rw [fm_succ_j, (peel z z' hD (smooth_mul (sm_mono z z' _ j l) hh) hg Y _).1, sub_self, zero_smul, zero_sub]
@@ -712,21 +712,21 @@ theorem lower_left_monomial_action (j l : ℕ) :
     · obtain ⟨rfl, rfl⟩ := hjl
       rw [fm_zero]
       simp
-    · rw [diagonal_monomial_vanish z z' hD hh hg Y j l (by omega), if_neg (by omega), if_neg (by omega), neg_zero]
+    · rw [diagonal_monomial_vanish z z' hD hh hg Y j l (by omega), ite_eq_right (by omega), ite_eq_right (by omega), neg_zero]
 
 theorem upper_right_monomial_action (j l : ℕ) :
     tL k r z z' i Y 0 1 (fun y => mono (zetaL k r z z' i g) j l (zetaL k r z z' i y) • h y) g =
       if j = 0 ∧ l = 0 then tL k r z z' i Y 0 1 h g else if j = 0 ∧ l = 1 then tL k r z z' i Y 1 1 h g else 0 := by
   rcases j with _ | j
   · rcases l with _ | l
-    · rw [fm_zero, if_pos ⟨rfl, rfl⟩]
+    · rw [fm_zero, ite_eq_left ⟨rfl, rfl⟩]
     · rw [fm_succ_l, (peel z z' hD (smooth_mul (sm_mono z z' _ 0 l) hh) hg Y _).2.2.2.1, sub_self, zero_smul,
         zero_add]
       by_cases hl : l = 0
       · subst hl
         rw [fm_zero]
         simp
-      · rw [diagonal_monomial_vanish z z' hD hh hg Y 0 l (by omega), if_neg (by omega), if_neg (by omega)]
+      · rw [diagonal_monomial_vanish z z' hD hh hg Y 0 l (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
   · rw [fm_succ_j, (peel z z' hD (smooth_mul (sm_mono z z' _ j l) hh) hg Y _).2.2.1, sub_self, zero_smul]
     simp
 
@@ -743,11 +743,11 @@ theorem mono_at (ζ0 : ℂ) (j l : ℕ) :
   · rw [h1]
     by_cases hj : j = 1 ∧ l = 0
     · obtain ⟨rfl, rfl⟩ := hj; simp
-    · rw [if_neg (by rintro ⟨⟩; exact hj ⟨rfl, rfl⟩), if_neg hj]
+    · rw [ite_eq_right (by rintro ⟨⟩; exact hj ⟨rfl, rfl⟩), ite_eq_right hj]
   · rw [h2]
     by_cases hj : j = 0 ∧ l = 1
     · obtain ⟨rfl, rfl⟩ := hj; simp
-    · rw [if_neg (by rintro ⟨⟩; exact hj ⟨rfl, rfl⟩), if_neg hj]
+    · rw [ite_eq_right (by rintro ⟨⟩; exact hj ⟨rfl, rfl⟩), ite_eq_right hj]
 
 section Main
 
@@ -897,7 +897,7 @@ theorem up_ne {P : M.Par} {l : ℕ} (hl : l ∈ Finset.Icc 1 (P.k - 1)) {ρ ρ' 
   subst e
   have hl' := Finset.mem_Icc.1 hl
   have a := h ⟨l - 1, by omega⟩
-  simp only [Fin.val_mk, Nat.sub_add_cancel hl'.1, if_true] at a
+  simp only [Fin.val_mk, Nat.sub_add_cancel hl'.1, ite_true] at a
   omega
 
 theorem up_unique {P : M.Par} {l : ℕ} {ρ τ τ' : M.Ty P} (h : M.Up P l ρ τ) (h' : M.Up P l ρ τ') : τ = τ' := by
@@ -909,7 +909,7 @@ theorem up_diff {P : M.Par} {l j : ℕ} (hl : l ∈ Finset.Icc 1 (P.k - 1)) {ρ 
   have hl' := Finset.mem_Icc.1 hl
   have a := h ⟨l - 1, by omega⟩
   have b := h' ⟨l - 1, by omega⟩
-  simp only [Fin.val_mk, Nat.sub_add_cancel hl'.1, if_true] at a b
+  simp only [Fin.val_mk, Nat.sub_add_cancel hl'.1, ite_true] at a b
   split_ifs at b with hj
   · omega
   · omega
@@ -1395,7 +1395,7 @@ theorem nFOrder0OfParts : NF.NFOrder0OfParts := by
         have hi' := Finset.mem_sdiff.1 hi
         have hil : i ≠ l := fun e => hi'.2 (by simp [e])
         have hup := Mx3.rhoUp P l a b hUp i hi'.1
-        rw [if_neg hil, add_zero] at hup
+        rw [ite_eq_right hil, add_zero] at hup
         have hne : M.rho P b i ≠ M.rho P b l := rho_ne P hP b hi'.1 hl hil
         intro h0
         apply hne
@@ -1535,9 +1535,9 @@ theorem Pj_mul (ρ σ : M.Ty P) : Pj κ ρ * Pj κ σ = if ρ = σ then Pj κ ρ
   · rw [show dl ρ * dl σ = 0 from ?_, map_zero]; funext x; simp only [dl, Pi.mul_apply, Pi.zero_apply]
     split_ifs <;> simp_all
 
-theorem Pj_idem (ρ : M.Ty P) : Pj κ ρ * Pj κ ρ = Pj κ ρ := by rw [Pj_mul, if_pos rfl]
+theorem Pj_idem (ρ : M.Ty P) : Pj κ ρ * Pj κ ρ = Pj κ ρ := by rw [Pj_mul, ite_eq_left rfl]
 
-theorem Pj_orth {ρ σ : M.Ty P} (h : ρ ≠ σ) : Pj κ ρ * Pj κ σ = 0 := by rw [Pj_mul, if_neg h]
+theorem Pj_orth {ρ σ : M.Ty P} (h : ρ ≠ σ) : Pj κ ρ * Pj κ σ = 0 := by rw [Pj_mul, ite_eq_right h]
 
 theorem sum_Pj : ∑ ρ, Pj κ ρ = 1 := by
   unfold Pj; rw [← map_sum, ← map_one κ]; congr 1; funext x; simp [dl]
@@ -1618,7 +1618,7 @@ theorem P_SS_P (l : ℕ) (σ ρ : M.Ty P) :
   rw [Pj, this, mul_assoc, kap_Pj]; split_ifs <;> simp
 
 theorem supp_SS (l : ℕ) : Supp d.κ (ee l) (d.SS l) := by
-  intro ρ σ h; rw [P_SS_P hd, if_neg]; exact fun h' => h (off_of_up h')
+  intro ρ σ h; rw [P_SS_P hd, ite_eq_right]; exact fun h' => h (off_of_up h')
 
 theorem P_SSs_P (l : ℕ) (σ ρ : M.Ty P) :
     Pj d.κ σ * star (d.SS l) * Pj d.κ ρ = if M.Up P l σ ρ then Pj d.κ σ * star (d.SS l) else 0 := by
@@ -1627,7 +1627,7 @@ theorem P_SSs_P (l : ℕ) (σ ρ : M.Ty P) :
   rw [this]; split_ifs <;> simp [star_mul, Pj_star hd]
 
 theorem supp_SSs (l : ℕ) : Supp d.κ (-ee l) (star (d.SS l)) := by
-  intro ρ σ h; rw [P_SSs_P hd, if_neg]; intro h'; exact h (off_neg (off_of_up h'))
+  intro ρ σ h; rw [P_SSs_P hd, ite_eq_right]; intro h'; exact h (off_neg (off_of_up h'))
 
 theorem supp_kcomm {X : A} (hX : ∀ f, Commute (d.κ f) X) : Supp d.κ 0 X := supp_comm d.κ hX
 
@@ -1715,11 +1715,11 @@ theorem term_21_12 (Y Y' : ℂ) (ρ : M.Ty P) (i m : ℕ) (hi : i ∈ Icc 1 (P.k
       Pj d.κ ρ * d.SS i * Pj d.κ τ * star (d.SS m) * Pj d.κ ρ by simp only [mul_assoc], P_SS_P hd]
     by_cases him : i = m
     · subst him
-      rw [if_pos hτ, if_pos rfl, dif_pos h]
+      rw [ite_eq_left hτ, ite_eq_left rfl, dite_eq_left h]
       congr 1
       rw [show d.SS i * Pj d.κ τ * star (d.SS i) * Pj d.κ ρ = d.SS i * (Pj d.κ τ * star (d.SS i) * Pj d.κ ρ) by
         simp only [mul_assoc], ← hs, ← mul_assoc]
-    · rw [if_neg (fun h1 => him (ee_ne hm hi (off_of_up hτ) (off_of_up h1))), if_neg him]; simp
+    · rw [ite_eq_right (fun h1 => him (ee_ne hm hi (off_of_up hτ) (off_of_up h1))), ite_eq_right him]; simp
   · have hs : star (d.SS m) * Pj d.κ ρ = 0 := left_none hd (supp_SSs hd m) (fun τ hτ => h ⟨τ, by
       have := off_neg hτ; rw [neg_neg] at this; exact up_of_off this⟩)
     rw [hs]; split_ifs <;> simp
@@ -1732,7 +1732,7 @@ theorem blk_21_12 (Y Y' : ℂ) (ρ : M.Ty P) :
   simp only [Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_congr rfl fun m hm => Finset.sum_congr rfl fun i hi => term_21_12 hd Y Y' ρ i m hi hm]
   simp only [Finset.sum_ite_eq']
-  exact Finset.sum_congr rfl fun m hm => if_pos hm
+  exact Finset.sum_congr rfl fun m hm => ite_eq_left hm
 
 theorem term_12_21 (Y Y' : ℂ) (ρ : M.Ty P) (m i : ℕ) (hm : m ∈ Icc 1 (P.k - 1)) (hi : i ∈ Icc 1 (P.k - 1)) :
     Pj d.κ ρ * (d.κ (fun ρ => M.xEx P {m} ρ Y) * star (d.SS m) * (d.SS i * d.κ (fun ρ => M.xEx P {i} ρ Y'))) *
@@ -1760,7 +1760,7 @@ theorem blk_12_21 (Y Y' : ℂ) (ρ : M.Ty P) :
   simp only [Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun i hi => term_12_21 hd Y Y' ρ i x hi hx]
   simp only [Finset.sum_ite_eq']
-  exact Finset.sum_congr rfl fun m hm => if_pos hm
+  exact Finset.sum_congr rfl fun m hm => ite_eq_left hm
 
 end
 
@@ -1787,13 +1787,13 @@ theorem xEx_below {l : ℕ} {τ ρ : M.Ty P} (h : M.Up P l τ ρ) (Y : ℂ) :
     M.xEx P {l} τ Y = ∏ i ∈ (Icc 1 (P.k - 1)).erase l, (Y + (M.rho P ρ i : ℂ)) := by
   unfold M.xEx; rw [Finset.sdiff_singleton_eq_erase]
   refine Finset.prod_congr rfl fun i hi => ?_
-  rw [Finset.mem_erase] at hi; rw [rho_up h hi.2, if_neg hi.1, add_zero]
+  rw [Finset.mem_erase] at hi; rw [rho_up h hi.2, ite_eq_right hi.1, add_zero]
 
 theorem xEx_below_zero {l m : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hlm : l ≠ m) {τ ρ : M.Ty P} (h : M.Up P m τ ρ) :
     M.xEx P {m} τ (-(M.rho P ρ l : ℂ)) = 0 := by
   unfold M.xEx
   refine Finset.prod_eq_zero (i := l) (by simp [Finset.mem_sdiff, hl, hlm]) ?_
-  rw [rho_up h hl, if_neg hlm]; push_cast; ring
+  rw [rho_up h hl, ite_eq_right hlm]; push_cast; ring
 
 variable {d : Q.NFData P A} (hd : Hyp d)
 include hd
@@ -1816,7 +1816,7 @@ theorem projection_lower_sum_zero (Y : ℂ) (ρ : M.Ty P) : Pj d.κ ρ * d.weigh
   unfold Q.NFData.weightedSumBis
   rw [Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_eq_zero fun i hi => ?_
-  rw [← mul_assoc, mul_assoc, kap_Pj, mul_smul_comm, P_SS_P hd, if_neg (fun h => ee_not_self hi ρ (off_of_up h)),
+  rw [← mul_assoc, mul_assoc, kap_Pj, mul_smul_comm, P_SS_P hd, ite_eq_right (fun h => ee_not_self hi ρ (off_of_up h)),
     smul_zero]
 
 theorem ssDown (hP : P.OK) (hS : Wd.IsStart d.QQ (M.qC P)) {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) :
@@ -1849,7 +1849,7 @@ theorem ssDown (hP : P.OK) (hS : Wd.IsStart d.QQ (M.qC P)) {l : ℕ} (hl : l ∈
         Pj d.κ ρ * d.weightedSumBis Y * ((d.L.GG * d.x (Y + 1) * d.L.m0 (Y + 1)) * Pj d.κ ρ) by simp only [mul_assoc],
         ← comm_Pj hd (kappa_commute_upper_diagonal hd · (Y + 1)) ρ, ← mul_assoc, projection_lower_sum_zero hd, zero_mul]
     rw [z1, z2, z3, zero_add, zero_add, zero_add, blk_21_12 hd, Finset.sum_eq_single l] at e1
-    · rw [dif_pos ⟨τ, hτ⟩] at e1
+    · rw [dite_eq_left ⟨τ, hτ⟩] at e1
       have hc := (⟨τ, hτ⟩ : ∃ τ, M.Up P l τ ρ).choose_spec
       have hτ' : (⟨τ, hτ⟩ : ∃ τ, M.Up P l τ ρ).choose = τ := up_inj hc hτ
       rw [hτ', xEx_below hτ, xEx_below hτ] at e1
@@ -1858,13 +1858,13 @@ theorem ssDown (hP : P.OK) (hS : Wd.IsStart d.QQ (M.qC P)) {l : ℕ} (hl : l ∈
       set D2 : ℝ := ∏ i ∈ (Icc 1 (P.k - 1)).erase l, (M.rho P ρ i - M.rho P ρ l + 1) with hD2
       have hN : M.Nrm P l τ = -I.qpoly P.k P.T P.T' P.u P.u' (-M.rho P ρ l) / (D2 * D1) := by
         unfold M.Nrm
-        have e3 : M.rho P τ l = M.rho P ρ l - 1 := by rw [rho_up hτ hl, if_pos rfl]; ring
+        have e3 : M.rho P τ l = M.rho P ρ l - 1 := by rw [rho_up hτ hl, ite_eq_left rfl]; ring
         rw [e3, hD1, hD2, show -(M.rho P ρ l - 1) - 1 = -M.rho P ρ l by ring]
         congr 2
         · refine Finset.prod_congr rfl fun i hi => ?_
-          rw [Finset.mem_erase] at hi; rw [rho_up hτ hi.2, if_neg hi.1]; ring
+          rw [Finset.mem_erase] at hi; rw [rho_up hτ hi.2, ite_eq_right hi.1]; ring
         · refine Finset.prod_congr rfl fun i hi => ?_
-          rw [Finset.mem_erase] at hi; rw [rho_up hτ hi.2, if_neg hi.1]; ring
+          rw [Finset.mem_erase] at hi; rw [rho_up hτ hi.2, ite_eq_right hi.1]; ring
       have hDne : D2 * D1 ≠ 0 := by
         intro h0; rw [hN, h0, div_zero] at hpos; exact lt_irrefl _ hpos
       have hq : M.qC P Y = (I.qpoly P.k P.T P.T' P.u P.u' (-M.rho P ρ l) : ℂ) := by
@@ -1918,11 +1918,11 @@ theorem box_down {δ : ℕ → ℤ} {ρ σ : M.Ty P} (h : Off δ ρ σ) {l : ℕ
   refine ⟨fun i => if hi : (i : ℕ) + 1 = l then ⟨(ρ i : ℕ) - 1, by have := (ρ i).isLt; omega⟩ else ρ i, ?_⟩
   intro i
   by_cases hi : (i : ℕ) + 1 = l
-  · simp only [dif_pos hi, if_pos hi]
+  · simp only [dite_eq_left hi, ite_eq_left hi]
     have e := h i
     have e2 : δ ((i : ℕ) + 1) = -1 := by rw [hi]; exact hδ
     omega
-  · simp [dif_neg hi, if_neg hi]
+  · simp [dite_eq_right hi, ite_eq_right hi]
 
 theorem box_up {δ : ℕ → ℤ} {ρ σ : M.Ty P} (h : Off δ ρ σ) {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hδ : δ l = 1) :
     ∃ τ, M.Up P l ρ τ := by
@@ -1931,8 +1931,8 @@ theorem box_up {δ : ℕ → ℤ} {ρ σ : M.Ty P} (h : Off δ ρ σ) {l : ℕ} 
       have := (σ i).isLt; omega⟩ else ρ i, ?_⟩
   intro i
   by_cases hi : (i : ℕ) + 1 = l
-  · simp only [dif_pos hi, if_pos hi]
-  · simp [dif_neg hi, if_neg hi]
+  · simp only [dite_eq_left hi, ite_eq_left hi]
+  · simp [dite_eq_right hi, ite_eq_right hi]
 
 theorem gap1 (hP : P.OK) (π : M.Ty P) {i : ℕ} (hi : i ∈ Icc 1 (P.k - 1)) (hi' : i + 1 ∈ Icc 1 (P.k - 1)) :
     M.rho P π (i + 1) + 1 ≤ M.rho P π i := by
@@ -2042,12 +2042,12 @@ theorem blk_mixed1 (u v : ℂ) :
   · rw [term_up hd]
   · intro m _ hml
     rw [term_up hd, supp_mul d.κ (supp_SSs hd m) (supp_SS hd j) ρ σ, smul_zero]
-    exact mixed_not_off_l hd hl hj hjl hσ (by simp only [Pi.add_apply, Pi.neg_apply, ee, if_neg hjl, if_neg (Ne.symm hml)]; omega)
+    exact mixed_not_off_l hd hl hj hjl hσ (by simp only [Pi.add_apply, Pi.neg_apply, ee, ite_eq_right hjl, ite_eq_right (Ne.symm hml)]; omega)
   · intro h'; exact absurd hl h'
   · intro i _ hij
     refine Finset.sum_eq_zero fun m _ => ?_
     rw [term_up hd, supp_mul d.κ (supp_SSs hd m) (supp_SS hd i) ρ σ, smul_zero]
-    exact mixed_not_off_j hd hl hj hjl hσ (by simp only [Pi.add_apply, Pi.neg_apply, ee, if_neg (Ne.symm hij)]; split_ifs <;> omega)
+    exact mixed_not_off_j hd hl hj hjl hσ (by simp only [Pi.add_apply, Pi.neg_apply, ee, ite_eq_right (Ne.symm hij)]; split_ifs <;> omega)
   · intro h'; exact absurd hj h'
 
 theorem blk_mixed2 {τ : M.Ty P} (hτ : M.Up P l τ ρ) (u v : ℂ) :
@@ -2117,15 +2117,15 @@ theorem mixed_scalar (hP : P.OK) {l j : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hj : 
   intro u v
   have hρi : ∀ i ∈ Icc 1 (P.k - 1), M.rho P ρ i = M.rho P τ i + if i = l then 1 else 0 := fun i hi => rho_up hτ hi
   have hσi : ∀ i ∈ Icc 1 (P.k - 1), M.rho P σ i = M.rho P τ i + if i = j then 1 else 0 := fun i hi => rho_up hτσ hi
-  have sl : M.rho P σ l = M.rho P τ l := by rw [hσi l hl, if_neg (Ne.symm hjl), add_zero]
-  have sj : M.rho P σ j = M.rho P τ j + 1 := by rw [hσi j hj, if_pos rfl]
-  have rl : M.rho P ρ l = M.rho P τ l + 1 := by rw [hρi l hl, if_pos rfl]
+  have sl : M.rho P σ l = M.rho P τ l := by rw [hσi l hl, ite_eq_right (Ne.symm hjl), add_zero]
+  have sj : M.rho P σ j = M.rho P τ j + 1 := by rw [hσi j hj, ite_eq_left rfl]
+  have rl : M.rho P ρ l = M.rho P τ l + 1 := by rw [hρi l hl, ite_eq_left rfl]
   have A1 := xEx_split l j hj hjl σ u
   have A2 := xEx_split l j hj hjl τ u
   have A3 := xEx_split j l hl (Ne.symm hjl) ρ v
   have A4 := xEx_split j l hl (Ne.symm hjl) τ v
-  rw [prod_shift (τ := τ) (fun i hi h1 h2 => by rw [hσi i hi, if_neg h2, add_zero])] at A1
-  rw [prod_shift (τ := τ) (fun i hi h1 h2 => by rw [hρi i hi, if_neg h2, add_zero])] at A3
+  rw [prod_shift (τ := τ) (fun i hi h1 h2 => by rw [hσi i hi, ite_eq_right h2, add_zero])] at A1
+  rw [prod_shift (τ := τ) (fun i hi h1 h2 => by rw [hρi i hi, ite_eq_right h2, add_zero])] at A3
   set Qu := ∏ i ∈ ((Icc 1 (P.k - 1)).erase l).erase j, (u + (M.rho P τ i : ℂ)) with hQu
   set Qv := ∏ i ∈ ((Icc 1 (P.k - 1)).erase j).erase l, (v + (M.rho P τ i : ℂ)) with hQv
   have hu : u = -(M.rho P τ l : ℂ) := by simp only [u, sl]
@@ -2145,7 +2145,7 @@ theorem mixed_scalar (hP : P.OK) {l j : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hj : 
     rw [hQv]; refine Finset.prod_ne_zero_iff.2 fun i hi => ?_
     simp only [Finset.mem_erase] at hi
     have := rho_ne hP σ hi.2.2 hj hi.2.1
-    rw [hσi i hi.2.2, if_neg hi.2.1, add_zero, sj] at this
+    rw [hσi i hi.2.2, ite_eq_right hi.2.1, add_zero, sj] at this
     rw [hv]; intro h; apply this; exact_mod_cast (by push_cast; linear_combination h : ((M.rho P τ i : ℝ) : ℂ) = ((M.rho P τ j + 1 : ℝ) : ℂ))
   refine ⟨?_, ?_, ?_⟩
   · rw [A1, A2, A3, A4, sj, rl, hu, hv]; push_cast; ring
@@ -2214,10 +2214,10 @@ theorem comm_scalar (hP : P.OK) {l j : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (hj : j
   have eA := xEx_split j l hl (Ne.symm hjl) ρ (-(M.rho P ρ j : ℂ))
   have e1 := xEx_split j l hl (Ne.symm hjl) τl (-(M.rho P ρ j : ℂ))
   have e2 := xEx_split l j hj hjl τj (-(M.rho P ρ l : ℂ))
-  rw [prod_shift (τ := ρ) (fun i hi h1 h2 => by rw [hli i hi, if_neg h2, add_zero])] at e1
-  rw [prod_shift (τ := ρ) (fun i hi h1 h2 => by rw [hji i hi, if_neg h2, add_zero])] at e2
+  rw [prod_shift (τ := ρ) (fun i hi h1 h2 => by rw [hli i hi, ite_eq_right h2, add_zero])] at e1
+  rw [prod_shift (τ := ρ) (fun i hi h1 h2 => by rw [hji i hi, ite_eq_right h2, add_zero])] at e2
   rw [← hB1] at eA e1; rw [← hB2] at eC e2
-  rw [hli l hl, if_pos rfl] at e1; rw [hji j hj, if_pos rfl] at e2
+  rw [hli l hl, ite_eq_left rfl] at e1; rw [hji j hj, ite_eq_left rfl] at e2
   have nB1 : B1 ≠ 0 := by
     rw [hB1]; refine Finset.prod_ne_zero_iff.2 fun i hi => ?_
     simp only [Finset.mem_erase] at hi
@@ -2480,7 +2480,7 @@ theorem projection_upper_sum_zero (Y : ℂ) (ρ : M.Ty P) : Pj d.κ ρ * d.S12 Y
   unfold Q.NFData.S12
   rw [Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_eq_zero fun i hi => ?_
-  rw [← mul_assoc, Pj_kap, smul_mul_assoc, smul_mul_assoc, P_SSs_P hd, if_neg (fun h => ee_not_self hi ρ (off_of_up h)),
+  rw [← mul_assoc, Pj_kap, smul_mul_assoc, smul_mul_assoc, P_SSs_P hd, ite_eq_right (fun h => ee_not_self hi ρ (off_of_up h)),
     smul_zero]
 
 theorem projection_quartic_zero (Y : ℂ) (ρ : M.Ty P) : Pj d.κ ρ * d.S4 Y * Pj d.κ ρ = 0 := by

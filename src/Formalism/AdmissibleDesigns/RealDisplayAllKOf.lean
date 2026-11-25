@@ -1083,7 +1083,7 @@ theorem clause5Row : StatClause5Row := by
     rw [e1, map_add (f := _), map_add (f := _), hπ, hv]
   have e2 : clsRow D v (fun g => π (a g)) = Submodule.Quotient.mk ⟨_, ht⟩ := by
     unfold clsRow
-    exact dif_pos ht
+    exact dite_eq_left ht
   rw [e2]
   refine clause5Gen D _ u hu (ReciprocityTheory.ChartRestriction.T2.contAction_quotient hT D.T D.stT) hk b hb _ ht c hc fun g k => ?_
   have h4 := hcob g k

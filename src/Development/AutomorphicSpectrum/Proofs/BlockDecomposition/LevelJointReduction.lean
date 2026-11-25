@@ -60,7 +60,7 @@ theorem selfDualVol : PositivityTheory.SiegelWeilFormula.Gunr.SelfDualVol := by
       simp [hm]
     · rw [Set.indicator_of_notMem (s := (L : Set V)) hy]
       have h2 := (hann y).not.2 hy
-      push_neg at h2
+      push Not at h2
       obtain ⟨x0, hx0, hne⟩ := h2
       have h3 : ∫ x, Φ x * χ x y ∂μ = χ x0 y * ∫ x, Φ x * χ x y ∂μ := by
         calc ∫ x, Φ x * χ x y ∂μ = ∫ x, (fun x => Φ x * χ x y) (x0 + x) ∂μ :=

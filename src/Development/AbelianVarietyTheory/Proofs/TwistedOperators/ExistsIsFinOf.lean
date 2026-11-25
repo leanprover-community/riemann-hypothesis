@@ -72,7 +72,7 @@ theorem elt_succ (t : T) (w : Pl D.host.E) (β : Cosets (G := locGrid G t w) one
     (repsAt G t w).elt β ((locGrid G t w).m, i.1 + 1) = (repsAt G t w).rep i (β i) := by
   simp only [Reps.elt]
   rw [onColumn_apply]
-  simp only [dif_pos i.2]
+  simp only [dite_eq_left i.2]
 
 end GlobalTheory.RowRep
 

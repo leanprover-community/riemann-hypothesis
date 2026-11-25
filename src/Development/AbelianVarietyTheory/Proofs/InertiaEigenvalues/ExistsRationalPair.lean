@@ -177,7 +177,7 @@ theorem exists_tateIsoQ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : 
   let ev : ∀ n, D.La → QkPt P.D.toPre C n := fun n v =>
     if hn : 0 < n then Classical.choose (hpt n hn v) else GlobalTheory.TorusExt.qkZero hB C n
   have hev : ∀ n (hn : 0 < n) v, P.ToA C n (ev n v) (X n v) := fun n hn v => by
-    simp only [ev, dif_pos hn]
+    simp only [ev, dite_eq_left hn]
     exact Classical.choose_spec (hpt n hn v)
   refine ⟨⟨J.ζ, J.ζ_prim, J.ζ_pow, ev, ?_, ?_, ?_, ?_, ?_, ?_⟩, rfl, ?_⟩
   · intro n hn a b

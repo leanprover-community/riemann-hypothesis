@@ -92,7 +92,7 @@ theorem eigenFrameDual : EigenFrameDual.{u, v} := by
     by_cases hc : φ = τ₀
     · subst hc
       simp [j, j₀]
-    · rw [if_neg hc, if_neg]
+    · rw [ite_eq_right hc, ite_eq_right]
       intro hj
       apply hc
       have h2 : τ₀.toRatAlgHom = φ.toRatAlgHom := e.symm.injective hj

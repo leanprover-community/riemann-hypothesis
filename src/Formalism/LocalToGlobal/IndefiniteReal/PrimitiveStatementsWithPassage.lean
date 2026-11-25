@@ -223,13 +223,13 @@ theorem relMat_op_key (σ : K →+* ℂ) {E : Type} [AddCommGroup E] [Module ℂ
   have hsol : ∀ e ∈ LinearMap.range f, f (solve f e) = e := by
     rintro e ⟨y, rfl⟩
     have h : ∃ y', f y' = f y := ⟨y, rfl⟩
-    simp only [solve, dif_pos h]
+    simp only [solve, dite_eq_left h]
     exact h.choose_spec
   have hk : ∀ i k, σ (kOf σ (relMat f (S ∘ₗ f) i k)) = relMat f (S ∘ₗ f) i k := by
     intro i k
     obtain ⟨a, ha⟩ := hr i k
     have h : ∃ a : K, σ a = relMat f (S ∘ₗ f) i k := ⟨a, ha⟩
-    simp only [kOf, dif_pos h]
+    simp only [kOf, dite_eq_left h]
     exact h.choose_spec
   have hc : cpt σ ((kMat σ (relMat f (S ∘ₗ f))).mulVec x) = (relMat f (S ∘ₗ f)).mulVec (cpt σ x) := by
     funext i
@@ -484,12 +484,12 @@ variable {eV : ∀ t, (Fin ((fc X.zs).Df1.nV t) → K) →ₗ[K] A.FR t} {sEE : 
 
 theorem zetaOf_spec (u : (fc X.zs).Dc.Mem) (t : Bs.Tup) (h : ∃ k : K, Bs.v0.embedding k = d.ζC u t) :
     Bs.v0.embedding (X.zetaOf d u t) = d.ζC u t := by
-  simp only [zetaOf, dif_pos h]
+  simp only [zetaOf, dite_eq_left h]
   exact h.choose_spec
 
 theorem zetaOf_not (u : (fc X.zs).Dc.Mem) (t : Bs.Tup) (h : ¬ ∃ k : K, Bs.v0.embedding k = d.ζC u t) :
     X.zetaOf d u t = 1 := by
-  simp only [zetaOf, dif_neg h]
+  simp only [zetaOf, dite_eq_right h]
 
 end Ident
 

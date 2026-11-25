@@ -322,7 +322,7 @@ theorem exists_large_derSeries : ∃ A C r₀ : ℝ, 1 ≤ A ∧ 0 < C ∧ 0 < r
   have hD0 : ‖derSeries (fun n : ℕ => χ (n : ZMod q)) 0 s‖ ≤ 1 / r + C₁ := by
     refine (norm_derSeries_zero_le _ (fun n => χ.norm_le_one _) (1 + r) τ (by linarith)).trans ?_
     obtain ⟨hf, -, h⟩ := H 1 1 (1 + r) 0 0 (by linarith) (by linarith)
-    rw [finsum_mem_eq_finite_toFinset_sum _ hf, if_pos rfl] at h
+    rw [finsum_mem_eq_finite_toFinset_sum _ hf, ite_eq_left rfl] at h
     have h1 := (Complex.re_le_norm _).trans h
     rw [Complex.add_re, Complex.sub_re, Complex.re_sum] at h1
     have h2 : 0 ≤ ∑ w ∈ hf.toFinset, ((ord (1 : DirichletCharacter ℂ 1) w : ℂ) /

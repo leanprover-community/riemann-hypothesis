@@ -259,7 +259,7 @@ theorem wordMap_permMat {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n
   refine Finset.sum_congr rfl fun K _ => ?_
   rw [Finset.sum_eq_single (K ∘ π)]
   · simp
-  · intro I _ hI; rw [if_neg hI, zero_smul]
+  · intro I _ hI; rw [ite_eq_right hI, zero_smul]
   · simp
 
 theorem exists_symb {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (d : ℕ)

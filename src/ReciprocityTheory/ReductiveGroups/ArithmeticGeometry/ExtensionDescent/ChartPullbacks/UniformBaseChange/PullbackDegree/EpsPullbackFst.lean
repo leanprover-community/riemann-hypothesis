@@ -29,10 +29,4 @@ end Adj
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R']
 
-section Kappa
-
-variable (φ : R →+* R') (hφ : Function.Injective φ)
-
-end Kappa
-
 end ReciprocityTheory.ChartRestriction.G.Out.UBC

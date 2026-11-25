@@ -73,8 +73,6 @@ section -- clump:auto
 
 open CategoryTheory Limits AlgebraicGeometry
 
-theorem _root_.GlobalTheory.T.freeSch_hom_ext_of_etale_covering : ∀ (R : Type) [CommRing R] {S : Scheme.{0}} (F : GlobalTheory.EtC.Shv R) (φ ψ : GlobalTheory.EtC.Tr.freeSch R S ⟶ F) (T : Sieve S), T ∈ Scheme.etaleTopology S → (∀ ⦃V : Scheme.{0}⦄ (v : V ⟶ S), T v → (GlobalTheory.EtC.free R).map (yoneda.map v) ≫ φ = (GlobalTheory.EtC.free R).map (yoneda.map v) ≫ ψ) → φ = ψ := by
-  first | (exact @GlobalTheory.EtC.Tr.free_hom_ext_of_covering)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.FreeHomExtOfCoveringStatement =====
@@ -228,7 +226,6 @@ private lemma injective_of_pullback_lift_apply_eq_of_isIso {Z X V : Scheme.{0}} 
     rintro k _ rfl
     rfl
   exact key _ _ hjj
-
 
 open CategoryTheory Limits AlgebraicGeometry in
 theorem _root_.GlobalTheory.EtC.Tr.sum_sections_eq_of_two_splittings : ∀ (R : Type) [CommRing R] {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X}
@@ -840,7 +837,7 @@ theorem existsUnique_isTransfer {Z X : Scheme.{0}} (f : Z ⟶ X) [IsFinite f] [E
     rwa [Category.comp_id] at this
   refine ⟨t, ?_, fun t' ht' => ?_⟩
   · intro S x m s hs hiso
-    refine GlobalTheory.T.freeSch_hom_ext_of_etale_covering R (freeSch R Z) _ _ _ (_root_.GlobalTheory.EtC.Tr.splitSieve_mem f x) (fun V v hv => ?_)
+    refine GlobalTheory.EtC.Tr.free_hom_ext_of_covering R (freeSch R Z) _ _ _ (_root_.GlobalTheory.EtC.Tr.splitSieve_mem f x) (fun V v hv => ?_)
     obtain ⟨m', s', hs'⟩ := splits_of_splitSieve hv
     have hvx : splitSieve f (𝟙 X) (v ≫ x) := ⟨V, 𝟙 V, v ≫ x, (show Splits f ((v ≫ x) ≫ 𝟙 X) by rw [Category.comp_id]; exact ⟨m', s', hs'⟩), Category.id_comp _⟩
     have h1 := _root_.GlobalTheory.EtC.Tr.splitBy_baseChange ⟨hs, hiso⟩ v

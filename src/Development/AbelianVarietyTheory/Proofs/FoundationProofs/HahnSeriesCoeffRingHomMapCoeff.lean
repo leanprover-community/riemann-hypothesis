@@ -115,12 +115,12 @@ theorem coeff_pow_char (p : ℕ) [hp : Fact p.Prime] [CharP R p] (x : HahnSeries
   set b := x - a - c with hb_def
   have hx : x = a + c + b := by rw [hb_def]; abel
   have ha : ∀ t, a.coeff t ≠ 0 → t < N := by
-    intro t ht; by_contra h; push_neg at h; exact ht (HahnSeries.coeff_truncLT_of_le h x)
+    intro t ht; by_contra h; push Not at h; exact ht (HahnSeries.coeff_truncLT_of_le h x)
   have hb : ∀ t, b.coeff t ≠ 0 → N < t := by
-    intro t ht; by_contra h; push_neg at h; apply ht
+    intro t ht; by_contra h; push Not at h; apply ht
     rw [hb_def, HahnSeries.coeff_sub, HahnSeries.coeff_sub, ha_def, hc_def, HahnSeries.coeff_truncLT]
     rcases h.lt_or_eq with h | h
-    · rw [if_pos h, HahnSeries.coeff_single_of_ne h.ne]; simp
+    · rw [ite_eq_left h, HahnSeries.coeff_single_of_ne h.ne]; simp
     · subst h; simp
   rw [show x ^ p = (a + c + b) ^ p by rw [← hx], add_pow_char, add_pow_char, HahnSeries.coeff_add, HahnSeries.coeff_add]
   have h1 : (a ^ p).coeff n = 0 := by

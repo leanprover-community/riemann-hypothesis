@@ -877,9 +877,9 @@ theorem sign_off (q : ℕ) (i : Fin (q + 2)) (k : Fin (q + 1)) :
   simp only [val_succAbove, val_predAbove, Fin.val_castSucc]
   by_cases h : (k : ℕ) < i
   · obtain ⟨m, hm⟩ : ∃ m, (i : ℕ) = m + 1 := ⟨(i : ℕ) - 1, by omega⟩
-    rw [if_pos h, if_pos h, if_pos (by omega), hm]
+    rw [ite_eq_left h, ite_eq_left h, ite_eq_left (by omega), hm]
     simp [pow_add, pow_succ]
-  · rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+  · rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
     simp [pow_add, pow_succ]
 
 def fwd (q : ℕ) (p : Fin (q + 2) × Fin (q + 1)) : Fin (q + 1) × Fin (q + 2) :=
@@ -1249,9 +1249,9 @@ theorem hopfLeSt : CxSt → DictSt → LowSt → HopfLeSt := by
     rw [LinearMap.comp_apply, hΛv i _ (hdd y), hΦd, map_zero]
     rfl
   have hΛ1 : ∀ i, Λ i (xt i) = 1 := fun i ↦ by
-    rw [hΛv i _ (hxc i), hΦx, hl, if_pos rfl]
+    rw [hΛv i _ (hxc i), hΦx, hl, ite_eq_left rfl]
   have hΛn : ∀ i j, i ≠ j → Λ i (xt j) = 0 := fun i j h ↦ by
-    rw [hΛv i _ (hxc j), hΦx, hl, if_neg h]
+    rw [hΛv i _ (hxc j), hΦx, hl, ite_eq_right h]
   have hpr : ∀ i, ∃ u, pulln π 1 (pulln (boxL F) 1 (xt i) + pulln (boxR F) 1 (xt i)) - pulln m 1 (xt i) =
       dn G 0 u := fun i ↦ by
     have h := hprim (x i)

@@ -918,8 +918,8 @@ variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]}
 theorem qAll_const {r : ℝ} {c : ℂ} (hc : Sz l lam r c) : QAll (Sz l lam r) N fun _ => c := by
   refine ⟨_, (_root_.GlobalTheory.QFam.hasQ_linear N).2.2.2.1 c, fun n => ?_⟩
   by_cases h : n = 0
-  · simpa only [h, if_true] using hc
-  · simpa only [h, if_false] using (_root_.GlobalTheory.QFam.SzSum.sz_ring l lam).1 r
+  · simpa only [h, ite_true] using hc
+  · simpa only [h, ite_false] using (_root_.GlobalTheory.QFam.SzSum.sz_ring l lam).1 r
 
 theorem qAll_mono {r s : ℝ} {f : ℍ → ℂ} (h : r ≤ s) (hf : QAll (Sz l lam r) N f) : QAll (Sz l lam s) N f := by
   obtain ⟨a, ha, hs⟩ := hf

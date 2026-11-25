@@ -66,8 +66,8 @@ theorem UpperTheory.Gal.productCup_of_system.edgeB_of :
   obtain ⟨γ, hγ, hγ0, hγI⟩ := hEI (Fin (d + 1)) (DR ℂ K') G d y
     (by rw [hcech]; exact hy) (by rw [hmix]; exact hB)
   let A : Finset (Two d) → Submodule ℂ (DR ℂ K') := fun s => if (lft s).Nonempty then G s else ⊥
-  have hAn : ∀ s, (lft s).Nonempty → A s = G s := fun s hs => if_pos hs
-  have hAe : ∀ s, ¬ (lft s).Nonempty → A s = ⊥ := fun s hs => if_neg hs
+  have hAn : ∀ s, (lft s).Nonempty → A s = G s := fun s hs => ite_eq_left hs
+  have hAe : ∀ s, ¬ (lft s).Nonempty → A s = ⊥ := fun s hs => ite_eq_right hs
   have hWOk : WOk A (fun _ => 1) := by
     refine ⟨fun _ _ => Commute.one_left _, ?_⟩
     intro s i _ m hm
@@ -111,20 +111,20 @@ theorem UpperTheory.Gal.productCup_of_system.edgeB_of :
     · refine acx_C'.2 fun s => ?_
       have h1 := cech_C'.1 hγ.1 s
       by_cases hc : (s.card : ℤ) = (d : ℤ) + 1
-      · rw [if_pos hc]
+      · rw [ite_eq_left hc]
         by_cases hs : (lft s).Nonempty
         · rw [hAn _ hs]
           have hne : s.Nonempty := by
             rw [← Finset.card_pos]
             omega
-          rw [if_pos ⟨hne, hc⟩] at h1
+          rw [ite_eq_left ⟨hne, hc⟩] at h1
           exact h1
         · rw [hAe _ hs, Submodule.mem_bot]
           have hl : lft s = ∅ := Finset.not_nonempty_iff_eq_empty.1 hs
           have := hγ0 (rgt s)
           rwa [← hl, (hU _ _ (DR ℂ K') (fun _ => 1) (fun _ => 0) ∅ ∅).2.2.2.2 s] at this
-      · rw [if_neg hc]
-        rw [if_neg (fun h => hc h.2)] at h1
+      · rw [ite_eq_right hc]
+        rw [ite_eq_right (fun h => hc h.2)] at h1
         exact h1
     · show wd _ γ = 0
       rw [hdelta]
@@ -146,16 +146,16 @@ theorem UpperTheory.Gal.productCup_of_system.edgeB_of :
     rw [cu] at h1
     simp only [Finset.card_empty, add_zero] at h1
     by_cases hb : b.Nonempty ∧ (b.card : ℤ) = (d : ℤ) - 1 + 1
-    · rw [if_pos hb]
+    · rw [ite_eq_left hb]
       have hc : (b.card : ℤ) = (d : ℤ) + 1 - 1 := by omega
-      rw [if_pos hc, hAn _ (by rw [lu]; exact hb.1), hG0] at h1
+      rw [ite_eq_left hc, hAn _ (by rw [lu]; exact hb.1), hG0] at h1
       exact h1
-    · rw [if_neg hb]
+    · rw [ite_eq_right hb]
       by_cases hc : (b.card : ℤ) = (d : ℤ) + 1 - 1
       · have hne : ¬ b.Nonempty := fun h => hb ⟨h, by omega⟩
-        rw [if_pos hc, hAe _ (by rw [lu]; exact hne)] at h1
+        rw [ite_eq_left hc, hAe _ (by rw [lu]; exact hne)] at h1
         exact h1
-      · rw [if_neg hc] at h1
+      · rw [ite_eq_right hc] at h1
         exact h1
   · funext I
     have e1 := (hU _ _ (DR ℂ K') (fun _ => 1) η I ∅).1

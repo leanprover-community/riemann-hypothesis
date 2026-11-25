@@ -45,12 +45,12 @@ theorem eventually_one (hU : Unr E) (n : ℕ) (δ : GL (Fin n) E)
     split_ifs with hs
     · exact hy
     · have h2 : thetaGL n (cj w) (locEl n w δ) = thL n w (locEl n w δ) := by
-        unfold thL; rw [if_neg hs]
+        unfold thL; rw [ite_eq_right hs]
       rw [h2]; exact mul_mem hy (hKθ _ hy)
   refine ⟨hy, fun g hg => ?_, fun t ht hc => ?_⟩
   · by_cases hs : IsSplitAt w
-    · have hθ1 : thL n w = MonoidHom.id _ := by unfold thL; rw [if_pos hs]
-      have hn1 : nrmL n w (locEl n w δ) = locEl n w δ := by unfold nrmL; rw [if_pos hs]
+    · have hθ1 : thL n w = MonoidHom.id _ := by unfold thL; rw [ite_eq_left hs]
+      have hn1 : nrmL n w (locEl n w δ) = locEl n w δ := by unfold nrmL; rw [ite_eq_left hs]
       rw [hn1] at hgood'
       rw [hθ1] at hg ⊢
       obtain ⟨t, ht, k, hk, rfl⟩ := GlobalTheory.T.integral_conj_etale_mem_centralizer_mul_integralGL E n w _ g hy hgood' hg
@@ -60,11 +60,11 @@ theorem eventually_one (hU : Unr E) (n : ℕ) (δ : GL (Fin n) E)
   · refine GlobalTheory.T.mem_maxCompactGL_of_commute_etale_charpoly_bounded E n w (nrmL n w (locEl n w δ)) t hNK hgood' ?_ hc
     have ht' : t * locEl n w δ = locEl n w δ * thL n w t := ht
     by_cases hs : IsSplitAt w
-    · have hθ1 : thL n w = MonoidHom.id _ := by unfold thL; rw [if_pos hs]
-      have hn1 : nrmL n w (locEl n w δ) = locEl n w δ := by unfold nrmL; rw [if_pos hs]
+    · have hθ1 : thL n w = MonoidHom.id _ := by unfold thL; rw [ite_eq_left hs]
+      have hn1 : nrmL n w (locEl n w δ) = locEl n w δ := by unfold nrmL; rw [ite_eq_left hs]
       rw [hn1]; rw [hθ1] at ht'; simpa using ht'
     · have hn1 : nrmL n w (locEl n w δ) = locEl n w δ * thL n w (locEl n w δ) := by
-        unfold nrmL; rw [if_neg hs]; unfold thL; rw [if_neg hs]
+        unfold nrmL; rw [ite_eq_right hs]; unfold thL; rw [ite_eq_right hs]
       rw [hn1]
       calc t * (locEl n w δ * thL n w (locEl n w δ))
           = locEl n w δ * thL n w t * thL n w (locEl n w δ) := by rw [← mul_assoc, ht']

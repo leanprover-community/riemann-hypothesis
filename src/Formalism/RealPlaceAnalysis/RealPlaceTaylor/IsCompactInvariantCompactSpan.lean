@@ -60,7 +60,7 @@ theorem eigenvalue_real {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
   have hvv : ⟪v, v⟫_ℂ ≠ 0 := inner_self_ne_zero.2 hv
   exact Complex.conj_eq_iff_re.1 (mul_right_cancel₀ hvv h)
 
-theorem kHiUniq_of (hl : KLow) (_hw : KWtOrth) (ho : KOrth) : KHiUniq := by
+theorem kHiUniq_of (hl : KLow) (ho : KOrth) : KHiUniq := by
   intro V _ _ n ε F μ ν x y hrel hunit hx hyx hy
   by_cases hμν : ν = μ
   · right
@@ -95,7 +95,7 @@ theorem weighted_sum_rootVector_shift {n : ℕ} (ν : Fin n → ℝ) (a b : Fin 
       (∑ i : Fin n, -((i : ℕ) : ℝ) * ν i) + (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) := by
   simp only [root, Pi.add_apply, Pi.sub_apply, mul_add, mul_sub, Finset.sum_add_distrib,
     Finset.sum_sub_distrib, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   ring
 
 theorem highestWeightExists_holds : KHiExist := by

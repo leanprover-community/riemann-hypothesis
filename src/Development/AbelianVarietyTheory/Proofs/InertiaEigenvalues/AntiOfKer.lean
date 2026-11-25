@@ -468,7 +468,7 @@ theorem exists_newPlace : Cheb → ∀ (D : Formalism.BasicNotions.D7) (N : NDat
     rw [map_mul]
     rcases lt_or_ge b.val n with hb | hb
     · have h1 : d (P (.inl b)) γ₀ = 1 := Subgroup.mem_iInf.1 hγ₀.2 ⟨b, hb⟩
-      rw [h1, hh1 b hb, if_neg (by omega), mul_one]
+      rw [h1, hh1 b hb, ite_eq_right (by omega), mul_one]
       rfl
     · rw [hγd ⟨b, hb⟩, inv_mul_cancel_right]
   let V : Subgroup (GE N) := U ⊓ ⨅ b, (d (P (.inl b))).ker
@@ -730,7 +730,7 @@ theorem exists_ring (O A : Type) [CommRing O] [CommRing A] [Algebra O A] (m : �
       rw [map_mul, map_pow, AdjoinRoot.mk_X]
     rw [← hp, e, AdjoinRoot.mk_eq_zero, Polynomial.X_pow_dvd_iff] at h1
     have h2 := h1 (m - 1) (Nat.sub_lt hm Nat.one_pos)
-    rw [Polynomial.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self] at h2
+    rw [Polynomial.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self] at h2
     rw [← hp, hg]
     exact h2
 
@@ -1851,7 +1851,7 @@ theorem step : Cheb → PoitouTateTotallyComplex → CohDimTwo → TameLocal →
         · exact Or.inr (by rw [hP']; exact ((hmem σ).1 hσL).2 q hq)
     have e2 : d (P' (em q₁)) σ = Multiplicative.ofAdd 1 := by
       have := (hSt'.2.2 (Fin.last n)).2 ⟨n, hn⟩ σ hNew.2.2.2.2.2.1
-      rwa [if_pos (by simp)] at this
+      rwa [ite_eq_left (by simp)] at this
     have : Fact (1 < X.l i ^ M) := ⟨Nat.one_lt_pow (by omega) hp.one_lt⟩
     rwa [hξ1, e2, toAdd_ofAdd, ZMod.val_one, pow_one] at e1
   · have e1 := (φ' : _ →+* B).map_det Φ'

@@ -85,7 +85,7 @@ theorem hL_rename (p : MvPolynomial {v : TVar D N // v.1 ≠ 0} K) :
   induction p using MvPolynomial.induction_on with
   | C a => rw [MvPolynomial.rename_C, hL_C]
   | add p q hp hq => rw [map_add (f := _), map_add (f := _), hp, hq, map_add (f := _)]
-  | mul_X p n hp => rw [map_mul, map_mul, hp, MvPolynomial.rename_X, hL_X, dif_neg n.2, map_mul]
+  | mul_X p n hp => rw [map_mul, map_mul, hp, MvPolynomial.rename_X, hL_X, dite_eq_right n.2, map_mul]
 
 theorem hE_C (j0 : Fin (N + 1)) (r : Ω) :
     hE Ω D N j0 (MvPolynomial.C r) = MvPolynomial.C (MvPolynomial.C r) := by

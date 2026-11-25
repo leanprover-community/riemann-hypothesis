@@ -1218,11 +1218,11 @@ theorem momentHeA_of (hD : DecEx) (hC : Comat) (hW : WordBd) : MomentHeA := by
       have e1 : π (emb e (um h)) (X.p s x z) = actT π (um (embU hF h)) (X.p s x) z := by
         unfold actT
         rw [← um_inv, Finset.sum_eq_single z (fun b _ hb => by
-          rw [show um (embU hF h)⁻¹ b z = _ from emb_col _ b, if_neg hb, zero_smul]) (by simp),
-          show um (embU hF h)⁻¹ z z = _ from emb_col _ z, if_pos rfl, one_smul]
+          rw [show um (embU hF h)⁻¹ b z = _ from emb_col _ b, ite_eq_right hb, zero_smul]) (by simp),
+          show um (embU hF h)⁻¹ z z = _ from emb_col _ z, ite_eq_left rfl, one_smul]
         rfl
       have e2 := X.form s hs _ (smT_act hU (embU hF h) hx) _ (smT_single hηs z)
-      rw [formT_single, show ε z = true from hF.1, if_pos rfl, one_mul, X.pr_act s hs _ _ hx, X.p_act s hs _ _ hx] at e2
+      rw [formT_single, show ε z = true from hF.1, ite_eq_left rfl, one_mul, X.pr_act s hs _ _ hx, X.p_act s hs _ _ hx] at e2
       simp only
       rw [e1, e2]; ring
     have hκ' : (κ : ℂ) ≠ 0 := by exact_mod_cast hκ.ne'

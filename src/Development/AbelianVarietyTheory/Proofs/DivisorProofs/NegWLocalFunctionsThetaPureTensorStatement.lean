@@ -233,7 +233,7 @@ theorem datum_of_placeModel (M : Model D.sp.cm.sig Y Z) {ψ : AddChar (AF D.host
     · rw [Set.indicator_of_mem ((hH u).2 hu), Finset.prod_congr rfl fun w hw =>
         (congrArg _ ((lsm w hw _).symm.trans (congrArg (lin w) (map_smul p (a w) u).symm))).trans ((hv w hw).2 _ (hsm w hw u))]
       by_cases hl : p u ∈ Λ
-      · rw [if_pos ⟨hl, hu⟩, mul_one]
+      · rw [ite_eq_left ⟨hl, hu⟩, mul_one]
         exact Finset.prod_congr rfl fun w hw => Set.indicator_of_mem (by
           show p (a w • u) ∈ Λ
           rw [map_smul]
@@ -242,8 +242,8 @@ theorem datum_of_placeModel (M : Model D.sp.cm.sig Y Z) {ψ : AddChar (AF D.host
           by_contra! hall
           exact hl (mem_of_sum_smul (hεs ▸ hu) fun w hw => map_smul p (a w) u ▸ hall w hw)
         obtain ⟨w, hw, hn⟩ := this
-        rw [Finset.prod_eq_zero hw (Set.indicator_of_notMem (s := {u | p u ∈ Λ}) hn _), if_neg fun h => hl h.1, mul_zero]
-    · rw [Set.indicator_of_notMem (mt (hH u).1 hu), if_neg fun h => hu h.2, mul_zero]
+        rw [Finset.prod_eq_zero hw (Set.indicator_of_notMem (s := {u | p u ∈ Λ}) hn _), ite_eq_right fun h => hl h.1, mul_zero]
+    · rw [Set.indicator_of_notMem (mt (hH u).1 hu), ite_eq_right fun h => hu h.2, mul_zero]
   have hR := GlobalTheory.InductLagr.rel_of_vac M ψ hstd hG P pl hpl C
     (fun w => {u | IsHalf (a w) (p u)}) (fun w => {u | IsHalf (cA D (a w)) (p u)}) (fun w u => lin w (p u)) I H R (c • f)
     hI (fun w hw u hu => ⟨at_of_isHalf p _ (ha1 w hw) hu, (hH u).2 (hA w hw _ hu)⟩)
@@ -278,8 +278,8 @@ theorem datum_of_placeModel (M : Model D.sp.cm.sig Y Z) {ψ : AddChar (AF D.host
     refine (congrFun h2 u).symm.trans ?_
     dsimp only
     by_cases hu : IsHalf ε (p u)
-    · rw [if_pos hu]; exact Set.indicator_of_mem ((hH u).2 hu) _
-    · rw [if_neg hu]; exact Set.indicator_of_notMem (mt (hH u).1 hu) _
+    · rw [ite_eq_left hu]; exact Set.indicator_of_mem ((hH u).2 hu) _
+    · rw [ite_eq_right hu]; exact Set.indicator_of_notMem (mt (hH u).1 hu) _
   exact this ▸ h3
 
 end Generic

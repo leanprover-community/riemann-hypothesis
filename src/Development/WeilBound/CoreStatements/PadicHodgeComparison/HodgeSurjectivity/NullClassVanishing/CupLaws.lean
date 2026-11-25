@@ -55,10 +55,10 @@ theorem phi_single {N : ℕ} (s : ComposableArrows C N) (z : Pr N) (t : ℤ) :
 theorem val_pos {N : ℕ} (s : ComposableArrows C N) (z : Pr N) (h : z.1 = p ∧ z.2.1 = q) :
     val P f g s z =
       P.μ _ (CH.term F₁ s f (om z.2.2.1 h.1) (om_mono _ _)) (CH.term F₂ s g (om z.2.2.2 h.2) (om_mono _ _)) :=
-  dif_pos h
+  dite_eq_left h
 
 theorem val_neg {N : ℕ} (s : ComposableArrows C N) (z : Pr N) (h : ¬ (z.1 = p ∧ z.2.1 = q)) : val P f g s z = 0 :=
-  dif_neg h
+  dite_eq_right h
 
 theorem val_mk {N : ℕ} (s : ComposableArrows C N) (α : SimplexCategory.mk p ⟶ SimplexCategory.mk N)
     (β : SimplexCategory.mk q ⟶ SimplexCategory.mk N) :

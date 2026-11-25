@@ -239,12 +239,12 @@ theorem UpperTheory.V.Sd.pStab :
   have hne : (Finset.univ.image σ).card ≠ 0 :=
     Finset.card_ne_zero.2 (Finset.univ_nonempty.image σ)
   have h0 := (uopSum F w V ρ 0 x hx).2 _ hS
-  rw [if_pos rfl, hT] at h0
+  rw [ite_eq_left rfl, hT] at h0
   rw [← hcard] at hz hb
   obtain ⟨y, hy0, hy, hU⟩ := gen (w.adicCompletionIntegers F).subtype (atFin w (unif w)) ⟨_, hmem⟩ rfl
     (span_unif w ⟨_, hmem⟩ hπ) ρ _ hne x a b hx0 hx h0.symm hz hb
   refine ⟨y, hy0, hy, ?_⟩
-  rw [(uopSum F w V ρ 1 y hy).2 _ hS, if_neg one_ne_zero, add_zero]
+  rw [(uopSum F w V ρ 1 y hy).2 _ hS, ite_eq_right one_ne_zero, add_zero]
   exact hU
 end -- clump:auto
 end -- clump:auto

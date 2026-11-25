@@ -130,7 +130,7 @@ theorem solveMap_gen (i : Fin d) :
 
   rw [map_sum, Finset.sum_congr rfl fun j _ => h j]
   simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   rw [← rowForm, mul_assoc, mul_comm (rowForm J d q k i), ← mul_assoc, ← map_mul]
   have hu : IsLocalization.Away.invSelf (Ideal.Quotient.mk J (X k - C (q k))) *
       toBase J q k (X k - C (q k)) = (1 : Base J q k) := by

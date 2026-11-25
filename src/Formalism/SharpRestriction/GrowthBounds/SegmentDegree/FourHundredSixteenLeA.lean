@@ -137,7 +137,7 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
   have ha'le : (X.a' p K (posOf n' y) : ℝ) ≤ X.deg (posOf n' y) := by
     have h0 : X.a' p K (posOf n' y) ≤ X.deg (posOf n' y) := by
       unfold Dat.a' Dat.d
-      rw [if_pos hyT]
+      rw [ite_eq_left hyT]
       omega
     exact_mod_cast h0
   refine ⟨?_, by linarith [hdeg.1], by linarith [hdeg.2]⟩
@@ -229,7 +229,7 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
   have hP0 : (0 : ℝ) < (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) := by rw [← hPc]; exact_mod_cast hpp
   unfold Dat.Bdeg
   by_cases hW : X.F.IsW j x
-  · rw [if_pos hW]
+  · rw [ite_eq_left hW]
     unfold Dat.Bw Dat.m0
     set A := X.a' p K (posOf n' x) with hAdef
     set pp := p ^ (X.F.dist j x + X.Rj p K j) with hppdef
@@ -277,7 +277,7 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
           linarith
         · exact hApos
       linarith
-  · rw [if_neg hW]
+  · rw [ite_eq_right hW]
     have hxl := hx
     simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc] at hxl
     have hlate : x ∈ X.toLate j := by
@@ -285,11 +285,11 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
       simp only [Finset.mem_filter]
       exact ⟨hx, hW⟩
     unfold Dat.restr
-    rw [if_pos hlate]
+    rw [ite_eq_left hlate]
     have hLL : x ∈ X.F.LLset j := by
       simp only [Frames.LLset, Finset.mem_filter, Finset.mem_Ioo]
       unfold Frames.IsW at hW
-      push_neg at hW
+      push Not at hW
       exact ⟨⟨hW, hlt⟩, hxl.2⟩
     obtain ⟨h1, h2⟩ := hA x hLL
     have hPz : ((X.Pz p K j x : ℕ) : ℝ) = (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) := by

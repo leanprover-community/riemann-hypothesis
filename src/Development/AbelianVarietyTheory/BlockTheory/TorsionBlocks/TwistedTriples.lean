@@ -54,8 +54,6 @@ def IsTripleOf (a : D.nd.Loc) (σ : D.what₂.FT) (s : Trip D a) : Prop :=
 def TripAll : Prop :=
   ∀ (a : D.nd.Loc) (σ : D.what₂.FT), IsGoodRow D a σ → ∃ s : Trip D a, IsTripleOf D a σ s
 
-def epsL (l : ℕ) : ℚ := ((l : ℚ) ^ 2)⁻¹
-
 theorem badS_eq (a : D.nd.Loc) : badS D a = ↑(D.nd.S a) := by
   ext v
   have h := D.ntw.pD_eq (D.ntw.twOf a)

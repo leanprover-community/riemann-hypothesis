@@ -109,7 +109,7 @@ theorem dcos_supp (t : GLw m w) : ∃ C : Set (GLw m w), IsCompact C ∧ ∀ g �
   refine ⟨(fun p : GLw m w × GLw m w => p.1 * t * p.2) '' ((iwGL m w : Set (GLw m w)) ×ˢ (iwGL m w : Set (GLw m w))),
     (isCompact_iwGL.prod isCompact_iwGL).image hc, fun g hg => ?_⟩
   unfold dcos
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨x, hx, z, hz, e⟩
   exact hg ⟨(x, z), ⟨hx, hz⟩, e.symm⟩
 
@@ -152,12 +152,12 @@ theorem iwahori_pair_le_maximal_pair (a b : ℕ) (w : Pl E) : I2 a b w ≤ K2 a 
 theorem lev_good {a : ℕ} {w : Pl E} (hw : d.Good w) : d.lev a w = K2 a (n - a) w := by
   obtain ⟨-, hT, hS, hB, -⟩ := hw
   have : w ∉ d.S₀ ∪ d.Bad := by simp [hS, hB]
-  simp only [LocData.lev, if_neg hT, if_neg this]
+  simp only [LocData.lev, ite_eq_right hT, ite_eq_right this]
 
 theorem lev₂_good {a : ℕ} {w : Pl E} (hw : d.Good w) : d.lev₂ a w = K2 a (n - a) w := by
   obtain ⟨-, hT, hS, hB, -⟩ := hw
   have : w ∉ d.S₀ ∪ d.Bad := by simp [hS, hB]
-  simp only [LocData.lev₂, if_neg this]
+  simp only [LocData.lev₂, ite_eq_right this]
 
 theorem hecke_hc (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {w : Pl E} (hw : d.Good w) (k : ℕ) :
     IsHecke (K2 a (n - a) w) (d.hc a ha w k) := by
@@ -208,7 +208,7 @@ theorem adj_m {a : ℕ} {ha : a ≤ n} {L : LM d.kap a (n - a)} (hL : d.IsGen a 
   by_cases h : x = y
   · subst h
     simp [lfStar_idem]
-  · rw [if_neg (Ne.symm h), if_neg h, lfStar_zero]
+  · rw [ite_eq_right (Ne.symm h), ite_eq_right h, lfStar_zero]
 
 theorem generator_first_levi_position {a : ℕ} {ha : a ≤ n} {L : LM d.kap a (n - a)} (hL : d.IsGen a ha L) (w : Pl E) :
     Slot d a ha w (d.lev a w) (L.s w) := by
@@ -273,7 +273,7 @@ theorem hecke_beta (h3 : LocOpUniformizer E) (hd : d.Ok) {a : ℕ} (ha : a ≤ n
   · have e : d.lev a w = I2 a (n - a) w := by simp [LocData.lev, hT]
     rw [e]
     show IsHecke _ (if w ∈ d.T then d.diag (fun x => d.qT a w x.1.1) x y else _)
-    rw [if_pos hT]
+    rw [ite_eq_left hT]
     unfold LocData.diag
     split_ifs
     · exact hecke_qT d w _
@@ -283,10 +283,10 @@ theorem hecke_beta (h3 : LocOpUniformizer E) (hd : d.Ok) {a : ℕ} (ha : a ≤ n
     have e : d.lev a w = d.L a w := by simp [LocData.lev, hT, hSB]
     rw [e]
     show IsHecke _ (if w ∈ d.T then _ else d.mac a ha w (d.e w) x.1.2 y.1.2)
-    rw [if_neg hT]
+    rw [ite_eq_right hT]
     have hX : ∀ z : d.kap w, z.1.2 ∈ d.X w := fun z => by
       have := z.2
-      simp only [LocData.idx, if_neg hT, if_pos hS] at this
+      simp only [LocData.idx, ite_eq_right hT, ite_eq_left hS] at this
       exact (Finset.mem_product.1 this).2
     exact hecke_mac d h3 hd ha hS (hX x) (hX y)
 

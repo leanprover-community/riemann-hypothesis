@@ -174,7 +174,7 @@ private theorem UpperTheory.cyclic_trivial_induction_ring {R : Type} [Ring R] (h
       exact hext S A Q f g (fun _ _ => rfl) (fun _ _ => rfl) (Subtype.val_injective)
         (LinearMap.exact_subtype_mkQ B) (Submodule.mkQ_surjective B) hS hQ
     · have : Subsingleton A.V := ⟨fun x y => by
-        push_neg at hne
+        push Not at hne
         rw [hne x, hne y]⟩
       exact hcyc A hfin inferInstance htriv htors
 

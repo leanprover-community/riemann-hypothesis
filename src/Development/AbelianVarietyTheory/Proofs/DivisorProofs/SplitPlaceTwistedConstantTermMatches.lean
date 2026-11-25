@@ -146,9 +146,9 @@ theorem clSum_oneClass : ∀ {G : Type} [Group G] [TopologicalSpace G] (θ : G �
   · obtain ⟨g, hg⟩ : ∃ g, c₀.rep = g⁻¹ * δ * θ g := by
       have h1 : (Quot.mk _ c₀.rep : TwCl θ) = Quot.mk _ δ := (Quot.out_eq c₀).trans hc₀
       exact heqv.eqvGen_iff.mp (Quot.eqvGen_exact h1.symm)
-    rw [hg, if_pos (hS' g), hwt, horb]
+    rw [hg, ite_eq_left (hS' g), hwt, horb]
   · intro c hc
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hmem
     apply hc
     obtain ⟨g, hg⟩ := hS _ hmem
@@ -356,10 +356,10 @@ theorem match_ctMu_of_isSplitAt : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     IsSplitAt w → ∀ (μ : (w.adicCompletion E)ˣ →* ℂˣ), ∀ K' : Subgroup (UL n w), IsLevel (MonoidHom.id _) (KL n w) K' →
     ∀ f, IsHecke K' f → Match n a (n - a) w μ f (ctMu (Nat.add_sub_cancel' ha) w μ f) := by
   intro E _ _ _ n a ha w hw μ K' hK' f hf Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hsep _ _
-  have hth : ∀ k, thL k w = MonoidHom.id _ := fun k => by simp only [thL, if_pos hw]
-  have hnr : ∀ k (y : GLw k w), nrmL k w y = y := fun k y => by simp only [nrmL, if_pos hw]
-  have hUL : UL n w = ⊤ := by simp only [UL, if_pos hw]
-  have hks : ∀ γ, kapSign n w Q₁ γ = 1 := fun γ => by simp only [kapSign, if_pos hw]
+  have hth : ∀ k, thL k w = MonoidHom.id _ := fun k => by simp only [thL, ite_eq_left hw]
+  have hnr : ∀ k (y : GLw k w), nrmL k w y = y := fun k y => by simp only [nrmL, ite_eq_left hw]
+  have hUL : UL n w = ⊤ := by simp only [UL, ite_eq_left hw]
+  have hks : ∀ γ, kapSign n w Q₁ γ = 1 := fun γ => by simp only [kapSign, ite_eq_left hw]
   have hKL : (KL n w).map (UL n w).subtype = GlobalTheory.LFun.KGL w (n := n) := by
     rw [KL, Subgroup.subgroupOf_map_subtype, hUL, inf_top_eq]
   have hmem : ∀ g : GLw n w, g ∈ UL n w := fun g => by rw [hUL]; trivial
@@ -387,10 +387,10 @@ theorem match_ctMu_of_isSplitAt : ∀ (E : Type) [Field E] [NumberField E] [IsCM
       unfold clSum
       apply finsum_eq_zero_of_forall_eq_zero
       intro c
-      rw [if_neg (hS c.rep)]
+      rw [ite_eq_right (hS c.rep)]
     rw [hz _ _ {y : GLw a w × GLw (n - a) w | y.1.val.charpoly = Q₁ ∧ y.2.val.charpoly = Q₂} _ _ hL,
       hz _ _ {γ : UL n w | γ.1.val.charpoly = Q₁ * Q₂} _ _ hR, mul_zero]
-  · push_neg at h0
+  · push Not at h0
     obtain ⟨x₁, hx₁⟩ := existsOfCharpoly _ a Q₁ hm₁ hd₁ h0.1
     obtain ⟨x₂, hx₂⟩ := existsOfCharpoly _ (n - a) Q₂ hm₂ hd₂ h0.2
     have hs₁ : Q₁.Separable := hsep.of_mul_left
@@ -450,7 +450,7 @@ theorem match_ctMu_of_isSplitAt : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     have hδ : delta w μ Q₁ Q₂ = (μ ((-1) ^ (a * (n - a)) * GeneralLinearGroup.det x₁ ^ (n - a) *
         GeneralLinearGroup.det x₂ ^ a) : ℂ) * absHalf w (resultant Q₁ Q₂ ^ 2 / (x₁.val.det ^ (n - a) * x₂.val.det ^ a)) := by
       unfold delta
-      simp only [if_pos hw]
+      simp only [ite_eq_left hw]
       rw [dite_eq_left hne, hu, hdd]
     have hct : ctMu (Nat.add_sub_cancel' ha) w μ f = fun y =>
         (μ ((-1) ^ (a * (n - a)) * GeneralLinearGroup.det y.1 ^ (n - a) * GeneralLinearGroup.det y.2 ^ a) : ℂ) *

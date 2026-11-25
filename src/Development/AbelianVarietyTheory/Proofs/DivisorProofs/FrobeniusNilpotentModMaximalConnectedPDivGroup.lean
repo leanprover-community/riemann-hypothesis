@@ -160,7 +160,7 @@ theorem aug_nil : ∀ (p : ℕ) (O : Type) [CommRing O] (G : PDivGroup p O) (d :
   have hR : (p : G.A 1) ∣ c.ev 1 (f - (P : MvPowerSeries (Fin d) O)) := by
     have h := hN₁ (f - P) (fun α hα => ?_)
     · simpa using h
-    rw [map_sub, MvPolynomial.coeff_coe, coeff_trunc', if_pos, sub_self]
+    rw [map_sub, MvPolynomial.coeff_coe, coeff_trunc', ite_eq_left, sub_self]
     intro i
     have : α i ≤ α.degree := by
       rw [Finsupp.degree]
@@ -173,7 +173,7 @@ theorem aug_nil : ∀ (p : ℕ) (O : Type) [CommRing O] (G : PDivGroup p O) (d :
       MvPolynomial.algHom_ext fun i => by simp [(c.isEval 1).1 i]
     exact congrArg (fun φ => φ P) this
   have hP0 : MvPolynomial.constantCoeff P = 0 := by
-    rw [MvPolynomial.constantCoeff_eq, hPdef, coeff_trunc', if_pos (zero_le')]
+    rw [MvPolynomial.constantCoeff_eq, hPdef, coeff_trunc', ite_eq_left (zero_le')]
     simpa using hf
   have ha := dvd_pow_of_mem_span (c.x 1) (p : G.A 1) N₀ hx _ (aeval_mem_span (c.x 1) P hP0)
   rw [← hP] at ha
@@ -398,7 +398,7 @@ theorem isBasis_map : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgCl
       rw [h1, Pi.single_apply]
       split_ifs <;> simp
     have s1 : x l' = ∑ l, x l * F.θ (∑ m, M l m * N m l') := by
-      simp only [e1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [e1, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have s2 : ∑ l, x l * F.θ (∑ m, M l m * N m l') = ∑ m, y m * F.θ (N m l') := by
 
       simp only [hydef, map_sum, map_mul, Finset.mul_sum, Finset.sum_mul]

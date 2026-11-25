@@ -43,9 +43,9 @@ private theorem cocycle_extends_to_conj_group {l : ℕ} [Fact l.Prime] (F : W.GF
     · exact h
   let z : F.Γ → M := fun x =>
     if hx : x ∈ F.η.ker then y ⟨x, hx⟩ else y ⟨x * F.c, cocExt_mem F hx⟩ + R (x * F.c) w
-  have zin : ∀ x (hx : x ∈ F.η.ker), z x = y ⟨x, hx⟩ := fun x hx => dif_pos hx
+  have zin : ∀ x (hx : x ∈ F.η.ker), z x = y ⟨x, hx⟩ := fun x hx => dite_eq_left hx
   have zout : ∀ x (hx : x ∉ F.η.ker), z x = y ⟨x * F.c, cocExt_mem F hx⟩ + R (x * F.c) w :=
-    fun x hx => dif_neg hx
+    fun x hx => dite_eq_right hx
   refine ⟨z, ?_, ?_, fun g => zin g g.2⟩
   · rw [continuous_iff_continuousAt]
     intro x

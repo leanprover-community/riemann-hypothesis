@@ -88,8 +88,8 @@ theorem nab_smul_secN {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Ho
     have hC : ∑ e ∈ degLE m, MvPolynomial.monomial e
         (MvPowerSeries.coeff e (MvPowerSeries.C r : MvPowerSeries (Fin 1 × Fin C.d) S)) =
         MvPolynomial.monomial 0 r := by
-      rw [Finset.sum_eq_single_of_mem 0 h0 (fun e _ he => by rw [MvPowerSeries.coeff_C, if_neg he, map_zero]),
-        MvPowerSeries.coeff_C, if_pos rfl]
+      rw [Finset.sum_eq_single_of_mem 0 h0 (fun e _ he => by rw [MvPowerSeries.coeff_C, ite_eq_right he, map_zero]),
+        MvPowerSeries.coeff_C, ite_eq_left rfl]
     rw [hC, Finset.mul_sum]
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [MvPowerSeries.coeff_C_mul, MvPolynomial.monomial_mul, zero_add]

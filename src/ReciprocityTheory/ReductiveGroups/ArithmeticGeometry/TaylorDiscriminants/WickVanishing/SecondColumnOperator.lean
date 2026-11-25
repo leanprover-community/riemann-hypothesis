@@ -471,10 +471,10 @@ theorem cS_univ (c : ι → ι → k) :
   unfold cS cB
   funext p q
   by_cases h : p.2 = q.2
-  · rw [if_pos h]
-    simp only [← h, and_self, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-  · rw [if_neg h]
-    refine Finset.sum_eq_zero fun b _ => if_neg ?_
+  · rw [ite_eq_left h]
+    simp only [← h, and_self, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  · rw [ite_eq_right h]
+    refine Finset.sum_eq_zero fun b _ => ite_eq_right ?_
     rintro ⟨h1, h2⟩
     exact h (h1.trans h2.symm)
 

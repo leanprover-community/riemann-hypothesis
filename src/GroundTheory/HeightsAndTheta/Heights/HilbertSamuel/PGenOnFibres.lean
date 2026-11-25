@@ -533,7 +533,7 @@ theorem secCoch_mem {s : Ω} {a : K → ℤ} (hs : s ∈ chartLat y a 1) :
     · obtain ⟨k, i, hi, h0⟩ := hz
       haveI := subsingleton_loc (S := S) hi h0
       exact Subsingleton.elim _ _
-    · push_neg at hz
+    · push Not at hz
       have hJc : ∀ k, y ⟨k, cellChart J k⟩ ≠ 0 := fun k => hz k _ (hJ k (cellChart_mem J k))
       have hJc' : ∀ k, y ⟨k, cellChart J' k⟩ ≠ 0 := fun k => hz k _ (hJ' k (cellChart_mem J' k))
       rw [cellRes_of_le (cellMon_mono hJ), cellRes_of_le (cellMon_mono hJ')]
@@ -548,7 +548,7 @@ theorem generatedV_idealOver {a : K → ℤ} {n : ℕ} {w : Fin n → Ω} (hw : 
   · obtain ⟨k, h0⟩ := hz
     haveI := subsingleton_loc (S := S) (cellChart_mem I k) h0
     exact ⟨0, Fin.elim0, Fin.elim0, fun j => j.elim0, fun j => j.elim0, Subsingleton.elim _ _⟩
-  · push_neg at hz
+  · push Not at hz
     obtain ⟨u, hu, hsum⟩ := hg (cellChart I) hz
     have hU : ∀ j, ∃ x, IsRep y S (KH.cellMon S I.1) x (cellChart I)
         (u j * ∏ k, y ⟨k, cellChart I k⟩ ^ (-a k)) (-a) := by

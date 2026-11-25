@@ -102,7 +102,7 @@ private theorem leviM_apply_of_le_of_mem_K2 {x : X.B.I.Gf} (hk : x ∈ X.K2) (v 
     · exact zero_mem _
   show resT TR v (hA X.B.I (X.bwd i) (X.B.I.fmat x *ᵥ X.bw j)) = _
   unfold resT
-  rw [dif_pos hint]
+  rw [dite_eq_left hint]
   exact res_of_Z_delta TR v hint (i = j) ⟨t, ht, hct⟩
 
 theorem unitriangular_reduction_of_mem_level {x : X.B.I.Gf} (hx : Good X x) (hk : x ∈ X.K2) (v : TR.Pl) :
@@ -110,8 +110,8 @@ theorem unitriangular_reduction_of_mem_level {x : X.B.I.Gf} (hx : Good X x) (hk 
   have hent := leviM_apply_of_le_of_mem_K2 TR hk v
   have hlevi := levi_coe TR hx v
   refine ⟨fun i => ?_, fun i j hji => ?_⟩
-  · rw [hlevi, hent i i le_rfl, if_pos rfl]
-  · rw [hlevi, hent i j hji.le, if_neg (ne_of_gt hji)]
+  · rw [hlevi, hent i i le_rfl, ite_eq_left rfl]
+  · rw [hlevi, hent i j hji.le, ite_eq_right (ne_of_gt hji)]
 
 theorem mem_level_of_unitriangular {x : X.B.I.Gf} (hx : Good X x) (hn : NCong X x)
     (hu : ∀ v, Formalism.L2.SG.GGMirabolic.IsUni D.R.k (levi TR x v)) : x ∈ X.K2 := by
@@ -150,8 +150,8 @@ theorem mem_level_of_unitriangular {x : X.B.I.Gf} (hx : Good X x) (hn : NCong X 
       have hent : leviM TR x v j i = if j = i then 1 else 0 := by
         rw [← levi_coe TR hx]
         by_cases h : j = i
-        · subst h; rw [if_pos rfl]; exact hu'.1 j
-        · rw [if_neg h]; exact hu'.2 j i (lt_of_le_of_ne (Fin.le_def.2 hij) (fun e => h e.symm))
+        · subst h; rw [ite_eq_left rfl]; exact hu'.1 j
+        · rw [ite_eq_right h]; exact hu'.2 j i (lt_of_le_of_ne (Fin.le_def.2 hij) (fun e => h e.symm))
       have e : (⟨_, sub_mem hI hIt⟩ : IntAf X.B.I.F X.B.I.E) = ⟨_, hI⟩ - ⟨_, hIt⟩ := by
         apply Subtype.ext; simp
       rw [e, map_sub]
@@ -162,9 +162,9 @@ theorem mem_level_of_unitriangular {x : X.B.I.Gf} (hx : Good X x) (hn : NCong X 
       by_cases h : j = i
       · subst h
         have : (⟨_, hIt⟩ : IntAf X.B.I.F X.B.I.E) = 1 := by apply Subtype.ext; simp
-        rw [if_pos rfl, this, map_one, sub_self]
+        rw [ite_eq_left rfl, this, map_one, sub_self]
       · have : (⟨_, hIt⟩ : IntAf X.B.I.F X.B.I.E) = 0 := by apply Subtype.ext; simp [h]
-        rw [if_neg h, this, map_zero, sub_self]
+        rw [ite_eq_right h, this, map_zero, sub_self]
     have hZ := (TR.res_ker ⟨_, sub_mem hI hIt⟩).1 hres
     have e : X.ew * (hA X.B.I (X.bwd j) w - if j = i then 1 else 0) =
         hA X.B.I (X.bwd j) w - if j = i then X.ew else 0 := by
@@ -177,7 +177,7 @@ theorem mem_level_of_unitriangular {x : X.B.I.Gf} (hx : Good X x) (hn : NCong X 
         (∑ j, (hA X.B.I (X.bwd j) w - if j = i then X.ew else 0) • X.bw j) +
         (∑ j, hA X.B.I (X.bw j) w • X.bwd j)) := by
     have hbi : (∑ j, (if j = i then X.ew else 0) • X.bw j) = X.bw i := by
-      simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       exact (X.bw_w i).symm
     rw [Matrix.sub_mulVec, Matrix.one_mulVec, ← hwdef]
     unfold repr0
@@ -196,7 +196,7 @@ theorem mem_level_of_unitriangular {x : X.B.I.Gf} (hx : Good X x) (hn : NCong X 
   · refine sum_mem fun j _ => ?_
     by_cases hj : j.1 < i.1
     · have hne : j ≠ i := fun h => by subst h; exact lt_irrefl _ hj
-      rw [if_neg hne, sub_zero]
+      rw [ite_eq_right hne, sub_zero]
       exact spn _ _ (hA_int X.B.I (hBd j) hwL) (Or.inr ⟨j, hj, rfl⟩)
     · exact mL_Mo X.B.I (Z_smul_mL X (hcoef j (not_lt.1 hj)) (hB j))
   · refine sum_mem fun j _ => ?_
@@ -249,12 +249,12 @@ theorem chiL_eq_psiG {x : X.B.I.Gf} (hx : Good X x) (hk : x ∈ X.K2) : chiL X x
     · rw [Finset.sum_eq_single ⟨i.1 + 1, h⟩]
       · simp
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hj'
         exact hj (Fin.ext hj')
       · simp
     · refine Finset.sum_eq_zero (fun j _ => ?_)
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hj'
       have := j.2
       omega
@@ -262,7 +262,7 @@ theorem chiL_eq_psiG {x : X.B.I.Gf} (hx : Good X x) (hk : x ∈ X.K2) : chiL X x
       TR.psi0 v (TR.res v ⟨C, hCint⟩) := by
     intro v
     unfold Formalism.L2.SG.GGMirabolic.psiNat
-    rw [if_pos (unitriangular_reduction_of_mem_level TR hx hk v)]
+    rw [ite_eq_left (unitriangular_reduction_of_mem_level TR hx hk v)]
     unfold Formalism.L2.SG.GGMirabolic.psiU
     rw [levi_coe TR hx v, hsum v]
     congr 1
@@ -303,16 +303,16 @@ theorem ncong_colDiff (w : D.what₂.Word) (h h' : Formalism.L2.SG.PoincareInHH.
 private theorem ite_mem_K2_chiL_eq_psiG_levi {k : X.B.I.Gf} (gk : Good X k) (nk : NCong X k) :
     (if k ∈ X.K2 then chiL X k else 0) = psiG TR (levi TR k) := by
   by_cases hk2 : k ∈ X.K2
-  · rw [if_pos hk2]
+  · rw [ite_eq_left hk2]
     exact chiL_eq_psiG TR gk hk2
-  · rw [if_neg hk2]
+  · rw [ite_eq_right hk2]
     have hn : ¬ ∀ v, Formalism.L2.SG.GGMirabolic.IsUni D.R.k (levi TR k v) := fun hu => hk2 (mem_level_of_unitriangular TR gk nk hu)
-    push_neg at hn
+    push Not at hn
     obtain ⟨v, hv⟩ := hn
     unfold psiG
     refine (Finset.prod_eq_zero (Finset.mem_univ v) ?_).symm
     unfold Formalism.L2.SG.GGMirabolic.psiNat
-    rw [if_neg hv]
+    rw [ite_eq_right hv]
 
 theorem phaseAt_of (hL : ColLatK cs) (hL' : ColLatK cs') (hA : AdmPar F0 F0' cs cs') (hN : AdmN F0 F0' cs cs') :
     PhaseAt TR F0 F0' cs cs' := by

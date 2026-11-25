@@ -232,12 +232,12 @@ theorem GlobalTheory.KZ.H3.uhp_root : ∀ (h : ℂ → ℂ) (m : ℕ), 0 < m →
     have hev : R =ᶠ[nhds z] r' (N z hz) := by
       filter_upwards [Metric.isOpen_ball.mem_nhds hzk] with w hw
       have hwH : w ∈ Hs := closedBall_sub _ (Metric.ball_subset_closedBall hw)
-      simp only [R, dif_pos hwH]
+      simp only [R, dite_eq_left hwH]
       exact agree _ _ w (hN w hwH) hw
     exact (((hr'd _).differentiableAt (Metric.isOpen_ball.mem_nhds hzk)).congr_of_eventuallyEq
       hev).differentiableWithinAt
   · intro z hz
-    simp only [R, dif_pos hz]
+    simp only [R, dite_eq_left hz]
     exact hr'p _ z (hN z hz)
 end -- clump:auto
 end -- clump:auto
@@ -456,7 +456,7 @@ theorem kum_of_isRoot : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →
     if h : δ ∈ CongruenceSubgroup.Gamma M then ((key δ h).choose : ZMod (l ^ n)) else 0
   refine ⟨χ, f, a, b, M, hM, hx, ⟨ha, hb, hb0, hab0⟩, fun δ hδ z hz => ?_⟩
   have hc : ((l : ℂ) ^ n) = ((l ^ n : ℕ) : ℂ) := by push_cast; rfl
-  simp only [χ, dif_pos hδ]
+  simp only [χ, dite_eq_left hδ]
   rw [hc, exp_val_natCast (l ^ n) _ hm]
   exact (key δ hδ).choose_spec z hz
 

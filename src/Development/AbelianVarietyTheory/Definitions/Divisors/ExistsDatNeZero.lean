@@ -231,10 +231,4 @@ def IsContr (z : C2 (O (dp0 R) ((A ⊗ B).hom ≫ 𝟙 _))) (v : epsR R ⟶ B) (
 
 end Contract
 
-section Cube
-
-variable {H : Over (Sp R)} [GrpObj H] [IsCommMonObj H] {L : RigLB H}
-
-end Cube
-
 end GlobalTheory.PtExt

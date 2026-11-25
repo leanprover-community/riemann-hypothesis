@@ -164,15 +164,5 @@ def VF.zero (A : Over (Sp K)) : VF A where
   const _ _ := rfl
   res _ _ _ _ := by simp
 
-section LocDer
-variable {k B : Type} [CommRing k] [CommRing B] [Algebra k B] (d : Derivation k B B) (S : Submonoid B)
-
-end LocDer
-
-section SpecVF
-variable {B : Type} [CommRing B] [Algebra K B]
-
-end SpecVF
-
 end GlobalTheory.SS
 end

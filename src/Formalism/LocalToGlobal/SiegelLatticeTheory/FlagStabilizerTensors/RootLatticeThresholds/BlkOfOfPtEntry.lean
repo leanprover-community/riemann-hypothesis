@@ -895,7 +895,7 @@ theorem FM_inv {e : Fin m → V} {g : V ≃ₗ[K] V} {G : Matrix (Fin m) (Fin m)
   have hc : ∀ d, ∑ c, G⁻¹ c b * G d c = (G * G⁻¹) d b := fun d => by
     rw [Matrix.mul_apply]; exact Finset.sum_congr rfl fun c _ => mul_comm _ _
   simp only [← Finset.sum_smul, hc, hGG, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end FrameC
 
@@ -936,20 +936,20 @@ theorem inS_frame {n r : ℕ} {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} 
   · intro i j
     refine ⟨fun hji => ?_, fun hij => ?_⟩
     · dsimp only
-      rw [if_neg (ne_of_gt hji)]
+      rw [ite_eq_right (ne_of_gt hji)]
       split_ifs with h
       · rw [hy0 j ⟨i.val, h⟩ (le_of_lt hji)]; simp
       · simp
     · subst hij
       dsimp only
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       split_ifs with h
       · rw [hy0 i ⟨i.val, h⟩ le_rfl]; simp
       · simp
   · intro b
     show g *ᵥ _ = _
     simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [hyeq b, Fin.sum_univ_castSucc]
     simp [Formalism.L2.SG.RealObj.fam, Fin.snoc_castSucc]
 
@@ -990,7 +990,7 @@ theorem FMm_inv {e : Fin m → Fin n → ℂ} {g : Matrix (Fin n) (Fin n) ℂ} {
   have hc : ∀ d, ∑ c, G⁻¹ c b * G d c = (G * G⁻¹) d b := fun d => by
     rw [Matrix.mul_apply]; exact Finset.sum_congr rfl fun c _ => mul_comm _ _
   simp only [← Finset.sum_smul, hc, hGG, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem conj_shear {r : ℕ} {N : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hN : IsUpUni N)
     {Y Y' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (a b : Fin (r + 1))
@@ -1056,7 +1056,7 @@ theorem hJ_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS
     fun x y => by rw [← Formalism.L2.SG.PoincareInHH.Cut.hform_crd X x y, RingEquiv.symm_apply_apply]
   rw [efr_eq, Formalism.L2.SG.Pf.Level.hJ_rv, show X.fR a = X.crd (X.fY a) from rfl, hE']
   refine Fin.lastCases ?_ (fun i => ?_) d
-  · rw [if_neg (Fin.castSucc_lt_last a).ne']
+  · rw [ite_eq_right (Fin.castSucc_lt_last a).ne']
     simp only [FlagG.fvec, Fin.snoc_last, X.flagZVector u', (X.zu_orth u' a).2, map_zero]
   · simp only [FlagG.fvec, Fin.snoc_castSucc, X.Fu_e u']
     have h := (VS D).herm.eq (X.eX i) (X.fY a)
@@ -1065,7 +1065,7 @@ theorem hJ_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS
     rw [h2]
     by_cases hia : i = a
     · subst hia; simp
-    · rw [if_neg hia, if_neg (fun h => hia (Fin.castSucc_inj.1 h))]; simp
+    · rw [ite_eq_right hia, ite_eq_right (fun h => hia (Fin.castSucc_inj.1 h))]; simp
 
 theorem hJ_sum_right (ε : Fin X.B.I.n → Bool) (y : Fin X.B.I.n → ℂ) {m : ℕ} (c : Fin m → ℂ)
     (e : Fin m → Fin X.B.I.n → ℂ) : Formalism.L2.SG.HidaSetting.hJ ε y (∑ i, c i • e i) = ∑ i, c i * Formalism.L2.SG.HidaSetting.hJ ε y (e i) := by
@@ -1081,7 +1081,7 @@ theorem coef_efr (u' : D.what₂.Word) (v : InfinitePlace X.B.I.F) {g : Matrix (
   have hg' : ∀ d, g *ᵥ efr X u' v d = ∑ c, G c d • efr X u' v c := hg
   rw [Matrix.mulVec_smul, hg' b, Finset.smul_sum]
   simp only [smul_smul, hJ_sum_right X]
-  simp only [hJ_efr, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hJ_efr, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end RealFrame
 
@@ -1155,14 +1155,14 @@ theorem Alin_shear {N : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ} (hN : 
       z p = rdc ^ (p.1.2.1 - p.1.1.1) * Yhat w rdc z p.1.1 p.1.2 := by
     intro z
     have e1 : Yhat w rdc z p.1.1 p.1.2 = z p / rdc ^ (p.1.2.1 - p.1.1.1) := by
-      simp only [Yhat, dif_pos hcond]
+      simp only [Yhat, dite_eq_left hcond]
       rfl
     rw [e1, mul_div_cancel₀ _ (pow_ne_zero _ hrd)]
   have hcs := conj_shear hN (Y := Yhat w rdc x) (Y' := Yhat w rdc x') p.1.1 p.1.2 ?_
   · rw [Alin_apply, Alin_apply, hx x, hx x', ← mul_sub, ← mul_sub, hcs]
   · intro c d hac hdb hne
     by_cases hcd : c < d ∧ Formalism.L2.SG.RealObj.blkOf w.1 c.1 = Formalism.L2.SG.RealObj.blkOf w.1 d.1
-    · simp only [Yhat, dif_pos hcd]
+    · simp only [Yhat, dite_eq_left hcd]
       congr 1
       apply h
       have h1 : p.1.1.val ≤ c.val := hac
@@ -1173,7 +1173,7 @@ theorem Alin_shear {N : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ} (hN : 
         exact hne (Prod.ext (Fin.ext hh.1) (Fin.ext hh.2))
       show d.val - c.val < p.1.2.val - p.1.1.val
       omega
-    · simp only [Yhat, dif_neg hcd]
+    · simp only [Yhat, dite_eq_right hcd]
 
 end Alin
 

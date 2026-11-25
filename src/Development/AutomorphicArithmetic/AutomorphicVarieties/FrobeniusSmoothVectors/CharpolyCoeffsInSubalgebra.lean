@@ -304,17 +304,17 @@ theorem UpperTheory.V.Fr.finrank_structMapY_range :
       cases b
       · obtain ⟨α, hα'⟩ := hα v
         have key : af y (v, false) = -α := by
-          simp only [af, Bool.false_eq_true, if_false]
+          simp only [af, Bool.false_eq_true, ite_false]
           rw [hα' (gv v), smul_eq_mul]
           field_simp
         rw [key]
-        simp only [xf, Frame.loc2, Bool.false_eq_true, if_false]
+        simp only [xf, Frame.loc2, Bool.false_eq_true, ite_false]
         rw [hl, hα' s, smul_eq_mul]
         field_simp
         ring
       · obtain ⟨β, hβ'⟩ := hβ v
         have key : af y (v, true) = β := by
-          simp only [af, if_true]
+          simp only [af, ite_true]
           rw [hβ' (gv v), smul_eq_mul, Units.val_inv_eq_inv_val]
           field_simp
         have hc : F.star (F.loc0 v s⁻¹) = F.conj (F.loc0 v s) := by
@@ -323,7 +323,7 @@ theorem UpperTheory.V.Fr.finrank_structMapY_range :
         have hcv : F.Ψ ((F.conj (F.loc0 v s) : F.G0) : F.Γ) = F.Ψ (F.loc v s) := by
           rw [← hc, hΨst, hl, map_inv, map_inv, inv_inv]
         rw [key]
-        simp only [xf, Frame.loc2, if_true, MonoidHom.comp_apply]
+        simp only [xf, Frame.loc2, ite_true, MonoidHom.comp_apply]
         rw [hcv, ← hc, hβ' s⁻¹]
         simp only [map_inv, inv_inv, smul_eq_mul]
         field_simp
@@ -487,7 +487,7 @@ theorem UpperTheory.V.Fr.framePoint_alg_coord_eq :
     have y01 := hz (F.loc0 v s) 0 1 (by decide)
     have y02 := hz (F.loc0 v s) 0 2 (by decide)
     have y12 := hz (F.loc0 v s) 1 2 (by decide)
-    simp (config := {decide := true}) only [ordProd, List.ofFn_succ, List.ofFn_zero, List.prod_cons, List.prod_nil, mul_one, Matrix.mul_apply, Fin.sum_univ_three, Matrix.sub_apply, Matrix.smul_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons, Fin.succ_zero_eq_one, Fin.succ_one_eq_two, Matrix.one_apply, Matrix.zero_apply, smul_eq_mul, z01, z02, z12, hd, hb.2, hl, w0, w1, w2, zpow_one, zpow_zero, _root_.zpow_neg_one, Units.val_one, map_one, if_true, if_false, mul_zero, zero_mul, sub_zero, add_zero] at e
+    simp (config := {decide := true}) only [ordProd, List.ofFn_succ, List.ofFn_zero, List.prod_cons, List.prod_nil, mul_one, Matrix.mul_apply, Fin.sum_univ_three, Matrix.sub_apply, Matrix.smul_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons, Fin.succ_zero_eq_one, Fin.succ_one_eq_two, Matrix.one_apply, Matrix.zero_apply, smul_eq_mul, z01, z02, z12, hd, hb.2, hl, w0, w1, w2, zpow_one, zpow_zero, _root_.zpow_neg_one, Units.val_one, map_one, ite_true, ite_false, mul_zero, zero_mul, sub_zero, add_zero] at e
     set x : k := ↑(F.Ψ (F.loc v t)) with hx
     set xi : k := ↑(F.Ψ (F.loc v t))⁻¹ with hxi
     set y : k := ↑(F.Ψ (F.loc v s)) with hy
@@ -984,7 +984,7 @@ theorem UpperTheory.V.Fr.adjoin_image_in_residue_range :
           rw [List.prod_eq_zero]
           · exact zero_mem _
           · exact List.mem_map.mpr ⟨s, hs, hzero _ _ _ hlt⟩
-        · push_neg at hex
+        · push Not at hex
           have hterm := list_forall_eq_zero_of_nonpos_of_sum_eq_zero _ (fun x hx => by
             obtain ⟨s, hs, rfl⟩ := List.mem_map.mp hx
             exact w_sub_w_nonpos_of_le n _ _ (hex s hs)) hsum

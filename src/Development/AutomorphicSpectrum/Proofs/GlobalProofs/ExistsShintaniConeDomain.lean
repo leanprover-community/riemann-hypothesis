@@ -545,12 +545,12 @@ theorem openCone_equivFin {F : Type} [Field F] [CharZero F] (s : Finset F) :
   · rintro ⟨t, ht, rfl⟩
     refine ⟨fun y => if h : y ∈ s then t (s.equivFin ⟨y, h⟩) else 1, ?_, ?_⟩
     · intro y hy
-      simp only [dif_pos hy]
+      simp only [dite_eq_left hy]
       exact ht _
     · rw [← sum_equivFin_symm s (fun y => (if h : y ∈ s then t (s.equivFin ⟨y, h⟩) else 1 : ℚ) • y)]
       refine Finset.sum_congr rfl fun i _ => ?_
       have hm : (s.equivFin.symm i : F) ∈ s := (s.equivFin.symm i).2
-      simp only [dif_pos hm, Subtype.coe_eta, Equiv.apply_symm_apply]
+      simp only [dite_eq_left hm, Subtype.coe_eta, Equiv.apply_symm_apply]
       rw [Rat.smul_def]
   · rintro ⟨t, ht, rfl⟩
     refine ⟨fun i => t (s.equivFin.symm i : F), fun i => ht _ (s.equivFin.symm i).2, ?_⟩
@@ -714,7 +714,7 @@ theorem signConst_of_nonneg (l : V →ₗ[ℚ] ℚ) (s : Finset V) (h : ∀ v �
     rw [map_sum]
     exact Finset.sum_eq_zero (fun i hi => by rw [map_smul, hz i hi, smul_zero])
   · refine Or.inr (Or.inl ?_)
-    push_neg at hz
+    push Not at hz
     obtain ⟨w, hw, hlw⟩ := hz
     intro x hx
     simp only [coneOn, Set.mem_setOf_eq] at hx
@@ -738,7 +738,7 @@ theorem signConst_of_nonpos (l : V →ₗ[ℚ] ℚ) (s : Finset V) (h : ∀ v �
     rw [map_sum]
     exact Finset.sum_eq_zero (fun i hi => by rw [map_smul, hz i hi, smul_zero])
   · refine Or.inr (Or.inr ?_)
-    push_neg at hz
+    push Not at hz
     obtain ⟨w, hw, hlw⟩ := hz
     intro x hx
     simp only [coneOn, Set.mem_setOf_eq] at hx
@@ -762,14 +762,14 @@ private theorem sum_insert_insert_ite_ite_smul [DecidableEq V] {p q : V} {X : Fi
   have hpX : p ∉ X := fun e => hp (Finset.mem_insert_of_mem e)
   have hX : ∑ i ∈ X, (if i = p then α else if i = q then β else t i) • i = ∑ i ∈ X, t i • i :=
     Finset.sum_congr rfl (fun j hj => by
-      rw [if_neg (fun e => hpX (by rw [← e]; exact hj)), if_neg (fun e => hq (by rw [← e]; exact hj))])
-  rw [Finset.sum_insert hp, Finset.sum_insert hq, if_pos rfl, if_neg hqp, if_pos rfl, hX]
+      rw [ite_eq_right (fun e => hpX (by rw [← e]; exact hj)), ite_eq_right (fun e => hq (by rw [← e]; exact hj))])
+  rw [Finset.sum_insert hp, Finset.sum_insert hq, ite_eq_left rfl, ite_eq_right hqp, ite_eq_left rfl, hX]
 
 private theorem sum_insert_ite_smul [DecidableEq V] {p : V} {X : Finset V} (hp : p ∉ X) (α : ℚ) (t : V → ℚ) :
     ∑ i ∈ insert p X, (if i = p then α else t i) • i = α • p + ∑ i ∈ X, t i • i := by
   have hX : ∑ i ∈ X, (if i = p then α else t i) • i = ∑ i ∈ X, t i • i :=
-    Finset.sum_congr rfl (fun j hj => by rw [if_neg (fun e => hp (by rw [← e]; exact hj))])
-  rw [Finset.sum_insert hp, if_pos rfl, hX]
+    Finset.sum_congr rfl (fun j hj => by rw [ite_eq_right (fun e => hp (by rw [← e]; exact hj))])
+  rw [Finset.sum_insert hp, ite_eq_left rfl, hX]
 
 private theorem pos_ite_ite_of_pos_insert_insert [DecidableEq V] {p q : V} {X : Finset V} {α β : ℚ} {t : V → ℚ}
     (hα : 0 < α) (hβ : 0 < β) (ht : ∀ j ∈ X, 0 < t j) :
@@ -900,12 +900,12 @@ theorem tile_of_card_lt [DecidableEq V] (P : ConvexCone ℚ V) (l : V →ₗ[ℚ
   have hfr : ∀ (x : V) (X : Finset V), l x = 0 →
       ((insert x X).filter (fun v => l v ≠ 0)).card = (X.filter (fun v => l v ≠ 0)).card := by
     intro x X hx
-    rw [Finset.filter_insert, if_neg (not_not.mpr hx)]
+    rw [Finset.filter_insert, ite_eq_right (not_not.mpr hx)]
   have hfi : ∀ (x : V) (X : Finset V), l x ≠ 0 → x ∉ X →
       ((insert x X).filter (fun v => l v ≠ 0)).card = (X.filter (fun v => l v ≠ 0)).card + 1 := by
     intro x X hx hxX
-    rw [Finset.filter_insert, if_pos hx, Finset.card_insert_eq_ite,
-      if_neg (fun h => hxX (Finset.mem_filter.mp h).1)]
+    rw [Finset.filter_insert, ite_eq_left hx, Finset.card_insert_eq_ite,
+      ite_eq_right (fun h => hxX (Finset.mem_filter.mp h).1)]
   induction n with
   | zero => intro s hs; exact absurd hs (Nat.not_lt_zero _)
   | succ n ih =>
@@ -914,7 +914,7 @@ theorem tile_of_card_lt [DecidableEq V] (P : ConvexCone ℚ V) (l : V →ₗ[ℚ
     · exact Tile.cone s hli hP (signConst_of_nonneg l s hnn)
     by_cases hnp : ∀ v ∈ s, l v ≤ 0
     · exact Tile.cone s hli hP (signConst_of_nonpos l s hnp)
-    push_neg at hnn hnp
+    push Not at hnn hnp
     obtain ⟨w, hws, hlw⟩ := hnn
     obtain ⟨u, hus, hlu⟩ := hnp
     have huw : u ≠ w := by rintro rfl; linarith
@@ -1120,9 +1120,9 @@ theorem mem_coneOn_basis [DecidableEq V] {κ : Type} [Fintype κ] (b : Module.Ba
       simp only [map_sum, map_smul, Module.Basis.repr_self, Finsupp.smul_single, smul_eq_mul, mul_one,
       Finsupp.finsetSum_apply]
       rw [Finset.sum_eq_single i]
-      · rw [Finsupp.single_apply, if_pos rfl]
+      · rw [Finsupp.single_apply, ite_eq_left rfl]
       · intro j _ hji
-        rw [Finsupp.single_apply, if_neg hji]
+        rw [Finsupp.single_apply, ite_eq_right hji]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     rw [hrep]
@@ -1131,9 +1131,9 @@ theorem mem_coneOn_basis [DecidableEq V] {κ : Type} [Fintype κ] (b : Module.Ba
     have key : ∀ i, ∑ j, b.repr (b i) j * b.repr x j = b.repr x i := by
       intro i
       rw [Module.Basis.repr_self, Finset.sum_eq_single i]
-      · rw [Finsupp.single_apply, if_pos rfl, one_mul]
+      · rw [Finsupp.single_apply, ite_eq_left rfl, one_mul]
       · intro j _ hji
-        rw [Finsupp.single_apply, if_neg (Ne.symm hji), zero_mul]
+        rw [Finsupp.single_apply, ite_eq_right (Ne.symm hji), zero_mul]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     refine ⟨fun v => ∑ j, b.repr v j * b.repr x j, ?_, ?_⟩

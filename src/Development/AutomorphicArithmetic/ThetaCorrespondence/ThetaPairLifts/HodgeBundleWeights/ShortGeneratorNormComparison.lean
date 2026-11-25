@@ -31,50 +31,7 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.CoveringDomainLatticeRegularity
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.IntegralCuspSlopePowerBound
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ComponentMassSum
 import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
@@ -83,8 +40,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsoOverOfIsOpenImmersion
 import Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FnAlgClosedOfFixedPoints
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNumberFieldPoint
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.WeightFloorInequalities
 
@@ -488,7 +443,7 @@ theorem le_vAdd_of_mem {B : Finset ℕ} (hB : ∀ p ∈ B, p.Prime) (ρ : Height
     have : ((-m : ℤ) : ℝ) ≤ (vAdd w a : ℝ) := by exact_mod_cast this
     push_cast at this
     linarith
-  · push_neg at h
+  · push Not at h
     obtain ⟨p, hp, hpw⟩ := h
     have hmem : ((∏ p ∈ B, p : ℕ) : 𝓞 K) ∈ w.asIdeal :=
       Ideal.mem_of_dvd _ (Nat.cast_dvd_cast (Finset.dvd_prod_of_mem _ hp)) hpw
@@ -858,22 +813,22 @@ theorem wtOf_nonneg_antitone (la : AllWt.Weight Dw) (m : ℤ) (ha : ∀ τ, Anti
   have hi0 := h0 (τ, i)
   simp only [wtOf] at hi0 ⊢
   by_cases h : τ (H.rt : E) = H.rt0
-  · simp only [dif_pos h] at hi0 ⊢
+  · simp only [dite_eq_left h] at hi0 ⊢
     by_cases hj : j < Dw.p
     · have hi : i < Dw.p := by omega
-      simp only [dif_pos hi, dif_pos hj]
+      simp only [dite_eq_left hi, dite_eq_left hj]
       have := ha ⟨τ, h⟩ (show (⟨i, by omega⟩ : Fin (Dw.p + Dw.q)) ≤ ⟨j, by omega⟩ from hij)
       omega
-    · simpa only [dif_neg hj] using hi0
+    · simpa only [dite_eq_right hj] using hi0
   · have h' := AllWt.conj_mem h
-    simp only [dif_neg h, dif_pos h'] at hi0 ⊢
+    simp only [dite_eq_right h, dite_eq_left h'] at hi0 ⊢
     by_cases hj : j < Dw.q
     · have hi : i < Dw.q := by omega
-      simp only [dif_pos hi, dif_pos hj]
+      simp only [dite_eq_left hi, dite_eq_left hj]
       have := ha ⟨_, h'⟩ (show (⟨Dw.p + (Dw.q - 1 - j), by omega⟩ : Fin (Dw.p + Dw.q)) ≤
         ⟨Dw.p + (Dw.q - 1 - i), by omega⟩ from Fin.mk_le_mk.2 (by omega))
       omega
-    · simpa only [dif_neg hj] using hi0
+    · simpa only [dite_eq_right hj] using hi0
 
 theorem exists_exponents (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
     (Dw : Datum H) (m : ℕ) (la : AllWt.Weight Dw) (hp : 1 ≤ Dw.p) (ha : ∀ τ, Antitone (la τ))
@@ -894,7 +849,7 @@ theorem exists_exponents (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
     have hk2 := k.2
     have hlt : Dw.p - 1 + 1 < Dw.p + Dw.q := by omega
     have h1 := hg τ
-    rw [GlobalTheory.CompHS.gap, dif_pos hlt] at h1
+    rw [GlobalTheory.CompHS.gap, dite_eq_left hlt] at h1
     have h2 := ha τ (show (⟨Dw.p - 1 + 1, hlt⟩ : Fin (Dw.p + Dw.q)) ≤ k from Fin.le_def.2 (by simp only; omega))
     rw [e]; push_cast at h1; omega
   have hanti : ∀ τ, Antitone (lb τ) := fun τ i j hij => by

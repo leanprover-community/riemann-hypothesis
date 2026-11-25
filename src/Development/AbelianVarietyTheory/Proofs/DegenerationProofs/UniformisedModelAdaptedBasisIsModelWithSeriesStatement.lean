@@ -377,7 +377,7 @@ theorem good_of_parts {k : Type} [Field k] (Φ : FibPre k) (N : ℕ) (q : Quadra
     have key : ∀ i, (if h : cls i = cls i₀ then a ⟨i, h⟩ else 0) ≠ 0 → cls i = cls i₀ := by
       intro i hi
       by_contra h
-      exact hi (dif_neg h)
+      exact hi (dite_eq_right h)
     refine ⟨fun i => if h : cls i = cls i₀ then a ⟨i, h⟩ else 0, fun i hi => ?_, fun l => ?_⟩
     · rw [key i hi]
       exact hm

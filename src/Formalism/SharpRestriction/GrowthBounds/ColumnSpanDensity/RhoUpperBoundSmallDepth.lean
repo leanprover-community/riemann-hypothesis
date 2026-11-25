@@ -285,7 +285,7 @@ theorem famT (c : Fin k → R.W ⧸ Ideal.span {(p : R.W)}) (j : Fin k) (a : Fin
           apply Finset.sum_eq_zero
           intro l _
           simp [map_mul, R.res_p]
-        · simp only [hc, if_false, mul_one]
+        · simp only [hc, ite_false, mul_one]
           rw [phi_col R c j a c0 hc, ha c0, sub_self]
     | zero =>
       refine ⟨0, ?_, ?_⟩

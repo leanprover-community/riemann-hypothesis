@@ -1415,7 +1415,7 @@ lemma core (hC : FormCoreC) (hAe : AeFromTests) (hFa : FatouParam) (hL : CCLin) 
     have hmem : ∀ t, t ∈ box → InCC A 4 (dilF t x.1) := fun t h =>
       InCC_mono (by norm_num) ⟨_, (hCd t h x.1 c5 hc5).1⟩
     let Φ : ℝ × ℝ → V := fun t => if h : t ∈ box then ⟨dilF t x.1, hmem t h⟩ else x
-    have hΦ : ∀ t, t ∈ box → (Φ t).1 = dilF t x.1 := fun t h => by simp only [Φ, dif_pos h]
+    have hΦ : ∀ t, t ∈ box → (Φ t).1 = dilF t x.1 := fun t h => by simp only [Φ, dite_eq_left h]
     refine ⟨Φ, fun t => (((t.1 * t.2) ^ kap k r : ℝ) : ℂ) * betaInfTau D (τ₀.1 * t.1, τ₀.2 * t.2) x.1 x.1,
       (1, 1), ?_, ?_, ?_, ?_, ?_⟩
     · apply Subtype.ext

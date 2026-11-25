@@ -115,14 +115,14 @@ theorem bump_mem_of_bump {G W : Type} [Group G] [TopologicalSpace G] [IsTopologi
   have hval : ∀ x, b.1.1.1 ((x.out : K₁) : G) = if P x then v else 0 := by
     intro x
     by_cases hx : P x
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       obtain ⟨a, z, hz, e⟩ := hx
       have ha : (a : G) ∈ K₁ := by
         have : (a : G) = ((x.out : K₁) : G) * z⁻¹ := by rw [e]; group
         rw [this]
         exact mul_mem (x.out).2 (inv_mem (h₂₁ hz))
       rw [e, hb.1 a z hz, hv a ha]
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       exact hb.2 _ hx
   set N : ℕ := (Finset.univ.filter P).card with hN
   have hT1 : T.1.1.1 1 = (N : ℂ) • v := by
@@ -492,8 +492,8 @@ theorem lastRowMat_mul_rowInv {r : Fin (n + 1) → k} (hr : r (Fin.last n) ≠ 0
     · subst hj
       first
       | simp [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, hr]
-    · rw [Matrix.one_apply_ne (Ne.symm hj), if_neg hj]
-      simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_neg hj]
+    · rw [Matrix.one_apply_ne (Ne.symm hj), ite_eq_right hj]
+      simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, ite_eq_right hj]
       linear_combination (-r j) * mul_inv_cancel₀ hr
   · first
     | (rw [Matrix.mul_apply]
@@ -546,9 +546,9 @@ theorem continuousAt_rowInv : ContinuousAt (fun x : GL (Fin (n + 1)) k => rowInv
         rw [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow_one]; exact one_ne_zero)
   refine continuousAt_pi.2 fun j => ?_
   by_cases hj : j = Fin.last n
-  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_pos hj]
+  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, ite_eq_left hj]
     exact hl
-  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_neg hj]
+  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, ite_eq_right hj]
     exact (((continuous_apply j).comp hv).continuousAt.neg).mul hl
 
 theorem exists_nhd {V : Set (GL (Fin (n + 1)) k)} (hV : V ∈ 𝓝 (1 : GL (Fin (n + 1)) k)) :

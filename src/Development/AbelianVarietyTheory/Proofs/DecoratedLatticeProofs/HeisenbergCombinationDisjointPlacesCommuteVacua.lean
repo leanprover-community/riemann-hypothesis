@@ -148,7 +148,7 @@ variable {D : D7}
 theorem compAt_idem {P : Pl D → Prop} {w : Pl D} (hpw : P w) : compAt D w (idem P) = 1 := by
   rw [← compFin_eq_compAt]
   show evalV D.host.F w (indP D.host.F P) ⊗ₜ[D.host.F] (1 : D.host.E) = 1
-  rw [evalV_indP, if_pos hpw]
+  rw [evalV_indP, ite_eq_left hpw]
   rfl
 
 theorem sub_idem_mem {P P' : Pl D → Prop} {a : AE D} (ha : a ∈ idAt D (fun p => P p ∨ P' p)) :

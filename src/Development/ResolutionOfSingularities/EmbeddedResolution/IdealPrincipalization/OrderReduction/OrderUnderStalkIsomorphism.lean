@@ -20,16 +20,9 @@ namespace FunctorialResolution.EmbeddedResolution
 theorem map_maximalIdeal_le_maximalIdeal_of_retraction {R S : Type*} [CommRing R] [IsLocalRing R]
     [CommRing S] [IsLocalRing S] (f : R →+* S) (g : S →+* R) (hgf : g.comp f = RingHom.id R) :
     Ideal.map f (IsLocalRing.maximalIdeal R) ≤ IsLocalRing.maximalIdeal S := by
-  rw [Ideal.map_le_iff_le_comap]
-  intro x hx
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at hx
-  rw [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  intro hu
-  apply hx
-  have h3 : g (f x) = x := by
+  have := isLocalHom_of_leftInverse (f := f) g fun x => by
     rw [← RingHom.comp_apply, hgf, RingHom.id_apply]
-  have h2 := hu.map g
-  rwa [h3] at h2
+  exact IsLocalRing.map_maximalIdeal_le f
 
 theorem idealOrder_map_eq_of_comp_eq_id {R S : Type*} [CommRing R] [IsLocalRing R]
     [CommRing S] [IsLocalRing S] (f : R →+* S) (g : S →+* R)

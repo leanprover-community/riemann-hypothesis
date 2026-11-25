@@ -885,7 +885,7 @@ private lemma aux {W : Type u₁} {K : Type u₂} {A : Type u₅} {C : Type u₃
     intro i
     by_cases hi : i ∈ S
     · have hle : a₀ i ≤ N := hN ▸ Finset.le_sup hi
-      simp only [f, Finsupp.onFinset_apply, if_pos hi]
+      simp only [f, Finsupp.onFinset_apply, ite_eq_left hi]
       rw [← IsScalarTower.algebraMap_apply W K C, map_mul, map_pow, map_natCast, ← hw₀ i,
         ← mul_assoc, ← pow_add, Nat.sub_add_cancel hle]
     · have h0 : Φ z i = 0 := by simpa [hS] using hi

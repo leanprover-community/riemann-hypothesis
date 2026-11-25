@@ -121,7 +121,7 @@ theorem sum_M_N (hB : IsBlockImage y k₀ M N x) (hx : LinearIndependent ℤ x) 
   set g : Ix (Fin r) → ℤ := fun l => ∑ i, M j i * N i l - if j = l then 1 else 0 with hg
   have key : ∑ l, g l • x l = 0 := by
     simp only [hg, sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, zsmul_eq_mul]
+      Finset.mem_univ, ite_true, zsmul_eq_mul]
     rw [sub_eq_zero, hB.1 j]
     simp_rw [hB.2]
     push_cast
@@ -248,7 +248,7 @@ theorem BlockImageDatum.proof (hA : BlockImageArith.Statement) (hI : BlockImageI
     change ∏ k, (fsMetric (ι := ι k)).ρ (fun i => z ⟨k, i⟩) ^ (unitDeg d.k₀ k) =
       (fsMetric (ι := ι d.k₀)).ρ (fun i => ∑ j, (N i j : ℂ) * blockMapC d.k₀ M z j)
     rw [Finset.prod_eq_single d.k₀ (fun k _ hk => by simp [unitDeg, hk]) (by simp)]
-    simp only [unitDeg, if_true, zpow_one]
+    simp only [unitDeg, ite_true, zpow_one]
     congr 1
     funext i
     exact (blockMapC_N hB hz i).symm

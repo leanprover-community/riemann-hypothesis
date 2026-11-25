@@ -165,32 +165,6 @@ def tangentPt {R : Type u} [CommRing R] [Algebra O R] (v : Cotangent G →ₗ[O]
 
 end Tangent
 
-section Characters
-
-variable {S : Scheme.{u}} {G : Over S} [GrpObj G]
-
-
-variable [IsCommMonObj G] (G)
-
-variable {G}
-
-end Characters
-
-section HodgeTate
-
-variable {O : Type u} [CommRing O] [IsLocalRing O] {G : Over (Spec (CommRingCat.of O))}
-  [GrpObj G] [IsCommMonObj G]
-
-variable (G)
-
-end HodgeTate
-
-section Valued
-
-variable {C : Type u} [Field C]
-
-end Valued
-
 end
 
 end GlobalTheory.IndefiniteRowSideFullHecke.HodgeTateCharacterSystems

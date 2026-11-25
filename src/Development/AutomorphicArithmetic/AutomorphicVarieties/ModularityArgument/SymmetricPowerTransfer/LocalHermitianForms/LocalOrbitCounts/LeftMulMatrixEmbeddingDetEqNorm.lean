@@ -179,7 +179,7 @@ theorem UpperTheory.V.Z.Sym.Loc.gLat :
   · intro X hX
     have h : ∃ S, IsLat O τ S ∧ (∀ y ∈ S, (u : Etau K τ) * y ∈ S) ∧ X = cls τ S := by
       by_contra h
-      exact hX (by rw [if_neg h, mul_zero])
+      exact hX (by rw [ite_eq_right h, mul_zero])
     obtain ⟨S, hS, -, rfl⟩ := h
     obtain ⟨g, rfl⟩ := isLat_lat hS
     refine ⟨QuotientGroup.mk g, (hmk g).symm, fun y hy => ?_⟩

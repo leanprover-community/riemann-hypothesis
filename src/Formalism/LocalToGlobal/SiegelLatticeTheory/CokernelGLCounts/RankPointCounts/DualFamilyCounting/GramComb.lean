@@ -75,7 +75,7 @@ theorem hgv_e (a : Fin (r + 1)) (d : Fin r) :
     S.hT (gv y z N a) (e d) = if a = Fin.castSucc d then 1 else 0 := by
   induction a using Fin.lastCases with
   | last =>
-    rw [if_neg (Fin.castSucc_lt_last d).ne']
+    rw [ite_eq_right (Fin.castSucc_lt_last d).ne']
     simp only [gv, Fin.snoc_last, LinearMap.map_smulₛₗ, LinearMap.smul_apply, _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.ez d), smul_zero]
   | cast a =>
     simp only [gv, Fin.snoc_castSucc, Fin.castSucc_inj, h.ye]
@@ -91,10 +91,10 @@ theorem hz_gv (a : Fin (r + 1)) : S.hT z (gv y z N a) = if a = Fin.last r then 1
   have hN0 : (N : E) ≠ 0 := by exact_mod_cast hN.ne'
   induction a using Fin.lastCases with
   | last =>
-    simp only [gv, Fin.snoc_last, map_smul, smul_eq_mul, h.zz, if_true]
+    simp only [gv, Fin.snoc_last, map_smul, smul_eq_mul, h.zz, ite_true]
     field_simp
   | cast a =>
-    rw [if_neg (Fin.castSucc_lt_last a).ne]
+    rw [ite_eq_right (Fin.castSucc_lt_last a).ne]
     simp only [gv, Fin.snoc_castSucc]
     exact _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.yz a)
 
@@ -106,7 +106,7 @@ theorem hgv_gv (a a' : Fin (r + 1)) : S.hT (gv y z N a) (gv y z N a') =
     induction a' using Fin.lastCases with
     | last =>
       simp only [gv, Fin.snoc_last, LinearMap.map_smulₛₗ, map_smul, LinearMap.smul_apply, smul_eq_mul, h.zz,
-        starRingEnd_apply, star_neg, star_inv₀, star_natCast, and_self, if_true]
+        starRingEnd_apply, star_neg, star_inv₀, star_natCast, and_self, ite_true]
       field_simp
     | cast a' =>
       simp only [gv, Fin.snoc_last, Fin.snoc_castSucc, LinearMap.map_smulₛₗ, LinearMap.smul_apply,

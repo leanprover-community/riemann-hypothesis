@@ -199,11 +199,11 @@ theorem delta_topPart_eq_zero {ι : Type} [LinearOrder ι] {E : Type} [AddCommGr
     rw [Pi.zero_apply, ← h1]
     refine Finset.sum_congr rfl fun i hi => ?_
     have : (t.erase i).card = k := by rw [Finset.card_erase_of_mem hi]; omega
-    simp only [this, if_true]
+    simp only [this, ite_true]
   · refine Finset.sum_eq_zero fun i hi => ?_
     have h0 := Finset.card_erase_add_one hi
     have : (t.erase i).card ≠ k := by omega
-    simp only [this, if_false, smul_zero]
+    simp only [this, ite_false, smul_zero]
 
 theorem hypZero_of_cechZero : ∀ {ι : Type} [LinearOrder ι] {E : Type} [AddCommGroup E] (d : E →+ E) (T : ℕ → Finset ι → AddSubgroup E), (∀ x, d (d x) = 0) → (∀ q s t, s.Nonempty → s ⊆ t → T q s ≤ T q t) → (∀ q s x, x ∈ T q s → d x ∈ T (q + 1) s) → ∀ n, (∀ q b, q + b = n → CechZero (T q) b) → HypZero d T n := by
   intro ι _ E _ d T hdd hmono hdT n hC
@@ -227,9 +227,9 @@ theorem hypZero_of_cechZero : ∀ {ι : Type} [LinearOrder ι] {E : Type} [AddCo
       have hin : InCech (T q) (b + 1) (fun s => if s.card = b + 1 then c s else 0) := by
         refine ⟨by simp, fun s => ?_, fun s hs => by simp [hs]⟩
         by_cases hs : s.card = b + 1
-        · simp only [hs, if_true]
+        · simp only [hs, ite_true]
           exact hc.2.1 q s (by omega)
-        · simp only [hs, if_false]
+        · simp only [hs, ite_false]
           exact (T q s).zero_mem
       obtain ⟨y, hy, hyc⟩ := hC q b hq _ hin (delta_topPart_eq_zero d c (b + 1) hD h0)
       have hyT : InTot T n y := by
@@ -457,7 +457,7 @@ def LatModel.iso {V : Type} [AddCommGroup V] [Module X.functionField V] {M : X �
     by_cases hW : genericPoint X ∈ W
     · have hU : genericPoint X ∈ U := e hW
       apply L'.inj W hW
-      simp only [LatModel.secEquiv', dif_pos hW, dif_pos hU]
+      simp only [LatModel.secEquiv', dite_eq_left hW, dite_eq_left hU]
       rw [L.val_secEquiv L' W hW, L'.res U W e hW, L.res U W e hW, L.val_secEquiv L' U hU]
     · haveI := subsingleton_sec_of_not_gen F' hW
       exact Subsingleton.elim _ _
@@ -762,7 +762,7 @@ theorem val_resHom {U W : X.Opens} (e : W ≤ U) (s : secGrp M U) :
   unfold resHom; simp only [AddMonoidHom.coe_mk, ZeroHom.coe_mk]; split_ifs <;> rfl
 
 theorem val_resHom_of_mem {U W : X.Opens} (e : W ≤ U) (h : genericPoint X ∈ W) (s : secGrp M U) :
-    ((resHom M e s : secGrp M W) : V) = s := by rw [val_resHom, if_pos h]
+    ((resHom M e s : secGrp M W) : V) = s := by rw [val_resHom, ite_eq_left h]
 
 def pre : TopCat.Presheaf Ab.{0} X where
   obj U := AddCommGrpCat.of (secGrp M U.unop)
@@ -810,8 +810,8 @@ theorem isSheaf_pre : (pre M).IsSheaf := by
   have key : ∀ k l, genericPoint X ∈ W k → genericPoint X ∈ W l →
       sv M _ (sf k) = sv M _ (sf l) := fun k l hk hl => by
     have := congrArg (sv M _) (hsf k l)
-    rw [sv_map, sv_map, if_pos (show genericPoint X ∈ W k ⊓ W l from ⟨hk, hl⟩),
-      if_pos (show genericPoint X ∈ W k ⊓ W l from ⟨hk, hl⟩)] at this
+    rw [sv_map, sv_map, ite_eq_left (show genericPoint X ∈ W k ⊓ W l from ⟨hk, hl⟩),
+      ite_eq_left (show genericPoint X ∈ W k ⊓ W l from ⟨hk, hl⟩)] at this
     exact this
   by_cases hg : genericPoint X ∈ iSup W
   · obtain ⟨k₀, hk₀⟩ := Opens.mem_iSup.1 hg
@@ -822,11 +822,11 @@ theorem isSheaf_pre : (pre M).IsSheaf := by
       exact (sv_mem M _ (sf k)).1 y hk
     refine ⟨mk M (Opposite.op (iSup W)) _ mem, fun k => ?_, fun t ht => ?_⟩
     · refine sv_ext M fun hk => ?_
-      rw [sv_map, if_pos hk, sv_mk]
+      rw [sv_map, ite_eq_left hk, sv_mk]
       exact key k₀ k hk₀ hk
     · refine sv_ext M fun _ => ?_
       have := congrArg (sv M _) (ht k₀)
-      rw [sv_map, if_pos hk₀] at this
+      rw [sv_map, ite_eq_left hk₀] at this
       rw [sv_mk]
       exact this
   · refine ⟨mk M (Opposite.op (iSup W)) 0 (zero_mem _), fun k => ?_, fun t _ => ?_⟩
@@ -893,7 +893,7 @@ def latModel : LatModel M (toMod hM) where
     · intro hv
       exact ⟨mk M (Opposite.op U) v ⟨hv, fun h' => (h' h).elim⟩, rfl⟩
   res U W e h s := by
-    exact (sv_map M (homOfLE e).op s).trans (if_pos h)
+    exact (sv_map M (homOfLE e).op s).trans (ite_eq_left h)
   smul U h r s := val_smulSec hM h r s
 
 end GlobalTheory.LogDR.LatSheaf
@@ -1058,10 +1058,10 @@ theorem mem_chartForms_iff_sum_card {K : Type} [Field K] (A : Subring K) {n : �
         rw [e]
         exact hdA _
       · dsimp only
-        rw [dif_neg hI, zero_mul, zero_div]
+        rw [dite_eq_right hI, zero_mul, zero_div]
         exact zero_mem A
     · rw [hsplit (fun I => (if h : I.card = a then d ⟨I, h⟩ * ((t⁻¹ * ∏ j ∈ I \ J, x j : Kˣ) : K)
-          else 0) • logWedge x I) (fun I hI => by simp only [dif_neg hI, zero_smul])]
+          else 0) • logWedge x I) (fun I hI => by simp only [dite_eq_right hI, zero_smul])]
       refine Finset.sum_congr rfl fun I _ => ?_
       rw [dite_eq_left I.2, smul_smul]
 
@@ -1560,10 +1560,10 @@ private theorem logAt_top_lemma_6 {X : Scheme.{0}} [IsIntegral X] (Z : Set X) (G
       rw [hdx, map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul]
       by_cases hij : j = i
       · subst hij
-        simp only [s, hj, if_true, mul_one]
+        simp only [s, hj, ite_true, mul_one]
         rw [mul_inv_cancel₀ (x j).ne_zero]
         exact one_mem _
-      · rw [if_neg hij, mul_zero, mul_zero]
+      · rw [ite_eq_right hij, mul_zero, mul_zero]
         exact zero_mem _
   constructor
   · intro hη

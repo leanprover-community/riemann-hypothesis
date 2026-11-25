@@ -61,12 +61,6 @@ theorem eq_coordHom_iff (κ : GA D V) (g : GL Y K) :
 
 end Coord
 
-section AtLevel
-
-variable {ζ₀ : Fin a.Lz.rank → D.host.E} {PP : Formalism.L2.DIV.Pl D.host.E} (H : GX a ζ₀ PP)
-
-end AtLevel
-
 
 
 

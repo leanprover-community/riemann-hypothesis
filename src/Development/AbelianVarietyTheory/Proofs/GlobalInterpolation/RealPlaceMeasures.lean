@@ -1032,8 +1032,8 @@ theorem ptGauge_act_le (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (g
     Finset.sum_le_sum fun i _ => Finset.single_le_sum (f := fun j => ‖(UpqT.mat g - 1) i j‖)
       (fun _ _ => norm_nonneg _) (Finset.mem_univ _)
   rw [← e.sum_comp, Fintype.sum_option] at h2
-  simp only [Matrix.sub_apply, Matrix.one_apply, e.injective.eq_iff, if_true, reduceCtorEq,
-    if_false, sub_zero] at h2
+  simp only [Matrix.sub_apply, Matrix.one_apply, e.injective.eq_iff, ite_true, reduceCtorEq,
+    ite_false, sub_zero] at h2
   simp only [ptGauge, h1]
   linarith [norm_nonneg (UpqT.mat g (e none) (e none) - 1)]
 

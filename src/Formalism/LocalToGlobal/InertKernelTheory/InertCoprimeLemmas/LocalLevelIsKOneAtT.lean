@@ -66,14 +66,14 @@ theorem resV_eq_subst [Finite ι] {f : κ → ι} (hf : Function.Injective f) (g
   · beta_reduce
     rw [Finsupp.prod_mapDomain_index (fun _ => pow_zero _) (fun _ _ _ => pow_add _ _ _)]
     simp only [resFam_apply hf]
-    rw [prod_X_pow_lemma, MvPowerSeries.coeff_monomial, if_pos rfl, smul_eq_mul, mul_one]
+    rw [prod_X_pow_lemma, MvPowerSeries.coeff_monomial, ite_eq_left rfl, smul_eq_mul, mul_one]
   · intro d hd
     by_cases hsub : ↑d.support ⊆ Set.range f
     · obtain ⟨d', rfl⟩ : ∃ d', Finsupp.mapDomain f d' = d :=
         ⟨_, Finsupp.mapDomain_comapDomain f hf d hsub⟩
       rw [Finsupp.prod_mapDomain_index (fun _ => pow_zero _) (fun _ _ _ => pow_add _ _ _)]
       simp only [resFam_apply hf]
-      rw [prod_X_pow_lemma, MvPowerSeries.coeff_monomial, if_neg, smul_zero]
+      rw [prod_X_pow_lemma, MvPowerSeries.coeff_monomial, ite_eq_right, smul_zero]
       rintro rfl
       exact hd rfl
     · rw [Set.not_subset] at hsub
@@ -94,8 +94,8 @@ private theorem resV_one_lemma [Finite ι] {f : κ → ι} (hf : Function.Inject
   ext n
   rw [resV_coeff, MvPowerSeries.coeff_one, MvPowerSeries.coeff_one]
   by_cases h : n = 0
-  · rw [if_pos h, if_pos (by rw [h, Finsupp.mapDomain_zero])]
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_left h, ite_eq_left (by rw [h, Finsupp.mapDomain_zero])]
+  · rw [ite_eq_right h, ite_eq_right]
     intro h'
     apply h
     apply Finsupp.mapDomain_injective hf
@@ -135,8 +135,8 @@ theorem resV_X [Finite ι] {f : κ → ι} (hf : Function.Injective f) (k : κ) 
   ext n
   rw [resV_coeff, MvPowerSeries.coeff_X, MvPowerSeries.coeff_X]
   by_cases h : n = Finsupp.single k 1
-  · rw [if_pos h, if_pos (by rw [h, Finsupp.mapDomain_single])]
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_left h, ite_eq_left (by rw [h, Finsupp.mapDomain_single])]
+  · rw [ite_eq_right h, ite_eq_right]
     intro h'
     apply h
     apply Finsupp.mapDomain_injective hf
@@ -146,7 +146,7 @@ theorem resV_X_off [Finite ι] {f : κ → ι} (hf : Function.Injective f) (i : 
     resV f (MvPowerSeries.X i : MvPowerSeries ι R) = 0 := by
   classical
   ext n
-  rw [resV_coeff, MvPowerSeries.coeff_X, map_zero, if_neg]
+  rw [resV_coeff, MvPowerSeries.coeff_X, map_zero, ite_eq_right]
   intro h
   have h2 := congrArg (fun d => d i) h
   simp only [Finsupp.single_eq_same] at h2
@@ -174,7 +174,7 @@ theorem resV_subst_diag [Finite ι] {f : κ → ι} (hf : Function.Injective f) 
   by_cases hi : ∃ k, f k = i
   · obtain ⟨k, rfl⟩ := hi
     rw [resFam_apply hf, MvPowerSeries.subst_X ha', h1]
-  · push_neg at hi
+  · push Not at hi
     rw [resFam_off f i hi, h0 i hi, ← MvPowerSeries.coe_substAlgHom ha', map_zero]
 
 private theorem cc_psubst_lemma {τ : Type} {c : MvPowerSeries τ R} (hc : MvPowerSeries.constantCoeff c = 0)

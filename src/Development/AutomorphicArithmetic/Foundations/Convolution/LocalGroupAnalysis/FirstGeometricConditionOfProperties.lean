@@ -200,8 +200,8 @@ private theorem mult_smul (σ : E ≃ₐ[F] E) (w : InfinitePlace E) : (σ • w
   have h : (σ • w).IsReal ↔ w.IsReal := InfinitePlace.isReal_smul_iff
   unfold InfinitePlace.mult
   by_cases hw : w.IsReal
-  · rw [if_pos (h.2 hw), if_pos hw]
-  · rw [if_neg (fun h' => hw (h.1 h')), if_neg hw]
+  · rw [ite_eq_left (h.2 hw), ite_eq_left hw]
+  · rw [ite_eq_right (fun h' => hw (h.1 h')), ite_eq_right hw]
 
 private theorem inf_prod (σ : E ≃ₐ[F] E) {n : ℕ} (g : AdelicGLn.AdelicGL E n) :
     (∏ w : InfinitePlace E, AutomorphicForm.locHeight (infAt w (mapGL n (galAd σ) g)) ^ w.mult) =

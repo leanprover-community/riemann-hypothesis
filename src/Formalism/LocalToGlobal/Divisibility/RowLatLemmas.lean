@@ -337,7 +337,7 @@ theorem resSet_finite (hc : Col.PairComm B.op) (X : Finset (G → K)) : (B.resSe
     if h : Sg ∈ B.resSet X then (hex Sg h).choose else 0
   have hf : ∀ Sg (h : Sg ∈ B.resSet X), B.HasRes Sg (f Sg) ∧ Col.Occurs B.op (f Sg) := by
     intro Sg h
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     exact (hex Sg h).choose_spec
   refine Set.Finite.of_injOn (f := f) (t := (F : Set (B.Pl × ℕ → K))) ?_ ?_ F.finite_toSet
   · intro Sg h
@@ -355,7 +355,7 @@ theorem resSet_finite (hc : Col.PairComm B.op) (X : Finset (G → K)) : (B.resSe
 theorem mem_ixFin (hc : Col.PairComm B.op) (X : Finset (G → K)) (Sg : Pl0 → K[X]) :
     Sg ∈ B.ixFin X ↔ Sg ∈ B.resSet X := by
   unfold ixFin
-  rw [dif_pos (B.resSet_finite hc X)]
+  rw [dite_eq_left (B.resSet_finite hc X)]
   exact Set.Finite.mem_toFinset _
 
 theorem part_indep (hc : Col.PairComm B.op) {ι : Type} (Sg : ι → Pl0 → K[X])
@@ -507,7 +507,7 @@ theorem sameTypes_self {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {s : ℕ} (h :
   have hSg : ∀ P, Sg (B.pl P) = c P := by
     intro P
     have hP : ∃ P', B.pl P' = B.pl P := ⟨P, rfl⟩
-    simp only [Sg, dif_pos hP]
+    simp only [Sg, dite_eq_left hP]
     rw [h.pl_inj hP.choose_spec]
   have hres : B.HasRes Sg i.1 := by
     intro P
@@ -517,7 +517,7 @@ theorem sameTypes_self {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {s : ℕ} (h :
   rw [B.mem_ixFin h.comm]
   refine ⟨fun P0 hP0 => ?_, ?_⟩
   · have hP : ¬ ∃ P, B.pl P = P0 := fun ⟨P, hP⟩ => hP0 ⟨P, hP⟩
-    simp only [Sg, dif_neg hP]
+    simp only [Sg, dite_eq_right hP]
   · obtain ⟨u0, hu0⟩ := B.exists_vE_of_fix (Lvl.full ℓ.X) hψA
     intro hbot
     have hu0mem : u0 ∈ B.inV0 (Lvl.full ℓ.X) (B.partF Sg) := by
@@ -697,7 +697,7 @@ theorem sum_partPr (t : Bs.Tup) (hi : iSupIndep (Df.Qp t)) (ht : (⨆ p, Df.Qp t
       LinearMap.toMatrix' ((Df.Qp t p).subtype ∘ₗ Submodule.projectionOnto _ _ (hc p)) := by
     intro p
     unfold partPr
-    rw [dif_pos (hc p)]
+    rw [dite_eq_left (hc p)]
 
   simp_rw [hp, ← map_sum]
   rw [← LinearMap.toMatrix'_id]

@@ -231,8 +231,8 @@ theorem vol_rankZero : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G 
   have hneg : Node.neg D.R.m (.grid D.R.m (j + 1)) = 0 := by
     show (D.R.m - (j + 1)) / 2 = 0
     omega
-  rw [Vol.IsAt, if_pos hneg] at hg0
-  rw [Vol.IsAt, if_pos (show Node.neg D.R.m (.top (j + 1)) = 0 from rfl)] at ht0
+  rw [Vol.IsAt, ite_eq_left hneg] at hg0
+  rw [Vol.IsAt, ite_eq_left (show Node.neg D.R.m (.top (j + 1)) = 0 from rfl)] at ht0
   obtain ⟨hgm, hgf⟩ := hg0
   obtain ⟨htm, htf⟩ := ht0
   obtain ⟨_, _, _, _, _, _, _⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D (G.V (.grid D.R.m (j + 1)))

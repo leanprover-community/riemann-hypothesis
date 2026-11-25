@@ -82,9 +82,6 @@ def RRDef : Prop :=
     d ∉ (D.plEq w).asIdeal ∧
     d • x ∈ Submodule.span (𝓞 D.what₂.LL) {y | S.jEE y ∈ S.RRset (D.what₂.muAt w)}
 
-def AIntegral : Prop :=
-  ∀ μ x, x ∈ (S.Mtilde μ).carrier → ((D.what₂.restRowsFiniteGroupCard : ℂ) • S.eOp μ x) ∈ (S.Mtilde μ).carrier
-
 def sharp (D : D7) : RowSide D D.what₂.EE where
   Amb := D.what₂.Amb
   Mult := D.what₂.Mult

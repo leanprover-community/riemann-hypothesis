@@ -62,11 +62,11 @@ theorem sum_ite_val {n : ℕ} (m : ℕ) (g : ℕ → ℂ) :
   · rw [Finset.sum_eq_single (⟨m, h⟩ : Fin n)]
     · simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro rfl
       exact hb rfl
     · simp
-  · refine Finset.sum_eq_zero fun j _ => if_neg ?_
+  · refine Finset.sum_eq_zero fun j _ => ite_eq_right ?_
     rintro rfl
     exact h j.2
 

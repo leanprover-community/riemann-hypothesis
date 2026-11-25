@@ -45,13 +45,13 @@ theorem glAct_one (LL : Letters N) (i0 : Fin N) (h0 : (i0 : ℕ) = 0) (c d : Fin
   simp only [Formalism.GM.M.glAct]
   rw [Finset.sum_eq_single i0]
   · have hlt : (i0 : ℕ) < 1 := by omega
-    rw [if_pos hlt]
+    rw [ite_eq_left hlt]
     split_ifs <;> simp
   · intro b _ hb
     have hnb : ¬ (b : ℕ) < 1 := by
       intro hlt
       exact hb (Fin.ext (by omega))
-    rw [if_neg hnb]
+    rw [ite_eq_right hnb]
   · intro hn
     exact absurd (Finset.mem_univ i0) hn
 
@@ -59,12 +59,12 @@ theorem wt_one (LL : Letters N) (i0 : Fin N) (h0 : (i0 : ℕ) = 0) (c : Fin r) (
     wt LL 1 c m = if LL.vec i0 then (m (i0, c) : ℤ) else -(m (i0, c) : ℤ) := by
   simp only [Formalism.GM.M.wt]
   rw [Finset.sum_eq_single i0]
-  · rw [if_pos (by omega)]
+  · rw [ite_eq_left (by omega)]
   · intro b _ hb
     have hnb : ¬ (b : ℕ) < 1 := by
       intro hlt
       exact hb (Fin.ext (by omega))
-    rw [if_neg hnb]
+    rw [ite_eq_right hnb]
   · intro hn
     exact absurd (Finset.mem_univ i0) hn
 
@@ -151,10 +151,10 @@ theorem pol_le_iso (LL : Letters N) (j : ℕ) (hj : j ≤ 1) (hr : 1 ≤ r) :
           subst hm3
           simp only [Set.mem_setOf_eq]
           intro c _
-          rw [wt_one LL i0 h0 c, hv, if_pos rfl]
+          rw [wt_one LL i0 h0 c, hv, ite_eq_left rfl]
           by_cases hc : c = ⟨0, hr⟩
-          · rw [if_pos hc, hc, hd]
-          · rw [if_neg hc, hz c hc]
+          · rw [ite_eq_left hc, hc, hd]
+          · rw [ite_eq_right hc, hz c hc]
             simp
         · intro c d hcd
           have hd0 : d ≠ ⟨0, hr⟩ := by
@@ -162,12 +162,12 @@ theorem pol_le_iso (LL : Letters N) (j : ℕ) (hj : j ≤ 1) (hr : 1 ≤ r) :
             have hlt := hcd.2.2
             rw [hd0, Fin.lt_def] at hlt
             exact Nat.not_lt_zero _ hlt
-          rw [glAct_one LL i0 h0 c d, hv, if_pos rfl, pderiv_monomial, hz d hd0]
+          rw [glAct_one LL i0 h0 c d, hv, ite_eq_left rfl, pderiv_monomial, hz d hd0]
           simp
       have hst : ∀ a, ∀ x ∈ S, X (i0, a) * pderiv (i0, (⟨0, hr⟩ : Fin r)) x ∈ S := by
         intro a x hx
         have h1 := hGS a (Finset.mem_univ _) ⟨0, hr⟩ (Finset.mem_univ _) x hx
-        rwa [glAct_one LL i0 h0, hv, if_pos rfl] at h1
+        rwa [glAct_one LL i0 h0, hv, ite_eq_left rfl] at h1
       have hle : m (i0, ⟨0, hr⟩) ≤ LL.deg i0 := by
         rw [← hm' i0]
         exact Finset.single_le_sum (f := fun c => m (i0, c)) (fun _ _ => Nat.zero_le _)
@@ -197,10 +197,10 @@ theorem pol_le_iso (LL : Letters N) (j : ℕ) (hj : j ≤ 1) (hr : 1 ≤ r) :
           subst hm3
           simp only [Set.mem_setOf_eq]
           intro c _
-          rw [wt_one LL i0 h0 c, hv, if_neg Bool.false_ne_true]
+          rw [wt_one LL i0 h0 c, hv, ite_eq_right Bool.false_ne_true]
           by_cases hc : c = ⟨r - 1, by omega⟩
-          · rw [if_pos hc, hc, hd]
-          · rw [if_neg hc, hz c hc]
+          · rw [ite_eq_left hc, hc, hd]
+          · rw [ite_eq_right hc, hz c hc]
             simp
         · intro c d hcd
           have hct : c ≠ ⟨r - 1, by omega⟩ := by
@@ -210,12 +210,12 @@ theorem pol_le_iso (LL : Letters N) (j : ℕ) (hj : j ≤ 1) (hr : 1 ≤ r) :
             have hdr := d.isLt
             simp only at hlt
             omega
-          rw [glAct_one LL i0 h0 c d, hv, if_neg Bool.false_ne_true, pderiv_monomial, hz c hct]
+          rw [glAct_one LL i0 h0 c d, hv, ite_eq_right Bool.false_ne_true, pderiv_monomial, hz c hct]
           simp
       have hst : ∀ a, ∀ x ∈ S, X (i0, a) * pderiv (i0, (⟨r - 1, by omega⟩ : Fin r)) x ∈ S := by
         intro a x hx
         have h1 := hGS ⟨r - 1, by omega⟩ (Finset.mem_univ _) a (Finset.mem_univ _) x hx
-        rw [glAct_one LL i0 h0, hv, if_neg Bool.false_ne_true] at h1
+        rw [glAct_one LL i0 h0, hv, ite_eq_right Bool.false_ne_true] at h1
         have h2 := S.neg_mem h1
         rwa [neg_neg] at h2
       have hle : m (i0, ⟨r - 1, by omega⟩) ≤ LL.deg i0 := by
@@ -224,7 +224,7 @@ theorem pol_le_iso (LL : Letters N) (j : ℕ) (hj : j ≤ 1) (hr : 1 ≤ r) :
           (Finset.mem_univ _)
       exact move_mem i0 ⟨r - 1, by omega⟩ (LL.deg i0) S hbase hst
         (LL.deg i0 - m (i0, ⟨r - 1, by omega⟩)) m (by omega) (hm' i0)
-  · push_neg at hex
+  · push Not at hex
     have hn : ∀ i : Fin N, ¬ (i : ℕ) < j := fun i => not_lt.mpr (hex i)
     refine ⟨0, fun F _ => ?_⟩
     refine Formalism.CountingSumsFrames.hwc_le_isoC (p := p) LL j 0 ?_
@@ -278,8 +278,8 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
     have h0 : ((0 : Fin r) : ℕ) = 0 := by simp
     rw [hρ, h0] at h'
     omega
-  have hCsT : ∀ i : Fin (K + 2), (i : ℕ) = K + 1 → Cs i = univ.erase ρ := fun i h => if_pos h
-  have hCsL : ∀ i : Fin (K + 2), (i : ℕ) ≠ K + 1 → Cs i = univ := fun i h => if_neg h
+  have hCsT : ∀ i : Fin (K + 2), (i : ℕ) = K + 1 → Cs i = univ.erase ρ := fun i h => ite_eq_left h
+  have hCsL : ∀ i : Fin (K + 2), (i : ℕ) ≠ K + 1 → Cs i = univ := fun i h => ite_eq_right h
   have hCs : ∀ i, Cs i = univ ∨ Cs i = univ.erase ρ := by
     intro i
     by_cases h : (i : ℕ) = K + 1
@@ -402,7 +402,7 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
           exact (le_top : ((wt LL (K + 1) 0 m : ℤ) : WithTop ℤ) ≤ ⊤)
       · have hk' : K + 1 ≤ J k := by omega
         have h1 := hgI k
-        rw [if_pos hk'] at h1
+        rw [ite_eq_left hk'] at h1
         have h2 := (Submodule.mem_inf.mp h1).2
         have hT : T i = {la | ((la 0 : ℤ) : WithTop ℤ) ≤ M k} := by
           show {la : Fin r → ℤ | ((la 0 : ℤ) : WithTop ℤ) ≤ thr i} = _
@@ -423,9 +423,9 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
         have h1 := hgI k
         have := i.isLt
         rcases hk with hk | ⟨hk1, hk2⟩
-        · rw [if_neg (by omega), hk] at h1
+        · rw [ite_eq_right (by omega), hk] at h1
           exact h1
-        · rw [if_pos hk2] at h1
+        · rw [ite_eq_left hk2] at h1
           rw [show (i : ℕ) = K by omega]
           exact (Submodule.mem_inf.mp h1).1
 
@@ -438,7 +438,7 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
     rwa [coe_basisMonomials] at this
   rw [hPr]
   by_cases hw : ∀ c ∈ (univ : Finset (Fin r)), wt LL (K + 1) c m = w c
-  · rw [show f m = PE (Q (monomial m 1)) from if_pos hw]
+  · rw [show f m = PE (Q (monomial m 1)) from ite_eq_left hw]
     set u : MvPolynomial (Fin (K + 1) × Fin r) ℚ_[p] := monomial m 1 with hu
     have huP : u ∈ Pol p r LL := monomial_mem_supp' _ m hm
     have huZ : u ∈ PolZ p r LL := by
@@ -515,7 +515,7 @@ theorem highest_vector_projection_holds : HighestVectorProjectionPos := by
       obtain ⟨hgX, hgH⟩ := Submodule.mem_inf.mp hg1
       rw [hz, ← hE4 g y hgW hyW, hEfix g (Submodule.mem_inf.mpr ⟨hgH, hgW⟩)]
       exact lcomp_fock P hPsa g (hgfix g hgX) _ u
-  · rw [show f m = 0 from if_neg hw]
+  · rw [show f m = 0 from ite_eq_right hw]
     refine ⟨Submodule.zero_mem _, by rw [smul_zero]; exact Submodule.zero_mem _, fun g hg => ?_⟩
     rw [fock_right_zero', fock_monomial_zero']
     intro hmg

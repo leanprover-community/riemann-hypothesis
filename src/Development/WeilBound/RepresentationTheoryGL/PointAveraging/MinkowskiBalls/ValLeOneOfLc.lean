@@ -113,11 +113,11 @@ theorem idem_JJ (hjn : j ≤ n) (hjr : j ≤ r) (a b : Fin j) :
   simp only [idem, Matrix.of_apply, Fin.coe_castLE]
   by_cases h : a = b
   · subst h; simp
-  · rw [if_neg h, if_neg]; intro h'; exact h (Fin.ext h'.1)
+  · rw [ite_eq_right h, ite_eq_right]; intro h'; exact h (Fin.ext h'.1)
 
 theorem idem_right (i : Fin n) (l : Fin r) (hl : j ≤ l.val) : idem k r n j i l = 0 := by
   simp only [idem, Matrix.of_apply]
-  rw [if_neg]; omega
+  rw [ite_eq_right]; omega
 
 theorem val_le_one_of_Lc (hjr : j ≤ r) {c : kˣ} (hc : valuation k (c : k) < 1)
     {x : Matrix (Fin n) (Fin r) k} (hL : Lc hjr c x) (i : Fin n) (a : Fin j) :
@@ -226,7 +226,7 @@ theorem Mr_det (j : ℕ) (w c : k) (L : 𝓀[k] → 𝒪[k]) (ρ : Fin j → {l 
     intro l l' hll
     have hne : l ≠ l' := fun h => lt_irrefl _ (h ▸ hll)
     have hv : l'.val < l.val := hll
-    simp only [Mr, Matrix.of_apply, if_neg hne, add_zero]
+    simp only [Mr, Matrix.of_apply, ite_eq_right hne, add_zero]
     split_ifs with h1 h2
     · rfl
     · omega
@@ -234,7 +234,7 @@ theorem Mr_det (j : ℕ) (w c : k) (L : 𝓀[k] → 𝒪[k]) (ρ : Fin j → {l 
   rw [Matrix.det_of_upperTriangular hup]
   have hd : ∀ l : Fin r, Mr j w c L ρ l l = if l.val < j then 1 else w := by
     intro l
-    simp only [Mr, Matrix.of_apply, if_true]
+    simp only [Mr, Matrix.of_apply, ite_true]
     split_ifs with h1 <;> simp_all
   simp only [hd]
   rw [Finset.prod_ite, Finset.prod_const_one, one_mul, Finset.prod_const, Fintype.card_subtype]
@@ -258,7 +258,7 @@ theorem mulMr_right (hjr : j ≤ r) (w c : k) (L : 𝓀[k] → 𝒪[k])
       w * (x i l0 * (if h2 : l0.val < j then (c : k) * (L (ρ ⟨l0.val, h2⟩ ⟨l, hl⟩) : k) else 0)) +
         w * (x i l0 * if l0 = l then 1 else 0) := by
     intro l0
-    simp only [Mr, Matrix.of_apply, dif_neg (not_lt.2 hl)]
+    simp only [Mr, Matrix.of_apply, dite_eq_right (not_lt.2 hl)]
     ring
   rw [Finset.sum_congr rfl (fun l0 _ => e l0), Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
     ← mul_add]
@@ -311,7 +311,7 @@ theorem count [Fintype 𝓀[k]] [DecidableEq 𝓀[k]] {j r : ℕ} {c ϖ : kˣ} (
     if (∀ a (l : Fin r), j ≤ l.val → valuation k (T a l) ≤ valuation k (c : k)) then 1 else 0 := by
   classical
   by_cases hT : ∀ a (l : Fin r), j ≤ l.val → valuation k (T a l) ≤ valuation k (c : k)
-  · rw [if_pos hT]
+  · rw [ite_eq_left hT]
     have hc0 : valuation k (c : k) ≠ 0 := by simp
     let τ : Fin j → {l : Fin r // j ≤ l.val} → 𝒪[k] := fun a l => ⟨T a l / c, by
       rw [Valuation.mem_integer_iff, map_div₀, div_le_iff₀ (zero_lt_iff.2 hc0), one_mul]
@@ -334,10 +334,10 @@ theorem count [Fintype 𝓀[k]] [DecidableEq 𝓀[k]] {j r : ℕ} {c ϖ : kˣ} (
         exact (entry2 hU _ _ _ (hL _)).2 rfl
     rw [Finset.sum_congr rfl (fun ρ _ => if_congr (key ρ) rfl rfl)]
     simp
-  · rw [if_neg hT]
+  · rw [ite_eq_right hT]
     apply Finset.sum_eq_zero
     intro ρ _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hT
     intro a l hl
@@ -399,11 +399,11 @@ theorem ind_eq [Fintype 𝓀[k]] [DecidableEq 𝓀[k]] {n r j : ℕ} (hjn : j �
     · exact absurd ⟨hx', hp⟩ hq
     · exact absurd hq.2 hp
     · rfl
-  · rw [if_neg (fun h => hx h.1)]
+  · rw [ite_eq_right (fun h => hx h.1)]
     symm
     apply Finset.sum_eq_zero
     intro ρ _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hx ((hLeq ρ).1 h.1)
 

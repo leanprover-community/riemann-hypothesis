@@ -25,12 +25,6 @@ theorem gatNum_of_isRecG {sc D Gt c H F} (h : IsRecG sc D Gt c H F) : GatNum sc 
   intro u w hg
   exact ⟨rfl, rfl⟩
 
-section Stages
-variable {B : Base} {C : Cols B} (W W' : RowsRest B C) (V : DivStage B C W) (V' : DivStage B C W') (S : SStage B C W)
-  (S' : SStage B C W') (N : NStage B C W) (N' : NStage B C W') (G G' : GJStage B C)
-
-end Stages
-
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B}
 
 theorem gIs2_iff (w : ColW B f T) (G : GJStage B w.C) : GIs2 K w G ↔

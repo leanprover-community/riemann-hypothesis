@@ -118,7 +118,7 @@ theorem hasDepth_scaled : ∀ (k : Type) [Field k] [ValuativeRel k] [Topological
         simpa only [GlobalTheory.SplitWeil.cball, Set.mem_setOf_eq, hd, hinvu] using this
     refine GlobalTheory.SplitFlip.FourierDepth.mem_matLat_blockLat.2 ⟨fun i j hj => ?_, fun i j hj => ?_⟩
     · have h := he i j
-      rw [if_pos hj, map_mul, ← hu] at h
+      rw [ite_eq_left hj, map_mul, ← hu] at h
       rw [Valuation.mem_integer_iff, map_mul]
       calc valuation k ((ϖ ^ n : kˣ) : k) * valuation k (Y i j) ≤ u * u * valuation k (Y i j) :=
             mul_le_mul_left hn' _
@@ -126,7 +126,7 @@ theorem hasDepth_scaled : ∀ (k : Type) [Field k] [ValuativeRel k] [Topological
         _ ≤ u * u⁻¹ := mul_le_mul_right h _
         _ = 1 := mul_inv_cancel₀ hu0.ne'
     · have h := he i j
-      rw [if_neg hj, map_mul, hinvu] at h
+      rw [ite_eq_right hj, map_mul, hinvu] at h
       rw [Valuation.mem_integer_iff]
       have := mul_le_mul_left h u
       rwa [mul_assoc, inv_mul_cancel₀ hu0.ne', mul_one] at this
@@ -141,10 +141,10 @@ theorem hasDepth_scaled : ∀ (k : Type) [Field k] [ValuativeRel k] [Topological
     beta_reduce
     rw [hd, map_mul, ← hu]
     by_cases hj : q.2 ∈ P
-    · rw [if_pos hj, ← hu]
+    · rw [ite_eq_left hj, ← hu]
       calc valuation k (Z q.1 q.2) * u ≤ 1 * u := mul_le_mul_left (h1 q.1 q.2 hj) _
         _ = u := one_mul u
-    · rw [if_neg hj, hinvu]
+    · rw [ite_eq_right hj, hinvu]
       calc valuation k (Z q.1 q.2) * u⁻¹ ≤ u * u * u⁻¹ := mul_le_mul_left ((h2 q.1 q.2 hj).trans hn') _
         _ = u := by rw [mul_assoc, mul_inv_cancel₀ hu0.ne', mul_one]
 

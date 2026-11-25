@@ -76,7 +76,7 @@ theorem eq_smul_of_eigen {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (Z : GL (Fin
   have hu'0 : u' ≠ 0 := by
     intro h; apply hu0; rw [← hback u]; show Zm *ᵥ u' = 0; rw [h, mulVec_zero]
   obtain ⟨i0, hi0⟩ : ∃ i0, u' i0 ≠ 0 := by
-    by_contra h; push_neg at h; exact hu'0 (funext h)
+    by_contra h; push Not at h; exact hu'0 (funext h)
   have hlam0 : lam i0 = μ := mul_right_cancel₀ hi0 (hcoord u hu i0)
   refine ⟨w' i0 / u' i0, ?_⟩
   have hw' : w' = (w' i0 / u' i0) • u' := by
@@ -151,7 +151,7 @@ theorem cent_sim_pos : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G)
     have := congrArg Units.val hy.1; simpa using this
   have hMY : M * Y = Y * M := by rw [hMdef, hYdef, ← map_mul, ← map_mul, hc]
   have hform : Yᴴ * H * Y = (((y.2 : ℚˣ) : ℚ) : ℂ) • H := cent_form_law G P v y hy
-  obtain ⟨Z, lam, hinj, -, hZ⟩ := psi_eigenbasis p G P v
+  obtain ⟨Z, lam, hinj, -, hZ⟩ := psi_eigenbasis_of_regular G (P.γ : G.C) v P.reg
   have hx0 : x ≠ 0 := by rintro rfl; simp at hpos
   have hYx : M *ᵥ (Y *ᵥ x) = μ • (Y *ᵥ x) := by
     rw [mulVec_mulVec, hMY, ← mulVec_mulVec, hx, mulVec_smul]

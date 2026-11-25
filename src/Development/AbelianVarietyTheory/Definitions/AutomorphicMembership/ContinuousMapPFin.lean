@@ -119,8 +119,8 @@ theorem Wt.at_conjugate (W : Wt E n) (τ : E →+* ℂ) : W.at (ComplexEmbedding
   unfold Wt.at
   rw [InfinitePlace.mk_conjugate_eq]
   rcases InfinitePlace.embedding_mk_eq τ with h | h
-  · rw [if_pos h, if_neg (by rw [h]; exact (conjugate_ne τ).symm)]
-  · rw [if_pos h, if_neg (by rw [h]; exact conjugate_ne τ), dual_dual]
+  · rw [ite_eq_left h, ite_eq_right (by rw [h]; exact (conjugate_ne τ).symm)]
+  · rw [ite_eq_left h, ite_eq_right (by rw [h]; exact conjugate_ne τ), dual_dual]
 
 
 def Wt.ofFam (lam : (E →+* ℂ) → DomWeight n) : Wt E n := fun v => lam v.embedding
@@ -333,30 +333,12 @@ theorem HasWt.wt {π : AU E n} {τ : E →+* ℂ} {lam : DomWeight n} (h : π.Ha
   rcases InfinitePlace.embedding_mk_eq τ with e | e
   · have := key (InfinitePlace.mk τ) lam (by rw [e]; exact h)
     rw [e] at this
-    rwa [if_pos e]
+    rwa [ite_eq_left e]
   · have := (key (InfinitePlace.mk τ) lam.dual (by rw [e]; exact h.conjugate)).conjugate
     rw [e, ComplexEmbedding.involutive_conjugate E τ] at this
-    rwa [if_neg (by rw [e]; exact conjugate_ne τ)]
+    rwa [ite_eq_right (by rw [e]; exact conjugate_ne τ)]
 
 end AU
-
-section Par
-
-variable {LP : HeightOneSpectrum (𝓞 E) → Type}
-
-end Par
-
-section Host
-
-open Formalism.MainNotions.N GlobalTheory.DefiniteBC
-
-attribute [local instance] host_isCMField
-
-variable {R : Ranks} (H : Host R)
-
-variable {H} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
-
-end Host
 
 end GlobalTheory.DefU
 

@@ -428,8 +428,8 @@ theorem average_cut (H : Subgroup G) (ρ : Representation ℂ H W)
     have e1 : (cInd H ρ ((q.out : K₁) : G) B).1.1.1 g = B.1.1.1 (g * ((q.out : K₁) : G)) := rfl
     rw [e1, hB]
     by_cases h : g * ((q.out : K₁) : G) ∈ dc H K' c
-    · rw [Set.indicator_of_mem h, hy g _ q.out.2, if_pos h, one_smul]
-    · rw [Set.indicator_of_notMem h, if_neg h, zero_smul]
+    · rw [Set.indicator_of_mem h, hy g _ q.out.2, ite_eq_left h, one_smul]
+    · rw [Set.indicator_of_notMem h, ite_eq_right h, zero_smul]
   have hleft : ∀ (b : H) g, φ ((b : G) * g) = φ g := by
     intro b g
     simp only [φ, mul_assoc, dc_left H K' c (b : G) b.2]
@@ -473,11 +473,11 @@ theorem average_cut (H : Subgroup G) (ρ : Representation ℂ H W)
       Finset.single_le_sum (f := fun q : K₁ ⧸ L =>
         if c * ((q.out : K₁) : G) ∈ dc H K' c then 1 else 0) (fun _ _ => Nat.zero_le _)
         (Finset.mem_univ q₀)
-    rw [if_pos h4] at h5
+    rw [ite_eq_left h4] at h5
     omega
   have hoff : ∀ g, g ∉ dc H K₁ c → φ g = 0 := by
     intro g hg
-    refine Finset.sum_eq_zero fun q _ => if_neg fun h => hg ?_
+    refine Finset.sum_eq_zero fun q _ => ite_eq_right fun h => hg ?_
     obtain ⟨b, k, hk, e⟩ := h
     exact (dc_right H K₁ c _ q.out.2 g).1 ⟨b, k, hle hk, e⟩
   have hc0 : (φ c : ℂ) ≠ 0 := by exact_mod_cast hφc

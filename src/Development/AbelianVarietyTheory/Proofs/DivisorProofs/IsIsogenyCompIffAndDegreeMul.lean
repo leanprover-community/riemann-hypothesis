@@ -81,10 +81,10 @@ theorem GlobalTheory.AV.AbVar.isIsogeny_comp_iff_and_deg_comp : ∀ (K : Type) [
   by_cases h : IsIsogeny f ∧ IsIsogeny g
   · exact (GlobalTheory.T.isogeny_comp_and_degree_mul K A B C f g h.1 h.2).2
   · have h0 : deg (f ≫ g) = 0 := by
-      unfold deg; rw [if_neg (fun h' => h (key.1 h'))]
+      unfold deg; rw [ite_eq_right (fun h' => h (key.1 h'))]
     rw [h0]
     rcases not_and_or.1 h with hf | hg
-    · have : deg f = 0 := by unfold deg; rw [if_neg hf]
+    · have : deg f = 0 := by unfold deg; rw [ite_eq_right hf]
       rw [this, zero_mul]
-    · have : deg g = 0 := by unfold deg; rw [if_neg hg]
+    · have : deg g = 0 := by unfold deg; rw [ite_eq_right hg]
       rw [this, mul_zero]

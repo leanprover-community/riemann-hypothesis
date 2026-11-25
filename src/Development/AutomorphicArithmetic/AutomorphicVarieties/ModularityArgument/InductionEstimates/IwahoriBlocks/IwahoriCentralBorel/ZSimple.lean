@@ -1787,12 +1787,12 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.finIwa :
   · by_cases hv : v ∈ im w
     · obtain ⟨l, -, rfl⟩ := Finset.mem_image.1 hv
       beta_reduce
-      rw [if_pos hv]
+      rw [ite_eq_left hv]
       change GM.cf (w l) u ∈ U (w l)
       rw [hu l]
       exact one_mem _
     · beta_reduce
-      rw [if_neg hv]
+      rw [ite_eq_right hv]
       change GM.cf v u ∈ _
       rw [hu1 v hv]
       exact hc.2 v

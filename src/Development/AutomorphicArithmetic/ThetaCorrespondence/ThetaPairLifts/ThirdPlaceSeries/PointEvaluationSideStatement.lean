@@ -389,7 +389,7 @@ theorem uW_numRec (large₂ : SizeData₂ D) (hD : ∃ n : ℕ, D.s.Del = n) (u 
     have h' : l < D.R.k - 2 := by have := h.2; simp only at this; omega
     have a := D.s.u_letter u (tauPl D z) l h'
     have h2 : D.s.letter u ⟨l, h'⟩ = true := h1
-    rw [if_pos h2, D.hcW_v] at a
+    rw [ite_eq_left h2, D.hcW_v] at a
     have h3 : (((numDatumOfParameters D large₂).Del : ℕ) : ℚ) = D.s.Del := by
       show ((⌊D.s.Del⌋₊ : ℕ) : ℚ) = D.s.Del
       rw [hn, Nat.floor_natCast]
@@ -399,7 +399,7 @@ theorem uW_numRec (large₂ : SizeData₂ D) (hD : ∃ n : ℕ, D.s.Del = n) (u 
     have h' : l < D.R.k - 2 := by have := h.2; simp only at this; omega
     have a := D.s.u_letter u (tauPl D z) l h'
     have h2 : ¬ D.s.letter u ⟨l, h'⟩ = true := h1
-    rw [if_neg h2, D.hcW_v] at a
+    rw [ite_eq_right h2, D.hcW_v] at a
     rw [a]
     rfl
   · by_cases h0 : r = 0
@@ -1136,7 +1136,7 @@ theorem mem_tops_rec (D : D7) (z : Bool × Formalism.MainNotions.G.HH D) :
   obtain ⟨b, t⟩ := z
   constructor
   · rintro ⟨t', ht, h⟩
-    cases b <;> simp only [Formalism.MainNotions.G.plGG, if_true, if_false, Bool.false_eq_true] at h
+    cases b <;> simp only [Formalism.MainNotions.G.plGG, ite_true, ite_false, Bool.false_eq_true] at h
     · exact ⟨rfl, (hinj h) ▸ ht⟩
     · exact absurd h (hP.2 _ _)
   · rintro ⟨h1, h2⟩

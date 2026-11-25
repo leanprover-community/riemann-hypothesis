@@ -166,8 +166,8 @@ private theorem position_one {Z : Finset (Pl E)} (T : Finset (Pl E)) (L : Lv a b
   have hI : v ∉ Z → L.ln v = (K2 a b v : Set _).indicator 1 := (locAlg E a b Z L v).2.2.1
   unfold intersection_update_fsHerm_neg_one
   by_cases h1 : v ∈ Z
-  · rw [if_pos h1]
-  · rw [if_neg h1, hI h1]
+  · rw [ite_eq_left h1]
+  · rw [ite_eq_right h1, hI h1]
     split_ifs <;> rfl
 
 private theorem position_ne {Z : Finset (Pl E)} (L : Lv a b Z) (e : Pl E → Ex (Fin (a + 1) × Fin (b + 1))) {v w : Pl E}
@@ -175,13 +175,13 @@ private theorem position_ne {Z : Finset (Pl E)} (L : Lv a b Z) (e : Pl E → Ex 
   have hI : v ∉ Z → L.ln v = (K2 a b v : Set _).indicator 1 := (locAlg E a b Z L v).2.2.1
   unfold intersection_update_fsHerm_neg_one
   by_cases h1 : v ∈ Z
-  · rw [if_pos h1]
-  · rw [if_neg h1, if_neg (by simpa using h), hI h1]
+  · rw [ite_eq_left h1]
+  · rw [ite_eq_right h1, ite_eq_right (by simpa using h), hI h1]
 
 private theorem position_self {Z : Finset (Pl E)} (L : Lv a b Z) (e : Pl E → Ex (Fin (a + 1) × Fin (b + 1))) {w : Pl E}
     (h : w ∉ Z) : intersection_update_fsHerm_neg_one Z {w} L.ln e w = fn2 a b w (e w) := by
   unfold intersection_update_fsHerm_neg_one
-  rw [if_neg h, if_pos (by simp)]
+  rw [ite_eq_right h, ite_eq_left (by simp)]
 
 private theorem ln_open {Z : Finset (Pl E)} (L : Lv a b Z) (v : Pl E) :
     IsOpen (((L.L₁ v).prod (L.L₂ v) : Subgroup _) : Set (GLw a v × GLw b v)) := by

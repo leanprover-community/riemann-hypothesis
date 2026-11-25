@@ -202,13 +202,13 @@ theorem GlobalTheory.FrameZero.xclauses : OnStd fun {D} _ _ {sc} {G} W F => ∀ 
           omega
         · have hrv : r.1 = 2 * (σ + 1) - 1 - q.1 := by simp only at h1; omega
           rw [map_one, map_one, mul_one, Pi.smul_apply, Pi.single_apply,
-            if_pos (congrArg κ (Fin.ext hrv)), smul_eq_mul, mul_one, hrv]
-        · rw [map_zero, map_zero, mul_zero, Pi.smul_apply, Pi.single_apply, if_neg, smul_zero]
+            ite_eq_left (congrArg κ (Fin.ext hrv)), smul_eq_mul, mul_one, hrv]
+        · rw [map_zero, map_zero, mul_zero, Pi.smul_apply, Pi.single_apply, ite_eq_right, smul_zero]
           intro hk
           have h4 := congrArg Fin.val (hinj hk)
           simp only at h1 h4
           omega
-      · rw [Pi.smul_apply, Pi.single_apply, if_neg (fun e => hm ⟨_, e.symm⟩), smul_zero]
+      · rw [Pi.smul_apply, Pi.single_apply, ite_eq_right (fun e => hm ⟨_, e.symm⟩), smul_zero]
         exact hperp m hm _
     dsimp only
     rw [hrow, Matrix.smul_vecMul, hN, smul_smul, smul_smul, mul_assoc,
@@ -756,9 +756,9 @@ theorem exists_modul (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} 
     intro u hu
     by_cases huv : u = v
     · subst huv
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       exact exists_unif p hw hϖ
-    · rw [if_neg huv]
+    · rw [ite_eq_right huv]
       have hne : ¬ (P.w u).asIdeal ≤ (P.w v).asIdeal := fun hle => huv (by
         rw [← P.under_w hu, ← P.under_w hv,
           HeightOneSpectrum.ext ((P.w u).isMaximal.eq_of_le (P.w v).isPrime.ne_top hle)])
@@ -769,10 +769,10 @@ theorem exists_modul (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} 
   change valuation k (p.pr (incA D (algebraMap (𝓞 D.host.E) D.host.E _))) = _
   rw [map_prod, map_prod, map_prod, map_prod, Finset.prod_eq_single v]
   · rw [map_pow, map_pow, map_pow, map_pow]
-    exact congrArg (· ^ P.depth sc v) ((hb v hv).trans (if_pos rfl))
+    exact congrArg (· ^ P.depth sc v) ((hb v hv).trans (ite_eq_left rfl))
   · intro u hu huv
     rw [map_pow, map_pow, map_pow, map_pow]
-    exact (congrArg (· ^ P.depth sc u) ((hb u hu).trans (if_neg huv))).trans (one_pow _)
+    exact (congrArg (· ^ P.depth sc u) ((hb u hu).trans (ite_eq_right huv))).trans (one_pow _)
   · intro h; exact absurd hv h
 
 theorem val_le_of_mem_modul (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} (hv : v ∈ P.S0) (p : SplitPt D k)
@@ -1270,7 +1270,7 @@ theorem bessel_step_conj_place_column_functional_bound : OnStd fun {D} _ _ {sc} 
     have g := congrFun (congrFun dW.gram qW) r
     have g1 : antiDiagonalSignGramMatrix (2 * (σ + 1) + 1 - 1) (-1 : D.host.E) qW r = 1 := by
       simp only [antiDiagonalSignGramMatrix]
-      rw [if_pos (by simp only [qW, r]; omega), if_neg (fun e => by have := congrArg Fin.val e; simp only [qW, r] at this; omega)]
+      rw [ite_eq_left (by simp only [qW, r]; omega), ite_eq_right (fun e => by have := congrArg Fin.val e; simp only [qW, r] at this; omega)]
     rw [g1] at g
     have g2 : ∑ l, (∑ j, star (dW.a j qW) * (G.V (.grid (2 * (σ + 1) + 1) 0)).gram j l) * dW.a l r = 1 := g
     have g3 := congrArg (fun c => p.pr (incA D c)) g2

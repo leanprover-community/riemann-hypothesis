@@ -65,7 +65,7 @@ theorem integral_coset_singular_eq_zero : ∀ {k : Type} [Field k] [ValuativeRel
     exact hν fun y hy => h y hy
   obtain ⟨w0, hw0, hw0x⟩ := (Matrix.exists_vecMul_eq_zero_iff (M := x)).2 hx
   obtain ⟨j, hj⟩ : ∃ j, w0 j ≠ 0 := by
-    by_contra h; push_neg at h; exact hw0 (funext h)
+    by_contra h; push Not at h; exact hw0 (funext h)
   haveI : Nonempty A' := ⟨j⟩
   obtain ⟨i₀, hi₀⟩ := Finite.exists_max (fun i => valuation k (w0 i))
   have hwi₀ : w0 i₀ ≠ 0 := by

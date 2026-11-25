@@ -102,7 +102,7 @@ theorem isSBHalf_prodHalf {m n : ℕ} {a b : AE D} (ha : a * a = a) (hb : b * b 
   refine ⟨fun t ht => ?_, k * k', Nat.mul_pos hk hk', fun u hu hhu t => ?_, fun t ht => ?_⟩
   · rw [prodHalf_apply] at ht
     by_contra h
-    exact ht (by rw [if_neg h, mul_zero])
+    exact ht (by rw [ite_eq_right h, mul_zero])
   · rw [isHalf_iff'] at hhu
     simp only [prodHalf_apply]
     have e1 : a • (t + (k * k') • u) = a • t + k • (k' • (a • u)) := by
@@ -119,7 +119,7 @@ theorem isSBHalf_prodHalf {m n : ℕ} {a b : AE D} (ha : a * a = a) (hb : b * b 
     have h2 : Ψ (b • t) ≠ 0 := fun h => ht (by rw [h, mul_zero, zero_mul])
     have h3 : IsHalf (a + b) t := by
       by_contra h
-      exact ht (by rw [if_neg h, mul_zero])
+      exact ht (by rw [ite_eq_right h, mul_zero])
     rw [isHalf_iff', add_smul] at h3
     rw [← h3, smul_add]
     refine Λ.add_mem ?_ ?_

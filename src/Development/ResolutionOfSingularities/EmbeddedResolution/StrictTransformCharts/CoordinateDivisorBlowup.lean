@@ -214,10 +214,10 @@ theorem restrictIdeal_strictTransform_coordIdeal (B : BlowupChart π c S s)
     restrictIdeal (Blowup.strictTransform π Z D) B.domain =
       if j = s then ⊤ else B.chart.coordIdeal {j} := by
   by_cases hj : j = s
-  · rw [if_pos hj]
+  · rw [ite_eq_left hj]
     have hD' : restrictIdeal D U = c.coordIdeal {s} := by rw [hD, hj]
     exact B.restrictIdeal_strictTransform_coordIdeal_self Z D hs hZ hD'
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     by_cases hjS : j ∈ S
     · exact B.restrictIdeal_strictTransform_of_mem_of_ne Z D hs hZ j hjS hj hD
     · exact B.restrictIdeal_strictTransform_coordIdeal_of_notMem Z D hs hZ j hjS hD

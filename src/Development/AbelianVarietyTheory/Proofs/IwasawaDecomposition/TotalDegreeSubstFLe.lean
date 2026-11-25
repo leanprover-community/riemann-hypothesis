@@ -83,8 +83,6 @@ theorem totalDegree_aeval_le_of_linear {κ : Type} (f : κ → MvPolynomial κ �
   refine hprod.trans ?_
   exact Finset.le_sup (f := fun s : κ →₀ ℕ => s.sum fun _ e => e) hs
 
-alias main := _root_.GlobalTheory.AevalTotalDegreeLinear.totalDegree_aeval_le_of_linear
-
 end GlobalTheory.AevalTotalDegreeLinear
 end -- clump:auto
 end -- clump:auto

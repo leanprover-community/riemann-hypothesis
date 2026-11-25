@@ -147,9 +147,9 @@ theorem genIdx_cyclic_split_prime {A B : Submodule (𝓞 E) S.V} (hBA : B ≤ A)
     rw [i_lidx_of_le P.asIdeal hBA]
     by_cases hP : P ∈ plOver E T
     · have hmax := P.isPrime.isMaximal P.ne_bot
-      rw [finprod_eq_if, if_pos hP, localLength_cyclic_mem e P.asIdeal hmax hP (hs P.asIdeal hmax hP).2]
+      rw [finprod_eq_if, ite_eq_left hP, localLength_cyclic_mem e P.asIdeal hmax hP (hs P.asIdeal hmax hP).2]
       simp
-    · rw [finprod_eq_if, if_neg hP, localLength_cyclic_not_mem e P.asIdeal hP]
+    · rw [finprod_eq_if, ite_eq_right hP, localLength_cyclic_not_mem e P.asIdeal hP]
       simp
   rw [finprod_congr h1]
   exact finprod_plOver E hT hs id

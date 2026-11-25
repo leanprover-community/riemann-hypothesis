@@ -97,7 +97,7 @@ theorem exists_sec_char_val (D : D7) (H : ReciprocityTheory.ChartRestriction.G.G
     exact ⟨v i, hf2 y i P hP hx.symm⟩
   · obtain ⟨Pm, -, hP, hx, -⟩ := hD.1.2 (dict h).1 ⟨(dict h).2, hdom h⟩
     rw [← hv2 _ h γ hm rfl, ← hf2 _ _ Pm hP hx]
-    exact dif_pos (hdom h)
+    exact dite_eq_left (hdom h)
 
 theorem evR_ne_zero_of_pow {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
     {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l) (c : Coeff l) (f f' : Rul Xo c) (m : ℕ) (hm : 0 < m)

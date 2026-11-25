@@ -98,12 +98,6 @@ theorem setIntegral_comp_aut {G : Type} [AddCommGroup G] [TopologicalSpace G] [I
   refine e3.trans ?_
   rw [hT.setIntegral_eq hF' fun g x => hφ g g.2 x, hν]
 
-section Mat
-
-variable {R : Type} [CommRing R] {m n : ℕ}
-
-end Mat
-
 section Adelic
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

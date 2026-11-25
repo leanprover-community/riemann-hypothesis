@@ -341,10 +341,10 @@ theorem rowProjection_mem_lattice {M : Submodule (𝓞 D.host.E) (Fin N → D.ho
     refine mem_stdL.2 fun i => ?_
     by_cases hi : i.val < N' / 2
     · have e : (rowPM N N' A *ᵥ x) i = (A *ᵥ x) i := by
-        simp only [rowPM, LinearMap.coe_mk, AddHom.coe_mk, mulVec, dotProduct, of_apply, if_pos hi]
+        simp only [rowPM, LinearMap.coe_mk, AddHom.coe_mk, mulVec, dotProduct, of_apply, ite_eq_left hi]
       rw [e]; exact h i
     · have e : (rowPM N N' A *ᵥ x) i = 0 := by
-        simp only [rowPM, LinearMap.coe_mk, AddHom.coe_mk, mulVec, dotProduct, of_apply, if_neg hi, zero_mul,
+        simp only [rowPM, LinearMap.coe_mk, AddHom.coe_mk, mulVec, dotProduct, of_apply, ite_eq_right hi, zero_mul,
           Finset.sum_const_zero]
       rw [e]; exact Submodule.zero_mem _
 
@@ -1127,7 +1127,7 @@ theorem splitPair_of_gen (h : SplitPairGen) (D : Formalism.L2.Ker.Car) : SquareS
     · have hne : P ≠ ⊥ :=
         Ring.ne_bot_of_isMaximal_of_not_isField hP (NumberField.RingOfIntegers.not_isField _)
       have h2 := Formalism.HC.HostDer.unramEF D.host.der P hP.isPrime hne
-      push_neg at h2
+      push Not at h2
       obtain ⟨x, hx⟩ := h2
       refine ⟨x, D.host.conj • x, ?_, ?_⟩
       · exact hcj (x : D.host.E)

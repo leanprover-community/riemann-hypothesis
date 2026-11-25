@@ -133,18 +133,18 @@ theorem diag_word (hL : IsGlRep L) {μ : Fin n → ℝ} (hd : ∀ a, L a a Φ = 
     by_cases h1 : c = p.1
     · have h2 : p.2 ≠ c := by rw [h1]; exact hp.ne'
       have h2' : c ≠ p.2 := h2.symm
-      simp only [if_pos h1, if_neg h2, if_neg h2']
+      simp only [ite_eq_left h1, ite_eq_right h2, ite_eq_right h2']
       subst h1
       push_cast
       module
     · by_cases h2 : p.2 = c
       · have h2' : c = p.2 := h2.symm
-        simp only [if_neg h1, if_pos h2, if_pos h2']
+        simp only [ite_eq_right h1, ite_eq_left h2, ite_eq_left h2']
         subst h2
         push_cast
         module
       · have h2' : c ≠ p.2 := fun h => h2 h.symm
-        simp only [if_neg h1, if_neg h2, if_neg h2']
+        simp only [ite_eq_right h1, ite_eq_right h2, ite_eq_right h2']
         push_cast
         module
 
@@ -165,9 +165,9 @@ theorem inCone_add_wt (μ : Fin n → ℝ) :
       · by_cases h1 : a = p.1
         · by_cases h2 : b = p.2
           · rw [h1, h2]; exact hp
-          · rw [h0, if_pos h1, if_neg h2] at hab'
+          · rw [h0, ite_eq_left h1, ite_eq_right h2] at hab'
             exact absurd rfl hab'
-        · rw [h0, if_neg h1] at hab'
+        · rw [h0, ite_eq_right h1] at hab'
           exact absurd rfl hab'
       · exact hc a b h0
     · have hs : ∑ a, ∑ b, (((if a = p.1 then (if b = p.2 then 1 else 0) else 0 : ℕ) : ℝ)) •
@@ -217,7 +217,7 @@ theorem diag_commute (hL : IsGlRep L) (i j : Fin n) : Commute (L i i) (L j j) :=
   · subst h; exact Commute.refl _
   · have h1 := hL i i j j
     have h' : j ≠ i := fun e => h e.symm
-    simp only [if_neg h, if_neg h', sub_self] at h1
+    simp only [ite_eq_right h, ite_eq_right h', sub_self] at h1
     exact sub_eq_zero.mp h1
 
 theorem mem_span_of_weight (hL : IsGlRep L) {μ η : Fin n → ℝ} (hd : ∀ a, L a a Φ = (μ a : ℂ) • Φ)

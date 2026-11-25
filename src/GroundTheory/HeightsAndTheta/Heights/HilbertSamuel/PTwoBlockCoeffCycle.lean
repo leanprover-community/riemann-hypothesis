@@ -198,9 +198,9 @@ theorem horiz_eq (hH : TwoBlockHorizDiv.Statement) {x : Ix κ → Ω} {B : Matri
   by_cases hW : IsHorizontal W
   · obtain ⟨hiff, hmul⟩ := hH Ω κ x B c l hsp hl W hW
     by_cases h1 : W ∈ divSupp (twoBlockIdeal x (matAct B x)) (twoBlockNum l)
-    · simp only [Set.indicator_apply, h1, hiff.1 h1, if_true, hmul h1]
+    · simp only [Set.indicator_apply, h1, hiff.1 h1, ite_true, hmul h1]
     · have h2 : W ∉ divSupp (twoBlockIdeal x (matAct B x)) (twoBlockDen c) := mt hiff.2 h1
-      simp only [Set.indicator_apply, h1, h2, if_false]
+      simp only [Set.indicator_apply, h1, h2, ite_false]
   · simp [Set.indicator_apply, hW]
 
 end TwoBlockCoeffCycle

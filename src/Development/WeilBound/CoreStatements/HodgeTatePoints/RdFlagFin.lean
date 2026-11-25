@@ -242,8 +242,8 @@ theorem flag_om_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR.fu
     (fun i => if h : i < n then s ⟨i, h⟩ else 1) r
     (by
       intro i hi
-      have e1 : (if h : i < n then b ⟨i, h⟩ else 0) = b ⟨i, hi⟩ := dif_pos hi
-      have e2 : (if h : i < n then s ⟨i, h⟩ else 1) = s ⟨i, hi⟩ := dif_pos hi
+      have e1 : (if h : i < n then b ⟨i, h⟩ else 0) = b ⟨i, hi⟩ := dite_eq_left hi
+      have e2 : (if h : i < n then s ⟨i, h⟩ else 1) = s ⟨i, hi⟩ := dite_eq_left hi
       show HasLen v R (OmType (stepOrder AA.carrier (flagSub b i)
         (if h : i < n then b ⟨i, h⟩ else 0)) χ) (if h : i < n then s ⟨i, h⟩ else 1)
       rw [e1, e2]
@@ -259,8 +259,8 @@ theorem gr_partial_of (hex : type_of% @_root_.GlobalTheory.CompanionTheory.Ar.GR
     (fun i => if h : i < n then s ⟨i, h⟩ else 1)
     (by
       intro i hi
-      have e1 : (if h : i < n then b ⟨i, h⟩ else 0) = b ⟨i, hi⟩ := dif_pos hi
-      have e2 : (if h : i < n then s ⟨i, h⟩ else 1) = s ⟨i, hi⟩ := dif_pos hi
+      have e1 : (if h : i < n then b ⟨i, h⟩ else 0) = b ⟨i, hi⟩ := dite_eq_left hi
+      have e2 : (if h : i < n then s ⟨i, h⟩ else 1) = s ⟨i, hi⟩ := dite_eq_left hi
       show HasLen v R (OmType (stepOrder AA.carrier (flagSub b i)
         (if h : i < n then b ⟨i, h⟩ else 0)) χ) (if h : i < n then s ⟨i, h⟩ else 1)
       rw [e1, e2]

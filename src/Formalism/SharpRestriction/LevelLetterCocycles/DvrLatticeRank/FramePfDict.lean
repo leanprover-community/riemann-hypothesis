@@ -103,7 +103,7 @@ private lemma powerSeries_algHom_eq_subst_X (ψ : PowerSeries O →ₐ[O] PowerS
   have hdvd : PowerSeries.X ^ (k + 1) ∣ f - (PowerSeries.trunc (k + 1) f : PowerSeries O) := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
-    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hm, sub_self]
+    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hm, sub_self]
   obtain ⟨q, hq⟩ := hdvd
   have hf : f = (PowerSeries.trunc (k + 1) f : PowerSeries O) + PowerSeries.X ^ (k + 1) * q := by
     rw [← hq]; ring

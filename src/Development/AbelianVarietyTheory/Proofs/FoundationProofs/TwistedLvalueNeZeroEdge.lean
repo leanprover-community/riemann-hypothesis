@@ -455,10 +455,10 @@ theorem locineq : ∀ (x y : ℂ) (T : ℝ), 0 ≤ T → T < 1 → ‖x‖ ^ 2 *
       ((1 - ‖x‖ ^ 2 * T) * (1 - ‖y‖ ^ 2 * T) * ‖1 - x * conj y * T‖ ^ 2)) ≤ 1 := by
   intro x y T hT0 hT1 hx hy
   have hxT : ‖x‖ * T < 1 := by
-    by_contra hc; push_neg at hc
+    by_contra hc; push Not at hc
     nlinarith [norm_nonneg x, mul_le_mul_of_nonneg_left hT1.le (mul_nonneg (norm_nonneg x) (norm_nonneg x))]
   have hyT : ‖y‖ * T < 1 := by
-    by_contra hc; push_neg at hc
+    by_contra hc; push Not at hc
     nlinarith [norm_nonneg y, mul_le_mul_of_nonneg_left hT1.le (mul_nonneg (norm_nonneg y) (norm_nonneg y))]
   have hxy : ‖x‖ * ‖y‖ * T < 1 := by
     nlinarith [mul_nonneg (sq_nonneg (‖x‖ - ‖y‖)) hT0]
@@ -1073,10 +1073,10 @@ theorem global_positivity_ineq : ∀ (M : ℕ) (b ω : ℕ → ℂ) (s C : ℝ),
     intro p hp
     by_cases hpM : p ∣ M
     · obtain ⟨h1, h2⟩ := hdiv p hp hpM
-      simp only [hA, hpM, not_true_eq_false, if_false, Real.exp_zero, h1, h2, norm_one, one_pow, mul_one]
+      simp only [hA, hpM, not_true_eq_false, ite_false, Real.exp_zero, h1, h2, norm_one, one_pow, mul_one]
       nlinarith [hα1 p hp, hβ1 p hp]
     · have := _root_.GlobalTheory.LocIneq.local_positivity_eulerFactor b ω s C p hs hp hb1 (hrec p 1 hp hpM).1 (fun r => (hrec p r hp hpM).2) hC
-      simpa only [hA, hpM, not_false_eq_true, if_true] using this
+      simpa only [hA, hpM, not_false_eq_true, ite_true] using this
 
   have hfin : ∀ N : ℕ, X ≤ N → Real.exp (∑ p ∈ (Finset.range X).filter (fun p => p.Prime ∧ ¬ p ∣ M), ‖1 + b p‖ ^ 2 / (p : ℝ) ^ (1 + s)) ≤ 2 * (1 + 1 / s) * ‖∏ p ∈ N.primesBelow, Lp p‖ ^ 2 * Ssum := by
     intro N hN
@@ -1165,13 +1165,13 @@ theorem not_summable_one_div_primes_eq_neg_one :
       have hx : (1 : ℝ) < x := hx
       by_cases hn : n ∈ S
       · have hc : n.Prime ∧ (n : ZMod M) = -1 := hn
-        simp only [Set.indicator_of_mem hn, if_pos hc]
+        simp only [Set.indicator_of_mem hn, ite_eq_left hc]
         have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hc.1.one_lt.le)
         rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (by linarith)
           (div_nonneg hlog (Real.rpow_nonneg n.cast_nonneg _)))]
         exact sub_one_mul_log_div_rpow_le n hc.1.one_lt hx
       · have hc : ¬ (n.Prime ∧ (n : ZMod M) = -1) := hn
-        simp only [Set.indicator_of_notMem hn, if_neg hc, mul_zero, norm_zero, le_refl]
+        simp only [Set.indicator_of_notMem hn, ite_eq_right hc, mul_zero, norm_zero, le_refl]
   simp only [tsum_zero, tsum_mul_left] at h0
   have hu := tendsto_nhds_unique hD h0
   have ht : (0 : ℝ) < M.totient := by exact_mod_cast Nat.totient_pos.2 hM

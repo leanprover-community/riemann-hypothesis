@@ -65,8 +65,8 @@ theorem ncPairs_card_le {N : ℕ} (s : Fin N → Bool) :
           obtain ⟨x1, x2⟩ := x
           obtain ⟨y1, y2⟩ := y
           dsimp only at hx hy hxy
-          cases h1 : s x1 <;> cases h2 : s y1 <;> simp only [h1, h2, Bool.false_eq_true, if_false,
-            if_true, Prod.mk.injEq] at hxy
+          cases h1 : s x1 <;> cases h2 : s y1 <;> simp only [h1, h2, Bool.false_eq_true, ite_false,
+            ite_true, Prod.mk.injEq] at hxy
           · rw [hxy.1, hxy.2]
           · exact absurd (hxy.1 ▸ hxy.2 ▸ hx.1 : y2 < y1) (lt_asymm hy.1)
           · exact absurd (hxy.1 ▸ hxy.2 ▸ hx.1 : y2 < y1) (lt_asymm hy.1)

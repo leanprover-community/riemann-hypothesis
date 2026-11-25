@@ -67,15 +67,15 @@ theorem hA_symVec_sub_ite_mem_wInt : ∀ (D : D7) (X : HidaSetting D) (w : Heigh
     have h := Formalism.L2.SG.Pf.unitaryCongruence.Z_sig X.B.I X.B.g (X.gramIntegral ⟨j.1, h1⟩ a).2.2
     rw [map_sub, ← Formalism.L2.SG.Pf.unitaryCongruence.hA_symm] at h
     by_cases e : j = GlobalTheory.Mem.SymChar.Resid.posE D a
-    · rw [if_pos e]
-      rwa [if_pos (Fin.ext (by have := congrArg Fin.val e; simp only at this ⊢; omega)), map_one] at h
-    · rw [if_neg e]
-      rwa [if_neg (fun h' => e (Fin.ext (by have := congrArg Fin.val h'; simp only at this; omega))),
+    · rw [ite_eq_left e]
+      rwa [ite_eq_left (Fin.ext (by have := congrArg Fin.val e; simp only at this ⊢; omega)), map_one] at h
+    · rw [ite_eq_right e]
+      rwa [ite_eq_right (fun h' => e (Fin.ext (by have := congrArg Fin.val h'; simp only at this; omega))),
         map_zero] at h
   rw [dite_eq_right h1]
   have hne : ¬ j = GlobalTheory.Mem.SymChar.Resid.posE D a := fun e => by
     have := congrArg Fin.val e; rw [hpos] at this; omega
-  rw [if_neg hne, sub_zero]
+  rw [ite_eq_right hne, sub_zero]
   by_cases h2 : j.1 < D.R.rS + D.R.k
   · rw [dite_eq_left h2]; exact hW _
   rw [dite_eq_right h2]

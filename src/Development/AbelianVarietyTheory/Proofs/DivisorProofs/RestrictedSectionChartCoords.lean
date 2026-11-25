@@ -197,7 +197,7 @@ theorem vanishesTo_of_isUnit (s : Fin G.D → Fin G.N → K) (g : Matrix (Fin G.
     simp only [Finset.smul_sum, smul_smul]
     rw [Finset.sum_comm]
     simp only [← Finset.sum_smul, ← Matrix.mul_apply, Matrix.nonsing_inv_mul g hg, Matrix.one_apply, ite_smul, one_smul,
-      zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   change ger y hj ((G.comb (s a)).f j) ∈ Ideal.span _
   rw [e, ger_comb_sum]
   exact sum_mem fun i _ => Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, rfl⟩)

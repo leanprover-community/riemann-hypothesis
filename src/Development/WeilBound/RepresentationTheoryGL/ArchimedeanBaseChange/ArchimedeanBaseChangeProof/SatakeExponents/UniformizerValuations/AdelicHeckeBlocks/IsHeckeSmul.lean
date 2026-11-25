@@ -163,7 +163,7 @@ theorem inv_letter (h3 : LocOpUniformizer E) (hd : d.Ok) {a : ℕ} {ha : a ≤ n
       · exact isHecke_smul _ _ hI
       · exact LocComm.isHecke_zero _
     · show IsHecke _ (if w ∈ d.Bad then d.fix a w else idem (d.lev a w))
-      rw [if_pos hB]
+      rw [ite_eq_left hB]
       exact hd.fix a ha w hB
 
 theorem inv_prod (h3 : LocOpUniformizer E) (hd : d.Ok) {a : ℕ} (ha : a ≤ n) (ls : List (LM d.kap a (n - a)))
@@ -208,10 +208,10 @@ theorem seenTr (h3 : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Loc
     have key := (hf _ hH).2.1
     rw [← lev₂_eq d hw] at key
     funext y
-    simp only [seen, if_pos hs, ht]
+    simp only [seen, ite_eq_left hs, ht]
     exact congrFun key y
   · funext y
-    simp only [seen, if_neg hs]
+    simp only [seen, ite_eq_right hs]
 
 end PositivityTheory.Rg.BcB.F
 

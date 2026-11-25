@@ -33,7 +33,7 @@ theorem genU_isGenFam (Ω : Type) [Field Ω] {S : Type} (r : S → ℕ) : IsGenF
         algebraMap (MvPolynomial (GenIx r) Ω) (GenField Ω r) (MvPolynomial.X (R := Ω) (σ := GenIx r) q) :=
     fun q => by
       simp only [genU]
-      exact dif_pos q.2.2
+      exact dite_eq_left q.2.2
   refine ⟨hdiag, habove, ?_, ?_⟩
   · have hinj : Function.Injective
         (IsScalarTower.toAlgHom Ω (MvPolynomial (GenIx r) Ω) (GenField Ω r)) := by

@@ -93,8 +93,8 @@ theorem gauge_consC (t : ℂ) (c : Fin ρ → ℂ) :
       else 1 : ℝ)) =
       ‖t‖ ^ (2 * (1 + ρ) + k) *
         ∏ a : Fin ρ, (if a.val < (Fin.last ρ).val then ‖c a‖ ^ (Mdim k ρ a - 1) else 1 : ℝ) := by
-  rw [Finset.prod_congr rfl (fun a _ => if_pos (by rw [Fin.val_last]; exact a.isLt)),
-    Finset.prod_congr rfl (fun (a : Fin ρ) _ => if_pos (by rw [Fin.val_last]; exact a.isLt))]
+  rw [Finset.prod_congr rfl (fun a _ => ite_eq_left (by rw [Fin.val_last]; exact a.isLt)),
+    Finset.prod_congr rfl (fun (a : Fin ρ) _ => ite_eq_left (by rw [Fin.val_last]; exact a.isLt))]
   rw [← Fintype.prod_equiv (finCongr (Nat.add_comm ρ 1))
     (fun a : Fin (ρ + 1) => ‖PBH.consC t c (finCongr (Nat.add_comm ρ 1) a)‖ ^
       (Mdim k (1 + ρ) (finCongr (Nat.add_comm ρ 1) a) - 1)) _ (fun _ => rfl)]

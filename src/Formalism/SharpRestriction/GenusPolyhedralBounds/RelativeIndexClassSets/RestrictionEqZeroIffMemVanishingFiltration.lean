@@ -438,7 +438,7 @@ theorem sec_succ_mul_mem_Mon (u : WeightFamilies.Wt D j) (a n : ℕ) (i : Fin (W
     show sec X la w i.succ * (secPow X la w α * v) ∈ Mon X la w u (a + 1) n
     have e : sec X la w i.succ * secPow X la w α = secPow X la w (α + Pi.single i 1) := by
       simp only [secPow, Pi.add_apply, pow_add, Finset.prod_mul_distrib, Pi.single_apply, pow_ite, pow_one, pow_zero,
-        Finset.prod_ite_eq', Finset.mem_univ, if_true]
+        Finset.prod_ite_eq', Finset.mem_univ, ite_true]
       ring
     rw [← mul_assoc, e]
     refine secPow_mul_mem_Mon X la w ?_ hv

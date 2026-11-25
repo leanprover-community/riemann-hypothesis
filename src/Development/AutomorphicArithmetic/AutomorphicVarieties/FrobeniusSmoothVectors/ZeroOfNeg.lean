@@ -69,12 +69,12 @@ private theorem theta_mem {K : Type} [CommRing K] (j : ZMod 2) (X : Matrix (Fin 
   have hX : X b.rev a.rev = 0 := h b.rev a.rev (by rw [pw_rev]; exact hab)
   have ht : thetaLie X a b = -X b.rev a.rev := by
     simp only [thetaLie, Matrix.neg_apply, Matrix.mul_apply, Jmat, Matrix.transpose_apply, ite_mul, one_mul,
-      zero_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      zero_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     congr 1
     rw [Finset.sum_eq_single b.rev]
     · simp
     · intro c _ hc
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hb
       exact hc (by rw [hb, Fin.rev_rev])
     · intro hn

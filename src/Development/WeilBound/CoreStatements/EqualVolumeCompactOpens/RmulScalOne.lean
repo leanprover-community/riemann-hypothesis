@@ -245,14 +245,6 @@ namespace PositivityTheory.EqVol
 open Matrix NumberField MeasureTheory GlobalTheory.CompanionTheory.Ar.Cmp ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up
   ReciprocityTheory.L2DbarEstimates
 
-section frames
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Ψ : Finset (E →+* ℂ)}
-
-omit [NumberField E] [IsCMField E]
-
-end frames
-
 theorem levelFacts : LevelFacts := by
   intro F E _ _ _ _ _ N c J Λ 𝔞 hΛ hJ
   refine ⟨fun hN γ hγ ⟨s, hs⟩ => ?_, fun J₀ a Λ₀ ha hm => ?_⟩

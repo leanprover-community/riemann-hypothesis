@@ -493,7 +493,7 @@ theorem logarithm_weight_induction : LogStep.{u, v} := by
     · simpa using Real.rpow_nonneg hπ0.le _
   have hlow : Low N (D - truncBelow N D) := by
     intro m hm
-    rw [map_sub, coeff_truncBelow, if_pos hm, sub_self]
+    rw [map_sub, coeff_truncBelow, ite_eq_left hm, sub_self]
   have hT1 : Low 1 (truncBelow N D) := by
     intro m hm
     rw [coeff_truncBelow]
@@ -540,10 +540,10 @@ theorem logarithm_weight_induction : LogStep.{u, v} := by
     unfold mvExp
     rw [PowerSeries.coeff_subst hs]
     change ∑ᶠ k, a k = _
-    rw [habc, finsum_add_distrib hbfin hcfin, finsum_eq_single c 1 (fun k hk => if_neg hk)]
-    simp only [hc, if_pos rfl, ha1]
+    rw [habc, finsum_add_distrib hbfin hcfin, finsum_eq_single c 1 (fun k hk => ite_eq_right hk)]
+    simp only [hc, ite_eq_left rfl, ha1]
   have hEq : coeff n D = coeff n (mvExp D - 1) + -(∑ᶠ k, b k) := by
-    rw [map_sub, coeff_one, if_neg hn0, sub_zero, hsum]
+    rw [map_sub, coeff_one, ite_eq_right hn0, sub_zero, hsum]
     ring
   rw [monoWtGe_iff, hEq]
   refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hE n) ?_)
@@ -555,7 +555,7 @@ theorem logarithm_weight_induction : LogStep.{u, v} := by
   rcases Nat.lt_or_ge k 2 with hk2 | hk2
   · have hk0 : k = 0 := by omega
     subst hk0
-    simp only [ha, pow_zero, coeff_one, if_neg hn0, smul_zero, norm_zero]
+    simp only [ha, pow_zero, coeff_one, ite_eq_right hn0, smul_zero, norm_zero]
     exact Real.rpow_nonneg hπ0.le _
 
   have hce : coeff n (D ^ k) = coeff n (truncBelow N D ^ k) := by

@@ -124,7 +124,7 @@ theorem local_step (hE : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (M G : Matrix (
           simp only [← Matrix.mul_assoc]
           rw [hkinv, Matrix.one_mul, Units.mul_inv]
   have hγUL : γ0 ∈ UL n w := by
-    rw [UL, if_neg hw]
+    rw [UL, ite_eq_right hw]
     exact hγU
   refine ⟨⟨γ0, hγUL⟩, ?_, ?_⟩
   · rw [KL, Subgroup.mem_subgroupOf]

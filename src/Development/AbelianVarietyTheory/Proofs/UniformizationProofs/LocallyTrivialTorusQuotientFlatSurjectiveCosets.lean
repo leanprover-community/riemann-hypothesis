@@ -199,11 +199,11 @@ theorem exists_sum (a : Γ(G.left, q.left ⁻¹ᵁ V)) : ∃ c : X →₀ Γ(B.l
   · intro χ hχ
     rw [Finsupp.mem_support_iff]
     intro h0
-    exact hχ (if_pos h0)
+    exact hχ (ite_eq_left h0)
   · rw [Finsupp.onFinset_sum]
     · rw [Finsupp.sum]
       refine Finset.sum_congr rfl fun χ hχ => ?_
-      rw [if_neg (Finsupp.mem_support_iff.1 hχ), hc, Units.inv_mul_cancel_right]
+      rw [ite_eq_right (Finsupp.mem_support_iff.1 hχ), hc, Units.inv_mul_cancel_right]
     · intro χ
       simp
 

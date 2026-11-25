@@ -142,8 +142,8 @@ theorem zAt_frameOf (h : P.m + 1 = n) (pos : (Σ v : Fin P.nV, Fin (P.n' v)) ≃
   rw [key]
   unfold blockPreimageMatrix
   by_cases hs : Even s.val
-  · simp only [hs, if_true]
-  · simp only [hs, if_false]
+  · simp only [hs, ite_true]
+  · simp only [hs, ite_false]
     exact cRev_spec P (z v s) (hz v s)
 
 theorem evC_inj (h : P.m + 1 = n) (pos : (Σ v : Fin P.nV, Fin (P.n' v)) ≃ Tau) (G : Tau → Matrix (Fin n) (Fin n) ℂ)

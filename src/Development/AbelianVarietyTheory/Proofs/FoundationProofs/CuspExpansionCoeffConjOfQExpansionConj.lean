@@ -103,7 +103,7 @@ theorem exp_conj : ∀ (Ω : Type) [Field Ω] (ε : Ω →+* ℂ) (s : Ω →+* 
     ext r; rw [hΦc]
     by_cases hr : ∃ k : ℕ, r = (k : ℚ) / N
     · obtain ⟨k, rfl⟩ := hr; rw [hHk, hHk']
-    · push_neg at hr; rw [hH0 r hr, hH0' r hr, map_zero]
+    · push Not at hr; rw [hH0 r hr, hH0' r hr, map_zero]
   have key : hD ^ w * Φ h = hD ^ w * h' := by
     rw [e2, ← hΦH, ← e1, map_mul, map_pow, hΦD]
   have hne : hD ^ w ≠ 0 := pow_ne_zero _ hD0

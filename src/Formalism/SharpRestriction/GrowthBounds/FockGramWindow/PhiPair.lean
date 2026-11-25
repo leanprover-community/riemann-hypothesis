@@ -76,17 +76,17 @@ theorem cW_sum {K : Type} [Field K] (q J z : ℕ) (hq : J ≤ q) (mm : ℕ → K
   rw [← Finset.sum_subset hsub]
   · refine Finset.sum_congr rfl fun i hi => ?_
     have : i + l ≤ J := by simp only [mem_range] at hi; omega
-    rw [if_pos this]; ring
+    rw [ite_eq_left this]; ring
   · intro i _ hi
     have : ¬ (i + l ≤ J) := by simp only [mem_range] at hi; omega
-    rw [if_neg this, zero_mul]
+    rw [ite_eq_right this, zero_mul]
 
 theorem cW_top {K : Type} [Field K] (q J : ℕ) (mm : ℕ → K) : cW q J mm J = mm 0 := by
   unfold cW
   rw [Finset.sum_eq_single 0]
   · simp
   · intro l _ hl
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   · intro h; simp at h
 
 theorem cW_norm {p : ℕ} [Fact p.Prime] (q J : ℕ) (mm : ℕ → ℚ_[p]) (h : ∀ l ≤ J, ‖mm l‖ ≤ 1) (i : ℕ) :

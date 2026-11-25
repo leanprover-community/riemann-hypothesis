@@ -462,8 +462,8 @@ private theorem wtRep_inv_mulVec_zero_eq_chi_inv {O Ω : Type} [Field Ω] [CommR
     rw [← map_inv, _root_.mul_inv_rev, map_mul]; rfl
   rw [h1, Units.val_mul, ← Matrix.mulVec_mulVec]
   simp only [Matrix.mulVec, dotProduct]
-  simp only [W.torusAction, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  simp only [W.row_N _ (X.I.Nf.inv_mem hx), ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [W.torusAction, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [W.row_N _ (X.I.Nf.inv_mem hx), ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp [map_inv]
 
 private theorem ctrl_UF_eq_U_ctrl {O Ω : Type} [Field Ω] [CommRing O] [IsLocalRing O] [Algebra O Ω]
@@ -632,7 +632,7 @@ theorem absSpec {A O Ω : Type} [CommRing A] [IsCNL A] [CommRing O] [IsDomain O]
   have hsp : ∀ F f, Good F f → sp f = F := by
     intro F f hG
     have h : ∃ F, Good F f := ⟨F, hG⟩
-    simp only [sp, dif_pos h]
+    simp only [sp, dite_eq_left h]
     exact huniq _ _ _ h.choose_spec hG
   have hspec : ∀ K e, c ≤ e → ∀ f ∈ X.Ord τ θ (U K),
       sp f ∈ X.ClOrd W τ' (U K) e φ' ∧ X.ctrl m W (sp f) = X.mapFn (B := Ω) f := by

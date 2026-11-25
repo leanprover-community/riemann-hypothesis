@@ -264,16 +264,16 @@ theorem tendsto_pairD {s : ℕ} (hs : s ≠ 0) {β : ℂ} (hβ : β ≠ 0) {ε :
       simp only [Function.comp_apply, norm_mul, hζn, one_mul, Complex.ofReal_one, one_smul]
     by_cases h1 : ζ = 1
     · subst h1
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hw : Tendsto (fun a => (s : ℂ) * (1 * ρ a * x' a - x a)) l (𝓝 σ) := by simpa using hsh
       have := tendsto_integral_psi_conv β _ _ hf0 hfi hL1 _ σ hw
       simpa [termZ, hL] using this
-    · rw [if_neg h1]
+    · rw [ite_eq_right h1]
       have hw := tendsto_smul_cocompact (s : ℂ) hs0 _ (hne ζ hζ h1)
       have := tendsto_integral_psi_moving β hβ _ _ hf0 hfi hL1 _ hw
       simpa [termZ, mul_assoc] using this
   have hsum := tendsto_finsetSum (G.rootSet s 1) hlim
-  rw [Finset.sum_ite_eq' (G.rootSet s 1) 1 (fun _ => L), if_pos (one_mem_rootSet_one hs)] at hsum
+  rw [Finset.sum_ite_eq' (G.rootSet s 1) 1 (fun _ => L), ite_eq_left (one_mem_rootSet_one hs)] at hsum
   refine hsum.congr' ?_
   filter_upwards [hρ0] with a ha
   exact (pairD_eq hs β hε hb hb' (x a) (x' a) (ρ a) ha).symm

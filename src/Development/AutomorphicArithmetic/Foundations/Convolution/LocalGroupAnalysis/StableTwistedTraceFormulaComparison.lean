@@ -513,7 +513,7 @@ theorem UpperTheory.euler_product_support_finite :
   have hoff : ∀ g, g ∉ W → ∏ᶠ v, Fv v (p v g) = 0 := by
     intro g hg
     rw [hmem] at hg
-    push_neg at hg
+    push Not at hg
     obtain ⟨v, hv, hx⟩ := hg
     refine finprod_eq_zero _ v ((hS v hv _).2 ?_) (hfin g)
     rintro ⟨t, y, hy, e⟩
@@ -600,16 +600,16 @@ theorem UpperTheory.exists_haarMeasure_adelicGL :
     obtain ⟨g, h1, h2⟩ := hR.surj gi (fun v => if hv : v ∈ S then gv ⟨v, hv⟩ else 1) (by
       filter_upwards [S.finite_toSet.compl_mem_cofinite] with v hv
       have hv' : v ∉ S := by simpa using hv
-      rw [dif_neg hv']
+      rw [dite_eq_right hv']
       exact one_mem _)
     refine ⟨g, ?_, ?_⟩
     · intro v hv
-      rw [h2, dif_neg hv]
+      rw [h2, dite_eq_right hv]
       exact one_mem _
     · rw [prS_apply, h1]
       congr 1
       funext v
-      rw [h2, dif_pos v.2]
+      rw [h2, dite_eq_left v.2]
   obtain ⟨ν, hν⟩ : ∃ ν, ν = (μ.restrict (US p K S : Set G)).map (prS q p S) := ⟨_, rfl⟩
   haveI inv : ν.IsMulLeftInvariant := by
     refine ⟨fun h => ?_⟩
@@ -632,22 +632,22 @@ theorem UpperTheory.exists_haarMeasure_adelicGL :
     have hC : ∀ v, IsCompact (C v) := by
       intro v
       by_cases hv : v ∈ S
-      · simp only [C, dif_pos hv]
+      · simp only [C, dite_eq_left hv]
         exact hD.image (by fun_prop)
-      · simp only [C, dif_neg hv]
+      · simp only [C, dite_eq_right hv]
         exact hR.cpt v
     have hW := hR.prop (Prod.fst '' D) C (hD.image continuous_fst) hC (by
       filter_upwards [S.finite_toSet.compl_mem_cofinite] with v hv
       have hv' : v ∉ S := by simpa using hv
-      simp only [C, dif_neg hv']
+      simp only [C, dite_eq_right hv']
       exact subset_rfl)
     refine lt_of_le_of_lt (measure_mono ?_) hW.measure_lt_top
     rintro g ⟨h1, h2⟩
     refine ⟨⟨_, h1, rfl⟩, fun v => ?_⟩
     by_cases hv : v ∈ S
-    · simp only [C, dif_pos hv]
+    · simp only [C, dite_eq_left hv]
       exact ⟨_, h1, rfl⟩
-    · simp only [C, dif_neg hv]
+    · simp only [C, dite_eq_right hv]
       exact h2 v hv
   have e := Measure.isMulLeftInvariant_eq_smul ν (μi.prod (Measure.pi fun v : S => m v))
   refine ⟨Measure.haarScalarFactor ν (μi.prod (Measure.pi fun v : S => m v)), ?_, ?_⟩

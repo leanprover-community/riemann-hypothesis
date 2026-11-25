@@ -369,7 +369,7 @@ theorem exists_coords {Ψ : Finset (E →+* ℂ)} (hΨ : IsType Ψ) (v v' : Ψ �
     have h := hc' a (ComplexEmbedding.conjugate τ.1)
     simp only [ComplexEmbedding.conjugate_coe_eq] at h
     rw [h]
-    simp only [w, dif_neg hn]
+    simp only [w, dite_eq_right hn]
     exact congrArg (fun t => v' t a) (Subtype.ext (ComplexEmbedding.involutive_conjugate E τ.1))
 
 theorem im_tauOf (Ψ : Finset (E →+* ℂ)) (Z : CM Ψ N N) :
@@ -841,7 +841,7 @@ theorem exists_isDbl (hs : IsSympl X bas) (hn : Even n) {φ₁ φ₂ : TF n g} (
 theorem dbl_spec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ φ₁ φ₂ : TF n g, IsSB φ₁ → IsSB φ₂ → IsSB (dbl X bas idx φ₁ φ₂) ∧ IsDbl X bas idx φ₁ φ₂ (dbl X bas idx φ₁ φ₂) ∧ ∀ ψ, IsSB ψ → IsDbl X bas idx φ₁ φ₂ ψ → ψ = dbl X bas idx φ₁ φ₂ := by
   intro E _ _ _ r X g bas idx n hs hn φ₁ φ₂ h₁ h₂
   have h := exists_isDbl X bas idx hs hn h₁ h₂
-  have hd : dbl X bas idx φ₁ φ₂ = h.choose := dif_pos h
+  have hd : dbl X bas idx φ₁ φ₂ = h.choose := dite_eq_left h
   obtain ⟨a, b⟩ := hd ▸ h.choose_spec
   refine ⟨a, b, fun ψ hψ hψ' => ?_⟩
   obtain ⟨x, hx⟩ := FiniteNet.dom_nonempty X

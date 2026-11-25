@@ -55,7 +55,7 @@ theorem exists_unitary_isDiag {n : ℕ} (S : Set (Matrix (Fin n) (Fin n) ℂ))
       have := congrFun hv i
       simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct, U] using this
     have h0 := hinner j k
-    rw [if_neg hjk] at h0
+    rw [ite_eq_right hjk] at h0
     rw [Matrix.mul_assoc, Matrix.mul_apply]
     simp_rw [hAU]
     calc ∑ i, Uᴴ j i * (μ * WithLp.ofLp (b k) i)

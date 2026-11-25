@@ -479,7 +479,7 @@ theorem hcAt_eq_hc : ∀ (D : D7) (ρ : D.what₂.Tau) (g : D.R.GG), (((D.eTau �
     · unfold plc
       have h2 : (((D.eTau ρ : D.R.Psi) : D.R.GG) * D.R.cc).1.2 ≠ 1 := by
         simp [Formalism.HC.Frame.cc, c0, hm]
-      rw [if_neg h2, mul_comm, mul_assoc, _root_.Formalism.HC.Frame.cc_mul_cc, mul_one]
+      rw [ite_eq_right h2, mul_comm, mul_assoc, _root_.Formalism.HC.Frame.cc_mul_cc, mul_one]
   unfold hcAt
   have : (⟨plc g, plc_mem g⟩ : D.R.Psi) = D.eTau ρ := Subtype.ext hp
   rw [this, Equiv.symm_apply_apply]
@@ -547,13 +547,13 @@ theorem mem_twistedDualJumpsWithoutBlock_iff {R : Ranks} (P : HCParam R) (j : Fi
     u ∈ jT2 P j s ↔ (if s then -u - 1 else (R.t : ℤ) - 1 - (-u - 1)) ∈ cloud P j + lows P j := by
   unfold jT2 jW
   cases s
-  · simp only [Bool.false_eq_true, if_false, Multiset.map_map, Function.comp_def, Multiset.mem_map]
+  · simp only [Bool.false_eq_true, ite_false, Multiset.map_map, Function.comp_def, Multiset.mem_map]
     constructor
     · rintro ⟨x, hx, rfl⟩
       convert hx using 1; ring
     · intro h
       exact ⟨_, h, by ring⟩
-  · simp only [if_true, Multiset.mem_map]
+  · simp only [ite_true, Multiset.mem_map]
     constructor
     · rintro ⟨x, hx, rfl⟩
       convert hx using 1; ring
@@ -623,13 +623,13 @@ theorem rat_jump_sets_eq_int_multisets : ∀ (D : D7) (i : D.nd.Loc) (ρ : D.wha
       ring
   cases up
   · simp only [LJ.dualS, LJ.JJ, LJ.JW, LJ.cloudT, LJ.lowT, LJ.Jm, LJ.Jp, LJ.reflS, LJ.refl, LJ.cloudJ, LJ.lowJ,
-      LJ.blockJ, Set.mem_setOf_eq, Set.mem_union, Bool.false_eq_true, if_false, hsz, hc0]
+      LJ.blockJ, Set.mem_setOf_eq, Set.mem_union, Bool.false_eq_true, ite_false, hsz, hc0]
     refine ⟨or_congr Iff.rfl ?_, by push_cast⟩
     have := hblk' (-a - 1)
     push_cast at this
     exact this
   · simp only [LJ.dualS, LJ.JJ, LJ.JW, LJ.cloudT, LJ.lowT, LJ.Jm, LJ.Jp, LJ.reflS, LJ.refl, LJ.cloudJ, LJ.lowJ,
-      LJ.blockJ, Set.mem_setOf_eq, Set.mem_union, if_true, hsz, hc0]
+      LJ.blockJ, Set.mem_setOf_eq, Set.mem_union, ite_true, hsz, hc0]
     refine ⟨or_congr Iff.rfl ?_, by push_cast⟩
     have := hblk (-a - 1)
     push_cast at this
@@ -694,8 +694,8 @@ theorem hodgeTateJumps_coefficientExtension : ∀ {D : D7} (L : SizeData₂ D) (
   · intro a
     refine ((hπ ρ π hP.mem hP.dec a).2.2.2).trans ?_
     by_cases h : a ∈ jT2 (hcAt D g) (liftIdx D i) (pos (if ep = true then 1 else -1) g)
-    · rw [if_pos ((hs a).2.2 h), if_pos h]
-    · rw [if_neg (fun h' => h ((hs a).2.1 h')), if_neg h]
+    · rw [ite_eq_left ((hs a).2.2 h), ite_eq_left h]
+    · rw [ite_eq_right (fun h' => h ((hs a).2.1 h')), ite_eq_right h]
 
 end GlobalTheory.HTW.Rec
 end -- clump:auto

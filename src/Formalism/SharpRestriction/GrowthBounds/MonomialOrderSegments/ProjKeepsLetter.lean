@@ -102,7 +102,7 @@ theorem prodProj (hP : PROJ K v p C0) (hD : DVRHyp v p) {ι : Type} (s : Finset 
       have hb := bge_proj sg d hP hD hπx (h1 F hF) (h4 F hF a ha)
       rw [LinearMap.comp_apply]
       refine bge_mono v ?_ hb
-      rw [Finset.card_insert_eq_ite, if_neg hx]
+      rw [Finset.card_insert_eq_ite, ite_eq_right hx]
       apply le_of_eq
       push_cast
       ring

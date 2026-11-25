@@ -438,7 +438,7 @@ theorem exists_der_of_rsp {k R : Type} [Field k] [CommRing R] [IsLocalRing R] [I
       simp only [D0, h1, Module.Basis.repr_self]
     change ∑ i, l i * D0 (f i) ≠ 0
     simp only [hfi]
-    rw [Finset.sum_eq_single j (fun i _ hi => by rw [Finsupp.single_apply, if_neg hi, map_zero, mul_zero])
+    rw [Finset.sum_eq_single j (fun i _ hi => by rw [Finsupp.single_apply, ite_eq_right hi, map_zero, mul_zero])
       (fun h => (h (Finset.mem_univ j)).elim), Finsupp.single_eq_same, map_one, _root_.mul_one]
     exact hj
 

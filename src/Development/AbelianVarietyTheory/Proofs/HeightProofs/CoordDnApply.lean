@@ -48,10 +48,6 @@ open scoped TensorProduct ContDiff
 namespace GlobalTheory.DualPairCompare
 
 variable {D : D7}
-section Gen
-variable {R : Type} [CommRing R] {a b : ℕ}
-
-end Gen
 
 open GlobalTheory.IndefiniteRowSideFullHecke
 

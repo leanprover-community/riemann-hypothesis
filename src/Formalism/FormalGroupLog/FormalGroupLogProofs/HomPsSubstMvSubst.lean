@@ -48,7 +48,7 @@ private theorem hom_substInj {R : Type*} [CommRing R] {ι : Type*} (f : PowerSer
     rw [finsum_eq_single _ (m s)]
     · split_ifs <;> simp
     · intro d hd
-      rw [if_neg]
+      rw [ite_eq_right]
       · simp
       · intro hm
         apply hd

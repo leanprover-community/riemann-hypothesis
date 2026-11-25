@@ -951,7 +951,7 @@ theorem modularCharacter_permConj_diagPow (μ : Fin n → ℤ) :
         modulus ((GLnLocal.uniformizer F : F) ^ μ s.1.1) /
           modulus ((GLnLocal.uniformizer F : F) ^ μ s.1.2) := by
   rw [Measures.modularCharacter_blockUpper_of_mem_borel' _ (fun i j hij => by
-    rw [coe_permConj, permGL_conj_diagPow_apply, if_neg (fun h => by simp [h] at hij)])]
+    rw [coe_permConj, permGL_conj_diagPow_apply, ite_eq_right (fun h => by simp [h] at hij)])]
   symm
   refine Fintype.prod_equiv (Equiv.subtypeEquiv
     (p := fun q : Fin n × Fin n => (β ∘ w) q.1 < (β ∘ w) q.2) (q := fun q => β q.1 < β q.2)
@@ -964,7 +964,7 @@ theorem modularCharacter_permConj_diagPow (μ : Fin n → ℤ) :
       Matrix (Fin n) (Fin n) F) (w s.1.1) (w s.1.1)) /
     modulus (((permGL F w * Cartan.diagPow F n μ * (permGL F w)⁻¹ : GL (Fin n) F) :
       Matrix (Fin n) (Fin n) F) (w s.1.2) (w s.1.2))
-  rw [permGL_conj_diagPow_apply, permGL_conj_diagPow_apply, if_pos rfl, if_pos rfl]
+  rw [permGL_conj_diagPow_apply, permGL_conj_diagPow_apply, ite_eq_left rfl, ite_eq_left rfl]
   simp
 
 theorem modularCharacter_cellInnerHom_diagPow (μ : Fin n → ℤ) :
@@ -987,7 +987,7 @@ theorem modularCharacter_cellInnerHom_diagPow (μ : Fin n → ℤ) :
     · rfl
     · exact absurd (h2 ▸ rfl) h1
     · rfl
-  rw [modularCharacter_leviPar_of_diagonal _ fun i j hij => by rw [hentry, if_neg hij]]
+  rw [modularCharacter_leviPar_of_diagonal _ fun i j hij => by rw [hentry, ite_eq_right hij]]
   symm
   refine Fintype.prod_equiv (Equiv.subtypeEquiv
     (p := fun q : Fin n × Fin n => (β ∘ w) q.1 = (β ∘ w) q.2 ∧ γ q.1 < γ q.2)
@@ -1001,7 +1001,7 @@ theorem modularCharacter_cellInnerHom_diagPow (μ : Fin n → ℤ) :
     modulus ((((cellInnerHom β γ w ⟨Cartan.diagPow F n μ,
       diagPow_mem_levi μ, diagPow_mem_blockUpper' (β ∘ w) μ⟩ : leviPar F n β (γ ∘ ⇑w⁻¹)) :
         GL (Fin n) F) : Matrix (Fin n) (Fin n) F) (w s.1.2) (w s.1.2))
-  rw [hentry, hentry, if_pos rfl, if_pos rfl]
+  rw [hentry, hentry, ite_eq_left rfl, ite_eq_left rfl]
   simp
 
 end DiagonalValues

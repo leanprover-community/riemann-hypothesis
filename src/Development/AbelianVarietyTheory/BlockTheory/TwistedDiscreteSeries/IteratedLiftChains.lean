@@ -41,24 +41,6 @@ def excluded (q t : ℕ) : Set ℂ :=
   {(((q : ℝ) ^ (((t : ℝ) - 1) / 2) : ℝ) : ℂ), (((q : ℝ) ^ (-(((t : ℝ) - 1) / 2)) : ℝ) : ℂ),
     (((q : ℝ) ^ (((t : ℝ) + 1) / 2) : ℝ) : ℂ), (((q : ℝ) ^ (-(((t : ℝ) + 1) / 2)) : ℝ) : ℂ)}
 
-section Cusp
-
-variable (V : HSp D) (ν : Measure (GA D V)) [ν.IsHaarMeasure] [ν.IsMulRightInvariant]
-
-variable {V ν} {W : Submodule ℂ (DividedPowerChartLift V ν)}
-
-
-end Cusp
-
-section Chain
-
-variable (θ : InfFam D) (ψ : AddChar (AF D.host.F) ℂ)
-  (th : ∀ k, GA D (Yc D k) → GA D (Yc D (k + 1)) → (WO (Yc D k) (Yc D (k + 1)) → ℂ) → ℂ)
-  (ν : ∀ k, Measure (GA D (Yc D k))) [∀ k, (ν k).IsHaarMeasure] [∀ k, (ν k).IsMulRightInvariant]
-  (𝓕 : ∀ k, Set (GA D (Yc D k))) (σ : Submodule ℂ (DividedPowerChartLift (Yc D 0) (ν 0)))
-
-end Chain
-
 end GlobalTheory.IndefiniteRowSideFullHecke.IteratedLiftChains
 
 end

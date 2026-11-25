@@ -75,7 +75,7 @@ theorem _root_.GlobalTheory.KummerEisensteinGalois.smF_one_mem_subring : ∀ (K 
   unfold _root_.GlobalTheory.KummerEisensteinGalois.smF _root_.GlobalTheory.KummerEisensteinGalois.eisF
   split_ifs with hn
   · unfold _root_.GlobalTheory.KummerEisensteinGalois.const0
-    simp only [if_true, if_neg ha, if_neg hca]
+    simp only [ite_true, ite_eq_right ha, ite_eq_right hca]
     have hM0 : (M : ℚ) ≠ 0 := by exact_mod_cast hM.ne'
     have key : (c : ℚ) ^ 2 * (1 / 2 - _root_.GlobalTheory.KummerEisensteinGalois.frc M a) -
         c * (1 / 2 - _root_.GlobalTheory.KummerEisensteinGalois.frc M (c * a)) =

@@ -72,7 +72,7 @@ theorem cmpC_mem_M_iff (tE : Tau → E →+* LL) (htE : ∀ τ x, embLL (tE τ x
     obtain ⟨c, γ, κ, hγ, hpt⟩ := hp i g
     have h1 := (hloc x i L c hL ⟨g, γ, κ, hg, hγ, hpt⟩).2 (hI c)
     unfold cmpC at h1
-    rwa [if_pos hL] at h1
+    rwa [ite_eq_left hL] at h1
 
 end Gen
 

@@ -1347,9 +1347,9 @@ theorem isSNC_locSec : ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] 
     simp only [Set.mem_inter_iff, Set.mem_setOf_eq, mem_range_ptMap_closι]
     refine and_comm.trans (and_congr_right fun hy => ?_)
     by_cases h : x.1 (IsLocalRing.closedPoint ℂ) ∈ Closeds.closure {z a}
-    · simp only [τ, dif_pos h, Option.some.injEq, exists_eq_left', hev y hy]
+    · simp only [τ, dite_eq_left h, Option.some.injEq, exists_eq_left', hev y hy]
       exact ((hN hy).2.2.1 ⟨a, h⟩).symm
-    · simp only [τ, dif_neg h, reduceCtorEq, false_and, exists_false, iff_false]
+    · simp only [τ, dite_eq_right h, reduceCtorEq, false_and, exists_false, iff_false]
       exact (hN hy).2.2.2.1 a h
   · exact (hA.holoOn_iff hA.anRead ψ.open_source).2 ((hA.anRead.holoOn_ev V.1 (G' 0)).mono hψV)
   · intro y hy
@@ -1359,9 +1359,9 @@ theorem isSNC_locSec : ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] 
     congr 1
     rw [Finset.prod_eq_one (s := Finset.univ)
       (f := fun a : {a // ¬ x.1 (IsLocalRing.closedPoint ℂ) ∈ Closeds.closure {z a}} => _)
-      (fun a _ => by simp only [τ, dif_neg a.2]), mul_one]
+      (fun a _ => by simp only [τ, dite_eq_right a.2]), mul_one]
     refine Finset.prod_congr (by ext; simp) fun a _ => ?_
-    simp only [τ, dif_pos a.2, map_pow, hev y hy, ev_eq (hψV hy)]
+    simp only [τ, dite_eq_left a.2, map_pow, hev y hy, ev_eq (hψV hy)]
 
 end GlobalTheory.SecSnc
 end -- clump:auto

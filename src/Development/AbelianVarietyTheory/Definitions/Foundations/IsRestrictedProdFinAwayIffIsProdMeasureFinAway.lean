@@ -194,12 +194,6 @@ variable {σ J L} {S : Finset (HeightOneSpectrum (𝓞 F))} {μa : ∀ w, Measur
 theorem IsRestrictedProd.unique (h : IsRestrictedProd σ J L μa μf μ) (h' : IsRestrictedProd σ J L μa μf μ') :
     μ = μ' := IsHaarProd.unique (isOpen_stabLoc σ J L) (isCompact_stabLoc σ J L) h h'
 
-section Indep
-
-variable (L' : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsLattice E L']
-
-end Indep
-
 theorem IsRestrictedProd.smul_arch [DecidableEq (InfinitePlace F)] (h : IsRestrictedProd σ J L μa μf μ)
     (w : InfinitePlace F) {x : ℝ≥0} (hx : x ≠ 0) :
     IsRestrictedProd σ J L (Function.update μa w (x • μa w)) μf (x • μ) := isRestrictedProd_iff_isProdMeasure.2

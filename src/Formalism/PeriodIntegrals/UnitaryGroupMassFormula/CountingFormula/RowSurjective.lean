@@ -89,7 +89,7 @@ theorem coordL_injective (hf : PartnerOK D F0 f) : Function.Injective (coordL D 
       intro b
       rw [map_smul, smul_eq_mul, ← (VS D).herm.eq (F0.e b) (f a), hf.1 b a]
       split_ifs <;> simp
-    simp only [e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     exact h
   rw [← hc]
   simp [hc0]
@@ -311,7 +311,7 @@ theorem rs_xlam (hf : PartnerOK D F0 f) : XLam (lamC D F0 f M) (lf D F0) = XS D 
 
       rw [← hc, map_sum] at h
       simp only [map_smul, rs_hT_f_e hf, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true] at h
+        Finset.mem_univ, ite_true] at h
       exact h
     rw [← hc]
     refine Submodule.sum_mem _ fun a _ => Submodule.subset_span ⟨a, c a, hca a, rfl⟩
@@ -374,7 +374,7 @@ theorem rs_hT_f_lift (hf : PartnerOK D F0 f) (w : perpS (VS D) F0.X) (b : Fin D.
     split_ifs <;> simp
 
   simp only [rsLift, map_sub, map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+  Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
 
 theorem rs_lift_mem (hf : PartnerOK D F0 f) (w : perpS (VS D) F0.X)
     (hw : (Submodule.Quotient.mk w : WbQ D F0) ∈ M) : rsLift (f := f) w ∈ lamC D F0 f M := by
@@ -524,8 +524,8 @@ theorem rs_smul_f_mem (hf : PartnerOK D F0 f) {a : Fin D.R.rS} {s : D.host.E} (h
   refine mem_lamC_iff.2 ⟨fun b => ?_, ⟨0, ?_, ?_⟩, fun b => ?_⟩
   · rw [map_smul, hf.1, smul_eq_mul]
     by_cases hab : b = a
-    · subst hab; rw [if_pos rfl, mul_one, star_star]; exact hs
-    · rw [if_neg hab, mul_zero, star_zero]; exact fi_zero D _
+    · subst hab; rw [ite_eq_left rfl, mul_one, star_star]; exact hs
+    · rw [ite_eq_right hab, mul_zero, star_zero]; exact fi_zero D _
   · simp [rs_vPr_smul_f hf]
   · rw [Submodule.Quotient.mk_zero]; exact M.zero_mem
   · rw [rs_vPr_smul_f hf, map_zero]; exact fi_zero D _
@@ -752,7 +752,7 @@ theorem partner_exists {r : ℕ} {T : E} (F0 : FlagG S r T) (hT0 : T ≠ 0) :
     rw [hT_sub_sum_left]
     simp only [hf1]
     rw [hT_sub_sum_right]
-    simp only [hgeE, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hgeE, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hs : star (c a b) = S.hT (g a) (g b) / 2 := by
       simp only [c]
       rw [← star_hT_eq_hT_swap (S := S) (g a) (g b)]

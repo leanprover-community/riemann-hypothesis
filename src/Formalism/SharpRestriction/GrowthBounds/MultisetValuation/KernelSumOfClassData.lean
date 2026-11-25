@@ -256,7 +256,7 @@ theorem TtL_mem (J : ℕ) (i0 : X.Pl → ℕ) (c' : X.Lv.comp J) (T : Submodule 
     rw [hT]
     by_cases h0 : i0 v = 0
     · unfold Sys.Tt
-      rw [if_pos h0]
+      rw [ite_eq_left h0]
       apply ih hnd' a Lc
       intro L'' hrel
       have hfun : (fun u => if u ∈ v :: vs then i0 u else 0) = (fun u => if u ∈ vs then i0 u else 0) := by
@@ -267,7 +267,7 @@ theorem TtL_mem (J : ℕ) (i0 : X.Pl → ℕ) (c' : X.Lv.comp J) (T : Submodule 
       have := H L'' (by rw [hfun]; exact hrel)
       rwa [List.map_cons, List.prod_cons, pN_zero X J i0 v h0, one_mul] at this
     · unfold Sys.Tt
-      rw [if_neg h0]
+      rw [ite_eq_right h0]
       show a • ((p : X.G.Kf) ^ (Nprime (X.G.P.lam0 v) (X.w v) J (i0 v)) •
         ∑ᶠ (L1 : Submodule ((X.Pj J).W (X.vJ J v)) (Fin ((X.Pj J).m + 1) → (X.Pj J).Qq (X.vJ J v)))
           (_ : IsEdge p ((X.Pj J).n' (X.vJ J v)) (i0 v) ⟨L1, Lc (X.vJ J v)⟩),
@@ -288,9 +288,9 @@ theorem TtL_mem (J : ℕ) (i0 : X.Pl → ℕ) (c' : X.Lv.comp J) (T : Submodule 
         · subst hv'
           right
           have h1 := hrel (X.vJ J v)
-          simp only [vB_vJ, if_neg hv] at h1
+          simp only [vB_vJ, ite_eq_right hv] at h1
           rcases h1 with ⟨_, h1⟩ | ⟨h1, _⟩
-          · simp only [vB_vJ, List.mem_cons, true_or, if_true]
+          · simp only [vB_vJ, List.mem_cons, true_or, ite_true]
             refine ⟨Nat.one_le_iff_ne_zero.mpr h0, ?_⟩
             have e1 : Function.update (β := fun a => Submodule ((X.Pj J).W a) (Fin ((X.Pj J).m + 1) → (X.Pj J).Qq a))
                 Lc (X.vJ J v) L1 (X.vJ J v) = L1 := Function.update_self _ _ _

@@ -439,7 +439,7 @@ theorem not_kltAt_sub_of_not_lcAt : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocal
   obtain ⟨m₁, g₁, hm₁, hg₁, hd₁⟩ := _root_.GlobalTheory.PairStep.isLogEqn_add_smul X p n Δ D η x m m' g f 1 hm hm' hg hDf
   rw [one_smul] at hg₁
   have hnl := (_root_.GlobalTheory.PairStep.lcAt_iff_of_isLogEqn X p n hp hn (Δ + D) η x m₁ g₁ hη hm₁ hg₁).not.1 hlc
-  push_neg at hnl
+  push Not at hnl
   obtain ⟨E, hE, hlt⟩ := hnl
   rw [hd₁, one_mul] at hlt
   set a := discrep E η m g with ha

@@ -178,7 +178,7 @@ theorem summable_norm_of_lattice {Y : Type} {n : ℕ} (T : Y → ℂ) (ℓ : Y �
     by_cases hk : k = 0
     · simp [g, hk]
     · have hpos : 0 < (k : ℝ) ^ 2 := by positivity
-      simp only [g, hk, if_false, add_zero, sq_abs]
+      simp only [g, hk, ite_false, add_zero, sq_abs]
       exact inv_anti₀ hpos (by linarith)
   let b : (Fin n → ℤ) → ℝ := fun k => ∏ i, g (k i)
   have hb0 : ∀ k, 0 ≤ b k := fun k => Finset.prod_nonneg fun i _ => hg0 _

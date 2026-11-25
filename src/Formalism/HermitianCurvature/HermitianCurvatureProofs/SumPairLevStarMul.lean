@@ -53,11 +53,4 @@ theorem act_mem_pres (M : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'
 
 end Lev
 
-section Top
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
-
-end Top
-
 end Formalism.FourierDecayAlt.P5.HerA

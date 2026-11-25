@@ -415,9 +415,9 @@ theorem exists_monomial_matrices_of_indep : ∀ (o A M : Type) [CommRing o] [Com
     rw [LinearMap.toMatrix_apply, hb, hE, ← hb, map_smul, Module.Basis.repr_self]
     rw [Matrix.map_apply, Finsupp.smul_apply, smul_eq_mul]
     by_cases h : l = π a + i
-    · have : ρ a l i = ζ ^ E a i := if_pos h
+    · have : ρ a l i = ζ ^ E a i := ite_eq_left h
       rw [this, h, Finsupp.single_eq_same, _root_.mul_one]
-    · have : ρ a l i = 0 := if_neg h
+    · have : ρ a l i = 0 := ite_eq_right h
       rw [this, Finsupp.single_eq_of_ne h, mul_zero, map_zero]
   have hinj : Function.Injective (fun X : Matrix (Fin g ⊕ Fin g → ZMod m) (Fin g ⊕ Fin g → ZMod m) o => X.map f) := Matrix.map_injective hf
   have hmul : ∀ a c, (ρ a * ρ c).map f = LinearMap.toMatrix b b (u a ∘ₗ u c) := by

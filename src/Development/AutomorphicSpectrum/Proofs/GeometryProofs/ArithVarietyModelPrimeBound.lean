@@ -203,7 +203,7 @@ theorem htW_eq_htDual {G : Over X} [GrpObj G] {Li : Type} [AddCommGroup Li] [Mod
 theorem exists_mul_of_isCp {p : ℕ} (hp : p.Prime) (h2 : p ≠ 2) {κ w : Ω} (hκ : HT.IsCp p κ) (hw : HT.IsCp p w)
     (R : Subring Ω) (hR : w ∈ R) : ∃ u ∈ R, w = u * κ := by
   unfold HT.IsCp at hκ hw
-  rw [if_neg h2] at hκ hw
+  rw [ite_eq_right h2] at hκ hw
   obtain ⟨z, hz, rfl⟩ := hκ
   obtain ⟨z', hz', rfl⟩ := hw
   haveI : NeZero p := ⟨hp.ne_zero⟩

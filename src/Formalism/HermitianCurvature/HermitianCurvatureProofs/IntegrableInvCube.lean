@@ -144,7 +144,7 @@ theorem gsup_one (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hpos : C.ThmPPos S)
     t {t} (by simp)
   rw [(hmix N0).2, hcov, Finset.sum_singleton] at hH
   have hN : Nz Y κ D t = (KB.NstV S ε (b + 1 - 1) 1 w' Y κ t t).re := by
-    simp only [Nz, if_pos ht]
+    simp only [Nz, ite_eq_left ht]
     rw [nstV_eq]
     rfl
   rw [hN] at hH

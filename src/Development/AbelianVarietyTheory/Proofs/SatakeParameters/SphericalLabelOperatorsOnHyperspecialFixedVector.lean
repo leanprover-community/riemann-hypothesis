@@ -529,7 +529,7 @@ theorem label_operators : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), (∀ d R, 
     · obtain ⟨g, r1, -⟩ := exists_reps hK (sphOp_rep hd)
       rw [← r1.sum_eq r1 (k := k) (by rwa [hK] at hk) (fun x => π x u) (fix M π u hu)]
       simp only [map_mul, Module.End.mul_apply]
-    · simp only [Hk3.rep, dif_neg hd, Finset.sum_empty]
+    · simp only [Hk3.rep, dite_eq_right hd, Finset.sum_empty]
   · obtain ⟨e, f, h⟩ := (supported_group_and_prime_idempotents V).2.1 P
     have hD := divAt_one V (GlobalTheory.HeckeDual.idem_of_isPrimeIdem h).1 (tie_of_isPrimeIdem h) (ϖ : D.host.E)
     have hg : SuppF V f 1 := (one_mem (suppGroup V f) :)
@@ -549,7 +549,7 @@ theorem label_operators : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), (∀ d R, 
     by_cases hd : IsLab V P d
     · obtain ⟨R', r1, r2⟩ := exists_dual (sphOp_rep hd)
       rw [← (c1 _ _ r1).1, r2]
-    · rw [Hk3.rep, Hk3.rep, dif_neg hd, dif_neg (_root_.mt hi.2 hd)]
+    · rw [Hk3.rep, Hk3.rep, dite_eq_right hd, dite_eq_right (_root_.mt hi.2 hd)]
   · have he := (GlobalTheory.HeckeDual.idem_of_isPrimeIdem h).1
     obtain ⟨d, hd, hD⟩ := exists_divAt V he (tie_of_isPrimeIdem h) h1 h2 g
     have hl := isLab_of_divAt h h1 h2 hd hg hD

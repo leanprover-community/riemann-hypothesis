@@ -193,7 +193,7 @@ theorem flagZ_diff (M : FlagModel y Ψ N j) (F : FrameData ι Ψ N M.Ω M.blk) {
     DifferentiableAt ℂ (fun w => flagZ M F (zb w) (H w) q) x := by
   unfold flagZ
   by_cases e : ∃ p, M.blk p = some q.1
-  · simp only [dif_pos e]
+  · simp only [dite_eq_left e]
     exact DifferentiableAt.fun_sum fun I _ => (hv q I).mul (minorIJ_diff (fun a b => hH _ a b) _ _)
   · simp only [_root_.dite_eq_right e]
     exact hz _

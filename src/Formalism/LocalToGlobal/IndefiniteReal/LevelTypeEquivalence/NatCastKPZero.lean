@@ -65,18 +65,6 @@ theorem dual_of_dualL {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
     rw [← h]
     exact Submodule.subset_span hx
 
-section Core
-
-variable {β : GL (Fin V.rank) (Lev.EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
-
-end Core
-
-section Main
-
-variable {β : GL (Fin V.rank) (Lev.EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} {N : ℕ}
-
-end Main
-
 end Formalism.IndefR.Eqv
 
 end

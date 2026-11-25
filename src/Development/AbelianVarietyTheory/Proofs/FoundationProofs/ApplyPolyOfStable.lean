@@ -416,7 +416,7 @@ theorem line_functional_eq_period_mul : ∀ (l : ℕ) [Fact l.Prime] (M S : Type
   by_cases hall : ∀ i, y i = 0
   · refine ⟨0, 1, norm_one, fun i v => ?_⟩
     rw [hLv, hall i]; simp
-  push_neg at hall
+  push Not at hall
   obtain ⟨i₀, hy0⟩ := hall
 
   have hex : ∀ i, ∃ Sf : Finset (PadicAlgCl l × B),

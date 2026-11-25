@@ -96,14 +96,14 @@ theorem exists_avoid (c : 𝓞 E ≃+* 𝓞 E) (hc : ∀ x, c (c x) = x) (δ : �
     have h1 := hu Q ((finite_mem ht₀).mem_toFinset.2 hd)
     rw [pow_one] at h1
     by_cases h : y₁ ∈ Q.asIdeal
-    · simp only [h, if_true] at h1
+    · simp only [h, ite_true] at h1
       have h2 : (M : 𝓞 E) * (u * c u) ∈ Q.asIdeal := by simpa using sub_mem hy h
       have h3 : u ∈ Q.asIdeal := by
         rcases Q.isPrime.mem_or_mem ((Q.isPrime.mem_or_mem h2).resolve_left hMQ) with h3 | h3
         · exact h3
         · exact hc u ▸ hQ _ h3
       exact Q.isPrime.one_notMem (by simpa using sub_mem h3 h1)
-    · simp only [h, if_false, sub_zero] at h1
+    · simp only [h, ite_false, sub_zero] at h1
       exact h (by simpa using sub_mem hy (Ideal.mul_mem_left _ (M : 𝓞 E) (Ideal.mul_mem_right (c u) _ h1)))
 
 theorem local_close {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ] (v : Valuation K Γ) {s y n m : K}

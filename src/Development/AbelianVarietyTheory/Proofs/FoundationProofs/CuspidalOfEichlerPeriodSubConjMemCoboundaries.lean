@@ -130,7 +130,7 @@ lemma coeff_eichler (w : ℕ) (f : ℍ → ℂ) (τ : ℍ) :
   · rw [coeff_C_mul_X_pow]
     simp
   · intro b _ hbw
-    rw [coeff_C_mul_X_pow, if_neg hbw.symm]
+    rw [coeff_C_mul_X_pow, ite_eq_right hbw.symm]
   · simp
 
 lemma coeff_eichler_period (w n : ℕ) (hn : 0 < n) (g : ℍ → ℂ) (hper : Function.Periodic (g ∘ ofComplex) (n : ℝ))

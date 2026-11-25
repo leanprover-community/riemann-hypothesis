@@ -20,7 +20,7 @@ private theorem ffsum_pow (p : ℕ) [hp : Fact p.Prime] (n : ℕ) (hn : n < 2 * 
   classical
   have hp2 := hp.out.two_le
   rcases lt_or_ge n (p - 1) with h | h
-  · rw [if_neg h.ne]
+  · rw [ite_eq_right h.ne]
     have := FiniteField.sum_pow_lt_card_sub_one (ZMod p) n (by rw [ZMod.card]; exact h)
     exact this
   · have hn0 : n ≠ 0 := by omega
@@ -73,9 +73,9 @@ theorem UpperTheory.V.Stick.ffsum :
     rw [Finset.mem_range] at hm
     rw [ffsum_pow p (i + m) (by omega)]
     by_cases h : i + m = p - 1
-    · rw [if_pos h, if_pos (by omega)]
+    · rw [ite_eq_left h, ite_eq_left (by omega)]
       ring
-    · rw [if_neg h, if_neg (by omega), mul_zero]
+    · rw [ite_eq_right h, ite_eq_right (by omega), mul_zero]
   rw [key, key2, Finset.sum_ite_eq]
   split_ifs with h
   · rw [Finset.mem_range] at h

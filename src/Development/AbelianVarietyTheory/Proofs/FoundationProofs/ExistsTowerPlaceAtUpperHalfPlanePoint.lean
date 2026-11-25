@@ -138,7 +138,7 @@ theorem exists_place_at_point : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε 
             funext z; simp [inv_div]
           have hord' : 0 ≤ meromorphicOrderAt (b / a) τ := by
             rw [hinv, meromorphicOrderAt_inv]
-            push_neg at hord
+            push Not at hord
             generalize meromorphicOrderAt (a / b) τ = o at hord ⊢
             induction o with
             | top => simp at hord

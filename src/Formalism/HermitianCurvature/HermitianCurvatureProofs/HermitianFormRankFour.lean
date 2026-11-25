@@ -196,12 +196,12 @@ private theorem hpk_col_es_lemma_2 (k r : ℕ) (c : Fin r) (t : Fin (2 * r + k +
 theorem herm_e_left (w : Fin (2 * r + k + 1) → ℂ) (c : Fin r) :
     herm (Hpk k r) (bvec (eI k r c)) w = star (w (esI k r c)) := by
   simp only [herm, dotProduct, mulVec, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Pi.star_apply, hpk_col_e_lemma]
+    Finset.mem_univ, ite_true, Pi.star_apply, hpk_col_e_lemma]
 
 theorem herm_es_left (w : Fin (2 * r + k + 1) → ℂ) (c : Fin r) :
     herm (Hpk k r) (bvec (esI k r c)) w = star (w (eI k r c)) := by
   simp only [herm, dotProduct, mulVec, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Pi.star_apply, hpk_col_es_lemma_2]
+    Finset.mem_univ, ite_true, Pi.star_apply, hpk_col_es_lemma_2]
 
 theorem bvec_ee (c c' : Fin r) : bvec (eI k r c') (eI k r c) = if c = c' then 1 else 0 := by
   have := c.isLt

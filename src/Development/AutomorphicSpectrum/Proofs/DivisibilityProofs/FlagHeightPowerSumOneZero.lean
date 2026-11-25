@@ -27,12 +27,12 @@ theorem HH.sum_xDeg {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (τ : Ψ
   have ha : (a:ℕ) + 1 < N := by have := a.isLt; omega
   by_cases h : σ = τ
   · subst h
-    simp only [GroundTheory.Heights₂.Heights.LowerBoundFree.xDeg, if_true]
+    simp only [GroundTheory.Heights₂.Heights.LowerBoundFree.xDeg, ite_true]
     rw [Finset.sum_sub_distrib]
     rw [Fin.sum_univ_eq_sum_range (fun n => if (a:ℕ) = n then (1:ℤ) else 0) N,
         Fin.sum_univ_eq_sum_range (fun n => if (a:ℕ) + 1 = n then (1:ℤ) else 0) N]
-    rw [Finset.sum_ite_eq, Finset.sum_ite_eq, if_pos (Finset.mem_range.mpr (by omega)),
-        if_pos (Finset.mem_range.mpr ha)]
+    rw [Finset.sum_ite_eq, Finset.sum_ite_eq, ite_eq_left (Finset.mem_range.mpr (by omega)),
+        ite_eq_left (Finset.mem_range.mpr ha)]
     simp
   · simp [GroundTheory.Heights₂.Heights.LowerBoundFree.xDeg, h]
 

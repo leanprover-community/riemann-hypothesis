@@ -308,12 +308,12 @@ theorem cpt_of_isIdemSum {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e
 theorem cpt_one_of_isIdemSum {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) {Q : Pl D.host.E} (hQ : Q ∈ P) :
     GlobalTheory.StdFrames.cpt Q (toEAf D e) = 1 := by
   classical
-  rw [cpt_of_isIdemSum he, if_pos hQ]
+  rw [cpt_of_isIdemSum he, ite_eq_left hQ]
 
 theorem cpt_zero_of_isIdemSum {P : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) {Q : Pl D.host.E} (hQ : Q ∉ P) :
     GlobalTheory.StdFrames.cpt Q (toEAf D e) = 0 := by
   classical
-  rw [cpt_of_isIdemSum he, if_neg hQ]
+  rw [cpt_of_isIdemSum he, ite_eq_right hQ]
 
 theorem map_unitMix_of_zero {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S) (e x : R) (h : φ e = 0) :
     φ (e * x + (1 - e)) = 1 := by
@@ -653,10 +653,10 @@ theorem offPart_fixes_vac : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts
     exact rankX_even D _
   have hmu : Formalism.IndefR.Fin.UnrOff e (L.mu t (j + 1 + 1)) := unrOff_mu_locPl G hL t ⟨j + 1, hj⟩ he
   have hchS : G.chrS (Pair.top t (j + 1)) = L.mu t (j + 1 + 1) := by
-    simp only [GridData.chrS, Formalism.IndefR.Lift.attChr, hnodd, if_false]
+    simp only [GridData.chrS, Formalism.IndefR.Lift.attChr, hnodd, ite_false]
     rfl
   have hchT : G.chrT (Pair.top t (j + 1)) = L.mu t (j + 1 + 1) := by
-    simp only [GridData.chrT, Formalism.IndefR.Lift.attChr, hnodd', if_false]
+    simp only [GridData.chrT, Formalism.IndefR.Lift.attChr, hnodd', ite_false]
     rfl
 
   have hfrS := isFrame_moved (S.N.latS (Pair.top t (j + 1))) (G.Λ (.top (j + 1))) (S.βp (j + 1))
@@ -771,7 +771,7 @@ theorem vac_high_law (hA : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
   have hr0 : Even (G.V (.top (j + 1))).rank := by
     rw [GlobalTheory.FunObj.rank_top G (j := j + 1) (by omega)]; exact GlobalTheory.FunObj.rankX_even D (j + 1)
   have hTc : G.chrT (.top t (j + 1)) = L.mu t (j + 1 + 1) := by
-    simp only [GridData.chrT, Formalism.IndefR.Lift.attChr, GridData.chr, GridData.pT, Nat.not_odd_iff_even.2 hr1, if_false]
+    simp only [GridData.chrT, Formalism.IndefR.Lift.attChr, GridData.chr, GridData.pT, Nat.not_odd_iff_even.2 hr1, ite_false]
   have hc : ((splitFacO (G.chrS (.top t (j + 1) : Pair T)) (G.chrT (.top t (j + 1) : Pair T))
       (GlobalTheory.VecInv.detAt e hee (G.pS (.top t (j + 1) : Pair T)) (cutPart (e + cA D e) _ g))
       (GlobalTheory.VecInv.detAt e hee (G.pT (.top t (j + 1) : Pair T)) 1) : ℂ) *
@@ -892,13 +892,13 @@ theorem detAt_conjPt_eq_prod {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {
   · intro Q
     simp only [RingHom.map_add (f := _), RingHom.map_mul, RingHom.map_sub, RingHom.map_one, map_prod, hcomp, hloc]
     by_cases hQ : Q ∈ locPl G t
-    · rw [if_pos hQ, one_mul, sub_self, add_zero, Finset.prod_eq_single ⟨Q, hQ⟩]
+    · rw [ite_eq_left hQ, one_mul, sub_self, add_zero, Finset.prod_eq_single ⟨Q, hQ⟩]
       · rw [GlobalTheory.LFun.finSingle_self, det_kapAt_val]
       · intro b _ hb
         exact GlobalTheory.LFun.finSingle_ne (fun h => hb (Subtype.ext h.symm)) _
       · intro h
         exact absurd (Finset.mem_univ _) h
-    · rw [if_neg hQ, zero_mul, zero_add, sub_zero]
+    · rw [ite_eq_right hQ, zero_mul, zero_add, sub_zero]
       exact (Finset.prod_eq_one fun w _ => GlobalTheory.LFun.finSingle_ne (fun h => hQ (by rw [h]; exact w.2)) _).symm
 
 end GlobalTheory.TopLevelInv
@@ -1074,7 +1074,7 @@ theorem chrS_top_prod_locIdele : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : C
     rw [GridData.chrS, hrank]
     simp [Formalism.IndefR.Lift.attChr, GridData.chr, Nat.not_odd_iff_even.2 (even_rankX D j)]
   have hE : ChrEq (L.mu t (j + 1)) (muBase L (j + 1) * L.xiH t) := by
-    have h1 : muBase L (j + 1) = L.C.mu0 ⟨j, by omega⟩ := dif_pos (by omega)
+    have h1 : muBase L (j + 1) = L.C.mu0 ⟨j, by omega⟩ := dite_eq_left (by omega)
     rw [h1]
     exact GlobalTheory.TowerCharRead.chrEq_mul (hL.mu0 ⟨j, by omega⟩) (hL.xi t)
   rw [hchr, map_prod]
@@ -1413,7 +1413,7 @@ theorem prod_edgeFactor_col {j : ℕ} (hj : j + 1 < Γ.m) (g : GL (Fin (Γ.rank 
     List.prod_eq_one, one_mul, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
   · simp only [Function.comp, hf, Finset.prod_mul_distrib]
     rw [Finset.prod_eq_single j, Finset.prod_eq_single (j + 1)]
-    · simp only [if_true, Grid.kappa, Grid.blockChar, MonoidHom.div_apply]
+    · simp only [ite_true, Grid.kappa, Grid.blockChar, MonoidHom.div_apply]
       simp only [Units.val_div_eq_div_val, Units.val_inv_eq_inv_val]
       field_simp
     · intro b _ hb; simp [hb]

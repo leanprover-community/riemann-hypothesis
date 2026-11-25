@@ -21,8 +21,6 @@ namespace HermitianBundle
 
 def deg (M : HermitianBundle K) : ℝ := M.arithDegree / Module.finrank ℚ K
 
-def normAt (M : HermitianBundle K) (σ : K →+* ℂ) (e : M.carrier) : ℝ := ‖fibreVec M.metric σ e‖
-
 def sub (M : HermitianBundle K) (F : Submodule (𝓞 K) M.carrier) : HermitianBundle K :=
   ⟨F, M.metric.comap F.subtype F.injective_subtype⟩
 

@@ -30,10 +30,10 @@ theorem poly_pad {A : Type} [Ring A] [Algebra ℂ A] (m n : ℕ) (hmn : m < n) (
       omega
     · intro j hj hj'
       simp only [mem_range] at hj hj'
-      rw [if_neg (by omega), if_neg (by omega), smul_zero]
-  rw [h1, Finset.sum_range_succ, if_neg (lt_irrefl m), if_pos rfl, add_comm]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega), smul_zero]
+  rw [h1, Finset.sum_range_succ, ite_eq_right (lt_irrefl m), ite_eq_left rfl, add_comm]
   congr 1
-  exact Finset.sum_congr rfl fun j hj => by rw [if_pos (mem_range.mp hj)]
+  exact Finset.sum_congr rfl fun j hj => by rw [ite_eq_left (mem_range.mp hj)]
 
 theorem normalFormOfS : NormalFormOfS := by
   intro hT hPre hH Wp Wq _ _ _ _ _ _ P z z' π π' hpl X
@@ -369,7 +369,7 @@ theorem interpolation_inverse_matrix_sum_identity {M N : Type*} [AddCommGroup M]
     rw [Finset.sum_eq_single (⟨j, hj⟩ : Fin m)]
     · simp
     · intro b _ hb
-      rw [if_neg (fun h' => hb h'.symm), zero_smul]
+      rw [ite_eq_right (fun h' => hb h'.symm), zero_smul]
     · intro hn
       exact absurd (Finset.mem_univ _) hn
   refine ⟨fun j => if hj : j < m then ∑ i : Fin m, W ⟨j, hj⟩ i • F (v i) else 0, fun Y => ?_⟩
@@ -442,7 +442,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 theorem sum_mul_sum (Pj : ι → Module.End ℂ V) (ho : ∀ i j, Pj i * Pj j = if i = j then Pj i else 0) (a b : ι → ℂ) :
     (∑ i, a i • Pj i) * (∑ j, b j • Pj j) = ∑ i, (a i * b i) • Pj i := by
   simp only [Finset.sum_mul, Finset.mul_sum, smul_mul_smul_comm, ho, smul_ite, smul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 def kapOf (Pj : ι → Module.End ℂ V) (hs : ∑ i, Pj i = 1) (ho : ∀ i j, Pj i * Pj j = if i = j then Pj i else 0) :
     (ι → ℂ) →ₐ[ℂ] Q.Pr V where
@@ -570,10 +570,10 @@ theorem rep_of (X : ActualOps k r z z' π π') (a b : Fin 2) (m : ℕ) (ℓ : Mo
     by_cases hx : (c, g) ∈ DomR k r z z'
     · have e : ((X.t Y a b Φ : RadSp k r z z' π π') : Fn k r (Wq →L[ℂ] Wp)) c g =
           tL k r z z' (Fin.last r) Y a b ((Φ : Fn k r (Wq →L[ℂ] Wp)) c) g := X.t_apply Y a b Φ (c, g) hx
-      simp only [if_pos hx]
+      simp only [ite_eq_left hx]
       rw [e, hpt Φ c g hx Y]
       abel
-    · simp only [if_neg hx, smul_zero, Finset.sum_const_zero]
+    · simp only [ite_eq_right hx, smul_zero, Finset.sum_const_zero]
       rw [(X.t Y a b Φ).2.1 (c, g) hx, (ℓ Φ).2.1 (c, g) hx, smul_zero, sub_zero]
   obtain ⟨C, hC⟩ := interp (RadSp k r z z' π π').subtype Subtype.val_injective (fun Y => X.t Y a b - Y ^ m • ℓ) m
     (fun j Φ => fun c g => if (c, g) ∈ DomR k r z z' then A' j ((Φ : Fn k r (Wq →L[ℂ] Wp)) c) g else 0) hpw

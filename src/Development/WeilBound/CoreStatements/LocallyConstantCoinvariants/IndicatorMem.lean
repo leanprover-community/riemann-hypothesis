@@ -42,7 +42,7 @@ theorem kill {X : Type} [TopologicalSpace X] (N : Submodule ℂ (X → ℂ)) (Y�
   have hmm : ∀ Y, Y ≠ Y₁ → IsLocallyConstant (mm Y) ∧ mm Y Y ≠ mm Y Y₁ ∧
       ∀ Φ ∈ SB X, (fun y => (mm Y y - mm Y Y₁) * Φ y) ∈ N := by
     intro Y hY
-    simp only [mm, dif_neg hY]
+    simp only [mm, dite_eq_right hY]
     exact Classical.choose_spec (h Y hY)
   let U : X → Set X := fun Y => {y | mm Y y ≠ mm Y Y₁}
   have hUc : ∀ Y, Y ≠ Y₁ → IsClopen (U Y) := by
@@ -238,7 +238,7 @@ theorem box_of_near {M : ℕ} {c y : κ → Af F} (h : Near M c y) : box M c y =
 
 theorem box_of_not {M : ℕ} (hM : M ≠ 0) {c y : κ → Af F} (h : ¬ Near M c y) : box M c y = 0 := by
   unfold Near at h
-  push_neg at h
+  push Not at h
   obtain ⟨v, i, hvi⟩ := h
   unfold box
   apply finprod_eq_zero _ v

@@ -198,7 +198,7 @@ theorem exists_den {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E))
     funext i
     rw [Finset.sum_apply, Pi.smul_apply]
     simp only [Pi.smul_apply, Pi.single_apply, smul_ite, smul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     simp only [Algebra.smul_def, map_intCast]
     push_cast
     show (m : E) * (m' : E) * x i = ((m' : E) * x i) * (m : E)
@@ -252,12 +252,6 @@ theorem exists_inv_gen (σ : E →ₐ[F] E) (hs : ∀ e, (σ : E →+* E) ((σ :
   · rw [GlobalTheory.LocDict.eps_eq, ← hu0e, key, haO, map_mul]
     ring
 
-private theorem eps_mem_intAd {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
-    [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) :
-    afsplitEps E v ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F) := by
-  rw [GlobalTheory.LocDict.eps_eq]
-  exact GlobalTheory.LocDict.one_tmul_mem (afsplitI_mem_intAd v 1 (one_mem _))
-
 private theorem inclE_tmul' {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (ρ : 𝓞 F) (z : E) :
     inclE (F := F) (FiniteAdeleRing (𝓞 F) F) (algebraMap (𝓞 F) E ρ * z) =
@@ -304,7 +298,7 @@ theorem mem_loc_iff : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
       change s₁ ∈ Submonoid.closure _ at hs₁
       induction hs₁ using Submonoid.closure_induction with
       | mem s₀ hs₀ => exact GlobalTheory.LocDict.exists_inv_gen σ hs hfix v p hp hpv s₀ hs₀.1 hs₀.2
-      | one => exact ⟨afsplitEps E v, eps_mem_intAd v, by rw [map_one, map_one, mul_one]⟩
+      | one => exact ⟨afsplitEps E v, afsplit_eps_int (F := F) (E := E) (v := v), by rw [map_one, map_one, mul_one]⟩
       | mul a b _ _ ha hb =>
         obtain ⟨u₁, hu₁, e₁⟩ := ha
         obtain ⟨u₂, hu₂, e₂⟩ := hb

@@ -60,7 +60,7 @@ theorem seenFam : SeenFam := by
     intro w hw
     funext y
     have h := ((locAlg E a b Z L w).2.2.2.1 (φ w) (hφ w hw)).1
-    simp only [seen, if_pos (hZ w hw).2]
+    simp only [seen, ite_eq_left (hZ w hw).2]
     exact congrFun h y
   refine ⟨hZw, fun k => ⟨⟨hT.1, fun w hw hs x => ?_⟩, ?_, ?_, ?_⟩⟩
   · rw [Ex.ev_pow, hT.2 w hw hs]
@@ -70,22 +70,22 @@ theorem seenFam : SeenFam := by
     · have h := hZw w hwZ
       funext y
       have h' := congrFun h y
-      simp only [seen, if_pos (hZ w hwZ).2, intersection_update_fsHerm_neg_one, fam, if_pos hwZ] at h' ⊢
+      simp only [seen, ite_eq_left (hZ w hwZ).2, intersection_update_fsHerm_neg_one, fam, ite_eq_left hwZ] at h' ⊢
       exact h'
     · by_cases hwT : w ∈ T
       · by_cases hs : IsSplitAt w
         · funext y
-          simp only [seen, if_pos hs, intersection_update_fsHerm_neg_one, fam, if_neg hwZ, if_pos hwT]
+          simp only [seen, ite_eq_left hs, intersection_update_fsHerm_neg_one, fam, ite_eq_right hwZ, ite_eq_left hwT]
           rfl
         · funext y
-          simp only [seen, if_neg hs, intersection_update_fsHerm_neg_one, fam, if_neg hwZ, if_pos hwT]
+          simp only [seen, ite_eq_right hs, intersection_update_fsHerm_neg_one, fam, ite_eq_right hwZ, ite_eq_left hwT]
           rw [heckeFunction_mul, hT.2 w hwT hs, heckeFunction_one_pow, mconv_unit a b w (UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.exHecke2 E a b w _)]
       · by_cases hs : IsSplitAt w
         · funext y
-          simp only [seen, if_pos hs, intersection_update_fsHerm_neg_one, fam, if_neg hwZ, if_neg hwT]
+          simp only [seen, ite_eq_left hs, intersection_update_fsHerm_neg_one, fam, ite_eq_right hwZ, ite_eq_right hwT]
           exact congrFun (mconv_unit a b w (hecke_unit a b w)) y
         · funext y
-          simp only [seen, if_neg hs, intersection_update_fsHerm_neg_one, fam, if_neg hwZ, if_neg hwT]
+          simp only [seen, ite_eq_right hs, intersection_update_fsHerm_neg_one, fam, ite_eq_right hwZ, ite_eq_right hwT]
   · have h : fam Z T φ e₁ e₂ k = intersection_update_fsHerm_neg_one Z T φ fun w => ((e₁ w).pow k).mul ((e₂ w).pow k) := by
       funext w
       simp only [fam, intersection_update_fsHerm_neg_one]

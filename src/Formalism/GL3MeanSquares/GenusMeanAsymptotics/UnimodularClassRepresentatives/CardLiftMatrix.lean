@@ -55,7 +55,7 @@ theorem exists_shift (B : AddSubgroup A) (Z' : AddSubgroup Z) (g : A → Z) (p :
     show β' _ = β' _
     rw [hq]
   · have h : good (a : A ⧸ B) := ⟨a, rfl, hpa, hga⟩
-    simp only [β', dif_pos h]
+    simp only [β', dite_eq_left h]
     exact key _ h.choose_spec.2.1 h.choose_spec.2.2 _
       (hφ _ h.choose_spec.2.1 h.choose_spec.2.2).choose_spec.1 _
       ((hφ _ h.choose_spec.2.1 h.choose_spec.2.2).choose_spec.2 z hz).choose_spec a

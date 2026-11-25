@@ -15,14 +15,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.ERam
 
 open Formalism.L2.Pj
 
-section Induce
-
-variable {E : Type} [Field E] [NumberField E]
-variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {k : Type} [Field k] [Algebra V k]
-  [IsFractionRing V k]
-
-end Induce
-
 theorem vLa_pos {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) (p : ℕ) (hp0 : p ≠ 0)
     (hp : (p : 𝓞 K) ∈ la.asIdeal) : 0 < vLa la (p : K) := by
   have h1 : la.valuation K (algebraMap (𝓞 K) K (p : 𝓞 K)) < 1 :=
@@ -35,11 +27,5 @@ theorem vLa_pos {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (�
   unfold vLa
   rw [show ((p : K)) = algebraMap (𝓞 K) K (p : 𝓞 K) from (map_natCast _ _).symm]
   omega
-
-section Host
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra
-
-end Host
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.ERam

@@ -107,12 +107,6 @@ def ContrTensor : Prop :=
 
 def Contraction : Prop := ContrHilbert ∧ ContrTensor
 
-section Models
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
-
-end Models
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ContractionTensorModels
 
 end

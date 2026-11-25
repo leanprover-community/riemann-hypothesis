@@ -71,7 +71,7 @@ theorem rowGen_diag_monomial_one (R : Type) [CommRing R] {r n : ℕ} (a : Fin r)
       have e : Finsupp.weight (rowW r n) (Finsupp.single (b, s) c) b = c := by
         simp [Finsupp.weight_apply, rowW, Finsupp.sum_single_index]
       rw [e, ← mul_pow]
-      simp only [if_true]
+      simp only [ite_true]
       congr 1
       ring
     · have e : Finsupp.weight (rowW r n) (Finsupp.single (b, s) c) a = 0 := by

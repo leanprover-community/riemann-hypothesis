@@ -348,7 +348,7 @@ theorem cocycles_fg_mod_l : Formalism.GaloisCohomology.LocalTateDualityK → ∀
   refine ⟨fun j => if j = i then 1 else 0, c', ?_⟩
   have hsum : ∑ j ∈ hfr.toFinset.image (Function.invFun F),
       (if j = i then (1 : O) else 0) • (j : ↥(GK K) → A.V) = (i : ↥(GK K) → A.V) := by
-    rw [Finset.sum_eq_single_of_mem i hmem (fun j _ hj => by rw [if_neg hj, zero_smul]), if_pos rfl,
+    rw [Finset.sum_eq_single_of_mem i hmem (fun j _ hj => by rw [ite_eq_right hj, zero_smul]), ite_eq_left rfl,
       one_smul]
   rw [hsum]
   simpa using hc'

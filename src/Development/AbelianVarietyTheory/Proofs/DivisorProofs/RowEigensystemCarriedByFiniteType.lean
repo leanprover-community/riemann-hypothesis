@@ -120,7 +120,7 @@ theorem carries_of_eEc_ne_bot : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {P
     intro w hw
     have h := h0 w hw
     simp only [Submodule.mem_comap, h, Submodule.zero_mem]
-  push_neg at h0
+  push Not at h0
   obtain ⟨w, hw, hne⟩ := h0
   let b := (A3.A.fam.R A3.A.μ0).S.basis
   let j := R.jX A3.A.μ0

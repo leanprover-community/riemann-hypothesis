@@ -213,8 +213,8 @@ private theorem pI_mD (t : (A E)ˣ) (h : G1 E) (v : InfinitePlace E) :
     exact mul_le_mul_iff_of_pos_left (norm_pos_iff.2 hs)
   unfold pI
   by_cases hc : ‖(h 1 1).1 v‖ ≤ ‖(h 1 0).1 v‖
-  · rw [if_pos hc, if_pos (key.2 hc), e']
-  · rw [if_neg hc, if_neg (fun x => hc (key.1 x)), e']
+  · rw [ite_eq_left hc, ite_eq_left (key.2 hc), e']
+  · rw [ite_eq_right hc, ite_eq_right (fun x => hc (key.1 x)), e']
 
 private theorem pF_mD (t : (A E)ˣ) (h : G1 E) (w : HeightOneSpectrum (𝓞 E)) :
     pF (mD t * h) w = ((t⁻¹ : (A E)ˣ) : A E).2 w * pF h w := by
@@ -233,8 +233,8 @@ private theorem pF_mD (t : (A E)ˣ) (h : G1 E) (w : HeightOneSpectrum (𝓞 E)) 
       exact mul_le_mul_right x _
   unfold pF
   by_cases hc : Valued.v ((h 1 1).2 w) ≤ Valued.v ((h 1 0).2 w)
-  · rw [if_pos hc, if_pos (key.2 hc), e']
-  · rw [if_neg hc, if_neg (fun x => hc (key.1 x)), e']
+  · rw [ite_eq_left hc, ite_eq_left (key.2 hc), e']
+  · rw [ite_eq_right hc, ite_eq_right (fun x => hc (key.1 x)), e']
 
 private theorem al_mD (t : (A E)ˣ) (h : G1 E) : al (mD t * h) = t * al h := by
   apply Units.ext

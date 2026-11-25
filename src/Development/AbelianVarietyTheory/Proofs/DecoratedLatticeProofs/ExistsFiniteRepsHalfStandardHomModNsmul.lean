@@ -116,7 +116,7 @@ theorem exists_reps_half_stdHom : ∀ (D : D7) (S T : HSp D) (Q : Finset (Formal
   obtain ⟨r, hr, w, hw, huw⟩ := h u hu
   have hG : G r := ⟨u, hu, hh, w, hw, huw⟩
   obtain ⟨_, hh₀, w₀, hw₀, hu₀w⟩ := hG.choose_spec
-  have hp : pick r = hG.choose := dif_pos hG
+  have hp : pick r = hG.choose := dite_eq_left hG
   have hdiff : u = hG.choose + k • (w - w₀) := by
     rw [hu₀w, smul_sub, huw]; abel
   exact ⟨pick r, Finset.mem_image_of_mem _ (hR.mem_toFinset.2 hr), w - w₀, sub_mem hw hw₀,

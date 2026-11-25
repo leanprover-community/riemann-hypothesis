@@ -375,7 +375,7 @@ theorem valR_fst {X : Scheme.{0}} (y : Sp (DualNumber W) ⟶ X) (U : X.Opens) (h
   have h' : ⊤ ≤ (red W ≫ y) ⁻¹ᵁ U := by
     rw [Scheme.Hom.comp_preimage]; exact fun p _ => h trivial
   unfold valR
-  rw [dif_pos h, dif_pos h', ← Scheme.Hom.appLE_comp_appLE (red W) y U ⊤ ⊤ h le_top]
+  rw [dite_eq_left h, dite_eq_left h', ← Scheme.Hom.appLE_comp_appLE (red W) y U ⊤ ⊤ h le_top]
   have n := congrArg (fun q => q.hom ((y.appLE U ⊤ h).hom f))
     (Scheme.ΓSpecIso_naturality (CommRingCat.ofHom (TrivSqZeroExt.fstHom W W W).toRingHom))
   simp only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_ofHom] at n
@@ -430,7 +430,7 @@ theorem exists_jets [IsLocalRing W] (P : PolAV (Sp W)) (ρ : LB.Gen (P.L.pull (e
       exact this
   set u := valR (𝟙 (Sp W)) ((P.L.pull (eSec P.A)).U fun _ => i₀) (ρ.s fun _ => i₀).val with hu_def
   have hu : IsUnit u := by
-    rw [hu_def, valR, dif_pos hρt]
+    rw [hu_def, valR, dite_eq_left hρt]
     exact ((ρ.s _).isUnit.map _).map _
   set ui := Ring.inverse (u ^ k)
   have hui : u ^ k * ui = 1 := Ring.mul_inverse_cancel _ (hu.pow k)
@@ -445,7 +445,7 @@ theorem exists_jets [IsLocalRing W] (P : PolAV (Sp W)) (ρ : LB.Gen (P.L.pull (e
     fun i j => ui * (valR (epsLift (v j)) ((LPow P.A P.L (k : ℤ) (Over.mk (𝟙 (Sp W)))).U fun _ => i₀)
         ((t i).f fun _ => i₀)).snd, htop, fun i j => ?_⟩
   have hn : Nonempty (Fin g) := ⟨j⟩
-  simp only [dif_pos hn]
+  simp only [dite_eq_left hn]
   have hf : (valR (epsLift (v hn.some)) ((LPow P.A P.L (k : ℤ) (Over.mk (𝟙 (Sp W)))).U fun _ => i₀)
         ((t i).f fun _ => i₀)).fst =
       (valR (epsLift (v j)) ((LPow P.A P.L (k : ℤ) (Over.mk (𝟙 (Sp W)))).U fun _ => i₀) ((t i).f fun _ => i₀)).fst := by
@@ -547,7 +547,7 @@ theorem valR_add' {A : Type} [CommRing A] {X : Scheme.{0}} (x : Sp A ⟶ X) (U :
     valR x U (f + g) = valR x U f + valR x U g := by
   by_cases h : ⊤ ≤ x ⁻¹ᵁ U
   · rw [valR_eq x U h, valR_eq x U h, valR_eq x U h, map_add (f := _)]
-  · simp only [valR, dif_neg h, add_zero]
+  · simp only [valR, dite_eq_right h, add_zero]
 
 theorem valR_scal_mul {R A : Type} [CommRing R] [CommRing A] {X : Scheme.{0}} (ψ : R →+* A) (p : X ⟶ Sp R)
     (x : Sp A ⟶ X) (hx : x ≫ p = spMap ψ) (U : X.Opens) (c : R) (f : Γ(X, U)) :
@@ -556,7 +556,7 @@ theorem valR_scal_mul {R A : Type} [CommRing R] [CommRing A] {X : Scheme.{0}} (�
   · rw [valR_eq x U h, valR_eq x U h, map_mul]
     have e : resTop U (scal p c) = Geo.Tor.constFn p U c := rfl
     rw [e, vh_const ψ p x hx U h c]
-  · simp only [valR, dif_neg h, mul_zero]
+  · simp only [valR, dite_eq_right h, mul_zero]
 
 theorem exists_linear_valR_sec : ∀ (K : Type) [Field K] (x : KeyIn K) (N : ℕ) (i : Fin 1 → x.P.L.ι) (B : Type) [CommRing B] [Algebra K B]
     (y : Sp B ⟶ (baseOver (Sp K) ⊗ x.P.A).left),

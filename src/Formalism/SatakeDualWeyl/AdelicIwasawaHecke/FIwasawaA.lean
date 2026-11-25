@@ -24,8 +24,8 @@ theorem fIwasawa_antiJ (i j : Fin n) : antiJ L n i j = if j = Fin.rev i then 1 e
   have hiff : ((i : ℕ) + (j : ℕ) + 1 = n) ↔ (j = Fin.rev i) := by
     rw [Fin.ext_iff, Fin.val_rev]; omega
   by_cases h : j = Fin.rev i
-  · rw [if_pos h, if_pos (hiff.mpr h)]
-  · rw [if_neg h, if_neg (fun h' => h (hiff.mp h'))]
+  · rw [ite_eq_left h, ite_eq_left (hiff.mpr h)]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.mp h'))]
 
 private theorem cT_apply' (M : Matrix (Fin n) (Fin n) L) (i j : Fin n) : cT σ M i j = σ (M j i) := by
   first | rfl

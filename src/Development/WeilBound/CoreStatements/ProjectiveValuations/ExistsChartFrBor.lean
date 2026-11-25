@@ -79,7 +79,7 @@ theorem evR_frBor {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {f : Rul Xo c} (h
   rfl
 
 theorem rdU_eq (V : Unf Xo c σ r) (f : Rul Xo c) (k : V.Comp) (x : (V.X k).dom) :
-    rdU V f k x.1 = toC (evR Xo c f (V.un k x)) := dif_pos x.2
+    rdU V f k x.1 = toC (evR Xo c f (V.un k x)) := dite_eq_left x.2
 
 theorem sec_frBor {V : Unf Xo c σ r} (hU : IsUnf V) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (hD : Dom a n)
     (hN : NV Xo c σ a n) {k : V.Comp} {P : Frame (V.X k).Ψ r → ℂ} (hP : (V.X k).IsSec (laU V a n k) P)

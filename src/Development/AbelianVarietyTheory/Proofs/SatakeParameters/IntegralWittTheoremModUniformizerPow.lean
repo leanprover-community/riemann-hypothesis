@@ -245,7 +245,7 @@ theorem exists_not_mem_both (U U' : Submodule K V) (h : finrank K U = finrank K 
   · have hUU : U = U' := Submodule.eq_of_le_of_finrank_eq h1 h
     subst hUU
     obtain ⟨v, hv⟩ : ∃ v, v ∉ U := by
-      by_contra hc; push_neg at hc; exact hU (eq_top_iff.2 fun x _ => hc x)
+      by_contra hc; push Not at hc; exact hU (eq_top_iff.2 fun x _ => hc x)
     exact ⟨v, hv, hv⟩
   by_cases h2 : U' ≤ U
   · exact absurd (Submodule.eq_of_le_of_finrank_eq h2 h.symm ▸ le_rfl) h1
@@ -1732,17 +1732,17 @@ theorem indepMod_sub {ϖ : L} {ι : Type} [Fintype ι] {n : ℕ} {z : ι → Fin
   let d' : ι → L := fun j => if hj : p j then d ⟨j, hj⟩ else 0
   have h1 : ∀ j, d' j ∈ Formalism.UG.intL L := by
     intro j; by_cases hj : p j
-    · simp only [d', dif_pos hj]; exact hd _
-    · simp only [d', dif_neg hj]; exact (Formalism.UG.intL L).zero_mem
+    · simp only [d', dite_eq_left hj]; exact hd _
+    · simp only [d', dite_eq_right hj]; exact (Formalism.UG.intL L).zero_mem
   have h2 : ∀ r, ∑ j, d' j * z j r = ∑ j : {i // p i}, d j * z j.1 r := by
     intro r
     rw [← Fintype.sum_subtype_add_sum_subtype p (fun j => d' j * z j r)]
     have a1 : ∑ j : {i // ¬ p i}, d' j.1 * z j.1 r = 0 :=
-      Finset.sum_eq_zero fun j _ => by simp [d', dif_neg j.2]
+      Finset.sum_eq_zero fun j _ => by simp [d', dite_eq_right j.2]
     rw [a1, add_zero]
-    exact Finset.sum_congr rfl fun j _ => by simp [d', dif_pos j.2]
+    exact Finset.sum_congr rfl fun j _ => by simp [d', dite_eq_left j.2]
   have := hz d' h1 (fun r => by rw [h2]; exact hs r) i.1
-  simpa [d', dif_pos i.2] using this
+  simpa [d', dite_eq_left i.2] using this
 
 end GlobalTheory.Hk3.IntWittMod
 
@@ -1796,7 +1796,7 @@ theorem witt_mod_pow : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicat
       by_cases hki : k < a i
       · rw [min_eq_right (Nat.succ_le_of_lt hki)]
         exact hgc ⟨i, hki⟩ r
-      · push_neg at hki
+      · push Not at hki
         rw [min_eq_left (by omega)]
         have h2 := hc i r
         rw [min_eq_left hki] at h2

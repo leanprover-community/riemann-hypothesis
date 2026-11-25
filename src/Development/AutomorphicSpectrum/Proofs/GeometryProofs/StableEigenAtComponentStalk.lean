@@ -76,7 +76,7 @@ theorem frame_of_stableEig : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     have e2 := huq (fun τ => if τ = σ then e' else 0) ⟨fun τ a => by
       by_cases h : τ = σ
       · subst h
-        simp only [if_true]
+        simp only [ite_true]
         exact (mem_eigSp_iff_forall _ _ _).1 hE a
       · simp [h], by simp⟩
     have e3 : j (ft σ) = e' := by simpa using congrFun (e1.trans e2.symm) σ

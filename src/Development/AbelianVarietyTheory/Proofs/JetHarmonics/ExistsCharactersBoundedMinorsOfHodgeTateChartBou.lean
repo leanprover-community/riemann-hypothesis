@@ -187,9 +187,9 @@ theorem exists_columns {C : Type} [Field C] (v : Valuation C NNReal) {O : Type} 
     if col σ.1 σ.2 = b then fun l => (if σ.1 = l.1 then 1 else 0) * f (g σ.1 σ.2) l else 0
   have hY : ∀ b σ, Has (Y b σ) := fun b σ => by
     by_cases hb : col σ.1 σ.2 = b
-    · simp only [Y, if_pos hb]
+    · simp only [Y, ite_eq_left hb]
       exact hf _ _
-    · simp only [Y, if_neg hb]
+    · simp only [Y, ite_eq_right hb]
       exact h0
   refine ⟨fun q => (∑ σ, Y q.2 σ) q.1, fun b => Finset.sum_induction _ Has hadd h0 fun σ _ => hY b σ, ?_⟩
   have key : ∀ t (a i : Fin (r t)), (∑ σ, Y (col t i) σ) ⟨t, a⟩ = u t i a := by

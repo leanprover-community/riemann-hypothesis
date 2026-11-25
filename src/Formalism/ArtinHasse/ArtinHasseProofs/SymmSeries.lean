@@ -109,7 +109,7 @@ theorem esymm_hsymm_rel (k : ℕ) (hk : 1 ≤ k) :
     exact Finset.prod_eq_one fun j _ => geom_mul _
   have h := congrArg (PowerSeries.coeff k) hAB
   rw [PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, PowerSeries.coeff_one,
-    if_neg (by omega)] at h
+    ite_eq_right (by omega)] at h
   simp only [coeff_prod_one_sub, coeff_prod_geom] at h
   exact h
 

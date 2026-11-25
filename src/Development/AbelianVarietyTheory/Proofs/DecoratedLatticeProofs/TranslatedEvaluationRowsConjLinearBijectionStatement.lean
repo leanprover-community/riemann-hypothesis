@@ -83,14 +83,14 @@ theorem e_left (k : X.B.I.Gf) (hk : k ∈ X.K2) (y : X.B.I.Gf) : X.B.e y = X.chi
   rw [X.e_eq y, X.e_eq (k * y)]
   by_cases hy : y ∈ X.K2
   · have hky : k * y ∈ X.K2 := hKm k hk y hy
-    rw [if_pos ((hK y).2 hy), if_pos ((hK _).2 hky)]
+    rw [ite_eq_left ((hK y).2 hy), ite_eq_left ((hK _).2 hky)]
     change star (X.chi2 y) / _ = X.chi2 k * (star (X.chi2 (k * y)) / _)
     rw [hχm k hk y hy, star_mul', ← mul_div_assoc, ← mul_assoc]
     have h1 : X.chi2 k * star (X.chi2 k) = 1 := by
       rw [← starRingEnd_apply, Complex.mul_conj, Complex.normSq_eq_norm_sq, hχn k hk]; simp
     rw [h1, one_mul]
   · have hky : k * y ∉ X.K2 := fun h' => hy (by simpa using hKm _ (hKi k hk) _ h')
-    rw [if_neg (fun h' => hy ((hK y).1 h')), if_neg (fun h' => hky ((hK _).1 h')), mul_zero]
+    rw [ite_eq_right (fun h' => hy ((hK y).1 h')), ite_eq_right (fun h' => hky ((hK _).1 h')), mul_zero]
 
 theorem R_comp_Re (k : X.B.I.Gf) (hk : k ∈ X.K2) :
     (X.B.R (1, k)).comp X.B.Re = X.chi2 k • X.B.Re := by

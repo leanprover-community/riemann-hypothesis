@@ -216,14 +216,14 @@ theorem rho_mul {a : ℤ} {g : Matrix (Fin (N + 2)) (Fin (N + 2)) L} {g₀ U V C
       rowM_mid hg11]
     have := congrFun h1 j
     simp only [Matrix.vecMul, dotProduct] at this
-    simp only [Pi.smul_apply, Matrix.one_apply, last_ne_mid, if_false, smul_eq_mul, mul_zero, add_zero, zero_mul,
+    simp only [Pi.smul_apply, Matrix.one_apply, last_ne_mid, ite_false, smul_eq_mul, mul_zero, add_zero, zero_mul,
       zero_add]
     rw [← this, Finset.mul_sum]
     exact Finset.sum_congr rfl fun _ _ => by ring
   · simp only [Matrix.vecMul, dotProduct, sum_idx, vecOf_zero, vecOf_mid, vecOf_last, rowsP_mid, rowsP_last,
       rowM_last hg12]
     simp only [dotProduct] at h2
-    simp only [Pi.smul_apply, Matrix.one_apply, if_true, smul_eq_mul, mul_one, zero_mul, zero_add]
+    simp only [Pi.smul_apply, Matrix.one_apply, ite_true, smul_eq_mul, mul_one, zero_mul, zero_add]
     have e3 : ∀ u : Fin N → L, ∑ x, (z * ∑ x_1, r x_1 * C x_1 x) * u x = z * ∑ i, (r ᵥ* C) i * u i := fun u => by
       rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun _ _ => by simp only [Matrix.vecMul, dotProduct]; ring
     rw [e3, h2]
@@ -287,9 +287,9 @@ theorem spanEq_holds : SpanEq := by
         rwa [rowsP_last, smul_smul, div_mul_cancel₀ _ hy0] at this
       apply sup_le <;> rw [rowLat_le] <;> intro i <;> rcases idx_cases i with rfl | ⟨i, rfl⟩ | rfl
       · by_cases ha : 0 ≤ a
-        · have := PS 0; rwa [rowsP_zero, if_pos ha] at this
-        · have h := hw; rw [if_neg ha] at h
-          have hP0 := PS 0; rw [rowsP_zero, if_neg ha] at hP0
+        · have := PS 0; rwa [rowsP_zero, ite_eq_left ha] at this
+        · have h := hw; rw [ite_eq_right ha] at h
+          have hP0 := PS 0; rw [rowsP_zero, ite_eq_right ha] at hP0
           rw [show (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) 0 = ϖ ^ (-a).toNat • g 0 -
             vecOf 0 (fun j => ϖ ^ a.toNat * r j) (ϖ ^ a.toNat * c) by rw [h]; abel]
           exact sub_mem (smem (pow_mem_int hϖ _) hP0) wS
@@ -299,12 +299,12 @@ theorem spanEq_holds : SpanEq := by
         exact sub_mem (sum_smem (hC i) mS) (lastS _ (hy2 i))
       · have := lastS 1 (by rw [map_one]; exact hvy1); rwa [one_smul] at this
       · by_cases ha : 0 ≤ a
-        · have h := hw; rw [if_pos ha] at h
-          have hP0 := PS 0; rw [rowsP_zero, if_pos ha] at hP0
+        · have h := hw; rw [ite_eq_left ha] at h
+          have hP0 := PS 0; rw [rowsP_zero, ite_eq_left ha] at hP0
           rw [show g 0 = ϖ ^ a.toNat • (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) 0 +
             vecOf 0 (fun j => ϖ ^ a.toNat * r j) (ϖ ^ a.toNat * c) by rw [h]; abel]
           exact add_mem (smem (pow_mem_int hϖ _) hP0) wS
-        · have := PS 0; rwa [rowsP_zero, if_neg ha] at this
+        · have := PS 0; rwa [rowsP_zero, ite_eq_right ha] at this
       · rw [show g (mid i) = ∑ k, (g₀ * C) i k • rowM g U V k +
           ((g₀ * C * U) *ᵥ b) i • (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) (Fin.last (N + 1)) by
           rw [comb_gC hg10 hg11 hg12 hCM i]; abel]

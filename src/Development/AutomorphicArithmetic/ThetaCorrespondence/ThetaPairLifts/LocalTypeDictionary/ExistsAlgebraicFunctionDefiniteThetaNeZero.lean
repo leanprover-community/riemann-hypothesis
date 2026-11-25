@@ -323,10 +323,6 @@ noncomputable section
 
 namespace GlobalTheory.ThK.EvAt0.PlaneQ
 
-section Complex
-
-end Complex
-
 section Adelic
 
 open scoped Classical
@@ -1714,7 +1710,7 @@ theorem continuous_pure_theta_integral : _root_.GlobalTheory.FunPr.ThetaLocalInp
     refine Seminorm.continuous_of_lowerSemicontinuous ν fun u y hy => ?_
     by_cases hy0 : y < 0
     · exact Filter.Eventually.of_forall fun u' => hy0.trans_le (apply_nonneg ν u')
-    · push_neg at hy0
+    · push Not at hy0
       have hy' : y < (∫⁻ g, ‖T u g‖ₑ ∂μd).toReal := by rw [← hν]; exact hy
       have h1 : ENNReal.ofReal y < ∫⁻ g, ‖T u g‖ₑ ∂μd := (ENNReal.ofReal_lt_iff_lt_toReal hy0 (hfin _)).2 hy'
       filter_upwards [hN u _ h1] with u' hu'

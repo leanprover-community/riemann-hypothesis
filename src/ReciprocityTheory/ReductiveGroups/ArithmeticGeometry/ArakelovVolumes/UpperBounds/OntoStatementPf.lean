@@ -32,10 +32,6 @@ def Dt (X : Data E r) (x0 : Frame X.Ψ r) (W : Frame X.Ψ r → ℝ≥0∞) (bb 
     ∀ z ∈ OmF X x0, P (cpt X x0 z) = F z
 
 
-open Classical in
-def TL {α : Type*} [MeasurableSpace α] (ν : Measure α) (f : α → ℂ) : Lp ℂ 2 ν :=
-  if h : MemLp f 2 ν then h.toLp f else 0
-
 variable (X : Data E r) (x0 : Frame X.Ψ r) {W : Frame X.Ψ r → ℝ≥0∞} {bb : ℝ} {la : Wt X.Ψ r}
 
 theorem ka_cont : ContinuousOn (kaF X x0 bb) (OmF X x0) :=

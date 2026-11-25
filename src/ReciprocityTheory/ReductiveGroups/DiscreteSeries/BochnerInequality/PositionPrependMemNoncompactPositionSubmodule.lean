@@ -225,22 +225,22 @@ theorem positionPrepend_mem_noncompactPositionSubmodule {k : ℕ} {p : Fin n × 
   by_cases h0 : κ 0 = p
   · have hv : (indexPairPrepend p G) κ = G (Fin.tail κ) := by
       show (if κ 0 = p then G (Fin.tail κ) else 0) = _
-      rw [if_pos h0]
+      rw [ite_eq_left h0]
     rw [hv]
     have h := hG (Fin.tail κ)
     by_cases ht : ∀ i, ε (Fin.tail κ i).1 ≠ ε (Fin.tail κ i).2
-    · rw [if_pos ht] at h
+    · rw [ite_eq_left ht] at h
       have hk : ∀ i, ε (κ i).1 ≠ ε (κ i).2 := by
         intro i
         induction i using Fin.cases with
         | zero => rw [h0]; exact hp
         | succ j => exact ht j
-      rw [if_pos hk]; exact h
-    · rw [if_neg ht, Submodule.mem_bot] at h
+      rw [ite_eq_left hk]; exact h
+    · rw [ite_eq_right ht, Submodule.mem_bot] at h
       rw [h]; exact Submodule.zero_mem _
   · have hv : (indexPairPrepend p G) κ = 0 := by
       show (if κ 0 = p then G (Fin.tail κ) else 0) = _
-      rw [if_neg h0]
+      rw [ite_eq_right h0]
     rw [hv]; exact Submodule.zero_mem _
 
 theorem map_noncompactLayer_le_sup : ∀ (k : ℕ) (a b : Fin n), ε a ≠ ε b →
@@ -256,7 +256,7 @@ theorem map_noncompactLayer_le_sup : ∀ (k : ℕ) (a b : Fin n), ε a ≠ ε b 
     let G : Big n 0 M := WithLp.toLp 2 (fun _ => v)
     have hG : G ∈ ncV ε V 0 := by
       rw [mem_noncompactPositionSubmodule_iff']; intro κ
-      rw [if_pos (fun i => i.elim0)]; exact hv
+      rw [ite_eq_left (fun i => i.elim0)]; exact hv
     have hphi : phi E 0 G = v := by
       rw [wordContraction_apply]; simp [G, rootWordProduct_zero]
     refine ⟨indexPairPrepend (a, b) G, positionPrepend_mem_noncompactPositionSubmodule hab hG, ?_⟩

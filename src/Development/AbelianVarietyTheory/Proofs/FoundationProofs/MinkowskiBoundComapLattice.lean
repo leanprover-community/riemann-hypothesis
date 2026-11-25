@@ -53,24 +53,6 @@ noncomputable section
 
 namespace GlobalTheory.TestLat.Compare
 
-section Space
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-
-end Space
-
-section Sum
-
-variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι C : Type} [Fintype ι] {n N : ℕ}
-
-end Sum
-
-section DualSpace
-
-variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type} {n : ℕ}
-
-end DualSpace
-
 section Nabla
 
 variable {K : Type} [Field K] [NumberField K] {ι C : Type} [Fintype ι] {n N : ℕ}
@@ -98,13 +80,5 @@ theorem gramB_transpose (lam : ι → DomWeight n) : (gramB K lam)ᵀ = gramB K 
   exact pairingBSymm_holds K ι n lam _ _
 
 end Nabla
-
-section Clauses
-
-variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] [StarRing K] {ι C : Type} [Fintype ι] {n N : ℕ}
-  (emb : ι → E →+* K) (lam : ι → DomWeight n) (R : ℝ) (J : Matrix (Fin n) (Fin n) E)
-  (L : C → Submodule (𝓞 E) (Fin n → E)) (e : Fin N ≃ C × VVIdx lam) (X : InfinitePlace K → Matrix (Fin N) (Fin N) ℂ)
-
-end Clauses
 
 end GlobalTheory.TestLat.Compare

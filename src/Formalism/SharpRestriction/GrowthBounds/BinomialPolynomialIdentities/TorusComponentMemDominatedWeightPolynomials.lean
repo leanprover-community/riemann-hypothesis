@@ -61,24 +61,6 @@ namespace Formalism.InvariantFactorPaths.GelfandTsetlinBases
 
 namespace GS
 
-section Slices
-
-variable {k : Type*} [Field k] {σ : Type*}
-variable {A B D : Type*} [CommRing A] [CommRing B] [CommRing D] [Algebra k A] [Algebra k B] [Algebra k D]
-
-end Slices
-
-section Sharp
-
-variable {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-variable {A B : Type*} [CommRing A] [CommRing B]
-
-variable {isVec S}
-
-variable (isVec S)
-
-end Sharp
-
 section Universal
 
 variable (k : Type*) [Field k] (n : ℕ)
@@ -89,43 +71,6 @@ variable {B : Type*} [CommRing B] [Algebra k B]
 theorem genMat_isUnit : IsUnit (genMat k n).det := isUnit_iff_ne_zero.mpr (genMat_det_ne k n)
 
 end Universal
-
-section Act
-
-variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-end Act
-
-section Torus
-
-variable {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-variable (A : Type*) [CommRing A]
-
-variable {A}
-
-variable {k : Type*} [Field k] [Algebra k A]
-
-end Torus
-
-section Weights
-
-variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-end Weights
-
-section Exponents
-
-variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-variable (φ : MvPolynomial (LVar ι ζ n) k →ₗ[k] MvPolynomial (LVar ι ζ n) k)
-  (φL : MvPolynomial (LVar ι ζ n) (GenField k n) →ₗ[GenField k n] MvPolynomial (LVar ι ζ n) (GenField k n))
-  (h1 : ∀ f, φL (map (genφ k n) f) = map (genφ k n) (φ f))
-  (h2 : ∀ f, genPoint isVec S (φ f) = φL (genPoint isVec S f))
-
-include h1 h2
-
-end Exponents
 
 end GS
 
@@ -208,7 +153,7 @@ theorem laurentCoeff_mem_dominatedWeightPolynomials (y : MvPolynomial (ι × Fin
   simp only [h3, AddMonoidAlgebra.coeff_sum, AddMonoidAlgebra.coeff_single, Finsupp.coe_finsetSum,
     Finset.sum_apply, Finsupp.single_apply, AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero, Pi.zero_apply] at h2
   rw [Finset.sum_ite_eq' K k0] at h2
-  rw [if_pos hk0] at h2
+  rw [ite_eq_left hk0] at h2
   exact (MvPolynomial.mem_support_iff.1 hm) h2
 
 theorem dividedPower_mem_dominatedWeightPolynomials (hT : TransvectionExpansion) (a b : Fin n) (hab : a ≠ b) (k : ℕ) (y : MvPolynomial (ι × Fin n) R)
@@ -323,12 +268,12 @@ theorem restAct : RestAct := by
       by_cases hS : l.val < i
       · by_cases hvec : LL.vec l = true
 
-        · simp only [if_pos hS, if_pos hvec, map_sum, map_mul, rename_C, rename_X, iv]
+        · simp only [ite_eq_left hS, ite_eq_left hvec, map_sum, map_mul, rename_C, rename_X, iv]
           exact Finset.sum_congr rfl fun b _ => mul_comm _ _
 
-        · simp only [if_pos hS, if_neg hvec, map_sum, map_mul, rename_C, rename_X, iv]
+        · simp only [ite_eq_left hS, ite_eq_right hvec, map_sum, map_mul, rename_C, rename_X, iv]
           exact Finset.sum_congr rfl fun b _ => mul_comm _ _
-      · simp only [if_neg hS, rename_X, iv]
+      · simp only [ite_eq_right hS, rename_X, iv]
   exact congrArg (fun f => f G) this
 
 theorem monomialWeight_eq_letterWeight {N n : ℕ} (LL : Letters (Fin N)) (i : ℕ) (m : Fin N × Fin n →₀ ℕ) :
@@ -344,17 +289,17 @@ theorem monomialWeight_eq_letterWeight {N n : ℕ} (LL : Letters (Fin N)) (i : �
   simp only [Pi.smul_apply, wtI, iv, Set.mem_ofPred_eq, Formalism.InvariantFactorPaths.GelfandTsetlinBases.torusW, hv]
   by_cases hS : l.val < i
   · by_cases hvec : LL.vec l = true
-    · simp only [if_pos hS, if_pos hvec]
+    · simp only [ite_eq_left hS, ite_eq_left hvec]
       rw [Finset.sum_eq_single a]
       · simp
       · intro b _ hb; simp [Ne.symm hb]
       · intro h; exact absurd (Finset.mem_univ a) h
-    · simp only [if_pos hS, if_neg hvec]
+    · simp only [ite_eq_left hS, ite_eq_right hvec]
       rw [Finset.sum_eq_single a]
       · simp
       · intro b _ hb; simp [Ne.symm hb]
       · intro h; exact absurd (Finset.mem_univ a) h
-  · simp [if_neg hS]
+  · simp [ite_eq_right hS]
 
 theorem dominanceOrder_iff {n : ℕ} (nu mu : Fin n → ℤ) : DomLE nu mu ↔ Formalism.InvariantFactorPaths.GelfandTsetlinBases.DomLe nu mu := by
   classical

@@ -43,7 +43,7 @@ private lemma trace_inverseGram_conj_smul_eq {K : Type} [Field K] [CharZero K] (
   have e1 := hp 1
   have em := hp (-1)
   simp only [Matrix.det_fin_three, Matrix.sub_apply, Matrix.scalar_apply, Matrix.diagonal_apply] at e0 e1 em
-  simp only [Fin.isValue, Fin.reduceEq, if_true, if_false] at e0 e1 em
+  simp only [Fin.isValue, Fin.reduceEq, ite_true, ite_false] at e0 e1 em
   constructor
   · rw [Matrix.trace_fin_three]
     linear_combination e0 - e1 / 2 - em / 2

@@ -71,7 +71,7 @@ theorem addv_nonneg_iff (v : HeightOneSpectrum (integralClosure O L)) {y : L} (h
   have hv : v.valuation L y ≠ 0 := by simpa using hy
   have hval : addv L v y = ((-WithZero.log (v.valuation L y) : ℤ) : WithTop ℤ) := by
     unfold addv
-    rw [AddValuation.of_apply, if_neg hy]
+    rw [AddValuation.of_apply, ite_eq_right hy]
   rw [hval]
   have h2 := WithZero.log_le_log hv one_ne_zero
   rw [WithZero.log_one] at h2
@@ -180,9 +180,9 @@ theorem exists_val_eq (n : AddValuation L (WithTop ℤ) → ℤ) :
     intro v'
     simp only [g, map_prod, map_zpow₀, hval]
     rw [Finset.prod_eq_single v']
-    · rw [if_pos rfl, ← exp_zsmul, smul_eq_mul, mul_neg_one]
+    · rw [ite_eq_left rfl, ← exp_zsmul, smul_eq_mul, mul_neg_one]
     · intro v _ hv
-      rw [if_neg (Ne.symm hv), one_zpow]
+      rw [ite_eq_right (Ne.symm hv), one_zpow]
     · simp
   refine ⟨g, hg0, fun w hw => ?_⟩
   obtain ⟨v, rfl⟩ := addv_eq_of_mem O F hw

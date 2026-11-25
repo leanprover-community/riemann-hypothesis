@@ -139,14 +139,14 @@ theorem polarToPole_of_ctx (C : Ctx W) : Formalism.MainNotions.UnusedSlot80.Spli
   refine ⟨I, fun i => if c₀ i = 0 then 0 else g i, c₀, fun i => if c₀ i = 0 then fun _ => 0 else α i,
     fun i => ?_, fun k => ?_⟩
   · by_cases h0 : c₀ i = 0
-    · simp only [h0, if_true]
+    · simp only [h0, ite_true]
       refine ⟨inId_zero W c (A.len c), ?_⟩
       intro s _
       cases A.ty (c - (s : ZMod n)) with
       | thin => simp
       | up bs => simp
       | down bs => exact Or.inl le_rfl
-    · simp only [h0, if_false]
+    · simp only [h0, ite_false]
       exact ⟨(hg i).1, condPole_of_polar W C A hA _ T₂ hT b hb.1 c (α i) (c₀ i) h0 (hg i).2⟩
   · rw [hF k]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -287,7 +287,7 @@ theorem secOfP_int (hinj : Function.Injective (algebraMap O LL))
       split_ifs <;> ring
     rw [A2, Finset.sum_congr rfl fun m' _ => h1 m', Finset.sum_add_distrib, ← Finset.mul_sum,
       ← Finset.mul_sum]
-    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, w]
+    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, w]
     rw [hYM']
     ring
   have hΛm : Λ ∈ W.AΔ := W.AΔ.prod_mem fun s _ => W.AΔ.pow_mem (Formalism.MainNotions.UnusedSlot80.PhiPowers.ps_mem_AΔ W hR.1 s) _
@@ -622,7 +622,7 @@ theorem horTr_split (hinj : Function.Injective (algebraMap O LL)) (T : LocLat G 
   congr 1
   · rw [LevC.lA_smul_eq]
     unfold Formalism.MainNotions.LiftingTheory.vecB
-    simp only [hy0, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hy0, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   · refine Finset.sum_congr rfl fun r _ => ?_
     rw [smul_smul, ← pow_succ']
 
@@ -1005,8 +1005,8 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
     exact Finset.sum_congr rfl fun i _ => by split_ifs <;> simp
   have hSnp : ∀ j, IntA W a (Snp j) := fun j => intA_sum W _ _ fun i _ => by
     by_cases hi : pol i
-    · rw [if_pos hi]; exact intA_zero W
-    · rw [if_neg hi]
+    · rw [ite_eq_left hi]; exact intA_zero W
+    · rw [ite_eq_right hi]
       refine intA_omul W (intA_of_nonpol W C.hR.1 (fun s hs => ?_) (hgα i).1) _
       by_contra hlt
       exact hi ⟨s, hs, not_le.mp hlt⟩
@@ -1016,7 +1016,7 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => ?_
     by_cases hi : pol i
-    · simp only [if_pos hi]
+    · simp only [ite_eq_left hi]
       have h3 : ∑ k, g i * algebraMap O W.EE (r' i k) * algebraMap O W.EE (o k j) =
           g i * algebraMap O W.EE (∑ k, r' i k * o k j) := by
 
@@ -1026,7 +1026,7 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
       simp only [map_mul, map_pow, map_natCast]
       unfold lE
       ring
-    · simp only [if_neg hi, zero_mul, Finset.sum_const_zero, mul_zero]
+    · simp only [ite_eq_right hi, zero_mul, Finset.sum_const_zero, mul_zero]
   set Mt : ℕ := M0 + κx + t + κp + σ with hMt
   set Z : Fin d → W.EE := fun k => lE W Mt * F k + lE W (t + κ₁ + κp) * Pv k with hZdef
   set R : Fin dY → W.EE := fun j => lE W M0 * (lE W (κx + t + κ₁ + σ) * G j + lE W κx * ε j -
@@ -1051,7 +1051,7 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
       exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by simp only [map_mul]; ring
     rw [e2]
     simp only [hD, apply_ite (algebraMap O W.EE), map_zero, mul_ite, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, map_pow, map_natCast]
+      Finset.mem_univ, ite_true, map_pow, map_natCast]
     unfold lE
     ring
   have hInt : ∀ m, IntA W a (∑ j, R j * algebraMap O W.EE (D j m)) := fun m =>
@@ -1066,10 +1066,10 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
       rw [hPvdef, Finset.mul_sum, ← Finset.sum_neg_distrib]
       refine Finset.sum_congr rfl fun i _ => ?_
       by_cases hi : pol i
-      · simp only [hcpdef, if_pos hi, map_neg, map_mul, map_pow, map_natCast]
+      · simp only [hcpdef, ite_eq_left hi, map_neg, map_mul, map_pow, map_natCast]
         unfold lE
         ring
-      · simp only [hcpdef, if_neg hi, map_zero, mul_zero, neg_zero]
+      · simp only [hcpdef, ite_eq_right hi, map_zero, mul_zero, neg_zero]
     rw [e3, hZdef]
     simp only [hMt]
     unfold lE
@@ -1092,7 +1092,7 @@ theorem polar_core [FiniteDimensional Qp LL] (C : LevC.Ctx W) (h9 : DcrisExactSt
     · right
       have hi : pol i := ⟨s, hs, hneg⟩
       have e4 : cp i = fun k => (-((PD.p : ℕ) : O) ^ (q + (t + κ₁ + κp))) * r' i k := by
-        funext k; simp only [hcpdef, if_pos hi]; ring
+        funext k; simp only [hcpdef, ite_eq_left hi]; ring
       rw [e4, dvO_smul]
       exact Submodule.smul_mem _ _ (hr'2 i hi s hs hneg)
     · left
@@ -1357,10 +1357,10 @@ theorem lev_prod_ps (Ti : Formalism.MainNotions.UnusedSlot80.LevE.Comparison₂ 
     · subst h0
       obtain ⟨u₁, hu₁, hu₁c⟩ := level_series_first_factor_order_one Ti hR hp0 a ζ hζ
       refine ⟨u * u₁ ^ E 0, ?_, ?_⟩
-      · rw [hu₁]; simp only [if_true, pow_zero, one_mul, Nat.succ_ne_zero, if_false, mul_pow]; ring
+      · rw [hu₁]; simp only [ite_true, pow_zero, one_mul, Nat.succ_ne_zero, ite_false, mul_pow]; ring
       · rw [map_mul, map_pow]; exact mul_ne_zero huc (pow_ne_zero _ hu₁c)
     · refine ⟨u * W.lev a ζ (ps W N) ^ E N, ?_, ?_⟩
-      · rw [if_neg (by omega), if_neg (by omega)]; ring
+      · rw [ite_eq_right (by omega), ite_eq_right (by omega)]; ring
       · rw [map_mul, map_pow, cc_lev_ps Ti hR a ζ hζ N hpos]
         exact mul_ne_zero huc (pow_ne_zero _ hpL)
 
@@ -1380,11 +1380,11 @@ omit [IsDomain O] in
 theorem smulS_delta (g : PowerSeries LL) (v : V) (r : ℤ) :
     smulS g (fun k : ℤ => if k = 0 then v else 0) r = (if 0 ≤ r then PowerSeries.coeff r.toNat g else 0) • v := by
   rcases lt_or_ge r 0 with h | h
-  · rw [if_neg (by omega), zero_smul]
+  · rw [ite_eq_right (by omega), zero_smul]
     exact smulS_vanish_neg (LB_delta v) g r h
-  · rw [if_pos h, smulS_eq_sum (LB_delta v) g r (r.toNat + 1) (by omega), Finset.sum_eq_single r.toNat]
-    · rw [if_pos (show r - ((r.toNat : ℕ) : ℤ) = 0 by omega)]
-    · intro j _ hj; rw [if_neg (show r - (j : ℤ) ≠ 0 by omega), smul_zero]
+  · rw [ite_eq_left h, smulS_eq_sum (LB_delta v) g r (r.toNat + 1) (by omega), Finset.sum_eq_single r.toNat]
+    · rw [ite_eq_left (show r - ((r.toNat : ℕ) : ℤ) = 0 by omega)]
+    · intro j _ hj; rw [ite_eq_right (show r - (j : ℤ) ≠ 0 by omega), smul_zero]
     · intro hj; exact absurd (Finset.mem_range.2 (Nat.lt_succ_self _)) hj
 
 omit [IsDomain O] in
@@ -1441,7 +1441,7 @@ theorem dg_core {Fil : ℤ → Submodule LL V} (hF : Antitone Fil) {d I : ℕ} (
   have key : lam0 • ∑ j, (if 0 ≤ r then PowerSeries.coeff r.toNat (PowerSeries.X ^ D0 * uD * G j) else 0) • vv j =
       ∑ i, (if 0 ≤ r then PowerSeries.coeff r.toNat (Nser i) else 0) • ∑ j, cc i j • vv j := by
     by_cases h0 : 0 ≤ r
-    · simp only [if_pos h0, Finset.smul_sum, smul_smul]
+    · simp only [ite_eq_left h0, Finset.smul_sum, smul_smul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => ?_
       have := congrArg (PowerSeries.coeff r.toNat) (hid j)
@@ -1451,17 +1451,17 @@ theorem dg_core {Fil : ℤ → Submodule LL V} (hF : Antitone Fil) {d I : ℕ} (
       rw [← Finset.sum_smul, this]
       congr 1
       exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-    · simp [if_neg h0]
+    · simp [ite_eq_right h0]
   have hmem : lam0 • ∑ j, (if 0 ≤ r then PowerSeries.coeff r.toNat (PowerSeries.X ^ D0 * uD * G j) else 0) • vv j ∈
       Fil (s + D0 - r) := by
     rw [key]
     refine Submodule.sum_mem _ fun i _ => ?_
     by_cases h0 : 0 ≤ r
-    · rw [if_pos h0]
+    · rw [ite_eq_left h0]
       by_cases hr : r < E i
       · rw [PowerSeries.X_pow_dvd_iff.1 (hdvd i) r.toNat (by omega), zero_smul]; exact (Fil _).zero_mem
       · exact (Fil _).smul_mem _ (hF (show s + D0 - r ≤ -α i by have := hE i; omega) (hfil i))
-    · rw [if_neg h0, zero_smul]; exact (Fil _).zero_mem
+    · rw [ite_eq_right h0, zero_smul]; exact (Fil _).zero_mem
   have := (Fil (s + D0 - r)).smul_mem lam0⁻¹ hmem
   rwa [smul_smul, inv_mul_cancel₀ hlam0, one_smul] at this
 
@@ -1724,7 +1724,7 @@ theorem lev0Mpr_of [NeZero n] (C : Formalism.MainNotions.UnusedSlot80.LevC.Ctx W
             rw [map_pow, hu₀, mul_pow]; exact Dvd.intro _ rfl
           have hnu : (PowerSeries.X : PowerSeries LL) ^ (α i 0).toNat ∣ W.lev a' ζ (num i) := by
             rw [hnum]; simp only at hun ⊢; rw [hun]
-            simp only [Nat.add_one_ne_zero, if_false]; exact Dvd.intro _ rfl
+            simp only [Nat.add_one_ne_zero, ite_false]; exact Dvd.intro _ rfl
           have hde : (PowerSeries.X : PowerSeries LL) ^ (∑ i' ∈ Finset.univ.erase i, (-(α i' 0)).toNat) ∣
               W.lev a' ζ (DENx i) := by
             rw [hDENx]
@@ -1733,7 +1733,7 @@ theorem lev0Mpr_of [NeZero n] (C : Formalism.MainNotions.UnusedSlot80.LevC.Ctx W
             refine Finset.prod_dvd_prod_of_dvd _ _ fun i' _ => ?_
             obtain ⟨ud, hud, -⟩ := lev_prod_ps Ti C.hR C.hp0 a' ζ hζ (fun s => (-(α i' s)).toNat) (e + 1)
             rw [hden]; simp only at hud ⊢; rw [hud]
-            simp only [Nat.add_one_ne_zero, if_false]; exact Dvd.intro _ rfl
+            simp only [Nat.add_one_ne_zero, ite_false]; exact Dvd.intro _ rfl
           have h3 := mul_dvd_mul hq (mul_dvd_mul hnu hde)
           rw [← pow_add, ← pow_add] at h3
           rw [show 2 * H + (α i 0).toNat + ∑ i' ∈ Finset.univ.erase i, (-(α i' 0)).toNat =

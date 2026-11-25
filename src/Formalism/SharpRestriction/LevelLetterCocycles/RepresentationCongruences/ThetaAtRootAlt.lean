@@ -134,7 +134,7 @@ theorem uniq {x₀ : O} (hx : x₀ ∈ IsLocalRing.maximalIdeal O) {c : O}
     intro n
     have h := congrArg (fun g => coeff (n + 1) g) hf
     simp only [mul_sub, map_sub, PowerSeries.coeff_succ_mul_X, PowerSeries.coeff_mul_C,
-      PowerSeries.coeff_C, Nat.succ_ne_zero, if_false] at h
+      PowerSeries.coeff_C, Nat.succ_ne_zero, ite_false] at h
     linear_combination h
   have hpow : ∀ n, coeff 0 f = x₀ ^ n * coeff n f := by
     intro n

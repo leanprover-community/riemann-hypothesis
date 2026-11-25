@@ -32,7 +32,7 @@ theorem geoNum_one_lin (W : Ideal (MRing J)) :
         else 0) = _
       rw [dite_eq_left hW]
       simp only [hg0]
-  · refine ⟨fun _ => 0, fun _ => le_rfl, fun a => (dif_neg hW).trans ?_⟩
+  · refine ⟨fun _ => 0, fun _ => le_rfl, fun a => (dite_eq_right hW).trans ?_⟩
     simp
 
 end LevelTowerAlt

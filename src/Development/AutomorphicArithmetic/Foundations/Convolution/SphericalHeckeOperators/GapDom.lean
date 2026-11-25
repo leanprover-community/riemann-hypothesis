@@ -38,7 +38,7 @@ private theorem bd_insert {n : ℕ} {T : Finset (Fin n × Fin n)} {p : Fin n × 
   rw [Finset.filter_insert]
   by_cases hj : j = k
   · subst hj
-    rw [if_pos (by tauto), Finset.card_insert_of_notMem (by simp [hp])]
+    rw [ite_eq_left (by tauto), Finset.card_insert_of_notMem (by simp [hp])]
     simp only [Pi.add_apply, Pi.single_eq_same]
     push_cast
     omega

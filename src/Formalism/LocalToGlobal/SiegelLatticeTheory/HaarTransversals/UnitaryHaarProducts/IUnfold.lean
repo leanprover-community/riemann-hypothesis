@@ -312,7 +312,7 @@ theorem minkowski_submodule_short_vector (h1 : LatticeFinitelyGenerated) (h2 : E
     have := Finset.single_le_sum (f := cj) (fun j _ => hcj j) (Finset.mem_range.2 (Nat.lt_succ_of_le hjn))
     linarith
   have hcs : cj s.j = (h8m _ hd).choose * t8K I s.j ^ ((2 : ℝ) / ((2 * I.f * s.j : ℕ) : ℝ)) := by
-    simp only [cj, dif_pos hd]
+    simp only [cj, dite_eq_left hd]
   rw [← hcs]
   exact mul_le_mul_of_nonneg_right hle (sq_nonneg _)
 
@@ -1401,7 +1401,7 @@ theorem normPow_holds (I : AutInst) : NormPow I := by
     push_cast
     have h4 : (0 : ℝ) ≤ 4 * (I.n : ℝ) ^ 2 := by positivity
     nlinarith
-  · push_neg at hq
+  · push Not at hq
     have h1 : normI I g = 1 := by
       unfold normI
       refine Finset.prod_eq_one fun v _ => opn_eq_one_of_definite hn (I.ε v) (fun a => ?_) (g v)

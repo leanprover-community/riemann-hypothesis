@@ -98,7 +98,7 @@ theorem exists_cdvr (M : RatModel o' Ω) (U₀ : M.Z.Opens) (hU : (U₀ : Set M.
   have hc0 : c ≠ 0 := by
     by_cases hp : p = 0
     · simp [c, hp]
-    · simp only [c, hp, if_false]
+    · simp only [c, hp, ite_false]
       rw [← map_natCast (PowerSeries.C (R := O))]
       exact (map_ne_zero_iff _ (PowerSeries.C_injective)).2 (Nat.cast_ne_zero.2 hp)
   let f : PowerSeries O := PowerSeries.X * PowerSeries.C f₀ * c
@@ -138,7 +138,7 @@ theorem exists_cdvr (M : RatModel o' Ω) (U₀ : M.Z.Opens) (hU : (U₀ : Set M.
       have hpq : p = q := ringChar.eq κ q
       have hp : p ≠ 0 := hpq ▸ hqp.ne_zero
       apply hψf
-      have hc : c = (q : PowerSeries O) := by simp only [c, if_neg hp, hpq]
+      have hc : c = (q : PowerSeries O) := by simp only [c, ite_eq_right hp, hpq]
       show ψ (PowerSeries.X * PowerSeries.C f₀ * c) = 0
       rw [hc, map_mul, map_natCast, hqW, mul_zero]
     · subst hq0

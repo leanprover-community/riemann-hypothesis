@@ -160,7 +160,7 @@ theorem muV_le_one_iff (s : SplitPlace L) (x : L) : muV s x ≤ 1 ↔ s.w.valuat
   constructor
   · intro hμ
     by_contra hν
-    push_neg at hν
+    push Not at hν
     have hx0 : x ≠ 0 := by
       rintro rfl
       simp at hν

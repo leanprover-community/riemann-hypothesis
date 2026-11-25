@@ -65,7 +65,7 @@ theorem cutTheta : CutTheta := by
     rw [hexp, Finset.sum_eq_single 0]
     · rw [(hCc 0 ε₂ x h2 hx).2.2 hlt]; simp
     · intro i _ hi
-      rw [(hCc i ε₂ x h2 hx).2.2 hlt, if_neg hi]; simp
+      rw [(hCc i ε₂ x h2 hx).2.2 hlt, ite_eq_right hi]; simp
     · simp
 
 end Formalism.FourierDecayAlt.P.LEx1

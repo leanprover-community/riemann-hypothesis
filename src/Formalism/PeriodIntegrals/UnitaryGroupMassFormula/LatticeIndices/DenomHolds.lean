@@ -49,7 +49,7 @@ theorem denom_holds (hθ : IsSplitEquiv X p θ) : DenomP X p θ := by
     have hyp : y ∉ p.1.asIdeal := by
       intro hmem
       have h1 := hy p.1 (Finset.mem_insert_self _ _)
-      simp only [if_true, pow_one] at h1
+      simp only [ite_true, pow_one] at h1
       have h2 : (1 : 𝓞 X.B.I.F) ∈ p.1.asIdeal := by
         have h3 : y - (y - 1) ∈ p.1.asIdeal := p.1.asIdeal.sub_mem hmem h1
         simpa using h3
@@ -63,7 +63,7 @@ theorem denom_holds (hθ : IsSplitEquiv X p θ) : DenomP X p θ := by
           rw [Set.Finite.mem_toFinset, h] at hw
           exact absurd hf (not_le.2 hw)
         have h1 := hy w (Finset.mem_insert_of_mem hw)
-        simp only [hwp, if_false, sub_zero] at h1
+        simp only [hwp, ite_false, sub_zero] at h1
         have h2 : w.valuation X.B.I.F (y : X.B.I.F) ≤ WithZero.exp (-(N w : ℤ)) := by
           rw [IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap]
           exact (IsDedekindDomain.HeightOneSpectrum.intValuation_le_pow_iff_mem w y (N w)).2 h1

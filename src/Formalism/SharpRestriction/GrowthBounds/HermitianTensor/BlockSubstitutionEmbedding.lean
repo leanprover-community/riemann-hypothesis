@@ -209,7 +209,7 @@ theorem colAdd_trivial {k : ℕ} (l j : Fin k) (c : K) (f : MvPolynomial (Fin k 
     apply Finsupp.mem_support_iff.1 hw
     rw [e2]
     exact h1
-  rw [if_neg hwj]
+  rw [ite_eq_right hwj]
 
 end Scale
 

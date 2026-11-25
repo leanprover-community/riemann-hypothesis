@@ -114,7 +114,7 @@ theorem UpperTheory.continuous_GL2BaseChange_diagUnit_infiniteIdele :
       · exact continuous_pi fun _ => (Real.continuous_exp.inv₀ Real.exp_ne_zero)
     have he : (fun t : ℝ => iy (Real.exp t)) = fun t => TR.infId ℚ (u t) := by
       funext t
-      simp only [iy, dif_neg (Real.exp_ne_zero t)]
+      simp only [iy, dite_eq_right (Real.exp_ne_zero t)]
       rfl
     rw [he]
     exact (TR.continuous_infId ℚ).comp hu

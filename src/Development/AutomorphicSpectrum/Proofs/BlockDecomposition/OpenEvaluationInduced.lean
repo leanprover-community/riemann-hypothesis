@@ -258,7 +258,7 @@ def rowB {ι : Type} [Fintype ι] [DecidableEq ι] (ρ : ι → k) (c j : ι) : 
 
 theorem rowB_val {ι : Type} [Fintype ι] [DecidableEq ι] (ρ : ι → k) (c j : ι) (hc : ρ c ≠ 0) :
     (rowB ρ c j).val = rowM ρ c j := by
-  rw [rowB, dif_pos (rowM_det_ne ρ c j hc)]
+  rw [rowB, dite_eq_left (rowM_det_ne ρ c j hc)]
   rfl
 
 end Alg
@@ -381,7 +381,7 @@ theorem chart :
   classical
   intro k _ _ _ _ i t p₀ h₀
   have hp' : ¬ _ := fun h => h₀ ((Cl_iff i t p₀).2 h)
-  push_neg at hp'
+  push Not at hp'
   obtain ⟨c, hcs, hc⟩ := hp'
   have hj : (piPerm i t (Fin.last ((i + 1) + t))).val < i + 1 := by rw [piPerm_last_val]; omega
   set j := piPerm i t (Fin.last ((i + 1) + t)) with hjdef
@@ -421,11 +421,11 @@ theorem chart :
     intro p hp
     obtain ⟨hM, -⟩ := key p hp
     show ((μ p : Mir k ((i + 1) + t)) : GL _ k) = W p
-    simp only [μ, dif_pos hM]
+    simp only [μ, dite_eq_left hM]
   · intro p hp
     obtain ⟨hM, h, hh, d, e⟩ := key p hp
     refine ⟨h, hh, d, ?_⟩
-    have hμ : μ p = ⟨W p, hM⟩ := dif_pos hM
+    have hμ : μ p = ⟨W p, hM⟩ := dite_eq_left hM
     rw [hμ]
     exact e
 

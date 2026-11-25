@@ -75,8 +75,8 @@ theorem sa_lat (T : Finset (HeightOneSpectrum (𝓞 F))) (x : ∀ p, (L p).Ep) (
   have hc'0 : ∀ p, c' p ≠ 0 := by
     intro p
     by_cases hp : p ∈ T
-    · simp only [hc', if_pos hp]; exact hc p hp
-    · simp only [hc', if_neg hp]; exact one_ne_zero
+    · simp only [hc', ite_eq_left hp]; exact hc p hp
+    · simp only [hc', ite_eq_right hp]; exact one_ne_zero
   have hVo : ∀ p, IsOpen (ballS (c' p) : Set (L p).Fp) := by
     intro p
     have := (L p).lf
@@ -100,7 +100,7 @@ theorem sa_lat (T : Finset (HeightOneSpectrum (𝓞 F))) (x : ∀ p, (L p).Ep) (
         rw [map_sub]; ring
       rw [h2]
       exact (ballS (c' p)).add_mem (hd p _ (ht1 i p hp)) (ha p i)
-    have hcp : c' p = c p := by simp only [hc', if_pos hp]
+    have hcp : c' p = c p := by simp only [hc', ite_eq_left hp]
     choose β hβO hβ using fun i => ballS_mul (hc'0 p) (hmem i)
     have hbO : ∀ i, (L p).ιE (b i) ∈ (L p).O := by
       intro i

@@ -26,7 +26,7 @@ variable {O : Type*} [CommRing O]
 theorem coeff_X_pow_mul_lt {n d : ℕ} (h : d < n) (p : PowerSeries O) :
     coeff d (X ^ n * p) = 0 := by
   first
-  | rw [PowerSeries.coeff_X_pow_mul', if_neg (not_le.mpr h)]
+  | rw [PowerSeries.coeff_X_pow_mul', ite_eq_right (not_le.mpr h)]
 
 theorem coeff_pow_mul_lt {Y : PowerSeries O} (hY : constantCoeff Y = 0) {n d : ℕ} (h : d < n)
     (p : PowerSeries O) : coeff d (Y ^ n * p) = 0 := by
@@ -39,7 +39,7 @@ theorem trunc_decomp (a : PowerSeries O) (k : ℕ) :
   have hd : (X : PowerSeries O) ^ k ∣ a - (trunc k a : PowerSeries O) := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
-    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hm, sub_self]
+    rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hm, sub_self]
   obtain ⟨b, hb⟩ := hd
   exact ⟨b, by rw [← hb]; ring⟩
 
@@ -74,7 +74,7 @@ private theorem coeff_algHom_eq_sum_range_of_lt (σ : PowerSeries O →ₐ[O] Po
   refine Finset.sum_congr rfl fun i hi => ?_
   rw [Finset.mem_range] at hi
   first
-  | rw [map_smul, smul_eq_mul, PowerSeries.coeff_trunc, if_pos hi]
+  | rw [map_smul, smul_eq_mul, PowerSeries.coeff_trunc, ite_eq_left hi]
 
 private theorem coeff_subst_eq_sum_range_of_lt {Y : PowerSeries O} (hY : constantCoeff Y = 0)
     (a : PowerSeries O) {m N : ℕ} (hN : m < N) :

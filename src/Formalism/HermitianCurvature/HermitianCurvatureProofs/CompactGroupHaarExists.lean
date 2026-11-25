@@ -95,9 +95,9 @@ theorem closedN : ClosedN := by
       simp
     · intro l _ hlc
       by_cases hl : min c.val r ≤ l.val
-      · rw [hz c hc l hl, if_neg hlc, mul_zero]
+      · rw [hz c hc l hl, ite_eq_right hlc, mul_zero]
       · have hjl : j ≠ l := fun h => by rw [h] at hj; exact hl hj
-        rw [hy l (by omega) j (by omega), if_neg hjl, zero_mul]
+        rw [hy l (by omega) j (by omega), ite_eq_right hjl, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ c) h
   have invQ : ∀ y : Mat k r, IsUnit y.det → (∀ c : Fin (2 * r + k + 1), c.val ≤ r + k → ∀ j : Fin (2 * r + k + 1), min c.val r ≤ j.val →
@@ -116,9 +116,9 @@ theorem closedN : ClosedN := by
         simpa using h1
       · intro l _ hlc
         by_cases hl : min c.val r ≤ l.val
-        · rw [hy c hc l hl, if_neg hlc, mul_zero]
+        · rw [hy c hc l hl, ite_eq_right hlc, mul_zero]
         · have hjl : j ≠ l := fun h => by rw [h] at hj; exact hl hj
-          rw [ih l.val (by omega) l rfl (by omega) j (by omega), if_neg hjl, zero_mul]
+          rw [ih l.val (by omega) l rfl (by omega) j (by omega), ite_eq_right hjl, zero_mul]
       · intro h
         exact absurd (Finset.mem_univ c) h
     intro c hc j hj
@@ -181,7 +181,7 @@ theorem shellInt : ShellInt := by
         linarith
       · obtain ⟨n, hn⟩ : ∃ n, m0 = n + 1 := ⟨m0 - 1, by omega⟩
         have hmin := Nat.find_min hex (show n < m0 by omega)
-        push_neg at hmin
+        push Not at hmin
         rw [hn, pow_succ]
         linarith
     calc ENNReal.ofReal (N x ^ (-A)) ≤ ENNReal.ofReal (((2:ℝ) ^ m0 / 2) ^ (-A)) :=

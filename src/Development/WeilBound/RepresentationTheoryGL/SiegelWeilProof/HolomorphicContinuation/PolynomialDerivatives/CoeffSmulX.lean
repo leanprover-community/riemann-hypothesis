@@ -69,13 +69,13 @@ theorem rdeg_single (ε : Fin m → Bool) (k : Fin m × Fin n × Bool) (hk : inF
   subst hk
   by_cases ha : a = a0
   · subst ha
-    rw [if_pos rfl, Finset.sum_eq_single i0]
+    rw [ite_eq_left rfl, Finset.sum_eq_single i0]
     · simp
     · intro i _ hi; simp [Ne.symm hi]
     · simp
-  · rw [if_neg ha]
+  · rw [ite_eq_right ha]
     refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h; exact ha (congrArg Prod.fst h).symm
 
 theorem term_mem_box (ε : Fin m → Bool) (R : Set (Fin m → ℕ)) (k l : Fin m × Fin n × Bool)
@@ -145,7 +145,7 @@ theorem coeff_smul_X {τ : Type} [DecidableEq τ] (c : ℂ) (w0 u : τ) :
   rw [MvPolynomial.coeff_smul, coeff_X']
   by_cases h : w0 = u
   · subst h; simp
-  · rw [if_neg (fun e => h ((Finsupp.single_left_inj one_ne_zero).mp e)), if_neg h]; simp
+  · rw [ite_eq_right (fun e => h ((Finsupp.single_left_inj one_ne_zero).mp e)), ite_eq_right h]; simp
 
 theorem expand_lin {τ : Type} [Fintype τ] [DecidableEq τ] (c : ℂ) (w0 : τ) :
     (c • X w0 : MvPolynomial τ ℂ) = ∑ u, (c • X w0 : MvPolynomial τ ℂ).coeff (Finsupp.single u 1) • X u := by

@@ -122,7 +122,7 @@ theorem coefLine_of (hS : SWFull) (hX : BoxSec) (hW : DblW) (hH : HgtEx) (hT : H
     refine Eq.trans ?_ (congrArg _ this)
     rw [← integral_const_mul]
     refine integral_congr_ae (.of_forall fun y => ?_)
-    simp only [hv, if_neg (show ¬ a + a' < a' by omega), setAverage_eq, Complex.real_smul,
+    simp only [hv, ite_eq_right (show ¬ a + a' < a' by omega), setAverage_eq, Complex.real_smul,
       ← fun g => (((d2 Ψ s3 Ψ s3).2 g y.1 y.2 _ (he _ _)).1), integral_const_mul]
     ring
   rw [val _ (rp s t), val _ (rp 0 1), mul_left_comm lam] at key
@@ -774,9 +774,9 @@ theorem exists_ext {ι : Type} (M : ι → Type) [∀ v, AddCommGroup (M v)] [�
       simp [c]
     · rw [Function.update_of_ne hvi]
       by_cases hv : (v : ι) ∈ S
-      · simp only [c, dif_pos hv]
+      · simp only [c, dite_eq_left hv]
         exact Function.update_of_ne (fun e => hvi (Subtype.ext (by rw [← e]))) _ _
-      · simp only [c, dif_neg hv]
+      · simp only [c, dite_eq_right hv]
   refine ⟨PiTensorProduct.lift
     { toFun := fun x => PiTensorProduct.tprod ℂ (c x)
       map_update_add' := fun x i y y' => by simp only [key]; exact (PiTensorProduct.tprod ℂ).map_update_add _ _ _ _
@@ -784,8 +784,8 @@ theorem exists_ext {ι : Type} (M : ι → Type) [∀ v, AddCommGroup (M v)] [�
   rw [PiTensorProduct.lift.tprod]
   refine congrArg (PiTensorProduct.tprod ℂ) (funext fun v => ?_)
   by_cases hv : (v : ι) ∈ S
-  · simp only [c, dif_pos hv]
-  · simp only [c, dif_neg hv, hu v hv]
+  · simp only [c, dite_eq_left hv]
+  · simp only [c, dite_eq_right hv, hu v hv]
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d a a' : ℕ}
   {B : Base F E} {G : Geo σ a a'} {X : Chars F E} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W}

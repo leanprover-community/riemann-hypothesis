@@ -249,13 +249,6 @@ theorem exists_app_eq_of_isIntegralElem {T Z : Scheme.{0}} [GlobalTheory.IsNorma
     (s : Γ(T, j ⁻¹ᵁ U)) (hs : (j.app U).hom.IsIntegralElem s) : ∃ h : Γ(Z, U), j.app U h = s :=
   _root_.GlobalTheory.glue_of_dense_openImmersion j hj U s fun u hu => _root_.GlobalTheory.exists_section_of_isIntegralElem_of_isOpenImmersion j hj U s hs u hu
 
-section Models
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
-  {Xo : Moduli D l} {c : Coeff l}
-
-end Models
-
 end GlobalTheory.GenPush
 end -- clump:auto
 end -- clump:auto

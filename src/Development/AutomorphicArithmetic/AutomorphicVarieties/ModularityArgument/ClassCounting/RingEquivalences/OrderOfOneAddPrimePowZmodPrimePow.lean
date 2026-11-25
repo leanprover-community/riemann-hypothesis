@@ -755,7 +755,7 @@ theorem procyc_of_top (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebr
   · refine hM.2.2.2.2.2 (Or.inr (hM.2.2.1.2 ?_))
     have hc : c ≤ Tower.cZero l L := (hM.1 c).1 h.2.2.1
     have hq : qExp l ≤ c := by
-      unfold qExp; rw [if_pos h2]; exact h.2.1 h2
+      unfold qExp; rw [ite_eq_left h2]; exact h.2.1 h2
     omega
   · exact Or.inl h2
 

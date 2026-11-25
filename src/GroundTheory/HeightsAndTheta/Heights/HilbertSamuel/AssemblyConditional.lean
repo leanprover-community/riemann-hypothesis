@@ -205,16 +205,16 @@ theorem blockTeleFam_succAbove (A A' : HermLine ι) (D i : ℕ) (hi : i < D + 1)
   · have h' : Fin.castSucc j < (⟨i, hi⟩ : Fin (D + 1)) := by
       rw [Fin.lt_def]
       exact h
-    rw [Fin.succAbove_of_castSucc_lt _ _ h', if_pos (show (Fin.castSucc j).val < k by
+    rw [Fin.succAbove_of_castSucc_lt _ _ h', ite_eq_left (show (Fin.castSucc j).val < k by
       show j.val < k
-      omega), if_pos h]
+      omega), ite_eq_left h]
   · have h' : (⟨i, hi⟩ : Fin (D + 1)) ≤ Fin.castSucc j := by
       rw [Fin.le_def]
       show i ≤ j.val
       omega
-    rw [Fin.succAbove_of_le_castSucc _ _ h', if_neg (show ¬ (Fin.succ j).val < k by
+    rw [Fin.succAbove_of_le_castSucc _ _ h', ite_eq_right (show ¬ (Fin.succ j).val < k by
       show ¬ j.val + 1 < k
-      omega), if_neg h]
+      omega), ite_eq_right h]
 
 theorem blockTeleFam_smooth {A A' : HermLine ι} (hA : IsSmoothHerm A) (hA' : IsSmoothHerm A') (N i : ℕ)
     (j : Fin N) : IsSmoothHerm (blockTeleFam A A' N i j) := by
@@ -796,7 +796,7 @@ theorem matAct_scaleMat {D : ℕ} (e : Fin (D + 1) → J) (m : ℕ) (y : J → �
   funext i
   simp only [matAct, scaleMat, Matrix.diagonal_apply]
   rw [Finset.sum_eq_single i (fun j _ hj => by simp [Ne.symm hj]) (by simp)]
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl]
   unfold scaleOff
   split_ifs <;> simp
 

@@ -590,7 +590,7 @@ theorem qC_subset {B : Base} {px : PreX B.toPre} (I : Col2.ColIn B px) (h : I.Ok
     · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.1 hQ'
       rw [Set.Finite.mem_toFinset] at hv
       unfold qBound
-      rw [if_pos (hr ▸ hfin)]
+      rw [ite_eq_left (hr ▸ hfin)]
       exact ⟨v, hr ▸ hv, h.sel_ok v⟩
     · simp at hQ'
   · simp

@@ -59,7 +59,7 @@ theorem segG_eq (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numSeg T
   obtain ⟨m1, -⟩ := next_min TT j e he hev hne
   refine ⟨?_, m1⟩
   unfold segG
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem sum_segG (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) : ∑ j, segG TT j = n' := by
   have key : ∀ j : Fin (numSeg TT), (segG TT j : ℤ) =
@@ -77,7 +77,7 @@ theorem sum_segG (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) : ∑ j, segG TT 
         have := congrArg Fin.val e
         simp at this
         omega
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       omega
     · have hlt : (segStart TT (rot _ j)).val < (segStart TT j).val :=
         ev_mono TT (Fin.lt_def.mpr (by omega))
@@ -85,7 +85,7 @@ theorem sum_segG (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) : ∑ j, segG TT 
         apply Fin.ext
         show j.val = numSeg TT - 1
         omega
-      rw [if_pos he]
+      rw [ite_eq_left he]
       omega
   have hs : (∑ j, ((segStart TT (rot _ j)).val : ℤ)) = ∑ j, ((segStart TT j).val : ℤ) :=
     (rot_bij (numSeg TT)).sum_comp (fun j => ((segStart TT j).val : ℤ))

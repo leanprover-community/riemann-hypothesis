@@ -720,8 +720,8 @@ theorem phiB_E (hS : ScalChar X χ) (hB : BackStable) (a b : Fin (m + 1)) (v : X
   dsimp only
   by_cases h : c = b
   · subst h
-    rw [if_pos rfl, ← Pr_tensE, tensE_single, if_pos rfl, map_add (f := _), add_sub_cancel_right]
-  · rw [if_neg h, sub_zero, ← Pr_tensE, tensE_single, if_neg (Ne.symm h), add_zero]
+    rw [ite_eq_left rfl, ← Pr_tensE, tensE_single, ite_eq_left rfl, map_add (f := _), add_sub_cancel_right]
+  · rw [ite_eq_right h, sub_zero, ← Pr_tensE, tensE_single, ite_eq_right (Ne.symm h), add_zero]
 
 theorem unit_of_dualFacts (hDF : DualFacts) : Unit := by
   rintro (_ | m) X χ s hB hS hfree hsimp hom

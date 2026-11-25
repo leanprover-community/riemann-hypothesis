@@ -72,10 +72,10 @@ def ray {ι : Type} (τ : ι) (c : ℂ) : ℝ →+ (ι → ℂ) where
 theorem continuous_ray {ι : Type} (τ : ι) (c : ℂ) : Continuous (ray τ c) := by
   refine continuous_pi fun τ' => ?_
   by_cases h : τ' = τ
-  · have : (fun t : ℝ => ray τ c t τ') = fun t : ℝ => (t : ℂ) * c := funext fun t => if_pos h
+  · have : (fun t : ℝ => ray τ c t τ') = fun t : ℝ => (t : ℂ) * c := funext fun t => ite_eq_left h
     rw [this]
     exact Complex.continuous_ofReal.mul continuous_const
-  · have : (fun t : ℝ => ray τ c t τ') = fun _ : ℝ => (0 : ℂ) := funext fun t => if_neg h
+  · have : (fun t : ℝ => ray τ c t τ') = fun _ : ℝ => (0 : ℂ) := funext fun t => ite_eq_right h
     rw [this]
     exact continuous_const
 
@@ -99,10 +99,10 @@ theorem lineAt_exists (D : D7) : LineAtExists D := by
   · funext i j
     refine (hσ.comp (ray τ (z i j) t) τ').trans ?_
     by_cases h : τ' = τ
-    · rw [if_pos h]
-      exact if_pos h
-    · rw [if_neg h]
-      exact if_neg h
+    · rw [ite_eq_left h]
+      exact ite_eq_left h
+    · rw [ite_eq_right h]
+      exact ite_eq_right h
 
 theorem lineAt_unique (D : D7) : LineAtUnique D := by
   intro θ hθ m n τ z L L' hL hL'

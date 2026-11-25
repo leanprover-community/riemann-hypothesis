@@ -57,5 +57,5 @@ theorem UpperTheory.V.Fr.pr_brig :
   · rw [hres, hOf.psi, hOf.psi]
     exact fun e => hs i j hij (Units.ext e)
   · convert upT_mul h1 hT using 1
-    simp only [GG.adFun, hr, if_true, GG.mat, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
+    simp only [GG.adFun, hr, ite_true, GG.mat, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
       Units.inv_mul_cancel_left]

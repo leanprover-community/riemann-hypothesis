@@ -134,9 +134,9 @@ private theorem lb_chart [IsDomain O] [Finite τ] {R Y : Type} [CommRing R] [Alg
       rw [← this, ← IsScalarTower.algebraMap_smul (FractionRing O) c, map_smul, IsScalarTower.algebraMap_smul, coeff_X]
       simp [Finsupp.single_left_inj]
     refine ⟨a, ?_, fun i' hi => ?_⟩
-    · rw [key, if_pos rfl, Algebra.smul_def, mul_one]
+    · rw [key, ite_eq_left rfl, Algebra.smul_def, mul_one]
       exact fun e => hc0 (IsFractionRing.injective O (FractionRing O) (by rw [e, map_zero]))
-    · rw [key, if_neg hi, smul_zero]
+    · rw [key, ite_eq_right hi, smul_zero]
   · have h2 : φ f ∈ maximalIdeal (MvPowerSeries τ (FractionRing O)) ^ 2 := by
       rw [lb_max]
       refine GlobalTheory.mem_germIdeal_pow_iff.2 fun d hd => ?_

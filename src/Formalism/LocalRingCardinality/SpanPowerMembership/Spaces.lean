@@ -200,11 +200,11 @@ theorem lorentzDiagonal_hasSignature : Formalism.UG.HasSignature
   · simp only [Formalism.UG.Jpq, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm,
       finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, Matrix.fromBlocks_apply₁₂,
       Matrix.diagonal_apply, Matrix.zero_apply]
-    rw [if_neg (castAdd_ne_natAdd' i j)]
+    rw [ite_eq_right (castAdd_ne_natAdd' i j)]
   · simp only [Formalism.UG.Jpq, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm,
       finSumFinEquiv_apply_left, finSumFinEquiv_apply_right, Matrix.fromBlocks_apply₂₁,
       Matrix.diagonal_apply, Matrix.zero_apply]
-    rw [if_neg (castAdd_ne_natAdd' j i).symm]
+    rw [ite_eq_right (castAdd_ne_natAdd' j i).symm]
   · simp only [Formalism.UG.Jpq, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm,
       finSumFinEquiv_apply_right, Matrix.fromBlocks_apply₂₂, Matrix.diagonal_apply,
       Matrix.neg_apply, Matrix.one_apply, negLast_natAdd, (Fin.natAdd_injective 1 8).eq_iff]
@@ -307,7 +307,7 @@ theorem lorentz_last_vector_norm (T : ℕ) (pz : E) (hpz : star pz * pz = T) :
     diagForm (8 + 1) negLast (Pi.single (Fin.last 8) pz) (Pi.single (Fin.last 8) pz) = -(T : E) := by
   rw [diagForm_single_left]
   have hn : negLast (Fin.last 8) = true := rfl
-  simp only [Pi.single_eq_same, hn, sgn, if_true]
+  simp only [Pi.single_eq_same, hn, sgn, ite_true]
   rw [← hpz]
   ring
 
@@ -400,16 +400,16 @@ theorem example_baseSpace_isometric_graded : ∀ j, 1 ≤ j → j ≤ R0.m → �
     rw [e2]
     by_cases hij : i = j
     · subst hij
-      rw [if_pos (show @Eq (Fin (8 + 1)) i i from rfl), if_pos rfl]
+      rw [ite_eq_left (show @Eq (Fin (8 + 1)) i i from rfl), ite_eq_left rfl]
       by_cases hi : (i : ℕ) = 8
       · have hn : negLast i = true := by simp [negLast, hi]
         rw [hn]
-        simp only [if_pos hi, sgn, if_true, Bool.false_eq_true, if_false, map_neg, map_one]
+        simp only [ite_eq_left hi, sgn, ite_true, Bool.false_eq_true, ite_false, map_neg, map_one]
         rw [mul_neg_one, neg_mul, hy, neg_neg]
       · have hn : negLast i = false := by simp [negLast, hi]
         rw [hn]
         simp [hi, sgn]
-    · rw [if_neg (show ¬ @Eq (Fin (8 + 1)) i j from hij), if_neg hij]
+    · rw [ite_eq_right (show ¬ @Eq (Fin (8 + 1)) i j from hij), ite_eq_right hij]
       simp
 
 end Examples₂

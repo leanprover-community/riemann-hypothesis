@@ -190,7 +190,7 @@ theorem bad_finite {m : ℕ} (T : Matrix (Fin m) (Fin m) L) (hT : T.det ≠ 0) :
   by_cases hd : v T.det = 1
   · refine Or.inr ?_
     have : ¬ ∀ i j, v (T i j) ≤ 1 := fun h => hv ⟨h, hd⟩
-    push_neg at this
+    push Not at this
     obtain ⟨i, j, hij⟩ := this
     exact Set.mem_iUnion.2 ⟨i, Set.mem_iUnion.2 ⟨j, not_le.2 hij⟩⟩
   · exact Or.inl hd

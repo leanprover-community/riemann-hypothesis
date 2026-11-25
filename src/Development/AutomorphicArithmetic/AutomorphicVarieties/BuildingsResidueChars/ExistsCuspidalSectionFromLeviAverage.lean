@@ -193,6 +193,14 @@ private theorem low_coord {K : Type} [Field K] [NumberField K] :
     (continuous_retractOne.comp hac).prodMk ((continuous_retractOne.comp hdc).prodMk (htc.prodMk hXc)),
     fun g h h' => ⟨hlow _ h, hlow _ h'⟩, key⟩
 
+private theorem nn_inv {K : Type} [Field K] [NumberField K] (Y : UPos (2 + 2) 2 → 𝔸[K]) : (nn Y)⁻¹ = nn (-Y) :=
+  inv_eq_of_mul_eq_one_right (by rw [← unipOne_add, add_neg_cancel, unipOne_zero])
+
+private theorem lv_nn {K : Type} [Field K] [NumberField K] (m₁ m₂ : G1 K 2) (t : ℝ) (X : UPos (2 + 2) 2 → 𝔸[K]) :
+    ∃ Y, lv m₁ m₂ t * nn X = nn Y * lv m₁ m₂ t := by
+  obtain ⟨e, he, -⟩ := adMeas m₁ m₂ t
+  exact ⟨e.symm X, by rw [he, e.apply_symm_apply]⟩
+
 private theorem par_homeo {K : Type} [Field K] [NumberField K] :
     ∃ (S : Subgroup (G1 K (2 + 2))) (φ : (G1 K 2 × G1 K 2 × ℝ × (UPos (2 + 2) 2 → 𝔸[K])) ≃ₜ S),
       IsClosed (S : Set (G1 K (2 + 2))) ∧ (∀ g, g ∈ S ↔ ∃ X m₁ m₂ t, g = nn X * lv m₁ m₂ t) ∧
@@ -200,29 +208,24 @@ private theorem par_homeo {K : Type} [Field K] [NumberField K] :
   obtain ⟨-, hmul, hone, hc, -⟩ := blkLaws (K := K)
   obtain ⟨-, -, hinj, -⟩ := pkLaws (K := K)
   obtain ⟨C, ψ, hC, hψ, hin, hkey⟩ := low_coord (K := K)
-  have hcomm : ∀ (m₁ m₂ : G1 K 2) (t : ℝ) X, ∃ Y, lv m₁ m₂ t * nn X = nn Y * lv m₁ m₂ t := by
-    intro m₁ m₂ t X
-    obtain ⟨e, he, -⟩ := adMeas m₁ m₂ t
-    exact ⟨e.symm X, by rw [he, e.apply_symm_apply]⟩
   let S : Subgroup (G1 K (2 + 2)) :=
     { carrier := {g | ∃ X m₁ m₂ t, g = nn X * lv m₁ m₂ t}
       one_mem' := ⟨0, 1, 1, 0, by rw [hone, mul_one]; exact (unipOne_zero 2).symm⟩
       mul_mem' := by
         rintro _ _ ⟨X, m₁, m₂, t, rfl⟩ ⟨X', m₁', m₂', t', rfl⟩
-        obtain ⟨Y, hY⟩ := hcomm m₁ m₂ t X'
+        obtain ⟨Y, hY⟩ := lv_nn m₁ m₂ t X'
         refine ⟨X + Y, m₁ * m₁', m₂ * m₂', t + t', ?_⟩
         rw [mul_assoc, ← mul_assoc (lv m₁ m₂ t), hY, mul_assoc, hmul, ← mul_assoc]
         exact congrArg (· * _) (unipOne_add 2 X Y).symm
       inv_mem' := by
         rintro _ ⟨X, m₁, m₂, t, rfl⟩
-        obtain ⟨Y, hY⟩ := hcomm m₁⁻¹ m₂⁻¹ (-t) (-X)
+        obtain ⟨Y, hY⟩ := lv_nn m₁⁻¹ m₂⁻¹ (-t) (-X)
         refine ⟨Y, m₁⁻¹, m₂⁻¹, -t, ?_⟩
         rw [← hY, mul_inv_rev]
         congr 1
         · refine inv_eq_of_mul_eq_one_right ?_
           rw [hmul, mul_inv_cancel, mul_inv_cancel, add_neg_cancel, hone]
-        · refine inv_eq_of_mul_eq_one_right ?_
-          rw [← unipOne_add, add_neg_cancel, unipOne_zero] }
+        · exact nn_inv X }
   have hSC : ∀ g ∈ S, g ∈ C := fun g hg => hin g hg (S.inv_mem hg)
   have hS : (S : Set (G1 K (2 + 2))) = C :=
     Set.Subset.antisymm hSC fun g hg => ⟨_, _, _, _, hkey ⟨g, hg⟩⟩
@@ -392,10 +395,6 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.mkSec :
       have := φ.symm.continuous
       fun_prop
     exact hΛ.comp h1
-  have hnn : ∀ Y : UPos (2 + 2) 2 → 𝔸[K], (nn Y)⁻¹ = nn (-Y) := by
-    intro Y
-    refine inv_eq_of_mul_eq_one_right ?_
-    rw [← unipOne_add, add_neg_cancel, unipOne_zero]
   have hconst : ∀ p p', HaarSK.mulMap S (KG K (2 + 2)) p = HaarSK.mulMap S (KG K (2 + 2)) p' → F p = F p' := by
     rintro ⟨s, k⟩ ⟨s', k'⟩ hp
     obtain ⟨⟨m₁, m₂, t, X⟩, rfl⟩ := φ.surjective s
@@ -426,7 +425,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.mkSec :
     have hb : b ∈ KG K 2 := hab.2
     have hl := hlvK a ha b hb
     have hnY : nn (-Y) ∈ KG K (2 + 2) := by
-      rw [← hnn]
+      rw [← nn_inv]
       refine (KG K (2 + 2)).inv_mem ?_
       have : nn Y = (k : G1 K (2 + 2)) * (k' : G1 K (2 + 2))⁻¹ * (lv a b 0)⁻¹ := by rw [hκ, mul_inv_cancel_right]
       rw [this]
@@ -448,7 +447,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.mkSec :
     show Λ m₁ m₂ k = Λ (m₁ * a) (m₂ * b) k'
     rw [h2 m₁ m₂ a ha b hb k' k'.2]
     have h5 : lv a b 0 * (k' : G1 K (2 + 2)) = nn (-Y) * k := by
-      rw [← hnn, eq_inv_mul_iff_mul_eq, ← mul_assoc, ← hκ, inv_mul_cancel_right]
+      rw [← nn_inv, eq_inv_mul_iff_mul_eq, ← mul_assoc, ← hκ, inv_mul_cancel_right]
     rw [h5, h3 m₁ m₂ (-Y) hnY k k.2]
   refine ⟨fun g => F (Function.surjInv hsurj g), ?_, ?_⟩
   · refine hq.continuous_iff.2 ?_
@@ -554,10 +553,6 @@ private theorem span_le_rep {K : Type} [Field K] [NumberField K] {n : ℕ} (μ :
   rintro _ ⟨k, rfl⟩
   exact ⟨_, hτ.inv _ v hv, reps_tr μ hr k⟩
 
-private theorem int_cont {Y : Type} [TopologicalSpace Y] [CompactSpace Y] [MeasurableSpace Y] [OpensMeasurableSpace Y]
-    (ρ : Measure Y) [IsFiniteMeasure ρ] (F : Y → ℂ) (hF : Continuous F) : Integrable F ρ :=
-  hF.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-
 private theorem dbl {D Y : Type} [TopologicalSpace D] [TopologicalSpace Y] [CompactSpace Y] [MeasurableSpace Y]
     [OpensMeasurableSpace Y] (ρ : Measure Y) [IsFiniteMeasure ρ] (A : D → Y → Y → ℂ)
     (hA : Continuous fun p : (D × Y) × Y => A p.1.1 p.1.2 p.2) :
@@ -566,8 +561,8 @@ private theorem dbl {D Y : Type} [TopologicalSpace D] [TopologicalSpace Y] [Comp
   have hB : Continuous fun p : D × Y => ∫ v₂, A p.1 p.2 v₂ ∂ρ :=
     cont_int ρ (F := fun (p : D × Y) v₂ => A p.1 p.2 v₂) hA
   exact ⟨cont_int ρ (F := fun d v₁ => ∫ v₂, A d v₁ v₂ ∂ρ) hB,
-    fun d v₁ => int_cont ρ _ (hA.comp (Continuous.prodMk_right (d, v₁))),
-    fun d => int_cont ρ _ (hB.comp (Continuous.prodMk_right d))⟩
+    fun d v₁ => (hA.comp (.prodMk_right (d, v₁))).integrable_of_hasCompactSupport (.of_compactSpace _),
+    fun d => (hB.comp (.prodMk_right d)).integrable_of_hasCompactSupport (.of_compactSpace _)⟩
 
 private theorem cont_A {G S T : Type} [TopologicalSpace G] [Group G] [IsTopologicalGroup G] [TopologicalSpace S]
     [TopologicalSpace T] (P : S × S × T → ℂ) (hP : Continuous P) (ι : S → G) (hι : Continuous ι) (φ₁ φ₂ : G → ℂ)
@@ -729,9 +724,8 @@ private theorem sec_red {K : Type} [Field K] [NumberField K] (Λ : G1 K 2 → G1
   have hmul := (blkLaws (K := K)).2.1
   obtain ⟨X, n₁, n₂, t, k, hk, rfl⟩ := iwa g
   refine ⟨n₁, n₂, ⟨k, hk⟩, fun m₁ m₂ => ?_⟩
-  obtain ⟨e, he, -⟩ := adMeas m₁ m₂ 0
-  have e1 : lv m₁ m₂ 0 * nn X = nn (e.symm X) * lv m₁ m₂ 0 := by rw [he, e.apply_symm_apply]
-  have e2 : lv m₁ m₂ 0 * (nn X * lv n₁ n₂ t * k) = nn (e.symm X) * lv (m₁ * n₁) (m₂ * n₂) (0 + t) * k := by
+  obtain ⟨Y, e1⟩ := lv_nn m₁ m₂ 0 X
+  have e2 : lv m₁ m₂ 0 * (nn X * lv n₁ n₂ t * k) = nn Y * lv (m₁ * n₁) (m₂ * n₂) (0 + t) * k := by
     rw [← hmul, ← mul_assoc, ← mul_assoc, e1]
     simp only [mul_assoc]
   rw [e2, hfv _ _ _ _ _ hk]
@@ -751,9 +745,8 @@ private theorem sec_ray {K : Type} [Field K] [NumberField K] (Λ : G1 K 2 → G1
     (g : G1 K (2 + 2)) : f (lv 1 1 t * g) = f g := by
   have hmul := (blkLaws (K := K)).2.1
   obtain ⟨Y, m₁, m₂, s, k, hk, rfl⟩ := iwa g
-  obtain ⟨e, he, -⟩ := adMeas (1 : G1 K 2) 1 t
-  have e1 : lv (1 : G1 K 2) 1 t * nn Y = nn (e.symm Y) * lv (1 : G1 K 2) 1 t := by rw [he, e.apply_symm_apply]
-  have e2 : lv (1 : G1 K 2) 1 t * (nn Y * lv m₁ m₂ s * k) = nn (e.symm Y) * lv (1 * m₁) (1 * m₂) (t + s) * k := by
+  obtain ⟨Z, e1⟩ := lv_nn (1 : G1 K 2) 1 t Y
+  have e2 : lv (1 : G1 K 2) 1 t * (nn Y * lv m₁ m₂ s * k) = nn Z * lv (1 * m₁) (1 * m₂) (t + s) * k := by
     rw [← hmul, ← mul_assoc, ← mul_assoc, e1]
     simp only [mul_assoc]
   rw [e2, hfv _ _ _ _ _ hk, hfv _ _ _ _ _ hk, one_mul, one_mul]

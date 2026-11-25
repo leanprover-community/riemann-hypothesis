@@ -454,13 +454,13 @@ private theorem restrictIdeal_comap_strictTransform_eq_of_blowupChart {X X₁ : 
           ((Blowup.strictTransform π Z H).subschemeι ⁻¹ᵁ B.domain) = ⊤ := by
         refine restrictIdeal_comap_subschemeι_eq_top (Blowup.strictTransform π Z H) B.domain
           (Blowup.strictTransform π Z D) ?_
-        rw [B.restrictIdeal_strictTransform_coordIdeal Z D hs hZ b hDb, if_pos hbs]
+        rw [B.restrictIdeal_strictTransform_coordIdeal Z D hs hZ b hDb, ite_eq_left hbs]
       have hR : restrictIdeal (Blowup.strictTransform q (Z.comap H.subschemeι) (D.comap H.subschemeι))
           ((Blowup.strictTransform π Z H).subschemeι ⁻¹ᵁ B.domain) = ⊤ := by
         have h := (B.restrictToStrictTransform hU hB Z H hs hZ a ha has hH s'
             hs' q hq).restrictIdeal_strictTransform_coordIdeal (Z.comap H.subschemeι)
             (D.comap H.subschemeι) hs'S hZ' b' hRD
-        rw [if_pos (hiff.mp hbs)] at h
+        rw [ite_eq_left (hiff.mp hbs)] at h
         exact h
       rw [hL, hR]
     · have hL : restrictIdeal ((Blowup.strictTransform π Z D).comap (Blowup.strictTransform π Z H).subschemeι)
@@ -468,7 +468,7 @@ private theorem restrictIdeal_comap_strictTransform_eq_of_blowupChart {X X₁ : 
           = (B.chart.restrictToSubscheme hB (Blowup.strictTransform π Z H) {a} hFa).coordIdeal {b'} := by
         refine EtaleChart.restrictToSubscheme_coordIdeal_singleton B.chart hB
           (Blowup.strictTransform π Z H) {a} hFa b' (Blowup.strictTransform π Z D) ?_
-        rw [B.restrictIdeal_strictTransform_coordIdeal Z D hs hZ b hDb, if_neg hbs, hb']
+        rw [B.restrictIdeal_strictTransform_coordIdeal Z D hs hZ b hDb, ite_eq_right hbs, hb']
       have hR : restrictIdeal (Blowup.strictTransform q (Z.comap H.subschemeι) (D.comap H.subschemeι))
           ((Blowup.strictTransform π Z H).subschemeι ⁻¹ᵁ B.domain)
           = (B.restrictToStrictTransform hU hB Z H hs hZ a ha has hH s'
@@ -476,7 +476,7 @@ private theorem restrictIdeal_comap_strictTransform_eq_of_blowupChart {X X₁ : 
         have h := (B.restrictToStrictTransform hU hB Z H hs hZ a ha has hH s'
             hs' q hq).restrictIdeal_strictTransform_coordIdeal (Z.comap H.subschemeι)
             (D.comap H.subschemeι) hs'S hZ' b' hRD
-        rw [if_neg (fun hxx => hbs (hiff.mpr hxx))] at h
+        rw [ite_eq_right (fun hxx => hbs (hiff.mpr hxx))] at h
         exact h
       rw [hL, hR]
       exact coordIdeal_eq_of_map_eq

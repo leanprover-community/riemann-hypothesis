@@ -421,7 +421,7 @@ theorem one_sub_mul_geom (c : ℂ) :
   | zero => simp
   | succ n =>
     rw [sub_mul, one_mul, map_sub, mul_assoc, PowerSeries.coeff_C_mul, PowerSeries.coeff_succ_X_mul,
-      PowerSeries.coeff_mk, PowerSeries.coeff_mk, PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero n),
+      PowerSeries.coeff_mk, PowerSeries.coeff_mk, PowerSeries.coeff_one, ite_eq_right (Nat.succ_ne_zero n),
       pow_succ]
     ring
 
@@ -702,8 +702,8 @@ theorem main : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRi
   have hd : ∀ k L, heckeElem k φ L = d k • φ L := by
     intro k L
     by_cases hk : k ≤ r
-    · rw [hT k hk L, hd_def]; simp only [hk, if_true]
-    · rw [heckeElem_eq_zero (by omega), hd_def]; simp only [hk, if_false, zero_smul]
+    · rw [hT k hk L, hd_def]; simp only [hk, ite_true]
+    · rw [heckeElem_eq_zero (by omega), hd_def]; simp only [hk, ite_false, zero_smul]
   have hlin : ∀ (c : ℂ) k L, heckeElem k (fun M => c • φ M) L = (c * d k) • φ L := by
     intro c k L
     rw [heckeElem_eq_sum, ← Finset.smul_sum, ← heckeElem_eq_sum, hd, smul_smul]
@@ -741,7 +741,7 @@ theorem main : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRi
     intro k
     rw [hβ_def, esymm_map_mul, hs_def, hd_def]
     by_cases hk : k ≤ r
-    · simp only [hk, if_true]
+    · simp only [hk, ite_true]
       have hreal : c ^ k = (qRes O : ℝ) ^ (k * (k - 1) / 2) *
           (qRes O : ℝ) ^ ((k : ℝ) * ((r : ℝ) - k) / 2) := by
         rw [hc_def, ← Real.rpow_natCast, ← Real.rpow_mul hq0.le, ← Real.rpow_natCast (qRes O : ℝ),
@@ -754,7 +754,7 @@ theorem main : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRi
           Complex.ofReal_natCast]
       rw [hcomp]
       ring
-    · simp only [hk, if_false, mul_zero]
+    · simp only [hk, ite_false, mul_zero]
       rw [Multiset.esymm, Multiset.powersetCard_eq_empty _ (by rw [hcard]; omega)]
       simp
   have hrel : ∀ n, 1 ≤ n → ∑ k ∈ Finset.range (n + 1), (-1 : ℂ) ^ k * β.esymm k * a (n - k) = 0 := by

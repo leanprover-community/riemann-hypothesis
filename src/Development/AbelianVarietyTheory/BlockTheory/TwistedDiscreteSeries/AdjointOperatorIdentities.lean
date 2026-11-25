@@ -81,8 +81,4 @@ def PairOperatorStatement : Prop :=
     (M : Type) [AddCommGroup M] [Module ℂ M],
     Vanishing k n M ϖ ∧ OperatorIdentities k n M ϖ (resChar ψ hψ ϖ)
 
-section Examples
-
-end Examples
-
 end GlobalTheory.IndefiniteRowSideFullHecke.AdjointOperatorIdentities

@@ -10,12 +10,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite
 
 namespace GlobalTheory.Et
 
-section Transfer
-
-variable (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
-
-end Transfer
-
 section Semistable
 
 variable (O : Type) [CommRing O] (ϖ : O) (m r : ℕ)
@@ -25,10 +19,6 @@ abbrev ssModel : Type :=
       MvPolynomial.C ϖ))
 
 end Semistable
-
-section MuTest
-
-end MuTest
 
 end GlobalTheory.Et
 

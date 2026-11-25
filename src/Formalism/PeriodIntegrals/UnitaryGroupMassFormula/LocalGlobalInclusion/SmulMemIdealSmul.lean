@@ -38,7 +38,7 @@ theorem coe_pow_toNat_le (v : HeightOneSpectrum (𝓞 K)) (k : ℤ) :
   by_cases hk : 0 ≤ k
   · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hk
     simp
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨n, rfl⟩ := Int.exists_eq_neg_ofNat hk.le
     have h0 : (-(n : ℤ)).toNat = 0 := Int.toNat_of_nonpos hk.le
     rw [h0, pow_zero, zpow_neg, zpow_natCast]

@@ -22,25 +22,6 @@ def smM (m : ℕ∞) : WithTop ℕ∞ := ((m : ℕ∞) : WithTop ℕ∞)
 
 end cls
 
-section jets
-
-variable {r : ℕ} {TT : ℝ}
-
-
-end jets
-
-section ord
-
-variable {r : ℕ} {TT : ℝ}
-
-end ord
-
-section En
-
-variable (P : M.Par) (m : ℕ∞)
-
-end En
-
 open scoped Matrix.Norms.Elementwise
 
 def FFlM {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
@@ -51,14 +32,6 @@ def FFlM {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAdd
     Q.LeftEq k r z i Dm J ∧ Q.RightEq k r z' i Dm J ∧
     ∀ g ∈ Q.Glev k r i ∩ Dm, ∀ h ∈ Formalism.QuantumDeterminants.UWset k r z, ∀ h' ∈ Formalism.QuantumDeterminants.UWset k r z',
       J (h * g * h') = (π h).comp ((J g).comp (π' h'))}
-
-section place
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
-  [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
-  [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)] [∀ x, FiniteDimensional ℂ (Wq x)]
-
-end place
 
 end
 

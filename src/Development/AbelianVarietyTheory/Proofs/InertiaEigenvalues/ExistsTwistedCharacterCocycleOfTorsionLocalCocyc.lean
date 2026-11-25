@@ -96,7 +96,7 @@ theorem liftC_gen (hinj : Function.Injective (algebraMap O LL)) {G : Type} [Grou
   · have hF : (fun g => oneT hinj ψ ⊗ₜ[O]
         (⟨evOneQ LL (f g), evOneQ_mem (htor g)⟩ : ↥(Xq LL lam a))) = F ∘ f := by
       funext g
-      simp only [F, Function.comp_apply, dif_pos (htor g)]
+      simp only [F, Function.comp_apply, dite_eq_left (htor g)]
     rw [hF]
     exact hlc.comp F
   · intro g h

@@ -91,7 +91,7 @@ theorem topChain : TopChain := by
   · rw [hpin' c']
     constructor
     · rintro ⟨d, hd⟩
-      exact ⟨_, dif_pos ⟨d, hd⟩⟩
+      exact ⟨_, dite_eq_left ⟨d, hd⟩⟩
     · rintro ⟨d, hd⟩
       dsimp only at hd
       split_ifs at hd with h

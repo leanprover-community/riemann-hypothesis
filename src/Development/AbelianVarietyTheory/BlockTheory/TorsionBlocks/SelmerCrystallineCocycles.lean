@@ -11,18 +11,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.SelmerCrystallineCocycles
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N
 open scoped ENNReal Matrix
 
-section Rep
-
-variable {Γ A : Type} [Group Γ] [CommRing A] {m : ℕ}
-
-end Rep
-
-section Div
-
-variable {Γ O' : Type} [Group Γ] [CommRing O'] [IsDomain O'] {m : ℕ}
-
-end Div
-
 section BK
 
 variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]

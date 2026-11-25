@@ -62,7 +62,7 @@ theorem finSigmaFinEquiv_val_eq_range {s : ℕ} (t : Fin s → ℕ) (x : (a : Fi
   rw [← Fin.sum_univ_eq_sum_range]
   refine Finset.sum_congr rfl fun i _ => ?_
   have hi : (i : ℕ) < s := lt_of_lt_of_le i.2 x.1.2.le
-  simp only [hi, dif_pos]
+  simp only [hi, dite_eq_left]
   rfl
 
 theorem finSigmaFinEquiv_lt_of_lex_lt {s : ℕ} (t : Fin s → ℕ) (x y : (a : Fin s) × Fin (t a))

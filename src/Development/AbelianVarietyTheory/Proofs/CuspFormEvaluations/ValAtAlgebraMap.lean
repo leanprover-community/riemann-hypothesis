@@ -117,7 +117,7 @@ theorem exists_isHomogeneous_aeval_eq_zero {K Ω : Type} [Field K] [Field Ω] [A
     rw [htr, Cardinal.mk_fin, Nat.cast_le] at h1
     omega
   rw [algebraicIndependent_iff] at hdep
-  push_neg at hdep
+  push Not at hdep
   obtain ⟨P, hP, hP0⟩ := hdep
   have hex : ∃ d, MvPolynomial.homogeneousComponent d P ≠ 0 := by
     by_contra! hall
@@ -311,7 +311,7 @@ theorem phi_lower (X : Data E r) (hf : 0 < PT.f E) {th : ℝ} (hth : 0 < th) :
   have h1 := one_le_rd (E := E)
   refine ⟨2 * PT.f E / PT.rd E ^ 2, th, by positivity, hth, fun x _ hx => ?_⟩
   unfold phiFD
-  rw [if_pos hx, div_div]
+  rw [ite_eq_left hx, div_div]
 
 theorem phi_le (X : Data E r) (th : ℝ) (x : Frame X.Ψ r) : phiFD X th x ≤ 2 * PT.f E / X.la1 x ^ 2 := by
   have h1 := one_le_rd (E := E)
@@ -330,7 +330,7 @@ theorem phi_threshold (X : Data E r) (th : ℝ) {th' : ℝ} (h' : 0 < th') :
   · have : phiFD X th x ≤ phiFD X th' x := by
       have h0 := phi_nonneg X th' x
       unfold phiFD at h0 ⊢
-      rw [if_pos hx] at h0 ⊢
+      rw [ite_eq_left hx] at h0 ⊢
       split_ifs
       · exact le_rfl
       · exact h0
@@ -405,17 +405,17 @@ theorem gaps_all (X : Data E r) (L G : Wt X.Ψ r) (T : ℕ) (hL : IsStrictDom X 
     have ha : (a : ℕ) < X.p0 := lt_of_le_of_lt hab hb
     have h1' : (G τ b : ℝ) + 2 * (L τ a - L τ b) ≤ G τ a := by exact_mod_cast h1
     have h2' : (L τ b : ℝ) ≤ L τ a := by exact_mod_cast h2
-    simp only [de2W, if_neg (not_le.2 ha), if_neg (not_le.2 hb)]
+    simp only [de2W, ite_eq_right (not_le.2 ha), ite_eq_right (not_le.2 hb)]
     linarith
   · obtain ⟨h1, h2⟩ := hg τ a b hab (Or.inr ha)
     have hb : X.p0 ≤ (b : ℕ) := ha.trans hab
     have h1' : (G τ b : ℝ) + 2 * (L τ a - L τ b) ≤ G τ a := by exact_mod_cast h1
     have h2' : (L τ b : ℝ) ≤ L τ a := by exact_mod_cast h2
-    simp only [de2W, if_pos ha, if_pos hb]
+    simp only [de2W, ite_eq_left ha, ite_eq_left hb]
     linarith
   · obtain ⟨-, -, h3⟩ := hn τ a b ha hb
     have h3' : 57 * (T : ℝ) ≤ 10 * (2 * ((G τ b : ℝ) - G τ a) - (L τ b - L τ a)) := by exact_mod_cast h3
-    simp only [de2W, if_neg (not_le.2 ha), if_pos hb]
+    simp only [de2W, ite_eq_right (not_le.2 ha), ite_eq_left hb]
     push_cast
     linarith
 

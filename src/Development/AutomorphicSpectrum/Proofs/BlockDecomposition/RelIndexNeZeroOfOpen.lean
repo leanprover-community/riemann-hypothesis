@@ -209,27 +209,27 @@ theorem exists_local_levels_le_open : ∀ {ι Γ : Type} [Group Γ] {Hl : ι →
   refine ⟨fun i => if i ∈ T then KH i ⊓ U.comap (e i) else KH i, ?_, ?_, ?_, ?_⟩
   · intro i
     by_cases hi : i ∈ T
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact (hKo i).inter (hU.preimage (hec i))
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       exact hKo i
   · intro i
     by_cases hi : i ∈ T
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       exact inf_le_left
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       exact le_rfl
   · have hfin : ∀ᶠ i in cofinite, i ∉ T := T.finite_toSet.compl_mem_cofinite
     filter_upwards [hfin] with i hi
-    simp only [hi, if_false]
+    simp only [hi, ite_false]
   · intro u hu
     have hle : ∀ i, p i u ∈ KH i := by
       intro i
       have := hu i
       by_cases hi : i ∈ T
-      · simp only [hi, if_true] at this
+      · simp only [hi, ite_true] at this
         exact this.1
-      · simpa only [hi, if_false] using this
+      · simpa only [hi, ite_false] using this
     have huK : u ∈ K := (hK u).mpr hle
     set v : Γ := (T.toList.map fun i => e i (p i u)).prod with hv
     have hpv : ∀ j, p j v = if j ∈ T then p j u else 1 := by
@@ -242,7 +242,7 @@ theorem exists_local_levels_le_open : ∀ {ι Γ : Type} [Group Γ] {Hl : ι →
       obtain ⟨i, hi, rfl⟩ := List.mem_map.mp hx
       have hiT : i ∈ T := Finset.mem_toList.mp hi
       have := hu i
-      simp only [hiT, if_true] at this
+      simp only [hiT, ite_true] at this
       exact this.2
     have hwK : v⁻¹ * u ∈ K := by
       refine (hK _).mpr fun j => ?_

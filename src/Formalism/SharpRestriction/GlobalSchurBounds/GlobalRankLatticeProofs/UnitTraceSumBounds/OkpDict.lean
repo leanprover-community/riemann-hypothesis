@@ -27,6 +27,6 @@ theorem tauKp_apply (x : D.host.K) : tauKp D lam x = lamC lam (D.host.φ₀ (x :
   unfold tauKp lamC
   first
   | (simp [test_vector_mem_schwartz_bruhat]; done)
-  | (rw [dif_pos (test_vector_mem_schwartz_bruhat D _)]; rfl)
+  | (rw [dite_eq_left (test_vector_mem_schwartz_bruhat D _)]; rfl)
 
 end Formalism.MainNotions.Ext

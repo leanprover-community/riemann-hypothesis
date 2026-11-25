@@ -117,7 +117,7 @@ theorem choose_affine (ρ P m : ℕ) : ∃ z : ℕ → ℕ, ∀ β : ℕ,
     intro i hi
     rw [show ((1 + Polynomial.X : Polynomial ℕ) ^ ρ) * (Polynomial.X * Q) ^ i =
         ((1 + Polynomial.X) ^ ρ * Q ^ i) * Polynomial.X ^ i by ring,
-      Polynomial.coeff_mul_X_pow', if_neg (by omega)]
+      Polynomial.coeff_mul_X_pow', ite_eq_right (by omega)]
   have hL : ∀ i, (((1 + Polynomial.X : Polynomial ℕ) ^ ρ) *
       ((Polynomial.X * Q) ^ i * 1 ^ (β - i) * ((β.choose i : ℕ) : Polynomial ℕ))).coeff m =
       (((1 + Polynomial.X : Polynomial ℕ) ^ ρ) * (Polynomial.X * Q) ^ i).coeff m * β.choose i := by

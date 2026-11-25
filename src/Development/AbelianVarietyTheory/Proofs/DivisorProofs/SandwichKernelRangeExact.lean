@@ -344,7 +344,7 @@ theorem ker_bC_eq_range_alC_and_ker_alC_eq_range_bC : ∀ (p : ℕ) [Fact p.Prim
         intro h0; apply hc; simp [h0]
       have hle : v c⁻¹ ≤ 1 := by
         rw [map_inv₀]
-        push_neg at hc
+        push Not at hc
         exact inv_le_one_of_one_le₀ hc.le
       obtain ⟨a, ha⟩ := hv.exists_of_le_one hle
       obtain ⟨s, rfl⟩ := hsurj a

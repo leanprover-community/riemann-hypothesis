@@ -453,8 +453,8 @@ theorem La_lower {N N' : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E
   have hA' : ∀ i j, IsIntegral ℤ (A' i j) := by
     intro i j
     by_cases h : i = i0 ∧ j = j0
-    · simp only [A', if_pos h]; exact (t * b).isIntegral_coe
-    · simp only [A', if_neg h]; exact isIntegral_zero
+    · simp only [A', ite_eq_left h]; exact (t * b).isIntegral_coe
+    · simp only [A', ite_eq_right h]; exact isIntegral_zero
   have hmem : (fun i j => if i = i0 ∧ j = j0 then (M1 : D.host.E) * ((t : D.host.E) * b) else 0 :
       Matrix (Fin N') (Fin N) D.host.E) ∈ YYl D L L' := by
     have e : (fun i j => if i = i0 ∧ j = j0 then (M1 : D.host.E) * ((t : D.host.E) * b) else 0 :

@@ -1117,20 +1117,20 @@ theorem tlat_one_genus : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
   have hkU : ∀ v, k v ∈ UPts cm.sig J (v.adicCompletion F) := by
     intro v
     by_cases hv : loc v L = loc v M
-    · simp only [k, if_pos hv]; exact one_mem _
-    · simp only [k, if_neg hv]; exact hgU v
+    · simp only [k, ite_eq_left hv]; exact one_mem _
+    · simp only [k, ite_eq_right hv]; exact hgU v
   have hfin : {v | k v ≠ 1}.Finite := by
     refine (_root_.GlobalTheory.St.G.loc_eq_almost_all F E n L M hLat hMat).subset ?_
     intro v hv heq
-    exact hv (by simp only [k, if_pos heq])
+    exact hv (by simp only [k, ite_eq_left heq])
   obtain ⟨y, hyU, hy⟩ := _root_.GlobalTheory.St.G.exists_adelic_of_finite_support F E n cm.sig J k hkU hfin
   have hglob : ∀ x, x ∈ hat F L ↔ y.1 *ᵥ x ∈ hat F M := by
     rw [_root_.GlobalTheory.St.G.Carry.carry_iff F E n L M hLat hMat y]
     intro v x
     rw [hy v]
     by_cases hv : loc v L = loc v M
-    · simp only [k, if_pos hv, Units.val_one, Matrix.one_mulVec, hv]
-    · simp only [k, if_neg hv]; exact hg v x
+    · simp only [k, ite_eq_left hv, Units.val_one, Matrix.one_mulVec, hv]
+    · simp only [k, ite_eq_right hv]; exact hg v x
   refine ⟨⟨y, hyU⟩, fun x => ?_⟩
   rw [hglob, Matrix.mulVec_mulVec]
   have hinv : ((⟨y, hyU⟩ : UPts cm.sig J (Ad F))⁻¹).1 = y⁻¹ := rfl

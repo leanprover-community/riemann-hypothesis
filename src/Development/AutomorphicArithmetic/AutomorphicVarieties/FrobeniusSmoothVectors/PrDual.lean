@@ -51,7 +51,7 @@ private theorem thetaLie_single {K : Type} [Field K] {n : ℕ} (i : Fin n) :
   congr 1
   ext a b
   rw [Matrix.mul_apply, Finset.sum_eq_single b.rev, Matrix.mul_apply, Finset.sum_eq_single a.rev]
-  · simp only [Jmat, Matrix.transpose_apply, Matrix.single_apply, Fin.rev_rev, if_true, one_mul, mul_one,
+  · simp only [Jmat, Matrix.transpose_apply, Matrix.single_apply, Fin.rev_rev, ite_true, one_mul, mul_one,
       Fin.rev_inj]
     congr 1
     refine propext ⟨?_, ?_⟩
@@ -80,7 +80,7 @@ theorem UpperTheory.V.Fr.pr_dual :
     congr 1
     have hr : (B.r g).right = 1 := (B.nu g).trans g.2
     show _ = (B.r g).adFun _
-    rw [GG.adFun, if_pos hr, ← hB.res g, GG.mat]
+    rw [GG.adFun, ite_eq_left hr, ← hB.res g, GG.mat]
     simp [Matrix.mul_assoc]
   have h1 : ∀ (g : F.G0) i j, ∑ p, ρ.r g p i * Φ p j = F.om K g * ∑ q, Φ i q * ρ.r g j q := fun g i j => by
     have := h0 g (Matrix.single i j 1)
@@ -105,7 +105,7 @@ theorem UpperTheory.V.Fr.pr_dual :
     have hr : (B.r F.c).right ≠ 1 := by rw [B.nu, ok.del_c]; decide
     have hl : (B.r F.c).left = 1 := Units.ext hB.atc
     show _ = (B.r F.c).adFun _
-    rw [GG.adFun, if_neg hr, GG.mat, hl]
+    rw [GG.adFun, ite_eq_right hr, GG.mat, hl]
     simp
   have key : ∀ i j, (∀ g : F.G0, ρ.r g i i * Φ i j = F.om K g * (Φ i j * ρ.r g j j)) → Φ i j = 0 := by
     intro i j h

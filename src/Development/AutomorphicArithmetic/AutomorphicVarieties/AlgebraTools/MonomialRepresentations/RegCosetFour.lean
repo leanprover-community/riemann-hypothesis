@@ -160,7 +160,7 @@ private theorem separable_quartic_of_dsc_ne_zero {F : Type} [Field F] (b c d e :
     rw [nodup_roots_iff_of_splits (Polynomial.map_ne_zero hf0) hsplit, separable_map]
     exact hns
   rw [Multiset.nodup_iff_count_le_one] at hnd
-  push_neg at hnd
+  push Not at hnd
   obtain ⟨r, hr⟩ := hnd
   rw [count_roots] at hr
   obtain ⟨h0, h1⟩ := (one_lt_rootMultiplicity_iff_isRoot (Polynomial.map_ne_zero hf0)).1 hr

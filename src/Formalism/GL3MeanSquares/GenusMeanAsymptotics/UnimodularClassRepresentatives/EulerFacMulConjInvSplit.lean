@@ -114,7 +114,7 @@ theorem eulerFac_inv_inert (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) 
     (Formalism.HermitianLatticesTheory.eulerFac K M P)⁻¹ =
       1 - (-1 : ℝ) ^ M * Real.sqrt (Ideal.absNorm P : ℝ) ^ (-(M : ℤ)) := by
   unfold Formalism.HermitianLatticesTheory.eulerFac
-  rw [if_pos hc, inv_inv]
+  rw [ite_eq_left hc, inv_inv]
 
 theorem eulerFac_mul_conj_inv_split (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {P : Ideal (𝓞 K)}
     (hP : P.IsMaximal) (hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P ≠ P) (M : ℕ) (hM : 1 ≤ M) :
@@ -126,7 +126,7 @@ theorem eulerFac_mul_conj_inv_split (hK : Formalism.HermitianLatticesTheory.IsCM
   have hx : 0 < 1 - (Ideal.absNorm P : ℝ) ^ (-(M : ℤ)) :=
     sub_pos.mpr (zpow_neg_lt_one (one_lt_absNorm hP) hM)
   unfold Formalism.HermitianLatticesTheory.eulerFac
-  rw [if_neg hc, if_neg hc', absNorm_conjIdeal hK, ← Real.rpow_add hx]
+  rw [ite_eq_right hc, ite_eq_right hc', absNorm_conjIdeal hK, ← Real.rpow_add hx]
   norm_num [Real.rpow_neg_one]
 
 theorem multipliable_eulerFac (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM : 2 ≤ M) :

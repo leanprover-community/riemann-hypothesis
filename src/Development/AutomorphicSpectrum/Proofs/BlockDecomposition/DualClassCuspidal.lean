@@ -42,7 +42,7 @@ theorem dualCl_isCusp (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x :
   have hadm : IsAdmissible x.rep := hA k x.1 _ x.rep x.2.rep.smooth x.2.rep.irr
   have hG := GlobalTheory.SqIntUnit.compactOpen_basis k x.1
   have hirr : (contra x.rep).IsIrreducible := GlobalTheory.ContraRefl.contra_isIrreducible hG hadm x.2.rep.irr
-  have hd : dualCl x = IrrGL.of (contra x.rep) (isSmooth_smoothRep _) hirr := dif_pos hirr
+  have hd : dualCl x = IrrGL.of (contra x.rep) (isSmooth_smoothRep _) hirr := dite_eq_left hirr
   rw [hd]
   refine ⟨IrrGL.isCusp_of.2 ⟨hx.1, ?_⟩, rfl⟩
   exact GlobalTheory.SuperCusp.isCuspidal_of_isSupercuspidal k x.1 _ _

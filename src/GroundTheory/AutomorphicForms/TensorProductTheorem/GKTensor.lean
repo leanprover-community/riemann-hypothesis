@@ -418,7 +418,7 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
   set Tp : Bool → Set (End ℂ W) := fun i => if i then range T₁ else range T₂
   have hcommTp : ∀ i j, i ≠ j → ∀ s ∈ Tp i, ∀ t ∈ Tp j, Commute s t := by
     intro i j hij s hs t ht
-    cases i <;> cases j <;> simp only [Tp, if_true] at hs ht
+    cases i <;> cases j <;> simp only [Tp, ite_true] at hs ht
     · exact absurd rfl hij
     · obtain ⟨b, rfl⟩ := hs
       obtain ⟨a, rfl⟩ := ht
@@ -593,13 +593,13 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
     exact this
   have hN₁min : ∀ N' : Submodule ℂ V, N' ≤ N₁ → N' ≠ ⊥ → (∀ a, ∀ x ∈ N', e₁ (ρ₁ a x) ∈ N') →
       N' = N₁ := fun N' hle hne' hst => hmin true N' (fun t ht w hw => by
-        simp only [Tp, if_true] at ht
+        simp only [Tp, ite_true] at ht
         obtain ⟨a, rfl⟩ := ht
         rw [hT₁]
         exact hst a w hw) hle hne'
   have hN₂min : ∀ N' : Submodule ℂ V, N' ≤ N₂ → N' ≠ ⊥ → (∀ b, ∀ x ∈ N', e₂ (ρ₂ b x) ∈ N') →
       N' = N₂ := fun N' hle hne' hst => hmin false N' (fun t ht w hw => by
-        simp only [Tp, if_false, Bool.false_eq_true] at ht
+        simp only [Tp, ite_false, Bool.false_eq_true] at ht
         obtain ⟨b, rfl⟩ := ht
         rw [hT₂]
         exact hst b w hw) hle hne'

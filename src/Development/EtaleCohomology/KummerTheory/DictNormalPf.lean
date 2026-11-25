@@ -81,7 +81,7 @@ theorem DictNormal_of (hM : NrmMk) (hD : NrmDelta) : DictNormal := by
     ·
       have hp1 : Odd (p + 1) := hp.add_one
       have hp0 : ¬ Odd p := Nat.not_odd_iff_even.mpr hp
-      simp only [hp1, hp0, if_true, if_false, smul_zero, Finset.sum_const_zero, add_zero]
+      simp only [hp1, hp0, ite_true, ite_false, smul_zero, Finset.sum_const_zero, add_zero]
       have hc := hD R (n := n) (m := n + 1) rfl α.1 U (p + 1) (s - 1) s (by push_cast at h ⊢; omega)
         (by push_cast at h ⊢; omega) (up y)
       rw [hα, ev_zero'] at hc
@@ -89,7 +89,7 @@ theorem DictNormal_of (hM : NrmMk) (hD : NrmDelta) : DictNormal := by
       rw [← Finset.sum_smul, altsum] at hc
       have he : ¬ Even (p + 1 + 2) := by
         rw [Nat.not_even_iff_odd]; exact hp1.add_even even_two
-      simp only [he, if_false, one_smul] at hc
+      simp only [he, ite_false, one_smul] at hc
       rw [Int.negOnePow_succ, Units.neg_smul] at hc
       have key := add_neg_eq_zero.1 hc.symm
       rw [Units.smul_def]
@@ -99,11 +99,11 @@ theorem DictNormal_of (hM : NrmMk) (hD : NrmDelta) : DictNormal := by
       rw [← Units.smul_def, smul_smul, Int.units_mul_self, one_smul]
       rfl
     · have hp1 : ¬ Odd (p + 1) := Nat.not_odd_iff_even.mpr hp.add_one
-      simp only [hp1, hp, if_true, if_false, map_zero, zero_add]
+      simp only [hp1, hp, ite_true, ite_false, map_zero, zero_add]
       rw [← Finset.sum_smul, altsum]
       have he : ¬ Even (p + 2) := by
         rw [Nat.not_even_iff_odd]; exact hp.add_even even_two
-      simp only [he, if_false, one_smul, smul_smul, Int.units_mul_self]
+      simp only [he, ite_false, one_smul, smul_smul, Int.units_mul_self]
       rfl
 
 end LateralTheory.KummerTheory

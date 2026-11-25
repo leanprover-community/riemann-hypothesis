@@ -621,7 +621,7 @@ theorem chars_descend : ∀ (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+*
         Units.map (i : Ω →* Ω') (χ c) = e' y' a := by
       intro c hc a ha hac
       obtain ⟨a₁, -, hrel, hu⟩ := (hpart c hc).choose_spec
-      have : χ c = (hpart c hc).choose := dif_pos hc
+      have : χ c = (hpart c hc).choose := dite_eq_left hc
       rw [this, hu, hinjA _ _ _ hrel hac]
     obtain ⟨y, hy, hye⟩ := eperf χ (by
       intro g g' hg hg'
@@ -643,7 +643,7 @@ theorem chars_descend : ∀ (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+*
     have hχ : ∀ a : A, a ^ n = 1 → ∀ c : C, rel a c →
         χ a = Units.map (i : Ω →* Ω') (e y c) := by
       intro a ha c hac
-      have : χ a = Units.map (i : Ω →* Ω') (e y (hpart a ha).choose) := dif_pos ha
+      have : χ a = Units.map (i : Ω →* Ω') (e y (hpart a ha).choose) := dite_eq_left ha
       rw [this, hinjC _ _ _ (hpart a ha).choose_spec.2 hac]
     obtain ⟨y', hy', hye⟩ := e'perf χ (by
       intro g g' hg hg'

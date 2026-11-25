@@ -99,7 +99,7 @@ theorem linIndep : (∀ (k : Type) [Field k] (Φ : FibPre k) (N : ℕ) (q : Quad
     (fun i => if ∃ m, cls i₀ = cls i + N • m then a i else 0)
     (fun i hi => by
       by_contra h
-      exact hi (if_neg h))
+      exact hi (ite_eq_right h))
     (fun l => by
       have h := weight_sum Φ F a (cls i₀) l
       rw [ha l] at h
@@ -112,7 +112,7 @@ theorem linIndep : (∀ (k : Type) [Field k] (Φ : FibPre k) (N : ℕ) (q : Quad
           exact hi (hG.supp i _ ⟨l, hne⟩).2
         rw [h0, mul_zero, mul_zero])
   have := congrFun key i₀
-  rwa [if_pos ⟨0, by simp⟩] at this
+  rwa [ite_eq_left ⟨0, by simp⟩] at this
 
 end GlobalTheory.ZH.WtLin
 end

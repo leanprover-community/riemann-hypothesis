@@ -280,7 +280,7 @@ theorem bord_mul_sM {a : ℕ} (G : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) (π
     · have : z ≠ π i := fun h => hi ((hπz' i).1 h.symm)
       simp [this, hi]
   · rw [Finset.sum_eq_single (π i) (fun x _ hx => by simp [hx]) (by simp)]
-    simp only [hπ i, hπz', if_true]
+    simp only [hπ i, hπz', ite_true]
     rcases eq_or_ne i z with rfl | hi
     · by_cases hj : j = i
       · simp [hj]
@@ -471,7 +471,7 @@ theorem isoW_gen {a : ℕ} (Y : TupV (E := E) v n a) (z : Fin a) (γ : Fv F v)
   have hbO : b ∈ OEv (E := E) v := PI.OmLocU.hR_mem_oEv σ J v Λ hSD hw0L hw0L
   obtain ⟨β, hβ, hbβ⟩ := PI.OmLocU.NormOneUnitFixedPoints.fix_int_sc σ v hcm hbO (hconj w0 w0)
   have h1 : hR (Fv F v) σ J w0 y = 1 + (-g) * b := by
-    rw [hy, _root_.PI.OmLocU.UnN.hR_add_right', hSmulR, hw0X, if_pos rfl]
+    rw [hy, _root_.PI.OmLocU.UnN.hR_add_right', hSmulR, hw0X, ite_eq_left rfl]
   have h2 : hR (Fv F v) σ J y w0 = 1 + (-g) * b := by
     rw [← hconj, h1, map_add (f := _), map_one, map_mul, map_neg, hg, hsc, hconj]
   have h3 : hR (Fv F v) σ J y y = (-g) * (1 + (-g) * b) := by
@@ -553,7 +553,7 @@ theorem inclR_apply' (v : PlX X) :
     inclR (F := X.B.I.F) (Fv X.B.I.F v) (cD X u' (zi (D := D))) =
       sc (E := X.B.I.E) v (-((Tw u' : ℕ) : Fv X.B.I.F v)) := by
   have h : (zi (D := D)).val = D.R.rS := zi_val'
-  simp only [cD, h, if_true, map_neg, map_natCast, PI.OmLocU.NormOneUnitFixedPoints.sc_eq]
+  simp only [cD, h, ite_true, map_neg, map_natCast, PI.OmLocU.NormOneUnitFixedPoints.sc_eq]
 
 theorem gam_int (v : PlX X) : -((Tw u' : ℕ) : Fv X.B.I.F v) ∈ v.adicCompletionIntegers X.B.I.F := by
   have h := Formalism.L2.SG.Pf.NcVal.AriEta.val_int v ((Tw u' : ℕ) : 𝓞 X.B.I.F)
@@ -585,13 +585,13 @@ theorem isoW_holds (v : PlX X) (hv : ((Tw u' : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdea
   have hd : ∀ i, i ≠ zi (D := D) → inclR (F := X.B.I.F) (Fv X.B.I.F v) (cD X u' i) = 1 := by
     intro i hi
     have : ¬ i.val = D.R.rS := fun h => hi ((zi_iff i).1 h)
-    simp only [cD, this, if_false, map_one]
+    simp only [cD, this, ite_false, map_one]
   refine isoW_gen X.B.I.cm.sig X.B.I.J ψ v (abelian₂ X) (yTup X u' v) (zi (D := D)) γ hγO (gam_lt X u' v hv)
     (fun i => ?_) (primDual_of_left _ _ _ _ _ _ (leftInvO_holds _ _ _ _ _)) ?_
   · rw [gram_yTup]
     by_cases hi : i = zi (D := D)
-    · rw [if_pos ((hpe i).2 hi), if_pos hi, hi, inclR_apply']
-    · rw [if_neg (fun h => hi ((hpe i).1 h)), if_neg hi]
+    · rw [ite_eq_left ((hpe i).2 hi), ite_eq_left hi, hi, inclR_apply']
+    · rw [ite_eq_right (fun h => hi ((hpe i).1 h)), ite_eq_right hi]
   · refine ⟨sM v (piv D.R.rS) (zi (D := D)) (sc (E := X.B.I.E) v γ), fun i j => ?_,
       bord_mul_sM v _ (piv D.R.rS) (piv_invol D.R.rS) (zi (D := D)) hpz _
         (fun i => inclR (F := X.B.I.F) (Fv X.B.I.F v) (cD X u' i)) hd (inclR_apply' X u' v) (gram_yTup X u' v)⟩

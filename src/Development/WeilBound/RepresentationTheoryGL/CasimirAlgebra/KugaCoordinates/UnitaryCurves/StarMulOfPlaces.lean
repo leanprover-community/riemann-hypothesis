@@ -159,12 +159,12 @@ theorem exists_curve (τ : E →+* ℂ) (X : Matrix (Fin a) (Fin a) ℂ) (hX : X
       simp only [C, D, Matrix.of_apply, ← hv, ↓reduceIte]
     rw [e]
     by_cases hε : v.embedding = τ
-    · simp only [hε, if_true]
+    · simp only [hε, ite_true]
       have := hUd i j
       simpa [hYd, hε] using this
-    · simp only [hε, if_false]
+    · simp only [hε, ite_false]
       have := (hUd i j).star
-      simp only [hYd, hε, if_false, Matrix.map_apply] at this
+      simp only [hYd, hε, ite_false, Matrix.map_apply] at this
       simpa [Complex.star_def] using this
   · intro τ' h1 h2 t
     have hw : InfinitePlace.mk τ' ≠ v := by
@@ -179,17 +179,17 @@ theorem exists_curve (τ : E →+* ℂ) (X : Matrix (Fin a) (Fin a) ℂ) (hX : X
     ext i j
     show coord τ' (C t i j) = (1 : Matrix (Fin a) (Fin a) ℂ) i j
     rw [PositivityTheory.Rg.Cz.J.coord_eq]
-    simp only [C, D, Matrix.of_apply, if_neg hw, Matrix.one_apply]
+    simp only [C, D, Matrix.of_apply, ite_eq_right hw, Matrix.one_apply]
     split_ifs <;> simp
   · rw [hasDerivAt_pi]; intro i; rw [hasDerivAt_pi]; intro j; rw [hasDerivAt_pi]; intro w
     simp only [atEmb_apply, ← hv]
     show HasDerivAt (fun t => D t w i j) _ 0
     by_cases hw : w = v
-    · simp only [D, hw, if_true]
+    · simp only [D, hw, ite_true]
       have := hUd i j
       rw [hYd] at this
       split_ifs at this ⊢ <;> simpa using this
-    · simp only [D, hw, if_false]
+    · simp only [D, hw, ite_false]
       exact hasDerivAt_const _ _
 
 theorem lieOp_atEmb (π : CuspSub E a) (τ : E →+* ℂ) (X : Matrix (Fin a) (Fin a) ℂ) :

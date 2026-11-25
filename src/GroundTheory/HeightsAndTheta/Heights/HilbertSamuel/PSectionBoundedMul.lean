@@ -45,9 +45,9 @@ theorem sum_single_apply (k' : K) (j : ι k') (b : ℕ) (k : K) :
   by_cases h : k' = k
   · subst h
     simp [Finsupp.single_apply]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro he
     exact h (Sigma.mk.inj_iff.mp he).1
 
@@ -92,7 +92,7 @@ theorem exists_form_of_mem_chartRingZ (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k
       rwa [← X] at h
     · have h1 : ∏ k, y ⟨k, c k⟩ ^ (∑ i, (Finsupp.single (⟨k₀, j⟩ : Σ k, ι k) 1) ⟨k, i⟩) = y ⟨k₀, c k₀⟩ := by
         simp only [sum_single_apply]
-        rw [Finset.prod_eq_single k₀ (fun k _ hk => by rw [if_neg (Ne.symm hk), pow_zero])
+        rw [Finset.prod_eq_single k₀ (fun k _ hk => by rw [ite_eq_right (Ne.symm hk), pow_zero])
           (fun h => absurd (Finset.mem_univ _) h)]
         simp
       rw [aeval_X, h1, div_mul_cancel₀ _ (hc k₀)]

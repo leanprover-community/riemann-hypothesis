@@ -203,7 +203,7 @@ theorem map_mono_eq_zero {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W 
   have hout : ∀ mu, mu ∉ H → φ (mono W (Φ.t y) (Φ.δ y) mu) = 0 := by
     intro mu hmu
     rw [hmemH] at hmu
-    push_neg at hmu
+    push Not at hmu
     obtain ⟨k, hk, hk'⟩ := hmu
     rw [hφmono]
     apply Finset.prod_eq_zero (Finset.mem_univ k)
@@ -381,7 +381,7 @@ theorem mono_mem_radical : ∀ (O : Type) [CommRing O] (bar : O → O) (q s : �
   intro O _ bar q s W A _ _ Φ N₁ hN hE y nu hnu
   by_contra hno
   rw [Ideal.radical_eq_sInf, Submodule.mem_sInf] at hno
-  push_neg at hno
+  push Not at hno
   obtain ⟨p, ⟨hJp, hp⟩, hmp⟩ := hno
   have hs : ∀ k a b, Φ.δ y k a b = Φ.δ y k b a := fun k => (Φ.bal y k).1
   by_cases hpm : p = IsLocalRing.maximalIdeal (Φ.V y)
@@ -474,10 +474,10 @@ theorem pow_mem_of_radical {V : Type} [CommRing V] (J : Ideal V) {m : ℕ} (t : 
         rw [← pow_mul]
         refine pow_dvd_pow _ ?_
         by_cases h : 0 < a ν k
-        · simp only [pat, h, decide_true, if_true, Nat.one_mul]
+        · simp only [pat, h, decide_true, ite_true, Nat.one_mul]
           exact Finset.single_le_sum (f := a ν) (fun _ _ => Nat.zero_le _) (Finset.mem_univ k)
         · simp only [pat, h, decide_false]
-          simp only [Bool.false_eq_true, if_false, Nat.zero_mul]
+          simp only [Bool.false_eq_true, ite_false, Nat.zero_mul]
           omega
       obtain ⟨c, hc⟩ := hK
       have h1 : P (pat ν) ^ (∑ k, a ν k) ∈ J.radical := by

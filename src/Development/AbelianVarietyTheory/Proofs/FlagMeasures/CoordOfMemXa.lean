@@ -321,11 +321,11 @@ theorem inN_of_nset (h : IsReal H k r σ Φ) (ht : ∀ a, t a ≠ 0)
       exact this
     rw [phi_sub h, LinearEquiv.coe_coe, ← hm, Pi.sub_apply, sub_eq_zero, mulVec, dotProduct, Finset.sum_eq_single i]
     · by_cases hi2 : i.val ≤ r + k
-      · rw [hc i i hi2 (Or.inr hi), if_pos rfl, one_mul]
+      · rw [hc i i hi2 (Or.inr hi), ite_eq_left rfl, one_mul]
       · rw [hz i (by omega), mul_zero]
     · intro j _ hj
       by_cases hj2 : j.val ≤ r + k
-      · rw [hc i j hj2 (Or.inr hi), if_neg hj.symm, zero_mul]
+      · rw [hc i j hj2 (Or.inr hi), ite_eq_right hj.symm, zero_mul]
       · rw [hz j (by omega), mul_zero]
     · simp
 

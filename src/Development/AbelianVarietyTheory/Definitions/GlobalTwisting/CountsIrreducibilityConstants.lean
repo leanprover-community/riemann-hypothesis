@@ -117,12 +117,6 @@ structure RowsAt4 (Q : Formalism.IndefR.RealT Rc P Dcf Spf Zscf S Ks) (C CH : â„
 
 end At
 
-section Serv
-
-open Formalism.MainNotions.Pk Formalism.L2
-
-end Serv
-
 end GlobalTheory.Cp
 
 namespace GlobalTheory.Fc.R1

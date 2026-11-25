@@ -84,7 +84,7 @@ theorem rc_cong (hθ : IsSplitEquiv X p θ) (hε : θ (epsP X p) = (1, 0)) (hL :
     rw [e]
     by_cases hij : i = j
     · subst hij
-      simp only [if_true]
+      simp only [ite_true]
       have : PI.FinKW.psiV X.B.I p.1 X.ew = epsP X p := rfl
       rw [this, hε]
       simp

@@ -391,9 +391,9 @@ theorem first_basis_vector_isRadial (P : M.Par) (p : KB.Pl P Wp Wq) (G : B.Mat P
     Top.IsRadOf P p.T.base (Top.firstStateVector ΦG e) (if e = Wd.e1 then G else 0) := by
   intro x hx
   by_cases he : e = Wd.e1
-  · rw [show Top.firstStateVector ΦG e = ΦG from if_pos he, if_pos he]
+  · rw [show Top.firstStateVector ΦG e = ΦG from ite_eq_left he, ite_eq_left he]
     exact hΦG x hx
-  · rw [show Top.firstStateVector ΦG e = 0 from if_neg he, if_neg he]
+  · rw [show Top.firstStateVector ΦG e = 0 from ite_eq_right he, ite_eq_right he]
     have hz : B.JF p.T.base (0 : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) = fun _ => 0 :=
       funext fun g => Formalism.FourierDecayAlt.P.JCx2.bc_JF_zero (Bs := p.T.base) g
     rw [hz]
@@ -452,7 +452,7 @@ theorem level_zero_picture_of_slice : PBI.PicSlice := by
     simp [h1]
   have hL : P5.act (P5.bTall L (D.positionted ([] : List C.Letter))) (Top.firstStateVector ΦG) (fun _ => 0) = ΦG := by
     rw [hb0]
-    exact (congrFun (Formalism.FourierDecayAlt.P.PBF.polyAction_one₂ (Top.firstStateVector ΦG)) _).trans (if_pos rfl)
+    exact (congrFun (Formalism.FourierDecayAlt.P.PBF.polyAction_one₂ (Top.firstStateVector ΦG)) _).trans (ite_eq_left rfl)
   exact (congrArg (fun Φ : Q.RadSp P.k P.r p.T.base.z p.T.base.z' p.T.base.π p.T.base.π' =>
     (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c (D.castM (by omega) (ιLev P.k P.r (P.r - P.r) g))) hL).symm.trans key
 

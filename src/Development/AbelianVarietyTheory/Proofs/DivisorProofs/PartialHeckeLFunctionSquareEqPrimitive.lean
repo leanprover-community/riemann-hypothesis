@@ -90,7 +90,7 @@ theorem heckeL_eq_of_ram {K : Type} [Field K] [NumberField K] {χ : HChar K} {S 
       GlobalTheory.CMVal.eulerFactor χ s :=
     Set.mulIndicator_eq_self.2 fun w hw => by
       by_contra h
-      exact hw (if_neg (hr w (not_not.1 h)))
+      exact hw (ite_eq_right (hr w (not_not.1 h)))
   have h := (hasProd_subtype_iff_mulIndicator (s := {w | w ∉ S}) (f := GlobalTheory.CMVal.eulerFactor χ s)).2
     (by rw [e]; exact hΛ.2 s hs)
   unfold GlobalTheory.LFun.heckeL GlobalTheory.LFun.eulerProd

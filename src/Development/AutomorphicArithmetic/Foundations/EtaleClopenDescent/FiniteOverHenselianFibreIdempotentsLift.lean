@@ -50,11 +50,9 @@ private lemma restr_ex (B : Subalgebra A K) (t : K) (S : Subalgebra A K) (hS : S
     ∃ q : PrimeSpectrum (S ⧸ mI A S), Restr B t Q S (PrimeSpectrum.comap (Ideal.Quotient.mk _) q) ∧
       ∀ s : S, s ∈ (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S)) q).asIdeal ↔
         Subalgebra.inclusion hS s ∈ Q.asIdeal := by
-  have hcomp : (Subalgebra.inclusion hS).toRingHom.comp (algebraMap A S) = algebraMap A (AdjoinInv B t) :=
-    RingHom.ext fun _ => Subtype.ext rfl
   have hle : mI A S ≤ (PrimeSpectrum.comap (Subalgebra.inclusion hS).toRingHom Q).asIdeal := by
     show Ideal.map _ _ ≤ Ideal.comap _ Q.asIdeal
-    rw [Ideal.map_le_iff_le_comap, Ideal.comap_comap, hcomp, ← Ideal.map_le_iff_le_comap]
+    rw [Ideal.map_le_iff_le_comap, Ideal.comap_comap, AlgHom.toRingHom_eq_coe, AlgHom.comp_algebraMap, ← Ideal.map_le_iff_le_comap]
     exact hQ
   have ⟨q, hq⟩ : PrimeSpectrum.comap (Subalgebra.inclusion hS).toRingHom Q ∈
       Set.range (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S))) := by
@@ -90,98 +88,33 @@ private lemma pair_of_maps (B C : Subalgebra A K) (t : K) (hc : Charts B C t) {F
   have hCD : C ≤ AdjoinInv B t := by
     rw [hc.glue]
     exact fun c hc' => Algebra.subset_adjoin (Or.inl hc')
-  have hmap : ∀ (S : Subalgebra A K) (h : S ≤ AdjoinInv B t) (s : S), s ∈ mI A S →
-      Subalgebra.inclusion h s ∈ mI A (AdjoinInv B t) := by
-    intro S h s hs
-    have hcomp : (Subalgebra.inclusion h).toRingHom.comp (algebraMap A S) = algebraMap A (AdjoinInv B t) :=
-      RingHom.ext fun _ => Subtype.ext rfl
-    have h' := Ideal.mem_map_of_mem (Subalgebra.inclusion h).toRingHom hs
-    rw [Ideal.map_map, hcomp] at h'
+  have idem : ∀ (S : Subalgebra A K) (h : S ≤ AdjoinInv B t) (e : S), e * e - e ∈ mI A S →
+      IsIdempotentElem (Ideal.Quotient.mk (mI A (AdjoinInv B t)) (Subalgebra.inclusion h e)) := by
+    intro S h e he
+    have h' := Ideal.mem_map_of_mem (Subalgebra.inclusion h : S →+* AdjoinInv B t) he
+    rw [Ideal.map_map, AlgHom.comp_algebraMap, map_sub, map_mul] at h'
+    rw [IsIdempotentElem, ← map_mul, Ideal.Quotient.eq]
     exact h'
   have inn : ∀ {S : Subalgebra A K} (e : S) (q : PrimeSpectrum (S ⧸ mI A S)), e ∈ mI A S →
-      e ∈ (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S)) q).asIdeal := by
-    intro S e q he
-    show Ideal.Quotient.mk (mI A S) e ∈ q.asIdeal
-    rw [Ideal.Quotient.eq_zero_iff_mem.2 he]
-    exact q.asIdeal.zero_mem
+      e ∈ (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S)) q).asIdeal := fun e q he => by
+    simp [Ideal.Quotient.eq_zero_iff_mem.2 he]
   have notin : ∀ {S : Subalgebra A K} (e : S) (q : PrimeSpectrum (S ⧸ mI A S)), e - 1 ∈ mI A S →
-      e ∉ (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S)) q).asIdeal := by
-    intro S e q he hq
-    apply q.isPrime.ne_top
-    rw [Ideal.eq_top_iff_one]
-    have h0 : Ideal.Quotient.mk (mI A S) (e - 1) = 0 := Ideal.Quotient.eq_zero_iff_mem.2 he
-    rw [map_sub, map_one, sub_eq_zero] at h0
-    rw [← h0]
-    exact hq
+      e ∉ (PrimeSpectrum.comap (Ideal.Quotient.mk (mI A S)) q).asIdeal := fun e q he hq =>
+    q.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (by simpa using sub_mem hq (inn (e - 1) q he)))
   set a : AdjoinInv B t := Subalgebra.inclusion hBD eB with ha_def
   set b : AdjoinInv B t := Subalgebra.inclusion hCD eC with hb_def
-  have ha : a * a - a ∈ mI A (AdjoinInv B t) := by
-    have h' := hmap B hBD _ heB
-    rw [map_sub, map_mul] at h'
-    exact h'
-  have hb : b * b - b ∈ mI A (AdjoinInv B t) := by
-    have h' := hmap C hCD _ heC
-    rw [map_sub, map_mul] at h'
-    exact h'
-  have hrad : a - b ∈ (mI A (AdjoinInv B t)).radical := by
-    rw [Ideal.radical_eq_sInf, Submodule.mem_sInf]
-    rintro P ⟨hPle, hP⟩
-    let Q : PrimeSpectrum (AdjoinInv B t) := ⟨P, hP⟩
-    obtain ⟨qB, hRB, hmB⟩ := restr_ex B t B hBD Q hPle
-    obtain ⟨qC, hRC, hmC⟩ := restr_ex B t C hCD Q hPle
-    have hg := hov qB qC Q hRB hRC
-    have e1 : a ∈ P ↔ b ∈ P := by
-      have h1 := hWB qB
-      have h2 := hWC qC
-      rw [hg, hmB] at h1
-      rw [hmC] at h2
-      exact not_iff_not.mp (h1.symm.trans h2)
-    have ha' : a * (1 - a) ∈ P := by
-      have e : a * (1 - a) = -(a * a - a) := by ring
-      rw [e]
-      exact P.neg_mem (hPle ha)
-    have hb' : b * (1 - b) ∈ P := by
-      have e : b * (1 - b) = -(b * b - b) := by ring
-      rw [e]
-      exact P.neg_mem (hPle hb)
-    rcases hP.mem_or_mem ha' with h | h
-    · exact P.sub_mem h (e1.1 h)
-    · have hb1 : 1 - b ∈ P := by
-        rcases hP.mem_or_mem hb' with h2 | h2
-        · exfalso
-          apply hP.ne_top
-          rw [Ideal.eq_top_iff_one]
-          have h3 := P.add_mem (e1.2 h2) h
-          rwa [add_sub_cancel] at h3
-        · exact h2
-      have e : a - b = (1 - b) - (1 - a) := by ring
-      rw [e]
-      exact P.sub_mem hb1 h
   have hmem : a - b ∈ mI A (AdjoinInv B t) := by
-    obtain ⟨n, hn⟩ := hrad
-    set x := Ideal.Quotient.mk (mI A (AdjoinInv B t)) a
-    set y := Ideal.Quotient.mk (mI A (AdjoinInv B t)) b
-    have hx : x * x = x := by
-      rw [← sub_eq_zero, ← map_mul, ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
-      exact ha
-    have hy : y * y = y := by
-      rw [← sub_eq_zero, ← map_mul, ← map_sub, Ideal.Quotient.eq_zero_iff_mem]
-      exact hb
-    have h3 : (x - y) ^ 3 = x - y := by
-      linear_combination (x + 1 - 3 * y) * hx + (3 * x - y - 1) * hy
-    have hodd : ∀ k : ℕ, (x - y) ^ (2 * k + 1) = x - y := by
-      intro k
-      induction k with
-      | zero => simp
-      | succ k ih =>
-        rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by ring, pow_add, ih, ← pow_succ', h3]
-    have hzero : (x - y) ^ n = 0 := by
-      rw [← map_sub, ← map_pow, Ideal.Quotient.eq_zero_iff_mem]
-      exact hn
-    have hv : x - y = 0 := by
-      rw [← hodd n, show 2 * n + 1 = n + (n + 1) by ring, pow_add, hzero, zero_mul]
-    rw [← map_sub, Ideal.Quotient.eq_zero_iff_mem] at hv
-    exact hv
+    refine Ideal.Quotient.eq.1 (PrimeSpectrum.basicOpen_injOn_isIdempotentElem (idem B hBD eB heB) (idem C hCD eC heC) ?_)
+    ext Q
+    let P := PrimeSpectrum.comap (Ideal.Quotient.mk (mI A (AdjoinInv B t))) Q
+    have hPle : mI A (AdjoinInv B t) ≤ P.asIdeal := fun d hd => inn d Q hd
+    obtain ⟨qB, hRB, hmB⟩ := restr_ex B t B hBD P hPle
+    obtain ⟨qC, hRC, hmC⟩ := restr_ex B t C hCD P hPle
+    have h1 := hWB qB
+    have h2 := hWC qC
+    rw [hov qB qC P hRB hRC, hmB] at h1
+    rw [hmC] at h2
+    exact h1.symm.trans h2
   refine ⟨(eB : K), (eC : K), ⟨eB.2, eC.2, ?_, ?_, ?_⟩, ?_, ?_⟩
   · exact (mem_mS_iff B (eB * eB - eB)).2 heB
   · exact (mem_mS_iff C (eC * eC - eC)).2 heC

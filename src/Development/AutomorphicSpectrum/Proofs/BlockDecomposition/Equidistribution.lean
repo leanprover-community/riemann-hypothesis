@@ -76,7 +76,7 @@ theorem exists_pow_mul (v : HeightOneSpectrum (𝓞 F)) {D : Ideal (𝓞 F)} (hD
     rcases Nat.eq_zero_or_pos (Nat.find hex) with h0 | hpos
     · simp [h0]
     · have h1 := Nat.find_min hex (Nat.sub_lt hpos Nat.one_pos)
-      push_neg at h1
+      push Not at h1
       have e : Nat.find hex - 1 + 1 = Nat.find hex := by omega
       rwa [e] at h1
   obtain ⟨B, hB⟩ := Ideal.dvd_iff_le.mpr hle
@@ -1437,8 +1437,8 @@ theorem pointwise (v : HeightOneSpectrum (𝓞 F)) (ι : Type) [Fintype ι] (k :
       by_cases hne : c' = c
       · subst hne
         simp [boxInd, hcy]
-      · rw [if_neg hne]
-        refine if_neg fun h' => hne (hdisj c' hc' c hc fun i => ?_)
+      · rw [ite_eq_right hne]
+        refine ite_eq_right fun h' => hne (hdisj c' hc' c hc fun i => ?_)
         simpa using add_mem_ball v k (hcy i) (neg_mem_ball v k (h' i))
     have s1 : ∑ c' ∈ C, ψ c' * boxInd v k c' y = ψ c := by
       rw [Finset.sum_congr rfl fun c' hc' => by rw [key c' hc']]
@@ -1450,7 +1450,7 @@ theorem pointwise (v : HeightOneSpectrum (𝓞 F)) (ι : Type) [Fintype ι] (k :
     exact hunif y c hcy
   · have hz : ∀ c ∈ C, boxInd v k c y = 0 := by
       intro c hc
-      exact if_neg fun h' => h ⟨c, hc, h'⟩
+      exact ite_eq_right fun h' => h ⟨c, hc, h'⟩
     have hy : ψ y = 0 := by
       by_contra h0
       exact h (hcov y h0)
@@ -1479,7 +1479,7 @@ theorem boxInd_eq (v : HeightOneSpectrum (𝓞 F)) {ι : Type} (k : ℕ) (c : ι
   · rw [Set.indicator_of_mem ((mem_boxS v k c y).2 h)]
     simp [boxInd, h]
   · rw [Set.indicator_of_notMem (fun h' => h ((mem_boxS v k c y).1 h'))]
-    exact if_neg h
+    exact ite_eq_right h
 
 theorem real_boxS {v : HeightOneSpectrum (𝓞 F)} {lam : Measure (Fv F v)} (hstd : IsStdV v lam)
     {ι : Type} [Fintype ι] (k : ℕ) (c : ι → Fv F v) :
@@ -1693,7 +1693,7 @@ theorem indicator_box {ι : Type} {A A' : Set (ι → F)} {v : HeightOneSpectrum
     · have hA' : x ∉ A' := fun e => hA ((h x).2 e).1
       simp [Set.indicator, hA, hA']
   · have hA' : x ∉ A' := fun e => hb ((h x).2 e).2
-    have hz : boxInd v k c (yV v x) = 0 := by simp only [boxInd, yV]; rw [if_neg hb]
+    have hz : boxInd v k c (yV v x) = 0 := by simp only [boxInd, yV]; rw [ite_eq_right hb]
     simp [Set.indicator, hA', hz]
 
 theorem est {ι : Type} (θ : ℝ →+* Ainf F) {S : Finset (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S)

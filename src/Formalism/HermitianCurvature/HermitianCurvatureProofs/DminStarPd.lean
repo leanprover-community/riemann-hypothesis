@@ -49,7 +49,7 @@ lemma ubl_monoM (D : RealPlaceData k r Wp Wq) (L : Finset (Fin (r + 2))) (a b : 
           (fun g hg => by rw [Complex.star_def, Complex.normSq_conj]; exact hSD g hg l hl) (b l) n)
           le_rfl hl'
       exact ubl_mul hSG h1 h2
-    · push_neg at hl
+    · push Not at hl
       obtain ⟨ha, hb⟩ := hab l hl.1 hl.2
       have e : (fun g => (Dmin k r D.z D.z' g l)⁻¹ ^ a l * (star (Dmin k r D.z D.z' g l))⁻¹ ^ b l) =
           fun _ => (1 : ℂ) := by

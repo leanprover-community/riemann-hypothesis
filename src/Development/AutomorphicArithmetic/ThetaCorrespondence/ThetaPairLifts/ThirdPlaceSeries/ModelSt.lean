@@ -567,7 +567,7 @@ theorem pow_apply_eq_zero_of_strict {K : Type} [CommRing K] {n : ℕ} (S : Matri
   induction m with
   | zero =>
     intro a b h
-    rw [pow_zero, Matrix.one_apply, if_neg]
+    rw [pow_zero, Matrix.one_apply, ite_eq_right]
     intro hab
     rw [hab] at h
     omega
@@ -1265,7 +1265,7 @@ theorem row_pair {r p q : ℕ} (hpq : p + q = r) (Dm nL nF : ℤ) (hnF : 0 ≤ n
   have e2 : (b : ℤ) = r - 1 := by omega
   have e3 : (r : ℤ) = p + q := by omega
   rw [hL a, hL b, hF a, hF b, e1, e2]
-  simp only [if_pos hq1, if_neg hq2]
+  simp only [ite_eq_left hq1, ite_eq_right hq2]
   rw [show (b : ℕ) - q = p - 1 by omega, show q - 1 - (a : ℕ) = q - 1 by omega]
   nlinarith
 
@@ -1374,15 +1374,6 @@ theorem archOne_of_run (D : D7) (T : Top D) (h : LawsP T) (hinj : Function.Injec
 
 end Run
 
-section Point
-
-open Formalism.IndefR Formalism.IndefR.Links GlobalTheory.BigTop GlobalTheory.BigOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-end Point
-
 end GlobalTheory.ShareOn
 
 end
@@ -1403,11 +1394,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.RunIn GlobalTheory.Shares GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds
 open GlobalTheory.RunJoin
 namespace GlobalTheory.ShareOn
-section Model
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-end Model
-section Run
-end Run
 section Point
 open Formalism.IndefR Formalism.IndefR.Links GlobalTheory.BigTop GlobalTheory.BigOn
 

@@ -271,12 +271,12 @@ theorem exists_rows {E : Type} [Field E] [NumberField E] {k : ℕ} (L : AddSubgr
   · simp [ha0 j hj, not_lt.2 hj.le]
   · simpa using hα0
   · rcases lt_trichotomy j i with h | rfl | h
-    · simp only [Pi.sub_apply, if_pos h]
+    · simp only [Pi.sub_apply, ite_eq_left h]
       exact (hyC _).trans (le_max_right _ _)
-    · simp only [Pi.sub_apply, lt_irrefl, if_false, sub_zero]
+    · simp only [Pi.sub_apply, lt_irrefl, ite_false, sub_zero]
       exact hα1.trans (le_max_left _ _)
     · simp [ha0 j h, not_lt.2 h.le]
-  · simp only [Pi.sub_apply, lt_irrefl, if_false, sub_zero]
+  · simp only [Pi.sub_apply, lt_irrefl, ite_false, sub_zero]
     exact hmin _ ⟨hsi, s, hs, hs0, rfl⟩
 
 theorem integral_coord {E : Type} [Field E] [NumberField E] {k : ℕ}

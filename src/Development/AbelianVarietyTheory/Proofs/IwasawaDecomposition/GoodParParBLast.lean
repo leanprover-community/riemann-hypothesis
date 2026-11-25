@@ -217,7 +217,7 @@ theorem exists_frameKs : GlobalTheory.Published.DiscreteSeriesExists → ∀ (D 
     rw [← hy]
     exact RingHom.congr_fun hσ y
   · have he := (Classical.choice (hne i σ)).enum τ
-    have e : parAt (Wc D i) σ τ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ τ) := if_pos (hσ τ)
+    have e : parAt (Wc D i) σ τ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ τ) := ite_eq_left (hσ τ)
     rw [e] at he
     exact (GlobalTheory.HolDict.isEnum_holPar_kapW _ (D.sp.W_rank _ (Nat.le_add_left _ _) i.2) (sig_add i τ) he a).2
 
@@ -352,9 +352,9 @@ theorem goodPar_entAt (j : ℕ) (hj : j ≤ R.m) :
       rw [hr, ht']
       generalize k' + m' - 1 = n
       rcases Nat.even_or_odd' j with ⟨i, rfl | rfl⟩
-      · rw [if_neg (by simp)]
+      · rw [ite_eq_right (by simp)]
         exact ⟨-(n + i * (2 * t' + 1)), by push_cast; ring⟩
-      · rw [if_pos (by simp)]
+      · rw [ite_eq_left (by simp)]
         exact ⟨-(n + i * (2 * t' + 1) + t' + 1), by push_cast; ring⟩
     obtain ⟨w, hw⟩ := hs
     rw [hw]

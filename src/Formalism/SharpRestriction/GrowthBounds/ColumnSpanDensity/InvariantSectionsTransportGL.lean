@@ -50,7 +50,7 @@ theorem invariant_sections_transport_GL (γ : GL (Fin (m + 1)) Kf) (lam : Fin (m
     (Λ : Submodule O (Fin (m + 1) → Kf)) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) Kf)
     (hF : F ∈ H0 O m lam Λ) : fuT γ lam F ∈ H0 O m lam (Λ.map (nt_phi O γ)) := by
   unfold H0 at hF ⊢
-  rw [if_pos hlam] at hF ⊢
+  rw [ite_eq_left hlam] at hF ⊢
   simp only [Submodule.mem_iInf] at hF ⊢
   intro g hg
   have hid : (nt_phi O ((γ⁻¹ : GL (Fin (m + 1)) Kf))).comp (nt_phi O γ) = LinearMap.id := by
@@ -198,7 +198,7 @@ theorem restFunct : RestFunct := by
   have hV : ∀ (γ : Fin n' → GL (Fin (m + 1)) R.Kf), ∀ P ∈ Vsp R.Kf lam0, fuTT lam0 γ P ∈ Vsp R.Kf lam0 := by
     intro γ P hP
     refine fu_tensor lam0 γ _ _ (fun s F hF => ?_) P hP
-    rw [if_pos (hanti s)] at hF ⊢
+    rw [ite_eq_left (hanti s)] at hF ⊢
     exact Submodule.smul_mem _ _ (dualWeylRowStable R.Kf _ _ _ _ F hF)
   let γ : Fin n' → GL (Fin (m + 1)) R.Kf := fun s => fuG R.ι R.σ s.val g
   let T : Vsp R.Kf lam0 ≃ₗ[R.Kf] Vsp R.Kf lam0 :=

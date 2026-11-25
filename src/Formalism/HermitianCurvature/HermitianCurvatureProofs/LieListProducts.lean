@@ -164,8 +164,8 @@ theorem unitB_mul {n m : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (Bs : Fin m → F
   funext v
   rw [← Matrix.mulVec_mulVec, Qx8.unitB_mulVec H Bs c d, Matrix.mulVec_smul, Qx8.unitB_mulVec, ho]
   by_cases h : b = c
-  · rw [if_pos h, if_pos h.symm, one_smul, Qx8.unitB_mulVec]
-  · rw [if_neg h, if_neg (Ne.symm h), zero_smul, smul_zero, Matrix.zero_mulVec]
+  · rw [ite_eq_left h, ite_eq_left h.symm, one_smul, Qx8.unitB_mulVec]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), zero_smul, smul_zero, Matrix.zero_mulVec]
 
 theorem list_prod_apply {W : Type*} [AddCommGroup W] [Module ℂ W] (L : List (Module.End ℂ W)) (v : W) :
     (L.map fun T : Module.End ℂ W => fun y : W => T y).foldr (fun T h => T h) v = L.prod v := by

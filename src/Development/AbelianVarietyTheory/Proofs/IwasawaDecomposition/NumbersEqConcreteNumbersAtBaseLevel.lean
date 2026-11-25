@@ -183,8 +183,8 @@ theorem numTie_of_read : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T
     exact inv_smul_smul₀ haK z ▸ (Submodule.span K _).smul_mem (a : K)⁻¹ hmem
   · rw [Z.etaJ]
     by_cases h : D.plEq w ∈ R.twPl
-    · rw [if_pos h, if_pos (show D.plEq w ∈ (A3.indefDown (s0Of R F)).Tw from h)]; rfl
-    · rw [if_neg h, if_neg (show D.plEq w ∉ (A3.indefDown (s0Of R F)).Tw from h)]
+    · rw [ite_eq_left h, ite_eq_left (show D.plEq w ∈ (A3.indefDown (s0Of R F)).Tw from h)]; rfl
+    · rw [ite_eq_right h, ite_eq_right (show D.plEq w ∉ (A3.indefDown (s0Of R F)).Tw from h)]
 
 end GlobalTheory.Mem.ReadIndexNumerics
 

@@ -127,7 +127,7 @@ theorem form_Jm {n : ℕ} (ε : Fin n → Bool) (p q : Fin n → ℂ) :
     (∑ i, ∑ j, conj (p i) * Formalism.REAL.Jm ε i j * q j).re =
       ∑ i, (if ε i then 1 else -1 : ℝ) * ((p i).re * (q i).re + (p i).im * (q i).im) := by
   simp only [Formalism.REAL.Jm, Matrix.diagonal_apply, mul_ite, ite_mul, mul_zero, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, Complex.re_sum]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   split_ifs <;> simp [Complex.mul_re, Complex.conj_re, Complex.conj_im]
 

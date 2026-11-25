@@ -153,26 +153,10 @@ open Formalism.BasicNotions
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
   {LL0 : IntermediateField ℚ what₂.LL} {N : NData R H what₂}
 
-def ιOf (C : Core.RatCore) (eL : C.L0 ≃+* ↥LL0) : C.L0 →+* what₂.LL :=
-  (algebraMap (↥LL0) what₂.LL).comp eL.toRingHom
-
 def rdTw (tw : NTw R H what₂ LL0 N) (i : tw.Tw) (b : Bool) : ↥LL0 →+* FractionRing (tw.O i) :=
   (IsFractionRing.map (A := tw.O0 i) (B := tw.O i) (K := FractionRing (tw.O0 i)) (L := FractionRing (tw.O i))
     (tw.O_inj i)).comp (if b then tw.emb0 i else tw.emb0b i)
 
 end Rec
-
-section Test
-
-end Test
-
-section BsupMap
-
-open Formalism.BasicNotions
-
-variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
-  {LL0 : IntermediateField ℚ what₂.LL} {N : NData R H what₂}
-
-end BsupMap
 
 end Formalism.IndefR.NX.BC

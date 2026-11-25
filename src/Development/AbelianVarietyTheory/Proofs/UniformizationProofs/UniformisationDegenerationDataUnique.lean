@@ -344,7 +344,7 @@ theorem unifUniq : GlobalFnsSt → SecBaseChangeSt → AmpleSt → UnifUniqSt :=
     rw [← gm_res (𝟙 Y) y h₁ hy a, ← gm_res (𝟙 Y) y h₂ hy b, ← gm_res (𝟙 Y) y h₃ hy c, ← gm_res (𝟙 Y) y h₄ hy d,
       ← map_mul, ← map_mul] at key
     have hy' : (𝟙 Y) y ∈ V := hy
-    simp only [gm, dif_pos hy', MonoidHom.comp_apply] at key
+    simp only [gm, dite_eq_left hy', MonoidHom.comp_apply] at key
     have key2 := congrArg Units.val key
     exact key2
   have hs := specOf_id R

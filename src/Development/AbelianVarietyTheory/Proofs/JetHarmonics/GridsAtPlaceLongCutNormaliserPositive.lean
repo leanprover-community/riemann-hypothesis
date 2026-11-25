@@ -619,7 +619,7 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
           exact_mod_cast (show (t : ℝ) - y - 1 ≠ 0 by intro h1; apply this; linarith)
         have hz' : (t : ℂ) - 1 - y ≠ 0 := by
           intro h1; apply hz; linear_combination h1
-        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, Bool.false_eq_true, if_false, hρeq, ht]
+        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, Bool.false_eq_true, ite_false, hρeq, ht]
         push_cast
         rw [show (t : ℂ) - 1 - y = (t : ℂ) - y - 1 by ring]
         field_simp
@@ -631,7 +631,7 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
       · have hz : (y : ℂ) - t ≠ 0 := by
           have : y - t ≠ 0 := by intro h0; have := hplus hl; rw [h0, abs_zero] at this; norm_num at this
           exact_mod_cast this
-        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, if_true, hρeq, ht]
+        simp only [_root_.Formalism.FourierDecayAlt.Wd.qw, hl, ite_true, hρeq, ht]
         push_cast
         field_simp
 
@@ -764,11 +764,11 @@ private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAl
           exact List.mem_map_of_mem hla
         refine ⟨(w.get a).2, rfl, fun hp => ?_, fun hm => ?_⟩
         · have hp' : (w.get a).1 = true := hp
-          have : base (w.get a) = (w.get a).2 := if_pos hp'
+          have : base (w.get a) = (w.get a).2 := ite_eq_left hp'
           rw [this] at hfar'
           exact hfar'
         · have hm' : (w.get a).1 = false := hm
-          have : base (w.get a) = (w.get a).2 - 1 := if_neg (by rw [hm']; decide)
+          have : base (w.get a) = (w.get a).2 - 1 := ite_eq_right (by rw [hm']; decide)
           rw [this, abs_sub_comm] at hfar'
           exact hfar'
       obtain ⟨ρ, hρ, hρ1, hρeq⟩ := exists_qw_eq_mul_pos_real_of_five_le_dist (_root_.Formalism.FourierDecayAlt.M.qC P) y (_root_.Formalism.FourierDecayAlt.D.positionted w) hcond

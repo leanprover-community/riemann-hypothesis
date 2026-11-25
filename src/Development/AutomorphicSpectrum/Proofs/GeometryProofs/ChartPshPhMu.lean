@@ -63,13 +63,6 @@ theorem hodgeInnerProduct_of_fibreLatticeVector {E : Type} [Field E] [NumberFiel
   obtain ⟨w', f', g'⟩ := h3 j
   exact ⟨t.PP.isLB, tan i, tan j, A, inferInstance, φ, g, u, R.Hm, χ, v', w', x i, x j, h1, h2, e', f', d', g', rfl⟩
 
-section Free
-
-variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ]
-  {Ω : Type} [Field Ω] [Algebra ℚ Ω] {W : Ψ → Type} [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)]
-
-end Free
-
 end GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh
 
 noncomputable section

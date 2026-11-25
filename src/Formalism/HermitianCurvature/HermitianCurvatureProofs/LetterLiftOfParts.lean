@@ -331,7 +331,7 @@ theorem letter {L : LevelData A r} {st : Start A} {n : ℕ} {Lf : ℕ → ℕ �
     · exact hS.zero _ _
   unfold letterCol
   by_cases hp : l.plus
-  · simp only [hp, if_true]
+  · simp only [hp, ite_true]
     fin_cases i
     · exact ioE _ laP
     · simp only [Fin.mk_one, Matrix.cons_val_one]
@@ -366,7 +366,7 @@ theorem letter {L : LevelData A r} {st : Start A} {n : ℕ} {Lf : ℕ → ℕ �
         (fun Y => (xz _ mζbi Y).smul_right L.TT) hu
         (hS.mono (by omega) (le_of_eq (by ring)) (hS.mul (hS.xi _ p0 hr) lbP))
         (by rw [s1p]; rfl) laP hz hLz ((hLS A S r L st w hL hst hAw).2.2 l.pt m0 m1) e e'
-  · simp only [hp, Bool.false_eq_true, if_false]
+  · simp only [hp, Bool.false_eq_true, ite_false]
     fin_cases i
     · exact ioE _ laM
     · simp only [Fin.mk_one, Matrix.cons_val_one]

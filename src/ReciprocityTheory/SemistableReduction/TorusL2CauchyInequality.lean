@@ -52,7 +52,7 @@ theorem exp_torus_mean_le_l2_of_lex {ι : Type} [Fintype ι] [LinearOrder ι]
   have hsQ : s ∉ Q.support := fun h => lt_irrefl _ (hQ s h)
   have hQs : Q.coeff s = 0 := MvPolynomial.notMem_support_iff.mp hsQ
   have hPs : P.coeff s = 1 := by
-    rw [hPdef, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, if_pos rfl, hQs, sub_zero]
+    rw [hPdef, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, ite_eq_left rfl, hQs, sub_zero]
   have hP0 : P ≠ 0 := fun h => by rw [h, MvPolynomial.coeff_zero] at hPs; exact zero_ne_one hPs
   have hsupp : s ∈ P.support := by rw [MvPolynomial.mem_support_iff, hPs]; exact one_ne_zero
   have hlex : Real.log ‖P.coeff s‖ ≤ torusMean P := by
@@ -61,7 +61,7 @@ theorem exp_torus_mean_le_l2_of_lex {ι : Type} [Fintype ι] [LinearOrder ι]
     have htQ : t ∈ Q.support := by
       by_contra h
       have h0 : P.coeff t = 0 := by
-        rw [hPdef, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, if_neg (Ne.symm hts),
+        rw [hPdef, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, ite_eq_right (Ne.symm hts),
           MvPolynomial.notMem_support_iff.mp h, sub_zero]
       exact (MvPolynomial.mem_support_iff.mp ht) h0
     obtain ⟨i, h1, h2⟩ := hQ t htQ
@@ -988,7 +988,7 @@ theorem scaledTorusMean_le_torusMean {ι : Type} [Fintype ι] [DecidableEq ι]
       rw [e] at hle
       exact hle
   have hu := key Finset.univ
-  simp only [Finset.mem_univ, if_true] at hu
+  simp only [Finset.mem_univ, ite_true] at hu
   rwa [scaledTorusMean_one] at hu
 
 end ReciprocityTheory.MultiplicativeHeights
@@ -1130,18 +1130,18 @@ theorem coeff_coeffIn {ι : Type} (i : ι) (k : ℕ) (f : MvPolynomial ι ℂ) (
   split_ifs with hu
   · have hsp := (erase_eq_and_apply_eq_iff_eq_add_single i k (u + Finsupp.single i k) u hu).mpr rfl
     rw [Finset.sum_eq_single (u + Finsupp.single i k)]
-    · rw [if_pos hsp.1]
+    · rw [ite_eq_left hsp.1]
     · intro t ht hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hte
       exact hne ((erase_eq_and_apply_eq_iff_eq_add_single i k t u hu).mp ⟨hte, (Finset.mem_filter.mp ht).2⟩)
     · intro hnot
-      rw [if_pos hsp.1]
+      rw [ite_eq_left hsp.1]
       by_contra hc
       exact hnot (Finset.mem_filter.mpr ⟨MvPolynomial.mem_support_iff.mpr hc, hsp.2⟩)
   · apply Finset.sum_eq_zero
     intro t _
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact hu (by simp)
 
@@ -1150,9 +1150,9 @@ private theorem apply_eq_zero_and_add_single_mem_support_of_coeffIn {ι : Type} 
     u i = 0 ∧ u + Finsupp.single i k ∈ f.support := by
   rw [MvPolynomial.mem_support_iff, coeff_coeffIn] at hu
   by_cases h : u i = 0
-  · rw [if_pos h] at hu
+  · rw [ite_eq_left h] at hu
     exact ⟨h, MvPolynomial.mem_support_iff.mpr hu⟩
-  · rw [if_neg h] at hu
+  · rw [ite_eq_right h] at hu
     exact absurd rfl hu
 
 private theorem eq_monomial_of_vars_eq_empty {ι : Type} [LinearOrder ι] (g : MvPolynomial ι ℂ)
@@ -1213,7 +1213,7 @@ theorem torusLex_of (hBasic : TorusMeanBasicStatement) (hCoeff : TorusCoeffState
     have hsplit : s = s.erase i + Finsupp.single i (s i) :=
       (erase_eq_and_apply_eq_iff_eq_add_single i (s i) s (s.erase i) h0).mp ⟨rfl, rfl⟩
     have hcoef : (coeffIn i (s i) g).coeff (s.erase i) = g.coeff s := by
-      rw [coeff_coeffIn, if_pos h0, ← hsplit]
+      rw [coeff_coeffIn, ite_eq_left h0, ← hsplit]
     have hne' : coeffIn i (s i) g ≠ 0 := by
       intro hz
       have h2 := hcoef
@@ -1259,7 +1259,7 @@ theorem torusLex_of (hBasic : TorusMeanBasicStatement) (hCoeff : TorusCoeffState
         rintro rfl
         exact (Finsupp.mem_support_iff.mp hjt) ht0
       refine Finset.mem_erase.mpr ⟨hji, (MvPolynomial.mem_vars_iff_mem_support j).mpr ⟨_, ht, ?_⟩⟩
-      rw [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hji),
+      rw [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hji),
         add_zero]
       exact Finsupp.mem_support_iff.mp hjt
     have hcard' : (coeffIn i (s i) g).vars.card ≤ n := by
@@ -1345,9 +1345,9 @@ theorem torus_orth {ι : Type} [Fintype ι] (s t : ι →₀ ℕ) :
   split_ifs with hts
   · subst hts; simp
   · have : ∃ i, t i ≠ s i := by
-      by_contra hc; push_neg at hc; exact hts (Finsupp.ext hc)
+      by_contra hc; push Not at hc; exact hts (Finsupp.ext hc)
     obtain ⟨i, hi⟩ := this
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
 theorem integrable_of_bdd {ι : Type} [Fintype ι] {E : Type*} [NormedAddCommGroup E]
     {g : (ι → ℝ) → E} (hg : Continuous g) (C : ℝ) (hC : ∀ θ, ‖g θ‖ ≤ C) :

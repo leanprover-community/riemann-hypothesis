@@ -315,7 +315,7 @@ theorem DoubleCosetCovolume.proof (G G₁ G₂ : Type*) [Group G] [TopologicalSp
       Quotient.mk R (rep (Quotient.mk R t)) = Quotient.mk R t := by
     intro t ht
     have h : ∃ t' ∈ S, Quotient.mk R t' = Quotient.mk R t := ⟨t, ht, rfl⟩
-    simp only [rep, dif_pos h]
+    simp only [rep, dite_eq_left h]
     exact h.choose_spec
   let T : Finset (Quotient R) := S.image (Quotient.mk R)
   have hT : ∀ q ∈ T, rep q ∈ S ∧ Quotient.mk R (rep q) = q := by
@@ -328,7 +328,7 @@ theorem DoubleCosetCovolume.proof (G G₁ G₂ : Type*) [Group G] [TopologicalSp
   have hF : ∀ s ∈ S, IsFundamentalDomain (sliceGroup Φ Γ K s) (F s) Measure.haar ∧
       (Measure.haar : Measure G₁) (F s) < ∞ := by
     intro s hs
-    simp only [F, dif_pos hs]
+    simp only [F, dite_eq_left hs]
     exact (hFD s hs Measure.haar).choose_spec
   have hVo := isOpen_leftCosetSet hKo
   have hVc := isCompact_leftCosetSet hKc

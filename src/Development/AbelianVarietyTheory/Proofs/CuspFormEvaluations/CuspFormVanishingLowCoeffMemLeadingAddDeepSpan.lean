@@ -312,7 +312,7 @@ theorem main : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (
     refine ⟨cf, fun x hx => ?_⟩
     have h1 := congrFun hcf (e.symm ⟨k, x, hx⟩)
     rw [Equiv.apply_symm_apply, Finset.sum_apply] at h1
-    simp only [dif_pos hx]
+    simp only [dite_eq_left hx]
     simpa using h1.symm
   have hsurj : ∀ v : (Σ k : (T.U j T.σ₀).Comp, Fin (Fl.Fl k).δ) → ℂ, ∃ a : Fin m → ℂ, ∀ p,
       ∑ i, a i * θf i p.1 ((Fl.Fl p.1).xs p.2) = v p := by

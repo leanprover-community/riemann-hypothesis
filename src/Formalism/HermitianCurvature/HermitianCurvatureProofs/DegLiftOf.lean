@@ -128,11 +128,11 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
         P1 ⟨j - s, by omega⟩ (Fin.last j) := by
       rw [Finset.sum_eq_single ⟨j - s, by omega⟩]
       · rw [Finset.sum_eq_single (Fin.last j)]
-        · rw [if_pos (by simp; omega)]
+        · rw [ite_eq_left (by simp; omega)]
         · intro m _ hm
           have := m.isLt
           have hm' : (m : ℕ) ≠ j := fun e => hm (Fin.ext (by simp [e]))
-          rw [if_neg (by simp; omega)]
+          rw [ite_eq_right (by simp; omega)]
         · simp
       · intro l _ hl
         apply Finset.sum_eq_zero
@@ -147,11 +147,11 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
         P2 (Fin.last j) ⟨j - s, by omega⟩ := by
       rw [Finset.sum_eq_single (Fin.last j)]
       · rw [Finset.sum_eq_single ⟨j - s, by omega⟩]
-        · rw [if_pos (by simp; omega)]
+        · rw [ite_eq_left (by simp; omega)]
         · intro m _ hm
           have := m.isLt
           have hm' : (m : ℕ) ≠ j - s := fun e => hm (Fin.ext (by simp [e]))
-          rw [if_neg (by simp; omega)]
+          rw [ite_eq_right (by simp; omega)]
         · simp
       · intro l _ hl
         apply Finset.sum_eq_zero
@@ -169,7 +169,7 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
       obtain ⟨ε, hε⟩ := hN' (KB.minusW ys w); exact decV_of_nice hε
     have e1 : P1 ⟨j - s, by omega⟩ (Fin.last j) = cLift s τ true * Wl p F j s hj w h h' τ τ' ha ha' ys := by
       simp only [hP1]
-      rw [hEt, hD0l, if_pos rfl]
+      rw [hEt, hD0l, ite_eq_left rfl]
       have := pairJ_sesq_left P p.T (M.sgn P p.l0) ⟨j, Nat.lt_succ_of_le hj⟩ w ys 0
         (KB.slv p.T F j hj (KB.plusW ys w) (h ++ [(s, τ)]) ha)
         (KB.slv p.T F j hj (KB.minusW ys w) (h' ++ [(s, τ')]) ha') (cLift s τ true) decV_zero dXP dXM
@@ -177,14 +177,14 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
       rw [this]; rfl
     have e2 : P2 (Fin.last j) ⟨j - s, by omega⟩ = conj (cLift s τ' false) * Wl p F j s hj w h h' τ τ' ha ha' ys := by
       simp only [hP2]
-      rw [hE't, hC0l, if_pos rfl]
+      rw [hE't, hC0l, ite_eq_left rfl]
       have := pairJ_sesq_right P p.T (M.sgn P p.l0) ⟨j, Nat.lt_succ_of_le hj⟩ w ys
         (KB.slv p.T F j hj (KB.plusW ys w) (h ++ [(s, τ)]) ha) 0
         (KB.slv p.T F j hj (KB.minusW ys w) (h' ++ [(s, τ')]) ha') (cLift s τ' false) dXP decV_zero dXM
       rw [zero_add, ← hΞ', zR _ dXP, zero_add] at this
       rw [this]; rfl
     rw [e1, e2]
-    simp only [cLift, if_true, Bool.false_eq_true, if_false, map_mul, map_pow, map_neg, map_one, map_inv₀,
+    simp only [cLift, ite_true, Bool.false_eq_true, ite_false, map_mul, map_pow, map_neg, map_one, map_inv₀,
       Complex.conj_conj]
     ring
   · rw [hX y]
@@ -194,9 +194,9 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
       intro l m
       by_cases hlm : (l : ℕ) + m ≤ N
       · rw [Finset.sum_eq_single ⟨(l : ℕ) + m, by omega⟩]
-        · rw [if_pos rfl, pow_add]
+        · rw [ite_eq_left rfl, pow_add]
         · intro q _ hq
-          rw [if_neg, mul_zero]
+          rw [ite_eq_right, mul_zero]
           intro e
           exact hq (Fin.ext e.symm)
         · simp
@@ -206,7 +206,7 @@ theorem wl_step (hs : 1 ≤ s) (hsj : s ≤ j)
         symm
         apply Finset.sum_eq_zero
         intro q _
-        rw [if_neg, mul_zero]
+        rw [ite_eq_right, mul_zero]
         have := q.isLt
         omega
     simp only [key]
@@ -247,7 +247,7 @@ theorem degLift_of (hL : LiftDegAll) : KB.DegLift := by
     (fun a => grid (Fin.rev a)) hPS hinj (fun _ => 0)
   rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul] at hE
   have hW0 : W 0 (fun _ => 0) = p.RR F j w (h ++ [(s, t)]) (h' ++ [(s, t')]) := by
-    simp only [hW, KB.Pl.RR, D.RRplace, dif_pos (And.intro ha ha'), dif_pos hj]
+    simp only [hW, KB.Pl.RR, D.RRplace, dite_eq_left (And.intro ha ha'), dite_eq_left hj]
     rfl
   rw [hW0] at hE
   rw [hE]

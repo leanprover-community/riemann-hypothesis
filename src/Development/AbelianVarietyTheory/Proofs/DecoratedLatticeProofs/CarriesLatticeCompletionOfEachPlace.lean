@@ -66,7 +66,7 @@ theorem mem_latV_empty (S : HSp D) (L : Lat S) {z : Fin S.rank → AE D}
     rw [Function.comp_apply, ← e_mul_fin (hz i)]
     refine GlobalTheory.LatticeLocalGlobal.ext_components _ _ fun w => ?_
     change GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w _ = GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w _
-    rw [map_mul, compFin_e, if_neg (Finset.notMem_empty w), zero_mul, Pi.zero_apply, map_zero]
+    rw [map_mul, compFin_e, ite_eq_right (Finset.notMem_empty w), zero_mul, Pi.zero_apply, map_zero]
   rw [h0]
   exact zero_mem _
 

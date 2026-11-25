@@ -71,7 +71,7 @@ theorem frm_det {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (v : InfinitePlace K) :
 theorem frm_of_posDef {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (v : InfinitePlace K) (h : (H.map v.embedding).PosDef) :
     frm H v = frameOf (H.map v.embedding) := by
   unfold frm
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 end Frames
 

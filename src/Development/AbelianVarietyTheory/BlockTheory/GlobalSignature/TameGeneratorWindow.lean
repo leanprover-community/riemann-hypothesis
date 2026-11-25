@@ -51,12 +51,6 @@ def lJ (L : SizeData₂ D) : ℝ :=
 
 end Point
 
-section Family
-
-variable {eps : ℝ}
-
-end Family
-
 theorem lJ_den_pos {D : D7} (L : SizeData₂ D) :
     0 < (D.R.k : ℝ) * ((D.R.m : ℝ) + (D.R.t : ℝ)) * Real.log (3 * hWidth L) := by
   have hm : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m

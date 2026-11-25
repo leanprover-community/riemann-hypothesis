@@ -137,13 +137,13 @@ theorem divCycle_apply_of_mem {P W : Ideal (MRing ι)} {s : MRing ι} (h : W ∈
     divCycle P s W = multAt (P ⊔ Ideal.span {s}) W := by
   classical
   simp only [divCycle, Finsupp.ofSupportFinite_coe]
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 theorem divCycle_apply_of_not_mem {P W : Ideal (MRing ι)} {s : MRing ι} (h : W ∉ divSupp P s) :
     divCycle P s W = 0 := by
   classical
   simp only [divCycle, Finsupp.ofSupportFinite_coe]
-  rw [if_neg h]
+  rw [ite_eq_right h]
 
 theorem divCycle_congr {P : Ideal (MRing ι)} {a b : MRing ι}
     (h : P ⊔ Ideal.span {a} = P ⊔ Ideal.span {b}) : divCycle P a = divCycle P b := by

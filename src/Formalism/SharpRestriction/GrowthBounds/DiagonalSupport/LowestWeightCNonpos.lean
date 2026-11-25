@@ -201,8 +201,8 @@ theorem sum_of_span [Fintype G] [Nonempty G] {σ : Type} (X : G → Submodule O 
       show c • ∏ j, A i j = ∏ j, (if j = j0 then c • A i j else A i j)
       rw [← Finset.mul_prod_erase _ (fun j => A i j) (Finset.mem_univ j0),
         ← Finset.mul_prod_erase _ (fun j => if j = j0 then c • A i j else A i j) (Finset.mem_univ j0)]
-      simp only [if_true]
-      rw [Finset.prod_congr rfl (fun j hj => if_neg (Finset.ne_of_mem_erase hj)), smul_mul_assoc]
+      simp only [ite_true]
+      rw [Finset.prod_congr rfl (fun j hj => ite_eq_right (Finset.ne_of_mem_erase hj)), smul_mul_assoc]
 
 theorem decGen (hA : ATL) (hS : ValSlice) [IsPrincipalIdealRing O] [Fintype G] [Nonempty G]
     (hCv : ∀ j, ∀ q ∈ Cv j, q.1 ⊆ {i | π i = j}) (hCl : ∀ j, ∀ q ∈ Cl j, q.1 ⊆ {i | π i = j})
@@ -235,7 +235,7 @@ theorem decGen (hA : ATL) (hS : ValSlice) [IsPrincipalIdealRing O] [Fintype G] [
     unfold partOf at hvd
     rw [Finsupp.mem_support_iff, Finsupp.filter_apply] at hvd
     by_contra hne
-    exact hvd (if_neg hne)
+    exact hvd (ite_eq_right hne)
   · intro j
     exact ⟨F.support.image (partOf π j), fun x hx mo hmo => hx.1 mo hmo⟩
   · intro j c x hc hcx

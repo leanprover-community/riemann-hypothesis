@@ -591,7 +591,7 @@ private lemma polCoef_span {R : Type} [CommRing R] {g N : ℕ} (f : MvPolynomial
   intro m hm
   rw [MvPolynomial.coeff_sum]
   refine Finset.sum_eq_zero fun j _ => ?_
-  rw [MvPolynomial.X_pow_eq_monomial, MvPolynomial.coeff_mul_monomial', if_neg]
+  rw [MvPolynomial.X_pow_eq_monomial, MvPolynomial.coeff_mul_monomial', ite_eq_right]
   intro h
   have := h j
   simp only [Finsupp.single_eq_same] at this
@@ -1305,7 +1305,7 @@ private lemma pSerOf_trunc {R₀ : Type} [CommRing R₀] {g : ℕ} (N : ℕ) (G�
     · by_cases h0 : AddMonoidAlgebra.coeff G₁ m = 0
       · simp [h0]
       · simp [h, h0]
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_right h, ite_eq_right]
       intro hm
       exact h (Finset.mem_filter.1 hm).2
   · intro S _ _ a ha

@@ -50,13 +50,13 @@ theorem prod_upd_zero (k : σ) (d : σ →₀ ℕ) :
     (d.prod fun s e => (upd k (0 : MvPowerSeries σ K) s) ^ e) =
       if d k = 0 then MvPowerSeries.monomial d 1 else 0 := by
   by_cases h : d k = 0
-  · rw [if_pos h, MvPowerSeries.monomial_one_eq]
+  · rw [ite_eq_left h, MvPowerSeries.monomial_one_eq]
     refine Finsupp.prod_congr fun s hs => ?_
     have hsk : s ≠ k := by
       rintro rfl
       exact (Finsupp.mem_support_iff.1 hs) h
     rw [upd_ne _ hsk]
-  · rw [if_neg h, Finsupp.prod]
+  · rw [ite_eq_right h, Finsupp.prod]
     refine Finset.prod_eq_zero (i := k) (Finsupp.mem_support_iff.2 h) ?_
     try dsimp only
     rw [upd_self, zero_pow h]
@@ -66,7 +66,7 @@ theorem coeff_subst_upd_zero (k : σ) (f : MvPowerSeries σ K) (m : σ →₀ �
   have ha := hasSubst_upd k (t := (0 : MvPowerSeries σ K)) (map_zero _)
   rw [MvPowerSeries.coeff_subst ha, finsum_eq_single _ m]
   · try dsimp only
-    rw [prod_upd_zero, if_pos hm, MvPowerSeries.coeff_monomial_same, smul_eq_mul, mul_one]
+    rw [prod_upd_zero, ite_eq_left hm, MvPowerSeries.coeff_monomial_same, smul_eq_mul, mul_one]
   · intro d hd
     try dsimp only
     rw [prod_upd_zero]

@@ -61,7 +61,7 @@ theorem UpperTheory.V.AlgebraTools.Det.chiApi :
       have : n ≠ n - b := by
         have := Finset.mem_range.mp hb
         omega
-      rw [Polynomial.coeff_C_mul_X_pow, if_neg this]
+      rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right this]
     · intro h
       exact absurd (Finset.mem_range.mpr (Nat.succ_pos n)) h
   exact ⟨h0, hn, Polynomial.monic_of_natDegree_le_of_coeff_eq_one n hdeg hcoeff, hdeg, hsum⟩

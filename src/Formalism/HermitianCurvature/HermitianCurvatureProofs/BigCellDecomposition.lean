@@ -40,9 +40,9 @@ theorem bigCell_one_fixes_vector {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k 
       · rfl
     · have hj1 : ¬ j.val < r := by omega
       have hj2 : j.val ≤ r + k := by omega
-      simp only [bigCell, dif_neg hj1, dif_pos hj2]
+      simp only [bigCell, dite_eq_right hj1, dite_eq_left hj2]
       by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
-      · simp only [dif_pos hi, Matrix.one_apply]
+      · simp only [dite_eq_left hi, Matrix.one_apply]
         by_cases hij : j = i
         · subst hij
           simp
@@ -53,8 +53,8 @@ theorem bigCell_one_fixes_vector {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k 
             simp only [Fin.mk.injEq] at h
             omega
           simp [hne, hij]
-      · simp only [dif_neg hi, zero_mul]
-        rw [if_neg]
+      · simp only [dite_eq_right hi, zero_mul]
+        rw [ite_eq_right]
         rintro rfl
         omega
   rw [Finset.sum_congr rfl (fun j _ => key j)]

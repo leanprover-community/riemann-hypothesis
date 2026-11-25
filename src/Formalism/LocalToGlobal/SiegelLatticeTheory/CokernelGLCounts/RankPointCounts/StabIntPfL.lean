@@ -97,7 +97,7 @@ theorem untyped (hs : (M p).split = none) :
 theorem unitAt_untyped (hs : (M p).split = none) : (uP p : ℚ) = 1 / (gS D : ℚ) := by
   obtain ⟨h0, h1⟩ := untyped δ M hA p hs
   unfold uP gpart
-  rw [if_neg h0, if_neg h1]
+  rw [ite_eq_right h0, ite_eq_right h1]
   simp
 
 theorem gS_mul_uP (hs : (M p).split = none) :

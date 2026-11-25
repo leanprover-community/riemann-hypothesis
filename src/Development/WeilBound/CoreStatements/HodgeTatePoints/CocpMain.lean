@@ -207,7 +207,7 @@ theorem d_zero_pt (h : PS R 2 d) (j : Fin d) :
     by_cases hx : x = j
     · subst hx
       simp
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       exact pderiv_X_of_ne (by simpa using hx)
   rw [pderiv_ev_local noConst_0x, Fin.sum_univ_two]
   simp [pt, e]
@@ -281,7 +281,7 @@ theorem pd_pt_eq {n : ℕ} (j : Fin n) (i x : Fin d) :
   by_cases hx : x = i
   · subst hx
     simp
-  · rw [if_neg hx]
+  · rw [ite_eq_right hx]
     exact pderiv_X_of_ne (by simpa using hx)
 
 theorem partial_derivative_first_evaluation (h : PS R 2 d) (b : Pt R 3 d) (hb0 : ∀ l, constantCoeff (b l) = 0)
@@ -802,13 +802,13 @@ theorem top_coeff_eq (hp : 1 ≤ p) (b : Fin (p + 1) → B) (v : B)
     rw [Finset.sum_eq_single (Fin.last p)]
     · simp
     · intro i _ hi
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h'
       exact hi (Fin.ext (by simpa using h'.symm))
     · simp
   rw [e₁] at hc
   simp only [Polynomial.coeff_sub, Polynomial.coeff_add, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow,
-    Polynomial.coeff_one, if_neg hp0, e₂, if_true, zero_add] at hc
+    Polynomial.coeff_one, ite_eq_right hp0, e₂, ite_true, zero_add] at hc
   exact sub_eq_zero.1 hc
 
 end Ring

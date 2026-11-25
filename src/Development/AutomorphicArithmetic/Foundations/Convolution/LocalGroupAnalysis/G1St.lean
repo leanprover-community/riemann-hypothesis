@@ -153,14 +153,14 @@ private lemma scaled (t : Fin n → K) (ht0 : ∀ i, t i ≠ 0) (hinj : Function
     · rw [map_mul, hy, mul_one]; exact hdi j
     · simp
   have hM2 : ∀ j l, l < j → w (M j l) < 1 := fun j l h => by
-    simp only [M, Matrix.of_apply, if_neg h.ne', zero_sub, Valuation.map_neg, map_mul]
+    simp only [M, Matrix.of_apply, ite_eq_right h.ne', zero_sub, Valuation.map_neg, map_mul]
     rw [mul_comm]; exact mul_lt_one_of_lt_of_le (h2 j l h) (hdj j)
   have hMi : M i i = y - u i i := by
     have := ht0 i
     simp [M, d, this]
   have hM3 : ∀ j, j ≠ i → w (M j j) = 1 := fun j hj => by
     have hne : w (t j) ≠ w (t i) := fun h => hj (hinj h)
-    simp only [M, Matrix.of_apply, if_true, d]
+    simp only [M, Matrix.of_apply, ite_true, d]
     split_ifs with h
     · rw [div_self (ht0 i), one_mul, w.map_sub_eq_of_lt_left, hy]
       rw [hy, map_mul, h3, mul_one, map_div₀, div_lt_one₀ (hwt i)]; exact h

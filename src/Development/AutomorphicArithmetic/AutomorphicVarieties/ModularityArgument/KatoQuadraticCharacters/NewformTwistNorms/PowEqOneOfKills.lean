@@ -293,12 +293,6 @@ theorem eps_mem [IsAlgClosure ℚ Ω] {W : R2 Ω l} {A A' : ValuationSubring Ω}
 
 end GlobalTheory.Ord2.SrcForm
 
-namespace GlobalTheory.Ord2
-
-open TwDet SrcForm
-
-end GlobalTheory.Ord2
-
 end
 
 end

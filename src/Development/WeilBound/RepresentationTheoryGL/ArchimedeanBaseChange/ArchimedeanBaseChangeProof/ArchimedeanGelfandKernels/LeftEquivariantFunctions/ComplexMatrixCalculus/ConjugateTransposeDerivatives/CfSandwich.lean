@@ -31,7 +31,7 @@ theorem hbExp : HbExp := by
     simp_rw [smul_mul_assoc, trace_smul]
     rw [← finProdFinEquiv.sum_comp]
     simp only [hbM_eq, Equiv.symm_apply_apply, hb_ortho, smul_eq_mul, mul_ite, mul_one, mul_zero]
-    rw [Finset.sum_ite_eq' Finset.univ p, if_pos (Finset.mem_univ _), cf_eq_trace_mul_hbM_of_isHermitian H hH, hbM_eq,
+    rw [Finset.sum_ite_eq' Finset.univ p, ite_eq_left (Finset.mem_univ _), cf_eq_trace_mul_hbM_of_isHermitian H hH, hbM_eq,
       Equiv.symm_apply_apply, sub_self]
   exact (sub_eq_zero.mp (eq_zero_of_trace _ key))
 
@@ -65,7 +65,7 @@ theorem mtLaws : MtLaws := by
     · subst h
       simp
     · have h' : finProdFinEquiv.symm q ≠ finProdFinEquiv.symm p := fun e => h (finProdFinEquiv.symm.injective e).symm
-      rw [if_neg h', if_neg h]
+      rw [ite_eq_right h', ite_eq_right h]
   · intro x y
     ext p q
     rw [Matrix.mul_apply]

@@ -94,7 +94,7 @@ theorem injective_of_injective_comp_aeval_of_trdeg_le {k A κ ι : Type} [Field 
     exact Function.Injective.of_comp (f := χ) hχ
   have hT := hb.isTranscendenceBasis_of_trdeg_le_of_finite hA
   have := hT.isAlgebraic
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   by_contra hne
   have hmem : a ∈ RingHom.ker χ := ha
@@ -221,7 +221,7 @@ theorem valT_eq_zero_of_notMem {K : Type} [Field K] {X : Scheme.{0}} (w : Sp K �
     (h : ⊤ ≤ w ⁻¹ᵁ U) (f : Γ(X, U)) (p : Sp K) (hp : w p ∉ X.basicOpen f) : valT (T := K) w U f = 0 := by
   by_contra hne
   have h1 : IsUnit ((Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom ((w.appLE U ⊤ h).hom f)) := by
-    have e : valT (T := K) w U f = _ := dif_pos h
+    have e : valT (T := K) w U f = _ := dite_eq_left h
     exact e ▸ Ne.isUnit hne
   have h2 : IsUnit ((w.appLE U ⊤ h).hom f) := by
     have := h1.map (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom
@@ -237,7 +237,7 @@ theorem eq_of_specializes {X : Scheme.{0}} {J : Type} {U : X.Opens} (f : J → �
   by_contra hne
   have hn : ¬ y ⤳ y' := fun h' => hne (h.antisymm h').eq
   rw [specializes_iff_forall_open] at hn
-  push_neg at hn
+  push Not at hn
   obtain ⟨V, hV, hV1, hV2⟩ := hn
   obtain ⟨W, hW, hyW, -⟩ := exists_isAffineOpen_mem_and_subset (X := X) (x := y) (U := ⊤) trivial
   have hyW' : y' ∈ W := h.mem_open W.isOpen hyW

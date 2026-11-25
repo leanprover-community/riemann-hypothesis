@@ -79,7 +79,7 @@ theorem idem_spec : ∀ D : D7, (∀ p, idem D p * idem D p = idem D p) ∧ (∀
       · rfl
   · intro θ hθ τ
     refine ⟨?_, fun τ' h => ?_⟩
-    · rw [hTheta θ hθ τ τ, if_pos rfl]
-    · rw [hTheta θ hθ τ' τ, if_neg (Ne.symm h)]
+    · rw [hTheta θ hθ τ τ, ite_eq_left rfl]
+    · rw [hTheta θ hθ τ' τ, ite_eq_right (Ne.symm h)]
 
 end GlobalTheory.PlaceTensor

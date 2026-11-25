@@ -97,10 +97,10 @@ private lemma mix_mono (hT : T.Good) (n : κ → ℕ × ℕ) (L : Finset κ) {s 
   by_cases h : (lft s).Nonempty ∧ (rgt s).Nonempty
   · have h' : (lft s').Nonempty ∧ (rgt s').Nonempty :=
       ⟨Finset.Nonempty.mono (lft_mono' hs) h.1, Finset.Nonempty.mono (rgt_mono' hs) h.2⟩
-    rw [if_pos h] at hm
-    rw [if_pos h']
+    rw [ite_eq_left h] at hm
+    rw [ite_eq_left h']
     exact lat_mono T hT n h.1 h.2 (lft_mono' hs) (rgt_mono' hs) L hm
-  · rw [if_neg h, Submodule.mem_bot] at hm
+  · rw [ite_eq_right h, Submodule.mem_bot] at hm
     subst hm
     exact zero_mem _
 
@@ -110,7 +110,7 @@ private lemma mix_step (hT : T.Good) (n : κ → ℕ × ℕ) (z : κ → S) (hA 
     T.act (z l) m ∈ mixF (fun I J => (T.M I J).map (T.act ((∏ l ∈ insert l L, T.u n (pk I) (pk J) l : Sˣ) : S))) s := by
   unfold mixF at hm ⊢
   by_cases h : (lft s).Nonempty ∧ (rgt s).Nonempty
-  · rw [if_pos h] at hm ⊢
+  · rw [ite_eq_left h] at hm ⊢
     rw [Submodule.mem_map] at hm ⊢
     obtain ⟨m0, hm0, rfl⟩ := hm
     refine ⟨T.act (T.r n z (pk (lft s)) (pk (rgt s)) l) m0,
@@ -123,8 +123,8 @@ private lemma mix_step (hT : T.Good) (n : κ → ℕ × ℕ) (z : κ → S) (hA 
       simp only [Sys.r]
       linear_combination (z l * ((∏ k ∈ L, T.u n (pk (lft s)) (pk (rgt s)) k : Sˣ) : S)) * hu
     rw [← Module.End.mul_apply, ← map_mul, e, map_mul, Module.End.mul_apply]
-  · rw [if_neg h, Submodule.mem_bot] at hm
-    rw [if_neg h, hm, map_zero]
+  · rw [ite_eq_right h, Submodule.mem_bot] at hm
+    rw [ite_eq_right h, hm, map_zero]
     exact zero_mem _
 
 end SlopeTestRemainingChoices

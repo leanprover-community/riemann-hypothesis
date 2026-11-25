@@ -477,7 +477,7 @@ theorem exists_rule_of_frame (E : Type) [Field E] [NumberField E] [IsCMField E] 
   classical
   obtain ⟨x, hx⟩ := hsurj (s / gaugeT Or t u)
   let bb : ∀ Z' : Comp Xo c, Om Z' := fun Z' => if hZ : Z' = Z then hZ ▸ x else 0
-  have hbb : bb Z = x := dif_pos rfl
+  have hbb : bb Z = x := dite_eq_left rfl
   obtain ⟨g, hg, hgv⟩ := GlobalTheory.SecGlueInt.exists_secZ_of_regular E H Dw l Xo c h (GlobalTheory.AllWt.exOf Dw u 0) bb (fun C => by
     by_cases hZ : C.Z = Z
     · subst hZ
@@ -505,7 +505,7 @@ theorem exists_rule_of_frame (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [ValuationSubring.mem_comap, ← hx, ← map_mul] at h1
       have : (eq.symm : RM.Ω →+* Om C.Z) (φ (a0 * x)) = a0 * x := eq.symm_apply_apply _
       rwa [this] at h1
-    · have : bb C.Z = 0 := dif_neg hZ
+    · have : bb C.Z = 0 := dite_eq_right hZ
       rw [this, mul_zero]
       exact zero_mem _)
   exact ⟨g, hg, by rw [hgv Z, hbb, hx]⟩
@@ -568,9 +568,9 @@ theorem bir_of_origin (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Re
     rw [h1, h2]
     by_cases hk : k = Or.k₀
     · subst hk
-      rw [Or.A_deg.1, if_pos rfl]
+      rw [Or.A_deg.1, ite_eq_left rfl]
       ring
-    · rw [Or.A_deg.2 k hk, if_neg hk]
+    · rw [Or.A_deg.2 k hk, ite_eq_right hk]
       ring
   obtain ⟨c', hc'⟩ := Or.𝔐.tie.cover ⟨GlobalTheory.CompanionTheory.Ar.genPt Or.𝔐.ξ, specializes_rfl⟩
   have hy0 : RM.y ⟨Or.k₀, c' Or.k₀⟩ ≠ 0 := (Finset.prod_ne_zero_iff.1 hc'.1) _ (Finset.mem_univ _)

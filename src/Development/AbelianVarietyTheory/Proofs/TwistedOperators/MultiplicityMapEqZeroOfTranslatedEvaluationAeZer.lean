@@ -179,7 +179,7 @@ theorem eq_zero_of_value {T : MMap M} (hT : IsMultMap θ M J χ T) (v₀ : M.Vec
       simpa using h0
     · intro a s ha ih w
       have hne : ((if a ∈ s then w a else v₀ a : M.sm a) : M.H a) ≠ 0 := by
-        simp only [ha, if_false]
+        simp only [ha, ite_false]
         exact hv₀ a
       have h3 := step _ a (ih w) hne (w a)
       convert h3 using 2

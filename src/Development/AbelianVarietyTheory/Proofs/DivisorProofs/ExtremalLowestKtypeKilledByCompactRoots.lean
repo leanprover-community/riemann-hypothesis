@@ -216,8 +216,8 @@ private theorem single_ct_lemma (a c : Fin n) : (Matrix.single a c (1 : ℂ))ᴴ
   ext i j
   simp only [Matrix.conjTranspose_apply, Matrix.single, Matrix.of_apply]
   by_cases h : c = i ∧ a = j
-  · rw [if_pos ⟨h.2, h.1⟩, if_pos h, star_one]
-  · rw [if_neg (fun h' => h ⟨h'.2, h'.1⟩), if_neg h, star_zero]
+  · rw [ite_eq_left ⟨h.2, h.1⟩, ite_eq_left h, star_one]
+  · rw [ite_eq_right (fun h' => h ⟨h'.2, h'.1⟩), ite_eq_right h, star_zero]
 
 theorem conjH_single {a c : Fin n} (h : ε a = ε c) :
     conjH (Formalism.REAL.Jm ε) (Matrix.single a c 1) = -Matrix.single c a 1 := by
@@ -280,7 +280,7 @@ theorem dRepC_diag (hσ : IsURepOn (UJset ε) σ) {μ : Fin n → ℝ} {v : H} (
         · simp [Matrix.single, hia, Ne.symm hia]
       · rw [Matrix.diagonal_apply_ne _ hij]
         simp only [Matrix.smul_apply, Matrix.single, Matrix.of_apply]
-        rw [if_neg (fun h' => hij (h'.1.symm.trans h'.2))]
+        rw [ite_eq_right (fun h' => hij (h'.1.symm.trans h'.2))]
         simp
     rw [hs, Matrix.exp_diagonal]
     congr 1

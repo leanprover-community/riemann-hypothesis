@@ -110,7 +110,7 @@ theorem move_pnorm (hσ : GoodEmb c σ) (hU : IsUnf U) {k : U.Comp} (x : (U.X k)
   · have h1 := (hn s (f s).1 (f s).2).1 a2 a3
     have h2 : laZ U a k (f s).1 (f s).2 = a (s.1, s.2) := by
       unfold laZ
-      rw [if_pos (by omega), a2, hinv, a3, Nat.add_sub_cancel_left]
+      rw [ite_eq_left (by omega), a2, hinv, a3, Nat.add_sub_cancel_left]
     rw [h2]
     exact (rpow_of_sq hpos h1 _).symm
   · have e1 : conjEmb (f s).1.1 = relab c σ s.1 := by
@@ -118,7 +118,7 @@ theorem move_pnorm (hσ : GoodEmb c σ) (hU : IsUnf U) {k : U.Comp} (x : (U.X k)
     have h1 := (hn s (f s).1 (f s).2).2 e1 (by omega)
     have h2 : laZ U a k (f s).1 (f s).2 = -a (s.1, s.2) := by
       unfold laZ
-      rw [if_neg (by omega), e1, hinv, a3]
+      rw [ite_eq_right (by omega), e1, hinv, a3]
       congr 3
       omega
     rw [h2]
@@ -294,7 +294,7 @@ theorem core {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h : GenFrEx 
     have hft : Formalism.L2.Pj.FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y := ⟨q, ψ, yq, hψ⟩
     have hy : evR Xo c f y = ψ (f q yq) := by
       unfold evR evalAt
-      rw [dif_pos hft]
+      rw [dite_eq_left hft]
       exact hL.evalWD f hf.1 (CAt σ) _ q _ ψ _ yq y hft.choose_spec.choose_spec.choose_spec hψ
     have hbor : evR Xo c f y = ((∏ i, t i ^ exZ Dw a i : (CAt σ)ˣ) : CAt σ) * evR Xo c f ((U σ).un k x₁) :=
       evalAt_bor_zpow (_root_.GlobalTheory.Frames.algebraic_laws hS E H Dw l Xo c).2.1 (exZ Dw a) hf.1
@@ -303,7 +303,7 @@ theorem core {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h : GenFrEx 
     have h2 : ev ⟨φ (f q yq), hφA _⟩ = (∏ j, toC (t j : CAt σ) ^ exZ Dw a j) * rdU (U σ) f k x₁.1 := by
       refine (show _ = toC (ψ (f q yq)) from rfl).trans ?_
       rw [← hy, hbor]
-      have e1 : rdU (U σ) f k x₁.1 = toC (evR Xo c f ((U σ).un k x₁)) := dif_pos x₁.2
+      have e1 : rdU (U σ) f k x₁.1 = toC (evR Xo c f ((U σ).un k x₁)) := dite_eq_left x₁.2
       have e2 : toC ((∏ i, t i ^ exZ Dw a i : (CAt σ)ˣ) : CAt σ) = ∏ j, toC (t j : CAt σ) ^ exZ Dw a j :=
         (Units.coe_prod (M := ℂ) (fun i => t i ^ exZ Dw a i) _).trans
           (Finset.prod_congr rfl fun j _ => Units.val_zpow_eq_zpow_val (α := ℂ) (t j) _)
@@ -382,14 +382,14 @@ theorem y_read_arch : (Top.Given → ∀ (E : Type) [Field E] [NumberField E] [I
   refine ⟨u, hu, fun σ z hz hcst hzu => ?_⟩
   have hz' := RA.ptsOver_of_mcPts hz
   by_cases hσ : GoodEmb c σ
-  · have eg : goodOf c σ = σ := if_pos hσ
+  · have eg : goodOf c σ = σ := ite_eq_left hσ
     rw [eg]
     obtain ⟨A, ev, hBA, hQ, hev⟩ := hA ℂ z hz' hzu
     obtain ⟨-, k, hk, y, hy, hh⟩ := RA.core hL hx Rd (hB A hBA hQ) hσ hz' ev hev hcst
     refine ⟨k, hk, y, hy, fun a n' hn => ?_⟩
     obtain ⟨θ, h1, h2⟩ := hh a n' hn
     exact ⟨θ, h1, fun f hf => ⟨fun _ => h2 f hf, fun hn => absurd hσ hn⟩⟩
-  · have eg : goodOf c σ = (starRingEnd ℂ).comp σ := if_neg hσ
+  · have eg : goodOf c σ = (starRingEnd ℂ).comp σ := ite_eq_right hσ
     have hg := goodEmb_goodOf c σ
     have hcst' : ∀ t : c.F, Small.HasVal RM.y 0 (Or.𝔐.cst t) (fun p => starRingEnd ℂ (z p)) (goodOf c σ t) := fun t => by
       rw [eg]

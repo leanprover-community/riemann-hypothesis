@@ -226,7 +226,7 @@ lemma psi_eq (v₁ v₂ : ℂ) (h : ((starRingEnd ℂ) v₁ * v₂).im ≠ 0) (m
     (-1 : ℂ) ^ (m + n + m * n) =
       if ((m : ℂ) * v₁ + n * v₂) / 2 ∈ PI.lat2 v₁ v₂ then 1 else -1 := by
   by_cases hmem : ((m : ℂ) * v₁ + n * v₂) / 2 ∈ PI.lat2 v₁ v₂
-  · rw [if_pos hmem]
+  · rw [ite_eq_left hmem]
     unfold PI.lat2 at hmem
     obtain ⟨p, q, hpq⟩ := AddSubgroup.mem_closure_pair.mp hmem
     rw [zsmul_eq_mul, zsmul_eq_mul] at hpq
@@ -234,7 +234,7 @@ lemma psi_eq (v₁ v₂ : ℂ) (h : ((starRingEnd ℂ) v₁ * v₂).im ≠ 0) (m
     obtain rfl : m = 2 * p := by omega
     obtain rfl : n = 2 * q := by omega
     exact Even.neg_one_zpow ⟨p + q + 2 * p * q, by ring⟩
-  · rw [if_neg hmem]
+  · rw [ite_eq_right hmem]
     have hodd : Odd (m + n + m * n) := by
       rcases Int.even_or_odd m with ⟨a, ha⟩ | ⟨a, ha⟩ <;> rcases Int.even_or_odd n with ⟨b, hb⟩ | ⟨b, hb⟩
       · exfalso

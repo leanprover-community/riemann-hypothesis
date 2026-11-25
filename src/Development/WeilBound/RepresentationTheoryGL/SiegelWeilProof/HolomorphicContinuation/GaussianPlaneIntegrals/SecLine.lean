@@ -170,7 +170,7 @@ lemma continuous_evX (P : PX m n) : Continuous (fun x : Fin m → Fin n → ℂ 
   unfold evX
   refine (MvPolynomial.continuous_eval P).comp (continuous_pi fun k => ?_)
   by_cases h : k.2.2
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     exact continuous_star.comp ((continuous_apply k.2.1).comp (continuous_apply k.1))
   · simp only [h]
     exact (continuous_apply k.2.1).comp (continuous_apply k.1)

@@ -49,7 +49,7 @@ theorem piInf_eW {w w' : InfinitePlace F} (τ : EmbOver E w') (z : AE F E) :
   by_cases h : w' = w
   · subst h
     simp [eW, pairA]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp [eW, pairA, Pi.single_eq_of_ne h]
 
 variable (d : SD σ)

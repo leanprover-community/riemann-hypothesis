@@ -54,7 +54,7 @@ theorem smulS_X_pow {m : ℤ} {f : ℤ → V} (hf : LB m f) (K : ℕ) :
   rw [finsum_eq_single _ K]
   · rw [PowerSeries.coeff_X_pow_self, one_smul]
   · intro j hj
-    rw [PowerSeries.coeff_X_pow, if_neg hj, zero_smul]
+    rw [PowerSeries.coeff_X_pow, ite_eq_right hj, zero_smul]
 
 theorem smulS_mul {m : ℤ} {f : ℤ → V} (hf : LB m f) (g h : PowerSeries LL) :
     smulS (g * h) f = smulS g (smulS h f) := by

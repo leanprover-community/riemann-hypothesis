@@ -465,7 +465,7 @@ theorem charSum {F : Type} [Field F] [Fintype F] (ψ₀ : AddChar F ℂ) (hψ : 
   · obtain ⟨i, hi⟩ : ∃ i, ν i ≠ 0 := by
       by_contra! h
       exact hν (funext h)
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
 theorem charOrth : CharOrth := by
   intro F _ _ m ψ₀ hψ r s
@@ -792,7 +792,7 @@ theorem convScalar_of (h1 : RepGamConj) (h2 : RepGamComm) (h3 : QIdem) (h4 : Gen
   have hu : IsUni k (1 : GL (Fin k) F) :=
     ⟨fun i => by simp, fun i j hij => by simp [Matrix.one_apply_ne (ne_of_gt hij)]⟩
   have hpsi1 : psiNat ψ₀ (1 : GL (Fin k) F) = 1 := by
-    simp only [psiNat, if_pos hu, psiU]
+    simp only [psiNat, ite_eq_left hu, psiU]
     have hs : superdiag k ((1 : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) = 0 := by
       unfold superdiag
       refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
@@ -885,10 +885,10 @@ theorem whit_sgn_projQ (ψ₀ : AddChar F ℂ) (π : Representation ℂ (GL (Fin
     intro x
     rw [pi_sgn_mul]
     by_cases hx : IsUni k x
-    · rw [hℓ _ (isUni_sgn_conj hx), ← mul_assoc, if_pos hx]
+    · rw [hℓ _ (isUni_sgn_conj hx), ← mul_assoc, ite_eq_left hx]
       unfold psiNat
-      rw [if_pos hx, mul_comm (psiU ψ₀ x), psiU_sgn_conj]
-    · unfold psiNat; rw [if_neg hx, if_neg hx, zero_mul, zero_mul]
+      rw [ite_eq_left hx, mul_comm (psiU ψ₀ x), psiU_sgn_conj]
+    · unfold psiNat; rw [ite_eq_right hx, ite_eq_right hx, zero_mul, zero_mul]
   unfold projQ
 
   simp only [LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, smul_eq_mul]
@@ -942,7 +942,7 @@ theorem intertwiner_rank_le_one : RankLeOne := by
       rw [Submodule.mem_span_singleton]
       exact ⟨c, hc.symm⟩
     exact (Submodule.finrank_mono hle).trans (finrank_span_singleton hne).le
-  · push_neg at h
+  · push Not at h
     rw [(Submodule.eq_bot_iff _).2 h, finrank_bot]
     omega
 

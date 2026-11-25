@@ -109,7 +109,7 @@ theorem prod_cub_pt {Z : Over S} (x x' y : Z ⟶ A) {U : Type} [CommGroup U] (h 
       h (x * x' * y) * (h (x * x'))⁻¹ * (h (x * y))⁻¹ * (h (x' * y))⁻¹ * h x * h x' * h y * (h 1)⁻¹ := by
   classical
   let h' : (Z.left ⟶ A.left) → U := fun q => if hq : q ≫ A.hom = Z.hom then h (Over.homMk q hq) else 1
-  have e : ∀ q : Z ⟶ A, h' q.left = h q := fun q => dif_pos (Over.w q)
+  have e : ∀ q : Z ⟶ A, h' q.left = h q := fun q => dite_eq_left (Over.w q)
   have p := prod_cub x x' y h'
   simp only [e] at p
   exact (Finset.prod_congr rfl fun I _ => congrArg (· ^ thε I) (e _).symm).trans p

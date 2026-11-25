@@ -178,9 +178,9 @@ theorem gram_tower (R : RiemLat E g Λ) {I : Submodule (𝓞 E) Λ} (hI : IsIsoS
   simp only [Matrix.mul_apply, conjTranspose_apply, kroneckerMap_apply, Matrix.one_apply, transpose_apply,
     blockDiagonal_apply, Fintype.sum_prod_type, basisMatrix_apply']
   simp only [ite_mul, one_mul, zero_mul, mul_ite, mul_zero, star_zero, apply_ite star,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Fintype.sum_eq_single b fun x hx ↦ by simp [hx]]
-  simp only [if_true]
+  simp only [ite_true]
   rfl
 
 section CM

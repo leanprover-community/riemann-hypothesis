@@ -95,7 +95,7 @@ private theorem phi_bij (σ : E ≃ₐ[F] E) (hσ : ∀ τ : E ≃ₐ[F] E, τ �
           rw [Finset.sum_comm]
           exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
       _ = f k := by
-          simp only [h1, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+          simp only [h1, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hadd : ∀ f g, Ψ (f + g) = Ψ f + Ψ g := fun f g => by
     simp only [Ψ, Pi.add_apply, mul_add, Finset.sum_add_distrib, TensorProduct.tmul_add]
   have hl : Function.LeftInverse Ψ (phi σ p m) := by

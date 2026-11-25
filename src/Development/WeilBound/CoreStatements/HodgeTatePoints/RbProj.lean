@@ -203,7 +203,7 @@ theorem proj_props : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClo
       rw [map_sum, Finset.sum_mul]
     rw [hsum]
     simp only [hz, apply_ite (algebraMap R C), ite_mul, map_zero, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Units.val_one, one_smul, map_natCast]
+      Finset.mem_univ, ite_true, Units.val_one, one_smul, map_natCast]
     rw [← hcardU, inv_mul_cancel_left₀ h0]
   · intro haf χ
     have hA : g ∈ AA.carrier := (Submodule.mem_inf.1 haf).1

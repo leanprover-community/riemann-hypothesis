@@ -98,9 +98,9 @@ theorem jacquet_shalika_rigidity_of_bound : AbsRig → UnitEx → SatTw → DetO
       rw [hFe σ hσ]
       by_cases hxy : x = y
       · subst hxy
-        rw [if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl]
         rfl
-      · rw [if_neg (fun h => hxy (Subtype.ext (by simpa using h))), if_neg hxy]
+      · rw [ite_eq_right (fun h => hxy (Subtype.ext (by simpa using h))), ite_eq_right hxy]
         rfl
   let x : ι → X × ℝ := fun i => (⟨u i, Or.inl ⟨i, rfl⟩⟩, t i)
   let y : κ → X × ℝ := fun j => (⟨u' j, Or.inr ⟨j, rfl⟩⟩, t' j)

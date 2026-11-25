@@ -538,7 +538,7 @@ theorem nonStationary_main : NonStationary := by
   by_cases hEx : ∃ z : Kˣ, z ^ (m + 1) = D' ∧ ∀ k, x k - (z : K) ∈ B
   · left
     intro v hv
-    exact if_pos ((hE v hv).2 hEx)
+    exact ite_eq_left ((hE v hv).2 hEx)
   by_cases hAx : A x = 0
   · left
     intro v hv
@@ -570,7 +570,7 @@ theorem nonStationary_main : NonStationary := by
         else A (x + v) * ψ (g0 (D' : K) (x + v) * ti)) =
       A x * ψ (g0 (D' : K) x * ti) * ψ ((∑ i, v i * G i) * ti) := by
     intro v hv
-    rw [if_neg (fun hc => hEx ((hE v hv).1 hc)), hAv v hv]
+    rw [ite_eq_right (fun hc => hEx ((hE v hv).1 hc)), hAv v hv]
     obtain ⟨ρ, hρ, e⟩ := h.taylor m a (D' : K) x xi v μ hμI hxxi hxiR (fun i => by
       obtain ⟨r, hr, e⟩ := mem_mulR.1 (hv i)
       exact ⟨r, hr, by rw [e, hν]⟩)

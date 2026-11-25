@@ -67,7 +67,7 @@ private lemma pk_filter {d : ℕ} (I : Finset (Fin (d + 1))) (i : Fin (d + 1)) (
   have hmin : I.min' hne ∈ I.filter (· ≤ i) :=
     Finset.mem_filter.2 ⟨Finset.min'_mem _ _, Finset.min'_le _ _ hi⟩
   have hfne : (I.filter (· ≤ i)).Nonempty := ⟨_, hmin⟩
-  simp only [pk, dif_pos hne, dif_pos hfne]
+  simp only [pk, dite_eq_left hne, dite_eq_left hfne]
   apply le_antisymm
   · exact Finset.min'_le _ _ hmin
   · exact Finset.le_min' _ _ _ (fun y hy => Finset.min'_le _ _ (Finset.mem_filter.1 hy).1)
@@ -170,20 +170,20 @@ theorem UpperTheory.Gal.productCup_of_system.pCup_of :
         ((sysZ K x a).act ((∏ l ∈ L, (sysZ K x a).u n11 (pk I) (pk J) l : (K ⊗[ℂ] K)ˣ) : K ⊗[ℂ] K)) := by
     intro I J L h h1 h2
     have hv := hcv (uni (uni I J) L)
-    rw [card_uni', card_uni', mixF, lft_uni', lft_uni', rgt_uni', if_pos (by push_cast; omega),
-      if_pos ⟨h1, h2⟩, rgt_uni'] at hv
+    rw [card_uni', card_uni', mixF, lft_uni', lft_uni', rgt_uni', ite_eq_left (by push_cast; omega),
+      ite_eq_left ⟨h1, h2⟩, rgt_uni'] at hv
     exact hv
   have hαv : ∀ s, α s ∈ (if s.Nonempty ∧ (s.card : ℤ) = (p : ℤ) + 1 then omB ℂ K (rB ℂ K (xv x) s) a else ⊥) :=
     fun s => (Submodule.mem_pi.1 hαC) s (Set.mem_univ _)
   have hαz : ∀ s, ¬ (s.Nonempty ∧ s.card = p + 1) → α s = 0 := by
     intro s h
     have hv := hαv s
-    rw [if_neg (fun h' => h ⟨h'.1, by omega⟩)] at hv
+    rw [ite_eq_right (fun h' => h ⟨h'.1, by omega⟩)] at hv
     exact (Submodule.mem_bot _).1 hv
   have hαm : ∀ s, s.Nonempty → s.card = p + 1 → α s ∈ omB ℂ K (rB ℂ K (xv x) s) a := by
     intro s h1 h2
     have hv := hαv s
-    rw [if_pos ⟨h1, by omega⟩] at hv
+    rw [ite_eq_left ⟨h1, by omega⟩] at hv
     exact hv
   have hterm : ∀ (I J : Finset (Fin (d + 1))) (L : Finset (Mi d)) (i : Fin (d + 1)), i ∈ I →
       muP F K τ (c (uni (uni (I.filter (· ≤ i)) J) L)) (α (I.filter (i ≤ ·))) ∈
@@ -204,7 +204,7 @@ theorem UpperTheory.Gal.productCup_of_system.pCup_of :
       exact Submodule.zero_mem _
     have hsplit := card_split I i hi
     have hIne : I.Nonempty := ⟨i, hi⟩
-    rw [if_pos (by rw [card_uni', card_uni']; push_cast; omega), mixF, lft_uni', rgt_uni', if_pos ⟨hIne, h1.2⟩]
+    rw [ite_eq_left (by rw [card_uni', card_uni']; push_cast; omega), mixF, lft_uni', rgt_uni', ite_eq_left ⟨hIne, h1.2⟩]
     exact term_mem x hfin τ hτ a had h6 hmono I _ _ J L hfne hgne (Finset.filter_subset _ _)
       (Finset.filter_subset _ _) (pk_filter I i hi) _ (hcm _ _ _ h1.1 hfne h1.2) _ (hαm _ hgne h2)
   refine ⟨Submodule.mem_inf.2 ⟨?_, ?_⟩, ?_, ?_⟩
@@ -241,7 +241,7 @@ theorem UpperTheory.Gal.productCup_of_system.pCup_of :
     generalize lft b = I
     generalize rgt b = J
     by_cases hJ : J.card = 1
-    · rw [if_pos hJ]
+    · rw [ite_eq_left hJ]
       obtain ⟨j, rfl⟩ := Finset.card_eq_one.1 hJ
       have hαI : α I ∈ ⋀[K]^a Ω[K⁄ℂ] := by
         by_cases h : I.Nonempty ∧ I.card = p + 1
@@ -282,7 +282,7 @@ theorem UpperTheory.Gal.productCup_of_system.pCup_of :
           rw [Finset.card_pair (Ne.symm hne)] at hc2
           rw [Finset.card_singleton] at h
           omega
-    · rw [if_neg hJ, smul_zero, smul_zero, Finset.sum_eq_zero, smul_zero, map_zero]
+    · rw [ite_eq_right hJ, smul_zero, smul_zero, Finset.sum_eq_zero, smul_zero, map_zero]
       intro i hi
       rw [hcz _ _ _ (fun h => ?_), map_zero, LinearMap.zero_apply]
       have h1 := h.2.1.card_pos

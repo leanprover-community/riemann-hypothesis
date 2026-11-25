@@ -48,8 +48,8 @@ def ConjIn (N : NumDatum) (l : ℕ) : Prop := N.cls l = PrimeClass.inertClass �
 theorem even_ordP_of_not_conjIn {N : NumDatum} {l : ℕ} (hI : Inert N l) (hC : ¬ ConjIn N l) : Even (N.ordP l) := by
   unfold NumDatum.ordP
   by_cases hc : N.cls l = PrimeClass.signal
-  · rw [if_pos hc]; exact even_two_mul _
-  · rw [if_neg hc]
+  · rw [ite_eq_left hc]; exact even_two_mul _
+  · rw [ite_eq_right hc]
     exact Nat.not_odd_iff_even.1 fun h => hC ⟨hI.resolve_right hc, h⟩
 
 theorem ne_two_of_not_small {N : NumDatum} {l : ℕ} (h : l ∉ N.H.small) : l ≠ 2 := by

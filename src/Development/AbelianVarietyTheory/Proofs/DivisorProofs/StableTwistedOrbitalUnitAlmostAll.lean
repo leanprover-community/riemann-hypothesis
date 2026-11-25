@@ -232,12 +232,6 @@ theorem twConj_of_norm_eq [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (
 
 end Ring
 
-section Group
-
-variable {G : Type} [Group G]
-
-end Group
-
 variable {E : Type} [Field E] [NumberField E]
 
 theorem eventually_int (x : E) :
@@ -292,9 +286,9 @@ theorem twConj_of_mem (hU : Unr E) (n : ℕ) (w : Pl E) (Q : (w.adicCompletion E
     conj_of_charpoly a b (hQ _ ((hch a).trans ha))
       (Polynomial.map_injective ι hι (by rw [hch, hch, ha, hb]))
   by_cases hw : IsSplitAt w
-  · simp only [nrmL, if_pos hw] at hy hz
+  · simp only [nrmL, ite_eq_left hw] at hy hz
     obtain ⟨g, rfl⟩ := hconj _ _ hy hz
-    exact ⟨GeneralLinearGroup.map ι g, by rw [thL, if_pos hw, map_mul, map_mul, map_inv]; rfl⟩
+    exact ⟨GeneralLinearGroup.map ι g, by rw [thL, ite_eq_left hw, map_mul, map_mul, map_inv]; rfl⟩
   · obtain ⟨-, hcc, hv, h4, -⟩ := GlobalTheory.ConjAtPlace.main E hU w
     obtain ⟨ϖ, q, ⟨-, -, -, -, ⟨x₀, hx₀, hx₁⟩, hq2, hcard⟩, -⟩ := (h4 hw).2.1
     have hcard' : Nat.card (w.adicCompletionIntegers E ⧸ IsLocalRing.maximalIdeal (w.adicCompletionIntegers E))
@@ -307,7 +301,7 @@ theorem twConj_of_mem (hU : Unr E) (n : ℕ) (w : Pl E) (Q : (w.adicCompletion E
     have hc : ∀ x, c (c x) = x := fun x => Subtype.ext (hcc _)
     have hmap : ∀ a, GeneralLinearGroup.map ι (thetaGL n c a) = thetaGL n (cj w) (GeneralLinearGroup.map ι a) :=
       GlobalTheory.ThetaPull.map_thetaGL ι c (cj w) (fun _ => rfl)
-    simp only [nrmL, if_neg hw, ← hmap, ← map_mul] at hy hz
+    simp only [nrmL, ite_eq_right hw, ← hmap, ← map_mul] at hy hz
     obtain ⟨g, hg⟩ := hconj _ _ hy hz
     obtain ⟨k, hk⟩ := twConj_of_norm_eq c hc
       (fun x hx => by
@@ -326,6 +320,6 @@ theorem twConj_of_mem (hU : Unr E) (n : ℕ) (w : Pl E) (Q : (w.adicCompletion E
       calc z' = g⁻¹ * (g * z' * thetaGL n c g⁻¹) * thetaGL n c g := by rw [map_inv]; group
         _ = _ := by rw [hk, map_mul]; group
     refine ⟨GeneralLinearGroup.map ι (k * g), ?_⟩
-    rw [thL, if_neg hw, ← hmap, ← map_inv, ← map_mul, ← map_mul, ← hz']
+    rw [thL, ite_eq_right hw, ← hmap, ← map_inv, ← map_mul, ← map_mul, ← hz']
 
 end GlobalTheory.BCT.UnitStable

@@ -571,7 +571,7 @@ theorem isLiftFr_tilH (d : DecoSet (E := E) (n := n) (ST := ∅) (SG := SG)) {pi
       exact (IntAt.coe _ pi).mul h
   refine ⟨h1, fun x hx => ?_⟩
   show (if sumE rfl f t x ∈ localization₂ w.1.asIdeal (tilN d.1.N) then _ else _) = _
-  rw [if_pos ((h1 x).2 hx), i1, i2, hf.2 _ ((mem_stdAt_succ rfl).1 hx).1, show algebraMap (𝓞 E) E pi = t from ht.symm,
+  rw [ite_eq_left ((h1 x).2 hx), i1, i2, hf.2 _ ((mem_stdAt_succ rfl).1 hx).1, show algebraMap (𝓞 E) E pi = t from ht.symm,
     mul_div_cancel_left₀ _ t.ne_zero]
   funext i
   refine Fin.lastCases ?_ (fun j => ?_) i

@@ -48,7 +48,7 @@ theorem degFl_monomial_one [DecidableEq Ψ] :
   rw [Finset.sum_eq_single (1 : Ψ → Equiv.Perm (Fin N))]
   · simp [← mul_pow]
   · intro σ _ hσ
-    rw [coeff_monomial, if_neg (fun h => hσ (permExp_injective h).symm), mul_zero]
+    rw [coeff_monomial, ite_eq_right (fun h => hσ (permExp_injective h).symm), mul_zero]
   · simp
 
 end RootFieldNumerics.L3
@@ -91,7 +91,7 @@ theorem RootFieldNumerics.exists_degree_one_class : ∀ (Ψ : Type) [Fintype Ψ]
   rw [pkLow, Finset.sum_mul, coeff_sum, Finset.sum_eq_single i0]
   · rw [X_pow_eq_monomial, monomial_mul, one_mul, hm]
   · intro i hi hi0
-    rw [X_pow_eq_monomial, monomial_mul, coeff_monomial, if_neg]
+    rw [X_pow_eq_monomial, monomial_mul, coeff_monomial, ite_eq_right]
     intro h
     have hi1 : i ≠ i1 := by
       intro h'

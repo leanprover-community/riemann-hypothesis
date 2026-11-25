@@ -34,7 +34,7 @@ theorem isAlgebraic_of_mem_adjoin (u x : L) (hx : x ∈ IntermediateField.adjoin
   refine ⟨C (⟨aeval u s, hs⟩ : R) * X - C ⟨aeval u r, hr⟩, ?_, ?_⟩
   · intro h
     have := congrArg (fun p => p.coeff 1) h
-    simp only [coeff_sub, coeff_C_mul, coeff_X_one, mul_one, coeff_C, one_ne_zero, if_false,
+    simp only [coeff_sub, coeff_C_mul, coeff_X_one, mul_one, coeff_C, one_ne_zero, ite_false,
       sub_zero, coeff_zero] at this
     exact h0 (congrArg Subtype.val this)
   · simp only [map_sub, map_mul, aeval_C, aeval_X]

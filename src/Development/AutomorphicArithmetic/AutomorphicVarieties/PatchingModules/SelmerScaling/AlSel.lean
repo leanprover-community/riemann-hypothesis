@@ -80,7 +80,7 @@ private def evE (F : Type) [CommRing F] {n : ℕ} (p : Fin n → Prop) (b : Prop
     intro r i j
     rw [Matrix.algebraMap_matrix_apply]
     refine ⟨fun hij => ?_, fun _ => ?_⟩
-    · rw [if_neg (by rintro rfl; exact hij Iff.rfl)]; rfl
+    · rw [ite_eq_right (by rintro rfl; exact hij Iff.rfl)]; rfl
     · split_ifs
       · simp [TrivSqZeroExt.algebraMap_eq_inl]
       · rfl
@@ -90,7 +90,7 @@ private theorem scal_mem (p : Fin n → Prop) (b : Prop) (y : DualNumber F) (hy 
   intro i j
   rw [Matrix.algebraMap_matrix_apply]
   refine ⟨fun hij => ?_, fun hij => ?_⟩
-  · rw [if_neg (by rintro rfl; exact hij Iff.rfl)]; rfl
+  · rw [ite_eq_right (by rintro rfl; exact hij Iff.rfl)]; rfl
   · split_ifs with e
     · subst e
       exact hy (hij.1 Iff.rfl)

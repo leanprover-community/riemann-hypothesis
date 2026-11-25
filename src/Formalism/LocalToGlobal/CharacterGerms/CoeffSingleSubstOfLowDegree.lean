@@ -166,10 +166,10 @@ theorem coeff_single_substX_tyS {τ : Type} {l : ℕ} (hl : 2 ≤ l) (a : ℕ �
   · rw [Finsupp.mapDomain_single]
     by_cases h : c'' = c
     · subst h
-      rw [if_pos rfl, if_pos rfl, hcoef]
-    · rw [if_neg (fun h' => h ((Finsupp.single_left_injective one_ne_zero h').symm)), if_neg h]
+      rw [ite_eq_left rfl, ite_eq_left rfl, hcoef]
+    · rw [ite_eq_right (fun h' => h ((Finsupp.single_left_injective one_ne_zero h').symm)), ite_eq_right h]
   · intro d hd
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h'
     apply hd
     rw [Finsupp.unique_single d, Finsupp.mapDomain_single] at h'
@@ -206,7 +206,7 @@ theorem isT_sum {V : VF C} {d : ℕ} {I₁ J₁ : Type} [Fintype I₁] [Fintype 
         · intro s _ hs
           rw [Finset.mem_range] at hs
           have : s < V.l ^ s := Nat.lt_pow_self (by omega)
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
       rw [Finset.sum_congr rfl e1, Finset.sum_comm]
       refine Finset.sum_congr rfl fun s _ => ?_
       simp only [Finset.sum_ite_eq]
@@ -224,21 +224,6 @@ theorem isT_sum {V : VF C} {d : ℕ} {I₁ J₁ : Type} [Fintype I₁] [Fintype 
   simp only [key]
   rw [Finset.sum_comm, MvPowerSeries.coeff_X]
   exact ht.2 x μ
-
-section Law
-
-variable {dd : ℕ}
-
-variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O]
-
-end Law
-
-section Sys1
-
-variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ} {d : ℕ} {I : Fin 2 → Type}
-  [∀ g, Fintype (I g)]
-
-end Sys1
 
 end FormalGermZero
 

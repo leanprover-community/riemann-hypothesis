@@ -83,12 +83,12 @@ private lemma isLeft_ne_of_posIx_eq {p q : ℕ} (x y : Ix p q × Ix p q) (hx : �
 private lemma eigP_add_star_eigP_eq_zero {p q : ℕ} (x y : Ix p q × Ix p q) (hx : ¬ sameBlock x.1 x.2)
     (hy : ¬ sameBlock y.1 y.2) (hne : y ≠ x) : eigP x y + star (eigP y x) = 0 := by
   unfold eigP
-  rw [if_neg hne, if_neg (Ne.symm hne)]
+  rw [ite_eq_right hne, ite_eq_right (Ne.symm hne)]
   by_cases h : posIx y.1 = posIx x.1 ∧ posIx y.2 = posIx x.2
   · have c1 : ¬ sameBlock y.1 y.2 ∧ posIx y.1 = posIx x.1 ∧ posIx y.2 = posIx x.2 := ⟨hy, h⟩
     have c2 : ¬ sameBlock x.1 x.2 ∧ posIx x.1 = posIx y.1 ∧ posIx x.2 = posIx y.2 :=
       ⟨hx, h.1.symm, h.2.symm⟩
-    rw [if_pos c1, if_pos c2]
+    rw [ite_eq_left c1, ite_eq_left c2]
     have hL := isLeft_ne_of_posIx_eq x y hx hy hne h.1 h.2
     generalize x.1.isLeft = s at hL ⊢
     generalize y.1.isLeft = t at hL ⊢
@@ -97,16 +97,16 @@ private lemma eigP_add_star_eigP_eq_zero {p q : ℕ} (x y : Ix p q × Ix p q) (h
       fun h' => h ⟨h'.2.1, h'.2.2⟩
     have c2 : ¬ (¬ sameBlock x.1 x.2 ∧ posIx x.1 = posIx y.1 ∧ posIx x.2 = posIx y.2) :=
       fun h' => h ⟨h'.2.1.symm, h'.2.2.symm⟩
-    rw [if_neg c1, if_neg c2]
+    rw [ite_eq_right c1, ite_eq_right c2]
     simp
 
 theorem eigenvectorMatrix_add_star {p q : ℕ} (ab cd : PIx p q) :
     eigP ab.1 cd.1 + star (eigP cd.1 ab.1) = if cd = ab then 2 else 0 := by
   by_cases hc : cd = ab
   · subst hc
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     norm_num [eigP]
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     exact eigP_add_star_eigP_eq_zero ab.1 cd.1 ab.2 cd.2 (fun h => hc (Subtype.ext h))
 
 theorem det_eigenvectorMatrix_ne_zero :

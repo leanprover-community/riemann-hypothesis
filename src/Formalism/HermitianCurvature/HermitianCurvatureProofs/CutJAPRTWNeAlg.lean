@@ -152,11 +152,11 @@ theorem fam_of_hw {n : ℕ} {F : Fin n → Fin n → Module.End ℂ V} {Z : Fin 
     simp only [LinearMap.sub_apply, Module.End.mul_apply, hdiag a, map_smul] at h
     by_cases hac : a = c
     · subst hac
-      simp only [if_true, LinearMap.neg_apply] at h
-      rw [if_pos rfl, sub_eq_iff_eq_add.mp h, sub_smul, one_smul]
+      simp only [ite_true, LinearMap.neg_apply] at h
+      rw [ite_eq_left rfl, sub_eq_iff_eq_add.mp h, sub_smul, one_smul]
       abel
-    · simp only [if_neg hac, LinearMap.zero_apply] at h
-      rw [if_neg hac, sub_zero]
+    · simp only [ite_eq_right hac, LinearMap.zero_apply] at h
+      rw [ite_eq_right hac, sub_zero]
       exact sub_eq_zero.mp h
   · intro a b c hab
     have h := congrArg (fun T : Module.End ℂ V => T v) (hZ a b c)

@@ -618,18 +618,10 @@ theorem lie_isType : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [Comm
     fun τ' => root_cases D.disc_neg hr (hτω τ')
 
   have hinj : Function.Injective τ := by
-    intro i j hij
-    by_contra hne
-    have hle : Ideal.span (Set.range fun x => b.t i x - b.t j x) ≤ RingHom.ker σ := by
-      rw [Ideal.span_le]
-      rintro _ ⟨x, rfl⟩
-      have h1 := hτ' i x
-      have h2 := hτ' j x
-      rw [hij] at h1
-      simp [RingHom.mem_ker, ← h1, ← h2]
-    rw [b.comax i j hne] at hle
-    have : (1 : R) ∈ RingHom.ker σ := hle Submodule.mem_top
-    simp [RingHom.mem_ker] at this
+    intro i j h
+    by_contra hij
+    obtain ⟨c, hc⟩ := b.exists_char_separation σ hij
+    exact hc (by rw [← hτ' i c, ← hτ' j c, h])
   have hτA : ∀ i, τ i (D.ω : D.F) = r := fun i => by rw [hτ', b.t_ω]
   set d : (D.F →+* ℂ) → ℕ := fun τ' => Module.finrank ℂ (eigSp (ρ.comp (algebraMap (𝓞 D.F) D.O)) τ') with hd
 

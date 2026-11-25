@@ -91,7 +91,7 @@ private lemma spectrum_nonempty_of_countable_rank {V : Type} [AddCommGroup V] [_
     rw [Cardinal.mk_complex] at h1
     exact absurd (h1.trans hV) (not_le.mpr Cardinal.aleph0_lt_continuum)
   rw [linearIndependent_iff'] at hdep
-  push_neg at hdep
+  push Not at hdep
   obtain ⟨s, m, hm, i, hi, hmi⟩ := hdep
   let q : ℂ → ℂ[X] := fun a => ∏ j ∈ s.erase a, (X - C j)
   let p : ℂ[X] := ∑ a ∈ s, C (m a) * q a

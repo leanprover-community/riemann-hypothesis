@@ -248,14 +248,14 @@ theorem charpoly_companion {k : Type} [Field k] {r : ℕ} (p : Fin r → k) :
     rw [Algebra.leftMulMatrix_eq_repr_mul, hb, ← pow_succ']
     simp only [companion, Matrix.of_apply]
     by_cases hj : (j : ℕ) + 1 = r
-    · rw [if_pos hj, hj, hroot, ← b.equivFun_symm_apply, ← b.equivFun_apply, LinearEquiv.apply_symm_apply]
-    · rw [if_neg hj]
+    · rw [ite_eq_left hj, hj, hroot, ← b.equivFun_symm_apply, ← b.equivFun_apply, LinearEquiv.apply_symm_apply]
+    · rw [ite_eq_right hj]
       have hlt' : (j : ℕ) + 1 < r := lt_of_le_of_ne j.2 hj
       have : AdjoinRoot.root P ^ ((j : ℕ) + 1) = b ⟨(j : ℕ) + 1, hlt'⟩ := by rw [hb]
       rw [this, b.repr_self, Finsupp.single_apply]
       by_cases hi : (i : ℕ) = (j : ℕ) + 1
-      · rw [if_pos hi, if_pos (Fin.ext hi.symm)]
-      · rw [if_neg hi, if_neg (fun h => hi (congrArg Fin.val h).symm)]
+      · rw [ite_eq_left hi, ite_eq_left (Fin.ext hi.symm)]
+      · rw [ite_eq_right hi, ite_eq_right (fun h => hi (congrArg Fin.val h).symm)]
   have hP0 : P ≠ 0 := hm.ne_zero
   haveI : Module.Finite k (AdjoinRoot P) := pb.finite
   rw [hmat, Algebra.leftMulMatrix_apply, LinearMap.charpoly_toMatrix, ← LinearMap.charpoly_toMatrix _ pb.basis,
@@ -604,7 +604,7 @@ theorem trForm_sepLeft [hU : Unram F E] (r : ℕ) (c : Fin r → E) (h : ∀ b, 
   by_contra hc
   obtain ⟨i, hi⟩ : ∃ i, c i ≠ 0 := by
     by_contra h'
-    push_neg at h'
+    push Not at h'
     exact hc (funext h')
   have h1 := h (Pi.single i (star (c i))⁻¹)
   rw [trForm_apply, dotProduct_single, Pi.star_apply, mul_inv_cancel₀ (star_ne_zero.mpr hi),
@@ -1341,7 +1341,7 @@ namespace GlobalTheory.JR.SizeOne
 
 theorem eta_one' {F : Type} [NormedField F] : eta (1 : F) = 1 := by
   unfold eta
-  rw [if_pos ⟨1, by simp⟩]
+  rw [ite_eq_left ⟨1, by simp⟩]
 
 theorem unitMatch_zero : UnitMatch 0 := by
   intro F E _ _ _ _ _ M a _

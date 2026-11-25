@@ -399,7 +399,7 @@ private theorem inv_of_summable (f : A ℚ → ℂ) (hc : Continuous f) (hp : �
       by_cases h : α = β
       · subst h
         simp
-      · rw [if_neg h, if_neg (sub_ne_zero.2 (Ne.symm h)), mul_zero]
+      · rw [ite_eq_right h, ite_eq_right (sub_ne_zero.2 (Ne.symm h)), mul_zero]
     simp only [e2] at hsum
     exact hsum.unique (hasSum_ite_eq β (c β))
   have hz : (fun v => f v - G v) = 0 := by
@@ -879,7 +879,7 @@ theorem UpperTheory.whittaker_lintegral_abs_pow_bounded_on_maximalCompact :
   rw [← map_mul] at hb
   have hab : 0 ≤ ab y ^ x := Real.rpow_nonneg (IdeleGroup.ideleModule ℚ y).2.le x
   by_cases hy : (y : A ℚ).2 ∈ K
-  · rw [if_pos hy, ← ENNReal.ofReal_mul (abs_nonneg _), ← ofReal_norm_eq_enorm,
+  · rw [ite_eq_left hy, ← ENNReal.ofReal_mul (abs_nonneg _), ← ofReal_norm_eq_enorm,
       ← ENNReal.ofReal_mul (norm_nonneg _)]
     refine ENNReal.ofReal_le_ofReal ?_
     rw [← mul_assoc]

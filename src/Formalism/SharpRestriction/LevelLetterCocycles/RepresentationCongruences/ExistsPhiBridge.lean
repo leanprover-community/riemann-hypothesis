@@ -48,7 +48,7 @@ theorem ringHom_ext_nil {h₁ h₂ : R⟦X⟧ →+* S⟦X⟧} (hC : ∀ r, h₁ 
   obtain ⟨G, hG⟩ : (X : R⟦X⟧) ^ N ∣ F - (PowerSeries.trunc N F : R⟦X⟧) := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro i hi
-    rw [_root_.map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hi, sub_self]
+    rw [_root_.map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, ite_eq_left hi, sub_self]
   have hd : h₁ F - h₂ F = h₁ X ^ N * (h₁ G - h₂ G) := by
     have hF : F = (PowerSeries.trunc N F : R⟦X⟧) + X ^ N * G := by rw [← hG]; ring
     rw [hF]
@@ -101,7 +101,7 @@ private theorem powerSeries_algHom_injective_of_X_ne_zero {R : Type*} [CommRing 
     apply hn
     rw [hU]
     first
-    | rw [PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+    | rw [PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, h]
   have hψU : ψ U ≠ 0 := by
     intro h

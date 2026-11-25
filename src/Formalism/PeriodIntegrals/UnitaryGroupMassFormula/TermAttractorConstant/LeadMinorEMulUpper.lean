@@ -146,7 +146,7 @@ theorem gram_first {N : ℕ} (f g w : Fin N → S.V)
       rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
     rw [Matrix.mul_apply]
     simp only [Matrix.of_apply, add_mul, Finset.sum_add_distrib, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact key
 
 theorem gram_second {N : ℕ} (f w w' : Fin N → S.V)
@@ -169,7 +169,7 @@ theorem gram_second {N : ℕ} (f w w' : Fin N → S.V)
       rw [map_smul, smul_eq_mul, mul_comm]
     rw [Matrix.mul_apply]
     simp only [Matrix.of_apply, mul_add, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact key
 
 variable {T T' : E}

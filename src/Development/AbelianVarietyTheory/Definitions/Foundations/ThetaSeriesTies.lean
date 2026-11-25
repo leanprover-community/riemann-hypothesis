@@ -318,12 +318,6 @@ theorem sub_orthProj_mem_perpOf {K : Type} [Field K] [StarRing K] {n : ℕ} (Hm 
     simp [Formalism.DivisionValues.hform, Matrix.toLinearMapₛₗ₂'_apply, dotProduct, Matrix.mulVec, Finset.mul_sum, starRingEnd_apply, mul_assoc, mul_comm]
   rw [h1, Matrix.mulVecLin_apply, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, h0, dotProduct_zero]
 
-section
-
-variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {i : Fin D.R.m}
-
-end
-
 variable {T : Full D} [inst : Algebra T.J.Q.c.F D.what₂.LL] {R : RealDat D A T.J.Q.c.F}
   {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
 
@@ -402,7 +396,7 @@ def charInt {K : Type} [Field K] [NumberField K] {P : Type} [Group P] (inc : P �
 
 theorem charInt_coe {K : Type} [Field K] [NumberField K] {P : Type} [Group P] (inc : P →* G) (U : Subgroup G) (ψ : U →* Kˣ)
     (g : P) (hg : inc g ∈ U) : ((charInt inc U ψ g : 𝓞 K) : K) = (ψ ⟨inc g, hg⟩ : Kˣ) :=
-  congrArg (fun a : 𝓞 K => (a : K)) (dif_pos hg)
+  congrArg (fun a : 𝓞 K => (a : K)) (dite_eq_left hg)
 
 theorem exists_onTie (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D)
     {Bs : DefBase D.what₂.LL} {Df : DefSide Bs} {S : IndefData Df} {P : Type} [Group P] [Finite P] {oc : OnConst}
@@ -451,7 +445,7 @@ theorem exists_onTie (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Func
       θ'_eq := fun hr x => ?_, eX_eq := rfl, pr_eq := ?_ }⟩
   · exact charInt_coe inc U ψ g hg
   · change adForm R (ι i) (toForms h fw (ι i) (z i) (θ v i x)) = _
-    simp only [θ, dif_pos hr]
+    simp only [θ, dite_eq_left hr]
     exact (congrArg (adForm R (ι i)) (hw i _)).trans (hr.choose_spec x)
   · change orthProj _ (perpOf _ (LinearMap.ker (θ v i))) = orthProj _ (perpOf _ ((LinearMap.ker (θ v i)).map LinearMap.id))
     rw [Submodule.map_id]

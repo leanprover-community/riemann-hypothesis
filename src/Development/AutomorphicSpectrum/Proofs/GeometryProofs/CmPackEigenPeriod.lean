@@ -108,26 +108,6 @@ variable {ex : ℂ → (Over.mk (spMap s) ⟶ P.A)} {Λ : Submodule ℤ ℂ}
 
 end Analytic
 
-section Arithmetic
-
-variable {K : Type} [Field K] [NumberField K]
-
-end Arithmetic
-
-section Data
-
-variable (d : ℕ) (K : Type) [Field K] [NumberField K] {M : Type} [Field M] [NumberField M]
-
-variable {d K}
-
-end Data
-
-section Main
-
-variable {d : ℕ} {K : Type} [Field K] [NumberField K]
-
-end Main
-
 end GlobalTheory.CMPeriodCompare
 end -- clump:auto
 end -- clump:auto

@@ -191,7 +191,7 @@ theorem average {θ : InfFam D} {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin
       have : r = (t : WO S T) - (2 * N) • u := by rw [e]; abel
       rw [this]; exact sub_mem t.2 (AddSubgroup.nsmul_mem _ hu _)
     refine ⟨⟨r, hr⟩, ?_⟩
-    simp only [dif_pos hrΛ]
+    simp only [dite_eq_left hrΛ]
     rw [QuotientAddGroup.eq]
     exact ⟨⟨u, hu⟩, Subtype.ext (by simp [e])⟩
   haveI : Fintype (Λ ⧸ K) := Fintype.ofFinite _

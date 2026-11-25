@@ -228,7 +228,7 @@ theorem exists_unit_one_add_generator (r : ℝ) (hr : 0 < r) :
       show ∏ w, ‖(↑(Z t) : NumberField.AdeleRing (𝓞 ℚ) ℚ).1 w‖ ^ w.mult = |(t : ℝ)|
       rw [Fintype.prod_subsingleton _ p0]
       show ‖ι t p0‖ ^ p0.mult = |(t : ℝ)|
-      rw [hnorm, NumberField.InfinitePlace.mult, if_pos (hv _), pow_one]
+      rw [hnorm, NumberField.InfinitePlace.mult, ite_eq_left (hv _), pow_one]
     have hfin : (Z t).finiteModule = 1 := by
       show ∏ᶠ v, ‖(↑(Z t) : NumberField.AdeleRing (𝓞 ℚ) ℚ).2 v‖ = 1
       have h1 : ∀ v, ‖(↑(Z t) : NumberField.AdeleRing (𝓞 ℚ) ℚ).2 v‖ = 1 := fun v => by
@@ -310,14 +310,14 @@ theorem level {μ : Measure G2} {𝓕 : Set G2} {mK : Measure KA} {𝓓 : Set Jd
       have hD : Dt (dg2 z z * g) = r * Dt g := by rw [Dt_mul, detModulus_diag, hz]
       by_cases hg : Dt g = 1
       · have h2 : Dt (dg2 z z * g) = r := by rw [hD, hg, mul_one]
-        simp only [Set.indicator, Set.mem_setOf_eq, h2, hg, if_true, Pi.one_apply]
+        simp only [Set.indicator, Set.mem_setOf_eq, h2, hg, ite_true, Pi.one_apply]
       · have h2 : Dt (dg2 z z * g) ≠ r := by
           rw [hD]
           intro h3
           apply hg
           have h4 : r * Dt g = r * 1 := by rw [h3, mul_one]
           exact mul_left_cancel₀ hr.ne' h4
-        simp only [Set.indicator, Set.mem_setOf_eq, h2, hg, if_false]
+        simp only [Set.indicator, Set.mem_setOf_eq, h2, hg, ite_false]
     beta_reduce at key
     rw [hpre, lintegral_indicator_one (hmeasS 1), lintegral_indicator_one (hmeasS r),
       Measure.restrict_apply (hmeasS 1), Measure.restrict_apply (hmeasS r)] at key

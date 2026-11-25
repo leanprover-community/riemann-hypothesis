@@ -38,7 +38,7 @@ theorem toL_coeff_nat (f : R⟦X⟧) (n : ℕ) : (toL f).coeff (n : ℤ) = coeff
 
 theorem toL_coeff_neg (f : R⟦X⟧) {n : ℤ} (hn : n < 0) : (toL f).coeff n = 0 := by
   first
-    | (rw [PowerSeries.coeff_coe, if_pos hn])
+    | (rw [PowerSeries.coeff_coe, ite_eq_left hn])
 
 theorem uPow_zero : (uPow 0 : LaurentSeries R) = 1 := rfl
 

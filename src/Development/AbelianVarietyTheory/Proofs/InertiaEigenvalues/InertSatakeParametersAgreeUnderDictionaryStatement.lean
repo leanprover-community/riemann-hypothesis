@@ -457,7 +457,7 @@ theorem cosetSum_transfer_surj {G H V : Type} [Group G] [Group H] [AddCommGroup 
   have hval : ∀ d, F (f d) = a d.out • β (t d) := by
     intro d
     have hc : ∃ x : G, (x : G ⧸ U0) = f d ∧ x ∈ T := ⟨t d, rfl, (t d).2⟩
-    simp only [hF, dif_pos hc]
+    simp only [hF, dite_eq_left hc]
     obtain ⟨hU, k, hk, hkk⟩ := key (t d) ⟨hc.choose, hc.choose_spec.2⟩ hc.choose_spec.1.symm
     rw [hkk, ha _ k hk, ht]
     congr 1
@@ -470,7 +470,7 @@ theorem cosetSum_transfer_surj {G H V : Type} [Group G] [Group H] [AddCommGroup 
     rw [Function.mem_support] at hc
     have hc' : ∃ x : G, (x : G ⧸ U0) = c ∧ x ∈ T := by
       by_contra hn
-      exact hc (by simp only [hF, dif_neg hn])
+      exact hc (by simp only [hF, dite_eq_right hn])
     obtain ⟨x, rfl, hx⟩ := hc'
     obtain ⟨h1, h2⟩ := hcover ⟨x, hx⟩
     refine Finset.mem_coe.2 (Finset.mem_image.2 ⟨_, ?_, h1⟩)
@@ -1297,14 +1297,14 @@ theorem quad (α : Fin m → ℂ) (j k : Fin m) :
       (α j + (α j)⁻¹) * (α k + (α k)⁻¹) + if j = k then 2 * (1 - α j * (α j)⁻¹) else 0 := by
   by_cases hjk : j = k
   · subst hjk
-    rw [if_pos rfl, add_neg_cancel, mon_zero,
+    rw [ite_eq_left rfl, add_neg_cancel, mon_zero,
       mon_add _ _ _ (fun i => mul_self_nonneg _), mon_add _ _ _ (fun i => mul_self_nonneg _), mon_e, mon_ne]
     ring
   · have h0 : ∀ i, (Pi.single j (1 : ℤ) : Fin m → ℤ) i * (Pi.single k (1 : ℤ) : Fin m → ℤ) i = 0 := fun i => by
       by_cases hi : i = j
       · subst hi; rw [Pi.single_eq_of_ne hjk, mul_zero]
       · rw [Pi.single_eq_of_ne hi, zero_mul]
-    rw [if_neg hjk, add_zero,
+    rw [ite_eq_right hjk, add_zero,
       mon_add _ _ _ (fun i => by rw [h0 i]),
       mon_add _ _ _ (fun i => by rw [Pi.neg_apply, mul_neg, h0 i, neg_zero]),
       mon_add _ _ _ (fun i => by rw [Pi.neg_apply, mul_neg, mul_comm, h0 i, neg_zero]),
@@ -1347,7 +1347,7 @@ theorem laurentCoeffEval_squareSymmetricCoeffs (α : Fin m → ℂ) (c₀ A : �
       A ^ 2 * (∑ k, (α k + (α k)⁻¹)) ^ 2 + 2 * A ^ 2 * ∑ k, (1 - α k * (α k)⁻¹) := by
     rw [pow_two (∑ k, (α k + (α k)⁻¹)), Finset.sum_mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+    simp only [mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
       Finset.mul_sum]
     ring
   have h2 : ∑ k, (2 * c₀ * A * α k + 2 * c₀ * A * (α k)⁻¹) = 2 * c₀ * A * ∑ k, (α k + (α k)⁻¹) := by
@@ -1422,22 +1422,22 @@ theorem eq_lin (s : (Fin m → ℤ) →₀ ℂ) (h : ∀ κ, s κ ≠ 0 → κ =
     simp
   by_cases h1 : ∃ k, κ = Pi.single k 1
   · obtain ⟨j, rfl⟩ := h1
-    simp only [if_neg (Ne.symm h0), zero_add, hinj, fun k => (single_ne_neg_single j k).symm, if_false, add_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_eq_right (Ne.symm h0), zero_add, hinj, fun k => (single_ne_neg_single j k).symm, ite_false, add_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases h2 : ∃ k, κ = -Pi.single k 1
   · obtain ⟨j, rfl⟩ := h2
-    simp only [if_neg (Ne.symm h0), zero_add, hinj', single_ne_neg_single, if_false, zero_add,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  push_neg at h1 h2
+    simp only [ite_eq_right (Ne.symm h0), zero_add, hinj', single_ne_neg_single, ite_false, zero_add,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  push Not at h1 h2
   have hs : s κ = 0 := by
     by_contra hc
     rcases h κ hc with e | ⟨k, e | e⟩
     · exact h0 e
     · exact h1 k e
     · exact h2 k e
-  rw [hs, if_neg (Ne.symm h0), zero_add]
+  rw [hs, ite_eq_right (Ne.symm h0), zero_add]
   refine (Finset.sum_eq_zero fun k _ => ?_).symm
-  rw [if_neg (fun e => h1 k e.symm), if_neg (fun e => h2 k e.symm), add_zero]
+  rw [ite_eq_right (fun e => h1 k e.symm), ite_eq_right (fun e => h2 k e.symm), add_zero]
 
 theorem satU_ne_zero : ∀ (K : Type) [Field K] [Valued K (WithZero (Multiplicative ℤ))] [CompleteSpace K] (ϖ : K)
     (σ : K →+* K) (q n : ℕ), Formalism.UG.IsUnramInv ϖ σ q → ∀ (α : Fin (n / 2) → ℂ) (β : Fin (n / 2) → ℂˣ),

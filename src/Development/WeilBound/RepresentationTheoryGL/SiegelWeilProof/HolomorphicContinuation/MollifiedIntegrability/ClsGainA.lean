@@ -129,9 +129,9 @@ theorem entAn_inv {M : MC n → Matrix (Fin n) (Fin n) ℂ} {B₀ : MC n} (h : E
   refine ((an_det h).inv h0).mul (an_det fun a b => ?_)
   simp only [updateRow_apply]
   by_cases hab : a = j
-  · simp only [hab, if_true]
+  · simp only [hab, ite_true]
     exact analyticAt_const
-  · simp only [hab, if_false]
+  · simp only [hab, ite_false]
     exact h a b
 
 theorem entAn_X (c : ℂ) (B₀ : MC n) : EntAn (fun B : MC n => 1 - c • Matrix.of B) B₀ := fun i j => by
@@ -174,9 +174,9 @@ theorem an_clsC (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin 
   have hf : ∀ k : Bool × Fin n × Fin n, AnalyticAt ℂ (fun B : MC n => if k.1 then (1 + (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2
       else (1 - (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2) B₀ := by
     rintro ⟨_ | _, a, b⟩
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       exact hu a b
-    · simp only [if_true]
+    · simp only [ite_true]
       exact hv a b
   have hev := an_eval (fun k B => if k.1 then (1 + (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2
       else (1 - (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2) B₀ hf R

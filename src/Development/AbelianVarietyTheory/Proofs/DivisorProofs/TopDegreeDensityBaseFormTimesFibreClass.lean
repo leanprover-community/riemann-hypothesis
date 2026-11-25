@@ -436,7 +436,7 @@ theorem row_lt {s : ℕ} {i : Fin s} {y y' : Low s → ℂ} (h : ∀ j : Low s, 
 
 theorem row_ge {s : ℕ} {i : Fin s} (y : Low s → ℂ) {a : Fin s} (ha : i ≤ a) (c : Fin s) :
     upU (fun j => if j.1.2 < i then y j else 0) a c = if a = c then 1 else 0 := by
-  simp only [upU, Matrix.of_apply, ha.not_gt, if_false]
+  simp only [upU, Matrix.of_apply, ha.not_gt, ite_false]
   split_ifs with h1 h2
   · exact absurd h2 h1.ne
   all_goals rfl
@@ -450,7 +450,7 @@ theorem rows_eq {s : ℕ} {i : Fin s} {y y' : Low s → ℂ} (h : ∀ j : Low s,
   rintro (a | a) c <;> refine Eq.trans ?_ Matrix.mul_apply.symm
   · simp only [Fintype.sum_sum_type, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
       Matrix.zero_apply, zero_mul, Finset.sum_const_zero, add_zero, Matrix.one_apply, ite_mul, one_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, Matrix.submatrix_apply, id]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, Matrix.submatrix_apply, id]
     exact congrFun (row_lt h a.2) c
   · simp only [Fintype.sum_sum_type, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂,
       Matrix.zero_apply, zero_mul, Finset.sum_const_zero, zero_add, Matrix.submatrix_apply, id, Matrix.of_apply]
@@ -464,11 +464,11 @@ theorem rows_eq {s : ℕ} {i : Fin s} {y y' : Low s → ℂ} (h : ∀ j : Low s,
     · have h1 : ixA i (.inl c) < i := c.2
       simp [upU, h1.not_gt, h1.ne']
     · simp only [EmbeddingLike.apply_eq_iff_eq, Sum.inr.injEq, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       obtain _ | ⟨⟨⟨b, a⟩, hab⟩, rfl⟩ := c
       · change upU y' i i = 1
         simp [upU]
-      · exact dif_pos hab
+      · exact dite_eq_left hab
 
 theorem conj_mul {A B C : Type} [Fintype B] [Fintype C] (W : Matrix A B ℂ) (R : Matrix B C ℂ) (G : Matrix C C ℂ) :
     W * R * G * (W * R)ᴴ = W * (R * G * Rᴴ) * Wᴴ := by
@@ -684,7 +684,7 @@ theorem leviForm_log_herm : ∀ (n : ℕ) (B : Type) [Fintype B] [DecidableEq B]
   have hL : ∀ (a : B) i, L i (Pi.single a 1) = if i = some a then 1 else 0 := by
     intro a i; cases i <;> simp [L, Pi.single_apply]
   simp only [hL, map_zero, add_zero, apply_ite (starRingEnd ℂ), map_one, ite_mul, mul_ite, one_mul,
-    zero_mul, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+    zero_mul, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Finset.sum_ite_irrel, Finset.sum_const_zero]
   rfl
 

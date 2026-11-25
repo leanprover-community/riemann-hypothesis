@@ -330,12 +330,12 @@ theorem integrals_translates : ∀ (F : Type) [Field F] [NumberField F] (li : Me
     by_cases hS : v ∈ S
     · have h1 := integral_pi_unit (lam v) (fun x => g v ((a : AF F).2 v * x))
       have h2 := integral_mul_fin v (lam v) (hlam v).1 _ (hv v) (g v)
-      simp only [psiA, hS, if_true]
+      simp only [psiA, hS, ite_true]
       rw [h1, h2]
     · have h1 := integral_pi_unit (lam v) (fun x =>
         if (a : AF F).2 v * x ∈ v.adicCompletionIntegers F then (1 : ℝ) else 0)
       have h2 := integral_ind v (lam v) (hlam v) _ (hv v)
-      simp only [psiA, hS, if_false]
+      simp only [psiA, hS, ite_false]
       rw [h1, h2, mul_one]
   have hS' : ∏ v ∈ T, (if v ∈ S then ∫ s, g v s ∂(lam v) else 1) = ∏ v ∈ S, ∫ s, g v s ∂(lam v) := by
     symm
@@ -394,17 +394,17 @@ theorem finite_contributing : ∀ (F : Type) [Field F] [NumberField F], IsTotall
   have hS : ∀ v ∈ S, algebraMap F (Fv F v) x * (↑a : AF F).2 v ∈ tsupport (g v) := by
     intro v hv
     have h := hpsi v (hST hv)
-    simp only [psiA, if_pos hv] at h
+    simp only [psiA, ite_eq_left hv] at h
     rw [mul_comm]
     exact subset_tsupport _ h
   have hnS : ∀ v ∉ S, algebraMap F (Fv F v) x * (↑a : AF F).2 v ∈ v.adicCompletionIntegers F := by
     intro v hv
     by_cases hvT : v ∈ T
     · have h := hpsi v hvT
-      simp only [psiA, if_neg hv] at h
+      simp only [psiA, ite_eq_right hv] at h
       rw [mul_comm]
       by_contra hc
-      exact h (if_neg hc)
+      exact h (ite_eq_right hc)
     · exact mul_mem (hxT v hvT) (ha v hvT).1
   obtain ⟨y, hy⟩ := hNint a (Set.mem_singleton a) x hS hnS
   have hN0 : (N : F) ≠ 0 := by exact_mod_cast hN.ne'
@@ -486,9 +486,9 @@ theorem pure_term : ∀ (F : Type) [Field F] [NumberField F] (θ : ℝ →+* Ain
   rw [GlobalTheory.T.pure_adelic_function_formula F S G g (pr t * (a * r δ))]
   simp only [c1, c2]
   by_cases ht : ∀ v, v ∉ T → algebraMap F (Fv F v) (t : F) ∈ v.adicCompletionIntegers F
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     by_cases h : ∀ v, v ∉ S → (a : AF F).2 v * algebraMap F (Fv F v) (t : F) ∈ v.adicCompletionIntegers F
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       have hp : ∏ v ∈ S, g v ((a : AF F).2 v * algebraMap F (Fv F v) (t : F)) =
           ∏ v ∈ T, psiA S g a v (fun _ => algebraMap F (Fv F v) (t : F)) := by
         rw [← Finset.prod_subset hST]
@@ -498,8 +498,8 @@ theorem pure_term : ∀ (F : Type) [Field F] [NumberField F] (θ : ℝ →+* Ain
           simp [psiA, hv, h v hv]
       rw [hp]
       rfl
-    · rw [if_neg h]
-      push_neg at h
+    · rw [ite_eq_right h]
+      push Not at h
       obtain ⟨v, hvS, hv⟩ := h
       have hvT : v ∈ T := by
         by_contra hvT
@@ -508,7 +508,7 @@ theorem pure_term : ∀ (F : Type) [Field F] [NumberField F] (θ : ℝ →+* Ain
         Finset.prod_eq_zero hvT (by simp [psiA, hvS, hv])
       rw [hz]
       simp
-  · rw [if_neg ht, if_neg]
+  · rw [ite_eq_right ht, ite_eq_right]
     intro h
     exact ht fun v hv => (key v hv).1 (h v fun hs => hv (hST hs))
 
@@ -589,8 +589,8 @@ theorem th_pure_rv_zero_bound : ∀ (F : Type) [Field F] [NumberField F], IsTota
       rw [this, hr1]
     by_cases hint : ∀ v, v ∉ S → ((pr t * (u * r δ) : (AF F)ˣ) : AF F).2 v ∈ v.adicCompletionIntegers F
     swap
-    · exact absurd (if_neg hint) ht
-    rw [if_pos hint] at ht
+    · exact absurd (ite_eq_right hint) ht
+    rw [ite_eq_left hint] at ht
     have hne : G ((pr t * (u * r δ) : (AF F)ˣ) : AF F).1 * ∏ v ∈ S, g v (((pr t * (u * r δ) : (AF F)ˣ) : AF F).2 v) ≠ 0 := by
       intro h
       exact ht (by rw [h]; simp)

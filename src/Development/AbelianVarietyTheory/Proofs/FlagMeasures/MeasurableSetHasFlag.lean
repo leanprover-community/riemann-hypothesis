@@ -72,9 +72,9 @@ theorem continuous_frm (I : AutInst) (w : InfinitePlace I.E) :
   have hc : Continuous fun g : I.Ginf => uMat (g (w.comap (algebraMap I.F I.E))) :=
     Units.continuous_val.comp (continuous_subtype_val.comp (continuous_apply _))
   by_cases h : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
-  · simp only [frm, if_pos h]
+  · simp only [frm, ite_eq_left h]
     exact continuous_const.mul hc
-  · simp only [frm, if_neg h]
+  · simp only [frm, ite_eq_right h]
     exact (continuous_const.mul hc).matrix_map Complex.continuous_conj
 
 theorem continuous_frm_inv (I : AutInst) (w : InfinitePlace I.E) :

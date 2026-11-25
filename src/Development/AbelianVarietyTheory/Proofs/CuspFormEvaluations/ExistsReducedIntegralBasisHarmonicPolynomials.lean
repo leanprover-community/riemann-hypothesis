@@ -581,8 +581,8 @@ theorem mult_add_mult_conjugate (Dw : Datum H) (τ : E →+* ℂ) :
     simpa using h
   simp only [Datum.mult, ComplexEmbedding.conjugate_coe_eq]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 hs with h | h
-  · rw [if_pos h, if_neg (by rw [h, hc]; exact hne.symm)]
-  · rw [if_neg (by rw [h]; exact hne.symm), if_pos (by rw [h, map_neg, hc, neg_neg]), add_comm]
+  · rw [ite_eq_left h, ite_eq_right (by rw [h, hc]; exact hne.symm)]
+  · rw [ite_eq_right (by rw [h]; exact hne.symm), ite_eq_left (by rw [h, map_neg, hc, neg_neg]), add_comm]
 
 theorem card_LtN (Dw : Datum H) (n : ℕ) :
     Fintype.card (LtN Dw n) = FD.fdeg E * (Dw.p + Dw.q) * n := by

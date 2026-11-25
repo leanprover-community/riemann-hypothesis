@@ -242,9 +242,9 @@ theorem prod_pairs_even {m : ℕ} (hm : 2 ≤ m) (he : Even m) (a b : Fin (m - 1
   · refine Finset.prod_congr rfl fun j _ => if_ctx_congr Iff.rfl (fun hj => ?_) fun _ => rfl
     have h2 := j.2
     rw [Nat.even_iff] at hj
-    rw [if_pos (by rw [Nat.even_iff]; simp only; omega), if_neg (by rw [Nat.even_iff]; simp only; omega)]
+    rw [ite_eq_left (by rw [Nat.even_iff]; simp only; omega), ite_eq_right (by rw [Nat.even_iff]; simp only; omega)]
     ring
-  · rw [if_pos (by simp)]; rfl
+  · rw [ite_eq_left (by simp)]; rfl
 
 end Abstract
 
@@ -373,16 +373,16 @@ theorem flatTensor_pureTensor_eq_prod_contr : ∀ (k : Type) [Field k] [Valuativ
     rw [contractIntegrand, h1, prod_pairs_even hm he]
     congr 1
     · refine Finset.prod_congr rfl fun j _ => if_ctx_congr Iff.rfl (fun hj => ?_) fun _ => rfl
-      rw [dif_pos hj]
+      rw [dite_eq_left hj]
       congr 4
       refine Finset.sum_congr rfl fun r _ => ?_
       exact congrArg₂ (· * ·) (keptRow_eq x w ⟨j + 1, by omega⟩ (od j hj) r) (keptCol_eq w ⟨j, by omega⟩ (ev j hj) r)
     · congr 4
       refine Finset.sum_congr rfl fun r _ => ?_
-      exact congrArg₂ (· * ·) (dif_neg (by simp only; omega)) (keptCol_eq w ⟨G.m - 2, by omega⟩ el r)
+      exact congrArg₂ (· * ·) (dite_eq_right (by simp only; omega)) (keptCol_eq w ⟨G.m - 2, by omega⟩ el r)
   · congr 1
     · refine Finset.prod_congr rfl fun j _ => if_ctx_congr Iff.rfl (fun hj => ?_) fun _ => rfl
-      simp only [dif_pos hj]
+      simp only [dite_eq_left hj]
       convert integral_double_step ν hψ (ev j hj) (od j hj)
         (stepDatum_mem_SB hs ⟨j, by omega⟩ (hφ j (by omega)))
         (stepDatum_mem_SB hs ⟨j + 1, by omega⟩ (hφ (j + 1) (by omega))) (x j) (x (j + 1))
@@ -445,7 +445,7 @@ theorem prod_fin_even (n : ℕ) (g : ℕ → ℂ) :
   | zero => simp
   | succ n ih =>
     rw [show 2 * (n + 1) = 2 * n + 1 + 1 by ring, Finset.prod_range_succ, Finset.prod_range_succ, ih,
-      Finset.prod_range_succ, if_pos (even_two_mul n), if_neg (by rw [Nat.not_even_iff_odd]; exact odd_two_mul_add_one n), mul_one]
+      Finset.prod_range_succ, ite_eq_left (even_two_mul n), ite_eq_right (by rw [Nat.not_even_iff_odd]; exact odd_two_mul_add_one n), mul_one]
 
 theorem locA_last (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k Circle) (ν : Measure k)
     (φ : ∀ b : Edge, Matrix (Fin (G.rank b.tgt)) (Fin (G.rank b.src)) k → ℂ) (x : ColArgs G) (j : ℕ) (hj : j + 2 = G.m) :

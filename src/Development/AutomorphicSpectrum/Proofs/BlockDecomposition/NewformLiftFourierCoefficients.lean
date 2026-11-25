@@ -210,7 +210,7 @@ end Local
 
 theorem wr_ne (k : ℕ) : WR k (-1) ≠ 0 := by
   unfold WR
-  rw [if_pos (by simp)]
+  rw [ite_eq_left (by simp)]
   exact Complex.ofReal_ne_zero.2 (mul_ne_zero (pow_ne_zero _ (by simp)) (Real.exp_ne_zero _))
 
 theorem wh_zero (g : G2) : Wh 0 g = 0 := by

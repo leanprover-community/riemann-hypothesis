@@ -112,8 +112,8 @@ theorem affPt_eq (hc : 1 ≤ c) (he : IsOrd (yPos (fun a => (d a).val) n) e)
   simp only [toLoc, unfoldingAffineLinearMap_apply_single]
   by_cases h : Free 1 (r, s)
   · have hf := hF.1 h
-    rw [dif_pos hf]
-    simp only [affPt, Matrix.add_apply, Matrix.of_apply, dif_pos h]
+    rw [dite_eq_left hf]
+    simp only [affPt, Matrix.add_apply, Matrix.of_apply, dite_eq_left h]
     have hb : basePt c (toLoc ι d d' x₀) r s = 0 := by
       rcases r with r | l <;> rcases s with s | i
       · simp [Free] at h
@@ -123,26 +123,26 @@ theorem affPt_eq (hc : 1 ≤ c) (he : IsOrd (yPos (fun a => (d a).val) n) e)
         simp [basePt, h.ne]
     rw [hb, zero_add]; rfl
   · have hf : ¬ Loc.IsFree n' n c (e r).val (e' s).val := fun h' => h (hF.2 h')
-    rw [dif_neg hf]
-    simp only [affPt, Matrix.add_apply, Matrix.of_apply, dif_neg h, add_zero]
+    rw [dite_eq_right hf]
+    simp only [affPt, Matrix.add_apply, Matrix.of_apply, dite_eq_right h, add_zero]
     rcases r with r | l <;> rcases s with s | i
     · have hs : (e' (.inl s)).val < n' := by rw [ord_inl' he']; exact (d' s).2
       have hl : (e (.inl r)).val < n := by rw [ord_inl he]; exact (d r).2
-      rw [dif_pos hs, dif_pos hl]
+      rw [dite_eq_left hs, dite_eq_left hl]
       have h1 : (⟨(e (.inl r)).val, hl⟩ : Fin n) = d r := Fin.ext (ord_inl he r)
       have h2 : (⟨(e' (.inl s)).val, hs⟩ : Fin n') = d' s := Fin.ext (ord_inl' he' s)
       rw [h1, h2]
       simp [basePt, LinearMap.toMatrix'_apply, toLoc]
     · have hs : ¬ (e' (.inr i)).val < n' := by rw [ord_inr' he']; omega
       have hl : (e (.inl r)).val < n := by rw [ord_inl he]; exact (d r).2
-      rw [dif_neg hs, if_neg (by rw [ord_inr' he']; omega)]
+      rw [dite_eq_right hs, ite_eq_right (by rw [ord_inr' he']; omega)]
       simp [basePt]
     · have hs : (e' (.inl s)).val < n' := by rw [ord_inl' he']; exact (d' s).2
       have hl : ¬ (e (.inr l)).val < n := by rw [ord_inr he]; omega
-      rw [dif_pos hs, dif_neg hl]
+      rw [dite_eq_left hs, dite_eq_right hl]
       simp [basePt]
     · have hs : ¬ (e' (.inr i)).val < n' := by rw [ord_inr' he']; omega
-      rw [dif_neg hs]
+      rw [dite_eq_right hs]
       simp only [ord_inr he, ord_inr' he', basePt]
       simp
 end Coord2
@@ -235,7 +235,7 @@ theorem affPt_free (x₀ : Matrix U U' k) (u : {rs : (U ⊕ Fin c) × (U' ⊕ Fi
     (rs : (U ⊕ Fin c) × (U' ⊕ Fin (c + 1))) (h : Free 1 rs) : affPt 1 x₀ u rs.1 rs.2 = u ⟨rs, h⟩ := by
   classical
   simp only [affPt, Matrix.add_apply, Matrix.of_apply, basePt_free x₀ rs h, zero_add]
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 
 open Classical in
@@ -280,7 +280,7 @@ theorem free_small (ϖ : kˣ) (hv : valuation k (ϖ : k) < 1) {B : ℕ}
   rw [coords_apply]
   by_cases h : Free 1 (r, s)
   · obtain ⟨m, -, hw⟩ := free_wt ϖ (r, s) h
-    simp only [freeMat, Matrix.of_apply, dif_pos h]
+    simp only [freeMat, Matrix.of_apply, dite_eq_left h]
     rw [hw]
     have e1 : (wt ϖ r)⁻¹ * y ⟨(r, s), h⟩ * (wt ϖ r * (ϖ : k) ^ m * ϖ) = y ⟨(r, s), h⟩ * (ϖ : k) ^ m * ϖ := by
       have := wt_ne_zero ϖ r
@@ -288,7 +288,7 @@ theorem free_small (ϖ : kˣ) (hv : valuation k (ϖ : k) < 1) {B : ℕ}
     rw [e1, map_mul, map_mul, map_pow]
     have h1 : valuation k (y ⟨(r, s), h⟩) ≤ 1 := (hy _).trans (by rw [map_pow]; exact pow_le_one' hv.le _)
     exact lt_of_le_of_lt (mul_le_of_le_one_left zero_le' (mul_le_one' h1 (pow_le_one' hv.le _))) hv
-  · simp only [freeMat, Matrix.of_apply, dif_neg h, mul_zero, zero_mul, map_zero]
+  · simp only [freeMat, Matrix.of_apply, dite_eq_right h, mul_zero, zero_mul, map_zero]
     exact zero_lt_one
 
 theorem ch_freeMat_int (ϖ : kˣ) (hv : valuation k (ϖ : k) < 1) {B : ℕ}
@@ -299,7 +299,7 @@ theorem ch_freeMat_int (ϖ : kˣ) (hv : valuation k (ϖ : k) < 1) {B : ℕ}
   refine sum_mem fun i _ => ?_
   have h : Free 1 ((Sum.inr i : U ⊕ Fin c), (Sum.inr i.succ : U' ⊕ Fin (c + 1))) := by
     simp [Free, Fin.val_succ]
-  simp only [freeMat, Matrix.of_apply, dif_pos h, Valuation.mem_integer_iff]
+  simp only [freeMat, Matrix.of_apply, dite_eq_left h, Valuation.mem_integer_iff]
   exact (hy _).trans (by rw [map_pow]; exact pow_le_one' hv.le _)
 
 end Val

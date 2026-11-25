@@ -73,13 +73,13 @@ theorem intAt_of_locTop (hL : L.Ok Ch sel mu cst G m2) (P : rowSG Pr sel mu) {j 
       simp [LinearMap.funLeft_apply, Loc.eN, Pi.single_apply, Fin.ext_iff]
     simp only [LinearMap.comp_apply, e1] at h3
     have hlt' : l.1 < R.N R.m - 1 + 0 := hlt
-    simp only [Loc.atN, dif_pos hlt', prXp, LinearMap.funLeft_apply] at h3
+    simp only [Loc.atN, dite_eq_left hlt', prXp, LinearMap.funLeft_apply] at h3
     have h4 := (GlobalTheory.SuppTop.intAt_nat P.1 (qOf P.1 ^ cst.A)).mul h3
     rwa [Nat.cast_pow] at h4
   · have h3 := GlobalTheory.SuppTop.intAt_of_ftY sel mu cst P _ _ h2 s
     have hl3 : R.N R.m - 1 < R.N R.m := by omega
     have hl4 : (⟨R.N R.m - 1, hl3⟩ : Fin (R.N R.m)) = l := Fin.ext (by simp only; omega)
-    simp only [LinearMap.comp_apply, atNL, dif_pos hl3, LinearMap.proj_apply, hl4] at h3
+    simp only [LinearMap.comp_apply, atNL, dite_eq_left hl3, LinearMap.proj_apply, hl4] at h3
     obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le' hL.cst_ok.M_le_A
     have h4 := (GlobalTheory.SuppTop.intAt_nat P.1 (qOf P.1 ^ k)).mul h3
     rw [Nat.cast_pow, ← mul_assoc, ← pow_add] at h4

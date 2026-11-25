@@ -136,7 +136,7 @@ theorem nL_mem : LevelPointCoordinates.nL k r j hj a ∈ Nset k r := by
     · intro b _
       have hc := c.isLt
       rw [single_apply_of_col_ne _ _ (fun h => eI_ne_esI c ⟨b, by omega⟩ h.symm), mul_zero, zero_sub]
-      rw [single_apply, if_neg, mul_zero, neg_zero]
+      rw [single_apply, ite_eq_right, mul_zero, neg_zero]
       rintro ⟨h1, h2⟩
       have e1 := congrArg Fin.val h1; have e2 := congrArg Fin.val h2
       simp only [eI] at e1 e2
@@ -147,7 +147,7 @@ theorem nL_mem : LevelPointCoordinates.nL k r j hj a ∈ Nset k r := by
     · by_cases h : i = q <;> simp [h, Matrix.one_apply]
     · intro b _
       have hb := b.isLt
-      rw [single_apply, if_neg, single_apply, if_neg, mul_zero, mul_zero, sub_zero]
+      rw [single_apply, ite_eq_right, single_apply, ite_eq_right, mul_zero, mul_zero, sub_zero]
       · rintro ⟨_, h2⟩
         have e2 := congrArg Fin.val h2; simp only [eI] at e2; omega
       · rintro ⟨_, h2⟩

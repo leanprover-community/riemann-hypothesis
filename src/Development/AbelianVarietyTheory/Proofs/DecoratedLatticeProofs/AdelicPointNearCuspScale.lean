@@ -137,7 +137,7 @@ theorem firstMin_pos : ∀ (I : AutInst) (y : I.Ginf), ∃ t : ℝ, 0 < t ∧ No
     add_pos_of_nonneg_of_pos (Finset.sum_nonneg fun v _ => cst_nonneg I y v) one_pos
   refine ⟨1 / (∑ v, cst I y v + 1), by positivity, fun u hu h0 => ?_⟩
   obtain ⟨i, hi⟩ : ∃ i, u i ≠ 0 := by
-    by_contra hc; push_neg at hc; exact h0 (funext hc)
+    by_contra hc; push Not at hc; exact h0 (funext hc)
   obtain ⟨v, hv⟩ := exists_one_le_norm I (hu i) hi
   have h2 : cst I y v ≤ ∑ v, cst I y v + 1 := by
     have := Finset.single_le_sum (f := cst I y) (fun v _ => cst_nonneg I y v) (Finset.mem_univ v)
@@ -464,7 +464,7 @@ theorem exists_scale_of_bdd {ι : Type*} (N : ι → ℝ) (t a : ℝ) (ht : 0 < 
         exact ⟨i, hi.le⟩
       · left
         exact min_eq_right h2
-  · push_neg at h
+  · push Not at h
     exact ⟨a, ha, le_rfl, fun i => by linarith [h i], Or.inl rfl⟩
 
 theorem exists_root_scale (n : ℕ) (s₀ m : ℝ) (hs : 0 < s₀) (hm : 0 < m) :

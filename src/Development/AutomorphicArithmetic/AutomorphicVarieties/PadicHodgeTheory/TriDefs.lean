@@ -80,7 +80,7 @@ def M1 : Representation B G (B × B) where
     have r1 : (1 : Fin 3).rev = 1 := rfl
     have r2 : (2 : Fin 3).rev = 0 := rfl
     rcases Int.units_eq_one_or (η g) with hg | hg <;> rcases Int.units_eq_one_or (η h) with hh | hh <;>
-      simp only [map_mul, T.mul, hg, hh, hn, r0, r1, r2, if_true, if_false, mul_one, one_mul, neg_mul_neg,
+      simp only [map_mul, T.mul, hg, hh, hn, r0, r1, r2, ite_true, ite_false, mul_one, one_mul, neg_mul_neg,
         LinearMap.coe_mk, AddHom.coe_mk, Module.End.mul_apply, div_eq_mul_inv, mul_inv, inv_inv, Units.val_mul] <;>
       ext <;> simp only [] <;> ring
 
@@ -104,13 +104,13 @@ theorem alternatingForm_adjointSuperdiagRep (g : G) (v w : B × B) : omg (T.M1 g
     rw [← Units.val_mul, div_mul_div_cancel]
   have hn : ((-1 : ℤˣ) = 1) = False := by decide
   rcases Int.units_eq_one_or (η g) with hg | hg <;>
-    simp only [adjointSuperdiagRep_apply, χ2_apply, hg, hn, if_true, if_false, omg, e, Units.val_one, Units.val_neg, Int.cast_one,
+    simp only [adjointSuperdiagRep_apply, χ2_apply, hg, hn, ite_true, ite_false, omg, e, Units.val_one, Units.val_neg, Int.cast_one,
       Int.cast_neg] <;> ring
 
 def ch (H : Subgroup G) (hH : ∀ g ∈ H, η g = 1) (i : Fin 3) : H →* Bˣ where
   toFun g := T.t g i
   map_one' := T.t_one i
-  map_mul' g h := by rw [Subgroup.coe_mul, T.mul, if_pos (hH g g.2)]
+  map_mul' g h := by rw [Subgroup.coe_mul, T.mul, ite_eq_left (hH g g.2)]
 
 theorem ch_apply (H : Subgroup G) (hH : ∀ g ∈ H, η g = 1) (i : Fin 3) (g : H) : T.ch H hH i g = T.t g i := rfl
 

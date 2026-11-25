@@ -350,7 +350,7 @@ theorem joint_eigen_mem_iSup {ι κ M : Type} [AddCommGroup M] [Module ℂ M]
       obtain ⟨y, hy, z, hz, rfl⟩ := h
       obtain ⟨i, hi⟩ : ∃ i, χ k0 i ≠ ψ i := by
         by_contra h'
-        push_neg at h'
+        push Not at h'
         exact hne k0 (funext h')
       have hw : (op i : M → M) z - χ k0 i • z ∈ ⨆ k ∈ s, E k :=
         Submodule.sub_mem _ (hstab s i z hz) (Submodule.smul_mem _ _ hz)

@@ -219,7 +219,7 @@ theorem pure_type_projection_independent : ∀ (E : Type) [Field E] [NumberField
       split_ifs with h
       · apply hpure.2 b i
         rw [h, hτ]
-        simp only [sgnRt, Bool.false_eq_true, if_false]
+        simp only [sgnRt, Bool.false_eq_true, ite_false]
         exact hne
       · rfl
     · convert hli using 1
@@ -236,7 +236,7 @@ theorem pure_type_projection_independent : ∀ (E : Type) [Field E] [NumberField
       split_ifs with h
       · apply hpure.1 a i
         rw [h, hcτ]
-        simp only [sgnRt, if_true]
+        simp only [sgnRt, ite_true]
         exact hne.symm
       · rfl
     · have := hli.comp (Equiv.sumComm (Fin q) (Fin p)) (Equiv.injective _)
@@ -293,7 +293,7 @@ theorem mem_eigSp_iff_tyPart_eq_self {E : Type} [Field E] [NumberField E] {g : �
     · rw [hk]
     · have : w k = 0 := by
         have := congrFun h k
-        simp only [tyPart, hk, if_false] at this
+        simp only [tyPart, hk, ite_false] at this
         exact this.symm
       rw [this, mul_zero, mul_zero]
 

@@ -250,8 +250,8 @@ theorem val_mem {j : ℕ} (F : Arr V n j) (hF : F ∈ arrV0 ε E u j) (α : Fin 
     F α ∈ kSpan ε E u := by
   have h := (mem_arrV0_iff_forall_mem_kSpan ε E u F).mp hF α
   by_cases hc : ∀ i, ε (α i).1 ≠ ε (α i).2
-  · rwa [if_pos hc] at h
-  · rw [if_neg hc, Submodule.mem_bot] at h
+  · rwa [ite_eq_left hc] at h
+  · rw [ite_eq_right hc, Submodule.mem_bot] at h
     rw [h]
     exact Submodule.zero_mem _
 
@@ -262,10 +262,10 @@ theorem mapArr_mem (hι : ∀ c d, ε c = ε d → ∀ x ∈ kSpan ε E u, ι (E
   rw [mapArr_apply]
   have h := hF α
   by_cases hc : ∀ i, ε (α i).1 ≠ ε (α i).2
-  · rw [if_pos hc] at h ⊢
+  · rw [ite_eq_left hc] at h ⊢
     rw [kSpan_map ε E E' ι u hι]
     exact Submodule.mem_map_of_mem h
-  · rw [if_neg hc, Submodule.mem_bot] at h ⊢
+  · rw [ite_eq_right hc, Submodule.mem_bot] at h ⊢
     rw [h, map_zero]
 
 theorem mapArr_arrE (hι : ∀ c d, ε c = ε d → ∀ x ∈ kSpan ε E u, ι (E c d x) = E' c d (ι x))
@@ -343,7 +343,7 @@ theorem uniqAlg : ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V
         rw [mem_arrV0_iff_forall_mem_kSpan]
         intro α
         by_cases h : α = α0
-        · rw [h, if_pos hc0]
+        · rw [h, ite_eq_left hc0]
           simpa [F] using hz
         · simp [F, h]
       have hθ : thetaA E' _ (mapArr ι n _ F) = jmW E' α0 (ι z) := by

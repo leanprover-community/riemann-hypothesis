@@ -93,7 +93,7 @@ theorem ex_le {c : ∀ k, ι k} {n : ℕ} {d : (Σ k, ι k) →₀ ℕ} (h : ∀
     · rw [← h1]; exact h k
     · exact Nat.zero_le _
   · intro k' _ hk
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h1
     exact hk (congrArg Sigma.fst h1)
   · intro h1
@@ -279,7 +279,7 @@ theorem intNumL_subfield_constants : ∀ (K : Type) [Fintype K] [DecidableEq K] 
       have := hm' k
       omega
     unfold hilbFn
-    rw [if_pos hm0, if_pos hm0,
+    rw [ite_eq_left hm0, ite_eq_left hm0,
       BaseChangeColon.PlField.finrank_piece (fun q hq => BaseChangeColon.PlField.lift_form hn hlt hq), Nat.cast_mul]
   have hne : (Module.finrank F F' : ℤ) ≠ 0 := by
     exact_mod_cast (Module.finrank_pos (R := F) (M := F')).ne'

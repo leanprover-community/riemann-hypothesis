@@ -373,7 +373,7 @@ namespace GlobalTheory.TwLat
 
 theorem twCent_iff_gram : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : Pl E), ¬ IsSplitAt w → ∀ (K : GlobalTheory.UnitLemma.UQ) (e : K.E ≃+* w.adicCompletion E) (B : GlobalTheory.UnitLemma.InvAlg K) (m : ℕ) (b : Module.Basis (Fin m) K.E B.A) (β : B.A), IsUnit (GlobalTheory.TwLat.gram e b β) → ∀ g : GLw m w, g ∈ twCent (thL m w) (GlobalTheory.TwLat.dlt e b β) ↔ g.valᵀ * GlobalTheory.TwLat.gram e b β * g.val.map (cj w) = GlobalTheory.TwLat.gram e b β := by
   intro E _ _ _ w hw K e B m b β hG g
-  have hth : thL m w = thetaGL m (cj w) := by rw [thL, if_neg hw]
+  have hth : thL m w = thetaGL m (cj w) := by rw [thL, ite_eq_right hw]
   have hd : dlt e b β = invT m _ hG.unit * (PhiU m _)⁻¹ := by rw [dlt, dite_eq_left hG]
   rw [hth, hd]
   change g * _ = _ * _ ↔ _

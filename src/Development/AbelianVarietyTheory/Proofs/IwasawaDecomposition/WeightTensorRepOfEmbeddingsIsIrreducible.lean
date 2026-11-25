@@ -245,7 +245,7 @@ theorem eq_bot_or_eq_top : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] (n 
       · intro a S ha ih
         obtain ⟨T, hTW, hT⟩ := exists_elem lam H W hW a (i a) (j a)
         have h1 := hTW _ ih
-        rw [hT, if_pos (by simp [ha])] at h1
+        rw [hT, ite_eq_left (by simp [ha])] at h1
         convert h1 using 2
         funext τ
         by_cases h : τ = a
@@ -315,7 +315,7 @@ theorem GlobalTheory.cmType_family_extend : ∀ (L : Type) [Field L] [NumberFiel
   have v1 : ∀ τ, cmExtend emb g (emb τ) = g τ := by
     intro τ
     have h : ∃ τ', emb τ = emb τ' := ⟨τ, rfl⟩
-    simp only [cmExtend, dif_pos h]
+    simp only [cmExtend, dite_eq_left h]
     rw [hd.1 h.choose_spec.symm]
   have v2 : ∀ τ, cmExtend emb g ((emb τ).comp (IsCMField.complexConj L : L →+* L)) = tinv (g τ) := by
     intro τ
@@ -323,11 +323,11 @@ theorem GlobalTheory.cmType_family_extend : ∀ (L : Type) [Field L] [NumberFiel
       rintro ⟨τ', h⟩
       exact hd.2 τ' τ h.symm
     have h' : ∃ τ', (emb τ).comp (IsCMField.complexConj L : L →+* L) = (emb τ').comp (IsCMField.complexConj L : L →+* L) := ⟨τ, rfl⟩
-    simp only [cmExtend, dif_neg h, dif_pos h']
+    simp only [cmExtend, dite_eq_right h, dite_eq_left h']
     rw [hinj2 _ _ h'.choose_spec.symm]
   have v3 : ∀ σ, (¬ ∃ τ, σ = emb τ) → (¬ ∃ τ, σ = (emb τ).comp (IsCMField.complexConj L : L →+* L)) → cmExtend emb g σ = 1 := by
     intro σ h h'
-    simp only [cmExtend, dif_neg h, dif_neg h']
+    simp only [cmExtend, dite_eq_right h, dite_eq_right h']
   refine ⟨cmExtend emb g, ?_, v1⟩
   intro σ
   by_cases h : ∃ τ, σ = emb τ

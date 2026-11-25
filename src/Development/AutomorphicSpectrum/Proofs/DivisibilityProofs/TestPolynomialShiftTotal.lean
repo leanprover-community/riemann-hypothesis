@@ -150,8 +150,8 @@ theorem mu_sub (j : ℕ) : ∃ c : RP Ψ N, (muSmall j : RP Ψ N) - Formalism.L2
     simp only [pow_one, Finset.sum_filter, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     by_cases h : (i : ℕ) < j
-    · rw [if_pos h, if_neg (by omega), add_zero]
-    · rw [if_neg h, if_pos (by omega), zero_add]
+    · rw [ite_eq_left h, ite_eq_right (by omega), add_zero]
+    · rw [ite_eq_right h, ite_eq_left (by omega), zero_add]
 
 theorem deg_mu (j n : ℕ) (G : RP Ψ N) :
     degFl (muSmall j ^ n * G) = degFl (Formalism.L2.Geo.a0Mu j ^ n * G) := by
@@ -243,25 +243,25 @@ theorem RootFieldNumerics.test_polynomial_shift_values : ∀ (Ψ : Type) [Fintyp
     rw [deg_d_test τ j _ 0 hlow]
     · ring
     · unfold muSmall
-      rw [if_pos h, d_sum, Finset.filter_false_of_mem]
+      rw [ite_eq_left h, d_sum, Finset.filter_false_of_mem]
       · simp
       · intro x hx; simpa using hx
   · unfold Tot
     rw [deg_d_test τ j _ ((N - j : ℕ) : ℝ) hall]
     unfold muSmall
-    rw [if_pos h, d_sum, Finset.filter_true_of_mem (fun _ _ => Finset.mem_univ _), c2]
+    rw [ite_eq_left h, d_sum, Finset.filter_true_of_mem (fun _ _ => Finset.mem_univ _), c2]
   · unfold Sh
     rw [deg_d_test τ j _ (-(j : ℝ)) hlow]
     · ring
     · unfold muSmall pkLow
       simp only [pow_one]
-      rw [if_neg h, map_neg, d_sum, Finset.filter_true_of_mem (fun _ hx => hx), c1, map_neg]
+      rw [ite_eq_right h, map_neg, d_sum, Finset.filter_true_of_mem (fun _ hx => hx), c1, map_neg]
   · unfold Tot
     rw [deg_d_test τ j _ (-(j : ℝ)) hall]
     · ring
     · unfold muSmall pkLow
       simp only [pow_one]
-      rw [if_neg h, map_neg, d_sum, Finset.filter_true_of_mem (fun _ _ => Finset.mem_univ _), c1, map_neg]
+      rw [ite_eq_right h, map_neg, d_sum, Finset.filter_true_of_mem (fun _ _ => Finset.mem_univ _), c1, map_neg]
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

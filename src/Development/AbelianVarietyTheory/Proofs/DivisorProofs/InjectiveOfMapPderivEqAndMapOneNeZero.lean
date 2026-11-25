@@ -68,7 +68,7 @@ theorem injective_of_pderiv {V : Type} [AddCommGroup V] [Module ℂ V] {ι : Typ
       · have : p.coeff m = 0 := by
           by_contra h
           exact hm (hs m (mem_support_iff.2 h))
-        rw [this, MvPolynomial.coeff_smul, coeff_one, if_neg (Ne.symm hm), smul_zero]
+        rw [this, MvPolynomial.coeff_smul, coeff_one, ite_eq_right (Ne.symm hm), smul_zero]
     rw [e, map_smul, smul_eq_zero] at hp
     rcases hp with hp | hp
     · rw [e, hp, zero_smul]

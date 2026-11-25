@@ -249,7 +249,7 @@ theorem gram_unitary {K : Type} [Field K] (σ : K →+* K) {n : ℕ} (g : Matrix
     rw [← he y a, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
-  simp only [this, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [this, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem aeval_conj {K : Type} [Field K] {n : ℕ} (γ g : GL (Fin n) K) (Q : K[X]) :
     aeval (g⁻¹ * γ * g).val Q = (g⁻¹).val * aeval γ.val Q * g.val := by
@@ -283,7 +283,7 @@ theorem kapSign_conj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n
   · rfl
   have hg : ((g.1.val).map (cj w))ᵀ * g.1.val = 1 := by
     have h := g.2
-    simp only [UL, hs, if_false] at h
+    simp only [UL, hs, ite_false] at h
     have h2 : Formalism.UG.cT (cj w) (g.1 : Matrix (Fin n) (Fin n) (w.adicCompletion E)) * 1 * (g.1 : Matrix (Fin n) (Fin n) _) = 1 := h
     simpa [Formalism.UG.cT] using h2
   have hinv : ((g.1)⁻¹).val * g.1.val = 1 := by rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
@@ -739,7 +739,7 @@ theorem kapSign_eq_one_of_integral : ∀ (E : Type) [Field E] [NumberField E] [I
   · rfl
   simp only
   have hU : (γ.1.val.map (cj w))ᵀ * γ.1.val = 1 := by
-    have h2 : (UL n w : Subgroup (GLw n w)) = UJ (cj w) 1 := by unfold UL; rw [if_neg hs]
+    have h2 : (UL n w : Subgroup (GLw n w)) = UJ (cj w) 1 := by unfold UL; rw [ite_eq_right hs]
     have h : γ.1 ∈ UJ (cj w) 1 := by rw [← h2]; exact γ.2
     simpa [UJ, cT] using h
   set K := w.adicCompletion E
@@ -877,20 +877,20 @@ theorem twOrb_unit {G : Type} [Group G] [TopologicalSpace G] (K : Subgroup G) (�
           _ = _ := by rw [this]
       rw [this]; exact K.mul_mem (K.mul_mem (K.inv_mem hk) hg₀) hk
     rw [finsum_eq_single _ (DoubleCoset.mk T K g₀)]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       obtain ⟨h, hh, k, hk, he⟩ := DoubleCoset.mk_out_eq_mul T K g₀
       apply hgood
       rw [he]; exact mem_doubleCoset.2 ⟨h, hh, k, hk, rfl⟩
     · intro q hq
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hm
       apply hq
       obtain ⟨t, ht, k, hk, he⟩ := horb g₀ (Quotient.out q) hg₀ hm
       rw [← DoubleCoset.out_eq' q, DoubleCoset.eq]
       exact ⟨t⁻¹, T.inv_mem ht, k⁻¹, K.inv_mem hk, by rw [he]; group⟩
-  · push_neg at hex
+  · push Not at hex
     rw [finsum_eq_zero_of_forall_eq_zero]
-    intro q; rw [if_neg (hex _)]
+    intro q; rw [ite_eq_right (hex _)]
 
 end GlobalTheory.BCT.OrbUnit
 

@@ -61,7 +61,7 @@ private theorem exists_joint_eigenvector_bis {E J : Type} [AddCommGroup E] [Modu
       refine ⟨G, hSW hG1, hG2, fun i => ?_⟩
       have := hall i G hG1
       simpa [sub_eq_zero] using this
-    · push_neg at hall
+    · push Not at hall
       obtain ⟨i, s, hs, hne⟩ := hall
       set D : Module.End ℂ E := T i - μ i • (1 : Module.End ℂ E) with hD
       have hDS : ∀ t ∈ S, D t ∈ S := fun t ht => by

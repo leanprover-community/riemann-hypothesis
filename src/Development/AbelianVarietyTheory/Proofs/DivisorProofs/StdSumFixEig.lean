@@ -172,7 +172,7 @@ theorem sum_reindex (hv : v ∈ TT D (tor0 D ⊤ δ) a d) (hfix : ∀ k ∈ intG
   classical
   let ψ : GA D a → GA D a := fun r => if h : r ∈ R then (hR (φ r) (hφ r h)).exists.choose else r
   have hψ : ∀ r ∈ R, ψ r ∈ R ∧ CongOne D 𝔪 ((ψ r)⁻¹ * φ r) := fun r hr => by
-    simp only [ψ, dif_pos hr]; exact (hR (φ r) (hφ r hr)).exists.choose_spec
+    simp only [ψ, dite_eq_left hr]; exact (hR (φ r) (hφ r hr)).exists.choose_spec
   refine Finset.sum_nbij ψ (fun r hr => (hψ r hr).1) ?_ ?_ ?_
   · intro r₁ hr₁ r₂ hr₂ e
     have h1 := (hψ r₁ hr₁).2

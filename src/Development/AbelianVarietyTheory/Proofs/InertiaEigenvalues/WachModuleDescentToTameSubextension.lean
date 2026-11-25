@@ -185,11 +185,11 @@ theorem exists_sum (h : σ X = w * X ^ s) (hs : 0 < s) (hw : IsUnit w) (b : R⟦
     · rw [Nat.sub_add_cancel hn, Finset.sum_eq_zero, add_zero]
       intro k _
       have := k.2
-      rw [if_neg (by omega), zero_mul]
+      rw [ite_eq_right (by omega), zero_mul]
     · rw [zero_add, Finset.sum_eq_single ⟨n, by omega⟩]
       · simp
       · intro k _ hk
-        rw [if_neg (fun e => hk (Fin.ext e.symm)), zero_mul]
+        rw [ite_eq_right (fun e => hk (Fin.ext e.symm)), zero_mul]
       · simp
   have hG : ∀ b k, σ (G b k) = σ X * σ (G (T b) k) + C (coeff k b) := by
     intro b k

@@ -27,7 +27,7 @@ theorem sum_single_smul {W : Type*} [AddCommGroup W] [Module ℂ W] (Δ : Fin n 
         simp
       · simp [h1, h2, Ne.symm h2]
     · simp [h1, Ne.symm h1]
-  simp only [hx, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hx, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem eq_zero_of_skew {W : Type*} [AddCommGroup W] [Module ℂ W] (Δ : Fin n → Fin n → W)
     (h : ∀ X : Matrix (Fin n) (Fin n) ℂ, Xᴴ = -X → ∑ x, ∑ y, X x y • Δ x y = 0) (a b : Fin n) : Δ a b = 0 := by

@@ -19,8 +19,6 @@ open CategoryTheory MonoidalCategory
 
 universe u
 
-attribute [local instance 2000] Rep.hV2
-
 section Map
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
@@ -186,12 +184,6 @@ theorem cupPairing_h0Class (μ : A ⊗ B ⟶ C) (b : B) (hb : ∀ g : K, B.ρ g 
     cohomologyMap_rightUnitor_cup_unitClass]
 
 end ZeroClasses
-
-section ZModZero
-
-variable {K : Type u} [Group K] {n : ℕ} [NeZero n] (D' : Rep.{u} (ULift.{u} ℤ) K) (hD : ∀ d : D', n • d = 0)
-
-end ZModZero
 
 section Instances
 

@@ -552,9 +552,9 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
           exact Ideal.mem_span_singleton_self _
         exact hproper (hA.trans (span_coord_eq_top_of_mem_span hV (c'.restrict hVU') hne hmem))
   obtain ⟨a, ha0, has⟩ : ∃ a : ℕ → Option (Fin n), a 0 = some j₀ ∧ ∀ i, a (i + 1) = lab i :=
-    ⟨fun i => if i = 0 then some j₀ else lab (i - 1), if_pos rfl, fun i => by
+    ⟨fun i => if i = 0 then some j₀ else lab (i - 1), ite_eq_left rfl, fun i => by
       show (if i + 1 = 0 then some j₀ else lab (i + 1 - 1)) = lab i
-      rw [if_neg (by omega : ¬ (i + 1 = 0)), Nat.add_sub_cancel]⟩
+      rw [ite_eq_right (by omega : ¬ (i + 1 = 0)), Nat.add_sub_cancel]⟩
   refine ⟨U, hxU, n, c, a, insert j₀ S, ?_, ?_, ?_, ?_⟩
   · intro i hi j hj t hti htj
     cases i with
@@ -754,7 +754,7 @@ theorem det_eq_det_submatrix_of_row_eq_single (e : ι ≃ Fin (n + 1)) (M : Matr
     by_cases hb : b = 0
     · simp [hb]
     · have hne : ¬ (e.symm b = e.symm 0) := fun hc => hb (e.symm.injective hc)
-      rw [if_neg hne, if_neg hb]
+      rw [ite_eq_right hne, ite_eq_right hb]
   have h2 := det_eq_det_submatrix_succ (M.submatrix e.symm e.symm) hN
   rw [Matrix.det_submatrix_equiv_self] at h2
   rw [h2, Matrix.submatrix_submatrix]
@@ -1171,7 +1171,7 @@ private theorem appLE_subschemeι_chartPartialDeriv_complOrderEmb {p : X ⟶ Spe
       have h2 : ¬ (b = ULift.up i) := by
         intro hcon
         exact hb (congrArg ULift.down hcon)
-      rw [h1, if_neg h2]
+      rw [h1, ite_eq_right h2]
       simp
   have hδ'eq : δ' = EtaleCoordinates.partialDeriv k
       (ULift.{u} (Fin (n - ({j₀} : Finset (Fin n)).card)))

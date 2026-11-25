@@ -210,12 +210,12 @@ theorem val_sub_lt (φ : Datum.EAf D →+* Fv D.host.F v)
   have h1 := congrFun (congrFun hU' j) i
   rw [topL, dite_eq_left ⟨(Fin.castLE hr j).2, i.2⟩, redM, dite_eq_left (hU _ _), Matrix.one_apply] at h1
   by_cases h : j = i
-  · rw [if_pos h] at h1 ⊢
+  · rw [ite_eq_left h] at h1 ⊢
     have h2 := hres (⟨_, hU (Fin.castLE hr j) i⟩ - 1) (by
       rw [RingHom.map_sub, sub_eq_zero, RingHom.map_one]
       exact h1)
     rwa [AddSubgroupClass.coe_sub, RingHom.map_sub, Subring.coe_one, RingHom.map_one] at h2
-  · rw [if_neg h] at h1 ⊢
+  · rw [ite_eq_right h] at h1 ⊢
     rw [sub_zero]
     exact hres ⟨_, hU (Fin.castLE hr j) i⟩ h1
 
@@ -336,7 +336,7 @@ theorem exists_eigen {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp
         topL T.rank (redM PP (frMapAdj S T βS βT t)) = 1
     · rw [← hconst t ht.2 (hK PP hPP).2, hk, ← GlobalTheory.LatVac.symplHom_apply, map_nsmul, AddChar.map_nsmul_eq_pow]
       rfl
-    · rw [omegaK, if_neg hK, zero_mul, mul_zero, mul_zero]
+    · rw [omegaK, ite_eq_right hK, zero_mul, mul_zero, mul_zero]
   · rw [mul_zero, mul_zero]
 
 theorem exists_mem_Pg {T : Type} {L : LevCh D T} {μ0 : T} (h : L.Is μ0) : ∃ PP, PP ∈ L.Pg := by

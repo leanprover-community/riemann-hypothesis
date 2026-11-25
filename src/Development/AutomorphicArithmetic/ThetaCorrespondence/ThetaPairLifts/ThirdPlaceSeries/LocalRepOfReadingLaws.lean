@@ -1094,7 +1094,7 @@ theorem main_ind (n : ℕ) : ∀ (C : ι → Subalgebra ℂ (Module.End ℂ V)) 
     intro x hx
     have := (hK v _ hm).mp hk x hx
     simpa [sub_eq_zero] using this
-  push_neg at hB
+  push Not at hB
   obtain ⟨v₁, a₁, ha₁, hna⟩ := hB
   obtain ⟨μ₁, hμ₁⟩ := eig_drop U₁ h₁ a₁ (fun x hx => hS₁ v₁ a₁ ha₁ x hx)
   have he₁m : a₁ - algebraMap ℂ (Module.End ℂ V) μ₁ ∈ C v₁ :=

@@ -265,7 +265,7 @@ private theorem shift_agree_lemma_5 (F : Type) [Field F] (Ω : Type) [Field Ω] 
   rw [heq, h2] at h1
   have hle : N - 1 ≤ r + (N - 1) := by omega
   have hsub : r + (N - 1) - (N - 1) = r := by omega
-  rw [if_pos hle, if_pos hle, hsub] at h1
+  rw [ite_eq_left hle, ite_eq_left hle, hsub] at h1
   exact h1.symm
 
 private theorem negs_agree_lemma_6 (F : Type) [Field F] (K : Type) [Fintype K] [DecidableEq K]

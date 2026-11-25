@@ -309,7 +309,7 @@ private theorem inv_lt_one_of_one_lt' {a : Γ} (h : 1 < a) : a⁻¹ < 1 := by
     rintro rfl
     exact absurd h (not_lt.mpr zero_le)
   by_contra h'
-  push_neg at h'
+  push Not at h'
   have h₁ := mul_le_mul' (le_refl a) h'
   rw [mul_one, mul_inv_cancel₀ ha] at h₁
   exact absurd h (not_lt.mpr h₁)

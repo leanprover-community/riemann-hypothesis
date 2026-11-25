@@ -103,7 +103,7 @@ theorem delU_off (hQ : TWSet X i Q) (σ : G D.host.E N.Om) (v : ↥Q) (hv : v.1 
   classical
   rw [hY, GalChar.delU_apply, GalChar.delCoord]
   split_ifs with h
-  · rw [GalChar.delOf, dif_neg]
+  · rw [GalChar.delOf, dite_eq_right]
     · rfl
     rintro ⟨d, h1, h2, h3, h4, h5⟩
     obtain ⟨P', hc⟩ := GlobalTheory.TwistDet.exists_isConjPl v.1
@@ -132,7 +132,7 @@ theorem delU_off (hQ : TWSet X i Q) (σ : G D.host.E N.Om) (v : ↥Q) (hv : v.1 
 theorem delU_on (σ : G D.host.E N.Om) (v : ↥Q) (hv : v.1 ∈ admissibleConjugatePairPlaces X i Q M) :
     Multiplicative.toAdd (Y.delU i Q M σ) v =
       Multiplicative.toAdd (GalChar.delOf D.host X.cc (X.l i) M (GalChar.pair D.host v.1) σ) := by
-  rw [hY, GalChar.delU_apply, GalChar.delCoord, if_pos]
+  rw [hY, GalChar.delU_apply, GalChar.delCoord, ite_eq_left]
   rintro w (rfl | hw)
   · exact v.2
   · exact admissibleConjugatePairPlaces_subset i Q M (conj_mem_admissibleConjugatePairPlaces hv hw)
@@ -142,7 +142,7 @@ theorem delU_eq_coord (hQ : TWSet X i Q) (σ : G D.host.E N.Om) (v : ↥Q) :
   by_cases hv : v.1 ∈ admissibleConjugatePairPlaces X i Q M
   · rw [delU_on hY σ v hv, coord_apply _ _ _ _ hv, hY, GalChar.delU_apply,
       GalChar.delCoord_of_closed _ _ _ (fun _ h _ hc => conj_mem_admissibleConjugatePairPlaces h hc) M hv]
-  · rw [delU_off hY hQ σ v hv, coord, dif_neg hv]
+  · rw [delU_off hY hQ σ v hv, coord, dite_eq_right hv]
     rfl
 
 theorem delU_eq_spread (hQ : TWSet X i Q) {ch : Set (Pl D.host.E)} (hch : IsChoice ch) (σ : G D.host.E N.Om) :

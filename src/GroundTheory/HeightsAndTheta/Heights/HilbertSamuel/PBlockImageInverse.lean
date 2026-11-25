@@ -131,7 +131,7 @@ theorem aeval_congr_block [DecidableEq K] {S : Type*} [CommRing S] [Algebra ℤ 
     rw [hvw]
   · have h0 : d ⟨k, i⟩ = 0 := by
       have := hh d hd k
-      simp only [blockDeg, if_neg hk] at this
+      simp only [blockDeg, ite_eq_right hk] at this
       exact (Finset.sum_eq_zero_iff.mp this) i (Finset.mem_univ _)
     rw [h0, pow_zero, pow_zero]
 
@@ -283,9 +283,9 @@ theorem BlockImageInverse.proof : BlockImageInverse.Statement := by
     by_cases hk : k = k₀
     · subst hk
       rw [hσ0]
-      simp only [if_true]
+      simp only [ite_true]
       exact isMultiHomog_sum _ fun j _ => isMultiHomog_C_mul (hXu j) _
-    · simp only [hσ, dif_neg hk, if_neg hk]
+    · simp only [hσ, dite_eq_right hk, ite_eq_right hk]
       exact isMultiHomog_zero _
   have hpull : ∀ {P : MRing ι} {n : ℕ}, IsMultiHomog P (blockDeg k₀ n) →
       IsMultiHomog (ι := GlobalTheory (Fin r)) (bind₁ σ P) (fun _ => n) := by
@@ -347,9 +347,9 @@ theorem BlockImageInverse.proof : BlockImageInverse.Statement := by
     rintro ⟨k, i⟩
     by_cases hk : k = k₀
     · subst hk
-      simp only [hτ, hDg, if_true]
+      simp only [hτ, hDg, ite_true]
       simpa using hσH ⟨k, i⟩
-    · simp only [hτ, hDg, if_neg hk]
+    · simp only [hτ, hDg, ite_eq_right hk]
       exact hpull (hQH k i)
   obtain ⟨lam, hlam⟩ : ∃ lam : K → Ω,
       lam = fun k => if k = k₀ then 1 else (∏ i, aeval y (hh k i)) / y ⟨k, c k⟩ := ⟨_, rfl⟩
@@ -357,11 +357,11 @@ theorem BlockImageInverse.proof : BlockImageInverse.Statement := by
     rintro ⟨k, i⟩
     by_cases hk : k = k₀
     · subst hk
-      simp only [hτ, hlam, if_true, one_mul, hσ0]
+      simp only [hτ, hlam, ite_true, one_mul, hσ0]
       rw [show aeval x (∑ j, C (N i j) * X j : MRing (GlobalTheory (Fin r))) = ∑ j, (N i j : Ω) * x j from
         aeval_linear _ _ _]
       exact (hI.2 i).symm
-    · simp only [hτ, hlam, if_neg hk]
+    · simp only [hτ, hlam, ite_eq_right hk]
       rw [heval (hQH k i) x y (fun i => hI.2 i), hQv, ← Finset.mul_prod_erase _ _ (Finset.mem_univ i),
         div_mul_eq_mul_div, eq_div_iff (hc k)]
       linear_combination (-(∏ i' ∈ Finset.univ.erase i, aeval y (hh k i'))) * hgh k i
@@ -471,7 +471,7 @@ theorem BlockImageInverse.proof : BlockImageInverse.Statement := by
         exact hfac.2.1
       · have : z ⟨k, c k⟩ = aeval u (bind₁ σ (Q k (c k))) := by
           rw [hz]
-          simp only [hτ, if_neg hk]
+          simp only [hτ, ite_eq_right hk]
         rw [this, heval (hQH k (c k)) u z hzk₀, hQv]
         exact mul_ne_zero (hfac.2.2.1 k) (Finset.prod_ne_zero_iff.mpr fun i _ => hfac.2.2.2 k i)
     have hzmem : z ∈ mcPts (mCoordIdeal y) := by
@@ -539,7 +539,7 @@ theorem BlockImageInverse.proof : BlockImageInverse.Statement := by
       by_cases hk : k = k₀
       · subst hk
         simp [hk₀]
-      · simp only [if_neg hk]
+      · simp only [ite_eq_right hk]
         have h1 := hRz z hz k i
         have h2 := hRz z' hz' k i
         rw [hscale (hhh k i), hscale (hgg k i)] at h1

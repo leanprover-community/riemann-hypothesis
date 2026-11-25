@@ -171,7 +171,7 @@ theorem sB_unitMap (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (τ : D.what₂.Tau)
   simp only [Matrix.diagonal_mul, Matrix.smul_apply, Matrix.single_apply, smul_eq_mul]
   by_cases h : i = a ∧ l = b
   · obtain ⟨rfl, rfl⟩ := h
-    simp only [and_self, if_true, mul_one]
+    simp only [and_self, ite_true, mul_one]
     unfold sgn
     split_ifs <;> norm_num
   · simp [h]

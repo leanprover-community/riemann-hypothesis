@@ -44,10 +44,4 @@ theorem bcOver {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c
 
 end BC
 
-section Loc
-
-variable {D : D7} {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Comp : Type}
-
-end Loc
-
 end Formalism.L2.Pj

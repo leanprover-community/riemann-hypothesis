@@ -55,15 +55,15 @@ theorem qdet_coeffs {A : Type} [Ring A] [Algebra ℂ A] (W : Subalgebra ℂ A) (
       exact hW _
   refine ⟨fun k => if k < m + 1 + 1 then c k else 0, t, fun k => ?_, ?_, ?_, fun u => ?_⟩
   · by_cases hk : k < m + 1 + 1
-    · simp only [if_pos hk]
+    · simp only [ite_eq_left hk]
       exact hm k hk
-    · simp only [if_neg hk]
+    · simp only [ite_eq_right hk]
       exact W.zero_mem
-  · simpa only [if_pos (Nat.lt_succ_self (m + 1))] using h1
-  · simpa only [if_pos (show m < m + 1 + 1 by omega)] using h2
+  · simpa only [ite_eq_left (Nat.lt_succ_self (m + 1))] using h1
+  · simpa only [ite_eq_left (show m < m + 1 + 1 by omega)] using h2
   · rw [h3 u]
     refine Finset.sum_congr rfl fun k hk => ?_
-    simp only [if_pos (Finset.mem_range.1 hk)]
+    simp only [ite_eq_left (Finset.mem_range.1 hk)]
 
 theorem qdet_commute_of {A : Type} [Ring A] [Algebra ℂ A] {n p : ℕ} (X : Fin n → Fin n → A) (Y : Fin p → Fin p → A)
     (h : ∀ i j k l, X i j * Y k l = Y k l * X i j) (u v : ℂ) :

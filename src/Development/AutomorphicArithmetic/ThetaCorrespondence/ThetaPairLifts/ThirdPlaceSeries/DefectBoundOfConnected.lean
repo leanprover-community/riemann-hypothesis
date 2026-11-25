@@ -808,7 +808,7 @@ theorem exists_cmLat_unfAt_rankOne : ∀ (E : Type) [Field E] [NumberField E] [I
   obtain ⟨h1, h2, -⟩ := hU
   refine exists_cmLat_rankOne H (U.X k) x₀ hr h1 (h2 k).1 (h2 k).2 _ W.per (W.φ k) (W.isom k)
     (fun j => (W.e j).2) (fun j hj => ?_) W.pm_eq D₁ hp1 hq1 lam hL hli ho hsp
-  exact (W.e j).2.2.trans_eq (if_neg hj)
+  exact (W.e j).2.2.trans_eq (ite_eq_right hj)
 
 end GlobalTheory.LamT.CMRankOne
 end -- clump:auto
@@ -896,7 +896,7 @@ theorem gsStep_self (G : Matrix (Fin r) (Fin r) E) (v : Fin r → Fin r → E) (
   funext k
   simp only [gsStep, gsMat, true_and, mul_sub, Finset.sum_sub_distrib, Pi.sub_apply,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   congr 1
   refine Finset.sum_congr rfl fun j _ => ?_
   split_ifs <;> ring
@@ -931,7 +931,7 @@ theorem herm_gsStep_self (X : Data E r) (v : Fin r → Fin r → E) (hv : frm X.
   have hne := herm_self_ne X v hv m ho k hkm
   rw [gsStep_self, HermitianTraceFormVanishing.herm_sub_left, herm_sum_left,
     Finset.sum_eq_single k (fun i _ hik => ?_) (fun h => absurd (Finset.mem_univ k) h),
-    if_pos hk, div_mul_cancel₀ _ hne, sub_self]
+    ite_eq_left hk, div_mul_cancel₀ _ hne, sub_self]
   split_ifs with him
   · rw [ho i k him hkm hik, mul_zero]
   · rw [zero_mul]
@@ -1122,7 +1122,7 @@ theorem exists_orthoFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     simpa [ReciprocityTheory.ChartRestriction.G.FD.sgn, hj] using this
   · intro j hj τ
     have := hsl τ j
-    simp only [ReciprocityTheory.ChartRestriction.G.FD.sgn, if_neg (not_lt.2 hj)] at this
+    simp only [ReciprocityTheory.ChartRestriction.G.FD.sgn, ite_eq_right (not_lt.2 hj)] at this
     linarith
   · intro τ
     rfl

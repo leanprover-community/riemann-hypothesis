@@ -110,7 +110,7 @@ theorem chi_eq_one (U : Unf Xo c σ r)
           laU U (step (Function.invFun (relab c σ) τ0.1) (j0 - (U.X k).p0 + 1)) 0 k -
             laU U (step (Function.invFun (relab c σ) τ0.1) (j0 - (U.X k).p0)) 0 k := by
         funext τ j
-        simp only [Pi.sub_apply, laU, step, hI.eq_iff, hcn τ τ0, false_and, if_false, Subtype.val_inj]
+        simp only [Pi.sub_apply, laU, step, hI.eq_iff, hcn τ τ0, false_and, ite_false, Subtype.val_inj]
         by_cases ht : τ = τ0
         · subst ht
           simp only [Pi.single_eq_same, Pi.single_apply, true_and, Fin.ext_iff]
@@ -121,7 +121,7 @@ theorem chi_eq_one (U : Unf Xo c σ r)
           laU U (step (Function.invFun (relab c σ) (conjEmb τ0.1)) ((U.X k).p0 - 1 - j0)) 0 k -
             laU U (step (Function.invFun (relab c σ) (conjEmb τ0.1)) ((U.X k).p0 - j0)) 0 k := by
         funext τ j
-        simp only [Pi.sub_apply, laU, step, hI.eq_iff, (hcn τ0 τ).symm, false_and, if_false]
+        simp only [Pi.sub_apply, laU, step, hI.eq_iff, (hcn τ0 τ).symm, false_and, ite_false]
         by_cases ht : τ = τ0
         · subst ht
           simp only [Pi.single_eq_same, Pi.single_apply, true_and, Fin.ext_iff]

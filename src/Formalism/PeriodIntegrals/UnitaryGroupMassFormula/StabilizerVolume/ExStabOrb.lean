@@ -520,15 +520,14 @@ theorem cm_fixed {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
     (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (a : E) : σ a = a ↔ a ∈ (algebraMap F E).range := by
   apply PositivityTheory.SiegelWeilFormula.KAway.sigma_fix <;> assumption
 
-theorem orbTup_holds : OrbTup := by
-  intro F E _ _ _ _ _ σ hCM M J hJ _ _ a _ _ X0 hT hdet y hy
-  have h2 : Module.finrank F E = 2 := hCM.2.2.1
-  have hinv : ∀ x, σ (σ x) = x := by
-    intro x
-    obtain ⟨τ⟩ := (inferInstance : Nonempty (E →+* ℂ))
-    apply τ.injective
-    rw [hCM.2.2.2, hCM.2.2.2, star_star]
-  have hfix := cm_fixed σ hCM
+theorem witt_R {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+    (σ : E →ₐ[F] E) (h2 : Module.finrank F E = 2) (hfix : ∀ a : E, σ a = a ↔ a ∈ (algebraMap F E).range)
+    (hinv : ∀ x, σ (σ x) = x) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (hJ : IsHermND σ J) {a : ℕ}
+    (X0 : Fin a → Fin M → E) (hT : ∀ i j, σ (gramE σ J X0 j i) = gramE σ J X0 i j)
+    (hdet : (gramE σ J X0).det ≠ 0) (R : Type) [CommRing R] [Algebra F R]
+    (hU : PIW.AdelicOrbitU.UnitChoice R) (y : Fin a → Fin M → R ⊗[F] E)
+    (hy : gramR R σ J y = (gramE σ J X0).map (inclR R)) :
+    ∃ g : HA R σ J, g • ratTup (F := F) R X0 = y := by
   set T := gramE σ J X0 with hTdef
   let sE : E →+* E := σ
   have hTH : IsHerm sE T := by
@@ -568,7 +567,6 @@ theorem orbTup_holds : OrbTup := by
   have hDfix : ∀ j, σ (D j j) = D j j := fun j => by
     rw [← hDv]; exact PIW.AdelicOrbitU.hform_conj sE T hinv hTH _ _
 
-  let R := AF F
   let sS := sigR R σ
   let JS := JR (F := F) R J
   have hsS : ∀ z, sS (sS z) = z := (PIW.AdelicOrbitU.stFix F E σ h2 hfix R).1
@@ -610,7 +608,7 @@ theorem orbTup_holds : OrbTup := by
       obtain ⟨β, hβ⟩ := (hfix _).mp (hDfix j)
       have hβ0 : β ≠ 0 := by
         rintro rfl; exact hDne j (by rw [← hβ, map_zero])
-      obtain ⟨lam, hlam, hu⟩ := PIW.AdelicOrbitU.stLam F E σ h2 hfix R (PIW.AdelicOrbitU.stP F) t β hβ0
+      obtain ⟨lam, hlam, hu⟩ := PIW.AdelicOrbitU.stLam F E σ h2 hfix R hU t β hβ0
       refine ⟨lam, hlam, ?_⟩
       rw [hGx, ← hβ, PIW.AdelicOrbitU.inclR_algebraMap]
       exact hu)
@@ -625,12 +623,21 @@ theorem orbTup_holds : OrbTup := by
   have hmat2 : (g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) * Xm = tM y := by
     have := congrArg (fun N => N * Pm⁻¹) hmat
     simpa only [Matrix.mul_nonsing_inv_cancel_right _ _ hPmu] using this
-  refine ⟨(⟨g, hgU⟩ : HR (AF F) σ J), ?_⟩
+  refine ⟨(⟨g, hgU⟩ : HR R σ J), ?_⟩
   funext i
   funext r
-  show ((g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) *ᵥ ratTup (AF F) X0 i) r = y i r
+  show ((g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) *ᵥ ratTup (F := F) R X0 i) r = y i r
   have := congrFun (congrFun hmat2 r) i
   simpa [Xm, tM, ratTup, Matrix.mul_apply, mulVec, dotProduct] using this
+
+theorem orbTup_holds : OrbTup := by
+  intro F E _ _ _ _ _ σ hCM M J hJ _ _ a _ _ X0 hT hdet y hy
+  have hinv : ∀ x, σ (σ x) = x := by
+    intro x
+    obtain ⟨τ⟩ := (inferInstance : Nonempty (E →+* ℂ))
+    apply τ.injective
+    rw [hCM.2.2.2, hCM.2.2.2, star_star]
+  exact witt_R σ hCM.2.2.1 (cm_fixed σ hCM) hinv J hJ X0 hT hdet (AF F) (PIW.AdelicOrbitU.stP F) y hy
 
 end PI.VolStabS
 end -- clump:auto

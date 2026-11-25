@@ -77,7 +77,7 @@ theorem subst_one_X (k : Matrix (Fin b) (Fin b) ℂ) (i : Fin b) (j : Fin a) :
     subst τ ε ε' 1 k (MvPolynomial.X (τ, i, j)) =
       ∑ l, (if ε' i = ε j then k l i else star (k l i)) • MvPolynomial.X (τ, l, j) := by
   classical
-  simp only [subst, MvPolynomial.aeval_X, if_true]
+  simp only [subst, MvPolynomial.aeval_X, ite_true]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [Finset.sum_eq_single j]
   · split_ifs <;> simp
@@ -105,12 +105,12 @@ theorem subst_one_mul {k₁ k₂ : Matrix (Fin b) (Fin b) ℂ} (h₁ : k₁ ∈ 
     split_ifs with hij
     · refine Finset.sum_congr rfl fun l _ => ?_
       by_cases hl : ε' l = ε' i
-      · rw [if_pos (hl.trans hij)]; ring
+      · rw [ite_eq_left (hl.trans hij)]; ring
       · rw [kset_apply_eq_zero h₂ hl]; simp
     · rw [star_sum]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases hl : ε' l = ε' i
-      · rw [if_neg (fun h => hij (hl.symm.trans h)), star_mul']; ring
+      · rw [ite_eq_right (fun h => hij (hl.symm.trans h)), star_mul']; ring
       · rw [kset_apply_eq_zero h₂ hl]; simp
   · simp [subst, hρ]
 

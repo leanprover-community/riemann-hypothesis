@@ -21,7 +21,7 @@ theorem iwGL_entries {n : ℕ} {x : GL (Fin n) L} (hx : x ∈ IwGL L n) (i j : F
   rw [Subgroup.mem_comap, MulAction.mem_stabilizer_iff] at hk
   have hmem : (Pi.single j 1 : Fin n → L) ∈ latK L n (Fin.last n) := by
     intro l
-    simp only [Fin.val_last, l.isLt, if_true]
+    simp only [Fin.val_last, l.isLt, ite_true]
     by_cases hl : l = j
     · subst hl
       simp
@@ -31,7 +31,7 @@ theorem iwGL_entries {n : ℕ} {x : GL (Fin n) L} (hx : x ∈ IwGL L n) (i j : F
     rw [← hk]
     exact Set.smul_mem_smul_set hmem
   have h3 := h2 i
-  simp only [Fin.val_last, i.isLt, if_true] at h3
+  simp only [Fin.val_last, i.isLt, ite_true] at h3
   show (x : Matrix (Fin n) (Fin n) L) i j ∈ Valued.v.integer
   rw [Valuation.mem_integer_iff]
   convert h3 using 2

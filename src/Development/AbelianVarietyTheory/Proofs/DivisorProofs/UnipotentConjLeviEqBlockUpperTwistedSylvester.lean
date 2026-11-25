@@ -57,7 +57,7 @@ theorem blk_val {E : Type} [Field E] [NumberField E] {n a b : ℕ} (h : a + b = 
     rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁]
     exact (m.1.isUnit.map Matrix.detMonoidHom).mul (m.2.isUnit.map Matrix.detMonoidHom)
   unfold blk
-  simp only [dif_pos hU, IsUnit.unit_spec]
+  simp only [dite_eq_left hU, IsUnit.unit_spec]
 
 theorem conj_blk (E : Type) [Field E] [NumberField E] (n a b : ℕ) (h : a + b = n) (w : Pl E)
     (m : GLw a w × GLw b w) (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)) :

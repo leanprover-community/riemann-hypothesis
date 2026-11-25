@@ -28,35 +28,6 @@ variable {K L : Type} [Field K] [Field L] {ι : Type} [Fintype ι] {a b : ℕ}
 
 end BaseChange
 
-section Ev
-
-variable {X : Fields} {a b : ℕ}
-
-end Ev
-
-section Arg
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
-
-variable {W Λ}
-
-end Arg
-
-section Wt
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
-
-variable (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
-
-end Wt
-
-section Zero
-
-variable {X : Fields}
-
-end Zero
-
 section Rho
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs) (Ch : Chars X Pr R.m)

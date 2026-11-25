@@ -299,18 +299,6 @@ theorem map_wts {a : Mat p q →ₗ[ℂ] Module.End ℂ V} {b : Mat p q →ₗ[�
 
 end General
 
-section Constructions
-
-end Constructions
-
-section Max
-
-end Max
-
-section Main
-
-end Main
-
 end GlobalTheory.CommonQuot
 end -- clump:auto
 end -- clump:auto

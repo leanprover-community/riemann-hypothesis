@@ -250,7 +250,7 @@ theorem mem_mul_of_kill (m : ℕ) (e : Jet R (Fin 2 × Fin n) m) (h0 : kill m 0 
     induction hx' using Submodule.span_induction with
     | mem y hy =>
       obtain ⟨j, rfl⟩ := hy
-      rw [kill_alt_alt, if_neg (by simp), sub_self]
+      rw [kill_alt_alt, ite_eq_right (by simp), sub_self]
       exact Ideal.zero_mem _
     | zero => simp
     | add y z _ _ hy hz =>

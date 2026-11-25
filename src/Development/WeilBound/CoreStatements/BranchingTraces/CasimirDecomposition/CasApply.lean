@@ -97,7 +97,7 @@ theorem cas_apply (U : URep k r) (x : M (vr k r true, U)) (c : Fin (2 * r + k + 
   have e2 : ∑ a : Fin (2 * r + k + 1), ∑ b, (if c = b then U.dC (Matrix.single b a 1) (x a) - (if True then x b else 0) else 0) =
       ∑ b, U.dC (Matrix.single c b 1) (x b) - ((2 * r + k + 1 : ℕ) : ℂ) • x c := by
     rw [Nat.cast_smul_eq_nsmul]
-    simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
+    simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
       Fintype.card_fin]
   rw [e1, e2, two_smul]
   abel
@@ -117,7 +117,7 @@ theorem kOp_io {μ : Fin (2 * r + k + 1) → ℝ} {U T : URep k r} (hk : 1 ≤ k
   funext c
   have h2 := cas_apply U (i y) c
   rw [h1, (S.casDS S.infChar k r ε _ U hk hU (vr k r true)).1] at h2
-  simp only [LinearMap.smul_apply, LinearMap.id_apply, map_smul, Pi.smul_apply, if_true] at h2 ⊢
+  simp only [LinearMap.smul_apply, LinearMap.id_apply, map_smul, Pi.smul_apply, ite_true] at h2 ⊢
   push_cast at h2 ⊢
   linear_combination (norm := module) (1 / 2 : ℂ) • h2
 

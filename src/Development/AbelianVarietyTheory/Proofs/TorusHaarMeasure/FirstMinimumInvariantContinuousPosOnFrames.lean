@@ -377,7 +377,7 @@ private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.Chart
     intro v hvΛ hv0
     by_cases hsmall : ∀ τ : X.Ψ, ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v‖ ≤ 1
     · exact le_trans (min_le_left _ _) (hδf v ⟨⟨hvΛ, hsmall⟩, hv0⟩)
-    · push_neg at hsmall
+    · push Not at hsmall
       obtain ⟨τ, hτ⟩ := hsmall
       refine le_trans (min_le_right _ _) ?_
       have h1 : m * c0 ≤ X.c τ * X.maj x τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v) := by

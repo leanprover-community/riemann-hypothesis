@@ -45,7 +45,7 @@ def IsCst (τ : A →+* MvPowerSeries σ A) (c : A) : Prop := τ c = C c
 theorem IsCst.co {τ : A →+* MvPowerSeries σ A} {c : A} (hc : IsCst τ c) {β : σ →₀ ℕ} (hβ : β ≠ 0) :
     Tay.co τ β c = 0 := by
   classical
-  rw [co_apply, show τ c = C c from hc, MvPowerSeries.coeff_C, if_neg hβ]
+  rw [co_apply, show τ c = C c from hc, MvPowerSeries.coeff_C, ite_eq_right hβ]
 
 theorem IsCst.co_mul {τ : A →+* MvPowerSeries σ A} {c : A} (hc : IsCst τ c) (β : σ →₀ ℕ) (x : A) :
     Tay.co τ β (c * x) = c * Tay.co τ β x := by
@@ -329,10 +329,10 @@ theorem hasseOp_Tv (β : Idx D j N →₀ ℕ) (q : Idx D j N) : hasseOp X la N 
   · simp [h0]
 
 theorem pdOp_Tv (p q : Idx D j N) : pdOp X la N p (Tv X la N q) = if p = q then 1 else 0 := by
-  rw [← hasseOp_single, hasseOp_Tv, if_neg (Finsupp.single_ne_zero.mpr one_ne_zero)]
+  rw [← hasseOp_single, hasseOp_Tv, ite_eq_right (Finsupp.single_ne_zero.mpr one_ne_zero)]
   by_cases h : p = q
   · subst h; simp
-  · rw [if_neg h, if_neg]; exact fun h' => h (Finsupp.single_left_injective one_ne_zero h')
+  · rw [ite_eq_right h, ite_eq_right]; exact fun h' => h (Finsupp.single_left_injective one_ne_zero h')
 
 theorem hasseKp_algebraMap (β : Idx D j N →₀ ℕ) (x : Op X la N) :
     hasseKp X la N β (@algebraMap (Op X la N) (Kp X la N) _ _ _ x) =
@@ -453,7 +453,7 @@ theorem hasseRp_sec_eq_zero {β : Idx D j N →₀ ℕ} (h0 : β ≠ 0) (h1 : �
     (i : Fin (WeightFamilies.dimY D j + 1)) : hasseRp X la N β (sec X la w i) = 0 := by
   rw [hasseRp_sec]
   refine Finset.sum_eq_zero fun k _ => ?_
-  rw [hasseOp_Tv, if_neg h0, if_neg (h1 _), map_zero, zero_smul]
+  rw [hasseOp_Tv, ite_eq_right h0, ite_eq_right (h1 _), map_zero, zero_smul]
 
 def pdLc (p : Idx D j N) : Derivation (X.Kl la) (Lc X la w) (Lc X la w) :=
   Tay.der (X.Kl la) (tayLc X la w) (tayLc_isTay X la w) (tayLc_isCst X la w) p
@@ -497,11 +497,6 @@ theorem hasse_of_mul_eq (β : Idx D j N →₀ ℕ) {s x : Rp X la N} {y : Lc X 
 theorem Kl_charZero : CharZero (X.Kl la) := by
   first
     | exact charZero_of_injective_algebraMap (algebraMap B.KO (X.Kl la)).injective
-
-end
-
-section
-variable (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
 
 end
 

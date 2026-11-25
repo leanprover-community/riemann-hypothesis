@@ -211,8 +211,8 @@ theorem expU (D : D7) : ExpU D := by
   have hn1 : ‖u‖ = 1 := Complex.norm_exp_ofReal_mul_I _
   let x := mkU (D := D) (fun τ' => if τ' = τ then u else 1) (fun τ' => by split_ifs; exacts [hu, one_ne_zero])
   have h1 : finPart D (x : AE D) = 1 := finPart_mkAE _ _
-  have h2 : ∀ τ', τ' ≠ τ → th0 D τ' (infPart D (x : AE D)) = 1 := fun τ' h => (cmpAt_mkAE _ _ τ').trans (if_neg h)
-  have h3 : th0 D τ (infPart D (x : AE D)) = u := (cmpAt_mkAE _ _ τ).trans (if_pos rfl)
+  have h2 : ∀ τ', τ' ≠ τ → th0 D τ' (infPart D (x : AE D)) = 1 := fun τ' h => (cmpAt_mkAE _ _ τ').trans (ite_eq_right h)
+  have h3 : th0 D τ (infPart D (x : AE D)) = u := (cmpAt_mkAE _ _ τ).trans (ite_eq_left rfl)
   have a1 := allSome_fam.1 e x h1 h2
   have a2 := allSome_fam.1 e' x h1 h2
   rw [a1, h3, hn1, Complex.ofReal_one, div_one] at a2

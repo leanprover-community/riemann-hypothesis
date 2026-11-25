@@ -77,19 +77,6 @@ namespace GroundTheory.Automorphic
 
 open Module Matrix
 
-section Transport
-
-variable {A B : Type*} [CommRing A] [CommRing B] {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-
-end Transport
-
-section Split
-
-variable {F : Type*} [Field F] {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-end Split
-
 section OfGram
 
 variable {F A : Type*} [Field F] [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A]
@@ -146,20 +133,6 @@ theorem gram_ofGram (H : Matrix ι ι A) (hH : IsHermitianFor (conjHom F A) H)
   simp [Pi.single_apply]
 
 end OfGram
-
-section LocalField
-
-variable {F A : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-  [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A] [Algebra.IsSeparable F A]
-variable {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-end LocalField
-
-section Diagonal
-
-variable {F A : Type*} [Field F] [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A]
-
-end Diagonal
 
 end GroundTheory.Automorphic
 end -- clump:auto

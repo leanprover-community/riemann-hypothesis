@@ -18,9 +18,4 @@ theorem sec_res_map {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U
 
 end Basic
 
-section Kum
-variable (q : ℕ) [NeZero q]
-
-end Kum
-
 end LateralTheory.E.LeafKumSpecPf

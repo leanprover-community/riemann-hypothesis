@@ -76,7 +76,7 @@ theorem lamU_one (w : D.what₂.Word) (v : InfinitePlace X.B.I.F) : lamU X w v 1
   rw [Matrix.mul_one, Bv_mul_Bv', Matrix.one_mulVec]
   unfold nxt
   split_ifs with h
-  · rw [hfe_v, if_neg]
+  · rw [hfe_v, ite_eq_right]
     intro h'
     have := congrArg Fin.val h'
     simp at this

@@ -213,7 +213,7 @@ theorem exists_integral_multiplier {k : Type} [Field k] [ValuativeRel k] (a : k)
     refine ⟨a⁻¹, inv_ne_zero ha0, ?_, by simp [ha0]⟩
     rw [Valuation.mem_integer_iff] at ha ⊢
     rw [map_inv₀]
-    push_neg at ha
+    push Not at ha
     exact inv_le_one_of_one_le₀ ha.le
 
 theorem exists_common_integral_multiplier {k : Type} [Field k] [ValuativeRel k]
@@ -732,7 +732,7 @@ theorem vacuum_move : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topolo
     refine (hTm.modul u huh _ _ fun t => ?_).symm
     by_cases ht : ∀ r q, t r q ∈ 𝒪[k]
     · rw [hchalf u hu huh t ht, one_mul]
-    · rw [hΦ₀, if_neg ht, mul_zero]
+    · rw [hΦ₀, ite_eq_right ht, mul_zero]
   have key := hom _ (hTm.theta _) hf1 hf2
   have hsum : ∑ u ∈ R₀.image (p.up FS FT), heisO ψ S T u (Tm (ind 1 1 0)) = Tm (ind gk hk⁻¹ 0) := by
     rw [Finset.sum_image fun a _ b _ hab => up_inj hab]
@@ -751,12 +751,12 @@ theorem vacuum_move : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topolo
       have iff1 : ∀ v', (∀ r q, (-t - v') r q ∈ 𝒪[k]) ↔ (∀ r q, (t + v') r q ∈ 𝒪[k]) := fun v' => by
         refine forall_congr' fun r => forall_congr' fun q => ?_
         rw [show -t - v' = -(t + v') by abel, Matrix.neg_apply, neg_mem_iff]
-      rw [Finset.sum_eq_single_of_mem v hv, if_pos ((iff1 v).1 hv2)]
+      rw [Finset.sum_eq_single_of_mem v hv, ite_eq_left ((iff1 v).1 hv2)]
       intro v' hv' hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h'
       exact hne (hvu v' ⟨hv', (iff1 v').2 h'⟩)
-    · refine Finset.sum_eq_zero fun v hv => if_neg fun h' => htB fun r q => ?_
+    · refine Finset.sum_eq_zero fun v hv => ite_eq_right fun h' => htB fun r q => ?_
       have h2 := he _ h' r q
       have h3 := hsub _ _ (he _ h') (hR₀ v hv) r q
       rwa [← Matrix.sub_mul, ← Matrix.mul_sub, add_sub_cancel_right] at h3

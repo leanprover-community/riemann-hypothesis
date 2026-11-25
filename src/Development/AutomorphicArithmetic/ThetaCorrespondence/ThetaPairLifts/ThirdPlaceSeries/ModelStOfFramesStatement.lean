@@ -230,7 +230,7 @@ theorem mem_of_mem_iSup_finset (T : J → End L V) (p : (J → L) → Submodule 
     · obtain ⟨y0, hy0, hne⟩ := h
       obtain ⟨j, hj⟩ := Function.ne_iff.1 hne
       exact ih _ (Finset.filter_ssubset.2 ⟨y0, hy0, hj⟩) (mem_iSup_filter T p hp hf Y j hY)
-    · push_neg at h
+    · push Not at h
       exact (iSup₂_le fun y hy => by rw [h y hy] : (⨆ y ∈ Y, p y) ≤ p θ) hY
 
 end Gen
@@ -507,7 +507,7 @@ theorem maximal_ideal_eq_joint_eigen : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [
     · simpa using hint θ ⟨c, hc0, hc⟩ (X i)
     · rw [heq]; exact hJmem θ ⟨c, hc0, hc⟩ p
   · exfalso
-    push_neg at hex
+    push Not at hex
     have hnot : ¬ ((m : Set (MvPolynomial I O)) ⊆ ⋃ θ ∈ (hfin.toFinset : Set (I → K)), (J θ : Set _)) := by
       rw [Ideal.subset_union_prime (0 : I → K) (0 : I → K)
         (fun θ hθ _ _ => hJprime θ (by simpa using hθ))]

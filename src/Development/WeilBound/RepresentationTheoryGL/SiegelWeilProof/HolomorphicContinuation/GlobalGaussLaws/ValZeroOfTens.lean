@@ -249,7 +249,7 @@ theorem compAt_sub' {θ : InfFam D} {τ : D.what₂.Tau} {m : ℕ} (a b : Mx D m
 
 theorem phiS_eq {m : ℕ} {θ : InfFam D} {τ : D.what₂.Tau} {fr : Matrix (Fin m) (Fin m) ℂ} {c : ℝ} {Ψ : Mx D m n → ℂ}
     {P : PX m n} (h : tens θ τ fr (fP c P) Ψ ∈ schwartzA θ m n) : phiS θ τ fr c Ψ P = ⟨_, h⟩ := by
-  simp only [phiS, dif_pos h]
+  simp only [phiS, dite_eq_left h]
 
 theorem val_zero_of_tens {m : ℕ} {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {fr : Matrix (Fin m) (Fin m) ℂ}
     {Ψ : Mx D m n → ℂ} (hΨ : IsAwayFn θ τ Ψ) {x₁ : Mx D m n} (hx₁ : Ψ x₁ ≠ 0) {f f' : (Fin m → Fin n → ℂ) → ℂ}
@@ -263,8 +263,8 @@ theorem val_zero_of_tens {m : ℕ} {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.w
     rw [hc, GlobalTheory.SchwartzBruhatTensor.compAt_chartM hσ]
     split_ifs <;> rfl
   have hc2 : c.map (finPart D) = 0 := GlobalTheory.SchwartzBruhatTensor.finPart_chartM hσ _
-  have e0 : compAt θ τ (x₁ - c) = 0 := by rw [compAt_sub', hc1, if_pos rfl, sub_self]
-  have e1 : Ψ (x₁ - c) = Ψ x₁ := hΨ _ _ (fun τ' h' => by rw [compAt_sub', hc1, if_neg h', sub_zero])
+  have e0 : compAt θ τ (x₁ - c) = 0 := by rw [compAt_sub', hc1, ite_eq_left rfl, sub_self]
+  have e1 : Ψ (x₁ - c) = Ψ x₁ := hΨ _ _ (fun τ' h' => by rw [compAt_sub', hc1, ite_eq_right h', sub_zero])
     (by rw [Matrix.map_sub _ (fun a₁ a₂ => RingHom.map_sub (finPart D) a₁ a₂), hc2, sub_zero])
   have := congrFun h (x₁ - c)
   simp only [tens, e0, Matrix.mul_zero, e1] at this
@@ -322,7 +322,7 @@ theorem gSplit_of (hI : GIwasawa) (hAw : AwayAct) (hLF : LocFact) (hIn : AwayIn)
       have e : tens θ τ fr (fP (cLoc l τ) P) Ψ = 0 := by funext x; simp [tens, hΨ0]
       have : phiS θ τ fr (cLoc l τ) Ψ P = 0 := by rw [phiS_eq (hmem P)]; exact Subtype.ext e
       unfold secF; rw [this, map_zero, zero_mul]; rfl
-  · push_neg at hz
+  · push Not at hz
     obtain ⟨x₁, hx₁⟩ := hz
     have hconv : ∀ (y' : GR n) (P : PX V.rank n), L' y' (fP (cLoc l τ) P) 0 = L y' (fP (cLoc l τ) P) 0 := by
       intro y' P

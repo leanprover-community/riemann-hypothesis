@@ -212,7 +212,7 @@ theorem abstract {F B R n : Type} [Field F] [CommRing B] [Algebra F B] [CommRing
 
     rw [Matrix.mul_apply, Fintype.sum_prod_type, Finset.sum_comm, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
-    simp only [hp, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, map_mul, hfix _ _ (hA₀ _ _)]
+    simp only [hp, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_mul, hfix _ _ (hA₀ _ _)]
   have hZ : ∀ (i : n) (m : Fin r) (c : n × Fin r), (D * p) (i, m) c = (φ ^ (m : ℕ)) (w c.2 * a c.1 i) := by
     intro i m c
     have hinner : ∀ x : n, ∑ k : Fin r, D (i, m) (x, k) * p (x, k) c =
@@ -223,7 +223,7 @@ theorem abstract {F B R n : Type} [Field F] [CommRing B] [Algebra F B] [CommRing
       · intro k hk
         rw [hDdef, Matrix.blockDiagonal_apply_ne _ _ _ (Ne.symm hk), zero_mul]
     rw [Matrix.mul_apply, Fintype.sum_prod_type]
-    simp only [hinner, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, map_mul]
+    simp only [hinner, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, map_mul]
     rw [mul_comm]
   have hZY : D * p = p * (A₀ : Matrix (n × Fin r) (n × Fin r) B) * Gm := by
     ext ⟨i, m⟩ c
@@ -752,7 +752,7 @@ theorem eq_zero_of_sum_kd_mul_U0_mem_fil : ∀ (l : ℕ) [Fact l.Prime] (P : Loc
       intro a
       rw [hU0]
       simp only [Matrix.mul_apply, Matrix.blockDiagonal_apply, Matrix.map_apply, Fintype.sum_prod_type, mul_ite,
-        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.mul_sum, mul_assoc]
+        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.mul_sum, mul_assoc]
     rw [Finset.sum_congr rfl fun a _ => step a, Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => ?_
 

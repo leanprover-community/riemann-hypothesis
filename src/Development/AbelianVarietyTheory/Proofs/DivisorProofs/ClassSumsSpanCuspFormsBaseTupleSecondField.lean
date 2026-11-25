@@ -539,7 +539,7 @@ theorem atDict_indep (hT : LawsJ T) (O : OMDat T.toCore R i Tp tup) (κ : Weight
     exact eq_zero_of_orbit _ _ _ (hEq.1 k) (hEq.2 k) hx hγ hc hdom h0
   · simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
     refine Finset.sum_eq_zero fun j _ => ?_
-    have : rdU (unfO O) (b j) k x = 0 := dif_neg hx
+    have : rdU (unfO O) (b j) k x = 0 := dite_eq_right hx
     rw [this, mul_zero]
 
 
@@ -575,7 +575,7 @@ theorem rdU_mem_span_raw (hT : LawsJ T) (O : OMDat T.toCore R i Tp tup) (κ : We
       calc 4 * (2 * D.R.f * D.R.r) + 4 = 8 * D.R.f * D.R.r + 4 := by ring
         _ ≤ _ := hsz)
     (fun k => hT.chiTriv _ hj _ hσ _ _ hD k)
-  refine Submodule.span_le.2 ?_ (hle ⟨((mem_cusp _ _ _ _ _ _).1 hf).2 _ hσ, fun k x hx => dif_neg hx⟩)
+  refine Submodule.span_le.2 ?_ (hle ⟨((mem_cusp _ _ _ _ _ _).1 hf).2 _ hσ, fun k x hx => dite_eq_right hx⟩)
   rintro _ ⟨f', hf', rfl⟩
   simp only [Set.mem_iUnion] at hf'
   obtain ⟨x0, hx0, hf'⟩ := hf'
@@ -664,7 +664,7 @@ theorem exists_form {G Γ W X Y : Type} [Group G] [Group Γ] [NormedAddCommGroup
     intro x γ hγ
     by_contra hn
     have : ¬ h⁻¹ * (ι γ)⁻¹ * x ∈ J := fun hm => hn ((hS x).mem_toFinset.2 hm)
-    exact hγ (dif_neg this)
+    exact hγ (dite_eq_right this)
   have hterm : ∀ δ x (k : J) γ, term (ι δ * x * k) (δ * γ) = ((χ k : ℂˣ) : ℂ) • ρ δ (term x γ) := by
     intro δ x k γ
     have e : h⁻¹ * (ι (δ * γ))⁻¹ * (ι δ * x * k) = h⁻¹ * (ι γ)⁻¹ * x * k := by
@@ -672,12 +672,12 @@ theorem exists_form {G Γ W X Y : Type} [Group G] [Group Γ] [NormedAddCommGroup
     by_cases hm : h⁻¹ * (ι γ)⁻¹ * x ∈ J
     · have hm' : h⁻¹ * (ι (δ * γ))⁻¹ * (ι δ * x * k) ∈ J := e ▸ J.mul_mem hm k.2
       have e' : (⟨_, hm'⟩ : J) = ⟨_, hm⟩ * k := Subtype.ext e
-      simp only [term, dif_pos hm, dif_pos hm']
+      simp only [term, dite_eq_left hm, dite_eq_left hm']
       rw [e', map_mul χ, map_mul ρ, map_smul, smul_smul, Units.val_mul, mul_comm]
       rfl
     · have hm' : ¬ h⁻¹ * (ι (δ * γ))⁻¹ * (ι δ * x * k) ∈ J := fun hh =>
         hm ((J.mul_mem_cancel_right k.2).1 (e ▸ hh))
-      simp only [term, dif_neg hm, dif_neg hm', map_zero, smul_zero]
+      simp only [term, dite_eq_right hm, dite_eq_right hm', map_zero, smul_zero]
   refine ⟨fun x => ∑ᶠ γ, term x γ, ?_, fun x => (hS x).toFinset.card, fun x => ?_, fun γ k => ?_⟩
   · intro δ x k
     show ∑ᶠ γ, term (ι δ * x * k) γ = ((χ k : ℂˣ) : ℂ) • ρ δ (∑ᶠ γ, term x γ)
@@ -691,7 +691,7 @@ theorem exists_form {G Γ W X Y : Type} [Group G] [Group Γ] [NormedAddCommGroup
     rw [finsum_eq_sum_of_support_subset _ (hsupp _), map_sum, Nat.cast_smul_eq_nsmul, ← Finset.sum_const]
     refine Finset.sum_congr rfl fun γ hγ => ?_
     have hm : h⁻¹ * (ι γ)⁻¹ * p x ∈ J := (hS _).mem_toFinset.1 hγ
-    simp only [term, dif_pos hm]
+    simp only [term, dite_eq_left hm]
     rw [map_smul, law x γ ⟨_, hm⟩ (by simp only []; group), smul_smul, mul_inv_cancel₀ (Units.ne_zero _), one_smul]
   · refine (Finset.card_pos.2 ⟨γ, (hS _).mem_toFinset.2 ?_⟩).ne'
     show h⁻¹ * (ι γ)⁻¹ * (ι γ * h * k) ∈ J
@@ -946,10 +946,10 @@ theorem exists_point_phiIs_core : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
     (h2 x).trans (forall₂_congr fun PP _ => by
       rw [low_top_iff hrn]
       exact Eq.congr_left (Matrix.ext fun b a => (h4 PP b a).symm))
-  rw [hQ, omegaQ, dif_pos (by simp), Finset.attach_empty, Finset.prod_empty, mul_one, omegaK, indPhi]
+  rw [hQ, omegaQ, dite_eq_left (by simp), Finset.attach_empty, Finset.prod_empty, mul_one, omegaK, indPhi]
   by_cases h6 : (fun b => Submodule.Quotient.mk (x b)) = x1
-  · rw [if_pos h6, if_pos (h5.1 h6), map_one]
-  · rw [if_neg h6, if_neg (mt h5.2 h6), map_zero]
+  · rw [ite_eq_left h6, ite_eq_left (h5.1 h6), map_one]
+  · rw [ite_eq_right h6, ite_eq_right (mt h5.2 h6), map_zero]
 
 end Point
 
@@ -1010,7 +1010,7 @@ theorem lattice_scalar_value (hC : GlobalTheory.Hk3.Core R F) (hT : TieIn T R κ
     (fun Q hQ x => by
       rw [Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_inv,
         (R.C.isMu0 i).triv.1, (hL.xi_triv (tup t)).1, R.C.isEta.res.1, Formalism.L2.Host.etaFin, above_eq,
-        Finset.card_pair hQ.symm, if_neg (by norm_num), inv_one, one_mul, one_mul])
+        Finset.card_pair hQ.symm, ite_eq_right (by norm_num), inv_one, one_mul, one_mul])
   rw [← hbar] at c1 c3
   generalize Bridge.hLat (Vc D i) (fin (Vc D i) h) = L at *
   obtain ⟨q, q0, q1, q2⟩ := (hO.ep t).2 L cc g.1 g.2.1 g.2.2 c1 c3
@@ -1222,7 +1222,7 @@ theorem classSumsSpan_of_pins_core (hR : GlobalTheory.Hk3.Core R F) (ht : TieIn 
     let _ : Algebra O.c'.F ℂ := (inC O.c').toAlgebra
     choose t t1 t2 using fun g => d6 ℂ _ _ (raw_at_point nab hnab c1 c3 c4 c5 _ hs c6 ℂ
       (GlobalTheory.Dict.unC (Formalism.L2.PjFree.Unf.ofPj (unfO O)) (O.dict g).1 ⟨(O.dict g).2, dict_mem hT O g⟩))
-    have e : atDict O (rdU (unfO O) s) = inC O.c' z • t := funext fun g => (dif_pos (dict_mem hT O g)).trans (t2 g)
+    have e : atDict O (rdU (unfO O) s) = inC O.c' z • t := funext fun g => (dite_eq_left (dict_mem hT O g)).trans (t2 g)
     rw [SetLike.mem_coe, e]
     refine Submodule.smul_mem _ _ (mem_of_mul ha (mul_ne_zero (mul_ne_zero hu0' (inv_ne_zero hl0)) ((map_ne_zero (inC O.c')).2 hep))
       (_root_.GlobalTheory.KernelSpanCore.kernel_mem_span_core D G Pl0 T0 A _ R F hR i A.μ0 hV h' d1.1 (O.c0' v) w₀) (fun x₀ => ?_) fun g => ?_)

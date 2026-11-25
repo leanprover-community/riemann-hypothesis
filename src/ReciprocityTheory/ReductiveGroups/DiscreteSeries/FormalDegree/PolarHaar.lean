@@ -271,7 +271,7 @@ theorem rmulPR_polarPR {ε : Fin n → Bool} {G : Matrix (Fin n) (Fin n) ℂ} (h
     funext ab
     have h1 : plog (NormedSpace.exp (pmat z) * G) = pmat w := by
       rw [← hkw, plog_polarM]
-    simp only [actR, h1, pmat, dif_pos ab.2]
+    simp only [actR, h1, pmat, dite_eq_left ab.2]
   refine ⟨k', fun k => ?_⟩
   rw [hw]
   simp only [rmulPR, polarPR, polarM] at hkw ⊢
@@ -320,7 +320,7 @@ theorem muPolar_mul_right (ε : Fin n → Bool) (g : UJ ε) :
   by_cases h : Function.Injective (intMuCD_eM ε) ∧
       ∀ s, MeasurableSet s → NullMeasurableSet (intMuCD_eM ε '' s) (muPolarMat ε)
   swap
-  · simp only [Measure.comap, dif_neg h, Measure.map_zero]
+  · simp only [Measure.comap, dite_eq_right h, Measure.map_zero]
   haveI : BorelSpace (UJ ε) := ⟨rfl⟩
   have hRm : Measurable (fun x : UJ ε => x * g) := (continuous_mul_const g).measurable
   have hG : inUJ ε (toM g) := g.2

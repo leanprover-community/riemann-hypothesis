@@ -134,8 +134,8 @@ theorem topL_mul {a b c r : ℕ} (ha : r ≤ a) (hb : r ≤ b) (hc : r ≤ c) (A
 theorem lowZero_of_mem {n r : ℕ} {g : GL (Fin n) κ} (h : g ∈ blockTri (blk2 r)) : LowZero r g.val := by
   intro i j hi hj
   refine mem_blockTri.mp h i j ?_
-  have h1 : blk2 r i = 1 := if_neg (not_lt.mpr hi)
-  have h0 : blk2 r j = 0 := if_pos hj
+  have h1 : blk2 r i = 1 := ite_eq_right (not_lt.mpr hi)
+  have h0 : blk2 r j = 0 := ite_eq_left hj
   rw [h0, h1]
   exact Nat.zero_lt_one
 
@@ -143,7 +143,7 @@ theorem det_eq {n r : ℕ} (hr : r ≤ n) {g : GL (Fin n) κ} (h : g ∈ blockTr
     Matrix.GeneralLinearGroup.det g = Matrix.GeneralLinearGroup.det (upperLeftBlock hr g) * dBlk (blk2 r) 1 g := by
   have hg : (g.val).BlockTriangular (blk2 r) := fun i j hij => mem_blockTri.mp h i j hij
   let e : Fin r ≃ {x : Fin n // blk2 r x = 0} :=
-    { toFun := fun i => ⟨Fin.castLE hr i, if_pos (by simp)⟩
+    { toFun := fun i => ⟨Fin.castLE hr i, ite_eq_left (by simp)⟩
       invFun := fun x => ⟨x.1.val, by
         have hx := x.2
         unfold blk2 at hx
@@ -823,8 +823,8 @@ theorem vacScal_resChr {T0 : Type} (L : LevCh D T0) (t : T0) (n : ℕ) (hd : Dis
   unfold vacScal
   rw [e, Finset.prod_disjUnion]
   refine congrArg₂ _ (Finset.prod_congr rfl fun PP hPP => ?_) (Finset.prod_congr rfl fun PP hPP => ?_)
-  · simp only [resChr, if_pos hPP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, inv_inv]
-  · simp only [resChr, if_neg (Finset.disjoint_right.1 hd hPP)]
+  · simp only [resChr, ite_eq_left hPP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val, inv_inv]
+  · simp only [resChr, ite_eq_right (Finset.disjoint_right.1 hd hPP)]
 
 theorem regroup (A B G q q' H : ℂ) : A * B⁻¹ * G * (q * q' * H) = A * q * ((B * q'⁻¹)⁻¹ * (G * H)) := by
   rw [mul_inv, inv_inv]; ring
@@ -901,7 +901,7 @@ theorem step_law {T0 : Type} (L : LevCh D T0) {μ0 : T0} (hL : L.Is μ0) (t : T0
     rwa [GlobalTheory.AdelicLatMove.actO_actO_inv] at this
   simp only [Pi.smul_apply, smul_eq_mul]
   by_cases hx : IsHalf e x ∧ IsIntM (frMapO S T βS βT x)
-  · rw [if_pos hx, if_pos ⟨i3.2 hx.1, i1.2 hx.2⟩]
+  · rw [ite_eq_left hx, ite_eq_left ⟨i3.2 hx.1, i1.2 hx.2⟩]
     have a1 := GlobalTheory.T.typePlaces_localDatum_blockTriangular_law D _ _ D.R.r D.R.t j ha hb ea eb L.Pg (L.Q t) L.chi (L.xiR t)
       (fun PP => redFn βS PP (finE S κ)) (fun PP => redFn βT PP (finE T κ')) _ _
       (fun PP hP => parLev_g hκ.2.1 hP) (fun PP hP => parLev_g hκ'.2.1 hP)
@@ -917,7 +917,7 @@ theorem step_law {T0 : Type} (L : LevCh D T0) {μ0 : T0} (hL : L.Is μ0) (t : T0
     rw [levChi_flag_datY, levChi_flag_datY, Finset.prod_inv_distrib (s := L.Q t)
       (f := fun PP => ((L.xiR t PP (dBlk (blk2 D.R.r) 1 (redFn βT PP (finE T κ'))) : ℂˣ) : ℂ))]
     exact regroup _ _ _ _ _ _
-  · rw [if_neg hx, if_neg fun h => hx ⟨i3.1 h.1, i1.1 h.2⟩, mul_zero, mul_zero]
+  · rw [ite_eq_right hx, ite_eq_right fun h => hx ⟨i3.1 h.1, i1.1 h.2⟩, mul_zero, mul_zero]
 
 theorem last_step_law : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.toLevCh.Is A.μ0 → R.models_inf → R.chain_ωX → R.chain_vX → ∀ t (g0 : G0 R.Pg D.R.r) κ κ', IsLevelLift (Yc D (D.R.m - 1)) (R.βY (D.R.m - 1)) (R.datYt t (D.R.m - 1) R.triv) g0 κ → IsLevelLift D.sp.X' R.βX (R.datXt t) g0 κ' → (levChi _ (R.βY (D.R.m - 1)) (flagL (R.datYt t (D.R.m - 1) R.triv)) κ)⁻¹ • R.ωX t (κ, κ') (R.vX t) = (levChi _ R.βX (flagL (R.datXt t)) κ')⁻¹ • R.vX t := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R hL hθ hω hv t g0 κ κ' hκ hκ'

@@ -77,8 +77,8 @@ private theorem summable_lw (J : (FractionalIdeal (𝓞 F)⁰ F)ˣ) {N : ℕ}
     funext ξ
     unfold lw
     by_cases h : ∀ i, ξ i ∈ (J : FractionalIdeal (𝓞 F)⁰ F)
-    · rw [if_pos h, Set.indicator_of_mem (show ξ ∈ {ξ : Fin 4 → F | ∀ i, ξ i ∈ (J : FractionalIdeal (𝓞 F)⁰ F)} from h)]
-    · rw [if_neg h, Set.indicator_of_notMem (show ξ ∉ {ξ : Fin 4 → F | ∀ i, ξ i ∈ (J : FractionalIdeal (𝓞 F)⁰ F)} from h)]
+    · rw [ite_eq_left h, Set.indicator_of_mem (show ξ ∈ {ξ : Fin 4 → F | ∀ i, ξ i ∈ (J : FractionalIdeal (𝓞 F)⁰ F)} from h)]
+    · rw [ite_eq_right h, Set.indicator_of_notMem (show ξ ∉ {ξ : Fin 4 → F | ∀ i, ξ i ∈ (J : FractionalIdeal (𝓞 F)⁰ F)} from h)]
   rw [heq, ← summable_subtype_iff_indicator]
   exact hsT
 
@@ -175,7 +175,7 @@ private theorem wt_le {K : Set (Fin 4 → FiniteAdeleRing (𝓞 F) F)} {J : (Fra
   have hB0 : 0 < B := one_pos.trans_le hB
   by_cases h : finPartPi (sc a η) ∈ K
   · unfold wt lw
-    rw [if_pos h, if_pos (hfin η h)]
+    rw [ite_eq_left h, ite_eq_left (hfin η h)]
     have h1 : ‖embPi F η‖ ≤ B * ‖infPartPi (sc a η)‖ :=
       (pi_norm_le_iff_of_nonneg (by positivity)).2 fun i => (hinf (η i)).trans
         (mul_le_mul_of_nonneg_left (norm_le_pi_norm (infPartPi (sc a η)) i) hB0.le)
@@ -184,7 +184,7 @@ private theorem wt_le {K : Set (Fin 4 → FiniteAdeleRing (𝓞 F) F)} {J : (Fra
           rw [mul_pow, mul_inv, ← mul_assoc, mul_inv_cancel₀ (by positivity), one_mul]
       _ ≤ B ^ N * ((1 + ‖embPi F η‖) ^ N)⁻¹ := by gcongr
   · unfold wt
-    rw [if_neg h]
+    rw [ite_eq_right h]
     exact mul_nonneg (by positivity) (lw_nonneg _ _ _)
 
 end SlopeTestRemainingChoices

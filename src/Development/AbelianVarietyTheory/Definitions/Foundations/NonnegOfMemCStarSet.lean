@@ -47,7 +47,7 @@ theorem exists_basis_co (h : HasGram N) : ∃ b : Basis (Fin (cDim N)) K V,
       ∃ b : Basis (Fin s.1) K V, IsGram b s.2.2.2 N ∧ s.2.1 = b.equivFun ∧ s.2.2.1 = b.equivFun.symm := by
     rintro _ rfl
     exact ⟨_, h.some.2.2, rfl, rfl⟩
-  exact key _ (dif_pos h)
+  exact key _ (dite_eq_left h)
 
 
 omit [NumberField K] in

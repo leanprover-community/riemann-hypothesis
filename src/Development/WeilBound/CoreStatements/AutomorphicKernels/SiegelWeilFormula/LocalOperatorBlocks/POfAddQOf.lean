@@ -335,7 +335,7 @@ theorem evX_monomial (e : Fin m × Fin n × Bool →₀ ℕ) (c : ℂ) (v : Fin 
   rw [Fintype.prod_prod_type]
   refine Finset.prod_congr rfl fun j _ => ?_
   rw [Fintype.prod_bool]
-  simp only [if_true, Bool.false_eq_true, if_false]
+  simp only [ite_true, Bool.false_eq_true, ite_false]
   ring
 
 theorem gZ_diag (sg : ℤˣ) (w : Fin n → ℂ) (v : Fin m → Fin n → ℂ) :
@@ -935,9 +935,9 @@ theorem pth_cont (i0 : Fin n) : Continuous (pth i0) := by
     unfold dT
     refine Continuous.matrix_diagonal (continuous_pi fun i => ?_)
     by_cases h : i = i0
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact Complex.continuous_ofReal
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       exact continuous_const
   have hnb : ∀ f : ℝ → Matrix (Fin n) (Fin n) ℂ, Continuous f → Continuous fun t => nbM (f t) := by
     intro f hf
@@ -1186,7 +1186,7 @@ def rhoFun (h : LocHyp sg L) (k : GR n) (P : PX m n) : PX m n :=
 open scoped Classical in
 theorem rhoFun_spec (h : LocHyp sg L) {k : GR n} (hk : InK (mR k)) (P : PX m n) :
     (rhoFun h k P).totalDegree ≤ P.totalDegree ∧ L k (fP P) = fP (rhoFun h k P) := by
-  simp only [rhoFun, dif_pos hk]
+  simp only [rhoFun, dite_eq_left hk]
   exact Classical.choose_spec (k_poly h k hk P)
 
 
@@ -1203,7 +1203,7 @@ def rhoOf (h : LocHyp sg L) (k : GR n) : PX m n →ₗ[ℂ] PX m n where
       have e2 := fP_add_smul (1 : ℂ) (rhoFun h k P) (rhoFun h k Q)
       simp only [one_smul] at e2
       rw [e2]
-    · simp [rhoFun, dif_neg hk]
+    · simp [rhoFun, dite_eq_right hk]
   map_smul' a P := by
     by_cases hk : InK (mR k)
     · apply fP_injective
@@ -1214,7 +1214,7 @@ def rhoOf (h : LocHyp sg L) (k : GR n) : PX m n →ₗ[ℂ] PX m n where
       have e2 := fP_add_smul a (rhoFun h k P) 0
       simp only [add_zero, fP_zero] at e2
       simp [e2]
-    · simp [rhoFun, dif_neg hk]
+    · simp [rhoFun, dite_eq_right hk]
 
 theorem cnt_true : cnt (fun _ : Fin m => true) true = m := by
   simp [cnt]

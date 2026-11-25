@@ -123,7 +123,7 @@ theorem finsum_restrictedFamily_eq_prod_finsum : ∀ (V W : Type) [Fintype W] (C
     ⟨(fun v => if h : v ∈ S then t.1 ⟨v, h⟩ else ⟨1, (hS v h).1⟩, t.2), by
       refine Filter.eventually_cofinite.2 (S.finite_toSet.subset fun v hv => ?_)
       by_contra h
-      simp [dif_neg (show v ∉ S from h)] at hv⟩
+      simp [dite_eq_right (show v ∉ S from h)] at hv⟩
   have hmul : ∀ p : Sub, (Function.mulSupport fun v => o v (p.1.1 v)).Finite := by
     intro p
     refine (S.finite_toSet.union (Filter.eventually_cofinite.1 p.2)).subset ?_
@@ -144,8 +144,8 @@ theorem finsum_restrictedFamily_eq_prod_finsum : ∀ (V W : Type) [Fintype W] (C
     apply Prod.ext
     · funext v
       by_cases hv : v ∈ S
-      · simp only [emb, dif_pos hv]
-      · simp only [emb, dif_neg hv]
+      · simp only [emb, dite_eq_left hv]
+      · simp only [emb, dite_eq_right hv]
         exact Subtype.ext (h1 v hv).symm
     · rfl
   have hinj : Function.Injective emb := by
@@ -155,7 +155,7 @@ theorem finsum_restrictedFamily_eq_prod_finsum : ∀ (V W : Type) [Fintype W] (C
     obtain ⟨h1, h2⟩ := h'
     refine Prod.ext (funext fun v => ?_) h2
     have := congrFun h1 v.1
-    simpa only [dif_pos v.2] using this
+    simpa only [dite_eq_left v.2] using this
   have hval : ∀ t, F (emb t) = (∏ v : S, o v (t.1 v)) * ∏ w, oa w (t.2 w) := by
     intro t
     show (∏ᶠ v, o v ((emb t).1.1 v)) * ∏ w, oa w (t.2 w) = _
@@ -163,11 +163,11 @@ theorem finsum_restrictedFamily_eq_prod_finsum : ∀ (V W : Type) [Fintype W] (C
     rw [finprod_eq_prod_of_mulSupport_subset _ (s := S) ?_]
     · rw [← Finset.prod_coe_sort S]
       refine Finset.prod_congr rfl fun v _ => ?_
-      simp only [emb, dif_pos v.2]
+      simp only [emb, dite_eq_left v.2]
     · intro v hv
       by_contra h
       apply hv
-      simp only [emb, dif_neg (show v ∉ S from h)]
+      simp only [emb, dite_eq_right (show v ∉ S from h)]
       exact ((hS v h).2 _).1 rfl
   have hsupp' : Function.support F ⊆ ↑(Finset.univ.image emb) := by
     intro p hp

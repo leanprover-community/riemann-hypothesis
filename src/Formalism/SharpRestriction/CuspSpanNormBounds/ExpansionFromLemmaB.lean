@@ -50,12 +50,6 @@ theorem fdegOf_eq {μ : Measure (Formalism.REAL.UJ ε)} {σ : Matrix (Fin n) (Fi
 
 end Fdeg
 
-section SchurH
-
-variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-
-end SchurH
-
 section P90P
 
 open Formalism.QuantumDeterminants.WeylGroupFacts

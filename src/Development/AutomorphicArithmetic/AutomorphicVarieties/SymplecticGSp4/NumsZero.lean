@@ -681,7 +681,7 @@ theorem UpperTheory.V.X.galCount :
     rw [Finset.sum_eq_single ⟨l, hD.l_mem⟩]
     · simp
     · intro b _ hb
-      exact if_neg fun h => hb (Subtype.ext h)
+      exact ite_eq_right fun h => hb (Subtype.ext h)
     · simp
   have hQ : ∑ q : Q, finrank k (H1 (ρ.comp (locHom SP (pl q)))) =
       ∑ q : Q, finrank k (H1ur (ρ.comp (locHom SP (pl q))) ((Ine (F := ℚ) (pl q) ⊓ K).subgroupOf (Dec (F := ℚ) (pl q)))) +
@@ -690,7 +690,7 @@ theorem UpperTheory.V.X.galCount :
     refine Finset.sum_congr rfl fun q _ => ?_
     have hql : (q : ℕ) ≠ l := fun h => Finset.disjoint_left.1 hD.disj hD.l_mem (h ▸ q.2)
     obtain ⟨φ, h1, h2⟩ := decZhat Ω q (hD.prime _ (.inr q.2)) (pl q) (hD.isOver _ (.inr q.2))
-    rw [(loc q.1 (.inr q.2)).2.2.1, if_neg hql, add_zero,
+    rw [(loc q.1 (.inr q.2)).2.2.1, ite_eq_right hql, add_zero,
       urIndex l _ (hc q) ((Ine (F := ℚ) (pl q)).subgroupOf (Dec (F := ℚ) (pl q))) ((Ine (F := ℚ) (pl q) ⊓ K).subgroupOf (Dec (F := ℚ) (pl q)))
         (Subgroup.comap_mono inf_le_left) ?_,
       urAbs _ (hc q) _ φ h1 h2]
@@ -1061,7 +1061,7 @@ private theorem nums_all (P : CohomologyHyp) {Ω : Type} [Field Ω] [Algebra ℚ
     rw [a2 e, hdim]
     congr 1
     rcases hj with rfl | rfl | rfl <;> decide
-  rw [if_neg fun e => hj (Or.inl e), if_neg fun e => hj (Or.inr e), add_zero]
+  rw [ite_eq_right fun e => hj (Or.inl e), ite_eq_right fun e => hj (Or.inr e), add_zero]
   by_cases ho : j ∈ oddRoots
   · obtain ⟨o1, hne⟩ := hodd ho
     have o2 : ∀ j ∈ oddRoots, j.1 = 1 ∨ j.1 = -1 := by decide
@@ -1074,7 +1074,7 @@ private theorem nums_all (P : CohomologyHyp) {Ω : Type} [Field Ω] [Algebra ℚ
   · have e : j ∉ wts := by
       simp only [wts, Finset.mem_union, Finset.mem_insert, Finset.mem_singleton]
       tauto
-    rw [dimP, if_neg fun e => hj (Or.inl e), if_neg e] at hdim
+    rw [dimP, ite_eq_right fun e => hj (Or.inl e), ite_eq_right e] at hdim
     obtain ⟨a1, -, a2⟩ := key (Or.inl hdim)
     exact ⟨a1, a2 (Or.inl hdim), fun _ _ _ => nums_zero _ _ hdim⟩
 

@@ -28,11 +28,11 @@ theorem det_mul_cols {R : Type} [CommRing R] {N d : ℕ} (M : Matrix (Fin d) (Fi
     symm
     refine Finset.sum_subset (Finset.filter_subset _ _) fun s _ hs => ?_
     have hc : s.card ≠ d := fun hc => hs (by simp [hc])
-    rw [dif_neg hc, zero_mul]
+    rw [dite_eq_right hc, zero_mul]
   rw [h1, Finset.sum_subtype (Finset.univ.filter fun I : Finset (Fin N) => I.card = d)
     (p := fun s : Finset (Fin N) => s.card = d) (fun s => by simp)]
   refine Finset.sum_congr rfl fun s _ => ?_
-  rw [dif_pos s.2, MinorCalc.minorIJ_eq_det B s.1 C d s.2 hC]
+  rw [dite_eq_left s.2, MinorCalc.minorIJ_eq_det B s.1 C d s.2 hC]
   rfl
 
 variable {Ψ : Type} {p q : ℕ}
@@ -78,9 +78,9 @@ theorem sum_aExt_mul {Ω : Type} [Field Ω] {n : Ψ ⊕ Ψ → ℕ} (A : ∀ s, 
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [Finset.sum_eq_single (posOf p q s l)]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg (Ne.symm hb), map_zero, zero_mul]
+    rw [ite_eq_right (Ne.symm hb), map_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -97,10 +97,10 @@ theorem mem_stepCols_iff (r : Ψ × Fin (p + q)) (a : Fin (p + q)) :
         posOf p q (stepOf Ψ p q r).1 (Fin.castLE (stepOf Ψ p q r).2.2 y) = a := by
   have hr := r.2.2
   by_cases h : (r.2 : ℕ) < p
-  · have e : stepOf Ψ p q r = ⟨.inl r.1, ⟨r.2, h⟩⟩ := dif_pos h
+  · have e : stepOf Ψ p q r = ⟨.inl r.1, ⟨r.2, h⟩⟩ := dite_eq_left h
     rw [e]
     simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
     constructor
     · rintro ⟨h1, h2⟩
       refine ⟨⟨a - q, ?_⟩, Fin.ext ?_⟩
@@ -112,10 +112,10 @@ theorem mem_stepCols_iff (r : Ψ × Fin (p + q)) (a : Fin (p + q)) :
       have hy : (y : ℕ) < (r.2 : ℕ) + 1 := y.2
       show p + q - p ≤ q + (y : ℕ) ∧ q + (y : ℕ) < p + q - p + ((r.2 : ℕ) + 1)
       omega
-  · have e : stepOf Ψ p q r = ⟨.inr r.1, ⟨r.2 - p, by show _ < q; omega⟩⟩ := dif_neg h
+  · have e : stepOf Ψ p q r = ⟨.inr r.1, ⟨r.2 - p, by show _ < q; omega⟩⟩ := dite_eq_right h
     rw [e]
     simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     constructor
     · intro h1
       refine ⟨⟨a, ?_⟩, Fin.ext rfl⟩
@@ -156,11 +156,11 @@ theorem det_fMat_eq {Ω : Type} [Field Ω] {n : Ψ ⊕ Ψ → ℕ} (A : ∀ s, M
   refine Finset.sum_congr rfl fun I _ => ?_
   congr 1
   by_cases e : I.card = (t.2 : ℕ) + 1
-  · rw [dif_pos e]
+  · rw [dite_eq_left e]
     simp only [coefF]
-    rw [dif_pos e, RingHom.map_det]
+    rw [dite_eq_left e, RingHom.map_det]
     rfl
-  · rw [dif_neg e]
+  · rw [dite_eq_right e]
     simp [coefF, e]
 
 end GlobalTheory.CompanionTheory.Ar.PB.FMX.BlockEmbeddings

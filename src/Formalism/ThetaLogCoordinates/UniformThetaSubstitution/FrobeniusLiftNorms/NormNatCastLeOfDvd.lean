@@ -339,7 +339,7 @@ lemma sum_piece (p : ℕ) (Z Y : MvPowerSeries (Tp ⊕ Lw) K) (aA : Φ → K) (d
         ∑ k, MvPowerSeries.C (aB k) * topMonoS (dB k) * lowLin (b k) + Z +
         MvPowerSeries.C (p : K) * Y := by
   rw [Fintype.sum_sum_type, Fintype.sum_sum_type, Fin.sum_univ_two]
-  simp only [piece, Sum.elim_inl, Sum.elim_inr, if_true, one_ne_zero, if_false]
+  simp only [piece, Sum.elim_inl, Sum.elim_inr, ite_true, one_ne_zero, ite_false]
   ring
 
 def dTot (dA : Φ → Tp →₀ ℕ) (dB : κ → Tp →₀ ℕ) (k : Φ ⊕ κ ⊕ Fin 2 → ℕ) : Tp ⊕ Lw →₀ ℕ :=
@@ -363,7 +363,7 @@ lemma prod_piece (p : ℕ) (Z Y : MvPowerSeries (Tp ⊕ Lw) K) (aA : Φ → K) (
         (MvPowerSeries.monomial (dTot dA dB k) (cTot p aA aB k) *
           (Z ^ k (Sum.inr (Sum.inr 0)) * (Y ^ k (Sum.inr (Sum.inr 1)) * U))) := by
   rw [Fintype.prod_sum_type, Fintype.prod_sum_type, Fin.prod_univ_two]
-  simp only [piece, Sum.elim_inl, Sum.elim_inr, if_true, one_ne_zero, if_false]
+  simp only [piece, Sum.elim_inl, Sum.elim_inr, ite_true, one_ne_zero, ite_false]
   have hA : ∏ φ, (MvPowerSeries.C (aA φ) * topMonoS (Lw := Lw) (dA φ)) ^ k (Sum.inl φ) =
       MvPowerSeries.monomial (∑ φ, k (Sum.inl φ) • (dA φ).mapDomain Sum.inl)
         (∏ φ, aA φ ^ k (Sum.inl φ)) := by

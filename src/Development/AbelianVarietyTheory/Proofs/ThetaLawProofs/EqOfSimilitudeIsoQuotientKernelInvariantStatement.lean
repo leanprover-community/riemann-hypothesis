@@ -224,9 +224,9 @@ theorem eq_of_similitude_invariant : Out.Laws → ∀ (K : Type) [Field K] [IsAl
         Matrix.cons_val_one, neg_neg]
       simp only [← Finset.prod_mul_distrib]
       rw [Finset.prod_eq_single r₀ (fun r _ hr => ?_) (fun hr => absurd (Finset.mem_univ _) hr)]
-      · simp only [if_true, zpow_zero, _root_.mul_one, zpow_neg]
+      · simp only [ite_true, zpow_zero, _root_.mul_one, zpow_neg]
         rw [_root_.mul_mul_mul_comm, inv_mul_cancel, _root_.mul_one]
-      · simp only [if_neg hr, _root_.one_mul, zpow_one, zpow_neg, e']
+      · simp only [ite_eq_right hr, _root_.one_mul, zpow_one, zpow_neg, e']
         rw [_root_.mul_mul_mul_comm, mul_inv_cancel_comm, inv_mul_cancel_comm, inv_mul_cancel]) _ hu₀
   refine GlobalTheory.eq_of_invariantGen_translates laws K x.P m (ξ r₀) (ξ' r₀) u hm hu fun δ hδ y J hJ => ?_
   have hv := hinv (δ ≫ i) (fun r => by

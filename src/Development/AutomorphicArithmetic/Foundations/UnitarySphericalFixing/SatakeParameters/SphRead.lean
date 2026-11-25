@@ -560,18 +560,18 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
     · rw [Finset.sum_apply]
       refine Finset.sum_congr rfl fun c _ => ?_
       by_cases hc : ∃ x : GAf L n, (x : GAf L n ⧸ U) = c ∧ TrivOutside {v} x
-      · simp only [dif_pos hc]
+      · simp only [dite_eq_left hc]
         rfl
-      · simp only [dif_neg hc, zero_smul]
+      · simp only [dite_eq_right hc, zero_smul]
         rfl
     · intro c hc0
       rw [Function.mem_support] at hc0
       by_cases hc : ∃ x : GAf L n, (x : GAf L n ⧸ U) = c ∧ TrivOutside {v} x
-      · rw [dif_pos hc] at hc0
+      · rw [dite_eq_left hc] at hc0
         rw [Set.Finite.coe_toFinset]
         refine ⟨hc.choose, hc.choose_spec.1, hc.choose_spec.2, fun h0 => hc0 ?_⟩
         rw [h0, zero_smul]
-      · exact absurd (dif_neg hc) hc0
+      · exact absurd (dite_eq_right hc) hc0
   have hmemV : ∀ h ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n), ∀ f ∈ V, heckeFunI L n U Dv h f ∈ V := by
     intro h hh f hf
     refine ⟨?_, _root_.GlobalTheory.InertSatInv.heckeFunI_rt_invariant_prod L n v w Dv U hU hdec' π.W h hh f hf.2⟩
@@ -591,7 +591,7 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
     else 0
   have hT : ∀ h (hh : h ∈ Formalism.UG.Hecke ℂ (Formalism.UG.KU Dv.σw n)) (f : V),
       ((T h f : V) : GAf L n → π.W) = heckeFunI L n U Dv h f := fun h hh f => by
-    simp only [T, dif_pos hh]
+    simp only [T, dite_eq_left hh]
     rfl
   have hK := Formalism.UG.P.isCommensurated_integral_unitary_of_unramified Dv.unram n
   obtain ⟨α, x, hx0, hx⟩ := _root_.GlobalTheory.HeckeSatakeEigen.exists_satU_eigenvector Dv.ϖ Dv.σw _ n Dv.unram V T

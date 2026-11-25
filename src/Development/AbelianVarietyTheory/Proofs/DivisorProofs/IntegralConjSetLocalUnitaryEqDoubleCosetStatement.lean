@@ -966,7 +966,7 @@ theorem orbit_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
     · have hUL : ∀ h : UL n w, ((h.1.val).map (cj w))ᵀ * h.1.val = 1 := by
         intro h
         have := h.2
-        simp only [UL, hs, if_false] at this
+        simp only [UL, hs, ite_false] at this
         simpa [UJ, cT] using this
       have sd : ∀ g : UL n w, SelfDual (w.adicCompletionIntegers E) (cj w)
           (matLat (w.adicCompletionIntegers E) g.1.val (stdLat (w.adicCompletionIntegers E) n)) :=
@@ -977,7 +977,7 @@ theorem orbit_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
       have htu : IsUnit t := (Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_det_of_left_inverse ht1)
       refine ⟨htu.unit, ?_, ?_, by rw [hp]; exact htM⟩
       · show _ ∈ UL n w
-        simp only [UL, hs, if_false]
+        simp only [UL, hs, ite_false]
         show cT (cj w) _ * 1 * _ = 1
         simpa [cT] using ht1
       · ext : 1

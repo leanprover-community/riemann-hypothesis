@@ -159,8 +159,8 @@ theorem tens_ισ (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matr
   simp only [tens, entA, gInf_splitH₁, gInf_splitH₂, hFin_splitH, cA]
   rw [Fintype.prod_eq_mul_prod_subtype_ne _ v]
   have e : ∀ w : {w : InfinitePlace E // w ≠ v},
-      (if h : (w : InfinitePlace E) = v then t else r.1 ⟨w, h⟩) = r.1 w := fun w => by rw [dif_neg w.2]
-  simp only [dif_pos, e]
+      (if h : (w : InfinitePlace E) = v then t else r.1 ⟨w, h⟩) = r.1 w := fun w => by rw [dite_eq_right w.2]
+  simp only [dite_eq_left, e]
   ring
 
 theorem conv_slice (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v : InfinitePlace E) (ka : Kers Ma)
@@ -229,8 +229,8 @@ omit [BorelSpace (G a)] [BorelSpace (G b)] [BorelSpace (Hf E a b)] in
 theorem continuous_σA (v : InfinitePlace E) : Continuous (σA (a := a) (b := b) v) := by
   refine (splitH a b).continuous.comp (Continuous.prodMk (continuous_pi fun w => ?_) continuous_snd)
   by_cases h : w = v
-  · simp only [h, dif_pos]; exact continuous_const
-  · simp only [h, dif_neg, not_false_eq_true]; exact (continuous_apply _).comp continuous_fst
+  · simp only [h, dite_eq_left]; exact continuous_const
+  · simp only [h, dite_eq_right, not_false_eq_true]; exact (continuous_apply _).comp continuous_fst
 
 theorem ιA_mul (v : InfinitePlace E) (s t : G a) : ιA (b := b) v (s * t) = ιA v s * ιA v t := by
   rw [ιA, ιA, ιA, ← map_mul, Pi.mulSingle_mul]
@@ -318,7 +318,7 @@ theorem along_conv (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (
     have hxt : x * t.val ∈ GLs a := GlobalTheory.CompanionTheory.WaveAll.mul_mem_GLs hx (val_mem_GLs t)
     have hm : GeneralLinearGroup.mkOfDetNeZero (x * t.val) hxt = GeneralLinearGroup.mkOfDetNeZero x hx * t :=
       Units.ext rfl
-    simp only [FA, dif_pos hxt, hm, ιA_mul, hp0, mul_assoc]
+    simp only [FA, dite_eq_left hxt, hm, ιA_mul, hp0, mul_assoc]
   have hc : Continuous fun t : G a => ka v t.val (FA v μa μb ν ka kb ψ f i y m₂ (x * t.val)) := by
     simp only [hFA]
     exact (hka v).1.clm_apply (continuous_Rv v hf hka hkb hψ i p0)
@@ -374,7 +374,7 @@ theorem continuousOn_FA (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ 
   have e : (fun x : GLs a => FA v μa μb ν ka kb ψ f i y m₂ x.1) =
       fun x : GLs a => Rv v μa μb ν ka kb ψ f i ((y, m₂) * ιA v (GeneralLinearGroup.mkOfDetNeZero x.1 x.2)) := by
     funext x
-    simp only [FA, dif_pos x.2]
+    simp only [FA, dite_eq_left x.2]
   rw [e]
   exact (continuous_Rv v hf hka hkb hψ i (y, m₂)).comp hm
 

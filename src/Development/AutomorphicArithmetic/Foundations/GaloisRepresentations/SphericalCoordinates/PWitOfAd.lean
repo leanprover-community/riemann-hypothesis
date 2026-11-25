@@ -180,7 +180,7 @@ theorem UpperTheory.exists_lattice_lift_congr_mod_coprime :
     obtain ⟨e, he, heq⟩ := (key n hn hc (b i)).choose_spec.2
     refine AddSubgroup.mem_comap.mpr (AddSubgroup.mem_map.mpr ⟨e, he, ?_⟩)
     have hg : g n i = ⟨(key n hn hc (b i)).choose, (key n hn hc (b i)).choose_spec.1⟩ :=
-      dif_pos ⟨hn, hc⟩
+      dite_eq_left ⟨hn, hc⟩
     simp only [φ, AddMonoidHom.sub_apply, AddMonoidHom.comp_apply, LinearMap.toAddMonoidHom_coe,
       Module.Basis.constr_basis, hg, AddSubgroup.coe_subtype, nsmulAddMonoidHom_apply]
     rw [heq, ← AdelicSim.inAf_eq]
@@ -764,7 +764,7 @@ private theorem exists_pos_rat_valuation_one_away {p : ℕ} [Fact p.Prime] (K : 
   intro y hK hy hKy
   by_cases hall : ∀ v : AwayP p, Valued.v (AfP.eval v (y : AfP p)) = 1
   · exact ⟨1, one_pos, fun v => by rw [map_one, one_mul]; exact hall v⟩
-  push_neg at hall
+  push Not at hall
   obtain ⟨v, hv⟩ := hall
   have hvlt : Valued.v (AfP.eval v (y : AfP p)) < 1 :=
     lt_of_le_of_ne ((isIntAf_iff_val _).mp hy v) hv

@@ -138,7 +138,7 @@ theorem weilUnit_level (c : CubicalStr G L) (N M n : ℕ) (hn : n = N * M) {T : 
   rw [wq_level (isCub_cubV c hJ) N M hx] at h2
   have h3 := congrArg Units.val (h1.trans h2.symm)
   simp only [gm_val (𝟙 T.left) z ⊤ trivial] at h3
-  simp only [gs, dif_pos (show (𝟙 T.left : T.left ⟶ T.left) z ∈ (⊤ : T.left.Opens) from trivial)]
+  simp only [gs, dite_eq_left (show (𝟙 T.left : T.left ⟶ T.left) z ∈ (⊤ : T.left.Opens) from trivial)]
   exact h3
 
 end PositivityTheory.Xgn.TestGroupPoint

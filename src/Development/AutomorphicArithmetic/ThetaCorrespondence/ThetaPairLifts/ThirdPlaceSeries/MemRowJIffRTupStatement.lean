@@ -310,7 +310,7 @@ theorem prod_mem {n : ℕ} (γ : GL (Fin n) K)
           _ = _ := by rw [Finset.mul_sum, Finset.sum_mul]; refine Finset.sum_congr rfl fun r _ => by ring
       rw [e]
       exact A.sum_mem fun r _ => mul_mem (prod_mem_off A γ hγ p i k r (Ne.symm hk)) (prod_mem_off A γ hγ r k i q hk)
-    · push_neg at hk
+    · push Not at hk
       rw [hk p, hk q]
       have : ∑ r, a i r * b r i = 1 := by
         have := congrFun (congrFun hab i) i

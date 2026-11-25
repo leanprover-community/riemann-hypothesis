@@ -67,7 +67,7 @@ theorem list_equiv {U : MMap M} (hU : IsMultMap θ M J χ U)
   | cons a l ih =>
     rw [List.nodup_cons] at hl
     have e := hU.equiv a (g a) (hg a) (fun ρ => if ρ ∈ l then w ρ else v ρ) (w a) (by
-      simp only [if_neg hl.1]; exact h a)
+      simp only [ite_eq_right hl.1]; exact h a)
     rw [ih hl.2] at e
     have e2 : rTr V ((a :: l).map fun ρ => atTau θ V ρ (g ρ)).prod (U v) =
         rTr V (atTau θ V a (g a)) (rTr V (l.map fun ρ => atTau θ V ρ (g ρ)).prod (U v)) := by

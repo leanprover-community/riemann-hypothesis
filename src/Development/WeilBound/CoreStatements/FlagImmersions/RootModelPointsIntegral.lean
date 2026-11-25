@@ -146,7 +146,7 @@ theorem root_model_points_integral : ∀ II : IntersectionSystem, IsFullIntersec
         exact line_deg M t 1 _)]
     have hδ : (M.δ : ℝ) ≠ 0 := by exact_mod_cast M.δ_pos.ne'
     have hk : (M.kA : ℝ) ≠ 0 := by exact_mod_cast M.kA_pos.ne'
-    rw [RootModel.geoMono, if_pos (degree_word w)]
+    rw [RootModel.geoMono, ite_eq_left (degree_word w)]
     field_simp
   rw [hexp]
   simp_rw [linA_eq]

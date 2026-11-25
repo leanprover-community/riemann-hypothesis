@@ -956,7 +956,7 @@ private theorem arith (T : ℕ → PowerSeries ℂ) (h0 : ∀ p : ℕ, p.Prime �
     intro n hn
     have hprod : ((n.factorization.prod fun p k => p ^ k : ℕ) : ℝ) = n := by
       rw [Nat.prod_factorization_pow_eq_self hn]
-    simp only [a, if_neg hn, Finsupp.prod]
+    simp only [a, ite_eq_right hn, Finsupp.prod]
     rw [norm_prod, ← hprod, Finsupp.prod, Nat.cast_prod, ← Finset.prod_pow]
     refine Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) fun p hp => ?_
     have pp : p.Prime := Nat.prime_of_mem_primeFactors (by simpa using hp)
@@ -974,13 +974,13 @@ private theorem arith (T : ℕ → PowerSeries ℂ) (h0 : ∀ p : ℕ, p.Prime �
     rcases eq_or_ne n 0 with rfl | hn
     · have : m = 1 := by simpa using h
       subst this; simp [a1]
-    simp only [a, if_neg (mul_ne_zero hm hn), if_neg hm, if_neg hn]
+    simp only [a, ite_eq_right (mul_ne_zero hm hn), ite_eq_right hm, ite_eq_right hn]
     rw [Nat.factorization_mul_of_coprime h, Finsupp.prod_add_index_of_disjoint]
     simpa using h.disjoint_primeFactors
   · intro p k pp
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · simp [a1, h0 p pp]
-    · simp only [a, if_neg (pow_ne_zero k pp.ne_zero), pp.factorization_pow]
+    · simp only [a, ite_eq_right (pow_ne_zero k pp.ne_zero), pp.factorization_pow]
       rw [Finsupp.prod_single_index (h0 p pp)]
   · intro s hs
     refine LSeriesSummable_of_le_const_mul_rpow (x := 4) hs ⟨1, fun n hn => ?_⟩
@@ -1149,7 +1149,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.asEx_of :
   have tv1 : ∀ v Q, Den P χ v Q → Tv v * Q = 1 := by
     intro v Q hd
     have h : ∃ Q, Den P χ v Q := ⟨Q, hd⟩
-    simp only [Tv, dif_pos h]
+    simp only [Tv, dite_eq_left h]
     have := (Classical.choose_spec (den_inv hE hs (hc' v) h.choose_spec)).1
     rw [← den_unique hE h.choose_spec hd]
     exact this
@@ -1159,22 +1159,22 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.asEx_of :
       have : (1 : ℝ) ≤ normV v := by exact_mod_cast (nv_prime v).one_le
       linarith
     by_cases h : ∃ Q, Den P χ v Q
-    · simp only [Tv, dif_pos h]
+    · simp only [Tv, dite_eq_left h]
       exact (Classical.choose_spec (den_inv hE hs (hc' v) h.choose_spec)).2.1
-    · simp only [Tv, dif_neg h]
+    · simp only [Tv, dite_eq_right h]
       exact maj_one q1
   have tv0 : ∀ v, PowerSeries.coeff 0 (Tv v) = 1 := by
     intro v
     by_cases h : ∃ Q, Den P χ v Q
-    · simp only [Tv, dif_pos h]
+    · simp only [Tv, dite_eq_left h]
       exact (Classical.choose_spec (den_inv hE hs (hc' v) h.choose_spec)).2.2
-    · simp [Tv, dif_neg h]
+    · simp [Tv, dite_eq_right h]
   let T : ℕ → PowerSeries ℂ := fun p =>
     if p ∣ N then 1 else if h : ∃ v : H.P ℚ, normV v = p then Tv h.choose else 1
   have tEq : ∀ v : H.P ℚ, ¬ Bad N v → T (normV v) = Tv v := by
     intro v hb
     have h : ∃ v' : H.P ℚ, normV v' = normV v := ⟨v, rfl⟩
-    simp only [T, if_neg (fun hd => hb (MultiplicativeMajorants.bad_of_dvd v hd)), dif_pos h]
+    simp only [T, ite_eq_right (fun hd => hb (MultiplicativeMajorants.bad_of_dvd v hd)), dite_eq_left h]
     rw [nv_inj h.choose_spec]
   have h0 : ∀ p : ℕ, p.Prime → PowerSeries.coeff 0 (T p) = 1 := by
     intro p _
@@ -1595,7 +1595,7 @@ namespace UpperTheory.ConvolutionTheory.RankTwoDescent.SH
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
 private theorem re_iy (y : ℝ) (hy : y ≠ 0) : re ((iy y : (A ℚ)ˣ) : A ℚ) = y := by
-  have h : iy y = TR.infId ℚ ⟨fun _ => y, fun _ => y⁻¹, funext fun _ => mul_inv_cancel₀ hy, funext fun _ => inv_mul_cancel₀ hy⟩ := dif_neg hy
+  have h : iy y = TR.infId ℚ ⟨fun _ => y, fun _ => y⁻¹, funext fun _ => mul_inv_cancel₀ hy, funext fun _ => inv_mul_cancel₀ hy⟩ := dite_eq_right hy
   have h2 : ∀ x, TR.pInf ℚ (TR.sInf ℚ x) = x := fun x => (TR.infEq ℚ).symm_apply_apply x
   rw [h, re]
   change TR.pInf ℚ (1 - TR.sInf ℚ 1 + TR.sInf ℚ (fun _ => y)) _ = y

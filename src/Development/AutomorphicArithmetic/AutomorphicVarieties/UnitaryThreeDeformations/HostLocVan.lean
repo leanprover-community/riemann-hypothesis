@@ -120,7 +120,7 @@ private theorem gRep_bij {k D : Type} [Field k] [Finite k] [Group D] (η : D →
     show m.val a b = 0
     by_cases hab : wt a b = j
     · have e := congrArg (fun X : Gb (k := k) j => X.val a b) hm
-      simp only [gRep_val, adRep_baseLift_apply, hη, if_true] at e
+      simp only [gRep_val, adRep_baseLift_apply, hη, ite_true] at e
       have hne : (Ψ x ^ wt a b : kˣ) ≠ 1 := by
         have h0 : wt a b ≠ 0 := hab ▸ hj
         have hw : wt a b = 1 ∨ wt a b = 2 ∨ wt a b = -1 ∨ wt a b = -2 := by

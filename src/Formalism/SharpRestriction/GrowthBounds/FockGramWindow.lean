@@ -511,11 +511,11 @@ theorem bad_le_smith (n : ℕ) (k : ℤ) (Ψ : MvPolynomial σ ℚ_[p] → MvPol
     rw [hΨ]
     by_cases htt : t = t'
     · subst htt
-      rw [if_pos rfl, if_pos rfl]
+      rw [ite_eq_left rfl, ite_eq_left rfl]
       show (p : ℚ_[p]) ^ k * s / (d (ι t) : ℚ_[p]) * ((d (ι t) : ℚ_[p]) / s) = _
       have := hd0 t
       field_simp
-    · rw [if_neg htt, if_neg (fun h => htt (hιinj h)), zero_div, mul_zero]
+    · rw [ite_eq_right htt, ite_eq_right (fun h => htt (hιinj h)), zero_div, mul_zero]
   have hrank : Module.finrank ℤ_[p] L = n := by
     rw [hL, finrank_span_eq_card hli, Fintype.card_fin]
   have hcard : (Finset.univ.filter (fun i => ‖(d i : ℚ_[p])‖ ≤ (p : ℝ) ^ (-((k : ℝ) + 1)))).card + m = n := by
@@ -696,7 +696,7 @@ theorem dJ_le (A : ℕ) (hdeg : ∀ x, G.LL.deg x ≤ 2 * A) (hBa : G.B ≤ 2 * 
   · subst ha
     simp [Fin.castSucc_ne_last]
     omega
-  · rw [if_neg ha]
+  · rw [ite_eq_right ha]
     obtain ⟨a0, rfl⟩ : ∃ a0, Fin.castSucc a0 = a := Fin.exists_castSucc_eq.2 (Ne.symm ha)
     have h1 := lettersAt_le G j jp a0
     have h2 := hdeg a0
@@ -725,7 +725,7 @@ theorem lettersAt_uPos (hB : G.BlockOK) (j : Fin G.T.t → ℕ) (jp : ℕ) :
     (G.lettersAt j jp).deg G.uPos = G.LL.deg G.uPos - jp := by
   obtain ⟨-, hpos, -, -⟩ := hB
   have hz : (∑ i : Fin G.T.t, if (G.uPos : ℕ) = G.T.pos i ∨ (G.uPos : ℕ) = G.T.pos i + 1 then j i else 0) = 0 :=
-    Finset.sum_eq_zero fun i _ => if_neg (by have := hpos i; omega)
+    Finset.sum_eq_zero fun i _ => ite_eq_right (by have := hpos i; omega)
   change (List.map (fun i : Fin G.T.t => if (G.uPos : ℕ) = G.T.pos i ∨ (G.uPos : ℕ) = G.T.pos i + 1 then j i else 0) (List.finRange G.T.t)).sum = 0 at hz
   unfold M.BlockData.lettersAt
   simp only [hz, ite_true, Nat.sub_zero]
@@ -783,7 +783,7 @@ theorem det_leading_diagonal : DetLeadDiag := by
     · intro σ _ hσ
       rw [← Polynomial.C_eq_intCast, Polynomial.coeff_C_mul, hprod]
       obtain ⟨i, hi⟩ := not_forall.mp (mt Equiv.ext hσ)
-      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hcoeff, if_neg (by simpa using hi)]), mul_zero]
+      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [hcoeff, ite_eq_right (by simpa using hi)]), mul_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h
 

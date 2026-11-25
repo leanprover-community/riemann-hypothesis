@@ -21,12 +21,6 @@ def QuotShape {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {
     (π : (Hc ⧸ F.comap Hc.subtype) →ₗ[O] Cy),
     Function.Injective ι ∧ Function.Exact ι π ∧ ∃ c0 : Cy, ∀ y : Cy, ∃ a : O, y = a • c0
 
-section Defs
-variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-  {A T' G : Type} [Ring A] [Algebra O A] [CommRing T'] [Algebra T' A] [Group G]
-
-end Defs
-
 def HZeroHypotheses {ℓ : ℕ} [Fact ℓ.Prime] (D : InvariantsCohomologyData ℓ) (w : ℤ_[ℓ]ˣ) (m : ℕ) (U : Finset ℤ) : Prop :=
   1 ≤ m ∧ (ℓ = 2 → 2 ≤ m) ∧ PadicInt.valuation ((w : ℤ_[ℓ]) - 1) = m ∧ 0 ∉ U ∧ U.Nonempty ∧
   D.piece.Inputs w U 0 ∧ D.Union ∧ D.Flat ∧ D.LES ∧ D.Inv

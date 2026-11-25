@@ -45,10 +45,10 @@ theorem plk_flagPt : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintyp
     refine Finset.sum_congr rfl fun J _ => Finset.sum_congr rfl fun m _ => ?_
     ring
   rw [e1, Finset.sum_eq_single (stepCols N j p.2)]
-  · rw [hdelta _ hI₀, if_pos rfl, one_mul]
+  · rw [hdelta _ hI₀, ite_eq_left rfl, one_mul]
   · intro J _ hne
     by_cases hJ : IsStepRows N j p.2 J
-    · rw [hdelta J hJ, if_neg hne.symm, zero_mul]
+    · rw [hdelta J hJ, ite_eq_right hne.symm, zero_mul]
     · rw [hoff J hJ, mul_zero]
   · simp
 

@@ -48,8 +48,8 @@ theorem norm_moduleSection_apply (w : InfinitePlace K) (t : {r : ℝ // 0 < r}) 
 theorem infiniteModule_moduleSection (w : InfinitePlace K) (t : {r : ℝ // 0 < r}) :
     infiniteModule (moduleSection w t) = t := by
   rw [infiniteModule, Finset.prod_eq_single w (fun v _ hv ↦ by
-    rw [norm_moduleSection_apply, if_neg hv, one_pow]) (fun h ↦ absurd (Finset.mem_univ w) h),
-    norm_moduleSection_apply, if_pos rfl]
+    rw [norm_moduleSection_apply, ite_eq_right hv, one_pow]) (fun h ↦ absurd (Finset.mem_univ w) h),
+    norm_moduleSection_apply, ite_eq_left rfl]
   exact norm_posRealElem_pow w t.2.le
 
 theorem norm_moduleSection_apply_le_one (w : InfinitePlace K) {t : {r : ℝ // 0 < r}}
@@ -194,7 +194,7 @@ theorem exists_decay_bound_tensor_cosetIndicator (w : InfinitePlace K) (φ : �
   by_cases hm : ((IdeleGroup.toFinite K a : (𝔸ᶠ[K])ˣ) : 𝔸ᶠ[K]) * algebraMap K 𝔸ᶠ[K] ξ - b ∈
       idealFiniteAdeles I
   · have hξJ := hJ a ha ξ hm
-    rw [if_pos hm, if_pos hξJ, mul_one]
+    rw [ite_eq_left hm, ite_eq_left hξJ, mul_one]
     set x := mixedEmbedding K ξ
     set z := c * x
     have hx : ‖x‖ ≤ B' * ‖z‖ := by
@@ -234,7 +234,7 @@ theorem exists_decay_bound_tensor_cosetIndicator (w : InfinitePlace K) (φ : �
       _ = ((t : ℝ) ^ r)⁻¹ * (A * B' ^ k * (κ ^ r)⁻¹ * ((1 + ‖x‖) ^ k)⁻¹) := by
           rw [div_pow, inv_div, mul_pow, mul_inv]
           ring
-  · rw [if_neg hm, mul_zero, norm_zero]
+  · rw [ite_eq_right hm, mul_zero, norm_zero]
     split_ifs
     · exact mul_nonneg (inv_nonneg.2 (pow_nonneg t.2.le r)) (mul_nonneg (mul_nonneg (mul_nonneg hA
         (pow_nonneg hB'0.le k)) (inv_nonneg.2 (pow_nonneg hκ.le r))) (inv_nonneg.2 (by positivity)))

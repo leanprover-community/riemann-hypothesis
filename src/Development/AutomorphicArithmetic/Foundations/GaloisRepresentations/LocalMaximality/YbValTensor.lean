@@ -250,7 +250,7 @@ theorem UpperTheory.Gal.productCup_of_system.yBig_of :
     by_cases hij : i = 0 ∧ j = 0
     · obtain ⟨rfl, rfl⟩ := hij
       simpa [c0] using hc00
-    · simp only [c0, if_neg hij]
+    · simp only [c0, ite_eq_right hij]
       exact zero_mem _
   have hmono := hSO.2.2
   have hI : ∀ i i' j, c0 i j - c0 i' j ∈ (T.colCx N Z {i, i'} {j}).B d := by
@@ -296,7 +296,7 @@ theorem UpperTheory.Gal.productCup_of_system.yBig_of :
     have hp : (∏ l ∈ img (inrE : Fin d ↪o (Mi d ⊕ₗ κ) ⊕ₗ Fin d), u⁻¹ l)⁻¹ = T.X 0 ^ d := by
       simp [img, Finset.prod_map, hu]
     have h2 : c0 0 0 (img inrE) = T.act ((T.X 0 ^ d : K'ˣ) : K') m := by
-      simp only [c0, c00, unsc, and_self, if_true]
+      simp only [c0, c00, unsc, and_self, ite_true]
       rw [hp, hc1v]
     rw [h1, h2]
     change (((T.X 0 ^ d : K'ˣ) : K')) • (h' : K') • dtS K' x Finset.univ = _
@@ -309,4 +309,4 @@ theorem UpperTheory.Gal.productCup_of_system.yBig_of :
     have : ¬ (i = 0 ∧ j = 0) := by
       rintro ⟨rfl, rfl⟩
       simp at hij
-    simp only [c0, if_neg this]
+    simp only [c0, ite_eq_right this]

@@ -1233,7 +1233,7 @@ theorem interlacing : Formalism.FourierDecayAlt.Sz.Interlacing := by
     · have h1 : i + 1 ≠ 1 := by omega
       by_cases hlast : i + 1 = c.k
       · have : c.u de (i + 1) = c.ulast := by
-          unfold Cfg.u; rw [if_neg h1, if_pos hlast]
+          unfold Cfg.u; rw [ite_eq_right h1, ite_eq_left hlast]
         rw [this]
         have hiR : (i : ℝ) + 1 = c.k := by exact_mod_cast hlast
         have hvi : c.v i = c.vlast := by unfold Cfg.v; rw [← hiR]; ring
@@ -1242,7 +1242,7 @@ theorem interlacing : Formalism.FourierDecayAlt.Sz.Interlacing := by
         · have := htop ht; simp [ht]; linarith [this.1]
         · simp [ht]
       · have : c.u de (i + 1) = c.v i - 1 / 2 - de i * c.Del := by
-          unfold Cfg.u; rw [if_neg h1, if_neg hlast]; simp
+          unfold Cfg.u; rw [ite_eq_right h1, ite_eq_right hlast]; simp
         rw [this]
         rcases hw.1 i with h | h <;> rw [h] <;> linarith [hDel]
   · have hl : c.lam c.k = -c.b 1 := by simp [Cfg.lam]

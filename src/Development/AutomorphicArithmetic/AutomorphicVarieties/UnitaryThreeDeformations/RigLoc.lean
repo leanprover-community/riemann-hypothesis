@@ -230,7 +230,7 @@ theorem UpperTheory.V.UnitaryThreeInertia.rig_fin :
   have h1' : ∀ g ∈ H, (r' g).right = 1 := fun g hg => (hd g).1.trans (h1 g hg)
   have had : ∀ (g : H) X, adRep r g X = UpperTheory.V.Loc.adGL (glOn H r h1) g X := fun g X => by
     change (r g).adFun X = _
-    rw [GG.adFun, if_pos (h1 g g.2)]
+    rw [GG.adFun, ite_eq_left (h1 g g.2)]
     rfl
   have hcj : ∀ g : H, (UpperTheory.V.Loc.conjGL h⁻¹ (glOn H r' h1') g : Matrix (Fin 3) (Fin 3) (DualNumber E)) =
       (conjBy h⁻¹ r' g).mat := fun g => by

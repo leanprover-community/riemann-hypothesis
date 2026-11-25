@@ -66,7 +66,7 @@ theorem tB_orthonormal (t' : (∀ i, V' i) → H') (ht : ∀ x y, ⟪t' x, t' y�
   by_cases h : k = l
   · subst h
     simp
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro hall
     exact h (funext fun i => hall i (Finset.mem_univ i))
 

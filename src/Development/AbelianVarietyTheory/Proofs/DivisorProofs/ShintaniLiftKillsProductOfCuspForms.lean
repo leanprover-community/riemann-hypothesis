@@ -119,14 +119,14 @@ theorem liftAll_deg_reg : ∀ (q l : ℕ) (L : List (ℕ × ℕ)), 2 ≤ q → l
     by_cases h : l ∣ p.1
     · obtain ⟨h1, h2⟩ := _root_.GlobalTheory.Shin.liftL_deg_reg q l [p] hq hl.pos (by
         intro x hx; rw [List.mem_singleton] at hx; subst hx; exact ⟨hp.1, h, hp.2⟩)
-      rw [if_pos h]
+      rw [ite_eq_left h]
       have hs : deg [p] = p.1 := by simp [deg]
       refine ⟨by rw [h1, hs, ih'.1], ?_⟩
       intro x hx
       rcases List.mem_append.1 hx with hx | hx
       · exact h2 x hx
       · exact ih'.2 x hx
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       have hr := (_root_.GlobalTheory.Shin.reg_norm_frob q l p.1 p.2 hq hl hp.1 h hp.2).1
       have hs : deg [(p.1, p.2 * ∑ i ∈ Finset.range l, q ^ (p.1 * i))] = p.1 := by simp [deg]
       refine ⟨by rw [hs, ih'.1], ?_⟩
@@ -1056,7 +1056,7 @@ theorem sum_inPar_psiG {F : Type} [Field F] [Finite F] (R : F[X] → ℂ) (hR : 
         intro h hh
         have hh' : Matrix.toLin' h ∈ nilRad (headSub (F := F) a n) := (Finset.mem_filter.1 hh).2
         have hu : IsUnit (M + h) ∧ InParM a (M + h) := (unitPar_add_iff M h hh').2 hM
-        simp only [G, if_pos hu, β, tl_add M h hh']
+        simp only [G, ite_eq_left hu, β, tl_add M h hh']
       have hprim := GlobalTheory.CuspGL.isPrimitive_psi F (Fin n → F) R hR (headSub a n) hA0 hAtop
         (Matrix.toLin' M) (mapsTo_headSub M hM.2)
       rw [← Set.image_preimage_eq (nilRad (headSub (F := F) a n)) Matrix.toLin'.surjective,
@@ -1069,7 +1069,7 @@ theorem sum_inPar_psiG {F : Type} [Field F] [Finite F] (R : F[X] → ℂ) (hR : 
     · refine Finset.sum_eq_zero fun h hh => ?_
       have hh' : Matrix.toLin' h ∈ nilRad (headSub (F := F) a n) := (Finset.mem_filter.1 hh).2
       simp only [G]
-      rw [if_neg]
+      rw [ite_eq_right]
       rwa [unitPar_add_iff M h hh']
   have hshift : ∀ h, ∑ M, G (M + h) = ∑ M, G M := fun h =>
     Fintype.sum_equiv (Equiv.addRight h) _ _ (fun M => rfl)
@@ -1424,9 +1424,9 @@ theorem kills_liftAll : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [F
     have hKA : Kills (shLift s (cusp (pullθ ι θ) p.1 p.2)) (J θ A p.1) := by
       by_cases h : l ∣ p.1
       · have := _root_.GlobalTheory.Shin.shLift_cusp_kills_J F F' s hl hs ι θ hθ p.1 p.2 hp.1 h hp.2
-        rw [hAdef, if_pos h]
+        rw [hAdef, ite_eq_left h]
         simpa only [Prod.mk.eta] using this
-      · rw [hAdef, if_neg h]
+      · rw [hAdef, ite_eq_right h]
         have hu := _root_.GlobalTheory.Shin.shLift_cusp_kills_of_not_dvd F F' s hl hs ι θ hθ p.1 p.2 hp.1 h hp.2
         have hJ : J θ [(p.1, p.2 * ∑ i ∈ Finset.range l, q ^ (p.1 * i))] p.1 =
             cusp θ p.1 (p.2 * ∑ i ∈ Finset.range l, q ^ (p.1 * i)) := by

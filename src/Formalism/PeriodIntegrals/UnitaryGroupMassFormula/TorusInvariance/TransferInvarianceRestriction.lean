@@ -157,7 +157,7 @@ lemma n_fix {z : Fin (2 * r + k + 1) → ℂ} {i : Fin (r + 1)} (hz : inWb k r z
         · rw [hz x (Or.inr (by omega)), mul_zero]
       · intro j _ hj
         by_cases hjm : r ≤ j.val ∧ j.val ≤ r + k
-        · rw [hmid x j hjm.1 hjm.2 hx, if_neg (Ne.symm hj), zero_mul]
+        · rw [hmid x j hjm.1 hjm.2 hx, ite_eq_right (Ne.symm hj), zero_mul]
         · rw [hz j (by omega), mul_zero]
       · intro h
         exact absurd (Finset.mem_univ _) h
@@ -234,7 +234,7 @@ theorem transfer_invariance_vector : StepVec := by
     simp only [blk, Matrix.one_apply]
     by_cases h : a = b
     · simp [h]
-    · rw [if_neg (fun e => h (posL_inj e)), if_neg h]
+    · rw [ite_eq_right (fun e => h (posL_inj e)), ite_eq_right h]
   have mv_blk : ∀ s ∈ Glev k r i, ∀ v : Fin (2 * r + k + 1) → ℂ,
       (blk i s *ᵥ fun j => v (posL k r i j)) = fun j => (s *ᵥ v) (posL k r i j) := by
     intro s hs v

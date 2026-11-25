@@ -104,7 +104,7 @@ theorem fv_eq {S : Set (Pl E)} (hS : IsSection S) (φ₁ φ₂ : ∀ w : Pl E, G
     (hw : w.1 ∈ S) (y : Yv a b v) :
     fv S φ₁ φ₂ v y = φ₁ w.1 (evw w y) * if IsSplitAt w.1 then φ₂ w.1 (evw w (thv a b v y)) else 1 := by
   unfold fv
-  rw [finprod_eq_single _ w, finprod_eq_if, if_pos hw]
+  rw [finprod_eq_single _ w, finprod_eq_if, ite_eq_left hw]
   intro u hu
   have hn : u.1 ∉ S := by
     intro h
@@ -113,7 +113,7 @@ theorem fv_eq {S : Set (Pl E)} (hS : IsSection S) (φ₁ φ₂ : ∀ w : Pl E, G
     obtain ⟨z, -, hz⟩ := hS w.1
     have e : u.1.under (𝓞 (maximalRealSubfield E)) = w.1.under (𝓞 (maximalRealSubfield E)) := u.2.trans w.2.symm
     exact (hz _ ⟨h, e⟩).trans (hz _ ⟨hw, rfl⟩).symm
-  rw [finprod_eq_if, if_neg hn]
+  rw [finprod_eq_if, ite_eq_right hn]
 
 theorem evw_pv_rat (v : PlF E) (w : Above v) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E) :
     evw w (pv a b v (ratF E a δ₁, ratF E b δ₂)) = (ratW a w.1 δ₁, ratW b w.1 δ₂) := by
@@ -134,11 +134,11 @@ theorem locConds_inert (hC : CjEx) (hU : Unr E) {S : Set (Pl E)} (hS : IsSection
     LocConds (thv a b v) (Kv a b v) (pv a b v (ratF E a δ₁, ratF E b δ₂)) (fv S φ₁ φ₂ v) := by
   obtain ⟨e, he, hθ, hK⟩ := inert_iso hC E a b v w hns
   refine transport_loc e _ ((thL a w.1).prodMap (thL b w.1)) _ (K2 a b w.1) _ _ (φ₁ w.1) hθ hK (fun x => ?_) ?_
-  · rw [fv_eq hS φ₁ φ₂ v w hw, if_neg hns, mul_one, he]
+  · rw [fv_eq hS φ₁ φ₂ v w hw, ite_eq_right hns, mul_one, he]
   obtain ⟨K', hKo, hKle, hH, -⟩ := test_facts h₁
   have hloc : e (pv a b v (ratF E a δ₁, ratF E b δ₂)) = (locEl a w.1 δ₁, locEl b w.1 δ₂) := by
     rw [he, evw_pv_rat]
-    simp only [locEl, if_neg hns, ratW]
+    simp only [locEl, ite_eq_right hns, ratW]
   rw [hloc]
   have s₁ := sep_locEl hC E a w.1 δ₁ he₁
   have s₂ := sep_locEl hC E b w.1 δ₂ he₂
@@ -195,7 +195,7 @@ private lemma split_pair_facts {w : Pl E} (hs : IsSplitAt w) (δ₁ : GL (Fin a)
       (ratW a w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₁),
        ratW b w (GeneralLinearGroup.map (IsCMField.complexConj E).toRingEquiv.toRingHom δ₂)) =
       (locEl a w δ₁, locEl b w δ₂) ∧ (thL a w).prodMap (thL b w) = MonoidHom.id _ :=
-  ⟨Prod.ext (norm_split E a w δ₁ hs) (norm_split E b w δ₂ hs), by simp only [thL, if_pos hs]; rfl⟩
+  ⟨Prod.ext (norm_split E a w δ₁ hs) (norm_split E b w δ₂ hs), by simp only [thL, ite_eq_left hs]; rfl⟩
 
 theorem locConds_split (hC : CjEx) (hU : Unr E) {S : Set (Pl E)} (hS : IsSection S)
     {φ₁ φ₂ : ∀ w : Pl E, GLw a w × GLw b w → ℂ} (h₁ : IsTestP φ₁) (h₂ : IsTestP φ₂) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E)
@@ -205,7 +205,7 @@ theorem locConds_split (hC : CjEx) (hU : Unr E) {S : Set (Pl E)} (hS : IsSection
   obtain ⟨hσc, hσ, hσK⟩ := sg_facts E a b w.1
   refine transport_loc e _ (swTw (sgP a b w.1)) _ ((K2 a b w.1).prod (K2 a b w.1)) _ _
     (fun y => φ₁ w.1 y.1 * φ₂ w.1 (sgP a b w.1 y.2)) hθ hK (fun x => ?_) ?_
-  · rw [fv_eq hS φ₁ φ₂ v w hw, if_pos hs, ← he, ← he, hθ]
+  · rw [fv_eq hS φ₁ φ₂ v w hw, ite_eq_left hs, ← he, ← he, hθ]
     rfl
   obtain ⟨K₁, hKo₁, -, hH₁, -⟩ := test_facts h₁
   obtain ⟨K₂, hKo₂, -, hH₂, -⟩ := test_facts h₂
@@ -229,10 +229,10 @@ theorem unitConds_inert (hC : CjEx) {S : Set (Pl E)} (hS : IsSection S)
     UnitConds (thv a b v) (Kv a b v) (pv a b v (ratF E a δ₁, ratF E b δ₂)) (fv S φ₁ φ₂ v) := by
   obtain ⟨e, he, hθ, hK⟩ := inert_iso hC E a b v w hns
   refine transport_unit e _ ((thL a w.1).prodMap (thL b w.1)) _ (K2 a b w.1) _ _ (φ₁ w.1) hθ hK (fun x => ?_) ?_
-  · rw [fv_eq hS φ₁ φ₂ v w hw, if_neg hns, mul_one, he]
+  · rw [fv_eq hS φ₁ φ₂ v w hw, ite_eq_right hns, mul_one, he]
   have hloc : e (pv a b v (ratF E a δ₁, ratF E b δ₂)) = (locEl a w.1 δ₁, locEl b w.1 δ₂) := by
     rw [he, evw_pv_rat]
-    simp only [locEl, if_neg hns, ratW]
+    simp only [locEl, ite_eq_right hns, ratW]
   rw [hloc]
   refine ⟨hφ, hy.1, hy.2.2, fun g hg => ?_⟩
   obtain ⟨t, ht, hk⟩ := hy.2.1 g hg
@@ -262,7 +262,7 @@ theorem unitConds_split (hC : CjEx) {S : Set (Pl E)} (hS : IsSection S)
   obtain ⟨hσc, hσ, hσK⟩ := sg_facts E a b w.1
   refine transport_unit e _ (swTw (sgP a b w.1)) _ ((K2 a b w.1).prod (K2 a b w.1)) _ _
     (fun y => φ₁ w.1 y.1 * φ₂ w.1 (sgP a b w.1 y.2)) hθ hK (fun x => ?_) ?_
-  · rw [fv_eq hS φ₁ φ₂ v w hw, if_pos hs, ← he, ← he, hθ]
+  · rw [fv_eq hS φ₁ φ₂ v w hw, ite_eq_left hs, ← he, ← he, hθ]
     rfl
   rw [hr]
   obtain ⟨hN, hid⟩ := split_pair_facts hs δ₁ δ₂

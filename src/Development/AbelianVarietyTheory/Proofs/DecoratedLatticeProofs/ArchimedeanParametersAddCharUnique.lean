@@ -106,7 +106,7 @@ theorem realPar_unique : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : Inf
   have hd : l τ₀ - l' τ₀ ≠ 0 := sub_ne_zero.mpr hne
   obtain ⟨x, hx⟩ := exists_real_point hθ τ₀ (1 / (2 * (l τ₀ - l' τ₀)))
   have e := (hl x).symm.trans (hl' x)
-  simp only [hx, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at e
+  simp only [hx, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at e
   obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp e
   have hpi : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by simp [Real.pi_ne_zero]
   have h1 : ((l τ₀ : ℂ) - l' τ₀) * ((1 / (2 * (l τ₀ - l' τ₀)) : ℝ) : ℂ) = n := by

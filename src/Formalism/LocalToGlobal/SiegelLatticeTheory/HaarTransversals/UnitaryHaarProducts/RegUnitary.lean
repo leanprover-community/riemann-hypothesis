@@ -47,7 +47,7 @@ theorem rp_rep_ae_eq [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) 
   have e : rr_rep (Γ : Set G) D (x * g) = hex.choose * (x * g) := by
     unfold rr_rep
     first
-    | exact dif_pos hex
+    | exact dite_eq_left hex
   rw [e, hr'] at hx
   show ∃ γ₁ ∈ Γ, ∃ γ₂ ∈ Γ, γ₁ ≠ γ₂ ∧ γ₁ * (x * g) ∈ D ∧ γ₂ * (x * g) ∈ D
   exact ⟨hex.choose, hex.choose_spec.1, γ, hγ, fun heq => hx (by rw [heq]), hex.choose_spec.2, hD⟩
@@ -144,7 +144,7 @@ theorem rp_map [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) {g : G
     refine ⟨hex.choose, hex.choose_spec.1, ?_, hex.choose_spec.2⟩
     unfold rr_rep
     first
-    | exact dif_pos hex
+    | exact dite_eq_left hex
   haveI : Nonempty Γ := ⟨1⟩
   obtain ⟨e, he⟩ := exists_surjective_nat Γ
   have hp : ∀ y : G, ∃ n, (e n : G) * y ∈ D := fun y => by
@@ -178,7 +178,7 @@ theorem rp_rep_comp [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) (
     refine ⟨hex.choose, hex.choose_spec.1, ?_, hex.choose_spec.2⟩
     unfold rr_rep
     first
-    | exact dif_pos hex
+    | exact dite_eq_left hex
   rw [ae_iff]
   refine measure_mono_null (fun x hx => ?_) hnull
   simp only [Set.mem_setOf_eq] at hx

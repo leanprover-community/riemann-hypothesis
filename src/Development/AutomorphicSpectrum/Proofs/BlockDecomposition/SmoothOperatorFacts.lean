@@ -587,7 +587,7 @@ theorem ae_eq_of_tendsto {K : ℕ → Mat n → V} {L : Mat n → V} {y : Lp V 2
   obtain ⟨ns, hns0, hns⟩ := hm.exists_seq_tendsto_ae
   have hc : ∀ᵐ g ∂μ, ∀ k, (cls μ (K k) : G n → V) g = K k (g : G n).val :=
     ae_all_iff.2 fun k => by
-      have e : cls μ (K k) = (hK k).toLp _ := dif_pos (hK k)
+      have e : cls μ (K k) = (hK k).toLp _ := dite_eq_left (hK k)
       rw [e]
       exact (hK k).coeFn_toLp
   filter_upwards [hns, hc] with g h1 h2

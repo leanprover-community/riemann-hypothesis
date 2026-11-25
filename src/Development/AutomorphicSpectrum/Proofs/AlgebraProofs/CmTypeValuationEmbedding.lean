@@ -107,9 +107,9 @@ theorem exists_coord (emb : (E →+* C) → (𝓞 E →+* w.valuationSubring))
     refine ⟨fun i s => if i = j then emb s (RingOfIntegers.basis E k) else 0, fun i => ?_,
       fun s => ?_⟩
     · by_cases hij : i = j
-      · simp only [hij, if_true]
+      · simp only [hij, ite_true]
         exact Submodule.subset_span ⟨_, rfl⟩
-      · simp only [hij, if_false]
+      · simp only [hij, ite_false]
         exact zero_mem (valSpan emb)
     · rw [HodgeDeterminantLattice.eigProj_act, Finset.sum_eq_single j (fun i _ hi => by simp [hi]) (by simp)]
       simp [hemb]
@@ -165,7 +165,7 @@ theorem block_freeLattice : ∀ (E : Type) [Field E] [NumberField E] (C : Type) 
   intro E _ _ C _ _ w _ emb hemb hcard D π H M _ _ _ _ ρ X N t hfree _
   classical
   have hind : (fun s => if D s then (1 : w.valuationSubring) else 0) ∈ valSpan emb :=
-    (H _ (fun s hs => if_neg hs)).1 ⟨1, fun s hs => by simp [hs]⟩
+    (H _ (fun s hs => ite_eq_right hs)).1 ⟨1, fun s hs => by simp [hs]⟩
   have hpoly : ∀ F ∈ valSpan emb, ∃ g : Polynomial w.valuationSubring,
       ∀ s, D s → F s = g.eval (emb s π) := by
     intro F hF
@@ -209,7 +209,7 @@ theorem block_freeLattice : ∀ (E : Type) [Field E] [NumberField E] (C : Type) 
     let F : Fin N → (E →+* C) → w.valuationSubring :=
       fun j s => if D s then (g j).eval (emb s π) else 0
     have hFm : ∀ j, F j ∈ valSpan emb := fun j =>
-      (H (F j) (fun s hs => if_neg hs)).1 ⟨g j, fun s hs => if_pos hs⟩
+      (H (F j) (fun s hs => ite_eq_right hs)).1 ⟨g j, fun s hs => ite_eq_left hs⟩
     have key : ∑ j, ∑ s, ((F j s : w.valuationSubring) : C) • HT.eigProj ρ s (t j) ∈ X :=
       sum_mem fun j _ => sum_smul_mem emb hemb hcard hfree j (hFm j)
     have e : ∑ s, eigCoord ρ t s.1 (f s) =
@@ -219,7 +219,7 @@ theorem block_freeLattice : ∀ (E : Type) [Field E] [NumberField E] (C : Type) 
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [sum_eq_sum_subtype D _ (fun s hs => by simp [F, hs])]
       refine Finset.sum_congr rfl fun s _ => ?_
-      simp only [F, if_pos s.2, hg j s]
+      simp only [F, ite_eq_left s.2, hg j s]
     rw [e]
     exact key
   · obtain ⟨F, hF, e⟩ := exists_coord emb hemb hfree hy
@@ -1310,7 +1310,7 @@ theorem PositivityTheory.Xgn.exists_monogenic_separating : ∀ (E : Type) [Field
         rw [Pi.mul_apply]
         by_cases hs : ∀ a, ¬ IsUnit (emb s a - emb σ a)
         · rw [hu1 s hs, one_mul, hg s hs, haeval]
-        · push_neg at hs
+        · push Not at hs
           rw [hu0 s hs, zero_mul, hf s hs]
       rw [hfu]
       exact hTspan _ (Subalgebra.mul_mem _ huT hgT)
@@ -1399,7 +1399,7 @@ theorem sum_eigProj (E : Type) [Field E] [NumberField E] (C : Type) [Field C] [C
           rw [map_smul, smul_eq_mul]
       _ = ((b.repr 1 k : ℤ) : ℚ) := by
           simp only [HT.dualInt, LinearMap.BilinForm.apply_dualBasis_left, mul_ite, mul_one, mul_zero,
-            Finset.sum_ite_eq', Finset.mem_univ, if_true]
+            Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hsum : ∀ k, ∑ s : E →+* C, s (HT.dualInt E k) = ((b.repr 1 k : ℤ) : C) := by
     intro k
     rw [sum_embeddings_eq_trace E C hc, htr, map_intCast]

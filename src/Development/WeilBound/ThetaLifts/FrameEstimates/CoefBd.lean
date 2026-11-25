@@ -58,7 +58,7 @@ theorem dual_one [IsTotallyReal F] {ψ : AddChar (AF F) ℂ} (hψ : IsCharAF F �
     · exact hO v
     · exact (hO v).image (continuous_const.mul continuous_id)
   · filter_upwards [h2] with v hv
-    rw [if_pos hv]
+    rw [ite_eq_left hv]
   · have key : ∀ t ∈ v.adicCompletionIntegers F, psiV F ψ v (evalV F v y * t) = 1 := fun t ht => by
       have := hy (singleFin v t) fun u => by
         show evalV F u (singleFin v t) ∈ _
@@ -291,7 +291,7 @@ theorem coefBd_of : CoefReal → CoefBd := by
   · rw [h0, norm_zero]
     exact mul_nonneg (mul_nonneg (apply_nonneg _ _) (apply_nonneg _ _)) (LatticeQuotientCompactness.maj_nonneg _ _ _ _)
   have s0 := LatticeQuotientCompactness.sz_nonneg B.emb (M.co.e.symm (spl F _ x, spl F _ y))
-  rw [maj, if_pos, ← div_eq_mul_inv, le_div_iff₀ (by positivity)]
+  rw [maj, ite_eq_left, ← div_eq_mul_inv, le_div_iff₀ (by positivity)]
   · have q := mul_nonneg (apply_nonneg p f₁) (apply_nonneg p f₂)
     calc _ ≤ _ * (L * (1 + ‖x.1‖ + ‖y.1‖)) ^ N := by gcongr; exact hsz x y
       _ = L ^ N * (_ * (1 + ‖x.1‖ + ‖y.1‖) ^ N) := by rw [mul_pow, mul_left_comm]

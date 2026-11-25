@@ -116,7 +116,7 @@ theorem coeff_expand_low {K : Type u} [NormedField K] {ι : Type v} (q : ℕ) (h
       · omega
       · nlinarith
     rw [hdm, MvPowerSeries.coeff_expand_smul, MvPowerSeries.coeff_map, hlow m hmlt, map_zero]
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨i, hi⟩ := hall
     exact MvPowerSeries.coeff_expand_of_not_dvd q hq _ hi
 
@@ -215,12 +215,12 @@ theorem invIntegralOfClass (K : Type u) [NormedField K] [IsUltrametricDist K] (�
             · simp
           have hAg : Agree N h T := by
             intro e he
-            rw [hTc, if_pos he]
+            rw [hTc, ite_eq_left he]
           have hCD := hsub _ _ hCh (hP T hT0 hTint)
           have hLowD : Low N (f.subst h - f.subst T) := low_of_agree (agree_psubst f hh0 hT0 hAg)
           have hk := key f h0 h1 hh0 hT0 hAg d (by omega)
           have hb := hlowC _ hCD N hNpos hLowD d heq
-          rw [map_sub, map_sub, map_sub, hTc, if_neg (by omega), sub_zero] at hk
+          rw [map_sub, map_sub, map_sub, hTc, ite_eq_right (by omega), sub_zero] at hk
           have hcd : MvPowerSeries.coeff d h = MvPowerSeries.coeff d (f.subst h - f.subst T) := by
             rw [map_sub]
             linear_combination -hk

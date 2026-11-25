@@ -158,16 +158,16 @@ theorem colWt_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight
     intro i _
     have := i.2
     by_cases hi : i.1 + 1 = n
-    · rw [if_pos hi, if_pos (by omega)]
-    · rw [if_neg hi, if_neg (by omega), zero_mul]
+    · rw [ite_eq_left hi, ite_eq_left (by omega)]
+    · rw [ite_eq_right hi, ite_eq_right (by omega), zero_mul]
   have hQ : (∑ i : Fin n, (if i.1 = 0 then (bb h lam sg i).toNat else 0) * initW N (i.1 + 1) ⟨tv, htv⟩) =
       if hn : 0 < n then (bb h lam sg ⟨0, hn⟩).toNat * initW N (0 + 1) ⟨tv, htv⟩ else 0 := by
     rw [← sum_ite_val (fun i : Fin n => (bb h lam sg i).toNat * initW N (i.1 + 1) ⟨tv, htv⟩) 0]
     apply Finset.sum_congr rfl
     intro i _
     by_cases hi : i.1 = 0
-    · rw [if_pos hi, if_pos hi]
-    · rw [if_neg hi, if_neg hi, zero_mul]
+    · rw [ite_eq_left hi, ite_eq_left hi]
+    · rw [ite_eq_right hi, ite_eq_right hi, zero_mul]
 
   have hK : (∑ k : Fin K, (if k ∈ L then initW N (sz k + 1) else initW N (sz k)) ⟨tv, htv⟩) =
       (Finset.univ.filter fun k => tv < sz k).card +
@@ -176,9 +176,9 @@ theorem colWt_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight
     apply Finset.sum_congr rfl
     intro k _
     by_cases hk : k ∈ L
-    · simp only [hk, if_true, true_and, initW]
+    · simp only [hk, ite_true, true_and, initW]
       split_ifs <;> omega
-    · simp only [hk, if_false, false_and, initW]
+    · simp only [hk, ite_false, false_and, initW]
       split_ifs <;> omega
   rw [hP, hQ, hK]
   by_cases htn : tv < n
@@ -191,16 +191,16 @@ theorem colWt_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight
     have e2 := lam_natW_val h lam tv htv
     have e3 := aLast_val h lam sg hI hn
     have e4 := b_val h lam sg hI tv htn
-    have hw1 : initW N (n - 1 + 1) ⟨tv, htv⟩ = 1 := by simp only [initW]; rw [if_pos (by simp; omega)]
+    have hw1 : initW N (n - 1 + 1) ⟨tv, htv⟩ = 1 := by simp only [initW]; rw [ite_eq_left (by simp; omega)]
     rw [hw1, mul_one]
     by_cases ht0 : tv = 0
     · subst ht0
       have hw2 : initW N (0 + 1) ⟨0, htv⟩ = 1 := by simp [initW]
-      rw [hw2, mul_one, if_pos rfl]
+      rw [hw2, mul_one, ite_eq_left rfl]
       have := sg.anti (show (⟨0, htn⟩ : Fin n) ≤ ⟨n - 1, by omega⟩ by rw [Fin.le_def]; simp)
       omega
-    · have hw2 : initW N (0 + 1) ⟨tv, htv⟩ = 0 := by simp only [initW]; rw [if_neg (by simp; omega)]
-      rw [hw2, mul_zero, if_neg ht0]
+    · have hw2 : initW N (0 + 1) ⟨tv, htv⟩ = 0 := by simp only [initW]; rw [ite_eq_right (by simp; omega)]
+      rw [hw2, mul_zero, ite_eq_right ht0]
       omega
   · have htn' : tv = n := by omega
     subst htn'
@@ -218,7 +218,7 @@ theorem colWt_eq {n N : ℕ} (h : n + 1 = N) (lam : DomWeight N) (sg : DomWeight
       omega
     rw [hz]
     have hw1 : ∀ j, j ≤ tv → initW N j ⟨tv, htv⟩ = 0 := by
-      intro j hj; simp only [initW]; rw [if_neg (by simp; omega)]
+      intro j hj; simp only [initW]; rw [ite_eq_right (by simp; omega)]
     split_ifs with ha hb
     · rw [hw1 _ (by omega), hw1 _ (by omega)]; simp
     · rw [hw1 _ (by omega)]; simp

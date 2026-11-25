@@ -129,11 +129,11 @@ theorem xi_mem (hH : ∀ t, (H t)ᴴ = H t) (z) :
   rw [lie_apply, Matrix.zero_apply]
   by_cases hi : i ∈ S <;> by_cases hj : j ∈ S
   · simp [xiF, hi, hj]
-  · simp only [xiF, dif_pos hi, dif_neg hj, star_mul', star_neg, star_star, star_sgn]
+  · simp only [xiF, dite_eq_left hi, dite_eq_right hj, star_mul', star_neg, star_star, star_sgn]
     linear_combination (-(sgn ε i) * (r2 * cpx z.1 (eS.symm ⟨i, hi⟩) (eU.symm ⟨j, hj⟩))) * sgn_mul_self ε j
-  · simp only [xiF, dif_pos hj, dif_neg hi, star_mul']
+  · simp only [xiF, dite_eq_left hj, dite_eq_right hi, star_mul']
     linear_combination (-(sgn ε j) * (star r2 * star (cpx z.1 (eS.symm ⟨j, hj⟩) (eU.symm ⟨i, hi⟩)))) * sgn_mul_self ε i
-  · simp only [xiF, dif_neg hi, dif_neg hj, star_mul', star_sgn, star_I', hHe]
+  · simp only [xiF, dite_eq_right hi, dite_eq_right hj, star_mul', star_sgn, star_I', hHe]
     linear_combination (Complex.I * (H z.2 (eU.symm ⟨i, hi⟩) (eU.symm ⟨j, hj⟩))) * sgn_mul_self ε i - (Complex.I * (H z.2 (eU.symm ⟨i, hi⟩) (eU.symm ⟨j, hj⟩))) * sgn_mul_self ε j
 
 theorem xi_onto (hs : ∀ M : Matrix (Fin m) (Fin m) ℂ, Mᴴ = M → ∃ t, H t = M) (ξ : Matrix (Fin n) (Fin n) ℂ)
@@ -155,10 +155,10 @@ theorem xi_onto (hs : ∀ M : Matrix (Fin m) (Fin m) ℂ, Mᴴ = M → ∃ t, H 
   ext i j
   by_cases hi : i ∈ S <;> by_cases hj : j ∈ S
   · simp [xiF, hi, hj, h2 i hi j hj]
-  · simp only [xiF, dif_pos hi, dif_neg hj, u, cpx_reim, Matrix.of_apply, Equiv.apply_symm_apply, e2]
-  · simp only [xiF, dif_neg hi, dif_pos hj, u, cpx_reim, Matrix.of_apply, Equiv.apply_symm_apply, e2]
+  · simp only [xiF, dite_eq_left hi, dite_eq_right hj, u, cpx_reim, Matrix.of_apply, Equiv.apply_symm_apply, e2]
+  · simp only [xiF, dite_eq_right hi, dite_eq_left hj, u, cpx_reim, Matrix.of_apply, Equiv.apply_symm_apply, e2]
     linear_combination (-(sgn ε i)) * hξ i j + ξ i j * sgn_mul_self ε i
-  · simp only [xiF, dif_neg hi, dif_neg hj, ht, M, Matrix.of_apply, Equiv.apply_symm_apply]
+  · simp only [xiF, dite_eq_right hi, dite_eq_right hj, ht, M, Matrix.of_apply, Equiv.apply_symm_apply]
     linear_combination (-(sgn ε i) ^ 2 * ξ i j) * Complex.I_sq + ξ i j * sgn_mul_self ε i
 
 theorem dom_exists {ι : Type} [Fintype ι] (L : EuclideanSpace ℝ ι →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ)

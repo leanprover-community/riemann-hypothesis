@@ -847,7 +847,7 @@ theorem valsAt_torus_surjective : ∀ (G : Type) [CommGroup G] (τ : G →* G), 
     split_ifs with hij
     · subst hij; rw [hy1]; rfl
     · rw [hy2 j (e i) fun h => hij (he _ _ h)]; rfl
-  simp only [hc, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hc, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 end GlobalTheory.UnitLemma
 end -- clump:auto

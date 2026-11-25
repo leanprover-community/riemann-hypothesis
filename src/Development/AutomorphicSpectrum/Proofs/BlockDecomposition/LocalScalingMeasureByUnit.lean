@@ -129,17 +129,17 @@ theorem card_pairs {n : ℕ} (l : Fin n) :
     simp only at e
     apply Subtype.ext
     by_cases hi : i = l <;> by_cases hi' : i' = l
-    · simp only [hi, hi', if_true] at e
+    · simp only [hi, hi', ite_true] at e
       simp [hi, hi', e]
-    · simp only [hi, hi', if_true, if_false] at e
+    · simp only [hi, hi', ite_true, ite_false] at e
       have hj' : j' = l := hq.resolve_left hi'
       subst hi hj' e
       exact absurd (h1.trans h2) (lt_irrefl _)
-    · simp only [hi, hi', if_true, if_false] at e
+    · simp only [hi, hi', ite_true, ite_false] at e
       have hj : j = l := hp.resolve_left hi
       subst hi' hj e
       exact absurd (h1.trans h2) (lt_irrefl _)
-    · simp only [hi, hi', if_false] at e
+    · simp only [hi, hi', ite_false] at e
       have hj : j = l := hp.resolve_left hi
       have hj' : j' = l := hq.resolve_left hi'
       simp [e, hj, hj']

@@ -158,7 +158,7 @@ theorem exp_siegel_ord {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ
     rw [shift k e _ hd] at h1
     have h2 := HasQ.coeff_unique hM hB h1
     have h3 := congrFun h2 0
-    rw [if_neg (by omega)] at h3
+    rw [ite_eq_right (by omega)] at h3
     exact hB0 h3
   have hd : (((e - k).toNat : ℕ) : ℤ) = e - k := Int.toNat_of_nonneg (by omega)
   set d := (e - k).toNat with hdd
@@ -168,12 +168,12 @@ theorem exp_siegel_ord {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ
   have hAd : A d ≠ 0 := by
     intro h0
     have h3 := congrFun h2 d
-    simp only [le_refl, if_true, Nat.sub_self, h0, map_zero] at h3
+    simp only [le_refl, ite_true, Nat.sub_self, h0, map_zero] at h3
     exact hB0 h3.symm
   have hAn : ∀ n, n < d → A n = 0 := by
     intro n hn
     have h3 := congrFun h2 n
-    simp only [if_neg (show ¬ d ≤ n by omega)] at h3
+    simp only [ite_eq_right (show ¬ d ≤ n by omega)] at h3
     exact (map_eq_zero ε).1 h3
   have hMq : (0 : ℚ) < M := by exact_mod_cast hM
   have hed : (e : ℚ) = (k : ℚ) + d := by
@@ -191,7 +191,7 @@ theorem exp_siegel_ord {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ
       have : ((k : ℚ) + n) < (k : ℚ) + d := (div_lt_div_iff_of_pos_right hMq).1 hlt
       have : (n : ℚ) < d := by linarith
       exact absurd (by exact_mod_cast this : n < d) (by omega)
-    · push_neg at hex
+    · push Not at hex
       exact hr (hz r hex)
 
 theorem sum_sub (M K : ℕ) : ∀ n : ℕ, n * M ≤ K →

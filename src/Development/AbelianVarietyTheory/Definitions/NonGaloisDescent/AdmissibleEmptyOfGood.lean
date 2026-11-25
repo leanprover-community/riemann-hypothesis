@@ -220,7 +220,7 @@ theorem xiCoef_apply (ω : PairRep S T) (u : UnivTwist D C) (Q : Finset (Pl D.ho
     Finset.sum_eq_single (a - Multiplicative.toAdd (detChar T (u.delQ Q) g))]
   · rw [AddMonoidAlgebra.single_mul_single, add_sub_cancel, one_mul, AddMonoidAlgebra.coeff_single, Finsupp.single_eq_same]
   · intro b _ hb
-    rw [AddMonoidAlgebra.single_mul_single, AddMonoidAlgebra.coeff_single, Finsupp.single_apply, if_neg]
+    rw [AddMonoidAlgebra.single_mul_single, AddMonoidAlgebra.coeff_single, Finsupp.single_apply, ite_eq_right]
     exact fun e => hb (by rw [← e, add_sub_cancel_left])
   · exact fun hb => absurd (Finset.mem_univ _) hb
 

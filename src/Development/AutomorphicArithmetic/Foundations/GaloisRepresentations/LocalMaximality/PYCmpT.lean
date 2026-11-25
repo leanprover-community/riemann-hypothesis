@@ -19,7 +19,7 @@ private lemma pk_single {d : ℕ} (i : Fin (d + 1)) : pk ({i} : Finset (Fin (d +
   simp [pk]
 
 private lemma pk_mem' {d : ℕ} {I : Finset (Fin (d + 1))} (h : I.Nonempty) : pk I ∈ I := by
-  simp only [pk, dif_pos h]
+  simp only [pk, dite_eq_left h]
   exact Finset.min'_mem _ _
 
 private lemma r_eq (i j : Fin (d + 1)) (l : Fin d) :

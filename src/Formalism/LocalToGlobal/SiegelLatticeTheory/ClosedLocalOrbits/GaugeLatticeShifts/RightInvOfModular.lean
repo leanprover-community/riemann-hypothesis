@@ -55,10 +55,4 @@ theorem SG_closed : IsClosed (SG ε e z : Set (Formalism.REAL.UJ ε)) := by
   exact (isClosed_iInter fun a => (Submodule.closed_of_finiteDimensional _).preimage (hc _)).inter
     ((Submodule.closed_of_finiteDimensional _).preimage (hc _))
 
-section Sub
-
-variable {ε e z}
-
-end Sub
-
 end Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.RI

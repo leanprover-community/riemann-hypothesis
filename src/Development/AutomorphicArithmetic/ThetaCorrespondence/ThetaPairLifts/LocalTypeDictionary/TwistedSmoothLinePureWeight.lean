@@ -324,7 +324,7 @@ theorem GlobalTheory.Twist.twist_smoothLine_isPure : _root_.GlobalTheory.FunPr.T
   by_cases h : ∃ y : Fin n × Fin d → AF F, ∏ᶠ v, φ v (fun i => evFin F v (y i)) ≠ 0
   · obtain ⟨g, hg⟩ := _root_.GlobalTheory.Twist.SmoothLine.smooth_line_of_pure_tensor_theta hP M ψ χX χW om hCM hψ hM hW γ hγ f φ hφ hv h c hc
     exact ⟨c, g, hc, hg⟩
-  · push_neg at h
+  · push Not at h
     have h0 : ∀ c' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure c' φ = 0 := fun c' => by
       funext x; simp [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure, h x]
     refine ⟨fun _ => 0, 0, fun t => ?_, ?_⟩

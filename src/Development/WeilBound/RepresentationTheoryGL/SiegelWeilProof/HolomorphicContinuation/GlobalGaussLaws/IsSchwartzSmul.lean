@@ -81,9 +81,9 @@ theorem rhoT_eq {m : ℕ} (t c : ℝ) (ht : |t| = c) (hc : 0 < c) (ε : Fin m �
   rcases lt_or_gt_of_ne (show t ≠ 0 by rintro rfl; simp at ht; linarith) with h | h
   · have htc : t = -c := by rw [abs_of_neg h] at ht; linarith
     have hn : ¬ (0 < t) := by linarith
-    rw [if_neg hn, htc, mul_div_assoc, neg_div, div_self hc.ne']
+    rw [ite_eq_right hn, htc, mul_div_assoc, neg_div, div_self hc.ne']
     cases ε a <;> simp
   · have htc : t = c := by rw [abs_of_pos h] at ht; exact ht
-    rw [if_pos h, htc, mul_div_assoc, div_self hc.ne', mul_one]
+    rw [ite_eq_left h, htc, mul_div_assoc, div_self hc.ne', mul_one]
 
 end PositivityTheory.Rg.Sw.Glob.VacE

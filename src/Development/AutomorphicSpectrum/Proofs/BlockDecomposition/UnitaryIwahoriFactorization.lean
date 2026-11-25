@@ -64,8 +64,8 @@ theorem elim_step {N : Matrix (Fin n) (Fin n) L} (hN : IwM N) (c : Fin n) :
     rw [h, map_zero] at this
     exact zero_ne_one this
   let x : Fin n → L := fun a => if a < c then N a c / N c c else 0
-  have hxa : ∀ a, ¬ a < c → x a = 0 := fun a h => if_neg h
-  have hxl : ∀ a, a < c → x a = N a c / N c c := fun a h => if_pos h
+  have hxa : ∀ a, ¬ a < c → x a = 0 := fun a h => ite_eq_right h
+  have hxl : ∀ a, a < c → x a = N a c / N c c := fun a h => ite_eq_left h
   have hxv : ∀ a, Valued.v (x a) ≤ 1 := by
     intro a
     by_cases h : a < c

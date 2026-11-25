@@ -583,11 +583,11 @@ theorem eq_sum_mon {D : D7} {m n : ℕ} {d : D.what₂.Tau →₀ ℕ} (P : MvPo
   by_cases hk : k' ∈ Mon D m n d
   · rw [Finset.sum_eq_single ⟨k', hk⟩]
     · simp
-    · intro b _ hb; rw [if_neg]; intro h; exact hb (Subtype.ext h)
+    · intro b _ hb; rw [ite_eq_right]; intro h; exact hb (Subtype.ext h)
     · simp
   · rw [Finset.sum_eq_zero]
     · by_contra h; exact hk (hP k' h)
-    · intro b _; rw [if_neg]; rintro rfl; exact hk b.2
+    · intro b _; rw [ite_eq_right]; rintro rfl; exact hk b.2
 
 variable {D : D7}
 
@@ -758,8 +758,8 @@ theorem substMat_central (θ : InfFam D) (V : HSp D) (m : ℕ) (d : D.what₂.Ta
       fun ρ => if ρ = τ₀ then ζ • (1 : Matrix (Fin V.rank) (Fin V.rank) ℂ) else 1 := by
     funext ρ
     by_cases hρ : ρ = τ₀
-    · subst hρ; rw [if_pos rfl, h1]
-    · rw [if_neg hρ, h2 ρ hρ]
+    · subst hρ; rw [ite_eq_left rfl, h1]
+    · rw [ite_eq_right hρ, h2 ρ hρ]
   ext k' k
   simp only [substMat, e, _root_.GlobalTheory.CompactHowe.substF_scalar_monomial, MvPolynomial.coeff_smul, coeff_monomial, Matrix.smul_apply, Matrix.one_apply,
     smul_eq_mul]
@@ -1049,7 +1049,7 @@ theorem real_average_kernel_isAlgebraic : ∀ {D : D7} {T : Type} [Finite T] {L 
       have hc0 : c τ ≠ 0 := fun h0 => by have := hd₀ τ; rw [h0, zero_mul] at this; exact zero_ne_one this
       exact GlobalTheory.ExpPow.pow_exp_I_or_inv_injective _ _ _ (Or.inl rfl)
         (mul_left_cancel₀ hc0 ((hall τ).trans (hd₀ τ).symm))
-    · push_neg at hex
+    · push Not at hex
       exact ⟨0, fun d _ => hex d⟩
   refine ⟨dg, fun κ hκ hκp t x _ h _ k => ?_⟩
   haveI := hκp

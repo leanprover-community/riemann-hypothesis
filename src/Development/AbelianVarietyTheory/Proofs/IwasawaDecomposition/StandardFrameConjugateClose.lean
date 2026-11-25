@@ -146,7 +146,7 @@ theorem frame_mat_sub_one_lt : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (E
       simp only [Formalism.UG.cT, Matrix.sub_apply, Matrix.transpose_apply, Matrix.map_apply, map_sub, Matrix.one_apply]
       by_cases hij : i = j
       · subst hij; simp
-      · rw [if_neg hij, if_neg (Ne.symm hij), map_zero]
+      · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), map_zero]
     rw [e]
     exact cpt_sg_lt_one Q _ (h j i)
   have hint : ∀ x ∈ GlobalTheory.StdFrames.OA D, Valued.v (cpt (cP Q) x) ≤ 1 := fun x hx => (mem_OA x).1 hx (cP Q)

@@ -113,9 +113,9 @@ theorem card_sgnP {k p : ℕ} (hp : p ≤ k) (e : Bool) :
     (p := fun i : Fin k => i.val < p)
   rw [Finset.card_univ, Fintype.card_fin] at h2
   cases e
-  · simp only [sgnP, decide_eq_false_iff_not, Bool.false_eq_true, if_false]
+  · simp only [sgnP, decide_eq_false_iff_not, Bool.false_eq_true, ite_false]
     omega
-  · simp only [sgnP, decide_eq_true_eq, if_true]
+  · simp only [sgnP, decide_eq_true_eq, ite_true]
     exact h1
 
 theorem signBlockDeterminant_positive_eq {k p : ℕ} (κ : Matrix (Fin k) (Fin k) ℂ) : signBlockDeterminant (sgnP p) true κ = detPos p κ := by
@@ -150,7 +150,7 @@ theorem detPlus_onb : ∀ {n m : ℕ} (GS sS BS κS : Matrix (Fin n) (Fin n) ℂ
     prod_bool _ fun e => signBlockDeterminant (sgnP pT) e κT, card_sgnP hpT, card_sgnP hpT, card_sgnP hpS, card_sgnP hpS]
   have ih := fun e => signBlockDeterminant_mul_eq_one_of_mul_eq_one e bS hu
   rw [eq_inv_of_mul_eq_one_right (ih true), eq_inv_of_mul_eq_one_right (ih false)]
-  simp only [if_true, Bool.false_eq_true, if_false, signBlockDeterminant_positive_eq, signBlockDeterminant_negative_eq, inv_pow]
+  simp only [ite_true, Bool.false_eq_true, ite_false, signBlockDeterminant_positive_eq, signBlockDeterminant_negative_eq, inv_pow]
   ring
 
 end GlobalTheory.PlusDetONB
@@ -249,10 +249,10 @@ theorem GlobalTheory.VacCharAtPlace.vacuum_char_at_place : ∀ (D : D7) (ψ : Ad
   obtain ⟨v, hv'⟩ := IsAlgClosed.exists_pow_nat_eq κT.det two_pos
   have hw1 : ‖w‖ = 1 := (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 (by rw [← norm_pow, hw, nS])
   have hv1 : ‖v‖ = 1 := (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 (by rw [← norm_pow, hv', nT])
-  obtain ⟨x, hx, hxv⟩ := GlobalTheory.CompactFockAction.exists_root_at hθ S hg.1 τ w hw1 (by rw [dS, if_pos rfl, hw])
-    (fun ρ e => by rw [dS, if_neg e])
-  obtain ⟨y, hy, hyv⟩ := GlobalTheory.CompactFockAction.exists_root_at hθ T hh.1 τ v hv1 (by rw [dT, if_pos rfl, hv'])
-    (fun ρ e => by rw [dT, if_neg e])
+  obtain ⟨x, hx, hxv⟩ := GlobalTheory.CompactFockAction.exists_root_at hθ S hg.1 τ w hw1 (by rw [dS, ite_eq_left rfl, hw])
+    (fun ρ e => by rw [dS, ite_eq_right e])
+  obtain ⟨y, hy, hyv⟩ := GlobalTheory.CompactFockAction.exists_root_at hθ T hh.1 τ v hv1 (by rw [dT, ite_eq_left rfl, hv'])
+    (fun ρ e => by rw [dT, ite_eq_right e])
   rw [GlobalTheory.T.weilDatum_realPlaces_fockVacuum_character D ψ hW.std S T θ hθ χS χT om η ⟨e1, e4, e3, e2⟩ hW sS sT hCS hCT g hg.1 h hh.1 commS commT x y hx hy
     f hf hv]
   congr 1
@@ -268,8 +268,8 @@ theorem GlobalTheory.VacCharAtPlace.vacuum_char_at_place : ∀ (D : D7) (ψ : Ad
       (compAt θ ρ (Formalism.L2.Theta.mt T h)) =
       GlobalTheory.WeilParts.detPlus (sS τ) (sT τ) (BS τ * κS * (BS τ)⁻¹)⁻¹ (BT τ * κT * (BT τ)⁻¹) := by
     rw [Finset.prod_eq_single τ (fun ρ _ e => by
-        rw [ginv, cg, ch, if_neg e, if_neg e, inv_one]; exact GlobalTheory.CompactFockAction.detPlus_one_one _ _)
-      (by simp), ginv, cg, ch, if_pos rfl, if_pos rfl]
+        rw [ginv, cg, ch, ite_eq_right e, ite_eq_right e, inv_one]; exact GlobalTheory.CompactFockAction.detPlus_one_one _ _)
+      (by simp), ginv, cg, ch, ite_eq_left rfl, ite_eq_left rfl]
   have d0S := det_eq_detPos_mul_detNeg hkS
   have d0T := det_eq_detPos_mul_detNeg hkT
   have nz : ∀ {a b c : ℂ}, ‖c‖ = 1 → c = a * b → a ≠ 0 ∧ b ≠ 0 := fun {a b c} hc e => by

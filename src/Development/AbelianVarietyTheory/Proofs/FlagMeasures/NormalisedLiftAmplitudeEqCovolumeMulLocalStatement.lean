@@ -1751,7 +1751,7 @@ theorem oo_quot : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ :
         simpa using hz
       exact integral_eq_zero_of_ae hz
     rw [hrhs, hlhs, hsNormSq_zero]
-  push_neg at h0
+  push Not at h0
   by_cases hT : ∃ v, ∫⁻ z, ‖ψ v z‖ₑ ∂(νl v) = ⊤
   · obtain ⟨v0, hv0⟩ := hT
     have hrhs : ∏ v, Formalism.MainNotions.S.hsNormSq (∫ z, ψ v z ∂(νl v)) = 0 := by
@@ -1763,7 +1763,7 @@ theorem oo_quot : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ :
       exact ENNReal.top_mul (Finset.prod_ne_zero_iff.2 fun v _ => h0 v)
     have hlhs : ∫ x, Φ x ∂ν = 0 := integral_undef fun hi => hi.2.ne hg
     rw [hrhs, hlhs, hsNormSq_zero]
-  push_neg at hT
+  push Not at hT
   have hψI : ∀ v, Integrable (ψ v) (νl v) := fun v =>
     ⟨(hψc v).aestronglyMeasurable, lt_top_iff_ne_top.2 (hT v)⟩
   have hΦI : Integrable Φ ν := ⟨hΦc.aestronglyMeasurable, by

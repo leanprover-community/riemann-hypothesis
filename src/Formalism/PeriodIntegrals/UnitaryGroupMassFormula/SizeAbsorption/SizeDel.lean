@@ -167,7 +167,7 @@ theorem stepA : StepA := by
   have hNmE : Nm D ≤ Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2) := by
     by_cases h : (D.s.Del : ℝ) ≤ 0
     · exact le_trans (le_trans hNmDel h) (Real.exp_pos _).le
-    · push_neg at h
+    · push Not at h
       calc Nm D ≤ (D.s.Del : ℝ) := hNmDel
           _ = Real.exp (Real.log (D.s.Del : ℝ)) := (Real.exp_log h).symm
           _ ≤ Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2) := Real.exp_le_exp.mpr hDel3

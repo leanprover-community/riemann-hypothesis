@@ -72,10 +72,10 @@ theorem ffa_nlev_fix {n : Mx k r} (hn : n ∈ Nlev k r (Fin.last r)) {w : Fin (2
     exact ffa_herm_UH hU w _
   simp only [mulVec, dotProduct]
   rw [Finset.sum_eq_single i]
-  · rw [h3 i i (by omega) (by omega) (by omega), if_pos rfl, one_mul]
+  · rw [h3 i i (by omega) (by omega) (by omega), ite_eq_left rfl, one_mul]
   · intro j _ hji
     by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-    · rw [h3 i j hj.1 hj.2 (by omega), if_neg (Ne.symm hji), zero_mul]
+    · rw [h3 i j hj.1 hj.2 (by omega), ite_eq_right (Ne.symm hji), zero_mul]
     · rw [hw j (by omega), mul_zero]
   · simp
 

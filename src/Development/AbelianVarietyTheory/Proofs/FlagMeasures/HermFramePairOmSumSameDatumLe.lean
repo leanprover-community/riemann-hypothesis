@@ -320,12 +320,12 @@ theorem exists_gens [StarRing K] {H : HermSpace K V} {r : ℕ} (N : NF H r) (n :
     · refine sup_le (sup_le (sup_le (iSup_le fun a => ?_) (iSup₂_le fun a h => ?_)) ?_) (iSup₂_le fun a h => ?_)
       · exact le_iSup_of_le (some (Sum.inl a)) le_rfl
       · refine le_iSup_of_le (some (Sum.inr a)) (le_of_eq ?_)
-        simp only [I, x, Option.elim, Sum.elim_inr, if_pos h]
+        simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_left h]
         rfl
       · refine le_iSup_of_le none (le_of_eq ?_)
         simp only [I, x, Option.elim, FractionalIdeal.coe_one]
       · refine le_iSup_of_le (some (Sum.inr a)) (le_of_eq ?_)
-        simp only [I, x, Option.elim, Sum.elim_inr, if_neg (not_lt.2 h)]
+        simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_right (not_lt.2 h)]
         rfl
     · refine iSup_le ?_
       rintro (_ | a | a)
@@ -334,10 +334,10 @@ theorem exists_gens [StarRing K] {H : HermSpace K V} {r : ℕ} (N : NF H r) (n :
       · refine le_sup_of_le_left (le_sup_of_le_left (le_sup_of_le_left ?_))
         exact le_iSup_of_le a le_rfl
       · by_cases h : a.val < N.j
-        · simp only [I, x, Option.elim, Sum.elim_inr, if_pos h]
+        · simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_left h]
           refine le_sup_of_le_left (le_sup_of_le_left (le_sup_of_le_right ?_))
           exact le_iSup₂_of_le a h le_rfl
-        · simp only [I, x, Option.elim, Sum.elim_inr, if_neg h]
+        · simp only [I, x, Option.elim, Sum.elim_inr, ite_eq_right h]
           refine le_sup_of_le_right ?_
           exact le_iSup₂_of_le a (not_lt.1 h) le_rfl
   have hle : ∀ o, line (I o : Submodule (𝓞 K) K) (x o) ≤ N.P0 := fun o => by
@@ -1133,7 +1133,7 @@ theorem Xa_le_sup (N : NF H r) (n : ℕ) : N.F.Xa n ≤ N.F.Xa N.j ⊔ Ia N n :=
   · exact Submodule.mem_sup_right (e_mem_Ia N b (not_lt.1 h) hb)
 
 theorem Xa_ist (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) : ∀ y ∈ N.F.Xa b.val, H.B y (N.ist b) = 0 :=
-  perp_Xa N.F fun a ha => by rw [N.ist_e a b hb, if_neg (by rintro rfl; omega)]
+  perp_Xa N.F fun a ha => by rw [N.ist_e a b hb, ite_eq_right (by rintro rfl; omega)]
 
 theorem Ia_step (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {y : V} (hy : y ∈ Ia N (b.val + 1)) :
     y - H.B y (N.ist b) • N.F.e b.castSucc ∈ Ia N b.val := by
@@ -1243,7 +1243,7 @@ theorem exists_shear (N : NF H r) (b : Fin r) (hb : N.j ≤ b.val) {x : V} (hx :
       split_ifs with h
       · subst h; simpa using hx
       · simp)
-    (fun a ha => by rw [N.ist_e a b hb, if_neg (by rintro rfl; omega)])
+    (fun a ha => by rw [N.ist_e a b hb, ite_eq_right (by rintro rfl; omega)])
     (fun a ha => N.ist_e' a b ha hb)
     (Submodule.mem_sup_right (Submodule.subset_span ⟨b, hb, rfl⟩))
   refine ⟨s, hs, ?_, fun y hy => h y (X_iso N.F hy (Ia_X N hx))⟩
@@ -1273,7 +1273,7 @@ theorem exists_unitri (N : NF H r) (v : Fin r → V)
       u (v b) = if r ≤ b.val + m then N.F.e b.castSucc else v b := by
     intro m
     induction m with
-    | zero => exact ⟨1, one_mem _, rfl, fun b _ => by rw [if_neg (by have := b.isLt; omega)]; rfl⟩
+    | zero => exact ⟨1, one_mem _, rfl, fun b _ => by rw [ite_eq_right (by have := b.isLt; omega)]; rfl⟩
     | succ m ih =>
       obtain ⟨u, hu, huz, h⟩ := ih
       by_cases hm : N.j + m + 1 ≤ r
@@ -1287,22 +1287,22 @@ theorem exists_unitri (N : NF H r) (v : Fin r → V)
           simpa using this
         rw [LinearEquiv.mul_apply, h b hb]
         by_cases h1 : r ≤ b.val + m
-        · rw [if_pos h1, if_pos (by omega), hs' _ (e_mem_X _ _), N.ist_e b b0 hb0,
-            if_neg (by rintro rfl; omega)]
+        · rw [ite_eq_left h1, ite_eq_left (by omega), hs' _ (e_mem_X _ _), N.ist_e b b0 hb0,
+            ite_eq_right (by rintro rfl; omega)]
           simp
-        · rw [if_neg h1, hs' _ (Xa_le_X _ _ hvX)]
+        · rw [ite_eq_right h1, hs' _ (Xa_le_X _ _ hvX)]
           by_cases h2 : b = b0
           · subst h2
             have h3 := Xa_ist N b0 hb0 _ (Ia_le N _ (hv b0 hb0))
-            rw [map_sub, LinearMap.sub_apply, N.ist_e b0 b0 hb0, if_pos rfl, sub_eq_zero] at h3
-            rw [if_pos (by omega), h3]; simp
+            rw [map_sub, LinearMap.sub_apply, N.ist_e b0 b0 hb0, ite_eq_left rfl, sub_eq_zero] at h3
+            rw [ite_eq_left (by omega), h3]; simp
           · have h3 : b.val ≠ b0.val := fun h' => h2 (Fin.ext h')
-            rw [if_neg (by omega), Xa_ist N b0 hb0 _ (Xa_mono N.F (by omega) hvX)]
+            rw [ite_eq_right (by omega), Xa_ist N b0 hb0 _ (Xa_mono N.F (by omega) hvX)]
             simp
       · refine ⟨u, hu, huz, fun b hb => ?_⟩
-        rw [h b hb, if_pos (by omega), if_pos (by omega)]
+        rw [h b hb, ite_eq_left (by omega), ite_eq_left (by omega)]
   obtain ⟨u, hu, huz, h⟩ := key r
-  exact ⟨u, hu, huz, fun b hb => by rw [h b hb, if_pos (by omega)]⟩
+  exact ⟨u, hu, huz, fun b hb => by rw [h b hb, ite_eq_left (by omega)]⟩
 
 end Geometry
 
@@ -1355,7 +1355,7 @@ theorem exists_adapted (N : NF H r) (Λ : Submodule (𝓞 K) V) (hΛ : Λ.FG) (b
     refine ⟨v, ?_, fun y hy hy' => (h y ⟨hy, hy'⟩).1⟩
     have := Ia_step N b hb hv'
     rwa [show H.B v (N.ist b) = 1 from h1, one_smul] at this
-  · push_neg at h0
+  · push Not at h0
     refine ⟨N.F.e b.castSucc, by simp, fun y hy hy' => ?_⟩
     rw [show H.B y (N.ist b) = 0 from h0 y ⟨hy, hy'⟩]; simp
 
@@ -1417,7 +1417,7 @@ theorem normal_position : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K
     show γ • (t • N.F.e b.castSucc) ∈ (u * E) • Λ
     refine (hmem _).2 ⟨_, h2, ?_⟩
     rw [hsv b hb, ← algebraMap_smul K γ (t • _), smul_smul, map_smul, map_sub, map_smul, LinearMap.smul_apply,
-      LinearMap.sub_apply, LinearMap.smul_apply, N.ist_e b b hb, Xa_ist N b hb _ (Ia_le N _ hη₂), if_pos rfl,
+      LinearMap.sub_apply, LinearMap.smul_apply, N.ist_e b b hb, Xa_ist N b hb _ (Ia_le N _ hη₂), ite_eq_left rfl,
       smul_eq_mul, smul_eq_mul, mul_one, sub_zero]
   · rintro y ⟨hy, hyI⟩
     obtain ⟨x, hx, rfl⟩ := (hmem y).1 hy
@@ -1654,9 +1654,9 @@ theorem tsum_orbits_le {G α : Type*} [Group G] [MulAction G α] (Q : α → Pro
     rw [tsum_subtype T (fun _ => B)]
     refine ENNReal.tsum_le_tsum fun o => ?_
     by_cases ho : Q o.out
-    · rw [if_pos ho, Set.indicator_of_mem (show o ∈ T from ho)]
+    · rw [ite_eq_left ho, Set.indicator_of_mem (show o ∈ T from ho)]
       exact (h _ ho).1
-    · rw [if_neg ho]; exact zero_le
+    · rw [ite_eq_right ho]; exact zero_le
   refine h1.trans ?_
   rw [ENNReal.tsum_set_const]
   gcongr

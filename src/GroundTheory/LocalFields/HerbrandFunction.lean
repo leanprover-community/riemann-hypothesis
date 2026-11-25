@@ -129,8 +129,8 @@ theorem antitone_indicator_lowerRamificationGroupReal (σ : L ≃ₐ[K] L) :
   by_cases hb : σ ∈ lowerRamificationGroup K L 0 ∧ σ ∈ lowerRamificationGroupReal K L b
   · have ha : σ ∈ lowerRamificationGroup K L 0 ∧ σ ∈ lowerRamificationGroupReal K L a :=
       ⟨hb.1, lowerRamificationGroupReal_antitone K L hab hb.2⟩
-    simp only [ha, hb, and_self, if_true, le_refl]
-  · simp only [hb, if_false]
+    simp only [ha, hb, and_self, ite_true, le_refl]
+  · simp only [hb, ite_false]
     split_ifs <;> norm_num
 
 
@@ -152,7 +152,7 @@ theorem integral_indicator_lowerRamificationGroupReal (σ : L ≃ₐ[K] L) (u : 
       σ ∈ lowerRamificationGroupReal K L t then (1 : ℝ) else 0) =
       if σ ∈ lowerRamificationGroup K L 0 then enatMin (lowerIndex K L σ - 1) u else 0 := by
   by_cases h0 : σ ∈ lowerRamificationGroup K L 0
-  · simp only [h0, true_and, if_true]
+  · simp only [h0, true_and, ite_true]
     have h1 := one_le_lowerIndex_iff.mpr h0
     generalize hn : lowerIndex K L σ = n at h1
     induction n using ENat.recTopCoe with
@@ -225,7 +225,7 @@ theorem herbrandPhi_eq_sum_lowerIndex {u : ℝ} (hu : -1 ≤ u) :
         if σ ∈ lowerRamificationGroup K L 0 then 1 else 0 := by
     intro σ
     by_cases h0 : σ ∈ lowerRamificationGroup K L 0
-    · simp only [h0, if_true]
+    · simp only [h0, ite_true]
       have h1 := one_le_lowerIndex_iff.mpr h0
       generalize lowerIndex K L σ = n at h1
       induction n using ENat.recTopCoe with
@@ -234,7 +234,7 @@ theorem herbrandPhi_eq_sum_lowerIndex {u : ℝ} (hu : -1 ≤ u) :
         have hm : 1 ≤ m := by exact_mod_cast h1
         rw [← ENat.natCast_one, ← ENat.natCast_sub, enatMin_coe, enatMin_coe, Nat.cast_sub hm,
           Nat.cast_one, ← min_add_add_right, sub_add_cancel]
-    · simp only [h0, if_false, add_zero, lowerIndex_eq_zero_iff.mpr h0]
+    · simp only [h0, ite_false, add_zero, lowerIndex_eq_zero_iff.mpr h0]
       rw [show ((0 : ℕ∞)) = ((0 : ℕ) : ℕ∞) from rfl, enatMin_coe, Nat.cast_zero]
       exact min_eq_left (by linarith)
   simp_rw [h]
@@ -349,7 +349,7 @@ theorem herbrandPhi_of_mem_Icc (n : ℕ) {u : ℝ} (hu : u ∈ Set.Icc (n : ℝ)
             σ ∈ lowerRamificationGroupReal K L ((n : ℝ) + 1) then 1 else 0 := by
     intro σ
     by_cases h0 : σ ∈ lowerRamificationGroup K L 0
-    · simp only [h0, true_and, if_true]
+    · simp only [h0, true_and, ite_true]
       have h1 := one_le_lowerIndex_iff.mpr h0
       generalize hn : lowerIndex K L σ = N at h1
       induction N using ENat.recTopCoe with
@@ -362,9 +362,9 @@ theorem herbrandPhi_of_mem_Icc (n : ℕ) {u : ℝ} (hu : u ∈ Set.Icc (n : ℝ)
         rw [mem_lowerRamificationGroupReal_iff_of_lowerIndex_eq hn, ← ENat.natCast_one,
           ← ENat.natCast_sub, enatMin_coe, enatMin_coe, Nat.cast_sub hm, Nat.cast_one]
         by_cases hmn : (n : ℝ) + 1 + 1 ≤ m
-        · rw [if_pos hmn, min_eq_right (by linarith [hu.2]), min_eq_right (by linarith)]
+        · rw [ite_eq_left hmn, min_eq_right (by linarith [hu.2]), min_eq_right (by linarith)]
           ring
-        · rw [if_neg hmn]
+        · rw [ite_eq_right hmn]
           have hmn' : (m : ℝ) - 1 ≤ n := by
             have : m < n + 2 := by exact_mod_cast (show (m : ℝ) < n + 2 by linarith)
             have : (m : ℝ) ≤ n + 1 := by exact_mod_cast (show m ≤ n + 1 by omega)

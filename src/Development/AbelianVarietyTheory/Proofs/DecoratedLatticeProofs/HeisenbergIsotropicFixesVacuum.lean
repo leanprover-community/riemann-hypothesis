@@ -122,13 +122,13 @@ theorem indicatorIdempotent_eq_add_sum (P : Pl D → Prop) (Qs : Finset (Pl D)) 
   rw [map_add (f := _), map_add (f := _), map_sum, GlobalTheory.SelfDualAt.evalV_indP, evalV_halfOff]
   by_cases hw : w ∈ Qs
   · obtain ⟨hP, h2⟩ := (hQ w).1 hw
-    rw [Finset.sum_eq_single_of_mem w hw (fun v hv hvw => h0 v hv w (Ne.symm hvw)), h1 w hw, if_pos hP,
-      if_neg (fun h => h.2 h2), zero_add, zero_add]
+    rw [Finset.sum_eq_single_of_mem w hw (fun v hv hvw => h0 v hv w (Ne.symm hvw)), h1 w hw, ite_eq_left hP,
+      ite_eq_right (fun h => h.2 h2), zero_add, zero_add]
   · rw [Finset.sum_eq_zero (fun v hv => h0 v hv w (fun h => hw (h ▸ hv))), add_zero]
     by_cases hP : P w
     · have h2 : (2 : 𝓞 D.host.F) ∉ w.asIdeal := fun h2 => hw ((hQ w).2 ⟨hP, h2⟩)
-      rw [if_pos hP, if_pos ⟨hP, h2⟩, ← two_mul, mul_inv_cancel₀ (two_ne_zero_at w)]
-    · rw [if_neg hP, if_neg (fun h => hP h.1), add_zero]
+      rw [ite_eq_left hP, ite_eq_left ⟨hP, h2⟩, ← two_mul, mul_inv_cancel₀ (two_ne_zero_at w)]
+    · rw [ite_eq_right hP, ite_eq_right (fun h => hP h.1), add_zero]
 
 theorem int_alg_pair {β : Af D.host.F} (hβ : β ∈ intAf D.host.F) :
     finPart D (algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 β)) ∈ intAE D := by

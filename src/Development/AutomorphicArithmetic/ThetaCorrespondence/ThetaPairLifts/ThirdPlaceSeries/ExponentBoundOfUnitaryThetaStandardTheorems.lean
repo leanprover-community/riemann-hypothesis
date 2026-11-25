@@ -345,10 +345,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 noncomputable section
 namespace GlobalTheory.ExpTie.Asm
 open Formalism.L2.Indef Formalism.L2.Indef.Tree
-section Point
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz)
-end Point
 theorem expSt_of_alt : Formalism.CohomologicalDescent.E.ExCut → _root_.GlobalTheory.ExpTie.NumStAlt → _root_.GlobalTheory.ExpTie.ExponentSumStatement → _root_.GlobalTheory.ExpTie.ModelStatement → _root_.GlobalTheory.BigOn.ExponentStatement := by
   intro hcut hN hS hM
   obtain ⟨a, ha, H⟩ := (hN.and hS).and hM
@@ -593,7 +589,7 @@ theorem wts_U_le_h0_of_large : ∀ {D : Formalism.BasicNotions.D7} (L : Formalis
       have hLa : 0 < L.LaG := by
         have h := P5.S_le
         by_contra hc'
-        push_neg at hc'
+        push Not at hc'
         have : L.LaG * L.sc.b' / D.R.k ≤ 0 :=
           div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg hc' hb0.le) (by positivity)
         linarith
@@ -741,7 +737,7 @@ theorem valsAt_of_isLamPrime : ∀ {D : Formalism.BasicNotions.D7} (L : Formalis
       Formalism.IndefR.IndefiniteWeightData.WeightData.r] at hq
     split_ifs at hq with c1 c2 <;> try omega
     have c3 : D.R.k + ↑j + s + 1 ≤ D.R.k + ((j : ℕ) + 1) - 1 + D.R.t := by omega
-    simp only [c3, if_true] at hq
+    simp only [c3, ite_true] at hq
     rw [hp, hmj] at hq
     have hQ : (((lamL j τ).w ⟨_, hal⟩ : ℤ) : ℚ) + ((Vc D j).rank : ℚ) / 2 - ((D.R.k + j + s : ℕ) : ℚ) =
         -(D.hc τ).e ⟨(j : ℕ) + 1 - 1, hj.2⟩ + ((D.R.t : ℚ) - 1) / 2 - s := by
@@ -763,7 +759,7 @@ theorem valsAt_of_isLamPrime : ∀ {D : Formalism.BasicNotions.D7} (L : Formalis
       Formalism.IndefR.IndefiniteWeightData.WeightData.r] at hq
     split_ifs at hq with c1 c2 <;> try omega
     have c3 : ¬ (D.R.k - 1 + (i : ℕ) + D.R.t + 1 ≤ D.R.k + ((j : ℕ) + 1) - 1 + D.R.t) := by omega
-    simp only [c3, if_false] at hq
+    simp only [c3, ite_false] at hq
     rw [show D.R.m - ((j : ℕ) + 1) + 1 - (D.R.m - ((j : ℕ) + 1) + 1 - (D.R.k - 1 + (i : ℕ) + D.R.t + 1 - (D.R.k + ((j : ℕ) + 1) - 1) - D.R.t))
         = (i : ℕ) - j by omega] at hq
     rw [show (j : ℕ) + 1 + ((i : ℕ) - j) = (i : ℕ) + 1 by omega, hp, hmj] at hq
@@ -1244,7 +1240,7 @@ theorem exZ_res_eq_natW (n : ℕ) (lam : Formalism.BasicNotions.DomWeight n) (f 
     exact a.elim0
   · let m : Fin n := ⟨n - 1, by omega⟩
     have hds : lam.detShift = lam.w m := by
-      simp only [Formalism.BasicNotions.DomWeight.detShift, dif_pos hn]
+      simp only [Formalism.BasicNotions.DomWeight.detShift, dite_eq_left hn]
       rfl
     have hres : res n f = fun a => lam.natW a + f m := by
       funext a
@@ -1327,10 +1323,6 @@ end GlobalTheory.SumExpAt
 namespace GlobalTheory.ExpTie
 open GlobalTheory.SumExpAt
 open Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
-section Point
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-end Point
 theorem sumExpSt_alt : _root_.GlobalTheory.ExpTie.ExponentSumStatement :=
   ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun _ _ _ _ => _root_.GlobalTheory.BigTop.EventuallyAtPoints.of_forall fun _ _ _ p _ _ j P W hD _ t w => lIncl_sumExp p j P W hD t w⟩⟩
 end GlobalTheory.ExpTie

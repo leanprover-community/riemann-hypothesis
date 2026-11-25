@@ -19,7 +19,7 @@ theorem UpperTheory.V.Br.minNew :
           (∀ᶠ (p : ℕ) in Filter.cofinite, Nat.Prime p → IsEigAt k χ' (⇑g') p (coef (⇑g.f) p)) → g' = 0
     · refine ⟨⟨N, Nat.pos_of_ne_zero (NeZero.ne N), g.f, χ, g.char, g.one,
         fun p hp _ => g.eig p hp, hnew⟩, hN, g, rfl, Filter.Eventually.of_forall fun _ _ => rfl⟩
-    · push_neg at hnew
+    · push Not at hnew
       obtain ⟨M', hdvd, hne, g', χ', hc, hev, hg0⟩ := hnew
       have hM0 : M' ≠ 0 := by
         rintro rfl

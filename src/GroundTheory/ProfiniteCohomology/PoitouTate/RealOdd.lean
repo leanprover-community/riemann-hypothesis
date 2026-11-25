@@ -44,8 +44,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory Involution OrderTwo
 
-attribute [local instance 2000] Rep.hV2
-
 section Transfer
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] (M : Rep.{0} (ULift.{0} ℤ) Gal(Ω/F))
@@ -341,8 +339,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory Involution OrderTwo
-
-attribute [local instance 2000] Rep.hV2
 
 section Neg
 
@@ -645,21 +641,6 @@ theorem realDualityPairingZeroTwo_flip_bijective :
 
 end Duality
 
-section Values
-
-variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F Ω] [IsGalois F Ω]
-  (h2 : Module.finrank F Ω ≤ 2)
-  (hN : ∀ a b : Fˣ, (a : F) ∉ Set.range (Algebra.norm F : Ω → F) →
-    (b : F) ∉ Set.range (Algebra.norm F : Ω → F) →
-      ((a * b : Fˣ) : F) ∈ Set.range (Algebra.norm F : Ω → F))
-  {c : Gal(Ω/F)} (hG : ∀ g : Gal(Ω/F), g = 1 ∨ g = c) (hc : c ≠ 1)
-  (hneg : (-1 : F) ∉ Set.range (Algebra.norm F : Ω → F))
-  (hconj : ∀ ζ : galUnits.{0} F Ω, (∃ k : ℕ, 0 < k ∧ k • ζ = 0) → (galUnits.{0} F Ω).ρ c ζ = -ζ)
-  (hroots : ∀ k : ℕ, 0 < k → Nonempty (galRootsOfUnity.{0} F Ω k ≃+ ZMod k))
-  (M : Rep.{0} (ULift.{0} ℤ) Gal(Ω/F)) [IsDiscreteRep M] [Finite M]
-
-end Values
-
 section Bundle
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F Ω] [IsGalois F Ω]
@@ -709,8 +690,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory MonoidalCategory GroundTheory.Global
-
-attribute [local instance 2000] Rep.hV2
 
 section NormClassMap
 
@@ -986,8 +965,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory CategoryTheory.Limits MonoidalCategory GroundTheory.Global
-
-attribute [local instance 2000] Rep.hV2
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 

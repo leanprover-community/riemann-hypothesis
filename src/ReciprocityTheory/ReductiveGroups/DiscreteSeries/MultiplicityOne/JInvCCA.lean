@@ -76,9 +76,9 @@ theorem hpk_row (i m : Fin (2 * r + k + 1)) :
 theorem hpk_mul_apply (A : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (i j : Fin (2 * r + k + 1)) : (Hpk k r * A) i j = sgn k r i * A (tau k r i) j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau k r i)]
-  · rw [hpk_row, if_pos rfl]
+  · rw [hpk_row, ite_eq_left rfl]
   · intro m _ hm
-    rw [hpk_row, if_neg hm, zero_mul]
+    rw [hpk_row, ite_eq_right hm, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -107,10 +107,10 @@ theorem hpk_conjT : (Hpk k r)ᴴ = Hpk k r := by
   rw [Matrix.conjTranspose_apply, hpk_row, hpk_row]
   by_cases h : j = tau k r i
   · have h' : i = tau k r j := by rw [h, tau_tau]
-    rw [if_pos h', if_pos h, h, sgn_tau]
+    rw [ite_eq_left h', ite_eq_left h, h, sgn_tau]
     unfold sgn; split_ifs <;> simp
   · have h' : ¬ i = tau k r j := fun h' => h (by rw [h', tau_tau])
-    rw [if_neg h', if_neg h, star_zero]
+    rw [ite_eq_right h', ite_eq_right h, star_zero]
 
 theorem isUnit_of_uh {g : Mat k r} (hg : g ∈ GV k r) : IsUnit g.det := by
   apply Matrix.isUnit_det_of_left_inverse (B := Hpk k r * gᴴ * Hpk k r)

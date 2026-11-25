@@ -805,8 +805,8 @@ theorem nM_single_le {p q : ℕ} (i : Fin p) (j : Fin q) (w : Fv F v ⊗[F] E) :
     nM v (Matrix.single i j w) ≤ nA v w := by
   refine (nM_le_iff (nA_nonneg w)).2 fun i' j' => ?_
   by_cases h : i = i' ∧ j = j'
-  · rw [Matrix.single_apply, if_pos h]
-  · rw [Matrix.single_apply, if_neg h, nA_zero]; exact nA_nonneg w
+  · rw [Matrix.single_apply, ite_eq_left h]
+  · rw [Matrix.single_apply, ite_eq_right h, nA_zero]; exact nA_nonneg w
 
 
 variable (v) in
@@ -1035,7 +1035,7 @@ theorem shellP_core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
       (1 + x) * (1 + x' x) = 1 ∧ (1 + x' x) * (1 + x) = 1 := by
     intro x hx
     have hs := Classical.choose_spec (hinv x (hrle x hx).2.1)
-    simp only [x', dif_pos hx]
+    simp only [x', dite_eq_left hx]
     exact ⟨hs.1, hs.2.1⟩
   let φ : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E) → HermR (Fv F v) σ n → HermR (Fv F v) σ n := fun x b =>
     if hx : nM v x ≤ r then conjE h.cm (1 + x) (1 + x' x) (hx'1 x hx).1 (hx'1 x hx).2 b else b
@@ -1061,7 +1061,7 @@ theorem shellP_core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
     intro x hx
     have hx0 : nM v x ≤ r := hx
     have e1 : ∀ b, φ x b = conjE h.cm (1 + x) (1 + x' x) (hx'1 x hx0).1 (hx'1 x hx0).2 b := fun b => by
-      simp only [φ, dif_pos hx0]
+      simp only [φ, dite_eq_left hx0]
     simp only [e1]
     exact setIntegral_conj h.cm νv x (x' x) (hx'1 x hx0).1 (hx'1 x hx0).2 (fun b => hpres x (hrle x hx0).1 b)
       (fun t => R < t ∧ t ≤ q * R) hSm _
@@ -1069,7 +1069,7 @@ theorem shellP_core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
     intro x hx b hb
     have hx0 : nM v x ≤ r := hx
     have e1 : φ x b = conjE h.cm (1 + x) (1 + x' x) (hx'1 x hx0).1 (hx'1 x hx0).2 b := by
-      simp only [φ, dif_pos hx0]
+      simp only [φ, dite_eq_left hx0]
     rw [e1]
     have hval : (conjE h.cm (1 + x) (1 + x' x) (hx'1 x hx0).1 (hx'1 x hx0).2 b).1 = conjM σ (1 + x) b.1 := rfl
     have hnu' : nu2 lam L₁ L₂ (conjM σ (1 + x) b.1) = nu2 lam L₁ L₂ b.1 :=

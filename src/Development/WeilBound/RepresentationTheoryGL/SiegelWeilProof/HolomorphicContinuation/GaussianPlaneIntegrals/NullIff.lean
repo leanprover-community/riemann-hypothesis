@@ -476,11 +476,11 @@ theorem act_emb_other (β β' : Bool) (hne : β' ≠ β) (v : Matrix (Rw ε β) 
   rcases x with ⟨i, a⟩ | ⟨i, a⟩
   · have hi : ¬ ε i.1 = β := fun h => hne (i.2.symm.trans h)
     have := sum_blk_other (n := n) β v hi a false false
-    simp only [Bool.false_eq_true, if_false] at this
+    simp only [Bool.false_eq_true, ite_false] at this
     simp [act, emb, jv, this]
   · have hi : ¬ ε i.1 = β := fun h => hne (i.2.symm.trans h)
     have := sum_blk_other (n := n) β v hi a true true
-    simp only [if_true] at this
+    simp only [ite_true] at this
     simpa [act, emb, jv] using this
 
 theorem emb_pair (β : Bool) (a b : Fin n) :
@@ -535,7 +535,7 @@ theorem coeff_inv (v : Matrix (Rw ε true) (Rw ε true) ℂ) (Q : PX m n) (hQ : 
 
   simp only [map_sum, th_prod, coeff_sum_monomial] at h2
   by_cases hμ : μ ∈ (Th ε Q).support
-  · rw [if_pos hμ] at h2
+  · rw [ite_eq_left hμ] at h2
     exact h2.symm
   · have : AddMonoidAlgebra.coeff (Th ε Q) μ = 0 := notMem_support_iff.1 hμ
     rw [this, map_zero]
@@ -998,7 +998,7 @@ private theorem lam_eq_prod_kap_pow {ι A B : Type} [Fintype ι] [DecidableEq ι
   classical
   have hP : (0 : ℝ) < ∏ s : Sg ι A B, jr (m s) := Finset.prod_pos fun s _ => jr_pos _
   have h := gip_diag (A := A) (B := B) d (monomial m (1 : ℂ))
-  rw [pos_lemma, support_monomial, if_neg one_ne_zero, Finset.sum_singleton, coeff_monomial, if_pos rfl,
+  rw [pos_lemma, support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl,
     Complex.normSq_one, one_mul] at h
   have h3 : gip (C ((∏ s : Sg ι A B, kap d s ^ m s : ℝ) : ℂ) * monomial m (1 : ℂ)) (monomial m (1 : ℂ)) =
       ((∏ s : Sg ι A B, kap d s ^ m s : ℝ) : ℂ) * ((∏ s : Sg ι A B, jr (m s) : ℝ) : ℂ) := by
@@ -1207,9 +1207,9 @@ theorem integrable_evX_gs (P : PX m n) : ∀ {c : ℝ}, 0 < c → Integrable (fu
     refine (hp hc2).bdd_mul (c := 1 + 1 / (c / 2)) ?_ ?_
     · refine Continuous.aestronglyMeasurable (Continuous.mul ?_ (continuous_gs _))
       by_cases hk : k.2.2 = true
-      · simp only [hk, if_true]
+      · simp only [hk, ite_true]
         fun_prop
-      · simp only [hk, Bool.false_eq_true, if_false]
+      · simp only [hk, Bool.false_eq_true, ite_false]
         fun_prop
     · refine ae_of_all _ fun x => ?_
       have hn : ‖(if k.2.2 = true then star (x k.1 k.2.1) else x k.1 k.2.1)‖ = ‖x k.1 k.2.1‖ := by
@@ -1581,9 +1581,9 @@ theorem stable : Stable := by
     refine congrArg (fun w => eval w p) ?_
     funext v
     rcases v with ⟨i, a⟩ | ⟨i, b⟩
-    · simp only [Function.comp, f, Sum.elim_inl, if_true, u', Matrix.submatrix_apply]
+    · simp only [Function.comp, f, Sum.elim_inl, ite_true, u', Matrix.submatrix_apply]
       exact (Equiv.sum_comp eι (fun l => u () (eι i) l * z ((), true, l, eA a))).symm
-    · simp only [Function.comp, f, Sum.elim_inr, Bool.false_eq_true, if_false, u', Matrix.submatrix_apply,
+    · simp only [Function.comp, f, Sum.elim_inr, Bool.false_eq_true, ite_false, u', Matrix.submatrix_apply,
         Matrix.map_apply]
       exact (Equiv.sum_comp eι (fun l => (starRingEnd ℂ) (u () (eι i) l) * z ((), false, l, eB b))).symm
   obtain ⟨s, hs⟩ := GlobalTheory.invariant_polynomial_eq_aeval_pairings Unit n n le_rfl q hinv
@@ -1593,10 +1593,10 @@ theorem stable : Stable := by
   have hψf : ∀ w, ψF (f w) = X w := by
     rintro (⟨i, a⟩ | ⟨i, b⟩)
     · have h : ∃ a', eA a' = eA a := ⟨a, rfl⟩
-      simp only [f, Sum.elim_inl, ψF, if_true, dif_pos h, Equiv.symm_apply_apply]
+      simp only [f, Sum.elim_inl, ψF, ite_true, dite_eq_left h, Equiv.symm_apply_apply]
       rw [eA.injective h.choose_spec]
     · have h : ∃ b', eB b' = eB b := ⟨b, rfl⟩
-      simp only [f, Sum.elim_inr, ψF, Bool.false_eq_true, if_false, dif_pos h, Equiv.symm_apply_apply]
+      simp only [f, Sum.elim_inr, ψF, Bool.false_eq_true, ite_false, dite_eq_left h, Equiv.symm_apply_apply]
       rw [eB.injective h.choose_spec]
   have hp' : p = aeval ψF q := by
     rw [hq, aeval_rename]
@@ -1606,10 +1606,10 @@ theorem stable : Stable := by
       MvPolynomial (Unit × Bool × Fin n × Fin n) ℂ)) ∈ pairAlg ι A B := by
     rintro ⟨t, a', b'⟩
 
-    simp only [map_sum, map_mul, aeval_X, ψF, Bool.false_eq_true, if_false, if_true]
+    simp only [map_sum, map_mul, aeval_X, ψF, Bool.false_eq_true, ite_false, ite_true]
     by_cases hb : ∃ b, eB b = a'
     · by_cases ha : ∃ a, eA a = b'
-      · simp only [dif_pos hb, dif_pos ha]
+      · simp only [dite_eq_left hb, dite_eq_left ha]
         have : (∑ k : Fin n, (X (Sum.inr (eι.symm k, hb.choose)) : PV ι A B) * X (Sum.inl (eι.symm k, ha.choose))) =
             ∑ i, (X (Sum.inl (i, ha.choose)) : PV ι A B) * X (Sum.inr (i, hb.choose)) := by
           rw [← Equiv.sum_comp eι]
@@ -1617,9 +1617,9 @@ theorem stable : Stable := by
           rw [Equiv.symm_apply_apply, mul_comm]
         rw [this]
         exact Algebra.subset_adjoin ⟨(ha.choose, hb.choose), rfl⟩
-      · simp only [dif_neg ha, mul_zero, Finset.sum_const_zero]
+      · simp only [dite_eq_right ha, mul_zero, Finset.sum_const_zero]
         exact Subalgebra.zero_mem _
-    · simp only [dif_neg hb, zero_mul, Finset.sum_const_zero]
+    · simp only [dite_eq_right hb, zero_mul, Finset.sum_const_zero]
       exact Subalgebra.zero_mem _
   rw [hp', hs, ← AlgHom.comp_apply, comp_aeval]
   clear hs hp'

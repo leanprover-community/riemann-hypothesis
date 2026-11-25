@@ -512,11 +512,11 @@ private theorem J_entry {R : Type} [CommRing R] {n : ℕ} (M : Matrix (Fin n) (F
   have hJ : ∀ a b : Fin n, Jmat R n a b = if b = a.rev then 1 else 0 := fun _ _ => rfl
   have h1 : ∀ b, (Jmat R n * Mᵀ) i b = M b i.rev := by
     intro b
-    rw [Matrix.mul_apply, Finset.sum_eq_single i.rev (fun c _ hc => by rw [hJ, if_neg hc, zero_mul])
-      (fun h => absurd (Finset.mem_univ _) h), hJ, if_pos rfl, one_mul, Matrix.transpose_apply]
+    rw [Matrix.mul_apply, Finset.sum_eq_single i.rev (fun c _ hc => by rw [hJ, ite_eq_right hc, zero_mul])
+      (fun h => absurd (Finset.mem_univ _) h), hJ, ite_eq_left rfl, one_mul, Matrix.transpose_apply]
   rw [Matrix.mul_apply, Finset.sum_eq_single j.rev (fun c _ hc => by
-      rw [hJ, if_neg (fun h => hc (by rw [h, Fin.rev_rev])), mul_zero])
-      (fun h => absurd (Finset.mem_univ _) h), hJ, if_pos (Fin.rev_rev j).symm, mul_one, h1]
+      rw [hJ, ite_eq_right (fun h => hc (by rw [h, Fin.rev_rev])), mul_zero])
+      (fun h => absurd (Finset.mem_univ _) h), hJ, ite_eq_left (Fin.rev_rev j).symm, mul_one, h1]
 
 private theorem free_etale_sheaf_zmod_exists_hom_sending_generator [CharZero K] {n : ℕ} (hn : n = 2 ∨ n = 3) (x : Fin n → K)
     (h : ∀ i j, x i + x i.rev = x j + x j.rev) :
@@ -1037,7 +1037,7 @@ theorem UpperTheory.V.J.fixLe :
   · have hbot : FixTan S ξ = ⊥ := eq_bot_iff.2 fun D hD => (Submodule.mem_bot _).2 (h0 D hD)
     rw [hbot]
     simp
-  push_neg at h0
+  push Not at h0
   obtain ⟨D1, hD1, hne⟩ := h0
   obtain ⟨t1, h1r, h1ψ⟩ := key D1 hD1
   have ht1 : t1 ≠ 0 := by

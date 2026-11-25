@@ -132,7 +132,7 @@ theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K
     have := congrArg (eval (Pi.single (0, k) 1)) h0
     rw [hlin_eval, map_zero] at this
     simp only [Pi.single_apply, Prod.mk.injEq, true_and, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     exact hk (sub_eq_zero.mp this)
   obtain ⟨a, ha⟩ : ∃ a, eval a Q ≠ 0 := by
     by_contra! hcon
@@ -178,7 +178,7 @@ theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K
       ⟨pt σ, fun h => by simpa [hpj σ] using congrFun h j, hzero σ, fun i => ?_⟩
     obtain rfl : i = 0 := Fin.ext (Nat.lt_one_iff.mp i.isLt)
     simp only [add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, hpj σ, mul_one]
+      Finset.mem_univ, ite_true, hpj σ, mul_one]
     simp [c]
   have hcard : Fintype.card (E →ₐ[K] AlgebraicClosure K) ≤ g.roots.toFinset.card := by
     rw [← Finset.card_univ]

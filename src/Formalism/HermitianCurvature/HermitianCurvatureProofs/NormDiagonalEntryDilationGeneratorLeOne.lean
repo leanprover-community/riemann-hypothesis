@@ -117,14 +117,14 @@ theorem hermitian_entry_zero_or_weights_cancel (k r : ℕ) (i j : Fin (2 * r + k
     have h1 : ¬ j.val < r := by omega
     have h2 : ¬ j.val ≤ r + k := by omega
     have h3 : j.val - (r + k) = r - i.val := by omega
-    simp only [dilationGeneratorDiagonal, c1.1, h1, h2, if_true, if_false, h3]
+    simp only [dilationGeneratorDiagonal, c1.1, h1, h2, ite_true, ite_false, h3]
     push_cast; ring
   · by_cases c2 : j.val < r ∧ i.val + j.val = 2 * r + k
     · right
       have h1 : ¬ i.val < r := by omega
       have h2 : ¬ i.val ≤ r + k := by omega
       have h3 : i.val - (r + k) = r - j.val := by omega
-      simp only [dilationGeneratorDiagonal, c2.1, h1, h2, if_true, if_false, h3]
+      simp only [dilationGeneratorDiagonal, c2.1, h1, h2, ite_true, ite_false, h3]
       push_cast; ring
     · by_cases c3 : r ≤ i.val ∧ i.val ≤ r + k ∧ i = j
       · right
@@ -386,9 +386,9 @@ theorem lam_continuous (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Continuou
   refine Complex.continuous_re.comp (continuous_const.mul ?_)
   refine continuous_finsetSum _ fun a _ => ?_
   by_cases h : a.val + 1 < r
-  · simp only [h, dif_pos]
+  · simp only [h, dite_eq_left]
     exact continuous_id.matrix_elem _ _
-  · simp only [h, dif_neg, not_false_iff]
+  · simp only [h, dite_eq_right, not_false_iff]
     have h2 : Continuous fun n : Mat k r => n *ᵥ z := continuous_id.matrix_mulVec continuous_const
     exact (continuous_apply (eI k r a)).comp h2
 

@@ -19,10 +19,10 @@ def pad {m N : ℕ} (v : Fin m → R) : Fin N → R := fun i => if h : (i : ℕ)
 def restr {m N : ℕ} (h : m ≤ N) (y : Fin N → R) : Fin m → R := fun i => y ⟨i, lt_of_lt_of_le i.2 h⟩
 
 lemma pad_apply_lt {m N : ℕ} (v : Fin m → R) (i : Fin N) (h : (i : ℕ) < m) :
-    pad (N := N) v i = v ⟨i, h⟩ := dif_pos h
+    pad (N := N) v i = v ⟨i, h⟩ := dite_eq_left h
 
 lemma pad_apply_ge {m N : ℕ} (v : Fin m → R) (i : Fin N) (h : m ≤ (i : ℕ)) :
-    pad (N := N) v i = 0 := dif_neg (by omega)
+    pad (N := N) v i = 0 := dite_eq_right (by omega)
 
 lemma restr_pad {m N : ℕ} (h : m ≤ N) (v : Fin m → R) : restr h (pad (N := N) v) = v := by
   funext i

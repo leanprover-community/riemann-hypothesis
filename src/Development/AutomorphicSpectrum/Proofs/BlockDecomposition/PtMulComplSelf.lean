@@ -433,10 +433,10 @@ theorem projArch_pt_zero {f : AE D} (hf : f * f = f) (hc : cA D f = f) (x : G D 
   exact ptM_map_of_zero (compInf D.host.F D.host.E w) hf h (mat x)
 
 theorem cv_of_mem {S : Finset (Pl D)} {e : AE D} (hS : IsIdem S e) {v : Pl D} (hv : v ∈ S) : cv D v e = 1 := by
-  rw [hS.2 v, if_pos hv]
+  rw [hS.2 v, ite_eq_left hv]
 
 theorem cv_of_not_mem {S : Finset (Pl D)} {e : AE D} (hS : IsIdem S e) {v : Pl D} (hv : v ∉ S) : cv D v e = 0 := by
-  rw [hS.2 v, if_neg hv]
+  rw [hS.2 v, ite_eq_right hv]
 
 theorem pt_mem_KOff {S : Finset (Pl D)} {e : AE D} (hS : IsIdem S e) (he' : (1 - e) * (1 - e) = 1 - e)
     (hc' : cA D (1 - e) = 1 - e) {x : G D n}

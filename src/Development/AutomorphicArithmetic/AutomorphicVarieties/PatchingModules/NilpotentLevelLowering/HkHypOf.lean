@@ -362,7 +362,7 @@ private theorem satInd_trc {I K : Subgroup G} (h : I ≤ K) (hf : FinOrb K I 1) 
     rfl
   simp only [key]
   by_cases hy : g⁻¹ * y ∈ K
-  · rw [if_pos hy]
+  · rw [ite_eq_left hy]
     have hmem : ((g⁻¹ * y : G) : G ⧸ I) ∈ MulAction.orbit K ((1 : G) : G ⧸ I) :=
       MulAction.mem_orbit_iff.2 ⟨⟨g⁻¹ * y, hy⟩, by
         show (((g⁻¹ * y : G) * 1 : G) : G ⧸ I) = _
@@ -373,9 +373,9 @@ private theorem satInd_trc {I K : Subgroup G} (h : I ≤ K) (hf : FinOrb K I 1) 
     simp only [e2]
     rw [Finset.sum_ite_eq']
     simp
-  · rw [if_neg hy]
+  · rw [ite_eq_right hy]
     refine Finset.sum_eq_zero fun q _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hq
     obtain ⟨k, hk⟩ := MulAction.mem_orbit_iff.1 q.2
     have h1 : (((k : G) * 1 : G) : G ⧸ I) = ((g⁻¹ * y : G) : G ⧸ I) := hk.trans hq

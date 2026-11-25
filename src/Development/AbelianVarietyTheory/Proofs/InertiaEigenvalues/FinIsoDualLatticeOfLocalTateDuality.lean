@@ -255,7 +255,7 @@ theorem modpi_cocycles_finite_classes : Formalism.GaloisCohomology.LocalTateDual
   let pick : H1 ρ' → Z1 ρ := fun y => if hy : ∃ c, κ c = y then hy.choose else 0
   refine ⟨Finset.univ.image pick, fun c => ?_⟩
   have hex : ∃ c', κ c' = κ c := ⟨c, rfl⟩
-  have hpick : pick (κ c) = hex.choose := dif_pos hex
+  have hpick : pick (κ c) = hex.choose := dite_eq_left hex
   refine ⟨pick (κ c), Finset.mem_image_of_mem _ (Finset.mem_univ _), ?_⟩
   set c₀ := pick (κ c)
   have heq : κ c₀ = κ c := by rw [hpick]; exact hex.choose_spec

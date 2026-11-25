@@ -919,7 +919,7 @@ theorem main : MaxMass → ∀ (K V : Type) [Field K] [NumberField K] [StarRing 
       discN (hRes h U) M = p.1 ^ 2 ∧ p.1 ∣ de
   let f : ℕ × Finset (Ideal (𝓞 K)) → Submodule K V := fun I => if hI : ∃ U, Q I U then hI.choose else ⊥
   have hf : ∀ I, (∃ U, Q I U) → Q I (f I) := fun I hI => by
-    simp only [f, dif_pos hI]
+    simp only [f, dite_eq_left hI]
     exact hI.choose_spec
   let A : Finset (ℕ × Finset (Ideal (𝓞 K))) :=
     ((Finset.Icc 1 de).sigma T).map ⟨fun x => (x.1, x.2), by

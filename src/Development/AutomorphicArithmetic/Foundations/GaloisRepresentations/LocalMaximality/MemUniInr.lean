@@ -30,16 +30,16 @@ private lemma det_single {S : Type} [CommRing S] {n : ℕ} (g : Fin n → Fin n)
   · right
     refine ⟨hg, Equiv.Perm.sign (Equiv.ofBijective g hg), ?_⟩
     rw [Finset.sum_eq_single (Equiv.ofBijective g hg)]
-    · rw [if_pos (show ∀ i, (Equiv.ofBijective g hg) i = g i from fun i => rfl)]
+    · rw [ite_eq_left (show ∀ i, (Equiv.ofBijective g hg) i = g i from fun i => rfl)]
     · intro σ _ hσ
-      rw [if_neg, smul_zero]
+      rw [ite_eq_right, smul_zero]
       intro h
       exact hσ (Equiv.ext fun i => h i)
     · intro h
       exact absurd (Finset.mem_univ _) h
   · left
     refine Finset.sum_eq_zero fun σ _ => ?_
-    rw [if_neg, smul_zero]
+    rw [ite_eq_right, smul_zero]
     intro h
     have hgσ : g = σ := funext fun i => (h i).symm
     exact hg (hgσ ▸ σ.bijective)
@@ -48,7 +48,7 @@ private lemma detC_eq {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCo
     (s : Finset (Fin (d + 1) ⊕ₗ Fin d)) (h : s.card = d + 1) :
     detC T.rowT s = (Matrix.of fun a b => (Pi.single (phiT (s.orderEmbOfFin h a)) (cT T (s.orderEmbOfFin h a)) :
       Fin (d + 1) → S) b).det := by
-  simp only [detC, dif_pos h, rowT_eq]
+  simp only [detC, dite_eq_left h, rowT_eq]
 
 private lemma detC_id {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (T : Sys d S E)
     (s : Finset (Fin (d + 1) ⊕ₗ Fin d)) (h : s.card = d + 1) (f : Fin (d + 1) → Fin (d + 1) ⊕ₗ Fin d)
@@ -148,7 +148,7 @@ private theorem detC_uni_eq_zero_or_eq_unit_smul_prod_compl {d : ℕ} {S E : Typ
   by_cases hc : (uni I L).card = d + 1
   swap
   · left
-    simp only [detC, dif_neg hc]
+    simp only [detC, dite_eq_right hc]
   rcases det_single (fun a => phiT ((uni I L).orderEmbOfFin hc a))
       (fun a => cT T ((uni I L).orderEmbOfFin hc a)) with h0 | ⟨hbij, ε, hε⟩
   · left

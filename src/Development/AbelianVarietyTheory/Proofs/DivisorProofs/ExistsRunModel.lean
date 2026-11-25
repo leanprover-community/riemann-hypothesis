@@ -161,14 +161,6 @@ open IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-section General
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-
-variable (Xo : Moduli Dw l) (c : Coeff l)
-
-end General
-
 section Instance
 
 variable {D : D7} {T : Top D}
@@ -182,12 +174,6 @@ theorem one_le_rank (h : LawsP T) {j : ℕ} (hj : InR D j) : 1 ≤ (T.Q.Dw j).p 
   omega
 
 end Instance
-
-section Full
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-
-end Full
 
 end GlobalTheory.Proof.ModelAtPrimeToLevel
 end -- clump:auto
@@ -318,11 +304,11 @@ theorem exists_marking_match_at (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : F
   have he : ∀ τ, Formalism.L2.PjFree.relab c σ (e.symm τ) = τ := e.apply_symm_apply
   have m1 : ∀ τ ∈ (U.X k).Ψ, Dw.mult (e.symm τ) = r - (U.X k).p0 := fun τ hτ => by
     unfold Datum.mult
-    rw [if_pos ((hrt _).1 (by rw [he]; exact ((hty k).2 τ).1 hτ)), (hty k).1]
+    rw [ite_eq_left ((hrt _).1 (by rw [he]; exact ((hty k).2 τ).1 hτ)), (hty k).1]
     omega
   have m2 : ∀ τ ∉ (U.X k).Ψ, Dw.mult (e.symm τ) = (U.X k).p0 := fun τ hτ => by
     unfold Datum.mult
-    rw [if_neg (fun h => hτ (((hty k).2 τ).2 (by rw [← he τ]; exact (hrt _).2 h))), (hty k).1]
+    rw [ite_eq_right (fun h => hτ (((hty k).2 τ).2 (by rw [← he τ]; exact (hrt _).2 h))), (hty k).1]
   have hrel : ∀ τ, ∀ i < Dw.mult (e.symm τ), ∀ v ∈ (U.X k).Λ,
       Formalism.L2.PjFree.perFr (U.X k') x'.1 ((a : Matrix (Fin r) (Fin r) E) *ᵥ v) τ i =
         ∑ j ∈ Finset.range (Dw.mult (e.symm τ)), A (e.symm τ) i j * Formalism.L2.PjFree.perFr (U.X k) x.1 v τ j :=
@@ -975,7 +961,7 @@ theorem exists_const_of_forall_unit_mul {V : Type} [NormedAddCommGroup V] [Norme
     have e := step j x hx
     rw [Units.val_mk0]
     linear_combination e - (1 - Q j x₁) / Q j₀ x₁ * h₀ x hx
-  · push_neg at h0
+  · push Not at h0
     refine ⟨1, fun j x hx => ?_⟩
     obtain ⟨u, -, hPx⟩ := h x hx
     rw [hPx j, h0 j x hx, mul_zero, mul_zero]
@@ -1017,9 +1003,9 @@ theorem transp_reads_const_mul : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies 
     intro x hx hy t hbt F
     have e1 : rdU (uAt r v i) (actLev (Xo := (r.used v).full.Q.Xo ((i : ℕ) + 1)) (r.used v).full.Q.c (levFull ((r.used v).full.Q.Dw ((i : ℕ) + 1)) (r.used v).full.Q.l) γ F.1) k x =
         toC (evR _ _ (actLev (Xo := (r.used v).full.Q.Xo ((i : ℕ) + 1)) (r.used v).full.Q.c (levFull ((r.used v).full.Q.Dw ((i : ℕ) + 1)) (r.used v).full.Q.l) γ F.1)
-          ((uAt r v i).un k ⟨x, hx⟩)) := dif_pos hx
+          ((uAt r v i).un k ⟨x, hx⟩)) := dite_eq_left hx
     have e2 : rdU (uAt r v i) F.1 k' (castFrame hm.psi (lact a x)) =
-        toC (evR _ _ F.1 ((uAt r v i).un k' ⟨_, hy⟩)) := dif_pos hy
+        toC (evR _ _ F.1 ((uAt r v i).un k' ⟨_, hy⟩)) := dite_eq_left hy
     have e3 := evalAt_actL hL (hl.p.evalWD _ hj) frMap_trans_id γ (hsecF F).1 ((uAt r v i).un k ⟨x, hx⟩)
     have e4 := (GlobalTheory.Frames.algebraic_laws GlobalTheory.lawsFieldsSeparately.2.1 _ _ _ _ _ _).2.2.2.2.2.2 (CAt _)
       (inferInstanceAs (IsReduced ℂ)) _ _ F.1 (hsecF F) t _ _ hbt

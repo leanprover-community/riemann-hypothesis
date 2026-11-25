@@ -135,11 +135,6 @@ instance fracAlgebra (K : IntermediateField ℚ_[p] (PadicAlgCl p)) :
     Algebra (FractionRing (intRing K)) (PadicAlgCl p) :=
   (IsFractionRing.lift (A := intRing K) (K := FractionRing (intRing K)) (intRing_injective K)).toAlgebra
 
-def PsiNorm {K : IntermediateField ℚ_[p] (PadicAlgCl p)} (D : Out.DegPre (intRing K)) (χ : D.X) (t : ℝ) : Prop :=
-  ∀ i : D.P.L.ι, ⊤ ≤ (D.c χ).left ⁻¹ᵁ D.P.L.U i →
-    ‖algebraMap (FractionRing (intRing K)) (PadicAlgCl p)
-      (valF (𝟙 (Sp (FractionRing (intRing K)))) _ ((D.psi χ).s fun _ => i).val)‖ = t
-
 structure UnifTest {S : ThetaSys o Ω} (Z : Realisation S) (p : ℕ) [Fact p.Prime] (y : S.R →+* PadicAlgCl p) where
   base_int : ∀ a : o, ‖y (algebraMap o S.R a)‖ ≤ 1
   K : IntermediateField ℚ_[p] (PadicAlgCl p)

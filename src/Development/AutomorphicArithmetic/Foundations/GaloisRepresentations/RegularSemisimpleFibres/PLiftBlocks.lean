@@ -152,9 +152,9 @@ private lemma lbkL (Q q l f : ℕ) (hq : 2 ≤ q) (hl : l.Prime) (hQ : Q = (q ^ 
     · obtain ⟨m', rfl⟩ := hlm
       have : liftL q l [(l * m', k)] = (List.range l).map fun i => (m', k * q ^ i) := by
         simp [liftL, Nat.mul_div_cancel_left _ hl.pos]
-      rw [if_pos (dvd_mul_right _ _), this, List.map_map]
+      rw [ite_eq_left (dvd_mul_right _ _), this, List.map_map]
       exact lbk_dvd Q q l m' k
-    · rw [if_neg hlm] at hd ⊢
+    · rw [ite_eq_right hlm] at hd ⊢
       have hmf : m ∣ f := hd (m, _) (List.mem_append_left _ (List.mem_singleton.2 rfl))
       simpa using lbk_ndvd Q q l f m k hq hl hQ (h0 (m, k) List.mem_cons_self) hmf hlm
 
@@ -164,7 +164,7 @@ private lemma splitsL (q l f : ℕ) (hl : l.Prime) (L : List (ℕ × ℕ))
   by_cases hlm : l ∣ m
   · have h1 : (m / l, k * q ^ 0) ∈ liftAll q l L := by
       refine List.mem_flatMap.2 ⟨(m, k), hp, ?_⟩
-      simp only [if_pos hlm, liftL]
+      simp only [ite_eq_left hlm, liftL]
       simp only [List.flatMap_cons, List.flatMap_nil, List.append_nil]
       exact List.mem_map.2 ⟨0, List.mem_range.2 hl.pos, rfl⟩
     have h2 := hd _ h1
@@ -173,7 +173,7 @@ private lemma splitsL (q l f : ℕ) (hl : l.Prime) (L : List (ℕ × ℕ))
     exact Nat.mul_dvd_mul_left l h2
   · have h1 : (m, k * ∑ i ∈ Finset.range l, q ^ (m * i)) ∈ liftAll q l L := by
       refine List.mem_flatMap.2 ⟨(m, k), hp, ?_⟩
-      simp [if_neg hlm]
+      simp [ite_eq_right hlm]
     exact (hd _ h1).mul_left l
 
 theorem UpperTheory.Gal.InertialTypesAlt.liftBlocks :

@@ -258,12 +258,6 @@ theorem rigExtMap_relFrob_rig (x : G.RigExt) :
   exact (frobProj h G).rig_rig _ _
     (fun n a => (absFrob_app h G n a).trans (relFrob_app_frobProj h n a).symm) x
 
-section Perfect
-
-variable {k : Type} [Field k] [CharP k p]
-
-end Perfect
-
 end PDivGroup
 
 end GlobalTheory

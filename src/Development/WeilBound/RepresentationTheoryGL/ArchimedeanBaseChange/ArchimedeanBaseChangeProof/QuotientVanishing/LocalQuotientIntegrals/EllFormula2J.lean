@@ -170,7 +170,7 @@ theorem kernel_decomp (hι : Injective ι) (hθ : ∀ r, ι (θR r) = θ (ι r))
           (fun d => if cls d = c then χ x * φ (twConj θ x (ι d)) else 0) (orbPt ι θR (rep c) q) := by
       intro q
       have : cls (orbPt ι θR (rep c) q) = c := (hcls _ _).2 ⟨_, rfl⟩
-      simp only [this, if_true]
+      simp only [this, ite_true]
       exact hg c q
     have hs : support (fun d => if cls d = c then χ x * φ (twConj θ x (ι d)) else 0) ⊆
         range (orbPt ι θR (rep c) (S := (H c).subgroupOf ι.range)) := by
@@ -763,7 +763,7 @@ theorem exists_compact_cover (hM : Mahler) (τ : ℝ) (d : GL (Fin n) E) {K : Se
     exact Set.mul_mem_mul (Set.mul_mem_mul hc hk) (Set.inv_mem_inv.2 (mem_image_of_mem _ hc))
   have hex : ∃ γ, twConj (thetaE E n) γ d = δ := ⟨γ, rfl⟩
   have hp : twConj (thetaE E n) (pick δ) d = δ := by
-    simp only [pick, dif_pos hex]
+    simp only [pick, dite_eq_left hex]
     exact hex.choose_spec
   set p := pick δ with hpdef
   have ht : γ * p⁻¹ ∈ twCent (thetaE E n) d := by

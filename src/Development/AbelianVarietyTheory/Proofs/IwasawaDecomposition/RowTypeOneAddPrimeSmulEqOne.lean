@@ -95,7 +95,7 @@ theorem entB_id (q : ℕ) {k₀ c n : ℕ} (hk : k₀ ≤ n) (ex : ℕ → ℕ) 
   by_cases h : p = p'
   · subst h
     simp
-  · rw [if_neg h, if_neg (fun h' => h (h2.1 h')), zero_mul]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (h2.1 h')), zero_mul]
 
 variable (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
 
@@ -128,7 +128,7 @@ theorem lamGv_delta {r t j : ℕ} {M : ℕ → ℕ → E}
   rw [blocks_delta χ hM, mul_one, Finset.sum_eq_zero, GlobalTheory.TopStep.reduction_zero, AddChar.map_zero_eq_one]
   intro i hi
   have := Finset.mem_range.1 hi
-  rw [hM _ _ (by omega) (by omega), if_neg (by omega)]
+  rw [hM _ _ (by omega) (by omega), ite_eq_right (by omega)]
 
 omit [StarRing E] in
 theorem lamGvS_delta {k₀ r t j : ℕ} (hk : k₀ ≤ r) {M : ℕ → ℕ → E}
@@ -140,7 +140,7 @@ theorem lamGvS_delta {k₀ r t j : ℕ} (hk : k₀ ≤ r) {M : ℕ → ℕ → E
   all_goals
     intro i hi
     have := Finset.mem_range.1 hi
-    rw [hM _ _ (by omega) (by omega), if_neg (by omega)]
+    rw [hM _ _ (by omega) (by omega), ite_eq_right (by omega)]
 
 theorem lamQB_cong (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (kj n c : ℕ) {y : HomE E (n + c) (n + c)}
     (hy : y ∈ homS (LocE.lamY P (qOf P) n c 0) (LocE.lamY P (qOf P) n c 0)) :
@@ -178,7 +178,7 @@ theorem lamRow_cong : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X
   unfold lamYat at hy
   unfold lamRow
   by_cases hP : P ∈ Pr.vGs
-  · rw [if_pos hP] at hy ⊢
+  · rw [ite_eq_left hP] at hy ⊢
     have hZ := entB_int R.k (x := y) hy
     have hM : ∀ p p', p < R.r + j * R.t → p' < R.r + j * R.t →
         LocE.entB (qOf P) R.k (cOf R j) (R.N j) (cOf R j) (R.N j) (fun i => i + 1) (fun i => i + 1)
@@ -189,7 +189,7 @@ theorem lamRow_cong : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X
       rw [entB_add_smul, lamGvS_congr _ _ (int_delta hM) hZ, lamGvS_delta _ _ hr hM]
     · unfold LocE.lamGB
       rw [entB_add_smul, lamGv_congr _ _ (int_delta hM) hZ, lamGv_delta _ _ hM]
-  · rw [if_neg hP] at hy ⊢
+  · rw [ite_eq_right hP] at hy ⊢
     exact lamQB_cong _ _ _ _ hy
 
 end GlobalTheory.Mem.Col2.IdxEx.Cong

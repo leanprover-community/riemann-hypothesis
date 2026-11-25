@@ -97,19 +97,4 @@ def actM {k r : ℕ} (A : InfinitePlace E → Matrix (Fin (2 * r + k + 1)) (Fin 
 
 end Glob
 
-section Bundle
-
-variable {E : Type} [Field E] [NumberField E]
-
-def IsVolData {F : Type} [Field F] [NumberField F] [Algebra F E] (σ : E →ₐ[F] E) {k r : ℕ}
-    (J : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) E) (Λ : Submodule (𝓞 E) (Fin (2 * r + k + 1) → E))
-    (P : Matrix (Fin (2 * r + k + 1)) (Fin (r + 1)) E) (f : Matrix (Fin (2 * r + k + 1)) (Fin r) E) (T : F)
-    (A : InfinitePlace E → Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (s : Fin r → ℝ) : Prop :=
-  IsCMExt F E σ ∧ Algebra.FormallyUnramified (𝓞 F) (𝓞 E) ∧ IsHermND σ J ∧
-    GlobalTheory.SgGlob.SelfDual (σ : E →+* E) J Λ ∧ IsFrame (σ : E →+* E) J (algebraMap F E T) P ∧
-    IsDual (σ : E →+* E) J P f ∧ tupLat (id1 E r) (sideM P f) ≤ Λ ∧ IsModelAt J A ∧ (∀ a, 0 < s a) ∧
-    Adapted A P f s
-
-end Bundle
-
 end GlobalTheory.SnMass.VolN

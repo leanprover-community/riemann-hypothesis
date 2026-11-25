@@ -291,8 +291,8 @@ theorem flatV_vecE (hok : s.Ok) {a b : ℕ} (n : ℕ) (ω : ℂ) (r : X.E) (β :
   show ω * ((n : ℂ) * (if i = β ∧ j = α then s.σ₀ (X.emb (s.iT.symm τ) r) else 0)) =
     ω * TaylorLogMetric.embT D τ (if i = β ∧ j = α then (n : D.host.E) * s.iE r else 0)
   by_cases h : i = β ∧ j = α
-  · rw [if_pos h, if_pos h, hok.1, Equiv.apply_symm_apply, map_mul, map_natCast]
-  · rw [if_neg h, if_neg h, map_zero, mul_zero]
+  · rw [ite_eq_left h, ite_eq_left h, hok.1, Equiv.apply_symm_apply, map_mul, map_natCast]
+  · rw [ite_eq_right h, ite_eq_right h, map_zero, mul_zero]
 
 theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (p : ℕ) [hp : Fact p.Prime]
     (hN : s.StdAtP p N) (hN' : s.StdAtP p N') :
@@ -323,21 +323,21 @@ theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a))
       rw [Submodule.mem_pi]
       intro i _
       by_cases hi : i = β
-      · rw [if_pos hi]
+      · rw [ite_eq_left hi]
         refine Submodule.mem_one.2 ⟨r' * u, ?_⟩
         rw [map_mul, hr', hu]
         rfl
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
         exact zero_mem _
     have h3 := h2a _ hv
     have e : (fun i => if i = β then ((s₂ * s₁ : ℕ) : D.host.E) * s.iE (r : X.E) * y α else 0 : Fin b → D.host.E) =
         (s₂ : D.host.E) • (fun i => if i = β then s.iE (r : X.E) * ((s₁ : D.host.E) * y α) else 0 : Fin b → D.host.E) := by
       funext i
       by_cases hi : i = β
-      · simp only [Pi.smul_apply, if_pos hi, smul_eq_mul]
+      · simp only [Pi.smul_apply, ite_eq_left hi, smul_eq_mul]
         push_cast
         ring
-      · simp only [Pi.smul_apply, if_neg hi, smul_zero]
+      · simp only [Pi.smul_apply, ite_eq_right hi, smul_zero]
     rw [e]
     exact h3
 

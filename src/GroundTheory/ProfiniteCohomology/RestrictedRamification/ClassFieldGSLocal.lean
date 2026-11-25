@@ -126,13 +126,6 @@ local notation "ℚ̄" => AlgebraicClosure ℚ
 
 end Cup
 
-section Frobenius
-
-variable {K : FiniteSubfield} {S : Set (HeightOneSpectrum (𝓞 K.1))} {n : ℕ}
-
-
-end Frobenius
-
 end
 
 end GroundTheory.ProfCoh

@@ -23,7 +23,7 @@ theorem sSA_const (K' : Type) [Field K'] (j : ℕ) (v : X.Pl) (e : Fin (X.G.P.n'
   show (∑ l ∈ range ((0 : X.ZA j →₀ ℕ).degree + 1),
     if (0 : X.ZA j →₀ ℕ) = Finsupp.single (⟨v, (posSub e (2 * l), a, b)⟩ : X.ZA j) (p ^ (2 * l))
       then ((-1 : K') ^ l) else 0) = 0
-  refine Finset.sum_eq_zero fun l _ => if_neg fun h => ?_
+  refine Finset.sum_eq_zero fun l _ => ite_eq_right fun h => ?_
   exact pow_ne_zero (2 * l) hp.out.ne_zero (Finsupp.single_eq_zero.1 h.symm)
 
 theorem hhA_const (K' : Type) [Field K'] (j : ℕ) (v : X.Pl) (u : Fin (X.G.P.n' v) → K') :

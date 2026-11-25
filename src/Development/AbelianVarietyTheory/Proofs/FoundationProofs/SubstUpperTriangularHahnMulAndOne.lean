@@ -109,11 +109,11 @@ theorem cm_one (c : ℚ → R) (hc : c 0 = 1) : cm c (1 : HahnSeries ℚ R) = 1 
   · rw [mul_zero]
 
 theorem scale_mul {a : ℚ} (ha : 0 < a) (φ ψ : HahnSeries ℚ R) : scale a (φ * ψ) = scale a φ * scale a ψ := by
-  simp only [scale, dif_pos ha]
+  simp only [scale, dite_eq_left ha]
   exact HahnSeries.embDomain_mul _ (fun x y => by simp [mul_add]) φ ψ
 
 theorem scale_one {a : ℚ} (ha : 0 < a) : scale a (1 : HahnSeries ℚ R) = 1 := by
-  simp only [scale, dif_pos ha]
+  simp only [scale, dite_eq_left ha]
   exact HahnSeries.embDomain_one _ (by simp)
 
 end Coeff

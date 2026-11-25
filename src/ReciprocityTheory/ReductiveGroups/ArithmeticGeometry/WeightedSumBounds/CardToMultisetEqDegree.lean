@@ -118,7 +118,7 @@ theorem coeff_lg_sub_X_low (G : LogFGL v d) (a : Fin d) (e : Fin d →₀ ℕ) (
       intro h
       have := congrArg (fun f : Fin d →₀ ℕ => f a) h
       simp at this
-    rw [if_neg hs, coeff_zero_eq_constantCoeff_apply, G.lg_const a, sub_zero]
+    rw [ite_eq_right hs, coeff_zero_eq_constantCoeff_apply, G.lg_const a, sub_zero]
   · obtain ⟨b, hb⟩ : ∃ b, e.toMultiset = {b} := by
       apply Multiset.card_eq_one.mp
       rw [card_toMultiset_eq_degree, h1]
@@ -135,7 +135,7 @@ theorem coeff_lg_sub_X_low (G : LogFGL v d) (a : Fin d) (e : Fin d →₀ ℕ) (
     · have hne : Finsupp.single b 1 ≠ Finsupp.single a 1 := by
         intro h
         exact hab ((Finsupp.single_left_inj one_ne_zero).mp h).symm
-      rw [if_neg hab, if_neg hne, sub_zero]
+      rw [ite_eq_right hab, ite_eq_right hne, sub_zero]
 
 theorem lgCurve_sub_dvd (G : LogFGL v d) {α β : Fin d → PowerSeries C}
     (hα : ∀ b, PowerSeries.constantCoeff (α b) = 0)

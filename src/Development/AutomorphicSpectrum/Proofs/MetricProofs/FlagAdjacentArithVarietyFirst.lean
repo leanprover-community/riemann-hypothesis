@@ -32,7 +32,7 @@ theorem transv_isBlockDiag {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hab : (
     split_ifs at hca <;> omega
   intro r s hrs
   have e1 : r ≠ s := fun e => hrs (by rw [e])
-  rw [Matrix.add_apply, Matrix.one_apply_ne e1, zero_add, Matrix.single_apply, if_neg]
+  rw [Matrix.add_apply, Matrix.one_apply_ne e1, zero_add, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact hrs same.symm
 

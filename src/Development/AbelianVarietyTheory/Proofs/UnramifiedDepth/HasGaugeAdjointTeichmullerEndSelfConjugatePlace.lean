@@ -211,7 +211,7 @@ theorem teichSelf_endP_col [CharZero C] {τ : Type} (X : RawChart C d I (Fin dd)
   · refine Finset.sum_congr rfl fun y _ => ?_
     rw [e1]
     show (if x.1 = x.1 then M z y else 0) • subst a (inCol x.1 (X.lg y)) = _
-    rw [if_pos rfl, teichSelf_subst_inCol _ ha]
+    rw [ite_eq_left rfl, teichSelf_subst_inCol _ ha]
   · intro b _ hb
     simp [Ne.symm hb]
   · simp
@@ -322,7 +322,7 @@ theorem teichSelf_mulVec {C : Type} [Field C] {dd : ℕ} (M : Matrix (Fin dd) (F
   have h1 := h x.2
   simp only [Matrix.mulVec, dotProduct] at h1 ⊢
   rw [Fintype.sum_prod_type, Finset.sum_eq_single x.1]
-  · simp only [if_true, Pi.smul_apply, smul_eq_mul]
+  · simp only [ite_true, Pi.smul_apply, smul_eq_mul]
     rw [mul_left_comm, ← h1, Finset.mul_sum]
     exact Finset.sum_congr rfl fun _ _ => by ring
   · intro b _ hb

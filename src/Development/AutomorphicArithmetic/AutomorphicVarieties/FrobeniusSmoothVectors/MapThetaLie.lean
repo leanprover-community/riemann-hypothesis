@@ -143,8 +143,8 @@ theorem UpperTheory.V.Fr.pr_evk :
     have hs : ((sgnAct n C x.right z : GL (Fin n) C) : Matrix (Fin n) (Fin n) C) =
         1 + (if x.right = 1 then Z else thetaLie Z) := by
       rcases Int.units_eq_one_or x.right with h | h
-      · rw [h, sgnAct_one, if_pos rfl, hz]
-      · rw [h, sgnAct_neg_one, if_neg (by decide), theta_val, hinv, thetaLie, Matrix.transpose_sub,
+      · rw [h, sgnAct_one, ite_eq_left rfl, hz]
+      · rw [h, sgnAct_neg_one, ite_eq_right (by decide), theta_val, hinv, thetaLie, Matrix.transpose_sub,
           Matrix.transpose_one, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Jmat_mul_Jmat,
           sub_eq_add_neg]
     unfold GG.adFun GG.mat

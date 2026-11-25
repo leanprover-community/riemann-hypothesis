@@ -27,7 +27,7 @@ theorem genU_above (s : S) (l k : Fin (r s)) (h : l < k) : genU Ω r s l k = 0 :
 theorem genU_below (s : S) (l k : Fin (r s)) (h : k < l) :
     genU Ω r s l k = algebraMap (MvPolynomial (GenIx r) Ω) (GenField Ω r)
       (MvPolynomial.X ⟨s, ⟨(l, k), h⟩⟩) := by
-  simp only [genU, dif_pos h]
+  simp only [genU, dite_eq_left h]
 
 theorem genU_det (s : S) : (genU Ω r s).det = 1 := by
   have hlow : (genU Ω r s).IsLowerTriangular := by

@@ -36,7 +36,7 @@ private theorem lLL_deg_mul_segP_le_two_mul_a_of_kept (a : Fin X.s → ℕ) (hT 
       Nat.div_le_div_right (Nat.sub_le _ _)
     have hC : coarseC X.p (X.S C0 CE1 CE2) a b v ≤ a v / P :=
       Nat.div_le_div_right (Nat.sub_le _ _)
-    simp only [segChain, dif_neg hq]
+    simp only [segChain, dite_eq_right hq]
     rw [← hv]
     split_ifs with h2 h3 h3
     · exact Or.inl ((hK2 v h3).2.1.trans hA)
@@ -99,9 +99,9 @@ theorem S_bound (a : Fin X.s → ℕ) (hT : a ∈ Fintype.piFinset (fun _ : Fin 
         (if (q : ℕ) = 2 * (u : ℕ) then 5 / 2 * X.L.b' else 0) + 2 * X.L.a / X.p := by
     intro q
     by_cases h : (q : ℕ) ≤ 2 * (u : ℕ)
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       by_cases he : (q : ℕ) = 2 * (u : ℕ)
-      · rw [if_pos he]
+      · rw [ite_eq_left he]
         have h1 := lLL_deg_le_chain hS a b x q
         rw [segChain_deg_even (X.S C0 CE1 CE2) a b q u he hσu] at h1
         have hA : coarseA X.p (X.S C0 CE1 CE2) b u ≤
@@ -114,7 +114,7 @@ theorem S_bound (a : Fin X.s → ℕ) (hT : a ∈ Fintype.piFinset (fun _ : Fin 
             (X.S C0 CE1 CE2).bTop u := by exact_mod_cast h4
         push_cast at h5
         linarith [hS.bTop u]
-      · rw [if_neg he, zero_add]
+      · rw [ite_eq_right he, zero_add]
         have hq : (q : ℕ) ≠ 2 * X.s := by omega
         have h2 := lLL_deg_mul_segP_le_two_mul_a_of_kept hS a hT b hK x q hq
         have hvu : topOf q hq < u := by
@@ -127,7 +127,7 @@ theorem S_bound (a : Fin X.s → ℕ) (hT : a ∈ Fintype.piFinset (fun _ : Fin 
         rw [le_div_iff₀ hp]
         have hd0 : (0 : ℝ) ≤ ((lLL C0 CE1 CE2 X a b x).deg q : ℝ) := Nat.cast_nonneg _
         nlinarith
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right h, zero_mul]
       split_ifs <;> positivity
   calc _ ≤ ∑ q : Fin (2 * X.s + 1),
         ((if (q : ℕ) = 2 * (u : ℕ) then 5 / 2 * X.L.b' else 0) + 2 * X.L.a / X.p) :=
@@ -137,7 +137,7 @@ theorem S_bound (a : Fin X.s → ℕ) (hT : a ∈ Fintype.piFinset (fun _ : Fin 
           Finset.sum_eq_single (⟨2 * (u : ℕ), by omega⟩ : Fin (2 * X.s + 1))]
         · simp
         · intro c _ hc
-          rw [if_neg]
+          rw [ite_eq_right]
           intro hc'
           exact hc (Fin.ext hc')
         · intro hc

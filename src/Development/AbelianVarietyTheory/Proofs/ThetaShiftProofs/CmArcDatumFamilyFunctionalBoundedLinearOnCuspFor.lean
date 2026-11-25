@@ -88,12 +88,12 @@ theorem absA_wtA {D : D7} (T : Core D) (j : ℕ) (hD : IsDatW D j (T.Q.Dw j)) (h
   have ht := hH.2.2.2 t
   refine congrArg₂ (· + ·) ?_ ?_
   · rw [Finset.sum_eq_single (DV.tauEmb D t)]
-    · simp only [if_true]
+    · simp only [ite_true]
       exact sum_extendByZero_fin_eq_sum_of_eq _ (by rw [← hD.1]; simp [Datum.mult, ht])
     · intro b _ hb; simp [hb]
     · simp
   · rw [Finset.sum_eq_single (conjEmb (DV.tauEmb D t))]
-    · simp only [if_true]
+    · simp only [ite_true]
       exact sum_extendByZero_fin_eq_sum_of_eq _ (by rw [← hD.2.1]; simp [Datum.mult, conj_rt_ne _ _ ht])
     · intro b _ hb; simp [hb]
     · simp
@@ -143,7 +143,7 @@ theorem arch_good (hK : Known) {D : D7} {T : Core D} (h : LawsCore T) (j : ℕ) 
       supC (T.Q.Xo j) T.Q.c (T.U j) (xiR D) (em.comp (algebraMap T.Q.c.F K₁)) (wtA ka) ka.n F.1 := by
     change cutN T.C T.Ns j ka _ F = _
     unfold cutN Core.Ns
-    rw [if_pos hj, goodOf, if_pos hem]
+    rw [ite_eq_left hj, goodOf, ite_eq_left hem]
   have h0 := (recB h).supN_nonneg j ka (em.comp (algebraMap T.Q.c.F K₁)) F
   have hb := _root_.GlobalTheory.ArchCM.norm_cfOf_le hK _ _ _ _ (T.Q.Xo j) T.Q.c K₁ d _ _ _ s em D.R.r
     (Formalism.L2.PjFree.Unf.ofPj (T.U j _)) (xiR D) ((recB h).supN j ka (em.comp (algebraMap T.Q.c.F K₁)) F)
@@ -179,7 +179,7 @@ theorem arch_all (hK : Known) {D : D7} {T : Core D} (h : LawsCore T) (j : ℕ) (
   by_cases hem : GoodEmb T.Q.c (em.comp (algebraMap T.Q.c.F K₁))
   · exact arch_good hK h j ka CR Tt cc hG hj K₁ d hd s em hem F
   · have hg := goodEmb_goodOf T.Q.c (em.comp (algebraMap T.Q.c.F K₁))
-    rw [goodOf, if_neg hem] at hg
+    rw [goodOf, ite_eq_right hem] at hg
     have h1 := arch_good hK h j ka CR Tt cc hG hj K₁ d hd s ((starRingEnd ℂ).comp em) hg F
     rw [_root_.GlobalTheory.ArcCM.valLine_conj hK _ _ _ _ _ K₁ _ _ _ _ _ _ _ s d.μ ka.n em, RingHom.comp_assoc, recB_supN_conj] at h1
     simpa using h1

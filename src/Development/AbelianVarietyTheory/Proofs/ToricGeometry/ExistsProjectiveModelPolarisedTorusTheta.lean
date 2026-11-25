@@ -535,7 +535,7 @@ private theorem valAt'_presheaf_map_of_le_of_whole_le_preimage' {Y : Over (Sp �
   have hU : ⊤ ≤ x.left ⁻¹ᵁ U := fun y hy => hVU (h hy)
   have hm : Y.left.presheaf.map (homOfLE hVU).op ≫ x.left.appLE V ⊤ h = x.left.appLE U ⊤ hU :=
     Scheme.Hom.map_appLE x.left h (homOfLE hVU).op
-  simp only [valAt', valAt, dif_pos h, dif_pos hU, resG]
+  simp only [valAt', valAt, dite_eq_left h, dite_eq_left hU, resG]
   exact congrArg (fun φ => (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom (φ.hom s)) hm
 
 private theorem preimage_basicOpen_whole_iff_valAt'_ne_zero {Y : Over (Sp ℂ)} (x : 𝟙_ (Over (Sp ℂ)) ⟶ Y) {U : Y.left.Opens}

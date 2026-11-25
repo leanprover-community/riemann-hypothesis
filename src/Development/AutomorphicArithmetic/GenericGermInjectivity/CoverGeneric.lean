@@ -44,7 +44,7 @@ def gm (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) (s : Finset ι
 theorem gm_pos (hinst : inst = ffAlg p) (hU : IsAffCover p U B) (a : ℕ) {s : Finset ι}
     (h : s.Nonempty) :
     gm p hinst hU a s = formGermI p a (cover_affine hU h) (cover_generic hU s) hinst :=
-  dif_pos h
+  dite_eq_left h
 
 theorem gm_spec (d : ℕ) [SmoothOfRelativeDimension d p] (hinst : inst = ffAlg p)
     (hU : IsAffCover p U B) (a : ℕ) :

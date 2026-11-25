@@ -473,7 +473,7 @@ theorem colPar : ∀ (D : D7) (j : ℕ) (hj : j < D.R.m) (τ : D.what₂.Tau) (n
   have hν : ∀ (b : Fin (n + (D.R.t + 1))) (h : (b : ℕ) < n), (ν b : ℝ) = z ⟨b, h⟩ + ((b : ℕ) : ℝ) + e - n - s := by
     intro b h
     have : ((ν b : ℕ) : ℤ) = z ⟨b, h⟩ + (b : ℕ) + e - n - s := by
-      simp only [ν, dif_pos h]
+      simp only [ν, dite_eq_left h]
       exact Int.toNat_of_nonneg (hpos ⟨b, h⟩)
     have : ((ν b : ℕ) : ℝ) = ((z ⟨b, h⟩ + (b : ℕ) + e - n - s : ℤ) : ℝ) := by exact_mod_cast this
     rw [this]; push_cast; ring
@@ -504,7 +504,7 @@ theorem colPar : ∀ (D : D7) (j : ℕ) (hj : j < D.R.m) (τ : D.what₂.Tau) (n
   · intro b
     rw [GlobalTheory.LastStepParam.lowK_allPos, hshape b]
     by_cases hb : (b : ℕ) < n
-    · rw [dif_pos hb, hz, hν b hb]
+    · rw [dite_eq_left hb, hz, hν b hb]
       push_cast
       linarith [hpR, htR]
     · have h0 : ν b = 0 := by simp only [ν]; rw [dite_eq_right hb]

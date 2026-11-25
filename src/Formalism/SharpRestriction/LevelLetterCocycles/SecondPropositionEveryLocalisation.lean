@@ -302,7 +302,7 @@ theorem blocks_eq (a : A) :
     rw [Finset.sum_eq_single c]
     · simp
     · intro b _ hb
-      rw [if_neg (Ne.symm hb), map_zero, zero_mul]
+      rw [ite_eq_right (Ne.symm hb), map_zero, zero_mul]
     · simp
 
 theorem det_at (g : ℕ) (Θ : Matrix (Fin g) (Fin g) A) :
@@ -720,7 +720,7 @@ theorem inj_of_card {A : Type} [CommRing A] [IsDomain A] {t : ℕ} {F : Type} [F
   by_contra hni
   obtain ⟨i, j, hij, hne⟩ : ∃ i j, Φ x i = Φ x j ∧ i ≠ j := by
     unfold Function.Injective at hni
-    push_neg at hni
+    push Not at hni
     exact hni
   have hroot : ∀ z, Multiset.map (Φ z) Finset.univ.val = P.roots := by
     intro z
@@ -760,18 +760,18 @@ theorem inj_of_card {A : Type} [CommRing A] [IsDomain A] {t : ℕ} {F : Type} [F
     intro y c
     by_cases h : σ y = Equiv.swap i j
     · dsimp only [τ]
-      rw [if_pos h, hσ y c, h]
+      rw [ite_eq_left h, hσ y c, h]
       exact hswap c
     · dsimp only [τ]
-      rw [if_neg h, hσ y c]
+      rw [ite_eq_right h, hσ y c]
   have hτne : ∀ y, τ y ≠ Equiv.swap i j := by
     intro y
     by_cases h : σ y = Equiv.swap i j
     · dsimp only [τ]
-      rw [if_pos h]
+      rw [ite_eq_left h]
       exact hsw.symm
     · dsimp only [τ]
-      rw [if_neg h]
+      rw [ite_eq_right h]
       exact h
   have hτinj : Function.Injective τ := by
     intro y y' h
@@ -817,22 +817,22 @@ theorem sepElt (x : N.X i) : ∃ g ∈ N.T i, g x ≠ 0 ∧ ∀ y, y ≠ x → g
     if h : x ≠ y then f y h - algebraMap (N.O i) (N.X i → N.O i) (f y h y) else 1
   refine ⟨∏ y, F y, Subalgebra.prod_mem _ (fun y _ => ?_), ?_, ?_⟩
   · by_cases h : x ≠ y
-    · simp only [F, dif_pos h]
+    · simp only [F, dite_eq_left h]
       exact Subalgebra.sub_mem _ (hfT y h) (Subalgebra.algebraMap_mem _ _)
-    · simp only [F, dif_neg h]
+    · simp only [F, dite_eq_right h]
       exact Subalgebra.one_mem _
   · rw [Finset.prod_apply]
     refine Finset.prod_ne_zero_iff.mpr (fun y _ => ?_)
     by_cases h : x ≠ y
-    · simp only [F, dif_pos h, Pi.sub_apply]
+    · simp only [F, dite_eq_left h, Pi.sub_apply]
       exact sub_ne_zero.mpr (hf y h)
-    · simp only [F, dif_neg h, Pi.one_apply]
+    · simp only [F, dite_eq_right h, Pi.one_apply]
       exact one_ne_zero
   · intro y hy
     rw [Finset.prod_apply]
     refine Finset.prod_eq_zero (Finset.mem_univ y) ?_
     have h : x ≠ y := fun e => hy e.symm
-    simp only [F, dif_pos h, Pi.sub_apply]
+    simp only [F, dite_eq_left h, Pi.sub_apply]
     exact sub_self _
 
 variable {r : N.X i → (GE N →* GL (Fin R.nV) (N.O i))}

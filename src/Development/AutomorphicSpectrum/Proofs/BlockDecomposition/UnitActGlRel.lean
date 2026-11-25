@@ -23,7 +23,7 @@ theorem unitAct_glRel : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAd
   intro a b c d
   ext u
   have h := eabGlV_of (rdLinV_of vector_right_derivative_extends)
-    (rdBracketV_of vector_right_derivative_extends (rdSmoothV_of vector_right_derivative_extends)) (rdSmoothV_of vector_right_derivative_extends)
+    (rdBracketV_of vector_right_derivative_extends) (rdSmoothV_of vector_right_derivative_extends)
     n ε H (fun g => σ g u) a b c d 1 u.2 inUJ_one
   rw [← eabV_congr (key c d u) a b inUJ_one, ← eabV_congr (key a b u) c d inUJ_one] at h
   simp only [LinearMap.sub_apply, Module.End.mul_apply, Submodule.coe_sub]

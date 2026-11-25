@@ -97,7 +97,7 @@ private theorem coeff_lemma_3 {D : ℕ} (M : Finset (Fin D → ℕ)) (A : (Fin D
   rw [Finset.sum_eq_single α] at h1
   · simpa using h1
   · intro β _ hβα
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h'
     exact hβα (Finsupp.equivFunOnFinite.symm.injective h')
   · intro h'
@@ -211,7 +211,7 @@ theorem indep_disjoint {Y : Type} {δ D m : ℕ} (T a : ℕ) (xs : Fin δ → Y)
         rw [Finset.sum_subtype (multiLt D a) (fun α => GlobalTheory.LeadIndep.mem_multiLt),
           Fintype.sum_prod_type]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
-        rw [dif_pos i.2]
+        rw [dite_eq_left i.2]
         ring)
       p.1.1 (GlobalTheory.LeadIndep.mem_multiLt.mpr p.1.2) p.2
     simpa [p.1.2] using h1
@@ -257,11 +257,11 @@ theorem main : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (
     exact hx0
   have heφ : ∀ z (hz : z ∈ U), e (φ z) = ⟨k, ⟨cpt ((T.U j T.σ₀).X k) ((Fl.Fl k).xs i) z, hz⟩⟩ := by
     intro z hz
-    simp only [φ, dif_pos (show cpt ((T.U j T.σ₀).X k) ((Fl.Fl k).xs i) z ∈ ((T.U j T.σ₀).X k).dom from hz),
+    simp only [φ, dite_eq_left (show cpt ((T.U j T.σ₀).X k) ((Fl.Fl k).xs i) z ∈ ((T.U j T.σ₀).X k).dom from hz),
       Equiv.apply_symm_apply]
   have hφ0 : φ 0 = xs q := by
     have h0 : cpt ((T.U j T.σ₀).X k) ((Fl.Fl k).xs i) 0 ∈ ((T.U j T.σ₀).X k).dom := h0U
-    simp only [φ, dif_pos h0]
+    simp only [φ, dite_eq_left h0]
     rw [Equiv.symm_apply_eq, hx]
     exact Sigma.ext rfl (heq_of_eq (Subtype.ext (IW.cpt_zero _ _)))
   have hdg : ∀ u (g : R.Y → ℂ), g ∈ R.sp u Set.univ → DifferentiableOn ℂ (fun z => g (φ z)) U := by

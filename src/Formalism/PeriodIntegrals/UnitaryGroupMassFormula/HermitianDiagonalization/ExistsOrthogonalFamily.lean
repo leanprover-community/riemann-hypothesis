@@ -75,7 +75,7 @@ theorem exists_orthogonal_family [CharZero E] (σ : E →+* E) :
     by_cases hzero : ∀ x, h x x = 0
     · let b := Module.finBasisOfFinrankEq E V hk
       exact ⟨b, b.linearIndependent, fun i j _ => hh.eq_zero_of_diag hzero _ _⟩
-    · push_neg at hzero
+    · push Not at hzero
       obtain ⟨v, hv⟩ := hzero
       let f : V →ₗ[E] E :=
         { toFun := h v

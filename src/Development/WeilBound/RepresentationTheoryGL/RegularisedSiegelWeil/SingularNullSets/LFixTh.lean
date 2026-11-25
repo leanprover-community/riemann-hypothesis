@@ -67,7 +67,7 @@ theorem eventually_unr {χ : (AE D)ˣ →* Circle} (hχ : IsHeckeChar D χ) :
   filter_upwards [GlobalTheory.ThK.ConeEulerChr.eventually_chr_eq_one (ν := χ) hχ.1 m (Eventually.of_forall hm)] with v hv u hu
   by_contra hne
   have h : ∃ u ∈ GlobalTheory.ThK.unitsAt D.host.E v, χ u ≠ 1 := ⟨u, hu, hne⟩
-  have e : m v = h.choose := dif_pos h
+  have e : m v = h.choose := dite_eq_left h
   exact h.choose_spec.2 (e ▸ hv)
 
 theorem eventually_goodPl {χ : (AE D)ˣ →* Circle} (hχ : IsHeckeChar D χ) (b₀ : HermE D ρ) :
@@ -398,7 +398,7 @@ theorem levi_good {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) {g : G D p} (
       rw [map_mul, map_mul, map_one_apply]
       by_cases hv : v ∈ S
       · rw [((hb k j).2.1 v hv).1]
-      · rw [he.2 v, if_neg hv, zero_mul, zero_mul]
+      · rw [he.2 v, ite_eq_right hv, zero_mul, zero_mul]
   have hsmul : e • (y * a.1) = e • y := by
     ext i j
     rw [Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul]
@@ -427,8 +427,8 @@ theorem levi_good {S : Finset (Pl D)} {e : AE D} (he : IsIdem S e) {g : G D p} (
       exact hint _ a.1 h fun v hv k j => ((hb k j).2.2 v hv).1
   rw [hf (y * a.1), hf y, hsmul]
   by_cases h : IntOff S y
-  · rw [if_pos (hyI.mpr h), if_pos h]
-  · rw [if_neg (fun h' => h (hyI.mp h')), if_neg h]
+  · rw [ite_eq_left (hyI.mpr h), ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h (hyI.mp h')), ite_eq_right h]
 
 end PositivityTheory.Rg.Rsw.L.LFixTh
 
@@ -488,7 +488,7 @@ theorem fixTh : IdemEx → GenG → GenK → FixTh := by
       rw [hΩ.unip g b hb x y, hx]
       by_cases hy : IntOff S y
       · rw [unip_one hSg hSI hg hb hy, one_mul]
-      · rw [hgoodΩ y, if_neg hy, mul_zero]
+      · rw [hgoodΩ y, ite_eq_right hy, mul_zero]
     · have hbl := levi_blocks hg ha
       obtain ⟨h1, h2⟩ := levi_chr hχ hSg a (fun i j w => ((hbl i j).1 w).1) (fun i j v hv => ((hbl i j).2.1 v hv).1)
         (fun i j v hv => (hbl i j).2.2 v hv)

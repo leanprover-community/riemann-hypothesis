@@ -264,15 +264,6 @@ theorem beta_secH_secL {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ.IsSymm)
 
 end Concrete
 
-section General
-
-variable {R M V : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup V] [Module R V]
-  {ω : LinearMap.BilinForm R M} {π : M →ₗ[R] V} {σ σ' σ'' : V →ₗ[R] M}
-
-variable {O : Type*} [CommRing O] [StarRing O] [Module O M] [Module O V]
-
-end General
-
 end GlobalTheory.LagSplit
 end -- clump:auto
 end -- clump:auto
@@ -302,11 +293,11 @@ def coper (y : Frame X.Ψ r) (v : Fin r → E) : X.Ψ × Fin r → ℂ := fun p 
   else -(X.c p.1 * hermC p.1.1 X.Gm (FD.col (mat y p.1) p.2) (Data.emb p.1.1 v))
 
 theorem coper_of_lt (y : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) {a : Fin r} (h : (a : ℕ) < X.p0) :
-    coper X y v (τ, a) = X.c τ * ((mat y τ)⁻¹ *ᵥ Data.emb τ.1 v) a := if_pos h
+    coper X y v (τ, a) = X.c τ * ((mat y τ)⁻¹ *ᵥ Data.emb τ.1 v) a := ite_eq_left h
 
 theorem coper_of_le (y : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) {a : Fin r} (h : X.p0 ≤ (a : ℕ)) :
     coper X y v (τ, a) = -(X.c τ * hermC τ.1 X.Gm (FD.col (mat y τ) a) (Data.emb τ.1 v)) :=
-  if_neg (not_lt.2 h)
+  ite_eq_right (not_lt.2 h)
 
 theorem coper_add (y : Frame X.Ψ r) (u v : Fin r → E) :
     coper X y (u + v) = coper X y u + coper X y v := by
@@ -765,7 +756,7 @@ theorem mat_unip_neg_mul (K : Frame X.Ψ r) (τ : X.Ψ) :
 theorem unip_mem_Bor (K : Frame X.Ψ r) : unip X K ∈ Bor X.Ψ r := fun τ =>
   ⟨(isUnit_det_of_left_inverse (mat_unip_neg_mul X K τ)).ne_zero, fun a c h => by
     rw [Fin.lt_def] at h
-    rw [unip, if_neg (by omega), if_neg (by rw [Fin.ext_iff]; omega)]⟩
+    rw [unip, ite_eq_right (by omega), ite_eq_right (by rw [Fin.ext_iff]; omega)]⟩
 
 theorem per_rmul_unip (x K : Frame X.Ψ r) : per X (rmul x (unip X K)) = per X x := by
   classical
@@ -776,12 +767,12 @@ theorem per_rmul_unip (x K : Frame X.Ψ r) : per X (rmul x (unip X K)) = per X x
     by_cases hτ : σ = τ
     · subst hτ
       rcases lt_or_ge (a : ℕ) X.p0 with ha | ha
-      · rw [borMat_of_lt X _ _ ha, unip, if_neg (by omega)]
+      · rw [borMat_of_lt X _ _ ha, unip, ite_eq_right (by omega)]
         simp [eq_comm]
       · rw [borMat_of_le X _ _ ha, inv_eq_left_inv (mat_unip_neg_mul X K σ), mat, of_apply, unip,
-          if_neg (by omega)]
+          ite_eq_right (by omega)]
         simp
-    · rw [borMat_of_ne X _ hτ, if_neg (fun h => hτ (congrArg Prod.fst h).symm)]
+    · rw [borMat_of_ne X _ hτ, ite_eq_right (fun h => hτ (congrArg Prod.fst h).symm)]
   funext v
   rw [per_rmul x (unip_mem_Bor X K), h, one_mulVec]
 

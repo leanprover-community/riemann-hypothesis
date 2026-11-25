@@ -708,7 +708,7 @@ theorem lemGB_of [NeZero n] (W : LocWach PD LL O v n) (hQ : Formalism.MainNotion
     intro τ u j hτ hu hj1 hj2
     have h1 := hjump i τ hτ u hu
     unfold JumpWinS at h1
-    rw [if_neg (by omega)] at h1
+    rw [ite_eq_right (by omega)] at h1
     simp only [Set.mem_union, Set.mem_Icc, Finset.mem_union, Finset.mem_Icc] at h1 ⊢
     omega
   have hC := hC4 hA T₁ hsur.1 i a ha1 dop₁ hd₁ cc hcc _ hX (qi ^ a • y₂) (by

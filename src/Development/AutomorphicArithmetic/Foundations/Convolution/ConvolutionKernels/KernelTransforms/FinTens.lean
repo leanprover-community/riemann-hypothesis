@@ -424,8 +424,8 @@ theorem UpperTheory.finprod_local_eq_indicator_mul_prod :
     intro v hv
     rw [hf v hv]
     by_cases h : finAt v (finEmb K n x) ∈ GLnLocal.integralGL (v.adicCompletion K) n
-    · rw [if_pos h]; exact Set.indicator_of_mem (s := (GLnLocal.integralGL (v.adicCompletion K) n : Set (Gw n v))) h _
-    · rw [if_neg h]; exact Set.indicator_of_notMem (s := (GLnLocal.integralGL (v.adicCompletion K) n : Set (Gw n v))) h _
+    · rw [ite_eq_left h]; exact Set.indicator_of_mem (s := (GLnLocal.integralGL (v.adicCompletion K) n : Set (Gw n v))) h _
+    · rw [ite_eq_right h]; exact Set.indicator_of_notMem (s := (GLnLocal.integralGL (v.adicCompletion K) n : Set (Gw n v))) h _
   have hsupp : Function.mulSupport (fun v => f v (finAt v (finEmb K n x))) ⊆ (S : Set (Pl K)) := by
     intro v hv
     by_contra hvS
@@ -435,7 +435,7 @@ theorem UpperTheory.finprod_local_eq_indicator_mul_prod :
     have h2 : finAt v (finEmb K n x) ∈ GLnLocal.integralGL (v.adicCompletion K) n := by
       by_contra h
       exact hvS (by simp only [hS, Finset.coe_union, Set.mem_union, Finset.mem_coe, Set.Finite.mem_toFinset]; exact Or.inl h)
-    exact hv ((hoff v h1).trans (if_pos h2))
+    exact hv ((hoff v h1).trans (ite_eq_left h2))
   rw [finprod_eq_prod_of_mulSupport_subset _ hsupp]
   by_cases hx : x ∈ ({y | ∀ v, v ∉ Set.range w → finAt v (finEmb K n y) ∈ GLnLocal.integralGL (v.adicCompletion K) n} : Set (AdelicGLn.FiniteAdelicGL K n))
   · rw [Set.indicator_of_mem hx, Pi.one_apply, one_mul]
@@ -445,7 +445,7 @@ theorem UpperTheory.finprod_local_eq_indicator_mul_prod :
     have h1 : v ∉ Set.range w := by
       rintro ⟨i, rfl⟩
       exact hv (by simp)
-    rw [hoff v h1, if_pos (hx v h1)]
+    rw [hoff v h1, ite_eq_left (hx v h1)]
   · rw [Set.indicator_of_notMem hx, zero_mul]
     have hx' : ∃ v, v ∉ Set.range w ∧ finAt v (finEmb K n x) ∉ GLnLocal.integralGL (v.adicCompletion K) n := by
       by_contra! hc
@@ -453,7 +453,7 @@ theorem UpperTheory.finprod_local_eq_indicator_mul_prod :
     obtain ⟨v, h1, h2⟩ := hx'
     refine Finset.prod_eq_zero (i := v) ?_ ?_
     · simp only [hS, Finset.mem_union, Set.Finite.mem_toFinset]; exact Or.inl h2
-    · rw [hoff v h1, if_neg h2]
+    · rw [hoff v h1, ite_eq_right h2]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.LocalTestFunctions.FinprodLocalEqIndicatorMulProd =====
@@ -543,7 +543,7 @@ theorem UpperTheory.indicator_level_eq_prod_local_indicator :
           exact hJ i (hJx i)
         · exact hy v hv
       rw [Set.indicator_of_notMem hy, zero_mul]
-    · push_neg at hJx
+    · push Not at hJx
       obtain ⟨i, hi⟩ := hJx
       rw [Finset.prod_eq_zero (Finset.mem_univ i)
         (Set.indicator_of_notMem (SetLike.mem_coe.not.2 hi) _), mul_zero]

@@ -211,7 +211,7 @@ theorem utOf_sub_mainD {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ 
       rintro rfl
       rw [mem_rootSet4 hs0, zero_pow hs0] at hz
       exact hD hz.symm
-    simp only [GermFibreKernels.btOf, if_neg hz0, smul_smul, neg_smul]
+    simp only [GermFibreKernels.btOf, ite_eq_right hz0, smul_smul, neg_smul]
 
 end decomp
 

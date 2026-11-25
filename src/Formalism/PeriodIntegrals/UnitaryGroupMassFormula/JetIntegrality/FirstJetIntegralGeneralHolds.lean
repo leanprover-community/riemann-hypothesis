@@ -34,7 +34,7 @@ theorem coeff_truncatedExp_of_degree_eq_one {σ : Type*} (F : MvPowerSeries σ �
     rfl
   change (∑ n ∈ Finset.range ((e.sum fun _ k => k) + 1),
     MvPowerSeries.coeff e (F ^ n) / (n.factorial : ℂ_[p])) = _
-  rw [h1, Finset.sum_range_succ, Finset.sum_range_one, pow_zero, pow_one, MvPowerSeries.coeff_one, if_neg he]
+  rw [h1, Finset.sum_range_succ, Finset.sum_range_one, pow_zero, pow_one, MvPowerSeries.coeff_one, ite_eq_right he]
   simp
 
 theorem norm_two (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by

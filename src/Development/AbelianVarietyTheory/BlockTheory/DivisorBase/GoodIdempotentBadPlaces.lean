@@ -68,13 +68,4 @@ def badPl : Finset (HeightOneSpectrum (𝓞 D.host.F)) := primesOf ((D.host.g 0 
 
 abbrev Model (D : D7) (j : ℕ) : Type 1 := DSModel (D.sp.W j) (parW (D.sp.W j) (Formalism.L2.NTheta.wtOf D (D.sp.W j)))
 
-section Spaces
-
-variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
-  {pb : Fin 2 → 𝓞 D.host.E} (h : IsTypeDatum D.host.g pb) (om : ∀ i : Fin 2, (ZMod (D.host.g i))ˣ →* ℂˣ)
-  (ψ : ∀ w : Pl D.host.E, AddChar (kP w) ℂ)
-  (j : ℕ) (β : GL (Fin (D.sp.W j).rank) (EAf D)) (M : Model D j)
-
-end Spaces
-
 end GlobalTheory.IndefiniteRowSideFullHecke.GoodIdempotentBadPlaces

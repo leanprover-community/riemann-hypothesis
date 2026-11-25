@@ -41,10 +41,4 @@ theorem spec_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B}
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l}
 
-section
-variable {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β} {S : Finset ℕ} {Ω : Type} [Field Ω]
-  {K : Type} [Fintype K] {J : K → Type} {y : (Σ k, J k) → Ω}
-
-end
-
 end GlobalTheory.CompanionTheory.Ar.TowerOfTest

@@ -133,7 +133,7 @@ theorem eq_of_perm_inv_invariant_of_multiset_eq :
           simp [hj, h6]
         · simp [hij]
   have := key Finset.univ
-  simp only [Finset.mem_univ, if_true] at this
+  simp only [Finset.mem_univ, ite_true] at this
   rw [← (hf α hα).1 π, ← this]
 
 end GlobalTheory

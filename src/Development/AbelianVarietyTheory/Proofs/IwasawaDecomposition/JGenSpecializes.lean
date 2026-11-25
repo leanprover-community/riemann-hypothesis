@@ -54,7 +54,7 @@ variable {K : Type} [Field K] {Z : Scheme.{0}} [IsIntegral Z] {y : Sp K ⟶ Z} {
 theorem valAt_algebraMap (a : Z.presheaf.stalk (below y)) :
     valAt y (algebraMap _ Z.functionField a) = (Scheme.stalkClosedPointTo y).hom a := by
   have h : RegAt (below y) (algebraMap _ Z.functionField a) := ⟨a, rfl⟩
-  rw [valAt, dif_pos h, IsFractionRing.injective _ Z.functionField h.choose_spec]
+  rw [valAt, dite_eq_left h, IsFractionRing.injective _ Z.functionField h.choose_spec]
 
 theorem regAt_pow {x : Z} (hf : RegAt x f) (n : ℕ) : RegAt x (f ^ n) := by
   obtain ⟨a, rfl⟩ := hf
@@ -68,14 +68,14 @@ theorem valAt_fnOf {U : Z.Opens} (hy : below y ∈ U) (h : genericPoint Z ∈ U)
   have H := congrArg (fun φ => φ.hom a) (Scheme.germ_stalkClosedPointTo y U hy)
   rw [e, valAt_algebraMap]
   first
-  | rw [valR, dif_pos ht]
+  | rw [valR, dite_eq_left ht]
   refine H.trans ?_
   first
   | rfl
 
 theorem ratVal_eq_valAt {k : Type} [CommRing k] {q : Z ⟶ Sp k} {σ : k →+* ℂ} (y : CxPts q σ)
     (hf : RegAt (under y) f) : ratVal f y = valAt y.1 f := by
-  rw [ratVal, dif_pos hf]
+  rw [ratVal, dite_eq_left hf]
   have he := hf.exists_fnOf.choose_spec.choose_spec.choose_spec
   conv_rhs => rw [← he]
   exact (valAt_fnOf hf.exists_fnOf.choose_spec.choose _ _).symm

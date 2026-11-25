@@ -179,7 +179,7 @@ theorem twistStep_eq_self_iff {ℓ : MvPowerSeries ι B} (hℓ : constantCoeff �
     have hlin : ∀ e : ι →₀ ℕ, e.degree ≤ 1 → coeff e φ = coeff e ℓ := by
       intro e he
       have := congrArg (coeff e) hs
-      rw [coeff_twistStep, if_pos he] at this
+      rw [coeff_twistStep, ite_eq_left he] at this
       exact this.symm
     have hφ0 : constantCoeff φ = 0 := by
       rw [← coeff_zero_eq_constantCoeff_apply, hlin 0 (by simp),
@@ -204,7 +204,7 @@ theorem twistStep_eq_self_iff {ℓ : MvPowerSeries ι B} (hℓ : constantCoeff �
           rw [hd0, sub_zero, coeff_dropConst _ he0, h, pow_one, hlin e (by omega), hℓ1 e h,
             sub_self]
       · have := congrArg (coeff e) hs
-        rw [coeff_twistStep, if_neg he] at this
+        rw [coeff_twistStep, ite_eq_right he] at this
         have hT' := hT e.degree (by omega)
         have h2 := congrArg (twistOp σ u π e.degree) this
         rw [Function.invFun_eq (hT'.2 _)] at h2
@@ -960,7 +960,7 @@ theorem repr_ringHom_eq (T : AdjoinRoot P →+* AdjoinRoot P) (ψ : B → B)
   rw [hTz, map_sum]
   simp only [map_smul, Module.Basis.repr_self, Finsupp.coe_finsetSum, Finset.sum_apply,
     Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end Coordinates
 

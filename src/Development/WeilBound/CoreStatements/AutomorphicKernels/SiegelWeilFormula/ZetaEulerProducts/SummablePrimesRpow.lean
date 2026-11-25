@@ -18,7 +18,7 @@ theorem dedekindZeta_eq_exp (K : Type) [Field K] [NumberField K] {s : ℂ} (hs :
   classical
   set X : Ideal (𝓞 K) → ℂ := fun I => if I = ⊥ then 0 else 1 with hX
   have h0 : X ⊥ = 0 := by simp [hX]
-  have h1 : ∀ I, I ≠ ⊥ → X I = 1 := fun I hI => by simp only [hX, if_neg hI]
+  have h1 : ∀ I, I ≠ ⊥ → X I = 1 := fun I hI => by simp only [hX, ite_eq_right hI]
   have hmul : ∀ I J, X (I * J) = X I * X J := by
     intro I J
     by_cases hI : I = ⊥

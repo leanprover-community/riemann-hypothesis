@@ -292,7 +292,7 @@ lemma Mv_sum (Y : J k r → ℝ) : Mv Y = ∑ i, Y i • Eb i := by
   simp only [Matrix.smul_apply, Eb, Matrix.of_apply, Mv, smul_ite, smul_zero, ite_and]
   rw [Fintype.sum_prod_type]
   simp only [Fintype.sum_prod_type, Fintype.sum_bool]
-  simp only [Complex.real_smul, mul_one, if_true, if_false, Bool.false_eq_true]
+  simp only [Complex.real_smul, mul_one, ite_true, ite_false, Bool.false_eq_true]
   simp only [Finset.sum_add_distrib]
   rw [Finset.sum_eq_single p, Finset.sum_eq_single q, Finset.sum_eq_single p, Finset.sum_eq_single q]
   · simp [add_comm]
@@ -319,7 +319,7 @@ lemma cd_co {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] {n : WithTop 
   rw [cdm_iff] at hF
   unfold co
   by_cases h : i.2.2 = true
-  · simp only [h, if_true]; exact Complex.imCLM.contDiff.comp_contDiffOn (hF _ _)
+  · simp only [h, ite_true]; exact Complex.imCLM.contDiff.comp_contDiffOn (hF _ _)
   · simp only [h]; exact Complex.reCLM.contDiff.comp_contDiffOn (hF _ _)
 
 lemma cd_Mv : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Mv : (J k r → ℝ) → Mat k r) := by

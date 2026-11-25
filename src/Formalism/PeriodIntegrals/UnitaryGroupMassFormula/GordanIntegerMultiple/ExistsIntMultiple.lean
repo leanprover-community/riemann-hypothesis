@@ -73,15 +73,15 @@ theorem mem_gcone_insert {n : ℕ} {ι : Type*} [DecidableEq ι] {s : Finset ι}
     · rcases Finset.mem_insert.1 hi with h | h
       · subst h
         show 0 ≤ (if i = i then t else c i)
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         exact ht
       · show 0 ≤ (if i = w then t else c i)
-        rw [if_neg (ne_of_mem_of_not_mem h hw)]
+        rw [ite_eq_right (ne_of_mem_of_not_mem h hw)]
         exact hc i h
     · show x = ∑ j ∈ insert w s, (if j = w then t else c j) • f j
-      rw [Finset.sum_insert hw, if_pos rfl]
+      rw [Finset.sum_insert hw, ite_eq_left rfl]
       have hs : ∑ j ∈ s, (if j = w then t else c j) • f j = ∑ j ∈ s, c j • f j :=
-        Finset.sum_congr rfl fun j hj => by rw [if_neg (ne_of_mem_of_not_mem hj hw)]
+        Finset.sum_congr rfl fun j hj => by rw [ite_eq_right (ne_of_mem_of_not_mem hj hw)]
       rw [hs, ← hx]
       abel
 
@@ -129,7 +129,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
         rw [Finset.mem_filter] at hp0
         exact ⟨p0, hp0.1, hp0.2, fun p hp hc => hm p (Finset.mem_filter.2 ⟨hp, hc⟩)⟩
       exact ⟨b p0, good _ hmax (fun q hq hcq => key p0 hp0 q hq hcp0 hcq)⟩
-    · push_neg at hL
+    · push Not at hL
       by_cases hU : ∃ q ∈ P, c q < 0
       · obtain ⟨q0, hq0, hcq0, hmin⟩ : ∃ q0 ∈ P, c q0 < 0 ∧ ∀ q ∈ P, c q < 0 → b q0 ≤ b q := by
           obtain ⟨q, hq, hc⟩ := hU
@@ -138,7 +138,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
           rw [Finset.mem_filter] at hq0
           exact ⟨q0, hq0.1, hq0.2, fun q hq hc => hm q (Finset.mem_filter.2 ⟨hq, hc⟩)⟩
         exact ⟨b q0, good _ (fun p hp hcp => absurd hcp (not_lt.2 (hL p hp))) hmin⟩
-      · push_neg at hU
+      · push Not at hU
         exact ⟨0, good 0 (fun p hp hcp => absurd hcp (not_lt.2 (hL p hp)))
           (fun q hq hcq => absurd hcq (not_lt.2 (hU q hq)))⟩
 

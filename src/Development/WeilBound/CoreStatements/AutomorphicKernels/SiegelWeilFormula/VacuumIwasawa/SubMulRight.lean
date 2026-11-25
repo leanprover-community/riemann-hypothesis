@@ -29,7 +29,7 @@ theorem form_apply {n : ℕ} (c : AE F E →+* AE F E) (ε : AE F E)
   simp only [Jm, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.transpose_apply, Matrix.map_apply, Matrix.fromBlocks_apply₁₁,
     Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply, Matrix.smul_apply,
     Matrix.one_apply, mul_zero, Finset.sum_const_zero, zero_add, add_zero, smul_eq_mul, mul_ite, mul_one,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem unit_int (ε : ℤˣ) : IsUnit (((ε : ℤ) : AE F E)) := by
@@ -43,7 +43,7 @@ theorem row_zero {n : ℕ} {i₀ : Fin n} (c : AE F E →+* AE F E) (ε : ℤˣ)
   intro b hb
   have e := congrFun (congrFun hM b) (Sum.inl i₀)
   rw [form_apply, Finset.sum_eq_single i₀] at e
-  · simp only [hcol, if_true, reduceCtorEq, if_false, map_zero, mul_zero, add_zero] at e
+  · simp only [hcol, ite_true, reduceCtorEq, ite_false, map_zero, mul_zero, add_zero] at e
     have hr : Jm n ((ε : ℤ) : AE F E) b (Sum.inl i₀) = 0 := by
       rcases b with b | b
       · simp

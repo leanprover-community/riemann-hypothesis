@@ -945,7 +945,7 @@ theorem countK_alt :
   have hsys : ∀ π (v : Wd) B, (CG.mk π).HasSat v.1 B → sys π v = algSat n (normV v.1) B := by
     intro π v B hB
     have h : ∃ B, (CG.mk π).HasSat v.1 B := ⟨B, hB⟩
-    simp only [sys, dif_pos h]
+    simp only [sys, dite_eq_left h]
     rw [h.choose_spec.unique hB]
   have hsat : ∀ π ∈ SigK K m M, ∀ v : Wd, ∃ B, (CG.mk π).HasSat v.1 B := fun π hπ v =>
     _root_.UpperTheory.V.Af.satake_k_of_printed_results hP K n M π hπ.2.2 v.1 v.2
@@ -1013,7 +1013,7 @@ theorem countP_alt :
   have hsys : ∀ π (v : Wd) B, (CG.mk π).HasSat v.1 B → sys π v = algSat n (normV v.1) B := by
     intro π v B hB
     have h : ∃ B, (CG.mk π).HasSat v.1 B := ⟨B, hB⟩
-    simp only [sys, dif_pos h]
+    simp only [sys, dite_eq_left h]
     rw [h.choose_spec.unique hB]
   have hsat : ∀ π ∈ SigP K m M, ∀ v : Wd, ∃ B, (CG.mk π).HasSat v.1 B := fun π hπ v =>
     _root_.UpperTheory.V.Af.satake_k_of_printed_results hP K n M π hπ.2.2 v.1 v.2

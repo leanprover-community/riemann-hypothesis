@@ -310,7 +310,7 @@ theorem coeff_teich (c : L) (n : ℕ) : T.coeff (T.teich c) n = if n = 0 then c 
 theorem coeff_π_pow_mul_teich (k : ℕ) (c : L) (n : ℕ) :
     T.coeff (T.π ^ k * T.teich c) n = if n = k then c else 0 := by
   rcases lt_or_ge n k with h | h
-  · rw [T.coeff_π_pow_mul_of_lt _ h, if_neg (by omega)]
+  · rw [T.coeff_π_pow_mul_of_lt _ h, ite_eq_right (by omega)]
   · obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le' h
     rw [T.coeff_π_pow_mul_add, coeff_teich]
     split_ifs <;> first | rfl | omega
@@ -581,15 +581,15 @@ theorem coeff_tail_iterate (x : Γ) (k m : ℕ) : T.coeff (T.tail^[k] x) m = T.c
 theorem finSum_ite_eq (a : ℕ → L) {N n : ℕ} (h : N ≤ n) :
     T.finSum (fun j => if j < N then a j else 0) n = T.finSum a N := by
   induction n, h using Nat.le_induction with
-  | base => exact T.finSum_congr fun i hi => if_pos hi
-  | succ n hNn ih => rw [finSum_succ, ih, if_neg (by omega), T.teich_zero, mul_zero, add_zero]
+  | base => exact T.finSum_congr fun i hi => ite_eq_left hi
+  | succ n hNn ih => rw [finSum_succ, ih, ite_eq_right (by omega), T.teich_zero, mul_zero, add_zero]
 
 theorem coeff_finSum (a : ℕ → L) (N i : ℕ) :
     T.coeff (T.finSum a N) i = if i < N then a i else 0 := by
   refine T.coeff_eq_of_mem (a := fun j => if j < N then a j else 0) ?_ i le_rfl
   rcases le_total (i + 1) N with h | h
   · have e : T.finSum (fun j => if j < N then a j else 0) (i + 1) = T.finSum a (i + 1) :=
-      T.finSum_congr fun j hj => if_pos (by omega)
+      T.finSum_congr fun j hj => ite_eq_left (by omega)
     rw [e]; exact T.finSum_sub_finSum_mem a h
   · rw [T.finSum_ite_eq a h, sub_self]; exact zero_mem _
 
@@ -968,7 +968,7 @@ theorem zcoeff_π_pow_mul (M : ℕ) (z : Γ) (j : ℤ) : T.zcoeff (T.π ^ M * z)
 theorem zcoeff_one : T.zcoeff 1 = Pi.single 0 1 := by
   funext n
   rcases lt_or_ge n 0 with hn | hn
-  · rw [T.zcoeff_of_neg _ hn, Pi.single_apply, if_neg hn.ne]
+  · rw [T.zcoeff_of_neg _ hn, Pi.single_apply, ite_eq_right hn.ne]
   · lift n to ℕ using hn
     rw [zcoeff_natCast, ← T.teich_one, coeff_teich, Pi.single_apply]
     simp
@@ -1006,7 +1006,7 @@ theorem convergesAt_pi_single (n₀ : ℤ) (c : L) (ρ : ℝ) : ConvergesAt (Pi.
 theorem zcoeff_π_pow_mul_teich (N : ℕ) (c : L) : T.zcoeff (T.π ^ N * T.teich c) = Pi.single (N : ℤ) c := by
   funext n
   rcases lt_or_ge n 0 with hn | hn
-  · rw [T.zcoeff_of_neg _ hn, Pi.single_apply, if_neg (by omega)]
+  · rw [T.zcoeff_of_neg _ hn, Pi.single_apply, ite_eq_right (by omega)]
   · lift n to ℕ using hn
     rw [zcoeff_natCast, coeff_π_pow_mul_teich, Pi.single_apply]
     simp

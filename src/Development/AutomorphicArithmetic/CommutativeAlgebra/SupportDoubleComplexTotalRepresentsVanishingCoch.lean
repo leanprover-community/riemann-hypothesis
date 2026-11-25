@@ -49,9 +49,9 @@ theorem UpperTheory.supportDoubleComplex_total_represents_vanishing_cochain :
       else 0
     refine ⟨x, fun p s hps => ?_, fun p s h U z => ?_⟩
     · have h : ¬ (-(p : ℤ) + N = s + m) := by omega
-      exact dif_neg h
+      exact dite_eq_right h
     · exact congrArg (fun a : Fam Z p (K.X (s + m)) =>
-        (a : (U : Scheme.{0}) → Sx E p U → Sec (K.X (s + m)) U) U z) (dif_pos h)
+        (a : (U : Scheme.{0}) → Sx E p U → Sec (K.X (s + m)) U) U z) (dite_eq_left h)
   · intro γ x x' hx hx' cx cx'
     funext p s
     by_cases hps : (p : ℤ) + s = n

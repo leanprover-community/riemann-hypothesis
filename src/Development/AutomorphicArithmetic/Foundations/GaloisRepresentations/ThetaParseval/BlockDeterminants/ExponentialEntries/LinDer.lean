@@ -316,7 +316,7 @@ theorem omAct_definite (n d : ℕ) (T : Matrix (Ln n 0 d 0) (Ln n 0 d 0) ℂ) :
     by_cases h : l = l' <;> simp [omE, raiB, lowB, hpos, h]
   refine LinearMap.ext fun f => ?_
   have htr : ∑ l, ∑ l', T l l' • (if l = l' then (1 / 2 : ℂ) • f else 0) = ((1 / 2 : ℂ) * T.trace) • f := by
-    simp only [smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, Matrix.trace, Matrix.diag_apply,
+    simp only [smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Matrix.trace, Matrix.diag_apply,
       smul_smul, Finset.mul_sum, Finset.sum_smul, mul_comm]
   rw [omAct_apply]
   simp only [LinearMap.add_apply, LinearMap.sum_apply, LinearMap.smul_apply, hE, smul_add, Finset.sum_add_distrib,

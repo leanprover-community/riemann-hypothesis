@@ -186,14 +186,14 @@ theorem kernel_traceForm (hfin : ∀ x, Finite (stab ι J x)) {θ : Hf → P →
     intro γ hγ
     rw [Set.Finite.coe_toFinset]
     by_contra hn
-    exact hγ (if_neg hn)
+    exact hγ (ite_eq_right hn)
   have hc : hL.toFinset.card = Nat.card (stab ι J x) := by
     rw [Nat.card_congr (linkEquiv ι J h0), Nat.card_coe_set_eq, Set.ncard_eq_toFinset_card _ hL]
   unfold traceForm
   rw [map_finsum (θ x) hf]
   simp only [hterm]
   rw [finsum_eq_sum_of_support_subset _ hsub,
-    Finset.sum_congr rfl (fun γ hγ => if_pos ((Set.Finite.mem_toFinset hL).1 hγ)),
+    Finset.sum_congr rfl (fun γ hγ => ite_eq_left ((Set.Finite.mem_toFinset hL).1 hγ)),
     Finset.sum_const, hc, Nat.cast_smul_eq_nsmul]
 
 theorem classSum_traceForm [CharZero C] (hfin : ∀ x, Finite (stab ι J x)) {θ : Hf → P →ₛₗ[e] W}

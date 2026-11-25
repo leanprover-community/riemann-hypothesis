@@ -70,7 +70,7 @@ theorem frMapAdj_add_isIntM_redM : ∀ {D : D7} (S T : HSp D) (βS : GL (Fin S.r
   have h1 := hI i j
   have h2 := hx i j
   have h3 := hy i j
-  simp only [redM, Matrix.add_apply, dif_pos h1, dif_pos h2, dif_pos h3]
+  simp only [redM, Matrix.add_apply, dite_eq_left h1, dite_eq_left h2, dite_eq_left h3]
   rw [← RingHom.map_add (f := _)]
   congr 1
   apply Subtype.ext

@@ -85,7 +85,7 @@ theorem sum_emb_mul_dual {E : Type} [Field E] [NumberField E] {ι : Type} [Finty
         ← trace_eq_sum_embeddings ℂ]
     simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
       smul_eq_mul, LinearMap.zero_apply, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [h1, sub_eq_zero]
     simp only [Finset.sum_mul, map_mul]
     rw [Finset.sum_comm]
@@ -123,9 +123,9 @@ theorem eq_sum_trace_mul_dual {F E L : Type} [Field F] [NumberField F] [Field E]
     rw [this]
     by_cases h : ρ = IsScalarTower.toAlgHom F L ℂ
     · subst h
-      rw [if_pos rfl, if_pos (by rfl), mul_one]
+      rw [ite_eq_left rfl, ite_eq_left (by rfl), mul_one]
       rfl
-    · rw [if_neg h, if_neg, mul_zero]
+    · rw [ite_eq_right h, ite_eq_right, mul_zero]
       intro h'
       apply h
       have := hgen (ρ : L →+* ℂ) (fun x => ρ.commutes x) (fun x => DFunLike.congr_fun h' x)

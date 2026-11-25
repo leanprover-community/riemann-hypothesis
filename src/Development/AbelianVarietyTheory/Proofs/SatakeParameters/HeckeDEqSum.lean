@@ -161,10 +161,10 @@ theorem finsum_translate_eq {G : Type} [Group G] (J J' : Subgroup G) (h : G)
     rw [← hcard d hd]
   · intro d hd
     by_contra hn
-    exact hd (dif_neg fun h' => hn (Finset.mem_coe.2 ((hT d).2 h')))
+    exact hd (dite_eq_right fun h' => hn (Finset.mem_coe.2 ((hT d).2 h')))
   · intro c hc
     by_contra hn
-    exact hc (dif_neg fun h' => hn (Finset.mem_coe.2 ((hS c).2 h')))
+    exact hc (dite_eq_right fun h' => hn (Finset.mem_coe.2 ((hS c).2 h')))
 
 theorem heckeD_rt_eq_smul : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (J J' : Subgroup (GAf L n)) (h : GAf L n), J' ≤ J → (∀ κ ∈ J', h⁻¹ * κ * h ∈ J) → {c : GAf L n ⧸ J' | ∃ x ∈ (J : Set (GAf L n)), (x : GAf L n ⧸ J') = c}.Finite → ∃ m : ℕ, 0 < m ∧ ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (f : GAf L n → W), (∀ κ ∈ J, NG.rt L n κ f = f) → NG.heckeD J' (J : Set (GAf L n)) (NG.rt L n h f) = (m : ℂ) • NG.heckeD J {x | ∃ u ∈ J, ∃ u' ∈ J, x = u * h * u'} f := by
   intro L _ _ _ n J J' h _ hconj hfin
@@ -226,7 +226,7 @@ theorem finite_cosets (N' : ℕ) (hN' : 0 < N') :
   rintro _ ⟨x, hx, rfl⟩
   refine ⟨cls ⟨x, hx⟩, ?_⟩
   have h : ∃ a, cls a = cls ⟨x, hx⟩ := ⟨_, rfl⟩
-  simp only [F, dif_pos h]
+  simp only [F, dite_eq_left h]
   exact key _ _ h.choose_spec
 
 open Classical in
@@ -239,7 +239,7 @@ theorem heckeD_eq_sum {W : Type} [AddCommGroup W] [Module ℂ W] (J : Subgroup (
   intro c hc
   rw [Set.Finite.coe_toFinset]
   by_contra h
-  exact hc (dif_neg h)
+  exact hc (dite_eq_right h)
 
 theorem heckeD_add {W : Type} [AddCommGroup W] [Module ℂ W] (J : Subgroup (GAf L n)) (D : Set (GAf L n))
     (hfin : {c : GAf L n ⧸ J | ∃ x ∈ D, (x : GAf L n ⧸ J) = c}.Finite) (f f' : GAf L n → W) :
@@ -271,13 +271,13 @@ theorem heckeD_one {W : Type} [AddCommGroup W] [Module ℂ W] (J : Subgroup (GAf
   · have h : ∃ x ∈ {x | ∃ u ∈ J, ∃ u' ∈ J, x = u * 1 * u'},
         (x : GAf L n ⧸ J) = ((1 : GAf L n) : GAf L n ⧸ J) :=
       ⟨1, ⟨1, J.one_mem, 1, J.one_mem, by simp⟩, rfl⟩
-    rw [dif_pos h]
+    rw [dite_eq_left h]
     obtain ⟨⟨u, hu, u', hu', e⟩, -⟩ := h.choose_spec
     rw [e]
     have : u * 1 * u' ∈ J := by simpa using J.mul_mem hu hu'
     exact congrFun (hv _ this) g
   · intro c hc
-    rw [dif_neg]
+    rw [dite_eq_right]
     rintro ⟨x, ⟨u, hu, u', hu', rfl⟩, hx⟩
     apply hc
     rw [← hx, QuotientGroup.eq]

@@ -36,15 +36,6 @@ structure PowerDatum (j : ℕ) (G' G : Over S) [GrpObj G'] [GrpObj G] where
 
 attribute [instance] PowerDatum.isMonHom
 
-section Power
-
-variable (G : Over S)
-
-variable [GrpObj G]
-
-
-end Power
-
 section Symm
 
 variable {G : Over S} [GrpObj G]
@@ -348,23 +339,6 @@ theorem isNormSymm_iff (L : RigLB G) (sy : SymGen L.L (ι[G]).left) :
     (diagOne_iff_fixesRig L.L _ _ L.isLB sy hsy L.rig L.rigGen)).symm
 
 end GroupNorm
-
-section Pow
-
-variable {S : Scheme.{0}}
-
-variable {G' G : Over S} [GrpObj G'] [GrpObj G] {j : ℕ}
-
-variable [IsCommMonObj G'] [IsCommMonObj G]
-
-end Pow
-
-section Clauses
-
-variable {S : Scheme.{0}} {G' G : Over S} [GrpObj G'] [IsCommMonObj G'] [GrpObj G]
-  [IsCommMonObj G] {j : ℕ}
-
-end Clauses
 
 end GlobalTheory.BoxCompare
 end -- clump:auto

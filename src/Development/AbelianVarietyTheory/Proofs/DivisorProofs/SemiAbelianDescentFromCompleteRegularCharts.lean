@@ -269,7 +269,7 @@ theorem finite_mult (D : CartierDiv Y) (U : Set Y) [NoetherianSpace U] :
   have hi' : IsIrreducible ((Subtype.val : U → Y) '' T) :=
     (hi T hT).image _ continuous_subtype_val.continuousOn
   refine ⟨T, hT, ?_⟩
-  simp only [dif_pos hi']
+  simp only [dite_eq_left hi']
   have hg := hi'.isGenericPoint_genericPoint_closure
   have h₁ : z ≤ hi'.genericPoint := hg.specializes (subset_closure ⟨_, hzT, rfl⟩)
   have hsub : closure ((Subtype.val : U → Y) '' T) ⊆ D.supp :=
@@ -321,7 +321,7 @@ theorem exists_mult_eq (hY : ∀ y : Y, UniqueFactorizationMonoid (Y.presheaf.st
         · exact ⟨h, by simpa [h] using hz⟩
         · simp [h] at hz)
       fun z hz => h1 z fun h => hz (by simp [h])
-    exact ⟨E, fun z hz => by rw [hE z, if_pos hz]⟩
+    exact ⟨E, fun z hz => by rw [hE z, ite_eq_left hz]⟩
   choose E hE using hE
   let D : CartierDiv Y := show cartierGroup Y from ⟨fun y => (E y).germ y, fun y => by
     obtain ⟨U, hU, g, hg⟩ := (E y).exists_isEqn_nhds y
@@ -343,7 +343,7 @@ theorem GlobalTheory.Desc.exists_cartierDiv_closure : ∀ (Y V X : Scheme.{0}) [
   have : GlobalTheory.IsNormalScheme Y := ⟨fun x => inferInstance, fun x => by have := hY x; infer_instance⟩
   choose e he using fun v : V => D.exists_isEqn (φ v)
   let c : Y → ℤ := fun z => if h : z ∈ Set.range i then Scheme.ord (θ (e h.choose)) z else 0
-  have h0 : ∀ z, z ∉ Set.range i → c z = 0 := fun z hz => dif_neg hz
+  have h0 : ∀ z, z ∉ Set.range i → c z = 0 := fun z hz => dite_eq_right hz
   have h1 : ∀ z, c z ≠ 0 → Order.coheight z = 1 := fun z hz => by
     by_contra h
     apply hz
@@ -356,7 +356,7 @@ theorem GlobalTheory.Desc.exists_cartierDiv_closure : ∀ (Y V X : Scheme.{0}) [
     have hv : i v ∈ Set.range i := ⟨v, rfl⟩
     have e₀ : hv.choose = v := i.isOpenEmbedding.injective hv.choose_spec
     have hu := (unitAt_map i φ θ hθ v (hg.iff_unitAt.1 (he v))).ord_eq_zero
-    simp only [c, dif_pos hv, e₀]
+    simp only [c, dite_eq_left hv, e₀]
     rw [← div_mul_cancel₀ (e v : X.functionField) g.ne_zero, map_mul,
       Scheme.ord_mul ((map_ne_zero θ).2 (div_ne_zero (e v).ne_zero g.ne_zero))
         ((map_ne_zero θ).2 g.ne_zero), hu, zero_add]

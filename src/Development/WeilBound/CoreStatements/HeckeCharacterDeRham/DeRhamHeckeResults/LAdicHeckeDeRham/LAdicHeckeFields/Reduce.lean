@@ -915,11 +915,11 @@ theorem multV_inv [IsDomain BdR] (κ : K →ₐ[Qp] Om)
       exact Submodule.zero_mem _)
   set fi : (LL →ₐ[Qp] Om) → BdR := fun σ => if σ.comp τ = κ then yv σ else 0 with hfi
   have hfi1 : ∀ σ, σ.comp τ = κ → f σ * fi σ = 1 := fun σ hσ => by
-    simp only [hfi, if_pos hσ]; exact hyv1 σ hσ
-  have hfi0 : ∀ σ, ¬ σ.comp τ = κ → fi σ = 0 := fun σ hσ => by simp only [hfi, if_neg hσ]
+    simp only [hfi, ite_eq_left hσ]; exact hyv1 σ hσ
+  have hfi0 : ∀ σ, ¬ σ.comp τ = κ → fi σ = 0 := fun σ hσ => by simp only [hfi, ite_eq_right hσ]
   have hfiF : ∀ σ, fi σ ∈ PD.Fil (-J) := fun σ => by
     by_cases hσ : σ.comp τ = κ
-    · simp only [hfi, if_pos hσ]; exact hyv σ hσ
+    · simp only [hfi, ite_eq_left hσ]; exact hyv σ hσ
     · rw [hfi0 σ hσ]; exact Submodule.zero_mem _
   have hcoord : ∀ σ, ev σ (coordInv fi : (Fin 1 → LL) ⊗[Qp] BdR) = fi σ := ev_coordInv fi
   have hII : IsInv PD act χ' fi := fun g σ => by
@@ -1173,7 +1173,7 @@ theorem char_mul {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T
     intro τ
     obtain ⟨hf, hle, -⟩ := (GlobalTheory.Per.Components.components_finrank l P AI T K LL _ ν₃).1 τ
     have hm1 := hm τ (J₁ τ + J₂ τ)
-    rw [if_pos rfl, multV] at hm1
+    rw [ite_eq_left rfl, multV] at hm1
     have hfil : finrank ↥LL.1 ↥(FildR (P.PD K) ν₃ τ (J₁ τ + J₂ τ)) ≤ finrank ↥LL.1 ↥(DdRE (P.PD K) ν₃ τ) :=
       Submodule.finrank_mono (inf_le_left : FildR (P.PD K) ν₃ τ _ ≤ DdRE (P.PD K) ν₃ τ)
     simp only [Module.finrank_pi, Fintype.card_fin] at hle
@@ -1558,11 +1558,11 @@ theorem multV_of_fil (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (
     simpa using this
   unfold multV
   rcases lt_trichotomy a 0 with h | h | h
-  · rw [hneg a h.le, hneg (a + 1) (by omega), sub_self, if_neg h.ne]
+  · rw [hneg a h.le, hneg (a + 1) (by omega), sub_self, ite_eq_right h.ne]
   · subst h
     rw [hneg 0 le_rfl, hpos (0 + 1) (by omega), finrank_bot, hfin]
     simp
-  · rw [hpos a (by omega), hpos (a + 1) (by omega), sub_self, if_neg h.ne']
+  · rw [hpos a (by omega), hpos (a + 1) (by omega), sub_self, ite_eq_right h.ne']
 
 end Line
 
@@ -1881,10 +1881,10 @@ theorem field_of_ltPeriods (HP : LTPeriods) : GlobalTheory.Published.HeckeLAdicC
   have hsum : (0 + ∑ j, nj j • Jj j) τ' = -n (ι.toRingHom.comp τ) := by
     simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, Pi.zero_apply, zero_add]
     rw [Finset.sum_eq_single j0]
-    · simp only [Jj, if_pos hj0, nj, smul_eq_mul, mul_neg, mul_one, ← hj0E, RingHom.comp_assoc]
+    · simp only [Jj, ite_eq_left hj0, nj, smul_eq_mul, mul_neg, mul_one, ← hj0E, RingHom.comp_assoc]
     · intro b _ hb
       have : ¬ IsInduced Bw (b.1.comp (algebraMap E (w.adicCompletion E))) τ' := fun h => hb (huniq b h)
-      simp only [Jj, if_neg this, smul_zero]
+      simp only [Jj, ite_eq_right this, smul_zero]
     · intro h
       exact absurd (Finset.mem_univ j0) h
   rw [hsum, Multiset.count_singleton]

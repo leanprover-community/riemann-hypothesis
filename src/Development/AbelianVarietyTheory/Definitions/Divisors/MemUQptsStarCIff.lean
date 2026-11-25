@@ -31,18 +31,6 @@ theorem Datum.EF_swap (x y : D.La) : D.EF y x = - D.EF x y := by
 
 def Datum.Kq : Subfield D.F := (IntermediateField.adjoin ℚ {(D.ω : D.F)}).toSubfield
 
-section Places
-
-variable {F : Type} [Field F] [NumberField F] (Kq : Subfield F) (u : Kq →+* ℚ_[p])
-
-end Places
-
-section Examples
-
-variable {p : ℕ} [Fact p.Prime] (D : Datum p)
-
-end Examples
-
 end GlobalTheory.UPel.HT
 end -- clump:auto
 end -- clump:auto

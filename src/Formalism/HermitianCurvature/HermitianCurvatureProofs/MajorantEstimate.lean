@@ -67,9 +67,9 @@ lemma Hpk_mul_apply (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
 lemma mul_Hpk_apply (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (i j : Fin (2 * r + k + 1)) :
     (M * Hpk k r) i j = M i (GBasic.sig k r j) * GBasic.sgn k r j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (GBasic.sig k r j)]
-  · rw [GBasic.Hpk_eq, if_pos (GBasic.sig_sig k r j).symm, GBasic.sgn_sig]
+  · rw [GBasic.Hpk_eq, ite_eq_left (GBasic.sig_sig k r j).symm, GBasic.sgn_sig]
   · intro l _ hl
-    rw [GBasic.Hpk_eq, if_neg, mul_zero]
+    rw [GBasic.Hpk_eq, ite_eq_right, mul_zero]
     intro h
     exact hl (by rw [h, GBasic.sig_sig])
   · simp

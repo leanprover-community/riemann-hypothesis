@@ -264,11 +264,11 @@ theorem UpperTheory.Reformulated.B.Yha4.main :
   rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
   simp only [Pi.add_apply, Set.indicator, Set.mem_Ici, Left.nonneg_neg_iff]
   rcases le_or_gt 0 x with h | h
-  · rw [abs_of_nonneg h, if_pos h]
+  · rw [abs_of_nonneg h, ite_eq_left h]
     split_ifs
     · linarith [Real.exp_pos (-c * -x)]
     · simp
-  · rw [abs_of_neg h, if_neg (not_le.mpr h), if_pos h.le]
+  · rw [abs_of_neg h, ite_eq_right (not_le.mpr h), ite_eq_left h.le]
     simp
 end -- clump:auto
 end -- clump:auto

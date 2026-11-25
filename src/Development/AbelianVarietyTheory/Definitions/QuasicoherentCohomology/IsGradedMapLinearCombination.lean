@@ -474,7 +474,7 @@ theorem component_of (n : ℤ) (a : A n) : component hx n (of hx n a) = a :=
   DirectSum.component.lof_self R n a
 
 theorem component_of_ne {n k : ℤ} (h : k ≠ n) (a : A k) : component hx n (of hx k a) = 0 :=
-  (DirectSum.component.of R n k a).trans (dif_neg h)
+  (DirectSum.component.of R n k a).trans (dite_eq_right h)
 
 theorem of_injective (n : ℤ) : Function.Injective (of hx n) :=
   Function.LeftInverse.injective (component_of hx n)

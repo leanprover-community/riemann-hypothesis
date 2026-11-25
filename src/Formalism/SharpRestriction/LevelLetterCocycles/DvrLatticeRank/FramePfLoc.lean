@@ -18,12 +18,12 @@ variable {R : Type} [CommRing R]
 theorem framepf_coeff_pow_lt (f : PowerSeries R) (hf : PowerSeries.constantCoeff f = 0) (m j : ℕ)
     (hj : j < m) : PowerSeries.coeff j (f ^ m) = 0 := by
   obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf
-  rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+  rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
 theorem framepf_coeff_pow_self (f : PowerSeries R) (hf : PowerSeries.constantCoeff f = 0) (m : ℕ) :
     PowerSeries.coeff m (f ^ m) = PowerSeries.coeff 1 f ^ m := by
   obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf
-  rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+  rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
     PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, PowerSeries.coeff_succ_X_mul,
     PowerSeries.coeff_zero_eq_constantCoeff_apply]
 
@@ -122,7 +122,7 @@ theorem framepf_valAt (hc : IsCrys PD T.ρ) (c : ZMod n) (ζ : LL)
     (fun r h1 h2 => by omega) (Nat.find hex : ℤ) (by omega)
   rw [Ct.levN_eq, hC]
   unfold serC
-  rw [if_pos (by omega), map_smul, map_pow, Int.toNat_natCast, framepf_coeff_pow_self _ hQ0, smul_smul,
+  rw [ite_eq_left (by omega), map_smul, map_pow, Int.toNat_natCast, framepf_coeff_pow_self _ hQ0, smul_smul,
     inv_mul_cancel₀ (pow_ne_zero _ hQ1), one_smul]
 
 theorem framepf_levN_phi (hc : IsCrys PD T.ρ) (c : ZMod n) (ζ : LL)

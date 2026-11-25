@@ -72,12 +72,6 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-section Local
-
-variable {X : Data E r} {Xa : ArchInM X} (Fl : FlatM X Xa)
-
-end Local
-
 section Hyp
 
 variable {X : Data E r}
@@ -174,7 +168,7 @@ theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0
       simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, _root_.GlobalTheory.CurvMargin.blockWt, Pi.sub_apply] at h
       by_cases hi : (i : ℕ) < X.p0
       · have hj : (j : ℕ) < X.p0 := by omega
-        simp only [hi, hj, if_true] at h
+        simp only [hi, hj, ite_true] at h
         norm_num at h
         simp only [Pi.sub_apply]
         have h' : ((la τ j - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X τ j : ℤ) : ℝ) ≤ ((la τ i - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X τ i : ℤ) : ℝ) := by
@@ -182,7 +176,7 @@ theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0
           linarith
         exact_mod_cast h'
       · have hj : ¬ (j : ℕ) < X.p0 := by omega
-        simp only [hi, hj, if_false] at h
+        simp only [hi, hj, ite_false] at h
         norm_num at h
         simp only [Pi.sub_apply]
         have h' : ((la τ j - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X τ j : ℤ) : ℝ) ≤ ((la τ i - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X τ i : ℤ) : ℝ) := by
@@ -195,7 +189,7 @@ theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0
       simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, _root_.GlobalTheory.CurvMargin.blockWt, Pi.sub_apply] at h
       have hi0' : (i0 : ℕ) < X.p0 := by omega
       have hi1' : ¬ (i1 : ℕ) < X.p0 := by omega
-      simp only [hi0', hi1', if_true, if_false] at h
+      simp only [hi0', hi1', ite_true, ite_false] at h
       norm_num at h
       simp only [Pi.sub_apply, Int.cast_sub]
       linarith
@@ -210,12 +204,6 @@ theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0
       exact h
 
 end Hyp
-
-section Size
-
-variable {X : Data E r}
-
-end Size
 
 end
 

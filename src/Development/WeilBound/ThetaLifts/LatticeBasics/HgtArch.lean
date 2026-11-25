@@ -128,8 +128,8 @@ theorem exists_cartan_frame {n : ℕ} {M θ : Matrix (Fin n) (Fin n) ℂ} (hM : 
       funext i
       have : (hSh.eigenvalues i : ℂ) * hSh.eigenvalues i = 1 := congrFun (Matrix.diagonal_injective hD2) i
       rcases mul_self_eq_one_iff.1 this with e | e
-      · rw [if_pos (by simpa using e)]; exact e
-      · rw [if_neg (by simp only [decide_eq_true_eq]; intro e'; rw [e'] at e; norm_num at e)]; exact e
+      · rw [ite_eq_left (by simpa using e)]; exact e
+      · rw [ite_eq_right (by simp only [decide_eq_true_eq]; intro e'; rw [e'] at e; norm_num at e)]; exact e
   · rw [hsN, Units.val_mul, Matrix.conjTranspose_mul]
     calc _ = (Unitary.toUnits U).1ᴴ * (b.1ᴴ * N * b.1) * (Unitary.toUnits U).1 := by simp only [Matrix.mul_assoc]
       _ = 1 := by rw [hb1, Matrix.mul_one]; exact U.2.1

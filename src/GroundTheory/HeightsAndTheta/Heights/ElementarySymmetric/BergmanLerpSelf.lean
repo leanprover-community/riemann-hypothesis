@@ -192,7 +192,7 @@ lemma tendsto_inv_gaussDiscMass {lam : ℝ} (hl : 0 ≤ lam) :
     Tendsto (fun R => 1 / gaussDiscMass lam R) atTop (𝓝 (lam / Real.pi)) := by
   rcases hl.eq_or_lt with h | h
   · subst h
-    have h0 : ∀ R, gaussDiscMass 0 R = Real.pi * R ^ 2 := fun R => if_pos rfl
+    have h0 : ∀ R, gaussDiscMass 0 R = Real.pi * R ^ 2 := fun R => ite_eq_left rfl
     simp only [h0, zero_div, one_div]
     exact ((tendsto_pow_atTop two_ne_zero).const_mul_atTop Real.pi_pos).inv_tendsto_atTop
   · have he : Tendsto (fun R : ℝ => Real.exp (-lam * R ^ 2)) atTop (𝓝 0) :=
@@ -204,7 +204,7 @@ lemma tendsto_inv_gaussDiscMass {lam : ℝ} (hl : 0 ≤ lam) :
         (by simp [Real.pi_ne_zero])
     rw [sub_zero, mul_one] at h2
     refine h2.congr fun R => ?_
-    simp only [gaussDiscMass, h.ne', if_false, one_div_div]
+    simp only [gaussDiscMass, h.ne', ite_false, one_div_div]
 
 lemma det_smul_re {D : ℕ} {H : Matrix (Fin D) (Fin D) ℂ} {lam : Fin D → ℝ}
     (hdet : H.det = ∏ j, (lam j : ℂ)) :

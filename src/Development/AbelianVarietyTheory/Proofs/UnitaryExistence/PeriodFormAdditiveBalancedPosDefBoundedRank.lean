@@ -202,7 +202,7 @@ theorem betaAt_pos : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [C
     intro χ
     obtain ⟨r, hr, -⟩ := (hco χ).1
     have h : ∃ r, PsiCoord Dg.toPre χ r := ⟨r, hr⟩
-    exact ⟨h.choose, h.choose_spec, by simp only [vPsiAt, dif_pos h]⟩
+    exact ⟨h.choose, h.choose_spec, by simp only [vPsiAt, dite_eq_left h]⟩
   have hvn : ∀ χ, ∃ n : ℕ, vPsiAt Dg.toPre f p χ = (-Real.logb p ‖f ϖ‖) * n := by
     intro χ
     obtain ⟨r, hr, hvr⟩ := hv χ
@@ -277,7 +277,7 @@ theorem isFractionRing_intO : IsFractionRing (intO C) C := by
   refine IsFractionRing.of_field _ _ fun z => ?_
   by_cases h : ‖z‖ ≤ 1
   · exact ⟨⟨z, h⟩, 1, by rw [map_one, div_one]; rfl⟩
-  · push_neg at h
+  · push Not at h
     refine ⟨1, ⟨z⁻¹, ?_⟩, by rw [map_one, one_div]; exact (inv_inv z).symm⟩
     change ‖z⁻¹‖ ≤ 1
     rw [norm_inv]

@@ -84,7 +84,7 @@ private theorem polyDeriv_C_indep (a : ℂ) (u v : σ → W) (F : W → ℂ) (x 
   refine Finset.sum_congr rfl fun m hm => ?_
   have hm0 : m = 0 := by
     by_contra hne
-    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_C, if_neg (Ne.symm hne)])
+    exact (MvPolynomial.mem_support_iff.1 hm) (by rw [MvPolynomial.coeff_C, ite_eq_right (Ne.symm hne)])
   subst hm0
   congr 1
 

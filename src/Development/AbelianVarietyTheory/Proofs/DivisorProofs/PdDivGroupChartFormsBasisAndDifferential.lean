@@ -80,12 +80,12 @@ theorem exists_split (n m : ℕ) (f : MvPowerSeries (Fin d) O) :
     exact (Finsupp.le_degree i α).trans hα.le
   obtain ⟨a, ha⟩ := hN (f - P) fun α hα => by
     rw [map_sub, MvPolynomial.coeff_coe, hP, coeff_trunc',
-      if_pos (hle α (lt_of_lt_of_le hα (le_max_left _ _))), sub_self]
+      ite_eq_left (hle α (lt_of_lt_of_le hα (le_max_left _ _))), sub_self]
   refine ⟨P, a, ?_, ?_, fun i => ?_⟩
   · rw [← ev_coe, ← ha, ← map_add (f := _), add_sub_cancel]
   · rw [MvPolynomial.constantCoeff_eq, hP, coeff_trunc',
-      if_pos (hle 0 (by simp)), coeff_zero_eq_constantCoeff_apply]
-  · rw [hP, coeff_trunc', if_pos (hle _ (lt_of_lt_of_le (by simp) (le_max_right N 2))), lin]
+      ite_eq_left (hle 0 (by simp)), coeff_zero_eq_constantCoeff_apply]
+  · rw [hP, coeff_trunc', ite_eq_left (hle _ (lt_of_lt_of_le (by simp) (le_max_right N 2))), lin]
 
 theorem eq_zero_of_dvd [IsAdicComplete (Ideal.span {(p : O)}) O] (x : O)
     (h : ∀ m, (p : O) ^ m ∣ x) : x = 0 :=
@@ -133,7 +133,7 @@ theorem d_aeval (n : ℕ) (P : MvPolynomial (Fin d) O) :
       by_cases hij : j = i
       · subst hij; simp [MvPolynomial.constantCoeff_eq]
       · simp [hij]
-    simp only [hc, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hc, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hx : Bialgebra.counitAlgHom O (G.A n) (c.x n j) = 0 := by simpa using c.aug n j
     rw [map_mul, MvPolynomial.aeval_X, PDiv.dUnit, AugCot.d_mul, counit_aeval, hx, zero_smul,
       add_zero]

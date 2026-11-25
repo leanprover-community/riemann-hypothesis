@@ -116,7 +116,7 @@ theorem tendsto_idem (η : Finset (HeightOneSpectrum (𝓞 F)) → AF F)
     intro v
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_ge_atTop {v}] with T hT
-    exact (if_pos (hT (Finset.mem_singleton_self v))).symm
+    exact (ite_eq_left (hT (Finset.mem_singleton_self v))).symm
   let s : (∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletionIntegers F) → Af F :=
     RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
       (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) cofinite

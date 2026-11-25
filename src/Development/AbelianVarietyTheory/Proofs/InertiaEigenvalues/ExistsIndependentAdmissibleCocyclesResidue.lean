@@ -1414,25 +1414,25 @@ theorem sum_resCount {k : Type} [Field k] (U : Multiset ℤ) (w a : ℤ) (L : �
       push_cast
       exact sub_left_inj
     by_cases hp : p u
-    · rw [if_pos hp, Multiset.card_singleton]
+    · rw [ite_eq_left hp, Multiset.card_singleton]
       obtain ⟨ha, hb⟩ := hu.1 hp
       rw [Finset.sum_eq_single (u - a).toNat]
-      · rw [if_pos]
+      · rw [ite_eq_left]
         rw [tr]
         congr 1
         omega
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hc
         have := (hu.2 (a + j) (by omega) (by have := Finset.mem_range.mp ‹j ∈ Finset.range L›; omega) ((tr j).mp hc)).1
         omega
       · intro hn
         exfalso
         exact hn (Finset.mem_range.mpr (by omega))
-    · rw [if_neg hp, Multiset.card_zero]
+    · rw [ite_eq_right hp, Multiset.card_zero]
       apply Finset.sum_eq_zero
       intro j hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hc
       have hj' := Finset.mem_range.mp hj
       exact hp (hu.2 (a + j) (by omega) (by omega) ((tr j).mp hc)).2

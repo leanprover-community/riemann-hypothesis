@@ -185,7 +185,7 @@ lemma measMu_zm_congr (k l : ℕ) (u v : ℤ → ℂ) (F G : ℕ → ℕ → ℂ
   refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => ?_
   split_ifs with h1
   · rfl
-  · push_neg at h1
+  · push Not at h1
     have hx1 : x.1 ∣ p.1 := Dvd.intro _ (Nat.mem_divisorsAntidiagonal.mp hx).1
     have hy2 : y.2 ∣ p.2 := Dvd.intro_left _ (Nat.mem_divisorsAntidiagonal.mp hy).1
     rw [h x.1 y.2 (fun hd => h1.1 (hd.trans hx1)) (fun hd => h1.2 (hd.trans hy2))]
@@ -252,7 +252,7 @@ lemma measMu_zm_val_bound {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ)
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hδ fun y hy => ?_
     split_ifs with h
     · rw [map_zero, norm_zero]; exact hδ
-    · push_neg at h
+    · push Not at h
       have hx1 : ¬ l ∣ x.1 := fun hd => h.1 (hd.trans (Dvd.intro _ (Nat.mem_divisorsAntidiagonal.1 hx).1))
       have hy2 : ¬ l ∣ y.2 := fun hd => h.2 (hd.trans (Dvd.intro_left _ (Nat.mem_divisorsAntidiagonal.1 hy).1))
       have h1 : ‖ι.symm ((x.1 : ℂ) ^ (k - 2))‖ ≤ 1 := by

@@ -253,10 +253,10 @@ theorem yZero_mul_diag (S : HSp D) {ρ : ℕ} (z : Fin S.rank → D.host.E) (t :
     simp only [yZero, zEll, Matrix.neg_apply, Matrix.vecMulVec_apply, hell]
     split_ifs <;> simp
   rw [Matrix.mul_apply, Matrix.smul_apply, smul_eq_mul, hy l]
-  simp only [hy, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hy, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases hl : l = i
-  · subst hl; rw [if_pos rfl, mul_comm]
-  · rw [if_neg hl, ht i l (Ne.symm hl), mul_zero, mul_zero]
+  · subst hl; rw [ite_eq_left rfl, mul_comm]
+  · rw [ite_eq_right hl, ht i l (Ne.symm hl), mul_zero, mul_zero]
 
 theorem symplO_incAdj_eq {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) (S : HSp D) (z : Mx D S.rank ρ) (w : WO S T) :
     symplO S T (d.incAdj S z) w = -Algebra.trace (AF D.host.F) (AE D) (z ⬝ (d.pX ⬝ w)).trace := by

@@ -336,7 +336,7 @@ theorem hyodo_orth : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf
       rw [e]
       exact (hm.comp ((hρ v).prodMk (hρ' v'))).mul continuous_const
     exact orth_of_cont l P AI hT K V ρ V' ρ' m hρ' hdR hD hχ c hc a ha
-  · push_neg at hV
+  · push Not at hV
     refine ⟨0, continuous_const, funext fun x => ?_⟩
     simp [cupL, hV (c x.1), ReciprocityTheory.Def.d1]
 

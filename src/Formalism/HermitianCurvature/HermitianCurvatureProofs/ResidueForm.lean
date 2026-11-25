@@ -54,7 +54,7 @@ lemma eU_same (a : S) (i : Fin 2) : (eU a i i : SlopeTestRemainingChoices S A) =
       · subst hb
         rw [h1, h2]
       · exact h3 b hb
-    rw [if_neg hn, if_neg hxy]
+    rw [ite_eq_right hn, ite_eq_right hxy]
 
 lemma dg_io (g : Ix S → ℂ) (x : A) : (dg g * io x : SlopeTestRemainingChoices S A) = io x * dg g := by
   apply Matrix.ext

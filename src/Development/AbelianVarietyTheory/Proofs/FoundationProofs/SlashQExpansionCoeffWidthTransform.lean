@@ -80,7 +80,7 @@ theorem slash_periodic_comp {M : ℕ} {Γ : Subgroup SL(2, ℤ)} {k : ℤ} {f : 
     convert key ⟨w, hw⟩ using 2
     ext
     simp [ofComplex_apply_of_im_pos hw', add_comm]
-  · push_neg at hw
+  · push Not at hw
     have hw' : (w + M).im ≤ 0 := by simpa using hw
     simp [ofComplex_apply_of_im_nonpos hw', ofComplex_apply_of_im_nonpos hw]
 

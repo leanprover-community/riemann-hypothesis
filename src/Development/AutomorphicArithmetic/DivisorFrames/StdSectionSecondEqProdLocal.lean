@@ -83,22 +83,22 @@ private theorem core (D : D7) (ε : AE D) (Pw : Finset (Pl D.host.E)) (hε : IsI
     rfl
   simp only [stdB_eq, hb, ← RingHom.map_det]
   by_cases h : IsIntM Y ∧ ∀ i j, j.1 < a → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId (∏ w ∈ Pw, w.asIdeal ^ c w) (Y i j)
-  · rw [if_pos h, UpperTheory.unitChar_idempotentSum_eq_prod_unitInd D ε Pw hε ι pl τ hP hinj ν k]
-    · refine Finset.prod_congr rfl fun l _ => (if_pos ⟨fun i j => ?_, fun i j => ?_⟩).symm
+  · rw [ite_eq_left h, UpperTheory.unitChar_idempotentSum_eq_prod_unitInd D ε Pw hε ι pl τ hP hinj ν k]
+    · refine Finset.prod_congr rfl fun l _ => (ite_eq_left ⟨fun i j => ?_, fun i j => ?_⟩).symm
       · exact (hI i _).1.1 (h.1 i _) l
       · exact (hI i _).2.1 (h.2 i (Fin.castAdd k j) j.2) l
     · intro l
       rw [RingHom.map_det, ← hb, Matrix.det_apply']
       refine sum_mem fun σ _ => mul_mem (intCast_mem _ _) (prod_mem fun i _ => ?_)
       exact (hI _ _).1.1 (h.1 _ _) l
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     symm
     by_contra hne
     have hall : ∀ l, (∀ i j, GlobalTheory.BotMatch.evW (τ l) (Y i (Fin.natAdd a j)) ∈ 𝒪[Fv D.host.F (pl l)]) ∧
         ∀ i j, GlobalTheory.BotMatch.evW (τ l) (Y i (Fin.castAdd k j)) ∈
           GlobalTheory.SplitWeil.cball (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.unifAt (pl l) ^ c (splitPrime (τ l))) := fun l => by
       by_contra hl
-      exact hne (Finset.prod_eq_zero (Finset.mem_univ l) (if_neg hl))
+      exact hne (Finset.prod_eq_zero (Finset.mem_univ l) (ite_eq_right hl))
     refine h ⟨fun i j => (hI i j).1.2 fun l => ?_, fun i j hj => (hI i j).2.2 fun l => (hall l).2 i ⟨j.1, hj⟩⟩
     induction j using Fin.addCases with
     | left j => exact cball_sub _ _ _ ((hall l).2 i j)

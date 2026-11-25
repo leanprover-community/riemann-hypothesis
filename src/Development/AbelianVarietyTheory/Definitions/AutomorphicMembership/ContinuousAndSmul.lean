@@ -33,14 +33,6 @@ def cutoff (t : ℝ) : ℝ := if t < 1 then ((1 - t) ^ 2)⁻¹ * Real.exp (t - 1
 
 def mean (q f : (Fin d → ℂ) → ℝ) : ℝ := (∫ ξ, f ξ * cutoff (q ξ)) / ∫ ξ, cutoff (q ξ)
 
-section Mass
-
-variable {q : (Fin d → ℂ) → ℝ} (hc : Continuous q) (hh : ∀ (t : ℝ) ξ, q (t • ξ) = t ^ 2 * q ξ)
-  (hp : ∀ ξ, ξ ≠ 0 → 0 < q ξ)
-include hc hh hp
-
-end Mass
-
 end Flat
 
 section Manifold

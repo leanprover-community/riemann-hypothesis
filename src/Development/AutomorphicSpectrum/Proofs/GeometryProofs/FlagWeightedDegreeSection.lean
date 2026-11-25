@@ -42,7 +42,7 @@ theorem ιMulti_eq_prod_smul {b₀ b : Fin r → V} {t : Fin r → Ω}
   have hb : b = fun i => ∑ k, a i k • b₀ k := by
     funext i
     have e : b i = t i • b₀ i + ∑ l, d i l • b₀ l := by rw [← hd2 i]; abel
-    simp only [a, add_smul, Finset.sum_add_distrib, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [a, add_smul, Finset.sum_add_distrib, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [e, add_comm]
   have hdet : a.det = ∏ k, t k := by
     rw [Matrix.det_of_lowerTriangular a]
@@ -93,11 +93,11 @@ theorem prod_roots (D : Datum H) (τ : CMType H) {M : Type} [CommMonoid M]
   congr 1
   · refine Finset.prod_congr rfl fun k _ => ?_
     have h : ((Fin.castAdd D.q k : Fin (D.p + D.q)) : ℕ) < D.p := k.2
-    simp only [HodgeCpt.rootIdx, HodgeCpt.rootSgn, dif_pos h, if_pos h]
+    simp only [HodgeCpt.rootIdx, HodgeCpt.rootSgn, dite_eq_left h, ite_eq_left h]
     rfl
   · refine Fintype.prod_equiv Fin.revPerm _ _ fun j => ?_
     have h : ¬ ((Fin.natAdd D.p j : Fin (D.p + D.q)) : ℕ) < D.p := by simp
-    simp only [HodgeCpt.rootIdx, HodgeCpt.rootSgn, dif_neg h, if_neg h]
+    simp only [HodgeCpt.rootIdx, HodgeCpt.rootSgn, dite_eq_right h, ite_eq_right h]
     congr 2
     apply Fin.ext
     simp only [Fin.revPerm_apply, Fin.val_rev, Fin.val_natAdd]

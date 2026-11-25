@@ -91,7 +91,7 @@ variable {σ : Type} [DecidableEq σ] {H : Type} [NormedAddCommGroup H] [InnerPr
   {ι : MvPolynomial σ ℂ →ₗ[ℂ] H}
 
 theorem norm_mono (h : IsFockIP ι) (α : σ →₀ ℕ) : ‖ι (monomial α 1)‖ ^ 2 = mfact α := by
-  rw [← inner_self_eq_norm_sq (𝕜 := ℂ), h α α, if_pos rfl]
+  rw [← inner_self_eq_norm_sq (𝕜 := ℂ), h α α, ite_eq_left rfl]
   have : α.prod (fun _ k => (k.factorial : ℂ)) = ((mfact α : ℝ) : ℂ) := by
     simp [mfact, Finsupp.prod]
   rw [this]; simp
@@ -111,7 +111,7 @@ theorem norm_comb (h : IsFockIP ι) (s : Finset (σ →₀ ℕ)) (c : (σ →₀
     · simp [ha]
     by_cases hb : c b = 0
     · simp [hb]
-    rw [inner_smul_left, inner_smul_right, h, if_neg (hg a b hab ha hb)]; simp
+    rw [inner_smul_left, inner_smul_right, h, ite_eq_right (hg a b hab ha hb)]; simp
 
 theorem fock_norm_bounds (σ : Type) [DecidableEq σ] (H : Type) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] (ι : MvPolynomial σ ℂ →ₗ[ℂ] H) (h : IsFockIP ι) (i : σ) (d : ℕ)

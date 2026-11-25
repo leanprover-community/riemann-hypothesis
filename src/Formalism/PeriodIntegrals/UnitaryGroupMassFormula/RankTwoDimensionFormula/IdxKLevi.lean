@@ -41,7 +41,7 @@ theorem resT_congr (TR : TypedRed X) (v : TR.Pl) {x y : X.B.I.E ⊗[X.B.I.F] Af 
     refine (TR.res_ker ⟨_, hgt⟩).2 ?_ v
     exact ⟨X.ew * t, (IntAf X.B.I.F X.B.I.E).mul_mem X.ew_int ht, mul_left_comm _ _ _⟩
   have hsplit : (⟨x, hxm⟩ : IntAf X.B.I.F X.B.I.E) = ⟨y, hy⟩ + ⟨_, hgt⟩ := Subtype.ext hx
-  simp only [resT, dif_pos hxm, dif_pos hy]
+  simp only [resT, dite_eq_left hxm, dite_eq_left hy]
   rw [hsplit, map_add (TR.res v), h0, add_zero]
 
 theorem idxDLevi : IdxDLevi := by

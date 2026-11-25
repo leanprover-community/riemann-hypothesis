@@ -219,6 +219,6 @@ theorem dcOp_eq_heckeFunI : ∀ (L : Type) [Field L] [NumberField L] [IsCMField 
       show (γ : GAf L n ⧸ Umax L n) = c
       rw [← e]
       exact QuotientGroup.eq.2 hγx.1
-    · exact absurd (dif_neg hc) hc0
+    · exact absurd (dite_eq_right hc) hc0
 
 end GlobalTheory.InertDCOp

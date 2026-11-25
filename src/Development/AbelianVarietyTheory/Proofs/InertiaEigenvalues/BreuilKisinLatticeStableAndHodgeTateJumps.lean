@@ -573,17 +573,17 @@ theorem smul_coeff_one_eq_zero {R : Type} [CommRing R] (hR : ∀ n : ℕ, n ≠ 
       rcases Nat.lt_or_gt_of_ne hi with hi | hi
       · have : i = 0 := by omega
         subst this; simp [coeff_one]
-      · rw [if_neg (by omega), zero_mul]
+      · rw [ite_eq_right (by omega), zero_mul]
     · intro hn; exact absurd (Finset.mem_range.2 (by omega)) hn
   have hL : P.coeff 1 = Q.coeff 0 := by rw [hQ, coeff_X_mul]
   have hL2 : P.coeff 1 = y * (1 + (∑ j ∈ Finset.range t, y ^ j *
       Ring.inverse (((j + 2).factorial : ℕ) : R) * (descPochhammer R (j + 2)).coeff 1) * y) := by
-    rw [hPdef, coeff_sub, coeff_one, if_neg one_ne_zero, sub_zero, binPoly, finsetSum_coeff]
+    rw [hPdef, coeff_sub, coeff_one, ite_eq_right one_ne_zero, sub_zero, binPoly, finsetSum_coeff]
     simp only [coeff_C_mul]
     rw [Finset.sum_range_succ', Finset.sum_range_succ']
     simp only [zero_add, pow_one, pow_zero, Nat.factorial_zero, Nat.factorial_one, Nat.cast_one,
       Ring.inverse_one, descPochhammer_one, descPochhammer_zero, coeff_X_one, coeff_one,
-      if_neg one_ne_zero, mul_zero, add_zero, mul_one]
+      ite_eq_right one_ne_zero, mul_zero, add_zero, mul_one]
     have e : ∀ j ∈ Finset.range t, y ^ (j + 1 + 1) * Ring.inverse (((j + 1 + 1).factorial : ℕ) : R)
         * (descPochhammer R (j + 1 + 1)).coeff 1
         = y * ((y ^ j * Ring.inverse (((j + 2).factorial : ℕ) : R) * (descPochhammer R (j + 2)).coeff 1) * y) := by

@@ -143,30 +143,6 @@ theorem IsVerticalDivisor.of_unit_off_special {P : Ideal (MRing ι O)} {ϖ : O} 
 
 end Vertical
 
-section Graded
-
-variable {K : Type*} [DecidableEq K] {ι : K → Type*} {R : Type*} [CommRing R] {τ : Type*}
-
-end Graded
-
-section BlowUp
-
-variable {O : Type*} [CommRing O]
-
-end BlowUp
-
-section BlowUpModel
-
-variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-
-end BlowUpModel
-
-section Nodal
-
-variable {O : Type*} [CommRing O] [IsDomain O]
-
-end Nodal
-
 end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -410,7 +410,7 @@ theorem ioHarm_holds (D : D7) : IoHarm D := by
         simp at a
         linarith
     unfold parAt kapAt
-    rw [hlab, if_pos (hlabE ρ)]
+    rw [hlab, ite_eq_left (hlabE ρ)]
     rfl
   obtain ⟨x₁, x₂, x₃, hx⟩ := wts i (funext fun τ => (hpar τ).symm) M' hord
   have hact := GlobalTheory.T.weil_maximalCompact_fock_substitution_character D ψ θ (Vc D i) (Wc D i) _ _ ω _ M' BV hω hθ

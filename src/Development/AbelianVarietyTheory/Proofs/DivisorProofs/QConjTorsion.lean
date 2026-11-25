@@ -98,29 +98,29 @@ theorem _root_.GlobalTheory.WpFam.CoeffConj.main : ∀ (N : ℕ) [NeZero N] (g :
       _root_.GlobalTheory.WpFam.cB N (_root_.GlobalTheory.WpFam.vmul x (_root_.GlobalTheory.WpFam.dg a)) k := by
     unfold _root_.GlobalTheory.WpFam.cB
     rcases eq_or_ne k 0 with rfl | hk
-    · simp only [if_true, h0, h1]
+    · simp only [ite_true, h0, h1]
       split_ifs
       · simp only [map_div₀, map_pow, map_sub, map_one, hζ]
       · exact map_zero g
-    · simp only [hk, if_false]
+    · simp only [hk, ite_false]
       exact ringEquiv_cSum_eq_cSum_vmul_dg N g a hg 1 1 (map_one g) x k
   have hD : g (_root_.GlobalTheory.WpFam.cD N x k) =
       _root_.GlobalTheory.WpFam.cD N (_root_.GlobalTheory.WpFam.vmul x (_root_.GlobalTheory.WpFam.dg a)) k := by
     unfold _root_.GlobalTheory.WpFam.cD
     rcases eq_or_ne k 0 with rfl | hk
-    · simp only [if_true, h0, h1]
+    · simp only [ite_true, h0, h1]
       split_ifs
       · simp only [map_div₀, map_pow, map_sub, map_add (f := _), map_mul, map_one, hζ]
       · exact map_zero g
-    · simp only [hk, if_false]
+    · simp only [hk, ite_false]
       exact ringEquiv_cSum_eq_cSum_vmul_dg N g a hg 2 (-1) (by simp) x k
   refine ⟨hB, hD, hG, ?_⟩
   have hzero := (_root_.GlobalTheory.WpFam.Act.rightActions N).2.2.2.2.1 x (_root_.GlobalTheory.WpFam.dg a)
   unfold _root_.GlobalTheory.WpFam.cP
   by_cases hx : x = 0
-  · rw [if_pos hx, if_pos (hzero.2 hx), map_zero]
+  · rw [ite_eq_left hx, ite_eq_left (hzero.2 hx), map_zero]
   · have hx' : _root_.GlobalTheory.WpFam.vmul x (_root_.GlobalTheory.WpFam.dg a) ≠ 0 := fun h => hx (hzero.1 h)
-    simp only [hx, hx', if_false, map_sub, hB, hG]
+    simp only [hx, hx', ite_false, map_sub, hB, hG]
 
 end GlobalTheory.WpFam.CoeffConj
 end -- clump:auto

@@ -508,7 +508,7 @@ private theorem linearIndependent_frameD_of_T_ne_zero {F : Type} [Field F] [Valu
   have he := key (Fr.es j)
   rw [hg, H.h_zero_left, Fin.sum_univ_castSucc, hlast, zero_mul, add_zero] at he
   simp only [Fr.h_es, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at he
+    Finset.mem_univ, ite_true] at he
   exact he.symm
 
 theorem local_pair_linInd (Z : LocDat D) (p : PlF D) (P : LocNG.FPair (locH Z p) D.R.rS)
@@ -1043,9 +1043,9 @@ theorem tsum_classes_eq_prod_locSums : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p :
         congr 1
         refine Finset.prod_congr rfl (fun p _ => ?_)
         simp only [g, ext_in x p]
-      · push_neg at hT
+      · push Not at hT
         obtain ⟨p, hp⟩ := hT
-        have h0 : φ p.1 (x p).1 = 0 := hφ0 p.1 _ (by push_neg; exact hp)
+        have h0 : φ p.1 (x p).1 = 0 := hφ0 p.1 _ (by push Not; exact hp)
         rw [Finset.prod_eq_zero (Finset.mem_univ p) (by simp [g, h0]),
           Finset.prod_eq_zero (Finset.mem_univ p) h0, mul_zero, mul_zero]
     rw [h1, massA, ← ENNReal.tsum_mul_right]
@@ -1087,7 +1087,7 @@ theorem tsum_classes_eq_prod_locSums : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p :
         · rw [ext_out x0 p hp]; exact hr p hp
     simp only [hiff, c]
   · intro x hx
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨hr, _⟩
     apply hx
     funext p
@@ -1341,7 +1341,7 @@ theorem glue_count : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPai
   have htr := (GlobalTheory.tsum_transversal_eq_tsum_orbitQuotient ι (fun _ => True) (fun _ _ _ => trivial)
     (fun _ => trivial) hcover hinj).2 (fun x => ((MulAction.stabilizer Γ x : Set Γ).encard : ℝ≥0∞)⁻¹)
     (fun g x _ => by rw [encard_stab_smul])
-  simp only [if_true] at htr
+  simp only [ite_true] at htr
   have hfixS : ∀ x : {Λ : LV D // Λ ∈ GS}, Formalism.L2.SG.Pf.Cnt.stabFix (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') x.1 =
       Subtype.val '' (MulAction.stabilizer Γ x : Set Γ) := by
     intro x
@@ -1388,10 +1388,10 @@ theorem glue_count : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPai
       (((stabY F F' y).encard : ℝ≥0∞))⁻¹ * ∏ p ∈ P, φ p (y p) else 0) = g0 y := by
     intro y
     by_cases hc : (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (y p)) ∧ {p | y p ≠ d0 p}.Finite
-    · rw [if_pos hc, hstabYe]
+    · rw [ite_eq_left hc, hstabYe]
       show _ = _ * _
       rw [hfib, GlobalTheory.T.globalLattices_count_eq_prod_localCounts_badPlaces D Z FP u u' F G F' G' P d0 hk hB hS y hc.1 hc.2]
-    · rw [if_neg hc]
+    · rw [ite_eq_right hc]
       have hemp : π ⁻¹' {y} = ∅ := by
         ext x
         simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_empty_iff_false, iff_false]

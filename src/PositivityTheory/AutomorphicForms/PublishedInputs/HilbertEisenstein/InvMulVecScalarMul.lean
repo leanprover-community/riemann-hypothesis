@@ -211,7 +211,7 @@ theorem dom_gen {Kc : Set (Matrix (Fin 2) (Fin 2) (Ad F))} (hK : IsCompact Kc) {
       · exact Or.inl ⟨_, ⟨⟨hy.1, hy.2⟩, hA⟩, rfl⟩
       · exact Or.inr ⟨_, ⟨⟨hy.1, hy.2⟩, hA⟩, rfl⟩
     exact hmem
-  rw [norm_gJ_invN, norm_gJ_invN, if_pos (hfin 0), if_pos (hfin 1), mul_one, mul_one, ← Real.exp_add]
+  rw [norm_gJ_invN, norm_gJ_invN, ite_eq_left (hfin 0), ite_eq_left (hfin 1), mul_one, mul_one, ← Real.exp_add]
   refine (arch_norm_le _ _).trans (Real.exp_le_exp.2 ?_)
   simp_rw [pInf_vecMul]
   rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
@@ -443,10 +443,10 @@ theorem pair_sum {α : Type*} [Zero α] {f : α → ℝ} (hf0 : ∀ x, 0 ≤ f x
         fin_cases i
         · exact h0
         · exact h1
-      have : f' (ξ.1 1) = f (ξ.1 1) := by simp only [f', if_neg h1]
+      have : f' (ξ.1 1) = f (ξ.1 1) := by simp only [f', ite_eq_right h1]
       rw [this]
       linarith [mul_nonneg (hf'0 (ξ.1 0)) (hf0 (ξ.1 1))]
-    · have : f' (ξ.1 0) = f (ξ.1 0) := by simp only [f', if_neg h0]
+    · have : f' (ξ.1 0) = f (ξ.1 0) := by simp only [f', ite_eq_right h0]
       rw [this]
       linarith [mul_nonneg (hf0 (ξ.1 0)) (hf'0 (ξ.1 1))]
   have hQs : Summable (fun ξ : {ξ : Fin 2 → α // ξ ≠ 0} => g (e ξ.1)) := hQ.subtype _
@@ -599,8 +599,8 @@ theorem thetaS_bound {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (H 
     by_cases h2 : pFin F (y 0) ∈ idealFiniteAdeles (Jc c) ∧ pFin F (y 1) - 1 ∈ idealFiniteAdeles (Jc c)
     · have h3 : pFin F (y 0) ∈ L ∧ pFin F (y 1) ∈ L :=
         ⟨Or.inl h2.1, Or.inr (mem_vadd_idealFiniteAdeles.2 h2.2)⟩
-      rw [if_pos h2, if_pos h3, norm_one]
-    · rw [if_neg h2, norm_zero]
+      rw [ite_eq_left h2, ite_eq_left h3, norm_one]
+    · rw [ite_eq_right h2, norm_zero]
       split_ifs <;> norm_num
   have hsumPhi : Summable fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} =>
       ‖Phi c (rowA ξ.1 ᵥ* (h : Matrix (Fin 2) (Fin 2) (Ad F)))‖ :=

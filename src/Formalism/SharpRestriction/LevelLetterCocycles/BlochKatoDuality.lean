@@ -105,13 +105,6 @@ def PushoutSpanLengthBound : Prop :=
 
 end Main
 
-section Bridge
-
-variable {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp] [Field LL]
-    [Algebra Qp LL] [CommRing O] [Algebra O LL] [TopologicalSpace LL]
-
-end Bridge
-
 section Packet
 
 open Formalism.BasicNotions

@@ -60,7 +60,7 @@ theorem trace_mem {A : Type} [Ring A] [Algebra ℂ A] (S : Subalgebra ℂ A) (n 
       Fintype.card_fin] at hd
     exact coeff_eq_zero_of_natDegree_lt (by omega)
   have t3 : ∀ d ∈ range (n - 2), ((X : ℂ[X]) ^ d).coeff (n - 1) = 0 := fun d hd => by
-    rw [coeff_X_pow, if_neg]
+    rw [coeff_X_pow, ite_eq_right]
     have := mem_range.1 hd
     omega
   have e3 : ∑ d ∈ range (n - 2), f (Rm d) * ((X : ℂ[X]) ^ d).coeff (n - 1) = 0 :=
@@ -134,7 +134,7 @@ theorem lie_oneL_eq : lie E a (oneL E a) = ∑ τ : E →+* ℂ, ∑ i, Eop τ i
     · subst h; simp [Matrix.single_apply]
     · rw [Matrix.one_apply_ne h]
       exact (Finset.sum_eq_zero fun c _ => by
-        rw [Matrix.single_apply, if_neg fun hc => h (hc.1.symm.trans hc.2)]).symm
+        rw [Matrix.single_apply, ite_eq_right fun hc => h (hc.1.symm.trans hc.2)]).symm
 
   rw [e, map_sum]
   rfl

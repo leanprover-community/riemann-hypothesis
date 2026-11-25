@@ -30,7 +30,7 @@ theorem key (n L K : ℕ) (t : Finset ℕ) (h0t : 0 ∉ t) (h : ¬ CondA n (inse
   set s := t ∩ W.erase 0 with hs_def
   have hm : (if 0 ∈ W then K else K + 1) ≤ s.card := by
     by_cases hw : 0 ∈ W
-    · rw [if_pos hw]
+    · rw [ite_eq_left hw]
       have hsub : insert 0 t ∩ W ⊆ insert 0 s := by
         intro x hx
         rcases mem_inter.1 hx with ⟨hx1, hx2⟩
@@ -41,7 +41,7 @@ theorem key (n L K : ℕ) (t : Finset ℕ) (h0t : 0 ∉ t) (h : ¬ CondA n (inse
           exact h0t hxt
       have := (card_le_card hsub).trans (card_insert_le 0 s)
       omega
-    · rw [if_neg hw]
+    · rw [ite_eq_right hw]
       have hsub : insert 0 t ∩ W ⊆ s := by
         intro x hx
         rcases mem_inter.1 hx with ⟨hx1, hx2⟩

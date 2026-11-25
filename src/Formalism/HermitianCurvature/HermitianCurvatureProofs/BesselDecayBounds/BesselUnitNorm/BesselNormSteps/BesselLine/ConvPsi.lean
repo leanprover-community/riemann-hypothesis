@@ -51,13 +51,13 @@ theorem ell_conj {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWse
 theorem n_last {n : Mx k r} (hn : n ∈ Nset k r) {d : Fin (2 * r + k + 1) → ℂ} (hd : d ∈ lowS k r r)
     (a : Fin r) (ha : ¬ a.val + 1 < r) : (n *ᵥ d) (eI k r a) = d (eI k r a) := by
   rw [Matrix.mulVec, dotProduct, Finset.sum_eq_single (eI k r a)]
-  · rw [hn.2.1 a (eI k r a) le_rfl, if_pos rfl, one_mul]
+  · rw [hn.2.1 a (eI k r a) le_rfl, ite_eq_left rfl, one_mul]
   · intro j _ hj
     by_cases hjr : r ≤ j.val
     · rw [hd j hjr, mul_zero]
-    · push_neg at hjr
+    · push Not at hjr
       have h1 := hn.2.1 ⟨j.val, hjr⟩ (eI k r a) (by simp only [eI]; omega)
-      rw [show eI k r ⟨j.val, hjr⟩ = j from Fin.ext rfl, if_neg (Ne.symm hj)] at h1
+      rw [show eI k r ⟨j.val, hjr⟩ = j from Fin.ext rfl, ite_eq_right (Ne.symm hj)] at h1
       rw [h1, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
@@ -72,15 +72,15 @@ theorem ellT_mul {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {n m : Mx k
       have h1 := congrArg Fin.val h
       simp [eI] at h1
     rw [Finset.sum_eq_add (eI k r a) (eI k r ⟨a.val + 1, hlt⟩) hab]
-    · rw [hn.2.1 a (eI k r a) le_rfl, if_pos rfl, one_mul,
-        hm.2.1 ⟨a.val + 1, hlt⟩ (eI k r ⟨a.val + 1, hlt⟩) le_rfl, if_pos rfl, mul_one, add_comm]
+    · rw [hn.2.1 a (eI k r a) le_rfl, ite_eq_left rfl, one_mul,
+        hm.2.1 ⟨a.val + 1, hlt⟩ (eI k r ⟨a.val + 1, hlt⟩) le_rfl, ite_eq_left rfl, mul_one, add_comm]
     · intro c _ hc
       by_cases hcb : a.val + 1 ≤ c.val
-      · rw [hm.2.1 ⟨a.val + 1, hlt⟩ c hcb, if_neg hc.2, mul_zero]
-      · push_neg at hcb
+      · rw [hm.2.1 ⟨a.val + 1, hlt⟩ c hcb, ite_eq_right hc.2, mul_zero]
+      · push Not at hcb
         have hcr : c.val < r := by omega
         have h1 := hn.2.1 ⟨c.val, hcr⟩ (eI k r a) (by simp only [eI]; omega)
-        rw [show eI k r ⟨c.val, hcr⟩ = c from Fin.ext rfl, if_neg (Ne.symm hc.1)] at h1
+        rw [show eI k r ⟨c.val, hcr⟩ = c from Fin.ext rfl, ite_eq_right (Ne.symm hc.1)] at h1
         rw [h1, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ _) h
@@ -124,7 +124,7 @@ theorem psiAll : PsiAll := by
     by_contra hdet
     have h0 : n⁻¹ = 0 := Matrix.nonsing_inv_apply_not_isUnit n hdet
     have h1 := (n_inv hn).2.1 ⟨0, hr⟩ (eI k r ⟨0, hr⟩) le_rfl
-    rw [h0, if_pos rfl] at h1
+    rw [h0, ite_eq_left rfl] at h1
     simp at h1
   refine ⟨fun n hn m hm => psi_add z c (ell_mul hz hn hm), fun h hh n hn => ?_, fun h hh n hn => ?_,
     fun n hn => ?_⟩

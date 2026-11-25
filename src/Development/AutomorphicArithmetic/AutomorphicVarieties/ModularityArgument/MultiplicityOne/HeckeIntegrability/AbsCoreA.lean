@@ -676,7 +676,7 @@ private lemma trace_idem {Y : Type} [AddCommGroup Y] [Module ℂ Y] [FiniteDimen
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ Y, φ (f y) = 1 := by
     have h1 : ¬ ∀ φ : Module.Dual ℂ Y, φ (f y) = 0 := fun h =>
       hy ((Module.forall_dual_apply_eq_zero_iff ℂ (f y)).1 h)
-    push_neg at h1
+    push Not at h1
     obtain ⟨ψ, hψ⟩ := h1
     refine ⟨(ψ (f y))⁻¹ • ψ, ?_⟩
     simp [hψ]
@@ -1027,7 +1027,7 @@ theorem UpperTheory.V.Z.Mult.Pi.seenTrA :
     Prod.ext rfl (Subsingleton.elim _ _)
   rw [hcv]
   unfold PositivityTheory.Rg.BcB.G8.seen
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
   rw [UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.hint_fst (KGL w (n := n)) N (KGL w (n := 0)) _ hNK ?_ hi]
   · congr 1
     refine finsum_congr fun q => ?_

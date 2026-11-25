@@ -68,7 +68,7 @@ theorem pow_vanish (g : PowerSeries LL) (hg : PowerSeries.constantCoeff g = 0) (
   intro j hj
   have hX : (PowerSeries.X : PowerSeries LL) ∣ g := PowerSeries.X_dvd_iff.mpr hg
   obtain ⟨h, hh⟩ := pow_dvd_pow_of_dvd hX m
-  rw [hh, mul_assoc, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+  rw [hh, mul_assoc, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
 theorem pow_vanish' (g : PowerSeries LL) (hg : PowerSeries.constantCoeff g = 0) (m : ℕ) :
     ∀ j < m, PowerSeries.coeff j (g ^ m) = 0 := by

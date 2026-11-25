@@ -167,7 +167,7 @@ theorem piTensor_isIrreducible_of_schur {α : Type} [Finite α] {Γ X : α → T
     refine ⟨hU v, fun h => ?_⟩
     rw [show v = 0 from h]
     exact U.toSubmodule.zero_mem
-  push_neg at hU
+  push Not at hU
   obtain ⟨x, hxU, hx0⟩ := hU
   right
   let Asub : ∀ a, Subalgebra ℂ (Module.End ℂ (X a)) := fun i =>

@@ -170,13 +170,13 @@ theorem ch_mul_affPt {p : ℕ} {h : GL (n ⊕ Fin c) k} (hh : InN p h) (x₀ : M
   · congr 1
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hl : lev (n := n) p (Sum.inr i) < lev (n := n) p (Sum.inr j)
-    · rw [if_pos hl]
+    · rw [ite_eq_left hl]
       simp only [lev, Sum.elim_inr] at hl
       rw [affPt_of_not_free _ _ _ (by simp only [Free, Fin.val_succ]; omega)]
       simp [basePt]
-    · rw [if_neg hl]
+    · rw [ite_eq_right hl]
       simp only [lev, Sum.elim_inr] at hl
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
   · intro r _
     split_ifs with hl
     · simp only [lev, Sum.elim_inr, Sum.elim_inl] at hl

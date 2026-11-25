@@ -204,12 +204,12 @@ theorem quad_add {n N : ℕ} (S : Matrix (Fin N) (Fin N) ℂ) (z z' : Matrix (Fi
     rw [h, h]
     by_cases hj : j = k
     · subst hj
-      simp only [if_true, Matrix.mulVec_add, add_dotProduct, dotProduct_add, single_dotProduct]
+      simp only [ite_true, Matrix.mulVec_add, add_dotProduct, dotProduct_add, single_dotProduct]
       rw [Matrix.dotProduct_mulVec _ _ (Pi.single a s), dotProduct_single]
       simp [Matrix.mulVec_single]
       ring
     · simp [hj]
-  simp only [h2, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [h2, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem deriv_deriv_const_mul_cexp_bilinear_at_zero (K w q u v c : ℂ) :

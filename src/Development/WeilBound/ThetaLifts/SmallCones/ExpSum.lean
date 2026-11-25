@@ -26,7 +26,7 @@ theorem summable_lat_wt {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [F
     simp only [norm_zero, add_zero, inv_one, one_pow]
     exact le_add_of_nonneg_left (by positivity)
   · have h0 : 0 < ‖z‖ := norm_pos_iff.2 hz
-    simp only [hz, if_false, add_zero]
+    simp only [hz, ite_false, add_zero]
     gcongr
     linarith
 
@@ -53,7 +53,7 @@ theorem summable_wt {κ : Type} [Fintype κ] {C : Set (κ → Af F)} (hC : IsCom
   let S : Set (κ → F) := {ξ | (fun i => mixedEmbedding F (ξ i)) ∈ denomLattice F κ N}
   refine ((Subtype.val_injective (p := fun ξ => ξ ∈ S)).summable_iff ?_).1 ?_
   · intro ξ hξ
-    refine if_neg fun h0 => hξ ⟨⟨ξ, fun i => ?_⟩, rfl⟩
+    refine ite_eq_right fun h0 => hξ ⟨⟨ξ, fun i => ?_⟩, rfl⟩
     obtain ⟨y, hy⟩ := (GlobalTheory.IntegralFinAdele.integral_finiteAdele_properties F).2.2.2.1 ((N : F) * ξ i) fun v => by
       rw [map_mul, map_natCast]
       exact hK _ h0 i v

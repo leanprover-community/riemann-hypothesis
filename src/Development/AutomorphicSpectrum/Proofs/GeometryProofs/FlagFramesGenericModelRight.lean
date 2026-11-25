@@ -649,15 +649,15 @@ theorem exists_lu_of_leading_minors {F : Type} [Field F] {r : ℕ} (Y : Matrix (
       (fun _ _ => Finset.mem_univ _) (fun j _ hj => ?_) (fun b _ => ?_)
     · have hjk : ¬ (j : ℕ) < (k : ℕ) + 1 := fun hlt =>
         hj ⟨⟨j, hlt⟩, by simp, by ext; simp⟩
-      simp only [C, dif_neg hjk, mul_zero]
+      simp only [C, dite_eq_right hjk, mul_zero]
     · have hb : ((Fin.castLE k.2 b : Fin r) : ℕ) < (k : ℕ) + 1 := b.2
-      simp only [C, dif_pos hb]
+      simp only [C, dite_eq_left hb]
       rfl
   refine ⟨C, Y * C, fun l k hkl => ?_, fun l k hlk => ?_, fun l => ?_, rfl⟩
   · have hn : ¬ (l : ℕ) < (k : ℕ) + 1 := by
       have : (k : ℕ) < l := hkl
       omega
-    simp only [C, dif_neg hn]
+    simp only [C, dite_eq_right hn]
   · have hlt : (l : ℕ) < (k : ℕ) + 1 := by
       have : (l : ℕ) < k := hlk
       omega

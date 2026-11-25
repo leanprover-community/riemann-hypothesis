@@ -59,9 +59,9 @@ private theorem basis_det_D_update_eq_coeff {k : Type*} {S : Type*} [CommRing k]
     rw [Module.Basis.toMatrix_apply, Matrix.updateCol_apply]
     by_cases hj : j = i0
     · subst hj
-      rw [if_pos rfl, Function.update_self, hz]
+      rw [ite_eq_left rfl, Function.update_self, hz]
       simp [Finsupp.single_apply]
-    · rw [if_neg hj, Function.update_of_ne hj, ← hb, Matrix.one_apply]
+    · rw [ite_eq_right hj, Function.update_of_ne hj, ← hb, Matrix.one_apply]
       simp [Module.Basis.repr_self, Finsupp.single_apply, eq_comm]
   rw [Module.Basis.det_apply, hmat, ← Matrix.cramer_apply]
   simp [Matrix.cramer_one]

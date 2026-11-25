@@ -182,14 +182,14 @@ theorem coordSum_flag {n r : ℕ} (c : Fin r → ℂ) {L : Matrix (Fin r) (Fin n
     intro i
     split_ifs with h
     · rw [Finset.sum_eq_single ⟨i.1 + 1, h⟩]
-      · rw [if_pos rfl, hT i ⟨i.1 + 1, h⟩ rfl]
+      · rw [ite_eq_left rfl, hT i ⟨i.1 + 1, h⟩ rfl]
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h'
         exact hj (Fin.ext h')
       · intro h'; exact absurd (Finset.mem_univ _) h'
     · refine Finset.sum_eq_zero fun j _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h'
       have := j.2
       omega
@@ -199,8 +199,8 @@ theorem coordSum_flag {n r : ℕ} (c : Fin r → ℂ) {L : Matrix (Fin r) (Fin n
   refine Finset.sum_congr rfl fun i _ => ?_
   have := i.2
   by_cases h : i.1 + 1 < r
-  · rw [if_pos h, if_neg (by omega), add_zero]
-  · rw [if_neg h, if_pos (by omega), zero_add, hb i (by omega)]
+  · rw [ite_eq_left h, ite_eq_right (by omega), add_zero]
+  · rw [ite_eq_right h, ite_eq_left (by omega), zero_add, hb i (by omega)]
 
 variable {D : D7}
 
@@ -483,7 +483,7 @@ theorem mul_prod_of_separately {ι : Type} [Fintype ι] [DecidableEq ι] {X : ι
     have := hc (x i)
     rw [Function.update_eq_self, hi] at this
     simp [this]
-  push_neg at h0
+  push Not at h0
   choose x₀ hx₀ using h0
   have key : ∀ s : Finset ι, ∀ x, (∀ i, i ∉ s → x i = x₀ i) →
       β x * ∏ i ∈ s, b i (x₀ i) = β x₀ * ∏ i ∈ s, b i (x i) := by
@@ -760,7 +760,7 @@ theorem gapOver_parD (C : ℝ) (hS : LowsOver D g) (τ : D.what₂.Tau) {i : ℕ
     · exact absurd h (by simp)
     · obtain ⟨rfl, es⟩ := Prod.mk.inj e
       have hn : ¬ (l ≤ j + 1 ∨ Even (l - j - 1)) := by simpa using es.symm
-      push_neg at hn
+      push Not at hn
       exact gap_true C hS τ hi (by omega) h2 (by simpa using hn.2) hy
     · exact absurd h (by simp)
     · exact absurd h (by simp)
@@ -1015,8 +1015,8 @@ theorem besselDatum_middleVector_norm_eq {A B : HSp D} {c : ℕ} {ε : D.host.E}
       (fun k => tauE D τ ((d.besDat hε ρ h).z k)) = tauE D τ ε := by
   have h1 := congrFun (congrFun d.gram ⟨ρ, by omega⟩) ⟨ρ, by omega⟩
   have h2 : antiDiagonalSignGramMatrix c ε ⟨ρ, by omega⟩ ⟨ρ, by omega⟩ = ε := by
-    simp only [antiDiagonalSignGramMatrix, if_true]
-    rw [if_pos (by omega)]
+    simp only [antiDiagonalSignGramMatrix, ite_true]
+    rw [ite_eq_left (by omega)]
   rw [h2] at h1
   refine Eq.trans ?_ (congrArg (tauE D τ) h1)
   show star _ ⬝ᵥ _ = _
@@ -1104,7 +1104,7 @@ theorem topLine_gap (hB : BurGapPos) (hCT : CoefTensor) (hTS : TopSep) :
     rw [hb]
     beta_reduce
     rw [hb₀, key, LinearMap.smul_apply, LinearMap.smul_apply, smul_eq_mul, mul_comm]
-  · push_neg at h
+  · push Not at h
     exact ⟨0, fun F' hF' Ψ hΨ => ⟨0, fun ξ v => by rw [h F' hF' Ψ hΨ ξ v, mul_zero]⟩⟩
 
 theorem factor_gap (hB : BurGapPos) (hCT : CoefTensor) (hTS : TopSep) (hT : RowTower) (D : D7) (large₂ : SizeData₂ D)
@@ -1157,7 +1157,7 @@ theorem separate_of_burGapPos (hB : BurGapPos) (hCT : CoefTensor) (hTS : TopSep)
     refine ⟨Ψ, hΨ, Φ, hCo _ (hrow t ht) w ρ₀ ξ₀ Ψ hΨ Φ, ?_⟩
     intro h
     exact mul_ne_zero ha0 hl' ((hl ρ₀ ξ₀).symm.trans h)
-  · push_neg at h0
+  · push Not at h0
     exact ⟨Classical.arbitrary _, 0, fun t ht htne => absurd (h0 t ht) htne⟩
 
 end UpperTheory.Lit.Bur

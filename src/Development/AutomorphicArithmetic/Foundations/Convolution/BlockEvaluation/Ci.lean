@@ -439,14 +439,14 @@ private theorem UpperTheory.ConvolutionTheory.Ci.abs2 {A B : Type} (τE : ℝ ×
         · simpa [hg] using this.2 hg
     · rintro (y | y) - hg ha
       · simp only [Sum.elim_inl] at hg ha ⊢
-        rw [if_pos hg, ha]
+        rw [ite_eq_left hg, ha]
       · simp only [Sum.elim_inr] at hg ha ⊢
-        rw [if_pos hg, ha]
+        rw [ite_eq_left hg, ha]
     · rintro (y | y) - hg
       · simp only [Sum.elim_inl] at hg ⊢
-        rw [if_neg hg]
+        rw [ite_eq_right hg]
       · simp only [Sum.elim_inr] at hg ⊢
-        rw [if_neg hg]
+        rw [ite_eq_right hg]
     · intro N s₀
       obtain ⟨ME, MF, hME, hMF, hev⟩ := hb N s₀
       refine ⟨ME + (1 + ‖c‖) * MF, ?_⟩

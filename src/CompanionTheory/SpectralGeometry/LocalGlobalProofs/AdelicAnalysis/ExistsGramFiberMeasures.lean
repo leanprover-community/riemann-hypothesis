@@ -293,11 +293,11 @@ theorem fibFam_orbit {g : V → X} {b₀ : X} (w : Q → ℝ≥0) (m : Measure (
     fibFam g b₀ w m (q • b₀) = (w q : ℝ≥0∞) • m.map (fun z : (g ⁻¹' {b₀}) => q • (z : V)) := by
   have h : Function.invFun (fun q : Q => q • b₀) (q • b₀) = q :=
     Function.leftInverse_invFun ho q
-  rw [fibFam, if_pos ⟨q, rfl⟩, h]
+  rw [fibFam, ite_eq_left ⟨q, rfl⟩, h]
 
 theorem fibFam_off {g : V → X} {b₀ : X} (w : Q → ℝ≥0) (m : Measure (g ⁻¹' {b₀})) {b : X}
     (hb : b ∉ Set.range (fun q : Q => q • b₀)) : fibFam g b₀ w m b = 0 := by
-  rw [fibFam, if_neg hb]
+  rw [fibFam, ite_eq_right hb]
 
 theorem continuous_smul_fib (g : V → X) (b₀ : X) (q : Q) :
     Continuous (fun z : (g ⁻¹' {b₀}) => q • (z : V)) :=
@@ -765,7 +765,7 @@ lemma restr_family (hι : Function.Injective ι) (hg : Continuous g) (hf : ∀ v
   refine ⟨?_, ?_, ?_⟩
   · intro b
     by_cases hb : b ∈ B₂
-    · simp only [restr, if_pos hb]
+    · simp only [restr, ite_eq_left hb]
       refine measure_mono_null ?_ (h.1 b)
       intro v hv hv2
       apply hv
@@ -786,10 +786,10 @@ lemma restr_family (hι : Function.Injective ι) (hg : Continuous g) (hf : ∀ v
   · intro φ hφ hφc hφs
     have H := h.2.2 φ hφ hφc (hφs.trans (Set.preimage_mono hsub))
     refine ⟨fun b hb => ?_, ?_⟩
-    · simp only [restr, if_pos hb]
+    · simp only [restr, ite_eq_left hb]
       exact H.1 b (hsub hb)
     · refine (H.2.mono hsub).congr fun b hb => ?_
-      simp only [restr, if_pos hb]
+      simp only [restr, ite_eq_left hb]
 
 end Local
 
@@ -798,7 +798,7 @@ theorem glue : ∀ (V X Y : Type) [TopologicalSpace V] [LocallyCompactSpace V] [
   classical
   choose! C hCo hbC hCB F hF using hloc
   let fib : X → Measure V := fun b => if b ∈ B then F b b else 0
-  have hfibB : ∀ c ∈ B, fib c = F c c := fun c hc => by simp only [fib, if_pos hc]
+  have hfibB : ∀ c ∈ B, fib c = F c c := fun c hc => by simp only [fib, ite_eq_left hc]
   have hagree : ∀ a ∈ B, ∀ c ∈ C a, fib c = F a c := by
     intro a ha c hc
     have hcB : c ∈ B := hCB a ha hc
@@ -807,7 +807,7 @@ theorem glue : ∀ (V X Y : Type) [TopologicalSpace V] [LocallyCompactSpace V] [
     have u := _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq V X Y μ ν f g ι hι hg hf (C c) (C c ∩ C a) (hCo c hcB) hI
       Set.inter_subset_left (F c) (restr (C c ∩ C a) (F a)) (hF c hcB) r1 c ⟨hbC c hcB, hc⟩
     have hm : c ∈ C c ∩ C a := ⟨hbC c hcB, hc⟩
-    simp only [restr, if_pos hm] at u
+    simp only [restr, ite_eq_left hm] at u
     rw [hfibB c hcB, u]
   refine ⟨fib, ?_, ?_, ?_⟩
   · intro b

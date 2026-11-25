@@ -123,12 +123,12 @@ theorem parts_of_add (U D : Module.End ℂ (MvPolynomial σ ℂ))
   constructor
   · rw [← key U, plusPart]
     refine finsum_congr fun d => ?_
-    rw [LinearMap.add_apply, map_add (f := _), homogeneousComponent_of_mem (hU _ _ (hh d)), if_pos rfl,
-      homogeneousComponent_of_mem (hD _ _ (hh d)), if_neg (by omega), add_zero]
+    rw [LinearMap.add_apply, map_add (f := _), homogeneousComponent_of_mem (hU _ _ (hh d)), ite_eq_left rfl,
+      homogeneousComponent_of_mem (hD _ _ (hh d)), ite_eq_right (by omega), add_zero]
   · have h2 : ∀ d, homogeneousComponent d ((U + D) (homogeneousComponent (d + 2) P)) =
         D (homogeneousComponent (d + 2) P) := fun d => by
       rw [LinearMap.add_apply, map_add (f := _), homogeneousComponent_of_mem (hU _ _ (hh _)),
-        if_neg (by omega), homogeneousComponent_of_mem (hD _ _ (hh _)), if_pos (by omega), zero_add]
+        ite_eq_right (by omega), homogeneousComponent_of_mem (hD _ _ (hh _)), ite_eq_left (by omega), zero_add]
     rw [minusPart, finsum_congr h2, ← key D]
     rw [finsum_eq_sum_of_support_subset (s := Finset.range (P.totalDegree + 1)),
       finsum_eq_sum_of_support_subset (s := Finset.range (P.totalDegree + 1 + 1 + 1)),

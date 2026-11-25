@@ -129,18 +129,18 @@ theorem mulVec_inr (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) K) (
   simp only [Matrix.mulVec, dotProduct, Fintype.sum_sum_type, kosD, zero_mul, Finset.sum_const_zero, add_zero,
     Fintype.sum_sigma]
   rw [Finset.sum_eq_single ∅ (fun J _ hJ => by simp [hJ]) (by simp)]
-  simp only [if_true]
+  simp only [ite_true]
   rfl
 
 theorem kosD_inl_empty (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) K) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) K)
     (p) (k) : kosD m ev (.inl p) (.inl ⟨∅, k⟩) = 0 := by
   simp only [kosD]
-  exact Finset.sum_eq_zero fun i _ => if_neg fun h => Finset.insert_ne_empty _ _ h.2.symm
+  exact Finset.sum_eq_zero fun i _ => ite_eq_right fun h => Finset.insert_ne_empty _ _ h.2.symm
 
 theorem kosD_single_ne (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j')) K) (ev : ∀ j, Matrix (Fin d) (Fin (N j)) K)
     (p : Σ I : Finset (Fin g), Fin (N I.card)) (hp : p.1 ≠ ∅) (i) (k) : kosD m ev (.inl p) (.inl ⟨{i}, k⟩) = 0 := by
   simp only [kosD]
-  refine Finset.sum_eq_zero fun i' _ => if_neg fun h => hp ?_
+  refine Finset.sum_eq_zero fun i' _ => ite_eq_right fun h => hp ?_
   have := congrArg Finset.card h.2
   rw [Finset.card_insert_of_notMem h.1, Finset.card_singleton] at this
   exact Finset.card_eq_zero.1 (by omega)
@@ -149,8 +149,8 @@ theorem kosD_single_empty (m : Fin g → ∀ j j', Matrix (Fin (N j)) (Fin (N j'
     (ev : ∀ j, Matrix (Fin d) (Fin (N j)) K) (k' : Fin (N 0)) (i) (k : Fin (N 1)) :
     kosD m ev (.inl ⟨∅, k'⟩) (.inl ⟨{i}, k⟩) = m i 0 1 k' k := by
   simp only [kosD]
-  rw [Finset.sum_eq_single i (fun i' _ h => if_neg fun h' => h (by simpa using h'.2.symm)) (by simp),
-    if_pos (by simp)]
+  rw [Finset.sum_eq_single i (fun i' _ h => ite_eq_right fun h' => h (by simpa using h'.2.symm)) (by simp),
+    ite_eq_left (by simp)]
   simp only [Finset.filter_empty, Finset.card_empty, pow_zero, _root_.one_mul]
   rfl
 

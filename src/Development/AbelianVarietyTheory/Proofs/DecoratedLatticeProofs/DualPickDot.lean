@@ -60,7 +60,7 @@ theorem dualPick_dot {m : Type} [Fintype m] [DecidableEq m] (g : m → k) (hg : 
   classical
   have h : ∃ i, g i ≠ 0 := by
     by_contra h'
-    push_neg at h'
+    push Not at h'
     exact hg (funext h')
   unfold dualPick
   rw [dite_eq_left h]

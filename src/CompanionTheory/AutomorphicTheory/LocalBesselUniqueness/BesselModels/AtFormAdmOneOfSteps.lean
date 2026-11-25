@@ -151,7 +151,7 @@ theorem shape_of (hU : UniqGap) (hPsi : PsiConst) (hSch : SchurH) (hBC : Compani
     · exact h1
     · exact absurd h1 hNN.ne'
   have hre0 : 0 ≤ κ.re := by
-    by_contra hneg; push_neg at hneg
+    by_contra hneg; push Not at hneg
     have : κ.re * (N2 * N2) < 0 := mul_neg_of_neg_of_pos hneg hNN
     linarith [hpos.2]
   have hre : 0 < κ.re := by

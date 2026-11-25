@@ -147,7 +147,7 @@ theorem word_ct (d : LocData E n) (a : ℕ) (ha : a ≤ n) {w : Pl E} (hCt : MT.
       mconv (ctMu (Nat.add_sub_cancel' ha) w (d.μ w) A) (ctMu (Nat.add_sub_cancel' ha) w (d.μ w) B) =
         ctMu (Nat.add_sub_cancel' ha) w (d.μ w) (wordU d w l) := by
   obtain ⟨hw, hT, hS₀, hBad, hμ⟩ := hG
-  have hU : UL n w = ⊤ := if_pos hw
+  have hU : UL n w = ⊤ := ite_eq_left hw
   set C := ctMu (Nat.add_sub_cancel' ha) w (d.μ w) with hC
   have conv : ∀ {f g : UL n w → ℂ}, IsHecke (KL n w) f → IsHecke (KL n w) g → IsHecke (KL n w) (lconv f g) :=
     fun hf hg => GlobalTheory.CompanionTheory.UnitaryWord.isHecke_lconv GlobalTheory.CompanionTheory.LocHecke.locAlg (GlobalTheory.CompanionTheory.MatchPowers.isLevel_KL n w) hf hg
@@ -157,10 +157,10 @@ theorem word_ct (d : LocData E n) (a : ℕ) (ha : a ≤ n) {w : Pl E} (hCt : MT.
   have hunit : C (lone (KL n w)) = PositivityTheory.Rg.BcB.F.idem (K2 a (n - a) w) := GlobalTheory.CompanionTheory.MatchUnit.ctMu_lone _ hU _ hμ
   have hlev : d.lev a w = K2 a (n - a) w := by
     unfold LocData.lev
-    rw [if_neg hT, if_neg (by simp [hS₀, hBad])]
+    rw [ite_eq_right hT, ite_eq_right (by simp [hS₀, hBad])]
   have hlev₂ : d.lev₂ a w = K2 a (n - a) w := by
     unfold LocData.lev₂
-    rw [if_neg (by simp [hS₀, hBad])]
+    rw [ite_eq_right (by simp [hS₀, hBad])]
   have hes : (d.eL a).s w = C (lone (KL n w)) := by
     rw [hunit]
     show PositivityTheory.Rg.BcB.F.idem (d.lev a w) = _

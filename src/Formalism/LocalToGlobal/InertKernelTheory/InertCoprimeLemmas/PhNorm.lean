@@ -60,7 +60,7 @@ private lemma prim_rescale (a : K) (ha : a ≠ 0) (f : K⟦X⟧) :
   rcases n with _ | m
   · simp [Formalism.L2.Th1.B.prim]
   · simp only [Formalism.L2.Th1.B.prim, PowerSeries.coeff_rescale, PowerSeries.coeff_C_mul,
-      PowerSeries.coeff_mk, Nat.succ_ne_zero, if_false, Nat.add_sub_cancel]
+      PowerSeries.coeff_mk, Nat.succ_ne_zero, ite_false, Nat.add_sub_cancel]
     rw [pow_succ]
     field_simp
 
@@ -548,7 +548,3 @@ theorem phNormOKInert_of : Formalism.L2.KerInert.PhNormOKInert := by
 end Main
 
 end Formalism.L2.KerInert.PN
-
-namespace Formalism.L2.KerInert
-
-end Formalism.L2.KerInert

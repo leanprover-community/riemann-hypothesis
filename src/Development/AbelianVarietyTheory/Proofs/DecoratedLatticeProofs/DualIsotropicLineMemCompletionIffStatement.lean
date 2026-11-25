@@ -199,8 +199,8 @@ theorem mem_of_hA {S : HSp D} {L : Lat S} (hL : IsSelfDualC S L) {v : Pl D} {y :
     rw [Finset.sum_apply]
     have e1 : y a = ∑ a', y a' * ι * incA D (∑ i, s i a * ∑ k, star (s' i k) * S.gram k a') := by
       simp only [hdual]
-      rw [Finset.sum_eq_single a (fun b _ hb => by rw [if_neg (Ne.symm hb), map_zero, mul_zero])
-        (fun h => absurd (Finset.mem_univ a) h), if_pos rfl, map_one, mul_one]
+      rw [Finset.sum_eq_single a (fun b _ hb => by rw [ite_eq_right (Ne.symm hb), map_zero, mul_zero])
+        (fun h => absurd (Finset.mem_univ a) h), ite_eq_left rfl, map_one, mul_one]
       exact (GlobalTheory.FinPl.LatMem.mul_indP (hyAt a)).symm
     rw [e1]
 

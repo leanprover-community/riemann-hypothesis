@@ -51,8 +51,8 @@ theorem rename_base_homogeneousComponent (d : ℕ) (f : Kleiman.Poly k N) :
     rw [coeff_rename_mapDomain _ hinj, coeff_rename_mapDomain _ hinj, coeff_homogeneousComponent,
       weight_mapDomain_base]
     by_cases hd : e.degree = d
-    · rw [if_pos hd, if_pos (by rw [hd])]
-    · rw [if_neg hd, if_neg fun h => hd (congrFun h (Sum.inl ()))]
+    · rw [ite_eq_left hd, ite_eq_left (by rw [hd])]
+    · rw [ite_eq_right hd, ite_eq_right fun h => hd (congrFun h (Sum.inl ()))]
   · push Not at he
     rw [coeff_rename_eq_zero _ _ _ fun u hu => absurd hu (he u)]
     split_ifs

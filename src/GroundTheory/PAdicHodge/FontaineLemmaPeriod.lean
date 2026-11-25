@@ -274,7 +274,7 @@ theorem exists_periodT_eq_mu_mul_unit {ε : 𝒪♭} (hε : PreTilt.untilt ε = 
   refine hsum.mem (k := 1) (by rw [pow_one]; exact IsAdicComplete.le_jacobson_bot _) fun n => ?_
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp [hU0]
-  · rw [if_neg hn.ne', sub_zero]
+  · rw [ite_eq_right hn.ne', sub_zero]
     exact hUJ n hn
 
 theorem mu_mem_span_periodT {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)

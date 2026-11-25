@@ -149,7 +149,7 @@ theorem fib_of_ratio_gen (μ : Measure V) (ν : Measure X) [ν.IsAddHaarMeasure]
       setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => by simp [hx])
     rw [← hI]
     exact key
-  · push_neg at hX
+  · push Not at hX
     have hall : ∀ z : X, z = T := hX
     haveI : Subsingleton X := ⟨fun a b => (hall a).trans (hall b).symm⟩
     have hTN : T ∈ Nb := mem_of_mem_nhds hNb

@@ -21,9 +21,4 @@ section RatEl
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-theorem cT_eq {m p : Type} (M : Matrix m p X.B.I.E) : Formalism.UG.cT (starRingEnd X.B.I.E) M = Mᴴ := by
-  ext i j
-  simp only [Formalism.UG.cT, conjTranspose_apply, Matrix.transpose_apply, Matrix.map_apply]
-  rfl
-
 end RatEl

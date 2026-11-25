@@ -37,23 +37,23 @@ theorem coeff_compB (b : Fin (D + 1)) (k : ℕ) (p : MvPolynomial (TVar D N) K) 
   simp only [coeff_monomial]
   rw [Finset.sum_ite_eq']
   by_cases h : degB b t = k
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     by_cases ht : t ∈ p.support
     · have hm : t ∈ p.support.filter (fun s => degB b s = k) := Finset.mem_filter.mpr ⟨ht, h⟩
-      rw [if_pos hm]
+      rw [ite_eq_left hm]
     · have hn : t ∉ p.support.filter (fun s => degB b s = k) := fun h' => ht (Finset.mem_filter.mp h').1
-      rw [if_neg hn]
+      rw [ite_eq_right hn]
       exact (by simpa using ht : AddMonoidAlgebra.coeff p t = 0).symm
   · have hn : t ∉ p.support.filter (fun s => degB b s = k) := fun h' => h (Finset.mem_filter.mp h').2
-    rw [if_neg h, if_neg hn]
+    rw [ite_eq_right h, ite_eq_right hn]
 
 theorem mem_support_compB {b : Fin (D + 1)} {k : ℕ} {p : MvPolynomial (TVar D N) K}
     {t : TVar D N →₀ ℕ} (ht : t ∈ (compB b k p).support) : t ∈ p.support ∧ degB b t = k := by
   rw [mem_support_iff, coeff_compB] at ht
   by_cases h : degB b t = k
-  · rw [if_pos h] at ht
+  · rw [ite_eq_left h] at ht
     exact ⟨mem_support_iff.mpr ht, h⟩
-  · rw [if_neg h] at ht
+  · rw [ite_eq_right h] at ht
     exact absurd rfl ht
 
 private lemma sum_filter_block_eq_degB {D N : ℕ} (b : Fin (D + 1)) (s : TVar D N →₀ ℕ) :
@@ -130,7 +130,7 @@ theorem one_block (b : Fin (D + 1)) (z : KTf K D N)
     intro k hk
     have h4 := congrArg (fun P => _root_.AddMonoidAlgebra.coeff (M := ℕ) P k) hQ
     simpa only [Polynomial.finsetSum_coeff, Polynomial.coeff_monomial_apply,
-      Polynomial.coeff_zero, Finset.sum_ite_eq', if_pos (Finset.mem_range.mpr hk)] using h4
+      Polynomial.coeff_zero, Finset.sum_ite_eq', ite_eq_left (Finset.mem_range.mpr hk)] using h4
   have hqs : q = ∑ k ∈ Finset.range M, compB b k q := by
     ext t
     rw [MvPolynomial.coeff_sum]

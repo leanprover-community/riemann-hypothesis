@@ -88,7 +88,7 @@ theorem compP_mem : ∀ (D : D7), D.host.ccK = ⊤ → ∀ (S T : HSp D) (e : AE
     GlobalTheory.MovedIdem.isIdemAt_conj (hes PP hPP) fun x => Formalism.L2.Col.mem_conjP _ _
   have h0 : infPart D (cA D (es PP)) = 0 := GlobalTheory.PlaceVec.infPart_cA (infPart_es (hes PP hPP))
   have hm := (Submodule.mem_iInf _).1 hx PP
-  simp only [Submodule.mem_comap, expS, if_pos hPP] at hm
+  simp only [Submodule.mem_comap, expS, ite_eq_left hPP] at hm
   have hm' : (c : D.host.E) • x' ∈ Formalism.HermitianLatticesTheory.localization₂ (Formalism.L2.Col.conjPrime₂ (Formalism.L2.Col.conjPrime₂ PP)).asIdeal
       (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
     rw [conjP_conjP_self]
@@ -113,7 +113,7 @@ theorem compC_mem : ∀ (D : D7), D.host.ccK = ⊤ → ∀ (S T : HSp D) (e : AE
     rw [Formalism.L2.Col.mem_conjP, Formalism.L2.Col.cO_cO]
     exact ha
   have hm := (Submodule.mem_iInf _).1 hx (Formalism.L2.Col.conjPrime₂ PP)
-  simp only [Submodule.mem_comap, expS, if_neg hnot, conjP_conjP_self, if_pos hPP] at hm
+  simp only [Submodule.mem_comap, expS, ite_eq_right hnot, conjP_conjP_self, ite_eq_left hPP] at hm
   have hm' : (c : D.host.E)⁻¹ • x' ∈ Formalism.HermitianLatticesTheory.localization₂ (Formalism.L2.Col.conjPrime₂ PP).asIdeal
       (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') := by
     convert hm using 1
@@ -191,7 +191,7 @@ theorem exists_den {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ}
     rw [not_or] at hn
     have h : ((c : E) ^ (-expS SS Q))⁻¹ • x ∈ Formalism.HermitianLatticesTheory.localization₂ Q.asIdeal M := (Submodule.mem_iInf _).1 hx Q
     unfold expS at h
-    rw [if_neg hn.1, if_neg hn.2, neg_zero, zpow_zero, inv_one, one_smul] at h
+    rw [ite_eq_right hn.1, ite_eq_right hn.2, neg_zero, zpow_zero, inv_one, one_smul] at h
     obtain ⟨s, hs, hsx⟩ := h
     exact hs (hle ((hI s).2 hsx))
 

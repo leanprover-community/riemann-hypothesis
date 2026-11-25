@@ -757,11 +757,11 @@ theorem lift_of_conn_zero (Q : LSeq l S S') (hA : ∀ n, IsArtinian W (S.M n)) (
   let y : ∀ m, S.M m := fun m => if hm : n ≤ m then (hy m hm).choose else 0
   have hyx : ∀ m (hm : n ≤ m), Q.ρ m n (y m) = x := by
     intro m hm
-    simp only [y, dif_pos hm]
+    simp only [y, dite_eq_left hm]
     exact (hy m hm).choose_spec
   let N : ∀ m, Submodule W (S.M m) := fun m => if n ≤ m then LinearMap.ker (Q.ρ m n) else ⊤
-  have hN : ∀ m (hm : n ≤ m), N m = LinearMap.ker (Q.ρ m n) := fun m hm => if_pos hm
-  have hN' : ∀ m (hm : ¬ n ≤ m), N m = ⊤ := fun m hm => if_neg hm
+  have hN : ∀ m (hm : n ≤ m), N m = LinearMap.ker (Q.ρ m n) := fun m hm => ite_eq_left hm
+  have hN' : ∀ m (hm : ¬ n ≤ m), N m = ⊤ := fun m hm => ite_eq_right hm
   have hNr : ∀ m, ∀ u ∈ N (m + 1), S.r m u ∈ N m := by
     intro m u hu
     by_cases hm : n ≤ m

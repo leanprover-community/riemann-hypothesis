@@ -102,8 +102,6 @@ theorem prod_sub_prod_le {K Γ : Type} [Field K] [LinearOrderedCommGroupWithZero
       calc v (a j - b j) * v (∏ i ∈ s, b i) ≤ c * 1 := mul_le_mul' (hab j) hB
         _ = c := mul_one c
 
-alias main := _root_.GlobalTheory.ProdSubProdBound.prod_sub_prod_le
-
 end GlobalTheory.ProdSubProdBound
 end -- clump:auto
 end -- clump:auto
@@ -475,7 +473,7 @@ theorem depthLe_att {μ₀ : T₀} (hL : L.Is μ₀) (G : GridData L sc) {i : �
       have := G.pl.depth_pos sc v
       rw [WithZero.exp_le_exp]
       omega
-    · rw [Places.depth, if_neg h0]
+    · rw [Places.depth, ite_eq_right h0]
       exact (G.ch.lev1 i h1 h2 _ (hu.symm ▸ (G.pl.mem_S0_of_sum_eq.1 hv).resolve_left h0)).1
   have b : DepthLe G L.eta :=
     depthLe_of hL.eta (fun P _ => L.C.isEta.unr P) fun v _ x hx _ => L.C.isEta.unr _ x hx

@@ -98,10 +98,6 @@ theorem relabel_jpt {n n' : ℕ} (m : ℕ) (σ : Fin n → Fin n') (i : Fin n) :
 
 end Pts
 
-section Gen
-
-end Gen
-
 section Ser
 
 variable {S : Type} [CommRing S] (d : ℕ)
@@ -138,7 +134,7 @@ theorem cc_psTrunc {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPo
   rw [map_sum]
   simp only [MvPolynomial.constantCoeff_monomial]
   rw [Finset.sum_ite_eq']
-  rw [if_pos]
+  rw [ite_eq_left]
   · first
       | exact MvPowerSeries.coeff_zero_eq_constantCoeff_apply f
   · simp [degLE]
@@ -151,15 +147,6 @@ theorem cc_psIn {n n' : ℕ} (m : ℕ) (r : Fin n → Fin n') (f : PS S n d) :
     | (rw [MvPolynomial.constantCoeff_rename]; exact cc_psTrunc m f)
 
 end Ser
-
-section Comm
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
-variable {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ) (x : ∀ m, jOG x0 d m 1 ⟶ t.G)
-
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt)
-
-end Comm
 
 section AxTools
 

@@ -19,13 +19,6 @@ structure Rep (A V : Type) [Ring A] [StarRing A] [Algebra ℂ A] [AddCommGroup V
 
   adj : ∀ (a : A) (x y : V), β (a • x) y = β x (star a • y)
 
-section Defs
-
-variable {A S V : Type} [Ring A] [StarRing A] [Algebra ℂ A] [Fintype S] [DecidableEq S]
-  [AddCommGroup V] [Module ℂ V] [Module A V]
-
-end Defs
-
 def GrowthHypotheses {S : Type} (α β : ℝ) (w : List (Letter ℂ S)) : Prop :=
   (w.map Letter.intersection_update_fsHerm_neg_one).Nodup ∧
   (∀ l ∈ w, l.pt.im = 0 ∧ l.pt.re ∈ Set.Ioo α β ∧

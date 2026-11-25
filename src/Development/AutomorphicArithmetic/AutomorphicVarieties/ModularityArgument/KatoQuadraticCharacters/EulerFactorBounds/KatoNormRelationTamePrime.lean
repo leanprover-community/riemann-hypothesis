@@ -1770,7 +1770,7 @@ private theorem sum_filter_fiber_eq {G B : Type} [CommGroup G] [Fintype G] {H ι
   rw [Finset.sum_eq_single ((ρ i).1 * e⁻¹)]
   · simp [Prod.ext_iff]
   · intro a _ ha
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply ha
     rw [h]

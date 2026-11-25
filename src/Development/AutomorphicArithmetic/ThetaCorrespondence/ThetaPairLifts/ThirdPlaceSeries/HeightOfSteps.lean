@@ -1010,7 +1010,7 @@ theorem exists_frBor [IsGalois ℚ E] {T : CDVR} {io : c.F →+* T.Fr} {y₀ : I
   have heig := fun j => (hx τ j).isEig hP (z.eig τ j)
   have hlow : v 1 ≤ v (g τ i i) := by
     have := IsLatBasis.diag_le hv (g' := 1) (hg τ) (fun i j hij => Matrix.one_apply_ne hij.ne) (hb τ) i (by
-      simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       exact wRec_le_htLat P τ ⟨⟨x τ i, heig i⟩, rfl⟩)
     rwa [Matrix.one_apply_eq] at this
   have hp1 : 0 < p - 1 := Nat.sub_pos_of_lt hp.one_lt

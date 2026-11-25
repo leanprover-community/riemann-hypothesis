@@ -103,17 +103,17 @@ theorem continuous_block2 {α : Type*} [TopologicalSpace α] {p s : ℕ} {A : α
 theorem continuous_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) : Continuous (lowW σ) := by
   refine continuous_matrix fun a b => ?_
   by_cases h : b < a ∧ σ.symm b < σ.symm a
-  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dif_pos h]
+  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dite_eq_left h]
     exact continuous_const.add (continuous_apply _)
-  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dif_neg h]
+  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_upper {p : ℕ} : Continuous (G.upper (d := p)) := by
   refine continuous_matrix fun a b => ?_
   by_cases h : a < b
-  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dif_pos h]
+  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dite_eq_left h]
     exact continuous_const.add (continuous_apply _)
-  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dif_neg h]
+  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_subS {p : ℕ} : Continuous (subS (p := p)) := by
@@ -121,9 +121,9 @@ theorem continuous_subS {p : ℕ} : Continuous (subS (p := p)) := by
   unfold subS
   refine continuous_finsetSum _ fun i _ => ?_
   by_cases h : i.val + 1 < p
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact continuous_id.matrix_elem _ _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_const
 
 theorem continuous_supS {p : ℕ} : Continuous (supS (p := p)) := by
@@ -131,25 +131,25 @@ theorem continuous_supS {p : ℕ} : Continuous (supS (p := p)) := by
   unfold supS
   refine continuous_finsetSum _ fun i _ => ?_
   by_cases h : i.val + 1 < p
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact continuous_id.matrix_elem _ _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_const
 
 theorem continuous_cornerA {p s : ℕ} : Continuous (cornerA (p := p) (s := s)) := by
   show Continuous fun a : Fin s → Fin p → ℂ => cornerA a
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [cornerA, dif_pos h]
+  · simp only [cornerA, dite_eq_left h]
     exact continuous_apply_apply _ _
-  · simp only [cornerA, dif_neg h]
+  · simp only [cornerA, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_cornerB {p s : ℕ} : Continuous (cornerB (p := p) (s := s)) := by
   show Continuous fun b : Fin p → Fin s → ℂ => cornerB b
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [cornerB, dif_pos h]
+  · simp only [cornerB, dite_eq_left h]
     exact continuous_apply_apply _ _
-  · simp only [cornerB, dif_neg h]
+  · simp only [cornerB, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_psiH {p s : ℕ} (β : ℂ) (σ : Equiv.Perm (Fin p)) :

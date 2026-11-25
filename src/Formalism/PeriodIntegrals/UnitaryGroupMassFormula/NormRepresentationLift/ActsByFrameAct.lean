@@ -108,34 +108,34 @@ theorem exists_mul_eq_one_add_smul_of_rows_ge (g : R) (P : Matrix (Fin (r + 1)) 
       show ξ d c + (if d = a then w c else 0) =
         (if d = a then (if d = c then 1 else 0) else ξ d c) + g * (if d = a then (if a < c then q c else 0) else 0)
       by_cases hd : d = a
-      · rw [hd, if_pos rfl, if_pos rfl, if_pos rfl]
+      · rw [hd, ite_eq_left rfl, ite_eq_left rfl, ite_eq_left rfl]
         rcases lt_trichotomy c a with hca | hca | hca
-        · rw [hξ.1 a c hca, hw0 c hca.le, if_neg (ne_of_lt hca).symm, if_neg (not_lt.mpr hca.le)]
+        · rw [hξ.1 a c hca, hw0 c hca.le, ite_eq_right (ne_of_lt hca).symm, ite_eq_right (not_lt.mpr hca.le)]
           simp
-        · rw [hca, hξ.2 a, hw0 a le_rfl, if_pos rfl, if_neg (lt_irrefl a)]
+        · rw [hca, hξ.2 a, hw0 a le_rfl, ite_eq_left rfl, ite_eq_right (lt_irrefl a)]
           simp
-        · rw [hq c hca, if_neg (ne_of_lt hca), if_pos hca]
+        · rw [hq c hca, ite_eq_right (ne_of_lt hca), ite_eq_left hca]
           ring
-      · rw [if_neg hd, if_neg hd, if_neg hd]
+      · rw [ite_eq_right hd, ite_eq_right hd, ite_eq_right hd]
         simp
     have hξ₀ : UniUp ξ₀ := by
       refine ⟨fun d c hcd => ?_, fun d => ?_⟩
       · show (if d = a then (if d = c then 1 else 0) else ξ d c) = 0
         by_cases h1' : d = a
-        · rw [if_pos h1', if_neg (ne_of_lt hcd).symm]
-        · rw [if_neg h1']
+        · rw [ite_eq_left h1', ite_eq_right (ne_of_lt hcd).symm]
+        · rw [ite_eq_right h1']
           exact hξ.1 d c hcd
       · show (if d = a then (if d = d then 1 else 0) else ξ d d) = 1
         by_cases h1' : d = a
-        · rw [if_pos h1', if_pos rfl]
-        · rw [if_neg h1']
+        · rw [ite_eq_left h1', ite_eq_left rfl]
+        · rw [ite_eq_right h1']
           exact hξ.2 d
     have hid₀ : ∀ d c : Fin (r + 1), k ≤ d.val → ξ₀ d c = if d = c then 1 else 0 := by
       intro d c hdk
       show (if d = a then (if d = c then 1 else 0) else ξ d c) = _
       by_cases h1' : d = a
-      · rw [if_pos h1']
-      · rw [if_neg h1']
+      · rw [ite_eq_left h1']
+      · rw [ite_eq_right h1']
         apply hid d c
         have hne : d.val ≠ k := fun h' => h1' (Fin.ext h')
         omega
@@ -358,7 +358,7 @@ theorem tv_actsBy (F : LFlag S r T) (a : Fin r) (v : S.V) (l : E) (hee hev hve)
   unfold frameAct at hfa ⊢
   simp only [smul_coe] at hfa ⊢
   simp only [Matrix.add_apply, add_smul, Finset.sum_add_distrib, hfa, rowMat, ite_smul, zero_smul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, hfr]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, hfr]
 
 end PI.NRL
 end -- clump:auto

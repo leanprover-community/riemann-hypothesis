@@ -59,7 +59,7 @@ theorem uniformisationL2_injective (hP : IsPsiFor ε lam T Ψ) {v₀ : T.V} (hv�
     have hm := hML v
     have e1 : uniformisationL2 ε Ψ v₀ v = hm.toLp _ := by
       unfold uniformisationL2 toL2
-      exact dif_pos hm
+      exact dite_eq_left hm
     rw [e1, Lp.eq_zero_iff_ae_eq_zero]
     constructor
     · intro h g

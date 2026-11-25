@@ -33,8 +33,8 @@ theorem UpperTheory.V.Th.Sp.dlam :
     show th (MvPowerSeries.pderiv (R := O) k (MvPowerSeries.X k')) = if k = k' then 1 else 0
     by_cases h : k = k'
     · subst h
-      rw [MvPowerSeries.pderiv_X_self, map_one, if_pos rfl]
-    · rw [MvPowerSeries.pderiv_X_of_ne (Ne.symm h), map_zero, if_neg h]
+      rw [MvPowerSeries.pderiv_X_self, map_one, ite_eq_left rfl]
+    · rw [MvPowerSeries.pderiv_X_of_ne (Ne.symm h), map_zero, ite_eq_right h]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuLinked.SpectralEigenvalues.Dlam =====

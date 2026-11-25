@@ -396,7 +396,7 @@ theorem exists_local_data [GlobalTheory.IsNormalScheme Y] (B : Closeds Y)
       algebraMap (Y.presheaf.stalk x) Y.functionField ((e i).elim 1 t) = g := by
     intro i
     by_cases h : ∃ j, j ∈ J ∧ w i = w₀ j
-    · obtain ⟨j, hei, hwj⟩ : ∃ j, e i = some j ∧ w i = w₀ j := ⟨h.choose, dif_pos h, h.choose_spec.2⟩
+    · obtain ⟨j, hei, hwj⟩ : ∃ j, e i = some j ∧ w i = w₀ j := ⟨h.choose, dite_eq_left h, h.choose_spec.2⟩
       obtain ⟨hu1, -, -, -, hord, hoth⟩ := hu j
       refine ⟨u j, ?_, ?_⟩
       · refine (_root_.GlobalTheory.Cartier.MultEff.eff_supp_eq_of_mult Y (D i)).2.2.2 x (u j) fun z hz => ?_
@@ -411,7 +411,7 @@ theorem exists_local_data [GlobalTheory.IsNormalScheme Y] (B : Closeds Y)
           · exact Scheme.ord_eq_zero_of_coheight_neq_one hz1 _
       · rw [hei, hu1]
         exact algebraMap_germ hxU (f j)
-    · have hei : e i = none := dif_neg h
+    · have hei : e i = none := dite_eq_right h
       refine ⟨1, ?_, by rw [hei]; simp⟩
       refine (_root_.GlobalTheory.Cartier.MultEff.eff_supp_eq_of_mult Y (D i)).2.2.2 x 1 fun z hz => ?_
       rw [(hmult i).2 z ?_, Units.val_one, (unitAt_one z).ord_eq_zero]

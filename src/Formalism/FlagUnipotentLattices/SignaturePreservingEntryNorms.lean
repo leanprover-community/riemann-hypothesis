@@ -399,11 +399,6 @@ theorem L5_arithmetic_square : DetIndexProductPlacesInequalitySq := by
     calc detM * i₁ * i₂ ≤ (2 / g) ^ (e * f) * K₁ * K₂ / NT * Real.sqrt (G0₁ * G0₂) := hs
       _ = (2 / g) ^ (e * f) * Real.sqrt (G0₁ * G0₂) * K₁ * K₂ / NT := by ring
 
-section NF
-variable {E : Type} [Field E] [NumberField E]
-
-end NF
-
 end Formalism.HermitianLatticeCounting.P
 end -- clump:auto
 end -- clump:auto

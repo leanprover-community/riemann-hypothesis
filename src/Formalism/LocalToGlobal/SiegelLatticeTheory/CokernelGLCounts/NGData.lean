@@ -86,8 +86,4 @@ theorem ampInput_of_vanish (νL νB : X.B.I.Ginf → Measure X.B.I.Ginf) (ng : P
 
 end Def
 
-section Cut
-
-end Cut
-
 end Formalism.L2.SG.NGData

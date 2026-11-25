@@ -316,9 +316,9 @@ private theorem sum_top {R : Type} [CommRing R] {n r : ℕ} (h : r ≤ n) (X : M
   unfold NX.supSum NX.topR
   symm
   refine Finset.sum_of_injOn (Fin.castLE h) (Fin.castLE_injective h).injOn (fun _ _ => Finset.mem_univ _)
-    (fun a _ ha => Finset.sum_eq_zero fun b _ => if_neg fun hh => ha ⟨⟨a.val, by omega⟩, by simp, Fin.ext rfl⟩) fun a _ => ?_
+    (fun a _ ha => Finset.sum_eq_zero fun b _ => ite_eq_right fun hh => ha ⟨⟨a.val, by omega⟩, by simp, Fin.ext rfl⟩) fun a _ => ?_
   refine Finset.sum_of_injOn (Fin.castLE h) (Fin.castLE_injective h).injOn (fun _ _ => Finset.mem_univ _)
-    (fun b _ hb => if_neg fun hh => hb ⟨⟨b.val, hh.2⟩, by simp, Fin.ext rfl⟩) fun b _ => ?_
+    (fun b _ hb => ite_eq_right fun hh => hb ⟨⟨b.val, hh.2⟩, by simp, Fin.ext rfl⟩) fun b _ => ?_
   refine if_congr ?_ rfl rfl
   simp only [Fin.val_castLE, b.2, and_true]
   exact eq_comm
@@ -326,7 +326,7 @@ private theorem sum_top {R : Type} [CommRing R] {n r : ℕ} (h : r ≤ n) (X : M
 private theorem supSum_small {R : Type} [CommRing R] {r : ℕ} (h : ¬ 2 ≤ r) (M : Matrix (Fin r) (Fin r) R) :
     NX.supSum r M = 0 := by
   unfold NX.supSum
-  exact Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => if_neg (by have := b.2; omega)
+  exact Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => ite_eq_right (by have := b.2; omega)
 
 private theorem loc_read (s : SplitPlace L) {n r : ℕ} (h : r ≤ n) {q : ℕ} (hq : q.Prime)
     (red : s.v.adicCompletionIntegers (maximalRealSubfield L) →+* ZMod q)
@@ -441,7 +441,7 @@ theorem _root_.GlobalTheory.T.complex_typePlaceCharacter_eq_superdiag_addChar_mu
   · rw [hψ₀ hr y, hry]
   · have h0 : NG.supDiag s D.R.r x = 0 := by
       unfold NG.supDiag
-      exact Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun c _ => if_neg (by omega)
+      exact Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun c _ => ite_eq_right (by omega)
     rw [hy, h0, GlobalTheory.XUniRead.supSum_small hr, mul_zero, ofAdd_zero, map_one, Units.val_one, map_one, AddChar.map_zero_eq_one]
 end -- clump:auto
 end -- clump:auto
@@ -468,9 +468,9 @@ namespace GlobalTheory.ResidueChar
 @[reducible] def unitsDivC : DivisibleBy (Additive ℂˣ) ℤ where
   div a n := if n = 0 then 0 else
     Additive.ofMul (Units.mk0 (Complex.exp (Complex.log ((Additive.toMul a : ℂˣ) : ℂ) / n)) (Complex.exp_ne_zero _))
-  div_zero a := if_pos rfl
+  div_zero a := ite_eq_left rfl
   div_cancel {n} a hn := by
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
     apply Additive.toMul.injective
     rw [toMul_zsmul, toMul_ofMul]
     ext

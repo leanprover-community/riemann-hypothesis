@@ -71,9 +71,9 @@ theorem multiIndexFactorial_add_single (n : σ →₀ ℕ) (k : σ) :
     intro i
     by_cases hi : i = k
     · subst hi
-      rw [Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ, if_pos rfl]
+      rw [Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ, ite_eq_left rfl]
       push_cast; ring
-    · rw [Finsupp.add_apply, if_neg hi]
+    · rw [Finsupp.add_apply, ite_eq_right hi]
       simp [Ne.symm hi]
   rw [Finset.prod_congr rfl fun i _ => h i, Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ k]
   simp
@@ -141,8 +141,8 @@ theorem cntF_apply {m : ℕ} (f : Fin m → σ) (i : σ) : cntF f i = cnt f i :=
   rw [cntF, cnt, Finsupp.finsetSum_apply, Finset.card_filter]
   refine Finset.sum_congr rfl fun j _ => ?_
   by_cases h : f j = i
-  · rw [h, if_pos rfl, Finsupp.single_eq_same]
-  · rw [if_neg h, Finsupp.single_apply, if_neg h]
+  · rw [h, ite_eq_left rfl, Finsupp.single_eq_same]
+  · rw [ite_eq_right h, Finsupp.single_apply, ite_eq_right h]
 
 theorem card_cntF {m : ℕ} (f : Fin m → σ) : Multiset.card (cntF f).toMultiset = m := by
 
@@ -162,7 +162,7 @@ theorem vec_eq (v : VC D N N') :
   rw [Finset.sum_eq_single (τ, i, j)]
   · simp
   · rintro ⟨a, b, c⟩ _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨rfl, rfl, rfl⟩
     exact hb rfl
   · simp

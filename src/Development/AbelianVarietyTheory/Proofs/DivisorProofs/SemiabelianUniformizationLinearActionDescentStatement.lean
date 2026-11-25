@@ -151,7 +151,7 @@ theorem split_eq (k : thK) : Sum.elim (φA G a) (φB G) (splitEquiv k) = (pt3 G 
   simp only [Finset.mem_insert, Finset.mem_singleton] at h
   rcases h with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
   all_goals
-    simp (config := {decide := true}) only [split3, if_true, if_false, Finset.mem_insert, Finset.mem_singleton,
+    simp (config := {decide := true}) only [split3, ite_true, ite_false, Finset.mem_insert, Finset.mem_singleton,
       Sum.map_inl, Sum.map_inr, Sum.elim_inl, Sum.elim_inr]
   all_goals
     refine ⟨?_, trivial⟩

@@ -89,7 +89,7 @@ theorem mirror_chain_expansion_holds : MirrorChainExpansion := by
         ext; simp [colsVm, esI]; omega
       have hne : esI k r ⟨r - m - 2, by omega⟩ ≠ colsVm k r (m + 1) (Fin.last m) := by
         rw [hx]; intro h'; have := congrArg Fin.val h'; simp [esI] at this; omega
-      rw [tm_offdiag _ _ hne, hx, hL _ ⟨r - m - 1, by omega⟩ (by simp; omega), if_pos rfl]
+      rw [tm_offdiag _ _ hne, hx, hL _ ⟨r - m - 1, by omega⟩ (by simp; omega), ite_eq_left rfl]
       rw [colsVm_castSucc (by omega), smul_smul, smul_smul]
       congr 1
       simp only [Fin.val_last]
@@ -104,7 +104,7 @@ theorem mirror_chain_expansion_holds : MirrorChainExpansion := by
         ext; simp [colsVm, esI]
       have hne : esI k r ⟨r - m - 2, by omega⟩ ≠ colsVm k r (m + 1) (Fin.castSucc q) := by
         rw [hx]; intro h'; have := congrArg Fin.val h'; simp [esI] at this; omega
-      rw [tm_offdiag _ _ hne, hx, hL _ ⟨r - 1 - q.val, by omega⟩ (by simp; omega), if_neg (by simp; omega),
+      rw [tm_offdiag _ _ hne, hx, hL _ ⟨r - 1 - q.val, by omega⟩ (by simp; omega), ite_eq_right (by simp; omega),
         zero_smul, smul_zero]
   have hmT : La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u *
       Tm E (u - ((m + 1 : ℕ) : ℂ)) (a (Fin.castSucc (Fin.last m))) (a (Fin.last (m + 1)))) =

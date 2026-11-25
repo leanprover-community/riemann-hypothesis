@@ -186,10 +186,10 @@ theorem divCycle_eq {R : Type*} [CommRing R] [IsNoetherianRing R] (P : Ideal (MR
   rw [NumbersDVR.divCycle, hL]
   by_cases h : W ∈ (P ⊔ Ideal.span {f}).minimalPrimes ∧ NumbersDVR.IsRelevant W
   · have h' : W ∈ divSupp P f := h
-    rw [dite_eq_left h, if_pos h', multAt, dite_eq_left h.1.1.1]
+    rw [dite_eq_left h, ite_eq_left h', multAt, dite_eq_left h.1.1.1]
     rfl
   · have h' : W ∉ divSupp P f := h
-    rw [dite_eq_right h, if_neg h']
+    rw [dite_eq_right h, ite_eq_right h']
     simp
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]

@@ -83,11 +83,11 @@ theorem exists_smooth_weight_const_near_embeddings :
       by_cases htg : tg = sg
       · subst htg
         simpa using (hχ1 tg).filter_mono (nhds_le_nhdsSet he)
-      · simp only [htg, if_false]
+      · simp only [htg, ite_false]
         exact (hχ0 tg).filter_mono (nhds_le_nhdsSet
           (Set.mem_iUnion₂.2 ⟨sg, Finset.mem_erase.2 ⟨Ne.symm htg, Finset.mem_univ _⟩, he⟩))
     filter_upwards [Filter.eventually_all.2 this] with e' he'
-    simp only [g, he', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [g, he', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   let u : ((Σ k, ι k) → ℂ) → ℝ := fun z => g (projPt z)
   have hu_smul : ∀ (c : K → ℂ) z, (∀ k, c k ≠ 0) →
       (fun z => -u z) (fun p => c p.1 * z p) = (fun z => -u z) z := by

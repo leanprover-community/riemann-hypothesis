@@ -70,7 +70,7 @@ theorem dpolyOf_monomial_one (F : Fin d → PS k 2 d) {ι : Type} [Fintype ι] (
     unfold DpolyOf
     refine Finset.sum_subset MvPolynomial.support_monomial_subset fun x _ hx => ?_
     rw [MvPolynomial.notMem_support_iff.1 hx, map_zero, zero_mul]
-  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl, map_one, one_mul]
+  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl, map_one, one_mul]
 
 end GlobalTheory.PullbackColumn
 

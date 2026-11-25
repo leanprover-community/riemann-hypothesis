@@ -320,9 +320,9 @@ omit [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField
 theorem cut_eq {p : ℕ} (hp : 1 ≤ p) (hc : p < c) (χ : (n' → k) → ℂ) (y : Matrix (n ⊕ Fin c) n' k) :
     cut p χ y = χ fun s => y (Sum.inr ⟨p - 1, by omega⟩) s := by
   unfold cut
-  rw [Finset.sum_eq_single (⟨p - 1, by omega⟩ : Fin c), if_pos (by simp only; omega)]
+  rw [Finset.sum_eq_single (⟨p - 1, by omega⟩ : Fin c), ite_eq_left (by simp only; omega)]
   · intro l _ hl
-    exact if_neg fun e => hl (Fin.ext (by simp only; omega))
+    exact ite_eq_right fun e => hl (Fin.ext (by simp only; omega))
   · simp
 
 def cutL (p : ℕ) (χ : (n' → k) → ℂ) (hχ : IsLocallyConstant χ) :

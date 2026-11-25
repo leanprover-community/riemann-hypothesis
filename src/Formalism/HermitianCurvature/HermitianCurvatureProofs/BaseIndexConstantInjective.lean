@@ -182,17 +182,17 @@ theorem letter_plus_component_one (z z' : Fin (2 * r + k + 1) → ℂ) (j : ℕ)
     Formalism.FourierDecayAlt.D.vLet k r z z' j hj (true, Y) 1 f g =
       (Dmin k r z z' g ⟨j, by omega⟩)⁻¹ • C3.AAop k r (j - 1) (by omega) ((Y : ℂ) + ((2 * r + k : ℕ) : ℂ) / 2) f g := by
   show (if (1 : Fin 2) = 1 ∧ j = 0 then 0 else _) = _
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
   show (if true = true then _ else _) = _
-  rw [if_pos rfl, AAop_congr' (m₂ := j - 1) (by simp) _ (by omega)]
+  rw [ite_eq_left rfl, AAop_congr' (m₂ := j - 1) (by simp) _ (by omega)]
 
 theorem letter_plus_component_zero (z z' : Fin (2 * r + k + 1) → ℂ) (j : ℕ) (hj : j ≤ r) (Y : ℝ) (f : Q.Mx k r → E) (g : Q.Mx k r) :
     Formalism.FourierDecayAlt.D.vLet k r z z' j hj (true, Y) 0 f g =
       (Dmin k r z z' g ⟨j, by omega⟩)⁻¹ • C3.AAop k r j hj ((Y : ℂ) + ((2 * r + k : ℕ) : ℂ) / 2) f g := by
   show (if (0 : Fin 2) = 1 ∧ j = 0 then 0 else _) = _
-  rw [if_neg (by simp)]
+  rw [ite_eq_right (by simp)]
   show (if true = true then _ else _) = _
-  rw [if_pos rfl, AAop_congr' (m₂ := j) (by simp) _ hj]
+  rw [ite_eq_left rfl, AAop_congr' (m₂ := j) (by simp) _ hj]
 
 theorem letter_minus_component_one (z z' : Fin (2 * r + k + 1) → ℂ) (j : ℕ) (hj : j ≤ r) (hj1 : 1 ≤ j) (Y : ℝ) (f : Q.Mx k r → E)
     (g : Q.Mx k r) :
@@ -200,17 +200,17 @@ theorem letter_minus_component_one (z z' : Fin (2 * r + k + 1) → ℂ) (j : ℕ
       (conj (Dmin k r z z' g ⟨j, by omega⟩))⁻¹ •
         C3.AAvop k r (j - 1) (by omega) ((Y : ℂ) - ((2 * r + k : ℕ) : ℂ) / 2) f g := by
   show (if (1 : Fin 2) = 1 ∧ j = 0 then 0 else _) = _
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
   show (if false = true then _ else _) = _
-  rw [if_neg (by simp), AAvop_congr' (m₂ := j - 1) (by simp) _ (by omega)]
+  rw [ite_eq_right (by simp), AAvop_congr' (m₂ := j - 1) (by simp) _ (by omega)]
 
 theorem letter_minus_component_zero (z z' : Fin (2 * r + k + 1) → ℂ) (j : ℕ) (hj : j ≤ r) (Y : ℝ) (f : Q.Mx k r → E) (g : Q.Mx k r) :
     Formalism.FourierDecayAlt.D.vLet k r z z' j hj (false, Y) 0 f g =
       (conj (Dmin k r z z' g ⟨j, by omega⟩))⁻¹ • C3.AAvop k r j hj ((Y : ℂ) - ((2 * r + k : ℕ) : ℂ) / 2) f g := by
   show (if (0 : Fin 2) = 1 ∧ j = 0 then 0 else _) = _
-  rw [if_neg (by simp)]
+  rw [ite_eq_right (by simp)]
   show (if false = true then _ else _) = _
-  rw [if_neg (by simp), AAvop_congr' (m₂ := j) (by simp) _ hj]
+  rw [ite_eq_right (by simp), AAvop_congr' (m₂ := j) (by simp) _ hj]
 
 theorem dmin_nf (z z' : Fin (2 * r + k + 1) → ℂ) (x₁ : Q.Mx k r) (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ) (τ : ℂ)
     (hj : i0 + s ≤ r)
@@ -223,7 +223,7 @@ theorem dmin_nf (z z' : Fin (2 * r + k + 1) → ℂ) (x₁ : Q.Mx k r) (i0 s : �
   congr 1
   ext a b
   simp only [Matrix.of_apply]
-  rw [hnf _ _ (by simp; omega), if_pos (by simp [C3.xR, eI]; omega)]
+  rw [hnf _ _ (by simp; omega), ite_eq_left (by simp [C3.xR, eI]; omega)]
   simp [C3.xR, eI]
 
 theorem letter_plus_component_one_eq_smul_component_zero (hD : IsOpen D) (z z' : Fin (2 * r + k + 1) → ℂ) (i0 s : ℕ) (hs : 1 ≤ s) (hj : i0 + s ≤ r)

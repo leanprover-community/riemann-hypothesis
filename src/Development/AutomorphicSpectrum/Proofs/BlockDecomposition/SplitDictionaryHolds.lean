@@ -99,7 +99,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 theorem mem_UL {w : Pl E} (hw : IsSplitAt w) (g : GLw n w) : g ∈ UL n w := by
   unfold UL
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
   exact Subgroup.mem_top g
 
 theorem splitDict : PositivityTheory.Rg.BcB.F.Eig.SplitDict := by

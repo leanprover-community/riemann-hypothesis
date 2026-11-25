@@ -97,7 +97,7 @@ theorem finite_resK (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (hK : FiniteD
       rw [h1]
       exact (norm_sub_le_max' _ _).trans (max_le (norm_le_one x) hxy'.le)
     refine ⟨y, hy, ?_⟩
-    have hg : g y = res ⟨(y : PadicAlgCl p), mem_Obar_iff.2 hy1⟩ := dif_pos hy1
+    have hg : g y = res ⟨(y : PadicAlgCl p), mem_Obar_iff.2 hy1⟩ := dite_eq_left hy1
     rw [hg]
     exact ((res_eq_iff x ⟨(y : PadicAlgCl p), mem_Obar_iff.2 hy1⟩).2 hxy').symm
   exact (htf.image g).subset hsub

@@ -695,8 +695,8 @@ private theorem lev_max (S : Finset (Pl K)) (U : ∀ w : Pl K, Subgroup (Gw n w)
   have h : finAt v (finEmb K n u) ∈ if v ∈ S then U v else GLnLocal.integralGL (v.adicCompletion K) n := hu v
   have h2 : finAt v (finEmb K n u) ∈ GLnLocal.integralGL (v.adicCompletion K) n := by
     by_cases hv : v ∈ S
-    · rw [if_pos hv] at h; exact (hU v).2 h
-    · rwa [if_neg hv] at h
+    · rw [ite_eq_left hv] at h; exact (hU v).2 h
+    · rwa [ite_eq_right hv] at h
   have e : finAt v (finEmb K n u) = AdelicGLn.finiteRestrictedEquiv K n u v := by
     show (AdelicGLn.finiteRestrictedEquiv K n (AdelicGLn.prodEquiv K n (finEmb K n u)).2) v = _
     rw [prodEquiv_finEmb]

@@ -72,17 +72,17 @@ private theorem position_left {Z : Finset (Pl E)} (T : Finset (Pl E)) (L : Lv a 
   intro k hk y
   unfold intersection_update_fsHerm_neg_one
   by_cases h1 : w ∈ Z
-  · simp only [if_pos h1]
+  · simp only [ite_eq_left h1]
     exact ((hφ w h1).2 k hk y).1
-  · simp only [if_neg h1]
+  · simp only [ite_eq_right h1]
     have hk' : k ∈ K2 a b w := by
       have ho := L.off w h1
       rw [ho.1, ho.2] at hk
       exact hk
     by_cases h2 : w ∈ T
-    · simp only [if_pos h2]
+    · simp only [ite_eq_left h2]
       exact ((UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.exHecke2 E a b w (e w)).2 k hk' y).1
-    · simp only [if_neg h2]
+    · simp only [ite_eq_right h2]
       have hc : k * y ∈ (K2 a b w : Set (GLw a w × GLw b w)) ↔ y ∈ (K2 a b w : Set (GLw a w × GLw b w)) :=
         (K2 a b w).mul_mem_cancel_left hk'
       by_cases hy : y ∈ (K2 a b w : Set (GLw a w × GLw b w))

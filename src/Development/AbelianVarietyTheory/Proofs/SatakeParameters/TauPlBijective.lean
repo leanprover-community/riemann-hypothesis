@@ -81,7 +81,7 @@ theorem tauPl_bijective (D : D7) : Function.Bijective (tauPl D) := by
   constructor
   · rintro ⟨b, t⟩ ⟨b', t'⟩ h
     have h1 : plGG D (b, t) = plGG D (b', t') := congrArg Subtype.val (D.eTau.symm.injective h)
-    cases b <;> cases b' <;> simp only [plGG, if_true, if_false, Bool.false_eq_true] at h1
+    cases b <;> cases b' <;> simp only [plGG, ite_true, ite_false, Bool.false_eq_true] at h1
     · rw [show t = t' from hinj (congrArg Prod.snd h1)]
     · exact absurd h1 (hP.2 _ _)
     · exact absurd h1.symm (hP.2 _ _)

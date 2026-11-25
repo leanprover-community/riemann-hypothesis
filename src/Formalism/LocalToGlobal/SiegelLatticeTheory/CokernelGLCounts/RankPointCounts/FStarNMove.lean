@@ -204,7 +204,7 @@ theorem exists_move {T T' : E} (F : FlagG S r T) (P Q : FlagG S r T')
       have : Pi.single b (1 : E) ∈ LinearMap.ker ℓ := by rw [htop]; trivial
       rw [LinearMap.mem_ker, hℓ] at this
       simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-        if_true] at this
+        ite_true] at this
       exact hb (by simpa using this)
     have h3 := Submodule.finrank_lt h2
     simp only [Module.finrank_fin_fun] at h3

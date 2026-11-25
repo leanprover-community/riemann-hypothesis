@@ -179,7 +179,7 @@ theorem hilb_cone_le_of_span {K : Type} [Field K] {X : Scheme.{0}} (p : X ⟶ Sp
       ∀ j, v.1 j = TorsionZero.val x _ h ((s j).f l) * c := by
     rintro ⟨v, x, hx, l, c, hl, hv⟩
     exact ⟨x, l, c, hx, hl, fun j => (hv j).trans ((_root_.mul_comm _ _).trans
-      (congrArg (· * (c : K)) (dif_pos hl)))⟩
+      (congrArg (· * (c : K)) (dite_eq_left hl)))⟩
   choose x l c hx hl hv using hC
   let β : Fin m → cone p (lbPow L N) s → K := fun i v =>
     TorsionZero.val (x v) _ (hl v) ((b i).f (l v)) * c v ^ d

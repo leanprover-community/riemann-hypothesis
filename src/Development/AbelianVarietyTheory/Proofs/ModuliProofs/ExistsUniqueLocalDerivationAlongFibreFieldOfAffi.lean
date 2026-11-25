@@ -53,7 +53,7 @@ namespace GlobalTheory.LocDerExtK
 open GlobalTheory.LocDerExt
 
 theorem rsT_eq {Y : Scheme.{0}} {O₀ O : Y.Opens} (h : O ≤ O₀) (s : Γ(Y, O₀)) :
-    rsT s O = resG Y h s := dif_pos h
+    rsT s O = resG Y h s := dite_eq_left h
 
 theorem exists_locDerK : ∀ (K : Type) [Field K] (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp K) (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → K) (W₀ : X.Opens), IsAffineOpen W₀ → ∀ d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀), (∀ a b, d₀ (a + b) = d₀ a + d₀ b) → (∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a) → (∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) → ∃ d, LocDerK q p m D W₀ d ∧ d W₀ = d₀ := by
   intro K _ R _ Y X q p m D W₀ hW d₀ hadd hmul hbase
@@ -107,25 +107,25 @@ theorem exists_locDerK : ∀ (K : Type) [Field K] (R : Type) [CommRing R] (Y X :
   classical
   refine ⟨fun W s => if h : W ≤ W₀ then t W h s else 0, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
   · intro W h a b
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     refine sep m hW h _ _ (fun f k => ?_)
     rw [map_add (f := _), ht W h _ f k, ht W h _ f k, ht W h _ f k, map_add (f := _), δadd]
   · intro W h a b
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     refine sep m hW h _ _ (fun f k => ?_)
     rw [map_add (f := _), map_mul, map_mul, ht W h _ f k, ht W h _ f k, ht W h _ f k, map_mul, δmul, app_res m k, app_res m k]
   · intro W W' h' h a
-    simp only [dif_pos h, dif_pos (h'.trans h)]
+    simp only [dite_eq_left h, dite_eq_left (h'.trans h)]
     refine sep m hW (h'.trans h) _ _ (fun f k => ?_)
     rw [rsT_eq (m.preimage_mono h')]
     refine Eq.trans ?_ (res_res Y (m.preimage_mono h') (m.preimage_mono k) _).symm
     rw [ht W' _ _ f k, ht W h a f (k.trans h'), res_res X]
   · intro W h r
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     refine sep m hW h _ _ (fun f k => ?_)
     rw [ht W h _ f k, res_const, res_const, ← res_const p (X.basicOpen_le f), δres, hbase, res_const]
   · funext a
-    simp only [dif_pos (le_refl W₀)]
+    simp only [dite_eq_left (le_refl W₀)]
     refine sep m hW le_rfl _ _ (fun f k => ?_)
     rw [ht W₀ _ _ f k, δres]
 

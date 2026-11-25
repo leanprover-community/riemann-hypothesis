@@ -47,10 +47,4 @@ theorem hermForm_real_smul_right {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (t 
     simp [Complex.conj_ofReal]
   rw [h1, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
-section Prim
-
-variable {U : Unf Xo c σ r} {k : U.Comp} {x : (U.X k).dom} (W : UnfAt U k x)
-
-end Prim
-
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

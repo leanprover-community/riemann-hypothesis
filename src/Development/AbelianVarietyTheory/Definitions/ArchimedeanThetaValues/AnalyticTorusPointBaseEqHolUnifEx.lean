@@ -86,7 +86,7 @@ theorem isDiff_zero {O : Type} [CommRing O] [StarRing O] (A : AnArc O) [IsEmpty 
   have e := GlobalTheory.Points.valR_constFn_of_over (𝟙 (Sp ℂ)) (algebraMap ℂ (DualNumber ℂ)) v.left hv U h (valAt' (𝟙 (Sp ℂ)) U f)
   have e' := (congrArg (valR v.left U) hf).trans e
   unfold valR at e'
-  rw [dif_pos h] at e'
+  rw [dite_eq_left h] at e'
   exact (congrArg TrivSqZeroExt.snd e').trans rfl
 
 variable (c : Coeff l) (bF : c.F →+* ℂ) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
@@ -278,12 +278,5 @@ def toDict (Λ : letI := H.starRing; GlobalTheory.ArcPts.GtAn a) : letI := H.sta
     iota := isIota Λ }
 
 end Bridge
-
-section Test
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
-  [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
-
-end Test
 
 end GlobalTheory.GtAnModel

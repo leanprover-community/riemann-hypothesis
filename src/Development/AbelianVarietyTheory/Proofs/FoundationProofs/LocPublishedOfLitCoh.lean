@@ -923,7 +923,7 @@ theorem tors_bound : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebr
   by_cases hnm : n < m
   · exact (hBf n N z (fun i => ⟨(hz i).1, (hz i).2.1⟩) hnc).trans
       ((Finset.le_sup (f := Bf) (Finset.mem_range.2 hnm)).trans (le_max_left _ _))
-  push_neg at hnm
+  push Not at hnm
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hnm
   refine le_trans ?_ (le_max_right _ _)
   choose x hxO hx using hcob
@@ -1174,7 +1174,7 @@ theorem dual_classes_unbounded : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → �
   intro hL l _ Ω _ _ _ e S A W hN hG
   obtain ⟨y, hyZ, hyU, hyG, hyB⟩ : ∃ y ∈ Z1 (Loc.colRep W), Unr W y ∧ Gr W A y ∧
       y ∉ ReciprocityTheory.Gal.B1 (Loc.colRep W) := by
-    unfold GrZero at hG; push_neg at hG; exact hG
+    unfold GrZero at hG; push Not at hG; exact hG
   have hcol : ∀ s (x : Fin 2 → Qbar l), Loc.colRep W s x = mat W s *ᵥ x := fun s x => by
     simp [Loc.colRep, Matrix.toLin'_apply]
   obtain ⟨c0, hc0⟩ := hN.int

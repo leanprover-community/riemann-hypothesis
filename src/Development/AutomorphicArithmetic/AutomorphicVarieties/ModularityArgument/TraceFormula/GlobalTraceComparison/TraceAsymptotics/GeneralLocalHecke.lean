@@ -450,7 +450,7 @@ private theorem constant_term_parabolic_average {n : ℕ} (w : Pl E) (hw : IsSpl
     ⟨fun a b => Multiplicative.toAdd.injective (by ext i j; exact j.elim0)⟩
   have hU : ∀ y : GLw n w, y ∈ UL n w := fun y => by
     unfold UL
-    rw [if_pos hw]
+    rw [ite_eq_left hw]
     trivial
   have hs : ∀ y : GLw n w, (toSub (UL n w) y : GLw n w) = y := fun y => by
     unfold toSub

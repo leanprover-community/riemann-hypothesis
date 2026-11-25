@@ -222,16 +222,6 @@ def RowTie (rowLen : ℕ → ℕ∞) : Prop :=
           b * ((lenOl (Br.PD D.loc D.nbr i (plOf i dc n) hw)
             (O := ↥(OL (TruncatedSeriesCountingIdentities.CoefExt.self i (plOf i dc n) hw).LL))).toNat : ℚ)
 
-private theorem plOf_idx_of_mem_plSet (v : HeightOneSpectrum (𝓞 D.host.E)) (hv : v ∈ plSet i dc) :
-    plOf i dc (idx i dc v) = v := by
-  have h1 : idx i dc v = ((plSet i dc).equivFin ⟨v, hv⟩ : ℕ) := by
-    unfold idx
-    rw [dite_eq_left hv]
-  rw [h1]
-  unfold plOf
-  rw [dite_eq_left (Fin.is_lt _)]
-  simp
-
 end Row
 
 end Formalism.MainNotions.N.K.Sel
@@ -287,7 +277,7 @@ theorem bkAt_of_loc
     rcases (dc.cover w).mpr hw with h' | h'
     · simp [h']
     · simp [h']
-  have e : plOf i dc (idx i dc w) = w := plOf_idx_of_mem_plSet i dc w hwp
+  have e : plOf i dc (idx i dc w) = w := plOf_idx i dc hwp
   generalize hn : idx i dc w = n at *
   subst e
   apply h n hmem hw

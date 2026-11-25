@@ -281,7 +281,7 @@ private theorem span_pos (W : Weil D) (M : Meas ℚ) (π : TR.CuspSub ℚ 2) (h�
     rw [e]
     by_cases h0 : ∀ x, f.1 x = 0
     · simp [lift, h0]
-    · push_neg at h0
+    · push Not at h0
       obtain ⟨x, hx⟩ := h0
       have h1 : ((ω (ideleNorm ℚ E z) : ℂˣ) : ℂ) = 1 := by
         have h2 := hω f hf (ideleNorm ℚ E z) x

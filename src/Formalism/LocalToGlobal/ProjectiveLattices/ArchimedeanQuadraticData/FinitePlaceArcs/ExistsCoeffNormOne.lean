@@ -43,9 +43,9 @@ theorem subA_sum {K : Type} [Field K] (A : ∀ τ : E →+* ℂ, Matrix (Fin (Dw
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Finset.sum_eq_single ⟨y.1, y.2.1, k⟩]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg hb, map_zero, zero_mul]
+    rw [ite_eq_right hb, map_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

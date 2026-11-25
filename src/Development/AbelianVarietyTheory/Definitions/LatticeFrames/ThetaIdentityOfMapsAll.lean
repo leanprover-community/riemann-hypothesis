@@ -127,12 +127,6 @@ def SBes.Adapted {X : HidaSetting D} {h : X.B.I = Formalism.L2.SG.InstExistsPf.i
 
 end Model
 
-section MI
-
-variable {F₀ : ∀ u, Formalism.L2.Forms.Forms0 D u} (S : STrue D F₀) (u : D.what₂.Word) (W : Tower D) (L : Link D u W)
-
-end MI
-
 
 end GlobalTheory.Core.Mi
 

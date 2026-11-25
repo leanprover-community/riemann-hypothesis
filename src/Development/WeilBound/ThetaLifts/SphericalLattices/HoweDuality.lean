@@ -215,7 +215,7 @@ theorem exists_invariant {κ : Type} [Fintype κ] {φ : (κ → Fv F v) → ℂ}
       have := hNx x (y - x) hyx
       rwa [show x + (y - x) = y by abel] at this
     rw [h1, h2]
-  · push_neg at hy
+  · push Not at hy
     have hyK : y ∉ tsupport φ := fun hyK => by
       obtain ⟨x, hx, hyx⟩ := Set.mem_iUnion₂.1 (ht hyK)
       exact hy x hx hyx
@@ -268,8 +268,8 @@ theorem mem_span_boxes (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (�
         rfl
       rw [Pi.smul_apply, Set.indicator_apply]
       by_cases h : (x : (κ → Fv F v) ⧸ BG v κ N) = q
-      · rw [if_pos (hm.2 h), if_pos h, Pi.one_apply, smul_eq_mul, mul_one]
-      · rw [if_neg (fun h' => h (hm.1 h')), if_neg h, smul_zero]
+      · rw [ite_eq_left (hm.2 h), ite_eq_left h, Pi.one_apply, smul_eq_mul, mul_one]
+      · rw [ite_eq_right (fun h' => h (hm.1 h')), ite_eq_right h, smul_zero]
     rw [Finset.sum_apply]
     simp_rw [hterm]
     rw [Finset.sum_ite_eq]
@@ -870,11 +870,11 @@ theorem exists_integral_form_separating {R K : Type} [CommRing R] [IsDomain R]
   · obtain ⟨j, hj⟩ := h2
     refine ⟨(z / B.repr t (Sum.inr j)) • B.coord (Sum.inr j), fun i => ?_, ?_⟩
     · rw [LinearMap.smul_apply, ← hB, Module.Basis.coord_apply, Module.Basis.repr_self,
-        Finsupp.single_apply, if_neg Sum.inl_ne_inr, smul_zero]
+        Finsupp.single_apply, ite_eq_right Sum.inl_ne_inr, smul_zero]
       exact ⟨0, map_zero _⟩
     · rw [LinearMap.smul_apply, Module.Basis.coord_apply, smul_eq_mul, div_mul_cancel₀ _ hj]
       exact hz
-  push_neg at h1 h2
+  push Not at h1 h2
   choose c hc using h1
   exfalso
   apply ht

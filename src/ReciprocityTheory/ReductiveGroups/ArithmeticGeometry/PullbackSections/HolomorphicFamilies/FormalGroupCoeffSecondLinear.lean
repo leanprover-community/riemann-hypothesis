@@ -45,7 +45,7 @@ theorem coeff_lin_ev {m n : ℕ} (a : Fin m → Pt R n d) (ha : ∀ j i, constan
         · have he0 : e = 0 := by
             have : e.degree = 0 := by omega
             exact (Finsupp.degree_eq_zero_iff e).1 this
-          rw [he0, Finsupp.prod_zero_index, coeff_one, if_neg]
+          rw [he0, Finsupp.prod_zero_index, coeff_one, ite_eq_right]
           exact Finsupp.single_ne_zero.2 one_ne_zero
         · have hdegree : e.degree = 1 := by omega
           obtain ⟨p, rfl⟩ := (Finsupp.sum_eq_one_iff e).mp hdegree
@@ -66,7 +66,7 @@ theorem coeff_X_single {n : ℕ} (q p : Fin n × Fin d) :
   rw [coeff_X]
   by_cases h : q = p
   · simp [h]
-  · rw [if_neg, if_neg h]
+  · rw [ite_eq_right, ite_eq_right h]
     intro h'
     exact h (Finsupp.single_left_injective one_ne_zero h')
 
@@ -83,8 +83,8 @@ theorem formal_group_coeff_first_linear (G : FGLaw R d) (i l : Fin d) :
       fin_cases j <;> simp [pt])] at e
   rw [Fintype.sum_prod_type, Fin.sum_univ_two] at e
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, pt, coeff_X_single] at e
-  simp only [Prod.mk.injEq, false_and, if_false, mul_zero,
-    Finset.sum_const_zero, zero_add, true_and, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+  simp only [Prod.mk.injEq, false_and, ite_false, mul_zero,
+    Finset.sum_const_zero, zero_add, true_and, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
     zero_ne_one] at e
   rw [← e, formal_group_coeff_second_linear]
 

@@ -115,7 +115,7 @@ theorem index_off_range {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (I : �
   have hT0 : (0 : ℤ) ≤ ∑ i, ∑ m, |mu i m| := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
   simp only [colRange, Finset.mem_Icc, not_and_or, not_le] at hc
   rcases hc with hc | hc
-  · rw [if_neg (by omega)]
+  · rw [ite_eq_right (by omega)]
     have : colH (pEnd mu) c = n := by
       unfold colH
       rw [Finset.filter_true_of_mem]
@@ -125,7 +125,7 @@ theorem index_off_range {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (I : �
         have := hT m
         omega
     omega
-  · rw [if_pos (by omega)]
+  · rw [ite_eq_left (by omega)]
     unfold colH
     rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
     intro m _

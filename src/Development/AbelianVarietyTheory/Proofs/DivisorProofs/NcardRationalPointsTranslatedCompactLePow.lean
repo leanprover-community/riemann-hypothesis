@@ -96,7 +96,7 @@ theorem exists_den_of_isCompact {F : Type} [Field F] [NumberField F] {K : Set (F
   obtain ⟨z, hz, haz⟩ := Set.mem_iUnion₂.1 (ht ha)
   have hex : ∃ a : F, algebraMap F (FiniteAdeleRing (𝓞 F) F) a ∈ U z := ⟨a, haz⟩
   have hA : algebraMap F (FiniteAdeleRing (𝓞 F) F) (A ⟨z, hz⟩) ∈ U z := by
-    simp only [A, dif_pos hex]; exact hex.choose_spec
+    simp only [A, dite_eq_left hex]; exact hex.choose_spec
   obtain ⟨c, hc⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one (R := 𝓞 F) F (a - A ⟨z, hz⟩) fun v => by
     have h1 := sub_mem (haz v) (hA v)
     have e : (algebraMap F (FiniteAdeleRing (𝓞 F) F) a - z) v -

@@ -65,13 +65,13 @@ theorem rowDiv_eq_zero_of_unipotent_fixed {n : ℕ} (nu : DomWeight n) (q : MvPo
       intro i j hij
       have hij' : j < i := hij
       simp only [Matrix.transpose_apply, lfockq_mat]
-      rw [if_neg hij'.ne, if_neg, add_zero]
+      rw [ite_eq_right hij'.ne, ite_eq_right, add_zero]
       rintro ⟨rfl, rfl⟩
       exact lt_asymm hab hij'
     have hdiag : ∀ i, (lfockq_mat a b t).transpose i i = 1 := by
       intro i
       simp only [Matrix.transpose_apply, lfockq_mat]
-      rw [if_pos trivial, if_neg, add_zero]
+      rw [ite_eq_left trivial, ite_eq_right, add_zero]
       rintro ⟨h1, h2⟩
       exact hab.ne (h2.symm.trans h1)
     have hdet : (lfockq_mat a b t).transpose.det = 1 := by
@@ -93,7 +93,7 @@ theorem rowDiv_eq_zero_of_unipotent_fixed {n : ℕ} (nu : DomWeight n) (q : MvPo
     rintro _ ⟨t, rfl⟩
     show Polynomial.eval _ _ = Polynomial.eval _ _
     rw [lfockq_eval_rowGen, hfix, Polynomial.eval_C]
-  rw [rowDiv, hP, Polynomial.coeff_C, if_neg (by omega)]
+  rw [rowDiv, hP, Polynomial.coeff_C, ite_eq_right (by omega)]
 
 theorem exists_ne_zero_map_eq_zero_of_weight_ne (n : ℕ) (mu nu : DomWeight n) (hne : mu ≠ nu)
     (φ : (sqRep ℂ n mu).IntertwiningMap (sqRep ℂ n nu)) :

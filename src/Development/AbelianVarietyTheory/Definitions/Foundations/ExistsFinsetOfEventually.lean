@@ -79,8 +79,8 @@ theorem isCylProd_of_large (hK' : ∀ v, MeasurableSet (K' v)) (S₀ : Finset V)
   rw [cyl_eq_of_subset (K := K) (T := S ∪ S₀) Finset.subset_union_left
     (fun v hv => hK v fun h' => hv (Finset.mem_union_right _ h')), h _ Finset.subset_union_right _ _ hA fun v _ => ?_]
   · congr 1
-    rw [← Finset.prod_subset Finset.subset_union_left fun v _ hv => by simp only [if_neg hv, hS v hv]]
-    exact Finset.prod_congr rfl fun v hv => by simp only [if_pos hv]
+    rw [← Finset.prod_subset Finset.subset_union_left fun v _ hv => by simp only [ite_eq_right hv, hS v hv]]
+    exact Finset.prod_congr rfl fun v hv => by simp only [ite_eq_left hv]
   · by_cases hvS : v ∈ S
     · simpa [hvS] using hB v hvS
     · simpa [hvS] using hK' v

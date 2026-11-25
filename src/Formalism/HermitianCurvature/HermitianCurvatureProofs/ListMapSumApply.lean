@@ -86,7 +86,7 @@ def mkTerm (D : RealPlaceData k r Wp Wq) {nf : ℕ} (fib : Fin nf → Mat k r �
 lemma mkTerm_word (D : RealPlaceData k r Wp Wq) {nf : ℕ} (fib : Fin nf → Mat k r → C6.EndH Wp Wq)
     {e : CT k r nf × List (Mat k r)} (h : ∀ X ∈ e.2, inLie k r X) : (mkTerm D fib e).word = e.2 := by
   dsimp only [mkTerm]
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 lemma opApply_mk (D : RealPlaceData k r Wp Wq) {nf : ℕ} (fib : Fin nf → Mat k r → C6.EndH Wp Wq) (Lf : FS k r nf)
     (hL : ∀ e ∈ Lf, ∀ X ∈ e.2, inLie k r X) (F : Mat k r → (Wq →L[ℂ] Wp)) (g : Mat k r) :
@@ -131,7 +131,7 @@ lemma compFS_bound (D : RealPlaceData k r Wp Wq) {nf : ℕ} {L : Finset (Fin (r 
       by_cases h1 : e₁.1.a l ≠ 0 ∨ e₁.1.b l ≠ 0
       · exact hG₁a l h1
       · apply hG'a l
-        push_neg at h1
+        push Not at h1
         rcases hl with hl | hl
         · left; omega
         · right; omega

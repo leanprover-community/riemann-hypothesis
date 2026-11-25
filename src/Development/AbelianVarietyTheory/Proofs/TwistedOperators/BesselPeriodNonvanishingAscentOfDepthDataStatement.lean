@@ -128,9 +128,9 @@ theorem ascent_of_rungs : TowerEx → Rung0 → RungB → RungJ → Ascent := by
   refine ⟨ρ, Φ, ?_⟩
   let f : ∀ i, Fn G (.grid i 0) := fun i => if hi : i ≤ D.R.m then part W M ρ Φ u i hi else 0
   have hf : f D.R.m = thetaChi W M ρ Φ u := by
-    simp only [f, dif_pos le_rfl]; rfl
+    simp only [f, dite_eq_left le_rfl]; rfl
   have := hE.top (r - 1) hk hk' Ψ f (hΨ.1 _ le_rfl) (by rw [hf, ← part_m]; exact hu ρ Φ _ le_rfl) (by
-    simp only [f, dif_pos hk]; exact hne)
+    simp only [f, dite_eq_left hk]; exact hne)
   rwa [hf] at this
 
 end GlobalTheory.Asc

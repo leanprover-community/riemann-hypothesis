@@ -79,24 +79,24 @@ theorem labelSymp_eq (g M : ℕ) (a b : Fin g ⊕ Fin g → ZMod M) :
     labelSymp (a ∘ (halves g).symm) (b ∘ (halves g).symm) = eStd g M a b := by
   have h₁ : ∀ i j : Fin g, stdSymp g (halves g (.inl i)) (halves g (.inl j)) = 0 := fun i j => by
     have := i.2; have := j.2
-    rw [stdSymp, halves_inl, halves_inl, if_neg (by omega), if_neg (by omega)]
+    rw [stdSymp, halves_inl, halves_inl, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₂ : ∀ i j : Fin g, stdSymp g (halves g (.inl i)) (halves g (.inr j)) = if i = j then 1 else 0 := fun i j => by
     have := i.2; have := j.2
     rw [stdSymp, halves_inl, halves_inr]
     by_cases h : i = j
-    · rw [if_pos h, if_pos (by subst h; omega)]
+    · rw [ite_eq_left h, ite_eq_left (by subst h; omega)]
     · have : (i : ℕ) ≠ j := fun q => h (Fin.ext q)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₃ : ∀ i j : Fin g, stdSymp g (halves g (.inr i)) (halves g (.inl j)) = if i = j then -1 else 0 := fun i j => by
     have := i.2; have := j.2
     rw [stdSymp, halves_inl, halves_inr]
     by_cases h : i = j
-    · rw [if_pos h, if_neg (by omega), if_pos (by subst h; omega)]
+    · rw [ite_eq_left h, ite_eq_right (by omega), ite_eq_left (by subst h; omega)]
     · have : (i : ℕ) ≠ j := fun q => h (Fin.ext q)
-      rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
   have h₄ : ∀ i j : Fin g, stdSymp g (halves g (.inr i)) (halves g (.inr j)) = 0 := fun i j => by
     have := i.2; have := j.2
-    rw [stdSymp, halves_inr, halves_inr, if_neg (by omega), if_neg (by omega)]
+    rw [stdSymp, halves_inr, halves_inr, ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [labelSymp, ← (halves g).sum_comp]
   simp_rw [← (halves g).sum_comp]
   simp [Fintype.sum_sum_type, h₁, h₂, h₃, h₄, eStd, sub_eq_add_neg, Finset.sum_add_distrib, add_comm]

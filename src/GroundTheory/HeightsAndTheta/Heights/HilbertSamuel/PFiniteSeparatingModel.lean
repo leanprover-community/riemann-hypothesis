@@ -91,10 +91,10 @@ theorem exists_separating [Fintype σ] (S : Finset (σ → ℂ)) (x : σ → ℂ
     have h1 := congrArg (fun r => _root_.AddMonoidAlgebra.coeff (M := ℕ) r (k i : ℕ)) h
     simp only [q, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_zero] at h1
     rw [Finset.sum_eq_single i] at h1
-    · rw [if_pos rfl] at h1
+    · rw [ite_eq_left rfl] at h1
       exact hi (sub_eq_zero.mp h1)
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h'
       exact hj (k.injective (Fin.ext h'.symm))
     · simp

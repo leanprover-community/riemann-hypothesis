@@ -211,21 +211,21 @@ theorem fmat_mul [Fintype ι] (ε : ι → Fin m → Bool) (k k' : ι → Matrix
     fmat ε (k * k') (u * u') = fmat ε k u * fmat ε k' u' := by
   ext ⟨s, a, b⟩ ⟨t, i, j⟩
   rw [Matrix.mul_apply, Fintype.sum_prod_type, Finset.sum_eq_single t]
-  · simp only [fmat, Matrix.of_apply, Pi.mul_apply, Matrix.mul_inv_rev, if_true]
+  · simp only [fmat, Matrix.of_apply, Pi.mul_apply, Matrix.mul_inv_rev, ite_true]
     by_cases h1 : s = t
-    · simp only [h1, if_true]
+    · simp only [h1, ite_true]
       rw [Fintype.sum_prod_type]
       cases hi : ε t i
-      · simp only [Bool.false_eq_true, if_false, Matrix.mul_apply, Finset.sum_mul_sum]
+      · simp only [Bool.false_eq_true, ite_false, Matrix.mul_apply, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
         cases hc : ε t c
-        · simp only [Bool.false_eq_true, if_false]; ring
+        · simp only [Bool.false_eq_true, ite_false]; ring
         · rw [entry_eq_zero (inv_comm (hk' t)) (a := i) (i := c) (by simp [hi, hc])]; simp
-      · simp only [if_true, Matrix.mul_apply, Finset.sum_mul_sum]
+      · simp only [ite_true, Matrix.mul_apply, Finset.sum_mul_sum]
         refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
         cases hc : ε t c
         · rw [entry_eq_zero (hk' t).2 (a := c) (i := i) (by simp [hi, hc])]; simp
-        · simp only [if_true]; ring
+        · simp only [ite_true]; ring
     · simp [h1]
   · intro r _ hr
     simp [fmat, hr]
@@ -238,7 +238,7 @@ theorem fmat_conj (ε : ι → Fin m → Bool) (k : ι → Matrix (Fin m) (Fin m
   simp only [fmat, Matrix.of_apply, Matrix.conjTranspose_apply, ← Matrix.conjTranspose_nonsing_inv]
   by_cases h1 : s = t
   · subst h1
-    simp only [if_true]
+    simp only [ite_true]
     cases hi : ε s i <;> cases ha : ε s a
     · simp
     · rw [entry_eq_zero (hk s).2 (a := i) (i := a) (by simp [hi, ha]),
@@ -268,7 +268,7 @@ theorem fsub_eq_lsub (ε : D.what₂.Tau → Fin m → Bool) (k : D.what₂.Tau 
   refine MvPolynomial.algHom_ext fun v => ?_
   rw [FMul.lsub_X, fsub, MvPolynomial.aeval_X, Fintype.sum_prod_type, Finset.sum_eq_single v.1,
     Fintype.sum_prod_type]
-  · simp only [FMul.fmat, Matrix.of_apply, if_true]
+  · simp only [FMul.fmat, Matrix.of_apply, ite_true]
   · intro r _ hr
     simp [FMul.fmat, hr]
   · simp

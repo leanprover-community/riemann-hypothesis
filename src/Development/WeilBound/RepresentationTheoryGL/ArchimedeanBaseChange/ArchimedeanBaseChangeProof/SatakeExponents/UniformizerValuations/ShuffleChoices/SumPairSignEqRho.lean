@@ -241,14 +241,14 @@ theorem half {n a : ℕ} (s : Finset (Fin (n / 2))) (hp : a % 2 + (n - a) % 2 = 
     rw [Finset.mul_sum, sum_ind s]
     refine Finset.sum_congr rfl fun i _ => ?_
     by_cases his : i ∈ s
-    · rw [if_pos his, Finset.mul_sum, sum_ind sᶜ]
+    · rw [ite_eq_left his, Finset.mul_sum, sum_ind sᶜ]
       refine Finset.sum_congr rfl fun j _ => ?_
       by_cases hjs : j ∈ sᶜ
       · have hij : i ≠ j := by rintro rfl; exact (Finset.mem_compl.mp hjs) his
         simp only [hT, mem_lo, mem_hi, his, hjs, ↓reduceIte]
         exact pt4 x hx i j hij
       · simp only [hT, mem_lo, mem_hi, his, hjs, ↓reduceIte, add_zero]
-    · rw [if_neg his]
+    · rw [ite_eq_right his]
       simp only [hT, mem_lo, mem_hi, his, ↓reduceIte, add_zero, Finset.sum_const_zero]
   have q : ∀ i u, T (lo n i) (md n u) + T (hi n i) (md n u) + T (md n u) (lo n i) + T (md n u) (hi n i) =
       if a % 2 = 1 then (if i ∈ sᶜ then lOf x i else 0) else (if i ∈ s then lOf x i else 0) := by

@@ -72,7 +72,7 @@ lemma alternatingMap_sub_base_eq_alternating_sum_removeNth (q : ℕ) (f : V [⋀
     f (fun j => v j.succ - v 0) = ∑ i : Fin (q + 1), (-1 : ℝ) ^ (i : ℕ) * f (i.removeNth v) := by
   classical
   have h := alternatingMap_sub_on_finset_eq_sub_sum_update f (v 0) Finset.univ (fun j => v j.succ)
-  simp only [Finset.mem_univ, if_true] at h
+  simp only [Finset.mem_univ, ite_true] at h
   have hj : ∀ j : Fin q, f (update (fun j => v j.succ) j (v 0)) =
       (-1 : ℝ) ^ (j : ℕ) * f (j.succ.removeNth v) := by
     cases q with

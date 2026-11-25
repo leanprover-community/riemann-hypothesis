@@ -35,8 +35,8 @@ theorem gram_pos {E : Type} [Field E] [NumberField E] [StarRing E] (hs : ∀ x :
   funext i j
   refine (Examples₂.stdSpace_gram_apply hs n (fun _ => false) n 0 i j).trans ?_
   by_cases h : i = j
-  · subst h; rw [Matrix.one_apply_eq]; exact (if_pos rfl).trans (by simp [Examples₂.sgn])
-  · rw [Matrix.one_apply_ne h]; exact if_neg h
+  · subst h; rw [Matrix.one_apply_eq]; exact (ite_eq_left rfl).trans (by simp [Examples₂.sgn])
+  · rw [Matrix.one_apply_ne h]; exact ite_eq_right h
 
 theorem rk_top (D : D7) : D.sp.X'.rank + 1 = (D.sp.X D.R.m).rank := by
   have h1 := rankP D
@@ -129,8 +129,8 @@ theorem isEmbTop_topDec (hG : (D.sp.X D.R.m).gram = 1) (hG' : D.sp.X'.gram = 1)
       show _ = incA D (if D.sp.X'.rank = a then 1 else 0) * incA D c
       rw [← map_mul]
       by_cases ha : D.sp.X'.rank = a
-      · rw [if_pos ha, if_pos (this.2 ha), one_mul]
-      · rw [if_neg ha, if_neg (fun h => ha (this.1 h)), zero_mul]
+      · rw [ite_eq_left ha, ite_eq_left (this.2 ha), one_mul]
+      · rw [ite_eq_right ha, ite_eq_right (fun h => ha (this.1 h)), zero_mul]
     have ez' := congrFun ez b
     rw [ez, ez', ← e]
     refine Eq.trans ?_ (congrArg (· * incA D c) Matrix.mul_apply).symm

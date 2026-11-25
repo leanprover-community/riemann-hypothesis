@@ -127,11 +127,11 @@ theorem exists_isModel_of_isThetaAt : ∀ (D : D7) (k : Type) [Field k] [Valuati
       funext t
       rw [one_smul, ext_apply, halfInd]
       by_cases ht : IsHalf p.e t
-      · rw [if_pos ht, hO, Set.indicator_apply]
+      · rw [ite_eq_left ht, hO, Set.indicator_apply]
         refine if_congr ?_ rfl rfl
         rw [and_iff_left ht, ← up_down p FS FT ht, down_up, hlat]
         rfl
-      · rw [if_neg ht, if_neg fun h => ht h.2]
+      · rw [ite_eq_right ht, ite_eq_right fun h => ht h.2]
     change T₀ (ext p FS FT O) = f₀
     rw [e1]
     exact h₀.vac

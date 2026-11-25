@@ -73,7 +73,7 @@ theorem Bop_box (ε : Fin m → Bool) (c : ℝ) (Λ : PX m n →ₗ[ℂ] ℂ) (R
   · rintro x ⟨s, hs, hR, rfl⟩
     rw [Bop_mono]
     unfold Bm
-    rw [if_pos hs]
+    rw [ite_eq_left hs]
     refine Submodule.sum_mem _ fun t ht => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
     obtain ⟨htF, htr⟩ := (mem_cand ε _ t).mp ht
     exact ⟨t, htF, by rw [htr]; exact hR, rfl⟩

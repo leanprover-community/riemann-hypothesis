@@ -22,16 +22,10 @@ private theorem dR_apply' (κ : I → J → K) (j : J) (R : MvPolynomial (I ⊕ 
     dR κ j R = ∑ i, κ i j • pderiv (Sum.inl i) R := by
   simp [dR]
 
-theorem commute_gdelta_dL (κ : I → J → K) (i : I) : Commute (gdelta κ) (dL κ i) :=
-  PI.WickFormula.Gen.commute_gdelta_dL κ i
-
 theorem commute_gdelta_dR (κ : I → J → K) (j : J) : Commute (gdelta κ) (dR κ j) := by
   unfold dR
   exact Commute.sum_right _ _ _ fun i _ =>
     Commute.smul_right (commute_gdelta_pd κ (Sum.inl i)) _
-
-theorem gdelta_dL_apply (κ : I → J → K) (i : I) (S : MvPolynomial (I ⊕ J) K) :
-    gdelta κ (dL κ i S) = dL κ i (gdelta κ S) := LinearMap.congr_fun (commute_gdelta_dL κ i).eq S
 
 theorem gdelta_dR_apply (κ : I → J → K) (j : J) (S : MvPolynomial (I ⊕ J) K) :
     gdelta κ (dR κ j S) = dR κ j (gdelta κ S) := LinearMap.congr_fun (commute_gdelta_dR κ j).eq S
@@ -44,10 +38,6 @@ theorem gdelta_pow_succ_apply (κ : I → J → K) (m : ℕ) (S : MvPolynomial (
 theorem gdelta_apply (κ : I → J → K) (R : MvPolynomial (I ⊕ J) K) :
     gdelta κ R = ∑ i, ∑ j, κ i j • pderiv (Sum.inl i) (pderiv (Sum.inr j) R) :=
   PI.WickFormula.Gen.gdelta_apply κ R
-
-theorem gdelta_X_inl (κ : I → J → K) (i : I) (R : MvPolynomial (I ⊕ J) K) :
-    gdelta κ (X (Sum.inl i) * R) = X (Sum.inl i) * gdelta κ R + dL κ i R := by
-  apply PI.WickFormula.Gen.gdelta_X_inl
 
 theorem gdelta_X_inr (κ : I → J → K) (j : J) (R : MvPolynomial (I ⊕ J) K) :
     gdelta κ (X (Sum.inr j) * R) = X (Sum.inr j) * gdelta κ R + dR κ j R := by
@@ -63,8 +53,8 @@ theorem gdelta_X_inr (κ : I → J → K) (j : J) (R : MvPolynomial (I ⊕ J) K)
     simp only [smul_eq_mul]
     by_cases h : j' = j
     · subst h
-      rw [pderiv_X_self, mul_one, if_pos rfl]
-    · rw [pderiv_X_of_ne (fun e => h (Sum.inr_injective e).symm), mul_zero, add_zero, if_neg h, add_zero]
+      rw [pderiv_X_self, mul_one, ite_eq_left rfl]
+    · rw [pderiv_X_of_ne (fun e => h (Sum.inr_injective e).symm), mul_zero, add_zero, ite_eq_right h, add_zero]
   have h3 : ∀ (i' : I) (j' : J), pderiv (Sum.inl i') (pderiv (Sum.inr j') (X (Sum.inr j) * R)) =
       X (Sum.inr j) * pderiv (Sum.inl i') (pderiv (Sum.inr j') R) +
         if j' = j then pderiv (Sum.inl i') R else 0 := by
@@ -75,7 +65,7 @@ theorem gdelta_X_inr (κ : I → J → K) (j : J) (R : MvPolynomial (I ⊕ J) K)
   refine Finset.sum_congr rfl fun i' _ => ?_
   rw [Finset.mul_sum]
   simp only [h3, smul_add, Finset.sum_add_distrib, mul_smul_comm, smul_ite, smul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end
 

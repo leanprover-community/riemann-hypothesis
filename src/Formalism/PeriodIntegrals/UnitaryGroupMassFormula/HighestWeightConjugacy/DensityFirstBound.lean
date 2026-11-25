@@ -250,11 +250,11 @@ theorem var_hom (v : (L →+* ℂ) × Fin n × Fin n) :
   obtain ⟨σ, i, j⟩ := v
   by_cases h : σ = (InfinitePlace.mk σ).embedding
   · refine ⟨X (InfinitePlace.mk σ, i, j) * DlP, fun Y _ => ?_⟩
-    simp only [repPt, if_pos h, map_mul, eval_X, eval_DlP, coords]
+    simp only [repPt, ite_eq_left h, map_mul, eval_X, eval_DlP, coords]
     ring
   · refine ⟨(Mx (InfinitePlace.mk σ)).adjugate j i *
       ∏ w ∈ Finset.univ.erase (InfinitePlace.mk σ), (Mx w).det, fun Y hY => ?_⟩
-    simp only [repPt, if_neg h, map_mul, map_prod, eval_adj_Mx, eval_det_Mx]
+    simp only [repPt, ite_eq_right h, map_mul, map_prod, eval_adj_Mx, eval_det_Mx]
     rw [Matrix.inv_def, Matrix.smul_apply, Dl,
       ← Finset.mul_prod_erase Finset.univ (fun w => (Y w).det) (Finset.mem_univ (InfinitePlace.mk σ)),
       Ring.inverse_eq_inv', smul_eq_mul]

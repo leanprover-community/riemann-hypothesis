@@ -694,7 +694,7 @@ theorem eval_iterDer_aeval {R B : Type} [CommRing R] [CommRing B] [Algebra R B] 
         eval_iterDer_aeval ε y D hy hD L (pderiv j Q) (hP j)]
 
     rw [der_aeval, map_sum, map_sum]
-    simp only [key, hD, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [key, hD, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem exists_mul_coeff_eq_zero (d N : ℕ) : ∃ K : ℕ, 0 < K ∧ ∀ (R B : Type) [CommRing R] [CommRing B] [Algebra R B]
     (ε : B →ₐ[R] R) (y : Fin d → B) (D : Fin d → Derivation R B B), (∀ i, ε (y i) = 0) →
@@ -835,8 +835,8 @@ theorem exists_compatible_coordinates (p : ℕ) [Fact p.Prime] (C : Type) [Field
     rw [LinearMap.comp_apply, LinearEquiv.coe_coe, h, Submodule.liftQ_apply, LinearMap.comp_apply,
       Module.Basis.coord_apply, b.repr_self, Finsupp.single_apply]
     by_cases hij : i = j
-    · rw [if_pos hij, if_pos hij.symm]; rfl
-    · rw [if_neg hij, if_neg (Ne.symm hij), map_zero]
+    · rw [ite_eq_left hij, ite_eq_left hij.symm]; rfl
+    · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), map_zero]
 
 end GlobalTheory.PDiv
 end -- clump:auto
@@ -963,10 +963,10 @@ theorem trunc_dec : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A] [Algebr
     simp only [Finset.mem_filter]
   refine ⟨P, ?_, ?_, ?_⟩
   · intro α hα
-    rw [cP, if_neg]
+    rw [cP, ite_eq_right]
     omega
   · intro α hα
-    rw [cP, if_pos ⟨memF α (lt_of_lt_of_le hα (le_max_left _ _)), hα⟩]
+    rw [cP, ite_eq_left ⟨memF α (lt_of_lt_of_le hα (le_max_left _ _)), hα⟩]
   · have hrest : (p : A) ^ n ∣ E (f - (P : MvPowerSeries (Fin d) O) - (Q : MvPowerSeries (Fin d) O)) := by
       apply hM
       intro α hα
@@ -1328,27 +1328,6 @@ section -- clump:auto
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 open TensorProduct
 
-namespace GlobalTheory.FinProjComplete
-
-theorem mem_span_pow_smul_top_iff (p : ℕ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    (n : ℕ) (x : M) :
-    x ∈ (Ideal.span {(p : R)}) ^ n • (⊤ : Submodule R M) ↔ ∃ m : M, x = (p ^ n : ℕ) • m := by
-  rw [Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
-    Submodule.mem_smul_pointwise_iff_exists]
-  constructor
-  · rintro ⟨m, -, rfl⟩
-    exact ⟨m, by rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]⟩
-  · rintro ⟨m, rfl⟩
-    exact ⟨m, Submodule.mem_top, by rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]⟩
-
-theorem smodEq_iff (p : ℕ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    (n : ℕ) (x y : M) :
-    x ≡ y [SMOD ((Ideal.span {(p : R)}) ^ n • (⊤ : Submodule R M))] ↔
-      ∃ m : M, x - y = (p ^ n : ℕ) • m := by
-  rw [SModEq.sub_mem, mem_span_pow_smul_top_iff]
-
-end GlobalTheory.FinProjComplete
-
 open GlobalTheory.FinProjComplete in
 theorem GlobalTheory.FinProjComplete.isAdicComplete_span_natCast : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A] [Algebra O A] [Module.Finite O A] [Module.Projective O A] [IsAdicComplete (Ideal.span {(p : O)}) O], IsAdicComplete (Ideal.span {(p : A)}) A := by
   apply GlobalTheory.FinProjComplete.isAdicComplete_span_natCast_of_finite_projective
@@ -1404,7 +1383,7 @@ theorem pushVars_monomial {j : σ → ι} (hj : Function.Injective j) (α : σ �
   · obtain ⟨α', rfl⟩ := h
     rw [coeff_pushVars_mapDomain hj, coeff_monomial, coeff_monomial]
     simp only [(Finsupp.mapDomain_injective hj).eq_iff]
-  · rw [coeff_pushVars_of_not _ _ h, coeff_monomial, if_neg]
+  · rw [coeff_pushVars_of_not _ _ h, coeff_monomial, ite_eq_right]
     rintro rfl
     exact h ⟨α, rfl⟩
 
@@ -1459,7 +1438,7 @@ theorem exists_eval_pushVars (p : ℕ) {A C : Type} [CommRing A] [CommRing C] [A
         · simp [Finsupp.notMem_support_iff.1 hi]
       show α i ≤ N
       omega
-    rw [map_sub, MvPolynomial.coeff_coe, coeff_trunc', if_pos hle, sub_self]
+    rw [map_sub, MvPolynomial.coeff_coe, coeff_trunc', ite_eq_left hle, sub_self]
   have hgA : (p : A) ^ m ∣ evA g := hN2 g fun α hα => hg α (lt_of_lt_of_le hα (le_max_right _ _))
   have hgE : (p : C) ^ m ∣ E (pushVars j g) := by
     apply hN1

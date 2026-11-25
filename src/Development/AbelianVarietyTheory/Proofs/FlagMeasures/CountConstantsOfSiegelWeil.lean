@@ -637,8 +637,8 @@ theorem finite_term (hK : ∀ v, HasCompactSupport (φ v)) (x : I.GA) : {y | ter
   unfold term at hy
   have hx : y ∈ lamX I x := by
     by_contra hx
-    exact hy (if_neg hx)
-  rw [if_pos hx] at hy
+    exact hy (ite_eq_right hx)
+  rw [ite_eq_left hx] at hy
   refine ⟨hx, fun τ i => ?_⟩
   obtain ⟨v, hv⟩ := GlobalTheory.RatDiscrete.exists_place I τ
   have h1 := hC v _ (subset_tsupport _ (Finset.prod_ne_zero_iff.1 hy v (Finset.mem_univ v)))
@@ -685,8 +685,8 @@ theorem sum_eq (β : I.E) (x : I.GA) :
     change _ = ENNReal.ofReal (term I φ x y)
     unfold term
     by_cases hy : y ∈ lamX I x
-    · rw [Set.indicator_of_mem (by exact ⟨hy, h⟩), if_pos hy]
-    · rw [Set.indicator_of_notMem (by exact fun h' => hy h'.1), if_neg hy, ENNReal.ofReal_zero]
+    · rw [Set.indicator_of_mem (by exact ⟨hy, h⟩), ite_eq_left hy]
+    · rw [Set.indicator_of_notMem (by exact fun h' => hy h'.1), ite_eq_right hy, ENNReal.ofReal_zero]
   · have h1 : (Equiv.funUnique (Fin 1) (Fin I.n → I.E)).symm y ∉
         {X : Fin 1 → Fin I.n → I.E | hE I.cm.sig I.J (X 0) (X 0) = β} := fun h' => by
       have h'' : hE I.cm.sig I.J y y = β := h'
@@ -742,9 +742,9 @@ theorem test_eq_term (θ : InfinitePlace I.F → (Ainf I.F ⊗[I.F] I.E →+* �
     rfl
   unfold term
   by_cases hx : X 0 ∈ lamX I (T h)
-  · rw [if_pos hx, Set.indicator_of_mem (by exact e1.2 hx), Pi.one_apply, mul_one]
+  · rw [ite_eq_left hx, Set.indicator_of_mem (by exact e1.2 hx), Pi.one_apply, mul_one]
     simp only [e2]
-  · rw [if_neg hx, Set.indicator_of_notMem (by exact fun h' => hx (e1.1 h')), mul_zero, Complex.ofReal_zero]
+  · rw [ite_eq_right hx, Set.indicator_of_notMem (by exact fun h' => hx (e1.1 h')), mul_zero, Complex.ofReal_zero]
 
 theorem test_smooth (θ : InfinitePlace I.F → (Ainf I.F ⊗[I.F] I.E →+* ℂ))
     (hθ : ∀ v, Formalism.MainNotions.StandardLattice.IsInfEmb (I.φ v) (θ v))
@@ -1071,7 +1071,7 @@ theorem hasCompactSupport_prodFun (k n : ℕ) : HasCompactSupport (prodFun (cutE
   refine HasCompactSupport.intro (isCompact_closedBall (0 : Fin n → ℂ) (k + 1)) fun y hy => ?_
   have hk : (0 : ℝ) ≤ k := k.cast_nonneg
   rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg (by linarith)] at hy
-  push_neg at hy
+  push Not at hy
   obtain ⟨i, hi⟩ := hy
   refine Finset.prod_eq_zero (Finset.mem_univ i) ?_
   rw [cutExp, Real.smoothTransition.zero_of_nonpos (by nlinarith), zero_mul]

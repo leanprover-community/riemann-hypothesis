@@ -224,7 +224,7 @@ theorem exists_factors {T : GrpData p q} (U : URep T) (e : Ix p q ≃ Fin n)
   intro x
   have hM : ∃ y, Matrix.reindex e e ((T.cov y : GL (Ix p q) ℂ) : Mat p q) =
       Matrix.reindex e e ((T.cov x : GL (Ix p q) ℂ) : Mat p q) := ⟨x, rfl⟩
-  simp only [dif_pos hM]
+  simp only [dite_eq_left hM]
   set y := hM.choose with hy
   have hyx : T.cov y = T.cov x := Units.ext ((Matrix.reindex e e).injective hM.choose_spec)
   have h1 : T.cov (y⁻¹ * x) = 1 := by

@@ -189,7 +189,7 @@ theorem limitForm_period_symm {L : Flat.LogPeriods n a g Λ} {bas : Module.Basis
     intro m
     refine ⟨fun i => ?_, fun k hk => ?_⟩
     · have hi : (Fin.castLE L.a_le i).val < a := i.2
-      simp only [ws, hi, if_true]
+      simp only [ws, hi, ite_true]
       have : (0 : ℝ) ≤ m := Nat.cast_nonneg m
       simp
       linarith

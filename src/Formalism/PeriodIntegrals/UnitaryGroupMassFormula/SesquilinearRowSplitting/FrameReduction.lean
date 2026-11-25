@@ -140,7 +140,7 @@ theorem frame_reduction : FrameStep := by
   have hcfz : ∀ b, cf (Fin.castSucc b) F0.z = 0 := by
     intro b
     have h := hcf (Fin.castSucc b) (Fin.last r)
-    simp only [Fin.snoc_last, Fin.castSucc_ne_last, if_false] at h
+    simp only [Fin.snoc_last, Fin.castSucc_ne_last, ite_false] at h
     exact h
   have hcfN : ∀ b, ∀ n ∈ N, cf (Fin.castSucc b) n ∈ aa b := by
     intro b n hn

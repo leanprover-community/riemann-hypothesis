@@ -400,13 +400,13 @@ theorem core (u : D.what₂.Word) (m : X.B.I.Gf) (hmK : m ∈ X.B.I.Kset) (hmN :
   set W' := W - ∑ b, t b • incl X.B.I (X.fR b) with hW'def
   have hperp : ∀ a, hA X.B.I (incl X.B.I (X.eR a)) W' = 0 := fun a => by
     rw [hW'def, hA_sub_right, hA_sum_right]
-    simp only [hA_smul_right, hA_ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hA_smul_right, hA_ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [htdef]; exact sub_self _
   have hv := hmN.2.2 W' hperp
   obtain ⟨lam, hlam⟩ := (Submodule.mem_span_range_iff_exists_fun RA).1 hv
   have hlam_eq : ∀ a, hA X.B.I (incl X.B.I (X.fR a)) ((X.B.I.fmat m - 1) *ᵥ W') = lam a := fun a => by
     rw [← hlam, hA_sum_right]
-    simp only [hA_smul_right, hA_fe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hA_smul_right, hA_fe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
   have hcW' : (c : RA) • W' ∈ X.B.I.Lf := by
     rw [hW'def, smul_sub, Finset.smul_sum]
@@ -523,7 +523,7 @@ theorem hA_fR_nxt_zero (X : HidaSetting D) (u : D.what₂.Word) (a : Fin D.R.rS)
     unfold nxt
     split_ifs with hh
     · apply GlobalTheory.St.hT_symm_zero
-      rw [X.ef, if_neg]
+      rw [X.ef, ite_eq_right]
       intro h'
       have := congrArg Fin.val h'
       simp at this
@@ -875,7 +875,7 @@ theorem edge_sum_typeFrame {K : Type} [Field K] (κ τ s N r p : ℕ) (hr : r �
     intro x
     rw [Finset.sum_eq_zero, Finset.sum_eq_zero, add_zero]
     · intro x_1 _
-      rw [if_neg]
+      rw [ite_eq_right]
       omega
     · intro x_1 _
       split_ifs with h
@@ -897,13 +897,13 @@ theorem edge_sum_typeFrame {K : Type} [Field K] (κ τ s N r p : ℕ) (hr : r �
     rw [Finset.sum_eq_zero, zero_add, Finset.mul_sum]
     · refine Finset.sum_congr rfl fun x_1 _ => ?_
       by_cases h : (x_1 : ℕ) = x + 1
-      · rw [if_pos ⟨by omega, by omega⟩, if_pos h, h]
+      · rw [ite_eq_left ⟨by omega, by omega⟩, ite_eq_left h, h]
         have hϖ : (ϖ : K) ≠ 0 := ϖ.ne_zero
         field_simp
         ring
-      · rw [if_neg (by omega), if_neg h, mul_zero]
+      · rw [ite_eq_right (by omega), ite_eq_right h, mul_zero]
     · intro x_1 _
-      rw [if_neg]
+      rw [ite_eq_right]
       have := x_1.2
       omega
   simp only [A, B, Finset.sum_const_zero, zero_add, ← Finset.mul_sum]

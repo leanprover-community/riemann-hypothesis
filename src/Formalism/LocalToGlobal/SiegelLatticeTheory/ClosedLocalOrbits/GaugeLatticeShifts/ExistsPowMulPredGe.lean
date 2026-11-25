@@ -62,9 +62,9 @@ theorem goodPos_of_dual {r : ℕ} (e f : Fin r → Fin n → ℂ) (z z'' : Fin n
   · rw [hg]
     simp only [UnitaryIsometries.hJ_sub_right, UnitaryIsometries.hJ_sub_left, UnitaryIsometries.hJ_sum_right, UnitaryIsometries.hJ_sum_left, hee, hfe, mul_zero,
       Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, UnitaryIsometries.hJ_sum_left]
+      ite_true, UnitaryIsometries.hJ_sum_left]
     simp only [hef, mul_ite, mul_zero, mul_one, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, map_mul]
+      Finset.mem_univ, ite_true, map_mul]
     rw [← UnitaryIsometries.hJ_conj ε (f a) (f b)]
     simp only [map_div₀, map_one, map_ofNat]
     ring
@@ -146,10 +146,10 @@ theorem goodPos_shift (hF : FrameLoc ε k e z z' T T') :
       simp only [Fin.castSucc_inj]
     · have h1 := hf b (Fin.last r)
       simp only [fam, Fin.snoc_last] at h1
-      rw [h1, if_neg (Fin.castSucc_lt_last b).ne']
+      rw [h1, ite_eq_right (Fin.castSucc_lt_last b).ne']
     · have h1 := hf b (Fin.last r)
       simp only [fam, Fin.snoc_last] at h1
-      rw [UnitaryIsometries.hJ_smul_left, h1, if_neg (Fin.castSucc_lt_last b).ne', mul_zero]
+      rw [UnitaryIsometries.hJ_smul_left, h1, ite_eq_right (Fin.castSucc_lt_last b).ne', mul_zero]
   · refine ⟨0, ?_⟩
     simp only [Pi.zero_apply, zero_smul, Finset.sum_const_zero, add_zero]
     have hLI2 : LinearIndependent ℂ (Fin.snoc (α := fun _ => Fin n → ℂ) (fam e z) z') :=
@@ -164,12 +164,12 @@ theorem goodPos_shift (hF : FrameLoc ε k e z z' T T') :
       simp only [Fin.castSucc_inj]
     · have h1 := hf b (Fin.castSucc (Fin.last r))
       simp only [fam, Fin.snoc_castSucc, Fin.snoc_last] at h1
-      rw [h1, if_neg]
+      rw [h1, ite_eq_right]
       intro h
       exact (Fin.castSucc_lt_last b).ne' (Fin.castSucc_injective _ h)
     · have h1 := hf b (Fin.last (r + 1))
       simp only [Fin.snoc_last] at h1
-      rw [h1, if_neg (Fin.castSucc_lt_last _).ne']
+      rw [h1, ite_eq_right (Fin.castSucc_lt_last _).ne']
 
 theorem frameLoc_shift (hF : FrameLoc ε k e z z' T T') (d : Fin r → ℂ) :
     FrameLoc ε k e z (z' + ∑ a, d a • e a) T T' := by

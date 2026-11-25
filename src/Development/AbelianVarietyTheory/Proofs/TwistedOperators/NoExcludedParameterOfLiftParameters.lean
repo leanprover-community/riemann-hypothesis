@@ -110,27 +110,6 @@ theorem chart (V : HSp D) {v : HeightOneSpectrum (𝓞 D.host.F)} {w : HeightOne
     (frameLat_fg V) hspan h hv (SelfDual.isSelfDualAt_frameLat D V v)
   exact ⟨⟨e, he⟩, h1⟩
 
-section Param
-
-variable {V : HSp D} {ν : Measure (GA D V)} [ν.IsHaarMeasure] [ν.IsMulRightInvariant] {W : Submodule ℂ (DividedPowerChartLift V ν)}
-
-end Param
-
-section Chars
-
-open Formalism.L2.Host
-
-variable {T : Type} {L : LevCh D T} {t₀ : T}
-
-end Chars
-
-section Zero
-
-variable {V : HSp D} {ν : Measure (GA D V)} [ν.IsHaarMeasure] [ν.IsMulRightInvariant]
-  {σ π : Submodule ℂ (DividedPowerChartLift V ν)}
-
-end Zero
-
 end GlobalTheory.NoExcl
 
 end

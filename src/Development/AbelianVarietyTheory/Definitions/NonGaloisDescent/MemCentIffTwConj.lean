@@ -70,7 +70,7 @@ omit [StarRing R] in
 theorem Phi_mul_transpose : Phi n R * (Phi n R)ᵀ = 1 := by
   ext i j
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Phi_apply', ite_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_inj, Matrix.one_apply]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_inj, Matrix.one_apply]
   split_ifs with h
   · subst h
     rw [← pow_add, ← two_mul, pow_mul]; simp
@@ -89,10 +89,10 @@ theorem Phi_transpose : (Phi n R)ᵀ = ((-1 : R) ^ (n - 1)) • Phi n R := by
   ext i j
   simp only [Matrix.transpose_apply, Matrix.smul_apply, Phi, Matrix.of_apply, smul_eq_mul]
   by_cases h : (i : ℕ) + (j : ℕ) + 1 = n
-  · rw [if_pos h, if_pos (by omega)]
+  · rw [ite_eq_left h, ite_eq_left (by omega)]
     have : n - 1 = i + j := by omega
     rw [this, ← pow_add, show (i : ℕ) + j + i = 2 * i + j by ring, pow_add, pow_mul]; simp
-  · rw [if_neg h, if_neg (by omega)]; simp
+  · rw [ite_eq_right h, ite_eq_right (by omega)]; simp
 
 theorem theta_one : theta (1 : Matrix (Fin n) (Fin n) R) = 1 := by
   simp [theta, Phi_mul_transpose]

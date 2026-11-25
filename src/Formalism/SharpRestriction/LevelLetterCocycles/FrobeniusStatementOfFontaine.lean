@@ -74,7 +74,7 @@ theorem exists_liftF_le_sg_of_thick : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf 
     have h1 := hnt j hj
     have h2 := hηs j
     omega
-  have hhB : TruncatedSeriesCountingBounds.hB b w S η size = b + η + S := if_pos hth
+  have hhB : TruncatedSeriesCountingBounds.hB b w S η size = b + η + S := ite_eq_left hth
 
   let Mi' : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → ℕ := fun i => if up i then η else size i + S
   let hi' : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → ℕ := fun i => if up i then size i + S else η
@@ -83,10 +83,10 @@ theorem exists_liftF_le_sg_of_thick : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf 
     have h1 := hJA i τ hτ a ha
     have h2 := hηs i
     cases hu : up i
-    · simp only [hu, Mi', hi', Bool.false_eq_true, if_false, Set.mem_union, Set.mem_Icc] at h1 ⊢
+    · simp only [hu, Mi', hi', Bool.false_eq_true, ite_false, Set.mem_union, Set.mem_Icc] at h1 ⊢
       push_cast
       omega
-    · simp only [hu, Mi', hi', if_true, Set.mem_union, Set.mem_Icc] at h1 ⊢
+    · simp only [hu, Mi', hi', ite_true, Set.mem_union, Set.mem_Icc] at h1 ⊢
       push_cast
       omega
   have hM : Formalism.MainNotions.LiftingTheory.Mmax (Module.finrank ℚ_[l] ↥(K0 K)) Mi' ≤ b + η + S := by
@@ -94,19 +94,19 @@ theorem exists_liftF_le_sg_of_thick : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf 
     intro k _
     have h1 := hsz (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K)))
     cases hu : up (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K))) <;>
-      simp only [hu, Mi', Bool.false_eq_true, if_false, if_true] <;> omega
+      simp only [hu, Mi', Bool.false_eq_true, ite_false, ite_true] <;> omega
   have hm : Formalism.MainNotions.LiftingTheory.Mmax (Module.finrank ℚ_[l] ↥(K0 K)) hi' ≤ b + η + S := by
     apply Finset.sup_le
     intro k _
     have h1 := hsz (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K)))
     cases hu : up (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K))) <;>
-      simp only [hu, hi', Bool.false_eq_true, if_false, if_true] <;> omega
+      simp only [hu, hi', Bool.false_eq_true, ite_false, ite_true] <;> omega
   have hH : Formalism.MainNotions.LiftingTheory.Hmax (Module.finrank ℚ_[l] ↥(K0 K)) Mi' hi' ≤ b + η + S + η := by
     apply Finset.sup_le
     intro k _
     have h1 := hsz (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K)))
     cases hu : up (k : ZMod (Module.finrank ℚ_[l] ↥(K0 K))) <;>
-      simp only [hu, Mi', hi', Bool.false_eq_true, if_false, if_true] <;> omega
+      simp only [hu, Mi', hi', Bool.false_eq_true, ite_false, ite_true] <;> omega
   have hjumps : ∀ u ∈ Formalism.MainNotions.LiftingTheory.jumpSet ((HW l).W K 1 LL hG) T₁
       (Formalism.MainNotions.LiftingTheory.Mmax (Module.finrank ℚ_[l] ↥(K0 K)) Mi')
       (Formalism.MainNotions.LiftingTheory.Mmax (Module.finrank ℚ_[l] ↥(K0 K)) hi'),
@@ -184,7 +184,7 @@ theorem colLeR_of_exponent [IsDomain O] [IsDiscreteValuationRing O] (PD : Period
   let s' : Finset (G → T₂.V) := s.image r
   have hmemH : ∀ x ∈ s, x ∈ latticeFiniteCohomology PD T₂.L := fun x hx => hs ▸ Submodule.subset_span hx
   have hrx : ∀ x (hx : x ∈ latticeFiniteCohomology PD T₂.L), r x = (hrep x hx).choose := fun x hx => by
-    simp only [r, dif_pos hx]
+    simp only [r, dite_eq_left hx]
   have hs'Z : (↑s' : Set (G → T₂.V)) ⊆ latticeFiniteCocycles PD T₂.L := by
     intro y hy
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.1 hy

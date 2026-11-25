@@ -192,16 +192,16 @@ theorem measurePreserving_of_card (ρ : ι → ℕ) (N : ℕ) : ∀ (g : (ι →
     have hg1 : Measurable g1 := by
       refine measurable_pi_iff.2 fun i => ?_
       by_cases h : ρ i = N
-      · simp only [g1, h, if_true]
+      · simp only [g1, h, ite_true]
         exact (measurable_pi_apply i).comp hg
-      · simp only [g1, h, if_false]
+      · simp only [g1, h, ite_false]
         exact measurable_const
     have hg0 : Measurable g0 := by
       refine measurable_pi_iff.2 fun i => ?_
       by_cases h : ρ i < N
-      · simp only [g0, h, if_true]
+      · simp only [g0, h, ite_true]
         exact (measurable_pi_apply i).comp hg
-      · simp only [g0, h, if_false]
+      · simp only [g0, h, ite_false]
         exact measurable_const
     have hdep1 : ∀ x x', (∀ j, ¬ S j → x j = x' j) → g1 x = g1 x' := by
       intro x x' h
@@ -213,7 +213,7 @@ theorem measurePreserving_of_card (ρ : ι → ℕ) (N : ℕ) : ∀ (g : (ι →
     have hsupp1 : ∀ x i, ¬ S i → g1 x i = 0 := by
       intro x i hi
       simp only [g1]
-      rw [if_neg hi]
+      rw [ite_eq_right hi]
     obtain ⟨e0, he0, hm0⟩ := ih g0 hg0
       (by
         intro i x x' h
@@ -224,7 +224,7 @@ theorem measurePreserving_of_card (ρ : ι → ℕ) (N : ℕ) : ∀ (g : (ι →
       (by
         intro x i hi
         simp only [g0]
-        rw [if_neg (not_lt.2 hi)])
+        rw [ite_eq_right (not_lt.2 hi)])
     refine ⟨(skewEquiv S g1 hg1 hdep1 hsupp1).trans e0, fun x => ?_,
       (skew μ S g1 hg1 hdep1 hsupp1).trans hm0⟩
     rw [MeasurableEquiv.trans_apply, he0]
@@ -237,19 +237,19 @@ theorem measurePreserving_of_card (ρ : ι → ℕ) (N : ℕ) : ∀ (g : (ι →
       · apply hdep i
         intro j hj
         simp only [Pi.add_apply, g1]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
         simp
       · rfl
     rw [h0]
     funext i
     simp only [Pi.add_apply, g0, g1]
     by_cases h1 : ρ i < N
-    · rw [if_neg (by omega), if_pos h1]
+    · rw [ite_eq_right (by omega), ite_eq_left h1]
       simp
     · by_cases h2 : ρ i = N
-      · rw [if_pos h2, if_neg h1]
+      · rw [ite_eq_left h2, ite_eq_right h1]
         simp
-      · rw [if_neg h2, if_neg h1, hsupp x i (by omega)]
+      · rw [ite_eq_right h2, ite_eq_right h1, hsupp x i (by omega)]
         simp
 
 end
@@ -1162,11 +1162,11 @@ theorem sameBlock_iff : ∀ (bs : List (Eˣ × ℕ+)) (a b : ℕ), a < (bs.map (
     · by_cases h2 : b < (s : ℕ)
       · simp [h1, h2]
       · have h3 : ¬ ((s : ℕ) ≤ a) := by omega
-        simp only [h1, h2, h3, and_false, false_and, or_self, if_true, if_false, false_iff]
+        simp only [h1, h2, h3, and_false, false_and, or_self, ite_true, ite_false, false_iff]
         omega
     · by_cases h2 : b < (s : ℕ)
       · have h3 : ¬ ((s : ℕ) ≤ b) := by omega
-        simp only [h1, h2, h3, and_false, false_and, or_self, if_true, if_false, false_iff]
+        simp only [h1, h2, h3, and_false, false_and, or_self, ite_true, ite_false, false_iff]
         omega
       · have h3 : (s : ℕ) ≤ a := by omega
         have h4 : (s : ℕ) ≤ b := by omega
@@ -1181,12 +1181,12 @@ theorem simpleLow_eq {n : ℕ} (A : Matrix (Fin n) (Fin n) E) : simpleLow A = sL
   · rw [Finset.sum_eq_single ⟨b.val + 1, h⟩]
     · simp
     · intro a _ ha
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hab
       exact ha (Fin.ext hab)
     · simp
   · refine Finset.sum_eq_zero fun a _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hab
     have := a.isLt
     omega
@@ -1198,12 +1198,12 @@ theorem simpleUp_eq {n : ℕ} (A : Matrix (Fin n) (Fin n) E) : simpleUp A = sUp 
   · rw [Finset.sum_eq_single ⟨a.val + 1, h⟩]
     · simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hab
       exact hb (Fin.ext hab)
     · simp
   · refine Finset.sum_eq_zero fun b _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hab
     have := b.isLt
     omega
@@ -1266,7 +1266,7 @@ theorem eLast_eq (R : Subring E) (m : ℕ) : (eLast R : Fin (m + 1) → R) = Pi.
   by_cases h : j = Fin.last m
   · subst h
     simp
-  · rw [Pi.single_eq_of_ne h, if_neg]
+  · rw [Pi.single_eq_of_ne h, ite_eq_right]
     intro hj
     exact h (Fin.ext (by rw [Fin.val_last]; omega))
 
@@ -1277,7 +1277,7 @@ theorem lastCoord_eq (R : Subring E) (m : ℕ) (x : Fin (m + 1) → E) :
        rw [LinearMap.sum_apply, Finset.sum_eq_single (Fin.last m)]
        · simp
        · intro j _ hj
-         rw [if_neg]
+         rw [ite_eq_right]
          · simp
          · intro h
            exact hj (Fin.ext (by rw [Fin.val_last]; omega))
@@ -1369,12 +1369,12 @@ theorem GG_eq_phi (M : Model F E) {m : ℕ} (w : Pt E (m + 1)) (c : M.Cls m)
   · have h1 := hi.2 hI
     have hI' : IsInt M.R (((p.1 : GL (Fin (tr w).1.sum) E) : Matrix (Fin (tr w).1.sum) (Fin (tr w).1.sum) E) *
       pt (tr w).1 (tr w).2 * ((p.2 : GL (Fin (tr w).1.sum) E) : Matrix (Fin (tr w).1.sum) (Fin (tr w).1.sum) E)) := hI
-    rw [GG, dite_eq_left ⟨h1, isUnit_det_sub w p⟩, phi, if_pos hI']
+    rw [GG, dite_eq_left ⟨h1, isUnit_det_sub w p⟩, phi, ite_eq_left hI']
     congr 2
     exact Nat.card_congr ((isoEquiv M _ _).trans eq)
   · have hI' : ¬ IsInt M.R (((p.1 : GL (Fin (tr w).1.sum) E) : Matrix (Fin (tr w).1.sum) (Fin (tr w).1.sum) E) *
       pt (tr w).1 (tr w).2 * ((p.2 : GL (Fin (tr w).1.sum) E) : Matrix (Fin (tr w).1.sum) (Fin (tr w).1.sum) E)) := hI
-    rw [GG, dite_eq_right (fun h => hI (hi.1 h.1)), phi, if_neg hI', zero_mul]
+    rw [GG, dite_eq_right (fun h => hI (hi.1 h.1)), phi, ite_eq_right hI', zero_mul]
 
 theorem BB_eq (M : Model F E) {m : ℕ} (w : Pt E (m + 1))
     (μ₁ : Measure (lowW E (tr w).1 (tr w).2)) (μ₂ : Measure (upUniG E (tr w).1.sum))

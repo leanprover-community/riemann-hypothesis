@@ -140,7 +140,7 @@ private theorem exists_F (K : Type) [Field K] [NumberField K] [_root_.NumberFiel
   let F : Ideal (𝓞 K) → ℤ_[l]ˣ := fun I => if hI : ∃ u, P I u then hI.choose else 1
   have hF : ∀ I u, P I u → F I = u := fun I u hI => by
     have h1 : ∃ u, P I u := ⟨u, hI⟩
-    simp only [F, dif_pos h1]
+    simp only [F, dite_eq_left h1]
     exact uniq I _ _ h1.choose_spec hI
   have ex : ∀ I, I ≠ ⊥ → IsCoprime I w → ∃ a, IsUnit (ι a) ∧ I ^ h = Ideal.span {a} ∧
       (F I : ℤ_[l]) = ι a ^ (m * (l - 1)) := fun I hI hw => by

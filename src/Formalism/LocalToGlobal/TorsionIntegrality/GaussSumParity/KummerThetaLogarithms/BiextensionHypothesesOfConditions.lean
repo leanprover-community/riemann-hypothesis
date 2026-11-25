@@ -69,42 +69,42 @@ theorem subst_first_coordinate (ha : HasSubst a) (s : ZMod d) : subst a (s0 (K :
 theorem subst_first_sum_even (ha : HasSubst a) {s : ZMod d} (hs : s.val % 2 = 0) :
     subst a (s1 (K := K) s) = a (false, s) + a (true, s) := by
   unfold s1
-  rw [if_pos hs, MvPowerSeries.subst_add ha, MvPowerSeries.subst_X ha, MvPowerSeries.subst_X ha]
+  rw [ite_eq_left hs, MvPowerSeries.subst_add ha, MvPowerSeries.subst_X ha, MvPowerSeries.subst_X ha]
 
 theorem subst_first_odd (ha : HasSubst a) {s : ZMod d} (hs : ¬ s.val % 2 = 0) :
     subst a (s1 (K := K) s) = a (false, s) := by
   unfold s1
-  rw [if_neg hs, add_zero, MvPowerSeries.subst_X ha]
+  rw [ite_eq_right hs, add_zero, MvPowerSeries.subst_X ha]
 
 theorem subst_second_even (ha : HasSubst a) {s : ZMod d} (hs : s.val % 2 = 0) :
     subst a (s2 (K := K) s) = a (true, s) := by
   unfold s2
-  rw [if_pos hs, MvPowerSeries.subst_X ha]
+  rw [ite_eq_left hs, MvPowerSeries.subst_X ha]
 
 theorem subst_second_odd (ha : HasSubst a) {s : ZMod d} (hs : ¬ s.val % 2 = 0) :
     subst a (s2 (K := K) s) = a (false, s) := by
   unfold s2
-  rw [if_neg hs, MvPowerSeries.subst_X ha]
+  rw [ite_eq_right hs, MvPowerSeries.subst_X ha]
 
 theorem subst_s1Prime_even (ha : HasSubst a) {s : ZMod d} (hs : s.val % 2 = 0) :
     subst a (s1' (K := K) s) = a (false, s) := by
   unfold s1'
-  rw [if_pos hs, add_zero, MvPowerSeries.subst_X ha]
+  rw [ite_eq_left hs, add_zero, MvPowerSeries.subst_X ha]
 
 theorem subst_s1Prime_odd (ha : HasSubst a) {s : ZMod d} (hs : ¬ s.val % 2 = 0) :
     subst a (s1' (K := K) s) = a (false, s) + a (true, s) := by
   unfold s1'
-  rw [if_neg hs, MvPowerSeries.subst_add ha, MvPowerSeries.subst_X ha, MvPowerSeries.subst_X ha]
+  rw [ite_eq_right hs, MvPowerSeries.subst_add ha, MvPowerSeries.subst_X ha, MvPowerSeries.subst_X ha]
 
 theorem subst_s2Prime_even (ha : HasSubst a) {s : ZMod d} (hs : s.val % 2 = 0) :
     subst a (s2' (K := K) s) = a (false, s) := by
   unfold s2'
-  rw [if_pos hs, MvPowerSeries.subst_X ha]
+  rw [ite_eq_left hs, MvPowerSeries.subst_X ha]
 
 theorem subst_s2Prime_odd (ha : HasSubst a) {s : ZMod d} (hs : ¬ s.val % 2 = 0) :
     subst a (s2' (K := K) s) = a (true, s) := by
   unfold s2'
-  rw [if_neg hs, MvPowerSeries.subst_X ha]
+  rw [ite_eq_right hs, MvPowerSeries.subst_X ha]
 
 end Five
 

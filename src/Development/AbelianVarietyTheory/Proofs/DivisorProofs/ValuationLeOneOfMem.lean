@@ -373,7 +373,7 @@ theorem isGood_of_notMem {μ₀ : T} (hL : L.Is μ₀) {G : GridData L sc} (W : 
         refine ⟨fun h => l2 fun x hx hx' => by
           rw [← hun h x hx, hμ.tame w x hx hx', hL.xi_tame t w x hx hx', one_mul], condLE_loc l1 ?_⟩
         have := (depthAt_w G a).2
-        rw [← b, Places.depth, if_neg fun e : _ = G.pl.v0 => G.ch.basePlace_not_mem_chiGridBadPlaces (e ▸ a1)] at this
+        rw [← b, Places.depth, ite_eq_right fun e : _ = G.pl.v0 => G.ch.basePlace_not_mem_chiGridBadPlaces (e ▸ a1)] at this
         exact this.ge
     · have hχ := G.ch.unr _ i1 i2 w a
       refine ⟨fun h => (hL.Q_ram t w).2 (.inl c) fun x hx => ?_, condLE_of_isUnram _ _ (isUnram_loc.2 hχ)⟩

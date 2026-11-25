@@ -312,9 +312,9 @@ theorem good_top (hD : IsOpen D) (u : ℂ) (a b : Fin (mdim k r i)) :
   have hI : Good k r i D (fun (f : Mx k r → E) (g : Mx k r) =>
       if posL k r i a = posL k r i b then u • f g else 0) := by
     by_cases hc : posL k r i a = posL k r i b
-    · simp only [if_pos hc]
+    · simp only [ite_eq_left hc]
       exact Good.smul good_id u
-    · simp only [if_neg hc]
+    · simp only [ite_eq_right hc]
       exact good_zero
   exact Good.add hI hE
 
@@ -445,13 +445,13 @@ theorem PolyFam.succ {N : ℕ} {h : ℂ → Mx k r → E} (H : PolyFam k r i D N
   obtain ⟨c, hc, he⟩ := H
   refine ⟨fun j x => if j < N then c j x else 0, fun j => ?_, fun Y x hx => ?_⟩
   · by_cases hj : j < N
-    · simp only [if_pos hj]
+    · simp only [ite_eq_left hj]
       exact hc j
-    · simp only [if_neg hj]
+    · simp only [ite_eq_right hj]
       exact smooth_zero
   · rw [he Y x hx, Finset.sum_range_succ]
     simp only [lt_self_iff_false, ↓reduceIte, smul_zero, add_zero]
-    exact Finset.sum_congr rfl fun j hj => by rw [if_pos (Finset.mem_range.mp hj)]
+    exact Finset.sum_congr rfl fun j hj => by rw [ite_eq_left (Finset.mem_range.mp hj)]
 
 theorem PolyFam.add {N : ℕ} {h h' : ℂ → Mx k r → E} (H : PolyFam k r i D N h) (H' : PolyFam k r i D N h') :
     PolyFam k r i D N (fun Y x => h Y x + h' Y x) := by
@@ -475,9 +475,9 @@ theorem PolyFam.mulY {N : ℕ} {h : ℂ → Mx k r → E} (H : PolyFam k r i D N
   obtain ⟨c, hc, he⟩ := H
   refine ⟨fun j x => if j = 0 then 0 else c (j - 1) x, fun j => ?_, fun Y x hx => ?_⟩
   · by_cases hj : j = 0
-    · simp only [if_pos hj]
+    · simp only [ite_eq_left hj]
       exact smooth_zero
-    · simp only [if_neg hj]
+    · simp only [ite_eq_right hj]
       exact hc (j - 1)
   · try dsimp only
     rw [he Y x hx, Finset.sum_range_succ', Finset.smul_sum]
@@ -488,9 +488,9 @@ theorem polyFam_monomial {f : Mx k r → E} (hf : SmoothLev k r i D f) (N : ℕ)
     PolyFam k r i D (N + 1) (fun Y x => Y ^ N • f x) := by
   refine ⟨fun j x => if j = N then f x else 0, fun j => ?_, fun Y x hx => ?_⟩
   · by_cases hj : j = N
-    · simp only [if_pos hj]
+    · simp only [ite_eq_left hj]
       exact hf
-    · simp only [if_neg hj]
+    · simp only [ite_eq_right hj]
       exact smooth_zero
   · simp [smul_ite, Finset.sum_ite_eq']
 
@@ -613,7 +613,7 @@ theorem PolyAt.succ {N : ℕ} {φ : ℂ → E} (H : PolyAt N φ) : PolyAt (N + 1
   refine ⟨fun j => if j < N then c j else 0, fun Y => ?_⟩
   rw [hc Y, Finset.sum_range_succ]
   simp only [lt_self_iff_false, ↓reduceIte, smul_zero, add_zero]
-  exact Finset.sum_congr rfl fun j hj => by rw [if_pos (Finset.mem_range.mp hj)]
+  exact Finset.sum_congr rfl fun j hj => by rw [ite_eq_left (Finset.mem_range.mp hj)]
 
 theorem polyAt_monomial (N : ℕ) (e : E) : PolyAt (N + 1) (fun Y => Y ^ N • e) := by
   refine ⟨fun j => if j = N then e else 0, fun Y => ?_⟩
@@ -669,7 +669,7 @@ theorem lc_self {t : ℕ} (a : Fin t → Fin (mdim k r i)) (ha : Function.Inject
     obtain ⟨l, hl⟩ : ∃ l, σ l ≠ l := by
       by_contra! hc
       exact hσ (Equiv.ext hc)
-    rw [Finset.prod_eq_zero (Finset.mem_univ l) (if_neg fun e => hl (ha (posL_inj i e))), mul_zero]
+    rw [Finset.prod_eq_zero (Finset.mem_univ l) (ite_eq_right fun e => hl (ha (posL_inj i e))), mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -677,7 +677,7 @@ theorem lc_miss {t : ℕ} (a b : Fin t → Fin (mdim k r i)) (l₀ : Fin t) (h :
     lc k r i a b = 0 := by
   unfold lc
   exact Finset.sum_eq_zero fun σ _ => by
-    rw [Finset.prod_eq_zero (Finset.mem_univ l₀) (if_neg fun e => h (σ l₀) (posL_inj i e)), mul_zero]
+    rw [Finset.prod_eq_zero (Finset.mem_univ l₀) (ite_eq_right fun e => h (σ l₀) (posL_inj i e)), mul_zero]
 
 theorem skip_one_injective {t : ℕ} (a : Fin t) : Function.Injective (skip1 a) := by
   intro x y e
@@ -715,7 +715,7 @@ theorem fvec_out {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {p : Fin (2
   unfold fvec
   split_ifs with h
   · simp only [bvec]
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     intro e
     apply hp
     rw [e]
@@ -812,7 +812,7 @@ theorem chat_poly (hD : IsOpen D) {f : Mx k r → E} (hf : SmoothLev k r i D f) 
         (Y ^ (mdim k r i - 1) • (lc k r i (skip1 p) (skip1 q) • f x))) =
       Y ^ (mdim k r i - 1) • ((∑ j, β x j * a x j) • f x) := fun Y => by
     simp only [lc_skip1, ite_smul, one_smul, zero_smul, smul_ite, smul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, hc, one_mul]
+      Finset.mem_univ, ite_true, hc, one_mul]
     rw [Finset.sum_smul, Finset.smul_sum]
     exact Finset.sum_congr rfl fun p _ => smul_comm _ _ _
   refine H.congr fun Y => ?_
@@ -827,13 +827,13 @@ theorem capelli_two_polynomial (hD : IsOpen D) {f : Mx k r → E} (hf : SmoothLe
   refine polyAt_sum _ _ fun p _ => polyAt_sum _ _ fun p' _ => polyAt_sum _ _ fun q _ =>
     polyAt_sum _ _ fun q' _ => ?_
   by_cases hc : p < p' ∧ q < q'
-  · simp only [if_pos hc]
+  · simp only [ite_eq_left hc]
     have h1 : p.val < p'.val := hc.1
     have h2 := p'.isLt
     have hm : mdim k r i - 2 + 1 = mdim k r i - 1 := by omega
     rw [← hm]
     exact (qminor_poly' hD hf hx (skip2 p p') (skip2 q q') s).smul _
-  · simp only [if_neg hc]
+  · simp only [ite_eq_right hc]
     exact polyAt_zero _
 
 

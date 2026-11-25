@@ -1399,9 +1399,6 @@ theorem real_maps_unique : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F
           rw [LinearEquiv.apply_symm_apply]
     _ = c • ψ (R.p' f) := by rw [hT, map_smul]
 end Real
-section Fin
-open GlobalTheory.FinUniq
-end Fin
 end GlobalTheory.ReBase
 end
 end

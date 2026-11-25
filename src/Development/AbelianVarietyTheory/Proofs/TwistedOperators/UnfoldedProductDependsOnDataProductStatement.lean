@@ -279,7 +279,7 @@ theorem contrLin_left : Big fun ch => ContrLin ch 0 := by
   have hin : (Pair.mu t D.R.m a : Pair T).InRange D.R.m := show D.R.m ≤ D.R.m ∧ a + 1 ≤ D.R.m from ⟨le_rfl, by omega⟩
   have hin' : (Pair.mu t D.R.m (a + 1) : Pair T).InRange D.R.m :=
     show D.R.m ≤ D.R.m ∧ a + 1 + 1 ≤ D.R.m from ⟨le_rfl, by omega⟩
-  simp only [conAt, dif_neg h1, fockD]
+  simp only [conAt, dite_eq_right h1, fockD]
   simp (disch := simp) only [Function.update_self, Function.update_of_ne]
   simp only [h2, ↓reduceDIte]
   · rw [fock_comb ch.W (Pair.mu t D.R.m a) c hφ hφ' (P ⟨a, ha'⟩), map_add (f := _), map_smul]

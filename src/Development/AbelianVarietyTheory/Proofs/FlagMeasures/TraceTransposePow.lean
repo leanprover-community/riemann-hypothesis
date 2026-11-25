@@ -79,16 +79,16 @@ private lemma matrix_of_pow_succ_apply_sub_nsmul_add_trace {n : ℕ} {V : Type} 
       ((if a = b then Formalism.REAL.epow E j c c else 0) - Formalism.REAL.epow E j b a) := by
     intro c
     have := _root_.Formalism.REAL.generatorPowCovariance_holds (Module.End ℂ V) n E hE j b c c a
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     rw [← this]
     abel
   rw [Finset.sum_congr rfl fun c _ => h1 c]
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin]
   rw [show Formalism.REAL.epow E (j + 1) b a = ∑ c, Formalism.REAL.epow E j b c * E c a from rfl]
   by_cases hab : a = b
-  · simp only [hab, if_true]
+  · simp only [hab, ite_true]
     abel
-  · simp only [hab, if_false, Finset.sum_const_zero]
+  · simp only [hab, ite_false, Finset.sum_const_zero]
     abel
 
 private lemma ite_eq_trace_matrix_of_pow_apply {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
@@ -113,9 +113,9 @@ private lemma sum_range_shift_smul_eq_sub_add {Y : Type} [AddCommGroup Y] [Modul
   have h2 : ∑ j ∈ Finset.range (m + 2), (if j ≤ m then α j else 0) • y j =
       ∑ j ∈ Finset.range (m + 1), α j • y j := by
     rw [Finset.sum_range_succ]
-    simp only [show ¬ (m + 1 ≤ m) from by omega, if_false, zero_smul, add_zero]
+    simp only [show ¬ (m + 1 ≤ m) from by omega, ite_false, zero_smul, add_zero]
     exact Finset.sum_congr rfl fun j hj => by
-      rw [if_pos (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj))]
+      rw [ite_eq_left (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj))]
   have h3 : ∑ j ∈ Finset.range (m + 2), (if j = 0 then φ else 0) • y j = φ • y 0 := by
     rw [Finset.sum_range_succ']
     simp

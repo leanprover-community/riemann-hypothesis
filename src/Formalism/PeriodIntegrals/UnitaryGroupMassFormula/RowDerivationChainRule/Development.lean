@@ -61,9 +61,9 @@ theorem rowLetter_of (hC : ChainRule) (hV : VecX) (hK : KeyCov) (hH : HdHom) : P
           rw [hK K m a a c]
           simp
         simp only [hc, mul_sub, Finset.sum_sub_distrib, mul_ite, mul_zero, Finset.sum_ite_eq,
-          Finset.mem_univ, if_true]
+          Finset.mem_univ, ite_true]
       rw [hL, hE]
-      simp only [TE, Bool.false_eq_true, if_true, if_false, map_sub, map_smul, map_mul, theta_X]
+      simp only [TE, Bool.false_eq_true, ite_true, ite_false, map_sub, map_smul, map_mul, theta_X]
       rw [mul_comm (Nv K m false a)]
     · have hc : ∀ c, RE K (m + 1) a b (Nv K m false c) =
           -(if a = c then Nv K m false b else 0) := by
@@ -71,12 +71,12 @@ theorem rowLetter_of (hC : ChainRule) (hV : VecX) (hK : KeyCov) (hH : HdHom) : P
         rw [hK K m a b c]
         simp [hab]
       simp only [hc, mul_neg, mul_ite, mul_zero, Finset.sum_neg_distrib, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       simp [TE, hab, theta_X] <;> ring
   · have hc : ∀ c, RE K (m + 1) a b (Nv K m true c) = if c = b then Nv K m true a else 0 :=
       fun c => hV K m a b c
-    simp only [hc, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    simp only [TE, if_true, map_mul, theta_X]
+    simp only [hc, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    simp only [TE, ite_true, map_mul, theta_X]
     rw [mul_comm]
 
 end PI.RL.W

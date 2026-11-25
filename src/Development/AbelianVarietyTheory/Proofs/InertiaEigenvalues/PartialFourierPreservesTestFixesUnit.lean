@@ -189,7 +189,7 @@ theorem exists_trace_unit : ∀ (F E : Type) [NontriviallyNormedField F] [Nontri
       simpa using this
     by_cases ha : ‖a‖ ≤ ‖y‖
     · exact isMinOn_iff.1 hx a (mem_closedBall_zero_iff.2 ha)
-    · push_neg at ha
+    · push Not at ha
       have hm : ‖a‖ ≤ max ‖y‖ ‖y - algebraMap F E a‖ := by
         have := norm_sub_le_max_of_ultra y (y - algebraMap F E a)
         rwa [sub_sub_cancel, norm_algebraMap'] at this
@@ -526,7 +526,7 @@ theorem fourU_hasCompactSupport : ∀ (F E : Type) [NontriviallyNormedField F] [
     by_contra h2
     have hR : 0 ≤ ‖a‖ / δ := by positivity
     rw [pi_norm_le_iff_of_nonneg hR] at h2
-    push_neg at h2
+    push Not at h2
     obtain ⟨i, hi⟩ := h2
     exact hne (hzero X i hi)
   · by_contra h3
@@ -669,7 +669,7 @@ theorem integral_ball_char (hU : Unram F E) [MeasurableSpace E] [BorelSpace E] (
       refine (norm_trace_le hU htr _).trans ?_
       rw [norm_mul, hU.norm_star]
       exact mul_le_one₀ (mem_closedBall_zero_iff.1 hz) (norm_nonneg _) hy
-  · push_neg at hy
+  · push Not at hy
     obtain ⟨x₀, hx₀, hx₀'⟩ := hψ.2
     obtain ⟨yF, hyF⟩ := hU.unram y
     obtain ⟨u, hu1, hu2⟩ := hu
@@ -730,7 +730,7 @@ theorem fourU_unitU : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivially
         simp only [dotProduct, Pi.star_apply, map_sum, addChar_sum]
         refine Finset.prod_congr rfl fun i _ => ?_
         rw [Set.indicator_of_mem (mem_closedBall_zero_iff.2 (hc i))]
-      · push_neg at hc
+      · push Not at hc
         obtain ⟨i, hi⟩ := hc
         have e1 : unitU r F E (X.1, c, X.2.2) = 0 := by
           simp only [unitU]

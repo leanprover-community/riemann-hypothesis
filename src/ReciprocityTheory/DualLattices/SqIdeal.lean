@@ -276,7 +276,7 @@ private theorem sqIdeal_eq_span_of_pow_p_eq_smul {p : ℕ} [Fact p.Prime] {C : T
     intro n hn2 hn
     by_cases hnp : n < p
     · exact Submodule.subset_span (Or.inr ⟨n, hn2, hnp, rfl⟩)
-    · push_neg at hnp
+    · push Not at hnp
       obtain ⟨k, rfl⟩ : ∃ k, n = p + k := ⟨n - p, by omega⟩
       have hsplit : x ^ (p + k) = δ • x ^ (k + 1) := by
         rw [pow_add, hxp, hδ, smul_mul_assoc, ← pow_succ']
@@ -351,8 +351,8 @@ theorem u3 : PrimeHopfOrderStatement := by
       by_cases ha : a = 0
       · subst ha
         simp [hω0]
-      · rw [if_neg ha, sub_zero]
-        simp only [u0, if_neg ha, sub_zero]
+      · rw [ite_eq_right ha, sub_zero]
+        simp only [u0, ite_eq_right ha, sub_zero]
         exact pow_two_mul_p_sub_three_mul_self_eq_one hωpow hω1 hωmul a ha
     rw [Finset.sum_congr rfl (fun a _ => hterm a)]
     simp [Finset.sum_sub_distrib, Finset.card_univ, ZMod.card]

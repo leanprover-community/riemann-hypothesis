@@ -147,22 +147,6 @@ theorem span_dualSet_latT (hz : (pz : E) ≠ 0) :
 
 end LatT
 
-section Bridge
-
-open Formalism.MainNotions.Gaps.LG
-
-variable {E : Type} [Field E] [NumberField E]
-
-variable {F : Type} [Field F] [NumberField F] [Algebra F E]
-
-end Bridge
-
-section Record
-
-open Formalism.MainNotions.Gaps.LG
-
-end Record
-
 end Formalism.MainNotions.Gaps.LevGap
 
 end

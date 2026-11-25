@@ -239,7 +239,7 @@ theorem TubeDeepAreaCount.proof (hB : IsolatedPointsCount.Statement) : TubeDeepA
     have hM : ∀ I, deepMap P hex.choose I (A *ᵥ x) = deepMap P (σ' k) I (A *ᵥ x) := fun I => by
       rw [(hmev I).eq_of_nhds, hσ'deep k I _ hAU]
     refine ⟨?_, (hBmem k _).2 ⟨hAU, hsx.symm ▸ hx⟩, hsx⟩
-    simp only [ht, dif_pos hex, Set.indicator_of_mem (hEBl k hx), one_mul, hG, hJ, hM]
+    simp only [ht, dite_eq_left hex, Set.indicator_of_mem (hEBl k hx), one_mul, hG, hJ, hM]
     rw [ENNReal.ofReal_sum_of_nonneg fun I _ => mul_nonneg (sq_nonneg _) (hg0 _)]
     exact Finset.sum_congr rfl fun I _ => ENNReal.ofReal_mul (sq_nonneg _)
 

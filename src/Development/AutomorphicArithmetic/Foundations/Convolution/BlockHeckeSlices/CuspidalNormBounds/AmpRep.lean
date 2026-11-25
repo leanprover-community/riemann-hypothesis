@@ -311,7 +311,7 @@ private theorem UpperTheory.polynomial_identity_coefficients_zero {M : Type*} [A
   rw [Finset.sum_eq_single i] at this
   · simpa using this
   · intro j _ hj
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro e
     apply hj
     have := j.2

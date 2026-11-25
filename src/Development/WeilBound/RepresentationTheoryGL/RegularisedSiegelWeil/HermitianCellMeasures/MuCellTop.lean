@@ -124,7 +124,7 @@ theorem crit (S : Finset (HeightOneSpectrum (𝓞 F))) (e : AF F ⊗[F] E) (h1 :
   have he : ∀ k, φ k e = 1 := hφ e (by
     rintro (w | ⟨v, hv⟩)
     · exact h1 w
-    · exact (h2 v).trans (if_pos hv))
+    · exact (h2 v).trans (ite_eq_left hv))
   refine ⟨m, Ω, fld, φ, he, fun z => ⟨fun h k => ?_, fun h => ?_⟩⟩
   · have h' := h.map (φ k)
     rw [map_add (f := _), map_sub, map_mul, map_one, he, sub_self, zero_add, one_mul] at h'
@@ -133,15 +133,15 @@ theorem crit (S : Finset (HeightOneSpectrum (𝓞 F))) (e : AF F ⊗[F] E) (h1 :
     have hI : ∀ w, IsUnit (compInf F E w z) := fun w => hz (.inl w)
     have hS : ∀ v (h : v ∈ S), IsUnit (compFin F E v z) := fun v h => hz (.inr ⟨v, h⟩)
     obtain ⟨x, hxf, hxi⟩ := exists_adele (E := E) S
-      (fun v => if h : v ∈ S then (hS v h).unit⁻¹ else 1) (fun v hv => dif_neg hv) (fun w => (hI w).unit⁻¹)
+      (fun v => if h : v ∈ S then (hS v h).unit⁻¹ else 1) (fun v hv => dite_eq_right hv) (fun w => (hI w).unit⁻¹)
     refine isUnit_iff_exists_inv.2 ⟨x, GlobalTheory.AdelicU.Supp.adTens_eq_one' (fun w => ?_) fun v => ?_⟩
     · rw [map_mul, map_add (f := _), map_sub, map_mul, map_one, h1, hxi, sub_self, zero_add, one_mul]
       exact (hI w).mul_val_inv
     · rw [map_mul, map_add (f := _), map_sub, map_mul, map_one, h2, hxf]
       by_cases hv : v ∈ S
-      · simp only [if_pos hv, dif_pos hv, sub_self, zero_add, one_mul]
+      · simp only [ite_eq_left hv, dite_eq_left hv, sub_self, zero_add, one_mul]
         exact (hS v hv).mul_val_inv
-      · simp [if_neg hv, dif_neg hv]
+      · simp [ite_eq_right hv, dite_eq_right hv]
 
 end Glue
 
@@ -1397,7 +1397,7 @@ def finS (S : Finset (HeightOneSpectrum (𝓞 F))) (q : F) :
     rw [Filter.eventually_principal]
     intro v hv
     have hv' : v ∉ S := by simpa using hv
-    simp only [if_neg hv']
+    simp only [ite_eq_right hv']
     exact zero_mem _⟩
 
 theorem cofinite_le (S : Finset (HeightOneSpectrum (𝓞 F))) :
@@ -1418,10 +1418,10 @@ theorem tendsto_sAd (S : Finset (HeightOneSpectrum (𝓞 F))) (q : ℕ → F)
     intro v
     by_cases hv : v ∈ S
     · refine (hf v hv).congr fun k => ?_
-      exact (if_pos hv).symm
+      exact (ite_eq_left hv).symm
     · refine tendsto_const_nhds.congr fun k => ?_
       show (0 : v.adicCompletion F) = _
-      exact (if_neg hv).symm
+      exact (ite_eq_right hv).symm
   have h2 := ((RestrictedProduct.continuous_inclusion (cofinite_le S)).tendsto 0).comp h1
   refine Tendsto.prodMk_nhds (tendsto_pi_nhds.2 hi) h2
 
@@ -1447,13 +1447,13 @@ theorem tensor_key {E : Type} [Field E] [Algebra F E] (S : Finset (HeightOneSpec
     exact one_tmul_algebraMap (A := w.Completion) _
   · refine ring_hom_mul_sub_eq_zero (compFin F E v) _ _ _ _ (hf v) ?_
     by_cases hv : v ∈ S
-    · rw [if_pos hv, mul_one]
-      have h : evFin F v (sAd S q) = algebraMap F (v.adicCompletion F) q := if_pos hv
+    · rw [ite_eq_left hv, mul_one]
+      have h : evFin F v (sAd S q) = algebraMap F (v.adicCompletion F) q := ite_eq_left hv
       show (1 : v.adicCompletion F) ⊗ₜ[F] _ = evFin F v (sAd S q) ⊗ₜ[F] (1 : E)
       rw [h]
       exact one_tmul_algebraMap _
-    · rw [if_neg hv, mul_zero]
-      have h : evFin F v (sAd S q) = 0 := if_neg hv
+    · rw [ite_eq_right hv, mul_zero]
+      have h : evFin F v (sAd S q) = 0 := ite_eq_right hv
       show 0 = evFin F v (sAd S q) ⊗ₜ[F] (1 : E)
       rw [h, TensorProduct.zero_tmul]
 

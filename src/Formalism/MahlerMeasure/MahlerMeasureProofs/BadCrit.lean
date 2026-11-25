@@ -107,7 +107,7 @@ theorem badCrit_goodCount_bdd (be : Vs →ₗ[ℚ_[p]] Vs →ₗ[ℚ_[p]] ℚ_[p
 
     simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, LinearMap.sum_apply,
     Submodule.coe_zero, map_zero, LinearMap.zero_apply] at h1
-    simp only [badCrit_be_smul_left, hxy, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+    simp only [badCrit_be_smul_left, hxy, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
     have hp : (p : ℚ_[p]) ^ D ≠ 0 := zpow_ne_zero _ (by exact_mod_cast (Fact.out : p.Prime).ne_zero)
     exact PadicInt.ext (((mul_eq_zero.1 h1).resolve_right hp).trans PadicInt.coe_zero.symm)
   simpa using hli.fintype_card_le_finrank

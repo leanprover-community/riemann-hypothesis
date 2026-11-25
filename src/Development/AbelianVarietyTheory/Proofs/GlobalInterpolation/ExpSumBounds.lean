@@ -216,8 +216,8 @@ lemma LFam.res_eq_sum (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) : 𝓕.res χ = �
   rw [← Finset.sum_mul, AddChar.sum_eq_ite]
   unfold LFam.res
   by_cases h : χ = 1
-  · rw [if_pos h, if_pos (show χ = 0 from h)]; push_cast; ring
-  · rw [if_neg h, if_neg (show ¬ χ = 0 from h)]; simp
+  · rw [ite_eq_left h, ite_eq_left (show χ = 0 from h)]; push_cast; ring
+  · rw [ite_eq_right h, ite_eq_right (show ¬ χ = 0 from h)]; simp
 
 lemma LFam.summable_norm_aChi_exp (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {t : ℝ} (ht : 0 < t) :
     Summable (fun n : ℕ => ‖𝓕.aChi χ n‖ * Real.exp (-(t * n))) := by
@@ -292,7 +292,7 @@ lemma LFam.norm_sum_aChi_sub_le (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {x : ℝ
 
 lemma LFam.integral_theta (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (hχ : χ ≠ 1) :
     ∫ t in Set.Ioi (0 : ℝ), ∑' n : ℕ, 𝓕.aChi χ n * (Real.exp (-(t * n)) : ℂ) = 𝓕.F χ 1 := by
-  have hr : 𝓕.res χ = 0 := by unfold LFam.res; rw [if_neg hχ]
+  have hr : 𝓕.res χ = 0 := by unfold LFam.res; rw [ite_eq_right hχ]
   have h0 : 𝓕.aChi χ 0 = 0 := by simp [LFam.aChi, 𝓕.a_zero]
   have hm : Measurable fun x : ℝ => ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n :=
     (measurable_from_top (f := fun k : ℕ => ∑ n ∈ Finset.Icc 1 k, 𝓕.aChi χ n)).comp Nat.measurable_floor
@@ -300,7 +300,7 @@ lemma LFam.integral_theta (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (hχ : χ ≠ 
     have := 𝓕.norm_sum_aChi_sub_le χ hx.le
     rwa [hr, zero_mul, sub_zero] at this)
   unfold LFam.F LFam.mel
-  rw [if_neg hχ, one_mul]
+  rw [ite_eq_right hχ, one_mul]
   simp only [hr, zero_mul, sub_zero]
   rw [← h]
   apply setIntegral_congr_fun measurableSet_Ioi

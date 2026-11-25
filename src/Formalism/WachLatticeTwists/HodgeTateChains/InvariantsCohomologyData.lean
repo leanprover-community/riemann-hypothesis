@@ -60,12 +60,6 @@ def Inputs (w : ℤ_[ℓ]ˣ) (U : Finset ℤ) (i : ℤ) : Prop :=
 
 end Piece
 
-def StatPiece : Prop :=
-  ∀ (ℓ : ℕ) [Fact ℓ.Prime] (w : ℤ_[ℓ]ˣ) (m : ℕ), 1 ≤ m → (ℓ = 2 → 2 ≤ m) →
-    PadicInt.valuation ((w : ℤ_[ℓ]) - 1) = m →
-    ∀ (U : Finset ℤ) (i : ℤ) (A : Md ℓ) (P : Piece ℓ A), P.Inputs w U i →
-      TorsKilled ℓ A (2 + max 1 (rI ℓ m U i))
-
 structure LLData (ℓ : ℕ) [Fact ℓ.Prime] (n : ℕ) where
 
   HK : Md ℓ
@@ -129,13 +123,6 @@ def Inv : Prop :=
   ∀ x, D.piece.gm (D.jm x) = D.jm x ∧ D.piece.gX (D.jX x) = D.jX x
 
 end InvariantsCohomologyData
-
-def InvariantsKilledByPower : Prop :=
-  ∀ (ℓ : ℕ) [Fact ℓ.Prime] (w : ℤ_[ℓ]ˣ) (m : ℕ), 1 ≤ m → (ℓ = 2 → 2 ≤ m) →
-    PadicInt.valuation ((w : ℤ_[ℓ]) - 1) = m →
-    ∀ (U : Finset ℤ), 0 ∉ U → U.Nonempty → ∀ D : InvariantsCohomologyData ℓ,
-    D.piece.Inputs w U 0 → D.Union → D.Flat → D.LES → D.Inv →
-      ∀ x : D.M, ((ℓ : ℤ_[ℓ]) ^ c0 ℓ m U) • x = 0
 
 structure TBData (ℓ : ℕ) [Fact ℓ.Prime] where
 

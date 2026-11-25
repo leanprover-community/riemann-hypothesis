@@ -68,7 +68,7 @@ theorem card_quotient_eq_of_pow_sub_self_mem : ∀ {R : Type} [CommRing R] (P : 
       intro a b hab
       simp only [g] at hab
       apply Fin.ext
-      by_cases ha : (a : ℕ) = 0 <;> by_cases hb : (b : ℕ) = 0 <;> simp only [ha, hb, if_true, if_false] at hab
+      by_cases ha : (a : ℕ) = 0 <;> by_cases hb : (b : ℕ) = 0 <;> simp only [ha, hb, ite_true, ite_false] at hab
       · omega
       · exact absurd hab.symm (pow_ne_zero _ hz0)
       · exact absurd hab (pow_ne_zero _ hz0)

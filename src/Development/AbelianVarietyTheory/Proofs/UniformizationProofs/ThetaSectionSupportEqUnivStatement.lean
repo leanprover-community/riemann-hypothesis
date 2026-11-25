@@ -315,7 +315,7 @@ theorem phiRaw_torus : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (
     · have hcorr : LB.Gen.Corr D.P.L _ _ _ _ (gs' α) (LB.oneGen D.P.L) :=
         corr_of_val D.P.isLB fun z J hJ => (hs α hz z J hJ).trans (val_one _).symm
       rw [val_corr hI' hcorr, val_one, Units.val_one, _root_.mul_one]
-    · push_neg at hz
+    · push Not at hz
       have : sval (s α) (𝟙 _) y I = 0 :=
         (congrArg (gs (𝟙 _) y _) (hz _)).trans ((gs_eq _ y _ (hI'.mem _ (𝟙 _)) _).trans
           ((congrArg _ (map_zero _)).trans (map_zero _)))

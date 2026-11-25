@@ -52,16 +52,16 @@ theorem asmOne_lin_wt {K : Type u} [NormedField K] [IsUltrametricDist K] {ι : T
   by_cases hn : ∃ i, n = Finsupp.single i 1
   · obtain ⟨i, rfl⟩ := hn
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl, mul_one, asmR_dot_single]
+    · rw [ite_eq_left rfl, mul_one, asmR_dot_single]
       simp only [Nat.cast_one, one_mul, sub_self, Real.rpow_zero]
       exact hc i
     · intro j _ hj
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       intro h
       exact hj ((Finsupp.single_left_injective one_ne_zero) h).symm
     · simp
-  · push_neg at hn
-    rw [Finset.sum_eq_zero (fun i _ => by rw [if_neg (hn i), mul_zero]), norm_zero]
+  · push Not at hn
+    rw [Finset.sum_eq_zero (fun i _ => by rw [ite_eq_right (hn i), mul_zero]), norm_zero]
     exact Real.rpow_nonneg h0.le _
 
 theorem asmOne_lin_const {K : Type u} [NormedField K] {ι : Type v} [Fintype ι] (c : ι → K) :

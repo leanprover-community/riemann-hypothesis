@@ -46,7 +46,7 @@ private theorem coef_zero (n : ℕ) (a : ℕ → ℂ) (h : ∀ u : ℂ, ∑ k �
   rw [Finset.sum_eq_single k] at this
   · simpa using this
   · intro b hb hne
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     have := Finset.mem_range.1 hb
     omega
   · intro h'

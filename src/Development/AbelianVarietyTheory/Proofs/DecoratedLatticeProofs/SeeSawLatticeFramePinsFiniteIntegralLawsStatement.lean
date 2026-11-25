@@ -237,7 +237,7 @@ theorem vac_second : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : ℕ) (J
     refine (L0 _).1.mpr ⟨hth0, fun v hv => ?_⟩
     exact (_root_.GlobalTheory.FinPl.supportShift D ψ σ J B s LV LV₀ LW LW₀ v (hP v hv).1 (hP v hv).2 (flatFB s) (hflat (· = v))
       ((_root_.GlobalTheory.FlatShiftPf.flatShift D ψ (· = v)).2 σ J B s) _ (hgv v hv)).1
-  · push_neg at hne
+  · push Not at hne
     have hbot := latO_of_none J.W₀ B.V₀ (LV₀ : Set _) (LW₀ : Set _) P hne
     refine ⟨hth0, ?_, ?_⟩
     · intro u hu

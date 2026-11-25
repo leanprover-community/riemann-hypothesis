@@ -78,11 +78,11 @@ theorem blk_lt_of_parab_le [Nontrivial R] {e : (Σ a, m a) ≃ n} {e' : (Σ a, m
     change (t : Matrix n n R).BlockTriangular (blk e)
     intro k l hkl
     have hkl' : k ≠ l := fun hh => (ne_of_lt hkl) (by rw [hh])
-    rw [hent, Matrix.one_apply_ne hkl', zero_add, if_neg]
+    rw [hent, Matrix.one_apply_ne hkl', zero_add, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact hc hkl
   have hzero : (t : Matrix n n R) i j = 0 := (h hmem) hij
-  rw [hent, Matrix.one_apply_ne hne, zero_add, if_pos ⟨rfl, rfl⟩] at hzero
+  rw [hent, Matrix.one_apply_ne hne, zero_add, ite_eq_left ⟨rfl, rfl⟩] at hzero
   exact one_ne_zero hzero
 
 theorem unipRad_le_of_parab_le [Nontrivial R] {e : (Σ a, m a) ≃ n} {e' : (Σ a, m' a) ≃ n}

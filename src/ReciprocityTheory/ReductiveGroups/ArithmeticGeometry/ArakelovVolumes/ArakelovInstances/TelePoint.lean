@@ -223,13 +223,13 @@ theorem Ck_eq (b : Frame X.Ψ r) (z u : V (nd X)) (τ : X.Ψ) (k : Fin (r + 1)) 
     _ = _ := by
       refine Finset.sum_congr rfl fun a _ => ?_
       by_cases ha : (a : ℕ) < k
-      · rw [if_pos ha, Finset.mul_sum]
+      · rw [ite_eq_left ha, Finset.mul_sum]
         refine Finset.sum_congr rfl fun j _ => ?_
         by_cases hj : (k : ℕ) ≤ (j : ℕ)
-        · rw [if_pos hj, if_pos ⟨ha, hj⟩]
-        · rw [if_neg hj, if_neg (fun h => hj h.2), mul_zero]
-      · rw [if_neg ha, eq_comm]
-        exact Finset.sum_eq_zero fun j _ => if_neg (fun h => ha h.1)
+        · rw [ite_eq_left hj, ite_eq_left ⟨ha, hj⟩]
+        · rw [ite_eq_right hj, ite_eq_right (fun h => hj h.2), mul_zero]
+      · rw [ite_eq_right ha, eq_comm]
+        exact Finset.sum_eq_zero fun j _ => ite_eq_right (fun h => ha h.1)
 
 theorem tele_point (a j i : Fin r) :
     ((if (a : ℕ) < (i : ℕ) + 1 ∧ (i : ℕ) + 1 ≤ j then (1 : ℝ) else 0) -
@@ -283,9 +283,9 @@ theorem tele (b : Frame X.Ψ r) (z u : V (nd X)) (la : Wt X.Ψ r) (τ : X.Ψ) :
             (if (a : ℕ) < i ∧ (i : ℕ) ≤ j then 1 else 0))) * ((Dsg X a)⁻¹ * (Dsg X j * ‖Yd X b z u τ j a‖ ^ 2)) from by
           rw [Finset.sum_mul]; exact Finset.sum_congr rfl fun i _ => by ring, hts]
       by_cases haj : (a : ℕ) < j
-      · rw [if_pos haj, if_pos haj, coef, div_eq_mul_inv]
+      · rw [ite_eq_left haj, ite_eq_left haj, coef, div_eq_mul_inv]
         ring
-      · rw [if_neg haj, if_neg haj, zero_mul]
+      · rw [ite_eq_right haj, ite_eq_right haj, zero_mul]
 
 end ReciprocityTheory.ChartRestriction.G.AR.Inst.CurvPf
 end -- clump:auto

@@ -464,9 +464,9 @@ theorem exists_gen_of_val_eq (hL : L.IsLB) {E F : Scheme.{0}} (π : E ⟶ F) (hF
     have hJ : Good L z J := by
       intro ψ
       by_cases hψ : ψ z ∈ L.U (j PUnit.unit)
-      · simp only [J, if_pos hψ]
+      · simp only [J, ite_eq_left hψ]
         exact hψ
-      · simp only [J, if_neg hψ]
+      · simp only [J, ite_eq_right hψ]
         exact (exists_chart hL (ψ z)).choose_spec
     set_option synthInstance.maxHeartbeats 200000 in
     have hj : ∀ (g : Z ⟶ E), g z ∈ π ⁻¹ᵁ (L.pull φ).U j → (fun k : PUnit => J (g ≫ (π ≫ φ))) = j := by
@@ -476,7 +476,7 @@ theorem exists_gen_of_val_eq (hL : L.IsLB) {E F : Scheme.{0}} (π : E ⟶ F) (hF
         have := (hmem j (g z)).2 hg
         simp [LB.pull, LB.LinComb, LB.wchart] at this
         simpa using this PUnit.unit
-      simp only [J, if_pos hin]
+      simp only [J, ite_eq_left hin]
     have hv := hval Z g₁ g₂ hπ z J hJ
     unfold val at hv
     rw [hj g₁ (h₁ z)] at hv

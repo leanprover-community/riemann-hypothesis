@@ -315,7 +315,7 @@ theorem detRed {V : HSp D} {n : ℕ} {hF : D.host.F = maximalRealSubfield D.host
       invFun := fun i => ⟨Fin.cast hn.symm i.1, by
         have h := i.2
         unfold blk2
-        rw [if_neg (by simp only [Fin.val_cast]; omega)]⟩
+        rw [ite_eq_right (by simp only [Fin.val_cast]; omega)]⟩
       left_inv := fun a => rfl
       right_inv := fun i => rfl }
   have hdetT : NX.detT r (NX.locM s κ) = ((A.det : O) : K) := by
@@ -480,7 +480,7 @@ theorem levChi_read : ∀ (D : D7) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (k 
       obtain ⟨hnot, hd⟩ := qPlace hP hn hUm (M.sp PP) PP hw D.R.r _ hrW (hQB' PP (Finset.mem_union_left _ hPP))
       have hnT : PP ∉ t.Q := by rw [htQ]; exact Finset.disjoint_right.1 hdisj hPP
       have hD : PP ∈ B.de.Q := by rw [hdQ]; exact hPP
-      rw [MonoidHom.mul_apply, Units.val_mul, Twist.locC, Twist.locC, if_neg hnT, if_pos hD, MonoidHom.one_apply,
+      rw [MonoidHom.mul_apply, Units.val_mul, Twist.locC, Twist.locC, ite_eq_right hnT, ite_eq_left hD, MonoidHom.one_apply,
         Units.val_one, mul_one]
       exact (hde PP hPP _ hnot _ hd).symm
     · refine Finset.prod_congr rfl fun PP hPP => ?_
@@ -488,7 +488,7 @@ theorem levChi_read : ∀ (D : D7) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (k 
       obtain ⟨hnot, hd⟩ := qPlace hP hn hUm (M.sp PP) PP hw D.R.r _ hrW (hQB' PP (Finset.mem_union_right _ hPP))
       have hnD : PP ∉ B.de.Q := by rw [hdQ]; exact Finset.disjoint_left.1 hdisj hPP
       have hT : PP ∈ t.Q := by rw [htQ]; exact hPP
-      rw [MonoidHom.mul_apply, Units.val_mul, Twist.locC, Twist.locC, if_neg hnD, if_pos hT, MonoidHom.one_apply,
+      rw [MonoidHom.mul_apply, Units.val_mul, Twist.locC, Twist.locC, ite_eq_right hnD, ite_eq_left hT, MonoidHom.one_apply,
         Units.val_one, one_mul]
       exact (hres PP hPP _ hnot _ hd).symm
 

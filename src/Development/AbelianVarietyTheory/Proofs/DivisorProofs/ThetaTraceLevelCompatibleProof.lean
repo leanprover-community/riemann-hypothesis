@@ -80,7 +80,7 @@ theorem rTup_datWp_val (x : GL (Fin (Wc D i).rank) (EAf D)) (PP : ↥(R.datWp i 
   have hm : redFn (R.βW i) PP.1 x ∈ blockTri (blk2 (R.datWp i R.triv).r) := by
     refine mem_blockTri.2 fun c d hcd => ?_
     have hc : c.val < (R.datWp i R.triv).r := lt_of_lt_of_eq c.2 rW
-    have e : blk2 (R.datWp i R.triv).r c = 0 := if_pos hc
+    have e : blk2 (R.datWp i R.triv).r c = 0 := ite_eq_left hc
     exact absurd (lt_of_lt_of_eq hcd e) (Nat.not_lt_zero _)
   unfold rTup
   rw [upper_block_val_submatrix _ hm]

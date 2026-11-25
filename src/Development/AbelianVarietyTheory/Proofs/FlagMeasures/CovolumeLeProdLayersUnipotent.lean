@@ -269,21 +269,21 @@ theorem measurePreserving_triangular_shear (d : ℕ) (deg : Fin d → ℕ)
     funext x i
     by_cases hin : deg i = n
     · have hfx : f (U (n + 1) x) i = f x i :=
-        h _ _ i (fun k hk => by simp only [U]; rw [if_neg (by omega)])
+        h _ _ i (fun k hk => by simp only [U]; rw [ite_eq_right (by omega)])
       simp only [Function.comp_apply, hfx]
       simp only [U]
-      rw [if_pos (by omega), if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_left (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
     · simp only [Function.comp_apply, U]
-      rw [if_pos hin]
+      rw [ite_eq_left hin]
       by_cases h2 : n ≤ deg i
-      · rw [if_pos h2, if_pos (by omega)]
-      · rw [if_neg h2, if_neg (by omega)]
+      · rw [ite_eq_left h2, ite_eq_left (by omega)]
+      · rw [ite_eq_right h2, ite_eq_right (by omega)]
   have hN : ∀ n, Finset.univ.sup deg < n → U n = id := by
     intro n hn
     funext x i
     have hi : deg i ≤ Finset.univ.sup deg := Finset.le_sup (Finset.mem_univ i)
     simp only [U, id]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hU : ∀ k n, Finset.univ.sup deg < n + k → MeasurePreserving (U n) volume volume := by
     intro k
     induction k with

@@ -118,7 +118,7 @@ private theorem ad_entry {D k : Type} [Group D] [CommRing k] (η : D →* ℤˣ)
     adRep (r0 η Ψ) g X a b * ((Ψ g ^ wt1 b : kˣ) : k) = ((Ψ g ^ wt1 a : kˣ) : k) * X a b := by
   show (GG.adFun (r0 η Ψ g) X) a b * _ = _
   unfold GG.adFun GG.mat
-  rw [unitaryThreeReflection_left, ← map_inv, tor_val, tor_val, Matrix.mul_diagonal, Matrix.diagonal_mul, unitaryThreeReflection_right, if_pos hg,
+  rw [unitaryThreeReflection_left, ← map_inv, tor_val, tor_val, Matrix.mul_diagonal, Matrix.diagonal_mul, unitaryThreeReflection_right, ite_eq_left hg,
     mul_assoc, ← Units.val_mul, ← mul_zpow]
   simp
 
@@ -578,7 +578,7 @@ theorem exists_setLift {D : Type} [Group D] [TopologicalSpace D] (𝒜 : ℤ →
   have hX : ∀ g, GrMat 𝒜 (X (r g).mat) ∧ (X (r g).mat).map (p : R →+* R') = (r g).mat := by
     intro g
     have hM : ∃ g', (r g').mat = (r g).mat := ⟨g, rfl⟩
-    simp only [X, dif_pos hM]
+    simp only [X, dite_eq_left hM]
     refine ⟨(Classical.choose_spec (hg (Classical.choose hM))).1, ?_⟩
     exact (Classical.choose_spec (hg (Classical.choose hM))).2.trans (Classical.choose_spec hM)
   have hdet : ∀ g, IsUnit (X (r g).mat).det := by

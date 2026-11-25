@@ -262,7 +262,7 @@ theorem continuousOn_secInf {D : D7} {θ : InfF D} (hθ : IsInfFam θ) (V : HSp 
   refine ContinuousOn.congr (h.mono fun u hu => (unit_iff R u).1 hu) fun u hu => ?_
   refine R.2.2.1 _ (secInf_spec R hu).1 _ (GlobalTheory.RealLift.prodAt_mem θ V _ u) fun τ => ?_
   rw [(secInf_spec R hu).2, GlobalTheory.RealLift.infMat_prodAt hθ V ((unit_iff R u).1 hu) τ _ (Finset.nodup_toList _),
-    if_pos (Finset.mem_toList.2 (Finset.mem_univ _))]
+    ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ _))]
 
 theorem mem_smFun_of_closed : ∀ (D : D7) (θ : InfF D), IsInfFam θ → ∀ (V : HSp D), ∀ 𝒮 : Set (GA D V → ℂ), (∀ φ ∈ 𝒮, Continuous φ) → (∀ φ ∈ 𝒮, ∀ τ, ∀ X ∈ lieAt V τ, ∃ φ' ∈ 𝒮, ∀ g, HasDerivAt (fun t : ℝ => φ (g * oneP θ V τ X t)) (φ' g) 0) → ∀ φ ∈ 𝒮, φ ∈ SmFun θ V := by
   intro D θ hθ V 𝒮 hc hd φ hφ

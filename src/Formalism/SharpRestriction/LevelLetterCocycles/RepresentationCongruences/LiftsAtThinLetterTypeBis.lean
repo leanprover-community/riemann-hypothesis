@@ -199,9 +199,9 @@ theorem mem_span_of_coeff {R : Type*} [CommRing R] (F : PowerSeries R) (t : R) (
   ext m
   rw [map_add (f := _), coeff_mul_C, coeff_mul_X_pow', coeff_mk]
   by_cases hm : m < B'
-  · rw [dite_eq_left hm, if_neg (by omega), add_zero, mul_comm]
+  · rw [dite_eq_left hm, ite_eq_right (by omega), add_zero, mul_comm]
     exact ((h m hm).choose_spec).symm
-  · rw [dite_eq_right hm, zero_mul, zero_add, if_pos (by omega), coeff_mk, Nat.sub_add_cancel (by omega)]
+  · rw [dite_eq_right hm, zero_mul, zero_add, ite_eq_left (by omega), coeff_mk, Nat.sub_add_cancel (by omega)]
 
 section Dv
 variable (W : LocWach PD LL O v n)
@@ -411,8 +411,8 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
   have hf₂fr : ∀ k, InFr W (c - 2) 1 (qA W ^ G₀) (f₂ k) := by
     intro k
     by_cases hk : k = k₀
-    · simp only [hf₂, if_pos hk]; exact ⟨_, W.AΔ.pow_mem hqmem _, hg₂Λ⟩
-    · simp only [hf₂, if_neg hk]; exact ⟨0, W.AΔ.zero_mem, by simp⟩
+    · simp only [hf₂, ite_eq_left hk]; exact ⟨_, W.AΔ.pow_mem hqmem _, hg₂Λ⟩
+    · simp only [hf₂, ite_eq_right hk]; exact ⟨0, W.AΔ.zero_mem, by simp⟩
   have hf₂NL : InNL W T₂ (c - 2) 1 (qA W ^ G₀) bb f₂ := by
     refine ⟨hf₂fr, 0, 1, fun _ => g₂, fun _ => Pi.single k₀ 1, fun _ _ => -(wa : ℤ), fun _ => ⟨?_, ?_⟩, ?_⟩
     · show InFr W (c - 2) (∏ s ∈ Finset.range 1, ps W s ^ (-(wa : ℤ)).toNat)
@@ -503,7 +503,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
     have h2 : algebraMap (LetA O n) W.EE (qA W ^ G₀) * f₂ k =
         if k = k₀ then algebraMap (LetA O n) W.EE (E * 1 * qA W ^ (G₀ - wa)) else 0 := by
       by_cases hk : k = k₀
-      · simp only [hf₂, if_pos hk]; exact hg₂Λ
+      · simp only [hf₂, ite_eq_left hk]; exact hg₂Λ
       · simp [hf₂, hk]
     have h3 := hu₂eq k
     rw [show E * (W.π₀ * qA W ^ G₀) * u₂ k = (E * u₂ k) * (W.π₀ * qA W ^ G₀) by ring, hG₂ k] at h3
@@ -523,7 +523,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
     rw [← Br.lA_eq, ← Br.qA_eq, hΦc]
     simp only [Br.cst_C]
     by_cases hk : k = k₀
-    · rw [if_pos hk] at h2 ⊢
+    · rw [ite_eq_left hk] at h2 ⊢
 
       simp only [map_mul, map_sub, map_sum, map_pow, map_natCast, lA, lE, mul_one] at h3 h2 ⊢
       linear_combination (algebraMap (LetA O n) W.EE (qA W)) ^ G₀ * h3 - ((PD.p : ℕ) : W.EE) ^ Kc * hsum +
@@ -533,7 +533,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
           (algebraMap (LetA O n) W.EE (qA W)) ^ (G₀ - wa)) * hEE -
         (algebraMap (LetA O n) W.EE E * algebraMap (LetA O n) W.EE (Br.cst (G₂ k)) *
           (algebraMap (LetA O n) W.EE (qA W)) ^ (2 * G₀)) * hq
-    · rw [if_neg hk] at h2 ⊢
+    · rw [ite_eq_right hk] at h2 ⊢
 
       simp only [map_mul, map_sub, map_sum, map_pow, map_natCast, lA, lE, sub_zero] at h3 h2 ⊢
       linear_combination (algebraMap (LetA O n) W.EE (qA W)) ^ G₀ * h3 - ((PD.p : ℕ) : W.EE) ^ Kc * hsum +
@@ -551,7 +551,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
       show (PowerSeries.C ((PD.p : ℕ) : O)) ^ (2 * σ) = PowerSeries.C (((PD.p : ℕ) : O) ^ (2 * σ)) from
         (map_pow _ _ _).symm] at h
 
-    simp only [PowerSeries.coeff_X_pow_mul', if_neg (show ¬ 2 * G₀ ≤ j by omega), PowerSeries.coeff_C_mul, map_sub,
+    simp only [PowerSeries.coeff_X_pow_mul', ite_eq_right (show ¬ 2 * G₀ ≤ j by omega), PowerSeries.coeff_C_mul, map_sub,
     map_sum, PowerSeries.coeff_mul_C, apply_ite (PowerSeries.coeff j), map_zero] at h
     rcases mul_eq_zero.1 h with h0 | h0
     · exact absurd h0 (pow_ne_zero _ hp0)
@@ -631,7 +631,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
       intro m
       have h := congrArg (PowerSeries.coeff (N' - G₀ + j)) (hX m)
 
-      rw [PowerSeries.coeff_X_pow_mul', if_pos (by omega), Nat.add_sub_cancel_left, PowerSeries.coeff_C_mul, map_sum] at h
+      rw [PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega), Nat.add_sub_cancel_left, PowerSeries.coeff_C_mul, map_sum] at h
       rw [h]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [PowerSeries.coeff_X_pow_mul']
@@ -654,7 +654,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
         refine ArcLengthFourSecond.filS_mono W T₁ (c - 2) 0 ?_ hc
         have := hnle i
         omega
-      · simp only [hr, if_neg hi, map_zero, zero_smul]
+      · simp only [hr, ite_eq_right hi, map_zero, zero_smul]
         exact Submodule.zero_mem _
     rw [hdvO_smul] at hsumFil
     have hne : algebraMap O LL (((PD.p : ℕ) : O) ^ κ) ≠ 0 := by

@@ -261,9 +261,9 @@ theorem gm_iK (w : D.what₂.places.Pl) (v : B.ch.A.vT) (g : GL (Fin (D.R.N i)) 
   split_ifs with hs
   · congr 1
     refine Units.ext (Matrix.ext fun a b => ?_)
-    exact (jj_iK R w v _).trans (by rw [if_pos hs]; rfl)
+    exact (jj_iK R w v _).trans (by rw [ite_eq_left hs]; rfl)
   · refine Units.ext (Matrix.ext fun a b => ?_)
-    exact (jj_iK R w v _).trans (by rw [if_neg hs]; rfl)
+    exact (jj_iK R w v _).trans (by rw [ite_eq_right hs]; rfl)
 
 theorem exists_map (v : B.ch.A.vT) (h : GL (Fin (D.R.N i)) (M.Lc v).K) :
     ∃ g, h = Matrix.GeneralLinearGroup.map (R.iK v).toRingHom g :=
@@ -357,22 +357,22 @@ theorem valIs (hS : B.Sees) : R.ValIs (coord R hS) := by
     obtain ⟨a, ha⟩ := exists_sepElt sp.nonconj
     by_cases hs : B.Z.seenP w = true
     · have := valB_iff R hS hw ∅ (R.pt b d) hd.Lsh_full_lattice (fun v x => by
-        rw [if_pos ⟨hs, Finset.notMem_empty v⟩, hd.locP_Lsh ha (B.pr v)]
+        rw [ite_eq_left ⟨hs, Finset.notMem_empty v⟩, hd.locP_Lsh ha (B.pr v)]
         exact R.pt_L b d v x) y
-      rw [if_pos hs] at this
+      rw [ite_eq_left hs] at this
       rw [(B.hJ.tied i).Lsh_eq]
       exact this
     · have := valB_iff R hS hw ∅ (R.pt b d) hd.L_full_lattice (fun v x => by
-        rw [if_neg fun h => hs h.1]
+        rw [ite_eq_right fun h => hs h.1]
         exact ker_iff R b d v x) y
-      rw [if_neg hs] at this
+      rw [ite_eq_right hs] at this
       rw [(B.hJ.tied i).Lsh_eq]
       exact this
   · intro w hw hs b d y
     have := valB_iff R hS hw Finset.univ (R.pt b d) ((B.hJ.tied i).ok b d).L_full_lattice (fun v x => by
-      rw [if_neg fun h => h.2 (Finset.mem_univ v)]
+      rw [ite_eq_right fun h => h.2 (Finset.mem_univ v)]
       exact ker_iff R b d v x) y
-    rw [if_pos hs] at this
+    rw [ite_eq_left hs] at this
     exact this
 
 theorem ev_rho (b) (g : (B.I.S i).G b) (F : B.V i) :
@@ -678,7 +678,7 @@ theorem valB_of_inc : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u) (i : ℕ) (
     intro v'
     by_cases h : v' = v
     · subst h
-      rw [if_neg (fun h => h.2 hv), if_pos ⟨hw, Finset.notMem_erase _ _⟩, hk]
+      rw [ite_eq_right (fun h => h.2 hv), ite_eq_left ⟨hw, Finset.notMem_erase _ _⟩, hk]
     · rw [hoff v' h]
       have : v' ∈ V.erase v ↔ v' ∈ V := by simp [h]
       simp only [this]
@@ -872,14 +872,14 @@ theorem ukSharp (D : D7) (u : D.what₂.Word) (X : Ch D u) (Lv : LevTie X) (Vt :
     obtain ⟨n, hn⟩ := Int.le.dest hle
     have h4 := h3.pow_smul hC' hw n
     rw [smul_smul, ← zpow_natCast, ← zpow_add₀ hT, add_comm (n : ℤ), hn, zpow_natCast] at h4
-    rw [if_pos hs]
+    rw [ite_eq_left hs]
     exact h4
   · have hs' : X.fm.seenP w = false := by simpa using hs
     have h1 := extIn_K (V := ∅) hC' (Kt i hi) (hK.tgt i hi) hw (hst i hi.le) 1 (fun p p' y hy => by
       obtain ⟨y', hy', e⟩ := hK.bar i hi w hw hs' p p' y hy
       rw [one_smul, e]
       exact pow_smul_mem hC' hw hy' _) h0
-    rw [if_neg hs]
+    rw [ite_eq_right hs]
     simpa [tpow, Uprod, VVT, hs'] using h1
 
 end GlobalTheory.LvT.UKS
@@ -1386,7 +1386,7 @@ theorem chain_into (hF : FormsStable X) (h4 : LevelChainUOperatorCommutation X) 
 
 theorem card_VVT {w : D.what₂.places.Pl} (h : X.fm.seenP w = true) : (VVT X w).card = (tops D).card := by
   unfold VVT
-  rw [if_pos h]
+  rw [ite_eq_left h]
   refine Finset.card_bij (fun v _ => X.fm.tauOf w v) (fun v hv => (Finset.mem_filter.1 hv).2)
     (fun a _ b _ hab => (X.fm.tauOf w).injective hab) (fun τ hτ => ?_)
   exact ⟨(X.fm.tauOf w).symm τ, Finset.mem_filter.2 ⟨Finset.mem_univ _, by simpa using hτ⟩, by simp⟩
@@ -1423,7 +1423,7 @@ theorem loss_eq {s : ℕ} (hs : D.R.t + 1 = 2 * s) (w : D.what₂.places.Pl) :
       s * (VVT X w).card * ∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) : ℝ) = (D.R.m : ℝ) * ET X w := by
   unfold ET
   by_cases h : X.fm.seenP w = true
-  · rw [if_pos h, if_pos h, card_VVT h]
+  · rw [ite_eq_left h, ite_eq_left h, card_VVT h]
     unfold ETpi
     have h1 : ((D.R.t : ℝ) + 1) = 2 * s := by exact_mod_cast hs
     have h2 : ((∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) : ℝ) * 2 = ((D.R.m : ℝ) + 1) * D.R.m := by
@@ -1434,8 +1434,8 @@ theorem loss_eq {s : ℕ} (hs : D.R.t + 1 = 2 * s) (w : D.what₂.places.Pl) :
     generalize (∑ j ∈ Finset.range (D.R.m + 1), j : ℕ) = S at h2 ⊢
     push_cast
     linear_combination ((s : ℝ) * ((tops D).card : ℝ) / 2) * h2
-  · have : VVT X w = ∅ := by unfold VVT; rw [if_neg h]
-    rw [if_neg h, if_neg h, this]
+  · have : VVT X w = ∅ := by unfold VVT; rw [ite_eq_right h]
+    rw [ite_eq_right h, ite_eq_right h, this]
     simp
 
 end ColSharp
@@ -1599,17 +1599,6 @@ theorem prime_le_of_embed_GL {E G : Type} [Field E] [NumberField E] [Group G] [F
     ((LinearMap.GeneralLinearGroup.generalLinearEquiv E (Fin n → E)).injective.comp
       ((Matrix.GeneralLinearGroup.toLin (n := Fin n) (R := E)).injective.comp hφ)) hp hd
 
-section Concrete
-
-variable {F : Fields} {Pr : Primes F} {R : Ranks} {W : Wts F Pr.Word R} {a : ℝ}
-
-variable {n : ℕ} {ST SG Q : Finset (HeightOneSpectrum (𝓞 F.E))}
-
-variable (sel : HeightOneSpectrum (𝓞 F.F) → HeightOneSpectrum (𝓞 F.E)) {S : Set ℕ} (mu : Tup F.F F.E F.K S)
-  (cst : LocCst F (rowSG Pr sel mu)) (L : ChIdx F Pr R (QE sel (mu : Chr F.F F.E F.K)))
-
-end Concrete
-
 section Record
 
 variable {D : D7} {u : D.what₂.Word}
@@ -1663,7 +1652,7 @@ theorem natAbs_lamT_le_Wt (X : Ch D u) (j : ℕ) (hj : j ≤ D.R.m) (τ : D.what
   refine le_trans ?_ (Finset.le_sup (f := fun a : Fin (D.R.N j) =>
     if a.1 = 0 ∧ τ ∈ topsOf D.host D.eTau then 0
     else ((X.fm.lam j τ).w a - ((j * (D.R.t + 1) / 2 : ℕ) : ℤ)).natAbs) (Finset.mem_univ a))
-  rw [if_neg ha]
+  rw [ite_eq_right ha]
   exact le_rfl
 
 theorem lamT_last (X : Ch D u) (i : ℕ) (hi : i < D.R.m) (τ : D.what₂.Tau) (a : Fin (D.R.N (i + 1)))

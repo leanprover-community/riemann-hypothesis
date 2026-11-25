@@ -118,7 +118,7 @@ theorem halfA_mem_locP_conj {D : D7} {a b : ℕ} {SS : Finset (HeightOneSpectrum
   have hcc : Formalism.L2.Col.conjPrime₂ (Formalism.L2.Col.conjPrime₂ P) = P := by
     rw [GlobalTheory.OffIdemDen.conjP_eq_cP, GlobalTheory.OffIdemDen.conjP_eq_cP, GlobalTheory.OffIdemDen.cP_cP]
   have he : expS SS (Formalism.L2.Col.conjPrime₂ P) = -1 := by
-    unfold expS; rw [if_neg hP', if_pos (by rw [hcc]; exact hP)]
+    unfold expS; rw [ite_eq_right hP', ite_eq_left (by rw [hcc]; exact hP)]
   have hc' : (c : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 hc.ne'
   rw [he, neg_neg, zpow_one] at h
   have := nsmul_mem h c
@@ -130,7 +130,7 @@ theorem halfA_mem_locP_off {E : Type} [Field E] [NumberField E] [StarRing E] {a 
     (hQ : ¬ (Q ∈ SS ∨ Formalism.L2.Col.conjPrime₂ Q ∈ SS)) : x ∈ Formalism.HermitianLatticesTheory.localization₂ Q.asIdeal M := by
   have h : ((c : E) ^ (-expS SS Q))⁻¹ • x ∈ Formalism.HermitianLatticesTheory.localization₂ Q.asIdeal M := (Submodule.mem_iInf _).1 hx Q
   have he : expS SS Q = 0 := by
-    unfold expS; rw [if_neg (fun h => hQ (Or.inl h)), if_neg (fun h => hQ (Or.inr h))]
+    unfold expS; rw [ite_eq_right (fun h => hQ (Or.inl h)), ite_eq_right (fun h => hQ (Or.inr h))]
   rwa [he, neg_zero, zpow_zero, inv_one, one_smul] at h
 
 

@@ -80,26 +80,26 @@ theorem blockIdx_of_entry : ∀ (bs : List (ℂ × ℕ)) (i j : ℕ), ptEntry bs
     have := blockIdx_of_entry bs (i - s) (j - s)
     simp only [blockIdx, ptEntry] at h ⊢
     by_cases h1 : i < s ∧ j < s
-    · rw [if_pos h1.1, if_pos h1.2]
-    · rw [if_neg h1] at h
+    · rw [ite_eq_left h1.1, ite_eq_left h1.2]
+    · rw [ite_eq_right h1] at h
       by_cases h2 : s ≤ i ∧ s ≤ j
-      · rw [if_pos h2] at h
-        rw [if_neg (by omega), if_neg (by omega), this h]
-      · rw [if_neg h2] at h; exact absurd rfl h
+      · rw [ite_eq_left h2] at h
+        rw [ite_eq_right (by omega), ite_eq_right (by omega), this h]
+      · rw [ite_eq_right h2] at h; exact absurd rfl h
 
 theorem entry_cases (t : ℂ) (s : ℕ) (bs : List (ℂ × ℕ)) (i j : ℕ) (h : ptEntry ((t, s) :: bs) i j ≠ 0) :
     (i < s ∧ i + j + 1 = s ∧ ptEntry ((t, s) :: bs) i j = t) ∨
       (s ≤ i ∧ s ≤ j ∧ ptEntry ((t, s) :: bs) i j = ptEntry bs (i - s) (j - s)) := by
   simp only [ptEntry] at h ⊢
   by_cases h1 : i < s ∧ j < s
-  · rw [if_pos h1] at h ⊢
+  · rw [ite_eq_left h1] at h ⊢
     by_cases h3 : i + j + 1 = s
-    · exact Or.inl ⟨h1.1, h3, if_pos h3⟩
-    · rw [if_neg h3] at h; exact absurd rfl h
-  · rw [if_neg h1] at h ⊢
+    · exact Or.inl ⟨h1.1, h3, ite_eq_left h3⟩
+    · rw [ite_eq_right h3] at h; exact absurd rfl h
+  · rw [ite_eq_right h1] at h ⊢
     by_cases h2 : s ≤ i ∧ s ≤ j
-    · exact Or.inr ⟨h2.1, h2.2, if_pos h2⟩
-    · rw [if_neg h2] at h; exact absurd rfl h
+    · exact Or.inr ⟨h2.1, h2.2, ite_eq_left h2⟩
+    · rw [ite_eq_right h2] at h; exact absurd rfl h
 
 theorem entry_same : ∀ (bs : List (ℂ × ℕ)) (i j i' j' : ℕ), ptEntry bs i j ≠ 0 → ptEntry bs i' j' ≠ 0 →
     blockIdx bs i = blockIdx bs i' → ptEntry bs i j = ptEntry bs i' j' ∧ i + j = i' + j' := by
@@ -115,9 +115,9 @@ theorem entry_same : ∀ (bs : List (ℂ × ℕ)) (i j i' j' : ℕ), ptEntry bs 
     rcases entry_cases t s bs i j h with ⟨a1, a2, a3⟩ | ⟨a1, a2, a3⟩ <;>
       rcases entry_cases t s bs i' j' h' with ⟨b1, b2, b3⟩ | ⟨b1, b2, b3⟩
     · exact ⟨a3.trans b3.symm, by omega⟩
-    · rw [if_pos a1, if_neg (by omega)] at hb; omega
-    · rw [if_pos b1, if_neg (by omega)] at hb; omega
-    · rw [if_neg (by omega), if_neg (by omega)] at hb
+    · rw [ite_eq_left a1, ite_eq_right (by omega)] at hb; omega
+    · rw [ite_eq_left b1, ite_eq_right (by omega)] at hb; omega
+    · rw [ite_eq_right (by omega), ite_eq_right (by omega)] at hb
       obtain ⟨e1, e2⟩ := ih (i - s) (j - s) (i' - s) (j' - s)
         (a3 ▸ h) (b3 ▸ h') (by omega)
       exact ⟨by rw [a3, b3, e1], by omega⟩
@@ -136,12 +136,12 @@ theorem entry_exists : ∀ (bs : List (ℂ × ℕ)), (∀ b ∈ bs, b.1 ≠ 0 �
     by_cases h1 : j < s
     · refine ⟨s - 1 - j, by omega, ?_⟩
       simp only [ptEntry]
-      rw [if_pos (by omega), if_pos (by omega)]
+      rw [ite_eq_left (by omega), ite_eq_left (by omega)]
       exact (hb (t, s) (by simp)).1
     · obtain ⟨i, hi, he⟩ := ih (fun b hb' => hb b (by simp [hb'])) (j - s) (by omega)
       refine ⟨s + i, by omega, ?_⟩
       simp only [ptEntry]
-      rw [if_neg (by omega), if_pos (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_left (by omega)]
       simpa using he
 
 theorem point_facts {r : ℕ} (p : Point ℂ (r + 1)) (Z : Matrix (Fin r) (Fin r) ℂ) (hZ : Z.det ≠ 0)
@@ -208,7 +208,7 @@ theorem H_mul_H : Hpk k r * Hpk k r = 1 := by
       eI_inj, wI_inj, esI_inj, eI_ne_wI, eI_ne_esI, wI_ne_esI, wI_ne_eI, esI_ne_eI, esI_ne_wI]
   rename_i i j
   by_cases h : i = j
-  · subst h; simp only [if_true, sg]; split_ifs <;> simp
+  · subst h; simp only [ite_true, sg]; split_ifs <;> simp
   · simp [h]
 
 theorem isUnit_det {g : Mat k r} (hg : g ∈ GG k r) : IsUnit g.det := by
@@ -335,7 +335,7 @@ theorem normal_form : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g�
   have hgi : ∀ v, g *ᵥ (g⁻¹ *ᵥ v) = v := fun v => by
     rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hu, Matrix.one_mulVec]
   have hee : ∀ a b : Fin r, herm (Hpk k r) (bvec (eI k r a)) (bvec (eI k r b)) = 0 := fun a b => by
-    rw [GlobalTheory.Amp.NfMid.herm_e, bvec_apply, if_neg (esI_ne_eI _ _)]
+    rw [GlobalTheory.Amp.NfMid.herm_e, bvec_apply, ite_eq_right (esI_ne_eI _ _)]
   obtain ⟨q₁, h1, -⟩ := graph' (fun b => g *ᵥ bvec (eI k r b)) (fun a b => by rw [herm_isom hg, hee])
     (Zr k r g) hdet (fun a b => mulVec_bvec _ _ _)
   obtain ⟨q₀, h2, h3⟩ := graph' (fun b => g⁻¹ *ᵥ bvec (eI k r b))
@@ -509,11 +509,11 @@ theorem eq_map (z' : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1))
       funext q
       change flagMat k r z' (Matrix.of x) q.1.1.1.castSucc q.1.1.2.castSucc = _
       unfold flagMat fvec
-      rw [dif_pos (show q.1.1.1.castSucc.val < r from q.1.1.1.2), dif_pos (show q.1.1.2.castSucc.val < r from q.1.1.2.2), hx']
+      rw [dite_eq_left (show q.1.1.1.castSucc.val < r from q.1.1.1.2), dite_eq_left (show q.1.1.2.castSucc.val < r from q.1.1.2.2), hx']
       refine (conj_entry p₀ _ q.1.1.1 q.1.1.2).trans ?_
       unfold upperIn upper
-      rw [dif_pos q.1.2]
-      exact dif_pos q.2
+      rw [dite_eq_left q.1.2]
+      exact dite_eq_left q.2
     rw [hy']
     unfold conjM
     rw [Matrix.nonsing_inv_nonsing_inv _ hu]

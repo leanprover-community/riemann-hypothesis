@@ -565,19 +565,19 @@ theorem patchAt_isLattice_locP (P : HeightOneSpectrum (𝓞 E)) (A B : Submodule
     intro Q x hx
     by_cases hQ : Q = P
     · subst hQ
-      simp only [Λ, if_true] at hx
+      simp only [Λ, ite_true] at hx
       obtain ⟨s, hs, hsx⟩ := hx
       refine ⟨s, hs, ?_⟩
       rw [smul_comm]
       exact hAB _ hsx
-    · simp only [Λ, hQ, if_false] at hx
+    · simp only [Λ, hQ, ite_false] at hx
       exact Submodule.smul_mem _ d hx
   have h2 : ∀ Q, ∀ x ∈ B, d • x ∈ Λ Q := by
     intro Q x hx
     by_cases hQ : Q = P
-    · simp only [Λ, hQ, if_true]
+    · simp only [Λ, hQ, ite_true]
       exact Formalism.L2.DIV.lc_le_locP _ _ (hBA x hx)
-    · simp only [Λ, hQ, if_false]
+    · simp only [Λ, hQ, ite_false]
       exact Formalism.L2.DIV.lc_le_locP _ _ (B.smul_mem d hx)
   have hpat : patchAt P A B = ⨅ Q, Λ Q := rfl
   refine ⟨?_, fun Q => ?_⟩
@@ -757,25 +757,25 @@ theorem exchange : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : �
       ∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P → SameAt Q X (patchAt P (gmap g Y) Y)
     refine ⟨latσ Y hYl hYu, ?_, ?_⟩
     · refine unimod _ (gmap g Y) X (latσ Y hYl hYu) (gmap_lattice g Y hYl) hXl (unimodG g hg Y hYu) hXu ?_ ?_
-      · rw [locσ Y hYl hYu P, if_pos rfl]
+      · rw [locσ Y hYl hYu P, ite_eq_left rfl]
       · intro Q hQ
-        rw [locσ Y hYl hYu Q, if_neg hQ]
+        rw [locσ Y hYl hYu Q, ite_eq_right hQ]
         exact (hYS Q hQ).localization_eq
     · intro Q hQ
       apply _root_.GlobalTheory.sameAt_of_localized_eq Q X _ hXl (latσ Y hYl hYu)
-      rw [locσ Y hYl hYu Q, if_neg hQ]
+      rw [locσ Y hYl hYu Q, ite_eq_right hQ]
       exact (hYS Q hQ).localization_eq.symm
   · intro Y' hl' hu' hS'
     obtain ⟨hYl, hYloc⟩ := patch_lat_loc g⁻¹ hginv Y' hl' hu'
     have hYu : IsUnimodular (hStd E n) (patchAt P (gmap g⁻¹ Y') Y') := by
       refine unimod _ (gmap g⁻¹ Y') Y' hYl (gmap_lattice _ _ hl') hl' (unimodG _ hginv Y' hu') hu' ?_ ?_
-      · rw [hYloc P, if_pos rfl]
+      · rw [hYloc P, ite_eq_left rfl]
       · intro Q hQ
-        rw [hYloc Q, if_neg hQ]
+        rw [hYloc Q, ite_eq_right hQ]
     refine ⟨patchAt P (gmap g⁻¹ Y') Y', hYl, hYu, ?_, ?_⟩
     · intro Q hQ
       apply _root_.GlobalTheory.sameAt_of_localized_eq Q X _ hXl hYl
-      rw [hYloc Q, if_neg hQ]
+      rw [hYloc Q, ite_eq_right hQ]
       exact (hS' Q hQ).localization_eq.symm
     · show patchAt P (gmap g (patchAt P (gmap g⁻¹ Y') Y')) (patchAt P (gmap g⁻¹ Y') Y') = Y'
       apply Formalism.L2.DIV.eq_of_forall_localized_eq
@@ -784,10 +784,10 @@ theorem exchange : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : �
       split_ifs with hQ
       · rw [hQ]
         ext x
-        rw [mem_localization_gmap, hYloc P, if_pos rfl, mem_localization_gmap]
+        rw [mem_localization_gmap, hYloc P, ite_eq_left rfl, mem_localization_gmap]
         have e : g⁻¹ = g.symm := rfl
         rw [e, LinearEquiv.symm_symm, LinearEquiv.apply_symm_apply]
-      · rw [hYloc Q, if_neg hQ]
+      · rw [hYloc Q, ite_eq_right hQ]
   · intro Y Y' hYl hYu hYS hY'l hY'u hY'S he
     have he' : patchAt P (gmap g Y) Y = patchAt P (gmap g Y') Y' := he
     apply Formalism.L2.DIV.eq_of_forall_localized_eq
@@ -796,21 +796,21 @@ theorem exchange : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : �
     · rw [hQ]
       apply locg_inv g P
       have h1 := congrArg (localization₂ P.asIdeal) he'
-      rw [locσ Y hYl hYu P, locσ Y' hY'l hY'u P, if_pos rfl, if_pos rfl] at h1
+      rw [locσ Y hYl hYu P, locσ Y' hY'l hY'u P, ite_eq_left rfl, ite_eq_left rfl] at h1
       exact h1
     · rw [(hYS Q hQ).localization_eq, (hY'S Q hQ).localization_eq]
   · intro s Y Y' hYl hYu hYS hY'l hY'u hY'S
     show IsInertNbr P.asIdeal s (patchAt P (gmap g Y) Y) (patchAt P (gmap g Y') Y') ↔ IsInertNbr P.asIdeal s Y Y'
     have hAl := gmap_lattice g Y hYl
     have hBl := gmap_lattice g Y' hY'l
-    have hAA' := _root_.GlobalTheory.sameAt_of_localized_eq P (gmap g Y) _ hAl (latσ Y hYl hYu) (by rw [locσ Y hYl hYu P, if_pos rfl])
-    have hBB' := _root_.GlobalTheory.sameAt_of_localized_eq P (gmap g Y') _ hBl (latσ Y' hY'l hY'u) (by rw [locσ Y' hY'l hY'u P, if_pos rfl])
+    have hAA' := _root_.GlobalTheory.sameAt_of_localized_eq P (gmap g Y) _ hAl (latσ Y hYl hYu) (by rw [locσ Y hYl hYu P, ite_eq_left rfl])
+    have hBB' := _root_.GlobalTheory.sameAt_of_localized_eq P (gmap g Y') _ hBl (latσ Y' hY'l hY'u) (by rw [locσ Y' hY'l hY'u P, ite_eq_left rfl])
     have hAB : ∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P → localization₂ Q.asIdeal (gmap g Y) = localization₂ Q.asIdeal (gmap g Y') :=
       fun Q hQ => locg g Q Y Y' ((hYS Q hQ).localization_eq.trans (hY'S Q hQ).localization_eq.symm)
     have hA'B' : ∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P →
         localization₂ Q.asIdeal (patchAt P (gmap g Y) Y) = localization₂ Q.asIdeal (patchAt P (gmap g Y') Y') := by
       intro Q hQ
-      rw [locσ Y hYl hYu Q, locσ Y' hY'l hY'u Q, if_neg hQ, if_neg hQ, (hYS Q hQ).localization_eq, (hY'S Q hQ).localization_eq]
+      rw [locσ Y hYl hYu Q, locσ Y' hY'l hY'u Q, ite_eq_right hQ, ite_eq_right hQ, (hYS Q hQ).localization_eq, (hY'S Q hQ).localization_eq]
     obtain ⟨k1, hk1, hk1'⟩ := _root_.GlobalTheory.InertExchange.exists_pow_smul_le_of_locP_eq P _ _ hAl hBl hAB
     obtain ⟨k2, hk2, hk2'⟩ := _root_.GlobalTheory.InertExchange.exists_pow_smul_le_of_locP_eq P _ _ (latσ Y hYl hYu) (latσ Y' hY'l hY'u) hA'B'
     obtain ⟨a, ha, a', ha', h1, h2⟩ := hAA'

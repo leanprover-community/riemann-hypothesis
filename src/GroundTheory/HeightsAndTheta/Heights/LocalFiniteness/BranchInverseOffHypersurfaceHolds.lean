@@ -783,7 +783,7 @@ theorem IdealHeightSpread.proof : IdealHeightSpread.Statement := by
   have ha : ∀ p : Ideal R, ¬ p ≤ P → a p ∈ p ∧ a p ∉ P := by
     intro p h
     have h' : ¬ (p : Set R) ⊆ P := h
-    simp only [a, dif_pos h']
+    simp only [a, dite_eq_left h']
     exact Classical.choose_spec (Set.not_subset.mp h')
   let s : Finset (Ideal R) := hF.toFinset.filter (fun p => ¬ p ≤ P)
   refine ⟨∏ p ∈ s, a p, ?_, ?_⟩

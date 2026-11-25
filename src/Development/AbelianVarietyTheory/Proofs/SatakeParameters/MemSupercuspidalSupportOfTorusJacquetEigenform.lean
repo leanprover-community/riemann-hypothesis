@@ -118,7 +118,7 @@ theorem inSupport_of_eigenform (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ
       simp only [LinearMap.comp_apply, Submodule.mkQ_apply]
       rw [key, ofChar_apply]
     · obtain ⟨x, hx⟩ : ∃ x, l x ≠ 0 := by
-        by_contra hc; push_neg at hc; exact hl0 (LinearMap.ext hc)
+        by_contra hc; push Not at hc; exact hl0 (LinearMap.ext hc)
       obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ x
       intro c
       refine ⟨(c / l (Submodule.Quotient.mk v)) • Submodule.Quotient.mk v, ?_⟩

@@ -470,7 +470,7 @@ theorem cusp_of_integral_of_dom : ∀ (E : Type) [Field E] [NumberField E] [IsCM
   have key : ∀ f, Formalism.L2.PjFree.rdU (U σ) f j x = evHom ((U σ).un j ⟨x, hx⟩) hy f := by
     intro f
     unfold Formalism.L2.PjFree.rdU
-    simp only [LinearMap.coe_mk, AddHom.coe_mk, dif_pos hx]
+    simp only [LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left hx]
     rfl
   simp only [key]
   have h3 := congrArg (evHom ((U σ).un j ⟨x, hx⟩) hy) heq

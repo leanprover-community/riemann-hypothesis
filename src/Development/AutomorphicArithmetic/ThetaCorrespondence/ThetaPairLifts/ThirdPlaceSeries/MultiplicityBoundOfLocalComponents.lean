@@ -1252,8 +1252,8 @@ theorem UpperTheory.sidePlace_exists_of_copyAll :
   have a := hs (e x)
   rw [hv, hL x] at a
   have b : D.ntw.emb0 i (e x) = (overD D r).ntw.emb0 i x := eq_of_heq (hE i i HEq.rfl x)
-  rw [if_pos rfl, b] at a
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl, b] at a
+  rw [ite_eq_left rfl]
   exact a
 end -- clump:auto
 end -- clump:auto

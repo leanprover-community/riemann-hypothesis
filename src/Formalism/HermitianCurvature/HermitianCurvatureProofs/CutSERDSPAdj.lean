@@ -68,7 +68,7 @@ theorem psiL_one_near (n : ℕ) (c : ℂ) (hc : c ≠ 0) (h : |Real.log ‖c‖|
     ((Real.continuousAt_log (norm_ne_zero_iff.2 hc)).comp continuous_norm.continuousAt).abs
   have h1 : ∀ᶠ w in 𝓝 c, |Real.log ‖w‖| < (n:ℝ) + 1 := hcont.eventually_lt continuousAt_const h
   filter_upwards [isOpen_ne.mem_nhds hc, h1] with w hw hw1
-  simp only [psiL, if_neg hw]
+  simp only [psiL, ite_eq_right hw]
   apply bumpR.one_of_mem_closedBall
   have hpos : (0:ℝ) < (n:ℝ) + 1 := by positivity
   rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, abs_div, abs_of_pos hpos, div_le_iff₀ hpos]
@@ -625,7 +625,7 @@ theorem site_p_adj_g (X : ActualOps k r z z' π π') (Φ Ψ : RadSp k r z z' π 
     rw [X.op_apply, hd.1]
     show pOp l fΦ (Function.update c l t) = _
     unfold pOp
-    rw [if_pos (update_mem_OmX hc l ht), Function.update_self]
+    rw [ite_eq_left (update_mem_OmX hc l ht), Function.update_self]
   have hpΨ : ∀ t : ℂ, t ≠ 0 → (X.op l 3 Ψ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g =
       conj t • dZbv Bf t := by
     intro t ht
@@ -634,7 +634,7 @@ theorem site_p_adj_g (X : ActualOps k r z z' π π') (Φ Ψ : RadSp k r z z' π 
     rw [X.op_apply, hd.2]
     show pbOp l fΨ (Function.update c l t) = _
     unfold pbOp
-    rw [if_pos (update_mem_OmX hc l ht), Function.update_self]
+    rw [ite_eq_left (update_mem_OmX hc l ht), Function.update_self]
     rfl
   have e1 : (fun t : ℂ => B.hsInner ((X.op l 0 Φ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g)
       ((Ψ : Fn k r (Wq →L[ℂ] Wp)) (Function.update c l t) g) / ((‖t‖ ^ 2 : ℝ) : ℂ)) =

@@ -102,10 +102,10 @@ theorem squareModelW₁_good : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Con
   · change M0.IsVac B.ψ v (if M0.IsVac B.ψ v (Set.indicator {x : Fin _ × Fin _ → Fv _ v | ∀ k, x k ∈ v.adicCompletionIntegers _} 1)
       then Set.indicator {x : Fin _ × Fin _ → Fv _ v | ∀ k, x k ∈ v.adicCompletionIntegers _} 1 else (hb v).choose)
     by_cases h : M0.IsVac B.ψ v (Set.indicator {x : Fin _ × Fin _ → Fv _ v | ∀ k, x k ∈ v.adicCompletionIntegers _} 1)
-    · rw [if_pos h]; exact h
-    · rw [if_neg h]; exact (hb v).choose_spec
+    · rw [ite_eq_left h]; exact h
+    · rw [ite_eq_right h]; exact (hb v).choose_spec
   · filter_upwards [hc] with v hv
-    exact if_pos hv
+    exact ite_eq_left hv
 
 end GlobalTheory.FunObj
 end -- clump:auto

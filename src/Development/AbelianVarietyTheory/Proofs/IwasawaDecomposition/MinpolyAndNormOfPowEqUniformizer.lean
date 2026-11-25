@@ -84,11 +84,11 @@ theorem minpoly_and_norm_of_pow_eq_uniformizer : ∀ (E Ω : Type) [Field E] [Nu
     · rw [hmon.leadingCoeff]; exact fun h => v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h)
     · intro m hm
       rw [hdeg] at hm
-      rw [coeff_sub, coeff_X_pow, coeff_C, if_neg hm.ne]
+      rw [coeff_sub, coeff_X_pow, coeff_C, ite_eq_right hm.ne]
       by_cases h0 : m = 0
       · subst h0; simpa using v.asIdeal.neg_mem_iff.2 hmem
       · simp [h0]
-    · rw [coeff_sub, coeff_X_pow, coeff_C, if_neg hn1.ne, if_pos rfl, zero_sub]
+    · rw [coeff_sub, coeff_X_pow, coeff_C, ite_eq_right hn1.ne, ite_eq_left rfl, zero_sub]
       rwa [Ideal.neg_mem_iff]
   have hirr : Irreducible (X ^ n - C ϖ : (𝓞 E)[X]) :=
     hEis.irreducible v.isPrime hmon.isPrimitive (by rw [hdeg]; exact hn1)
@@ -106,7 +106,7 @@ theorem minpoly_and_norm_of_pow_eq_uniformizer : ∀ (E Ω : Type) [Field E] [Nu
   rw [← IntermediateField.adjoin.powerBasis_gen hx,
     Algebra.PowerBasis.norm_gen_eq_coeff_zero_minpoly, IntermediateField.adjoin.powerBasis_gen hx,
     IntermediateField.minpoly_gen, IntermediateField.adjoin.powerBasis_dim, hmin, natDegree_X_pow_sub_C _]
-  rw [coeff_sub, coeff_X_pow, coeff_C, if_neg hn1.ne, if_pos rfl, zero_sub]
+  rw [coeff_sub, coeff_X_pow, coeff_C, ite_eq_right hn1.ne, ite_eq_left rfl, zero_sub]
   have : normV v = n + 1 := by omega
   rw [this, pow_succ]; ring
 

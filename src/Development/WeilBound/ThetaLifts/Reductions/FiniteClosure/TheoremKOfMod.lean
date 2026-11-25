@@ -517,8 +517,8 @@ theorem finAt_sph {ω ρ ω' ρ'} (L : IsLocRep G.M B.ψ om v ω ρ) (L' : IsLoc
     { Pi := fun _ => S
       p := fun u => if h : v = u then h ▸ (π ∘ₗ c) else 0
       p' := fun u => if h : v = u then h ▸ (π ∘ₗ c') else 0 }
-  have e : R.p v = π ∘ₗ c := dif_pos rfl
-  have e' : R.p' v = π ∘ₗ c' := dif_pos rfl
+  have e : R.p v = π ∘ₗ c := dite_eq_left rfl
+  have e' : R.p' v = π ∘ₗ c' := dite_eq_left rfl
   have hx : ∀ x : S, π x.1 = x := fun x => hπ' x.1 x.2
   have on : ∀ x : S, ∃ φ ∈ SB _, c φ = x := fun x => (mS.symm ▸ x.2 : x.1 ∈ (SB _).map c)
   have on' : ∀ x : S, ∃ φ ∈ SB _, c' φ = x := fun x => (mS'.symm ▸ x.2 : x.1 ∈ (SB _).map c')

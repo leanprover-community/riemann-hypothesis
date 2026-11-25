@@ -681,7 +681,7 @@ theorem chr_mem_of_idemSum {K : Type} [Field K] {σ : K →+* ℂ} {D : D7} {c :
   have hout : ∀ P, P ∉ S → ι (finPart D (x : AE D)) P = 1 := by
     intro P hP
     rw [hx, map_add (f := _), map_mul, map_sub, map_one, map_add (f := _), map_mul, map_sub, map_one, GlobalTheory.FlipCharFormula.fa_add,
-      GlobalTheory.FlipCharFormula.fa_mul, GlobalTheory.FlipCharFormula.fa_sub, GlobalTheory.FlipCharFormula.fa_one, heT, if_neg hP]
+      GlobalTheory.FlipCharFormula.fa_mul, GlobalTheory.FlipCharFormula.fa_sub, GlobalTheory.FlipCharFormula.fa_one, heT, ite_eq_right hP]
     simp
   have hne : ∀ P, ι (finPart D (x : AE D)) P ≠ 0 := by
     intro P h0
@@ -1349,9 +1349,9 @@ theorem stdFst_actO {D : D7} {A WW : HSp D} (ν : (AE D)ˣ →* Circle) (e : AE 
     have hu' : IsHalf e (actO A WW g h u) := (GlobalTheory.SchrMove.isHalf_actO_iff g h u).2 hu
     by_cases hr : IsIntM (frMapO A WW βA βW u) ∧
         ∀ i j, A.rank ≤ i.1 → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (frMapO A WW βA βW u i j)
-    · rw [if_pos ⟨hu', hr⟩, if_pos ⟨hu, hr⟩]
-    · rw [if_neg fun hh => hr hh.2, if_neg fun hh => hr hh.2]
-  · rw [if_neg fun hh => hu ((GlobalTheory.SchrMove.isHalf_actO_iff g h u).1 hh.1), if_neg fun hh => hu hh.1]
+    · rw [ite_eq_left ⟨hu', hr⟩, ite_eq_left ⟨hu, hr⟩]
+    · rw [ite_eq_right fun hh => hr hh.2, ite_eq_right fun hh => hr hh.2]
+  · rw [ite_eq_right fun hh => hu ((GlobalTheory.SchrMove.isHalf_actO_iff g h u).1 hh.1), ite_eq_right fun hh => hu hh.1]
 
 theorem move_fst : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (i j : Fin D.R.m)
     (A A' WW : HSp D) (X Y : Tri T A A' WW), IsBottomTri W i j X → IsBottomTri W i j Y → ∀ (t : T) (g : GA D A) (h : GA D WW) (x y : (AE D)ˣ),
@@ -1486,7 +1486,7 @@ theorem isThetaAt_stdSnd_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Co
         unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.dualCoord
         rw [hfr u hu]
       rw [hd, GlobalTheory.SchrMove.isHalf_actO_iff]
-    · rw [if_neg, if_neg]
+    · rw [ite_eq_right, ite_eq_right]
       · exact fun hh => hu hh.1
       · exact fun hh => hu ((GlobalTheory.SchrMove.isHalf_actO_iff g' h u).1 hh.1)
   obtain ⟨⟨T₀, hT₀⟩, hall⟩ := hi.snd t

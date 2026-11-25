@@ -601,17 +601,17 @@ theorem semidef (D : Formalism.BasicNotions.D7) (w : (VS D).V) (hE : ∀ a, (VS 
     · have ha : a ≠ a' := fun h => hij (by rw [h])
       have ha' : a' ≠ a := fun h => ha h.symm
       simp only [wv, Sum.elim_inl, map_sub, LinearMap.sub_apply, D.sp.hyp_ee, D.sp.hyp_ff, D.sp.hyp_ef,
-        hFE, if_neg ha, if_neg ha']
+        hFE, ite_eq_right ha, ite_eq_right ha']
       simp
     · cases b'
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, if_false, map_sub,
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, ite_false, map_sub,
           LinearMap.sub_apply, hEz, hFz, sub_zero]
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, LinearMap.sub_apply, hE, hF,
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, ite_true, map_sub, LinearMap.sub_apply, hE, hF,
           sub_zero]
     · cases b
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, if_false, map_sub,
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, Bool.false_eq_true, ite_false, map_sub,
           (D.sp.hyp_orthz a').1, (D.sp.hyp_orthz a').2, sub_zero]
-      · simp only [wv, Sum.elim_inl, Sum.elim_inr, if_true, map_sub, hzero_swap D (hE a'),
+      · simp only [wv, Sum.elim_inl, Sum.elim_inr, ite_true, map_sub, hzero_swap D (hE a'),
           hzero_swap D (hF a'), sub_zero]
     · cases b <;> cases b'
       · exact absurd rfl hij
@@ -622,21 +622,21 @@ theorem semidef (D : Formalism.BasicNotions.D7) (w : (VS D).V) (hE : ∀ a, (VS 
     intro i
     rcases i with a | b
     · simp only [wv, d, Sum.elim_inl, map_sub, LinearMap.sub_apply, D.sp.hyp_ee, D.sp.hyp_ff,
-        D.sp.hyp_ef, hFE, if_true]
+        D.sp.hyp_ef, hFE, ite_true]
       rw [map_zero, map_one]
       push_cast; ring
     · cases b
-      · simp only [wv, d, Sum.elim_inr, Bool.false_eq_true, if_false, D.sp.zm_norm, map_neg,
+      · simp only [wv, d, Sum.elim_inr, Bool.false_eq_true, ite_false, D.sp.zm_norm, map_neg,
           map_natCast]
         push_cast; ring
-      · simp only [wv, d, Sum.elim_inr, if_true]
+      · simp only [wv, d, Sum.elim_inr, ite_true]
         exact real_of_emb D τ w
   have hneg : ∀ i, d i < 0 := by
     intro i
     rcases i with a | b
     · simp [d]
     · cases b
-      · simp only [d, Sum.elim_inr, Bool.false_eq_true, if_false]; linarith
+      · simp only [d, Sum.elim_inr, Bool.false_eq_true, ite_false]; linarith
       · simpa [d] using hlt
   have hc := PI.CntNotPosW.card_le_of_negFamily (VS D) τ hτ (D.sp.Y_sig 0 τ) wv d hoff hdiag hneg
   have hq : ((D.sp.Y 0).sig τ).2 = D.R.rS + 1 := by rw [D.sp.baseSpace_signature_eq τ]; rfl
@@ -865,7 +865,7 @@ theorem stage1_of_unipotentIntegralIsGroup (hN : UnipotentIntegralIsGroup) : Sta
       abel
     rw [Finset.sum_congr rfl fun a _ => e4 a, Finset.sum_add_distrib, ← Finset.smul_sum]
     simp only [tv, Pm, Matrix.sub_apply, Matrix.one_apply, sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul,
-      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.mul_apply, Finset.sum_smul,
+      zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.mul_apply, Finset.sum_smul,
       Finset.sum_neg_distrib, Finset.smul_sum, smul_smul]
     rw [Finset.sum_comm (f := fun a b' => (betaZ D Z a b * R b' a) • pWf D x b')]
     have e5 : ∀ b' a, (betaZ D Z a b * R b' a) • pWf D x b' = (R b' a * betaZ D Z a b) • pWf D x b' :=

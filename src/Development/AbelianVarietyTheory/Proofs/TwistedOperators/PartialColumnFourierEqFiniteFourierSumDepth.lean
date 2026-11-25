@@ -83,7 +83,7 @@ theorem natDatum_setCols_eq {ϖ : kˣ} {n : ℕ} {Φ : Matrix A C k → ℂ} (h�
     by_cases hj : j ∈ P
     · have h1 := h i ⟨j, hj⟩
       simp only [cball, Set.mem_setOf_eq] at h1
-      simp only [Pi.smul_apply, Matrix.row, setCols, of_apply, dif_pos hj, Matrix.sub_apply, Units.smul_def,
+      simp only [Pi.smul_apply, Matrix.row, setCols, of_apply, dite_eq_left hj, Matrix.sub_apply, Units.smul_def,
         smul_eq_mul]
       rw [Valuation.mem_integer_iff, map_mul, Units.val_inv_eq_inv_val, map_inv₀, inv_mul_le_iff₀ h0, mul_one]
       exact h1
@@ -183,7 +183,7 @@ theorem fourierInt_eq_fourierSum : ∀ (k : Type) [Field k] [ValuativeRel k] [To
         have hd := (hmemS T0 U).1 ((key T0).2 rfl)
         simp only [hF]
         rw [natDatum_setCols_eq hΦ P Y hd, psi_pairCols_eq hψ P hY hd]
-      · push_neg at hU
+      · push Not at hU
         obtain ⟨i, j, hij⟩ := hU
         have hz : F U = 0 := by
           simp only [hF]

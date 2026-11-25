@@ -416,7 +416,7 @@ theorem inAt_iffG (Xa : ArchInM X) (Fl : FlatM X Xa) (G : Wt X.Ψ r) (x0 : Frame
   have hdp := OntoB.densF_pos hz
   have hka : 0 < kaF X x0 bb z := Real.exp_pos _
   simp only [Pi.mul_apply]
-  rw [if_pos hdom, ENNReal.ofReal_rpow_of_pos hw, ENNReal.ofReal_rpow_of_pos hsp,
+  rw [ite_eq_left hdom, ENNReal.ofReal_rpow_of_pos hw, ENNReal.ofReal_rpow_of_pos hsp,
     ← ENNReal.ofReal_mul (Real.exp_pos _).le,
     ← ENNReal.ofReal_mul (mul_nonneg (Real.exp_pos _).le (Real.rpow_nonneg hw.le _)),
     Real.rpow_def_of_pos hw, Real.rpow_def_of_pos hsp, ← Real.exp_add, ← Real.exp_add,
@@ -480,11 +480,11 @@ theorem Wfree_of_mem {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
       ENNReal.ofReal (∑ k, ‖Xa.w k x‖ ^ 2) ^ (-(1 / 2 : ℝ)) *
       ENNReal.ofReal (∑ k, ‖Fl.s k x‖ ^ 2) ^ (-((n : ℝ) - 1 / 2)) := by
   unfold Wfree
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
 
 theorem Wfree_of_notMem {x : Frame X.Ψ r} (hx : x ∉ X.dom) : Wfree Xa Fl G n x = 0 := by
   unfold Wfree
-  rw [if_neg hx]
+  rw [ite_eq_right hx]
 
 theorem Wfree_eq_exp {x : Frame X.Ψ r} (hx : x ∈ X.dom) (hs : ∃ k, Fl.s k x ≠ 0) :
     Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-(phla X G x +
@@ -1160,7 +1160,7 @@ theorem Wfree_of_mem (n : ℕ) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
       ENNReal.ofReal (∑ k, ‖Xa.w k x‖ ^ 2) ^ (-(1 / 2 : ℝ)) *
       ENNReal.ofReal (∑ k, ‖Fl.s k x‖ ^ 2) ^ (-((n : ℝ) - 1 / 2)) := by
   unfold Wfree
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
 
 theorem Wfree_eq_pnorm (n : ℕ) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
     Wfree Xa Fl G n x = ENNReal.ofReal (Real.exp (-phla X (G + n • Xa.L) x)) *

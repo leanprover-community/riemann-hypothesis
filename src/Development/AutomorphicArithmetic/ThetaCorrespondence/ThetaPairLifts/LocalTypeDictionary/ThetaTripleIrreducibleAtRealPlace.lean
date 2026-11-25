@@ -927,8 +927,8 @@ theorem theta_triple_piT_irreducible : GlobalTheory.Published.HoweDualityReal �
       obtain ⟨q, hq⟩ := Onto.exists_factor T _ (fun x hx => hinj x (hS hx)) (liftPure Γ.M R.p Rf.p (vacIm Γ Rf))
       exact ⟨q, fun Ψ hΨ => by rw [← hTh Ψ (hS hΨ)]; exact hq Ψ hΨ⟩
     have H' := GlobalTheory.T.weil_model_projection_factorisation _ _ _ Γ.M Bs.ψ hM _ R.p _ Rf.p (vacIm Γ Rf) (Filter.Eventually.of_forall fun _ => rfl)
-    have e1 : mapA ψ e Bs Γ R Rf = H.choose := dif_pos H
-    have e2 : liftPure Γ.M R.p Rf.p (vacIm Γ Rf) = H'.choose := dif_pos H'
+    have e1 : mapA ψ e Bs Γ R Rf = H.choose := dite_eq_left H
+    have e2 : liftPure Γ.M R.p Rf.p (vacIm Γ Rf) = H'.choose := dite_eq_left H'
     rw [e1]
     refine (H.choose_spec _ hmem).trans ?_
     rw [e2]

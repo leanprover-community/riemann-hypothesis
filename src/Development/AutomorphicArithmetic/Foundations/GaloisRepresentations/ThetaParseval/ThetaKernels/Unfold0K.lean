@@ -520,9 +520,6 @@ def StepOf_k : Prop :=
 def VacAll_k : Prop := ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
   (d : SD_k σ) (R : RD_k d), ∀ c : ℂ, MainV_k c R → MainC_k c d
 def MainLe_k : Prop := ForAllSD fun d => d.m ≤ d.n → MainC_k 2 d
-def MainLeOf_k : Prop := RDEx_k → LDEx_k → VacK_k → PolyKFin_k → MainEq_k → Step_k → VacAll_k → MainLe_k
-def FieldOf_k : Prop := GlobalTheory.ThK.Dbl.EisBL_k → SecK_k → SWStdLt_k → MainLe_k →
-  GlobalTheory.ThK.Dbl.SiegelWeilStd_k
 end PositivityTheory.SiegelWeilFormula
 end
 

@@ -672,9 +672,9 @@ theorem hodgeTate : ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F
       apply Multiset.map_injective (f := fun n : ℤ => (n : ℂ)) Int.cast_injective
       rw [hG.weights τ, h3, e]
     refine ⟨hK, fun τ => ?_⟩
-    letI : Algebra F (Qbar l) := τ.toAlgebra
-    haveI : Module.Finite F K := Module.finite_of_finrank_pos (by omega)
-    haveI : Algebra.IsAlgebraic F K := Algebra.IsAlgebraic.of_finite F K
+    let : Algebra F (Qbar l) := τ.toAlgebra
+    have : Module.Finite F K := Module.finite_of_finrank_pos (by omega)
+    have : Algebra.IsAlgebraic F K := Algebra.IsAlgebraic.of_finite F K
     let τ' : K →ₐ[F] Qbar l := (by
       refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
       solve_by_elim* (maxDepth := 2) only [*,
@@ -1118,7 +1118,7 @@ theorem UpperTheory.V.Af.clozelCohC_alt :
   have hreg : (CG.mk π).IsRegAlg := (GlobalTheory.CuspRep.CG.isRegAlg_iff _).2 fun τ => by
     obtain ⟨m', e1, e2, e3⟩ := GlobalTheory.AlgInfChar.exists_dualInfChar E a Ξ τ
     have e : m τ = m' := msetSep _ _ fun u => by
-      haveI : Nonempty (Fin Ξ.d) := ⟨⟨0, Ξ.pos⟩⟩
+      have : Nonempty (Fin Ξ.d) := ⟨⟨0, Ξ.pos⟩⟩
       exact smul_left_injective ℂ one_ne_zero (((hd τ).2 u).symm.trans (e1.2 u))
     have h3 : (CG.mk π).HasInfChar τ (m τ) := h1 τ
     rw [h3.infChar_eq, e]

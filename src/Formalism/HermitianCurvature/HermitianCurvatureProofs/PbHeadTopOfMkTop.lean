@@ -533,7 +533,7 @@ theorem pbF_left_uw (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n 
     rw [← Matrix.mul_assoc, ← _root_.Formalism.FourierDecayAlt.P.Dx2.Tower.castM_mul]
     congr 2
     unfold PBQ.sP
-    rw [if_pos hx, if_pos hΦ]
+    rw [ite_eq_left hx, ite_eq_left hΦ]
     show U.Rn k p ρ (-x.2) * U.embG k p ρ ((Matrix.of x.1.1)⁻¹ * (Matrix.of x.1.2)⁻¹) * U.embG k p ρ h =
       U.Rn k p ρ (-x.2) * U.embG k p ρ ((h⁻¹ * Matrix.of x.1.1)⁻¹ * (h⁻¹ * Matrix.of x.1.2 * h⁻¹⁻¹)⁻¹)
     rw [Matrix.mul_assoc, ← Formalism.FourierDecayAlt.P.Dx2.Split.embG_mul]
@@ -1086,7 +1086,7 @@ theorem radial_of_function_holds : RadOfFun := by
   refine ⟨⟨fun c g => if (c, g) ∈ DomR k ρ z z' then f g else 0, ?_, ?_, ?_⟩, ?_⟩
   · intro x hx
     show (if (x.1, x.2) ∈ DomR k ρ z z' then f x.2 else 0) = 0
-    exact if_neg hx
+    exact ite_eq_right hx
   · intro x₀ hx₀
     obtain ⟨hΩ, hG, hpos⟩ := hx₀
     obtain ⟨U, F, hU, hgU, hF, hFe⟩ := hloc x₀.2 hG hpos
@@ -1098,7 +1098,7 @@ theorem radial_of_function_holds : RadOfFun := by
     · intro x hx hxG
       have hxD : (x.1, x.2) ∈ DomR k ρ z z' := ⟨hx.1, hxG, hx.2.2⟩
       show (if (x.1, x.2) ∈ DomR k ρ z z' then f x.2 else 0) = F x.2
-      rw [if_pos hxD]
+      rw [ite_eq_left hxD]
       exact hFe x.2 hx.2.1 hxG
   · intro x hx h hh h' hh'
     obtain ⟨hΩ, hG, hpos⟩ := hx
@@ -1108,11 +1108,11 @@ theorem radial_of_function_holds : RadOfFun := by
     have hD0 : (x.1, x.2) ∈ DomR k ρ z z' := ⟨hΩ, hG, hpos⟩
     show (if (x.1, h * x.2 * h') ∈ DomR k ρ z z' then f (h * x.2 * h') else 0) =
       π h ∘SL (if (x.1, x.2) ∈ DomR k ρ z z' then f x.2 else 0) ∘SL π' h'
-    rw [if_pos hD, if_pos hD0]
+    rw [ite_eq_left hD, ite_eq_left hD0]
     exact hequiv x.2 hG hpos h hh h' hh'
   · intro x hx
     show (if (x.1, x.2) ∈ DomR k ρ z z' then f x.2 else 0) = f x.2
-    exact if_pos hx
+    exact ite_eq_left hx
 
 theorem determinant_vanishing_holds : ZxDet := by
   intro r h hh v
@@ -1275,7 +1275,7 @@ theorem frame_dframe (S : B.RealPlaceData k r Wp Wq) (hr : r = 0) {ν' : Fin (2 
         γ⁻¹ *ᵥ S.z := by
       funext i
       have := i.isLt
-      rw [if_pos (by omega)]
+      rw [ite_eq_left (by omega)]
     have hpr : γ⁻¹ *ᵥ S.z = Formalism.FourierDecayAlt.D.prW k 0 S.z' (γ⁻¹ *ᵥ S.z) +
         (herm (Hpk k 0) (γ⁻¹ *ᵥ S.z) S.z' / herm (Hpk k 0) S.z' S.z') • S.z' := by
       unfold Formalism.FourierDecayAlt.D.prW
@@ -1672,7 +1672,7 @@ theorem ptMatN_one (ζ : ℂ) : D.ptMatN [(1, ζ)] (0 + 1) = Matrix.of fun _ _ =
 theorem ptMatN_append_head (h : C.LPt) (ζ : ℂ) (R : ℕ) (hR : D.ptSize h = R) :
     D.ptMatN (h ++ [(1, ζ)]) R = D.ptMatN h R := by
   ext a b
-  simp only [D.ptMatN, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, hR, a.isLt, b.isLt, and_self, if_true]
+  simp only [D.ptMatN, _root_.Formalism.FourierDecayAlt.P.PBJ.Asm.ptEntry_append, hR, a.isLt, b.isLt, and_self, ite_true]
 
 alias isLocPt_app := _root_.Formalism.FourierDecayAlt.P.PBI.isLocPt_app
 
@@ -1731,7 +1731,7 @@ theorem vecV_append_singleton_eq_vecV_sliceAt (k R ρ : ℕ) (hρ : ρ = 0) (e :
       rw [hG] at hpos
       nlinarith
     rw [hL, vector_level_zero_degenerate rfl S0 ν'r m₀r _ ζ (by rw [← hT, ← hT']; exact hζT)]
-  push_neg at hζT
+  push Not at hζT
   have hζT0 : Tz k 0 S0.z * Tz k 0 S0.z' < Complex.normSq ζ := by rw [← hT, ← hT']; exact hζT
   obtain ⟨γ0, hγ0G, hZ0, hD0⟩ := exists_frame_level_zero rfl S0 ν'r m₀r hF0 ζ hζT0
   rw [vector_level_zero_eq_jacquet rfl S0 ν'r m₀r hF0 _ ζ hζT0 γ0 hγ0G hZ0 hD0, jacquet_integral_level_zero rfl S0 hN0 _ γ0]

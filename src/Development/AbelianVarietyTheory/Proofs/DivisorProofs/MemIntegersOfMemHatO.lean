@@ -94,7 +94,7 @@ theorem exists_generator : ∃ g : Ideal (𝓞 E) → 𝓞 E, ∀ b : 𝓞 E, �
   classical
   refine ⟨fun I => if h : ∃ b, Ideal.span {b} = I then h.choose else 0, fun b => ?_⟩
   have h : ∃ b', Ideal.span {b'} = Ideal.span {b} := ⟨b, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact Ideal.span_singleton_eq_span_singleton.1 h.choose_spec
 
 theorem summable_norm_rpow : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (c : Ideal (OF E)) (y : (Af E)ˣ) (t : ℝ), c ≠ ⊥ → 1 < t → Summable fun q : modUnits (lattice c y) => |(Algebra.norm ℚ (q.1.out : E) : ℝ)| ^ (-t) := by

@@ -86,7 +86,7 @@ theorem projAt2_of (hX : HighestVectorProjectionPos) (p : ℕ) [Fact p.Prime] (K
       rw [hn]
       exact coeff_pow_mul_ne _ _ y (xH_le_free _ J _ ρ _ y hy) m hme
     · right
-      rw [coeff_monomial, if_neg (Ne.symm hn)]
+      rw [coeff_monomial, ite_eq_right (Ne.symm hn)]
 
 theorem graded_bound_pos_of_proj (hX : HighestVectorProjectionPos) : GradedBoundOfSaturationPos := by
   intro p _ K r _ LLw q J M ρ e1 c0 κ hK hr hρ hv hPE hS hκ w e k g hli hspan
@@ -361,7 +361,7 @@ theorem termF_IVPE (LL : Letters (N + 1)) (ρ : Fin r) (hr : 1 ≤ r) (B : ℕ)
     rw [X_pow_mul_monomial (yE ρ) m γ, Dop_pow_monomial_lt _ _ hxy a' _ h'
       (by simp [Finsupp.single_apply, hxy]; exact h2), fock_zero_right']
     simp
-  push_neg at h1 h2
+  push Not at h1 h2
   have hle : ∀ (δ : Fin (N + 1 + 1) × Fin r →₀ ℕ) (t : ℕ), t ≤ δ (xW ρ) → δ (xW ρ) ≤ δ (yE ρ) → t • s ≤ δ := by
     intro δ t ht1 ht2 v
     simp only [hs, Finsupp.smul_apply, Finsupp.add_apply, Finsupp.single_apply, smul_eq_mul]
@@ -377,7 +377,7 @@ theorem termF_IVPE (LL : Letters (N + 1)) (ρ : Fin r) (hr : 1 ≤ r) (B : ℕ)
   · apply (IVP.zero (p := p) _).congr
     intro m
     unfold termF
-    rw [fock_Dop_term _ _ hxy, if_neg hb]
+    rw [fock_Dop_term _ _ hxy, ite_eq_right hb]
     simp
   subst hb
   set o := LL.deg (Fin.last N) with ho
@@ -431,16 +431,16 @@ theorem termF_IVPE (LL : Letters (N + 1)) (ρ : Fin r) (hr : 1 ≤ r) (B : ℕ)
     rw [hNum, hDen]
     refine term_valE LL hr B hB j a a' hj ha ha' δh ?_ ?_ ?_ d1 d2 ?_ nd1 ?_ nd2
     · intro k
-      rw [hδv, Pi.add_apply, Pi.single_apply, if_neg (hne _).symm, add_zero, hk k]
-    · rw [hδv, Pi.add_apply, Pi.single_apply, if_neg (Fin.castSucc_ne_last _), add_zero]; omega
-    · rw [hδv, Pi.add_apply, Pi.single_apply, if_pos rfl]; omega
+      rw [hδv, Pi.add_apply, Pi.single_apply, ite_eq_right (hne _).symm, add_zero, hk k]
+    · rw [hδv, Pi.add_apply, Pi.single_apply, ite_eq_right (Fin.castSucc_ne_last _), add_zero]; omega
+    · rw [hδv, Pi.add_apply, Pi.single_apply, ite_eq_left rfl]; omega
     · rw [hd1]; exact vdesc_ge _ _ (by omega)
     · rw [hd2]; exact vdesc_ge _ _ (by omega)
   have I1 := ((IVP.choose_add (p := p) c1 (o - j)).mul (IVP.choose_add e e)).mul (IVP.choose_add e' a')
   refine ((I1.smul K hKn).mono (by omega)).congr ?_
   intro m
   unfold termF
-  rw [fock_Dop_term _ _ hxy, if_pos rfl, Nat.add_sub_cancel]
+  rw [fock_Dop_term _ _ hxy, ite_eq_left rfl, Nat.add_sub_cancel]
   have hjM : j ≤ o + (m + S) + r + z - 1 := by omega
   have hMj : o + (m + S) + r + z - 1 - j = m + c1 := by omega
   have hMo : (((o + (m + S) + r + z - 1).choose o : ℕ) : ℚ_[p]) =
@@ -749,7 +749,7 @@ theorem tieOpsX_main : TieOpsX := by
     rw [this]
     by_cases hbb : b = b'
     · subst hbb; simp
-    · rw [if_neg hbb, if_neg]
+    · rw [ite_eq_right hbb, ite_eq_right]
       intro h
       apply hbb
       simpa using h

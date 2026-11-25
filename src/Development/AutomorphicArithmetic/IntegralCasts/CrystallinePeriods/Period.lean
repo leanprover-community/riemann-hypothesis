@@ -46,17 +46,6 @@ theorem Bcris.algebraMap_padicInt (a : ℤ_[p]) :
       algebraMap (Acris p R) _ (algebraMap ℤ_[p] (Acris p R) a) :=
   congrArg (algebraMap (BcrisPlus p R) (Bcris p R)) (BcrisPlus.algebraMap_padicInt a)
 
-section Good
-
-variable [IsDomain R] [ValuationRing R] [IsAlgClosed (FractionRing R)] [CharZero R]
-
-variable (p R)
-
-
-variable {p R}
-
-end Good
-
 namespace Bst
 
 open Polynomial

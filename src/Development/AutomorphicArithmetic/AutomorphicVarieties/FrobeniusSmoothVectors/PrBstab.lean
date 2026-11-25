@@ -28,5 +28,5 @@ theorem UpperTheory.V.Fr.pr_bstab :
       (((B.g v)⁻¹ : GL (Fin n) C) : Matrix (Fin n) (Fin n) C) * ((B.g v : Matrix (Fin n) (Fin n) C) * Y) = Y :=
     fun Y => Units.inv_mul_cancel_left _ Y
   simp only [Matrix.mul_assoc, hg] at t3
-  simp only [GG.adFun, GG.mat, h1, if_true, Matrix.mul_assoc]
+  simp only [GG.adFun, GG.mat, h1, ite_true, Matrix.mul_assoc]
   exact t3

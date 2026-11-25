@@ -261,10 +261,4 @@ def goodIdemTw (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (j : Fin R.m) : M
 
 end Level
 
-section Ties
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {c : OnConst}
-
-end Ties
-
 end GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters

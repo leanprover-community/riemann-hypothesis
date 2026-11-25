@@ -350,11 +350,11 @@ theorem distribHaarChar_finiteAdeleRing (u : (𝔸ᶠ[K])ˣ) :
     rw [IsIntegralUnitAt, hwx', hwx, hPinv, coe_prod_finiteSingleUnits_apply, hP,
       coe_prod_finiteSingleUnits_apply]
     by_cases hx : x ∈ S
-    · rw [if_pos hx, if_pos hx, Units.val_inv_eq_inv_val, he,
+    · rw [ite_eq_left hx, ite_eq_left hx, Units.val_inv_eq_inv_val, he,
         mul_inv_cancel₀ (fun h ↦ by simpa [h] using units_mul_inv_apply u x),
         units_mul_inv_apply]
       exact ⟨one_mem _, one_mem _⟩
-    · rw [if_neg hx, if_neg hx, mul_one, one_mul]
+    · rw [ite_eq_right hx, ite_eq_right hx, mul_one, one_mul]
       exact not_not.1 ((hmemS x).not.1 hx)
   have hu : u = w * P := by rw [hw, inv_mul_cancel_right]
   have hχ : distribHaarChar 𝔸ᶠ[K] u = ∏ v ∈ S, ‖(u : 𝔸ᶠ[K]) v‖₊ := by

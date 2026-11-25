@@ -172,7 +172,7 @@ theorem _root_.GlobalTheory.UTrans.exists_isotropic_of_indefinite : ∀ (E : Typ
     · intro j _ hj
       simp [hj]
     · simp
-  · push_neg at hd0
+  · push Not at hd0
     refine _root_.GlobalTheory.UTrans.exists_isotropic_diagonal hn hd hd0 fun τ => ?_
     obtain ⟨⟨x, hx⟩, y, hy⟩ := hs τ
     rw [hf, ← hPinv x, hform] at hx

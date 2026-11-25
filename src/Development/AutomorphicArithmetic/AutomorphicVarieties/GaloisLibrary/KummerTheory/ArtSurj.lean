@@ -40,7 +40,7 @@ theorem UpperTheory.V.Kum.artSurj :
           MonoidHom.mem_ker, map_mul, map_inv, inv_mul_eq_one, eq_comm]
       rw [this]
       exact hopen.preimage (continuous_const_mul g⁻¹)
-    · push_neg at hy
+    · push Not at hy
       have : (artCl K Ω) ⁻¹' {y} = ∅ := by
         ext x
         simp [hy x]

@@ -114,7 +114,7 @@ theorem isIrreducible_of_simple (τ : FDRep ℂ Γ) (h : Simple τ) : Representa
   have : Invertible (Nat.card Γ : ℂ) := invertibleOfNonzero hc
   apply GlobalTheory.AbsIrrDescent.isIrreducible_of_norm_one
   have hs := FDRep.char_orthonormal τ τ
-  rw [if_pos ⟨Iso.refl _⟩, inv_mul_eq_one₀ hc] at hs
+  rw [ite_eq_left ⟨Iso.refl _⟩, inv_mul_eq_one₀ hc] at hs
   exact hs.symm
 
 theorem isIrr_of_simple (τ : FDRep ℂ Γ) (h : Simple τ) : Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.IsIrr τ.ρ :=

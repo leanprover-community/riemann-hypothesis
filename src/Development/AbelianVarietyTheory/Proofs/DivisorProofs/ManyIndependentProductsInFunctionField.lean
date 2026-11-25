@@ -293,16 +293,16 @@ theorem mem_pow_of_coeff_mem (a n : ℕ) :
         have : ∀ i, ¬ P i 0 := fun i h => h.1 rfl
         simp [this, coeff_zero_eq_constantCoeff_apply]
       · obtain ⟨i, hi⟩ := hexists d hd
-        rw [if_neg hd, zero_add, Finset.sum_eq_single i (fun j _ hj => by
-          rw [if_neg (fun h => hj (huniq _ _ _ h hi))]) (fun h => absurd (Finset.mem_univ i) h),
-          if_pos hi]
+        rw [ite_eq_right hd, zero_add, Finset.sum_eq_single i (fun j _ hj => by
+          rw [ite_eq_right (fun h => hj (huniq _ _ _ h hi))]) (fun h => absurd (Finset.mem_univ i) h),
+          ite_eq_left hi]
     rw [hdecomp]
     refine add_mem (C_mem_pow _ _ ?_) (Ideal.sum_mem _ fun i _ => ?_)
     · simpa [coeff_zero_eq_constantCoeff_apply] using hf 0
     · have hdvd : (X i : MvPowerSeries (Fin a) O) ∣ fi i := by
         rw [X_dvd_iff]
         intro m hm
-        rw [hfi, if_neg (fun h => h.1 hm)]
+        rw [hfi, ite_eq_right (fun h => h.1 hm)]
       obtain ⟨g, hg⟩ := hdvd
       rw [hg, pow_succ']
       refine Ideal.mul_mem_mul (X_mem_max i) (ih g fun d => ?_)
@@ -568,8 +568,6 @@ theorem main {R F K : Type} [CommRing R] [IsDomain R] [Field F] [Algebra R F] [I
     ext i
     rw [AddMonoidAlgebra.coeff_smul_apply, coeff_C_mul, Algebra.smul_def]
   rw [← aeval_map_algebraMap F, hmap, map_mul, aeval_C, ← IsScalarTower.algebraMap_apply]
-
-alias target := _root_.GlobalTheory.TargetInequalityLemmas.main
 
 end GlobalTheory.TargetInequalityLemmas
 end -- clump:auto
@@ -903,7 +901,7 @@ theorem lexOrder_monomial_one' (a : Fin D →₀ ℕ) :
   · apply lexOrder_le_of_coeff_ne_zero; simp
   · rw [le_lexOrder_iff]
     intro d hd
-    rw [coeff_monomial, if_neg]
+    rw [coeff_monomial, ite_eq_right]
     rintro rfl
     exact lt_irrefl _ (WithTop.coe_lt_coe.mp hd)
 
@@ -948,8 +946,8 @@ variable {D n : ℕ} {A : Type} [CommRing A] [Algebra ℂ A]
 noncomputable def evalAt (k : ℕ) (u : A) : MvPowerSeries (Fin D) ℂ :=
   if h : k < n then φ ⟨k, h⟩ u else 0
 
-theorem evalAt_of_lt {k : ℕ} (h : k < n) (u : A) : evalAt φ k u = φ ⟨k, h⟩ u := dif_pos h
-theorem evalAt_of_not_lt {k : ℕ} (h : ¬ k < n) (u : A) : evalAt φ k u = 0 := dif_neg h
+theorem evalAt_of_lt {k : ℕ} (h : k < n) (u : A) : evalAt φ k u = φ ⟨k, h⟩ u := dite_eq_left h
+theorem evalAt_of_not_lt {k : ℕ} (h : ¬ k < n) (u : A) : evalAt φ k u = 0 := dite_eq_right h
 
 theorem evalAt_zero (k : ℕ) : evalAt φ k (0 : A) = 0 := by
   unfold evalAt; split_ifs <;> simp
@@ -977,7 +975,7 @@ theorem firstIdx_spec {u : A} (h : ∃ k, evalAt φ k u ≠ 0) :
     evalAt φ (firstIdx φ u) u ≠ 0 ∧ ∀ i < firstIdx φ u, evalAt φ i u = 0 := by
   classical
   unfold firstIdx
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   exact ⟨Nat.find_spec h, fun i hi => not_not.mp (Nat.find_min h hi)⟩
 
 theorem firstIdx_eq {u : A} {k : ℕ} (hk : evalAt φ k u ≠ 0) (hlt : ∀ i < k, evalAt φ i u = 0) :
@@ -985,7 +983,7 @@ theorem firstIdx_eq {u : A} {k : ℕ} (hk : evalAt φ k u ≠ 0) (hlt : ∀ i < 
   classical
   have h : ∃ k, evalAt φ k u ≠ 0 := ⟨k, hk⟩
   unfold firstIdx
-  rw [dif_pos h, Nat.find_eq_iff]
+  rw [dite_eq_left h, Nat.find_eq_iff]
   exact ⟨hk, fun i hi => not_not.mpr (hlt i hi)⟩
 
 theorem val_eq {u : A} {k : ℕ} (hk : evalAt φ k u ≠ 0) (hlt : ∀ i < k, evalAt φ i u = 0) :
@@ -1005,12 +1003,12 @@ theorem val_smul (c : ℂ) (u : A) (hc : c ≠ 0) : val φ (c • u) = val φ u 
     rw [val_eq φ (k := firstIdx φ u) (by rw [evalAt_smul]; exact smul_ne_zero hc h1)
       (fun i hi => by rw [evalAt_smul, h2 i hi, smul_zero]), evalAt_smul, lexOrder_smul' hc]
     rfl
-  · push_neg at h
+  · push Not at h
     have : ∀ k, evalAt φ k (c • u) = evalAt φ k u := fun k => by rw [evalAt_smul, h, smul_zero]
     have h' : ¬ ∃ k, evalAt φ k (c • u) ≠ 0 := by simpa [this] using h
     have h'' : ¬ ∃ k, evalAt φ k u ≠ 0 := by simpa using h
     unfold val firstIdx
-    rw [dif_neg h', dif_neg h'', this]
+    rw [dite_eq_right h', dite_eq_right h'', this]
 
 theorem val_add (hinj : ∀ u : A, (∀ j, φ j u = 0) → u = 0) (u v : A) (hu : u ≠ 0) (hv : v ≠ 0)
     (hlt : val φ u < val φ v) : u + v ≠ 0 ∧ val φ (u + v) = val φ u := by
@@ -1059,7 +1057,7 @@ theorem val_sub (hinj : ∀ u : A, (∀ j, φ j u = 0) → u = 0) (u v : A) (hu 
     rw [evalAt_sub, evalAt_smul]
   obtain ⟨hw1, hw2⟩ := firstIdx_spec φ (exists_evalAt_ne_zero hinj hw)
   have hge : k ≤ firstIdx φ (u - c • v) := by
-    by_contra hlt; push_neg at hlt
+    by_contra hlt; push Not at hlt
     exact hw1 (e2 _ hlt)
   by_cases hz : evalAt φ k (u - c • v) = 0
   · have hlt : k < firstIdx φ (u - c • v) := lt_of_le_of_ne hge (fun h => hw1 (h ▸ hz))

@@ -225,13 +225,13 @@ theorem nonsing (hU : Unif l L ι W) (t : ℂ) (ht : t ∉ L.lattice) :
 theorem ptW_notMem (hU : Unif l L ι W) (t : ℂ) (ht : t ∉ L.lattice) :
     ptW l L ι W t = .some _ _ (nonsing hU t ht) := by
   unfold ptW
-  exact dif_pos ⟨ht, nonsing hU t ht⟩
+  exact dite_eq_left ⟨ht, nonsing hU t ht⟩
 
 variable (l L ι W)
 
 theorem ptW_mem (t : ℂ) (ht : t ∈ L.lattice) : ptW l L ι W t = 0 := by
   unfold ptW
-  exact dif_neg (fun h => h.1 ht)
+  exact dite_eq_right (fun h => h.1 ht)
 
 variable {l L ι W}
 

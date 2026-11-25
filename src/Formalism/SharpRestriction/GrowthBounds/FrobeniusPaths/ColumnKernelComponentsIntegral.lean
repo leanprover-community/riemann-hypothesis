@@ -46,14 +46,14 @@ lemma ZZ_zero (p : ℕ) (x : Fin N → Fin k → R) (pos : Fin N → ℤ) (mu : 
 lemma ZZ_unused (p : ℕ) (x : Fin N → Fin k → R) (pos : Fin N → ℤ) (mu : Fin (N + 1) → Fin k → ℤ) (c : ℤ) (s : ℤ)
     (j : ℕ) (h : j < N) (hu : colH (mu ⟨j, by omega⟩) c = colH (mu ⟨j + 1, by omega⟩) c) :
     ZZ p x pos mu c (j + 1) s = ZZ p x pos mu c j s := by
-  unfold ZZ; simp only [KKs, dif_pos h, if_pos hu]
+  unfold ZZ; simp only [KKs, dite_eq_left h, ite_eq_left hu]
 
 lemma ZZ_used (p : ℕ) (x : Fin N → Fin k → R) (pos : Fin N → ℤ) (mu : Fin (N + 1) → Fin k → ℤ) (c : ℤ) (s : ℤ)
     (j : ℕ) (h : j < N) (hu : colH (mu ⟨j, by omega⟩) c ≠ colH (mu ⟨j + 1, by omega⟩) c) :
     ZZ p x pos mu c (j + 1) s = powC (p ^ (s - pos ⟨j, h⟩).toNat)
       (colStep c (colH (mu ⟨j, by omega⟩) c) (colH (mu ⟨j + 1, by omega⟩) c) (x ⟨j, h⟩)
         (ZZ p x pos mu c j (pos ⟨j, h⟩))) := by
-  unfold ZZ; simp only [KKs, dif_pos h, if_neg hu]
+  unfold ZZ; simp only [KKs, dite_eq_left h, ite_eq_right hu]
   cases hst : (KKs p x pos mu c j).2 with
   | none => simp only [powC_one]
   | some sl => rfl

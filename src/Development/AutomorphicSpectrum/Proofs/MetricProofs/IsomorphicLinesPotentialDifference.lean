@@ -119,13 +119,13 @@ theorem PositivityTheory.Xgp.t_an_two : ConvergenceSignedStatement → ∀ (e : 
   have hcont : ∀ t, ContinuousOn (gT t) (bdry S.s)ᶜ := by
     intro t
     by_cases hp : 0 < t ∧ t ≤ S.t₀
-    · have e1 : gT t = f t := if_pos hp
+    · have e1 : gT t = f t := ite_eq_left hp
       rw [e1]
       have c1 := projLine_continuous_of_smooth S.A ((S.reg (Sum.inl a)).2.2 t hp.1 hp.2).1
       have c2 := projLine_continuous_of_smooth S.A ((S.reg (Sum.inr a)).2.2 t hp.1 hp.2).1
       have c3 := projLine_continuous_of_smooth S.A (hd a)
       exact ((c1.sub c2).sub c3).continuousOn
-    · have e1 : gT t = 0 := if_neg hp
+    · have e1 : gT t = 0 := ite_eq_right hp
       rw [e1]
       exact continuousOn_const
   have hbound : ∀ t, ∀ y ∉ bdry S.s, |gT t y| ≤ C₆ * Real.log (rW S.L S.s y) := by
@@ -134,7 +134,7 @@ theorem PositivityTheory.Xgp.t_an_two : ConvergenceSignedStatement → ∀ (e : 
     have hC6 : 0 ≤ C₆ := by positivity
     show |gT t y| ≤ C₆ * L y
     by_cases hp : 0 < t ∧ t ≤ S.t₀
-    · have e1 : gT t = f t := if_pos hp
+    · have e1 : gT t = f t := ite_eq_left hp
       rw [e1]
       obtain ⟨l1, u1⟩ := abs_le.mp (hphT (Sum.inl a) t hp.1 hp.2 y hy)
       obtain ⟨l2, u2⟩ := abs_le.mp (hphT (Sum.inr a) t hp.1 hp.2 y hy)
@@ -156,7 +156,7 @@ theorem PositivityTheory.Xgp.t_an_two : ConvergenceSignedStatement → ∀ (e : 
       · show S.phT (Sum.inl a) t y - S.phT (Sum.inr a) t y - d a y ≤
           2 * (|S.C| * L y) + 2 * (|S.C₅| * L y) + |M| * L y
         linarith
-    · have e1 : gT t = 0 := if_neg hp
+    · have e1 : gT t = 0 := ite_eq_right hp
       rw [e1, Pi.zero_apply, abs_zero]
       exact mul_nonneg hC6 (zero_le_one.trans hLy)
   have hO : IsOpen (bdry S.s)ᶜ := (ReciprocityTheory.AnForm.P.LeviFormBoundaryTopology.isClosed_bdry S.sec).isOpen_compl
@@ -169,7 +169,7 @@ theorem PositivityTheory.Xgp.t_an_two : ConvergenceSignedStatement → ∀ (e : 
       (PositivityTheory.Xgp.an_two.locUnif S.A S.s hO _ _ (S.c2 (Sum.inr a))) (ε / 2) (half_pos hε) x hx
     refine ⟨t1 ∩ t2 ∩ (bdry S.s)ᶜ, Filter.inter_mem (Filter.inter_mem ht1 ht2) self_mem_nhdsWithin, ?_⟩
     filter_upwards [ev1, ev2, Ioo_mem_nhdsGT ht0] with t e1 e2 htt y hy
-    have e3 : gT t = f t := if_pos ⟨htt.1, htt.2.le⟩
+    have e3 : gT t = f t := ite_eq_left ⟨htt.1, htt.2.le⟩
     have hdy := hdiff a y hy.2
     have d1 := e1 y hy.1.1
     have d2 := e2 y hy.1.2
@@ -191,7 +191,7 @@ theorem PositivityTheory.Xgp.t_an_two : ConvergenceSignedStatement → ∀ (e : 
   rw [hz] at key
   refine key.congr' ?_
   filter_upwards [Ioo_mem_nhdsGT ht0] with t ht
-  have e1 : gT t = f t := if_pos ⟨ht.1, ht.2.le⟩
+  have e1 : gT t = f t := ite_eq_left ⟨ht.1, ht.2.le⟩
   rw [e1]
   rfl
 end -- clump:auto

@@ -64,8 +64,8 @@ theorem mass_union_bounds : ∀ (g : ℕ) [Fact g.Prime], ∀ (N : ℕ), (∀ A 
     simp only [mass_eq_sum_ite_union]
     refine Finset.sum_le_sum fun f hf => ?_
     by_cases hA : A f
-    · rw [if_pos hA, if_pos (h f hf hA)]
-    · rw [if_neg hA]
+    · rw [ite_eq_left hA, ite_eq_left (h f hf hA)]
+    · rw [ite_eq_right hA]
       split_ifs
       · exact hw f
       · exact le_rfl
@@ -82,10 +82,10 @@ theorem mass_union_bounds : ∀ (g : ℕ) [Fact g.Prime], ∀ (N : ℕ), (∀ A 
       · exact le_rfl
     by_cases hA : A f
     · obtain ⟨i, hi, hB⟩ := h f hf hA
-      rw [if_pos hA]
+      rw [ite_eq_left hA]
       have := Finset.single_le_sum hn hi
-      simpa only [if_pos hB] using this
-    · rw [if_neg hA]
+      simpa only [ite_eq_left hB] using this
+    · rw [ite_eq_right hA]
       exact Finset.sum_nonneg hn
   · intro A
     rw [mass_eq_sum_ite_union, mass_eq_sum_ite_union, mass_eq_sum_ite_union, ← Finset.sum_add_distrib]

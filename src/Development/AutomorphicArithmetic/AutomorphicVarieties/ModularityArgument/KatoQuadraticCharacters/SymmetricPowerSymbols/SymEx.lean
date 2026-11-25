@@ -1265,7 +1265,7 @@ theorem UpperTheory.V.Z.Kato.Sym.pSymb :
   refine ⟨fun s x y => if h : UpperTheory.V.Z.Kato.Sym.Ok x y then Classical.choose (key s x y h) else 1, ?_⟩
   unfold UpperTheory.V.Z.Kato.Sym.IsSymb
   intro s x y hxy
-  simp only [dif_pos hxy]
+  simp only [dite_eq_left hxy]
   exact Classical.choose_spec (key s x y hxy)
 end -- clump:auto
 end -- clump:auto

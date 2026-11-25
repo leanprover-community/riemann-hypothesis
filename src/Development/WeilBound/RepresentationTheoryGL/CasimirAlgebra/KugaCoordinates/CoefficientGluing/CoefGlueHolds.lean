@@ -65,11 +65,11 @@ theorem coefGlue_holds : CoefGlue := by
   obtain ⟨q, N, lab, col, b, tl, η, hcl, htab, htl, hw, hinv, hanti, halt⟩ := hKT
   obtain ⟨ω₀, hω0, hcoc, hω0a⟩ := hCo E a π.V (fun k => π.op (.cpt k)) q N lab tl η htl hinv halt
   obtain ⟨X, hX⟩ : ∃ X, ω₀ X ≠ 0 := by
-    by_contra h; push_neg at h; exact hω0 (AlternatingMap.ext h)
+    by_contra h; push Not at h; exact hω0 (AlternatingMap.ext h)
   obtain ⟨I₀, hI⟩ : ∃ I, ω₀ X I ≠ 0 := by
-    by_contra h; push_neg at h; exact hX (funext h)
+    by_contra h; push Not at h; exact hX (funext h)
   obtain ⟨lam, hlam⟩ : ∃ lam : π.V →ₗ[ℂ] ℂ, lam (ω₀ X I₀) ≠ 0 := by
-    by_contra h; push_neg at h; exact hI ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 h)
+    by_contra h; push Not at h; exact hI ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 h)
   set v₀ : TV a ℂ (Fin q) := fun I => lam (ω₀ X I) with hv₀
   have hv₀D : v₀ ∈ colAnti (n := a) col := by
     intro p p' h1 h2
@@ -114,7 +114,7 @@ theorem coefGlue_holds : CoefGlue := by
         refine LinearMap.ext fun f => ?_
         simp only [Matrix.toLin'_apply, Matrix.sum_mulVec, hBC1, Finset.sum_sub_distrib, tE_diag_sum,
           Matrix.smul_mulVec, Matrix.one_mulVec]
-        simp only [if_pos rfl, if_true, ite_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin]
+        simp only [ite_eq_left rfl, ite_true, ite_true, Finset.sum_const, Finset.card_univ, Fintype.card_fin]
         rw [← Nat.cast_smul_eq_nsmul ℂ]
         module
       rw [Finset.sum_congr rfl fun i _ => hcx τ i i, ← Matrix.sum_mul, ← Matrix.mul_sum, hsumB, Matrix.mul_smul,

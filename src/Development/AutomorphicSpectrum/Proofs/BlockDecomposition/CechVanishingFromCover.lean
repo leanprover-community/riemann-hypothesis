@@ -116,13 +116,13 @@ theorem van_sup {U V : ObjectProperty C} (hU : Cosieve U) (hV : Cosieve V) {j : 
     refine ⟨fun s => if U (s.obj 0) then a' s else b s, fun s hs => ?_⟩
     by_cases hu : U (s.obj 0)
     · rw [ha' s hu]
-      exact d_congr _ _ s fun i => (if_pos (face_start hU i s hu)).symm
+      exact d_congr _ _ s fun i => (ite_eq_left (face_start hU i s hu)).symm
     · have hv : V (s.obj 0) := hs.resolve_left hu
       rw [hb s hv]
       refine d_congr _ _ s fun i => ?_
       by_cases hui : U ((face i s).obj 0)
-      · exact (hab _ hui (face_start hV i s hv)).symm.trans (if_pos hui).symm
-      · exact (if_neg hui).symm
+      · exact (hab _ hui (face_start hV i s hv)).symm.trans (ite_eq_left hui).symm
+      · exact (ite_eq_right hui).symm
 
 theorem van_congr {W W' : ObjectProperty C} (h : ∀ T, W T ↔ W' T) {j : ℕ} (hv : Van F W j) : Van F W' j := by
   obtain rfl : W = W' := funext fun T => propext (h T)

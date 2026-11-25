@@ -268,11 +268,11 @@ theorem det_placeBlockMatrix_unit_twist (h : P.m + 1 = n) (pos : (Σ v : Fin P.n
       else (g (pos ⟨v, s⟩) : Matrix (Fin n) (Fin n) ℂ).det⁻¹ := by
   unfold hAt
   by_cases hs : Even s.val
-  · simp only [hs, if_true, one_mul, inv_one, mul_one]
+  · simp only [hs, ite_true, one_mul, inv_one, mul_one]
     show (reM P h (g (pos ⟨v, s⟩) : Matrix (Fin n) (Fin n) ℂ)).det = _
     unfold reM
     rw [Matrix.det_submatrix_equiv_self]
-  · simp only [hs, if_false, one_mul, inv_one, mul_one]
+  · simp only [hs, ite_false, one_mul, inv_one, mul_one]
     show (Matrix.transpose (((reG P h (g (pos ⟨v, s⟩)))⁻¹ : GL (Fin (P.m + 1)) ℂ) : Matrix (Fin (P.m + 1)) (Fin (P.m + 1)) ℂ)).det = _
     rw [Matrix.det_transpose, det_inv_gl]
     show (reM P h (g (pos ⟨v, s⟩) : Matrix (Fin n) (Fin n) ℂ)).det⁻¹ = _
@@ -286,10 +286,10 @@ theorem inv_placeBlockMatrix_unit_twist (h : P.m + 1 = n) (pos : (Σ v : Fin P.n
       else Matrix.transpose (reM P h (g (pos ⟨v, s⟩) : Matrix (Fin n) (Fin n) ℂ)) := by
   unfold hAt
   by_cases hs : Even s.val
-  · simp only [hs, if_true, one_mul, inv_one, mul_one]
+  · simp only [hs, ite_true, one_mul, inv_one, mul_one]
     rw [← map_inv]
     rfl
-  · simp only [hs, if_false, one_mul, inv_one, mul_one]
+  · simp only [hs, ite_false, one_mul, inv_one, mul_one]
     rfl
 
 end GlobalTheory.TwV.DelA.ActInv
@@ -508,22 +508,22 @@ theorem scal_tauV : ∀ {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (pos : (Σ
   refine Finset.prod_congr rfl fun b _ => ?_
   rw [Equiv.symm_apply_apply]
   by_cases ho : IsOddPos b.2
-  · simp only [if_pos ho]
+  · simp only [ite_eq_left ho]
     have hw : GlobalTheory.FrameB.wV Kc fd c j La' b.1 b.2 = GlobalTheory.FrameB.mk Kc fd j La' b.1 b.2 := by
-      unfold GlobalTheory.FrameB.wV; rw [if_pos ho]
+      unfold GlobalTheory.FrameB.wV; rw [ite_eq_left ho]
     have hk : GlobalTheory.FrameB.kV Kc fd c j La' b.1 b.2 = c * (GlobalTheory.FrameB.mk Kc fd j La' b.1 b.2).det⁻¹ := by
-      unfold GlobalTheory.FrameB.kV; rw [if_pos ho]
+      unfold GlobalTheory.FrameB.kV; rw [ite_eq_left ho]
     rw [hw, hk, exY, exT, blk_scal_odd c _ hc (hdet0 b.1 b.2) _ hN1 _ _ (hbd b)]
     have h1 : szMu X j b.1 b.2 = szT X D pos j (pos b) := by
       show _ = szMu X j (pos.symm (pos b)).1 (pos.symm (pos b)).2; rw [Equiv.symm_apply_apply]
     have h2 : cMu X j b.1 b.2 = cT1 X D pos j (pos b) := by
       show _ = cMu X j (pos.symm (pos b)).1 (pos.symm (pos b)).2; rw [Equiv.symm_apply_apply]
     have h3 := (GlobalTheory.T.unitaryBlockMatrices_read_in_placeField X D pos Kc ι ρ hT M hU b.1 b.2).2
-    rw [if_pos ho] at h3
+    rw [ite_eq_left ho] at h3
     rw [h1, h2, hdet, h3, ← zpow_mul]
     congr 2
     ring
-  · simp only [if_neg ho]
+  · simp only [ite_eq_right ho]
     simp
 
 end GlobalTheory.TwV.DelA
@@ -591,7 +591,7 @@ theorem GlobalTheory.TwV.DelA.targetFrameMap_eq_complexBlockAction_scalar_alt : 
       (∑ x : Var (X.Pj (j + 1)), if (⟨x.1, x.2.1⟩ : Σ v : Fin (X.Pj (j + 1)).nV, Fin ((X.Pj (j + 1)).n' v)) =
         (posJ X D pos (j + 1)).symm τ then (m x : ℤ) else 0) = szT X D pos j τ := by
     intro m hm τ ho
-    rw [hdeg m (MvPolynomial.support_map_subset _ _ hm) τ, if_neg ho, (GlobalTheory.T.realPlaceBlockWeightLastEntry_consecutive_levels X D pos j τ).2, if_neg ho, ← hsz' τ]
+    rw [hdeg m (MvPolynomial.support_map_subset _ _ hm) τ, ite_eq_right ho, (GlobalTheory.T.realPlaceBlockWeightLastEntry_consecutive_levels X D pos j τ).2, ite_eq_right ho, ← hsz' τ]
     ring
   rw [hphi, hRR]
   unfold GlobalTheory.FrameB.tauV
@@ -656,7 +656,7 @@ theorem target_scalar : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H
     apply Int.cast_injective (α := ℚ)
     rw [(D.chTw u μ).sDiv_eq j hjm τ, Int.cast_sub, D.hcW_e, he τ, half_rank_cast]
     simp only [sExp, Nat.add_sub_cancel]
-  simp only [dPow, sPt, Dec.uT, dif_pos hj, kT, hW, hsd]
+  simp only [dPow, sPt, Dec.uT, dite_eq_left hj, kT, hW, hsd]
   rw [← hγ, hmuγ, hgd]
   have hP : ∀ τ x, TaylorLogMetric.embT D τ x = embT D τ x := fun _ _ => rfl
   simp only [hP, map_mul]

@@ -104,11 +104,11 @@ theorem mass_le_sum {ι : Type} (s : Finset ι) (d : S.Datum) (P : Submodule L.O
   refine ENNReal.tsum_le_tsum fun o => ?_
   by_cases hP : S.IsTerm d o.out ∧ P o.out
   · obtain ⟨i, hi, hQ⟩ := h _ hP.1 hP.2
-    rw [if_pos hP]
+    rw [ite_eq_left hP]
     refine le_trans ?_ (Finset.single_le_sum (f := fun i => if S.IsTerm d o.out ∧ Q i o.out then
       ENNReal.ofReal (S.mu o.out) else 0) (fun _ _ => zero_le) hi)
-    exact (if_pos ⟨hP.1, hQ⟩).ge
-  · rw [if_neg hP]
+    exact (ite_eq_left ⟨hP.1, hQ⟩).ge
+  · rw [ite_eq_right hP]
     exact zero_le
 
 
@@ -190,7 +190,7 @@ theorem ampSq_le_height_mul_mass : ∀ {F : Type} [Field F] [ValuativeRel F] [To
   refine ⟨ampSq_le_of_zero S hk1 _ fun _ _ _ h => h, ?_⟩
   by_cases hz : ∀ d Λ, S.IsTerm d Λ → S.BBzero d Λ
   · exact ampSq_le_of_zero S hk1 _ fun d Λ h _ => hz d Λ h
-  push_neg at hz
+  push Not at hz
   obtain ⟨d₀, Λ₀, h₀, hn⟩ := hz
   obtain ⟨ha, -, -, hqa, hH, -, -, hqH, -⟩ := GlobalTheory.HL.Defect.exponents_and_defect L r k S d₀ Λ₀ h₀
   have hq : 2 ≤ S.q := (GlobalTheory.UnramOrder.order_facts L S.ϖ S.ϖ_irr).2.2.2.2.2.2.1
@@ -273,13 +273,13 @@ theorem _root_.GlobalTheory.HL.CoordSq.sums_eq : ∀ {F : Type} [Field F] [Valua
     intro δ Q hδ
     unfold _root_.GlobalTheory.HL.Frames.amp
     refine (tsum_congr fun o => ?_).trans tsum_zero
-    rw [if_neg fun h => hδ ⟨_, h.1⟩]
+    rw [ite_eq_right fun h => hδ ⟨_, h.1⟩]
   have hvanM : ∀ (δ : S.Datum) (Q : Submodule M.L.O S.V → Prop),
       (¬ ∃ Λ, S.IsTerm δ Λ) → S.mass δ Q = 0 := by
     intro δ Q hδ
     unfold _root_.GlobalTheory.HL.Frames.mass
     refine (tsum_congr fun o => ?_).trans tsum_zero
-    rw [if_neg fun h => hδ ⟨_, h.1⟩]
+    rw [ite_eq_right fun h => hδ ⟨_, h.1⟩]
   have hinv : ∀ h ∈ S.H0, ∀ (δ : S.Datum) (Q : S.Datum → Submodule M.L.O S.V → Prop),
       (∀ δ', ∀ s ∈ S.St, ∀ Λ, S.IsTerm δ' Λ → Q δ' Λ → Q δ' (s • Λ)) →
       (∀ δ' Λ, S.IsTerm δ' Λ → (Q δ' Λ ↔ Q (h • δ') (h • Λ))) →
@@ -763,7 +763,7 @@ theorem mass_le_sum (S : Frames L r k) (d : S.Datum) (P : Submodule L.O S.V → 
   split_ifs with ho
   · obtain ⟨i, hi, hq⟩ := h _ ho.1 ho.2
     refine le_trans ?_ (Finset.single_le_sum (fun _ _ => zero_le) hi)
-    rw [if_pos ⟨ho.1, hq⟩]
+    rw [ite_eq_left ⟨ho.1, hq⟩]
   · exact zero_le
 
 theorem mass_mono (S : Frames L r k) (d : S.Datum) (P Q : Submodule L.O S.V → Prop)
@@ -914,7 +914,7 @@ theorem ampSq_nonzero_defect : ∀ {F : Type} [Field F] [ValuativeRel F] [Topolo
         intro d
         unfold Frames.amp
         have : ∀ Λ, ¬ (S.IsTerm d Λ ∧ ¬ S.BBzero d Λ) := fun Λ h => hex ⟨d, Λ, h⟩
-        simp only [this, if_false, tsum_zero]
+        simp only [this, ite_false, tsum_zero]
       unfold Frames.ampSq Frames.sumData
       simp [ha]
     rw [h0]
@@ -965,7 +965,7 @@ theorem raise [IsNonarchimedeanLocalField F] [CharZero F] {C : ℝ} (hC : 39 ≤
     refine Real.rpow_le_rpow_of_exponent_le h1 ?_
     push_cast
     exact mul_le_mul_of_nonneg_right hC (by positivity)
-  · push_neg at h
+  · push Not at h
     simp [nn_eq_zero S h]
 
 end

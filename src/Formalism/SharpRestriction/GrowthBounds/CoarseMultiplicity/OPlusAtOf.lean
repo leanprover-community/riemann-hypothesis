@@ -208,7 +208,7 @@ theorem oPlusAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
             ≤ ∑ _i : Fin s, 2 * (b' / p) := by
               apply Finset.sum_le_sum
               intro i _
-              rw [if_pos i.2]
+              rw [ite_eq_left i.2]
               exact hcoarse i
           _ = (s : ℝ) * (2 * (b' / p)) := by simp
       linarith

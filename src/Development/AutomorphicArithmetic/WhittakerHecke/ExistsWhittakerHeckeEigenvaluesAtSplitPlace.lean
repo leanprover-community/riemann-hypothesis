@@ -371,7 +371,7 @@ private theorem UpperTheory.product_four_geometric_series (x y x' y' c : ℂ) (S
   · simp only [UpperTheory.powerSeriesFirstDifferenceSeq, hS, hT, hS0, hT0]
     norm_num
     ring
-  · rw [if_neg (by omega), if_neg (by omega)]
+  · rw [ite_eq_right (by omega), ite_eq_right (by omega)]
     simp only [UpperTheory.powerSeriesFirstDifferenceSeq, hS2, hT2]
     ring
 

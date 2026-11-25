@@ -336,10 +336,10 @@ theorem polyVal_of_rep (hv : IsBlockMap κ v) (x' : (Σ k, ι' k) → Ω) {P : P
   have hc : (valPoly n g h (z ∘ v)).coeff e = if e < n then fr (g e) (h e) (z ∘ v) else 0 := by
     simp [valPoly, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
   by_cases he : e < n
-  · rw [hc, if_pos he]
+  · rw [hc, ite_eq_left he]
     obtain ⟨a, b, c, f⟩ := hr.2 e
     exact isValueAt_of_rep hv x' a b c f (hz e he)
-  · rw [hc, if_neg he, Polynomial.coeff_eq_zero_of_natDegree_lt (by have := hr.1; omega)]
+  · rw [hc, ite_eq_right he, Polynomial.coeff_eq_zero_of_natDegree_lt (by have := hr.1; omega)]
     exact ValRing.isValueAt_zero_self _ _
 
 omit [Fintype K] [∀ k, Fintype (ι k)] in

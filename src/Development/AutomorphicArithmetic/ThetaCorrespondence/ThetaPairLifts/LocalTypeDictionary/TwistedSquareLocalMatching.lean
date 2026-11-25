@@ -1160,7 +1160,7 @@ theorem twist_quotient_isReal : GlobalTheory.Published.HoweDualityReal → _root
   · intro N hN
     have hst : IsStab ρA (N.comap R.mkQ) := fun i x hx => by
       have h1 := hN i.1.1 i.1.2 i.2 _ hx
-      simp only [dif_pos i.2] at h1
+      simp only [dite_eq_left i.2] at h1
       exact h1
     have hle : R ≤ N.comap R.mkQ := fun x hx => by
       show R.mkQ x ∈ N
@@ -1178,12 +1178,12 @@ theorem twist_quotient_isReal : GlobalTheory.Published.HoweDualityReal → _root
     refine ⟨fun f hf => ?_, fun f hf => ?_⟩
     · have hk := rad_le_ker _ _ _ ρA CA _ _ (iA' ⟨f, hf⟩) (kA' ⟨f, hf⟩) radA ss'
       refine ⟨R.liftQ (p ∘ₗ fockF ψ θ true A B f) hk, fun τ Y hY => ?_, fun P => rfl⟩
-      simp only [dif_pos hY]
+      simp only [dite_eq_left hY]
       refine Submodule.linearMap_qext _ (LinearMap.ext fun P => ?_)
       exact LinearMap.congr_fun (iA' ⟨f, hf⟩ ⟨(τ, Y), hY⟩) P
     · have hk := rad_le_ker _ _ _ ρB CB _ _ (iB' ⟨f, hf⟩) (kB' ⟨f, hf⟩) radB ss'
       refine ⟨RB.liftQ (p' ∘ₗ fockF ψ θ false A₁ B f) hk ∘ₗ e.toLinearMap, fun τ Y hY => ?_, fun P => ?_⟩
-      · simp only [dif_pos hY]
+      · simp only [dite_eq_left hY]
         refine LinearMap.ext fun x => ?_
         have h1 := LinearMap.congr_fun (he ⟨(τ, Y), hY⟩) x
         simp only [LinearMap.comp_apply] at h1 ⊢

@@ -622,9 +622,9 @@ theorem GlobalTheory.CompanionTheory.SiegLoc.level_identity : ∀ (R : Type) [Co
     intro x
     have hmem := gram_sub_mem σ ϖ hR.inv hR.fix_ϖ k S T hS hT x
     by_cases hxe : cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T
-    · rw [if_pos hxe]
+    · rw [ite_eq_left hxe]
       exact (horth _ hmem).1 (sub_eq_zero.mpr hxe)
-    · rw [if_neg hxe]
+    · rw [ite_eq_right hxe]
       exact (horth _ hmem).2 (sub_ne_zero.mpr hxe)
   have hsplit : ∀ (B : hermMod σ ϖ n k) (x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)),
       ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x - red ϖ k T))) =

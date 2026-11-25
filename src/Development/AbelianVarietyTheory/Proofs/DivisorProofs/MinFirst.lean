@@ -103,13 +103,13 @@ theorem mem_hwSub (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (μ : Ix p q → 
 
 theorem isKC_diag (a : Ix p q) : IsKC (Eab a a) := by
   intro c d h
-  rw [Eab, Matrix.single_apply, if_neg]
+  rw [Eab, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   cases a <;> simp [sameBlock] at h
 
 theorem isKC_pos {a b : Ix p q} (hab : posC a b) : IsKC (Eab a b) := by
   intro c d h
-  rw [Eab, Matrix.single_apply, if_neg]
+  rw [Eab, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   cases a <;> cases b <;> simp_all [sameBlock, posC]
 
@@ -273,14 +273,14 @@ theorem comp_omAct (Z : Matrix (Ln p q r s) (Ln p q r s) ℂ) {d e : ℕ} (he : 
   obtain ⟨h1, h2, h3⟩ := GlobalTheory.FockOm.omE_form_and_degree p q r s l l' d P hP
   rw [LinearMap.mem_ker]
   cases hl : linePos l <;> cases hl' : linePos l'
-  · rw [homogeneousComponent_of_mem (h1 (hl.trans hl'.symm)), if_neg (by omega)]
+  · rw [homogeneousComponent_of_mem (h1 (hl.trans hl'.symm)), ite_eq_right (by omega)]
   · have : (pderiv l (pderiv l' P)).IsHomogeneous (d - 1 - 1) :=
       (IsHomogeneous.pderiv (IsHomogeneous.pderiv hP))
-    rw [h3 hl hl', map_neg, homogeneousComponent_of_mem this, if_neg (by omega), neg_zero]
+    rw [h3 hl hl', map_neg, homogeneousComponent_of_mem this, ite_eq_right (by omega), neg_zero]
   · have : (X l * X l' * P).IsHomogeneous (1 + 1 + d) :=
       ((isHomogeneous_X ℂ l).mul (isHomogeneous_X ℂ l')).mul hP
-    rw [h2 hl hl', homogeneousComponent_of_mem this, if_neg (by omega)]
-  · rw [homogeneousComponent_of_mem (h1 (hl.trans hl'.symm)), if_neg (by omega)]
+    rw [h2 hl hl', homogeneousComponent_of_mem this, ite_eq_right (by omega)]
+  · rw [homogeneousComponent_of_mem (h1 (hl.trans hl'.symm)), ite_eq_right (by omega)]
 
 theorem mem_of_comp (T : Submodule ℂ (Pol p q r s)) (P : Pol p q r s)
     (h : ∀ e, homogeneousComponent e P ∈ T) : P ∈ T := by
@@ -294,9 +294,9 @@ theorem top_mem (T : Submodule ℂ (Pol p q r s)) (P : Pol p q r s) (n : ℕ) (h
     refine mem_of_comp T _ fun e => ?_
     rw [map_sub, homogeneousComponent_of_mem (homogeneousComponent_mem n P)]
     rcases lt_trichotomy e n with h | rfl | h
-    · rw [if_neg h.ne, sub_zero]; exact h1 e h
-    · rw [if_pos rfl, sub_self]; exact T.zero_mem
-    · rw [if_neg h.ne', sub_zero, h2 e h]; exact T.zero_mem
+    · rw [ite_eq_right h.ne, sub_zero]; exact h1 e h
+    · rw [ite_eq_left rfl, sub_self]; exact T.zero_mem
+    · rw [ite_eq_right h.ne', sub_zero, h2 e h]; exact T.zero_mem
   simpa using T.sub_mem hP this
 
 theorem comp_comm (Z : Mat p q) (hZ : IsKC Z) (e : ℕ) (P : Pol p q r s) :
@@ -315,15 +315,15 @@ theorem plusPart_homog (A : Module.End ℂ (Pol p q r s)) {d : ℕ} {P : Pol p q
     (hP : P ∈ homog (Ix p q × Ix r s) d) : plusPart A P = homogeneousComponent (d + 2) (A P) := by
   unfold plusPart
   rw [finsum_eq_single _ d]
-  · rw [homogeneousComponent_of_mem hP, if_pos rfl]
+  · rw [homogeneousComponent_of_mem hP, ite_eq_left rfl]
   · intro e he
-    rw [homogeneousComponent_of_mem hP, if_neg he, map_zero, map_zero]
+    rw [homogeneousComponent_of_mem hP, ite_eq_right he, map_zero, map_zero]
 
 theorem minusPart_low (A : Module.End ℂ (Pol p q r s)) {d : ℕ} (hd : d < 2) {P : Pol p q r s}
     (hP : P ∈ homog (Ix p q × Ix r s) d) : minusPart A P = 0 := by
   unfold minusPart
   refine finsum_eq_zero_of_forall_eq_zero fun e => ?_
-  rw [homogeneousComponent_of_mem hP, if_neg (by omega), map_zero, map_zero]
+  rw [homogeneousComponent_of_mem hP, ite_eq_right (by omega), map_zero, map_zero]
 
 end Degree
 

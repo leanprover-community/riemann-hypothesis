@@ -544,7 +544,7 @@ theorem nLamOnto_holds : TupLift.NLamOnto := by
         · have h0 : UX c i - (if c = i then 1 else 0) = 0 := by
             by_cases hci : c = i
             · subst hci; simp [hUX1]
-            · rw [if_neg hci, hUX0 c i (lt_of_le_of_ne (Fin.le_iff_val_le_val.2 (by omega)) (Ne.symm hci)),
+            · rw [ite_eq_right hci, hUX0 c i (lt_of_le_of_ne (Fin.le_iff_val_le_val.2 (by omega)) (Ne.symm hci)),
                 sub_zero]
           rw [h0, zero_smul]
           exact Submodule.zero_mem _

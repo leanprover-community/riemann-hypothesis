@@ -482,7 +482,7 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
     obtain ⟨d, hd⟩ := hover t ht p
     obtain ⟨y, hy, hyd⟩ := (R p).hRD.2.1 d (Set.mem_univ _)
     have hex : ∃ d ∈ (R p).RD, Over (FP p) d (LT t.toTerm p) := ⟨y, hy, (hreps p).2.2 d y _ ((hreps p).1.symm hyd) hd⟩
-    have e : rho t.toTerm p = hex.choose := dif_pos hex
+    have e : rho t.toTerm p = hex.choose := dite_eq_left hex
     rw [e]
     exact hex.choose_spec
 
@@ -528,7 +528,7 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
     exact ⟨g, hg, d', hrel', hto⟩
   · intro c ν
     by_cases h : ∃ t ∈ TS, cls t = c ∧ ptPN t = γ ∧ nmlOf Y u u' t = ν
-    · have e : Fm.dat c ν = some (fun p => ⟨rho h.choose.toTerm p.1, hmemDs _ h.choose_spec.2.2.1 p.1⟩) := dif_pos h
+    · have e : Fm.dat c ν = some (fun p => ⟨rho h.choose.toTerm p.1, hmemDs _ h.choose_spec.2.2.1 p.1⟩) := dite_eq_left h
       rw [e]
       obtain ⟨hc1, hc2, hc3, hc4⟩ := h.choose_spec
       refine ⟨h, fun t ht hct hpt hnt => ⟨fun p _ => ?_, ?_⟩⟩
@@ -536,11 +536,11 @@ theorem exists_famTie : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
         obtain ⟨g, hg, d', hdd', hto⟩ := hsame.2 (hc4.trans hnt.symm) p (FP p) (hp p).2.1 _ (hrho _ hc3 p).2
         exact ⟨g, hg, d', hdd', hto⟩
       · have hc : ∃ t ∈ TS, cls t = c := ⟨t, ht, hct⟩
-        have e2 : Fm.rw c = (Formalism.L2.SG.TermOp.wt hc.choose) ^ 2 := dif_pos hc
+        have e2 : Fm.rw c = (Formalism.L2.SG.TermOp.wt hc.choose) ^ 2 := dite_eq_left hc
         rw [e2]
         obtain ⟨hh1, hh2⟩ := hc.choose_spec
         rw [(GlobalTheory.T.terms_same_row_same_weight_same_localData D X Y u u' hc.choose t (hG _ hh1) (hrow _ hh1 t ht (hh2.trans hct.symm))).1]
-    · have e : Fm.dat c ν = none := dif_neg h
+    · have e : Fm.dat c ν = none := dite_eq_right h
       rw [e]
       exact h
   · show (locH (zOf Y) p).Zhat (locU (zOf Y) p t₀.toTerm.lam (lf D (X.Fu u)) (Quot.out t₀.toTerm.cls).1 (Tu D u) (Tu D u')).f

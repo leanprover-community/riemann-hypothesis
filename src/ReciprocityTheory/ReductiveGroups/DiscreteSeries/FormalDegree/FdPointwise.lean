@@ -31,10 +31,10 @@ theorem pmat_herm_apply {ε : Fin n → Bool} (y : PCoord ε → ℂ) (a b : Fin
   simp only [pmat]
   by_cases h1 : a < b ∧ ε b ≠ ε a
   · have h2 : ¬ (b < a ∧ ε a ≠ ε b) := fun h => lt_asymm h.1 h1.1
-    simp only [dif_pos h1, dif_neg h2, star_star]
+    simp only [dite_eq_left h1, dite_eq_right h2, star_star]
   · by_cases h2 : b < a ∧ ε a ≠ ε b
-    · simp only [dif_neg h1, dif_pos h2]
-    · simp only [dif_neg h1, dif_neg h2, star_zero]
+    · simp only [dite_eq_right h1, dite_eq_left h2]
+    · simp only [dite_eq_right h1, dite_eq_right h2, star_zero]
 
 theorem sum_pairs_pmat_fp {ε : Fin n → Bool} (w : Fin n → Fin n → ℝ) (z : PCoord ε → ℂ) :
     ∑ x : Fin n × Fin n, (if x.2 < x.1 then w x.1 x.2 * ‖pmat z x.1 x.2‖ ^ 2 else 0) =
@@ -49,8 +49,8 @@ theorem qForm_term {ε : Fin n → Bool} (y : PCoord ε → ℂ) (a b : Fin n) :
   by_cases h : b < a ∧ ε a ≠ ε b
   · have hin : Lap.Base.InNM ε (Dvec n) b a := Or.inr h
     have hN : Lap.Base.partNM ε (Dvec n) (pmat y) b a = pmat y b a := by
-      rw [Lap.Base.partNM, Matrix.of_apply, if_pos hin]
-    rw [hN, if_pos h.1, hD, pmat_herm_apply y a b, Complex.star_def, Complex.mul_conj,
+      rw [Lap.Base.partNM, Matrix.of_apply, ite_eq_left hin]
+    rw [hN, ite_eq_left h.1, hD, pmat_herm_apply y a b, Complex.star_def, Complex.mul_conj,
       Complex.normSq_eq_norm_sq]
     push_cast; ring
   · have h0 : pmat y a b * Lap.Base.partNM ε (Dvec n) (pmat y) b a = 0 := by

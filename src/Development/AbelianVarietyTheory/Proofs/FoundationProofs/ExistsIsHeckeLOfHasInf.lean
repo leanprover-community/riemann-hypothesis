@@ -444,7 +444,7 @@ theorem gen_relation (hA : GlobalTheory.Published.GlobalArtinReciprocity) (hL : 
     ((normV_eq P).trans (absNorm_split (IsCMField.complexConj D.host.E) (Algebra.IsQuadraticExtension.finrank_eq_two _ _)
       (IsCMField.complexConj_ne_one _) host_unram ((conjPl_iff P Pb).2 hconj) hne)).symm
   apply J.injective
-  rw [map_mul, e1, e2, hins, Finset.filter_insert, if_pos (hPP.symm ▸ huχ.mul huξ),
+  rw [map_mul, e1, e2, hins, Finset.filter_insert, ite_eq_left (hPP.symm ▸ huχ.mul huξ),
     Finset.prod_insert fun h => hnot (Finset.mem_filter.1 h).1, hPP, hN, ← inv_inv (val (χ * ξ) P : ℂ), eq_inv,
     map_eq, map_mul J, hJ, ← IsScalarTower.algebraMap_apply, map_zpow₀, map_natCast, mul_left_comm (Λ s), map_mul ι,
     map_eq, map_zpow₀, map_natCast, mul_left_comm u]

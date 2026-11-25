@@ -109,18 +109,18 @@ theorem conv_low (w : PowerSeries LL) (k : ℕ) (f : ℤ → M) (hf : ∀ j < 0,
   apply finsum_eq_zero_of_forall_eq_zero
   intro m
   by_cases hm : m < k
-  · rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega), zero_smul]
+  · rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), zero_smul]
   · rw [hf _ (by omega), smul_zero]
 
 theorem conv_lead (w : PowerSeries LL) (k : ℕ) (f : ℤ → M) (hf : ∀ j < 0, f j = 0) :
     conv ((PowerSeries.X * w) ^ k) f k = PowerSeries.constantCoeff w ^ k • f 0 := by
   unfold conv
   rw [finsum_eq_single _ k]
-  · rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl]
+  · rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl]
     simp
   · intro m hmk
     by_cases hm : m < k
-    · rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega), zero_smul]
+    · rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), zero_smul]
     · rw [hf _ (by omega), smul_zero]
 
 theorem pullback_span {M' ι : Type} [AddCommGroup M'] [Module LL M'] {P : ι → ℕ → Prop}

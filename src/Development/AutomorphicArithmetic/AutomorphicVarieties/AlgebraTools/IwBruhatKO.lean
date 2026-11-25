@@ -24,7 +24,7 @@ private lemma pm_mul_apply (M : Matrix (Fin n) (Fin n) k) (σ : Equiv.Perm (Fin 
   rw [Matrix.mul_apply, Fintype.sum_eq_single (σ⁻¹ r)]
   · simp [pm_apply]
   · intro a ha
-    rw [pm_apply, if_neg, zero_mul]
+    rw [pm_apply, ite_eq_right, zero_mul]
     rintro rfl
     exact ha (by simp)
 
@@ -128,7 +128,7 @@ private lemma rowsReduced_step (h : GL (Fin n) k) (t : ℕ) (ht : t < n)
     rcases lt_trichotomy c j with hc | rfl | hc
     · simp [v, hjmin c hc, not_lt.mpr hc.le, (ne_of_lt hc)]
     · simp [v]
-    · simp only [v, if_pos hc, if_neg (ne_of_lt hc).symm]
+    · simp only [v, ite_eq_left hc, ite_eq_right (ne_of_lt hc).symm]
       field_simp
       ring
   have hM₁S : ∀ r : Fin n, t + 1 ≤ r.val → ∀ c, M₁ r c = H r c := by
@@ -171,8 +171,8 @@ private lemma rowsReduced_step (h : GL (Fin n) k) (t : ℕ) (ht : t < n)
     have hlt : r < i₀ := by
       rw [Fin.lt_def]
       simpa [i₀] using hr
-    rw [hM₂, hM₁i₀ j, if_pos rfl]
-    simp only [u, if_pos hlt]
+    rw [hM₂, hM₁i₀ j, ite_eq_left rfl]
+    simp only [u, ite_eq_left hlt]
     field_simp
     ring
   have hval : ((b₁ * h * b₂ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) = M₂ := by
@@ -186,10 +186,10 @@ private lemma rowsReduced_step (h : GL (Fin n) k) (t : ℕ) (ht : t < n)
     subst hii
     rw [Function.update_self]
     refine ⟨?_, ?_, ?_⟩
-    · rw [hM₂, hu0 _ le_rfl, zero_mul, add_zero, hM₁i₀, if_pos rfl]
+    · rw [hM₂, hu0 _ le_rfl, zero_mul, add_zero, hM₁i₀, ite_eq_left rfl]
       exact hj
     · intro c hc
-      rw [hM₂, hu0 _ le_rfl, zero_mul, add_zero, hM₁i₀, if_neg hc]
+      rw [hM₂, hu0 _ le_rfl, zero_mul, add_zero, hM₁i₀, ite_eq_right hc]
     · intro r hr
       rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hr) with hlt | hgt
       · exact hM₂j r (by simpa [i₀] using hlt)
@@ -206,7 +206,7 @@ private lemma rowsReduced_step (h : GL (Fin n) k) (t : ℕ) (ht : t < n)
       rw [hM₂, hu0 i hi, zero_mul, add_zero, hM₁S i hi']
       exact h2 c hc
     · intro r hr
-      rw [hM₂, hM₁i₀, if_neg (hjp i hi'), mul_zero, add_zero, hM₁, hvp i hi', mul_zero,
+      rw [hM₂, hM₁i₀, ite_eq_right (hjp i hi'), mul_zero, add_zero, hM₁, hvp i hi', mul_zero,
         add_zero]
       exact h3 r hr
 
@@ -229,8 +229,8 @@ private lemma exists_eq_mul_pm_of_rowsReduced (g : GL (Fin n) k)
   rw [Units.val_mul, mul_pm_apply, hbD, diagonal_apply]
   by_cases hc : c = p r
   · subst hc
-    rw [if_pos (by rw [← hτ]; simp)]
-  · rw [(hp r (Nat.zero_le _)).2.1 c hc, if_neg]
+    rw [ite_eq_left (by rw [← hτ]; simp)]
+  · rw [(hp r (Nat.zero_le _)).2.1 c hc, ite_eq_right]
     intro e
     apply hc
     rw [← hτ, e]

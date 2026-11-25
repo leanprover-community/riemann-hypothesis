@@ -230,8 +230,8 @@ theorem ei_inv : ∀ (F : Type) [Field F] [NumberField F] [MeasurableSpace (A F)
     refine tsum_congr fun b => ?_
     by_cases hb : b = 0
     · simp [hb]
-    · rw [if_neg hb, recip F lf hlf h1 ψ hψ ι M B ρ P hQ φ hφ τ hτ b hb]
-      exact (if_neg (by simpa using hb)).symm
+    · rw [ite_eq_right hb, recip F lf hlf h1 ψ hψ ι M B ρ P hQ φ hφ τ hτ b hb]
+      exact (ite_eq_right (by simpa using hb)).symm
   · simp only [eis, eiTerm, fstar, opU, Pi.smul_apply, smul_eq_mul, mul_left_comm _ c, integral_const_mul, mul_assoc,
       tsum_mul_left, mul_add]
 

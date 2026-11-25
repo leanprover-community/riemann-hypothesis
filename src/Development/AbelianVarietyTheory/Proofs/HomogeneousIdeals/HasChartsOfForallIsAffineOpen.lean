@@ -100,11 +100,6 @@ variable {𝒯 𝒯' : AlgClass k} {X : Over (Spec (CommRingCat.of k))}
 
 
 
-section
-variable (A : Type) [CommRing A] [Algebra k A] (hA : 𝒯 A) (x : sp A ⟶ X)
-
-end
-
 
 
 

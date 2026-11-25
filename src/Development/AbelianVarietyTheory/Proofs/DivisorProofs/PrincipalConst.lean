@@ -161,20 +161,6 @@ theorem presents_zpow {D : CartierDiv X} {L : LB X} {r : L.ι → X.functionFiel
 
 end Bundle
 
-section Comb
-
-variable {X : Scheme.{0}} [IsIntegral X] {ι : Type} (T : ι → LB X) (b : ι → ℤ)
-
-variable {k : Type} [CommRing k] {p : X ⟶ Sp k} {σ : k →+* ℂ}
-
-end Comb
-
-section Met
-
-variable {F : Type} [Field F] [NumberField F] {C : CxSt F} {Y : Var F}
-
-end Met
-
 end GlobalTheory.CombChern
 end -- clump:auto
 end -- clump:auto
@@ -602,11 +588,11 @@ theorem bertini_cotangent_independent : ∀ (k A : Type) [Field k] [CharZero k] 
       if h : algebraMap A R (∑ p, u (j, p) • f p) ∈ maximalIdeal R then w ⟨j, h⟩ / w i₀ else 0
     have hJ : i₀.1 ∈ J := Finset.mem_map_of_mem _ hi₀
     have hx := hu (J, i₀.1, p₀) (Finset.mem_univ _)
-    simp only [Qf, dif_pos hJ] at hx
+    simp only [Qf, dite_eq_left hJ] at hx
     refine (hC J i₀.1 p₀ hJ).choose_spec.2 u hx (ResidueField R) φ c ?_ ?_ ?_ ?_
     · exact fun h => hp₀ ((residue_algebraMap_eq_zero_iff_mem q _).1 h)
     · show c i₀.1 = 1
-      rw [show c i₀.1 = w i₀ / w i₀ from dif_pos i₀.2]
+      rw [show c i₀.1 = w i₀ / w i₀ from dite_eq_left i₀.2]
       exact div_self hne
     · intro i hi
       obtain ⟨j, _, rfl⟩ := Finset.mem_map.1 hi
@@ -621,7 +607,7 @@ theorem bertini_cotangent_independent : ∀ (k A : Type) [Field k] [CharZero k] 
       rw [Finset.sum_map]
       convert key using 2 with j hj
       show c j.1 * φ _ = _
-      rw [show c j.1 = w j / w i₀ from dif_pos j.2]
+      rw [show c j.1 = w j / w i₀ from dite_eq_left j.2]
       rfl
 
 end GlobalTheory
@@ -1122,7 +1108,7 @@ theorem neg_one_lt_formOrd_sub_sum : ∀ (Y : Scheme.{0}) [IsIntegral Y] [IsLoca
         have : (0 : ℚ) < E.ord (v j) := by exact_mod_cast hj
         nlinarith [hc j]⟩
     linarith
-  · push_neg at h
+  · push Not at h
     have h' : ∀ j, E.ord (v j) = 0 := fun j => le_antisymm (h j) (hnn j)
     simp only [h', Int.cast_zero, mul_zero, Finset.sum_const_zero, sub_zero]
     linarith

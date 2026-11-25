@@ -239,7 +239,7 @@ def HermInf : Prop := ∀ (n : ℕ) (lam : Fin n → ℤ), PositivityTheory.RgBc
 theorem hermInf_holds : HermInf := by
   intro n lam
   refine ⟨Equiv.refl _, fun a => ?_⟩
-  simp only [PositivityTheory.RgBcC.infOf, Equiv.refl_apply, Bool.false_eq_true, if_false, if_true, map_mul, map_add (f := _), map_sub,
+  simp only [PositivityTheory.RgBcC.infOf, Equiv.refl_apply, Bool.false_eq_true, ite_false, ite_true, map_mul, map_add (f := _), map_sub,
     map_div₀, map_one, map_intCast, Complex.conj_natCast, map_ofNat]
   ring
 
@@ -320,9 +320,9 @@ theorem _root_.UpperTheory.BaseChangeIdentities.FrameWordIdentity.archlet_pf :
     · rcases y with ⟨j, v, s, m, side⟩
       by_cases hij : i = j
       · subst hij
-        simp only [RunFrame.g, RunFrame.ug, if_true, Sum.elim_inr, Sum.elim_inl, id, RunFrame.tD, RunFrame.dval]
+        simp only [RunFrame.g, RunFrame.ug, ite_true, Sum.elim_inr, Sum.elim_inl, id, RunFrame.tD, RunFrame.dval]
         exact val_der (F₀.A i) v s m side _ _
-      · simp only [RunFrame.g, RunFrame.ug, hij, if_false, Sum.elim_inl, id]
+      · simp only [RunFrame.g, RunFrame.ug, hij, ite_false, Sum.elim_inl, id]
     · exact val_nil (F₀.A i) _ _
   refine ⟨fun p => ?_, val_nil (F₀.A i) _ _, val_nil (F₀.A i) _ _, val_nil (F₀.A i) _ _⟩
   rcases p with ⟨x, s⟩
@@ -337,7 +337,7 @@ theorem _root_.UpperTheory.BaseChangeIdentities.FrameWordIdentity.archlet_pf :
     have huadj : ∀ (u : U.UGen E n), Sum.elim id (fun _ => (1 : ℂ)) (U.UGen.adj u) =
         starRingEnd ℂ (Sum.elim id (fun _ => (1 : ℂ)) u) := by
       rintro (c | y) <;> simp [U.UGen.adj]
-    simp only [gl, ul, if_true]
+    simp only [gl, ul, ite_true]
     rw [hadj _ (hS.ok x i), huadj, base]
 
 end
@@ -593,7 +593,7 @@ attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel 
 theorem _root_.UpperTheory.BaseChangeIdentities.FrameWordIdentity.huhecke_pf :
     HuHecke := by
   intro E _ _ _ n d hd w hw k
-  have hU : UL n w = ⊤ := if_pos hw.1
+  have hU : UL n w = ⊤ := ite_eq_left hw.1
   exact GlobalTheory.CompanionTheory.MatchWord.isHecke_hU d hd hU k
 
 end
@@ -1433,10 +1433,10 @@ theorem isTestFunction_translate {κ : Pl E → Type} [∀ w, Fintype (κ w)] (P
 
 theorem seen_split {φ₁ φ₂ : ∀ w : Pl E, LF a b w} {w : Pl E} (hs : IsSplitAt w) :
     seen φ₁ φ₂ w = mconv (φ₁ w) (φ₂ w) := by
-  funext y; simp only [seen, if_pos hs]; rfl
+  funext y; simp only [seen, ite_eq_left hs]; rfl
 
 theorem seen_inert {φ₁ φ₂ : ∀ w : Pl E, LF a b w} {w : Pl E} (hs : ¬ IsSplitAt w) : seen φ₁ φ₂ w = φ₁ w := by
-  funext y; simp only [seen, if_neg hs]
+  funext y; simp only [seen, ite_eq_right hs]
 
 theorem testP_seen {φ₁ φ₂ : ∀ w : Pl E, LF a b w} (h₁ : IsTestP φ₁) (h₂ : IsTestP φ₂) : IsTestP (seen φ₁ φ₂) := by
   have hm := FinConv.isTestFunction_mulConvolution h₁ h₂
@@ -1482,16 +1482,16 @@ theorem initial_generator_isHecke {n : ℕ} (d : LocData E n) (hd : d.Ok) (hM : 
     (hO : IsOpen (d.KU w : Set (UL n w))) (hKK : d.KU w ≤ KL n w) (hw : w ∈ d.B) : IsHecke (d.KU w) (d.g₀ w) := by
   by_cases hT : w ∈ d.T
   · have hs := (hM.T w hT).1
-    have e1 : d.KU w = iwU n w (d.b w) := by simp only [LocData.KU, if_pos hT]
+    have e1 : d.KU w = iwU n w (d.b w) := by simp only [LocData.KU, ite_eq_left hT]
     have e2 : d.g₀ w = ∑ x ∈ (d.c w).support,
         ((d.c w) x * (((iwU n w (d.b w)).relIndex (KL n w) : ℕ) : ℂ)) • fU n w (d.b w) (d.ϖ w) (PositivityTheory.Rg.Bc.ArchbcB.B.lOf x) := by
       funext y
-      simp only [LocData.g₀, if_pos hT, Finsupp.sum, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+      simp only [LocData.g₀, ite_eq_left hT, Finsupp.sum, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
     rw [e1, e2]
     exact hk_fsum _ _ _ _ fun x => GlobalTheory.CompanionTheory.MatchPow.fU_hecke hs _ _ _ (GlobalTheory.LocFinU.continuous_cj w)
   by_cases hS : w ∈ d.S₀
-  · have e1 : d.KU w = (d.K' w).subgroupOf (UL n w) := by simp only [LocData.KU, if_neg hT, if_pos hS]
-    have e2 : d.g₀ w = fun y => d.e w y.1 := by simp only [LocData.g₀, if_neg hT, if_pos hS]
+  · have e1 : d.KU w = (d.K' w).subgroupOf (UL n w) := by simp only [LocData.KU, ite_eq_right hT, ite_eq_left hS]
+    have e2 : d.g₀ w = fun y => d.e w y.1 := by simp only [LocData.g₀, ite_eq_right hT, ite_eq_left hS]
     have hk := (hd.K' w hS).2.2.2.2.2
     rw [e1, e2]
     refine ⟨hk.2.2.1.comp_isClosedEmbedding (GlobalTheory.CompanionTheory.LevelU.isClosed_UL n w).isClosedEmbedding_subtypeVal,
@@ -1500,7 +1500,7 @@ theorem initial_generator_isHecke {n : ℕ} (d : LocData E n) (hd : d.Ok) (hM : 
       simpa using this
     · have := hk.2.2.2 1 (Subgroup.one_mem _) k.1 (Subgroup.mem_subgroupOf.1 hk') x.1
       simpa using this
-  · have e2 : d.g₀ w = U.lone (d.KU w) := by simp only [LocData.g₀, if_neg hT, if_neg hS]
+  · have e2 : d.g₀ w = U.lone (d.KU w) := by simp only [LocData.g₀, ite_eq_right hT, ite_eq_right hS]
     rw [e2]; exact lone_hecke hO hKK
 
 end PLocMatch
@@ -1514,7 +1514,7 @@ theorem locMatch (h : LocWord) (h1 : MLM.MatchLMB2) (h2 : MLM.MatchLMWordS) (h3 
   have hg0 : ∀ w ∈ d.B, IsHecke (d.KU w) (d.g₀ w) := fun w hw => initial_generator_isHecke d hd hM (hO w) (hKK w) hw
   have hfamB : ∀ w ∈ d.B, U.fam d.B d.KU (d.gU m) k lU w = d.gU (N + 1) w := by
     intro w hw
-    simp only [U.fam, if_pos hw, LocData.gU]
+    simp only [U.fam, ite_eq_left hw, LocData.gU]
     rw [FBL.lpowMul E n w (d.KU w) (d.g₀ w) (hO w) (hKK w) (hg0 w hw) m k, hN]
   have hBS : ∀ w ∈ d.B, w ∈ S := fun w hw => hLev.1 hw
   have hTB : ∀ w ∈ d.T, w ∈ d.B := fun w hw => by simp [LocData.B, hw]
@@ -1528,7 +1528,7 @@ theorem locMatch (h : LocWord) (h1 : MLM.MatchLMB2) (h2 : MLM.MatchLMWordS) (h3 
   have hloc := BlockFiniteConvolution.locOk₀ E n d hd a ha
   have hne : ∀ w, Nonempty (d.kap w) := hloc.1
   have hpe : prodL d ls a = (d.fixL a :: ls.map (locL d a ha)).foldr LM.mul (d.eL a) := by
-    simp only [prodL, dif_pos ha]
+    simp only [prodL, dite_eq_left ha]
   have hall : ∀ L ∈ (d.fixL a :: ls.map (locL d a ha)), L.Ok d.P ∧ d.IsLetter a ha L := by
     intro L hL
     rcases List.mem_cons.1 hL with rfl | hL
@@ -1548,7 +1548,7 @@ theorem locMatch (h : LocWord) (h1 : MLM.MatchLMB2) (h2 : MLM.MatchLMWordS) (h3 
     · rw [hfamB w hwB, hseenB w hwB, hBtr w hwB]
       have hb := h1 E hE n d hd hM a ha N w hwB
       by_cases hmu : w ∈ d.S₀ ∨ (w ∈ d.Bad ∧ IsSplitAt w)
-      · have e : MLM.muAt d w = d.μ w := by simp only [MLM.muAt, if_pos hmu]
+      · have e : MLM.muAt d w = d.μ w := by simp only [MLM.muAt, ite_eq_left hmu]
         rwa [e] at hb
       · have hns : ¬ IsSplitAt w := by
           intro hs
@@ -1559,16 +1559,16 @@ theorem locMatch (h : LocWord) (h1 : MLM.MatchLMB2) (h2 : MLM.MatchLMWordS) (h3 
           · exact hmu (Or.inr ⟨hBad, hs⟩)
         exact (_root_.GlobalTheory.CompanionTheory.MuInertPlace.muInert E n a (n - a) w hns _ _ _ _).1 hb
     · have hf : U.fam d.B d.KU (d.gU m) k lU w = MLM.wordUS d w (atPlace d w ls) := by
-        simp only [U.fam, if_neg hwB]; exact hlU w hwB
+        simp only [U.fam, ite_eq_right hwB]; exact hlU w hwB
       have e1 : (prodL d ls a).tr d.P d.one w = (MLM.wordLS d a ha w (atPlace d w ls)).tr d.P d.one w := by
-        simp only [LM.tr, if_neg (hPB w hwB)]; exact (hoff w hwB).1
+        simp only [LM.tr, ite_eq_right (hPB w hwB)]; exact (hoff w hwB).1
       rw [hf]
       by_cases hs : IsSplitAt w
       · rw [seen_split hs, e1, (hoff w hwB).2]
         exact h2 E hE n d hd a ha w (hGood w hwS hwB hs) (hμ w) _
       · rw [seen_inert hs, e1, hnil w fun hG => hs hG.1]
         have := h3 E hE n d hd a ha w hwB fun hs' => absurd hs' hs
-        rw [if_neg hs] at this
+        rw [ite_eq_right hs] at this
         exact (_root_.GlobalTheory.CompanionTheory.MuInertPlace.muInert E n a (n - a) w hs _ _ _ _).1 this
   · rw [hBtr w₀ (hTB _ hw₀)]
     exact _root_.GlobalTheory.CompanionTheory.RegPow.regPowT E hE n d hd hM a ha N w₀ hw₀
@@ -1618,7 +1618,7 @@ theorem levOk (hd : d.Ok) {a : ℕ} (ha : a ≤ n) (w : Pl E) :
     by_cases hSB : w ∈ d.S₀ ∪ d.Bad
     · rw [PSeen.lev_eq d hd hSB]
       exact PSeen.L_ok d hd ha hSB
-    · simp only [LocData.lev, if_neg hT, if_neg hSB]
+    · simp only [LocData.lev, ite_eq_right hT, ite_eq_right hSB]
       exact ⟨LocComm.isOpen_levelSubgroup' _ _ _, le_rfl⟩
 
 def idA (hd : d.Ok) {a : ℕ} (ha : a ≤ n) (w : Pl E) := idemAlg E a (n - a) w _ (levOk d hd ha w).1 (levOk d hd ha w).2

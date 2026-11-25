@@ -880,7 +880,7 @@ theorem exists_form_unit {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (h : IsU
   · obtain ⟨a, ha⟩ := hd
     refine ⟨Pi.single a 1, key _ ?_⟩
     simpa [bf_single] using ha
-  · push_neg at hd hnd
+  · push Not at hd hnd
     obtain ⟨a, b, hab⟩ := hnd
     obtain ⟨t, ht⟩ := exists_trace_not_dvd h hab
     refine ⟨Pi.single a t + Pi.single b 1, key _ ?_⟩

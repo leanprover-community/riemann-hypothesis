@@ -248,10 +248,10 @@ theorem dl_cont {r : ℕ} (l : ℕ) : Continuous (fun Z : Matrix (Fin (r + 1)) (
 
   unfold Dl
   by_cases h : l ≤ r + 1
-  · simp only [h, dif_pos]
+  · simp only [h, dite_eq_left]
     first
     | exact (continuous_id.matrix_submatrix _ _).matrix_det
-  · simp only [h, dif_neg, not_false_eq_true]
+  · simp only [h, dite_eq_right, not_false_eq_true]
     exact continuous_const
 
 theorem wt_cont (u u' : D.what₂.Word) : Continuous (wt X u u') := by

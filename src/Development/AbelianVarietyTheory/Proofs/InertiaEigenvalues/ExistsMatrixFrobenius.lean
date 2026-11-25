@@ -169,7 +169,7 @@ theorem _root_.GlobalTheory.WachTie.MatF.exists_matrix_frobenius (R : _root_.Glo
     refine Matrix.ext fun m' m => ?_
     have h : ∑ m'', (∑ t, a m t * C t m'') • (b m'' : W.DD T) =
         ∑ m'', (Pi.single m c : Fin r → _root_.Formalism.BasicNotions.LetA O n) m'' • (b m'' : W.DD T) := by
-      simp only [Pi.single_apply, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [Pi.single_apply, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       rw [hc, pow_add, mul_smul, ← ha m, Finset.smul_sum]
       simp_rw [smul_comm (e ^ M) (a m _), hC, Finset.smul_sum, smul_smul, Finset.sum_smul]
       exact Finset.sum_comm

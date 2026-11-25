@@ -294,7 +294,7 @@ theorem plB_mem_twPl (w : X.B.places.Pl) : plB X w ∈ z.R.twPl ↔ w ∈ Wt := 
 
 theorem xi_mu {w : X.B.places.Pl} (hw : w ∈ Wt) : I.xi (ixOf I (usedOf I T Wt) (z.R.mu (plB X w))) = T.xiTw I.C w := by
   have hm := (z.mu w).2
-  rw [if_pos hw] at hm
+  rw [ite_eq_left hw] at hm
   exact hm
 
 theorem mu_mem (h : Wt' ⊆ Wt) {v : HeightOneSpectrum (𝓞 X.toD7.what₂.LL)} (hv : (plB X).symm v ∈ Wt') :
@@ -327,13 +327,13 @@ theorem mem_resTw (h : Wt' ⊆ Wt) (v : HeightOneSpectrum (𝓞 X.toD7.what₂.L
 
 theorem inclU_resMu (h : Wt' ⊆ Wt) {v : HeightOneSpectrum (𝓞 X.toD7.what₂.LL)} (hv : (plB X).symm v ∈ Wt') :
     inclU I (usedOf_mono I T h) (z.resMu h v) = z.R.mu v := by
-  have e : z.resMu h v = ⟨(z.R.mu v).1, Or.inr (z.mu_mem h hv)⟩ := dif_pos hv
+  have e : z.resMu h v = ⟨(z.R.mu v).1, Or.inr (z.mu_mem h hv)⟩ := dite_eq_left hv
   rw [e]
   rfl
 
 theorem resMu_off (h : Wt' ⊆ Wt) {v : HeightOneSpectrum (𝓞 X.toD7.what₂.LL)} (hv : (plB X).symm v ∉ Wt') :
     z.resMu h v = mu0F (X := X.B.fields) (tuOf I (usedOf I T Wt')) := by
-  exact dif_neg hv
+  exact dite_eq_right hv
 
 theorem resMu_used (h : Wt' ⊆ Wt) (t : TupU I (usedOf I T Wt')) :
     t = mu0F (X := X.B.fields) (tuOf I (usedOf I T Wt')) ∨ ∃ v, z.resMu h v = t := by
@@ -357,7 +357,7 @@ theorem resMu_used (h : Wt' ⊆ Wt) (t : TupU I (usedOf I T Wt')) :
       rw [z.lev.xiH, z.lev.xiH, hix, hs, hxa]
 
     have he := z.lev.is.xi_inj hxi
-    have e : z.resMu h (plB X w) = ⟨(z.R.mu (plB X w)).1, Or.inr (z.mu_mem h hw')⟩ := dif_pos hw'
+    have e : z.resMu h (plB X w) = ⟨(z.R.mu (plB X w)).1, Or.inr (z.mu_mem h hw')⟩ := dite_eq_left hw'
     rw [e]
     apply Subtype.ext
     show (z.R.mu (plB X w)).1 = I.tup a
@@ -370,13 +370,13 @@ theorem muOf_res (h : Wt' ⊆ Wt) : MuOf X I T Wt' (z.resMu h) (z.resTw Wt') := 
   refine ⟨?_, ?_⟩
   · rw [z.mem_resTw h, hpl]
   · by_cases hw : w ∈ Wt'
-    · rw [if_pos hw]
+    · rw [ite_eq_left hw]
       have hw' : (plB X).symm (X.toD7.plEq w) ∈ Wt' := by
         rw [hpl]
         exact hw
       rw [← ixOf_inclU (usedOf_mono I T h), z.inclU_resMu h hw']
       exact z.xi_mu (h hw)
-    · rw [if_neg hw]
+    · rw [ite_eq_right hw]
       have hw' : (plB X).symm (X.toD7.plEq w) ∉ Wt' := by
         rw [hpl]
         exact hw

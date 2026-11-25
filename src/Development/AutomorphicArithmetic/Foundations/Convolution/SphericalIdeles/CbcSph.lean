@@ -275,9 +275,9 @@ theorem UpperTheory.ConvolutionTheory.Sph.down :
   have hAt₁ : At μE S₀ V' Λ t₁ := by
     refine ⟨hAt.1, fun u hu => ?_⟩
     by_cases h : u.under (𝓞 F) = v
-    · simp only [t₁, if_pos h]
+    · simp only [t₁, ite_eq_left h]
       exact hb u h
-    · simp only [t₁, if_neg h]
+    · simp only [t₁, ite_eq_right h]
       exact hAt.2 u fun h' => hu ⟨h', h⟩
   have hAE₁ : AtAE μE V' Λ t₁ := ⟨S₀, hS₀, hAt₁⟩
   obtain ⟨V₀, Λ₀, t₀, hV₀, hAt₀, hΛ, ht, hv₀, -⟩ := Sph.descAt ci Sph.gm F E σ hσ hp n hn μE μF θ hθ V' Λ t₁ S₀

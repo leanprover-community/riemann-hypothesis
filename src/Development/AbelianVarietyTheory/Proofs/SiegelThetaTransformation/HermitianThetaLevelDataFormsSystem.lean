@@ -267,7 +267,7 @@ theorem admissible_of_sum_translates_quadraticCharacter : ∀ (E : Type) [Field 
     · rw [add_sub_right_comm]
       generalize x - d = z
       by_cases hz : z ∈ tens Λ K
-      · rw [if_pos hz, if_pos (add_mem hz hR)]
+      · rw [ite_eq_left hz, ite_eq_left (add_mem hz hR)]
         have h1 := isIntegral_pair hΛ hy (mem_tens_mul H5 hz)
         have h2 := isIntegral_pair hΛ (mem_tens_mul H4 hz) hy
         have h3 := isIntegral_pair hΛ (mem_tens_mul H6 hy) hy
@@ -279,7 +279,7 @@ theorem admissible_of_sum_translates_quadraticCharacter : ∀ (E : Type) [Field 
           Matrix.mul_assoc]
         push_cast
         ring
-      · rw [if_neg hz, if_neg fun h => hz ((AddSubgroup.add_mem_cancel_right _ hR).1 h)]
+      · rw [ite_eq_right hz, ite_eq_right fun h => hz ((AddSubgroup.add_mem_cancel_right _ hR).1 h)]
     · rw [← exp_trace_add (t := (b * ccT (x + x - d)).trace) ((ni (2 * N')).mul hb),
         show ∀ w, x + w + (x + w) - d = x + x - d + w + w from fun w => by abel]
       generalize x + x - d = z

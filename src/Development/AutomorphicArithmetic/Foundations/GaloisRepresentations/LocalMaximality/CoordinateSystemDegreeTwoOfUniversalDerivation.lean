@@ -77,7 +77,7 @@ theorem UpperTheory.Gal.productCup_of_system.coordinateSystem_degree_two_of_univ
       A (uni b L) = ⊥ := by
     intro b hb L
     simp only [A, mixF, lu1, ru1]
-    rw [if_neg hb]
+    rw [ite_eq_right hb]
   set c0' : Finset (Two d) → Finset κ → E := fun b =>
     if (lft b).card = 1 ∧ (rgt b).card = 1 then c0 (pk (lft b)) (pk (rgt b)) else 0 with hc0'
   have pk1 : ∀ i : Fin (d + 1), pk ({i} : Finset (Fin (d + 1))) = i := by
@@ -110,7 +110,7 @@ theorem UpperTheory.Gal.productCup_of_system.coordinateSystem_degree_two_of_univ
       subst hb'
       rw [c0ij, hcol _ _ (Finset.singleton_nonempty i) (Finset.singleton_nonempty j)]
       exact hZ i j
-    · have h0 : c0' b = 0 := by simp only [hc0', h11, if_false]
+    · have h0 : c0' b = 0 := by simp only [hc0', h11, ite_false]
       rw [h0]
       exact zero_mem _
   have hw : (fun i : Two d => T.wt z (inlE i : Two d ⊕ₗ κ)) = fun _ => 1 := by

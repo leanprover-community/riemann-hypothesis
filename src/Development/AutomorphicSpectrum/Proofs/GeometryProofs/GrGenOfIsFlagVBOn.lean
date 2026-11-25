@@ -45,14 +45,14 @@ private theorem eq_zero_of_sum_smul_mem_span_lt {r : ℕ} {b : Fin r → E} (hli
     intro j _
     by_cases hj : (j : ℕ) < n
     · simp [hj]
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, hj, rfl⟩)
   have hlo : ∑ j : Fin r, (if (j : ℕ) < n then g j else 0) • b j ∈
       Submodule.span Ω (b '' {k | (k : ℕ) < n}) := by
     apply Submodule.sum_mem
     intro j _
     by_cases hj : (j : ℕ) < n
-    · rw [if_pos hj]
+    · rw [ite_eq_left hj]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, hj, rfl⟩)
     · simp [hj]
   have hsplit : ∑ j : Fin r, (if (j : ℕ) < n then 0 else g j) • b j =
@@ -108,7 +108,7 @@ theorem gr_gen (L : Lat ξ E) {r : ℕ} (b b₀ : Fin r → E) (p : Cpt ξ) (h :
       exact hx
     unfold flagStep at key
     have hci := eq_zero_of_sum_smul_mem_span_lt hli _ i key i le_rfl
-    rw [if_pos rfl, sub_eq_zero] at hci
+    rw [ite_eq_left rfl, sub_eq_zero] at hci
     rw [SetLike.mem_coe, Submodule.mem_span_singleton]
     refine ⟨g i, ?_⟩
     show (g i : Ω) * c = t

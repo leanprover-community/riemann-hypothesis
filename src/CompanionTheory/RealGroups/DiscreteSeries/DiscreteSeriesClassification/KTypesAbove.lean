@@ -560,7 +560,7 @@ theorem inP_entry_zero {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (h
     (h : ε a = ε b) : X a b = 0 := by
   have h1 := congrFun (congrFun hX.2 a) b
   simp only [Matrix.mul_apply, Matrix.neg_apply, Jm, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true] at h1
+    Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h1
   rw [h] at h1
   split_ifs at h1 with hb
   · have : (2 : ℂ) * X a b = 0 := by linear_combination h1

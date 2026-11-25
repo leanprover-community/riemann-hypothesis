@@ -29,9 +29,6 @@ theorem form_ne_zero (h : AdjKlt c n T S η φ) : η ≠ 0 := h.1
 
 theorem apply_zero (h : AdjKlt c n T S η φ) : φ 0 = 0 := h.2.1
 
-def incl {Q : Subring K} {P : Place c} (h : P.Contains Q) : Q →+* P.ring :=
-  Q.subtype.codRestrict P.ring fun q => h q q.2
-
 end AdjKlt
 
 variable {c : k →+* K} {n : ℕ} {T : Subring K} {η : Forms c n} {φ : K →₀ ℚ}

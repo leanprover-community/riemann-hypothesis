@@ -1176,9 +1176,9 @@ theorem UpperTheory.V.Cj.H.poinOp :
   have hf : ∀ p ∈ G.Y, ∀ w, f p w ∈ G.Om q := by
     intro p hp w
     refine fun s => ⟨?_, ?_⟩
-    · exact ((hD p hp q _ (hwm w s).1).1).congr (fun x hx => if_pos hx)
+    · exact ((hD p hp q _ (hwm w s).1).1).congr (fun x hx => ite_eq_left hx)
     · intro x hx
-      exact if_neg hx
+      exact ite_eq_right hx
   let K : V → G.Om (q + 1) → G.Om q := fun p w => if hp : p ∈ G.Y then ⟨f p w, hf p hp w⟩ else 0
   have hK : ∀ p (hp : p ∈ G.Y) w, ((K p w : G.Om q) : S → V → V [⋀^Fin q]→L[ℝ] (Fin d → ℂ)) = f p w := by
     intro p hp w
@@ -1200,7 +1200,7 @@ theorem UpperTheory.V.Cj.H.poinOp :
         rw [← extDerivWithin_univ, ← extDerivWithin_univ]
         apply Filter.EventuallyEq.extDerivWithin_eq_of_mem _ (Set.mem_univ x)
         rw [nhdsWithin_univ]
-        exact Filter.eventually_of_mem (G.isOpen.mem_nhds hx) (fun y hy => if_pos hy)
+        exact Filter.eventually_of_mem (G.isOpen.mem_nhds hx) (fun y hy => ite_eq_left hy)
       rw [hloc]
       exact (hD p hp q _ (hwm w s).1).2 hclosed x hx
     · have h1 := ((G.dOm q (K p w)).2 s).2 x hx
@@ -1215,7 +1215,7 @@ theorem UpperTheory.V.Cj.H.poinOp :
     rw [hK p hp, hK _ hp']
     by_cases hx : x ∈ G.Y
     · have hx' : G.ρ γ⁻¹ x ∈ G.Y := G.maps γ⁻¹ x hx
-      simp only [f, if_pos hx, if_pos hx']
+      simp only [f, ite_eq_left hx, ite_eq_left hx']
       exact tr_coneOp G q γ _ p x
     · have hx' : G.ρ γ⁻¹ x ∉ G.Y := by
         intro h
@@ -1224,7 +1224,7 @@ theorem UpperTheory.V.Cj.H.poinOp :
         have h3 := Geo.ρ_inv_apply G γ⁻¹ x
         rw [inv_inv] at h3
         rwa [h3] at h2
-      simp only [f, if_neg hx, if_neg hx', map_zero]
+      simp only [f, ite_eq_right hx, ite_eq_right hx', map_zero]
   · intro p hp w hw s C hC hCc
     have h := coneLim V (Fin d → ℂ) G.Y hconv p hp q
       (fun k => ((w k : G.Om (q + 1)) : S → V → V [⋀^Fin (q + 1)]→L[ℝ] (Fin d → ℂ)) s)
@@ -1304,7 +1304,7 @@ theorem UpperTheory.V.Cj.H.zigLim :
       refine ⟨fun j x => if h : x.length = k + 1 then f j x h else 0, ?_, ?_⟩
       · intro j x hx
         show u j x = G.incl (if h : x.length = k + 1 then f j x h else 0)
-        rw [dif_pos hx, hf j x hx]
+        rw [dite_eq_left hx, hf j x hx]
       · intro x hx s
         have hx' : x.length = k + 1 := by simpa using hx
         have ht := (hlim x hx' s {p} (Set.singleton_subset_iff.2 hp)
@@ -1315,7 +1315,7 @@ theorem UpperTheory.V.Cj.H.zigLim :
           intro j
           rw [← hf j x hx']
           simp [Dr.Geo.incl, Set.indicator_of_mem hp]
-        simp only [dif_pos hx']
+        simp only [dite_eq_left hx']
         have hfun : (fun j => f j x hx' s) =
             fun j => ((u j x : S → V → V [⋀^Fin 0]→L[ℝ] (Fin d → ℂ)) s p) (fun _ => 0) :=
           funext fun j => (heq j).symm

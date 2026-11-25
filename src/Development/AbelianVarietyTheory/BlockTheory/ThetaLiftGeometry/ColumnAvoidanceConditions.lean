@@ -65,16 +65,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
   T u := (D.mem u).A.T
   piT := EX.piT
 
-section Ties
-
-variable (D : D7) (Dx : DivX D) (EX : ErrX D) (Ch : Chars (fieldsOf D) (primesOf D EX) D.R.m)
-  (m0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E)
-  (sel : HeightOneSpectrum (𝓞 (fieldsOf D).F) → HeightOneSpectrum (𝓞 (fieldsOf D).E))
-
-variable {S : Set ℕ} (ξ : Tup (fieldsOf D).F (fieldsOf D).E (fieldsOf D).K S)
-
-end Ties
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ColumnAvoidanceConditions
 
 end

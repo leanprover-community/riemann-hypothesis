@@ -186,7 +186,7 @@ theorem claim_all (p : ℕ) [hp : Fact p.Prime] (C : Type) [Field C] [IsAlgClose
   intro N _ _ _ hk hN AA
   by_cases htriv : ∀ x : N, x = 0
   · exact claim_base v hv N htriv AA
-  push_neg at htriv
+  push Not at htriv
   obtain ⟨x, hx0⟩ := htriv
   set K : AddSubgroup N := AddSubgroup.zmultiples x with hKdef
   let e : ZMod p ≃+ K := zmodEquiv p x (hN x) hx0
@@ -292,8 +292,8 @@ theorem claim_all (p : ℕ) [hp : Fact p.Prime] (C : Type) [Field C] [IsAlgClose
         simp [h0, show p - 1 ≠ 0 by omega]
       refine ⟨Fin.snoc (fun j => -a j) 0, ?_⟩
       rw [Fin.sum_univ_castSucc]
-      simp only [Fin.snoc_last, Fin.snoc_castSucc, Fin.castSucc_lt_last, if_true,
-        lt_self_iff_false, if_false, zero_smul, add_zero]
+      simp only [Fin.snoc_last, Fin.snoc_castSucc, Fin.castSucc_lt_last, ite_true,
+        lt_self_iff_false, ite_false, zero_smul, add_zero]
       have h1 := Submodule.sub_mem _ hpow ha
       convert h1 using 1
       simp only [neg_smul, Finset.sum_neg_distrib, sub_neg_eq_add]
@@ -303,7 +303,7 @@ theorem claim_all (p : ℕ) [hp : Fact p.Prime] (C : Type) [Field C] [IsAlgClose
       refine ⟨Fin.snoc a 0, ?_⟩
       have hnl : ¬ (Fin.last n < Fin.castSucc i0) := not_lt.2 (Fin.castSucc_lt_last i0).le
       rw [Fin.sum_univ_castSucc]
-      simp only [Fin.snoc_castSucc, Fin.snoc_last, Fin.castSucc_lt_castSucc_iff, hnl, if_false,
+      simp only [Fin.snoc_castSucc, Fin.snoc_last, Fin.castSucc_lt_castSucc_iff, hnl, ite_false,
         zero_smul, add_zero]
       have h1 := pullQ_sq K AA AQ hAQ ha
 

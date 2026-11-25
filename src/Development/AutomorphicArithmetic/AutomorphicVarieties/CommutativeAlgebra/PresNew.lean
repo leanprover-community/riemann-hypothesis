@@ -136,11 +136,11 @@ private theorem pres_new_wcomp {O σ X : Type} [CommRing O] [AddCommGroup X] [De
   rw [coeff_wcomp]
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs with h1
     · rfl
     · exact (hh a h1).symm
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     split_ifs with h1
     · rw [map_zero]
       exact hh a (h1 ▸ Ne.symm hij)

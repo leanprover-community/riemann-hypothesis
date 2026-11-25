@@ -393,7 +393,7 @@ private theorem iw_clear (Y : Matrix (Fin n) (Fin n) K) (c : Fin n) (a : Fin n �
   ext i j
   simp [A, Matrix.mul_apply, Matrix.one_apply, sub_mul, Finset.sum_sub_distrib]
   simp only [apply_ite (fun x : V => (x : K)), ZeroMemClass.coe_zero, OneMemClass.coe_one, ite_mul,
-    one_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    one_mul, zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 private theorem iw_step (Y : Matrix (Fin n) (Fin n) K) (c : Fin n)
     (hY : ∀ i j : Fin n, j < c → j < i → Y i j = 0) :
@@ -446,7 +446,7 @@ private theorem iw_step (Y : Matrix (Fin n) (Fin n) K) (c : Fin n)
     rcases lt_or_eq_of_le hjc with hlt | heq
     · rw [hY1c i j hlt hji, hY1c c j hlt hlt, mul_zero, sub_zero]
     · rw [heq] at hji ⊢
-      simp only [a, dif_pos hji]
+      simp only [a, dite_eq_left hji]
       show Y1 i c - Y1 i c / Y1 c c * Y1 c c = 0
       rw [div_mul_cancel₀ _ h0, sub_self]
 

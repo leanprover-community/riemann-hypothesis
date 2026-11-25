@@ -169,9 +169,9 @@ theorem dual_partner (t : ℕ) (c : ℚ) (P : SPar) (hc : ∀ x ∈ P, x.1 ≠ c
       have hne : -a ≠ c := hc _ h
       by_cases h1 : a < -c
       · have h3 : ¬ (-a < c) := by linarith
-        rw [if_pos h1] at h2; rw [if_neg h3]; subst h2; simp
+        rw [ite_eq_left h1] at h2; rw [ite_eq_right h3]; subst h2; simp
       · have h3 : -a < c := lt_of_le_of_ne (by linarith) hne
-        rw [if_neg h1] at h2; rw [if_pos h3]; subst h2; simp
+        rw [ite_eq_right h1] at h2; rw [ite_eq_left h3]; subst h2; simp
     · right; exact ⟨-a, mem_block_neg.1 ha, rfl, rfl⟩
   · rintro (⟨a, b', h, rfl, h2⟩ | ⟨a, ha, ha', hb⟩)
     · left
@@ -179,9 +179,9 @@ theorem dual_partner (t : ℕ) (c : ℚ) (P : SPar) (hc : ∀ x ∈ P, x.1 ≠ c
       refine ⟨y, b', h, rfl, ?_⟩
       by_cases h1 : y < -c
       · have h3 : ¬ (-y < c) := by linarith
-        rw [if_neg h3] at h2; rw [if_pos h1]; subst h2; simp
+        rw [ite_eq_right h3] at h2; rw [ite_eq_left h1]; subst h2; simp
       · have h3 : -y < c := lt_of_le_of_ne (by linarith) hne
-        rw [if_pos h3] at h2; rw [if_neg h1]; exact Bool.not_inj h2
+        rw [ite_eq_left h3] at h2; rw [ite_eq_right h1]; exact Bool.not_inj h2
     · right
       subst ha'
       refine ⟨y, mem_block_neg.2 ha, rfl, ?_⟩

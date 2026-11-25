@@ -72,11 +72,11 @@ lemma vmin_le (h : ℕ) (x : K) :
       rw [Finset.sum_Icc_succ_top (by omega)]
       have e : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
       by_cases hc : ((n + 1 : ℕ) : ℝ) - 1 < r
-      · rw [if_pos hc]
+      · rw [ite_eq_left hc]
         have h1 : min r (n : ℝ) = n := min_eq_right (by linarith)
         have h2 := min_le_right r ((n + 1 : ℕ) : ℝ)
         linarith
-      · rw [if_neg hc]
+      · rw [ite_eq_right hc]
         have h1 : min r (n : ℝ) = r := min_eq_left (by linarith)
         have h2 := min_le_left r ((n + 1 : ℕ) : ℝ)
         linarith
@@ -115,8 +115,8 @@ lemma vmin_le (h : ℕ) (x : K) :
             linarith
           have h5 := (Real.log_lt_log_iff hMpos (zpow_pos hpp _)).mp h4
           linarith
-        rw [if_pos h1, if_pos h2]
-      · rw [if_neg h1]
+        rw [ite_eq_left h1, ite_eq_left h2]
+      · rw [ite_eq_right h1]
         split_ifs <;> norm_num
 
 

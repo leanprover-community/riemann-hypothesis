@@ -301,18 +301,18 @@ theorem redM_blkDg {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (
     rw [e]
     exact redM_entry v _ _ _ _ _ _ (by simp [blkDg, h])
   · by_cases hxy : (x : ℕ) = y
-    · have e1 : blkDg hN M x y = 1 := by simp only [blkDg, Matrix.of_apply, dif_neg h, if_pos hxy]
-      have e2 : blkDg hN (redM F v M) x y = 1 := by simp only [blkDg, Matrix.of_apply, dif_neg h, if_pos hxy]
+    · have e1 : blkDg hN M x y = 1 := by simp only [blkDg, Matrix.of_apply, dite_eq_right h, ite_eq_left hxy]
+      have e2 : blkDg hN (redM F v M) x y = 1 := by simp only [blkDg, Matrix.of_apply, dite_eq_right h, ite_eq_left hxy]
       have hm : blkDg hN M x y ∈ v.adicCompletionIntegers F := by rw [e1]; exact one_mem _
       rw [e2]
-      simp only [redM, dif_pos hm]
+      simp only [redM, dite_eq_left hm]
       have : (⟨blkDg hN M x y, hm⟩ : v.adicCompletionIntegers F) = 1 := Subtype.ext (by simpa using e1)
       rw [this, map_one]
-    · have e1 : blkDg hN M x y = 0 := by simp only [blkDg, Matrix.of_apply, dif_neg h, if_neg hxy]
-      have e2 : blkDg hN (redM F v M) x y = 0 := by simp only [blkDg, Matrix.of_apply, dif_neg h, if_neg hxy]
+    · have e1 : blkDg hN M x y = 0 := by simp only [blkDg, Matrix.of_apply, dite_eq_right h, ite_eq_right hxy]
+      have e2 : blkDg hN (redM F v M) x y = 0 := by simp only [blkDg, Matrix.of_apply, dite_eq_right h, ite_eq_right hxy]
       have hm : blkDg hN M x y ∈ v.adicCompletionIntegers F := by rw [e1]; exact zero_mem _
       rw [e2]
-      simp only [redM, dif_pos hm]
+      simp only [redM, dite_eq_left hm]
       have : (⟨blkDg hN M x y, hm⟩ : v.adicCompletionIntegers F) = 0 := Subtype.ext (by simpa using e1)
       rw [this, map_zero]
 
@@ -367,7 +367,7 @@ theorem lamSym_blk [Field K] {N : ℕ} (hN : n + 1 = N) (ψ : AddChar K ℂ) (χ
       blkDg rfl M x y else 0)
     (fun x y : Fin n => if (x : ℕ) + 1 = y ∧ (y : ℕ) < rSym k rS ∧ (y : ℕ) ≠ k then M x y else 0)
     (fun i j => by simp)
-    (fun i => if_neg (fun hc => by
+    (fun i => ite_eq_right (fun hc => by
       have := hc.2.1
       simp only [Fin.val_last] at this
       omega))
@@ -385,7 +385,7 @@ theorem lamSym_blk [Field K] {N : ℕ} (hN : n + 1 = N) (ψ : AddChar K ℂ) (χ
     have hs' := s'.is_lt
     have b1 : rSym k rS + i * t + s < n := by linarith
     have b2 : rSym k rS + i * t + s' < n := by linarith
-    simp only [blkMat, entN, dif_pos (And.intro b1 b2), dif_pos (And.intro (Nat.lt_succ_of_lt b1) (Nat.lt_succ_of_lt b2))]
+    simp only [blkMat, entN, dite_eq_left (And.intro b1 b2), dite_eq_left (And.intro (Nat.lt_succ_of_lt b1) (Nat.lt_succ_of_lt b2))]
     simp [blkDg, b1, b2]
   rw [e]
 

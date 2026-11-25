@@ -65,7 +65,7 @@ theorem exists_factorization_of_sum_order (z₀ : ℂ) (r R₁ : ℝ) (hR : R₁
       exact_mod_cast h1
     have hsumg : ∑ ρ ∈ Z, analyticOrderNatAt g ρ = n := by
       have hs := Finset.sum_congr rfl fun ρ hρ => (keyN ρ hρ).1
-      rw [hs, Finset.sum_add_distrib, Finset.sum_ite_eq', if_pos hρ₀Z] at hsum; omega
+      rw [hs, Finset.sum_add_distrib, Finset.sum_ite_eq', ite_eq_left hρ₀Z] at hsum; omega
     obtain ⟨h, hhd, hh0, hhf⟩ := ih g Z hgd hZ (fun z hz h0 => hzero z hz (by rw [hfg z, h0, mul_zero]))
       (fun ρ hρ => (keyN ρ hρ).2) hsumg
     refine ⟨h, hhd, hh0, fun z hz => ?_⟩

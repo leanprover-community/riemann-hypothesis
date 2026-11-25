@@ -16,13 +16,6 @@ namespace GlobalTheory.CompanionTheory.Ar.CmpHodgeDiag
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
 
-section Ident
-
-open MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
-open scoped CategoryTheory.Obj
-
-end Ident
-
 theorem exists_gen {X : Type} [TopologicalSpace X] [TopologicalSpace.NoetherianSpace X] [QuasiSober X]
     {U : Set X} (hU : IsOpen U) (hd : Dense U) (y : X) : ∃ g ∈ U, g ⤳ y := by
   obtain ⟨o, ho, hne, hoZ⟩ :=

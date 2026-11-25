@@ -15,7 +15,7 @@ private theorem le_mul_totient_sq (n : ℕ) : n ≤ (if Even n then 2 else 1) * 
     by_cases h2 : p = 2
     · subst h2
       have he : Even (2 ^ k) := (Nat.even_pow.2 ⟨even_two, hk.ne'⟩)
-      rw [if_pos he]
+      rw [ite_eq_left he]
       have : 2 ^ k ≤ 2 * (2 ^ (k - 1)) ^ 2 := by
         rw [← pow_mul, ← pow_succ']
         exact Nat.pow_le_pow_right (by norm_num) (by omega)
@@ -23,7 +23,7 @@ private theorem le_mul_totient_sq (n : ℕ) : n ≤ (if Even n then 2 else 1) * 
     · have hodd : ¬ Even (p ^ k) := by
         rw [Nat.even_pow]; rintro ⟨he, -⟩
         exact h2 ((Nat.Prime.even_iff hp).1 he)
-      rw [if_neg hodd, one_mul]
+      rw [ite_eq_right hodd, one_mul]
       have hp3 : 3 ≤ p := by
         have := hp.two_le
         rcases Nat.lt_or_ge p 3 with h | h

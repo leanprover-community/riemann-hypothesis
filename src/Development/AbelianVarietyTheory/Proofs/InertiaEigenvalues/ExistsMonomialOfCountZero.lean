@@ -241,7 +241,7 @@ theorem exists_wordMult_segment_ne {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.l
       (List.ofFn fun i : Fin (l * 1) => (unrChar k z * absPow k (((l : ℂ) - 1) / 2) *
         absPow k (((i : ℕ) : ℂ) - (((l * 1 : ℕ) : ℂ) - 1) / 2)) ϖ) = 0 :=
     (wordMult_congr e _).trans h0
-  rw [wordMult_detRep, if_pos] at h1
+  rw [wordMult_detRep, ite_eq_left] at h1
   · exact one_ne_zero h1
   refine ⟨List.length_ofFn, fun i hi => ?_⟩
   have hg : (List.ofFn fun i : Fin (l * 1) => (unrChar k z * absPow k (((l : ℂ) - 1) / 2) *
@@ -298,8 +298,8 @@ theorem fixed_iwahori_ne_bot : GlobalTheory.Published.GeometricLemma → GlobalT
       obtain ⟨h1, h2⟩ := segWord_inj (hlpos Δ hΔ) h
       exact Segment.ext_first (by rw [hfst Δ hΔ, hfst Δ' hΔ', h1]) (by rw [hlen Δ hΔ, hlen Δ' hΔ', h2])
     have hUl : ∀ Δ ∈ U, IsLyndon (ℓ Δ) ∧ φ Δ = ShuffleAlgebra.word ℚ (ℓ Δ) := fun Δ hΔ =>
-      ⟨isLyndon_segWord (norm_absPow_one_lt hϖ) _ (hlpos Δ hΔ), if_pos hΔ⟩
-    have h0 : ∀ Δ ∉ U, φ Δ = 0 := fun Δ hΔ => if_neg hΔ
+      ⟨isLyndon_segWord (norm_absPow_one_lt hϖ) _ (hlpos Δ hΔ), ite_eq_left hΔ⟩
+    have h0 : ∀ Δ ∉ U, φ Δ = 0 := fun Δ hΔ => ite_eq_right hΔ
     have hXr : ∀ Δ, Realised Ψ (MvPolynomial.X Δ) (φ Δ) := by
       intro Δ
       have hfl : HasFiniteLength (Z Δ).rep.ρ := hasFiniteLength_of_isIrreducible (Z Δ).rep.irr
@@ -308,10 +308,10 @@ theorem fixed_iwahori_ne_bot : GlobalTheory.Published.GeometricLemma → GlobalT
       · by_cases hΔ : Δ ∈ U
         · refine ⟨{ℓ Δ}, hcount Δ hΔ, ?_⟩
           rw [Multiset.map_singleton, Multiset.sum_singleton]
-          exact (if_pos hΔ).symm
+          exact (ite_eq_left hΔ).symm
         · refine ⟨0, fun w => by rw [hzero Δ hΔ w]; simp, ?_⟩
           rw [Multiset.map_zero, Multiset.sum_zero]
-          exact (if_neg hΔ).symm
+          exact (ite_eq_right hΔ).symm
     have H : ∀ m : Segment k →₀ ℕ, 0 ≤ Ψ.symm (MvPolynomial.monomial m 1) ∧ ∃ s : Multiset (List ℂˣ),
         (∀ w, ((Ψ.symm (MvPolynomial.monomial m 1)).sum fun x a =>
           (a.toNat : ℕ∞) * wordMult x.2.rep.ρ w) = (s.count w : ℕ∞)) ∧

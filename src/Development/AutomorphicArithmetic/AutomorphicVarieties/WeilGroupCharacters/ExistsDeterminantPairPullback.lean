@@ -37,7 +37,7 @@ private theorem tr_zero (D : GDet n A G) (hn : 1 ≤ n) : D.tr 0 = 0 := by
     congr 1
     simp [MonoidAlgebra.one_def]
   unfold GDet.tr GDet.lam
-  rw [h1, Polynomial.coeff_X_pow, if_neg (by omega), mul_zero]
+  rw [h1, Polynomial.coeff_X_pow, ite_eq_right (by omega), mul_zero]
 
 private theorem tr_dim_zero (D : GDet 0 A G) (y : MonoidAlgebra A G) : D.tr y = -1 := by
   have h1 : ∀ x, D.D (Polynomial A) x = D.D (Polynomial A) 0 := fun x => by

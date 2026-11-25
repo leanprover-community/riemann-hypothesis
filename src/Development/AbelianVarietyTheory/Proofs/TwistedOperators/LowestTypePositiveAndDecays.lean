@@ -1052,8 +1052,8 @@ theorem single_comm_Jm {a b : Fin n} (h : ε a = ε b) :
   rw [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.single_apply]
   by_cases h1 : a = i ∧ b = k
   · rcases h1 with ⟨rfl, rfl⟩
-    rw [if_pos ⟨rfl, rfl⟩, h, one_mul, mul_one]
-  · rw [if_neg h1, zero_mul, mul_zero]
+    rw [ite_eq_left ⟨rfl, rfl⟩, h, one_mul, mul_one]
+  · rw [ite_eq_right h1, zero_mul, mul_zero]
 
 theorem inK_of_skew {Y : Matrix (Fin n) (Fin n) ℂ} (h : Yᴴ = -Y) (h' : Y * Jm ε = Jm ε * Y) : inK ε Y := by
   refine ⟨?_, h'⟩
@@ -1128,7 +1128,7 @@ theorem fderiv_tau_thE {abelian₂ Λ : Fin n → ℝ} {u : V} (hτ : IsTau ε a
     split_ifs <;> simp <;> ring
   have hthE : thE ε (a, b) = -((1 / 2 : ℂ) • ((S - T) - Complex.I • (Complex.I • (S + T)))) := by
     rw [smul_smul, Complex.I_mul_I]
-    simp only [thE, Formalism.REAL.sgn, hab, if_true, Complex.ofReal_one]
+    simp only [thE, Formalism.REAL.sgn, hab, ite_true, Complex.ofReal_one]
     module
   rw [hthE, map_neg, map_smul, map_sub, map_smul]
   simp only [ContinuousLinearMap.neg_apply, ContinuousLinearMap.smul_apply,
@@ -1453,7 +1453,7 @@ theorem int_of_isWtOn {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H
     simpa using this.symm
   obtain ⟨m, hm⟩ := Complex.exp_eq_one_iff.1 e2
   refine ⟨m, ?_⟩
-  simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at hm
+  simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at hm
   have h3 : ((μ i : ℝ) : ℂ) = m := by
     refine mul_right_cancel₀ Complex.two_pi_I_ne_zero ?_
     rw [← hm]; push_cast; ring

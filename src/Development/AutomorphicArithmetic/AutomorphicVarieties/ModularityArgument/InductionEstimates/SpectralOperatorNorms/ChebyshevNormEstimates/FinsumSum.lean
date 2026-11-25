@@ -450,14 +450,14 @@ private lemma regroup {T : Type} (s : Finset T) (a : T → ℝ) (S : T → Finse
       = ∑ q ∈ (S i).image (fun ζ : ℂ => (a i, ζ)), (if a i = q.1 ∧ q.2 ∈ S i then w i * c i q.2 else 0) * f q := by
         rw [Finset.sum_image hinj]
         refine Finset.sum_congr rfl fun ζ hζ => ?_
-        rw [if_pos ⟨rfl, hζ⟩, mul_assoc]
+        rw [ite_eq_left ⟨rfl, hζ⟩, mul_assoc]
     _ = _ := by
         refine Finset.sum_subset ?_ ?_
         · intro q hq
           obtain ⟨ζ, hζ, rfl⟩ := Finset.mem_image.1 hq
           exact hP i hi ζ hζ
         · intro q _ hq
-          rw [if_neg, zero_mul]
+          rw [ite_eq_right, zero_mul]
           rintro ⟨h1, h2⟩
           exact hq (Finset.mem_image.2 ⟨q.2, h2, Prod.ext h1 rfl⟩)
 
@@ -559,7 +559,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.absX :
     refine Finset.sum_congr rfl fun i hi => ?_
     by_cases hg : good i
     · by_cases ha : a i = x
-      · simp only [hg, ha, and_self, if_true, hgood i hi hg ha, hj i hi]
+      · simp only [hg, ha, and_self, ite_true, hgood i hi hg ha, hj i hi]
       · simp [ha]
     · simp [hg, hbad i hi hg]
   have h4 : {i | act i ∧ good i ∧ a i = x} = ↑(s.filter (fun i => good i ∧ a i = x)) := by

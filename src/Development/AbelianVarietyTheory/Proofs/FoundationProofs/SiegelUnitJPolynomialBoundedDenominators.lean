@@ -159,7 +159,7 @@ theorem shift_hasQ {N : ℕ} {f : ℍ → ℂ} {a : ℕ → ℂ} (h : HasQ N f a
   rw [hz, sub_zero]
   convert h1 using 2 with n
   case e'_5 =>
-    simp only [le_add_iff_nonneg_left, zero_le, if_true, Nat.add_sub_cancel, ee]
+    simp only [le_add_iff_nonneg_left, zero_le, ite_true, Nat.add_sub_cancel, ee]
     rw [mul_assoc (a n), ← Complex.exp_add]
     congr 2
     push_cast
@@ -306,7 +306,7 @@ theorem siegel_coeff [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε)
   · obtain ⟨m, rfl⟩ := hr
     rw [hc m]
     exact hAn m
-  · push_neg at hr
+  · push Not at hr
     rw [hz r hr]
     exact zero_mem _
 

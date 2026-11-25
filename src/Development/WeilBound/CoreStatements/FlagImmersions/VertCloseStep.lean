@@ -73,7 +73,7 @@ theorem mem_divSupp_of_memZ {V W : Ideal (MRing ι)} (hV : V.IsPrime) {f g : MRi
     (hQ.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self g))) hgV hQW).ge
 
 theorem divCycle_eq_zero_of_not_memZ {V W : Ideal (MRing ι)} {f : MRing ι} (h : f ∉ W) : divCycle V f W = 0 := by
-  rw [divCycle_applyZ, if_neg fun h2 => h (mem_of_mem_divSuppZ h2)]
+  rw [divCycle_applyZ, ite_eq_right fun h2 => h (mem_of_mem_divSuppZ h2)]
 
 theorem divCycle_mulZ {V : Ideal (MRing ι)} (hV : V.IsPrime) {f g : MRing ι}
     (hf : f ∉ V) (hg : g ∉ V) (W : Ideal (MRing ι)) :
@@ -86,25 +86,25 @@ theorem divCycle_mulZ {V : Ideal (MRing ι)} (hV : V.IsPrime) {f g : MRing ι}
     have key := locLen_mul hV hf g ⟨W, hWp⟩
     have hfin := locLen_ne_top h.1
     rw [key] at hfin
-    rw [if_pos h, multAt_eqZ _ _ hWp, key]
+    rw [ite_eq_left h, multAt_eqZ _ _ hWp, key]
     by_cases hfW : f ∈ W <;> by_cases hgW : g ∈ W
-    · rw [if_pos (mem_divSupp_of_memZ hV hf h hfW), if_pos (mem_divSupp_of_memZ hV hg h hgW),
+    · rw [ite_eq_left (mem_divSupp_of_memZ hV hf h hfW), ite_eq_left (mem_divSupp_of_memZ hV hg h hgW),
         multAt_eqZ _ _ hWp, multAt_eqZ _ _ hWp, ENat.toNat_add (WithTop.add_ne_top.mp hfin).1
           (WithTop.add_ne_top.mp hfin).2, add_comm]
-    · rw [if_pos (mem_divSupp_of_memZ hV hf h hfW), if_neg fun h2 => hgW (mem_of_mem_divSuppZ h2),
+    · rw [ite_eq_left (mem_divSupp_of_memZ hV hf h hfW), ite_eq_right fun h2 => hgW (mem_of_mem_divSuppZ h2),
         multAt_eqZ _ _ hWp, locLen_quot_eq_zero _ hgW, zero_add, add_zero]
-    · rw [if_neg fun h2 => hfW (mem_of_mem_divSuppZ h2), if_pos (mem_divSupp_of_memZ hV hg h hgW),
+    · rw [ite_eq_right fun h2 => hfW (mem_of_mem_divSuppZ h2), ite_eq_left (mem_divSupp_of_memZ hV hg h hgW),
         multAt_eqZ _ _ hWp, locLen_quot_eq_zero (V := V) (g := f) _ hfW, add_zero, zero_add]
     · exact absurd (hWp.mem_or_mem (mem_of_mem_divSuppZ h)) (by tauto)
-  · rw [if_neg h, if_neg fun h2 => h (mem_divSupp_of_memZ hV hfg h2
+  · rw [ite_eq_right h, ite_eq_right fun h2 => h (mem_divSupp_of_memZ hV hfg h2
         (W.mul_mem_right _ (mem_of_mem_divSuppZ h2))),
-      if_neg fun h2 => h (mem_divSupp_of_memZ hV hfg h2 (W.mul_mem_left _ (mem_of_mem_divSuppZ h2)))]
+      ite_eq_right fun h2 => h (mem_divSupp_of_memZ hV hfg h2 (W.mul_mem_left _ (mem_of_mem_divSuppZ h2)))]
 
 theorem pow_not_memZ {V : Ideal (MRing ι)} (hV : V.IsPrime) {f : MRing ι} (hf : f ∉ V) (n : ℕ) : f ^ n ∉ V :=
   fun h => hf (hV.mem_of_pow_mem n h)
 
 theorem divCycle_oneZ (V W : Ideal (MRing ι)) : divCycle V 1 W = 0 := by
-  rw [divCycle_applyZ, if_neg]
+  rw [divCycle_applyZ, ite_eq_right]
   intro h
   exact h.1.1.1.ne_top ((Ideal.eq_top_iff_one _).2 (mem_of_mem_divSuppZ h))
 
@@ -137,11 +137,11 @@ theorem divCycle_le_of_rel {V W : Ideal (MRing ι)} (hV : V.IsPrime) {a b u : MR
     have hVW : V ≤ W := le_sup_left.trans h.1.1.2
     have haW : a ∈ W := SectionOrderAtPoint.mem_of_rel hWp (mem_of_mem_divSuppZ h) hu c (hVW hrel)
     have h' := mem_divSupp_of_memZ hV ha h haW
-    rw [divCycle_applyZ, divCycle_applyZ, if_pos h, if_pos h', multAt_eqZ _ _ hWp, multAt_eqZ _ _ hWp]
+    rw [divCycle_applyZ, divCycle_applyZ, ite_eq_left h, ite_eq_left h', multAt_eqZ _ _ hWp, multAt_eqZ _ _ hWp]
     exact ENat.toNat_le_toNat
       (SectionOrderAtPoint.locLen_le_of_rel hV ha hb ⟨W, hWp⟩ hVW hu c hrel (locLen_ne_top h.1))
       (locLen_ne_top h'.1)
-  · rw [divCycle_applyZ, if_neg h]
+  · rw [divCycle_applyZ, ite_eq_right h]
     exact Nat.zero_le _
 
 variable {Ω : Type} [Field Ω]
@@ -176,7 +176,7 @@ theorem chart_form (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y �
     refine ⟨fun k => if k = p.1 then 1 else 0, up _ _ ⟨X p, LowerBoundFree.isMultiHomog_X_single p, ?_⟩⟩
     rw [Finset.prod_eq_single p.1 (fun k _ hk => by simp [hk]) (by simp)]
     have := hc p.1
-    simp only [aeval_X, if_true, pow_one]
+    simp only [aeval_X, ite_true, pow_one]
     field_simp
   | algebraMap r =>
     exact ⟨0, up _ _ ⟨C r, LocalRep.isMultiHomog_C r, by simp⟩⟩
@@ -263,7 +263,7 @@ theorem half_bound (y : (Σ k, ι k) → Ω) (hP : (mCoordIdeal y).IsPrime) (hH 
   classical
   by_cases h : W ∈ divSupp (mCoordIdeal y) g
   swap
-  · rw [divCycle_applyZ _ _ g, if_neg h]
+  · rw [divCycle_applyZ _ _ g, ite_eq_right h]
     simp
   have hWp := h.1.1.1
   have hVW : mCoordIdeal y ≤ W := le_sup_left.trans h.1.1.2
@@ -316,7 +316,7 @@ theorem charOf_dvd {W : Ideal (MRing ι)} {n : ℕ} (h : (C (n : ℤ) : MRing ι
 theorem div_const_off {P W : Ideal (MRing ι)} {m : ℕ} (hm : 0 < m)
     (h : ¬ ((charOf W).Prime ∧ charOf W ∣ m)) : divCycle P (C (m : ℤ)) W = 0 := by
   classical
-  rw [divCycle_applyZ, if_neg]
+  rw [divCycle_applyZ, ite_eq_right]
   intro hW
   have hd := charOf_dvd (mem_of_mem_divSuppZ hW)
   refine h ⟨PB.prime_charOf_of_ne_zero hW.1.1.1 fun h0 => ?_, hd⟩
@@ -403,7 +403,7 @@ theorem div_eq_of_unit {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype 
     have := divCycle_congrZ huv W
     rwa [divCycle_mulZ hP (fun h => hu (hW'.2.1 h)) hfP, divCycle_mulZ hP (fun h => hv (hW'.2.1 h)) hgP,
       divCycle_eq_zero_of_not_memZ hu, divCycle_eq_zero_of_not_memZ hv, zero_add, zero_add] at this
-  · rw [divCycle_applyZ, divCycle_applyZ, if_neg fun h => hW (Or.inl h), if_neg fun h => hW (Or.inr h)]
+  · rw [divCycle_applyZ, divCycle_applyZ, ite_eq_right fun h => hW (Or.inl h), ite_eq_right fun h => hW (Or.inr h)]
 
 theorem exists_forms {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     (y : (Σ k, ι k) → Ω) (hB : Birational y) (hy : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0) (a : K → ℤ) {u : Ω} (hu : u ≠ 0) :

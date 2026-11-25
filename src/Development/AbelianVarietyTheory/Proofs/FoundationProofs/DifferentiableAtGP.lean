@@ -284,7 +284,7 @@ private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
     have hc : 0 < x 0 + (((n + 1 : ℕ) : ℤ) : ℚ) := by
       push_cast
       linarith [(n.cast_nonneg : (0 : ℚ) ≤ n)]
-    simp only [g, if_pos hc, hu, zpow_natCast]
+    simp only [g, ite_eq_left hc, hu, zpow_natCast]
   have hgneg : ∀ n : ℕ, g (-((n : ℤ) + 1)) = -(q ^ (n + 1) * t⁻¹ / (1 - q ^ (n + 1) * t⁻¹)) := by
     intro n
     have h2 : x 0 + ((-((n : ℤ) + 1) : ℤ) : ℚ) < 0 := by
@@ -294,7 +294,7 @@ private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
     have h4 : (_root_.GlobalTheory.Sieg.DlogOne.u x τ (-((n : ℤ) + 1)))⁻¹ = q ^ (n + 1) * t⁻¹ := by
       rw [hu, mul_inv, zpow_neg, inv_inv]
       norm_cast
-    simp only [g, if_neg h3, if_pos h2, h4]
+    simp only [g, ite_eq_right h3, ite_eq_left h2, h4]
   have hnat : HasSum (fun n : ℕ => g n) (g 0 + _root_.GlobalTheory.Sieg.DlogOne.gS q t) := by
     refine (hasSum_nat_add_iff' 1).mp ?_
     simp only [Finset.range_one, Finset.sum_singleton, Nat.cast_zero, add_sub_cancel_left]
@@ -317,10 +317,10 @@ private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
       rw [ht_def, _root_.GlobalTheory.Sieg.pt, hx0]
       simp
     have h1t : 1 - t ≠ 0 := by simpa using (hne 0).1
-    rw [if_pos hx0, if_pos hx0, ← hte, hx0]
+    rw [ite_eq_left hx0, ite_eq_left hx0, ← hte, hx0]
     field_simp
     ring
-  · rw [if_neg h.ne', if_neg h.ne']
+  · rw [ite_eq_right h.ne', ite_eq_right h.ne']
     ring
 
 open scoped UpperHalfPlane MatrixGroups Manifold in

@@ -235,10 +235,6 @@ def WhitK_k : Prop := ForAllSD fun d => d.n < d.m → d.EisAll → ∀ Φ, d.KFi
       d.s₀ (d.orb T (d.om x Φ))
 def Main_k : Prop := ForAllSD fun d => d.n < d.m → d.EisAll → ∀ Φ, d.KFin Φ → ∀ x,
   HolValueAt (fun z => d.eis (d.sec0 Φ) d.s₀ z x) d.s₀ (d.I Φ x)
-def MainOf_k : Prop :=
-  AbsThm → TAll_k → ThetaCoef_k → RDEx_k → SiegelWeilDatumProperties → FockMem_k → LiftEx_k → LocOpEx_k → LocInst_k →
-      GSplit_k → GIinv_k → GIdil_k → KFinPoly_k →
-    PolyKFin_k → SecK_k → LamBd_k → LamSing_k → Unfold_k → WhitK_k → Main_k
 def HeadOf_k : Prop := EisBL_k → SecK_k → EisStrong_k → Main_k → SWStdLt_k
 end PositivityTheory.SiegelWeilFormula
 end

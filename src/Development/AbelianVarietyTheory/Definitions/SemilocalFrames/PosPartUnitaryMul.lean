@@ -126,7 +126,7 @@ theorem gelfVal_succ (χ : Fin n → ℂ) (k : ℕ) :
       have := a.isLt
       rw [Fin.card_Ioi, Nat.cast_sub (by omega), Nat.cast_sub (by omega)]; simp
     simp only [Matrix.mulVec, dotProduct, Formalism.REAL.Amat, Matrix.of_apply, mul_one, e,
-      Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_ite_mem,
+      Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_ite_mem,
       Finset.univ_inter, Finset.sum_const, nsmul_eq_mul, hc, Formalism.QuantumDeterminants.rhoStd]
     push_cast
     ring
@@ -142,12 +142,6 @@ theorem Eword_const (ε : Fin n → Bool) (c : ℂ) (p : Fin n × Fin n) (w : Li
     rw [Formalism.REAL.Eword]
     simp only [ih q]
     simp [Formalism.REAL.Eab, Formalism.REAL.Ec, Formalism.REAL.Rd]
-
-section Smooth
-
-open scoped Matrix.Norms.Elementwise
-
-end Smooth
 
 
 open scoped MatrixOrder in

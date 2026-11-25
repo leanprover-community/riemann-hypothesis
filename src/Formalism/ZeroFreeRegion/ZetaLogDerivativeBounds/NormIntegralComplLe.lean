@@ -37,20 +37,16 @@ theorem norm_integral_compl_le (f : ℝ → ℂ) (B T : ℝ) (hB : 0 ≤ B) (hT 
 
 theorem pow_three_mul_exp_le (c s : ℝ) (hc : 0 < c) (hs : 0 ≤ s) :
     s ^ 3 * Real.exp (-(c * s / 4)) ≤ 6 * (8 / c) ^ 3 * Real.exp (-(c / 8) * s) := by
-  have hA : 0 < Real.exp (-(c / 8) * s) := Real.exp_pos _
-  have hEA : Real.exp (c * s / 8) * Real.exp (-(c / 8) * s) = 1 := by
-    rw [← Real.exp_add, show c * s / 8 + -(c / 8) * s = 0 by ring, Real.exp_zero]
-  have hsq : Real.exp (-(c * s / 4)) = Real.exp (-(c / 8) * s) ^ 2 := by
-    rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
-  have hfact : (c * s / 8) ^ 3 ≤ 6 * Real.exp (c * s / 8) := by
-    have h := Real.pow_div_factorial_le_exp (c * s / 8) (by positivity) 3
-    norm_num [Nat.factorial] at h; linarith
-  have hkey : (c * s / 8) ^ 3 * Real.exp (-(c / 8) * s) ≤ 6 := by nlinarith [mul_le_mul_of_nonneg_right hfact hA.le]
-  rw [hsq, show s ^ 3 = (8 / c) ^ 3 * (c * s / 8) ^ 3 by field_simp]
-  calc (8 / c) ^ 3 * (c * s / 8) ^ 3 * Real.exp (-(c / 8) * s) ^ 2
-      = (8 / c) ^ 3 * ((c * s / 8) ^ 3 * Real.exp (-(c / 8) * s)) * Real.exp (-(c / 8) * s) := by ring
-    _ ≤ (8 / c) ^ 3 * 6 * Real.exp (-(c / 8) * s) := by gcongr
-    _ = 6 * (8 / c) ^ 3 * Real.exp (-(c / 8) * s) := by ring
+  have h := Real.pow_div_factorial_le_exp (c * s / 8) (by positivity) 3
+  norm_num [Nat.factorial] at h
+  rw [show -(c * s / 4) = -(c / 8) * s - c * s / 8 by ring, Real.exp_sub,
+    ← mul_div_assoc, div_le_iff₀ (Real.exp_pos _)]
+  have hpow : s ^ 3 ≤ 6 * (8 / c) ^ 3 * Real.exp (c * s / 8) := by
+    field_simp
+    rw [mul_comm s c]
+    nlinarith
+  rw [mul_right_comm (6 * (8 / c) ^ 3)]
+  exact mul_le_mul_of_nonneg_right hpow (Real.exp_pos _).le
 
 theorem log_exp_add_two_bounds (c s : ℝ) (hc : 0 < c) (hs : 8 / c ≤ s) :
     1 ≤ Real.exp (c * s / 4) ∧ 1 ≤ Real.log (Real.exp (c * s / 4) + 2) ∧

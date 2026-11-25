@@ -157,7 +157,7 @@ theorem indicator_coset_scaledInt_eq_finprod : ∀ (F : Type) [Field F] [NumberF
       rw [finprod_congr h1, finprod_one]
     · rw [Set.indicator_of_notMem (show y ∉ {y | y - r ∈ scaledInt F κ a} from hy)]
       rw [mem_scaledInt] at hy
-      push_neg at hy
+      push Not at hy
       obtain ⟨i, v, hv⟩ := hy
       symm
       refine finprod_eq_zero _ v ?_ ?_

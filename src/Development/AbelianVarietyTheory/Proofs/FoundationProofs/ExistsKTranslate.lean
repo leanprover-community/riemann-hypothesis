@@ -139,7 +139,7 @@ theorem casimir_on_vector {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
     intro b a
     have h5 := congrArg (fun f : Module.End ℂ V => f e)
       (act_Eab_comm h (.inr b) (.inl a) (.inl a) (.inr b))
-    simp only [if_true, LinearMap.sub_apply, Module.End.mul_apply, h3, sub_zero, hw] at h5
+    simp only [ite_true, LinearMap.sub_apply, Module.End.mul_apply, h3, sub_zero, hw] at h5
     rw [h5, Rat.cast_sub, sub_smul]
   have h6 : ∑ b : Fin q, ∑ a : Fin p, ((Λ (.inr b) - Λ (.inl a) : ℚ) : ℂ) • e =
       ((∑ b : Fin q, ∑ a : Fin p, (Λ (.inr b) - Λ (.inl a)) : ℚ) : ℂ) • e := by
@@ -939,7 +939,7 @@ theorem weight_eq_wtK (p q n : ℕ) (hn : p + q < n) (ap : Fin p → ℕ) (am : 
     have v := e3 ⟨i.1, by omega⟩
     rw [b1 _ (by simp)] at u
     rw [d1 _ ((min_le_left _ _).trans (by rw [Fin.val_rev]; dsimp only; omega))] at v
-    simp only [shiftNu, cPair, wtH, hi, dif_pos, Fin.eta] at u v
+    simp only [shiftNu, cPair, wtH, hi, dite_eq_left, Fin.eta] at u v
     simp only [wtK]
     push_cast at u v
     linarith
@@ -951,7 +951,7 @@ theorem weight_eq_wtK (p q n : ℕ) (hn : p + q < n) (ap : Fin p → ℕ) (am : 
       rw [Fin.val_rev]; dsimp only; omega
     rw [c1 _ (by simp)] at u
     rw [a1 _ ((min_le_left _ _).trans (not_lt.1 hp))] at v
-    simp only [shiftNu, cPair, wtH, dif_neg hp, Fin.rev_rev, hr, dif_pos, Fin.eta] at u v
+    simp only [shiftNu, cPair, wtH, dite_eq_right hp, Fin.rev_rev, hr, dite_eq_left, Fin.eta] at u v
     simp only [wtK]
     push_cast at u v
     linarith
@@ -1790,7 +1790,7 @@ theorem exists_k_translate (hpq : 1 ≤ p + q) (T : GrpData p q) (σ : URep T) (
   obtain ⟨e', h, -⟩ := GlobalTheory.RealPar.pair_kEquivariant_of_lie p q T (GlobalTheory.CoverKGen.kset_gen p q hpq T) σ σ W
     (fun Y => if h : IsKC Y then (M.act Y).restrict (hW Y h) else 0) (j ∘ₗ W.subtype) (j ∘ₗ W.subtype)
     (fun Y hY hK w => by
-      simp only [dif_pos hK, and_self]
+      simp only [dite_eq_left hK, and_self]
       exact hder Y hY w) k hk e
   exact ⟨e', h⟩
 

@@ -679,10 +679,10 @@ theorem mp_model {k0 : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProduct
     simp only [Formalism.FourierDecayAlt.C2.monoP, Matrix.of_apply, hd'def]
     by_cases hai : a = W i
     · have hia : i = W a := by rw [hai, wPt_invol]
-      rw [if_pos hai, if_pos hia]
+      rw [ite_eq_left hai, ite_eq_left hia]
       all_goals (try (rw [hai, wPt_invol]))
     · have hia : ¬ i = W a := fun h => hai (by rw [h, wPt_invol])
-      rw [if_neg hai, if_neg hia, star_zero]
+      rw [ite_eq_right hai, ite_eq_right hia, star_zero]
   have hG' := good_of Ds' hδi hd' hZ'
 
   set φ : Mt (k0 + 1) r → Formalism.FourierDecayAlt.C2.Lstidx W → ℂ := phi0 Ds W with hφ
@@ -860,7 +860,7 @@ theorem Qi_spanLt (a : ℕ) (x : Fin X.B.I.n → ℂ) (hx : x ∈ spanLt (eV (X 
   induction hx using Submodule.span_induction with
   | mem x hx' =>
     obtain ⟨b, hb, rfl⟩ := hx'
-    rw [Qi_e v hl hT, Pi.smul_apply, Pi.single_apply, if_neg, smul_zero]
+    rw [Qi_e v hl hT, Pi.smul_apply, Pi.single_apply, ite_eq_right, smul_zero]
     intro h
     have := congrArg Fin.val h
     simp only [Formalism.QuantumDeterminants.eI] at this
@@ -937,7 +937,7 @@ theorem inN_iff (z : Fin X.B.I.n → ℂ) (hz : Formalism.QuantumDeterminants.in
       rw [hcol (Qi * g * Q) i j]
       have horth : ∀ b : Fin D.R.rS, hJ (X.B.I.ε v) (eV v b) (Q *ᵥ Pi.single j 1) = 0 := by
         intro b
-        rw [hJ_e v hl hT, Matrix.mulVec_mulVec, hQiQ, Matrix.one_mulVec, Pi.single_apply, if_neg, mul_zero]
+        rw [hJ_e v hl hT, Matrix.mulVec_mulVec, hQiQ, Matrix.one_mulVec, Pi.single_apply, ite_eq_right, mul_zero]
         intro h
         have := congrArg Fin.val h
         simp only [Formalism.QuantumDeterminants.esI] at this
@@ -1065,7 +1065,7 @@ theorem fam_eq (hl : lam ≠ 0) (b : Fin (D.R.rS + 1)) :
   · rw [Fin.snoc_castSucc]
     have h1 := (hT.2.2.2 c c rfl).1
     unfold Formalism.QuantumDeterminants.fvec Formalism.QuantumDeterminants.bvec
-    simp only [Fin.coe_castSucc, Fin.is_lt, dif_pos, Fin.eta]
+    simp only [Fin.coe_castSucc, Fin.is_lt, dite_eq_left, Fin.eta]
     rw [h1, smul_smul, inv_mul_cancel₀ (pow_ne_zero _ hl), one_smul]
 
 
@@ -1206,7 +1206,7 @@ theorem scal_partner : ∀ (l : List (ℕ × ℂ)) (a : ℕ), Formalism.FourierD
     · have hp : Formalism.FourierDecayAlt.D.ptPartner ((s, t) :: l) a = s + Formalism.FourierDecayAlt.D.ptPartner l (a - s) := by
         simp [Formalism.FourierDecayAlt.D.ptPartner, ha]
       rw [hp]
-      simp only [Formalism.FourierDecayAlt.D.ptScal, if_neg ha, if_neg (show ¬ (s + Formalism.FourierDecayAlt.D.ptPartner l (a - s) < s) by omega),
+      simp only [Formalism.FourierDecayAlt.D.ptScal, ite_eq_right ha, ite_eq_right (show ¬ (s + Formalism.FourierDecayAlt.D.ptPartner l (a - s) < s) by omega),
         Nat.add_sub_cancel_left]
       exact scal_partner l _
 

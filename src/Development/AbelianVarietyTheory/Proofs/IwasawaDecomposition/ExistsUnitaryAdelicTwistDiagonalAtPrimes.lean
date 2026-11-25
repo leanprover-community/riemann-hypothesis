@@ -86,7 +86,7 @@ theorem exists_tw : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
   have hval : ∀ P ∈ Q, ∀ i : Fin n, P.valuation E (dEnt n (π : E) i) = 1 := by
     intro P hP i
     unfold dEnt
-    rw [if_neg (hπ0 P hP)]
+    rw [ite_eq_right (hπ0 P hP)]
     split_ifs
     · exact le_antisymm (HeightOneSpectrum.valuation_le_one _ π)
         (not_lt.1 fun h => hπ P hP ((HeightOneSpectrum.valuation_lt_one_iff_mem _ _).1 h))
@@ -127,7 +127,7 @@ theorem exists_tw : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
     show dAut n (π : E) (Pi.single j 1) i = _
     rw [dAut_apply]
     unfold dEnt
-    rw [if_neg (hπ0 P.1 P.2)]
+    rw [ite_eq_right (hπ0 P.1 P.2)]
     by_cases h : i = j
     · subst h; simp
     · simp [h]

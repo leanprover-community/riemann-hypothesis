@@ -58,9 +58,9 @@ theorem eig_basis_of_full {x : Sp S ⟶ Xo.X} (u : ∀ τ : E →+* ℂ, Fin (Dw
     rw [hmm'_def]
     show IsEigV _ _ (if τ' = τ then tvOf hw else 0)
     by_cases h : τ' = τ
-    · rw [if_pos h, h]
+    · rw [ite_eq_left h, h]
       exact (eigAt_iff (c := c) hw τ).1 hwe
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       show ∀ b, _ = _
       intro b
       rw [map_zero, smul_zero]

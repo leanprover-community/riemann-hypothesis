@@ -94,11 +94,11 @@ private theorem exists_push (hr0 : 0 < r) {a : GL (Fin n) k → ℂ} (ha : IsLoc
     have h : ∃ u' : GL (Fin n) k, (incl u' : GL (Fin n) E) ∈ ball n r ∧ u' ^ Module.finrank k E = u ^ Module.finrank k E :=
       ⟨u, hu, rfl⟩
     have := root_conj hr (y := 1) h.choose_spec.1 hu (by simpa using h.choose_spec.2)
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     rw [inv_one, one_mul, mul_one] at this
     exact congrArg a this
   have h2 : ∀ γ, (¬ ∃ u : GL (Fin n) k, (incl u : GL (Fin n) E) ∈ ball n r ∧ u ^ Module.finrank k E = γ) → f γ = 0 :=
-    fun γ h => dif_neg h
+    fun γ h => dite_eq_right h
   refine ⟨f, sb_of_push (U := incl ⁻¹' ball (E := E) n r) (hj.isCompact_preimage (isCompact_ball hr1))
     (p := fun u => u ^ Module.finrank k E) (continuous_pow _) ?_ ha h1 h2, h1, h2⟩
   have e : (fun u : GL (Fin n) k => u ^ Module.finrank k E) '' (incl ⁻¹' ball (E := E) n r) =
@@ -616,40 +616,40 @@ theorem tyEx_of (hLev : SplitLev) (hSt : SplitStable) (hMa : SplitMatch) (hIn : 
       { S := S, q_not := hqS, unr := hunr, φ := φ, f := f, c := c, UE := UE, UF := UF
         test := fun v hv => by
           by_cases b : GM.Split E v
-          · simp only [φ, f, if_pos hv, if_pos b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_left b]
             exact ⟨(hψ' v hv b).2.1.1, (hψ' v hv b).2.1.2, (hψ' v hv b).2.2.1.1, (hψ' v hv b).2.2.1.2⟩
-          · simp only [φ, f, if_pos hv, if_neg b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_right b]
             exact ⟨(k7 v hv b).2.2.1.1, (k7 v hv b).2.2.1.2, (k7 v hv b).2.2.2.1.1, (k7 v hv b).2.2.2.1.2⟩
         lev := k6
         inv := fun v hv => by
           by_cases b : GM.Split E v
-          · simp only [φ, f, if_pos hv, if_pos b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_left b]
             exact ⟨fun y hy => (hψ' v hv b).2.2.2.1 y (((k8 v hv b).2.1 y).1 hy), (hψ' v hv b).2.2.2.2⟩
-          · simp only [φ, f, if_pos hv, if_neg b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_right b]
             exact (k7 v hv b).2.2.2.2
         mat := fun v hv => by
           by_cases b : GM.Split E v
-          · simp only [φ, f, if_pos hv, if_pos b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_left b]
             exact (hψ' v hv b).1
-          · simp only [φ, f, if_pos hv, if_neg b]
+          · simp only [φ, f, ite_eq_left hv, ite_eq_right b]
             exact (k7 v hv b).2.1
-        at_q := ⟨by simp only [φ, if_neg hqS, dif_pos], by simp only [f, if_neg hqS, if_pos], (k5 q rfl).2⟩
-        off := fun v a b => ⟨by simp only [φ, if_neg a, dif_neg b], by simp only [f, if_neg a, if_neg b], (k4 v a b).2⟩ }
+        at_q := ⟨by simp only [φ, ite_eq_right hqS, dite_eq_left], by simp only [f, ite_eq_right hqS, ite_eq_left], (k5 q rfl).2⟩
+        off := fun v a b => ⟨by simp only [φ, ite_eq_right a, dite_eq_right b], by simp only [f, ite_eq_right a, ite_eq_right b], (k4 v a b).2⟩ }
     refine ⟨L, ⟨rfl, hψ, fun v hv => ?_, fun v a b => ?_⟩, fun _ _ => ⟨rfl, rfl⟩, fun v hv => ?_, fun v a b => ?_⟩
     · obtain ⟨a, b⟩ := (hsp v).1 hv
       change φ v = GM.prodFn (Function.update (fun u : PlacesOver E v => ((J' u.1 : Set (Gw n u.1)).indicator 1 : Gw n u.1 → ℂ))
         (mk v) (ψ v)) ∧ ∀ g, g ∈ UE v ↔ ∀ u, GM.cmp u g ∈ J' u.1
-      simp only [eJ, φ, if_pos a, if_pos b, true_and]
+      simp only [eJ, φ, ite_eq_left a, ite_eq_left b, true_and]
       exact (k8 v a b).2.1
     · change φ v = GM.prodFn fun u : PlacesOver E v => (J' u.1 : Set (Gw n u.1)).indicator fun x => conj (χ' u.1 x)
       have a' : v ∈ S := a
-      simp only [eJ, eχ, φ, if_pos a', if_neg b]
+      simp only [eJ, eχ, φ, ite_eq_left a', ite_eq_right b]
     · obtain ⟨a, b⟩ := (hsp v).1 hv
       change f v = _
-      simp only [f, if_pos a, if_pos b]
+      simp only [f, ite_eq_left a, ite_eq_left b]
       rfl
     · change f v = _
-      simp only [f, if_pos a, if_neg b]
+      simp only [f, ite_eq_left a, ite_eq_right b]
 
 end UpperTheory.ConvolutionTheory.T
 end -- clump:auto

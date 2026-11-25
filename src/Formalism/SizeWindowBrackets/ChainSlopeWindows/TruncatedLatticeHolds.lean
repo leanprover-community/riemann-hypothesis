@@ -231,8 +231,8 @@ theorem card_pLen : ∀ (n : ℕ) (A B : Submodule R W), B ≤ A →
         rw [pLen_add w.1 hBC hCA, hk1 w, Finsupp.add_apply, Finsupp.single_apply]
         by_cases hw : (⟨m0, hm0⟩ : {p : Ideal R // p.IsMaximal}) = w
         · subst hw
-          rw [if_pos rfl, pLen_simple_self m0 e]; simp
-        · rw [if_neg hw, pLen_simple_ne w.1 m0 (fun h => hw (Subtype.ext h.symm))
+          rw [ite_eq_left rfl, pLen_simple_self m0 e]; simp
+        · rw [ite_eq_right hw, pLen_simple_ne w.1 m0 (fun h => hw (Subtype.ext h.symm))
             (kill_of_equiv m0 e)]; simp
       · have hz : ∀ w : {p : Ideal R // p.IsMaximal}, Nat.card (R ⧸ w.1) ^ 0 = 1 :=
           fun _ => pow_zero _
@@ -622,15 +622,6 @@ theorem covolume_free_module : LcvFree := by
     (Submodule.fg_span (Set.finite_range e)) h0 (Submodule.span_span_of_tower _ _ _)
   refine ⟨hfin0, ?_⟩
   rw [h1, hrk, lcv, hfin0, add_zero]
-
-section BaseChange
-
-open scoped Matrix
-
-variable {K V ι : Type} [Field K] [NumberField K] [StarRing K]
-  [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι]
-
-end BaseChange
 
 theorem covolume_ideal : LcvIdeal := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b j e I he hj hI

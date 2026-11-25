@@ -58,9 +58,9 @@ theorem isAdm_mul_left {w : ℂ} (hw : w ≠ 0) {F : L → ℂ} (hF : IsAdm w F)
   show F (c * x) = _
   rw [h2 _ (mul_ne_zero hc hx) (by omega), ho, neg_add, zpow_add₀ hw, mul_assoc]
 
-theorem sphFn_of_le {w : ℂ} {x : L} (hx : Valued.v x ≤ 1) : sphFn w x = 1 := if_pos hx
+theorem sphFn_of_le {w : ℂ} {x : L} (hx : Valued.v x ≤ 1) : sphFn w x = 1 := ite_eq_left hx
 
-theorem sphFn_of_lt {w : ℂ} {x : L} (hx : ¬ Valued.v x ≤ 1) : sphFn w x = w ^ (-ordL x) := if_neg hx
+theorem sphFn_of_lt {w : ℂ} {x : L} (hx : ¬ Valued.v x ≤ 1) : sphFn w x = w ^ (-ordL x) := ite_eq_right hx
 
 theorem isLocallyConstant_sphFn {ϖ : L} (hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ)) (w : ℂ) :
     IsLocallyConstant (sphFn (L := L) w) := by

@@ -35,7 +35,6 @@ private theorem UpperTheory.integralClosure_finite_of_finiteType_perfect (k : Ty
     [FaithfulSMul B L] [Algebra.EssFiniteType B L] :
     Module.Finite B (integralClosure B L) := by
   letI : Algebra (FractionRing B) L := FractionRing.liftAlgebra B L
-  haveI : IsScalarTower B (FractionRing B) L := FractionRing.isScalarTower_liftAlgebra B L
   haveI : Algebra.EssFiniteType (FractionRing B) L :=
     Algebra.EssFiniteType.of_comp B (FractionRing B) L
   let M := algebraicClosure (FractionRing B) L
@@ -44,23 +43,10 @@ private theorem UpperTheory.integralClosure_finite_of_finiteType_perfect (k : Ty
   haveI : Module.Finite B (integralClosure B M) :=
     GlobalTheory.NormFin.finite_integralClosure_of_perfectField k B (FractionRing B) M
   let g : M →ₐ[B] L := M.val.restrictScalars B
-  have hg : Function.Injective g := Subtype.val_injective
-  let φ : integralClosure B M →ₗ[B] integralClosure B L :=
-    { toFun := fun x => ⟨g x, x.2.map g⟩
-      map_add' := by
-        intro x y
-        ext
-        simp
-      map_smul' := by
-        intro r x
-        ext
-        simp }
-  refine Module.Finite.of_surjective φ ?_
-  rintro ⟨y, hy⟩
-  have hyF : IsIntegral (FractionRing B) y := hy.tower_top
-  let z : M := ⟨y, mem_algebraicClosure_iff'.mpr hyF⟩
-  have hz : IsIntegral B z := (isIntegral_algHom_iff g hg).mp hy
-  exact ⟨⟨z, hz⟩, rfl⟩
+  refine Module.Finite.of_surjective ((g.comp (integralClosure B M).val).codRestrict
+    (integralClosure B L) fun x => x.2.map g).toLinearMap fun y => ?_
+  exact ⟨⟨⟨y, mem_algebraicClosure_iff'.mpr y.2.tower_top⟩,
+    (isIntegral_algHom_iff g Subtype.val_injective).mp y.2⟩, rfl⟩
 
 theorem UpperTheory.module_finite_integralClosure_of_finiteType_perfect :
     ∀ (k : Type) [Field k] [PerfectField k] (A L : Type) [CommRing A] [Algebra k A] [Algebra.FiniteType k A] [Field L] [Algebra A L] [Algebra.EssFiniteType A L], Module.Finite A (integralClosure A L) := by

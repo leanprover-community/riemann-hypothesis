@@ -215,7 +215,7 @@ theorem valT_specMap_fromSpecStalk {X : Scheme.{0}} {y : X} {U : X.Opens} (hy : 
   have ht : ⊤ ≤ X.fromSpecStalk y ⁻¹ᵁ U := (Scheme.preimage_eq_top_of_closedPoint_mem (X.fromSpecStalk y)
     (by rwa [Scheme.fromSpecStalk_closedPoint])).ge
   have ht' : ⊤ ≤ (Spec.map φ ≫ X.fromSpecStalk y) ⁻¹ᵁ U := fun q _ => ht (x := Spec.map φ q) trivial
-  refine (dif_pos ht').trans ?_
+  refine (dite_eq_left ht').trans ?_
   have h1 : (X.fromSpecStalk y).appLE U ⊤ ht ≫ (Scheme.ΓSpecIso (X.presheaf.stalk y)).hom =
       X.presheaf.germ U y hy := by
     rw [Scheme.Hom.appLE, Scheme.fromSpecStalk_app hy]

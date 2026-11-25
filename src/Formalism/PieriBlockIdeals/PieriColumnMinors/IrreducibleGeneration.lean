@@ -185,7 +185,7 @@ theorem highestWeightDominant_holds : HWDominant := by
   intro K N q _ _ _ _ _ T B hU v μ hv0 hv a b hab
   obtain ⟨hr, hd⟩ := hv
   have h2 := LinearMap.congr_fun (hU.gl a b b a) v
-  rw [if_pos rfl, if_pos rfl] at h2
+  rw [ite_eq_left rfl, ite_eq_left rfl] at h2
   simp only [LinearMap.sub_apply, Module.End.mul_apply, hr a b hab, map_zero, sub_zero, hd a, hd b] at h2
   have hnn := lpa_nonneg hU (T b a v)
   rw [hU.adj b a v (T b a v), h2, map_sub, map_smul, map_smul, smul_eq_mul, smul_eq_mul, ← sub_mul] at hnn
@@ -253,7 +253,7 @@ theorem existsHighestWeight_holds : ExistsHW := by
     · subst hab
       exact Commute.refl _
     · have h := hT a a b b
-      rw [if_neg hab, if_neg (Ne.symm hab), sub_zero] at h
+      rw [ite_eq_right hab, ite_eq_right (Ne.symm hab), sub_zero] at h
       exact sub_eq_zero.mp h
   obtain ⟨C', hC'C, hC'ne, _, μ0, hμ0⟩ :=
     lpa_joint (fun a => T a a) (fun a b => hcomm a b) hdiag Finset.univ C
@@ -286,17 +286,17 @@ theorem existsHighestWeight_holds : ExistsHW := by
     have h3 := sub_eq_iff_eq_add.mp h2
     by_cases hca : c = a
     · rw [hca] at h3 ⊢
-      rw [if_pos rfl, if_neg hba, LinearMap.zero_apply, sub_zero] at h3
+      rw [ite_eq_left rfl, ite_eq_right hba, LinearMap.zero_apply, sub_zero] at h3
       rw [h3]
       simp only [Pi.add_apply, Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne hab.ne, sub_zero]
       module
     · by_cases hcb : c = b
       · rw [hcb] at h3 ⊢
-        rw [if_neg hba, if_pos rfl, LinearMap.zero_apply, zero_sub] at h3
+        rw [ite_eq_right hba, ite_eq_left rfl, LinearMap.zero_apply, zero_sub] at h3
         rw [h3]
         simp only [Pi.add_apply, Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne hba, add_zero]
         module
-      · rw [if_neg hca, if_neg (fun h => hcb h.symm), LinearMap.zero_apply, sub_zero, zero_add] at h3
+      · rw [ite_eq_right hca, ite_eq_right (fun h => hcb h.symm), LinearMap.zero_apply, sub_zero, zero_add] at h3
         rw [h3]
         simp only [Pi.add_apply, Pi.sub_apply, Pi.single_eq_of_ne hca, Pi.single_eq_of_ne hcb,
           add_zero, sub_zero]
@@ -439,7 +439,7 @@ theorem highest_weight_successive : StepHW := by
     rw [hcm, h1, map_neg, hprod]
     split_ifs with hba
     · subst hba
-      have h3 : ε b c z = ε b c (ε c c z) := by rw [hprod, if_pos rfl]
+      have h3 : ε b c z = ε b c (ε c c z) := by rw [hprod, ite_eq_left rfl]
       rw [h3, hzero c hac, map_zero, neg_zero]
     · rw [neg_zero]
   · intro a
@@ -452,7 +452,7 @@ theorem highest_weight_successive : StepHW := by
     by_cases hab : a = b
     · subst hab
       simp [sub_smul]
-    · rw [if_neg (Ne.symm hab)]
+    · rw [ite_eq_right (Ne.symm hab)]
       simp [hab]
 
 section Tower
@@ -492,7 +492,7 @@ theorem lp_casVal_step (κ : Fin q → ℕ) (ρ : Fin q) :
       ring
     · simp
   rw [Finset.sum_congr rfl (fun b _ => key b), Finset.sum_add_distrib, Finset.sum_ite_eq']
-  simp only [Finset.mem_univ, if_true]
+  simp only [Finset.mem_univ, ite_true]
   ring
 
 theorem lp_content_inj (κ : Fin q → ℕ) (hκ : Antitone κ) (b ρ : Fin q)
@@ -528,21 +528,21 @@ theorem lp_hw_cas (hDom : HWDominant) {T : Fin q → Fin q → Module.End K N} {
       rw [hc]
       rcases lt_trichotomy b b' with h | h | h
       · have hgl' := hgl b b' b' b
-        rw [if_pos rfl, if_pos rfl] at hgl'
+        rw [ite_eq_left rfl, ite_eq_left rfl] at hgl'
         have hA : T b b' * T b' b = T b' b * T b b' + (T b b - T b' b') := by rw [← hgl']; abel
         rw [hA, LinearMap.add_apply, Module.End.mul_apply, hup b b' h, map_zero, zero_add,
-          LinearMap.sub_apply, hdiag', hdiag', ← sub_smul, if_neg (ne_of_lt h), if_pos h, if_pos h]
+          LinearMap.sub_apply, hdiag', hdiag', ← sub_smul, ite_eq_right (ne_of_lt h), ite_eq_left h, ite_eq_left h]
         congr 1
         push_cast
         ring
       · subst h
-        rw [Module.End.mul_apply, hdiag', map_smul, hdiag', smul_smul, if_pos rfl,
-          if_neg (lt_irrefl _)]
+        rw [Module.End.mul_apply, hdiag', map_smul, hdiag', smul_smul, ite_eq_left rfl,
+          ite_eq_right (lt_irrefl _)]
         congr 1
         push_cast
         ring
-      · rw [Module.End.mul_apply, hup b' b h, map_zero, if_neg (ne_of_gt h),
-          if_neg (not_lt.mpr h.le), if_neg (not_lt.mpr h.le)]
+      · rw [Module.End.mul_apply, hup b' b h, map_zero, ite_eq_right (ne_of_gt h),
+          ite_eq_right (not_lt.mpr h.le), ite_eq_right (not_lt.mpr h.le)]
         simp
     have hIoi : ∀ b : Fin q, (∑ b' : Fin q, if b < b' then (1 : ℤ) else 0) = (q : ℤ) - 1 - (b.val : ℤ) := by
       intro b
@@ -695,8 +695,8 @@ theorem lp_claim [FiniteDimensional K N] (hCR : CompleteRed) (hDom : HWDominant)
       obtain ⟨b, hμ, hanti, hcas⟩ := lp_key hDom H j (by omega) κ (ihuniq κ hκ) v hv hv0 μ hvw
       obtain ⟨κ', hκ'⟩ : ∃ κ' : ℕ → Fin q → ℕ,
           ∀ i, κ' i = if i = j + 1 then κ j + Pi.single b 1 else κ i := ⟨_, fun _ => rfl⟩
-      have hκ'le : ∀ i ≤ j, κ' i = κ i := fun i hi => by rw [hκ', if_neg (by omega)]
-      have hκ'top : κ' (j + 1) = κ j + Pi.single b 1 := by rw [hκ', if_pos rfl]
+      have hκ'le : ∀ i ≤ j, κ' i = κ i := fun i hi => by rw [hκ', ite_eq_right (by omega)]
+      have hκ'top : κ' (j + 1) = κ j + Pi.single b 1 := by rw [hκ', ite_eq_left rfl]
       have hpath : PathTo lam2 (j + 1) κ' := by
         refine ⟨by rw [hκ'le 0 (Nat.zero_le _)]; exact hκ.1, ?_, ?_⟩
         · intro i hi
@@ -822,21 +822,21 @@ theorem lpc_Dpart_succ (EM : R → R → Module.End K M) (j : ℕ) (a b : R) :
   · rw [Finset.sum_eq_single (⟨j, h⟩ : Fin n)]
     · simp
     · intro s _ hs
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact hs (Fin.ext e)
     · intro h'
       exact absurd (Finset.mem_univ _) h'
   · apply Finset.sum_eq_zero
     intro s _
-    rw [if_neg]
+    rw [ite_eq_right]
     have := s.2
     omega
 
 theorem lpc_eps_mul (j : ℕ) (a b c d : R) :
     (epsY K n j a b * epsY K n j c d : Module.End K (Tens R P M n)) = if b = c then epsY K n j a d else 0 := by
   by_cases hj : j < n
-  · simp only [epsY, dif_pos hj]
+  · simp only [epsY, dite_eq_left hj]
     exact unitSecond_mul_unitSecond K _ a b c d
   · simp [epsY, hj]
 
@@ -887,7 +887,7 @@ theorem lpc_unitY_diag (s : Fin n) (a : R) (z : Tens R P M n) (g : Fin n → R �
 theorem lpc_eps_one [Fintype R] (j : ℕ) (hj : j < n) :
     (∑ a, epsY K n j a a : Module.End K (Tens R P M n)) = 1 := by
   refine LinearMap.ext fun z => funext fun g => ?_
-  simp only [epsY, dif_pos hj, LinearMap.sum_apply, Finset.sum_apply, lpc_unitY_diag, Module.End.one_apply]
+  simp only [epsY, dite_eq_left hj, LinearMap.sum_apply, Finset.sum_apply, lpc_unitY_diag, Module.End.one_apply]
   simp
 
 def lpc_cnt (j : ℕ) (a : R) (g : Fin n → R × P) : ℕ :=
@@ -1126,7 +1126,7 @@ theorem diagonal_transfer : DiagTransfer := by
   choose w hw using fun μ : {μ // μ ∈ c.support} => LinearMap.mem_range.mp (hin μ.1 μ.2)
   let W : K → M := fun μ => if h : μ ∈ c.support then w ⟨μ, h⟩ else 0
   have hW : ∀ μ ∈ c.support, i (W μ) = c μ := fun μ h => by
-    simp only [W, dif_pos h]
+    simp only [W, dite_eq_left h]
     exact hw ⟨μ, h⟩
   have hxsum : x = ∑ μ ∈ c.support, W μ := by
     apply hi

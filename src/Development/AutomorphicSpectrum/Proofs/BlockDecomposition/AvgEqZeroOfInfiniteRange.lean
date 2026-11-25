@@ -103,16 +103,16 @@ theorem clSum_lin {G : Type} [Group G] [TopologicalSpace G] (θ : G →* G) (K :
   have hsupp : ∀ j, (Function.support fun c : TwCl θ => if c.rep ∈ S then wt c.rep * twOrb θ K c.rep (g j) else 0).Finite :=
     fun j => hS.subset fun c hc => by
       by_contra hn
-      exact hc (if_neg hn)
+      exact hc (ite_eq_right hn)
   unfold clSum
   have hterm : ∀ c : TwCl θ, (if c.rep ∈ S then wt c.rep * twOrb θ K c.rep (fun z => ∑ j, a j * g j z) else 0) =
       ∑ j, a j * (if c.rep ∈ S then wt c.rep * twOrb θ K c.rep (g j) else 0) := by
     intro c
     by_cases hc : c.rep ∈ S
-    · simp only [if_pos hc, h _ hc, Finset.mul_sum]
+    · simp only [ite_eq_left hc, h _ hc, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       ring
-    · simp only [if_neg hc, mul_zero, Finset.sum_const_zero]
+    · simp only [ite_eq_right hc, mul_zero, Finset.sum_const_zero]
   rw [finsum_congr hterm, finsum_sum_comm _ _ fun j _ => ?_]
   · refine Finset.sum_congr rfl fun j _ => ?_
     rw [mul_finsum]

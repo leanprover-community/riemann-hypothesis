@@ -30,11 +30,6 @@ def ListTailLogSmooth.Statement : Prop :=
       (∀ i, IsSmoothPotForm A R.Yo R.r Om C₁ (th i) (u i)) →
         TailLogBound A R.Yo R.r (fun i => potForm (th i) (u i)) CE
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit
 end -- clump:auto
 end -- clump:auto

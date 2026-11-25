@@ -95,7 +95,7 @@ theorem gap_comp_swap {Ψ : Type} [DecidableEq Ψ] {N : ℕ} (τ : Ψ) (a b : Fi
   have hab : (a : ℕ) + 1 < N := hb ▸ b.2
   have hbe : (⟨(a : ℕ) + 1, hab⟩ : Fin N) = b := Fin.ext hb.symm
   have hu : gap lam (τ, a) = lam (τ, a) - lam (τ, b) := by
-    rw [gap_eq_weight_sub_next]; simp only [hab, dif_pos, hbe]
+    rw [gap_eq_weight_sub_next]; simp only [hab, dite_eq_left, hbe]
   have hsw : ∀ q : Ψ × Fin N, (lam ∘ Equiv.swap (τ, a) (τ, b)) q =
       lam q + (if q.1 = τ then (if (q.2 : ℕ) = a + 1 then 1 else 0) - (if (q.2 : ℕ) = a then 1 else 0) else 0)
         * (lam (τ, a) - lam (τ, b)) := by
@@ -311,7 +311,7 @@ theorem PositivityTheory.Xgp.t_thma_alg : ∀ (σ : Type) [Fintype σ] (D : ℕ)
     intro f hf
     have hbig : ∀ n, D + 1 ≤ n → Pl.coeff n = 0 := by
       intro n hn
-      rw [hcoeff, if_neg (by omega)]
+      rw [hcoeff, ite_eq_right (by omega)]
     rw [Finset.sum_subset (Finset.range_mono (Nat.le_add_right (Pl.natDegree + 1) (D + 1)))
         (fun n hn hn' => hf n (Polynomial.coeff_eq_zero_of_natDegree_lt (by simp at hn hn'; omega))),
       Finset.sum_subset (Finset.range_mono (Nat.le_add_left (D + 1) (Pl.natDegree + 1)))
@@ -326,11 +326,11 @@ theorem PositivityTheory.Xgp.t_thma_alg : ∀ (σ : Type) [Fintype σ] (D : ℕ)
   rw [Finset.mem_range] at hn
   rcases Nat.even_or_odd n with ⟨m, rfl⟩ | ⟨m, rfl⟩
   · have hno : ¬ Odd (m + m) := Nat.not_odd_iff_even.mpr ⟨m, rfl⟩
-    rw [if_neg hno, Odd.neg_pow ⟨m, by ring⟩]
+    rw [ite_eq_right hno, Odd.neg_pow ⟨m, by ring⟩]
     simp
   · have e1 : (2 * m + 1 + 1) / 2 = m + 1 := by omega
     have e2 : 2 * m + 1 + 1 = 2 * m + 2 := by ring
-    rw [if_pos (odd_two_mul_add_one m), e1, hcoeff, if_pos hn, e2, hPk m hn, Even.neg_pow ⟨m + 1, by ring⟩]
+    rw [ite_eq_left (odd_two_mul_add_one m), e1, hcoeff, ite_eq_left hn, e2, hPk m hn, Even.neg_pow ⟨m + 1, by ring⟩]
     have hch := succ_mul_choose_odd_eq_choose_succ_mul D m
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
     push_cast

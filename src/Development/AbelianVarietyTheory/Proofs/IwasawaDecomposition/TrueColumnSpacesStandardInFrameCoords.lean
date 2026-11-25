@@ -117,10 +117,10 @@ theorem incl_co {S S' : Formalism.BasicNotions.HSpace E} {n : ℕ} (hn : S.rank 
   · rw [Finset.sum_eq_single ⟨j.1, h⟩]
     · simp
     · intro a _ ha
-      rw [if_neg (fun h2 => ha (Fin.ext h2)), mul_zero]
+      rw [ite_eq_right (fun h2 => ha (Fin.ext h2)), mul_zero]
     · simp
   · refine Finset.sum_eq_zero fun a _ => ?_
-    rw [if_neg (fun h2 : a.1 = j.1 => h (h2 ▸ a.2)), mul_zero]
+    rw [ite_eq_right (fun h2 : a.1 = j.1 => h (h2 ▸ a.2)), mul_zero]
 
 end Gen
 

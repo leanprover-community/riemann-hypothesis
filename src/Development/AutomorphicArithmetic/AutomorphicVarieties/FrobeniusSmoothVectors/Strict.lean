@@ -347,9 +347,9 @@ theorem UpperTheory.V.Fr.st_count :
     rw [hH0]
     exact card_bot'
   have e5 : ∏ v, Nat.card (L v) = Nat.card (H1 (ρ.comp (locFam S Av v₀))) := by
-    rw [Finset.prod_eq_single v₀ (fun v _ hv => by rw [hL, if_neg hv]; exact card_bot')
+    rw [Finset.prod_eq_single v₀ (fun v _ hv => by rw [hL, ite_eq_right hv]; exact card_bot')
       (fun h => absurd (Finset.mem_univ _) h)]
-    rw [hL, if_pos rfl]
+    rw [hL, ite_eq_left rfl]
     exact Nat.card_congr Submodule.topEquiv.toEquiv
   rw [e1, e2, e3, e4, e5] at hgw
   have hapos : 0 < Nat.card (Sel ρ (locFam S Av) (continuous_locFam S Av) L) := Nat.card_pos
@@ -375,7 +375,7 @@ theorem UpperTheory.V.Fr.st_count :
     exact (Submodule.Quotient.mk_eq_zero _).2 hz
   · intro v hv
     have hm := (mem_Sel ρ (locFam S Av) (continuous_locFam S Av) L x.1).1 x.2 v
-    rw [hL, if_neg hv, Submodule.mem_bot, ← hz'] at hm
+    rw [hL, ite_eq_right hv, Submodule.mem_bot, ← hz'] at hm
     simp only [resH1, Submodule.mapQ_apply] at hm
     obtain ⟨m, hm'⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 hm)
     exact ⟨m, fun g hg => hm' ⟨g, hg⟩⟩

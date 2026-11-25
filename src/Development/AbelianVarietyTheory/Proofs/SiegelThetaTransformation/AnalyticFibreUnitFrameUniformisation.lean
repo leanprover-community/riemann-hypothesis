@@ -146,7 +146,7 @@ theorem uw_anFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : H
               obtain ⟨a, rfl⟩ := hφs v hv
               obtain ⟨hn, hp⟩ := hfrper a j z
               try dsimp only
-              rw [← hPv, if_pos hn, ← hH, ← hH]
+              rw [← hPv, ite_eq_left hn, ← hH, ← hH]
               exact hp (by simpa only [hexl] using hz) }, ?_, θ, ?_, ?_⟩
   · intro a ha
     have hM : pv (U.X k) idx x.1 (((l.M : E)⁻¹) • W.mark k a) = (l.M : ℂ)⁻¹ • Pm (W.F.t (W.ik k) a) := by

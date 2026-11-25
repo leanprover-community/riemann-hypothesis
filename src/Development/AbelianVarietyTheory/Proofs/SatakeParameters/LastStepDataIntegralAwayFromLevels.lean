@@ -153,7 +153,7 @@ theorem ftY_intOff (hc : cst.Ok) (P : rowSG Pr sel mu) (hG : P.1 ∈ Pr.vGs → 
   have hpos : 0 < qOf P.1 ^ cst.D P := pow_pos (GlobalTheory.GO.ChRoot.qOf_pos P.1) _
   unfold ftY
   by_cases hP : P.1 ∈ Pr.vGs
-  · rw [if_pos hP] at hy ⊢
+  · rw [ite_eq_left hP] at hy ⊢
     split_ifs with hη
     · refine IntOff.of_pow hpos ?_
       rw [← map_pow, psi_root hc P _ ?_, map_one]
@@ -162,7 +162,7 @@ theorem ftY_intOff (hc : cst.Ok) (P : rowSG Pr sel mu) (hG : P.1 ∈ Pr.vGs → 
       convert he.mul h1 using 1
       ring
     · simpa using (IntOff.zero : IntOff B 0)
-  · rw [if_neg hP] at hy ⊢
+  · rw [ite_eq_right hP] at hy ⊢
     split_ifs with hη
     · rw [map_mul, map_inv₀, map_pow, map_natCast]
       refine IntOff.mul ?_ (IntOff.of_pow hpos ?_)

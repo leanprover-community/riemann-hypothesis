@@ -201,13 +201,13 @@ theorem isProj_e (L : Lev g N) : IsProj L.e := by
   · ext x
     simp only [conv, Lev.e, eps]
     by_cases hx : L.Mem x
-    · rw [if_pos hx]
+    · rw [ite_eq_left hx]
       have : ∀ y : GG g N, (if L.Mem y then (L.chi y)⁻¹ / (Nat.card {u // L.Mem u} : ℂ) else 0) *
           (if L.Mem (y⁻¹ * x) then (L.chi (y⁻¹ * x))⁻¹ / (Nat.card {u // L.Mem u} : ℂ) else 0) =
           if L.Mem y then (L.chi x)⁻¹ / (Nat.card {u // L.Mem u} : ℂ) / (Nat.card {u // L.Mem u} : ℂ) else 0 := by
         intro y
         by_cases hy : L.Mem y
-        · rw [if_pos hy, if_pos hy, if_pos (mem_mul L (mem_inv L hy) hx), chi_mul L (mem_inv L hy) hx, chi_inv L hy]
+        · rw [ite_eq_left hy, ite_eq_left hy, ite_eq_left (mem_mul L (mem_inv L hy) hx), chi_mul L (mem_inv L hy) hx, chi_inv L hy]
           have := chi_ne L y
           have := chi_ne L x
           field_simp
@@ -215,7 +215,7 @@ theorem isProj_e (L : Lev g N) : IsProj L.e := by
       rw [Finset.sum_congr rfl fun y _ => this y, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul,
         ← Fintype.card_subtype, ← Nat.card_eq_fintype_card]
       field_simp
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       refine Finset.sum_eq_zero fun y _ => ?_
       by_cases hy : L.Mem y
       · have : ¬ L.Mem (y⁻¹ * x) := fun h => hx (by simpa using mem_mul L hy h)
@@ -223,7 +223,7 @@ theorem isProj_e (L : Lev g N) : IsProj L.e := by
       · simp [hy]
   · simp only [Lev.e, eps]
     by_cases hx : L.Mem x
-    · rw [if_pos hx, if_pos (mem_inv L hx), chi_inv L hx, map_div₀, map_inv₀, ← Complex.inv_eq_conj (norm_chi L x)]
+    · rw [ite_eq_left hx, ite_eq_left (mem_inv L hx), chi_inv L hx, map_div₀, map_inv₀, ← Complex.inv_eq_conj (norm_chi L x)]
       simp
     · have : ¬ L.Mem x⁻¹ := fun h => hx (by simpa using mem_inv L h)
       simp [hx, this]
@@ -308,13 +308,6 @@ theorem countAt_of_trace_eq_zero {g₁ g₂ N : ℕ} [Fact g₁.Prime] [Fact g�
     · rw [h0, zero_mul]
     · rw [h γ hγ (hu.imp (fun H => H γ h0) fun H => H γ h0), mul_zero]
   · simp
-
-section Reg
-variable (G : Type) [Group G] [Fintype G]
-
-variable {G}
-
-end Reg
 
 theorem isNilpotent_of_isUp {u : GG g N} (hu : IsUp g N u) : IsNilpotent (u.val - 1) := by
   have ht : (u.val - 1).BlockTriangular id := by

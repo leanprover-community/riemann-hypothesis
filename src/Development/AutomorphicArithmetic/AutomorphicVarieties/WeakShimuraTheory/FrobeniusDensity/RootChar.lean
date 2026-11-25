@@ -98,7 +98,7 @@ private theorem rc_princ {l : ℕ} [Fact l.Prime] (u : ℤ_[l]ˣ) : u ∈ KStar.
 
 private theorem rc_equiv {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) :
     Nonempty (KStar.TotallyRealRoots.princ l 1 ≃ₜ* Multiplicative ℤ_[l]) := by
-  refine (princZl l (KStar.TotallyRealRoots.princ l 1) ?_ (by rw [qExp, if_neg hl]) ?_).1
+  refine (princZl l (KStar.TotallyRealRoots.princ l 1) ?_ (by rw [qExp, ite_eq_right hl]) ?_).1
   · apply Subgroup.isClosed_of_isOpen
     have : (KStar.TotallyRealRoots.princ l 1 : Set ℤ_[l]ˣ) = {u : ℤ_[l]ˣ | ‖(u : ℤ_[l]) - 1‖ < 1} := Set.ext rc_princ
     rw [this]

@@ -70,15 +70,15 @@ theorem sum_rootCoef_mul [Fintype Ψ] (r : Ψ × Fin N) (f : Ψ × Fin N → ℤ
   congr 1
   · split_ifs with h
     · rw [Finset.sum_eq_single (τ, ⟨(i : ℕ) - 1, lt_of_le_of_lt (Nat.sub_le _ _) i.isLt⟩)]
-      · rw [if_pos ⟨rfl, by simp only; omega⟩]
+      · rw [ite_eq_left ⟨rfl, by simp only; omega⟩]
       · rintro ⟨τ', l⟩ - hne
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, h2⟩
         simp only at h1 h2
         subst h1
         exact hne (by simp only [Prod.mk.injEq, true_and]; ext; simp only; omega)
       · simp
-    · refine Finset.sum_eq_zero fun p _ => if_neg ?_
+    · refine Finset.sum_eq_zero fun p _ => ite_eq_right ?_
       rintro ⟨-, h2⟩
       have h2' : (p.2 : ℕ) + 1 = i := h2
       omega
@@ -94,14 +94,14 @@ theorem sum_neg_mul_rootCoef [Fintype Ψ] (lam : Ψ × Fin N → ℝ) (p : Ψ ×
     · rw [Finset.sum_eq_single (τ, ⟨(l : ℕ) + 1, h⟩)]
       · simp
       · rintro ⟨τ', m⟩ - hne
-        rw [if_neg, mul_zero]
+        rw [ite_eq_right, mul_zero]
         rintro ⟨h1, h2⟩
         simp only at h1 h2
         subst h1
         exact hne (by simp only [Prod.mk.injEq, true_and]; ext; simp only; omega)
       · simp
     · refine Finset.sum_eq_zero fun r _ => ?_
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       rintro ⟨-, h2⟩
       have := r.2.isLt
       simp only at h2

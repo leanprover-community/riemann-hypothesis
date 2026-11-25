@@ -58,11 +58,11 @@ theorem mPt_continuousAt {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (hM : M.det 
   rw [continuousAt_pi]
   rintro ⟨b, i, j⟩
   cases b
-  · simp only [mPt, Bool.false_eq_true, if_false]
+  · simp only [mPt, Bool.false_eq_true, ite_false]
     have h1 : ContinuousAt (fun N : Matrix (Fin n) (Fin n) ℂ => N⁻¹) M :=
       continuousAt_matrix_inv M (by simpa [isUnit_iff_ne_zero] using hM)
     exact (continuous_apply_apply j i).continuousAt.comp h1
-  · simp only [mPt, if_true]
+  · simp only [mPt, ite_true]
     exact (continuous_apply_apply i j).continuousAt
 
 def Rm {n : ℕ} {ι : Type} (Q : ι → ι → MvPolynomial (Bool × Fin n × Fin n) ℂ) (M : Matrix (Fin n) (Fin n) ℂ) :

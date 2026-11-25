@@ -59,7 +59,7 @@ theorem column_indicator_expansion : ExpansionCovector := by
       else xi (Fin.castLE le_rfl a) (ew w l)).det = (-1) ^ s'' * (h.det * t ^ s'' * sgnW s'') := by
     intro w
     rw [Matrix.det_succ_row _ i, Finset.sum_eq_single (Fin.last _)]
-    · simp only [Matrix.of_apply, (hew_last w (Fin.last _)).mpr rfl, if_true, mul_one,
+    · simp only [Matrix.of_apply, (hew_last w (Fin.last _)).mpr rfl, ite_true, mul_one,
         Fin.succAbove_last]
       have hsub : (Matrix.of fun a l => if a = i then (if ew w l = wI k _ w then (1 : ℂ) else 0)
           else xi (Fin.castLE le_rfl a) (ew w l)).submatrix i.succAbove Fin.castSucc =
@@ -67,12 +67,12 @@ theorem column_indicator_expansion : ExpansionCovector := by
             ((⟨i0, by omega⟩ : Fin (i0 + s'' + 1)).succAbove b).val := by
         ext a b
         simp only [Matrix.submatrix_apply, Matrix.of_apply]
-        rw [if_neg (Fin.succAbove_ne i a)]
+        rw [ite_eq_right (Fin.succAbove_ne i a)]
         simp only [ew, Fin.snoc_castSucc]
         have hb := (i.succAbove b).isLt
         have hbne : (i.succAbove b).val ≠ i0 := fun h' => Fin.succAbove_ne i b (Fin.ext h')
         have hane : (i.succAbove a).val ≠ i0 := fun h' => Fin.succAbove_ne i a (Fin.ext h')
-        rw [hxa _ _ (by simpa using hane), if_pos ⟨by rw [hfv]; omega, by rw [hfv]; exact hbne⟩, hfv]
+        rw [hxa _ _ (by simpa using hane), ite_eq_left ⟨by rw [hfv]; omega, by rw [hfv]; exact hbne⟩, hfv]
         simp [i]
       rw [hsub, third_polynomial_expansion]
       simp only [Fin.val_last]
@@ -80,7 +80,7 @@ theorem column_indicator_expansion : ExpansionCovector := by
       norm_num
     · intro j _ hj
       simp only [Matrix.of_apply]
-      rw [if_neg (fun h' => hj ((hew_last w j).mp h'))]; simp
+      rw [ite_eq_right (fun h' => hj ((hew_last w j).mp h'))]; simp
     · simp
   have hAA : AAx k (i0 + s'' + 1) E xi (i0 + s'' + 1) le_rfl u =
       ((-1) ^ s'' * (h.det * t ^ s'' * sgnW s'')) • ∑ w, herm (Hpk k _) (bvec (wI k _ w)) yb •
@@ -95,11 +95,11 @@ theorem column_indicator_expansion : ExpansionCovector := by
       else xi (Fin.castLE le_rfl a) p) (Set.range (ew w)) ?_ (ew w) (hew w) ?_, hdet w, smul_comm]
     · intro a p hp
       by_cases ha : a = i
-      · rw [if_pos ha, if_neg]; intro hpw; apply hp; exact ⟨Fin.last _, by rw [hpw]; simp [ew]⟩
-      · rw [if_neg ha]
+      · rw [ite_eq_left ha, ite_eq_right]; intro hpw; apply hp; exact ⟨Fin.last _, by rw [hpw]; simp [ew]⟩
+      · rw [ite_eq_right ha]
         have hane : a.val ≠ i0 := fun h' => ha (Fin.ext h')
         rw [hxa _ _ (by simpa using hane)]
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨hp1, hp2⟩
         apply hp
         refine ⟨Fin.castSucc ⟨if p.val < i0 then p.val else p.val - 1, by split_ifs <;> omega⟩, ?_⟩
@@ -115,7 +115,7 @@ theorem column_indicator_expansion : ExpansionCovector := by
       · rfl
     · intro a b
       have hb := b.isLt
-      rw [hxa _ _ (by simp; omega), if_pos (by simp [xR, eI]; omega)]
+      rw [hxa _ _ (by simp; omega), ite_eq_left (by simp [xR, eI]; omega)]
       unfold Zb
       simp [xR, eI]
   have hP := second_peeling_identity A k (i0 + s'') z' yb E i u hz'

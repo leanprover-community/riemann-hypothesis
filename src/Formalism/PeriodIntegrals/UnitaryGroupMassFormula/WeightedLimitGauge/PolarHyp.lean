@@ -232,7 +232,7 @@ theorem polarHyp : PolarHyp := by
         rw [hF2]; have : 0 ≤ T * ρ ^ 2 := by positivity
         linarith
       simp only [hwR]
-      rw [if_pos hle, hF2]
+      rw [ite_eq_left hle, hF2]
       congr 1; ring
     have hHF : Hh F = H ρ := by
       have h1 : Real.sqrt ((F ^ 2 - T * T') / T) = ρ := by

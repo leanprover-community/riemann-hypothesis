@@ -141,8 +141,8 @@ private theorem tsph_iff {V : Submodule ℂ (LL μ)} (hV : IsSummand μ V) (B : 
       congr 1
       funext a
       by_cases ha : a ≤ i
-      · rw [if_pos ha, if_pos (Nat.lt_succ_of_le ha), zpow_one]
-      · rw [if_neg ha, if_neg (fun h' => ha (Nat.le_of_lt_succ h')), zpow_zero])
+      · rw [ite_eq_left ha, ite_eq_left (Nat.lt_succ_of_le ha), zpow_one]
+      · rw [ite_eq_right ha, ite_eq_right (fun h' => ha (Nat.le_of_lt_succ h')), zpow_zero])
   rw [kgl_eq] at hv
   rw [Tsph, ContinuousLinearMap.smul_apply, scal, kgl_eq, hop_apply μ w _ _ (Final.GLintComm K w n) hv, ← ht]
   exact ⟨fun h' => Subtype.ext (e.trans h'), fun h' => e.symm.trans (congrArg Subtype.val h')⟩

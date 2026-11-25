@@ -151,7 +151,7 @@ theorem coset_match : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → �
         (extTo (QE I.sel (I.tup I.mu0 : Chr B.fields.F B.fields.E B.fields.K)) r.1.1).deco.1.N := by
       rw [ysAt_ys_of_eq _ _ _ hl]
       refine ⟨y, (mem_locLat _ _ _ _).2 fun P => ?_, rfl⟩
-      rw [if_pos (hGs P), _root_.zpow_neg_one, inv_inv]
+      rw [ite_eq_left (hGs P), _root_.zpow_neg_one, inv_inv]
       exact hy P.1 (hGs P)
     let q0 : PtAt B.R I.sel (I.tup I.mu0) (I.cst I.mu0) u i := ⟨(extTo _ r.1.1, Y0), hY0⟩
     have hbar : MemChart.bar q0 = MemChart.bar r := by
@@ -292,7 +292,7 @@ omit [StarRing E] in
 theorem frOf_apply {n : ℕ} {M : Matrix (Fin n) (Fin n) (𝓞 E)} (h : IsUnit (matE M).det) (v : Sp E n) :
     frOf M v = matE M *ᵥ v := by
   classical
-  rw [frOf, dif_pos h]
+  rw [frOf, dite_eq_left h]
   rfl
 
 omit [StarRing E] in
@@ -345,7 +345,7 @@ theorem exists_lift (hc : CMData F E) (n : ℕ) (Q : Finset (HeightOneSpectrum (
   let M : HeightOneSpectrum (𝓞 E) → Matrix (Fin n) (Fin n) (𝓞 E) := fun P =>
     if h : P ∈ Q then (x ⟨P, h⟩ : Matrix (Fin n) (Fin n) (𝓞 E ⧸ P.asIdeal)).map (lift P) else 1
   have hM : ∀ (P : Q) r j, M P.1 r j = lift P.1 ((x P).1 r j) := fun P r j => by
-    simp only [M, dif_pos P.2]
+    simp only [M, dite_eq_left P.2]
     rfl
   have hdet : ∀ P ∈ Q, (M P).det ∉ P.asIdeal := by
     intro P hP hmem
@@ -859,8 +859,8 @@ theorem locCQ_conj_iff_eq_one : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), 
       rw [MonoidHom.map_mul, MonoidHom.map_mul, MonoidHom.map_inv, htv, hsv, inv_one, one_mul, one_mul]
     have entry := bc_prV_entry w _ hm r j
     split_ifs with hrj
-    · exact GlobalTheory.Mem.Col2.FullDt.adAt_eq_one_of_prV P.1 (by rw [hvw, entry, if_pos hrj])
-    · exact GlobalTheory.Mem.Col2.TilX.adAt_eq_zero_of_prV P.1 _ (by rw [hvw, entry, if_neg hrj])
+    · exact GlobalTheory.Mem.Col2.FullDt.adAt_eq_one_of_prV P.1 (by rw [hvw, entry, ite_eq_left hrj])
+    · exact GlobalTheory.Mem.Col2.TilX.adAt_eq_zero_of_prV P.1 _ (by rw [hvw, entry, ite_eq_right hrj])
   constructor
   · intro hL
     funext P

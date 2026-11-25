@@ -268,7 +268,7 @@ private theorem units_ext_of_gm_id_eq {Z : Scheme.{0}} {W : Z.Opens} (u v : Γ(Z
     intro x hx
     have hx' : (𝟙 Z) x ∈ W := hx
     have e := congrArg Units.val (h x hx)
-    simp only [gm, pullU, dif_pos hx', MonoidHom.comp_apply, Units.coe_map, MonoidHom.coe_coe] at e
+    simp only [gm, pullU, dite_eq_left hx', MonoidHom.comp_apply, Units.coe_map, MonoidHom.coe_coe] at e
     exact e
   ext1
   exact (ConcreteCategory.bijective_of_isIso (Scheme.Hom.app (𝟙 Z) W)).1 key

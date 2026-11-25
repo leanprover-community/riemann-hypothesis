@@ -157,7 +157,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
       simp [RF.GlobalTheory.wt, he]
     · intro he
       refine h _ _ _ ?_
-      simp only [RF.GlobalTheory.wt, and_self, if_true]
+      simp only [RF.GlobalTheory.wt, and_self, ite_true]
       omega
   | ch g a u =>
     simp only [RF.GlobalTheory.wt]
@@ -178,7 +178,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
         intro k hk
         rw [Finset.mem_Icc] at hk
         simp only [RF.GlobalTheory.wt]
-        rw [if_pos ⟨trivial, hk⟩]
+        rw [ite_eq_left ⟨trivial, hk⟩]
       refine Finset.prod_congr_of_eq_on_inter ?_ ?_ ?_
       · intro k hk hk'
         have : e a k = 0 := by
@@ -188,7 +188,7 @@ theorem poly_eq (b : RF.GlobalTheory d) (M : Fin 2 → ZMod d → ℕ) (h : ∀ 
       · intro k _ hk
         rw [Finset.mem_Icc] at hk
         simp only [RF.GlobalTheory.wt]
-        rw [if_neg (fun h => hk h.2), pow_zero]
+        rw [ite_eq_right (fun h => hk h.2), pow_zero]
       · intro k hk _
         rw [h1 k hk, map_pow]
     · intro g' _ hg
@@ -210,7 +210,7 @@ theorem le_rows (b : RF.GlobalTheory d) (g : Fin 2) (a : ZMod d) (k : ℕ) (h : 
   | mon g' e N =>
     simp only [RF.GlobalTheory.wt] at h
     by_contra hk
-    rw [if_neg] at h
+    rw [ite_eq_right] at h
     · exact h rfl
     · rintro ⟨-, -, h3⟩
       exact hk (h3.trans (min_le_left _ _))
@@ -290,9 +290,9 @@ theorem isImgO {dd n : ℕ} (inj : Function.Injective fun x : Orb × Fin 2 × ZM
     obtain ⟨x, -, rfl⟩ := Finset.mem_image.1 (MvPolynomial.vars_rename _ _ hℓ)
     beta_reduce
     rw [hx, Finset.sum_eq_single x.2]
-    · rw [hU, if_pos rfl, one_smul]
+    · rw [hU, ite_eq_left rfl, one_smul]
     · intro w _ hw
-      rw [if_neg (fun h => hw (hi h)), zero_smul]
+      rw [ite_eq_right (fun h => hw (hi h)), zero_smul]
     · simp
   · rw [MvPolynomial.aeval_rename]
     have : ((fun ℓ : Formalism.L2.Pj.Letter Ty r n => ∑ w : WVO (Ix r tau),
@@ -301,10 +301,10 @@ theorem isImgO {dd n : ℕ} (inj : Function.Injective fun x : Orb × Fin 2 × ZM
       funext x
       simp only [Function.comp]
       rw [hx, Finset.sum_eq_single x.2]
-      · rw [if_pos rfl, map_one, one_mul]
+      · rw [ite_eq_left rfl, map_one, one_mul]
         rfl
       · intro w _ hw
-        rw [if_neg (fun h => hw (hi h)), map_zero, zero_mul]
+        rw [ite_eq_right (fun h => hw (hi h)), map_zero, zero_mul]
       · simp
     rw [this, MvPolynomial.aeval_X_left_apply]
 
@@ -327,13 +327,13 @@ theorem rename_minor {J : Fin 2 → Type} [∀ g, Fintype (J g)] (o : Orb) (X : 
     GlobalTheory.CombMinor.cMat]
   have hρ : ρ.val < N := lt_of_lt_of_le ρ.2 hN
   rw [Finset.sum_eq_single (col ⟨ρ.val, hρ⟩)]
-  · rw [ind, dite_eq_left hρ, if_pos rfl, map_one, one_mul]
+  · rw [ind, dite_eq_left hρ, ite_eq_left rfl, map_one, one_mul]
     congr 1
     simp only [Function.comp, RF.Flag.letter]
     rw [sigma_eq _ a (Fin.castLE hk i) (h1 g a (Fin.castLE hr i)) (h2 g a (Fin.castLE hr i))]
     rfl
   · intro b _ hb
-    rw [ind, dite_eq_left hρ, if_neg hb, map_zero, zero_mul]
+    rw [ind, dite_eq_left hρ, ite_eq_right hb, map_zero, zero_mul]
   · simp
 
 theorem sum_fin_gap (m i : ℕ) (f : ℕ → ℕ) :
@@ -440,18 +440,18 @@ theorem prod_mem [Fintype Ty] (O : Subring C) (cc : Ty → Ty) (isX : Ty → Pro
       · rw [Fintype.sum_sigma, Finset.sum_eq_single s]
         · simp
         · intro s' _ hs
-          refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+          refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
           have h3 : ((o, g, s') : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
           simpa using h3
         · simp
       · intro g' _ hs
-        refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+        refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
         have h3 : ((o, g', k.1) : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
         simp only [Prod.mk.injEq] at h3
         exact h3.2.1
       · simp
     · intro o' _ hs
-      refine Finset.sum_eq_zero fun k _ => if_neg fun h => hs ?_
+      refine Finset.sum_eq_zero fun k _ => ite_eq_right fun h => hs ?_
       have h3 : ((o', k.2.1, k.2.2.1) : Orb × Fin 2 × ZMod d) = (o, g, s) := inj h.1
       simp only [Prod.mk.injEq] at h3
       exact h3.1
@@ -670,7 +670,7 @@ theorem van_h {n : ℕ} (j : Fin n) {b : Fin dd → PS C n dd} (hb : Zc b) :
   rintro ⟨s, x⟩ hs ν hν
   obtain rfl : s = 0 := hs
   show coeff ν (X (j, x) : PS C n dd) = 0
-  rw [coeff_X, if_neg]
+  rw [coeff_X, ite_eq_right]
   rintro rfl
   exact hν (j, x) (by simp) rfl
 
@@ -1198,7 +1198,7 @@ theorem deriv_genVec {n : ℕ} (b : Fin n) (u : Fin dd → C) (co : WVO I → C)
       by_cases h : ρ = b'
       · subst h
         simp [smul_eq_C_mul]
-      · rw [pderiv_X_of_ne (by simp [Ne.symm h]), if_neg h, smul_zero]
+      · rw [pderiv_X_of_ne (by simp [Ne.symm h]), ite_eq_right h, smul_zero]
     · intro w' _ hw'
       rw [Derivation.map_smul, pderiv_X_of_ne (by simp [hw']), smul_zero]
     · simp
@@ -1353,7 +1353,7 @@ theorem supply_pairs : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory.ChartRes
   refine RF.blkAdm _ F Finset.univ _ (fun o _ => hdich o) (fun _ _ => hj) fun o _ g s q hq => ?_
   rw [hrk]
   by_contra hc
-  exact hq (by unfold gap; rw [if_neg fun h => hc h.2])
+  exact hq (by unfold gap; rw [ite_eq_right fun h => hc h.2])
 
 end GlobalTheory.RowAt
 end -- clump:auto

@@ -947,7 +947,7 @@ theorem ε_ne_one : AI.ε ≠ 1 := by
   let c : OC l → OC l := fun μ => if h : μ ∈ s then Classical.choose (hfac μ h) else 0
   have hc : ∀ μ ∈ s, 1 - μ = (1 - AI.ζ 2) * c μ := by
     intro μ hμ
-    simp only [c, dif_pos hμ]
+    simp only [c, dite_eq_left hμ]
     exact Classical.choose_spec (hfac μ hμ)
   rw [Finset.prod_congr rfl hc, Finset.prod_mul_distrib, Finset.prod_const] at hev
   have hcard : s.card = l * (l - 1) := by

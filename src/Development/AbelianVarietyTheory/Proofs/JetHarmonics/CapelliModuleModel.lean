@@ -299,7 +299,7 @@ theorem capelli_module_model : ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGrou
     congr 1
     exact Finset.prod_congr rfl fun s _ => by ring
   · intro c hc
-    simp only [mulOp, dif_pos hc]
+    simp only [mulOp, dite_eq_left hc]
     refine ⟨fun v g hg => ev_M isOpen_univ (smooth_iff.2 hc) v (mem_lev.2 hg), fun a b v g hg => ?_⟩
     have := ev_EM (i := 0) isOpen_univ (c0 a) (c0 b) (smooth_iff.2 hc) v (mem_lev.2 hg)
     rw [position_level_zero_coord, position_level_zero_coord, ← ev_Eu a b v g hg] at this

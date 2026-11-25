@@ -38,7 +38,7 @@ theorem sum_single {M : Type*} [AddCommGroup M] [Module ℂ M] {m N : ℕ} (P : 
     (∑ c : Fin m → Fin N, if P c then (Matrix.of fun a l => X a (c l)).det • F c else 0) =
       (Matrix.of fun a l => X a (e l)).det • F e := by
   rw [Finset.sum_eq_single e]
-  · rw [if_pos he]
+  · rw [ite_eq_left he]
   · intro c _ hc
     split_ifs with hP
     · by_cases hS : ∀ l, c l ∈ S

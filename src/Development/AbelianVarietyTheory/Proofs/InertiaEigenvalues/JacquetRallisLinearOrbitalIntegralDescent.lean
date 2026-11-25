@@ -567,12 +567,12 @@ theorem eta_inv_eq {F : Type} [NormedField F] (x : F) : eta x⁻¹ = eta x := by
       exact ⟨y⁻¹, by rw [norm_inv, norm_inv, inv_pow, hy]⟩
   unfold eta
   by_cases h : ∃ y : F, ‖x‖ = ‖y‖ ^ 2
-  · rw [if_pos (key.mpr h), if_pos h]
-  · rw [if_neg (fun h' => h (key.mp h')), if_neg h]
+  · rw [ite_eq_left (key.mpr h), ite_eq_left h]
+  · rw [ite_eq_right (fun h' => h (key.mp h')), ite_eq_right h]
 
 theorem eta_neg_one_pow {F : Type} [NormedField F] (r : ℕ) : eta ((-1 : F) ^ r) = 1 := by
   unfold eta
-  rw [if_pos]
+  rw [ite_eq_left]
   exact ⟨1, by simp⟩
 
 variable {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
@@ -958,7 +958,7 @@ theorem valuationParitySign_mul_self {F : Type} [NormedField F] (x : F) : eta x 
   unfold eta; split_ifs <;> norm_num
 
 theorem valuationParitySign_one {F : Type} [NormedField F] : eta (1 : F) = 1 := by
-  unfold eta; rw [if_pos ⟨1, by simp⟩]
+  unfold eta; rw [ite_eq_left ⟨1, by simp⟩]
 
 theorem desc_unit_eq {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E]
     [StarRing E] [Unram F E] (A : Et F E) {r : ℕ} {τ : A.K} {p : Fin r → F} (hG : A.IsGen τ p) (lam : F)
@@ -1194,7 +1194,7 @@ theorem pi_selfDual (F E : Type) [NontriviallyNormedField F] [NontriviallyNormed
         · simp [Pi.single_eq_of_ne hj]
       have h2 := h _ hx
       have e : Pi.single i (x0 * (y i)⁻¹) ⬝ᵥ y = x0 := by
-        simp only [dotProduct, Pi.single_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        simp only [dotProduct, Pi.single_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
         rw [mul_assoc, inv_mul_cancel₀ hyi, mul_one]
       rw [e] at h2
       exact hx0 h2

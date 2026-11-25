@@ -195,7 +195,7 @@ theorem lR_last_ge (Tp : ParamsT D L P) (hK : DV.KapDef D) {j : ℕ} (hj : InR D
   show Tp.TO ≤ ofGaps (lGapP D (kaR Tp hK j) Tp.TO Tp.nWn τ) i + 1
   rw [ofGaps_last _ _ hn]
   unfold lGapP
-  rw [if_neg hn]
+  rw [ite_eq_right hn]
   have hp : (0 : ℤ) < (WeightAlgebra.Tp D j Tp.TO : ℤ) := by unfold WeightAlgebra.Tp; push_cast; omega
   rw [Int.fdiv_eq_ediv_of_nonneg _ hp.le]
   have h1 : ((Tp.Dp : ℤ) + 2) * Tp.nWn + 2 * D.R.r ≤ Tp.TO := by exact_mod_cast Tp.TO_nW

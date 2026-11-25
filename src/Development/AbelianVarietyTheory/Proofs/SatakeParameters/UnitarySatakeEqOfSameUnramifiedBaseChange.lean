@@ -196,7 +196,7 @@ theorem eq_of_invariant (m : ℕ) (f : (Fin m → ℂ) → ℂ)
           simp [hj, h6]
         · simp [hij]
   have := key Finset.univ
-  simp only [Finset.mem_univ, if_true] at this
+  simp only [Finset.mem_univ, ite_true] at this
   rw [← (hf α).1 π, ← this]
 
 theorem satU_eq_of_ubc_eq : ∀ (K : Type) [Field K] [Valued K (WithZero (Multiplicative ℤ))] [CompleteSpace K] (ϖ : K)

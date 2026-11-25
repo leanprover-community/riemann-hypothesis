@@ -254,9 +254,9 @@ theorem regularised_eq_regMax_near (R : RegChartData A) {η : Fin R.N → X → 
     have := mem_iInter.1 hy j
     constructor
     · intro h
-      rwa [if_pos h] at this
+      rwa [ite_eq_left h] at this
     · intro h
-      rw [if_neg h] at this
+      rw [ite_eq_right h] at this
       simpa only [mem_compl_iff, mem_union, not_or] using this
   refine ⟨N, hNo, hx₀, fun j hj y hy => (hyN y hy j).1 hj, ?_⟩
   intro ρ K t ε hε hcmp y hyy
@@ -286,7 +286,7 @@ theorem eventually_trunc_eq (R : RegChartData A) {Kt : ℝ → ℝ} (hK : Tendst
   filter_upwards [hK.eventually_ge_atTop (-B)] with t ht y hy
   have h1 : B ≤ R.u i y := hB ⟨y, hy, rfl⟩
   have hyn : y ∉ coordDiv (R.S i) := (hQ hy).2
-  simp only [RegChartData.trunc, limsupExt, if_neg hyn]
+  simp only [RegChartData.trunc, limsupExt, ite_eq_right hyn]
   exact max_eq_left (by linarith)
 
 theorem arg_C2_on_compact (R : RegChartData A) (ρ : Mollifier D) {η : Fin R.N → X → ℝ} {Cη : ℝ}

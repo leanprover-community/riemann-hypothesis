@@ -28,10 +28,10 @@ theorem analytic_minorIJ {m N : ℕ} {V : Set (Fin m → ℂ)} {h : (Fin m → �
     AnalyticOnNhd ℂ (fun u => minorIJ (h u) I J) V := by
   unfold minorIJ
   by_cases e : I.card = J.card
-  · simp only [dif_pos e, Matrix.det_apply', Matrix.submatrix_apply]
+  · simp only [dite_eq_left e, Matrix.det_apply', Matrix.submatrix_apply]
     refine Finset.analyticOnNhd_fun_sum _ fun σ _ => ?_
     exact analyticOnNhd_const.mul (Finset.analyticOnNhd_fun_prod _ fun i _ => hh _ _)
-  · simp only [dif_neg e]
+  · simp only [dite_eq_right e]
     exact analyticOnNhd_const
 
 end GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.DensR
@@ -53,9 +53,9 @@ theorem dens_r : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (�
     intro m V bp hh hV hc ha hm hhan _ q
     have hval := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.bvec_val_analytic K ι Φ y Ψ N j M n BM l m V bp hV hc ha hm
     by_cases hk : ∀ p, M.blk p ≠ some q.1
-    · simp only [FC.flagPt, dif_pos hk]
+    · simp only [FC.flagPt, dite_eq_left hk]
       exact hval.1 _
-    · simp only [FC.flagPt, dif_neg hk]
+    · simp only [FC.flagPt, dite_eq_right hk]
       refine Finset.analyticOnNhd_fun_sum _ fun I _ => ?_
       refine (hval.2 _ fun b hb => ((hgood b hb).2.1.2.1 q I).1).mul ?_
       exact analytic_minorIJ (fun r s => hhan _ r s) _ _

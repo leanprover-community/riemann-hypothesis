@@ -64,8 +64,8 @@ theorem weil_gen {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
   have hs : ∀ Y, (∃ g : HA (Fv F v) σ J, g • X0r = Y) → s Y • X0r = Y := by
     intro Y hY
     by_cases hA : Y ∈ A
-    · simp only [s, dif_pos hA]; exact hA.choose_spec.2
-    · simp only [s, dif_neg hA, dif_pos hY]; exact hY.choose_spec
+    · simp only [s, dite_eq_left hA]; exact hA.choose_spec.2
+    · simp only [s, dite_eq_right hA, dite_eq_left hY]; exact hY.choose_spec
   have hf : Measurable (C.indicator (1 : HA (Fv F v) σ J → ENNReal)) := measurable_one.indicator hCm
   have key := hc.2 _ hf s hs
   have hL : ∫⁻ g, C.indicator (1 : HA (Fv F v) σ J → ENNReal) g ∂μG = μG C := lintegral_indicator_one hCm
@@ -76,7 +76,7 @@ theorem weil_gen {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
     by_cases hA : Y ∈ A
     · rw [Set.indicator_of_mem hA]
       have hk : hA.choose ∈ C := hA.choose_spec.1
-      have hsY : s Y = hA.choose := by simp only [s, dif_pos hA]
+      have hsY : s Y = hA.choose := by simp only [s, dite_eq_left hA]
       rw [← lintegral_indicator_one hDm]
       congr 1
       funext h'

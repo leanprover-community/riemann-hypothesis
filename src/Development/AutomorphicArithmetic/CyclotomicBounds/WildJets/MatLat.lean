@@ -218,7 +218,7 @@ private theorem lcb_mem_colLat_one (x : Fin n → K) :
     have : x = ∑ j, r j • fun a => ((1 : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) a j := by
       funext a
       simp only [Finset.sum_apply, Pi.smul_apply, Units.val_one, Matrix.one_apply, Algebra.smul_def, mul_ite, mul_zero,
-        mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, hr]
+        mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, hr]
     rw [this]
     exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 

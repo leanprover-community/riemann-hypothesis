@@ -550,8 +550,8 @@ theorem avgCondExp_annihilator (H : Subgroup (ZMod N)ˣ) :
       intro t ht
       have := filt_mem_ann l (Finset.mem_range.mp ht).le ψ
       by_cases h : t < condExp l ψ
-      · rw [if_neg (by rw [this]; omega), if_pos h, sub_zero]
-      · rw [if_pos (by rw [this]; omega), if_neg h, sub_self]
+      · rw [ite_eq_right (by rw [this]; omega), ite_eq_left h, sub_zero]
+      · rw [ite_eq_left (by rw [this]; omega), ite_eq_right h, sub_self]
     rw [Finset.sum_congr rfl h1, Finset.sum_boole]
     have : (Finset.range (N.factorization l)).filter (fun t => t < condExp l ψ) =
         Finset.range (condExp l ψ) := by
@@ -709,11 +709,11 @@ theorem padicValNat_absNorm_one_sub {K : Type*} [Field K] [NumberField K] (l : �
       by_cases hpl : p = l
       · subst hpl
         rw [Nat.padicValNat_def, Nat.Prime.multiplicity_self, rootWeight,
-          if_pos ⟨hne, j + 1, rfl⟩]
+          ite_eq_left ⟨hne, j + 1, rfl⟩]
         have ht : ((p ^ (j + 1)).totient : ℚ) ≠ 0 := by
           exact_mod_cast (Nat.totient_pos.mpr (by positivity)).ne'
         rw [Nat.cast_one, mul_one_div, div_self ht]
-      · rw [Nat.padicValNat_def, multiplicity_primes (Ne.symm hpl), rootWeight, if_neg]
+      · rw [Nat.padicValNat_def, multiplicity_primes (Ne.symm hpl), rootWeight, ite_eq_right]
         · simp
         · rintro ⟨-, s, hs⟩
           apply hpl
@@ -731,7 +731,7 @@ theorem padicValNat_absNorm_one_sub {K : Type*} [Field K] [NumberField K] (l : �
         · rw [pow_zero] at hj
           omega
         · exact hpp ⟨p, j, hp, hj.symm⟩
-      rw [h1, rootWeight, if_neg]
+      rw [h1, rootWeight, ite_eq_right]
       · simp [_root_.Nat.padicValNat_def (n := 1)]
       · rintro ⟨-, s, hs⟩
         rcases s with _ | s

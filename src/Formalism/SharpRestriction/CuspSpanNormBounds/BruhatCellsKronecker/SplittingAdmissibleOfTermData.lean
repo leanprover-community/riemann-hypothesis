@@ -73,12 +73,6 @@ theorem tie_X_le_ker {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpa
 
 end Packets
 
-section Fam
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Fam
-
 end Formalism.MainNotions.BridgeLemma
 
 end

@@ -86,7 +86,7 @@ private theorem e2_of_not (y : CC F 2) {a b d : (NE κ)ᵒᵖ} (φ : a ⟶ b) (�
 private theorem e2_of_lt (y : CC F 2) (t : {s : Finset κ // s.card = 2 + 1}) {a b : (NE κ)ᵒᵖ} (φ : a ⟶ b)
     (ψ : b ⟶ ne t.1 (card_nonempty t)) (h₁ : mn (ne t.1 (card_nonempty t)) < mn b) (h₂ : mn b < mn a) :
     e2 F y a b _ φ ψ = - y t := by
-  simp only [e2, LinearMap.pi_apply, dif_pos (And.intro h₁ h₂), LinearMap.neg_apply,
+  simp only [e2, LinearMap.pi_apply, dite_eq_left (And.intro h₁ h₂), LinearMap.neg_apply,
     LinearMap.comp_apply, LinearMap.proj_apply, AlgHom.toLinearMap_apply]
   congr 1
   exact mp_homOf_eq F y ⟨_, card_three h₁ h₂⟩ t

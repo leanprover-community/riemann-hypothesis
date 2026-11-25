@@ -227,16 +227,16 @@ theorem cell_bij {α β : Type} [Fintype α] [LinearOrder α] [Fintype β] [Line
       Nonempty ((cellFunctor f g (piTensor ρ)).Equiv (piTensor fun j => ρ (e j))) := by
   have hrz : ∀ i j, j ≠ e.symm i → b.1 i j = 0 := by
     intro i j hj
-    rw [hb, if_neg fun h => hj (by rw [← h, Equiv.symm_apply_apply])]
+    rw [hb, ite_eq_right fun h => hj (by rw [← h, Equiv.symm_apply_apply])]
   have hcz : ∀ j i, i ≠ e j → b.1 i j = 0 := by
     intro j i hi
-    rw [hb, if_neg fun h => hi h.symm]
+    rw [hb, ite_eq_right fun h => hi h.symm]
   have hrf : ∀ i, b.1 i (e.symm i) = d i := by
     intro i
-    rw [hb, if_pos (e.apply_symm_apply i)]
+    rw [hb, ite_eq_left (e.apply_symm_apply i)]
   have hcf : ∀ j, b.1 (e j) j = d (e j) := by
     intro j
-    rw [hb, if_pos rfl]
+    rw [hb, ite_eq_left rfl]
   let f : ∀ i, (Σ j, Fin (b.1 i j)) ≃ Fin (d i) := fun i =>
     GlobalTheory.OneBlockCell.valEquiv (e.symm i) (hrf i) (fun j hj => hrz i j hj)
   let g : ∀ j, (Σ i, Fin (b.1 i j)) ≃ Fin (d (e j)) := fun j =>
@@ -384,7 +384,7 @@ def IsPermCell {l c : ℕ} (x : Fin l → IrrGL (k := k)) (y : Fin c → IrrGL (
 def permMatrix {l c : ℕ} (x : Fin l → IrrGL (k := k)) (y : Fin c → IrrGL (k := k)) (e : Fin c ≃ Fin l)
     (h : ∀ a, y a = x (e a)) : SizeMatrix (fun i => Fin (x i).1) (fun j => Fin (y j).1) :=
   ⟨fun i j => if e j = i then (x i).1 else 0, fun i => by
-    rw [Finset.sum_eq_single (e.symm i) (fun j _ hj => if_neg fun h' => hj (by rw [← h', e.symm_apply_apply]))
+    rw [Finset.sum_eq_single (e.symm i) (fun j _ hj => ite_eq_right fun h' => hj (by rw [← h', e.symm_apply_apply]))
       (by simp)]
     simp, fun j => by
     rw [Finset.sum_ite_eq]
@@ -425,9 +425,9 @@ theorem card_permCell {l c : ℕ} (x : Fin l → IrrGL (k := k)) (y : Fin c → 
   · intro e he e' he' H
     refine Equiv.ext fun j => ?_
     have h2 := congrArg (fun b : SizeMatrix (fun i => Fin (x i).1) (fun j => Fin (y j).1) => b.1 (e j) j) H
-    simp only [permMatrix, if_true] at h2
+    simp only [permMatrix, ite_true] at h2
     by_contra hne
-    rw [if_neg (Ne.symm hne)] at h2
+    rw [ite_eq_right (Ne.symm hne)] at h2
     exact (hxc (e j)).1.ne' h2
   · intro b hb
     obtain ⟨e, he, hb⟩ := (Finset.mem_filter.1 hb).2

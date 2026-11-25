@@ -94,9 +94,9 @@ theorem glue_holds_var : Glue := by
       LocConcl I g r e f z Rf.z0 v := fun v hv => hL I g r k e f z Rf hH v hv
   let loc : ∀ v : HeightOneSpectrum (𝓞 I.F), GL (Fin I.n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v ⊗[I.F] I.E) :=
     fun v => if hv : (g : 𝓞 I.F) ∈ v.asIdeal then Classical.choose (hloc v hv) else 1
-  have hloc1 : ∀ v, (g : 𝓞 I.F) ∉ v.asIdeal → loc v = 1 := fun v hv => dif_neg hv
+  have hloc1 : ∀ v, (g : 𝓞 I.F) ∉ v.asIdeal → loc v = 1 := fun v hv => dite_eq_right hv
   have hspec : ∀ v (hv : (g : 𝓞 I.F) ∈ v.asIdeal), loc v = Classical.choose (hloc v hv) :=
-    fun v hv => dif_pos hv
+    fun v hv => dite_eq_left hv
   have hlocUK : ∀ v, loc v ∈ Uv I v ∧ loc v ∈ Kv I v := by
     intro v
     by_cases hv : (g : 𝓞 I.F) ∈ v.asIdeal
@@ -126,8 +126,8 @@ theorem glue_holds_var : Glue := by
     intro w
     rw [matV_listProd I loc Y hY1 hY2 _ (Finset.nodup_toList _) w]
     by_cases hw : (g : 𝓞 I.F) ∈ w.asIdeal
-    · rw [if_pos (by simpa using hw)]
-    · rw [if_neg (by simpa using hw), hloc1 w hw]
+    · rw [ite_eq_left (by simpa using hw)]
+    · rw [ite_eq_right (by simpa using hw), hloc1 w hw]
   have hxm : ∀ v, (I.fmat x).map (PI.FinKW.psiV I v).toRingHom =
       ((loc v : GL (Fin I.n) _) : Matrix (Fin I.n) (Fin I.n) _) := by
     intro v

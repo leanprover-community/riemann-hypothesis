@@ -452,12 +452,12 @@ theorem level_congruence_typed_places : LevelCongruenceTypedPlaces := by
     rw [Finset.sum_congr rfl (fun p _ => hs p)]
     by_cases hv : v ∈ typSet X.B.I.F (D.host.g 0) (D.host.g 1)
     · rw [Finset.sum_eq_single (⟨v, hv⟩ : TypX X)]
-      · rw [if_pos rfl, one_mul, ← heq ⟨v, hv⟩, sub_self]
+      · rw [ite_eq_left rfl, one_mul, ← heq ⟨v, hv⟩, sub_self]
       · intro p _ hp
-        rw [if_neg (fun h => hp (Subtype.ext h.symm)), zero_mul]
+        rw [ite_eq_right (fun h => hp (Subtype.ext h.symm)), zero_mul]
       · intro h
         exact absurd (Finset.mem_univ _) h
-    · rw [Finset.sum_eq_zero (fun p _ => by rw [if_neg (fun h => hv (by rw [h]; exact p.2)), zero_mul])]
+    · rw [Finset.sum_eq_zero (fun p _ => by rw [ite_eq_right (fun h => hv (by rw [h]; exact p.2)), zero_mul])]
       rw [hO v hv]
       have : ((HA.mat (Fv X.B.I.F v) X.B.I.cm.sig X.B.I.J (1 : HA (Fv X.B.I.F v) X.B.I.cm.sig X.B.I.J) :
           GL (Fin X.B.I.n) _) : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Fv X.B.I.F v ⊗[X.B.I.F] X.B.I.E)) = 1 := rfl

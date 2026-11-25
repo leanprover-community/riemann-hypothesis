@@ -90,10 +90,10 @@ theorem exists_C_mul_X_pow_mem {R Ω σ : Type*} [CommRing R] [Field Ω] [IsAlgC
         · rw [Finset.sum_eq_single (⟨c, hc⟩ : n)]
           · simp
           · intro a _ ha
-            rw [coeff_monomial, if_neg fun h => ha (Subtype.ext h)]
+            rw [coeff_monomial, ite_eq_right fun h => ha (Subtype.ext h)]
           · simp
         · refine Finset.sum_eq_zero fun a _ => ?_
-          rw [coeff_monomial, if_neg fun h : a.1 = c => hc (h ▸ a.2)]
+          rw [coeff_monomial, ite_eq_right fun h : a.1 = c => hc (h ▸ a.2)]
       change L _ ∈ I
       rw [this]
       exact homogeneousComponent_mem_of_mem hI hg d

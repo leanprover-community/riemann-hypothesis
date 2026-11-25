@@ -588,7 +588,7 @@ theorem exists_arc_secZ' [Algebra c.F ℂ⸨X⸩]
   have := hT' w hw.2.1 yw hyw F hF.1
   rw [e1] at this
   convert this using 1
-  exact dif_pos hxw
+  exact dite_eq_left hxw
 
 end SecZ
 
@@ -641,7 +641,7 @@ theorem tendsto_dirichlet {ι : Type*} (A : ι → ℂ) (a : ι → ℝ) (F : �
       by_cases hz : a i = 0
       · simp [hz]
       have hp : 0 < a i := lt_of_le_of_ne (ha i hi) (Ne.symm hz)
-      rw [if_neg hz]
+      rw [ite_eq_right hz]
       have h1 : Tendsto (fun t : ℝ => Real.exp (-(a i * t))) atTop (𝓝 0) :=
         Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.const_mul_atTop hp)
       have h2 := ((Complex.continuous_ofReal.tendsto 0).comp h1).const_mul (A i)

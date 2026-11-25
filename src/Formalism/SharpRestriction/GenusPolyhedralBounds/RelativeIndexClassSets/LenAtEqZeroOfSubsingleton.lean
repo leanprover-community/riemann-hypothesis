@@ -90,26 +90,26 @@ theorem rLa_tsum_split {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt 
           (Formalism.MainNotions.Gaps.SizeBoundsAlt.gaussC (B.Mlat j ka) G.zc la : ℝ) * X.lN la + lenQ G CRm T c la * X.lN la := by
       funext la
       unfold rLa lenQ
-      rw [if_pos hj]
+      rw [ite_eq_left hj]
       ring
     have h := (((hI.hasSum.mul_left (Nat.choose (T - 1) (WeightFamilies.dimY D j) : ℝ)).add
       ((hN hj).hasSum.mul_left ((Nat.choose (T - 1) (WeightFamilies.dimY D j) : ℝ) *
         ((T : ℝ) * (max 0 c / (2 * (G.iet : ℝ))))))).add hC.hasSum).add hQ.hasSum
     rw [e]
     refine ⟨h.summable, h.tsum_eq.trans ?_⟩
-    rw [if_pos hj]
+    rw [ite_eq_left hj]
     ring
   · have e : (fun la => rLa (Qf la) CRm T c * X.lN la) = fun la =>
         (Nat.choose (T - 1) (WeightFamilies.dimY D j) : ℝ) * (((Qf la).Ila.toNat : ℝ) * X.lN la) +
           (Formalism.MainNotions.Gaps.SizeBoundsAlt.gaussC (B.Mlat j ka) G.zc la : ℝ) * X.lN la + lenQ G CRm T c la * X.lN la := by
       funext la
       unfold rLa lenQ
-      rw [if_neg hj]
+      rw [ite_eq_right hj]
       ring
     have h := ((hI.hasSum.mul_left (Nat.choose (T - 1) (WeightFamilies.dimY D j) : ℝ)).add hC.hasSum).add hQ.hasSum
     rw [e]
     refine ⟨h.summable, h.tsum_eq.trans ?_⟩
-    rw [if_neg hj]
+    rw [ite_eq_right hj]
     ring
 
 theorem lenQ_tsum_of_ge {j : ℕ} {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G : GlobalFamilyData X ka wL wF) (hj : D.R.m ≤ j)

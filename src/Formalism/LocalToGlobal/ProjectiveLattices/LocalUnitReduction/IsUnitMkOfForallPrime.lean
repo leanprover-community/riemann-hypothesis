@@ -156,7 +156,7 @@ theorem mem_of_forall_sup_ker [Fintype ι] (hinj : ∀ f : Fr, (∀ c, φ c f = 
     show (∏ c, t c) * (j + k0) ∈ J
     rw [mul_add, hTk0, add_zero]
     exact J.mul_mem_left _ hj
-  · push_neg at h0
+  · push Not at h0
     have hT0 : ∏ c, t c = 0 := hinj _ fun c => hTk c (h0 c)
     exact hTQ (hT0 ▸ Q.zero_mem)
 

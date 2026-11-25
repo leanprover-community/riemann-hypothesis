@@ -88,21 +88,21 @@ variable {X}
 
 theorem borMat_eq_zero_of_lt {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) {p q : X.Ψ × Fin r}
     (h : (p.2 : ℕ) < X.p0) (hq : p.2 < q.2) : borMat X b p q = 0 := by
-  simp only [borMat, of_apply, if_pos h, transpose_apply]
+  simp only [borMat, of_apply, ite_eq_left h, transpose_apply]
   split_ifs
   · exact PerMove.bor_tri hb _ hq
   · rfl
 
 theorem borMat_eq_zero_of_le {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) {p q : X.Ψ × Fin r}
     (h : X.p0 ≤ (p.2 : ℕ)) (hq : q.2 < p.2) : borMat X b p q = 0 := by
-  simp only [borMat, of_apply, if_neg (not_lt.2 h)]
+  simp only [borMat, of_apply, ite_eq_right (not_lt.2 h)]
   split_ifs
   · exact PerMove.bor_inv_tri hb _ hq
   · rfl
 
 theorem borMat_diag {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) (p : X.Ψ × Fin r) :
     borMat X b p p = rowFac X (fun τ a => b τ a a) p := by
-  simp only [borMat, of_apply, if_true, rowFac]
+  simp only [borMat, of_apply, ite_true, rowFac]
   split_ifs
   · rfl
   · exact PerMove.bor_inv_diag hb _ _

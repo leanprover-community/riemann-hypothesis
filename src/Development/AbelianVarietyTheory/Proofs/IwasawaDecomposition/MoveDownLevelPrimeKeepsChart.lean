@@ -218,7 +218,7 @@ private theorem TC.cosetIn_rep_cl_dn_eq (hPr : (B.primes X).Ok) (u : B.Word) (a 
           Y ∈ (ysAt B.R I.sel (I.tup a) (I.cst a) i).ys N → Y = ∅ := by
         intro Y N hY
         unfold ysAt at hY
-        rw [if_neg hi] at hY
+        rw [ite_eq_right hi] at hY
         exact hY
       have hp : p.1.2 = ∅ := hys _ _ p.2
       funext P

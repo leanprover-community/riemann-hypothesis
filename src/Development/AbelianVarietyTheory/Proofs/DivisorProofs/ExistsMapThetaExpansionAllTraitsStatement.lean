@@ -1660,7 +1660,7 @@ theorem exp_of_values : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
     have ga := gs_scal_eq T.G.hom ((algebraMap (FractionRing W) F).comp (algebraMap W _)) p _ e2' z a
     have gb := gs_scal_eq T.G.hom ((algebraMap (FractionRing W) F).comp (algebraMap W _)) p _ e2' z b
     rw [hv Z p z J hJ, h2 F₁ σ₁ hσ₁ Z p p' e1 e2 z J hJ, ga, gb, ← _root_.mul_assoc, ← gs_mul _ z ⊤ trivial, fnF, ← map_mul, key]
-  · push_neg at hB
+  · push Not at hB
     refine ⟨1, 1, one_ne_zero, one_ne_zero, fun F₀ => ?_⟩
     obtain ⟨σ, hσ⟩ := h1 F₀
     refine ⟨σ, hσ, _root_.GlobalTheory.Mum.ValDescent.desc R hR D C k W T F hF σ (Φ F₀) 1 ?_⟩

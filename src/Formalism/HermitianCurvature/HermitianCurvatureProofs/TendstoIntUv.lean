@@ -48,13 +48,4 @@ theorem hs_smul_right (a : ℂ) (A C : Wq →L[ℂ] Wp) : B.hsInner A (a • C) 
 
 end HS
 
-section Lim
-
-variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
-
-variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-end Lim
-
 end Formalism.FourierDecayAlt.P5.HerB

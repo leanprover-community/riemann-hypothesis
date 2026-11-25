@@ -191,7 +191,7 @@ theorem glMap_diag_mem_subElem :
         apply Valuation.Integer.not_isUnit_iff_valuation_lt_one.mpr
         have := h i
         unfold dEnt at this
-        rw [if_pos hi] at this
+        rw [ite_eq_left hi] at this
         exact lt_of_le_of_lt (this.trans hϖle) hexp
       · intro h i
         unfold dEnt
