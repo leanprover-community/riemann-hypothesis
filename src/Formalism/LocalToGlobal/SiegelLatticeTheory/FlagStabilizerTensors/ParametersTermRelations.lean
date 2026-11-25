@@ -283,9 +283,6 @@ variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
   {sig : E →ₐ[F] E} {Word Tau : Type} {hc : Word → Tau → HCParam R}
 
 structure SIso (s s' : Formalism.MainNotions.S.Draft.SData R F E sig Word Tau hc) : Type 1 where
-  cd : s.cdScale = s'.cdScale
-  del : s.Del = s'.Del
-  letter : s.letter = s'.letter
   eHH : s.HH ≃ₗᵢ[ℂ] s'.HH
   eCu : ∀ u, s.Cu u ≃ₗᵢ[ℂ] s'.Cu u
   Pu_eq : ∀ u (x : s.Cu u), eHH (s.Pu u x) = s'.Pu u (eCu u x)
@@ -294,13 +291,9 @@ structure SIso (s s' : Formalism.MainNotions.S.Draft.SData R F E sig Word Tau hc
   eT : ∀ u u', s.Term u u' ≃ s'.Term u u'
   aTerm_eq : ∀ u u' (t : s.Term u u') (x : s.Cu u'), eCu u (s.aTerm u u' t x) = s'.aTerm u u' (eT u u' t) (eCu u' x)
   isId : ∀ {u u'} (t : s.Term u u'), s.isId t ↔ s'.isId (eT u u' t)
-  inS : ∀ {u u'} (t : s.Term u u'), s.inS t ↔ s'.inS (eT u u' t)
   relevant : ∀ {u u'} (t : s.Term u u'), s.relevant t ↔ s'.relevant (eT u u' t)
-  FeqF : ∀ {u u'} (t : s.Term u u'), s.FeqF t ↔ s'.FeqF (eT u u' t)
   Gterm : ∀ {u u'} (t : s.Term u u'), s.Gterm t = s'.Gterm (eT u u' t)
-  atP : ∀ p, Formalism.L2.S.LocIso (s.atP p) (s'.atP p)
   ePl : s.PlF ≃ s'.PlF
-  BBne : ∀ {u u'} (t : s.Term u u') (q : s.PlF), s.BBne t q ↔ s'.BBne (eT u u' t) (ePl q)
   generic : ∀ {u u'} (t : s.Term u u'), s.generic t ↔ s'.generic (eT u u' t)
   eP : ∀ u u', s.Pair u u' ≃ s'.Pair u u'
   pfst : ∀ {u u'} (p : s.Pair u u'), eT u u' (s.pfst p) = s'.pfst (eP u u' p)
@@ -309,9 +302,6 @@ structure SIso (s s' : Formalism.MainNotions.S.Draft.SData R F E sig Word Tau hc
   scalarPair : ∀ {u u'} (p : s.Pair u u'), s.scalarPair p ↔ s'.scalarPair (eP u u' p)
   pval : ∀ {u u'} (p : s.Pair u u'), s.pval p = s'.pval (eP u u' p)
   ptOf : ∀ {u u'} (t : s.Term u u'), s.ptOf t = s'.ptOf (eT u u' t)
-  cTerm : ∀ {u u'} (t : s.Term u u'), s.cTerm t = s'.cTerm (eT u u' t)
-  massPair : ∀ {u u'} (p : s.Pair u u'), s.massPair p = s'.massPair (eP u u' p)
-  meanCount : s.meanCount = s'.meanCount
 
 end Iso
 

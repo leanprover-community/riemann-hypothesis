@@ -45,23 +45,6 @@ theorem conjF_invol (D : D7) (x : D.host.E) : D.conjF (D.conjF x) = x := by
 def locC (D : D7) (p : HeightOneSpectrum (𝓞 D.host.F)) : Formalism.MainNotions.S.Loc.LocAt D.host.F D.host.E D.conjF p :=
   Examples₂.locAtC D.conjF (conjF_invol D) (Examples₂.finrank_FE D.host) p
 
-def LocIso.refl {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : Formalism.MainNotions.S.Loc.LocAt F E sig p) : LocIso A A where
-  eF := RingEquiv.refl _
-  eF_ι _ := rfl
-  eF_val _ _ := Iff.rfl
-  eF_cont := continuous_id
-  eF_symm_cont := continuous_id
-  eF_ql := fun _ => rfl
-  eE := RingEquiv.refl _
-  eE_alg _ := rfl
-  eE_ι _ := rfl
-  eE_cont := continuous_id
-  eE_symm_cont := continuous_id
-  eE_cj _ := rfl
-  eE_O _ := Iff.rfl
-  eE_psi _ := rfl
-
 def LocIso.setSplit {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : Formalism.MainNotions.S.Loc.LocAt F E sig p)
     (s : Option (Formalism.MainNotions.S.Loc.SplitAt A.Fp A.Ep A.cj (Formalism.MainNotions.S.Loc.resChar p))) :

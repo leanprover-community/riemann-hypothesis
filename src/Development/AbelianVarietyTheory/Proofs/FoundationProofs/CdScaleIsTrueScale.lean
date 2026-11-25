@@ -207,16 +207,4 @@ theorem cdScaleIs_trueScale : ∀ cd : CDHaar, CdScaleIs cd (trueScale cd) := by
   rw [dite_eq_left (exists_cdScaleIs cd)]
   exact (Classical.choose_spec (exists_cdScaleIs cd)).2
 
-theorem cdScaleIs_unique (cd : CDHaar) {sc sc' : ∀ n : ℕ, (Fin n → Bool) → NNReal}
-    (h : CdScaleIs cd sc) (h' : CdScaleIs cd sc') : sc = sc' := by
-  funext n ε
-  obtain ⟨P, Q, e, he⟩ := exists_sorts ε
-  obtain ⟨K⟩ : Nonempty (TopologicalSpace.PositiveCompacts (Formalism.REAL.UJ ε)) := inferInstance
-  have hm : MeasurableSet (K : Set (Formalism.REAL.UJ ε)) := K.isCompact.measurableSet
-  have h0 : Formalism.REAL.muG ε K ≠ 0 := (Measure.measure_pos_of_nonempty_interior _ K.interior_nonempty).ne'
-  have ht : Formalism.REAL.muG ε K ≠ ⊤ := K.isCompact.measure_lt_top.ne
-  have := (h n ε P Q e he.1 he.2 K hm).trans (h' n ε P Q e he.1 he.2 K hm).symm
-  rw [Measure.smul_apply, Measure.smul_apply, smul_eq_mul, smul_eq_mul] at this
-  exact ENNReal.coe_injective ((ENNReal.mul_left_inj h0 ht).1 this)
-
 end GlobalTheory.Mem.Vol.Scale

@@ -232,11 +232,6 @@ theorem cdScaleOf_tie (h : CdScaleExists D) (n : ℕ) (ε : Fin n → Bool) :
   rw [dite_eq_left (h n ε)]
   exact (h n ε).choose_spec
 
-theorem cdScaleExists_of_tie (h : Formalism.BasicNotions.cdScaleTie D) : CdScaleExists D := by
-  unfold Formalism.BasicNotions.cdScaleTie at h
-  intro n ε
-  exact ⟨D.s.cdScale n ε, D.s.cdScale_pos n ε, fun P Q e h1 h2 A hA => h n ε P Q e h1 h2 A hA⟩
-
 end Vol
 
 section Pairs

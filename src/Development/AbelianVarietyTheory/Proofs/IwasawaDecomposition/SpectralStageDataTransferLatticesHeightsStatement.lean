@@ -90,9 +90,6 @@ def eP (u u' : D.what₂.Word) : RP Y u u' ≃ RP (reY Z Y) (wd Z u) (wd Z u') :
 
 
 def sIsoRe : SIso (sOf h) ((@sOf (reD D Z) (@reX D Z X) (@reY D Z X Y) h')) where
-  cd := Eq.refl (Formalism.L2.SG.PairVal.cdScaleOf D)
-  del := Eq.refl D.s.Del
-  letter := Eq.refl D.s.letter
   eHH := eHHre Z X
   eCu := eCure Z h h'
   Pu_eq := (keep_pu_vol_aR D Z X Y h h').1
@@ -101,13 +98,9 @@ def sIsoRe : SIso (sOf h) ((@sOf (reD D Z) (@reX D Z X) (@reY D Z X Y) h')) wher
   eT := eRT Z Y
   aTerm_eq := (keep_pu_vol_aR D Z X Y h h').2.2
   isId := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).1
-  inS := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.1
   relevant := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.1
-  FeqF := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.1
   Gterm := fun {u u'} t => Subtype.ext (a1 := (sOf h).Gterm t) (a2 := (sOf h').Gterm (eRT Z Y u u' t)) (((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.2.2.1)
-  atP := fun p => Formalism.L2.S.LocIso.refl (Formalism.L2.S.locC D p)
   ePl := Equiv.refl (Formalism.MainNotions.S.LocalSplitGroups.PlF D)
-  BBne := fun {u u'} t q => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.2.2.2.1 q
   generic := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.2.1
   eP := eP Z h h'
   pfst := fun {u u'} p => ((rp_iso_pair D Z X Y h h' u u').choose_spec p).1
@@ -116,12 +109,6 @@ def sIsoRe : SIso (sOf h) ((@sOf (reD D Z) (@reX D Z X) (@reY D Z X Y) h')) wher
   scalarPair := fun {u u'} p => ((rp_iso_pair D Z X Y h h' u u').choose_spec p).2.2.2.1
   pval := fun {u u'} p => ((rp_iso_pair D Z X Y h h' u u').choose_spec p).2.2.2.2
   ptOf := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.2.2.2.2.1
-  cTerm := fun {u u'} t => ((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 t).2.2.2.2.2.2.2.2.2
-  massPair := fun {u u'} p => (((GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').1 ((p.1.1) : RT Y u u')).2.2.2.2.2.2.2.2.1).trans
-      (congrArg Formalism.L2.SG.PairVal.massTerm ((rp_iso_pair D Z X Y h h' u u').choose_spec ((p) : RP Y u u')).1)
-  meanCount := (funext fun u => funext fun u' => funext fun w => (GlobalTheory.T.spectralRedivisionTermEquiv_keeps_term_data D Z X Y u u').2 w :
-      (fun (u u' : D.what₂.Word) w => Formalism.L2.SG.PairVal.meanCount D u u' (X.Fu u) (Y.what₂ u) w) =
-        fun (u u' : D.what₂.Word) w => Formalism.L2.SG.PairVal.meanCount (reD D Z) (wd Z u) (wd Z u') ((reX Z X).Fu (wd Z u)) ((reY Z Y).what₂ (wd Z u)) w)
 
 end GlobalTheory.Mem.SRe.IsoRe
 
@@ -160,31 +147,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Trans
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)}
-
-def LocIso.trans {A B C : Formalism.MainNotions.S.Loc.LocAt F E sig p} (a : Formalism.L2.S.LocIso A B) (b : Formalism.L2.S.LocIso B C) :
-    Formalism.L2.S.LocIso A C where
-  eF := a.eF.trans b.eF
-  eF_ι x := (congrArg b.eF (a.eF_ι x)).trans (b.eF_ι x)
-  eF_val x y := (a.eF_val x y).trans (b.eF_val _ _)
-  eF_cont := b.eF_cont.comp a.eF_cont
-  eF_symm_cont := a.eF_symm_cont.comp b.eF_symm_cont
-  eF_ql x := (congrArg b.eF (a.eF_ql x)).trans (b.eF_ql x)
-  eE := a.eE.trans b.eE
-  eE_alg x := (congrArg b.eE (a.eE_alg x)).trans (b.eE_alg _)
-  eE_ι x := (congrArg b.eE (a.eE_ι x)).trans (b.eE_ι x)
-  eE_cont := b.eE_cont.comp a.eE_cont
-  eE_symm_cont := a.eE_symm_cont.comp b.eE_symm_cont
-  eE_cj y := (congrArg b.eE (a.eE_cj y)).trans (b.eE_cj _)
-  eE_O y := (a.eE_O y).trans (b.eE_O _)
-  eE_psi y := (a.eE_psi y).trans (b.eE_psi _)
+  {sig : E →ₐ[F] E}
 
 variable {R : Ranks} {Word Tau : Type} {hc : Word → Tau → HCParam R}
 
 def SIso.trans {s s' s'' : Formalism.MainNotions.S.Draft.SData R F E sig Word Tau hc} (a : SIso s s') (b : SIso s' s'') : SIso s s'' where
-  cd := a.cd.trans b.cd
-  del := a.del.trans b.del
-  letter := a.letter.trans b.letter
   eHH := a.eHH.trans b.eHH
   eCu u := (a.eCu u).trans (b.eCu u)
   Pu_eq u x := (congrArg b.eHH (a.Pu_eq u x)).trans (b.Pu_eq u _)
@@ -193,13 +160,9 @@ def SIso.trans {s s' s'' : Formalism.MainNotions.S.Draft.SData R F E sig Word Ta
   eT u u' := (a.eT u u').trans (b.eT u u')
   aTerm_eq u u' t x := (congrArg (b.eCu u) (a.aTerm_eq u u' t x)).trans (b.aTerm_eq u u' _ _)
   isId t := (a.isId t).trans (b.isId _)
-  inS t := (a.inS t).trans (b.inS _)
   relevant t := (a.relevant t).trans (b.relevant _)
-  FeqF t := (a.FeqF t).trans (b.FeqF _)
   Gterm t := (a.Gterm t).trans (b.Gterm _)
-  atP p := LocIso.trans (a.atP p) (b.atP p)
   ePl := a.ePl.trans b.ePl
-  BBne t q := (a.BBne t q).trans (b.BBne _ _)
   generic t := (a.generic t).trans (b.generic _)
   eP u u' := (a.eP u u').trans (b.eP u u')
   pfst p := (congrArg (b.eT _ _) (a.pfst p)).trans (b.pfst _)
@@ -208,9 +171,6 @@ def SIso.trans {s s' s'' : Formalism.MainNotions.S.Draft.SData R F E sig Word Ta
   scalarPair p := (a.scalarPair p).trans (b.scalarPair _)
   pval p := (a.pval p).trans (b.pval _)
   ptOf t := (a.ptOf t).trans (b.ptOf _)
-  cTerm t := (a.cTerm t).trans (b.cTerm _)
-  massPair p := (a.massPair p).trans (b.massPair _)
-  meanCount := a.meanCount.trans b.meanCount
 
 end Trans
 
