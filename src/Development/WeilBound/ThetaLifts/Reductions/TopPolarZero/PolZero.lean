@@ -1,37 +1,29 @@
 module
 
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SchToPol
 public import Development.WeilBound.ThetaLifts.LatticeBasics.NonZero
 public import Development.WeilBound.ThetaLifts.LatticeBasics.RankPolData
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsIsGauss
-public import Development.AutomorphicSpectrum.Proofs.TwistedProofs.EqZeroOfPiInf
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsMaximalCompactInfinite
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
-public import Development.AutomorphicSpectrum.Proofs.TwistedProofs.ExistsAdelePiInf
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LatArch
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.WeilBound.ThetaLifts.LatticeBasics.RealInv
 public import Development.WeilBound.ThetaLifts.SchwartzMoments.PolynomialFunctionalEvalContinuous
 public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsB
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
-public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsStable
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ArchimedeanEvaluationVector
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.TendstoIndMul
 public import Development.WeilBound.ThetaLifts.FrameEstimates.CuspRapid
 public import Development.WeilBound.ThetaLifts.SmallCones.SoStab
-public import Development.WeilBound.ThetaLifts.LatticeBasics.FdEqZero
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ThConstInv
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNatMulIntegralOfIsCompact
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
 public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoStatement
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLEntireAndNonzeroAtOne
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesS
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.UnitaryDensity.EqTopOfLines
@@ -45,20 +37,10 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtIntOf
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocDist
 public import Development.WeilBound.ThetaLifts.LatticeBasics.RatEquiv
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SiegelWeilAnisoOf
-import Development.WeilBound.ThetaLifts.LatticeBasics.FarRight
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Kcompact
-import Formalism.LocalToGlobal.IndefiniteReal.PHeisFCA
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPureA
-import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 import Aesop.Main
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
-import Development.WeilBound.ThetaLifts.LatticeBasics.ThConstLoc
 import Development.WeilBound.ThetaLifts.LatticeBasics.SWFull
 
 -- This file was produced by scripts/clump.py from the modules listed below.

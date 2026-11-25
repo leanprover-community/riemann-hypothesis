@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
 public import Development.WeilBound.ThetaLifts.SmallCones.KerUni
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneForm
 public import Development.WeilBound.ThetaLifts.SmallCones.ExpSum
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 public import Development.WeilBound.ThetaLifts.SmallCones.SliceSummable
 public import Development.WeilBound.ThetaLifts.CTKernel
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
@@ -31,13 +30,9 @@ public import Development.WeilBound.ThetaLifts.SmallCones.TateAbs
 public import Development.WeilBound.ThetaLifts.SmallCones.TwoExp
 public import Development.WeilBound.ThetaLifts.SmallCones.Unfold
 public import Development.WeilBound.ThetaLifts.SmallCones.UnipEx
-import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
-import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
 import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.ThetaLifts.SmallCones.SoStab
 import Development.WeilBound.ThetaLifts.SmallCones.WittOf
 

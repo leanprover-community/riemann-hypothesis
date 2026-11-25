@@ -3,16 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismBot
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.SubThickRees
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLiftToThickening
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.RingTheory.Ideal.Defs
-public import Mathlib.RingTheory.Noetherian.Nilpotent
-public import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
-public import Mathlib.Algebra.Ring.GeomSum
-public import Mathlib.RingTheory.Finiteness.Basic
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.Ideal.Operations
 public import Mathlib.RingTheory.Nilpotent.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedPowerFiltration
 public import Mathlib.Data.Nat.Choose.Lucas
@@ -24,7 +14,6 @@ public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.Divided
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSmulSecNonzeroOnSpecialFibre
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrystallineSiteZariskiCoveredByAtlas
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsEtaleLiftOfSurjective
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubMemSpanOfEtale
@@ -65,28 +54,19 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.InstAddCommGroup
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.XSmulSucc
-import Mathlib.RingTheory.DividedPowers.Basic
-import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.WeilBound.LevelCriteria.IsLevOneIff
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.GaloisGeometry.FirstChernClassMemHodgeFiltration, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsActOfHom, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConnectionOnDividedPowerBasis, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CyclotomicDividedPowerExpansion, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapMemExt, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowDvdFactorialMul, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PreimageOpenTopOfJacobsonSurjection, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubThickOnto, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.PropsA

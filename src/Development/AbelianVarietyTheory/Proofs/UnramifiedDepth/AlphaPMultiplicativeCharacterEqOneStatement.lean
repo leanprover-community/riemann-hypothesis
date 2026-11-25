@@ -6,18 +6,13 @@ public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointE
 public import ReciprocityTheory.DualLattices.FormalChartAtZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Mathlib.Algebra.CharP.Defs
-import Mathlib.Algebra.DualNumber
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueTorusCompat
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CubWeilOfInjective
 import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
 import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AlphaPMultiplicativeCharacterEqOne, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AlphaPMultiplicativeCharacterEqOneStatement

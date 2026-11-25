@@ -8,9 +8,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecStalkSpe
 public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChange
@@ -24,7 +22,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFini
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PHeightOneIntersection
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PLatticesAgree
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.HeightOnePrimeDvrStalk, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.NormalLatticeRange, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelDescendsBaseChange, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularLocalRingFractionField, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianLieLatticeEq, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianLieLatticeAgree

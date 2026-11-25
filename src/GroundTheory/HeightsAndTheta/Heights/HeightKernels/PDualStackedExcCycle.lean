@@ -5,9 +5,6 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LengthCokerEqKerAddDimOneOrderSum
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualStackedGraphHorizontal
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualTopSimpleStacked
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.MemDivSuppOfDivCycleNeZero
 

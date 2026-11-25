@@ -2,21 +2,12 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.DOkBasis
-public import Mathlib.NumberTheory.NumberField.CMField
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Unramified.Basic
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.ExistsUnitValueSkewHermitian
-public import Mathlib.LinearAlgebra.Matrix.IsDiag
-public import Mathlib.RingTheory.Spectrum.Maximal.Defs
 public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsRealDifferentGenerator
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDeterminantLogDifferent
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIntegralIffDenominator
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

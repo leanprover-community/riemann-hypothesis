@@ -11,7 +11,6 @@ import Aesop.Main
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Topology.Separation.CompletelyRegular
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

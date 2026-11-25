@@ -2,18 +2,12 @@ module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLocal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
-public import GroundTheory.ProfiniteCohomology.PoincarePairs.IsDiscreteRepResHomCoindRes
-public import GroundTheory.TateCohomology.CochainReverse
 public import GroundTheory.ProfiniteCohomology.PoincarePairs.ConeProduct
-public import GroundTheory.TateCohomology.CupGraded
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInv
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLevel
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFixed
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInputs
-import GroundTheory.ProfiniteCohomology.Bridge
-import GroundTheory.ProfiniteCohomology.FilteredHomology
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
 

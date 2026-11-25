@@ -5,9 +5,6 @@ public import Formalism.LocalToGlobal.Divisibility.DivisibilityRemainder.Rationa
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 public import Formalism.LocalToGlobal.GroupLattices.JointServices.LevelOperatorFixesImage
-import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.Divisibility.DivisibilityRemainder.RationalColumns.Descent, Formalism.LocalToGlobal.Divisibility.DivisibilityRemainder.RationalColumns.BuRationalOf

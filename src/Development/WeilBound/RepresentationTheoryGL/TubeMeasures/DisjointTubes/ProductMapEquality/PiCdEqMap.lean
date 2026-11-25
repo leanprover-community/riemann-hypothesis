@@ -10,10 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCo
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSecondCountableBorelCountable
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
-import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.BridgeA
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Retie
 
 @[expose] public section
 

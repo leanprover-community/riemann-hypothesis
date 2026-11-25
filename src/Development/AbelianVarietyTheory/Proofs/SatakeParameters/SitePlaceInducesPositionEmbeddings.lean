@@ -4,13 +4,8 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NatCastMemOfPlace
 public import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.PosBridge
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JointCmpEmbeddingY
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
 import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
-import Formalism.SharpRestriction.GrowthBounds.ChartComparison.NrmAMemAdForms
-import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ToLEInvApply
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.LamPosOfPosEmb, Development.AbelianVarietyTheory.Proofs.SatakeParameters.SitePlaceInducesPositionEmbeddings

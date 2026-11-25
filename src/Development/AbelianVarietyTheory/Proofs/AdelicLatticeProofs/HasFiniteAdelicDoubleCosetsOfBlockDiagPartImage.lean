@@ -5,27 +5,16 @@ public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.
 public import Mathlib.FieldTheory.Galois.Infinite
 public import Mathlib.RingTheory.Jacobson.Ideal
 public import Mathlib.RingTheory.Jacobson.Ring
-public import Mathlib.GroupTheory.MonoidLocalization.Basic
-public import Mathlib.RingTheory.FiniteType
-public import Mathlib.RingTheory.OreLocalization.Ring
-public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.RingTheory.RingHom.FiniteType
 public import Mathlib.RingTheory.KrullDimension.Basic
 public import Mathlib.RingTheory.KrullDimension.Zero
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.BlockDiagPartOfRatIdempotentOneAndMulOfTriangula
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EvalComplexPolyEqZeroOnRatZariskiClosure
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsAutStableSLMatrixGroupImageBlockDiagPart
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RatZariskiClosurePointsIsGroup
 public import Mathlib.RingTheory.Nullstellensatz
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.GaloisStableSubmoduleLeSpanRational
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsFiniteAdeleLikePairElementary
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RatMemRatZariskiClosurePoints
 import Mathlib.Algebra.Order.Floor.Extended
@@ -83,7 +72,6 @@ import Mathlib.FieldTheory.PurelyInseparable.Exponent
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RatComponentMemRatPolysVanishingOnMatrixSet
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar

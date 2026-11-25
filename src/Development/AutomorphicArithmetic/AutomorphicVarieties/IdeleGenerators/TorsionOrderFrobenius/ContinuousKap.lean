@@ -2,9 +2,6 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqOneOfMemLev
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
-public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.TorsionOrderFrobenius.NotDvdTorsionOrder
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import Mathlib.Algebra.Order.Floor.Extended

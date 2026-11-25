@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RemainingWeightVectorCount
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SymbolRealisableBound
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
 

@@ -6,7 +6,6 @@ public import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 public import Development.WeilBound.ThetaLifts.SmallCones.ConeBasic
 public import Development.WeilBound.ThetaLifts.SmallCones.KerPol
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.ThetaLifts.SmallCones.KerGeo
 
 @[expose] public section
 

@@ -1,9 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExponentAndTwistData
-public import Mathlib.FieldTheory.IntermediateField.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.LinearAlgebra.TensorProduct.Tower
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemilinearDescentToBaseChangeOfForm
 import Mathlib.Tactic.Linter.HaveILetI
 

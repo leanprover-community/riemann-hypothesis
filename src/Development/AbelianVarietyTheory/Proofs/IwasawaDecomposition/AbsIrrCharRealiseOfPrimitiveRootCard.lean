@@ -11,25 +11,11 @@ public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharacterE
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsIsCharEqAddOfPairNeZero
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGroupFunctionPairingAddNatPosSymm
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.MemVirtualCharactersIffSubCharacters
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.GroupTheory.GroupAction.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.GroupTheory.GroupAction.FixedPoints
-public import Mathlib.GroupTheory.Perm.Cycle.Type
-public import Mathlib.GroupTheory.OrderOfElement
-public import Mathlib.Data.Nat.Factorization.Basic
-public import Mathlib.GroupTheory.Index
 public import Mathlib.GroupTheory.Sylow
-public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InducedClassFunctionFromSubgroupEqFinsumCosets
-public import Mathlib.Algebra.Group.Pi.Basic
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Algebra.Ring.Int.Defs
-public import Mathlib.Basic.Finite.Defs
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.OneMemOfMulMemOfForallPrimeNotDvd
 public import Formalism.LocalToGlobal.Columns.GoodXgFin
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldRestrictClassFunctionOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldLinearOfPrimitiveRoot, Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldAbelianByPrimePower, Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldOfVirtualAndCharacter, Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByPowPrimePowModEq, Development.AbelianVarietyTheory.Proofs.CharacterTheory.CardFixedByQuotientEqRelIndexOfPRegular, Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCoprimeOrderOfPowPrimePow, Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsSylowOverSubgroup, Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsAbelianByPrimePowerNotDvdCardFixedBy, Development.AbelianVarietyTheory.Proofs.CharacterTheory.IndRestrictEqCardFixedByMul, Development.AbelianVarietyTheory.Proofs.CharacterTheory.MemVirtualCharactersOfAbelianByPrimePower, Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharOfIsPrimitiveRoot, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsIrrCharRealiseOfPrimitiveRootCard

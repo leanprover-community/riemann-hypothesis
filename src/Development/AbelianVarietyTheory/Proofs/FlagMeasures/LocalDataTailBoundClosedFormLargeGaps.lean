@@ -6,24 +6,14 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousOnM
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TailMassLeOfMajorantLengthMomentBound
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MomAllP
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.OnePlaceKF
-public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DegVand
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralTranslate
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsFRepOnePlusDet
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LenEqOfUnitriangular
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
-public import Mathlib.Analysis.MeanInequalities
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Add
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselSubgroupProductMeasureIsHaar
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DstInvContinuousOn
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QuotientMeasureRightInvariant
@@ -31,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitaryGroupM
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqGapOfUniq
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.CayleyEndomorphismsModular
-public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.IsDSOfIsDG
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FamiliesHaveLargeGapOfNumericalHypotheses
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralLeOfHighest
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassBoundLowTypesSum
@@ -46,13 +35,11 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TorusWeightEi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ReproducingFormulaReduction
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.FamilySetupBesselGrowth
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.FamilySetupCayleyBound
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.BlockAnti
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AbsOfRange
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AmplitudeLocalDataMomentPieriHypothesesStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselMapsProportionalDiscreteSeriesLargeGap
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsKFiniteBesselPeriodNeZeroGap
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnitaryTorusScaleBesselCharacter
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MomentPieriNumericsOfSizeHyps
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneMajorantLengthMomentLowestKTypeStatement
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ContinuousOnOfSmoothOnH
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AmplitudeOneSideOfGoodLocalData
@@ -60,15 +47,8 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CayleyExistsAndAny
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalizedBesselMapsAnyScalePieriConstants
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumericalFamilyShapeGaps
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerSmoothStability.ExistsFinStableOfMemSSup
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MajorantLengthMomentsAmplitudesLargeGap
 

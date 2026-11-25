@@ -6,15 +6,9 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Same
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TrivFlagMod
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtensionUnique
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericBundleChain
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagComparison
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagDifference
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Statements
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.VerticalDivisorsCommute
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSteps
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairCocycle
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

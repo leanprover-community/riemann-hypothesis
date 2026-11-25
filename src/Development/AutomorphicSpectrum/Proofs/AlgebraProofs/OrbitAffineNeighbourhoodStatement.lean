@@ -5,22 +5,8 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreeHom
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypothesesAndConclusion
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
-public import Mathlib.AlgebraicGeometry.Morphisms.FinitePresentation
-public import Mathlib.AlgebraicGeometry.Morphisms.Flat
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFlatLocallyFreeAffine
-public import Mathlib.RingTheory.RingHomProperties
-public import Mathlib.AlgebraicGeometry.Morphisms.RingHomProperties
-public import Mathlib.RingTheory.Norm.Defs
-public import Mathlib.LinearAlgebra.Charpoly.BaseChange
-public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
-public import Mathlib.AlgebraicGeometry.Restrict
-public import Mathlib.AlgebraicGeometry.Pullbacks
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Mod
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
-public import Mathlib.CategoryTheory.Monoidal.Mod
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

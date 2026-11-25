@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteP
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceOverMoveValCc
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsCoprimePowOfMemIneKer
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

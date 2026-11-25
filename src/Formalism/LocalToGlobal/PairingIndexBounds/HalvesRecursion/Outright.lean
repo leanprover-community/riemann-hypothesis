@@ -8,9 +8,7 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.ModelLatticeMoves.Moves
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.RecursiveLatticeMembership.MemLamOfIff
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PIopNorm
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.Assemble
-public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.AdicBoxOpenness.CentralCharacterLocalHolds
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.SplitElementExistsHolds
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PThIndep
 import Mathlib.Tactic.Linter.Style

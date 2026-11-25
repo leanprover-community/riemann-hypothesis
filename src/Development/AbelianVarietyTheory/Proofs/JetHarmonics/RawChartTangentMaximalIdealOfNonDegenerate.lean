@@ -9,30 +9,19 @@ public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsNotM
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.GaugeBiadditiveSymmAdjointIntegralEnd
 public import Mathlib.Data.Nat.Prime.Factorial
 public import Mathlib.NumberTheory.Wilson
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmEmbeddingsIntegralAndDistinctModMaximal
-public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IntSOfMulEqOne
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.EqZeroOfGe
-public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
-public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Mathlib.RingTheory.MvPowerSeries.Expand
-public import Mathlib.Algebra.CharP.Algebra
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AdjointEndPairMemGaugedCurveLogarithms
-public import Formalism.LocalToGlobal.CharacterGerms.Interface
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ConnectionKillsSeries
-import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
-import Mathlib.Algebra.Order.Star.Real
-import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-import Formalism.LocalToGlobal.Divisibility.Numbers
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.FormalGroupCocycleLthPowerCoboundaryModMaximal, Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralSmulCurveCoeffSeriesOfChartHOfLinearLog, Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesLthPowerOfPderivVanishModMaximal, Development.AbelianVarietyTheory.Proofs.JetHarmonics.RawChartTangentMaximalIdealOfNonDegenerate

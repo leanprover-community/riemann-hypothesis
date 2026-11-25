@@ -6,12 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolumeInteg
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusHolds
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniquePlace
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.DetMulEqSumProdMulDetSubmatrix
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 

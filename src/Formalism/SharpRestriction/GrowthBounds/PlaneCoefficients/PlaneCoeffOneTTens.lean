@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.PlanePairsOnBlocksAt
-import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
 import Mathlib.Tactic.TypeStar
 

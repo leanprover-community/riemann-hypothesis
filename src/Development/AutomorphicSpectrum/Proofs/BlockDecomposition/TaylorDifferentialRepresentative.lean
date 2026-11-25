@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepUnique
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DFormMem
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

@@ -6,10 +6,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.KTypeExist
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IntegralCompression.ContinuousEntryCharacters.CoefEx
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompactGroupIntegrability.InstCompactUG
-import GroundTheory.AutomorphicForms.RealIwasawaIntegration
-import Mathlib.Topology.Algebra.Star.Unitary
-import Mathlib.Topology.Compactness.Paracompact
-import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.PeterWeyl
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 

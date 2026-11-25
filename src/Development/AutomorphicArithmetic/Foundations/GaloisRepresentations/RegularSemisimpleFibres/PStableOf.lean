@@ -5,12 +5,9 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEva
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.GmOfBcfl
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.WeakStableAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CoreDesc
-import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.CoreLift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.DescStep
-import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.LiftAll
 import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.LiftStep
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.SplitStrong
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.BcflUnit
 
 @[expose] public section
 

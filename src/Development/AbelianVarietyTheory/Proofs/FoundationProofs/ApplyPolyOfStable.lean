@@ -3,23 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OpLDOneSubMemTriv
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HtCoIOfEq
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
-public import Mathlib.Analysis.Normed.Field.Instances
-public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.Flat.Localization
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import GroundTheory.PAdicHodge.AxLemma
-public import Mathlib.LinearAlgebra.TensorProduct.Finiteness
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
-public import ReciprocityTheory.GaloisValuations.Global
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSubOnePowTotient
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.Inertia
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ContinuousGK
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CuspFunctionalValueModPrimePowUniqueOddWeightStatement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspFunctionalValueGalBEquivariant
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaBasisLinearCombination
@@ -31,8 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCus
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalBMemKummerInvariantSet
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsThBSuccCoeffCongStatement
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerBettiModuleFreeFinite
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsLamFROfIsLamF
 public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftApplyOfMemAdmissibleSubalgebra
@@ -40,26 +26,14 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ThNSpec
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorCommGaloisActionModularTower
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularTowerBAdmissibleHeckeCommute
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeDiamondAction
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeLetterPreservesBasisSet
 import Mathlib.Tactic.NormNum.Prime
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BoundedOrbitHasNearbyFixedPoint
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Nonarchimedean.Completion
-import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.MemRangeOfAevalRatEqZero
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ValuationIntCastLtOneIff
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationSubringNonunitsPowModEqZero
-import GroundTheory.PAdicHodge.GaloisOnCp
 import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsEqSubOfMemCob
 

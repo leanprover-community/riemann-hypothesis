@@ -1,37 +1,14 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjective
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.LinearAlgebra.UnitaryGroup
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieAction
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModel
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.IsCoreMod
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeUnitaryAction
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightTensorDecomposition
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InvariantIntertwinesDual
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumMemOfStable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
-public import Mathlib.Data.Finset.Powerset
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Order.Interval.Finset.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Vandermonde
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Data.Fintype.BigOperators
-public import Mathlib.Analysis.Complex.Norm
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonomialCoefficientComparison
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Trace
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.HighestVectorsRegularLine
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CliffordHighestWeightVector
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualOperatorCommutesLie
@@ -42,7 +19,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Parthasa
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RangeStable
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLoc
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightAntitoneOfFiniteDimensionalStable
 

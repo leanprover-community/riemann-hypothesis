@@ -1,37 +1,14 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.DUAllOfParts
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PDnDil
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.DiaFun
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.DUPt0FOfVals
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.NatSmulInv
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Common
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DnkLkLocP
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DualSigmaApply
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.MulLatSupSpan
-public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.HeckeRamifiedZeroOfMatchingsAndDu
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.DiaSame
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.LocalUnitaryOfMatchingZero
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.DiaConj
-public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.TrpDia
-public import Formalism.HermitianLattices.StatementLat
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
-public import Formalism.SharpRestriction.GlobalSchurBounds.LemmaBSecondBranchOfLength
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
-import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.TripMem
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.GlobalTheory.GL4.BranchingNormalisedOfAdjoint
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunctionRightTranslateDiamond
-import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocW
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.ProjectionKernelEqFunctional, Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.TNotinSq, Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.DUAllOfSameTe, Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.MulLatticeOne, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.DnDiaSame0FHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.MatchGen, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.EqualDiagonalEntriesAll, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.SameCommon, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.UpFSame, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnramifiedSameDiagonal.UpSame, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DiamondSamePlaceMatchings, Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.HeckeRamifiedZeroAll

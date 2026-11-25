@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.WeightCongruences.IsRootOfIntegr
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BoundedDenominatorsOfBeta
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.VpBounds
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

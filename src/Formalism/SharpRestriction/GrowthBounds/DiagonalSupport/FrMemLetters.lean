@@ -3,9 +3,7 @@ module
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.DvDegOtherMono
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneCoeff
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
-import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
-import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 
 @[expose] public section
 

@@ -3,27 +3,18 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneCoeff
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.RestValBdG
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FrMemLetters
-public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ExistsMapOfCoefGe
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LowestWeightCNonpos
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembTop
-public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDefs
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.NoMonMultideg
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembAlgF
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PosTLSurj
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Proposition5OfThreeParts
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MemSupportSumMonomial
-public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDd
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembVB
-import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
-import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
-import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ValuationOneEqZero
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ValLamOfSubset
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ThresholdGeOddPosition, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembXXb, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SumMulSumProd, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.DecIdentity, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.HomCompRename, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDegF, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembLabF, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ProjectionMemPartialSpan, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwistSliceCoeff, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembershipOfThreeParts, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembFinal

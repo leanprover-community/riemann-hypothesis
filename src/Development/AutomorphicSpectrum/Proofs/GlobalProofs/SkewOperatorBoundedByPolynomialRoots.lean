@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 
 @[expose] public section
 

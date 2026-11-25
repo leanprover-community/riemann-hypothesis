@@ -11,19 +11,10 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideDef
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideLat
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSide
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.ProdBlockEmbMonomial
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.WeylFormNondegenerateGlobal
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRAddRight
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestrictedWeightFirstTwoEq
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.WspanLeOpCl
-import Formalism.ThetaLogCoordinates.SandwichModelDomains.FinalW
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
-import Formalism.LocalToGlobal.GroupLattices.FockModels.DualInclusionLattices
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSidePos
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideTen
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
 

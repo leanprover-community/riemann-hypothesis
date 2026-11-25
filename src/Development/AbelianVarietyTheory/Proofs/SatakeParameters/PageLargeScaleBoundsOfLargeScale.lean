@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataParams₂
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
-public import Formalism.LocalRingCardinality.DataParams
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ScaleLogMulLeSizeRatio, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThinSizeDominatesAtLargeScale, Development.AbelianVarietyTheory.Proofs.SatakeParameters.TopSizeAddLeThreeHalvesScale, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PageLargeScaleBoundsOfLargeScale

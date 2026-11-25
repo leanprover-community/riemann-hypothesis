@@ -12,21 +12,14 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDvdOfEqNa
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeCompletionEqLatticeVectorAddNsmul
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntAfIntCast
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLatticeVectorEqNsmulOfAdelicNsmul
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Data.Rat.Init
 public import Mathlib.Data.Rat.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HopfOrderPullbackAlongHom
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.LevelChange
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MemUQptsStarCIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLevelEqKN
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudeActionAdelicLattice
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsHolPeriods
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI
-import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
-import Development.AbelianVarietyTheory.Definitions.Divisors.TwOrbMEqTwOrbUOfNormal
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
 
 -- This file was produced by scripts/clump.py from the modules listed below.

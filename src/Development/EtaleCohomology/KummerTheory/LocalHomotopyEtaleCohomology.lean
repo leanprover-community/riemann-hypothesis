@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.KummerTheory.FinalTheorems
 public import Development.EtaleCohomology.KummerTheory.LHCutGlue
 public import Development.EtaleCohomology.KummerTheory.LocCokPf
 public import Mathlib.CategoryTheory.Generator.Sheaf
-public import Development.EtaleCohomology.KummerTheory.InjSlice
 public import Development.EtaleCohomology.KummerTheory.DictNormalPf
 public import Development.EtaleCohomology.KummerTheory.InjSlicePf
 public import Development.EtaleCohomology.KummerTheory.ContCut
@@ -25,7 +24,6 @@ public import Development.EtaleCohomology.KummerTheory.MVnatPf
 public import Development.EtaleCohomology.KummerTheory.NrmMkPf
 public import Development.EtaleCohomology.KummerTheory.SHenCutPf
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Category.ModuleCat.Products
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.EtaleCohomology.KummerTheory.DictPfEv
 

@@ -7,21 +7,12 @@ public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcGalIdx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcUnrOf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.KrullDimQuotientComapEq
-public import Mathlib.Algebra.Group.Subgroup.Ker
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.LocallyConstant.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsFacts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.IneFixRoots
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.DecGen
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Places
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
 public import Mathlib.Data.FunLike.Fintype
-public import ReciprocityTheory.Hypotheses.GalCoh
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.GlobalEulerCharacteristicRationalsOddPrime
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecompositionGroupEquivLocalGaloisGroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcUrAbs
@@ -78,18 +69,13 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.Un
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.DecZhat
-import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.PtTail
-import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.ZMod.LocalRing
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.LocEuler
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic

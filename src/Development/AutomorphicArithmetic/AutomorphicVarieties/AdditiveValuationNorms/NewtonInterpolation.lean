@@ -3,10 +3,6 @@ module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Topology.Algebra.Polynomial
-public import Mathlib.Topology.Order.Compact
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
 
 public section
 

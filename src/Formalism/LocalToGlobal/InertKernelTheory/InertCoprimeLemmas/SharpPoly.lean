@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Mathlib.RingTheory.Nullstellensatz
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 
 @[expose] public section
 

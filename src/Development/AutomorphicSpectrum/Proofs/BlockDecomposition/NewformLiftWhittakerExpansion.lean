@@ -2,8 +2,6 @@ module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 public import GroundTheory.AutomorphicForms.GL2Classical.ConstantTerm
-import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.LocalFields.SeparableClosureValuation
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

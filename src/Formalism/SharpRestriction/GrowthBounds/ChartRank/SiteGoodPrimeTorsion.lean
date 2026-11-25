@@ -3,11 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypVin
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.LocCore
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypLift
-public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.RowActWeylMemDescentLattice
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.SwRowGenMonomial
-public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypFormsCl
-public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentHolds
-public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ExistsIsCGBases
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypInvLe
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.FrobeniusNoKernelOfFrobeniusSimilitude
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.ValuationClassTranslateMem
@@ -16,7 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ValIntN
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypChi
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypLat
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan
-import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.SelfDualCongr
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -51,24 +45,13 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylEqSpanInt
-import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescentOfIntegralModels
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.WittVector.IsPoly
 import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.FormSK
 import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
-import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.ColSpanMulUnit
 import Formalism.SharpRestriction.GrowthBounds.ChartComparison.LocMore
-import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.CompInjLocJ
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.ChartRank.HypVinRec, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypLiftDesc, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypLiftTw, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypLiftInv, Formalism.SharpRestriction.GrowthBounds.ChartRank.NuOfAntiEv, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypEvChain, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypFin, Formalism.SharpRestriction.GrowthBounds.ChartRank.HypForms, Formalism.SharpRestriction.GrowthBounds.ChartRank.IntWOfPow, Formalism.SharpRestriction.GrowthBounds.ChartRank.SiteGoodPrimeTorsion

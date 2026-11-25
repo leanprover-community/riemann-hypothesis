@@ -5,11 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Bund
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.ChartGlueSat
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.RingTheory.Ideal.Basic
-public import Mathlib.RingTheory.Ideal.Operations
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XBundleOfFamily
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtension
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.X_join_model

@@ -5,10 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualInfin
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WignerHighestWeights.MsetSep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.HasCohomology
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WignerHighestWeights.AlgIrr
-import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WignerHighestWeights.PairAlg

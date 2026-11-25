@@ -19,8 +19,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvaria
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvariantWeylInvolution
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceInnerMul
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationCovarianceLevi
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelEisenstein.GramMatrixAdjoint
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixMul

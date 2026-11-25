@@ -4,7 +4,6 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Dimension.Finrank
 public import Mathlib.RingTheory.MvPolynomial.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WeylAlgebraQuantumDet.IsTop
-public import Mathlib.Data.Finsupp.Weight
 public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.LinearAlgebra.Dimension.Free
@@ -16,10 +15,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WeylAlgebraQuantumDet.GlRel
 public import Formalism.RealPlaceAnalysis.StatementE
-public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WeylAlgebraQuantumDet.QdetRect
-public import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WeylAlgebraQuantumDet.LineDeriv

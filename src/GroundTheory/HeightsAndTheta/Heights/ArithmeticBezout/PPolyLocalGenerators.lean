@@ -19,7 +19,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGeneratorsDiff, GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPolyLocalGenerators

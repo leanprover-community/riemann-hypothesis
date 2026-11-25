@@ -70,7 +70,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZC
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZExtend
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFamily
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZFinite
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistBundleToSubSystem
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

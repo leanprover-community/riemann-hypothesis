@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.FdEqZero
 public import Mathlib.Algebra.Order.Floor.Extended
 public import Mathlib.Algebra.Order.Floor.Semifield
 public import Mathlib.Algebra.Order.Interval.Basic
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 public import Mathlib.Combinatorics.Enumerative.DyckWord
 public import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -33,19 +32,12 @@ public import Mathlib.Tactic.NormNum.NatFib
 public import Mathlib.Tactic.NormNum.NatLog
 public import Mathlib.Tactic.NormNum.NatSqrt
 public import Mathlib.Tactic.NormNum.Ordinal
-public import Mathlib.Tactic.NormNum.Parity
 public import Mathlib.Tactic.NormNum.Prime
 public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Tactic.Polynomial.Basic
 public import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Topology.Sheaves.Init
 public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerA
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
-public import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-public import Mathlib.Analysis.SpecialFunctions.Bernstein
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-public import Mathlib.Data.Nat.Choose.Multinomial
 public import Mathlib.Tactic.Linter.Style
 
 section

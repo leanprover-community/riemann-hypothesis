@@ -20,9 +20,7 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplierLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsUnitValues
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagCompare
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareFirst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareSecond
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareThird
@@ -31,13 +29,8 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.Integra
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualMapComp
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Assembly
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsProject
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelSummationBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogHermitianSumBounded, Development.AutomorphicSpectrum.Proofs.GeometryProofs.PotentialBoundedPshBoth, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootTowerUniformHeightBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HasReferenceOfSandwichAllPrimes

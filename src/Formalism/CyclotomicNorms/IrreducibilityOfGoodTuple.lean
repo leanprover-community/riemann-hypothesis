@@ -2,13 +2,11 @@ module
 
 public import Formalism.CyclotomicNorms.StatementI
 public import Formalism.GaloisIrreducibility.NoSolvableTransitive
-public import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.PowerPCycle
 public import Formalism.CyclotomicNorms.StatementT
 public import Formalism.CyclotomicNorms.NonsquarefreeBounds.IrreducibilityOfRestriction
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.CyclotomicNorms.NonsquarefreeBounds.Jordan, Formalism.CyclotomicNorms.NonsquarefreeBounds.RestrictionOfBlocksAndJordan, Formalism.CyclotomicNorms.IrreducibilityOfGoodTuple

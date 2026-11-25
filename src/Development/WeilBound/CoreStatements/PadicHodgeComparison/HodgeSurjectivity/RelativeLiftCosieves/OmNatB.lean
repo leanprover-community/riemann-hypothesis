@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.LiftsNonempty
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormLaws
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OntoFormLaws
 
 @[expose] public section
 

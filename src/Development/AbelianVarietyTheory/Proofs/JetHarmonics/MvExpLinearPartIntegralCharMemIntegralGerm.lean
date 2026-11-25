@@ -4,20 +4,15 @@ import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IsIntegralGaugedF
 public import Formalism.IncomingBounds.StatementThmP
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
-public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IntegralGermEqGaugedFormalGroupLawExpIntegral
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.CoeffSubstInvMemOfTwoLeOrder
-import Mathlib.Order.CompletePartialOrder
 import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 import Mathlib.Tactic.Linter.HaveILetI

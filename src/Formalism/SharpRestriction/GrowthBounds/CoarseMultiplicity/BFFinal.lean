@@ -9,16 +9,10 @@ public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymVarI
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.CoarseMultAt
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.WeightWLet
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFTrueDeg
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.ExpFactIoExp
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.FTDefs
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymbolFormOfOrthogonality
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockMonomial
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.MemIntPolOfCoeff
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.TopOddNeEnd
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Kummer
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExponentFactorialAddSingleOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SatBlock, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BlockForm, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFCoarse, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Imports, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LevOfSymVar, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockEqSum, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFFinal

@@ -1,21 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyInvFunEquiv
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.TensorProduct.Basis
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqRepTopVecOfUnitriangular
 public import Mathlib.LinearAlgebra.PiTensorProduct.Dual
-public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MinorOrderedEntries
-public import Mathlib.RepresentationTheory.Intertwining
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPiTensorMvPolynomialProdEquiv
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.Algebra.Module.Projective
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BranchesAlongOfIrreducible
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContractsTensorProductChain
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsoUnitaryIrrepConjDual
@@ -67,14 +56,12 @@ import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIrreducibleSmallRepUnitary
-import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContractsOfIsoDirectSum, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGanGrossPrasadColumnWeights, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGanGrossPrasadRowWeights, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPiTensorShuffleEquiv, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockOnePlaceIsoDirectSumPartitions, Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsoOuterDual, Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsoTwistDetIrrShift, Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonemptyInvFunDualTprodEquiv, Development.AbelianVarietyTheory.Proofs.TwistedOperators.OuterIrrIsoWeylRep, Development.AbelianVarietyTheory.Proofs.TwistedOperators.OuterTensorFockOnePlaceIsoUnitaryFock, Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiTensorMapSurjectiveAndKer, Development.AbelianVarietyTheory.Proofs.TwistedOperators.StrictInterlaceGanGrossPrasadBigSmall, Development.AbelianVarietyTheory.Proofs.TwistedOperators.TensorRepresentationIntertwinerCompat, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinrankInvFunBranch

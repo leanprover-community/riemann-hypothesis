@@ -3,9 +3,6 @@ module
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
 public import Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean
 public import ReciprocityTheory.SemistableReduction.ExistsTorusPointOneLeNormSum
-public import Mathlib.Analysis.Normed.Group.Continuity
-public import Mathlib.Analysis.Normed.Group.Ultra
-public import Mathlib.Topology.Algebra.InfiniteSum.Basic
 public import Mathlib.Combinatorics.Nullstellensatz
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.FinCoreSt
 import Mathlib.Topology.Connected.Separation

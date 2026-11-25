@@ -3,7 +3,6 @@ module
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.OrderReduction.DescentHypotheses
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.OrderPullback
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

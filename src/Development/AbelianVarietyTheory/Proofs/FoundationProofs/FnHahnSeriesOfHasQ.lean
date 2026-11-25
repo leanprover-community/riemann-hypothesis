@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FnHasSumReindexNat
-public import Mathlib.RingTheory.HahnSeries.Multiplication
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesAsRatHahnSeriesFractionalQ
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
 

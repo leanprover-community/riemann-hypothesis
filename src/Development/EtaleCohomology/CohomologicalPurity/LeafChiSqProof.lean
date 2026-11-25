@@ -2,7 +2,6 @@ module
 
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcLevelPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcIdentPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafExcFormalPf
 import Mathlib.CategoryTheory.Limits.Types.Pushouts
 import Mathlib.CategoryTheory.Presentable.Type
 import Mathlib.Tactic.Linter.Style

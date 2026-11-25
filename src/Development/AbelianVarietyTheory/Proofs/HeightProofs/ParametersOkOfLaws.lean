@@ -8,9 +8,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ParCanon
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FunctionFieldAlgClosedLevel
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.LevelDvdBadN
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinSt
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.WchartLePreimage
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.PiTwistNegation, Development.AbelianVarietyTheory.Proofs.JetHarmonics.HalfEXIffOriented, Development.AbelianVarietyTheory.Proofs.HeightProofs.ParametersOkOfLaws

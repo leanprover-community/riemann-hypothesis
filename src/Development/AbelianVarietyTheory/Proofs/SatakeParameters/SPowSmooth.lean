@@ -7,9 +7,6 @@ public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGDatumOneOneOne
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Unramified.Basic
-public import Mathlib.RingTheory.Unramified.Field
 public import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 public import Mathlib.RingTheory.SimpleRing.Congr
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentreCompat
@@ -19,22 +16,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenModelEqGe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorIntegralModelNonemptyStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckePowOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmoothOfRelativeDimensionFibrePower
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Matrix
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CardTorsionPointsUnconditional
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulEquivOfIsGrpPullback
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.BilinFormInjectiveExistsNsmulMemRange, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AlgebraMapFCoe, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsReducedTensorIntNumberField, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSimpleRingOfCentralIdem, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsRingOfIntegersTensorPadicEquivAdjoin, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsTensorPadicIntEquivAdjoinOfFreeFinite, Development.AbelianVarietyTheory.Proofs.SatakeParameters.HarrisTaylorOrderSplitAlmostAllPrimes, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsHarrisTaylorDatumAtPrimeCoprime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.GenericModelComplexSmooth, Development.AbelianVarietyTheory.Proofs.SatakeParameters.SPowSmooth

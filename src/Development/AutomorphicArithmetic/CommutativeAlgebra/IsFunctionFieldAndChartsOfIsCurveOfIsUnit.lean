@@ -11,7 +11,6 @@ public import Development.AutomorphicArithmetic.CommutativeAlgebra.TwistedSectio
 public import Development.EtaleCohomology.EtaleSheaves.LeafAffCoverVanishPfEmpty
 public import Development.EtaleCohomology.EtaleTrace.LocalSplitting.Cover2
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.IsChart
-public import GroundTheory.FunctionField.PlaceDefs
 public import Development.EtaleCohomology.CohomologicalPurity.LeafHtpyMVPf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleSheafSectionsSepGlueOfSurjectiveFamily
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZeroChains
@@ -19,7 +18,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMayerVietorisConnectingExact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KummerClassOfUnitCocycleNaturalAdditiveStatement
 public import Mathlib.Tactic.ENatToNat
-public import Mathlib.RingTheory.PicardGroup
 public import Mathlib.Algebra.Homology.HomotopyCategory.KInjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChosenInjectiveResolutionEtaleSheafProperties
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChosenInjectiveResolutionEtaleSheafSectionsExactStatement
@@ -37,10 +35,6 @@ public import Development.EtaleCohomology.KummerTheory.PlaceExPfZorn
 public import Development.EtaleCohomology.KummerTheory.PlacePfVal
 public import Development.EtaleCohomology.KummerTheory.PlaceResGoodPf
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsRootOfKummerClassEqZero
-public import Mathlib.AlgebraicGeometry.Properties
-public import Mathlib.AlgebraicGeometry.FunctionField
-public import Mathlib.AlgebraicGeometry.Stalk
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.BaseChangeAffineSectionsSubalgebraTensor
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsCurvePullbackOfIsCurveBaseChange
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsDedekindDomainAffineSectionsOfIsCurve
@@ -48,7 +42,6 @@ public import Development.AutomorphicArithmetic.CommutativeAlgebra.SurjectiveOfI
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CurveFunctionField
 import Development.EtaleCohomology.EtaleTrace.LDblPf
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsUnitEqMultiplicativeGroupSection
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitKummerEqOfPicardTorsionFree
 import Mathlib.Tactic.Linter.Style
 

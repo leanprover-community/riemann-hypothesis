@@ -10,11 +10,7 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDDeg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechMapDeg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechSES
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.SnapperComponentMulX
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechDSq
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PQuotPartGraded
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

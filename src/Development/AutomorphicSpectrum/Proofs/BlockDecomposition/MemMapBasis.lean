@@ -1,34 +1,22 @@
 module
 
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.XSmulSucc
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Ring.Defs
-public import Mathlib.Data.Nat.Prime.Defs
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
-public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Algebra.CharP.Lemmas
-public import Mathlib.RingTheory.Coprime.Basic
-public import Mathlib.RingTheory.Coprime.Lemmas
 public import Mathlib.RingTheory.Nilpotent.Basic
 public import Mathlib.RingTheory.WittVector.Teichmuller
 public import Mathlib.NumberTheory.Basic
 public import Mathlib.RingTheory.Perfectoid.FontaineTheta
-public import Mathlib.RingTheory.Perfection
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.TwistAcrisZeroPreservesFiltration
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.MapAcrFromBase
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PeriodRingBaseChangeFromUniversal
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.MapUSharp
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EtaleLiftingOfNilIdeal
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Flat.EquationalCriterion
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.ObFacts
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EpsilonCyclotomicElementProperties
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLiftToThickening
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubMemSpanOfEtale
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UZeroApplySelf
-import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsDPMorphismBot
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.InstAddCommGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExtendedDividedPowers

@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.ThetaDilations.IsOpenCoset
-public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
 import CompanionTheory.AutomorphicTheory.ThetaDilations.OrbitAdelic
 

@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 public import Formalism.QuotientMetricDivisors.Complement2Normaliser
 public import Formalism.LocalToGlobal.Divisibility.JetBounds.IsExpansion
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementKer
-import Formalism.LocalToGlobal.Divisibility.ClassSum
 import Formalism.LocalToGlobal.ExponentGrids.ExponentGridsProofs.NormaliserValuationBound
 
 -- This file was produced by scripts/clump.py from the modules listed below.

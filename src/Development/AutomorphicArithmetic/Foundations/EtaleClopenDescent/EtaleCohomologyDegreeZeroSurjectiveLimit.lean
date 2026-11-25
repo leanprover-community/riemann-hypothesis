@@ -9,7 +9,6 @@ public import Development.EtaleCohomology.EtaleSheaves.RelativeCohomologyForgetI
 public import Development.EtaleCohomology.EtaleSheaves.SecondDegreeKilling.LeafKill2Of
 public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

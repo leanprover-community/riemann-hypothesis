@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Unita
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemLatSLatAdIff
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.UnderTie
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

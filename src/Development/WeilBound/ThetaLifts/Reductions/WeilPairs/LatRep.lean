@@ -13,7 +13,6 @@ public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepC
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepB_A
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SumFourEqTrace
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

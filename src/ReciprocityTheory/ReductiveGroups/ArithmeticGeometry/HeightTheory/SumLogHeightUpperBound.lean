@@ -1,10 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormLineSectionPow
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Qdist
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GaussAbsMulSupportFinite
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
@@ -12,13 +8,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.MinkSat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.MvPolynomial.Division
 import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.SemistableReduction.GaussAbsMulOfMonomialOrder
-import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HupsChooseRatio, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HupsTwCoeffCoeff, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.UpMkApplyInl, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.PolyL2EqSqrtCoeffSum, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ExistsIntMultiple, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SatDegLe, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.UpSiegel, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SumLogHeightUpperBound

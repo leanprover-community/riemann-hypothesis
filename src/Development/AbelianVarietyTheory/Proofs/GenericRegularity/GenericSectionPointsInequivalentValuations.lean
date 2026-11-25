@@ -14,13 +14,7 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.CountQAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInj
 public import Formalism.LocalToGlobal.ProjectiveLattices.PtOfSPf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IsUnitOfValEqZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.WeakApprox
-import ReciprocityTheory.SemistableReduction.AlgAll
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FinrankHostDivTwo
 import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed

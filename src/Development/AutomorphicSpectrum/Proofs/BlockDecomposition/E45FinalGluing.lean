@@ -5,13 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentreEnvelo
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteAutomorphicRepGLExistsLocalComponent
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteSpectrumOfResidual
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MultisetSeparation
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitTwistBound
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
 public import Mathlib.Topology.MetricSpace.Sequences
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinStable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairFirstStep
@@ -54,31 +48,16 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharInfCharOfCommute
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsDiscreteUOfIsDiscrete
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BaseChangeDefiniteUnitary
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapacityEquivalence, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConvergenceComposition, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConvergenceInfimum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConvergenceShift, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConvergenceStrip, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DiscreteInfimum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorInduction, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorLimit, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HullGeneration, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MultisetEqOfProdAddEq, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinitePlacesOver, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InfimumOfEquality, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeafBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitLists, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LimitTrees, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairEmbedding, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairFiniteDimensional, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemProdSpanInf, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairRestriction, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairSlices, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProdClose, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SingleGluing, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SliceType, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopologicalInfimum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.E45FinalGluing

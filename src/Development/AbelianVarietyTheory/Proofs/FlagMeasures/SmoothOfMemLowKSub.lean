@@ -4,13 +4,9 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.NumRho
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 public import Formalism.RealPlaceAnalysis.StatementU
 public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.NoncompactArrFiniteDimensional
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.HalfSumRootsStandard
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.OrbitStepSpace
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSmoothCompactSupportFixLowestKType
@@ -18,12 +14,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfValTwoEqC
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.KTypeGeneratedByHighest
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.NoncompactGeneratorRaisesPfil
 import Aesop.Main
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Algebra.Order.Star.Real
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.SumOfSquaresIdentityHolds
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothVecUnitaryModule
 import Mathlib.MeasureTheory.Function.L2Space
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd

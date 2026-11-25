@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.Analysis.Complex.Exponential
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

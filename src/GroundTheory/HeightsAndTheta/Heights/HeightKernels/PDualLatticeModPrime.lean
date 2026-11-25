@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLatticeInd
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 

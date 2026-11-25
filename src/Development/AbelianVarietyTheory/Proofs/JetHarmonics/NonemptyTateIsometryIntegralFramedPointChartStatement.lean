@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelMapFibre
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.TateTransport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushEquivSymmLeft
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.BidegreeTwoJet

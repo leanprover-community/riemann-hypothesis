@@ -1,14 +1,10 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.SymFamilyWordEqHeadMulMonomial
-public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColsDef
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.PolynomialThetaProduct
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TopOddNeEndAny
-public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestRoom
-public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.SgKSPowP
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.PreDef
 import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MonomialWeightedHomogeneous
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.Finsupp.Pointwise
 

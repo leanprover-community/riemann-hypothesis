@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Vanishing

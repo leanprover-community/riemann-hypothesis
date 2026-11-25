@@ -3,8 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.TraceForm
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.OpenSlices
-import GroundTheory.AutomorphicForms.MeasuresModulus
-import GroundTheory.AutomorphicForms.WhittakerDistribution
 
 @[expose] public section
 set_option linter.unusedSectionVars false

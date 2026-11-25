@@ -4,14 +4,9 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FromNAdd
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FunctionFamilyIdempotent
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFlagPair
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderRetractRestriction
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsIntegrallyClosedOfDenom
 public import ReciprocityTheory.DualLattices.ExistsSmulMemOfMemSpan
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.NonemptyEquivOfCardHom
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LemmaBTHolds
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 
 @[expose] public section

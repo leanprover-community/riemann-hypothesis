@@ -3,13 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 public import Mathlib.FieldTheory.Galois.Infinite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedLaurentIsDVRStatement
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.RingTheory.Valuation.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DivMemSubalgebraOfValuationLeOneOfUniformizer
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.Algebraic.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePidSubalgebraDivPadicInt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGaloisInvariantValuationIntegersEqIntegral
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGeneratorValuationPrimeDvdPowSubOfFinitePa
@@ -17,12 +11,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ResidueTowerPowersLinearIndependent
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerParameterNotPowModMaximalIdealAdjoinAlgebra
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedIntegersAdicComplete
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
 

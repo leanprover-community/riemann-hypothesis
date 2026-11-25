@@ -7,7 +7,6 @@ public import Mathlib.RingTheory.Filtration
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
-public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatFiniteFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQuotientOfCompleteNakayama
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FreeModuleAdicCompleteSeparated

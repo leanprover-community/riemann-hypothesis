@@ -5,20 +5,14 @@ public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowS
 public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGDefs
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGBasic
-public import Mathlib.Algebra.Algebra.Hom.Rat
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModLocB
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
 import ReciprocityTheory.NeutralLocalFields.HilbertClassField
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.WittVector.IsPoly

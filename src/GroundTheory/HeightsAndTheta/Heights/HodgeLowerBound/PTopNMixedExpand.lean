@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombExpand
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PZCombLimit
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

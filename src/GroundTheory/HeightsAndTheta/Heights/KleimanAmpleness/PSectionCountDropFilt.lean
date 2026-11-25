@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.QuotGraded
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar

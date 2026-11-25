@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
 public import Mathlib.CategoryTheory.Category.Basic
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RangeSubtypeEq
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGenerates
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HasLenOfEquiv
 public import ReciprocityTheory.DualLattices.EigenLengthProductStatementHolds
@@ -57,7 +56,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.DualLattices.PowMemCarrier
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.DualLattices.IsLocalOfIntegers

@@ -2,10 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAuxiliaryVectorWittDec
 public import GroundTheory.GlobalFields.Adele.IntegersLattice
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SelfDualLatticePairingDual

@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.DecompSigmaOrd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EptInt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.PtInSmul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SgnMulSelf
@@ -11,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUni
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartSpan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SInternal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SpanMono
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MonicNormLtOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.PtActInternal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.PtLift
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.PtScale
@@ -20,14 +18,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticG
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSqz
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.DerHom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.ShaCoc
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.OrbitVanishingLocal
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.NormO
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.DiagCases
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SpanZero
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.TriComb
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.WPresGrZeroIsCOOfMemMaximalIdeal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.ASmooth
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.QuotientSaturatedSquareTorsionFree
 import Mathlib.Algebra.Order.Floor.Extended
@@ -35,7 +25,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -67,27 +56,15 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueFixedPointOfAdicContraction
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.WPresDualExt
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
-import Mathlib.RingTheory.PicardGroup
-import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
-import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.GeAlgTop
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Data.Finsupp.WellFounded
 
 section
 @[expose] public section

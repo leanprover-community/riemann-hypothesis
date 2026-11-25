@@ -29,16 +29,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFnDegRelDeg
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ProjDeg
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.NumericalSegre
-import Mathlib.RingTheory.KrullDimension.Field
-import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PrimeComplMapLeNonZeroDivisorsQuot
-import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogIdealChain
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreDivSupp
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreOverFinite

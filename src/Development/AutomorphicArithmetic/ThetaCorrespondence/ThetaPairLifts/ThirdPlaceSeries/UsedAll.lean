@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
 public import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RealPack
-import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.NormFr
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.LatticeFrames.CornerCoordinateAutomatic, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.UsedAll

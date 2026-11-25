@@ -5,9 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMin
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
 import Mathlib.Algebra.Order.Sub.Prod
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsMultiHomogIdealSpanSingleton
 import GroundTheory.HeightsAndTheta.Heights.BlockScaling

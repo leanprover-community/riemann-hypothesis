@@ -3,14 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemIffRead
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SourceLatticeInvariance
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatEqOfCarries
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Formalism.LocalToGlobal.Columns.RecLevelLoc
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsMoveRight
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HermitianStepLevelOfChartFormsLevel
-public import Formalism.LocalToGlobal.HermitianColumns.StepLevelQ
-public import Formalism.LocalToGlobal.HermitianForms.RankEqFirstLevel
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValLtOfRedM
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartWiden
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepBeforeClNonempty
@@ -19,7 +14,6 @@ public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtRec
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -51,21 +45,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemIdSOfResSEqZero
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PrimesOverPlaces
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SymmetricFlagBasisVectorEqSingleOfNoExtra
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
-import Formalism.LocalToGlobal.Columns.RecLevelLocP
-import Formalism.LocalToGlobal.Columns.RecLevelStep
-import Formalism.LocalToGlobal.HermitianForms.PrkSmul
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelPrimeDvdOfAdicValuationLtOne
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
-import Mathlib.Algebra.Group.Action.Sigma
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetReductionFixedIffResidues, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetReductionFixedIffResiduesStatement, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelMemChartLevelIffReductionFixesTypePrime, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartLevOffType, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReGLMemLevelVL, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RedMLevJ, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevJCosetsOfFurther

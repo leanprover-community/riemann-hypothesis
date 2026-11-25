@@ -2,14 +2,9 @@ module
 
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.LocpairAlg
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
 public import GroundTheory.LocalFields.PadicLogSeries
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GlobalUnitScalingHaarProductFormula
-import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.AdelicSchrodingerTensorEqLocalOfSupportedAt
-import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModulusOfNormEqAbs

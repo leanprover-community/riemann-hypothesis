@@ -3,15 +3,9 @@ module
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.ClassGroup.Basic
-public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import GroundTheory.GlobalFields.Adele.Discrete
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
-public import GroundTheory.GlobalFields.Adele.Approximation
 public import Mathlib.NumberTheory.NumberField.AdeleRing
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Algebra.Quaternion
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Tactic.ENatToNat

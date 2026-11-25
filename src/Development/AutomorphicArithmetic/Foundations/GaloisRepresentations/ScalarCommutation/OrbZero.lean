@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlgebraicRealisationHolomorphicMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockParOpp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocPartMul
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MaxWeightGL1EqOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowerBasisOfCharpolySeparable
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointSide
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ScalarCommutation.TypeSlice

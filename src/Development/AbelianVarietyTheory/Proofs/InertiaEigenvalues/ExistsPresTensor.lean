@@ -4,25 +4,13 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Algebra.Ring.Hom.Defs
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.JSmul
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardLeOfSpan
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Group.Units.Defs
-public import Mathlib.Algebra.Group.Units.Basic
-public import Mathlib.Algebra.GroupWithZero.Units.Basic
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.RingTheory.LaurentSeries
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteClassesSubsetAdmissibleOfGoodO
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.T2SpaceLocalLatticeRepresentationSpace
-public import Mathlib.RingTheory.WittVector.Complete
-public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.RingTheory.Flat.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqTopOfSpanImage
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleStd
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.OnePlusPowerAssembly
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemOfAssembleMem
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicExistsIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InclWFrobIter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvrComplete
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCyclotomic
@@ -31,11 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsF
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankAndKernelOfLetterImageTensor
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GammaActionReduction
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.PowerSeriesOneAddConstMulXMulInv
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ResBound
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistedModelAdmissibleCocycles
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQuotientPow
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

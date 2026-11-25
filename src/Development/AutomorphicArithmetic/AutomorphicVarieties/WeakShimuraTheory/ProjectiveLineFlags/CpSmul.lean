@@ -11,9 +11,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedIdeal
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HeckeSectionsIsotropicCommutatorPairingPower
 public import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.WeylPolynomialAlgebra
-public import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.BlockVandermondeForms
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

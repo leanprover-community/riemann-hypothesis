@@ -4,7 +4,6 @@ public import Formalism.MahlerMeasure.GoodCount
 public import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockValuationZpOfLatticeInclusion
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SLetCastSucc
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.GoodCountMem
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.ValFactSumLe
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style

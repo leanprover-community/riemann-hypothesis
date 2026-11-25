@@ -11,26 +11,16 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TensorKP
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DerivativeRepresentation
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.TieDefs
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.NuOfWtPQCast
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.DeltaPsiH
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.QaNuNextAdd
-public import Formalism.GradedWeylDivisibility.StatementD
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ShapeCovering.CovDet
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TwoLatLeTwoSp
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ExplicitMapOntoTwoLetterSpace
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DetYNeZero
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.SubCoeffP
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.TheoremIOfTwoLetterClausesContraction
 import Mathlib.Tactic.Linter.Style
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankTensor
-import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CcDualWtAnti
-import Formalism.GradedWeylDivisibility.FinalC
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDbasisLemmas
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ShapeCovering.CovWeyl
 
 -- This file was produced by scripts/clump.py from the modules listed below.

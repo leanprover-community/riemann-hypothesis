@@ -9,34 +9,15 @@ public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Norm.Basic
 public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.FieldTheory.KrullTopology
-public import Mathlib.Topology.LocallyConstant.Basic
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.RestrictedMultiplicativeH1Subsingleton
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertFixesRootOfUnitRatio
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Data.ZMod.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerGeneratorOfChar
-public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.WithZeroEqOfLeExpIff
 public import Mathlib.NumberTheory.RamificationInertia.Galois
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Ramification
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
-public import Mathlib.RingTheory.DedekindDomain.Basic
-public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-public import Mathlib.LinearAlgebra.BilinearForm.DualLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ClassGroupAffineCurveDivisibleCharZero
-public import Mathlib.FieldTheory.Galois.Basic
-public import Mathlib.RingTheory.ClassGroup.Basic
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationEqOneOfPowEqSpan
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ZetaMemRange
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.C1FieldNormSurjective
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TsenTheorem
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
@@ -44,7 +25,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.Valuation.LocalSubring
 

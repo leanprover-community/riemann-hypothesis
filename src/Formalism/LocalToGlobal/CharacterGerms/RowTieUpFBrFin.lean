@@ -4,11 +4,7 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrPl
 public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Lemmata.MiscLemmasH.Imports
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Mathlib.FieldTheory.Finite.Basic
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrS
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrR
@@ -19,7 +15,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
 public import Formalism.LocalToGlobal.CharacterGerms.CharacterHypothesisUnramified
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.CharacterGerms.NatCastMulTmul, Formalism.LocalToGlobal.CharacterGerms.CompleteOfBasis, Formalism.LocalToGlobal.CharacterGerms.DetNeZeroOfChars, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrPlP, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrEF, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrPlB, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrRP, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrSfI, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrFin

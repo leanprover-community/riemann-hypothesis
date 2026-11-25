@@ -4,13 +4,8 @@ public import Mathlib.Algebra.Algebra.Subalgebra.Basic
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Dimension.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.Complex.Cardinality
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.TensorIrr
-public import Mathlib.RingTheory.SimpleModule.Basic
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basis
 public import Mathlib.RingTheory.Algebraic.LinearIndependent

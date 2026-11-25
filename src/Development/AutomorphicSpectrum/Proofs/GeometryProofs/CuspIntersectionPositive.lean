@@ -3,52 +3,26 @@ module
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.UniLatA
-public import Mathlib.Analysis.Normed.Group.Basic
-public import Mathlib.Analysis.Normed.MulAction
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicFamilySmoothEntries
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositive
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeGramDeterminant
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
-public import Mathlib.Analysis.Matrix.Hermitian
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicEigencomponentConjugateForm
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PlurisubharmonicLocal
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsExtendLinearIndependentOfSpan
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicQuotientStructure
 public import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PhiISemipositive
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.NineGeoU
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeIPOfFibreLatVec
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataHodgeBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeMiddle
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContinuousHermitianMatrixFamily
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
-import Development.WeilBound.CoreStatements.PlurisubharmonicCones.FiniteOfTorsion
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataIntersectionBound
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 
 -- This file was produced by scripts/clump.py from the modules listed below.

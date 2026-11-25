@@ -1,9 +1,7 @@
 module
 
 public import Development.EtaleCohomology.EtaleTrace.ChartGenOnPfCut
-public import Development.EtaleCohomology.EtaleTrace.GenOutChartPfGen
 public import Development.EtaleCohomology.EtaleTrace.FibrePf
-public import Development.EtaleCohomology.EtaleTrace.LCoverCut
 public import Development.EtaleCohomology.EtaleTrace.FinSurjPf
 public import Development.EtaleCohomology.EtaleTrace.GenOnAgreePf
 public import Mathlib.RingTheory.MvPolynomial.Ideal
@@ -15,7 +13,6 @@ public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 public import Development.EtaleCohomology.EtaleTrace.PNBasicPf
-public import Development.EtaleCohomology.EtaleTrace.GenOutGluePf
 public import Development.EtaleCohomology.EtaleTrace.PNIntegralPf
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.BasisOne
 import Mathlib.Tactic.Linter.HaveILetI

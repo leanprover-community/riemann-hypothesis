@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupLocal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSLocal
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SDivisor
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupCone
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseClass
@@ -13,18 +12,10 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsDiscrete
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseClassIdele
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDelta
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummer
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupFormula
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BijectiveGsLocalInvRootsOfPlaces
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCores
 public import GroundTheory.ProfiniteCohomology.PoitouTate.Deduction
-public import GroundTheory.ProfiniteCohomology.PoitouTate.ZmodToQZCompactCohomologyResMapOfLocalInv
-import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -35,7 +26,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -62,19 +52,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import GroundTheory.ProfiniteCohomology.FilteredHomology
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
-import GroundTheory.TateCohomology.HerbrandAbstract
-import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
-import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 import Mathlib.Tactic.TypeStar
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupNat
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.ClassFieldGSPresentation
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFixed
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInputs
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.RestrictedRamification.MkFiniteEmbeddingGlobalUniformizer, GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupGlob, GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCupGlobal, GroundTheory.ProfiniteCohomology.RestrictedRamification.GsRootsToUnitsCompactComparisonCup, GroundTheory.ProfiniteCohomology.RestrictedRamification.ZmodToQZGsCompactInvLocalToCompactEqLocalInvU, GroundTheory.ProfiniteCohomology.RestrictedRamification.BasePairing, GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseMain, GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs

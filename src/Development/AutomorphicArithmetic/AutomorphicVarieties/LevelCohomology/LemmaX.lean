@@ -1,33 +1,10 @@
 module
 
 public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.CharP.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Ring.Int.Defs
-public import Mathlib.Algebra.Ring.Parity
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.ExistsPowDvdSubOfTwoPowDvdSubOne
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.CharP.Lemmas
-public import Mathlib.Algebra.Field.GeomSum
-public import Mathlib.GroupTheory.OrderOfElement
-public import Mathlib.Algebra.Group.Int.Defs
-public import Mathlib.Algebra.Group.Nat.Defs
-public import Mathlib.Algebra.Divisibility.Basic
-public import Mathlib.Algebra.GroupWithZero.Divisibility
-public import Mathlib.Algebra.Ring.Int.Parity
-public import Mathlib.RingTheory.Coprime.Basic
-public import Mathlib.RingTheory.Coprime.Lemmas
 public import Mathlib.RingTheory.Int.Basic
-public import Mathlib.Data.ZMod.Basic
-public import Mathlib.Data.Nat.Totient
 public import Mathlib.Data.ZMod.Units
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.Algebra.Ring.Subring.Defs
-public import Mathlib.Algebra.Field.Basic
-public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.NumberTheory.DirichletCharacter.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.UnramifiedCocycleIsCoboundaryOfBernoulliUnit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.BOneSum

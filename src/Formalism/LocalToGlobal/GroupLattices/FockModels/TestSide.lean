@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideDef
 public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSidePos
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideLat
 
 @[expose] public section
 

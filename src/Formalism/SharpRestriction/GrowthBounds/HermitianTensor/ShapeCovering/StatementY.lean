@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementA
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 
 @[expose] public section

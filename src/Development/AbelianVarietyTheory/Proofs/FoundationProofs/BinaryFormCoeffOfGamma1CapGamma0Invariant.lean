@@ -3,12 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerUnitClassModPrimePowProperties
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsRootOne
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Vandermonde
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BinaryMonomialDegreeSubstExpansion
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 

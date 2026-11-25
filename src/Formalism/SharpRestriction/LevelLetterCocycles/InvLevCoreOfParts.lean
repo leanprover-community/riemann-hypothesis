@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillWinFromCut
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalInputsFromLiterature
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.PrecompConst, Formalism.SharpRestriction.LevelLetterCocycles.InvLevCoreOf, Formalism.SharpRestriction.LevelLetterCocycles.InvLevCoreOfParts

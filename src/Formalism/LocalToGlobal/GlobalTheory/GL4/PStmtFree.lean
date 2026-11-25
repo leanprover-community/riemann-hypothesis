@@ -1,9 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PacketOfFrameDegree
-public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwoLeV
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HookBound
-import Formalism.LocalToGlobal.Columns.BrpStarLatLattice
 import Formalism.SharpRestriction.GlobalSchurBounds.TotallyPositiveTraceGeOfNormDiscr
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

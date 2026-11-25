@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.GermEvalOneStandardPointSelf
-public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroDoubleMultiplicationPair
 public import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
 import Mathlib.Tactic.Linter.Style
 

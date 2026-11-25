@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.PolBridge
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestSegCore
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RecursionWithDensities, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.DensitySumsAndDomination

@@ -5,8 +5,6 @@ public import Formalism.PieriBlockIdeals.TailInequalityEventually
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExportSt
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.LargeParameterEstimates
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Development.AbelianVarietyTheory.Definitions.Divisors.SumExpSt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

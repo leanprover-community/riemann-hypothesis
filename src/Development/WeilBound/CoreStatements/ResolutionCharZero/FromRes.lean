@@ -10,7 +10,6 @@ public import Development.WeilBound.CoreStatements.ResolutionCharZero.FromResSnc
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.WChartsC
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.StrictNormalCrossings
 
 @[expose] public section
 

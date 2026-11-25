@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.ExpDefs
-public import Formalism.AlgebraicWeights.IsAlgWeight
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevel
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
 import Mathlib.Tactic.Linter.Style

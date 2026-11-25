@@ -2,14 +2,9 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
 public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeLinearFunctionals
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeWeightFormula
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Nat.Choose.Multinomial
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PolarizationPolynomialCoeffBound
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerGeometricAgreement
 import Mathlib.Tactic.Linter.Style
 

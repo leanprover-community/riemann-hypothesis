@@ -7,39 +7,28 @@ public import Formalism.LocalRingCardinality.DataKerI
 public import Formalism.LocalToGlobal.GroupLattices.CloudFilling.ExistsPowOrbRep
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FrobOrderSpec
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.GTiedFOfIsRecCEv
-public import Formalism.SharpRestriction.GrowthBounds.DataG
-public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NZLevB
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.DuCount
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ClsRec
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.DeterminantTwistRowActionMem
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.Cartan
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.SelfDualAtColLevel
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.TestSideCounting
-public import Formalism.PolynomialDimension.WeylDim
 public import Mathlib.RingTheory.MvPolynomial
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPlTieOfInertCore
-public import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsAdicCompleteAndCardQuotientAdicCompletionInteg
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemDualSetOfMemSpan
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDvrFrobeniusLift
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LocIdFr
-public import Formalism.LocalRingCardinality.SpanPowerMembership.GatTies
 public import Formalism.LocalRingCardinality.ConjSqrtMinusD
-public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ICIntCp
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.CompanionOfBaseTied
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.FullTiedCBase
 public import Formalism.LocalToGlobal.HermitianColumns.FullSym
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieStd
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
-import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtRec
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -64,7 +53,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -79,31 +67,11 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.GroupLattices.TiedRec
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.GlobalTheory.GL6.WeylLengthDiagonalUnitUniformiser
-import Formalism.LocalToGlobal.GroupLattices.FockModels.SwRowGenMonomial
-import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
-import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.WeylDimShift
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FractionRingFrobeniusAlgebraMap
-import Formalism.LocalToGlobal.GroupLattices.CloudFilling.GatRecStepFrob
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.RingTheory.Ideal.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AddCharIsIntegral, Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TieEmbeddingCastLevelTie, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EvalRepsSurjective, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CharZeroOfSetting, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompletionEquiv, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LamV, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocIdOfCompletions, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConcrete

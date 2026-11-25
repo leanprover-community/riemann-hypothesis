@@ -7,7 +7,6 @@ public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.EtaDef
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmQuadraticCharacterEqProdRealSigns
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaTildeHeckeCharSplitMulSignOfNormFormula
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutEtaA
 import Mathlib.Tactic.Linter.Style
 

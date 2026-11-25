@@ -9,7 +9,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetectio
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.GaloisActionFrobeniusComm
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvEquiv
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvRhoC
-import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
 import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.CrystallineToDeRhamInjective
 
 -- This file was produced by scripts/clump.py from the modules listed below.

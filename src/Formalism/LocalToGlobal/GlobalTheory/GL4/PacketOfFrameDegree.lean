@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 public import Formalism.LocalToGlobal.Columns.CoefficientMapHeightBound
 public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwoLeV
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
-public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsNsmulMem
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
@@ -17,31 +15,10 @@ public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescen
 public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.ThirdPropositionOfClass
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.ColumnLatticeExactSlope
-public import Formalism.SharpRestriction.GlobalSchurBounds.TotallyPositiveTraceGeOfNormDiscr
-public import Formalism.LocalToGlobal.Columns.SummandSlopeAtDecoratedLattice
-public import Formalism.LocalToGlobal.Divisibility.CoefMod
-public import Formalism.SizeWindowBrackets.LcvBaseChange
-public import Formalism.LocalToGlobal.Columns.BrzColLatOneLattice
-public import Formalism.LocalToGlobal.Columns.StandardDeltaIntegralCoeffs
 public import Formalism.LocalToGlobal.Columns.SummandSlopeOfThreeLemmas
-public import Formalism.LocalToGlobal.Columns.BrpStarLatLattice
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.CoeffMemOfIntSpanAt
 public import Formalism.LocalToGlobal.Columns.FockNormSubstitutionBound
-import Formalism.HermitianLattices.StatementLat
-import Formalism.LocalToGlobal.GlobalTheory.HLatOps
 import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.StExtInv
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.GL3MeanSquares.ConcavityEquidistribution
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.FrameHermSharpB
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
-import Formalism.HarderNarasimhan.ShiftInvariance
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
-import Formalism.LocalToGlobal.Columns.LocWLemmas
-import Formalism.LocalToGlobal.Columns.StdLatUnimodular
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.LocalToGlobal.GlobalTheory.GL4.PZBasis
-import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PExtInvMuB, Formalism.LocalToGlobal.Columns.MaxSlopeSummandOfFock, Formalism.LocalToGlobal.Columns.MultiFactorialEqTripleProd, Formalism.LocalToGlobal.GlobalTheory.GL4.FockNExtCNu, Formalism.LocalToGlobal.Columns.MaxSlopeOrthogonalNegLog, Formalism.LocalToGlobal.GlobalTheory.GL4.MuMaxLeMon, Formalism.LocalToGlobal.GlobalTheory.GL4.ShortAtMeanLog, Formalism.LocalToGlobal.GlobalTheory.GL4.ThirdLinkOfArchimedean, Formalism.LocalToGlobal.Columns.BrpColLatOneSpan, Formalism.LocalToGlobal.Columns.TwistedLocalisationComparable, Formalism.LocalToGlobal.GlobalTheory.GL4.CfMemTwId, Formalism.LocalToGlobal.GlobalTheory.GL4.NfAllSelfEq, Formalism.LocalToGlobal.GlobalTheory.GL4.PacketOfFrameDegree

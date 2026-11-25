@@ -7,9 +7,6 @@ public import Development.EtaleCohomology.TateTwists.EtaleLocallyKummerRootsOfUn
 public import Development.EtaleCohomology.TateTwists.EtaleTorsionCohomologyLocalizationBasic
 public import Development.EtaleCohomology.TateTwists.EtaleLocallyExistsPrimitiveRootOfUnityOfInvertib
 import Development.EtaleCohomology.KummerExtensions.EtaleTateTwistSectionsLocallyGenerated
-public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
-public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
-public import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 @[expose] public section
 

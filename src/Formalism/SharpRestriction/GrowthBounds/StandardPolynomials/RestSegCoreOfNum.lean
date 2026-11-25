@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TCNumD
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestSegCore
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Std.Tactic.BVDecide.Normalize.BitVec
 
 -- This file was produced by scripts/clump.py from the modules listed below.

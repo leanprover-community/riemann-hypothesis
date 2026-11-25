@@ -8,8 +8,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StTailLogOfMass
 public import Mathlib.Analysis.Complex.ExponentialBounds
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PTailLogOfMassCharts, GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PTailLogOfMass

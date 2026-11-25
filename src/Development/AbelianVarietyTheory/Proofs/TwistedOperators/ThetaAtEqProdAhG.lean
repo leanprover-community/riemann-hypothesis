@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Heisenber
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.DifferentiableConjConj
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.PPSemichar
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsNsmulIntegral, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaAtEqProdAhG

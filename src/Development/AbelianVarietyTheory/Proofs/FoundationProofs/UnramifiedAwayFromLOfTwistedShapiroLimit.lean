@@ -9,29 +9,14 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WildEqO
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ShCocOn
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertiaTorsionQuotientConjInvariantDecomposition
-public import Mathlib.Data.Nat.Totient
-public import Mathlib.Data.ZMod.Units
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.RingTheory.Noetherian.Defs
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.Filtration
-public import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Compactification.OnePoint.ProjectiveLine
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsLocallyConstantCycMod
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTameGenAtOfValuationSubring
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 
 -- This file was produced by scripts/clump.py from the modules listed below.

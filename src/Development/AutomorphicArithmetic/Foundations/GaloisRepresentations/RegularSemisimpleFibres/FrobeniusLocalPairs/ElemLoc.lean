@@ -17,8 +17,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import GroundTheory.LocalFields.Uniqueness
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.FrobeniusLocalPairs.StrictNear
 
 -- This file was produced by scripts/clump.py from the modules listed below.

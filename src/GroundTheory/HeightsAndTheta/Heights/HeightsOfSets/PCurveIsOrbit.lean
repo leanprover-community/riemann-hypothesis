@@ -4,11 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObject
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.MemMCoordIdealIffOfIsWeightedHomogeneous
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseChart
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

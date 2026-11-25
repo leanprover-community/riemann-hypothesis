@@ -10,7 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftBlo
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftCountAlongMultiples
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionLatticeFinite
 import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDefs
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 import Mathlib.Algebra.Order.Star.Real
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockVeronese

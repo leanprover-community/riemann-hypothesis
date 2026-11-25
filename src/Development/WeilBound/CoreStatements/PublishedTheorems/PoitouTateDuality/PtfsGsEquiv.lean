@@ -4,11 +4,9 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramif
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GaloisUnramifiedOutsideCohomology
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.NormalSubgroupLeUnramifiedFixing
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
 public import Mathlib.RingTheory.PicardGroup
 public import Mathlib.FieldTheory.Galois.Profinite
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import Mathlib.Topology.Connected.Separation
 
 -- This file was produced by scripts/clump.py from the modules listed below.

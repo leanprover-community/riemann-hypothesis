@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPolydiscLelongLimit
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood

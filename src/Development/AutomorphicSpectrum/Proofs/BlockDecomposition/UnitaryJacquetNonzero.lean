@@ -3,44 +3,20 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.SatPowNonvan
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasselmanFirstProperty
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Mathlib.Basic.Complex.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedVectorZeroOfDual
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsDomMonoid
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.Topology.Algebra.Valued.ValuationTopology
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPermWOne
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.IsStrictDom
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsStrictDom
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Algebra.Group.Subgroup.Map
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Data.Finset.Defs
-public import Mathlib.GroupTheory.Coset.Defs
-public import Mathlib.Data.Finset.Image
-public import Mathlib.Data.Fintype.EquivFin
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPoints
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Data.Finset.Card
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIwUIff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryIwahoriFactorization
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryIwasawaBruhatDecomposition
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAveragingProjection
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.CasselmanStrictlyDominantExample
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantUnipotentContraction
-public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.TwistedIndependenceLemma.TwistedIndependence
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCharacterExistsUnique
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriUnipotentDatum
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeA
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FiniteCosetsInDoset
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeComb
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

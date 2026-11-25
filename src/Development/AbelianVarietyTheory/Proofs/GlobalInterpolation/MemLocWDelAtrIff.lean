@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TiedValBwG
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairBDual
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 

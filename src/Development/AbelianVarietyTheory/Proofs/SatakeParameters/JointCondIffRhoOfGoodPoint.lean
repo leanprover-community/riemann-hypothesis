@@ -4,7 +4,6 @@ public import ReciprocityTheory.GaloisValuations.Global
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 @[expose] public section

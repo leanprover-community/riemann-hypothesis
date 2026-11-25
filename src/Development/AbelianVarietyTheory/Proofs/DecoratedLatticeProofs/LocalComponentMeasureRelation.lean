@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsNormalFr
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.VacOfShape
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EmbeddingXiZeroNeZero
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.TripleMultiplicationConstan
 public import Formalism.LocalToGlobal.CharacterGerms.PderivTripleMultiplicationMaximal
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePGmExLem
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Data.Nat.Choose.Dvd
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 

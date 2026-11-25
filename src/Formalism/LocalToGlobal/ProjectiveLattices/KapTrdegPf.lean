@@ -5,10 +5,8 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Algebra.Algebra.Hom.Rat
 public import Formalism.LocalToGlobal.ProjectiveLattices.FnTrdegOf
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.ProjectiveLattices.KapTrdegPfB, Formalism.LocalToGlobal.ProjectiveLattices.KapTrdegPf

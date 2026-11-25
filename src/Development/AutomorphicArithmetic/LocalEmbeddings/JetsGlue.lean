@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.LocalEmbeddings.JetsChain
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFinClAndGamOrd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqFinClSumAvg
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqVolMulSum
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
 import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 

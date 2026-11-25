@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOrt
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsBplusNeZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PathConvergenceDownChain
-import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

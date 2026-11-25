@@ -4,17 +4,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerve
 public import Mathlib.Analysis.Convex.Hull
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.Sublevel
-public import Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap
-public import Mathlib.Analysis.Normed.Operator.Bilinear
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.Perturb
 public import Mathlib.Analysis.Convex.KreinMilman
-public import Mathlib.Analysis.Convex.Extreme
-public import Mathlib.Algebra.BigOperators.Fin
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConvexNerveComplexes.AltDoubleSum
-public import Mathlib.Analysis.Convex.Basic
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.Analysis.LocallyConvex.Separation
-public import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Etale.Weakly
 import Std.Tactic.BVDecide.Normalize.Prop

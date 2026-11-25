@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.UpperCountOfTopRows
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 
 @[expose] public section
 

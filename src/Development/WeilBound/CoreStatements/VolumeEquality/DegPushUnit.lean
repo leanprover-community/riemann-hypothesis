@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PDiv
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PGenericProjClosureDivisor
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 public import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

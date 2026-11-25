@@ -12,24 +12,12 @@ public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahle
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.SequenceFamilyPairing
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.SequenceLocalizationExists
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsDualOf
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.LinearAlgebra.FreeModule.Basic
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Valuation.Integers
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.Algebra.Ring.Hom.InjSurj
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.LocalRing.Module
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GdChart
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.IsFractionRingOfIntegers
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyModelPrimeDegree
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointHTOfFarguesHodgeTate
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLat
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatTest
-public import Mathlib.RingTheory.Nakayama
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FromNAdd
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFlagPair
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.QuotientByFiniteFlatStatement
@@ -40,18 +28,9 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVariety
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ValCastSub
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.KernelMem
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TestOrderSections
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkLoc
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeIntegralModels
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NatCastSmulMemHtLat
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionPointsDefinedGeneric
-import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfFin
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XPtAfType, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PtAfTypeMain, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsDualFamily, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsUnitOfVal, Development.WeilBound.CoreStatements.HodgeTatePoints.FreeOfFg, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ChartMatrices, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ReducesAtOfWithE, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.Typed, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TestGroupPointExists, Development.AutomorphicSpectrum.Proofs.GeometryProofs.OrdinaryCurveModelRelay, Development.AutomorphicSpectrum.Proofs.GeometryProofs.OrdinaryCurveModelRelayStatement

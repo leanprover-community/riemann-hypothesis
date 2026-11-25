@@ -9,9 +9,7 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.GroupTheory.IndexNormal
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

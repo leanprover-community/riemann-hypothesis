@@ -1,31 +1,10 @@
 module
 
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.AbsInvOf
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.VecZero
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.LimAlg
-public import GroundTheory.PAdicHodge.BdRAlg
-public import GroundTheory.PAdicHodge.FactorizationFactorialLe
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.Defs
-public import Mathlib.Algebra.Algebra.Hom
-public import Mathlib.Algebra.Algebra.Tower
-public import Mathlib.Algebra.Group.Finsupp
-public import Mathlib.Algebra.Module.LocalizedModule.Basic
-public import Mathlib.Data.Finsupp.SMulWithZero
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.TensorProduct.Map
-public import Mathlib.LinearAlgebra.TensorProduct.Tower
-public import Mathlib.RingTheory.IsTensorProduct
-public import Mathlib.RingTheory.Localization.BaseChange
-public import Mathlib.RingTheory.TensorProduct.Free
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.NormLtOneOfIrreducible
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.NatCastQb
 public import GroundTheory.PAdicHodge.AInfTopology
 public import GroundTheory.PAdicHodge.BCrisGalois
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ValuationSquareOfValuationMod
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.CrSEqOne
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.ExistsDpPow
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -66,13 +45,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.PAdicHodge.ACrisPhi

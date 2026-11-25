@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.DualLattices.CharTableIsUnit
-public import Mathlib.LinearAlgebra.Matrix.Kronecker
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ReBase
 import Mathlib.Tactic.Linter.Style
 

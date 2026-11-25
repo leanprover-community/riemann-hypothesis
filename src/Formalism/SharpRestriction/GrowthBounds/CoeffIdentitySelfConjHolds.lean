@@ -5,32 +5,10 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePHStab
 public import Formalism.SharpRestriction.GrowthBounds.AlongCvSmul
 public import Formalism.SharpRestriction.GrowthBounds.PsOfIntS
-public import Formalism.LocalToGlobal.CharacterGerms.Interface
-public import Formalism.LocalToGlobal.CharacterGerms.IndependenceBoundRaw
-public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
-public import Mathlib.Data.Nat.Choose.Dvd
-public import Formalism.SharpRestriction.GrowthBounds.MixedCoefficientClosed
 public import Formalism.LocalToGlobal.CharacterGerms.FirstPartialLawAtPoints
-public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalOfNondegenerate
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCartSelfSt
-public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
-public import Formalism.LocalToGlobal.CharacterGerms.GeOfPowEqOne
-public import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
-public import Formalism.LocalToGlobal.CharacterGerms.ValNonnegLeadingCoeffOfMemTySet
 public import Formalism.SharpRestriction.GrowthBounds.CoeffOneAlongCvLg
 public import Formalism.LocalToGlobal.CharacterGerms.CoefficientIdentitySelfConjugate
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
-public import Mathlib.RingTheory.PowerSeries.Substitution
-public import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
-import Formalism.SharpRestriction.GrowthBounds.CoeffIdentityPlainChartOfThree
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Sheaves.Presheaf
-import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
-import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

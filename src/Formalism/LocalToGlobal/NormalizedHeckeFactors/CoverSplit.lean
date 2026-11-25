@@ -6,10 +6,7 @@ public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 public import ReciprocityTheory.Automorphisms.InstMainA
-import ReciprocityTheory.Automorphisms.PlaceA
 
 @[expose] public section
 

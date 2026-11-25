@@ -1,10 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BlochKatoSelmerVanishes
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.GroupTheory.Commensurable
 public import Mathlib.RepresentationTheory.Coinduced
-public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ProjFacts
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReindexDblIncM
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchurLemmaHeisenbergCommutingThetaOperator
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.PrSingle
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.Mfac

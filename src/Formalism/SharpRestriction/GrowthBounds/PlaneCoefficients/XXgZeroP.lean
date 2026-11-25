@@ -2,15 +2,10 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.DigOKAddInl
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemLin
-public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.MaxTwistDegreePderivLeAddOne
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.NoOpStep
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.TwistSubEqMatrixSubst
-import Formalism.SharpRestriction.GrowthBounds.SourceCleaning
-import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.TwistedMonomialFiltration.TMemLaurentFiltration
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
 
 -- This file was produced by scripts/clump.py from the modules listed below.

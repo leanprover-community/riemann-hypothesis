@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwi
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockFnField
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.DimOfMinimal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.StepTStA

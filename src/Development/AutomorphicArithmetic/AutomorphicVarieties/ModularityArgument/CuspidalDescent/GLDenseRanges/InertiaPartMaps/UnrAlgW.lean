@@ -3,18 +3,10 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.CmpPrime
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.DerivativeDivisibility.CmpPrime
 public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.LinearAlgebra.BilinearForm.DualLattice
-public import Mathlib.RingTheory.Polynomial.GaussLemma
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
-public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.FieldTheory.PrimitiveElement
-public import Mathlib.RingTheory.Localization.Finiteness
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.GLDenseRanges.MuRange
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KleimanInputN
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNef
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.LineFibre
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.TargetSt
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KodairaGenericOfAmpleSectionCount
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.OfRemaining
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
@@ -16,7 +15,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.SmallGeneratedCountUpperOfUse
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FibreDim
-public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceRateStatementHolds
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeOfIsIntersectionSystem
@@ -28,7 +26,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RationalityOfR
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SignedConvergenceStatementHolds
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UniformIntegrabilityStatementHolds
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.HsLinksOfUse
-import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNefF
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ResolutionExistsOfResolutionStatementStatement
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -5,13 +5,7 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.PolCountDef
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CountableCompactOpen
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.RealTrans
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.CommuteConj
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.HoweMaximalTori.MaxSplit
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.Factor
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.ActsComp
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsBeta
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLFock
@@ -22,7 +16,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.NearUnits
 public import Development.WeilBound.ThetaLifts.LatticeBasics.PresDOf
 public import Development.WeilBound.ThetaLifts.LatticeBasics.RatEquiv
 public import Development.WeilBound.ThetaLifts.TowerModels.StabEx
-public import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.EvCone
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.EvZero
 public import Development.WeilBound.ThetaLifts.LocalTheory.StepFacEq
@@ -34,22 +27,14 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalLagrangianInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryDoubledBlockDiagOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.EqZeroOfTheta
-public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedMultiplicityOneProportional
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Vaceigen
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasMain
 public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.MemLatWIff
-public import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 public import Development.WeilBound.ThetaLifts.SmallCones.HodgeTateFromSandwich
 public import Development.WeilBound.ThetaLifts.LocalTheory.SplitInv2
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportFinprodSchwartzBruhatFiniteAdel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantFinprodSchwartzBruhatFiniteAdel
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaKernelGeneralIdentity
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOne
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 public import Development.WeilBound.ThetaLifts.WeilDomination.FacNeGauss
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesS
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SecondFromFirstStatement
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SiegelWeilAnisoOf
@@ -65,7 +50,6 @@ public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSe
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.KRealAsm
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLieH
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locpair
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 public import Development.WeilBound.ThetaLifts.AgreeOfLeaves
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ArchimedeanEvaluationVector
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Cartan
@@ -124,35 +108,21 @@ public import Development.WeilBound.ThetaLifts.SmallCones.StabDec
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaExp
 public import Development.WeilBound.ThetaLifts.SphericalLattices.SphericalClosure.EndCore
 public import Development.WeilBound.ThetaLifts.SphericalLattices.ThetaKillsCuspFormsSpherical
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 public import Development.WeilBound.ThetaLifts.CTKernel
 public import Development.WeilBound.ThetaLifts.FrameEstimates.HodgeTateFromSandwich
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnr
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ContinuousFc
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
-import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.LocalFields.LocalFourierHaar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
-import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
-import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.PolRange
 import Development.WeilBound.ThetaLifts.LatticeBasics.LeviEx
-import Development.WeilBound.ThetaLifts.LatticeBasics.LocMeas
 import Development.WeilBound.ThetaLifts.LatticeBasics.NonZero
 import Development.WeilBound.ThetaLifts.LatticeBasics.RealInv
-import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
-import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PresOfHat
 import Development.WeilBound.ThetaLifts.SmallCones.SoStab
-import Development.WeilBound.ThetaLifts.SmallCones.UnipEx
 import Development.WeilBound.ThetaLifts.SphericalLattices.ThetaSubSup
-import Development.WeilBound.ThetaLifts.TowerModels.LeviEx
-import Development.WeilBound.ThetaLifts.TowerModels.ModelEx
-import Development.WeilBound.ThetaLifts.TowerModels.PlaneSkew
 import Development.WeilBound.ThetaLifts.TowerModels.TowerCodimensionTwo
 import Development.WeilBound.ThetaLifts.TowerModels.TowerCodimensionTwoOf
-import Development.WeilBound.ThetaLifts.WeilDomination.DomWeilOf
-import Development.WeilBound.ThetaLifts.WeilDomination.MatchEx
 
 section -- clump:auto
 @[expose] public section

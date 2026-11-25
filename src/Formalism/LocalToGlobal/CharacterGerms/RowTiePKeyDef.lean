@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
 public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePLSmallCv

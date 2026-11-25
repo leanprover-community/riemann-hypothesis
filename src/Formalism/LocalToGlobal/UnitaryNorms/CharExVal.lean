@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 public import Formalism.PeriodIntegrals.AlgValsFin
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.AlgValsFinMain
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.UnitaryNorms.CharExCol, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AlgValsFin, Formalism.LocalToGlobal.UnitaryNorms.CharExVal

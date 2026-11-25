@@ -10,11 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsNormali
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormTranslatePowerCombLeCoprimeTranslation
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WeilOperatorThetaTranslateShiftPrimeToQ
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpTransportedTaylorSeriesInChartRingHomLaws
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.UwEllipticFlow
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ThetaLawsUnitPeriod, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LawsAndChart

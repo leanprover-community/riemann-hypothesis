@@ -8,7 +8,6 @@ public import Development.EtaleCohomology.TateTwists.EtaleShortComplexExactIffLo
 public import Mathlib.CategoryTheory.Sites.EpiMono
 public import Development.EtaleCohomology.TateTwists.EtaleTensorUniversalPropertyOfDegreewise
 public import Development.EtaleCohomology.CohomologicalPurity.LeafIndExc
-public import Development.EtaleCohomology.EtaleSheaves.CupProductRingLaws
 public import Development.EtaleCohomology.TateTwists.EtaleTateTwistSectionsLocallyGenerated
 public import Development.EtaleCohomology.TateTwists.EtaleTateTwistSingletonTensorGenMul
 public import Development.EtaleCohomology.TateTwists.EtaleTensorPairQuasiIsoOfFlatQuasiIso
@@ -30,9 +29,7 @@ public import Development.EtaleCohomology.TateTwists.TtResSidePf
 public import Development.EtaleCohomology.TateTwists.TtTwistSidePf
 public import Development.EtaleCohomology.TateTwists.acycIffPf
 public import Development.EtaleCohomology.TateTwists.conePf
-public import Development.EtaleCohomology.TateTwists.EtaleTensorTwistedResolutionOfExistenceBoundAndS
 public import Development.EtaleCohomology.CohomologicalPurity.LeafAWCutTw
-import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Development.EtaleCohomology.TateTwists.EtaleComplexAcyclicIffLocalExactness
 

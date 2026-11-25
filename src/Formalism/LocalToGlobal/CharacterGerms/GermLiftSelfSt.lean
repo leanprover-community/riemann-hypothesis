@@ -1,15 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqPairOfUnitGerm
-public import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.IncomingBounds.FlowDegreeBounds.ThmPJet
 public import Formalism.LocalToGlobal.CharacterGerms.LogCoordOfDpull
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValCut
 public import Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffSinglePointZero
-import Formalism.LocalToGlobal.CharacterGerms.LemmaMJet
-import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.CharacterGerms.RowTieValG, Formalism.LocalToGlobal.CharacterGerms.GermLiftSelfSt

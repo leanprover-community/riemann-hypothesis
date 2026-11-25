@@ -4,27 +4,14 @@ public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.LinearAlgebra.Dimension.Free
 public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Algebra.Module.Pi
 public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Algebra.Star.BigOperators
-public import Mathlib.Data.Matrix.Basic
 public import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
-public import Mathlib.Basic.Complex.BigOperators
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.EqZeroOfIsIsoSub
-public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

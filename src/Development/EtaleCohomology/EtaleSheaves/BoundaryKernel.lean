@@ -12,7 +12,6 @@ public import Development.EtaleCohomology.EtaleSheaves.SheafIsomorphism
 public import Mathlib.CategoryTheory.Sites.EpiMono
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.CategoryTheory.Monoidal.Mon
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 
 -- This file was produced by scripts/clump.py from the modules listed below.

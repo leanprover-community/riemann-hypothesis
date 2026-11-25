@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.LevelCa
 import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt
 import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCoprimeOfNatCast
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl
 
 @[expose] public section

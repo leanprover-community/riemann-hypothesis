@@ -4,7 +4,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.GaussSt
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonomStA
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 @[expose] public section
 

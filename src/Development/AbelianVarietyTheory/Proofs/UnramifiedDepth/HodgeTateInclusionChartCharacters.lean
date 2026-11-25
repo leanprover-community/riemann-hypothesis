@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LinearData
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NilChartOfIsChartJ
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.PadicIntAlgebraOfIsAdicCompleteMatrixUnique
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.UniformizationSplitFormalGroupLawEquivariant
-import Mathlib.RingTheory.TotallySplit
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
 
 @[expose] public section

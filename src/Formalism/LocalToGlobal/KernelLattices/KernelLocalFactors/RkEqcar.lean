@@ -3,9 +3,7 @@ module
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThIndEqAmbOfOf
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.HermitianHalfLattice.ConjHSymmApply
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivGen
-public import Formalism.LocalToGlobal.KernelLattices.ThEquiv
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkThind
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.SelfDualFourfoldCurveIdealLattice
 public import Formalism.LocalToGlobal.KernelLattices.ColInst
@@ -13,14 +11,10 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.MuProd
 public import Formalism.LocalToGlobal.KernelLattices.RatKDeg
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkConj
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPAmbOfTiesD
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.TripleEighthProof
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPStepCIff
 
 -- This file was produced by scripts/clump.py from the modules listed below.

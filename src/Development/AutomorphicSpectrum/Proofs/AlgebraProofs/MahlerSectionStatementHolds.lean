@@ -19,10 +19,8 @@ public import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsProjRe
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowDegree
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntSphere
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerMeasureOfProduct, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AePolynomialNonvanishingRows, Development.WeilBound.CoreStatements.CommonZeroEvaluation.EvalEqZeroOfCommonZero, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChowFormSpecializationProportional, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XXgzChowMahlerFibrefactor, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChowFormFibreSpecialization, Development.WeilBound.CoreStatements.CommonZeroEvaluation.GaussianSphereMeanIntegral, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SphereMeanNormalizedGroups, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerMinusConeIntegralIndep, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerSectionStatementHolds

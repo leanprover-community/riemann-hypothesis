@@ -8,17 +8,10 @@ public import ReciprocityTheory.AnalyticForms.LeviForms.ConvExpandStatement
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundB
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TailBoundStatementHolds
-import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
-import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
 import Aesop.Main
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 
 section
 @[expose] public section

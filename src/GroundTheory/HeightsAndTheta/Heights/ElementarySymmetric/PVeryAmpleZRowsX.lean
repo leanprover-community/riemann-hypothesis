@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleZRo
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ZChartSmulSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ZChartLocalSt
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleAffineGen
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZTwist
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

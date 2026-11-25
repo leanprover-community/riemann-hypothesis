@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PieriBlockIdeals.IntegralQuotient
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.GroupTheory.Perm.DomMulAct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

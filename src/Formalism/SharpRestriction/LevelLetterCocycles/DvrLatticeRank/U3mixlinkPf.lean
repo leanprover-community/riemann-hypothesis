@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ExpansionLowCoeffsIntegral
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.PiNSOfPi
-public import Formalism.SharpRestriction.LevelLetterCocycles.SplitROfSteps
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DescentValuation
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.UpPositionOfModels
@@ -12,11 +11,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.KapP
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.NinLamPf
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.PhibOLComplete
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3upPfFilCAnti
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
-import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ConstantCoeffQZeroEqP
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3downPfFildRConst
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC

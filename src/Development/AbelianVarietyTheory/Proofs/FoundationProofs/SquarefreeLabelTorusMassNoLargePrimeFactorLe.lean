@@ -3,8 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
-public import Mathlib.Data.Nat.Choose.Central
-public import Mathlib.Data.Nat.Choose.Factorization
 public import Mathlib.NumberTheory.Primorial
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardCycleTypeConsMul
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleType

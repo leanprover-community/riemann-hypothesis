@@ -6,12 +6,7 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCompactOpenAddSubgroup
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocMeas
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
-public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerProd
 
 @[expose] public section
 

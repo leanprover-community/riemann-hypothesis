@@ -1,26 +1,19 @@
 module
 
 public import Formalism.WachLatticeTwists.LatticeDualFibres.StatDualFibreLattice
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.Topology.Algebra.Module.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FactorMemCocyclesPowQuot
-public import Formalism.WachLatticeTwists.LatticeDualFibres.FibreDualStable
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.Data.ZMod.QuotientRing
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
 public import Mathlib.RingTheory.AdicCompletion.RingHom
-public import Formalism.CharacterColumnKernels.Statement
-public import Mathlib.RingTheory.Filtration
 public import Formalism.GaloisCohomology.LocalTateDualityK
-public import Formalism.GaloisCohomology.StatementLoc
-public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterCongrRootOfUnityPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatticeCompactPowSmulNhdsBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TatePairingLatticeQuotientsNondegenerate
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousFixingSubgroupEquiv
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCompatibleSeqOfFiniteNonempty
@@ -31,12 +24,10 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -64,9 +55,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Order.CompletePartialOrder
-import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -76,7 +64,6 @@ import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

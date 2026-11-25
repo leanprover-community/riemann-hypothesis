@@ -4,24 +4,14 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOf
 public import Mathlib.RingTheory.HahnSeries.Summable
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FnHasSumReindexNat
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HahnSeriesCommonDenominatorEqMonomialMulPowerSer
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.MvPowerSeries.Inverse
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSumPowerSeriesInvOfConvergent
-public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Basic
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
-public import Mathlib.RingTheory.HahnSeries.Multiplication
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesAsRatHahnSeriesFractionalQ
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasCommonExponentDenominatorRingOperations
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasQExpansionSumAboveBasicProperties
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
-import Mathlib.NumberTheory.ModularForms.SlashActions
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.FnHahnSeriesInvConverges, Development.AbelianVarietyTheory.Proofs.FoundationProofs.FnHasSumNeZero, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HahnSeriesEqOfQExpansionSumAboveEventuallyEq, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasQExpansionSumAboveMul, Development.AbelianVarietyTheory.Proofs.FoundationProofs.UpperHalfPlaneEqZeroOfVanishAboveIm, Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspExpansionAtInfinityProperties

@@ -9,7 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPoly
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Imports
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.RestAt
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CutoffCoefficientsBound
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HomogeneousPowerSumDecomposition
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerHeightIdentityExpansion
 import Std.Tactic.BVDecide.Normalize.BitVec

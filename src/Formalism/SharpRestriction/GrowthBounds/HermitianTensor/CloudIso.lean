@@ -10,9 +10,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.OneMemDu
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TensorKP
 public import Lemmata.DualWeylPullback.DualWeylPull
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Formalism.PolynomialDimension.WeylDim

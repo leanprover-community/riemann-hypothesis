@@ -23,38 +23,14 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfSmoothBuil
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NilpotentDerivative
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothOfCoefficientsHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferSmoothAtBuiltPlace
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvariantOperatorUnderJacquet
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.TBBTie
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DensityConstantOfParts
-public import Formalism.HermitianCurvature.StatementTBB
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselNormSqEqBigCellNormSq
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpBig
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SpanMemOfImage
-public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.PStarTie
-public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
-public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QNFAsm
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Order.Interval.Finset.Nat
-public import Formalism.HermitianCurvature.StatementQ
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Formalism.HermitianCurvature.BesselNonvanishingReduction
-public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsDerivedActionFiniteDimUnitaryRep
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsFrameConjUnitaryBlockEqUnitaryComplement
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SupExistsOfInterlaced
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsPlaceWithVectors
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeForULower
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SingleMulVecOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TLFinal
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.PowFourLeRpowNineHalves
 public import Formalism.SharpRestriction.CuspSpanNormBounds.TheoremBConstants
@@ -68,18 +44,12 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceExpansion
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Transported
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.TensorProductsG2.FormalDegreeConstantDiscrete
-public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
-public import Formalism.HermitianCurvature.FrameExists2
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OmgEquivariant
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HpkConjTranspose
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OmgMulLeft
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmBpAtEqOfShiftR
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsPolyDegStar
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FormSubRight
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ShiftAtRExistsEq
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsShiftedTypesLowerBound
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.EndpointDifferentTypesThreshold
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.DiscreteSeriesInfinitesimalCharacter
@@ -88,13 +58,9 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -102,7 +68,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -125,41 +90,13 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSqLeShifted
-import Formalism.HermitianCurvature.StatementJF
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapAdInv
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGradedRegFFM
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerFixesTailCoords
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.FormalDegreeBessel.FinalBF
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactCoefficientAppend
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLemB
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.VectorVanishesBigCell
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.HermitianCurvature.StatementI
-import Formalism.HermitianCurvature.StatementQr
-import Formalism.RealPlaceAnalysis.StatementA
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LeftDerivativeCurves
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfIwasawa
 
 -- This file was produced by scripts/clump.py from the modules listed below.

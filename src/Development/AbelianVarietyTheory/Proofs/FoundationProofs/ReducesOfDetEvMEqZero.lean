@@ -4,10 +4,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Basic
 public import Mathlib.NumberTheory.ModularForms.LevelOne.DimensionFormula
 public import ReciprocityTheory.DualLattices.HasSumNormalizedDeriv
-public import Mathlib.Analysis.Complex.Periodic
-public import Mathlib.NumberTheory.ModularForms.CuspFormSubmodule
-public import Mathlib.NumberTheory.ModularForms.Derivative
-public import Mathlib.NumberTheory.ModularForms.Discriminant
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.JInvariantEqualSl2Orbit
 public import Mathlib.RingTheory.RootsOfUnity.Complex
@@ -53,13 +49,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.ModularForms.LevelOne.GradedRing
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 

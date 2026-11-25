@@ -4,23 +4,16 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LamIde
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.NumberTheory.LSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyLogDerivReGtOne
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyContinuationGrowth
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionLogDerivLocalFormula
 public import Mathlib.NumberTheory.Chebyshev
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TruncatedPerronPsi
-public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AnalyticAtDslope
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.NumberTheory.LSeries.Dirichlet
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BdIntEqZeroOfPrimitive
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

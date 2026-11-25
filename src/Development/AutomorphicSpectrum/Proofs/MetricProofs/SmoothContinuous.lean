@@ -5,14 +5,11 @@ public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatem
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationAntiholomorphicCharts
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationInvariantSingularPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicDegreeOneBiholomorphism
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftSystemComplexConjugationStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LiftSystemRealStructure
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularWeightMonotoneRegularization
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

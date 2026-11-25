@@ -3,11 +3,7 @@ module
 public import Formalism.LocalToGlobal.Columns.ChainTopLawTw
 public import Formalism.LocalToGlobal.Columns.XtPhiTopGCongr
 public import Formalism.LocalToGlobal.Columns.BlockTriangularMulVecMemPartialFlag
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ChainTopLaw
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

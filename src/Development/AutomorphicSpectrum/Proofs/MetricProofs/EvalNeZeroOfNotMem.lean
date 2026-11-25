@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriod
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPotentialBlockDecomposition
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SamePotBlock
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA

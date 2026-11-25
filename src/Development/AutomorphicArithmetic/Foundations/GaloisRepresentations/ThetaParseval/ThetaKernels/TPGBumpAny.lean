@@ -16,11 +16,8 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrim
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.LatticeOrderExistsInverseOneAddUniformizerSmul
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.MemNhdsOneOfCongruenceLatticeOrder
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.UnitaryLatticeExistsFrame
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.CompFinLiftE
-public import Development.WeilBound.ThetaLifts.LatticeBasics.LocMeas
 public import Development.WeilBound.ThetaLifts.LatticeBasics.MemLam
-public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 
 /-! # TPGBumpAny: Consolidated global theta-kernel definitions and proofs (TPGBumpAny). -/
 @[expose] public section

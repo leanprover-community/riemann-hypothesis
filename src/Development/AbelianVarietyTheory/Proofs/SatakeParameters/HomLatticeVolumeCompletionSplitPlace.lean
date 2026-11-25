@@ -2,13 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemHomLat
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqZeroOfForallLeExp
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.DetOfColSpanEq
@@ -16,11 +10,7 @@ public import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.Co
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.XiOfSpec
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceRepresentativesTrivial
-import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalRingCardinality.SpanPowerMembership.GatRing
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

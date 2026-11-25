@@ -9,27 +9,16 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETruncMas
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaETruncTail
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLemmaEWeight
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormSecIntegrable
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PListTailLogSmooth
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.ProjLineChartsNotSubsetBall
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.TailBound
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
-public import Mathlib.Order.CompletePartialOrder
 public import ReciprocityTheory.AnalyticForms.LeviForms.MixedIntegralInclusionExclusion
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocDensAddOfFunContinuousOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularChartDataProperties
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalDensityInclusionExclusion
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
 import Mathlib.Tactic.Linter.Style
@@ -37,7 +26,6 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Per
 import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.UniformEnergyBoundOfSection
 import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB

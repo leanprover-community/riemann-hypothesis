@@ -4,23 +4,10 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.
 public import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 public import Formalism.RealPlaceAnalysis.StatementE
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantAntiHomomorphism
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Algebra.Module.Submodule.Lattice
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Lagrange
-public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.InfinitesimalCharacterPaths.TensDecomp
-public import Mathlib.Algebra.Module.Submodule.LinearMap
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ConjQdet
 import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.IsSimpleTriv
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.KeepsMul
 
 -- This file was produced by scripts/clump.py from the modules listed below.

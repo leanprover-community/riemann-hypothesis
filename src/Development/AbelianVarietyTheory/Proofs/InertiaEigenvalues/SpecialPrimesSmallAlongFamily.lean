@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily
 public import Formalism.SharpRestriction.LevelLetterCocycles.NEqRZeroMulXPow
 import Mathlib.Tactic.Linter.Style
-public import Formalism.SharpRestriction.LevelLetterCocycles.MemPrimesOverOfMem
 
 @[expose] public section
 

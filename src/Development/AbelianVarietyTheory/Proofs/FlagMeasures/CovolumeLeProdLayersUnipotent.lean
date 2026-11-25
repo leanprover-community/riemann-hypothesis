@@ -3,15 +3,8 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IpLEqZeroOfMemSpan
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
-public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaugeMeasureMatrixAlgebraSubgroupLocalAsymptotic
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PiTensorProduct

@@ -9,11 +9,7 @@ public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 public import GroundTheory.GlobalFields.GlobalArtinMap.Kernel
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-import GroundTheory.GlobalFields.ClassFieldConsequences.OpenSubgroup
-import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
-import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.NumberTheory.RamificationInertia.Unramified
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal

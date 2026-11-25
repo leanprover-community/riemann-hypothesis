@@ -5,7 +5,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrin
 import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.CoordinateDivisorSmoothness
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.CoordinateSubspaceIdeal
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.MonomialCase.IntersectionComponents
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

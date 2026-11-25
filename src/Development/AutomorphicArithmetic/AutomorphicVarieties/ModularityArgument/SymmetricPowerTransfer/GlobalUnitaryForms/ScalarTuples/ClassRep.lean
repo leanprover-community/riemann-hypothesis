@@ -11,15 +11,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import GroundTheory.GlobalFields.IdeleGroups.ClassGroup
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.RingTheory.Valuation.LocalSubring
 

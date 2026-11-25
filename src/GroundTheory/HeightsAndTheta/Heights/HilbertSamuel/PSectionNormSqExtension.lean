@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecti
 public import Mathlib.Topology.Algebra.MvPolynomial
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockGenFinite
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Ring.IsFormallyReal
 

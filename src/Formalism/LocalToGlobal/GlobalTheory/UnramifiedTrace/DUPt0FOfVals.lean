@@ -9,11 +9,8 @@ public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.EopUEq
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.HeckeRamifiedZeroOfMatchingsAndDu
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.DUAllOfParts
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.PSplitT
-import Formalism.LocalToGlobal.GlobalTheory.GL6.DiamondPreservesRationalFormZero
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PDnDil
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DnkLkLocP
 
 -- This file was produced by scripts/clump.py from the modules listed below.

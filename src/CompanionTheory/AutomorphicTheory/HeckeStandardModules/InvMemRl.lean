@@ -2,16 +2,12 @@ module
 
 public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.EqZeroOfCompAt
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 public import Formalism.SatakeDualWeyl.StatementE
 public import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 public import Mathlib.GroupTheory.ArchimedeanDensely
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.HeckeA
 public import CompanionTheory.AutomorphicTheory.HeckeStandardModules.HeckeStdStatement
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmFieldAdeleSplitPlaceSupportIntegral
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegerUnitSplitPlaceConjugatePrime
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

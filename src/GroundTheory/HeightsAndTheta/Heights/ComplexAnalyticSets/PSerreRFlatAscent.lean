@@ -3,7 +3,6 @@ module
 public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.RingTheory.Ideal.Height
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSerreRFlatAscent
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar

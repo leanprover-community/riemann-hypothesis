@@ -11,15 +11,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFo
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormLocalOfFrame
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormRestrict
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVectorBundle
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.CapOComp
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.Tactic.ENatToNat
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AffineCoverCohomologyFinite
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoverCupActionBasis
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SEqOne
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenFiniteInfIff
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

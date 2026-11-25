@@ -2,13 +2,8 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeSqSubLeSlopeSqSpan
 public import Formalism.HermitianLattices.StatementMass
-import Mathlib.Analysis.Matrix.Hermitian
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 import Mathlib.RingTheory.Complex
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountStA
 import ReciprocityTheory.SemistableReduction.SemiDegC

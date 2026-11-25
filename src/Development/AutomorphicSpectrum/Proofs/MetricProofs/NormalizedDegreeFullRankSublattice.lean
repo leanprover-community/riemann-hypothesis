@@ -3,7 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.LinearIndependentSumElimOfExact
 public import Mathlib.RingTheory.Ideal.Quotient.Index
-public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull

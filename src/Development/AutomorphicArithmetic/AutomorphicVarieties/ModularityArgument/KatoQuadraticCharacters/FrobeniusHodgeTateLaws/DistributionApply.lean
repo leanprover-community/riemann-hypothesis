@@ -2,21 +2,11 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTLawAt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSubOnePowThreeLe
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
-public import Mathlib.Analysis.Normed.Group.Ultra
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.NumberTheory.DirichletCharacter.Basic
-public import Mathlib.FieldTheory.Finite.Basic
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ChapterMu
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.FrobeniusHodgeTateLaws.RhoFrob
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.DvrIntClosure
 
 -- This file was produced by scripts/clump.py from the modules listed below.

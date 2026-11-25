@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscret
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.StalkGenericPointSpecializesOfSpecializes
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Mathlib.RingTheory.KrullDimension.Field
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SelfTwistEigenvalues.CompleteDVRExt
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CurveDVRPrecompleteFinite
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsRingEquivPowerSeriesOfComplete
@@ -17,11 +16,8 @@ public import Mathlib.RingTheory.Smooth.AdicCompletion
 public import Mathlib.Algebra.Algebra.ZMod
 public import Mathlib.RingTheory.Etale.Basic
 public import Mathlib.RingTheory.Etale.Field
-import Mathlib.RingTheory.AdicCompletion.Completeness
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Smooth.Field
 
 -- This file was produced by scripts/clump.py from the modules listed below.

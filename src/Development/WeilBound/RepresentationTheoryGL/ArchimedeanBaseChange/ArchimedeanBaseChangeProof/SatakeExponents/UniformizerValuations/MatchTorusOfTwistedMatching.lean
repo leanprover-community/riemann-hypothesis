@@ -8,8 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Matching
 import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
-import GroundTheory.GlobalFields.LocalFieldAtPlace
-import GroundTheory.LocalFields.PadicLogSeries
 
 @[expose] public section
 

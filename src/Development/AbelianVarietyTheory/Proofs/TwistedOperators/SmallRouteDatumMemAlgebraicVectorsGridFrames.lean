@@ -16,7 +16,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieAlgebrasAtPla
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Bool
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsBiThetaIffJoin
 
 @[expose] public section
 

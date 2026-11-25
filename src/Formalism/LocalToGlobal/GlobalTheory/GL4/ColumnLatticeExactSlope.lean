@@ -14,8 +14,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL4.MemDualCrdLat
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PZBasis
 public import Formalism.SharpRestriction.GlobalSchurBounds.TotallyPositiveTraceGeOfNormDiscr
 import Formalism.LocalToGlobal.Columns.BrzColLatOneLattice
-import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.ExistsFrameOfSig
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.MonomialMeanResidues.MonomialMeanProofs.SpanEqTopAndRankOfLinearIndependent, Formalism.MonomialMeanResidues.ZerosPerVariable, Formalism.LocalToGlobal.GlobalTheory.GL4.ColumnLatticeExactSlope

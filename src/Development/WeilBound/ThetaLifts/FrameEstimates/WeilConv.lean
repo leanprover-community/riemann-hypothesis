@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.FrameEstimates.HodgeTateFromSandwich
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LatSumRedH
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
 public import Development.WeilBound.ThetaLifts.FrameEstimates.IntMvPolynomialCoeffAbsSumMulLe
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Development.WeilBound.ThetaLifts.FrameEstimates.ContinuousMixedSymm
@@ -11,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Local
 public import Development.WeilBound.ThetaLifts.FrameEstimates.RankIffRight
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
 public import Development.WeilBound.ThetaLifts.FrameEstimates.DomContinuous
-public import Development.WeilBound.ThetaLifts.FrameEstimates.ThickFrames
 public import Development.WeilBound.ThetaLifts.FrameEstimates.Parity
 public import Development.WeilBound.ThetaLifts.FrameEstimates.SqAllC
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
@@ -33,8 +31,6 @@ public import Development.WeilBound.ThetaLifts.FrameEstimates.SiegelAll
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Development.WeilBound.ThetaLifts.FrameEstimates.LatCpt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

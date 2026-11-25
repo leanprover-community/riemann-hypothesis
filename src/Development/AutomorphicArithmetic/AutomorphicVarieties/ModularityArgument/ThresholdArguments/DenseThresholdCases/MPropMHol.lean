@@ -16,8 +16,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsRe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.PeriodicIntegralFundamentalDomainInvariant
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.CrystallineBaseChange.RotEig
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.KLevTop
-public import GroundTheory.AutomorphicForms.ReductionIwasawa
-public import GroundTheory.AutomorphicForms.ReductionHeight
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.RayClassGroupFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.GlobFixed
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.PCuspFin
@@ -76,16 +74,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
-import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.Adele.Topology
-import Mathlib.CategoryTheory.Countable
 import Mathlib.Dynamics.Ergodic.Action.Regular
-import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.OneNonUnit
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Topology.Algebra.Star.Unitary
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel

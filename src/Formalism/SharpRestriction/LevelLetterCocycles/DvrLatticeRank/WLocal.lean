@@ -9,7 +9,6 @@ import Formalism.PadicSubsetSums.StableGradedCounts.ARCReuse
 import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC
 import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
-import Formalism.WindowSums.PowerSeriesRelationList
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

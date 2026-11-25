@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJMatrixCoord
 public import GroundTheory.HeightsAndTheta.Theta.AdelicFourier
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.CovolUnique
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

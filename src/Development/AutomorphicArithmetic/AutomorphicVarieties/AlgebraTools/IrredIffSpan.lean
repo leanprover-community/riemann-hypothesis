@@ -3,7 +3,6 @@ module
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Span.Defs
-public import Mathlib.LinearAlgebra.Matrix.Defs
 public import Mathlib.Algebra.Module.Submodule.Basic
 public import Mathlib.Data.Matrix.Basis
 public import Mathlib.FieldTheory.IsAlgClosed.Basic

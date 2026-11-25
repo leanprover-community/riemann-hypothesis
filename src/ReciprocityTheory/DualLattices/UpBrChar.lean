@@ -4,7 +4,6 @@ public import ReciprocityTheory.DualLattices.CotangentSurjective
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.DualLattices.HasLenCokerDet
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 @[expose] public section
 

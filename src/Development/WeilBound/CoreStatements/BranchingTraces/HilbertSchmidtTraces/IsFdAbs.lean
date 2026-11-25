@@ -2,13 +2,8 @@ module
 
 public import Mathlib.MeasureTheory.Group.Measure
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsNormEmbId
-public import Mathlib.MeasureTheory.Group.LIntegral
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.RealPlaceAnalysis.StatementA
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Tactic.Linter.Style
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 

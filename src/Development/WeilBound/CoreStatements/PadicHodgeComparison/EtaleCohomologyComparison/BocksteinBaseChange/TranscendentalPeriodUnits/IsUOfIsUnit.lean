@@ -3,8 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.BcrisRegularPeriodRing
 public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.PeriodRingUnits.DieudonneManinBasisModification
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TiltedDrinfeld.Base
-import GroundTheory.PAdicHodge.ACrisBdRGalois
-import GroundTheory.PAdicHodge.ACrisPhi
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

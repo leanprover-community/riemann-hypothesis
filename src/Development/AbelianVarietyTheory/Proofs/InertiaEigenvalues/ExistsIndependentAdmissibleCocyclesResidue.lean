@@ -4,16 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Powe
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NabBijectiveWindow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SubIdBijOfContracting
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GenEigenMultiplicityLaurentShiftEqSumSen
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistedModelAdmissibleCocycles
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GammaConditionShiftAndDivVariableMem
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.OnePlusPowerAssembly
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleLetterDataWindowArithmetic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelObjAndAbc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiGammaLatticeFamiliesShiftInclusion
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CloseVectorNeZero
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GenEigenMultiplicityQuotientAdditiveChain
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SenWeightSubquotientModelMemResidues
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ResBound
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPhiGammaModelExtensionCocyclePair
@@ -23,8 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodCoe
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GmultEqZeroOfInj
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapAevalNab
 import ReciprocityTheory.BasicDefinitions.ExistsUnique
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -53,7 +53,6 @@ import Mathlib.Topology.Sheaves.Init
 public import Formalism.LocalToGlobal.ProjectiveLattices.EmbKCoe
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
 

@@ -4,36 +4,21 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsP
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenFibreExists
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AnalyticSystemRegularityProperties
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PtsIntegralLogNormRatEqBase
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FixedMemberBase
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
-public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularWeightMonotoneRegularization
 public import ReciprocityTheory.AnalyticForms.LeviForms.Energy
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Algebra.Order.Group
-public import Mathlib.Topology.MetricSpace.Pseudo.Basic
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.AgreementPos
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AbsCoeffProdXLeOne
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
-import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionDifferenceTelescopingIntegral, Development.AutomorphicSpectrum.Proofs.MetricProofs.LimRateMulLogSqLe, Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereRegularizationLogLogBound, Development.AutomorphicSpectrum.Proofs.MetricProofs.TendstoLimUnderOfCauchyRate, Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositive

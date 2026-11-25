@@ -4,7 +4,6 @@ public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.IsFrPlane
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 

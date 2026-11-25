@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHTheoremSAux
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.CechHcSubsingletonOfBij
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenSESStep
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PKHCechMapDeg
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKleimanScheme

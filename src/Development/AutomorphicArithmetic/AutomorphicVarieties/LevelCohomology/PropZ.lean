@@ -2,17 +2,9 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.ConjStableShaFam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.PrincZl
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
-public import Mathlib.Analysis.SpecificLimits.Normed
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Topology.LocallyConstant.Basic
-public import Mathlib.Topology.Algebra.Module.Basic
 public import ReciprocityTheory.GroupCohomology.FiveTerm
 public import ReciprocityTheory.GroupCohomology.IsLowExists
 public import ReciprocityTheory.GroupCohomology.LowNat
-public import ReciprocityTheory.GroupCohomology.ContinuousContractNth
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.ContTw
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DecInf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
@@ -25,31 +17,23 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsOnto
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.KwAbsRam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.IsAdmissiblePrimeListNil
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ShaFamMono
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.FixLev
-public import Mathlib.NumberTheory.NumberField.ClassNumber
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIdealInClassOfNormLeSqrtDiscr
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.ExistsQuadraticGaussSum
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.PullOnto
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PlacesOfRationals.PlacesQ
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.ShaToShT
 public import Formalism.DirichletDensity.DirichletDensityProofs.QuadDiscr
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.ClPullApply
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.Counts
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -80,25 +64,16 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.NumberTheory.Padics.ProperSpace
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.GaloisCohomology.Statement
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.ZMod.UnitsCyclic
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.UnramifiedCocycleIsCoboundaryOfBernoulliUnit
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.GroupTheory.Nilpotent
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.IsCharOneOfSubsingleton
 import Formalism.GaloisCohomology.StatementLoc
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.GammaGen, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DenseGen, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Transg, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.H2SubsingletonTransport, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.ControlGamma, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.Control, Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.KwlOnto, Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.TorsClass, Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HQuad, Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.ZqField, Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.PropZ

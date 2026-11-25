@@ -3,9 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BezoutEisensteinDerivativePrimePow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinPrismHomsAgreeWittAndModIdeal
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.RingTheory.Ideal.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowMulSubMemOfRootsModPow
 
 @[expose] public section

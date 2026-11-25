@@ -4,7 +4,6 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
 import Mathlib.RingTheory.KrullDimension.PID
-import Mathlib.RingTheory.LocalRing.Quotient
 public import Mathlib.RingTheory.OrderOfVanishing.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDefs

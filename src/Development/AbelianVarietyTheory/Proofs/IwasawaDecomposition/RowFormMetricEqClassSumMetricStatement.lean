@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Inner
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StdLvPr
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingOfIsFormsOf
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IpMtTie
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanMapNabKDelK
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

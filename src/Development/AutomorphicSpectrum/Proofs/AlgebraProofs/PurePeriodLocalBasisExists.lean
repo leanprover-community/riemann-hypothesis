@@ -8,29 +8,15 @@ public import Development.WeilBound.CoreStatements.SesquilinearFractions.DCompl
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.DOkBasis
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.HermSplit
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.PrincipalRootReZeroImSq
-public import Development.WeilBound.CoreStatements.SesquilinearFractions.SesqSesquilinearSkewHermitian
-public import Development.WeilBound.CoreStatements.SesquilinearFractions.CoefZeroOfPer
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.ExistsNsmulMemSpanFullFamily
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.UltrametricNormProdSubLt
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
-public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicLogIdealMaxElement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocalBasisGramDeterminantBound
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIntegralIffDenominator
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.VolumeFundamentalDomainStdRealBasis
 
 -- This file was produced by scripts/clump.py from the modules listed below.

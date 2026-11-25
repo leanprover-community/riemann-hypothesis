@@ -13,27 +13,20 @@ public import Development.WeilBound.CoreStatements.CommonZeroEvaluation.Eventual
 public import Mathlib.RingTheory.Etale.StandardEtale
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.RingTheory.Unramified.LocalStructure
-public import Mathlib.FieldTheory.AlgebraicClosure
-public import Mathlib.RingTheory.Smooth.Locus
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProdZpowLe
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
 public import Development.WeilBound.CoreStatements.CommonZeroEvaluation.TestMem
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.EigLatBasis
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.WeilBound.CoreStatements.CommonZeroEvaluation.CombComb
 public import Development.WeilBound.CoreStatements.CommonZeroEvaluation.ExistsLeftInv
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjEmbRtOfNe
 public import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsChartFiniteType
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CompleteDvrPullbackSemiabelianStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecFracExt
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import Formalism.LocalToGlobal.ProjectiveLattices.IntAll
 public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.VVAlgebraMapNonneg
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsAffineLieBasisBaseChange
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenericFrameIntegralOffFinitelyManyFunctions
@@ -41,28 +34,21 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IntFrExtM
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.NotFamConstZero
-public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AllWeightSectionsCompat
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -70,7 +56,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -83,23 +68,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ModelSmall
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Tactic.Polynomial.Basic
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.CommonZeroEvaluation.ExistsRootAdicComplete, Development.WeilBound.CoreStatements.CommonZeroEvaluation.IsAlgebraicStd, Development.WeilBound.CoreStatements.CommonZeroEvaluation.AlgebraicApproximationValued, Development.WeilBound.CoreStatements.CommonZeroEvaluation.RegularChartNonzeroDenominator, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameChartNonzeroDenominator, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameChartNonzeroDenominatorStatement, Development.WeilBound.CoreStatements.CommonZeroEvaluation.DualMapRComp, Development.WeilBound.CoreStatements.CommonZeroEvaluation.IsTanIff, Development.WeilBound.CoreStatements.CommonZeroEvaluation.IntegralFrameOverCdvr, Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralFrameSubalgebraRelay, Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralFrameSubalgebraRelayStatement, Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeightSectionComponentValue, Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeightSectionComponentValueStatement

@@ -3,14 +3,12 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LaTIsPrime
 public import Development.AbelianVarietyTheory.Proofs.AlgebraicCurves.AlgebraicIndependentFreeVar
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RestrictionEqZeroIffMemVanishingFiltration
-public import Mathlib.RingTheory.Flat.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraMapOLInjective
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MapSpanBaseChangeEquivSubmoduleOf
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsIntegralIffMemSpanOneTmulIntegralClosure
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemIntegralClosureOfMemSpan
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FlatLength
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
-public import Mathlib.RingTheory.Valuation.Integral
 public import Formalism.LocalToGlobal.ProjectiveLattices.HtXfer
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompTie
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RangeMulStep
@@ -19,16 +17,8 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Development.AbelianVarietyTheory.Proofs.AlgebraicCurves.PlacesRestrictInjective
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.GaussRingCompletionRename
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.RealisationValuesEqValuedPointOrdersStatement
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAC
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
 import Mathlib.RingTheory.PiTensorProduct

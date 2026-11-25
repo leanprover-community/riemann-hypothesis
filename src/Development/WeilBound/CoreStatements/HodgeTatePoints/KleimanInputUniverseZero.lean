@@ -28,11 +28,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSnapperQ
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSnapperSectionX
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PSubsetDiffConst
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplaneMid
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PExtension
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSurjectiveClosed
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PRestrLenEuler
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperDiffPoly
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperHyperplane
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.InterSumEventuallyEqInterNum
 
 -- This file was produced by scripts/clump.py from the modules listed below.

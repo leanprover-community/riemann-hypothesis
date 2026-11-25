@@ -2,14 +2,11 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestPlusOf
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestRankLProved
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.RemoveS
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BePhiSmulRight
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockValuationZpOfLatticeInclusion
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.ThresholdsMonoNormalized
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestDirOf
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.LiMap
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.MemIntPolIff
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.PadicIntegersEmbeddingMapPrime
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BejjSmulLeft
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.MemLevelsIff
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestSumSpan
@@ -17,12 +14,9 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SumFinr
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.FinrankEqSpanGen
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.FinrankLjjSpan
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BePhiAddLeft
-import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
-import Formalism.PolynomialDimension.MultinomialDepth.TieOps
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
-import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.FinrankSpanImageLe
 import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.KappaZeroNonneg
 
 -- This file was produced by scripts/clump.py from the modules listed below.

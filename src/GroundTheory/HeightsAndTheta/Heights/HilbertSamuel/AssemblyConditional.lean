@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeome
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockMetricChange
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockMeasureChange
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockDefectMetricChange
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockResolutionDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockSectionsRank
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockResolutionDegreeIntegral
@@ -21,7 +20,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResol
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionFormsIndependent
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionDegree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergman
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeSt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRealGramComparison
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionMixedIntegral
@@ -33,7 +31,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecon
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPointHeightFS
 public import ReciprocityTheory.GeometryOfNumbers.AsymptoticSequences.ClosingHS
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsMetricToFS
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDefectMetricChange
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTopPullFS
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjDegGenDeg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenDegMatAct
@@ -42,14 +39,12 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageGenDeg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionMixedBridge
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionInterpIntegral
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameBasePtFree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameImage
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameGraphDeg
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 public import Mathlib.Analysis.Calculus.ContDiff.WithLp
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockPieceCycle
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockPieceIndex
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockModuleFinite
@@ -59,7 +54,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBl
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockCoeffCycle
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockCycleExpand
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-public import Mathlib.RingTheory.KrullDimension.PID
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockTop
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCoordArithOfFnField
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockFnField
@@ -87,8 +81,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutio
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockChainSum
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsIntegrable
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.LengthLocQuotEqZero
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase

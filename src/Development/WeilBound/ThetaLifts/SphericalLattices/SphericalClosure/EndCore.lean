@@ -9,7 +9,6 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PsiUnrOfNotLe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.EqZeroOfLocW
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.ConeIntegralFactorisation
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.TowerCodimensionTwo
@@ -21,12 +20,9 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPu
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.ContinuousFinId
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoStatement
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsNhdsInvariant
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.SignatureSplitting.SigSplit
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
-public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
-public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.PlaneRemovalConfiguration
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 public import Development.WeilBound.ThetaLifts.FrameEstimates.TowerRallisLemma
@@ -119,27 +115,16 @@ public import Development.WeilBound.ThetaLifts.TowerModels.TowerCodimensionTwo
 public import Development.WeilBound.ThetaLifts.TowerModels.TowerCodimensionTwoOf
 public import Development.WeilBound.ThetaLifts.WeilDomination.DomWeilOf
 public import Development.WeilBound.ThetaLifts.WeilDomination.MatchEx
-public import Development.WeilBound.ThetaLifts.CTKernel
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PolDense
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.SigThConst
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnr
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
-import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 import Development.WeilBound.ThetaLifts.LatticeBasics.LeviEx
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLActs
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLFrame
-import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLines
-import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.PolRange
-import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
-import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ExistsAbsGt
-import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.IsFrPlane
 import Development.WeilBound.ThetaLifts.FrameEstimates.FundamentalDomainFiniteVolume
 import Development.WeilBound.ThetaLifts.FrameEstimates.GrpTop
 import Development.WeilBound.ThetaLifts.FrameEstimates.IInvOfParts
 import Development.WeilBound.ThetaLifts.FrameEstimates.InitialPairs.TriplePairHolds
 import Development.WeilBound.ThetaLifts.FrameEstimates.IsCompactIntV
 import Development.WeilBound.ThetaLifts.FrameEstimates.LatCpt
-import Development.WeilBound.ThetaLifts.FrameEstimates.SiegelAll
 import Development.WeilBound.ThetaLifts.FrameEstimates.WeilConv
 import Development.WeilBound.ThetaLifts.LatticeBasics.GoodNe
 import Development.WeilBound.ThetaLifts.LatticeBasics.NonZero
@@ -147,11 +132,6 @@ import Development.WeilBound.ThetaLifts.LatticeBasics.RealInv
 import Development.WeilBound.ThetaLifts.LatticeBasics.SWFull
 import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.AdelicEstimatesHolds
 import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.MCPure
-import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
-import Development.WeilBound.ThetaLifts.SmallCones.TwoExp
-import Development.WeilBound.ThetaLifts.SmallCones.Unfold
-import Development.WeilBound.ThetaLifts.SmallCones.UnipEx
-import Development.WeilBound.ThetaLifts.SmallCones.WittOf
 
 section -- clump:auto
 @[expose] public section

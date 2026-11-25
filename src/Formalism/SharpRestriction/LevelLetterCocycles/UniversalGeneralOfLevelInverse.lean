@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocalInputsFromLite
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneratorsOfUnits
 import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 import Mathlib.Order.Interval.Finset.Box
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.IsobaricMultiplicityOne
 import Formalism.SharpRestriction.LevelLetterCocycles.PsCoprimeOf

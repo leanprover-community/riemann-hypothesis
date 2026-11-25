@@ -2,20 +2,14 @@ module
 
 public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvalMod
-public import Mathlib.RingTheory.Ideal.BigOperators
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WBMemLatS
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.AinfMapSurjective
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasPeriods
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import ReciprocityTheory.GaloisValuations.GlobalA
 import ReciprocityTheory.NeutralLocalFields.Reciprocity
-import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.PAdicHodge.BdRLattice
 
 -- This file was produced by scripts/clump.py from the modules listed below.

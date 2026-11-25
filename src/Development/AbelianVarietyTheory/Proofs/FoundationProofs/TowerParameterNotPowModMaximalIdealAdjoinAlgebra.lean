@@ -5,10 +5,6 @@ public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.Algebra.Field.IsField
 public import Mathlib.RingTheory.LocalRing.Defs
 public import Mathlib.FieldTheory.PurelyInseparable.PerfectClosure
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.RingTheory.Artinian.Ring
 public import Mathlib.RingTheory.Derivation.Basic
 public import Mathlib.RingTheory.Kaehler.Basic
@@ -16,21 +12,13 @@ public import Mathlib.RingTheory.Unramified.Basic
 public import Mathlib.RingTheory.Unramified.Field
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedLaurentIsDVRStatement
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.RingTheory.Valuation.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DivMemSubalgebraOfValuationLeOneOfUniformizer
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.Algebraic.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsFinitePidSubalgebraDivPadicInt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGeneratorValuationPrimeDvdPowSubOfFinitePa
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedIntegersAdicComplete
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationLeOneIffIsIntegralOfCompleteDvr
 public import Mathlib.Algebra.CharP.Quotient
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

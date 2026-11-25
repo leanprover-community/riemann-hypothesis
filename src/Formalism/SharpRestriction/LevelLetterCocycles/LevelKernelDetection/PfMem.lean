@@ -4,18 +4,11 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrobeniu
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PsCoprimeDvdSub
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
-public import Formalism.DistinguishedUnitIdeals.UnivPart
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.KerEqOfSpan
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.LevBMemFil
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvBasis
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.EvaluationExpansionAtRoot
-import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-import Formalism.DistinguishedUnitIdeals.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.CombineProd, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PowerSeriesCancelBounded, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.DetectPt, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.GradedClassDecomposition, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.HfracOf, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.XPowDvdOfComponents, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfMem

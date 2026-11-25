@@ -1,18 +1,13 @@
 module
 
 public import Development.WeilBound.ThetaLifts.SmallCones.UnfAbs
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.SmallCones.FcCols
 public import Development.WeilBound.ThetaLifts.SmallCones.IdeleTop
 public import Development.WeilBound.ThetaLifts.SmallCones.StabDec
-public import Development.WeilBound.ThetaLifts.SmallCones.ColsOfMul
-import CompanionTheory.AutomorphicTheory.ThetaDilations.Nuabs
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 -- This file was produced by scripts/clump.py from the modules listed below.

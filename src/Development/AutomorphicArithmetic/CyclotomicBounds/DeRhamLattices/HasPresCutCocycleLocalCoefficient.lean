@@ -3,9 +3,6 @@ module
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.Localization.FractionRing
 public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
-public import Mathlib.Algebra.BigOperators.Pi
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.Localization.Module
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftQMk

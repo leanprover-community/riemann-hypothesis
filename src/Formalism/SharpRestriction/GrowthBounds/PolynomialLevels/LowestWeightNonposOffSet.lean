@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.TlNonempt
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FrMemLetters
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDd
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
-import Formalism.SharpRestriction.GrowthBounds.PathWeight.MdWeightMapDomain
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
 public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Mathlib.Tactic.Linter.Style

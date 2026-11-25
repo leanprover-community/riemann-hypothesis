@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.MatGstar
 public import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.NormNum.LegendreSymbol
-public import Mathlib.Algebra.Polynomial.Derivative
 
 @[expose] public section
 

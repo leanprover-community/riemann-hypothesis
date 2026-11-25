@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.Smooth.AdicCompletion
 public import Mathlib.RingTheory.Smooth.Fiber
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
-public import Mathlib.RingTheory.Etale.Locus
 
 @[expose] public section
 

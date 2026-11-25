@@ -2,8 +2,6 @@ module
 
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-public import Mathlib.NumberTheory.NumberField.Units.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwistIntersection
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
@@ -13,12 +11,9 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionLo
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionNumberMetricChange
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.MetricLocal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UnitRatioDivisorSupportEq
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PBoundedSectionTransfer
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPieceDegree
@@ -29,12 +24,10 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PointsIntegrab
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingPieces
 import Development.WeilBound.CoreStatements.FlagImmersions.PointsIntegralSectionSnoc
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.LengthLocQuotEqZero
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsAntisym
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ResolutionExistsOfResolutionStatementStatement
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPiecesAdditive
 

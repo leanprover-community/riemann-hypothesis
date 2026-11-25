@@ -1,12 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointsNonemptyUnitaryRankOne
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.Algebra.Group.Subgroup.Actions
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.GroupAction.Defs
-public import Mathlib.GroupTheory.Subgroup.Centralizer
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToVInjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FixLineConjIff
@@ -31,7 +25,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitSumConj
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI
 import Development.AbelianVarietyTheory.Definitions.Divisors.TwOrbMEqTwOrbUOfNormal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MinpolyOfRegAfOfFixL
 

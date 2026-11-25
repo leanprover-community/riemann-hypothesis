@@ -2,12 +2,8 @@ module
 
 public import Development.EtaleCohomology.DivisorCycles.CycleCount
 public import Mathlib.LinearAlgebra.Trace
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.RingTheory.Artinian.Algebra
-public import Development.EtaleCohomology.DivisorCycles.OpenCoset
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import Mathlib.Algebra.MvPolynomial.Monad
 public import Development.EtaleCohomology.DivisorCycles.ChainPf

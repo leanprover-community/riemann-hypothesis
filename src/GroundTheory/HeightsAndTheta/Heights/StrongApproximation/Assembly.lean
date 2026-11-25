@@ -2,12 +2,8 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.StrongApproximation.Statements
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.EichAlongSub
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.EichPreserves
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.DenseRangeFiniteAdele
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.LocGen
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Unramified.Basic
-public import Mathlib.RingTheory.Unramified.Field
 public import GroundTheory.HeightsAndTheta.Heights.StrongApproximation.PHypPairExists
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

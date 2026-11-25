@@ -8,12 +8,9 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueM
 public import Formalism.LocalToGlobal.ProjectiveLattices.AvMono
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.LePreimageOfNil
 import Mathlib.Tactic.Lemma
-import Mathlib.NumberTheory.Padics.RingHoms
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
-import ReciprocityTheory.DualLattices.FormalChartAtZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 
 -- This file was produced by scripts/clump.py from the modules listed below.

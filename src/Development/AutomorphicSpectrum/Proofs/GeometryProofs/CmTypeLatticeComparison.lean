@@ -6,9 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkM
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericCoordsDescendSubfield
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelConstantsExtension
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelDominantHodge
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkClosedPointToGermTop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

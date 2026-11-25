@@ -10,7 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymp
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.Finiteness.Lattice
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup

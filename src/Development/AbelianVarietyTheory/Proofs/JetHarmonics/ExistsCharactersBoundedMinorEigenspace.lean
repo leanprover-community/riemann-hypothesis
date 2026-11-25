@@ -5,25 +5,15 @@ public import Mathlib.RingTheory.TensorProduct.Basic
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Development.AbelianVarietyTheory.Definitions.Jets.TwoPlaces
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StAvDefs
 public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.SplitUnramifiedPlaces
-public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueMaximalAbovePlace
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import Mathlib.RingTheory.Valuation.Integers
 public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.Algebra.Algebra.Hom.Rat
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IdempotentEmbeddingsCard
 public import Development.AbelianVarietyTheory.Definitions.Jets.IsSelfOf
-public import Formalism.LocalToGlobal.CharacterGerms.Interface
 public import Formalism.LocalToGlobal.CharacterGerms.PlugUP
-public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.NonemptyPadicIntRingHomOfIsAdicComplete
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmTypeDirectionsEigenbasisValuedIntegers
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyUniformisedFormalChartAlgebraicPoint
@@ -31,23 +21,10 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarRingExtOf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePEmbIntSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.BiextChangeSecondFactor
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Mathlib.Topology.Sheaves.Presheaf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-import Formalism.IncomingBounds.IncomingBound
-import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.AlWellDefSt
 import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
-import Formalism.LocalToGlobal.Divisibility.Numbers
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCmTypeEmbeddingsIntoValuationRing
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogInv
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.CardOrthogonalIdempotentsLeNcardPrimesOver, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPowOfFiniteField, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPrimitiveIdempotentMapEqOne, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.EmbeddingsCongruentEq, Development.AbelianVarietyTheory.Proofs.JetHarmonics.UnitDeterminantBasis, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TauBasisUnitDeterminant, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPlaceUOfFrobeniusOrbit, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationIntegersPadicComplete, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCharactersBoundedMinorEigenspace

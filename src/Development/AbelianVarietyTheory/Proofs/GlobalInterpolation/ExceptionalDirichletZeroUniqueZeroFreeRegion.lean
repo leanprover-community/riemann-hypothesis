@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DirichletLZerosEqPrimitiveCharacterZeros
-public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsDirichletLFunctionZeroGapNearOne
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OrderNeTop
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LFunctionConjEqZero

@@ -10,8 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegr
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassPush
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassSteps
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices.InstFintypeFlIdx
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagGrassPush
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagImageGrass
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFsInvPow
@@ -27,11 +25,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBi
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.InputsOfUse
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagArithVar
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPermAppendSnoc, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointsIntegralProductFormula, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGrassmannPushOfInputs, Development.AutomorphicSpectrum.Proofs.MetricProofs.GrassmannHeightZ2OfInputsAndZ2, Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.GrassmannianHeightBoundOfSystems, Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.NineFreeOfUse

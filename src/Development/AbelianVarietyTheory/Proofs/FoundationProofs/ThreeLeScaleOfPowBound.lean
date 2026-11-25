@@ -1,15 +1,11 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.CmQuadraticFormEqAlternatingForm
-public import Mathlib.Analysis.SpecialFunctions.Log.Base
-public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Formalism.LocalRingCardinality.DataParams
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ONPage
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DegreeWeightKappaLePageBound
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RunWeightsSum
 public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.Jets.NotRunTiesZeroSteps, Development.AutomorphicArithmetic.CMTraceForms.SumLogPrimeFactorsMulTwoAddLogbLe, Development.AutomorphicArithmetic.CMTraceForms.CmDatumSmallPrimesLogBoundsOfParams, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThreeLeScaleOfPowBound

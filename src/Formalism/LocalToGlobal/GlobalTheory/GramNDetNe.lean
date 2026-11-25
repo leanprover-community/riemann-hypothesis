@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataSpaces
 public import Formalism.LocalToGlobal.GlobalTheory.SigDEqStar
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.GL4.PCoordH, Formalism.LocalToGlobal.GlobalTheory.GramNDetNe

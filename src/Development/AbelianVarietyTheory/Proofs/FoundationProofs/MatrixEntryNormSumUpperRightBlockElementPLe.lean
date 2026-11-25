@@ -5,39 +5,16 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.CartanCoshPower
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StarMulOfMemKc
-public import Formalism.LocalRingCardinality.DataTheta
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
-public import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
-public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.MeasureTheory.Integral.Gamma
 public import Mathlib.MeasureTheory.Integral.Pi
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContinuousOnPolarLog
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSvd
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 public import Mathlib.Algebra.Order.Chebyshev
-public import Mathlib.Analysis.Matrix.Normed
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHermitianLogUnitaryBlockDiagonal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpLogNearOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsInvInvariantOfRight
-public import Formalism.LocalRingCardinality.DataCD
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LamBallULe
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
-public import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
-import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
 

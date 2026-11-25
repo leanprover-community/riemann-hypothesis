@@ -3,10 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IsClassFieldHilbert
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import Mathlib.RingTheory.Ideal.Int
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IneFixQ
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IneAbs

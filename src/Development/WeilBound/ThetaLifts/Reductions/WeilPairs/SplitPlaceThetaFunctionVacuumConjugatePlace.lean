@@ -1,8 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNsmulFix
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ExistsCompactOfFinite
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaFunctionHeisenbergInvariant
 import Mathlib.Tactic.Linter.HaveILetI

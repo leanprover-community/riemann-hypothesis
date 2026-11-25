@@ -7,7 +7,6 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
 import Mathlib.NumberTheory.Height.NumberField
 public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section

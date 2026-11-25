@@ -9,10 +9,8 @@ public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.KerBF
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoefficientDataExistsStatement
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LCutLowA
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LGoodEvA
-import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 
 -- This file was produced by scripts/clump.py from the modules listed below.

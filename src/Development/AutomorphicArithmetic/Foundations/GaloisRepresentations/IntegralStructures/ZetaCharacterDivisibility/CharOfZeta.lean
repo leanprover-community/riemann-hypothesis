@@ -12,7 +12,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BlochKatoSelmerVanishes
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.GenericMulOfProd
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.SplitLineSubtraction.RowDefOfOdd
-import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 
 @[expose] public section
 

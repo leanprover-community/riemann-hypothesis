@@ -7,22 +7,13 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.Analysis.Complex.RemovableSingularity
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Analysis.Calculus.DSlope
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.NumberTheory.Harmonic.Bounds
-public import Mathlib.Analysis.SumIntegralComparisons
 import Formalism.LFunctionBounds.LFunctionBoundsProofs.RectResidue
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
 import Mathlib.Tactic.Lemma
-import Mathlib.NumberTheory.DirichletCharacter.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

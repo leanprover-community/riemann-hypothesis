@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StatementsTrun
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
 
 @[expose] public section
 

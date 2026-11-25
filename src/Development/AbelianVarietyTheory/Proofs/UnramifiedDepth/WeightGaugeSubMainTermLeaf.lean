@@ -5,8 +5,6 @@ public import Mathlib.Data.Nat.Factorization.Defs
 public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Mathlib.RingTheory.Valuation.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuation
-public import Mathlib.Data.Nat.Factorization.Basic
-public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
 public import Mathlib.Algebra.Order.Ring.Pow
 public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TwoMulChainStartIndexAddOneOfOdd

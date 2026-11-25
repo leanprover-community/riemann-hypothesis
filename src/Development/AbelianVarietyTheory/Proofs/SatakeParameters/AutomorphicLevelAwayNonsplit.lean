@@ -8,9 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Lattic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyLocalIntegralPointsMemOpenSubgroupDefi
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSatakeSphericalVectorDefiniteUnitary
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChebotarevDegreeOne
-import Formalism.LocalToGlobal.Columns.LevGCount
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RestrictsSelf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsNormMemOfUnderEq, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutomorphicLevelAwayNonsplit

@@ -29,10 +29,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.E
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.OrdCharIff
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZeroAdicCompletion
 import GroundTheory.ProfiniteCohomology.LocalClassFormation.UnramifiedRes
-import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AdmissibleResidues.SphericalOfHasSat
 
 @[expose] public section

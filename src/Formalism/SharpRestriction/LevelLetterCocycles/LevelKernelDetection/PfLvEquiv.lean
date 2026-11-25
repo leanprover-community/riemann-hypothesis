@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
-import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
 
 @[expose] public section
 

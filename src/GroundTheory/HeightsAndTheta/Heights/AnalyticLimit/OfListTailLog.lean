@@ -7,24 +7,10 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassError
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.SystemIndependence
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import ReciprocityTheory.AnalyticForms.MaIntEmpty
-public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.UIObjects
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PKaehlerBound
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassReplace
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.EnergyStep
@@ -38,9 +24,7 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListMono
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSection
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StTailShift
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Assembly
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftB
 

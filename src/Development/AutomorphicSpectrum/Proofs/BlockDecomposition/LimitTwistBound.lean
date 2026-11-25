@@ -5,7 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceOpe
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.TwistStripLimits.BlockTypes
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralEigenExponential
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieCentralElementTrace
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelPurity.EopV
 
 -- This file was produced by scripts/clump.py from the modules listed below.

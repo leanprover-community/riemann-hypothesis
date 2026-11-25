@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RootsChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.PolarizedLinkage.PlainRec
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.PrincipalSeriesMatching.PolFacts
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.GenericIrreducibility.GenericUnitary.NormEqOneOfValuationEqOne
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 
 @[expose] public section
 

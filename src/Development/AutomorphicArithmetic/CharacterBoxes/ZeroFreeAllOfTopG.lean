@@ -3,10 +3,6 @@ module
 public import Development.AutomorphicArithmetic.DedekindLFunctions.CharFamily
 public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauZeroFreeCriterion
 public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LFunctionConj
-public import Mathlib.Analysis.Analytic.Order
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Pow
 public import Mathlib.MeasureTheory.Function.Floor
 public import Formalism.ZetaNonvanishing.MellinSAux
 public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.CharFamilyLFunctionNeZeroOfOneLeRe
@@ -19,12 +15,6 @@ public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClas
 public import Development.AutomorphicArithmetic.PrimitiveCosets.LevelGmLeOnFamilyScales
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicArithmetic.DedekindLFunctions.SplitInertia
-import Development.AutomorphicArithmetic.PrimitiveCosets.RecH
-import Formalism.SizeWindowBrackets.ErrorFormsWeakWindowsFalse
-import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
-import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
-import Formalism.SizeWindowBrackets.SChain
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.WindowHypOfRpow, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.WindowHypUOfWindowHyp, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.GchiConj, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.GchiGrowth, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LogDerivLocal, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.measurableGchi, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.mellinGchiModOne, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.mellinGchiOfNeOne, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.poleData, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.lemmaL, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.ZeroFreeOfRpowWindow, Development.AutomorphicArithmetic.PrimitiveCosets.Imports, Development.AutomorphicArithmetic.CharacterBoxes.ZeroFreeAllOfTopG

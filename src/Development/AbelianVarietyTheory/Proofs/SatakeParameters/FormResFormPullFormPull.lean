@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HodgePullHodgePull
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

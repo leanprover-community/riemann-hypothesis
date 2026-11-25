@@ -6,9 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.TableLineDegreeTwo
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemIntPts
 public import Formalism.SharpRestriction.LevelLetterCocycles.AdmissibleParameterJ
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.BaseSizes
-public import Development.AutomorphicArithmetic.ResidueCharacters.TwistedPlaces
-public import Formalism.SharpRestriction.LevelLetterCocycles.MemPrimesOverOfMem
-public import Mathlib.Basic.Real.Basic
 public import Formalism.PadicSubsetSums.StableGradedCounts.TOPSgLe
 public import Formalism.PadicSubsetSums.StableGradedCounts.TOPSgRange
 public import Formalism.PadicSubsetSums.CentralIdempotents.ResidueAvoidanceOfPrimes

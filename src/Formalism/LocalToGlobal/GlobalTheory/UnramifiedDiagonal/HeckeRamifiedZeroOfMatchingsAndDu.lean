@@ -6,13 +6,9 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.LocalUnita
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PDnDil
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Common
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DnkLkLocP
-public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.TrpDia
 public import Formalism.SharpRestriction.GlobalSchurBounds.LemmaBSecondBranchOfLength
-import Formalism.SharpRestriction.GlobalSchurBounds.IntegralityOfRationalityLocal
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocW
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.Development, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.DnDiaMatch0FHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.UpF, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CrossDiagonalMatching.UpMatch, Formalism.LocalToGlobal.GlobalTheory.UnramifiedDiagonal.HeckeRamifiedZeroOfMatchingsAndDu

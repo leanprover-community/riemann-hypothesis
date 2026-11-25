@@ -5,17 +5,11 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalGl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemZpowersOfTameGen
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootEqOfClose
 public import ReciprocityTheory.GaloisValuations.Global
-public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTameGenAtOfValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertiaActsOnTameRoot
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import ReciprocityTheory.GaloisValuations.GlobalB
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import Mathlib.Tactic.Linter.Style
 

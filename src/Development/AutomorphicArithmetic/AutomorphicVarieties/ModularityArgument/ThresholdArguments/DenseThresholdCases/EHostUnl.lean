@@ -56,7 +56,6 @@ import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Connected.Separation
 import Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuLinked.OrdZero
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsTerMore
-public import Formalism.SharedLemmas.TotDiscQuot
 
 @[expose] public section
 

@@ -6,25 +6,11 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Trans
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsNormSubEqOne
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCompatFiniteIsometry
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LamGApply
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FramesStdMatched
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocE
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.LinearAlgebra.Span.Defs
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-public import Mathlib.Algebra.MvPolynomial.Monad
 public import Formalism.LocalToGlobal.IndefiniteReal.Bridge
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinIndMapRangeField
-public import Formalism.LocalToGlobal.IndefiniteReal.BridgeLemmas
-public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.CoefModAt
 public import Formalism.LocalToGlobal.Columns.TiedValLatG
-public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsPrimeIdemOfInert
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelCharEqOneInertPrimeOffLevel
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitHeckeElementLabelZerosThenNegOnes
@@ -33,9 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHa
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SplitOffBadOfSuppSplitOff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientS
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SmallnessCondition
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -69,40 +52,13 @@ import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.Divisors.SumExpSt
-import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairBDual
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormEmbeddingIntegerLeOne
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.RingTheory.PicardGroup
 import Formalism.PieriBlockIdeals.PieriColumnMinors.RealLocalDeltaNabla
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormLeOneIffIntegralAtPadicEmbeddingPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CompletedLatticeEqAdelicCompletionAndGram
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicPointIntegralRelativeLocalBasis, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualWeylTensorLiftEquivariant, Development.AbelianVarietyTheory.Proofs.DivisorProofs.VariableMatrixDetPolyPowMulMemDualWeyl, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDualWeylTensorLiftCoefficientSpace, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDualWeylTensorLiftCoefficientSpaceStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntermediateFieldPadicIntegersEqNormLeOne, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.NormIntegersLeOne, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SemilinearLatticeMem, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.WeightedHomogeneousMap, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LiftNabStdMemLatN, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPhiOfFrameInjectiveShift, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPhiOfFrameInjectiveShiftStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinIndOfBasis, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalBasisDualBasisEmbeddedLattice, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalBasisIntegralRelativeAdelicPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapEqOneOfIsLocEnv, Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnimodularMatricesPreserveFrameLattices, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadsAtSmallPlace, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ReadsOfSmall, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ReadsOfSmallStatement

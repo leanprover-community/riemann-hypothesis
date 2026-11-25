@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SbHalfHalfInd
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FinPartDetAtInvInt
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FinPartPhiE
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FstACoordOfInfPart
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq
 import Mathlib.Tactic.Linter.Style

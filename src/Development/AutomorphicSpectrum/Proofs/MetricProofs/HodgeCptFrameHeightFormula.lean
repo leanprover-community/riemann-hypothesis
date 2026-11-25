@@ -8,22 +8,13 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsChartOfLineBundle
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkSpecializesBijective
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DetFacGMatEqOne
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.FiniteEtaleSurjectiveOfPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordTieCompEquiv
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsLocalTwistTrivialization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTriangularRegularFrameChange
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptBasesLinearIndependentSpan
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.GroupWithZero.Units.Basic
-public import Mathlib.Algebra.Ring.Subring.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GrGenOfIsFlagVBOn
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOnDualAndBidual
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatRestrictComapSpan
 import Lemmata.GeneralBFact.Imports
 import Mathlib.Tactic.Linter.Style
 

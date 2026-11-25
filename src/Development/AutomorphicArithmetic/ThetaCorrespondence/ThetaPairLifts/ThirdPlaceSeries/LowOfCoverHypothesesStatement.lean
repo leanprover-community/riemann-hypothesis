@@ -9,12 +9,6 @@ public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescen
 public import Formalism.MeanHeightDescent.DivisionInequalityWithCovolume
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LiftLambdaBound
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
-import Formalism.MeanHeightDescent.AverageDegreeBounds.GoodBadCut
-import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
-import Formalism.MeanHeightDescent.AverageDegreeBounds.DescentSlope
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsHalfRankSub, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HtMapLeOfPoints, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowerBoundOfAllEstimates, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LowOfCoverHypotheses, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LowOfCoverHypothesesStatement

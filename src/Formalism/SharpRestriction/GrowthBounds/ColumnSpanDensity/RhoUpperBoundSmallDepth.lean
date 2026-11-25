@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.MemColSp
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundOfEdgeCount
 public import Mathlib.LinearAlgebra.Projectivization.Cardinality
-public import Mathlib.LinearAlgebra.Projectivization.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 

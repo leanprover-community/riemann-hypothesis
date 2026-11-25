@@ -2,17 +2,8 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfE
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
-public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
 public import GroundTheory.IdeleRoots.TorusPowers.HeckeTensor
-public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
-public import GroundTheory.GlobalFields.TateThesis.AdeleMeasurable
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoAF
-import Mathlib.Tactic.Linter.HaveILetI
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.MatrixTransvectionDiagonalDecomposition
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdeleModuleBaseChangeSq, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdeleModuleConjugationInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdeleModuleEqNormModule

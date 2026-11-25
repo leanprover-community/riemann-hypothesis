@@ -11,26 +11,16 @@ public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsNormDifferentEqProd
 public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-public import Development.AbelianVarietyTheory.Definitions.Divisors.EntireEqOfHalfPlane
-public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFinite
-public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
 public import GroundTheory.GlobalFields.TateThesis.NonvanishingPrimes
-public import GroundTheory.GlobalFields.TateThesis.AdelicCharLocal
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremFE
 public import GroundTheory.LocalFields.LocalZetaEpsilon
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsCMTypeEmbedding
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
 public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalFinite
-import GroundTheory.GlobalFields.TateThesis.ArchCharsUnitary
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CompletedLStripBounds
-import GroundTheory.LocalFields.FilteredSurj
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Mathlib.Tactic.Linter.HaveILetI
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 import Aesop.Main
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GlobalProofs.CmHeckeCharacterInfinityType, Development.AutomorphicSpectrum.Proofs.GlobalProofs.CmHeckeCharacterNotNormPower, Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteEpsilonFactorDependenceOnS, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HaarIntegralIntegersFiniteSum, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HeckeCharacterConductorExponent, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HeckeGaussSumLocalTerm, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HeckeLFunctionEulerProduct, Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocalAdditiveCharacterEqAdelic, Development.AutomorphicSpectrum.Proofs.GlobalProofs.HeckeTateFunctionalEquation

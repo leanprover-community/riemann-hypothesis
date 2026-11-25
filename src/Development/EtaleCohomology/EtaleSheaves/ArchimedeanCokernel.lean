@@ -1,12 +1,9 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.StalkCut
-public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Defs
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.EtaleCohomology.EtaleSheaves.LocalDescent.DescLocOf
 public import Development.EtaleCohomology.EtaleSheaves.FiltrationLevelInjectivity
 public import Development.EtaleCohomology.EtaleSheaves.KernelLocalization.RangeOfBd
-import Development.EtaleCohomology.EtaleSheaves.LocalDescent
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

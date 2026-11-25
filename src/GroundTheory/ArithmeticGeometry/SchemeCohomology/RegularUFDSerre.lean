@@ -8,8 +8,6 @@ public import Mathlib.Algebra.Category.Grp.Zero
 public import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
 public import Mathlib.RingTheory.Regular.Category
 public import Mathlib.RingTheory.Regular.ProjectiveDimension
-public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Linear
-public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
 

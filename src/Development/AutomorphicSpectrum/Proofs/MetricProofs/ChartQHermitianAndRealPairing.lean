@@ -1,10 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
-public import Mathlib.Data.Matrix.Mul
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIntPreimageOfOrthogonalKernel
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsAdaptedUnimodular
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RiemannFormHermitianLattice
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
 

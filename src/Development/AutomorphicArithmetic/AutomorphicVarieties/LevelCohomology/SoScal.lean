@@ -4,7 +4,6 @@ public import ReciprocityTheory.Hypotheses.GalCohDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDefs
-import Formalism.GaloisCohomology.Statement
 
 @[expose] public section
 

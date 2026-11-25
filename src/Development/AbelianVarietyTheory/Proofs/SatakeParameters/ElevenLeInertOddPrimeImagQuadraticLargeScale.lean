@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataParams₂
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NotDvdCondN
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.LtPrime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ElevenLeInertOddPrimeImagQuadraticLargeScale

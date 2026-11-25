@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JointCmpEmbeddingY
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormPadicEmbeddingLeOneOfMemInverseHalfDifferent
-import Formalism.LocalRingCardinality.HostCls
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Reframe
 import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
 import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit

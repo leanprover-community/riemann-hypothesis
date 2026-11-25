@@ -3,8 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartFlagPt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseChartHolomorphicComposition
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BaseVectorProperties
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockLUFactorization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFlagPointInOrbit
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointTriangularChangeOrbit
@@ -12,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameLUMinorVa
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwoPointFibreChartFirst
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsHoloOnOfGerm
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameMinorValueFormula
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.Divisibility.HeckeCSDICommTrRep
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InTypeIsoSortedPos
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

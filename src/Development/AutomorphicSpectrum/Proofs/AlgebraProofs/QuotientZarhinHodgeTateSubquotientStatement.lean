@@ -8,10 +8,6 @@ public import ReciprocityTheory.DualLattices.MemDualLat
 public import ReciprocityTheory.DualLattices.MemMapAugmentationIdealComapPullbackQuotient
 public import ReciprocityTheory.DualLattices.MemSupOfRestrictToSubgroupMemSq
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsFinFlatSub
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.RingTheory.Valuation.Integers
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import ReciprocityTheory.DualLattices.TensorSpan
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RfTors
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.QuotientByFiniteFlatStatement
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.ZarhinStatement

@@ -2,13 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormalizedValuationMul
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLoc
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftSec
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftUnit
-public import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftInSt
-import Formalism.LocalToGlobal.ProjectiveLattices.SecPtOrd
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 import Mathlib.Tactic.Linter.Style
 

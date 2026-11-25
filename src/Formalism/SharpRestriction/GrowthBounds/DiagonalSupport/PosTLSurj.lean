@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.GrowthBounds.PathWeight.LeadingDepthOne
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.PhProdShift
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
-public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeOldest
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
 
 @[expose] public section

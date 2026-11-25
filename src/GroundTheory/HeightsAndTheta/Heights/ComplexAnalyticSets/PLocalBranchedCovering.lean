@@ -7,11 +7,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchOf
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLinearNoetherNormalization
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PManifoldZerosComplementConnected
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IrreducibleConnected.BasicOpenSteps
-import Mathlib.Analysis.Analytic.Polynomial
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

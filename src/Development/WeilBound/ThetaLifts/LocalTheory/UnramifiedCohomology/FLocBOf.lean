@@ -1,15 +1,11 @@
 module
 
 public import Development.WeilBound.ThetaLifts.SmallCones.UnfAbs
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.EvFinIdemSelf
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Kcompact
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.SmallCones.FcCols
-public import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
-public import Development.WeilBound.ThetaLifts.SmallCones.ColsOfMul
 public import Development.WeilBound.ThetaLifts.SmallCones.SoDefs
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.CoefficientSpans
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealStmt
@@ -22,15 +18,10 @@ public import Development.WeilBound.ThetaLifts.LeviDeterminants.ActsEx
 public import Development.WeilBound.ThetaLifts.LocalTheory.AdmissiblePureTensorSchwartz
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PureCancel
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.LocalFields.PadicLogSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.Lint, Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.KAtCompact, Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.SpanSoLoc, Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.FLocBOf

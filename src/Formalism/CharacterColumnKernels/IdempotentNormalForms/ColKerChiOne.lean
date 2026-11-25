@@ -2,7 +2,6 @@ module
 
 public import Formalism.CharacterColumnKernels.CharacterColumnKernelEqualityForm
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.ColKer
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerSmulLe
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

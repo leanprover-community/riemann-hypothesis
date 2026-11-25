@@ -1,17 +1,13 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.Entire
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SplitAt
 public import CompanionTheory.AutomorphicTheory.UnitriangularMeasure.AdeleCoordinateMeasure.EllipticTorusNorm
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.HeckeExpl
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.LcLaws
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
 public import Mathlib.RingTheory.PowerSeries.Expand
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ConjInv
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

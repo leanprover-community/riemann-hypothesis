@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepFormulaF
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.FormulaFA
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IsInLieAlgebraISmulAddConjTranspose
 
 @[expose] public section

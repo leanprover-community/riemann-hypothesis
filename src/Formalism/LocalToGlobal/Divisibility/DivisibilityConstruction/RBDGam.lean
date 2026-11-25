@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
 public import Formalism.LocalToGlobal.Divisibility.ZscOfNum
 public import Formalism.SharpRestriction.ElevenLe
 public import Formalism.LocalToGlobal.Divisibility.DivisibilityConstruction.RBLam
-import Formalism.PeriodIntegrals.GZeroLogBound
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearCardBound.ZeroLogBound
 
 @[expose] public section
 

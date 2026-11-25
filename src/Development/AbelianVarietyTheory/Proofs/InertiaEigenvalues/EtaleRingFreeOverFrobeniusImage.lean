@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Integer
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PhiFree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingsCyclotomic
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
 
 @[expose] public section
 

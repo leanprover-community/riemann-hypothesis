@@ -1,14 +1,12 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
-public import Mathlib.Topology.Algebra.ContinuousMonoidHom
 public import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsDiscreteRepResMuROrep
 import Formalism.ConjugateSelfDual.Statement
 import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
-import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassMap
 import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section

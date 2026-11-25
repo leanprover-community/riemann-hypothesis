@@ -8,23 +8,14 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BadExis
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplierLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsDenseNonvanishing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsUnitValues
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagCompare
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareFirst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareSecond
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginPointCompare
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsProject
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.MvPolynomial
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.BundleChernComparison
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1

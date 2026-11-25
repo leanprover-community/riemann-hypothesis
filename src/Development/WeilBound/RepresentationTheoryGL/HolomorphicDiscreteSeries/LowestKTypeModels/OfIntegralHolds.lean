@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.WeightOccurrence.OccSome
 public import Development.WeilBound.CoreStatements.BranchingTraces.ExistsIntertwiner
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.LipschitzEstimate
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 

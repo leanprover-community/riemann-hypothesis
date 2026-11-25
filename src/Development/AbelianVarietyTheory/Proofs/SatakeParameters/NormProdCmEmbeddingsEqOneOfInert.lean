@@ -5,7 +5,6 @@ public import Formalism.LocalRingCardinality.ConjSqrtMinusD
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NatCastMemOfPlace
-import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
 import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.IsOrthCo
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
 

@@ -11,11 +11,6 @@ public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.MulMatQ
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.PolyUpperBoundDelta
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SegFormZeroRight
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.TestFlat
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.PolynomialThetaProduct
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TopDegreeLeTwoB
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.FockRAddRight
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LaTwInvT
 
 @[expose] public section
 

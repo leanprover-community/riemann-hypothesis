@@ -6,7 +6,6 @@ import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Algebra.Module.Torsion.Basic
 
 @[expose] public section
 

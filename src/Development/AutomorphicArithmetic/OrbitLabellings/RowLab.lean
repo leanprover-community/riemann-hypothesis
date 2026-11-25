@@ -11,7 +11,6 @@ public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 @[expose] public section
 

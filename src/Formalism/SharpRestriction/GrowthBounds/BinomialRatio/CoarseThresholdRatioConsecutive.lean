@@ -1,10 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreesLargeOfStd
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairFacts
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

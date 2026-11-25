@@ -3,7 +3,6 @@ module
 public import Formalism.PieriBlockIdeals.ContentDistanceBounds
 public import Mathlib.Algebra.Order.Floor.Semifield
 public import Mathlib.NumberTheory.Chebyshev
-public import Formalism.PieriBlockIdeals.Statement
 public import Mathlib.NumberTheory.Harmonic.Bounds
 public import Formalism.RankGapBounds.LargePrimeFactor
 public import Formalism.PieriBlockIdeals.MertensReciprocalElementary

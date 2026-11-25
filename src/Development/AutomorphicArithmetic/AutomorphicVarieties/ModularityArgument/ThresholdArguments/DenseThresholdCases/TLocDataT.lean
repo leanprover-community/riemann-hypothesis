@@ -48,7 +48,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqOfHasValueAtInfinite
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.FixedNeBotOfEquiv
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZLevD
-import GroundTheory.LocalFields.UnramifiedHensel
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic

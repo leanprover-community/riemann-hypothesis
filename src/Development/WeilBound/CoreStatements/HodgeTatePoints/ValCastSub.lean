@@ -2,21 +2,14 @@ module
 
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsDerAt0
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RaCoord
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.RaCpaf
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CntCoord
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.FormMemLin
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsFinFlatSub
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.RaTlog
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.DetUpdateRowDiagonal
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.RaChar
 public import ReciprocityTheory.DualLattices.HasLenCokerDet
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsDualOf
 public import ReciprocityTheory.DualLattices.PrimeHopfOrderOfAddEquiv
 public import ReciprocityTheory.DualLattices.HasLenLeOfSurj
-import ReciprocityTheory.DualLattices.ProdDvdOfIso
-import ReciprocityTheory.DualLattices.SumValCoord
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

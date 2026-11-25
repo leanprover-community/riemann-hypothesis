@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPushForward
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.NumericalSegre
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

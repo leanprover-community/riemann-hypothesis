@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTPresNuOfPolys
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PieceEqPieceT
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HtCoLOfEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HtCoLSum
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPrimitiveRootEOmLevel
@@ -15,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoefPosEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DropConst
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SumMulCoPtSbEqSumInv
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ShCocOn
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaSystemFixedExponent
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleNewformZetaData
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeTateZetaClassParams
@@ -24,14 +21,8 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ChiProj
 public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ZetaUr
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KumValSubMem
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UntwistedRepresentationOrdinaryTriangularShape
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.Mdl
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

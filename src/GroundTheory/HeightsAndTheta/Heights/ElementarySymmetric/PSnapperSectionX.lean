@@ -18,7 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapperSubq
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTildeFiniteE
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTildeShift
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PTwistTilde
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PMulQuotEq
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Unitar
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ConstIdele
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ConstOfGood
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.UniqPlugPl
-public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ContinuousInfiniteAdeleMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.AbelianHeightsDuality.UnitaryDensity.Cayley, Development.WeilBound.CoreStatements.AbelianHeightsDuality.UnitaryDensity.EqTopOfLines

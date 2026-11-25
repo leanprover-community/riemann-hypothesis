@@ -11,7 +11,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailF
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsSideRest
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTailExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PModelGenericPoint
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDefs
 import Mathlib.RingTheory.LocalProperties.Reduced
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.BlockVecSegreJoin
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsMultiProjPrimeMIdealOverGraph

@@ -6,22 +6,9 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Finite
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TruncatedExplicitFormula
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZerosInWindowFiniteAndPosOrder
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ZeroCount
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FinsumMemLeOfSubset
-public import Mathlib.NumberTheory.LSeries.Nonvanishing
-public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
-public import Mathlib.NumberTheory.DirichletCharacter.Basic
-public import Mathlib.NumberTheory.DirichletCharacter.Bounds
-public import Mathlib.NumberTheory.Harmonic.Bounds
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
-public import Mathlib.Data.FunLike.Fintype
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DirichletLZerosEqPrimitiveCharacterZeros
-public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsDirichletLFunctionZeroGapNearOne
-public import Mathlib.Analysis.Complex.Trigonometric
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IteratedDerivLogDerivDirichletLViaNearbyZeros
 public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 public import Mathlib.RingTheory.SimpleRing.Principal
@@ -30,10 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SumRpo
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Lemma

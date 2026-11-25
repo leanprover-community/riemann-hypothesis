@@ -7,12 +7,9 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseP
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryFactorCommutation
-public import Mathlib.FieldTheory.RatFunc.AsPolynomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagElementaryTwist
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsFlagFrame
-import Development.WeilBound.CoreStatements.PluriharmonicCharts.MinorColsBEqZero
 import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsBlockMapInitialVertex
 import Mathlib.Tactic.Linter.Style
 

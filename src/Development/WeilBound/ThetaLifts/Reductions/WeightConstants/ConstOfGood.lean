@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsC
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ConstOfGood
 public import Development.WeilBound.ThetaLifts.LatticeBasics.GoodNe
 public import Development.WeilBound.ThetaLifts.Reductions.WeightConstants.Bridge
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

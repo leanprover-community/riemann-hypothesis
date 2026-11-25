@@ -3,21 +3,15 @@ module
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
-public import Mathlib.CategoryTheory.Comma.Over.Basic
 public import Mathlib.NumberTheory.NumberField.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StAvDefs
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 public import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedFlagStatement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderLatticeBase
-public import Mathlib.CategoryTheory.Category.Basic
 public import ReciprocityTheory.DualLattices.HasLenCokerDet
 public import ReciprocityTheory.DualLattices.MemAugIdeal
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotIsUnitNatCastOfIsLocalHom
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.AlWellDefSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Development.WeilBound.CoreStatements.HodgeTatePoints.RbProj
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.AnalyticForms.LeviForms.RegChartB
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.AnalyticForms.LeviForms.RegChartA
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
 
 @[expose] public section
 

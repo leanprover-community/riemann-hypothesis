@@ -10,7 +10,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
 public import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EquivOfStalkwiseBaseChange
 public import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.TateTwistFinitary
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

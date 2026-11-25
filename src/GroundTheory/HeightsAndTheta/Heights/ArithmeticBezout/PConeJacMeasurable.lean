@@ -11,7 +11,6 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

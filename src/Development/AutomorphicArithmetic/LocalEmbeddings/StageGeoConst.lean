@@ -15,13 +15,7 @@ public import Development.AutomorphicArithmetic.DivisorFrames.IdempotentSumFixes
 public import Development.AutomorphicArithmetic.DivisorFrames.StdSectionFirstEqProdLocal
 public import Development.AutomorphicArithmetic.DivisorFrames.StdSectionSecondEqProdLocal
 public import Development.AutomorphicArithmetic.DivisorFrames.ExistsThOEqOfIsLatVacThetaFun
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.MatchingAdjoints
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.DivisorFrames.ExistsLocalZetaDataRealizingStandardPair, Development.AutomorphicArithmetic.DivisorFrames.ThetaLiftTripleLocalSplitPlaces, Development.AutomorphicArithmetic.DivisorFrames.TripleDualCoordSplitPlacesOfIsPairIsLat, Development.AutomorphicArithmetic.LocalEmbeddings.StageGeoConst

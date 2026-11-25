@@ -12,7 +12,6 @@ public import Development.EtaleCohomology.EtaleSheaves.TruncKerPf
 public import Development.EtaleCohomology.EtaleSheaves.CechFiltPf
 public import Development.EtaleCohomology.EtaleSheaves.FiltrationLevelInjectivity
 public import Development.EtaleCohomology.EtaleSheaves.DiscLvlPf
-import Mathlib.CategoryTheory.Monoidal.Mon
 import Development.EtaleCohomology.EtaleSheaves.KernelLocalization.RangeOfBd
 import Mathlib.Tactic.Linter.Style
 

@@ -11,7 +11,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointOverNum
 public import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsPoint
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointExistsUniqueEmbedding
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.FlagImmersions.ExistsUnitMetric, Development.WeilBound.CoreStatements.FlagImmersions.UnitAtOfSpan

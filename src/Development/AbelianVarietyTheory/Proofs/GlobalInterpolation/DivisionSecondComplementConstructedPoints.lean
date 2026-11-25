@@ -5,10 +5,8 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LevelLoss
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OneLeLetterBlockLength
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDegreeGapBound
 public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
-public import Formalism.LocalRingCardinality.DataErr
 public import Formalism.SharpRestriction.ElevenLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHeightOneIdealIffAdditiveValuationPos
-public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.LocalToGlobal.GlobalTheory.PlacesP
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLbud
@@ -17,13 +15,7 @@ public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DivisionSecondComplementAtConstructedPoints
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalRingCardinality.DataAmbForm
-import Formalism.LocalRingCardinality.SpanPowerMembership.Places
-import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral
 
 -- This file was produced by scripts/clump.py from the modules listed below.

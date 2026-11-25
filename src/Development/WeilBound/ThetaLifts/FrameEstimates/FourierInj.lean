@@ -5,8 +5,6 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Topology.ContinuousMap.Bounded.Star
 public import Mathlib.MeasureTheory.Measure.FiniteMeasureExt
-public import Mathlib.MeasureTheory.Function.AEEqOfLIntegral
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionHeisenbergInvariant
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup

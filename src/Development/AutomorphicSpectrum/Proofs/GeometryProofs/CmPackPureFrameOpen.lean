@@ -2,15 +2,10 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCMFrame
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackEigenPeriod
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsTransitionMatrixGram
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDetNeZeroLocalBasisCofinite
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PureTypeLatticesOrthogonal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackPureFrame
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveZNeZero
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorsBaseChange
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.

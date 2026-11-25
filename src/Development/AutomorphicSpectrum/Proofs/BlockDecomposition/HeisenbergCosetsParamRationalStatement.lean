@@ -3,10 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RowD
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinRationalPoints
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BigCellCosetsHermitianParam
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetCell
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetCellInvariantUnipotent
-public import Mathlib.Data.Matrix.Block
-public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryChartMemRationalIff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeisenbergCentreRationalFormStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -42,26 +39,12 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ValueFormula
 import Mathlib.Tactic.Basify
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin
-import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.MapsExist
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinCellsDecomposition
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SummableCell
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicFactorizationRows, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RowsOfWeylHeisenbergProduct, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RowsProportionalOfTransform, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelParabolicQuotientIffRows, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryBlockInvertibleCriterion, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryCellBlockNormalForm, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BlockFourMatrices, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeylHeisenbergLeviRational, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeisenbergCosetsParamRational, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeisenbergCosetsParamRationalStatement

@@ -5,9 +5,6 @@ public import Mathlib.MeasureTheory.Group.Defs
 public import Mathlib.MeasureTheory.Measure.QuasiMeasurePreserving
 public import Mathlib.Dynamics.Ergodic.MeasurePreserving
 public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Algebra.Group.Subgroup.Map
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.InnerProductSpace.Basic

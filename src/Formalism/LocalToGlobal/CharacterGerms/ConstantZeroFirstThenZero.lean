@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

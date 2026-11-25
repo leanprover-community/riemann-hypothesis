@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalLatt
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NearTrivialPointwise
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthogonalCanonicalFiltrationStepsAutPoint
 public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescentCutA
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 import Formalism.HarderNarasimhan.ShiftInvariance
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style

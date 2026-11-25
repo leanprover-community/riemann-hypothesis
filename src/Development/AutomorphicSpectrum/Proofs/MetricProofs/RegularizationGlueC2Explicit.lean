@@ -5,11 +5,9 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.RegularizedMaxC
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.TendstoLocallyUniformlyOnOfNhds
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShift
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 

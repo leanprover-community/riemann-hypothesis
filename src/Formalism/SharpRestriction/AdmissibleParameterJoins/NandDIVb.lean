@@ -6,9 +6,7 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.Algebra.DirectSum.Decomposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 public import Formalism.LocalRingCardinality.DataParams₂
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.AdmissibleParameterJoins.NandDIVa, Formalism.SharpRestriction.AdmissibleParameterJoins.NandDIVb

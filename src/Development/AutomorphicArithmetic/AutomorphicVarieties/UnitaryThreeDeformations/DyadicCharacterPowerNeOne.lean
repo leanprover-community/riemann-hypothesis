@@ -11,7 +11,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CompOrd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.PartOrd
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.ProjFacts
-import Mathlib.NumberTheory.MulChar.Duality
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.Style
 

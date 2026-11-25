@@ -2,17 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsAbsIrrCharCompIff
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousIdeleCharLocalFactorization
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DegOneIffSurjective
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SameCfgRefl
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FixedCoefficientFieldInComplex
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.HFSSplit
-public import Formalism.LocalToGlobal.Columns.HeckeInert
-public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundColumns
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowsLiftsHeckeOperatorsCommute
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.HeckeFieldSplit
-public import Formalism.LocalToGlobal.Columns.ColumnsProofs.HFSData
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CmQuadraticFormEqAlternatingForm
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,14 +45,9 @@ import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
 import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
-import Formalism.LocalToGlobal.Columns.GSetLemmas
-import Formalism.LocalToGlobal.Columns.RowFormsLemmas
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.Columns.PathCountSymmetricHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.

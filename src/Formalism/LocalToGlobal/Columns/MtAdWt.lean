@@ -2,12 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.AdelicCompactOpens.UniROfUniRT
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightDualUniqueness.SelfInjective
-public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.CoefModB
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AlgWtHwUnq
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.ExtremalFactsProofA
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs

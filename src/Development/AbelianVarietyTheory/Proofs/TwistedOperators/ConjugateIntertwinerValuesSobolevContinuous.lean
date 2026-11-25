@@ -14,10 +14,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicTransportMeasu
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicTransportMeasureThird
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContinuousMultilinearMapOfInnerProd
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralInvOfSupport
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicIdentificationRespectsRealFinite
-import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowLevelMatch

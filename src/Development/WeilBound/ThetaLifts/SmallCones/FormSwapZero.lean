@@ -5,24 +5,15 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.S
 public import Development.WeilBound.ThetaLifts.SmallCones.SoStab
 public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsNhdsInvariant
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.CompFinLiftE
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
-import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPureA
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
-import GroundTheory.GlobalFields.LocalAtPlace
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Mathlib.Topology.Connected.Separation
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

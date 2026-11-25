@@ -5,17 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharEqO
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SetIntegralCompAut
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SiegelWeilSectionLawDiagonalLagrangian
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.LagrIntRhoInvK
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.CAFInvol
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.DiagonalLagrangianIntegralSiegelParabolicTransfo
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LeviGLInvVal
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.Periodic
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SplitPlaceSiegelLawDiagonalLagrangianCharacter
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.OneAddPow
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalMatricesDiscreteCocompactAdelicMatrixSpa
-public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 
 /-! # SplittingCharacterRestrictedEta: Consolidated global theta-kernel definitions and proofs (SplittingCharacterRestrictedEta). -/
 @[expose] public section

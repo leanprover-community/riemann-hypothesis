@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsAvg
 public import Mathlib.Analysis.CStarAlgebra.lpSpace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CasselmanWallachExtensionBanachTarget
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsInnerApprox
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerKAvgNeZero
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsKFinDRep
 import Mathlib.Tactic.Linter.Style

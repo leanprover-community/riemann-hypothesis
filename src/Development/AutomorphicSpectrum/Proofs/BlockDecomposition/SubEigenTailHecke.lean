@@ -9,7 +9,6 @@ public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SubOfNonNil
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -1,12 +1,6 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.BuildCut
-public import Mathlib.RingTheory.Localization.Away.Basic
-public import Mathlib.RingTheory.Localization.LocalizationLocalization
-public import Mathlib.RingTheory.RingHom.Flat
-public import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
-public import Mathlib.AlgebraicGeometry.Morphisms.Flat
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.EtaleCohomology.EtaleSheaves.SysFMPf
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoNormalizationPullbackOfToIntegralClosure
 import Mathlib.Tactic.Linter.HaveILetI

@@ -7,10 +7,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.VanishTranslates
 public import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
 public import Formalism.LocalToGlobal.IndefiniteReal.GvPairOfOrbitDerivCont
-public import Formalism.LocalToGlobal.IndefiniteReal.DKerHasCompactSupport
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,13 +2,8 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SigmaFiniteOfRealSmul
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Mathlib.Analysis.Matrix.Order
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Analysis.InnerProductSpace.Orthonormal
-public import Mathlib.Analysis.Normed.Lp.WithLp
-public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasEuclideanBallVolumeSublevelAsymptoticsProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PoissonSummationInfinitePlaceGaussianLattice
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarComplexGLMatricesConjAndSingularNull
@@ -19,16 +14,10 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAlgebra
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsConjGaugeInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaugeMeasureMatrixAlgebraSubgroupLocalAsymptotic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocSizeBlocks
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
-import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Order.Sigma
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

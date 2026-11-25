@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Integrabl
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PeterssonDoubleCosetAdjoint
 public import Mathlib.NumberTheory.DirichletCharacter.Bounds
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionPolyGrowthSummableContinuous
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashIntMatrixPosDetProperties
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 

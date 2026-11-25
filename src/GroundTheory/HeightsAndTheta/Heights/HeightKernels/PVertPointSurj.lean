@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointSurj
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 

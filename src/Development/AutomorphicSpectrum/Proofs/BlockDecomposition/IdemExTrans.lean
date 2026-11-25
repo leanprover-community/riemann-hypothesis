@@ -52,13 +52,9 @@ import GroundTheory.AutomorphicForms.GLnLocal
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemHROfGram, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvalVSum, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenMulEqIdem, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrameCompletes, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFreeFramePairs, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdemExTrans

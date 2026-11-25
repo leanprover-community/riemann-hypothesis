@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.SmulNeZeroLat
 public import Mathlib.Analysis.Matrix.PosDef
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.SmulStrictMono
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Locfin
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Rypos

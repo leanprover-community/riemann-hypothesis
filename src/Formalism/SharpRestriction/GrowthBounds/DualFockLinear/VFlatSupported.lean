@@ -9,13 +9,10 @@ public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeAdaptedBasis
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleZpowMono
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.CloudBAtOfRho
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.DualInclusionLattices
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.GoodRankOfPrim
 import Mathlib.RingTheory.PiTensorProduct
 

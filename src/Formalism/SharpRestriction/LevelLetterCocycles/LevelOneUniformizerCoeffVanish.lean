@@ -5,11 +5,8 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisi
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
 public import Formalism.SharpRestriction.LevelLetterCocycles.IndepStep
-import Formalism.SharpRestriction.LevelLetterCocycles.LamZero
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExpPowSubOne
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
 import Mathlib.Tactic.Linter.Style
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 
 @[expose] public section
 

@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.LevChiE
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TopFormula
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LastGroupEmbeddingRealComponentsBlockForm
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MoveCompactLevelInvariant
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPointOfRationalUnitaryAdelicMul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LastAllTranspose
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemCutQGrp
@@ -15,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Chi
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ScalarFormsOnChartsOfTrueColumnTuple
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoordsStatement
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.UnitRatio
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StpTopIdxEq
 
 -- This file was produced by scripts/clump.py from the modules listed below.

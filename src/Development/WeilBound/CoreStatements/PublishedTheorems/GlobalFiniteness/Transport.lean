@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
 public import ReciprocityTheory.Hypotheses.GalCohDefs
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GaloisUnramifiedOutsideCohomology
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.NormalSubgroupLeUnramifiedFixing
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
@@ -11,7 +10,6 @@ public import Mathlib.FieldTheory.Galois.Profinite
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
 
 @[expose] public section

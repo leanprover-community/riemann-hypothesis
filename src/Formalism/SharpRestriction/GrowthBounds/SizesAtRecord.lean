@@ -1,12 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.Joints
-import Formalism.LocalRingCardinality.ColumnWeightSpreadOffTop
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSa
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.MeanNum
-import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 
 @[expose] public section
 

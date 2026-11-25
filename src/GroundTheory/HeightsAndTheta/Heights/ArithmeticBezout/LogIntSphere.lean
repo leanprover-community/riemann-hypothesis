@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntPoly
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntCircle
-import Mathlib.Topology.Algebra.MvPolynomial
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

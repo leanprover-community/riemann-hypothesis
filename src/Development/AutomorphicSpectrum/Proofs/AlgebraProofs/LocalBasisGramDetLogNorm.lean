@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTransition
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDual
@@ -10,11 +9,7 @@ public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPri
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicLogIdealMaxElement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDeterminantLogDifferent
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIntegralIffDenominator
-import Development.WeilBound.CoreStatements.SesquilinearFractions.ExistsNsmulMemSpanFullFamily
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLe
-import Development.WeilBound.CoreStatements.SesquilinearFractions.SesqSesquilinearSkewHermitian
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDetNeZeroLocalBasisCofinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.

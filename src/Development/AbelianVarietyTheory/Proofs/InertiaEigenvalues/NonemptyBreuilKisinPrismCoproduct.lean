@@ -2,32 +2,16 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DeltaStructureOfWittLengthTwoSection
-public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.WittVector.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorRingHomEqOfSubMem
-public import Mathlib.RingTheory.PowerSeries.Trunc
-public import Mathlib.RingTheory.AdicCompletion.RingHom
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InvertibleSpanSingleton
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemBallOfGaugeLt
-public import Mathlib.Algebra.Polynomial.Div
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaAddSubMemPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeltaRingHomOfDenseDeltaCommuteLocus
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.RingTheory.PowerSeries.Basic
-public import Mathlib.RingTheory.PicardGroup
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemNonZeroDivisorsOfInvertibleSpanSingleton
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaMemIdealPowOfMemPowSucc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrimeNotMemSqAndDeltaNotMem
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.RingTheory.Ideal.Operations
-public import Mathlib.RingTheory.Ideal.BigOperators
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EnvRingExists
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrismHomMapIdealEq
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsAdicCompleteOfPowLe
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

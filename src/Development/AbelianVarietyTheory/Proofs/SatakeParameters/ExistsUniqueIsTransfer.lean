@@ -7,9 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoveringO
 public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitByBaseChange
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FibrePointsLEId
-public import Mathlib.AlgebraicGeometry.Morphisms.Etale
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
-public import Mathlib.AlgebraicGeometry.Sites.Etale
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI

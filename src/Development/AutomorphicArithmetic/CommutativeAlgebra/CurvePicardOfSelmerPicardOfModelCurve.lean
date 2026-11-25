@@ -7,27 +7,18 @@ public import Mathlib.RingTheory.Noetherian.Basic
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.IsChart
 public import GroundTheory.FunctionField.DivisorDegree
 public import GroundTheory.FunctionField.ExistsBoundDegSubFinrankL
-public import GroundTheory.FunctionField.Divisor
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNeZeroForallPointExtendSubalgebra
-public import GroundTheory.FunctionField.PlaceDefs
 public import Mathlib.RingTheory.Jacobson.Ring
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.SpecializationTensorRingHomProperties
 public import GroundTheory.FunctionField.PlaceBridge
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-public import GroundTheory.FunctionField.PlaceAbove
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Development.EtaleCohomology.EtaleSheaves.LeafPicCut
 public import Mathlib.RingTheory.PicardGroup
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-public import GroundTheory.FunctionField.ValuationAevalSubCoeffZeroLe
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CurveFunctionField
 public import Development.EtaleCohomology.EtaleSheaves.LeafCurveVCut
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsFunctionFieldAndChartsOfIsCurveOfIsUnit
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation

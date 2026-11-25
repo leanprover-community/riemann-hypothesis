@@ -4,14 +4,9 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.Coefficien
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.FinStmt
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealStmt
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Kcompact
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ActsEx
 import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PureCancel
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 

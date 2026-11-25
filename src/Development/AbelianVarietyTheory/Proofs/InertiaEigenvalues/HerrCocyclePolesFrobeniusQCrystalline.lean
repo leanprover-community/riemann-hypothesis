@@ -15,9 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMulL
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfFrob
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZgFormula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvariantBasis
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeomSumOneAddPrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -58,7 +55,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesDataLevIsExpansionAtZeta
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBeta
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEvaluationConvergentSeriesBcris

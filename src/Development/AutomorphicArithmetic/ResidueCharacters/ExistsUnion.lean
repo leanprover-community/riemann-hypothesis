@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.ResidueCharacters.InvariantsKilledOverCyclotomicAlt
 public import Formalism.SharpRestriction.LevelLetterCocycles.DecompositionData
 public import Development.AutomorphicArithmetic.CyclotomicBounds.FiniteDimensionalRoots
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

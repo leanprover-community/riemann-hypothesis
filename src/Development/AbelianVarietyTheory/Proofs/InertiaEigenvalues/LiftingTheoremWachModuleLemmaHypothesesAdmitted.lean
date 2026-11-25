@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SmulCoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeLaterClausesHold
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExtensionInvariantClause
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.LocalInputFourteenOfLocal
-import Formalism.SharpRestriction.LevelLetterCocycles.SemisimpleLetterIffForallMem
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

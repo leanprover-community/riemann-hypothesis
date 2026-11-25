@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
-import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
 
 @[expose] public section
 

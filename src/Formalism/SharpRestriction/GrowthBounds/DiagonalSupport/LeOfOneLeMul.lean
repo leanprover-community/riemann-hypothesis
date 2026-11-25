@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
 import Formalism.PolynomialDimension.FinalNum
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundJoint
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
 
 @[expose] public section
 

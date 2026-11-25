@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoSumBoundOfMapsSplitting
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.EdgeLatRS
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

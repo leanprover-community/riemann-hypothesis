@@ -3,11 +3,9 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassNotRootsAvoidLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OneSubTwoDivLeSquarefreeLabelMass
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassDivisorBound
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassHasDivisorOfDegreeLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassNoLargePrimeFactorLe
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassRootsNotDistinctLe
-import Mathlib.Analysis.Complex.ExponentialBounds
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

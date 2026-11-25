@@ -7,11 +7,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanish
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartFormsDifferentialClosed
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemChartFormsIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CechFam
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
-public import Mathlib.Algebra.CharP.Lemmas
-public import Mathlib.RingTheory.Kaehler.Basic
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsLifted
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanFormsEqBotOfLtCard
 public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.SplittingLocalIntegrality
@@ -20,8 +15,6 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanish
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogFormsEqChartForms
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsIsoTermComparisonRestrictScalars
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEtCoord
 
 -- This file was produced by scripts/clump.py from the modules listed below.

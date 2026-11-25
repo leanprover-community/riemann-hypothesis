@@ -6,13 +6,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CdUniv
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrRatio
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPf
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifBijectiveOfParam
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBFr
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieBc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTrA
@@ -28,11 +22,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBMapPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThetaSwapFirstTwo
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.IsPullbackWhisker
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CubicalLawRight
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PullFEPf
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 

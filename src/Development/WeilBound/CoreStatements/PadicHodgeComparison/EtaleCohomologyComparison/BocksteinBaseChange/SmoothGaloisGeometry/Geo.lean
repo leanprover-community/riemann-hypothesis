@@ -1,44 +1,23 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsStrictlySemistableModel
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import Mathlib.Algebra.MvPolynomial.Basic
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
-public import Mathlib.Algebra.MvPolynomial.Degrees
-public import Mathlib.Algebra.MvPolynomial.Equiv
-public import Mathlib.RingTheory.Polynomial.UniqueFactorization
-public import Mathlib.Algebra.MvPolynomial.Division
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.RingTheory.Polynomial.Basic
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.HarishChandraFormulaStatement
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
-public import Mathlib.RingTheory.RingHom.Smooth
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SemistableGenericFibreLocalization
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.NormLtOneOfIrreducible
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.EtSide
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.CompSm
-public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.RingTheory.Invariant.Defs
-public import Mathlib.RingTheory.TensorProduct.Free
-public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Invariant.Profinite
-public import Mathlib.FieldTheory.Galois.Infinite
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsMatrixForm
-public import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.EtProps
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.Style
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Henselian
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.IsOpenConnectedComponentOfNoetherianSpace
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.CrystallineTowers.SpecOf
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper

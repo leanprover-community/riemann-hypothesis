@@ -3,36 +3,14 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaTW
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.InvMod
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.FieldTheory.RatFunc.Basic
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Valuation.ValuationSubring
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ClassGroupAffineCurveDivisibleCharZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationEqOneOfPowEqSpan
-public import Mathlib.RingTheory.DedekindDomain.Factorization
-public import Mathlib.RingTheory.Coalgebra.IsFrobenius
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.HopfAlgebra.Basic
-public import Mathlib.RingTheory.Valuation.LocalSubring
-public import Development.AbelianVarietyTheory.Definitions.Foundations.Mdl
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Development.AbelianVarietyTheory.Definitions.Foundations.HahnPowOrderLeadingCoeff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PrincipalCongruenceFunctionMemAdjoinJSiegelUnits
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
-public import Mathlib.FieldTheory.Galois.Basic
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.C1FieldNormSurjective
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TsenTheorem
-public import Mathlib.RingTheory.Ideal.Norm.RelNorm
-public import Mathlib.NumberTheory.RamificationInertia.Galois
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.LUnH
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteDimensionalLev
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.EvalSmulCong
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelInvarianceImpliesCongruence
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MemRangeIffOfFinite
 
 section -- clump:auto

@@ -7,7 +7,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdO
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3downPfFildRConst
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

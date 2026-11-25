@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData.KerEntHyp
 public import Formalism.LocalToGlobal.KernelLattices.JetFieldLeKR
 import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.JetsRationalOfKernelRationality
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

@@ -2,14 +2,11 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZeroPadic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BlochKatoSelmerVanishes
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
 public import Development.AbelianVarietyTheory.Statements.EllipticCurveLevels.HasLevel
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParameterSphericalProductSpehQuotients
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ConjSep
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterOfSpherical
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
 
 -- This file was produced by scripts/clump.py from the modules listed below.

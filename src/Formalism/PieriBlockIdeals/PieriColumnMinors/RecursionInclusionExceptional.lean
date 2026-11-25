@@ -10,8 +10,6 @@ public import Formalism.PieriBlockIdeals.PieriColumnMinors.ParameterBounds
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.ProdInitialMinorsMemDetSpan
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.WeightBounds
 import Mathlib.Algebra.Order.Star.Real
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
-import Formalism.PieriBlockIdeals.StatementLA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PieriBlockIdeals.PieriColumnMinors.MaxValEqZeroOfLt, Formalism.PieriBlockIdeals.PieriColumnMinors.SL2BinomialLattices, Formalism.PieriBlockIdeals.PieriColumnMinors.RecursionInclusionExceptional

@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.BranchingTraces.HeBranching
 public import Development.WeilBound.CoreStatements.BranchingTraces.ContinuousEmb
 public import Development.WeilBound.CoreStatements.BranchingTraces.FormTSingle
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.BlowupCategories.AffC
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoOfBijectiveOnSimplices
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.TateTwistAffineLineProjectionEquiv
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

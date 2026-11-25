@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardDiv
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjugateIntoK1
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitLocalPlaceDataAtSplitPlaceStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitPlaceGood
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsUniqueVec
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

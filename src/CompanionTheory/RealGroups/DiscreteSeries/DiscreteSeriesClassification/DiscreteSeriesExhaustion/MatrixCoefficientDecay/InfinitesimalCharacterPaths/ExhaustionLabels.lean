@@ -9,18 +9,13 @@ public import Mathlib.Algebra.Order.Chebyshev
 public import GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.QdetSub
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.AbsoluteL2Bound
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.PolynomialNilpotentPath
-public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.KeepsMul
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FamilyFiltration
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetBasis
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetInitial
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetTensorDecomposition
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetTransport
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.RingTheory.PiTensorProduct
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CayleyChartDomainIsOpen
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

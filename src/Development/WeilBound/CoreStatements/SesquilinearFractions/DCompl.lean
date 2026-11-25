@@ -5,9 +5,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTrans
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicLogIdealMaxElement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicIntegralIffDenominator
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLe
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.SesqSesquilinearSkewHermitian
 import Mathlib.Tactic.Linter.HaveILetI

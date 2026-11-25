@@ -9,15 +9,11 @@ import GroundTheory.LocalFields.Examples
 public import GroundTheory.LocalFields.FiniteExtension
 public import GroundTheory.LocalFields.LocalArtinCompletion
 import GroundTheory.LocalFields.PadicLogSeries
-import GroundTheory.LocalFields.UnitsPowers
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Compactness.Paracompact
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 
 @[expose] public section
 

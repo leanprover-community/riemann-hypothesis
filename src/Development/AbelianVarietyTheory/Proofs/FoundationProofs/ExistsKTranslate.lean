@@ -2,13 +2,10 @@ module
 
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.HeckeCharacterParameters
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CasimirCentralAndOnHighestWeight
-public import Formalism.LocalRingCardinality.DataTheta
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
 public import Mathlib.Analysis.Real.Pi.Irrational
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Formalism.RealPlaceAnalysis.StatementB
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLinearEquivOfIrreducibleIsHW
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemISupInfWeightSubmoduleOfDiagonalStable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfFactorialBound
@@ -18,14 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairKEquivariantOfLieAlgebraCompat
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FockSingularValues
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.LinearMap
-public import Mathlib.Analysis.InnerProductSpace.Orthogonal
-public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.CartanCoshPower
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsMinf
@@ -44,13 +33,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LowestKTy
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedAdjoint
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SchurOrthogonalitySquareIntegrable
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsStableSubmoduleTopWeightLine
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubleCoverUpqKsetGeneratedByExp
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InstSecondCountable
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HighestWeightTensor
 
 -- This file was produced by scripts/clump.py from the modules listed below.

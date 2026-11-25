@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.BrExistsOfRestS
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ExistsOnOfPosDef
 import Formalism.LocalToGlobal.GlobalTheory.BlockActions.HformSmulRightB
 public import Formalism.LocalToGlobal.GlobalTheory.NfAllSmulSelfRe
-import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

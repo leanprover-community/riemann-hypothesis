@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
-public import Mathlib.Analysis.CStarAlgebra.Classes
 
 @[expose] public section
 

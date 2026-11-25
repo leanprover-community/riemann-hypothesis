@@ -7,37 +7,18 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockVa
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.CoarseCLower
 public import Formalism.SharpRestriction.GrowthBounds.FockGramWindow.FirstCoefficientLeDiv
 public import Formalism.SharpRestriction.GrowthBounds.FockGramWindow.GramWindow2
-public import Formalism.MahlerMeasure.CoarseLevelSlackInequalities
-public import Formalism.MahlerMeasure.FinalD
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.PhiInt
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SLetCastSucc
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.SSDirect
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.ValFactSumLe
-public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.BiHomPlus
-public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.SmulMemOfNorm
-public import Formalism.PolynomialDimension.DigitSumValuationBound
-public import Mathlib.Algebra.Polynomial.BigOperators
 public import Formalism.MahlerMeasure.StatementD
 public import Formalism.SharpRestriction.GrowthBounds.FockGramWindow.PhiPair
-public import Formalism.MahlerMeasure.TieVars
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.DegFactNeZero
 public import Formalism.PeriodIntegrals.DiagRank
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.OrthBasisLatOf
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.IntegralityFromMetricOfOrthBasisLat
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.GoodLeSmallMat
-import Formalism.SharpRestriction.GrowthBounds.CountingStatementReduction
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.MahlerMeasure.MahlerMeasureProofs.RemoveS
-import Formalism.MahlerMeasure.MahlerMeasureProofs.GamInt
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,17 +3,10 @@ module
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeIntB
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Geometry.Manifold.ChartedSpace
-public import Mathlib.Geometry.Manifold.ContMDiff.Defs
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithRes
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResVolume
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
 
 -- This file was produced by scripts/clump.py from the modules listed below.

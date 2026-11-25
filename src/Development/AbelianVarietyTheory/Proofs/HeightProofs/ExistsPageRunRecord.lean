@@ -2,9 +2,6 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInjective
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.WindowsAllowOffCentre
-public import Mathlib.Data.Nat.Choose.Basic
-public import Mathlib.Tactic.ToAdditive
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.FourthHypothesisOfParams
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PageOKRun
@@ -17,8 +14,6 @@ public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClas
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

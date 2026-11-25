@@ -6,8 +6,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.Galo
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.GaloisCohomology.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

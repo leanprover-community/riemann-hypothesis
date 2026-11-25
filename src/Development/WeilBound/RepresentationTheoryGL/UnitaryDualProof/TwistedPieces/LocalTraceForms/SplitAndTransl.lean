@@ -4,9 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Comp
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.SliceVanishing
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.TraceForm
 import GroundTheory.AutomorphicForms.ContragredientTranspose.MatrixSimilarity
-import GroundTheory.AutomorphicForms.MeasuresModulus
 import GroundTheory.AutomorphicForms.WhittakerCriterion
-import GroundTheory.AutomorphicForms.WhittakerDistribution
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 
 @[expose] public section

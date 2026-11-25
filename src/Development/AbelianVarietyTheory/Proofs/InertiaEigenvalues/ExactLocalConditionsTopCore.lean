@@ -6,26 +6,14 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ResB
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineSumsTwistsCharactersExpectedJumps
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankDcrisLetterDeRhamComponentEqDim
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.SelmerWindowSums
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.AdmissibleCharacterHyp
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.InvariantsVanishing
-public import Mathlib.Algebra.Module.Defs
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.RingTheory.LocalRing.Defs
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.RingTheory.Jacobson.Ideal
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
-public import Mathlib.RingTheory.Nakayama
-public import ReciprocityTheory.BasicDefinitions.AdRep
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.AdmissibleCharUnramified
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleClassesPropsOfFlatCoefficient
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleOfSurjective
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvrComplete
 import ReciprocityTheory.BasicDefinitions.ExistsUnique
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndepOnOfInvariant
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

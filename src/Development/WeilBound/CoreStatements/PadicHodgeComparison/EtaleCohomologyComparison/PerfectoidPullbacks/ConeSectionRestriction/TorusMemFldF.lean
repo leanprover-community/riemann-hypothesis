@@ -3,8 +3,6 @@ module
 public import Mathlib.RingTheory.Derivation.Basic
 public import Mathlib.RingTheory.Trace.Defs
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.RaTpowSinglePow
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.Adjoin.FG
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 public import Mathlib.Algebra.DualNumber

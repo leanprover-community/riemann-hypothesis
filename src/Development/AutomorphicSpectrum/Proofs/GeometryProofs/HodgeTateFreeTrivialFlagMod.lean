@@ -3,16 +3,9 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsCompactUnitaryPointsAtPlaceFstMemCompact
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueLatOfChartBundle
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GrIsGenAt
-public import Mathlib.LinearAlgebra.Dual.Basis
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LeadMinor
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CoefMemDual
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GaGram
@@ -23,14 +16,8 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.Famproj
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.FinrankDualEqOfProjective
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeFlagLatticeLower
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointHTOfFarguesHodgeTate
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.HodgeTatePoints.GaSurj
-import Development.WeilBound.CoreStatements.HodgeTatePoints.Hcptgen
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ImaginaryRootConj
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,7 +3,6 @@ module
 public import Development.ResolutionOfSingularities.Statements
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 public import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
-import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
 
 @[expose] public section
 

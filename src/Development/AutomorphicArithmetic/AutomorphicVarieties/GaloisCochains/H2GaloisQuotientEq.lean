@@ -15,7 +15,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCocha
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.PtTail
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.TameEq
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.ContinuousCoboundaries2
 import Mathlib.Topology.Connected.Separation
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.FieldTheory.Galois.Profinite

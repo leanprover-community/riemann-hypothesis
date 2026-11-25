@@ -12,7 +12,6 @@ public import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.KrullDimension.Polynomial
 import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.IntegralBallPow
-import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

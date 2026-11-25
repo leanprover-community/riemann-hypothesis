@@ -4,8 +4,6 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LayeredIsomorphisms.SecondBound
-import Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN
-import Formalism.GaloisCohomology.Statement
 public import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 
 @[expose] public section

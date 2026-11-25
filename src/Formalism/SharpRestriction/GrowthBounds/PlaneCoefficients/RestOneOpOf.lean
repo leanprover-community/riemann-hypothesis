@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.NoOpStep
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.JointEIntList
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationBoundDetPowerFactor
 import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
 

@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CPoly
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.IsCoreMod
 public import Mathlib.Algebra.Order.Rearrangement
-public import Mathlib.Analysis.Complex.Circle
 public import GroundTheory.GlobalFields.TateThesis.ArchCharsUnits
 public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
@@ -21,7 +20,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLoc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominanceOfWeylCharacterCoeff, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWeightSpacesSpan, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorCharInjective, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightPolynomialTraceIdentity, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualWeightsDominated

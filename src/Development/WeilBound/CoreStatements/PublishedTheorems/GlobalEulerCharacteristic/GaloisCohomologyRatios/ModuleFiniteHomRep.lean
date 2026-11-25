@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.MemShaS
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.StabilizersDefs
 public import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharacteristic.GaloisCohomologyRatios.NormalOfGsOpenSubgroupNormal
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.Kummer
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 
 @[expose] public section
 

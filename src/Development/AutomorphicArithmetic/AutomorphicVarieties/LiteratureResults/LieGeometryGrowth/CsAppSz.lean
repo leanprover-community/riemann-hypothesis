@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.CsStmt
-import Mathlib.Analysis.Calculus.ContDiff.Bounds
 
 @[expose] public section
 

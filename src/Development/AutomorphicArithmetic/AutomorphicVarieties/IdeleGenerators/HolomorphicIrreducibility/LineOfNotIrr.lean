@@ -3,7 +3,6 @@ module
 public import Mathlib.FieldTheory.Separable
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ShapeFacts
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Compactification.OnePoint.ProjectiveLine
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
 import Mathlib.RingTheory.Etale.Weakly

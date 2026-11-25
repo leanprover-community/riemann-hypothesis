@@ -8,13 +8,11 @@ public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.RingTheory.LocalRing.Module
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.BasisCombinationMemInvariants
-public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordStepsOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
 public import Formalism.SharpRestriction.LevelLetterCocycles.RealExtOfExact
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.ExistsBasisOfSurjective, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.ExistsInvariantLiftAverage, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfSplit

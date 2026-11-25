@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Formalism.PeriodIntegrals.WwCauchyBinet
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LFunctionMinors.FintypeColChoice
-public import Formalism.PeriodIntegrals.WwMain
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LFunctionMinors.InfinitePadicComplex
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CauchyBinet.WwCauchyBinetMain
@@ -13,12 +12,7 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
-public import Mathlib.Analysis.Normed.Field.Instances
-public import Mathlib.Combinatorics.Young.YoungDiagram
-public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.RingTheory.MvPowerSeries.Basic
 
 @[expose] public section
 

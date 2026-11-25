@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Injecti
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Algebra.Module.Lattice.Basic
 
 @[expose] public section
 

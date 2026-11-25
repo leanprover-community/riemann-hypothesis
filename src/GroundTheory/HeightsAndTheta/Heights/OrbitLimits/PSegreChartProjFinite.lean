@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statement
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeAvoidsFinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjHomInjective
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
-import Mathlib.RingTheory.SimpleRing.Principal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartModel
 

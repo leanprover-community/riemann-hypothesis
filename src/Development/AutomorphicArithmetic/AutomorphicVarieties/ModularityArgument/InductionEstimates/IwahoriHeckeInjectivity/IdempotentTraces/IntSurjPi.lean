@@ -22,7 +22,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.WittVector.IsPoly
@@ -52,11 +51,8 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.MeasurePreservingRmulQuotMeas
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
-import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
 import GroundTheory.AutomorphicForms.GKModules.ParametricIntegral
 import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
-import Mathlib.MeasureTheory.Integral.Pi
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

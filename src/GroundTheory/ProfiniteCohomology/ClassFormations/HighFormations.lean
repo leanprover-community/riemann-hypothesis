@@ -7,7 +7,6 @@ public import GroundTheory.TateCohomology.CupTateShift
 public import GroundTheory.TateCohomology.TateLow
 public import GroundTheory.TateCohomology.CupTate
 public import GroundTheory.TateCohomology.TateTheorem
-public import GroundTheory.TateCohomology.Annihilation
 public import GroundTheory.ProfiniteCohomology.ClassFormationDefs
 public import GroundTheory.ProfiniteCohomology.CupProducts.Functoriality
 public import GroundTheory.ProfiniteCohomology.ClassFormations
@@ -16,16 +15,9 @@ public import GroundTheory.ProfiniteCohomology.Colimit
 public import GroundTheory.ProfiniteCohomology.CupProducts.GroupCohomology
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolDefs
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.FormationThree
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
-public import GroundTheory.ProfiniteCohomology.GaloisModules.Discrete
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ClassLimitDefs
-public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation
 import Mathlib.Tactic.TypeStar
-import GroundTheory.TateCohomology.DimensionShift
-import GroundTheory.TateCohomology.InducedNorm
-import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.TateCohomology.CupFunctorial, GroundTheory.TateCohomology.CupTateNatural, GroundTheory.TateCohomology.TateCupUnit, GroundTheory.TateCohomology.TateCup, GroundTheory.ProfiniteCohomology.ClassFormations.HighFinite, GroundTheory.ProfiniteCohomology.ClassFormations.SubsingletonCohomologyTopOfThreeLeInt, GroundTheory.ProfiniteCohomology.ClassFormations.HighFormations

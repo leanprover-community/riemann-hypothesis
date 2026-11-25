@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChange
 public import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.NormalFixingSubgroupGaloisClosure
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 
 @[expose] public section
 

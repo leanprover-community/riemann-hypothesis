@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-public import Mathlib.NumberTheory.NumberField.AdeleRing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIdempotentIsUnitOneAddOrSubAdele
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.Hilbert90AdeleRingTensorQuadratic
 public import GroundTheory.GlobalFields.ExistenceTheorem.ExistsIsAbelianGaloisRangeIdeleClassNormEqOfFini

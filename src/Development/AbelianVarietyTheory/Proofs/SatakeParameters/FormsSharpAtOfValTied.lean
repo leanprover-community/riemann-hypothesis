@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.K2OfAgreements
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SharpPoly
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

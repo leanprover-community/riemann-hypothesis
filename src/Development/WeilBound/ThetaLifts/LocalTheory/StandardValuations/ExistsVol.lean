@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.SplitProd
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitLoc
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.ExistsUpperProjectionInverseTranspose
-public import Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.IntIndPow
 public import Development.WeilBound.ThetaLifts.LocalTheory.IsArchimedeanLocalEquivariantMap
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictDef
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
@@ -16,18 +15,12 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedDeterminedB
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ResCardAndUniformizer
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SplitCharacterFacts
 public import Development.WeilBound.ThetaLifts.LocalTheory.UatClosure
-import Formalism.DoubleCosetMeasures.Statement
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
-import GroundTheory.LocalFields.LocalFourierHaar
 import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.SmallFSing, Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.IdeleInt, Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.ConeVal, Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.ExistsVol

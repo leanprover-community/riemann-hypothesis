@@ -3,13 +3,10 @@ module
 public import ReciprocityTheory.DualLattices.LiftMonomialDeterminantStatement
 public import ReciprocityTheory.DualLattices.UpSmith
 public import ReciprocityTheory.DualLattices.ExistsReductionOfCoordinateCombination
-public import ReciprocityTheory.DualLattices.UnramifiedCokernelLengthStatement
-public import ReciprocityTheory.DualLattices.EigenLiftsFrobeniusStatement
 public import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroupStatement
 public import ReciprocityTheory.DualLattices.LiftMonomialDeterminantStatementHolds
 public import ReciprocityTheory.DualLattices.FrobEqOfLe
 public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import ReciprocityTheory.DualLattices.MemAugIdeal
 public import ReciprocityTheory.DualLattices.PowMemCarrier
 public import ReciprocityTheory.DualLattices.SumValCoord
@@ -18,7 +15,6 @@ public import Mathlib.RingTheory.LocalRing.Module
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLengthOfLengthEigenLengthProduct
 public import ReciprocityTheory.DualLattices.MulVecMemPP
 public import ReciprocityTheory.DualLattices.HasLenLeOfSurj
-public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
 public import ReciprocityTheory.DualLattices.EigenLengthProductStatementHolds
 public import ReciprocityTheory.DualLattices.ElementaryDivisorStatement
 public import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroup
@@ -26,11 +22,9 @@ public import ReciprocityTheory.DualLattices.LenEx
 public import ReciprocityTheory.DualLattices.MatEquivApply
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

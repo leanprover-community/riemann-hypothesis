@@ -1,8 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.OrderOfVanishing.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
@@ -15,11 +13,7 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteQ
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IotaTmulOneMem
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDRAndDdRLeFilZeroOfTwist
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
-import Mathlib.RingTheory.KrullDimension.PID
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGenerator
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsOpenOfFgOfSpanEqTop
 import Mathlib.FieldTheory.Galois.Profinite

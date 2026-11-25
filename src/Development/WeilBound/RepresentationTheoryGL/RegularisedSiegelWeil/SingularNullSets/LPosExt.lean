@@ -4,15 +4,10 @@ public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Topology.ContinuousMap.Star
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Topology.ContinuousMap.StoneWeierstrass
-public import Mathlib.Topology.Algebra.StarSubalgebra
-public import Mathlib.Topology.ContinuousMap.Compact
 public import Mathlib.Topology.ContinuousMap.CompactlySupported
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LPosExtC
-public import Mathlib.Geometry.Convex.Cone.Pointed
-public import Mathlib.Analysis.Convex.Cone.Extension
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.WeakApproximationFinitePlace
 
 -- This file was produced by scripts/clump.py from the modules listed below.

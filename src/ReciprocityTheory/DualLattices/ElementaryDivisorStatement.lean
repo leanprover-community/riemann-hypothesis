@@ -4,19 +4,12 @@ public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
 public import ReciprocityTheory.DualLattices.ExistsSmulMemOfMemSpan
 public import ReciprocityTheory.DualLattices.ProdDvdOfIso
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroupStatement
 public import ReciprocityTheory.DualLattices.EigenLengthProductStatementHolds
 public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLengthOfLengthEigenLengthProduct
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.LocalRing.Module
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.DualLattices.UpSmith
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapE
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.WPresGrZeroIsCOOfMemMaximalIdeal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.WPresMaximalIdealGrZeroEqSupSpanMonomials
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Mathlib.RingTheory.KrullDimension.Field
 import Mathlib.Tactic.Linter.HaveILetI

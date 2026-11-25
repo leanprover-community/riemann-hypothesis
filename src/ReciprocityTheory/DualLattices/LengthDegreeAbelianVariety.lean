@@ -8,14 +8,12 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.LinearAlgebra.Vandermonde
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
 public import ReciprocityTheory.DualLattices.IsLocalOfIntegers
 public import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundStatement
 public import ReciprocityTheory.DualLattices.LenEx
 public import ReciprocityTheory.DualLattices.LengthDegreeOfFrobenius
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.DualLattices.TensorSpan
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

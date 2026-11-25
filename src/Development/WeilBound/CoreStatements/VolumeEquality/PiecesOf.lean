@@ -1,18 +1,11 @@
 module
 
 public import Development.WeilBound.CoreStatements.VolumeEquality.Pieces
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeLimit
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibreLatticeBaseChangeConj
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFundamentalSet
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsGroupDictionary
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicCoordsOfGenericPoint
 
 @[expose] public section
 

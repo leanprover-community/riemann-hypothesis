@@ -9,8 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDiscrim
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartDehomog
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMassFinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation

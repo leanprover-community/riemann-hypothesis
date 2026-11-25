@@ -7,18 +7,9 @@ public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.Perio
 public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.FixedBaseSurjectivity.GaloisPeriodCyclotomic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalPrimeAinf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KummerNotFrac
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocalComparisonFromAlternative
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.AinfMapSurjective
 public import GroundTheory.PAdicHodge.BCrisEigen
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.ExistsMapEqOfPowMul
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.PhiGalCris
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.PAdicHodge.BdRTGalois
-import Development.WeilBound.CoreStatements.CrystallinePeriodRings.FrobAinfMapFrobenius
-import GroundTheory.PAdicHodge.ACrisFrobFixed
-import GroundTheory.PAdicHodge.BCrisPlusInvariants
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.BaseThetaVanishing.BaseThZero, Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TiltedDrinfeld.Base

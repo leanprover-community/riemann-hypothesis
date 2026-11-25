@@ -2,14 +2,12 @@ module
 
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
 public import Formalism.SubspaceCounting.StatementB
-public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevGapLoc
 public import Formalism.SubspaceCounting.ChoiceOfTopsRefined
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.TotallySplit

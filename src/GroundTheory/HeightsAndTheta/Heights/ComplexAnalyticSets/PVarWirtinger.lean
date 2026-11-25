@@ -9,12 +9,8 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmal
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetAreaCompare
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetComass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetImageAreaSet
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeFormCompare
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 @[expose] public section
 

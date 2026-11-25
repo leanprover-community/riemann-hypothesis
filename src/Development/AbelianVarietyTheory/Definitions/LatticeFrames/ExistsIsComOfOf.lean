@@ -7,9 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FrameTo
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiPinnedWithFinIff
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisOFinsetSum
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.PhiTopAgree
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.LatticeFrames.TiedAt, Development.AbelianVarietyTheory.Definitions.LatticeFrames.ExistsIsComOfOf

@@ -10,8 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompac
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalAlgebraHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingSplitOf
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingUnitOf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SphericalOneOfLocalAlgebra
-import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

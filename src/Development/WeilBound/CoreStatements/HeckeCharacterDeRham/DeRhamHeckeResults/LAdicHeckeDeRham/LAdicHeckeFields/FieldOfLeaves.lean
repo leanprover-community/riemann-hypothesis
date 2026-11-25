@@ -6,15 +6,11 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasPerio
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValuationLtOneOfEq
 public import GroundTheory.LocalFields.LocalArtinBaseChange
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.InstCommRingBcris
-public import GroundTheory.PAdicHodge.FieldOfNormsCyclBase
 public import GroundTheory.PAdicHodge.UnramifiedClosure
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemFiniteExtPadicRingOfIntegersIffNormLeOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniformizerGaloisAction
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalBridgeLubinTateField
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LubinTateUnramifiedDegreeOne
 public import GroundTheory.LocalFields.ExplicitQp
-public import Mathlib.NumberTheory.Padics.LocalField
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TeichmullerNearPowerExists
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterDeRham
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.LocTied6
@@ -24,14 +20,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Uniformi
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.FilQuot
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.MaximalIdealEqSpanT
 public import Development.WeilBound.CoreStatements.HeckeCharacterDeRham.DeRhamHeckeResults.LAdicHeckeDeRham.LAdicHeckeFields.Reduce
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import ReciprocityTheory.GaloisValuations.GlobalA
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

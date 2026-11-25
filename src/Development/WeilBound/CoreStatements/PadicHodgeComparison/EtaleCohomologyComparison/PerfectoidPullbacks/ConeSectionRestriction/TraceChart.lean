@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.DedekindDomain.PID
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.RingTheory.Localization.NormTrace
-public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.RingTheory.Localization.AtPrime.Basic
 public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.RaTpowSinglePow
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs

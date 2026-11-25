@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.HilbertRowConditions.ColumnsFunctionAtSubspaces
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
 public import Formalism.LocalToGlobal.ClassRec

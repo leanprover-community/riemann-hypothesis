@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrInt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReindexDblIncM
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartFPlaceIdem
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.CAFInvol
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SmulMemConjHalf
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

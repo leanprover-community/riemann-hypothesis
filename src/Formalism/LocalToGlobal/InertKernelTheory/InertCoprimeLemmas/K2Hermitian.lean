@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.LocalLevelIsKOneAtT
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
 import Formalism.LocalToGlobal.InertKernelTheory.K2OfAgreements
 import Formalism.LocalToGlobal.InertKernelTheory.KernelDifferenceOfFrame
 import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel

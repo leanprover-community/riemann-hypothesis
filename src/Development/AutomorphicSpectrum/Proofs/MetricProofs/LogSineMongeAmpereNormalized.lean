@@ -7,9 +7,7 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibre
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.XFibMdisc
-public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedDiscriminantCofactorExpansionStatement
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.KappaSt
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SphereMeasureStereographicIntegral
@@ -17,23 +15,11 @@ public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDiagFibr
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StWWFibrePoly
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PDiagFibreFubini
 public import Mathlib.RingTheory.Derivation.Lie
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreLocal
 import Aesop.Main
 
 -- This file was produced by scripts/clump.py from the modules listed below.

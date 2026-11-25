@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartHessCompa
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 

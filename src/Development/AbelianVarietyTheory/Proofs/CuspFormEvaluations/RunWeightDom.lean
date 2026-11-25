@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.ThetaValues.Generic
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AdmissibleModuleIffLatticeQuotients
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpolationModelInequalities
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ComponentModelWeightDimensionDictionary
-import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 

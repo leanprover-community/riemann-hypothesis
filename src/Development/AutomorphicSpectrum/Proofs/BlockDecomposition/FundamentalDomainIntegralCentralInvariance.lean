@@ -1,8 +1,6 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

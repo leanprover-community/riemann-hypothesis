@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.ThetaLifts.SmallCones.SliceAd
 public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdmissibleFormAdelicThetaSum
-import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section

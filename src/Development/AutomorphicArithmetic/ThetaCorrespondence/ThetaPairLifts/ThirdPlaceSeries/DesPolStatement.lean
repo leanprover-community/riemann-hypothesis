@@ -6,9 +6,6 @@ public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscrim
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LeafInfinitePlaceBound
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Development.AbelianVarietyTheory.Definitions.Divisors.TwistedPlaceChoiceLiesOverPair
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
 import Std.Tactic.BVDecide.Normalize.Prop
 

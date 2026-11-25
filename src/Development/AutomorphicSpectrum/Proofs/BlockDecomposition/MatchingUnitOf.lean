@@ -11,8 +11,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasCompa
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeCosetSumCompact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelFamInf
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SphericalOneOfLocalAlgebra
-import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

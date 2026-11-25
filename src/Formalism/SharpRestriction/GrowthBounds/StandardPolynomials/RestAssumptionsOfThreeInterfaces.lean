@@ -3,13 +3,10 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColGen
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.PreSys
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.PreDef
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
-import Formalism.SharpRestriction.GrowthBounds.PolBridge
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralPolyLinearMapClosed
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.BitVec
 

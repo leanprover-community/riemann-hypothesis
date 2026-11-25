@@ -1,13 +1,7 @@
 module
 
 public import Mathlib.RingTheory.Valuation.ValuationSubring
-public import Mathlib.Data.Nat.Choose.Basic
-public import Mathlib.Data.Nat.Log
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Data.Rat.Defs
 public import Mathlib.Data.Nat.Choose.Lucas
-public import Mathlib.Algebra.Order.GroupWithZero.Basic
-public import Mathlib.Data.Int.Cast.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective

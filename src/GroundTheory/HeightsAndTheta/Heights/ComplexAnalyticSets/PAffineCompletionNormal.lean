@@ -15,9 +15,6 @@ public import Mathlib.RingTheory.Spectrum.Prime.FreeLocus
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAffineCompletionNormal
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFormalFibresRegular
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularUFDSerre
-import Mathlib.Algebra.Category.ModuleCat.Projective
-import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import GroundTheory.ArithmeticGeometry.EtaleCompletion.ArtinHenselCompletionNoetherian

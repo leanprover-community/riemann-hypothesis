@@ -3,7 +3,6 @@ module
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.FieldTheory.Finite.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemOfAssembleMem
 import Mathlib.Tactic.Linter.HaveILetI

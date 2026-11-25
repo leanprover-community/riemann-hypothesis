@@ -3,11 +3,6 @@ module
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.RightIdealImageOfSurjective
 public import Mathlib.RingTheory.Ideal.BigOperators
 public import Formalism.CharacterColumnKernels.StatOntoLattice
-public import Mathlib.Algebra.Polynomial.Degree.Operations
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.Data.Fintype.Perm
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Mathlib.RingTheory.AdjoinRoot
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
@@ -16,7 +11,6 @@ public import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Henselian

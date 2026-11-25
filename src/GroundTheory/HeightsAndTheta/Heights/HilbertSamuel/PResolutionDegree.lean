@@ -9,7 +9,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionDegree
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.AMixSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedA
 
 @[expose] public section
 

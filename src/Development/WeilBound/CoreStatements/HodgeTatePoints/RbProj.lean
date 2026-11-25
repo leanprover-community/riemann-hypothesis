@@ -5,7 +5,6 @@ public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RbFund
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGenerates
 
 @[expose] public section
 

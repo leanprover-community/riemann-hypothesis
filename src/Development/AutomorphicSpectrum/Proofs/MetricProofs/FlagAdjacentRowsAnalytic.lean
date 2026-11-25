@@ -4,9 +4,6 @@ import Development.WeilBound.CoreStatements.PluriharmonicCharts.PullDegSome
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsMultiHomogIdealMap
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
-public import Mathlib.FieldTheory.RatFunc.AsPolynomial
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentSwapVarietiesArithmetic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
 

@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.Tactic.Lemma
 

@@ -4,11 +4,7 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.Resolutio
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.GraphChart
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.AffineSpaceGlobalSections
-public import Mathlib.RingTheory.Extension.Presentation.Submersive
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-public import Mathlib.RingTheory.Smooth.StandardSmooth
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PolynomialRingOverGlobalSections
 import Mathlib.Tactic.Linter.Style
 

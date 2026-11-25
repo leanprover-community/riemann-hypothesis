@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BranchingNormIdentityTrueColumnsMembers
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LastAllTranspose
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowsRowPin
-import Formalism.LocalToGlobal.HermitianForms.Interlace
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowerMapTwGen, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LowerMapTieTw

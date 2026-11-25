@@ -6,8 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreserves
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.SharpRestriction.LevelLetterCocycles.HermFlagUnipotentAnisotropicVectorSubMem
 public import Formalism.SharpRestriction.LevelLetterCocycles.CompleteOfPow
-import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
 
 -- This file was produced by scripts/clump.py from the modules listed below.

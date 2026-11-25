@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
 public import Mathlib.Algebra.Polynomial.Homogenize
 public import Mathlib.NumberTheory.ModularForms.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariables
 

@@ -6,9 +6,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSmooth
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PNbarLeviChartReg
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.StMUcSmooth, GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PMUcSmooth

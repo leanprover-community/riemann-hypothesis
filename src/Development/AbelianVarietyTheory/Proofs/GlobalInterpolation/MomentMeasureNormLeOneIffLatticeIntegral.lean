@@ -17,7 +17,6 @@ import Mathlib.Topology.UniformSpace.Uniformizable
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.

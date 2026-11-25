@@ -11,8 +11,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Std.Tactic.BVDecide.Normalize.Bool
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerKAvgNeZero
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SobolevEmbeddingDiscreteSeriesHilbertSchmidt

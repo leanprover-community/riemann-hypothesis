@@ -5,10 +5,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.QuotientMapImageZInjective
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.RelabelTransport
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LengthCokerEqKerAddDimOneOrderSum
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagPull
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionVerticalPerturbationBound
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PZeroSetNull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.APrime
@@ -17,7 +15,6 @@ import Mathlib.Tactic.Linter.Style
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal
-import GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.AlgebraicSquareIntersectionPullback, Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqDiag, Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqR, Development.AutomorphicSpectrum.Proofs.MetricProofs.AlgebraicSquareBaseIntersection

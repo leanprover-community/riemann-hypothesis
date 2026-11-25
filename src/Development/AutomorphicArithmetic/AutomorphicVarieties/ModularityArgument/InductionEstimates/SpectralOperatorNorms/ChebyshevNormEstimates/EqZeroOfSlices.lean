@@ -13,10 +13,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SSatIff
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
 public import Development.AutomorphicArithmetic.WhittakerHecke.LocGLEqLocalEmbeddingAndKGLEqIntegralGL
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CmBridge
 
 @[expose] public section
 

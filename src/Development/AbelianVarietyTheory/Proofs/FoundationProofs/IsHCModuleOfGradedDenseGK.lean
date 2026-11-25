@@ -6,7 +6,6 @@ public import Mathlib.Analysis.InnerProductSpace.Defs
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.InnerProductSpace.LinearMap
 public import Mathlib.Analysis.InnerProductSpace.Orthogonal
@@ -15,13 +14,9 @@ public import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsKStableOnOfLieStableFiniteDim
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubleCoverUpqKsetGeneratedByExp
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InstSecondCountable
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.HeckeCharacterParameters
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData

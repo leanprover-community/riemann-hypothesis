@@ -7,13 +7,9 @@ public import Development.EtaleCohomology.DivisorCycles.DegPoly2
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
 public import Development.EtaleCohomology.DivisorCycles.ChainPf
 public import Development.EtaleCohomology.DivisorCycles.SepPolyProof
-public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.RingTheory.Spectrum.Prime.Topology
-public import Mathlib.Topology.Algebra.ConstMulAction
 public import Development.EtaleCohomology.DivisorCycles.OpenCoset
 public import Development.EtaleCohomology.DivisorCycles.MatUnitsOf
 public import Development.EtaleCohomology.DivisorCycles.SemisPf

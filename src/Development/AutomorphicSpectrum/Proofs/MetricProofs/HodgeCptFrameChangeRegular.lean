@@ -4,19 +4,14 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DetMemSubring
 public import GroundTheory.PAdicHodge.SlopeCauchyBinet
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.YvEqSumMinorsGMat
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecializesOfUnits
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordTieCompEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameCoeffsRegularInChart
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsNonzeroXbOfLeftInverse
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.CauchyBinetSumPositionedMinors, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsComponentInChartRegular, Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalFrameOfTwistGeneration, Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorExpansionOfScaledProduct, Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorRatioRegularOfMatrixIdentity, Development.AutomorphicSpectrum.Proofs.MetricProofs.ProdXbPowEqXcOfPow, Development.AutomorphicSpectrum.Proofs.MetricProofs.TMatBlockDiagDetFactors, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameChangeRegular

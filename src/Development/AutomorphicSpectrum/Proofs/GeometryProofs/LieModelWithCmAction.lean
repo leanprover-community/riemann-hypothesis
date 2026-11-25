@@ -9,8 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSecti
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ExpRowsPf
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetF
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.SesquilinearFractions.RetractionTwoProjectionOne, Development.WeilBound.CoreStatements.SesquilinearFractions.GDerivLin, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelWithCmAction

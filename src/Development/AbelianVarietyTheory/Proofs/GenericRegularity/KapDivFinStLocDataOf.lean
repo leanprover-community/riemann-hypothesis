@@ -8,7 +8,6 @@ public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Monic
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Mathlib.Data.Fin.Tuple.Sort
@@ -25,14 +24,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IsUnitOfValEqZero
 public import ReciprocityTheory.SemistableReduction.IntegralClosureRankAndResidueTrdegLe
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import ReciprocityTheory.SemistableReduction.AlgAll
-public import Mathlib.RingTheory.DedekindDomain.Dvr
-public import Mathlib.FieldTheory.Separable
 public import Mathlib.Topology.Algebra.MvPolynomial
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.FieldTheory.PrimitiveElement
-public import Mathlib.RingTheory.Kaehler.Basic
 public import Development.AbelianVarietyTheory.Proofs.AlgebraicCurves.AlgebraicIndependentFreeVar
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AeEvalCircleMapNeZero
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AemeasurableFinsumSection
@@ -40,17 +33,7 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.DenseMvPolyno
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsEmbeddingsOverInjective
 public import Formalism.LocalToGlobal.ProjectiveLattices.DivFinOfLawA3
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.KapFgTrdeg
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.Analysis.Calculus.ImplicitFunction.ProdDomain
-public import Mathlib.Algebra.Polynomial.Eval.Degree
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.ContDiff.RCLike
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.Analysis.Calculus.Implicit
 public import Formalism.LocalToGlobal.ProjectiveLattices.NrmContPf
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsLinearIndependentDIffTrdegAdjoinEq
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.IntegralAndRationalOfPolynomialGrowth
@@ -67,8 +50,6 @@ import Mathlib.RingTheory.TotallySplit
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 import Mathlib.Topology.UniformSpace.Uniformizable
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.CastAddNeNatAdd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValuationResidueLemmas
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.BaseNorm
 import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 

@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisedDualSystem
 public import Formalism.LocalRingCardinality.DataRRMetric
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 
 -- This file was produced by scripts/clump.py from the modules listed below.

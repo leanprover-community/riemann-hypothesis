@@ -7,9 +7,6 @@ import Mathlib.GroupTheory.Abelianization.Finite
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
 public import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Matrix.CharP
-import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Ideal.Quotient.Index
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 

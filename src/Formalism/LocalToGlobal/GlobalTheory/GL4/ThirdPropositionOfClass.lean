@@ -13,10 +13,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwo
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColStd
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PZBasis
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEig
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalLattice
 public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.UnfoldedThetaIntegralConvergesSimilitudeOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.ArchimedeanCompact.InfEmbGrpEq
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.ActCont
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.ContinuousAdeleInfHom
@@ -12,9 +11,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaBounds.WtLeOfNorm
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ActRat
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.SzLaws
-import GroundTheory.AutomorphicForms.ReductionIdele
-import GroundTheory.GlobalFields.TateThesis.AdelePoisson
-import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ConjInv
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.UnipotentInvariants.AbLeMulOneAddNormOfFinPartMemCompact, Development.AutomorphicArithmetic.UnipotentInvariants.ExistsCompactSiegelDecompositionHeightLe, Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.LatSum

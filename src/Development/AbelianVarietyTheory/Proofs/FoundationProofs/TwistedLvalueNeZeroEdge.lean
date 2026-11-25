@@ -4,41 +4,21 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 public import Mathlib.NumberTheory.LSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoefQExpansionFunctionUpperHalfPlane
-public import Mathlib.NumberTheory.ModularForms.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCuspFormGamma1OfIsCuspFormCoeffSeq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RankinMeanSquareCuspForm
 public import Mathlib.NumberTheory.LSeries.Deriv
 public import Mathlib.NumberTheory.ModularForms.LFunction
-public import Mathlib.NumberTheory.LSeries.Convergence
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RepL
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasModerateGrowthQExpansionOfCoeffPolynomialGrow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegrablePeterssonIntegrandModerateGrowth
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionFunctionInjectiveOfPolynomialGrowth
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionPolyGrowthSummableContinuous
 public import Mathlib.NumberTheory.DirichletCharacter.Bounds
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGammaZeroPartitionWeight
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HalfPeterssonIntegralHeckeTAdjoint
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-public import Mathlib.Analysis.SpecialFunctions.Complex.Log
-public import Mathlib.Analysis.Normed.Group.InfiniteSum
-public import Mathlib.Analysis.SpecificLimits.Basic
-public import Mathlib.Analysis.SpecificLimits.Normed
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RootsNormLeOfBoundedTwoStepRecurrence
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.NumberTheory.PrimeCounting
-public import Mathlib.Analysis.PSeries
 public import Mathlib.NumberTheory.EulerProduct.Basic
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Formalism.DirichletDensity.DirichletDensityProofs.APLogDensity
 public import Mathlib.Analysis.Normed.Group.Tannery
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Data.ZMod.Defs
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepletedCuspEigenformHeckeRelations
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspFormCoeffSeqDirichletTwistLevelMulSq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFormCoeffSeqLinearStructure
@@ -46,10 +26,8 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf
 

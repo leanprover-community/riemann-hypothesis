@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PieriBlockIdeals.StatementLR
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FinalB
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LGradedLemmas
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.BinaryFormsExample

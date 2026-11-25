@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeAdditiv
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeInvariantLinearEquiv
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualLatticeDegreeNeg
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactFirstTermBundle
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 
 @[expose] public section
 

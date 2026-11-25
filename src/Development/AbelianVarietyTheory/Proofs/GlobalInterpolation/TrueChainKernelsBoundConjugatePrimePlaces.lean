@@ -11,9 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocPDe
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PlaceOverPInducedByAlgebraicPadicEmbedding
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SubHalfRankInt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValuationLeOneOfMemZmu
-public import Formalism.LocalToGlobal.Columns.AtTOwedS
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
-public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MoveStep
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.JetsAllOfColIn
@@ -21,16 +18,8 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatSte
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatTermOfRatStep
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SubAddLeSpread
 public import Formalism.LocalToGlobal.Columns.TiedAtT
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemExtLatOfMemLocP
-import Formalism.LocalToGlobal.Columns.BaseLemmas
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Std.Tactic.BVDecide.Normalize.BitVec
 
 -- This file was produced by scripts/clump.py from the modules listed below.

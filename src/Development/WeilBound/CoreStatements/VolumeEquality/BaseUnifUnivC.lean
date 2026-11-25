@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BigZe
 public import Mathlib.Analysis.Matrix.Hermitian
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifRiem
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusHolomorphicPotentialChange
 import Mathlib.Algebra.Order.Floor.Extended

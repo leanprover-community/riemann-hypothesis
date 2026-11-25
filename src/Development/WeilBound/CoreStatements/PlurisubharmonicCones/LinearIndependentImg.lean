@@ -7,7 +7,6 @@ public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsS
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegreeIdeal
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PLocalChange
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 
 @[expose] public section
 

@@ -10,13 +10,9 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListMonoDens
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLocDensContOnOpen
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StMIntegrableOfDensLe
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StMIntMonoOfDensLe
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSection
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StTailShift
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailMass
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListTailLog
@@ -27,10 +23,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PTailLogOfMass
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Ring.IsFormallyReal
-import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.Tactic.TypeStar

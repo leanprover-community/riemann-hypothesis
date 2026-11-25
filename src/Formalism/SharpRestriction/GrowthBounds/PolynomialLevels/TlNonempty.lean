@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneC
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.PlanePairsOnBlocksAt
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
 
 @[expose] public section
 

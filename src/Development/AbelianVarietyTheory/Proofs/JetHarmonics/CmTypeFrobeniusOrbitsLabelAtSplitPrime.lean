@@ -8,10 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.IsSelfOf
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmEmbeddingsIntegralAndDistinctModMaximal
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Tactic.Linter.Style
-import Mathlib.FieldTheory.Galois.IsGaloisGroup
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-import Formalism.LocalToGlobal.Divisibility.Numbers
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RealPlaceLabellingInertFrobeniusNotConj
 import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
 import Mathlib.Algebra.Order.Star.Real

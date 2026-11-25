@@ -4,22 +4,12 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLower
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.InvariantSectionsTransportGL
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundSmallDepth
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.EdgeIndep
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoUpperBoundOfEdgeCount
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FactorsLEOfFintype
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.CloudBoundOfPropAndWeylDimension
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FactorizationBoundMonoLattices
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoSumBoundOfMapsSplitting
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.PolynomialDimension.WeylDim
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.NLeDAll, Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.CloudCount, Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LemmaSMat, Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.CloudPropOfMapsRetractionBasis

@@ -5,7 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalM
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeScalarFactor
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CoordinateRatioValueAtPoint
@@ -21,10 +20,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsLocSec
-import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeRegularEntries, Development.AutomorphicSpectrum.Proofs.MetricProofs.DetFacChange, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentFrameComparison, Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockTriangularOfProportionalMinors, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentOrbitComparison, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwoFramesOrbit

@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.KOneCharacterTrivialNearOne
 public import Formalism.LocalToGlobal.Columns.ChainTwPsi
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 
 @[expose] public section
 

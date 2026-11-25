@@ -3,52 +3,24 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.LiftCurveSt
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ModelSmall
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AllWeightSectionsCompatStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentNormConstantModelsStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerWeightOfZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PBoundedSectionTransfer
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFibreNormDehomRoots
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
-public import Mathlib.RingTheory.Ideal.Height
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.RegKrull
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.FiniteType
-public import Mathlib.Algebra.Module.Torsion.Field
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.Jacobson.Ideal
-public import Mathlib.RingTheory.Jacobson.Ring
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsHolomorphicChartAtPoint
-public import Mathlib.RingTheory.QuasiFinite.Basic
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanFinrankMaximalIdealLeNcardOfLeSupSq
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValueLocallyRegularFunction
-public import Mathlib.Algebra.MvPolynomial.Funext
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BdryChart
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InjectiveOfIsCptGen
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalizationAtPrimeIsDiscreteValuationRingOfHeig
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericPointComponentLocalRing
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgebraicElementHomogRelation
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentres
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordField
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootOriginDegreeCount
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginPointCompare
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootOriginWeightComparison
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.RingTheory.Smooth.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -59,7 +31,6 @@ import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
@@ -83,33 +54,11 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LevelsQDesc
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormOffSpecializationRing
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.ExistsAlgPtOff
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.RingTheory.Unramified.LocalStructure
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FullTranscendenceDegree, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPosLowerBoundSections, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CompLawsModelRootBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDiscComponentGrowth, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDiscComponentGrowthStatement, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDiscOrbitBound, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqAlgebraMapOfIntegralAtHeightOnePrimes, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisAlt, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsHolomorphicDiscAvoidingPole, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDiscRatioGrowth, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginExistsForm, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginWeightSection, Development.AutomorphicSpectrum.Proofs.GeometryProofs.UniformNormSectionCount

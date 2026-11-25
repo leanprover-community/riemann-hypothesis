@@ -4,8 +4,6 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.Continuous
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormCmExtensionSplitPlaceEqZpow
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OrdLEqNegLog
 import Aesop.Main
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
-import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.FubTate
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

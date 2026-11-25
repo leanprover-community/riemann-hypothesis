@@ -2,13 +2,6 @@ module
 
 public import Mathlib.Combinatorics.Derangements.Finite
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Data.Fintype.Perm
-public import Mathlib.Data.Fintype.Powerset
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleType
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SquarefreeLabelTorusMassUnionBounds
 import Mathlib.Algebra.Order.Star.Int

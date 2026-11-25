@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlocksUnique
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseChangeNonempty
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
 import Mathlib.Tactic.Linter.HaveILetI
 

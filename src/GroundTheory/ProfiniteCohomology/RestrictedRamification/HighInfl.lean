@@ -5,13 +5,10 @@ public import GroundTheory.ProfiniteCohomology.CoinducedModules.CohomologyCoindC
 import GroundTheory.ProfiniteCohomology.CoinducedModules.Acyclic
 public import GroundTheory.ProfiniteCohomology.CupProducts.Projection
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-import GroundTheory.ProfiniteCohomology.InflationRestriction.Coinduced
 public import GroundTheory.ProfiniteCohomology.InflationRestriction.Higher
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.ProfiniteCohomology.CupProducts
-public import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
 
 @[expose] public section
 

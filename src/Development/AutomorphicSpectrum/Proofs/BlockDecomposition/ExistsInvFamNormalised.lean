@@ -5,36 +5,15 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomolog
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DualityForAbsGal
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsCoprimePowOfMemIneKer
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
-public import GroundTheory.ProfiniteCohomology.CupProducts
-public import GroundTheory.ProfiniteCohomology.GaloisModules.CoeGalRootsOfUnityHomApply
-public import Mathlib.FieldTheory.IsSepClosed
-public import Mathlib.FieldTheory.KrullTopology
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
-public import GroundTheory.ProfiniteCohomology.LocalTateDuality.Bockstein
-public import GroundTheory.ProfiniteCohomology.CyclicCup
-public import GroundTheory.LocalFields.UnitsBasic
 public import GroundTheory.LocalFields.LocalArtinMap
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import Formalism.ConjugateSelfDual.Statement
 public import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecompositionGroupLocalGaloisIso
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalEmbeddingOverPlace
-public import Mathlib.Topology.LocallyConstant.Basic
-public import GroundTheory.LocalFields.MaximalUnramified
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPowCharPowEqSelf
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.InvariantSplit
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
-public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbol
-public import GroundTheory.ProfiniteCohomology.CyclicCupGaloisDefs
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdicCompletionValuationMapUniformiser
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.Functoriality
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsAlgHomMulEquivDec
-public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -74,30 +53,15 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Connected.Separation
-import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.GaloisValuations.GlobalA
-import GroundTheory.ProfiniteCohomology.FilteredHomology
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.WittVector.IsPoly
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import GroundTheory.LocalFields.UnitsPowers
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ChevalleyUnits
 import GroundTheory.ProfiniteCohomology.ProcyclicDefs
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationOfMemNotMemSq
-import Mathlib.RepresentationTheory.Basic
-import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
-import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

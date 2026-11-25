@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussianPoin
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutLat
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ContinuousTheta
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

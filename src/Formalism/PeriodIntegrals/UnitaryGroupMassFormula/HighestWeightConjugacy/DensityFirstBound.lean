@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.DensStepOf
 public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
-public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryDense
 public import Mathlib.Topology.Algebra.MvPolynomial
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsElementPosImUnderCmType

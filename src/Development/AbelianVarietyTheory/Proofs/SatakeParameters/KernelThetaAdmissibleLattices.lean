@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NatCas
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepComb
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntPull
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.SelfDualComap
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.InertKernelTheory.StatementInt

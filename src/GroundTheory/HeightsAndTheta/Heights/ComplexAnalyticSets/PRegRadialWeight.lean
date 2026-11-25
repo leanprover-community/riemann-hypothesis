@@ -9,11 +9,9 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffBo
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteProjectionCluster
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensChain
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Topology.UniformSpace.Uniformizable
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 
 @[expose] public section
 

@@ -7,14 +7,9 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Spe
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FiniteFaithfullyFlatKer
 public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartIff
-public import Mathlib.AlgebraicGeometry.Restrict
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.AlgebraicGeometry.Gluing
-public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.OrbitAffineNeighbourhoodStatement
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.RingTheory.PiTensorProduct
@@ -24,10 +19,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
-import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.AlgebraicGeometry.Morphisms.Proper
-import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FreeActionAffineChart, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartRestrictPreimageOpen, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GlueQuotientChartsCover, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.InvariantOpenChartPreimage, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackOfGluedCharts, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackOfGluedChartsStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.QuotientOfAffineChartCover, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FreeQuotientSchemeHolds

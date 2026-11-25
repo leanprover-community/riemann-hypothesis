@@ -6,8 +6,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFr
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FrMemLetters
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundJoint
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.SharpRestriction.GrowthBounds.PathWeight.DvDegOtherMono
-import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PreChainLe, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembVB

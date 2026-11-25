@@ -5,8 +5,6 @@ public import Mathlib.SetTheory.Cardinal.Finite
 public import Mathlib.Algebra.BigOperators.Pi
 public import Mathlib.Algebra.Module.Submodule.Basic
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-public import Mathlib.Algebra.Group.Pi.Basic
-public import Mathlib.Algebra.GroupWithZero.Action.Defs
 public import Mathlib.RepresentationTheory.Character
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnitsPerm
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
@@ -22,8 +20,6 @@ import Mathlib.RepresentationTheory.Maschke
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
-import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit

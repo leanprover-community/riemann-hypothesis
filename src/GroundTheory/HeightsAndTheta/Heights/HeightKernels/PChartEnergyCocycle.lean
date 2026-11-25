@@ -8,8 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartHessCompa
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ADensStBA
 
 @[expose] public section
 

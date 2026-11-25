@@ -9,9 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.StableHopfOrd
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Invres
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RangeSubtypeEq
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RcFlag
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.NumberTheory.MulChar.Basic
-public import Mathlib.RingTheory.Valuation.Integers
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterExists
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RbFund
 import Mathlib.Tactic.Linter.Style

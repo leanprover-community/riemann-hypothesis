@@ -9,22 +9,14 @@ public import Development.EtaleCohomology.EtaleTrace.LCompDecPf
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsIntegralOfSmoothFieldOfConnectedSpace
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-public import Mathlib.AlgebraicGeometry.Artinian
 public import Development.EtaleCohomology.EtaleTrace.LRingPf
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverCompOfIsClosedImmersion
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ProjSpaceHom
-public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOneChartEqPreimageStandardChart
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveSpaceChart
-public import Development.EtaleCohomology.EtaleTrace.LadicH0LocallyConstant
-public import Development.EtaleCohomology.KummerTheory.InjSlice
 public import Mathlib.CategoryTheory.CofilteredSystem
 public import Mathlib.CategoryTheory.Functor.OfSequence
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleMemIffPoints
 public import Development.EtaleCohomology.EtaleTrace.PtCoverPf
-public import Mathlib.Basic.Finite.Defs
 public import Mathlib.Order.KonigLemma
-public import Mathlib.Data.Nat.Init
-public import Mathlib.Order.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCupUnitAndPrimitiveRootClasses
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.IntOne
@@ -35,7 +27,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.PPnCls
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.PPnFacts
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.PRingL
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

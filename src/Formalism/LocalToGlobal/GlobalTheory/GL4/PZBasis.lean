@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Columns.BrpAevalScaleMonomial
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PDetAll
 public import Formalism.PeriodIntegrals.HookBound
-public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColSlopeEq
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
@@ -11,10 +10,6 @@ public import Formalism.LocalToGlobal.Columns.CoefficientsModP
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColStd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.GramMatrixDuality
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.NablaOperatorBasis
-import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.GL4.KronDetScalar, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.Inhabit, Formalism.LocalToGlobal.GlobalTheory.GL4.PZBasis

@@ -5,9 +5,6 @@ public import Mathlib.RingTheory.Coalgebra.MonoidAlgebra
 public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.Bialgebra.MonoidAlgebra
 public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Data.ZMod.Defs
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.Algebra.Ring.Int.Field
 public import Mathlib.Data.ZMod.QuotientRing
 public import Mathlib.RingTheory.SimpleModule.Basic

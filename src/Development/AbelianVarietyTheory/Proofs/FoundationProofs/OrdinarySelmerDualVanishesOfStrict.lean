@@ -6,10 +6,6 @@ public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoAdicCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoDualGen
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoLevFacts
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-public import Formalism.ConjugateSelfDual.Statement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EmbeddingClosedIntegral
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LocalCharacterH1FiniteLevels
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer
@@ -21,13 +17,9 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CupProduc
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaloisCocycleIntegralAfterScaling
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GreenbergOrdinaryOfVanishingOnCycloKernel
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralTwoCocycleReciprocityTrivialAtLastPlace
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
 import Mathlib.Algebra.Order.Star.Int
 

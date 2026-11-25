@@ -8,12 +8,7 @@ public import Development.WeilBound.CoreStatements.BranchingTraces.BranchingComa
 public import Development.WeilBound.CoreStatements.BranchingTraces.BranchingComatrices.OneLeDiff
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.WordSpans.ExistsDs
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.WordSpans.QminorInt
-public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.DiscreteSeriesInfinitesimalCharacter
 public import Development.WeilBound.CoreStatements.BranchingTraces.ExistsIntertwiner
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
-import Development.WeilBound.CoreStatements.BranchingTraces.BranchingComatrices.RootOfNe
-import Development.WeilBound.CoreStatements.BranchingTraces.FormTSingle
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 section -- clump:auto
 @[expose] public section

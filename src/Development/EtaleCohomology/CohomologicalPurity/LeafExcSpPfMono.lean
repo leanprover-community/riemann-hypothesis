@@ -1,7 +1,6 @@
 module
 
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcSpPf
-public import Mathlib.Algebra.Homology.HomotopyCategory.ShortExact
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.CohomologicalPurity.LeafExcSpPfCone, Development.EtaleCohomology.CohomologicalPurity.LeafExcSpPfMono

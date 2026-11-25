@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
-public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.BirationalOfFormRatiosFullTrdeg
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveAsm
 public import Formalism.LocalToGlobal.ProjectiveLattices.TieUpC
@@ -13,8 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.CuspEqZe
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveInj
-import Formalism.LocalToGlobal.ProjectiveLattices.LocalUnitReduction.IsUnitMkOfForallPrime
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.UpperBounds.PhRec
 

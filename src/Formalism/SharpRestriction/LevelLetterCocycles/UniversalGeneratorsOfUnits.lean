@@ -1,25 +1,13 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.EvaluationAtUniformizerPower
-public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
-public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
-public import Formalism.SharpRestriction.LevelLetterCocycles.PsCoprimeOf
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Formalism.SharpRestriction.LevelLetterCocycles.InvLevAtOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.InId0OfMem
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipAevalUniformizer
-import Formalism.SharpRestriction.LevelLetterCocycles.EqZeroOfPowDvd
-import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
-import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.RingTheory.PiTensorProduct

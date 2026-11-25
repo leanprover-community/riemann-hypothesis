@@ -1,15 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.LevConstOfEv
-public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Dimension.RankNullity
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.RingTheory.Localization.Module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.Imports
 public import Formalism.SharpRestriction.LevelLetterCocycles.ModelKStep
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelQPfA

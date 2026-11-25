@@ -3,33 +3,22 @@ module
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutEtaB
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutEtaA
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import GroundTheory.GlobalFields.LocalFieldAtPlace
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.PLocalLatticeIndex
 public import Mathlib.LinearAlgebra.Determinant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryIdeleCharTrivialCongruentOneModulo
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepBI
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutEtaC
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaFunctionHeisenbergInvariant
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepBS
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SpanInfRatF
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.MemRangeOfOneTmulMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeIntertwinerRepSplitPlacePositiveScalar
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTopologicalRingAE
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAFSmulMemLatOF
-import Formalism.LocalToGlobal.IndefiniteReal.DatumF
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.Statements
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-public import Formalism.LocalRingCardinality.DataArith
 public import Formalism.LocalToGlobal.LatticeGeometry.GeometryDefinitions.ClsSum
 public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PMuFrames
@@ -14,8 +13,6 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LocBasis
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.RatHerm
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionSecondStep
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
 import Mathlib.Tactic.Lemma

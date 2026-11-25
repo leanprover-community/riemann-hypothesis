@@ -5,12 +5,10 @@ public import Mathlib.RingTheory.QuotSMulTop
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularUFDSerre
-import Mathlib.Algebra.Category.ModuleCat.Projective
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
 public import Mathlib.RingTheory.KrullDimension.Regular
 public import Mathlib.RingTheory.LocalProperties.ProjectiveDimension
 import Mathlib.RingTheory.Regular.Free
@@ -20,7 +18,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Algebra.Category.ModuleCat.Localization
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section

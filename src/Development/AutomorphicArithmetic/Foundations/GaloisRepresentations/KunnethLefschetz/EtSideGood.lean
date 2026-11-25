@@ -40,23 +40,16 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.ProjectiveBaseChange.PSumCl
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.ProjectiveBaseChange.PSumHl
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.ProjectiveBaseChange.PiBCHolds
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.OneMul
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.IsolateSpecHolds
 public import Development.EtaleCohomology.KummerTheory.AdicDegPf
 public import Development.EtaleCohomology.KummerTheory.AdicLimPf
 public import Development.EtaleCohomology.KummerTheory.AdicLimPfKer
 public import Development.EtaleCohomology.WeilConjectures.AdicFinPf
 public import Development.EtaleCohomology.KummerTheory.LimitPf
-public import Mathlib.CategoryTheory.CofilteredSystem
-public import Mathlib.CategoryTheory.Functor.OfSequence
 public import Development.EtaleCohomology.KummerTheory.OneExPf
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
-public import Development.EtaleCohomology.KummerTheory.EtaleKummerDegreeZeroCohomologyOfTwistSectionCla
 public import Development.EtaleCohomology.KummerTheory.CupAWCutEv
-public import Development.EtaleCohomology.KummerTheory.InjSlice
 public import Development.EtaleCohomology.KummerTheory.PrimTorsPf
 public import Development.EtaleCohomology.KummerTheory.ShSectPf
-public import Development.EtaleCohomology.KummerTheory.SecSHPf
 public import Development.EtaleCohomology.KummerTheory.FinBock
 public import Development.EtaleCohomology.KummerTheory.FinSHInv
 public import Development.EtaleCohomology.KummerTheory.LocalHomotopyEtaleCohomology
@@ -82,19 +75,15 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafNewtonPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafWhitneyPf
 public import Development.EtaleCohomology.EtaleSheaves.UnimodularBlockEqToHomValEqOne
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.Geo
-public import Development.EtaleCohomology.EtaleSheaves.HalfDegreeVanishing.SecondBlockUnimodularLocusInclusionMono
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -131,14 +120,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZeroChains
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchClsCocycleSec
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictlyHenselianIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictlyHenselianLocalRingAcyclicEverySheafStatement
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Development.EtaleCohomology.EtaleSheaves.LeafCover2Of
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoIffBijectiveOverAlgClosed
 

@@ -6,7 +6,6 @@ public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.Admiss
 public import Development.WeilBound.CoreStatements.BranchingTraces.BranchingComatrices.ContDiffEmb
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.IntegrableOfDec
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.HarishChandraMultiplicityBound
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigZeroDecay
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliAbstractCharacter
 
 section -- clump:auto

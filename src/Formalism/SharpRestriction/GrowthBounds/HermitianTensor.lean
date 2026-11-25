@@ -7,10 +7,6 @@ public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.Derivative
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DetYNeZero
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ModelIdentificationHolds
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.PbSmithLam
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
-import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.NuOfLoZero
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

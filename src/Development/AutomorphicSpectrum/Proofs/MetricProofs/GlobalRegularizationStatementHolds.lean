@@ -14,20 +14,10 @@ public import ReciprocityTheory.AnalyticForms.LeviForms.RegChart
 public import ReciprocityTheory.AnalyticForms.LeviForms.RegChartC
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AtlasIndep
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.AnalyticForms.LeviForms.RegChartB
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import Mathlib.Topology.OpenPartialHomeomorph.Constructions
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalLeviPshRegularization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizationGlueC2Explicit
 import ReciprocityTheory.AnalyticForms.AnalyticCharts.NullZero
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

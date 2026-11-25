@@ -4,13 +4,9 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigS
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NotInFibreOfIsUnit
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptAwayFromPrimes
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptMultihomogForm
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
-public import Mathlib.AlgebraicGeometry.Noetherian
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeGlueOverPrimes
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticePatchAtPrimes, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ComponentDataHeightIdentity

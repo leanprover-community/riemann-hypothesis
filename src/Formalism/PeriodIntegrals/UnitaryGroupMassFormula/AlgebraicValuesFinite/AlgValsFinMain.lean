@@ -5,14 +5,10 @@ public import Mathlib.Order.CompletePartialOrder
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.EvFLocalIdeleSelf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.FinprodNormEmbedding
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.OrdFEqOfClassOf
-public import Mathlib.Analysis.Complex.Norm
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EqOneOfForallZpow
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.InvMemUFin
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.ValuedAtFin
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

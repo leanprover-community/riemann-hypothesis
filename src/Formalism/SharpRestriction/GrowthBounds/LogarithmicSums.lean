@@ -1,10 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.NumberTheory.Harmonic.Bounds
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.NumData
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.NotSingularOfCentral
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.PartnerCountOfCentral

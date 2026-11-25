@@ -4,9 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsC
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GaGram
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsExtendLin
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
-public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.OverZpOfInFibre
@@ -23,7 +21,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeIntegralModels
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointHTOfFarguesHodgeTate
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

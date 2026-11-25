@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafLocPf
 public import Mathlib.Algebra.Homology.Embedding.ExtendHomotopy
 public import Mathlib.CategoryTheory.Preadditive.Injective.Preserves
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
-import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 import Mathlib.CategoryTheory.Comma.LocallySmall
 
 -- This file was produced by scripts/clump.py from the modules listed below.

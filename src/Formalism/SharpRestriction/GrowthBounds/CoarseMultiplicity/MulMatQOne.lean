@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LaTwInvT
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinalTheorems
 import Formalism.LocalToGlobal.GroupLattices.FockModels.EdgePlane
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
 
 @[expose] public section
 

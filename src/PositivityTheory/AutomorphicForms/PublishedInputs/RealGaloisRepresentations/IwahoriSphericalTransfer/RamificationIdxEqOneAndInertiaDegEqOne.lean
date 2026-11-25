@@ -6,7 +6,6 @@ public import GroundTheory.GlobalFields.CompletionAtPlace.Galois
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 public import GroundTheory.GlobalFields.SemilocalAlgebras.ContinuousCompletionMap
 import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.FinrankAdjoinSqrtNegOne
 

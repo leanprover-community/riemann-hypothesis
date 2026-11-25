@@ -1,22 +1,14 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.VFlatSupported
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.DualInclusionLattices
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
-public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.CloudBAtOfRho
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.SubstSPtrue
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.GoodRankOfPrim
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleZpowMono
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.OrdMaxRest
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RhoAtGOfPair, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.CloudBStepOfRho, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestCloudBOfTop, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RhoTopStepOfPair, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestCloudBOfThree

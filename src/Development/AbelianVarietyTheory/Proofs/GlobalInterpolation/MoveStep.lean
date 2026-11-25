@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.KerIsTerm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HermitianCodeWordWeilElementMemQuadraticField
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AssembleLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemUnitOff
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProdAbsNormDivsDvd
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PlacesOverConjPrimes
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LawsAll
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExtUHInjective
@@ -16,9 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Decora
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KAtTopEquiv
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.XiEntryInvariant
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CharacterValueAtT
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

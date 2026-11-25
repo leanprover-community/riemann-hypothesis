@@ -8,21 +8,10 @@ public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.Lan
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.PresTr
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FrobLiftWittClosure
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.WdVal
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
-public import Mathlib.RingTheory.Norm.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsBasisOneAddXPow
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormOpFrob
-public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
-public import Mathlib.RingTheory.Polynomial.Eisenstein.IsIntegral
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvNormOpEqNrm
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsAdicCompleteComapConstantCoeff
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.RingTheory.Ideal.Defs
-public import Mathlib.Algebra.Ring.GeomSum
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.Ideal.Operations
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.DlogCmp
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.PresMono
 

@@ -7,46 +7,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspRapidDec
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GelfandKazhdanDualOfHyps
 public import Mathlib.Data.Multiset.Functor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AutomorphicFormsFiniteGL
-public import Mathlib.Order.Fin.Basic
-public import Mathlib.Data.Fin.Tuple.Sort
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.PowerSeries.Basic
-public import Mathlib.RingTheory.PowerSeries.Trunc
-public import Mathlib.Analysis.Normed.Group.InfiniteSum
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.ParametricIntegral
-public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.Analysis.InnerProductSpace.l2Space
-public import Mathlib.MeasureTheory.Function.L2Space
-public import Mathlib.MeasureTheory.Group.FundamentalDomain
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 public import Mathlib.NumberTheory.NumberField.DirichletDensity
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Mathlib.Analysis.SpecialFunctions.Bernstein
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-public import Mathlib.Data.Nat.Choose.Multinomial
 public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
-public import Mathlib.Algebra.BigOperators.Finsupp.Basic
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Data.Finsupp.Basic
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Complex.RemovableSingularity
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.DSlope
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.IntegralDeterminants.PlaceConjAlt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfiniteQuadraticCMGoodBaseChangeSplitStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PolarizedPairBaseChangePolarizedSameWeightStatement
@@ -96,9 +60,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CrystallineInputs.InputsOf
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.GlobalFields.SemilocalAlgebras.LocalDegree
-import Mathlib.Algebra.Order.Star.Int
 import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.RamificationIdxEqOneAndInertiaDegEqOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,7 +6,6 @@ public import Mathlib.Order.CompletePartialOrder
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.GoodCoverEigenspaces.CoverOf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HodgePullHodgePull
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.OmegaPullId
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT

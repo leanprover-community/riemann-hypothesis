@@ -14,32 +14,19 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.RingTheory.Ideal.Prime
-public import Mathlib.Algebra.Order.GroupWithZero.Basic
-public import Mathlib.RingTheory.Trace.Defs
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.LocalRing.Module
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Mathlib.NumberTheory.NumberField.Norm
-public import Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicative
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import ReciprocityTheory.Hypotheses.GalCoh
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.PrimaryComponentCohomologyEqBotOfScdpLt
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IsDiscreteRepResMuROrep
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CohomologicalDimensionTopologicalIso
-public import Mathlib.Topology.Algebra.ContinuousMonoidHom
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConstantTermFrameKTypeCoefficients
 public import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalFiniteness.Transport
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Dimension
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

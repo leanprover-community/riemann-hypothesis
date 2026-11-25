@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkMin
 public import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesEight
 public import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
-import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
 import Formalism.LocalToGlobal.GlobalTheory.LossRequirementsOfSmallShares
 import Formalism.LocalToGlobal.GlobalTheory.PlacesP
 

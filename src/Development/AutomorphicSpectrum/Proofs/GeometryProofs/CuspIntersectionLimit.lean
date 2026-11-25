@@ -8,7 +8,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExtA
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SymplecticPolydiscPeriodBasis
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FirstMinimumAndCuspWeightBounds
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodsSubframeDetBounds
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodLimit
@@ -16,10 +15,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartQContinuousAtAndLocalSolution
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartQHermitianAndRealPairing
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartWSaturatedAndContinuousSection
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsEigenComponentPolynomial
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsExtendLinearIndependentOfSpan
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsKerProj
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MemChartWOfContinuousPeriod
@@ -30,14 +26,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeIPOfFib
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionPositive
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.PotentialsBoundedRegSettingEqReference
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SiegelOfRiemann
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositive
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

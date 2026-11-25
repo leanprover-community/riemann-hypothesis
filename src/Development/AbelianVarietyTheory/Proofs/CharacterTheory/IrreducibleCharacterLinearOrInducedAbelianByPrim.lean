@@ -3,11 +3,7 @@ module
 public import Mathlib.RepresentationTheory.Irreducible
 public import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharTraceMulIdempotent
-public import Mathlib.RepresentationTheory.Basic
-public import Mathlib.RingTheory.IntegralDomain
-public import Mathlib.RepresentationTheory.Character
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CommuteImageAbelianByPrimePowerOfNormalCentral
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterEigenvectorOfCommutingRepresentat
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct

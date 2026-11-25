@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.IsFrPlane
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 
 @[expose] public section
 

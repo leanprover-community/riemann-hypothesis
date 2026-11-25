@@ -3,7 +3,6 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ParabolicSubgroupEquality
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LineFacts
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.RightDerivativeZeroOutsideSupport
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 

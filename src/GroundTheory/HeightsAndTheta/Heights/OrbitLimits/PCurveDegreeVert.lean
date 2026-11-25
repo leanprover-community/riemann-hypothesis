@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIsSheetFi
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 
 @[expose] public section

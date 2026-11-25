@@ -3,9 +3,6 @@ module
 public import Development.EtaleCohomology.EtaleSheaves.LeafUnitsPfB
 public import Mathlib.Order.CompletePartialOrder
 public import Development.EtaleCohomology.EtaleSheaves.LeafOrdInfLocalPf
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.FieldTheory.PurelyInseparable.Basic
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Development.EtaleCohomology.EtaleSheaves.LeafUnitsPfC
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero

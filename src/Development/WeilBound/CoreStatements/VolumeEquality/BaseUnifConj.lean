@@ -1,10 +1,8 @@
 module
 
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifDefs
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyConjugate
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugateUniversalFamily
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConjA
 import Mathlib.Tactic.Linter.Style

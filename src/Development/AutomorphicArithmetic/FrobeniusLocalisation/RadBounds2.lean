@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiscrK
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffDefs
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.SlopeTestRemainingChoices
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.LogRdSum

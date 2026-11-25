@@ -1,9 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
-public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.Etale.Weakly
-public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Mathlib.RingTheory.TotallySplit
 public import Formalism.LocalToGlobal.IndefiniteReal.ConjSubConjSub
 public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
@@ -17,8 +15,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RowsRe
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 import Development.AbelianVarietyTheory.Definitions.Foundations.ValuedAlgebraMapEqOne
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
-import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
-import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 
 @[expose] public section
 

@@ -5,9 +5,7 @@ public import Mathlib.Algebra.Polynomial.Homogenize
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
 public import Mathlib.NumberTheory.ModularForms.QExpansion
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariables
-public import Mathlib.NumberTheory.ModularForms.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerPeriodCocycleMemCocyclesAndEq
 import Std.Tactic.BVDecide.Normalize.Prop
 

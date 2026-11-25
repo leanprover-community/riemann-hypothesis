@@ -7,13 +7,9 @@ public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.Ortho
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContinuousMultilinearMapOfInnerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasDerivAtOrbitTens
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepSpacePropsOfDiff
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsOrthonormalBasis
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepSpaceProps
 public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CountHypPAtAddQAt
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeInfinitesimalCharLargeGap
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LowestKTypeMultiplicityOneCountingHypotheses
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SmoothOfMemLowKSub
@@ -24,8 +20,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicU
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLatticeSizeRightTranslateLowerBoun
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdelicUnitaryHaarBiInvariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUnipotentQuotientInvariantProbability
-public import Mathlib.Analysis.Calculus.Deriv.Prod
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ContinuousRepresentativeProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CuspidalSubspaceClosedRightTranslationStable
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalFlagExistsUniqueSemistable
@@ -40,14 +34,9 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreser
 import Mathlib.Tactic.TypeStar
 import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.HarderNarasimhan.ShiftInvariance
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationUnitaryUnipotentRadical
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

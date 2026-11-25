@@ -1,15 +1,10 @@
 module
 
 public import Development.WeilBound.CoreStatements.BranchingTraces.ExistsIntertwiner
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.WeightOccurrence.OccSome
-public import Development.WeilBound.CoreStatements.BranchingTraces.ContinuousEmb
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.KFiniteWordBoundIndefUnitary
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.LowestKTypeModels.OfIntegralHolds
-public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.HarishChandraMultiplicityBound
-import Development.WeilBound.CoreStatements.BranchingTraces.FormTSingle
 
 section -- clump:auto
 @[expose] public section

@@ -8,10 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIsUnitS
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HomValueCongruentIntModPrime
 public import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectors
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsWeightBasisFiltration
 public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion

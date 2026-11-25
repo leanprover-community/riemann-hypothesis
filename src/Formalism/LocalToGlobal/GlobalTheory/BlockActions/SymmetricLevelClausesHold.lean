@@ -8,26 +8,14 @@ public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.InJSymRestrict
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NfAllSmulReB
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundOfClasses
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormOneOfPow
-public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.InterlaceDifferenceShiftInvariant
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.IsUnitALMap
-public import Formalism.LocalToGlobal.HilbertRowConditions.RowPin
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.MapMemCSpanOfRat
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ArchimedeanSignatureMatchingOfTrivialBranchingSymm
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.BrOneGFull
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.RestrictionSymmetric
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundOfClassesFrames
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassMapEstimateOfPartial
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.SymmetricClausesOfFormsNorm
-import Formalism.LocalToGlobal.GlobalTheory.BlockActions.HformSmulRightB
-import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBound
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.LocalToGlobal.HermitianForms.Interlace
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkPderivBlockEmbNe
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabFunGen, Formalism.LocalToGlobal.GlobalTheory.BlockActions.FormsExtendHolds, Formalism.LocalToGlobal.GlobalTheory.BlockActions.BlockActEqBlkRow, Formalism.LocalToGlobal.GlobalTheory.BlockActions.MapBrTenL, Formalism.LocalToGlobal.GlobalTheory.BlockActions.IsUnitBZMap, Formalism.LocalToGlobal.GlobalTheory.BlockActions.NfAllBrTenLe, Formalism.LocalToGlobal.GlobalTheory.BlockActions.BlkFockLe, Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormalFormAgree, Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundOfTorsionCharacter, Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundOfInjectiveStable, Formalism.LocalToGlobal.GlobalTheory.BlockActions.NormBoundHolds, Formalism.LocalToGlobal.GlobalTheory.BlockActions.SymmetricLevelClausesHold

@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Exists
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatAdXMulLev
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsUnifAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatticeTupleChartEqOfSameComponentStatement
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.HkLatTupUpdate
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatKRatMulLev, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelLatticeMovedLatticeTuple, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelLatticeMovedLatticeTupleStatement

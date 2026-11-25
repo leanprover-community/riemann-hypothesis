@@ -1,9 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowTEqRowS
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
 public import Mathlib.Analysis.Normed.Group.Ultra
@@ -19,8 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsT
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgClosedTiltFieldAndValuationRing
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltSumSubLe
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltUntiltToComplexPAdicBasicLaws
-public import Mathlib.Analysis.Normed.Field.Instances
-public import Mathlib.NumberTheory.Padics.Complex
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftHasSumZeroOfSurjectiveModPrime
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI

@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InvertibleS
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotential
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RealisesUnitPow
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.Filtration
 
 @[expose] public section

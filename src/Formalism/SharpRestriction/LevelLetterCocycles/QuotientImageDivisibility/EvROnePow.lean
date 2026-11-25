@@ -4,14 +4,9 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTranslationIn
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.XAddOneMonic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 import Formalism.SharpRestriction.LevelLetterCocycles.NatCastEqZeroOfNotDvd
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 

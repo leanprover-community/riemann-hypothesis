@@ -2,7 +2,6 @@ module
 
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.ClassGroup.Basic
-public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.NumberTheory.FunctionField
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.C1FieldNormSurjective
@@ -10,14 +9,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TsenLangR
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
 public import Mathlib.RingTheory.Localization.NormTrace
 public import Mathlib.RingTheory.PowerSeries.Derivative
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NewtonPowerSeriesSurjectiveLinearizationSolution
-public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesTaylorSubstFirstOrder
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPowerSeriesCompletionEmbedding
 public import Mathlib.RingTheory.PowerSeries.Inverse
-public import Mathlib.RingTheory.FiniteType
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNeZeroForallPointExtendSubalgebra
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLinearSystemMaximalDegreeFactorization
 import Mathlib.Algebra.Order.Floor.Extended
@@ -77,7 +72,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.LinearAlgebra.FreeModule.Norm
 import Mathlib.RingTheory.Polynomial.IsIntegral

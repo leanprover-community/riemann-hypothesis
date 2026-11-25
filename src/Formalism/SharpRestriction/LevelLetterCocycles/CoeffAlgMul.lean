@@ -7,12 +7,8 @@ public import Mathlib.RingTheory.Noetherian.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsSmulPowEqSumOfInFNc
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineFiltrationAntitone
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.LevelLetterCocycles.DvOZeroHigh
-import Formalism.SharpRestriction.LevelLetterCocycles.LevLetEMul
 import Formalism.SharpRestriction.LevelLetterCocycles.ProdPsUnitE
 
 -- This file was produced by scripts/clump.py from the modules listed below.

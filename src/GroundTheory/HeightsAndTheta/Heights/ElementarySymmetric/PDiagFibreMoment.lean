@@ -2,9 +2,7 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PFibreLocal
-public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

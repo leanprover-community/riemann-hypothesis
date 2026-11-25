@@ -8,13 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.SumExpSt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSystemOf
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Realised
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.SingleIndexPlacesAreTwisted
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
-public import Formalism.QuotientMetricDivisors.Statement
-public import Formalism.PieriBlockIdeals.LatticeInclusionRealSettingAlt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaLiftLevelsGoodPrimesProperties
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LiftFrameEmbeddingBase
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryTransferPosDef
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StableComplementSecondPolynomial
@@ -28,18 +22,7 @@ public import Development.AutomorphicArithmetic.DivisorFrames.LevChiEqOneOfGoodP
 public import Development.AutomorphicArithmetic.DivisorFrames.VectorValuedAutFormEquivariantInfiniteComponent
 public import Formalism.LocalToGlobal.IndefiniteReal.IsThPKernelSigBase
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.AutSt
-import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
-import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.PieriBlockIdeals.MertensReciprocalElementary
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

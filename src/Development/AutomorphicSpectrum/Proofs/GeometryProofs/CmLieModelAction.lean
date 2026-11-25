@@ -1,21 +1,13 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCMFrame
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModelBaseChange
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjective
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.GModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOfSmooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalence
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.GLieIntA
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.GLieInt
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction
-import Development.WeilBound.CoreStatements.SesquilinearFractions.GLieIntB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.SesquilinearFractions.Models, Development.WeilBound.CoreStatements.SesquilinearFractions.IntegralLieModel, Development.WeilBound.CoreStatements.SesquilinearFractions.CmPackLieProperties, Development.WeilBound.CoreStatements.SesquilinearFractions.CmLieModelAction, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmLieModelAction

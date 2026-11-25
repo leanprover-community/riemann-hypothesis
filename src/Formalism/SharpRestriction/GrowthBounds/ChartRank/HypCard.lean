@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison
-import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieDim
 
 @[expose] public section
 

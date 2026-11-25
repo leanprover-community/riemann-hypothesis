@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjMono
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableOfUnitCoord
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormFockLSqLe
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TaylorCoefficientForms
 import Formalism.ThetaSupremumBounds.GaussianShiftBounds.FockJet
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

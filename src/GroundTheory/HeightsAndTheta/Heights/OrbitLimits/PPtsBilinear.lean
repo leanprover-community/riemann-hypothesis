@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsBilinear
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StPtsAbsIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PtsIntegrable
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar

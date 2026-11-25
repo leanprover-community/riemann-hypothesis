@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Length
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ShaFamMono
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.LocUnr
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.PlacesQ
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.GaloisCohomology.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.SelFam, Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.VLe

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HeBranching
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsNormEmbId
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
@@ -10,7 +9,6 @@ public import Development.WeilBound.CoreStatements.BranchingTraces.HilbertSchmid
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.SchurEigenProjections.BigProjP
 public import Development.WeilBound.CoreStatements.BranchingTraces.HilbertSchmidtTraces.ColSq
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 
 section -- clump:auto
 @[expose] public section

@@ -2,31 +2,20 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffOneSubstCurve
 public import Formalism.LocalToGlobal.CharacterGerms.FirstVanishingAt
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
-public import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
 public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroFirstThenZero
 public import Formalism.LocalToGlobal.CharacterGerms.FirstVanishingCore
 public import Formalism.LocalToGlobal.CharacterGerms.PderivDoubleMultiplicationJacobian
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
-public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalOfNondegenerateOfUnitSeriesIntegral
-public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroDoubleMultiplicationPair
-public import Formalism.LocalToGlobal.CharacterGerms.GermEvalOneStandardPointSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
-public import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelfCuts
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePAddCvSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePStartSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyDef
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePProjLieSelf
 public import Formalism.LocalToGlobal.CharacterGerms.FunEqCoreHolds
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyEig2
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.CharacterGerms.EndomorphismLimitIntegral
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePLSmallMain
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.CharacterGerms.ConstantZeroMultiplicationPair, Formalism.LocalToGlobal.CharacterGerms.ConstantZeroCompCoordinate, Formalism.LocalToGlobal.CharacterGerms.LinearPartUnitFrobenius, Formalism.LocalToGlobal.CharacterGerms.UncurryLinearCombination, Formalism.LocalToGlobal.CharacterGerms.RankMaximalSelfCore, Formalism.LocalToGlobal.CharacterGerms.MmOfUnitMul, Formalism.LocalToGlobal.CharacterGerms.RankMaximalSelfOfProjection, Formalism.LocalToGlobal.CharacterGerms.RankMaximalSelfUnconditional

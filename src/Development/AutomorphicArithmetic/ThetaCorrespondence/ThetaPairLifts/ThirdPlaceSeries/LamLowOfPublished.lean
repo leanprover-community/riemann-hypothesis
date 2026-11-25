@@ -9,12 +9,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToNatFloorLe
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AMiEqAMinusQ
 public import Formalism.LocalToGlobal.Divisibility.RecBridgeNum
 public import Development.AbelianVarietyTheory.Definitions.Divisors.FormalDegreeUpperC
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TwistedLevelValues
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BTLeFiveQuarters
 public import Development.AbelianVarietyTheory.Definitions.Divisors.OfCore
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoefInjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TypePartBase
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CuspLatticeAnyLevel
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LiftFormsMainTerm
 public import Development.AbelianVarietyTheory.Counterexamples.RotationExamples.LevelVectorSizeBounds
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LiftWeightComplexPointEqTwist
@@ -78,25 +76,13 @@ import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Tactic.NormNum.Parity
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ScaleFamilySizeRelationsEventually
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InnerProductFormula
-import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NotOntoOfCharAlone
-import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IpMSelfEqZero
-import Mathlib.Tactic.Polynomial.Basic
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.NoncompactArrFiniteDimensional
 

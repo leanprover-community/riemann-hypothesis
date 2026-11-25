@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.ClosedOrbitsBase
 import GroundTheory.AutomorphicForms.MeasuresModulus
-import GroundTheory.AutomorphicForms.WhittakerDistribution
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
 import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.Topology.Baire.LocallyCompactRegular

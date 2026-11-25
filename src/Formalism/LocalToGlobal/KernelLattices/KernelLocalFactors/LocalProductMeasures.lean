@@ -4,9 +4,7 @@ public import Formalism.LocalToGlobal.KernelLattices.MuProd
 public import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 public import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.AdeleIntA
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-public import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
 public import Formalism.LocalToGlobal.UnitaryNorms.CharProd
-public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ChainInstY
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
@@ -18,14 +16,9 @@ public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.AbsoluteValueInertPrimes
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.MqRowSGUnif
 public import Formalism.LocalToGlobal.KernelLattices.ColInst
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
-import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 import Formalism.LocalToGlobal.Columns.AdelicLemmas
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Formalism.LocalToGlobal.Columns.RowFormsSel
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.TwistComponentsCompatibleSystem, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.TwistValueAtUniformizer, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.XiProd, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.HeckeCharacterCompatibleSystem, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.MlZFacSupport, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures.HilbertNinetyNormOne, Formalism.LocalToGlobal.Columns.DetChrJoint, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LocalProductMeasures

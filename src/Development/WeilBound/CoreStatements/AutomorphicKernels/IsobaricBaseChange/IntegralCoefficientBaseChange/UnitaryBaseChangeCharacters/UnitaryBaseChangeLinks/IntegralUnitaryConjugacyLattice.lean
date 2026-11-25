@@ -2,15 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AevalRootEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitOneAddPiOMul
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Ring.Hom.Defs
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Algebra.Algebra.Equiv
-public import Mathlib.Algebra.Field.Subfield.Basic
 public import Mathlib.FieldTheory.Finite.GaloisField
-public import Mathlib.FieldTheory.Separable
-public import Mathlib.RingTheory.AdjoinRoot
-public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyDvdOfAevalEqZero
 public import GroundTheory.LocalFields.FilteredSurj

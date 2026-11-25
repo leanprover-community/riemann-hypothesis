@@ -16,8 +16,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Algebra.Azumaya.Basic
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PartsSign
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GwTame, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.CharacterH1GaloisQuotient, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.CastToZModPowOne

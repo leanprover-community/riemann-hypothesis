@@ -2,7 +2,6 @@ module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.LocalFields.SeparableClosureValuation
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

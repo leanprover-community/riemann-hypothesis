@@ -1,27 +1,14 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLevel
-public import GroundTheory.ProfiniteCohomology.PoincareDuality.TensorHomZmodDualIsoZmodMulPairing
 public import GroundTheory.ProfiniteCohomology.PoitouTate.ZmodToQZCompactCohomologyResMapOfLocalInv
-public import GroundTheory.ProfiniteCohomology.PoincarePairs
 public import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealAbstract
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseFormal
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealEvenFree
-public import GroundTheory.ProfiniteCohomology.RealPlaces.Induced
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsOpenSubgroupMemFixedModule
-public import GroundTheory.ProfiniteCohomology.PoincarePairs.MackeyCup
-public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageDefs
-public import GroundTheory.ProfiniteCohomology.EulerChar
-public import GroundTheory.ProfiniteCohomology.PoitouTate.RealCup
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseCores
 public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageNatural
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealTraceMap
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingIndex
 public import GroundTheory.ProfiniteCohomology.RealPlaces.Vanishing
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInv
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BijectiveGsLocalInvRootsOfPlaces
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -32,7 +19,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -61,13 +47,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseInputs
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
-import GroundTheory.ProfiniteCohomology.CupProducts.Projection
-import GroundTheory.ProfiniteCohomology.PoincareDuality.Devissage
-import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
 import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingPrimes
 
 -- This file was produced by scripts/clump.py from the modules listed below.

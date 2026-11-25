@@ -7,20 +7,7 @@ public import Mathlib.Analysis.Calculus.FDeriv.Basic
 public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PerValNeZero
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
-public import Mathlib.Analysis.Analytic.Basic
 public import Mathlib.Analysis.Complex.OpenMapping
-public import Mathlib.Analysis.Complex.RemovableSingularity
-public import Mathlib.Analysis.Analytic.IsolatedZeros
-public import Mathlib.Analysis.Calculus.FDeriv.Analytic
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.Analysis.Complex.AbsMax
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.MeasureTheory.Integral.CircleIntegral
-public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
-public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Mathlib.Topology.Algebra.Order.Archimedean
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLieBase

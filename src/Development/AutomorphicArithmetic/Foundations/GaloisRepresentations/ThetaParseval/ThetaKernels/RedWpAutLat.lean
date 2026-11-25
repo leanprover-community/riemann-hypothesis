@@ -12,16 +12,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalLatt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexMapNsmulComapEqAbsNormDet
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldPoincareSeriesLatticeFourier
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutLat
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSerA
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepA
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.QInertHolds
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SpanInfRatF
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepC
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaDistributionInvariantRationalTarget
 

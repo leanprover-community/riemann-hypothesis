@@ -8,8 +8,6 @@ public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Combinatorics.Nullstellensatz
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.RingTheory.RootsOfUnity.Complex
 
 @[expose] public section

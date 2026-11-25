@@ -12,7 +12,6 @@ import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifRiem
 import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVecA
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
 

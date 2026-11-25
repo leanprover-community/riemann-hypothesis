@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LaTwInvT
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.RestBlockForm
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.ProdBlockEmbMonomial
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.MulMatQOne
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

@@ -6,9 +6,7 @@ public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsLocalApp
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelEisensteinUnfoldingIdentity
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SelfDualTransport
-import Development.AutomorphicSpectrum.Proofs.NonGaloisProofs.ExistsEqAdelicCharMul
 import GroundTheory.HeightsAndTheta.Theta.AdelicFourier
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

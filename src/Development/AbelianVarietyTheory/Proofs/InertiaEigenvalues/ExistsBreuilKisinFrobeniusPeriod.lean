@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsAlgCl
 public import Mathlib.RingTheory.Valuation.Integral
 public import Mathlib.RingTheory.WittVector.Complete
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompleteOCSpanSingletonSetCast
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompatibleRootsOfUnityAndTiltPadic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineThetaEqZeroIffFontaineXiElementDvd

@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Hadam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Hnf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Rypos
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

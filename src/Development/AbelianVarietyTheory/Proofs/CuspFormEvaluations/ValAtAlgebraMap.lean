@@ -6,12 +6,10 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.Evaluati
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FnFGFnTrdeg
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.SectionEqZeroOfGenericFramedPointValues
 public import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.Generic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpolationModelInequalities
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameThetaConstPos
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.CurvAndMarginClosed
-public import Development.AbelianVarietyTheory.BlockTheory.JetGauges.ThetaWeightedNorm
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.AdmissibleModuleIffLatticeQuotients
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAt
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ComponentModelWeightDimensionDictionary
@@ -21,13 +19,8 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RunWei
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FirstMinimumInvariantContinuousPosOnFrames
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.CurvNumStatementPf
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
 import Formalism.LocalToGlobal.ProjectiveLattices.CuspMulOf
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.CrystallineTowers.LocTower
 import GroundTheory.PAdicHodge.LocalBridge
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

@@ -2,9 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ThetaFinsetSum
-import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGeneratorReEqZero
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 
 @[expose] public section

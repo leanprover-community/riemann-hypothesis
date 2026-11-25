@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaProj
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TranslateUnitaryLifts
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilActionLiftPairStepVectorInvLevelCharStatement
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ToUnitsCompToCircle
 
 @[expose] public section
 

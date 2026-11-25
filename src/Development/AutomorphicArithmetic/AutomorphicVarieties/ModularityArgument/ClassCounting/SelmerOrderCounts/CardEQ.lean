@@ -7,16 +7,11 @@ public import Mathlib.Algebra.Module.ZLattice.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.HasVal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.SelmerOrderCounts.TwoLe
 public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
-public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Data.Matrix.PEquiv
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-public import Mathlib.NumberTheory.NumberField.Units.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.AutomorphicVarieties.TensorHomCubes.StabDirectedSystem
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

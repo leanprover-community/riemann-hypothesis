@@ -11,7 +11,6 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.ThreeForms
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
-import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.IdxRules
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

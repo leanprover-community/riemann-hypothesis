@@ -5,7 +5,6 @@ public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
 public import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.ResH1BijectiveOfInverse
 public import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.ResH2BijectiveOfInverse
-import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

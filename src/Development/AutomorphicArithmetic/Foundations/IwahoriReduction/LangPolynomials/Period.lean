@@ -7,7 +7,6 @@ public import Mathlib.Data.Matrix.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.FixedIntegersIsUnitOfNotMemPrimeSpan
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.LangPolynomials.DvdOfNormLe
-import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
 
 section -- clump:auto

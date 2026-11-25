@@ -4,10 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JointC
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DetUnitaryAdelicPointGramStepNormOne
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RealAt
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Realises
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Reframe
-import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
-import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.StepTwistAtClassRepEqCharPowDet, Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealAtSuccIffDecompositionValues, Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealAtSuccIffDecompositionValuesStatement

@@ -8,8 +8,6 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.DegPushDefs
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeGenericOfDegree
 public import Development.WeilBound.CoreStatements.VolumeEquality.DegPushTestA
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalNef
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPrincipalDegree
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 
 -- This file was produced by scripts/clump.py from the modules listed below.

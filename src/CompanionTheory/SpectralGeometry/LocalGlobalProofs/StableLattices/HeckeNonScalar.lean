@@ -5,7 +5,6 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.Expand
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section

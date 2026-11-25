@@ -9,9 +9,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.CoeffAlgMul
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfLevelZeroParts
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 public import Formalism.SharpRestriction.LevelLetterCocycles.StrictSesLetter
-import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineFiltrationAntitone
-import Formalism.SharpRestriction.LevelLetterCocycles.LevLetEMul
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExpPowSubOne
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 

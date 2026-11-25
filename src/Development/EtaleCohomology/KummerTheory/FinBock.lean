@@ -37,7 +37,6 @@ public import Development.EtaleCohomology.TateTwists.EtaleSheafShortComplexExact
 public import Development.EtaleCohomology.TateTwists.EtaleSingleSheafHomotopicMapsEqualHolds
 public import Development.EtaleCohomology.TateTwists.Imports
 import Development.EtaleCohomology.TateTwists.PpEvBasicPf
-import Development.EtaleCohomology.TateTwists.EtaleChainCochainEvalDifferentialFormulaHolds
 import Development.EtaleCohomology.TateTwists.PpEvMkPf
 
 @[expose] public section

@@ -10,24 +10,11 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Distrib
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.WeakApproximationFinitePlace
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsFieldIdemOne
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EqPlaceIdemOfIsPrimeIdem
-public import Mathlib.RingTheory.Ideal.Maximal
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Matrix.ToLin
-public import Mathlib.RingTheory.Ideal.Quotient.Basic
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.Topology.Instances.Matrix
 import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.GlobalFields.Adele.Topology
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousLogHomIsMultipleOfLogAbs, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarScalingMultiplicative, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompInfSingleInfSelf, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsDependentColumn, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsFrameLeftInvGram, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsGlGD, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GUEqOneAdd, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasureComplementImageEqZero, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasureUnitImage, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PieceMeasureLtTop, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointEqTranslate, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NullSingOfIdemEx, Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LNullSing

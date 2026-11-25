@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVec
 public import Mathlib.Analysis.Matrix.Hermitian
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

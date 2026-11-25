@@ -9,23 +9,16 @@ public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 public import ReciprocityTheory.SemistableReduction.AevalIsWeightedHomogeneous
 public import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous
 public import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
-public import ReciprocityTheory.SemistableReduction.SJCoreA
-public import ReciprocityTheory.SemistableReduction.SJCoreB
 public import ReciprocityTheory.SemistableReduction.SJCoreD
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PointHeight
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHeightIffOfDegreeEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockSphereMeanEqOfFrameNormEq
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsImageHeightUnique
-public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
-public import Mathlib.Algebra.MvPolynomial.Nilpotent
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.GenIdeal
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.SemistableReduction.DetGramEqProdGramSchmidt
 import ReciprocityTheory.SemistableReduction.SphereTorusC
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinSubstLinSubst
-import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
 import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

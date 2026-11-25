@@ -12,9 +12,6 @@ public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.ChiMemSubfield
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.FullTiedCBase
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.SelfDualAtColLevel
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieExC
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
-import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IsUnitDetBlockPreimage
-import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieSurj, Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieLatFin, Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieAll

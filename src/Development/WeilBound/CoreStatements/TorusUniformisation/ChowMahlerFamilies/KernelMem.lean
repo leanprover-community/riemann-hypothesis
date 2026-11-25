@@ -2,23 +2,15 @@ module
 
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.WeilfunCore
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsDerAt0
-public import Mathlib.Tactic.ENatToNat
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsFinFlatSub
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.RingTheory.Valuation.Integers
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwpairAlg
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwpairGeo
-public import Development.AutomorphicSpectrum.Statements.GeometryStatements.NonemptyEquivOfCardHom
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LemmaBTHolds
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatBcTors
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Weilreg
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FunctionFamilyIdempotent
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatDesc
 import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.BtExistsBc
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 

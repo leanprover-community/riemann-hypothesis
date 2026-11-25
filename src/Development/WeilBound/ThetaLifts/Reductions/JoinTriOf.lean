@@ -11,10 +11,6 @@ public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSe
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.TensorIrr
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsGreatestProperInvariantSubmoduleOfSide
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Dimension.Basic
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensMax
 public import Development.WeilBound.ThetaLifts.Reductions.JoinDef
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
@@ -23,7 +19,6 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.FockSecondAct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.ThetaLifts.CartanFactorisation.PolCount
-import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 -- This file was produced by scripts/clump.py from the modules listed below.

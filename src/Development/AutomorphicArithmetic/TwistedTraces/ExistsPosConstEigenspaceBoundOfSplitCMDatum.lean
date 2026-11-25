@@ -1,7 +1,6 @@
 module
 
 import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.SideTrace
-import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactorAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OfinProd
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj

@@ -9,8 +9,6 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsMaximal
 public import Development.WeilBound.ThetaLifts.FrameEstimates.GrpTop
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceAn
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceLine
-import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 public import Mathlib.MeasureTheory.Function.StronglyMeasurable.Lp
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

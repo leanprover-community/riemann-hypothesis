@@ -1,7 +1,6 @@
 module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.DerivativeIdeal
-public import Mathlib.RingTheory.Ideal.Operations
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

@@ -1,16 +1,10 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
-public import Mathlib.FieldTheory.Perfect
 public import Mathlib.FieldTheory.PurelyInseparable.Exponent
 public import Mathlib.RingTheory.NoetherNormalization
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.Algebra.CharP.IntermediateField
-public import Mathlib.FieldTheory.PurelyInseparable.Basic
-public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Development.EtaleCohomology.EtaleSheaves.LeafModelCurveCut
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanFinrankMaximalIdealLeNcardOfLeSupSq
-public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsProperCurveThroughPoint
 public import Development.EtaleCohomology.EtaleSheaves.ProperLineCovers.CoverPf
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteTypeSectionsOfIsFiniteTypeOverZ
@@ -19,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZeroChains
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMayerVietorisConnectingExact
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LinCombTrivG
 

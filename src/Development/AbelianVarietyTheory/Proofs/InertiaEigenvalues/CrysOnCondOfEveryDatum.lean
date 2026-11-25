@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Finrank
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InclWFrobIter
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Mathlib.Algebra.Lie.OfAssociative
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RestrictCrystallineDeRhamFiniteExt
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.CrysOnCond
 

@@ -8,14 +8,7 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmCon
 public import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LiftLambdaBound
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitivePackageFullHecke
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.QuotRealize
-import Formalism.HarderNarasimhan.ShiftInvariance
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
 
 -- This file was produced by scripts/clump.py from the modules listed below.

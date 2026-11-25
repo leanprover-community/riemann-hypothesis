@@ -8,10 +8,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotien
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.CmpOfMemX
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.QpEqUnit
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVNonneg
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.SemisimpleLetterIffForallMem
-import Mathlib.RingTheory.PowerSeries.Inverse
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 
 @[expose] public section
 

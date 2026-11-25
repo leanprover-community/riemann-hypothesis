@@ -1,15 +1,10 @@
 module
 
 public import Development.EtaleCohomology.DivisorCycles.CycleCount
-public import Development.EtaleCohomology.DivisorCycles.OpenCoset
 public import Development.EtaleCohomology.DivisorCycles.CycleCountPf
 public import Mathlib.LinearAlgebra.Eigenspace.Charpoly
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Data.Matrix.Basic
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly

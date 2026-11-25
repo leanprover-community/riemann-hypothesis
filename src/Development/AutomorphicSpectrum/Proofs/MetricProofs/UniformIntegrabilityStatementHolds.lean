@@ -13,25 +13,15 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.UIObjects
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CompChartEventuallyEq
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FixedMemberBase
-public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UniformEnergyBoundOfSection
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassZero
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailBound
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.OfListTailLog
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.TailBoundStatementHolds
 import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
 import Std.Tactic.BVDecide.Normalize.Prop

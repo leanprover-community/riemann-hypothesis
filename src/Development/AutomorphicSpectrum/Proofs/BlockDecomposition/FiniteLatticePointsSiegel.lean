@@ -7,7 +7,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentMemFins
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.NormalisedExistence.ExistsNormed
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount
 import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
-import GroundTheory.AutomorphicForms.Reduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UfamConst
 
 @[expose] public section

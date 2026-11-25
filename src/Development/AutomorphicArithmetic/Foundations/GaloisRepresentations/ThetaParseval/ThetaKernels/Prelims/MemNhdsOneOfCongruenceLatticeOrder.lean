@@ -1,28 +1,22 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.BumpLat
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.ExistsSmallSubgroups
 public import Development.WeilBound.ThetaLifts.LatticeBasics.NearUnits
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.LocalFields.PadicLogSeries
 public import Mathlib.Algebra.Order.Floor.Extended
 public import Mathlib.Algebra.Order.Floor.Semifield
 public import Mathlib.Algebra.Order.Interval.Basic
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 public import Mathlib.Combinatorics.Enumerative.DyckWord
 public import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 public import Mathlib.Data.NNRat.Floor
 public import Mathlib.Geometry.Euclidean.Volume.Basic
-public import Mathlib.NumberTheory.Chebyshev
 public import Mathlib.NumberTheory.Height.NumberField
 public import Mathlib.NumberTheory.Height.Projectivization
 public import Mathlib.NumberTheory.LucasLehmer
 public import Mathlib.NumberTheory.SelbergSieve
 public import Mathlib.RingTheory.Radical.NatInt
 public import Mathlib.Tactic.Basify
-public import Mathlib.Tactic.ENatToNat
 public import Mathlib.Tactic.Echelon.Zsqrtd
 public import Mathlib.Tactic.Inclusion.Extension.Core.Core
 public import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -39,12 +33,8 @@ public import Mathlib.Tactic.NormNum.NatFib
 public import Mathlib.Tactic.NormNum.NatLog
 public import Mathlib.Tactic.NormNum.NatSqrt
 public import Mathlib.Tactic.NormNum.Ordinal
-public import Mathlib.Tactic.NormNum.Parity
 public import Mathlib.Tactic.NormNum.Prime
 public import Mathlib.Tactic.NormNum.RealSqrt
-public import Mathlib.Tactic.ReduceModChar
-public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
-public import Mathlib.Topology.Sheaves.Init
 /-! # MemNhdsOneOfCongruenceLatticeOrder: Preliminary helper declarations for global theta kernels. -/
 
 @[expose] public section

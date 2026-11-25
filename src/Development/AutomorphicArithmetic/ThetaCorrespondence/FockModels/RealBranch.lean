@@ -3,26 +3,16 @@ module
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsNormEmbId
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableMulInner
 public import GroundTheory.AutomorphicForms.HilbertSchmidt
-public import Mathlib.MeasureTheory.Function.L2Space
 public import Development.WeilBound.CoreStatements.BranchingTraces.HilbertSchmidtTraces.UnitaryMatrixCoefficientDecay
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.SchurEigenProjections.EigA
-public import Mathlib.Analysis.Normed.Operator.Compact.Basic
 public import GroundTheory.AutomorphicForms.CompactSelfAdjoint
 public import GroundTheory.AutomorphicForms.HilbertSchmidtCompact
-public import Development.WeilBound.CoreStatements.BranchingTraces.HeBranching
 public import Development.WeilBound.CoreStatements.BranchingTraces.BranchingComatrices.OneLeDiff
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.KFiniteWordBoundIndefUnitary
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiGelfand
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdCons
-public import Formalism.HermitianCurvature.StatementM
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EqZeroOfDatumEmbeddingEqZero
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.SchurEigenProjections.BigProjP
-public import Development.WeilBound.CoreStatements.BranchingTraces.ContinuousEmb
 public import Development.WeilBound.CoreStatements.BranchingTraces.CasimirDecomposition.UnitaryDecompositionExists
-public import Development.WeilBound.CoreStatements.BranchingTraces.FormTSingle
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyProjectorSectionLocal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BranchDefs
@@ -37,8 +27,6 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
@@ -76,10 +64,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.Exists
-import Formalism.HermitianCurvature.BesselNonvanishingReduction
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimBdPfKFin
 import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij

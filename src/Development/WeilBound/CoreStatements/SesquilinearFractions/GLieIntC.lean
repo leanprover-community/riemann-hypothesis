@@ -3,9 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChange
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.GLieIntB
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree

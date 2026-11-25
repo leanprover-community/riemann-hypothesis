@@ -22,8 +22,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierUn
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ExistsCompactOfFinite
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.IntegralCompAddEquiv
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SetIntegralAddRight
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SmulMemConjHalf
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SplitPlaceSiegelLawDiagonalLagrangianCharacterIm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicSchwartzThetaDistributionSumNeZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvariantFormDoubledSpaceSplitPlace
@@ -32,9 +30,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitPlaceHalfHeisenbergInvariantForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilTransportAdelicSchwartzCmExtension
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairAMulEqZeroIffSnd
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.RedWpAutProdA
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SplitPlaceThetaFunctionVacuumConjugatePlace
 
 /-! # ExistsFinsetAnnLeK: Consolidated global theta-kernel definitions and proofs (ExistsFinsetAnnLeK). -/
 @[expose] public section

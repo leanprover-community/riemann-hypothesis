@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds

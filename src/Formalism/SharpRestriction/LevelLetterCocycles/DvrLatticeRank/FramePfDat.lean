@@ -3,27 +3,15 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfEqv
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfL
-public import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
-public import Mathlib.LinearAlgebra.Matrix.Defs
-public import Mathlib.RingTheory.Ideal.Defs
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.Ideal.Span
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.FirstLemmaB
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.FirstLemmaI
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.FirstLemmaJ
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.RingTheory.PowerSeries.Substitution
-public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfAlpha
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfNat
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.InvLiftPfA
 

@@ -5,14 +5,11 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RbFund
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RbProj
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FundamentalIdealFrobeniusProduct
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FundamentalIdealFrobeniusPowers
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGenerates
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CharacterIdealPrincipalEigenStatement
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RdBase
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Invres
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RangeSubtypeEq
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RcFlag
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.ProdDigits
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

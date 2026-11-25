@@ -86,16 +86,8 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.PPFVert
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ArithSystem
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ContractMixed
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ContractMixedField
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPCProof
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
-import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GeoNum
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartZeroSet
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSumMeasurable
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartProjFinite
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartZeroSet
 import GroundTheory.HeightsAndTheta.Heights.Intersections.EqZeroOfEventuallyEval
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PRatioAlgDep

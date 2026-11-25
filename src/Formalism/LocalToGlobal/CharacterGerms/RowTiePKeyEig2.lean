@@ -5,10 +5,8 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGmExLem
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyTeichDef
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyDef
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePKeyJointDef
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
 public import Mathlib.Data.Nat.Choose.Dvd
-public import Mathlib.Data.Matrix.Basic
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePProjFB
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation

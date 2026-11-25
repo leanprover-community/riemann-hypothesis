@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PointsFinite
 public import Mathlib.Algebra.DualNumber
-public import Mathlib.Analysis.Normed.Field.Basic
 
 @[expose] public section
 

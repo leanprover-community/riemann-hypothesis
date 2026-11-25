@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormUniq
-public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormLaws
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OntoFormLaws
 
 @[expose] public section

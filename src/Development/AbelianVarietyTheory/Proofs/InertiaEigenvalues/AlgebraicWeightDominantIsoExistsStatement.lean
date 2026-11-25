@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolyRep
 public import Formalism.LocalToGlobal.Columns.MtAdWtIrr
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.DetLowUni
 public import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgWeightHighestWeightExistsUniqueAntitone
 public import Formalism.PeriodIntegrals.HwFixedLine
@@ -12,14 +11,7 @@ public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrameEquivApply
 public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraicWeightPolyMatrixMultiplicative
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConjugateNeSelf
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBorelEigenvectorOfPolynomialRepGLComplex
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolynomialRepGLComplexAlgebraicWeightEvalPoint
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SpanRationalPointOrbitAlgebraicWeight
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AlgWtHwUnq
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightConjugacy.GLDense
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalRingCardinality.DataHost

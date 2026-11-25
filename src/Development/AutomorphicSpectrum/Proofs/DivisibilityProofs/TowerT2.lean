@@ -4,10 +4,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Fintype.Basic
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Data.Fintype.Fin
 public import Development.WeilBound.CoreStatements.FlagImmersions.AltCMul
 public import Mathlib.Algebra.MvPolynomial.Coeff
 public import Mathlib.Data.Nat.Choose.Cast
@@ -19,9 +15,7 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegr
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PrimeWeightEqZeroOfLt
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestInnerTsumBound
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagShiftTotalPowerSum
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsFlagDegreeOnePolys
-public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagDegreeLinearFunctionals
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RemainderTermSummable
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CutoffCoefficientsBound
@@ -31,7 +25,6 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerHei
 public import Mathlib.RingTheory.MvPolynomial
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardFilterValLt
 

@@ -2,9 +2,7 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomCharpolyForms
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
-public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.PicardGroup
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.FibreNormCharpolyFalse
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange

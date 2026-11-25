@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLineGenOn
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedSpan
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigProjMemOfFree

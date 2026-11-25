@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.BlowupCategories.SpanScale
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FreeHomSectionsStatement
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.CupPullbacks.ConstCompSingle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.CommutativeAlgebra.MayerVietorisCoverOfMonoOfZariskiLocal, Development.AutomorphicArithmetic.CommutativeAlgebra.MonoOfInjectiveOnSimplices, Development.AutomorphicArithmetic.CommutativeAlgebra.MayerVietorisStackProductOfInjectiveOfLocallyCov

@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionSystems
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.RestrictionPowers
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

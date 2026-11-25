@@ -1,26 +1,15 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiagScaleApply
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormPowLeNormFactorial
-public import Mathlib.RingTheory.FiniteLength
-public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ImageStableDegreeBounds
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MonodromyReductionModuloHighDegree
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RepresentationBounds
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Formalism.PadicSubsetSums.StableGradedCounts.ARCReuse
 public import Formalism.PadicSubsetSums.StableGradedCounts.LagrangeBound
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.PowerSeriesVecReduceModUMulVec
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMemA
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowerSeriesExistsUniqueDecompOverFrobeniusLikeEn
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsAlgebraMapEqRoot
 public import Mathlib.RingTheory.Finiteness.Nakayama
-public import Mathlib.Data.ZMod.Defs
-public import Mathlib.RingTheory.Ideal.Maps
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InstTameDescentExponentDataPadicThree
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MaxFrobeniusOrbitLengthDiffBoundsZmod
-public import Mathlib.Algebra.Group.Nat.Defs
-public import Mathlib.Tactic.ToDual
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NumericalConditionsTheoremTLargePrime
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,20 +54,16 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Basify
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
-import Mathlib.Analysis.Normed.Ring.Ultra
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

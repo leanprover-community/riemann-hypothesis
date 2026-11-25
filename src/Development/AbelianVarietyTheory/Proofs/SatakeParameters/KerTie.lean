@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasPar
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsStdFStdLvC
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KerEntTiedTrueEnt
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ValidForConstructedPointClassesEventuallyWorking
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ErrorDataGeneratorsEqColumnPreDatum, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KerTie

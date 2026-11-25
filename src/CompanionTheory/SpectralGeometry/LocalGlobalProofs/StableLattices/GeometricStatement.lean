@@ -3,23 +3,13 @@ module
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Fintype.Card
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HsConjTranspose
-public import Mathlib.Analysis.Matrix.PosDef
 public import Mathlib.LinearAlgebra.Lagrange
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ParabolicSubgroupEquality
 public import Formalism.RealPlaceAnalysis.Complexify
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
-public import Mathlib.Analysis.Matrix.Spectrum
-public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.KeepsMul
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.HilbertSchmidtDecay.AbsoluteL2Bound
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HaarExistence
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.CStarAlgebra.Matrix
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaDecompositionUnitaryIsotropicFlag
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
 import Mathlib.RingTheory.TotallySplit
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective

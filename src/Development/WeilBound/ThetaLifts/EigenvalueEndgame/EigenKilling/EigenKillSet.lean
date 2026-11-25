@@ -6,32 +6,21 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.ConeIntegralFactorisation
 public import Development.WeilBound.ThetaLifts.CTKernel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianSelfDualLatticeSpaceFormHermitianNondeg
-import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPureA
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 public import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
 import Development.WeilBound.ThetaLifts.SmallCones.FourierUniq
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import GroundTheory.GlobalFields.LocalAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
-import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.EqZeroOfLocW
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 
 @[expose] public section

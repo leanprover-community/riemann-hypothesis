@@ -9,9 +9,7 @@ public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Algebra.DirectSum.LinearMap
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.FieldTheory.PrimitiveElement
 import Mathlib.Analysis.CStarAlgebra.Classes

@@ -14,9 +14,6 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.Bounded
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.Assemble
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.SplitElementExistsHolds
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NatCastMemOfPlace
-public import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-public import Formalism.LocalToGlobal.Columns.DecoFin
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepComb
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CommonRepresentativesPeriodLatticeHalves
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepComb
@@ -24,7 +21,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MovedV
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ConditionIffAdditiveMaps
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsTraceCompatibleTorusEmbeddingStandardTorus
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoefInTranslate
-public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.XiOfSpec
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HomLatticeVolumeCompletionSplitPlace
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JointCmpEmbeddingY
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDatumLevelPosBadPrimesNoConjugatePair
@@ -34,16 +30,8 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PendTThFL
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SiteSystemRanksEqDatumRanks
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.Outright
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
-import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.IsOrthCo
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThIndep
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.SelfDualComap
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

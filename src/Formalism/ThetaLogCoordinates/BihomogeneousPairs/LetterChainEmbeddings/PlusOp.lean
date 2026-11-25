@@ -4,7 +4,6 @@ public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbedd
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.PhiInt
 public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.BiHomPlus
 public import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.LatticeEqualHolds
-import Formalism.ThetaLogCoordinates.BihomogeneousPairs.LetterChainEmbeddings.SmulMemOfNorm
 
 @[expose] public section
 

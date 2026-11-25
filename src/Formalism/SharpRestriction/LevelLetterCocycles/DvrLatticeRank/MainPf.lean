@@ -12,7 +12,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.Grad
 public import Formalism.SharpRestriction.LevelLetterCocycles.ClassMapStep
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.InvLiftPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.NinLamPf
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalFormOfThreeInputs
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FrobPiNPf
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GeneratorBoundOfHypotheses
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelQPfA
@@ -20,12 +19,9 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.Mode
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelQPfC
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelQPfD
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.PhibOLComplete
-public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
-public import Formalism.SharpRestriction.LevelLetterCocycles.MixedPositionHypothesis
 public import Formalism.SharpRestriction.LevelLetterCocycles.UpPositionOfModels
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GamPiPf
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3upPfFilCAnti
-public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.SecondPropositionFree
 public import Formalism.SharpRestriction.LevelLetterCocycles.SecondRankCount
@@ -42,11 +38,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.Mode
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.RankBounds
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U2ringPfZetaO
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3mixlinkPf
-import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
-import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC
 import Mathlib.Algebra.Order.Star.Rat
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.RankLinkProof

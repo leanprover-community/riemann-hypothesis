@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.AdmBoundsBOfAdm
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ProdTwoLevelsEqConst
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ConstantCoeffResidueUXPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ConstantLeRpowOfThreeLe
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.TsumThree
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.DivAddLogbLeEightMulErrorScale
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.LogbNn
@@ -16,11 +15,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongr
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.FilVSep
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.LemGBInImgIff
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.
