@@ -71,8 +71,7 @@ def herm0S (H : Formalism.L2.Herm.Herm0 D) : Formalism.L2.Herm.Herm0 (setDiv D N
 def fullS (X : Formalism.L2.Herm.FullTiedS D) : Formalism.L2.Herm.FullTiedS (setDiv D N h) :=
   { X with
     base := { X.base with }
-    atT := fun u => { X.atT u with }
-    ad := { X.ad with } }
+    atT := fun u => { X.atT u with } }
 
 
 

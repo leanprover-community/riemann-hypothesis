@@ -67,13 +67,6 @@ theorem cechD_apply {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] (n :
 
 end Cells
 
-section Point
-
-variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, Fintype (ι k)]
-  [∀ k, LinearOrder (ι k)] {Ω : Type} [Field Ω] [Algebra F Ω] {y : (Σ k, ι k) → Ω}
-
-end Point
-
 end CechPointVanish
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

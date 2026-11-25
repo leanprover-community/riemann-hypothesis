@@ -108,8 +108,7 @@ theorem modDepthGE_two_of_isIntegrallyClosed_of_isRegularLocalRing :
       exact ⟨b, Submodule.mem_top, by rw [Algebra.smul_def, mul_comm]⟩
 
   obtain ⟨y, hym, hyreg⟩ : ∃ y ∈ maximalIdeal R, IsSMulRegular (QuotSMulTop x A) y := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hfin := associatedPrimes.finite R (QuotSMulTop x A)
     have hsub : (maximalIdeal R : Set R) ⊆
         ⋃ p ∈ associatedPrimes R (QuotSMulTop x A), (p : Set R) := by

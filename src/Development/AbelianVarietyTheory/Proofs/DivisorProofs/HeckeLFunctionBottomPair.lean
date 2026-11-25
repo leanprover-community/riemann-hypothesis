@@ -148,7 +148,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 namespace GlobalTheory.NormRatio
@@ -253,7 +252,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 noncomputable section
@@ -310,7 +308,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 noncomputable section
@@ -333,14 +330,6 @@ theorem vac_exists_gram_one {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF
   GlobalTheory.VacRead.vac_exists_gram_one ψ θ hψ hθ S T gS gT ΛS ΛT hS hT
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {r : D.host.E}
-
-theorem th_div_scale (hc : Formalism.MainNotions.StandardLatticesGL3.Crv D cc δ) (h : IsScale D cc r) {a d : ℕ}
-    {L Ls : GlobalTheory.InertSign.Lat D a} {L' Lt : GlobalTheory.InertSign.Lat D d}
-    (hLa : ∀ x ∈ Formalism.MainNotions.TaylorLogMetric.La D (tor0 D cc δ) L L',
-      (fun τ i j => x τ i j / embT D τ r) ∈ Formalism.MainNotions.TaylorLogMetric.La D (tor0 D D.host.ccK δ) Ls Lt)
-    {Φ : VC D a d → ℂ} (hΦ : Φ ∈ Th D (tor0 D D.host.ccK δ) Ls Lt) :
-    (fun Y => Φ (fun τ i j => Y τ i j / embT D τ r)) ∈ Th D (tor0 D cc δ) L L' :=
-  GlobalTheory.VacRead.th_div_scale hc h hLa hΦ
 
 end Copy
 
@@ -654,7 +643,7 @@ theorem vac_reads {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
     have ht : embT D τ r ≠ 0 := (map_ne_zero _).2 hr
     simp only [Matrix.smul_apply, smul_eq_mul, map_mul, map_inv₀]
     field_simp
-  have hG := th_div_scale crv sc hLa hth
+  have hG := GlobalTheory.VacRead.th_div_scale crv sc hLa hth
   have hback : ∀ Z : VC D S.rank T.rank,
       (δ⁻¹ • fun τ i j => (δ * embT D τ r * Z τ i j) / embT D τ r : VC D S.rank T.rank) = Z := by
     intro Z
@@ -728,7 +717,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 theorem _root_.GlobalTheory.T.exists_selfDualLattice_vacuumReading : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d)
@@ -962,7 +950,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 theorem _root_.GlobalTheory.T.thetaCosetIndicatorReading_spherical_off_modulus : ∀ {D : D7} {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (X : Data P) (r : D.host.E), IsExact P X r →
@@ -995,7 +982,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 namespace GlobalTheory.VacNormMean
@@ -1295,7 +1281,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 namespace GlobalTheory.SphMove
@@ -1350,7 +1335,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 namespace GlobalTheory.NormRatio

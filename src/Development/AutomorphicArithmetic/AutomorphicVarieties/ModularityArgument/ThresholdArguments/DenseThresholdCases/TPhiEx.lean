@@ -976,35 +976,6 @@ private theorem adic_mul {Γ R : Type} [TopologicalSpace Γ] [CommRing R] {I : I
   funext x
   exact map_mul _ _ _
 
-private theorem adic_pow {Γ R : Type} [TopologicalSpace Γ] [CommRing R] {I : Ideal R} {f : Γ → R}
-    (hf : AdicCont I f) (n : ℕ) : AdicCont I fun x => f x ^ n := by
-  induction n with
-  | zero =>
-    intro N
-    simp only [pow_zero, map_one]
-    exact IsLocallyConstant.const _
-  | succ k ih =>
-    simp only [pow_succ]
-    exact adic_mul ih hf
-
-private theorem adic_alg {Γ O R : Type} [TopologicalSpace Γ] [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R]
-    [IsCO O R] {f : Γ → O} (hf : AdicCont (maximalIdeal O) f) :
-    AdicCont (maximalIdeal R) fun x => algebraMap O R (f x) := by
-  have hloc : IsLocalHom (algebraMap O R) := IsCO.isLocalHom
-  intro N
-  have hN : (maximalIdeal O) ^ N ≤ Ideal.comap (algebraMap O R) ((maximalIdeal R) ^ N) := by
-    rw [← Ideal.map_le_iff_le_comap, Ideal.map_pow]
-    refine Ideal.pow_right_mono ?_ N
-    rw [Ideal.map_le_iff_le_comap]
-    intro a ha
-    exact map_nonunit (algebraMap O R) a ha
-  have := (hf N).comp (Ideal.Quotient.lift ((maximalIdeal O) ^ N)
-    ((Ideal.Quotient.mk ((maximalIdeal R) ^ N)).comp (algebraMap O R))
-    (fun a ha => Ideal.Quotient.eq_zero_iff_mem.mpr (hN ha)))
-  convert this using 1
-  funext g
-  simp only [Function.comp_apply, Ideal.Quotient.lift_mk, RingHom.coe_comp]
-
 private theorem resLe_mem_Dec {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {F L : IntermediateField ℚ Ω}
     (h : F ≤ L) {A A' : ValuationSubring Ω} (e : A = A') (g : Dec (F := L) A) : resLe h g ∈ Dec (F := F) A' := by
   subst e
@@ -1021,11 +992,11 @@ theorem UpperTheory.V.Ws.phiIsPsi :
   · have hsc : AdicCont (maximalIdeal X.B)
         fun g : Dec (F := T.L) (K.s.A (v : W.Plc (W.Lp T.L))) => algebraMap c'.O X.B (K.sc n g) := by
       have h0 : AdicCont (maximalIdeal c'.O) fun g : G T.L Ω => K.sc n g :=
-        adic_mul K.κ_cont (adic_pow K.β_cont n)
+        adic_mul K.κ_cont (_root_.ac_pow K.β_cont n)
       have h1 : AdicCont (maximalIdeal c'.O)
           fun g : Dec (F := T.L) (K.s.A (v : W.Plc (W.Lp T.L))) => K.sc n g :=
         fun N => (h0 N).comp_continuous continuous_subtype_val
-      exact adic_alg h1
+      exact _root_.ac_alg h1
     have hX : AdicCont (maximalIdeal X.B)
         fun g : Dec (F := T.L) (K.s.A (v : W.Plc (W.Lp T.L))) => X.ψ (K.e v) i (resLe T.F_le g) := by
       intro N

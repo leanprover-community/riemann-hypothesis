@@ -1,5 +1,6 @@
 module
 
+import all Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockSupported
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 import Mathlib.Tactic.Lemma
@@ -16,13 +17,7 @@ variable {n' : ℕ}
 
 theorem sg_cdist (a b : Fin n') :
     cdist a b = if a.val ≤ b.val then b.val - a.val else b.val + n' - a.val := by
-  have ha := a.isLt
-  have hb := b.isLt
-  unfold cdist
-  split_ifs with h
-  · rw [show b.val + n' - a.val = (b.val - a.val) + n' by omega, Nat.add_mod_right,
-      Nat.mod_eq_of_lt (by omega)]
-  · exact Nat.mod_eq_of_lt (by omega)
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.cdist_eq_ite <;> assumption
 
 private lemma posAdd_cdist_eq_self (x y : Fin n') : posAdd x (cdist x y) = y := by
   have hx := x.isLt

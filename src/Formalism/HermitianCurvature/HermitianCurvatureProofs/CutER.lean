@@ -278,8 +278,7 @@ theorem energyReal_of_leaves (hA : CapAdj) (hF : CapThFacts) (hSm : CVSmooth) (h
     Formalism.FourierDecayAlt.P.JCTx6.Link2.ckOn_cutF Bs ⟨hχ1, ⟨δ, hδ, hδ0⟩, hχ3⟩ (hfs v) ε
   have hFsupp : ∀ g ∈ B.GV S.G.k S.G.r, F g ≠ 0 → δ * ε ≤ Gf S.G.k S.G.r Bs.z Bs.z' g := by
     intro g _ hg
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     apply hg
     have h0 : χ (Gf S.G.k S.G.r Bs.z Bs.z' g / ε) = 0 := hδ0 _ (by rw [div_lt_iff₀ hε]; exact hlt)
     simp only [hFdef, FourierDecayAlt.D.cutF, h0, Complex.ofReal_zero, zero_smul]

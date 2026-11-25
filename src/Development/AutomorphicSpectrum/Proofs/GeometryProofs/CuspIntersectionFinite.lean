@@ -59,80 +59,28 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.GlobalFnsHolds
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AmplePt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsDerivAt0OfIsPullback
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLinearLiftOfAdditiveFamily
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolPairA
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FamilyExpDerivativeLie
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentLabelFrame
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicEndomorphismFamily
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicPointsOfComponent
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-import Mathlib.NumberTheory.NumberField.CMField
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodsModuleStructure
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncChartHodgeComponentLocal
-import Mathlib.Algebra.Order.Star.Real
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Analysis.Matrix.Hermitian
-import Mathlib.Topology.Algebra.MvPolynomial
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.ProIsoAt
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPshPhMu
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionPositive
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsPrincipal, Development.WeilBound.CoreStatements.PlurisubharmonicCones.TorusExpEqOne, Development.WeilBound.CoreStatements.PlurisubharmonicCones.CentreIdent, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsSeqCover, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ChartCentre, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionComparison, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ComponentHeightLowerBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionFinite
@@ -685,7 +633,7 @@ theorem abPart_principal (C : Flat.BdryChart Xo σ₀ n a) {z : Fin n → ℂ} (
   have key : ∀ (z₀ : Sp ℂ ⟶ Sp C.R), z₀ = spMap r ≫ spMap f → ∀ P : AbPart C.t z₀, IsPrincipal P.tB := by
     rintro _ rfl P
     obtain ⟨m', -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartPull.exists_sabMap_tK E H _ _ tV C.t _ mV ℂ (spMap r) P
-    exact _root_.GlobalTheory.CompanionTheory.Relay.polarized_abelian_part_principal E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
+    exact _root_.PositivityTheory.HtPt.Ppic.dvr E H V r tV hV hr hker hpol ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
   refine key _ ?_ P
   rw [← hrf]
   show Spec.map (CommRingCat.ofHom (r.comp f)) = _
@@ -761,7 +709,7 @@ theorem centre_phi (C : Flat.BdryChart Xo σ₀ n a) {X : Scheme.{0}} {tt : SAB 
   obtain ⟨m', hm'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartPull.exists_sabMap_tK E H _ _ C.t tt jj m ℂ _ P
   let P' : AbPart C.t (spMap (C.ψ ((ρ : ℂ) • 0))) := ⟨P.tK, m', P.τ, P.tB, P.e, P.e_hom, P.act, P.pp⟩
   have hP := abPart_principal C (Metric.ball_subset_ball hρ1 hbρ) P'
-  obtain ⟨Mz, hMz⟩ := _root_.GlobalTheory.CompanionTheory.Ar.QuotUnif.frame_lieModel_fibre E H D l Xo σ₀ n a C ((ρ : ℂ) • 0)
+  obtain ⟨Mz, hMz⟩ := _root_.PositivityTheory.Xgn.quotient_uniformization_model E H D l Xo σ₀ n a C ((ρ : ℂ) • 0)
   have hL : ∀ i, ((Mz.pt (Pi.single i 1)).left ≫ (𝟙 _) = ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.ψ ((ρ : ℂ) • 0))) ≫ (C.M.pt (Pi.single i 1)).left) := fun i => by
     have h1 := hMz (Pi.single i 1)
     have h2 : (fun j => C.ψ ((ρ : ℂ) • 0) ((Pi.single i 1 : Fin C.g → C.R) j)) = (Pi.single i 1 : Fin C.g → ℂ) := by
@@ -1078,30 +1026,7 @@ open scoped ComplexOrder in
 theorem gram_det_pos {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] (R : RiemLat E g Λ) {m : ℕ} (u : Fin m → Fin g → ℂ) (hu : LinearIndependent ℂ u) :
     0 < (R.gram u).det.re := by
-  have hH : (R.Hmᵀ).IsHermitian := by
-    ext i j
-    exact R.herm.apply j i
-  have hM : (R.Hmᵀ).PosDef := by
-    refine Matrix.PosDef.of_dotProduct_mulVec_pos hH fun x hx => ?_
-    have h1 := R.pos x hx
-    have e : star x ⬝ᵥ (R.Hmᵀ *ᵥ x) = x ⬝ᵥ R.Hm *ᵥ star x := by
-      rw [Matrix.mulVec_transpose, dotProduct_comm, ← Matrix.dotProduct_mulVec]
-    have him : (star x ⬝ᵥ (R.Hmᵀ *ᵥ x)).im = 0 := hH.im_star_dotProduct_mulVec_self x
-    rw [Complex.pos_iff]
-    exact ⟨by rw [e]; exact h1, him.symm⟩
-  let C : Matrix (Fin g) (Fin m) ℂ := (Matrix.of u)ᵀ
-  have hC : Function.Injective C.mulVec := Matrix.mulVec_injective_iff.2 hu
-  have e : R.gram u = Cᴴ * R.Hmᵀ * C := by
-    ext a b
-    simp only [RiemLat.gram, RiemLat.ip, Matrix.of_apply, Matrix.mul_apply, dotProduct, Matrix.mulVec,
-      Matrix.conjTranspose_apply, Matrix.transpose_apply, Pi.star_apply, C]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.mul_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    ring
-  have hp := (hM.conjTranspose_mul_mul_same hC).det_pos
-  rw [← e] at hp
-  exact (Complex.pos_iff.1 hp).1
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.gram_det_pos <;> assumption
 
 section Pt
 
@@ -1121,25 +1046,7 @@ theorem point_formula (Or : CptOrigin Y S₀ Dc Hd) {z : Sp ℂ ⟶ Or.𝔐.X} {
     (hfib : FibreLatVec Or.𝔐.t z R (fun i => x i.1 i.2) v) :
     phMu Hd w = Real.log (‖valAt Dc.y d.u w‖ * ∏ k, ‖w ⟨k, d.c k⟩‖ ^ Hd.aMu k) +
       ((Fintype.card (CMType H) : ℝ) * (((Dc.N - Dc.j : ℕ) : ℝ) * Real.log Real.pi) + R.logDet x) / 2 := by
-  obtain ⟨-, hP⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PhMuFree.phMu_small hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or z w co
-  obtain ⟨-, hP2⟩ := hP d
-  obtain ⟨-, -, hform⟩ := hP2 s hs
-  let Γ : CMType H → Matrix (Fin (Dc.N - Dc.j)) (Fin (Dc.N - Dc.j)) ℂ := fun τ =>
-    Matrix.of fun p q => (Real.pi : ℂ) * R.ip (x τ p) (x τ q)
-  have hΓ : ∀ τ, Or.𝔐.M.GramAt Or.𝔐.t.PP.L z (s τ) (Γ τ) := fun τ =>
-    ⟨fun p => v (τ, p), fun p => hv (τ, p), fun p q =>
-      _root_.GlobalTheory.CompanionTheory.Ar.Cusp.FibreEx.hodgeInnerProduct_eq_pi_mul_riemannForm hfib (fun i => (hv i).isTanAt) (τ, p) (τ, q)⟩
-  have hdet : ∀ τ, Real.log (Γ τ).det.re = ((Dc.N - Dc.j : ℕ) : ℝ) * Real.log Real.pi +
-      Real.log (R.gram (x τ)).det.re := by
-    intro τ
-    have hpos := gram_det_pos R (x τ) (hx τ)
-    have e1 : Γ τ = (Real.pi : ℂ) • R.gram (x τ) := by
-      ext p q; rfl
-    rw [e1, Matrix.det_smul, Fintype.card_fin, ← Complex.ofReal_pow, Complex.re_ofReal_mul,
-      Real.log_mul (pow_ne_zero _ Real.pi_ne_zero) hpos.ne', Real.log_pow]
-  have h1 := hform hI Γ hΓ
-  simp only [hdet, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at h1
-  exact h1
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.CorrPsh.point_formula <;> assumption
 
 theorem fibreLat_of_vec {X : Scheme.{0}} {t : SAB H X} {z : Sp ℂ ⟶ X} {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] {R : RiemLat E g Λ} {A₀ : Type} {x : A₀ → Fin g → ℂ} {v : A₀ → (epsAt z ⟶ t.G)}

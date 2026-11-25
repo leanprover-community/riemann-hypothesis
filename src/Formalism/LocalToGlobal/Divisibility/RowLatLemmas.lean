@@ -308,8 +308,7 @@ theorem HasRes.excl {Sg Sg' : Pl0 → K[X]} (hne : ∃ P : B.Pl, Sg (B.pl P) ≠
 
 theorem exists_of_partF_ne_bot {Sg : Pl0 → K[X]} (h : B.partF Sg ≠ ⊥) :
     ∃ x, B.HasRes Sg x ∧ Col.Occurs B.op x := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   unfold partF Col.eigSum
   refine le_antisymm (iSup₂_le fun x hx => ?_) bot_le
@@ -539,11 +538,6 @@ theorem good_part_coordinates_mono {W W' : Submodule K B.S.Forms} (hW : W ≤ W'
   unfold inV0 coord
   exact Submodule.comap_mono (Submodule.map_mono hW)
 
-theorem equivFun_op (i : B.Pl × ℕ) (f : B.S.Forms) :
-    B.S.basis.equivFun (B.op i f) = (B.opMat i).mulVec (B.S.basis.equivFun f) := by
-  unfold opMat
-  simp only [Basis.equivFun_apply, LinearMap.toMatrix_mulVec_repr]
-
 theorem equivFun_act (g : G) (f : B.S.Forms) :
     B.S.basis.equivFun (B.r g f) = (B.S.actMat B.r g).mulVec (B.S.basis.equivFun f) := by
   unfold CSD.actMat
@@ -608,8 +602,7 @@ theorem sep_of_mem_ixFin {X : Finset (G → K)} {Sg Sg' : Pl0 → K[X]} (h : Sg 
   split_ifs at h h' with hf
   · rw [Set.Finite.mem_toFinset] at h h'
     simp only [resSet, Set.mem_setOf_eq] at h h'
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hne
     funext P0
     by_cases hP : P0 ∈ Set.range B.pl

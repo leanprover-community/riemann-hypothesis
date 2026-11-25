@@ -145,27 +145,8 @@ theorem ratPts_eq : ratPts σ J = rat (HR (AF F) σ J) := by
   simp only [Matrix.map_mul]
   exact hg
 
-theorem exists_herm (h : IsCMExt F E σ) (hJ : EpsHerm σ J) : ∃ c : E, c ≠ 0 ∧ IsHermND σ (c • J.map σ) := by
-  have hσ := sigma_sigma h
-  have hd : ∀ c : E, c ≠ 0 → (c • J.map σ).det ≠ 0 := fun c hc => by
-    have e : (J.map σ).det = σ J.det := ((σ : E →+* E).map_det _).symm
-    rw [det_smul, e]
-    exact mul_ne_zero (pow_ne_zero _ hc) ((map_ne_zero σ).2 hJ.2)
-  rcases hJ.1 with h1 | h1
-  · exact ⟨1, one_ne_zero, fun i j => by simp [h1], hd 1 one_ne_zero⟩
-  · obtain ⟨x, hx⟩ : ∃ x, σ x ≠ x := by
-      by_contra! hx
-      obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-      have := h.2.1
-      refine IsTotallyComplex.complexEmbedding_not_isReal τ ?_
-      rw [ComplexEmbedding.isReal_iff]
-      ext z
-      have := h.2.2.2 τ z
-      rw [hx] at this
-      exact this.symm
-    refine ⟨σ x - x, sub_ne_zero.2 hx, fun i j => ?_, hd _ (sub_ne_zero.2 hx)⟩
-    simp only [Matrix.smul_apply, map_apply, smul_eq_mul, map_mul, map_sub, hσ, h1 j i]
-    ring
+theorem exists_herm (h : IsCMExt F E σ) (hJ : EpsHerm σ J) : ∃ c : E, c ≠ 0 ∧ IsHermND σ (c • J.map σ) :=
+  by apply _root_.PositivityTheory.ThKEst.Sieg.exists_herm_smul <;> assumption
 
 omit [NumberField F] [NumberField E] in
 theorem gram (hσ : ∀ x, σ (σ x) = x) (c : E) (Z : Matrix (Fin n) (Fin r) E) (u : Fin n → E) (i : Fin r) :

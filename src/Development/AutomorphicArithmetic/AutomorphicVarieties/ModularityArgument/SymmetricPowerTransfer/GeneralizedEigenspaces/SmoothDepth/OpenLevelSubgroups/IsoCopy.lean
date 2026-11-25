@@ -132,8 +132,7 @@ theorem UpperTheory.V.Z.Sym.Al.isoCopy :
     haveI := IsSimpleModule.nontrivial (MonoidAlgebra ℂ H) S
     obtain ⟨s, hs⟩ := exists_ne (0 : S)
     obtain ⟨i, hi⟩ : ∃ i, Q i s ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hs (Subtype.ext (hsep s.1 fun i => hc i))
     have hne : (Q i).comp S.subtype ≠ 0 := fun h => hi (LinearMap.congr_fun h s)
     have hj : Function.Injective ((Q i).comp S.subtype) :=

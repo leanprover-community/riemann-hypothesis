@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PartialFlagBlocks
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumSqCompBlockMap
@@ -49,61 +50,10 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MCoordIdealCom
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularWeightMonotoneRegularization
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothFunctionAsDegreeZeroMetric
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedAtlasProjection
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 import Development.WeilBound.CoreStatements.CentralCharts.TraceMulReNonneg
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.NumberTheory.Height.NumberField
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
-import Mathlib.Tactic.TypeStar
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import Development.WeilBound.CoreStatements.PluriharmonicCharts.XCGradAtlas
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
@@ -111,8 +61,8 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SamePotBlock
-import Mathlib.Topology.OpenPartialHomeomorph.Composition
 import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInhab
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.IsSmoothHermPullHerm, Development.AutomorphicSpectrum.Proofs.MetricProofs.NotMemMcPtsTop, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackFourth, Development.WeilBound.CoreStatements.PluriharmonicCharts.XGramSize, Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetGramSubharmonic, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackThird, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackSecond, Development.AutomorphicSpectrum.Proofs.MetricProofs.PartialFlagBundleMetricLine, Development.AutomorphicSpectrum.Proofs.MetricProofs.SingWeightRegFamilyTransport, Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightDescendsOfSameOrbit, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelAnalyticDataExists
@@ -138,19 +88,8 @@ theorem pullDeg_zero {K K' : Type} (κ : K → K') : pullDeg κ (0 : K → ℤ) 
 theorem isSmoothHerm_pullHerm {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type}
     [∀ k, Fintype (ι k)] [∀ k, Fintype (ι' k)] {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')}
     (hv : IsBlockMap κ v) {B : HermLine ι} (hB : IsSmoothHerm B) : IsSmoothHerm (pullHerm hv B) := by
-  have hlin : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : (Σ k', ι' k') → ℂ => fun q => z (v q)) :=
-    contDiff_pi.2 fun q => contDiff_apply ℝ (fun _ => ℂ) (v q)
-  show ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (B.h ∘ fun z : (Σ k', ι' k') → ℂ => fun q => z (v q))
-    {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0}
-  refine ContDiffOn.comp hB hlin.contDiffOn ?_
-  intro z hz k
-  obtain ⟨i', hi'⟩ := hz (κ k)
-  obtain ⟨q, hq⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-  have h2 : q.1 = k := hv.1 (by rw [← hv.2.2.1 q, hq])
-  obtain ⟨k₀, m⟩ := q
-  simp only at h2
-  subst h2
-  exact ⟨m, by simpa [hq] using hi'⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Chg.isSmoothHerm_pull <;> assumption
 
 theorem exists_stepLine : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ]
     (y : (Σ k, ι k) → Φ) (Ψ : Type) (N j : ℕ) (M : FlagModel y Ψ N j) (p : Ψ × Fin N)
@@ -1691,27 +1630,7 @@ theorem step_member (hR : RegGlobalStatement) (hP : PullbackStatement) [Fintype 
 open scoped ContDiff
 
 theorem degree_id_self {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) : IsDegreeOff A A id 1 ∅ := by
-  have hA : A.IsAnalyticSubset ∅ := fun x =>
-    ⟨Set.univ, isOpen_univ, trivial, 1, fun _ _ => 1, fun _ _ _ _ => analyticAt_const, by ext; simp⟩
-  refine ⟨hA, interior_empty, hA, interior_empty, fun x _ => by simp, fun j k y hy _ hk => ?_⟩
-  set E := (A.chart j).symm.trans (A.chart k) with he
-  have hs : y ∈ E.source := ⟨hy, hk⟩
-  have hf : DifferentiableAt ℂ (A.chart k ∘ (A.chart j).symm) y := (A.holo j k y ⟨hy, hk⟩).differentiableAt
-  have ht := E.map_source hs
-  have hg : DifferentiableAt ℂ (A.chart j ∘ (A.chart k).symm) ((A.chart k ∘ (A.chart j).symm) y) :=
-    (A.holo k j _ ⟨ht.1, ht.2⟩).differentiableAt
-  have hc := fderiv_comp y hg hf
-  have hid : (A.chart j ∘ (A.chart k).symm) ∘ (A.chart k ∘ (A.chart j).symm) =ᶠ[𝓝 y] id := by
-    filter_upwards [E.open_source.mem_nhds hs] with w hw
-    exact E.left_inv hw
-  rw [hid.fderiv_eq, fderiv_id] at hc
-  intro h0
-  have := congrArg (fun L : (Fin e → ℂ) →L[ℂ] (Fin e → ℂ) => LinearMap.det (L : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ))) hc
-  simp only [ContinuousLinearMap.coe_id, LinearMap.det_id] at this
-  erw [ContinuousLinearMap.toLinearMap_comp, LinearMap.det_comp] at this
-  have h0' : LinearMap.det (fderiv ℂ (A.chart k ∘ (A.chart j).symm) y : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)) = 0 := h0
-  rw [h0', mul_zero] at this
-  exact one_ne_zero this
+  apply _root_.ReciprocityTheory.AnForm.M.isDegreeOff_id <;> assumption
 
 theorem common_bound {σ : Type} [Finite σ] (f : σ → ℝ) : ∃ M : ℝ, ∀ a, f a ≤ M := by
   obtain ⟨M, hM⟩ := (Set.finite_range f).bddAbove

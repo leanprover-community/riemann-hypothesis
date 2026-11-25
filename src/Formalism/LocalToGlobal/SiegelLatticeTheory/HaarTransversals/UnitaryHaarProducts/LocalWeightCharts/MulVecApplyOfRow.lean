@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.TorusConjugacy
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.ColOfLeftInv
 
 @[expose] public section
@@ -48,19 +49,7 @@ theorem uw_fixed_col {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ UWset k r z)
     (c : Fin (2 * r + k + 1)) (hc : c.val < r ∨ r + k < c.val) (p : Fin (2 * r + k + 1)) :
     h p c = if p = c then 1 else 0 := by
-  by_cases hcr : c.val < r
-  · have e : eI k r ⟨c.val, hcr⟩ = c := Fin.ext rfl
-    have := (hh.2.1 ⟨c.val, hcr⟩).1
-    rw [e] at this
-    exact col_of_fix this p
-  · have ha : 2 * r + k - c.val < r := by omega
-    have e : esI k r ⟨2 * r + k - c.val, ha⟩ = c := by
-      apply Fin.ext
-      simp only [esI]
-      omega
-    have := (hh.2.1 ⟨2 * r + k - c.val, ha⟩).2
-    rw [e] at this
-    exact col_of_fix this p
+  apply _root_.GlobalTheory.CompanionTheory.BmuTorConj.uw_col <;> assumption
 
 theorem tau_out (i : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
     (tau k r i).val < r ∨ r + k < (tau k r i).val := by

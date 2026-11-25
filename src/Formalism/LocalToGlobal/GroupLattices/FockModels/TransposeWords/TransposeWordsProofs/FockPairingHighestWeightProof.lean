@@ -37,23 +37,7 @@ theorem sum_fin_filter_lt_eq_range {N : ℕ} (G : ℕ → ℕ) (k : ℕ) :
 
 theorem rowNu_partial_sum {r n : ℕ} (ν : Fin n → ℕ) (hnr : n ≤ r) (k : ℕ) :
     (∑ a : Fin r with a.val < k, rowNu (r := r) ν a) = ∑ t : Fin n with t.val < k, ν t := by
-  obtain ⟨G, hG⟩ : ∃ G : ℕ → ℕ, G = fun i => if h : i < n then ν ⟨i, h⟩ else 0 := ⟨_, rfl⟩
-  have h1 : (∑ a : Fin r with a.val < k, rowNu (r := r) ν a) =
-      ∑ a : Fin r with a.val < k, G a.val :=
-    Finset.sum_congr rfl fun a _ => by subst hG; rfl
-  have h2 : (∑ t : Fin n with t.val < k, ν t) = ∑ t : Fin n with t.val < k, G t.val :=
-    Finset.sum_congr rfl fun t _ => by subst hG; simp [t.isLt]
-  rw [h1, h2, sum_fin_filter_lt_eq_range, sum_fin_filter_lt_eq_range]
-  symm
-  apply Finset.sum_subset
-  · intro i hi
-    simp only [Finset.mem_range] at hi ⊢
-    omega
-  · intro i hi hi'
-    simp only [Finset.mem_range] at hi hi'
-    have hin : ¬ i < n := by omega
-    rw [hG]
-    simp [hin]
+  apply _root_.Formalism.GradedWeylDivisibility.rowNuSum <;> assumption
 
 end Formalism.GradedWeylDivisibility
 end -- clump:auto

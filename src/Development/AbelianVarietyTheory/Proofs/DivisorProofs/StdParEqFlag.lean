@@ -369,8 +369,7 @@ theorem unipFlag_castLE_le_unip : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   · obtain ⟨m, hmS, hmax⟩ : ∃ m ∈ S, ∀ k ∈ S, k ≤ m := ⟨S.max' hne, S.max'_mem hne, fun k hk => S.le_max' k hk⟩
     have hsm : s = m.val + 1 := by
       apply le_antisymm
-      · by_contra hlt
-        push_neg at hlt
+      · by_contra! hlt
         obtain ⟨k, hk, hle⟩ := (hS ⟨m.val + 1, by omega⟩).1 (by simp only; omega)
         have h2 := hmax k hk
         rw [Fin.le_def] at hle h2
@@ -415,9 +414,9 @@ theorem stdPar_eq_flag : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
     (by rw [GlobalTheory.TieStd.cT_submatrix_mul, hW.xx]; ext; simp)
     (by rw [GlobalTheory.TieStd.cT_submatrix_mul, hW.yy]; ext; simp)
     (by rw [GlobalTheory.TieStd.cT_submatrix_mul, hW.xy]; exact Matrix.submatrix_one _ (Fin.castLE_injective hs))).2.2.1
-  refine ⟨hu, hl, fun K φ => ⟨fun hφ => ⟨?_, hφ.level, hφ.cont, hφ.smooth, hφ.growth, GlobalTheory.UAut.kfin_iff.1 hφ.kfin, hφ.zfin⟩,
+  refine ⟨hu, hl, fun K φ => ⟨fun hφ => ⟨?_, hφ.level, hφ.cont, hφ.smooth, hφ.growth, GlobalTheory.UAut.kfin_iff.1 hφ.kfin⟩,
     fun hφ => ⟨fun u hu' g => hφ.left u ?_ g, fun γ hγ hγ' g => hφ.left γ ?_ g, hφ.level, hφ.cont, hφ.smooth, hφ.growth,
-      GlobalTheory.UAut.kfin_iff.2 hφ.kfin, hφ.zfin⟩⟩⟩
+      GlobalTheory.UAut.kfin_iff.2 hφ.kfin⟩⟩⟩
   · rw [hg]
     have : GlobalTheory.UAut.unipFlag σ J (X.submatrix id (Fin.castLE hs)) d ⊔ (ratPts σ J ⊓ GlobalTheory.UAut.leviFlag σ J (X.submatrix id (Fin.castLE hs)) (Y.submatrix id (Fin.castLE hs)) d) ≤ leftStab φ :=
       sup_le (fun u hu' => hφ.leftN u (hu ▸ hu')) (fun γ hγ => hφ.leftM γ hγ.1 (hl ▸ hγ.2))

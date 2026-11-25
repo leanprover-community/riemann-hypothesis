@@ -44,8 +44,6 @@ noncomputable section
 open NumberField IsDedekindDomain UpperTheory.V.Z.Gam
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
 private lemma quot_ne (q : ℕ) (hq : q ≠ 0) (t : ℝ) (a b : ℂˣ)

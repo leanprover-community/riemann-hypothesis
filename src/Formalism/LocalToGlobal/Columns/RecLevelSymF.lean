@@ -18,7 +18,7 @@ section TieFormsSym
 
 variable {κ : Type} [CommRing κ] {k' : Type} [Field k']
 
-theorem blkIdx_replicate_top {t : ℕ} (_ht : 0 < t) (j : ℕ) : blkIdx (List.replicate j t) (j * t) = j := by
+theorem blkIdx_replicate_top {t : ℕ} (j : ℕ) : blkIdx (List.replicate j t) (j * t) = j := by
   induction j with
   | zero => rfl
   | succ j ih =>
@@ -32,7 +32,7 @@ theorem coarse_rep {r t j x : ℕ} (ht : 0 < t) (hx : x ≤ r + j * t) :
     by_cases h2 : x - r < j * t
     · rw [blkIdx_replicate ht j (x - r) h2]
     · have e : x - r = j * t := by omega
-      rw [e, blkIdx_replicate_top ht, Nat.mul_div_cancel _ ht]
+      rw [e, blkIdx_replicate_top, Nat.mul_div_cancel _ ht]
 
 theorem posSym_eq_symIdx (k rS x : ℕ) : Formalism.L2.Forms.posSym k rS x = symIdx k rS x := by
   unfold Formalism.L2.Forms.posSym symIdx

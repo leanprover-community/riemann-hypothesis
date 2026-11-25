@@ -3,51 +3,10 @@ module
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.LowRankSiegelDensities.OneVecBinaryMassOf
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteFieldQuadraticFormPointCount
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.LowRankSiegelDensities.SiegelDensitiesLowAOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalMassFormula
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.LowRankSiegelDensities.SharpCount, Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.LowRankSiegelDensities.MassTop
@@ -194,61 +153,7 @@ theorem sharp (hF : ringChar k ≠ 2) (M : ℕ) (hM : Fintype.card ι = 2 * M) (
     (B : Matrix ι ι k) (hB : B.IsSymm) (hdet : B.det ≠ 0) (s : k) (hs : s ≠ 0) :
     |(Nat.card {x : ι → k // (2 : k)⁻¹ * (x ⬝ᵥ (B *ᵥ x)) = s} : ℝ) -
       (Fintype.card k : ℝ) ^ (2 * M - 1)| ≤ (Fintype.card k : ℝ) ^ (M - 1) := by
-  have h2 : (2 : k) ≠ 0 := Ring.two_ne_zero hF
-  obtain ⟨ψ, hψ⟩ : ∃ ψ : AddChar k ℂ, ψ 1 ≠ 1 := AddChar.exists_apply_ne_zero.mpr one_ne_zero
-  have hψ1 : ψ ≠ 1 := fun h => hψ (by simp [h])
-  have hq : (0 : ℝ) < (Fintype.card k : ℝ) := by exact_mod_cast Fintype.card_pos
-  set N : ℕ := Nat.card {x : ι → k // quadForm B x = s} with hNdef
-  have hcount := count_mul_card ψ hψ1 B s
-  rw [← hNdef, ← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ (0 : k))] at hcount
-  have hzero : ψ (-((0 : k) * s)) * ∑ x, ψ ((0 : k) * quadForm B x) =
-      (Fintype.card k : ℂ) ^ (2 * M) := by
-    simp [hM]
-  rw [hzero] at hcount
-  set S1 : ℂ := ∑ x, ψ (1 * quadForm B x) with hS1
-  have hrest : ∑ t ∈ Finset.univ.erase (0 : k), ψ (-(t * s)) * ∑ x, ψ (t * quadForm B x) = -S1 := by
-    rw [Finset.sum_congr rfl (fun t ht => by
-      rw [gauss_const hF ψ hψ1 hM B hB hdet t (Finset.ne_of_mem_erase ht)])]
-    rw [← Finset.sum_mul]
-    have hall : ∑ t : k, ψ (-(t * s)) = 0 := by
-      have hp := AddChar.IsPrimitive.of_ne_one hψ1
-      have := AddChar.sum_mulShift (-s) hp
-      simp only [neg_eq_zero, hs, if_false] at this
-      simpa [mul_neg] using this
-    have hsplit : ψ (-((0 : k) * s)) + ∑ t ∈ Finset.univ.erase (0 : k), ψ (-(t * s)) =
-        ∑ t, ψ (-(t * s)) := Finset.add_sum_erase Finset.univ (fun t : k => ψ (-(t * s))) (Finset.mem_univ (0 : k))
-    have h0 : ψ (-((0 : k) * s)) = 1 := by simp
-    rw [h0, hall] at hsplit
-    have : ∑ t ∈ Finset.univ.erase (0 : k), ψ (-(t * s)) = -1 := by
-      linear_combination hsplit
-    rw [this]
-    ring
-  rw [hrest] at hcount
-  have hnorm : ‖S1‖ = (Fintype.card k : ℝ) ^ M := by
-    have := norm_gauss ψ hψ1 h2 hB hdet hM (one_ne_zero)
-    simpa [hS1] using this
-  have hreal : (((N : ℝ) * (Fintype.card k : ℝ) - (Fintype.card k : ℝ) ^ (2 * M) : ℝ) : ℂ) = -S1 := by
-    push_cast
-    rw [hcount]
-    ring
-  have habs : |(N : ℝ) * (Fintype.card k : ℝ) - (Fintype.card k : ℝ) ^ (2 * M)| =
-      (Fintype.card k : ℝ) ^ M := by
-    rw [← Real.norm_eq_abs, ← Complex.norm_real, hreal, norm_neg, hnorm]
-  have hpow : (Fintype.card k : ℝ) ^ (2 * M) =
-      (Fintype.card k : ℝ) ^ (2 * M - 1) * (Fintype.card k : ℝ) := by
-    rw [← pow_succ]
-    congr 1
-    omega
-  have hpowM : (Fintype.card k : ℝ) ^ M = (Fintype.card k : ℝ) ^ (M - 1) * (Fintype.card k : ℝ) := by
-    rw [← pow_succ]
-    congr 1
-    omega
-  have hfac : (N : ℝ) * (Fintype.card k : ℝ) - (Fintype.card k : ℝ) ^ (2 * M) =
-      ((N : ℝ) - (Fintype.card k : ℝ) ^ (2 * M - 1)) * (Fintype.card k : ℝ) := by
-    rw [hpow]
-    ring
-  rw [hfac, abs_mul, abs_of_pos hq, hpowM] at habs
-  exact le_of_eq (mul_right_cancel₀ hq.ne' habs)
+  apply _root_.GlobalTheory.CompanionTheory.SW.QuadricUnit.card_quadric_unit <;> assumption
 
 end PositivityTheory.PfSWUS.HMass.SC
 

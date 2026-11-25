@@ -10,6 +10,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBloc
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelLiftBasics.LevelGroupUnitaryHermitian
 
 @[expose] public section
 
@@ -27,26 +29,11 @@ variable {k : ℕ}
 
 theorem hpk_levPos_gen (o ρ : ℕ) (i j : Fin (2 * ρ + k + 1)) :
     Hpk k (o + ρ) (levPos k o ρ i) (levPos k o ρ j) = Hpk k ρ i j := by
-  have e1 : (levPos k o ρ i = levPos k o ρ j) ↔ i.val = j.val := by
-    simp only [levPos, Fin.ext_iff]; omega
-  have e2 : (i = j) ↔ i.val = j.val := Fin.ext_iff
-  have hi : (levPos k o ρ i).val = i.val + o := rfl
-  have hj : (levPos k o ρ j).val = j.val + o := rfl
-  have := i.isLt; have := j.isLt
-  unfold Hpk
-  simp only [e1, e2, hi, hj]
-  split_ifs <;> first | rfl | (exfalso; omega)
+  apply _root_.QnGlevImageW.hpk_shift <;> assumption
 
 theorem herm_lift_gen (o ρ : ℕ) (y y' : Fin (2 * ρ + k + 1) → ℂ) :
     herm (Hpk k (o + ρ)) (liftVec k o ρ y) (liftVec k o ρ y') = herm (Hpk k ρ) y y' := by
-  simp only [herm, dotProduct, mulVec, Pi.star_apply]
-  rw [sum_lift_gen o ρ _ (fun p hp => by rw [liftVec_out_gen o ρ y' p hp, star_zero, zero_mul])]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [liftVec_levPos_gen]
-  congr 1
-  rw [sum_lift_gen o ρ _ (fun q hq => by rw [liftVec_out_gen o ρ y q hq, mul_zero])]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [hpk_levPos_gen, liftVec_levPos_gen]
+  apply _root_.PI.QnLevBasicsW.herm_lift <;> assumption
 
 theorem liftVec_inj (o ρ : ℕ) {v w : Fin (2 * ρ + k + 1) → ℂ} (h : liftVec k o ρ v = liftVec k o ρ w) : v = w := by
   funext p

@@ -151,10 +151,6 @@ theorem exists_coord {k : Type} [Field k] {κ : Type} [Fintype κ] (Λ : Submodu
     rw [h4]
     simp
 
-private theorem lc_lemma {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (ψ : AddChar k ℂ) (hψ : Continuous ψ) : IsLocallyConstant ψ := by
-  apply _root_.SchrodingerSchwartzBruhat.GlobalTheory.CompanionTheory.SchrSB.isLocallyConstant_addChar <;> assumption
-
 private theorem isLocallyConstant_hasCompactSupport_comp_linearEquiv {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k]
     {A B : Type} [AddCommGroup A] [Module k A] [TopologicalSpace A] [IsModuleTopology k A]
     [ContinuousAdd A] [ContinuousSMul k A]
@@ -192,7 +188,8 @@ theorem proportional (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] 
   letI : MeasurableSpace k := borel k
   haveI : BorelSpace k := ⟨rfl⟩
   obtain ⟨n, m, e, s, hs, hb⟩ := exists_coord Λ hiso hdim
-  have hlc : IsLocallyConstant ψ := lc_lemma ψ hψ
+  have hlc : IsLocallyConstant ψ :=
+    _root_.SchrodingerSchwartzBruhat.GlobalTheory.CompanionTheory.SchrSB.isLocallyConstant_addChar ψ hψ
   have hn1 : ∀ t, ‖ψ t‖ = 1 := GlobalTheory.norm_addChar_nonarch ψ hψ
   have hce : Continuous e := IsModuleTopology.continuous_of_linearMap e.toLinearMap
   have hcs : Continuous s := IsModuleTopology.continuous_of_linearMap s

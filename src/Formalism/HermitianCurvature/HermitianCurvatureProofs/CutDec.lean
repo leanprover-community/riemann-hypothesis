@@ -85,8 +85,7 @@ theorem cptCoef_apx {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
       apply hne
       simp only [apx, D.cutF, h0, zero_smul, smul_zero]
     have h2 : δ ≤ Gf P.k P.r Bs.z Bs.z' g / ε := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact h1 (by rw [hχ0 _ hlt]; simp)
     rwa [le_div_iff₀ hε] at h2
 
@@ -150,8 +149,7 @@ theorem corS_of_apx (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (G : B.Mat P.k P.r �
       exact (hw n).2.1
     · simp [List.map_pmap]
   obtain ⟨w0, hw0⟩ : ∃ w0, ∃ᶠ n in atTop, w n = w0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h2 := (Filter.eventually_all_finite hfin).mpr fun i _ => hcon i
     obtain ⟨n, hn⟩ := h2.exists
     exact hn (w n) ⟨n, rfl⟩ rfl

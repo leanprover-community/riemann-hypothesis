@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneralOfRestriction
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
@@ -116,16 +117,7 @@ theorem filCris_anti : Antitone (FilCris PD ρ) := fun _ _ hab =>
   inf_le_inf_left _ (Submodule.comap_mono (filV_anti hab))
 
 theorem ιV_inj : Function.Injective (ιV PD (LL := LL) (V := V)) := by
-  have h : ∀ y, ιV PD (LL := LL) (V := V) y =
-      ((PD.ι.toLinearMap.restrictScalars Qp).lTensor V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [ιV]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : Function.Injective (PD.ι.toLinearMap.restrictScalars Qp) := PD.ι_inj
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hi hab
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.ιV_inj <;> assumption
 
 theorem mem_of_map_ιV {S : Submodule LL (V ⊗[Qp] B)} {z : V ⊗[Qp] B}
     (h : ιV PD (LL := LL) (V := V) z ∈ S.map (ιV PD (LL := LL) (V := V))) : z ∈ S := by

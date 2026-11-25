@@ -64,11 +64,7 @@ theorem ev_eq_single (i : ℕ) (hi : i < r) : ev r k i = Pi.single (⟨i, hi⟩ 
   simp only [ev, Pi.single_apply, Fin.ext_iff]
 
 theorem sum_mulVec' {ι : Type} (s : Finset ι) (M : ι → Matrix (Fin r) (Fin r) k) (v : Fin r → k) :
-    (∑ i ∈ s, M i) *ᵥ v = ∑ i ∈ s, M i *ᵥ v := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, add_mulVec, ih]
+    (∑ i ∈ s, M i) *ᵥ v = ∑ i ∈ s, M i *ᵥ v := Matrix.sum_mulVec s M v
 
 theorem pow_card_eq (M : Matrix (Fin r) (Fin r) k) :
     M ^ r = - ∑ l ∈ Finset.range r, M.charpoly.coeff l • M ^ l := by

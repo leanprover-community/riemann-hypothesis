@@ -62,8 +62,7 @@ namespace GlobalTheory.UPel.HT.EtLev.TanKill
 theorem exists_mem_pow_forall_ne_zero : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (w0 : Ideal (𝓞 D.F)) (r : ℕ), IsEtPlace b w0 → ∀ (k : Type) [Field k] (β : R →+* k), ∃ c ∈ w0 ^ r, ∀ i, β (b.t i c) ≠ 0 := by
   intro p _ D R _ b w0 r hw k _ β
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   rcases Nat.eq_zero_or_pos D.a with ha | ha
   · obtain ⟨i, -⟩ := hcon 0 (zero_mem _)
     exact (Fin.elim0 (ha ▸ i))

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.DecompositionOfIwasawaLeviCartan
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.RealPlaceAnalysis.FinalF
@@ -235,20 +237,8 @@ end Grp
 
 lemma compact_right_inv {Γ : Type*} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [MeasurableSpace Γ] [BorelSpace Γ]
     [CompactSpace Γ] (m : Measure Γ) [m.IsHaarMeasure] : m.IsMulRightInvariant := by
-  refine ⟨fun g => ?_⟩
-  have h := Measure.isMulInvariant_eq_smul_of_compactSpace (Measure.map (fun x => x * g) m) m
-  have hu : (Measure.map (fun x => x * g) m) Set.univ = m Set.univ := by
-    rw [Measure.map_apply (measurable_mul_const g) MeasurableSet.univ, Set.preimage_univ]
-  have h2 := hu
-  rw [h, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul] at h2
-  have hpos : m Set.univ ≠ 0 := (isOpen_univ.measure_pos m ⟨1, trivial⟩).ne'
-  have hfin : m Set.univ ≠ ⊤ := (isCompact_univ.measure_lt_top).ne
-  have h3 : ((Measure.haarScalarFactor (Measure.map (fun x => x * g) m) m : ℝ≥0) : ℝ≥0∞) * m Set.univ = 1 * m Set.univ := by
-    rw [h2, one_mul]
-  rw [ENNReal.mul_left_inj hpos hfin] at h3
-  rw [h]
-  have h4 : Measure.haarScalarFactor (Measure.map (fun x => x * g) m) m = 1 := by exact_mod_cast h3
-  rw [h4, one_smul]
+  intros
+  apply _root_.GlobalTheory.isMulRightInvariant_of_compactSpace <;> assumption
 
 theorem compactHaar : CompactHaarExists := by
   intro k r U h hc
@@ -496,13 +486,7 @@ lemma bvec_apply {n : ℕ} (j l : Fin n) : bvec j l = if l = j then 1 else 0 := 
   simp [bvec, Pi.single_apply]
 
 lemma hpk_e (a : Fin r) : Hpk k r *ᵥ bvec (eI k r a) = bvec (esI k r a) := by
-  ext l
-  rw [mulVec_bvec, bvec_apply]
-  have := a.isLt
-  have := l.isLt
-  unfold Hpk
-  simp only [eI, esI, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega)
+  apply _root_.GlobalTheory.CompanionTheory.BmuDecomp.hpk_e <;> assumption
 
 lemma hpk_es (a : Fin r) : Hpk k r *ᵥ bvec (esI k r a) = bvec (eI k r a) := by
   rw [← hpk_e (k := k) (r := r) a]

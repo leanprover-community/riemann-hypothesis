@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -124,15 +125,7 @@ end
 variable {k : Type*} [Field k] {n : Type*} [Fintype n] [DecidableEq n] {c p : ℕ}
 
 theorem mem_N_iff (g : GL (n ⊕ Fin c) k) : g ∈ N k n c p ↔ InN p g := by
-  constructor
-  · intro hg
-    induction hg using Subgroup.closure_induction with
-    | mem x hx => exact hx
-    | one => intro r s _; rfl
-    | mul x y _ _ hx hy => exact Uni.mul (b := lev p) hx hy
-    | inv x _ hx => exact Uni.inv (b := lev p) hx
-  · intro hg
-    exact Subgroup.subset_closure hg
+  apply _root_.GlobalTheory.RootEx.Model.mem_N_iff <;> assumption
 
 theorem simpleSum_mul {g h : GL (n ⊕ Fin c) k} (hg : g ∈ N k n c p) (hh : h ∈ N k n c p) :
     simpleSum (g * h) = simpleSum g + simpleSum h := by

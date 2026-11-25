@@ -43,8 +43,7 @@ theorem conj_facts [NumberField F] [NumberField E] {σ : E →ₐ[F] E} (h : IsC
     v.embedding.injective (by rw [hτ, hτ, star_star])
   refine ⟨hinv, ?_⟩
   have hne : ∃ x, σ x ≠ x := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hc : ¬ ComplexEmbedding.IsReal v.embedding :=
       InfinitePlace.isComplex_iff.mp (htc.isComplex v)
     apply hc

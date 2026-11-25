@@ -54,7 +54,6 @@ open MvPolynomial NumberField Module GlobalTheory.ChowHt GlobalTheory.CompHt
 namespace GlobalTheory.ImageHeightUnique
 
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 theorem _root_.GlobalTheory.ImageHeightUnique.map_linSubst {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {B N n : ℕ} (M : Matrix (Fin N) (Fin n) R)
@@ -72,7 +71,6 @@ variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [M
   [IsScalarTower (𝓞 K) K V] {N : ℕ}
 
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
@@ -104,7 +102,6 @@ private theorem exists_integral_matrix_toMatrix_mul_eq_of_isFrame {Nm : (K →+*
 
   simp [map_sum, Finsupp.single_apply, mul_comm]
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -114,7 +111,6 @@ private theorem gaussAbs_le_of_forall_coeff_le {ι : Type} {v : FinitePlace K} {
   rw [← Real.coe_toNNReal c hc, NNReal.coe_le_coe]
   exact Finset.sup_le fun s _ => Real.toNNReal_le_toNNReal (h s)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -128,7 +124,6 @@ private theorem finitePlace_finset_sum_le_of_forall_le {α : Type} (v : FinitePl
     refine (FinitePlace.add_le v _ _).trans (max_le (h a (Finset.mem_insert_self a t)) ?_)
     exact ih fun x hx => h x (Finset.mem_insert_of_mem hx)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -137,7 +132,6 @@ private theorem gaussAbs_nonneg' {ι : Type} (v : FinitePlace K) (p : MvPolynomi
   unfold _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs
   exact NNReal.coe_nonneg _
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -151,7 +145,6 @@ private theorem finitePlace_coeff_le_gaussAbs {ι : Type} (v : FinitePlace K) (p
         (Real.coe_toNNReal _ (apply_nonneg v _)).symm
     _ ≤ _ := NNReal.coe_le_coe.2 hs
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -162,7 +155,6 @@ private theorem gaussAbs_finset_sum_le_of_forall_le {ι α : Type} (v : FinitePl
   rw [coeff_sum]
   exact finitePlace_finset_sum_le_of_forall_le v t _ hc fun x hx => (finitePlace_coeff_le_gaussAbs v _ s).trans (h x hx)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -172,7 +164,6 @@ private theorem gaussAbs_C_mul_le' {ι : Type} (v : FinitePlace K) (c : K) (p : 
   rw [coeff_C_mul, map_mul]
   exact mul_le_mul_of_nonneg_left (finitePlace_coeff_le_gaussAbs v p s) (apply_nonneg v c)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -183,7 +174,6 @@ private theorem gaussAbs_one_le_one {ι : Type} (v : FinitePlace K) :
   rw [coeff_one]
   split_ifs <;> simp
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -199,7 +189,6 @@ private theorem gaussAbs_mul_le' {ι : Type} (v : FinitePlace K) (p q : MvPolyno
   exact mul_le_mul (finitePlace_coeff_le_gaussAbs v p _) (finitePlace_coeff_le_gaussAbs v q _)
     (apply_nonneg v _) (gaussAbs_nonneg' v p)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -216,7 +205,6 @@ private theorem gaussAbs_finset_prod_le_one_of_forall_le_one {ι α : Type} (v :
     have h2 := ih fun x hx => h x (Finset.mem_insert_of_mem hx)
     nlinarith [gaussAbs_nonneg' v (F a), gaussAbs_nonneg' v (∏ x ∈ t, F x)]
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -224,7 +212,6 @@ private theorem gaussAbs_pow_le_one_of_le_one {ι : Type} (v : FinitePlace K) (p
     (hp : _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v p ≤ 1) (n : ℕ) : _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v (p ^ n) ≤ 1 := by
   simpa using gaussAbs_finset_prod_le_one_of_forall_le_one v (Finset.range n) (fun _ => p) (fun _ _ => hp)
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -243,7 +230,6 @@ private theorem gaussAbs_aeval_le_of_gaussAbs_le_one {ι κ : Type} (v : FiniteP
         mul_le_mul_of_nonneg_left hprod (apply_nonneg v _)
     _ ≤ _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs v g := by rw [mul_one]; exact finitePlace_coeff_le_gaussAbs v g s
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -254,7 +240,6 @@ private theorem finitePlace_coe_ringOfIntegers_le_one (v : FinitePlace K) (x : �
   rw [this]
   exact h
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -265,7 +250,6 @@ private theorem gaussAbs_X_le_one {ι : Type} (v : FinitePlace K) (i : ι) :
   rw [coeff_X']
   split_ifs <;> simp
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
@@ -280,7 +264,6 @@ private theorem gaussAbs_linSubst_integral_matrix_le {B N n : ℕ} (v : FinitePl
   have h2 := gaussAbs_X_le_one (K := K) v (p.1, k)
   nlinarith [apply_nonneg v (U.map ((↑) : 𝓞 K → K) p.2 k), gaussAbs_nonneg' v (X (p.1, k) : MvPolynomial (Fin B × Fin n) K)]
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
@@ -432,7 +415,6 @@ private theorem frameNorm_toMatrix_map_mul_eq_of_isFrame {Nm : (K →+* ℂ) →
   exact (sq_eq_sq₀ n1 n2).1 hsq'
 
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
@@ -478,7 +460,6 @@ theorem _root_.GlobalTheory.ImageHeightUnique.formHeight_linSubst {Nm : (K →+*
   simp only [hfin, harch]
 
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
@@ -509,7 +490,6 @@ theorem _root_.GlobalTheory.ImageHeightUnique.isImageHeight_unique {Ω : Type} [
   exact mul_left_cancel₀ hδ.ne' this
 
 
-set_option autoImplicit false in
 open MvPolynomial NumberField Module in
 open scoped Matrix in
 theorem _root_.GlobalTheory.ImageHeightUnique.imageHeight_eq : ∀ (K V Ω : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]

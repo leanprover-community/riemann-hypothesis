@@ -84,7 +84,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleE
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsChartOfIsLocalRing
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WeightsAtPointStatement
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsoOverOfIsOpenImmersion
@@ -124,8 +123,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 namespace GlobalTheory.HSShortRun
 
@@ -277,7 +274,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 noncomputable section
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.FrameBerg
 end GlobalTheory.FrameBerg
 open scoped GlobalTheory.CompHt
@@ -455,8 +451,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CovTop.DgShare
@@ -528,7 +522,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovTop.DgShare
 section Weights
@@ -590,7 +583,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovTop.DgShare
 section Weights
@@ -626,7 +618,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovTop.DgShare
 theorem choose_mul_compDeg_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted →
@@ -670,8 +661,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -749,7 +738,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 noncomputable section
 open scoped GlobalTheory.CompHt
 namespace GlobalTheory.CovTop.DimLogTop
@@ -847,7 +835,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovTop.DgLog
 end GlobalTheory.CovTop.DgLog
@@ -1114,7 +1101,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 
 noncomputable section
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped GlobalTheory.CompHt
 namespace GlobalTheory.CovTop.ShortSpanUnitCover
@@ -1207,8 +1193,7 @@ theorem log_sum_le {S k fr L : ℝ} (hS0 : 0 ≤ S) (hSk : S ≤ (fr * L) ^ 2 * 
   · rw [← h, Real.log_zero]; linarith
   have hZ : 0 < fr * L := by positivity
   have hk0 : 0 < k := by
-    by_contra hk0
-    push_neg at hk0
+    by_contra! hk0
     have : (fr * L) ^ 2 * k ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (by positivity) hk0
     linarith
   have hlogL : Real.log L ≤ L := (Real.log_le_sub_one_of_pos (by linarith)).trans (by linarith)
@@ -1248,7 +1233,6 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 
 noncomputable section
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.CovTop.ShortSpanUnitCover
 end GlobalTheory.CovTop.ShortSpanUnitCover
 namespace GlobalTheory.CovTop.ShortSpanUnitCover
@@ -1371,7 +1355,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-set_option autoImplicit false
 namespace GlobalTheory.HSShortRun
 open GlobalTheory.Vanishing GlobalTheory.Adelic GlobalTheory.HilbertSamuel GlobalTheory.HSCore
 variable {D : D7} {T : Core D} {j : ℕ} {Y : Deep T j}

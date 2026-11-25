@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JRepsA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharB, ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvChar
@@ -34,31 +35,6 @@ theorem unit_of_frame {γ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (h : γᴴ *
   rw [h0, mul_zero] at h1
   exact hHb h1.symm
 
-private theorem wI_val_eq_add (j : Fin (k + 1)) : (wI k r j).val = r + j.val := rfl
-
-private theorem wI_val_mem_block (j : Fin (k + 1)) : r ≤ (wI k r j).val ∧ (wI k r j).val ≤ r + k := by
-  have := j.isLt
-  rw [wI_val_eq_add]
-  constructor <;> omega
-
-private theorem wI_val_sub_eq (j : Fin (k + 1)) :
-    (⟨(wI k r j).val - r, by rw [wI_val_eq_add]; omega⟩ : Fin (k + 1)) = j := by
-  exact Fin.ext (by simp [wI_val_eq_add])
-
-private theorem sum_eq_sum_wI_of_zero_off_block {f : Fin (2 * r + k + 1) → ℂ}
-    (hf : ∀ i : Fin (2 * r + k + 1), ¬ (r ≤ i.val ∧ i.val ≤ r + k) → f i = 0) :
-    ∑ i, f i = ∑ j : Fin (k + 1), f (wI k r j) := by
-  have hinj : Function.Injective (wI k r) := by
-    intro a b h
-    apply Fin.ext
-    have := congrArg Fin.val h
-    rw [wI_val_eq_add, wI_val_eq_add] at this
-    omega
-  symm
-  refine Fintype.sum_of_injective (wI k r) hinj (fun j => f (wI k r j)) f (fun i hi => hf i ?_) (fun j => rfl)
-  rintro ⟨h1, h2⟩
-  exact hi ⟨⟨i.val - r, by omega⟩, Fin.ext (by simp only [wI_val_eq_add, Fin.val_mk]; omega)⟩
-
 private theorem embWb_apply_of_mem_block (X : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) {i j : Fin (2 * r + k + 1)}
     (hi : r ≤ i.val ∧ i.val ≤ r + k) (hj : r ≤ j.val ∧ j.val ≤ r + k) :
     embWb k r X i j = X ⟨i.val - r, by omega⟩ ⟨j.val - r, by omega⟩ := by
@@ -81,30 +57,6 @@ private theorem embWb_apply_of_right_not_mem_block (X : Matrix (Fin (k + 1)) (Fi
   · rw [if_pos (show i = j ∧ ¬ (r ≤ i.val ∧ i.val ≤ r + k) from ⟨h, by rw [h]; exact hj⟩), if_pos h]
   · rw [if_neg (show ¬ (i = j ∧ ¬ (r ≤ i.val ∧ i.val ≤ r + k)) from fun h' => h h'.1), if_neg h]
 
-private theorem embWb_mul' (X Y : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
-    embWb k r (X * Y) = embWb k r X * embWb k r Y := by
-  ext i j
-  rw [Matrix.mul_apply]
-  by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
-  · by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-    · rw [embWb_apply_of_mem_block _ hi hj, sum_eq_sum_wI_of_zero_off_block (f := fun l => embWb k r X i l * embWb k r Y l j)
-        (fun l hl => by
-          show embWb k r X i l * embWb k r Y l j = 0
-          rw [embWb_apply_of_right_not_mem_block X hl, if_neg (fun h => hl (by rw [← h]; exact hi)), zero_mul])]
-      simp only [embWb_apply_of_mem_block _ hi (wI_val_mem_block _), embWb_apply_of_mem_block _ (wI_val_mem_block _) hj, wI_val_sub_eq, Matrix.mul_apply]
-    · rw [Finset.sum_eq_single j]
-      · simp [embWb_apply_of_right_not_mem_block X hj, embWb_apply_of_right_not_mem_block Y hj, embWb_apply_of_right_not_mem_block (X * Y) hj]
-      · intro l _ hl
-        rw [embWb_apply_of_right_not_mem_block Y hj, if_neg hl, mul_zero]
-      · intro h
-        exact absurd (Finset.mem_univ j) h
-  · rw [Finset.sum_eq_single i]
-    · simp [embWb_apply_of_left_not_mem_block X hi, embWb_apply_of_left_not_mem_block Y hi, embWb_apply_of_left_not_mem_block (X * Y) hi]
-    · intro l _ hl
-      rw [embWb_apply_of_left_not_mem_block X hi, if_neg (Ne.symm hl), zero_mul]
-    · intro h
-      exact absurd (Finset.mem_univ i) h
-
 private theorem embWb_one' : embWb k r (1 : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) = 1 := by
   ext i j
   rw [Matrix.one_apply]
@@ -119,7 +71,7 @@ private theorem embWb_one' : embWb k r (1 : Matrix (Fin (k + 1)) (Fin (k + 1)) �
 theorem unit_embWb {γ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hγ : IsUnit γ.det) :
     IsUnit (embWb k r γ).det := by
   have h1 : embWb k r γ * embWb k r γ⁻¹ = 1 := by
-    rw [← embWb_mul', Matrix.mul_nonsing_inv _ hγ, embWb_one']
+    rw [← _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.RepsA.embWb_mul, Matrix.mul_nonsing_inv _ hγ, embWb_one']
   exact Matrix.isUnit_det_of_right_inverse h1
 
 theorem not_isW_eI (a : Fin r) : ¬ isW k r (eI k r a) := by

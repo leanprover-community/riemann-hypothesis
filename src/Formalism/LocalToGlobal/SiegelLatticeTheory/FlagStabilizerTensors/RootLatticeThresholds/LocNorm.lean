@@ -26,8 +26,6 @@ open scoped ENNReal
 
 namespace Formalism.L2.SG.Pf.OOCore3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section K
 
 variable {D : D7} {X : HidaSetting D} (Y : Full X) (u u' : D.what₂.Word) (ν : X.B.I.Ginf → Measure X.B.I.Ginf)
@@ -107,8 +105,6 @@ open scoped Classical
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.RealObj
 
 namespace Formalism.L2.SG.Pf.LocNorm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : HidaSetting D} (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word) {θ : ℝ} (C : Choice X θ)
   (hB : WuBessel C) (large₂ : SizeData₂ D) (C1 : ℝ)

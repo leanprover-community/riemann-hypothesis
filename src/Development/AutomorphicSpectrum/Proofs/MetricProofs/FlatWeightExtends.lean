@@ -20,62 +20,10 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SectionBoundar
 public import Mathlib.Geometry.Manifold.IsManifold.Basic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularPotentialLogGrowthPsh
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.InnerProductSpace.OfNorm
-import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.MeasureTheory.Measure.RegularityCompacts
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.UniformSpace.Uniformizable
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncBoundaryCoordinateChart
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
+import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.LeviFlatSeparatelyHarmonic, Development.AutomorphicSpectrum.Proofs.MetricProofs.LeviZeroInCompatibleChart, Development.AutomorphicSpectrum.Proofs.MetricProofs.HarmonicAnnulusMaximumPrinciple, Development.AutomorphicSpectrum.Proofs.MetricProofs.PoissonIntegralPuncturedDisc, Development.AutomorphicSpectrum.Proofs.MetricProofs.PolydiscPoissonReproducesHarmonic, Development.AutomorphicSpectrum.Proofs.MetricProofs.PolydiscPoissonSmooth, Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothInCompatibleChart, Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothOnOfChartComposition, Development.AutomorphicSpectrum.Proofs.MetricProofs.BoundedPshCorrectionLocallySmooth, Development.AutomorphicSpectrum.Proofs.MetricProofs.PshExtensionAcrossClosedDense, Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothExtensionAcrossClosedDense, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlatWeightExtends
@@ -1160,21 +1108,7 @@ namespace GlobalTheory.CompanionTheory.SmoothGlue
 theorem continuousAt_of_smoothOn {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
     {N : Set X} {E : X → ℝ} (hN : IsOpen N) (hS : A.SmoothOn N E) {p : X} (hp : p ∈ N) :
     ContinuousAt E p := by
-  obtain ⟨j, hj⟩ := A.cover p
-  have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' N) :=
-    (A.chart j).isOpen_inter_preimage_symm hN
-  have hz : A.chart j p ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' N := by
-    refine ⟨(A.chart j).map_source hj, ?_⟩
-    simpa [Set.mem_preimage, (A.chart j).left_inv hj] using hp
-  have h1 : ContinuousAt (E ∘ (A.chart j).symm) (A.chart j p) :=
-    ((hS j).continuousOn).continuousAt (hopen.mem_nhds hz)
-  have h2 : ContinuousAt (A.chart j) p := (A.chart j).continuousAt hj
-  have h1' : ContinuousAt (E ∘ (A.chart j).symm) ((A.chart j) p) := h1
-  have h3 : ContinuousAt ((E ∘ (A.chart j).symm) ∘ (A.chart j)) p :=
-    ContinuousAt.comp h1' h2
-  refine h3.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-  simp [Function.comp, (A.chart j).left_inv hy]
+  apply _root_.ReciprocityTheory.AnForm.P.LeviFormBoundaryTopology.continuousAt_of_smoothOn <;> assumption
 
 theorem eq_of_dense_compl {X : Type} [TopologicalSpace X] {B W : Set X} {f g : X → ℝ}
     (hD : Dense Bᶜ) (hW : IsOpen W) (hf : ∀ p ∈ W, ContinuousAt f p)

@@ -176,7 +176,7 @@ theorem pullback_chernF : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (X Y : Var
     (fun z => (((E'.nonempty (under p.pt)).choose *
       (Mat.map (E.nonempty (under (ptMap σ f hf p.pt))).choose φ)⁻¹) x.1).map (ratVal · z)) p _ _
     (GlobalTheory.T.flaggedBundleMetric_smoothUnit_etaleChart F σ X ι m 0 E H (isMetricFr_of_isMetricOn hH) _ _ hA x.1).1
-    (GlobalTheory.T.isHolomorphicUnitMatrixAt_rational_matrix_values F σ Y _ _ p.pt (fun i j => mem_O_ratOf.1 (hP.1 i j)) hP.2.1 (mem_O_ratOf.1 hP.2.2.1)) ?_ x.2
+    (_root_.GlobalTheory.ChernCalc.holUnitAt_ratVal F σ Y _ _ p.pt (fun i j => mem_O_ratOf.1 (hP.1 i j)) hP.2.1 (mem_O_ratOf.1 hP.2.2.1)) ?_ x.2
   filter_upwards [(hol.1.tendsto p.pt).eventually (_root_.GlobalTheory.ChernCalc.frame_eventually_near F σ X ι m 0 E _ _ hA),
     _root_.GlobalTheory.ChernCalc.frame_eventually_near F σ Y ι m m E' _ _ hB] with z h1 h2
   exact (hE z).2 _ ((congrArg (fun w => (E.nonempty (under (ptMap σ f hf p.pt))).choose ∈ E.S w) (hE z).1).mp h1) _ h2 x.1
@@ -518,11 +518,8 @@ theorem leadMinor_conj (T G : Matrix (Fin s) (Fin s) ℂ) (hT : ∀ a b, a < b �
   congr 1
   rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_prod, Finset.prod_pow]
 
-theorem leadMinor_re_pos {G : Matrix (Fin s) (Fin s) ℂ} (hG : G.PosDef) (j : ℕ) : 0 < (leadMinor G j).re :=
-  (Complex.pos_iff.1 (hG.submatrix Subtype.val_injective).det_pos).1
-
 theorem grD_pos {G : Matrix (Fin s) (Fin s) ℂ} (hG : G.PosDef) (i : Fin s) : 0 < grD G i :=
-  div_pos (leadMinor_re_pos hG _) (leadMinor_re_pos hG _)
+  div_pos (GlobalTheory.ChernCalc.leadMinor_re_pos_of_posDef hG _) (GlobalTheory.ChernCalc.leadMinor_re_pos_of_posDef hG _)
 
 theorem grD_conj (T G : Matrix (Fin s) (Fin s) ℂ) (hT : ∀ a b, a < b → T a b = 0) (hd : ∀ a, T a a ≠ 0) (i : Fin s) :
     grD (T * G * Tᴴ) i = ‖T i i‖ ^ 2 * grD G i := by
@@ -761,7 +758,7 @@ theorem isGramPair_of_isMetricFr : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (
     (GlobalTheory.T.flaggedBundleMetric_smoothUnit_etaleChart F σ X ι m k E H' hH' y _ (hA y) τ).1⟩, fun y => ?_⟩
   filter_upwards [_root_.GlobalTheory.ChernCalc.frame_eventually_near F σ X ι m k E y _ (hA y)] with z hz
   have hP := (Fr.mem_iff hz).1 (hA z) τ
-  have hT := GlobalTheory.T.isHolomorphicUnitMatrixAt_rational_matrix_values F σ X (m τ) _ z (fun i j => mem_O_ratOf.1 (hP.1 i j)) hP.2.1 (mem_O_ratOf.1 hP.2.2.1)
+  have hT := _root_.GlobalTheory.ChernCalc.holUnitAt_ratVal F σ X (m τ) _ z (fun i j => mem_O_ratOf.1 (hP.1 i j)) hP.2.1 (mem_O_ratOf.1 hP.2.2.1)
   refine ⟨_, _, _, hT, hT, hT, ?_⟩
   filter_upwards [_root_.GlobalTheory.ChernCalc.frame_eventually_near F σ X ι m k E z _ hz, _root_.GlobalTheory.ChernCalc.frame_eventually_near F σ X ι m k E z _ (hA z)] with w h1 h2
   exact ⟨hH.trans w _ h1 _ h2 τ, hH'.trans w _ h1 _ h2 τ⟩

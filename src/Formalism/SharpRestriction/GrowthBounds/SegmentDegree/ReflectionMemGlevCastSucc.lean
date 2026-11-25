@@ -136,8 +136,7 @@ theorem power_exceeds_max_multiplicity (C₀ : ℝ) : PowerExceedsMaxMultiplicit
   have hE : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
   have hm : (0 : ℝ) ≤ X.mStar := Nat.cast_nonneg _
   have h3 : 4 * ((X.E₀ : ℝ) + X.mStar + 1) < (p : ℝ) ^ X.Rj p K j := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have := mul_le_mul_of_nonneg_right hcon hp.le
     nlinarith
   have h4 : (X.mStar : ℝ) < ((p ^ X.Rj p K j : ℕ) : ℝ) := by push_cast; linarith

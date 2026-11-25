@@ -89,8 +89,7 @@ theorem exists_pivot {α : Type} [DecidableEq α] (R0 : Subring LL) (hv : ∀ x 
         exact R0.zero_mem
 
 theorem exists_dual_ne {v : Kf} (hv : v ≠ 0) : ∃ ℓ : Kf →ₗ[LL] LL, ℓ v ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact hv ((Module.forall_dual_apply_eq_zero_iff LL v).mp hc)
 
 theorem desc_main (A : Subring Kf) (hA : ∀ x : Kf, x ∈ A ∨ x⁻¹ ∈ A) (R0 : Subring LL)

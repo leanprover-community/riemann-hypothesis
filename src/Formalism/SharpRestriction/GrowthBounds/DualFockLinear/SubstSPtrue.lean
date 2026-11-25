@@ -150,7 +150,6 @@ theorem fr_pos_inj {TT : Finset (Fin n')} {L₁ L₂ N₁ G' : ℕ} {F : Frames 
     (hG : G' ≤ n') (j : ℤ) : Function.Injective (fun l : Fin r => posOf n' (F.fr j l.val)) := by
   intro a b hab
   have hV := hF.2.1
-  have ha := a.2
   have hb := b.2
   have hmono := hV.2.2.1 j
   have hprev : F.fr (j - 1) (r - 1) < F.fr j 0 := by

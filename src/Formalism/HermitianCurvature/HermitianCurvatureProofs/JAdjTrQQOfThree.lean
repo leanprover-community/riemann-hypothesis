@@ -196,8 +196,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem locAdd_thr (k r : ℕ) {A : ℝ} (hA : 10 * ((r : ℝ) + 1) * nDim k r ^ 2 ≤ A) : JF.TransportedAlt k r A 0 := by
   unfold JF.TransportedAlt
   have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
@@ -404,8 +402,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 open Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem local_square_integrable_transfer : LocalSquareIntegrableTransfer := by
   refine ⟨3, ?_⟩
   intro E _ _ _ Wp Wq _ _ _ _ _ _ S T f χ ν' m₀ top Cb A₀ hB v Bg A ε J e hFr hBg hε hA hJ π
@@ -554,8 +550,6 @@ open scoped ContDiff
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.LT
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section op
 
@@ -867,12 +861,6 @@ theorem opApply_van {Wp' Wq' : Type} [NormedAddCommGroup Wp'] [InnerProductSpace
   rw [rw_van hU hJ Tm.word g hg, map_zero]
 
 end van
-
-theorem list_sum_flatMap {α M : Type} [AddCommMonoid M] (l : List α) (f : α → List M) :
-    (l.flatMap f).sum = (l.map fun a => (f a).sum).sum := by
-  induction l with
-  | nil => simp
-  | cons a l ih => simp [List.flatMap_cons, List.sum_append, ih]
 
 theorem list_sum_map_flatMap {α β M : Type} [AddCommMonoid M] (l : List α) (f : α → List β) (g : β → M) :
     ((l.flatMap f).map g).sum = (l.map fun a => ((f a).map g).sum).sum := by

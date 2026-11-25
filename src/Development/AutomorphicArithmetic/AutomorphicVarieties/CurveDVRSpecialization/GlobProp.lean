@@ -49,8 +49,7 @@ theorem UpperTheory.V.Pr.globProp :
   classical
   have hfin := TopologicalSpace.NoetherianSpace.finite_irreducibleComponents (α := X)
   have key : ∀ Y, M.CompI Y → Y ⊆ M.Good := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨Yb, hYb, hYbn⟩ := hne
     set G : Set X := ⋃ Y ∈ {Y | M.CompI Y ∧ Y ⊆ M.Good}, Y with hG
     set B : Set X := ⋃ Y ∈ {Y | M.CompI Y ∧ ¬ Y ⊆ M.Good}, Y with hB

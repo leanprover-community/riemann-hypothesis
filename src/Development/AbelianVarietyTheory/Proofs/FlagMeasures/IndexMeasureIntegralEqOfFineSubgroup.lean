@@ -58,18 +58,8 @@ namespace GlobalTheory.IdxInt
 
 open scoped Pointwise Classical in
 open Function in
-private lemma quotientEquivProdOfLE_apply_fst {W : Type} [AddCommGroup W] {C B : AddSubgroup W} (h : C ≤ B)
-    (c : W ⧸ C) : ((AddSubgroup.quotientEquivProdOfLE h) c).1 = ((Quotient.out c : W) : W ⧸ B) := by
-  conv_lhs => rw [← QuotientAddGroup.out_eq' c]
-  rfl
-
 open scoped Pointwise Classical in
 open Function in
-private lemma support_quotient_out_finite_of_image_finite {W : Type} [AddCommGroup W] {B : AddSubgroup W} (φ : W → ℂ)
-    (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
-    (support fun c : W ⧸ B => φ (Quotient.out c)).Finite := by
-  refine hφ.subset fun c hc => ⟨Quotient.out c, hc, QuotientAddGroup.out_eq' c⟩
-
 open scoped Pointwise Classical in
 open Function in
 private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup W] {C B : AddSubgroup W} (hCB : C ≤ B)

@@ -39,8 +39,6 @@ open Formalism.L2.PairingIndexBounds.Eq.J Formalism.L2.PairingIndexBounds.Eq For
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Car}
 
 def rowE (D : Car) (N N' : ℕ) : TaylorLogMetric.VC D N N' ≃ₗ[ℂ] (Fin N' → TaylorLogMetric.VC D N 1) where
@@ -178,8 +176,6 @@ namespace Formalism.L2.Ker.Cd.PairingIndexBounds.Eq.J
 open Formalism.L2.PairingIndexBounds.Eq.J Formalism.L2.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Car}
 
@@ -399,8 +395,6 @@ namespace Formalism.L2.Ker.Cd.PairingIndexBounds.Eq.J
 open Formalism.L2.PairingIndexBounds.Eq.J Formalism.L2.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds
 
 open Formalism.MainNotions Formalism.L2.Th1.H Formalism.L2.Ker.Cd.PairingIndexBounds.Eq Formalism.L2.PairingIndexBounds.Eq
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 

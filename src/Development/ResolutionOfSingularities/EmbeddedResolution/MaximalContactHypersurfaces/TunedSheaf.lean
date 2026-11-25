@@ -97,21 +97,6 @@ def IsMaxContactInvariantTunedSheaf : Prop :=
       derivIdealSheafIterate k p (s - 1) (tunedSheaf k p I m s) *
           derivIdealSheaf k p (tunedSheaf k p I m s) ≤ tunedSheaf k p I m s
 
-def TunedSheafMulEqAdd : Prop :=
-  ∀ (k : Type u) [Field k] [CharZero k] [IsNoetherianRing k] (X : Scheme.{u})
-    (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (I : X.IdealSheafData) (m : ℕ), 1 ≤ m → MaxOrderEq I m →
-    ∀ r t : ℕ, (m - 1) * lcmUpTo m ≤ t →
-      tunedSheaf k p I m (r * lcmUpTo m) * tunedSheaf k p I m t =
-        tunedSheaf k p I m (r * lcmUpTo m + t)
-
-def TunedSheafPowEqMul : Prop :=
-  ∀ (k : Type u) [Field k] [CharZero k] [IsNoetherianRing k] (X : Scheme.{u})
-    (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (I : X.IdealSheafData) (m : ℕ), 1 ≤ m → MaxOrderEq I m →
-    ∀ r : ℕ, m - 1 ≤ r → ∀ j : ℕ, 1 ≤ j →
-      tunedSheaf k p I m (r * lcmUpTo m) ^ j = tunedSheaf k p I m (j * (r * lcmUpTo m))
-
 def IsDerivBalancedTunedSheafMulLcm : Prop :=
   ∀ (k : Type u) [Field k] [CharZero k] [IsNoetherianRing k] (X : Scheme.{u})
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
@@ -161,15 +146,9 @@ def IsMarkedIffBalancedTunedSheaf : Prop :=
 
 structure TunedSheafProperties : Prop where
   isMarked_tuned_iff : IsMarkedIffBalancedTunedSheaf.{u}
-  tunedSheaf_succ_le : TunedSheafSuccLe.{u}
-  tunedSheaf_mul_le : TunedSheafMulLeAdd.{u}
-  derivIdealSheaf_tunedSheaf_succ : DerivIdealSheafTunedSheafSucc.{u}
   derivIdealSheafIter_pred_tunedSheaf : MaxContactIdealTunedSheafEq.{u}
   derivIdealSheafIter_mul_derivIdealSheaf_le_tunedSheaf : IsMaxContactInvariantTunedSheaf.{u}
-  tunedSheaf_mul_eq : TunedSheafMulEqAdd.{u}
-  tunedSheaf_pow : TunedSheafPowEqMul.{u}
   derivIdealSheafIter_tunedSheaf_pow_le : IsDerivBalancedTunedSheafMulLcm.{u}
   coSupport_tunedSheaf_eq_and_orderLE : CoSupportTunedSheafEqAndOrderLE.{u}
-  isMarked_iff_of_pow_le_of_le_tunedSheaf : IsMarkedIffOfPowLeOfLeTunedSheaf.{u}
 
 end FunctorialResolution.EmbeddedResolution

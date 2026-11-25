@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsInjectiveCharacterOfIsCyclic
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.RingTheory.Flat.EquationalCriterion
@@ -639,19 +640,7 @@ theorem mem_xor {A : Type*} [CommRing A] (P : Ideal A) (hP : P.IsPrime) (p t m :
 
 theorem exists_over (K : Type*) [Field K] [NumberField K] (p : ℕ) (hp : p.Prime) :
     ∃ 𝔭 : HeightOneSpectrum (𝓞 K), (p : 𝓞 K) ∈ 𝔭.asIdeal := by
-  have hpr : (Ideal.span {(p : ℤ)}).IsPrime :=
-    (Ideal.span_singleton_prime (by exact_mod_cast hp.ne_zero)).2 (Nat.prime_iff_prime_int.1 hp)
-  obtain ⟨Q, -, hQ, hQc⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (S := 𝓞 K) (Ideal.span {(p : ℤ)}) ⊥ (by
-    rw [(show Ideal.under _ ⊥ = ⊥ from Ideal.comap_bot_of_injective _ (FaithfulSMul.algebraMap_injective ℤ (𝓞 K)))]
-    exact bot_le)
-  have hmem : (p : 𝓞 K) ∈ Q := by
-    have : (p : ℤ) ∈ Ideal.under ℤ Q := by
-      rw [hQc]
-      exact Ideal.mem_span_singleton_self _
-    simpa using this
-  refine ⟨⟨Q, hQ, ?_⟩, hmem⟩
-  rintro rfl
-  exact (Nat.cast_ne_zero.2 hp.ne_zero) ((Ideal.mem_bot).1 hmem)
+  first | exact _root_.GlobalTheory.exists_heightOneSpectrum_natCast_mem | exact @_root_.GlobalTheory.exists_heightOneSpectrum_natCast_mem | apply _root_.GlobalTheory.exists_heightOneSpectrum_natCast_mem <;> assumption
 
 theorem exists_elt {R : Ranks} (H : Host R) (p : ℕ) (hp : p.Prime) (hs : Th.SplitK H p) :
     ∃ (a : H.K) (t m : ℤ), IsIntegral ℤ a ∧ a * HostK.conjK H a = (p : H.K) * m ∧ a + HostK.conjK H a = t ∧

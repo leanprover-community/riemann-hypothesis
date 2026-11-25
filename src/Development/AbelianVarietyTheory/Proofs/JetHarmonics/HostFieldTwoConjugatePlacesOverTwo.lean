@@ -79,6 +79,8 @@ import Formalism.LocalToGlobal.Divisibility.Numbers
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthCond
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.OneAddZeta21PowSevenAddPowFourteenEqZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.CMTraceForms.DiscrCMDatumEqProdPlaces, Development.AutomorphicArithmetic.CMTraceForms.ExistsPrimitiveOrthogonalIdempotentsSumEqOfNoeth, Development.AutomorphicArithmetic.CMTraceForms.ExistsSplitIdempotentOfSplitAt, Development.AutomorphicArithmetic.CMTraceForms.TraceFormDecompositionCMDatum, Development.AutomorphicArithmetic.CMTraceForms.SplitPlacesDiscriminantDepthOfSplitAt, Development.AbelianVarietyTheory.Proofs.JetHarmonics.HostFieldTwoConjugatePlacesOverTwo
@@ -388,8 +390,7 @@ theorem UpperTheory.discr_CMDatum_eq_prod_places :
       Sum.elim (fun a => (t k.1 a : 𝓞 E →+* O)) (fun a => (t k.1 a : 𝓞 E →+* O).comp (starRingEnd (𝓞 E))) k.2
     have hsurj : ∀ τ : 𝓞 E →+* O, ∃ k, ρ k = τ := by
       intro τ
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have he0 : ∀ i, tauExt τ (w i).e = 0 := by
         intro i
         rcases eq_zero_or_one_of_idempotent_integers hv (tauExt τ (w i).e) (by rw [← map_mul, (w i).idem]) with h | h
@@ -679,30 +680,6 @@ namespace UpperTheory.Depth.SplitIdem
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-private theorem cmHost_bar_halfIntegerGenerator (H : Host E) : H.bar H.w0 = 1 - H.w0 := by
-  have hsq : H.bar H.rt ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
-  have hrt : H.bar H.rt = -H.rt := by
-    rcases sq_eq_sq_iff_eq_or_eq_neg.1 hsq with h | h
-    · exfalso
-      have h1 : IsCMField.complexConj E (H.rt : E) = (H.rt : E) := by rw [← H.bar_eq, h]
-      obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-      have h2 := IsCMField.complexEmbedding_complexConj E τ (H.rt : E)
-      rw [h1] at h2
-      have h3 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-        rw [← map_pow]
-        have := congrArg (fun a : 𝓞 E => τ (a : E)) H.rt_sq
-        simpa using this
-      have h4 : (τ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.1 h2.symm
-      have h5 := congrArg Complex.re h3
-      simp [sq, h4] at h5
-      have : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-      nlinarith [mul_self_nonneg (τ (H.rt : E)).re]
-    · exact h
-  apply mul_left_cancel₀ (by norm_num : (2 : 𝓞 E) ≠ 0)
-  have := congrArg H.bar H.two_weight_eq_one_add_root
-  rw [map_mul, map_add (f := _), map_one, hrt, map_ofNat] at this
-  linear_combination this + H.two_weight_eq_one_add_root
-
 private theorem exists_root_two (k : ℕ) : ∃ β γ : ℤ_[2], β * β = β - 2 * k ∧ γ * (1 - 2 * β) = 1 := by
   have h2 : ‖(2 : ℤ_[2])‖ < 1 := by
     have := PadicInt.norm_p (p := 2)
@@ -806,7 +783,7 @@ theorem UpperTheory.exists_splitIdempotent_of_splitAt :
       unfold sig
       rw [Algebra.TensorProduct.map_tmul]
       rfl
-    rw [h1, UpperTheory.Depth.SplitIdem.cmHost_bar_halfIntegerGenerator, map_sub, map_one]
+    rw [h1, _root_.GlobalTheory.HostModel.cmHost_bar_halfIntegerGenerator, map_sub, map_one]
   have hsum : ι γ * (j H.w0 - ι β) + sig p (𝓞 E) (ι γ * (j H.w0 - ι β)) = 1 := by
     rw [map_mul, map_sub, hsι, hsι, hsj]
     linear_combination hγ'
@@ -888,29 +865,6 @@ namespace UpperTheory.Depth.SplitPl
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-private theorem exists_inPsi (H : Host E) : ∃ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have hE : (H.rt : E) ^ 2 = -(H.d : E) := by
-    have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-    simpa using this
-  have h : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, hE]; simp
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 (h.trans H.sqrt_neg_disc_sq.symm) with h1 | h1
-  · exact ⟨τ, h1⟩
-  · refine ⟨ComplexEmbedding.conjugate τ, ?_⟩
-    rw [ComplexEmbedding.conjugate_coe_eq, h1]
-    have hre := congrArg Complex.re H.sqrt_neg_disc_sq
-    have him := congrArg Complex.im H.sqrt_neg_disc_sq
-    simp [pow_two] at hre him
-    have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-    have h0 : H.rt0.re = 0 := by
-      by_contra hne
-      have : H.rt0.im = 0 := by
-        have : H.rt0.re * H.rt0.im = 0 := by linarith
-        exact (mul_eq_zero.1 this).resolve_left hne
-      rw [this] at hre
-      nlinarith [mul_self_nonneg H.rt0.re]
-    apply Complex.ext <;> simp [h0]
-
 private theorem existsUnique_one {A O : Type} [CommRing A] [CommRing O] [IsDomain O] {F : Type} [FunLike F A O]
     [RingHomClass F A O] (φ : F) {s : ℕ} (g : Fin s → A) (h1 : ∀ i, g i * g i = g i)
     (h2 : ∀ i j, i ≠ j → g i * g j = 0) (h : φ (∑ i, g i) = 1) : ∃! i, φ (g i) = 1 := by
@@ -941,7 +895,7 @@ theorem UpperTheory.splitPlaces_discriminantDepth_of_splitAt :
   intro C _ _ _ v O _ _ hv _ _ τO hinj hrt
   haveI : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
   haveI : CharZero O := (algebraMap O C).charZero
-  obtain ⟨τ₀, hτ₀⟩ := exists_inPsi H
+  obtain ⟨τ₀, hτ₀⟩ := _root_.GlobalTheory.HostModel.exists_embedding_rt_eq H
   have hpos : 0 < Module.finrank ℚ E := Module.finrank_pos
   have hsq : ∀ σ : 𝓞 E →+* O, σ H.rt ^ 2 = -(H.d : O) := fun σ => by
     rw [← map_pow, H.rt_sq]; simp

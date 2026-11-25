@@ -25,8 +25,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 structure IsDualFlag {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : BesDat A B ι) (f : Matrix (Fin B.rank) (Fin d.ρ) D.host.E) :
@@ -56,8 +54,6 @@ open scoped TensorProduct ContDiff
 namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.MainNotions.Inhab
 
@@ -139,8 +135,6 @@ open scoped TensorProduct ContDiff
 namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.Host Formalism.L2.JoinChr Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
 

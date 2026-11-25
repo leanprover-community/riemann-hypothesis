@@ -6,8 +6,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpOfPf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 
 theorem expChartOf_of (hAct : ExpActOfSt) : ExpChartOfSt := by

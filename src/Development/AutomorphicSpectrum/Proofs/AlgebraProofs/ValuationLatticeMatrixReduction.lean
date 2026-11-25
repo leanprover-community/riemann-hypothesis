@@ -530,24 +530,11 @@ open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity
 namespace GlobalTheory.HerbrandBridge
 open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference (freeLattice unif IsFiltration filSpace eigenSub eigenQuot lie quotMap addVal)
 
-theorem filPre_mem : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
-    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
-    (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)),
-    (∀ x ∈ F, unif a x ∈ F) →
-    ∀ x, x ∈ (Submodule.span (RS (liftA hv a)) {x : Fin _ → RS (liftA hv a) | (fun s i => ↑(ev (liftA hv a) s (x i))) ∈ F}) ↔ evalVec (liftA hv a) N x ∈ F :=
-  _root_.GlobalTheory.FilPreMem.filPre_mem_iff
-
 theorem evalVec_range : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
     (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
     (a : S → w.valuationSubring) (N : ℕ) (y : S → Fin N → C),
     y ∈ freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y :=
   _root_.GlobalTheory.EvalVecRange.evalVec_range
-
-theorem evalVec_injective : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
-    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
-    (a : S → w.valuationSubring) (N : ℕ), Function.Injective a →
-    Function.Injective (evalVec (liftA hv a) N) :=
-  _root_.GlobalTheory.HerbrandBridge.evalVec_injective_of_injective
 
 theorem mem_of_components : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S]
     [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ)

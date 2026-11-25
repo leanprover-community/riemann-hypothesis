@@ -152,8 +152,7 @@ theorem GlobalTheory.PolFan.cellMult_lt_of_star_new : ∀ (E : Type) [Field E] [
   obtain ⟨c, hc0, hcβ⟩ : InRCone δt β₀ := inRCone_trans hγδt hβ₀γ
   have hclt : ∀ i, c i < 1 := hcoord X hX m₀ δt hδt hliδt hprimδt β₀ hβ₀ hβ₀p hw c hc0 hcβ
   obtain ⟨j, hcj, hjI⟩ : ∃ j, 0 < c j ∧ h₃ (δt j) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have h30 : h₃ β₀ = 0 := by
       have : (h₃ β₀ : ℝ) = 0 := by
         rw [val_eq h₃ hcβ]

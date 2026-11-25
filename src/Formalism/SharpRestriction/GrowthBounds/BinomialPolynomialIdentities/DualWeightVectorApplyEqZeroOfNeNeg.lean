@@ -107,8 +107,7 @@ variable {n : ℕ} {K V : Type*} [Field K] [CharZero K] [AddCommGroup V] [Module
 theorem dual_weightVector_apply_eq_zero_of_ne_neg (E : GLOps n K V) {nu' nu : Fin n → ℤ} {φ : Module.Dual K V} {x : V}
     (hφ : φ ∈ weightSp (dualOps E) nu') (hx : x ∈ weightSp E nu) (hne : nu' ≠ -nu) : φ x = 0 := by
   obtain ⟨a, ha⟩ : ∃ a, nu' a ≠ -nu a := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext fun a => by rw [h a, Pi.neg_apply])
   have e1 := wt_apply_lemma_3 hx a
   have e2 := wt_apply_lemma_3 hφ a

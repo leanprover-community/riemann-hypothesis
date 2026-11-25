@@ -6,6 +6,7 @@ import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 import Mathlib.Tactic.TypeStar
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
 
 @[expose] public section
 
@@ -129,17 +130,7 @@ theorem mx_of_entry {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) {c : ℝ} (hc : 0
 
 theorem isUnit_det_monomialMatrix' {m : ℕ} (w : Equiv.Perm (Fin m)) (d : Fin m → ℂ) (hd : ∀ a, d a ≠ 0) :
     IsUnit (monoP w d).det := by
-  have hQ : monoP w d * monoP w.symm (fun j => (d (w.symm j))⁻¹) = 1 := by
-    ext i j
-    simp only [Matrix.mul_apply, monoP, of_apply, Matrix.one_apply]
-    rw [Finset.sum_eq_single (w.symm j)]
-    · simp only [if_true, Equiv.apply_symm_apply]
-      split_ifs with h
-      · exact mul_inv_cancel₀ (hd _)
-      · exact zero_mul _
-    · intro b _ hb; simp [hb]
-    · intro h; exact absurd (Finset.mem_univ _) h
-  exact isUnit_det_of_right_inverse hQ
+  apply _root_.Formalism.FourierDecayAlt.P.C2x2.isUnit_det_monomialMatrix <;> assumption
 
 def kap (m : ℕ) (P : Matrix (Fin m) (Fin m) ℂ) : ℝ := 1 + m * mx P⁻¹
 

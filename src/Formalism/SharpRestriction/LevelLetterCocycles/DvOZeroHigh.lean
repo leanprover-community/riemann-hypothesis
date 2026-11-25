@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ArcStructuresThreeHold
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
@@ -31,15 +32,7 @@ open Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.UnusedSlot80.Ph
 
 theorem tau_over (hbij : Function.Bijective (algebraMap K₀ K)) (c : ZMod n) :
     ∃ τ : K →ₐ[Qp] LL, Formalism.MainNotions.LiftingTheory.Over W τ c ∧ ∀ x : K₀, τ (algebraMap K₀ K x) = W.emb c x := by
-  let E : K₀ ≃ₐ[Qp] K := AlgEquiv.ofBijective (IsScalarTower.toAlgHom Qp K₀ K) hbij
-  refine ⟨(W.emb c).comp E.symm.toAlgHom, ?_, fun x => ?_⟩
-  · ext x
-    simp only [AlgHom.comp_apply, AlgEquiv.coe_toAlgHom]
-    congr 1
-    exact E.symm_apply_apply x
-  · simp only [AlgHom.comp_apply, AlgEquiv.coe_toAlgHom]
-    congr 1
-    exact E.symm_apply_apply x
+  apply _root_.Formalism.MainNotions.N.Ln17.exists_algHom_over_of_bijective_algebraMap <;> assumption
 
 theorem dvO_letter (T : LocLat G Qp LL O) (c' : ZMod n) {d : ℕ} (b : Fin d → W.DD T)
     (hb : Formalism.MainNotions.LiftingTheory.IsFrameΔ W T c' b) (e : ℕ) (c₀ : Fin d → O) :

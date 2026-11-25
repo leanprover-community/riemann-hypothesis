@@ -92,8 +92,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.VarFlagLL
@@ -326,8 +324,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 open Filter
 open scoped GlobalTheory.CompHt
-
-set_option autoImplicit false
 
 noncomputable section
 

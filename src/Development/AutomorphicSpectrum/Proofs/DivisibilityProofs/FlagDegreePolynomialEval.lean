@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.KerJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.KrullDimension.Polynomial
@@ -340,8 +341,7 @@ theorem ptDeg_eq_one [DecidableEq (Σ k, ι k)] (k₀ : K) (hK : ∀ a : K, a = 
 theorem exists_single_notMem [DecidableEq (Σ k, ι k)] (U : Submodule F ((Σ k, ι k) → F))
     (hd : 0 < Module.finrank F (((Σ k, ι k) → F) ⧸ U)) :
     ∃ q : Σ k, ι k, (Pi.single q (1 : F) : (Σ k, ι k) → F) ∉ U := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have htop : U = ⊤ := by
     refine (Submodule.eq_top_iff').2 fun c => ?_
     rw [eq_sum_single c]
@@ -1115,32 +1115,7 @@ theorem exists_perm_of_letterCount_eq (w w₀ : Fin n → σ) (h : letterCount w
 theorem card_letterCount_mul (w₀ : Fin n → σ) :
     (univ.filter fun w : Fin n → σ => letterCount w = letterCount w₀).card *
       ∏ p, (letterCount w₀ p).factorial = n.factorial := by
-  have hst : Fintype.card {g : Equiv.Perm (Fin n) // w₀ ∘ g = w₀} =
-      ∏ p, (letterCount w₀ p).factorial := by
-    rw [DomMulAct.stabilizer_card]
-    exact Finset.prod_congr rfl fun p _ => by rw [Fintype.card_subtype, letterCount_apply]
-  have hcard : (univ : Finset (Equiv.Perm (Fin n))).card = n.factorial := by
-    simp [Finset.card_univ, Fintype.card_perm]
-  have hfib : ∀ w ∈ univ.filter (fun w : Fin n → σ => letterCount w = letterCount w₀),
-      (univ.filter fun π : Equiv.Perm (Fin n) => w₀ ∘ π = w).card =
-        Fintype.card {g : Equiv.Perm (Fin n) // w₀ ∘ g = w₀} := by
-    intro w hw
-    obtain ⟨π₀, rfl⟩ := exists_perm_of_letterCount_eq w w₀ (Finset.mem_filter.1 hw).2
-    rw [← Fintype.card_subtype]
-    refine Fintype.card_congr (Equiv.subtypeEquiv (Equiv.mulRight π₀⁻¹) fun g => ?_)
-    constructor
-    · intro h
-      funext r
-      have := congrFun h (π₀⁻¹ r)
-      simpa using this
-    · intro h
-      funext r
-      have := congrFun h (π₀ r)
-      simpa using this
-  rw [← hst, ← hcard, Finset.card_eq_sum_card_fiberwise (s := univ)
-    (f := fun π : Equiv.Perm (Fin n) => w₀ ∘ π)
-    (t := univ.filter fun w : Fin n → σ => letterCount w = letterCount w₀)
-    (fun π _ => by simp [letterCount_comp]), Finset.sum_congr rfl hfib, Finset.sum_const, smul_eq_mul]
+  apply _root_.Formalism.L2.AlgTh.KerJet.card_cnt <;> assumption
 
 theorem coeff_formPoly_mul (σ : Type) [Fintype σ] [DecidableEq σ] (n : ℕ) (a : (Fin n → σ) → ℝ)
     (hsym : ∀ (π : Equiv.Perm (Fin n)) (w : Fin n → σ), a (w ∘ π) = a w) (w₀ : Fin n → σ) (m : σ →₀ ℕ)
@@ -1588,11 +1563,11 @@ theorem alg_const (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (D : ℕ)
 open GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights in
 theorem degFl_vand (hIn : PB.Inputs) (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) (Ψ : Type) [Fintype Ψ]
     [DecidableEq Ψ] [Nonempty Ψ] (N : ℕ) (hN : 2 ≤ N) : ∃ c : ℝ, degFlPoly Ψ N = C c * antisymDelta Ψ N := by
-  obtain ⟨M, BM, hhom, hfs, hbd⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.flagModel_over_point Ψ N hN
+  obtain ⟨M, BM, hhom, hfs, hbd⟩ := _root_.PositivityTheory.Xgp.t_c_fl_model Ψ N hN
   have hpos : 1 ≤ antisymDegree Ψ N := Nat.mul_pos Fintype.card_pos (Nat.choose_pos hN)
   obtain ⟨d, hd⟩ : ∃ d, d + 1 = antisymDegree Ψ N := ⟨antisymDegree Ψ N - 1, by omega⟩
   have harith : IsArithVar (mCoordIdeal (yFl Ψ N)) (d + 2) := by
-    have := _root_.GlobalTheory.CompanionTheory.Ar.PB.pFl_isArithVar Ψ N hN
+    have := _root_.PositivityTheory.Xgp.t_c_fl_arith Ψ N hN
     rw [← hd] at this
     exact this
   have hdim : d + 1 = 0 + Fintype.card Ψ * (N.choose 2 + (N - N).choose 2) := by

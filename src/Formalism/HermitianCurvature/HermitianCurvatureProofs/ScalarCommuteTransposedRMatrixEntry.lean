@@ -103,9 +103,6 @@ theorem insert_diagScalar_mul_of_free (a : S) (M : M2 (SlopeTestRemainingChoices
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [← mul_assoc, (hb i j).eq, mul_assoc]
 
-theorem io_mul_apply (x : A) (M : SlopeTestRemainingChoices S A) (z y : Ix S) : ((io x : SlopeTestRemainingChoices S A) * M) z y = x * M z y := by
-  simp [io, Matrix.scalar_apply, Matrix.diagonal_mul]
-
 theorem mul_io_apply (x : A) (M : SlopeTestRemainingChoices S A) (z y : Ix S) : (M * (io x : SlopeTestRemainingChoices S A)) z y = M z y * x := by
   simp [io, Matrix.scalar_apply, Matrix.mul_diagonal]
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Divisors.FiniteNotLocFrOne
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FirstIndexEqOfUnfolded
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,32 +56,7 @@ namespace GlobalTheory.TrueCx.FrameOnto
 
 theorem exists_congr_one {n : Type} [Fintype n] [DecidableEq n] {M : Matrix n n ℂ} (hM : M.PosDef) :
     ∃ S : Matrix n n ℂ, IsUnit S.det ∧ Sᴴ * M * S = 1 := by
-  classical
-  set U : Matrix n n ℂ := (hM.1.eigenvectorUnitary : Matrix n n ℂ) with hU
-  have hD : star U * M * U = diagonal (RCLike.ofReal ∘ hM.1.eigenvalues) := by
-    have h := hM.1.conjStarAlgAut_star_eigenvectorUnitary
-    rw [Unitary.conjStarAlgAut_star_apply] at h
-    exact h
-  set c : n → ℂ := fun i => (RCLike.ofReal ((Real.sqrt (hM.1.eigenvalues i))⁻¹) : ℂ) with hc
-  refine ⟨U * diagonal c, ?_, ?_⟩
-  · rw [det_mul, det_diagonal]
-    refine IsUnit.mul (isUnit_det_of_left_inverse (Unitary.coe_star_mul_self _)) ?_
-    refine Ne.isUnit (Finset.prod_ne_zero_iff.mpr fun i _ => ?_)
-    exact RCLike.ofReal_ne_zero.mpr (inv_ne_zero (Real.sqrt_ne_zero'.mpr (hM.eigenvalues_pos i)))
-  · have hs : (U * diagonal c)ᴴ * M * (U * diagonal c) = diagonal (star c) * (star U * M * U) * diagonal c := by
-      rw [conjTranspose_mul, diagonal_conjTranspose, ← star_eq_conjTranspose]
-      simp only [Matrix.mul_assoc]
-    rw [hs, hD, diagonal_mul_diagonal, diagonal_mul_diagonal, ← diagonal_one]
-    congr 1
-    funext i
-    have hl := hM.eigenvalues_pos i
-    have hr : (Real.sqrt (hM.1.eigenvalues i))⁻¹ * hM.1.eigenvalues i * (Real.sqrt (hM.1.eigenvalues i))⁻¹ = 1 := by
-      have h0 : Real.sqrt (hM.1.eigenvalues i) ≠ 0 := Real.sqrt_ne_zero'.mpr hl
-      have h2 := Real.mul_self_sqrt hl.le
-      field_simp
-      linarith
-    simp only [hc, Pi.star_apply, Function.comp_apply, RCLike.star_def, RCLike.conj_ofReal]
-    rw [← RCLike.ofReal_mul, ← RCLike.ofReal_mul, hr, RCLike.ofReal_one]
+  first | exact _root_.GlobalTheory.HolDS.exists_congr_one_of_posDef | exact @_root_.GlobalTheory.HolDS.exists_congr_one_of_posDef | apply _root_.GlobalTheory.HolDS.exists_congr_one_of_posDef <;> assumption
 
 private lemma posDef_one_sub_mul_conjTranspose_of_posDef {p q : ℕ} {z : Matrix (Fin p) (Fin q) ℂ} (hz : (1 - zᴴ * z).PosDef) :
     (1 - z * zᴴ).PosDef := by

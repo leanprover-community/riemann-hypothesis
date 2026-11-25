@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.DivisionRationalLattice
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
@@ -57,16 +58,7 @@ theorem span_emb_int (hD3 : IntegerApproximationCount (E := E)) :
   nlinarith [norm_nonneg g, mul_le_mul_of_nonneg_left hnorm (norm_nonneg g)]
 
 theorem exists_nat_mul_int (c : E) : ∃ N : ℕ, 0 < N ∧ IsIntegral ℤ ((N : E) * c) := by
-  obtain ⟨y, hy0, hy⟩ := exists_integral_multiples ℤ ℚ (L := E) {c}
-  have h := hy c (Finset.mem_singleton_self c)
-  rw [zsmul_eq_mul] at h
-  refine ⟨y.natAbs * y.natAbs, Nat.mul_pos (Int.natAbs_pos.mpr hy0) (Int.natAbs_pos.mpr hy0), ?_⟩
-  have e : ((y.natAbs * y.natAbs : ℕ) : E) = (y : E) * (y : E) := by
-    rw [← Int.cast_natCast, Int.natAbs_mul_self, Int.cast_mul]
-  have hy' : IsIntegral ℤ (y : E) := by
-    simpa using (isIntegral_algebraMap : IsIntegral ℤ (algebraMap ℤ E y))
-  rw [e, mul_assoc]
-  exact hy'.mul h
+  apply _root_.PI.TensCpctDenWork.exists_nat_mul_isIntegral <;> assumption
 
 theorem exists_nat_smul_mem (v : Fin r → E) : ∃ N : ℕ, 0 < N ∧ (N : E) • v ∈ X.Λ := by
   have hv : v ∈ Submodule.span E (X.Λ : Set (Fin r → E)) := X.Λ_span ▸ Submodule.mem_top

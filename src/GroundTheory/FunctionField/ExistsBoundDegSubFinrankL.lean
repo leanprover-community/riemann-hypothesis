@@ -41,23 +41,8 @@ theorem finiteDimensional_map_mkQ_trans {S T U : Submodule R M} (hST : S ≤ T) 
       Submodule.factor_comp_mk]
   have hTU' : T.map S.mkQ ≤ U.map S.mkQ := Submodule.map_mono hTU
   have hker : LinearMap.ker f = (T.map S.mkQ).comap (U.map S.mkQ).subtype := by
-    ext ⟨w, hw⟩
-    simp only [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply, f,
-      LinearMap.coe_comp, Function.comp_apply]
-    obtain ⟨m, -, rfl⟩ := Submodule.mem_map.1 hw
-    rw [Submodule.mkQ_apply,
-      show Submodule.factor hST (Submodule.Quotient.mk m) = Submodule.Quotient.mk m from rfl,
-      Submodule.Quotient.mk_eq_zero]
-    constructor
-    · intro hm
-      exact Submodule.mem_map_of_mem hm
-    · intro hm
-      obtain ⟨m', hm', he⟩ := Submodule.mem_map.1 hm
-      have : m' - m ∈ S := (Submodule.Quotient.eq S).1 he
-      have := hST this
-      have h2 : m = m' - (m' - m) := by abel
-      rw [h2]
-      exact T.sub_mem hm' this
+    dsimp only [f]
+    rw [LinearMap.ker_comp, Submodule.factor, Submodule.ker_mapQ, Submodule.comap_id]
   have ek : LinearMap.ker f ≃ₗ[R] T.map S.mkQ :=
     (LinearEquiv.ofEq _ _ hker).trans (Submodule.comapSubtypeEquivOfLe hTU')
   have er : LinearMap.range f ≃ₗ[R] U.map T.mkQ := LinearEquiv.ofEq _ _ hrange
@@ -486,55 +471,8 @@ theorem exists_bound_deg_sub_finrank_L :
   obtain ⟨x, hx, hfin⟩ := IsFunctionField.exists_transcendental_finiteDimensional (k := k) (K := K)
   set F := IntermediateField.adjoin k {x} with hF
   set n := finrank F K with hn
-  let b := Module.finBasis F K
   set B : Divisor k K := poleDivisor x with hBdef
-  set C : Divisor k K := ∑ j, poleDivisor (b j) with hCdef
-  have hB : 0 ≤ B := poleDivisor_nonneg x
-  have hC : 0 ≤ C := Finset.sum_nonneg fun j _ => poleDivisor_nonneg _
-  have hCj : ∀ j, (poleDivisor (b j) : Divisor k K) ≤ C := fun j =>
-    Finset.single_le_sum (f := fun j => (poleDivisor (b j) : Divisor k K))
-      (fun j _ => poleDivisor_nonneg _) (Finset.mem_univ j)
-  have key : ∀ l : ℕ, ((l + 1 : ℤ) * n) ≤ finrank k (L (l • B + C)) := by
-    intro l
-    set D : Divisor k K := l • B + C with hD'
-    have hmem : ∀ p : Fin (l + 1) × Fin n, x ^ (p.1 : ℕ) * b p.2 ∈ L D := by
-      rintro ⟨i, j⟩ v
-      rw [map_mul, map_pow]
-      have hx' := valuation_le_exp_poleDivisor x v
-      have hb' := (valuation_le_exp_poleDivisor (b j) v).trans
-        (WithZero.exp_le_exp.2 (Finsupp.le_def.1 (hCj j) v))
-      have hBv : 0 ≤ B v := by simpa using Finsupp.le_def.1 hB v
-      have hil : ((i : ℕ) : ℤ) ≤ l := by exact_mod_cast Nat.lt_succ_iff.1 i.2
-      calc v.valuation x ^ (i : ℕ) * v.valuation (b j)
-          ≤ WithZero.exp (B v) ^ (i : ℕ) * WithZero.exp (C v) :=
-            mul_le_mul' (pow_le_pow_left' hx' _) hb'
-        _ ≤ WithZero.exp (D v) := by
-            rw [← WithZero.exp_nsmul, ← WithZero.exp_add, WithZero.exp_le_exp]
-            simp only [hD', Finsupp.add_apply, Finsupp.smul_apply, nsmul_eq_mul]
-            have := mul_le_mul_of_nonneg_right hil hBv
-            linarith
-    let G : Fin (l + 1) × Fin n → L D := fun p => ⟨x ^ (p.1 : ℕ) * b p.2, hmem p⟩
-    have hli : LinearIndependent k G := by
-      apply LinearIndependent.of_comp (L D).subtype
-      have hb' : LinearIndependent k fun i : Fin (l + 1) =>
-          (IntermediateField.AdjoinSimple.gen k x) ^ (i : ℕ) := by
-        apply LinearIndependent.of_comp F.val.toLinearMap
-        have h := linearIndependent_pow_of_transcendental hx (l + 1)
-        have heq : (F.val.toLinearMap ∘ fun i : Fin (l + 1) =>
-            (IntermediateField.AdjoinSimple.gen k x) ^ (i : ℕ)) =
-            fun i : Fin (l + 1) => x ^ (i : ℕ) := by
-          funext i
-          simp
-        rw [heq]
-        exact h
-      convert linearIndependent_smul hb' b.linearIndependent using 1
-      funext p
-      simp [G, Algebra.smul_def]
-    have hcard := hli.fintype_card_le_finrank
-    simp only [Fintype.card_prod, Fintype.card_fin] at hcard
-    have : ((l + 1 : ℕ) * n : ℕ) ≤ (finrank k (L D) : ℤ) := by exact_mod_cast hcard
-    push_cast at this
-    linarith
+  obtain ⟨C, hC, key⟩ := exists_le_finrank_L_poleDivisor hx
   have hdegB : deg B = n := deg_poleDivisor hx
   have hn1 : 0 < n := Module.finrank_pos
   refine ⟨deg C - n, fun D => ?_⟩

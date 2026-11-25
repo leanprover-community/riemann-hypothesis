@@ -79,7 +79,7 @@ theorem thetaValue_natural : Laws → ChartIndepSt2 → ∀ (E : Type) [Field E]
   have hcomp : ψ1.comp φ0 = ψ2.comp (φ1.comp φ) := by
     ext s
     exact hsq s
-  have key := GlobalTheory.T.thetaExpression_eq_of_witnesses hL hC E H Dw l Xo c nab hnab S y0 a n x P hP S' φ0 y0' F0 T' (φ1.comp φ)
+  have key := _root_.GlobalTheory.ThetaCompare.thExpr_eq_of_witnesses hL hC E H Dw l Xo c nab hnab S y0 a n x P hP S' φ0 y0' F0 T' (φ1.comp φ)
     y1 F1 hm0 hv0 hm01 hv1 (TensorProduct S T' S') ψ1 ψ2 hcomp
   rw [← he0, ← he1] at key
   have hv : ψ1 (φ0 v0) = ψ2 (φ1 (φ v0)) := congrArg (fun f => f v0) hcomp

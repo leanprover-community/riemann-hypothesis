@@ -51,8 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.InvFieldRing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Val
 
 variable {A : Type} [CommRing A] {Y : Scheme.{0}}

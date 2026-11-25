@@ -716,8 +716,7 @@ theorem finite_split_holds : FinSplit := by
             pLoc F v.1 (yf : Af F)) ≤ WithZero.exp (-(c v.1 : ℤ)) ∧
             Valued.v ((((finUnitAt v.1 b)⁻¹ : (v.1.adicCompletion F)ˣ) : v.1.adicCompletion F) *
               algebraMap F (v.1.adicCompletion F) (ξ : F)) ≤ WithZero.exp ((c v.1 : ℤ) + dd v.1)) := by
-          by_contra hne
-          push_neg at hne
+          by_contra! hne
           apply hfk
           constructor
           · intro w

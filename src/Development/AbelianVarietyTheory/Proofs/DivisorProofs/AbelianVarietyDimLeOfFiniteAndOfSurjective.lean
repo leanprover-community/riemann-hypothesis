@@ -79,8 +79,7 @@ theorem le_height_of_specializingMap {X Z : Type*} [TopologicalSpace X] [Topolog
   | succ n ih =>
     intro y hy
     have hex : ∃ b < f y, (n : ℕ∞) ≤ Order.height b := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have h1 : Order.height (f y) ≤ n := by
         rw [Order.height_eq_iSup_lt_height]
         exact iSup₂_le fun b hb => Order.add_one_le_of_lt (hne b hb)
@@ -112,7 +111,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.HTLat GlobalTheory.Published.AbVarRed GlobalTheory.CechPic GlobalTheory.AV GlobalTheory.AV.AbVar
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AV.DimLe
 

@@ -201,19 +201,6 @@ theorem pw_pull (H : LB X) (f : Y ⟶ X) (a : ℤ) :
     (AbLaw.pw H a).pull f = AbLaw.pw (H.pull f) a :=
   _root_.GlobalTheory.Algebraise.pw_pull H f a
 
-theorem cocycle_on {H : LB X} (hH : H.IsLB) (i j k : H.ι) {W : X.Opens} (hi : W ≤ H.U i)
-    (hj : W ≤ H.U j) (hk : W ≤ H.U k) :
-    res (le_inf hi hj) (H.g i j) * res (le_inf hj hk) (H.g j k) = res (le_inf hi hk) (H.g i k) := by
-  have h := congrArg (res (le_inf (le_inf hi hj) hk : W ≤ H.U i ⊓ H.U j ⊓ H.U k)) (hH.cocycle i j k)
-  simpa only [map_mul, res_res] using h
-
-theorem rel_on {H : LB X} (hH : H.IsLB) (i k i' k' : H.ι) {W : X.Opens} (hi : W ≤ H.U i)
-    (hk : W ≤ H.U k) (hi' : W ≤ H.U i') (hk' : W ≤ H.U k') :
-    res (le_inf hi hk) (H.g i k) = res (le_inf hi hi') (H.g i i') * (res (le_inf hk hk') (H.g k k'))⁻¹ *
-      res (le_inf hi' hk') (H.g i' k') := by
-  rw [mul_right_comm, eq_mul_inv_iff_mul_eq, cocycle_on hH i k k' hi hk hk',
-    cocycle_on hH i i' k' hi hi' hk']
-
 theorem lbIso_tw {H : LB X} (hH : H.IsLB) (t : ℤ) : LBIso (AbLaw.pw H (t + 1)) (tw H H t) := by
   apply _root_.GlobalTheory.Algebraise.lbIso_tw <;> assumption
 

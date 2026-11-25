@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.HJSpanLtZero
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramActLStmt
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramActRRep
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
@@ -495,16 +496,7 @@ section OOL
 variable {D : D7} (X : HidaSetting D)
 
 theorem psiInfU_one' (w : D.what₂.Word) : X.psiInfU w 1 = 1 := by
-  have h1m : (1 : X.B.I.Ginf) ∈ X.SinfU w := hinf_le_sinf X w 1 (Hinf X w).one_mem
-  have h1 : ∀ x, X.Wu w x = X.psiInfU w 1 • X.Wu w x := fun x => by
-    have e : X.Wu w (1 * x) = X.psiInfU w 1 • X.piU w 1 (X.Wu w x) := (X.Wu_spec w).1 1 h1m x
-    rwa [one_mul, (X.piU_rep w).1, ContinuousLinearMap.one_apply] at e
-  by_contra hne
-  have h0 : ∀ x, X.Wu w x = 0 := fun x => by
-    have h2 : (1 - X.psiInfU w 1) • X.Wu w x = 0 := by rw [sub_smul, one_smul, ← h1 x, sub_self]
-    exact (smul_eq_zero.1 h2).resolve_left (sub_ne_zero.2 (Ne.symm hne))
-  have := (X.Wu_spec w).2.2.2.2
-  simp [h0] at this
+  apply _root_.Formalism.L2.S.Pv.TauS.psiInfU_one <;> assumption
 
 theorem wu_left (w : D.what₂.Word) {s : X.B.I.Ginf} (hs : s ∈ Hinf X w) (x : X.B.I.Ginf) :
     X.Wu w (s * x) = X.piU w s (X.Wu w x) := by

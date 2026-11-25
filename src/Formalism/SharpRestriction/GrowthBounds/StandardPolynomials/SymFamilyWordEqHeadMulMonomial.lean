@@ -180,8 +180,8 @@ theorem symPolBL (h2 : 2 ≤ numSeg X.TT) {E : ℝ} (β : GlobalTheory X) (hβ :
   intro μ hμ x
   have hwh : IsWeightedHomogeneous (wLet X x) (symFam (KK O) X.p C0 CE1 CE2 X β s)
       (∑ j, TD C0 CE1 CE2 X j (β j) (wLet X x)) :=
-    IsWeightedHomogeneous.prod _ _ _ (fun j _ => ioBlock_wh' C0 CE1 CE2 X j O 0 (β j) (wLet X x) (fun _ _ _ => rfl)
-      (fun _ => rfl) rfl (s j) (hs j))
+    IsWeightedHomogeneous.prod _ _ _ (fun j _ => ioBlock_wh C0 CE1 CE2 X j O (β j) (wLet X x) (fun _ _ _ => rfl)
+      (fun _ => rfl) rfl (s j) (fun ω' ωL h1 h2 h3 => hs j ω' ωL ⟨h1, h2, h3⟩))
   have h1 := hwh (mem_support_iff.1 (Finset.mem_coe.1 hμ))
   rw [weight_wLet] at h1
   rw [h1, Finset.sum_congr rfl fun j _ => TD_wLetBL C0 CE1 CE2 X j x (β j) (hβ j),
@@ -192,14 +192,15 @@ theorem symNdBL (β : GlobalTheory X) (s : Syms O C0 CE1 CE2 X) (hs : BalHom O C
     IsWeightedHomogeneous (wN X) (symFam (KK O) X.p C0 CE1 CE2 X β s) (ordFam C0 CE1 CE2 X β) := by
   have hwh : IsWeightedHomogeneous (wN X) (symFam (KK O) X.p C0 CE1 CE2 X β s)
       (∑ j, TD C0 CE1 CE2 X j (β j) (wN X)) :=
-    IsWeightedHomogeneous.prod _ _ _ (fun j _ => ioBlock_wh' C0 CE1 CE2 X j O 0 (β j) (wN X)
+    IsWeightedHomogeneous.prod _ _ _ (fun j _ => ioBlock_wh C0 CE1 CE2 X j O (β j) (wN X)
       (fun x c c' => by
         rcases x with ⟨t, bb⟩
         cases bb
         · rw [wN_covS, wN_covS]
         · rw [wN_vecS, wN_vecS])
       (fun l => by rw [normal_weight_vector_zero_eq_zero, normal_weight_covector_zero, wN_vecS, wN_covS])
-      (by rw [normal_weight_vector_zero_eq_zero, normal_weight_covector_zero, wN_vecS, wN_covS]) (s j) (hs j))
+      (by rw [normal_weight_vector_zero_eq_zero, normal_weight_covector_zero, wN_vecS, wN_covS])
+      (s j) (fun ω' ωL h1 h2 h3 => hs j ω' ωL ⟨h1, h2, h3⟩))
   have e : ∑ j, TD C0 CE1 CE2 X j (β j) (wN X) = ordFam C0 CE1 CE2 X β :=
     Finset.sum_congr rfl fun j _ => TD_wN C0 CE1 CE2 X j (β j)
   rwa [e] at hwh

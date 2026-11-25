@@ -47,7 +47,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Formalism.L2.Pj GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatCore GlobalTheory.LineNorm GlobalTheory.FlatModel
 open MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv actR)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

@@ -65,8 +65,6 @@ namespace GlobalTheory.ThetaTrace
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section General
 
 variable {S : Scheme.{0}} (A : Over S) [GrpObj A]

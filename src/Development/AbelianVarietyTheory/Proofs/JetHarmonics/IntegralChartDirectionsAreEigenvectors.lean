@@ -205,8 +205,6 @@ end Law
 
 section Scal
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {X0 : Scheme.{0}} {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {G : Over X0} [GrpObj G] [IsCommMonObj G]
 
 theorem smT_prod {κ : Type} (s : Finset κ) (a : S) (u : κ → (overAt x0 (DualNumber S) ⟶ G)) :
@@ -247,8 +245,6 @@ end Scal
 
 section Scal2
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {X0 : Scheme.{0}} {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {G : Over X0} [GrpObj G]
 
 theorem smT_zero_jetTan {κ : Type} [DecidableEq κ] (ℓ : κ) (m : ℕ)
@@ -282,8 +278,6 @@ theorem smT_zero_jetTan {κ : Type} [DecidableEq κ] (ℓ : κ) (m : ℕ)
 end Scal2
 
 section Pts
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) {d : ℕ}
@@ -400,8 +394,6 @@ end Pts
 
 section Sep
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {X0 : Scheme.{0}} {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {G : Over X0} [GrpObj G] [IsCommMonObj G]
 
 theorem localization_quotient_separated_dvd {T A : Type} [DecidableEq T] (φ : A → (G ⟶ G)) (hφ : ∀ a, IsMonHom (φ a)) (χ : T → A → S)
@@ -477,8 +469,6 @@ end Sep
 
 section Pts2
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S] {y : FrPt Xo c S} {d : ℕ}
 variable {x : ∀ m, jO y d m 1 ⟶ Xo.univ.t.G}
@@ -533,8 +523,6 @@ theorem Tv_act (a : 𝓞 E) (act : Fin d → MvPowerSeries (Fin 1 × Fin d) S)
 end Pts2
 
 section Main
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem embK_sep {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
     (τ τ' : E →+* ℂ) (h : τ ≠ τ') : ∃ a : 𝓞 E, embK c τ a ≠ embK c τ' a := by

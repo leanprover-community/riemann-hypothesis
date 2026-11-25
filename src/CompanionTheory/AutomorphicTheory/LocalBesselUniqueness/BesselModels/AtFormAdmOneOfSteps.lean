@@ -104,8 +104,7 @@ theorem shape_of (hU : UniqGap) (hPsi : PsiConst) (hSch : SchurH) (hBC : Compani
   obtain ⟨-, -, -, hBC4⟩ := hBC hIn k r ε lam h H σ w0 Wp z c u π μW μN μG νq hS
   obtain ⟨x0, hx0, y0, hy0, hne⟩ := hnz
   obtain ⟨ξ0, hξ0⟩ : ∃ ξ, be z c π σ μW μN x0 y0 ξ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (ContinuousLinearMap.ext hcon)
   have hB0 := hBB hIn k r ε lam h H σ w0 Wp z c u π μW μN μG νq hS y0 (Or.inl hy0) ξ0
   set B0 : H → Wp := fun x => be z c π σ μW μN x y0 ξ0 with hB0def

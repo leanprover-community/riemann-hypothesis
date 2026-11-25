@@ -113,7 +113,7 @@ theorem occurs (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFiniteness)
     rw [deg _ _ mS, (hA 1).sum_fst, Fintype.card_fin]
   let e₁ := Fintype.equivOfCardEq c₁
   let e₂ := Fintype.equivOfCardEq c₂
-  obtain ⟨Φ⟩ := GlobalTheory.T.parabolicProduct_equiv_product_of_partition k s (fun a => (u a).1) σ S (d 0) (d 1) e₃ e₁ e₂
+  obtain ⟨Φ⟩ := _root_.GlobalTheory.ProdReorder.reorder_split k s (fun a => (u a).1) σ S (d 0) (d 1) e₃ e₁ e₂
     (fun a b ha hb n _ _ f f' => commute_pair hG hBZ hZ (fun i => u (![a, b] i)) (hc a) (hc b)
       (hU _ (mem0 a ha) _ (mem1 b hb)) f f')
   have hsupp : ∀ (T : Finset (Fin s)) (C : Multiset (IrrGL (k := k))), T.val.map u = C → ∀ (n : ℕ)

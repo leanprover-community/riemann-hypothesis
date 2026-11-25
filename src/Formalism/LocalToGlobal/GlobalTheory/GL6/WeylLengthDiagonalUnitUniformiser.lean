@@ -383,8 +383,7 @@ theorem weighted_homogeneous_rename_perm (σ : Equiv.Perm (Fin r)) (f : MvPolyno
   classical
   intro d hd
   have : ∃ u, Finsupp.mapDomain (t2wE σ) u = d ∧ AddMonoidAlgebra.coeff f u ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hd
     apply MvPolynomial.coeff_rename_eq_zero
     exact hcon
@@ -805,19 +804,6 @@ section FnOf
 open Formalism.L2.Forms
 
 variable {ι : Type} [Fintype ι] {n : ℕ}
-
-def t2wDet : MvPolynomial (ι × Fin n × Fin n) ℂ :=
-  ∏ τ : ι, (Matrix.of fun a b : Fin n => (MvPolynomial.X (τ, a, b) : MvPolynomial (ι × Fin n × Fin n) ℂ)).det
-
-theorem eval_det_product (pt : ι × Fin n × Fin n → ℂ) :
-    MvPolynomial.eval pt (t2wDet (ι := ι) (n := n)) = ∏ τ : ι, (Matrix.of fun a b : Fin n => pt (τ, a, b)).det := by
-  unfold t2wDet
-  rw [map_prod]
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [RingHom.map_det]
-  congr 1
-  ext a b
-  simp
 
 theorem polynomial_function_frames_injective (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → ℤ) (M : ι → Matrix (Fin n) (Fin n) ℂ)
     (hM : ∀ τ, IsUnit (M τ).det) : Function.Injective (fnOf G s M) := by

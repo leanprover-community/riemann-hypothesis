@@ -52,11 +52,7 @@ theorem levPos_inj (k r' : ℕ) : Function.Injective (levPos k 1 r') := by
 
 theorem lev_mm (k r' : ℕ) (g : Mat k r') (s t : Fin (2 * r' + k + 1)) :
     ιLev k 1 r' g (levPos k 1 r' s) (levPos k 1 r' t) = g s t := by
-  have hs := s.isLt
-  have ht := t.isLt
-  have h3 : s.val ≤ 2 * r' + k := by omega
-  have h4 : t.val ≤ 2 * r' + k := by omega
-  simp [ιLev, levPos, h3, h4]
+  apply _root_.Formalism.FourierDecayAlt.P.B2x9.lev_mid <;> assumption
 
 theorem lev_mn (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (hp : mid k r' p) (hq : ¬ mid k r' q) :
     ιLev k 1 r' g p q = 0 := by

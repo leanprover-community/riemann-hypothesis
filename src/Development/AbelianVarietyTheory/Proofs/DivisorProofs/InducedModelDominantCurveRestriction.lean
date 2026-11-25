@@ -49,7 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemConeOfMem
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsOfInduces
 import Formalism.LocalRingCardinality.SpanPowerMembership.HasStrictFDerivAtExpZero
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
@@ -61,7 +60,7 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic
-open Formalism.BasicNotions GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.Mean4O GlobalTheory.CoverNorm GlobalTheory.VertForm
+open Formalism.BasicNotions GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.Mean4O GlobalTheory.VertForm
 
 namespace GlobalTheory.NefHodgeTateAt
 

@@ -60,7 +60,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc GlobalTheory.TorusPart
 open Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Poinc.FibLat
 

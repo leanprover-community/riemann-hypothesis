@@ -1197,8 +1197,7 @@ theorem exists_GL_lastRow [NeZero n] (l : Fin n → κ) (hl : l ≠ 0) :
     ∃ A : GL (Fin n) κ, ∀ j, (A : Matrix (Fin n) (Fin n) κ) (lastIdx n) j = l j := by
   classical
   obtain ⟨k, hk⟩ : ∃ k, l k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hl (funext h)
   let M : Matrix (Fin n) (Fin n) κ := Matrix.of fun i j =>
     if i = lastIdx n then l j else if i = k then (if j = lastIdx n then 1 else 0) else (if j = i then 1 else 0)

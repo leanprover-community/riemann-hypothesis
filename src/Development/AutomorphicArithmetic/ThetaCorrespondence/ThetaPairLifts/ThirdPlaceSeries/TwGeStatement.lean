@@ -111,7 +111,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 section Generic
@@ -235,8 +234,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.BigOn.Exp
@@ -321,8 +318,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.BigOn.LevVal
 
 theorem envV_chi_mem {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
@@ -356,7 +351,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.LevVal
 theorem chi_val_alt : _root_.GlobalTheory.BigOn.Exp.TwistConditions fun Fm x hx i p w j => ∀ k, ∃ a : (Fm.D x i).what₂.LL,
   (Fm.D x i).what₂.embLL a = (((GlobalTheory.TraceIncl.envV (R2 p) j ((R2 p).mu ((Fm.D x i).plEq w))).χ k : ℂˣ) : ℂ) :=
@@ -396,7 +390,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.TieLift
 theorem lift_principal_alt : _root_.GlobalTheory.BigOn.Exp.TwistConditions fun Fm x hx i p w j => ∀ g0 : G0 (R2 p).Pg (Fm.D x i).R.r,
     ∃ κ', Formalism.IndefR.Lev.IsLevelLift (Wc (Fm.D x i) j) ((R2 p).βW j) ((R2 p).datWp j (R2 p).triv) g0 κ' :=
@@ -436,7 +429,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 theorem adForm_eq_levelTrace_singleSeries' : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels.SeriesRat → _root_.GlobalTheory.BigOn.Exp.TwistConditions fun Fm x hx i p w j => ∀ h ∈ GfC (Vc (Fm.D x i) j), ∀ w' : ((R2 p).cV j).W, InCoefLat (R2 p) j h w' →
@@ -491,8 +483,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem _root_.GlobalTheory.T.adForm_eq_levelTrace_singleSeries : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → GlobalTheory.SerStd.SeriesRatS → _root_.GlobalTheory.BigOn.Exp.TwistConditions fun Fm x hx i p w j => ∀ h ∈ GfC (Vc (Fm.D x i) j), ∀ w' : ((R2 p).cV j).W, InCoefLat (R2 p) j h w' →
   ∃ y ∈ Submodule.span (Fm.D x i).what₂.LL ((p.nexp.fi j).e '' ((p.Sx.A ((j : ℕ) + 1)).WK : Set _)), ∀ v : ∀ τ, lowT ((R2 p).MW j (sg0 (Fm.D x i) p.P.A3.A)) τ, adForm (R2 p) j y (fun τ => v τ) = levelTrace (R2 p) j (F2 p).P0 (F2 p).ψ0⁻¹ (singleSeries (R2 p) j ((R2 p).ωP j ((R2 p).mu ((Fm.D x i).plEq w))) ((R2 p).vP j ((R2 p).mu ((Fm.D x i).plEq w))) h w' v) := by
   first | exact @_root_.GlobalTheory.BigOn.Exp.adForm_eq_levelTrace_singleSeries'
@@ -514,8 +504,6 @@ open Formalism.IndefR.FWT GlobalTheory.OntoChain GlobalTheory.RealIndexBound Glo
 open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eExt incl)
 open scoped TensorProduct
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -579,8 +567,7 @@ theorem readExt_scalar_mem_range
     rw [e3, r₁, r₂, h, smul_smul, smul_smul, inv_mul_cancel_right₀ (hδ _ hd₂), sub_self]
   have hc := Fintype.linearIndependent_iff.1 (hF _ v v.linearIndependent) _ h0
   obtain ⟨a, ha⟩ : ∃ a, c₂ a ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply h₂
     have : δ₂ • readExt rd eL hL x₂ = 0 := by rw [← r₂]; simp [hne]
     exact (smul_eq_zero.1 this).resolve_left (hδ _ hd₂)
@@ -634,7 +621,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.BigOn.Exp
 section ScalarGeneric
@@ -775,8 +761,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.BigOn.Exp.TwCx
 
 open GlobalTheory.ExportSeries Formalism.IndefR.Datum GlobalTheory.BigOn.Exp.TupLe GlobalTheory.BigOn.Exp.SerBase
@@ -822,7 +806,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.TwCx
 open GlobalTheory.ExportSeries Formalism.IndefR.Datum GlobalTheory.BigOn.Exp.TupLe GlobalTheory.BigOn.Exp.SerBase
 open GlobalTheory.ConjTwist (BaseOf UnitOff ser)
@@ -985,7 +968,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eEx
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp
 theorem twGe_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt →
     GlobalTheory.SerStd.SeriesRatS → _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.TwistCharacter → _root_.GlobalTheory.BigOn.Exp.TwistLowerBound := by

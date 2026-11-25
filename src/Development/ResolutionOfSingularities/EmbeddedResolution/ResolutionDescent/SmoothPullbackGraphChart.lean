@@ -315,26 +315,23 @@ instance instIsOpenImmersionGraphChartHom (k : Type u) [Field k] (M n q : ℕ)
     IsOpenImmersion (basicOpenToSpecGraphAlgebra k M n q F s) :=
   isOpenImmersion_basicOpenToSpecGraphAlgebra k M n q F s
 
-private theorem base_comp_apply {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (x : ↥X) :
-    ⇑(f ≫ g).base x = ⇑g.base (⇑f.base x) := rfl
-
 private theorem range_base_comp {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) :
     Set.range ⇑(f ≫ g).base = ⇑g.base '' Set.range ⇑f.base := by
   ext z
   constructor
   · rintro ⟨x, rfl⟩
-    exact ⟨⇑f.base x, ⟨x, rfl⟩, (base_comp_apply f g x).symm⟩
+    exact ⟨⇑f.base x, ⟨x, rfl⟩, (Scheme.Hom.comp_apply f g x).symm⟩
   · rintro ⟨y, ⟨x, rfl⟩, rfl⟩
-    exact ⟨x, base_comp_apply f g x⟩
+    exact ⟨x, Scheme.Hom.comp_apply f g x⟩
 
 private theorem image_base_comp {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) (S : Set ↥X) :
     ⇑(f ≫ g).base '' S = ⇑g.base '' (⇑f.base '' S) := by
   ext z
   constructor
   · rintro ⟨x, hx, rfl⟩
-    exact ⟨⇑f.base x, ⟨x, hx, rfl⟩, (base_comp_apply f g x).symm⟩
+    exact ⟨⇑f.base x, ⟨x, hx, rfl⟩, (Scheme.Hom.comp_apply f g x).symm⟩
   · rintro ⟨y, ⟨x, hx, rfl⟩, rfl⟩
-    exact ⟨x, hx, base_comp_apply f g x⟩
+    exact ⟨x, hx, Scheme.Hom.comp_apply f g x⟩
 
 private theorem image_hom_preimage_eq {X Y : Scheme.{u}} (e : X ≅ Y) (U : Y.Opens) :
     ⇑e.hom.base '' ((e.hom ⁻¹ᵁ U : X.Opens) : Set ↥X) = (U : Set ↥Y) := by

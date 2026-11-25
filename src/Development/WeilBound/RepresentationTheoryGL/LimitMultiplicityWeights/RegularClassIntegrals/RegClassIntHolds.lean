@@ -86,7 +86,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -203,7 +202,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -227,7 +225,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 
 namespace GlobalTheory.CompanionTheory.AutCover
@@ -281,7 +278,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -346,7 +342,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -372,7 +367,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -668,7 +662,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -693,7 +686,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Matrix
 open scoped Pointwise
@@ -704,32 +696,8 @@ namespace MainStatements.WeightKernel.RegInt
 
 variable {D : D7} {V : HSp D} {r : ℕ}
 
-theorem cone_lower {c : ℝ} (hc : 0 < c) : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ t ∈ GlobalTheory.SiegelSet.cone r c, ∀ i, c₀ ≤ t i := by
-  set d := min c 1 with hd
-  have hd0 : 0 < d := lt_min hc one_pos
-  have hd1 : d ≤ 1 := min_le_right _ _
-  refine ⟨d ^ r, pow_pos hd0 _, fun t ht i => ?_⟩
-  have key : ∀ k : ℕ, ∀ i : Fin r, r - i.val = k + 1 → d ^ (k + 1) ≤ t i := by
-    intro k
-    induction k with
-    | zero =>
-      intro i hi
-      have : i.val + 1 = r := by have := i.2; omega
-      rw [zero_add, pow_one]
-      exact (min_le_left c 1).trans (ht.2.2 i this)
-    | succ k ih =>
-      intro i hi
-      have hlt : i.val + 1 < r := by have := i.2; omega
-      have h1 := ih ⟨i.val + 1, hlt⟩ (by simp only; omega)
-      have h2 := ht.2.1 i ⟨i.val + 1, hlt⟩ rfl
-      have h3 := ht.1 ⟨i.val + 1, hlt⟩
-      calc d ^ (k + 1 + 1) = d * d ^ (k + 1) := by ring
-        _ ≤ d * t ⟨i.val + 1, hlt⟩ := by gcongr
-        _ ≤ c * t ⟨i.val + 1, hlt⟩ := by gcongr; exact min_le_left _ _
-        _ ≤ t i := h2
-  have hi := i.2
-  obtain ⟨k, hk⟩ : ∃ k, r - i.val = k + 1 := ⟨r - i.val - 1, by omega⟩
-  exact (pow_le_pow_of_le_one hd0.le hd1 (by omega)).trans (key k i hk)
+theorem cone_lower {c : ℝ} (hc : 0 < c) : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ t ∈ GlobalTheory.SiegelSet.cone r c, ∀ i, c₀ ≤ t i :=
+  by apply _root_.GlobalTheory.CompanionTheory.TorusCount.exists_cone_lower; assumption
 
 theorem le_pow_of_root {t : Fin r → ℝ} (ht : ∀ i, 0 < t i) {ρ : ℝ} (hρ : 1 ≤ ρ) (h : ∀ j, root t j ≤ ρ) (i : Fin r) :
     t i ≤ ρ ^ r := by
@@ -924,7 +892,7 @@ theorem class_bound {X Y : Matrix (Fin V.rank) (Fin r) D.host.E} (hW : IsWittFra
   have hWc : IsCompact W := hC₀.mul hK
   set C₁ : Set (GA D V) := W * tsupport f * W⁻¹ with hC₁
   have hC₁c : IsCompact C₁ := (hWc.mul hS).mul hWc.inv
-  obtain ⟨A₁, B₁, hcnt⟩ := GlobalTheory.T.finite_lattice_points_in_siegel_set_bound D V r X Y hW c hc C₁ hC₁c
+  obtain ⟨A₁, B₁, hcnt⟩ := _root_.GlobalTheory.CompanionTheory.TorusCount.torus_count D V r X Y hW c hc C₁ hC₁c
   have hdec := fun j : Fin r => MainStatements.WeightKernel.Dec.decay_holds D V r X Y hW c hc j f hf
     (hcusp _ (IsoFlag.proper_single _)) (W⁻¹ * C₁) W (hWc.inv.mul hC₁c) hWc
   choose A hA using hdec
@@ -1129,7 +1097,6 @@ open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.Aut
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData NoFixed)
 open GlobalTheory.TrMult GlobalTheory.TruncKer
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace MainStatements.WeightKernel
 

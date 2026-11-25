@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginPointCompare
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConeTangentLiftInChart
@@ -468,16 +469,8 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 theorem log_h_torus (L : HermLine ι) (c : K → ℂ) (z : (Σ k, ι k) → ℂ) (hc : ∀ k, c k ≠ 0)
     (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) :
     Real.log (L.h (torusSmul c z)) = ∑ k, (L.a k : ℝ) * Real.log ‖c k‖ + Real.log (L.h z) := by
-  have hsm : L.h (torusSmul c z) = (∏ k, ‖c k‖ ^ L.a k) * L.h z := L.smul c z hc
-  have hpos : 0 < L.h z := L.pos z hz
-  have hprod : ∀ k ∈ (Finset.univ : Finset K), ‖c k‖ ^ L.a k ≠ 0 := by
-    intro k _
-    exact zpow_ne_zero _ (norm_ne_zero_iff.mpr (hc k))
-  rw [hsm, Real.log_mul (Finset.prod_ne_zero_iff.mpr hprod) hpos.ne', Real.log_prod hprod]
-  congr 1
-  apply Finset.sum_congr rfl
-  intro k _
-  rw [Real.log_zpow]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.OrArch.log_h_torus <;> assumption
 
 theorem contDiffAt_log_h {L : HermLine ι} (hL : IsSmoothHerm L) (z : (Σ k, ι k) → ℂ)
     (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) : ContDiffAt ℝ 2 (fun z => Real.log (L.h z)) z := by
@@ -843,15 +836,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
-
-namespace GlobalTheory.CompanionTheory.Ar.Top
-
-theorem tower_A1_of_real_tower : PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II →
-    ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (R : RealTower T),
-      R.Smooth → R.Flat → R.Pos → T.A1 :=
-  @RootFieldNumerics.real_tower_mean_slope_condition
-
-end GlobalTheory.CompanionTheory.Ar.Top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerA1 =====

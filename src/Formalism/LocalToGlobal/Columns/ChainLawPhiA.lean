@@ -94,8 +94,7 @@ def clPfMul (N : ℕ) (X Y : ℕ → ℕ → k) : ℕ → ℕ → k := fun p p' 
 
 theorem clPf_exists_of_sum {N : ℕ} {X Y : ℕ → ℕ → k} {p p' : ℕ} (h : clPfMul N X Y p p' ≠ 0) :
     ∃ u, u < N ∧ X p u ≠ 0 ∧ Y u p' ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   unfold clPfMul
   apply Finset.sum_eq_zero

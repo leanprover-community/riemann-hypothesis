@@ -40,6 +40,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsRemoveBlockArrow
 
 @[expose] public section
 
@@ -342,21 +343,7 @@ theorem odd_sLen : Odd (sLen D) := by
   exact ⟨a + 3, by unfold sLen; omega⟩
 
 theorem odd_rkV_iff (i j : ℕ) : Odd (rkV D i j) ↔ ¬ Odd (i + j) := by
-  have hr := _root_.Formalism.L2.Theta.r_odd D
-  have ht := D.R.t_odd
-  have hs := odd_sLen D
-  obtain ⟨a, ha⟩ := hr
-  obtain ⟨b, hb⟩ := ht
-  obtain ⟨c, hc⟩ := hs
-  unfold rkV
-  rw [hc, hb, ha]
-  have e1 : j * (2 * b + 1) = 2 * (j * b) + j := by ring
-  have e2 : i * (2 * c + 1) = 2 * (i * c) + i := by ring
-  rw [e1, e2]
-  generalize j * b = A
-  generalize i * c = B
-  simp only [Nat.odd_iff]
-  omega
+  apply _root_.GlobalTheory.RemoveBlock.odd_rkV <;> assumption
 
 end GlobalTheory.GridParD
 

@@ -48,8 +48,7 @@ theorem finTyp_invariant_form_of_isotIn : ∀ (D : D7) (n : ℕ) (A : Type) [Add
   intro D n A _ _ ρ C B hlin hherm hpos _hstab hinv π hne
 
   obtain ⟨Φ, ⟨hΦe, hΦC⟩, hΦne⟩ : ∃ Φ : π.S →ₗ[ℂ] A, (IsEqvA ρ π Φ ∧ LinearMap.range Φ ≤ C) ∧ LinearMap.range Φ ≠ ⊥ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hne
     unfold isotIn
     refine iSup_eq_bot.2 fun Φ => iSup_eq_bot.2 fun hΦ => hcon Φ hΦ

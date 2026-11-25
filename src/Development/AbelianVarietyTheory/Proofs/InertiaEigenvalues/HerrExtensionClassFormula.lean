@@ -51,7 +51,6 @@ namespace GlobalTheory.HerrExtClass
 
 
 set_option synthInstance.maxHeartbeats 200000 in
-set_option maxHeartbeats 4000000 in
 theorem herr_extension_class_formula : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), Formalism.MainNotions.HerrComplexNaturality.HerrExtensionClass D HW F := by
   intro D HW F
   unfold Formalism.MainNotions.HerrComplexNaturality.HerrExtensionClass Formalism.MainNotions.RamifiedCoefficientChains.adm16

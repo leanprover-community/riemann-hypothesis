@@ -1,5 +1,7 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.BinomialPreservesDiagonalStable
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ContravariantIsotypicOrthogonal
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.MemWeightSpaceIffDiagonalRep
@@ -66,43 +68,17 @@ theorem exists_highest_weight_vector_findim {n : ℕ} {K V : Type*} [Field K] [C
   have hP : P (raisingFunctional (mu + rootW a b)) := ⟨_, fun h => hne0 (by rw [h, Submodule.mem_bot] at hs; exact hs), rfl⟩
   have h1 := hmax _ hP
   rw [raising_functional_add_root] at h1
-  have h2 : (a.val : ℤ) < b.val := by exact_mod_cast hab
   omega
 
 theorem isotypic_sum_stable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
     (a b : Fin n) {x : V} (hx : x ∈ ⨆ mu : Fin n → ℤ, isoSub E mu) : E a b x ∈ ⨆ mu : Fin n → ℤ, isoSub E mu := by
-  have key : ∀ (mu : Fin n → ℤ), ∀ y ∈ isoSub E mu, E a b y ∈ isoSub E mu := by
-    intro mu y hy
-    unfold isoSub at hy ⊢
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨u, hu, v, hv, rfl⟩ := hy
-      apply Submodule.subset_span
-      exact ⟨E a b * u, (Umon E).mul_mem (Submonoid.subset_closure ⟨(a, b), rfl⟩) hu, v, hv, rfl⟩
-    | zero => simp
-    | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-    | smul c x _ hx => rw [map_smul]; exact Submodule.smul_mem _ c hx
-  have hle : (⨆ mu : Fin n → ℤ, isoSub E mu) ≤ (⨆ mu : Fin n → ℤ, isoSub E mu).comap (E a b) :=
-    iSup_le fun mu y hy => Submodule.mem_comap.2 (Submodule.mem_iSup_of_mem mu (key mu y hy))
-  exact hle hx
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.isotypic_sum_stable_gl_operator <;> assumption
 
 theorem complete_reducibility_findim (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (n : ℕ) (E : GLOps n K V) (hE : IsGLRep E) :
     (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤ := by
-  obtain ⟨U', hc, hst⟩ := h2 K V n E hE (⨆ mu : Fin n → ℤ, isoSub E mu)
-    (fun a b x hx => isotypic_sum_stable E a b hx)
-  have hbot : U' = ⊥ := by
-    by_contra hne
-    have : Nontrivial U' := Submodule.nontrivial_iff_ne_bot.2 hne
-    obtain ⟨mu, v, hv⟩ := exists_highest_weight_vector_findim (restricted_isGLRep E U' hst hE)
-    have hv' := (restricted_isHWV_iff E U' hst mu v).1 hv
-    have h1 : (v : V) ∈ ⨆ mu : Fin n → ℤ, isoSub E mu :=
-      Submodule.mem_iSup_of_mem mu (Submodule.subset_span ⟨1, (Umon E).one_mem, (v : V), hv', rfl⟩)
-    have h3 : (v : V) ∈ (⨆ mu : Fin n → ℤ, isoSub E mu) ⊓ U' := ⟨h1, v.2⟩
-    rw [hc.inf_eq_bot] at h3
-    exact hv'.1 ((Submodule.mem_bot K).1 h3)
-  have := hc.sup_eq_top
-  rwa [hbot, sup_bot_eq] at this
+  intros
+  apply _root_.Formalism.MainNotions.G.Joints.isoSub_top <;> assumption
 
 private theorem restrictStableOperators_apply_coe {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
     (W : Submodule K V) (h : ∀ a b, ∀ x ∈ W, E a b x ∈ W) (a b : Fin n) (x : W) :
@@ -128,12 +104,10 @@ private theorem weight_components_mem_of_sum_mem {n : ℕ} {K V : Type*} [Field 
         rw [Finsupp.sum, Finset.sum_subset hone (fun x _ hx => by simpa using hx), Finset.sum_singleton]
       rw [← hsum]; exact hs
     obtain ⟨nu, hnu, hne⟩ : ∃ nu ∈ f.support, nu ≠ mu := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hone fun x hx => Finset.mem_singleton.2 (hc x hx)
     obtain ⟨a, ha⟩ : ∃ a, mu a ≠ nu a := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hne (funext fun a => (hc a).symm)
     let g : (Fin n → ℤ) →₀ V := Finsupp.onFinset f.support
       (fun mu' => (((mu' a : ℤ) : K) - ((nu a : ℤ) : K)) • f mu')

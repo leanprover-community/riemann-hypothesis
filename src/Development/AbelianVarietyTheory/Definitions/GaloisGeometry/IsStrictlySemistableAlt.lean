@@ -31,8 +31,6 @@ section Mu
 
 variable (n : ℕ) [NeZero n]
 
-def Mu (A : Type) [CommRing A] : Type := Additive (rootsOfUnity n A)
-
 
 end Mu
 

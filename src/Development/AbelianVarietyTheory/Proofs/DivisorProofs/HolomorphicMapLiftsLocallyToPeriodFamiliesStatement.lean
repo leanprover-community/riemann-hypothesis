@@ -109,14 +109,6 @@ private def reHermBilin {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) : LinearMap.
       simp only [hermForm, star_smul, star_trivial, Matrix.mulVec_smul, dotProduct_smul]
       simp)
 
-private theorem hermForm_swap' {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian) (z w : Fin g → ℂ) :
-    hermForm Hm w z = star (hermForm Hm z w) := by
-  simp only [hermForm, dotProduct, Matrix.mulVec, star_sum, star_mul', Finset.mul_sum, star_star, Pi.star_apply]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [← hH.apply i j, star_star]
-  ring
-
 private theorem form_eq_zero_of_im_span' {g : ℕ} (s : Set (Fin g → ℂ)) (hs : Submodule.span ℝ s = ⊤)
     (B : (Fin g → ℂ) → (Fin g → ℂ) → ℂ) (h1 : ∀ z z' w, B (z + z') w = B z w + B z' w)
     (h2 : ∀ (r : ℂ) z w, B (r • z) w = r * B z w) (h3 : ∀ z w w', B z (w + w') = B z w + B z w')
@@ -197,7 +189,7 @@ theorem gram_re_posdef_adj : ∀ (O : Type) [Ring O] (bar : O → O) (g : ℕ) (
     · subst hv; simp
     · exact (hBpos v hv).le
   have hBsymm : ∀ v w, B v w = B w v := fun v w => by
-    rw [hB, hB, hermForm_swap' hH v w]; simp
+    rw [hB, hB, GlobalTheory.AppellHumbertTrivial.hermForm_swap hH v w]; simp
   refine ⟨Matrix.of fun i j => ((B (P (e i)) (P (e j)) : ℝ) : ℂ), ?_, ?_, ?_⟩
   · ext i j
     simp [Matrix.conjTranspose_apply, hBsymm]
@@ -220,8 +212,7 @@ theorem gram_re_posdef_adj : ∀ (O : Type) [Ring O] (bar : O → O) (g : ℕ) (
       ring
     rw [hq, ← hexp, ← hexp]
     have hor : (fun i => (z i).re) ≠ 0 ∨ (fun i => (z i).im) ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply hz
       funext i
       exact Complex.ext (congrFun h.1 i) (congrFun h.2 i)

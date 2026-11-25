@@ -48,8 +48,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme)
 open GlobalTheory.Cris (dp0)
 open GlobalTheory.DeRham
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.DeRhamCpl
 
 open GlobalTheory.PDiv (ModPow)

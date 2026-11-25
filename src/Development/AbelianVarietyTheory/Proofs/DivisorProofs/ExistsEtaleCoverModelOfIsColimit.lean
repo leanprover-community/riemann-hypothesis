@@ -145,8 +145,7 @@ theorem _root_.GlobalTheory.EtaleCoverDescent.exists_etale_cover_model_of_isColi
       exact ha1 i
     exact (Spec.map (a1 i)).isOpenMap.isOpen_range
   have claim : ∃ (k : J) (f : j1 ⟶ k), ∀ p : Spec (D.obj k), Spec.map (D.map f) p ∉ W := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     haveI : ∀ {i i' : Jᵒᵖ} (f : i ⟶ i'), IsAffineHom ((D.op ⋙ Scheme.Spec).map f) :=
       fun f => inferInstanceAs (IsAffineHom (Spec.map (D.map f.unop)))
     obtain ⟨s, hs⟩ := exists_mem_of_isClosed_of_nonempty' (D.op ⋙ Scheme.Spec)

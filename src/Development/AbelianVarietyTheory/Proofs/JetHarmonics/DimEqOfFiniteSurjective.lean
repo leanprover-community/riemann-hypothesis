@@ -73,9 +73,6 @@ abbrev epsAt (t : Sp R ⟶ S) : Over S := Over.mk (spMap (algebraMap R (DualNumb
 def IsTan {G : Over S} [GrpObj G] (t : Sp R ⟶ S) (v : epsAt t ⟶ G) : Prop :=
   spMap (TrivSqZeroExt.fstHom R R R).toRingHom ≫ v.left = (1 : Over.mk t ⟶ G).left
 
-def IsMultiple {G : Over S} {t : Sp R ⟶ S} (x : R) (v w : epsAt t ⟶ G) : Prop :=
-  w.left = spMap (epsScaleR x) ≫ v.left
-
 end Lie
 
 section Line

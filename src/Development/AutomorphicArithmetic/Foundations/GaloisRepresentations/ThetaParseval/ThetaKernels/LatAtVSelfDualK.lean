@@ -80,7 +80,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open UpperTheory.TP.W (GoodK)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ spV₁ alpha beta Num skewGram blk conjU)
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model HasExp SplitsFully Chars)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar borelKw borelSpaceKw
 noncomputable section
 namespace GlobalTheory.LatVacArith
 section Final

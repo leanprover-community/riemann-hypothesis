@@ -1,5 +1,8 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RankOneEmbeddings
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.ReproducingKernels.ProductBoundOfFactorBounds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsFrameTwo
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.StatementNF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
@@ -48,30 +51,11 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {μsec : ℂ → Matri
 
 theorem uw_mul {z : Fin (2 * r + k + 1) → ℂ} {g h : Q.Mx k r} (hg : g ∈ UWset k r z) (hh : h ∈ UWset k r z) :
     g * h ∈ UWset k r z := by
-  obtain ⟨hu, hb, hz⟩ := hg
-  obtain ⟨hu', hb', hz'⟩ := hh
-  refine ⟨?_, fun a => ⟨?_, ?_⟩, ?_⟩
-  · show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-    have e1 : gᴴ * Hpk k r * g = Hpk k r := hu
-    have e2 : hᴴ * Hpk k r * h = Hpk k r := hu'
-    rw [Matrix.conjTranspose_mul]
-    calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [e1, e2]
-  · rw [← Matrix.mulVec_mulVec, (hb' a).1, (hb a).1]
-  · rw [← Matrix.mulVec_mulVec, (hb' a).2, (hb a).2]
-  · rw [← Matrix.mulVec_mulVec, hz', hz]
+  apply _root_.Formalism.FourierDecayAlt.P.SkewHermitianParts.uw_mul <;> assumption
 
 private theorem isUnit_det_of_mem_uwset {z : Fin (2 * r + k + 1) → ℂ} {g : Q.Mx k r} (hg : g ∈ UWset k r z) :
     IsUnit g.det := by
-  have h1 : gᴴ * Hpk k r * g = Hpk k r := hg.1
-  have hH : (Hpk k r).det * (Hpk k r).det = 1 := by
-    rw [← Matrix.det_mul, Formalism.QuantumDeterminants.GBasic.Hpk_sq, Matrix.det_one]
-  have h2 := congrArg Matrix.det h1
-  rw [Matrix.det_mul, Matrix.det_mul] at h2
-  refine isUnit_iff_ne_zero.mpr fun h0 => ?_
-  rw [h0, mul_zero] at h2
-  rw [← h2] at hH
-  simp at hH
+  apply _root_.Formalism.FourierDecayAlt.P.RankOneEmbeddings.In.uw_unit <;> assumption
 
 theorem uw_inv_mul {z : Fin (2 * r + k + 1) → ℂ} {g : Q.Mx k r} (hg : g ∈ UWset k r z) : g⁻¹ * g = 1 :=
   Matrix.nonsing_inv_mul g (isUnit_det_of_mem_uwset hg)
@@ -81,19 +65,7 @@ theorem uw_mul_inv {z : Fin (2 * r + k + 1) → ℂ} {g : Q.Mx k r} (hg : g ∈ 
 
 private theorem inv_mem_uwset_of_mem {z : Fin (2 * r + k + 1) → ℂ} {g : Q.Mx k r} (hg : g ∈ UWset k r z) :
     g⁻¹ ∈ UWset k r z := by
-  have hi : g⁻¹ * g = 1 := uw_inv_mul hg
-  have hi' : g * g⁻¹ = 1 := uw_mul_inv hg
-  have fix : ∀ v, g *ᵥ v = v → g⁻¹ *ᵥ v = v := fun v hv => by
-    calc g⁻¹ *ᵥ v = g⁻¹ *ᵥ (g *ᵥ v) := by rw [hv]
-      _ = v := by rw [Matrix.mulVec_mulVec, hi, Matrix.one_mulVec]
-  obtain ⟨hu, hb, hz⟩ := hg
-  refine ⟨?_, fun a => ⟨fix _ (hb a).1, fix _ (hb a).2⟩, fix _ hz⟩
-  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-  have e1 : gᴴ * Hpk k r * g = Hpk k r := hu
-  have hci : (g⁻¹)ᴴ * gᴴ = 1 := by rw [← Matrix.conjTranspose_mul, hi', Matrix.conjTranspose_one]
-  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [e1]
-    _ = ((g⁻¹)ᴴ * gᴴ) * Hpk k r * (g * g⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hci, hi', Matrix.one_mul, Matrix.mul_one]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.S0.Dec.UW_inv_mem <;> assumption
 
 theorem wd (hπ : IsCRepOn (UWset k r z) π) (hπ' : IsCRepOn (UWset k r z') π') {ζ : ℂ}
     {X : Wq →L[ℂ] Wp} (hX : X ∈ Fib k r z z' μsec π π' ζ)

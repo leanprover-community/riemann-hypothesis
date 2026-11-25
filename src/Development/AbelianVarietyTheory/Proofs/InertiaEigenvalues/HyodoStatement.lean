@@ -324,8 +324,7 @@ theorem hyodo_orth : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf
   by_cases hV : ∃ v : V, v ≠ 0
   · obtain ⟨v, hv⟩ := hV
     obtain ⟨v', hv'⟩ : ∃ v', m v v' ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hv (hD.2.1 v h)
     have hm : Continuous fun p : V × V' => m p.1 p.2 :=
       IsModuleTopology.continuous_bilinear_of_finite_left m

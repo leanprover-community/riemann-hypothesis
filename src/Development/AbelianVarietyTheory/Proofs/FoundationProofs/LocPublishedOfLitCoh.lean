@@ -927,8 +927,7 @@ theorem tors_bound : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebr
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hnm
   refine le_trans ?_ (le_max_right _ _)
   choose x hxO hx using hcob
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   let f : Fin N → T := fun i => cls (fun j => ⟨x i j, hxO i j⟩)
   classical
   obtain ⟨t, ht⟩ := Fintype.exists_lt_card_fiber_of_mul_lt_card f (by rw [Fintype.card_fin]; exact hlt)
@@ -1247,8 +1246,7 @@ theorem dual_classes_unbounded : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → �
       rw [← this, abs_lt]; constructor <;> omega
   obtain ⟨N', z, hNC, hzS, hzne⟩ := hC (t + k0) (by omega) (l ^ t) yF hsel hne
   have hex : ∃ i, ¬ Cob1 c (t + k0) (dual1 W) ⊤ (fun s => ((l : ℕ) : Qbar l) ^ m • z i s) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 := hB (t + k0) N' z hzS hzne h
     have h2 : C * N' ≤ C * B := Nat.mul_le_mul_left C h1
     omega
@@ -1333,8 +1331,7 @@ theorem exists_pair_ne [IsAlgClosed k] [CharZero k] {W : Γ →* GL (Fin 2) k} {
     (hz : ∀ s ∈ H, ∀ g ∈ N, z (s * g * s⁻¹) = (W s : Matrix (Fin 2) (Fin 2) k) *ᵥ z g)
     (hy0 : ∃ g ∈ N, y g ≠ 0) (hz0 : ∃ g ∈ N, z g ≠ 0) :
     ∃ g ∈ N, ∃ h ∈ N, y h 0 * z g 1 - y h 1 * z g 0 ≠ y g 0 * z h 1 - y g 1 * z h 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let Sig : Submodule k ((Fin 2 → k) × (Fin 2 → k)) := Submodule.span k ((fun g => (y g, z g)) '' N)
   have hgen : ∀ g ∈ N, (y g, z g) ∈ Sig := fun g hg => Submodule.subset_span ⟨g, hg, rfl⟩
   have hinv : ∀ s ∈ H, ∀ σ ∈ Sig,
@@ -1586,22 +1583,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-theorem UpperTheory.Reformulated.B.Rb6.norm_le_one_of_mem :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
-    {x : Formalism.ConjugateSelfDual.Qbar l},
-    x ∈ c.O →
-      ‖x‖ ≤
-        (1 :
-          ℝ) := by
-  intro l _ c x hx
-  have h1 : IsIntegral ℤ_[l] (⟨x, hx⟩ : c.O) := Algebra.IsIntegral.isIntegral _
-  have h2 : IsIntegral ℤ_[l] x := h1.map c.O.val
-  have h3 : IsIntegral ℚ_[l] x := h2.tower_top
-  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm, spectralValue_le_one_iff (minpoly.monic h3),
-    minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h2]
-  intro n
-  rw [Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsFurtherRest =====
@@ -1802,15 +1783,13 @@ theorem main : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → ∀ (l : ℕ) [Fact
         ⟨x2, hx2, fun s hs => cv_of_eq n (hx2e s hs)⟩⟩
 
   have hyN : ∃ g ∈ N0g W, y' g ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hyG
     refine _root_.GlobalTheory.Ord2.GrOfKill.gr_of_vanish_on_trivial l Ω e S A W hN y hy fun g hg => ?_
     have := h g hg
     exact (smul_eq_zero.mp this).resolve_left ha1
   have hzN : ∃ g ∈ N0g W, z' g ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hzB
     refine _root_.GlobalTheory.Ord2.h1dual_of_vanish_fix l Ω e S A W hN z hz fun g hg => ?_
     have := h g hg

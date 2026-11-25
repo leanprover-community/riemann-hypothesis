@@ -27,67 +27,21 @@ public import Mathlib.AlgebraicGeometry.Properties
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtNoetherianModelNoetherian
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreRefineLineBundles
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateOmegaCoherent
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelEmbeddingInjective
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Mathlib.Order.CompletePartialOrder
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalence
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagModelStatementHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.MkWeil, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FullTorsionWeilPullback, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptProjectiveModel
@@ -292,16 +246,7 @@ variable {X X' : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of �
 
 theorem pull_map (L : Lat ξ E) (ξ' : Spec (CommRingCat.of Ω) ⟶ X') (g : X' ⟶ X) (φ : E →ₗ[Ω] E') :
     (L.map φ).pull ξ' g (AddMonoidHom.id E') = (L.pull ξ' g (AddMonoidHom.id E)).map φ := by
-  funext p
-  show Submodule.span _ _ = Submodule.map _ (Submodule.span _ _)
-  rw [Submodule.map_span]
-  congr 1
-  ext w
-  constructor
-  · rintro ⟨h, e, ⟨u, hu, rfl⟩, rfl⟩
-    exact ⟨u, ⟨h, u, hu, rfl⟩, rfl⟩
-  · rintro ⟨u, ⟨h, e, he, hu⟩, rfl⟩
-    exact ⟨h, φ e, ⟨e, he, rfl⟩, congrArg φ hu⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagModel.pull_map <;> assumption
 
 theorem span_of_isVBOn {L : Lat ξ E} {T : Set (Cpt ξ)} {r : ℕ} {V : Submodule Ω E} (h : L.IsVBOn T r V)
     {p : Cpt ξ} (hp : p ∈ T) : Submodule.span Ω (L p : Set E) = V := by
@@ -451,7 +396,7 @@ theorem common₂ (Ω : Type) [Field Ω] (κ : Type) [Finite κ] (x : κ → Ω)
     | .inl _ => inferInstanceAs (FiniteDimensional Ω (⊤ : Submodule Ω E₁))
     | .inr b => inferInstanceAs (FiniteDimensional Ω (⊤ : Submodule Ω (E₂ b)))
   obtain ⟨c₀, hc₀⟩ := M.tie.cover ⟨genPt M.ξ, specializes_rfl⟩
-  obtain ⟨κ', hκ', y, M', f, hd, hn, hch, hvb, hnorm⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flag_model_common_refinement ℤ Ω κ x M Unit (fun _ => κ) (fun _ => x)
+  obtain ⟨κ', hκ', y, M', f, hd, hn, hch, hvb, hnorm⟩ := _root_.PositivityTheory.HtPt.Mb.LTopCommon.exists_common_normal_model ℤ Ω κ x M Unit (fun _ => κ) (fun _ => x)
     (B₁ ⊕ B₂) F L (fun _ => ⊤) (fun _ => ⟨c₀, hc₀.1⟩)
     (fun b => match b with
       | .inl b => h₁ b

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianLattices.StatementLat
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

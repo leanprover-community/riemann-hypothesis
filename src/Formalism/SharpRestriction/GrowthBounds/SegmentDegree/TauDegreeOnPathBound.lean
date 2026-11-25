@@ -226,10 +226,8 @@ theorem restMon_of (C₀ : ℝ) (h61 : BetaRatioBound C₀) (h21 : TauDegreeOnPa
       rw [hcst]
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       have hQr : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQpos
-      have hYp : (0 : ℝ) < X.Y := by linarith
       have : 2 * (r : ℝ) * (be : ℝ) / Q ≤ (r : ℝ) / (2 * X.Y) := by
         rw [div_le_div_iff₀ hQr (by positivity)]
-        have hr0 : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg _
         nlinarith
       linarith
     have h2 : (Fintype.piFinset fun i' : Fin r =>

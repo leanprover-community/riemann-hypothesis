@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GlobalTheory.GL5.LocalEndomorphismContinuous
 public import Formalism.SatakeDualWeyl.Statement
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 import Mathlib.Algebra.Order.Floor.Extended
@@ -97,13 +98,7 @@ section Adele
 variable {F : Type} [Field F] [NumberField F]
 
 theorem compact_Ov (v : HeightOneSpectrum (𝓞 F)) : CompactSpace (v.adicCompletionIntegers F) := by
-  have h1 : Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers F)) :=
-    Formalism.UG.P.glint_finite_residueField v
-  have h2 : IsClosed ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-    Valued.isClosed_valuationSubring _
-  have h3 : CompleteSpace (v.adicCompletionIntegers F) := h2.completeSpace_coe
-  exact Valued.integer.compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField.2
-    ⟨h3, (inferInstance : IsDiscreteValuationRing (v.adicCompletionIntegers F)), h1⟩
+  apply _root_.Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ProGW.compactOv <;> assumption
 
 theorem isCompact_intAd : IsCompact (intAd F : Set (FiniteAdeleRing (𝓞 F) F)) := by
   have : ∀ v : HeightOneSpectrum (𝓞 F), CompactSpace (v.adicCompletionIntegers F) := compact_Ov

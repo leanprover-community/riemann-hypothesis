@@ -57,8 +57,7 @@ private lemma exp_le_succ_div_self_le_exp_of_le_abs {z dl : ℝ} (hdl : 8 ≤ dl
           ≤ Real.exp (-2 * (1 / dl)) * Real.exp (2 * (1 / dl)) := mul_le_mul_of_nonneg_left hexp hpos.le
         _ = 1 := hone
     have h3 : Real.exp (-2 * (1 / dl)) ≤ 1 - 1 / dl := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have h4 : (1 - 1 / dl) * (1 + 2 * (1 / dl)) < Real.exp (-2 * (1 / dl)) * (1 + 2 * (1 / dl)) :=
         mul_lt_mul_of_pos_right hc (by positivity)
       nlinarith [mul_nonneg hx0.le (by linarith : (0 : ℝ) ≤ 1 - 2 * (1 / dl))]

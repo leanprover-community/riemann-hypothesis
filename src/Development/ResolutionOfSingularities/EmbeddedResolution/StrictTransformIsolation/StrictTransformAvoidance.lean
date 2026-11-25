@@ -17,9 +17,6 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem comp_base_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C) (x : ↥A) :
-    (f ≫ g).base x = g.base (f.base x) := by simp
-
 namespace EmbeddedBlowupSequence
 
 variable {k : Type u} [Field k] [CharZero k] {Y : Scheme.{u}} [AlgebraicGeometry.IsAffine Y]
@@ -122,7 +119,7 @@ private theorem mem_closure_singleton_of_base_mem {X₀ X₁ : Scheme.{u}}
   have hvx : V.ι.base (⟨x, hx⟩ : ↥V) = x := rfl
   have hvy : V.ι.base (⟨y, hy⟩ : ↥V) = y := rfl
   have h' : (V.ι ≫ π).base (⟨y, hy⟩ : ↥V) ⤳ (V.ι ≫ π).base (⟨x, hx⟩ : ↥V) := by
-    rw [comp_base_apply V.ι π (⟨x, hx⟩ : ↥V), comp_base_apply V.ι π (⟨y, hy⟩ : ↥V), hvx, hvy]
+    rw [Scheme.Hom.comp_apply V.ι π (⟨x, hx⟩ : ↥V), Scheme.Hom.comp_apply V.ι π (⟨y, hy⟩ : ↥V), hvx, hvy]
     exact specializes_iff_mem_closure.mpr h
   have hspec : (⟨y, hy⟩ : ↥V) ⤳ (⟨x, hx⟩ : ↥V) := hoe.isInducing.specializes_iff.mp h'
   have hfin := hspec.map V.ι.base.hom.continuous
@@ -460,12 +457,12 @@ private theorem eq_of_specializes_iso_hom {X B : Scheme.{u}} (e : X ≅ B) (x : 
   have hcont : Continuous ⇑e.inv.base := e.inv.base.hom.continuous
   have h1 : e.inv.base w ⤳ e.inv.base (e.hom.base x) := hw.map hcont
   have h2 : e.inv.base (e.hom.base x) = x := by
-    rw [← comp_base_apply e.hom e.inv x, e.hom_inv_id]
+    rw [← Scheme.Hom.comp_apply e.hom e.inv x, e.hom_inv_id]
     simp
   rw [h2] at h1
   have h3 := h _ h1
   have h4 : e.hom.base (e.inv.base w) = w := by
-    rw [← comp_base_apply e.inv e.hom w, e.inv_hom_id]
+    rw [← Scheme.Hom.comp_apply e.inv e.hom w, e.inv_hom_id]
     simp
   rw [← h4, h3]
 
@@ -680,7 +677,7 @@ private theorem agreesWithComponentsOrderOne_succ {k : Type u} [Field k] [CharZe
     refine FunctorialResolution.EmbeddedResolution.comap_vanishingIdeal_of_isOpenImmersion_of_coe_eq
       (U.ι ≫ (D.toEmbeddedBlowupSequence A).blowdown i) _ _ ?_
     ext y
-    have hcb := comp_base_apply U.ι ((D.toEmbeddedBlowupSequence A).blowdown i) y
+    have hcb := Scheme.Hom.comp_apply U.ι ((D.toEmbeddedBlowupSequence A).blowdown i) y
     have hiff := EmbeddedBlowupSequence.mem_image_strictTransformι_iff_of_notMem_ambientCenter
       (D.toEmbeddedBlowupSequence A) hN i hi' C η hηgen C' hη' (U.ι.base y) (hmemU y)
     constructor
@@ -713,7 +710,7 @@ private theorem agreesWithComponentsOrderOne_succ {k : Type u} [Field k] [CharZe
     have hφp : (U.ι ≫ (D.toEmbeddedBlowupSequence A).blowdown i).base
         (⟨((D.toEmbeddedBlowupSequence A).strictTransformι (i + 1)).base η, hxU⟩ : ↥U)
         = ((D.toEmbeddedBlowupSequence A).strictTransformι i).base (((D.toEmbeddedBlowupSequence A).strictTransformMap i).base η) := by
-      rw [comp_base_apply U.ι ((D.toEmbeddedBlowupSequence A).blowdown i)
+      rw [Scheme.Hom.comp_apply U.ι ((D.toEmbeddedBlowupSequence A).blowdown i)
         (⟨((D.toEmbeddedBlowupSequence A).strictTransformι (i + 1)).base η, hxU⟩ : ↥U)]
       exact hkey.symm
     calc FunctorialResolution.EmbeddedResolution.orderAt ((principalizationOfEmbedding k Y pY D A).ideal (i + 1))

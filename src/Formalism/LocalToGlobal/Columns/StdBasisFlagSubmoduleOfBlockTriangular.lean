@@ -18,7 +18,7 @@ section Coord
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-theorem frameIndex_framePos {k₀ c n l : ℕ} (_hk : k₀ ≤ n) (hl : l < n + c) : LocE.fIdx k₀ c n (LocE.fPos k₀ c n l) = l := by
+theorem frameIndex_framePos {k₀ c n l : ℕ} (hl : l < n + c) : LocE.fIdx k₀ c n (LocE.fPos k₀ c n l) = l := by
   unfold LocE.fPos LocE.fIdx
   split_ifs <;> omega
 
@@ -137,8 +137,8 @@ theorem reducedMatrix_eq_reduction_frameEntry {k₀ n c : ℕ} (hk : k₀ ≤ n)
     ob2M P q κ l l' = redP P (LocE.entB q k₀ c n c n (fun i => i + 1) (fun i => i + 1) κ.toLinearMap (LocE.fPos k₀ c n l.1) (LocE.fPos k₀ c n l'.1)) := by
   rw [reduction_frameEntry_eq_matrix hk (framePos_lt hk l.2) (framePos_lt hk l'.2)]
   congr 1
-  · exact Fin.ext (frameIndex_framePos hk l.2).symm
-  · exact Fin.ext (frameIndex_framePos hk l'.2).symm
+  · exact Fin.ext (frameIndex_framePos l.2).symm
+  · exact Fin.ext (frameIndex_framePos l'.2).symm
 
 end Coord
 
@@ -309,7 +309,7 @@ theorem stdBasis_flag_submodule_of_blockTriangular (hq : ((q : ℕ) : 𝓞 E) �
         intro h
         apply hll
         apply Fin.ext
-        rw [← frameIndex_framePos hk l.2, ← frameIndex_framePos hk l0.2, h, hpos]
+        rw [← frameIndex_framePos l.2, ← frameIndex_framePos l0.2, h, hpos]
       have hlt := framePos_lt hk l.2
       show ob2M P q κ l l0 = 0
       by_cases hsp : s = rS + k₀

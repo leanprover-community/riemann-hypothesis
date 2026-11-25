@@ -110,7 +110,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.GalCut
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.GalCut
 
@@ -168,8 +167,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.GenericLDatum
 
 theorem exists_unlinked_isL : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k]
@@ -211,8 +208,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -273,8 +268,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.SegSumOne
 
 theorem segSum_of_mono0 : ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
@@ -328,27 +321,11 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 noncomputable section
 
 namespace GlobalTheory.LocGL.LenOneSupport
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-theorem eq_of_isCosocle_prodIrr_one (ρ x : IrrGL (k := k)) (y : Fin 1 → IrrGL (k := k)) (hy : ∀ a, y a = ρ)
-    (hd : ∑ a, (y a).1 = x.1) (h : IsCosocle x.rep (prodIrr y hd)) : x = ρ := by
-  have e : y = fun _ => ρ := funext hy
-  subst e
-  obtain ⟨n, c⟩ := x
-  obtain ⟨m, r⟩ := ρ
-  have hmn : m = n := by simpa using hd
-  subst hmn
-  obtain ⟨ψ⟩ := nonempty_equiv_prodIrr_one (⟨m, r⟩ : IrrGL (k := k)) hd
-  have h2 := h.of_equiv (.refl _) ψ.symm
-  obtain ⟨φ⟩ := (isCosocle_self r.rep.irr).unique h2
-  have e1 := (IrrGL.of_eq_of (hs := c.rep.smooth) (hi := c.rep.irr) (hs' := r.rep.smooth) (hi' := r.rep.irr)).2 ⟨φ⟩
-  exact (IrrGL.of_rep (⟨m, c⟩ : IrrGL (k := k))).symm.trans (e1.trans (IrrGL.of_rep (⟨m, r⟩ : IrrGL (k := k))))
 
 theorem hasSupport_first_of_isL_len_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (c : ℕ) (Δ : Fin c → Segment k) (x : IrrGL (k := k)), (∀ i, (Δ i).len = 1) →
@@ -420,8 +397,6 @@ noncomputable section
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.DzCount
 
@@ -589,14 +564,11 @@ theorem st5 : St5 := by
   have hCF := hτ s d e (unipotent_radical_ne_bot (exists_block_lt_of_ne_bot hne))
   let S : Submodule ℂ π.V := Submodule.span ℂ {v | ∃ h x, v = π.ρ h (j x)}
   have hSst : ∀ h v, v ∈ S → π.ρ h v ∈ S := by
-    intro h v hv
-    induction hv using Submodule.span_induction with
-    | mem v hv =>
-      obtain ⟨h', x, rfl⟩ := hv
-      exact Submodule.subset_span ⟨h * h', x, by rw [map_mul, mul_apply_eq_comp]⟩
-    | zero => simp
-    | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
-    | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ c ha
+    intro h
+    show S ≤ S.comap (π.ρ h)
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨h', x, rfl⟩
+    exact Submodule.subset_span ⟨h * h', x, by rw [map_mul, mul_apply_eq_comp]⟩
   have hS0 : S ≠ ⊥ := by
     obtain ⟨x, hx⟩ := exists_ne (0 : W)
     intro hb
@@ -612,9 +584,8 @@ theorem st5 : St5 := by
     exact twKer_le_comap π.ρ _ p (parab_le_normalizer k e p.2) (lift_mem_twisted_kernel τ π.ρ j hj.2 hCF _)
   have htop : S = ⊤ := by
     let S' : Subrepresentation π.ρ := ⟨S, fun x v hv => hSst x v hv⟩
-    rcases π.irr.eq_bot_or_eq_top S' with h | h
-    · exact absurd (congrArg Subrepresentation.toSubmodule h) hS0
-    · exact congrArg Subrepresentation.toSubmodule h
+    exact congrArg Subrepresentation.toSubmodule
+      ((π.irr.eq_bot_or_eq_top S').resolve_left fun h => hS0 (congrArg Subrepresentation.toSubmodule h))
   rw [htop, top_le_iff] at hST
   show Subsingleton (_ ⧸ twKer π.ρ (unipRad k e) 1)
   rw [Submodule.Quotient.subsingleton_iff]
@@ -638,36 +609,11 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.DzCount
 
 section Quot
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
-
-def subRep4 (π : Representation ℂ G V) (U : Submodule ℂ V) (hU : ∀ g, ∀ v ∈ U, π g v ∈ U) :
-    Representation ℂ G U where
-  toFun g := (π g).restrict (fun v hv => hU g v hv)
-  map_one' := LinearMap.ext fun v => Subtype.ext (by
-    show π 1 (v : V) = v
-    rw [map_one]; rfl)
-  map_mul' g h := LinearMap.ext fun v => Subtype.ext (by
-    show π (g * h) (v : V) = π g (π h v)
-    rw [map_mul]; rfl)
-
-def quotRep4 (π : Representation ℂ G V) (M : Submodule ℂ V) (hM : ∀ g, ∀ v ∈ M, π g v ∈ M) :
-    Representation ℂ G (V ⧸ M) where
-  toFun g := M.mapQ M (π g) (fun v hv => hM g v hv)
-  map_one' := LinearMap.ext fun x => Submodule.Quotient.induction_on M x fun v => by
-    show Submodule.Quotient.mk (π 1 v) = Submodule.Quotient.mk v
-    rw [map_one]; rfl
-  map_mul' g h := LinearMap.ext fun x => Submodule.Quotient.induction_on M x fun v => by
-    show Submodule.Quotient.mk (π (g * h) v) = Submodule.Quotient.mk (π g (π h v))
-    rw [map_mul]; rfl
-
-theorem quotRep4_mk (π : Representation ℂ G V) (M : Submodule ℂ V) (hM : ∀ g, ∀ v ∈ M, π g v ∈ M) (g : G) (v : V) :
-    quotRep4 π M hM g (Submodule.Quotient.mk v) = Submodule.Quotient.mk (π g v) := rfl
 
 theorem exists_maximal_stable_avoiding (π : Representation ℂ G V) (x₀ : V) (hx₀ : x₀ ≠ 0) :
     ∃ M : Submodule ℂ V, (∀ g, ∀ v ∈ M, π g v ∈ M) ∧ x₀ ∉ M ∧
@@ -688,19 +634,16 @@ theorem exists_maximal_stable_avoiding (π : Representation ℂ G V) (x₀ : V) 
 theorem quotRep4_irr (π : Representation ℂ G V) (M : Submodule ℂ V) (hM : ∀ g, ∀ v ∈ M, π g v ∈ M) (x₀ : V)
     (hgen : ∀ N : Submodule ℂ V, (∀ g, ∀ v ∈ N, π g v ∈ N) → x₀ ∈ N → N = ⊤) (hx₀ : x₀ ∉ M)
     (hmax : ∀ N : Submodule ℂ V, (∀ g, ∀ v ∈ N, π g v ∈ N) → x₀ ∉ N → M ≤ N → N = M) :
-    (quotRep4 π M hM).IsIrreducible := by
+    (π.quotient M fun g v hv => hM g v hv).IsIrreducible := by
   have hne : (Submodule.Quotient.mk x₀ : V ⧸ M) ≠ 0 := by
     rwa [Ne, Submodule.Quotient.mk_eq_zero]
   refine { toNontrivial := ⟨⊥, ⊤, fun h => hne ?_⟩, eq_bot_or_eq_top := fun S => ?_ }
-  · have h1 : (Submodule.Quotient.mk x₀ : V ⧸ M) ∈ (⊤ : Subrepresentation (quotRep4 π M hM)).toSubmodule :=
+  · have h1 : (Submodule.Quotient.mk x₀ : V ⧸ M) ∈ (⊤ : Subrepresentation (π.quotient M fun g v hv => hM g v hv)).toSubmodule :=
       Submodule.mem_top
     rw [← h] at h1
     exact (Submodule.mem_bot ℂ).1 h1
   · let N : Submodule ℂ V := S.toSubmodule.comap M.mkQ
-    have hNst : ∀ g, ∀ v ∈ N, π g v ∈ N := fun g v hv => by
-      show Submodule.Quotient.mk (π g v) ∈ S.toSubmodule
-      rw [← quotRep4_mk π M hM]
-      exact S.apply_mem_toSubmodule g hv
+    have hNst : ∀ g, ∀ v ∈ N, π g v ∈ N := fun g _ hv => S.apply_mem_toSubmodule g hv
     by_cases hx : x₀ ∈ N
     · right
       have hN := hgen N hNst hx
@@ -746,8 +689,7 @@ theorem st4 : St4 := by
   obtain ⟨ω, hω, hωc⟩ := exists_isTameLift ω₀ (val_unif4 hϖ) c
   have hE : ExtendsCentral ω τ := hω.extendsCentral hω₀
   obtain ⟨w₀, hw₀⟩ : ∃ w₀ : W, w₀ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     haveI := hτ
     exact (bot_ne_top : (⊥ : Subrepresentation τ) ≠ ⊤) (Subrepresentation.ext (Submodule.ext fun w => by
       rw [hcon w]; exact ⟨fun _ => Submodule.zero_mem _, fun _ => Submodule.zero_mem _⟩))
@@ -778,7 +720,7 @@ theorem st4 : St4 := by
     intro w
     have : w ∈ S.toSubmodule := by rw [hS]; exact Submodule.mem_top
     exact this
-  let π₁ := subRep4 π₀ U hU
+  let π₁ := π₀.subrepresentation U fun g v hv => hU g v hv
   let x₁ : U := ⟨x₀, hx₀U⟩
   have hx₁ : x₁ ≠ 0 := fun h => hx₀ (congrArg Subtype.val h)
   have hgen : ∀ N : Submodule ℂ U, (∀ g, ∀ v ∈ N, π₁ g v ∈ N) → x₁ ∈ N → N = ⊤ := by
@@ -790,7 +732,7 @@ theorem st4 : St4 := by
     obtain ⟨u', hu', he⟩ := hle u.2
     rwa [show u' = u from Subtype.ext he] at hu'
   obtain ⟨M, hM, hx₁M, hMmax⟩ := exists_maximal_stable_avoiding π₁ x₁ hx₁
-  let ρQ := quotRep4 π₁ M hM
+  let ρQ := π₁.quotient M fun g v hv => hM g v hv
   have hirr : ρQ.IsIrreducible := quotRep4_irr π₁ M hM x₁ hgen hx₁M hMmax
   have hsm : IsSmooth ρQ := by
     intro q
@@ -808,8 +750,7 @@ theorem st4 : St4 := by
             rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
       have hopen : IsOpen {g : GL (Fin n) k | π₀ g (u : DepthZeroSp τ ω hE) = u} := isSmooth_depthZero τ ω hE u
       have hsub : {g : GL (Fin n) k | π₀ g (u : DepthZeroSp τ ω hE) = u} ⊆ (H : Set (GL (Fin n) k)) := fun g hg => by
-        show ρQ g (Submodule.Quotient.mk u) = Submodule.Quotient.mk u
-        rw [quotRep4_mk]
+        change Submodule.Quotient.mk (π₁ g u) = Submodule.Quotient.mk u
         congr 1
         exact Subtype.ext hg
       exact Subgroup.isOpen_of_mem_nhds H (g := 1)
@@ -837,8 +778,9 @@ theorem st4 : St4 := by
   intro z q
   induction q using Submodule.Quotient.induction_on with
   | H u =>
-    show ρQ (GeneralLinearGroup.scalar (Fin n) z) (Submodule.Quotient.mk u) = (ω z : ℂ) • Submodule.Quotient.mk u
-    rw [quotRep4_mk, ← Submodule.Quotient.mk_smul]
+    change Submodule.Quotient.mk (π₁ (GeneralLinearGroup.scalar (Fin n) z) u) =
+      (ω z : ℂ) • Submodule.Quotient.mk u
+    rw [← Submodule.Quotient.mk_smul]
     congr 1
     exact Subtype.ext (hasCentralChar_depthZero τ ω hE z u)
 
@@ -859,8 +801,6 @@ noncomputable section
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.DzCount
 
@@ -1071,8 +1011,7 @@ theorem exists_eq_pow_of_aeval {K F : Type*} [Field K] [Fintype K] [Field F] [Al
     · exact absurd H (hlt i j h hj)
     · exact h
     · exact absurd H.symm (hlt j i h hi)
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   set S := (Finset.range n).image (fun i : ℕ => w ^ (Nat.card K) ^ i) with hS
   have hcardS : S.card = n := by
     rw [hS, Finset.card_image_of_injOn hinj, Finset.card_range]
@@ -1215,8 +1154,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.DzCount
 
 theorem lab_finite (K : Type) [Field K] [Finite K] (n : ℕ) : (Lab K n).Finite := by
@@ -1244,8 +1181,6 @@ noncomputable section
 open NumberField IsDedekindDomain ValuativeRel Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial Module
 open GlobalTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 open scoped commutatorElement
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 open UpperTheory.Zero.LLC UpperTheory.GalStar UpperTheory.GalS PositivityTheory.Rg.DzCount
 
@@ -1459,8 +1394,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.GalCut GlobalTheory.RoadU GlobalTheory.DeRhamOfPlainTorus
 open UpperTheory.Zero.LLC UpperTheory.GalStar UpperTheory.GalS UpperTheory.Gal.ToralGalois.R2
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Int.Row
 

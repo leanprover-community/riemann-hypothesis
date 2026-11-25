@@ -12,48 +12,9 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompac
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
 import GroundTheory.AutomorphicForms.GLnLocal
 import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Separation.Connected
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingTransferOf
 
 @[expose] public section
 
@@ -192,29 +153,13 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem dcos_left {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
     dcos m w t (k * g) = dcos m w t g := by
-  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, k * g = x * t * z) ↔
-      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
-    constructor
-    · rintro ⟨x, hx, z, hz, e⟩
-      refine ⟨k⁻¹ * x, mul_mem (inv_mem hk) hx, z, hz, ?_⟩
-      calc g = k⁻¹ * (k * g) := by group
-        _ = _ := by rw [e]; simp only [mul_assoc]
-    · rintro ⟨x, hx, z, hz, e⟩
-      exact ⟨k * x, mul_mem hk hx, z, hz, by rw [e]; simp only [mul_assoc]⟩
-  simp only [dcos, this]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.MatchPow.dcos_left' <;> assumption
 
 theorem dcos_right {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
     dcos m w t (g * k) = dcos m w t g := by
-  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g * k = x * t * z) ↔
-      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
-    constructor
-    · rintro ⟨x, hx, z, hz, e⟩
-      refine ⟨x, hx, z * k⁻¹, mul_mem hz (inv_mem hk), ?_⟩
-      calc g = (g * k) * k⁻¹ := by group
-        _ = _ := by rw [e]; simp only [mul_assoc]
-    · rintro ⟨x, hx, z, hz, e⟩
-      exact ⟨x, hx, z * k, mul_mem hz hk, by rw [e]; simp only [mul_assoc]⟩
-  simp only [dcos, this]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.MatchPow.dcos_right' <;> assumption
 
 theorem isHecke_iwahori_pair_double_coset {a b : ℕ} (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     IsHecke (I2 a b w) (dc2 w ϖ x y) := by

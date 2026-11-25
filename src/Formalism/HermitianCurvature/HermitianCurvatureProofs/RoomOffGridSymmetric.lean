@@ -50,8 +50,7 @@ theorem pick_one (lo hi : ℝ) (Q B : Finset ℝ) (h : 9 * ((Q.card : ℝ) + B.c
   · have hn1 : (1 : ℝ) ≤ (Q.card : ℝ) + B.card := by
       have : 1 ≤ Q.card + B.card := Nat.one_le_iff_ne_zero.mpr hn
       exact_mod_cast this
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hsub : Set.Icc lo (hi - 1) ⊆
         (⋃ q ∈ Q, Metric.closedBall q 4) ∪ ((B : Set ℝ) ∪ (fun b => b - 1) '' (B : Set ℝ)) := by
       intro y hy

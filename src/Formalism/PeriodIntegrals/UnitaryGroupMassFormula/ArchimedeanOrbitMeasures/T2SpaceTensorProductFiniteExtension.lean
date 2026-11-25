@@ -6,6 +6,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Group.Units
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 
 @[expose] public section
 
@@ -52,15 +53,7 @@ instance t2Space_tensorProduct_finiteExtension : T2Space (R ⊗[F] E) := by
   exact h.isEmbedding.t2Space
 
 theorem continuous_sigR (σ : E →ₐ[F] E) : Continuous (sigR R σ) := by
-  have h : ∀ x : R ⊗[F] E, sigR R σ x = (σ.toLinearMap.baseChange R) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r e => simp [sigR]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have : (sigR R σ : R ⊗[F] E → R ⊗[F] E) = (σ.toLinearMap.baseChange R) := funext h
-  rw [this]
-  exact IsModuleTopology.continuous_of_linearMap _
+  apply _root_.PI.AdicCompletionValuation.continuous_sigR <;> assumption
 
 variable {M : ℕ}
 
@@ -72,16 +65,7 @@ instance t2Space_matrix_tensor : T2Space (Matrix (Fin M) (Fin M) (R ⊗[F] E)) :
 
 theorem isClosed_HR (σ : E →ₐ[F] E) (J : Matrix (Fin M) (Fin M) E) :
     IsClosed (HR R σ J : Set (GL (Fin M) (R ⊗[F] E))) := by
-  have hset : (HR R σ J : Set (GL (Fin M) (R ⊗[F] E))) =
-      {g : GL (Fin M) (R ⊗[F] E) | Formalism.UG.cT (sigR R σ) (g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) * JR R J *
-        (g : Matrix (Fin M) (Fin M) (R ⊗[F] E)) = JR R J} := rfl
-  rw [hset]
-  have hv : Continuous (fun g : GL (Fin M) (R ⊗[F] E) => (g : Matrix (Fin M) (Fin M) (R ⊗[F] E))) :=
-    Units.continuous_val
-  refine isClosed_eq ?_ continuous_const
-  refine Continuous.matrix_mul (Continuous.matrix_mul ?_ continuous_const) hv
-  unfold Formalism.UG.cT
-  exact (hv.matrix_map (continuous_sigR R σ)).matrix_transpose
+  apply _root_.PI.AdicCompletionValuation.isClosed_HR <;> assumption
 
 instance locallyCompactSpace_HR (σ : E →ₐ[F] E) (J : Matrix (Fin M) (Fin M) E) :
     LocallyCompactSpace (HR R σ J) :=

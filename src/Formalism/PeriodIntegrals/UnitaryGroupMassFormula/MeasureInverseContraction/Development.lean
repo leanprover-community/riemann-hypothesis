@@ -14,6 +14,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposi
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.Group.Units
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HaarOn
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureInverseContraction.RightInvOfContract, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureInverseContraction.Development
@@ -42,15 +43,7 @@ def HaarOn (N : Subgroup G) (μ : Measure G) : Prop :=
 
 theorem map_comap_subgroup (H : Subgroup G) (hH : IsClosed (H : Set G)) (μ : Measure G)
     (hc : μ (H : Set G)ᶜ = 0) : (μ.comap ((↑) : H → G)).map ((↑) : H → G) = μ := by
-  have hemb : MeasurableEmbedding ((↑) : H → G) := MeasurableEmbedding.subtype_coe hH.measurableSet
-  ext s hs
-  rw [Measure.map_apply hemb.measurable hs, hemb.comap_apply, Set.image_preimage_eq_inter_range]
-  have hr : Set.range ((↑) : H → G) = (H : Set G) := by ext x; simp
-  rw [hr]
-  have h1 := measure_inter_add_diff (μ := μ) s hH.measurableSet
-  have h2 : μ (s \ (H : Set G)) = 0 := measure_mono_null (fun x hx => hx.2) hc
-  rw [h2, add_zero] at h1
-  exact h1
+  apply _root_.Formalism.L2.SG.Pf.map_comap_subgroup <;> assumption
 
 private theorem abs_inv_lemma (S : Subgroup G) (hS : IsClosed (S : Set G)) (ν : Measure G)
     (hνc : ν (S : Set G)ᶜ = 0) (hνi : ∀ s ∈ S, ν.map (fun x => s * x) = ν) :
@@ -222,8 +215,7 @@ theorem haarOn_conj (N : Subgroup G) (hN : IsClosed (N : Set G)) {μ : Measure G
     (by ext x; simp) (fun x hx => h1 x hx) (fun s hs => ⟨a⁻¹ * s * a, h2 s hs, fun x => by group⟩)
 
 theorem le_one_of_pow_le {x B : ℝ≥0∞} (hB : B ≠ ⊤) (h : ∀ p : ℕ, x ^ p ≤ B) : x ≤ 1 := by
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   have hxt : x ≠ ⊤ := by
     rintro rfl
     have h1 := h 1

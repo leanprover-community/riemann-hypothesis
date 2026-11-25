@@ -26,8 +26,6 @@ lemma expS_summable {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
   letI : NormedAlgebra ℂ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAlgebra
   exact NormedSpace.expSeries_summable' X
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def mvL {n : ℕ} (y : Fin n → ℂ) : Matrix (Fin n) (Fin n) ℂ →L[ℂ] (Fin n → ℂ) :=
   LinearMap.toContinuousLinearMap
     { toFun := fun M => M *ᵥ y

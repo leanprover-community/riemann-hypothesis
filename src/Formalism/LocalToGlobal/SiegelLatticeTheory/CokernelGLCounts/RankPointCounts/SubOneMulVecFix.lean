@@ -138,8 +138,6 @@ namespace PI.SchurPlaces.Geo
 
 open PI.SchurPlaces Formalism.L2.SG.KappaOffDiagonal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lin
 
 variable {n k : ℕ} (ε : Fin n → Bool)

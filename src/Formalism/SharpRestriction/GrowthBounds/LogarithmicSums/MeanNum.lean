@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.PartnerCountOfCentral
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 public import Mathlib.NumberTheory.Harmonic.Bounds
 import Mathlib.Tactic.Linter.Style
@@ -90,13 +91,7 @@ theorem marg_card (φ : β → α) (hφ : Function.Injective φ) (T : α → Fin
 end marg
 
 theorem frobenius_step_large_order (p : ℕ) (h : IsResidueClassZero D p) : stepP D p = hP D p := by
-  unfold stepP
-  rw [if_neg]
-  intro hs
-  simp only [IsSg] at hs
-  simp only [IsResidueClassZero] at h
-  rw [h] at hs
-  cases hs
+  apply _root_.Formalism.MainNotions.AuxBlock8.Pf.St.frobenius_step_large_order <;> assumption
 
 def phi (D : D7) (p : ℕ) (t0 : HH D) : Fin (addOrderOf (hP D p)) → HH D := fun i => t0 + (i : ℕ) • hP D p
 

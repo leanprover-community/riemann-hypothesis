@@ -34,27 +34,7 @@ theorem inclR_mem (a : 𝓞 E) : inclR (F := F) (Fv F v) (a : E) ∈ OEv (E := E
 theorem exists_gens : ∃ (m : ℕ) (w : Fin m → Fv F v ⊗[F] E), (∀ k, w k ∈ OEv (E := E) v) ∧
     ∀ x ∈ OEv (E := E) v, ∃ c : Fin m → Fv F v, (∀ k, c k ∈ v.adicCompletionIntegers F) ∧
       x = ∑ k, c k • w k := by
-  classical
-  let b := (NumberField.RingOfIntegers.basis E).reindex (Fintype.equivFin _)
-  refine ⟨_, fun k => inclR (F := F) (Fv F v) ((b k : 𝓞 E) : E), fun k => inclR_mem v (b k), ?_⟩
-  intro x hx
-  have hle : OEv (E := E) v ⊆ (Submodule.span (v.adicCompletionIntegers F)
-      (Set.range fun k => inclR (F := F) (Fv F v) ((b k : 𝓞 E) : E)) : Set (Fv F v ⊗[F] E)) := by
-    unfold OEv
-    apply Submodule.span_le.2
-    rintro _ ⟨a, -, rfl⟩
-    have ha : (a : E) = ∑ k, ((b.repr a k : ℤ) : E) * ((b k : 𝓞 E) : E) := by
-      conv_lhs => rw [← b.sum_repr a]
-      push_cast
-      simp [zsmul_eq_mul]
-    beta_reduce
-
-    rw [SetLike.mem_coe, ha, map_sum]
-    refine Submodule.sum_mem _ fun k _ => ?_
-    rw [map_mul, map_intCast, ← zsmul_eq_mul]
-    exact zsmul_mem (Submodule.subset_span (Set.mem_range_self k)) _
-  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 (hle hx)
-  exact ⟨fun k => (c k : Fv F v), fun k => (c k).2, by rw [← hc]; rfl⟩
+  apply _root_.PI.UnitaryGroupMassFormula.LocJacTyp.Sd.exists_gens <;> assumption
 
 theorem isCompact_oev : IsCompact (OEv (E := E) v) := by
   apply PI.UnitaryGroupMassFormula.LocJacTyp.Sd.isCompact_oev

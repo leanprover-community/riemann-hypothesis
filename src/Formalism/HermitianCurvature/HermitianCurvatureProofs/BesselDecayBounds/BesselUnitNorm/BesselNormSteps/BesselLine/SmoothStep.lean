@@ -65,6 +65,4 @@ theorem ds_rep {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) �
     show σ g v = σ (P⁻¹ * (P * g * P⁻¹) * P) v
     rw [conj_back hP]
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 end PI.WBL.FSW

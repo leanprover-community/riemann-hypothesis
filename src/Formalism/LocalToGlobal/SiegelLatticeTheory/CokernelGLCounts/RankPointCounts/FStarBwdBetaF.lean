@@ -112,8 +112,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
@@ -153,8 +151,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.PCount Formalism.L2.SG.Pf.FrameGlobalPatching
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BwdNP
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
@@ -260,8 +256,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
@@ -362,8 +356,6 @@ open OmP OmL
 
 namespace OmD
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)
 
 theorem mat_frameAct {T T' : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T')
@@ -391,8 +383,6 @@ theorem gdl_eq {T T' : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (F' : FlagG (VS D)
 end OmD
 
 open OmD
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
@@ -694,21 +684,12 @@ end OmR
 
 open OmR
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
 theorem omRep_repF (γ : TermDef.Term D u u' F0 what₂) :
     Rep γ.lam (lf D F0) (PD D γ.lam (lf D F0) u') γ.cls (repF γ) := by
-  unfold repF
-  split
-  · rename_i x hx
-    unfold nrep at hx
-    split_ifs at hx with h
-    cases hx
-    exact h.choose_spec.1
-  · exact ⟨(Quot.out γ.cls).2, Quot.out_eq _⟩
+  apply _root_.Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.starRepF_rep <;> assumption
 
 variable (u u' F0 what₂)
 
@@ -786,8 +767,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
   Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.PCount Formalism.L2.SG.Pf.FrameGlobalPatching
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
@@ -941,8 +920,6 @@ end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLoc
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
@@ -977,17 +954,6 @@ theorem starFrameU_holds : StarFrameU u u' F0 what₂ := by
     exact hom
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
-  {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
-
-variable (u u' F0 what₂)
-
-end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1006,8 +972,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLoc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (Zd : LocDat D)
 
 theorem localLattice_preserves_cofinite (g : (VS D).V ≃ₗ[D.host.E] (VS D).V) {Λ : Submodule (𝓞 D.host.E) (VS D).V}
@@ -1018,8 +982,7 @@ theorem localLattice_preserves_cofinite (g : (VS D).V ≃ₗ[D.host.E] (VS D).V)
   refine (s.finite_toSet.biUnion fun v _ => CohIntPf.bcP_mem_cof Zd hΛ (g v)).subset ?_
   intro p hp
   simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hp
   have hloc : ∀ v ∈ Λ, g v ∈ Formalism.HermitianLattices.Ext.L3.locF p.asIdeal Λ := by
     intro v hv
@@ -1051,8 +1014,7 @@ theorem localLattice_preserves_cofinite_symm (g : (VS D).V ≃ₗ[D.host.E] (VS 
   refine (s.finite_toSet.biUnion fun v _ => CohIntPf.bcP_mem_cof Zd hΛ (g.symm v)).subset ?_
   intro p hp
   simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hp
   have hloc : ∀ v ∈ Λ, g.symm v ∈ Formalism.HermitianLattices.Ext.L3.locF p.asIdeal Λ := by
     intro v hv
@@ -1147,8 +1109,6 @@ end Concrete
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLoc
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
@@ -1340,8 +1300,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open CohGoodPf
 
 variable {D : Formalism.BasicNotions.D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
@@ -1501,8 +1459,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u))
   (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))
 
@@ -1532,8 +1488,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.PCount Formalism.L2.SG.Pf.FrameGlobalPatching
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}

@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PWallAlgA
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.DetYtMatNeZero
 public import Formalism.GradedWeylDivisibility.FinalC
 import Mathlib.Algebra.Order.Star.Int
@@ -553,12 +554,7 @@ open MvPolynomial Formalism.GradedWeylDivisibility
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) (Kc : Type) [Field Kc] [Algebra X.G.Kf Kc]
 
 theorem card_filter_val_lt {n a : ℕ} (ha : a ≤ n) : (Finset.univ.filter fun t : Fin n => t.val < a).card = a := by
-  rw [Finset.card_filter, Fin.sum_univ_eq_sum_range (fun t => if t < a then 1 else 0) n, ← Finset.card_filter]
-  have : (Finset.range n).filter (fun t => t < a) = Finset.range a := by
-    ext k
-    simp only [Finset.mem_filter, Finset.mem_range]
-    omega
-  rw [this, Finset.card_range]
+  apply _root_.PositivityTheory.Rg.Cz.WallAlgP.card_lowS <;> assumption
 
 theorem sum_shapeDeg {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n) : ∑ t : Fin n, shapeDeg sz t = ∑ k, sz k := by
   unfold shapeDeg

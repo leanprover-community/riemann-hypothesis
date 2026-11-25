@@ -128,15 +128,12 @@ theorem rows_nZ_pos (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch δ
   unfold LatticeSumBounds.nTot
   have h1 := gramProductG0_pos Y h.hH.1 h.hT hZ
   have h2 := rows_NT_pos D u
-  have hpi := Real.pi_pos
   have hv1 : 1 ≤ D.host.v := by
     obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h19, _⟩ := h.hH.1.1
     exact h19
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
     exact_mod_cast (by omega : 1 ≤ D.R.k)
-  have hv0 : 0 < D.host.v := by linarith
-  have hk0 : (0 : ℝ) < D.R.k := by linarith
   positivity
 
 theorem rows_nd_term (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch δ δm q) (t : D.s.Term u u')
@@ -260,7 +257,6 @@ theorem rows_nd_prod (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch �
     (rows_XiS_nonneg D u hh0 hc s) hXi rfl rfl he
   have hA0 : 0 ≤ (2 / gg D) ^ ((s - 1) * D.R.k * D.R.f) *
       ((D.R.k : ℝ) * D.host.v / (Real.exp 1 * Real.pi)) ^ (D.R.k * D.R.f) := by
-    have hpi := Real.pi_pos
     have : 0 ≤ gg D := by linarith
     have : 0 ≤ D.host.v := by linarith
     positivity
@@ -307,7 +303,6 @@ theorem rows_R_nonneg (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch 
   have hτ0 : 0 ≤ (1 + δ) * rDD D u' := mul_nonneg (by linarith [h.hδ]) (rows_rDD_nonneg D u')
   have hGam0 : 0 < GamS D large₂ := by unfold GamS; exact Real.exp_pos _
   have hXiP0 : 0 ≤ XiS D u (rows_P D large₂ c Ch ^ 2) c s := rows_XiS_nonneg D u (by positivity) h.hc s
-  have hpi := Real.pi_pos
   have : 0 ≤ gg D := by linarith
   have : 0 ≤ D.host.v := by linarith
   have := h.hc

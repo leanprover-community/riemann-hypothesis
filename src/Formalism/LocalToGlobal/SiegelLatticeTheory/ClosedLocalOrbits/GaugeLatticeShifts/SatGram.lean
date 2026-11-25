@@ -1,5 +1,7 @@
 module
 
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.OmVBadTOfFfX
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.MassDataInst
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLoc
@@ -93,12 +95,7 @@ theorem prV_algebraMap (v : HeightOneSpectrum (𝓞 X.B.I.F)) (c : X.B.I.F) :
      exact (Algebra.TensorProduct.map (AlgHom.id X.B.I.F X.B.I.E) (evalV X.B.I.F v)).commutes c)
 
 theorem le_exp_neg_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZero.exp (-1 : ℤ) := by
-  rcases eq_or_ne x 0 with rfl | hx
-  · exact zero_le'
-  · obtain ⟨n, rfl⟩ : ∃ n : ℤ, x = WithZero.exp n := ⟨WithZero.log x, (WithZero.exp_log hx).symm⟩
-    rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h
-    rw [WithZero.exp_le_exp]
-    omega
+  apply _root_.PI.OmVg.le_exp_neg_one <;> assumption
 
 theorem tens_one_mem_intV (v : HeightOneSpectrum (𝓞 X.B.I.F)) (c : v.adicCompletion X.B.I.F)
     (hc : c ∈ v.adicCompletionIntegers X.B.I.F) : (1 : X.B.I.E) ⊗ₜ[X.B.I.F] c ∈ intV X.B.I.E v :=
@@ -897,33 +894,8 @@ open Formalism.L2.SG.Pf.SatGramLoc
 theorem ncard_places_eq {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] (e : K ≃+* L) (p : ℕ) :
     {w : HeightOneSpectrum (𝓞 K) | ((p : ℕ) : 𝓞 K) ∈ w.asIdeal}.ncard =
       {w : HeightOneSpectrum (𝓞 L) | ((p : ℕ) : 𝓞 L) ∈ w.asIdeal}.ncard := by
-  set f := RingOfIntegers.mapRingEquiv e
-  have hne : ∀ w : HeightOneSpectrum (𝓞 K), w.asIdeal.comap (f.symm : 𝓞 L →+* 𝓞 K) ≠ ⊥ := by
-    intro w h
-    apply w.ne_bot
-    rw [← Ideal.map_comap_of_surjective (f.symm : 𝓞 L →+* 𝓞 K) f.symm.surjective w.asIdeal, h, Ideal.map_bot]
-  refine Set.ncard_congr (fun w _ => (⟨w.asIdeal.comap (f.symm : 𝓞 L →+* 𝓞 K), Ideal.comap_isPrime _ _, hne w⟩ :
-    HeightOneSpectrum (𝓞 L))) ?_ ?_ ?_
-  · intro w hw
-    show ((p : ℕ) : 𝓞 L) ∈ w.asIdeal.comap (f.symm : 𝓞 L →+* 𝓞 K)
-    rw [Ideal.mem_comap, map_natCast]; exact hw
-  · intro a b _ _ hab
-    have h := congrArg HeightOneSpectrum.asIdeal hab
-    simp only at h
-    exact HeightOneSpectrum.ext (Ideal.comap_injective_of_surjective _ f.symm.surjective h)
-  · intro w hw
-    refine ⟨⟨w.asIdeal.comap (f : 𝓞 K →+* 𝓞 L), Ideal.comap_isPrime _ _, ?_⟩, ?_, ?_⟩
-    · intro h
-      apply w.ne_bot
-      rw [← Ideal.map_comap_of_surjective (f : 𝓞 K →+* 𝓞 L) f.surjective w.asIdeal, h, Ideal.map_bot]
-    · show ((p : ℕ) : 𝓞 K) ∈ w.asIdeal.comap (f : 𝓞 K →+* 𝓞 L)
-      rw [Ideal.mem_comap, map_natCast]; exact hw
-    · apply HeightOneSpectrum.ext
-      show (w.asIdeal.comap (f : 𝓞 K →+* 𝓞 L)).comap (f.symm : 𝓞 L →+* 𝓞 K) = w.asIdeal
-      rw [Ideal.comap_comap]
-      have : (f : 𝓞 K →+* 𝓞 L).comp (f.symm : 𝓞 L →+* 𝓞 K) = RingHom.id _ := by
-        ext x; simp
-      rw [this, Ideal.comap_id]
+  intros
+  apply _root_.Formalism.L2.NT.ncard_places_of_equiv <;> assumption
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -1031,17 +1003,8 @@ end Formalism.L2.SG.Pf.SatGram
 
 namespace Formalism.L2.SG.Pf
 
-alias typedRed_exists := SatGram.typedRed_exists
-alias typedRed_exists' := SatGram.typedRed_exists'
-alias corankPos_tO := SatGram.corankPos_tO
-alias idDegenerate_tO := SatGram.idDegenerate_tO
-alias satGram_of := SatGram.satGram_of
 alias typed_count := SatGram.typed_count
-alias typed_count' := SatGram.typed_count'
 alias tt_eq := SatGram.tt_eq
-alias tt_eq' := SatGram.tt_eq'
 alias gamma_one_eq_prod_typed_places := SatGram.gamma_one_eq_prod_typed_places
-alias gsplit_X := SatGram.gsplit_X
-alias one_sub_ew := SatGram.one_sub_ew
 
 end Formalism.L2.SG.Pf

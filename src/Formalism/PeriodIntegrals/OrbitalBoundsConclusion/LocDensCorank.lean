@@ -434,8 +434,7 @@ theorem flb_main {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [C
           Q * Matrix.of (fun k l => H.h (b k) (b l)) = 1 := by
   classical
   haveI : NoZeroDivisors E := ⟨fun {a b} hab => by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨u, hu⟩ := hE a hne.1
     apply hne.2
     have h2 := congrArg (fun t => (↑u⁻¹ : E) * t) hab

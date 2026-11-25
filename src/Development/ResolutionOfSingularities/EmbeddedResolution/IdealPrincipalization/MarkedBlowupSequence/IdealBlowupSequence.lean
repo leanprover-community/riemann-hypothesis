@@ -32,12 +32,8 @@ namespace SmoothCenterBlowup
 variable {k : Type u} [Field k] {X : Scheme.{u}} {p : X ⟶ Spec (CommRingCat.of k)}
   {I : X.IdealSheafData} {E : List X.IdealSheafData}
 
-def structureMorphism (s : SmoothCenterBlowup p I E) : s.obj ⟶ Spec (CommRingCat.of k) := s.map ≫ p
-
 def exceptionalIdeal (s : SmoothCenterBlowup p I E) : s.obj.IdealSheafData :=
   Blowup.exceptionalIdeal s.map s.center
-
-theorem exceptionalIdeal_eq (s : SmoothCenterBlowup p I E) : s.exceptionalIdeal = s.center.comap s.map := rfl
 
 def boundary (s : SmoothCenterBlowup p I E) : List s.obj.IdealSheafData :=
   E.map (Blowup.strictTransform s.map s.center) ++ [s.exceptionalIdeal]

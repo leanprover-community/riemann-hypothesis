@@ -529,10 +529,6 @@ theorem exists_lift_pt : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B
     Algebra.FiniteType A B → ∀ (k : Type) [Field k] [IsAlgClosed k] (φ : A →+* k),
     ∃ φ' : B →+* k, φ'.comp (algebraMap A B) = φ := _root_.GlobalTheory.GeomPointLift.exists_lift
 
-theorem exists_eq_of_geom : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [IsReduced A] [IsJacobsonRing A],
-    Module.FaithfullyFlat A B → Algebra.Etale A B → ∀ b : B,
-    (∀ (k : Type) [Field k] [IsAlgClosed k] (φ ψ : B →+* k), φ.comp (algebraMap A B) = ψ.comp (algebraMap A B) →
-      φ b = ψ b) → ∃ a : A, algebraMap A B a = b := _root_.GlobalTheory.EtaleGeomDescent.descent
 
 theorem exists_etale_lift : ∀ (Y Z : Scheme.{0}) (π : Z ⟶ Y), IsFinite π → Etale π → Surjective π →
     ∀ (K : Type) [Field K] (p : TRing K) (x : Sp p.R ⟶ Y), ∃ (q : TRing K) (ι : p.R →ₐ[K] q.R),
@@ -647,7 +643,7 @@ theorem val_exists {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} {g : Rul d.Xo₂
     (GlobalTheory.TransferCompare.allTest_framed d.Xo₂ d.c₂) g hg.1
   letI : Algebra p.R q.R := ι.toRingHom.toAlgebra
   haveI : IsScalarTower c.F p.R q.R := IsScalarTower.of_algebraMap_eq fun t => (ι.commutes t).symm
-  obtain ⟨v, hv⟩ := exists_eq_of_geom p.R q.R hff het' (evR d.Xo₂ d.c₂ g y₂) (by
+  obtain ⟨v, hv⟩ := _root_.GlobalTheory.EtaleGeomDescent.descent p.R q.R hff het' (evR d.Xo₂ d.c₂ g y₂) (by
     intro k _ _ φ ψ hφψ
     letI : Algebra c.F k := (φ.comp (algebraMap c.F q.R)).toAlgebra
     letI := algAbove d k

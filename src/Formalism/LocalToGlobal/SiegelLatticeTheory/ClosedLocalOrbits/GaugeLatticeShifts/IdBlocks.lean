@@ -6,6 +6,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.Vanish
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -617,16 +618,7 @@ open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Fo
 
 theorem norm_psiR {n r : ℕ} (ε : Fin n → Bool) (gg : ℕ) (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) : ‖psiR ε gg e f z g‖ = 1 := by
-  unfold psiR
-  have hS : ∑ a, (rootCoord ε e f z g a + star (rootCoord ε e f z g a)) =
-      ((∑ a, 2 * (rootCoord ε e f z g a).re : ℝ) : ℂ) := by
-    push_cast
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [Complex.star_def, Complex.add_conj]
-    push_cast; ring
-  rw [hS, show 2 * (Real.pi : ℂ) * Complex.I * (((∑ a, 2 * (rootCoord ε e f z g a).re : ℝ) : ℂ) / (gg : ℂ)) =
-      ((2 * Real.pi * ((∑ a, 2 * (rootCoord ε e f z g a).re) / gg) : ℝ) : ℂ) * Complex.I by push_cast; ring]
-  exact Complex.norm_exp_ofReal_mul_I _
+  apply _root_.Formalism.L2.SG.TermOp.Vanish.psiR_norm1 <;> assumption
 
 variable {D : D7} {X : HidaSetting D}
 

@@ -341,8 +341,6 @@ open NumberField IsDedekindDomain MeasureTheory Polynomial Formalism.L2.Host For
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL UpperTheory.Zero.LLC UpperTheory.V.Z.Inf UpperTheory.V UpperTheory.V.Z.Gam
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
 variable {K : Type} [Field K] [NumberField K]

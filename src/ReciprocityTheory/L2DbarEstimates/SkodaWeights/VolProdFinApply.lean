@@ -643,8 +643,7 @@ theorem skodaOps (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
   have hN : ∀ x, 0 < vsq (gv g x) := by
     intro x
     obtain ⟨i, hi⟩ : ∃ i, gv g x i ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hgv x (funext hc)
     have h1 : 0 < ‖gv g x i‖ ^ 2 := pow_pos (norm_pos_iff.mpr hi) 2
     have h2 : ‖gv g x i‖ ^ 2 ≤ ∑ j, ‖gv g x j‖ ^ 2 :=

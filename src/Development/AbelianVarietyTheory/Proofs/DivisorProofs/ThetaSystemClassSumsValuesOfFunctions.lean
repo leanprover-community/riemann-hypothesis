@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsActIffIsDi
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.NormNatCastPadicAlgClOfCoprime
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsUnitTermZero
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAdaptedBasisTestLattice
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividingThetaConstantsGenerateIntegralTorsionLabStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SurjectiveLabelHomLatticeModLevelThetaMemberStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaConstantsTorusTranslatesTwistedSumsStatement
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SumFCalculus
 import Mathlib.Algebra.Order.Floor.Extended
@@ -118,45 +116,6 @@ theorem sumI_fourier {V : Type} [CommRing V] [IsDomain V] (I : Ideal V) {n : ℕ
   · rw [hf1 mu hmu, ← _root_.mul_assoc, hd, _root_.one_mul]
   · rw [hf0 mu hmu, zero_mul, mul_zero]
 
-theorem labels {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (H : AddSubgroup S.Gam)
-    {X : Type} [AddCommGroup X] (YY : S.Gam → (Fin 8 → X) → Prop)
-    (h1 : ∀ a, ∃ mu, YY a mu) (h2 : ∀ mu, ∃ a, YY a mu)
-    (h3 : ∀ a mu mu', YY a mu → (YY a mu' ↔ ∀ v, CongMod (S.r * S.N) (mu' v) (mu v)))
-    (h4 : ∀ a a' mu mu', YY a mu → YY a' mu' → YY (a + a') (mu + mu'))
-    (hH : ∀ a, a ∈ H ↔ YY a 0) :
-    ∃ l : (Fin 8 → X) → S.Gam, (∀ mu, YY (l mu) mu) ∧
-      (∀ τ ∈ S.perp H, ∀ a mu, YY a mu → eStd S.g _ τ a = eStd S.g _ τ (l mu)) ∧
-      ∀ mu κ, (∀ τ ∈ S.perp H, eStd S.g _ τ (l mu) = eStd S.g _ τ (l κ)) ↔ ∀ v, CongMod (S.r * S.N) (mu v) (κ v) := by
-  obtain ⟨l, hl⟩ : ∃ l : (Fin 8 → X) → S.Gam, ∀ mu, YY (l mu) mu := ⟨fun mu => (h2 mu).choose, fun mu => (h2 mu).choose_spec⟩
-  have sub : ∀ a a' mu, YY a mu → YY a' mu → a - a' ∈ H := by
-    intro a a' mu ha ha'
-    obtain ⟨b, hb⟩ := h2 (-mu)
-    have e1 := h4 _ _ _ _ ha hb
-    have e2 := h4 _ _ _ _ ha' hb
-    rw [add_neg_cancel] at e1 e2
-    have := H.sub_mem ((hH _).2 e1) ((hH _).2 e2)
-    simpa using this
-  have D1 : ∀ τ ∈ S.perp H, ∀ a mu, YY a mu → eStd S.g _ τ a = eStd S.g _ τ (l mu) := by
-    intro τ hτ a mu ha
-    have h0 : eStd S.g _ τ (a - l mu) = 0 := hτ _ (sub a (l mu) mu ha (hl mu))
-    have e : a = (a - l mu) + l mu := (sub_add_cancel a (l mu)).symm
-    conv_lhs => rw [e]
-    rw [eStd_add_right, h0, zero_add]
-  refine ⟨l, hl, D1, fun mu κ => ⟨fun h => ?_, fun h τ hτ => ?_⟩⟩
-  · have hb : l mu - l κ ∈ H := by
-      rw [← TestBasis.perp_perp S H]
-      intro τ hτ
-      have e : eStd S.g _ τ (l mu) = eStd S.g _ τ (l mu - l κ) + eStd S.g _ τ (l κ) := by
-        rw [← eStd_add_right, sub_add_cancel]
-      have h0 : eStd S.g _ τ (l mu - l κ) = 0 := by rw [h τ hτ] at e; simpa using e.symm
-      rw [eStd_swap, h0, neg_zero]
-    have e1 := h4 _ _ _ _ (hl κ) ((hH _).1 hb)
-    rw [add_sub_cancel, add_zero] at e1
-    intro v
-    obtain ⟨w, hw⟩ := ((h3 _ _ _ (hl mu)).1 e1) v
-    exact ⟨-w, by rw [hw, smul_neg, add_neg_cancel_right]⟩
-  · exact (D1 τ hτ (l κ) mu ((h3 _ _ _ (hl κ)).2 h)).symm
-
 theorem isClassSum_of_sumI {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W : Matrix (Fin s) (Fin s) ℤ}
     {A : Type} [CommRing A] [IsLocalRing A] (Φ : VPre bar q W A) (y : Φ.Y) (N : ℕ) (κ : Fin s → Φ.X y) (c : Φ.Q)
     {V' : Type} [CommRing V'] [IsLocalRing V'] (io : Φ.V y →+* V') (x : V') (f : (Fin s → Φ.X y) → V')
@@ -171,8 +130,7 @@ theorem isClassSum_of_sumI {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {
   let L := (PreModel.low_finite Φ y P j).toFinset
   let T := S₀ ∪ L
   refine ⟨T.filter P, fun mu hmu => (Finset.mem_filter.1 hmu).2, fun mu hP hn => ?_, ?_⟩
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     exact hn (Finset.mem_filter.2 ⟨Finset.mem_union_right _ ((Set.Finite.mem_toFinset _).2 ⟨hP, hlt⟩), hP⟩)
   · have h1 := hS₀ T Finset.subset_union_left
     have h2 : ∑ mu ∈ T, f mu = io (∑ mu ∈ T.filter P, Φ.term y mu c) := by

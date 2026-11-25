@@ -203,8 +203,7 @@ theorem content_divisibility : R2 := by
     have h'' := (mul_dvd_mul_iff_left (pow_ne_zero _ hϖ.ne_zero)).mp h'
     exact Units.dvd_mul_left.mp h''
   have hk : k < e * (v₁ - i₀) + 1 + e * a := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hnd ((pow_dvd_pow ϖ hcon).trans hd)
   have h1 : e * (v₁ - i₀) ≤ e * v₁ := Nat.mul_le_mul_left e (Nat.sub_le _ _)
   have h3 : e * (a + v₁ + 1) = e * a + e * v₁ + e := by ring

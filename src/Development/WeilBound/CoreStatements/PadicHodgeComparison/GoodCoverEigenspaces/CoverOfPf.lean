@@ -38,8 +38,6 @@ theorem ideal_mono {S S' : Finset ι} (h : S ⊆ S') : ideal I S ≤ ideal I S' 
 
 def Y (S : Finset ι) : Scheme.{0} := (ideal I S).subscheme
 
-def Yι (S : Finset ι) : Y I S ⟶ X := (ideal I S).subschemeι
-
 def incl {S S' : Finset ι} (h : S ⊆ S') : Y I S' ⟶ Y I S :=
   Scheme.IdealSheafData.inclusion (ideal_mono I h)
 
@@ -83,17 +81,6 @@ variable {X' : Scheme.{0}} (f : X' ⟶ X)
 
 end BaseChange
 
-theorem nonempty_Ystr {s : ℕ} (S : Idx ι s) (y : Y I S.1) : Nonempty (Ystr I s) := ⟨(inj I S).base y⟩
-
-theorem isEmpty_Ystr {s : ℕ} (h : IsEmpty (Idx ι s)) : IsEmpty (Ystr I s) :=
-  ⟨fun x => IsEmpty.false ((Sigma.desc (fun S : Idx ι s => (isEmptyElim S : Y I S.1 ⟶ ∅)) : Ystr I s ⟶ ∅).base x)⟩
-
-theorem nonempty_Y_iff (S : Finset ι) : Nonempty (Y I S) ↔ ((ideal I S).support : Set X).Nonempty := by
-  rw [← Set.range_nonempty_iff_nonempty (f := (Yι I S).base)]
-  unfold Yι
-  rw [← Scheme.IdealSheafData.range_subschemeι]
-  rfl
-
 end GlobalTheory.Strata
 
 namespace GlobalTheory.Strata
@@ -124,11 +111,6 @@ abbrev A : Type := MvPolynomial (Fin 2) O ⧸ Ideal.span {X 0 * X 1 - C ϖ}
 
 def T (k : Fin 2) : A O ϖ := Ideal.Quotient.mk _ (X k)
 
-abbrev XS : Scheme.{0} := Spec (CommRingCat.of (A O ϖ))
-
-def compIdeal (k : Fin 2) : (XS O ϖ).IdealSheafData :=
-  Scheme.IdealSheafData.ofIdealTop (Ideal.span {(Scheme.ΓSpecIso (CommRingCat.of (A O ϖ))).inv.hom (T O ϖ k)})
-
 def red : A O ϖ →+* O ⧸ Ideal.span {ϖ} :=
   Ideal.Quotient.lift _ (eval₂Hom (Ideal.Quotient.mk _) (fun _ => 0)) (by
     intro a ha
@@ -136,38 +118,9 @@ def red : A O ϖ →+* O ⧸ Ideal.span {ϖ} :=
     obtain ⟨c, rfl⟩ := ha
     simp [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self])
 
-theorem reduction_uniformizerPoint (k : Fin 2) : red O ϖ (T O ϖ k) = 0 := by simp [red, T]
-
-theorem mem_support_compIdeal (x : XS O ϖ) (k : Fin 2) (hx : T O ϖ k ∈ x.asIdeal) :
-    x ∈ ((compIdeal O ϖ k).support : Set (XS O ϖ)) := by
-  rw [compIdeal, Scheme.IdealSheafData.coe_support_ofIdealTop, Scheme.zeroLocus_span, Scheme.zeroLocus_singleton,
-    basicOpen_eq_of_affine]
-  exact fun h' => (PrimeSpectrum.mem_basicOpen (x := (x : PrimeSpectrum (A O ϖ))) _).1 h' hx
-
-theorem isEmpty_Ystr_two : IsEmpty (Ystr (compIdeal O ϖ) 2) :=
-  isEmpty_Ystr _ ⟨fun S => by have := S.1.card_le_univ; have h2 := S.2; simp at this; omega⟩
-
-theorem nonempty_Ystr_one (h : ¬ IsUnit ϖ) : Nonempty (Ystr (compIdeal O ϖ) 1) := by
-  haveI : Nontrivial (O ⧸ Ideal.span {ϖ}) :=
-    Ideal.Quotient.nontrivial_iff.2 (by rwa [Ne, Ideal.span_singleton_eq_top])
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal (O ⧸ Ideal.span {ϖ})
-  let x : XS O ϖ := ⟨M.comap (red O ϖ), Ideal.comap_isPrime _ _⟩
-  have hx : x ∈ ((ideal (compIdeal O ϖ) Finset.univ).support : Set (XS O ϖ)) := by
-    simp only [ideal, Scheme.IdealSheafData.support_iSup, TopologicalSpace.Closeds.coe_iInf, Set.mem_iInter]
-    intro k _
-    refine mem_support_compIdeal O ϖ x k ?_
-    show red O ϖ (T O ϖ k) ∈ M
-    rw [reduction_uniformizerPoint]; exact zero_mem _
-  obtain ⟨y⟩ := (nonempty_Y_iff (compIdeal O ϖ) Finset.univ).2 ⟨x, hx⟩
-  exact nonempty_Ystr (compIdeal O ϖ) (s := 1) ⟨Finset.univ, by simp⟩ y
-
 end GlobalTheory.Strata.Example
 
 namespace GlobalTheory.Strata
-
-theorem orderEmbOfFin_univ_fin {n : ℕ} (h : (Finset.univ : Finset (Fin n)).card = n) :
-    ((Finset.univ : Finset (Fin n)).orderEmbOfFin h : Fin n → Fin n) = id :=
-  (Finset.orderEmbOfFin_unique h (f := id) (fun _ => Finset.mem_univ _) strictMono_id).symm
 
 end GlobalTheory.Strata
 end -- clump:auto
@@ -207,8 +160,6 @@ namespace GlobalTheory.EtC.WSS
 open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime]
-
-def idx (m : ℕ) (a : ℤ) : Finset ℕ := (Finset.range m).filter fun s => -a ≤ (s : ℤ) ∧ a + 2 * (s : ℤ) < m
 
 variable {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
 

@@ -448,8 +448,7 @@ theorem exists_integral_cob1_congr_of_frobenius_congr : ∀ (p : ℕ) [Fact p.Pr
       rw [coeff_smul_pow_char, coeff_map, hu, ← map_pow, hrt]
     · rw [coeff_pow_char_of_not _ _ _ h, ← hres]
       apply ht
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       refine h ⟨Finsupp.mapRange (· / p) (Nat.zero_div p) γ, ?_⟩
       ext i
       simp [Nat.mul_div_cancel' (hall i)]
@@ -814,8 +813,7 @@ theorem isLocalRing_of_integers {C : Type} [Field C] (v : Valuation C NNReal) (O
     [Algebra O C] (hv : v.Integers O) : IsLocalRing O := by
   haveI : Nontrivial O := (algebraMap O C).domain_nontrivial
   refine IsLocalRing.of_isUnit_or_isUnit_one_sub_self fun a => ?_
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : v (algebraMap O C a) < 1 :=
     lt_of_le_of_ne (hv.map_le_one a) (fun e => h.1 (hv.isUnit_of_one' e))
   have h2 : v (algebraMap O C (1 - a)) < 1 :=
@@ -974,12 +972,6 @@ variable {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {σ : Type}
 theorem in_zero : In (⊤ : Ideal B) (0 : MvPowerSeries σ Q) :=
   fun _ => ⟨0, trivial, by simp⟩
 
-theorem in_add {g h : MvPowerSeries σ Q} (hg : In (⊤ : Ideal B) g) (hh : In (⊤ : Ideal B) h) :
-    In (⊤ : Ideal B) (g + h) := fun α => by
-  obtain ⟨a, -, ha⟩ := hg α
-  obtain ⟨b, -, hb⟩ := hh α
-  exact ⟨a + b, trivial, by rw [map_add (f := _), ha, hb, map_add (f := _)]⟩
-
 theorem in_smul (c : B) {g : MvPowerSeries σ Q} (hg : In (⊤ : Ideal B) g) :
     In (⊤ : Ideal B) (algebraMap B Q c • g) := fun α => by
   obtain ⟨a, -, ha⟩ := hg α
@@ -992,7 +984,7 @@ theorem in_sum {κ : Type} (s : Finset κ) (g : κ → MvPowerSeries σ Q)
   | empty => simpa using in_zero
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    exact in_add (hg a (Finset.mem_insert_self _ _)) (ih fun j hj => hg j (Finset.mem_insert_of_mem hj))
+    exact GlobalTheory.QLogBasis.in_top_add (hg a (Finset.mem_insert_self _ _)) (ih fun j hj => hg j (Finset.mem_insert_of_mem hj))
 
 theorem comb_one {ι : Type} [Fintype ι] [DecidableEq ι] (e : ι → MvPowerSeries σ Q) (i : ι) :
     comb ((1 : Matrix ι ι B) i) e = e i := by
@@ -1018,7 +1010,7 @@ theorem mul_eq_one {d : ℕ} (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B) 
   obtain ⟨b, -, hb⟩ := he.2 (e i) (he.1 i)
   have hA : In (⊤ : Ideal B) (e i - comb ((Matrix.of P * Matrix.of P') i) e) := by
     rw [comb_mul e f P P' i]
-    exact in_add (h1 i) (in_sum _ _ fun j _ => in_smul _ (h2 j))
+    exact GlobalTheory.QLogBasis.in_top_add (h1 i) (in_sum _ _ fun j _ => in_smul _ (h2 j))
   have hB : In (⊤ : Ideal B) (e i - comb ((1 : Matrix ι ι B) i) e) := by
     rw [comb_one, sub_self]; exact in_zero
   exact (hb _ hA).trans (hb _ hB).symm

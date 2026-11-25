@@ -23,8 +23,6 @@ variable {D : Car} {N N' : ℕ}
 
 private def sS (z w : VC D N N') : ℂ := ∑ τ, ∑ i, ∑ j, z τ i j * (starRingEnd ℂ) (w τ i j)
 
-private theorem Hf_eq (T : Tor D) (z w : VC D N N') : Formalism.L2.Ker.Cd.TaylorLogMetric.Hf D T z w = sS z w / (area T.abelian₂ : ℂ) := rfl
-
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 
 namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.FL

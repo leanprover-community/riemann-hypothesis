@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.HpkMulMulHpkApply
 public import Formalism.PeriodIntegrals.IsLowUnitH
 import Mathlib.Tactic.Lemma
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.UnitaryHaarColumns
 
 @[expose] public section
 
@@ -122,23 +123,7 @@ lemma blockW_mul (a b : Matrix (Fin k) (Fin k) ℂ) :
       exact absurd (Finset.mem_univ i) h
 
 lemma blockW_one : blockW k r (1 : Matrix (Fin k) (Fin k) ℂ) = 1 := by
-  ext i j
-  by_cases hi : InB k r i
-  · by_cases hj : InB k r j
-    · rw [blockW_in _ hi hj, Matrix.one_apply, Matrix.one_apply]
-      have hi' : r ≤ i.val ∧ i.val < r + k := hi
-      have hj' : r ≤ j.val ∧ j.val < r + k := hj
-      by_cases hij : i = j
-      · subst hij
-        simp
-      · rw [if_neg hij, if_neg]
-        intro h
-        apply hij
-        have h2 := congrArg Fin.val h
-        change i.val - r = j.val - r at h2
-        exact Fin.ext (by omega)
-    · rw [blockW_in_out _ hi hj, Matrix.one_apply, if_neg (ne_of_inB hi hj)]
-  · rw [blockW_out _ hi, Matrix.one_apply]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.Base.StandardBasisEmbedding.blockW_one <;> assumption
 
 lemma blockW_conjTranspose (a : Matrix (Fin k) (Fin k) ℂ) : (blockW k r a)ᴴ = blockW k r aᴴ := by
   ext i j

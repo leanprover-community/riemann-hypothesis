@@ -416,8 +416,6 @@ namespace PI.CntNotPosW
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem totPos_of_flags (D : Formalism.BasicNotions.D7) {T T' : ℕ} (F : FlagG (VS D) D.R.rS (T : D.host.E))
     (F' : FlagG (VS D) D.R.rS (T' : D.host.E)) (hG : Gflag F F' ≠ 0) : TotPos (Gflag F F') := by
   unfold TotPos
@@ -446,8 +444,6 @@ namespace Formalism.L2.SG.Pf.DensLoc
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.DataCut Formalism.L2.SG.DataInst
 open Formalism.HermitianLattices.Ext.L3
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem prod_lower_third {x : ℝ} (hx0 : 0 ≤ x) (hx : x ≤ 1 / 3) {η : ℝ} (hη : η = 1 ∨ η = -1) (a b : ℕ)
     (ha : 1 ≤ a) : Real.exp (-(3 * x ^ a)) ≤ ∏ i ∈ Finset.Icc a b, (1 - η ^ i * x ^ i) := by
@@ -618,8 +614,7 @@ theorem densLocBound_at {D : Formalism.BasicNotions.D7} (h5 : DensAllAt D) : Den
       _ ≤ Real.exp (4 * y) * alpD u u' p := mul_le_mul_of_nonneg_left hαl (Real.exp_pos _).le
   · refine (qP_lt_three_finite D).subset fun p hp => ?_
     simp only [Set.mem_setOf_eq] at hp ⊢
-    by_contra h3
-    push_neg at h3
+    by_contra! h3
     obtain ⟨-, -, hlo⟩ := key p
     obtain ⟨hαl, hαu⟩ := hα p
     have hαpos : 0 < alpD u u' p := lt_of_lt_of_le (Real.exp_pos _) hαl

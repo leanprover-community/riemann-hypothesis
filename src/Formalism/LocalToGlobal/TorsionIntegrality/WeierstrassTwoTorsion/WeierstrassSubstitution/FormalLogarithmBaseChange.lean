@@ -437,8 +437,7 @@ private theorem eq_zero_of_pderiv_zero_of_pderiv_one_eq_zero {h : MvPowerSeries 
   · subst hn
     simpa using hc
   · obtain ⟨i, hi⟩ : ∃ i, n i ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hn (Finsupp.ext hne)
     have hD : MvPowerSeries.pderiv (R := K) i h = 0 := by
       fin_cases i

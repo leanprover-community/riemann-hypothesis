@@ -15,8 +15,6 @@ namespace Formalism.HermitianLattices.ZeroFreeRegionGL2
 
 def X1 (ε x : ℝ) : ℝ := Real.exp (x ^ (ε / 5))
 
-def X2 (ε x : ℝ) : ℝ := Real.exp (x ^ (ε / 5) * Real.log x ^ 2)
-
 def logDerivLAtOne {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) : ℂ :=
   deriv (DirichletCharacter.LFunction χ) 1 / DirichletCharacter.LFunction χ 1
 

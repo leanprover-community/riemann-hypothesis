@@ -71,7 +71,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree GlobalTheory.Dict GlobalTheory.ClsVal
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Dict.MarkLift
 

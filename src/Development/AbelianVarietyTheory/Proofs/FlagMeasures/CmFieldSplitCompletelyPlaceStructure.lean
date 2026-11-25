@@ -94,10 +94,9 @@ private theorem sum_ramificationIdx_mul_inertiaDeg_primesOver (K : Type) [Field 
 
 private theorem eq_one_of_pos_of_sum_eq_card {ι : Type} [Fintype ι] (f : ι → ℕ) (hpos : ∀ i, 0 < f i)
     (hs : ∑ i, f i = Fintype.card ι) (i : ι) : f i = 1 := by
-  by_contra h
-  have hlt : ∑ j, 1 < ∑ j, f j :=
-    Finset.sum_lt_sum (fun j _ => hpos j) ⟨i, Finset.mem_univ _, by have := hpos i; omega⟩
-  simp [hs] at hlt
+  have h := (Finset.sum_eq_sum_iff_of_le (s := Finset.univ) (f := fun _ => 1) (g := f)
+    fun j _ => Nat.one_le_iff_ne_zero.2 (hpos j).ne').1 (by simpa using hs.symm)
+  exact (h i (Finset.mem_univ i)).symm
 
 private theorem ramificationIdx_inertiaDeg_eq_one_of_ncard_eq_finrank (K : Type) [Field K] [NumberField K] (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)

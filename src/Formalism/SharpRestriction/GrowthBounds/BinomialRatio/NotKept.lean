@@ -46,7 +46,6 @@ theorem nk_core {s : ℕ} (r : ℕ) (hr : 1 ≤ r) (L A : ℕ) (R n Ai Ci : Fin 
     (sdXi r L : ℝ) * (∏ i, (sdXi r (R i) : ℝ)) * (∏ i, (sdXi r (n i) : ℝ)) ≤
       θ ^ (r - 1) * ((sdXi r A : ℝ) * (∏ i, (sdXi r (Ai i) : ℝ)) * ∏ i, (sdXi r (Ci i) : ℝ)) := by
   set f : ℝ := ((r - 1).factorial : ℝ)⁻¹ with hf
-  have hf0 : 0 ≤ f := by positivity
   have up : (sdXi r L : ℝ) * (∏ i, (sdXi r (R i) : ℝ)) * (∏ i, (sdXi r (n i) : ℝ)) ≤
       (((L : ℝ) + r) ^ (r - 1) * f) * (∏ i, (((R i : ℝ) + r) ^ (r - 1) * f)) *
         (∏ i, (((n i : ℝ) + r) ^ (r - 1) * f)) := by

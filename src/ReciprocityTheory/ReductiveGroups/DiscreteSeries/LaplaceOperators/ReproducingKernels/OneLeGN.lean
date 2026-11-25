@@ -1,5 +1,7 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.EIntBound
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.HasDerivAtExp
 public import Formalism.HermitianCurvature.StatementB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.EquivariantL2Space
 import Mathlib.Algebra.Order.Star.Real
@@ -115,15 +117,7 @@ theorem gN_conjT {k r : ℕ} (g : Mat k r) : Formalism.FourierDecayAlt.B.gN gᴴ
   rw [conjTranspose_apply, Complex.star_def, Complex.normSq_conj]
 
 theorem gN_entry {k r : ℕ} (g : Mat k r) (i j : Fin (2 * r + k + 1)) : ‖g i j‖ ≤ Formalism.FourierDecayAlt.B.gN g := by
-  unfold Formalism.FourierDecayAlt.B.gN
-  rw [← Real.sqrt_sq (norm_nonneg (g i j)), ← Complex.normSq_eq_norm_sq]
-  refine Real.sqrt_le_sqrt ?_
-  calc Complex.normSq (g i j) ≤ ∑ j', Complex.normSq (g i j') :=
-        Finset.single_le_sum (f := fun j' => Complex.normSq (g i j')) (fun _ _ => Complex.normSq_nonneg _)
-          (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', Complex.normSq (g i' j') :=
-        Finset.single_le_sum (f := fun i' => ∑ j', Complex.normSq (g i' j'))
-          (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.RankOneLeviIdentities.gN_entry <;> assumption
 
 section frob
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LinearIndependentSemilinearOfBasis
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.CoefCol
 public import Formalism.LocalToGlobal.Columns.ColForms
@@ -108,43 +109,8 @@ open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV F
 theorem rec_li_semilin {K V M ι κ : Type} [Field K] [AddCommGroup V] [Module K V] [AddCommGroup M] [Module ℂ M]
     (σ : K →+* ℂ) (e : V →ₛₗ[σ] M) (b : Basis ι K V) (hb : LinearIndependent ℂ fun i => e (b i))
     (v : κ → V) (hv : LinearIndependent K v) : LinearIndependent ℂ fun a => e (v a) := by
-  classical
-  let _ : Algebra K ℂ := σ.toAlgebra
-  let L : TensorProduct K ℂ V →ₗ[ℂ] M := (b.baseChange ℂ).constr ℂ fun i => e (b i)
-  have hLb : ∀ i, L ((1 : ℂ) ⊗ₜ[K] b i) = e (b i) := by
-    intro i
-    rw [← Basis.baseChange_apply]
-    exact Basis.constr_basis _ _ _ _
-  have hL : ∀ x : V, L ((1 : ℂ) ⊗ₜ[K] x) = e x := by
-    intro x
-    conv_lhs => rw [← b.linearCombination_repr x]
-    conv_rhs => rw [← b.linearCombination_repr x]
-
-    rw [Finsupp.linearCombination_apply, Finsupp.sum, TensorProduct.tmul_sum, map_sum, map_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [LinearMap.map_smulₛₗ, TensorProduct.tmul_smul, ← algebraMap_smul ℂ (b.repr x i), map_smul, hLb]
-    rfl
-  have hinj : Function.Injective L := by
-    rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
-    intro x hx
-    rw [LinearMap.mem_ker, Basis.constr_apply] at hx
-    have h0 := linearIndependent_iff.1 hb ((b.baseChange ℂ).repr x) (by rw [Finsupp.linearCombination_apply]; exact hx)
-    exact (b.baseChange ℂ).repr.map_eq_zero_iff.1 h0
-  let I : Set V := hv.linearIndepOn_id.extend (Set.subset_univ _)
-  let b2 : Basis I K V := .extend hv.linearIndepOn_id
-  let v' (a : κ) : I := ⟨v a, hv.linearIndepOn_id.subset_extend _ <| Set.mem_range_self a⟩
-  have hinj' : Function.Injective v' := fun i j hij => hv.injective (congrArg Subtype.val hij)
-  have h2 : LinearIndependent ℂ fun a => (1 : ℂ) ⊗ₜ[K] v a := by
-    have : (fun a => (1 : ℂ) ⊗ₜ[K] v a) = (b2.baseChange ℂ) ∘ v' := by
-      funext a
-      simp [b2, v', Basis.baseChange_apply, Basis.extend]
-    rw [this]
-    exact (b2.baseChange ℂ).linearIndependent.comp _ hinj'
-  have h3 := h2.map' L (LinearMap.ker_eq_bot.2 hinj)
-  have : (L ∘ fun a => (1 : ℂ) ⊗ₜ[K] v a) = fun a => e (v a) := by
-    funext a; exact hL _
-  rw [this] at h3
-  exact h3
+  intros
+  apply _root_.GlobalTheory.Mem.linearIndependent_semilinear_of_basis <;> assumption
 
 namespace GSD
 

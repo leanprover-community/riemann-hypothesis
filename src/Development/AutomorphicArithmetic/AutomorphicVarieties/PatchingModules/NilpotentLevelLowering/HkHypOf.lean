@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwBernDom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDedekind
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SwapOne
@@ -128,8 +129,7 @@ theorem UpperTheory.V.AlgebraTools.hkFaith :
   have hD := UpperTheory.V.AlgebraTools.hkDedekind R n K _ key
   by_contra hne
   obtain ⟨w0, hw0⟩ : ∃ w, c w ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (funext hall)
   obtain ⟨w, hwS, hmax⟩ := (Finset.univ.filter (fun u => c u ≠ 0)).exists_max_image invN
     ⟨w0, by simp [hw0]⟩
@@ -821,7 +821,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil
 open UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Pa UpperTheory.V.Pa.Lev
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem dc_apply {A H M : Type} [CommRing A] [Group H] [AddCommGroup M] [Module A M]
     (ρ : Representation A H M) (K K' : Subgroup H) (x : H) (h : FinOrb K K' x) (m : M) :
@@ -874,19 +873,7 @@ private theorem iw_le : iwC k n ⊤ ≤ KO k (Fin n) := by
   exact iwahori_le_KO k (Fin n)
 
 private theorem dom_fund {x : kˣ} (hx : IsUnif x) (m : ℕ) : Dom (fun j : Fin n => x ^ fund n m j) := by
-  have hx1 : valuation k (x : k) ≤ 1 := by
-    obtain ⟨p, -, hp⟩ := hx
-    rw [← hp]
-    exact p.2
-  intro j l hjl
-  have hjl' : (j : ℕ) ≤ (l : ℕ) := hjl
-  simp only [fund]
-  by_cases h1 : (l : ℕ) < m
-  · have h2 : (j : ℕ) < m := lt_of_le_of_lt hjl' h1
-    simp [h1, h2]
-  · by_cases h2 : (j : ℕ) < m
-    · simpa [h1, h2] using hx1
-    · simp [h1, h2]
+  apply _root_.dom_fund <;> assumption
 
 private theorem fund_split {T : Type} [CommGroup T] (x : T) (i : Fin n) : (fun j : Fin n => x ^ fund n ((i : ℕ) + 1) j)
     = Pi.mulSingle i x * (fun j : Fin n => x ^ fund n (i : ℕ) j) := by

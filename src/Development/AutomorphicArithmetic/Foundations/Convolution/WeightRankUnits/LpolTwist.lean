@@ -184,8 +184,7 @@ private theorem exists_scalar (E : Type) [Field E] [NumberField E] [IsCMField E]
   rcases Nat.even_or_odd (n - 1) with h | h
   · exact ⟨1, one_ne_zero, by simp [h.neg_one_pow]⟩
   · have hx : ∃ x : E, IsCMField.complexConj E x ≠ x := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact IsCMField.complexConj_ne_one E (AlgEquiv.ext hc)
     obtain ⟨x, hx⟩ := hx
     refine ⟨x - IsCMField.complexConj E x, sub_ne_zero.mpr hx.symm, ?_⟩
@@ -1797,7 +1796,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem UpperTheory.ConvolutionTheory.G2.sum_one {G : Type} [Group G] (θ : G →* G) (S : Set G) (T : G → ℂ) (x₀ : G)
     (hS : ∀ g, g⁻¹ * x₀ * θ g ∈ S)

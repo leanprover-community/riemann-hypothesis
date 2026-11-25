@@ -52,6 +52,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SecondCountableLocal
 
 @[expose] public section
 
@@ -62,18 +63,7 @@ namespace GlobalTheory.RootEx.TargetUnip
 
 theorem det_eq_one_of_level {k ι : Type*} [Field k] [Fintype ι] [DecidableEq ι] (f : ι → ℕ)
     (M : Matrix ι ι k) (hM : ∀ r s, f s ≤ f r → M r s = (1 : Matrix ι ι k) r s) : M.det = 1 := by
-  have hb : M.BlockTriangular f := by
-    intro r s h
-    rw [hM r s h.le, Matrix.one_apply_ne]
-    rintro rfl
-    exact lt_irrefl _ h
-  rw [hb.det]
-  refine Finset.prod_eq_one fun a _ => ?_
-  have : M.toSquareBlock f a = 1 := by
-    ext i j
-    rw [Matrix.toSquareBlock_def, Matrix.of_apply, hM _ _ (by rw [i.2, j.2])]
-    simp [Matrix.one_apply, Subtype.ext_iff]
-  rw [this, Matrix.det_one]
+  apply _root_.GlobalTheory.RootExSource.det_eq_one_of_unip <;> assumption
 
 variable {k : Type*} [Field k] {n : Type*} [Fintype n] [DecidableEq n] {c : ℕ}
 variable {n' : Type*} [Fintype n'] [DecidableEq n']

@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.UnifExHolds
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.OmAtComplZero
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.ColumnAdditionFixesTranspose
 
 @[expose] public section
 
@@ -52,19 +53,7 @@ def PrimCos (a : ℕ) : Prop :=
 
 theorem smul_prim {a : ℕ} (k : HA (Fv F v) σ J) (hk : k ∈ Formalism.L2.SG.TypedSets.Kv σ J Λ v)
     (Y : TupV (E := E) v n a) (hY : IsPrim v Λ Y) : IsPrim v Λ (k • Y) := by
-  have hki : ∀ i, (k • Y) i =
-      Matrix.mulVec ((HA.mat (Fv F v) σ J k : GL (Fin n) (Fv F v ⊗[F] E)) : Matrix (Fin n) (Fin n) _) (Y i) :=
-    fun i => rfl
-  refine ⟨fun i => ?_, fun c hc => hY.2 c ?_⟩
-  · rw [hki]; exact (hk (Y i)).1 (hY.1 i)
-  · have e : (∑ i, c i • (k • Y) i) =
-        Matrix.mulVec ((HA.mat (Fv F v) σ J k : GL (Fin n) (Fv F v ⊗[F] E)) : Matrix (Fin n) (Fin n) _)
-          (∑ i, c i • Y i) := by
-      rw [Matrix.mulVec_sum]
-      refine Finset.sum_congr rfl (fun i _ => ?_)
-      rw [Matrix.mulVec_smul, hki]
-    rw [e] at hc
-    exact (hk _).2 hc
+  apply _root_.PI.LocMassTypW.prim_smul <;> assumption
 
 end Gen
 

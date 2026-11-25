@@ -405,10 +405,6 @@ def charRep (χ : G →* LLˣ) : Representation LL G LL where
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [mul_comm]
 
-def IsTwist (χ : G →* LLˣ) (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ') : Prop :=
-  ∃ e : V ≃ₗ[LL] V', (∀ g x, ρ' g (e x) = ((χ g : LLˣ) : LL) • e (ρ g x)) ∧
-    L.T.map ((e : V →ₗ[LL] V').restrictScalars O) = L'.T
-
 def IsDualLat (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ') (P : V →ₗ[LL] V' →ₗ[LL] LL) :
     Prop :=
   (∀ g x y, P (ρ g x) (ρ' g y) = P x y) ∧ (∀ x, (∀ y, P x y = 0) → x = 0) ∧

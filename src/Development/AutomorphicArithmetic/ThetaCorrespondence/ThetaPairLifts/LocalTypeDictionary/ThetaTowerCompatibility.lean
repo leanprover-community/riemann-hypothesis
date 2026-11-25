@@ -92,7 +92,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.BottomRallis
@@ -376,8 +375,8 @@ theorem globalFormAnisoAt_move_nc : ∀ (D : D7) (A : HSp D) (L L' : Lat A), IsS
     group
   obtain ⟨c1, c2, c3, z, hz, hpet⟩ := hG ψ θ B χA χB sA sB t cA a om ν 𝓕 hP hw m mH hm hmH
     (om (k⁻¹, 1) Φ₁) (om (k⁻¹, 1) Φ₂) (fock Φ₁ hΦ₁) (fock Φ₂ hΦ₂)
-    (rTr A k⁻¹ u₁) (GlobalTheory.T.rTr_mem_A0 D θ A cA hθ k⁻¹ hki u₁ hu₁)
-    (rTr A k⁻¹ u₂) (GlobalTheory.T.rTr_mem_A0 D θ A cA hθ k⁻¹ hki u₂ hu₂)
+    (rTr A k⁻¹ u₁) (_root_.GlobalTheory.Core.Rk.RTr.cuspFormsArchimedeanKFinite_rightTranslate_finite D θ A cA hθ k⁻¹ hki u₁ hu₁)
+    (rTr A k⁻¹ u₂) (_root_.GlobalTheory.Core.Rk.RTr.cuspFormsArchimedeanKFinite_rightTranslate_finite D θ A cA hθ k⁻¹ hki u₂ hu₂)
   obtain ⟨up₁, cv₁⟩ := upConvIff Φ₁ hΦ₁.1 u₁ lu₁
   obtain ⟨up₂, cv₂⟩ := upConvIff Φ₂ hΦ₂.1 u₂ lu₂
   refine ⟨cv₁ c1, cv₂ c2, fun s hs => integrable_of_conj m k ?_, z, ?_, ?_⟩
@@ -417,7 +416,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU Gl
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero IsKFinVec ThetaClause SectionClause CoefClause)
 open GlobalTheory.Mem.Th (CptF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
 theorem _root_.GlobalTheory.T.theta_tower_compatibility : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.CuspRapidDecay → _root_.GlobalTheory.Published.DoublingMethodLocalZetaIntegrals → ∀ D : D7, GlobalTheory.BottomRallis.SiegelWeilFockAniso D → GlobalTheory.BottomRallis.GlobalFormAniso D := by

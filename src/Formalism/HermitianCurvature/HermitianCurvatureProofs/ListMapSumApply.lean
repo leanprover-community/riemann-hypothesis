@@ -16,8 +16,6 @@ namespace Formalism.FourierDecayAlt.P.MinorPolynomials
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity PI.UnitaryGroupMassFormula.UsCompose
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
@@ -48,8 +46,7 @@ theorem toFS (D : RealPlaceData k r Wp Wq) {nf : ℕ} (fib : Fin nf → Mat k r 
         unfold Good
         refine ⟨?_, hes, T.word_lie⟩
         intro l hl
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         obtain ⟨ha, hb⟩ := hab l hcon.1 hcon.2
         rcases hl with hl | hl
         · exact hl ha

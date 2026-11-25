@@ -291,7 +291,7 @@ theorem reducedMatrix_eq_of_isReduction {E : Type} [Field E] [NumberField E] [St
 theorem residueFrameEntry_eq_coord {k : Type} [Field k] {k₀ n c : ℕ} (hk : k₀ ≤ n) (κ : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) (l l' : Fin (n + c)) :
     ocbEnt k₀ c n c n κ.toLinearMap (LocE.fPos k₀ c n l.1) (LocE.fPos k₀ c n l'.1) = κ (Pi.single l' 1) l := by
   unfold ocbEnt
-  rw [frameIndex_framePos hk l.2, frameIndex_framePos hk l'.2, residue_basisVec_eq_single l'.2]
+  rw [frameIndex_framePos l.2, frameIndex_framePos l'.2, residue_basisVec_eq_single l'.2]
   unfold Loc.atN
   rw [dite_eq_left l.2]
   rfl

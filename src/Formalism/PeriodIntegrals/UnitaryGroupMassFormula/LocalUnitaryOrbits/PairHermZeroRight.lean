@@ -11,6 +11,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.L
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
 import Mathlib.Tactic.Linter.HaveILetI
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.HRAddSmul
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.ContinuousPsiVOf
 
 @[expose] public section
 
@@ -60,13 +61,7 @@ theorem dV_ne_zero : dV v ≠ 0 := by
   · exact one_ne_zero
 
 theorem psiV_zero (ψ : AddChar (AF F) ℂ) : psiV F ψ v 0 = 1 := by
-  have hs : singleV F v (0 : Fv F v) = 0 := by
-    have h := SdUniqW.singleV_add v (0 : Fv F v) 0
-    rw [add_zero] at h
-    simpa using h
-  rw [psiV, hs]
-  convert AddChar.map_zero_eq_one ψ
-  rfl
+  apply _root_.PI.UnitaryGroupMassFormula.LocJacTyp.Sd.psiV_zero <;> assumption
 
 theorem unif_ne_zero {ϖ : Fv F v} (h : IsUnif v ϖ) : ϖ ≠ 0 := by
   intro h0

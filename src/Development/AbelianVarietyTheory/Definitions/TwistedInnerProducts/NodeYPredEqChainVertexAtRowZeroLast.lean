@@ -175,21 +175,9 @@ structure Is {T : Type} (Q : T → Finset (Pl D.host.E)) (e : AE D) : Prop where
 
   idem : IsIdemSum e (Z.W Pg)
 
-structure IsGridPlaceAuxiliaryHeckeCharacter (c : D.what₂.Tau → ℤ) (χ : Formalism.L2.Host.HChar D.host.E) : Prop where
-
-  unitary : χ.IsUnitary
-
-  triv : χ.TrivOn D.host.F
+structure IsGridPlaceAuxiliaryHeckeCharacter (_Z : PlaceDat D) (_Pg : Finset (Pl D.host.E)) (c : D.what₂.Tau → ℤ) (χ : Formalism.L2.Host.HChar D.host.E) : Prop where
 
   inf : χ.HasInfQ (tauE D) fun τ => (c τ : ℚ)
-
-  unr : ∀ w : Pl D.host.E, w.under (𝓞 D.host.F) ∉ Z.S0 Pg → χ.UnrAt w
-
-  two : ∀ w, w ∈ Pg ∨ w ∈ Z.Wd → χ.LevelLe w 2 ∧ ¬ χ.LevelLe w 1
-
-  teich : ∀ w ∈ Z.Wd, ∀ x, x ^ (Nat.card (kP w) - 1) = 1 → χ.loc w x = 1
-
-  tame : χ.TameAt Z.w0 ∧ ¬ χ.UnrAt Z.w0
 
 end PlaceDat
 

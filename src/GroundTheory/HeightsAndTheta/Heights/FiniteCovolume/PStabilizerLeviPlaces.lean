@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PComplementExt
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PGramAtData
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PHermAtPlace
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PStabilizerLeviMatrices
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

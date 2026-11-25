@@ -173,8 +173,7 @@ theorem lg_agree (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d
   by_cases hpow : ∃ m, j = p ^ m
   · obtain ⟨m, rfl⟩ := hpow
     have hmn : m < n := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact absurd hj (not_lt.mpr (Nat.pow_le_pow_right hp.pos h))
     have hrel := congrFun (ptx_rel G p hγ hdet ga m) a
     change G.lc p ga m a = _
@@ -292,8 +291,7 @@ private theorem lgCurve_const_zero (G : LogFGL v d) (a : Fin d) :
   · subst he
     rw [coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact he (Finsupp.ext hcon)
     rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
       map_zero, smul_zero]

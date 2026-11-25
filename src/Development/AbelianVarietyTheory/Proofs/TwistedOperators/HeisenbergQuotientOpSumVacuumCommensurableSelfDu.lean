@@ -186,8 +186,7 @@ theorem form_translate_vacuum {R X M : Type} [CommRing R] [AddCommGroup X] [Modu
   split_ifs with hx
   · rw [hs x hx]
   · obtain ⟨a, ha, hne⟩ : ∃ a ∈ Λ, γ x a ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hx ((hΛ x).2 hc)
     have h1 : e (W x s) = γ a x * e (W x s) := by
       conv_lhs => rw [← he a ha (W x s)]

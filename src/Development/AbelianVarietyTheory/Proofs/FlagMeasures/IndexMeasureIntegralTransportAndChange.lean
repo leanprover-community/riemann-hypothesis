@@ -103,10 +103,7 @@ private lemma Fine_inf_of_relIndex_ne_zero {A A' B : AddSubgroup W} {φ : W → 
   have hfine := Model.fine_refine hB inf_le_left hCA
   refine ⟨hfine, inf_le_right, ?_, hfine.2.2⟩
   have hCD : B ⊓ A' ≤ A ⊓ A' := inf_le_inf_right A' hBA
-  have hD : (B ⊓ A').relIndex (A ⊓ A') ≠ 0 := by
-    have h := hCA
-    rw [← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A hCD inf_le_left] at h
-    exact left_ne_zero_of_mul h
+  have hD : (B ⊓ A').relIndex (A ⊓ A') ≠ 0 := AddSubgroup.relIndex_inter_ne_zero hB.2.1 A'
   rw [← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A' hCD inf_le_right,
     AddSubgroup.inf_relIndex_right]
   exact mul_ne_zero hD h₁
@@ -146,10 +143,7 @@ theorem _root_.GlobalTheory.IdxInt.Transport.cint_map_and_change : ∀ {W : Type
     · obtain ⟨B, hB⟩ := hN
       have hC := Fine_inf_of_relIndex_ne_zero hB h₂ h₁
       have hCD : B ⊓ A' ≤ A ⊓ A' := inf_le_inf_right A' hB.1
-      have hD : (B ⊓ A').relIndex (A ⊓ A') ≠ 0 := by
-        have h := hC.1.2.1
-        rw [← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A hCD inf_le_left] at h
-        exact left_ne_zero_of_mul h
+      have hD : (B ⊓ A').relIndex (A ⊓ A') ≠ 0 := AddSubgroup.relIndex_inter_ne_zero hB.2.1 A'
       rw [_root_.GlobalTheory.IdxInt.Model.cint_eq hC.1, _root_.GlobalTheory.IdxInt.Model.cint_eq hC.2,
         ← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A' hCD inf_le_right,
         ← AddSubgroup.relIndex_mul_relIndex (B ⊓ A') (A ⊓ A') A hCD inf_le_left,

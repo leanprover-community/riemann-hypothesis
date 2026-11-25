@@ -206,12 +206,7 @@ theorem exists_eq_mul_canonical_theta_of_sign_multiplier :
     simp only [dotProduct, Matrix.mulVec]
     fun_prop
   have hFd : Differentiable ℂ F := ((hquad.const_mul _).neg.cexp).mul hf
-  have hone : ∀ x : ℂ, x ^ 2 = 1 → x = 1 ∨ x = -1 := by
-    intro x hx
-    have h' : (x - 1) * (x + 1) = 0 := by linear_combination hx
-    rcases mul_eq_zero.mp h' with h1 | h1
-    · left; linear_combination h1
-    · right; linear_combination h1
+  have hone : ∀ x : ℂ, x ^ 2 = 1 → x = 1 ∨ x = -1 := fun _ => sq_eq_one_iff.mp
   have hsign : ∀ n n', χ n n' = 1 ∨ χ n n' = -1 := by
     intro n n'
     apply hone

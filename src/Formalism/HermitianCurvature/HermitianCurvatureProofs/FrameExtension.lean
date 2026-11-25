@@ -12,8 +12,6 @@ namespace Formalism.FourierDecayAlt.P.FrameExtension
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.QrD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem frame_weaken {k r m : ℕ} {z e : Fin (2 * r + k + 1) → ℂ} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
     (h : IsFrameOf k r [z, e] Bs) : IsFrameOf k r [z] Bs := by
   obtain ⟨h1, h2, h3⟩ := h
@@ -85,8 +83,6 @@ end Formalism.FourierDecayAlt.P.FrameExtension
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem qr_branchingK_of : Qr.BranchingAlg → Qr.FrameGl → Qr.LieStab → Qr.StabLie → Qr.FrameChange →
     Qr.FrameExists2 → Qr.BranchingK := by

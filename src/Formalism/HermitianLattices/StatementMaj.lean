@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -79,9 +78,6 @@ variable [Module (RingOfIntegers K) V] [IsScalarTower (RingOfIntegers K) K V]
 def idealSmul (I : Submodule (RingOfIntegers K) K) (L : Submodule (RingOfIntegers K) V) :
     Submodule (RingOfIntegers K) V :=
   Submodule.span (RingOfIntegers K) {z | ∃ a ∈ I, ∃ x ∈ L, z = a • x}
-
-def matAt (b : Module.Basis ι K V) (v : InfinitePlace K) (g : V →ₗ[K] V) : Matrix ι ι ℂ :=
-  (LinearMap.toMatrix b b g).map v.embedding
 
 end Maj
 

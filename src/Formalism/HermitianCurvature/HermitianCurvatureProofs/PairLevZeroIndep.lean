@@ -420,12 +420,8 @@ theorem free_smul {a : S} {x : SlopeTestRemainingChoices S A} (c : K) (hx : Free
   fun i j => (hx i j).smul_right c
 
 theorem freeOf_J_matrix (a : S) : FreeOf2 a (YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A)) := by
-  intro i j
-  fin_cases i <;> fin_cases j
-  · exact free_zero a
-  · exact free_one a
-  · exact free_neg (free_one a)
-  · exact free_zero a
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.Wd9.freeOf_J_matrix <;> assumption
 
 theorem freeOf2_mul {a : S} {M N : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 a M) (hN : FreeOf2 a N) :
     FreeOf2 a (M * N) := by

@@ -371,8 +371,7 @@ theorem rel_sum_posL (k r : ℕ) (i : Fin (r + 1)) (F : Fin (2 * r + k + 1) → 
   refine (Finset.sum_subset (Finset.subset_univ _) ?_).symm
   intro a _ ha
   apply hF
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply ha
   have hi := i.isLt
   refine Finset.mem_image.2 ⟨⟨a.val - i.val, ?_⟩, Finset.mem_univ _, ?_⟩

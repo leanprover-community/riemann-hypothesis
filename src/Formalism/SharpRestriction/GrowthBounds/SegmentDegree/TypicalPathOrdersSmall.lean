@@ -109,7 +109,6 @@ theorem vcount_od {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fi
       · exact Or.inl hl
       · refine Or.inr ⟨?_, h2, h3⟩
         have : (od i).val ≠ l.val := fun h => hl (Fin.ext h.symm)
-        have h1' : (od i).val ≤ l.val := h1
         omega
     · rintro (rfl | ⟨h1, h2, h3⟩)
       · exact ⟨le_rfl, H.od_lt i hi, H.od_vec i hi⟩

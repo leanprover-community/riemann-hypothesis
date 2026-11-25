@@ -19,9 +19,4 @@ def LemmaEScale.Statement : Prop :=
       mInt A (fun i => potForm Om.pot (v i)) g ≤
         M ^ D * mInt A (fun i => potForm Om.pot fun x => v i x / M) g
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -73,10 +73,6 @@ theorem rowGen_X' {r n : ℕ} (a b : Fin r) (v : Fin r × Fin n) :
       (if v.1 = b then Polynomial.X * Polynomial.C (X (a, v.2)) else 0) := by
   rw [rowGen, aeval_X]
 
-theorem rowGen_C' {r n : ℕ} (a b : Fin r) (c : ℚ) :
-    rowGen ℚ a b (C c : MvPolynomial (Fin r × Fin n) ℚ) = Polynomial.C (C c) := by
-  rw [← MvPolynomial.algebraMap_eq, AlgHom.commutes, Polynomial.algebraMap_apply, MvPolynomial.algebraMap_eq]
-
 theorem rowGen_derivative {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × Fin n) ℚ) :
     (1 + if a = b then Polynomial.X else 0) * Polynomial.derivative (rowGen ℚ a b f) =
       rowGen ℚ a b (der r n a b f) := by

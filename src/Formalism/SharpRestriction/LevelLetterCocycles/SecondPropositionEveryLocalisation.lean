@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.CongruenceAnnihilatesCharacterPart
 public import Formalism.SharpRestriction.LevelLetterCocycles.LargeLevelLemmas
 public import Aesop.BuiltinRules
 public import Formalism.TruncatedSeriesCounting.LemmaDetPoly
@@ -1047,11 +1048,7 @@ variable {i : N.Loc} {r : N.X i → (GE N →* GL (Fin R.nV) (N.O i))}
 
 theorem inR'_of_inR (hT : ∀ f ∈ N.T i, (fun x' => f (S.p x')) ∈ S.T') {a : N.X i → MatN N i}
     (ha : InR N i r a) : InR' N r S (fun x' => a (S.p x')) := by
-  obtain ⟨m, f, γ, hf, he⟩ := ha
-  refine ⟨m, fun k x' => f k (S.p x'), γ, fun k => hT _ (hf k), ?_⟩
-  subst he
-  funext x'
-  simp [Finset.sum_apply]
+  apply _root_.Formalism.MainNotions.TypePrimeCongruences.CongruenceModules.inR'_of_inR <;> assumption
 
 theorem exists_nonfixed_twisted_vector
     (hG6 : ∀ x : N.X i, (∃ u : Fin R.nV → KK N i, u ≠ 0 ∧ ∀ g,
@@ -1060,8 +1057,7 @@ theorem exists_nonfixed_twisted_vector
     (x : N.X i) (hx : x ∉ N.Z i) (η : Fin R.nV → KK N i) (hη : η ≠ 0) :
     ∃ g : GE N, toK N i (((chiU N i 1 g)⁻¹ : (N.O i)ˣ) : N.O i) •
       (mapM (toK N i) (rO N i r x) g).mulVec η ≠ η := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   apply hG6 x
   refine ⟨η, hη, fun g => ?_⟩

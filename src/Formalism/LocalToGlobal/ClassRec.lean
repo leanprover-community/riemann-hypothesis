@@ -125,7 +125,6 @@ structure RecT (ex : Extra D L hT Gi Gl K Y cX) where
 
   host : HostDatumS T.toTiedDataS
 
-  weq : Theta.WeilCompatibleEquivariance T.toTiedDataS.theta.W
 
 end
 

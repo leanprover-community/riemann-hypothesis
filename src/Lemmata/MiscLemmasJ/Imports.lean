@@ -12,7 +12,7 @@ theorem goal1 :
   [IsFractionRing.{0, 0} R F] [inst_5 : AddCommGroup.{0} X] [inst_6 : Module.{0, 0} F X] [inst_7 : Module.{0, 0} R X]
   [IsScalarTower.{0, 0, 0} R F X] (S : Submodule.{0, 0} R X) {x : X},
   Membership.mem.{0, 0} (Submodule.span.{0, 0} F (SetLike.coe.{0, 0} S)) x →
-    Exists.{1} fun (d : R) ↦ And (Ne.{1} d 0) (Membership.mem.{0, 0} S (HSMul.hSMul.{0, 0, 0} d x)) := by
-  apply Bl.general_b_fact_third_bis_other.goal1
+    Exists.{1} fun (d : R) ↦ And (Ne.{1} d 0) (Membership.mem.{0, 0} S (HSMul.hSMul.{0, 0, 0} d x)) :=
+  general_b_fact_third_bis_other.goal1
 
 end Bl.SecondBlockLemmaK

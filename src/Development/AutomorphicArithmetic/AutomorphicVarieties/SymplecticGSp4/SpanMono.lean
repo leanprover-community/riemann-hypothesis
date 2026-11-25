@@ -58,12 +58,6 @@ public import Formalism.SharedLemmas.PrecompleteFinite
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-private theorem spanMono_prec {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    [Module.Finite R M] (I : Ideal R) [IsPrecomplete I R] : IsPrecomplete I M := by
-  first
-  | exact _root_.Formalism.SharedLemmas.isPrecomplete_of_moduleFinite
-  | (apply _root_.Formalism.SharedLemmas.isPrecomplete_of_moduleFinite <;> assumption)
-
 private theorem exists_pow_mem_map_maxIdeal_of_monic_aeval_mem {O B : Type} [CommRing O] [IsLocalRing O] [CommRing B] [IsLocalRing B]
     [Algebra O B] (x : B) (hx : x ∈ maximalIdeal B)
     (hJ : (maximalIdeal O).map (algebraMap O B) ≤ maximalIdeal B) :
@@ -196,7 +190,7 @@ private theorem spanMono_top {O B : Type} [CommRing O] [IsLocalRing O] [IsAdicCo
       · exact Submodule.mem_sup_left (A.algebraMap_mem c)
       · exact Submodule.mem_sup_right (Ideal.mem_sup_left hj)
       · simpa using hP s hs 1
-  haveI : IsPrecomplete (maximalIdeal O) A := spanMono_prec (maximalIdeal O)
+  haveI : IsPrecomplete (maximalIdeal O) A := Formalism.SharedLemmas.isPrecomplete_of_moduleFinite (maximalIdeal O)
   haveI : IsAdicComplete (maximalIdeal B) B := IsCO.complete (O := O)
   haveI : IsHausdorff (maximalIdeal O) B := by
     refine ⟨fun x hx => IsHausdorff.haus' (I := maximalIdeal B) x fun n => ?_⟩

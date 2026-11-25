@@ -1490,7 +1490,6 @@ noncomputable section
 namespace GlobalTheory.NRows.AtPt
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl
   GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.Fc NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists}
 def OverNEAlt (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) : Prop :=
   ∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (_root_.GlobalTheory.HeightCounting.defaultExtension hL K B f T w Z Wt p0 t nch n xd c)
@@ -1597,13 +1596,12 @@ noncomputable section
 namespace GlobalTheory.NLink.Final
 section Slot
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.HeightCounting.Up GlobalTheory.Mem.SRe GlobalTheory.Mem.R3.Rw
 
 theorem slot_mv_extension_with_list_geo_cl (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (cDep : ℝ) :
     PositionMv (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none).s := by
   intro K B f T w Z O x N h O' hO' col n
-  have hrows := _root_.GlobalTheory.T.rows_pass_to_moved_divisionLatticesHeights
+  have hrows := _root_.GlobalTheory.Mem.R3.Rw.DivMv.rows_move_geo
     K B f T w Z x.Wt O x.what₂ N h O' hO'
   obtain ⟨t', hs, hgeo, hpk, hobj, hrx⟩ := hrows
   obtain ⟨nch', xd', -, hnx, -, -, hmv⟩ := _root_.GlobalTheory.LayerMove.exists_kept_nChoice_thData_upL hL K B f T w Z x.Wt Z.S N h O.nch O.xd
@@ -1615,7 +1613,7 @@ theorem slot_mv_extension_with_list_geo_cl (hL : _root_.UpperTheory.Zero.LLC.Rec
   have hlp := GlobalTheory.Mem.GridMove.listPin_rowsSame cDep K.s.b K B f T w Z x.Wt Z.S N h O.p0 x.what₂ (O.tr N h).p0 t' hs x.nx.2.2.down
   obtain ⟨c⟩ := hmv O.p0 x.what₂ x.n (O.tr N h).p0 t' n hs hgeo ⟨x.nx.1, x.nx.2.1⟩
   obtain ⟨s⟩ := GlobalTheory.T.spectralStageData_transfer_lattices_heights K B f T w Z x.Wt O.p0 x.what₂ x.col.toColT N h (O.tr N h).p0 t' col.toColT hpk ⟨x.sx.1⟩
-  obtain ⟨o⟩ := GlobalTheory.T.divisionGeometryScalars_transfer_setDivision K B f T w Z x.Wt N h O (O.tr N h) rfl x.what₂ t' hs x.ox
+  obtain ⟨o⟩ := _root_.GlobalTheory.Mem.OxMove.oAt_setDiv K B f T w Z x.Wt N h O (O.tr N h) rfl x.what₂ t' hs x.ox
   exact ⟨t', hobj x.obj, hrx ⟨x.rx⟩, ⟨⟨c.1, c.2, ⟨hlp⟩⟩⟩, ⟨⟨s, PUnit.unit⟩⟩, ⟨o⟩⟩
 end Slot
 end GlobalTheory.NLink.Final
@@ -1652,7 +1650,7 @@ theorem linkN_of_twGood_galoisPreconditions (hP : Hypotheses₂) (hG : _root_.Up
   have hFF : _root_.GlobalTheory.NLink.FactsFAlt (gd Fm c) C CT := fun x hx i =>
     ⟨(hc x i hx).2.1, hEx _ _ (hc x i hx).2.1 (hc x i hx).2.2⟩
   refine linkN_of_gd Fm c (fun x hx i => ⟨(hc x i hx).1, ?_, (hF x hx i).1.what₂.rank _⟩)
-    (_root_.GlobalTheory.LinkFam.main _ (_root_.GlobalTheory.T.conclF_of_family_facts_and_bound_at_two_three hP _ C CT hC (twGood_gd Fm c hTw) hFF (_root_.UpperTheory.N.at23_family_alt hP _)))
+    (_root_.GlobalTheory.LinkFam.main _ (_root_.GlobalTheory.NLinkClose.main_alt_alt hP _ C CT hC (twGood_gd Fm c hTw) hFF (_root_.UpperTheory.N.at23_family_alt hP _)))
   have p := (hF x hx i).1
   exact _root_.GlobalTheory.NLink.multLe_of_rank _ _ p.Conclusion1.2.2 p.z p.adm.2.2 p.c2
 theorem linkN_of_boundAtTwoThree_slot (hP : Hypotheses₂) (hG : _root_.UpperTheory.GalC.CutGivesAlt) (Q : GlobalTheory.Mem.Top.V4.Slot) (Lk : GlobalTheory.Fc.LkT _root_.GlobalTheory.Fc.BundleCondition)
@@ -1683,7 +1681,7 @@ theorem final_of_alt (hP : Hypotheses₂) (hG : _root_.UpperTheory.GalC.CutGives
     _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep) (fun Q L => _root_.GlobalTheory.Fc.R1.SlotNormCondition Q L fun 𝒞 => Formalism.MainNotions.Closed 𝒞 fun Fm _ => Formalism.MainNotions.LinkN Fm) := by
   have hW : WitMv (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep).s :=
     GlobalTheory.T.witnesses_pass_along_set_division _ (_root_.GlobalTheory.NLink.Final.slot_mv_extension_with_list_geo_cl hL cDep)
-  have hTf := _root_.GlobalTheory.T.tieChi_at_members_of_depthZero hX.ht prN dzs hL
+  have hTf := _root_.GlobalTheory.TypePrimesFinished.locComp_of_isRc_classMapD_cenLoc hX.ht prN dzs hL
   have hTr := (_root_.GlobalTheory.Mem.AtPtTransport.atMem_at_wit_alt hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none hW
     (fun _ _ _ _ _ _ _ _ _ _ _ _ _ e => ⟨e.1⟩)).2
   exact _root_.UpperTheory.GalC.linkedAt_linkN_of_boundAtTwoThree hP hG hL (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep)

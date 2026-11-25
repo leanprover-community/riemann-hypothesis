@@ -61,7 +61,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 
 namespace GlobalTheory.StageFinMatch
@@ -83,8 +82,7 @@ theorem tmul_right_prop {K V U : Type*} [Field K] [AddCommGroup V] [Module K V] 
   have ha : a ≠ 0 := by rintro rfl; exact hne (TensorProduct.zero_tmul _ _)
   have hb : b ≠ 0 := by rintro rfl; exact hne (TensorProduct.tmul_zero _ _)
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K V, φ a ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact ha ((Module.forall_dual_apply_eq_zero_iff K a).mp hc)
   have k := congrArg (fun z => TensorProduct.lid K U (LinearMap.rTensor U φ z)) h
   simp only [LinearMap.rTensor_tmul, TensorProduct.lid_tmul] at k
@@ -118,7 +116,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 namespace GlobalTheory.StageFinMatch
 end GlobalTheory.StageFinMatch
@@ -167,7 +164,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.theta_finiteData_match_each_stage : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →

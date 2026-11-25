@@ -95,15 +95,6 @@ theorem sig_eq : (starRingEnd X.B.I.E) = (X.B.I.cm.sig : X.B.I.E →+* X.B.I.E) 
   first
   | rfl
 
-theorem hA_e_f (a b : Fin D.R.rS) :
-    hA X.B.I (incl X.B.I (X.eR a)) (incl X.B.I (X.fR b)) = if a = b then 1 else 0 := by
-  rw [hA_incl, sig_eq]
-  have h := MassDataLevelSSteps.FrameW.hE_crdOf X (X.eX a) (X.fY b)
-  change Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hE X.B.I.cm.sig X.B.I.J
-    (crdOf X.B.I X.ιE X.bas (X.eX a)) (crdOf X.B.I X.ιE X.bas (X.fY b))) = _
-  rw [h, X.ef]
-  split_ifs <;> simp
-
 theorem hA_f_e (b a : Fin D.R.rS) :
     hA X.B.I (incl X.B.I (X.fR b)) (incl X.B.I (X.eR a)) = if b = a then 1 else 0 := by
   rw [hA_incl, sig_eq]

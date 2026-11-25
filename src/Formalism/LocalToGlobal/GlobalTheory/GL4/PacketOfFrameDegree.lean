@@ -640,8 +640,6 @@ theorem two_nPl (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] : 2 * 
   unfold nPl
   ring
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 private lemma sum_log_le_card_mul_log_mean_of_pos {ι : Type*} [Fintype ι] (S : ι → ℝ) (hS : ∀ i, 0 < S i)
     (hn : 0 < (Fintype.card ι : ℝ)) :
     ∑ i, Real.log (S i) ≤ (Fintype.card ι : ℝ) * Real.log ((∑ i, S i) / Fintype.card ι) := by
@@ -741,8 +739,6 @@ namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def ClassMap (D : D7) : Prop :=
   ∀ u (CV : ColVal D u) (c : (D.mem u).C.cls 0), (∃ y : Fin (D.R.N 0) → (D.sp.X 0).V, Formalism.MainNotions.flipTwoThree.ShortAt D u c y) →
     ∃ (φ : ((D.fm u).lat 0).V →ₗ[D.what₂.LL] (MonI ((D.fm u).lam 0) → D.what₂.LL))
@@ -799,8 +795,6 @@ end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem shortAt_pos (D : D7) (u : D.what₂.Word) (c : (D.mem u).C.cls 0) (y : Fin (D.R.N 0) → (D.sp.X 0).V)
     (hy : Formalism.MainNotions.flipTwoThree.ShortAt D u c y) (w : InfinitePlace D.host.E) (a : Fin (D.R.N 0)) :
@@ -1437,8 +1431,6 @@ namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col Formalism.BasicNotions.SkeletonIndexLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Int2
 
 variable {D : D7} {u : D.what₂.Word} (CV : ColVal D u)
@@ -1532,8 +1524,6 @@ noncomputable section
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col Formalism.BasicNotions.SkeletonIndexLemmas
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section SlopeTestRemainingChoices
 
@@ -1801,8 +1791,6 @@ noncomputable section
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col Formalism.BasicNotions.SkeletonIndexLemmas
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def QFrameDeg (D : D7) : Prop :=
   ∀ u (CV : ColVal D u) c τ,

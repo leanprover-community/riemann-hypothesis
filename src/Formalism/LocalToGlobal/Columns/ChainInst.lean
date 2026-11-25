@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetricLevelTypePrimeDatumLocallySmall
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Algebra.Order.Star.Int
@@ -252,19 +253,7 @@ theorem redP_det {n : Type} [Fintype n] [DecidableEq n] (N : Matrix n n E) (h : 
 
 theorem redP_add_natCast_mul (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) {a d : E} (hd : IntAt P d) :
     redP P (a + q * d) = redP P a := by
-  have hqd : IntAt P ((q : E) * d) := ciIntAt_q.mul hd
-  by_cases ha : IntAt P a
-  · rw [reduction_add ha hqd, reduction_mul ciIntAt_q hd, redP_natCast_eq_zero hq, zero_mul, add_zero]
-  · have ha' : ¬ IntAt P (a + q * d) := fun h => ha (by simpa using ciIntAt_sub h hqd)
-    have hz : ∀ b : E, ¬ IntAt P b → redP P b = 0 := by
-      intro b hb
-      have hn : ¬ ∃ c : 𝓞 E ⧸ P.asIdeal, ∃ r s : 𝓞 E, s ∉ P.asIdeal ∧
-          algebraMap (𝓞 E) E s * b = algebraMap (𝓞 E) E r ∧
-          Ideal.Quotient.mk P.asIdeal s * c = Ideal.Quotient.mk P.asIdeal r := by
-        rintro ⟨c, r, s, hs, h1, -⟩
-        exact hb ⟨r, s, hs, h1⟩
-      rw [redP, dite_eq_right hn]
-    rw [hz _ ha', hz _ ha]
+  apply _root_.GlobalTheory.SymLevelDatum.redP_add_mul <;> assumption
 
 theorem ciIntAt_add_iff {a d : E} (hd : IntAt P d) : IntAt P (a + d) ↔ IntAt P a := ⟨fun h => by simpa using ciIntAt_sub h hd, fun h => h.add hd⟩
 

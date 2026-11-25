@@ -330,8 +330,7 @@ theorem exists_unit_norm_of_selfDual_hermitian_lattice :
       linear_combination h2 / 2
     exact ⟨a, by rw [hab, h1, add_zero]⟩
   have hnp : padicNorm p (p : ℚ) = (p : ℚ)⁻¹ := padicNorm.padicNorm_p_of_prime
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hdiv : ∀ y ∈ L, y ∈ W → h y y / p ∈ O := by
     intro y hy hyW
     obtain ⟨u, hu⟩ := hrat y

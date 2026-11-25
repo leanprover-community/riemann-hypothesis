@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntValuationPrimeBack
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FixedCoefficientFieldInComplex
 public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
 import Mathlib.Algebra.Order.Floor.Extended
@@ -53,18 +54,7 @@ theorem count_comap {R S : Type} [CommRing R] [IsDedekindDomain R] [CommRing S] 
     (e : R ≃+* S) (p : HeightOneSpectrum R) {I : Ideal R} (hI : I ≠ ⊥) :
     (Associates.mk (HeightOneSpectrum.equivOfRingEquiv e p).asIdeal).count (Associates.mk (I.comap e.symm)).factors =
       (Associates.mk p.asIdeal).count (Associates.mk I).factors := by
-  have hI' : I.comap e.symm ≠ ⊥ := by
-    rw [← Ideal.map_comap_of_equiv]
-    exact fun h => hI ((Ideal.map_eq_bot_iff_of_injective e.injective).1 h)
-  refine eq_of_forall_le_iff fun k => ?_
-  rw [← Associates.prime_pow_dvd_iff_le (Associates.mk_ne_zero.2 hI') (HeightOneSpectrum.associates_irreducible _),
-    ← Associates.prime_pow_dvd_iff_le (Associates.mk_ne_zero.2 hI) (HeightOneSpectrum.associates_irreducible _),
-    ← Associates.mk_pow, ← Associates.mk_pow, Associates.mk_le_mk_iff_dvd, Associates.mk_le_mk_iff_dvd,
-    Ideal.dvd_iff_le, Ideal.dvd_iff_le]
-  have : (HeightOneSpectrum.equivOfRingEquiv e p).asIdeal = p.asIdeal.map (e : R →+* S) := by
-    rw [Ideal.map_comap_of_equiv]; rfl
-  rw [this, ← Ideal.map_pow, Ideal.map_comap_of_equiv]
-  exact Ideal.comap_le_comap_iff_of_surjective e.symm e.symm.surjective _ _
+  apply _root_.GlobalTheory.GalSup.count_equiv <;> assumption
 
 section Transport
 

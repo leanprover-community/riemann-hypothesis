@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ZzMinusSecondProjTranspose
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.SumIndL
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitShiftSplitting.FormSplitP
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.CompOfMemR
@@ -88,16 +89,7 @@ theorem det_map_unit {n : Type} [Fintype n] [DecidableEq n] (f : E →+* F) (A :
 
 theorem zm_unit {Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (hZh : IsUnit Zh.det) (T T' : F) :
     IsUnit (ZZm g Zh T T').det := by
-  have hq := q_ne g
-  apply Formalism.L2.SG.LocalCountModules.UnitaryGroupMassFormula.LocCntUG.isUnit_of_comp g
-  · rw [← adeleInfiniteComponent_apply, RingHom.map_det]
-    change (((ZZm g Zh T T').map (p1 g))).det ≠ 0
-    rw [zzMinus_firstProj hs, Matrix.det_smul]
-    exact mul_ne_zero (pow_ne_zero _ (inv_ne_zero hq)) (det_map_unit hs (p1 g) Zh hZh).ne_zero
-  · rw [← adele_ext_components, RingHom.map_det]
-    change (((ZZm g Zh T T').map (p2 g))).det ≠ 0
-    rw [zzMinus_secondProj hs, Matrix.det_smul, Matrix.det_transpose]
-    exact mul_ne_zero (pow_ne_zero _ (neg_ne_zero.2 (inv_ne_zero hq))) (det_map_unit hs (p2 g) Zh hZh).ne_zero
+  apply _root_.Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork.unit_zzm <;> assumption
 
 theorem inv_smul_q {n : Type} [Fintype n] [DecidableEq n] (c : F) (hc : c ≠ 0) (X : Matrix n n F)
     (hX : IsUnit X.det) : (c⁻¹ • X)⁻¹ = c • X⁻¹ := by

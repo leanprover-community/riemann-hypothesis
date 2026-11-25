@@ -96,8 +96,7 @@ theorem exists_homog_of (P : MvPolynomial σ ℂ) (h0 : P ≠ 0) (D : ℚ)
     (h : ∀ e : ℕ, homogeneousComponent e P ≠ 0 → (e : ℚ) = D) :
     ∃ d : ℕ, (d : ℚ) = D ∧ P ∈ homog σ d := by
   have hex : ∃ e, homogeneousComponent e P ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply h0
     rw [← sum_homogeneousComponent P]
     exact Finset.sum_eq_zero fun i _ => hall i

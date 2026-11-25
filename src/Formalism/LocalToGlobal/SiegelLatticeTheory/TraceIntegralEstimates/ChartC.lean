@@ -98,8 +98,6 @@ open MeasureTheory Finset NumberField Formalism.BasicNotions Formalism.MainNotio
 
 namespace Formalism.L2.S.Pv.Chart
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Formalism.L2.SG.LocWSOf.Choice X θ) (u u' : D.what₂.Word)
   (w : Point D.host.E (D.R.rS + 1)) (γ : X.B.I.Ginf) (τ : D.what₂.Tau)
 

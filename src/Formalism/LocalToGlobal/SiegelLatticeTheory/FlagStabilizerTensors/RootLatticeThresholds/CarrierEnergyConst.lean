@@ -13,8 +13,6 @@ namespace Formalism.L2.SG.Pf.Carrier.EnergyConst
 
 open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.Carrier.EnergyPf
 
-attribute [local instance] instCM
-
 def e1 (D : D7) : ℕ := (D.R.rS + 1) * (8 * D.R.rS ^ 2 + 10 * D.R.rS + 3) / 3
 
 def rdExp (D : D7) : ℕ := 2 * D.R.rS * (D.R.rS + 1) * (D.R.k - 1) + e1 D

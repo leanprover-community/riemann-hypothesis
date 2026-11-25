@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeStableAlmostAllPlacesLeft
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -68,14 +67,6 @@ theorem _root_.GlobalTheory.AdelMatLatRight.transpose_mem_latAtV {F E : Type} [F
   | zero => simpa using zero_mem _
   | add u v _ _ hu hv => simpa [transpose_add] using add_mem hu hv
   | neg u _ hu => simpa [transpose_neg] using neg_mem hu
-
-theorem almost_all_stable_right : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n d : ℕ)
-    (X : Spc F E n) (Y : Spc F E d), Y.L.IsFullLattice E → ∀ N : Matrix (Fin d) (Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)),
-    Set.Finite {w : Pl (F := F) | ¬ ∀ γ ∈ latAtV X Y w, γ * Matrix.transpose N ∈ latAtV X Y w} := by
-  intro F E _ _ _ _ _ n d X Y hY N
-  refine (GlobalTheory.AdelMatLat.almost_all_stable F E d n Y X hY N).subset fun w hw h => hw fun γ hγ => ?_
-  have h1 := transpose_mem_latAtV Y X w _ (h _ (transpose_mem_latAtV X Y w γ hγ))
-  rwa [Matrix.transpose_mul, Matrix.transpose_transpose] at h1
 
 end GlobalTheory.AdelMatLatRight
 

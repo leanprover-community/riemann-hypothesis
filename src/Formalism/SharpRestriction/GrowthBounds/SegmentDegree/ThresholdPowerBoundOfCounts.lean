@@ -112,7 +112,6 @@ theorem order_numeric_bound_of_oldest (C₀ : ℝ) (hOld : OldestLetterInSegment
     unfold Frames.dist
     omega
   have hP : (13 : ℝ) ≤ p := by exact_mod_cast hX.p13
-  have hP0 : (0 : ℝ) < p := by linarith
   have hP1 : (1 : ℝ) ≤ p := by linarith
   have hk : (5 : ℝ) ≤ Dat.k (r := r) K := b.k5
   have hY := b.Y1
@@ -146,7 +145,6 @@ theorem order_numeric_bound_of_oldest (C₀ : ℝ) (hOld : OldestLetterInSegment
       _ = X.a := by rw [← hTa]; ring
   have hB : (p : ℝ) ^ X.Rj p K j * (4 * X.a * ((p : ℝ) ^ (X.F.dist j (X.F.oldest j x) + X.Rj p K j))⁻¹) ≤ X.a / (p : ℝ) ^ (X.L₁ + X.F.dist j x) := by
     rw [pow_add, mul_inv, le_div_iff₀ hLpos]
-    have hRpos : (0 : ℝ) < (p : ℝ) ^ X.Rj p K j := by positivity
     have e : (p : ℝ) ^ X.Rj p K j * (4 * X.a * (((p : ℝ) ^ X.F.dist j (X.F.oldest j x))⁻¹ * ((p : ℝ) ^ X.Rj p K j)⁻¹)) = 4 * X.a / (p : ℝ) ^ X.F.dist j (X.F.oldest j x) := by
       field_simp
     rw [e, div_mul_eq_mul_div, div_le_iff₀ hEpos]

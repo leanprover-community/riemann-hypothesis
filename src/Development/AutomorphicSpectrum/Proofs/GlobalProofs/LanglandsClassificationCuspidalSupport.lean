@@ -106,8 +106,7 @@ theorem embeds_zero (Q : Irr k 0) : Embeds 0 Q := by
   haveI : Subsingleton (GL (Fin 0) k) := ⟨fun _ _ => Units.ext (Subsingleton.elim _ _)⟩
   obtain ⟨v, hv⟩ := exists_ne (0 : Q.V)
   obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ Q.V, f v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ v).1 h)
   have hker : Function.Injective f := by
     let S : Subrepresentation Q.π := ⟨LinearMap.ker f, fun g x hx => by
@@ -146,8 +145,7 @@ theorem reduce_embed (hBZ : GlobalTheory.Published.BernsteinZelevinskyFiniteness
         Function.Injective φ := by
   obtain ⟨s, d, e, hne, hns⟩ : ∃ (s : ℕ) (d : Fin s → ℕ) (e : (Σ a, Fin (d a)) ≃ Fin n),
       unipRad k e ≠ ⊥ ∧ ¬ Subsingleton (Jacquet π.π (unipRad k e)) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hc ⟨π.smooth, fun s d e hne => h s d e hne⟩
   obtain ⟨Y, _, _, τ, hτi, hτs, hτq, φ, hφ⟩ := _root_.GlobalTheory.exists_embedding_parInd_of_jacquet_nontrivial hBZ k n π s d e hns
   obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.JacTensor.exists_irr_tensor_of_isSubquotient_jac hGL k n π s d e Y τ hτi hτq

@@ -341,8 +341,6 @@ def IotaRowC : Prop :=
 
 section Rec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
 
 open Formalism.L2.SG.TermTieOf in
@@ -549,8 +547,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
   Formalism.L2.SG.PackageTie2 Formalism.L2.SG.Full
 
 namespace Formalism.L2.SG.Pf.FinXP
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem star_Gflag {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} (n m : ℕ)
     (F : FlagG S r (n : E)) (F' : FlagG S r (m : E)) : star (Gflag F F') = Gflag F F' := by

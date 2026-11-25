@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialTransformSquareIntegrable
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSE2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermMulVecMulVec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
@@ -84,22 +85,7 @@ private theorem isMulOp_unimodular_preserves_squareIntegrable (μ : Measure (Mt 
     {Wv : Module.End ℂ (RadSp k r z z' π π')} {m : (Fin r → ℂ) → Mx k r → ℂ}
     (h1 : Formalism.FourierDecayAlt.P5.multiplicationOperator Wv m) (hm : ∀ c g, ‖m c g‖ = 1) {Φ : RadSp k r z z' π π'}
     (hΦ : Φ ∈ squareIntegrableSmoothSubmoduleGL k r z z' π π' μ hμ) : Wv Φ ∈ squareIntegrableSmoothSubmoduleGL k r z z' π π' μ hμ := by
-  obtain ⟨hlc, hL⟩ := hΦ
-  have hp : ∀ c, pairAt μ (Wv Φ) (Wv Φ) c = pairAt μ Φ Φ c := by
-    intro c
-    unfold pairAt
-    refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-    simp only
-    rw [h1 Φ c, B6.hsInner_smul_left, PBFV.hsInner_smul_right, ← mul_assoc, Complex.mul_conj,
-      Complex.normSq_eq_norm_sq, hm, one_pow, Complex.ofReal_one, one_mul]
-  refine ⟨?_, fun c => ?_⟩
-  · intro c hc
-    obtain ⟨U, hU, hcU, K, hK, hKs, hv⟩ := hlc c hc
-    refine ⟨U, hU, hcU, K, hK, hKs, fun c' hc' g hg hgK => ?_⟩
-    rw [h1 Φ c' g, hv c' hc' g hg hgK, smul_zero]
-  · have := hL c
-    unfold LevelZeroSquareIntegrable at this ⊢
-    simpa only [hp] using this
+  apply _root_.Formalism.FourierDecayAlt.P5.HerC.unimodular_multiplier_preserves_L2 <;> assumption
 
 theorem mkPair_mem_preservingAlgebra_of_isMulOp (μ : Measure (Mt k r)) [SFinite μ] (hμ : B.IsHaarOn (Glev k r (Fin.last r)) μ) (l : Fin r)
     {Wv Wv' : Module.End ℂ (RadSp k r z z' π π')} {m m' : (Fin r → ℂ) → Mx k r → ℂ}

@@ -124,36 +124,8 @@ theorem ord (k : ℕ) (u u' ρ : ℕ → ℝ) (hI : I.Interlaces k u u' ρ) (l :
   apply Formalism.FourierDecayAlt.P.Mx4.ord <;> assumption
 
 theorem nrm_pos (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π π' : Ty P) (hU : Up P l π π') :
-    0 < Nrm P l π := by
-  have hI := tyInterlaces P hP π
-  have hI' := tyInterlaces P hP π'
-  have hr := rhoUp P l π π' hU l hl
-  rw [if_pos rfl] at hr
-  have b' := hI' l hl
-  rw [hr] at b'
-  have b := hI l hl
-  obtain ⟨o1, o2, o3, o4⟩ := ord P.k P.u P.u' (rho P π) hI l hl
-  unfold Nrm I.qpoly
-  apply div_pos
-  · rw [neg_mul, neg_neg]
-    apply mul_pos (mul_pos hP.T_pos hP.T'_pos)
-    apply Finset.prod_pos
-    intro i hi
-    by_cases h : i ≤ l
-    · have := o1 i hi h
-      apply mul_pos <;> linarith [b'.1, b'.2.1, this.1, this.2]
-    · have := o2 i hi (by omega)
-      apply mul_pos_of_neg_of_neg <;> linarith [b.2.2.1, b.2.2.2, this.1, this.2]
-  · rw [← Finset.prod_mul_distrib]
-    apply Finset.prod_pos
-    intro j hj
-    have hj1 := Finset.mem_of_mem_erase hj
-    have hj2 := Finset.ne_of_mem_erase hj
-    by_cases h : j < l
-    · have := o3 j hj1 h
-      apply mul_pos <;> linarith [b'.1, b'.2.1, this.1, this.2]
-    · have := o4 j hj1 (by omega)
-      apply mul_pos_of_neg_of_neg <;> linarith [b.2.2.1, b.2.2.2, this.1, this.2]
+    0 < Nrm P l π :=
+  by apply _root_.Formalism.FourierDecayAlt.P.Mx4.nrm_pos <;> assumption
 
 theorem nrm_down (P : Par) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π π' : Ty P) (hU : Up P l π π') :
     NrmDown P l π' = Nrm P l π := by

@@ -73,11 +73,7 @@ def sOf (I : CarrierIn X u u') : Formalism.FourierDecayAlt.C.HidaSetting D.host.
   hv := I.hv
   hT := I.hT
 
-structure ModelsFor {Wp Wq : InfinitePlace D.host.E → Type} [∀ x, NormedAddCommGroup (Wp x)]
-    [∀ x, InnerProductSpace ℂ (Wp x)] [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
-    (_S : Formalism.FourierDecayAlt.C.HidaSetting D.host.E Wp Wq) where
-
-def CarrierOf (I : CarrierIn X u u') (_Mo : ModelsFor (sOf I)) : Parts X u u' where
+def CarrierOf (I : CarrierIn X u u') : Parts X u u' where
   Wp := I.Wp
   Wq := I.Wq
   S := sOf I

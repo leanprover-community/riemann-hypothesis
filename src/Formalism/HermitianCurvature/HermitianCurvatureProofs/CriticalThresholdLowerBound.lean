@@ -245,8 +245,7 @@ lemma E_le : Real.exp (1/4) ≤ 1.3 := by
     | (rw [← Real.exp_nat_mul]; norm_num)
   have h2 := Real.exp_one_lt_d9
   have h3 : 0 < Real.exp (1/4) := Real.exp_pos _
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have ht4 : (2.8561:ℝ) < Real.exp (1/4) ^ 4 := by
     calc (2.8561 : ℝ) = (1.3 : ℝ) ^ 4 := by norm_num
       _ < Real.exp (1 / 4) ^ 4 := pow_lt_pow_left₀ hc (by norm_num) (by norm_num)

@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExpUnique
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.IsCondAt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HasQExpansionAffineTranslateCoeff
@@ -21,54 +23,10 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTh
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.ExistsIsHolAdelicLiftOfEvenWeightSystem
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.ExistsSeedThetaLatticeFixedPointFree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.OneUseOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
 import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.OneNonUnit
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Lemma
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.QExpansionLinearCombination
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -289,24 +247,8 @@ theorem count_span_int (v : HeightOneSpectrum (𝓞 K)) {r : 𝓞 K} (hr : r ≠
 
 theorem count_span (v : HeightOneSpectrum (𝓞 K)) {x : K} (hx : x ≠ 0) :
     FractionalIdeal.count K v (FractionalIdeal.spanSingleton (𝓞 K)⁰ x) = -WithZero.log (v.valuation K x) := by
-  obtain ⟨⟨r, s⟩, rfl⟩ := IsLocalization.mk'_surjective (𝓞 K)⁰ x
-  have hs : (s : 𝓞 K) ≠ 0 := nonZeroDivisors.coe_ne_zero s
-  have hr : r ≠ 0 := by
-    rintro rfl
-    exact hx (by simp)
-  have hs' : algebraMap (𝓞 K) K s ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hs
-  have e : IsLocalization.mk' K r s * algebraMap (𝓞 K) K s = algebraMap (𝓞 K) K r :=
-    IsLocalization.mk'_spec K r s
-  have e2 := congrArg (FractionalIdeal.count K v) (congrArg (FractionalIdeal.spanSingleton (𝓞 K)⁰) e)
-  rw [← FractionalIdeal.spanSingleton_mul_spanSingleton, FractionalIdeal.count_mul K v
-    ((FractionalIdeal.spanSingleton_ne_zero_iff).mpr hx) ((FractionalIdeal.spanSingleton_ne_zero_iff).mpr hs'),
-    count_span_int v hs, count_span_int v hr] at e2
-  have e3 := congrArg (v.valuation K) e
-  rw [map_mul] at e3
-  have hv1 : v.valuation K (algebraMap (𝓞 K) K s) ≠ 0 := (map_ne_zero _).mpr hs'
-  have hv2 : v.valuation K (IsLocalization.mk' K r s) ≠ 0 := (map_ne_zero _).mpr hx
-  rw [← e3, WithZero.log_mul hv2 hv1] at e2
-  linarith
+ intros
+ apply @_root_.ReciprocityTheory.Neutral.Bridge.HCFR.count_spanSingleton <;> assumption
 
 theorem exists_ideal (y : (Af K)ˣ) : ∃ I : FractionalIdeal (𝓞 K)⁰ K, I ≠ 0 ∧
     ∀ w, FractionalIdeal.count K w I = -WithZero.log (Valued.v (pLoc K w (y : Af K))) := by
@@ -382,13 +324,7 @@ namespace GlobalTheory.HilbertThetaSeries.LiftExp
 variable {F : Type} [Field F] [NumberField F]
 
 theorem genD_eq {y : Af F} {𝔪 𝔫 : Ideal (𝓞 F)} (h : GenD y 𝔪) (h' : GenD y 𝔫) : 𝔪 = 𝔫 := by
-  have hc : ∀ w : HeightOneSpectrum (𝓞 F), ordI w 𝔪 = ordI w 𝔫 := fun w => by
-    have := (h.2 w).symm.trans (h'.2 w)
-    rw [WithZero.exp_inj] at this
-    omega
-  rw [← Ideal.finprod_heightOneSpectrum_factorization h.1, ← Ideal.finprod_heightOneSpectrum_factorization h'.1]
-  refine finprod_congr fun w => ?_
-  exact congrArg (fun n => w.asIdeal ^ n) (hc w)
+  apply _root_.UpperTheory.V.Sd.genD_unique <;> assumption
 
 theorem coefAt_of_genD {y : Af F} {𝔪 : Ideal (𝓞 F)} (h : GenD y 𝔪) (a : Ideal (𝓞 F) → ℂ) : coefAt a y = a 𝔪 := by
   have h' : ∃ 𝔪, GenD y 𝔪 := ⟨𝔪, h⟩
@@ -401,19 +337,7 @@ theorem ordI_eventually {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) :
   exact_mod_cast hw
 
 theorem exists_unit_genD {𝔪 : Ideal (𝓞 F)} (h : 𝔪 ≠ ⊥) : ∃ y : (Af F)ˣ, GenD (y : Af F) 𝔪 := by
-  choose t ht using fun w : HeightOneSpectrum (𝓞 F) => w.valuedAdicCompletion_surjective F
-    (WithZero.exp ((ordI w (differentIdeal ℤ (𝓞 F)) : ℤ) - (ordI w 𝔪 : ℤ)))
-  have hf : ∀ᶠ w in Filter.cofinite, Valued.v (t w) = 1 := by
-    filter_upwards [ordI_eventually h, ordI_eventually (I := differentIdeal ℤ (𝓞 F)) differentIdeal_ne_bot] with w h1 h2
-    rw [ht, h1, h2]; simp
-  let a : FiniteAdeleRing (𝓞 F) F := ⟨t, by
-    filter_upwards [hf] with w hw
-    exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hw.le⟩
-  have hu : IsUnit a := FiniteAdeleRing.isUnit_iff.2 ⟨fun w hw => by
-    have := ht w
-    rw [show t w = 0 from hw, map_zero] at this
-    exact WithZero.exp_ne_zero this.symm, hf⟩
-  exact ⟨hu.unit, h, fun w => ht w⟩
+  apply _root_.UpperTheory.V.Sd.exists_genD <;> assumption
 
 theorem aff_mul {R : Type} [CommRing R] (y z : Rˣ) (x : R) : aff (y * z) x = aff y 0 * aff z (((y⁻¹ : Rˣ) : R) * x) := by
   apply Units.ext; ext i j; fin_cases i <;> fin_cases j <;> simp [aff, Matrix.mul_apply, Fin.sum_univ_succ]
@@ -974,11 +898,6 @@ open scoped Matrix
 
 namespace GlobalTheory.HilbertThetaSeries.GaussSumOrbitFiniteness
 
-theorem reAt_eq {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (v : InfinitePlace F) (x : F) : reAt v x = rhom x v := by
-  simp only [reAt, rhom]
-  rw [← InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x, Complex.ofReal_re]
-  rfl
-
 theorem scal_comm {R : Type} [CommRing R] (z : Rˣ) (A : GL (Fin 2) R) :
     Matrix.GeneralLinearGroup.scalar (Fin 2) z * A = A * Matrix.GeneralLinearGroup.scalar (Fin 2) z := by
   ext i j
@@ -1031,7 +950,7 @@ theorem stab_inv (g : GL (Fin 2) (Af F)) (γ : GL (Fin 2) F) (h : Stab g γ) : S
     have hv := congrArg (fun x => rhom x v) h1
     simp only [map_mul, map_one, Pi.mul_apply, Pi.one_apply] at hv
     have hp := ht v
-    rw [reAt_eq] at hp ⊢
+    rw [GlobalTheory.HilbertThetaSeries.reAt_eq_rhom] at hp ⊢
     exact (pos_iff_pos_of_mul_pos (by rw [hv]; exact one_pos)).mp hp
   · rw [map_inv, inv_mul_eq_iff_eq_mul, ← mul_assoc, ← mul_assoc, ← scal_comm, mul_assoc (Matrix.GeneralLinearGroup.scalar (Fin 2) z⁻¹), he]
     simp only [map_inv]
@@ -1476,10 +1395,6 @@ theorem exists_sl_aff (K : Subgroup (GL (Fin 2) (Af F)))
 
 variable [IsTotallyReal F]
 
-theorem TP_mul {x y : F} (hx : TP x) (hy : TP y) : TP (x * y) := fun v => by
-  have := mul_pos (hx v) (hy v)
-  rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, _root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq] at this; rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, map_mul]; exact this
-
 theorem TP_inv {x : F} (hx : TP x) : TP x⁻¹ := fun v => by
   have := inv_pos.2 (hx v)
   rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq] at this; rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, map_inv₀]; exact this
@@ -1505,7 +1420,7 @@ theorem GlobalTheory.HilbertThetaSeries.finite_reps : ∀ (F : Type) [Field F] [
     · have hd : (aff (ξ⁻¹ * ξf y0) 0 * σ⁻¹ : GL (Fin 2) F).val.det = ((ξ⁻¹ * ξf y0 : Fˣ) : F) := by
         rw [← Matrix.GeneralLinearGroup.val_det_apply, map_mul, map_inv, hσ, det_aff', inv_one, mul_one]
       rw [hd, Units.val_mul]
-      exact TP_mul (by simpa using TP_inv hξ) (hξf y0).1
+      exact GlobalTheory.HilbertThetaSeries.CmpP.tp_mul (by simpa using TP_inv hξ) (hξf y0).1
     · rw [e, map_mul, map_inv, ← mul_assoc, ← mul_assoc, inv_mul_cancel_right, toFin_aff, ← mul_assoc, aff_mul_aff, aff_mul_aff, hy]
       congr 2
       simp only [map_mul, map_inv, hι]

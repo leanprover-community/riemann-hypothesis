@@ -536,8 +536,7 @@ theorem norm_le_one_of_compact {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [C
   have hpow : ∀ k : ℕ, ‖((t g : Kˣ) : K)‖ ^ k ≤ M := fun k => by
     have := hM ⟨g ^ k, Set.mem_univ _, rfl⟩
     simpa [map_pow, Units.val_pow_eq_pow_val, norm_pow] using this
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨k, hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt h).eventually_gt_atTop M).exists
   exact absurd (hpow k) (not_le.2 hk)
 
@@ -1227,20 +1226,6 @@ theorem rowZ_of_rowW {O : Type} [CommRing O] {N : ℕ} (w : Fin N → ℕ) (h : 
   funext c
   rw [GlobalTheory.LvT.KerLat.weight_rowZ, hh hd]
 
-theorem rowAct_transvection {O : Type} [CommRing O] {N : ℕ} (a b : Fin N) (f : MvPolynomial (Fin N × Fin N) O) :
-    rowAct O (n := N) (Matrix.transvection b a (1 : O)) f = (rowGen O a b f).eval 1 := by
-  have e : (rowAct O (n := N) (Matrix.transvection b a (1 : O))).toRingHom =
-      (Polynomial.evalRingHom (1 : MvPolynomial (Fin N × Fin N) O)).comp (rowGen O a b).toRingHom := by
-    apply MvPolynomial.ringHom_ext
-    · intro c; simp [rowAct, rowGen]
-    · intro v
-      simp [rowAct, rowGen, Matrix.transvection, Matrix.one_apply, Matrix.single_apply, Finset.sum_add_distrib,
-        add_mul, ite_and]
-      by_cases hv : v.1 = b
-      · simp [hv]
-      · simp [hv, Ne.symm hv]
-  exact congrArg (fun φ : MvPolynomial (Fin N × Fin N) O →+* MvPolynomial (Fin N × Fin N) O => φ f) e
-
 end GlobalTheory.PolarFormula
 
 namespace GlobalTheory.PolarFormula
@@ -1251,7 +1236,7 @@ theorem comp_rowAct_transvection {O : Type} [CommRing O] {N : ℕ} (a b : Fin N)
       (rowAct O (n := N) (Matrix.transvection b a (1 : O)) h) = rowDiv O a b 1 h := by
   classical
   have hZ := rowZ_of_rowW w h hh
-  rw [rowAct_transvection, Polynomial.eval_eq_sum_range' (n := (rowGen O a b h).natDegree + 2) (by omega)]
+  rw [GlobalTheory.RowDivMem.rowAct_transvection, Polynomial.eval_eq_sum_range' (n := (rowGen O a b h).natDegree + 2) (by omega)]
 
   simp only [one_pow, mul_one, map_sum]
   have hk : ∀ k ∈ Finset.range ((rowGen O a b h).natDegree + 2),
@@ -1622,8 +1607,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 noncomputable section
 
 namespace GlobalTheory.ExpModel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_lift_subquot {A V : Type} [Ring A] [AddCommGroup V] [Module A V] (S : Submodule A V) (E : Submodule A (V ⧸ S))
     (N' : Submodule A E) : ∃ (U : Submodule A V) (π : U →ₗ[A] (E ⧸ N')), Function.Surjective π ∧ ∀ x : U, (x : V) ∈ S → π x = 0 := by

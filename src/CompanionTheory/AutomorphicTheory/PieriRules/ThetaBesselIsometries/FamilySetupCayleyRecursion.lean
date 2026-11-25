@@ -99,7 +99,7 @@ theorem hhJ_eq {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {Q : Mx k r}
 theorem algTens_cayley : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ) (R : Rep k r), R.IsDG ε mu → ∀ (RI : Fin (2 * r + k + 1) → Rep k r) (muI : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → ℝ) (io : ∀ s, Fin (2 * r + k + 1) → (RI s).H → R.H) (pr : ∀ s, Fin (2 * r + k + 1) → R.H → (RI s).H) (ep : Fin (2 * r + k + 1) → ℝ) (Q : Mx k r) (E : (Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → Module.End ℂ R.smSub)) (F : ∀ s, Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → Module.End ℂ (RI s).smSub), (∀ s, (RI s).IsDG ε (muI s)) → TensH dualM (Formalism.QuantumDeterminants.Hpk k r) R RI io pr ep → PI.UpqRep.IsCayleyU k r ε Q → R.IsE Q E → (∀ s, (RI s).IsE Q (F s)) → ∃ (io' : ∀ s, (RI s).smSub →ₗ[ℂ] (Fin (2 * r + k + 1) → R.smSub)) (pr' : ∀ s, (Fin (2 * r + k + 1) → R.smSub) →ₗ[ℂ] (RI s).smSub), AlgTens ε E (fun s => (RI s).smSub) F io' pr' ∧ ∀ s x, ((pr' s x : (RI s).smSub) : (RI s).H) = ∑ c, pr s c (∑ d, Q d c • ((x d : R.smSub) : R.H)) := by
   intro hK k r ε mu R hR RI muI io pr ep Q E F hRI hT hQ hE hF
   obtain ⟨io', pr', h1, h2, h3, h4, h5, h6, h7⟩ :=
-    GlobalTheory.T.dual_tensor_cayley_compatible hK k r ε mu R hR RI muI io pr Q E F hRI hT.raw hQ.1.1 hE hF
+    _root_.Gp91.GlobalTheory.RawTens.rawTens hK k r ε mu R hR RI muI io pr Q E F hRI hT.raw hQ.1.1 hE hF
   refine ⟨io', pr', ⟨h1, h2, h3, h4, h5, ?_, ?_⟩, h7⟩
   · intro s t hst y y'
     rw [hhJ_eq hQ R _ _ _ _ (h6 s y) (h6 t y')]
@@ -531,7 +531,7 @@ theorem bessel_ev_projector_value : HypsG → ∀ (k r : ℕ) (ε : Fin (2 * r +
   obtain ⟨E, hE, hEg⟩ := GlobalTheory.T.smoothVectors_discreteSeries_glModule hK k r ε mu R hR g⁻¹ hQ
   choose F hF hFg using fun t => GlobalTheory.T.smoothVectors_discreteSeries_glModule hK k r ε _ (RI t) (hRI t) g⁻¹ hQ
   obtain ⟨io', pr', hcomm, -, hsum, -, -, hio, hpr⟩ :=
-    GlobalTheory.T.dual_tensor_cayley_compatible hK k r ε mu R hR RI _ io pr g⁻¹ E F hRI hT hQ hE hF
+    _root_.Gp91.GlobalTheory.RawTens.rawTens hK k r ε mu R hR RI _ io pr g⁻¹ E F hRI hT hQ hE hF
   have hn : 2 ≤ 2 * r + k + 1 := by omega
   have hqE := _root_.Gp91.GlobalTheory.CapelliSmooth.qdet_smooth hy k r ε mu R hR g⁻¹ E hQ hE
   have hcE := _root_.GlobalTheory.CapelliCasimir.cas_of_capelli _ _ E mu hn hEg hqE

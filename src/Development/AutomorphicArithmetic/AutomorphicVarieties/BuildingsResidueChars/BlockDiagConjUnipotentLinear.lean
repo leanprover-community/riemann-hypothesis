@@ -47,7 +47,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.F
 
 open NumberField NumberField.mixedEmbedding Matrix MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm UpperTheory.V.Af.Fin
 open scoped TensorProduct
-attribute [local instance 100] LieRing.ofAssociativeRing
 
 private def LowZ {n : ℕ} {R : Type} [CommRing R] (r : ℕ) (M : Matrix (Fin n) (Fin n) R) : Prop :=
   ∀ i j : Fin n, r ≤ (i : ℕ) → (j : ℕ) < r → M i j = 0

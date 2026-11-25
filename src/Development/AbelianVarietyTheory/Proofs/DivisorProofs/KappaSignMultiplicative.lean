@@ -303,7 +303,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.KapSignMul
@@ -330,14 +329,6 @@ theorem span_coe {n : ℕ} {W : Submodule K (Fin n → K)} {ι : Type} (b : Modu
   have : (Set.range fun i => (b i : Fin n → K)) = W.subtype '' Set.range b := by
     rw [← Set.range_comp]; rfl
   rw [this, Submodule.span_image, b.span_eq, Submodule.map_top, Submodule.range_subtype]
-
-theorem gram_change (σ : K →+* K) {n : ℕ} (W : Submodule K (Fin n → K)) {ι ι' : Type} [Fintype ι] [Fintype ι']
-    [DecidableEq ι] [DecidableEq ι'] (u : ι → Fin n → K) (u' : ι' → Fin n → K) (hu : LinearIndependent K u)
-    (hsu : Submodule.span K (Set.range u) = W) (hu' : LinearIndependent K u')
-    (hsu' : Submodule.span K (Set.range u') = W) :
-    ∃ d : K, d ≠ 0 ∧ (Matrix.of fun i j => ∑ k, σ (u' i k) * u' j k).det =
-      σ d * d * (Matrix.of fun i j => ∑ k, σ (u i k) * u j k).det :=
-  _root_.GlobalTheory.gram_det_change_of_bases σ W u u' hu hsu hu' hsu'
 
 end GlobalTheory.KapSignMul
 

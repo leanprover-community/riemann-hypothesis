@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MinorsDisjointColumnsHarmonic
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -58,19 +59,7 @@ namespace GlobalTheory.MinorHarmonic
 
 theorem pderiv_comm {σ R : Type*} [CommRing R] (i j : σ) (f : MvPolynomial σ R) :
     MvPolynomial.pderiv i (MvPolynomial.pderiv j f) = MvPolynomial.pderiv j (MvPolynomial.pderiv i f) := by
-  classical
-  induction f using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p k hp =>
-    have h : ∀ a b : σ, MvPolynomial.pderiv a (MvPolynomial.pderiv b (MvPolynomial.X k : MvPolynomial σ R)) = 0 := by
-      intro a b
-      rw [MvPolynomial.pderiv_X]
-      by_cases hk : k = b
-      · subst hk; simp
-      · simp [Pi.single_eq_of_ne hk]
-    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul, hp, h]
-    ring
+  first | exact _root_.GlobalTheory.minorHarm_pderiv_comm | exact @_root_.GlobalTheory.minorHarm_pderiv_comm | apply _root_.GlobalTheory.minorHarm_pderiv_comm <;> assumption
 
 def ker {σ : Type*} (v : σ) : Subring (MvPolynomial σ ℂ) where
   carrier := {f | MvPolynomial.pderiv v f = 0}

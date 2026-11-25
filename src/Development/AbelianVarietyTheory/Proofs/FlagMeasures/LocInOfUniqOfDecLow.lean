@@ -151,8 +151,6 @@ lemma rpow_compare {K : ℝ} (hK : 0 < K) (A : ℝ) {x y : ℝ} (hx : 0 < x) (hy
     calc x ^ A ≤ y ^ A / K ^ A := this
       _ = _ := by ring
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 end GlobalTheory.SOrb.CCBridge

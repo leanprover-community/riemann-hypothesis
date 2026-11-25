@@ -51,7 +51,6 @@ theorem Nm_le_Sc (P : ParameterChoice' D L) : (5 : ℝ) ≤ (D.R.k : ℝ) ∧ (D
   have hND : (D.R.N D.R.m : ℝ) ≤ (D.s.Del : ℝ) := by
     have := mul_le_mul_of_nonneg_left hm10 hN0
     linarith
-  have hD : (5 : ℝ) ≤ (D.s.Del : ℝ) := by linarith
   have hkD : 5 * (D.s.Del : ℝ) ≤ (D.R.k : ℝ) * (D.s.Del : ℝ) := mul_le_mul_of_nonneg_right hk (by linarith)
   refine ⟨hk, ?_, ?_⟩ <;> rw [L.Sc_eq] <;> nlinarith
 

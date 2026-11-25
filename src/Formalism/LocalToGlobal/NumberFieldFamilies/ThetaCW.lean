@@ -27,8 +27,6 @@ namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (V : HSpace E) (δ : E) (hδ : star δ = -δ) (hδ0 : δ ≠ 0)
@@ -37,11 +35,9 @@ include hδ hδ0 in
 theorem aniso_ex (W : Submodule E V.V) (hW : ∀ y ∈ W, (∀ z ∈ W, V.hT y z = 0) → y = 0) (hne : W ≠ ⊥) :
     ∃ x ∈ W, V.hT x x ≠ 0 := by
   obtain ⟨y, hy, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   obtain ⟨z, hz, hz0⟩ : ∃ z ∈ W, V.hT y z ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy0 (hW y hy h)
   have q0 : V.hT (y + z) (y + z) = V.hT y y + V.hT y z + V.hT z y + V.hT z z := by
     simp only [map_add (f := _), LinearMap.add_apply]; ring
@@ -371,8 +367,6 @@ open scoped TensorProduct ContDiff
 namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

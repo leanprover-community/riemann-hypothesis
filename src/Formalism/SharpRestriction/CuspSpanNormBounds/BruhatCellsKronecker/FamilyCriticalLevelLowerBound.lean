@@ -135,8 +135,7 @@ theorem critical_level_lower_bound {D : D7} {large₂ : SizeData₂ D} {C0 C' Cl
   obtain ⟨hG1, hG2⟩ := hG τ
   have hVVpos := VV_pos D τ
   have hvpos : 0 < vand (lamSH D.R (D.hc τ)) := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h3 : Real.exp (CV * D.R.k * D.R.m * large₂.sc.L) * vand (lamSH D.R (D.hc τ)) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le hneg
     linarith

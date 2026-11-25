@@ -118,7 +118,7 @@ theorem degPush_of (hEq : NumEq) (hPF : GeoPF) (hFib : FibNum) (hTr : TrdegU) (h
   intro _ hProp _ hG hInt E _ _ _ _ H D Xo l c Y _ T o II hY hX hII hp hq hqp a K _ J _ Ω _ _ W _ _ Dc Hd Or eb es _ _ eS eg
   have hIn : PB.Inputs := hG.2.2.2.2.2.2.2.2.2.1
   have : Nonempty (CMType H) := (_root_.GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H).2.1
-  have hT : T.Proportional := _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hProp hIn II hII _ _ T _ (_root_.GlobalTheory.CompanionTheory.Relay.good_tower_real_agreement hG E H D Xo l c Y T o II hY hX hII hp hq)
+  have hT : T.Proportional := _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hProp hIn II hII _ _ T _ (_root_.RootFieldNumerics.global_model_real_tower hG E H D Xo l c Y T o II hY hX hII hp hq)
   have htd : 0 < Top.testDeg (CMType H) (D.p + D.q) D.p := (_root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts (CMType H) (D.p + D.q) D.p hp (by omega)).2.1
   have eg' : genPt Or.𝔐.ξ₀ = genPt (o.Or 2 a).𝔐.ξ₀ := by
     have g1 := congrArg (fun f => f (IsLocalRing.closedPoint _)) ((o.Or 2 a).g_over.symm.trans (o.Or 2 a).𝔐.fn_over)
@@ -819,21 +819,9 @@ theorem card_le_one {I : Submodule ℤ (Fin 2 → ℤ)} (hI : IsIsoSub sympForm 
 
 def cx (v : Fin 2 → ℤ) : ℂ := ⟨v 0, v 1⟩
 
-theorem cx_add (v w : Fin 2 → ℤ) : cx (v + w) = cx v + cx w := by
-  apply Complex.ext <;> simp [cx]
-
-theorem cx_smul (a : ℤ) (v : Fin 2 → ℤ) : cx (a • v) = (a : ℂ) * cx v := by
-  apply Complex.ext <;> simp [cx]
-
 theorem normSq_cx (v : Fin 2 → ℤ) : Complex.normSq (cx v) = (v 0 : ℝ) ^ 2 + (v 1 : ℝ) ^ 2 := by
   rw [cx, Complex.normSq_mk]
   ring
-
-theorem cx_injective {v : Fin 2 → ℤ} (h : cx v = 0) : v = 0 := by
-  have h0 := congrArg Complex.re h
-  have h1 := congrArg Complex.im h
-  simp only [cx, Complex.zero_re, Complex.zero_im] at h0 h1
-  exact ext2 (by exact_mod_cast h0) (by exact_mod_cast h1)
 
 theorem sqLen_real (v : Fin 2 → ℤ) : (sqLen v : ℝ) = Complex.normSq (cx v) := by
   rw [normSq_cx]
@@ -850,67 +838,22 @@ variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)]
 theorem codim_pos (D : ComponentData II Ψ K J Ω E) : 1 ≤ D.N - D.j := by
   have := D.j_le; have := D.two_le_N; omega
 
-def scaledCusp (D : ComponentData II Ψ K J Ω E) (l : ((Σ k, J k) → ℂ) → ℝ)
-    (hl : ∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → l (torusSmul c z) = l z) :
+def scaledCusp (D : ComponentData II Ψ K J Ω E) (l : ((Σ k, J k) → ℂ) → ℝ) :
     CuspData D ℤ (Fin 2 → ℤ) where
-  rank := 2
-  basis := Pi.basisFun ℤ (Fin 2)
   form := sympForm
-  alt v := by rw [sympForm_apply]; ring
-  unimod := by
-    have : (Matrix.of fun a b => sympForm (Pi.basisFun ℤ (Fin 2) a) (Pi.basisFun ℤ (Fin 2) b)).det = 1 := by
-      rw [Matrix.det_fin_two]
-      simp [sympForm_apply]
-    rw [this]
-    exact isUnit_one
-  emb _ := Int.castRingHom ℂ
-  normSq z v := (1 + (Fintype.card Ψ : ℝ) * ((D.N - D.j : ℕ) : ℝ) * Real.exp (l z) ^ 2) *
-    Complex.normSq (cx v)
-  normSq_pos _ _ v hv := mul_pos (by positivity)
-    (Complex.normSq_pos.2 fun h => hv (cx_injective h))
-  form_le z _ v w := by
-    have h1 : ((sympForm v w : ℤ) : ℝ) ^ 2 ≤ Complex.normSq (cx v) * Complex.normSq (cx w) := by
-      rw [sympForm_apply, normSq_cx, normSq_cx]
-      push_cast
-      nlinarith [sq_nonneg ((v 0 : ℝ) * w 0 + v 1 * w 1)]
-    have h2 : 0 ≤ (Fintype.card Ψ : ℝ) * ((D.N - D.j : ℕ) : ℝ) * Real.exp (l z) ^ 2 := by positivity
-    refine h1.trans (mul_le_mul ?_ ?_ (Complex.normSq_nonneg _) ?_)
-    · nlinarith [Complex.normSq_nonneg (cx v)]
-    · nlinarith [Complex.normSq_nonneg (cx w)]
-    · exact mul_nonneg (by positivity) (Complex.normSq_nonneg _)
   lie z _ v _ := (Real.exp (l z) : ℂ) * cx v
-  lie_add _ _ v w := by funext c; simp [cx_add, mul_add]
-  lie_smul _ _ a v := by
-    funext c
-    simp only [Pi.smul_apply, smul_eq_mul, cx_smul, eq_intCast]
-    ring
-  lie_le z _ v := by
-    simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, norm_mul, mul_pow,
-      Complex.norm_real, Real.norm_eq_abs, sq_abs, Complex.sq_norm]
-    nlinarith [Complex.normSq_nonneg (cx v)]
-  inj z _ τ I hI ρ v hv hli := by
-    have hρ := card_le_one hI hv hli
-    haveI : Subsingleton (Fin ρ) := Fin.subsingleton_iff_le_one.2 hρ
-    refine (linearIndependent_subsingleton_index_iff _).2 fun a h => ?_
-    have h0 := congrFun h ⟨0, codim_pos D⟩
-    simp only [Pi.zero_apply, mul_eq_zero, Complex.ofReal_eq_zero, Real.exp_ne_zero, false_or] at h0
-    exact hli.ne_zero a (cx_injective h0)
-  torus z hz c hc := by
-    constructor
-    · funext v; simp only [hl z hz c hc]
-    · funext τ v c'; simp only [hl z hz c hc]
 
 theorem scaledCusp_Nz [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) {I : Submodule ℤ (Fin 2 → ℤ)} (hI0 : I ≠ ⊥)
-    (hI : IsIsoSub sympForm I) : ∃ c : ℝ, 1 ≤ c ∧ ∀ l hl z,
-      (scaledCusp D l hl).Nz z I = Real.exp (l z) ^ (2 * Fintype.card Ψ) * c := by
+    (hI : IsIsoSub sympForm I) : ∃ c : ℝ, 1 ≤ c ∧ ∀ l z,
+      (scaledCusp D l).Nz z I = Real.exp (l z) ^ (2 * Fintype.card Ψ) * c := by
   classical
   obtain ⟨v, hvI, hv⟩ := (Submodule.ne_bot_iff I).1 hI0
   have hex : ∃ ρ v, IsNzFamily I ρ v := by
     refine ⟨1, fun _ => v, le_rfl, fun _ => hvI, linearIndependent_unique_iff.2 hv, ?_⟩
     rw [Set.range_const]
     exact (relIndex_span_le hI hvI hv).1
-  have key : ∀ (ρ : ℕ) (u : Fin ρ → Fin 2 → ℤ), IsNzFamily I ρ u → ∃ c : ℝ, 1 ≤ c ∧ ∀ l hl z,
-      (∏ τ, ((scaledCusp D l hl).gramLie z τ u).det.re) /
+  have key : ∀ (ρ : ℕ) (u : Fin ρ → Fin 2 → ℤ), IsNzFamily I ρ u → ∃ c : ℝ, 1 ≤ c ∧ ∀ l z,
+      (∏ τ, ((scaledCusp D l).gramLie z τ u).det.re) /
         ((Submodule.span ℤ (Set.range u)).toAddSubgroup.relIndex I.toAddSubgroup : ℝ) =
       Real.exp (l z) ^ (2 * Fintype.card Ψ) * c := by
     rintro ρ u ⟨h1, h2, h3, -⟩
@@ -922,14 +865,14 @@ theorem scaledCusp_Nz [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) {I : Subm
     set m := (Submodule.span ℤ {u 0}).toAddSubgroup.relIndex I.toAddSubgroup
     have hm : (0 : ℝ) < m := by exact_mod_cast Nat.pos_of_ne_zero hi0
     have hN := sqLen_real (u 0)
-    refine ⟨(((D.N - D.j : ℕ) : ℝ) * sqLen (u 0)) ^ Fintype.card Ψ / m, ?_, fun l hl z => ?_⟩
+    refine ⟨(((D.N - D.j : ℕ) : ℝ) * sqLen (u 0)) ^ Fintype.card Ψ / m, ?_, fun l z => ?_⟩
     · rw [one_le_div hm]
       have a1 : (m : ℝ) ≤ sqLen (u 0) := by exact_mod_cast hi
       have a2 : (1 : ℝ) ≤ ((D.N - D.j : ℕ) : ℝ) := by exact_mod_cast codim_pos D
       have a3 : (1 : ℝ) ≤ m := by exact_mod_cast Nat.pos_of_ne_zero hi0
       have a4 : (sqLen (u 0) : ℝ) ≤ ((D.N - D.j : ℕ) : ℝ) * sqLen (u 0) := by nlinarith
       exact a1.trans (a4.trans (le_self_pow₀ (by linarith) Fintype.card_ne_zero))
-    · have hg : ∀ τ, ((scaledCusp D l hl).gramLie z τ u).det.re =
+    · have hg : ∀ τ, ((scaledCusp D l).gramLie z τ u).det.re =
           Real.exp (l z) ^ 2 * (((D.N - D.j : ℕ) : ℝ) * sqLen (u 0)) := by
         intro τ
         rw [Matrix.det_fin_one, hN]
@@ -941,7 +884,7 @@ theorem scaledCusp_Nz [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) {I : Subm
       simp only [hg, Finset.prod_const, Finset.card_univ, mul_pow, ← pow_mul]
       ring
   obtain ⟨c, hc, h⟩ := key _ _ hex.choose_spec.choose_spec
-  exact ⟨c, hc, fun l hl z => by rw [CuspData.Nz, dite_eq_left hex]; exact h l hl z⟩
+  exact ⟨c, hc, fun l z => by rw [CuspData.Nz, dite_eq_left hex]; exact h l z⟩
 
 theorem exists_iso_line : ∃ I : Submodule ℤ (Fin 2 → ℤ), I ≠ ⊥ ∧ IsSaturated I ∧ IsIsoSub sympForm I := by
   refine ⟨LinearMap.ker (sympForm ![1, 0]), ?_, ?_, ?_⟩
@@ -958,13 +901,13 @@ theorem exists_iso_line : ∃ I : Submodule ℤ (Fin 2 → ℤ), I ≠ ⊥ ∧ I
     simp [sympForm_apply, hv, hw]
 
 theorem exists_cusp_of_weight [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) (U : ((Σ k, J k) → ℂ) → ℝ)
-    (hU0 : ∀ z, 0 ≤ U z) (hU : ∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → U (torusSmul c z) = U z) :
+    (hU0 : ∀ z, 0 ≤ U z) :
     ∃ Cd : CuspData D ℤ (Fin 2 → ℤ), Cd.cuspWeight = U := by
   classical
   have hf : (0 : ℝ) < 2 * Fintype.card Ψ := by
     have : (0 : ℝ) < Fintype.card Ψ := by exact_mod_cast Fintype.card_pos
     linarith
-  let C0 := scaledCusp D (fun _ => 0) (fun _ _ _ _ => rfl)
+  let C0 := scaledCusp D (fun _ => 0)
   let T : Set ℝ := {x | ∃ I : Submodule ℤ (Fin 2 → ℤ), I ≠ ⊥ ∧ IsSaturated I ∧ IsIsoSub sympForm I ∧
     x = -Real.log (C0.Nz 0 I)}
   have hTne : T.Nonempty := by
@@ -977,10 +920,8 @@ theorem exists_cusp_of_weight [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) (
     simp only [C0, h, Real.exp_zero, one_pow, _root_.one_mul]
     linarith [Real.log_nonneg hc]
   let l : ((Σ k, J k) → ℂ) → ℝ := fun z => (sSup T - U z) / (2 * Fintype.card Ψ)
-  have hl : ∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → l (torusSmul c z) = l z :=
-    fun z hz c hc => by simp only [l, hU z hz c hc]
   have hlog : ∀ z (I : Submodule ℤ (Fin 2 → ℤ)), I ≠ ⊥ → IsIsoSub sympForm I →
-      -Real.log ((scaledCusp D l hl).Nz z I) = (U z - sSup T) + -Real.log (C0.Nz 0 I) := by
+      -Real.log ((scaledCusp D l).Nz z I) = (U z - sSup T) + -Real.log (C0.Nz 0 I) := by
     intro z I h1 h3
     obtain ⟨c, hc, h⟩ := scaledCusp_Nz D h1 h3
     simp only [C0, h, Real.exp_zero, one_pow, _root_.one_mul]
@@ -990,7 +931,7 @@ theorem exists_cusp_of_weight [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) (
     field_simp
     ring
   have hset : ∀ z, {x | ∃ I : Submodule ℤ (Fin 2 → ℤ), I ≠ ⊥ ∧ IsSaturated I ∧
-      IsIsoSub (scaledCusp D l hl).form I ∧ x = -Real.log ((scaledCusp D l hl).Nz z I)} =
+      IsIsoSub (scaledCusp D l).form I ∧ x = -Real.log ((scaledCusp D l).Nz z I)} =
       (fun x => (U z - sSup T) + x) '' T := by
     intro z
     ext x
@@ -999,7 +940,7 @@ theorem exists_cusp_of_weight [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) (
       exact ⟨_, ⟨I, h1, h2, h3, rfl⟩, (hlog z I h1 h3).symm⟩
     · rintro ⟨_, ⟨I, h1, h2, h3, rfl⟩, rfl⟩
       exact ⟨I, h1, h2, h3, (hlog z I h1 h3).symm⟩
-  refine ⟨scaledCusp D l hl, funext fun z => ?_⟩
+  refine ⟨scaledCusp D l, funext fun z => ?_⟩
   have h := (OrderIso.addLeft (U z - sSup T)).map_csSup' hTne hTb
   have h' : sSup ((fun x => (U z - sSup T) + x) '' T) = U z := by
     refine h.symm.trans ?_
@@ -1009,7 +950,7 @@ theorem exists_cusp_of_weight [Nonempty Ψ] (D : ComponentData II Ψ K J Ω E) (
 end Cusp
 
 theorem every_weight_is_cusp_weight : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) [Nonempty Ψ] (U : ((Σ k, J k) → ℂ) → ℝ), (∀ z, 0 ≤ U z) → (∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → U (torusSmul c z) = U z) → ∃ Cd : CuspData D ℤ (Fin 2 → ℤ), Cd.cuspWeight = U :=
-  fun _ _ _ _ _ _ _ _ _ _ _ _ _ D _ U hU0 hU => exists_cusp_of_weight D U hU0 hU
+  fun _ _ _ _ _ _ _ _ _ _ _ _ _ D _ U hU0 _ => exists_cusp_of_weight D U hU0
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.Fake
 end -- clump:auto
@@ -1393,7 +1334,7 @@ theorem muLink : ChartVal → Centre → CoordLat → MuLink := by
       (Or.i_range τ ▸ LinearMap.mem_range_self (Or.i τ) (bb τ (tailIdx Dc.j_le_N k)))
     exact ⟨z, hz, by rw [← h, add_sub_cancel_right]; exact ha⟩
   choose s hs using hs
-  obtain ⟨hsi, hdeg⟩ := _root_.GlobalTheory.CompanionTheory.Relay.intersection_datum_degree_sum E H D Xo l c Y II K J Ω W Dc Hd S₀ Or 0 bb s _ hs hΛ
+  obtain ⟨hsi, hdeg⟩ := _root_.LevelTowerAlt.det_lattice_tensor_isDegOn_muTwDeg E H D Xo l c Y II K J Ω W Dc Hd S₀ Or 0 bb s _ hs hΛ
   have hSB : Dc.SB 0 = ∅ := by simp [ComponentData.SB, hS]
   have hmu : muTwDeg Hd 0 = Hd.aMu := by simp [muTwDeg, hSB]
   rw [hmu, hSB, Finset.union_empty, hsm] at hdeg
@@ -1482,8 +1423,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.LowerBoundFree (ComponentData ComponentSetting degMu ArLimExists slX)
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.good_tower_intersection_extra : GlobalTheory.CompanionTheory.Ar.Cmp.CmpSt → Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : RootTower (CMType H) (D.p + D.q)) (o : GoodOrigin Y T) (II : IntersectionSystem), IsGlobal Xo l c Y → o.Extra → IsFullIntersectionSystem II → 1 ≤ D.q → 3 * D.q + 1 ≤ D.p + D.q → T.VolEq := by
-  first | exact @SheetDecomposition.volEq_of_isFullIntersectionSystem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra =====

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedSubfieldLeCyclotomicExt
 public import Formalism.SharpRestriction.LevelLetterCocycles.AdmBoundsBOfAdm
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ArcGamLiftCore
 public import Formalism.SharpRestriction.LevelLetterCocycles.LetterConditionGlobal
@@ -101,12 +102,7 @@ theorem galoisEmbedding_coe {K LL : FinExt l} (hG : Good K 1 LL) (g : GQ l) (y :
 
 theorem exists_galois_extending_algHom {F : IntermediateField ℚ_[l] (Om l)} (τ : F →ₐ[ℚ_[l]] Om l) :
     ∃ g : GQ l, ∀ x : F, g x = τ x := by
-  classical
-  let φ : Om l →ₐ[ℚ_[l]] Om l := τ.liftNormal (Om l)
-  refine ⟨AlgEquiv.ofBijective φ (Algebra.IsAlgebraic.algHom_bijective φ), fun x => ?_⟩
-  rw [AlgEquiv.ofBijective_apply]
-  have h := τ.liftNormal_commutes (Om l) x
-  simpa using h
+  apply _root_.GlobalTheory.NL.Points.exists_aut <;> assumption
 
 end PPts
 

@@ -211,8 +211,6 @@ namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace CoefficientIntegrals
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -388,8 +386,6 @@ namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace ExponentialDecomposition
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -533,8 +529,6 @@ theorem apply_der {F G : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] [Norm
     HasDerivAt (fun t => φ t x) (A x) 0 := clm_der (ContinuousLinearMap.apply ℂ G x) hA
 
 end Gen
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section Orth
 
@@ -846,8 +840,6 @@ noncomputable section
 namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GeneratorWeights
 

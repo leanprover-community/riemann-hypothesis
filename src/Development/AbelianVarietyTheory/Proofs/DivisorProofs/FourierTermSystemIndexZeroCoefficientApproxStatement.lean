@@ -60,7 +60,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Poinc.RadQ
 
@@ -119,8 +118,7 @@ theorem exists_qW_pos (hW : PosW W) {m : ℕ} (δ : Fin m → LinearMap.BilinFor
     (hs : ∀ k a b, δ k a b = δ k b a) (hn : ∀ k y, 0 ≤ δ k y y) (hp : ∀ x, x ≠ 0 → ∃ k, 0 < δ k x x)
     {mu : Fin s → X} (hmu : mu ≠ 0) : ∃ k, 0 < qW W (δ k) mu := by
   obtain ⟨u, hu⟩ : ∃ u, mu u ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hmu (funext h)
   obtain ⟨k, hk⟩ := hp _ hu
   obtain ⟨c, hc0, hc⟩ := QWDom.qW_ge s W hW
@@ -414,7 +412,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Poinc.Sep.UnitZero
 

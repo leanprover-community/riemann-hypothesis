@@ -111,8 +111,8 @@ theorem zhatReduce_of (hC : CellReduce) (hF : FrameOp) (hR : CarrierRow) (hI : Z
   have hBo : UpB ((b2 : ℕ) : 𝓞 D.host.E) Bo := upB_sgn D D.R.rS b1 b2 B hB
   obtain ⟨hrow, hlf⟩ := hR D u u' F0 Λ hΛ x.1 x.2
   obtain ⟨m, hm, hmact⟩ := hF2 x.1.fl Λ hrow Bo hBo
-  set_option backward.isDefEq.respectTransparency false in
-    rw [hlf] at hm hmact
+  unfold Tu at hm hmact
+  rw [hlf] at hm hmact
   choose st hst using fun i j => star_int D (A j i)
   have hAo := starO_upB D b1 b2 A hA st hst
   obtain ⟨n0, hn0, hn0act⟩ := hF1 F0 Λ hΛ st hAo
@@ -140,8 +140,7 @@ theorem zhatReduce_of (hC : CellReduce) (hF : FrameOp) (hR : CarrierRow) (hI : Z
       rw [← hiso0 (frame (lf D F0) a) (n0⁻¹ (m (frame x.1 b)))]
       congr 1
       exact n0.apply_symm_apply _
-    set_option backward.isDefEq.respectTransparency false in
-      rw [h1, hn0act a, hmact b]
+    rw [h1, hn0act a, hmact b]
 
     simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
     Matrix.mul_apply, Matrix.map_apply, Finset.sum_mul]
@@ -149,8 +148,7 @@ theorem zhatReduce_of (hC : CellReduce) (hF : FrameOp) (hR : CarrierRow) (hI : Z
     simp only [RingHom.id_apply, Finset.mul_sum]
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [hst, starRingEnd_apply, star_star, key]
-    set_option backward.isDefEq.respectTransparency false in
-      ring
+    ring
   have hBo' : (Bo.map fun x => (x : D.host.E)) = Sg * (B.map fun x => (x : D.host.E)) * Sg := by
     ext i j
     simp only [Bo, Sg, Matrix.map_apply, sgn_conj_entry]

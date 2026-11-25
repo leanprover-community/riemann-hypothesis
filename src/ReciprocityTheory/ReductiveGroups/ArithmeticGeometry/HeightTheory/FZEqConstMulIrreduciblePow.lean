@@ -13,6 +13,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValUFD
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.RegularLocalRing.Defs
+import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.BlockSphereProbIsProbabilityMeasure, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FZEqConstMulIrreduciblePow
@@ -28,20 +29,7 @@ open NumberField
 
 theorem blockSphereProb_isProbabilityMeasure {B n : ℕ} (hn : 0 < n) :
     MeasureTheory.IsProbabilityMeasure (ReciprocityTheory.MultiplicativeHeights.blockSphereProb B n) := by
-  unfold ReciprocityTheory.MultiplicativeHeights.blockSphereProb
-  haveI : MeasureTheory.IsProbabilityMeasure (ReciprocityTheory.MultiplicativeHeights.sphereProb n) := by
-    unfold ReciprocityTheory.MultiplicativeHeights.sphereProb
-    have hne : ∃ x : EuclideanSpace ℂ (Fin n), x ≠ 0 :=
-      ⟨EuclideanSpace.single ⟨0, hn⟩ 1, by simp⟩
-    have hdim : 0 < Module.finrank ℝ (EuclideanSpace ℂ (Fin n)) :=
-      Module.finrank_pos_iff_exists_ne_zero.mpr hne
-    apply ProbabilityTheory.cond_isProbabilityMeasure_of_finite
-    · rw [MeasureTheory.Measure.toSphere_apply_univ]
-      refine mul_ne_zero ?_ (Metric.measure_ball_pos _ _ one_pos).ne'
-      exact_mod_cast hdim.ne'
-    · rw [MeasureTheory.Measure.toSphere_apply_univ]
-      exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (MeasureTheory.measure_ball_lt_top).ne
-  infer_instance
+  apply _root_.ReciprocityTheory.MultiplicativeHeights.blockSphereMeasure_isProbability <;> assumption
 
 theorem height_const_eq_zero {K : Type} [Field K] [NumberField K] {B n : ℕ} (hn : 0 < n) (a : K) :
     ReciprocityTheory.MultiplicativeHeights.h0 (MvPolynomial.C a : MvPolynomial (Fin B × Fin n) K) = 0 := by
@@ -249,8 +237,7 @@ theorem fZ_factor_positive_places (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (F : KTp
   refine ⟨κ, hP0fin.toFinset, fun p => (Nn p).toNat, hκ, hTS,
     IsFractionRing.injective _ _ hF', ?_⟩
   intro p hpT hpos
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hz : Nn p = 0 := by
     rw [hNn]
     refine (finsum_mem_congr rfl fun w hw => ?_).trans (finsum_mem_zero _)

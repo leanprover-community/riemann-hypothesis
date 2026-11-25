@@ -381,11 +381,7 @@ theorem nuIn_mem_Sram (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) (�
   exact this
 
 theorem pair_gain_nonneg {X : Inst D L} {K : Consts} (a b : HH D → ℤ) (p j : ℕ) : 0 ≤ gainP X K a b p j := by
-  unfold gainP
-  split_ifs
-  · exact le_rfl
-  · refine add_nonneg (Finset.sum_nonneg fun t _ => ?_) (Finset.sum_nonneg fun t _ => le_max_right _ _)
-    exact le_trans (le_max_right _ _) (le_max_right _ _)
+  apply _root_.Formalism.MainNotions.WeilJacquetShalikaLaw.gainP_nonneg' <;> assumption
 
 theorem served_gain_nonneg {X : Inst D L} {K : Consts} (p j : ℕ) : 0 ≤ gainS X K p j := by
   unfold gainS

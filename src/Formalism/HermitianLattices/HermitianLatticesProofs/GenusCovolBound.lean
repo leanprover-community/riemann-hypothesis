@@ -6,7 +6,6 @@ public import Formalism.FockGram.FockGramProofs.CovolGram
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusScale
-import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 import Mathlib.Algebra.Order.Star.Rat
 

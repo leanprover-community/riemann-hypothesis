@@ -10,6 +10,7 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Analysis.CStarAlgebra.Exponential
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapStarMul
 
 @[expose] public section
 
@@ -29,8 +30,7 @@ open scoped Matrix.Norms.L2Operator
 
 theorem exists_theta {k : ℕ} (A : Matrix (Fin k) (Fin k) ℂ) :
     ∃ θ : ℝ, -Complex.exp (θ * Complex.I) ∉ spectrum ℂ A := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hfin : (spectrum ℂ A).Finite := by
     rw [← AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv' : Matrix (Fin k) (Fin k) ℂ ≃ₐ[ℂ] _) A]
     exact Module.End.finite_spectrum _
@@ -95,26 +95,7 @@ variable {N K J : Type} [Fintype N] [Fintype K] [Fintype J] [DecidableEq N] [Dec
 
 theorem exp_semiconj (X : Matrix N N ℂ) (B : Matrix K K ℂ) (V : Matrix N K ℂ) (h : X * V = V * B) :
     NormedSpace.exp X * V = V * NormedSpace.exp B := by
-  letI : NormedRing (Matrix N N ℂ) := Matrix.linftyOpNormedRing
-  letI : NormedAlgebra ℂ (Matrix N N ℂ) := Matrix.linftyOpNormedAlgebra
-  letI : NormedRing (Matrix K K ℂ) := Matrix.linftyOpNormedRing
-  letI : NormedAlgebra ℂ (Matrix K K ℂ) := Matrix.linftyOpNormedAlgebra
-  have hp : ∀ n : ℕ, X ^ n * V = V * B ^ n := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih => rw [pow_succ, pow_succ, Matrix.mul_assoc, h, ← Matrix.mul_assoc, ih, Matrix.mul_assoc]
-  let fL : Matrix N N ℂ →+ Matrix N K ℂ := ⟨⟨fun M => M * V, Matrix.zero_mul V⟩, fun a b => Matrix.add_mul a b V⟩
-  let fR : Matrix K K ℂ →+ Matrix N K ℂ := ⟨⟨fun M => V * M, Matrix.mul_zero V⟩, fun a b => Matrix.mul_add V a b⟩
-  have h1 := (NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) X).map fL
-    (show Continuous (fun M : Matrix N N ℂ => M * V) from continuous_id.matrix_mul continuous_const)
-  have h2 := (NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) B).map fR
-    (show Continuous (fun M : Matrix K K ℂ => V * M) from continuous_const.matrix_mul continuous_id)
-  have e : (⇑fL ∘ fun n : ℕ => ((n.factorial : ℂ)⁻¹) • X ^ n) = (⇑fR ∘ fun n : ℕ => ((n.factorial : ℂ)⁻¹) • B ^ n) := by
-    funext n
-    simp only [Function.comp_apply, fL, fR, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Matrix.smul_mul, Matrix.mul_smul, hp]
-  rw [e] at h1
-  exact h1.unique h2
+  apply _root_.GlobalTheory.IndLine.Iwasawa.exp_mul_eq <;> assumption
 
 variable {V : Matrix N K ℂ} {C : Matrix N J ℂ} {Vd : Matrix K N ℂ} {Cd : Matrix J N ℂ}
 
@@ -330,8 +311,6 @@ theorem fix_c' {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWset 
 end Geo
 
 end HermitianFormRankFour
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 open HermitianFormRankFour in
 theorem exp_generates : Formalism.FourierDecayAlt.Qr.ExpGen := by

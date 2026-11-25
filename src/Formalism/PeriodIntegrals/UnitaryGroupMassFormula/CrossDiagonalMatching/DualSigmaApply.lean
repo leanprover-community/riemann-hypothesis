@@ -200,8 +200,7 @@ theorem dniEquiv_te (T : Forms0 D u) (v : (D.mem u).A.vT) (c c' : (D.mem u).C.cl
 theorem dni_exists_one (T : Forms0 D u) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls 0) :
     ∃ z : ↥(Ld D u 0 (Nat.zero_le _) c), (D.fm u).fv 0 v c (T.lv0.pr v c z) = 1 := by
   obtain ⟨w, hw⟩ : ∃ w, (D.fm u).fv 0 v c w ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact (D.fm u).fv_ne 0 v c (LinearMap.ext h)
   obtain ⟨z, hz⟩ := T.lv0.pr_surj v c (((D.fm u).fv 0 v c w)⁻¹ • w)
   refine ⟨z, ?_⟩

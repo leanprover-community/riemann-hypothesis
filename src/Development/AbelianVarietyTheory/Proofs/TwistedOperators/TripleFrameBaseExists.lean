@@ -226,7 +226,7 @@ theorem exists_ram_set {D : D7} {W W₁ X : HSp D} {α β : (AE D)ˣ →* Circle
       (∀ w : HeightOneSpectrum (𝓞 D.host.E), w.under (𝓞 D.host.F) ∈ T → ¬ GlobalTheory.LFun.UnrAt (α / β) w) ∧
       ∀ w : HeightOneSpectrum (𝓞 D.host.E), w.under (𝓞 D.host.F) ∉ T → GlobalTheory.LFun.UnrAt α w ∧ GlobalTheory.LFun.UnrAt β w := by
   classical
-  have hfin := (GlobalTheory.T.heckeChar_unramified_at_cofinitely_many_places D α h.hecA).union (GlobalTheory.T.heckeChar_unramified_at_cofinitely_many_places D β h.hecB)
+  have hfin := (_root_.GlobalTheory.HeckeFinRam.finite_ramified D α h.hecA).union (_root_.GlobalTheory.HeckeFinRam.finite_ramified D β h.hecB)
   have hν : IsHeckeChar D (α / β) :=
     ⟨h.hecA.1.div' h.hecB.1, fun x => by rw [MonoidHom.div_apply, h.hecA.2, h.hecB.2, div_one]⟩
   have hr : ResEta D (α / β) 0 := by
@@ -249,7 +249,7 @@ theorem exists_ram_set {D : D7} {W W₁ X : HSp D} {α β : (AE D)ˣ →* Circle
   · obtain ⟨ε, h1, h2, -, h4⟩ := key v hv
     exact ⟨GlobalTheory.T.nonempty_algHom_completion_of_split_place D v ε h1 h2, h4⟩
   · obtain ⟨ε, h1, -, h3, -⟩ := key _ hw
-    exact h3 (GlobalTheory.T.heckeChar_unramified_place_of_unramified_one_prime D _ hν hr _ ε h1 w rfl hu)
+    exact h3 (_root_.GlobalTheory.UnramFromOnePrime.unramAt_of_unrAt_one D _ hν hr _ ε h1 w rfl hu)
   · by_contra hn
     refine hw (Finset.mem_image_of_mem _ (hfin.mem_toFinset.2 ?_))
     by_cases ha : GlobalTheory.LFun.UnrAt α w

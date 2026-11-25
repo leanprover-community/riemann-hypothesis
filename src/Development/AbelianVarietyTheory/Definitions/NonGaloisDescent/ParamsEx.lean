@@ -149,11 +149,6 @@ def ParamsEx (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) : Prop :=
   ∀ c, partW R i t c ≠ ⊥ → ∃ B', GlobalTheory.LFun.IsSysParamD D (GlobalTheory.IndefiniteRowSideFullHecke.LabelSettingScalars.badPl R t) D.R.r c B' ∧
     ∀ w, GlobalTheory.Hk3.Good R t w → ∀ a ∈ B' w, ‖(a : ℂ)‖ ≤ (Ideal.absNorm w.asIdeal : ℝ) ^ (((D.R.r : ℝ) - 1) / 2)
 
-def Saturated (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) : Prop :=
-  ∀ h, GlobalTheory.Hk3.IsOpsV R i t h → ∀ s, HasString R i t s → ∃ c, ∀ y, IsEigV R i t h s y → GoodVt R i t y →
-    ∃ x : (R.HW i (sg0 D A)).H, (R.HW i (sg0 D A)).e x ∈ partW R i t c ⊓ R.Wat i (sg0 D A) R.triv ∧
-      LinearMap.adjoint (R.thG i t) x = y
-
 end GlobalTheory.DownLift
 
 end

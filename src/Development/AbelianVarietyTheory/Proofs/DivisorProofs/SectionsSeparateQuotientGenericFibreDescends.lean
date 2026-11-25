@@ -623,10 +623,6 @@ noncomputable section
 
 namespace GlobalTheory.QuotSetup
 
-theorem genericPoint_mem {X : Scheme.{0}} [IsIntegral X] (U : X.Opens) (hU : (U : Set X).Nonempty) :
-    genericPoint X ∈ U :=
-  ((genericPoint_spec X).mem_open_set_iff U.isOpen).2 (by simpa using hU)
-
 theorem map_genericPoint {X Y : Scheme.{0}} [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f] :
     f (genericPoint X) = genericPoint Y := by
   have := (genericPoint_spec X).image f.continuous
@@ -677,7 +673,7 @@ theorem exists_resolved_modification : GlobalTheory.Published.Principalisation �
   obtain ⟨W', s, UW, hW', hsm, hpj, hUW, hiso⟩ := _root_.GlobalTheory.WeakRes.weak_resolution hP F W sW n hsW hdW
   haveI := hW'
   haveI := hiso
-  have hηUW : genericPoint W ∈ UW := genericPoint_mem UW hUW
+  have hηUW : genericPoint W ∈ UW := GlobalTheory.EtaleKlt.genericPoint_mem_of_nonempty UW hUW
 
   let O : V.Opens := (ℓ ≫ q) ⁻¹ᵁ UW
   have hvO : ∀ j o, v j o ∈ O := fun j o => by

@@ -5,48 +5,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ImportsBis
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousQuaternaryQuadraticForm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Compactness.Paracompact
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ContEntry, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ContKer, Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.Imports
@@ -76,14 +36,11 @@ private theorem cont_pair (y : FiniteAdeleRing (𝓞 F) F) :
     Continuous (fun x : InfiniteAdeleRing F => ((x, y) : A F)) :=
   Continuous.prodMk_left (X := InfiniteAdeleRing F) (Y := FiniteAdeleRing (𝓞 F) F) y
 
-private theorem cont_entry (i j : Fin 2) : Continuous (fun h : G1 F => h i j) :=
-  (continuous_apply j).comp ((continuous_apply i).comp continuous_subtype_val)
-
 private theorem d_one : ((1 : G1 F) 1 1).1 = 1 := by
   simp
 
 private theorem cont_d (v : InfinitePlace F) : Continuous (fun h : G1 F => (h 1 1).1 v) :=
-  (continuous_apply (A := fun v : InfinitePlace F => v.Completion) v).comp (cont_fst.comp (cont_entry 1 1))
+  (continuous_apply (A := fun v : InfinitePlace F => v.Completion) v).comp (cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 1 1))
 
 private theorem ne_one (v : InfinitePlace F) : ((1 : G1 F) 1 1).1 v ≠ 0 := by
   rw [d_one]
@@ -199,18 +156,18 @@ private theorem cont_mD : Continuous (mD : (A F)ˣ → G1 F) := by
 
 private theorem bU_cont : ContinuousAt (bU : G1 F → A F) 1 :=
   (cont_pair 0).continuousAt.comp
-    (((cont_fst.comp (cont_entry 0 1)).continuousAt).mul eI_cont)
+    (((cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 0 1)).continuousAt).mul eI_cont)
 
 private theorem cU_cont : ContinuousAt (cU : G1 F → A F) 1 :=
   (cont_pair 0).continuousAt.comp
-    ((((continuous_neg.comp (cont_fst.comp (cont_entry 1 0))).continuousAt)).mul eI_cont)
+    ((((continuous_neg.comp (cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 1 0))).continuousAt)).mul eI_cont)
 
 private theorem aU_cont : ContinuousAt (aU : G1 F → (A F)ˣ) 1 := by
   rw [Units.isEmbedding_embedProduct.isInducing.continuousAt_iff]
   have hf : ContinuousAt (fun h : G1 F => ((((eI h, 1) : A F), MulOpposite.op (((h 1 1).1, 1) : A F)) :
       A F × (A F)ᵐᵒᵖ)) 1 := by
     refine ContinuousAt.prodMk ((cont_pair 1).continuousAt.comp eI_cont) ?_
-    exact (MulOpposite.continuous_op.comp ((cont_pair 1).comp (cont_fst.comp (cont_entry 1 1)))).continuousAt
+    exact (MulOpposite.continuous_op.comp ((cont_pair 1).comp (cont_fst.comp (UpperTheory.ConvolutionTheory.R2.continuous_entry 1 1)))).continuousAt
   refine hf.congr ?_
   filter_upwards [ev_ne] with h hu
   simp only [Function.comp, aU, dif_pos hu]

@@ -132,8 +132,7 @@ namespace IdxHW
 theorem sigma_ne_id {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) : ∃ x : E, σ x ≠ x := by
   obtain ⟨-, hC, -, hst⟩ := hCM
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨w⟩ := (inferInstance : Nonempty (InfinitePlace E))
   have hw : w.IsReal := by
     rw [InfinitePlace.isReal_iff, ComplexEmbedding.isReal_iff]

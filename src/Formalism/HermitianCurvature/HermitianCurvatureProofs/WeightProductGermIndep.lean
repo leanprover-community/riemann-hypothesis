@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermConstant
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
@@ -86,17 +87,7 @@ theorem prod_Ico_int_succ (f : ℤ → ℝ) (a b : ℤ) (h : a ≤ b) :
 
 theorem betaZ_succ (κ : ℝ) (hκ : κ ≠ 0) (n : ℕ) :
     betaZ κ ((n : ℤ) + 1) = betaZ κ n * ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), (κ ^ (1 - 2 * x) / Real.pi) := by
-  unfold betaZ
-  have hc : ∀ x : ℤ, κ ^ (1 - 2 * x) / Real.pi ≠ 0 := fun x => div_ne_zero (zpow_ne_zero _ hκ) Real.pi_ne_zero
-  have e : ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), (κ ^ (1 - 2 * x) / Real.pi) ^ ((n : ℤ) + 1 - x) =
-      ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), ((κ ^ (1 - 2 * x) / Real.pi) ^ ((n : ℤ) - x) * (κ ^ (1 - 2 * x) / Real.pi)) := by
-    refine Finset.prod_congr rfl fun x _ => ?_
-    rw [← zpow_add_one₀ (hc x)]; congr 1; ring
-  rw [e, Finset.prod_mul_distrib]
-  congr 1
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp
-  · rw [prod_Ico_int_succ _ _ _ (by omega), sub_self, zpow_zero, mul_one]
+  apply _root_.Formalism.FourierDecayAlt.P.FormNormSumIdentities.betaZ_succ <;> assumption
 
 theorem prod_c (κ : ℝ) (hκ : κ ≠ 0) : ∀ n : ℕ,
     ∏ x ∈ Finset.Ico 1 ((n : ℤ) + 1), (κ ^ (1 - 2 * x) / Real.pi) = κ ^ (-((n : ℤ) ^ 2)) / Real.pi ^ n

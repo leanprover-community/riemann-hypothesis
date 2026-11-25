@@ -30,8 +30,6 @@ namespace PI.CntNotIntW
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Generic
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
@@ -166,8 +164,6 @@ namespace PI.CntNotIntW
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cntE_eq_zero_of_empty {D : Formalism.BasicNotions.D7} {T : D.host.E} (T' : D.host.E) (F0 : FlagG (VS D) D.R.rS T)
     (Λ : Submodule (𝓞 D.host.E) (VS D).V) (Z : MatZ D) (h : EZ T' F0 Λ Z = ∅) : cntE T' F0 Λ Z = 0 := by
   unfold cntE
@@ -197,8 +193,6 @@ namespace PI.CntNotIntW
 
 open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def NotIntR : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
@@ -427,8 +421,6 @@ namespace Formalism.L2.SG.Pf.FCount
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
   Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.PCount
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem nuNotCls_of {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep}
     {δ : ∀ p : PlF D, (D.s.atP p).Fp} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}

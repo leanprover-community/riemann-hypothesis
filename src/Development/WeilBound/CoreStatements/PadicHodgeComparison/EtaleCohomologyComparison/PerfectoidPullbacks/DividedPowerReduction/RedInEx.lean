@@ -96,7 +96,7 @@ open PAlg
 variable {l : ℕ} [Fact l.Prime] {A : Type} [CommRing A]
 
 def e0 (l : ℕ) [Fact l.Prime] : Acris0 l ≃+* (base l).Acr0 :=
-  RingEquiv.ofBijective (base l).cris0 (RL.base_acr (base l) isBase_base).1.1
+  RingEquiv.ofBijective (base l).cris0 (_root_.GlobalTheory.CompanionTheory.BaseAcris.main (base l) isBase_base).1.1
 
 def lam0 (lam : Acris l →+* A) : (base l).Acr0 →+* A :=
   (lam.comp (algebraMap (Acris0 l) (Acris l))).comp (e0 l).symm.toRingHom
@@ -116,9 +116,9 @@ theorem lam0_algebraMap_sW_eq_lam_algebraMap (lam : Acris l →+* A) (w : Ainf l
   rfl
 
 def rho (lam : Acris l →+* A) (n : ℕ) : (base l).Acr n →+* A ⧸ Ideal.span {(l : A) ^ n} :=
-  ((base l).cris n).liftOfSurjective ((RL.base_acr (base l) isBase_base).2 n).1
+  ((base l).cris n).liftOfSurjective ((_root_.GlobalTheory.CompanionTheory.BaseAcris.main (base l) isBase_base).2 n).1
     ⟨(Ideal.Quotient.mk _).comp lam, fun x hx => by
-      rw [((RL.base_acr (base l) isBase_base).2 n).2] at hx
+      rw [((_root_.GlobalTheory.CompanionTheory.BaseAcris.main (base l) isBase_base).2 n).2] at hx
       obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hx
       have hz : Ideal.Quotient.mk (Ideal.span {(l : A) ^ n}) ((l : A) ^ n) = 0 :=
         Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_span_singleton_self _)

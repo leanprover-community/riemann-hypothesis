@@ -232,7 +232,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 theorem UpperTheory.V.Z.Sym.Al.contE :
@@ -264,7 +263,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 theorem UpperTheory.V.Z.Sym.Al.eigTS :
@@ -291,7 +289,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 namespace UpperTheory.V.Z.Sym.Al.ExtChar
@@ -440,7 +437,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 section SlopeTestRemainingChoices
@@ -657,7 +653,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 namespace UpperTheory.V.Z.Sym.Al
@@ -830,7 +825,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
 theorem UpperTheory.V.Z.Sym.Al.smoothDepth :
@@ -1283,7 +1277,6 @@ section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Formalism.BasicNotions
 open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 private theorem compD :
     _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (L : Type) [Field L] [NumberField L] [IsCMField L], Unr L → ∀ n : ℕ, 1 ≤ n → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Submodule ℂ (UA L n → ℂ)), IsAutRepU π → ∀ w, IsSplitAt w → ∀ W : Sig.Lev (Kw w),

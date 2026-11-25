@@ -605,9 +605,6 @@ structure ThDist.Ok (th : ThDist E K a b SB V V') (Sall : Finset (HeightOneSpect
   cong : ∀ N fr N' fr' c x x', IsSdLat N → IsSdLat N' → x - x' ∈ mulLat c (homAt Sall N N') →
     th N fr N' fr' c x = th N fr N' fr' c x'
 
-  add : ∀ N fr N' fr' c c' x, IsSdLat N → IsSdLat N' → 0 < c → 0 < c' → c * c' ∣ D → x ∈ divLat D (homAt Sall N N') →
-    th N fr N' fr' c x = latSum (mulLat c (homAt Sall N N')) (mulLat (c * c') (homAt Sall N N')) fun y => th N fr N' fr' (c * c') (x + y)
-
   equiv : ∀ (γ : UF E a) (γ' : UF E b) N fr N' fr' c x, IsSdLat N → IsSdLat N' →
     th (gmap γ.1 N) (fun P => γ.1 * fr P) (gmap γ'.1 N') (fun P => γ'.1 * fr' P) c
         (γ'.1.toLinearMap ∘ₗ x ∘ₗ γ.1.symm.toLinearMap) = (rho' γ') ∘ₗ (th N fr N' fr' c x) ∘ₗ (rho γ⁻¹)

@@ -464,8 +464,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.KerInert.KG
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.PairingIndexBounds.F
 
 theorem linSub_scl {σ R : Type} [Fintype σ] [CommRing R] (c : R) (A : σ → σ → R) (G : MvPowerSeries σ R) :
@@ -1724,8 +1722,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G
 open scoped TensorProduct
 
 namespace Formalism.L2.KerInert.KGLt
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert.KG
 

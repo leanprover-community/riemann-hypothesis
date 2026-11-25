@@ -58,7 +58,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CechDR GlobalTheory.CechPer
-attribute [local instance] Over.cartesianMonoidalCategory
 open Opposite GlobalTheory.CatCoh
 
 namespace GlobalTheory.CechPer
@@ -88,7 +87,7 @@ theorem eq_zero_of_isPer_zero : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L 
     refine Eq.trans ?_ e0.symm
     rw [Pi.sub_apply]
     linear_combination e2 - e1
-  have hb := GlobalTheory.T.isReg_of_periodic_of_isReg_sub' A g L u hA A.left.affineOpens (fun U ↦ U.1) h
+  have hb := _root_.GlobalTheory.CechPer.isReg_of_periodic_of_isReg_sub A g L u hA A.left.affineOpens (fun U ↦ U.1) h
     (iSup_affineOpens_eq_top A.left) hd (fun U l z hz ↦ by simpa using hp U l z hz) hreg
   choose b hb using hb
   let b' : ∀ U : A.left.affineOpens, Sec (str A) U.1 := b
@@ -110,7 +109,7 @@ theorem eq_zero_of_isPer_zero : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L 
   · obtain ⟨U⟩ := T
     change KaehlerDifferential.D ℂ (Sec (str A) U.1) (b' U) = c.1.2 (op U)
     apply sub_eq_zero.1
-    apply GlobalTheory.T.kaehlerOneForm_eq_zero_of_uniformised_values A g L u hA U
+    apply _root_.GlobalTheory.form_eq_zero_of_evForm_eq_zero A g L u hA U
     intro z hz
     rw [map_sub, (GlobalTheory.T.uniformisedOneFormEvaluation_rules A g L u U.1 z hz).2.2 (b' U), ← hω U z hz, sub_eq_zero]
     refine (Filter.EventuallyEq.fderiv_eq ?_).symm
@@ -131,8 +130,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CechDR GlobalTheory.CechPer
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.cechDeRham_class_eq_zero_of_periods_zero : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : ℕ) (L : LB A.left) (u : HolUnif A L g), IsAbelianScheme A → ∀ x, IsPer u.ex u.Λ x 0 → x = 0 := by
-  first | exact @GlobalTheory.CechPer.eq_zero_of_isPer_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CechDeRhamClassEqZeroOfPeriodsZeroStatement =====

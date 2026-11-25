@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -21,12 +22,7 @@ open scoped Matrix.Norms.Elementwise
 variable {k r : ℕ}
 
 theorem uw_inv {z : Fin (2 * r + k + 1) → ℂ} {h : Mat k r} (hh : h ∈ UWset k r z) : h⁻¹ ∈ UWset k r z := by
-  have hu := WeylGroupFacts.isUnit_of_uh hh.1
-  have key : ∀ v : Fin (2 * r + k + 1) → ℂ, h *ᵥ v = v → h⁻¹ *ᵥ v = v := by
-    intro v hv
-    calc h⁻¹ *ᵥ v = h⁻¹ *ᵥ (h *ᵥ v) := by rw [hv]
-      _ = v := by rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hu, Matrix.one_mulVec]
-  exact ⟨WeylGroupFacts.uh_inv hh.1, fun a => ⟨key _ (hh.2.1 a).1, key _ (hh.2.1 a).2⟩, key _ hh.2.2⟩
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.uw_inv_mem <;> assumption
 
 def invP (p : SS k r) : SS k r :=
   ((((Matrix.of p.1.1 : Mat k r)⁻¹ : Mat k r),

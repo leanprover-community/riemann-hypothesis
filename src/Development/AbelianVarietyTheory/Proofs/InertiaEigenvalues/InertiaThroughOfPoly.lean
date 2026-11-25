@@ -58,15 +58,8 @@ open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotio
 namespace GlobalTheory.PassPoly
 
 theorem aeval_mem_of_stable {L M : Type} [Field L] [AddCommGroup M] [Module L M] (f : Module.End L M)
-    (D : Submodule L M) (hD : ∀ x ∈ D, f x ∈ D) (p : L[X]) : ∀ x ∈ D, Polynomial.aeval f p x ∈ D := by
-  induction p using Polynomial.induction_on with
-  | C a => intro x hx; simpa [Module.algebraMap_end_apply] using D.smul_mem a hx
-  | add p q hp hq => intro x hx; simpa using D.add_mem (hp x hx) (hq x hx)
-  | monomial n a ih =>
-    intro x hx
-    have := ih _ (hD x hx)
-    rw [pow_succ, ← mul_assoc, map_mul, Module.End.mul_apply, Polynomial.aeval_X]
-    exact this
+    (D : Submodule L M) (hD : ∀ x ∈ D, f x ∈ D) (p : L[X]) : ∀ x ∈ D, Polynomial.aeval f p x ∈ D :=
+  fun _ hx => Polynomial.aeval_apply_smul_mem_of_le_comap hx p f hD
 
 section
 variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀] [Field K]

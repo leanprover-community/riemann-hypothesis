@@ -256,8 +256,7 @@ theorem _root_.GlobalTheory.localFactor_mod_p_nilOver :
       exact (hW.2 w hw).map (D.wd.πW.1 : D.wd.W.carrier →+* (Tw.R 0).carrier)
   refine ⟨hK, hρ1, fun i => ?_⟩
   have hsec : ∃ φ : _root_.ReciprocityTheory.PGsh.LHom (D.fin.AAx i) Tw.O, φ.comp (D.fin.sO i) = _root_.ReciprocityTheory.PGsh.LHom.id Tw.O := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 : (1 : (D.fin.AAx i).carrier) = 0 := D.fin.sep i 1 fun φ hφ => absurd hφ (hne φ)
     exact one_ne_zero h1
   obtain ⟨φ₀, hφ₀⟩ := hsec

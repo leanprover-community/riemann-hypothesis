@@ -111,7 +111,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CechPic GlobalTheory.AbDual
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.DualHomFlat
 
@@ -207,7 +206,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CechPic GlobalTheory.AbDual
 open ReciprocityTheory.ChartRestriction.G
-attribute [local instance] Over.cartesianMonoidalCategory
 open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.DualHomSurj
@@ -284,7 +282,6 @@ section -- clump:auto
 @[expose] public section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CechPic GlobalTheory.AbDual
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.DualFactor
 
@@ -1325,7 +1322,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HomTorsionFree
 
@@ -1384,20 +1380,6 @@ namespace GlobalTheory.ZarhinFam.Rig
 
 section
 variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
-
-theorem pull_pull_lift {Y W X₁ X₂ : Over S} {M : LB (X₁ ⊗ X₂).left} (hM : M.IsLB) (u : Y ⟶ W) (f : W ⟶ X₁)
-    (g : W ⟶ X₂) : CechPic.pull u.left (CechPic.pull (lift f g).left (cls M hM)) = evc hM (u ≫ f) (u ≫ g) := by
-  rw [← pull_comp, ← Over.comp_left, comp_lift]; rfl
-
-theorem pull_zCls {P : LB (A ⊗ A).left} (hP : P.IsLB) {Q : LB (A ⊗ B).left} (hQ : Q.IsLB) (d : ℕ) (mu : B ⟶ A)
-    {Y : Over S} (z z' : Y ⟶ Zob A B) :
-    CechPic.pull (lift z z').left (zCls A B hP hQ d mu) =
-      (∑ i, evc hP (z ≫ pa A B i) (z' ≫ pa A B i)) +
-      (∑ i, ∑ j, quat d j i • evc hQ (z ≫ pa A B i) (z' ≫ pb A B j)) +
-      (∑ i, ∑ j, quat d j i • evc hQ (z' ≫ pa A B i) (z ≫ pb A B j)) +
-      ∑ j, evc hQ (z' ≫ pb A B j ≫ mu) (z ≫ pb A B j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [zCls, map_add (f := _), map_sum, map_zsmul, pull_pull_lift, lift_fst_assoc, lift_snd_assoc]
 
 theorem zarhinBundle_pull_trivial_iff {P : LB (A ⊗ A).left} (hP : P.IsLB) {Q : LB (A ⊗ B).left} (hQ : Q.IsLB) (d : ℕ)
     (mu : B ⟶ A) {Y : Over S} (u : Y ⟶ Zob A B ⊗ Zob A B) :
@@ -1494,17 +1476,17 @@ theorem zarhinBundle_rigidified_symmetric₂ : ∀ (h M d : ℕ) (S : Scheme.{0}
   have hQ := hZ.2.1
   haveI : IsMonHom mu := hZ.2.2.2.2.1
   refine ⟨(zarhinBundle_pull_trivial_iff _ _ _ _ _ _ _).2 ?_, (zarhinBundle_pull_trivial_iff _ _ _ _ _ _ _).2 ?_, ?_⟩
-  · rw [pull_zCls]
+  · rw [GlobalTheory.ZarhinKerB.pull_zCls]
     simp only [one_pa, one_pb, Category.id_comp, evc_one_left c.isLB c.rig₁,
       hQ.additive.evc_one hQ.isLB, evc_one_right hQ.isLB hQ.zero, smul_zero, Finset.sum_const_zero, add_zero]
-  · rw [pull_zCls]
+  · rw [GlobalTheory.ZarhinKerB.pull_zCls]
     simp only [MonObj.one_comp, Category.id_comp, evc_one_right c.isLB c.rig₂,
       hQ.additive.evc_one hQ.isLB, evc_one_right hQ.isLB hQ.zero, smul_zero, Finset.sum_const_zero, add_zero]
   · have hz := zarhinBundle_isLineBundle c.A B c.isLB hQ.isLB d mu
     refine (CechPic.cls_eq_iff hz (pull_isLB hz _)).1 ?_
     rw [cls_pull hz, cls_zP]
     conv_lhs => rw [← pull_id (zCls _ _ _ _ _ _), ← Over.id_left, ← lift_fst_snd]
-    rw [pull_zCls, pull_zCls]
+    rw [GlobalTheory.ZarhinKerB.pull_zCls, GlobalTheory.ZarhinKerB.pull_zCls]
     have htor : ∀ x y : B ⟶ c.A, IsMonHom x → IsMonHom y → x ^ d = y ^ d → x = y :=
       _root_.GlobalTheory.HomTorsionFree.eq_of_pow_eq S c.A B c.ab hZ.1 d hd hdu
     have h1 : ∑ i, evc c.isLB (fst (Zob c.A B) (Zob c.A B) ≫ pa c.A B i) (snd (Zob c.A B) (Zob c.A B) ≫ pa c.A B i) =

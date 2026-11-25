@@ -236,7 +236,6 @@ theorem restMemA_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ)
       rw [← mem_thc_restr hX j b _ hxl]
       have := (hGood i hW).1
       push_cast
-      have hm : (0 : ℝ) ≤ (X.m0 K : ℝ) := Nat.cast_nonneg _
       linarith
 
 end Formalism.MainNotions.SelectionLemmas.Pf

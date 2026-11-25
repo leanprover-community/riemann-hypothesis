@@ -29,58 +29,14 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTo
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MeasurableSetIntF
-import Mathlib.MeasureTheory.Integral.Pi
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitProductClosureProperties
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyEqOfIsPreconnected
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -342,7 +298,7 @@ theorem herm_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF
       (GlobalTheory.CompanionTheory.SW.HermSd.mp_hermVec hCM (Fv F v) bs n (lam v))
   haveI : ∀ v : S, SigmaFinite (GlobalTheory.CompanionTheory.SW.coordHerm (Fv F v.1) σ bs (lam v.1) n) := fun v => hSF v.1
   have hmp := HS.db_split σ hCM ψ hψ n ν hν bs laminf hinf lf hlf h1
-  obtain ⟨-, -, -, -, -, -, -, -, hme0, -⟩ := GlobalTheory.T.hermitian_haar_splits_arch_times_finite F E σ hCM n ν hν.1
+  obtain ⟨-, -, -, -, -, -, -, -, hme0, -⟩ := _root_.GlobalTheory.CompanionTheory.SiegelND.Integ.MapHerm.map_eq_smul_prod F E σ hCM n ν hν.1
   have hme : MeasurableEmbedding (fun S : HermR (AF F) σ n => (HS.hInfR σ S, HS.hFinR σ S)) := hme0
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordHerm (Ainf F) σ bs laminf n) := by
     obtain ⟨hH, -⟩ := hinf
@@ -963,7 +919,7 @@ theorem tup_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF 
       rw [← Finset.prod_coe_sort S]
     rw [e1, hmap, integral_fintype_prod_eq_prod (fun v : S => g v.1), ← Finset.prod_coe_sort S]
 
-  obtain ⟨-, -, -, -, -, -, -, -, hme, -⟩ := GlobalTheory.T.adelic_haar_splits_as_arch_times_finite F E σ hCM M n μ hμ.1
+  obtain ⟨-, -, -, -, -, -, -, -, hme, -⟩ := _root_.GlobalTheory.CompanionTheory.SiegelND.Integ.MapTup.map_tuple F E σ hCM M n μ hμ.1
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordW (Af F) bs lf n M) :=
     GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler.sfinite_coordW σ hCM bs lf hlf n M
   haveI : SFinite (GlobalTheory.CompanionTheory.SW.coordW (Ainf F) bs laminf n M) := by

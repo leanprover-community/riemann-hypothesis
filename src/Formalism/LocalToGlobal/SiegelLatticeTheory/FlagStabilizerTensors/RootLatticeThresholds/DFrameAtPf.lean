@@ -82,8 +82,7 @@ theorem gv_pos_scale (T T' : ℝ) (e : Fin r → Fin n → ℂ) (z z' : Fin n �
   rw [zhat_famSc, gv_scale T T' _ (lamS_last sc)]
   rw [zhat_famSc, gv_scale T T' _ (lamS_last s0)] at h0
   have hpos : 0 < Gv T T' (Zhat ε (fam e z) (fam e z') G) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h5 : ‖∏ a, lamS r s0 a‖ ^ 4 * Gv T T' (Zhat ε (fam e z) (fam e z') G) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos (by positivity) hc
     linarith
@@ -388,8 +387,6 @@ open NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S
 namespace Formalism.L2.SG.Pf.Carrier
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut.PtRepPf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace DFrameAtPf
 

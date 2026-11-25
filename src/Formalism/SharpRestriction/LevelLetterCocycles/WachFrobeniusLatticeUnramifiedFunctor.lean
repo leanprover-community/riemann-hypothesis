@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.PointRingCommRing
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.SecondComparisonInCoordinates
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
@@ -538,12 +539,7 @@ theorem caseA_of_unram' {l : ℕ} [Fact l.Prime] (P : LocPrime l) (H : LocHW l P
   exact hl
 
 theorem neZero_finrank_max_unramified {l : ℕ} [Fact l.Prime] (K : FinExt l) : NeZero (Module.finrank ℚ_[l] ↥(K0 K)) := by
-  haveI : FiniteDimensional ℚ_[l] K.1 := K.2
-  have hle : K0 K ≤ K.1 := inf_le_left
-  haveI : FiniteDimensional ℚ_[l] ↥(K0 K) :=
-    FiniteDimensional.of_injective (IntermediateField.inclusion hle).toLinearMap
-      (IntermediateField.inclusion hle).injective
-  exact ⟨Module.finrank_pos.ne'⟩
+  apply _root_.GlobalTheory.IndefiniteRowSideFullHecke.PointRingCommRing.letters_neZero <;> assumption
 
 theorem eq_sum_herm_smul_frame_of_inW {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K LL : FinExt l) :
     IsAdicComplete (Ideal.span {((((P.PD K).p : ℕ) : ↥(OL LL)))}) ↥(OL LL) := by

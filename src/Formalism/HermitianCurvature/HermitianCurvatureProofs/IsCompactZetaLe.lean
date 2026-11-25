@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
@@ -68,12 +69,7 @@ section Wb
 variable {k r : ℕ}
 
 theorem hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
-  ext i j
-  simp only [Matrix.conjTranspose_apply, Hpk]
-  rcases i with ⟨a, ha⟩
-  rcases j with ⟨b, hb⟩
-  simp only [Fin.mk.injEq]
-  split_ifs <;> first | (exfalso; omega) | simp
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.hpk_herm <;> assumption
 
 theorem inWb_add {x y : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (hy : inWb k r y) : inWb k r (x + y) := by
   intro i hi
@@ -89,8 +85,7 @@ theorem inWb_smul (c : ℂ) {x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) 
 
 theorem perp_nonneg {b v : Fin (2 * r + k + 1) → ℂ} (hb : inWb k r b) (hbn : (herm (Hpk k r) b b).re < 0)
     (hv : inWb k r v) (hvb : herm (Hpk k r) v b = 0) : 0 ≤ (herm (Hpk k r) v v).re := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have h := reverse_cauchy_schwarz_holds k r v b hv hb hneg hbn
   have h0 : herm (Hpk k r) b v = 0 := by rw [hb_symm _ (hpk_herm k r) v b, hvb, star_zero]
   rw [h0, map_zero] at h

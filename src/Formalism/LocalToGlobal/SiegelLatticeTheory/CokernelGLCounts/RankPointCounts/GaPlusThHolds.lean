@@ -47,8 +47,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.Coef.SplitCoefficientComponents
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Cross
 
 variable {D : D7}
@@ -412,8 +410,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 namespace Formalism.L2.SG.Pf.Coef.SplitCoefficientComponents
 
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

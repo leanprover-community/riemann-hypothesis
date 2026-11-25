@@ -5,6 +5,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxGroup
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.PrincipalCongruenceLeLevel
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ImAPsiVScPSame
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ImAVecVMulVec
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocVolKap
 
 @[expose] public section
 
@@ -24,13 +25,7 @@ abbrev gLam (X : HidaSetting D) (p : TypX X) :
     latLoc (E := X.B.I.E) p.1 (X.B.I.L : Set (Fin X.B.I.n → X.B.I.E))
 
 theorem g_mem_p (X : HidaSetting D) (p : TypX X) : ((X.B.g : ℕ) : 𝓞 X.B.I.F) ∈ p.1.asIdeal := by
-  have h0 : D.host.g 0 ≠ 0 := (D.host.g_prime 0).ne_zero
-  have h1 : D.host.g 1 ≠ 0 := (D.host.g_prime 1).ne_zero
-  have hp := (mem_typSet X.B.I.F (D.host.g 0) (D.host.g 1) h0 h1 p.1).1 p.2
-  rw [X.g_eq, Nat.cast_mul]
-  rcases hp with h | h
-  · exact Ideal.mul_mem_right _ _ h
-  · exact Ideal.mul_mem_left _ _ h
+  apply _root_.Formalism.L2.SG.LocVolKap.Bg_mem <;> assumption
 
 theorem coprime_not_mem (X : HidaSetting D) (p : TypX X) (c : ℕ) (hc : Nat.Coprime c X.B.g) :
     ((c : ℕ) : 𝓞 X.B.I.F) ∉ p.1.asIdeal := by

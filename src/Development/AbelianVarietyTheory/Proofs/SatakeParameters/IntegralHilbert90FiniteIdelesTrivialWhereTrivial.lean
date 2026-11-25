@@ -208,8 +208,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem exists_sub_sig_notMem (σ : E →ₐ[F] E) (hσ : IsConjOf σ) [Algebra.Unramified (𝓞 F) (𝓞 E)]
     (P : HeightOneSpectrum (𝓞 E)) : ∃ b : 𝓞 E, b - RingOfIntegers.mapAlgHom σ b ∉ P.asIdeal := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have h := Algebra.FormallyUnramified.ext_of_iInf (R := 𝓞 F) P.asIdeal
     (Ideal.iInf_pow_eq_bot_of_isDomain P.asIdeal P.isPrime.ne_top) (g₁ := AlgHom.id _ (𝓞 E))
     (g₂ := RingOfIntegers.mapAlgHom σ) (fun x => Ideal.Quotient.eq.2 (hn x))
@@ -236,8 +235,7 @@ theorem exists_val_add_eq_one (σ : E →ₐ[F] E) (hσ : IsConjOf σ) [Algebra.
     fun o => rfl
   have hle' : ∀ o, Valued.v (g o + dP * g (RingOfIntegers.mapAlgHom σ o)) ≤ 1 := fun o =>
     Valuation.map_add_le _ (hle o) (by rw [map_mul]; exact mul_le_one' hd (hle _))
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have h1 : Valued.v (g 1 + dP * g (RingOfIntegers.mapAlgHom σ 1)) < 1 := lt_of_le_of_ne (hle' 1) (by
     rw [← hσg]; exact hn 1)
   have h2 : Valued.v (g b + dP * g (RingOfIntegers.mapAlgHom σ b)) < 1 := lt_of_le_of_ne (hle' b) (by

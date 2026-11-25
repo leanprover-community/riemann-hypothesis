@@ -256,17 +256,7 @@ theorem xv_coe (v : HeightOneSpectrum (𝓞 F)) (w : Eˣ) (b : 𝓞 E) (hw : (w 
   rfl
 
 theorem xv_supp (v : HeightOneSpectrum (𝓞 F)) (w : Eˣ) : locId E v w ∈ suppAt E v := by
-  unfold suppAt
-  rw [Subgroup.mem_iInf]
-  intro v'
-  rw [Subgroup.mem_iInf]
-  intro hne
-  rw [MonoidHom.mem_ker]
-  apply Units.ext
-  show (Algebra.TensorProduct.map (AlgHom.id F E) (evalV F v')) ((w : E) ⊗ₜ[F] Formalism.L2.G.sgl F v 1 + (1 : E) ⊗ₜ[F] (1 - Formalism.L2.G.sgl F v 1)) = 1
-  rw [map_add (f := _), Algebra.TensorProduct.map_tmul, Algebra.TensorProduct.map_tmul, map_sub, Formalism.L2.G.sgl_apply_ne F v 1 hne,
-    TensorProduct.tmul_zero, zero_add, sub_zero, map_one (evalV F v')]
-  rfl
+  apply _root_.Formalism.L2.Ker.xs_supp <;> assumption
 
 theorem xv_cong (v : HeightOneSpectrum (𝓞 F)) (P : HeightOneSpectrum (𝓞 E)) (hv : P.asIdeal.under (𝓞 F) = v.asIdeal) (b t : 𝓞 E) (k : ℕ)
     (h : b - t ∈ P.asIdeal ^ k) : xvY v b - toRInt F E t ∈ (P.asIdeal ^ k).map (toRInt F E) := by
@@ -707,10 +697,7 @@ theorem hk_le_exp {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZe
     omega
 
 theorem hk_val_one {P : HeightOneSpectrum (𝓞 E)} {a : E} (h : OneAt P a) : P.valuation E a = 1 := by
-  have e : a = 1 + (a - 1) := by ring
-  rw [e]
-  have h1 : P.valuation E (a - 1) < P.valuation E (1 : E) := by rw [map_one]; exact h
-  rw [Valuation.map_add_eq_of_lt_left _ h1, map_one]
+  apply _root_.Formalism.L2.Ker.xs_unit_of_oneAt <;> assumption
 
 theorem hk_valued_sub (P : HeightOneSpectrum (𝓞 E)) (a : Eˣ) :
     Valued.v (((atFin P a : (P.adicCompletion E)ˣ) : P.adicCompletion E) - 1) = P.valuation E ((a : E) - 1) := by

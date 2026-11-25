@@ -296,8 +296,7 @@ private theorem pf_eq {Z : Finset (Pl E)} {S : Set (Pl E)} {N : ∀ w : Pl E, Su
   · rw [Set.indicator_of_notMem hx]
     obtain ⟨i, hi, hix⟩ : ∃ i : Pl E × Bool, Sl S i ∧
         qw n i.1 i.2 x ∉ doubleCoset (qw n i.1 i.2 g) (N i.1 : Set _) (N i.1) := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       exact hx (mem_dcs_of_positions hqj hsep g x hn (bad_finite hG hbad x g))
     unfold pf
     rw [finprod_mem_def]

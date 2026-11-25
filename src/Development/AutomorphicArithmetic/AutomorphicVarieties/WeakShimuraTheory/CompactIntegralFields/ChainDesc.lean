@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.ChainMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.SpaceMap
@@ -54,12 +55,12 @@ variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
 
 private theorem conj_mp (f : R →+* R') (n m : M4 R) (i j : Fin 4) :
     (adj (n.map f) * m.map f * n.map f) i j = f ((adj n * m * n) i j) := by
-  rw [adj_map, ← Matrix.map_mul, ← Matrix.map_mul, Matrix.map_apply]
+  rw [UpperTheory.V.Ws.adj_map, ← Matrix.map_mul, ← Matrix.map_mul, Matrix.map_apply]
 
 private theorem gsp_of (f : R →+* R') (hf : Function.Injective f) (ν : R) (X : M4 R) (h : IsGSp (f ν) (X.map f)) :
     IsGSp ν X := by
   unfold IsGSp at h ⊢
-  rw [adj_map, ← Matrix.map_mul] at h
+  rw [UpperTheory.V.Ws.adj_map, ← Matrix.map_mul] at h
   ext i j
   apply hf
   have hij := congrFun (congrFun h i) j
@@ -67,7 +68,7 @@ private theorem gsp_of (f : R →+* R') (hf : Function.Injective f) (ν : R) (X 
   rw [hij, Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul, map_mul, Matrix.one_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-private theorem supp_of (f : R →+* R') (hf : Function.Injective f) (S : Finset (ℤ × ℤ)) (X : M4 R)
+theorem supp_of (f : R →+* R') (hf : Function.Injective f) (S : Finset (ℤ × ℤ)) (X : M4 R)
     (h : SuppM S (X.map f)) : SuppM S X := by
   intro i j hij hw
   apply hf
@@ -75,18 +76,11 @@ private theorem supp_of (f : R →+* R') (hf : Function.Injective f) (S : Finset
   exact h i j hij hw
 
 private theorem cont_iff {Γ : Type} [TopologicalSpace Γ] (z : Γ → R) : AdicCont ⊥ z ↔ IsLocallyConstant z := by
-  constructor
-  · intro h
-    refine IsLocallyConstant.desc z (Ideal.Quotient.mk ((⊥ : Ideal R) ^ 1)) (h 1) ?_
-    intro x y hxy
-    rw [Ideal.Quotient.eq, pow_one, Ideal.mem_bot, sub_eq_zero] at hxy
-    exact hxy
-  · intro h N
-    exact h.comp _
+  apply _root_.adic_bot <;> assumption
 
 variable {ι Γ : Type} [Group Γ]
 
-private theorem ent_of (f : R →+* R') (r : Γ →* M4 R) (w : ℤ × ℤ) (h : Ent (mapRep f r) w) : Ent r w := by
+theorem ent_of (f : R →+* R') (r : Γ →* M4 R) (w : ℤ × ℤ) (h : Ent (mapRep f r) w) : Ent r w := by
   obtain ⟨g, i, j, h1, h2⟩ := h
   exact ⟨g, i, j, h1, fun h0 => h2 (by rw [mapRep_apply, h0, map_zero])⟩
 
@@ -140,7 +134,7 @@ private theorem inV_of (f : R →+* R') (hf : Function.Injective f) (P : PD Φ.�
   show f (P.n v 2 0) = 0
   rw [h0, map_zero]
 
-private theorem good_of (f : R →+* R') (hf : Function.Injective f) (P : PD Φ.ι Γ R) (h : Φ.Good (f.comp a) (P.map f)) :
+theorem good_of (f : R →+* R') (hf : Function.Injective f) (P : PD Φ.ι Γ R) (h : Φ.Good (f.comp a) (P.map f)) :
     Φ.Good a P := by
   have e := fun w => ent_of f P.r w
   rcases h with ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2, h3, h4⟩
@@ -255,17 +249,25 @@ private theorem ev_poly (c : Coef l) (x : 𝔞.k[X]) : Ev fun c => x ∈ (mapRin
 
 end Ev
 
-theorem UpperTheory.V.Ws.chainDesc :
-    ∀ {l : ℕ} [Fact l.Prime] (𝔞 : Amb l) (c : Coef l) {Γ : Type} [Group Γ] [TopologicalSpace Γ] [CompactSpace Γ] (Φ : Fr c.O Γ) (s t : PD Φ.ι Γ 𝔞.k),
-      Φ.IsRes (𝔞.red c) s → Φ.Chain (𝔞.red c) s t → ∃ c₁ : Coef l, ∀ (c' : Coef l) (h : c.O ≤ c'.O), c₁.O ≤ c'.O →
-        ∃ s' t' : PD Φ.ι Γ (ResidueField c'.O), s'.map (𝔞.j c') = s ∧ t'.map (𝔞.j c') = t ∧ Φ.IsRes ((residue c'.O).comp (inc h)) s' ∧ Φ.Chain ((residue c'.O).comp (inc h)) s' t' := by
-  intro l _ 𝔞 c Γ _ _ _ Φ s t hs hst
+theorem UpperTheory.V.Ws.chainDescOf
+    {l : ℕ} [Fact l.Prime] (𝔞 : Amb l) (c : Coef l) {Γ : Type} [Group Γ] [TopologicalSpace Γ] [CompactSpace Γ]
+    (Φ : Fr c.O Γ) (G : ∀ {R : Type} [CommRing R], (c.O →+* R) → PD Φ.ι Γ R → Prop)
+    (hG : ∀ {R R' : Type} [CommRing R] [CommRing R'] (a : c.O →+* R) (f : R →+* R'),
+      Function.Injective f → ∀ P : PD Φ.ι Γ R, G (f.comp a) (P.map f) → G a P)
+    (s t : PD Φ.ι Γ 𝔞.k) (hs : Φ.IsRes (𝔞.red c) s)
+    (hst : G (𝔞.red c) s ∧ Relation.ReflTransGen (fun x y => G (𝔞.red c) y ∧ Φ.Linked (𝔞.red c) x y) s t) :
+    ∃ c₁ : Coef l, ∀ (c' : Coef l) (h : c.O ≤ c'.O), c₁.O ≤ c'.O →
+      ∃ s' t' : PD Φ.ι Γ (ResidueField c'.O), s'.map (𝔞.j c') = s ∧ t'.map (𝔞.j c') = t ∧
+        Φ.IsRes ((residue c'.O).comp (inc h)) s' ∧ G ((residue c'.O).comp (inc h)) s' ∧
+        Relation.ReflTransGen
+          (fun x y => G ((residue c'.O).comp (inc h)) y ∧ Φ.Linked ((residue c'.O).comp (inc h)) x y) s' t' := by
   haveI := Φ.fin
   obtain ⟨hg, hrt⟩ := hst
-  suffices key : ∀ t, Relation.ReflTransGen (fun x y => Φ.Good (𝔞.red c) y ∧ Φ.Linked (𝔞.red c) x y) s t →
+  suffices key : ∀ t, Relation.ReflTransGen (fun x y => G (𝔞.red c) y ∧ Φ.Linked (𝔞.red c) x y) s t →
       Ev (fun c' : Coef l => ∀ h : c.O ≤ c'.O, ∃ s' t' : PD Φ.ι Γ (ResidueField c'.O), s'.map (𝔞.j c') = s ∧
-        t'.map (𝔞.j c') = t ∧ Φ.IsRes ((residue c'.O).comp (inc h)) s' ∧
-        Φ.Chain ((residue c'.O).comp (inc h)) s' t') by
+        t'.map (𝔞.j c') = t ∧ Φ.IsRes ((residue c'.O).comp (inc h)) s' ∧ G ((residue c'.O).comp (inc h)) s' ∧
+        Relation.ReflTransGen
+          (fun x y => G ((residue c'.O).comp (inc h)) y ∧ Φ.Linked ((residue c'.O).comp (inc h)) x y) s' t') by
     obtain ⟨c1, hc1⟩ := key t hrt
     exact ⟨c1, fun c' h h1 => hc1 c' h1 h⟩
   intro t ht
@@ -280,7 +282,7 @@ theorem UpperTheory.V.Ws.chainDesc :
     · apply isRes_of Φ _ (𝔞.j c') (𝔞.j c').injective
       rw [hb, hQ]
       exact hs
-    · apply good_of Φ _ (𝔞.j c') (𝔞.j c').injective
+    · apply hG _ (𝔞.j c') (𝔞.j c').injective
       rw [hb, hQ]
       exact hg
   | tail _ hxy ih =>
@@ -289,7 +291,7 @@ theorem UpperTheory.V.Ws.chainDesc :
       (fun c' => Polynomial.map_injective _ (𝔞.j c').injective) (fun x => ev_poly 𝔞 c x) P hP.cont
     refine ev_mono (ev_and ih lp) ?_
     rintro c' ⟨hc, Q, hQ⟩ h
-    obtain ⟨s', x', hs', hx', hr', hch⟩ := hc h
+    obtain ⟨s', x', hs', hx', hr', hg', hch⟩ := hc h
     have hb := j_comp 𝔞 h
     have e0 : (𝔞.j c').comp (evalRingHom 0) = (evalRingHom 0).comp (mapRingHom (𝔞.j c')) :=
       RingHom.ext fun p => (Polynomial.eval_zero_map (𝔞.j c') p).symm
@@ -302,11 +304,19 @@ theorem UpperTheory.V.Ws.chainDesc :
     have hQ0 : Q.map (evalRingHom 0) = x' := by
       apply map_inj' (𝔞.j c') (𝔞.j c').injective
       rw [hx', PD.map_map, e0, ← PD.map_map, hQ, h0]
-    refine ⟨s', Q.map (evalRingHom 1), hs', ?_, hr', hch.1, Relation.ReflTransGen.tail hch.2 ⟨?_, Q, ?_, hQ0, rfl⟩⟩
+    refine ⟨s', Q.map (evalRingHom 1), hs', ?_, hr', hg', Relation.ReflTransGen.tail hch ⟨?_, Q, ?_, hQ0, rfl⟩⟩
     · rw [PD.map_map, e1, ← PD.map_map, hQ, h1]
-    · apply good_of Φ _ (𝔞.j c') (𝔞.j c').injective
+    · apply hG _ (𝔞.j c') (𝔞.j c').injective
       rw [hb, PD.map_map, e1, ← PD.map_map, hQ, h1]
       exact hgy
     · apply isRes_of Φ _ (mapRingHom (𝔞.j c')) (Polynomial.map_injective _ (𝔞.j c').injective)
       rw [hC, hQ]
       exact hP
+
+theorem UpperTheory.V.Ws.chainDesc :
+    ∀ {l : ℕ} [Fact l.Prime] (𝔞 : Amb l) (c : Coef l) {Γ : Type} [Group Γ] [TopologicalSpace Γ] [CompactSpace Γ] (Φ : Fr c.O Γ) (s t : PD Φ.ι Γ 𝔞.k),
+      Φ.IsRes (𝔞.red c) s → Φ.Chain (𝔞.red c) s t → ∃ c₁ : Coef l, ∀ (c' : Coef l) (h : c.O ≤ c'.O), c₁.O ≤ c'.O →
+        ∃ s' t' : PD Φ.ι Γ (ResidueField c'.O), s'.map (𝔞.j c') = s ∧ t'.map (𝔞.j c') = t ∧ Φ.IsRes ((residue c'.O).comp (inc h)) s' ∧ Φ.Chain ((residue c'.O).comp (inc h)) s' t' := by
+  intro l _ 𝔞 c Γ _ _ _ Φ s t hs hst
+  exact UpperTheory.V.Ws.chainDescOf 𝔞 c Φ (fun {_} _ a P => Φ.Good a P)
+    (fun {_ _} _ _ a f hf P h => good_of Φ a f hf P h) s t hs hst

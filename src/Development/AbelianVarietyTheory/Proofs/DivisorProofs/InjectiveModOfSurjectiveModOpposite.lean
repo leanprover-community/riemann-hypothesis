@@ -57,8 +57,7 @@ theorem datum_finite_int (D : Datum H) : Module.Finite ℤ D.La := by
 theorem datum_isTorsionFree_int (D : Datum H) : Module.IsTorsionFree ℤ D.La := by
   refine Module.isTorsionFree_iff_smul_eq_zero.2 ?_
   intro k x hkx
-  by_contra hk
-  push_neg at hk
+  by_contra! hk
   have hx : x = 0 := D.unimod.1 (LinearMap.ext fun b => by
     have := congrArg (fun v => D.EF v b) hkx
     simp only [map_zsmul, LinearMap.smul_apply, map_zero, LinearMap.zero_apply, smul_eq_mul, mul_eq_zero] at this

@@ -580,8 +580,7 @@ theorem main (hρ : Good ρ) (hρ' : Good ρ') (hcomm : ∀ i j v, ρ i (ρ' j v
     exact h0 ((Submodule.mem_bot ℂ).1 hx₀U)
   have hUi : Irr ρ' U := by
     intro U' hU'U hU's
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨hU'0, hU'ne⟩ := hne
     have hU''le : U'ᗮ ⊓ U ≤ U := inf_le_right
     have hU''0 : U'ᗮ ⊓ U ≠ ⊥ := by

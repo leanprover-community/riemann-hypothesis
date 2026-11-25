@@ -168,8 +168,7 @@ theorem unif_setup (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)
 
 theorem exists_norm_prime (dK : ℕ) (p : ℕ) [Fact p.Prime] (hp2 : p ≠ 2) :
     ∃ m : ℤ, ¬ (p : ℤ) ∣ Formalism.L2.Th1.D.normInt dK m 1 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 := h 0
   have h1 := h 1
   have e : Formalism.L2.Th1.D.normInt dK 1 1 - Formalism.L2.Th1.D.normInt dK 0 1 = 2 := by

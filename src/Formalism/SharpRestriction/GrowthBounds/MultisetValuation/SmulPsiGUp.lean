@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
 public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.Localization.Module
@@ -72,19 +73,7 @@ theorem psi_apply (g : Matrix (Fin n) (Fin n) Qq) (w : Fin n → W) :
 
 theorem mem_colSpan (G : Matrix (Fin n) (Fin n) Qq) (x : Fin n → Qq) :
     x ∈ colSpan W G ↔ ∃ y : Fin n → W, x = G.mulVec (fun c => algebraMap W Qq (y c)) := by
-  unfold colSpan
-  rw [Submodule.mem_span_range_iff_exists_fun]
-  constructor
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, ?_⟩
-    funext i
-    simp only [Finset.sum_apply, Matrix.mulVec, dotProduct, Algebra.smul_def]
-    exact Finset.sum_congr rfl fun c _ => mul_comm _ _
-  · rintro ⟨y, rfl⟩
-    refine ⟨y, ?_⟩
-    funext i
-    simp only [Finset.sum_apply, Matrix.mulVec, dotProduct, Algebra.smul_def]
-    exact Finset.sum_congr rfl fun c _ => mul_comm _ _
+  apply _root_.Formalism.MainNotions.Pf14.mem_colSpan <;> assumption
 
 theorem range_psi (g : Matrix (Fin n) (Fin n) Qq) : LinearMap.range (psi (W := W) g) = colSpan W g := by
   ext x

@@ -53,8 +53,7 @@ variable {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} {ΛT : Subm
 theorem exists_pair_ne_one (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {a : AE D}
     (ha : IsSplitIdem D a) {d : WO S T} (hd : IsHalf a d) (hn : d ∉ latO S T ΛS ΛT fun _ => True) :
     ∃ l ∈ latO S T ΛS ΛT fun _ => True, IsHalf (cA D a) l ∧ ψ (symplO S T l d) ≠ 1 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   refine hn (GlobalTheory.LatVac.mem_of_char hψ hS hT (half_fin ha hd) fun u hu => ?_)
   have hb := (isSplitIdem_conj ha).1
   have h1 := hc (cA D a • u) (GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ _

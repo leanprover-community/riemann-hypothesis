@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantUniformizer
 import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 
@@ -25,13 +26,7 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 
 theorem extPf_filV_succ_le (a : ℤ) :
     FilV PD (LL := LL) (V := V) (a + 1) ≤ FilV PD (LL := LL) (V := V) a := by
-  have hle : (PD.Fil (a + 1)).restrictScalars Qp ≤ (PD.Fil a).restrictScalars Qp :=
-    fun x hx => PD.Fil_anti a hx
-  unfold FilV
-  rintro _ ⟨t, rfl⟩
-  refine ⟨AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) (Submodule.inclusion hle) t, ?_⟩
-  rw [← LinearMap.comp_apply, ← AlgebraTensorModule.map_comp]
-  rfl
+  apply _root_.Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_succ <;> assumption
 
 theorem extPf_fildR_succ_le (τ : K →ₐ[Qp] LL) (a : ℤ) :
     FildR PD ρ τ (a + 1) ≤ FildR PD ρ τ a :=

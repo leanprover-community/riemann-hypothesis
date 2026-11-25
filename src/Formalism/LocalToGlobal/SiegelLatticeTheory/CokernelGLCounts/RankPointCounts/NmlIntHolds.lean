@@ -32,8 +32,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem zhat_int {Λ : Submodule (𝓞 D.host.E) (VS D).V} (hun : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ)
@@ -169,8 +167,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -338,8 +334,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Term
 

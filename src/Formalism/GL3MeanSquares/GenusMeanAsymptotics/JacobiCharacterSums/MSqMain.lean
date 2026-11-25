@@ -22,9 +22,6 @@ theorem cN_primePow (x : ℝ) (n : ℕ) (h : cN x n ≠ 0) : IsPrimePow n := by
   unfold cN at h
   exact ArithmeticFunction.vonMangoldt_ne_zero_iff.mp (left_ne_zero_of_mul h)
 
-theorem RR_nonneg (c : ℕ → ℝ) (hc : ∀ n, 0 ≤ c n) (m₀ N : ℕ) : 0 ≤ RR c m₀ N :=
-  Finset.sum_nonneg fun n _ => hc n
-
 theorem abs_sum_jacobi_le (PP : Finset ℕ) (s : ℕ) :
     |∑ q ∈ PP, (jacobiSym (q : ℤ) s : ℝ)| ≤ (PP.card : ℝ) := by
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_

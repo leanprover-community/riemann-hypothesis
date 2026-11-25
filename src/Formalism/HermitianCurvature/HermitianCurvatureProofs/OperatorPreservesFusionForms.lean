@@ -208,8 +208,6 @@ lemma exp_curve_cont {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
 
 end Linfty
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 lemma exp_mulVec_fix {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) (hXv : X *ᵥ v = 0) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • X) *ᵥ v = v := by
   apply QnYLeibnizW.exp_mulVec_fix <;> assumption
@@ -849,8 +847,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Fo
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
 
 variable {k r : ℕ}
@@ -1087,8 +1083,6 @@ open Matrix
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.QuantumDeterminants.WeylGroupFacts
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
 

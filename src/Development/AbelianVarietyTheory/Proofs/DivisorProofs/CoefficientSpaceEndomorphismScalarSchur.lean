@@ -458,7 +458,6 @@ section -- clump:auto
 
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open MvPolynomial
 open scoped Matrix

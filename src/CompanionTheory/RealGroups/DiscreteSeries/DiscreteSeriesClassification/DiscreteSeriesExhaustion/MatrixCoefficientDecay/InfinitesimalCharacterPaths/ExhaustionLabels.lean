@@ -941,8 +941,7 @@ variable {n : ℕ} {X : GMod n} {A : Matrix (Fin n) (Fin n) ℂ}
 theorem top_of_SS (F : Filt X A) (c : ℝ) (hS : SS F c = W F) : F.N c = ⊤ := by
   by_contra hN
   obtain ⟨u, hu⟩ : ∃ u, u ∉ F.N c := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hN (Submodule.eq_top_iff'.2 h)
   obtain ⟨s0, hs0⟩ := F.top
   have hc : c < s0 := by

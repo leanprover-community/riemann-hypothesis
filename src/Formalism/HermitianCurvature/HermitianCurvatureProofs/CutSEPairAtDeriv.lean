@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEOuterLeib
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSELeib
 import Aesop.Main
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
@@ -207,16 +208,7 @@ theorem hsInner_hasFDerivAt {φ ψ : ℂ → (Wq →L[ℂ] Wp)} {a1 b1 a2 b2 : W
   ring
 
 theorem norm_wl_le' (A B : ℂ) : ‖wl A B‖ ≤ ‖A‖ + ‖B‖ := by
-  unfold wl
-  refine (norm_add_le _ _).trans (add_le_add ?_ ?_)
-  · calc ‖A • ContinuousLinearMap.id ℝ ℂ‖ ≤ ‖A‖ * ‖ContinuousLinearMap.id ℝ ℂ‖ := norm_smul_le _ _
-      _ ≤ ‖A‖ * 1 := mul_le_mul_of_nonneg_left ContinuousLinearMap.norm_id_le (norm_nonneg _)
-      _ = ‖A‖ := mul_one _
-  · calc ‖B • Complex.conjCLE.toContinuousLinearMap‖
-        ≤ ‖B‖ * ‖(Complex.conjCLE.toContinuousLinearMap : ℂ →L[ℝ] ℂ)‖ := norm_smul_le _ _
-      _ ≤ ‖B‖ * 1 := mul_le_mul_of_nonneg_left
-          (ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x => by simp) (norm_nonneg _)
-      _ = ‖B‖ := mul_one _
+  apply _root_.Formalism.FourierDecayAlt.P.CutSE.norm_wl_le <;> assumption
 
 theorem pairAt_off (μ : Measure (Mt k r)) (Φ Ψ : RadSp k r z z' π π') (x : Fin r → ℂ) (hx : x ∉ OmX r) :
     pairAt μ Φ Ψ x = 0 := by

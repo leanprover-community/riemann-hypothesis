@@ -82,10 +82,8 @@ theorem isPushout_app {g : R →+* R'} {f : X ⟶ Spec (CommRingCat.of R)} {π :
   · simp [Scheme.Hom.app_eq_appLE]
   · ext x; simp [AbLaw.cst, Scheme.Hom.appLE]; rfl
 
-theorem pre_le (π : X' ⟶ X) {U V : X.Opens} (h : V ≤ U) : π ⁻¹ᵁ V ≤ π ⁻¹ᵁ U := fun _ hy => h hy
-
 theorem app_rs (π : X' ⟶ X) {U V : X.Opens} (h : V ≤ U) (a : Γ(X, U)) :
-    (π.app V).hom (rs X h a) = rs X' (pre_le π h) ((π.app U).hom a) :=
+    (π.app V).hom (rs X h a) = rs X' (π.preimage_mono h) ((π.app U).hom a) :=
   congrArg (fun φ => φ.hom a) (π.naturality (homOfLE h).op)
 
 theorem app_cst {g : R →+* R'} {f : X ⟶ Spec (CommRingCat.of R)} {π : X' ⟶ X}
@@ -230,7 +228,7 @@ theorem app_injective [Smooth f] (U : X.Opens) : Function.Injective (j.app U).ho
 
 theorem exists_extension [Smooth f] {U : X.Opens} (t : Γ(XK, j ⁻¹ᵁ U))
     (h : ∀ x ∈ U, ∃ (V : X.Opens) (hV : V ≤ U) (b : Γ(X, V)), x ∈ V ∧
-      (j.app V).hom b = rs XK (pre_le j hV) t) :
+      (j.app V).hom b = rs XK (j.preimage_mono hV) t) :
     ∃ b : Γ(X, U), (j.app U).hom b = t := by
   choose V hV b hx hb using h
   have hc : U ≤ ⨆ x : U, V x.1 x.2 := fun x hxU =>
@@ -256,7 +254,7 @@ def loc (σ : LB.Sec (M.pull j)) (i : M.ι) {V : X.Opens} (hV : V ≤ M.U i) : �
   rs XK (le_pull M j hV) (σ.f (fun _ => i))
 
 theorem rs_loc (σ : LB.Sec (M.pull j)) (i : M.ι) {V W : X.Opens} (hV : V ≤ M.U i) (h : W ≤ V) :
-    rs XK (pre_le j h) (loc σ i hV) = loc σ i (h.trans hV) := rs_rs _ _ _
+    rs XK (j.preimage_mono h) (loc σ i hV) = loc σ i (h.trans hV) := rs_rs _ _ _
 
 theorem loc_trans (σ : LB.Sec (M.pull j)) (i k : M.ι) {V : X.Opens} (hi : V ≤ M.U i) (hk : V ≤ M.U k) :
     loc σ i hi = (j.app V).hom (rs X (le_inf hi hk) (M.g i k).val) * loc σ k hk := by

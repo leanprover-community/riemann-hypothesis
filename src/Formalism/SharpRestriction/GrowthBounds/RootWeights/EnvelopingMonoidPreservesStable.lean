@@ -157,7 +157,6 @@ theorem lowering_word_weight_and_monoid {E : GLOps n K V}
     refine ⟨⟨mu + rootW a b, operator_shifts_weight_by_root hrel a b mu y hmu, ?_⟩, ⟨E a b * u, mul_mem hE hu, ?_⟩,
       fun h0 => absurd h0 (Nat.succ_ne_zero k)⟩
     · rw [heightSum_add_root]
-      have hab' : b.val < a.val := hab
       push_cast
       omega
     · subst hyu

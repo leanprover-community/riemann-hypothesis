@@ -249,8 +249,6 @@ section Glob
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word)
 
 theorem zhatO_inj {r : ℕ} {Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (h : ZhatO Z = ZhatO Z') : Z = Z' := by
@@ -303,8 +301,6 @@ open scoped ComplexConjugate
 namespace Formalism.L2.SG.Pf.RowForm.RealDecompL
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Mat
 

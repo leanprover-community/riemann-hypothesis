@@ -530,8 +530,7 @@ theorem term_eq [Fintype (G0g D.nd)] (P : Subgroup (G0g D.nd)) (lam : P →* ℂ
     · rw [zero_mul]
       obtain ⟨v, hv⟩ : ∃ v : D.nd.PlG k, ¬ IsUniUp ((y ⟨k, v⟩ : GL (Fin D.R.r) (ZMod (D.host.g k))) :
           Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g k))) := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         apply hP
         rw [hW.2.1]
         rintro ⟨k', v⟩

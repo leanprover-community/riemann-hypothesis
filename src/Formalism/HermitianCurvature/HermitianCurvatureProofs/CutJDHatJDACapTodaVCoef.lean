@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace TVCoefPf

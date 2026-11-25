@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.Interface
-public import Lemmata.PowMulVecEigen.PowMulVecEig
+public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
+public import Mathlib.LinearAlgebra.Matrix.ToLin
 import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePLSmallCv
@@ -85,8 +86,7 @@ theorem eig_int {n : ℕ} (A : Matrix (Fin n) (Fin n) C) (hA : ∀ i j, V.Ge 0 (
   have hne : V.v (w i) ≠ ⊤ := (AddValuation.ne_top_iff V.v).mpr hwi
   obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.mp hne
   rw [← hr] at hge
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h2 : V.v lam + (r : WithTop ℝ) < 0 + (r : WithTop ℝ) := by
     exact WithTop.add_lt_add_right (WithTop.coe_ne_top) hlt
   rw [zero_add] at h2

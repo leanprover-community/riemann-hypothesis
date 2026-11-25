@@ -70,7 +70,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -226,7 +225,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -243,7 +241,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -539,7 +536,7 @@ theorem exists_kaVal_extension : Out.Laws → ∀ (O : Type) [CommRing O] [IsDom
     refine e.injective (Subtype.ext (Over.OverMorphism.ext ?_))
     rw [← hq₂ b, ← hq₂ b', e₅])
   have hcast : degProd x'.P.g n l l' ^ (2 * x'.P.g) = degProd x.P.g n l l' ^ (2 * x.P.g) := by rw [hg']
-  obtain ⟨u, hu⟩ := GlobalTheory.T.exists_invariant_of_split_zeros_torsion laws O' x' n l l' al d s' z' ch' (fun b => ξ (b.cast hcast)) (hg'.symm ▸ hadm)
+  obtain ⟨u, hu⟩ := _root_.GlobalTheory.exists_kaVal_of_split laws O' x' n l l' al d s' z' ch' (fun b => ξ (b.cast hcast)) (hg'.symm ▸ hadm)
     (by
       have := hN.map j
       rwa [map_natCast, ← hg'] at this) E' (fun b => (congrArg (fun g => _ ^ degProd g n l l') hg').trans (hξ _))

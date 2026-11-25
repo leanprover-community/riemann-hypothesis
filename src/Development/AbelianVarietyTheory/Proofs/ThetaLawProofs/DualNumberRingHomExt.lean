@@ -56,7 +56,6 @@ namespace GlobalTheory.KeyCancel
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem dualNumber_ringHom_ext {R S : Type} [CommRing R] [CommRing S] {F G : DualNumber R →+* S}
     (h : ∀ a, F (algebraMap R _ a) = G (algebraMap R _ a)) (he : F DualNumber.eps = G DualNumber.eps) : F = G := by

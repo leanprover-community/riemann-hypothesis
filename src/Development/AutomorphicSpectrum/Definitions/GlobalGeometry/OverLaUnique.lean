@@ -44,11 +44,6 @@ abbrev PtU (la : HeightOneSpectrum (𝓞 c.F)) : Type :=
 def pjSys : PtSys c.F (Rul Xo c) where
   Pt := PtU Xo c
   val y f := vAtV y f
-  val_zero y := vAtV_zero y
-  val_ne_bot y f := vAtV_ne_bot y f
-  val_add y f g := vAtV_add y f g
-  val_smul y a f ha := vAtV_smul y a f ha
-  val_mul y f g := vAtV_mul y f g
 
 
 variable {Xo c} in
@@ -90,14 +85,6 @@ theorem pjSys_val_mk (la : HeightOneSpectrum (𝓞 c.F)) {T : CDVR} {io : c.F �
     (ho : OverLa la T.V io e) (y : IntFr Xo c T io) (hy : y.IsAlg) (t : ℝ) (ht : IsPhiAt Xo c la T io y t)
     (f : Rul Xo c) :
     (pjSys Xo c).val (show PtU Xo c la from PtV.mk la ho y hy t ht) f = nval T.V e (evI y f) := rfl
-
-theorem phiC_nonneg {E : Type} [Field E] [NumberField E] (cj : E → E) {Y : Type} [AddCommGroup Y] [Module (𝓞 E) Y]
-    (b : SymB cj Y) (hb : ∀ a, 0 ≤ (b : Y →ₗ[ℤ] Y →ₗ[ℤ] ℝ) a a) : 0 ≤ phiC cj b := by
-  refine Real.sInf_nonneg ?_
-  rintro _ ⟨l, -, h, rfl⟩
-  by_cases h0 : b = 0
-  · simp [h0]
-  · exact (h b hb h0).le
 
 
 end Basic

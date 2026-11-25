@@ -6,6 +6,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralLatt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PadicChangeOfVariables
 
 @[expose] public section
 
@@ -36,18 +37,7 @@ theorem small (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 → IsUnit (n 
 theorem big (hD : LocalDatum K R ψ) {ϖ : Kˣ}
     (hϖ : (ϖ : K) ∈ R) (hϖ' : ∀ x : K, ∃ m : ℕ, (ϖ : K) ^ m * x ∈ R) (C : Set K)
     (hC : IsCompact C) : ∃ n : ℕ, ∀ y ∈ C, (ϖ : K) ^ n * y ∈ R := by
-  obtain ⟨n, hn⟩ := hC.elim_directed_cover
-    (fun n : ℕ => (fun y => (ϖ : K) ^ n * y) ⁻¹' (R : Set K))
-    (fun n => hD.isOpen.preimage (continuous_const.mul continuous_id))
-    (fun y _ => by simpa using hϖ' y)
-    (by
-      apply directed_of_isDirected_le
-      intro a b hab y hy
-      obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hab
-      show (ϖ : K) ^ (a + k) * y ∈ R
-      have e : (ϖ : K) ^ (a + k) * y = (ϖ : K) ^ k * ((ϖ : K) ^ a * y) := by rw [pow_add]; ring
-      rw [e]; exact R.mul_mem (R.pow_mem hϖ k) hy)
-  exact ⟨n, hn⟩
+  apply _root_.Formalism.FourierDecayAlt.P.A6x9.bdd_of_compact <;> assumption
 
 theorem compact_big (hD : LocalDatum K R ψ) (ϖ : Kˣ) (n : ℕ) :
     IsCompact {y : K | (ϖ : K) ^ n * y ∈ R} := by

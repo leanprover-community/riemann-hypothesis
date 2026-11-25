@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.SigROneTmul
 
 @[expose] public section
 
@@ -64,19 +65,7 @@ theorem DictLat.star_int (I : AutInst) (a : 𝓞 I.E) :
 
 theorem DictLat.sigR_int (I : AutInst) {r : I.E ⊗[I.F] Af I.F} (hr : r ∈ IntAf I.F I.E) :
     Formalism.UG.sigR I.cm.sig (Af I.F) r ∈ IntAf I.F I.E := by
-  have hle : IntAf I.F I.E ≤ (IntAf I.F I.E).comap (Formalism.UG.sigR I.cm.sig (Af I.F)) := by
-    show Subring.closure _ ≤ _
-    rw [Subring.closure_le]
-    rintro _ (⟨⟨x, hx⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
-    · obtain ⟨a, rfl⟩ := hx
-      show Formalism.UG.sigR I.cm.sig (Af I.F)
-        (Formalism.UG.inclE (F := I.F) (Af I.F) (algebraMap (𝓞 I.E) I.E a)) ∈ IntAf I.F I.E
-      rw [DictLat.sigR_inclE]
-      exact DictLat.inclE_int I (DictLat.star_int I a)
-    · show Formalism.UG.sigR I.cm.sig (Af I.F) ((1 : I.E) ⊗ₜ[I.F] (y : Af I.F)) ∈ IntAf I.F I.E
-      rw [DictLat.sigR_one_tmul]
-      exact Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, rfl⟩)
-  exact hle hr
+  apply _root_.MassDataMassesW.NLev.sigR_int <;> assumption
 
 theorem DictLat.iv_add (I : AutInst) (v w : Fin I.n → I.E) : iv I (v + w) = iv I v + iv I w := by
   funext i

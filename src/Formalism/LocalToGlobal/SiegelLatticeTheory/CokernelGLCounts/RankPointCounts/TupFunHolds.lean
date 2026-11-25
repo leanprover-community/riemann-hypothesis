@@ -42,8 +42,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat PI.PairValDefs PI.NRCW IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Cong
 
 variable (D : D7)
@@ -170,8 +168,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Bridge
 
 variable {D : D7}
@@ -238,8 +234,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Cong
 
@@ -313,8 +307,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section ModeG3
 
@@ -452,8 +444,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section LocU
 
 variable {D : D7} (Z : LocDat D) (p : PlF D)
@@ -500,8 +490,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section OneDir
 
 variable {D : D7} (Zd : LocDat D)
@@ -541,8 +529,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section OneDir2
 
@@ -654,8 +640,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups PI.PairValDefs PI.NRCW IsDedekindDomain
   Formalism.L2.SG.TermLoc Formalism.L2.SG.DataCut Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.PCount
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem tupFun_holds {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
     (δ : ∀ p : PlF D, (D.s.atP p).Fp) (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Formalism.L2.SG.CntLocal.Tn u))

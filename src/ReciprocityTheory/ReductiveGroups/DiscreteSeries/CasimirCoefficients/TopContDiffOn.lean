@@ -104,8 +104,7 @@ theorem capelliC_ad (E : Fin n → Fin n → 𝒰) (hE : GlRelR E) (P Q : Matrix
   have hdet : ∀ c : Fin n → Fin n, ¬ Function.Injective c → (P.submatrix c id).det = 0 := by
     intro c hc
     obtain ⟨i, j, hij, hne⟩ : ∃ i j, c i = c j ∧ i ≠ j := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hc (fun i j hij => h i j hij)
     exact Matrix.det_zero_of_row_eq hne (by ext k; simp [hij])
   have hS : ∀ d : Fin n → Fin n,

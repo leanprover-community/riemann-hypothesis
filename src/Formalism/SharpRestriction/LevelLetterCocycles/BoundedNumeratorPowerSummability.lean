@@ -477,15 +477,15 @@ theorem rr_arith (l d G h y C L s r q : ℝ) (hld : l = d + 1) (hd2 : 2 ≤ d) (
   have ht0 : 0 ≤ (d + 1) / ((d - 1) * d) := div_nonneg hl0.le hdd.le
   have htc : (d + 1) / ((d - 1) * d) ≤ 3 / 2 := by
     have key : d + 1 ≤ 3 / 2 * ((d - 1) * d) := by
-      nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ d - 2) (by linarith : (0:ℝ) ≤ 3 * d + 1)]
+      nlinarith only [hd2]
     exact (div_le_iff₀ hdd).mpr key
   have htG : (d + 1) / ((d - 1) * d) ≤ 10 / (d + 1) := by
     have key : (d + 1) * (d + 1) ≤ 10 * ((d - 1) * d) := by
-      nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ d - 2) (by linarith : (0:ℝ) ≤ 9 * d + 6)]
+      nlinarith only [hd2]
     exact (div_le_div_iff₀ hdd hl0).mpr key
   have hth : (d + 1) / ((d - 1) * d) ≤ 3 / d := by
     have key : (d + 1) * d ≤ 3 * ((d - 1) * d) := by
-      nlinarith [mul_nonneg hd0.le (by linarith : (0:ℝ) ≤ d - 2)]
+      nlinarith only [hd2, hd0]
     exact (div_le_div_iff₀ hdd hd0).mpr key
   have e1 : 2 * G * ((d + 1) / ((d - 1) * d)) ≤ 20 * (G / (d + 1)) := by
     calc 2 * G * ((d + 1) / ((d - 1) * d)) ≤ 2 * G * (10 / (d + 1)) :=
@@ -517,7 +517,7 @@ theorem remainder_bound_of_tsum : RrBound := by
     exact (Real.logb_le_logb hb (by norm_num) (by linarith)).mpr hL3
   have hlogmul : Real.logb ℓ (2 * h + 1) ≤ Real.logb ℓ 3 + Real.logb ℓ h := by
     rw [← Real.logb_mul (by norm_num) (by linarith)]
-    exact (Real.logb_le_logb hb (by linarith) (by nlinarith)).mpr (by linarith)
+    exact (Real.logb_le_logb hb (by linarith) (by positivity)).mpr (by linarith)
   have hL0 : 0 ≤ Real.logb ℓ h := Real.logb_nonneg hb hh1
   have hC0 : (0:ℝ) ≤ (⌈1 + Real.logb ℓ (2 * h + 1)⌉₊ : ℝ) := Nat.cast_nonneg _
   have hCL : (⌈1 + Real.logb ℓ (2 * h + 1)⌉₊ : ℝ) ≤ 3 + Real.logb ℓ h := by linarith
@@ -1080,7 +1080,7 @@ theorem aprimeConfig_holds : ∃ C : ℝ, 1 ≤ C ∧ AprimeConfig C := by
     refine le_trans ?_ hCb
     apply mul_le_mul_of_nonneg_right _ hGpos
     have h1 : (1 : ℝ) ≤ max C₀ 1 := le_max_right _ _
-    nlinarith
+    nlinarith only [hjR, h1]
   have hb2 : 2 * (w + S + η + 1) ≤ b := by exact_mod_cast hb2R
   obtain ⟨cuts, ell, hne, hc⟩ := hcore l hl n j sz b w S η
     (20 * (((w + S + η : ℕ) : ℝ) / l + ((b + η + S : ℕ) : ℝ) / ((l : ℝ) - 1) ^ (j + 1) +
@@ -1172,7 +1172,7 @@ theorem aprimeConfig_holds : ∃ C : ℝ, 1 ≤ C ∧ AprimeConfig C := by
           rw [hg, hh, sigPar_eq]
           push_cast at hellR hrr ⊢
           have hgn : (0 : ℝ) ≤ 2 * max ((w : ℝ) + S + η) 1 := by positivity
-          nlinarith [mul_le_mul_of_nonneg_left hellR hgn]
+          linarith only [hellR, hrr, hgn, mul_le_mul_of_nonneg_left hellR hgn]
         have : (2 : ℝ) * (initialExponentBound l n j (gPar (w + S + η) S η) (hA b w S η sz) H₁ H₂ cuts ell : ℕ) <
             sz (c - (s₁ : ZMod n)) := by linarith
         exact_mod_cast this
@@ -1224,7 +1224,7 @@ theorem eA_le (C₁ : ℝ) (hC₁ : 0 ≤ C₁) (hE : ThmEBound C₁) (l : ℕ) 
   have hone : (1 : ℝ) ≤ (((w + S + η : ℕ) : ℝ) + 1) * ((j : ℝ) + 1) := by
     have h1 : (0 : ℝ) ≤ ((w + S + η : ℕ) : ℝ) := by positivity
     have h2 : (0 : ℝ) ≤ (j : ℝ) := by positivity
-    nlinarith
+    nlinarith only []
   have hX1 : (1 : ℝ) ≤ ((l : ℝ) - 1) ^ (j + 1) := one_le_pow₀ (by linarith)
   have hAdef : hA b w S η sz = max (hCor b w S η sz) 1 := rfl
   rw [hAdef]

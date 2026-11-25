@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.MXMulVecMid
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FlagSpanVanishing
@@ -39,11 +40,7 @@ lemma sig_eI (c : Fin r) : GBasic.sig k r (eI k r c) = esI k r c := by
   · exact absurd (Or.inl c.isLt) h
 
 lemma sig_esI (c : Fin r) : GBasic.sig k r (esI k r c) = eI k r c := by
-  have hc := c.isLt
-  unfold GBasic.sig
-  split_ifs with h
-  · exact Fin.ext (by show 2 * r + k - (2 * r + k - c.val) = c.val; omega)
-  · exact absurd (Or.inr (by show r + k < 2 * r + k - c.val; omega)) h
+  apply _root_.PI.PolynomialProperness.TM.sig_esI <;> assumption
 
 lemma sum_Xs (g : Fin (2 * r + k + 1) → ℂ) (hg : ∀ p : Fin (2 * r + k + 1), p.val ≤ r + k → g p = 0) :
     ∑ p, g p = ∑ c : Fin r, g (esI k r c) := by

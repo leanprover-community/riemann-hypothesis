@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.ClassMapStep
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingBounds
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantUniformizer
@@ -43,13 +44,7 @@ theorem classMapPf_mem_Z1DΔ (y z : W.DD T) (hy : y ∈ DelS W T) (hz : z ∈ De
 
 theorem classMapPf_cocycle {y z : W.DD T} (h : (y, z) ∈ W.wachCocyclesDelta T) :
     W.γD T W.gamK y - y = W.φD T z - z := by
-  have h0 : (y, z) ∈ herrZ1Δ (W.γD T W.gamK) (W.φD T) W.DelF (W.γD T) := h
-  rw [herrZ1Δ, Submodule.mem_inf] at h0
-  have h1 := h0.1
-  rw [herrCocycles] at h1
-  simp only [LinearMap.mem_ker, LinearMap.coprod_apply, LinearMap.sub_apply, LinearMap.neg_apply,
-    LinearMap.id_apply] at h1
-  rwa [← sub_eq_add_neg, sub_eq_zero] at h1
+  apply _root_.Formalism.MainNotions.N.Ln34.UnivLinkPf.univLinkPf_cocycle <;> assumption
 
 theorem classMapPf_local (π' Eπ : LetA O n) (h' M : ℕ) (c : ZMod n)
     (hF : FrobPiN W T π' M)

@@ -41,19 +41,6 @@ lemma formalτ_mem_formalQ (n : ℕ) (y : Sheaf.H.{u} (modulesAb (idealPow I F (
 def formalτQ (n : ℕ) : formalQ I F q (n + 1) →ₗ[A] formalQ I F q n :=
   (H.linearMap A (idealPowSucc I F (n + 1)) (q + 1)).restrict (formalτ_mem_formalQ I F q n)
 
-abbrev formalτP : ∀ n, (Sheaf.H.{u} (modulesAb F) q ⧸ formalK I F q (n + 1)) →ₗ[A]
-    (Sheaf.H.{u} (modulesAb F) q ⧸ formalK I F q n) :=
-  quotTower (formalK I F q) (formalK_antitone I F q)
-
-lemma formalι_comm (n : ℕ) :
-    (formalτE I F q n).comp (formalι I F q (n + 1)) = (formalι I F q n).comp (formalτP I F q n) := by
-  refine LinearMap.ext fun x => ?_
-  obtain ⟨h, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  change Sheaf.H.map.{u} (modulesAbMap (quotPowMap I F n)) q
-      (Sheaf.H.map.{u} (modulesAbMap (quotPowπ I F (n + 1))) q h) =
-    Sheaf.H.map.{u} (modulesAbMap (quotPowπ I F n)) q h
-  rw [← Sheaf.H.map_comp_apply, ← modulesAbMap_comp, quotPowπ_map]
-
 lemma formalπ_comm (n : ℕ) :
     (formalτQ I F q n).comp (formalπ I F q (n + 1)) = (formalπ I F q n).comp (formalτE I F q n) := by
   refine LinearMap.ext fun x => Subtype.ext ?_

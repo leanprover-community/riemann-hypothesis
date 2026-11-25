@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisLoc
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
@@ -84,16 +85,8 @@ set_option allowUnsafeReducibility true in
 attribute [local irreducible] Per.Acris Per.Bcris
 
 theorem isUnit_l {e : Per.Fl l} (he : IsEps e) : IsUnit (l : Per.Bcris l) := by
-  obtain ⟨w, hw, -⟩ := _root_.GlobalTheory.MemLoc.exists_mu_pow_div l e he.1
-  have h0 : (l : Per.Acris0 l) * w = algebraMap (Per.Ainf l) (Per.Acris0 l) (mu e) ^ (l - 1) := by
-    apply Subtype.ext
-    simpa using hw
-  have h1 := congrArg (fun x => algebraMap (Per.Acris l) (Per.Bcris l)
-    (algebraMap (Per.Acris0 l) (Per.Acris l) x)) h0
-  simp only [map_mul, map_natCast, map_pow, ← alg_factor] at h1
-  have h2 := (isUnit_mu he).pow (l - 1)
-  rw [← h1] at h2
-  exact isUnit_of_mul_isUnit_left h2
+  intros
+  apply _root_.GlobalTheory.MemLoc.isUnit_l_Bcris <;> assumption
 
 theorem isUnit_cofactor {e : Per.Fl l} (he : IsEps e) :
     IsUnit (aDp l (Per.tm ((frobeniusEquiv (Per.Fl l) l).symm e) - 1)) := by

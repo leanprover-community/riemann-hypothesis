@@ -25,56 +25,15 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelEmbeddingInjective
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-import Mathlib.Order.CompletePartialOrder
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIsLocalRingIsFractionRingStalk
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreRefineLineBundles
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 
@@ -283,8 +242,7 @@ theorem isIntegrallyClosed_of_snc {K : Type} [Fintype K] {J : K → Type} [∀ k
     rw [AddSubmonoidClass.coe_finsetSum]
     exact hs1
   obtain ⟨l, hl⟩ : ∃ l, IsUnit (f' l) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 : (1 : regAt ξ q) ∈ IsLocalRing.maximalIdeal (regAt ξ q) := by
       rw [← hsum']
       exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 (hcon l))
@@ -396,7 +354,7 @@ theorem exists_eigBase : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have hw : ∃ l, x l ≠ 0 := by
     obtain ⟨l, hl⟩ := htie.cover (Flat.ZLat.gp ξ)
     exact ⟨l, hl.1⟩
-  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flag_model_common_refinement ℤ Ω₀ ((k : K₀) → J₀ k) x
+  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.PositivityTheory.HtPt.Mb.LTopCommon.exists_common_normal_model ℤ Ω₀ ((k : K₀) → J₀ k) x
     (PModel.mk X₀ ξ (specZIsTerminal.from X₀) hover hall htie) Unit (fun _ => (k : K₀) → J₀ k) (fun _ => x)
     (CMType H ⊕ CMType H) (fun _ => Li) L V (fun _ => hw) hcoh hspan
   have hd' : GlobalTheory.CompanionTheory.Ar.Dominates M'.ξ ξ g (RingHom.id Ω₀) := hd

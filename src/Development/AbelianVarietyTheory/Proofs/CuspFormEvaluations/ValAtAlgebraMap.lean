@@ -120,8 +120,7 @@ theorem exists_isHomogeneous_aeval_eq_zero {K Ω : Type} [Field K] [Field Ω] [A
   push_neg at hdep
   obtain ⟨P, hP, hP0⟩ := hdep
   have hex : ∃ d, MvPolynomial.homogeneousComponent d P ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hP0
     rw [← MvPolynomial.sum_homogeneousComponent P]
     exact Finset.sum_eq_zero fun d _ => hall d

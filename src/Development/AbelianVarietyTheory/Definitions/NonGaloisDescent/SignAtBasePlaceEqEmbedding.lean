@@ -4,40 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Univ
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistDataAgreeAcrossCoefficients
 public import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.CoreBC
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.LevelCuspCharacters
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -210,10 +176,6 @@ def KsIso.bc (A : Arith.FormsL L0 Ks WL W G) :
     change _ ↔ (NX.BC.bc L A).ρ g (NX.BC.incl Ks L0 L WL x) = NX.BC.incl Ks L0 L WL y
     rw [NX.BC.bc_rho_incl, (NX.BC.incl_injective Ks L0 L WL).eq_iff]
   chi _ := rfl
-
-theorem KsIso.bc_j (A : Arith.FormsL L0 Ks WL W G) (σ : L →+* ℂ) (x : A.WK) :
-    (NX.BC.bc L A).j σ ((KsIso.bc L A).φ x : NX.BC.BCW Ks L0 L WL) = A.j (σ.comp (algebraMap L0 L)) x :=
-  NX.BC.bc_j_incl L A σ x
 
 end BC
 

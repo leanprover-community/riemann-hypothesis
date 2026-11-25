@@ -265,23 +265,6 @@ private theorem le_of_not_natCast_succ_le {a : ℕ∞} {s : ℕ}
     have hns : n ≤ s := by omega
     exact_mod_cast hns
 
-theorem tunedSheaf_mul_eq_add : TunedSheafMulEqAdd.{u} := by
-  intro k hk hchar hnoeth X p hsmooth hft I m hm hmax r t ht
-  refine Scheme.IdealSheafData.ext (funext ?_)
-  intro U
-  rw [Scheme.IdealSheafData.ideal_mul, Pi.mul_apply, tunedSheaf_ideal, tunedSheaf_ideal,
-    tunedSheaf_ideal]
-  exact @tunedIdeal_mul_eq_tunedIdeal_add k _ _ _ (sectionsAlgebra k p U.1) (I.ideal U) m (lcmUpTo m)
-    (lcmUpTo_pos m) (fun w hw1 hw2 => dvd_lcmUpTo m w hw1 hw2) r t ht
-
-theorem tunedSheaf_pow_eq_mul : TunedSheafPowEqMul.{u} := by
-  intro k hk hchar hnoeth X p hsmooth hft I m hm hmax r hr j hj
-  refine Scheme.IdealSheafData.ext (funext ?_)
-  intro U
-  rw [Scheme.IdealSheafData.ideal_pow, Pi.pow_apply, tunedSheaf_ideal, tunedSheaf_ideal]
-  exact @tunedIdeal_pow_eq_tunedIdeal_mul k _ _ _ (sectionsAlgebra k p U.1) (I.ideal U) m (lcmUpTo m)
-    (lcmUpTo_pos m) (fun w hw1 hw2 => dvd_lcmUpTo m w hw1 hw2) r hr j hj
-
 theorem isDerivBalanced_tunedSheaf_mul_lcmUpTo : IsDerivBalancedTunedSheafMulLcm.{u} := by
   intro k hk hchar hnoeth X p hsmooth hft I m hm hmax r hr i hi
   refine Scheme.IdealSheafData.le_def.mpr ?_
@@ -842,21 +825,15 @@ theorem isMarked_iff_balanced_tunedSheaf : IsMarkedIffBalancedTunedSheaf.{u} := 
     rw [balancedTunedSheaf_eq]
     exact h8
 
-theorem tunedSheafProperties_of_succ_le_of_mul_le (h1 : TunedSheafSuccLe.{u}) (h2 : TunedSheafMulLeAdd.{u}) :
+theorem tunedSheafProperties_of_succ_le_of_mul_le (_h1 : TunedSheafSuccLe.{u}) (_h2 : TunedSheafMulLeAdd.{u}) :
     TunedSheafProperties.{u} := by
   exact {
     isMarked_tuned_iff := isMarked_iff_balanced_tunedSheaf.{u}
-    tunedSheaf_succ_le := h1
-    tunedSheaf_mul_le := h2
-    derivIdealSheaf_tunedSheaf_succ := derivIdealSheaf_tunedSheaf_succ.{u}
     derivIdealSheafIter_pred_tunedSheaf := maxContactIdealTunedSheafEq.{u}
     derivIdealSheafIter_mul_derivIdealSheaf_le_tunedSheaf :=
       isMaxContactInvariantTunedSheaf.{u}
-    tunedSheaf_mul_eq := tunedSheaf_mul_eq_add.{u}
-    tunedSheaf_pow := tunedSheaf_pow_eq_mul.{u}
     derivIdealSheafIter_tunedSheaf_pow_le := isDerivBalanced_tunedSheaf_mul_lcmUpTo.{u}
-    coSupport_tunedSheaf_eq_and_orderLE := orderAtLeastLocus_tunedSheaf_eq_and_order_le.{u}
-    isMarked_iff_of_pow_le_of_le_tunedSheaf := isMarked_iff_of_pow_le_of_le_tunedSheaf.{u} }
+    coSupport_tunedSheaf_eq_and_orderLE := orderAtLeastLocus_tunedSheaf_eq_and_order_le.{u} }
 
 end FunctorialResolution.EmbeddedResolution
 end -- clump:auto

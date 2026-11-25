@@ -234,8 +234,7 @@ lemma wlocal_unit_add {a b : R} (ha : ¬IsUnit a) (hb : IsUnit b) : IsUnit (a + 
 lemma wlocal_pivot {r : ℕ} (k : Fin r) (M N : Matrix (Fin r) (Fin r) R) (hNM : N * M = 1)
     (hstd : ∀ i j : Fin r, j.val < k.val → M i j = if i = j then 1 else 0) :
     ∃ i : Fin r, k.val ≤ i.val ∧ IsUnit (M i k) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hNcol : ∀ j : Fin r, j.val < k.val → N k j = 0 := by
     intro j hj
     have h1 : (N * M) k j = 0 := by

@@ -125,8 +125,7 @@ theorem dvd_aeval_of_coeff (p : ℕ) (x : σ → A) (S : ℕ) (hS : ∀ i, (p : 
   refine Finset.dvd_sum fun α hα => ?_
   rw [MvPolynomial.aeval_monomial]
   obtain ⟨i, hi⟩ : ∃ i, m * S < α i := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact (MvPolynomial.mem_support_iff.1 hα) (hP α h)
   refine Dvd.dvd.mul_left ?_ _
   have hmem : i ∈ α.support := Finsupp.mem_support_iff.2 (by omega)

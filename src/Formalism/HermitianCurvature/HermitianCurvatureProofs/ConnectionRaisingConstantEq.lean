@@ -1885,12 +1885,7 @@ theorem sc_isPF_xEx (κ : (M.Ty P → ℂ) →ₐ[ℂ] A) (ex : Finset ℕ) : Is
 
 theorem sc_x_up {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) {τ σ : M.Ty P} (hu : M.Up P l τ σ) (Y : ℂ) :
     M.xC P σ Y = (Y + (M.rho P τ l : ℂ) + 1) * M.xEx P {l} τ Y := by
-  unfold M.xC M.xEx
-  rw [← Finset.mul_prod_erase _ _ hl, Finset.sdiff_singleton_eq_erase]
-  congr 1
-  · rw [up_rho P hu l hl, if_pos rfl]; push_cast; ring
-  · refine Finset.prod_congr rfl fun i hi => ?_
-    rw [up_rho P hu i (Finset.mem_of_mem_erase hi), if_neg (Finset.ne_of_mem_erase hi), add_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.NFx2.sn_x_up <;> assumption
 
 theorem sc_x_self {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) (τ : M.Ty P) (Y : ℂ) :
     M.xC P τ Y = (Y + (M.rho P τ l : ℂ)) * M.xEx P {l} τ Y := by

@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.HcptgenGen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsLatFamilyCongr
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenWeil
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
@@ -11,46 +12,8 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInte
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveRootHodgeCpt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoPullbackEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilSt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompEqIdOfTwists
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFullLevelAt
@@ -248,39 +211,7 @@ theorem mem_range_jQ_of_ker (Y : Model Xo c β) {Ω₀ : Type} [Field Ω₀] (ξ
     eq_of_specializes_of_fst_of_ne Y.s β g₀ ξ₀ h₀ hs (exists_integral_multiple_of_ker β g₀ hk) hz h'
 
 theorem exists_point_of_hodgeCpt (𝔐 : HodgeCpt Y S y) : ∃ x : Sp Ω ⟶ Xo.XF c, 𝔐.ξ ≫ 𝔐.f = x ≫ Y.j := by
-  have hcst : Function.Injective 𝔐.cst := 𝔐.cst.injective
-  let g₀ : O₀ →+* 𝔐.Ω₀ := (Spec.preimage (𝔐.ξ₀ ≫ Y.s)).hom
-  have hs : 𝔐.ξ₀ ≫ Y.s = spMap g₀ := by
-    show _ = Spec.map (CommRingCat.ofHom (Spec.preimage (𝔐.ξ₀ ≫ Y.s)).hom)
-    rw [CommRingCat.ofHom_hom, Spec.map_preimage]
-  have hfn : 𝔐.ξ ≫ 𝔐.f = spMap 𝔐.fn ≫ 𝔐.ξ₀ := 𝔐.fn_over
-  have hcomp : 𝔐.fn.comp g₀ = 𝔐.cst.comp β := by
-    have h1 : spMap (𝔐.fn.comp g₀) = spMap (𝔐.cst.comp β) := by
-      rw [← 𝔐.cst_over, ← Category.assoc, hfn, Category.assoc, hs]
-      simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
-    have h2 := Spec.map_injective h1
-    exact congrArg CommRingCat.Hom.hom h2
-  have hk : ∀ a, g₀ a = 0 → β a = 0 := by
-    intro a ha
-    apply hcst
-    have := RingHom.congr_fun hcomp a
-    simp only [RingHom.comp_apply, ha, map_zero] at this
-    rw [map_zero]; exact this.symm
-  have hw : (𝔐.ξ ≫ 𝔐.f) ≫ Y.s = spMap 𝔐.cst ≫ spMap β := by
-    rw [Category.assoc, 𝔐.cst_over]
-    simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
-  let g : Sp Ω ⟶ pullback Y.s (spMap β) := pullback.lift (𝔐.ξ ≫ 𝔐.f) (spMap 𝔐.cst) hw
-  have hgf : g ≫ pullback.fst _ _ = 𝔐.ξ ≫ 𝔐.f := pullback.lift_fst _ _ _
-  have hall : ∀ w : Sp Ω, pullback.fst Y.s (spMap β) (g w) = genPt 𝔐.ξ₀ := by
-    intro w
-    rw [← Scheme.Hom.comp_apply, hgf, hfn, Scheme.Hom.comp_apply]
-    exact congrArg 𝔐.ξ₀ (Subsingleton.elim (α := PrimeSpectrum 𝔐.Ω₀) _ _)
-  have hran : Set.range g ⊆ Set.range Y.jQ := by
-    rintro _ ⟨w, rfl⟩
-    exact mem_range_jQ_of_ker Y 𝔐.ξ₀ 𝔐.gen₀ g₀ hs hk _ (hall w)
-  have := Y.jQ_open
-  refine ⟨IsOpenImmersion.lift Y.jQ g hran, ?_⟩
-  rw [Model.j, ← Category.assoc, IsOpenImmersion.lift_fac, hgf]
+  apply _root_.PositivityTheory.HtPt.Hcptgen.exists_lift <;> assumption
 
 end gen
 

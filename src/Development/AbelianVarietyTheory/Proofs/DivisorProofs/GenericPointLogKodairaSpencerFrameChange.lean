@@ -160,8 +160,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ActMatrix
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
@@ -208,8 +206,6 @@ namespace GlobalTheory.LogKSDiv.GenUniq
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (spMap_comp_spMap)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem dualMap_injective {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
     (hf : Function.Injective f) : Function.Injective (Formalism.L2.Pj.dualMap f) := by
@@ -536,10 +532,6 @@ open GlobalTheory.OrbitSep
 
 namespace GlobalTheory.LogKSDiv.GenChange
 
-theorem chart_res {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) :
-    spMap (X.presheaf.map (homOfLE h).op).hom ≫ GlobalTheory.LogKS.chart U = GlobalTheory.LogKS.chart W := by
-  simpa [spMap, GlobalTheory.LogKS.chart] using U.2.map_fromSpec W.2 (homOfLE h).op
-
 theorem common_basic {X : Scheme.{0}} (U U' : X.affineOpens) (x : X) (hx : x ∈ U.1) (hx' : x ∈ U'.1) :
     ∃ (W : X.affineOpens) (hW : W.1 ≤ U.1) (hW' : W.1 ≤ U'.1) (f : Γ(X, U.1)) (f' : Γ(X, U'.1)),
       W.1 = X.basicOpen f ∧ W.1 = X.basicOpen f' ∧ x ∈ W.1 := by
@@ -663,7 +655,7 @@ theorem genKS_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   have hfacU' : ρ' = ρW.comp (TF.Y.X.presheaf.map (homOfLE hWU').op).hom :=
     rho_fac U' W hWU' ρ' ρW (hρ'.trans hρW.symm)
   obtain ⟨hinj, hfr⟩ := _root_.GlobalTheory.GenFrac.injective_and_frac TF.Y.X (barComp TF.Y Z) W (hWU.trans hU) ρW hρW
-  have hcr := chart_res U W hWU
+  have hcr := GlobalTheory.LogKSLoc.spMap_res_chart U W hWU
   have hcr' := _root_.GlobalTheory.LogKSLoc.spMap_res_chart U' W hWU'
   obtain ⟨hfu, hfloc⟩ := basic_loc U W hWU f hWf
   obtain ⟨hfu', hfloc'⟩ := basic_loc U' W hWU' f' hWf'

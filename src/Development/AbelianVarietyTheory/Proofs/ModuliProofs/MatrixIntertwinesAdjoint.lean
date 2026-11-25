@@ -496,11 +496,6 @@ private lemma constFn_sub' {K : Type} [Field K] {Y : Scheme.{0}} (q : Y ⟶ Sp K
   unfold constFn
   simp only [map_sub]
 
-private lemma constFn_mul_moduli {K : Type} [Field K] {Y : Scheme.{0}} (q : Y ⟶ Sp K) (O : Y.Opens) (a b : K) :
-    constFn q O (a * b) = constFn q O a * constFn q O b := by
-  unfold constFn
-  simp only [map_mul]
-
 private lemma constFn_sum {K : Type} [Field K] {Y : Scheme.{0}} (q : Y ⟶ Sp K) (O : Y.Opens) {n : ℕ}
     (f : Fin n → K) : constFn q O (∑ k, f k) = ∑ k, constFn q O (f k) := by
   unfold constFn
@@ -525,7 +520,7 @@ theorem lc_row_mul_sub {K : Type} [Field K] {Y : Scheme.{0}} {I : Type} {U : I �
         lc q (F x) (fun b => θ b - lc q (Θ b) φ) := by
   funext i j
   simp only [lc, Pi.sub_apply, Matrix.sub_apply, Matrix.mul_apply, Matrix.transpose_apply,
-    constFn_sub', constFn_sum, constFn_mul_moduli]
+    constFn_sub', constFn_sum, GlobalTheory.KS.InvField.constFn_mul]
   exact sum_sub_sum_mul_eq_sub_sub_sum (fun b => constFn q (U i ⊓ U j) (F x b)) (fun b => constFn q (U i ⊓ U j) (Θ x b))
     (fun b => θ b i j) (fun b => φ b i j) (fun a b => constFn q (U i ⊓ U j) (Θ a b))
     (fun a b => constFn q (U i ⊓ U j) (F' a b))

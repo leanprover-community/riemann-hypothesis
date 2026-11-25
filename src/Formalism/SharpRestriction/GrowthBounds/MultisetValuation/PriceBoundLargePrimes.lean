@@ -110,8 +110,6 @@ theorem ne_nP : (Formalism.MainNotions.G.nP D (D.what₂.places.resChar w) : ℝ
 theorem ne_Nm (j : ℕ) (hj : j ∈ SizeData₂.lifts D) : (j : ℝ) * ((D.R.t : ℝ) + 1) / 2 ≤ Formalism.MainNotions.G.Nm D := by
   unfold Formalism.MainNotions.G.Nm Ranks.N
   have h1 : (j : ℝ) ≤ D.R.m := by exact_mod_cast (Finset.mem_Icc.1 hj).2
-  have h2 : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
-  have h3 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have h4 : (0 : ℝ) ≤ j := Nat.cast_nonneg _
   push_cast
   nlinarith [mul_le_mul_of_nonneg_right h1 (by linarith : (0 : ℝ) ≤ (D.R.t : ℝ) + 1),

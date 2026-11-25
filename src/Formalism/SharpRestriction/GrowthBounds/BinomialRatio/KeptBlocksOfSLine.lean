@@ -93,7 +93,6 @@ theorem pairU_at {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
 
   have hdich := (coarse_degree_alternative le_rfl hs j (digitBlock rz ry) hd i).2 hi
   set Ai := (clA C0 CE1 CE2 X j rz ry i : ℝ) with hAi
-  have hdich' : ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) < Ai * (1 - X.de C0 Cde) := hdich
 
   have hn4 := coarse_degree_prefix_sum hs le_rfl j rz ry hd i
   have hc := pairC_le_sum hP.1 i

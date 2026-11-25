@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3upPfFilCAnti
 public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
@@ -53,27 +54,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 theorem filC_le_bot (τ : K →ₐ[Qp] LL) (h' : ℕ)
     (hJ : JumpsInV PD T.ρ τ (Set.Icc (-(h' : ℤ)) h')) (a : ℤ) :
     Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := PD) T τ a ≤ Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := PD) T τ (-(h' : ℤ)) := by
-  by_cases ha : -(h' : ℤ) ≤ a
-  · exact u3upPf_FilC_anti (PD := PD) T τ ha
-  · have hc : ∀ j : ℕ, FildR PD T.ρ τ (-(h' : ℤ) - j) = FildR PD T.ρ τ (-(h' : ℤ)) := by
-      intro j
-      induction j with
-      | zero => simp
-      | succ j ih =>
-        have hnj : ¬ IsJumpV PD T.ρ τ (-(h' : ℤ) - (j + 1 : ℕ)) := by
-          intro hj
-          have := (hJ _ hj).1
-          push_cast at this
-          omega
-        unfold IsJumpV at hnj
-        push Not at hnj
-        rw [← ih, ← hnj]
-        congr 1
-        push_cast
-        ring
-    obtain ⟨j, hj⟩ : ∃ j : ℕ, a = -(h' : ℤ) - j := ⟨(-(h' : ℤ) - a).toNat, by omega⟩
-    unfold Formalism.MainNotions.DeltaInvariantLattices.FilC
-    rw [hj, hc j]
+  apply _root_.Formalism.MainNotions.N.Ln34.ModelFPf.FilC_top <;> assumption
 
 theorem φD_letter' {i : ZMod n} {x : W.DD T} (hx : (letE (O := O) i : LetA O n) • x = x) :
     (letE (O := O) (i + 1) : LetA O n) • W.φD T x = W.φD T x := by
@@ -192,15 +173,7 @@ theorem filtration_value_local (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Pro
 theorem R_smul' {b : LetA O n} (hb : b ∈ W.AΔ) {r : LA W T π' c}
     (hr : r ∈ LinearMap.range (toLA W T π' c ⊤)) :
     smulLA W T π' c b r ∈ LinearMap.range (toLA W T π' c ⊤) := by
-  obtain ⟨t, rfl⟩ := hr
-  induction t using TensorProduct.inductionOn with
-  | tmul a s =>
-    refine ⟨(⟨b, hb⟩ * a) ⊗ₜ s, ?_⟩
-    rw [toLA_tmul', toLA_tmul', smulLA_tmul', ← map_mul]
-    congr 2
-    simp only [Subalgebra.coe_mul]
-    ring
-  | add x y hx hy => simpa only [map_add] using add_mem hx hy
+  apply _root_.Formalism.MainNotions.N.Ln34.ModelFPf.range_smul <;> assumption
 
 theorem lattice_contains_power_local (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (Eπ : LetA O n) (h' M : ℕ)
     (hEΔ : Eπ ∈ W.AΔ)
@@ -588,18 +561,8 @@ theorem flat_compHom {O LL X : Type*} [CommRing O] [IsDomain O] [IsDedekindDomai
     [Algebra O LL] (hinj : Function.Injective (algebraMap O LL)) [AddCommGroup X] [Module LL X] :
     letI : Module O X := Module.compHom X (algebraMap O LL)
     Module.Flat O X := by
-  letI : Module O X := Module.compHom X (algebraMap O LL)
-  rw [IsDedekindDomain.flat_iff_torsion_eq_bot, eq_bot_iff]
-  intro x hx
-  rw [Submodule.mem_torsion_iff] at hx
-  obtain ⟨⟨r, hr⟩, hrx⟩ := hx
-  have hr0 : r ≠ 0 := nonZeroDivisors.ne_zero hr
-  have h1 : algebraMap O LL r • x = 0 := hrx
-  rw [smul_eq_zero] at h1
-  rw [Submodule.mem_bot]
-  rcases h1 with h1 | h1
-  · exact absurd ((map_eq_zero_iff _ hinj).mp h1) hr0
-  · exact h1
+  intros
+  apply _root_.Formalism.MainNotions.N.Ln34.LevelExpansions.V.flat_compHom <;> assumption
 
 section Generic
 

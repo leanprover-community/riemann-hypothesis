@@ -72,9 +72,6 @@ theorem segFacts {CYb Cde Ck CD Cb Cc : ℝ} (hCYb : 2 ≤ CYb) (hCb : 1 ≤ Cb)
     show 0 ≤ errorTermBound CE1 CE2 X.L.p X.L.k X.L.N1 X.L.Q X.L.c X.L.a X.L.b' (X.L.La C0)
     unfold errorTermBound
     have h1 := hF.La0
-    have h2 := hF.b0.le
-    have h3 : (0 : ℝ) ≤ X.L.k := by linarith
-    have h4 : (0 : ℝ) ≤ X.L.Q := by linarith
     positivity
   refine ⟨hF, fun i => ?_, fun i => Nat.one_le_pow _ _ (lt_of_lt_of_le zero_lt_one hp1), hPQ, ?_, hE0, fun i => ?_, ?_, hY, hxa0, hxa⟩
   · have h1 : ((X.S C0 CE1 CE2).P X.p i : ℝ) ≤ X.L.Q :=

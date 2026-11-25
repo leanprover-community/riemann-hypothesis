@@ -224,8 +224,7 @@ theorem uniqueDiffWithinAt_compl {V : Type} [NormedAddCommGroup V] [NormedSpace 
   obtain ⟨f, hf0, hf⟩ := exists_support hK hne hx
   obtain ⟨v, hv⟩ : ∃ v, 0 < f v := by
     obtain ⟨w, hw⟩ : ∃ w, f w ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hf0 (ContinuousLinearMap.ext h)
     rcases lt_or_gt_of_ne hw with h | h
     · exact ⟨-w, by simpa using h⟩
@@ -537,7 +536,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.F
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff SABMap)
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OneMapRef GlobalTheory.WeilParts
 
 theorem gram_frOf {D : D7} {T : HSp D} {X : Data D.host.E T.rank} (eT : D.what₂.Tau ≃ X.Ψ)

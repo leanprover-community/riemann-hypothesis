@@ -156,7 +156,6 @@ open GlobalTheory.HSApp
 open GlobalTheory.Cartier GlobalTheory.Discrepancy GlobalTheory.QCoh
 open GlobalTheory.Twist GlobalTheory.SerreCriterion
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory
 namespace IsolatedSec
@@ -345,8 +344,7 @@ theorem exists_sec_of_pull {F E : Type} [Field F] [Field E] [Algebra F E] {Y X :
   have hβ : ∀ β, dfun N V c hVc (e₁ t β) = 0 := fun β =>
     (hδ _).1 (by rw [← nat, ht, map_zero, Finsupp.zero_apply])
   choose θ hθ using fun β => exists_glue N V c hVc hN hcov (e₁ t β) (hβ β)
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨j, hj⟩ : ∃ j, π x ∈ V j := TopologicalSpace.Opens.mem_iSup.1 (by rw [hcov]; trivial)
   have hxj : x ∈ π ⁻¹ᵁ V j ⊓ q ⁻¹ᵁ ⊤ := ⟨hj, trivial⟩
   have hxc : x ∈ (N.pull π).U (fun _ => c j) := hV'c j hxj
@@ -416,7 +414,6 @@ open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 
-set_option autoImplicit false
 noncomputable section
 open GlobalTheory.Cartier GlobalTheory.Discrepancy GlobalTheory.QCoh
 
@@ -560,8 +557,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -650,7 +645,6 @@ section -- clump:auto
 @[expose] public section
 
 section
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions

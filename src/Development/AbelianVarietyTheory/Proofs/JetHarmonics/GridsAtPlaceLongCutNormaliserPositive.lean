@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.BesselWaveGrids.FourLeOfFive
 public import Formalism.HermitianCurvature.StatementI
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
@@ -637,25 +638,7 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
 open Finset in
 private theorem sum_abs_lagCo_le_one_of_five_separated {d : ℕ} (y : Fin (d + 1) → ℝ)
     (hy : ∀ i j, i ≠ j → 5 ≤ |y i - y j|) : ∑ j, |_root_.Formalism.FourierDecayAlt.F7.lagCo y j| ≤ 1 := by
-  have key : ∀ n : ℕ, n + 1 ≤ 5 ^ n := fun n => by
-    induction n with
-    | zero => simp
-    | succ n ih => rw [pow_succ]; omega
-  have h1 : ∀ j, |_root_.Formalism.FourierDecayAlt.F7.lagCo y j| ≤ (1 / 5 : ℝ) ^ d := by
-    intro j
-    unfold _root_.Formalism.FourierDecayAlt.F7.lagCo
-    rw [Finset.abs_prod]
-    calc ∏ i ∈ Finset.univ.erase j, |(y j - y i)⁻¹| ≤ ∏ i ∈ Finset.univ.erase j, (1 / 5 : ℝ) :=
-          Finset.prod_le_prod₀ (fun _ _ => abs_nonneg _) (fun i hi => by
-            rw [abs_inv, one_div]
-            exact inv_anti₀ (by norm_num) (hy j i (Finset.ne_of_mem_erase hi).symm))
-      _ = (1 / 5) ^ d := by
-          rw [Finset.prod_const, Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ,
-            Fintype.card_fin, Nat.add_sub_cancel]
-  have h2 : ((d : ℝ) + 1) ≤ 5 ^ d := by exact_mod_cast key d
-  calc ∑ j, |_root_.Formalism.FourierDecayAlt.F7.lagCo y j| ≤ ∑ _j : Fin (d + 1), (1 / 5 : ℝ) ^ d := Finset.sum_le_sum fun j _ => h1 j
-    _ = ((d : ℝ) + 1) / 5 ^ d := by simp [div_eq_mul_inv]
-    _ ≤ 1 := by rw [div_le_one (by positivity)]; exact h2
+  apply _root_.GroundTheory.BlockD.FourierDecayAlt.WaveGridLiftGrid.lag_abs_sum_le_one <;> assumption
 
 open Finset in
 private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAlt.M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp]
@@ -795,8 +778,7 @@ private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAl
       have hnum : 0 < nn y * nn (y + 1) := mul_pos (hnn _) (hnn _)
       have hqy := hq y hy
       have hqpos : 0 < (_root_.Formalism.FourierDecayAlt.M.qC P (y : ℂ)).re := by
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         nlinarith [sq_nonneg Λ₀]
       rw [hre]
       have hden : 0 < (_root_.Formalism.FourierDecayAlt.M.qC P (y : ℂ)).re * ρ := mul_pos hqpos hρ

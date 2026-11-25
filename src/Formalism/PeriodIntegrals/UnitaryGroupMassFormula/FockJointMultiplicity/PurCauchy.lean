@@ -209,8 +209,7 @@ variable {σ : Type*}
 
 theorem exists_support_of_killS {S : Set σ} {P : MvPolynomial σ ℂ} (h : aeval (killS S) P ≠ 0) :
     ∃ e ∈ P.support, ∀ v ∈ S, e v = 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   conv_lhs => rw [P.as_sum]
 
@@ -291,27 +290,23 @@ theorem cauchyHW_of (hA : HypAnti) (hS : HypShape) (hD : HypDiag) (hF : HypFree)
       exact absurd (Finset.mem_univ i) h
   have hrowlt : ∀ i : Fin m, (i : ℕ) < n := by
     intro i
-    by_contra hi
-    push_neg at hi
+    by_contra! hi
     have h0 : α i = 0 := by
       rw [← (hsum e heP).1 i]
       exact Finset.sum_eq_zero fun k _ => hoff i k (by have := k.isLt; omega)
     exact (hα i).ne' h0
   have hcollt : ∀ k : Fin n, (k : ℕ) < m := by
     intro k
-    by_contra hk
-    push_neg at hk
+    by_contra! hk
     have h0 : β k = 0 := by
       rw [← (hsum e heP).2 k]
       exact Finset.sum_eq_zero fun i _ => hoff i k (by have := i.isLt; omega)
     exact (hβ k).ne' h0
   have hmn : m = n := by
     apply le_antisymm
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       exact lt_irrefl n (hrowlt ⟨n, h⟩)
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       exact lt_irrefl m (hcollt ⟨m, h⟩)
   have hanti : Antitone α := hA τ m n ι hι α P hP hrow fun e he i => (hsum e he).1 i
   refine ⟨hmn, hanti, fun i k h => (hrowsum i k h).trans (hcolsum i k h).symm, ?_⟩

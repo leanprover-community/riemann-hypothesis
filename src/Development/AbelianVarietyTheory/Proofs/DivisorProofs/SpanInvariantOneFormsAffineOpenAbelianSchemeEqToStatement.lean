@@ -61,8 +61,6 @@ open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs
 open GlobalTheory.AbTan GlobalTheory.AbTan.Transl GlobalTheory.TanForms GlobalTheory.InvForm
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.InvSpan
 
 variable {R : Type} [CommRing R]
@@ -183,7 +181,7 @@ theorem span_invForm_eq_top : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [Grp
       (Set.range fun w : GlobalTheory.InvForm.InvForm A ↦ evForm A.hom U w.1) = ⊤ := by
   intro R _ A _ g hA _ U
   have := hA.comm
-  obtain ⟨W, _, _, -, -, ⟨T⟩⟩ := GlobalTheory.T.exists_tangentRepresentation_smooth_groupScheme R A hA.smooth
+  obtain ⟨W, _, _, -, -, ⟨T⟩⟩ := _root_.GlobalTheory.TanRepr.exists_tanRep R A hA.smooth
   exact span_eq_top_of_tanRep T U
 
 end GlobalTheory.InvSpan
@@ -203,8 +201,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 attribute [local instance] Over.cartesianMonoidalCategory
 
 
-theorem _root_.GlobalTheory.T.span_invariantOneForms_affineOpen_abelianScheme_eq_top : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → ∀ U : AffOp A.left, Submodule.span (Sec A.hom U.unop.1) (Set.range fun w : GlobalTheory.InvForm.InvForm A ↦ evForm A.hom U w.1) = ⊤ := by
-  first | exact @GlobalTheory.InvSpan.span_invForm_eq_top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanInvariantOneFormsAffineOpenAbelianSchemeEqToStatement =====

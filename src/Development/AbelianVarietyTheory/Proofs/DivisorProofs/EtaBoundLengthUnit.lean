@@ -97,8 +97,7 @@ theorem size_inequality_real : ∀ (rd c t b f r DF g0 g1 : ℝ), 1 ≤ rd → r
   have hct : 1 ≤ c ^ 36 * t ^ 150 := one_le_mul_of_one_le_of_one_le (one_le_pow₀ hc1) (one_le_pow₀ ht1)
   have hs1 : 1 ≤ Real.sqrt b := hct.trans hC
   have hb0 : 0 ≤ b := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [Real.sqrt_eq_zero'.2 h.le] at hs1
     linarith
   have hbs := Real.sq_sqrt hb0

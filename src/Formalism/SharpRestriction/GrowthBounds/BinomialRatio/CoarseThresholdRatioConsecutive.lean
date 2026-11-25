@@ -82,7 +82,6 @@ theorem coarse_threshold_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (h
   have hlt := (dist_pos_lt X.TT j l').2
   obtain ⟨k1, hk1⟩ := ho1
   obtain ⟨k2, hk2⟩ := ho2
-  have hdd : (segDists X.TT j).get l + 2 ≤ (segDists X.TT j).get l' := by omega
   set P := X.p ^ (segG X.TT j - (segDists X.TT j).get l) with hP
   set P' := X.p ^ (segG X.TT j - (segDists X.TT j).get l') with hP'
   have hp1 : 1 ≤ X.p := by have := hs.p5; omega
@@ -111,12 +110,10 @@ theorem coarse_threshold_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (h
   have hk0 : (0 : ℝ) < X.k := by linarith
   have hkP : X.k * (P' : ℝ) ≤ X.b' / 25 := by
     have h1 : X.k * (P' : ℝ) ≤ X.k * X.Q := mul_le_mul_of_nonneg_left (le_trans hPQ' hQ) hk0.le
-    have hQ1 := hs.Q1
     have h3 : 25 * (X.k * X.Q) ≤ X.k ^ 3 * X.Q := by
       have h25 : (25 : ℝ) ≤ X.k ^ 2 := by nlinarith
       nlinarith [mul_nonneg (mul_nonneg hk0.le (by linarith : (0:ℝ) ≤ X.Q)) (by linarith : (0:ℝ) ≤ X.k ^ 2 - 25)]
     linarith
-  have ha0 : (0 : ℝ) ≤ X.a := by linarith [wa.1, (Nat.cast_nonneg _ : (0:ℝ) ≤ (X.aT (segPos X.TT j l) : ℝ))]
   have hwin : (X.a : ℝ) * (1 + 2 / (X.k * X.Y)) ≤ X.a * (7 / 5) := by
     have : 2 / (X.k * X.Y) ≤ 2 / 5 := by
       apply div_le_div_of_nonneg_left (by norm_num) (by norm_num)

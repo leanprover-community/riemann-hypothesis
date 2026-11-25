@@ -20,9 +20,4 @@ def LemmaETruncTail.Statement : Prop :=
         mInt A (fun i => potForm Om.pot (v i))
             ({x | x ∉ secOpen s ∨ ρ ≤ rSec L s x}.indicator 1) ≤ M ^ D * K / ρ
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

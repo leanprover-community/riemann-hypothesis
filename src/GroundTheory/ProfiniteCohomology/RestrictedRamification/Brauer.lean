@@ -26,12 +26,6 @@ private theorem map_nsmul_eq_zero_of {A B F : Type*} [AddMonoid A] [AddMonoid B]
     n • f x = 0 :=
   (map_nsmul f n x).symm.trans ((congrArg f hx).trans (map_zero f))
 
-private theorem linearMap_apply_apply_eq_zero {R A B C : Type*} [Semiring R]
-    [AddCommMonoid A] [AddCommMonoid B] [AddCommMonoid C]
-    [Module R A] [Module R B] [Module R C]
-    (f : A →ₗ[R] B) (g : B →ₗ[R] C) {x : A} (hx : x = 0) : g (f x) = 0 :=
-  (congrArg (fun z => g (f z)) hx).trans ((congrArg g f.map_zero).trans g.map_zero)
-
 theorem eq_zero_of_coprime_nsmul_eq_zero {A : Type*} [AddCommGroup A] {ℓ N k : ℕ} (hN : N.Coprime ℓ)
     {x : A} (h1 : N • x = 0) (h2 : ℓ ^ k • x = 0) : x = 0 := by
   have hd : addOrderOf x ∣ Nat.gcd N (ℓ ^ k) :=

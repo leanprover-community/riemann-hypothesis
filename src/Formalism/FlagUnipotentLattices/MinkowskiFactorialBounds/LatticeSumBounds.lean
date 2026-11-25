@@ -573,8 +573,7 @@ theorem prodMinLeOfProdRatio : SmallTerm := by
           rw [← mul_pow, ← pow_mul, mul_comm (Fintype.card ι) 2, pow_mul]
           congr 1
           rw [mul_pow, mul_pow, hsq2]; ring
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨ha, hb⟩ := hcon
   have hc0 : 0 ≤ (4 * Real.sqrt (T' / T) * g) ^ Fintype.card ι := by positivity
   have hlt := mul_lt_mul'' ha hb hc0 hc0

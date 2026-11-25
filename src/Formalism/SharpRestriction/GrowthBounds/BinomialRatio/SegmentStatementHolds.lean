@@ -58,7 +58,6 @@ private lemma cdist_next_pos_and_le_of_strictMono (L : List (Fin n')) (hL : Stri
   have hm := m.isLt
   have hs := (L.get j).isLt
   have hnx := (L.get i').isLt
-  have he := (L.get m).isLt
   rcases Nat.lt_or_ge (j.val + 1) L.length with hk | hk
   · rw [Nat.mod_eq_of_lt hk] at hi
     have a1 : (L.get j).val < (L.get i').val := (lt_iff j i').2 (by omega)
@@ -203,11 +202,7 @@ theorem oddSet_disj (TT : Finset (Fin n')) (j j' : Fin (numSeg TT)) (h : j ≠ j
   have h2 := cdist_lt_segStart_of_mem_oddSet_of_ne TT j' j (Ne.symm h) hs'
   have p1 := (Finset.mem_filter.1 hs).2.2.1
   have p2 := (Finset.mem_filter.1 hs').2.2.1
-  have hne : (segStart TT j).val ≠ (segStart TT j').val := fun e =>
-    (ev_mono TT).injective.ne h (Fin.ext e)
   have ha := (segStart TT j).isLt
-  have hb := (segStart TT j').isLt
-  have hsl := s.isLt
   rcases cd_cases (segStart TT j) s with ⟨_, e1⟩ | ⟨_, e1⟩ <;>
   rcases cd_cases (segStart TT j') s with ⟨_, e2⟩ | ⟨_, e2⟩ <;>
   rcases cd_cases (segStart TT j) (segStart TT j') with ⟨_, e3⟩ | ⟨_, e3⟩ <;>

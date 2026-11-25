@@ -67,7 +67,6 @@ def lastSubst {A : Type} [CommRing A] {N : ℕ} (D : ℕ) (t : Fin N → A) :
   fun v => Fin.lastCases (motive := fun _ => MvPolynomial (Fin D × Fin N) A)
     (C (t v.2)) (fun i => X (i, v.2)) v.1
 
-set_option autoImplicit false in
 open MvPolynomial Filter in
 open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
@@ -75,7 +74,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPoly
     (t : Fin N → A) (j : Fin N) : _root_.GlobalTheory.ChowSpec.lastSubst D t (Fin.last D, j) = C (t j) := by
   simp [_root_.GlobalTheory.ChowSpec.lastSubst]
 
-set_option autoImplicit false in
 open MvPolynomial Filter in
 open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
@@ -98,7 +96,6 @@ def lastEquiv (K : Type) [CommRing K] (N D : ℕ) :
       rintro ⟨i, j⟩
       refine Fin.lastCases ?_ (fun i => ?_) i <;> simp)
 
-set_option autoImplicit false in
 open MvPolynomial Filter in
 open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
@@ -122,7 +119,6 @@ private theorem isWeightedHomogeneous_aeval_of_forall {R S σ τ Γ Δ : Type} [
     (IsWeightedHomogeneous.prod _ _ _ fun v _ => (hφ v).pow _)
 
 
-set_option autoImplicit false in
 open MvPolynomial Filter in
 open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
@@ -235,17 +231,7 @@ theorem _root_.GlobalTheory.ChowSpec.exists_isChowFormInt_generic_section : ∀ 
     have hPhom : Ideal.IsHomogeneous (homogeneousSubmodule (Fin N) K) P := by
       intro i r hr
       convert hP r hr i using 1
-      conv_lhs => rw [← sum_homogeneousComponent r]
-      rw [DirectSum.decompose_sum, DFinsupp.finsetSum_apply, AddSubmonoidClass.coe_finsetSum,
-        Finset.sum_eq_single i]
-      · exact DirectSum.decompose_of_mem_same _ (homogeneousComponent_mem i r)
-      · intro b _ hb
-        exact DirectSum.decompose_of_mem_ne _ (homogeneousComponent_mem b r) hb
-      · intro hi
-        have h0 : homogeneousComponent i r = 0 :=
-          homogeneousComponent_eq_zero i r (by simp at hi; omega)
-        rw [h0, DirectSum.decompose_zero]
-        rfl
+      exact decomposition.decompose'_apply r i
     have hideal : ∀ y : Fin N → AlgebraicClosure L,
         (∀ g ∈ P.map (MvPolynomial.map (algebraMap K L) : MvPolynomial (Fin N) K →+* MvPolynomial (Fin N) L) ⊔
           Ideal.span {(∑ j : Fin N, C (t j) * X j : MvPolynomial (Fin N) L)}, aeval y g = 0) ↔

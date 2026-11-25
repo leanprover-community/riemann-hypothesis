@@ -24,8 +24,6 @@ namespace Formalism.FourierDecayAlt.Q.EabGlW
 
 open Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 lemma hsq : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
@@ -261,8 +259,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.Q.EabGlW
 
 open Formalism.REAL Formalism.QuantumDeterminants
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 

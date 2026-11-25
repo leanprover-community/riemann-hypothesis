@@ -13,8 +13,6 @@ namespace Formalism.FourierDecayAlt.JF
 
 open Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def Om (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : Set (B.Mat k r) := B.GV k r ∩ Q.OmPlus k r z z'
 
 def QDom (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : Set ((Fin r → ℂ) × ℂ) :=

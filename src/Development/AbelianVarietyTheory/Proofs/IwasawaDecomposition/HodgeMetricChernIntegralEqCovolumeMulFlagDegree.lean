@@ -161,8 +161,6 @@ open Classical
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame
 open MeasureTheory Formalism.DegreeFormula GlobalTheory.TrueCx
 
-set_option autoImplicit false
-
 namespace GlobalTheory.BaseDim
 
 theorem two_card_psi (E : Type) [Field E] [NumberField E] [IsCMField E] {r : ℕ} (D : ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
@@ -344,8 +342,6 @@ open AlgebraicGeometry CategoryTheory MvPolynomial NumberField ReciprocityTheory
 open Classical
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame
 open MeasureTheory Formalism.DegreeFormula GlobalTheory.TrueCx
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -406,8 +406,7 @@ theorem GlobalTheory.totalDegree_le_of_integral_at_infinity : ∀ {K : Type} [Fi
     z i * y j ^ N = aeval y C) → ∀ (f : Polynomial (MvPolynomial ι ℤ)), f.Monic →
     f.eval₂ (aeval z).toRingHom (aeval y T₀ / y j ^ q) = 0 → T₀.totalDegree ≤ q := by
   intro K _ D y hind j hu T₀ q ι z hz f hf heq
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hw : y j ^ q ≠ 0 := pow_ne_zero _ hu
   generalize hs : aeval y T₀ / y j ^ q = s at heq
   have ht : aeval y T₀ = s * y j ^ q := by rw [← hs, div_mul_cancel₀ _ hw]

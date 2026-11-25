@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLiftDef
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.ClauseAOfIdentityFlag
 
@@ -25,16 +26,7 @@ theorem lframe_mem_locP {P : Ideal (𝓞 E)} [P.IsPrime] {M : Submodule (𝓞 E)
 
 theorem lframe_local_global (M : Submodule (𝓞 E) S.V) (y : S.V)
     (h : ∀ P : HeightOneSpectrum (𝓞 E), ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ s • y ∈ M) : y ∈ M := by
-  let I : Ideal (𝓞 E) := M.comap (LinearMap.toSpanSingleton (𝓞 E) S.V y)
-  have hI : ∀ s, s ∈ I ↔ s • y ∈ M := fun s => by
-    simp [I, Submodule.mem_comap, LinearMap.toSpanSingleton_apply]
-  by_cases htop : I = ⊤
-  · have h1 : (1 : 𝓞 E) ∈ I := by rw [htop]; trivial
-    simpa using (hI 1).1 h1
-  · obtain ⟨m, hm, hle⟩ := Ideal.exists_le_maximal I htop
-    have hne : m ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField E)
-    obtain ⟨s, hs, hsy⟩ := h ⟨m, hm.isPrime, hne⟩
-    exact absurd (hle ((hI s).2 hsy)) hs
+  apply _root_.Formalism.L2.SG.Pf.mem_of_forall_prime <;> assumption
 
 theorem lframe_dual {r : ℕ} {T : E} (F : FlagG S r T) (a : Fin r) :
     ∃ φ : S.V →ₗ[E] E, ∀ b, φ (F.e b) = if b = a then 1 else 0 := by

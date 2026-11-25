@@ -13,55 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Admissi
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleStd
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineSumsTwistsCharactersExpectedJumps
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LinearIndependentOfIndepMod
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.BasicDefinitions.ExistsUnique
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -745,8 +698,7 @@ theorem exists_map_res [IsLocalRing O] {lam : O} (hm : IsLocalRing.maximalIdeal 
       Module.Finite.fg_top h.ge (by rw [← hm]; exact IsLocalRing.maximalIdeal_le_jacobson ⊥)
     exact top_ne_bot hb
   obtain ⟨y, hy⟩ : ∃ y : Y, y ∉ (Ideal.span {lam} • ⊤ : Submodule O Y) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne (eq_top_iff.2 fun y _ => hc y)
   have hq : (Submodule.mkQ (Ideal.span {lam} • ⊤ : Submodule O Y)) y ≠ 0 := by
     rwa [Submodule.mkQ_apply, Ne, Submodule.Quotient.mk_eq_zero]
@@ -791,8 +743,7 @@ theorem eq_hom_of_res {l : ℕ} [Fact l.Prime] [Algebra ℤ_[l] O] [IsLocalRing 
     rw [hd]
     exact B.sub_mem hc hclu
   have hzero : ∀ g, h g = 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨g₀, hg₀⟩ := hne
     set Y : Submodule O X := Submodule.span O (Set.range h) with hY_eq
     have hY : ∀ g, h g ∈ Y := fun g => Submodule.subset_span ⟨g, rfl⟩
@@ -806,8 +757,7 @@ theorem eq_hom_of_res {l : ℕ} [Fact l.Prime] [Algebra ℤ_[l] O] [IsLocalRing 
     have : Nontrivial ↥Y := ⟨⟨hY' g₀, 0, fun e => hg₀ (congrArg Subtype.val e)⟩⟩
     obtain ⟨φ, hφ⟩ := exists_map_res hm ↥Y
     have hex : ∃ g, φ (hY' g) ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hφ
       have hle : Y ≤ (LinearMap.ker φ).map Y.subtype := by
         refine Submodule.span_le.2 ?_

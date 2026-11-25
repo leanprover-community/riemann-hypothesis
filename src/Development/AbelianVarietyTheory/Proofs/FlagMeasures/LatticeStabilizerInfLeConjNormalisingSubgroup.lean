@@ -111,9 +111,7 @@ private lemma matrix_eq_of_linearIndependent_sum_smul_eq {n m : ℕ} {f : Fin m 
     (hf : LinearIndependent E f) {A B : Matrix (Fin m) (Fin m) E}
     (h : ∀ j, ∑ i, A i j • f i = ∑ i, B i j • f i) : A = B := by
   ext i j
-  have := Fintype.linearIndependent_iff.mp hf (fun l => A l j - B l j)
-    (by simp only [sub_smul, Finset.sum_sub_distrib, h j, sub_self])
-  exact sub_eq_zero.mp (this i)
+  exact Fintype.linearIndependent_iffₛ.1 hf (fun l => A l j) (fun l => B l j) (h j) i
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in

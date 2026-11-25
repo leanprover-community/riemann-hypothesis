@@ -92,8 +92,7 @@ lemma sum_dot {k : Type} [Field k] [Fintype k] [DecidableEq k] {ι : Type} [Fint
   · obtain ⟨i, hi⟩ := Function.ne_iff.mp hw
     have hi' : w i ≠ 0 := hi
     have h1 : ∃ a : k, ψ (a * w i) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have := AddChar.sum_mulShift (w i) hψ
       simp [hcon, hi'] at this
     obtain ⟨a, ha⟩ := h1

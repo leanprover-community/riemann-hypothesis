@@ -9,6 +9,7 @@ public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Bir
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ArithIntersectionMultilinearAll
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumFundCoMulSumIic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ArithIntersectionConstantMetric, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IntersectionSystemDegree, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LogIntegralMultilinear
@@ -80,19 +81,7 @@ theorem smooth_oneLine : IsSmoothHerm (oneLine ι) := by
 
 theorem smooth_comb {J : Type} [Fintype J] {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j))
     (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := by
-  refine contDiffOn_prod fun a _ => ?_
-  intro z hz
-  have h0 : (ℓ a).h z ≠ 0 := ((ℓ a).pos z hz).ne'
-  have hf := hℓ a z hz
-  have key : ∀ m : ℤ, ContDiffWithinAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => (ℓ a).h z ^ m)
-      {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} z := by
-    intro m
-    cases m with
-    | ofNat k => simpa only [Int.ofNat_eq_natCast, zpow_natCast] using hf.pow k
-    | negSucc k =>
-      simp only [zpow_negSucc]
-      exact (hf.pow (k + 1)).inv (pow_ne_zero _ h0)
-  exact key _
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Small.Fund.isSmoothHerm_comb <;> assumption
 
 def extLine {J : Type} (ℓ : J → HermLine ι) : Option J → HermLine ι
   | none => oneLine ι

@@ -131,8 +131,6 @@ def AF (j : Γ →* G) (R : Representation ℂ G W) : Submodule ℂ (G → W) wh
   zero_mem' γ g := by simp
   smul_mem' c f h γ g := by simp [h γ g]
 
-def stab (j : Γ →* G) (H : Subgroup G) (g : G) : Subgroup Γ := H.comap ((MulAut.conj g⁻¹).toMonoidHom.comp j)
-
 end Abs
 
 variable (F : Type) [Field F] [NumberField F]

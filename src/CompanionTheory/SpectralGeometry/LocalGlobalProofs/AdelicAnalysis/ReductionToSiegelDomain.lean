@@ -372,8 +372,7 @@ theorem exists_small {ι : Type} [Fintype ι] [DecidableEq ι] {κ : Type} [Fint
     exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure hfund hsymm hconv hvol
   have hx' : x ∈ Submodule.span ℤ (Set.range b₂) := hx
   refine ⟨_, hproj x hx' 0, _, hproj x hx' 1, ?_, fun w => ?_⟩
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     apply hne
     apply Subtype.ext
     funext ⟨k, w⟩
@@ -580,8 +579,7 @@ theorem prod_sq_embedding {F : Type} [Field F] [NumberField F] (hF : IsTotallyRe
 theorem balanced_lower {ι : Type} [Fintype ι] (z : ι → ℝ) (hz : ∀ i, 0 < z i) (κ P : ℝ)
     (hκ : 0 < κ) (hbal : ∀ v w, κ * z w ≤ z v) (hprod : P ≤ ∏ i, z i) (w : ι) :
     κ * min 1 P ≤ z w := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   set q := z w / κ with hq
   have hqpos : 0 < q := div_pos (hz w) hκ
   have hqlt : q < min 1 P := by

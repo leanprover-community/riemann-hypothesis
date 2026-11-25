@@ -24,8 +24,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat 
   Formalism.L2.SG.MassDataConc Formalism.L2.SG.TypedSets MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures
 open scoped Classical TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Vol
 
 variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I)

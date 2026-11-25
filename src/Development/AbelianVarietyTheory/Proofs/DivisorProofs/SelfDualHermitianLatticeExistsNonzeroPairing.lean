@@ -76,8 +76,7 @@ theorem selfDual_pair_nondeg : ∀ (F E : Type) [Field F] [NumberField F] [Field
     (∀ i j, σ (J j i) = J i j) → (∀ y, y ∈ L ↔ ∀ x ∈ L, IsIntegral ℤ (form σ J y x)) →
     ∀ x : Fin n → E, x ≠ 0 → ∃ z ∈ L, form σ J z x ≠ 0 := by
   intro F E _ _ _ _ _ σ hσ n J L hL hJ hdual x hx
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hxw : ∀ w ∈ L, form σ J x w = 0 := fun w hw => by
     rw [sesquilinearFormOfGram_eq_conj_swap F E σ hσ n J x w hJ, hcon w hw, map_zero]
   have hmem : ∀ c : E, c • x ∈ L := fun c => by

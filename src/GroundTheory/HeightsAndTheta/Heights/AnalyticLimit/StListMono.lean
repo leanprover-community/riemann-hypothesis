@@ -22,9 +22,4 @@ def ListMono.Statement : Prop :=
       MIntegrable A (fun i => potForm (th i) (u i)) g ∧
         mInt A (fun i => potForm (th i) (u i)) g ≤ mInt A (fun i => potForm Om.pot (u i)) g
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

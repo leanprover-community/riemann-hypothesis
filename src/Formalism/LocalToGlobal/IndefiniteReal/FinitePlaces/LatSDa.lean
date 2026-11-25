@@ -4,7 +4,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 public import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LatticeVariant
+public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod
@@ -116,8 +116,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.VacEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 end Gen
@@ -175,8 +173,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def PhiM (m n : ℕ) (x : Mx D m n) : Fin m → Fin n → Fin (nE D) → AF D.host.F :=
@@ -194,7 +190,7 @@ end -- clump:auto
 -- ===== end clump member: Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FDMSubCompact =====
 
 -- ===== clump member: Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSDa =====
--- clump-header: {"m": "Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSDa", "h": "module\n\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt\npublic import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators\npublic import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction\npublic import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC\npublic import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LatticeVariant\npublic import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceDualB\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.VacExA\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.VacExApp\npublic import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.ConjPurelyImaginaryGenerator\npublic import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FDMSubCompact\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSDa", "h": "module\n\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt\npublic import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators\npublic import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction\npublic import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC\npublic import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow\npublic import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ExistsNatSmulSingle\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum\nimport Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemUniq\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceDualB\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.VacExA\npublic import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.VacExApp\npublic import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.ConjPurelyImaginaryGenerator\npublic import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FDMSubCompact\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -206,8 +202,6 @@ open scoped TensorProduct
 set_option synthInstance.maxHeartbeats 160000
 
 namespace Formalism.IndefR.Fin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -270,11 +264,6 @@ theorem lsd_coordO : ∃ r : 𝓞 D.host.F, r ≠ 0 ∧ ∀ (x : 𝓞 D.host.E) 
   rw [map_zsmul, Finsupp.smul_apply, ← hy l, zsmul_eq_mul, zsmul_eq_mul]
   ring
 
-theorem lsd_spanDen {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
-    (hL : Submodule.span D.host.E (L : Set (Fin n → D.host.E)) = ⊤) (x : Fin n → D.host.E) :
-    ∃ d : 𝓞 D.host.E, d ≠ 0 ∧ (d : D.host.E) • x ∈ L :=
-  _root_.UpperTheory.Reformulated.B.LatticeVariant.lsd_spanDen L hL x
-
 section Lat
 
 variable (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E))
@@ -284,8 +273,7 @@ def lsdE (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F) (e : D.host.E) : W
   Matrix.of fun i' j' => if i' = i ∧ j' = j then pairA D.host.F 0 β ⊗ₜ[D.host.F] e else 0
 
 theorem lsd_AA_ne : ∃ c : D.host.E, c ∈ D.host.AA ∧ c ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 : D.host.AA = 0 := by
     ext x
     rw [FractionalIdeal.mem_zero_iff]

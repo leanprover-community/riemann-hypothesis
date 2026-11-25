@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumACorr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarOmPart
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModel
@@ -48,18 +49,7 @@ theorem om_pair {r : ℕ} (f g : Fin (r + 1) → V) (a : Fin (r + 1)) :
   rw [e, Matrix.mul_adjugate, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
 
 theorem om_perp {r : ℕ} (f g : Fin (r + 1) → V) : H.om' f g ∈ H.perp (H.X f) := by
-  intro s hs
-  have hl : ∀ s ∈ H.X f, H.h s (H.om' f g) = 0 := by
-    intro s hs
-    induction hs using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨i, rfl⟩ := hx
-      rw [H.h_herm (H.om' f g), om_pair]
-      simp [Fin.castSucc_ne_last]
-    | zero => exact H.h_zero_left _
-    | add x y _ _ hx hy => rw [H.h_add_left, hx, hy, add_zero]
-    | smul c x _ hx => rw [H.h_smul_left, hx, mul_zero]
-  rw [H.h_herm s, hl s hs, map_zero]
+  apply +allowSynthFailures _root_.Formalism.L2.SG.LsDatumA.om'_mem_perpX <;> assumption
 
 theorem uniq_loc {r : ℕ} (f g : Fin (r + 1) → V) (hdet : IsUnit (H.Zhat f g).det) {d : V}
     (hd : d ∈ Submodule.span E (Set.range g)) (h0 : ∀ a, H.h d (f a) = 0) : d = 0 := by

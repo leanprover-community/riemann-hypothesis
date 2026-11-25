@@ -83,11 +83,8 @@ theorem schr_zero' {R : Type} [CommRing R] [Invertible (2 : R)] {κ : Type} [Fin
   funext x
   simp [schr]
 
-theorem char_ne_zero {R : Type} [CommRing R] (ψ : AddChar R ℂ) (x : R) : ψ x ≠ 0 := by
-  intro hx
-  have h2 : ψ (x + -x) = ψ x * ψ (-x) := AddChar.map_add_eq_mul ψ x (-x)
-  rw [add_neg_cancel, AddChar.map_zero_eq_one, hx, zero_mul] at h2
-  exact one_ne_zero h2
+theorem char_ne_zero {R : Type} [CommRing R] (ψ : AddChar R ℂ) (x : R) : ψ x ≠ 0 :=
+  (ψ.val_isUnit x).ne_zero
 
 theorem common_eigen {R : Type} [CommRing R] [Invertible (2 : R)] {κ : Type} [Fintype κ] (ψ : AddChar R ℂ)
     (S : Set ((κ → R) × (κ → R))) (f g : (κ → R) → ℂ) (hf : ∀ s ∈ S, schr ψ s f = f)

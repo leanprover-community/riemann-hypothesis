@@ -155,16 +155,6 @@ structure FrRel (R : SRel A A') (I : Set ℂ) (f : FrameData S A) (f' : FrameDat
   ci : (R.mat (Ix S)).r f.ci f'.ci
 
 
-omit [StarModule ℂ A] in
-theorem l_eq {L : LevelData A r} {f : FrameData S A} (hf : IsFrame L f) {Y : ℂ} (hY : Y ∈ f.inv)
-    (hY1 : Y + 1 ∈ f.inv) : f.l L Y = f.xi Y * io L.GGi * (f.F * f.TT Y 1 0) * f.Fi := by
-  have hG : (io L.GGi : SlopeTestRemainingChoices S A) * io L.GG = 1 := by
-    rw [io, io, ← map_mul, L.GGi_GG, map_one]
-  rw [hf.frame_l Y hY hY1]
-  calc f.l L Y = (f.xi Y * ((io L.GGi * io L.GG) * f.x Y)) * f.l L Y * (f.F * f.Fi) := by
-        rw [hG, one_mul, (hf.x_xi Y hY).2, hf.F_Fi, one_mul, mul_one]
-    _ = _ := by simp only [mul_assoc]
-
 omit [StarModule ℂ A] [StarModule ℂ A'] in
 theorem l_rel {R : SRel A A'} {I : Set ℂ} {L : LevelData A r} {L' : LevelData A' r} (hL : FnRel R L L')
     {f : FrameData S A} {f' : FrameData S A'} (h : FrRel R I f f') (hf : IsFrame L f) (hf' : IsFrame L' f')

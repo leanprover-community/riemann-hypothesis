@@ -41,8 +41,7 @@ theorem exists_lieElement_middleBlockPart (c : Coeff l) (la : HeightOneSpectrum 
       exact (la.intValuation_lt_one_iff_mem x).2 hx
     exact hnon ⟨_, (Valuation.mem_valuationSubring_iff (la.valuation c.F) _).2 hx1.le⟩
       ((Valuation.mem_maximalIdeal_iff _ (la.valuation c.F)).2 hx1)
-  · by_contra hv
-    push_neg at hv
+  · by_contra! hv
     have hx0 : x ≠ 0 := by rintro rfl; simp at hv
     have hi1 : la.valuation c.F x⁻¹ < 1 := by rw [map_inv₀]; exact inv_lt_one_of_one_lt₀ hv
     have hiV : x⁻¹ ∈ V := (Valuation.mem_valuationSubring_iff (la.valuation c.F) _).2 hi1.le

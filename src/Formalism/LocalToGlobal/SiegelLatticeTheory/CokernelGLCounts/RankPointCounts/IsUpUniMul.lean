@@ -17,22 +17,8 @@ section Uni
 
 variable {R : Type*} [CommRing R] {n : ℕ}
 
-theorem isLoUni_mul {l l' : Matrix (Fin n) (Fin n) R} (h : IsLoUni l) (h' : IsLoUni l') : IsLoUni (l * l') := by
-  intro a b
-  refine ⟨fun hab => ?_, fun hab => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    rcases lt_or_ge a c with hc | hc
-    · rw [(h a c).1 hc, zero_mul]
-    · rw [(h' c b).1 (lt_of_le_of_lt hc hab), mul_zero]
-  · subst hab
-    rw [Matrix.mul_apply, Finset.sum_eq_single a]
-    · rw [(h a a).2 rfl, (h' a a).2 rfl, mul_one]
-    · intro c _ hc
-      rcases lt_or_gt_of_ne hc with hc' | hc'
-      · rw [(h' c a).1 hc', mul_zero]
-      · rw [(h a c).1 hc', zero_mul]
-    · simp
+theorem isLoUni_mul {l l' : Matrix (Fin n) (Fin n) R} (h : IsLoUni l) (h' : IsLoUni l') : IsLoUni (l * l') :=
+  by apply _root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul <;> assumption
 
 theorem isUpUni_mul {l l' : Matrix (Fin n) (Fin n) R} (h : IsUpUni l) (h' : IsUpUni l') : IsUpUni (l * l') := by
   first | (apply GlobalTheory.UpperUnipotentProductFlagMeasures.upUni_mul <;> assumption)

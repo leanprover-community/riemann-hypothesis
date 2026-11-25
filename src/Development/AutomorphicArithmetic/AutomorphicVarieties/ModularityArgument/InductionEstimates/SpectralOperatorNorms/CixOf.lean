@@ -795,22 +795,12 @@ private theorem bV_mem {r : ℕ} (b : Blo S r) :
     ((cuspToL2 (mu1 E r) ⟨b.f.1, b.cusp⟩ : cuspidalL2 (mu1 E r)) : LL (mu1 E r)) ∈ bV b :=
   b.summand.choose_spec.2
 
-private theorem sum_blo {n : ℕ} (d : Dat S n) : ∑ i, (d.blo i).1 = n := by
-  induction d with
-  | nil =>
-    change ∑ i : Fin 0, _ = 0
-    simp
-  | @cons r s b d ih =>
-    change ∑ i : Fin (d.len + 1), _ = r + s
-    rw [Fin.sum_univ_succ]
-    exact congrArg (r + ·) ih
-
 private noncomputable def datOf {n : ℕ} (d : Dat S n) (h : 2 ≤ d.len) : Datum E n where
   r := d.len
   two := h
   d := fun i => (d.blo i).1
   pos := fun i => (d.blo i).2.pos
-  sum := sum_blo d
+  sum := _root_.UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.KX.blo_sum d
   μ := fun i => mu1 E (d.blo i).1
   V := fun i => bV (d.blo i).2
   summand := fun i => bV_summand _
@@ -846,17 +836,6 @@ private theorem lam_ms {n : ℕ} (d : Dat S n) (τ : E →+* ℂ) : ∀ z : Fin 
     rw [h1, h2, ih fun j => z j.succ, Multiset.map_map]
     rfl
 
-private theorem sat_blo {n : ℕ} (d : Dat S n) (j : Fin d.len) : d.sat j = (d.blo j).2.sat := by
-  induction d with
-  | nil => exact (j : Fin 0).elim0
-  | @cons r s b d ih =>
-    revert j
-    change ∀ j : Fin (d.len + 1), _
-    intro j
-    refine Fin.cases ?_ (fun i => ?_) j
-    · rfl
-    · exact ih i
-
 private theorem pt_on {n : ℕ} (d : Dat S n) (h : 2 ≤ d.len) {Λ : (E →+* ℂ) → Multiset ℂ} {t : BW.Pl E → Multiset ℂ}
     (ho : d.On Λ t) : (datOf d h).Pt S Λ t := by
   obtain ⟨z, hΛ, ht⟩ := ho
@@ -867,7 +846,7 @@ private theorem pt_on {n : ℕ} (d : Dat S n) (h : 2 ≤ d.len) {Λ : (E →+* �
   · rw [ht w hw]
     unfold Dat.ptS
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [sat_blo, Multiset.map_map]
+    rw [_root_.UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.KX.blo_sat, Multiset.map_map]
     rfl
 
 private theorem two_blocks {n : ℕ} (d : Dat S n) (h : d.len = 2) (hs : ∀ i, (d.blo i).1 = 2) :

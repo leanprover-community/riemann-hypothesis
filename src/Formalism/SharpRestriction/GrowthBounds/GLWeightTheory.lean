@@ -1046,28 +1046,8 @@ theorem raising_shifts_weight_by_root (E : GLOps n K V)
     (hrel : ∀ a b c d, E a b * E c d - E c d * E a b = (if b = c then E a d else 0) - (if d = a then E c b else 0))
     {a b : Fin n} (hab : a ≠ b) {mu : Fin n → ℤ} {x : V} (hx : x ∈ weightSp E mu) :
     E a b x ∈ weightSp E (mu + rootW a b) := by
-  rw [mem_weightSpace_iff_diagonal] at hx ⊢
-  intro c
-  have h := congrArg (fun f : Module.End K V => f x) (hrel c c a b)
-  simp only [LinearMap.sub_apply, Module.End.mul_apply] at h
-  rw [hx c, map_smul, sub_eq_iff_eq_add] at h
-  rw [h]
-  by_cases hca : c = a
-  · subst hca
-    have hbc : ¬ b = c := fun h => hab h.symm
-    simp only [if_true, if_neg hbc, LinearMap.zero_apply, sub_zero, rootW, Pi.add_apply, Pi.sub_apply,
-      Pi.single_eq_same, Pi.single_eq_of_ne hab]
-    push_cast
-    rw [add_smul, one_smul, add_comm]
-  · by_cases hcb : c = b
-    · subst hcb
-      simp only [if_neg hca, if_true, LinearMap.zero_apply, zero_sub, rootW, Pi.add_apply, Pi.sub_apply,
-        Pi.single_eq_same, Pi.single_eq_of_ne hca]
-      push_cast
-      rw [add_smul, neg_smul, one_smul, add_comm]
-    · have hbc : ¬ b = c := fun h => hcb h.symm
-      simp only [if_neg hca, if_neg hbc, LinearMap.zero_apply, sub_zero, rootW, Pi.add_apply, Pi.sub_apply,
-        Pi.single_eq_of_ne hca, Pi.single_eq_of_ne hcb, zero_add, add_zero]
+  intros
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.operator_shifts_weight_by_root <;> assumption
 
 def weightHeight (mu : Fin n → ℤ) : ℤ := ∑ c : Fin n, ((c : ℕ) : ℤ) * mu c
 

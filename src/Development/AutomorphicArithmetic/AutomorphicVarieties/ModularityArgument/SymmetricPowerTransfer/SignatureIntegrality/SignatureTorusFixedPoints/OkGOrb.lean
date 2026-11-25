@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.ThetaThetaAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.SignatureIntegrality.HodgeTateFromSandwich
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.SignatureIntegrality.SignatureTorusFixedPoints.EUInvApply
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.SignatureIntegrality.SignatureTorusFixedPoints.IsIntegralOfEv
@@ -967,12 +968,7 @@ private theorem theta_theta {K : Type} [Field K] {Δ : K} (g : U3 Δ) : theta Δ
 
 private theorem hasTau_conj {K : Type} [Field K] {Δ τ : K} {δ : U3 Δ} (h : HasTau δ τ) (y : U3 Δ) :
     HasTau (y⁻¹ * δ * theta Δ y) τ := by
-  unfold HasTau at h ⊢
-  have e : y⁻¹ * δ * theta Δ y * theta Δ (y⁻¹ * δ * theta Δ y) = y⁻¹ * (δ * theta Δ δ) * y := by
-    simp only [map_mul, map_inv, theta_theta]
-    group
-  rw [e, ← h, Submonoid.coe_mul, Submonoid.coe_mul, mul_assoc, Matrix.charpoly_mul_comm, mul_assoc,
-    ← Submonoid.coe_mul, mul_inv_cancel, Submonoid.coe_one, mul_one]
+  apply _root_.hasTau_conj <;> assumption
 
 private theorem val_unif_lt (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
     valuation k (unif k : k) < 1 := by

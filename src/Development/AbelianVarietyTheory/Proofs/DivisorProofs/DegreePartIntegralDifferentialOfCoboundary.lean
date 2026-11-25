@@ -71,11 +71,11 @@ theorem coboundaryOne_teichmullerLift_mem_integralDifferential (p : ℕ) [Fact p
     cob1 (fun i => lift p (μ i)) g ∈ quasiInt p k (Fin d ⊕ Fin d) := by
   unfold cob1 inL inR
   refine sub_mem (sub_mem ?_ ?_) ?_
-  · exact GlobalTheory.T.subst_mem_integralDifferentialSubmodule p k (Fin d) (Fin d ⊕ Fin d) _ g
+  · exact _root_.GlobalTheory.Katz.subst_mem_quasiInt p k (Fin d) (Fin d ⊕ Fin d) _ g
       (fun i => constantCoeff_lift p (hμ.const i)) (fun i => lift_mem_intBy p k _) hg
-  · exact GlobalTheory.T.subst_mem_integralDifferentialSubmodule p k (Fin d) (Fin d ⊕ Fin d) _ g
+  · exact _root_.GlobalTheory.Katz.subst_mem_quasiInt p k (Fin d) (Fin d ⊕ Fin d) _ g
       (fun i => constantCoeff_X _) (fun i => X_mem_intBy p k _) hg
-  · exact GlobalTheory.T.subst_mem_integralDifferentialSubmodule p k (Fin d) (Fin d ⊕ Fin d) _ g
+  · exact _root_.GlobalTheory.Katz.subst_mem_quasiInt p k (Fin d) (Fin d ⊕ Fin d) _ g
       (fun i => constantCoeff_X _) (fun i => X_mem_intBy p k _) hg
 
 theorem main : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k), IsLaw μ → ∀ (N : ℕ) (g h : MvPowerSeries (Fin d) (Fr p k)), 2 ≤ N → g ∈ quasiInt p k (Fin d) → (∀ α : Fin d →₀ ℕ, α.degree < N → coeff α h = 0) → (∀ γ : Fin d ⊕ Fin d →₀ ℕ, γ.degree = N → ∃ w : WittVector p k, coeff γ (cob1 (fun i => Katz.lift p (μ i)) (g + h)) = algebraMap (WittVector p k) (Fr p k) w) → ∀ (α : Fin d →₀ ℕ) (i : Fin d), α.degree = N → ∃ w : WittVector p k, (α i : Fr p k) * coeff α h = algebraMap (WittVector p k) (Fr p k) w := by

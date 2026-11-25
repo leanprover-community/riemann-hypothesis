@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MaximalCompactActsOnFockVectorsBySubstitution
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactSubgroupsActOnFockVectorsAllSignatures
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
@@ -166,7 +167,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor
 open scoped TensorProduct ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.VacCharAtPlace
 
@@ -186,29 +186,8 @@ theorem onb_mul_inv {k p : ℕ} {G s B : Matrix (Fin k) (Fin k) ℂ} (h : IsONBa
 
 theorem comm_of_onb {k p : ℕ} {G s B κ : Matrix (Fin k) (Fin k) ℂ} (h : IsONBasis G s B p) (hk : IsKMat p κ) :
     s * (B * κ * B⁻¹) = B * κ * B⁻¹ * s := by
-  have hB := onb_mul_inv h
-  have hB' : B⁻¹ * B = 1 := mul_eq_one_comm.1 hB
-  obtain ⟨ε, hε, -, h2⟩ := h
-  have hs : s = B * diagonal (fun a => (ε a : ℂ)) * B⁻¹ := by
-    rw [← h2, Matrix.mul_assoc, hB, Matrix.mul_one]
-  have hc : diagonal (fun a => (ε a : ℂ)) * κ = κ * diagonal (fun a => (ε a : ℂ)) := by
-    ext i j
-    rw [diagonal_mul, mul_diagonal]
-    by_cases hij : (i.val < p ↔ j.val < p)
-    · have e : ε i = ε j := by
-        rcases hε i with ⟨a1, a2⟩ | ⟨a1, a2⟩ <;> rcases hε j with ⟨b1, b2⟩ | ⟨b1, b2⟩
-        · rw [a1, b1]
-        · exact absurd (hij.1 a2) (by omega)
-        · exact absurd (hij.2 b2) (by omega)
-        · rw [a1, b1]
-      rw [e, mul_comm]
-    · rw [hk.2 i j hij, mul_zero, zero_mul]
-  rw [hs]
-  calc B * diagonal (fun a => (ε a : ℂ)) * B⁻¹ * (B * κ * B⁻¹)
-        = B * (diagonal (fun a => (ε a : ℂ)) * (B⁻¹ * B) * κ) * B⁻¹ := by simp only [Matrix.mul_assoc]
-    _ = B * (κ * (B⁻¹ * B) * diagonal (fun a => (ε a : ℂ))) * B⁻¹ := by
-        rw [hB', Matrix.mul_one, Matrix.mul_one, hc]
-    _ = B * κ * B⁻¹ * (B * diagonal (fun a => (ε a : ℂ)) * B⁻¹) := by simp only [Matrix.mul_assoc]
+  intros
+  apply _root_.GlobalTheory.FockCompact.comm_of_onb <;> assumption
 
 theorem alg {A B C E : ℂ} (cS cT : ℤ) (pS qS pT qT : ℕ) (hA : A ≠ 0) (hB : B ≠ 0) (hC : C ≠ 0) (hE : E ≠ 0) :
     ((A * B) ^ cT)⁻¹ * (C * E) ^ cS * (C ^ pS * E ^ qS * (A ^ pT)⁻¹ * (B ^ qT)⁻¹) =

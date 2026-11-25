@@ -79,8 +79,7 @@ theorem balanced_pairs (H : Host E) {l : Level H} (c : Coeff l) {S : Type} [Comm
     (hv : ∀ a : 𝓞 E, algebraMap c.F S (embK c τ a) * v = algebraMap c.F S (embK c τ' (H.bar a)) * v)
     (hne : τ ≠ ComplexEmbedding.conjugate τ') : v = 0 := by
   have : ∃ a : 𝓞 E, embK c τ a ≠ embK c τ' (H.bar a) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hne
     apply IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E))
     ext a

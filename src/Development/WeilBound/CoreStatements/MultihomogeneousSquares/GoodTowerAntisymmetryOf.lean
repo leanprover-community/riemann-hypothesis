@@ -49,59 +49,11 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerOri
 public import Development.WeilBound.CoreStatements.FlagImmersions.SumFundOnRoot
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CmHostRankBounds
 public import Development.WeilBound.CoreStatements.MultihomogeneousSquares.ChooseTwoAdd
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Polynomial.Basic
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-import Mathlib.Geometry.Manifold.IsManifold.Basic
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Separation.CompletelyRegular
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PZeroSetNull
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
@@ -867,7 +819,7 @@ theorem pts_eq_polar (hE : ResExistsStatement) (Q : SqSys Re a₀ ε) {t : ℝ} 
     have hxZ : x ∉ Z := fun h => hx (Or.inr h)
     rw [hAm _ (Q.ReW.R.mem x x (Q.ReW.R.mem_U x)) hxZ, hNe t ht ht' x hxN]
     rfl
-  have hbr := _root_.GlobalTheory.CompanionTheory.Ar.PB.ptsIntegral_logNormRat_eq_base hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
+  have hbr := _root_.PositivityTheory.Xgp.t_re_bridge hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
     Q.ReW.deg Q.ReW.br Q.alg.arithW Q.ReW.degree (fun j => combLine (fun o => Q.ReW.line o t) (c j)) Φ
     hsmooth hΦ hSame Am Q.alg.g Q.alg.h (Q.an.gT t) (N ∪ Z) hAmS hRat hN' hEq hexp.1
   rw [hbr, Q.deg_eq]
@@ -924,7 +876,7 @@ theorem first_half_at_scale : Inputs → ∀ (II : IntersectionSystem), IsFullIn
   have hpol : ∀ c : Fin (d + 2) → σ → ℤ, polar (d + 2) (Re.num II t) (fun r a => (c r a : ℝ)) =
       II K ι P (d + 2) (fun r => combLine LY (c r)) / Re.deg := by
     intro c
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.combLine_intersection hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
+    rw [(_root_.PositivityTheory.Xgp.t_re_comb hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
     exact polar_div _ _ _ _
   let Xi : HermLine ι := combLine LY ε
   let A : HermLine ι := combLine LY n
@@ -1426,7 +1378,7 @@ theorem sq_of (hT : StTie) (hCmp : StCmp) : StSq := by
   obtain ⟨M', t, d, S, K, _, ι, _, P, Re, hgen, hR, hdeg, hpos, hS, hF, hPB⟩ :=
     hT hG hW E H D l (Xo l) c Y (o.S B) _ (o.Or B a).𝔐.ξ₀ (o.Or B a).𝔐.gen₀ (o.Or B a).𝔐.S_prime hdisc hp hq
   obtain ⟨-, ⟨x, hx⟩, -⟩ := HodgeCpt.basic _ _ _ _ _ _ _ _ Y _ _ _ _ _ (o.Or B a).𝔐 RingOfIntegers.coe_injective
-  have hA := _root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
+  have hA := _root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
   obtain ⟨f₁, f₂⟩ := hCmp hIn hC II hII E H D l (Xo l) c _ _ Y _ _ _ _ t
     (RootFieldNumerics.Sq.tieOf (o.Or B a) ((o.Sys a).reg none).1 (o.omVB B a) t.discr hA) hmono hgen
     (fun p hp => (hX.2 B a p hp).trans (hR p hp).symm) hdeg (o.Or B a).Re_deg

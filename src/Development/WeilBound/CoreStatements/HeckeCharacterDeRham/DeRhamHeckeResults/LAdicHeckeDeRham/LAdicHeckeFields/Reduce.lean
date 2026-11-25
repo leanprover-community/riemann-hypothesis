@@ -52,73 +52,19 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomolog
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocalComparisonFromAlternative
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeRhamRankLubinTateLineStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisOpenSubgroupLocalUnits
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalPrimeGaloisActionPeriodT
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import CompanionTheory.AutomorphicTheory.PlaceSeparation.ArtinA
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.ConjugateSelfDual.Statement
 import GroundTheory.LocalFields.FilteredSurj
 import GroundTheory.LocalFields.FormalGroups.Truncation
 import ReciprocityTheory.GaloisValuations.GlobalA
 import GroundTheory.GlobalFields.LocalAtPlace
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import GroundTheory.GlobalFields.IdeleGroups.SIdeleHerbrand
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Topology.Separation.CompletelyRegular
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedIsCrysAndJumpEqZero
-import Mathlib.RingTheory.PicardGroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLubinTateCharacterUnitary, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenUnitSubgroupKer, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisCharacterArtinCompat, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalArtinMapUnique, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSepClosureOfRangeEq, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalEmbeddingRangeEqField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGlobalArtinCompatible, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValuationLeIffNormEmbedding, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ImportsTer, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalCharacterFiniteExtension, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneNotMemFilOne, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalCharacterInducedTiedSix, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalCharacterInducedTied, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGaloisEmbeddingExtension, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedCharactersDeRhamJumpZero, Development.WeilBound.CoreStatements.HeckeCharacterDeRham.DeRhamHeckeResults.LAdicHeckeDeRham.LAdicHeckeFields.Reduce
@@ -154,8 +100,6 @@ noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.HeckeSmooth
 
@@ -964,8 +908,7 @@ theorem multV_inv [IsDomain BdR] (κ : K →ₐ[Qp] Om)
   have hinv : ∀ σ, σ.comp τ = κ → ∃ y ∈ PD.Fil (-J), f σ * y = 1 := fun σ hσ => hval J _ (hJ σ) (hJ1 σ hσ)
   choose! yv hyv hyv1 using hinv
   obtain ⟨σ₀, hσ₀⟩ : ∃ σ : LL →ₐ[Qp] Om, σ.comp τ = κ := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hz2 ((mem_filV_coord PD hOm (J + 1) z).2 fun σ' => by
       change f σ' ∈ _
       rw [hzero σ' (hno σ')]

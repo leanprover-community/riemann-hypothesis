@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StarMulOfMemKc
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProjectorOfIntegrableDiscreteSeriesCoefficient
@@ -84,15 +85,7 @@ private lemma sinh_div_le_exp_of_pos {y : ℝ} (hy : 0 < y) : Real.sinh y / y �
 
 open MvPolynomial in
 private lemma shc_le_exp_abs (x : ℝ) : _root_.Formalism.MainNotions.SchurIrreducible.shc x ≤ Real.exp |x| := by
-  unfold _root_.Formalism.MainNotions.SchurIrreducible.shc
-  split_ifs with hx
-  · simp [hx]
-  · rcases lt_or_gt_of_ne hx with h | h
-    · rw [abs_of_neg h]
-      have := sinh_div_le_exp_of_pos (neg_pos.mpr h)
-      rwa [Real.sinh_neg, neg_div_neg_eq] at this
-    · rw [abs_of_pos h]
-      exact sinh_div_le_exp_of_pos h
+  apply _root_.GlobalTheory.CartanInt.shc_le_exp <;> assumption
 
 open MvPolynomial in
 private lemma sum_sum_ite_lt_four_mul_add_eq (m : ℕ) (a : ℕ → ℝ) :

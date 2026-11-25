@@ -161,8 +161,7 @@ theorem eq_top_of_stable : ∀ (ι : Type) [Fintype ι] (K : ι → Type) [∀ i
   have hall : ∀ i (f : Module.End ℂ (K i)), ∀ y ∈ N, intersection_update_fsHerm_neg_one i f y ∈ N := fun i f =>
     stable_all_position i (a i) (ha i) N (hN i) f
   obtain ⟨w, hw⟩ : ∃ w, Scal.tform w x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx0 (Scal.eq_of_tform fun w => by rw [h w, map_zero])
   have htp : ∀ v : ∀ i, K i, PiTensorProduct.tprod ℂ v ∈ N := by
     intro v

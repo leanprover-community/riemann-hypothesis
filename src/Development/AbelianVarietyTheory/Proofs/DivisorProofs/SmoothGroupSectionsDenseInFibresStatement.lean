@@ -87,23 +87,6 @@ namespace GlobalTheory.DenseSec
 open KaehlerDifferential
 open scoped TensorProduct
 
-theorem formallyEtale_of_bijective_kaehler_mapBaseChange (R P B : Type*) [CommRing R] [CommRing P] [CommRing B]
-    [Algebra R P] [Algebra R B] [Algebra P B] [IsScalarTower R P B] [Algebra.FormallySmooth R B]
-    (h : Function.Bijective (mapBaseChange R P B)) : Algebra.FormallyEtale P B := by
-  have h1 : Subsingleton Ω[B⁄P] := by
-    refine subsingleton_of_forall_eq 0 fun x => ?_
-    obtain ⟨y, rfl⟩ := map_surjective R P B x
-    exact (exact_mapBaseChange_map R P B y).mpr (h.2 y)
-  have h2 : Subsingleton (Algebra.H1Cotangent P B) := by
-    refine subsingleton_of_forall_eq 0 fun x => ?_
-    have h3 : Algebra.H1Cotangent.δ R P B x = 0 := by
-      apply h.1
-      rw [map_zero]
-      exact (Algebra.H1Cotangent.exact_δ_mapBaseChange R P B _).mpr ⟨x, rfl⟩
-    obtain ⟨y, rfl⟩ := (Algebra.H1Cotangent.exact_map_δ R P B x).mp h3
-    rw [Subsingleton.elim y 0, map_zero]
-  exact ⟨h1, h2⟩
-
 theorem exists_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) [CommRing A] [Algebra R A]
     [Algebra.Smooth R A] (ε : A →ₐ[R] R), ∃ (g : ℕ) (t : Fin g → A) (h : A),
       (∀ i, ε (t i) = 0) ∧ IsUnit (ε h) ∧ GlobalTheory.DenseSec.EtChart R A t h := by
@@ -180,7 +163,7 @@ theorem exists_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) 
       rw [this]
       exact (bP.equiv bB' (Equiv.refl _)).bijective
     haveI : Algebra.FormallyEtale P (Localization.Away g) :=
-      formallyEtale_of_bijective_kaehler_mapBaseChange R P (Localization.Away g) hbij
+      GlobalTheory.SmoothDescent.formallyEtale_of_bijective_mapBaseChange R P (Localization.Away g) hbij
     haveI : Algebra.FinitePresentation R (Localization.Away g) :=
       Algebra.FinitePresentation.trans R A (Localization.Away g)
     haveI : Algebra.FinitePresentation P (Localization.Away g) :=
@@ -200,7 +183,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 noncomputable section
@@ -750,7 +732,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 noncomputable section
@@ -765,8 +746,7 @@ theorem image_maximalIdeal_infinite {R Ω : Type} [CommRing R] [IsLocalRing R] [
   have hle : RingHom.ker (algebraMap R Ω) ≤ maximalIdeal R :=
     IsLocalRing.le_maximalIdeal (RingHom.ker_ne_top _)
   obtain ⟨m0, hm0, hm0k⟩ : ∃ m0 ∈ maximalIdeal R, m0 ∉ RingHom.ker (algebraMap R Ω) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hker (le_antisymm hle hcon)
   rw [RingHom.mem_ker] at hm0k
   have hne : ∀ n k : ℕ, n < k → algebraMap R Ω (m0 ^ (n + 1)) ≠ algebraMap R Ω (m0 ^ (k + 1)) := by
@@ -794,8 +774,7 @@ theorem image_maximalIdeal_infinite {R Ω : Type} [CommRing R] [IsLocalRing R] [
 theorem exists_eval_ne_zero_of_infinite {Ω : Type} [Field Ω] (S : Set Ω) (hS : S.Infinite) (g : ℕ)
     (Q : MvPolynomial (Fin g) Ω) (hQ : Q ≠ 0) : ∃ c : Fin g → Ω, (∀ i, c i ∈ S) ∧ MvPolynomial.eval c Q ≠ 0 := by
   obtain ⟨T, hTS, hT⟩ := hS.exists_subset_card_eq (Q.totalDegree + 1)
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hQ
   refine MvPolynomial.eq_zero_of_eval_zero_at_prod_finset Q (fun _ => T) (fun i => ?_) (fun x hx => hcon x (fun i => hTS (hx i)))
   rw [hT]

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IntegralCompression.ContinuousEntryCharacters.RepsRight
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.UnipotentBlockPairs
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.BlkInvVal
@@ -119,29 +120,11 @@ section Reps
 variable {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
 
 theorem reps_ext {v w : L2 μ} {φ : G1 K n → ℂ} (hv : Reps μ v φ) (hw : Reps μ w φ) : v = w := by
-  refine Lp.ext ?_
-  have hm := map_restrict_eq_quotientMeasure μ (isFundamentalDomain_fundamentalDomain (Gam K n) μ)
-  refine Measure.ae_le_iff_absolutelyContinuous.2 (hm ▸ Measure.AbsolutelyContinuous.rfl :
-    quotientMeasure (Gam K n) μ ≪ Measure.map (mk (Gam K n)) (μ.restrict (fundamentalDomain (Gam K n)))) ?_
-  refine (ae_map_iff (measurable_mk _).aemeasurable
-    ((Lp.stronglyMeasurable v).measurableSet_eq_fun (Lp.stronglyMeasurable w))).2 (ae_restrict_of_ae ?_)
-  filter_upwards [hv, hw] with y h1 h2
-  rw [h1, h2]
+  apply _root_.reps_ext' <;> assumption
 
 theorem reps_sum {ι : Type} (s : Finset ι) (c : ι → ℂ) {v : ι → L2 μ} {φ : ι → G1 K n → ℂ} (h : ∀ i ∈ s, Reps μ (v i) (φ i)) :
     Reps μ (∑ i ∈ s, c i • v i) fun y => ∑ i ∈ s, c i * φ i y := by
-  classical
-  have hq := quasiMeasurePreserving_mk (Gam K n) μ
-  induction s using Finset.induction_on with
-  | empty =>
-    filter_upwards [MeasureTheory.QuasiMeasurePreserving.ae hq
-      (Lp.coeFn_zero ℂ 2 (quotientMeasure (Gam K n) μ))] with y hy
-    simpa only [Finset.sum_empty, Pi.zero_apply] using hy
-  | insert a s ha ih =>
-    filter_upwards [MeasureTheory.QuasiMeasurePreserving.ae hq (Lp.coeFn_add (c a • v a) (∑ i ∈ s, c i • v i)),
-      MeasureTheory.QuasiMeasurePreserving.ae hq (Lp.coeFn_smul (c a) (v a)), h a (Finset.mem_insert_self _ _),
-      ih fun i hi => h i (Finset.mem_insert_of_mem hi)] with y h1 h2 h3 h4
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, h1, Pi.add_apply, h2, h4, Pi.smul_apply, h3, smul_eq_mul]
+  apply _root_.reps_sum' <;> assumption
 
 theorem reps_right {v : L2 μ} {φ : G1 K n → ℂ} (hv : Reps μ v φ) (g : G1 K n) :
     Reps μ (rightRegularRep (Gam K n) μ g v) fun y => φ (y * g) := by

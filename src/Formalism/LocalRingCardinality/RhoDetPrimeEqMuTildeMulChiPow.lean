@@ -335,9 +335,6 @@ namespace D7
 
 variable (D : D7)
 
-def colsS (u : D.what₂.Word) : Set ((D.mem u).C.cls 0 → (D.mem u).C.Y 0 → ℂ) :=
-  ((D.mem u).A.Mu0 : Set _)
-
 def duS (u : D.what₂.Word) : ℕ :=
   haveI := (D.mem u).A.Mu0_fd; Module.finrank ℂ (D.mem u).A.Mu0
 
@@ -352,8 +349,6 @@ def RRFull : Prop :=
 
 def NuFull : Prop := ∀ u,
   (D.div.Nu u).L.FG ∧ Submodule.span D.what₂.LL ((D.div.Nu u).L : Set (D.div.Nu u).V) = ⊤
-
-def iota0 : D.what₂.Amb D.what₂.mu0 →ₗ[ℂ] D.what₂.EE := D.what₂.iota D.what₂.mu0
 
 def BuRational : Prop := ∀ u (φ : (D.div.Nu u).V) (x : D.div.RR.V),
   D.what₂.Bu u (D.jN u φ) (D.jEE x) = D.what₂.embLL (D.div.Bk u φ x)

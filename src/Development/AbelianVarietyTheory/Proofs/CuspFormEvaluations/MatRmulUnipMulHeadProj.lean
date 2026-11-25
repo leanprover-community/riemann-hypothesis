@@ -736,9 +736,6 @@ section Compl
 
 def headProj : Matrix (Fin r) (Fin r) ℂ := diagonal fun a => if (a : ℕ) < X.p0 then 1 else 0
 
-def mix (x y : Frame X.Ψ r) : Frame X.Ψ r := fun τ i a =>
-  if (a : ℕ) < X.p0 then x τ i a else y τ i a
-
 def unip (K : Frame X.Ψ r) : Frame X.Ψ r := fun τ a c =>
   if (a : ℕ) < X.p0 ∧ X.p0 ≤ (c : ℕ) then K τ a c else if a = c then 1 else 0
 

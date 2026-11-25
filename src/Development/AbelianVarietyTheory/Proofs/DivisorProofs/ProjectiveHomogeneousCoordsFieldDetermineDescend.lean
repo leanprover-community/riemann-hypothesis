@@ -76,8 +76,7 @@ theorem exists_ne_zero_of_pCrd {o K : Type} [CommRing o] [Field K] {n : ℕ} {x 
     {v : Fin (n + 1) → K} (h : PCrd x v) : ∃ k, v k ≠ 0 := by
   obtain ⟨c, hc⟩ := _root_.GlobalTheory.ZM.DenseFib.exists_spMap (x ≫ PSpace.str o n)
   obtain ⟨hv, -⟩ := (pCrd_iff x c hc.symm v).1 h
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have : Set.range v ⊆ {0} := by rintro _ ⟨k, rfl⟩; exact hn k
   have h0 : Ideal.span (Set.range v) = ⊥ := by
     rw [Ideal.span_eq_bot]; intro y hy; exact this hy

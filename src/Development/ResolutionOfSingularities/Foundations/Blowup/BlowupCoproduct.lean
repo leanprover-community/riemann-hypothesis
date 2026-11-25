@@ -179,9 +179,6 @@ theorem idealSheafData_ext_coprod {X Y : Scheme.{u}} (I J : (X ⨿ Y).IdealSheaf
     · exact ideal_image_eq_of_comap_eq (coprod.inl : X ⟶ X ⨿ Y) hl V
     · exact ideal_image_eq_of_comap_eq (coprod.inr : Y ⟶ X ⨿ Y) hr V
 
-private theorem base_comp_apply {U V W : Scheme.{u}} (f : U ⟶ V) (g : V ⟶ W) (x : U) :
-    (f ≫ g).base x = g.base (f.base x) := by simp
-
 private theorem range_fst_subset_range_inl {A B A' B' : Scheme.{u}} (p : A' ⟶ A) (q : B' ⟶ B)
     (s : PullbackCone (coprod.map p q) (coprod.inl : A ⟶ A ⨿ B)) :
     Set.range ⇑(PullbackCone.fst s).base ⊆ Set.range ⇑(coprod.inl : A' ⟶ A' ⨿ B').base := by
@@ -199,7 +196,7 @@ private theorem range_fst_subset_range_inl {A B A' B' : Scheme.{u}} (p : A' ⟶ 
       = q ≫ (coprod.inr : B ⟶ A ⨿ B) := by simp
   have e2 : (coprod.map p q).base ((coprod.inr : B' ⟶ A' ⨿ B').base b)
       = (coprod.inr : B ⟶ A ⨿ B).base (q.base b) := by
-    rw [← base_comp_apply, hmapr, base_comp_apply]
+    rw [← Scheme.Hom.comp_apply, hmapr, Scheme.Hom.comp_apply]
   have key : (coprod.map p q).base ((PullbackCone.fst s).base t)
       = (coprod.map p q).base ((coprod.inr : B' ⟶ A' ⨿ B').base b) := by rw [hb]
   have hfin : (coprod.inl : A ⟶ A ⨿ B).base ((PullbackCone.snd s).base t)
@@ -224,7 +221,7 @@ private theorem range_fst_subset_range_inr {A B A' B' : Scheme.{u}} (p : A' ⟶ 
       = p ≫ (coprod.inl : A ⟶ A ⨿ B) := by simp
   have e2 : (coprod.map p q).base ((coprod.inl : A' ⟶ A' ⨿ B').base a)
       = (coprod.inl : A ⟶ A ⨿ B).base (p.base a) := by
-    rw [← base_comp_apply, hmapl, base_comp_apply]
+    rw [← Scheme.Hom.comp_apply, hmapl, Scheme.Hom.comp_apply]
   have key : (coprod.map p q).base ((PullbackCone.fst s).base t)
       = (coprod.map p q).base ((coprod.inl : A' ⟶ A' ⨿ B').base a) := by rw [ha]
   have hfin : (coprod.inr : B ⟶ A ⨿ B).base ((PullbackCone.snd s).base t)
@@ -370,7 +367,7 @@ private theorem range_fst_subset_range_inl_of_isCompl {X A F : Scheme.{u}} (f : 
     have hc := congrArg (fun m : s.pt ⟶ X => m.base t) s.condition
     simpa using hc
   have e2 : (coprod.desc f g).base ((coprod.inr : F ⟶ A ⨿ F).base b) = g.base b := by
-    rw [← base_comp_apply, coprod.inr_desc]
+    rw [← Scheme.Hom.comp_apply, coprod.inr_desc]
   have hfin : U.ι.base ((PullbackCone.snd s).base t) = g.base b := by
     rw [← e1, ← hb]
     exact e2
@@ -453,11 +450,11 @@ private theorem range_fst_subset_range_inr_of_isCompl {X A F : Scheme.{u}} (f : 
   have hc := congrArg (fun m : s.pt ⟶ X => m.base t) s.condition
   have e1 : (coprod.desc f g).base ((PullbackCone.fst s).base t)
       = V.ι.base ((PullbackCone.snd s).base t) := by
-    rw [← base_comp_apply, ← base_comp_apply]
+    rw [← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply]
     exact hc
   have hd : (coprod.inl : A ⟶ A ⨿ F) ≫ coprod.desc f g = f := coprod.inl_desc f g
   have e2 : (coprod.desc f g).base ((coprod.inl : A ⟶ A ⨿ F).base a) = f.base a := by
-    rw [← base_comp_apply, hd]
+    rw [← Scheme.Hom.comp_apply, hd]
   have hfa : f.base a = V.ι.base ((PullbackCone.snd s).base t) := by
     rw [← e2, ha, e1]
   refine notMem_of_isCompl h (f.base a) ?_ ?_

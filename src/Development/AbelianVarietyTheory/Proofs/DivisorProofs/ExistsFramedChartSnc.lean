@@ -487,8 +487,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open GlobalTheory.ShFam.Hor.LogCh
 open scoped Matrix CategoryTheory.Obj Topology
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.DetLine
 
 section Level
@@ -617,7 +615,7 @@ theorem exists_isLogChart_snc : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   let Pair : ℕ → (Fin n → ℂ) → (Fin g → ℂ) → (Fin g → ℂ) → ℂˣ → Prop := fun N z v w c =>
     GlobalTheory.UU.CubWeil Z.t.cub N (ex (e.symm z) ((N : ℂ)⁻¹ • v)) (ex (e.symm z) ((N : ℂ)⁻¹ • w)) (unitOn c)
   have hLF : IsLatFam (Metric.ball 0 1) K :=
-    GlobalTheory.T.exponentialKernels_isHolomorphicLatticeFamily E H Z.X Z.t n g (Metric.ball 0 1) (fun z => (e.symm z).1 ≫ genι Z) (fun z => ex (e.symm z))
+    _root_.GlobalTheory.ShFam.Hor.LogCh.isLatFam_ker E H Z.X Z.t n g (Metric.ball 0 1) (fun z => (e.symm z).1 ≫ genι Z) (fun z => ex (e.symm z))
       Metric.isOpen_ball hHol fun z hz => hExpAt _ (hsymm z hz)
   have hB0 : IsLatBasis (K 0) (ζ 0) := by
     show IsLatBasis {w | ex (e.symm 0) w = 1} (ζ 0)
@@ -636,7 +634,7 @@ theorem exists_isLogChart_snc : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     have h2 := GlobalTheory.HolPeriods.isHolTo_comp (φ := fun b => (φ b, (N : ℂ)⁻¹ • w b)) hHol hB
       (hφ.prodMk ((differentiableOn_const ((N : ℂ)⁻¹)).smul hw)) fun b hb => Set.mk_mem_prod (hφm hb) (Set.mem_univ _)
     dsimp only at h1 h2
-    exact GlobalTheory.T.cubicalWeilPairing_torsion_const_holomorphic_family Z.X Z.t.G Z.t.PP Z.t.cub m N B (fun b => (e.symm (φ b)).1 ≫ genι Z)
+    exact _root_.GlobalTheory.TorsionPairFam.cubWeil_const_of_isHolTo Z.X Z.t.G Z.t.PP Z.t.cub m N B (fun b => (e.symm (φ b)).1 ≫ genι Z)
       (fun b => ex (e.symm (φ b)) ((N : ℂ)⁻¹ • v b)) (fun b => ex (e.symm (φ b)) ((N : ℂ)⁻¹ • w b)) c b₀ b₁ hN hB hBc
       h1 h2
       (fun b hb => ⟨pow_eq_one_of_map _ (hadd _ (hsymm _ (hφm hb))) (hzero _ (hsymm _ (hφm hb))) hN (hK b hb).1,
@@ -661,8 +659,8 @@ theorem exists_isLogChart_snc : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
       have := hslice 0 hmem0
       rw [h0] at this
       exact this
-    obtain ⟨Tt, hT1, hT2, hTc⟩ := GlobalTheory.T.exists_toricTorsion_cubicalWeil_one_complexPoint E H Z.X Z.t (x₀.1 ≫ genι Z) g N (ex x₀) hN (hExpAt x₀ hx₀) hsurj hsl
-    obtain ⟨S, hSc, hS⟩ := GlobalTheory.T.torsion_count_through_exponential_lattice_kernel _ g r₀ N (ex x₀) (ζ 0) Tt hN (hadd x₀ hx₀) hsurj hζB hT1 hTc
+    obtain ⟨Tt, hT1, hT2, hTc⟩ := _root_.GlobalTheory.exists_toric_torsion_cubWeil_one_of_exp E H Z.X Z.t (x₀.1 ≫ genι Z) g N (ex x₀) hN (hExpAt x₀ hx₀) hsurj hsl
+    obtain ⟨S, hSc, hS⟩ := _root_.GlobalTheory.ShFam.Hor.LogCh.exp_lattice_torsion_count _ g r₀ N (ex x₀) (ζ 0) Tt hN (hadd x₀ hx₀) hsurj hζB hT1 hTc
     refine ⟨S, hSc, fun a a' ha => ?_⟩
     show GlobalTheory.UU.CubWeil Z.t.cub N (ex (e.symm 0) ((N : ℂ)⁻¹ • ∑ j, a j • ζ 0 j))
       (ex (e.symm 0) ((N : ℂ)⁻¹ • ∑ j, a' j • ζ 0 j)) (unitOn 1)

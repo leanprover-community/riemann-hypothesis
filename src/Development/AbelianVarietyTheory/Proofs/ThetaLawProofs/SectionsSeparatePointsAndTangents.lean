@@ -74,7 +74,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 
 noncomputable section
@@ -160,8 +159,7 @@ theorem exists_separating (f : X ⟶ Spec (CommRingCat.of k)) {H : LB X} (hH : H
   · exact ⟨s a, hpa, hqa⟩
   obtain ⟨haff, r, hr, hsurj⟩ := hs.2 a
   obtain ⟨b, hb⟩ : ∃ b, valueAt p _ hpa (r b) ≠ valueAt q _ hqa (r b) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     refine hne (eq_of_valueAt_eq p q haff hpa hqa (RingHom.ext fun x => ?_))
     obtain ⟨F, rfl⟩ := hsurj x
     induction F using MvPolynomial.induction_on with
@@ -203,7 +201,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.H1
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 
 theorem GlobalTheory.VeryAmpleJet.veryAmpleBy_of_veryAmpleAt {R : Type} [CommRing R] {A : Over (Spec (CommRingCat.of R))}
@@ -302,7 +299,6 @@ end
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 

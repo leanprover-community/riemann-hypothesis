@@ -156,7 +156,7 @@ theorem fdAll_of (hM : ModelDS) (hF : FdModel) : FdAll := by
   have hDS := (hM n ε lam T μ hl hμ).2
   have hd := hF n ε lam T μ hl hμ
   obtain ⟨U, hU⟩ := GlobalTheory.CompanionTheory.DSUniq.ds_unique
-    CompanionTheory.D.LK.hMultAlg CompanionTheory.D.LK.hKModExists CompanionTheory.D.LK.hOrthCyc
+    CompanionTheory.D.LK.hMultAlg CompanionTheory.D.LK.hKModExists _root_.GlobalTheory.CompanionTheory.LowKType.orthCyc
     n ε lam H _ σ (sigLam ε (PsiM T μ) T.w) hl hσ hDS
   have hc : ∀ (v w : H) (g : Formalism.REAL.UJ ε), Formalism.MainNotions.S.coefOn σ v w g =
       Formalism.MainNotions.S.coefOn (sigLam ε (PsiM T μ) T.w) (U v) (U w) g := by

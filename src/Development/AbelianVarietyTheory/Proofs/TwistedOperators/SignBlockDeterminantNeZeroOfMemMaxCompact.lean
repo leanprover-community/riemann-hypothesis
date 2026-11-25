@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOnMulRight
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteSupport
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubstitutionTotalDegreeLe
@@ -146,18 +147,7 @@ variable {D : D7}
 theorem unframe_mem {W : HSp D} {S' : D.what₂.Tau → SPar} (M' : DSModel W S') (τ : D.what₂.Tau)
     {k : Matrix (Fin W.rank) (Fin W.rank) ℂ} (hk : k ∈ Formalism.REAL.Kset (M'.ε τ)) :
     (M'.fr τ)⁻¹ * k * M'.fr τ ∈ Formalism.QuantumDeterminants.UH (gramAt D W τ) := by
-  have hd := (Matrix.isUnit_iff_isUnit_det _).1 (M'.fr_unit τ)
-  have hJ : kᴴ * Formalism.REAL.Jm (M'.ε τ) * k = Formalism.REAL.Jm (M'.ε τ) := (Formalism.REAL.maximal_compact_facts _ _).1 k hk
-  have hJ' : ∀ A : Matrix (Fin W.rank) (Fin W.rank) ℂ,
-      kᴴ * (Formalism.REAL.Jm (M'.ε τ) * (k * A)) = Formalism.REAL.Jm (M'.ε τ) * A := fun A => by
-    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hJ]
-  have e1 : ((M'.fr τ)⁻¹)ᴴ * (M'.fr τ)ᴴ = 1 := by
-    rw [← Matrix.conjTranspose_mul, Matrix.mul_nonsing_inv _ hd]; simp
-  have e2 : ∀ A : Matrix (Fin W.rank) (Fin W.rank) ℂ, ((M'.fr τ)⁻¹)ᴴ * ((M'.fr τ)ᴴ * A) = A := fun A => by
-    rw [← Matrix.mul_assoc, e1, Matrix.one_mul]
-  change ((M'.fr τ)⁻¹ * k * M'.fr τ)ᴴ * gramAt D W τ * ((M'.fr τ)⁻¹ * k * M'.fr τ) = gramAt D W τ
-  rw [← M'.fr_gram τ]
-  simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc, e2, Matrix.mul_nonsing_inv_cancel_left _ _ hd, hJ']
+  first | exact _root_.GlobalTheory.Chain.IoLift.AvgLift.frame_mem | exact @_root_.GlobalTheory.Chain.IoLift.AvgLift.frame_mem | apply _root_.GlobalTheory.Chain.IoLift.AvgLift.frame_mem <;> assumption
 
 theorem elt_mul {θ : InfFam D} (hθ : IsInfFam θ) {W : HSp D} {S' : D.what₂.Tau → SPar} (M' : DSModel W S')
     (τ : D.what₂.Tau) {a b : Matrix (Fin W.rank) (Fin W.rank) ℂ} (ha : a ∈ Formalism.REAL.Kset (M'.ε τ))

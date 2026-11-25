@@ -19,7 +19,6 @@ theorem kap_core {p k N N1 La Q c a b' Y CE1 CE2 Cm : ℝ} (hk : 1 ≤ k) (hY : 
         k * errorTermBound CE1 CE2 p k N1 Q c a b' La / a ≤ (Cm + 4 * CE1 + CE2 + 15) * (N1 / Y) := by
   have hk0 : 0 < k := by linarith
   have hY0 : 0 < Y := by linarith
-  have hN0 : 0 < N := by linarith
   have hN10 : 0 < N1 := by linarith
   have hQ0 : 0 < Q := by linarith
   have ha : 0 < a := lt_of_lt_of_le (mul_pos hk0 hb) hkb
@@ -119,7 +118,6 @@ theorem rest2 (D : Formalism.BasicNotions.D7) : FamilyFourthBound D := by
     S.Q1 (by positivity) S.bpos S.pk S.LaNY S.LaLeK S.kb hLaY
     (by have := S.Hc2 zero_le_one; linarith) (by have := S.Hb1 zero_le_one; linarith)
     (by linarith) (by linarith) (by linarith)
-  have hN0 : 0 ≤ X.N := by linarith
   calc X.kapP C0 CE1 CE2 Cm Ckap
       = Ckap * X.N * (Real.exp (-X.La C0 / 8) + X.k * X.Q * (m0G4 Cm X.k X.N1 X.Q X.c + X.N1 * X.k) / X.b' + 1 / X.Y +
         X.k * errorTermBound CE1 CE2 X.p X.k X.N1 X.Q X.c X.a X.b' (X.La C0) / X.a) := rfl

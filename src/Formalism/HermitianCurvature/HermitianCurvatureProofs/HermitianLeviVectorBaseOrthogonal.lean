@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.EIntBound
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.RankOneLeviComm
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CmHalfIntegralGeneratorMemAlgebraicClosure
@@ -57,6 +58,7 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HermitianMeasures.NIntStep
 
 @[expose] public section
 
@@ -324,16 +326,7 @@ def heisF (k r' : ℕ) (x : HPar k r') : Mt k (1 + r') := heis0 k r' x
 def w0F (k r' : ℕ) (c : ℂ) : Mt k (1 + r') := w0 k r' c
 
 lemma heisenberg_map_continuous : Continuous (heisF k r') := by
-  have hl : Continuous fun x : HPar k r' => liftVec k 1 r' x.1 := liftVec_cont.comp continuous_fst
-  have hb' : Continuous fun x : HPar k r' => hb k r' x.1 x.2 := hb_cont
-  apply continuous_pi; intro i; apply continuous_pi; intro j
-  have h1 : Continuous fun x : HPar k r' => herm (Hpk k (1 + r')) (bvec j) (liftVec k 1 r' x.1) :=
-    (herm_cont (Hpk k (1 + r'))).comp (continuous_const.prodMk hl)
-  have h2 : Continuous fun x : HPar k r' => liftVec k 1 r' x.1 i := (continuous_apply i).comp hl
-  show Continuous fun x : HPar k r' => heisG k r' (liftVec k 1 r' x.1) (hb k r' x.1 x.2) i j
-  simp only [heisG, Matrix.add_apply, Matrix.sub_apply, vecMulVec_apply, Pi.add_apply, Pi.smul_apply,
-    smul_eq_mul]
-  exact (continuous_const.sub (continuous_const.mul h1)).add ((h2.add (hb'.mul continuous_const)).mul continuous_const)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.RankOneLeviIdentities.heisenberg_map_continuous <;> assumption
 
 lemma long_weyl_family_measurable : Measurable (w0F k r') := by
   apply measurable_pi_lambda; intro i; apply measurable_pi_lambda; intro j
@@ -343,14 +336,7 @@ lemma long_weyl_family_measurable : Measurable (w0F k r') := by
         (Measurable.ite (MeasurableSet.const _) measurable_id (Measurable.ite (MeasurableSet.const _) measurable_const measurable_const))
 
 lemma levM_cont : Continuous (levM k r') := by
-  apply continuous_pi; intro p; apply continuous_pi; intro q
-  unfold levM ιLev
-  by_cases hp : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1
-  · by_cases hq : 1 ≤ q.val ∧ q.val < 2 * r' + k + 1 + 1
-    · simp only [dif_pos hp, dif_pos hq]
-      first | exact continuous_apply_apply _ _
-    · simp only [dif_pos hp, dif_neg hq]; exact continuous_const
-  · simp only [dif_neg hp]; exact continuous_const
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.S0.A.ns_cont_levM <;> assumption
 
 lemma tau_meas : Measurable (tau k r') := by
   have h1 : Measurable fun p : ℂ × HPar k r' => heisF k r' p.2 := heisenberg_map_continuous.measurable.comp measurable_snd

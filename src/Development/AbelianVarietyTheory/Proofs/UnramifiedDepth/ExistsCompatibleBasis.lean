@@ -175,7 +175,6 @@ end Helpers
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 alias exists_dualTower := _root_.GlobalTheory.dualTower_nonempty
 
@@ -384,7 +383,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -801,7 +799,6 @@ noncomputable section
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.FinOf
 
@@ -1096,7 +1093,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
@@ -1280,7 +1276,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1500,7 +1495,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
@@ -1508,20 +1502,12 @@ section SlopeTestRemainingChoices
 
 variable {R₀ : Type} [CommRing R₀] (B : BX R₀) {R : LAlg R₀}
 
-private lemma gram_zero (N : ℕ) (y : B.G R) (hy : N • y = 0) : B.IsPairing N 0 y 1 := by
-  obtain ⟨z, hz⟩ := B.pairing_exists N 0 y (smul_zero N) hy
-  have h := B.isPairingValue_add_left N 0 0 y z z hz hz
-  rw [add_zero] at h
-  have e : z * z = z := B.pairing_unique N 0 y _ _ h hz
-  have e1 : z = 1 := by simpa using e
-  rwa [e1] at hz
-
 private lemma gram_nsmul (N : ℕ) (x y : B.G R) (z : (R : Type)ˣ) (h : B.IsPairing N x y z)
     (m : ℕ) : B.IsPairing N (m • x) y (z ^ m) := by
   induction m with
   | zero =>
     rw [zero_smul, pow_zero]
-    exact gram_zero B N y h.2.1
+    exact TateMatrices.pairing_zero_left B N y h.2.1
   | succ m ih =>
     rw [succ_nsmul, pow_succ]
     exact B.isPairingValue_add_left N _ _ y _ _ ih h
@@ -1533,7 +1519,7 @@ private lemma gram_sum {κ : Type} (s : Finset κ) (N : ℕ) (x : κ → B.G R) 
   induction s using Finset.induction_on with
   | empty =>
     rw [Finset.sum_empty, Finset.prod_empty]
-    exact gram_zero B N y hy
+    exact TateMatrices.pairing_zero_left B N y hy
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.prod_insert ha]
     exact B.isPairingValue_add_left N _ _ y _ _ (h a) ih
@@ -1662,7 +1648,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.WittQuot
 
@@ -1747,7 +1732,6 @@ section -- clump:auto
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

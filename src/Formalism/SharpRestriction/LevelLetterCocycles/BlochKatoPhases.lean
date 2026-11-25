@@ -446,9 +446,6 @@ def adm9 (N0 : D.ntw.Tw → ℕ) : Prop := Gen.adm9 D.ntw N0
 
 def adm10 : Prop := Gen.adm10 D.ntw
 
-def AdmACD (bkP : BK D) (N0 : D.ntw.Tw → ℕ) : Prop :=
-  adm1 bkP ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching ∧ adm9 D N0 ∧ adm10 D
-
 def aux₃ (bkP : BK D) (N0 : D.ntw.Tw → ℕ) : Prop := Gen.aux₃ (pin bkP) N0
 
 end Formalism.MainNotions.BlochKatoReduction

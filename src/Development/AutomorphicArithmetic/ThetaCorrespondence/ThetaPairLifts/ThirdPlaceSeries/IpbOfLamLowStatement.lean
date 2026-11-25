@@ -231,9 +231,6 @@ section -- clump:auto
 section
 open Formalism.BasicNotions Formalism.MainNotions NumberField Formalism.L2.Indef Formalism.L2.Indef.Tree GlobalTheory.BigTop GlobalTheory.BigTop.Fun
 noncomputable section
-namespace GlobalTheory.BigTop.Fun.IPbProof
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-end GlobalTheory.BigTop.Fun.IPbProof
 namespace GlobalTheory.BigTop.Fun
 open GlobalTheory.BigTop.Fun.IPbProof
 theorem ipb_of_lamLow_alt : _root_.GlobalTheory.BigTop.LambdaLowerBound₂ → _root_.GlobalTheory.BigTop.Fun.LeafInfinitePlaceBound := by

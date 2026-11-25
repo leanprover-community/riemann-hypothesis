@@ -60,8 +60,6 @@ structure RegCharts (A : FinHolAtlas D X) where
 
   W'' : Fin n → Set (Fin D → ℂ)
   isOpen_kappaOpenNeighbourhood : ∀ j, IsOpen (W j)
-  isOpen_alt : ∀ j, IsOpen (W' j)
-  isOpen_alt_alt : ∀ j, IsOpen (W'' j)
   W_subset : ∀ j, W j ⊆ (ψ j).target
   isCompact_closure_middle : ∀ j, IsCompact (closure (W' j))
   closure_W'_subset : ∀ j, closure (W' j) ⊆ W j
@@ -69,26 +67,14 @@ structure RegCharts (A : FinHolAtlas D X) where
   cover : ∀ x, ∃ j, x ∈ (ψ j).source ∧ ψ j x ∈ W'' j
 
   θ : LocPot X
-  θ_pot : IsPotential A θ
 
   om : LocPot X
-  om_pot : IsPotential A om
-  om_pos : IsPosPot A om
-
-  q : Fin n → (Fin D → ℂ) → ℝ
-  q_smooth : ∀ j, ContDiffOn ℝ ∞ (q j) (W j)
-  q_θ : ∀ j, ∀ y ∈ (ψ j).source, ψ j y ∈ W j → ∃ V : Set X, IsOpen V ∧ y ∈ V ∧ ∃ G : X → ℂ,
-    A.HoloOn V G ∧ ∀ x ∈ V ∩ θ.U y ∩ (ψ j).source, ψ j x ∈ W j →
-      θ.φ y x - q j (ψ j x) = (G x).re
 
 namespace RegCharts
 
 variable {A : FinHolAtlas D X} (R : RegCharts A)
 
 def V'' (j : Fin R.n) : Set X := (R.ψ j).source ∩ R.ψ j ⁻¹' R.W'' j
-
-def u (φ : X → ℝ) (j : Fin R.n) (z : Fin D → ℂ) : ℝ := R.q j z + φ ((R.ψ j).symm z)
-
 
 end RegCharts
 
@@ -110,21 +96,6 @@ structure RegChartData (A : FinHolAtlas D X) extends RegCharts A where
   one_le_r : ∀ x ∈ Yo, 1 ≤ r x
 
   φ : X → ℝ
-  φ_smooth : A.SmoothOn Yo φ
-  psh : ∀ j, ReciprocityTheory.AnForm.A.IsPsh (W j \ coordDiv (S j)) (toRegCharts.u φ j)
-
-  C : ℝ
-  φ_le : ∀ x ∈ Yo, φ x ≤ C
-  le_φ : ∀ x ∈ Yo, -(C * Real.log (r x)) ≤ φ x
-  grad : ∀ j, ∀ z ∈ W j \ coordDiv (S j),
-    ‖fderiv ℝ (toRegCharts.u φ j) z‖ ≤
-      C * r ((ψ j).symm z) ^ C * Real.exp (r ((ψ j).symm z) / 2)
-
-structure BoundedThPsh {A : FinHolAtlas D X} (R : RegCharts A) where
-
-  φ : X → ℝ
-  bdd : ∃ B, ∀ x, |φ x| ≤ B
-  psh : ∀ j, ReciprocityTheory.AnForm.A.IsPsh (R.W j) (R.u φ j)
 
 def siegel (g : ℕ) : Set (Matrix (Fin g) (Fin g) ℂ) :=
   {Z | Zᵀ = Z ∧ (Z.map Complex.im).PosDef}

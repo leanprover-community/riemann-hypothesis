@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfLocGlob
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MemOfBcPMem
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocFacts
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
@@ -216,30 +217,7 @@ section Main
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D)
 
 theorem int_of_loc (c : D.host.E) (h : ∀ p : PlF D, (D.s.atP p).ιE c ∈ (D.s.atP p).O) : IsIntegral ℤ c := by
-  let I : Ideal (𝓞 D.host.F) :=
-    { carrier := {s | IsIntegral ℤ (algebraMap D.host.F D.host.E (s : D.host.F) * c)}
-      add_mem' := fun {a b} ha hb => by
-        simp only [Set.mem_ofPred_eq] at ha hb ⊢
-        rw [show ((a + b : 𝓞 D.host.F) : D.host.F) = (a : D.host.F) + b from rfl, map_add (f := _), add_mul]
-        exact ha.add hb
-      zero_mem' := by
-        simp only [Set.mem_ofPred_eq]
-        rw [show ((0 : 𝓞 D.host.F) : D.host.F) = 0 from rfl, map_zero, zero_mul]
-        exact isIntegral_zero
-      smul_mem' := fun r {s} hs => by
-        simp only [Set.mem_ofPred_eq, smul_eq_mul] at hs ⊢
-        rw [show ((r * s : 𝓞 D.host.F) : D.host.F) = (r : D.host.F) * s from rfl, map_mul, mul_assoc]
-        exact (r.2.map (algebraMap D.host.F D.host.E).toIntAlgHom).mul hs }
-  have hI : I = ⊤ := by
-    by_contra hne
-    obtain ⟨m, hm, hIm⟩ := Ideal.exists_le_maximal I hne
-    have hm0 : m ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hm (RingOfIntegers.not_isField D.host.F)
-    let p : PlF D := ⟨m, hm.isPrime, hm0⟩
-    obtain ⟨s, hs, hsint⟩ := (Formalism.L2.SG.Pf.LocalDenominators.iE_mem_O_iff_D p c).1 (h p)
-    exact hs (hIm hsint)
-  have h1 : (1 : 𝓞 D.host.F) ∈ I := by rw [hI]; exact Submodule.mem_top
-  have h2 : IsIntegral ℤ (algebraMap D.host.F D.host.E ((1 : 𝓞 D.host.F) : D.host.F) * c) := h1
-  simpa using h2
+  apply +allowSynthFailures _root_.Formalism.L2.SG.Pf.StabIntSh.lg_int_of_loc <;> assumption
 
 theorem xlam_eq {T' : D.host.E} (F' : LFlag (D.sp.Y 0) D.R.rS T') (Λ₂ : Submodule (𝓞 D.host.E) (VS D).V)
     (hlat : Submodule.IsLattice D.host.E Λ₂)

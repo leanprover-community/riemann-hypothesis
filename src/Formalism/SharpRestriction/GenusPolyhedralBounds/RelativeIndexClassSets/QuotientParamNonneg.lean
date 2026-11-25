@@ -161,12 +161,6 @@ def rr (la : ι) : ℝ :=
 
 def P1 : ℝ := 60 * X.G + 180 * X.PH + 40 * X.PD
 
-def P2 : ℝ := 5 * X.G * (X.f * X.r ^ 2) + X.Pd
-
-def P3 : ℝ := X.Pη / 2
-
-def P4 : ℝ := X.DivisibilityWeightConstant * (X.PD + X.PQ)
-
 variable {X}
 
 end SumDat

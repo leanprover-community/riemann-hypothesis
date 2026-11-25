@@ -198,9 +198,5 @@ theorem GlobalTheory.tameRep_residue : ∀ (E Ω : Type) [Field E] [NumberField 
   have h0 : (a : Formalism.CyclotomicNorms.Fbar g) = 0 := (CharP.cast_eq_zero_iff (Formalism.CyclotomicNorms.Fbar g) g a).2 hd
   have ho := (hζ 1 one_pos).1
   rw [hz, h0, pow_one] at ho
-  have hz0 : orderOf (0 : Formalism.CyclotomicNorms.Fbar g) = 0 := by
-    rw [orderOf_eq_zero_iff']
-    intro n hn
-    rw [zero_pow (Nat.pos_iff_ne_zero.mp hn)]
-    exact zero_ne_one
+  have hz0 : orderOf (0 : Formalism.CyclotomicNorms.Fbar g) = 0 := orderOf_zero _
   omega

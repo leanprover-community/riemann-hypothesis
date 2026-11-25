@@ -59,8 +59,6 @@ open GlobalTheory.IdemSupport (cP)
 
 namespace GlobalTheory.AdIsom.BaseVec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem local_dual {A M : Type} [CommRing A] [AddCommGroup M] [Module A M] (O : Subring A) (σ : A →+* A)
     (hσσ : ∀ a, σ (σ a) = a) (hσ : ∀ a ∈ O, σ a ∈ O) (h : M → M → A)
     (hsl : ∀ a x y, h (a • x) y = a * h x y) (hsr : ∀ a x y, h x (a • y) = σ a * h x y)
@@ -330,7 +328,6 @@ open Formalism.L2.DIV (Pl)
 open Formalism.IndefR.Lev (EAf)
 open Formalism.IndefR.Datum (IsSelfDualC)
 open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents GlobalTheory.AdIsom
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

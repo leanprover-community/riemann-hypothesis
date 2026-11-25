@@ -74,8 +74,7 @@ theorem main {Ω : Type} [Field Ω] (S : Type) [CommRing S] [IsDomain S] [IsDede
     [Algebra S Ω] [IsFractionRing S Ω] (A : ValuationSubring Ω)
     (hS : ∀ s : S, algebraMap S Ω s ∈ A) {x : Ω} (hx : x ∈ A) :
     ∃ s t : S, A.valuation (algebraMap S Ω s) = 1 ∧ algebraMap S Ω s * x = algebraMap S Ω t := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hSle : ∀ c : S, A.valuation (algebraMap S Ω c) ≤ 1 := fun c => (A.valuation_le_one_iff _).2 (hS c)
   let M : Submodule S Ω :=
     { carrier := {z | A.valuation z < 1}
@@ -180,7 +179,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj CategoryTheory.MonObj Pointwise
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

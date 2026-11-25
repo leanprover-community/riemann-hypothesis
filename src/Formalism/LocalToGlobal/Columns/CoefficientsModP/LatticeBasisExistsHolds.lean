@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHasBasisAtEveryFinitePlace
 public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.LocalToGlobal.Columns.LocWLemmas
@@ -116,32 +117,7 @@ theorem latticeBasisExists_holds :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ)
       (M : Submodule (𝓞 K) (Fin n → K)), Submodule.IsFullLattice K M →
       ∀ w : HeightOneSpectrum (𝓞 K), ∃ B : GL (Fin n) K, IsBasisAt w M B := by
-  intro K _ _ n M hM w
-  letI : Submodule.IsFullLattice K M := hM
-  obtain ⟨κ, hκ, bK, hb⟩ := lc_exists_basis w hM.fg Submodule.IsFullLattice.span_eq_top
-  have hcard : Fintype.card κ = n := by
-    rw [← Module.finrank_eq_card_basis bK, Module.finrank_fin_fun]
-  let e : κ ≃ Fin n := Fintype.equivFinOfCardEq hcard
-  let b' : Module.Basis (Fin n) K (Fin n → K) := bK.reindex e
-  let B : GL (Fin n) K :=
-    ⟨(Pi.basisFun K (Fin n)).toMatrix b', b'.toMatrix (Pi.basisFun K (Fin n)),
-      Module.Basis.toMatrix_mul_toMatrix_flip _ _, Module.Basis.toMatrix_mul_toMatrix_flip _ _⟩
-  refine ⟨B, ?_⟩
-  unfold IsBasisAt
-  rw [hb]
-  congr 2
-  ext x
-  constructor
-  · rintro ⟨i, rfl⟩
-    refine ⟨e i, ?_⟩
-    funext a
-    show (Pi.basisFun K (Fin n)).toMatrix b' a (e i) = bK i a
-    simp [Module.Basis.toMatrix_apply, b']
-  · rintro ⟨j, rfl⟩
-    refine ⟨e.symm j, ?_⟩
-    funext a
-    show bK (e.symm j) a = (Pi.basisFun K (Fin n)).toMatrix b' a j
-    simp [Module.Basis.toMatrix_apply, b']
+  apply +allowSynthFailures _root_.GlobalTheory.LatBasisAt.basisAtEx <;> assumption
 
 end BasisAt
 

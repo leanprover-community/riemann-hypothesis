@@ -13,8 +13,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
   AlgebraicGeometry
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace ReciprocityTheory.ChartRestriction.G.Out.PullGtPf
 
 open Semi Geo.Tor
@@ -153,70 +151,6 @@ variable {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (specOf
 variable {e} (g : GtCoord I D e G)
 
 end Q
-
-section Torus
-
-variable (hφ e) {X X' : Type} [AddCommGroup X] [AddCommGroup X'] (xe : X' ≃+ X)
-
-def ψB : AddMonoidAlgebra ZU.{0} X →ₐc[ZU.{0}] AddMonoidAlgebra ZU.{0} X' :=
-  AddMonoidAlgebra.mapDomainBialgHom ZU.{0} xe.symm.toAddMonoidHom
-
-abbrev ψR : AddMonoidAlgebra ZU.{0} X →+* AddMonoidAlgebra ZU.{0} X' := (ψB xe : _ →+* _)
-
-def specψ : splitTorusAff ZU X' ⟶ splitTorusAff ZU X :=
-  ((bialgSpec ZU).map (CommBialgCat.ofHom (ψB xe)).op).hom
-
-instance specψ_hom : IsMonHom (specψ xe) :=
-  ((bialgSpec ZU).map (CommBialgCat.ofHom (ψB xe)).op).isMonHom_hom
-
-def hT : (splitTorus (Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1)))) X').left ⟶
-    (splitTorus (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))) X).left :=
-  pullback.lift (pullback.fst _ _ ≫ Spec.map (CommRingCat.ofHom (ψR xe))) (pullback.snd _ _ ≫ sE φ hφ e)
-    (specULiftZIsTerminal.hom_ext _ _)
-
-lemma ψB_left_inv : (ψR xe).comp (ψR xe.symm) = RingHom.id _ := by
-  refine RingHom.ext fun x => ?_
-  induction x using AddMonoidAlgebra.induction_linear with
-  | zero => simp
-  | add a c ha hc => rw [map_add (f := _), map_add (f := _), ha, hc]
-  | single a r => simp [ψB, AddMonoidAlgebra.mapDomainBialgHom, AddMonoidAlgebra.mapDomainAlgHom_apply]
-
-lemma ψB_right_inv : (ψR xe.symm).comp (ψR xe) = RingHom.id _ := by
-  refine RingHom.ext fun x => ?_
-  induction x using AddMonoidAlgebra.induction_linear with
-  | zero => simp
-  | add a c ha hc => rw [map_add (f := _), map_add (f := _), ha, hc]
-  | single a r => simp [ψB, AddMonoidAlgebra.mapDomainBialgHom, AddMonoidAlgebra.mapDomainAlgHom_apply]
-
-lemma specψ_left : (specψ xe).left = Spec.map (CommRingCat.ofHom (ψR xe)) := rfl
-
-instance : IsIso (specψ xe).left := by
-  rw [specψ_left]
-  have : IsIso (CommRingCat.ofHom (ψR xe)) :=
-    ⟨⟨CommRingCat.ofHom (ψR xe.symm), by
-      rw [← CommRingCat.ofHom_comp, ψB_right_inv]; rfl, by
-      rw [← CommRingCat.ofHom_comp, ψB_left_inv]; rfl⟩⟩
-  exact (inferInstance : IsIso (Scheme.Spec.map (CommRingCat.ofHom (ψR xe)).op))
-
-def eψ : splitTorusAff ZU X' ≅ splitTorusAff ZU X :=
-  Over.isoMk (asIso (specψ xe).left) (Over.w (specψ xe))
-
-lemma eψ_hom : (eψ xe).hom = specψ xe := by
-  first
-  | rfl
-
-instance : IsMonHom (eψ xe).hom := by rw [eψ_hom]; infer_instance
-
-lemma grpT : IsGrpPullback (splitTorus (Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1)))) X')
-    (splitTorus (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))) X) (sE φ hφ e) (hT hφ e xe) := by
-  have A := isGrpPullback_pullback (splitTorusAff ZU X') (toZ (Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1)))))
-  have B := isGrpPullback_of_iso (eψ xe)
-  have C := A.comp B
-  have D := isGrpPullback_pullback (splitTorusAff ZU X) (toZ (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))))
-  exact D.cancel (C.congr (specULiftZIsTerminal.hom_ext _ _) ((pullback.lift_fst _ _ _).trans
-    (congrArg (pullback.fst _ _ ≫ ·) (specψ_left xe).symm)).symm) (pullback.lift_snd _ _ _)
-
-end Torus
 
 section Unit
 

@@ -108,8 +108,7 @@ theorem exists_ne_zero (hT : Out.GlobalSectionsRankAlgClosed) (h₁ : ∀ s, ∃
     ∃ θ, u.IsThetaFn Hm χ 1 θ ∧ θ ≠ 0 := by
   obtain ⟨β, hβ⟩ := PowSec.exists_indep_sections hT P 1 le_rfl
   have i₀ : Fin (1 ^ P.g) := ⟨0, by simp⟩
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h0 : ∀ i j, (β i).f j = 0 := fun i j => eq_zero_of_val u _ _ fun z hz => by
     obtain ⟨θ, h, h'⟩ := h₁ (β i)
     rw [h' j z hz, hne θ h, Pi.zero_apply, zero_mul]

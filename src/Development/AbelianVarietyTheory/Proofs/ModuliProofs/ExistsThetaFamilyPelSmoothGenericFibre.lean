@@ -616,7 +616,7 @@ theorem hasTh_iff_secCoord (h₁ : Out.Laws) (h₂ : Out.Laws2) (ho : Odd N') (h
     obtain ⟨f, hf, z, e⟩ := exists_away_lift x x' p hp
     exact ⟨f, hf, fun i => z (v' i), e ▸ (Coord.secCoord_bc_scale_unique X M _ th R' x' v' hM a).1 _ z,
       e ▸ _root_.GlobalTheory.hasTh_baseChange h₂ o g N' J b X s t R' _ z x' v' c⟩
-  refine ⟨fun h => _root_.GlobalTheory.ZM.secCoord_of_locally X M _ th R x v hM (sp R x v h) fun p => ?_,
+  refine ⟨fun h => _root_.GlobalTheory.ZM.secCoord_of_locally X M _ th R x v (sp R x v h) fun p => ?_,
     fun h => hasTh_of_local t ho fun q hq => ?_⟩
   · obtain ⟨f, hf, w, a, c⟩ := key p
     refine ⟨Localization.Away f, inferInstance, algebraMap R _, inferInstance,

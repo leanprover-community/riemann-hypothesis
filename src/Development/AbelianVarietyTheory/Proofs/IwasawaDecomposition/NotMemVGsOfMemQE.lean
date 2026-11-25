@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.StabCardOfStabTie
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SandwichNormalForm
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.LatticeNormalFormUnipotent
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.UnipotentCharacterArgumentMulStabilizer
@@ -1102,21 +1103,8 @@ variable {E : Type} [Field E] [NumberField E]
 
 theorem isUnit_of_reduction_mul {K : Type} [Field K] {P : HeightOneSpectrum (𝓞 E)} (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
     {a b c : E} (h : redP P c = redP P a * redP P b) : LocE.unitV ξ c = LocE.unitV ξ a * LocE.unitV ξ b := by
-  unfold LocE.unitV
-  by_cases hc : IsUnit (redP P c)
-  · have hab := hc
-    rw [h] at hab
-    have ha : IsUnit (redP P a) := isUnit_of_mul_isUnit_left hab
-    have hb : IsUnit (redP P b) := isUnit_of_mul_isUnit_right hab
-    rw [dite_eq_left ha, dite_eq_left hb, dite_eq_left hc, ← Units.val_mul, ← map_mul]
-    have : hc.unit = ha.unit * hb.unit := Units.ext (by simpa using h)
-    rw [this]
-  · rw [dite_eq_right hc]
-    by_cases ha : IsUnit (redP P a)
-    · by_cases hb : IsUnit (redP P b)
-      · exact absurd (h ▸ ha.mul hb) hc
-      · rw [dite_eq_right hb, mul_zero]
-    · rw [dite_eq_right ha, zero_mul]
+  intros
+  apply _root_.GlobalTheory.SymLevelMul.unitV_mul <;> assumption
 
 variable [StarRing E]
 
@@ -1654,23 +1642,8 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 theorem notMem_vGs_of_mem_QE (hX : X.Ok) (hPr : Pr.Ok) {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)}
     (hsel : IsSel X sel) {S : Set ℕ} (hS : ∀ i, Pr.g i ∈ S) (mu : Tup X.F X.E X.K S) {P : HeightOneSpectrum (𝓞 X.E)}
     (hP : P ∈ QE sel (mu : Chr X.F X.E X.K)) : P ∉ Pr.vGs := by
-  classical
-  intro hG
-  obtain ⟨i, hi⟩ : ∃ i, P ∈ Pr.vG i := by
-    unfold Primes.vGs at hG
-    rcases Finset.mem_union.1 hG with h | h
-    exacts [⟨0, h⟩, ⟨1, h⟩]
-  unfold QE at hP
-  split_ifs at hP with h
-  · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.1 hP
-    rw [Set.Finite.mem_toFinset] at hv
-    have hg : GoodPl X.E S v := by_contra fun hg => hv
-      (Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 (Subgroup.mem_inf.1 mu.2).2 v) hg)
-    have h3 := (ColPeriod.absNorm_eq_of_splitAt hX.rankE hg.1 hg.2.1 (hsel v)).1
-    apply hg.2.2
-    rw [ColPeriod.plc_eq_absNorm hg.2.1.1, ← h3, hPr.vG_norm i _ hi]
-    exact hS i
-  · simp at hP
+  intros
+  apply _root_.GlobalTheory.KFormsCmp.disj <;> assumption
 
 variable {Ch : Chars X Pr R.m} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
   {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)}

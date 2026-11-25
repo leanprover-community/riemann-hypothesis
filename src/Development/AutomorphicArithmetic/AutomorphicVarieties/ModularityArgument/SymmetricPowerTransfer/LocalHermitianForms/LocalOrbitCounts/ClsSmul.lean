@@ -326,8 +326,7 @@ theorem exists_lat (L : IsLoc O Δ) (hc : c = (τ ^ 2 - 4) * algebraMap O K ε *
           rw [hinvE, one_smul]
       _ = κ • y := by rw [mul_smul, this, smul_smul, hκ, map_mul, map_ofNat]
   obtain ⟨w0, hw0⟩ : ∃ w0, psi s β e w0 ≠ 0 := by
-    by_contra H
-    push_neg at H
+    by_contra! H
     have := ef 1
     rw [H (psi s β f 1), H 1, map_zero, add_zero, eq_comm, smul_eq_zero] at this
     rcases this with h0 | h0

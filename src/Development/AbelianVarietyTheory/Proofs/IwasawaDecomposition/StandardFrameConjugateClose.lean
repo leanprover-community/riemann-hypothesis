@@ -86,8 +86,7 @@ theorem cpt_sg_lt_one (Q : Pl D.host.E) (z : EAf D) (h : Valued.v (cpt Q z) < 1)
       rw [← hvp, ← Valuation.map_mul, ← map_mul, ← hza]
     have e2 := lt_one_le_exp h
     rw [← e1] at e2
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : WithZero.exp (-1) < Valued.v (cpt Q a) * WithZero.exp (-1) := by
       calc WithZero.exp (-1) = 1 * WithZero.exp (-1) := (one_mul _).symm
         _ < _ := mul_lt_mul_of_pos_right hc (WithZero.exp_pos)

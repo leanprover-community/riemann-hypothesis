@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.StdExpEntryHasDerivAt
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PieriRules.KTypeIntDomStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ContinuousRepresentations.DerivExistsAllPosStatement
 public import Mathlib.Analysis.Calculus.Deriv.Star
@@ -77,18 +78,7 @@ attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebr
 
 theorem exp_entry_hasDerivAt (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) (X i j) 0 := by
-  have h0 := hasDerivAt_exp_smul_const' (𝕂 := ℝ) X (0 : ℝ)
-  rw [zero_smul, NormedSpace.exp_zero, mul_one] at h0
-  let L : Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] ℂ :=
-    { toFun := fun M => M i j, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
-  have h1 := (LinearMap.toContinuousLinearMap L).hasFDerivAt.comp_hasDerivAt (0 : ℝ) h0
-  have e : (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) =
-      fun t : ℝ => LinearMap.toContinuousLinearMap L (NormedSpace.exp (t • X)) := by
-    funext t
-    rw [Complex.coe_smul]
-    rfl
-  rw [e]
-  exact h1
+  apply ReciprocityTheory.ChartRestriction.DS.HW.std_exp_entry_hasDerivAt <;> assumption
 
 end Deriv
 

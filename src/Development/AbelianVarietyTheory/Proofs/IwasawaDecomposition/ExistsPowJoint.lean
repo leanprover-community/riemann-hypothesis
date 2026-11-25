@@ -70,12 +70,7 @@ theorem exists_pow_joint : ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω
   have hred : ∀ {N : Type} [Monoid N] (x : N), x ^ L = 1 → ∀ a : ℕ, x ^ a = x ^ (a % L) := by
     intro N _ x hx a
     conv_lhs => rw [← Nat.div_add_mod a L, pow_add, pow_mul, hx, one_pow, one_mul]
-  have hvζ : A.valuation ζ = 1 := by
-    have hp : A.valuation ζ ^ L = 1 := by rw [← map_pow, hζn, map_one]
-    rcases lt_trichotomy (A.valuation ζ) 1 with hl | he' | hg
-    · exact absurd hp (pow_lt_one₀ zero_le' hl hL0).ne
-    · exact he'
-    · exact absurd hp (one_lt_pow₀ hg hL0).ne'
+  have hvζ : A.valuation ζ = 1 := _root_.GlobalTheory.RootValuationOne.val_root_eq_one A hL0 hζn
 
   have hfixζ : ∀ τ ∈ ReciprocityTheory.Gal.Ine (F := E) A, τ ζ = ζ := by
     intro τ hτ

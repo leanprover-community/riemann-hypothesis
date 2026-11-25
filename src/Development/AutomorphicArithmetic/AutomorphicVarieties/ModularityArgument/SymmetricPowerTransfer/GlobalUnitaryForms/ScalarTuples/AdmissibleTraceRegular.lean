@@ -457,18 +457,6 @@ private theorem tr_map {K K' : Type} [Field K] [Field K'] (f : K →+* K') {Δ �
   · rw [e, Matrix.trace_fin_two_of, ← lmap_star', ← map_add (f := _), ht]
     ext <;> simp [lmap]
 
-private theorem conj_tr {K : Type} [Field K] {Δ τ : K} {γ : DX Δ} (h : HasTr γ τ) (y : DX Δ) :
-    HasTr (y⁻¹ * γ * y) τ := by
-  have e : mt (y⁻¹ * γ * y) = mt y⁻¹ * mt γ * mt y := rfl
-  have e1 : mt y⁻¹ * mt y = 1 := by
-    rw [show mt y⁻¹ * mt y = mt (y⁻¹ * y) from rfl, inv_mul_cancel]; rfl
-  have e2 : mt y * mt y⁻¹ = 1 := by
-    rw [show mt y * mt y⁻¹ = mt (y * y⁻¹) from rfl, mul_inv_cancel]; rfl
-  refine ⟨?_, ?_⟩
-  · rw [e, Matrix.det_mul, Matrix.det_mul, h.1, mul_one, ← Matrix.det_mul, e1, Matrix.det_one]
-  · rw [e, Matrix.trace_mul_comm, ← mul_assoc, e2, one_mul]
-    exact h.2
-
 private theorem supp_el {K : Type} [Field K] [CharZero K] (O : Type) [CommRing O] [Algebra O K] {Δ : K} (hΔ : Δ ≠ 0)
     {χ : Kˣ →* ℂˣ} {S : SigData Δ} (h : SigOk O χ S) {t : Kˣ} (ht : t ∈ S.P) {τ : K} (hτ : τ ^ 2 - 4 ≠ 0)
     (hI : Ind S.H τ t) {γ : DX Δ} (hγ : HasTr γ τ) : ∃ g : DX Δ, HasTr g τ ∧ S.fS t g ≠ 0 := by
@@ -485,14 +473,13 @@ private theorem supp_el {K : Type} [Field K] [CharZero K] (O : Type) [CommRing O
   have hc : ((S.cS : ℝ) : ℂ) ≠ 0 := by exact_mod_cast h.cS.ne'
   have h1 : Glob.one (Ind S.H τ t) = 1 := if_pos hI
   rw [h1, mul_one] at ho
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hc
   rw [← ho]
   unfold orb wcount
   apply finsum_eq_zero_of_forall_eq_zero
   intro o
-  exact mul_eq_zero_of_right _ (hne _ (conj_tr hγ (Quotient.out (Quotient.out o))))
+  exact mul_eq_zero_of_right _ (hne _ (UpperTheory.V.Z.Sym.Glob.hasTr_conj hγ (Quotient.out (Quotient.out o))))
 
 private theorem common_den (O : Type) {K : Type} [Field K] [CommRing O] [IsDomain O] [Algebra O K] [IsFractionRing O K]
     {Δ : K} {T : Set (Lsq K Δ)} (hT : T.Finite) : ∃ N : O, N ≠ 0 ∧ ∀ e ∈ T, IsIntegral O (N • e) := by
@@ -1313,8 +1300,7 @@ theorem exG : ExG := by
     have h3 := norm_pos_part hok.neg y σ
     have h4 := congrArg σ hmain
     rw [map_mul, map_mul] at h4
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     nlinarith [mul_pos h1 h2, mul_nonneg (neg_nonneg.mpr hle) h3]
   have hw : TPos (c * (2 - τ)) := fun σ => by
     rw [map_mul]
@@ -1395,8 +1381,7 @@ private theorem nrm_nonneg (σ : F →+* ℝ) (h : σ Δ < 0) (x : Lsq F Δ) : 0
 private theorem nrm_pos (σ : F →+* ℝ) (h : σ Δ < 0) (x : Lsq F Δ) (hx : x ≠ 0) : 0 < σ (x * star x).re := by
   rw [re_mul_star, map_sub, map_mul, map_pow, map_pow]
   have hne : x.re ≠ 0 ∨ x.im ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hx (QuadraticAlgebra.ext (by simp [hc.1]) (by simp [hc.2]))
   have ha := mul_nonneg (neg_nonneg.mpr h.le) (sq_nonneg (σ x.im))
   have hb := sq_nonneg (σ x.re)

@@ -258,8 +258,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.CovB
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.Pf.NcReal.JX.FR
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem rowParseval_holds : RowParseval := by
   intro D X u x y hx hy v
   set a := rv X.B.I v (X.crd x) with ha
@@ -313,8 +311,6 @@ open scoped BigOperators
 namespace Formalism.L2.SG.Pf.NcReal.JX.CovB.CovolumeSpans
 
 open Formalism.L2.SG.HidaSetting Formalism.MainNotions.S
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -437,8 +433,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.CovB
 
 open Formalism.L2.SG.HidaSetting Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem traceRe_holds : TraceRe := by
   intro D X t
   have h1 : ∀ v, X.B.I.φ v (X.ιE.symm t) = embS D (X.pl v) t := fun v => by
@@ -469,8 +463,6 @@ open scoped ENNReal
 namespace Formalism.L2.SG.Pf.NcReal.JX.CovB
 
 open Formalism.L2.SG.HidaSetting Formalism.MainNotions.S Formalism.L2.SG.Pf.NcReal.JX Formalism.L2.SG.Pf.RealCovolume
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def gR {D : D7} (u : D.what₂.Word) (c : Fin (D.R.k + 1)) : ℝ :=
   if c.val < D.R.k then 1 else -(1 / Formalism.L2.SG.RealObj.Tw u)
@@ -638,8 +630,6 @@ open NumberField Formalism.BasicNotions
 namespace Formalism.L2.SG.Pf.NcReal.JX.CovB.TrD
 
 open Formalism.L2.SG.HidaSetting Formalism.MainNotions.S Formalism.L2.SG.Pf.NcReal.JX Formalism.L2.SG.Pf.NcReal.JX.CovB.CovolumeSpans
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace DetH
 

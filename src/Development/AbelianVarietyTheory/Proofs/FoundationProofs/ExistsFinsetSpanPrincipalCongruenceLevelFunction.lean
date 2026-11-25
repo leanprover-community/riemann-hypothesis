@@ -215,8 +215,7 @@ variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma norm_le_max_one_of_monic_root {d : ℕ} {c : ℕ → ℂ} {w : ℂ} {B : ℝ}
     (hc : ∀ i < d, ‖c i‖ ≤ B) (hw : w ^ d + ∑ i ∈ Finset.range d, c i * w ^ i = 0) :
     ‖w‖ ≤ max 1 (d * B) := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h1 : 1 < ‖w‖ := lt_of_le_of_lt (le_max_left _ _) hlt
   have h2 : (d : ℝ) * B < ‖w‖ := lt_of_le_of_lt (le_max_right _ _) hlt
   rcases Nat.eq_zero_or_pos d with hd | hd

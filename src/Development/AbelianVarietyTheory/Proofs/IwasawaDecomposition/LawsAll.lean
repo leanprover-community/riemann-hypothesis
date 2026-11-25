@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardQuotPowSmulBoundsDvrFgModule
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Formalism.LocalToGlobal.Columns.ColFormsLemmas
@@ -389,32 +390,7 @@ open scoped TensorProduct in
 theorem natCard_quot {R N : Type} [CommRing R] [IsDomain R] [AddCommGroup N] [Module R N]
     [Module.Finite R N] [Module.Projective R N] (I : Ideal R) [Finite (R ⧸ I)] :
     Nat.card (N ⧸ (I • ⊤ : Submodule R N)) = Nat.card (R ⧸ I) ^ Module.finrank R N := by
-  have : IsArtinianRing (R ⧸ I) := isArtinian_of_finite
-  obtain ⟨b⟩ := Module.nonempty_basis_of_flat_of_finrank_eq (R ⧸ I) ((R ⧸ I) ⊗[R] N) (Module.finrank R N)
-    (fun P => by
-      have := P.isMaximal
-      let : Field ((R ⧸ I) ⧸ P.asIdeal) := Ideal.Quotient.field _
-      rw [(TensorProduct.AlgebraTensorModule.cancelBaseChange R (R ⧸ I) ((R ⧸ I) ⧸ P.asIdeal)
-        ((R ⧸ I) ⧸ P.asIdeal) N).finrank_eq]
-      have h1 := Module.rankAtStalk_baseChange (R := R) (M := N) (S := (R ⧸ I) ⧸ P.asIdeal) ⊥
-      rw [Module.rankAtStalk_eq_finrank_of_free, Module.rankAtStalk_eq, Ideal.finrank_fiber_eq_finrank] at h1
-      exact h1)
-  rw [← Nat.card_congr (TensorProduct.quotTensorEquivQuotSMul N I).toEquiv, Nat.card_congr b.equivFun.toEquiv,
-    Nat.card_fun, Nat.card_eq_fintype_card (α := Fin _), Fintype.card_fin]
-
-theorem finrank_of_span_top {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
-    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (p : Submodule (𝓞 K) V)
-    (h : Submodule.span K (p : Set V) = ⊤) : Module.finrank (𝓞 K) p = Module.finrank K V := by
-  have : IsLocalizedModule (nonZeroDivisors (𝓞 K)) p.subtype := by
-    refine ⟨fun s => ?_, fun y => ?_, fun {a b} hab => ⟨1, by simpa using hab⟩⟩
-    · have := isLocalizedModule_id (nonZeroDivisors (𝓞 K)) V K
-      exact IsLocalizedModule.map_units (S := nonZeroDivisors (𝓞 K)) (LinearMap.id : V →ₗ[𝓞 K] V) s
-    · have hy : y ∈ Submodule.span K (p : Set V) := h ▸ Submodule.mem_top
-      obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span (nonZeroDivisors (𝓞 K)) K _ y hy
-      rw [Submodule.span_eq] at ht
-      exact ⟨(⟨_, ht⟩, t), rfl⟩
-  rw [← IsLocalizedModule.finrank_eq (nonZeroDivisors (𝓞 K)) p.subtype le_rfl,
-    IsFractionRing.finrank_right_eq (𝓞 K) K V]
+  first | exact _root_.GlobalTheory.DVRQuotCount.card_quot_smul_top_of_flat' | exact @_root_.GlobalTheory.DVRQuotCount.card_quot_smul_top_of_flat' | apply _root_.GlobalTheory.DVRQuotCount.card_quot_smul_top_of_flat' <;> assumption
 
 theorem finrank_of_card {F V : Type} [Field F] [Finite F] [AddCommGroup V] [Module F V] {n : ℕ}
     (h : Nat.card V = Nat.card F ^ n) : Module.finrank F V = n := by

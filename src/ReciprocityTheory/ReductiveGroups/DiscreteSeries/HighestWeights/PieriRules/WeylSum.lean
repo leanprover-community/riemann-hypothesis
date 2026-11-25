@@ -138,31 +138,8 @@ namespace ReciprocityTheory.ChartRestriction.DS.HW
 open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.S7
 
 theorem weylRatio_rhoC_sub_ge_one {n : ℕ} (ε : Fin n → Bool) {a b : Fin n} (hab : a < b)
-    (he : ε a = ε b) : 1 ≤ rhoC ε a - rhoC ε b := by
-  have h1 : (univ.filter fun x => b < x ∧ ε x = ε b).card + 1 ≤
-      (univ.filter fun x => a < x ∧ ε x = ε a).card := by
-    apply Nat.succ_le_of_lt
-    apply Finset.card_lt_card
-    rw [Finset.ssubset_iff_of_subset]
-    · exact ⟨b, by simp [hab, he], by simp⟩
-    · intro x hx
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
-      exact ⟨hab.trans hx.1, hx.2.trans he.symm⟩
-  have h2 : (univ.filter fun x => x < a ∧ ε x = ε a).card + 1 ≤
-      (univ.filter fun x => x < b ∧ ε x = ε b).card := by
-    apply Nat.succ_le_of_lt
-    apply Finset.card_lt_card
-    rw [Finset.ssubset_iff_of_subset]
-    · exact ⟨a, by simp [hab, he], by simp⟩
-    · intro x hx
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
-      exact ⟨hx.1.trans hab, hx.2.trans he⟩
-  have h1' : ((univ.filter fun x => b < x ∧ ε x = ε b).card : ℝ) + 1 ≤
-      ((univ.filter fun x => a < x ∧ ε x = ε a).card : ℝ) := by exact_mod_cast h1
-  have h2' : ((univ.filter fun x => x < a ∧ ε x = ε a).card : ℝ) + 1 ≤
-      ((univ.filter fun x => x < b ∧ ε x = ε b).card : ℝ) := by exact_mod_cast h2
-  simp only [rhoC]
-  linarith
+    (he : ε a = ε b) : 1 ≤ rhoC ε a - rhoC ε b :=
+  by apply _root_.ReciprocityTheory.ChartRestriction.DS.HW.rhoC_sub_ge_one <;> assumption
 
 theorem weylRatio_prodW {n : ℕ} (ε : Fin n → Bool) (s : Fin n) (h : Fin n → ℝ) :
     ∏ a, ∏ b ∈ univ.filter (fun b => a < b ∧ ε a = ε b),

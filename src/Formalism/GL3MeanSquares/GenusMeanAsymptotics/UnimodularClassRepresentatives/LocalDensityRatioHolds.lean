@@ -1354,8 +1354,7 @@ private theorem exists_int_add_star_eq_one_of_isCMUnram (hK : Formalism.Hermitia
       algebraMap F K (algebraMap (𝓞 F) F x) := fun x => rfl
   let tr : 𝓞 K → K := fun θ => algebraMap (𝓞 K) K θ + star (algebraMap (𝓞 K) K θ)
   show ∃ θ : 𝓞 K, tr θ = 1
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let I : Ideal (𝓞 F) :=
     { carrier := {a | ∃ θ : 𝓞 K, tr θ = algebraMap F K (algebraMap (𝓞 F) F a)}
       add_mem' := by

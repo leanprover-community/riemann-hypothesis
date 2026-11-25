@@ -1,5 +1,6 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UnipotentOnHyperbolicComplement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 public import Mathlib.Analysis.Matrix.LDL
 import Mathlib.RingTheory.PiTensorProduct
@@ -104,21 +105,7 @@ private lemma hermC_smul_sub_left_lemma_3 (σ : E →+* ℂ) (G : Matrix (Fin r)
 
 private lemma hermC_ppos_lemma_5 (x : Frame X.Ψ r) (τ : X.Ψ) (u w : Fin r → ℂ) :
     hermC τ.1 X.Gm (X.ppos x τ u) w = hermC τ.1 X.Gm u (X.ppos x τ w) := by
-  have hGp : Matrix.conjTranspose (X.gramPos x τ) = X.gramPos x τ := by
-    ext a b
-    exact hermC_conj τ.1 X.Gm_herm (col (mat x τ) (Fin.castLE X.p0_le b))
-      (col (mat x τ) (Fin.castLE X.p0_le a))
-  have hM : ∀ a b, conj ((X.gramPos x τ)⁻¹ b a) = (X.gramPos x τ)⁻¹ a b := by
-    intro a b
-    have h := congrFun (congrFun (show Matrix.conjTranspose ((X.gramPos x τ)⁻¹) =
-      (X.gramPos x τ)⁻¹ by rw [Matrix.conjTranspose_nonsing_inv, hGp]) a) b
-    exact h
-  unfold Data.ppos
-  rw [hermC_sum_left_lemma, hermC_sum_right_lemma_2]
-
-  simp only [map_sum, map_mul, hM, hermC_conj τ.1 X.Gm_herm, Finset.sum_mul]
-  conv_lhs => rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.hermC_ppos_left_eq_ppos_right_frame <;> assumption
 
 private lemma maj_eq_lemma_4 (x : Frame X.Ψ r) (τ : X.Ψ) (v : Fin r → ℂ) :
     X.maj x τ v = (X.Hf x τ v v).re := by

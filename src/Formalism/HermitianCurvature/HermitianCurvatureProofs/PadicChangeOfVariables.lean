@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AveragedVectorChoices
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelNonzeroModulusDeterminantEq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralLatticeRefinementIdentity
@@ -481,16 +482,7 @@ theorem loc_count (hd : LocalDatum K R ψ) (hn : ∀ n : ℕ, n ≠ 0 → IsUnit
 
 theorem finite_cosets {B : AddSubgroup K} (hB : IsOpen (B : Set K)) {Om : Set K}
     (hOm : IsCompact Om) : {w : K ⧸ B | (Quotient.out w : K) ∈ Om}.Finite := by
-  have : DiscreteTopology (K ⧸ B) := QuotientAddGroup.discreteTopology hB
-  obtain ⟨T, hT⟩ := hOm.elim_finite_subcover (fun w : K ⧸ B => {z : K | (z : K ⧸ B) = w})
-    (fun w => (isOpen_discrete ({w} : Set (K ⧸ B))).preimage continuous_quot_mk)
-    (fun z _ => Set.mem_iUnion.2 ⟨(z : K ⧸ B), rfl⟩)
-  refine T.finite_toSet.subset ?_
-  intro w hw
-  obtain ⟨w', hw', h⟩ := Set.mem_iUnion₂.1 (hT hw)
-  have h : ((Quotient.out w : K) : K ⧸ B) = w' := h
-  rw [QuotientAddGroup.out_eq'] at h
-  rwa [h]
+  apply _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.finite_cosets <;> assumption
 
 theorem out_sub_mem' {B : AddSubgroup K} (z : K) :
     (Quotient.out ((z : K) : K ⧸ B) : K) - z ∈ B := by

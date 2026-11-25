@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarmonicPolynomialEqZeroOfFunction
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHolRepOfIsTau
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
@@ -53,7 +54,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.JointHarm
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -112,22 +112,7 @@ theorem vhol_diff_fock {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {s 
     exact DifferentiableOn.fun_sum fun b _ => (h _ _ _).mul (hp _)
 
 theorem vhol_aniso {σ : Type} (x : MvPolynomial σ ℂ) (hx : fockL x x = 0) : x = 0 := by
-  rw [fockL_apply, fockS] at hx
-  have e : ∀ m, star (x.coeff m) * x.coeff m * (mfact m : ℂ) =
-      ((Complex.normSq (x.coeff m) * (mfact m : ℝ) : ℝ) : ℂ) := by
-    intro m
-    rw [Complex.ofReal_mul, Complex.normSq_eq_conj_mul_self]
-    simp
-  simp only [e] at hx
-  rw [← Complex.ofReal_sum, Complex.ofReal_eq_zero,
-    Finset.sum_eq_zero_iff_of_nonneg fun m _ => mul_nonneg (Complex.normSq_nonneg _) (Nat.cast_nonneg _)] at hx
-  ext m
-  by_contra hm
-  have h1 := hx m (MvPolynomial.mem_support_iff.2 hm)
-  have h2 : 0 < mfact m := Finset.prod_pos fun k _ => Nat.factorial_pos _
-  rcases mul_eq_zero.1 h1 with h | h
-  · exact hm (Complex.normSq_eq_zero.1 h)
-  · exact h2.ne' (by exact_mod_cast h)
+  first | exact _root_.GlobalTheory.ExportSeries.HarmInj.fock_pos | exact @_root_.GlobalTheory.ExportSeries.HarmInj.fock_pos | apply _root_.GlobalTheory.ExportSeries.HarmInj.fock_pos <;> assumption
 
 theorem vhol_one (lam : ι → DomWeight n) : vact lam 1 = 1 := by
   unfold vact
@@ -292,10 +277,7 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.JointHarm
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.frameFunctionAction_holomorphic_extremal_lowest : ∀ (ι : Type) [Fintype ι] (n : ℕ) (lam : ι → DomWeight n), IsHolFam (fun _ => allPos n) fockL (vact lam) ∧ IsBotFam (fun _ => allPos n) (vact lam) (fun τ j => -((lam τ).w j : ℝ)) (ten fun τ => extremal ℂ n (lam τ)) ∧ (ten fun τ => extremal ℂ n (lam τ)) ≠ 0 ∧ (ten fun τ => extremal ℂ n (lam τ)) ∈ VV ℂ lam := by
-  first | exact @GlobalTheory.JointHarm.vact_isHolFam_isBotFam
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameFunctionActionHolomorphicExtremalLowestStatement =====

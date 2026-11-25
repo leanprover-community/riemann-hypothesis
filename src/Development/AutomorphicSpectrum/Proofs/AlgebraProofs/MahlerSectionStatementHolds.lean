@@ -22,6 +22,7 @@ import Mathlib.Tactic.Linter.Style
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowDegree
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntSphere
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerMeasureOfProduct, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AePolynomialNonvanishingRows, Development.WeilBound.CoreStatements.CommonZeroEvaluation.EvalEqZeroOfCommonZero, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChowFormSpecializationProportional, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XXgzChowMahlerFibrefactor, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChowFormFibreSpecialization, Development.WeilBound.CoreStatements.CommonZeroEvaluation.GaussianSphereMeanIntegral, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SphereMeanNormalizedGroups, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerMinusConeIntegralIndep, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MahlerSectionStatementHolds
@@ -80,14 +81,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Short.Crofton
 
 theorem eq_zero_of_hermNorm_eq_zero {n : ℕ} (h : HermNorm n) {u : Fin n → ℂ} (hu : h.norm u = 0) :
     u = 0 := by
-  have hs : ∑ i, ‖(h.mat *ᵥ u) i‖ ^ 2 = 0 :=
-    (Real.sqrt_eq_zero (Finset.sum_nonneg fun _ _ => by positivity)).mp hu
-  have hz : h.mat *ᵥ u = 0 := by
-    funext i
-    have hi := (Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => by positivity)).mp hs i (Finset.mem_univ i)
-    simpa using hi
-  have := congrArg (fun w => h.mat⁻¹ *ᵥ w) hz
-  simpa [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ h.isUnit_det] using this
+  apply _root_.GroundTheory.Heights₂.Heights.HermNorm.li_eq_zero_of_norm_eq_zero <;> assumption
 
 theorem eval_scale_groups {k n δ : ℕ} {q : MvPolynomial (Fin k × Fin n) ℂ} (hq : GroundTheory.Heights₂.Heights.IsMultiHomog δ q)
     (c : Fin k → ℂ) (v : Fin k × Fin n → ℂ) :

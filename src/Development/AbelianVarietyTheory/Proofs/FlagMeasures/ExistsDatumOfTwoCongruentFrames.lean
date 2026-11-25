@@ -190,8 +190,7 @@ theorem ideal_eq_top_of_inv [IsNonarchimedeanLocalField F] [CharZero F] (L : Loc
     have hni : ¬ Function.Injective (LinearMap.mulLeft F (a : E)) :=
       fun h => hns (LinearMap.injective_iff_surjective.1 h)
     obtain ⟨s, hs, hs0⟩ : ∃ s : E, (a : E) * s = 0 ∧ s ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hni ((injective_iff_map_eq_zero _).2 (fun s h => hc s h))
     have hts : ∀ t : F, algebraMap F E t * s ∈ L.O := fun t => hJ _ (fun j hj => by
       obtain ⟨k, rfl⟩ := Ideal.mem_span_singleton'.1 hj

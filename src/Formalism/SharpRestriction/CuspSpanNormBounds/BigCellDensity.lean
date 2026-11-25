@@ -11,49 +11,7 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.CategoryTheory.Countable
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.StatementJF
 
@@ -1282,55 +1240,17 @@ def hsE : (Wq →L[ℂ] Wp) ≃ₗ[ℂ] PiLp 2 (fun _ : Fin (Module.finrank ℂ 
     ext i
     simp
 
-theorem hsInner_hsE (A B : Wq →L[ℂ] Wp) : Formalism.FourierDecayAlt.B.hsInner A B = ⟪hsE B, hsE A⟫_ℂ := rfl
-
-def adjHS (T : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp) :=
-  LinearMap.toContinuousLinearMap ((hsE.symm.toLinearMap) ∘ₗ
-    (LinearMap.adjoint (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap)) ∘ₗ hsE.toLinearMap)
-
-theorem adjHS_spec (T : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) (A B : Wq →L[ℂ] Wp) :
-    Formalism.FourierDecayAlt.B.hsInner (T A) B = Formalism.FourierDecayAlt.B.hsInner A (adjHS T B) := by
-  rw [hsInner_hsE, hsInner_hsE]
-  have e1 : hsE (T A) = (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap) (hsE A) := by simp
-  have e2 : hsE (adjHS T B) = LinearMap.adjoint (hsE.toLinearMap ∘ₗ T.toLinearMap ∘ₗ hsE.symm.toLinearMap) (hsE B) := by
-    simp [adjHS]
-  rw [e1, e2, LinearMap.adjoint_inner_left]
-
 end HSadj
 
 section cellOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-def cellTerms (w : List (Formalism.MainNotions.BridgeLemma₃.cal_Ix k r)) (a : Formalism.FourierDecayAlt.B.Mat k r → ((Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp))) :
-    List (Formalism.FourierDecayAlt.B.DTerm k r Wp Wq) :=
-  (Formalism.MainNotions.BridgeLemma₃.cal_expE w).attach.map fun cv =>
-    { coef := fun g => cv.1.1 • a g
-      coefAdj := fun g => adjHS (cv.1.1 • a g)
-      word := cv.1.2
-      word_lie := fun X hX => Formalism.MainNotions.BridgeLemma₃.cal_expE_lie w cv.1 cv.2 X hX
-      adj_id := by
-        intro x A B
-        exact adjHS_spec (cv.1.1 • a x) A B }
-
-def cellOp {N : ℕ} (ws : Fin N → List (Formalism.MainNotions.BridgeLemma₃.cal_Ix k r))
-    (a : Fin N → Formalism.FourierDecayAlt.B.Mat k r → ((Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp))) : Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq :=
-  (List.finRange N).flatMap fun n => cellTerms (ws n) (a n)
-
 end cellOp
 
 section zeroOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-def zeroOp (o : ℕ) : Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq :=
-  [{ coef := fun _ => 0
-     coefAdj := fun _ => 0
-     word := List.replicate o 0
-     word_lie := fun X hX => by
-       rw [List.eq_of_mem_replicate hX]
-       simp [Formalism.FourierDecayAlt.B.inLie]
-     adj_id := fun x A B => by simp [hsInner_hsE] }]
 
 end zeroOp
 

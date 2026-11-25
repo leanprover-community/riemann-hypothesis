@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrobeniusMatrixMulEqEPowOfPeriod
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PsCoprimeDvdSub
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
@@ -182,15 +183,8 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
 theorem C_dvd_iff_dvd_coeffs (ϖ : O) (f : PowerSeries O) :
     PowerSeries.C ϖ ∣ f ↔ ∀ k, ϖ ∣ PowerSeries.coeff k f := by
-  constructor
-  · rintro ⟨g, rfl⟩ k
-    rw [PowerSeries.coeff_C_mul]
-    exact dvd_mul_right _ _
-  · intro h
-    choose g hg using h
-    refine ⟨PowerSeries.mk g, ?_⟩
-    ext k
-    rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_mk, hg]
+  intros
+  apply _root_.GlobalTheory.BSP.HeightAprime.C_dvd_iff <;> assumption
 
 theorem prime_C_uniformizer {ϖ : O} (hϖ : Irreducible ϖ) : Prime (PowerSeries.C ϖ : PowerSeries O) := by
   have : (Ideal.span {ϖ} : Ideal O).IsPrime := (Ideal.span_singleton_prime hϖ.ne_zero).2 hϖ.prime

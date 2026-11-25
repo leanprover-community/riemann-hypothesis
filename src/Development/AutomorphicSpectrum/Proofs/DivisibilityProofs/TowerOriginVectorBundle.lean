@@ -245,7 +245,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Cmp.HodgeA.propA_of_hodgeTower : CmpPair
   refine _root_.GlobalTheory.CompanionTheory.Ar.Top.PermInv.propA_of_limits (CMType H) (D.p + D.q) T II (relabGroup H) hConv ?_ ?_ hII.1
   · intro τ τ'
     obtain ⟨g, hg, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HostAutTrans.existsUnique_hostAut_comp E H τ.1 τ'.1 τ.2 τ'.2
-    obtain ⟨π, hπ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Label.automorphism_permutes_labels E H l c g
+    obtain ⟨π, hπ, -⟩ := _root_.PositivityTheory.UnitarySelfGeneration.cm_type_label_twist_permutation E H l c g
     exact ⟨π, ⟨g, hπ⟩, Subtype.ext ((hπ τ).trans hg.symm)⟩
   · intro s hs B _
     obtain ⟨g₀, hg₀⟩ := hs
@@ -654,7 +654,7 @@ theorem propA_of_origin : CmpPair → TwistAut → ∀ (II : IntersectionSystem)
     intro B a
     obtain ⟨-, ⟨x, hx⟩, -⟩ := HodgeCpt.basic _ _ _ _ _ _ _ _ Y _ _ _ _ _ (o.Or B a).𝔐 hinj
     exact _root_.GlobalTheory.CompanionTheory.Ar.hodgeTie_of_rootOrigin E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) (hOm B a)
-      (hdisc B) (_root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx
+      (hdisc B) (_root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx
         hmono (hhol a))
   choose tie htie using hex
   have hgen : ∀ B a, genPt (tie B a).A.ξ₀ = genPt (o.Fx a).ξf := by

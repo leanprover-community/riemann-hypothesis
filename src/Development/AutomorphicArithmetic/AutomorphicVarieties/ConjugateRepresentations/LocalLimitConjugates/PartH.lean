@@ -38,6 +38,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.DelCochain
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.EllFacts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.LieOneComm
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.LieOneComm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.KugaSucc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.BorelHarmonicForms.KugaZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.LocalLimitConjugates.SqOrth
@@ -1451,13 +1452,7 @@ variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyCompl
 
 private theorem lie_left (X : Lie E a) (φ : Sm E a) (h g : GA E a) (hφ : ∀ g, φ.1 (h * g) = φ.1 g) :
     (lie E a X φ).1 (h * g) = (lie E a X φ).1 g := by
-  have e : chart φ.1 (h * g) =ᶠ[nhds (oneL E a)] chart φ.1 g := by
-    filter_upwards [isOpen_invSet.mem_nhds (val_mem_invSet (1 : GL (Fin a) (Cinf E)))] with x hx
-    obtain ⟨u, hu⟩ := hx
-    obtain rfl : x = toL u.val := hu.symm
-    rw [chart_val, chart_val, mul_assoc, hφ]
-  change fderiv ℝ (chart φ.1 (h * g)) (oneL E a) X = fderiv ℝ (chart φ.1 g) (oneL E a) X
-  rw [e.fderiv_eq]
+  apply _root_.lie_left <;> assumption
 
 private theorem lie_one_comm (X : Lie E a) (φ : Sm E a) :
     lie E a (oneL E a) (lie E a X φ) = lie E a X (lie E a (oneL E a) φ) := by

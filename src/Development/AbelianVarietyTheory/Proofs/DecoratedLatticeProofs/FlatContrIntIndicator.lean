@@ -223,8 +223,7 @@ theorem integral_psi_O {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ν : M
     simp [Measure.real, hν.2]
   · rw [if_neg ha]
     obtain ⟨t₀, ht₀, hne⟩ : ∃ t₀ ∈ 𝒪[k], ψ (t₀ * (-a)) ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact ha (by simpa using neg_mem (mem_of_psi hψ h))
     set F : k → ℂ := fun t => (if t ∈ 𝒪[k] then (1 : ℂ) else 0) * (ψ (-1 * (a * t)) : ℂ) with hF
     have hFt : ∀ t, F (t₀ + t) = (ψ (t₀ * (-a)) : ℂ) * F t := by

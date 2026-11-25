@@ -91,8 +91,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.Chain.RealIt.GlueProof
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {a b : ℕ}
 
 

@@ -59,20 +59,7 @@ namespace GlobalTheory.CompactHarm
 open MvPolynomial
 
 theorem pd_comm {σ : Type*} (i j : σ) (f : MvPolynomial σ ℂ) :
-    pderiv i (pderiv j f) = pderiv j (pderiv i f) := by
-  classical
-  induction f using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p k hp =>
-    have h : ∀ a b : σ, pderiv a (pderiv b (X k : MvPolynomial σ ℂ)) = 0 := by
-      intro a b
-      rw [pderiv_X]
-      by_cases hk : k = b
-      · subst hk; simp
-      · simp [Pi.single_eq_of_ne hk]
-    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul, hp, h]
-    ring
+    pderiv i (pderiv j f) = pderiv j (pderiv i f) := MvPolynomial.pderiv_comm i j f
 
 theorem pd_X_mul {σ : Type*} [DecidableEq σ] (x u : σ) (Q : MvPolynomial σ ℂ) :
     pderiv x (X u * Q) = (if u = x then Q else 0) + X u * pderiv x Q := by

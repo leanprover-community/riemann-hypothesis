@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.StarVecMulDM
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChainRecursionFromSingleDescent
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRGrpPTop
@@ -20,8 +21,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutMP.StepB
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx3 Formalism.FourierDecayAlt.P.WeylCellAction
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 
@@ -50,13 +49,7 @@ theorem tailW (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (b : Fin r) : ∀ n : 
       rw [← Matrix.mulVec_mulVec, Formalism.FourierDecayAlt.P.CutMP.unipotent_fixes_anisotropic_vector l _ v hv, hTv v hv]
 
 theorem bvec_wI_inWb (v : Fin (k + 1)) : inWb k r (bvec (wI k r v)) := by
-  intro i hi
-  simp only [bvec, Pi.single_apply]
-  rw [if_neg]
-  intro h
-  have := congrArg Fin.val h
-  simp [wI] at this
-  omega
+  apply _root_.Formalism.MainNotions.FrameBoundFromBesselTorus.inWb_bvec_wI <;> assumption
 
 section rules
 

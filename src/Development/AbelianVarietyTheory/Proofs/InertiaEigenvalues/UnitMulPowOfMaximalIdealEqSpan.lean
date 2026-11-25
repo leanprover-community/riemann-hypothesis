@@ -126,8 +126,7 @@ theorem dvr_of_maximalIdeal_eq_span {S : Type} [CommRing S] [IsLocalRing S] [IsN
     | succ k ih => intro a h; exact ih a (hreg _ (by rw [← h, pow_succ]; ring))
   have hnzd : NoZeroDivisors S := by
     refine ⟨fun {x y} hxy => ?_⟩
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨a, u, hu, rfl⟩ := _root_.GlobalTheory.PowMulUnit.exists_eq_pow_mul_unit hm h.1
     obtain ⟨b, v, hv, rfl⟩ := _root_.GlobalTheory.PowMulUnit.exists_eq_pow_mul_unit hm h.2
     have : π ^ (a + b) * (u * v) = 0 := by rw [← hxy, pow_add]; ring

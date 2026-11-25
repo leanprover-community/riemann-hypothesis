@@ -141,19 +141,6 @@ private theorem span_of_scaled_dual {K : Type} [Field K] [NumberField K] [StarRi
   rw [algebraMap_smul K]
   exact Submodule.subset_span (hdual _ hmem)
 
-private theorem full_Lam {K : Type} [Field K] [NumberField K] [StarRing K]
-    {G : Type} [Group G] [Fintype G] {Pl0 : Type} {B : BlockDat K G Pl0}
-    {ℓ : Lvl K G} {Z : Submodule K B.S.Forms} {v0 : InfinitePlace K}
-    (hv0 : IsConjAt v0) {s : ℕ} (h : B.Ok s) (hX : ∀ χ ∈ ℓ.X, IsAbsIrrChar χ) :
-    Submodule.IsFullLattice K (B.abelian₂ ℓ Z) := by
-  have hc : ((Fintype.card G * s : ℕ) : 𝓞 K) ≠ 0 := by
-    exact_mod_cast (Nat.mul_pos (Fintype.card_pos (α := G)) h.good.s_pos).ne'
-  have hLat := B.Mt_lat hv0 h hX
-  have hMt : Submodule.IsFullLattice K (B.Mt ℓ) :=
-    { toIsLattice := hLat
-      span_eq_top := span_of_scaled_dual _ _ hLat.fg hc (B.Mt_dual hv0 h hX) }
-  exact Formalism.L2.DIV.matLat_full (B.Pq ℓ Z) (B.Pq_surj hv0 h hX) (B.Mt ℓ) hMt
-
 private theorem rr_span_eq_top (P : RowSideFamily ex) {s : ℕ} (hOk : P.A3.fam3.Ok3 s)
     (hF : ColFacts P.S1 P.C) :
     Submodule.span D.what₂.LL (P.S1.RR : Set (Fin P.S1.D → D.what₂.LL)) = ⊤ := by
@@ -164,7 +151,7 @@ private theorem rr_span_eq_top (P : RowSideFamily ex) {s : ℕ} (hOk : P.A3.fam3
   have hlocal (t : P.T) :
       Submodule.span D.what₂.LL (localLat t : Set (Fin P.S1.D → D.what₂.LL)) = ⊤ := by
     have hL : Submodule.IsFullLattice D.what₂.LL (side.abelian₂ t) :=
-      full_Lam (ℓ := P.A3.fam3.F.lvl P.Ps P.ψs)
+      BlockDat.Lam_full (ℓ := P.A3.fam3.F.lvl P.Ps P.ψs)
         hOk.ok2.conj (hOk.ok2.what₂ t) hOk.ok2.irr
     exact (Formalism.L2.DIV.matLat_full (P.S1.ι t) (hF.bij t).2 _ hL).span_eq_top
   rw [eq_top_iff]

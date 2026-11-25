@@ -183,8 +183,6 @@ theorem colGram_blkW_last (r p0 : ℕ) (w : Low r → ℂ) :
   rw [this, Matrix.submatrix_id_id, Matrix.det_mul, Matrix.det_conjTranspose, blkW_det_eq_one]
   simp
 
-theorem colGramLast : ∀ (r p0 : ℕ) (w : Low r → ℂ), colGram (blkW p0 w) (Fin.last (r - 1)) = 1 :=
-  colGram_blkW_last
 
 end GlobalTheory.IntBall
 end -- clump:auto
@@ -1783,8 +1781,7 @@ theorem norm_dmin_zero (X : Data E r) (x : Frame X.Ψ r) (τ : X.Ψ) (h : 0 < r 
 
 theorem ball_cases {X : Data E r} (h1 : 0 < X.p0) (h2 : X.p0 < r) (h3 : X.p0 * (r - X.p0) ≤ 3) :
     X.p0 = 1 ∨ X.p0 + 1 = r := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have ha : 2 ≤ X.p0 := by omega
   have hb : 2 ≤ r - X.p0 := by omega
   have := Nat.mul_le_mul ha hb
@@ -1825,7 +1822,7 @@ theorem density_mul_exp_le (X : Data E r) (h1 : 0 < X.p0) (h2 : X.p0 < r) (h3 : 
     have e1 := Fin.prod_univ_succ fun j : Fin (r - 1 + 1) => colGram (blkW X.p0 (zOf X z τ)) j ^ (-2 : ℤ)
     have e2 := Fin.prod_univ_castSucc fun j : Fin (r - 1 + 1) => colGram (blkW X.p0 (zOf X z τ)) j ^ (-2 : ℤ)
     rw [colGram_zero, one_zpow, one_mul] at e1
-    rw [_root_.GlobalTheory.IntBall.colGramLast r X.p0 (zOf X z τ), one_zpow, mul_one] at e2
+    rw [_root_.GlobalTheory.IntBall.colGram_blkW_last r X.p0 (zOf X z τ), one_zpow, mul_one] at e2
     rw [← e1, e2]
     rfl
 

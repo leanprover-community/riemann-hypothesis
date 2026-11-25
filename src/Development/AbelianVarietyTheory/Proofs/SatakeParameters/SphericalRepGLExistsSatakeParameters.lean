@@ -87,8 +87,7 @@ theorem exists_eigenform {G V : Type} [Group G] [TopologicalSpace G] [IsTopologi
     have := LinearMap.congr_fun (hm g⁻¹) x
     simpa [Representation.dual_apply, Module.Dual.transpose_apply] using this
   obtain ⟨x₀, hx₀⟩ : ∃ x, m x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hm0 (LinearMap.ext fun x => by simpa using h x)
   refine ⟨ψ⁻¹, m ∘ₗ p.toLinearMap, fun h => hx₀ ?_, fun g v => ?_, fun h hh => ?_⟩
   · have := LinearMap.congr_fun h x₀.1
@@ -143,8 +142,7 @@ theorem isSubquotient_of_eigenform {n : ℕ} {V : Type} [AddCommGroup V] [Module
       exact (hl t x).trans e.symm⟩
   obtain ⟨f, hf⟩ := (GlobalTheory.SmGL.Model.evalOne_bijective (points (Fin n)) hπ ρ).2 φ
   have hne : ∃ v, f v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     refine hl0 (LinearMap.ext fun x => ?_)
     obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ x
     have h1 : φ (Submodule.Quotient.mk v) = (f v).1.1 1 := by rw [← hf]; rfl

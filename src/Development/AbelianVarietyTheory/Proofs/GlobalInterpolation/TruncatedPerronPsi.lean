@@ -1005,10 +1005,6 @@ theorem truncated_perron_psi_of_one_le : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [N
   have b5 := mul_le_mul_of_nonneg_left b4 hC0.le
   linarith
 
-theorem truncated_perron_psi : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (u T : ℝ), 2 ≤ T → T ≤ 2 * u → 2 ≤ u → ‖(∑ n ∈ Finset.Icc 1 ⌊u⌋₊, (Λ n : ℂ) * χ (n : ZMod q)) - (1 / (2 * Real.pi) : ℂ) * ∫ t in (-T)..T, -(deriv (LFunction χ) ((1 + 1 / Real.log u : ℝ) + t * I) / LFunction χ ((1 + 1 / Real.log u : ℝ) + t * I)) * (u : ℂ) ^ (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I) / ((1 + 1 / Real.log u : ℝ) + t * I)‖ ≤ C * (u * Real.log u ^ 2 / T + Real.log u) := by
-  obtain ⟨C, hC, h⟩ := truncated_perron_psi_of_one_le
-  exact ⟨C, hC, fun q _ χ u T hT _ hu => h q χ u T (by linarith) hu⟩
-
 end GlobalTheory.PerronPsi
 end -- clump:auto
 end -- clump:auto

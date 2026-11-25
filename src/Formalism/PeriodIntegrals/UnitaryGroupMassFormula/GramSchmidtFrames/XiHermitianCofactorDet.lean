@@ -13,6 +13,7 @@ import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HermBvecEI
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HmSelfRe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvMulVecOfFixedVector
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.MemXspIff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.XiHermitianCofactorDet
@@ -108,18 +109,8 @@ variable {k r : ℕ}
 lemma herm_out_wb {v u : Fin (2 * r + k + 1) → ℂ}
     (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → v i = 0) (hu : inWb k r u) :
     herm (Hpk k r) v u = 0 := by
-  unfold herm
-  simp only [dotProduct, mulVec, Pi.star_apply]
-  refine Finset.sum_eq_zero fun j _ => ?_
-  by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-  · refine mul_eq_zero_of_right _ (Finset.sum_eq_zero fun l _ => ?_)
-    by_cases hl : r ≤ l.val ∧ l.val ≤ r + k
-    · rw [hv l hl.1 hl.2, mul_zero]
-    · have h0 : Hpk k r j l = 0 := by
-        simp only [Hpk]
-        split_ifs with h1 h2 h3 <;> first | rfl | (exfalso; omega)
-      rw [h0, zero_mul]
-  · rw [hu j (by omega), star_zero, zero_mul]
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.TLC.om_herm_wb_zero <;> assumption
 
 lemma herm_wb_out {u v : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u)
     (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → v i = 0) :

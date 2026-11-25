@@ -165,8 +165,7 @@ theorem _root_.GlobalTheory.heisenberg_family_irreducible : ∀ (K G V : Type) [
   right
   obtain ⟨w, hwW, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hbot
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K V, φ w ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hw0 ((Module.forall_dual_apply_eq_zero_iff K w).1 hcon)
   rw [eq_top_iff]
   intro v _

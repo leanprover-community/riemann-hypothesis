@@ -95,8 +95,6 @@ section -- clump:auto
 
 open GlobalTheory.InertZeta
 
-theorem _root_.GlobalTheory.T.elementaryDivisors_exist_discretelyValued : Smith := by
-  first | exact @GlobalTheory.InertZeta.elementaryDivisors_exist_discretely_valued
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ElementaryDivisorsExistDiscretelyValuedStatement =====

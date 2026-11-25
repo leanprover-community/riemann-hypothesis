@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipAevalUniformizer
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillWinFromCut
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalInputsFromLiterature
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneratorsOfUnits
@@ -290,26 +291,7 @@ section Pi0
 open Formalism.MainNotions.UnusedSlot80.ToolsR Formalism.MainNotions.WachCoordinates
 
 theorem exists_gamma_pi0_eq_pi0_mul [IsDomain O] [NeZero n] (hR : RingP W) : ∃ z ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * z := by
-  obtain ⟨w, hw⟩ := hR.2.2.2.2.2.2.1
-  have e : Formalism.MainNotions.DeltaInvariantLattices.Eat (fun _ : ZMod n => Polynomial.X + Polynomial.C ((PD.p : ℕ) : O)) W.π₀ =
-      qP W := by
-    funext i; simp [Formalism.MainNotions.DeltaInvariantLattices.Eat, qP, LocWach.π₀]
-  rw [e] at hw
-  have hp0 := Formalism.MainNotions.WachCoordinates.Br.p_ne_zero_O W
-  have hπ : W.π₀ ∈ W.AΔ := hR.1
-  have hq : qP W ∈ W.AΔ := qP_AΔ hR
-  have hc : W.π₀ * qP W ∈ W.AΔ := Subalgebra.mul_mem _ hπ hq
-  have hc0 : ∀ i, (W.π₀ * qP W) i ≠ 0 := fun i => by
-    show W.π₀₁ * qP W i ≠ 0
-    exact mul_ne_zero (π₀₁_ne hR) (q_component_ne_zero' hR hp0 i)
-  have hwΔ : (w : LetA O n) ∈ W.AΔ := by
-    refine cancel_AΔ hc hc0 ?_
-    have : W.π₀ * qP W * (w : LetA O n) = W.γA W.gam W.π₀ - W.π₀ := by rw [hw]; ring
-    rw [this]
-    exact Subalgebra.sub_mem _ (γA_mem W _ hπ) hπ
-  refine ⟨1 + qP W * (w : LetA O n), Subalgebra.add_mem _ (Subalgebra.one_mem _)
-    (Subalgebra.mul_mem _ hq hwΔ), ?_⟩
-  linear_combination hw
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UGen.exists_gammaA_pi0_eq_pi0_mul_of_RingP <;> assumption
 
 def InIdπ (a : ZMod n) (e : ℕ) (α : ℕ → ℤ) (f : W.EE) : Prop :=
   ∃ u ∈ W.AΔ, ιE (denI W e α) * f = ιE (letE a * numI W e α * (W.π₀ * u))

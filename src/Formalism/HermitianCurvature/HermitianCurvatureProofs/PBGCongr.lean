@@ -17,8 +17,6 @@ namespace Formalism.FourierDecayAlt.P.PBG
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section pres
 
 variable {k ρ : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]

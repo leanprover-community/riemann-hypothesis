@@ -88,8 +88,8 @@ def realOfRead {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
   tpEq := by subst hC; rfl
   recR := by
     subst hC
-    exact ⟨hbase, Y.tied, Y.prtE, Y.prtE0, Y.prtWE, Y.xi, htup,
-      fun w => by rw [Y.muAt w, Y.tupT_tup], Y.isomFin, Y.frameMatch⟩
+    exact ⟨hbase, Y.tied, Y.prtWE, htup,
+      fun w => by rw [Y.muAt w, Y.tupT_tup]⟩
   given := hg
   full := hf
 

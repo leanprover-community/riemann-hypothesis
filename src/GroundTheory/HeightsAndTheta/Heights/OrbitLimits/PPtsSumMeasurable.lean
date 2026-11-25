@@ -17,12 +17,22 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.ChartRestriction.G.Geo
 
-theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
-  intro K _ ι _ P e Ψ L A s hP hΨ hL hA hs
+theorem PtsSumMeasurable.aestronglyMeasurable_finsum {K : Type} [Fintype K] {ι : K → Type}
+    [∀ k, Fintype (ι k)] {P : Ideal (MRing ι)} {e : ℕ}
+    {Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)} {L : Fin e → HermLine ι}
+    {g : ((Σ k, ι k) → ℂ) → ℝ} {φ : ℝ → ℝ} (hP : IsArithVar P (e + 1)) (hΨ : IsGoodProj P Ψ)
+    (hφm : Measurable φ) (hφ0 : φ 0 = 0)
+    (hg_meas : ∀ (B : Set (Fin e → ℂ)) (γ : (Fin e → ℂ) → (Σ k, ι k) → ℂ),
+      IsOpen B → ContinuousOn γ B → Set.MapsTo γ B {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} →
+      ∃ a : (Fin e → ℂ) → ℝ, Measurable a ∧ ∀ y ∈ B, a y = g (γ y))
+    (hind : ∀ᵐ y : Fin e → ℂ, ∀ w γ₁ γ₂, IsSheet P Ψ y w γ₁ → IsSheet P Ψ y w γ₂ →
+      g (γ₁ y) * maDensity (fun j y' => pot L j (γ₁ y')) y =
+        g (γ₂ y) * maDensity (fun j y' => pot L j (γ₂ y')) y) :
+    AEStronglyMeasurable
+      (fun y => ∑ᶠ w ∈ fibre P Ψ y, φ (sheetDensity P Ψ (pot L) g y w)) := by
   classical
   have hfin := fibreFinite K ι P e Ψ hP hΨ
   obtain ⟨B, γ, hBo, hlift, hcov⟩ := PtsSumMeasurable.exists_lift_family (P := P) (Ψ := Ψ) hfin
-  have hind := sheetIndep K ι P e Ψ L A s hP hΨ hL hA hs
   have hsheet : ∀ m, ∀ y ∈ B m, IsSheet P Ψ y (segre (γ m y)) (γ m) := fun m y hy =>
     ⟨rfl, Filter.eventually_of_mem ((hBo m).mem_nhds hy) fun y' hy' => hlift m y' hy'⟩
   have hγc : ∀ m, ContinuousOn (γ m) (B m) := fun m y hy =>
@@ -31,47 +41,27 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
     (hlift m y hy).2.1.1
   have hseg : Continuous (segre : ((Σ k, ι k) → ℂ) → ((k : K) → ι k) → ℂ) :=
     continuous_pi fun i => continuous_finsetProd _ fun k _ => continuous_apply _
-
   set σ : ℕ → (Fin e → ℂ) → ((k : K) → ι k) → ℂ := fun m =>
     (B m).piecewise (fun y => segre (γ m y)) 0 with hσdef
   have hσB : ∀ m, ∀ y ∈ B m, σ m y = segre (γ m y) := fun m y hy =>
     Set.piecewise_eq_of_mem _ _ _ hy
   have hσm : ∀ m, Measurable (σ m) := fun m =>
     (hseg.comp_continuousOn (hγc m)).measurable_piecewise continuousOn_const (hBo m).measurableSet
-
-  set a : ℕ → (Fin e → ℂ) → ℝ := fun m => (B m).piecewise
-    (fun y => ‖eval (γ m y) (map (Int.castRingHom ℂ) s)‖) 0 with hadef
-  set b : ℕ → (Fin e → ℂ) → ℝ := fun m => (B m).piecewise (fun y => A.h (γ m y)) 1 with hbdef
-  have ham : ∀ m, Measurable (a m) := fun m =>
-    ((continuous_norm.comp (MvPolynomial.continuous_eval _)).comp_continuousOn
-      (hγc m)).measurable_piecewise continuousOn_const (hBo m).measurableSet
-  have hbm : ∀ m, Measurable (b m) := fun m =>
-    ((ContDiffOn.continuousOn hA).comp (hγc m) (hO m)).measurable_piecewise continuousOn_const
-      (hBo m).measurableSet
+  choose a ham haB using fun m => hg_meas (B m) (γ m) (hBo m) (hγc m) (hO m)
   set dens : ℕ → (Fin e → ℂ) → ℝ := fun m y =>
-    Real.log (a m y / b m y) * maDensity (fun j y' => pot L j (γ m y')) y with hddef
+    φ (a m y * maDensity (fun j y' => pot L j (γ m y')) y) with hddef
   have hdm : ∀ m, Measurable (dens m) := fun m =>
-    (Real.measurable_log.comp ((ham m).div (hbm m))).mul (PtsSumMeasurable.measurable_maDensity _)
+    hφm.comp ((ham m).mul (PtsSumMeasurable.measurable_maDensity _))
   have hdens : ∀ m, ∀ y ∈ B m,
-      dens m y = logNorm A s (γ m y) * maDensity (fun j y' => pot L j (γ m y')) y := by
-    intro m y hy
-    simp only [hddef, hadef, hbdef, Set.piecewise_eq_of_mem _ _ _ hy, logNorm]
-
+      dens m y = φ (g (γ m y) * maDensity (fun j y' => pot L j (γ m y')) y) := fun m y hy => by
+    simp only [hddef, haB m y hy]
   set S : ℕ → Set (Fin e → ℂ) := fun m =>
     {y | y ∈ B m ∧ ∀ m' < m, ¬ (y ∈ B m' ∧ σ m' y = σ m y)} with hSdef
   have hSm : ∀ m, MeasurableSet (S m) := by
     intro m
     have : S m = B m ∩ ⋂ m' ∈ Finset.range m, (B m' ∩ {y | σ m' y = σ m y})ᶜ := by
       ext y
-      simp [hSdef]
-      intro _
-      constructor
-      · intro h i hi
-        by_cases hb : y ∈ B i
-        · exact Or.inr (h i hi hb)
-        · exact Or.inl hb
-      · intro h i hi hb
-        exact (h i hi).resolve_left (not_not.mpr hb)
+      simp [hSdef, imp_iff_not_or]
     rw [this]
     exact (hBo m).measurableSet.inter (Finset.measurableSet_biInter _ fun m' _ =>
       ((hBo m').measurableSet.inter (measurableSet_eq_fun (hσm m') (hσm m))).compl)
@@ -80,8 +70,7 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
   refine aestronglyMeasurable_of_tendsto_ae atTop (f := fun N y => ∑ m ∈ Finset.range N, f m y)
     (fun N => (Finset.measurable_sum _ fun m _ => hfm m).aestronglyMeasurable) ?_
   filter_upwards [hind] with y hy
-
-  have hterm : ∀ m, y ∈ S m → f m y = sheetDensity P Ψ (pot L) (logNorm A s) y (σ m y) := by
+  have hterm : ∀ m, y ∈ S m → f m y = φ (sheetDensity P Ψ (pot L) g y (σ m y)) := by
     intro m hm
     have hsh := hsheet m y hm.1
     rw [← hσB m y hm.1] at hsh
@@ -90,8 +79,7 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
     simp only
     rw [Set.indicator_of_mem hm, hdens m y hm.1]
     unfold sheetDensity
-    rw [dite_eq_left hex]
-    exact (hy _ _ _ hex.choose_spec hsh).symm
+    rw [dite_eq_left hex, hy _ _ _ hex.choose_spec hsh]
   have hmemF : ∀ m, y ∈ S m → σ m y ∈ (hfin y).toFinset := by
     intro m hm
     rw [Set.Finite.mem_toFinset, hσB m y hm.1]
@@ -107,7 +95,7 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
         simp only
         rw [Set.indicator_of_notMem hm]
   have hev : ∀ w ∈ (hfin y).toFinset, ∀ᶠ N in atTop,
-      sheetDensity P Ψ (pot L) (logNorm A s) y w =
+      φ (sheetDensity P Ψ (pot L) g y w) =
         ∑ m ∈ Finset.range N, if σ m y = w then f m y else 0 := by
     intro w _
     by_cases hex : ∃ γ', IsSheet P Ψ y w γ'
@@ -131,11 +119,11 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
           simp only
           rw [Set.indicator_of_notMem hmS]
       · rfl
-    · have h0 : sheetDensity P Ψ (pot L) (logNorm A s) y w = 0 := by
+    · have h0 : sheetDensity P Ψ (pot L) g y w = 0 := by
         unfold sheetDensity
         rw [dite_eq_right hex]
       refine Eventually.of_forall fun N => ?_
-      rw [h0]
+      rw [h0, hφ0]
       refine (Finset.sum_eq_zero fun m _ => ?_).symm
       split_ifs with hmw
       · by_cases hmS : y ∈ S m
@@ -146,12 +134,26 @@ theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
           simp only
           rw [Set.indicator_of_notMem hmS]
       · rfl
-  have hsum : ∑ᶠ w ∈ fibre P Ψ y, sheetDensity P Ψ (pot L) (logNorm A s) y w =
-      ∑ w ∈ (hfin y).toFinset, sheetDensity P Ψ (pot L) (logNorm A s) y w :=
+  have hsum : ∑ᶠ w ∈ fibre P Ψ y, φ (sheetDensity P Ψ (pot L) g y w) =
+      ∑ w ∈ (hfin y).toFinset, φ (sheetDensity P Ψ (pot L) g y w) :=
     finsum_mem_eq_finite_toFinset_sum _ (hfin y)
   refine tendsto_const_nhds.congr' ?_
   filter_upwards [(eventually_all_finset _).2 hev] with N hN
   rw [hsum, Finset.sum_congr rfl hN, Finset.sum_comm]
   exact Finset.sum_congr rfl fun m _ => hfy m
+
+theorem PtsSumMeasurable.proof : PtsSumMeasurable.Statement := by
+  intro K _ ι _ P e Ψ L A s hP hΨ hL hA hs
+  classical
+  refine PtsSumMeasurable.aestronglyMeasurable_finsum (g := logNorm A s) (φ := id)
+    hP hΨ measurable_id rfl (fun B γ hBo hγc hO => ?_) (sheetIndep K ι P e Ψ L A s hP hΨ hL hA hs)
+  refine ⟨fun y => Real.log (B.piecewise (fun y => ‖eval (γ y) (map (Int.castRingHom ℂ) s)‖) 0 y /
+      B.piecewise (fun y => A.h (γ y)) 1 y), ?_, fun y hy => ?_⟩
+  · exact Real.measurable_log.comp
+      ((((continuous_norm.comp (MvPolynomial.continuous_eval _)).comp_continuousOn
+          hγc).measurable_piecewise continuousOn_const hBo.measurableSet).div
+        (((ContDiffOn.continuousOn hA).comp hγc hO).measurable_piecewise
+          continuousOn_const hBo.measurableSet))
+  · simp only [Set.piecewise_eq_of_mem _ _ _ hy, logNorm]
 
 end GroundTheory.Heights₂.Heights

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.SplitSumStabLattice
 public import Formalism.LocalToGlobal.IndefiniteReal.EvalTieTOne
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowLevelMatch
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
@@ -128,27 +129,8 @@ theorem mulVec_mem_intAf (U : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm
 theorem mem_hatL_iff_of_St {β M : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} {Λ : Submodule (𝓞 E) (Fin n → E)}
     (hF : Formalism.L2.DIV.IsFrame β Λ) (hM : M ∈ Formalism.L2.DIV.St β) (x : Fin n → E ⊗[F] Formalism.L2.Herm.Af F) :
     x ∈ Formalism.L2.Herm.hatL (F := F) Λ ↔ M.val *ᵥ x ∈ Formalism.L2.Herm.hatL (F := F) Λ := by
-  obtain ⟨u, rfl⟩ := hM
-  have hint : ∀ v : GL (Fin n) (Formalism.L2.Herm.intAf F E), ∀ i j,
-      (Formalism.L2.DIV.intGL F E n v).val i j ∈ Formalism.L2.Herm.intAf F E :=
-    fun v i j => (v.val i j).2
-  have e : (β⁻¹).val *ᵥ ((Formalism.L2.DIV.frGL β u).val *ᵥ x) =
-      (Formalism.L2.DIV.intGL F E n u).val *ᵥ ((β⁻¹).val *ᵥ x) := by
-    have : Formalism.L2.DIV.frGL β u = β * Formalism.L2.DIV.intGL F E n u * β⁻¹ := rfl
-    rw [this, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← Units.val_mul, ← Units.val_mul]
-    congr 2
-    group
-  rw [hF, hF, e]
-  constructor
-  · intro hw i
-    exact mulVec_mem_intAf _ (hint u) _ hw i
-  · intro hw i
-    have e2 : (β⁻¹).val *ᵥ x = (Formalism.L2.DIV.intGL F E n u⁻¹).val *ᵥ
-          ((Formalism.L2.DIV.intGL F E n u).val *ᵥ ((β⁻¹).val *ᵥ x)) := by
-      rw [Matrix.mulVec_mulVec, ← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one,
-        Matrix.one_mulVec]
-    rw [e2]
-    exact mulVec_mem_intAf _ (hint u⁻¹) _ hw i
+  intros
+  apply _root_.GlobalTheory.IndefiniteRowSideFullHecke.SplitSumStabLattice.mulVec_mem_hatL_iff <;> assumption
 
 end Frame
 

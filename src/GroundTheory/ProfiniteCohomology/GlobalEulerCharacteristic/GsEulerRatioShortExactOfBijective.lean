@@ -22,54 +22,6 @@ section Generic
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {S : ShortComplex (Rep.{u} k G)} [IsDiscreteRep S.X₁] [IsDiscreteRep S.X₂] [IsDiscreteRep S.X₃]
 
-theorem eulerChar_mul_eq_mul_card_range_δ (hS : S.ShortExact)
-    [Finite (cohomology S.X₁ 1)] [Finite (cohomology S.X₂ 1)] [Finite (cohomology S.X₃ 1)] :
-    eulerChar S.X₁ * eulerChar S.X₃ =
-      eulerChar S.X₂ * Nat.card (LinearMap.range (δ hS 2 3 rfl).hom) := by
-  have hk := fun {X Y : ModuleCat k} (φ : X ⟶ Y) => card_eq_card_ker_mul_card_range φ.hom
-  have e2 : ∀ i, Nat.card (LinearMap.range (cohomologyMap S.f i).hom) =
-      Nat.card (LinearMap.ker (cohomologyMap S.g i).hom) := fun i =>
-    card_range_eq_card_ker_of_exact (cohomology_exact₂ hS i)
-  have e30 : Nat.card (LinearMap.range (cohomologyMap S.g 0).hom) =
-      Nat.card (LinearMap.ker (δ hS 0 1 rfl).hom) :=
-    card_range_eq_card_ker_of_exact (cohomology_exact₃ hS 0 1 rfl)
-  have e31 : Nat.card (LinearMap.range (cohomologyMap S.g 1).hom) =
-      Nat.card (LinearMap.ker (δ hS 1 2 rfl).hom) :=
-    card_range_eq_card_ker_of_exact (cohomology_exact₃ hS 1 2 rfl)
-  have e32 : Nat.card (LinearMap.range (cohomologyMap S.g 2).hom) =
-      Nat.card (LinearMap.ker (δ hS 2 3 rfl).hom) :=
-    card_range_eq_card_ker_of_exact (cohomology_exact₃ hS 2 3 rfl)
-  have e10 : Nat.card (LinearMap.range (δ hS 0 1 rfl).hom) =
-      Nat.card (LinearMap.ker (cohomologyMap S.f 1).hom) :=
-    card_range_eq_card_ker_of_exact (cohomology_exact₁ hS 0 1 rfl)
-  have e11 : Nat.card (LinearMap.range (δ hS 1 2 rfl).hom) =
-      Nat.card (LinearMap.ker (cohomologyMap S.f 2).hom) :=
-    card_range_eq_card_ker_of_exact (cohomology_exact₁ hS 1 2 rfl)
-  have h0 : Nat.card (LinearMap.ker (cohomologyMap S.f 0).hom) = 1 := by
-    have := hS.mono_f
-    have hm : Mono (cohomologyMap S.f 0) :=
-      HomologicalComplex.mono_homologyMap_of_mono_of_not_rel (cochainsMap S.f) 0
-        (fun i => by simp)
-    rw [LinearMap.ker_eq_bot.2 ((ModuleCat.mono_iff_injective _).1 hm)]
-    simp
-  have hA1 : Nat.card (cohomology S.X₁ 1) ≠ 0 := Nat.card_pos.ne'
-  have hB1 : Nat.card (cohomology S.X₂ 1) ≠ 0 := Nat.card_pos.ne'
-  have hC1 : Nat.card (cohomology S.X₃ 1) ≠ 0 := Nat.card_pos.ne'
-  rw [hk (cohomologyMap S.f 1), ← e10] at hA1
-  rw [hk (cohomologyMap S.g 1), ← e2 1] at hB1
-  rw [hk (δ hS 1 2 rfl), ← e31] at hC1
-  rw [eulerChar_eq, eulerChar_eq, eulerChar_eq,
-    hk (cohomologyMap S.f 0), hk (cohomologyMap S.f 1), hk (cohomologyMap S.f 2),
-    hk (cohomologyMap S.g 0), hk (cohomologyMap S.g 1), hk (cohomologyMap S.g 2),
-    hk (δ hS 0 1 rfl), hk (δ hS 1 2 rfl), hk (δ hS 2 3 rfl),
-    h0, ← e2 0, ← e2 1, ← e2 2, ← e30, ← e31, ← e32, ← e10, ← e11]
-  simp only [mul_ne_zero_iff] at hA1 hB1 hC1
-  obtain ⟨hz0, hx1⟩ := hA1
-  obtain ⟨-, hy1⟩ := hB1
-  obtain ⟨-, hz1⟩ := hC1
-  push_cast
-  field_simp
-
 theorem eulerChar_mul_eq_mul_card_ker (hS : S.ShortExact)
     [Finite (cohomology S.X₁ 1)] [Finite (cohomology S.X₂ 1)] [Finite (cohomology S.X₃ 1)] :
     eulerChar S.X₁ * eulerChar S.X₃ =

@@ -784,8 +784,7 @@ theorem descendedIdealSheaf_exists : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsFi
   refine ⟨Z.presheaf.stalk (GlobalTheory.NormSheafDescent.genPt π), Y.functionField, inferInstance, inferInstance,
     inferInstance, hfd, GlobalTheory.T.charZero_stalk_imageOfGenericPoint Y Z π hchar hK, J, ?_, ?_⟩
   · intro x hx
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hxW := hJs hx
     have hS : IsClosed (π '' (I.support : Set Y)) := π.isClosedMap _ I.support.isClosed
     obtain ⟨_, ⟨U, hU, rfl⟩, hxU, hUsub⟩ := Z.isBasis_affineOpens.exists_subset_of_mem_open

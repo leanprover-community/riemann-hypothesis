@@ -103,7 +103,7 @@ theorem satU_of_fixed : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
   have hχ : ∀ x, TrivOutside {v} x → ∑ γ ∈ R x, NG.rt L n γ f₀ =
       Formalism.UG.SatU Dv.ϖ (Formalism.UG.qV (maximalRealSubfield L) v) (ha x) α • f₀ := by
     intro x hx
-    rw [hA x hx a.W f₀ hf₀K, GlobalTheory.T.inertHeckeOperator_level_independent L n v w Dv hK (Umax L n) U' hUmax hU' a.W (ha x) (hha x hx).1 f₀ hf₀K]
+    rw [hA x hx a.W f₀ hf₀K, _root_.GlobalTheory.InertLevel.heckeFunI_level_indep L n v w Dv hK (Umax L n) U' hUmax hU' a.W (ha x) (hha x hx).1 f₀ hf₀K]
     exact hH _ (hha x hx)
 
   let W' : Submodule ℂ (GAf L n → a.W) :=
@@ -187,7 +187,7 @@ theorem satU_of_fixed : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     show E (NG.rt L n b f₀) = 0
     rw [hE, ← hT,
       GlobalTheory.InertSph.heckeFunI_rt U Dv h f₀ b hb,
-      GlobalTheory.T.inertHeckeOperator_level_independent L n v w Dv hK U U' hU hU' a.W h hh.1 f₀ hf₀K, hH h hh, map_smul, sub_self]
+      _root_.GlobalTheory.InertLevel.heckeFunI_level_indep L n v w Dv hK U U' hU hU' a.W h hh.1 f₀ hf₀K, hH h hh, map_smul, sub_self]
   have := hker hfW
   rw [LinearMap.mem_ker, hE, sub_eq_zero] at this
   rw [hT]

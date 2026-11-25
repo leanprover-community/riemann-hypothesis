@@ -30,25 +30,6 @@ private theorem presheaf_map_eq {X : Scheme.{u}} {A B : (X.Opens)ᵒᵖ} (f g : 
   have h : f = g := Quiver.Hom.unop_inj (Subsingleton.elim f.unop g.unop)
   rw [h]
 
-private theorem idealSheafData_mul_le_mul {Y : Scheme.{u}} {A B C D : Y.IdealSheafData}
-    (h1 : A ≤ B) (h2 : C ≤ D) : A * C ≤ B * D := by
-  refine Scheme.IdealSheafData.le_def.mpr fun U => ?_
-  rw [Scheme.IdealSheafData.ideal_mul, Scheme.IdealSheafData.ideal_mul]
-  exact Ideal.mul_mono (Scheme.IdealSheafData.le_def.mp h1 U)
-    (Scheme.IdealSheafData.le_def.mp h2 U)
-
-private theorem idealSheafData_mul_le_left {Y : Scheme.{u}} (A B : Y.IdealSheafData) :
-    A * B ≤ A := by
-  refine Scheme.IdealSheafData.le_def.mpr fun U => ?_
-  rw [Scheme.IdealSheafData.ideal_mul]
-  exact Ideal.mul_le.mpr fun r hr s _ => Ideal.mul_mem_right _ _ hr
-
-private theorem idealSheafData_pow_le_pow_of_le {Y : Scheme.{u}} (A : Y.IdealSheafData) {i j : ℕ}
-    (h : j ≤ i) : A ^ i ≤ A ^ j := by
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h
-  calc A ^ (j + d) = A ^ j * A ^ d := by rw [pow_add]
-    _ ≤ A ^ j := idealSheafData_mul_le_left _ _
-
 private theorem appLE_ι_bijective {Y : Scheme.{u}} (V : Y.Opens)
     (e : (⊤ : V.toScheme.Opens) ≤ V.ι ⁻¹ᵁ V) :
     Function.Bijective (V.ι.appLE V ⊤ e).hom := by
@@ -134,15 +115,14 @@ theorem derivIdealSheaf_pow_succ_mul_le (k : Type u) [Field k] [CharZero k] {Y :
     (F J : Y.IdealSheafData) (n : ℕ) :
     derivIdealSheaf k q (F ^ (n + 1) * J) ≤ F ^ n * derivIdealSheaf k q J := by
   refine le_trans (derivIdealSheaf_mul_le k q (F ^ (n + 1)) J) (sup_le ?_ ?_)
-  · exact idealSheafData_mul_le_mul (idealSheafData_pow_le_pow_of_le F (Nat.le_succ n)) le_rfl
+  · exact mul_le_mul_of_nonneg_right (pow_le_pow_of_le_one bot_le le_top (Nat.le_succ n)) bot_le
   · calc J * derivIdealSheaf k q (F ^ (n + 1))
         ≤ J * (F ^ n * derivIdealSheaf k q F) :=
-          idealSheafData_mul_le_mul le_rfl (derivIdealSheaf_pow_succ_le k q F n)
+          mul_le_mul_of_nonneg_left (derivIdealSheaf_pow_succ_le k q F n) bot_le
       _ = F ^ n * (J * derivIdealSheaf k q F) := mul_left_comm _ _ _
       _ ≤ F ^ n * derivIdealSheaf k q J :=
-          idealSheafData_mul_le_mul le_rfl
-            (le_trans (idealSheafData_mul_le_left J (derivIdealSheaf k q F))
-              (le_derivIdealSheaf k q J))
+          mul_le_mul_of_nonneg_left
+            (le_trans (mul_le_of_le_one_right bot_le le_top) (le_derivIdealSheaf k q J)) bot_le
 
 theorem derivIdealSheafIterate_pow_mul_le (k : Type u) [Field k] [CharZero k] {Y : Scheme.{u}}
     (q : Y ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth q]

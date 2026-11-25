@@ -1,5 +1,7 @@
 module
 
+
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsReadsAtOfCover
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.WdOfMono0L
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
@@ -48,7 +50,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.ENatToNat
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AlgebraMapToZModEq, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyResidueFieldUnitBallEquiv
 
@@ -247,17 +248,7 @@ theorem nonempty_residueField_unitBall_equiv {l : ℕ} [Fact l.Prime] (ι : Padi
 
 theorem val_nonneg_iff (D : D7) (lam : D.what₂.places.Pl) (x : D.what₂.LL) :
     0 ≤ D.what₂.places.val lam x ↔ (D.plEq lam).valuation D.what₂.LL x ≤ 1 := by
-  haveI := D.nfLL
-  by_cases hx : x = 0
-  · simp [hx]
-  rw [D.val_eq lam x hx]
-  have h0 : (D.plEq lam).valuation D.what₂.LL x ≠ 0 := (Valuation.ne_zero_iff _).mpr hx
-  have h1 := WithZero.log_le_log (x := (D.plEq lam).valuation D.what₂.LL x) (y := 1) h0 one_ne_zero
-  rw [WithZero.log_one] at h1
-  rw [← h1]
-  unfold vAdd
-  norm_cast
-  omega
+  first | exact _root_.GlobalTheory.TwistChoice.val_nonneg_iff | exact @_root_.GlobalTheory.TwistChoice.val_nonneg_iff | apply _root_.GlobalTheory.TwistChoice.val_nonneg_iff <;> assumption
 
 theorem nonempty_plSide : ∀ D : D7, Nonempty (PlSide D) := by
   intro D

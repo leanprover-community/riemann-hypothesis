@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGram
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictPf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.IdxProd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.MeasBAll
@@ -239,18 +240,7 @@ theorem card_over (i : Fin 2) :
 
 theorem not_both (v : HeightOneSpectrum (𝓞 X.B.I.F)) (h0 : ((D.host.g 0 : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdeal)
     (h1 : ((D.host.g 1 : ℕ) : 𝓞 X.B.I.F) ∈ v.asIdeal) : False := by
-  have hne : D.host.g 0 ≠ D.host.g 1 := D.host.g_ne
-  have hcop : IsCoprime ((D.host.g 0 : ℕ) : ℤ) ((D.host.g 1 : ℕ) : ℤ) :=
-    Nat.isCoprime_iff_coprime.mpr ((Nat.coprime_primes (D.host.g_prime 0) (D.host.g_prime 1)).mpr hne)
-  obtain ⟨a, b, hab⟩ := hcop
-  have h2 : (a : 𝓞 X.B.I.F) * ((D.host.g 0 : ℕ) : 𝓞 X.B.I.F) +
-      (b : 𝓞 X.B.I.F) * ((D.host.g 1 : ℕ) : 𝓞 X.B.I.F) = 1 := by
-    have := congrArg (Int.cast : ℤ → 𝓞 X.B.I.F) hab
-    push_cast at this
-    exact this
-  apply v.isPrime.ne_top
-  rw [Ideal.eq_top_iff_one, ← h2]
-  exact Ideal.add_mem _ (Ideal.mul_mem_left _ _ h0) (Ideal.mul_mem_left _ _ h1)
+  apply +allowSynthFailures _root_.Formalism.L2.SG.Pf.SatGram.g_coprime_mem <;> assumption
 
 theorem gOf_iff (i : Fin 2) (p : TypX X) : gOf p = D.host.g i ↔ ((D.host.g i : ℕ) : 𝓞 X.B.I.F) ∈ p.1.asIdeal := by
   have hne : D.host.g 0 ≠ D.host.g 1 := D.host.g_ne

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
 
@@ -36,17 +37,7 @@ theorem psd_smul {X : Type} (F : Finset X) (k : X → X → ℂ) (c : ℝ) (hc :
 
 theorem psd_sum {X ι : Type} (F : Finset X) (s : Finset ι) (k : ι → X → X → ℂ)
     (h : ∀ i ∈ s, IsPSD F (k i)) : IsPSD F (fun x y => ∑ i ∈ s, k i x y) := by
-  intro a
-  have E : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * (∑ i ∈ s, k i x y) =
-      ∑ i ∈ s, ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k i x y := by
-    symm
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun x _ => ?_
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun y _ => ?_
-    rw [Finset.mul_sum]
-  rw [E, Complex.im_sum, Complex.re_sum]
-  exact ⟨Finset.sum_eq_zero fun i hi => (h i hi a).1, Finset.sum_nonneg fun i hi => (h i hi a).2⟩
+  apply _root_.Formalism.FourierDecayAlt.P.Jx9.psd_sum <;> assumption
 
 theorem psd_mix {X Y : Type} (F : Finset X) (B : Finset Y) (e : Y → ℂ)
     (k : X × Y → X × Y → ℂ) (h : IsPSD (F ×ˢ B) k) :

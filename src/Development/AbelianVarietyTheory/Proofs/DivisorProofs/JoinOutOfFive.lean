@@ -602,8 +602,8 @@ theorem latAlg_of_siegelKlingen : GlobalTheory.Published.SiegelKlingenDeligneRib
     exact τ.im_pos.ne' h2
   obtain ⟨n, N, L, hn, hN, hN2, hL, hLΛ⟩ := GlobalTheory.RoadE.exists_level E (algebraMap K E θ) (condQ 𝔣 Q) y 2 hc0 hθF (by norm_num)
   have hN2' : 2 ≤ N := Nat.le_of_dvd hN hN2
-  haveI : NeZero N := ⟨by omega⟩
-  haveI : Fact (1 < N) := ⟨by omega⟩
+  have : NeZero N := ⟨by omega⟩
+  have : Fact (1 < N) := ⟨by omega⟩
   let y₁ : Fin 2 → ZMod N := ![1, 0]
   have hy₁ : y₁ ≠ 0 := by
     intro h
@@ -755,7 +755,7 @@ theorem dvd_discr_of_sq {E : Type} [Field E] [NumberField E] {d : ℕ} (hd : d.P
   obtain ⟨P, hPmax, hPd⟩ := Ideal.exists_le_maximal (Ideal.span {(d : 𝓞 E)})
     ((Ideal.span_singleton_ne_top (not_isUnit_natCast hd)))
   have hdP : (d : 𝓞 E) ∈ P := hPd (Ideal.mem_span_singleton_self _)
-  haveI := hPmax.isPrime
+  have := hPmax.isPrime
   have he := (GlobalTheory.Mem.RaySplit.not_dvd_discr_iff_ramificationIdx E hd).1 h P hPmax.isPrime hdP
   apply GlobalTheory.Mem.RaySplit.not_mem_sq hd hdP he
   have hWP : W ∈ P := hPmax.isPrime.mem_of_pow_mem 2 (by rw [hW]; exact P.neg_mem hdP)
@@ -780,7 +780,7 @@ theorem ne_d_of_c_eq_zero {E : Type} [Field E] [NumberField E] {I : Type} [Finty
   rintro rfl
   obtain ⟨w, hw, -⟩ := hF.2.2.2.2.2.2.2
   have hdd := dvd_discr_of_sq hF.1 hw
-  haveI : Fact l.Prime := ⟨hF.1⟩
+  have : Fact l.Prime := ⟨hF.1⟩
   unfold c_vp at hc
   split_ifs at hc with hv
   · obtain ⟨v, hlv, hvf⟩ := hv
@@ -826,7 +826,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds (ValGe_vp 
 theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.Statement → JetInt → LatIntUnr := by
   intro hSt hJ E _ _ _ _ I _ d φ s hF hs z hz 𝔣 Λ h𝔣 hΛ l hl Q hQ hQl y hy hc κ S hS
   classical
-  haveI : Fact l.Prime := ⟨hl⟩
+  have : Fact l.Prime := ⟨hl⟩
   have hld : l ≠ d := ne_d_of_c_eq_zero hF h𝔣 hc
   rw [_root_.GlobalTheory.LadicDenom.valGe_iff_forall_sz]
   intro lam

@@ -297,6 +297,6 @@ theorem operatorIdentities [Fintype n] (hχ : χ ≠ 1) : OperatorIdentities k n
 
 theorem pairOperatorStatement : PairOperatorStatement := by
   intro k _ _ _ _ ϖ ψ hψ n _ _
-  exact ⟨fun M _ _ => ⟨vanishing ϖ, operatorIdentities ϖ (resChar_ne_one hψ ϖ)⟩, ⟨⟩⟩
+  exact fun M _ _ => ⟨vanishing ϖ, operatorIdentities ϖ (resChar_ne_one hψ ϖ)⟩
 
 end GlobalTheory.PairOp

@@ -17,65 +17,10 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Hermitia
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.SeparableOfMap
 public import GroundTheory.AutomorphicForms.TraceFormulaGeometric
 public import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.GaloisTwistPreservesSiegelBound
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
 import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.Topology.Algebra.ProperAction.Torsor
-import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsRealEmbeddingEqHom
 import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.CharacterColumnKernelsOfBlockChiCOfBlockChiOne
 import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.EllipticCentralizerQuotientCompact
@@ -442,8 +387,7 @@ private theorem exists_bump {X : Type} [Group X] [TopologicalSpace X] [IsTopolog
       (Finset.range N).isCompact_biUnion fun m _ => hfc m, ?_⟩
     intro h hh x hx hne
     obtain ⟨m, hm⟩ : ∃ m, f m (h * x) ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hne (finsum_eq_zero_of_forall_eq_zero hall)
     have hmN : m < N := by
       by_contra hmN
@@ -526,46 +470,6 @@ section -- clump:auto
 @[expose] public section
 
 open PositivityTheory.Rg.Tf.Geo
-
-private theorem exists_krylov_det_ne_zero {k : Type*} [Field k] [Infinite k] {n : ℕ}
-    (M : Matrix (Fin n) (Fin n) k) (h : M.charpoly.Separable) :
-    ∃ v : Fin n → k, (GroundTheory.Automorphic.krylov M v).det ≠ 0 := by
-  have hs : (Matrix.toLin' M).charpoly.Separable := by rwa [Matrix.charpoly_toLin']
-  obtain ⟨w, hw⟩ := GroundTheory.Automorphic.exists_linearIndependent_pow_apply _ hs
-  rw [Module.finrank_fin_fun] at hw
-  refine ⟨w, ?_⟩
-  rw [← isUnit_iff_ne_zero, ← Matrix.isUnit_iff_isUnit_det,
-    ← Matrix.linearIndependent_cols_iff_isUnit]
-  have hcol : (GroundTheory.Automorphic.krylov M w).col =
-      fun j : Fin n => (Matrix.toLin' M ^ (j : ℕ)) w := by
-    ext1 j
-    rw [GroundTheory.Automorphic.krylov_col, ← Matrix.toLin'_pow, Matrix.toLin'_apply]
-  rw [hcol]
-  exact hw
-
-private theorem isClosed_charpoly_eq {k : Type*} [NontriviallyNormedField k] [Infinite k] {n : ℕ}
-    (P : Polynomial k) : IsClosed {g : GL (Fin n) k | (g : Matrix (Fin n) (Fin n) k).charpoly = P} := by
-  have : {g : GL (Fin n) k | (g : Matrix (Fin n) (Fin n) k).charpoly = P} =
-      ⋂ a : k, {g : GL (Fin n) k | (Matrix.scalar (Fin n) a - (g : Matrix (Fin n) (Fin n) k)).det = P.eval a} := by
-    ext g
-    simp only [Set.mem_setOf_eq, Set.mem_iInter]
-    constructor
-    · rintro rfl a
-      rw [Matrix.eval_charpoly]
-    · intro h
-      apply Polynomial.funext
-      intro a
-      rw [Matrix.eval_charpoly]
-      exact h a
-  rw [this]
-  refine isClosed_iInter fun a => isClosed_eq ?_ continuous_const
-  exact (continuous_const.sub Units.continuous_val).matrix_det
-
-private theorem continuous_krylov {k : Type*} [NontriviallyNormedField k] {n : ℕ} (v : Fin n → k) :
-    Continuous fun g : GL (Fin n) k => GroundTheory.Automorphic.krylov (g : Matrix (Fin n) (Fin n) k) v := by
-  refine continuous_matrix fun i j => ?_
-  simp only [GroundTheory.Automorphic.krylov, Matrix.of_apply]
-  exact (continuous_apply i).comp (((Units.continuous_val.pow _)).matrix_mulVec continuous_const)
 
 theorem UpperTheory.ConvolutionTheory.G.p1_holds :
     P1 :=

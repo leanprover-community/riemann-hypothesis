@@ -983,12 +983,7 @@ theorem trace_tensor (h : IsCMExt F E σ) (z : R ⊗[F] E) :
   apply GlobalTheory.SelfDualLatticeCompare.trace_tensor <;> assumption
 
 theorem sigR_sigR (h : IsCMExt F E σ) (z : R ⊗[F] E) : sigR R σ (sigR R σ z) = z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  | tmul a e =>
-    show a ⊗ₜ[F] σ (σ e) = _
-    rw [conj_conj h]
+  apply _root_.GlobalTheory.GaugeEx.GramPair.sigR_sigR <;> assumption
 
 theorem half_trace (h : IsCMExt F E σ) {z : R ⊗[F] E} (hs : sigR R σ z = z) :
     algebraMap R (R ⊗[F] E) (algebraMap F R (1 / 2) * Algebra.trace R (R ⊗[F] E) z) = z := by

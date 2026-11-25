@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-import Mathlib.Tactic.TypeStar
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 
 @[expose] public section

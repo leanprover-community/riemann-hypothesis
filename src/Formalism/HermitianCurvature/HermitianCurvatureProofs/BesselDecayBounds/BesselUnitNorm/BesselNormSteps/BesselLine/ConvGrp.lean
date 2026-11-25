@@ -1,5 +1,7 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.MulVecApplyOfRow
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.SfiniteMuN
 import Mathlib.Tactic.Linter.Style
@@ -97,62 +99,8 @@ theorem onto_low {g : Mx k r} (hg : g⁻¹ * g = 1) {a : ℕ} (hmaps : ∀ y ∈
   obtain ⟨x, hx⟩ := hsurj ⟨y, hy⟩
   exact ⟨x, x.2, congrArg Subtype.val hx⟩
 
-private lemma mem_lowS_of_apply_mem_lowS {g : Mx k r} (hg : g⁻¹ * g = 1) {a : ℕ}
-    (hmaps : ∀ y ∈ lowS k r a, g *ᵥ y ∈ lowS k r a) (x : Fin (2 * r + k + 1) → ℂ)
-    (hx : g *ᵥ x ∈ lowS k r a) : x ∈ lowS k r a := by
-  obtain ⟨x', hx', he⟩ := onto_low hg hmaps _ hx
-  have h3 : x' = x := by
-    simpa only [Matrix.mulVec_mulVec, hg, Matrix.one_mulVec] using
-      congrArg (fun v => g⁻¹ *ᵥ v) he
-  rw [← h3]
-  exact hx'
-
 theorem n_inv {n : Mx k r} (hn : n ∈ Nset k r) : n⁻¹ ∈ Nset k r := by
-  unfold Nset at hn ⊢
-  simp only [Set.mem_setOf_eq] at hn ⊢
-  obtain ⟨hU, hcol, hmid⟩ := hn
-  obtain ⟨h1, h2, hUi⟩ := uh_inv hU
-  have key : ∀ a ≤ r, ∀ c, n *ᵥ bvec c - bvec c ∈ lowS k r a →
-      n⁻¹ *ᵥ bvec c - bvec c ∈ lowS k r a := by
-    intro a har c hc
-    apply mem_lowS_of_apply_mem_lowS h2 (maps_low hcol har)
-    have e : n *ᵥ (n⁻¹ *ᵥ bvec c - bvec c) = -(n *ᵥ bvec c - bvec c) := by
-      rw [Matrix.mulVec_sub, Matrix.mulVec_mulVec, h1, Matrix.one_mulVec]
-      abel
-    rw [e]
-    exact (lowS k r a).neg_mem hc
-  refine ⟨hUi, fun a i hi => ?_, fun i j hj1 hj2 hi => ?_⟩
-  · have h3 : ∀ i' : Fin (2 * r + k + 1), a.val ≤ i'.val →
-        (n⁻¹ *ᵥ bvec (eI k r a) - bvec (eI k r a)) i' = 0 := by
-      apply key a.val a.isLt.le
-      show ∀ i' : Fin (2 * r + k + 1), a.val ≤ i'.val →
-        (n *ᵥ bvec (eI k r a) - bvec (eI k r a)) i' = 0
-      intro i' hi'
-      have h5 : (n *ᵥ bvec (eI k r a)) i' = n i' (eI k r a) := by rw [col_eq]
-      rw [Pi.sub_apply, h5, hcol a i' hi']
-      unfold bvec
-      rw [Pi.single_apply, sub_self]
-    have h4 := h3 i hi
-    have h5 : (n⁻¹ *ᵥ bvec (eI k r a)) i = n⁻¹ i (eI k r a) := by rw [col_eq]
-    rw [Pi.sub_apply, h5, sub_eq_zero] at h4
-    rw [h4]
-    unfold bvec
-    rw [Pi.single_apply]
-  · have h3 : ∀ i' : Fin (2 * r + k + 1), r ≤ i'.val →
-        (n⁻¹ *ᵥ bvec j - bvec j) i' = 0 := by
-      apply key r le_rfl
-      show ∀ i' : Fin (2 * r + k + 1), r ≤ i'.val → (n *ᵥ bvec j - bvec j) i' = 0
-      intro i' hi'
-      have h5 : (n *ᵥ bvec j) i' = n i' j := by rw [col_eq]
-      rw [Pi.sub_apply, h5, hmid i' j hj1 hj2 hi']
-      unfold bvec
-      rw [Pi.single_apply, sub_self]
-    have h4 := h3 i hi
-    have h5 : (n⁻¹ *ᵥ bvec j) i = n⁻¹ i j := by rw [col_eq]
-    rw [Pi.sub_apply, h5, sub_eq_zero] at h4
-    rw [h4]
-    unfold bvec
-    rw [Pi.single_apply]
+  apply _root_.PI.AmpOrbQuot.nset_inv <;> assumption
 
 theorem fix_low {g : Mx k r} (hfix : ∀ b : Fin r, g *ᵥ bvec (eI k r b) = bvec (eI k r b)) {a : ℕ}
     (har : a ≤ r) : ∀ y ∈ lowS k r a, g *ᵥ y = y := by
@@ -284,60 +232,7 @@ theorem n_on_Wb {n : Mx k r} (hn : n ∈ Nset k r) {u : Fin (2 * r + k + 1) → 
 
 theorem conj_n {z : Fin (2 * r + k + 1) → ℂ} {h n : Mx k r} (hh : h ∈ UWset k r z) (hn : n ∈ Nset k r) :
     h⁻¹ * n * h ∈ Nset k r := by
-  have hh0 := hh
-  have hn0 := hn
-  unfold UWset at hh
-  unfold Nset at hn ⊢
-  simp only [Set.mem_setOf_eq] at hh hn ⊢
-  obtain ⟨hU, hfix, hz⟩ := hh
-  obtain ⟨hnU, hcol, hmid⟩ := hn
-  obtain ⟨h1, h2, hUi⟩ := uh_inv hU
-  have hinvfix : ∀ v, h *ᵥ v = v → h⁻¹ *ᵥ v = v := fun v hv => by
-    conv_lhs => rw [← hv]
-    rw [Matrix.mulVec_mulVec, h2, Matrix.one_mulVec]
-  have hlow : ∀ a ≤ r, ∀ y ∈ lowS k r a, h⁻¹ *ᵥ y = y := fun a har =>
-    fix_low (fun b => hinvfix _ (hfix b).1) har
-  refine ⟨uh_mul (uh_mul hUi hnU) hU, fun a i hi => ?_, fun i j hj1 hj2 hi => ?_⟩
-  · have hc : (h⁻¹ * n * h) *ᵥ bvec (eI k r a) = h⁻¹ *ᵥ (n *ᵥ bvec (eI k r a)) := by
-      rw [← Matrix.mulVec_mulVec, (hfix a).1, ← Matrix.mulVec_mulVec]
-    have hw : n *ᵥ bvec (eI k r a) - bvec (eI k r a) ∈ lowS k r a.val := by
-      show ∀ i' : Fin (2 * r + k + 1), a.val ≤ i'.val →
-        (n *ᵥ bvec (eI k r a) - bvec (eI k r a)) i' = 0
-      intro i' hi'
-      have h5 : (n *ᵥ bvec (eI k r a)) i' = n i' (eI k r a) := by rw [col_eq]
-      rw [Pi.sub_apply, h5, hcol a i' hi']
-      unfold bvec
-      rw [Pi.single_apply, sub_self]
-    have hfixw := hlow a.val a.isLt.le _ hw
-    have hE : (h⁻¹ * n * h) *ᵥ bvec (eI k r a) = n *ᵥ bvec (eI k r a) := by
-      rw [hc]
-      have e : n *ᵥ bvec (eI k r a) =
-          (n *ᵥ bvec (eI k r a) - bvec (eI k r a)) + bvec (eI k r a) := by abel
-      rw [e, Matrix.mulVec_add, hfixw, hinvfix _ (hfix a).1]
-    have h5 : ((h⁻¹ * n * h) *ᵥ bvec (eI k r a)) i = (h⁻¹ * n * h) i (eI k r a) := by rw [col_eq]
-    have h6 : (n *ᵥ bvec (eI k r a)) i = n i (eI k r a) := by rw [col_eq]
-    rw [← h5, hE, h6, hcol a i hi]
-  · have hej : inWb k r (bvec j) := by
-      show ∀ i' : Fin (2 * r + k + 1), ↑i' < r ∨ r + k < ↑i' → bvec j i' = 0
-      intro i' hi'
-      unfold bvec
-      rw [Pi.single_apply, if_neg (fun h => by subst h; omega)]
-    have hv := uw_inWb hh0 hej
-    have hw := n_on_Wb hn0 hv
-    have hw' : ∀ i' : Fin (2 * r + k + 1), r ≤ i'.val →
-        (n *ᵥ (h *ᵥ bvec j) - h *ᵥ bvec j) i' = 0 := hw
-    have hfixw := hlow r le_rfl _ hw
-    have hinvh : h⁻¹ *ᵥ (h *ᵥ bvec j) = bvec j := by
-      rw [Matrix.mulVec_mulVec, h2, Matrix.one_mulVec]
-    have hE : (h⁻¹ * n * h) *ᵥ bvec j = bvec j + (n *ᵥ (h *ᵥ bvec j) - h *ᵥ bvec j) := by
-      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
-      have e2 : n *ᵥ (h *ᵥ bvec j) = (n *ᵥ (h *ᵥ bvec j) - h *ᵥ bvec j) + h *ᵥ bvec j := by abel
-      rw [e2, Matrix.mulVec_add, hfixw, hinvh]
-      abel
-    have h5 : ((h⁻¹ * n * h) *ᵥ bvec j) i = (h⁻¹ * n * h) i j := by rw [col_eq]
-    rw [← h5, hE, Pi.add_apply, hw' i hi, add_zero]
-    unfold bvec
-    rw [Pi.single_apply]
+  apply _root_.WlocSk.UnitaryGroupBasics.uw_conj_mem <;> assumption
 
 theorem grpAll : GrpAll := by
   intro k r z

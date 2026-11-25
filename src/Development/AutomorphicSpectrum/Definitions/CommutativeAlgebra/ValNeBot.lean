@@ -21,11 +21,6 @@ structure PtSys (K : Type) [Field K] [NumberField K] (R : Type) [CommRing R] [Al
   Pt : HeightOneSpectrum (𝓞 K) → Type
 
   val : ∀ {la}, Pt la → R → EReal
-  val_zero : ∀ {la} (y : Pt la), val y 0 = ⊤
-  val_ne_bot : ∀ {la} (y : Pt la) f, val y f ≠ ⊥
-  val_add : ∀ {la} (y : Pt la) f g, min (val y f) (val y g) ≤ val y (f + g)
-  val_smul : ∀ {la} (y : Pt la) (a : K) f, a ≠ 0 → val y (a • f) = (((vl la a : ℤ) : ℝ) : EReal) + val y f
-  val_mul : ∀ {la} (y : Pt la) f g, val y (f * g) = val y f + val y g
 
 namespace PtSys
 

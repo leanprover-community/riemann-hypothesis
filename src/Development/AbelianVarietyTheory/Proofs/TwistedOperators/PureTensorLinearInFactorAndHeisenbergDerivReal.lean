@@ -200,8 +200,8 @@ theorem isPure_linear_and_dRho : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (
       beta_reduce at e
       rw [(hP.2.2 w).2, e, wAt_lineAt_self hθ τ z t]
     have hG := hthH w f₀ hf₀
-    have h1 := (GlobalTheory.T.hasDerivAt_heisenbergMatrixCoeff_realLine_skew D ψ θ S T μ 𝓕 hψ hθ hμ f (heisO ψ S T w f₀) hfθ hG τ z).1
-    have h2 := ((GlobalTheory.T.hasDerivAt_heisenbergMatrixCoeff_realLine_skew D ψ θ S T μ 𝓕 hψ hθ hμ (x (.inr τ)) (heisO ψ S T (wAt (.inr τ) w) f₀)
+    have h1 := (_root_.GlobalTheory.MatrixCoeffDeriv.hasDerivAt_ipO_and_skew D ψ θ S T μ 𝓕 hψ hθ hμ f (heisO ψ S T w f₀) hfθ hG τ z).1
+    have h2 := ((_root_.GlobalTheory.MatrixCoeffDeriv.hasDerivAt_ipO_and_skew D ψ θ S T μ 𝓕 hψ hθ hμ (x (.inr τ)) (heisO ψ S T (wAt (.inr τ) w) f₀)
       (hxl _).1 (hthH _ _ hf₀) τ z).1).mul_const C
     have h3 : HasDerivAt (fun t : ℝ => ipO μ 𝓕 (heisO ψ S T (lineAt θ τ z t) f) (heisO ψ S T w f₀))
         (ipO μ 𝓕 (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ z (x (.inr τ))) (heisO ψ S T (wAt (.inr τ) w) f₀) * C) 0 := by

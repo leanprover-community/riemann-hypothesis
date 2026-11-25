@@ -49,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -105,7 +104,7 @@ theorem pb_comp {Z Y A : Over (Sp R)} (f : Z ⟶ Y) (g : Y ⟶ A) (a : HO1 A.hom
   have h'' : (f.left ≫ g.left) ≫ A.hom = Z.hom ≫ spMap (RingHom.id R) := by
     have e : (f ≫ g).left = f.left ≫ g.left := by simp
     rw [← e]; exact overW (f ≫ g)
-  have k := (GlobalTheory.T.structureSheaf_pullback_relations_basic R A.left Y.left A.hom Y.hom g.left (overW g)).2.2 Z.left Z.hom f.left (overW f) h''
+  have k := (_root_.GlobalTheory.Obs.pullO_basic R A.left Y.left A.hom Y.hom g.left (overW g)).2.2 Z.left Z.hom f.left (overW f) h''
     a (pb g a) (pb f (pb g a)) (isPullO_pullHO1 _ a) (isPullO_pullHO1 _ _)
   exact ((isPullO_congr (show f.left ≫ g.left = (f ≫ g).left by simp) h'' (overW (f ≫ g))).1 k).eq_pullHO1.symm
 

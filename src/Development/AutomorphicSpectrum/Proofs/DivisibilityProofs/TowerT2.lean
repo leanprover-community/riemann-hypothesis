@@ -33,6 +33,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Elementary
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardFilterValLt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.FlagImmersions.PartialSumOrderedBounds, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.DominantPartialSumBounds, Development.WeilBound.CoreStatements.FlagImmersions.CoeffShift, Development.WeilBound.CoreStatements.FlagImmersions.AltEqZero, Development.WeilBound.CoreStatements.FlagImmersions.SumChooseLe, Development.WeilBound.CoreStatements.FlagImmersions.RestDegreePowerBound, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LieTermFlagBound, Development.WeilBound.CoreStatements.FlagImmersions.TwoMulThreePowLeFactorial, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LinRootRemainderBound, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PowerSumDeltaDecomposition, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerIdentityAtCutoff, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT2
@@ -1109,15 +1110,7 @@ def lieRank {Ψ : Type} (N j : ℕ) (s : Ψ ⊕ Ψ) : ℝ := if s.isLeft then (j
 
 theorem delta_card_filter_lt {N j : ℕ} (hj : j ≤ N) :
     (Finset.univ.filter (fun i : Fin N => (i : ℕ) < j)).card = j := by
-  have h : (Finset.univ.filter (fun i : Fin N => (i : ℕ) < j)).map Fin.valEmbedding = Finset.range j := by
-    ext a
-    simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and, Fin.valEmbedding_apply, Finset.mem_range]
-    constructor
-    · rintro ⟨i, hi, rfl⟩
-      exact hi
-    · intro ha
-      exact ⟨⟨a, lt_of_lt_of_le ha hj⟩, ha, rfl⟩
-  rw [← Finset.card_map Fin.valEmbedding, h, Finset.card_range]
+  apply _root_.GlobalTheory.CardFilterLt.card_filter_val_lt <;> assumption
 
 theorem delta_card_filter_ge {N j : ℕ} (hj : j ≤ N) :
     (Finset.univ.filter (fun i : Fin N => j ≤ (i : ℕ))).card = N - j := by
@@ -1341,10 +1334,10 @@ theorem GlobalTheory.CompanionTheory.Ar.Top.exists_identAt : ∀ II : Intersecti
   have hN : 2 ≤ N := by have := T.j_pos; have := T.j_lt; omega
   obtain ⟨a, b, hid⟩ := exists_finite_identity II T hh frob hshape h6 hBA B₀ hB₀
   have hrest : ∀ (τ : Ψ) (k : ℕ) (Q : RP Ψ N), _ := fun τ k Q =>
-    (_root_.GlobalTheory.CompanionTheory.Ar.Top.restTerm_bound_and_tendsto Ψ N T.j T.bad frob τ k Q).2 B₀
+    (_root_.RootFieldNumerics.rest_term_bound_convergent Ψ N T.j T.bad frob τ k Q).2 B₀
   by_cases hΨ : Nonempty Ψ
   · obtain ⟨τ₀⟩ := hΨ
-    obtain ⟨⟨Q₁, hQ₁, hd₁⟩, Q₂, hQ₂, hd₂⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.testForms_sh_tot Ψ N T.j τ₀ T.j_pos T.j_lt
+    obtain ⟨⟨Q₁, hQ₁, hd₁⟩, Q₂, hQ₂, hd₂⟩ := _root_.RootFieldNumerics.exists_degree_one_class Ψ N T.j τ₀ T.j_pos T.j_lt
     have hQ₁' : Q₁.IsHomogeneous (dimFl Ψ N + 1 - 1) := by simpa using hQ₁
     have hQ₂' : Q₂.IsHomogeneous (dimFl Ψ N + 1 - 2) := by
       have : dimFl Ψ N + 1 - 2 = dimFl Ψ N - 1 := by omega
@@ -1465,9 +1458,9 @@ theorem tower_T2_of_inputs : ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Finty
   have hfl := _root_.GlobalTheory.CompanionTheory.Ar.Top.flat_85_bound II Ψ N T hh frob C' rd Lval B A₀ b₀ hprop hI9 hF hB128 hbad hId
   have hHom : (linRoot u ^ (dimFl Ψ N + 1) : RP Ψ N).IsHomogeneous (dimFl Ψ N + 1) := by
     simpa using (linRoot_isHomogeneous u).pow (dimFl Ψ N + 1)
-  obtain ⟨Q, hQ1, hQ2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.form_top_succ_eq_sum_pk Ψ N _ hN2 hHom
+  obtain ⟨Q, hQ1, hQ2⟩ := _root_.RootFieldNumerics.decomposition_power_sums_top_degree Ψ N _ hN2 hHom
   have hDec : IsDecomp (linRoot u ^ (dimFl Ψ N + 1)) Q := ⟨hQ1, hQ2⟩
-  have hEq := _root_.GlobalTheory.CompanionTheory.Ar.Top.identOnDecomposedForm II Ψ N T hh frob B A₀ b₀ _ Q hId hDec
+  have hEq := _root_.RootFieldNumerics.tower_point_count_identity II Ψ N T hh frob B A₀ b₀ _ Q hId hDec
   have hRest := _root_.GlobalTheory.CompanionTheory.Ar.Top.restSum_total_bound Ψ N T.j T.bad frob u g B Q T.j_pos T.j_lt hW hB0 hDec
   have hhF : 0 ≤ hh (linRoot u ^ (dimFl Ψ N + 1)) := hI9.2.1 u hdom
   have hdeg : 0 < flagDeg u := (GlobalTheory.CompanionTheory.Ar.Top.flagDeg_eq_weyl Ψ N u).2.1 hreg

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.SecondOrderNormBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CntPartners
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 
@@ -92,16 +93,7 @@ end
 
 theorem sum_castLE {N l : ℕ} (hl : l ≤ N) (f : Fin N → ℂ) (hf : ∀ i : Fin N, l ≤ i.val → f i = 0) :
     ∑ i, f i = ∑ i : Fin l, f (Fin.castLE hl i) := by
-  classical
-  have h1 : ∑ i ∈ Finset.univ.map (⟨Fin.castLE hl, Fin.castLE_injective hl⟩ : Fin l ↪ Fin N), f i =
-      ∑ i, f i := by
-    refine Finset.sum_subset (Finset.subset_univ _) ?_
-    intro i _ hi
-    refine hf i ?_
-    by_contra h
-    exact hi (Finset.mem_map.2 ⟨⟨i.val, by omega⟩, Finset.mem_univ _, Fin.ext rfl⟩)
-  rw [← h1, Finset.sum_map]
-  try rfl
+  apply _root_.PI.PolynomialProperness.CB.sum_castLE <;> assumption
 
 theorem leadMinor_cell {N : ℕ} (L P U : Matrix (Fin N) (Fin N) ℂ) (hL : IsLoUni L) (hU : IsUpUni U) (l : ℕ)
     (hl : l ≤ N) : leadMinor (L * P * U) l hl = leadMinor P l hl := by

@@ -430,50 +430,6 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-theorem isStrictPullbackBlowupSeq_ambientBlowupSequence_of_flat
-    (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
-    (hno : BlowupPreservesNoetherian.{u})
-    {X Y S S' : Scheme.{u}} (ι : S ⟶ X) (ι' : S' ⟶ Y) (h : Y ⟶ X) (h' : S' ⟶ S)
-    [AlgebraicGeometry.IsClosedImmersion ι] [AlgebraicGeometry.IsClosedImmersion ι']
-    [AlgebraicGeometry.Flat h]
-    [AlgebraicGeometry.IsNoetherian X] [AlgebraicGeometry.IsNoetherian Y]
-    (hsq : IsPullback ι' h' h ι)
-    (s : BlowupSequenceData S) (s' : BlowupSequenceData S')
-    (hs : s.CentersContainNoComponent) (hs' : s'.CentersContainNoComponent)
-    (hpb : IsStrictPullbackBlowupSeq h' s'.toSequenceOfBlowups s.toSequenceOfBlowups) :
-    IsStrictPullbackBlowupSeq h (ambientBlowupSequence ι' s' hres hno hs').toSequenceOfBlowups
-      (ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups := by
-  have hstrict : IsStrictPullbackBlowupSeq h
-      (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h)
-      ((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups) :=
-    isStrictPullbackSequenceOfBlowups_baseChange ((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups) h
-  have hN : ∀ i : ℕ, i ≤ ((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).length →
-      AlgebraicGeometry.IsLocallyNoetherian (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).schemeAt i) := by
-    intro i hi
-    have : AlgebraicGeometry.IsNoetherian (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).schemeAt i) :=
-      isNoetherian_ambientBlowupSequence_schemeAt ι s hres hno hs i hi
-    infer_instance
-  have hN' : ∀ i : ℕ, i ≤ (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h).length →
-      AlgebraicGeometry.IsLocallyNoetherian
-        ((((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h).schemeAt i) := by
-    intro i hi
-    have : AlgebraicGeometry.IsNoetherian
-        ((((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h).schemeAt i) :=
-      isNoetherian_schemeAt
-        (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h) i hi
-    infer_instance
-  have hpushTb : IsPushforwardBlowupSeq ι' s'.toSequenceOfBlowups
-      (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h) :=
-    IsPushforwardBlowupSeq.of_flat_isPullback ι ι' h h' hsq s.toSequenceOfBlowups
-      ((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups) s'.toSequenceOfBlowups
-      (((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h) hN hN'
-      (isPushforwardBlowupSeq_ambientBlowupSequence ι s hres hno hs) hpb hstrict
-  have hequiv : ((((ambientBlowupSequence ι s hres hno hs).toSequenceOfBlowups).baseChange h)).Isomorphic
-      ((ambientBlowupSequence ι' s' hres hno hs').toSequenceOfBlowups) :=
-    IsPushforwardBlowupSeq.isomorphic ι' hpushTb
-      (isPushforwardBlowupSeq_ambientBlowupSequence ι' s' hres hno hs')
-  exact IsStrictPullbackBlowupSeq.of_isomorphic_pullback hstrict hequiv
-
 theorem isPullbackBlowupSequence_ambientBlowupSequence_of_flat
     (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hno : BlowupPreservesNoetherian.{u})

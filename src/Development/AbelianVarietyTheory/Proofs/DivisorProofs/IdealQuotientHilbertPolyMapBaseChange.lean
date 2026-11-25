@@ -63,8 +63,6 @@ namespace GlobalTheory.HilbBaseChange
 
 open Module TensorProduct
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 open MvPolynomial Filter in
 open scoped ENNReal in
 open Module TensorProduct in
@@ -142,20 +140,8 @@ private theorem decompose_coe_eq_homogeneousComponent {σ L : Type} [Field L]
     (g : MvPolynomial σ L) (n : ℕ) :
     letI := MvPolynomial.gradedAlgebra (σ := σ) (R := L)
     (((DirectSum.decompose (homogeneousSubmodule σ L)) g) n : MvPolynomial σ L) =
-      homogeneousComponent n g := by
-  letI := MvPolynomial.gradedAlgebra (σ := σ) (R := L)
-  conv_lhs => rw [← sum_homogeneousComponent g]
-  rw [DirectSum.decompose_sum, DirectSum.sum_apply, Submodule.coe_sum]
-  by_cases hn : n ∈ Finset.range (g.totalDegree + 1)
-  · rw [Finset.sum_eq_single n]
-    · exact DirectSum.decompose_of_mem_same _ (homogeneousComponent_mem n g)
-    · intro i _ hi
-      exact DirectSum.decompose_of_mem_ne _ (homogeneousComponent_mem i g) hi
-    · intro h; exact absurd hn h
-  · rw [homogeneousComponent_eq_zero]
-    · refine Finset.sum_eq_zero fun i hi => ?_
-      exact DirectSum.decompose_of_mem_ne _ (homogeneousComponent_mem i g) (by rintro rfl; exact hn hi)
-    · simp at hn; omega
+      homogeneousComponent n g :=
+  decomposition.decompose'_apply g n
 
 open MvPolynomial Filter in
 open scoped ENNReal in

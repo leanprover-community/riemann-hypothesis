@@ -226,8 +226,7 @@ theorem le_v_iff (P : LocPrime l) (LL : FinExt l) (x : ℚ_[l]) (k : ℕ) :
 theorem norm_eq_of_v_eq (P : LocPrime l) (LL : FinExt l) (x : ℚ_[l]) (k : ℕ)
     (h : P.v LL (algebraMap ℚ_[l] ↥LL.1 x) = (k : WithTop ℚ)) : ‖x‖ = (l : ℝ) ^ (-(k : ℤ)) := by
   refine le_antisymm ((le_v_iff P LL x k).1 h.ge) ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h1 : ‖x‖ ≤ (l : ℝ) ^ (-((k + 1 : ℕ) : ℤ)) := by
     rw [Padic.norm_le_pow_iff_norm_lt_pow_add_one]
     simpa using hlt

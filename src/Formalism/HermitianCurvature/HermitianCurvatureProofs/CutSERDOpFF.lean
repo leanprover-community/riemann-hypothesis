@@ -14,8 +14,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.CutSE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem level_zero_inter_big_cell_eq (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) :
     Q.Glev k r 0 ∩ JF.Om k r z z' = Q.Glev k r 0 ∩ Q.OmPlus k r z z' := by
   ext g

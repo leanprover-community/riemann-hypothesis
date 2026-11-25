@@ -193,8 +193,7 @@ private theorem hur_of_closed_under_pderiv [DecidableEq σ] (Q : MvPowerSeries �
     rw [fc_zero, one_mul]
     simpa using h0 f hf
   · obtain ⟨i, hi⟩ : ∃ i, n i ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hn (Finsupp.ext hc)
     have hlt : n - Finsupp.single i 1 < n := by
       refine lt_of_le_of_ne tsub_le_self (fun heq => ?_)
@@ -669,8 +668,7 @@ theorem hur_of_pderiv [DecidableEq σ] {f : MvPowerSeries σ K} (h0 : constantCo
     rw [fc_zero, one_mul]
     simpa using h0
   · obtain ⟨i, hi⟩ : ∃ i, n i ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hn (Finsupp.ext hc)
     rw [← Finsupp.sub_add_single_one_cancel hi, ← fc_coeff_pderiv]
     exact hd i _

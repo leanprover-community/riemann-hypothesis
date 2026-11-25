@@ -616,8 +616,6 @@ section -- clump:auto
 open UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi UpperTheory.Zero.ConvolutionTheory.EB
 open NumberField GlobalTheory.CuspRep PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 private theorem zero_of_powers_compact {G : Type*} [Monoid G] [TopologicalSpace G] (f : G → ℝ) (hf : Continuous f)
     (hm : ∀ x y, f (x * y) = f x + f y) (S : Set G) (hS : IsCompact S) (k : G) (hk : ∀ m : ℕ, k ^ m ∈ S) : f k = 0 := by
   obtain ⟨C, hC⟩ := (hS.image hf).isBounded.exists_norm_le
@@ -1501,7 +1499,7 @@ protected theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.hint_fst {G P : Ty
   have hLu : L ≤ rStab u := fun k hk x => by
     have h1 : x * k = (x.1 * k.1, 1) := Prod.ext rfl (Subsingleton.elim _ _)
     rw [h1, hu k.1 hk x.1, ← hp x]
-  rw [GlobalTheory.T.haarIntegralNormalizedOpenCompact_eq_finite_level_sum _ _ L u hLK hLu (by rwa [hrel]), hrel]
+  rw [_root_.GlobalTheory.BCT.HintLevel.hint_level _ _ L u hLK hLu (by rwa [hrel]), hrel]
   congr 1
   have hval : ∀ q : G ⧸ N, u (Quotient.out (QuotientGroup.mk (q.out, (1 : P)) : (G × P) ⧸ L)) = u (q.out, 1) := by
     intro q
@@ -1614,7 +1612,7 @@ theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.seenTr_pf :
   have hcv : UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv N (two φ₁ φ₂ w false) (two φ₁ φ₂ w true) g =
       ∑ᶠ q : GLw n w ⧸ N, two φ₁ φ₂ w false q.out * two φ₁ φ₂ w true (q.out⁻¹ * g) := by
     unfold UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv
-    rw [GlobalTheory.T.haarIntegralNormalizedOpenCompact_eq_finite_level_sum _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
+    rw [_root_.GlobalTheory.BCT.HintLevel.hint_level _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
     simp
   have hpr : ∀ x : GLw n w, ((x, 1) : GLw n w × GLw 0 w)⁻¹ * (g, 1) = (x⁻¹ * g, 1) := fun x =>
     Prod.ext rfl (Subsingleton.elim _ _)
@@ -1696,8 +1694,6 @@ open PositivityTheory.Rg.BcB.CG.prime_not_mem_section_base_place
 open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
-
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 section SlopeTestRemainingChoices
 

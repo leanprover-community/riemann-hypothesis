@@ -52,9 +52,6 @@ namespace GlobalTheory.PSer.Laws
 
 variable (l : ℕ) [Fact l.Prime]
 
-theorem untilt_zero : (0 : Fl l).untilt = 0 :=
-  Perfection.teichmuller_zero
-
 theorem sh_laws : ∀ (l : ℕ) [Fact l.Prime], sh (1 : Fl l) = 1 ∧ sh (0 : Fl l) = 0 ∧
     (∀ x y : Fl l, sh (x * y) = sh x * sh y) ∧ (∀ (x : Fl l) (n : ℕ), sh (x ^ n) = sh x ^ n) ∧
     (∀ x : Fl l, ‖sh x‖ ≤ 1) ∧ (∀ c : ℂ_[l], ‖c‖ ≤ 1 → ∃ x : Fl l, sh x = c) ∧

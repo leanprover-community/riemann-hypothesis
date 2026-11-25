@@ -387,40 +387,13 @@ lemma sig_ge {k r : ℕ} (i : Fin (2 * r + k + 1)) (h : i.val ≤ r + k) : r ≤
   · push_neg at h'
     exact h'.1
 
-private lemma hpk_apply_of_outer_index (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j = sig k r i then sgn k r i else 0 := by
-  by_cases hi : i.val < r ∨ r + k < i.val
-  · have hsig : sig k r i = ⟨2 * r + k - i.val, by omega⟩ := by
-      unfold sig
-      rw [if_pos hi]
-    rw [hsig]
-    have hj : (j = (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1))) ↔ i.val + j.val = 2 * r + k := by
-      rw [Fin.ext_iff]
-      simp only
-      omega
-    simp only [Hpk, sgn, hj]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  · have hsig : sig k r i = i := by
-      unfold sig
-      rw [if_neg hi]
-    rw [hsig]
-    push_neg at hi
-    simp only [Hpk, sgn]
-    by_cases hij : j = i
-    · subst hij
-      simp only [if_true, and_true]
-      split_ifs <;> first | rfl | (exfalso; omega)
-    · have hij' : ¬ i = j := fun h => hij h.symm
-      simp only [hij, hij', if_false, and_false]
-      split_ifs <;> first | rfl | (exfalso; omega)
-
 lemma herm_coord {k r : ℕ} (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) v w = ∑ i, star (w i) * (sgn k r i * v (sig k r i)) := by
   unfold herm
   simp only [dotProduct, Pi.star_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   congr 1
-  simp only [Matrix.mulVec, dotProduct, hpk_apply_of_outer_index, ite_mul, zero_mul, Finset.sum_ite_eq',
+  simp only [Matrix.mulVec, dotProduct, _root_.Formalism.QuantumDeterminants.GBasic.Hpk_eq, ite_mul, zero_mul, Finset.sum_ite_eq',
     Finset.mem_univ, if_true]
 
 lemma star_dotProduct_Hpk_mulVec_eq_sum_sub {k r : ℕ} {v w : Fin (2 * r + k + 1) → ℂ} (hv : perpX k r v) (hw : perpX k r w) :

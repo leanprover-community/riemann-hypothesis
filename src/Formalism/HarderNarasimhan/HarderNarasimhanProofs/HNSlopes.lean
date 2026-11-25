@@ -142,8 +142,7 @@ theorem hnSlopes_of (h1 : HNStep.{u, v, w}) (h2 : MuChar.{u, v, w})
     have hne0 : hnStep ρ L θ₀ ≠ ⊥ :=
       hne_of θ₀ (lt_of_le_of_lt (Nat.zero_le j) (hbelow θ₀ hθ₀s))
     have hμ : s ≤ muMin ρ (hnStep ρ L θ₀) := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       obtain ⟨θ, hθdef⟩ : ∃ θ, θ = max θ₀ ((muMin ρ (hnStep ρ L θ₀) + s) / 2) := ⟨_, rfl⟩
       have h1' : θ₀ ≤ θ := by rw [hθdef]; exact le_max_left _ _
       have h2' : θ < s := by rw [hθdef]; exact max_lt hθ₀s (by linarith)

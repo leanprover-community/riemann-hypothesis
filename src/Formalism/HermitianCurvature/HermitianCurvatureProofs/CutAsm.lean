@@ -5,6 +5,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsAdmissibleSplittingCharPairMulTwist
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
+import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.TieRad
 
 @[expose] public section
 
@@ -70,11 +71,6 @@ theorem pr_fst_sum (P : M.Par) {ι : Type} (s : Finset ι) (g : ι → (MA.DQ P)
     (∑ i ∈ s, g i).1 = ∑ i ∈ s, (g i).1 := by
   exact map_sum (prFst P) g s
 
-theorem op_sum_apply (P : M.Par) {ι : Type} (s : Finset ι) (g : ι → (MA.DQ P).Op) (y : (MA.DQ P).R) :
-    (∑ i ∈ s, g i) y = ∑ i ∈ s, g i y := by
-  first
-  | exact LinearMap.sum_apply s g y
-
 theorem actA_mul (P : M.Par) (a b : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (a * b) x = MA.actA P a (MA.actA P b x) := by
   funext π
@@ -91,14 +87,7 @@ theorem actA_mul (P : M.Par) (a b : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r
 
 theorem actA_smul (P : M.Par) (c : ℂ) (a : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (c • a) x = c • MA.actA P a x := by
-  funext π
-  simp only [Formalism.FourierDecayAlt.MA.actA, Matrix.smul_apply, _root_.Formalism.FourierDecayAlt.P.MAx3.G.pfst_smul, Pi.smul_apply]
-  rw [eq_comm]
-  erw [Finset.smul_sum]
-  symm
-  refine Finset.sum_congr rfl fun π' _ => ?_
-  first
-    | rfl
+  apply _root_.Formalism.FourierDecayAlt.P.NormalFormRelations.act_smul <;> assumption
 
 theorem initial_coefficient_of_start_matrix (P : M.Par) (l : ℕ) (Y : ℂ) :
     Wd.C0 (MA.startM P (MA.DQ P) l).QQ (MA.sites P (MA.DQ P)) Y =

@@ -27,77 +27,32 @@ namespace PowerBlockMetric
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
 theorem homog_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f + g) a := by
-  classical
-  intro m hm
-  rcases Finset.mem_union.mp (support_add hm) with hm | hm
-  · exact hf m hm
-  · exact hg m hm
+    IsMultiHomog (f + g) a := SectionBounded.homog_add hf hg
 
 theorem homog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f - g) a := by
-  rw [sub_eq_add_neg]
-  exact homog_add hf (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_neg hg)
+    IsMultiHomog (f - g) a := SectionBounded.homog_sub hf hg
 
 theorem homog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
-    IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
+    IsMultiHomog (f * g) (a + b) := SectionBounded.homog_mul hf hg
 
-theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  obtain ⟨k, i⟩ := p
-  intro m hm k'
-  rw [MvPolynomial.support_X, Finset.mem_singleton] at hm
-  subst hm
-  by_cases h : k' = k
-  · subst h
-    rw [Pi.single_eq_same, Finset.sum_eq_single i]
-    · simp
-    · intro b _ hb
-      rw [Finsupp.single_apply, if_neg]
-      intro e
-      exact hb (eq_of_heq (Sigma.mk.inj_iff.mp e).2).symm
-    · simp
-  · rw [Pi.single_eq_of_ne h]
-    refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro e
-    exact h (congrArg Sigma.fst e).symm
+theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) :=
+  SectionBounded.homog_X p
 
 def chartMon (c : ∀ k, ι k) (d : K → ℕ) : MRing ι := ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k
 
-theorem homog_chartMon (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (chartMon c d) d := by
-  classical
-  have key : ∀ s : Finset K, IsMultiHomog (∏ k ∈ s, (X ⟨k, c k⟩ : MRing ι) ^ d k)
-      (∑ k ∈ s, d k • Pi.single k 1) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one (ι := ι))
-    | insert k s hk ih =>
-      rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      exact homog_mul (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_pow (homog_X ⟨k, c k⟩) _) ih
-  have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  have := key Finset.univ
-  rw [e] at this
-  exact this
+theorem homog_chartMon (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (chartMon c d) d :=
+  SectionBounded.homog_chartMon c d
 
 theorem aeval_chartMon (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (d : K → ℕ) :
-    aeval y (chartMon c d) = ∏ k, y ⟨k, c k⟩ ^ d k := by
-  simp [chartMon, map_prod]
+    aeval y (chartMon c d) = ∏ k, y ⟨k, c k⟩ ^ d k := SectionBounded.aeval_chartMon y c d
 
 theorem eval_chartMon (z : (Σ k, ι k) → ℂ) (c : ∀ k, ι k) (d : K → ℕ) :
-    eval z (map (Int.castRingHom ℂ) (chartMon c d)) = ∏ k, z ⟨k, c k⟩ ^ d k := by
-  simp [chartMon, map_prod]
+    eval z (map (Int.castRingHom ℂ) (chartMon c d)) = ∏ k, z ⟨k, c k⟩ ^ d k := SectionBounded.eval_chartMon z c d
 
 theorem exists_form_of_mem_chartRingZ (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {x : Ω}
     (hx : x ∈ chartRingZ y c) :
-    ∃ (δ : K → ℕ) (e : MRing ι), IsMultiHomog e δ ∧ aeval y e = x * ∏ k, y ⟨k, c k⟩ ^ δ k := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.exists_form_of_mem_chartRingZ <;> assumption
+    ∃ (δ : K → ℕ) (e : MRing ι), IsMultiHomog e δ ∧ aeval y e = x * ∏ k, y ⟨k, c k⟩ ^ δ k :=
+  SectionBounded.exists_form_of_mem_chartRingZ y c hc hx
 
 theorem y_ne_zero {y : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y))
     {p : Σ k, ι k} (hp : z p ≠ 0) : y p ≠ 0 := by

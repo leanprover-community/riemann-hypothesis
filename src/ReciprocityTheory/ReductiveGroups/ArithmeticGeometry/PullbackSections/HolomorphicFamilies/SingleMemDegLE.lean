@@ -13,8 +13,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.EigD
 
 open MvPolynomial CategoryTheory Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Alg
 
 variable {V : Type} [CommRing V]

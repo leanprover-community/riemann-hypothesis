@@ -478,22 +478,10 @@ namespace GlobalTheory.CurveSigmaAlg
 
 open NumberField Formalism.BasicNotions GlobalTheory.IsogConst
 
-theorem hasCMBy_curve (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hcc : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc)
-    (hδ : Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (L : PeriodPair)
-    (hL : L.lattice.toAddSubgroup = Formalism.MainNotions.TaylorLogMetric.lamOf D cc δ) : Formalism.L2.Th1.CM.HasCMBy D.host.d L := by
-  have hδ0 : δ ≠ 0 := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.brcc_delta_ne D cc hcc δ hδ
-  obtain ⟨-, hCM⟩ := GlobalTheory.InertGenusOne.lamOf_lat D cc δ hcc.1 hδ0
-  intro ω hω
-  have h1 := hCM ω (by rw [← hL]; exact hω)
-  rw [← hL] at h1
-  have e : Formalism.L2.Th1.CM.omegaK D.host.d = Formalism.L2.Th1.F.cmTheta 1 D.host.d := by
-    unfold Formalism.L2.Th1.CM.omegaK Formalism.L2.Th1.F.cmTheta; push_cast; ring
-  rw [e]; exact h1
-
 theorem secondEisensteinAlgebraic_of_invAlg : Formalism.L2.KerInert.Sigma.InvAlg → Formalism.L2.KerInert.Sigma.SecondEisensteinAlgebraic := by
   intro hInv D cc δ hcc hδ L hL
   obtain ⟨h2, h3⟩ := hInv D cc δ hcc hδ L hL
-  have hcm := hasCMBy_curve D cc δ hcc hδ L hL
+  have hcm := Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.hasCMBy_curve D cc δ hcc hδ L hL
   have hd0 : 0 < D.host.d := (D.host.hyp.2.1 : D.host.d.Prime).pos
   obtain ⟨S, -, -, hIso, -⟩ := Formalism.L2.Th1.F.hasCMByIsogeny D.host.d L hcm (-1) 2 (by simp) hd0
   have hαsq := alpha_sq D.host.d

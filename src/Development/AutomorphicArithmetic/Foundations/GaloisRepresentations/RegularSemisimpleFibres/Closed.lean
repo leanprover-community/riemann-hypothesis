@@ -16,48 +16,9 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.FrobeniusLocalPairs.MemTwCentConj
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.NumberField
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RegularSemisimpleFibres.TypeOfLblHolds
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroOfTwOrbNeZero
 import GroundTheory.LocalFields.Uniqueness
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
@@ -327,8 +288,7 @@ private theorem trace_one (σ : F₁ ≃ₐ[F₀] F₁) (d : ℕ) (hG : UpperThe
     rw [Finset.sum_comm, Finset.sum_congr rfl fun j hj => h j (Finset.mem_range.1 hj)]
     simp [hG.pos]
   obtain ⟨i, hi⟩ : ∃ i, T (y i) ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     simp [hn] at hs
   refine ⟨y i * (T (y i))⁻¹, ?_⟩
   simp only [map_mul, map_inv₀, hTj]
@@ -587,16 +547,6 @@ private theorem avg_const_frobenius_local_pairs {A : Type} [Group A] (c : ℂ) :
   exact finsum_eq_single (fun _ : A ⧸ (⊤ : Subgroup A) => c) 1
     (fun q hq => absurd (Subsingleton.elim q 1) hq)
 
-private theorem conj_self {G : Type} [Group G] (S : Subgroup G) {s : G} (hs : s ∈ S) :
-    S.map (MulAut.conj s).toMonoidHom = S := by
-  ext y
-  simp only [Subgroup.mem_map, MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
-  constructor
-  · rintro ⟨z, hz, rfl⟩
-    exact S.mul_mem (S.mul_mem hs hz) (S.inv_mem hs)
-  · intro hy
-    exact ⟨s⁻¹ * y * s, S.mul_mem (S.mul_mem (S.inv_mem hs) hy) hs, by group⟩
-
 private theorem zpowers_closed {G H : Type} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H]
     (j : H →* G) (hj : Topology.IsClosedEmbedding j) (t : H) :
     IsCompact (closure (Subgroup.zpowers (j t) : Set G)) ↔ IsCompact (closure (Subgroup.zpowers t : Set H)) := by
@@ -633,7 +583,7 @@ private theorem wt_inv {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
     {t κ : G} (ht : t ∈ T) (hκ : κ ∈ K) (x : G) : wt T K (t * x * κ) = wt T K x := by
   unfold wt
   have hinj : Function.Injective (MulAut.conj t).toMonoidHom := (MulAut.conj t).injective
-  have hT : T.map (MulAut.conj t).toMonoidHom = T := conj_self T ht
+  have hT : T.map (MulAut.conj t).toMonoidHom = T := GlobalTheory.TwOrbConj.map_conj_self T ht
   have hKm : K.map (MulAut.conj (t * x * κ)).toMonoidHom =
       (K.map (MulAut.conj x).toMonoidHom).map (MulAut.conj t).toMonoidHom := by
     ext y

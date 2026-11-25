@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerFlagSplitting.MulVecColOfMul
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
@@ -853,28 +854,11 @@ lemma al_one_mem (k r : ℕ) : (1 : Mat k r) ∈ GV k r := by
   show (1 : Mat k r)ᴴ * Hpk k r * 1 = Hpk k r
   simp
 lemma al_mul_mem {k r : ℕ} {g h : Mat k r} (hg : g ∈ GV k r) (hh : h ∈ GV k r) : g * h ∈ GV k r := by
-  show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hh' : hᴴ * Hpk k r * h = Hpk k r := hh
-  rw [Matrix.conjTranspose_mul]
-  calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hg', hh']
+  apply _root_.PI.StabSplit.GV_mul <;> assumption
 lemma al_unit {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : IsUnit g.det := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have h1 := congrArg Matrix.det hg'
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_conjTranspose] at h1
-  have hH : (Hpk k r).det ≠ 0 := (Hpk_unit k r).ne_zero
-  rw [isUnit_iff_ne_zero]
-  intro h0
-  rw [h0, mul_zero] at h1
-  exact hH h1.symm
+  apply _root_.PI.StabSplit.GV_unit <;> assumption
 lemma al_inv_mem {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : g⁻¹ ∈ GV k r := by
-  have hu := al_unit hg
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
-    _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hu]; simp
+  apply _root_.PI.StabSplit.GV_inv <;> assumption
 
 lemma al_cL_eq (u : Fin (2 * (1 + r') + k + 1) → ℂ) : herm (Hpk k (1 + r')) u (e0 k r') = cL u := by
   have h := hermitian_three_block (k := k) (r' := r') (cF u) 1 (cL u) 0 (mid u) 0

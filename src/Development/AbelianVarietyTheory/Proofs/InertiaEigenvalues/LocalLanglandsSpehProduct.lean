@@ -86,32 +86,6 @@ theorem sumList_flatMap {α : Type*} (L : List α) (f : α → List (WD h)) :
 
 end Sum
 
-theorem rec_spehQuot : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
-    (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)),
-    letI := GlobalTheory.LocalData.complRel w
-    haveI := GlobalTheory.LocalData.isLocalField w
-    ∀ (h : IsPlaceOver A w) (rc : IrrGL (k := w.adicCompletion E) → WD h),
-    IsRec h rc → GlobalTheory.Published.GenericUnitaryDualGL → GlobalTheory.Published.StandardCosocleGL →
-    ∀ (a d n : ℕ) (hd : ∑ _ : Fin d, a = n) (σ : LocIrr w a) (σ' : LocIrr w n),
-      IsUnitarisable σ.ρ → IsGeneric σ.ρ → IsSpehQuot hd σ σ' →
-      rc (cls (ParLaws.toRep σ')) =
-        sumList ((List.range d).map fun k : ℕ => (rc (cls (ParLaws.toRep σ))).lpTw (((d : ℝ) - 1) / 2 - k)) := by
-  intro E Ω _ _ _ _ _ A w
-  letI := GlobalTheory.LocalData.complRel w
-  haveI := GlobalTheory.LocalData.isLocalField w
-  intro h rc hrc hTZ hLM a d n hd σ σ' hu hg hq
-  haveI : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
-  obtain ⟨m, δ, Δ, s, hΔ, hδu, hs, hd0, hφ⟩ := hTZ.exists_prod σ.smooth σ.irred hu hg
-  have hA := _root_.GlobalTheory.isL_of_irreducible_prod_unitarisable_nu _ (_root_.GlobalTheory.LocGL.UnitaryOrder.add_one_le_of_precedes _) a _ σ.ρ σ.irred m δ Δ s hΔ hδu hs hd0 hφ
-  have hB := _root_.GlobalTheory.speh_quotient_isL _ hLM (_root_.GlobalTheory.LocGL.UnitaryOrder.add_one_le_of_precedes _) (GlobalTheory.T.parabolicInduction_in_stages_product_of_products _) a _ σ.ρ m δ Δ s hΔ hδu hs hd0 hφ d n hd _ σ'.ρ σ'.irred hq
-  have h4 := GlobalTheory.lpSum_segments_nu E Ω A w h rc hrc
-  obtain ⟨a', ha', ε, -, L⟩ := hrc
-  rw [L.langlands _ _ (isL_of_equiv hB (equivRep (ParLaws.toRep σ'))),
-    L.langlands _ _ (isL_of_equiv hA (equivRep (ParLaws.toRep σ))), List.map_flatMap, sumList_flatMap]
-  congr 1
-  refine List.map_congr_left fun i _ => ?_
-  exact h4 _ _
-
 end GlobalTheory.SpehRec
 
 end

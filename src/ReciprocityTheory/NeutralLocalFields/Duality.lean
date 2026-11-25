@@ -1,6 +1,7 @@
 module
 
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
+public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
 public import Formalism.ConjugateSelfDual.Statement
 public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
 public import Mathlib.NumberTheory.Padics.Complex
@@ -37,92 +38,57 @@ section ContMaps
 
 variable (R M)
 
-def contMaps (X : Type*) [TopologicalSpace X] : Submodule R (X → M) where
-  carrier := {f | Continuous f}
-  zero_mem' := continuous_const
-  add_mem' hf hg := hf.add hg
-  smul_mem' c _ hf := hf.const_smul c
+abbrev contMaps (X : Type*) [TopologicalSpace X] : Submodule R (X → M) :=
+  ReciprocityTheory.Gal.contMaps R M X
 
 variable {R M}
 
 end ContMaps
 
-def ContAction (rho : Representation R G M) : Prop :=
-  Continuous (fun p : G × M => rho p.1 p.2)
+abbrev ContAction (rho : Representation R G M) : Prop :=
+  ReciprocityTheory.Gal.ContAction rho
 
 variable (rho : Representation R G M)
 
-def H0 : Submodule R M := rho.invariants
+abbrev H0 : Submodule R M := ReciprocityTheory.Gal.H0 rho
 
-theorem mem_riemannRochSpace_iff_regularAt_everywhere (m : M) : m ∈ H0 rho ↔ ∀ g, rho g m = m := Iff.rfl
+theorem mem_riemannRochSpace_iff_regularAt_everywhere (m : M) : m ∈ H0 rho ↔ ∀ g, rho g m = m :=
+  ReciprocityTheory.Gal.mem_riemannRochSpace_iff_regularAt_everywhere rho m
 
-def Z1 : Submodule R (G → M) where
-  carrier := {f | Continuous f ∧ ∀ g h, f (g * h) = f g + rho g (f h)}
-  zero_mem' := ⟨continuous_const, fun g h => by simp⟩
-  add_mem' := fun {f f'} hf hf' => ⟨hf.1.add hf'.1, fun g h => by
-    simp only [Pi.add_apply, hf.2, hf'.2, map_add (f := _)]; abel⟩
-  smul_mem' c f hf := ⟨hf.1.const_smul c, fun g h => by
-    simp only [Pi.smul_apply, hf.2, map_smul, smul_add]⟩
+abbrev Z1 : Submodule R (G → M) := ReciprocityTheory.Gal.Z1 rho
 
-def d0 : M →ₗ[R] (G → M) := LinearMap.pi fun g => rho g - LinearMap.id
+abbrev d0 : M →ₗ[R] (G → M) := ReciprocityTheory.Gal.d0 rho
 
-def Bd1 : Submodule R (G → M) := LinearMap.range (d0 rho)
+abbrev Bd1 : Submodule R (G → M) := ReciprocityTheory.Gal.B1 rho
 
-theorem mem_contCoboundaries1 (f : G → M) : f ∈ Bd1 rho ↔ ∃ m, ∀ g, f g = rho g m - m := by
-  constructor
-  · rintro ⟨m, rfl⟩; exact ⟨m, fun g => rfl⟩
-  · rintro ⟨m, hm⟩; exact ⟨m, funext fun g => (hm g).symm⟩
+theorem mem_contCoboundaries1 (f : G → M) : f ∈ Bd1 rho ↔ ∃ m, ∀ g, f g = rho g m - m :=
+  ReciprocityTheory.Gal.mem_coboundaries1 rho f
 
-abbrev H1 := Z1 rho ⧸ (Bd1 rho).comap (Z1 rho).subtype
+abbrev H1 := ReciprocityTheory.Gal.H1 rho
 
-def Z2 : Submodule R (G × G → M) where
-  carrier := {f | Continuous f ∧
-    ∀ g h k, rho g (f (h, k)) - f (g * h, k) + f (g, h * k) - f (g, h) = 0}
-  zero_mem' := ⟨continuous_const, fun g h k => by simp⟩
-  add_mem' := fun {f f'} hf hf' => ⟨hf.1.add hf'.1, fun g h k => by
-    have e1 := hf.2 g h k; have e2 := hf'.2 g h k
-    simp only [Pi.add_apply, map_add (f := _)]
-    calc _ = (rho g (f (h, k)) - f (g * h, k) + f (g, h * k) - f (g, h)) +
-          (rho g (f' (h, k)) - f' (g * h, k) + f' (g, h * k) - f' (g, h)) := by abel
-      _ = 0 := by rw [e1, e2, add_zero]⟩
-  smul_mem' c f hf := ⟨hf.1.const_smul c, fun g h k => by
-    have e := hf.2 g h k
-    simp only [Pi.smul_apply, map_smul]
-    rw [← smul_sub, ← smul_add, ← smul_sub, e, smul_zero]⟩
+abbrev Z2 : Submodule R (G × G → M) := ReciprocityTheory.Gal.Z2 rho
 
-def d1 : (G → M) →ₗ[R] (G × G → M) where
-  toFun c p := rho p.1 (c p.2) - c (p.1 * p.2) + c p.1
-  map_add' c c' := by
-    funext p; simp only [Pi.add_apply, map_add (f := _)]; abel
-  map_smul' r c := by
-    funext p; simp only [Pi.smul_apply, map_smul, RingHom.id_apply, smul_sub, smul_add]
+abbrev d1 : (G → M) →ₗ[R] (G × G → M) := ReciprocityTheory.Gal.d1 rho
 
-def Bd2 : Submodule R (G × G → M) := (contMaps R M G).map (d1 rho)
+abbrev Bd2 : Submodule R (G × G → M) := ReciprocityTheory.Gal.B2 rho
 
 theorem mem_contCoboundaries2 (f : G × G → M) :
-    f ∈ Bd2 rho ↔ ∃ c : G → M, Continuous c ∧ d1 rho c = f := Iff.rfl
+    f ∈ Bd2 rho ↔ ∃ c : G → M, Continuous c ∧ d1 rho c = f :=
+  ReciprocityTheory.Gal.separated_dvr_second_cohomology_mem rho f
 
-abbrev H2 := Z2 rho ⧸ (Bd2 rho).comap (Z2 rho).subtype
+abbrev H2 := ReciprocityTheory.Gal.H2 rho
 
-def Cn (rho : Representation R G M) (n : ℕ) : Submodule R ((Fin n → G) → M) := contMaps R M (Fin n → G)
+abbrev Cn (rho : Representation R G M) (n : ℕ) : Submodule R ((Fin n → G) → M) :=
+  ReciprocityTheory.Gal.Cn rho n
 
-def dn (n : ℕ) : ((Fin n → G) → M) →ₗ[R] ((Fin (n + 1) → G) → M) where
-  toFun f g := rho (g 0) (f fun i => g i.succ) + Finset.univ.sum fun j : Fin (n + 1) =>
-    (-1 : R) ^ ((j : ℕ) + 1) • f (Fin.contractNth j (· * ·) g)
-  map_add' f f' := by
-    funext g
-    simp [Finset.sum_add_distrib, add_add_add_comm]
-  map_smul' r f := by
-    funext g
-    simp [Finset.smul_sum, ← smul_assoc, mul_comm r]
+abbrev dn (n : ℕ) : ((Fin n → G) → M) →ₗ[R] ((Fin (n + 1) → G) → M) :=
+  ReciprocityTheory.Gal.dn rho n
 
-def Zn (n : ℕ) : Submodule R ((Fin n → G) → M) := Cn rho n ⊓ LinearMap.ker (dn rho n)
+abbrev Zn (n : ℕ) : Submodule R ((Fin n → G) → M) := ReciprocityTheory.Gal.Zn rho n
 
-def Bn : (n : ℕ) → Submodule R ((Fin n → G) → M)
-  | 0 => ⊥
-  | n + 1 => (Cn rho n).map (dn rho n)
+abbrev Bn (n : ℕ) : Submodule R ((Fin n → G) → M) := ReciprocityTheory.Gal.Bn rho n
 
-abbrev Hn (n : ℕ) := Zn rho n ⧸ (Bn rho n).comap (Zn rho n).subtype
+abbrev Hn (n : ℕ) := ReciprocityTheory.Gal.Hn rho n
 
 section Restriction
 
@@ -131,35 +97,17 @@ variable {H : Type*} [Group H] [TopologicalSpace H] (phi : H →* G)
 variable (hphi : Continuous phi)
 include hphi
 
-def restrictCocycles1 : Z1 rho →ₗ[R] Z1 (rho.comp phi) where
-  toFun f := ⟨f.1 ∘ phi, f.2.1.comp hphi, fun g h => by
-    simp only [Function.comp_apply, map_mul, MonoidHom.coe_comp]
-    exact f.2.2 _ _⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
+abbrev restrictCocycles1 : Z1 rho →ₗ[R] Z1 (rho.comp phi) :=
+  ReciprocityTheory.Gal.restrictCocycles1 rho phi hphi
 
-def resH1 : H1 rho →ₗ[R] H1 (rho.comp phi) :=
-  Submodule.mapQ _ _ (restrictCocycles1 rho phi hphi) fun f hf => by
-    obtain ⟨m, hm⟩ := (mem_contCoboundaries1 rho _).1 hf
-    exact (mem_contCoboundaries1 _ _).2 ⟨m, fun h => hm (phi h)⟩
+abbrev resH1 : H1 rho →ₗ[R] H1 (rho.comp phi) :=
+  ReciprocityTheory.Gal.resH1 rho phi hphi
 
-def restrictCocycles2 : Z2 rho →ₗ[R] Z2 (rho.comp phi) where
-  toFun f := ⟨fun p => f.1 (phi p.1, phi p.2), f.2.1.comp (hphi.prodMap hphi), fun g h k => by
-    simp only [map_mul, MonoidHom.coe_comp, Function.comp_apply]
-    exact f.2.2 _ _ _⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
+abbrev restrictCocycles2 : Z2 rho →ₗ[R] Z2 (rho.comp phi) :=
+  ReciprocityTheory.Gal.restrictCocycles2 rho phi hphi
 
-def resH2 : H2 rho →ₗ[R] H2 (rho.comp phi) :=
-  Submodule.mapQ _ _ (restrictCocycles2 rho phi hphi) fun f hf => by
-    obtain ⟨c, hc, hcf⟩ := (mem_contCoboundaries2 rho _).1 hf
-    refine (mem_contCoboundaries2 _ _).2 ⟨c ∘ phi, hc.comp hphi, ?_⟩
-    funext p
-    have e := congrFun hcf (phi p.1, phi p.2)
-    simp only [Submodule.coe_subtype] at e
-    change _ = f.1 (phi p.1, phi p.2)
-    rw [← e]
-    simp [d1]
+abbrev resH2 : H2 rho →ₗ[R] H2 (rho.comp phi) :=
+  ReciprocityTheory.Gal.resH2 rho phi hphi
 
 end Restriction
 

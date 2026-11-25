@@ -23,6 +23,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassFiniteness.HermSingleLeft
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FinIdx
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PsiInclR, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.SigRTmulOne, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.LSLocA, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.LsLat, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PLatStep, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PSurjA, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.AlgebraMapIntIntAf, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PSurjP, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PPatchF, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.UJClassMassOfOpen, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.UJClassMassOfHerm
@@ -709,13 +710,7 @@ end Split
 theorem crd_int_smul {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Module E V]
     [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V] {M : ℕ} (b : Module.Basis (Fin M) E V)
     (L0 : Submodule (𝓞 E) V) : ∀ e : E, IsIntegral ℤ e → ∀ x ∈ crdOf b L0, e • x ∈ crdOf b L0 := by
-  intro e he x hx
-  show ∑ i, (e • x) i • b i ∈ L0
-  have : ∑ i, (e • x) i • b i = e • ∑ i, x i • b i := by
-    rw [Finset.smul_sum]
-    simp [smul_smul]
-  rw [this]
-  exact int_smul_mem L0 he hx
+  apply _root_.PI.UnitaryGroupMassFormula.UJClassMass.crd_smul <;> assumption
 
 theorem equivFun_toLin {E : Type} [Field E] {V : Type} [AddCommGroup V] [Module E V] {M : ℕ}
     (b : Module.Basis (Fin M) E V) (A : Matrix (Fin M) (Fin M) E) (v : V) :
@@ -762,14 +757,7 @@ theorem algebraMap_int_intAf (t : 𝓞 F) : algebraMap F (Af F) (algebraMap (�
   exact HeightOneSpectrum.intValuation_le_one w t
 
 theorem finElt (m : 𝓞 F) (hm : m ≠ 0) : {w : HeightOneSpectrum (𝓞 F) | m ∈ w.asIdeal}.Finite := by
-  have hI : Ideal.span {m} ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact hm
-  apply (Ideal.finite_factors hI).subset
-  intro w hw
-  show w.asIdeal ∣ Ideal.span {m}
-  rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
-  exact hw
+  apply _root_.Formalism.L2.G.finite_setOf_mem_asIdeal <;> assumption
 
 theorem evT_compl (X : Set (HeightOneSpectrum (𝓞 F))) : 1 - evT Xᶜ = evT X := by
   apply af_ext
@@ -808,8 +796,7 @@ theorem t_lemma (v : HeightOneSpectrum (𝓞 F)) (m : 𝓞 F) (hm : m ≠ 0) :
   classical
   have hn : ∀ w : HeightOneSpectrum (𝓞 F), ∃ n : ℕ, m ∉ w.asIdeal ^ n := by
     intro w
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hmem : m ∈ ⨅ i, w.asIdeal ^ i := (Submodule.mem_iInf _).2 h
     rw [Ideal.iInf_pow_eq_bot_of_isDomain w.asIdeal w.isPrime.ne_top, Ideal.mem_bot] at hmem
     exact hm hmem

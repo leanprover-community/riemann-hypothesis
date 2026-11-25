@@ -21,8 +21,7 @@ open Formalism.L2.SG.AdBridge
 variable (I : AutInst)
 
 theorem exists_not_mem_range : ∃ x : I.E, x ∉ Set.range (algebraMap I.F I.E) := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hs : Function.Surjective (Algebra.linearMap I.F I.E) := fun x => by
     obtain ⟨a, ha⟩ := h x
     exact ⟨a, ha⟩

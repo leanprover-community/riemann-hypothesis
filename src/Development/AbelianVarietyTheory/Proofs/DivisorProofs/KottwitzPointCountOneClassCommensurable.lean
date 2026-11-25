@@ -432,7 +432,7 @@ theorem pointSum_eq_pointSide_of_commensurable : ∀ {Γ G₁ G₂ : Type} [Grou
       f₁ ((Quotient.out q).1⁻¹ * γ * (Quotient.out q).1) * φ ((Quotient.out q).2⁻¹ * δ * θ (Quotient.out q).2) ≠ 0
   · have hu := hcore.2 hne
     have hTp : GlobalTheory.BCT.twCent ((MonoidHom.id G₁).prodMap θ) (γ, δ) =
-        (GlobalTheory.BCT.twCent (MonoidHom.id G₁) γ).prod (GlobalTheory.BCT.twCent θ δ) := twCent_prod _ _ γ δ
+        (GlobalTheory.BCT.twCent (MonoidHom.id G₁) γ).prod (GlobalTheory.BCT.twCent θ δ) := GlobalTheory.BCT.OrbProd.twCent_prod _ _ γ δ
     have hCp : GlobalTheory.BCT.twCent ((MonoidHom.id G₁).prodMap θ) (γ, δ) ⊓ K₁.prod K₂ =
         (GlobalTheory.BCT.twCent (MonoidHom.id G₁) γ ⊓ K₁).prod (GlobalTheory.BCT.twCent θ δ ⊓ K₂) := by
       rw [hTp]; ext z; simp only [Subgroup.mem_inf, Subgroup.mem_prod]; tauto
@@ -467,8 +467,7 @@ theorem pointSum_eq_pointSide_of_commensurable : ∀ {Γ G₁ G₂ : Type} [Grou
       rw [← hFinv h (hΓT hh) x k hk, ← he]
       exact hne _
     have hor : (∀ x₁ : G₁, f₁ (x₁⁻¹ * γ * x₁) = 0) ∨ (∀ x₂ : G₂, φ (x₂⁻¹ * δ * θ x₂) = 0) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ := hc
       exact mul_ne_zero ha hb (hF0 (a, b))
     rw [hPS]

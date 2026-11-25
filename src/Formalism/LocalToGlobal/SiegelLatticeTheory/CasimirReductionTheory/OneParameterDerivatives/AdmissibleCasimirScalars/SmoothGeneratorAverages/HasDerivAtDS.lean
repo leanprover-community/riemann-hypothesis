@@ -16,8 +16,6 @@ namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace AdmissibleVectors
 
 section Lie

@@ -17,8 +17,6 @@ namespace PI.UnitaryGroupMassFormula.UsCompose
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem continuous_vars {N : ℕ} : Continuous (vars : Matrix (Fin N) (Fin N) ℂ → Vr N → ℂ) := by
   refine continuous_pi fun i => ?_
   rcases i with x | x

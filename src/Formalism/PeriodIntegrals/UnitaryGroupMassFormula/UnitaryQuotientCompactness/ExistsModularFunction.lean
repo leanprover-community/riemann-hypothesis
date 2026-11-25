@@ -147,42 +147,6 @@ theorem rightInv_of (μ : Measure (MtM m)) (hμ : IsHaarOnM G μ)
   rw [← hback, Measure.map_map hR hMe.measurable, hgkey,
     ← Measure.map_map hMe.measurable (measurable_mul_const _), hinv]
 
-def conjE (c : Matrix (Fin m) (Fin m) ℂ) (hc : IsUnit c) (hcG : ∀ g, c * g * c⁻¹ ∈ G ↔ g ∈ G) :
-    MG G hG ≃ₜ* MG G hG where
-  toFun x := mk hG (c * x.toM * c⁻¹) ((hcG _).2 x.2)
-  invFun x := mk hG (c⁻¹ * x.toM * c) (by
-    have hd : IsUnit c.det := (Matrix.isUnit_iff_isUnit_det c).1 hc
-    apply (hcG _).1
-    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.one_mul,
-      Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
-    exact x.2)
-  left_inv x := by
-    have hd : IsUnit c.det := (Matrix.isUnit_iff_isUnit_det c).1 hc
-    apply MG.toM_injective
-    simp only [toM_mk]
-    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hd, Matrix.one_mul,
-      Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hd, Matrix.mul_one]
-  right_inv x := by
-    have hd : IsUnit c.det := (Matrix.isUnit_iff_isUnit_det c).1 hc
-    apply MG.toM_injective
-    simp only [toM_mk]
-    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.one_mul,
-      Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
-  map_mul' x y := by
-    have hd : IsUnit c.det := (Matrix.isUnit_iff_isUnit_det c).1 hc
-    apply MG.toM_injective
-    simp only [toM_mk, toM_mul']
-    simp only [Matrix.mul_assoc]
-    rw [← Matrix.mul_assoc c⁻¹ c, Matrix.nonsing_inv_mul _ hd, Matrix.one_mul]
-  continuous_toFun := by
-    rw [continuous_iff_toM]
-    simp only [toM_mk]
-    exact (continuous_const.matrix_mul continuous_toM).matrix_mul continuous_const
-  continuous_invFun := by
-    rw [continuous_iff_toM]
-    simp only [toM_mk]
-    exact (continuous_const.matrix_mul continuous_toM).matrix_mul continuous_const
-
 theorem modF_conj (φ : MG G hG ≃ₜ* MG G hG) (g : MG G hG) :
     Measure.modularCharacterFun (φ g) = Measure.modularCharacterFun g := by
   rw [Measure.modularCharacterFun_eq_haarScalarFactor

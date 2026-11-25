@@ -861,8 +861,7 @@ theorem main (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (hdet : J.det ≠ 0
       rw [htop, finrank_top, Module.finrank_fin_fun, Fintype.card_fin] at h1
       omega
     obtain ⟨z, hz⟩ : ∃ z, z ∉ Submodule.span K (Set.range e) := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hspan (eq_top_iff.mpr (fun z _ => hall z))
     obtain ⟨v, hvW, hzv⟩ := proj e he ho z
     have hv0 : v ≠ 0 := by
@@ -870,8 +869,7 @@ theorem main (hσ : ∀ a, σ (σ a) = a) (hJ : cT σ J = J) (hdet : J.det ≠ 0
       rw [sub_zero] at hzv
       exact hz hzv
     obtain ⟨z2, hz2⟩ : ∃ z2, H σ J v z2 ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hv0 (eq_zero_of_H σ J hdet v hall)
     obtain ⟨v2, hv2W, hzv2⟩ := proj e he ho z2
     have hvspan : ∀ x ∈ Submodule.span K (Set.range e), H σ J v x = 0 := by
@@ -1287,53 +1285,6 @@ theorem trace_integral' : TraceInt := by
   let O := ↥(v.adicCompletionIntegers I.F)
   let w : Valuation K (WithZero (Multiplicative ℤ)) := Valued.v
   let m := IsLocalRing.maximalIdeal O
-  have hcomplete : IsAdicComplete m O := by
-    have hIntegers := IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := I.F) v
-    obtain ⟨π, hπ⟩ := Formalism.BasicNotions.Examples₂.adicInt_exists_unif (K := I.F) v
-    have hm : m = Ideal.span {π} := by
-      ext x
-      change x ∈ IsLocalRing.maximalIdeal _ ↔ x ∈ Ideal.span {π}
-      rw [Formalism.BasicNotions.Examples₂.adicInt_mem_max_iff v x,
-        Ideal.mem_span_singleton, hIntegers.dvd_iff_le]
-      change Valued.v (x : K) < 1 ↔ Valued.v (x : K) ≤ Valued.v (π : K)
-      rw [hπ]
-      exact Formalism.BasicNotions.Examples₂.wz_lt_one_iff _
-    have hpow (n : ℕ) (x : O) : x ∈ m ^ n ↔ w (x : K) ≤ w ((π : K) ^ n) := by
-      rw [hm, Ideal.span_singleton_pow, Ideal.mem_span_singleton, hIntegers.dvd_iff_le]
-      rfl
-    have hAdic : IsAdic m := by
-      rw [isAdic_iff]
-      constructor
-      · intro n
-        have hπ0 : (π : K) ≠ 0 := by
-          apply (map_ne_zero w).mp
-          change Valued.v (π : K) ≠ 0
-          rw [hπ]
-          exact WithZero.exp_ne_zero
-        have hopen := Valued.isOpen_closedBall K
-          (r := w.restrict ((π : K) ^ n)) ((map_ne_zero w.restrict).mpr (pow_ne_zero n hπ0))
-        convert hopen.preimage (continuous_subtype_val : Continuous (fun x : O => (x : K))) using 1
-        ext x
-        exact (hpow n x).trans (w.restrict_le_iff).symm
-      · intro U hU
-        rw [show nhds (0 : O) = Filter.comap (fun x : O => (x : K)) (nhds (0 : K)) from
-          nhds_subtype_eq_comap] at hU
-        obtain ⟨γ, -, hγ⟩ :=
-          ((Valued.hasBasis_nhds_zero K (WithZero (Multiplicative ℤ))).comap _).mem_iff.mp hU
-        have hγ0 : MonoidWithZeroHom.ValueGroup₀.embedding γ.1 ≠ 0 := by
-          exact (_root_.map_ne_zero MonoidWithZeroHom.ValueGroup₀.embedding).mpr γ.ne_zero
-        obtain ⟨n, hn⟩ := @WithZero.exists_exp_neg_natCast_lt _ hγ0
-        have hπn : w ((π : K) ^ n) = WithZero.exp (-(n : ℤ)) := by
-          change Valued.v ((π : K) ^ n) = _
-          rw [map_pow, hπ, ← WithZero.exp_nsmul]
-          simp
-        refine ⟨n, fun x hx => hγ ?_⟩
-        apply w.restrict_lt_iff_lt_embedding.mpr
-        refine ((hpow n x).mp hx).trans_lt ?_
-        rwa [hπn]
-    exact hAdic.isAdicComplete_iff.mpr
-      ⟨completeSpace_coe_iff_isComplete.mpr (Valued.isClosed_valuationSubring K).isComplete,
-        inferInstance⟩
   obtain ⟨a, ha, -⟩ := HenselianRing.is_henselian (I := m)
     (Polynomial.X ^ 2 + (Polynomial.C s - Polynomial.X)) (by monicity!) 0
     (by simpa [m] using hsm) (by simp)

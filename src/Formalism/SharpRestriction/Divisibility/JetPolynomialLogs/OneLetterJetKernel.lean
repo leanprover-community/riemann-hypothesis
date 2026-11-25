@@ -1,5 +1,6 @@
 module
 
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EGaussK
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
@@ -387,15 +388,8 @@ theorem jetPairPoly_subst_CX {K : Type} [Field K] {σ ι : Type} [Finite ι]
     (P : MvPolynomial ι (MvPolynomial σ K)) (D : ℕ) (hP : P.IsHomogeneous D) (Th : MvPowerSeries ι K) (ep : K) :
     jetPairPoly P (MvPowerSeries.subst (fun v => MvPowerSeries.C ep * (MvPowerSeries.X v : MvPowerSeries ι K)) Th) =
       MvPolynomial.C (ep ^ D) * jetPairPoly P Th := by
-  unfold jetPairPoly
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun κ hκ => ?_
-  have hd : κ.degree = D := by
-    by_contra h
-    exact (MvPolynomial.mem_support_iff.mp hκ) (hP.coeff_eq_zero h)
-  rw [coeff_subst_CX, hd, show ((DworkPowerSeriesWeights.mfact κ : ℕ) : K) * (ep ^ D * MvPowerSeries.coeff κ Th) =
-    ep ^ D * (((DworkPowerSeriesWeights.mfact κ : ℕ) : K) * MvPowerSeries.coeff κ Th) by ring, MvPolynomial.C_mul]
-  ring
+  intros
+  apply _root_.Formalism.InvariantFactorPaths.G7.DeterminantJetScaling.jetPairPoly_scale <;> assumption
 
 def frIdx {Lt : Type} {N0 : ℕ} : Lt × Fin N0 × Fin N0 → Lt × ℕ × Fin N0 := fun v => (v.1, (v.2.1 : ℕ), v.2.2)
 

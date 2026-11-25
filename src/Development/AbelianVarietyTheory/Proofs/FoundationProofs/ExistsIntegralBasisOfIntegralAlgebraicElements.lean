@@ -243,8 +243,7 @@ theorem exists_residue_basis (hφ : ∀ z, v (fromInt p L z) ≤ 1) (h1 : v (p :
     ∃ (F : ℕ) (κ : Fin F → L), (∀ j, v (κ j) ≤ 1) ∧
       (∀ μ : Fin F → ℤ_[p], (∃ j, ¬ (p : ℤ_[p]) ∣ μ j) → v (∑ j, κ j * fromInt p L (μ j)) = 1) ∧
       ∀ x, v x ≤ 1 → ∃ μ : Fin F → ℤ_[p], v (x - ∑ j, κ j * fromInt p L (μ j)) < 1 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hall : ∀ F : ℕ, ∃ κ : Fin F → L, (∀ j, v (κ j) ≤ 1) ∧
       (∀ μ : Fin F → ℤ_[p], (∃ j, ¬ (p : ℤ_[p]) ∣ μ j) → v (∑ j, κ j * fromInt p L (μ j)) = 1) := by
     intro F

@@ -140,8 +140,7 @@ theorem _root_.GlobalTheory.UnramifiedDiscriminant.exists_discr_notMem (F E : Ty
       Ideal.ramificationIdxIn_eq_ramificationIdx v.asIdeal P (E ≃ₐ[F] E)]
     exact Ideal.ramificationIdx_eq_one_of_isUnramifiedAt
   obtain ⟨x, hx⟩ : ∃ x : 𝓞 E, σ' • x - x ∉ P := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hmem : σ' ∈ P.inertia (E ≃ₐ[F] E) := hcon
     haveI := (Nat.card_eq_one_iff_unique.mp hcard).1
     have h1 : σ' = 1 := congrArg Subtype.val (Subsingleton.elim (⟨σ', hmem⟩ : P.inertia _) 1)

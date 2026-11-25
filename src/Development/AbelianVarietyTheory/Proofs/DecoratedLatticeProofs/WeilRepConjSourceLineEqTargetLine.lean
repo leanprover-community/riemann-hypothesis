@@ -218,7 +218,7 @@ theorem trivOnF_of_resEta {χ χ' : (AE D)ˣ →* Circle} {n : ℕ} (h : ResEta 
 
 theorem conj_line : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (L L' S : HSp D) (τ : Matrix (Fin L.rank) (Fin L'.rank) D.host.E), L.rank = L'.rank → τᴴ ⬝ (L.gram ⬝ τ) = (((1 : ℤ) : D.host.E) * (D.host.xi0 * star D.host.xi0)) • L'.gram → ∀ (χz χ χ' : ((AE D)ˣ →* Circle)) (om : Om L S) (om' : Om S L'), IsWeilDatumO ψ L S χz χ om → IsWeilDatumO ψ S L' χ' χz om' → ∀ f, IsThetaFunO ψ L S f → IsThetaFunO ψ S L' (fun w => star (f (GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ w)))) ∧ ∀ h, om' (h, 1) (fun w => star (f (GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ w)))) = fun w => star (om (1, h) f (GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.ofAdj L S ((rat τ : Mx D L.rank L'.rank) ⬝ w))) := by
   intro D ψ L L' S τ hr hg χz χ χ' om om' hom hom' f hf
-  have CA := GlobalTheory.T.weilConjugationAdjointRule_standard_char D ψ hom.std L S
+  have CA := _root_.GlobalTheory.WeilConjAdjoint.conjAdjoint_holds D ψ hom.std L S
   have hW : IsWeilDatumO ψ S L χ χz (conjAdjoint om) := (CA.conj_adjoint χz χ om hom).1
   have hF₁ : IsThetaFunO ψ S L (cj (dagger S L) f) := (CA.theta_dagger f).2 hf
   set I := (isoOf L L' τ hr hg).symm with hI

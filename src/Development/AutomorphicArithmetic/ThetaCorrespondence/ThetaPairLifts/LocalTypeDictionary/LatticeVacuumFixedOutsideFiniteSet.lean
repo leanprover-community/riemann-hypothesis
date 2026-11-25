@@ -456,8 +456,7 @@ theorem scalar_eq_one_of_split_left : _root_.GlobalTheory.FunPr.ThetaLocalInputs
       ring
     rw [← e1, hfix]
   obtain ⟨y, hy⟩ : ∃ y, G.M'.vac v y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   let x : Fin a' × Fin (a + a') → AF F := fun i => GlobalTheory.LatVac.liftV v (y i)
   have hRx : R x = R 0 := by
@@ -492,7 +491,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 noncomputable section
@@ -634,8 +632,7 @@ theorem cm_exists_moved (σ : E →ₐ[F] E) (h : IsCMExt F E σ) : ∃ x : E, �
   haveI : IsTotallyComplex E := h.2.1
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
   have hc := InfinitePlace.isComplex_iff.1 (IsTotallyComplex.isComplex w)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hc
   ext x
   have hx := h.2.2.2 w.embedding x
@@ -1443,10 +1440,6 @@ theorem vdbl_line_of_unr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
     (fun i => hφl _ i.1.2 _ i.2.2) (fun i => hdl _ i.1.2 _ i.2.2) hφd0
   exact ⟨c', hc'⟩
 
-private theorem star_mem_SB' {Y : Type} [TopologicalSpace Y] {φ : Y → ℂ} (h : φ ∈ SB Y) :
-    (fun y => star (φ y)) ∈ SB Y :=
-  ⟨h.1.comp _, h.2.comp_left (star_zero _)⟩
-
 theorem vdbl_eigen_of_unr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ (v : Pl (F := F)), PsiUnr B.ψ v →
@@ -1465,7 +1458,7 @@ theorem vdbl_eigen_of_unr : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
   set φ := G.M.vac v with hφ
   set vD := boxFun φ (fun x => star (φ x)) with hvD
   set RD := boxFun r (fun x => star (r x)) with hRD
-  have hvDSB : vD ∈ SB _ := _root_.GlobalTheory.DblVacLine.box_mem_SB hvSB (star_mem_SB' hvSB)
+  have hvDSB : vD ∈ SB _ := _root_.GlobalTheory.DblVacLine.box_mem_SB hvSB (GlobalTheory.DblVacEigen.sb_star hvSB)
   have hS : boxFun (tens (evFin F v) φ r) (fun x => star (tens (evFin F v) φ r x)) = tens (evFin F v) vD RD := by
     funext x
     simp only [tens, boxFun, hvD, hRD, Function.comp_def, star_mul']
@@ -1707,7 +1700,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 namespace GlobalTheory.LatStabVac

@@ -36,8 +36,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.
 
 namespace Formalism.L2.SG.Pf.FibreEq
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D} {Y : Formalism.L2.SG.Full.Full X} {u u' : D.what₂.Word}
 
 theorem partner (hN : Formalism.L2.SG.PoincareInHH.Cut.NeatKu X u' Y.hK) (hIR : Formalism.L2.SG.Pf.SatGramRep.IotaRepC)
@@ -120,8 +118,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.KernelOfEmbedding
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Pair
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
@@ -183,8 +179,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf
 
 namespace Formalism.L2.SG.Pf.KernelOfEmbedding
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : HidaSetting D} {Y : Formalism.L2.SG.Full.Full X} {hF : FinX Y} (W : WittDat X)
   (hI : SIso D.s (sOf hF))
@@ -272,8 +266,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
   Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.Vanish Formalism.L2.SG.Pf.FibreCounting
 
 namespace Formalism.L2.SG.Pf.KernelOfEmbedding
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Gen
 

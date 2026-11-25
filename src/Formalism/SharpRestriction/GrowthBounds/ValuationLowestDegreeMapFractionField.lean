@@ -2477,9 +2477,6 @@ theorem last_inequality_clause_of_lemma (D : Formalism.BasicNotions.D7) (h : Con
   intro N r K _ _ LL B hK L
   have hanti : StrictAnti (fun i : Fin N => N - i.val) := by
     intro a b hab
-    have h1 := a.2
-    have h2 := b.2
-    have h3 : a.val < b.val := hab
     show N - b.val < N - a.val
     omega
   exact (h p O S N r K LL B (fun i => N - i.val) hK hanti (fun i => Nat.sub_pos_of_lt i.2)

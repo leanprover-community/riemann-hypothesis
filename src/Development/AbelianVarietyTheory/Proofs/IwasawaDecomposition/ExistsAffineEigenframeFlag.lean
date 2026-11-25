@@ -69,8 +69,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.LieMet (tanOf isTan_tv isTan_map tan_ext)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} {t : SAB H X}
   {S T U : Type} [CommRing S] [CommRing T] [CommRing U] {x : Sp S ⟶ X} {x' : Sp T ⟶ X} {x'' : Sp U ⟶ X}
 
@@ -120,7 +118,6 @@ open Formalism.DegreeFormula Formalism.MJ Formalism.UG Formalism.L2.Geo Formalis
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.PullbackSections
 open GlobalTheory GlobalTheory.HodgeDomain GlobalTheory.LieMet GlobalTheory.CxPts GlobalTheory.TrueCx
 open GlobalTheory.AllWt (Psi)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end GlobalTheory.LieLocFrame
 end -- clump:auto
@@ -144,8 +141,6 @@ open GlobalTheory.LieLocFrame (res res_sum res_res)
 open GlobalTheory.LieMet (tan_ext)
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (spMap_comp_spMap)
 open scoped CategoryTheory.MonObj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem exists_affine_germs {X : Scheme.{0}} (y : X) {W : X.Opens} (hW : y ∈ W) {κ : Type} [Finite κ]
     (a : κ → X.presheaf.stalk y) : ∃ (U : X.Opens) (_ : IsAffineOpen U) (hy : y ∈ U) (s : κ → Γ(X, U)), U ≤ W ∧

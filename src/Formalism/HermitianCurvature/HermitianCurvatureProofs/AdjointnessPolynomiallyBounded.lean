@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 public import Formalism.HermitianCurvature.StatementB
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.Lemma
@@ -20,16 +21,7 @@ theorem AB_nonneg (k r : ℕ) : (0 : ℝ) ≤ AB k r := by
   positivity
 
 theorem aDil_inv (k r : ℕ) (t : ℝ) (ht : t ≠ 0) : (aDil k r t)⁻¹ = aDil k r t⁻¹ := by
-  have hp : ∀ n : ℕ, t ^ n ≠ 0 := fun n => pow_ne_zero n ht
-  apply Matrix.inv_eq_left_inv
-  unfold aDil
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext i
-  split_ifs with h1 h2
-  · rw [← Complex.ofReal_mul, inv_pow, inv_mul_cancel₀ (hp _), Complex.ofReal_one]
-  · exact mul_one 1
-  · rw [← Complex.ofReal_mul, inv_pow, inv_inv, mul_inv_cancel₀ (hp _), Complex.ofReal_one]
+  apply _root_.Formalism.FourierDecayAlt.P.B4.aDil_inv <;> assumption
 
 end B2
 
@@ -120,23 +112,7 @@ theorem dilation_big_cell_formula : Formalism.FourierDecayAlt.B.DilBigCell := by
 private lemma star_ofReal_eq_self (x : ℝ) : star (x : ℂ) = x := Complex.conj_ofReal x
 
 theorem dilation_mem_group : Formalism.FourierDecayAlt.B.DilMem := by
-  unfold Formalism.FourierDecayAlt.B.DilMem
-  intro k r t ht
-  have hp : ∀ n : ℕ, t ^ n ≠ 0 := fun n => pow_ne_zero n ht
-  unfold GV UH aDil
-  rw [Set.mem_setOf_eq, Matrix.diagonal_conjTranspose]
-  ext i j
-  simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Pi.star_apply]
-  unfold Hpk
-  split_ifs
-  all_goals (try simp only [star_ofReal_eq_self, star_one, mul_one, one_mul, mul_zero, zero_mul, mul_neg])
-  all_goals try first
-    | rfl
-    | (exfalso; (try simp only [Fin.ext_iff] at *); omega)
-    | (rw [show (j : ℕ) - (r + k) = r - (i : ℕ) by omega, ← Complex.ofReal_mul,
-          mul_inv_cancel₀ (hp _), Complex.ofReal_one])
-    | (rw [show (i : ℕ) - (r + k) = r - (j : ℕ) by omega, ← Complex.ofReal_mul,
-          inv_mul_cancel₀ (hp _), Complex.ofReal_one])
+  apply _root_.Formalism.FourierDecayAlt.P.B4.aDil_mem <;> assumption
 
 theorem bessel_lemma_closed_form : Formalism.FourierDecayAlt.B.LemmaBClosedFromParts := by
   intro hXi hLB hSC hAP k r Wp Wq _ _ _ _ _ _ D A hA hInt hConj hDJ hCCI

@@ -75,15 +75,11 @@ structure OperatorIdentities (n : Type) [Fintype n] (M : Type) [AddCommGroup M] 
   dia_mem_ram : ∀ c : 𝓀[k]ˣ, ∀ φ ∈ Mram k n M, dia c φ ∈ Mram k n M
 
 
-variable (k) in
-structure AdjointIdentities (n : Type) [Fintype n] (ϖ : Unif k) (χ : AddChar 𝓀[k] ℂ) : Prop where
-
 def PairOperatorStatement : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (ϖ : Unif k) (ψ : AddChar k Circle) (hψ : HasConductor ψ 1) (n : Type) [Fintype n] [DecidableEq n],
-    (∀ (M : Type) [AddCommGroup M] [Module ℂ M],
-      Vanishing k n M ϖ ∧ OperatorIdentities k n M ϖ (resChar ψ hψ ϖ)) ∧
-    AdjointIdentities k n ϖ (resChar ψ hψ ϖ)
+    (ϖ : Unif k) (ψ : AddChar k Circle) (hψ : HasConductor ψ 1) (n : Type) [Fintype n] [DecidableEq n]
+    (M : Type) [AddCommGroup M] [Module ℂ M],
+    Vanishing k n M ϖ ∧ OperatorIdentities k n M ϖ (resChar ψ hψ ϖ)
 
 section Examples
 

@@ -121,7 +121,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.DefiniteBC
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.GalDef.RunPart
 
@@ -203,16 +202,14 @@ theorem GlobalTheory.GalDef.spehPart_is_run : ∀ (n t : ℕ) (lam : DomWeight n
       (Multiset.nodup_of_le (map_le_spehInf (d i) 0 (by omega) (M i)) (hnd i)).of_map _
     rw [Multiset.eq_replicate.2 ⟨rfl, hall⟩] at hnodup ⊢
     have hc1 : Multiset.card (M i) ≤ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       obtain ⟨k, hk⟩ : ∃ k, Multiset.card (M i) = k + 2 := ⟨Multiset.card (M i) - 2, by omega⟩
       rw [hk, Multiset.replicate_succ, Multiset.replicate_succ, Multiset.nodup_cons] at hnodup
       exact hnodup.1 (Multiset.mem_cons_self _ _)
     have hc0 : Multiset.card (M i) ≠ 0 := fun h => hM i (Multiset.card_eq_zero.1 h)
     rw [show Multiset.card (M i) = 1 by omega, Multiset.replicate_one]
   · intro j hji
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨z', hz'⟩ := Multiset.exists_mem_of_ne_zero (hM j)
     obtain ⟨hdj, hz'v⟩ := entry_of_run lam p hn hrun (d j) (M j) (hle j) hlt z' hz'
     have ht0 : 0 < t := by omega

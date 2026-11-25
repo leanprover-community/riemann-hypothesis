@@ -319,8 +319,7 @@ theorem descent {R₁ E : Type} [CommRing R₁] [CommRing E] [IsLocalRing E] (a 
       RingHom.algebraMap_toAlgebra]
     simp only [smul_eq_mul, _root_.mul_one]
   obtain ⟨l, hl⟩ : ∃ l, α (ev 0) l ∉ q := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have : (1 : E) ∈ maximalIdeal E := by
       rw [← h1, hy]
       exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_right _ _ (hq _ (hall l))
@@ -574,16 +573,6 @@ theorem exists_indep {T M I : Type} [CommRing T] [IsDomain T] [IsPrincipalIdealR
     rw [Submodule.coe_sum] at h
     simpa using h.symm
 
-theorem mem_spanBy_iff {R F : Type} [CommRing R] [CommRing F] [Algebra R F] (S : Set F) (v : F) :
-    v ∈ spanBy (algebraMap R F) S ↔ v ∈ Submodule.span R S := by
-  simp only [spanBy]
-  rw [Submodule.mem_span_set']
-  constructor
-  · rintro ⟨n, r, t, ht, rfl⟩
-    exact ⟨n, r, fun i => ⟨t i, ht i⟩, by simp [Algebra.smul_def]⟩
-  · rintro ⟨n, f, g, hg⟩
-    exact ⟨n, f, fun i => g i, fun i => (g i).2, by rw [← hg]; simp [Algebra.smul_def]⟩
-
 section
 
 variable {T E F' FE : Type} [CommRing T] [IsDomain T] [IsPrincipalIdealRing T] [CommRing E] [CommRing F']
@@ -766,12 +755,12 @@ theorem gaussAt_comp_alg {T E F F' FE : Type} [CommRing T] [IsDomain T] [IsPrinc
   intro v hv
   obtain ⟨d, hd, hdv⟩ := hv
   have hdv' : algebraMap E FE d * v ∈ spanBy (algebraMap E FE) (Set.range θb) := by
-    rw [mem_spanBy_iff]
-    exact Submodule.span_mono (Set.range_comp_subset_range θ θb) ((mem_spanBy_iff _ _).mp hdv)
+    rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff]
+    exact Submodule.span_mono (Set.range_comp_subset_range θ θb) ((GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff _ _).mp hdv)
   rw [G₂ v ⟨d, hd, hdv'⟩]
   constructor
   · rintro ⟨s, hs, hsv⟩
-    rw [mem_spanBy_iff, Submodule.mem_span_set'] at hsv
+    rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff, Submodule.mem_span_set'] at hsv
     obtain ⟨n, f, g, hfg⟩ := hsv
     have hg : ∀ i, ∃ x, x ∈ W' ∧ θb x = (g i : FE) := fun i => (g i).2
     choose w hw hwg using hg
@@ -782,7 +771,7 @@ theorem gaussAt_comp_alg {T E F F' FE : Type} [CommRing T] [IsDomain T] [IsPrinc
       rw [← hfg]
       simp_rw [← hwg]
       exact sum_smul_thetab_expand_in_basis θb hc f w A ε hA
-    rw [mem_spanBy_iff, Submodule.mem_span_set'] at hdv
+    rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff, Submodule.mem_span_set'] at hdv
     obtain ⟨n', r, g', hrg⟩ := hdv
     have hg'' : ∀ k, ∃ x, (θb.comp θ) x = (g' k : FE) := fun k => (g' k).2
     choose fk hfk using hg''
@@ -811,9 +800,9 @@ theorem gaussAt_comp_alg {T E F F' FE : Type} [CommRing T] [IsDomain T] [IsPrinc
         (fun k => s * r k) (fun k => θ (fk k)) (fun k => Submodule.subset_span ⟨fk k, rfl⟩) heq l
       have hpre : ∃ d' : T, d' ≠ 0 ∧
           algebraMap T F' d' * w' l ∈ spanBy (algebraMap T F') (Set.range θ) :=
-        ⟨t, ht, by rw [mem_spanBy_iff, ← Algebra.smul_def]; exact htm⟩
+        ⟨t, ht, by rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff, ← Algebra.smul_def]; exact htm⟩
       obtain ⟨σ, hσ, hσm⟩ := (G₁ (w' l) hpre).mp (hw'W l)
-      rw [mem_spanBy_iff, ← Algebra.smul_def] at hσm
+      rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff, ← Algebra.smul_def] at hσm
       exact ⟨σ, hσ, hσm⟩
     choose σ hσq hσm using hG
     have hτ : (∏ l, σ l) ∉ q := by
@@ -828,7 +817,7 @@ theorem gaussAt_comp_alg {T E F F' FE : Type} [CommRing T] [IsDomain T] [IsPrinc
       rcases (inferInstance : Q.IsPrime).mem_or_mem hmem with h | h
       · exact hq _ hτ h
       · exact hs h
-    · rw [mem_spanBy_iff]
+    · rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff]
       have e2 : algebraMap E FE (algebraMap T E (∏ l, σ l) * s) * v =
           ∑ l, ε l • θb ((∏ k, σ k) • w' l) := by
         rw [map_mul, _root_.mul_assoc, e1, Finset.mul_sum]
@@ -839,7 +828,7 @@ theorem gaussAt_comp_alg {T E F F' FE : Type} [CommRing T] [IsDomain T] [IsPrinc
       exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (himg _ (hτm l))
   · rintro ⟨s, hs, hsv⟩
     refine ⟨s, hs, ?_⟩
-    rw [mem_spanBy_iff] at hsv ⊢
+    rw [GlobalTheory.VandermondeEmbeddingVanishing.mem_spanBy_iff] at hsv ⊢
     refine Submodule.span_mono ?_ hsv
     rintro _ ⟨u, hu, rfl⟩
     exact ⟨θ u, hW u hu, rfl⟩

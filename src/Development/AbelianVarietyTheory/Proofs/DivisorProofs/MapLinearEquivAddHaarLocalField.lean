@@ -50,13 +50,12 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Divisors.UnipVal
 
 @[expose] public section
 
 noncomputable section
 
-open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
+open MeasureTheory Matrix
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
 open scoped NNReal ENNReal

@@ -56,7 +56,6 @@ section -- clump:auto
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -84,8 +83,8 @@ theorem wsum_eq_zero_of_mul : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [Grp
       Finset.sum_add_distrib] at h1
     simp only [wsum, Fin.sum_univ_add, U, V, Fin.append_left, Fin.append_right]
     exact add_add_eq_add_imp _ _ _ _ h1
-  have key := (GlobalTheory.T.sumWedgeGlobalOneForms_eq_zero_iff R _ (OAff (A ⊗ A).hom) hF2 hC2 (n + n) U V).mp hUV
-  refine (GlobalTheory.T.sumWedgeGlobalOneForms_eq_zero_iff R _ (OAff A.hom) hF hC n u v).mpr ?_
+  have key := (_root_.GlobalTheory.AbCoh.wsum_eq_zero_iff R _ (OAff (A ⊗ A).hom) hF2 hC2 (n + n) U V).mp hUV
+  refine (_root_.GlobalTheory.AbCoh.wsum_eq_zero_iff R _ (OAff A.hom) hF hC n u v).mpr ?_
   intro l l'
   have h2 := key (l ∘ₗ pF (lift (𝟙 A) (toUnit A ≫ η[A]))) (l' ∘ₗ pF (lift (toUnit A ≫ η[A]) (𝟙 A)))
   simp only [Fin.sum_univ_add, U, V, Fin.append_left, Fin.append_right, LinearMap.comp_apply,

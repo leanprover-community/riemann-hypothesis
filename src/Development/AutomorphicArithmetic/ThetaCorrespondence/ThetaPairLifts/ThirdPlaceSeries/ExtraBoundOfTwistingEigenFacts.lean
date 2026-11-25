@@ -764,26 +764,6 @@ open Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.TheoremTClosing
 
-section Mono
-
-variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : PeriodData G Qp K₀ K B BdR)
-    {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
-    {O : Type} [CommRing O] [Algebra O LL]
-
-theorem liftF_of_le {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {e e' : ℕ}
-    (hF : F.LiftF PD e) (he : e ≤ e') : F.LiftF PD e' := by
-  intro c hc
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le he
-  rw [pow_add, mul_comm, mul_smul]
-  exact (F.ImF PD).smul_mem _ (hF c hc)
-
-end Mono
-
 theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices → GlobalTheory.Published.FontaineBcris → ∀ C : ℕ, 40 ≤ C →
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), Formalism.MainNotions.ElementDenominator.HodgeTateFromSandwich D HW F C := by
   intro hBS hFB C hC D HW F _ l _ K' h hN hF hS LL
@@ -826,7 +806,7 @@ theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices → Global
   have horb := _root_.GlobalTheory.BK.maxPeriod_bounds l e a hlp (Nat.one_le_iff_ne_zero.2 (NeZero.ne a)) he Sig' N hS1 hS2 hS3 h2N
   rw [hS4] at hcore horb
   refine ⟨horb.2.1, ?_⟩
-  exact liftF_of_le _ g hcore (Nat.mul_le_mul_right _ (by omega))
+  exact GlobalTheory.StepLiftPf.liftF_mono_loc _ g hcore (Nat.mul_le_mul_right _ (by omega))
 
 end GlobalTheory.TheoremTClosing
 end -- clump:auto
@@ -1000,7 +980,7 @@ theorem main_alt_alt : GlobalTheory.Published.GlobalArtinReciprocity → GlobalT
   have hN5g : TypePrimeChoiceLemmas (D := D) := _root_.GlobalTheory.typePrimeCongruences_forall D ⟨hadm5, h41, hN9, hO⟩
   have hTB : admTB (D := D) HW F := _root_.GlobalTheory.TheoremTBRecords.aux_of_blochKato_tateDuality_eulerChar hBKL hLTD hLEC D HW F Cm
   have hBK : admBK (D := D) := _root_.GlobalTheory.BlochKatoLocalAllOfTateDualityEulerChar₂.aux_of_blochKato_tateDuality_eulerChar₂ hBKL hLTD hLEC D
-  exact _root_.GlobalTheory.T.admT_of_artin_reciprocity_and_local_conditions hGAR D P HW F C CT hC hadm5 hEig hIne hT hLOC hRbar hN5g hDZ
+  exact _root_.GlobalTheory.admT_of_adm5_eigSpan_tieInePoly hGAR D P HW F C CT hC hadm5 hEig hIne hT hLOC hRbar hN5g hDZ
     (_root_.GlobalTheory.ClosingLocalInputs.galoisFamilyConditions_of_sumRepresentations_alt D h41) hG5 hG6 hSer hTB hBK hadm1 hadm2 htie0 hChi
 end GlobalTheory.ClosingLocalInputs
 end
@@ -1065,8 +1045,6 @@ section -- clump:auto
 section
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.CongruenceModules
 
-theorem _root_.GlobalTheory.T.no_cut_passes_of_artin_reciprocity : GlobalTheory.Published.GlobalArtinReciprocity → _root_.GlobalTheory.Pass.NoCutStatement := by
-  first | exact @_root_.GlobalTheory.Pass.stepsNoCut_of_artin_alt
 end
 end -- clump:auto
 end -- clump:auto

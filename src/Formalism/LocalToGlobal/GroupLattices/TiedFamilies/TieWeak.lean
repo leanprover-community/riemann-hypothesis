@@ -456,8 +456,6 @@ theorem weak_of_locAt (G : GAtP p) (A : LocAt F E n G)
 
 end Gen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Formalism.L2.Herm.Herm0 D}
 
 theorem locAt_iw_F (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))

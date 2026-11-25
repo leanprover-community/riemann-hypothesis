@@ -1,5 +1,8 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
+import Formalism.SharpRestriction.CuspSpanNormBounds.SchurRelationsDiscreteSeries
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.InnerProductSpace.Defs
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -100,19 +103,7 @@ open ReciprocityTheory.ChartRestriction.DS.Lap
 variable {k r : ℕ}
 
 theorem isClosed_UWset (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (Formalism.QuantumDeterminants.UWset k r z) := by
-  have hU : IsClosed {g : Mat k r | gᴴ * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r} :=
-    isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id)
-      continuous_const
-  have h1 : IsClosed {g : Mat k r | ∀ a : Fin r,
-      g *ᵥ Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a) = Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a) ∧
-        g *ᵥ Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI k r a) = Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI k r a)} := by
-    simp only [Set.ofPred_forall, Set.ofPred_and]
-    exact isClosed_iInter fun a =>
-      (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const).inter
-        (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const)
-  have h2 : IsClosed {g : Mat k r | g *ᵥ z = z} :=
-    isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-  exact hU.inter (h1.inter h2)
+  apply ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.uw_closed <;> assumption
 
 theorem piInv_facts (z : Fin (2 * r + k + 1) → ℂ) (u : Fin k → ℝ) {Vp : Type} [NormedAddCommGroup Vp]
     [InnerProductSpace ℂ Vp] [FiniteDimensional ℂ Vp] (π : Mat k r → (Vp →L[ℂ] Vp))
@@ -180,17 +171,7 @@ theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
   apply ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.hpk_mulVec
 
 theorem hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk k r *ᵥ v) = v := by
-  funext i
-  have hi := i.isLt
-  by_cases h : i.val < r ∨ r + k < i.val
-  · have h' : (2 * r + k - i.val < r ∨ r + k < 2 * r + k - i.val) := by omega
-    rw [hpk_mulVec, if_pos h, hpk_mulVec, if_pos h']
-    congr 1
-    ext
-    simp only
-    omega
-  · rw [hpk_mulVec, if_neg h, hpk_mulVec, if_neg h]
-    split_ifs <;> simp
+  apply ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec <;> assumption
 
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
   apply Matrix.ext_of_mulVec_single
@@ -221,15 +202,8 @@ theorem mul_mem_UH (k r : ℕ) {g x : Mat k r} (hg : g ∈ UH (Hpk k r)) (hx : x
         simp only [Matrix.mul_assoc]
     _ = Hpk k r := by rw [hg', hx']
 
-theorem inv_mem_UH (k r : ℕ) (g : Mat k r) (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have e := mul_inv_UH k r hg
-  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
-    _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [e]; simp
+theorem inv_mem_UH (k r : ℕ) (g : Mat k r) (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) :=
+  by apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.inv_mem_UH'; assumption
 
 end ReciprocityTheory.ChartRestriction.DS.Lap.S0.Core
 end -- clump:auto
@@ -366,28 +340,8 @@ theorem bridge_inv_mul (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (P : Mat 
 theorem bridge_conj (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (P : Mat k r)
     (hP : Formalism.MainNotions.S.IsCayleyU k r ε P) (g : Mat k r) (hg : g ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) :
     P * g * P⁻¹ ∈ Formalism.MainNotions.S.UJset ε ∧ P⁻¹ * (P * g * P⁻¹) * P = g := by
-  have hPi : P⁻¹ * P = 1 := bridge_inv_mul k r ε P hP
-  have hPu : P ∈ Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ := hP.2
-  have e1 : Pᴴ * P = 1 := by
-    have := (Matrix.mem_unitaryGroup_iff' (A := P)).mp hPu
-    simpa [Matrix.star_eq_conjTranspose] using this
-  have e2 : P * Pᴴ = 1 := by
-    have := (Matrix.mem_unitaryGroup_iff (A := P)).mp hPu
-    simpa [Matrix.star_eq_conjTranspose] using this
-  have hinv : P⁻¹ = Pᴴ := Matrix.inv_eq_left_inv e1
-  have hc : Pᴴ * Formalism.REAL.Jm ε * P = Formalism.QuantumDeterminants.Hpk k r := hP.1.2
-  have hg' : gᴴ * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r := hg
-  refine ⟨?_, ?_⟩
-  · show (P * g * P⁻¹)ᴴ * Formalism.REAL.Jm ε * (P * g * P⁻¹) = Formalism.REAL.Jm ε
-    rw [hinv]
-    calc (P * g * Pᴴ)ᴴ * Formalism.REAL.Jm ε * (P * g * Pᴴ)
-        = P * (gᴴ * (Pᴴ * Formalism.REAL.Jm ε * P) * g) * Pᴴ := by
-          simp [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = P * Pᴴ * Formalism.REAL.Jm ε * (P * Pᴴ) := by
-          rw [hc, hg', ← hc]; simp [Matrix.mul_assoc]
-      _ = Formalism.REAL.Jm ε := by rw [e2]; simp
-  · calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by simp [Matrix.mul_assoc]
-      _ = g := by rw [hPi]; simp
+  intros
+  apply _root_.Formalism.MainNotions.SchurRelationsDiscreteSeries.conj_mem <;> assumption
 
 end ReciprocityTheory.ChartRestriction.DS.Lap
 end -- clump:auto
@@ -491,17 +445,8 @@ def BesselNVG : Prop :=
 theorem urep_of_isDSHpk {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {σ : Mat k r → (H →L[ℂ] H)}
     (hd : Formalism.MainNotions.S.IsDSHpk k r ε lam σ) : Formalism.MainNotions.S.IsURepOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) σ := by
-  obtain ⟨P, hP, hDS⟩ := hd
-  have h1 : P⁻¹ * P = 1 := bridge_inv_mul k r ε P hP
-  have hback : (fun g => σ (P⁻¹ * (P * g * P⁻¹) * P)) = σ := by
-    funext g
-    have : P⁻¹ * (P * g * P⁻¹) * P = g := by
-      calc P⁻¹ * (P * g * P⁻¹) * P = (P⁻¹ * P) * g * (P⁻¹ * P) := by
-            simp only [Matrix.mul_assoc]
-        _ = g := by rw [h1, Matrix.one_mul, Matrix.mul_one]
-    rw [this]
-  have := ReciprocityTheory.ChartRestriction.DS.isURepOn_UH_of hP hDS.2.2.1
-  rwa [hback] at this
+  intros
+  apply _root_.Formalism.MainNotions.LowestKTypeMultiplicity.urep_of_DS <;> assumption
 
 theorem inner_shift {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {σ : Mat k r → (H →L[ℂ] H)} (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) σ)

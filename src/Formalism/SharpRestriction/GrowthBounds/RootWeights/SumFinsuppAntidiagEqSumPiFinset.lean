@@ -344,8 +344,7 @@ theorem sum_finsuppAntidiag_eq_sum_piFinset (k : ℕ) :
       monomial (shiftedExponent LL a b m p) (rootShiftCoefficient B LL a b m p) := by
   have hcf : ∀ p : ι → ℕ, rootShiftCoefficient B LL a b m p ≠ 0 → ∀ l, p l ≤ m (sourceVar LL a b l) := by
     intro p hp l
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     apply hp
     unfold rootShiftCoefficient
     refine Finset.prod_eq_zero (Finset.mem_univ l) ?_

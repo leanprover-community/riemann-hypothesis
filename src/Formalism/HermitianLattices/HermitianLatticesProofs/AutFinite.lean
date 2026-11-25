@@ -1,9 +1,8 @@
 module
 
 public import Formalism.HermitianLattices.StatementLat
-public import Formalism.HermitianLattices.HermitianLatticesProofs.ThetaSummable
+import Formalism.HermitianLattices.HermitianLatticesProofs.ThetaSummable
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

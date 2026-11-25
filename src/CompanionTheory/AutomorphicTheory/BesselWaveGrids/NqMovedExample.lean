@@ -565,21 +565,6 @@ structure PairData (P : M.Par) (l : ℕ) (lam : ℕ → ℝ) (c g b : ℝ) : Pro
   ul_le : |P.u l| ≤ b ∧ |P.u' l| ≤ b
   pair : ∀ Y, I.OnCut P.u P.u' l Y → (∃ e, PairOK P.k lam P.u e (-Y)) ∧ ∃ e', PairOK P.k lam P.u' e' (-Y)
 
-theorem LamData.toPair {P : M.Par} {lam : ℕ → ℝ} {c g b : ℝ} (hL : LamData P lam c g b) {l : ℕ} (hl1 : 1 ≤ l)
-    (hlk : l ≤ P.k) : PairData P l lam c g b := by
-  exact {
-    c_pos := hL.c_pos
-    g_ge := hL.g_ge
-    b_ge_three := hL.b_ge_three
-    b_ge_k := hL.b_ge_k
-    b_ge_c := hL.b_ge_c
-    lam_le := hL.lam_le
-    gap := hL.gap
-    ul_le := hL.u_le l hl1 hlk
-    pair := fun Y _ =>
-      ⟨⟨0, pairOK_of_interlace P.k lam P.u 0 (-Y) fun s h1 h2 => (hL.inter s h1 h2).1⟩,
-        ⟨0, pairOK_of_interlace P.k lam P.u' 0 (-Y) fun s h1 h2 => (hL.inter s h1 h2).2⟩⟩ }
-
 theorem pairOK_of_moved (k l : ℕ) (lam u v : ℕ → ℝ) (x : ℝ)
     (h : ∀ s, 1 ≤ s → s ≤ k - 1 → lam s + 1 / 2 ≤ u s ∧ u (s + 1) ≤ lam s - 1 / 2)
     (hv : ∀ i, i ≠ l → v i = u i) (hx : (u l < x ∧ x < v l) ∨ (v l < x ∧ x < u l)) :
@@ -615,24 +600,6 @@ structure MovedData (P : M.Par) (l : ℕ) (lam : ℕ → ℝ) (c g b : ℝ) : Pr
   inter : ∀ s, 1 ≤ s → s ≤ P.k - 1 → lam s + 1 / 2 ≤ P.u s ∧ P.u (s + 1) ≤ lam s - 1 / 2
   moved : ∀ i, i ≠ l → P.u' i = P.u i
   ul_le : |P.u l| ≤ b ∧ |P.u' l| ≤ b
-
-theorem MovedData.toPair {P : M.Par} {l : ℕ} {lam : ℕ → ℝ} {c g b : ℝ} (hM : MovedData P l lam c g b) :
-    PairData P l lam c g b := by
-  exact {
-    c_pos := hM.c_pos
-    g_ge := hM.g_ge
-    b_ge_three := hM.b_ge_three
-    b_ge_k := hM.b_ge_k
-    b_ge_c := hM.b_ge_c
-    lam_le := hM.lam_le
-    gap := hM.gap
-    ul_le := hM.ul_le
-    pair := fun Y hY =>
-      ⟨⟨0, pairOK_of_interlace P.k lam P.u 0 (-Y) hM.inter⟩,
-        pairOK_of_moved P.k l lam P.u P.u' (-Y) hM.inter hM.moved (by
-          rcases hY with ⟨h1, h2⟩ | ⟨h1, h2⟩
-          · exact Or.inl ⟨by linarith, by linarith⟩
-          · exact Or.inr ⟨by linarith, by linarith⟩)⟩ }
 
 theorem nq_onCut_pair (P : M.Par) (hOK : P.OK) (l : ℕ) (hl1 : 1 ≤ l) (hlk : l ≤ P.k) (hk : 2 ≤ P.k)
     (lam : ℕ → ℝ) (c g b : ℝ) (hL : PairData P l lam c g b) (Y : ℝ) (hY : I.OnCut P.u P.u' l Y) :

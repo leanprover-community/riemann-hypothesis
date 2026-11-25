@@ -1,5 +1,7 @@
 module
 
+import all Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartDataPf
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GaugeUniqB
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 
@@ -27,15 +29,12 @@ theorem jet_hom_ext {B : Type} [CommRing B] [Algebra R B] {f g : Jet R ι m →�
     (h : ∀ i, f (Ideal.Quotient.mk _ (X i)) = g (Ideal.Quotient.mk _ (X i))) : f = g :=
   Ideal.Quotient.algHom_ext R (MvPolynomial.algHom_ext fun i => h i)
 
-private theorem deg_sum_lemma {κ : Type} (e : κ →₀ ℕ) : e.degree = ∑ i ∈ e.support, e i := by
-  first
-  | rfl
-
 theorem monomial_mem_orig_pow (e : ι →₀ ℕ) (c : R) : monomial e c ∈ orig R ι ^ e.degree := by
   classical
   rw [MvPolynomial.monomial_eq, Finsupp.prod]
   refine Ideal.mul_mem_left _ _ ?_
-  rw [deg_sum_lemma e, ← Finset.prod_pow_eq_pow_sum]
+  change _ ∈ orig R ι ^ (∑ i ∈ e.support, e i)
+  rw [← Finset.prod_pow_eq_pow_sum]
   exact Ideal.prod_mem_prod fun i _ => Ideal.pow_mem_pow (X_mem_orig i) _
 
 theorem mem_orig_pow_of {n : ℕ} {p : MvPolynomial ι R} (h : ∀ e ∈ p.support, n ≤ e.degree) :
@@ -45,22 +44,7 @@ theorem mem_orig_pow_of {n : ℕ} {p : MvPolynomial ι R} (h : ∀ e ∈ p.suppo
 
 private theorem mem_degLE_lemma [Fintype ι] [DecidableEq ι] (k : ℕ) (e : ι →₀ ℕ) :
     e ∈ degLE k ↔ e.degree ≤ k := by
-  unfold degLE
-  rw [Finset.mem_filter, deg_sum_lemma]
-  constructor
-  · rintro ⟨-, h⟩
-    exact h
-  · intro h
-    refine ⟨Finset.mem_image.2 ⟨fun i => ⟨e i, ?_⟩, Finset.mem_univ _, ?_⟩, h⟩
-    · have hle : e i ≤ ∑ j ∈ e.support, e j := by
-        by_cases hi : i ∈ e.support
-        · exact Finset.single_le_sum (fun _ _ => Nat.zero_le _) hi
-        · have h0 : e i = 0 := by simpa [Finsupp.mem_support_iff] using hi
-          rw [h0]
-          exact Nat.zero_le _
-      omega
-    · ext i
-      simp
+  apply _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.mem_degLE_lemma <;> assumption
 
 private theorem coeff_psTrunc_lemma_2 [Fintype ι] [DecidableEq ι] (k : ℕ) (g : MvPowerSeries ι R)
     (e : ι →₀ ℕ) :
@@ -86,37 +70,7 @@ theorem psTrunc_succ_sub [Fintype ι] [DecidableEq ι] (g : MvPowerSeries ι R) 
 theorem exists_ps_of_jets [Fintype ι] [DecidableEq ι] (a : ∀ m, Jet R ι m)
     (ha : ∀ m, (jetTrunc : Jet R ι (m + 1) →ₐ[R] Jet R ι m) (a (m + 1)) = a m) :
     ∃ f : MvPowerSeries ι R, ∀ m, psJet m f = a m := by
-  choose p hp using fun k => Ideal.Quotient.mk_surjective (a k)
-  have hc : ∀ k l, k ≤ l → p l - p k ∈ orig R ι ^ (k + 1) := by
-    intro k l hkl
-    induction l, hkl using Nat.le_induction with
-    | base => simp
-    | succ l hkl ih =>
-      have h1 : p (l + 1) - p l ∈ orig R ι ^ (l + 1) := by
-        rw [← Ideal.Quotient.eq]
-        have h := ha l
-        rw [← hp (l + 1), ← hp l, jetTrunc_mk] at h
-        exact h
-      have h2 : orig R ι ^ (l + 1) ≤ orig R ι ^ (k + 1) := Ideal.pow_le_pow_right (by omega)
-      have h3 := Ideal.add_mem _ (h2 h1) ih
-      rwa [sub_add_sub_cancel] at h3
-  obtain ⟨f, hf⟩ : ∃ f : MvPowerSeries ι R, ∀ e, MvPowerSeries.coeff e f = AddMonoidAlgebra.coeff (p e.degree) e :=
-    ⟨fun e => AddMonoidAlgebra.coeff (p e.degree) e, fun e => rfl⟩
-  refine ⟨f, fun k => ?_⟩
-  rw [← hp k]
-  unfold psJet
-  rw [Ideal.Quotient.eq]
-  apply mem_orig_pow_of
-  intro e he
-  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, coeff_psTrunc_lemma_2] at he
-  by_contra hlt
-  have h1 : e.degree ≤ k := by omega
-  rw [if_pos h1] at he
-  apply he
-  have h3 := coeff_eq_zero_of_mem (hc e.degree k h1) (by omega : e.degree < e.degree + 1)
-  rw [MvPolynomial.coeff_sub, sub_eq_zero] at h3
-  rw [hf, sub_eq_zero]
-  exact h3.symm
+  apply _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.GaugeR.exists_ps_of_compat <;> assumption
 
 end Alg
 

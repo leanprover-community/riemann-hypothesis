@@ -185,11 +185,6 @@ theorem trunc_sub_alt (F G : PowerSeries O) (N : ℕ) : trunc N (F - G) = trunc 
   ext m
   simp only [PowerSeries.coeff_trunc, Polynomial.coeff_sub, map_sub]
 
-theorem trunc_smul_alt (o : O) (F : PowerSeries O) (N : ℕ) : trunc N (o • F) = o • trunc N F := by
-  ext m
-  simp only [PowerSeries.coeff_trunc, Polynomial.coeff_smul, PowerSeries.coeff_smul]
-  all_goals split_ifs <;> simp
-
 theorem aeval_mem_invariants (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) (p : Polynomial O) :
     Polynomial.aeval (qP W) p ∈ W.AΔ := by
   induction p using Polynomial.induction_on' with
@@ -449,8 +444,7 @@ theorem scalar_integrality_relation [IsDiscreteValuationRing O] [IsFractionRing 
       algebraMap O LL (ϖ ^ m) * algebraMap O LL (uz : O) := by
     rw [← huz, ← hux, map_mul, map_mul, ← hθz]; ring
   have hmk : m < k := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hθ
     refine ⟨ϖ ^ (m - k) * (uz : O) * ((ux⁻¹ : Oˣ) : O), ?_⟩
     have hk : algebraMap O LL (ϖ ^ k) * algebraMap O LL (ux : O) ≠ 0 := by

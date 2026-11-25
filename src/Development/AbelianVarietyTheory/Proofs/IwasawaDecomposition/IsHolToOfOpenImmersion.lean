@@ -52,7 +52,6 @@ open Formalism.DegreeFormula Formalism.MJ Formalism.UG Formalism.L2.Geo Formalis
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.PullbackSections
 open GlobalTheory GlobalTheory.HodgeDomain GlobalTheory.LieMet GlobalTheory.CxPts GlobalTheory.TrueCx
 open GlobalTheory.AllWt (Psi)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TrueCx.TorHolo
 

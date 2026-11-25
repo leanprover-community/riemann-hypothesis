@@ -168,18 +168,6 @@ open Finset
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
-private theorem num_e {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : (((num D C τ).e l : ℤ) : ℚ) = (D.hc τ).e ⟨l - 1, by omega⟩ := by
-  obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
-  exact GridData.extend_cast 1 (D.hc τ).e_int ⟨l, by omega⟩
-
-private theorem num_b {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : (((num D C τ).b l : ℤ) : ℚ) = (D.hc τ).b ⟨l - 1, by omega⟩ := by
-  obtain ⟨l, rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
-  exact GridData.extend_cast 1 (D.hc τ).b_int ⟨l, by omega⟩
-
-private theorem num_v {i : ℕ} (h1 : 2 ≤ i) (h2 : i ≤ D.R.k) : (((num D C τ).v i : ℤ) : ℚ) = (D.hc τ).v ⟨i - 2, by omega⟩ := by
-  obtain ⟨i, rfl⟩ : ∃ i', i = i' + 2 := ⟨i - 2, by omega⟩
-  exact GridData.extend_cast 2 (D.hc τ).v_int ⟨i, by omega⟩
-
 private theorem num_be {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) : ((D.R.t : ℚ) + 3) / 2 ≤ ((num D C τ).e l : ℚ) - (num D C τ).b l := by
   rw [num_e D C τ h1 h2, num_b D C τ h1 h2]
   exact (D.hc τ).gap_be _

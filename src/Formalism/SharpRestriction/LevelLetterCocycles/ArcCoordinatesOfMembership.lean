@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeEqStdPowerSeriesAtZero
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
@@ -126,15 +128,7 @@ theorem φVB_mul (T : LocLat G Qp LL O) (c : K₀) (x : T.V ⊗[Qp] B) :
 theorem φVB_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     (hx : x ∈ DcrisL PD T.ρ (W.emb i)) :
     φVB PD (LL := LL) (V := T.V) x ∈ DcrisL PD T.ρ (W.emb (i + 1)) := by
-  rw [mem_DcrisL_iff]
-  obtain ⟨h1, h2⟩ := (mem_DcrisL_iff T _ x).1 hx
-  refine ⟨(mem_Dcris_iff T _).2 fun g => ?_, fun c => ?_⟩
-  · rw [φVB_act, (mem_Dcris_iff T x).1 h1 g]
-  · obtain ⟨c', rfl⟩ := PD.σ_bij.2 c
-    rw [φVB_mul, h2 c', map_smul]
-    congr 1
-    have := congrArg (fun f : K₀ →ₐ[Qp] LL => f c') (W.emb_σ i)
-    simpa using this.symm
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivC.φVB_letter <;> assumption
 
 theorem φVB_pow_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     (hx : x ∈ DcrisL PD T.ρ (W.emb i)) (e : ℕ) :
@@ -147,16 +141,8 @@ theorem φVB_pow_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     rwa [show i + (e : ZMod n) + 1 = i + ((e + 1 : ℕ) : ZMod n) by push_cast; ring] at this
 
 theorem φVB_inj (T : LocLat G Qp LL O) : Function.Injective (φVB PD (LL := LL) (V := T.V)) := by
-  have h := Module.Flat.lTensor_preserves_injective_linearMap (M := T.V) PD.φ.toLinearMap PD.φ_inj
-  have e : ∀ z, φVB PD (LL := LL) (V := T.V) z = (PD.φ.toLinearMap.lTensor T.V) z := by
-    intro z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v b => simp [φVB]
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  intro x y hxy
-  rw [e, e] at hxy
-  exact h hxy
+  intros
+  apply _root_.GlobalTheory.NL.FullDown.phi_inj <;> assumption
 
 include W in
 alias p_ne_zero := _root_.Formalism.MainNotions.LiftingTheory.tr_pLL_ne

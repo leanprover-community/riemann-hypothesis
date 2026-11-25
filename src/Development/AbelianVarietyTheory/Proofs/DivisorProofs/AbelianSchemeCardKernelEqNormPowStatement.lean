@@ -274,8 +274,6 @@ open scoped TensorProduct
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.KerUnram
 
 theorem formallyUnramified_ker : ∀ (K : Type) [Field K] [IsAlgClosed K] (B : AbVar K) (f : B ⟶ B), IsIsogeny f → (∀ v : epsPtR (𝟙 (Sp K)) ⟶ B.X, spMap (TrivSqZeroExt.fstHom K K K).toRingHom ≫ v.left = (1 : Over.mk (𝟙 (Sp K)) ⟶ B.X).left → v ≫ Hom.hom f = 1 → v = 1) → FormallyUnramified (pullback.snd (Hom.hom f).left η[B.X].left) := by
@@ -506,7 +504,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 namespace GlobalTheory.AVCount
 
 section
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem deg_eq_card_ker_of_unram : ∀ (K : Type) [Field K] (A B : AbVar K) (f : A ⟶ B), IsIsogeny f → FormallyUnramified (pullback.snd (Hom.hom f).left η[B.X].left) → deg f = Nat.card (ptMap f).ker := by
   intro K _ A B f hiso hpfu

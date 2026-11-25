@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TminusLinApply
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelSumOfClassData
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
@@ -21,12 +22,7 @@ variable {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
 
 theorem tm_fin (v : Fin P.nV) (i : ℕ) (L : Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)) :
     {L'' : Submodule (P.W v) (Fin (P.m + 1) → P.Qq v) | IsEdge p (P.n' v) i ⟨L'', L⟩}.Finite := by
-  have hres := (P.setting v).res_card
-  have hfin : Finite (P.W v ⧸ Ideal.span {(p : P.W v)}) := by
-    apply Nat.finite_of_card_ne_zero
-    rw [hres]
-    exact pow_ne_zero _ (P.setting v).prime.ne_zero
-  exact ef_edges_finite_gen p (P.n' v) i (P.m + 1) hfin L
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.edges_fin <;> assumption
 
 def tmE (v : Fin P.nV) (i : ℕ) (L : Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)) :
     Finset (Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)) :=

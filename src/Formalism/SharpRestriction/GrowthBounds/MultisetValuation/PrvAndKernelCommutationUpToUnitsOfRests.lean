@@ -1007,15 +1007,7 @@ def RestWeylEdge : Prop :=
 theorem latTup_update {L : P.Tup} (hL : P.IsLatTup L) {v : Fin P.nV}
     {A : Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)} (hA : IsLattice (P.W v) A) :
     P.IsLatTup (Function.update L v A) := by
-  intro u
-  by_cases h : u = v
-  · subst h
-    have e : Function.update (β := fun v => Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)) L u A u = A :=
-      Function.update_self u A L
-    exact e.symm ▸ hA
-  · have e : Function.update (β := fun v => Submodule (P.W v) (Fin (P.m + 1) → P.Qq v)) L v A u = L u :=
-      Function.update_of_ne h A L
-    exact e.symm ▸ hL u
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.hk_latTup_update <;> assumption
 
 theorem Tminus_mem (h : RestWeylEdge P) (v : Fin P.nV) (i : ℕ) (F : P.Tup → P.Xsp)
     (hF : ∀ L, P.IsLatTup L → F L ∈ P.HtupW L) (L : P.Tup) (hL : P.IsLatTup L) :

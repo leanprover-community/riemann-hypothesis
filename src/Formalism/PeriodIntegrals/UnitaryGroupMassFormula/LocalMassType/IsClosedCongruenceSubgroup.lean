@@ -9,6 +9,7 @@ public import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUHerm
 
 @[expose] public section
 
@@ -56,19 +57,7 @@ section HATop
 variable (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F))
 
 theorem continuous_sigR : Continuous (sigR (Fv F v) σ) := by
-  haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  haveI := LocMassOrdSF.isModTop_tens (F := F) (E := E) (R := Fv F v)
-  let f : (Fv F v ⊗[F] E) →ₗ[Fv F v] (Fv F v ⊗[F] E) :=
-    TensorProduct.AlgebraTensorModule.map LinearMap.id σ.toLinearMap
-  have hf : Continuous f := IsModuleTopology.continuous_of_linearMap f
-  have heq : (sigR (Fv F v) σ : Fv F v ⊗[F] E → Fv F v ⊗[F] E) = f := by
-    funext x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a b => simp [f, sigR]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  rw [heq]
-  exact hf
+  apply _root_.Formalism.L2.SG.Pf.NcVal.VolUHm.sigR_cont <;> assumption
 
 theorem isClosed_HR : IsClosed (HR (Fv F v) σ J : Set (GL (Fin n) (Fv F v ⊗[F] E))) := by
   have hv : Continuous fun g : GL (Fin n) (Fv F v ⊗[F] E) => (g : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) :=

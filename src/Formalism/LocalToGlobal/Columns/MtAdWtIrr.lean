@@ -75,8 +75,7 @@ theorem mtwPerp_ne_bot (lam : ι → DomWeight n) (S : Submodule ℂ (VV ℂ lam
 
 theorem mtw_bot_or_top (hH : HwInStable) (lam : ι → DomWeight n) (S : Submodule ℂ (VV ℂ lam)) (hS : MtwStable lam S) :
     S = ⊥ ∨ S = ⊤ := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨h1, h2⟩ := hc
   have hw1 := hH ι n lam S h1 hS
   have hw2 := hH ι n lam (mtwPerp lam S) (mtwPerp_ne_bot lam S h2) (mtwPerp_stable lam S hS)
@@ -207,8 +206,7 @@ theorem mtw_stable_of_rat (lam : ι → DomWeight n) (S : Submodule ℂ (VV ℂ 
     rw [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
     exact hnot
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ (VV ℂ lam ⧸ S), φ (S.mkQ (rhoK lam g x)) ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hq ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 hall)
   set f : VV ℂ lam →ₗ[ℂ] ℂ := φ.comp S.mkQ with hf
   let F : MvPolynomial ((L →+* ℂ) × Fin n × Fin n) ℂ :=

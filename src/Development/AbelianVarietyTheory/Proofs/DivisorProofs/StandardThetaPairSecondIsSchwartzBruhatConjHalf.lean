@@ -118,11 +118,6 @@ private theorem dualCoord_add (A WW : HSp D) (βA : GL (Fin A.rank) (EAf D)) (β
   unfold dualCoord
   rw [GlobalTheory.PlaceVec.frMapAdj_add, smul_add]
 
-private theorem mul_nsmul_mul_eq_nsmul_mul_nsmul {R : Type} [CommRing R] (k l : ℕ) (x y : R) : (k * l) • (x * y) = (k • x) * (l • y) := by
-  simp only [nsmul_eq_mul]
-  push_cast
-  ring
-
 private theorem inv_aux {R : Type} [CommRing R] (k : ℕ) {x x' : R} (h : x' * x = 1) (y : R) :
     k • y = (k • x') * (x * y) := by
   simp only [nsmul_eq_mul]
@@ -135,7 +130,7 @@ private theorem dualCoord_up (A WW : HSp D) (βA : GL (Fin A.rank) (EAf D)) (βW
   obtain ⟨d, hd, hx⟩ := GlobalTheory.PlaceVec.exists_nsmul_mem_int (eToEAf D D.host.xi0)
   refine ⟨d * k, mul_pos hd hk, fun x hi i j => ?_⟩
   change (d * k) • (eToEAf D D.host.xi0 * frMapAdj A WW βA βW x i j) ∈ OO
-  rw [mul_nsmul_mul_eq_nsmul_mul_nsmul]
+  rw [mul_smul_mul_comm]
   exact mul_mem hx (h x hi i j)
 
 

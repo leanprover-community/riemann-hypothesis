@@ -59,7 +59,7 @@ namespace GlobalTheory.RowVal.EndCalc
 
 open MvPowerSeries
 
-variable {C : Type} [Field C] {V : VF C} {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] {κ : Type} [Fintype κ]
+variable {C : Type} [Field C] {V : VF C} {d : ℕ} {I : Fin 2 → Type} {κ : Type} [Fintype κ]
   {X : RawChart C d I κ}
 
 theorem comp_cc {σ τ υ : Type} [Finite σ] [Finite τ] {a : σ → MvPowerSeries τ C} {b : τ → MvPowerSeries υ C}

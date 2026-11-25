@@ -330,8 +330,7 @@ private theorem exists_columns_det_ne_zero_of_rows_linearIndependent {E τ κ : 
 
 private theorem exists_perm_diag_ne_zero_of_det_ne_zero {E κ : Type} [Field E] [Fintype κ] [DecidableEq κ]
     (M : Matrix κ κ E) (hM : M.det ≠ 0) : ∃ π : Equiv.Perm κ, ∀ k, M (π k) k ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hM
   rw [Matrix.det_apply]
   refine Finset.sum_eq_zero fun π _ => ?_

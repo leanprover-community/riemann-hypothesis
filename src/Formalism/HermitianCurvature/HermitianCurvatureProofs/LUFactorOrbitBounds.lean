@@ -34,8 +34,6 @@ namespace Formalism.FourierDecayAlt.P.JFxDs1
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem jConv_of_jDom : Formalism.FourierDecayAlt.JF.JDom → Formalism.FourierDecayAlt.JF.JConv := by
   intro hD k r Wp Wq _ _ _ _ _ _ D A F hT hC
   obtain ⟨hmeas, hbd⟩ := hD k r Wp Wq D A 0 F hT hC

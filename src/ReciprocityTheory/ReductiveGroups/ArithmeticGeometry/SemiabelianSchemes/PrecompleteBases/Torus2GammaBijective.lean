@@ -38,8 +38,7 @@ theorem isUnit_eq_single {R A : Type*} [CommRing R] [IsDomain R] [AddCommMonoid 
     first
     | (simp [AddMonoidAlgebra.one_def]; done)
   have hcard : u.coeff.support.card * v.coeff.support.card ≤ 1 := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨p1, hp1, p2, hp2, hne, hu1, hu2⟩ := TwoUniqueSums.uniqueAdd_of_one_lt_card hlt
     rw [Finset.mem_product] at hp1 hp2
     have n1 : u.coeff p1.1 * v.coeff p1.2 ≠ 0 :=

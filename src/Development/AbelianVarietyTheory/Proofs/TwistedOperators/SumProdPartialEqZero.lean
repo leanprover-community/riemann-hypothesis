@@ -87,8 +87,7 @@ theorem sum_prod_map_eq_zero (s : Finset δ) (a : δ → ℂ) (F : δ → ∀ i,
   · obtain ⟨x⟩ := hX
     simpa using sum_prod_partial_eq_zero T s a F h Finset.univ x y
   · have hi : ∃ i, IsEmpty (X i) := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       exact hX ⟨fun i => Classical.choice (hn i)⟩
     obtain ⟨i, hi⟩ := hi
     have h0 : ∀ f : X i → ℂ, f = 0 := fun f => funext fun z => hi.elim z

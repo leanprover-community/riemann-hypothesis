@@ -15,8 +15,6 @@ import Mathlib.Tactic.TypeStar
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 open scoped ContDiff
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace Formalism.FourierDecayAlt.P.CutMP
 
 noncomputable section

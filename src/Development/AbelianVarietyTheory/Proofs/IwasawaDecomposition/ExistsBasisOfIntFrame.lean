@@ -50,8 +50,6 @@ open GlobalTheory.GradedPieces GlobalTheory.Points
 
 namespace GlobalTheory.TotalFrame
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem exists_basis_sigma {O S M J : Type} [CommRing O] [CommRing S] [AddCommGroup M] [Module S M] [Fintype J]
     {χ : J → O →+* S} (h : EigenSplit.IsSplitting χ) (ρ : O →+* Module.End S M) {m : J → ℕ}
     (u : ∀ σ, Fin (m σ) → M) (li : ∀ σ, LinearIndependent S (u σ))

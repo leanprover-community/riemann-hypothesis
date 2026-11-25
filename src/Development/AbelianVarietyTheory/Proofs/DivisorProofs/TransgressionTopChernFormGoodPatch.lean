@@ -221,7 +221,6 @@ noncomputable def logCutoff (k : ℕ) (z : ℂ) : ℝ :=
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma logCutoff_eq_zero_of_norm_le (k : ℕ) {z : ℂ}
     (hz : ‖z‖ ≤ Real.exp (-2 * ((k : ℝ) + 1))) : _root_.GlobalTheory.GoodTop.logCutoff k z = 0 := by
   unfold _root_.GlobalTheory.GoodTop.logCutoff
@@ -238,7 +237,6 @@ private lemma logCutoff_eq_zero_of_norm_le (k : ℕ) {z : ℂ}
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 lemma _root_.GlobalTheory.GoodTop.contDiff_logCutoff (k : ℕ) : ContDiff ℝ ∞ (_root_.GlobalTheory.GoodTop.logCutoff k) := by
   rw [contDiff_iff_contDiffAt]
   intro z
@@ -276,7 +274,6 @@ namespace GlobalTheory.GoodTop
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma exists_bound_abs_deriv_smoothTransition_mul_sub_two :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ x : ℝ, |deriv Real.smoothTransition x| * |x - 2| ≤ M := by
   have hc : Continuous fun x : ℝ => |deriv Real.smoothTransition x| * |x - 2| :=
@@ -304,7 +301,6 @@ private lemma exists_bound_abs_deriv_smoothTransition_mul_sub_two :
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma exists_bound_fderiv_logCutoff_mul_norm_mul_log :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ (k : ℕ) (z c : ℂ),
       ‖fderiv ℝ (_root_.GlobalTheory.GoodTop.logCutoff k) z c‖ * (‖z‖ * |Real.log ‖z‖|) ≤ M * ‖c‖ := by
@@ -349,7 +345,6 @@ private lemma exists_bound_fderiv_logCutoff_mul_norm_mul_log :
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma logCutoff_mem_Icc (k : ℕ) (z : ℂ) :
     0 ≤ _root_.GlobalTheory.GoodTop.logCutoff k z ∧ _root_.GlobalTheory.GoodTop.logCutoff k z ≤ 1 := by
   unfold _root_.GlobalTheory.GoodTop.logCutoff
@@ -359,14 +354,12 @@ private lemma logCutoff_mem_Icc (k : ℕ) (z : ℂ) :
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma logCutoff_eq_zero_of_norm_le_exp_neg_two_mul (k : ℕ) {z : ℂ}
     (hz : ‖z‖ ≤ Real.exp (-2 * ((k : ℝ) + 1))) : _root_.GlobalTheory.GoodTop.logCutoff k z = 0 := by
   apply _root_.GlobalTheory.GoodTop.logCutoff_eq_zero_of_norm_le <;> assumption
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma logCutoff_eq_one_of_exp_le_norm (k : ℕ) {z : ℂ}
     (hz : Real.exp (-((k : ℝ) + 1)) ≤ ‖z‖) : _root_.GlobalTheory.GoodTop.logCutoff k z = 1 := by
   have h0 : z ≠ 0 := by
@@ -384,7 +377,6 @@ private lemma logCutoff_eq_one_of_exp_le_norm (k : ℕ) {z : ℂ}
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fin n))
     (v : _root_.ReciprocityTheory.L2DbarEstimates.V n) (b : Fin n) (c : ℂ) :
     fderiv ℝ (fun w : _root_.ReciprocityTheory.L2DbarEstimates.V n => ∏ a ∈ S, _root_.GlobalTheory.GoodTop.logCutoff k (w a)) v
@@ -1192,7 +1184,6 @@ namespace GlobalTheory.GoodTop
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma mem_offHyp_iff {n : ℕ} {S : Finset (Fin n)}
     {U : Set (_root_.ReciprocityTheory.L2DbarEstimates.V n)} {v : _root_.ReciprocityTheory.L2DbarEstimates.V n} :
     v ∈ _root_.GlobalTheory.GoodTop.offHyp S U ↔ v ∈ U ∧ ∀ a ∈ S, v.ofLp a ≠ 0 := by
@@ -1201,7 +1192,6 @@ private lemma mem_offHyp_iff {n : ℕ} {S : Finset (Fin n)}
 
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix in
-set_option autoImplicit false in
 private lemma mixTop_slot_smul_sub_sub {n : ℕ} {r : Type} [Fintype r]
     [DecidableEq r] (A B D : _root_.GlobalTheory.GoodTop.EndValuedForm11Coeffs n r) (s : ℂ) (j : Fin n) :
     _root_.GlobalTheory.GoodTop.mixTop (_root_.GlobalTheory.GoodTop.intersection_update_fsHerm_neg_one A (s • (A - B) - D) B j) =

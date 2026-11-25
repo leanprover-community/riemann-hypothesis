@@ -1,49 +1,9 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallDomainOpenConvexZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExists
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
-import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 
 @[expose] public section
@@ -192,16 +152,8 @@ theorem form_one_sub (Z : Matrix a b ℂ) (x : b → ℂ) :
 
 theorem posDef_iff_norm (Z : Matrix a b ℂ) :
     (1 - Zᴴ * Z).PosDef ↔ ∀ x : b → ℂ, x ≠ 0 → ‖WithLp.toLp 2 (Z *ᵥ x)‖ < ‖WithLp.toLp 2 x‖ := by
-  rw [Matrix.posDef_iff_dotProduct_mulVec]
-  constructor
-  · rintro ⟨-, h⟩ x hx
-    have h1 := h hx
-    rw [form_one_sub, Complex.zero_lt_real] at h1
-    exact lt_of_pow_lt_pow_left₀ 2 (norm_nonneg _) (sub_pos.1 h1)
-  · intro h
-    refine ⟨Matrix.isHermitian_one.sub (Matrix.isHermitian_conjTranspose_mul_self _), fun x hx => ?_⟩
-    rw [form_one_sub, Complex.zero_lt_real]
-    exact sub_pos.2 (pow_lt_pow_left₀ (h x hx) (norm_nonneg _) two_ne_zero)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.BallConvex.posDef_iff <;> assumption
 
 theorem convex_ball_mat : Convex ℝ {Z : Matrix a b ℂ | (1 - Zᴴ * Z).PosDef} := by
   rw [convex_iff_forall_pos]
@@ -225,16 +177,8 @@ section Dom
 variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
 
 theorem convex_ballDom (q : Ψ × Fin j × Fin j' ≃ Fin n) : Convex ℝ (ballDom q) := by
-  have hset : ballDom q = ⋂ τ, (fun t => ballMat q t τ) ⁻¹' {Z | (1 - Zᴴ * Z).PosDef} := by
-    ext t
-    simp [ballDom]
-  rw [hset]
-  refine convex_iInter fun τ => ?_
-  let L : (Fin n → ℂ) →ₗ[ℝ] Matrix (Fin j) (Fin j') ℂ :=
-    { toFun := fun t => ballMat q t τ
-      map_add' := fun s t => by ext a b; simp [ballMat]
-      map_smul' := fun c t => by ext a b; simp [ballMat] }
-  exact convex_ball_mat.linear_preimage L
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.BallConvex.convex_ballDom <;> assumption
 
 theorem zero_mem (q : Ψ × Fin j × Fin j' ≃ Fin n) : (0 : Fin n → ℂ) ∈ ballDom q := by
   intro τ

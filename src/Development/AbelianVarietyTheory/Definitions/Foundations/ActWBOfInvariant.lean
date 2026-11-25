@@ -11,53 +11,8 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ShCocOn
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlMulToRingEquiv
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.CobOn
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
@@ -80,12 +35,6 @@ open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.NeedB GlobalTheory.KEdge
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
-def tInv (l N R : ℕ) : ZMod N := ((l : ZMod N) ^ R)⁻¹
-
-def uIdxMu (l N R : ℕ) (x : ZMod N) : Fin 2 → ℚ := ![1 / (l : ℚ) ^ R + ((x * tInv l N R).val : ℚ) / N, 0]
-
-def vIdxMu (l N R : ℕ) : Fin 2 → ℚ := ![((tInv l N R).val : ℚ) / N, 1 / (l : ℚ) ^ R]
-
 abbrev Om (X : Tower Ω ε) : Type := AlgebraicClosure X.K
 
 attribute [local instance] algMdl
@@ -107,10 +56,6 @@ def gR (l N : ℕ) (r₀ : ZMod l) : SL(2, ℤ) :=
   ⟨!![1, 0; cR l N r₀, 1], by simp [Matrix.det_fin_two]⟩
 
 
-
-theorem cR_mod (l N : ℕ) [Fact l.Prime] (hN : (N : ZMod l) ≠ 0) (r₀ : ZMod l) : ((cR l N r₀ : ℤ) : ZMod l) = -r₀ := by
-  simp only [cR, Int.cast_mul, Int.cast_natCast, ZMod.natCast_zmod_val]
-  rw [mul_comm (-r₀), ← mul_assoc, mul_inv_cancel₀ hN, one_mul]
 
 
 open scoped MatrixGroups TensorProduct in
@@ -174,12 +119,6 @@ def secT (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (w : ℕ) (a : X.K) : X.Fn l
 
 def shArg (M : ℕ) (s : Ω ≃ₐ[ℚ] Ω) (y : (ZMod M)ˣ) : Ω ≃ₐ[ℚ] Ω :=
   (repM M y)⁻¹ * s * repM M (y * (cycM M s)⁻¹)
-
-theorem vecMul_gR (l N : ℕ) [Fact l.Prime] (hN : (N : ZMod l) ≠ 0) (r₀ : ZMod l) :
-    (![r₀, 1] : Fin 2 → ZMod l) ᵥ* ((GlobalTheory.ZetaB.gR l N r₀ : Matrix (Fin 2) (Fin 2) ℤ).map (Int.castRingHom (ZMod l))) =
-      ![0, 1] := by
-  ext i
-  fin_cases i <;> simp [GlobalTheory.ZetaB.gR, Matrix.vecMul, dotProduct, Fin.sum_univ_two, GlobalTheory.ZetaB.cR_mod l N hN]
 
 def lnFn (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) : Submodule ℤ_[l] (X.Fn l) :=
   Submodule.pi Set.univ fun _ => (idl l) ^ n • (⊤ : Submodule ℤ_[l] (X.Khat l))

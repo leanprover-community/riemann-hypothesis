@@ -193,7 +193,7 @@ theorem rhoExP (h1 : ExistsSplittingAuxiliaryCharacterForTower) (h2 : PhiFacts) 
   have e : ∀ g, (cycBar ℚ Ω l ^ (k - 1) * toB (phi D T₀.pr)) g =
       Units.map (algebraMap c.O (PadicAlgCl l)).toMonoidHom (Phi D T₀.pr k g) := by
     intro g
-    simp only [MonoidHom.mul_apply, MonoidHom.pow_apply, Phi, map_mul, map_pow]
+    simp only [MonoidHom.mul_apply, MonoidHom.pow_apply, UpperTheory.V.Cu.Phi, map_mul, map_pow]
     rw [← toB_chi c g]
     rfl
   have hI : IrrOpen ρ := by
@@ -1281,16 +1281,6 @@ theorem fin_cg {α : Type} [CommGroup α] (E D : α) (j : ℤ) (n m : ℕ) (hD :
 
 end Alg
 
-private theorem psi_map {ι Γ R R' : Type} [Group Γ] [CommRing R] [CommRing R'] (P : PD ι Γ R) (f : R →+* R') (v : ι) (i : Fin 4) (s : Γ) :
-    (P.map f).ψ v i s = f (P.ψ v i s) := by
-  have a : adj ((P.n v).map f) = (adj (P.n v)).map f := by
-    ext i j
-    simp [adj_apply]
-  have b : (P.map f).r s = (P.r s).map f := rfl
-  have c : (P.map f).n v = (P.n v).map f := rfl
-  rw [PD.ψ, b, c, a, ← Matrix.map_mul, ← Matrix.map_mul]
-  rfl
-
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
 
 private theorem cont_emb (E : Type) [Field E] [NumberField E] [Algebra E Ω] : Continuous (galEmb ℚ E Ω) := by
@@ -1347,7 +1337,7 @@ theorem UpperTheory.V.Cu.wtsOf4 : WtsOf4 := by
     have := d.big
     omega
   dsimp only
-  rw [RankFourHodgeWeights.psi_map, RankFourHodgeWeights.psi_eq d T v s hI i, hk]
+  rw [UpperTheory.V.Ws.PD.map_ψ, RankFourHodgeWeights.psi_eq d T v s hI i, hk]
   have key := RankFourHodgeWeights.fin_cg (cycBar T.F Ω l s) (toB d.δ (resQ T.F s)) j (d.k - 1) d.m e3 i
   have hδ : (Units.map (algebraMap d.c₁.O (PadicAlgCl l)).toMonoidHom) (toC d.h d.δ (resQ T.F s)) = toB d.δ (resQ T.F s) :=
     Units.ext rfl

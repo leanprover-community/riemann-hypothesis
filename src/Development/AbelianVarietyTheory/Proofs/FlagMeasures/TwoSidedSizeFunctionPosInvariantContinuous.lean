@@ -61,8 +61,7 @@ theorem exists_coord {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k 
     exact one_ne_zero
   ·
     have hz0 : ∃ i, z i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : z = 0 := funext h
       subst this
       simp [Tz, herm] at hT

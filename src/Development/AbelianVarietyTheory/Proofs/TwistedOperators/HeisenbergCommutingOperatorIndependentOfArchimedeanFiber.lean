@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilActionUnitaryCompact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicAddCharNontrivialFinitePlaceStatement
@@ -90,8 +91,7 @@ theorem exists_ne_one (ψ : AddChar (AF F) ℂ) (hψ : ∀ w : Pl (F := F), ∃ 
     (ha : a ≠ 0) : ∃ b : Af F, GlobalTheory.HeisSchA.finChar ψ (a * b) ≠ 1 := by
   classical
   obtain ⟨v, hv⟩ : ∃ v, evalV F v a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ha (af_ext fun u => by rw [h u, map_zero])
   obtain ⟨t, ht⟩ := hψ v
   refine ⟨singleFin v (t / evalV F v a), ?_⟩
@@ -245,32 +245,8 @@ theorem main (ψ : AddChar (AF F) ℂ) (T : Module.End ℂ ((κ → AF F) → �
       T (schr ψ (u • p, u • q) Φ) = schr ψ (u • p, u • q) (T Φ))
     (Φ : (κ → AF F) → ℂ) (hΦ : Φ ∈ schA F κ) (y : κ → AF F) (hy : ∀ z, At (evI F) z → Φ (y + z) = 0) :
     T Φ y = 0 := by
-  obtain ⟨⟨K, hK, h0⟩, h1⟩ := schA_struct hΦ
-  set U := {w : κ → Af F | ∀ a : κ → Ainf F, Φ (mkv a w) = Φ (mkv a (fin y))}
-  have hU : U ∈ nhds (fin y) := h1 (fin y)
-  obtain ⟨C, hC, hC1, hC0⟩ := exists_sep ψ hψ.1 hnd (fin y) (hK.diff isOpen_interior)
-    (fun h => h.2 (mem_interior_iff_mem_nhds.mpr hU))
-  have hzero : (fun x => C (fin x) * Φ x) = 0 := by
-    funext x
-    by_cases hxK : fin x ∈ K
-    · by_cases hxU : fin x ∈ interior U
-      · have hx := interior_subset hxU (fun i => (x i).1)
-        have e1 : mkv (fun i => (x i).1) (fin x) = x := rfl
-        rw [e1] at hx
-        have e2 : mkv (fun i => (x i).1) (fin y) = y + fun i => GlobalTheory.HeisSchA.mk ((x i).1 - (y i).1) 0 := by
-          funext i
-          refine Prod.ext ?_ ?_
-          · change (x i).1 = (y i).1 + ((x i).1 - (y i).1)
-            abel
-          · change (y i).2 = (y i).2 + 0
-            rw [add_zero]
-        rw [hx, e2, hy _ (fun u hu => funext fun i => GlobalTheory.HeisSchA.at_mk _ u hu)]
-        simp
-      · simp [hC0 _ ⟨hxK, hxU⟩]
-    · simp [h0 x hxK]
-  have h := congrFun (comm_alg ψ T hT hC hΦ) y
-  rw [hzero, map_zero, hC1, one_mul] at h
-  exact h.symm
+  intros
+  apply _root_.GlobalTheory.ArchLocality.fibre <;> assumption
 
 end GlobalTheory.FinFibre
 

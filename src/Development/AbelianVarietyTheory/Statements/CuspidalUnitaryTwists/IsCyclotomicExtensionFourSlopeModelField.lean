@@ -153,8 +153,7 @@ theorem _root_.GlobalTheory.TestLat.SlopeModel.sumGram_posDef (lam : ι → _roo
       simp
     · exact (_root_.Formalism.L2.DIV.ps_nfL_pos lam _ hc).le
   · obtain ⟨a, ha⟩ : ∃ a, x a ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hx (funext h)
     refine ⟨(e a).1, Finset.mem_univ _, _root_.Formalism.L2.DIV.ps_nfL_pos lam _ ?_⟩
     intro h0

@@ -1,13 +1,13 @@
 module
 
 import Mathlib.RingTheory.AdicCompletion.Functoriality
-
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.DistinguishedUnitIdeals.FrobeniusCoboundedArc
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CyclotomicFrobeniusPowerSeriesXEqMulQuotient
 
 @[expose] public section
 
@@ -24,25 +24,7 @@ variable {R : Type} [CommRing R]
 theorem algHom_ext_X (f g : PowerSeries R →ₐ[R] PowerSeries R)
     (h : f PowerSeries.X = g PowerSeries.X)
     (h0 : PowerSeries.constantCoeff (f PowerSeries.X) = 0) : f = g := by
-  have hpoly : ∀ p : Polynomial R, f (p : PowerSeries R) = g (p : PowerSeries R) := by
-    have hc : f.comp (Polynomial.coeToPowerSeries.algHom R) =
-        g.comp (Polynomial.coeToPowerSeries.algHom R) := by
-      apply Polynomial.algHom_ext
-      simpa using h
-    intro p
-    simpa using AlgHom.congr_fun hc p
-  refine AlgHom.ext fun a => PowerSeries.ext fun k => ?_
-  obtain ⟨t, b, ha⟩ : ∃ (t : Polynomial R) (b : PowerSeries R),
-      a = (t : PowerSeries R) + PowerSeries.X ^ (k + 1) * b := by
-    obtain ⟨b, hb⟩ : PowerSeries.X ^ (k + 1) ∣ a - (PowerSeries.trunc (k + 1) a : PowerSeries R) := by
-      rw [PowerSeries.X_pow_dvd_iff]
-      intro m hm
-      rw [map_sub, Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos hm, sub_self]
-    exact ⟨_, b, by rw [← hb]; ring⟩
-  obtain ⟨c, hcX⟩ := PowerSeries.X_dvd_iff.mpr h0
-  have hcX' : g PowerSeries.X = PowerSeries.X * c := by rw [← h]; exact hcX
-  subst ha
-  simp [hcX, hcX', hpoly t, mul_pow, mul_assoc, PowerSeries.coeff_X_pow_mul']
+  apply _root_.GlobalTheory.Fon.algHom_ext_X <;> assumption
 
 theorem constCoeff_algHom (f : PowerSeries R →ₐ[R] PowerSeries R)
     (h0 : PowerSeries.constantCoeff (f PowerSeries.X) = 0) (a : PowerSeries R) :

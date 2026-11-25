@@ -29,8 +29,7 @@ theorem norm_apply_le_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
     first
     | (rw [hsA] at h2; exact h2)
   have key : ∀ y, ‖ι y‖ ≤ 1 → ‖ι (τ y)‖ ≤ 1 := fun y hy => (h (τ y)).1 (hs y ((h y).2 hy))
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hc : (1 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).one_lt
   have hpa : (0 : ℝ) < p := by linarith
   have ha : 0 < ‖ι x‖ := by

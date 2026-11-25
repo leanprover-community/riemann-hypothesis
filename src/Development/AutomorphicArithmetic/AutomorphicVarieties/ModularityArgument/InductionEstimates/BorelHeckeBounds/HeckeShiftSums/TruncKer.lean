@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.ThBasic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.BorelHeckeBounds.Full
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.CtClosed
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.CtZero
@@ -1459,12 +1460,7 @@ namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.HeckeShiftDescent
 private theorem mk_shift {G : Type*} [Group G] (P : Subgroup G) (a b : G) :
     (Quotient.mk (QuotientGroup.rightRel P) ((Quotient.mk (QuotientGroup.rightRel P) a).out * b)) =
       Quotient.mk (QuotientGroup.rightRel P) (a * b) := by
-  have h : (QuotientGroup.rightRel P) ((Quotient.mk (QuotientGroup.rightRel P) a).out) a :=
-    Quotient.mk_out (s := QuotientGroup.rightRel P) a
-  refine Quotient.sound ?_
-  change (QuotientGroup.rightRel P) _ _
-  rw [QuotientGroup.rightRel_apply] at h ⊢
-  simpa [mul_assoc] using h
+  apply _root_.mk_out_mul <;> assumption
 
 private theorem shift_bij {G : Type*} [Group G] (P : Subgroup G) (b : G) :
     Function.Bijective fun q : Quotient (QuotientGroup.rightRel P) =>

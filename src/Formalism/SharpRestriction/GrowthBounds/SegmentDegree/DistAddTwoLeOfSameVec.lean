@@ -363,7 +363,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
     rw [le_div_iff₀ (hPpos _)]
     refine le_trans ?_ (cb i).1
     refine mul_le_mul_of_nonneg_right ?_ (hPpos _).le
-    have h1 : 0 ≤ Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) := by positivity
     nlinarith [Bs.Y1]
   have H : HypT (segN X.F j) (segN X.F j - r) r K (segLL X.F j)
       (fun i => X.Bdeg p K j (X.restr j b) (segE X.F j i)) od
@@ -418,7 +417,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       have h6 : 9 / 10 * (X.a / P') ≤ (X.a' p K (posOf n' (segE X.F j i')) : ℝ) / P' := by
         rw [← mul_div_assoc]
         exact div_le_div_of_nonneg_right (cb i').2.1 hP'0.le
-      have h7 : 0 < X.a / P' := div_pos ha0 hP'0
       linarith
     · have hr3 : (r : ℝ) ≤ X.Ns := by
         have : r ≤ X.Ns := by omega
@@ -443,11 +441,9 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
         le_trans (Bup l hl) (div_le_div_of_nonneg_left (by linarith) (by positivity) hPP)
       have h2 : 4 * (X.a / P') / (p : ℝ) = 2 * (2 * X.a / (P' * (p : ℝ))) := by field_simp; ring
       rw [h2]
-      have h3 : 0 ≤ 2 * X.a / (P' * (p : ℝ)) := by positivity
       linarith
     · unfold Dat.La
       have : (0 : ℝ) < X.CLa := by linarith
-      have h6 : (0 : ℝ) < X.Ns := by linarith
       have : (0 : ℝ) < Real.log X.a := by linarith
       positivity
   refine ⟨segN X.F j - r, od, H, ?_, ?_, ?_, final_num hX hLa hk _ hNNs⟩
@@ -499,8 +495,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       have h3 : 4 * X.a * (1 / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j)) =
           2 * (2 * X.a / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j)) := by ring
       rw [h3]
-      have h1' : ((X.Bdeg p K j (X.restr j b) (segE X.F j (od i)) : ℕ) : ℝ) ≤
-          2 * X.a / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j) := h1
       linarith
     · intro hE
       have hv : (segLL X.F j).vec i = false := by

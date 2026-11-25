@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.EigenvalueSeparation.AlmostEverywhereEigen.OrthogonalKeepingHolds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrExistsMeasRep
 import Mathlib.Tactic.TypeStar
 
@@ -13,12 +14,7 @@ open MeasureTheory Set
 open scoped ENNReal InnerProductSpace
 
 theorem rrkb_le_one_add_sq (a : ℝ≥0∞) : a ≤ 1 + a ^ 2 := by
-  rcases le_total a 1 with h | h
-  · exact le_trans h le_self_add
-  · calc a = a * 1 := (mul_one a).symm
-      _ ≤ a * a := by gcongr
-      _ = a ^ 2 := (sq a).symm
-      _ ≤ 1 + a ^ 2 := le_add_self
+  apply _root_.PositivityTheory.Rg.BcB.E2.P.Locint.enorm_le_one_add_sq <;> assumption
 
 variable {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [MeasurableInv G]
   {μ : Measure G} [SigmaFinite μ] [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant]

@@ -14,8 +14,6 @@ namespace GroundTheory.Heights₂.Heights.Kleiman
 
 open MvPolynomial Filter
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 noncomputable section
 
 universe u w

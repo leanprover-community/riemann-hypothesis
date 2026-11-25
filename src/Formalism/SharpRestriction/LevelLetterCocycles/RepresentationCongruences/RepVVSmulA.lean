@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvBasisPhi
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.AlgebraMapMemInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
@@ -33,15 +34,8 @@ variable (W : LocWach PD LL O v n)
 
 theorem φVB_inj {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V] :
     Function.Injective (φVB PD (LL := LL) (V := V)) := by
-  have h : ∀ y, φVB PD (LL := LL) (V := V) y = ((PD.φ.toLinearMap.restrictScalars Qp).lTensor V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : Function.Injective (PD.φ.toLinearMap.restrictScalars Qp) := PD.φ_inj
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hi hab
+  intros
+  apply _root_.Formalism.MainNotions.N.Ln03.Pf.lvBasis_φ_inj <;> assumption
 
 theorem crisMap_φ {V V' : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     [AddCommGroup V'] [Module LL V'] [Module Qp V'] [IsScalarTower Qp LL V'] (f : V →ₗ[LL] V') (x : V ⊗[Qp] B) :

@@ -13,8 +13,6 @@ namespace PI.QnHermHaar
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def tA {A : Type*} [Ring A] [Algebra ℂ A] {m : ℕ} (E : Fin m → Fin m → A) (Y Yb : Fin m → A)
     (x xb : Fin m → ℂ) (u : ℂ) : Fin 2 → Fin 2 → A := fun p q =>
   match p, q with

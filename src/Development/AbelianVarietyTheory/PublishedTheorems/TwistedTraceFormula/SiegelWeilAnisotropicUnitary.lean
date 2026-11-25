@@ -118,11 +118,6 @@ theorem leftInv_theta (g : GA D S) : LeftInv (GQ T) fun h => thetaKO ω g h f :=
 
 variable {ν : Measure (GA D T)} [ν.IsHaarMeasure]
 
-theorem thetaMean_eq {𝓕 : Set (GA D T)} (h𝓕 : IsFundamentalDomain (GQ T) 𝓕 ν) (g : GA D S) :
-    thetaMean ω ν f g = ⨍ h in 𝓕, thetaKO ω g h f ∂ν := by
-  rw [thetaMean, average_eq, setAverage_eq, integral_quotMeasure h𝓕, measureReal_def, quotMeasure_univ h𝓕]
-  simp only [(leftInv_theta hω hf g).descend_mk, measureReal_def]
-
 end GlobalTheory.ThetaMean
 
 namespace GlobalTheory.Published

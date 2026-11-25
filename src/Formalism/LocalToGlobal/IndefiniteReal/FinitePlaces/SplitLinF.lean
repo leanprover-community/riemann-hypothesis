@@ -22,7 +22,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSelf
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceFinal
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GrowthNorm
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.EFinSmulEqOfFinPart
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ActsLinOfSplitLin
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourExist
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceSum
@@ -45,8 +45,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (S T : HSp D)
 
@@ -509,8 +507,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D)
 
 theorem exists_invForm (e₁ : AE D) (he : e₁ * cA D e₁ = 0) (Λ : AddSubgroup (WO S T))
@@ -590,8 +586,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (S T : HSp D)
 
 theorem suppAt_inv_fp {e : AE D} {V : HSp D} {g : GA D V} (hg : SuppAt e V g) : SuppAt e V g⁻¹ := by
@@ -612,7 +606,7 @@ theorem actO_nsmul (g : GA D S) (h : GA D T) (k : ℕ) (t : WO S T) : actO S T g
     rw [zero_smul, zero_smul]
     unfold actO
     rw [Matrix.mul_zero, Matrix.zero_mul]
-  | succ n ih => rw [succ_nsmul, succ_nsmul, Formalism.IndefR.Eqv.actO_add, ih]
+  | succ n ih => rw [succ_nsmul, succ_nsmul, Formalism.IndefR.Fin.LevelGroupLemmas.actO_add, ih]
 
 theorem isHalf_actO_fp {e : AE D} (g : GA D S) (h : GA D T) {t : WO S T} (ht : IsHalf e t) :
     IsHalf e (actO S T g h t) := by
@@ -655,7 +649,7 @@ theorem sb_comp {e : AE D} {Λ : AddSubgroup (WO S T)} (g : GA D S) (h : GA D T)
   refine ⟨fun t ht => (isHalf_actO_iff S T g h t).1 (hs _ ht), k * k₁ * k₂, by positivity,
     fun u hu hue t => ?_, fun t ht => ?_⟩
   · show Φ (actO S T g h (t + (k * k₁ * k₂) • u)) = Φ (actO S T g h t)
-    rw [Formalism.IndefR.Eqv.actO_add, actO_nsmul, show (k * k₁ * k₂) • actO S T g h u =
+    rw [Formalism.IndefR.Fin.LevelGroupLemmas.actO_add, actO_nsmul, show (k * k₁ * k₂) • actO S T g h u =
       k • (k₂ • (k₁ • actO S T g h u)) by rw [smul_smul, smul_smul]; ring_nf]
     exact hi _ (Λ.nsmul_mem (h₁ u hu) k₂)
       (isHalf_nsmul_fp S T (isHalf_nsmul_fp S T (isHalf_actO_fp S T g h hue) k₁) k₂) _
@@ -686,8 +680,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -795,7 +787,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
         rw [← hTm.trans _ hG _ hqu]
         congr 1
         funext t
-        rw [Formalism.IndefR.Eqv.actO_add, Formalism.IndefR.Eqv.actO_inv_actO, halfInd_add S T hu (half_sub_of S T h1 hue)]
+        rw [Formalism.IndefR.Fin.LevelGroupLemmas.actO_add, Formalism.IndefR.Eqv.actO_inv_actO, halfInd_add S T hu (half_sub_of S T h1 hue)]
       · have hqu : IsHalf (cA D e) (actO S T g⁻¹ h⁻¹ u) := isHalf_actO_fp S T _ _ (chalf_sub_of S T h1 hue)
         rw [← hTm.modul _ hG _ hqu]
         congr 1
@@ -840,7 +832,7 @@ theorem splitLin_of (hPD : PlaceLatDual D) (hlev : LatLevel D) : SplitLin D := b
       have hq : IsHalf e (actO S T g⁻¹ h⁻¹ x₀) := isHalf_actO_fp S T _ _ hx₀
       have e1 : (fun t => Φ (actO S T g h t + x₀)) =
           fun t => Φ (actO S T g h (t + actO S T g⁻¹ h⁻¹ x₀)) := by
-        funext t; rw [Formalism.IndefR.Eqv.actO_add, Formalism.IndefR.Eqv.actO_inv_actO]
+        funext t; rw [Formalism.IndefR.Fin.LevelGroupLemmas.actO_add, Formalism.IndefR.Eqv.actO_inv_actO]
       show c⁻¹ • om (g, h) (Tm (fun t => Φ (actO S T g h t + x₀))) = _
       rw [e1, hTm.trans _ (hSBp Φ hΦ) _ hq, hω.om_heis g h _ _ (hthm _ (hSBp Φ hΦ)),
         Formalism.IndefR.Eqv.actO_inv_actO, ← heisL_apply, ← heisL_apply, map_smul]

@@ -50,8 +50,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.UPoinc
 open Classical
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.UPoinc.GFib
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Geo.Tor.Level H}

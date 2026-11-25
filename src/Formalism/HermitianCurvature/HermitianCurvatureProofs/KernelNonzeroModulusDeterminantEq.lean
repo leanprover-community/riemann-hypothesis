@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AddedBlockKernelSupport
 public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Aesop.BuiltinRules
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
@@ -835,20 +836,7 @@ theorem modK_det_pt (s : List ℕ) (t : ℕ → Kˣ) :
   rcases Int.units_eq_one_or ε with h | h <;> rw [h] <;> simp [modK_neg]
 
 theorem blk_lt : ∀ (s : List ℕ) (j : ℕ), j < s.sum → blk s j < s.length := by
-  intro s
-  induction s with
-  | nil =>
-    intro j h
-    simp at h
-  | cons a s ih =>
-    intro j h
-    rw [List.sum_cons] at h
-    simp only [blk, List.length_cons]
-    split_ifs with hj
-    · omega
-    · have hj' : j - a < s.sum := by omega
-      have hblk := ih (j - a) hj'
-      omega
+  apply _root_.Formalism.FourierDecayAlt.P.A5x7.blk_lt_length <;> assumption
 
 theorem blk_append_lt : ∀ (s : List ℕ) (k j : ℕ), j < s.sum → blk (s ++ [k]) j = blk s j
   | [], k, j, h => by simp at h
@@ -901,8 +889,7 @@ variable [TopologicalSpace K] [IsTopologicalRing K] {ψ : AddChar K ℂ}
 theorem kernel_nonzero_modulus_determinant_eq (hd : LocalDatum K R ψ) (w w' : Point K) (h : Kp R ψ w w' ≠ 0) :
     modK R (pt w.1 w.2).det = modK R (pt w'.1 w'.2).det := by
   obtain ⟨q, hq⟩ : ∃ q, pairTerm R ψ w w' q ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (finsum_eq_zero_of_forall_eq_zero hc)
   unfold pairTerm at hq
   by_cases hc : IsInt R (orbZ w (rep R q.1)) ∧ IsInt R (orbZ w' (rep R q.2))

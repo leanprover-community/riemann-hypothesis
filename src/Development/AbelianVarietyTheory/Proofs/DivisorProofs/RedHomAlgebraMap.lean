@@ -48,8 +48,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry KaehlerDifferential Opposite MonObj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CechDR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.InvForm
 
 variable {R : Type} [CommRing R]

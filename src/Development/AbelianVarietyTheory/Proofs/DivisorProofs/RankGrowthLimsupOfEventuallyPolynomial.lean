@@ -51,7 +51,6 @@ namespace GlobalTheory.CompHt
 open Filter Topology
 open scoped ENNReal
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 private lemma factorial_mul_div_pow_ennreal_eq_ofReal (D k m : ℕ) (hk : 1 ≤ k) :
@@ -64,7 +63,6 @@ private lemma factorial_mul_div_pow_ennreal_eq_ofReal (D k m : ℕ) (hk : 1 ≤ 
     ENNReal.ofReal_pow (by positivity)]
   simp
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ) (D : ℕ) (hQ : Q.degree ≤ D) :
@@ -80,7 +78,6 @@ private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ)
     simpa [hc] using this
 
 
-set_option autoImplicit false in
 open Filter Topology in
 open scoped ENNReal in
 theorem _root_.GlobalTheory.CompHt.growth_of_eventually_eq_eval :
@@ -137,8 +134,7 @@ theorem _root_.GlobalTheory.CompHt.growth_of_eventually_eq_eval :
   · have hQdeg' : (D : WithBot ℕ) < Q.degree := hQdeg ▸ hdeg
     have hX : (Polynomial.X ^ D : Polynomial ℝ).degree = D := by simp
     have hlc : 0 < Q.leadingCoeff := by
-      by_contra hneg
-      push_neg at hneg
+      by_contra! hneg
       have hpos : 0 < Q.degree := lt_of_le_of_lt (by exact_mod_cast Nat.zero_le D) hQdeg'
       have hbot := (Polynomial.tendsto_atBot_of_leadingCoeff_nonpos hpos hneg).comp hakR
       have hneg' := hbot.eventually (eventually_lt_atBot (0 : ℝ))

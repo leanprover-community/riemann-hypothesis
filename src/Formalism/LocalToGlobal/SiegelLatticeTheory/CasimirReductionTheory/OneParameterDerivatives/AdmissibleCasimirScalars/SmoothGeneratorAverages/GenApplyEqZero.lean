@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviConjHaarModulus
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.SmoothGeneratorAverages.HasDerivAtDS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CompactDerivativesBounded
 import Mathlib.Tactic.Linter.Style
@@ -121,26 +122,7 @@ lemma umat_inUJ {ε : Fin n → Bool} (g : UJ ε) : (umat g)ᴴ * Jm ε * umat g
 
 lemma conj_inG {ε : Fin n → Bool} (g : UJ ε) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) :
     inG ε (umat g * X * umat g⁻¹) := by
-  have hhJ : (umat g)ᴴ * Jm ε = Jm ε * umat g⁻¹ := by
-    calc (umat g)ᴴ * Jm ε = (umat g)ᴴ * Jm ε * (umat g * umat g⁻¹) := by
-          rw [umat_mul_inv, Matrix.mul_one]
-      _ = ((umat g)ᴴ * Jm ε * umat g) * umat g⁻¹ := by simp only [Matrix.mul_assoc]
-      _ = Jm ε * umat g⁻¹ := by rw [umat_inUJ]
-  have hkJ : (umat g⁻¹)ᴴ * Jm ε = Jm ε * umat g := by
-    calc (umat g⁻¹)ᴴ * Jm ε = (umat g⁻¹)ᴴ * Jm ε * (umat g⁻¹ * umat g) := by
-          rw [umat_inv_mul, Matrix.mul_one]
-      _ = ((umat g⁻¹)ᴴ * Jm ε * umat g⁻¹) * umat g := by simp only [Matrix.mul_assoc]
-      _ = Jm ε * umat g := by rw [umat_inUJ]
-  have hX' : Xᴴ * Jm ε = -(Jm ε * X) := eq_neg_of_add_eq_zero_left hX
-  unfold inG
-  have e : (umat g * X * umat g⁻¹)ᴴ * Jm ε = -(Jm ε * (umat g * X * umat g⁻¹)) := by
-    calc (umat g * X * umat g⁻¹)ᴴ * Jm ε = (umat g⁻¹)ᴴ * (Xᴴ * ((umat g)ᴴ * Jm ε)) := by
-          simp only [conjTranspose_mul, Matrix.mul_assoc]
-      _ = (umat g⁻¹)ᴴ * ((Xᴴ * Jm ε) * umat g⁻¹) := by rw [hhJ, Matrix.mul_assoc]
-      _ = -(((umat g⁻¹)ᴴ * Jm ε) * X * umat g⁻¹) := by
-          rw [hX', Matrix.neg_mul, Matrix.mul_neg]; simp only [Matrix.mul_assoc]
-      _ = -(Jm ε * (umat g * X * umat g⁻¹)) := by rw [hkJ]; simp only [Matrix.mul_assoc]
-  rw [e, neg_add_cancel]
+  apply _root_.GlobalTheory.FlagModulus.inG_conj <;> assumption
 
 lemma trace_swap (h k P Q : Matrix (Fin n) (Fin n) ℂ) :
     trace (h * P * k * Q) = trace (k * Q * h * P) := by

@@ -27,8 +27,6 @@ open Matrix
 
 namespace Formalism.L2.SG.RealObj.StepIntOf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Defs
 
 variable {D : D7} (X : HidaSetting D)
@@ -45,8 +43,6 @@ end Formalism.L2.SG.RealObj.StepIntOf
 namespace Formalism.L2.SG.RealObj.StepIntOf.Steps
 
 open Formalism.L2.SG.RealObj.StepIntOf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem norm_rank_one_le {V V' : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
     [NormedAddCommGroup V'] [InnerProductSpace ℂ V'] (v : V) (w : V') :

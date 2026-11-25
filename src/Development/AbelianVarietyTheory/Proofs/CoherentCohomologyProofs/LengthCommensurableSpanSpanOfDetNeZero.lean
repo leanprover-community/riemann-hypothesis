@@ -316,8 +316,7 @@ theorem main {R : Type u_1} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R
       rw [hA, LinearMap.toMatrix_apply]
     let ψ := (LinearMap.range f).liftQ φ hle
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hw0 (funext h)
     have hmem : (R ∙ w i) ≤ LinearMap.range ψ := by
       rw [Submodule.span_le, Set.singleton_subset_iff]

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAFFStableEquivOps
 public import Formalism.HermitianCurvature.StatementQ
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.StatementJF
@@ -17,12 +18,7 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Fo
 open scoped Matrix.Norms.Elementwise
 
 theorem glev0 {k r : ℕ} (g : Mat k r) : g ∈ Q.Glev k r 0 ↔ g ∈ GV k r := by
-  simp only [Q.Glev, Set.mem_setOf_eq]
-  constructor
-  · rintro ⟨h, -⟩
-    exact h
-  · intro h
-    exact ⟨h, fun a ha => by simp at ha⟩
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.FFS.level_zero_iff <;> assumption
 
 theorem integrable_map_sum {α ι E : Type*} [MeasurableSpace α] [NormedAddCommGroup E] [NormedSpace ℝ E]
     {μ : Measure α} (L : List ι) (φ : ι → α → E) (h : ∀ i ∈ L, Integrable (φ i) μ) :

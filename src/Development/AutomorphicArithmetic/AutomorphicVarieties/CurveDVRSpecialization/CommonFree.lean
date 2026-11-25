@@ -53,8 +53,7 @@ theorem UpperTheory.V.Pr.commonFree :
   let K : ι → Subgroup H := fun i => ((powMonoidHom N : A →* A).comp (χ i)).ker
   have hK : ∀ i h, h ∈ K i ↔ χ i h ^ N = 1 := fun i h => by
     simp [K, MonoidHom.mem_ker]
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have _ : Fintype ι := Fintype.ofFinite ι
   have hcov : ⋃ i ∈ (Finset.univ : Finset ι), (fun _ => (1 : H)) i • ((K i : Set H)) = Set.univ := by
     apply Set.eq_univ_of_forall

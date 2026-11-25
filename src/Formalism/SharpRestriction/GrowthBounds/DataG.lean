@@ -143,11 +143,7 @@ def funMod (Hv : P.Tup → Submodule O P.Xsp) : Submodule O (P.Tup → P.Xsp) :=
       ((C.χ γ : O) • ((C.actX γ).restrictScalars O)) ∘ₗ
         LinearMap.proj (R := O) (φ := fun _ : P.Tup => P.Xsp) L)
 
-def Mna : Submodule O (P.Tup → P.Xsp) := C.funMod P.Htup
-
 def M : Submodule O (P.Tup → P.Xsp) := C.funMod P.HtupW
-
-def dna : ℕ := Module.finrank O C.Mna
 
 def d : ℕ := Module.finrank O C.M
 

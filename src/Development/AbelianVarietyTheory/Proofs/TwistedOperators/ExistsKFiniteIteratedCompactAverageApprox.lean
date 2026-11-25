@@ -73,8 +73,6 @@ open scoped TensorProduct NNReal ENNReal Topology
 open NumberField IsDedekindDomain MeasureTheory Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.AdelicU
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Height
 
 variable {D : D7} (V : HSp D)
@@ -109,7 +107,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.Grow GlobalTheory.Size
 
 open scoped ENNReal Topology Matrix
@@ -206,8 +203,7 @@ theorem unif_right : ∀ (D : D7) (V : HSp D) (φ : GA D V → ℂ), RapidDec V 
                          linarith
   have hT : ∀ y, T ≤ quotHeight V y → ‖φ y‖ < δ / 2 := by
     intro y hy
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 := hC y
     simp only [pow_one] at h1
     have h2 : δ / 2 * T = |C| + δ / 2 := by rw [hTdef]; field_simp

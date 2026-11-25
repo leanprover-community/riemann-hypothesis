@@ -174,9 +174,6 @@ theorem chartPullbackFst_base_chartPullbackPoint (c₁ c₂ : EtaleChart q V n) 
       = V.ι.base (pointOfMem V p hp) := by rw [key]
   exact key2
 
-private theorem comp_base_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C)
-    (x : ↥A) : (f ≫ g).base x = g.base (f.base x) := rfl
-
 theorem chartPullbackSnd_base_chartPullbackPoint (c₁ c₂ : EtaleChart q V n) (p : ↥P) (hp : p ∈ V)
     (h : ChartsAgreeAt c₁ c₂ p hp) :
     (chartPullbackSnd c₁ c₂).base (chartPullbackPoint c₁ c₂ p hp h) = p := by
@@ -185,9 +182,9 @@ theorem chartPullbackSnd_base_chartPullbackPoint (c₁ c₂ : EtaleChart q V n) 
       (specResidueFieldPoint (pointOfMem V p hp)) = pointOfMem V p hp := by
     simp
   have e2 : V.ι.base (pointOfMem V p hp) = p := rfl
-  have hA := comp_base_apply (chartPullbackLift c₁ c₂ p hp h)
+  have hA := Scheme.Hom.comp_apply (chartPullbackLift c₁ c₂ p hp h)
       (pullback.snd c₁.map c₂.map ≫ V.ι) (specResidueFieldPoint (pointOfMem V p hp))
-  have hB := comp_base_apply
+  have hB := Scheme.Hom.comp_apply
       (V.toScheme.fromSpecResidueField (pointOfMem V p hp)) V.ι
       (specResidueFieldPoint (pointOfMem V p hp))
   have h3 : (chartPullbackLift c₁ c₂ p hp h ≫ pullback.snd c₁.map c₂.map ≫ V.ι).base

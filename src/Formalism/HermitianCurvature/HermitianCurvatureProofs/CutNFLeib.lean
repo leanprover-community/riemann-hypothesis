@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XiExistsOfIn
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
@@ -34,8 +35,6 @@ open Formalism.FourierDecayAlt.P.Ux1 hiding gN_pos
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4 Formalism.FourierDecayAlt.P.Ux10 Formalism.FourierDecayAlt.P.SmoothnessOrderArithmetic
 open Formalism.FourierDecayAlt.P.Ux1 hiding gN_pos
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -337,14 +336,7 @@ lemma W_lin (ℓ : Mat k r →ₗ[ℝ] ℂ) :
     exact ⟨ℓ'.comp (vf x.1 x.2).toLinearMap, by rw [W_cons, he, op_lin]⟩
 
 lemma entry_le_gN (g : Mat k r) (i j : Fin (2 * r + k + 1)) : ‖g i j‖ ≤ gN g := by
-  have h : ‖g i j‖ ^ 2 ≤ ∑ i, ∑ j, Complex.normSq (g i j) := by
-    rw [Complex.sq_norm]
-    exact (Finset.single_le_sum (f := fun j => Complex.normSq (g i j)) (fun _ _ => Complex.normSq_nonneg _)
-      (Finset.mem_univ j)).trans
-      (Finset.single_le_sum (f := fun i => ∑ j, Complex.normSq (g i j))
-        (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i))
-  have := Real.abs_le_sqrt h
-  rwa [abs_of_nonneg (norm_nonneg _)] at this
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.DetB.entry_le_gN <;> assumption
 
 lemma polyClass_lin (ℓ : Mat k r →ₗ[ℝ] ℂ) : PolyClass 1 (fun g => ℓ g) := by
   refine ⟨?_, fun a _ => ?_⟩

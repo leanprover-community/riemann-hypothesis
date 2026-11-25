@@ -52,22 +52,10 @@ private theorem smooth_ΓSpecIso_inv_comp_appTop {X : Scheme.{u}} {k : Type u} [
 private theorem exists_mem_basicOpen_of_span_eq_top {X : Scheme.{u}} {U : X.Opens}
     (x : X) (hx : x ∈ U) (s : Set Γ(X, U)) (hs : Ideal.span s = ⊤) :
     ∃ t ∈ s, x ∈ X.basicOpen t := by
-  by_contra hcon
-  push Not at hcon
-  have : IsLocalRing (X.presheaf.stalk x) := inferInstance
-  have hnu : ∀ t ∈ s, t ∈ Ideal.comap (X.presheaf.germ U x hx).hom
-      (IsLocalRing.maximalIdeal (X.presheaf.stalk x)) := by
-    intro t ht
-    rw [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-    intro hunit
-    refine hcon t ht ((X.mem_basicOpen t x hx).mpr ?_)
-    exact hunit
-  have hle := Ideal.span_le.mpr hnu
-  rw [hs] at hle
-  have h1 := hle (Submodule.mem_top : (1 : Γ(X, U)) ∈ ⊤)
-  rw [Ideal.mem_comap, map_one] at h1
-  exact (IsLocalRing.maximalIdeal.isMaximal (X.presheaf.stalk x)).ne_top
-    ((Ideal.eq_top_iff_one _).mpr h1)
+  rw [← AlgebraicGeometry.iSup_basicOpen_of_span_eq_top U s hs] at hx
+  obtain ⟨t, hx⟩ := TopologicalSpace.Opens.mem_iSup.1 hx
+  obtain ⟨ht, hxt⟩ := TopologicalSpace.Opens.mem_iSup.1 hx
+  exact ⟨t, ht, hxt⟩
 
 private theorem exists_etale_eval₂Hom_of_submersivePresentation {k S : Type u} [CommRing k] [CommRing S] [Algebra k S]
     {ι σ : Type} [Finite ι] [Finite σ] (P : Algebra.SubmersivePresentation k S ι σ) :

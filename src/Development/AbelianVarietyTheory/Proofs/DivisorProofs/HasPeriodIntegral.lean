@@ -365,10 +365,6 @@ namespace GlobalTheory.QLog.FrobQL
 
 variable {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q]
 
-theorem frob_eq_expand (p : ℕ) (hp : p ≠ 0) {σ : Type} (s : Q →+* Q) (f : MvPowerSeries σ Q) :
-    frob p s f = expand p hp (map s f) := by
-  simp only [frob, expand, substAlgHom_apply]
-
 theorem cob1_expand_frobenius_map (p : ℕ) (hp : p ≠ 0) (t : B →+* B) (s : Q →+* Q)
     (hs : ∀ b, s (algebraMap B Q b) = algebraMap B Q (t b)) {d : ℕ}
     (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B) (h0 : ∀ i, constantCoeff (μ i) = 0)
@@ -451,7 +447,7 @@ theorem ql_frob : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed
   have hp : p ≠ 0 := hpp.ne_zero
   have hu : ¬IsUnit (p : F.B) := fun h =>
     (Fact.out : ¬IsUnit (p : O)) (by simpa using h.map F.θ)
-  rw [frob_eq_expand p hp]
+  rw [GlobalTheory.FrobPowDefect.frob_eq_expand' p hp]
   have hc0 : constantCoeff (expand p hp (map F.s f)) = 0 := by
     rw [constantCoeff_expand, constantCoeff_map, hf.1, map_zero]
   have hlin : ∀ i, lin (expand p hp (map F.s f)) i = 0 := fun i => by
@@ -539,10 +535,6 @@ theorem ql_div (p : B) {c : Q} (hc : c * algebraMap B Q p = 1)
     have := div_coeff p hc (h2 α)
     simpa [coeff_smul] using this
 
-theorem comb_mul {ι : Type} [Fintype ι] (p : B) (b : ι → B) (e : ι → MvPowerSeries σ Q) :
-    comb (fun l => b l * p) e = algebraMap B Q p • comb b e := by
-  simp only [comb, Finset.smul_sum, map_mul, mul_comm, mul_smul]
-
 end Div
 
 end GlobalTheory.QLog
@@ -574,7 +566,7 @@ theorem exists_frob_matrix : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [
         blk d k (p : F.B) 1) l (Sum.inl i')) = fun l => b1 i' l * p := by
       funext l
       simp [blk, Matrix.mul_diagonal]
-    rw [hcol, comb_mul]
+    rw [hcol, GlobalTheory.BasisLift.comb_mul_right]
     have heq : frob p F.s (e (Sum.inl i')) - algebraMap F.B F.Q (p : F.B) • comb (b1 i') e =
         algebraMap F.B F.Q (p : F.B) • (pinv • frob p F.s (e (Sum.inl i')) - comb (b1 i') e) := by
       rw [smul_sub, smul_smul, hc', one_smul]
@@ -794,7 +786,6 @@ variable {p : ℕ} {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {σ : Ty
   [DecidableEq σ]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private theorem pderiv_map_algebraMap {B Q σ : Type} [CommRing B] [CommRing Q] [Algebra B Q]
     (k : σ) (g : MvPowerSeries σ B) :
     pderiv (R := Q) k (map (algebraMap B Q) g) = map (algebraMap B Q) (pderiv (R := B) k g) := by
@@ -802,7 +793,6 @@ private theorem pderiv_map_algebraMap {B Q σ : Type} [CommRing B] [CommRing Q] 
   simp [coeff_pderiv, coeff_map]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private theorem subst_zero_eq_C_constantCoeff_divisor {σ τ Q : Type} [CommRing Q] [Finite σ] (h : MvPowerSeries σ Q) :
     subst (fun _ : σ => (0 : MvPowerSeries τ Q)) h = C (constantCoeff h) := by
   classical
@@ -819,7 +809,6 @@ private theorem subst_zero_eq_C_constantCoeff_divisor {σ τ Q : Type} [CommRing
     simp [this]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private theorem dIn_univ_of_QL_of_isLaw {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.Katz.IsLaw μ)
     {f : MvPowerSeries (Fin d) Q} (hf : _root_.GlobalTheory.QLog.QL μ ⊤ f) :
@@ -955,7 +944,6 @@ private theorem dIn_univ_of_QL_of_isLaw {B Q : Type} [CommRing B] [CommRing Q] [
     rw [← hb, coeff_pderiv, hαe, hαi, mul_comm]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private theorem hasVal_zero_of_constantCoeff_eq_zero {p : ℕ} {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {d : ℕ}
     {f : MvPowerSeries (Fin d) Q} (hf : constantCoeff f = 0) :
     _root_.GlobalTheory.QLog.HasVal p (fun _ : Fin d => (0 : B)) f 0 := by
@@ -1049,7 +1037,6 @@ end GlobalTheory.QLog.FrobPeriod
 namespace GlobalTheory.QLog
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma coeff_single_inr_of_isLift {B O : Type} [CommRing B] [CommRing O] {θ : B →+* O} {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.QLog.IsLift θ μ) (i j : Fin d) :
     coeff (Finsupp.single (Sum.inr i) 1) (μ j) = if i = j then 1 else 0 := by
@@ -1080,7 +1067,6 @@ private lemma coeff_single_inr_of_isLift {B O : Type} [CommRing B] [CommRing O] 
   · simp [h, Finsupp.single_left_inj]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma subst_inr_zero_map_eq_X_of_isLift {B O Q : Type} [CommRing B] [CommRing O] [CommRing Q] [Algebra B Q] {θ : B →+* O} {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.QLog.IsLift θ μ) (j : Fin d) :
     subst (Sum.elim (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q)) fun _ : Fin d => 0)
@@ -1093,7 +1079,6 @@ private lemma subst_inr_zero_map_eq_X_of_isLift {B O Q : Type} [CommRing B] [Com
   split_ifs <;> simp
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma subst_zero_fin_eq_C_constantCoeff {Q : Type} [CommRing Q] {d : ℕ} (g : MvPowerSeries (Fin d) Q) :
     subst (fun _ : Fin d => (0 : MvPowerSeries (Fin d) Q)) g = C (constantCoeff g) := by
   have hz : HasSubst (fun _ : Fin d => (0 : MvPowerSeries (Fin d) Q)) :=
@@ -1104,14 +1089,12 @@ private lemma subst_zero_fin_eq_C_constantCoeff {Q : Type} [CommRing Q] {d : ℕ
     simp [coeff_one]
   · intro n hn
     obtain ⟨s, hs⟩ : ∃ s, n s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext h)
     rw [Finsupp.prod, Finset.prod_eq_zero (i := s) (by simpa using hs) (by simp [hs])]
     simp
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : ℕ} (ν : Fin d → MvPowerSeries (Fin d ⊕ Fin d) Q)
     (hν0 : ∀ j, constantCoeff (ν j) = 0)
     (hν1 : ∀ j, subst (Sum.elim (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q)) fun _ : Fin d => 0)
@@ -1141,7 +1124,6 @@ private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : �
   simp only [show (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q)) = X from rfl, subst_self, id]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma dIn_univ_of_QL_of_isLift {B O Q : Type} [CommRing B] [CommRing O]
     [CommRing Q] [Algebra B Q] {θ : B →+* O} {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.QLog.IsLift θ μ)
@@ -1199,7 +1181,6 @@ private lemma dIn_univ_of_QL_of_isLift {B O Q : Type} [CommRing B] [CommRing O]
     split_ifs <;> simp [hc]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma dIn_univ_map_of_compatible {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q]
     {σ : Type} (φ : B →+* B) (s : Q →+* Q) (hs : ∀ b, s (algebraMap B Q b) = algebraMap B Q (φ b))
     {f : MvPowerSeries σ Q} (h : _root_.GlobalTheory.QLog.DIn (⊤ : Ideal B) f) :
@@ -1211,7 +1192,6 @@ private lemma dIn_univ_map_of_compatible {B Q : Type} [CommRing B] [CommRing Q] 
   rw [coeff_map, ← hs, ← hb, map_mul, map_natCast]
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma exists_pow_dvd_of_theta_pow_eq_mul {p : ℕ} {B O Q : Type} [CommRing B] [CommRing Q]
     [CommRing O] [Algebra B Q] {θ : B →+* O} (hF : _root_.GlobalTheory.QLog.IsFrame p Q θ)
     (z : B) (N : ℕ) (a : O) (h : θ z ^ N = (p : O) * a) : ∃ M, (p : B) ∣ z ^ M := by
@@ -1230,7 +1210,6 @@ private lemma exists_pow_dvd_of_theta_pow_eq_mul {p : ℕ} {B O Q : Type} [CommR
   exact dvd_add h1 (dvd_mul_right _ _)
 
 open MvPowerSeries in
-set_option autoImplicit false in
 private lemma hasVal_map_of_compatible {p : ℕ} {B Q : Type} [CommRing B]
     [CommRing Q] [Algebra B Q] {σ : Type} [Fintype σ] [DecidableEq σ] (φ : B →+* B)
     (s : Q →+* Q) (hs : ∀ b, s (algebraMap B Q b) = algebraMap B Q (φ b)) {z : σ → B}

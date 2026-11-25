@@ -230,8 +230,6 @@ open Formalism.REAL Formalism.QuantumDeterminants
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem aCInt_of_proper (hP : ACProper) : ACInt := by
   intro k r Wp Wq _ _ _ _ D φ₀ hφ hφc g hg
   obtain ⟨P, hPc, hPm⟩ := hP k r Wp Wq D (tsupport φ₀) {g} hφc isCompact_singleton

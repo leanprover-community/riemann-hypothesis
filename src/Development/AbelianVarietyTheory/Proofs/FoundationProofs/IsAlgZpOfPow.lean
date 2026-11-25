@@ -72,8 +72,7 @@ def contr (N : ℤ) (hN : 0 < N) (b : Lau p) : Lau p where
     have h : b.order ≤ N * j := HahnSeries.order_le_of_coeff_ne_zero hj
     have h1 := neg_abs_le b.order
     have h2 := abs_nonneg b.order
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith
 
 theorem sum_ite {M : Type} [AddCommMonoid M] (N : ℕ) (hN : 0 < N) (r : ℤ) (f : ℕ → M) :

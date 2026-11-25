@@ -112,48 +112,6 @@ theorem lminors_ne {x : Frame X.Ψ r} (hΔ : DeltaF X x0 x ≠ 0) (τ : X.Ψ) (k
   rw [Finset.prod_ne_zero_iff] at h1
   exact h1 k (Finset.mem_univ _)
 
-private lemma Lm_mul_apply_eq_zero_of_lt {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (i k : Fin n) (hki : k < i)
-    (hdet : (lb M i).det ≠ 0) : (Lm M * M) i k = 0 := by
-  have hkey : ∑ j : Fin i, wv M i j * M (Fin.castLE i.isLt.le j) k = M i k := by
-    have h1 : vecMul (wv M i) (lb M i) = fun j : Fin i => M i (Fin.castLE i.isLt.le j) := by
-      unfold wv
-      rw [Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hdet), Matrix.vecMul_one]
-    have h2 := congrFun h1 ⟨k.1, hki⟩
-    simp only [Matrix.vecMul, dotProduct, Matrix.submatrix_apply] at h2
-    exact h2
-  have hf : ∀ j : Fin n, Lm M i j * M j k =
-      (if h : (j : ℕ) < i then -wv M i ⟨j, h⟩ * M j k else 0) + (if j = i then M j k else 0) := by
-    intro j
-    simp only [Lm, Matrix.of_apply]
-    by_cases h : (j : ℕ) < i
-    · have hne : j ≠ i := fun e => by rw [e] at h; exact lt_irrefl _ h
-      rw [dif_pos h, dif_pos h, if_neg hne]
-      ring
-    · rw [dite_eq_right h, dite_eq_right h]
-      by_cases e : j = i
-      · rw [if_pos e, if_pos e]
-        ring
-      · rw [if_neg e, if_neg e]
-        ring
-  have hg : ∑ j : Fin n, (if h : (j : ℕ) < i then -wv M i ⟨j, h⟩ * M j k else 0) =
-      ∑ j : Fin i, -wv M i j * M (Fin.castLE i.isLt.le j) k := by
-    symm
-    apply Finset.sum_of_injOn (Fin.castLE i.isLt.le)
-    · exact (Fin.castLE_injective _).injOn
-    · intro _ _
-      exact Finset.mem_coe.mpr (Finset.mem_univ _)
-    · intro j _ hj
-      rw [dite_eq_right]
-      intro hlt
-      exact hj ⟨⟨j.1, hlt⟩, Finset.mem_coe.mpr (Finset.mem_univ _), Fin.ext rfl⟩
-    · intro j _
-      split_ifs with h
-      · rfl
-      · exact absurd j.isLt h
-  rw [Matrix.mul_apply, Finset.sum_congr rfl fun j _ => hf j, Finset.sum_add_distrib, hg,
-    Finset.sum_ite_eq' Finset.univ i, if_pos (Finset.mem_univ _), ← hkey]
-  simp only [neg_mul, Finset.sum_neg_distrib, neg_add_cancel]
-
 theorem bF_mem {x : Frame X.Ψ r} (_hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0) : bF X x0 x ∈ Bor X.Ψ r := by
   show ∀ τ : X.Ψ, (mat (bF X x0 x) τ).det ≠ 0 ∧ ∀ a c : Fin r, c < a → bF X x0 x τ a c = 0
   intro τ
@@ -163,7 +121,7 @@ theorem bF_mem {x : Frame X.Ψ r} (_hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0
     rw [Matrix.det_mul, (Lm_lowU _).det, one_mul]
     exact hM (Fin.last r)
   · show (Lm (Mx X x0 x τ) * Mx X x0 x τ) a c = 0
-    exact Lm_mul_apply_eq_zero_of_lt _ a c hca (hM a.castSucc)
+    exact Lm_mul_up _ hM a c hca
 
 theorem nmat_zF (x : Frame X.Ψ r) : nmat X (zF X x0 x) = nF X x0 x := by
   refine nmat_eq_of X (zF X x0 x) (nF X x0 x) (fun τ => ?_) (fun τ a c h => ?_)

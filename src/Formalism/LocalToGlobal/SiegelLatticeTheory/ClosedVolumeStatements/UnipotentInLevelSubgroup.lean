@@ -56,8 +56,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
@@ -200,8 +198,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
@@ -421,8 +417,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting
@@ -538,8 +532,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
@@ -762,8 +754,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
@@ -930,8 +920,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat

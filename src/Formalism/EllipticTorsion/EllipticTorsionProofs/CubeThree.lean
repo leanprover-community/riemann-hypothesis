@@ -269,8 +269,7 @@ private theorem constantCoeff_subst_of_zero_lemma_2 {τ : Type} [Finite τ] {a :
   · simp
   · intro d hd
     obtain ⟨i, hi⟩ : ∃ i, d i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     have h0 : cc (d.prod fun s e => a s ^ e) = 0 := by
       rw [Finsupp.prod, map_prod]

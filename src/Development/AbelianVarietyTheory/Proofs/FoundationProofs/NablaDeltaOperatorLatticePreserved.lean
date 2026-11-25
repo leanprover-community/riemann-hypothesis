@@ -70,12 +70,6 @@ namespace GlobalTheory.SpanScalarMembership
 
 open NumberField
 
-theorem exists_smul_mem_of_mem_span {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V]
-    [Module K V] [Module (RingOfIntegers K) V] [IsScalarTower (RingOfIntegers K) K V]
-    (T : Submodule (RingOfIntegers K) V) {x : V} (hx : x ∈ Submodule.span K (T : Set V)) :
-    ∃ s : RingOfIntegers K, s ≠ 0 ∧ s • x ∈ T := by
-  apply Formalism.IndefR.LatticeTransfer.Lat.exists_smul_mem <;> assumption
-
 end GlobalTheory.SpanScalarMembership
 end -- clump:auto
 end -- clump:auto
@@ -109,8 +103,6 @@ section General
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
-
-alias exists_smul_mem_of_mem_span := _root_.GlobalTheory.TransLoc.exists_smul_mem_of_mem_span
 
 omit [Module K V] [IsScalarTower (𝓞 K) K V] in
 theorem locP_le_of_smul_mem (w : HeightOneSpectrum (𝓞 K)) {A B : Submodule (𝓞 K) V} {t : 𝓞 K}

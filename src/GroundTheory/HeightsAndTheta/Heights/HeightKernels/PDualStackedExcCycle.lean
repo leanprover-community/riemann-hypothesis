@@ -251,8 +251,7 @@ theorem DualStackedExcCycle.proof (hR : DualStackedExcReduced.Statement) : DualS
       have hl' : ∃ l : T, graphSecond l ∉ W := hW.2 (Sum.inr ())
       obtain ⟨l, hgl⟩ := hl'
       have hj : ∃ j, C (a j) * graphFirst j ∉ W := by
-        by_contra hno
-        push_neg at hno
+        by_contra! hno
         refine hWE (hexc W x hW (sup_le hΓW (Ideal.span_le.mpr ?_)))
         rintro _ ⟨s, rfl⟩
         exact hno s

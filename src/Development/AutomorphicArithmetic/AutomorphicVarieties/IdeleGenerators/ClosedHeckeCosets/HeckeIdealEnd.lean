@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.FrobeniusConjugateInertia.FrobConjIne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.Adelise
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.UopSum
 public import GroundTheory.GlobalFields.LocalAtPlace
@@ -400,18 +401,7 @@ theorem mem_iff (v : Pl ℚ) (n : ℕ) : (n : 𝓞 ℚ) ∈ v.asIdeal ↔ normV 
   exact Ideal.mul_mem_right _ _ (Ideal.absNorm_mem _)
 
 theorem normV_prime (v : Pl ℚ) : (normV v).Prime := by
-  have h1 : 1 < normV v := by
-    rw [normV_eq]
-    exact NumberField.HeightOneSpectrum.one_lt_absNorm v
-  refine Nat.prime_def.2 ⟨h1, fun m hm => ?_⟩
-  obtain ⟨c, hc⟩ := hm
-  have h2 := (mem_iff v _).2 dvd_rfl
-  rw [hc, Nat.cast_mul] at h2
-  rcases v.isPrime.mem_or_mem h2 with h | h
-  · exact Or.inr (Nat.dvd_antisymm ⟨c, hc⟩ ((mem_iff v _).1 h))
-  · have h3 := Nat.dvd_antisymm (Dvd.intro_left m hc.symm) ((mem_iff v _).1 h)
-    rw [h3] at hc
-    exact Or.inl (Nat.eq_of_mul_eq_mul_right (by omega) (hc.symm.trans (one_mul _).symm))
+  apply _root_.UpperTheory.V.Z.Kato.Nb.normV_prime <;> assumption
 
 theorem mem_iff_eq (v : Pl ℚ) {l : ℕ} (hl : l.Prime) : (l : 𝓞 ℚ) ∈ v.asIdeal ↔ normV v = l := by
   rw [mem_iff, Nat.prime_dvd_prime_iff_eq (normV_prime v) hl]

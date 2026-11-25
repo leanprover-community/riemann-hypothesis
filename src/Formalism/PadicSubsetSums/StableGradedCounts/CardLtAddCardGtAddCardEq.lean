@@ -239,8 +239,7 @@ theorem goodCuspidal_holds : GoodCuspidal := by
     have e3 := hn i
     omega
   refine ⟨hd1, ?_⟩
-  by_contra hcard
-  push_neg at hcard
+  by_contra! hcard
   haveI : Nontrivial I := Fintype.one_lt_card_iff_nontrivial.mp hcard
   obtain ⟨i, j, hij⟩ := exists_pair_ne I
   have hf0 : f v0 ≠ 0 := (hsq v0).ne_zero

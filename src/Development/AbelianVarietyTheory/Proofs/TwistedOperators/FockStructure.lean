@@ -69,13 +69,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.FockAlg
-
-namespace GlobalTheory.FockAlg
-
-theorem fock_structure : ∀ X : ProvA, admH2 X :=
-  _root_.GlobalTheory.JointHarm.fock_polynomials
-
-end GlobalTheory.FockAlg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockStructure =====

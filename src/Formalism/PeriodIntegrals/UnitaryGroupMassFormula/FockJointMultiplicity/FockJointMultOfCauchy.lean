@@ -57,8 +57,7 @@ theorem neg_iff_nN {n : ℕ} (f : Fin n → ℚ) (hseg : ∀ i i' : Fin n, i < i
       intro x hx
       rw [Finset.mem_filter] at hx
       rw [Finset.mem_Ioi]
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       rcases hle.lt_or_eq with h | h
       · exact hn (hseg x i h hx.2)
       · rw [← h] at hn; exact hn hx.2

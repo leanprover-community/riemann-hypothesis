@@ -73,12 +73,8 @@ theorem exists_eq_exp_of_rat {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosu
     (Polynomial.degree_cyclotomic_pos n Ω hn0).ne'
   have hp : IsPrimitiveRoot ζ n := (Polynomial.isRoot_cyclotomic_iff).mp hζ
   have hp' : IsPrimitiveRoot (ε ζ) n := hp.map_of_injective hε
-  have hpow : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ n = 1 := by
-    rw [← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
-    refine ⟨x.num, ?_⟩
-    have h := Rat.mul_den_eq_num x
-    have h' : ((x : ℂ) * (n : ℂ)) = (x.num : ℂ) := by exact_mod_cast h
-    rw [← h']; ring
+  have hpow : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ n = 1 :=
+    (Complex.isPrimitiveRoot_exp_rat x).pow_eq_one
   obtain ⟨i, -, hi⟩ := hp'.eq_pow_of_pow_eq_one hpow
   exact ⟨ζ ^ i, by rw [map_pow, hi]⟩
 

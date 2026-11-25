@@ -128,8 +128,7 @@ theorem dual_facts (hc : Continuous ψ) (ha : ∀ x y, ψ (x + y) = ψ x * ψ y)
       exact integral_subgroup_eq_real lam _ hLm y hy
     · rw [Set.indicator_of_notMem (show y ∉ (P : Set R) from hy)]
       have : ∃ a ∈ L, ψ (a * y) ≠ 1 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hy hcon
       obtain ⟨a, haL, hne⟩ := this
       exact integral_subgroup_eq_zero lam L hLm ha y a haL hne
@@ -189,8 +188,7 @@ theorem integral_ann_eq (lam : Measure R) [lam.IsAddHaarMeasure] (L P : AddSubgr
       exact hLP s h x hx
   · rw [if_neg h]
     have : ∃ a ∈ P, ψ (a * s) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact h (hPL s hcon)
     obtain ⟨a, haP, hne⟩ := this
     exact integral_subgroup_eq_zero lam P hPm ha s a haP hne
@@ -212,8 +210,7 @@ theorem integral_box (lam : Measure R) [lam.IsAddHaarMeasure] [SigmaFinite lam] 
     simp [this]
   · rw [Set.indicator_of_notMem hw]
     have : ∃ i, w i ∉ L := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hw fun i _ => hcon i
     obtain ⟨i, hi⟩ := this
     exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [hi])

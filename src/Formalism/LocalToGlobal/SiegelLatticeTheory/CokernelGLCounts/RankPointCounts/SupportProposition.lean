@@ -350,8 +350,7 @@ theorem totPos_of_kind {T T' : ℕ} {w w' : Point D.host.E (D.R.rS + 1)} (hk : k
     have hp' : 0 < Complex.normSq (D.host.emb (D.eTau τ : D.R.GG) (Dmin w' D.R.rS)) :=
       Complex.normSq_pos.mpr ((map_ne_zero _).mpr h0')
     have hq : 0 < Complex.normSq (D.host.emb (D.eTau τ : D.R.GG) (zetaOf w')) - (T : ℝ) * T' := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     nlinarith [mul_pos hq hp]
 

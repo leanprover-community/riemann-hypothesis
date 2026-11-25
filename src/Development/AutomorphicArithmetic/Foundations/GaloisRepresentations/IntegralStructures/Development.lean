@@ -209,7 +209,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.BlockSum (blockRep)
 open PositivityTheory.AutomorphicGaloisHodgeTate.Div (DivWCoreLac SenWLac HTLac IsSSMat)
 open UpperTheory.Gal.Int.Div
@@ -360,7 +359,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 open UpperTheory.Gal.Int.Div
 
@@ -428,7 +426,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 open UpperTheory.Gal.Int.Div
 
@@ -585,14 +582,12 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 open UpperTheory.Gal.Int.Div
 
 private theorem two_cases {R : Type} [CommRing R] (T : R → Prop) (hT : ∀ a b, T a → T b → T (a + b))
     (I J : Ideal R) (h : ∀ y, T y → y ∈ I ∨ y ∈ J) : (∀ y, T y → y ∈ I) ∨ (∀ y, T y → y ∈ J) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨⟨a, ha, haI⟩, b, hb, hbJ⟩ := hcon
   have haJ : a ∈ J := (h a ha).resolve_left haI
   have hbI : b ∈ I := (h b hb).resolve_right hbJ
@@ -709,7 +704,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 open UpperTheory.Gal.Int.Div
 
@@ -758,7 +752,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 open UpperTheory.Gal.Int.Div
 
@@ -836,7 +829,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.Gal.Int.Geo (GeoOne)
 
 namespace UpperTheory.Gal.Int.Div
@@ -1011,7 +1003,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL
 
 namespace GlobalTheory.Cong.OffTLimit
@@ -1064,7 +1055,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.CongL
 namespace GlobalTheory.CongL.SatConj
 
@@ -1155,7 +1145,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL
 
 namespace GlobalTheory.FrobOps
@@ -1194,7 +1183,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 noncomputable section
@@ -1291,7 +1279,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 namespace GlobalTheory.CongL
@@ -1325,7 +1312,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 open Filter Topology
@@ -1338,7 +1324,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
   have hcont : ∀ i, Continuous (trc (ρ i)) := fun i =>
     (Units.continuous_val.comp (hρ i)).matrix_trace
   have hLc : IsComplete (L : Set (PadicAlgCl l)) := by
-    haveI : FiniteDimensional ℚ_[l] L.toSubalgebra.toSubmodule := hL
+    have : FiniteDimensional ℚ_[l] L.toSubalgebra.toSubmodule := hL
     exact Submodule.complete_of_finiteDimensional L.toSubalgebra.toSubmodule
   have conv : ∀ A : Set I, PolyApprox θ (η '' A) → ∀ ε > 0, ∃ F : Finset I, (↑F ⊆ A) ∧
       ∃ c : I → PadicAlgCl l, ∀ P : MvPolynomial J ℤ,
@@ -1347,7 +1333,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
     obtain ⟨s, c, hs, hc⟩ := hA ε hε
     rcases s.eq_empty_or_nonempty with rfl | ⟨f0, hf0⟩
     · exact ⟨∅, by simp, fun _ => 0, fun P => le_of_eq_of_le (by simp only [Finset.sum_empty]; rfl) (hc P)⟩
-    haveI : Nonempty I := ⟨(hs hf0).choose⟩
+    have : Nonempty I := ⟨(hs hf0).choose⟩
     have hex : ∀ f ∈ s, ∃ i, i ∈ A ∧ η i = f := fun f hf => hs hf
     choose! k hkA hk using hex
     refine ⟨s.image k, ?_, fun i => c (η i), fun P => ?_⟩
@@ -1393,7 +1379,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
       _ ≤ ε + r := (norm_add_le _ _).trans (add_le_add h1 h2.le)
   have hlim : ∀ g : Γ, ∃ v ∈ L, Filter.Tendsto θ (Filter.comap x (𝓝 g) ⊓ B) (𝓝 v) := by
     intro g
-    haveI := hne g
+    have := hne g
     have hcau : Cauchy (Filter.map θ (Filter.comap x (𝓝 g) ⊓ B)) := by
       refine Metric.cauchy_iff.2 ⟨inferInstance, fun e he => ?_⟩
       obtain ⟨F, -, c, hc⟩ := conv Set.univ (by rw [Set.image_univ]; exact hθ) (e / 5) (by positivity)
@@ -1428,7 +1414,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
     have hmem : (fun g => (g, t g)) ∈ closure (Set.univ.pi fun _ : Γ => Z) := by
       rw [closure_pi_set]
       intro g _
-      haveI := hne g
+      have := hne g
       refine mem_closure_of_tendsto ((Filter.tendsto_comap.mono_left inf_le_left).prodMk_nhds (htlim g)) ?_
       filter_upwards [Filter.mem_inf_of_right (hDF F)] with j hj
       exact ⟨j, hj, rfl⟩
@@ -1500,7 +1486,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 open Polynomial
 
@@ -1622,7 +1607,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 namespace UpperTheory.Gal.Lim

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankLeAleph0SmoothIrreducibleUnitaryAdelic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteRationalConjMemBoundedCompact
@@ -128,17 +129,7 @@ theorem mem_Umax_of_loc (s : SplitPlace L) (x : GAf L n) (hx : TrivOutside {s.v}
 
 theorem mem_GLint_iff {F : Type} [Field F] {O : Subring F} {x : GL (Fin n) F} :
     x ∈ Formalism.UG.GLint (Fin n) O ↔ (∀ i j, x.1 i j ∈ O) ∧ ∀ i j, (x⁻¹).1 i j ∈ O := by
-  refine ⟨?_, fun h => ⟨⟨Matrix.of fun i j => ⟨_, h.1 i j⟩, Matrix.of fun i j => ⟨_, h.2 i j⟩, ?_, ?_⟩, rfl⟩⟩
-  · rintro ⟨y, rfl⟩
-    exact ⟨fun i j => (y.1 i j).2, fun i j => ((y⁻¹).1 i j).2⟩
-  · refine Matrix.map_injective O.subtype_injective ?_
-    simp only
-    rw [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact x.mul_inv
-  · refine Matrix.map_injective O.subtype_injective ?_
-    simp only
-    rw [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact x.inv_mul
+  apply _root_.GlobalTheory.AdelicU.mem_GLint_iff <;> assumption
 
 theorem proj_mem (s : SplitPlace L) {z : AL L} (hz : z ∈ ALint L) :
     s.proj z ∈ (s.v.adicCompletionIntegers L⁺).toSubring := by

@@ -70,11 +70,6 @@ open GlobalTheory.SplitScalar
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-theorem symplO_nsmul_left (k : ℕ) (x y : WO S T) : symplO S T (k • x) y = k • symplO S T x y := by
-  induction k with
-  | zero => rw [zero_nsmul, zero_nsmul, symplO_zero_left]
-  | succ n ih => rw [succ_nsmul, succ_nsmul, GlobalTheory.LatVac.symplO_add_left, ih]
-
 theorem symplO_neg_left (x y : WO S T) : symplO S T (-x) y = -symplO S T x y := by
   have h := symplO_sub_left S T 0 x y
   rwa [zero_sub, symplO_zero_left, zero_sub] at h

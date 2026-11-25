@@ -93,19 +93,6 @@ open scoped InnerProductSpace
 
 namespace GlobalTheory.LowHW
 
-theorem height_root {n : ℕ} (a b : Fin n) :
-    ∑ i : Fin n, ((i : ℕ) : ℝ) * Formalism.REAL.root a b i = ((a : ℕ) : ℝ) - ((b : ℕ) : ℝ) := by
-  simp [Formalism.REAL.root, mul_sub, Finset.sum_sub_distrib, Pi.single_apply]
-
-theorem height_sum {n : ℕ} (c : Fin n → Fin n → ℕ) :
-    ∑ i : Fin n, ((i : ℕ) : ℝ) * (∑ a, ∑ b, (c a b : ℝ) • Formalism.REAL.root a b) i
-      = ∑ a, ∑ b, (c a b : ℝ) * (((a : ℕ) : ℝ) - ((b : ℕ) : ℝ)) := by
-  simp only [← height_root, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun i _ => by ring
-
 theorem cdom_antisymm {n : ℕ} {ε : Fin n → Bool} {μ Λ : Fin n → ℝ} (h1 : CDom ε μ Λ) (h2 : CDom ε Λ μ) :
     μ = Λ := by
   apply Formalism.MainNotions.BridgeLemma.cdom_antisymm <;> assumption

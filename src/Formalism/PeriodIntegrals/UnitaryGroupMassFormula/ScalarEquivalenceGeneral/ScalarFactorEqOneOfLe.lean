@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.ScalPairs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XLeOrthXplus
 
 @[expose] public section
 
@@ -28,15 +29,7 @@ theorem orthAntiQ {U U' : Submodule E S.V} (h : U ≤ U') : orth S U' ≤ orth S
   exact fun x hx => hv x (h hx)
 
 theorem orthOrthQ (U : Submodule E S.V) : orth S (orth S U) = U := by
-  symm
-  apply Submodule.eq_of_le_of_finrank_le
-  · intro u hu
-    rw [memOrthQ]
-    intro x hx
-    exact hTCommQ.mp ((memOrthQ.mp hx) u hu)
-  · have h1 := PI.UnitaryGroupMassFormula.BetaLUniq.finrank_orth_add S U
-    have h2 := PI.UnitaryGroupMassFormula.BetaLUniq.finrank_orth_add S (orth S U)
-    omega
+  apply _root_.PI.ScalarPairDr.W.orth_orth <;> assumption
 
 theorem XflagTopQ {r : ℕ} {T : E} (F : LFlag S r T) : Xflag F r = Xsp F := by
   show Submodule.span E (F.fl.e '' {i | i.1 < r}) = Submodule.span E (Set.range F.fl.e)

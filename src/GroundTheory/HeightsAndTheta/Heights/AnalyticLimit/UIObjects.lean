@@ -134,12 +134,6 @@ def UniformIntegrability.Statement : Prop :=
     ∀ η, 0 < η → ∃ ε₀, 0 < ε₀ ∧ ∃ t₁, 0 < t₁ ∧ ∀ ε t, 0 < ε → ε ≤ ε₀ → 0 < t → t ≤ t₁ →
       S.ell₀ ≤ ell t → mInt S.A (S.T t) (S.green ε) ≤ η
 
-section Inhabitant
-
-open OnePoint
-
-end Inhabitant
-
 end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GGMirabolicBase
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCorePsiNatEquiv
 
 @[expose] public section
 
@@ -20,66 +21,15 @@ def IsUTm (A : Matrix (Fin k) (Fin k) F) : Prop :=
   (∀ i, A i i = 1) ∧ ∀ i j, j < i → A i j = 0
 
 theorem IsUTm.mul {A B : Matrix (Fin k) (Fin k) F} (hA : IsUTm A) (hB : IsUTm B) : IsUTm (A * B) := by
-  refine ⟨fun i => ?_, fun i j hij => ?_⟩
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · rw [hA.1, hB.1, one_mul]
-    · intro l _ hl
-      rcases lt_or_gt_of_ne hl with h | h
-      · rw [hA.2 i l h, zero_mul]
-      · rw [hB.2 l i h, mul_zero]
-    · intro h
-      exact absurd (Finset.mem_univ i) h
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    rcases lt_or_ge l i with h | h
-    · rw [hA.2 i l h, zero_mul]
-    · rw [hB.2 l j (lt_of_lt_of_le hij h), mul_zero]
+  apply _root_.Formalism.L2.SG.NormCut.PsiNatEquivPf.IsUTm.mul <;> assumption
 
 theorem superdiag_mul {A B : Matrix (Fin k) (Fin k) F} (hA : IsUTm A) (hB : IsUTm B) :
     superdiag k (A * B) = superdiag k A + superdiag k B := by
-  have key : ∀ i j : Fin k, (j : ℕ) = (i : ℕ) + 1 → (A * B) i j = A i j + B i j := by
-    intro i j hj
-    have hij : i ≠ j := fun h => by rw [h] at hj; omega
-    rw [Matrix.mul_apply, Finset.sum_eq_add i j hij]
-    · rw [hA.1, hB.1, one_mul, mul_one, add_comm]
-    · intro c _ hc
-      have h1 : (c : ℕ) ≠ i := fun h => hc.1 (Fin.ext h)
-      have h2 : (c : ℕ) ≠ j := fun h => hc.2 (Fin.ext h)
-      rcases Nat.lt_or_gt_of_ne h1 with h | h
-      · rw [hA.2 i c (Fin.lt_iff_val_lt_val.2 h), zero_mul]
-      · rw [hB.2 c j (Fin.lt_iff_val_lt_val.2 (by omega)), mul_zero]
-    · intro h
-      exact absurd (Finset.mem_univ _) h
-    · intro h
-      exact absurd (Finset.mem_univ _) h
-  unfold superdiag
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  split_ifs with hj
-  · exact key i j hj
-  · simp
+  apply _root_.Formalism.L2.SG.NormCut.PsiNatEquivPf.superdiag_mul <;> assumption
 
 theorem IsUTm.inv_val (u : GL (Fin k) F) (h : IsUTm (u : Matrix (Fin k) (Fin k) F)) :
     IsUTm ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) := by
-  have h2 : ∀ i j, j < i → ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) i j = 0 := by
-    intro i j hij
-    rw [Matrix.coe_units_inv]
-    exact Matrix.blockTriangular_inv_of_blockTriangular (b := id)
-      (fun a b hab => h.2 a b hab) hij
-  refine ⟨fun i => ?_, h2⟩
-  have hm : ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) * (u : Matrix (Fin k) (Fin k) F) = 1 := by
-    rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
-  have he := congrFun (congrFun hm i) i
-  rw [Matrix.mul_apply, Finset.sum_eq_single i, h.1, mul_one, Matrix.one_apply_eq] at he
-  · exact he
-  · intro l _ hl
-    rcases lt_or_gt_of_ne hl with hh | hh
-    · rw [h2 i l hh, zero_mul]
-    · rw [h.2 l i hh, mul_zero]
-  · intro hh
-    exact absurd (Finset.mem_univ i) hh
+  apply _root_.Formalism.L2.SG.NormCut.PsiNatEquivPf.IsUTm.inv_val <;> assumption
 
 theorem isUni_mul {x y : GL (Fin k) F} (hx : IsUni k x) (hy : IsUni k y) : IsUni k (x * y) := by
   show IsUTm ((x : Matrix (Fin k) (Fin k) F) * (y : Matrix (Fin k) (Fin k) F))

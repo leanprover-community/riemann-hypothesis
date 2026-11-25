@@ -367,14 +367,6 @@ set_option autoImplicit false
 noncomputable section
 
 open MvPolynomial NumberField
-
-namespace GlobalTheory.ChowHt
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-
-
-end GlobalTheory.ChowHt
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -428,7 +420,7 @@ theorem growth_eq_top_self_intersection (hP : _root_.GlobalTheory.CovTop.Hypothe
     (fun m => vanBd TF.X Z (m • la)) fun _ _ => Iff.rfl, CompHt.growthOn]
   congr 1
   funext m
-  have h1 := GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace D T j Y e o hY hf Z TF (m • la)
+  have h1 := _root_.GlobalTheory.CompHS.cusp_extends_comp D T j Y e o hY hf Z TF (m • la)
   have h2 := le_antisymm h1.space_le (vanBd_le_space D T j Y e o hY hf Z TF (m • la))
   rw [CompHt.nsmul_wtOf, smul_zero, ← h2]
   exact congrArg _ h1.equiv.rank_eq

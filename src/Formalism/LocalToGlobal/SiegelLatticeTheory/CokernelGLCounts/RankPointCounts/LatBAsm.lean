@@ -33,8 +33,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGCut.StabilizerCovolume
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def StabilizerLatticeCoordinates : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), (∀ i, 3 ≤ D.host.g i) → PrimeHyp D u (Tu D u') →
     ∀ (t : TT Y u u'), t.relevant → t.G ≠ 0 →
@@ -324,8 +322,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.Pf.StabIntSh Formalism.L2.SG.Pf.StabIntLat
 
 namespace Formalism.L2.SG.LatBAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Places
 

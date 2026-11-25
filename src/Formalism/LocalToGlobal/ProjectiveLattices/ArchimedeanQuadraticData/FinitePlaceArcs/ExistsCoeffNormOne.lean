@@ -99,8 +99,7 @@ private theorem eval_map_detZ_lemma {K : Type} [CommRing K] (D : Datum H) (x : A
 
 theorem exists_coeff_norm_one {K : Type} [NormedField K] [IsUltrametricDist K] (Dw : Datum H) :
     ∃ ν, ‖AddMonoidAlgebra.coeff (map (Int.castRingHom K) (detZ Dw)) ν‖ = 1 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hlt : ∀ ν, ‖AddMonoidAlgebra.coeff (map (Int.castRingHom K) (detZ Dw)) ν‖ < 1 := fun ν =>
     lt_of_le_of_ne (by rw [coeff_map]; exact IsUltrametricDist.norm_intCast_le_one K _) (hne ν)
   have hev : eval (fun x : ArcLt Dw => if x.2.1 = x.2.2 then (1 : K) else 0)
@@ -123,7 +122,7 @@ theorem exists_coeff_norm_one {K : Type} [NormedField K] [IsUltrametricDist K] (
     | zero => simp
     | succ k ih =>
       rw [pow_succ, norm_mul]
-      nlinarith [norm_nonneg (y ^ k), norm_nonneg y]
+      nlinarith only [hy, ih, norm_nonneg (y ^ k), norm_nonneg y]
   have hp : ‖∏ i ∈ ν.support, (if i.2.1 = i.2.2 then (1 : K) else 0) ^ ν i‖ ≤ 1 := by
     rw [norm_prod]
     refine Finset.prod_le_one₀ (fun _ _ => norm_nonneg _) fun i _ => hpow _ ?_ _

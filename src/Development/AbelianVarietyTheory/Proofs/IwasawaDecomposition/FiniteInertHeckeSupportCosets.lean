@@ -51,6 +51,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import ReciprocityTheory.GaloisValuations.GlobalA
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevel
 
 @[expose] public section
 
@@ -92,14 +93,7 @@ theorem trivOutside_mul {T : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L
 
 theorem trivOutside_inv {T : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))} {x : GA L n}
     (hx : TrivOutside T x) : TrivOutside T x⁻¹ := by
-  intro w hw
-  have h1 : (((x⁻¹ : GA L n).1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) *
-      (x.1 : Matrix (Fin n) (Fin n) (AL L)) = 1 := by
-    rw [← Units.val_mul, ← Subgroup.coe_mul, inv_mul_cancel]
-    rfl
-  have h2 := congrArg (fun M => M.map (compAt L w)) h1
-  simp only [Matrix.map_mul, hx w hw, mul_one] at h2
-  rw [h2, Matrix.map_one _ (map_zero _) (map_one _)]
+  apply _root_.GlobalTheory.TSetFin.triv_inv <;> assumption
 
 variable {v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))} {w : HeightOneSpectrum (𝓞 L)}
 

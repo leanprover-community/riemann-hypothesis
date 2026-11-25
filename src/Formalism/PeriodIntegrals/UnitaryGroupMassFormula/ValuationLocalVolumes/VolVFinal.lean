@@ -527,8 +527,6 @@ namespace Formalism.L2.SG.Pf.NcVal
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
   NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem volUHermBox_holds {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) ℂ) : VolUHermBox X ψ := by
   intro hψ hs v hv
   obtain ⟨hg, -, hd⟩ := VolUT.typ_arith X v hv
@@ -601,8 +599,6 @@ noncomputable section
 namespace Formalism.L2.SG.Pf.NcVal
 
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem volTypV_holds {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) :
     VolTypV X u u' ψ :=

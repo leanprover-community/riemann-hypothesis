@@ -54,7 +54,6 @@ open MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
 open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam
 open scoped CategoryTheory.Obj Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorRef
 

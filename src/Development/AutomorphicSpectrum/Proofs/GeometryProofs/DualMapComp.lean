@@ -20,51 +20,10 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootLinesFla
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationRingCentreInChart
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.HodgeComponentFlagDegree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenProjectorDenominator, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeEigenProjectorExists, Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualMapComp
@@ -359,19 +318,7 @@ theorem self_mem_flagStep {r : ℕ} (b : Fin r → Li) (j : ℕ) (k : Fin r) (hk
 
 theorem flag_coef {r : ℕ} (b b₀ : Fin r → Li) (hf : ∀ j, flagStep Ω b j = flagStep Ω b₀ j) (k : Fin r) :
     ∃ t : Ω, b k - t • b₀ k ∈ flagStep Ω b₀ k := by
-  have h1 : b k ∈ flagStep Ω b₀ ((k : ℕ) + 1) := hf _ ▸ self_mem_flagStep b _ k (Nat.lt_succ_self _)
-  have h2 : flagStep Ω b₀ ((k : ℕ) + 1) ≤ flagStep Ω b₀ k ⊔ Submodule.span Ω {b₀ k} := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨l, hl, rfl⟩
-    have hl' : (l : ℕ) ≤ k := Nat.lt_succ_iff.1 hl
-    rcases hl'.lt_or_eq with h | h
-    · exact Submodule.mem_sup_left (self_mem_flagStep b₀ _ l h)
-    · have : l = k := Fin.ext h
-      subst this
-      exact Submodule.mem_sup_right (Submodule.mem_span_singleton_self _)
-  obtain ⟨x, hx, z, hz, e⟩ := Submodule.mem_sup.1 (h2 h1)
-  obtain ⟨t, rfl⟩ := Submodule.mem_span_singleton.1 hz
-  exact ⟨t, by rw [← e, add_sub_cancel_right]; exact hx⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagDet.exists_diag <;> assumption
 
 theorem mem_span_of_flag {r : ℕ} (b : Fin r → Li) (j : ℕ) : flagStep Ω b j ≤ Submodule.span Ω (Set.range b) :=
   Submodule.span_mono (Set.image_subset_range _ _)

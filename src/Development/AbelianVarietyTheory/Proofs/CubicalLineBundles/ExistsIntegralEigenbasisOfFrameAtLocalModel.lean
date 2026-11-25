@@ -52,8 +52,6 @@ namespace GlobalTheory.LamT.LocLie
 open GlobalTheory.IntRebase
 open Formalism.L2.PjFree (spMap_comp' epsMul_comp_alg)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l}
 

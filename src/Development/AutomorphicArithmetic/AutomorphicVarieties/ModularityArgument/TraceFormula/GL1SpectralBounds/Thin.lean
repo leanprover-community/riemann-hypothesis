@@ -67,8 +67,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC Formalism.L2.Host PositivityThe
 
 namespace PositivityTheory.Rg.BcB.Desc
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 def InertThin : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
@@ -212,8 +210,7 @@ lemma key (w : HeightOneSpectrum (𝓞 E)) (hns : ¬ IsSplitAt w)
       rw [← Ideal.over_def q.1 v.asIdeal, ← Ideal.over_def w.asIdeal v.asIdeal]
   let q0 : v.asIdeal.primesOver (𝓞 E) := ⟨w.asIdeal, w.isPrime, hvw⟩
   rw [Fintype.sum_eq_single q0 (fun q hq => absurd (Subtype.ext (huniq q)) hq), hrank] at hsum
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hfpos := Ideal.inertiaDeg_pos w.asIdeal (𝓞 F)
   have hf1 : w.asIdeal.inertiaDeg (𝓞 F) = 1 := by omega
   have he : w.asIdeal.ramificationIdx (𝓞 F) = 2 := by

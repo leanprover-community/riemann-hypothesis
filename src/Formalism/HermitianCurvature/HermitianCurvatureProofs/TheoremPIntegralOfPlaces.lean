@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.TopsChoicePartA
 public import Formalism.HermitianCurvature.StatementJC
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelSizesJointMean
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
@@ -67,12 +68,7 @@ theorem contDiff_Dmin {k r : ℕ} (z z' : Fin (2 * r + k + 1) → ℂ) (l : Fin 
   exact contDiff_det _ fun a b => contDiff_Zhat z z' _ _
 
 theorem contDiff_normSq : ContDiff ℝ (⊤ : ℕ∞) (fun c : ℂ => Complex.normSq c) := by
-  have h1 : ContDiff ℝ (⊤ : ℕ∞) (fun c : ℂ => c.re) := Complex.reCLM.contDiff
-  have h2 : ContDiff ℝ (⊤ : ℕ∞) (fun c : ℂ => c.im) := Complex.imCLM.contDiff
-  have e : (fun c : ℂ => Complex.normSq c) = fun c => c.re * c.re + c.im * c.im :=
-    funext Complex.normSq_apply
-  rw [e]
-  exact (h1.mul h1).add (h2.mul h2)
+  apply _root_.Formalism.MainNotions.S.Inh.normSq_contDiff_smooth <;> assumption
 
 theorem contDiff_Gf {k r : ℕ} (z z' : Fin (2 * r + k + 1) → ℂ) :
     ContDiff ℝ (⊤ : ℕ∞) (fun g : B.Mat k r => Formalism.QuantumDeterminants.Gf k r z z' g) := by

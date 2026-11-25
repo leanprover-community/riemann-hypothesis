@@ -2,46 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.AlgebraEquivSetup.ApartOfNotMem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMaxCompactGLOfCommuteEtaleCharpolyBounded
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.AlgebraInstances
-import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ProjectiveAutomorphicHecke.MapWopWmap
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MemPadicAlgClValuationSubringIffNormLeOne
 
@@ -166,23 +127,9 @@ private theorem omega_not_rat {E : Type} [Field E] [NumberField E] [IsCMField E]
 private theorem span_omega {E : Type} [Field E] [NumberField E] [IsCMField E] (A : Arith E) (K : Subfield E)
     (hK : Module.finrank ℚ K = 2) (h : (A.ω : E) ∈ K) (x : K) :
     ∃ a b : ℚ, x = algebraMap ℚ K a + algebraMap ℚ K b * ⟨A.ω, h⟩ := by
-  have hli : LinearIndependent ℚ ![(1 : K), ⟨A.ω, h⟩] := by
-    rw [LinearIndependent.pair_iff]
-    intro a b hab
-    have hE : algebraMap ℚ E a + algebraMap ℚ E b * (A.ω : E) = 0 := by
-      have := congrArg (fun z : K => (z : E)) hab
-      simpa [Algebra.smul_def] using this
-    have hb : b = 0 := by
-      by_contra hb
-      apply omega_not_rat A (-a / b)
-      have hb' : algebraMap ℚ E b ≠ 0 := by simpa using hb
-      rw [map_div₀, map_neg]
-      field_simp
-      linear_combination hE
-    subst hb
-    refine ⟨?_, rfl⟩
-    have : algebraMap ℚ E a = 0 := by simpa using hE
-    simpa using this
+  have hli : LinearIndependent ℚ ![(1 : K), ⟨A.ω, h⟩] :=
+    (LinearIndependent.pair_iff' one_ne_zero).2 fun a ha => omega_not_rat A a <| by
+      simpa [Algebra.smul_def] using (congrArg (fun z : K => (z : E)) ha).symm
   have hspan : Submodule.span ℚ (Set.range ![(1 : K), ⟨A.ω, h⟩]) = ⊤ :=
     hli.span_eq_top_of_card_eq_finrank' (by simp [hK])
   have hx : x ∈ Submodule.span ℚ (Set.range ![(1 : K), ⟨A.ω, h⟩]) := hspan ▸ Submodule.mem_top

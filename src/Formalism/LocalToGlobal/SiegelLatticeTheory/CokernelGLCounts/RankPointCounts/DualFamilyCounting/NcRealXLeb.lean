@@ -32,8 +32,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX
 
 open Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem haarUnique_holds : Formalism.L2.SG.Pf.LsNc5.HaarUnique := by
   intro D X u μ ν hμ hν
   obtain ⟨hσ, h0, hc, hi⟩ := hμ

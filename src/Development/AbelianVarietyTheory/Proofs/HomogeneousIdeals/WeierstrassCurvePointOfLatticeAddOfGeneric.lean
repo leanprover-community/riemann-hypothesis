@@ -281,8 +281,7 @@ theorem _root_.GlobalTheory.latticePoint_add (z w : ℂ) :
       exact ⟨u + u, hu, by ring⟩
     obtain ⟨u, hu⟩ : ∃ u, u ∉ ({u : ℂ | u ∈ L.lattice} ∪ {u | u + u ∈ L.lattice} ∪
         {u | u + z ∈ L.lattice} ∪ {u | u + -z ∈ L.lattice}) := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact not_countable_complex (hc.mono fun u _ => h u)
     simp only [Set.mem_union, Set.mem_setOf_eq, not_or] at hu
     obtain ⟨⟨⟨hu1, hu2⟩, hu3⟩, hu4⟩ := hu

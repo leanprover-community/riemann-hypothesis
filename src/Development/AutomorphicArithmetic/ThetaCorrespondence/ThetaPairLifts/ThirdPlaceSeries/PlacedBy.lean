@@ -67,16 +67,12 @@ def levelZeroState (W : _root_.GlobalTheory.MiS.RealPackAlt ex) : StAt (Yc D 0) 
   ν := (_root_.GlobalTheory.BaseChain.stageOfSpaceY W 0).ν
   fd := (_root_.GlobalTheory.BaseChain.stageOfSpaceY W 0).fd
 variable {W : _root_.GlobalTheory.MiS.RealPackAlt ex} {u : D.what₂.Word}
-structure PlacedByLocalGroups (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (B : SBes W.S.X W.Q.instEq u W.Q.Rl.ψ (D.sp.X 0))
+structure PlacedByLocalGroups (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (_B : SBes W.S.X W.Q.instEq u W.Q.Rl.ψ (D.sp.X 0))
     {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}
-    (v : VCom f.c) (o : TDat f.c k ι) {n : ℕ} (G : Fin n → GLoc v) (pl : Fin n ≃ (_root_.GlobalTheory.Fam.pk_z W).Pg) : Prop where
-  cis : f.c.Is
+    (v : VCom f.c) (_o : TDat f.c k ι) {n : ℕ} (G : Fin n → GLoc v) (pl : Fin n ≃ (_root_.GlobalTheory.Fam.pk_z W).Pg) : Prop where
   vis : v.Is
   tie : _root_.GlobalTheory.Fam.CommutingVectorTie f v
-  shape : ShapeOff v o
-  pin : GPin G
   read : _root_.GlobalTheory.Fam.LocalGroupReading f G pl
-  bot : _root_.GlobalTheory.MiTop.LocalBottomCompatibility f B v o G
 
 def frameAtTranslate (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (B : SBes W.S.X W.Q.instEq u W.Q.Rl.ψ (D.sp.X 0)) (a₀ a : GA D (D.sp.X 0)) :
     GL (Fin (D.sp.Y 0).rank) (Lev.EAf D) :=

@@ -1,5 +1,8 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FlagSpaceComponentCarriesEveryFrameFlag
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.KapPush
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.CocycleCardEulerFormula
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.CrystallineCardinalities.UnitStep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSqz
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.PrOfbox
@@ -162,18 +165,8 @@ private theorem sq_exp {C Q : Type} [CommRing C] [CommRing Q] (n : ℕ) (π : C 
 
 private theorem upT_mul {C : Type} [CommRing C] {n : ℕ} {A B : Matrix (Fin n) (Fin n) C} (hA : UpT A) (hB : UpT B) :
     UpT (A * B) ∧ ∀ i, (A * B) i i = A i i * B i i := by
-  refine ⟨fun i j h => ?_, fun i => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun b _ => ?_
-    rcases lt_or_ge b i with h' | h'
-    · rw [hA i b h', zero_mul]
-    · rw [hB b j (lt_of_lt_of_le h h'), mul_zero]
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · intro b _ hb
-      rcases lt_or_gt_of_ne hb with h' | h'
-      · rw [hA i b h', zero_mul]
-      · rw [hB b i h', mul_zero]
-    · simp
+  intros
+  apply _root_.GlobalTheory.UpperTriangularMul.upperTriangular_mul <;> assumption
 
 private theorem box_def {l : ℕ} [Fact l.Prime] {κ : Type} [Field κ] {F : Frame l κ} {n : ℕ}
     {C Q : Type} [CommRing C] [CommRing Q] (π : C →+* Q) (μ : Q →+ C)
@@ -630,14 +623,7 @@ variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscre
 private theorem adicCont_comp_ringHom_of_map_le {Γ R R' : Type} [TopologicalSpace Γ] [CommRing R] [CommRing R'] (f : R →+* R')
     {I : Ideal R} {J : Ideal R'} (hIJ : I.map f ≤ J) {a : Γ → R} (ha : AdicCont I a) :
     AdicCont J (fun g => f (a g)) := by
-  intro N
-  have h : I ^ N ≤ (J ^ N).comap f := by
-    rw [← Ideal.map_le_iff_le_comap, Ideal.map_pow]
-    exact Ideal.pow_right_mono hIJ N
-  have := (ha N).comp (Ideal.quotientMap (J ^ N) f h)
-  convert this using 1
-  funext g
-  simp [Ideal.quotientMap_mk]
+  apply _root_.adicCont_map <;> assumption
 
 private theorem lift_pt (S : Space O F 3) (ξ : S.R →ₐ[O] O) : UpperTheory.V.Fr.IsLift O (S.ρ.map (ξ : S.R →+* O)) := by
   have hres : (res O O : O →+* ResidueField O).comp (ξ : S.R →+* O) = (res O S.R : S.R →+* ResidueField O) :=
@@ -1310,36 +1296,7 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr Uppe
 private theorem cardZ {k D M : Type} [CommRing k] [Group D] [TopologicalSpace D] [AddCommGroup M] [Module k M]
     [Finite M] [TopologicalSpace M] [DiscreteTopology M] (σ : Representation k D M) (hσ : ContAction σ)
     [Finite (H1 σ)] : Finite (Z1 σ) ∧ Nat.card (Z1 σ) * Nat.card (H0 σ) = Nat.card (H1 σ) * Nat.card M := by
-  set B := Submodule.comap (Z1 σ).subtype (B1 σ) with hB
-  have hBZ : B1 σ ≤ Z1 σ := by
-    rintro f ⟨m, rfl⟩
-    have hfun : (d0 σ m : D → M) = fun g => σ g m - m := funext fun g => amitsur_d0_apply σ m g
-    refine ⟨?_, ?_⟩
-    · rw [hfun]
-      exact (hσ.comp (Continuous.prodMk continuous_id continuous_const)).sub continuous_const
-    · intro g h
-      rw [amitsur_d0_apply, amitsur_d0_apply, amitsur_d0_apply, map_mul, Module.End.mul_apply, map_sub]
-      abel
-  have hker : LinearMap.ker (d0 σ) = H0 σ := by
-    ext m
-    rw [LinearMap.mem_ker, mem_riemannRochSpace_iff_regularAt_everywhere, funext_iff]
-    simp [amitsur_d0_apply, sub_eq_zero]
-  have hM : Nat.card M = Nat.card (H0 σ) * Nat.card (B1 σ) := by
-    rw [Submodule.card_eq_card_quotient_mul_card (LinearMap.ker (d0 σ)),
-      Nat.card_congr (d0 σ).quotKerEquivRange.toEquiv, hker]
-    rfl
-  have hZ : Nat.card (Z1 σ) = Nat.card B * Nat.card (H1 σ) := Submodule.card_eq_card_quotient_mul_card B
-  have hBc : Nat.card B = Nat.card (B1 σ) := Nat.card_congr (Submodule.comapSubtypeEquivOfLe hBZ).toEquiv
-  haveI : Finite (B1 σ) := by
-    show Finite (LinearMap.range (d0 σ))
-    exact Finite.of_surjective (d0 σ).rangeRestrict (LinearMap.surjective_rangeRestrict _)
-  have hB1pos : 0 < Nat.card (B1 σ) := Nat.card_pos
-  have hH1pos : 0 < Nat.card (H1 σ) := Nat.card_pos
-  refine ⟨Nat.finite_of_card_ne_zero ?_, ?_⟩
-  · rw [hZ, hBc]
-    positivity
-  · rw [hZ, hBc, hM]
-    ring
+  apply _root_.UpperTheory.V.Ws.cocycle_card_euler_formula <;> assumption
 
 private def zRep (n : ℕ) {D M : Type} [Group D] [AddCommGroup M] [Module (ZMod n) M]
     (ρ : Representation ℤ D M) : Representation (ZMod n) D M where

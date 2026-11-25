@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubledVacuumEigenvalueEqOneSplitPlace
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FromBlocksMem
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IdeleCharacterEqOneIntegralUnitsUnramifiedAdelic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
@@ -252,28 +253,7 @@ theorem chr_det_eq_one {n : ℕ} (Y : Spc F E n) (hL : Y.L.IsFullLattice E) (v :
     (h2 : ∀ z ∈ GlobalTheory.InertSph.latAt Y v, (t : Matrix (Fin n) (Fin n) (AE F E)) *ᵥ z ∈ GlobalTheory.InertSph.latAt Y v ∧
       ((t⁻¹ : GL (Fin n) (AE F E)) : Matrix (Fin n) (Fin n) (AE F E)) *ᵥ z ∈ GlobalTheory.InertSph.latAt Y v) :
     χ (Matrix.GeneralLinearGroup.det t) = 1 := by
-  rw [GlobalTheory.InertDetChr.eq_ideleAt (GlobalTheory.InertDetChr.at_det_sub_one v t h1), GlobalTheory.LFun.ideleAt_eq_prod_locIdele, map_prod]
-  refine Finset.prod_eq_one fun w _ => ?_
-  have h : w.1.under (𝓞 F) = v := (Formalism.L2.Host.finite_aboveF (L := E) F v).mem_toFinset.1 w.2
-  have key : ∀ s : GL (Fin n) (AE F E), (∀ z ∈ GlobalTheory.InertSph.latAt Y v,
-      (s : Matrix (Fin n) (Fin n) (AE F E)) *ᵥ z ∈ GlobalTheory.InertSph.latAt Y v) →
-      ((Units.map (toCompl h).toMonoidHom (GlobalTheory.Doubling.unitFin F E v (Matrix.GeneralLinearGroup.det s)) :
-        (w.1.adicCompletion E)ˣ) : w.1.adicCompletion E) ∈ Formalism.UG.Ov E w.1 := by
-    intro s hs
-    have e : ((Units.map (toCompl h).toMonoidHom (GlobalTheory.Doubling.unitFin F E v (Matrix.GeneralLinearGroup.det s)) :
-        (w.1.adicCompletion E)ˣ) : w.1.adicCompletion E) =
-        GlobalTheory.InertDetChr.piW' h ((s : Matrix (Fin n) (Fin n) (AE F E)).det) := by
-      rw [Units.coe_map, GlobalTheory.InertDetChr.piW', RingHom.comp_apply, ← Matrix.GeneralLinearGroup.val_det_apply]
-      rfl
-    rw [e, RingHom.map_det]
-    exact det_mem_of_keeps w.1 Y.L hL _ (GlobalTheory.InertDetChr.mulVec_mem_latAt h Y _ hs)
-  have hu : Formalism.L2.Host.IsUnitAt w.1
-      (Units.map (toCompl h).toMonoidHom (GlobalTheory.Doubling.unitFin F E v (Matrix.GeneralLinearGroup.det t))) := by
-    refine (EulerTie.isUnitAt_iff w.1 _).2 ⟨?_, ?_⟩
-    · exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 (key t fun z hz => (h2 z hz).1)
-    · rw [← map_inv, ← map_inv, ← map_inv]
-      exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 (key t⁻¹ fun z hz => (h2 z hz).2)
-  exact Circle.ext (congrArg Units.val (hχ w.1 h _ hu))
+  first | exact _root_.GlobalTheory.DblVacSiegelAny.chr_det_eq_one_any | exact @_root_.GlobalTheory.DblVacSiegelAny.chr_det_eq_one_any | apply _root_.GlobalTheory.DblVacSiegelAny.chr_det_eq_one_any <;> assumption
 
 theorem dblFun_eigen_left {σ : E →ₐ[F] E} {B : Base F E} {a a' : ℕ} {G : Geo σ a a'} (hB : B.IsGood σ) (hG : G.IsGood B)
     (v : Pl (F := F)) (hunr : PsiUnr B.ψ v)

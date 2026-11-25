@@ -328,8 +328,7 @@ lemma smallRV {ε : Fin n → Bool} {s : Bool} {k : Matrix (Fin n) (Fin n) ℂ} 
   have han := norm_nonneg (k * signedIdentityColumns ε s)
   have hKw : ‖k‖ * ‖u - signedIdentityColumns ε s‖ ≤ ‖k‖ * (1 / 4) := mul_le_mul_of_nonneg_left hw.le hKn
   have hb : ‖k * signedIdentityColumns ε s‖ ≤ 5 / 2 * Real.sqrt n + 1 / 2 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : ‖k * signedIdentityColumns ε s‖ ≤ Real.sqrt n + 1 / 4 + ‖k‖ / 4 := by linarith
     have h4 : 0 ≤ 4 * (‖k * signedIdentityColumns ε s‖ - (Real.sqrt n + 1 / 4)) := by linarith
     have h5 : 4 * (‖k * signedIdentityColumns ε s‖ - (Real.sqrt n + 1 / 4)) ≤ ‖k‖ := by linarith

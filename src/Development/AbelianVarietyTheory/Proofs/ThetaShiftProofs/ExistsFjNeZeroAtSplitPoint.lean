@@ -286,8 +286,7 @@ theorem _root_.GlobalTheory.FJDetect.exists_fj_ne_zero_at_split_point' {r : ℕ}
         X.fj la ξ ν P x ≠ 0 := by
   have hnot : ∃ ξ, X.IsIso ξ ∧ ∃ ν : X.Ψ → ℝ, ∑ τ, ν τ ≤ c1 ∧
       ∃ x ∈ X.dom, X.fj la ξ ν P x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP' ⟨hP, fun ξ hξ ν hν x hx => h ξ hξ ν hν x hx⟩
   obtain ⟨ξ, hξ, ν, hν, x, hx, hfx⟩ := hnot
   have hbdd := hP.1

@@ -52,14 +52,12 @@ namespace CobCob
 
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type}
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.elim_has {u v : Fin d → MvPowerSeries τ R} (hu : ∀ i, constantCoeff (u i) = 0)
     (hv : ∀ i, constantCoeff (v i) = 0) : HasSubst (Sum.elim u v) :=
   hasSubst_of_constantCoeff_zero (by rintro (i | i) <;> simp [hu, hv])
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.op_const
@@ -71,7 +69,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.op_const
   exact constantCoeff_subst_eq_zero (_root_.GlobalTheory.Katz.CobCob.elim_has hu hv)
     (by rintro (j | j) <;> simp [hu, hv]) (h i)
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsFirstVariables (i : Fin d) :
@@ -79,7 +76,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsFirstVariables 
   unfold _root_.GlobalTheory.Katz.x1
   exact constantCoeff_X _
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables (i : Fin d) :
@@ -87,7 +83,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables
   unfold _root_.GlobalTheory.Katz.x2
   exact constantCoeff_X _
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsThirdVariables (i : Fin d) :
@@ -97,7 +92,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsThirdVariables 
 
 end CobCob
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_cob1_eq_subst_op_sub {u v : Fin d → MvPowerSeries τ R}
@@ -114,7 +108,6 @@ private theorem at2_cob1_eq_subst_op_sub {u v : Fin d → MvPowerSeries τ R}
   simp only [subst_X h, Sum.elim_inl, Sum.elim_inr]
   rfl
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem op_addLaw_eq_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
@@ -126,7 +119,6 @@ private theorem op_addLaw_eq_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R
   rfl
 
 
-set_option autoImplicit false in
 open CategoryTheory TensorProduct MvPowerSeries in
 theorem _root_.GlobalTheory.Katz.formalGroupLawCoboundaryTwo_coboundaryOne_alt : ∀ (R : Type) [CommRing R] (d : ℕ)
     (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R), (∀ i, constantCoeff (μ i) = 0) →

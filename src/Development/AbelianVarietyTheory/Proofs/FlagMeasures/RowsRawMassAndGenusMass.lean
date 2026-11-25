@@ -428,8 +428,6 @@ namespace GlobalTheory.Mass.RowsRawMass
 
 open Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma₂
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem rowsLift (D : D7) (u : D.what₂.Word) : LiftsConjugateUnderStabilizer D u := by
   intro hp h3 hs F0 he hz
   exact _root_.GlobalTheory.LoopC.rowsLift D u hp h3 hs F0 he hz

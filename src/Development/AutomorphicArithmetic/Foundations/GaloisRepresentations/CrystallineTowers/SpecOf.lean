@@ -104,8 +104,6 @@ section Proj
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 theorem isProper_pstr (R : Type) [CommRing R] (N : ℕ) : IsProper (PSpace.str R N) := by
   have : IsScalarTower R (MvPolynomial.homogeneousSubmodule (Fin (N + 1)) R 0) (MvPolynomial (Fin (N + 1)) R) :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl

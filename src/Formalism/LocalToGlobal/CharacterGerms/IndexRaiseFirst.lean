@@ -53,8 +53,7 @@ private theorem v_intCast_nonneg' (V : VF C) (a : ℤ) : 0 ≤ V.v (a : C) := by
     exact v_natCast_nonneg_of_vf V m
 
 private theorem v_natCast_nonpos_of_not_dvd (V : VF C) (n : ℕ) (hn : ¬ V.l ∣ n) : V.v (n : C) ≤ 0 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hcop : Nat.Coprime n V.l :=
     Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd V.l_prime).mpr hn)
   have hb := Nat.gcd_eq_gcd_ab n V.l
@@ -94,8 +93,7 @@ theorem frobX_of {f : PS C 3 dd} (hi : IntS V f) (hd : FrobD V f) : FrobX V f :=
   rw [hn] at h
   unfold VF.MM at h ⊢
   rw [AddValuation.map_mul] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have := add_le_add hc (v_natCast_nonpos_of_not_dvd V _ hj)
   rw [add_zero] at this
   exact absurd h (not_lt.mpr this)

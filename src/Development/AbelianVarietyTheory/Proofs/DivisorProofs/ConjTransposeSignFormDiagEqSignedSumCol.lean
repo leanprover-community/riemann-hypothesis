@@ -644,8 +644,7 @@ theorem stConjLow : GlobalTheory.PsCo.Pc3.StConjLow := by
       rw [e, hconj t ht]
   rcases (C ∩ {x : UJ ε | δ ≤ rM ε (toM x)}).eq_empty_or_nonempty with hDe | hDn
   · refine ⟨1, one_pos, fun x hx => ?_⟩
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨y, hy, -⟩ := key x hx hc
     rw [hDe] at hy
     exact hy
@@ -660,8 +659,7 @@ theorem stConjLow : GlobalTheory.PsCo.Pc3.StConjLow := by
         have h4 : δ ≤ rM ε (toM x0) := hx0.2
         linarith
     refine ⟨min 1 (rM ε (toM (x0⁻¹ * s * x0)) / 2), by positivity, fun x hx => ?_⟩
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨y, hy, hyx⟩ := key x (hx.trans (min_le_left _ _)) hc
     have h1 : rM ε (toM (x0⁻¹ * s * x0)) ≤ rM ε (toM (y⁻¹ * s * y)) := hmin hy
     have h2 := min_le_right 1 (rM ε (toM (x0⁻¹ * s * x0)) / 2)

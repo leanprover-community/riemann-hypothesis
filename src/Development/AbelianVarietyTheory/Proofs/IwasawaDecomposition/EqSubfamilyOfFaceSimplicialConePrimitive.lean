@@ -64,8 +64,7 @@ theorem eq_of_isPrim_of_toReal_eq_smul : ∀ {O : Type} [CommRing O] (bar : O �
     rintro rfl
     exact not_isPrim_zero (bar := bar) py
   obtain ⟨a, c, hac⟩ : ∃ a c, y a c ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hy0 (LinearMap.ext₂ hc)
   have hR : ∀ u v, (x u v : ℝ) = b * (y u v : ℝ) := fun u v => by
     have := LinearMap.congr_fun₂ h u v
@@ -141,8 +140,7 @@ theorem exists_ray {p q : ℕ} {u : Fin p → LinearMap.BilinForm ℤ X} {v : Fi
   have hc := eq_of_toReal_sum_eq hu hsum
   have hk1 : ∑ l, A l * B' l k = 1 := by simpa using (congrFun hc k).symm
   obtain ⟨l, -, hl⟩ : ∃ l ∈ Finset.univ, A l * B' l k ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     rw [Finset.sum_eq_zero hne] at hk1
     exact zero_ne_one hk1
   have hAl : 0 < A l := (hA l).lt_of_ne fun h0 => hl (by rw [← h0, zero_mul])

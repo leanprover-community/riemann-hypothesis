@@ -325,8 +325,7 @@ theorem lowerBlock_eq_zero_of_gap : ∀ (n : ℕ) (K c : ℝ), ∃ R : ℝ, 1 �
     have h1 : X * Wm s t ^ 2 ≤ K := le_trans (mul_le_mul_of_nonneg_right hXr.le (sq_nonneg _)) (hterm s t)
     have h2 : C ^ 2 * Wm s t ^ 2 < 1 := by
       have hK : K ≤ |K| := le_abs_self K
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have : (|K| + 1) * 1 ≤ (|K| + 1) * (C ^ 2 * Wm s t ^ 2) := by gcongr
       nlinarith
     have h3 : (C * |Wm s t|) ^ 2 < 1 := by rw [mul_pow, sq_abs]; exact h2

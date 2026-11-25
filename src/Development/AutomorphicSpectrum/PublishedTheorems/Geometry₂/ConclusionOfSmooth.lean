@@ -25,10 +25,6 @@ inductive IsBlowupSeq {X : Scheme.{0}} : ∀ {X' : Scheme.{0}}, (X' ⟶ X) → P
   | step {X₁ X₂ : Scheme.{0}} {s : X₁ ⟶ X} (J : X₁.IdealSheafData) (π : X₂ ⟶ X₁) :
       IsBlowupSeq s → FinalTheorems.Blowup π J → IsBlowupSeq (π ≫ s)
 
-theorem IsBlowupSeq.single {X X' : Scheme.{0}} (J : X.IdealSheafData) (π : X' ⟶ X) (h : FinalTheorems.Blowup π J) :
-    IsBlowupSeq π := by
-  simpa using IsBlowupSeq.step J π .id h
-
 theorem IsBlowupSeq.of_smooth {S Y Y' : Scheme.{0}} {f : Y ⟶ S} {B : Set Y} {s : Y' ⟶ Y}
     (h : IsSmoothBlowupSeq f B s) : IsBlowupSeq s := by
   induction h with

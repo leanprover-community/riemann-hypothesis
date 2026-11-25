@@ -179,7 +179,6 @@ theorem exists_ab (e : ℕ) (g : ℝ) : ∃ (a : ℤ) (b : ℕ), 0 < b ∧ (a : 
       have := Int.ceil_lt_add_one (g * (e : ℝ))
       rw [← hc] at this
       linarith
-    have hδ : 0 < g * e - ((c : ℝ) - 1) := by linarith
     obtain ⟨k, hk⟩ := exists_nat_gt (1 / (g * e - ((c : ℝ) - 1)))
     have hk0' : (0 : ℝ) < k := lt_trans (by positivity) hk
     have hk0 : 0 < k := by exact_mod_cast hk0'

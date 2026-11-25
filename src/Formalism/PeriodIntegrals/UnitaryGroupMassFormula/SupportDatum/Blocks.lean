@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportLoc
 
 @[expose] public section
 
@@ -101,20 +102,7 @@ theorem ptEntry_append_ge {K : Type} [Zero K] (head tail : List (K × ℕ)) (a b
     ptEntry (head ++ tail) a b =
       if (head.map Prod.snd).sum ≤ b then
         ptEntry tail (a - (head.map Prod.snd).sum) (b - (head.map Prod.snd).sum) else 0 := by
-  induction head generalizing a b with
-  | nil => simp
-  | cons x hd ih =>
-    obtain ⟨t, s⟩ := x
-    simp only [List.map_cons, List.sum_cons] at ha ⊢
-    simp only [List.cons_append, ptEntry]
-    have hna : ¬ (a < s ∧ b < s) := by omega
-    rw [if_neg hna]
-    by_cases hb : s ≤ b
-    · rw [if_pos ⟨by omega, hb⟩, ih (a - s) (b - s) (by omega)]
-      by_cases hc : (hd.map Prod.snd).sum ≤ b - s
-      · rw [if_pos hc, if_pos (by omega), Nat.sub_sub, Nat.sub_sub]
-      · rw [if_neg hc, if_neg (by omega)]
-    · rw [if_neg (by omega), if_neg (by omega)]
+  apply _root_.Formalism.L2.SG.Pf.ptEntry_append_ge <;> assumption
 
 theorem blkDet_ne_zero {K : Type} [CommRing K] [IsDomain K] (bs : List (K × ℕ))
     (h : ∀ b ∈ bs, b.1 ≠ 0) : blkDet bs ≠ 0 := by

@@ -86,16 +86,11 @@ private lemma hpk_apply_of_middle {i : Fin (2 * r + k + 1)} (hi : r ≤ i.val �
   simp only [Formalism.QuantumDeterminants.Hpk, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-private lemma hpk_mul_hpk : Hpk k r * Hpk k r = 1 := by
-  first
-  | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
-  | (apply _root_.Formalism.SharedLemmas.upq_hpk_mul_self <;> assumption)
-
 private lemma hpk_conjTranspose_hpk_mul_eq_one_of_mem_UH {g : Mx k r} (hg : g ∈ UH (Hpk k r)) :
     Hpk k r * gᴴ * Hpk k r * g = 1 := by
   have e : gᴴ * Hpk k r * g = Hpk k r := hg
   calc Hpk k r * gᴴ * Hpk k r * g = Hpk k r * (gᴴ * Hpk k r * g) := by simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [e, hpk_mul_hpk]
+    _ = 1 := by rw [e]; exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self
 
 private lemma inv_eq_hpk_mul_conjTranspose_mul_hpk {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ = Hpk k r * gᴴ * Hpk k r :=
   Matrix.inv_eq_left_inv (hpk_conjTranspose_hpk_mul_eq_one_of_mem_UH hg)

@@ -56,7 +56,6 @@ open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 open GlobalTheory.DeRham (spOver spOver_comp)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.GroupBplus.Aff
 

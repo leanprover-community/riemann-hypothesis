@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharOnIdMulSqrtAbsNormInvMemSubring
 public import Formalism.LocalToGlobal.IndefiniteReal.ThPinsR
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisGe
 import Mathlib.Algebra.Order.Floor.Extended
@@ -55,15 +56,7 @@ variable {L : Type} [Field L] [NumberField L]
 
 theorem onId_mul (χ : HChar L) {I J : FractionalIdeal (𝓞 L)⁰ L} (hI : I ≠ 0) (hJ : J ≠ 0) :
     χ.onId (I * J) = χ.onId I * χ.onId J := by
-  have hf : ∀ K : FractionalIdeal (𝓞 L)⁰ L,
-      (Function.mulSupport fun v : HeightOneSpectrum (𝓞 L) => χ.val v ^ FractionalIdeal.count L v K).Finite := fun K => by
-    refine (FractionalIdeal.finite_factors (K := L) K).subset fun v hv h => hv ?_
-    have h' : FractionalIdeal.count L v K = 0 := h
-    simp [h']
-  unfold HChar.onId
-  rw [← finprod_mul_distrib (hf I) (hf J)]
-  refine finprod_congr fun v => ?_
-  rw [FractionalIdeal.count_mul L v hI hJ, _root_.zpow_add]
+  apply _root_.GlobalTheory.HeckeIdealValue.onId_mul <;> assumption
 
 theorem onId_one (χ : HChar L) : χ.onId 1 = 1 := by
   unfold HChar.onId

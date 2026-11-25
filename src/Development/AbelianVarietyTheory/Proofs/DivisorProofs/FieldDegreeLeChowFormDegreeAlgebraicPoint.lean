@@ -54,7 +54,6 @@ open MvPolynomial GlobalTheory.ChowHt GlobalTheory.CompHt
 
 namespace GlobalTheory.CompHt.PointLow
 
-set_option autoImplicit false in
 open MvPolynomial in
 private lemma natDegree_aeval_le_totalDegree_of_natDegree_le_one {R S σ : Type} [CommRing R] [CommRing S] [Algebra R S]
     (p : MvPolynomial σ R) (s : σ → Polynomial S) (hs : ∀ i, (s i).natDegree ≤ 1) :
@@ -75,7 +74,6 @@ private lemma natDegree_aeval_le_totalDegree_of_natDegree_le_one {R S σ : Type}
   simpa using Nat.mul_le_mul_left (d i) (hs i)
 
 
-set_option autoImplicit false in
 open MvPolynomial in
 theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K : Type) [Field K] [CharZero K] (N δ : ℕ) (y : Fin N → AlgebraicClosure K)
     (j : Fin N) (f : MvPolynomial (Fin (0 + 1) × Fin N) K), y j = 1 → _root_.GlobalTheory.ChowHt.IsChowFormInt (_root_.GlobalTheory.CompHt.coneIdeal K y) 0 δ f →
@@ -137,8 +135,7 @@ theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K
       Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
     exact hk (sub_eq_zero.mp this)
   obtain ⟨a, ha⟩ : ∃ a, eval a Q ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ0 (MvPolynomial.funext fun x => by rw [hcon x, map_zero])
   have hfa : eval a fΩ ≠ 0 := fun h => ha (by rw [hQ, eval_mul, h, zero_mul])
   let c : (E →ₐ[K] AlgebraicClosure K) → AlgebraicClosure K := fun σ => ∑ k, a (0, k) * pt σ k

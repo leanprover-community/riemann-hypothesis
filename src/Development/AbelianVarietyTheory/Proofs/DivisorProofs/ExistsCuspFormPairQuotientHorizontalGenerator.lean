@@ -167,8 +167,7 @@ theorem res_indep {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {x : ℝ} (hL : La
       have := congrFun hw ⟨y, hy⟩
       simpa only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] using this
     · exact Finset.sum_eq_zero fun i _ => by rw [hoff _ (hs i) k y hz, mul_zero]
-  · by_contra hall
-    push_neg at hall
+  · by_contra! hall
     refine hne (hR.2 f hf fun k y hy => ?_)
     by_cases hz : (⟨k, y⟩ : Σ k, Frame ((U σ).X k).Ψ r) ∈ framesOn (U σ) Z
     · rw [hk] at hz

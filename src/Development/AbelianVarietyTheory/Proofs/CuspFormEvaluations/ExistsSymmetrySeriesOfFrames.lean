@@ -47,7 +47,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRin
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1 FGLaw)
 open MvPolynomial (X)
 
@@ -105,17 +104,6 @@ theorem pt_X (m : ℕ) {n : ℕ} (k : Fin n) :
   rw [subst_X_eq_copy]
   rfl
 
-private theorem comp_foldr_padd_eq_foldr_padd_comp {T T' : Over X0} (f : T' ⟶ T) (xs : Fin 2 → (T ⟶ t.G)) (L : List (Fin 2)) :
-    f ≫ L.foldr (fun k acc => padd t.G (xs k) acc) (pzero t.G T) =
-      L.foldr (fun k acc => padd t.G (f ≫ xs k) acc) (pzero t.G T') := by
-  induction L with
-  | nil => simp [pzero]
-  | cons k L ih =>
-    simp only [List.foldr_cons]
-    rw [← ih]
-    simp only [padd]
-    rw [← Category.assoc, CartesianMonoidalCategory.comp_lift]
-
 theorem pe_pt (m : ℕ) {n : ℕ} (σ : Jet S (Fin 2 × Fin d) m →ₐ[S] Jet S (Fin n × Fin d) m) (I : ULift.{0} (Finset (Fin 2))) :
     (homAt x0 σ).left ≫ cφG t ![jptG t x0 d x m (0 : Fin 2), jptG t x0 d x m (1 : Fin 2)] I =
       (psum t.G ![homAt x0 σ ≫ jptG t x0 d x m (0 : Fin 2), homAt x0 σ ≫ jptG t x0 d x m (1 : Fin 2)] I.down).left := by
@@ -123,7 +111,7 @@ theorem pe_pt (m : ℕ) {n : ℕ} (σ : Jet S (Fin 2 × Fin d) m →ₐ[S] Jet S
   rw [← Over.comp_left]
   congr 1
   unfold psum
-  rw [comp_foldr_padd_eq_foldr_padd_comp]
+  rw [← foldr_padd_pre]
   congr 1
   funext k acc
   fin_cases k <;> rfl

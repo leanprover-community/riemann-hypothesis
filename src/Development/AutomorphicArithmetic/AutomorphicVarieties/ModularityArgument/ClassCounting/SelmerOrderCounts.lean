@@ -1205,20 +1205,8 @@ open scoped nonZeroDivisors
 
 private theorem ord_eq_count {L : Type} [Field L] [NumberField L] (p : HeightOneSpectrum (𝓞 L)) (y : Lˣ) :
     ordP p y = FractionalIdeal.count L p (FractionalIdeal.spanSingleton (𝓞 L)⁰ (y : L)) := by
-  obtain ⟨a, b, hab⟩ := IsLocalization.exists_mk'_eq (𝓞 L)⁰ (y : L)
-  have ha : a ≠ 0 := by
-    rintro rfl
-    exact y.ne_zero (by rw [← hab, IsLocalization.mk'_zero])
-  have hb : (b : 𝓞 L) ≠ 0 := nonZeroDivisors.coe_ne_zero b
-  have hI : FractionalIdeal.spanSingleton (𝓞 L)⁰ (y : L) ≠ 0 :=
-    FractionalIdeal.spanSingleton_ne_zero_iff.mpr y.ne_zero
-  have h : FractionalIdeal.spanSingleton (𝓞 L)⁰ (y : L) =
-      FractionalIdeal.spanSingleton (𝓞 L)⁰ ((algebraMap (𝓞 L) L) b)⁻¹ * ((Ideal.span {a} : Ideal (𝓞 L)) : FractionalIdeal (𝓞 L)⁰ L) := by
-    rw [FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.spanSingleton_mul_spanSingleton, ← hab,
-      IsFractionRing.mk'_eq_div, div_eq_inv_mul]
-  rw [FractionalIdeal.count_well_defined L p hI h, ordP, ← hab, HeightOneSpectrum.valuation_of_mk',
-    p.intValuation_if_neg ha, p.intValuation_if_neg hb, ← WithZero.exp_sub, WithZero.log_exp]
-  ring
+  intros
+  refine (@_root_.fractionalIdeal_count_spanSingleton_eq_ordP ?_ ?_ ?_ ?_ ?_).symm <;> first | assumption | infer_instance
 
 private theorem ord_mul {L : Type} [Field L] [NumberField L] (p : HeightOneSpectrum (𝓞 L)) (x y : Lˣ) :
     ordP p (x * y) = ordP p x + ordP p y := by

@@ -884,11 +884,6 @@ lemma majForm_sub_smul (x : Frame X.Ψ r) (τ : X.Ψ) (a : ℂ) (v e w : Fin r �
     X.Hf x τ (v - a • e) w = X.Hf x τ v w - a * X.Hf x τ e w := by
   simp only [X.Hf_eq_jp, X.jp_sub, X.jp_smul, hermC_sub_left, hermC_smul_left]
 
-lemma maj_zero {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) : X.maj x τ 0 = 0 := by
-  have h := X.Hf_self hx τ 0
-  rw [X.Hf_eq_jp, hermC_zero_right] at h
-  exact_mod_cast h.symm
-
 lemma maj_split {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (a : ℂ) (e u : Fin r → ℂ)
     (h : X.Hf x τ u e = 0) : X.maj x τ (u + a • e) = X.maj x τ u + ‖a‖ ^ 2 * X.maj x τ e := by
   have h' : X.Hf x τ e u = 0 := by rw [majForm_conj X hx, h, map_zero]

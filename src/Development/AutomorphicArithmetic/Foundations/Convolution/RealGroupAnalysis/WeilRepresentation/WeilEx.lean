@@ -29,59 +29,10 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.IdxEta
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.Imports
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.RamificationInertia.Inertia
-import Mathlib.RingTheory.Ideal.Norm.RelNorm
-import Mathlib.Tactic.ENatToNat
 import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
@@ -89,12 +40,8 @@ import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 import ReciprocityTheory.NeutralLocalFields.Reciprocity
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Mathlib.Topology.Compactness.Paracompact
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
-import Mathlib.Algebra.Order.Positive.Field
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ImportsBis
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -226,8 +173,6 @@ variable {F : Type} [Field F] [NumberField F]
 private theorem continuous_psi : Continuous (ψ : A F → ℂ) :=
   continuous_subtype_val.comp (continuous_adelicChar (K := F))
 
-private theorem norm_psi (x : A F) : ‖ψ x‖ = 1 := Circle.norm_coe _
-
 private theorem continuous_quaternaryForm_left (δ : F) (v : V4 F) : Continuous fun y : V4 F => B4 δ y v := by
   exact continuous_form (v 2) (rt δ) (v 3) (v 0) (v 1)
 
@@ -235,7 +180,7 @@ private theorem integrable_ft (δ : F) {φ : V4 F → ℂ} (hφ : φ ∈ schwart
     Integrable (fun y => φ y * ψ (B4 δ y v)) (adeleMeasurePi F) := by
   refine (integrable_of_mem_schwartzBruhatPi hφ).mul_bdd (c := 1) ?_ ?_
   · exact (continuous_psi.comp (continuous_quaternaryForm_left δ v)).aestronglyMeasurable
-  · exact Eventually.of_forall fun y => (norm_psi _).le
+  · exact Eventually.of_forall fun y => (UpperTheory.ConvolutionTheory.R2.norm_ψ _).le
 
 private theorem quaternaryFourier_add (δ : F) {φ φ' : V4 F → ℂ} (hφ : φ ∈ schwartzBruhatPi (K := F) (ι := Fin 4))
     (hφ' : φ' ∈ schwartzBruhatPi (K := F) (ι := Fin 4)) (v : V4 F) :
@@ -821,8 +766,7 @@ private lemma fieldCase (K : Type) [Field K] [CharZero K] {ι : Type} (s : Finse
 
 private lemma rowUnit {R : Type} [CommRing R] [IsLocalRing R] {a b c d : R}
     (h : a * d - b * c = 1) : IsUnit c ∨ IsUnit d := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have hc : c ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal c).2 hn.1
   have hd : d ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal d).2 hn.2
   have h1 : (1 : R) ∈ IsLocalRing.maximalIdeal R := by
@@ -891,8 +835,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
     refine fieldCase w.Completion s (fun g => (g 1 0).1 w) (fun g => (g 1 1).1 w) fun g _ => ?_
     have hdet : (g 0 0).1 w * (g 1 1).1 w - (g 0 1).1 w * (g 1 0).1 w = 1 :=
       congrArg (fun x : A F => x.1 w) (row g)
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
     exact zero_ne_one hdet
   let G : HeightOneSpectrum (𝓞 F) → Prop := fun v =>
@@ -918,8 +861,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
         (fun g => (g 1 1).2 v) (fun g _ => by
           have hdet : (g 0 0).2 v * (g 1 1).2 v - (g 0 1).2 v * (g 1 0).2 v = 1 :=
             congrArg (fun x : A F => x.2 v) (row g)
-          by_contra hn
-          push_neg at hn
+          by_contra! hn
           simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
           exact zero_ne_one hdet)
       exact ⟨t, fun h => absurd h hv, fun g hg => ⟨ht g hg, fun h => absurd h hv⟩⟩
@@ -1276,14 +1218,6 @@ private theorem exHom {G V : Type} [Group G] (S : Submodule ℂ (V → ℂ)) (c 
     show c (g * h) * f.1 (a (g * h)⁻¹ v) = c g * (c h * f.1 (a h⁻¹ (a g⁻¹ v)))
     rw [cm, am, mul_assoc]
 
-private theorem abMul {F : Type} [Field F] [NumberField F] (s t : (A F)ˣ) : ab (s * t) = ab s * ab t := by
-  simp only [ab, map_mul]
-  rfl
-
-private theorem abOne {F : Type} [Field F] [NumberField F] : ab (1 : (A F)ˣ) = 1 := by
-  simp only [ab, map_one]
-  rfl
-
 private theorem nuMul (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (g h : GL (Fin 2) (A E)) : nu F (g * h) = nu F g * nu F h := by
   simp only [nu, map_mul]
@@ -1299,11 +1233,11 @@ theorem UpperTheory.ConvolutionTheory.R2.D.lEx :
   obtain ⟨ρ, hρ, -, -⟩ := UpperTheory.ConvolutionTheory.R2.D.actMat F E D
   refine exHom (schwartzBruhatPi (K := F) (ι := Fin 4)) (fun h => (((ab (nu F h))⁻¹ : ℝ) : ℂ)) D.act ?_ ?_ ?_ ?_ ?_
   · show (((ab (nu F (1 : GL (Fin 2) (A E))))⁻¹ : ℝ) : ℂ) = 1
-    rw [nuOne, abOne]
+    rw [nuOne, UpperTheory.ConvolutionTheory.R2.ab_one]
     simp
   · intro g h
     show (((ab (nu F (g * h)))⁻¹ : ℝ) : ℂ) = (((ab (nu F g))⁻¹ : ℝ) : ℂ) * (((ab (nu F h))⁻¹ : ℝ) : ℂ)
-    rw [nuMul, abMul, mul_inv]
+    rw [nuMul, UpperTheory.ConvolutionTheory.R2.ab_mul, mul_inv]
     push_cast
     rfl
   · intro v

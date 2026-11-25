@@ -515,7 +515,6 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
   have hs := hstd X hD hI hc
   obtain ⟨⟨hP, hK⟩, hjp⟩ := ht
   have hk : 0 < X.k := by unfold Loc.k; positivity
-  have hkk : X.k = (X.m : ℝ) + 1 := rfl
   have hLa0 : 0 ≤ X.La C0 := le_trans zero_le_one hs.La1
   have hA0 : (0 : ℝ) ≤ ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) := by
     refine le_trans ?_ (hs.half_ratio_le_segment_base_of_std j)
@@ -622,7 +621,6 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
       rfl
     have nD := Int.toNat_of_nonneg (show 0 ≤ pairD t.1 t.2.1 by rw [eD]; exact hd0)
     have cD : (((pairD t.1 t.2.1).toNat : ℕ) : ℝ) = ((pairD t.1 t.2.1 : ℤ) : ℝ) := by exact_mod_cast nD
-    have hB : (0 : ℝ) ≤ ((X.seg C0 CE1 CE2 j).bPlus : ℝ) := Nat.cast_nonneg _
     have hj : (t.2.2 : ℝ) ≤ X.La C0 * ((X.seg C0 CE1 CE2 j).bPlus : ℝ) / X.k :=
       le_trans (by exact_mod_cast hjp) (Nat.floor_le (by positivity))
     have hC : ∀ i : Fin (segS X.TT j), (clC C0 CE1 CE2 X j rz ry i : ℝ) ≤
@@ -646,8 +644,6 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
         mul_comm (X.a : ℝ) (2 / (X.k * X.Y))]
     have hsum : ∑ i, (clC C0 CE1 CE2 X j rz ry i : ℝ) ≤
         ∑ i, 2 * (X.a : ℝ) / ((X.seg C0 CE1 CE2 j).P X.p i : ℝ) := Finset.sum_le_sum fun i _ => hC i
-    have hsum0 : (0 : ℝ) ≤ ∑ i, 2 * (X.a : ℝ) / ((X.seg C0 CE1 CE2 j).P X.p i : ℝ) :=
-      Finset.sum_nonneg fun i _ => by positivity
     have hq : X.La C0 / X.k * ∑ i, (clC C0 CE1 CE2 X j rz ry i : ℝ) ≤
         (X.La C0 / X.k + 4 / (X.p : ℝ) ^ 2) * ∑ i, 2 * (X.a : ℝ) / ((X.seg C0 CE1 CE2 j).P X.p i : ℝ) := by
       have a1 : X.La C0 / X.k * ∑ i, (clC C0 CE1 CE2 X j rz ry i : ℝ) ≤
@@ -685,7 +681,6 @@ theorem coarse_degree_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs :
   have hlt := (dist_pos_lt X.TT j l').2
   obtain ⟨k1, hk1⟩ := ho1
   obtain ⟨k2, hk2⟩ := ho2
-  have hdd : (segDists X.TT j).get l + 2 ≤ (segDists X.TT j).get l' := by omega
   set P := X.p ^ (segG X.TT j - (segDists X.TT j).get l) with hP
   set P' := X.p ^ (segG X.TT j - (segDists X.TT j).get l') with hP'
   have hp1 : 1 ≤ X.p := by have := hs.p5; omega
@@ -700,9 +695,7 @@ theorem coarse_degree_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs :
   have wb := hs.winB _ (pos_mem X.TT j l).1
   have wb' := hs.winB _ (pos_mem X.TT j l').1
   have hbe := hs.beLe
-  have hbe0 := hs.be0
   have hde := hs.de6
-  have hLK := hs.LaK
   have hk5 := hs.k5
   have hkQ := hs.kQ hH
   have hb := hs.bpos
@@ -721,7 +714,6 @@ theorem coarse_degree_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs :
 
   have hkP : X.k * (P' : ℝ) ≤ X.b' / 12 := by
     have h1 : X.k * (P' : ℝ) ≤ X.k * X.Q := mul_le_mul_of_nonneg_left (le_trans hPQ' hQ) (by linarith)
-    have h2 : X.k ^ 3 * X.Q ≤ X.b' := hkQ
     have h3 : 12 * (X.k * X.Q) ≤ X.k ^ 3 * X.Q := by
       have h12 : (12 : ℝ) ≤ X.k ^ 2 := by
         calc (12 : ℝ) ≤ 5 ^ 2 := by norm_num
@@ -736,7 +728,6 @@ theorem coarse_degree_ratio_consecutive {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs :
     calc (X.p : ℝ) ^ 2 * A * P' = A * ((X.p : ℝ) ^ 2 * P') := by ring
       _ ≤ A * P := mul_le_mul_of_nonneg_left hPPr hA0
       _ ≤ _ := le_trans cb.1 wb.2
-  have e2 : X.b' * (1 - be X C0) - X.k * P' < A' * P' := by linarith [cb'.2, wb'.1]
   have hP'pos : (0 : ℝ) < P' := hP0'
   have hbb := mul_le_mul_of_nonneg_left hbe1 hb.le
   have key : (X.p : ℝ) ^ 2 * A * P' ≤ 2 * A' * P' := by linarith
@@ -772,7 +763,6 @@ theorem coarse_degree_prefix_sum {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs : Std C0
         · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
         · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
     rw [e]
-    have hA : (0 : ℝ) ≤ (clA C0 CE1 CE2 X j rz ry ⟨i, by omega⟩ : ℝ) := Nat.cast_nonneg _
     have hp0 : (0 : ℝ) < (X.p : ℝ) ^ 2 := by linarith
     rw [div_eq_mul_inv] at ih' ⊢
     have hinv : (X.p : ℝ) ^ 2 * ((X.p : ℝ) ^ 2)⁻¹ = 1 := mul_inv_cancel₀ hp0.ne'

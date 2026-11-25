@@ -76,8 +76,7 @@ theorem dvr_of_span_maximal {S : Type*} [CommRing S] [IsNoetherianRing S] (π : 
     intro a ha
     classical
     have hex : ∃ k : ℕ, ¬ π ^ k ∣ a := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hb := Ideal.iInf_pow_eq_bot_of_isLocalRing (Ideal.span {π}) hmax.ne_top
       have : a ∈ (⨅ i : ℕ, (Ideal.span {π}) ^ i) := by
         rw [Ideal.mem_iInf]
@@ -106,8 +105,7 @@ theorem dvr_of_span_maximal {S : Type*} [CommRing S] [IsNoetherianRing S] (π : 
     rw [hm, Ideal.mem_span_singleton] at this
     exact h2 (by rw [pow_succ]; exact mul_dvd_mul_left _ this)
   haveI : NoZeroDivisors S := ⟨fun {a b} hab => by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨k, u, hu, rfl⟩ := hfac a hcon.1
     obtain ⟨l, v, hv, rfl⟩ := hfac b hcon.2
     apply hnil

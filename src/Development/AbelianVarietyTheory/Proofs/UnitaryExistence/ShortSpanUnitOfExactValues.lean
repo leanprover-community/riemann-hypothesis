@@ -100,11 +100,6 @@ def shortGen (hK : ReflexLe Dw c) (nV : ℕ) (a : (E →+* ℂ) × ℕ → ℕ) 
   {f | ∃ (Λ : Lat E n) (N : ℕ) (x₀ : Fin n → ConjCl Dw l) (P : MvPolynomial (LtN Dw n) c.F),
     IsSeriesData Δ Λ N (be hK Λ) a P ∧ LevelSpanSeparation.Admissible nV x₀ ∧ IsShortRule Δ Λ N (be hK Λ) x₀ a P f}
 
-def Descends : Prop :=
-  ∀ (n N : ℕ) (Λ : Lat E n) (β : c.F) (x₀ : Fin n → ConjCl Dw l) (a : (E →+* ℂ) × ℕ → ℕ)
-    (P : MvPolynomial (LtN Dw n) c.F), IsSeriesData Δ Λ N β a P →
-    ∃ f ∈ sec Xo c a n, IsShortRule Δ Λ N β x₀ a P f
-
 def OnePos (Dw : Datum H) (a : (E →+* ℂ) × ℕ → ℕ) : Prop :=
   ∃ τ : E →+* ℂ, InPsi H τ ∧ (0 < Dw.p → 1 ≤ a (τ, Dw.p - 1))
 
@@ -135,8 +130,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.IndefiniteRowSideFullH
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelSpanSeparation hiding zetaM
 open GlobalTheory.IndefiniteRowSideFullHecke.RamifiedCoverPairIsomorphism hiding IsShortRule shortGen ShortInCusp
 open GlobalTheory.GenusLatCompare GlobalTheory.LevelCoverCompare GlobalTheory.ShortDatumEq GlobalTheory.TransferCompare
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l}

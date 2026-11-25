@@ -530,8 +530,7 @@ private theorem colLex_lt_of_toLex_domCongr_cmIdx_lt {r n : ℕ} {c d : Fin r ×
 theorem minorExponentLt : MinorExpLt := by
   intro r n s I hs hI σ hσ
   have hex : ∃ q, σ q ≠ q := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hσ
     ext x
     first
@@ -961,14 +960,6 @@ noncomputable section
 
 namespace Formalism.GradedWeylDivisibility
 
-private lemma pairW_apply {r n : ℕ} (l j : Fin n) (v : Fin r × Fin n) (b : Fin r)
-    (t : Fin n) :
-    pairW l j v (b, t) = if v.2 = j then (if (v.1, l) = (b, t) then 1 else 0)
-      else (if v = (b, t) then 1 else 0) := by
-  classical
-  unfold pairW
-  split_ifs <;> simp_all
-
 theorem lcplead_weight_apply {r n : ℕ} (l j : Fin n) (hlj : l ≠ j) (d : Fin r × Fin n →₀ ℕ)
     (b : Fin r) (t : Fin n) :
     Finsupp.weight (pairW l j) d (b, t) =
@@ -1296,8 +1287,7 @@ private theorem exists_tableau_of_sum_eq_lemma (hP : SSYTPeel) (r n : ℕ) :
     · simp [bidetExp]
   · obtain ⟨h, hh, c, hc, hν, hle, hint', hcol'⟩ := hP r n ν m hcol hint_r hm
     obtain ⟨⟨a0, t0⟩, hne⟩ : ∃ x, m x ≠ 0 := by
-      by_contra H
-      push_neg at H
+      by_contra! H
       exact hm (Finsupp.ext H)
     have hpos : 0 < ν t0 := by
       rw [← hcol t0]
@@ -1437,8 +1427,7 @@ theorem lctwo_main (h1 : PeelDecomp) (h2 : PeelHomog) (h3 : PeelLead) (h4 : Peel
       exfalso
       omega
     have hex : ∃ k ∈ Finset.range (ω (A0, l) + 1), peel l j A0 k g ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hg (hdec.trans (Finset.sum_eq_zero fun k hk => by rw [hne k hk, mul_zero]))
     obtain ⟨k0, hk0, hk00⟩ := hex
     obtain ⟨K, hKT, hKmax⟩ := Finset.exists_max_image

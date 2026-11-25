@@ -194,7 +194,6 @@ open CategoryTheory AlgebraicGeometry DividedPowers ReciprocityTheory.ChartRestr
 
 namespace GlobalTheory.Cris
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry DividedPowers in
 private theorem isNilpotent_of_mem_of_isNilDP {B : Type} [CommRing B]
     {J : Ideal B} (δ : DividedPowers J) (hδ : _root_.GlobalTheory.Cris.IsNilDP δ) {x : B} (hx : x ∈ J) :
@@ -206,7 +205,6 @@ private theorem isNilpotent_of_mem_of_isNilDP {B : Type} [CommRing B]
   rw [← δ.factorial_mul_dpow_eq_pow hx, h, mul_zero]
 
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry DividedPowers in
 theorem _root_.GlobalTheory.Cris.exists_finite_small_cover (R : Type) [CommRing R] (I : Ideal R) (κ : DividedPowers I)
     (X : Scheme.{0}) (s : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R) (K : Type) (U : K → X.Opens) (hU : ⨆ i, U i = ⊤)

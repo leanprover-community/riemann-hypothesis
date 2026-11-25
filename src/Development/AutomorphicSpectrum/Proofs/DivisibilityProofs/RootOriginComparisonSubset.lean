@@ -328,7 +328,7 @@ theorem same_base_cmp {S₁ S₂ : Finset ℕ} {Ω : Type} [Field Ω] {K : Type}
   have ha' : (FrameRebase.sabRebase A'.m hf.symm).φ = A'.m.φ := FrameRebase.sabRebase_φ _ _
   obtain ⟨k, hk⟩ := sabCancel pullCubCancel E H _ _ _ Y.t A.t A'.t A.f e.hom A.m (FrameRebase.sabRebase A'.m hf.symm)
   rw [ha'] at hk
-  obtain ⟨M₁, P1, -, -, P4⟩ := _root_.GlobalTheory.CompanionTheory.Ar.IsoMove.lieModel_isoMove E H A.X A'.X e Ω A.ξ A'.ξ A.t A'.t k A.Li A.M he
+  obtain ⟨M₁, P1, -, -, P4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.lie_model_transport_isomorphism E H A.X A'.X e Ω A.ξ A'.ξ A.t A'.t k A.Li A.M he
   obtain ⟨φ, hφ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_existsUnique_equiv A'.X A'.t.G Ω A'.ξ A.Li A'.Li M₁ A'.M
   have hemb : A'.emb = A.emb := by
     funext s

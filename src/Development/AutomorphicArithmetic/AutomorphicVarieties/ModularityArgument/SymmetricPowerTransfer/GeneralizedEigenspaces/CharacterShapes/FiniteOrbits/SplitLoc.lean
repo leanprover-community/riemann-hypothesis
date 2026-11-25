@@ -99,8 +99,7 @@ theorem UpperTheory.V.Z.Sym.So.kNon :
   obtain ⟨-, -, -, -, hU2₀⟩ := datOk F Δ A₀ hA₀
   have hinv := (kOps F Δ A hA V ch C hC).2.1 φ hφ
   obtain ⟨g, hg⟩ : ∃ g, φ g ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ0 (funext h)
   obtain ⟨γ, s, hs, y, hy, u, hu, rfl⟩ := hY.2 g
   have hu₀ := (hU2₀ u).1 hu

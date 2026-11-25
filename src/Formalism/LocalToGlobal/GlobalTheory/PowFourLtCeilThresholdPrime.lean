@@ -31,30 +31,9 @@ variable {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (Cr C bo :
 open NumberField in
 theorem pa_int_dvd_of_mem_span {E : Type*} [Field E] [NumberField E] (N a : ℤ)
     (h : (a : 𝓞 E) ∈ Ideal.span {(N : 𝓞 E)}) : N ∣ a := by
-  obtain ⟨z, hz⟩ := Ideal.mem_span_singleton'.1 h
-  by_cases hN : N = 0
-  · subst hN
-    simp only [Int.cast_zero, mul_zero] at hz
-    have : a = 0 := by exact_mod_cast hz.symm
-    simp [this]
-  have hNE : (N : E) ≠ 0 := by exact_mod_cast hN
-  have hzE' : (z : E) * (N : E) = (a : E) := by
-    have := congrArg (fun t : 𝓞 E => (t : E)) hz
-    simpa using this
-  have hzE : (z : E) = algebraMap ℚ E ((a : ℚ) / N) := by
-    rw [map_div₀, eq_div_iff (by simpa using hNE)]
-    simpa using hzE'
-  have hint : IsIntegral ℤ ((a : ℚ) / N) := by
-    have : IsIntegral ℤ (z : E) := RingOfIntegers.isIntegral_coe z
-    rw [hzE] at this
-    exact (isIntegral_algebraMap_iff ).1 this
-  obtain ⟨m, hm⟩ := IsIntegrallyClosed.isIntegral_iff.1 hint
-  refine ⟨m, ?_⟩
-  have hNQ : (N : ℚ) ≠ 0 := by exact_mod_cast hN
-  have : (a : ℚ) = N * m := by
-    have h2 : (m : ℚ) = (a : ℚ) / N := by simpa using hm
-    rw [h2]; field_simp
-  exact_mod_cast this
+  rwa [← Ideal.mem_span_singleton,
+    ← Ideal.comap_map_eq_self_of_faithfullyFlat (B := 𝓞 E) (Ideal.span {N}),
+    Ideal.mem_comap, Ideal.map_span, Set.image_singleton]
 
 
 open NumberField in

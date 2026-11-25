@@ -931,8 +931,7 @@ private lemma one_side {X Y : Type} [MulAction T X] [MulAction T Y] (C : Subgrou
       simp only [Function.mem_support] at hq
       have hs := right_ne_zero_of_mul hq
       have : ∃ y, F (Quotient.out q) y ≠ 0 := by
-        by_contra hno
-        push_neg at hno
+        by_contra! hno
         exact hs (by simp [hno])
       obtain ⟨y, hy⟩ := this
       simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
@@ -1144,8 +1143,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.BCT GlobalTheory.LFun GroundTheory.Automorphic PositivityTheory.Rg.BcB.G8
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Th
 

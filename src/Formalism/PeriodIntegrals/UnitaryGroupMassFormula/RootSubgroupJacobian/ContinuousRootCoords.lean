@@ -6,6 +6,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasi
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselRootMeasureIndependentOfChoices
 
 @[expose] public section
 
@@ -246,13 +247,7 @@ theorem measurable_conjM (a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1
 
 theorem continuous_rootCoords (z : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1)) :
     Continuous (rootCoords k r z p) := by
-  refine continuous_pi fun q => ?_
-  simp only [rootCoords, flagMat]
-  by_cases hi : q.1.1.val < r
-  · simp only [hi, ↓reduceDIte]
-    fun_prop
-  · simp only [hi, ↓reduceDIte]
-    exact continuous_const
+  apply _root_.GlobalTheory.SnMass.RootUniq.continuous_rootCoords <;> assumption
 
 theorem cont_of : Continuous (fun x : Mt k r => (Matrix.of x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)) :=
   continuous_id

@@ -19,8 +19,7 @@ open PI.UnitaryGroupMassFormula.BetaLUniq
 
 theorem positive_weight_holds : PosW := by
   intro D T' F' τ w hT' hw hwX
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   classical
   have hτ : ∀ a : D.host.E, τ (star a) = starRingEnd ℂ (τ a) := D.sp.cm.cmUnram.2.1 τ
   have hTE : ((T' : ℕ) : D.host.E) ≠ 0 := by exact_mod_cast hT'.ne'

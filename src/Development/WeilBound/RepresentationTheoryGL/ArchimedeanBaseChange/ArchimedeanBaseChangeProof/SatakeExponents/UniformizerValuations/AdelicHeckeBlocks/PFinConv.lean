@@ -6,47 +6,9 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralPointsOpenCompact
 import GroundTheory.AutomorphicForms.AdelicGLn
 import GroundTheory.GlobalFields.Adele.Topology
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Separation.Connected
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.AdelicHeckeBlocks.RStabApply
 
 @[expose] public section
 
@@ -95,22 +57,8 @@ theorem exists_of_hint_ne {H : Type} [Group H] (K : Subgroup H) (u : H → ℂ) 
   push Not at hc
   exact h (by rw [show u = fun _ => 0 from funext hc, hint_zero])
 
-theorem hint_ind {H : Type} [Group H] (K : Subgroup H) : hint K ((K : Set H).indicator 1) = 1 := by
-  have hR : rStab ((K : Set H).indicator 1) ⊓ K = K := by
-    refine inf_eq_right.2 fun k hk x => ?_
-    by_cases hx : x ∈ K
-    · rw [Set.indicator_of_mem (K.mul_mem hx hk), Set.indicator_of_mem hx]; rfl
-    · rw [Set.indicator_of_notMem (fun h => hx (by simpa using K.mul_mem h (K.inv_mem hk))), Set.indicator_of_notMem hx]
-  unfold hint
-  rw [hR, Subgroup.relIndex_self]
-  simp only [Nat.cast_one, inv_one, one_mul]
-  rw [finsum_eq_single _ (QuotientGroup.mk 1 : H ⧸ K)]
-  · obtain ⟨h, e⟩ := QuotientGroup.mk_out_eq_mul K (1 : H)
-    rw [e, Set.indicator_of_mem (by simpa using h.2)]; rfl
-  · intro q hq
-    refine Set.indicator_of_notMem (fun hm => hq ?_) _
-    rw [← QuotientGroup.out_eq' q]
-    exact QuotientGroup.eq.2 (by simpa using K.inv_mem hm)
+theorem hint_ind {H : Type} [Group H] (K : Subgroup H) : hint K ((K : Set H).indicator 1) = 1 :=
+  _root_.PositivityTheory.Rg.BcB.F.Hint.hint_ind K
 
 def cv {H : Type} [Group H] (K : Subgroup H) (u₁ u₂ : H → ℂ) (m : H) : ℂ := hint K fun z => u₁ z * u₂ (z⁻¹ * m)
 

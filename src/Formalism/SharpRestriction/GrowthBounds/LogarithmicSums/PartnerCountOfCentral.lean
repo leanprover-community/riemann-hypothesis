@@ -233,7 +233,6 @@ theorem a_bounds (P : ParameterChoice' D L) {a b : HH D → ℤ} (hW : InWin L a
   obtain ⟨hk, _, _⟩ := Nm_le_Sc P
   obtain ⟨h1, h2, _⟩ := hW s hs
   have hab := two_b'_le_a L.sc
-  have ha := sc_one_lt_a L.sc
   have h4 : L.sc.a / ((D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2)) ≤ L.sc.a := by
     apply div_le_self (by linarith)
     have : 1 ≤ L.sc.x ^ (Scale.A / 2) := Real.one_le_rpow L.sc.one_lt_alt.le (by unfold Scale.A; norm_num)
@@ -497,7 +496,6 @@ theorem caseD_arith (N n nd r lx b' G u c c0 kQ S1 Dw C31 Pr2 tc C : ℝ)
   have hu0 : 0 ≤ u := le_trans hc0' hcu
   have hN0 : 0 ≤ N := by linarith
   have hr0 : 0 ≤ r := by linarith
-  have hb0 : 0 ≤ b' := by linarith
   have hlx0 : 0 ≤ lx := by linarith
   have hC0 : 0 ≤ C := by linarith
   have t1 : n * u ≤ N * b' := by
@@ -557,7 +555,6 @@ theorem lg_ge_one (P : ParameterChoice' D L) {p : ℕ} (hp : p.Prime) (hX : (p :
   obtain ⟨h500, _, hwb, _, _⟩ := base P
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
   have hXpos : 0 < L.sc.X' := by unfold Scale.X'; exact Real.exp_pos _
-  have ha := sc_one_lt_a L.sc
   have hb : 1 ≤ L.sc.a / L.sc.X' := by
     have : L.sc.b' = L.sc.a / L.sc.X' := rfl
     linarith
@@ -696,10 +693,6 @@ theorem starAt_E (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
   obtain ⟨hLa, _, _, _, _, _, _, hDI, htI1, htI2, _, _, _, hPr1, _⟩ := hK
   obtain ⟨h500, hcw, hwb, hc0, _⟩ := base P
   have hfix : X.bs (stepP D p) t0 = t0 := reps_fix X (Finset.mem_filter.1 ht0).1
-  have hord1 : 1 < addOrderOf (hP D p) := by
-    have h1 : (1 : ℝ) < L.sc.x ^ (L.sc.eps / 4) :=
-      Real.one_lt_rpow L.sc.one_lt_alt (by have := L.sc.eps_pos; positivity)
-    exact_mod_cast lt_of_lt_of_le h1 hord
   have hlg := lg_ge_one P hp hX
   have hgl := gU_lower X K P hW hp hlg hj t0
   have hkk := kinkHH X P hW hp hc (UpperTheory.even_addOrderOf_hP_of_pow_le.2 D L p hord) hfix hj
@@ -722,11 +715,6 @@ theorem starAt_E (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
   have hE0 : 0 ≤ K.DI * (L.sc.x ^ (Scale.A / 2)) ^ 2 * ((N1 L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 3) * Real.logb p L.sc.a :=
     mul_nonneg (mul_nonneg (mul_nonneg hDI (by positivity)) (by positivity)) hlp
   have hnle : addOrderOf (hP D p) ≤ D.R.n := order_le_n D _
-  have hNle : Nv X p t0 ≤ D.R.n := by
-    rw [Nv_eq_card X hc hfix]
-    refine le_trans (Finset.card_le_univ _) ?_
-    rw [Fintype.card_fin]
-    exact hnle
   have hGw : K.Pr1 * (C31 * Real.log L.sc.x / L.sc.delta1) * L.sc.w'' D.R.n ≤
       C * L.sc.w'' D.R.n * Real.log L.sc.x / L.sc.delta1 := by
     have h1 : 0 ≤ L.sc.w'' D.R.n * Real.log L.sc.x / L.sc.delta1 :=

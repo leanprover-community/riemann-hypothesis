@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.NatCastEqZeroOfNotDvd
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Mathlib.RingTheory.Valuation.Basic
 public import Mathlib.Algebra.Polynomial.AlgebraMap
@@ -38,11 +39,7 @@ theorem zero_lt_one' : (0 : WithTop ℚ) < 1 := by exact_mod_cast (zero_lt_one :
 theorem one_lt_two' : (1 : WithTop ℚ) < 1 + 1 := by exact_mod_cast (by norm_num : (1 : ℚ) < 1 + 1)
 
 theorem natCast_nonneg (n : ℕ) : 0 ≤ v (n : LL) := by
-  induction n with
-  | zero => rw [Nat.cast_zero, AddValuation.map_zero]; exact le_top
-  | succ n ih =>
-    rw [Nat.cast_succ]
-    exact AddValuation.map_le_add v ih (by rw [AddValuation.map_one])
+  apply _root_.Formalism.MainNotions.UnusedSlot80.LTE.natCast_nonneg <;> assumption
 
 theorem intCast_nonneg (z : ℤ) : 0 ≤ v (z : LL) := by
   obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg z
@@ -408,12 +405,10 @@ private theorem card_filter_dvd_sub_mul_le_Icc_length_add (q : ℤ) (hq : 0 < q)
     have hlt : q * (v - u) < q := by linarith
     have hgt : -q < q * (v - u) := by linarith
     have h1' : v - u < 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     have h2' : -1 < v - u := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith
     have hvu : v = u := by omega
     subst hvu

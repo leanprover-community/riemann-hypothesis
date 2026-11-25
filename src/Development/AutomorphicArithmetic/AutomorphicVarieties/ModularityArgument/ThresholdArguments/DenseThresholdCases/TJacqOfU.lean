@@ -454,9 +454,8 @@ private theorem unit_mem (c : ℕ) (u : (w.adicCompletion F)ˣ) (hu : IsUnitAt w
 end Loc
 end UpperTheory.V.Sd
 open UpperTheory.V.Sd in
-theorem UpperTheory.V.Sd.jacqOfU_alt :
-    _root_.UpperTheory.V.Af.Hypotheses' → UpperTheory.V.Sd.JacqOfU := by
-  intro _ F _ _ w σ c lam hc ⟨v, hv, hfix, hU⟩
+theorem UpperTheory.V.Sd.jacqOfU : UpperTheory.V.Sd.JacqOfU := by
+  intro F _ _ w σ c lam hc ⟨v, hv, hfix, hU⟩
   obtain ⟨ω, hω⟩ := cent w σ
   obtain ⟨S, hS, hcard⟩ := reps w
   have hsum := (uopSum F w σ.V σ.ρ c v hfix).2 _ hS
@@ -468,5 +467,9 @@ theorem UpperTheory.V.Sd.jacqOfU_alt :
     (pi_pow hπ) (IsUnitAt w) (pi_dec hπ) σ.ρ σ.irred (tors σ) (fin_orb σ) ω hω v hv (fun x hx => ?_)
     (fun u hu => hfix _ (unit_mem c u hu)) S lam hsum.symm
   simpa using hfix _ (affine_mem_iwahori_level w c 1 ⟨x, hx⟩)
+
+theorem UpperTheory.V.Sd.jacqOfU_alt :
+    _root_.UpperTheory.V.Af.Hypotheses' → UpperTheory.V.Sd.JacqOfU :=
+  fun _ => UpperTheory.V.Sd.jacqOfU
 end
 end

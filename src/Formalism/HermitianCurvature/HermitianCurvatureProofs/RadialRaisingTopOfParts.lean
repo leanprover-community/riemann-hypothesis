@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P.PBN
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section loc
 
 variable {r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -74,8 +72,6 @@ end Formalism.FourierDecayAlt.P.PBN
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.PBN
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem radial_raising_top_of_parts : PBN.RadAATopOfParts := by
   intro hJ hC hM hR hCp Wp Wq _ _ _ _ _ _ P Bs X μ L st l0 y hD F hF

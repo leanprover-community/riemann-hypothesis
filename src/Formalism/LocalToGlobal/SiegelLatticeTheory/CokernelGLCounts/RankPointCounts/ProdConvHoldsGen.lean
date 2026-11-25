@@ -1,5 +1,7 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUHerm
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcSIntWittOEv
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ProdConvCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DensitySumsAndDomination
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.AlTiePl
@@ -248,8 +250,6 @@ open MeasureTheory NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.Measures Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
   Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets Formalism.L2.SG.Pf.MassDataX
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem local_factors_pos_typical_general {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (ψ : AddChar (AF X.B.I.F) ℂ)
     (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ) (hloc : ∀ w : D.what₂.Word, LocCompatX X ψ w)
     (u u' : D.what₂.Word) (v : PlX X) (hv : TypAt X v) : 0 < MX X u u' ψ v ∧ 0 < localVolumeUnit X ψ v := by
@@ -299,8 +299,6 @@ namespace Formalism.L2.SG.Pf.ProdConvCut2
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.NcVal
   Formalism.L2.SG.Pf.NcVal.VolOrdW Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory Formalism.L2.SG.TypedSets
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ)
 
@@ -492,8 +490,6 @@ namespace Formalism.L2.SG.Pf.LocalPositivity
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.Pf.NcVal
   Formalism.L2.SG.Pf.NcVal.VolOrdW Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory Formalism.L2.SG.TypedSets
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ)
 
 theorem pos_of_div {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : 0 < a / b) : 0 < a ∧ 0 < b := by
@@ -581,34 +577,7 @@ theorem sc_mul (t : Fv F v) (x : Fv F v ⊗[F] E) : sc (E := E) v t * x = t • 
 
 theorem oev_mul {x y : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) (hy : y ∈ OEv (E := E) v) :
     x * y ∈ OEv (E := E) v := by
-  unfold OEv at hx hy ⊢
-  rw [SetLike.mem_coe] at hx hy ⊢
-  induction hx using Submodule.span_induction with
-  | mem a ha =>
-    induction hy using Submodule.span_induction with
-    | mem b hb =>
-      obtain ⟨a', -, rfl⟩ := ha
-      obtain ⟨b', -, rfl⟩ := hb
-      apply Submodule.subset_span
-      refine ⟨a' * b', Set.mem_univ _, ?_⟩
-      first
-        | exact map_mul _ _ _
-    | zero => simp
-    | add y z _ _ hy hz =>
-      rw [mul_add]
-      exact Submodule.add_mem _ hy hz
-    | smul c y _ hy =>
-      first
-        | rw [mul_smul_comm]
-      exact Submodule.smul_mem _ c hy
-  | zero => simp
-  | add x z _ _ hx hz =>
-    rw [add_mul]
-    exact Submodule.add_mem _ hx hz
-  | smul c x _ hx =>
-    first
-      | rw [smul_mul_assoc]
-    exact Submodule.smul_mem _ c hx
+  apply _root_.Formalism.L2.SG.Pf.NcS.IntWittPf.oev_mul <;> assumption
 
 theorem sigR_smul (σ : E →ₐ[F] E) (c : Fv F v) (x : Fv F v ⊗[F] E) :
     sigR (Fv F v) σ (c • x) = c • sigR (Fv F v) σ x := by
@@ -624,22 +593,7 @@ private theorem sigR_smulO_lemma (σ : E →ₐ[F] E) (c : v.adicCompletionInteg
 
 theorem oev_sigR (σ : E →ₐ[F] E) {x : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) :
     sigR (Fv F v) σ x ∈ OEv (E := E) v := by
-  unfold OEv at hx ⊢
-  rw [SetLike.mem_coe] at hx ⊢
-  induction hx using Submodule.span_induction with
-  | mem a ha =>
-    obtain ⟨a', -, rfl⟩ := ha
-    apply Submodule.subset_span
-    first
-      | exact ⟨NumberField.RingOfIntegers.mapRingHom (σ : E →+* E) a', Set.mem_univ _,
-          by simp [sigR, inclR]⟩
-  | zero => simp
-  | add x y _ _ hx hy =>
-    rw [map_add (f := _)]
-    exact Submodule.add_mem _ hx hy
-  | smul c x _ hx =>
-    rw [sigR_smulO_lemma]
-    exact Submodule.smul_mem _ c hx
+  apply _root_.Formalism.L2.SG.Pf.NcS.IntWittPf.oev_sigR <;> assumption
 
 theorem integer_ring_topology : OTop (E := E) v :=
   ⟨Sd.isCompact_oev v, Sd.isOpen_oev v, oev_one v, fun _ hx _ hy => oev_mul v hx hy,
@@ -920,17 +874,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)}
 
 theorem continuous_sigR' (σ : E →ₐ[F] E) : Continuous (sigR (Fv F v) σ) := by
-  have : IsModuleTopology (Fv F v) (Fv F v ⊗[F] E) := ⟨rfl⟩
-  have h : ∀ x : Fv F v ⊗[F] E, sigR (Fv F v) σ x = (σ.toLinearMap.baseChange (Fv F v)) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r e => simp [sigR]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have : (sigR (Fv F v) σ : Fv F v ⊗[F] E → Fv F v ⊗[F] E) = (σ.toLinearMap.baseChange (Fv F v)) :=
-    funext h
-  rw [this]
-  exact IsModuleTopology.continuous_of_linearMap _
+  apply _root_.Formalism.L2.SG.Pf.NcVal.VolUHm.sigR_cont <;> assumption
 
 namespace SD
 
@@ -1151,8 +1095,6 @@ namespace Formalism.L2.SG.Pf.ProdConvCut2
 open MeasureTheory NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets Formalism.L2.SG.Pf.NcVal
   Formalism.L2.SG.Pf.NcVal.VolOrdW
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem pp_pos_typ_gen {D : D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (ψ : AddChar (AF X.B.I.F) ℂ)
     (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ) (u u' : D.what₂.Word) (v : PlX X) (hv : TypAt X v)

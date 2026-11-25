@@ -200,8 +200,7 @@ theorem linIndep_of_eigen_weights : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l
   intro a hcard hrel
   by_contra hne
   obtain ⟨j0, hj0⟩ : ∃ j0, a j0 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   set b : ι → ℂ_[l] := fun j => (a j0)⁻¹ * a j with hb
   have hbrel : ∑ j, b j • v j = 0 := by

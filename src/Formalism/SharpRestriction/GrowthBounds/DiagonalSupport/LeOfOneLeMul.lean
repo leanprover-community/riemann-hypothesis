@@ -214,8 +214,6 @@ theorem numStep_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → �
   have h11' : 8 * ((Dp : ℝ) + 1) ≤ (cStar : ℝ) := by exact_mod_cast h11
   have hcP : 80 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) <
       ((cPrime n' r TT.card c0 cpp cStar : ℕ) : ℝ) := by
-    have e : C * (TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a =
-        C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) := by ring
     have e2 : 10 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) ≤
         C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) :=
       mul_le_mul_of_nonneg_right hC10 (by linarith [hnb.one_le_Lg])

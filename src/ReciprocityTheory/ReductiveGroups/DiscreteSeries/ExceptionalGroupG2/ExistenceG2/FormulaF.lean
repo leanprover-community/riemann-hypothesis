@@ -29,16 +29,6 @@ open Finset Matrix MeasureTheory Filter Topology
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 variable {n : ℕ} {ε : Fin n → Bool}
 
-section General
-
-section Smooth
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-end Smooth
-
-end General
-
 section KMap
 
 variable {Λ : Fin n → ℝ}

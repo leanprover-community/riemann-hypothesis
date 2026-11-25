@@ -363,8 +363,6 @@ theorem muMax_le_class : ∃ c, ((D.fm u).lat 0).muMax ≤ (withL ((D.fm u).lat 
 
 end Rank
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def SlopeMaxClass (D : D7) : Prop :=
   ∀ u (CV : ColVal D u) (c : (D.mem u).C.cls 0), (∃ y : Fin (D.R.N 0) → (D.sp.X 0).V, Formalism.MainNotions.flipTwoThree.ShortAt D u c y) →
     (withL ((D.fm u).lat 0) (NC CV c)).muMax ≤

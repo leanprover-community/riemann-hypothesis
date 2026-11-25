@@ -65,8 +65,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
 noncomputable section
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.EpsAdd
 
 open GlobalTheory.VertSpanZero
@@ -253,8 +251,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField MonoidalCategory Cartes
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 
 noncomputable section
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.VertSpanZero
 

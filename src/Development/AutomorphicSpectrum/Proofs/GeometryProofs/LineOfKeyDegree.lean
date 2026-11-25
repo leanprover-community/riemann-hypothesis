@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkNum
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import GroundTheory.PAdicHodge.SlopeCauchyBinet
@@ -24,80 +25,18 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.LevelT
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsIntegralJetBasis
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsThetaSectionsBounded
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionSupNormFieldExtension
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaFunctionArchimedeanFrame
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Convex.Contractible
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtension
 import GroundTheory.HeightsAndTheta.Heights.FactorialBounds.Assembly
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.BaseChangeIndex
-import Mathlib.Topology.Separation.CompletelyRegular
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AdelicProofs.IntegralFlagEmbeddingCriterion, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsThetaSupBoundLogMean, Development.AutomorphicSpectrum.Proofs.MetricProofs.IteratedDerivBoundGaussianGrowth, Development.AutomorphicSpectrum.Proofs.MetricProofs.ThetaDerivativeBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineOfKeyDegree
@@ -1343,8 +1282,7 @@ theorem exists_pair {θ : (Fin g → ℂ) → ℂ} (hθ : a.IsTheta 1 θ) (h0 : 
     exact mul_ne_zero (mul_ne_zero hp hq1) hq2
   set s₀ := tri θ p q with hs₀def
   obtain ⟨p', q', hpq⟩ : ∃ p' q', (-(fderiv ℂ s₀ 0 v) / s₀ 0) * tri θ p' q' 0 + fderiv ℂ (tri θ p' q') 0 v ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hv (separates a hθ h0 _ v hall)
   have hs := isTheta_tri a hθ p' q'
   refine ⟨s₀, fun w => s₀ 0 * tri θ p' q' w - tri θ p' q' 0 * s₀ w, hs₀, IsTheta.lin a hs hs₀ _ _, hne, by ring, ?_⟩
@@ -1469,15 +1407,7 @@ theorem slope_sum {K : Type} [Field K] [NumberField K] (n' : ℕ) (hn' : 1 ≤ n
 
 theorem mean_comp {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
     (f : (K →+* ℂ) → ℝ) : mean K' (fun σ => f (σ.comp (algebraMap K K'))) = mean K f := by
-  have hd : (Module.finrank ℚ K : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := K)).ne'
-  have hd' : (Module.finrank K K' : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := K) (M := K')).ne'
-  have hm : (Module.finrank ℚ K' : ℝ) = Module.finrank ℚ K * Module.finrank K K' := by
-    exact_mod_cast (Module.finrank_mul_finrank ℚ K K').symm
-  simp only [mean]
-  rw [GroundTheory.Heights₂.Heights.LatticeLemmas.sum_comp_algebraMap, hm]
-  field_simp
+  apply _root_.Formalism.L2.Pj.abelian₂.mean_restrict <;> assumption
 
 section Frame
 

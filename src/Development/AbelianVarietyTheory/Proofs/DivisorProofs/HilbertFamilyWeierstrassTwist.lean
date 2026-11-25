@@ -135,7 +135,6 @@ def rowEquiv (F : Type) [Field F] (γ : SL(2, ℤ)) : (Fin 2 → F) ≃ₗ[F] (F
 
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
-set_option autoImplicit false in
 private lemma iterD_const_mul {I : Type} [Fintype I] [DecidableEq I] (u : List I)
     (h : (I → ℂ) → ℂ) (A : ℂ) (z : I → ℂ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.iterD u (fun z ↦ A * h z) z =
@@ -144,7 +143,6 @@ private lemma iterD_const_mul {I : Type} [Fintype I] [DecidableEq I] (u : List I
 
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
-set_option autoImplicit false in
 private lemma mem_iff_sl2_equiv_mem_mulMat (F : Type) [Field F] [NumberField F] (L : _root_.GlobalTheory.HilbFam.Lat F)
     (γ : SL(2, ℤ)) (x : Fin 2 → F) :
     x ∈ L ↔ _root_.GlobalTheory.HilbFam.JetModular.rowEquiv F γ x ∈ _root_.GlobalTheory.HilbFam.mulMat L (γ : Matrix (Fin 2) (Fin 2) ℤ) := by
@@ -158,7 +156,6 @@ private lemma mem_iff_sl2_equiv_mem_mulMat (F : Type) [Field F] [NumberField F] 
 
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
-set_option autoImplicit false in
 private lemma embeddingCoord_sl2_smul_lemma_3 (F : Type) [Field F] [NumberField F] (γ : SL(2, ℤ)) (τ : ℍ)
     (c t : ℂ) (z : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ) (x : Fin 2 → F) (i : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F) :
     _root_.GlobalTheory.HilbFam.coord (fun i ↦ ((γ • τ : ℍ) : ℂ) + z i * (c * ((γ • τ : ℍ) : ℂ) + t)) (fun i ↦ 1 + z i * c) x i =
@@ -187,7 +184,6 @@ private lemma embeddingCoord_sl2_smul_lemma_3 (F : Type) [Field F] [NumberField 
 
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
-set_option autoImplicit false in
 private lemma card_realEmbeddings_eq_finrank (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
     Fintype.card (_root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F) = Module.finrank ℚ F := by
   rw [← NumberField.Embeddings.card F ℂ]
@@ -202,7 +198,6 @@ private lemma card_realEmbeddings_eq_finrank (F : Type) [Field F] [NumberField F
 
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
-set_option autoImplicit false in
 theorem _root_.GlobalTheory.HilbFam.JetModular.jet_smul : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (L : _root_.GlobalTheory.HilbFam.Lat F) (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (γ : SL(2, ℤ)) (τ : ℍ) (c t : ℂ), Even k → _root_.GlobalTheory.HilbFam.jet k L κ ((γ • τ : ℍ) : ℂ) c t = (((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) : ℂ) ^ (k * Module.finrank ℚ F) * _root_.GlobalTheory.HilbFam.jet k (_root_.GlobalTheory.HilbFam.mulMat L (γ : Matrix (Fin 2) (Fin 2) ℤ)) κ τ (c - t * ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 : ℂ) * ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1)) (t * ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) ^ 2) := by
   intro F _ _ _ k L κ γ τ c t hk
   have hj : ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) ≠ 0 := by

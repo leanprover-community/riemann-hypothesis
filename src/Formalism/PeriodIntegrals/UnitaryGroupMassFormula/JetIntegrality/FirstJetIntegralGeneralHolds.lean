@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.JetsPhW
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JetIntegrality.CoeffSubstOfDegreeEqOne
 import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormulaUnit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JetIntegrality.ExpLow, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JetIntegrality.FirstJetIntegralGeneralHolds
@@ -37,12 +38,7 @@ theorem coeff_truncatedExp_of_degree_eq_one {σ : Type*} (F : MvPowerSeries σ �
   simp
 
 theorem norm_two (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
-  have h : ‖((2 : ℕ) : ℚ_[p])‖ = 1 :=
-    Padic.norm_natCast_eq_one_iff.2 ((Nat.coprime_primes (Fact.out) Nat.prime_two).2 hp)
-  have e : (2 : ℂ_[p]) = ((algebraMap ℚ_[p] (PadicAlgCl p) ((2 : ℕ) : ℚ_[p]) : PadicAlgCl p) : ℂ_[p]) := by
-    rw [map_natCast, PadicComplex.coe_natCast]
-    norm_num
-  rw [e, PadicComplex.norm_extends, PadicAlgCl.norm_extends, h]
+  apply _root_.Formalism.MainNotions.Ext.CutA.norm_two_cp <;> assumption
 
 end PI.JetsPhW.Low
 end -- clump:auto

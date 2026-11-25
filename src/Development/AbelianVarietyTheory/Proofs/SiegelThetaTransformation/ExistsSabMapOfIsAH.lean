@@ -68,7 +68,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj GlobalTheory.Dict GlobalTheory.ClsVal
 open scoped Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.Dict.SameFibre
 

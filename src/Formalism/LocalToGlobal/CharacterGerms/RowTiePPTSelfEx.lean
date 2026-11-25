@@ -454,8 +454,7 @@ theorem typ_gen {N : Type} (M : Set (ℕ → N → C))
         by_cases hl2' : V.l = 2
         · refine ⟨3, Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by omega), Nat.prime_three, by omega⟩, dvd_zero 3⟩
         · refine ⟨2, Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by omega), Nat.prime_two, fun h => hl2' h.symm⟩, dvd_zero 2⟩
-      · by_contra hne
-        push_neg at hne
+      · by_contra! hne
         apply hpow'
         refine ⟨n.primeFactorsList.length, (Nat.eq_prime_pow_of_unique_prime_dvd hn0 ?_).symm⟩
         intro q hq hqn

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ValuationBoundAdd
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
 
@@ -23,12 +24,7 @@ theorem prime_cast_ne_zero : ((p : ℕ) : K0 p) ≠ 0 := by
   simpa using h2
 
 theorem pKf_ne (Y : Pend X) : ((p : ℕ) : X.G.Kf) ≠ 0 := by
-  intro h
-  have h1 : algebraMap X.G.Kf Y.Kc ((p : ℕ) : X.G.Kf) = 0 := by rw [h, map_zero]
-  have h2 : algebraMap (K0 p) Y.Kc ((p : ℕ) : K0 p) = 0 := by
-    rw [map_natCast] at h1 ⊢
-    exact h1
-  exact prime_cast_ne_zero ((map_eq_zero _).1 h2)
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.pK_ne <;> assumption
 
 theorem algebraMap_inj (Y : Pend X) (he : 0 < X.eO) : Function.Injective (algebraMap X.G.O X.G.Kf) := by
   rw [injective_iff_map_eq_zero]

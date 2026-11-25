@@ -110,8 +110,7 @@ theorem placeBound (r : ℕ) (ν sv : Fin r → ℝ) (Q : ℝ) (hν : ∀ i, 0 �
 theorem blockIntegral_of (hG : GaussCoord) : BlockIntegral := by
   intro Pl ι _ _ W _ _ r ν s Th R S hν hs hsq hTh hR
   have hS : 0 ≤ S := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h0 := (norm_nonneg _).trans (hTh 0)
     have := mul_neg_of_neg_of_pos hneg (Real.exp_pos (nsq (0 : Pl × ι → ℂ) / 2))
     linarith

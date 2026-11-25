@@ -125,19 +125,6 @@ def intSubring (v : AddValuation C (WithTop ℝ)) : Subring C where
 theorem isIntV_iff (v : AddValuation C (WithTop ℝ)) (x : C) : IsIntV v x ↔ x ∈ intSubring v :=
   Iff.rfl
 
-theorem int_of_le (v : AddValuation C (WithTop ℝ)) {a b : C} (hb : b ≠ 0)
-    (h : v b ≤ v (a * b)) : IsIntV v a := by
-  show 0 ≤ v a
-  rw [AddValuation.map_mul] at h
-  have hb' : v b ≠ ⊤ := fun h' => hb ((AddValuation.top_iff v).1 h')
-  obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.1 hb'
-  rcases eq_or_ne (v a) ⊤ with ha | ha
-  · rw [ha]; exact le_top
-  obtain ⟨s, hs⟩ := WithTop.ne_top_iff_exists.1 ha
-  rw [← hr, ← hs, ← WithTop.coe_add, WithTop.coe_le_coe] at h
-  rw [← hs]
-  exact_mod_cast (by linarith : (0 : ℝ) ≤ s)
-
 end
 
 end GlobalTheory.LowU
@@ -157,7 +144,7 @@ theorem pivot_step (v : AddValuation C (WithTop ℝ)) {i' n : ℕ}
     (M : Matrix (Fin (i' + 1)) (Fin (n + 1)) C) (h0 : M 0 0 ≠ 0)
     (hmin : ∀ b, v (M 0 0) ≤ v (M b 0)) : Reduces v M := by
   have hq : ∀ c : Fin i', IsIntV v (M c.succ 0 / M 0 0) := fun c =>
-    int_of_le v h0 (by rw [div_mul_cancel₀ _ h0]; exact hmin c.succ)
+    GlobalTheory.powRow_int_of_le v h0 (by rw [div_mul_cancel₀ _ h0]; exact hmin c.succ)
   obtain ⟨g', cr', hc1, hc2, hint, hdet, hz⟩ :=
     ih (Matrix.of fun c e' => M c.succ e'.succ - M c.succ 0 / M 0 0 * M 0 e'.succ)
   have hw : ∀ a'', IsIntV v (-∑ c, g' a'' c * (M c.succ 0 / M 0 0)) := fun a'' =>
@@ -1022,8 +1009,7 @@ theorem _root_.GlobalTheory.RootFin.root_fin : _root_.ReciprocityTheory.ChartRes
   · intro a ha haD
     set w := e.symm ⟨a, ha⟩ with hw
     have hjw : j ≤ (w : ℕ) := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact haD (Finset.mem_image.mpr ⟨w, by simp [hlt], by simp [hw]⟩)
     have key := hTzero w hjw
     have hp0 : p ^ n ≠ 0 := pow_ne_zero _ hp.ne_zero

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccDAdjB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.IsPhysSet
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.FockWeights
@@ -129,20 +130,7 @@ theorem adMat_conjTranspose (k : Matrix (Fin n) (Fin n) ℂ) : (adMat ε k)ᴴ =
     · simp [h, Ne.symm h]
 
 theorem kset_conjTranspose {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) : kᴴ ∈ Kset ε := by
-  refine ⟨?_, ?_⟩
-  · have := hk.1
-    rw [Matrix.mem_unitaryGroup_iff] at this ⊢
-    rw [star_eq_conjTranspose, conjTranspose_conjTranspose]
-    rw [star_eq_conjTranspose] at this
-    exact mul_eq_one_comm.mp this
-  · have hJ : (Jm ε)ᴴ = Jm ε := by
-      simp only [Jm, Matrix.diagonal_conjTranspose]
-      congr 1
-      funext a
-      by_cases h : ε a = true <;> simp [h]
-    have := congrArg Matrix.conjTranspose hk.2
-    rw [conjTranspose_mul, conjTranspose_mul, hJ] at this
-    exact this.symm
+  apply ReciprocityTheory.ChartRestriction.DS.adjB_star_Kset <;> assumption
 
 theorem adMat_unitary {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) : (adMat ε k)ᴴ * adMat ε k = 1 := by
   rw [adMat_conjTranspose, ← adMat_mul (kset_conjTranspose hk) hk]

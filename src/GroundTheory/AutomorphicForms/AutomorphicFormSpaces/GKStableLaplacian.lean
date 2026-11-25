@@ -22,8 +22,6 @@ namespace AutomorphicForm
 
 set_option linter.unusedSectionVars false
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 theorem exists_monic_aeval_apply_eq_zero {M : Type*} [AddCommGroup M] [Module ℂ M]
     (T : Module.End ℂ M) (V : Submodule ℂ M) [FiniteDimensional ℂ V] (hV : ∀ w ∈ V, T w ∈ V)
     {v : M} (hv : v ∈ V) :

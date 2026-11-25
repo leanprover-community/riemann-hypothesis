@@ -242,20 +242,6 @@ theorem frobenius_uniformiser_wach {G : Type} [Group G] [TopologicalSpace G] {Qp
     exact (w.isUnit.map _).mul (W.EE_π.pow _)
   exact frobpin_local W T I hI hφI π' (Formalism.MainNotions.DeltaInvariantLattices.Eat E π') u s' h' M hu hEI hsM hN hπΔ' hunit
 
-theorem max_unramified_finrank_pos {l : ℕ} [Fact l.Prime] (K : FinExt l) : 0 < finrank ℚ_[l] ↥(K0 K) := by
-  have := K.2
-  have : FiniteDimensional ℚ_[l] ↥(K0 K) := FiniteDimensional.of_injective
-      (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).toLinearMap
-      (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).injective
-  exact finrank_pos
-
-theorem frobpin_finrank_sup {l : ℕ} [Fact l.Prime] (F : IntermediateField ℚ_[l] (Om l)) (y : Om l)
-    (hint : IsIntegral F y) :
-    finrank ℚ_[l] ↥(F ⊔ IntermediateField.adjoin ℚ_[l] {y}) = finrank ℚ_[l] ↥F * (minpoly F y).natDegree := by
-  rw [← IntermediateField.restrictScalars_adjoin_eq_sup, ← IntermediateField.adjoin.finrank hint]
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact (Module.finrank_mul_finrank ℚ_[l] ↥F ↥(IntermediateField.adjoin F {y})).symm
-
 theorem frobpin_sK_pos {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l) (hG : Good K 1 LL) :
     1 ≤ sK l K := by
   apply Formalism.MainNotions.N.Ln34.ramification_quotient_pos <;> assumption

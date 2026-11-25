@@ -59,8 +59,6 @@ noncomputable section
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CechKS
 
 variable {K : Type} [Field K]

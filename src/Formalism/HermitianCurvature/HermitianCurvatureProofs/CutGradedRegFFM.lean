@@ -20,8 +20,6 @@ open NumberField
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section thr
 
 end thr

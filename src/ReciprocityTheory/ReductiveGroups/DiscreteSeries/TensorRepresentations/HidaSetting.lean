@@ -45,11 +45,6 @@ theorem tset_genSub_E {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n →
   intro T hT
   exact hT.2 a b v (hv T hT)
 
-theorem tset_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n → Fin n → Module.End ℂ M)
-    (r d : Fin n) : actM E (Matrix.single r d (1 : ℂ)) = E r d := by
-  unfold actM
-  simp [Matrix.single_apply, ite_smul, ite_and]
-
 theorem tset_conj_single (k : Matrix (Fin n) (Fin n) ℂ) (r d a b : Fin n) :
     (k * Matrix.single r d (1 : ℂ) * kᴴ : Matrix (Fin n) (Fin n) ℂ) a b = k a r * star (k b d) := by
   simp [Matrix.mul_apply, Matrix.single_apply, Matrix.conjTranspose_apply, ite_and, ite_mul,

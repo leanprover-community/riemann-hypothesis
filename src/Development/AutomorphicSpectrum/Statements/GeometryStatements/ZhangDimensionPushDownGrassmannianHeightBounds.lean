@@ -22,8 +22,7 @@ open GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundF
 namespace Prov
 
 def HS : Prop :=
-  SuccessiveMinimaLowerBound ∧ SuccessiveMinimaUpperBound ∧ ArithmeticIntersectionNonneg ∧ ArithmeticVolumeLowerBound ∧ BirationalPullbackPushforwardFormula ∧ ArithmeticHilbertSamuelUpperBound ∧ ArithmeticHilbertSamuelUpperBoundNumberField ∧
-    HilbertSamuel.G3.Statement ∧ HilbertSamuel.ArithmeticVolumeMultiplicative.Statement
+  SuccessiveMinimaLowerBound ∧ SuccessiveMinimaUpperBound ∧ BirationalPullbackPushforwardFormula
 
 def An : Prop :=
   ReciprocityTheory.AnForm.P.TailBoundStatement ∧ ReciprocityTheory.AnForm.P.ConvergenceStatement ∧

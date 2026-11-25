@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudADef
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.OneMemDualWeyl
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CcDualWtAnti
@@ -154,12 +155,7 @@ theorem last_ne_zero'' (m : ℕ) (hm : 1 ≤ m) : Fin.last m ≠ 0 := by
 
 theorem lamAt_add' {n' m : ℕ} (X Y : Fin n' → Fin (m + 1) → ℤ) (s : Fin n') :
     lamAt (X + Y) s = lamAt X s + lamAt Y s := by
-  unfold lamAt
-  split_ifs
-  · rfl
-  · funext i
-    simp only [Pi.add_apply]
-    ring
+  apply _root_.Formalism.MainNotions.Pf14.lamAt_add <;> assumption
 
 theorem lamAt_sub' {n' m : ℕ} (X Y : Fin n' → Fin (m + 1) → ℤ) (s : Fin n') :
     lamAt (X - Y) s = lamAt X s - lamAt Y s := by
@@ -519,8 +515,7 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
           exact Finset.prod_congr rfl fun s _ => by rw [map_mul, mul_comm]
         · rw [if_neg hab]
           have hex : ∃ s, e a' s ≠ e b s := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hab (e.injective (funext hcon))
           obtain ⟨s0, hs0⟩ := hex
           apply Finset.prod_eq_zero (Finset.mem_univ s0)

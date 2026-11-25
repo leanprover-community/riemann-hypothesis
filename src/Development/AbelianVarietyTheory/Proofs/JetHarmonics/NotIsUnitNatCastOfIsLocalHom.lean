@@ -57,8 +57,6 @@ open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open scoped TensorProduct
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.OriginChartMultiplication
 
 def jetOfSeries {R : Type} [CommRing R] {κ : Type} [Finite κ] (m : ℕ) (f : MvPowerSeries κ R) :
@@ -81,11 +79,6 @@ def IsOriginChart {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] {d : ℕ}
 def mulSeries {R : Type} [CommRing R] {d : ℕ} (F : FGLaw R d) (n : ℕ) : Pt R 1 d :=
   Nat.rec (motive := fun _ => Pt R 1 d) 0 (fun _ a => F.add a (pt R d 0)) n
 
-theorem mulSeries_one {R : Type} [CommRing R] {d : ℕ} (F : FGLaw R d) :
-    mulSeries F 1 = pt R d 0 := by
-  funext i
-  exact F.unit i
-
 def torsionIdeal {T O : Type} [CommRing T] [CommRing O] (f : T →+* O) {d : ℕ} (F : FGLaw T d)
     (n : ℕ) : Ideal (PS O 1 d) :=
   Ideal.span (Set.range fun i : Fin d => MvPowerSeries.map f (mulSeries F n i))
@@ -107,8 +100,6 @@ open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF GlobalTheory.IndefiniteRowSideFullHecke.OriginChartMultiplication
 open scoped TensorProduct
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsionCompare
 

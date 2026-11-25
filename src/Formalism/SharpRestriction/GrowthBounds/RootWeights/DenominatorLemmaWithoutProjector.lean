@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.MemWeightSpaceIffDiagonalRep
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DegreeZeroWeightsBounded
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
@@ -347,15 +348,7 @@ def ProjectorRecursionProperty (E : GLOps n K V) (c : Fin n) (s : ℕ) (y : V) :
 
 theorem gl_commutation_relation_apply {E : GLOps n K V} (hE : IsGLRep E) (a b c d : Fin n) (y : V) :
     E a b (E c d y) = E c d (E a b y) + (if b = c then E a d y else 0) - (if d = a then E c b y else 0) := by
-  have h := LinearMap.congr_fun (hE.1 a b c d) y
-  have e1 : ((if b = c then E a d else 0) : Module.End K V) y = if b = c then E a d y else 0 := by
-    split_ifs <;> rfl
-  have e2 : ((if d = a then E c b else 0) : Module.End K V) y = if d = a then E c b y else 0 := by
-    split_ifs <;> rfl
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, e1, e2] at h
-  rw [sub_eq_iff_eq_add] at h
-  rw [h]
-  abel
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.gl_commutation_apply <;> assumption
 
 theorem projector_recursion_base {E : GLOps n K V} (hE : IsGLRep E) (c : Fin n) (u : V) (hu0 : u ∈ weightSp E 0)
     (hu : ∀ a b : Fin n, a < c → b < c → E a b u = 0) : ProjectorRecursionProperty E c 0 u := by
@@ -753,41 +746,12 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
 private theorem E_apply_mem_weightSp_add_rootW_of_ne {E : GLOps n K V} (hE : IsGLRep E) {a b : Fin n} (hab : a ≠ b)
     {μ : Fin n → ℤ} {x : V} (hx : x ∈ weightSp E μ) : E a b x ∈ weightSp E (μ + rootW a b) := by
-  rw [_root_.Formalism.MainNotions.G.GLWeightTheory.mem_weightSpace_iff_diagonal_eigen] at hx ⊢
-  intro c
-  have hc := LinearMap.congr_fun (hE.1 c c a b) x
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, hx c, map_smul] at hc
-  rw [sub_eq_iff_eq_add] at hc
-  by_cases h1 : c = a
-  · have h2 : ¬ b = c := fun h => hab (h1.symm.trans h.symm)
-    rw [if_pos h1, if_neg h2, h1] at hc
-    rw [h1] at *
-    simp only [LinearMap.zero_apply, sub_zero] at hc
-    rw [hc]
-    simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_eq_same, Pi.single_apply, hab, if_false,
-      sub_zero, Int.cast_add, Int.cast_one, add_smul, one_smul]
-    abel
-  · by_cases h2 : b = c
-    · rw [if_neg h1, if_pos h2] at hc
-      subst h2
-      simp only [LinearMap.zero_apply, zero_sub] at hc
-      rw [hc]
-      simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_eq_same, Pi.single_apply,
-        Ne.symm hab, if_false, zero_sub, Int.cast_add, Int.cast_neg, Int.cast_one, add_smul,
-        neg_smul, one_smul]
-      abel
-    · rw [if_neg h1, if_neg h2] at hc
-      simp only [LinearMap.zero_apply, sub_zero, zero_add] at hc
-      rw [hc]
-      have h2' : c ≠ b := fun h => h2 h.symm
-      simp only [rootW, Pi.add_apply, Pi.sub_apply, Pi.single_apply, h1, h2', if_false, sub_zero,
-        add_zero]
+  intros
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.gl_rep_weight_shift <;> assumption
 
 private theorem E_pow_apply_mem_weightSp_ne_zero_of_highest [CharZero K] {E : GLOps n K V} (hE : IsGLRep E) {a b : Fin n}
     (hab : a ≠ b) {μ : Fin n → ℤ} {v : V} (hv : v ∈ weightSp E μ) (hv0 : v ≠ 0)
@@ -951,7 +915,6 @@ theorem weight_difference_le_ell_of_rep [CharZero K] [FiniteDimensional K V] {E 
       Pi.natCast_apply]
     ring
   have hle : N ≤ ellOf E (⊤ : Submodule K V) := le_csSup (root_differences_bddAbove_top E) hmem
-  have hle' := (Nat.cast_le (α := ℤ)).2 hle
   omega
 
 end Formalism.MainNotions.G.GLWeightTheory
@@ -979,15 +942,13 @@ private theorem degreeZeroWeightsBounded_ellOf {n : ℕ} {K V : Type*} [Field K]
   intro ν hsum hne a
   have hsplit : ν a + ∑ i ∈ Finset.univ.erase a, ν i = 0 := by
     rw [Finset.add_sum_erase _ _ (Finset.mem_univ a)]; exact hsum
-  have hell : (0 : ℤ) ≤ (ellOf E (⊤ : Submodule K V) : ℤ) := by positivity
   rw [abs_le]
   constructor
   · by_cases h0 : 0 ≤ ν a
     · linarith
     · push_neg at h0
       obtain ⟨b, hb, hbpos⟩ : ∃ b ∈ Finset.univ.erase a, 0 < ν b := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have := Finset.sum_nonpos hc
         linarith
       have hba : b ≠ a := Finset.ne_of_mem_erase hb
@@ -997,8 +958,7 @@ private theorem degreeZeroWeightsBounded_ellOf {n : ℕ} {K V : Type*} [Field K]
     · linarith
     · push_neg at h0
       obtain ⟨b, hb, hbneg⟩ : ∃ b ∈ Finset.univ.erase a, ν b < 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have := Finset.sum_nonneg hc
         linarith
       have hab : a ≠ b := (Finset.ne_of_mem_erase hb).symm

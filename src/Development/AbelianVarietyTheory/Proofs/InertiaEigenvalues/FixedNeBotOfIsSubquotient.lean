@@ -102,8 +102,7 @@ theorem piTensor_isSubquotient_jac_degZero : ∀ (k : Type) [Field k] [Valuative
     rw [Ne, Submodule.Quotient.mk_eq_zero, hK, Submodule.mem_bot]; exact hv
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ (Jacquet π (unipRad k e)),
       φ (Submodule.Quotient.mk v) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 h)
   let L : Jacquet π (unipRad k e) →ₗ[ℂ] PiTensorProduct ℂ X :=
     (PiTensorProduct.isEmptyEquiv (Fin 0)).symm.toLinearMap ∘ₗ φ

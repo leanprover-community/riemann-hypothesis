@@ -9,6 +9,7 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.UniformSpace.Matrix
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
 
 @[expose] public section
 
@@ -174,37 +175,11 @@ theorem corollary_u2_of_parts_holds : GermExpansionHypothesisFromComponents := b
   rw [← mul_assoc] at h3
   exact h3
 
-private theorem one_le_gN_of_mem_GV {k r : ℕ} (g : B.Mat k r) (hg : g ∈ B.GV k r) : 1 ≤ B.gN g := by
-  letI : NormedAddCommGroup (B.Mat k r) := Matrix.frobeniusNormedAddCommGroup
-  have hH : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hne : Hpk k r ≠ 0 := by
-    intro h0
-    have h00 := congrFun (congrFun h0 ⟨r, by omega⟩) ⟨r, by omega⟩
-    simp [Hpk] at h00
-    try (split_ifs at h00 <;> norm_num at h00)
-  have h1 : ‖Hpk k r‖ ≤ ‖g‖ ^ 2 * ‖Hpk k r‖ := by
-    calc ‖Hpk k r‖ = ‖gᴴ * Hpk k r * g‖ := by rw [hH]
-      _ ≤ ‖gᴴ * Hpk k r‖ * ‖g‖ := Matrix.frobenius_norm_mul _ _
-      _ ≤ ‖gᴴ‖ * ‖Hpk k r‖ * ‖g‖ :=
-        mul_le_mul_of_nonneg_right (Matrix.frobenius_norm_mul _ _) (norm_nonneg _)
-      _ = ‖g‖ ^ 2 * ‖Hpk k r‖ := by rw [Matrix.frobenius_norm_conjTranspose]; ring
-  have hpos : 0 < ‖Hpk k r‖ := norm_pos_iff.2 hne
-  have h2 : 1 ≤ ‖g‖ ^ 2 := by nlinarith
-  have h3 : 1 ≤ ‖g‖ := by nlinarith [norm_nonneg g]
-  have h4 : B.gN g = ‖g‖ := by
-    unfold B.gN
-    rw [Matrix.frobenius_norm_def, Real.sqrt_eq_rpow]
-    congr 1
-    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-    rw [Complex.normSq_eq_norm_sq, Real.rpow_two]
-  rw [h4]
-  exact h3
-
 theorem ccMono : CCMono := by
   intro k ρ E _ _ a AB c mm F hAB hF
   obtain ⟨hck, hb⟩ := hF
   refine ⟨hck, fun u v hu hv hl g hg => le_trans ?_ (hb u v hu hv hl g hg)⟩
-  exact mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le (one_le_gN_of_mem_GV g hg) hAB) (norm_nonneg _)
+  exact mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le (_root_.Formalism.FourierDecayAlt.P.SmoothnessOrderArithmetic.one_le_gN hg) hAB) (norm_nonneg _)
 
 section supp
 open Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity

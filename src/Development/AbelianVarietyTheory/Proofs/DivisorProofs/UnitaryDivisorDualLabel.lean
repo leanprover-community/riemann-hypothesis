@@ -75,21 +75,13 @@ theorem entry_mem (O : Subring L) {U : GL (Fin n) L} (hU : U ∈ GLint (Fin n) O
   obtain ⟨U0, rfl⟩ := hU
   exact ((U0 : Matrix (Fin n) (Fin n) O) i j).2
 
-theorem antiJ_apply (i j : Fin n) : antiJ L n i j = if j = i.rev then 1 else 0 := by
-  unfold antiJ
-  congr 1
-  have := i.2
-  have := j.2
-  simp only [Fin.ext_iff, Fin.val_rev, eq_iff_iff]
-  omega
-
 theorem antiJ_mul (A : Matrix (Fin n) (Fin n) L) (i j : Fin n) : (antiJ L n * A) i j = A i.rev j := by
-  simp [Matrix.mul_apply, antiJ_apply]
+  simp [Matrix.mul_apply, Formalism.UG.P.fIwasawa_antiJ]
 
 theorem mul_antiJ (A : Matrix (Fin n) (Fin n) L) (i j : Fin n) : (A * antiJ L n) i j = A i j.rev := by
   have : ∀ k : Fin n, (j = k.rev) = (k = j.rev) := fun k => by
     rw [eq_iff_iff, eq_comm, Fin.rev_eq_iff]
-  simp [Matrix.mul_apply, antiJ_apply, this]
+  simp [Matrix.mul_apply, Formalism.UG.P.fIwasawa_antiJ, this]
 
 theorem dual_mul (σ : L →+* L) (A B : Matrix (Fin n) (Fin n) L) (h : A * B = 1) :
     antiJ L n * cT σ B * antiJ L n * (antiJ L n * cT σ A * antiJ L n) = 1 := by

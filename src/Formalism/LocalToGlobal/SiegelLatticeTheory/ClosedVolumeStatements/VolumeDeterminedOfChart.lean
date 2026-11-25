@@ -103,8 +103,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.StabilizerIndexVolumes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem volume_index_finite_of_hyps (D : D7) (u u' : D.what₂.Word)
     (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
     (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))
@@ -278,8 +276,6 @@ theorem pres_of_aut (Λ : Submodule (𝓞 E) S.V) (f : Fin n → S.V) (s : S.V �
 
 end Gen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem volume_index_b_bounded (D : D7) (u u' : D.what₂.Word)
     (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
     (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V))
@@ -402,8 +398,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.Pf.BlockPermutation Formalism.L2.SG.Pf.StabIntSh Formalism.L2.SG.Pf.StabIntLat
 
 namespace Formalism.L2.SG.Pf.StabIntCong
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -599,8 +593,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2
 
 namespace Formalism.L2.SG.Pf.VolPinAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hyps_of {D : D7} {X : HidaSetting D} (Y : Full X) (u u' : D.what₂.Word) (hPH : PrimeHyp D u (Tu D u')) :
     Formalism.L2.SG.Pf.StabilizerIndexVolumes.Hyps D u u' (X.Fu u) (Y.what₂ u) := by

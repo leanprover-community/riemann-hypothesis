@@ -86,26 +86,3 @@ theorem g_mem_of_div (P : Formalism.L2.Host.PiBar D.host) {k : Fin 2} {w : Pl D.
   rwa [map_natCast] at this
 
 end GlobalTheory.Fam.PlaceSep
-
-
-open GlobalTheory.Fam.PlaceSep in
-theorem GlobalTheory.Fam.pg_qAll_under_inj : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex), PkHyp W → ∀ PP PP' : Pl D.host.E, (PP ∈ (pk W).Pg ∨ QAll W PP) → (PP' ∈ (pk W).Pg ∨ QAll W PP') → (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP) = (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP') → PP = PP' := by
-  intro D L hT Gi Gl Kc Yd cX ex W hP PP PP' hPP hPP' hu
-  have hL : (pk W).toLevCh.Is W.P.A3.A.μ0 := hP.bot.hyp.2.2.2.1.lev
-
-  have mixed : ∀ A B : Pl D.host.E, A ∈ (pk W).Pg → QAll W B → A.under (𝓞 D.host.F) = B.under (𝓞 D.host.F) → False := by
-    intro A B hA hB hAB
-    obtain ⟨k, hk⟩ := (hL.Pg A).1 hA
-    obtain ⟨t, ht⟩ := hB
-    obtain ⟨q, hq, hqB, hne⟩ := twist_prime (hL.Q_pl t) ht
-    exact not_two_primes_mem B (D.host.g_prime k) hq (hne k).symm
-      (natCast_mem_of_under_eq hAB (g_mem_of_div _ hk)) hqB
-  rcases hPP with h1 | h1 <;> rcases hPP' with h2 | h2
-  · obtain ⟨k, hk⟩ := (hL.Pg PP).1 h1
-    obtain ⟨k', hk'⟩ := (hL.Pg PP').1 h2
-    rcases GlobalTheory.GoodPrimes.eq_or_conj_of_under_eq hu with e | e
-    · exact e
-    · exact absurd (GlobalTheory.GoodPrimes.isConjPl_iff.2 e) (GlobalTheory.ProjLift.not_isConjPl_of_div _ hk' hk)
-  · exact (mixed PP PP' h1 h2 hu).elim
-  · exact (mixed PP' PP h2 h1 hu.symm).elim
-  · exact hP.sel PP PP' h1 h2 hu

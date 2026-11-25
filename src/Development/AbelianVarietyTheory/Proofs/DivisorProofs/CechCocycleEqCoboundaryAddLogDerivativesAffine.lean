@@ -592,7 +592,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 
 set_option autoImplicit false
-attribute [local instance] Over.cartesianMonoidalCategory
 open TensorProduct
 
 namespace GlobalTheory.AbCohFibre

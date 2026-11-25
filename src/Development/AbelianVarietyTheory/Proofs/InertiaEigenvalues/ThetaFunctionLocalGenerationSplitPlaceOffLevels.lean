@@ -205,8 +205,7 @@ theorem exists_invForm (hψ : IsStdChar D ψ (-1)) (he : IsSplitIdem D e) {φ : 
   obtain ⟨ℓ, h1, h2⟩ := GlobalTheory.SplitHecke.exists_invariant_form' (Λ := lat0 S T) (ψ := ψ)
     (GlobalTheory.SplitScalar.isSplitIdem_conj he) (fun y hy hn => by
       rw [GlobalTheory.DualPairCheck.cA_cA]
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hn (h3 y hy hc)) h0 (fun u hu hh => hφ.2 u hu (Or.inr hh))
     (fun u hu hh => hφ.2 u hu (Or.inl (by rwa [GlobalTheory.DualPairCheck.cA_cA] at hh)))
   exact ⟨ℓ, h2, h1⟩

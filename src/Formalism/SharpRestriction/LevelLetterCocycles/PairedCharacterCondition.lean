@@ -27,7 +27,6 @@ structure LzData (g : ℕ) where
   idem_central : ∀ {a : ℕ} (τ : Irr a) z, idem τ * z = z * idem τ
   idem_ne : ∀ {a : ℕ} (τ : Irr a), idem τ ≠ 0
   idem_orth : ∀ {a : ℕ} (τ σ : Irr a), τ ≠ σ → idem τ * idem σ = 0
-  idem_sum : ∀ a : ℕ, ∑ τ : Irr a, idem τ = 1
   idem_prim : ∀ {a : ℕ} (τ : Irr a) (e : MonoidAlgebra ℂ (GL (Fin a) (ZMod g))), e * e = e →
     (∀ z, e * z = z * e) → e * idem τ = e → e = 0 ∨ e = idem τ
   lab : ∀ {a : ℕ}, Irr a → Polynomial (ZMod g)
@@ -35,7 +34,6 @@ structure LzData (g : ℕ) where
   Rep : ℕ → Type
   ofIrr : ∀ {a : ℕ}, Irr a → Rep a
   cons : ∀ {a : ℕ}, Rep a → Irr a → Prop
-  cons_ofIrr : ∀ {a : ℕ} (τ σ : Irr a), cons (ofIrr τ) σ ↔ σ = τ
   hc : ∀ {a b : ℕ}, Irr a → Irr b → Rep (a + b)
 
 attribute [instance] LzData.finIrr
@@ -213,29 +211,6 @@ def tieBr : Prop :=
 
 def tiePH : Prop := LocTie D.nd D.naut D.loc D.nbr
 
-def tiePar : Prop := MtParTie D.nd D.naut D.ntypes
-
-def tieIne : Prop :=
-  ∀ (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
-    (K' : FinExt (D.nd.l i)) (h : (D.nbr i w hw).Kw.1 ≤ K'.1) (hN : (GKin h).Normal)
-    (hF : (GKin h).FiniteIndex)
-    (hS : ∀ (g : ↥(GK (D.nbr i w hw).Kw)) (c : ↥(K0 K')), ∃ c' : ↥(K0 K'),
-      ((D.loc (D.nd.l i)).PD (D.nbr i w hw).Kw).actB g (algebraMap ↥(K0 K') (D.loc (D.nd.l i)).R.B c) =
-        algebraMap ↥(K0 K') (D.loc (D.nd.l i)).R.B c')
-    (m : ℕ) (r : GE D.nd →* GL (Fin m) (D.nd.O i)),
-    Continuous (fun g => ((r g : GL _ _) : Matrix (Fin m) (Fin m) (D.nd.O i))) →
-    (pc (D.loc (D.nd.l i)) h hN hF hS).IsPotCrys ((D.nbr i w hw).rep (r.comp (decS D.nd w))) →
-    ∀ σ : Gw D.nd w, (σ : GE D.nd) ∈ Ine (F := D.host.E) (D.nd.plOm.1 w) →
-      (D.nbr i w hw).e σ ∈ (pc (D.loc (D.nd.l i)) h hN hF hS).Iner ∧
-      ∀ a : D.nd.O i,
-        ((D.naut.inePol (D.naut.wdOf i (mapRep (iotaOQ D.nd D.naut i) r) w) (σ : GE D.nd)).IsRoot
-            (iotaO D.nd D.naut i a) ↔
-          ∃ d ∈ (pc (D.loc (D.nd.l i)) h hN hF hS).Dpcris ((D.nbr i w hw).rep (r.comp (decS D.nd w))),
-            d ≠ 0 ∧
-            actVB ((D.loc (D.nd.l i)).PD (D.nbr i w hw).Kw) ((D.nbr i w hw).rep (r.comp (decS D.nd w)))
-              ((D.nbr i w hw).e σ) d =
-                @SMul.smul _ _ TensorProduct.leftHasSMul ((D.nbr i w hw).toLL a) d)
-
 def tieChi : Prop :=
   ∀ (i : D.nd.Loc) (k : Fin 2), D.nd.l i = D.host.g k → ∀ v : D.nd.PlG k,
     ∃ u : (ZMod (D.host.g k))ˣ, (u = chiJ D i k v ∨ u = (chiJ D i k v)⁻¹) ∧
@@ -246,10 +221,6 @@ def tieChi : Prop :=
         (IsConjPl D.host (D.naut.plGw k v) w → Br.IsdRW D.loc D.nbr i w hw (chiGL i) ∧
           D.naut.items₂ k w (D.naut.wdOf i (mapRep (iotaOQ D.nd D.naut i) (chiGL i)) w) =
             X - C ((u⁻¹ : (ZMod (D.host.g k))ˣ) : ZMod (D.host.g k)))
-
-def Comparison₂ : Prop :=
-  Formalism.MainNotions.SumRepresentations.tie0 D ∧ tieBr (D := D) ∧ tiePH (D := D) ∧ tiePar (D := D) ∧ tieIne (D := D) ∧
-    tieChi (D := D)
 
 section Pending
 

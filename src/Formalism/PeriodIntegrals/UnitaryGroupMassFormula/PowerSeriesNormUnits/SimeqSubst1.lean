@@ -5,6 +5,7 @@ public import Mathlib.Analysis.Normed.Field.Instances
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PowerSeriesNormUnits.ConstantCoeffFormalSMul
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PowerSeriesNormUnits.ConstantCoeffVar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PowerSeriesNormUnits.TendstoCoeffOfCont
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormulaUnit
 
 @[expose] public section
 
@@ -35,11 +36,7 @@ theorem norm_zc (a : ℤ_[p]) : ‖zc a‖ = ‖a‖ := by
   rw [norm_algebraMap', PadicInt.padic_norm_e_of_padicInt]
 
 theorem norm_two_of (hp2 : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
-  have h2 : ‖((2 : ℕ) : ℚ_[p])‖ = 1 :=
-    Padic.norm_natCast_eq_one_iff.mpr ((Nat.coprime_primes (Fact.out) Nat.prime_two).mpr hp2)
-  have h2' : ‖(2 : ℚ_[p])‖ = 1 := by exact_mod_cast h2
-  have e : algebraMap ℚ_[p] ℂ_[p] 2 = 2 := map_ofNat _ 2
-  rw [← e, norm_algebraMap', h2']
+  apply _root_.Formalism.MainNotions.Ext.CutA.norm_two_cp <;> assumption
 
 theorem zc_inv_of (n : ℤ_[p]) (h : ‖zc n‖ = 1) : ∃ m : ℤ_[p], zc n * zc m = 1 := by
   rw [norm_zc] at h

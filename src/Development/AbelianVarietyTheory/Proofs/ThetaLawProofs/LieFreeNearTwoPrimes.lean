@@ -62,8 +62,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp epsR IsTangent IsLieComb I
 open TrivSqZeroExt (inl inr)
 open GlobalTheory.SqZero GlobalTheory.LieBaseChange
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   {n : ℕ} {S T : Type} [CommRing S] [Algebra R S] [CommRing T] [Algebra R T]
   {v w u : Fin n → (epsR R ⟶ G)}
@@ -288,7 +286,6 @@ end SlopeTestRemainingChoices
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem lie_free_near_two_primes :
     ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (n : ℕ),

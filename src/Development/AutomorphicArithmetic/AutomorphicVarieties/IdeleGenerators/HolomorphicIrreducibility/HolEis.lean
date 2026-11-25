@@ -118,8 +118,7 @@ open UpperTheory.V.Sd.Eis
 private theorem exists_addChar_fourier_coeff_ne_zero_of_ne_zero {α : Type} [AddCommGroup α] [Fintype α] (F : α → ℂ) (hF : F ≠ 0) :
     ∃ ψ : AddChar α ℂ, ∑ a, F a * ψ (-a) ≠ 0 := by
   classical
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hF
   funext x
   have key : ∑ ψ : AddChar α ℂ, ∑ a, F a * ψ (x - a) = (Fintype.card α : ℂ) * F x := by

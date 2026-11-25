@@ -129,22 +129,6 @@ section Inclusion
 
 variable {K L : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : K ≤ L)
 
-theorem valuativeExtension_inclusion :
-    (letI := (IntermediateField.inclusion h).toRingHom.toAlgebra; ValuativeExtension K L) := by
-  let := (IntermediateField.inclusion h).toRingHom.toAlgebra
-  exact ⟨fun {_ _} => by rw [subfield_vle_iff_norm_le, subfield_vle_iff_norm_le]; rfl⟩
-
-theorem isScalarTower_inclusion :
-    (letI := (IntermediateField.inclusion h).toRingHom.toAlgebra; IsScalarTower ℚ_[p] K L) := by
-  let := (IntermediateField.inclusion h).toRingHom.toAlgebra
-  exact IsScalarTower.of_algebraMap_eq fun _ => rfl
-
-theorem finiteDimensional_inclusion [FiniteDimensional ℚ_[p] L] :
-    (letI := (IntermediateField.inclusion h).toRingHom.toAlgebra; FiniteDimensional K L) := by
-  let := (IntermediateField.inclusion h).toRingHom.toAlgebra
-  have := isScalarTower_inclusion h
-  exact Module.Finite.of_restrictScalars_finite ℚ_[p] K L
-
 end Inclusion
 
 section Galois

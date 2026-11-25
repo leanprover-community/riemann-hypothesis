@@ -188,8 +188,7 @@ theorem exists_eCh_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   classical
   have ex : ∀ σ : E →+* ℂ, ∃ s : Fin (Dw.mult σ) → Fin M.n,
       Y.X.evaluation M.U x hx ((LowRank.pm p M.toMChart σ).submatrix s s).det ≠ 0 := fun σ => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := congrArg (Y.X.evaluation M.U x hx) (pm_minors Y p M.toMChart σ).2.1
 
     rw [map_sum, map_one, Finset.sum_eq_zero fun S _ => h _] at this

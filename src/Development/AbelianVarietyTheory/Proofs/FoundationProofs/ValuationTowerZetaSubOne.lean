@@ -101,8 +101,7 @@ theorem valuation_zeta_sub_one : ∀ (p : ℕ) [hpf : Fact p.Prime] (Ω : Type) 
         rw [this]
         exact lt_of_le_of_lt (v.map_add _ _) (max_lt (lt_of_le_of_lt hb hvp) ih)
       rw [v.map_pow] at h2
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact absurd h2 (not_lt.2 (one_le_pow₀ hc))
   intro n hn
   refine ⟨hlt n, ?_⟩

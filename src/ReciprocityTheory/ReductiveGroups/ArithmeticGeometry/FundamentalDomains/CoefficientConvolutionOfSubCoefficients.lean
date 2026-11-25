@@ -403,29 +403,6 @@ private lemma hsmull_lemma_22 {n : ℕ} (σ : E →+* ℂ) (G : Matrix (Fin n) (
     (k : ℂ) (u w : Fin n → ℂ) : hermC σ G (k • u) w = k * hermC σ G u w := by
   simp only [hermC, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
 
-private lemma hsubr_lemma_23 {n : ℕ} (σ : E →+* ℂ) (G : Matrix (Fin n) (Fin n) E)
-    (v w w' : Fin n → ℂ) : hermC σ G v (w - w') = hermC σ G v w - hermC σ G v w' := by
-  simp only [hermC, Pi.sub_apply, map_sub, mul_sub, Finset.sum_sub_distrib]
-
-private lemma hsmulr_lemma_24 {n : ℕ} (σ : E →+* ℂ) (G : Matrix (Fin n) (Fin n) E)
-    (k : ℂ) (v w : Fin n → ℂ) : hermC σ G v (k • w) = conj k * hermC σ G v w := by
-  simp only [hermC, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
-
-private lemma hconj_lemma_25 (τ : X.Ψ) (u v : Fin r → ℂ) :
-    conj (hermC τ.1 X.Gm u v) = hermC τ.1 X.Gm v u := by
-  have hG : ∀ a b, conj (τ.1 (X.Gm a b)) = τ.1 (X.Gm b a) := by
-    intro a b
-    rw [← X.Gm_herm a b]
-    first
-      | simp [cc, IsCMField.complexEmbedding_complexConj]
-
-  simp only [hermC, map_sum, map_mul, Complex.conj_conj, hG]
-  refine Finset.sum_comm.trans ?_
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  ring
-
 private lemma huu_lemma_26 {ξ : Fin r → E} (hξ : herm X.Gm ξ ξ = 0) (τ : X.Ψ) :
     hermC τ.1 X.Gm (Data.emb τ.1 ξ) (Data.emb τ.1 ξ) = 0 := by
   have h : τ.1 (herm X.Gm ξ ξ) = hermC τ.1 X.Gm (Data.emb τ.1 ξ) (Data.emb τ.1 ξ) := by
@@ -449,21 +426,7 @@ private lemma gramflow_lemma_29 {ξ : Fin r → E} (hξ : herm X.Gm ξ ξ = 0) (
     (M : Matrix (Fin r) (Fin r) ℂ) :
     gram τ.1 X.Gm (X.flowMat ξ τ s * M) =
       gram τ.1 X.Gm M + ((2 * X.c τ * s.im : ℝ) : ℂ) • rk1 X ξ τ M := by
-  ext a b
-  have hu := huu_lemma_26 hξ τ
-  simp only [gram, Matrix.of_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, rk1,
-    Matrix.vecMulVec_apply, hv]
-  rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.AdmissibleHermitianColumns.col_mul, _root_.ReciprocityTheory.ChartRestriction.G.FD.AdmissibleHermitianColumns.col_mul, flowmv_lemma_28, flowmv_lemma_28]
-  simp only [hsubl_lemma_21, hsubr_lemma_23, hsmull_lemma_22, hsmulr_lemma_24, hu]
-  rw [← hconj_lemma_25 τ (col M b) (Data.emb τ.1 ξ)]
-  simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
-  have hs : (starRingEnd ℂ) s = s - 2 * I * (s.im : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
-  rw [hs]
-  push_cast
-  ring_nf
-  rw [Complex.I_sq]
-  ring
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.AdmissibleHermitianColumns.gram_flowMat <;> assumption
 
 private lemma flowdet_lemma_210 {ξ : Fin r → E} (hξ : herm X.Gm ξ ξ = 0) (τ : X.Ψ) (s : ℂ) :
     (X.flowMat ξ τ s).det ≠ 0 := by

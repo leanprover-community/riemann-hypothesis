@@ -5,6 +5,7 @@ public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHo
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.MulApplyS
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylConjugationFixedColumn.ReflectionScalarDualIsotropic
 
 @[expose] public section
 
@@ -121,42 +122,7 @@ lemma weyl_cell_inv (l : Fin r) (c : ℂ) (hc : c ≠ 0) : (w1 k r l c)⁻¹ = w
   Matrix.inv_eq_right_inv (reflection_mul_star l c hc)
 
 lemma weyl_cell_mem_unitary (l : Fin r) (c : ℂ) (hc : c ≠ 0) : w1 k r l c ∈ UH (Hpk k r) := by
-  have hsc : star c ≠ 0 := star_ne_zero.2 hc
-  show (w1 k r l c)ᴴ * Hpk k r * w1 k r l c = Hpk k r
-  ext p q
-  rw [Matrix.mul_assoc, Matrix.mul_apply]
-  simp only [conjTranspose_apply, hpk_mul_apply]
-  rw [hpk_row]
-  by_cases hp1 : p = eI k r l
-  · subst hp1
-    rw [Finset.sum_eq_single (esI k r l)]
-    · rw [reflection_column_isotropic, if_pos rfl, tau_es, sgn_es, weyl_cell_apply_basis, tau_e, sgn_e]
-      by_cases hq : q = esI k r l
-      · rw [if_pos hq, if_pos hq, one_mul, ← star_inv₀, ← star_mul, inv_mul_cancel₀ hc, star_one]
-      · rw [if_neg hq, if_neg hq, mul_zero, mul_zero]
-    · intro t _ ht; rw [reflection_column_isotropic, if_neg ht, star_zero, zero_mul]
-    · simp
-  · by_cases hp2 : p = esI k r l
-    · subst hp2
-      rw [Finset.sum_eq_single (eI k r l)]
-      · rw [reflection_column_dual_isotropic, if_pos rfl, tau_e, sgn_e, weyl_cell_apply_dual_basis, tau_es, sgn_es]
-        by_cases hq : q = eI k r l
-        · rw [if_pos hq, if_pos hq, one_mul, star_inv₀, star_star, inv_mul_cancel₀ hc]
-        · rw [if_neg hq, if_neg hq, mul_zero, mul_zero]
-      · intro t _ ht; rw [reflection_column_dual_isotropic, if_neg ht, star_zero, zero_mul]
-      · simp
-    · have ht1 : tau k r p ≠ eI k r l := by
-        intro h; apply hp2; rw [← tau_tau p, h, tau_e]
-      have ht2 : tau k r p ≠ esI k r l := by
-        intro h; apply hp1; rw [← tau_tau p, h, tau_es]
-      rw [Finset.sum_eq_single p]
-      · rw [reflection_off_support _ _ p p hp1 hp2, if_pos rfl, star_one, one_mul,
-          reflection_off_support_row _ _ (tau k r p) q ht1 ht2]
-        by_cases hq : q = tau k r p
-        · rw [if_pos hq, if_pos hq.symm, mul_one]
-        · rw [if_neg hq, if_neg (Ne.symm hq), mul_zero]
-      · intro t _ ht; rw [reflection_off_support _ _ t p hp1 hp2, if_neg ht, star_zero, zero_mul]
-      · simp
+  apply _root_.PI.IsotropicReflections.reflection_mem_unitary <;> assumption
 
 lemma glev_inv {i : Fin (r + 1)} {g : Mx k r} (hg : g ∈ Glev k r i) : g⁻¹ ∈ Glev k r i := by
   have hu := isUnit_of_uh hg.1

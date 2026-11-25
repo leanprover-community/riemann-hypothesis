@@ -63,7 +63,6 @@ namespace GlobalTheory.Member.TameDivOrd
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing in
 open scoped CategoryTheory.Obj in
-set_option autoImplicit false in
 private lemma ord_vw_unit_mul_uniformiser_pow {W : Type} [CommRing W] [IsDomain W]
     [IsDiscreteValuationRing W] {ϖ : W} (hϖ : Irreducible ϖ) (h0 : ϖ ≠ 0) (u : Wˣ) (m : ℕ) :
     (_root_.GlobalTheory.IndefiniteRowSideFullHecke.GeneratorValues.ord_vw W).toFun
@@ -82,7 +81,6 @@ private lemma ord_vw_unit_mul_uniformiser_pow {W : Type} [CommRing W] [IsDomain 
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing in
 open scoped CategoryTheory.Obj in
-set_option autoImplicit false in
 private lemma eq_one_of_pow_eq_one_of_ne_zero {Γ : Type*} [LinearOrderedCommGroupWithZero Γ] {a : Γ}
     {k : ℕ} (hk : k ≠ 0) (h : a ^ k = 1) : a = 1 := by
   rcases lt_trichotomy a 1 with h1 | h1 | h1
@@ -92,7 +90,6 @@ private lemma eq_one_of_pow_eq_one_of_ne_zero {Γ : Type*} [LinearOrderedCommGro
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing in
 open scoped CategoryTheory.Obj in
-set_option autoImplicit false in
 private lemma one_le_valuation_root_of_unity_sub_one {F : Type} [Field F] (O : ValuationSubring F) {k : ℕ}
     (hk : IsUnit (k : O)) {w : F} (hw : w ^ k = 1) (hw1 : w ≠ 1) : 1 ≤ O.valuation (w - 1) := by
   have hk0 : k ≠ 0 := by
@@ -118,7 +115,6 @@ private lemma one_le_valuation_root_of_unity_sub_one {F : Type} [Field F] (O : V
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing in
 open scoped CategoryTheory.Obj in
-set_option autoImplicit false in
 theorem _root_.GlobalTheory.Member.TameDivOrd.tame_fixed_dvd_ord : ∀ (W : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W]
     (F : Type) [Field F] [Algebra (FractionRing W) F] (ϖ : W), Irreducible ϖ →
     ∀ (k : ℕ) (O : ValuationSubring F) (φ : W →+* O) (σ : F →ₐ[FractionRing W] F) (π : F), IsUnit (k : O) →

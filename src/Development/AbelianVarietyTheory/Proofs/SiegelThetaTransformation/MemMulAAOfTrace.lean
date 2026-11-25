@@ -101,8 +101,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.Ker.Inhab
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA
 
 variable {D : D7}

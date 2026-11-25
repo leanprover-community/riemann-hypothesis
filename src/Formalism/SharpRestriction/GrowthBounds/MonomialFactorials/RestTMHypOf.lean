@@ -143,7 +143,6 @@ theorem restTMHyp_of {CYb Cde Ck CD Cb Cc : ℝ} (hH : flipOneThree.HI C0 CYb Cd
       omega
     have hl := lgA_ge_one X.p X.L.a X.r hp1 (by omega)
     have hr2' : (2 : ℝ) ≤ X.r := by exact_mod_cast hr2
-    have hs0 : (0 : ℝ) ≤ X.s := Nat.cast_nonneg _
     unfold kapS
     have h1 : (1 : ℝ) ≤ 3 * (↑X.s + 2) * ↑X.r ^ 2 := by nlinarith
     have h2 : (1 : ℝ) ≤ 3 * (↑X.s + 2) * ↑X.r ^ 2 * lgA X.p X.L.a X.r := by nlinarith

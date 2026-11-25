@@ -62,7 +62,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -197,7 +196,7 @@ theorem exists_kaVal_of_split :
         obtain ⟨b, hb⟩ := (GlobalTheory.KeyBasis.main laws R x (L - j * n) (by omega)).1
         obtain ⟨ζ, h3, h4⟩ := exists_split_ker_of_split_torsion laws R x.P _ _ hu (hdv j hj) ξ hξ hd
           _ (hal (L - j * n))
-        obtain ⟨lam, h5⟩ := GlobalTheory.T.exists_l2Val_field_or_dvr_split_kernel laws R x _ _ b ζ
+        obtain ⟨lam, h5⟩ := _root_.GlobalTheory.SimilLocal.exists_l2Val laws R x _ _ b ζ
           (isUnit_of_dvd_unit (Nat.cast_dvd_cast (hdv j hj)) hu) (hal _) hb h3 h4
         exact ⟨b, lam, fun _ => ⟨hb, h5⟩⟩
       · exact ⟨fun _ => ⟨fun _ => 0, fun _ _ => by rw [map_zero, map_zero, mul_zero]⟩, 1,
@@ -228,13 +227,10 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
 
-theorem _root_.GlobalTheory.T.exists_invariant_of_split_zeros_torsion : Out.Laws → ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsPrincipalIdealRing R] (x : KeyIn R) (n l l' : ℕ) (al : ℕ → Matrix (Fin 4) (Fin 4) ℤ) (d : ℕ) (s : Fin x.P.g → RR x n) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι) (ξ : Fin (degProd x.P.g n l l' ^ (2 * x.P.g)) → Pt x), admitted x.P.g n l l' al → IsUnit ((degProd x.P.g n l l' : ℕ) : R) → EtZ x s z ch → (∀ a, ξ a ^ degProd x.P.g n l l' = 1) → (∀ a a', a ≠ a' → ∀ p : Sp R, (ξ a).left p ≠ (ξ a').left p) → ∃ κ, KaVal x n l l' al s κ := by
-  first | exact @GlobalTheory.exists_kaVal_of_split
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsInvariantOfSplitZerosTorsionStatement =====

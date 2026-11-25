@@ -129,59 +129,6 @@ theorem isLocalIsomorphism_coverMap (T : MarkedIdealWithBoundary.{u}) (hv : T.Is
     infer_instance
   exact ⟨coverTripleOpen T hv i, hxi, hψ⟩
 
-private theorem coverPieceIso_inv_comp_map_comp_affineSpaceFinToSpec (T : MarkedIdealWithBoundary.{u}) (hv : T.IsAdmissible)
-    (i : (MaxContactCoverData.chosenCoverData T hv).idx) {n : ℕ}
-    (c : EtaleChart T.structMap ((MaxContactCoverData.chosenCoverData T hv).opens i) n) :
-    ((coverPieceIso T hv i).inv ≫ c.map) ≫ affineSpaceFinToSpec T.base n =
-      (coverTripleOpen T hv i).ι ≫ (MaxContactCoverData.coverMap T hv ≫ T.structMap) := by
-  have h1 : c.map ≫ affineSpaceFinToSpec T.base n =
-      ((MaxContactCoverData.chosenCoverData T hv).opens i).ι ≫ T.structMap := c.comp_struct
-  have h2 := coverTripleOpen_ι_comp_coverMap T hv i
-  calc ((coverPieceIso T hv i).inv ≫ c.map) ≫ affineSpaceFinToSpec T.base n
-      = (coverPieceIso T hv i).inv ≫ (c.map ≫ affineSpaceFinToSpec T.base n) := Category.assoc _ _ _
-    _ = (coverPieceIso T hv i).inv ≫ (((MaxContactCoverData.chosenCoverData T hv).opens i).ι ≫ T.structMap) := by
-        rw [h1]
-    _ = ((coverPieceIso T hv i).inv ≫ ((MaxContactCoverData.chosenCoverData T hv).opens i).ι) ≫ T.structMap :=
-        (Category.assoc _ _ _).symm
-    _ = ((coverTripleOpen T hv i).ι ≫ MaxContactCoverData.coverMap T hv) ≫ T.structMap := by rw [h2]
-    _ = (coverTripleOpen T hv i).ι ≫ (MaxContactCoverData.coverMap T hv ≫ T.structMap) :=
-        Category.assoc _ _ _
-
-theorem etale_coverPieceIso_inv_comp_map (T : MarkedIdealWithBoundary.{u}) (hv : T.IsAdmissible)
-    (i : (MaxContactCoverData.chosenCoverData T hv).idx) {n : ℕ}
-    (c : EtaleChart T.structMap ((MaxContactCoverData.chosenCoverData T hv).opens i) n) :
-    AlgebraicGeometry.Etale ((coverPieceIso T hv i).inv ≫ c.map) := by
-  have : AlgebraicGeometry.Etale c.map := c.isEtale
-  have : IsIso (coverPieceIso T hv i).inv := inferInstance
-  have : IsOpenImmersion (coverPieceIso T hv i).inv := inferInstance
-  have : AlgebraicGeometry.Etale (coverPieceIso T hv i).inv := inferInstance
-  infer_instance
-
-def coverEtaleChart (T : MarkedIdealWithBoundary.{u}) (hv : T.IsAdmissible)
-    (i : (MaxContactCoverData.chosenCoverData T hv).idx) {n : ℕ}
-    (c : EtaleChart T.structMap ((MaxContactCoverData.chosenCoverData T hv).opens i) n) :
-    EtaleChart (MaxContactCoverData.coverMap T hv ≫ T.structMap) (coverTripleOpen T hv i) n where
-  map := (coverPieceIso T hv i).inv ≫ c.map
-  comp_struct := by
-    exact coverPieceIso_inv_comp_map_comp_affineSpaceFinToSpec T hv i c
-  isEtale := etale_coverPieceIso_inv_comp_map T hv i c
-
-theorem coverEtaleChart_coordIdeal (T : MarkedIdealWithBoundary.{u}) (hv : T.IsAdmissible)
-    (i : (MaxContactCoverData.chosenCoverData T hv).idx) {n : ℕ}
-    (c : EtaleChart T.structMap ((MaxContactCoverData.chosenCoverData T hv).opens i) n)
-    (S : Finset (Fin n)) :
-    (coverEtaleChart T hv i c).coordIdeal S = (c.coordIdeal S).comap (coverPieceIso T hv i).inv := by
-  have key : (coordSubspaceIdeal T.base n S).comap ((coverPieceIso T hv i).inv ≫ c.map)
-      = ((coordSubspaceIdeal T.base n S).comap c.map).comap (coverPieceIso T hv i).inv := by
-    rw [Scheme.IdealSheafData.comap_comp]
-  have h1 : (coverEtaleChart T hv i c).coordIdeal S
-      = (coordSubspaceIdeal T.base n S).comap ((coverPieceIso T hv i).inv ≫ c.map) :=
-    EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal (coverEtaleChart T hv i c) S
-  have h2 : (c.coordIdeal S).comap (coverPieceIso T hv i).inv
-      = ((coordSubspaceIdeal T.base n S).comap c.map).comap (coverPieceIso T hv i).inv :=
-    congrArg (fun J => J.comap (coverPieceIso T hv i).inv) (EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal c S)
-  exact h1.trans (key.trans h2.symm)
-
 private theorem compactSpace_of_quasiCompact_toSpec {X : Scheme.{u}} {R : CommRingCat.{u}}
     (f : X ⟶ Spec R) (hf : AlgebraicGeometry.QuasiCompact f) : CompactSpace ↥X := by
   have := hf

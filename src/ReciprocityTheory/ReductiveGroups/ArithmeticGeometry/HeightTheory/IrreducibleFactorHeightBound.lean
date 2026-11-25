@@ -25,6 +25,7 @@ import ReciprocityTheory.SemistableReduction.SphereTorusA
 import Mathlib.Order.CompletePartialOrder
 import ReciprocityTheory.SemistableReduction.GaussAbsMulOfMonomialOrder
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValAlgebraMapEqZero
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GeneratorNeZeroOfHeight
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.AlgebraicIndependentScaledForms, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HeightKerScaledSubstitutionLeOne, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ContinuousTorusPoint, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.LogHeightLeTorusHeightSubst, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.IrreducibleFactorHeightBound
@@ -153,15 +154,9 @@ theorem algebraicIndependent_scaledForms {K Ω : Type} [Field K] [CharZero K] [F
 
 theorem scalarRatio_self {Ω V : Type*} [Field Ω] [AddCommGroup V] [Module Ω V] {f : V}
     (hf : f ≠ 0) : ratio (Ω := Ω) f f = 1 := by
-  unfold ratio
-  split_ifs with h
-  · have hc : f = h.choose • f := h.choose_spec
-    have h0 : (h.choose - 1) • f = 0 := by
-      rw [sub_smul, one_smul, ← hc, sub_self]
-    rcases smul_eq_zero.mp h0 with h1 | h1
-    · exact sub_eq_zero.mp h1
-    · exact absurd h1 hf
-  · exact absurd ⟨1, (one_smul Ω f).symm⟩ h
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.G.T0.ratio_self_height
+    | apply _root_.ReciprocityTheory.ChartRestriction.G.T0.ratio_self_height <;> first | assumption | rfl | infer_instance
 
 theorem optionEquivLeft_rename_some' {R S : Type*} [CommRing R] (a : MvPolynomial S R) :
     MvPolynomial.optionEquivLeft R S (MvPolynomial.rename some a) = Polynomial.C a := by

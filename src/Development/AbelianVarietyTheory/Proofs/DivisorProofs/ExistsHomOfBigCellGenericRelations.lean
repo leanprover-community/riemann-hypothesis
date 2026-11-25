@@ -47,11 +47,11 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AbelianVarietyTheory.Definitions.Divisors.UnipVal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 
 @[expose] public section
 
-open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
+open MeasureTheory Matrix
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
 

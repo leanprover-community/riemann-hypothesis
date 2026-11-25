@@ -43,48 +43,4 @@ theorem etale_adjoin (A : Type) [CommRing A] (q : ℕ) [NeZero q] (hq : IsUnit (
     (IsLocalization.atUnit (AdjoinRoot P.f) (Localization.Away (AdjoinRoot.mk P.f P.g)) (AdjoinRoot.mk P.f P.g) hu).restrictScalars A
   exact Algebra.Etale.of_equiv (e1.trans e2.symm)
 
-theorem ff_adjoin (A : Type) [CommRing A] [Nontrivial A] (q : ℕ) [NeZero q] :
-    Module.FaithfullyFlat A (AdjoinRoot (cyclotomic q A)) := by
-  let b := AdjoinRoot.powerBasisAux' (cyclotomic.monic q A)
-  have hpos : 0 < (cyclotomic q A).natDegree := by
-    rw [natDegree_cyclotomic]; exact Nat.totient_pos.2 (Nat.pos_of_neZero q)
-  have : Nonempty (Fin (cyclotomic q A).natDegree) := ⟨⟨0, hpos⟩⟩
-  exact Module.FaithfullyFlat.of_linearEquiv _ _ b.repr
-
-theorem prim_adjoin (A : Type) [CommRing A] (q : ℕ) [NeZero q] (hq : IsUnit (q : A)) :
-    Nonempty (Prim q (AdjoinRoot (cyclotomic q A))) := by
-  refine ⟨⟨AdjoinRoot.root _, by simpa using hq.map (algebraMap A (AdjoinRoot (cyclotomic q A))), ?_⟩⟩
-  have h0 : aeval (AdjoinRoot.root (cyclotomic q A)) (cyclotomic q A) = 0 := by
-    rw [AdjoinRoot.aeval_eq, AdjoinRoot.mk_self]
-  rw [← aeval_map_algebraMap A, map_cyclotomic]
-  exact h0
-
-theorem spec_surj (A B : CommRingCat.{0}) (φ : A ⟶ B) (hA : Subsingleton A) : Surjective (Spec.map φ) := by
-  constructor
-  intro x
-  exact absurd (Subsingleton.elim _ _) x.isPrime.ne_top
-
-theorem leafPrimCover_pf : LateralTheory.E.LeafOneSpecPf.LeafPrimCover := by
-  intro q _ U hq
-  let A : Type := Γ(U, ⊤)
-  let B : Type := AdjoinRoot (cyclotomic q A)
-  let φ : Γ(U, ⊤) ⟶ CommRingCat.of B := CommRingCat.ofHom (algebraMap A B)
-  have hEt : Etale (Spec.map φ) := by
-    have := etale_adjoin A q hq
-    exact (HasRingHomProperty.Spec_iff (P := @Etale)).mpr (RingHom.etale_algebraMap.mpr this)
-  have hSu : Surjective (Spec.map φ) := by
-    rcases subsingleton_or_nontrivial A with h | h
-    · exact spec_surj _ _ φ h
-    · have := ff_adjoin A q
-      exact ((flat_and_surjective_SpecMap_iff φ).mpr (RingHom.faithfullyFlat_algebraMap_iff.mpr this)).2
-  let f := pullback.fst U.toSpecΓ (Spec.map φ)
-  refine ⟨Sieve.generate (Presieve.singleton f), ?_, ?_⟩
-  · apply Precoverage.generate_mem_toGrothendieck
-    exact (Scheme.singleton_mem_precoverage_iff (P := @Etale) f).2 ⟨Surjective.surj, inferInstance⟩
-  · rintro V g ⟨W, h, k, hk, rfl⟩
-    cases hk
-    obtain ⟨ζ⟩ := prim_adjoin A q hq
-    exact ⟨Prim.map (h.appTop.hom.comp ((pullback.snd U.toSpecΓ (Spec.map φ)).appTop.hom.comp
-      (Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom)) ζ⟩
-
 end LateralTheory.E.LeafPrimCoverPf

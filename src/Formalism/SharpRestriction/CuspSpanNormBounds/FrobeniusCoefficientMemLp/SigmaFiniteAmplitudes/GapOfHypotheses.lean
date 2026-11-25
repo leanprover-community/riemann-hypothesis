@@ -55,9 +55,6 @@ theorem arith (N m s h Cl M AS AG : ℝ) (hN : 6 ≤ N) (hm2 : 2 ≤ m) (hmN : m
       10 * (m / 2) ^ 2 * (AS + AG) + 2 * AG + 4 ≤ h / (8 * s) := by
   have hN1 : (1 : ℝ) ≤ N := by linarith
   have hN0 : (0 : ℝ) ≤ N := by linarith
-  have hs0 : (0 : ℝ) < s := by linarith
-  have hsN : s ≤ N := le_trans hsm hmN
-  have hm0 : (0 : ℝ) ≤ m := by linarith
   have h35 : N ^ 3 ≤ N ^ 5 := pow_le_pow_right₀ hN1 (by norm_num)
   have h319 : N ^ 3 ≤ N ^ 19 := pow_le_pow_right₀ hN1 (by norm_num)
   have h619 : N ^ 6 ≤ N ^ 19 := pow_le_pow_right₀ hN1 (by norm_num)
@@ -74,7 +71,6 @@ theorem arith (N m s h Cl M AS AG : ℝ) (hN : 6 ≤ N) (hm2 : 2 ≤ m) (hmN : m
     have q1 : X * (8 * s) ≤ 30 * N ^ 5 * (8 * s) := mul_le_mul_of_nonneg_right hX (by linarith)
     have q2 : 30 * N ^ 5 * (8 * s) ≤ 30 * N ^ 5 * (8 * N) :=
       mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-    have q3 : 30 * N ^ 5 * (8 * N) = 240 * N ^ 6 := by ring
     linarith
   refine ⟨by linarith, key _ ?_, key _ ?_, key _ ?_⟩
   · have q : M * (AS + AG) ≤ N ^ 2 / 2 * (6 * N ^ 3) := mul_le_mul hMb hA hA0 (by positivity)
@@ -125,7 +121,6 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
   have hf5 : (32 : ℝ) ≤ (D.R.f : ℝ) ^ 5 := by
     have : (2 : ℝ) ^ 5 ≤ (D.R.f : ℝ) ^ 5 := pow_le_pow_left₀ (by norm_num) hf 5
     norm_num at this; linarith
-  have hN19 : (0 : ℝ) ≤ N ^ 19 := by positivity
   have hClN : (0 : ℝ) ≤ Cl * N ^ 19 := by positivity
   have hh0big : 16 * (Cl * N ^ 19) ≤ h0 := by
     have e1 : Cl * N ^ 19 * 32 ≤ Cl * N ^ 19 * (D.R.f : ℝ) ^ 5 :=
@@ -137,7 +132,6 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
   have hkm3 : kk * m ^ 3 ≤ N ^ 19 := by
     have a1 : kk * m ^ 3 ≤ N * N ^ 3 :=
       mul_le_mul hkN (pow_le_pow_left₀ (by linarith) hmN 3) (by positivity) (by linarith)
-    have a2 : N * N ^ 3 = N ^ 4 := by ring
     have a3 : N ^ 4 ≤ N ^ 19 := pow_le_pow_right₀ (by linarith) (by norm_num)
     linarith
   have hpert : 4 * (Cn * kk * m ^ 3) ≤ h0 / 2 := by

@@ -58,8 +58,6 @@ section -- clump:auto
 
 noncomputable section
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.LocLanglands GlobalTheory.SplitRead GlobalTheory.CuspRep in
 theorem UpperTheory.One.M.goodI_of_sph {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
     (π : Irr k n) (h : IsSpherical π.π) : UpperTheory.One.M.GoodI π :=
@@ -100,7 +98,6 @@ section -- clump:auto
 
 section
 noncomputable section
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.RowTie GlobalTheory.SplitRead
 namespace GlobalTheory.TameType

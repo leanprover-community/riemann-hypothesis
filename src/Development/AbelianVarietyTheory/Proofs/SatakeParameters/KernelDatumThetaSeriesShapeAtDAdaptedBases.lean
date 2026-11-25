@@ -769,8 +769,7 @@ theorem norm_le_one : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → �
       simp at h1
     · rw [hmem, show ((x * y : 𝓞 D.host.E) : D.host.E) = (x : D.host.E) * y from rfl, map_mul,
         norm_mul] at hxy
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       rw [hmem, hmem, not_lt, not_lt] at hc
       have := mul_le_mul hc.1 hc.2 zero_le_one (norm_nonneg _)
       linarith
@@ -823,8 +822,7 @@ theorem congr_at_d : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → ∀
   have hnth : ‖th‖ = ‖(p : ℂ_[p])‖ ^ (1 / 2 : ℝ) := by
     rw [← Real.sqrt_eq_rpow, ← hnorm2, Real.sqrt_sq (norm_nonneg _)]
   refine ⟨⟨?_, ?_⟩, ?_⟩
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     have : 1 < ‖th‖ ^ 2 := by nlinarith
     linarith
   · intro h

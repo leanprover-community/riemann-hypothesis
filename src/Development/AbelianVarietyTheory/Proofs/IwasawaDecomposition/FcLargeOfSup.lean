@@ -41,8 +41,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Fo
 
 namespace GlobalTheory.Mem.Top
 
-alias fc_large_of_sup := _root_.GlobalTheory.EX.fc_large_of_sup
-
 theorem Ev.mono {p q : Ctx → Prop} (h : ∀ K, p K → q K) (hp : Ev p) : Ev q := by
   obtain ⟨a, ha, hp⟩ := hp
   refine ⟨a, ha, fun e C8 he hle h52 h8 => ?_⟩

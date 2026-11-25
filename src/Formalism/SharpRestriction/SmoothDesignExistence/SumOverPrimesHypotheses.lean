@@ -25,52 +25,11 @@ public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.LocalBou
 public import Formalism.SharpRestriction.Divisibility.LocalNonemptiness.OrbitAdmissibleOfSplitBound
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PrvAndKernelCommutationUpToUnitsOfRests
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCountTheoremWithConstants
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.ENatToNat
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.SizeDel
 import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
-import Mathlib.Tactic.ReduceModChar
 import Aesop.Frontend.Tactic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -262,8 +221,6 @@ theorem rowA : RowA := by
   have hbl := blocks_le D L u j τ hj1 hj2
   have hr1 := nuRow_le_Sc_add_wSz D L u j τ 1 le_rfl (by omega)
   rw [hw] at hcl hr1
-  have e : ((D.R.k : ℝ) - 1) * (L.Sc + wj D j τ) + (L.Sc + wj D j τ) =
-      (D.R.k : ℝ) * (L.Sc + wj D j τ) := by ring
   rw [hsplit]
   linarith
 
@@ -307,8 +264,6 @@ theorem rowB : RowB := by
   have hcl := cloudRows_le D L u j τ
   have hbl := blocks_le D L u j τ hj1 hj2
   rw [hw] at hcl
-  have e : ((D.R.k : ℝ) - 1) * (L.Sc + wj D j τ) + (3 * L.Sc + wj D j τ) =
-      ((D.R.k : ℝ) + 2) * L.Sc + (D.R.k : ℝ) * wj D j τ := by ring
   rw [hsplit]
   linarith
 
@@ -468,11 +423,6 @@ theorem ct_le (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : PlaceFa
   have hwx : L.sc.w'' D.R.n / L.sc.x ≤ L.sc.w'' D.R.n := by nlinarith
   have h3Sc : 3 * L.Sc ≤ (D.R.k : ℝ) * L.Sc := by nlinarith
   have hkb' : 5 * L.sc.b' ≤ (D.R.k : ℝ) * L.sc.b' := mul_le_mul_of_nonneg_right hk5 hb'0
-  have hmη0 : 0 ≤ (D.R.m : ℝ) * ((D.R.t : ℝ) + 1) * L.etaSz := by
-    have : (0 : ℝ) ≤ L.etaSz := by
-      obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, hEta, -⟩ := hSz
-      exact le_trans (Nat.cast_nonneg _) hEta.1
-    positivity
   by_cases ht : t ∈ D.host.TT
   · simp only [ctD, if_pos ht]
     have hRA := hA D L j hj u (tauPl D (false, t))
@@ -498,8 +448,6 @@ theorem ct_le (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : PlaceFa
       mul_le_mul_of_nonneg_left (by linarith) hk0
     have k3 : (D.R.k : ℝ) * L.etaSz ≤ (D.R.k : ℝ) * (L.sc.b' / 3) :=
       mul_le_mul_of_nonneg_left (by linarith) hk0
-    have e3 : (D.R.k : ℝ) * (5 / 4 * L.sc.b') + (D.R.k : ℝ) * (L.sc.b' / 3) +
-        (D.R.k : ℝ) * (L.sc.b' / 3) = 23 / 12 * ((D.R.k : ℝ) * L.sc.b') := by ring
     have e4 : 4 * (D.R.k : ℝ) * L.sc.b' = 4 * ((D.R.k : ℝ) * L.sc.b') := by ring
     rcases hwT with hT | hT <;> linarith
   · simp only [ctD, if_neg ht]
@@ -538,9 +486,6 @@ theorem szCt_of (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : Place
     push_cast
     ring
   rw [hf]
-  have e : (D.R.n : ℝ) * (4 * (D.R.k : ℝ) * L.sc.b') = 2 * (2 * (D.R.n : ℝ)) * (D.R.k : ℝ) * L.sc.b' := by
-    ring
-  have e2 : (D.host.TT.card : ℝ) * (2 * L.sc.b) = 2 * (D.host.TT.card : ℝ) * L.sc.b := by ring
   linarith
 
 end PI.SzCt.UnitaryGroupMassFormula
@@ -1342,8 +1287,6 @@ section -- clump:auto
 
 namespace Formalism.MainNotions.FormalGroupSystem.Pf
 
-theorem stmtNumE : Formalism.MainNotions.FormalGroupSystem.NumericalComparisonUniform := numericalComparisonUniform_of_size nd_size
-
 end Formalism.MainNotions.FormalGroupSystem.Pf
 end -- clump:auto
 end -- clump:auto
@@ -1523,7 +1466,7 @@ theorem sum_over_primes_service (𝒞 : FamClass) (hD : Closed 𝒞 fun Fm _ => 
   have hpdv := h.pdv
   have h01 : OrbitPlaces.OrbitLetterBoundsAll 11 1 := DIV.Bridge.DworkPowerSeriesWeights.split_bound_eleven_one
   refine closed_large_pos ⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩
-    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞 FormalGroupSystem.Pf.stmtNumE))))
+    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞))))
     fun {eps} Fm CH hpos hL ⟨hDg, ⟨xb, hb⟩, ⟨xc, hc⟩, ⟨xn, hnum⟩⟩ => ?_
   have hpr1 : 1 ≤ Fm.GK.Pr1 := le_of_eq Fm.fixed.1.symm
   have hCL : OrbitPlaces.CLarge 11 1 Fm.GK Fm.cX.err :=

@@ -185,8 +185,8 @@ def realisationRecursionOfInput {y : _root_.GlobalTheory.Mem.R3.RealInAlt x Rc S
   recR := by
     have h : Formalism.IndefR.RecTie.RecReal x.R.toRealDat x.F.lv2 x.Y.tupT x.Y.hm x.Y.hTop x.Y.hinj ex.p0 x.Y.Ish x.Y.Iz x.Y.IL x.Y.Kc r.E
         r.labPi x.Y.PY x.Y.PW x.Y.eFT r.piOf x.Y.ιW ex.nch r.Tp :=
-      ⟨x.pins.char.base, x.Y.tied, x.Y.prtE, x.Y.prtE0, x.Y.prtWE, x.Y.xi, r.tupXi,
-        fun w => by rw [x.Y.muAt w, x.Y.tupT_tup], x.Y.isomFin, x.Y.frameMatch⟩
+      ⟨x.pins.char.base, x.Y.tied, x.Y.prtWE, r.tupXi,
+        fun w => by rw [x.Y.muAt w, x.Y.tupT_tup]⟩
     exact (h)
   tpEq := (r.tpEq)
   tupTie := x.Y.tupTie

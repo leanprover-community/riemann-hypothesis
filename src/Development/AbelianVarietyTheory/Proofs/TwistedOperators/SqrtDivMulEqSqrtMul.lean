@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CardFilterLowerHeckeRepsEqRelIndexPow
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RealPoints
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalHomLatticeOfKeepsCompletedLattices
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
@@ -86,16 +87,7 @@ def IsHalfReps (Λ : AddSubgroup (WO S T)) (b : AE D) (a : GA D T) (Δ : Finset 
 
 theorem card_reps {G : Type} [AddCommGroup G] (A B : AddSubgroup G) {R : Finset G} (h1 : ∀ u ∈ R, u ∈ B)
     (h2 : ∀ w ∈ B, ∃! v, v ∈ R ∧ w - v ∈ A) : R.card = A.relIndex B := by
-  have key : ∀ u w : B, (QuotientAddGroup.mk u : B ⧸ A.addSubgroupOf B) = QuotientAddGroup.mk w ↔ (w : G) - u ∈ A :=
-    fun u w => by
-      rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf, AddSubgroup.coe_add, AddSubgroup.coe_neg, neg_add_eq_sub]
-  rw [← Nat.card_eq_finsetCard]
-  refine Nat.card_congr (Equiv.ofBijective
-    (fun u : R => (QuotientAddGroup.mk ⟨u, h1 u u.2⟩ : B ⧸ A.addSubgroupOf B)) ⟨fun u v h => ?_, fun q => ?_⟩)
-  · exact Subtype.ext ((h2 v (h1 v v.2)).unique ⟨u.2, (key _ _).1 h⟩ ⟨v.2, by rw [sub_self]; exact zero_mem _⟩)
-  · obtain ⟨w, rfl⟩ := QuotientAddGroup.mk_surjective q
-    obtain ⟨v, ⟨hv, h⟩, -⟩ := h2 w w.2
-    exact ⟨⟨v, hv⟩, (key _ _).2 h⟩
+  apply _root_.GlobalTheory.LowerHeckeCount.card_eq_relIndex_of_reps <;> assumption
 
 theorem smul_rankOne (b : AE D) (a : D.host.E) (s : Fin S.rank → Formalism.IndefR.Datum.EAf D) (α : Af D.host.F)
     (y : Fin T.rank → Af D.host.F ⊗[D.host.F] D.host.E) :

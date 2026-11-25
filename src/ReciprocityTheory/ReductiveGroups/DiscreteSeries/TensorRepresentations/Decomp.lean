@@ -152,8 +152,7 @@ theorem tens_unitarize (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [NormedAd
     simp only [Complex.re_sum, hre]
     have hnn : ∀ j ξ, 0 ≤ ∫ x, ‖u j ξ f x‖ ^ 2 ∂(Formalism.REAL.muG ε) := fun j ξ =>
       integral_nonneg fun x => by positivity
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h0 : ∑ j, ∑ ξ, ∫ x, ‖u j ξ f x‖ ^ 2 ∂(Formalism.REAL.muG ε) = 0 :=
       le_antisymm hneg (Finset.sum_nonneg fun j _ => Finset.sum_nonneg fun ξ _ => hnn j ξ)
     have hz : ∀ j ξ, ∫ x, ‖u j ξ f x‖ ^ 2 ∂(Formalism.REAL.muG ε) = 0 := by

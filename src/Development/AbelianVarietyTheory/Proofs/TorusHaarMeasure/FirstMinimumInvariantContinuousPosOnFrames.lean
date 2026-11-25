@@ -393,8 +393,7 @@ private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.Chart
         X.c τ * X.maj x τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v)) (fun τ _ => hterm v τ)
         (Finset.mem_univ _))
   obtain ⟨v0, hv0Λ, hv00⟩ : ∃ v ∈ X.Λ, v ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hbot : (X.Λ : Set (Fin r → E)) ⊆ {0} := fun v hv => hcon v hv
     have := X.Λ_span
     rw [eq_top_iff] at this

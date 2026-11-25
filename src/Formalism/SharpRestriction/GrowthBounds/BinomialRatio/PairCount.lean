@@ -49,7 +49,6 @@ theorem pc_shape {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {M : ℕ} (hA : �
     {mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ} (h : IsChain (kLetters A Ai Ci) mu) (n : Fin (2 * s + 1 + 1)) :
     ∀ idx : Fin (r + 1), (pcU n.val ≤ idx.val → mu n idx ≤ 0) ∧ (idx.val + pcL n.val < r + 1 → 0 ≤ mu n idx) ∧
       |mu n idx| ≤ (if n.val = 0 then 0 else (A : ℤ)) + n.val * M := by
-  have hM0 : (0 : ℤ) ≤ M := Int.natCast_nonneg _
   have key : ∀ t : ℕ, ∀ ht : t < 2 * s + 1 + 1, ∀ idx : Fin (r + 1),
       (pcU t ≤ idx.val → mu ⟨t, ht⟩ idx ≤ 0) ∧ (idx.val + pcL t < r + 1 → 0 ≤ mu ⟨t, ht⟩ idx) ∧
       |mu ⟨t, ht⟩ idx| ≤ (if t = 0 then 0 else (A : ℤ)) + (t : ℤ) * M := by
@@ -169,7 +168,6 @@ theorem pc_count {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {M : ℕ} (hA : �
     refine (pc_shape hA hC h n idx).2.2.trans ?_
     have hn : (n.val : ℤ) ≤ 2 * (s : ℤ) + 1 := by have := n.2; omega
     have hM : (0 : ℤ) ≤ (M : ℤ) := Int.natCast_nonneg _
-    have hA0 : (0 : ℤ) ≤ (A : ℤ) := Int.natCast_nonneg _
     have := mul_le_mul_of_nonneg_right hn hM
     split_ifs <;> linarith
   have hzero : ∀ {mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ}, IsChain (kLetters A Ai Ci) mu → ∀ n (i : Fin (r + 1)),

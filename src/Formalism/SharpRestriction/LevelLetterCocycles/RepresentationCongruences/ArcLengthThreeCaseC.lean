@@ -1,5 +1,7 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ArcLengthOneOrTwoCaseB
 public import Formalism.SharpRestriction.LevelLetterCocycles.AdmBoundsBOfAdm
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ProdTwoLevelsEqConst
@@ -49,15 +51,8 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 namespace ArcLengthThreeFiltration
 
 theorem φVB_inj (T : LocLat G Qp LL O) : Function.Injective (φVB PD (LL := LL) (V := T.V)) := by
-  have hφ : Function.Injective (PD.φ.toLinearMap) := by simpa using PD.φ_inj
-  have h : ⇑(φVB PD (LL := LL) (V := T.V)) = ⇑(LinearMap.lTensor T.V PD.φ.toLinearMap) := by
-    funext x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a c => simp [φVB]
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  rw [h]
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hφ
+  intros
+  apply _root_.Formalism.MainNotions.UnusedSlot80.ArcF.φVB_inj <;> assumption
 
 theorem crisMap_φ {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (x : T₁.V ⊗[Qp] B) :
     Formalism.MainNotions.TruncatedSeriesCountingBounds.crisMap B F.f (φVB PD (LL := LL) (V := T₁.V) x) =
@@ -92,12 +87,7 @@ theorem dv_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
 
 theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → LL) :
     dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
-  have h : c₀ = ∑ m, c₀ m • (Pi.single m 1 : Fin d → LL) := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  conv_lhs => rw [h]
-  rw [dv_sum]
-  simp only [dv_smul]
+  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.ArcLengthTwoLifting.dv_eq_sum_single <;> assumption
 
 theorem dvO_eq (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → O) :
     dvO W T e b c₀ = ∑ m, algebraMap O LL (c₀ m) • dv W T e b (Pi.single m 1) := by
@@ -111,21 +101,7 @@ theorem dvO_single (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.D
 
 theorem filS_anti (T : LocLat G Qp LL O) (a : ZMod n) (s : ℕ) {u u' : ℤ} (h : u ≤ u') :
     FilS W T a s u' ≤ FilS W T a s u := by
-  unfold FilS
-  apply Submodule.map_mono
-  apply inf_le_inf_right
-  unfold FilCris
-  apply inf_le_inf_left
-  apply Submodule.comap_mono
-  unfold FilV
-  have hF : PD.Fil u' ≤ PD.Fil u := antitone_int_of_succ_le PD.Fil_anti h
-  intro y hy
-  rw [LinearMap.mem_range] at hy
-  obtain ⟨z, rfl⟩ := hy
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a c => exact LinearMap.mem_range.mpr ⟨a ⊗ₜ ⟨c.1, hF c.2⟩, by simp⟩
-  | add z w hz hw => rw [map_add (f := _)]; exact Submodule.add_mem _ hz hw
+  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.ArcLengthTwoLifting.filS_anti <;> assumption
 
 theorem filS_zero_iff (T : LocLat G Qp LL O) (a : ZMod n) (u : ℤ) (x : T.V ⊗[Qp] B) :
     x ∈ FilS W T a 0 u ↔ x ∈ FilCris PD T.ρ u ⊓ DcrisL PD T.ρ (W.emb a) := by

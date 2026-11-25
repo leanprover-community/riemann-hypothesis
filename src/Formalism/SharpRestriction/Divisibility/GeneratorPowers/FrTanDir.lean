@@ -6,8 +6,6 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanPf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.FrTanDir

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateSizesOfHypotheses
@@ -153,18 +154,7 @@ theorem continuous_cornerB {p s : ℕ} : Continuous (cornerB (p := p) (s := s)) 
 
 theorem continuous_psiH {p s : ℕ} (β : ℂ) (σ : Equiv.Perm (Fin p)) :
     Continuous fun η : XiH p s σ => psiH β σ η := by
-  have h1 : Continuous fun η : XiH p s σ => subS (wP σ * lowW σ η.2.1 * (wP σ)⁻¹) :=
-    continuous_subS.comp ((continuous_const.matrix_mul
-      ((continuous_lowW σ).comp (continuous_fst.comp continuous_snd))).matrix_mul continuous_const)
-  have h2 : Continuous fun η : XiH p s σ => supS (G.upper η.2.2) :=
-    continuous_supS.comp (continuous_upper.comp (continuous_snd.comp continuous_snd))
-  have h3 : Continuous fun η : XiH p s σ => cornerA η.1.1 :=
-    continuous_cornerA.comp (continuous_fst.comp continuous_fst)
-  have h4 : Continuous fun η : XiH p s σ => cornerB η.1.2 :=
-    continuous_cornerB.comp (continuous_snd.comp continuous_fst)
-  simp only [psiH, G.psi]
-  exact Complex.continuous_exp.comp (continuous_const.mul (Complex.continuous_ofReal.comp
-    (Complex.continuous_re.comp (continuous_const.mul (((h1.add h2).add h3).add h4)))))
+  apply _root_.Formalism.FourierDecayAlt.P.Ux10.cont_psiH <;> assumption
 
 theorem continuous_zjH {p s : ℕ} (σ : Equiv.Perm (Fin p)) (d : Fin p → ℂ) (CC : G.Mat s) :
     Continuous fun η : XiH p s σ => (Matrix.of.symm (ZjH σ d η CC) : G.Mat (p + s)) := by

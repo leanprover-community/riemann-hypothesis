@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapQdetEtr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHL2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeKeepsCharacter
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGHeadV
@@ -53,15 +54,7 @@ theorem dzb_smul' (c : ℂ) (f : ℂ → E) (τ : ℂ) : PBP.dzb (fun s => c •
 theorem map_qminor' {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B) {n t : ℕ}
     (Eu : Fin n → Fin n → A) (a b : Fin t → Fin n) (u : ℂ) :
     φ (qminor Eu a b u) = qminor (fun p q => φ (Eu p q)) a b u := by
-  unfold qminor
-
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun σ _ => ?_
-  rw [map_mul, map_intCast, map_list_prod, List.map_ofFn]
-  congr 2
-  apply congrArg List.ofFn
-  funext k
-  by_cases h : a (σ k) = b k <;> simp [Tm, h]
+  apply _root_.GlobalTheory.CompanionTheory.CapelliMap.map_qminor <;> assumption
 
 theorem map_AAv {A B : Type} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B] (φ : A →ₐ[ℂ] B) (k r : ℕ)
     (Eu : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (y : Fin r → Fin (2 * r + k + 1) → ℂ) (n : ℕ)

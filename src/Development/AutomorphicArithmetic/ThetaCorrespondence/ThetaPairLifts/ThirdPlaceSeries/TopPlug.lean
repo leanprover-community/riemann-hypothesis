@@ -115,8 +115,7 @@ private theorem UpperTheory.Top.boundedTw_key (ψ : PChar) (φ : Frame) (H : Hos
   obtain ⟨ξ, hξ, i, j, hiod, heq⟩ := htw θ htriv
   have hNc : ψ.N ∣ H.condN := Dvd.dvd.mul_right (Dvd.dvd.mul_right hdiv _) _
   refine ⟨ξ, i, j, ?_, hχ'.1, ?_⟩
-  · by_contra hij
-    push_neg at hij
+  · by_contra! hij
     obtain ⟨rfl, rfl⟩ := hij
     rcases hθ' with ⟨-, hnk⟩ | hm
     · apply hnk
@@ -1046,8 +1045,7 @@ theorem UpperTheory.T3.supplyOfAdmOf :
       linarith
     linarith
   have he : e ≥ e0 := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 : (2 : ℝ) ^ e ≤ 2 ^ e0 := pow_le_pow_right₀ (by norm_num) hlt.le
     have h2 : s.x ≤ s.x ^ (2 + 8 * eps) := by
       calc s.x = s.x ^ (1 : ℝ) := (Real.rpow_one _).symm

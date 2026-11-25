@@ -1,5 +1,6 @@
 module
 
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
@@ -75,16 +76,7 @@ lemma polar_half {A B : Matrix (Fin n) (Fin n) ℂ} (h : A + A = B + B) : A = B 
 
 lemma polar_spec_pos {P : Matrix (Fin n) (Fin n) ℂ} (hP : P.PosSemidef) (hu : IsUnit P) :
     ∀ x ∈ spectrum ℝ P, 0 < x := by
-  intro x hx
-  rw [hP.isHermitian.spectrum_real_eq_range_eigenvalues] at hx
-  obtain ⟨i, rfl⟩ := hx
-  have h0 := hP.eigenvalues_nonneg i
-  have hne : hP.isHermitian.eigenvalues i ≠ 0 := by
-    intro h
-    have hmem := hP.isHermitian.eigenvalues_mem_spectrum_real i
-    rw [h, spectrum.zero_mem_iff] at hmem
-    exact hmem hu
-  exact lt_of_le_of_ne h0 (Ne.symm hne)
+  apply _root_.Formalism.REAL.spectrum_pos_of_posSemidef_unit <;> assumption
 
 lemma polar_exp_log {P : Matrix (Fin n) (Fin n) ℂ} (hP : IsSelfAdjoint P)
     (hs : ∀ x ∈ spectrum ℝ P, 0 < x) : NormedSpace.exp (CFC.log P) = P := by
@@ -98,16 +90,7 @@ lemma polar_exp_log {P : Matrix (Fin n) (Fin n) ℂ} (hP : IsSelfAdjoint P)
 
 lemma polar_gJgH {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     g * Jm ε * gᴴ = Jm ε ∧ IsUnit g := by
-  have hg' : gᴴ * Jm ε * g = Jm ε := hg
-  have hJJ := polar_Jm_mul_self ε
-  have hleft : (Jm ε * gᴴ * Jm ε) * g = 1 := by
-    calc (Jm ε * gᴴ * Jm ε) * g = Jm ε * (gᴴ * Jm ε * g) := by simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hg', hJJ]
-  have hright : g * (Jm ε * gᴴ * Jm ε) = 1 := mul_eq_one_comm.1 hleft
-  refine ⟨?_, ⟨⟨g, _, hright, hleft⟩, rfl⟩⟩
-  calc g * Jm ε * gᴴ = g * (Jm ε * gᴴ * Jm ε) * Jm ε := by
-        simp only [Matrix.mul_assoc, hJJ, Matrix.mul_one]
-    _ = Jm ε := by rw [hright, Matrix.one_mul]
+  apply _root_.Formalism.REAL.indefinite_unitary_preserves_form <;> assumption
 
 def polar_L (g : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ :=
   (1 / 2 : ℝ) • CFC.log (gᴴ * g)

@@ -953,12 +953,6 @@ section -- clump:auto
 
 namespace GlobalTheory.IntSmulIsIntegral
 
-theorem exists_int_smul_isIntegral {E : Type} [Field E] [NumberField E] (a : E) :
-    ∃ d : ℤ, d ≠ 0 ∧ IsIntegral ℤ (d • a) := by
-  have h : IsAlgebraic ℤ a :=
-    (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic a)
-  exact h.exists_integral_multiple
-
 theorem exists_int_smul_mem {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
     (M : Submodule (NumberField.RingOfIntegers E) (Fin n → E))
     (hM : Submodule.span E (↑M : Set (Fin n → E)) = ⊤) (x : Fin n → E) :
@@ -1154,8 +1148,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict GlobalTheory.St GlobalTheory.St.G
 open scoped TensorProduct InnerProductSpace
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.St.G
 

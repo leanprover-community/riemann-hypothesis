@@ -51,7 +51,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.AbLaw GlobalTheory.UU GlobalTheory.LN GlobalTheory.Raynaud IsLocalRing
 open scoped CategoryTheory.Obj
 open GlobalTheory.AbDual GlobalTheory.CechPic GlobalTheory.DualCon
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

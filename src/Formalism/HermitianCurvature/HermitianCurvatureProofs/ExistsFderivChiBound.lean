@@ -14,8 +14,6 @@ namespace Formalism.FourierDecayAlt.P5.HerB
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P5.HerA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Bump
 
 theorem dZ_contDiff {f : ℂ → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (NF.dZ f) := by

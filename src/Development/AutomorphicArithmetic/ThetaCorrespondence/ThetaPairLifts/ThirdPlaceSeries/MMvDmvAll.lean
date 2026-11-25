@@ -48,7 +48,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.R3.Tr GlobalTheory.LayerMove
 
 noncomputable section
@@ -70,7 +69,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.R3.Tr GlobalTheory.LayerMove
 noncomputable section
 namespace UpperTheory.One.M
@@ -303,7 +301,6 @@ def mvAll_alt {D : D7} (m : Mv D) {C : NChoice D} (a : _root_.GlobalTheory.Heigh
       (psi_is := (by with_unfolding_all exact (a.tp.psi_is :)))
       (psi_un := (by with_unfolding_all exact (a.tp.psi_un :))))
     (plB := (by with_unfolding_all exact (a.plB :)))
-    (plκ := (by with_unfolding_all exact (a.plκ :)))
 end UpperTheory.One.M
 end
 end

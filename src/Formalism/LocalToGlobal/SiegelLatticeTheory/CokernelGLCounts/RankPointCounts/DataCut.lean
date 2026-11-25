@@ -835,8 +835,7 @@ theorem dom_points (hN : SupportG.NormProd D) {δ : ∀ p : PlF D, (D.s.atP p).F
       rw [hsum]
       ring
     · have h0 : n x = 0 ∨ n y = 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hxy ⟨lt_of_le_of_ne (hn0 x) (Ne.symm h.1), lt_of_le_of_ne (hn0 y) (Ne.symm h.2)⟩
       rcases h0 with h0 | h0
       · have hc : ∀ ρ, chat vR κ nc ρ (w x) = 0 := fun ρ => by

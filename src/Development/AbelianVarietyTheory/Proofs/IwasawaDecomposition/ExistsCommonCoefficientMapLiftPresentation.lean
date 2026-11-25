@@ -239,7 +239,7 @@ theorem exists_oneCoef_presStd_heq : ∀ (X : Stages) (px : PreX X.B.toPre) (I :
     rw [hgr]
     exact he_pair 1 x x'
   · intro cl
-    have h6 := GlobalTheory.T.translatedStdLattice_eq_decoratedLattice_reindexed X i (L.ΛV i) (by rw [← hβ]; exact hL.is.βV i) (LiftBrg.sgL X I U t) eG hchar (A.y cl)
+    have h6 := _root_.GlobalTheory.Mem.R3.LiftLatStd.hLat_eq_decoPt_N X i (L.ΛV i) (by rw [← hβ]; exact hL.is.βV i) (LiftBrg.sgL X I U t) eG hchar (A.y cl)
     have hy := A.q_y cl
     have hy' : Formalism.L2.Col.decoPt X.toD7.sp.cm X.B.R.nV ∅ (LiftBrg.sgL X I U t) (QuotientGroup.mk (A.y cl)) =
         (Formalism.L2.Col.mtKGSD X.B.wts I.Ch I.sel t.1 ((i : ℕ) + 1)).outSec.rep cl := hy
@@ -247,7 +247,7 @@ theorem exists_oneCoef_presStd_heq : ∀ (X : Stages) (px : PreX X.B.toPre) (I :
     rw [hy']
     exact he_nab _
   · intro cl
-    have h6 := GlobalTheory.T.translatedStdLattice_eq_decoratedLattice_reindexed X i (L.ΛV i) (by rw [← hβ]; exact hL.is.βV i) (LiftBrg.sgL X I U t) eG hchar (A.y cl)
+    have h6 := _root_.GlobalTheory.Mem.R3.LiftLatStd.hLat_eq_decoPt_N X i (L.ΛV i) (by rw [← hβ]; exact hL.is.βV i) (LiftBrg.sgL X I U t) eG hchar (A.y cl)
     have hy := A.q_y cl
     have hy' : Formalism.L2.Col.decoPt X.toD7.sp.cm X.B.R.nV ∅ (LiftBrg.sgL X I U t) (QuotientGroup.mk (A.y cl)) =
         (Formalism.L2.Col.mtKGSD X.B.wts I.Ch I.sel t.1 ((i : ℕ) + 1)).outSec.rep cl := hy

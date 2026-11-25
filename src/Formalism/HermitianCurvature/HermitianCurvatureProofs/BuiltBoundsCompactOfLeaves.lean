@@ -797,11 +797,7 @@ theorem glob_pos (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) : 0 < S.G.g 
   unfold Sz.Glob.ka; rw [S.hv]; have := PBD.rd_pos' E; positivity
 
 theorem lenI_pos (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (v : Fin S.f) : 0 < S.G.lenI := by
-  have hGo := hB.2.2.2.2.2.2.2.2.2.2.1
-  have h := (hGo v).1
-  rw [len_eq] at h
-  have : (0 : ℝ) < 6 * (S.Ntop : ℝ) ^ 3 + 6 * S.Ntop := by have := PBD.ntop_ge S; positivity
-  linarith
+  apply _root_.Formalism.FourierDecayAlt.P.LiftDegreeLemmas.lenI_pos' <;> assumption
 
 theorem xw_nonneg (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (i : ℕ) (v : Fin S.f) : 0 ≤ Xw S i v := by
   obtain ⟨hg, hk⟩ := glob_pos hB

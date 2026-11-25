@@ -14,8 +14,7 @@ namespace PI.QuotSetU.UnitaryGroupMassFormula.SW
 open PI PI.QuotSetU
 
 lemma le_one_of_pow_le {x M : ℝ} (h : ∀ m : ℕ, x ^ m ≤ M) : x ≤ 1 := by
-  by_contra hx
-  push_neg at hx
+  by_contra! hx
   obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt M hx
   linarith [h m]
 

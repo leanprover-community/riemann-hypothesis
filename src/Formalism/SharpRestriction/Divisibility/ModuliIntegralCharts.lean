@@ -382,9 +382,6 @@ def bs {D : D7} {r j p : ℕ} (L : Loc D r j p) : Option ℕ → L.Mdl
   | none => L.Xm
   | some n => L.Xn n
 
-def IsChart {D : D7} {r j p : ℕ} (L : Loc D r j p) {Z y e} (χ : L.Chart Z y e) : Prop :=
-  L.chAt χ ∧ L.chOpen χ ∧ L.chAbExact χ ∧ L.chModU χ ∧ L.chConst χ
-
 structure ExtA (D : D7) {r j p : ℕ} (L : Loc D r j p) where
 
   FlagData : L.Mdl → Type
@@ -525,10 +522,6 @@ structure Prov (D : Formalism.BasicNotions.D7) where
   limRA : ∀ {w}, Met w → Prop
 
 variable {D : Formalism.BasicNotions.D7}
-
-theorem Prov.dP_le (X : Prov D) (w : X.Dat) (p : ℕ) {Z : (X.loc w p).Mdl} (y : (X.loc w p).Pt Z) :
-    (X.loc w p).dP y ≤ 2 * D.R.f * min (X.jj w) (X.rk w - X.jj w) :=
-  (X.loc w p).dP_le (X.jj_range w).1 (X.jj_range w).2 y
 
 def LinkConditions (D : Formalism.BasicNotions.D7) (X : Prov D) : Prop :=
   ∀ w p, p.Prime → ∀ n DF nW : ℕ, NHyp D p n → 3 * DF + 2 ≤ n →

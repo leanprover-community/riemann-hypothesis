@@ -172,8 +172,7 @@ theorem sum_smul_toReal_mem_psdCone : ∀ (O : Type) [CommRing O] [IsDedekindDom
   have hint : ∀ u : X ⧸ R, u ≠ 0 → cmin ≤ B₁ u u := by
     intro u hu
     obtain ⟨i, hi, hpos⟩ : ∃ i ∈ S, 0 < γ i (s u) (s u) := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       apply hu
       rw [← hs u, Submodule.Quotient.mk_eq_zero]
       exact fun i hi z => eq_zero_of_self_eq_zero (γ i) (hbal i).1 (hpsd i)

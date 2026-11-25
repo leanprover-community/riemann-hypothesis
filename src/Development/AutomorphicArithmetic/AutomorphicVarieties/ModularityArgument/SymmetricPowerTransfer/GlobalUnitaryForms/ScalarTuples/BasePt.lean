@@ -596,8 +596,7 @@ private theorem posF_one {F : Type} [Field F] [NumberField F] {Δ τ : F} (hΔ :
   set p2 := σ x.2.re.im with hp2
   set q1 := σ x.2.im.re with hq1
   set q2 := σ x.2.im.im with hq2
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have t1 := sq_nonneg a1
   have t2 : 0 ≤ (-D) * b1 ^ 2 := mul_nonneg (by linarith) (sq_nonneg _)
   have t3 : 0 ≤ (2 * p1 + T * q1) ^ 2 := sq_nonneg _
@@ -863,8 +862,7 @@ theorem UpperTheory.V.Z.Sym.Glob.basePt :
       rw [map_add (f := _), map_ofNat]
       nlinarith [hTb σ]
     obtain ⟨v, hv⟩ : ∃ v : Pl F, hs (cv v Δ) (cv v (2 + τ)) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hnot (hsHasse F Δ (2 + τ) hΔ0 h2τ hreal hcon)
     have hvS : v ∉ D.Sg := fun hvS => hv (hs_sq (two_ne v) ((map_ne_zero _).mpr hΔ0) (hD.split v hvS) _)
     have hnl : ¬ ∃ lam : Lsq (Kv v) (cv v Δ), QuadraticAlgebra.norm lam = 2 + cv v τ := by

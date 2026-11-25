@@ -94,8 +94,7 @@ theorem semistandardPeel : SSYTPeel := by
           intro s hs
           rw [Finset.mem_filter] at hs
           rw [Finset.mem_Iio]
-          by_contra hst
-          push_neg at hst
+          by_contra! hst
           exact hnt (hmono s t hst hs.2)
         have hc := Finset.card_le_card hsub
         rw [Fin.card_Iio] at hc

@@ -379,32 +379,6 @@ open MvPowerSeries IsLocalRing Formalism.BasicNotions.V1
 
 namespace GlobalTheory.PsCNL
 
-theorem psCNL : ∀ (O : Type) [CommRing O] [IsLocalRing O] (C : TR O) (n : ℕ),
-    ∃ (_ : IsLocalRing (MvPowerSeries (Fin n) C.C)), IsCNL O (MvPowerSeries (Fin n) C.C) ∧
-      ∀ x : MvPowerSeries (Fin n) C.C, x ∈ maximalIdeal (MvPowerSeries (Fin n) C.C) ↔
-        MvPowerSeries.constantCoeff x ∈ maximalIdeal C.C := by
-  intro O _ _ A n
-  refine ⟨inferInstance, ?_, fun x => _root_.GlobalTheory.MaximalIdealMembership.mem_maximalIdeal_iff x⟩
-  exact
-    { noeth := inferInstance
-      complete :=
-        { toIsHausdorff := _root_.GlobalTheory.NoetherianLocalHausdorff.noeth_local_hausdorff _
-          toIsPrecomplete := _root_.GlobalTheory.PowerSeriesIdealPowers.main n }
-      localHom := ⟨fun a ha => by
-        rw [MvPowerSeries.algebraMap_apply, isUnit_iff_constantCoeff, constantCoeff_C] at ha
-        exact isUnit_of_map_unit _ _ ha⟩
-      resSurj := by
-        intro y
-        obtain ⟨f, rfl⟩ := residue_surjective y
-        obtain ⟨a, ha⟩ := IsCNL.resSurj (O := O) (A := A.C) (residue A.C (constantCoeff f))
-        have ha' : residue A.C (algebraMap O A.C a) = residue A.C (constantCoeff f) := ha
-        refine ⟨a, ?_⟩
-        show residue _ (algebraMap O (MvPowerSeries (Fin n) A.C) a) = residue _ f
-        rw [← sub_eq_zero, ← map_sub, residue_eq_zero_iff, mem_maximalIdeal, mem_nonunits_iff,
-          isUnit_iff_constantCoeff, map_sub, MvPowerSeries.algebraMap_apply, constantCoeff_C]
-        show algebraMap O A.C a - constantCoeff f ∈ maximalIdeal A.C
-        rw [← residue_eq_zero_iff, map_sub, ha', sub_self] }
-
 end GlobalTheory.PsCNL
 end -- clump:auto
 end -- clump:auto
@@ -634,8 +608,7 @@ theorem exists_separable_specialization {D : ℕ} (P : (MvPolynomial (Fin D) ℚ
     linear_combination (C (algebraMap R F da) * C (algebraMap R F db)) * hab
   have hδ : da * db ≠ 0 := mul_ne_zero (nonZeroDivisors.ne_zero hda) (nonZeroDivisors.ne_zero hdb)
   obtain ⟨c, hc⟩ : ∃ c : Fin D → ℚ, MvPolynomial.eval c (da * db) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hδ (MvPolynomial.funext fun c => by simpa using hno c)
   refine ⟨c, ?_⟩
   have key' := congrArg (Polynomial.map (MvPolynomial.eval c)) key
@@ -1023,8 +996,7 @@ variable {φ}
 
 theorem exists_evalAt_ne_zero (hinj : ∀ u : A, (∀ j, φ j u = 0) → u = 0) {u : A} (hu : u ≠ 0) :
     ∃ k, evalAt φ k u ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   exact hu (hinj u fun j => by simpa [evalAt_of_lt φ j.2] using h j)
 
 theorem val_smul (c : ℂ) (u : A) (hc : c ≠ 0) : val φ (c • u) = val φ u := by

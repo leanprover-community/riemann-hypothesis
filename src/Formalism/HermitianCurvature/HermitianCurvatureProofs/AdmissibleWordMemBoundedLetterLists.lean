@@ -10,6 +10,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoo
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBJoint
 
 @[expose] public section
 
@@ -352,20 +353,7 @@ theorem psiInf_eq_prod (S : C.HidaSetting E Wp Wq) (l : E) (c : J.CV E) :
 
 theorem prod_dlB (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (i : ℕ) :
     ∏ _v : Fin S.f, KB.dlB S i 1 = ZLattice.covolume (J.eLat E (S6.perLat E S.g (S6.nuBlock S.G.r i 1) 1) 1) := by
-  rw [_root_.Formalism.FourierDecayAlt.P.Dx2.NH.nhat E hU S.g _ 1 hg]
-  have hf : S.f = S6.deg E := by
-    have h1 := (Formalism.FourierDecayAlt.P.degreeFacts_statement E).2.1
-    have h2 : Fintype.card (Fin S.f) = Fintype.card (InfinitePlace E) := Fintype.card_congr S.pl
-    rw [Fintype.card_fin] at h2
-    omega
-  rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, hf]
-  unfold KB.dlB D.deG
-  have hrd := Formalism.FourierDecayAlt.P.Jx4.rd_pos E
-  have hg' : (0 : ℝ) < (S.g : ℝ) := by exact_mod_cast hg
-  have e : S6.rd E ^ (2 * S6.nuBlock (S.G.r : ℤ) (i : ℤ) (1 : ℤ)) / (2 / (S6.rd E * (S.g : ℝ) ^ 3)) =
-      S6.rd E ^ (2 * S6.nuBlock (S.G.r : ℤ) (i : ℤ) (1 : ℤ)) * (S6.rd E / 2) * (S.g : ℝ) ^ 3 := by
-    field_simp
-  rw [Nat.cast_one, e, mul_pow, mul_pow, ← zpow_natCast, ← zpow_mul, ← pow_mul]
+  apply _root_.Formalism.FourierDecayAlt.P.PBJoint.prod_dlB <;> assumption
 
 theorem nhat_eq_nhatV (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (hInt : KB.IntAll S)
     (ε : ℝ) (hε : 0 < ε) (i : ℕ) (hi1 : 1 ≤ i) (hi2 : i ≤ S.G.r + 1) (w : S.W) (Y : Finset (TB.Pt E))

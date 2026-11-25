@@ -148,10 +148,6 @@ theorem coeff_single_one {σ : Type} (s : σ) (f : MvPowerSeries σ R) :
     coeff (Finsupp.single s 1) f = constantCoeff (pderiv s f) := by
   rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv]; simp
 
-theorem coeff_add_single {σ : Type} (D : σ →₀ ℕ) (t : σ) (h : D t = 0) (f : MvPowerSeries σ R) :
-    coeff (D + Finsupp.single t 1) f = coeff D (pderiv t f) := by
-  rw [coeff_pderiv, h]; simp
-
 private theorem cc_d_ev_lemma {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a) (g : PS R m d) :
     ev a g = substAlgHom (hasSubst_ev a ha) g := by
   rw [substAlgHom_apply]
@@ -246,16 +242,6 @@ theorem cc_dd_ev {m n : ℕ} {a : Fin m → Pt R n d} (ha : ZZ a) (s t : Fin n �
 
 theorem lin_one (φ : Pt R 1 d) (i j : Fin d) : lin φ 1 i j = constantCoeff (pderiv ((0 : Fin 1), j) (φ i)) :=
   coeff_single_one _ _
-
-theorem cc_d_comp1_pt {n : ℕ} (φ : Pt R 1 d) (j k : Fin n) (i l : Fin d) :
-    constantCoeff (pderiv (k, l) (comp1 φ (pt R d j) i)) = if j = k then lin φ 1 i l else 0 := by
-  classical
-  show constantCoeff (pderiv (k, l) (ev ![pt R d j] (φ i))) = _
-  rw [cc_d_ev (cechDeRhamTotalCocyclesOne (Z_pt j)), lin_one, Fintype.sum_prod_type, Fin.sum_univ_one]
-  by_cases h : j = k
-  · subst h
-    simp [pt, pderiv_X, Pi.single_apply]
-  · simp [pt, h]
 
 theorem lin_comp1 (φ : Pt R 1 d) {ψ : Pt R 1 d} (hψ : Z ψ) : lin (comp1 φ ψ) 1 = lin φ 1 * lin ψ 1 := by
   ext i j

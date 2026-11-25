@@ -2,6 +2,7 @@ module
 
 public import Formalism.HermitianCurvature.StatementQ
 import Mathlib.Tactic.Lemma
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvPsi
 
 @[expose] public section
 
@@ -9,8 +10,6 @@ open Matrix
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
 
@@ -121,16 +120,6 @@ lemma ell_add (z : Fin (2 * r + k + 1) → ℂ) (A B : Mx k r) :
   split_ifs <;> simp [Matrix.add_mulVec]
 
 lemma ell_one (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) : ell k r z 1 = 0 := by
-  unfold ell
-  apply Finset.sum_eq_zero
-  intro a _
-  split_ifs with h
-  · apply Matrix.one_apply_ne
-    intro he
-    have := congrArg Fin.val he
-    simp only [eI_val] at this
-    omega
-  · rw [Matrix.one_mulVec]
-    exact hz _ (Or.inl a.isLt)
+  apply _root_.PI.WBL.Cv.ell_one <;> assumption
 
 end Formalism.FourierDecayAlt.Q.LeftMultiplicationRule

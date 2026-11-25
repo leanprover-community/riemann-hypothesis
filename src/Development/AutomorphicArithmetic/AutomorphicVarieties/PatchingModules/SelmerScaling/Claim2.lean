@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SubMulAddEpM
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.EpC
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.BndOps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.BndRho
@@ -10,58 +11,11 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.TriProdZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.TpDual
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.AlSel
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
 import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.DefUTest
 
@@ -80,30 +34,6 @@ namespace UpperTheory.V.Pa
 section Comp
 
 variable {X : Type} [CommRing X] {e n : ℕ}
-
-private theorem dd_a_add (x y : DD X e) : (x + y).a = x.a + y.a := rfl
-
-private theorem ep_component_add (x y : DD X e) : (x + y).ep = x.ep + y.ep := rfl
-
-private theorem dd_ep'_add (x y : DD X e) : (x + y).ep' = x.ep' + y.ep' := rfl
-
-private theorem dd_eta_add (x y : DD X e) : (x + y).eta = x.eta + y.eta := rfl
-
-private theorem dd_a_zero : (0 : DD X e).a = 0 := rfl
-
-private theorem dd_ep_zero : (0 : DD X e).ep = 0 := rfl
-
-private theorem dd_ep'_zero : (0 : DD X e).ep' = 0 := rfl
-
-private theorem dd_eta_zero : (0 : DD X e).eta = 0 := rfl
-
-private theorem dd_a_one : (1 : DD X e).a = 1 := rfl
-
-private theorem dd_ep_one : (1 : DD X e).ep = 0 := rfl
-
-private theorem dd_ep'_one : (1 : DD X e).ep' = 0 := rfl
-
-private theorem dd_eta_one : (1 : DD X e).eta = 0 := rfl
 
 private theorem sum_a {ι : Type} (s : Finset ι) (f : ι → DD X e) : (∑ i ∈ s, f i).a = ∑ i ∈ s, (f i).a := by
   classical
@@ -176,16 +106,7 @@ private theorem P_ep' (Y : Fin e → Matrix (Fin n) (Fin n) X) (k : Fin e) :
   · simp [DD.epM, hij]
 
 private theorem epM_mul (Y Z : Fin e → Matrix (Fin n) (Fin n) X) : DD.epM Y * DD.epM Z = 0 := by
-  refine Matrix.ext fun i j => ?_
-  simp only [Matrix.mul_apply, Matrix.zero_apply]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  apply DD.ext
-  · simp [DD.mul_a, DD.epM]
-  · funext m
-    simp [DD.mul_ep, DD.epM]
-  · funext m
-    simp [DD.mul_ep', DD.epM]
-  · simp [DD.mul_eta, DD.epM]
+  apply _root_.UpperTheory.V.Pa.Det.epM_mul_epM <;> assumption
 
 private theorem epM_add (Y Z : Fin e → Matrix (Fin n) (Fin n) X) : DD.epM Y + DD.epM Z = DD.epM (Y + Z) := by
   ext i j <;> simp [DD.epM]

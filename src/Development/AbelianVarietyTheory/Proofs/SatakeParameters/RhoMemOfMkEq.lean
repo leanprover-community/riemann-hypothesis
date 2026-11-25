@@ -880,13 +880,11 @@ theorem class_fixed_phase : ∀ (L : Type) [Field L] [CharZero L] [Valued L (Wit
     exact hmemV _
   have hwAll : w ∈ ⨆ c, V c := (iSup_le fun k => le_iSup V _) hwO
   obtain ⟨d, hd⟩ : ∃ d, w ∉ P d := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨F, hF⟩ := (Submodule.mem_iSup_iff_exists_finset).1 hwAll
     exact hw0 (eq_zero_of_mem_compl hind F w hF hcon)
   obtain ⟨k, hk⟩ : ∃ k : KInt σ (JT : Matrix (Fin n') (Fin n') L), k • QuotientAddGroup.mk x = d := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hd ((iSup_le fun k => le_iSup₂_of_le (f := fun j (_ : j ≠ d) => V j) (k • QuotientAddGroup.mk x) (hcon k) le_rfl) hwO)
   have hsplit : w ∈ V d ⊔ P d := by
     have e := iSup_split_single V d

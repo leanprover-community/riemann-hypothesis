@@ -59,8 +59,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap eigLat IsUnivChart scaleD sp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem finrank_range_idem' {V k : Type} [CommRing V] [IsLocalRing V] [CommRing k] [IsLocalRing k] [CharZero k]
     (f : V →+* k) {n : ℕ} (e : Module.End V (Fin n → V)) (e' : Module.End k (Fin n → k)) (he : IsIdempotentElem e)
     (he' : IsIdempotentElem e') (h : ∀ c, e' (f ∘ c) = f ∘ e c) :
@@ -70,11 +68,8 @@ theorem finrank_range_idem' {V k : Type} [CommRing V] [IsLocalRing V] [CommRing 
       ∑ i, e (Pi.single i 1) i = (Module.finrank R (LinearMap.range e) : R) := fun {R} _ _ e he => by
     have := Formalism.L2.Pj.LocFrM.range_free e he
     have k1 : IsIdempotentElem (1 - e) := he.one_sub
-    have kr : LinearMap.ker e = LinearMap.range (1 - e) := by
-      ext v
-      refine ⟨fun hv => ⟨v, by simp [LinearMap.mem_ker.1 hv]⟩, ?_⟩
-      rintro ⟨w, rfl⟩
-      simpa [sub_eq_zero] using (LinearMap.congr_fun he.eq w).symm
+    have kr : LinearMap.ker e = LinearMap.range (1 - e) :=
+      LinearMap.IsIdempotentElem.ker_eq_range_one_sub he
     have : Module.Free R (LinearMap.ker e) := kr ▸ Formalism.L2.Pj.LocFrM.range_free _ k1
     have : Module.Finite R (LinearMap.ker e) := kr ▸ Module.Finite.range _
     rw [← (LinearMap.IsIdempotentElem.isProj_range e he).trace, LinearMap.trace_eq_matrix_trace R (Pi.basisFun R (Fin n))]

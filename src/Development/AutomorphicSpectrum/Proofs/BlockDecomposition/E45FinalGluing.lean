@@ -595,7 +595,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Matrix Polynomial Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.UG Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec GlobalTheory.BCWords GlobalTheory.Published
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.IsobaricOfPublished
 
@@ -1860,12 +1859,10 @@ theorem eFinalGlue_of (hCS : ConvStrip) (hCC : ConvComp) (hFS : FactorStep) (hLL
     hG'0 hG'm hG't (fun k h hh => hG'e k h _ (hGe _ h _ (heig _ h hh)))
     (fun h hh => (hlam h hh).comp ((tendsto_add_atTop_nat k₀).comp (hφ₁.comp hφ₂).tendsto_atTop))
   obtain ⟨i, hi⟩ : ∃ i, F i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hF0 (funext hcon)
   obtain ⟨x, hx⟩ : ∃ x, F i x ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hi (funext hcon)
   have hsl := hPS E a b _ _ (F i) (hFm i)
   have hn₁ : sl₁ (F i) x.2 ≠ 0 := fun h => hx (by

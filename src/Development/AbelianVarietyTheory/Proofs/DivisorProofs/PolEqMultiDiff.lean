@@ -67,7 +67,6 @@ open Classical in
 def pol (φ : (ι → ℤ) → ℝ) : ℝ := ∑ S : Finset ι, (-1 : ℝ) ^ S.card * φ fun i => if i ∈ S then -1 else 0
 
 
-set_option autoImplicit false in
 open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 theorem _root_.GlobalTheory.FibreProj.pol_sum {J : Type} (T : Finset J)
@@ -78,14 +77,6 @@ theorem _root_.GlobalTheory.FibreProj.pol_sum {J : Type} (T : Finset J)
   simp_rw [Finset.mul_sum]
   exact Finset.sum_comm
 
-set_option autoImplicit false in
-open MvPolynomial in
-variable {ι : Type} [Fintype ι] in
-private theorem sum_pow_eq_sum_words_prod {R : Type} [CommRing R] (c : ι → R) (D : ℕ) :
-    (∑ i, c i) ^ D = ∑ f : Fin D → ι, ∏ k, c (f k) := by
-  rw [← Fin.prod_const, Fintype.prod_sum]
-
-set_option autoImplicit false in
 open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 open Classical in
@@ -158,7 +149,6 @@ private theorem sum_surjective_words_prod_eq_factorial_prod {R : Type} [CommRing
   rw [Finset.sum_congr rfl hprod, Finset.sum_const, hcard, nsmul_eq_mul]
   ring
 
-set_option autoImplicit false in
 open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 open Classical in
@@ -170,7 +160,7 @@ private theorem sum_neg_one_pow_card_mul_sum_pow_eq_factorial_prod {R : Type} [C
       = ∑ S : Finset ι, ∑ f : Fin D → ι,
           (∏ k, w (f k)) * ((-1 : R) ^ S.card * (if ∀ k, f k ∈ S then 1 else 0)) := by
         refine Finset.sum_congr rfl fun S _ => ?_
-        rw [sum_pow_eq_sum_words_prod, Finset.mul_sum]
+        rw [Fintype.sum_pow, Finset.mul_sum]
         refine Finset.sum_congr rfl fun f _ => ?_
         rw [Finset.prod_ite_zero]
         simp only [Finset.mem_univ, true_implies]
@@ -183,7 +173,6 @@ private theorem sum_neg_one_pow_card_mul_sum_pow_eq_factorial_prod {R : Type} [C
     _ = _ := sum_surjective_words_prod_eq_factorial_prod hD w
 
 
-set_option autoImplicit false in
 open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 open Classical in

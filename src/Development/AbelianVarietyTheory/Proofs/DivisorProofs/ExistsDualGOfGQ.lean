@@ -245,8 +245,6 @@ def dualG : GA D (dualSp S Λ hΛ) →* GA D S :=
       rw [JR, JR, ← Matrix.transpose_map, ← Matrix.map_mul, gram_dual_mul,
         Matrix.map_one _ (map_zero _) (map_one _)]) g.2
 
-theorem matHom_dualG (g : GA D (dualSp S Λ hΛ)) : matHom S (dualG S Λ hΛ g) = invT (matHom (dualSp S Λ hΛ) g) := rfl
-
 theorem mt_dualG (g : GA D (dualSp S Λ hΛ)) :
     Formalism.L2.Theta.mt S (dualG S Λ hΛ g) = (Formalism.L2.Theta.mt (dualSp S Λ hΛ) g⁻¹)ᵀ := rfl
 

@@ -81,8 +81,7 @@ theorem idemKO : StatIdemKO := by
     rw [← hsum]
     exact Finset.sum_congr rfl fun i _ => mul_comm _ _
   obtain ⟨i0, hi0⟩ : ∃ i0, IsUnit (e i0 i0) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hmem : ∑ i, e i i ∈ IsLocalRing.maximalIdeal O :=
       Ideal.sum_mem _ fun i _ => (IsLocalRing.mem_maximalIdeal _).2 (mem_nonunits_iff.2 (hcon i))
     rw [htr] at hmem

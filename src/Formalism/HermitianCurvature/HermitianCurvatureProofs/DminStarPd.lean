@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ZinvBound
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SplLen
@@ -16,8 +17,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.AdmissibleLieWords
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity PI.UnitaryCorollaryDerivatives.CRH
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 
@@ -80,15 +79,8 @@ private lemma rw_congr_on_open_of_eq_on_GV {F : Type*} [NormedAddCommGroup F] [N
 
 private lemma dw_const_smul {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F] (c : ℂ) (f : Mat k r → F) :
     ∀ w : List (Bool × Mat k r), Dw w (fun g => c • f g) = fun g => c • Dw w f g := by
-  intro w
-  induction w with
-  | nil => rfl
-  | cons x w ih =>
-    funext g
-    show Dx x (Dw w (fun g => c • f g)) g = c • Dx x (Dw w f) g
-    rw [ih, Dx_eq, Dx_eq]
-    first
-    | exact deriv_const_smul_field c (f := fun t => Dw w f (crv x g t))
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.BetaSesquilinearity.Dw_smul <;> assumption
 
 lemma ubl_fib (D : RealPlaceData k r Wp Wq) (E : Mat k r → C6.EndH Wp Wq) (hE : C6.FibBound D E) {ε : ℝ} (hε : 0 < ε)
     {S : Set (Mat k r)} (hS : ∀ g ∈ S, g ∈ GV k r ∧ ε ≤ Gf k r D.z D.z' g) (v : List (Mat k r))

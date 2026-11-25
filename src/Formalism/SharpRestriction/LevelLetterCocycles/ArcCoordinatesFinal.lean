@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.FrobeniusCoeffSupportBddBelow
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfLevelZeroParts
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
@@ -1289,17 +1290,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem prim_pow_p {ζ : LL} (hζ : ∃ j : ℕ, IsPrimitiveRoot ζ (PD.p ^ j)) :
     ∃ j : ℕ, IsPrimitiveRoot (ζ ^ PD.p) (PD.p ^ j) := by
-  obtain ⟨j, hj⟩ := hζ
-  rcases Nat.eq_zero_or_pos j with h0 | hpos
-  · subst h0
-    have : ζ = 1 := by simpa using hj
-    exact ⟨0, by simp [this]⟩
-  · refine ⟨j - 1, ?_⟩
-    have h := hj.pow_of_dvd PD.hp.ne_zero (dvd_pow_self PD.p (by omega))
-    have e : PD.p ^ j / PD.p = PD.p ^ (j - 1) := by
-      have := Nat.pow_div (show 1 ≤ j by omega) PD.hp.pos
-      rwa [pow_one] at this
-    rwa [e] at h
+  apply _root_.Formalism.MainNotions.N.Ln03.Pf.primitive_root_pow_prime <;> assumption
 
 theorem cc_lev_φpow (hlevφ : ∀ (i : ZMod n) (ζ : LL), (∃ j : ℕ, IsPrimitiveRoot ζ (PD.p ^ j)) → ∀ f : LetA O n,
       W.lev i ζ (W.φA f) = PowerSeries.rescale (PD.p : LL) (W.lev (i - 1) (ζ ^ PD.p) f))

@@ -94,7 +94,7 @@ theorem exists_constants : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0
         exact ⟨cc ⟨n, hn⟩, (hO ⟨n, hn⟩).2.1.2.2.2.1, fun _ => ⟨fun _ => HEq.rfl, fun _ hV =>
           eqAt_base T R κ v₀ hL hT ⟨n, hn⟩ (O ⟨n, hn⟩) (cc ⟨n, hn⟩) (hO ⟨n, hn⟩).1 hV⟩⟩
       · by_cases hg : GoodEmb T.Q.c σ ∧ T.V (n + 1) σ = Wc D ⟨n, hn⟩
-        · obtain ⟨c, hc, hE⟩ := GlobalTheory.T.exists_equivariant_unit_constants_goodEmbedding T R κ v₀ O hL hT hpb hP ⟨n, hn⟩ σ hg.1 hg.2
+        · obtain ⟨c, hc, hE⟩ := _root_.GlobalTheory.EquivConst.exists_equivariant_constants T R κ v₀ O hL hT hpb hP ⟨n, hn⟩ σ hg.1 hg.2
           exact ⟨c, hc, fun _ => ⟨fun h => absurd h hσ, fun _ _ => hE⟩⟩
         · exact ⟨fun _ => 1, fun _ => norm_one, fun _ => ⟨fun h => absurd h hσ, fun h1 h2 => absurd ⟨h1, h2⟩ hg⟩⟩
     · exact ⟨fun _ => 1, fun _ => norm_one, fun h => absurd h hn⟩

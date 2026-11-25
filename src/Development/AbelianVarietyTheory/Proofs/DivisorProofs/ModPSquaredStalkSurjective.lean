@@ -53,7 +53,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory
 
 namespace GlobalTheory.DI.StalkKer
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
 private lemma natCast_eq_zero_stalk_of_over_zmod (n : ℕ) {X : Scheme} (f : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (ZMod n)) (x : X) :
     ((n : ℕ) : X.presheaf.stalk x) = 0 := by
@@ -61,7 +60,6 @@ private lemma natCast_eq_zero_stalk_of_over_zmod (n : ℕ) {X : Scheme} (f : X �
     ((f.appTop).hom.comp (Scheme.ΓSpecIso (CommRingCat.of (ZMod n))).inv.hom)) n
   rw [← this, ZMod.natCast_self, map_zero]
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
 private lemma stalk_hom_eq_zero_of_stalkMap_eq_zero {X Y : Scheme} (π : X ⟶ Y) (y : X) {R : CommRingCat}
     [IsLocalRing R] (h : Spec R ⟶ X) (hy : h (IsLocalRing.closedPoint R) = y)
@@ -75,7 +73,6 @@ private lemma stalk_hom_eq_zero_of_stalkMap_eq_zero {X Y : Scheme} (π : X ⟶ Y
   simp [hz]
 
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.DI.StalkKer.stalkMap_surjective_ker : ∀ (p : ℕ) [Fact p.Prime] (Y X : Scheme.{0})
     (g : Y ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (ZMod (p ^ 2))) (f : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (ZMod p)) (π : X ⟶ Y),

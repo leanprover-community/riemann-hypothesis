@@ -12,6 +12,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbit
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushInv
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ProdFirstProjectionSmul
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensInfTR
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.ExistsLocalSolve, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SqChartCore
@@ -134,34 +135,12 @@ theorem sq_coord_pi {X : Type} [AddCommGroup X] [TopologicalSpace X] {k : ℕ}
 
 theorem sq_coord_Ainf (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
     ∃ (k : ℕ) (e : Ainf F ≃ₜ (Fin k → ℝ)), ∀ x y, e (x + y) = e x + e y := by
-  let e1 : Ainf F ≃ₜ (InfinitePlace F → ℝ) :=
-    Homeomorph.piCongrRight fun v =>
-      (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal v)).toHomeomorph
-  have h1 : ∀ x y, e1 (x + y) = e1 x + e1 y := by
-    intro x y; funext v
-    exact (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal v)).map_add _ _
-  let L := ContinuousLinearEquiv.ofFinrankEq (𝕜 := ℝ) (E := InfinitePlace F → ℝ)
-    (F := Fin (Module.finrank ℝ (InfinitePlace F → ℝ)) → ℝ) (Module.finrank_fin_fun ℝ).symm
-  refine ⟨_, e1.trans L.toHomeomorph, fun x y => ?_⟩
-  show L (e1 (x + y)) = L (e1 x) + L (e1 y)
-  rw [h1, map_add (f := _)]
+  apply _root_.PI.VolStabS.exists_coord_Ainf <;> assumption
 
 theorem sq_coord_tens (F E : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field E]
     [NumberField E] [Algebra F E] :
     ∃ (k : ℕ) (e : Ainf F ⊗[F] E ≃ₜ (Fin k → ℝ)), ∀ x y, e (x + y) = e x + e y := by
-  classical
-  let R := Ainf F
-  let b := Module.Free.chooseBasis R (R ⊗[F] E)
-  let eL : (R ⊗[F] E) ≃ₗ[R] (Module.Free.ChooseBasisIndex R (R ⊗[F] E) → R) := b.equivFun
-  let e0 : R ⊗[F] E ≃ₜ (Module.Free.ChooseBasisIndex R (R ⊗[F] E) → R) :=
-    { toEquiv := eL.toEquiv
-      continuous_toFun := IsModuleTopology.continuous_of_linearMap eL.toLinearMap
-      continuous_invFun := IsModuleTopology.continuous_of_linearMap eL.symm.toLinearMap }
-  obtain ⟨k0, eA, hA⟩ := sq_coord_Ainf F
-  obtain ⟨k, e1, h1⟩ := sq_coord_pi eA hA (Module.Free.ChooseBasisIndex R (R ⊗[F] E))
-  refine ⟨k, e0.trans e1, fun x y => ?_⟩
-  show e1 (e0 (x + y)) = e1 (e0 x) + e1 (e0 y)
-  rw [show e0 (x + y) = e0 x + e0 y from eL.map_add x y, h1]
+  apply _root_.PI.VolStabS.exists_coord_tens <;> assumption
 
 section Gen
 

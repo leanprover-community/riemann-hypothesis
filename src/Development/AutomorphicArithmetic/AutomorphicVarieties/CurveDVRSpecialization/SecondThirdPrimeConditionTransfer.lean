@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DeterminantRepresentations.RepApi
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ExistsDeterminantPairMapOfAlgHom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.BaseRepGL3NormalisedOfPsiEqOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
@@ -227,49 +229,12 @@ theorem th_comp {A' : Type} [CommRing A'] (e : A' →+* A) (f : A →+* Q) (σ :
 
 theorem chi_ofRep (σ : G →* Matrix (Fin n) (Fin n) Q) (y : MonoidAlgebra Q G) :
     (GDet.ofRep σ).chi y = (GDet.repAlg σ Q y).charpoly := by
-  have key : ∀ y : MonoidAlgebra Q G, GDet.repAlg σ Q[X] (MonoidAlgebra.mapRingHom G C y) = (C : Q →+* Q[X]).mapMatrix (GDet.repAlg σ Q y) := by
-    intro y
-    induction y using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add a b ha hb =>
-      rw [map_add (f := _), map_add (f := _), ha, hb]
-      ext i k
-      simp
-    | single g a =>
-      ext i k
-      simp [GDet.repAlg, MonoidAlgebra.lift_single]
-  simp only [GDet.chi, GDet.ofRep]
-  rw [Matrix.charpoly, Matrix.charmatrix]
-  simp [map_sub, key]
-  congr 2
-  ext i k
-  simp [GDet.repAlg, MonoidAlgebra.lift_single, Matrix.diagonal, Matrix.one_apply]
+  apply _root_.UpperTheory.V.AlgebraTools.Det.chi_eq <;> assumption
 
 private theorem gdet_map_chi_mapRingHom {n : ℕ} {A Q G : Type} [CommRing A] [CommRing Q] [Group G]
     (D : GDet n A G) (f : A →+* Q) (y : MonoidAlgebra A G) :
     (D.map f).chi (MonoidAlgebra.mapRingHom G f y) = (D.chi y).map f := by
-  letI : Algebra A Q[X] := ((algebraMap Q Q[X]).comp f).toAlgebra
-  let φ : A[X] →ₐ[A] Q[X] :=
-    { Polynomial.mapRingHom f with
-      commutes' := fun a => by simp [RingHom.algebraMap_toAlgebra] }
-  have hn := D.nat A[X] Q[X] φ (MonoidAlgebra.single 1 X - MonoidAlgebra.mapRingHom G C y)
-  have e : MonoidAlgebra.mapRingHom G (φ : A[X] →+* Q[X])
-      (MonoidAlgebra.single 1 X - MonoidAlgebra.mapRingHom G C y) =
-      MonoidAlgebra.single 1 X - MonoidAlgebra.mapRingHom G C (MonoidAlgebra.mapRingHom G f y) := by
-    rw [map_sub, MonoidAlgebra.mapRingHom_single]
-    congr 1
-    · congr 1
-      show Polynomial.map f X = X
-      simp
-    · rw [← RingHom.comp_apply, ← RingHom.comp_apply, ← MonoidAlgebra.mapRingHom_comp,
-        ← MonoidAlgebra.mapRingHom_comp]
-      congr 2
-      exact RingHom.ext fun a => by
-        change Polynomial.map f (C a) = C (f a)
-        simp
-  rw [e] at hn
-  unfold GDet.chi GDet.map
-  exact hn
+  apply _root_.pm_chi_map <;> assumption
 
 theorem charpoly_th {D : GDet n A G} {f : A →+* Q} {σ : G →* Matrix (Fin n) (Fin n) Q}
     (h : D.map f = GDet.ofRep σ) (y : MonoidAlgebra A G) : (th f σ y).charpoly = (D.chi y).map f := by

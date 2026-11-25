@@ -227,17 +227,12 @@ theorem arithAt : ∀ (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau), ArithAt D i
   have hr' : (D.R.r : ℚ) = (pS D i τ : ℚ) + (qS D i τ : ℚ) := by exact_mod_cast hr.symm
   have ho : Odd (pS D i τ + qS D i τ) := hr ▸ odd_r D.R
   have hL := GlobalTheory.ForcedWeights.lamLForced D ((i : ℕ) + 1) (Nat.le_add_left _ _) i.2 τ
-  refine ⟨sig_eq D i τ, ⟨hr, hV⟩, fun a ha => cast_aPlus D i τ ha, fun c hc => aM_cast D i τ hc,
-    fun a b hab hb => ?_, fun a b hab hb => ?_, fun a ha => ?_, fun a ha => ?_, fun a => ?_, fun c => ?_, ?_,
-    lamPrime_eq D i τ, hL, fun a => ?_⟩
+  refine ⟨⟨hr, hV⟩, fun a ha => cast_aPlus D i τ ha, fun c hc => aM_cast D i τ hc,
+    fun a b hab hb => ?_, fun a b hab hb => ?_, fun a => ?_, fun c => ?_, ?_, fun a => ?_⟩
   · rw [← Nat.cast_le (α := ℚ), cast_aPlus D i τ hb, cast_aPlus D i τ (by omega)]
     exact aPlusQ_anti D i τ hab hb
   · rw [← Nat.cast_le (α := ℚ), aM_cast' D i τ hb, aM_cast' D i τ (by omega), neg_le_neg_iff]
     exact dRowQ_anti D i τ (by omega) (by omega)
-  · rw [← Nat.cast_le (α := ℚ), cast_aPlus D i τ ha, Nat.cast_one]
-    exact one_le_aPlusQ D i τ ha
-  · rw [← Nat.cast_le (α := ℚ), aM_cast' D i τ ha, Nat.cast_one]
-    exact one_le_neg_dRowQ D i τ (by omega)
   · rw [kapW_cast _ _ _ ho, cast_aPlus D i τ a.2]
     simp only [kapQ, Sum.elim_inl, aPlusQ, centred, hr']; ring
   · rw [kapW_cast _ _ _ ho, aM_cast D i τ c.2]

@@ -1,6 +1,7 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZHAbove
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsActIffIsDiagEnd
+public import Development.AbelianVarietyTheory.Statements.SemistableTorsion.ImmersedBy
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsCompleteDvrIntegralClosureFinite
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

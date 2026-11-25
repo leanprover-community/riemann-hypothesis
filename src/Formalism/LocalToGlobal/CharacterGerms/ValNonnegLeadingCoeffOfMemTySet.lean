@@ -71,8 +71,7 @@ theorem coeff_tyS_lt {l : ℕ} (hl : 2 ≤ l) (a : ℕ → C) (s : ℕ) (ha : �
   intro t _
   split_ifs with ht
   · apply ha
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : l ^ s ≤ l ^ t := Nat.pow_le_pow_right (by omega) hc
     omega
   · rfl

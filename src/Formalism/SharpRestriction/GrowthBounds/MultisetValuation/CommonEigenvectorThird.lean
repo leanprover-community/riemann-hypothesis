@@ -34,19 +34,6 @@ open Formalism.InvariantFactorPaths.G7 (lgF lamF altF)
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-theorem sx_dual_even {n' : ℕ} (B : OmBasis p n') (i i' : Fin (n' / 2)) :
-    ∑ r, (sigW p)^[2 * i.val] (B.omS r) * (sigW p)^[2 * i'.val] (B.om r) = if i = i' then 1 else 0 := by
-  classical
-  have hAB : (Matrix.of fun (r j : Fin (n' / 2)) => (sigW p)^[2 * j.val] (B.om r)) *
-      (Matrix.of fun (j r' : Fin (n' / 2)) => (sigW p)^[2 * j.val] (B.omS r')) = 1 := by
-    refine Matrix.ext fun r r' => ?_
-    rw [Matrix.mul_apply, Matrix.one_apply, ← B.dual r r']
-    exact Finset.sum_congr rfl fun j _ => by rw [Matrix.of_apply, Matrix.of_apply, iterate_map_mul]
-  have hBA := mul_eq_one_comm.mp hAB
-  have h := congrFun (congrFun hBA i) i'
-  rw [Matrix.mul_apply, Matrix.one_apply] at h
-  simpa using h
-
 theorem sx_dual {n' : ℕ} (B : OmBasis p n') (hev : Even n') (a b : Fin n') (hab : a.val % 2 = b.val % 2) :
     ∑ r, (sigW p)^[a.val] (B.omS r) * (sigW p)^[b.val] (B.om r) = if a = b then 1 else 0 := by
   apply Formalism.L2.G.Pend.dualS <;> assumption

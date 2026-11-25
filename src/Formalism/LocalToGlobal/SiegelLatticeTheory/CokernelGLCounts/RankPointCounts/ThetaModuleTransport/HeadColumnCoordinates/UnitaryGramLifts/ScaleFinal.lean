@@ -379,8 +379,7 @@ theorem scaleChoice_holds : ScaleChoiceP := by
     have := pow_injective_of_not_isUnit g.q_irr.not_isUnit g.q_irr.ne_zero (add_left_cancel h')
     simpa using this
   obtain ⟨k, -, hk⟩ : ∃ k ∈ Finset.range 9, f k ∉ L.toFinset := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hsub : (Finset.range 9).image f ⊆ L.toFinset := fun x hx => by
       obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hx; exact hcon k hk
     have h1 := Finset.card_le_card hsub

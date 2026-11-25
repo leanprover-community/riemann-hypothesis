@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.InvariantLetterIdempotentOfFixed
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExpRules
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
@@ -36,13 +37,7 @@ theorem φA_letE' (i : ZMod n) : W.φA (letE i : LetA O n) = letE (i + 1) := by
   rwa [add_sub_cancel_right] at this
 
 theorem dl_φ {i : ZMod n} {x : W.DD T} (h : DL W T i x) : DL W T (i + 1) (W.φD T x) := by
-  obtain ⟨h1, h2⟩ := h
-  have e1 : W.φD T x = (letE (i + 1) : LetA O n) • W.φD T x := by
-    conv_lhs => rw [← h1]
-    rw [Formalism.MainNotions.WachCoordinates.Br.φD_smulA, φA_letE']
-  refine ⟨?_, fun δ hδ => ?_⟩
-  · rw [e1, smul_smul, Formalism.MainNotions.WachCoordinates.Br.letE_mul_self]
-  · rw [← W.φγ_comm, h2 δ hδ]
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.ExtensionLemmaAlt.Step2L.invariantLetter_frobenius_succ <;> assumption
 
 theorem dl_φpow {i : ZMod n} {x : W.DD T} (h : DL W T i x) (j : ℕ) :
     DL W T (i + (j : ZMod n)) (((W.φD T) ^ j) x) := by

@@ -55,8 +55,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.GradedPieces
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Linear
 
 variable {k M : Type} [Field k] [AddCommGroup M] [Module k M] {m : ℕ}

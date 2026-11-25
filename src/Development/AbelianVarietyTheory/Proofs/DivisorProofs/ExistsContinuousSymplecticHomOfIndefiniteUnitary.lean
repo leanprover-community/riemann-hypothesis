@@ -98,15 +98,16 @@ theorem signed_sum_mul_transpose {P Q R S : ℕ} (X Y : Matrix (Ix P Q) (Ix R S)
         simp only [Matrix.mul_assoc]
     _ = _ := by rw [hk']
 
-theorem exists_symplectic_hom_of_unitary : ∀ (ι l : Type) [Fintype ι] [DecidableEq ι] [Fintype l] [DecidableEq l] (P Q R S : ℕ)
-    (φ : (ι → Matrix (Ix P Q) (Ix R S) ℂ) ≃ₗ[ℝ] (l ⊕ l → ℝ)),
+theorem exists_symplectic_hom_of_unitary_dep : ∀ (ι l : Type) [Fintype ι] [DecidableEq ι] [Fintype l] [DecidableEq l] (P Q R S : ι → ℕ)
+    (φ : (∀ w : ι, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) ≃ₗ[ℝ] (l ⊕ l → ℝ)),
     (∀ c c', sympl (φ c) (φ c') = 2 * (∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im) →
-    ∀ (G : Type) [Group G] [TopologicalSpace G] (k : G →* (ι → Mat R S)), Continuous k →
-    (∀ g w, (k g w)ᴴ * Jm R S * k g w = Jm R S) →
+    ∀ (G : Type) [Group G] [TopologicalSpace G] (k : G →* (∀ w : ι, Mat (R w) (S w))), Continuous k →
+    (∀ g w, (k g w)ᴴ * Jm (R w) (S w) * k g w = Jm (R w) (S w)) →
     ∃ s : G →* Matrix.symplecticGroup l ℝ, Continuous s ∧
       ∀ g c, (s g : Matrix (l ⊕ l) (l ⊕ l) ℝ) *ᵥ φ c = φ fun w => c w * (k g w)ᵀ := by
   intro ι l _ _ _ _ P Q R S φ hφ G _ _ k hk hkJ
-  let A : G → (ι → Matrix (Ix P Q) (Ix R S) ℂ) →ₗ[ℝ] (ι → Matrix (Ix P Q) (Ix R S) ℂ) := fun g =>
+  let A : G → (∀ w : ι, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) →ₗ[ℝ]
+      (∀ w : ι, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) := fun g =>
     { toFun := fun c w => c w * (k g w)ᵀ
       map_add' := fun c c' => by ext w : 1; simp [Matrix.add_mul]
       map_smul' := fun r c => by ext w : 1; simp [Matrix.smul_mul] }
@@ -157,5 +158,14 @@ theorem exists_symplectic_hom_of_unitary : ∀ (ι l : Type) [Fintype ι] [Decid
       (continuous_pi fun w => continuous_const.matrix_mul ((continuous_apply w).comp hk).matrix_transpose))
   · show LinearMap.toMatrix' (T g) *ᵥ φ c = _
     rw [LinearMap.toMatrix'_mulVec, hT]
+
+theorem exists_symplectic_hom_of_unitary : ∀ (ι l : Type) [Fintype ι] [DecidableEq ι] [Fintype l] [DecidableEq l] (P Q R S : ℕ)
+    (φ : (ι → Matrix (Ix P Q) (Ix R S) ℂ) ≃ₗ[ℝ] (l ⊕ l → ℝ)),
+    (∀ c c', sympl (φ c) (φ c') = 2 * (∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im) →
+    ∀ (G : Type) [Group G] [TopologicalSpace G] (k : G →* (ι → Mat R S)), Continuous k →
+    (∀ g w, (k g w)ᴴ * Jm R S * k g w = Jm R S) →
+    ∃ s : G →* Matrix.symplecticGroup l ℝ, Continuous s ∧
+      ∀ g c, (s g : Matrix (l ⊕ l) (l ⊕ l) ℝ) *ᵥ φ c = φ fun w => c w * (k g w)ᵀ :=
+  fun ι l _ _ _ _ P Q R S => exists_symplectic_hom_of_unitary_dep ι l (fun _ => P) (fun _ => Q) (fun _ => R) (fun _ => S)
 
 end GlobalTheory.ColAction

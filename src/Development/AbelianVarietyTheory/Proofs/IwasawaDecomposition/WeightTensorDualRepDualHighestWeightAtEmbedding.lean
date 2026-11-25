@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaRoundFreeHolds
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IncludeLInjective
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
@@ -358,17 +359,7 @@ theorem blockAct_ten (M : ι → Matrix (Fin n) (Fin n) K) (f : ι → MvPolynom
   exact (Formalism.GradedWeylDivisibility.blockActTensor K K ι n n M).1 τ (f τ)
 
 theorem rowAct_one (f : MvPolynomial (Fin n × Fin n) K) : Formalism.GradedWeylDivisibility.rowAct K (1 : Matrix (Fin n) (Fin n) K) f = f := by
-  have : Formalism.GradedWeylDivisibility.rowAct K (n := n) (1 : Matrix (Fin n) (Fin n) K) = AlgHom.id K _ := by
-    apply MvPolynomial.algHom_ext
-    intro v
-    simp only [Formalism.GradedWeylDivisibility.rowAct, aeval_X, Matrix.one_apply, AlgHom.id_apply]
-    rw [Finset.sum_eq_single v.1]
-    · simp
-    · intro b _ hb
-      simp [Ne.symm hb]
-    · simp
-  rw [this]
-  rfl
+  apply _root_.Formalism.L2.DIV.rd_rowAct_one <;> assumption
 
 theorem ten_smul (c : ι → K) (f : ι → MvPolynomial (Fin n × Fin n) K) :
     ten (fun τ => c τ • f τ) = (∏ τ, c τ) • ten f := by

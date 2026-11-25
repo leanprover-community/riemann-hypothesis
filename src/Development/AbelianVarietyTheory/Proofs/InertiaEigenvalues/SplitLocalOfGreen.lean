@@ -95,7 +95,6 @@ section -- clump:auto
 @[expose] public section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead GlobalTheory.PendOf GlobalTheory.LevelType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -378,8 +377,7 @@ theorem exists_irr_hc_of_stdTrace_ne_zero : ∀ (p : ℕ) [Fact p.Prime] (r a c 
   subst hr
   obtain ⟨L, hLirr, hL⟩ := (HCChar.hc_isChar_and_res_decomp p (a + 1) c (a + 1 + c) rfl).2 ψ hψ
   obtain ⟨q, hq, hqt⟩ : ∃ q ∈ L, stdTrace a θ q.1 ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hne
     rw [stdTrace_eq]
     have e1 : (∑ y : Gn p (a + 1), if StdBlock a y then
@@ -451,7 +449,6 @@ section -- clump:auto
 @[expose] public section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead GlobalTheory.PendOf GlobalTheory.LevelType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.LevelType
@@ -519,7 +516,6 @@ section -- clump:auto
 @[expose] public section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead GlobalTheory.PendOf GlobalTheory.LevelType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -607,7 +603,6 @@ section -- clump:auto
 @[expose] public section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead GlobalTheory.PendOf GlobalTheory.LevelType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -715,7 +710,6 @@ section -- clump:auto
 @[expose] public section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead GlobalTheory.PendOf GlobalTheory.LevelType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 

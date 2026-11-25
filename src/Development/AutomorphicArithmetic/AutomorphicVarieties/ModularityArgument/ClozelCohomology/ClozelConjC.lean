@@ -583,8 +583,7 @@ private theorem irrAbs_module {R M S W κ ι : Type} [Ring R] [AddCommGroup M] [
   haveI := IsSimpleModule.nontrivial R N
   obtain ⟨y, hy⟩ := exists_ne (0 : N)
   have hex : ∃ i, p i (y : W) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy (Subtype.ext (hp _ h))
   obtain ⟨i, hi⟩ := hex
   let g : N →ₗ[R] M := (p i).comp N.subtype
@@ -603,8 +602,7 @@ private theorem irrAbs_module {R M S W κ ι : Type} [Ring R] [AddCommGroup M] [
     rw [hz] at h1
     rw [← h2, h1]
   have hex2 : ∃ k, (r.comp Φ).comp (Finsupp.lsingle k) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hrΦ
     apply Finsupp.lhom_ext
     intro a b

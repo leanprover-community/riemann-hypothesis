@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.AdaptExists
 public import Formalism.FormalDegreeBessel.StatementG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJABddSSn
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnRepDatumUnit
@@ -81,14 +82,7 @@ theorem herm_bvec_bvec (i j : Fin (2 * r + k + 1)) : herm (Hpk k r) (bvec i) (bv
 
 theorem herm_bvec_w {i : Fin (2 * r + k + 1)} (hi : i.val < r ∨ r + k < i.val) {w : Fin (2 * r + k + 1) → ℂ}
     (hw : inWb k r w) : herm (Hpk k r) (bvec i) w = 0 := by
-  have hc : ∀ l, (Hpk k r *ᵥ bvec i) l = Hpk k r l i := fun l => by
-    simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
-  simp only [herm, dotProduct, hc]
-  apply Finset.sum_eq_zero
-  intro l _
-  by_cases hl : r ≤ l.val ∧ l.val ≤ r + k
-  · rw [(hpk_out_in hi hl).2, mul_zero]
-  · rw [Pi.star_apply, hw l (by omega), star_zero, zero_mul]
+  apply _root_.GlobalTheory.CompanionTheory.BmuAdapt.herm_outer <;> assumption
 
 theorem herm_w_bvec {i : Fin (2 * r + k + 1)} (hi : i.val < r ∨ r + k < i.val) {w : Fin (2 * r + k + 1) → ℂ}
     (hw : inWb k r w) : herm (Hpk k r) w (bvec i) = 0 := by

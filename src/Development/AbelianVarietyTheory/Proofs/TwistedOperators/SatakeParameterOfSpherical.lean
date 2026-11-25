@@ -42,6 +42,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalCoefficientElementarySymm
 
 @[expose] public section
 
@@ -113,68 +114,7 @@ variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {
 
 theorem Tj_indep (j : ℕ) {ϖ ϖ' : w.adicCompletion E} (h : IsUnifV E w ϖ) (h' : IsUnifV E w ϖ') :
     Tj ℂ n (Ov E w) ϖ' j = Tj ℂ n (Ov E w) ϖ j := by
-  classical
-  unfold IsUnifV at h h'
-  have hϖ0 : ϖ ≠ 0 := by
-    intro h0; rw [h0, map_zero] at h; exact WithZero.zero_ne_coe h
-  set u : w.adicCompletion E := ϖ' * ϖ⁻¹ with hu
-  have hvu : Valued.v u = 1 := by
-    rw [hu, map_mul, map_inv₀, h, h', mul_inv_cancel₀ (by simp)]
-  have hvu' : Valued.v u⁻¹ = 1 := by rw [map_inv₀, hvu, inv_one]
-  have huO : u ∈ Ov E w := by
-    show u ∈ w.adicCompletionIntegers E
-    rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, hvu]
-  have huO' : u⁻¹ ∈ Ov E w := by
-    show u⁻¹ ∈ w.adicCompletionIntegers E
-    rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, hvu']
-  have hu0 : u ≠ 0 := by intro h0; rw [h0, map_zero] at hvu; exact zero_ne_one hvu
-  have hϖ' : ϖ' = ϖ * u := by rw [hu, mul_comm ϖ' _, ← mul_assoc, mul_inv_cancel₀ hϖ0, one_mul]
-
-  let dO : Matrix (Fin n) (Fin n) (Ov E w) := Matrix.diagonal fun i => if (i : ℕ) < j then ⟨u, huO⟩ else 1
-  let dO' : Matrix (Fin n) (Fin n) (Ov E w) := Matrix.diagonal fun i => if (i : ℕ) < j then ⟨u⁻¹, huO'⟩ else 1
-  have hdd : dO * dO' = 1 := by
-    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1; funext i
-    split_ifs
-    · exact Subtype.ext (by simp [mul_inv_cancel₀ hu0])
-    · simp
-  have hdd' : dO' * dO = 1 := by
-    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1; funext i
-    split_ifs
-    · exact Subtype.ext (by simp [inv_mul_cancel₀ hu0])
-    · simp
-  let D : GL (Fin n) (Ov E w) := ⟨dO, dO', hdd, hdd'⟩
-  set Dk : GL (Fin n) (w.adicCompletion E) := bc (Ov E w).subtype D with hDkdef
-  have hDk : Dk ∈ GLint (Fin n) (Ov E w) := by
-    unfold GLint
-    exact ⟨D, rfl⟩
-  have hDval : (Dk : Matrix (Fin n) (Fin n) (w.adicCompletion E)) =
-      Matrix.diagonal fun i : Fin n => if (i : ℕ) < j then u else 1 := by
-    rw [hDkdef]
-    ext a b
-    first
-    | (simp [bc, D, dO, Matrix.diagonal_apply]; done)
-    | (simp [bc, D, dO, Matrix.diagonal_apply]; split_ifs <;> simp)
-  have hdiag : diagJ n ϖ' j = diagJ n ϖ j * (Dk : Matrix (Fin n) (Fin n) (w.adicCompletion E)) := by
-    rw [hDval]
-    unfold diagJ
-    rw [Matrix.diagonal_mul_diagonal]
-    congr 1; funext i
-    split_ifs <;> simp [hϖ']
-  have hdiag' : diagJ n ϖ j = diagJ n ϖ' j * ((Dk⁻¹ : GL (Fin n) (w.adicCompletion E)) : Matrix (Fin n) (Fin n) _) := by
-    rw [hdiag, mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.mul_one]
-  unfold Tj
-  congr 1
-  ext g
-  simp only [Set.mem_setOf_eq]
-  constructor
-  · rintro ⟨a, ha, b, hb, hab⟩
-    refine ⟨a, ha, Dk * b, mul_mem hDk hb, ?_⟩
-    rw [hab, hdiag, Units.val_mul, Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
-  · rintro ⟨a, ha, b, hb, hab⟩
-    refine ⟨a, ha, Dk⁻¹ * b, mul_mem (inv_mem hDk) hb, ?_⟩
-    rw [hab, hdiag', Units.val_mul, Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
+  apply _root_.GlobalTheory.SphPar.Tj_eq_of_isUnifV <;> assumption
 
 theorem heckeVec_Tj_zero (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (ϖ : w.adicCompletion E)
     {x : V} (hx : x ∈ fixed ρ (KGL w (n := n))) : heckeVec ρ (KGL w (n := n)) (Tj ℂ n (Ov E w) ϖ 0) x = x := by

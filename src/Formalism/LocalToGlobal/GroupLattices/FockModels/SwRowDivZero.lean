@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.CapelliOps
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.HWRaise
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
@@ -56,13 +57,7 @@ theorem sw_deriv (a b : Fin r) (f : MvPolynomial (Fin r × Fin n) R) :
         Polynomial.derivative_X, zero_add, one_mul] <;> ring
 
 theorem sw_rowDiv_zero (a b : Fin r) (g : MvPolynomial (Fin r × Fin n) R) : rowDiv R a b 0 g = g := by
-  unfold rowDiv
-  induction g using MvPolynomial.induction_on with
-  | C c => rw [sw_rowGen_C, Polynomial.coeff_C_zero]
-  | add p q hp hq => rw [map_add (f := _), Polynomial.coeff_add, hp, hq]
-  | mul_X p v hp =>
-    rw [map_mul, Polynomial.mul_coeff_zero, hp, sw_rowGen_X]
-    split_ifs <;> simp
+  apply _root_.PI.WGL.rowDiv_zero <;> assumption
 
 theorem sw_step_ne (a b : Fin r) (hab : a ≠ b) (k : ℕ) (f : MvPolynomial (Fin r × Fin n) R) :
     ((k + 1 : ℕ) : R) • rowDiv R a b (k + 1) f = rowDiv R a b k (Dop R a b f) := by

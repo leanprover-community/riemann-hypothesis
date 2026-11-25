@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameMinorValueFormula
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBaseChartAtGoodPoint
@@ -14,49 +15,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullba
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSecond
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import Std.Tactic.BVDecide.Normalize.Prop
 
@@ -151,42 +110,8 @@ theorem pluck_of_flag (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk
     (hw : ∀ m : ι k, w ⟨k, m⟩ = A * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) zb * minorIJ H I (stepCols N j p.2))
     {I : Finset (Fin N)} (hI : IsStepRows N j p.2 I) :
     pluck M F zb k w I = A * minorIJ H I (stepCols N j p.2) := by
-  let val := CPts.regVal hzb
-  let uA : (Σ k, ι k) → Finset (Fin N) → CPts.regRing M.x zb :=
-    fun q I => ⟨F.u q I, exists_isValueAt hzb (hG.2.1 q I).1⟩
-  let vA : Finset (Fin N) → (Σ k, ι k) → CPts.regRing M.x zb :=
-    fun I q => ⟨F.u' I q, exists_isValueAt hzb (hG.2.1 q I).2⟩
-  have rel : ∀ I', IsStepRows N j p.2 I' →
-      ∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb * valAt M.x (F.u ⟨k, m⟩ I') zb = if I = I' then 1 else 0 :=
-    fun I' hI' => by
-      have e : ∑ m : ι k, vA I ⟨k, m⟩ * uA ⟨k, m⟩ I' = if I = I' then 1 else 0 := by
-        apply Subtype.ext
-        have := hF.2.2.1 p k hp I I' hI hI'
-        split_ifs at this ⊢ <;> simpa [uA, vA] using this
-      have e' := congrArg val e
-
-      rw [map_sum] at e'
-      simp only [map_mul] at e'
-      refine e'.trans ?_
-      split_ifs <;> simp
-  unfold pluck
-  simp only [hw]
-  calc ∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb *
-        (A * ∑ I', valAt M.x (F.u ⟨k, m⟩ I') zb * minorIJ H I' (stepCols N j p.2))
-      = A * ∑ I', (∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb * valAt M.x (F.u ⟨k, m⟩ I') zb) *
-          minorIJ H I' (stepCols N j p.2) := by
-        simp only [Finset.mul_sum, Finset.sum_mul]
-        rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun I' _ => Finset.sum_congr rfl fun m _ => by ring
-    _ = A * minorIJ H I (stepCols N j p.2) := by
-        congr 1
-        rw [Finset.sum_eq_single I]
-        · rw [rel I hI, if_pos rfl, one_mul]
-        · intro I' _ hne
-          by_cases hs : IsStepRows N j p.2 I'
-          · rw [rel I' hs, if_neg (Ne.symm hne), zero_mul]
-          · rw [minorIJ_block_zero hH hs, mul_zero]
-        · simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.TwRead.pluck_eq <;> assumption
 
 theorem twMinor_of_flag (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F)
     {zb : (Σ k, baseIdx ι M.blk k) → ℂ} (hzb : zb ∈ mcPts (mCoordIdeal M.x)) (hG : M.GoodAt F (mCoordIdeal zb))

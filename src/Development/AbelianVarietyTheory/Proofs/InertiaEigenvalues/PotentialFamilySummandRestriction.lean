@@ -197,8 +197,7 @@ theorem left_nondeg (R C : Submodule LL (Fin a → Fin n → LL)) (hRC : IsCompl
   by_contra hne
   have hne' : (⟨u, hu⟩ : ↥R) ≠ 0 := fun h0 => hne (congrArg Subtype.val h0)
   obtain ⟨f, hf⟩ : ∃ f : Module.Dual LL ↥R, f ⟨u, hu⟩ ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne' ((Module.forall_dual_apply_eq_zero_iff LL _).1 hall)
   obtain ⟨u', hu'⟩ := exists_rep (f ∘ₗ R.projectionOnto C hRC)
   have hann : u' ∈ ann C := by

@@ -70,6 +70,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSquareOfValuedSubOneLt
 
 @[expose] public section
 
@@ -244,8 +245,7 @@ private lemma not_nm_of_valuation_eq_exp_neg_one {K : Type} [Field K] (w : Valua
     (hE : EvenNorms w B) (hz : w z = WithZero.exp (-1)) : ¬ Nm B z := by
   rintro ⟨x, y, rfl⟩
   have hne : x ≠ 0 ∨ y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [hc.1, hc.2] at hz
     have h0 : w ((0 : K) ^ 2 - B * 0 ^ 2) = 0 := by simp
     rw [h0] at hz
@@ -257,35 +257,7 @@ private lemma not_nm_of_valuation_eq_exp_neg_one {K : Type} [Field K] (w : Valua
 private lemma isSquare_of_valued_sub_one_lt_four {v : HeightOneSpectrum (𝓞 F)}
     (h2 : Valued.v (2 : v.adicCompletion F) = 1) (x : v.adicCompletion F)
     (hx : Valued.v (x - 1) < Valued.v (4 : v.adicCompletion F)) : IsSquare x := by
-  have h4 : Valued.v (4 : v.adicCompletion F) = 1 := by
-    rw [show (4 : v.adicCompletion F) = 2 * 2 by norm_num, map_mul, h2, one_mul]
-  rw [h4] at hx
-  by_cases hx1 : x - 1 = 0
-  · rw [sub_eq_zero.1 hx1]
-    exact ⟨1, by simp⟩
-  obtain ⟨n, hn⟩ := Defect.exists_exp Valued.v hx1
-  have hxv : Valued.v x = 1 := by
-    have hsplit : x = (x - 1) + 1 := by ring
-    rw [hsplit, Valuation.map_add_eq_of_lt_right _ (by rwa [map_one])]
-    exact map_one _
-  have hx0 : x ≠ 0 := by
-    intro h0
-    rw [h0, map_zero] at hxv
-    exact zero_ne_one hxv
-  have hle : Valued.v (x - 1) ≤ WithZero.exp (-(((2 * 0 + 1 : ℕ)) : ℤ)) := by
-    rw [hn] at hx ⊢
-    rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at hx
-    rw [WithZero.exp_le_exp]
-    push_cast
-    omega
-  have hmem : Units.mk0 x hx0 ∈
-      hiUnits (Valued.v : Valuation (v.adicCompletion F) (WithZero (Multiplicative ℤ))) (2 * 0 + 1) :=
-    ⟨hxv, hle⟩
-  obtain ⟨y, -, hy⟩ := hiUnits_le_sqs_hiUnits F v 0 (by rw [h2]; simp) hmem
-  refine ⟨(y : v.adicCompletion F), ?_⟩
-  have hyx := congrArg Units.val hy
-  simp only [powMonoidHom_apply, Units.val_pow_eq_pow_val, Units.val_mk0] at hyx
-  rw [← hyx, sq]
+  apply _root_.GlobalTheory.LocalQuad.isSquare_of_valued_sub_one_lt <;> assumption
 
 theorem mem_nrm_of_unit {v : HeightOneSpectrum (𝓞 F)} {a b : Fˣ} (h2 : v.valuation F 2 = 1)
     (ha : v.valuation F (a : F) = 1) (hb : v.valuation F (b : F) = 1) : a ∈ nrm (.inl v) b := by
@@ -382,8 +354,7 @@ theorem exists_not_mem_nrm {p : Place F} {b : Fˣ} (h : b ∉ sqr p) : ∃ a : F
   | inr σ =>
     have hb : ¬ IsSquare (σ (b : F)) := fun hs => h ((mem_sqSub _ _).2 hs)
     have hneg : σ (b : F) < 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hb ⟨Real.sqrt _, (Real.mul_self_sqrt hc).symm⟩
     refine ⟨-1, fun hmem => ?_⟩
     obtain ⟨c, d, hcd⟩ : ∃ c d : ℝ, σ ((-1 : Fˣ) : F) = c ^ 2 - σ (b : F) * d ^ 2 := hmem

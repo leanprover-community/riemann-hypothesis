@@ -152,7 +152,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris Divided
 
 namespace CrystallineSemistableComparison.Pb
 
-theorem isFil : ∀ {b : Base} {L : b.Fun} (Q : ObjectProperty (Thick L)), IsFil (sP Q) (sFil Q) := @_root_.GlobalTheory.CompanionTheory.DPFil.isFil_sFil
 
 alias poly_all := _root_.CrystallineSemistableComparison.Pb.Site.poly_all'
 
@@ -160,8 +159,6 @@ alias zar := _root_.GlobalTheory.CompanionTheory.NlZar.zariski_descent
 
 alias refl := _root_.GlobalTheory.CompanionTheory.PDTrunc.pull_incl_bijective
 
-theorem cov_ex : ∀ {O : Type} [CommRing O] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) [IsSeparated q] [QuasiCompact q],
-    (Smooth q → Nonempty (Cov q)) ∧ ∀ d, SmoothOfRelativeDimension d q → ∃ U : Cov q, ∀ α, U.d α = d := @_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov
 
 theorem coord_res : ∀ {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {V W : X.Opens} {d : ℕ}
     (c : Coord q V d) (h : W ≤ V) (hW : IsAffineOpen W), ∃ c' : Coord q W d, ∀ i, c'.t i = rs h (c.t i) := @_root_.GlobalTheory.CompanionTheory.CoordRes.main

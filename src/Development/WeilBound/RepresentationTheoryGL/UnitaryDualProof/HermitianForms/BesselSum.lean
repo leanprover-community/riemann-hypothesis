@@ -162,7 +162,7 @@ theorem exists_tr_le {n : ℕ} (C D : AddSubgroup (Fin n → k)) (hC : IsCompact
     (hD : IsOpen (D : Set (Fin n → k))) (hDC : D ≤ C) :
     ∃ T : Finset (Fin n → k), IsTr C D T ∧ T.card = D.relIndex C := by
   obtain ⟨T, hT1, hT2⟩ := GlobalTheory.T.exists_coset_reps_open_in_compact (Fin n → k) C D hC hD hDC
-  exact ⟨T, ⟨hT1, hT2⟩, GlobalTheory.T.card_coset_reps_eq_relIndex _ C D T hDC hT1 hT2⟩
+  exact ⟨T, ⟨hT1, hT2⟩, GlobalTheory.T.card_coset_reps_eq_relIndex _ C D T hT1 hT2⟩
 
 theorem det_scal (m : ℕ) (z : kˣ) :
     GeneralLinearGroup.det (Units.map (algebraMap k (M1 k m)).toMonoidHom z) = z ^ (m + 1) := by
@@ -199,9 +199,9 @@ theorem avg_decomp (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) (hπ : IsSmooth π) (
     simp only [f, pc, dotProduct_add, AddChar.map_add_eq_mul, hHξ d hd, mul_one, colEl_add, map_mul, mul_apply_eq_comp,
       hHv d hd]
   have cmul : U'.card = S.card * T.card := by
-    rw [GlobalTheory.T.card_coset_reps_eq_relIndex _ A' H U' (hHA.trans hAA) hU1 hU2,
-      GlobalTheory.T.card_coset_reps_eq_relIndex _ A H S hHA hS1 hS2,
-      GlobalTheory.T.card_coset_reps_eq_relIndex _ A' A T hAA hT.1 hT.2,
+    rw [GlobalTheory.T.card_coset_reps_eq_relIndex _ A' H U' hU1 hU2,
+      GlobalTheory.T.card_coset_reps_eq_relIndex _ A H S hS1 hS2,
+      GlobalTheory.T.card_coset_reps_eq_relIndex _ A' A T hT.1 hT.2,
       AddSubgroup.relIndex_mul_relIndex H A A' hHA hAA]
   have hT0 : (T.card : ℂ) ≠ 0 := cast_ne_zero.2 (transversal_nonempty hT.2).card_pos.ne'
   rw [hsum, hind, hav, smul_smul, smul_smul, cmul]; congr 1; rw [cast_mul, mul_inv]

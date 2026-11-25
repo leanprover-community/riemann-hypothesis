@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.LowKAddStrictAnti
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DerivedActionDiscreteSeriesProperties
 import Mathlib.Algebra.Order.Floor.Extended
@@ -180,17 +181,7 @@ theorem dC_conj (hK : PI.KFinSmooth) (R : Rep k r) (hR : R.IsDS ε mu)
 
 theorem torus_mem_K {n : ℕ} (ε : Fin n → Bool) (θ : Fin n → ℝ) :
     Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) ∈ Kset ε := by
-  refine ⟨?_, ?_⟩
-  · rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose,
-      Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1
-    funext a
-    simp [← Complex.exp_conj, ← Complex.exp_add]
-  · unfold Jm
-    rw [Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
-    congr 1
-    funext a
-    ring
+  first | exact _root_.GlobalTheory.DiscreteSeriesTest.torus_mem | exact @_root_.GlobalTheory.DiscreteSeriesTest.torus_mem | apply _root_.GlobalTheory.DiscreteSeriesTest.torus_mem <;> assumption
 
 theorem torus_single {n : ℕ} (θ : Fin n → ℝ) (a b : Fin n) :
     Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) * Matrix.single a b (1 : ℂ) =

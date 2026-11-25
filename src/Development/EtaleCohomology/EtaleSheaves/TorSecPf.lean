@@ -64,8 +64,7 @@ section LC
 variable {q : ℕ} [NeZero q] {R : Type} [CommRing R] {δ : ZMod q → R}
 
 lemma exists_not_mem (hδ : CompleteOrthogonalIdempotents δ) (p : PrimeSpectrum R) : ∃ k, δ k ∉ p.asIdeal := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply p.isPrime.ne_top
   rw [Ideal.eq_top_iff_one, ← hδ.complete]
   exact Ideal.sum_mem _ fun k _ => h k

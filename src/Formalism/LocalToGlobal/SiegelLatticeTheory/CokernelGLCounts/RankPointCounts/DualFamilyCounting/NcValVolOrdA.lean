@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.KitAbs
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
@@ -59,20 +60,7 @@ theorem absNorm_pos : (0 : ℝ) < ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) := by
   exact_mod_cast Nat.pos_of_ne_zero h
 
 theorem absV_mul (x y : Fv F v) : absV v (x * y) = absV v x * absV v y := by
-  by_cases hx : x = 0
-  · subst hx
-    simp [absV]
-  by_cases hy : y = 0
-  · subst hy
-    simp [absV]
-  have hx' : Valued.v x ≠ 0 := (Valuation.ne_zero_iff _).2 hx
-  have hy' : Valued.v y ≠ 0 := (Valuation.ne_zero_iff _).2 hy
-  have hxy' : Valued.v (x * y) ≠ 0 := (Valuation.ne_zero_iff _).2 (mul_ne_zero hx hy)
-  have key : WithZero.unzero hxy' = WithZero.unzero hx' * WithZero.unzero hy' := by
-    apply WithZero.coe_injective
-    rw [WithZero.coe_mul, WithZero.coe_unzero, WithZero.coe_unzero, WithZero.coe_unzero, map_mul]
-  have hN : ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) ≠ 0 := (absNorm_pos v).ne'
-  simp only [absV, dif_neg hx', dif_neg hy', dif_neg hxy', key, toAdd_mul, zpow_add₀ hN]
+  apply _root_.PI.UnitaryGroupMassFormula.LocJacTyp.absV_mul <;> assumption
 
 theorem absV_one : absV v (1 : Fv F v) = 1 := by
   have h1 : Valued.v (1 : Fv F v) ≠ 0 := by simp

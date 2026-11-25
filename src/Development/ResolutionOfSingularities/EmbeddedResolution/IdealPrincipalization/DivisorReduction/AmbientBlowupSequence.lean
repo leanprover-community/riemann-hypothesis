@@ -189,16 +189,6 @@ structure DivisorReductionTerminationProperties (hres : FunctorialResolution.Blo
         IsPullbackBlowupSequence ψ d'.toSequenceOfBlowups d.toSequenceOfBlowups →
         IsPullbackBlowupSequence φ (ambientBlowupSequence σ' d' hres hno hc').toSequenceOfBlowups
           (ambientBlowupSequence σ d hres hno hc).toSequenceOfBlowups
-  isStrictPullbackSeq_ambientTower : ∀ (X Y S S' : Scheme.{u}) (σ : S ⟶ X) (σ' : S' ⟶ Y)
-      (φ : Y ⟶ X) (ψ : S' ⟶ S) [AlgebraicGeometry.IsClosedImmersion σ]
-      [AlgebraicGeometry.IsClosedImmersion σ'] [AlgebraicGeometry.Flat φ]
-      [AlgebraicGeometry.IsNoetherian X] [AlgebraicGeometry.IsNoetherian Y],
-      IsPullback σ' ψ φ σ →
-      ∀ (d : BlowupSequenceData S) (d' : BlowupSequenceData S') (hc : d.CentersContainNoComponent)
-        (hc' : d'.CentersContainNoComponent),
-        IsStrictPullbackBlowupSeq ψ d'.toSequenceOfBlowups d.toSequenceOfBlowups →
-        IsStrictPullbackBlowupSeq φ (ambientBlowupSequence σ' d' hres hno hc').toSequenceOfBlowups
-          (ambientBlowupSequence σ d hres hno hc).toSequenceOfBlowups
   comap_ctrlIdeal_top : ∀ (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible), T.IsOrderBoundedByMult →
     T.IsBalanced hV.locallyOfFiniteType → ∀ (j : ℕ) (hj : j < T.boundary.length),
       DivisorReduction.containedComponentsIdeal T j hj = ⊤ → (DivisorReduction.restrictToDivisor T j hj).IsAdmissible →

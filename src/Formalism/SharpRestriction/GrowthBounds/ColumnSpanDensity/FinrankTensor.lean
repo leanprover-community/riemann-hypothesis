@@ -37,25 +37,11 @@ private theorem choose_succ_eq_choose_mul_div (A m : ℕ) :
 
 theorem prodA (m A : ℕ) :
     ∏ j : Fin m, (((A : ℚ) + ((j : ℕ) : ℚ) + 1) / (((j : ℕ) : ℚ) + 1)) = ((A + m).choose m : ℚ) := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    rw [Fin.prod_univ_castSucc]
-    simp only [Fin.coe_castSucc, Fin.val_last]
-    rw [ih, choose_add_succ_succ_eq_choose_mul_div]
-    ring
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodUp <;> assumption
 
 theorem prodB (m B : ℕ) :
     ∏ j : Fin m, (((B : ℚ) + (m : ℚ) - ((j : ℕ) : ℚ)) / ((m : ℚ) - ((j : ℕ) : ℚ))) = ((B + m).choose m : ℚ) := by
-  rw [← prodA m B, ← Equiv.prod_comp Fin.revPerm]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  have hj := j.isLt
-  have hr : (((Fin.revPerm j : Fin m) : ℕ) : ℚ) = (m : ℚ) - ((j : ℕ) : ℚ) - 1 := by
-    rw [Fin.revPerm_apply, Fin.val_rev, Nat.cast_sub (by omega)]
-    push_cast
-    ring
-  rw [hr]
-  congr 1 <;> ring
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodDown <;> assumption
 
 theorem weylDim_const (m : ℕ) (d : ℤ) : weylDim m (fun _ => d) = 1 := by
   unfold weylDim

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoundV
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WuDecayPf
@@ -118,11 +119,7 @@ theorem Hpk_ee (a b : Fin r) : Hpk k r (eI k r a) (eI k r b) = 0 := by
 theorem Hpk_ew (a : Fin r) (c : Fin (k + 1)) : Hpk k r (eI k r a) (wI k r c) = 0 := by
   rw [Hpk_sig, if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; have := a.isLt; have := c.isLt; omega)]
 theorem Hpk_ef (a b : Fin r) : Hpk k r (eI k r a) (esI k r b) = if a = b then 1 else 0 := by
-  rw [Hpk_sig]
-  by_cases hab : a = b
-  · subst hab; rw [if_pos (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]), if_pos rfl, sgn_eI]
-  · have : a.val ≠ b.val := fun h => hab (Fin.ext h)
-    rw [if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; have := a.isLt; have := b.isLt; omega), if_neg hab]
+  apply _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_es <;> assumption
 theorem Hpk_we (c : Fin (k + 1)) (a : Fin r) : Hpk k r (wI k r c) (eI k r a) = 0 := by
   rw [Hpk_sig, if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; have := a.isLt; omega)]
 theorem Hpk_ww (c d : Fin (k + 1)) : Hpk k r (wI k r c) (wI k r d) =
@@ -138,11 +135,7 @@ theorem Hpk_ww (c d : Fin (k + 1)) : Hpk k r (wI k r c) (wI k r d) =
 theorem Hpk_wf (c : Fin (k + 1)) (a : Fin r) : Hpk k r (wI k r c) (esI k r a) = 0 := by
   rw [Hpk_sig, if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; have := a.isLt; have := c.isLt; omega)]
 theorem Hpk_fe (a b : Fin r) : Hpk k r (esI k r a) (eI k r b) = if a = b then 1 else 0 := by
-  rw [Hpk_sig]
-  by_cases hab : a = b
-  · subst hab; rw [if_pos (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]), if_pos rfl, sgn_esI]
-  · have : a.val ≠ b.val := fun h => hab (Fin.ext h)
-    rw [if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; omega), if_neg hab]
+  apply _root_.PI.UnitaryGroupMassFormula.DLm.NBk.Hpk_se <;> assumption
 theorem Hpk_fw (a : Fin r) (c : Fin (k + 1)) : Hpk k r (esI k r a) (wI k r c) = 0 := by
   rw [Hpk_sig, if_neg (by simp only [sig_eI, sig_wI, sig_esI, eI_val, wI_val, esI_val]; have := a.isLt; omega)]
 theorem Hpk_ff (a b : Fin r) : Hpk k r (esI k r a) (esI k r b) = 0 := by

@@ -1,6 +1,5 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZHAbove
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsIsoMorphismRestrictOfIsHomId
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibrePreconnected

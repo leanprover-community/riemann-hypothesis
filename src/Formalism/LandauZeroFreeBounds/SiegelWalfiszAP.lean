@@ -14,9 +14,6 @@ namespace Formalism.ZeroFreeDirichlet
 def psiChi {q : ℕ} (χ : DirichletCharacter ℂ q) (x : ℝ) : ℂ :=
   ∑ n ∈ Icc 1 ⌊x⌋₊, ((Λ n : ℝ) : ℂ) * χ (n : ZMod q)
 
-def psiAP (q a : ℕ) (x : ℝ) : ℝ :=
-  ∑ n ∈ (Icc 1 ⌊x⌋₊).filter (fun n => n ≡ a [MOD q]), Λ n
-
 def ExcZeros (c₁ : ℝ) {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (B : Finset ℝ) : Prop :=
   B.card ≤ 1 ∧
   (∀ β ∈ B, χ ≠ 1 ∧ InRegion c₁ q (β : ℂ) ∧ DirichletCharacter.LFunction χ (β : ℂ) = 0 ∧

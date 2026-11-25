@@ -9,6 +9,7 @@ public import Mathlib.Algebra.MvPolynomial.Monad
 import Formalism.LocalRingCardinality.Params
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.FockFEqSumOfSubsetB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.FockFRowActRight, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.AevalScaleMonomial
@@ -97,14 +98,7 @@ theorem fockF_add_left {σ : Type} (p p' q : MvPolynomial σ ℂ) :
 
 theorem fockF_smul_left {σ : Type} (c : ℂ) (p q : MvPolynomial σ ℂ) :
     fockF (c • p) q = c * fockF p q := by
-  classical
-  rw [fockF_eq_sum (c • p) q p.support (fun m h _ => by
-        rw [MvPolynomial.coeff_smul, smul_eq_mul] at h
-        exact MvPolynomial.mem_support_iff.mpr (right_ne_zero_of_mul h)),
-    fockF_eq_sum p q p.support (fun m h _ => MvPolynomial.mem_support_iff.mpr h), Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_smul, smul_eq_mul]
-  ring
+  apply _root_.PI.WGB.fockF_smul_left_B <;> assumption
 
 theorem fockF_zero_left {σ : Type} (q : MvPolynomial σ ℂ) : fockF 0 q = 0 := by
   simp [fockF]
@@ -122,14 +116,7 @@ theorem fockF_add_right {σ : Type} (p q q' : MvPolynomial σ ℂ) :
 
 theorem fockF_smul_right {σ : Type} (c : ℂ) (p q : MvPolynomial σ ℂ) :
     fockF p (c • q) = star c * fockF p q := by
-  classical
-  have hs : ∀ r : MvPolynomial σ ℂ,
-      fockF p r = ∑ m ∈ p.support, p.coeff m * star (r.coeff m) * fct m :=
-    fun r => fockF_eq_sum p r _ (fun m h1 _ => MvPolynomial.mem_support_iff.mpr h1)
-  rw [hs, hs, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_smul, smul_eq_mul, star_mul']
-  ring
+  apply _root_.PI.WGB.fockF_smul_right_B <;> assumption
 
 theorem fockF_sum_left {σ ι : Type} (s : Finset ι) (x : ι → MvPolynomial σ ℂ) (q : MvPolynomial σ ℂ) :
     fockF (∑ i ∈ s, x i) q = ∑ i ∈ s, fockF (x i) q := by

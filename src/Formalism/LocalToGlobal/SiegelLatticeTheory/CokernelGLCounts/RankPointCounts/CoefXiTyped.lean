@@ -9,6 +9,7 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NGCong
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.ValOneOfNotMem
 import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MulConjApply
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ZzPlusSecondProjection, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.CoefXiTyped
@@ -26,8 +27,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.LsDatumB
 open Classical ValuativeRel
 open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Tau1Cut
 
@@ -184,15 +183,7 @@ theorem det_mem_R (A : Matrix (Fin n) (Fin n) E) (h : ∀ i j, A i j ∈ M.R) : 
 
 theorem adj_mem_R (A : Matrix (Fin n) (Fin n) E) (h : ∀ i j, A i j ∈ M.R) (a b : Fin n) :
     A.adjugate a b ∈ M.R := by
-  rw [Matrix.adjugate_apply]
-  refine det_mem_R _ fun i j => ?_
-  rw [Matrix.updateRow_apply]
-  split_ifs
-  · rw [Pi.single_apply]
-    split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  · exact h _ _
+  apply _root_.Formalism.L2.SG.Pf.PCountEx.mem_of_adj <;> assumption
 
 theorem intUp_inv {ρ : Matrix (Fin n) (Fin n) E} (h : TieN.IntUp M ρ) : TieN.IntUp M ρ⁻¹ := by
   have hU : IsUp ρ := ⟨h.1, fun a b hab => h.2.1 b a hab⟩
@@ -537,8 +528,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S
   Formalism.L2.SG.LsDatumB
 open Classical ValuativeRel
 open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section QMul
 

@@ -45,58 +45,13 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SubsingletonRankZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.ExistsCombComb
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.ContinuousEntry
-import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Compactness.Paracompact
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Topology.Algebra.ProperAction.Basic
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.BaseChangeUnits.CycCOfCyclic
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -228,9 +183,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter
 open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.GJMatrix
 open scoped Classical ENNReal NNReal Pointwise
 open UpperTheory.ConvolutionTheory.R2
-
-private theorem diag_val (F : Type) [Field F] [NumberField F] (t : Fˣ) :
-    ((IdeleGroup.diagonal F t : (A F)ˣ) : A F) = rt (t : F) := rfl
 
 private theorem diag_inv_val (F : Type) [Field F] [NumberField F] (t : Fˣ) :
     (((IdeleGroup.diagonal F t : (A F)ˣ)⁻¹ : (A F)ˣ) : A F) = rt ((t : F)⁻¹) := by
@@ -737,8 +689,7 @@ private theorem char_integral_ne (μ : Measure G) [μ.IsHaarMeasure] (N : Subgro
     (b : G → ℂ) (hb : Continuous b) (hi : ∀ k ∈ N, ∀ x, b (x * k) = b x) (x₀ : G) (h0 : b x₀ ≠ 0) :
     ∃ χ : G →ₜ* Circle, (∀ k ∈ N, χ k = 1) ∧ ∫ x in F, (χ x : ℂ) * b x ∂μ ≠ 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   haveI hcl : IsClosed (N : Set G) := Subgroup.isClosed_of_discrete
   haveI : CompactSpace (G ⧸ N) := ⟨by
     have : (Set.univ : Set (G ⧸ N)) = QuotientGroup.mk '' closure F := by
@@ -1234,8 +1185,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.downN :
   obtain ⟨ω, hω⟩ := cenEx_of E hfr P hC
   have hnv := asaiNV E D M U P ω W.η hC hω (unit_of_normalised hfr hN hω) W.quad
   have hper : ∃ φ ∈ P.V, ∃ h : G1 E, (UPer D M fun x => φ.1 (x * gl h)) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hnv (perU_of E D W M N P U ω hN hω hno)
   obtain ⟨π, hπ, hJ⟩ := rev_holds E D W M N P hper
   obtain ⟨π', hπ', hI⟩ := toII E D W M N P hN π hπ hJ

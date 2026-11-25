@@ -96,7 +96,7 @@ theorem morse_inequality_arith (d : ℕ) (a b : ℤ) (h g : ℕ → ℕ) (C C' m
     · simp
     · rw [Nat.add_sub_cancel, pow_succ]
       have : (0 : ℤ) ≤ ((e + 1 : ℕ) : ℤ) * (M + 1) ^ e := by positivity
-      nlinarith
+      linarith only [this]
   have hP : (M + 1) ^ d ≤ 2 ^ d * M ^ d := by
     rw [← mul_pow]
     exact pow_le_pow_left₀ (by linarith) (by linarith) d

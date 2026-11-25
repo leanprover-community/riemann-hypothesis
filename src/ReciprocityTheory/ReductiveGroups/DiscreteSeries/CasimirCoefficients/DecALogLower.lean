@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingBump
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.MeanInequalitiesPow
@@ -32,8 +33,6 @@ open scoped ComplexOrder ContDiff ENNReal
 namespace ReciprocityTheory.ChartRestriction.DS.S7
 
 open ReciprocityTheory.ChartRestriction.DS
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
@@ -321,8 +320,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.S7
 
 open ReciprocityTheory.ChartRestriction.DS
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 lemma dm_rank_add (A B : Matrix (Fin n) (Fin n) ℂ) : (A + B).rank ≤ A.rank + B.rank := by
@@ -476,8 +473,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.S7
 
 open ReciprocityTheory.ChartRestriction.DS
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ} {ε : Fin n → Bool}
 
 lemma decA_spec {Y : Matrix (Fin n) (Fin n) ℂ} (hY : inP ε Y) :
@@ -595,15 +590,7 @@ lemma decA_lead_last {Y U : Matrix (Fin n) (Fin n) ℂ} {y : Fin n → ℝ} (hYp
   exact_mod_cast h5
 
 lemma decA_hs_trace (A : Matrix (Fin n) (Fin n) ℂ) : ((hs A : ℝ) : ℂ) = Matrix.trace (A * Aᴴ) := by
-  unfold hs
-  rw [Matrix.trace]
-  push_cast
-  refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [Matrix.diag_apply, Matrix.mul_apply]
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [Matrix.conjTranspose_apply, Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  push_cast
-  rfl
+  apply _root_.CompanionTheory.D.gk.admitted.Gard.hs_eq_trace <;> assumption
 
 lemma decA_hs_conj {K : Matrix (Fin n) (Fin n) ℂ} (hK : K * Kᴴ = 1) (X : Matrix (Fin n) (Fin n) ℂ) :
     hs (Kᴴ * X * K) = hs X := by

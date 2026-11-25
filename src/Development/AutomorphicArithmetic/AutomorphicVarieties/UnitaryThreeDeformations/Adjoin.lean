@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Gordan
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUnitBasePointAdjoinTwistedSigma
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.IsCharZeroPt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.WPresEx
 import Mathlib.Algebra.Order.Floor.Extended
@@ -54,14 +56,7 @@ open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg
 
 private theorem exists_min_basis {σ : Type} [Finite σ] (S : Set (σ →₀ ℕ)) :
     ∃ B : Finset (σ →₀ ℕ), (∀ b ∈ B, b ∈ S) ∧ ∀ n ∈ S, ∃ b ∈ B, b ≤ n := by
-  classical
-  have hP : ∀ t : Set (σ →₀ ℕ), t.IsPWO := fun t => Set.isPWO_of_wellQuasiOrderedLE t
-  have hfin : {b | Minimal (· ∈ S) b}.Finite :=
-    (setOfPred_minimal_antichain _).finite_of_partiallyWellOrderedOn (hP _)
-  refine ⟨hfin.toFinset, fun b hb => ?_, fun n hn => ?_⟩
-  · exact ((Set.Finite.mem_toFinset hfin).1 hb).1
-  · obtain ⟨b, hbn, hb⟩ := (hP S).exists_le_minimal hn
-    exact ⟨b, (Set.Finite.mem_toFinset hfin).2 hb, hbn⟩
+  apply _root_.UpperTheory.V.Alg.gordan_dickson <;> assumption
 
 private theorem exists_decomp {O σ : Type} [CommRing O] [Finite σ] (w : σ → ℤ) (j : ℤ) (S : Set (σ →₀ ℕ))
     (hS : ∀ n ∈ S, Finsupp.weight w n = j) :
@@ -198,25 +193,7 @@ private theorem part_decomp {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
 
 private theorem mem_adjoin_of_mul_eq_one_of_isIntegral' {O R : Type} [CommRing O] [CommRing R] [Algebra O R] {u v : R}
     (huv : u * v = 1) (hv : IsIntegral O v) : v ∈ Algebra.adjoin O {u} := by
-  obtain ⟨p, hpm, hp⟩ := hv
-  letI : Invertible v := ⟨u, huv, by rw [mul_comm]; exact huv⟩
-  have h1 : Polynomial.eval₂ (algebraMap O R) u p.reverse = 0 := by
-    have h := Polynomial.eval₂_reverse_mul_pow (algebraMap O R) v p
-    rw [hp] at h
-    have hinv : (⅟v : R) = u := rfl
-    rw [hinv] at h
-    have hu : IsUnit (v ^ p.natDegree) := (isUnit_of_invertible v).pow _
-    exact hu.mul_left_eq_zero.mp h
-  obtain ⟨q, hq⟩ := Polynomial.X_dvd_sub_C (p := p.reverse)
-  rw [Polynomial.coeff_zero_reverse, hpm.leadingCoeff, map_one] at hq
-  have h2 : p.reverse = 1 + Polynomial.X * q := by rw [← hq]; ring
-  rw [h2, Polynomial.eval₂_add, Polynomial.eval₂_mul, Polynomial.eval₂_X, Polynomial.eval₂_one] at h1
-  have h3 : v = -Polynomial.aeval u q := by
-    have h4 : v * (1 + u * Polynomial.eval₂ (algebraMap O R) u q) = 0 := by rw [h1, mul_zero]
-    rw [Polynomial.aeval_def]
-    linear_combination h4 - (Polynomial.eval₂ (algebraMap O R) u q) * huv
-  rw [h3]
-  exact Subalgebra.neg_mem _ (Polynomial.aeval_mem_adjoin_singleton O u)
+  apply _root_.GlobalTheory.UnitLemma.UnitBase.mem_adjoin_of_mul_eq_one' <;> assumption
 
 private theorem part_zero_le {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [IsLocalRing R] [Algebra O R]
     (W : WPres O ℤ R) (hfin : (W.part 0).FG) : ∀ x ∈ W.part 0, x ∈ Algebra.adjoin O (Set.range W.z) := by

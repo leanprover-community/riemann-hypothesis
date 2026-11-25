@@ -89,7 +89,6 @@ structure IsAutOn (H K : Subgroup (GAd σ J)) (φ : GAd σ J → ℂ) : Prop whe
   growth : ∃ N : ℕ, ∀ l : List (ℝ → GAd σ J), (∀ γ ∈ l, IsRealLine σ J γ) →
     ∃ C : ℝ, ∀ g, ‖l.foldr lineDer φ g‖ ≤ C * (height σ J g : ℝ) ^ N
   kfin : GlobalTheory.Doubling.IsKFinite K φ
-  zfin : FiniteDimensional ℂ (Submodule.span ℂ {f | ∃ z, IsCentral σ J z ∧ f = dop z φ})
 
 def IsConstTerm {r : ℕ} (C : Matrix (Fin n) (Fin r) E) (φ c : GAd σ J → ℂ) : Prop :=
   ∀ (μ : Measure (unipRad σ J C)) (𝓕 : Set (unipRad σ J C)), μ.IsHaarMeasure →

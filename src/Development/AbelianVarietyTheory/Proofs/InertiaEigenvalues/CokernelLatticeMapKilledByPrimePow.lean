@@ -356,8 +356,7 @@ theorem graded (D : BKDat O K l e a ι η H) (Sig : Finset (ZMod e))
   have hred : red y = 0 := by
     by_contra hne
     obtain ⟨τ, hτ⟩ : ∃ τ, red y τ ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (funext h)
     have hmem : c - (i : ZMod e) ∈ D.desc.chars τ := ⟨red y, hτ, fun ζ => actD_red D c i y hxW ζ τ⟩
     refine hi ⟨_, hch τ hmem, i / e, ?_⟩
@@ -1232,8 +1231,7 @@ theorem frobenius_ideal_degree_bound : ∀ {O : Type} [CommRing O] (l : ℕ), 2 
     have d := down τ0
     have m := hmax (τ0 + 1) (Finset.mem_univ _)
     rw [hn] at d
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith
   intro τ
   have h1 := step (τ + 1) (s (τ + 1)) (hspec (τ + 1))

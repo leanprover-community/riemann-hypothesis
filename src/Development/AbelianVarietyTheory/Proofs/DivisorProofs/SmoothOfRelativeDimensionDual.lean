@@ -97,14 +97,6 @@ section Dual
 variable {S : Scheme.{0}} {A B A₁ B₁ : Over S} [GrpObj A] [GrpObj B] [GrpObj A₁] [GrpObj B₁]
   {P : LB (A ⊗ B).left} {P₁ : LB (A₁ ⊗ B₁).left}
 
-theorem point_ext (h : IsDual A B P) {T : Over S} {x y : T ⟶ B}
-    (e : evc h.isLB (fst A T) (snd A T ≫ x) = evc h.isLB (fst A T) (snd A T ≫ y)) : x = y := by
-  have hM : (ev P (fst A T) (snd A T ≫ x)).IsLB := pull_isLB h.isLB _
-  refine (h.univ T _ hM ((isAdditive_iff hM).2 fun Y a a' t ↦ ?_)).unique
-    ((cls_eq_iff hM hM).1 rfl) ((cls_eq_iff hM (pull_isLB h.isLB _)).1 e)
-  simp only [evc_ev h.isLB, lift_fst, lift_snd_assoc]
-  exact (isAdditive_iff h.isLB).1 h.additive _ _ _ _
-
 theorem dual_unique {B' : Over S} [GrpObj B'] {P' : LB (A ⊗ B').left} (h : IsDual A B P) (h' : IsDual A B' P') :
     Nonempty (B ≅ B') := by
   have key : ∀ {C D : Over S} [GrpObj C] [GrpObj D] {Q : LB (A ⊗ C).left} {Q' : LB (A ⊗ D).left}
@@ -118,8 +110,8 @@ theorem dual_unique {B' : Over S} [GrpObj B'] {P' : LB (A ⊗ B').left} (h : IsD
     simpa [evc] using this.symm
   obtain ⟨x, hx⟩ := key h h'
   obtain ⟨y, hy⟩ := key h' h
-  exact ⟨⟨x, y, point_ext h (by rw [← Category.assoc, hy, hx, Category.comp_id]),
-    point_ext h' (by rw [← Category.assoc, hx, hy, Category.comp_id])⟩⟩
+  exact ⟨⟨x, y, GlobalTheory.BirigidLift.dual_ext h (by rw [← Category.assoc, hy, hx, Category.comp_id]),
+    GlobalTheory.BirigidLift.dual_ext h' (by rw [← Category.assoc, hx, hy, Category.comp_id])⟩⟩
 
 end Dual
 
@@ -166,8 +158,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.DeRham GlobalTheory.AbDual GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.BadPt GlobalTheory.CartierDual WithConv
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.WeilHom
 
@@ -340,8 +330,6 @@ open GlobalTheory.BadPt (IsWeilHom)
 open GlobalTheory.PerfdLat (dualBaseChange)
 open GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin (IsPolarisation)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SerreTateDef
 
 section Notions
@@ -444,7 +432,6 @@ open GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin (IsPolarisation)
 open GlobalTheory.BadPt (IsWeilHom)
 open GlobalTheory.PerfdLat (dualBaseChange)
 
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory
 
 namespace GlobalTheory.DualTower

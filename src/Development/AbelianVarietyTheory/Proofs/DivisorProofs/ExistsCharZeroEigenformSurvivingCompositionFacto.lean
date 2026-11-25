@@ -368,8 +368,7 @@ theorem unitBall_prime (R : Type) [CommRing R] (l : ℕ) [Fact l.Prime] (χ : R 
       have hab' : ‖χ a‖ * ‖χ b‖ < 1 := by
         have : ‖χ (a * b)‖ < 1 := hab
         simpa [map_mul, norm_mul] using this
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       have : 1 * 1 ≤ ‖χ a‖ * ‖χ b‖ := mul_le_mul hno.1 hno.2 zero_le_one (norm_nonneg _)
       linarith
 
@@ -402,8 +401,7 @@ theorem core (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] (emb : O →+* Pad
     fun χ hχ => unitBall_prime R l χ (hXle χ hχ)
   choose! P hPprime hPmem using hP
   have key : ∃ χ ∈ X, m ≤ P χ := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨p, hpm, hpX⟩ : ∃ p ∈ m, ∀ χ ∈ X, ¬ ‖χ p‖ < 1 := by
       rcases X.eq_empty_or_nonempty with hX | ⟨χ0, hχ0⟩
       · exact ⟨0, m.zero_mem, by simp [hX]⟩
@@ -920,12 +918,6 @@ private theorem map_mem_smul_top {R M : Type} [CommRing R] [AddCommGroup M] [Mod
     rw [Submodule.map_smul'']
     exact Submodule.smul_mono le_rfl le_top
   exact hmap (Submodule.mem_map_of_mem hx)
-
-theorem quot_ker_stable {l : ℕ} [Fact l.Prime] {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (F : Frame l ι N)
-    (mu : ι → ℕ → ℕ) (jKm : F.K →* alg F.O N mu) (ϖ : F.O) (κ : F.K) (x : NablaT F.O N mu)
-    (hx : x ∈ (Ideal.span {ϖ} • ⊤ : Submodule F.O (NablaT F.O N mu))) :
-    repOf F.O (A := alg F.O N mu) jKm (NablaT F.O N mu) κ x ∈ (Ideal.span {ϖ} • ⊤ : Submodule F.O (NablaT F.O N mu)) := by
-  exact map_mem_smul_top _ _ hx
 
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1000000

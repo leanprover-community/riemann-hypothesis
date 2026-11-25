@@ -43,17 +43,9 @@ private theorem exists_affineOpen_ideal_eq_span_singleton {Y : Scheme.{u}} {F : 
 private theorem exists_pow_mul_mem_of_algebraMap_mem_map {R S : Type*} [CommRing R] [CommRing S]
     [Algebra R S] (r : R) [IsLocalization.Away r S] (I : Ideal R) (x : R)
     (hx : algebraMap R S x ∈ Ideal.map (algebraMap R S) I) : ∃ n : ℕ, r ^ n * x ∈ I := by
-  rw [IsLocalization.mem_map_algebraMap_iff (M := Submonoid.powers r) (S := S)] at hx
-  obtain ⟨w, hy⟩ := hx
-  rw [← map_mul] at hy
-  obtain ⟨c, hc⟩ := (IsLocalization.eq_iff_exists (M := Submonoid.powers r) (S := S)).mp hy
-  obtain ⟨p, hp⟩ : ∃ p : ℕ, r ^ p = (c : R) := c.2
-  obtain ⟨q, hq⟩ : ∃ q : ℕ, r ^ q = (w.2 : R) := w.2.2
-  refine ⟨p + q, ?_⟩
-  have h2 : r ^ (p + q) * x = (c : R) * (w.1 : R) := by
-    rw [pow_add, hp, hq, ← hc]; ring
-  rw [h2]
-  exact I.mul_mem_left _ w.1.2
+  obtain ⟨_, ⟨n, rfl⟩, h⟩ := (IsLocalization.algebraMap_mem_map_algebraMap_iff
+    (M := Submonoid.powers r) (S := S) I x).mp hx
+  exact ⟨n, h⟩
 
 private theorem ideal_le_ideal_of_mul_le_mul {Y : Scheme.{u}} {F J J' : Y.IdealSheafData}
     (h : F * J ≤ F * J') (W : Y.affineOpens) (t : Γ(Y, (W : Y.Opens)))

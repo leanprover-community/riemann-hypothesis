@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryRationalConjIntersectionCardDvdInvariant
 
 @[expose] public section
 
@@ -47,17 +48,7 @@ theorem basRatV_single (i : Fin n) (e : E) :
 theorem basInt_smul_mem (L : Submodule (𝓞 E) (Fin n → E))
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (x : Fin n → E) :
     ∃ y : ℤ, y ≠ 0 ∧ y • x ∈ L := by
-  classical
-  have hx : x ∈ Submodule.span E (L : Set (Fin n → E)) := hL ▸ Submodule.mem_top
-  obtain ⟨m, f, g, rfl⟩ := Submodule.mem_span_set'.1 hx
-  obtain ⟨y, hy, hint⟩ := exists_integral_multiples ℤ ℚ (Finset.univ.image f)
-  refine ⟨y, hy, ?_⟩
-  rw [Finset.smul_sum]
-  refine Submodule.sum_mem _ fun i _ => ?_
-  have hi : IsIntegral ℤ (y • f i) := hint _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))
-  convert L.smul_mem (⟨y • f i, hi⟩ : 𝓞 E) (g i).2 using 1
-  rw [← smul_assoc]
-  rfl
+  apply _root_.GlobalTheory.StabOrder.exists_int_smul_mem <;> assumption
 
 theorem basLat_fg (L : Submodule (𝓞 E) (Fin n → E)) (hLat : Submodule.IsLattice E L) :
     (latLoc (E := E) v (L : Set (Fin n → E))).FG := by

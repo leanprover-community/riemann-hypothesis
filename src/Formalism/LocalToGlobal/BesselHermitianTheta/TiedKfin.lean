@@ -57,17 +57,8 @@ structure KfinTied {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) wher
 
   cpt : ∀ (V : HSp D) (τ : D.what₂.Tau),
     Matrix (Fin (V.sig (tauE D τ)).1 ⊕ Fin (V.sig (tauE D τ)).2) (Fin V.rank) ℂ
-  cpt_gram : ∀ V : HSp D, V.SigOK → ∀ τ,
-    (cpt V τ)ᴴ * Formalism.UG.Jpq (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 * cpt V τ = gramAt D V τ
 
   bas : ∀ V : HSp D, Matrix (Fin V.rank) (Fin V.rank) D.host.E
-  bas_unit : ∀ V : HSp D, V.SigOK → IsUnit (bas V).det
-
-  bas_orth : ∀ V : HSp D, V.SigOK → ∀ i j, i ≠ j →
-    (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (bas V) * V.gram * bas V) i j = 0
-
-  cpt_bas : ∀ V : HSp D, V.SigOK → ∀ τ a i j,
-    (cpt V τ * (bas V).map (tauE D τ)) a i ≠ 0 → (cpt V τ * (bas V).map (tauE D τ)) a j ≠ 0 → i = j
 
 end Formalism.L2.Theta
 

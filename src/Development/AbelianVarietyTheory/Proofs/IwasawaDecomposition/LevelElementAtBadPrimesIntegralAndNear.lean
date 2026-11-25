@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartTiedLevelChain
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsInvOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResidueEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NeZeroTop
@@ -138,16 +139,7 @@ theorem hasRes_redP {P : HeightOneSpectrum (𝓞 E)} {y : E} (hy : Formalism.L2.
 theorem val_sub_lt_of_hasRes {P : HeightOneSpectrum (𝓞 E)} {z : P.adicCompletion E} {t0 : 𝓞 E}
     (h : HasRes P z (Ideal.Quotient.mk P.asIdeal t0)) :
     Valued.v (z - algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E t0)) < 1 := by
-  obtain ⟨t, ht, hv⟩ := h
-  have h0 : t - t0 ∈ P.asIdeal := Ideal.Quotient.eq.1 ht
-  have e : z - algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E t0) =
-      (z - algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E t)) + algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E (t - t0)) := by
-    simp only [map_sub]
-    ring
-  rw [e]
-  refine Valuation.map_add_lt _ hv ?_
-  rw [valued_algebraMap]
-  exact (HeightOneSpectrum.valuation_lt_one_iff_mem P _).2 h0
+  apply _root_.GlobalTheory.Mem.Col2.LevFun.hasRes_sub_lt <;> assumption
 
 theorem le_exp_neg_one {P : HeightOneSpectrum (𝓞 E)} {z : P.adicCompletion E} (h : Valued.v z < 1) :
     Valued.v z ≤ WithZero.exp (-1 : ℤ) := by

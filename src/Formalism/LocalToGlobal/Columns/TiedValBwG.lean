@@ -132,26 +132,6 @@ private theorem mem_loc_iff_of_basis (w : Pl.Pl) (J : Matrix (Fin n) (Fin n) E)
     have hG' : actP lam (vlBdF emb B)⁻¹ F.1 = G := MvPolynomial.map_injective s s.injective hinj
     exact hmem.2 (hG' ▸ hG)
 
-theorem mem_localization_iff_forall_localBasis (w : Pl.Pl) (J : Matrix (Fin n) (Fin n) E)
-    (lam lam' : ι → DomWeight n) (hn : ∀ τ, (lam τ).natW = (lam' τ).natW)
-    (M : ι → Submodule (𝓞 E) (Fin n → E)) (hM : ∀ τ, Submodule.IsFullLattice E (M τ))
-    (F : VV K lam) :
-    F ∈ localization₂ (pw w).asIdeal (delK lam fun τ => dualFr (tauLat emb τ (M τ))) ↔
-      ∀ B : ι → GL (Fin n) E, (∀ τ, IsLocBasis (Pl.resChar w) (M τ : Set (Fin n → E)) (B τ)) →
-        ∃ P ∈ vlIntSpan s Pl w lam', evV emb J lam s F = fnOf _ (shiftOf lam)
-          (fun τ => atInf (embAt s emb)
-            (((B τ)⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) τ) P := by
-  constructor
-  · intro h B hB
-    exact (mem_loc_iff_of_basis Pl pw hval emb s w J lam lam' hn M hM F B hB).1 h
-  · intro h
-    have : Fact (Pl.resChar w).Prime := ⟨Pl.resChar_prime w⟩
-    choose B hB using fun τ => by
-      letI : Submodule.IsFullLattice E (M τ) := hM τ
-      exact Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.LocB.exists_isLocBasis
-        (Pl.resChar w) E (M τ) (hM τ).fg Submodule.IsFullLattice.span_eq_top
-    exact (mem_loc_iff_of_basis Pl pw hval emb s w J lam lam' hn M hM F B hB).2 (h B hB)
-
 theorem mem_localization_iff_forall_localBasis_of_valuation (w : Pl.Pl) (J : Matrix (Fin n) (Fin n) E) (lam lam' : ι → DomWeight n)
     (hn : ∀ τ, (lam τ).natW = (lam' τ).natW) (M : ι → Submodule (𝓞 E) (Fin n → E)) (hM : ∀ τ, Submodule.IsFullLattice E (M τ))
     (F : VV K lam) (B : ι → GL (Fin n) E) (hB : ∀ τ, IsLocBasis (Pl.resChar w) (M τ : Set (Fin n → E)) (B τ)) :

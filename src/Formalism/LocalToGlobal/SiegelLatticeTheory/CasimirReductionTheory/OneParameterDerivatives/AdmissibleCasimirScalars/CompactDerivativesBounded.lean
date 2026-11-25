@@ -13,8 +13,6 @@ namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Defs
 
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]

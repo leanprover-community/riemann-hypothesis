@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.CuspDecayShortRow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.ThStmt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GeometricSideEstimates.GeometricSideQuadraticFormIdentity
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GeometricSideEstimates.HeightBoundOfQuasiHeightLe
@@ -66,18 +67,7 @@ private alias cont_pInf := _root_.GlobalTheory.CuspRep.RankOne.continuous_pInf
 
 private theorem pInf_pos {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (s : ℝ) (hs : 0 < s) :
     pInf E ((posIdele (K := E) s hs : GroundTheory.Global.IdeleGroup E) : Ad E) = fun _ => (s : ℂ) := by
-  funext w
-  have hw : ¬ w.IsReal := InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w)
-  have h : ((posIdele s hs : GroundTheory.Global.IdeleGroup E) : AdeleRing (𝓞 E) E).1 w =
-      (InfinitePlace.Completion.ringEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).symm (s : ℂ) := by
-    rw [← GroundTheory.Global.IdeleGroup.coe_infiniteProj, infiniteProj_posIdele]
-    change GroundTheory.Global.posRealElem w _ = _
-    unfold GroundTheory.Global.posRealElem
-    rw [dite_eq_right hw]
-    simp [InfinitePlace.mult, hw, Real.sqrt_sq hs.le]
-  change (InfinitePlace.Completion.ringEquivComplexOfIsComplex (IsTotallyComplex.isComplex w))
-    (((posIdele s hs : GroundTheory.Global.IdeleGroup E) : AdeleRing (𝓞 E) E).1 w) = _
-  rw [h, RingEquiv.apply_symm_apply]
+  apply _root_.PositivityTheory.AdelicQuotientData.CuspDecayShortRow.pInf_posIdele <;> assumption
 
 private theorem pFin_pos {E : Type} [Field E] [NumberField E] (s : ℝ) (hs : 0 < s) :
     pFin E ((posIdele (K := E) s hs : GroundTheory.Global.IdeleGroup E) : Ad E) = 1 := by

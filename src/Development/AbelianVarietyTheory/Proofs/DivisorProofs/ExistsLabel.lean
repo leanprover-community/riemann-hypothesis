@@ -606,8 +606,7 @@ theorem exists_regular_exponent_of_sum_sq_eq :
     ((Nat.modEq_iff_dvd' h1.le).2 dvd_rfl).symm
   generalize q ^ d - 1 = N at *
   obtain ⟨k, hk⟩ : ∃ k, a k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [h] at hsum
     omega
   refine ⟨k, hk, fun i hi hid hki => ?_⟩
@@ -1040,15 +1039,6 @@ theorem finrank_comap_of_surjective {F V U : Type} [Field F] [AddCommGroup V] [M
     (Submodule.comapSubtypeEquivOfLe (LinearMap.ker_le_comap π)).finrank_eq] at h
   omega
 
-theorem additive_pow {F : Type} [Field F] {s : F[X] → ℂ} (hs : IsAdditive s) {f : F[X]} (hf : f.Monic)
-    (j : ℕ) : s (f ^ j) = j * s f := by
-  induction j with
-  | zero =>
-    have := hs 1 1 monic_one monic_one
-    rw [mul_one] at this
-    simpa using this
-  | succ j ih => rw [pow_succ, hs _ _ (hf.pow j) hf, ih]; push_cast; ring
-
 theorem additive_restrict {F V : Type} [Field F] [AddCommGroup V] [Module F V] [FiniteDimensional F V]
     {s : F[X] → ℂ} (hs : IsAdditive s) {g : Module.End F V} {f : F[X]} {m : ℕ} (hf : f.Monic)
     (hi : Irreducible f) (hc : LinearMap.charpoly g = f ^ m) (A : Submodule F V) (hA : ∀ x ∈ A, g x ∈ A) :
@@ -1060,7 +1050,7 @@ theorem additive_restrict {F V : Type} [Field F] [AddCommGroup V] [Module F V] [
     eq_of_monic_of_associated (LinearMap.charpoly_monic _) (hf.pow j) hj
   have h3 := LinearMap.charpoly_natDegree (g.restrict hA)
   rw [h2, hf.natDegree_pow] at h3
-  rw [h2, additive_pow hs hf, ← h3]
+  rw [h2, GlobalTheory.CuspGL.IsAdditive.map_pow_monic hs hf, ← h3]
   push_cast; ring
 
 theorem eq_top_of_nilpotent {F V : Type} [Field F] [AddCommGroup V] [Module F V] (N : Module.End F V)

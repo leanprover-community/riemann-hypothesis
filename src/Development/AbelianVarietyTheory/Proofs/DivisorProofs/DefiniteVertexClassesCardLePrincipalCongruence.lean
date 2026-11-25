@@ -213,8 +213,6 @@ noncomputable section
 
 namespace GlobalTheory.FrameTransport
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem toAfE_inc (D : D7) (x : D.host.E) :
     GlobalTheory.BotFormula.toAfE D (StandardLatticesGL3.inc D x) = (1 : Af D.host.F) ⊗ₜ[D.host.F] x := by
   have h1 : GlobalTheory.LFun.finAdEquiv D.host.F D.host.E ((1 : Af D.host.F) ⊗ₜ[D.host.F] x) =
@@ -745,9 +743,6 @@ open scoped TensorProduct
 namespace GlobalTheory.FrameTransport.Cong
 
 variable {D : D7}
-
-theorem adSwap_mem_intAf (x : StandardLatticesGL3.AE D) (hx : x ∈ StandardLatticesGL3.OhE D) :
-    adSwap D x ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := _root_.GlobalTheory.FrameTransport.adSwap_mem_intAf_of_OhE x hx
 
 theorem adSwap_inc (e : D.host.E) : adSwap D (StandardLatticesGL3.inc D e) = inclEAf D e := by
   have h1 : GlobalTheory.BotFormula.toFinE D (StandardLatticesGL3.inc D e) = algebraMap D.host.E _ e := by

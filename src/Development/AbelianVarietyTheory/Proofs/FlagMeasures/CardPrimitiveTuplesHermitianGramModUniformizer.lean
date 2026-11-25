@@ -413,8 +413,7 @@ theorem exists_isPrimitive_invol_invariant {B : Type} [CommRing B] [Fintype B] (
   refine ⟨ψ.compAddMonoidHom T, ?_, ?_⟩
   · intro a ha h
     have hex : ∃ u, a * u + c (a * u) ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have h1 := hne 1
       have h2 := hne ω
       rw [mul_one] at h1
@@ -473,8 +472,7 @@ theorem exists_dot_eq_of_indep {B : Type} [CommRing B] [Fintype B] (χ : AddChar
     (hχ : χ.IsPrimitive) {k n : ℕ} (x : Fin k → Fin n → B)
     (hx : ∀ s : Fin k → B, ∑ a, s a • x a = 0 → s = 0) (u : Fin k → B) :
     ∃ z : Fin n → B, ∀ a, ∑ i, x a i * z i = u a := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h1 : ∑ z : Fin n → B, ∑ s : Fin k → B, χ (∑ a, s a * (∑ i, x a i * z i - u a)) = 0 := by
     refine Finset.sum_eq_zero fun z _ => ?_
     refine sum_char_dot_eq_zero χ hχ (fun a => ∑ i, x a i * z i - u a) ?_

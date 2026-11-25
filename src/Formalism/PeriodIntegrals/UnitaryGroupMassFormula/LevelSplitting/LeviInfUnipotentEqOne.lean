@@ -32,28 +32,16 @@ private theorem h_sum_lemma_6 (D : Dat A n r) (v : n → A) (t : Fin r → A) (w
   rw [← hL_apply_lemma, map_sum]
   simp only [map_smul, smul_eq_mul, hL_apply_lemma]
 
-private theorem h_swap_lemma_7 (D : Dat A n r) (H : D.Hyp) (x y : n → A) :
-    D.h y x = D.σA (D.h x y) := by
-  show (∑ i, ∑ j, D.σA (y i) * D.JA i j * x j) = D.σA (∑ i, ∑ j, D.σA (x i) * D.JA i j * y j)
-
-  simp only [map_sum, map_mul, H.σσ, H.herm]
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
 private theorem h_fe_lemma_8 (D : Dat A n r) (H : D.Hyp) (a b : Fin r) :
     D.h (D.f a) (D.e b) = if b = a then 1 else 0 := by
-  rw [h_swap_lemma_7 D H, H.ef]
+  rw [D.h_symm H, H.ef]
   split_ifs <;> simp
-
-private theorem h_add_left_lemma_9 (D : Dat A n r) (H : D.Hyp) (x x' y : n → A) :
-    D.h (x + x') y = D.h x y + D.h x' y := by
-  rw [h_swap_lemma_7 D H, _root_.PI.VolSemiDirect.W.PG.Dat.h_add_right, map_add (f := _), ← h_swap_lemma_7 D H, ← h_swap_lemma_7 D H]
 
 private theorem h_sum_left_lemma_10 (D : Dat A n r) (H : D.Hyp) (t : Fin r → A) (w : Fin r → n → A)
     (y : n → A) : D.h (∑ a, t a • w a) y = ∑ a, D.σA (t a) * D.h (w a) y := by
 
-  rw [h_swap_lemma_7 D H, h_sum_lemma_6, map_sum]
-  simp only [map_mul, ← h_swap_lemma_7 D H]
+  rw [D.h_symm H, h_sum_lemma_6, map_sum]
+  simp only [map_mul, ← D.h_symm H]
 
 theorem pV_apply (D : Dat A n r) (x : n → A) : pV D x = x - D.pX x - D.pXv x := rfl
 
@@ -174,17 +162,17 @@ theorem levL_sub_perp (U W : Matrix (Fin r) (Fin r) A) {v : n → A} (he : ∀ b
     (Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩))
 
 private theorem h_pV_e_lemma_11 (x : n → A) (a : Fin r) : D.h (pV D x) (D.e a) = 0 := by
-  rw [h_swap_lemma_7 D H, h_e_pV H, map_zero]
+  rw [D.h_symm H, h_e_pV H, map_zero]
 
 private theorem h_pV_f_lemma_12 (x : n → A) (a : Fin r) : D.h (pV D x) (D.f a) = 0 := by
-  rw [h_swap_lemma_7 D H, h_f_pV H, map_zero]
+  rw [D.h_symm H, h_f_pV H, map_zero]
 
 theorem h_decomp (x y : n → A) :
     D.h x y = D.h (pV D x) (pV D y) + ∑ a, D.σA (D.h (D.f a) x) * D.h (D.e a) y +
       ∑ a, D.σA (D.h (D.e a) x) * D.h (D.f a) y := by
   have hx : D.h x y = D.h (pV D x) y + D.h (D.pX x) y + D.h (D.pXv x) y := by
     conv_lhs => rw [decomp D x]
-    rw [h_add_left_lemma_9 D H, h_add_left_lemma_9 D H]
+    rw [D.h_add_left, D.h_add_left]
   have hy : D.h (pV D x) y = D.h (pV D x) (pV D y) := by
     conv_lhs => rw [decomp D y]
     rw [_root_.PI.VolSemiDirect.W.PG.Dat.h_add_right, _root_.PI.VolSemiDirect.W.PG.Dat.h_add_right, _root_.PI.VolSemiDirect.W.PG.Dat.pX_apply, _root_.PI.VolSemiDirect.W.PG.Dat.pXv_apply, h_sum_lemma_6, h_sum_lemma_6]

@@ -1493,8 +1493,7 @@ theorem le_exp_half {t h : ℝ} (H : t ^ 2 ≤ Real.exp h) : t ≤ Real.exp (h /
     rw [sq, ← Real.exp_add]
     congr 1
     ring
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hp := Real.exp_pos (h / 2)
   nlinarith
 

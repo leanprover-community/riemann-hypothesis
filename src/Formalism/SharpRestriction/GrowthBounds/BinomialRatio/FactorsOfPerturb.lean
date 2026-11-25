@@ -91,7 +91,6 @@ theorem factors_of_perturb {Kf V V' : Type} [Field Kf] [Algebra O Kf] [AddCommGr
     intro i
     have h := (vLEO_iff hw h2 (hδ i).1 D).mp (hδ i).2
     rw [← hkdef] at h
-    have h0 : (0 : ℝ) ≤ (k i : ℝ) := Nat.cast_nonneg _
     have : (k i : ℝ) < c := by linarith
     exact_mod_cast this
   obtain ⟨i0, -, hi0⟩ := Finset.exists_max_image Finset.univ k ⟨⟨0, hn⟩, Finset.mem_univ _⟩

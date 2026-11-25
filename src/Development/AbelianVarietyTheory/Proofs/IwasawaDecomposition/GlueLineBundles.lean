@@ -41,6 +41,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LbIsoOfDisjointCover
 
 @[expose] public section
 
@@ -83,14 +84,7 @@ theorem gm_id_val {O : X.Opens} {x : X} (hx : x ∈ O) (a : Γ(X, O)ˣ) :
 theorem unit_ext_imm {O : X.Opens} {a b : Γ(X, O)ˣ}
     (h : ∀ x ∈ O, ∃ (W : Scheme.{0}) (j : W ⟶ X) (_ : IsOpenImmersion j) (w : W), j w = x ∧
       gm j w O a = gm j w O b) : a = b := by
-  apply unit_ext
-  intro x hx
-  obtain ⟨W, j, hj, w, rfl, e⟩ := h x hx
-  apply Units.ext
-  rw [gm_id_val hx, gm_id_val hx]
-  have e' := congrArg Units.val e
-  rw [gm_val j w O hx, gm_val j w O hx, ← Scheme.Hom.germ_stalkMap_apply, ← Scheme.Hom.germ_stalkMap_apply] at e'
-  exact (asIso (j.stalkMap w)).commRingCatIsoToRingEquiv.injective e'
+  apply _root_.GlobalTheory.DisjointCoverLB.units_eq_of_gm <;> assumption
 
 end GlobalTheory.GlueLineBundle
 

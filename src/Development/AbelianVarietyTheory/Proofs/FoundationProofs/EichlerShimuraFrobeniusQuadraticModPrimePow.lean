@@ -831,8 +831,7 @@ theorem core {F K L : Type} [Field F] [IsAlgClosed F] [Field K] [Field L] [Algeb
     have := congrArg (Polynomial.aeval y) (X_pow_sub_one_eq_prod hl.pos hζ₀)
     simpa [map_prod] using this
   obtain ⟨ζ, hζm, hζ⟩ : ∃ ζ ∈ nthRootsFinset l (1 : F), W'.valuation (y - algebraMap F L ζ) < 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have : 1 ≤ W'.valuation (y ^ l - 1) := by
       rw [hprod, map_prod]; exact Finset.one_le_prod' hne
     exact absurd hy1 (not_lt.2 this)
@@ -982,8 +981,7 @@ theorem exists_root_of_unity_close_of_pow_close : ∀ {Ω K : Type} [Field Ω] [
   have hx : x ^ N - 1 = (p.roots.map (fun a => x - algebraMap Ω K a)).prod := by
     have := congrArg (Polynomial.aeval x) hs
     simpa [p, map_multiset_prod, Multiset.map_map, Function.comp_def] using this
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   refine (not_lt.mpr ?_) hv
   rw [hx, map_multiset_prod, Multiset.map_map]
   refine Multiset.one_le_prod_of_one_le ?_

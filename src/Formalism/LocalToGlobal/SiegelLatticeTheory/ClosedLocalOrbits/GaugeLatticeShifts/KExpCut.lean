@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictRing
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOpInhab
@@ -175,18 +176,7 @@ theorem fa_torsion {F : Type} [Field F] [NumberField F] (a : FiniteAdeleRing (�
 
 theorem int_multiple {E : Type} [Field E] [NumberField E] (e : E) :
     ∃ n : ℕ, 0 < n ∧ (n : E) * e ∈ Formalism.UG.intOE E := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) e
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 (Ideal.absNorm_mem (Ideal.span {b}))
-  have hn0 : Ideal.absNorm (Ideal.span {b}) ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
-    exact hb0
-  refine ⟨Ideal.absNorm (Ideal.span {b}), Nat.pos_of_ne_zero hn0, c * a, ?_⟩
-  have hbE : algebraMap (𝓞 E) E b ≠ 0 := by
-    rw [Ne, map_eq_zero_iff _ (FaithfulSMul.algebraMap_injective (𝓞 E) E)]
-    exact hb0
-  rw [← map_natCast (algebraMap (𝓞 E) E), ← hc, map_mul, map_mul]
-  field_simp
+  apply _root_.PIW.AdelClassFin.DictRing.e_denom <;> assumption
 
 theorem tens_torsion {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (x : E ⊗[F] Formalism.MainNotions.S.Af F) : ∃ n : ℕ, 0 < n ∧ n • x ∈ Formalism.MainNotions.S.IntAf F E := by

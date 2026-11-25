@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodDataComparison
 public import Formalism.WeaklyAdmissibleFiltrations.Statement
 
 @[expose] public section
@@ -52,17 +53,7 @@ theorem inv_one_mem_all (h1 : (1 : BdR) ∈ PD.Fil 1) : ∀ a : ℤ, (1 : BdR) �
     rw [hn]; exact hpos n
 
 theorem field_inter_filtration_one_eq_zero (c : K) (hc : algebraMap K BdR c ∈ PD.Fil 1) : c = 0 := by
-  by_contra hne
-  have h1 : (1 : BdR) ∈ PD.Fil 1 := by
-    have := (PD.Fil 1).smul_mem c⁻¹ hc
-    rwa [Algebra.smul_def, ← map_mul, inv_mul_cancel₀ hne, map_one] at this
-  have hall := inv_one_mem_all PD h1
-  have h0 : (1 : BdR) = 0 := PD.Fil_sep 1 hall
-  apply PD.not_mem_filtration_two
-  have : PD.ι PD.t = 0 := by
-    rw [← one_mul (PD.ι PD.t), h0, zero_mul]
-  rw [this]
-  exact (PD.Fil 2).zero_mem
+  apply +allowSynthFailures _root_.GlobalTheory.SplitJump.eq_zero_of_mem_fil_one <;> assumption
 
 end Inv
 

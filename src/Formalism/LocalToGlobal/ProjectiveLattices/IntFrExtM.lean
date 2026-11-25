@@ -51,15 +51,6 @@ section Proofs
 
 variable {D : Datum H} {l : Level H}
 
-theorem exists_family {D : Datum H} {l : Level H} (X0 : Moduli D l) (hN : ∀ l' : Level H, Nonempty (Moduli D l')) :
-    ∃ XoF : ∀ l' : Level H, Moduli D l', XoF l = X0 := by
-  classical
-  refine ⟨fun l' => if h : l' = l then cast (congrArg (Moduli D) h.symm) X0 else (hN l').some, ?_⟩
-  first
-    | (beta_reduce
-       rw [dite_eq_left rfl]
-       rfl)
-
 end Proofs
 
 section Place

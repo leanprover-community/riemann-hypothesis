@@ -144,12 +144,6 @@ variable {X₁ : Setup F W i} {ε₁ : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P
   ι := c.ι
   int := c.int
   comm := by rw [← D.comp, ← Category.assoc y, h, c.comm]
-
-def Compat {X : Type} [AddCommGroup X] (yy₁ : X₁.S.Gam →+ ModN (X₁.S.r * X₁.S.N) X)
-    (yy : D.X.S.Gam →+ ModN (D.X.S.r * D.X.S.N) X) : Prop :=
-  ∀ a μ, yy₁ a = QuotientAddGroup.mk μ →
-    yy (D.lab a) = QuotientAddGroup.mk ((D.X.S.r * D.X.S.N / (X₁.S.r * X₁.S.N)) • μ)
-
 end Deep
 
 end GlobalTheory.Poinc

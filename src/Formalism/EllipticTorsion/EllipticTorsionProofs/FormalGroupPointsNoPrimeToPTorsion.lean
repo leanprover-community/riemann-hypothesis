@@ -63,8 +63,7 @@ lemma vy (hW : IntegralModel W) {x y : K} (h : W.toAffine.Equation x y) (hx : 1 
       rw [norm_pow]; exact hr.trans_lt (by rw [pow_succ]; exact lt_mul_of_one_lt_right (pow_pos (by linarith) 2) hx)
     rw [dom this, norm_pow]
   have hyx : ‖x‖ < ‖y‖ := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have : ‖y ^ 2 + (W.a₁ * x + W.a₃) * y‖ ≤ ‖x‖ ^ 2 := by
       refine add_le ?_ ?_
       · rw [norm_pow]; exact pow_le_pow_left₀ (norm_nonneg _) hle 2
@@ -131,14 +130,12 @@ lemma bigx3 (hW : IntegralModel W) {x1 x2 x3 y3 l v : K} (hX1 : 1 < ‖x1‖) (h
     (h3 : W.toAffine.Equation x3 y3) (hy3 : y3 = l * x3 + v)
     (e1 : l ^ 2 + W.a₁ * l - W.a₂ = x1 + x2 + x3)
     (e2 : W.a₄ - 2 * l * v - W.a₁ * v - W.a₃ * l = x1 * x2 + x3 * (x1 + x2)) : 1 < ‖x3‖ := by
-  by_contra hx3
-  push_neg at hx3
+  by_contra! hx3
   obtain ⟨h1, h2, h3', h4, h6⟩ := hW
   have hy3n : ‖y3‖ ≤ 1 := by
 
     rw [Affine.equation_iff] at h3
-    by_contra hy
-    push_neg at hy
+    by_contra! hy
     have key : y3 ^ 2 = -((W.a₁ * x3 + W.a₃) * y3) + (x3 ^ 3 + W.a₂ * x3 ^ 2 + W.a₄ * x3 + W.a₆) := by
       linear_combination h3
     have hA : ‖W.a₁ * x3 + W.a₃‖ ≤ 1 := add_le ((mul_le_of_one h1).trans hx3) h3'

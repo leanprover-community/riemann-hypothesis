@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.DividedPowerZeroOfGlActionZero
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PolarizationDividedPowerSumSucc
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.StableSubspaceCompleteReducibility
 import Mathlib.Tactic.Linter.Style
@@ -33,15 +34,7 @@ theorem polarizationSource_injective (LL : Letters ι) (a b : Fin n) : Function.
 
 theorem polarizationTarget_ne_source (LL : Letters ι) (a b : Fin n) (hab : a ≠ b) (l l' : ι) :
     polarizationTarget LL a b l' ≠ polarizationSource LL a b l := by
-  intro h
-  have e1 : (polarizationTarget LL a b l').1 = l' := by unfold polarizationTarget; split_ifs <;> rfl
-  have e2 : (polarizationSource LL a b l).1 = l := by unfold polarizationSource; split_ifs <;> rfl
-  have hl : l' = l := by rw [← e1, h, e2]
-  subst hl
-  unfold polarizationTarget polarizationSource at h
-  split_ifs at h <;> simp only [Prod.mk.injEq] at h
-  · exact hab h.2
-  · exact hab h.2.symm
+  apply _root_.Formalism.MainNotions.LemmaBAlt.divided_power_target_ne_source <;> assumption
 
 open Classical in
 theorem glAct_eq_sum_polarizations (LL : Letters ι) (S : Set ι) (a b : Fin n) :
@@ -70,30 +63,14 @@ theorem divPowMono_eq_monomialSum (LL : Letters ι) (S : Set ι) (a b : Fin n) (
 
 theorem glAct_comp_divPow (LL : Letters ι) (S : Set ι) (a b : Fin n) (hab : a ≠ b) (k : ℕ) :
     glAct R LL S a b ∘ₗ divPow R LL S a b k = (k + 1) • divPow R LL S a b (k + 1) := by
-  classical
-  refine (MvPolynomial.basisMonomials (ι × Fin n) R).ext fun m => ?_
-  rw [LinearMap.comp_apply, LinearMap.smul_apply]
-  simp only [divPow, Module.Basis.constr_basis]
-  rw [divPowMono_eq_monomialSum, divPowMono_eq_monomialSum, glAct_eq_sum_polarizations]
-  exact polarization_dividedPowerSum_succ _ _ _ (polarizationSource_injective LL a b) (polarizationTarget_ne_source LL a b hab) _ m k
+  apply _root_.Formalism.MainNotions.LemmaBAlt.gl_action_comp_divided_power <;> assumption
 
 theorem divPow_zero' (LL : Letters ι) (S : Set ι) (a b : Fin n) : divPow R LL S a b 0 = LinearMap.id := by
-  classical
-  refine (MvPolynomial.basisMonomials (ι × Fin n) R).ext fun m => ?_
-  rw [LinearMap.id_apply]
-  simp only [divPow, Module.Basis.constr_basis]
-  rw [divPowMono_eq_monomialSum, dividedPowerMonomialSum_zero, MvPolynomial.coe_basisMonomials]
+  apply _root_.Formalism.MainNotions.LemmaBAlt.divided_power_zero <;> assumption
 
 theorem glAct_pow_eq_factorial_divPow (LL : Letters ι) (S : Set ι) (a b : Fin n) (hab : a ≠ b) (k : ℕ) :
     (glAct R LL S a b : Module.End R (MvPolynomial (ι × Fin n) R)) ^ k = k.factorial • divPow R LL S a b k := by
-  induction k with
-  | zero => rw [pow_zero, divPow_zero', Nat.factorial_zero, one_smul]; rfl
-  | succ k ih =>
-    rw [pow_succ', ih, Module.End.mul_eq_comp, LinearMap.comp_smul, glAct_comp_divPow LL S a b hab k,
-      smul_smul]
-    congr 1
-    rw [Nat.factorial_succ]
-    ring
+  apply _root_.Formalism.MainNotions.LemmaBAlt.gl_action_pow_eq_factorial_smul <;> assumption
 
 theorem X_mul_pderiv_monomial' {σ : Type*} (v : σ) (m : σ →₀ ℕ) (c : R) :
     X v * pderiv v (monomial m c) = ((m v : ℕ) : R) • monomial m c := by

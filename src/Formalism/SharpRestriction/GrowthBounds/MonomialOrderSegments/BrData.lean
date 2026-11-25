@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.DigOKAddInl
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrBase
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.AddMemSupportOfMemSupportCoefOut
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.Monomial
@@ -403,16 +404,7 @@ theorem sum_single_inj {α β : Type} [DecidableEq α] (u : α → β) (hu : Fun
     exact Finset.sum_eq_zero fun v _ => if_neg fun h => hx ⟨v, h⟩
 
 theorem liftVar_inj : Function.Injective Dt.liftVar := by
-  rintro ⟨⟨j, l | m⟩, a⟩ ⟨⟨j', l' | m'⟩, a'⟩ h
-  · simp only [PlaneGramData.SignedChainData.liftVar, Prod.mk.injEq, PlaneGramData.ML.ll.injEq] at h
-    obtain ⟨⟨rfl, h2⟩, rfl⟩ := h
-    cases h2
-    rfl
-  · simp [PlaneGramData.SignedChainData.liftVar] at h
-  · simp [PlaneGramData.SignedChainData.liftVar] at h
-  · simp only [PlaneGramData.SignedChainData.liftVar, Prod.mk.injEq, PlaneGramData.ML.wc.injEq] at h
-    obtain ⟨⟨rfl, rfl⟩, rfl⟩ := h
-    rfl
+  apply _root_.Formalism.MainNotions.PairMembershipBlocks.liftVar_inj <;> assumption
 
 theorem lift_mono (mo : PlaneGramData.TL J Dt.nL r × Fin r →₀ ℕ) :
     rename (Prod.map (fM Dt) id) (∏ v ∈ mo.support, X (Dt.liftVar v) ^ Dt.liftExp mo v) =

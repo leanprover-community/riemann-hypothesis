@@ -28,57 +28,11 @@ public import GroundTheory.HeightsAndTheta.Theta.AdelicFourier
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SummableOneDivAbsNormSq
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EventuallyMeasurableSetPrimV
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalVolumeRankOneProduct
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HypOneZeroZero
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -693,8 +647,7 @@ theorem maximal_ideals : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
     apply τ.injective
     rw [h.2.2.2, h.2.2.2, star_star]
   have hne : ∃ x, σ x ≠ x := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨w⟩ := (inferInstance : Nonempty (NumberField.InfinitePlace E))
     have hreal : w.IsReal := by
       rw [← NumberField.InfinitePlace.mk_embedding w, NumberField.InfinitePlace.isReal_mk_iff,
@@ -938,8 +891,7 @@ theorem norm_le_of_nonunit (F E : Type) [Field F] [NumberField F] [Field E] [Num
     intro h
     exact one_ne_zero (b.repr.map_eq_zero_iff.1 h)
   obtain ⟨k0, hk0⟩ : ∃ k, b.repr 1 k ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hb1 (Finsupp.ext hcon)
   filter_upwards [GlobalTheory.CompanionTheory.SW.GoodRing.good_ring F E σ hσ d b, val_eq_one_eventually _ hk0]
     with v hgood hv O hO c hc hcu
@@ -1091,8 +1043,7 @@ theorem exists_u_local {A : Type} [CommRing A] (σ : A →+* A) {M : ℕ}
       | succ j => exact ⟨j, rfl⟩
   set w : Fin M → A := fun i => x i.succ.succ with hw
   have hex : ∃ k, (J *ᵥ w) k ∉ P := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have e : w = Ji *ᵥ (J *ᵥ w) := by
       rw [Matrix.mulVec_mulVec, mul_eq_one_comm.1 hJi, one_mulVec]
     apply hi
@@ -1167,8 +1118,7 @@ theorem exists_u {A : Type} [CommRing A] (σ : A →+* A) (hσ : ∀ a, σ (σ a
 theorem exists_mu {A : Type} [CommRing A] (P₁ P₂ : Ideal A)
     (hmax : ∀ P : Ideal A, P.IsMaximal → P = P₁ ∨ P = P₂) (h2 : IsUnit (2 : A)) (a b : A)
     (hab : ∀ P : Ideal A, P.IsMaximal → b ∉ P ∨ a ∉ P) : ∃ μ : ℤ, IsUnit (a - (μ : A) * b) := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have pair : ∀ P : Ideal A, P.IsMaximal → ∀ m n : ℤ, IsUnit ((n : A) - m) →
       a - (m : A) * b ∈ P → a - (n : A) * b ∈ P → False := by
     intro P hP m n hu h1 h3

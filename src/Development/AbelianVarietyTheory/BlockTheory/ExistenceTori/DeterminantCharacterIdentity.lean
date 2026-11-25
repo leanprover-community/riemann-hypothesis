@@ -93,20 +93,6 @@ def inclF : AdF E →+* AdE E :=
   Algebra.TensorProduct.includeLeftRingHom (R := maximalRealSubfield E) (A := AdF E) (B := E)
 
 
-variable {E} in
-def compF (v : Plc E) : AdF E →ₐ[maximalRealSubfield E] v.adicCompletion (maximalRealSubfield E) where
-  toFun a := a v
-  map_one' := rfl
-  map_mul' _ _ := rfl
-  map_zero' := rfl
-  map_add' _ _ := rfl
-  commutes' _ := rfl
-
-
-variable {E} in
-def compE (v : Plc E) : AdE E →+* (v.adicCompletion (maximalRealSubfield E) ⊗[maximalRealSubfield E] E) :=
-  (Algebra.TensorProduct.map (compF v) (AlgHom.id (maximalRealSubfield E) E)).toRingHom
-
 def intAd : Subring (AdE E) :=
   Subring.closure ((inclF E '' {a | ∀ v : Plc E, a v ∈ v.adicCompletionIntegers (maximalRealSubfield E)}) ∪
     Set.range fun o : 𝓞 E => diagE E (o : E))
@@ -139,22 +125,6 @@ variable (E) in
 def ratPts (n : ℕ) : Subgroup (UA E n) := ptsIn n (diagE E).range
 
 
-variable (E) in
-def maxCpt (n : ℕ) : Subgroup (UA E n) := ptsIn n (intAd E)
-
-def IsLevelGrp (J : Subgroup (UA E n)) : Prop :=
-  J ≤ maxCpt E n ∧
-  (∃ m : ℕ, m ≠ 0 ∧ ∀ k ∈ maxCpt E n,
-    (∀ a b, ∃ u ∈ intAd E, (k.1 - 1) a b = (m : AdE E) * u) → k ∈ J) ∧
-  ∀ k : UA E n, (∀ v : Plc E, ∃ j ∈ J, ∀ a b, compE v (k.1 a b) = compE v (j.1 a b)) → k ∈ J
-
-def TrivOn (S : Finset (Plc E)) (h : UA E n) : Prop :=
-  ∀ v ∈ S, ∀ a b, compE v (h.1 a b) = compE v ((1 : Matrix (Fin n) (Fin n) (AdE E)) a b)
-
-def stab (J : Subgroup (UA E n)) (h : UA E n) : Subgroup (UA E n) :=
-  ratPts E n ⊓ J.comap (MulAut.conj h⁻¹).toMonoidHom
-
-
 end Adelic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
@@ -164,14 +134,6 @@ abbrev ConjQ (Dw : Datum H) (l : Level H) : Type := Dw.La ⧸ (Mfr l • ⊤ : S
 
 def fourierSum {n : ℕ} (ph : (Fin n → ConjQ Dw l) → c.F) : (Fin n → LevQ Dw l) → c.F :=
   fun q => ∑ᶠ x : Fin n → ConjQ Dw l, ph x * zetaM c ^ (-pairL (l := l) (fun b => qRep (x b)) (fun b => levRep (q b)))
-
-def FixesDatum {n : ℕ} (J : Subgroup (UA E n)) (ph : (Fin n → ConjQ Dw l) → c.F) : Prop :=
-  ∀ k ∈ J, ∀ κ : Fin n → Fin n → 𝓞 E,
-    (∀ a b, ∃ u ∈ intAd E, star (k.1 a b) - diagE E (κ a b : E) = (l.M : AdE E) * u) →
-      ∀ x, ph (fun a => ∑ b, κ a b • x b) = ph x
-
-
-
 
 end GlobalTheory.IndefiniteRowSideFullHecke.AdelicNormWeight
 end -- clump:auto
@@ -219,10 +181,6 @@ end Adelic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l)
-
-def push {n : ℕ} (g : Matrix (Fin n) (Fin n) E) :
-    MvPolynomial (LtN Dw n) c.F →ₐ[c.F] MvPolynomial (LtN Dw n) c.F :=
-  aeval fun ℓ => letB c ℓ.1 ℓ.2.1 (fun k => g k ℓ.2.2)
 
 section Coeff
 

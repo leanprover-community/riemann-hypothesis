@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.CoeffSingleLawAdd
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import Mathlib.Order.CompletePartialOrder
 import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
@@ -71,19 +72,7 @@ theorem coeff_X_single {n : ℕ} (q p : Fin n × Fin d) :
 
 theorem formal_group_coeff_second_linear (G : FGLaw R d) (i l : Fin d) :
     coeff (Finsupp.single ((1 : Fin 2), l) 1) (G.F i) = if l = i then 1 else 0 := by
-  classical
-  have e := congrArg (coeff (Finsupp.single ((0 : Fin 1), l) 1)) (G.unit i)
-  rw [coeff_lin_ev _ (by
-      intro j i'
-      fin_cases j
-      · simp
-      · simp [pt]), coeff_X_single] at e
-  rw [Fintype.sum_prod_type, Fin.sum_univ_two] at e
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Pi.zero_apply, map_zero, mul_zero,
-    Finset.sum_const_zero, zero_add, pt, coeff_X_single] at e
-  simp only [Prod.mk.injEq, true_and, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true] at e
-  rw [e]
+  apply GlobalTheory.FormalCalc.coeff_law_snd <;> assumption
 
 theorem formal_group_coeff_first_linear (G : FGLaw R d) (i l : Fin d) :
     coeff (Finsupp.single ((0 : Fin 2), l) 1) (G.F i) = if l = i then 1 else 0 := by

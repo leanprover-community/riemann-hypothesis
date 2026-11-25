@@ -8,6 +8,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.LocFrom
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.LocInj
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.AtGLev
 
 @[expose] public section
 
@@ -46,14 +47,7 @@ theorem val_nat (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (�
 
 theorem not_mem_of_coprime {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
     {m g : ℕ} (h : Nat.Coprime m g) (hg : (g : 𝓞 F) ∈ v.asIdeal) : (m : 𝓞 F) ∉ v.asIdeal := by
-  intro hm
-  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 h
-  apply v.isPrime.ne_top
-  rw [Ideal.eq_top_iff_one]
-  have h1 : ((a * (m : ℤ) + b * (g : ℤ) : ℤ) : 𝓞 F) = 1 := by rw [hab, Int.cast_one]
-  rw [← h1]
-  push_cast
-  exact v.asIdeal.add_mem (v.asIdeal.mul_mem_left _ hm) (v.asIdeal.mul_mem_left _ hg)
+  apply _root_.Formalism.L2.G.not_mem_of_coprime <;> assumption
 
 theorem finite_over (F : Type) [Field F] [NumberField F] {g : ℕ} (hg : 1 ≤ g) :
     {v : HeightOneSpectrum (𝓞 F) | (g : 𝓞 F) ∈ v.asIdeal}.Finite := by

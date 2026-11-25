@@ -129,8 +129,7 @@ theorem sub_one_dvd_coeff_zero {ε : 𝒪♭} (hε : PreTilt.untilt ε = 1)
           gcongr
           exact pow_le_one₀ (norm_nonneg _) (preTilt_norm_le_one _)
       _ = r ^ p ^ N := mul_one _
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set q := x / r with hq
   have hq1 : 1 < q := by rw [hq, one_lt_div hr0]; exact hlt
   have hbound : ∀ N : ℕ, q ^ p ^ N * r ≤ 1 := by

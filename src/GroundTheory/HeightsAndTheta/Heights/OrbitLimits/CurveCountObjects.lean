@@ -91,10 +91,6 @@ theorem exists_chart {y : (Σ k, ι k) → Ω} {n : ℕ} (hP : IsArithVar (mCoor
 
 end Lemmas
 
-section Examples
-
-end Examples
-
 end
 
 end GroundTheory.Heights₂.Heights.Targets

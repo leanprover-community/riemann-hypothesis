@@ -93,8 +93,7 @@ namespace GlobalTheory
 theorem norm_le_one_of_isIntegral_int {K : Type*} [NormedField K] [IsUltrametricDist K]
     {z : K} (hz : IsIntegral ℤ z) : ‖z‖ ≤ 1 := by
   obtain ⟨p, hm, hp⟩ := hz
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set n := p.natDegree
   rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, Polynomial.coeff_natDegree,
     hm.leadingCoeff, map_one, one_mul] at hp
@@ -144,8 +143,7 @@ theorem exists_embedding_padicAlgCl_place (E : Type) [Field E] [NumberField E] (
     · intro x y hxy
       rw [hmem] at hxy
       rw [hmem, hmem]
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : 1 ≤ ‖τ ((x * y : 𝓞 E) : E)‖ := by
         push_cast
         rw [map_mul, norm_mul]

@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryApproximation.WeakApproxF
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictRing
 
 @[expose] public section
 
@@ -59,19 +60,7 @@ theorem mem_intOE_of_isIntegral {x : E} (h : IsIntegral ℤ x) : x ∈ PI.Unitar
 theorem algebraMap_mem_intOE (a : 𝓞 F) : algebraMap F E (a : F) ∈ PI.UnitaryApproxDefs.intOE E := mem_intOE_of_isIntegral (IsIntegral.algebraMap (NumberField.RingOfIntegers.isIntegral_coe a))
 
 theorem exists_nat_mul (x : E) : ∃ m : ℕ, 0 < m ∧ (m : E) * x ∈ PI.UnitaryApproxDefs.intOE E := by
-  have halg : IsAlgebraic ℤ x :=
-    (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic x)
-  obtain ⟨y, hy0, hyint⟩ := halg.exists_integral_multiple
-  rw [zsmul_eq_mul] at hyint
-  refine ⟨y.natAbs, Int.natAbs_pos.2 hy0, mem_intOE_of_isIntegral ?_⟩
-  rw [Nat.cast_natAbs]
-  rcases abs_choice y with h | h
-  · rw [h]
-    exact hyint
-  · rw [h]
-    push_cast
-    rw [neg_mul]
-    exact hyint.neg
+  apply _root_.PIW.AdelClassFin.DictRing.e_denom <;> assumption
 
 theorem exists_int_mul (x : E) :
     ∃ c : 𝓞 F, c ≠ 0 ∧ algebraMap F E (c : F) * x ∈ PI.UnitaryApproxDefs.intOE E := by

@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.VLem
 
 open Formalism.FourierDecayAlt.P.CutMP.Gauge
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 section fam

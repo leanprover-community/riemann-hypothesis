@@ -250,8 +250,6 @@ section Data
 open Formalism.MainNotions Formalism.MainNotions.G Formalism.L2.G.Pend IsDedekindDomain
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {p : ℕ} [Fact p.Prime] {D : D7}
 
 def AdmGLt (X : Sys p) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7) (fd : Formalism.L2.PairingIndexBounds.F.FData X D) : Prop :=

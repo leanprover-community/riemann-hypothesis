@@ -56,8 +56,7 @@ namespace GlobalTheory.CMGen
 
 theorem exists_integer_not_mem (K : Type) [Field K] [NumberField K] [IsCMField K] :
     ∃ x : 𝓞 K, (x : K) ∉ maximalRealSubfield K := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply NumberField.IsCMField.complexConj_ne_one K
   ext y
   obtain ⟨a, b, _, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) y

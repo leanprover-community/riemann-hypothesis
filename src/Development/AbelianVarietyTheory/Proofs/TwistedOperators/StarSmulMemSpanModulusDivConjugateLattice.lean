@@ -37,6 +37,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeSelfDualTraceForm
 
 @[expose] public section
 
@@ -52,14 +53,7 @@ namespace GlobalTheory.AdjSrcZero
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 theorem AAbar_ne_zero (D : D7) : D.host.AAbar ≠ 0 := by
-  obtain ⟨⟨hAA, hbar⟩, -⟩ := GlobalTheory.ChiGrid.StairConj.conj_AA_and_stA D
-  intro h0
-  apply hAA
-  rw [FractionalIdeal.eq_zero_iff] at h0 ⊢
-  intro x hx
-  have h1 : star x ∈ D.host.AAbar := (hbar _).2 (by rwa [star_star])
-  have h2 := h0 _ h1
-  simpa using congrArg star h2
+  apply _root_.GlobalTheory.Member.LatSelfDual.AAbar_ne_zero <;> assumption
 
 theorem AAbar_mul_st (G : GridData L sc) :
     D.host.AAbar * (G.pl.stA sc ^ (0 + 1) * (G.pl.stAbar sc ^ (0 + 1))⁻¹) = D.host.AA * shiftId G := by

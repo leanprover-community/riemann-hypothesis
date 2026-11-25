@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictRing
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormStepsB
 
 @[expose] public section
@@ -126,14 +127,7 @@ theorem matE_isom (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (st
     Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, mapM_unitary X M hM]
 
 theorem af_nontriv (F : Type) [Field F] [NumberField F] : Nontrivial (Af F) := by
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 F)
-  have hne : M ≠ ⊥ :=
-    Ring.ne_bot_of_isMaximal_of_not_isField hM (NumberField.RingOfIntegers.not_isField F)
-  let v : IsDedekindDomain.HeightOneSpectrum (𝓞 F) := ⟨M, hM.isPrime, hne⟩
-  refine ⟨⟨1, 0, fun h => ?_⟩⟩
-  have h1 := congrArg (fun x : Af F => x v) h
-  first
-  | exact one_ne_zero h1
+  apply _root_.PIW.AdelClassFin.DictRing.nontrivial <;> assumption
 
 theorem inclE_inj :
     Function.Injective (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) : X.B.I.E → X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) := by

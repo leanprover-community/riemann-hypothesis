@@ -148,8 +148,7 @@ theorem mem_of_dual (D : Formalism.BasicNotions.D7) (cc : Ideal (𝓞 D.host.K))
 theorem exists_ne_zero (D : Formalism.BasicNotions.D7) (cc : Ideal (𝓞 D.host.K)) (r : D.host.E)
     (hn : (Ideal.absNorm cc : D.host.E) ≠ 0) (hs : GlobalTheory.NormExact.IsScale D cc r) :
     ∃ x ∈ bInv D cc r, x ≠ 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hle : pairSpan D (bInv D cc r) ≤ ⊥ := by
     unfold pairSpan
     rw [Submodule.span_le]

@@ -56,14 +56,12 @@ theorem holAlg_isDomain : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have := congrFun (congrArg Subtype.val h) ⟨y0, hy0⟩
     simp at this⟩⟩
   haveI : NoZeroDivisors (holAlg X) := ⟨fun {a b} hab => by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨ha, hb⟩ := hcon
     obtain ⟨F, hF, hFa⟩ := a.2
     obtain ⟨G, hG, hGb⟩ := b.2
     have ha' : ∃ y : X.dom, (a : X.dom → ℂ) y ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact ha (Subtype.ext (funext h))
     obtain ⟨y, hy⟩ := ha'
     have hfg : ∀ w ∈ X.dom, F w * G w = 0 := by

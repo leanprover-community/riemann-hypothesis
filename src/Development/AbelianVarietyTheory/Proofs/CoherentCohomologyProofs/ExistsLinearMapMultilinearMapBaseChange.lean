@@ -190,10 +190,6 @@ theorem interNum_eq_zero {n : ℕ} (h : DiffVanish n (chiPic k F)) (hn : n ≤ F
 variable (h : DiffVanish (d + 1) (chiPic k F))
 include h
 
-theorem chiPic_twist (hM : M.IsLB) : DiffVanish (d + 1) (chiPic k (twist F M)) := by
-  rw [funext (GlobalTheory.chiPic_twist k F hM)]
-  exact h.translate _
-
 theorem form_cls {P : Fin d → LB X} (hP : ∀ i, (P i).IsLB) :
     h.form (fun i ↦ cls (P i) (hP i)) = interNum k F P := by
   rw [interNum_eq_multiDiff k F hP, h.form_apply _ 0]

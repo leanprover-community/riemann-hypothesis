@@ -10,6 +10,7 @@ import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.Cayley
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatticeExists
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
+import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.NormInter
 
 @[expose] public section
 
@@ -207,17 +208,7 @@ theorem theta_laF {b₀ : ℤ} (hb : Odd b₀) {x : DVar X.Tau a b → ℂ} (hx 
   exact zsmul_mem hx' k
 
 theorem odd_of_cmOK {a₀ : ℕ} {b₀ c₀ : ℤ} {d : ℕ} (h : CmOK a₀ b₀ c₀ d) : Odd b₀ := by
-  obtain ⟨h1, -, h3, -⟩ := h
-  rcases Int.even_or_odd b₀ with ⟨k, hk⟩ | hb
-  · exfalso
-    have e1 : (4 : ℤ) * a₀ * c₀ = 4 * ((a₀ : ℤ) * c₀) := by ring
-    have e2 : b₀ ^ 2 = 4 * (k * k) := by rw [hk]; ring
-    rw [e1, e2] at h1
-    have h4 : (d : ℤ) % 8 = 7 := by exact_mod_cast h3
-    generalize (a₀ : ℤ) * c₀ = f at h1
-    generalize k * k = e at h1
-    omega
-  · exact hb
+  apply _root_.Formalism.L2.AlgTh.ImageLatticeRepresentatives.odd_b <;> assumption
 
 theorem al_eq_La (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : TaylorLogMetric.admitted D a b L L') :
     ∀ x ∈ TaylorLogMetric.La D B.tor L L', TaylorLogMetric.al D B.tor x =

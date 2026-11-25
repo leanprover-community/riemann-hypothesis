@@ -78,10 +78,6 @@ def IsEquivBilin {G₁ G₂ : Type} [Group G₁] [Group G₂] (π₁ : G₁ →*
 def IsContr (Tm : H₁ →ₗ[ℂ] H₂ →ₗ[ℂ] FF) (It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁) : Prop :=
   ∀ φ y x, ⟪x, It φ y⟫_ℂ = ⟪Tm x y, φ⟫_ℂ
 
-structure ContrProps {G₁ G₂ : Type} [Group G₁] [Group G₂] (_π₁ : G₁ →* (H₁ ≃ₗᵢ[ℂ] H₁))
-    (_π₂ : G₂ →* (H₂ ≃ₗᵢ[ℂ] H₂)) (_ρ : G₁ × G₂ →* (FF ≃ₗᵢ[ℂ] FF)) (_Tm : H₁ →ₗ[ℂ] H₂ →ₗ[ℂ] FF)
-    (_It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁) : Prop where
-
 end Hilbert
 
 def ContrHilbert : Prop :=
@@ -92,8 +88,7 @@ def ContrHilbert : Prop :=
     (G₁ G₂ : Type) [Group G₁] [Group G₂] (π₁ : G₁ →* (H₁ ≃ₗᵢ[ℂ] H₁)) (π₂ : G₂ →* (H₂ ≃ₗᵢ[ℂ] H₂))
     (ρ : G₁ × G₂ →* (FF ≃ₗᵢ[ℂ] FF)) (Tm : H₁ →ₗ[ℂ] H₂ →ₗ[ℂ] FF),
     IsIsoBilin Tm → IsEquivBilin π₁ π₂ ρ Tm →
-      (∃! It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁, IsContr Tm It) ∧
-      ∀ It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁, IsContr Tm It → ContrProps π₁ π₂ ρ Tm It
+      ∃! It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁, IsContr Tm It
 
 def IsTensorIt {ι : Type} [Fintype ι] {σ : ι → Type} {Var : Type} (e : (Σ τ, σ τ) ≃ Var) {A B : ι → Type}
     [∀ τ, AddCommGroup (A τ)] [∀ τ, Module ℂ (A τ)] [∀ τ, AddCommGroup (B τ)] [∀ τ, Module ℂ (B τ)]
@@ -117,16 +112,6 @@ section Models
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 
 end Models
-
-theorem contrProps_of {H₁ H₂ FF : Type}
-    [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [CompleteSpace H₁]
-    [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] [CompleteSpace H₂]
-    [NormedAddCommGroup FF] [InnerProductSpace ℂ FF]
-    {G₁ G₂ : Type} [Group G₁] [Group G₂] {π₁ : G₁ →* (H₁ ≃ₗᵢ[ℂ] H₁)} {π₂ : G₂ →* (H₂ ≃ₗᵢ[ℂ] H₂)}
-    {ρ : G₁ × G₂ →* (FF ≃ₗᵢ[ℂ] FF)} {Tm : H₁ →ₗ[ℂ] H₂ →ₗ[ℂ] FF} (_hI : IsIsoBilin Tm)
-    (_hE : IsEquivBilin π₁ π₂ ρ Tm) {It : FF →ₗ[ℂ] H₂ →ₛₗ[starRingEnd ℂ] H₁} (_hC : IsContr Tm It) :
-    ContrProps π₁ π₂ ρ Tm It :=
-  ⟨⟩
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ContractionTensorModels
 

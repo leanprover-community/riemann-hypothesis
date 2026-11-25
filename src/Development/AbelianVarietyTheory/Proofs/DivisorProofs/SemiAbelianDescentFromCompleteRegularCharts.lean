@@ -143,7 +143,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
 noncomputable section
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SymLB
 
@@ -414,11 +413,6 @@ theorem flat_preimage_of_stalk {R Rc : Type} [CommRing R] [CommRing Rc] [IsLocal
   rw [← Spec.map_preimage ξ] at h3
   exact HasRingHomProperty.Spec_iff.mp h3
 
-theorem injective_of_flat {R Rc : Type} [CommRing R] [IsDomain R] [CommRing Rc] [Nontrivial Rc] (ρ : R →+* Rc)
-    (h : ρ.Flat) : Function.Injective ρ := by
-  algebraize [ρ]
-  exact FaithfulSMul.algebraMap_injective R Rc
-
 theorem isPullback_away {R Rc : Type} [CommRing R] [CommRing Rc] (ρ : R →+* Rc) (f : R) :
     IsPullback (spMap (Localization.awayMap ρ f)) (spMap (algebraMap Rc (Localization.Away (ρ f)))) (awayMap f)
       (spMap ρ) := by
@@ -478,7 +472,7 @@ theorem chart_part : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing 
   have hξ : C.ξ = spMap ρ := by
     rw [hρdef]; exact (Spec.map_preimage C.ξ).symm
   have hflat : ρ.Flat := flat_preimage_of_stalk C.ξ C.etc.1
-  have hρf : ρ f ≠ 0 := fun h => hf0 (injective_of_flat ρ hflat (h.trans (map_zero ρ).symm))
+  have hρf : ρ f ≠ 0 := fun h => hf0 (GlobalTheory.SmoothStalkNormal.injective_of_flat_of_isDomain ρ hflat (h.trans (map_zero ρ).symm))
   obtain ⟨_, hnorm⟩ := GlobalTheory.isDomain_and_isIntegrallyClosed_of_isRegularLocalRing C.R
 
   let Rf := Localization.Away (ρ f)

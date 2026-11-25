@@ -75,8 +75,6 @@ open NumberField MeasureTheory Filter Topology CuspidalSpectrum Polynomial Unita
 
 set_option linter.unusedSectionVars false
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
 theorem exists_aeval_uActionCusp_laplacianU_eq_zero (φ : cuspForms K n) {d : ℕ}

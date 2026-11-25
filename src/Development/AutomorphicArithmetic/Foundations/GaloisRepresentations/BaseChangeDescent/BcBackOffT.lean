@@ -221,8 +221,6 @@ noncomputable section
 open NumberField IsDedekindDomain Filter GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DefiniteBC GlobalTheory.BcSpeh GlobalTheory.LFun GlobalTheory.PRep Formalism.UG
 open GlobalTheory.GalOfCusp PositivityTheory.AutomorphicGaloisHodgeTate.SaturatedBaseChange UpperTheory.V.Z.Tf
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.Gal.Desc
 
 def WeakAll : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], GlobalTheory.BCT.Unr E → ∀ n : ℕ, 1 ≤ n → ∀ π : CuspSub E n,
@@ -371,7 +369,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 theorem restr {A : Type} [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ A] (S T : StarSubalgebra ℂ A) (hle : S ≤ T)
     (χ : T →⋆ₐ[ℂ] ℂ) : ∃ χ' : S →⋆ₐ[ℂ] ℂ, ∀ (y : A) (hy : y ∈ S) (hy' : y ∈ T), χ' ⟨y, hy⟩ = χ ⟨y, hy'⟩ :=
@@ -436,7 +434,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 section
 
@@ -533,8 +531,6 @@ section -- clump:auto
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial Topology WithZero
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.LemB
 
@@ -748,7 +744,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.PCandTb
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -1212,12 +1208,9 @@ theorem pair_eigenvalue_add (w : Pl E) (ξa : Fin a → ℂˣ) (ξb : Fin b → 
 
 theorem dl_ne {N : ℕ} (w : Pl E) (x : Fin N → ℤ) : dl w x ≠ 0 := zpow_ne_zero _ (qh_ne w)
 
-theorem pw_ne {N : ℕ} (ξ : Fin N → ℂˣ) (x : Fin N → ℤ) : pw ξ x ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 fun i _ => Units.ne_zero _
-
 theorem pair_eigenvalue_ne_zero (w : Pl E) (ξa : Fin a → ℂˣ) (ξb : Fin b → ℂˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     ev2 w ξa ξb x y ≠ 0 :=
-  mul_ne_zero (mul_ne_zero (dl_ne w x) (pw_ne ξa x)) (mul_ne_zero (dl_ne w y) (pw_ne ξb y))
+  mul_ne_zero (mul_ne_zero (dl_ne w x) (GlobalTheory.CompanionTheory.ExtCharU.pw_ne_zero ξa x)) (mul_ne_zero (dl_ne w y) (GlobalTheory.CompanionTheory.ExtCharU.pw_ne_zero ξb y))
 
 theorem dl_zero {N : ℕ} (w : Pl E) : dl w (0 : Fin N → ℤ) = 1 := by
   unfold dl
@@ -1327,8 +1320,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 theorem fd_pair (Pa : Pre E a) (Pb : Pre E b) (w : Pl E) :
     FiniteDimensional ℂ (GlobalTheory.PRep.fixed (pairAt Pa Pb w) (I2 a b w)) := by
-  have hIa := GlobalTheory.T.iwahori_double_coset_finite E w a
-  have hIb := GlobalTheory.T.iwahori_double_coset_finite E w b
+  have hIa := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w a
+  have hIb := _root_.GlobalTheory.CompanionTheory.IwDcosFin.dcos_finite_support_iwGL E w b
   exact _root_.GlobalTheory.CompanionTheory.ExtTensorFixed.finiteDimensional_fixed_extTensor _ _ _ _ (lp Pa w) (lp Pb w) (iwGL a w) (iwGL b w)
       ((_root_.GlobalTheory.CompanionTheory.ProdAdm.isAdmissible_multiProd_smIrr (w.adicCompletion E) _ Pa.h (fun i => Pa.σ i w)).2 _ (hIa 1).2.1 (hIa 1).2.2.1)
       ((_root_.GlobalTheory.CompanionTheory.ProdAdm.isAdmissible_multiProd_smIrr (w.adicCompletion E) _ Pb.h (fun i => Pb.σ i w)).2 _ (hIb 1).2.1 (hIb 1).2.2.1)
@@ -1584,8 +1577,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo.He2
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.CG
@@ -1646,8 +1637,6 @@ open scoped Classical
 
 
 
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
@@ -1754,8 +1743,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS
@@ -1833,8 +1820,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open scoped Classical
 
 
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
@@ -1921,8 +1906,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.BaseChangeIdentities
 

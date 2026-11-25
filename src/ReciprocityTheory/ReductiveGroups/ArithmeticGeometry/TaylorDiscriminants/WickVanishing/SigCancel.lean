@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofComm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.IntegralFamilyPointZero
 import Mathlib.RingTheory.PiTensorProduct
@@ -28,17 +29,8 @@ theorem dof_expS (F : Fin d → PS k 2 d) (u : Fin d → k) {f : PS k 1 d} (hf :
 
 theorem dof_Cmul (F : Fin d → PS k 2 d) (u : Fin d → k) (a : k) (g : PS k 1 d) :
     Dof F u (C a * g) = C a * Dof F u g := by
-  have hD : ∀ j, pderiv (R := k) ((0 : Fin 1), j) (C a * g) = C a * pderiv (R := k) ((0 : Fin 1), j) g := by
-    intro j
-    rw [Derivation.leibniz]
-    have h0 : pderiv (R := k) ((0 : Fin 1), j) (C a : PS k 1 d) = 0 := by
-      rw [show (C a : PS k 1 d) = algebraMap k (PS k 1 d) a from rfl]
-      exact Derivation.map_algebraMap _ _
-    rw [h0, smul_zero, add_zero, smul_eq_mul]
-  simp only [Dof, hD]
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  ring
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.G.TB.GE.dof_C_mul <;> assumption
 
 theorem ig_dAct (B : FB R d O) (a : O) (i j : Fin d) : (C (dAct k B a i j) : PS k 1 d) ∈ Ig R k (Fin 1 × Fin d) := by
   unfold Ig

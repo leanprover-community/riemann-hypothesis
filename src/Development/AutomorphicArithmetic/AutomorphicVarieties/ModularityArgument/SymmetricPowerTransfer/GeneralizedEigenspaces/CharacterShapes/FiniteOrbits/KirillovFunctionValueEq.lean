@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.SignatureIntegrality.SignatureTorusFixedPoints.OkKValLt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.UnitaryThreeTestFunctionHeckeRelations
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.DcBasic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.LocalLevelOutsideSigma
@@ -160,17 +161,7 @@ section Loc2
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 private theorem val_lt (t : kˣ) (ht : valuation k (t : k) < valuation k (unif k : k) ^ 2) : valuation k (t : k) < 1 := by
-  have hex : ∃ x : kˣ, valuation k (x : k) = uniformizer k := by
-    obtain ⟨x, hx⟩ := valuation_surjective (uniformizer k)
-    have h0 : x ≠ 0 := by
-      rintro rfl
-      rw [map_zero] at hx
-      exact uniformizer_ne_zero hx.symm
-    exact ⟨Units.mk0 x h0, hx⟩
-  have hu : valuation k (unif k : k) = uniformizer k := Classical.epsilon_spec hex
-  have h1 : valuation k (unif k : k) ≤ 1 := by
-    rw [hu]; exact uniformizer_lt_one.le
-  exact lt_of_lt_of_le ht (pow_le_one' h1 2)
+  apply _root_.okK_val_lt <;> assumption
 
 private theorem sdom {t : kˣ} (ht : valuation k (t : k) < 1) : SDom (![t, 1] : Fin 2 → kˣ) := by
   intro i j hij

@@ -109,7 +109,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -310,7 +309,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -337,7 +335,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -457,7 +454,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -594,7 +590,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -621,7 +616,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -753,7 +747,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -780,7 +773,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -875,7 +867,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -927,7 +918,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -1114,7 +1104,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -1208,7 +1197,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
@@ -1312,7 +1300,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open Formalism.MainNotions.TaylorLogMetric (VC tor0 Th La Iop YYl U al)
@@ -1617,7 +1604,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 

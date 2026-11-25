@@ -136,8 +136,7 @@ theorem classGroup_nthPower_of_codim_one_mod : ∀ (k A : Type) [Field k] [IsAlg
     haveI : IsJacobsonRing A := isJacobsonRing_of_finiteType (A := k) (B := A)
     have hj : (⊥ : Ideal A).jacobson = ⊥ :=
       IsJacobsonRing.out' _ (Ideal.isPrime_bot).isRadical
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hx
     have : x ∈ (⊥ : Ideal A).jacobson := by
       rw [Ideal.jacobson]
@@ -305,21 +304,6 @@ open Polynomial
 
 namespace GlobalTheory.CurveCompletionG
 
-alias residue_exists := _root_.GlobalTheory.CurveCompletion.residue_exists
-alias pow_le_span_sup := _root_.GlobalTheory.CurveCompletion.pow_le_span_sup
-alias pow_not_mem := _root_.GlobalTheory.CurveCompletion.pow_not_mem
-alias aeval_mem_of_dvd := _root_.GlobalTheory.CurveCompletion.aeval_mem_of_dvd
-alias dvd_of_aeval_mem := _root_.GlobalTheory.CurveCompletion.dvd_of_aeval_mem
-alias aeval_mem_iff := _root_.GlobalTheory.CurveCompletion.aeval_mem_iff
-alias coe_dvd_iff := _root_.GlobalTheory.CurveCompletion.coe_dvd_iff
-alias eq_of_forall_dvd := _root_.GlobalTheory.CurveCompletion.eq_of_forall_dvd
-noncomputable abbrev approx := @_root_.GlobalTheory.CurveCompletion.approx
-alias approx_spec := _root_.GlobalTheory.CurveCompletion.approx_spec
-noncomputable abbrev ser := @_root_.GlobalTheory.CurveCompletion.ser
-alias ser_sub_approx := _root_.GlobalTheory.CurveCompletion.ser_sub_approx
-alias mem_iff_dvd := _root_.GlobalTheory.CurveCompletion.mem_iff_dvd
-alias ser_eq := _root_.GlobalTheory.CurveCompletion.ser_eq
-noncomputable abbrev serHom := @_root_.GlobalTheory.CurveCompletion.serHom
 alias exists_completion_embedding := _root_.GlobalTheory.CurveCompletion.exists_completion_embedding
 
 end GlobalTheory.CurveCompletionG
@@ -1237,8 +1221,7 @@ theorem formal_deformation : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRin
     rw [hΔ, hσπ, hX, ← PowerSeries.coe_substAlgHom (hsub i), map_one]
   · intro j; exact (b j).2
   · exact b.linearIndependent.map' V.subtype (Submodule.ker_subtype V)
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     have hz : ∀ j, y₀ j = 0 := by
       intro j
       have := hcon j

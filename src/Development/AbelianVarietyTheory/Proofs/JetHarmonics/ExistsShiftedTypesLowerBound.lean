@@ -997,8 +997,7 @@ theorem splitCasimir_eigenspace_irreducible_standard : ∀ (V : Type) [NormedAdd
   have hirr : ∀ S' : Submodule ℂ (PiLp 2 (fun _ : Fin (n + 1) => V)), S' ≤ S → Stab Et S' →
       S' = ⊥ ∨ S' = S := by
     intro S' hle hst
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨hb, hne⟩ := hcon
     have hst2 : Stab Et (S'ᗮ ⊓ S) := by
       intro a b v hv

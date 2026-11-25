@@ -204,7 +204,7 @@ namespace GlobalTheory.AnPer.Charts
 theorem exists_perCl {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ}
     (K : Charts F) (hR : K.Rich) (hB : K.Based) (c : H1 K.Oc) : ∃ per : Λ →+ Hol F.V, c = K.perCl per := by
   obtain ⟨f, rfl⟩ := H1.mk_surjective K.Oc c
-  obtain ⟨G, hG⟩ := GlobalTheory.T.degZeroCocycle_exists_coboundary_of_rich_based K hR hB f.1 (fun T T' T'' φ ψ _ _ ↦ f.2 φ ψ)
+  obtain ⟨G, hG⟩ := _root_.GlobalTheory.AnPer.Charts.DegZero.exists_gauge K hR hB f.1 (fun T T' T'' φ ψ _ _ ↦ f.2 φ ψ)
   let f' : Z1 K.Oc := f - ⟨d0 K.Oc G, commAlgFunctorCoboundaryZero_mem_cocyclesOne K.Oc G⟩
   have hv : ∀ (T T' : K.Obj) (φ : T ⟶ T'), f'.1 T T' φ = f.1 T T' φ - (G T' - φ.φ (G T)) :=
     fun _ _ _ ↦ rfl

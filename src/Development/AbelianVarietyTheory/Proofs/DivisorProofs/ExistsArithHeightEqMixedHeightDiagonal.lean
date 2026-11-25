@@ -325,7 +325,7 @@ theorem exists_isArithHeight : ArchInteg → ∀ (k : Type) [CommRing k] (X : Sc
     have hz0 : HasDim (i z) 0 := (himm Z i z 0).2 (((_root_.GlobalTheory.MixHt.dimOne k Z (i ≫ p) hAZ 0 hd1).1 z).1 hz1)
     rw [hT.zero _ _ hz0, card_residueField_eq i z]
   · have hAZ : IsAmb (i ≫ p) := hA.sub i
-    refine ⟨GlobalTheory.T.archIntegrable_of_projArithAmbient HI k Z (i ≫ p) hAZ e hd _ _ r hr, ?_⟩
+    refine ⟨_root_.GlobalTheory.MixHt.archIntegrable_of_isAmb HI k Z (i ≫ p) hAZ e hd _ _ r hr, ?_⟩
     have hle' := hle Z i (e + 1) hd
     have hx := hgi Z i (e + 1) hd
     have hiso : ((N.pow m).pull i rfl).Isometric ((N.restr i).pow m) :=

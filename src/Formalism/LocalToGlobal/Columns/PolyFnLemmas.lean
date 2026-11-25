@@ -1,5 +1,6 @@
 module
 
+import Formalism.PieriBlockIdeals.PieriColumnMinors.ProdInitialMinorsMemDetSpan
 public import Formalism.LocalToGlobal.Columns.PolyFn
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalB
@@ -380,18 +381,7 @@ variable {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] {n : ℕ}
 theorem map_mem_weyl {S : Type} [CommRing S] {r m : ℕ} (hm : m ≤ r) (ν : Fin m → ℕ)
     (f : MvPolynomial (Fin r × Fin m) ℤ) (hf : f ∈ Formalism.GradedWeylDivisibility.weyl ℤ r m hm ν) :
     MvPolynomial.map (Int.castRingHom S) f ∈ Formalism.GradedWeylDivisibility.weyl S r m hm ν := by
-  unfold Formalism.GradedWeylDivisibility.weyl at hf ⊢
-  induction hf using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨w, rfl⟩ := hx
-    refine Submodule.subset_span ⟨w, ?_⟩
-    simp only
-    rw [← Formalism.GradedWeylDivisibility.lclosedeq_applyWord_map, Formalism.GradedWeylDivisibility.lclosedeq_hw_map]
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-  | smul c x _ hx =>
-    rw [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, ← MvPolynomial.smul_eq_C_mul]
-    exact Submodule.smul_mem _ _ hx
+  apply _root_.Formalism.CohomologicalDescent.LA.la_map_weyl <;> assumption
 
 theorem dualWeyl_eq_weyl (K : Type) [Field K] [CharZero K] {r m : ℕ} (hm : m ≤ r) (ν : Fin m → ℕ) (hν : Antitone ν) :
     Formalism.GradedWeylDivisibility.dualWeyl K r m ν = Formalism.GradedWeylDivisibility.weyl K r m hm ν := by

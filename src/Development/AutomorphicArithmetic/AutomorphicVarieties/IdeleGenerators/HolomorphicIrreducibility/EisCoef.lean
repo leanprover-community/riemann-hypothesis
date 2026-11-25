@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ConstSmall
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
 public import Mathlib.Analysis.Calculus.SmoothSeries
 public import Mathlib.Analysis.Normed.Group.Tannery
@@ -68,18 +69,7 @@ namespace UpperTheory.V.Sd
 
 private lemma lk_hasDerivAt (m : ℕ) (x : ℂ) (hx : x ≠ 1) :
     ∃ d : ℂ, HasDerivAt (fun w : ℂ => Lk (m + 1) w) d x ∧ x * d = Lk (m + 2) x := by
-  have hx' : (1 : ℂ) - x ≠ 0 := sub_ne_zero.mpr (Ne.symm hx)
-  have hN := Polynomial.hasDerivAt_aeval (numL (m + 1)) x
-  have hD := ((hasDerivAt_id x).const_sub (1 : ℂ)).pow (m + 1)
-  have h := hN.div hD (pow_ne_zero (m + 1) hx')
-  refine ⟨_, h, ?_⟩
-  have e2 : numL (m + 2) = X * (derivative (numL (m + 1)) * (1 - X) + C ((m : ℤ) + 1) * numL (m + 1)) := by
-    rw [numL.eq_3]
-  simp only [Lk, e2, map_mul, map_add (f := _), map_sub, map_one, Polynomial.aeval_X, Polynomial.aeval_C,
-    id, Nat.add_sub_cancel, Pi.pow_apply]
-  field_simp
-  push_cast
-  ring
+  apply _root_.UpperTheory.V.Sd.lk_deriv <;> assumption
 
 private lemma lk_hasSum_succ (m : ℕ) : ∀ x : ℂ, ‖x‖ < 1 →
     HasSum (fun e : ℕ => ((e : ℂ) + 1) ^ m * x ^ (e + 1)) (Lk (m + 1) x) := by

@@ -259,25 +259,6 @@ theorem det_ne_of_gram {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} {p0 :
 
 end
 
-theorem norm_herm_le {y : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hy : IntegralBasisReduction.IsNormal X y) {C : ℝ}
-    {p q : Fin r → E} (hp : QuadraticLatticeForms.Qy X y p ≤ C) (hq : QuadraticLatticeForms.Qy X y q ≤ C) (τ : X.Ψ) :
-    ‖τ.1 (herm X.Gm p q)‖ ≤ r * (C / X.c τ) := by
-  rw [← hermC_emb, IntegralBasisReduction.hermC_normal X (hy τ).1 _ (hy τ).2]
-  refine (norm_sum_le _ _).trans ?_
-  have hc := QuadraticLatticeForms.c_pos X τ
-  calc _ ≤ ∑ _a : Fin r, C / X.c τ := by
-        refine Finset.sum_le_sum fun a _ => ?_
-        have hs : ‖(((sgn X.p0 (a : ℕ) : ℝ) : ℂ))‖ = 1 := by
-          unfold sgn; split_ifs <;> simp
-        rw [norm_mul, norm_mul, hs, one_mul, Complex.norm_conj]
-        have h1 := (comp_le_Qy X y τ p a).trans hp
-        have h2 := (comp_le_Qy X y τ q a).trans hq
-        rw [le_div_iff₀ hc]
-        set u := ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) a‖
-        set w := ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 q) a‖
-        nlinarith [mul_nonneg hc.le (sq_nonneg (u - w))]
-    _ = _ := by simp
-
 
 open NumberField Module in
 open Matrix in
@@ -302,29 +283,6 @@ theorem _root_.GlobalTheory.FlagMahler.Qy_smul_le (y : X.Ψ → Matrix (Fin r) (
   have h3 := (_root_.ReciprocityTheory.ChartRestriction.G.FD.QuadraticLatticeForms.c_pos X τ).le
   nlinarith [mul_le_mul_of_nonneg_right h1 (mul_nonneg h3 h2)]
 
-theorem finite_bounded (B : X.Ψ → ℝ) :
-    {α : E | IsIntegral ℤ ((X.den : E) * α) ∧ ∀ τ : X.Ψ, ‖τ.1 α‖ ≤ B τ}.Finite := by
-  have hd : (X.den : E) ≠ 0 := by exact_mod_cast X.den_ne
-  have hfin := NumberField.Embeddings.finite_of_norm_le E ℂ
-    (∑ τ : X.Ψ, ‖τ.1 (X.den : E)‖ * |B τ|)
-  refine (hfin.preimage (f := fun α => (X.den : E) * α)
-    (fun a _ b _ h => mul_left_cancel₀ hd h)).subset ?_
-  rintro α ⟨h1, h2⟩
-  have key : ∀ τ : X.Ψ, ‖τ.1 ((X.den : E) * α)‖ ≤ ∑ τ : X.Ψ, ‖τ.1 (X.den : E)‖ * |B τ| := by
-    intro τ
-    rw [map_mul, norm_mul]
-    refine (mul_le_mul_of_nonneg_left ((h2 τ).trans (le_abs_self _)) (norm_nonneg _)).trans ?_
-    exact Finset.single_le_sum (f := fun τ : X.Ψ => ‖τ.1 (X.den : E)‖ * |B τ|)
-      (fun _ _ => by positivity) (Finset.mem_univ τ)
-  refine ⟨h1, fun φ => ?_⟩
-  by_cases hφ : φ ∈ X.Ψ
-  · exact key ⟨φ, hφ⟩
-  · have h3 : ComplexEmbedding.conjugate φ ∈ X.Ψ :=
-      (X.cmType _).mpr (by rw [TraceIntegralBasis.conj_conj]; exact hφ)
-    have h4 := key ⟨_, h3⟩
-    simp only [ComplexEmbedding.conjugate_coe_eq, Complex.norm_conj] at h4
-    exact h4
-
 open NumberField Module in
 open Matrix in
 open scoped ComplexConjugate in
@@ -337,24 +295,6 @@ theorem _root_.GlobalTheory.FlagMahler.finite_int_sq (D : ℝ) : {n : ℤ | (n :
   have h1 : (n : ℝ) ≤ ⌈|D|⌉ + 1 := by nlinarith [sq_nonneg ((n : ℝ) - 1)]
   have h2 : -((⌈|D|⌉ : ℝ) + 1) ≤ n := by nlinarith [sq_nonneg ((n : ℝ) + 1)]
   exact ⟨by exact_mod_cast h2, by exact_mod_cast h1⟩
-
-theorem finite_types {ι : Type} [Fintype ι] [DecidableEq ι] (C D : ℝ) (hD : 0 ≤ D) :
-    (HermitianLatticeMaps.ty X '' {f : Basis ι ℤ X.Λ | ∃ y, IntegralBasisReduction.IsNormal X y ∧
-      (∀ i, QuadraticLatticeForms.Qy X y (f i) ≤ C) ∧
-      ∀ (v : X.Λ) (i : ι), ((f.repr v i : ℤ) : ℝ) ^ 2 ≤ D * QuadraticLatticeForms.Qy X y v}).Finite := by
-  have h1 := finite_bounded X fun τ => r * (C / X.c τ)
-  have h2 := fun k : Free.ChooseBasisIndex ℤ (𝓞 E) =>
-    finite_int_sq (D * ((∑ σ : X.Ψ, ‖σ.1 (RingOfIntegers.basis E k : E)‖ ^ 2) * C))
-  have h3 := Set.Finite.pi' (fun _ : ι => Set.Finite.pi' fun _ : ι => h1)
-  have h4 := Set.Finite.pi' (fun k => Set.Finite.pi' fun _ : ι => Set.Finite.pi' fun _ : ι => h2 k)
-  refine (h3.prod h4).subset ?_
-  rintro _ ⟨f, ⟨y, hy, hf, hr⟩, rfl⟩
-  refine ⟨fun i j => ⟨X.Λ_int _ (f i).2 _ (f j).2, norm_herm_le X hy (hf i) (hf j)⟩,
-    fun k i j => ?_⟩
-  refine (hr _ j).trans (mul_le_mul_of_nonneg_left ?_ hD)
-  rw [HermitianLatticeMaps.smul_coe]
-  exact (Qy_smul_le X y _ _).trans (mul_le_mul_of_nonneg_left (hf i)
-    (Finset.sum_nonneg fun _ _ => by positivity))
 
 noncomputable def bound {ι : Type} [Fintype ι] (C : ℝ) (g : Basis ι ℤ X.Λ) (s : GL (Fin r) E) : ℝ :=
   ∑ τ : X.Ψ, ∑ l : Fin r, ∑ k : Fin r, ‖(X.Gm.map τ.1)⁻¹ k l‖ *

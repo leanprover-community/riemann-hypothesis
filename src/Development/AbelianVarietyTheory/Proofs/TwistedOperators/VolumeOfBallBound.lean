@@ -103,8 +103,7 @@ theorem main : ∀ {G E : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [
     have hgT : g ∉ T := fun hgT => hne g hgT (hW g g hg' (by simp; positivity))
     have far : ∀ h ∈ T, 2 * r < ‖φ g - φ h‖ := by
       intro h hh
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       exact hne h hh (hW g h (hT.1 h hh) hle)
     have hP : P (insert g T) := by
       refine ⟨?_, ?_⟩

@@ -515,7 +515,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 
 noncomputable section
 open GlobalTheory.FinPl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocMod.MulRow
 
@@ -786,8 +785,6 @@ def rowMx {ρ m : ℕ} (l : Fin ρ) (v : Fin m → k) : Mx D ρ m :=
 def lastMat {T T₀ : HSp D} {σ : ℕ} (d : HypDec T T₀ σ) (z : Fin T₀.rank → D.host.E) :
     Matrix (Fin T.rank) (Fin (σ + 1)) D.host.E :=
   Matrix.of fun row => Fin.snoc (d.e row) ((d.i₀ *ᵥ z) row)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def pairVal {T : HSp D} {ρ : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y] (FT : Frame k T.rank Y)
     (X : Matrix (Fin T.rank) (Fin ρ) D.host.E) (r : Y) (i : Fin ρ) : k :=

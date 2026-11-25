@@ -120,7 +120,6 @@ section
 noncomputable section
 namespace GlobalTheory.Mem.Top.Bl
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Pack
 open Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links
 set_option genInjectivity false in
@@ -163,7 +162,6 @@ structure BundleWitness (q : WPt p.s K) {c : ℝ} (b : _root_.GlobalTheory.Fc.Bu
   eF : HEq y.y.nexp.eF q.core_data_of_point.row.nexp.eF
   fi : HEq y.y.nexp.fi q.core_data_of_point.row.nexp.fi
   uS : y.y.uS = 1
-  parts : (_root_.GlobalTheory.Mem.R3.realisationRecursionOfInput y.r).PartsRow
   cW : HEq b.C.c.W q.B.wts ∧ HEq b.C.c.Xg q.x.what₂.r.z.Xg
   d3b : HEq y.HD.d3b q.x.pin.d3b
   side : _root_.Formalism.L2.SelectedSideOfRealRecord b.R (R3.divisionPairOfAdelicFormsFaceColumnsData x) (_root_.GlobalTheory.Mem.R3.realisationOfInput y.y) (_root_.GlobalTheory.Mem.R3.realisationRecursionOfInput y.r) y.HD q.core_data_of_point.a.Pq

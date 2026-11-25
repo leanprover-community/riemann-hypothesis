@@ -54,8 +54,7 @@ theorem interNum_top_pos_of_isAmpleLB : ∀ (k : Type) [Field k] (X : Scheme.{0}
     push_cast at h1
     rw [h1, h2]
     rfl
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have hcD : p.coeff D ≤ 0 := by
     rw [hcoeff]
     have : ((interNum k (structureModule X) fun _ : Fin D => A : ℤ) : ℝ) ≤ 0 := by exact_mod_cast hneg

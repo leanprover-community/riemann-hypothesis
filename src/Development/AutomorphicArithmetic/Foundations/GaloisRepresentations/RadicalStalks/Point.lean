@@ -137,7 +137,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.FiniteGroupSchemeLength
 
@@ -200,7 +199,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -214,7 +212,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped NumberField CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -961,8 +958,7 @@ theorem UpperTheory.Gal.Ord.cnt :
       rw [mul_zero] at hIN
       exact pow_ne_zero _ hPne hIN
     have hjle : j' ≤ D.n := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h1 : (p ^ f) ^ D.n < (p ^ f) ^ j' := Nat.pow_lt_pow_right hP2 hcon
       have h2 : (p ^ f) ^ j' ≤ (p ^ f) ^ j' * L := Nat.le_mul_of_pos_right _ (Nat.pos_of_ne_zero hL0)
       rw [hIN, hMpow] at h1
@@ -1623,7 +1619,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap IsGrpPullback)
 open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme LB mulN)
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 open GlobalTheory.DeRham (spOver)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1700,8 +1695,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.DeRham GlobalTheory.AbDual GlobalTheory.Cris GlobalTheory.CurveRootGeometry GlobalTheory.ConjSeq
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.FrobAdjoint
 
 section Dual
@@ -1717,14 +1710,6 @@ section Down
 
 variable {R R' : Type} [CommRing R] [CommRing R'] {A : Over (Sp R)} [GrpObj A] {A' : Over (Sp R')} [GrpObj A']
   {σ : R →+* R'} {φ : A'.left ⟶ A.left}
-
-def down (m : GrpMor (dp0 R) (𝟙 _) A (dp0 R') (𝟙 _) A' σ (spMap σ) φ) {Y : Over (Sp R')} (x : Y ⟶ A') :
-    Over.mk (Y.hom ≫ spMap σ) ⟶ A :=
-  Over.homMk (x.left ≫ φ) (by simp [m.w])
-
-theorem down_mul (m : GrpMor (dp0 R) (𝟙 _) A (dp0 R') (𝟙 _) A' σ (spMap σ) φ) {Y : Over (Sp R')} (x y : Y ⟶ A') :
-    down m (x * y) = down m x * down m y :=
-  Over.OverMorphism.ext (m.mul Y x y (down m x) (down m y) rfl rfl).symm
 
 end Down
 
@@ -1801,7 +1786,7 @@ theorem UpperTheory.Gal.Ord.rankV :
   let A₁ := (Over.pullback (spMap (frobR p k hk))).obj A
   have hπ : IsGrpPullback A₁ A _ _ := isGrpPullback_pullback A (spMap (frobR p k hk))
   have hA₁ : IsAbelianScheme A₁ := isAbelianScheme_pullback_obj _ A hA
-  obtain ⟨F, hFm, hF⟩ := GlobalTheory.T.exists_relativeFrobenius_grpScheme_charP p k hk A A₁ _ hπ
+  obtain ⟨F, hFm, hF⟩ := _root_.GlobalTheory.RelFrobGrp.main p k hk A A₁ _ hπ
   obtain ⟨t₁, ht⟩ := exists_tower hk t hπ
   have mπ := grpMor_of_isGrpPullback hπ
   have hid : (frobR p k hk).comp σ = RingHom.id k := RingHom.ext fun x => (frobR_apply p k hk _).trans (hσ x)

@@ -150,8 +150,7 @@ theorem coheight_add_eq : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegr
     rcases Nat.eq_zero_or_eq_succ_pred d with h | h
     · obtain ⟨M, hM⟩ := Ideal.exists_maximal Γ(Y, U)
       exact ⟨M, hM, by rw [h]; exact_mod_cast bot_le⟩
-    · by_contra hne
-      push_neg at hne
+    · by_contra! hne
       have : ringKrullDim Γ(Y, U) ≤ ((d.pred : ℕ) : WithBot ℕ∞) := by
         refine (ringKrullDim_le_iff_isMaximal_height_le _).2 fun m hm => ?_
         have h1 := hne m hm

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.PerKer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.PartitionSolutions.SplitFacts
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,15 +60,7 @@ private theorem hd_sub' {I M : Type} [AddCommGroup M] (c c' : List I → M) (x :
 
 private theorem hd_hd' {I M : Type} [AddCommGroup M] (x : List I) :
     ∀ c : List I → M, hd (hd c) x = 0 := by
-  induction x with
-  | nil => intro c; simp [hd]
-  | cons i x ih =>
-    intro c
-    rw [hd_cons']
-    have h : (fun y => hd c (i :: y)) = fun y => c y - hd (fun z => c (i :: z)) y :=
-      funext fun y => hd_cons' c i y
-    rw [h, hd_sub', ih]
-    simp
+  apply _root_.UpperTheory.V.Lit.Geo.hd_hd <;> assumption
 
 private theorem hd_map' {I J M : Type} [AddCommGroup M] (f : J → I) (c : List I → M) (x : List J) :
     hd (fun y => c (y.map f)) x = hd c (x.map f) := by

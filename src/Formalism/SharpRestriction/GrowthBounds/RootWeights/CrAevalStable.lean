@@ -1,5 +1,6 @@
 module
 
+import Lemmata.GeneralBFactUpperVariant.Imports
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 import Mathlib.Tactic.TypeStar
 
@@ -39,11 +40,7 @@ theorem cr_aeval_mod (T : Module.End K V) (Z : Submodule K V) (hZ : ∀ x ∈ Z,
 
 theorem cr_aeval_eig (T : Module.End K V) (a : K) (x : V) (hx : T x = a • x) (q : K[X]) :
     aeval T q x = q.eval a • x := by
-  have h := cr_aeval_mod T ⊥ (fun y hy => by
-      rw [Submodule.mem_bot] at hy ⊢; rw [hy, map_zero]) a x
-    (by rw [hx, sub_self]; exact Submodule.zero_mem _) q
-  rw [Submodule.mem_bot, sub_eq_zero] at h
-  exact h
+  apply _root_.Bl.general_b_fact_upper_variant.goal1 <;> assumption
 
 theorem cr_aeval_stable (T : Module.End K V) (Z : Submodule K V) (hZ : ∀ x ∈ Z, T x ∈ Z) (x : V) (hx : x ∈ Z)
     (q : K[X]) : aeval T q x ∈ Z := by

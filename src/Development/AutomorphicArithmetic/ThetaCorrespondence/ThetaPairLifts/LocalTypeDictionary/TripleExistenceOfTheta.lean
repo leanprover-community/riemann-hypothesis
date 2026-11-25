@@ -77,10 +77,3 @@ theorem triEx_holds_alt : GlobalTheory.Published.HoweDualityReal → _root_.Glob
 end GlobalTheory.SqTop
 end
 end
-
-section
-open GlobalTheory.SqTop
-
-theorem _root_.GlobalTheory.T.triEx_of_howe_duality_real : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching → LNe → TriEx := by
-  first | exact @_root_.GlobalTheory.SqTop.triEx_holds_alt
-end

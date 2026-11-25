@@ -181,20 +181,8 @@ variable (A : FamIn K G Pl0 T m) (X : CxData A.fam.amb)
 variable {A X}
 
 theorem toF_mem_Z {B : BlockDat K G Pl0} (ℓ : Lvl K G) (Z : Submodule K B.S.Forms) (y : Fin (B.dZ ℓ Z) → K) :
-    B.toF ℓ Z y ∈ Z := by
-  have h1 : (B.zE ℓ Z).mulVec y ∈ B.Z0 ℓ Z := by
-    rw [BlockDat.zE, subE_mulVec]
-    exact Submodule.coe_mem _
-  simp only [BlockDat.Z0, BlockDat.inV0, BlockDat.coord, Submodule.mem_comap, Submodule.mem_map,
-    Matrix.mulVecLin_apply] at h1
-  obtain ⟨w, hw, hwe⟩ := h1
-  have e : B.toF ℓ Z y = w := by
-    simp only [BlockDat.toF, LinearMap.coe_comp, Function.comp_apply, LinearEquiv.coe_coe,
-      Matrix.mulVecLin_apply]
-    rw [← hwe]
-    simp
-  rw [e]
-  exact hw
+    B.toF ℓ Z y ∈ Z :=
+  by apply _root_.Formalism.IndefR.Cx.BlockGood.toF_mem
 
 variable (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* Kˣ)
   (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))

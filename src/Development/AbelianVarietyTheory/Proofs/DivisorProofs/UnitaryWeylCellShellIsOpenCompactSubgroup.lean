@@ -61,8 +61,7 @@ namespace GlobalTheory.WeylCell.WeylUnipotentShell.ShellGroup
 section Order
 
 theorem le_max_one_of_mul_self_le {x e : WithZero (Multiplicative ℤ)} (h : x * x ≤ e) : x ≤ max 1 e := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : 1 ≤ x := le_of_lt (lt_of_le_of_lt (le_max_left _ _) hc)
   have h2 : x ≤ x * x := le_mul_of_one_le_right' h1
   exact absurd (lt_of_lt_of_le (lt_of_le_of_lt (le_max_right _ _) hc) (h2.trans h)) (lt_irrefl _)

@@ -2,6 +2,7 @@ module
 
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals
 
 @[expose] public section
 
@@ -421,35 +422,10 @@ theorem du_tl_gLat {ι : Type} (emb : ι → E →+* K) (τ : ι) (γ : GL (Fin 
 end ES
 
 theorem tauLatDual_of (hBA : BasisAtEx) : TauLatDual := by
-  intro E K _ _ _ _ _ ι n emb cE τ hstar J L L' hJ hL hL'
-  have hu : IsUnit J := (Matrix.isUnit_iff_isUnit_det J).2 hJ
-  have hJg : (hu.unit : Matrix (Fin n) (Fin n) E) = J := IsUnit.unit_spec hu
-  rw [← hJg] at hL'
-  have e1 := du_Lprime cE hu.unit L L' hL'
-  have e2 : (starRingEnd K).comp (emb τ) = (emb τ).comp cE := RingHom.ext fun x => hstar x
-  rw [e1, du_tauLat_eq, du_tauLat_eq, du_tl_gLat]
-  ext x
-  rw [du_mem_hdualFr, _root_.Formalism.L2.DIV.lc_mem_gLat, du_tl_comp, e2, ← du_tl_comp, du_dualFr_tl hBA _ _ (du_tl_lattice cE L hL),
-    embGL_inv, inv_inv, embGL_coe, hJg]
-  rfl
+  apply _root_.GlobalTheory.TauLat.tauLatDual <;> assumption
 
 theorem roundLat_of (hBA : BasisAtEx) : RoundLat := by
-  intro E K _ _ _ _ ι n emb cE τ hcc Jg L L' hL hJ hL'
-  have e1 := du_Lprime cE Jg L L' hL'
-  have e2 : (((emb τ).comp cE).comp cE) = emb τ := RingHom.ext fun x => by simp [hcc]
-  rw [e1, du_tauLat_eq, du_tauLat_eq, du_tl_gLat (fun τ => (emb τ).comp cE) τ,
-    ← du_dualFr_tl hBA _ _ (du_tl_lattice cE L hL), du_tl_comp, e2, du_gLat_mul]
-  have e3 : invTrK (embGL emb Jg⁻¹) τ * embGL (fun τ => (emb τ).comp cE) Jg⁻¹ τ = 1 := by
-    apply Units.ext
-    have hJ' : Formalism.UG.cT cE (Jg : Matrix (Fin n) (Fin n) E) = (Jg : Matrix (Fin n) (Fin n) E) := hJ
-    have h1 : ((Jg : Matrix (Fin n) (Fin n) E).map (emb τ))ᵀ =
-        (Jg : Matrix (Fin n) (Fin n) E).map ((emb τ).comp cE) := by
-      conv_lhs => rw [← hJ']
-      ext i j
-      simp [Formalism.UG.cT]
-    rw [Units.val_mul, invTrK_coe, embGL_inv, inv_inv, embGL_coe, embGL_coe, h1, ← Matrix.map_mul,
-      ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _), Units.val_one]
-  rw [e3, du_gLat_one]
+  apply _root_.GlobalTheory.TauLat.roundLat <;> assumption
 
 theorem dualFrameLattice_holds : DualFrLattice := dualFrLattice_of latticeBasisExists_holds
 

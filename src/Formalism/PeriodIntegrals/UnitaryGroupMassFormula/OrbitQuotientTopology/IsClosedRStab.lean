@@ -2,6 +2,7 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.ColOfLeftInv
 
 @[expose] public section
 
@@ -79,22 +80,11 @@ theorem nset_iff (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
 
 theorem uh_mul {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ UH (Hpk k r))
     (hb : b ∈ UH (Hpk k r)) : a * b ∈ UH (Hpk k r) := by
-  show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
-  have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
-  have hb' : bᴴ * Hpk k r * b = Hpk k r := hb
-  rw [Matrix.conjTranspose_mul]
-  calc bᴴ * aᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [ha', hb']
+  apply _root_.WlocSk.UnitaryGroupBasics.uh_mul <;> assumption
 
 theorem uh_inv {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ UH (Hpk k r)) :
     a⁻¹ ∈ UH (Hpk k r) := by
-  have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
-  show (a⁻¹)ᴴ * Hpk k r * a⁻¹ = Hpk k r
-  calc (a⁻¹)ᴴ * Hpk k r * a⁻¹ = (a⁻¹)ᴴ * (aᴴ * Hpk k r * a) * a⁻¹ := by rw [ha']
-    _ = (a * a⁻¹)ᴴ * Hpk k r * (a * a⁻¹) := by
-        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [uh_mul_inv ha, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
+  apply _root_.WlocSk.UnitaryGroupBasics.uh_inv <;> assumption
 
 theorem ndiag_term {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hA : a.BlockTriangular (nβ k r)) (hB : b.BlockTriangular (nβ k r)) (hDa : NDiag a)
@@ -144,11 +134,7 @@ theorem nset_mul {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} 
 
 theorem nset_inv {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r) :
     a⁻¹ ∈ Nset k r := by
-  rw [nset_iff] at ha ⊢
-  obtain ⟨h1, h2, h3⟩ := ha
-  have hh : a * a⁻¹ = 1 := uh_mul_inv h1
-  letI : Invertible a := ⟨a⁻¹, uh_inv_mul h1, hh⟩
-  exact ⟨uh_inv h1, Matrix.blockTriangular_inv_of_blockTriangular h2, ndiag_inv h1 h2 h3⟩
+  apply _root_.WlocSk.UnitaryGroupBasics.mem_n_inv <;> assumption
 
 theorem nset_uh {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r) :
     a ∈ UH (Hpk k r) := ha.1

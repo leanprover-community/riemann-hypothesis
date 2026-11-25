@@ -1,8 +1,6 @@
 module
 
-public import Formalism.HermitianLattices.StatementLat
-import Mathlib.Tactic.TypeStar
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianLattices.DualOrthSum, Formalism.HermitianLattices.HermitianLatticesProofs.DualOrthSum

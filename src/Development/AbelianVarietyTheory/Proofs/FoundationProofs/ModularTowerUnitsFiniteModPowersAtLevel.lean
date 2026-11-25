@@ -699,8 +699,7 @@ theorem germ_ne_zero {a : ℂ → ℂ} (ha : DifferentiableOn ℂ a Hs) {z₀ : 
   exact h (eqOn_of_germ ha (differentiableOn_const 0) h0 z₀ hz₀)
 
 theorem exists_ne_zero {a : ℂ → ℂ} (h : (a : Mero) ≠ 0) : ∃ z ∈ Hs, a z ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact h (germ_eq_of_eqOn (ψ := fun _ => 0) hc)
 
 theorem eventually_ne_zero {a : ℂ → ℂ} (ha : DifferentiableOn ℂ a Hs) {z₀ : ℂ} (hz₀ : z₀ ∈ Hs) (h : a z₀ ≠ 0) :

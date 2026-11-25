@@ -103,8 +103,7 @@ private theorem ann_of_flat {A R : Type} [CommRing A] [CommRing R] [IsLocalRing 
     exact ha
   obtain ⟨k, c, y, hy, hc⟩ := Module.Flat.isTrivialRelation_of_sum_smul_eq_zero
     (R := A) (M := R) (f := fun _ : Fin 1 => a) (x := fun _ : Fin 1 => (1 : R)) h0
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h1 : (1 : R) = ∑ j, c 0 j • y j := hy 0
   have hone : (1 : R) ∈ maximalIdeal R := by
     rw [h1]
@@ -620,8 +619,7 @@ theorem UpperTheory.V.CA.g_homprime :
     apply hP.ne_top
     rw [← hcomap, htop, Ideal.comap_top]
   · intro F G hFG
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨hF, hG⟩ := hne
     rw [key] at hF hG hFG
     push_neg at hF hG
@@ -1107,8 +1105,6 @@ private theorem ev_mul {a b : Matrix (Fin 3) (Fin 3) R} (ha : Ev π D a) (hb : E
   ext i j
   fin_cases i <;> fin_cases j <;> simp [th, Matrix.mul_apply, Fin.sum_univ_three, *] <;> ring
 
-private theorem D_one : D 1 = 0 := by simpa using hD 1 1
-
 private theorem th_one : th π D 1 = 1 := by
   ext i j
   fin_cases i <;> fin_cases j <;> simp [th]
@@ -1339,11 +1335,7 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 
 private theorem dim_comap {A R : Type} [CommRing A] [CommRing R] (p : A →+* R) (hp : Function.Surjective p)
     (P : Ideal R) : ringKrullDim (A ⧸ P.comap p) = ringKrullDim (R ⧸ P) := by
-  have h : RingHom.ker ((Ideal.Quotient.mk P).comp p) = P.comap p := by
-    ext a; simp [RingHom.mem_ker, Ideal.Quotient.eq_zero_iff_mem]
-  rw [← h]
-  exact ringKrullDim_eq_of_ringEquiv
-    (RingHom.quotientKerEquivOfSurjective (Ideal.Quotient.mk_surjective.comp hp))
+  apply _root_.UpperTheory.V.Fr.detsec_dim <;> assumption
 
 private theorem chained_of_comap {A R : Type} [CommRing A] [CommRing R] (p : A →+* R) (hp : Function.Surjective p)
     (I : Ideal R) (D : ℕ) (h : Chained (I.comap p) D) : Chained I D := by

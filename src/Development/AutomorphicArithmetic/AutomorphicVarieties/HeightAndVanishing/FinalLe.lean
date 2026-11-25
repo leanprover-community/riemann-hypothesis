@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.SelUnit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.ConjStableShaFam
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.RootVal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.KerResAb
@@ -1010,17 +1011,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 private theorem relIndex_inf_dvd {G : Type} [Group G] (U' U D : Subgroup G) [U'.Normal] :
     (U' ⊓ D).relIndex (U ⊓ D) ∣ U'.relIndex U := by
-  have e : (U' ⊓ D).relIndex (U ⊓ D) = U'.relIndex (U ⊓ D) := by
-    unfold Subgroup.relIndex
-    congr 1
-    ext x
-    simp only [Subgroup.mem_subgroupOf, Subgroup.mem_inf]
-    exact ⟨fun h => h.1, fun h => ⟨h, x.2.2⟩⟩
-  rw [e]
-  have k : ∀ K : Subgroup G, U'.relIndex K = Nat.card (K.map (QuotientGroup.mk' U')) := fun K => by
-    rw [← Subgroup.relIndex_ker, QuotientGroup.ker_mk']
-  rw [k, k]
-  exact Subgroup.card_dvd_of_le (Subgroup.map_mono inf_le_left)
+  apply _root_.relIndex_inf_dvd <;> assumption
 
 private theorem comm_inf {G : Type} [Group G] (U' D : Subgroup G) (h : ∀ a b : G, a * b * a⁻¹ * b⁻¹ ∈ U') :
     ∀ a ∈ ⊤ ⊓ D, ∀ b ∈ ⊤ ⊓ D, a * b * a⁻¹ * b⁻¹ ∈ U' ⊓ D := fun a ha b hb =>

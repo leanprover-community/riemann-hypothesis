@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.PtShape
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
@@ -521,13 +522,7 @@ open IsLocalRing Matrix NumberField Formalism.ConjugateSelfDual ReciprocityTheor
 namespace UpperTheory.V.Th.Nm
 
 private theorem sd_norm {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O) : ‖(x : PadicAlgCl l)‖ ≤ 1 := by
-  haveI := c.fin
-  have hx : IsIntegral ℤ_[l] (x : PadicAlgCl l) := (Algebra.IsIntegral.isIntegral x).map c.O.val
-  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm, minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hx,
-    spectralValue_le_one_iff ((minpoly.monic hx).map _)]
-  intro n
-  rw [Polynomial.coeff_map]
-  exact ((minpoly ℤ_[l] (x : PadicAlgCl l)).coeff n).2
+  apply _root_.norm_coe_coefO_le_one <;> assumption
 
 private theorem sd_eps {l : ℕ} [Fact l.Prime] (F : GFrame l) (c : Coef l) (g : F.G₀) (z : ℤ) :
     ‖((F.eps c.O (Qbar l) g ^ z : (Qbar l)ˣ) : Qbar l)‖ ≤ 1 := by

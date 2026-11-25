@@ -895,8 +895,7 @@ theorem herm_nonneg {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r
   have hyz : herm (Hpk k r) y z = 0 := by rw [← herm_conj, hzy, star_zero]
   have e1 : herm (Hpk k r) (v - y) (v - y) = herm (Hpk k r) v v := by
     rw [herm_sub_l, herm_sub_r, herm_sub_r, hvy, hyv, herm_low_low hy hy]; ring
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have h := revCS k r z (v - y) hz hw (by unfold Tz at hT; linarith) (by rw [e1]; exact hneg)
   rw [herm_sub_l, hvz, hyz] at h
   have : 0 < Tz k r (v - y) := by unfold Tz; rw [e1]; linarith

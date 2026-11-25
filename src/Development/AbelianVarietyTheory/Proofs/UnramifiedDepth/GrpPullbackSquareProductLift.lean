@@ -276,7 +276,6 @@ section Main
 
 open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Be2 ReciprocityTheory.ChartRestriction.G.Chart
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem adjBase {R₀ : Type} [CommRing R₀] {O R : LAlg R₀} (s : LHom O R) :
     Spec.map (CommRingCat.ofHom (algebraMap R₀ (R : Type))) =

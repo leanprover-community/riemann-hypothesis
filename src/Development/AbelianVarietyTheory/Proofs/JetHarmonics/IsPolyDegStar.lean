@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.JdPolyOKPolynomialOperators
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OmpCofLPd
@@ -126,18 +127,7 @@ private lemma star_eval_eq_eval₂_starRingEnd {σ : Type*} (x : σ → ℂ) (q 
 
 theorem isPolyDeg_star {a : ℕ} {P : Matrix (Fin N) (Fin N) ℂ → ℂ} (h : U.IsPolyDeg a P) :
     U.IsPolyDeg a (fun g => star (P g)) := by
-  obtain ⟨q, hq, hP⟩ := h
-  refine ⟨MvPolynomial.rename Sum.swap (MvPolynomial.map (starRingEnd ℂ) q), ?_, ?_⟩
-  · exact (MvPolynomial.totalDegree_rename_le _ _).trans
-      (le_trans (by
-        unfold MvPolynomial.totalDegree
-        exact Finset.sup_mono (MvPolynomial.support_map_subset _ _)) hq)
-  · intro g
-    show star (P g) = _
-    rw [hP g, MvPolynomial.eval_rename, MvPolynomial.eval_map, star_eval_eq_eval₂_starRingEnd]
-    congr 1
-    funext v
-    cases v <;> simp
+  first | exact _root_.GlobalTheory.HatNF.polyOK_star | exact @_root_.GlobalTheory.HatNF.polyOK_star | apply _root_.GlobalTheory.HatNF.polyOK_star <;> assumption
 
 theorem isPolyDeg_pow {a : ℕ} {P : Matrix (Fin N) (Fin N) ℂ → ℂ} (h : U.IsPolyDeg a P) (n : ℕ) :
     U.IsPolyDeg (n * a) (fun g => P g ^ n) := by

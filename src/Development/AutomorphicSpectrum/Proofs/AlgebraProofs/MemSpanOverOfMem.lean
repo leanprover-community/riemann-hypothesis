@@ -9,6 +9,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SmulMemSpanOver
 
 @[expose] public section
 
@@ -20,14 +21,7 @@ variable {o Ω : Type*} [CommRing o] [Field Ω] [Algebra o Ω] {E : Type*} [AddC
 
 theorem smul_mem_spanOver (R : Subalgebra o Ω) (S : Set E) {a : Ω} (ha : a ∈ R) {e : E}
     (he : e ∈ spanOver R S) : a • e ∈ spanOver R S := by
-  unfold spanOver at he ⊢
-  induction he using AddSubgroup.closure_induction with
-  | mem x hx =>
-    obtain ⟨c, hc, y, hy, rfl⟩ := hx
-    exact AddSubgroup.subset_closure ⟨a * c, R.mul_mem ha hc, y, hy, by rw [mul_smul]⟩
-  | zero => simp
-  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | neg x _ hx => rw [smul_neg]; exact neg_mem hx
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.SpanExact.smul_mem_spanOver <;> assumption
 
 theorem mem_spanOver_of_mem (R : Subalgebra o Ω) {S : Set E} {e : E} (he : e ∈ S) :
     e ∈ spanOver R S :=

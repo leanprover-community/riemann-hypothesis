@@ -216,8 +216,7 @@ theorem scalar_frame_w_zero_exists (k : ℕ) (e p : Fin r → Fin n → ℂ) (z 
     · rw [hsl, hξe, hξp, sub_zero]
     · exact hξz
   have hpos : 0 < (hJ ε ξ ξ).re := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have h := Formalism.L2.SG.PoincareInHH.Cut.card_le_of_orth' ε (r + 1) nv ξ horth hneg hnvξ hle hξ0
     rw [hsig] at h
     omega

@@ -150,8 +150,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding epsScale
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PureLift
 
 theorem eq_epsScale_of_isLieComb {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A] {c : Fin 1 → R}
@@ -884,17 +882,6 @@ theorem isGrpPullback_thickMap (e : ℕ) (A : Over (Sp T)) [GrpObj A] :
   (isGrpPullback_pullback A _).cancel
     ((isGrpPullback_pullback A _).congr (thickTrans_comp T I e).symm (thickMap_fst I e A).symm) (thickMap_hom I e A)
 
-theorem ker_factor_sq (e : ℕ) :
-    RingHom.ker (Ideal.Quotient.factor (Ideal.pow_le_pow_right (Nat.le_succ (e + 1)) : I ^ (e + 1 + 1) ≤ I ^ (e + 1))) ^ 2
-      = ⊥ := by
-  rw [pow_two, eq_bot_iff, Ideal.mul_le]
-  intro x hx y hy
-  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
-  obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
-  rw [RingHom.mem_ker, Ideal.Quotient.factor_mk, Ideal.Quotient.eq_zero_iff_mem] at hx hy
-  rw [Ideal.mem_bot, ← map_mul, Ideal.Quotient.eq_zero_iff_mem, pow_succ]
-  exact Ideal.mul_mem_mul hx (Ideal.pow_le_self (Nat.succ_ne_zero e) hy)
-
 variable {S : Type} [CommRing S] {G : Over (Sp S)} [GrpObj G]
 
 theorem isGrpPullback_red {a : S →+* T} {A : Over (Sp T)} [GrpObj A] {φ : A.left ⟶ G.left}
@@ -940,7 +927,7 @@ theorem existsUnique_hom (hF : GlobalTheory.Published.FormalAlgebraisation) (hM 
       ⟨e + 1 + 1, by
         rw [← map_natCast (Ideal.Quotient.mk (I ^ (e + 1 + 1))), ← map_pow, Ideal.Quotient.eq_zero_iff_mem]
         exact Ideal.pow_mem_pow hpI _⟩
-      (Ideal.Quotient.factor_surjective _) (ker_factor_sq I e) g g _ _ _ _ _ _
+      (Ideal.Quotient.factor_surjective _) (GlobalTheory.FormalAlgebraise.ker_factor_sq I e) g g _ _ _ _ _ _
       (PolPull.isAbelianScheme_of_isGrpPullback hG (rA (e + 1)))
       ((smoothOfRelativeDimension_isStableUnderBaseChange g).of_isPullback (rA (e + 1)).1 hg)
       (PolPull.isAbelianScheme_of_isGrpPullback hG (rB (e + 1)))

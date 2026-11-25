@@ -104,14 +104,7 @@ private theorem eq_of_ord {I J : Ideal (𝓞 ℚ)} (hI : I ≠ ⊥) (hJ : J ≠ 
 
 private theorem val_unit {u : (Af ℚ)ˣ} (hu : IsZU u) (w : HeightOneSpectrum (𝓞 ℚ)) :
     Valued.v (pLoc ℚ w (u : Af ℚ)) = 1 := by
-  have h1 : Valued.v (pLoc ℚ w (u : Af ℚ)) ≤ 1 := Subring.mem_iInf.1 hu.1 w
-  have h2 : Valued.v (pLoc ℚ w ((u⁻¹ : (Af ℚ)ˣ) : Af ℚ)) ≤ 1 := Subring.mem_iInf.1 hu.2 w
-  have h3 : Valued.v (pLoc ℚ w (u : Af ℚ)) * Valued.v (pLoc ℚ w ((u⁻¹ : (Af ℚ)ˣ) : Af ℚ)) = 1 := by
-    rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one]
-  refine le_antisymm h1 ?_
-  calc 1 = _ := h3.symm
-    _ ≤ Valued.v (pLoc ℚ w (u : Af ℚ)) * 1 := mul_le_mul_right h2 _
-    _ = _ := mul_one _
+  apply _root_.val_one <;> assumption
 
 private theorem genD_iff (q : ℚ) {u : (Af ℚ)ˣ} (hu : IsZU u) (𝔪 : Ideal (𝓞 ℚ)) :
     GenD (algebraMap ℚ (Af ℚ) q * (u : Af ℚ)) 𝔪 ↔

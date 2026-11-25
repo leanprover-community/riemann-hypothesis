@@ -84,9 +84,6 @@ def Gval (F F' : FlagD H r) : K :=
   Dl F F' (r + 1) le_rfl * star (Dl F F' (r + 1) le_rfl) -
     F.T * F'.T * (Dl F F' r (Nat.le_succ r) * star (Dl F F' r (Nat.le_succ r)))
 
-def Gram (F F' : FlagD H r) : Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) K :=
-  Matrix.of fun p q => H.B (Sum.elim F.e F'.e p) (Sum.elim F.e F'.e q)
-
 def xv (H : HermSpace K V) (x v : V) : V →ₗ[K] V :=
   (H.B.flip v).smulRight x - (H.B.flip x).smulRight v
 

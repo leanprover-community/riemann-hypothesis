@@ -19,15 +19,8 @@ section Top
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
 theorem small_mul {C : Set K} (hC : IsCompact C) {W : Set K} (hW : W ∈ 𝓝 (0 : K)) :
-    ∃ U ∈ 𝓝 (0 : K), ∀ u ∈ U, ∀ c ∈ C, u * c ∈ W := by
-  obtain ⟨W', hW'W, hW'o, h0⟩ := mem_nhds_iff.1 hW
-  have hn : IsOpen ((fun p : K × K => p.1 * p.2) ⁻¹' W') := hW'o.preimage continuous_mul
-  obtain ⟨u, v, hu, -, hsu, htv, huv⟩ :=
-    generalized_tube_lemma (isCompact_singleton (x := (0 : K))) hC hn (by
-      rintro ⟨a, b⟩ ⟨ha, -⟩
-      have ha' : a = 0 := ha
-      simp [ha', h0])
-  exact ⟨u, hu.mem_nhds (hsu rfl), fun a ha c hc => hW'W (huv (Set.mk_mem_prod ha (htv hc)))⟩
+    ∃ U ∈ 𝓝 (0 : K), ∀ u ∈ U, ∀ c ∈ C, u * c ∈ W :=
+  by apply _root_.Formalism.FourierDecayAlt.P.AdicNeighbourhood.small_mul <;> assumption
 
 def I (R : Subring K) (a : K) : Set K := {x | ∃ r ∈ R, x = a * r}
 

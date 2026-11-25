@@ -528,8 +528,7 @@ theorem exists_perm {j : ℕ} (hj : j ≤ r) (β : Fin r → ℕ) (Z : Matrix (F
   obtain ⟨-, hdet, hblk, hrow⟩ := h
   have hex : ∀ a : Fin j, ∃ b : Fin j, Z (Fin.castLE hj a) (Fin.castLE hj b) ≠ 0 := by
     intro a
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hdet (Matrix.det_eq_zero_of_row_eq_zero a fun b => hno b)
   choose τ hτ using hex
   have hβτ : ∀ a, β (Fin.castLE hj a) = β (Fin.castLE hj (τ a)) := fun a => hblk a (τ a) (hτ a)

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerIndependenceOfOrder
 public import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerVanishingBelowDimension
 public import Mathlib.Algebra.Module.SnakeLemma
 import Mathlib.Algebra.Order.Star.Int
@@ -330,15 +331,7 @@ theorem mem_ann_quot (G : GMod B R k) : s ∈ (G.quot s).Ann := by
 theorem adm_of_section_mem [IsLocalRing B] (𝒜 : Deg k → Submodule B R) {ts : List (Deg k × R)}
     {J J' : Ideal R} (h : admitted 𝒜 ((d, s) :: ts) J) (hJ : J ≤ J') (hs : s ∈ J') :
     admitted 𝒜 ts J' := by
-  obtain ⟨N, hN⟩ := h
-  refine ⟨N, hN.trans (sup_le (hJ.trans le_sup_left) ?_)⟩
-  refine Ideal.span_le.2 ?_
-  rintro t ⟨d', ht⟩
-  rcases List.mem_cons.1 ht with h1 | h1
-  · have h2 : t = s := (Prod.ext_iff.1 h1).2
-    rw [h2]
-    exact Ideal.mem_sup_left hs
-  · exact Ideal.mem_sup_right (Ideal.subset_span ⟨d', h1⟩)
+  apply _root_.Formalism.MainNotions.V.Pf.V2.Calc.E2.admissible_tail_of_cons_mem <;> assumption
 
 
 include S in

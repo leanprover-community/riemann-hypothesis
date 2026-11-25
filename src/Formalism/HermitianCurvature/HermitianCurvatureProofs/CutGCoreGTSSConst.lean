@@ -31,8 +31,7 @@ theorem ann_preconn (P : M.Par) (hTT : 0 < P.TT) : IsPreconnected (Ann P) := by
       refine ⟨(‖ζ‖, Complex.arg ζ), ⟨?_, Set.mem_univ _⟩, Complex.norm_mul_exp_arg_mul_I ζ⟩
       show Real.sqrt P.TT < ‖ζ‖
       rw [Complex.normSq_eq_norm_sq] at h'
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       nlinarith [norm_nonneg ζ, mul_le_mul hle hle (norm_nonneg ζ) hs]
     · rintro ⟨⟨a, b⟩, ⟨ha, -⟩, rfl⟩
       have ha' : Real.sqrt P.TT < a := ha

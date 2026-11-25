@@ -64,16 +64,6 @@ namespace GlobalTheory.MulEqIntegerExists
 
 open NumberField
 
-theorem exists_mul_eq_integer {E : Type} [Field E] [NumberField E] (c : E) :
-    ∃ a b : RingOfIntegers E, b ≠ 0 ∧ (algebraMap (RingOfIntegers E) E b) * c
-      = algebraMap (RingOfIntegers E) E a := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := RingOfIntegers E) c
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  refine ⟨a, b, hb0, ?_⟩
-  have : algebraMap (RingOfIntegers E) E b ≠ 0 :=
-    fun h => hb0 (IsFractionRing.injective (RingOfIntegers E) E (by rw [h, map_zero]))
-  rw [mul_div_assoc', mul_div_cancel_left₀ _ this]
-
 theorem exists_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ}
     (L : Submodule (RingOfIntegers E) (Fin n → E))
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (y : Fin n → E) :
@@ -91,7 +81,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.HAt Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 open scoped TensorProduct
 
@@ -122,8 +111,7 @@ theorem mem_localization_of_mem_localLattice : ∀ (F E : Type) [Field F] [Numbe
   haveI := v.isMaximal
   obtain ⟨Q, hQ, hI⟩ := Ideal.eq_prime_pow_mul_coprime hJ0 v.asIdeal
   obtain ⟨d, hdQ, hdv⟩ : ∃ d ∈ Q, d ∉ v.asIdeal := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [sup_eq_left.2 (show Q ≤ v.asIdeal from h)] at hQ
     exact v.isPrime.ne_top hQ
   refine ⟨algebraMap (𝓞 F) (𝓞 E) d, fun h => hdv (by rw [← hq]; exact h), ?_⟩
@@ -134,8 +122,7 @@ theorem mem_localization_of_mem_localLattice : ∀ (F E : Type) [Field F] [Numbe
     exact Submodule.smul_mem (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.locLat w B)
       (⟨_, Subring.subset_closure (Or.inl ⟨⟨_, ⟨algebraMap (𝓞 F) (𝓞 E) d, rfl⟩⟩, rfl⟩)⟩ : intV E w) hx
   · obtain ⟨π, hπ, hπw⟩ : ∃ π ∈ v.asIdeal ^ (UniqueFactorizationMonoid.normalizedFactors (J.comap (algebraMap (𝓞 F) (𝓞 E)))).count v.asIdeal, π ∉ w.asIdeal := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       haveI := w.isPrime
       have h1 : v.asIdeal ≤ w.asIdeal := Ideal.IsPrime.le_of_pow_le h
       exact hw (HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top h1).symm)

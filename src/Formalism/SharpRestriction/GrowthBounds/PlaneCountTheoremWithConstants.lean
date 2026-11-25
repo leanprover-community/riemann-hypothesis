@@ -412,7 +412,6 @@ theorem svBound_of (X : Inst D L) (K : Consts) (hK : K.Nonneg) (P : ParameterCho
     exact Finset.sum_le_card_nsmul _ _ _ (fun s hs => (hal s hs).2)
   set q : ℝ := L.sc.a / p with hq
   have hq0 : L.sc.b' ≤ q := by
-    have hX : 0 < L.sc.X' := by unfold Scale.X'; exact Real.exp_pos _
     rw [hq]
     unfold Scale.b'
     exact div_le_div_of_nonneg_left (by linarith) hp0 hpX.le
@@ -1477,7 +1476,6 @@ theorem rG_lt_k {eps : ℝ} (Fm : FamP eps) : Ev Fm fun x i => rG (Fm.L x i).sc 
   have h3 : (Fm.L x i).sc.x ≤ (Fm.L x i).sc.x ^ (9 / 2 + 10 * (Fm.L x i).sc.eps - szTh (Fm.L x i)) := by
     calc (Fm.L x i).sc.x = (Fm.L x i).sc.x ^ (1 : ℝ) := (Real.rpow_one _).symm
       _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hx1' hexp
-  have hge' : 32 / eps + 66 ≤ (Fm.L x i).sc.x := by rw [hxx]; exact hge
   have h4 : (rG (Fm.L x i).sc : ℝ) < ((Fm.D x i).R.k : ℝ) := by linarith
   exact_mod_cast h4
 
@@ -1486,7 +1484,7 @@ theorem numCmpF_fixed {eps : ℝ} (Fm : FamP eps) : NumCmpF Fm := by
   exact ⟨x0, fun x hx i => FormalGroupSystem.Pf.numeric_comparison_of_constants _ _ _ _ Fm.GK Fm.fixed.2.1.ge Fm.fixed.2.2.1.ge Fm.fixed.1.ge
     (hx0 x hx i).1.2 (by rw [Fm.L_x x i (hx0 x hx i).1.1]; exact (hx0 x hx i).2) (Fm.sizes x (hx0 x hx i).1.1 i)⟩
 
-theorem num_closed (𝒞 : FamClass) (_hN : FormalGroupSystem.NumericalComparisonUniform) : Closed 𝒞 fun Fm _ => NumCmpF Fm :=
+theorem num_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => NumCmpF Fm :=
   ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ => numCmpF_fixed Fm⟩⟩
 
 theorem cb_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => Ev Fm fun x i => CbLarge Fm.GK (Fm.L x i).sc := by

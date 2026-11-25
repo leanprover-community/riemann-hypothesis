@@ -9,8 +9,6 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open Finset
 
 namespace ReciprocityTheory.ChartRestriction.DS.DecInf

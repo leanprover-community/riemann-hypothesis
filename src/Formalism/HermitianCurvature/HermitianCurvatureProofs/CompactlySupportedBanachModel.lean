@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 public import Formalism.HermitianCurvature.StatementU
 public import Mathlib.Analysis.Normed.Lp.lpSpace
@@ -545,23 +546,7 @@ lemma continuous_gN : Continuous (gN : Mat k r → ℝ) := by
     Complex.continuous_normSq.comp ((continuous_apply j).comp (continuous_apply i)))
 
 lemma gN_pos {g : Mat k r} (hg : g ∈ GV k r) : 0 < gN g := by
-  have hu : IsUnit g.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg
-  have hne : g ≠ 0 := by
-    rintro rfl
-    have : Nonempty (Fin (2 * r + k + 1)) := ⟨⟨0, by omega⟩⟩
-    rw [Matrix.det_zero] at hu
-    exact not_isUnit_zero hu
-  obtain ⟨i, j, hij⟩ : ∃ i j, g i j ≠ 0 := by
-    by_contra h; push Not at h; exact hne (Matrix.ext h)
-  unfold gN
-  apply Real.sqrt_pos.2
-  calc (0:ℝ) < Complex.normSq (g i j) := Complex.normSq_pos.2 hij
-    _ ≤ ∑ j', Complex.normSq (g i j') :=
-        Finset.single_le_sum (f := fun j' => Complex.normSq (g i j'))
-          (fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', Complex.normSq (g i' j') :=
-        Finset.single_le_sum (f := fun i' => ∑ j', Complex.normSq (g i' j'))
-          (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.gN_pos <;> assumption
 
 lemma cv_continuous (b : Bool) (X g : Mat k r) : Continuous (fun t : ℝ => cv b X t g) := by
   rw [continuous_iff_continuousAt]

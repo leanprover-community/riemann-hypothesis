@@ -11,6 +11,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetF
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EpsPtScaleZero
 
 @[expose] public section
 
@@ -73,21 +74,7 @@ theorem tangent_open_preimage_zero {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w :
 
 theorem isDerivAt0_unique {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {v v' : Sp (DualNumber ℂ) ⟶ Y}
     (hv : IsDerivAt0 e w v) (hv' : IsDerivAt0 e w v') : v = v' := by
-  apply hom_ext_of_local
-  · have hc : (spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom).base (IsLocalRing.closedPoint ℂ) =
-        IsLocalRing.closedPoint (DualNumber ℂ) :=
-      IsLocalRing.comap_closedPoint _
-    have e1 := congrArg (fun φ => φ.base (IsLocalRing.closedPoint ℂ)) (hv.1.trans hv'.1.symm)
-    have e2 : v ((spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom) (IsLocalRing.closedPoint ℂ)) =
-        v' ((spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom) (IsLocalRing.closedPoint ℂ)) := e1
-    rw [hc] at e2
-    exact e2
-  · intro U h₁ h₂
-    rw [← cancel_mono (Scheme.ΓSpecIso (CommRingCat.of (DualNumber ℂ))).hom]
-    ext f
-    have hU := tangent_open_preimage_zero hv U h₁
-    · exact (fst_appLE hv U hU h₁ f).trans (fst_appLE hv' U hU h₂ f).symm
-    · exact (hv.2 U h₁ f).trans (hv'.2 U h₂ f).symm
+  apply _root_.GlobalTheory.PointUnif.deriv_unique <;> assumption
 
 theorem isDerivAt0_comp_hom {Y' : Scheme.{0}} {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ}
     {v : Sp (DualNumber ℂ) ⟶ Y} (hv : IsDerivAt0 e w v) (φ : Y ⟶ Y') :

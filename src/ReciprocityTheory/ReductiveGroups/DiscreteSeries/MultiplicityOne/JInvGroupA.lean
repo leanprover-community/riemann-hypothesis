@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDefs
 
 @[expose] public section
@@ -46,16 +47,7 @@ theorem embWb_mulVec_eq_zero_on_isW (γ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ
     rw [h0, zero_mul]
 
 theorem measurable_invM : Measurable (invM : Mt k r → Mt k r) := by
-  have hd : Continuous fun x : Mt k r => (Matrix.of x).det :=
-    Continuous.matrix_det (continuous_id : Continuous fun x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ => x)
-  have ha : Continuous fun x : Mt k r => (Matrix.of x).adjugate :=
-    Continuous.matrix_adjugate (continuous_id : Continuous fun x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ => x)
-  have h : (invM : Mt k r → Mt k r) = fun x i j => ((Matrix.of x).det)⁻¹ * (Matrix.of x).adjugate i j := by
-    funext x i j
-    simp only [invM, Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
-  rw [h]
-  refine Measurable.of_eval fun i => Measurable.of_eval fun j => ?_
-  exact hd.measurable.inv.mul ((continuous_apply j).comp ((continuous_apply i).comp ha)).measurable
+  apply _root_.GlobalTheory.SgInf.measurable_invM <;> assumption
 
 section cc
 

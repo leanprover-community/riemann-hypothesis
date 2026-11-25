@@ -463,8 +463,7 @@ theorem colHt_eq (nD : YoungDiagram) (s : Fin (X.G.P.n' v))
     (hnu : ∀ r, (((nD.rowLen r : ℕ) : ℤ)) = X.nuv v (j + 1) s (r + 1)) (c : ℕ) :
     X.colHt v (j + 1) s c = nD.colLen c := by
   have hle : nD.colLen c ≤ NN X.G.P.m X.t (j + 1) := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h2 : c < nD.rowLen (NN X.G.P.m X.t (j + 1)) :=
       YoungDiagram.mem_iff_lt_rowLen.1 (YoungDiagram.mem_iff_lt_colLen.2 hlt)
     have h3 := hnu (NN X.G.P.m X.t (j + 1))

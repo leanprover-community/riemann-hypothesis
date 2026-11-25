@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
 public import Formalism.SharpRestriction.GrowthBounds.TableLineDegreeFive
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
@@ -81,12 +82,7 @@ theorem tensorLat_mul (R K : Type*) [CommRing R] [CommRing K] [Algebra R K] {S :
 
 theorem lamAt_add {n' m : ℕ} (lam0 mu0 : Fin n' → Fin (m + 1) → ℤ) (s : Fin n') :
     lamAt (lam0 + mu0) s = lamAt lam0 s + lamAt mu0 s := by
-  unfold lamAt
-  split_ifs
-  · rfl
-  · funext i
-    simp only [Pi.add_apply]
-    ring
+  apply _root_.Formalism.MainNotions.Pf14.lamAt_add <;> assumption
 
 theorem products_sections_integral (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.LevelPrimesProviso D := by
   unfold Formalism.MainNotions.tableLineDegreeFive.LevelPrimesProviso

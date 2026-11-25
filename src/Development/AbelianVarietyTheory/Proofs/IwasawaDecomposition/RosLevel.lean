@@ -55,8 +55,6 @@ open Formalism.L2.Pj GlobalTheory.RayEv GlobalTheory.FormalPoint GlobalTheory.Ad
 open GlobalTheory.TorusInvariance (wVal)
 open GlobalTheory.EndRosati (push)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.RayEv.Transport
 
 abbrev Frame {X Y : Scheme.{0}} (L : LB X) (ψ : Y ⟶ X) : Type :=

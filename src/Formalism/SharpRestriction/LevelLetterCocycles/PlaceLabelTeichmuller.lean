@@ -11,6 +11,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NeZeroOfMemRoots
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.PrimesEffectiveChebotarev, Formalism.SharpRestriction.LevelLetterCocycles.PlaceLabelTeichmuller
@@ -540,16 +541,7 @@ theorem mem_rootSet_iff (f : (ZMod g)[X]) (x : Formalism.CyclotomicNorms.Fbar g)
 
 theorem root_ne_zero {f : (ZMod g)[X]} (h0 : f.coeff 0 ≠ 0) {x : Formalism.CyclotomicNorms.Fbar g}
     (hx : x ∈ Formalism.CyclotomicNorms.rootsBar f) : x ≠ 0 := by
-  intro hx0
-  subst hx0
-  unfold Formalism.CyclotomicNorms.rootsBar at hx
-  have hne : f.map (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)) ≠ 0 := by
-    intro h
-    rw [h] at hx
-    simp at hx
-  have hr := (Polynomial.mem_roots hne).mp hx
-  rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_map] at hr
-  exact h0 ((map_eq_zero_iff _ (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)).injective).mp hr)
+  apply _root_.GlobalTheory.SerSys.LabLoc.ne_zero_of_mem_roots <;> assumption
 
 def bigM (g N : ℕ) : ℕ := ∏ d ∈ Finset.Icc 1 N, (g ^ d - 1)
 

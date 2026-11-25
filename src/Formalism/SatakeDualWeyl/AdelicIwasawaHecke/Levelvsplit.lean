@@ -31,11 +31,8 @@ theorem levelvsplit_mem_range_iff (f : R →+* A) (hf : Function.Injective f) (g
   · rintro ⟨h1, h2⟩
     choose M hM using h1
     choose N hN using h2
-    have hinj : Function.Injective (f.mapMatrix : Matrix n n R →+* Matrix n n A) := by
-      intro X Y h
-      ext i j
-      have h' := congrArg (fun Z : Matrix n n A => Z i j) h
-      exact hf h'
+    have hinj : Function.Injective (f.mapMatrix : Matrix n n R →+* Matrix n n A) :=
+      Matrix.map_injective hf
     have hMg : f.mapMatrix (Matrix.of M) = (g : Matrix n n A) := by
       ext i j
       exact hM i j

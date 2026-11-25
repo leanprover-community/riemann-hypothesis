@@ -741,18 +741,6 @@ namespace GlobalTheory.UPel.HT.EtLev.HeckeLev
 
 variable {S : Scheme.{0}}
 
-theorem pow_comp_hom {A B T : Over S} [GrpObj A] [GrpObj B] (φ : A ⟶ B) [IsMonHom φ] (x : T ⟶ A) (n : ℕ) :
-    (x ^ n) ≫ φ = (x ≫ φ) ^ n := by
-  induction n with
-  | zero => rw [pow_zero, pow_zero, one_comp]
-  | succ n ih => rw [pow_succ, pow_succ, mul_comp, ih]
-
-theorem isMonHom_idPow (A : Over S) [GrpObj A] [IsCommMonObj A] (n : ℕ) :
-    IsMonHom ((𝟙 A) ^ n : A ⟶ A) := by
-  induction n with
-  | zero => rw [pow_zero, Hom.one_def]; infer_instance
-  | succ n ih => rw [pow_succ]; exact inferInstanceAs (IsMonHom (lift ((𝟙 A) ^ n) (𝟙 A) ≫ μ[A]))
-
 variable {p : ℕ} [Fact p.Prime] {D : Datum p}
 
 theorem act_natCast {A : Over S} [GrpObj A] (act : OActN D.O A) (n : ℕ) :
@@ -816,7 +804,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
     rw [add_zero] at this
     exact mul_eq_left.mp this.symm
   obtain ⟨φ, hφm, hψφ⟩ := GlobalTheory.HomDescent.exists_desc S o.A o'.A o.A (heckeSubA o f N) ψ hψ hgal
-    (𝟙 o.A ^ k) (isMonHom_idPow o.A k) (fun h hh => by
+    (𝟙 o.A ^ k) (GlobalTheory.SS.DivSemi.isMonHom_id_pow o.A k) (fun h hh => by
       rw [MonObj.comp_pow, Category.comp_id]
       exact HeckeAd.pow_eq_one_of_mem o f h hh)
   haveI := hφm
@@ -825,12 +813,12 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
     exact Over.epi_of_epi_left ψ
   have hφψ : φ ≫ ψ = 𝟙 o'.A ^ k := by
     apply (cancel_epi ψ).1
-    rw [← Category.assoc, hψφ, pow_comp_hom, MonObj.comp_pow, Category.id_comp, Category.comp_id]
+    rw [← Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp', MonObj.comp_pow, Category.id_comp, Category.comp_id]
   have hφact : ∀ a : D.O, φ ≫ o.act.act a = o'.act.act a ≫ φ := by
     intro a
     haveI := o.act.hom a
     apply (cancel_epi ψ).1
-    rw [← Category.assoc, hψφ, ← Category.assoc, ← hact a, Category.assoc, hψφ, pow_comp_hom,
+    rw [← Category.assoc, hψφ, ← Category.assoc, ← hact a, Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp',
       MonObj.comp_pow, Category.id_comp, Category.comp_id]
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro x y
@@ -873,7 +861,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
         UpperTheory.Gal.FiniteEtaleModels.pow_one_of_killed_tr o'.act hnI g (fun c hc => hg c (by rw [pow_one]; exact hc))
       refine ⟨m • y0, ?_⟩
       show toUnit (Over.mk x) ≫ lv (m • y0) ≫ ψ = g
-      rw [map_nsmul_pow lv hadd hlv0 m y0, pow_comp_hom, MonObj.comp_pow, ← hgk, ← pow_mul,
+      rw [map_nsmul_pow lv hadd hlv0 m y0, GlobalTheory.SS.FrobTorsion.pow_comp', MonObj.comp_pow, ← hgk, ← pow_mul,
         hmod g _ _ hgn, hm, ← hmod g _ 1 hgn, pow_one]
 end -- clump:auto
 end -- clump:auto
@@ -1417,8 +1405,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Hecke
 open GlobalTheory.UPel.HT.Hecke.PullHecke
 open GlobalTheory.UPel.HT.HeckeAd (IsTranslA heckeSubA mem_heckeSubA)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace UpperTheory.Gal.FiniteEtaleModels
 

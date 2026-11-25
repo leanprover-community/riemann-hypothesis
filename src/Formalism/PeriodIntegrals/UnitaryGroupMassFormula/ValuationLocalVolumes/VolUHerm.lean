@@ -5,6 +5,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.V
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUHaar
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUTr
 import Mathlib.Tactic.Linter.HaveILetI
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.OmVSDBwdHolds
 
 @[expose] public section
 
@@ -28,17 +29,7 @@ theorem sigR_smul (c : Fv F v) (x : Fv F v ⊗[F] E) : sigR (Fv F v) σ (c • x
   rw [← VolTU.sc_mul_eq_smul, ← VolTU.sc_mul_eq_smul, map_mul, sigR_sc]
 
 theorem sigR_mem {x : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) : sigR (Fv F v) σ x ∈ OEv (E := E) v := by
-  induction hx using Submodule.span_induction with
-  | mem a ha =>
-    obtain ⟨a, -, rfl⟩ := ha
-    rw [sigR_inclR]
-    exact Formalism.L2.SG.Pf.NcVal.TrW.inclR_mem' (E := E) v ⟨σ a, (a.2).map σ.toRingHom.toIntAlgHom⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x y _ _ h1 h2 => rw [map_add (f := _)]; exact Submodule.add_mem _ h1 h2
-  | smul c x _ h =>
-    have e : c • x = (c : Fv F v) • x := rfl
-    rw [e, sigR_smul]
-    exact Submodule.smul_mem _ c h
+  apply _root_.Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.sigR_oev <;> assumption
 
 def sigL : (Fv F v ⊗[F] E) →ₗ[Fv F v] (Fv F v ⊗[F] E) where
   toFun := sigR (Fv F v) σ

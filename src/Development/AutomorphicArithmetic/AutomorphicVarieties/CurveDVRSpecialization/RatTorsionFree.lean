@@ -73,24 +73,6 @@ def FinEnd : Prop :=
 
 end Ord
 
-variable {l : ℕ} [Fact l.Prime] (c : Coef l) (η : G ℚ Ω →* ℤˣ) (Ψ : G ℚ Ω →* c.Oˣ) (σ g₁ : G ℚ Ω) (B : ValuationSubring Ω)
-
-def AutEnd3 (K : Type) [Field K] [NumberField K] [IsCMField K] (ι : Qbar l ≃+* ℂ) : Prop :=
-  ∀ (A : Subalgebra c.O (PadicAlgCl l)) [IsDiscreteValuationRing A] [Module.Finite c.O A] (r : G ℚ Ω →* GG (m := 3) (R := A)),
-    OrdPt l η Ψ σ g₁ B r →
-    (∀ U : Subgroup (G ℚ Ω), IsOpen (U : Set (G ℚ Ω)) → U ≤ η.ker → MatIrr U (mats (UnitaryThreeInertia.push A.val r))) →
-    ∀ [Algebra K Ω] (ρ : G K Ω →* GL (Fin 3) (Qbar l)),
-      (∀ s, (ρ s).val = (UnitaryThreeInertia.push A.val r (Base.galEmb ℚ K Ω s)).mat) →
-      Af.IsAutCsd ι (Af.tw ρ (cycBar K Ω l)⁻¹)
-
-def AutEnd2 (e : ℕ) (ι : Qbar l ≃+* ℂ) : Prop :=
-  ∀ (A : Subalgebra c.O (PadicAlgCl l)) [IsDiscreteValuationRing A] [Module.Finite c.O A] (r : G ℚ Ω →* GG (m := 3) (R := A)),
-    OrdPt l η Ψ σ g₁ B r → TypeII η (UnitaryThreeInertia.push A.val r) → (∀ g ∈ η.ker, (r g).mat 1 1 = 1) →
-    ∀ W : G ℚ Ω →* GL (Fin 2) (PadicAlgCl l),
-      (∀ g ∈ η.ker, (W g).val = corner (UnitaryThreeInertia.push A.val r g).mat) →
-      (W σ).val.trace = 0 →
-      ∃ f : Af.Newform (2 * e + 1), f.Att ι (Af.tw W (cycBar ℚ Ω l ^ (-(e : ℤ))))
-
 end UpperTheory.V.Pr
 
 end

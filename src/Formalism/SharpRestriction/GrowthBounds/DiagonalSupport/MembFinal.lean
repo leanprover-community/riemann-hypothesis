@@ -64,8 +64,7 @@ theorem exists_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (N : ℕ)
     unfold posU llPos
     rw [if_pos (by omega), List.getD_eq_getElem _ _ hu, hux]
   · have key : ∃ i, i < r ∧ Fr.fr j i = x := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hall : ∀ i, i < r → Fr.fr j i < x := by
         intro i
         induction i with
@@ -73,8 +72,7 @@ theorem exists_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (N : ℕ)
         | succ k ih =>
           intro hk
           have h1 := ih (by omega)
-          by_contra h2
-          push_neg at h2
+          by_contra! h2
           have h3 : x < Fr.fr j (k + 1) := lt_of_le_of_ne h2 (fun h' => hne (k + 1) hk h'.symm)
           exact hV.2.2.2.2.2.1 j k x hk h1 h3 hxT
       have h4 := hall (r - 1) (by omega)
@@ -172,8 +170,7 @@ variable {O : Type} [CommRing O] {r K : ℕ}
 
 theorem exists_of_rename {σ τ : Type} (f : σ → τ) (A : MvPolynomial σ O) (a : τ →₀ ℕ) (ha : a ∈ (rename f A).support) :
     ∃ u ∈ A.support, Finsupp.mapDomain f u = a := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 : (rename f A).coeff a = 0 := MvPolynomial.coeff_rename_eq_zero f A a (fun u hu => by
     by_contra hu0
     exact hc u (MvPolynomial.mem_support_iff.mpr hu0) hu)
@@ -413,22 +410,6 @@ theorem back_rename (j : ZMod J) (X : MvPolynomial ((ZMod J × ℤ) × Fin n) O)
   subst hv
   rfl
 
-private theorem twistSub_rename_eq {R : Type} [CommRing R] {ι κ : Type} {n : ℕ} (LL : Letters ι) (LK : Letters κ)
-    (S : Set ι) (T : Set κ) (g : κ → ι) (hvec : ∀ y, LL.vec (g y) = LK.vec y) (hS : ∀ y, g y ∈ S ↔ y ∈ T)
-    (k : Fin n) (X' : MvPolynomial (κ × Fin n) R) :
-    twistSub LL S k (rename (R := R) (fun v : κ × Fin n => (g v.1, v.2)) X') =
-      rename (R := GLLaurent R n) (fun v : κ × Fin n => (g v.1, v.2)) (twistSub LK T k X') := by
-  have h : (twistSub LL S k).comp (rename (R := R) (fun v : κ × Fin n => (g v.1, v.2))).toRingHom =
-      (rename (R := GLLaurent R n) (fun v : κ × Fin n => (g v.1, v.2))).toRingHom.comp (twistSub LK T k) := by
-    apply MvPolynomial.ringHom_ext
-    · intro a
-      simp [twistSub]
-    · intro v
-      simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X, twistSub,
-        eval₂Hom_X', hS, hvec]
-      split_ifs <;> simp [map_sum]
-  exact congrArg (fun φ => φ X') h
-
 private theorem sDegs_rename_eq_of_injective {R : Type} [CommRing R] {ι κ : Type} {n : ℕ} (LL : Letters ι) (LK : Letters κ)
     (S : Set ι) (T : Set κ) (g : κ → ι) (hg : Function.Injective g) (hvec : ∀ y, LL.vec (g y) = LK.vec y)
     (hS : ∀ y, g y ∈ S ↔ y ∈ T) (k : Fin n) (X' : MvPolynomial (κ × Fin n) R) :
@@ -437,7 +418,7 @@ private theorem sDegs_rename_eq_of_injective {R : Type} [CommRing R] {ι κ : Ty
     simp only [Prod.mk.injEq] at h
     exact Prod.ext (hg h.1) h.2
   unfold sDegs
-  rw [twistSub_rename_eq LL LK S T g hvec hS k X', MvPolynomial.support_rename_of_injective hinj,
+  rw [_root_.Formalism.MainNotions.G.symbolGeneratorData.md_twist_rename g LK LL T S hvec hS k X', MvPolynomial.support_rename_of_injective hinj,
     Finset.image_biUnion]
   simp only [MvPolynomial.coeff_rename_mapDomain _ hinj]
 
@@ -1078,15 +1059,7 @@ private theorem fr_mono_of_valid (hV : Fr.Valid L₁ N₁) (j : ℤ) :
 
 private theorem fr_last_mono_in_index_of_valid (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (a : ℤ) :
     ∀ b : ℤ, a ≤ b → Fr.fr a (r - 1) ≤ Fr.fr b (r - 1) := by
-  intro b hab
-  obtain ⟨n, rfl⟩ : ∃ n : ℕ, b = a + n := ⟨(b - a).toNat, by omega⟩
-  clear hab
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    have hstep := le_trans (hV.2.2.2.1 (a + n)).le
-      (fr_mono_of_valid Fr hV (a + n + 1) 0 (r - 1) (Nat.zero_le _) (by omega))
-    exact le_trans ih (by simpa [add_assoc] using hstep)
+  apply _root_.Formalism.MainNotions.G.symbolGeneratorData.ph_z_mono <;> assumption
 
 theorem lf_dist_eq (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j j' x y : ℤ) (hx1 : Fr.fr (j - 1) (r - 1) < x)
     (hx2 : x ≤ Fr.fr j (r - 1)) (hy1 : Fr.fr (j' - 1) (r - 1) < y) (hy2 : y ≤ Fr.fr j' (r - 1))
@@ -1147,8 +1120,7 @@ theorem labO_apply (hinj : Function.Injective fun x : TL J nL r => posOf n' (pos
 theorem labO_support (rho : TL J nL r × Fin (r + K) → ℕ) (v : Fin n' × Fin (r + K))
     (hv : v ∈ (labO Fr K nL rho).support) : ∃ x : TL J nL r, v.1 = posOf n' (posTL Fr x) := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply Finsupp.mem_support_iff.mp hv
   simp only [labO, Finsupp.finsetSum_apply, Finsupp.single_apply]
   apply Finset.sum_eq_zero

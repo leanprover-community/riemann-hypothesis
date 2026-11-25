@@ -689,8 +689,7 @@ private theorem zm_f {B A : Type} [CommRing B] [CommRing A] [Algebra B A] {k : â
   have hle : Irr (reesGr N) â‰¤ Ideal.span (reesGr N (e i) : Set (rees N)) := by
     unfold Irr
     exact Ideal.prod_le_inf.trans (Finset.inf_le (Finset.mem_univ i))
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hp
   refine hle.trans (Ideal.span_le.mpr ?_)
   intro s hs

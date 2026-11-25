@@ -346,8 +346,7 @@ theorem exists_isWt_of_isPolyRep : ∀ (n : ℕ) (ι : Type) [Fintype ι] [Decid
     intro D hD
     simpa [T] using hc ⟨D, hD⟩
   obtain ⟨a, ha⟩ : ∃ a, v a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv0 (funext h)
   have cancel : ∀ x y : ℂ, x • v = y • v → x = y := by
     intro x y h

@@ -289,8 +289,7 @@ theorem idx_mul_map_bar_eq : ∀ (E : Type) [Field E] [NumberField E] (bar : �
       simp
     obtain ⟨k, hk0, hk⟩ := bdd_of_fg hfg
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hw0 (funext hne)
     have hdi : d i ≠ 0 := fun h => hi (by rw [← hbd i, h, map_zero])
     have hkE : (k : E) ≠ 0 := by exact_mod_cast hk0
@@ -1311,8 +1310,7 @@ theorem deg_iSup_map_of_gram : ∀ (K : Type) [Field K] [NumberField K] (W V : T
   haveI : FiniteDimensional K (Submodule.span K (ℓ : Set W)) :=
     Module.finite_of_finrank_pos (by rw [hr]; norm_num)
   obtain ⟨c, hcℓ, hc0⟩ : ∃ c ∈ ℓ, c ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h0 : Submodule.span K (ℓ : Set W) = ⊥ := by
       rw [Submodule.span_eq_bot]; intro x hx; exact hne x hx
     rw [h0, finrank_bot] at hr; exact zero_ne_one hr
@@ -1408,15 +1406,6 @@ open NumberField
 
 namespace GlobalTheory
 
-theorem ringOfIntegers_ringHom_injective {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
-    (σ : 𝓞 E →+* 𝓞 K) : Function.Injective σ := by
-  rw [RingHom.injective_iff_ker_eq_bot]
-  apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
-  rw [eq_bot_iff]
-  intro n hn
-  rw [Ideal.mem_comap, RingHom.mem_ker] at hn
-  simpa using hn
-
 theorem sum_log_norm_embeddings {K : Type} [Field K] [NumberField K] (y : K) :
     ∑ s : K →+* ℂ, Real.log ‖s y‖ = Real.log |((Algebra.norm ℚ y : ℚ) : ℝ)| := by
   by_cases hy : y = 0
@@ -1435,7 +1424,7 @@ theorem mean_log_norm_embeddings_ringHom :
     Real.log |((Algebra.norm ℚ (x : E) : ℚ) : ℝ)| / Module.finrank ℚ E := by
   intro E K _ _ _ _ σ x
   have hinj : Function.Injective ((algebraMap (𝓞 K) K).comp σ) :=
-    (RingOfIntegers.coe_injective).comp (ringOfIntegers_ringHom_injective σ)
+    (RingOfIntegers.coe_injective).comp (GlobalTheory.CM.ringOfIntegers_hom_injective σ)
   let τ : E →+* K := IsFractionRing.lift hinj
   have hτ : τ (x : E) = (σ x : K) := IsFractionRing.lift_algebraMap hinj x
   letI : Algebra E K := τ.toAlgebra

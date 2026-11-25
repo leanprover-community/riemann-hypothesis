@@ -102,7 +102,7 @@ theorem tfBase_field (K : Type) [Field K] [CharZero K] {s : ℕ} (hs : 1 ≤ s) 
 
 theorem kFin_of (hF : FinO) : KFin := by
   intro K _ _ X q _ _ a n
-  obtain ⟨U⟩ := (cov_ex q).1 inferInstance
+  obtain ⟨U⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).1 inferInstance
   have hU : sSup (Set.range U.U) = ⊤ := U.cover
   have hb := hdg_res q (a + 1) _ hU a (Nat.lt_succ_self a) n
   refine ⟨?_, fun hn => ?_⟩

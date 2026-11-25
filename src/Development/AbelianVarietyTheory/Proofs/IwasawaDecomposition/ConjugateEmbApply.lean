@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIndexIdeal
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AuxiliaryFrameNormalizedSpaces
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinsetTypeNormPrincipal
@@ -60,18 +61,7 @@ variable {K K' : Type} [Field K] [Field K'] (f : K →+* K')
 
 theorem span_image_span (s : Set K) :
     Submodule.span (𝓞 K') (f '' (Submodule.span (𝓞 K) s : Set K)) = Submodule.span (𝓞 K') (f '' s) := by
-  refine le_antisymm (Submodule.span_le.2 ?_)
-    (Submodule.span_mono (Set.image_mono Submodule.subset_span))
-  rintro _ ⟨x, hx, rfl⟩
-  induction hx using Submodule.span_induction with
-  | mem x hx => exact Submodule.subset_span ⟨x, hx, rfl⟩
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx =>
-    have : f (a • x) = RingOfIntegers.mapRingHom f a • f x := by
-      rw [Algebra.smul_def, Algebra.smul_def, map_mul]; rfl
-    rw [this]
-    exact Submodule.smul_mem _ _ hx
+  first | exact _root_.GlobalTheory.BetaEx.span_image_span | exact @_root_.GlobalTheory.BetaEx.span_image_span | apply _root_.GlobalTheory.BetaEx.span_image_span <;> assumption
 
 def extend : Submodule (𝓞 K) K →* Submodule (𝓞 K') K' where
   toFun M := Submodule.span (𝓞 K') (f '' (M : Set K))

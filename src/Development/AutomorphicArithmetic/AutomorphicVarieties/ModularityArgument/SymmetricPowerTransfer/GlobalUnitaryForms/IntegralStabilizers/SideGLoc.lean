@@ -375,8 +375,7 @@ private theorem real_sign {F : Type} [Field F] [NumberField F] (d : F) [Fact (�
   have hv : ρ ((infDiag F t (InfinitePlace.mk φ) : (InfinitePlace.mk φ).Completionˣ) :
       (InfinitePlace.mk φ).Completion) = σ t := key t
   rw [hab, map_sub, map_mul, map_pow, map_pow, key] at hv
-  by_contra hd
-  push_neg at hd
+  by_contra! hd
   nlinarith [sq_nonneg (ρ a), mul_nonneg (neg_nonneg.mpr hd) (sq_nonneg (ρ b))]
 
 theorem UpperTheory.V.Z.Sym.Glob.symbolEx :

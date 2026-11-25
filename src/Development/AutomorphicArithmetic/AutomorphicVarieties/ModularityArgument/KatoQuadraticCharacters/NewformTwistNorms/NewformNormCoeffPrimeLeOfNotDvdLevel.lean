@@ -317,8 +317,7 @@ theorem norm_a_le : ∀ (k : ℕ) (g : Newform k) (p : ℕ), p.Prime → ¬ p �
         rw [e1, Real.div_rpow hy.le hp0.le, Real.mul_rpow hp0.le hy.le]
         field_simp
   have hne : ∃ τ, 0 < φ τ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h0 : (g.f : ℍ → ℂ) = 0 := by
       funext τ
       have h1 := hcon τ

@@ -299,8 +299,7 @@ open Matrix
 theorem exists_isUnit_of_isUnit_sum_localRing {R : Type} [CommRing R] [IsLocalRing R]
     {ι : Type} (s : Finset ι) (f : ι → R) (h : IsUnit (∑ i ∈ s, f i)) :
     ∃ i ∈ s, IsUnit (f i) := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply (IsLocalRing.mem_maximalIdeal _).mp _ h
   exact Ideal.sum_mem _ fun i hi => (IsLocalRing.mem_maximalIdeal _).mpr (hne i hi)
 

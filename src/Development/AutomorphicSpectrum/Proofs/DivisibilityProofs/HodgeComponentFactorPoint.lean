@@ -5,6 +5,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodge
 public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGeneric
 
 @[expose] public section
 
@@ -79,17 +80,7 @@ theorem mem_of_dense_of_noGen {P : Type} [TopologicalSpace P] [TopologicalSpace.
 
 theorem noetherianSpace_baseChange {X : Scheme.{0}} {O F : Type} [CommRing O] [Field F] {s : X ⟶ Sp O}
     (hs : IsProjOver s) (β : O →+* F) : TopologicalSpace.NoetherianSpace ↥(pullback s (spMap β)) := by
-  obtain ⟨N, i, hi, rfl⟩ := hs
-  have := isProper_str O N
-  have : IsProper (i ≫ PSpace.str O N) := inferInstance
-  have hl : LocallyOfFiniteType (pullback.snd (i ≫ PSpace.str O N) (spMap β)) := inferInstance
-  have hq : QuasiCompact (pullback.snd (i ≫ PSpace.str O N) (spMap β)) := inferInstance
-  have : IsLocallyNoetherian (pullback (i ≫ PSpace.str O N) (spMap β)) :=
-    LocallyOfFiniteType.isLocallyNoetherian (pullback.snd _ _)
-  have : CompactSpace ↥(pullback (i ≫ PSpace.str O N) (spMap β)) :=
-    QuasiCompact.compactSpace_of_compactSpace (pullback.snd _ _)
-  have : IsNoetherian (pullback (i ≫ PSpace.str O N) (spMap β)) := {}
-  infer_instance
+  apply _root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.noetherianSpace_pullback <;> assumption
 
 theorem gen_open : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H)
     (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ)

@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.LocalRingCardinality.ColumnWeightSpreadOffTop
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.StmtNumEOf
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcCGNonneg
@@ -12,7 +14,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcSize
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcTsumOdd
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NdLszLe
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NumericalClosedOfNeed
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcSummableMin, Formalism.SharpRestriction.GrowthBounds.ProofLW
 
@@ -215,7 +216,6 @@ theorem lw_de_le (p t : ℕ) (TT : Finset (Fin n')) (lam0 : Fin n' → Fin (k1 +
   set ℓ := Real.logb p A with hℓ
   have hN1' : (1 : ℝ) ≤ NN k1 t j := by unfold NN; push_cast; nlinarith
   have hNM : 1 ≤ NM := le_trans hN1' hN1
-  have hN0' : (0 : ℝ) ≤ NN k1 t (j - 1) := by positivity
   have hα : ∀ s, (lgp p (al TT lam0 s) : ℝ) ≤ 2 * ℓ := fun s => by
     have := nc_lgp_le p hp _ A 1 (by rw [pow_one]; exact hal s) hl; push_cast at this; linarith
   have hlz : ∀ s, (lgp p (lsz t TT lam0 w j s) : ℝ) ≤ 3 * ℓ := fun s => by
@@ -310,22 +310,13 @@ theorem lw_eta_le (hS : Formalism.MainNotions.SizesAt L) : 2 * L.etaSz ≤ L.sc.
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, hEta, _⟩ := hS
   have h5 := hEta.2.2.2.2.1
   have hm := nd_m_ge (D := D)
-  have ht : (0 : ℝ) ≤ (D.R.t : ℝ) := Nat.cast_nonneg _
   have h1 : (2 : ℝ) ≤ (D.R.m : ℝ) * ((D.R.t : ℝ) + 1) := by nlinarith
   have h2 : 2 * L.etaSz ≤ (D.R.m : ℝ) * ((D.R.t : ℝ) + 1) * L.etaSz :=
     mul_le_mul_of_nonneg_right h1 L.etaSz_pos.le
   linarith
 
 theorem lw_aT_le (t : D.host.TT) : (L.aT t : ℝ) ≤ 6 / 5 * L.sc.a := by
-  have h := (L.aT_win t).2
-  have ha := nc_a_ge (L := L)
-  have hk := nd_k_ge (D := D)
-  have hx : (1 : ℝ) ≤ L.sc.x ^ (Scale.A / 2) :=
-    Real.one_le_rpow (nd_x_ge (L := L)) (by unfold Scale.A; norm_num)
-  have h5 : (5 : ℝ) ≤ (D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2) := by nlinarith
-  have h1 : L.sc.a / ((D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2)) ≤ L.sc.a / 5 :=
-    div_le_div_of_nonneg_left (by linarith) (by norm_num) h5
-  linarith
+  apply _root_.Formalism.BasicNotions.SizeData₂.aT_le' <;> assumption
 
 theorem lw_size (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotions.G.LatInst D) (hS : Formalism.MainNotions.SizesAt L) (hT : GatTies D)
     (hL : Formalism.MainNotions.G.LatTied hT X Y) (u : D.what₂.Word) (w : D.what₂.places.Pl)
@@ -388,13 +379,11 @@ theorem lw_size (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotion
     have hw0 : (0 : ℝ) ≤ ((Y.Fl u w hg).c : ℝ) + ((Y.Fl u w hg).w (Y.vOf u w hg t0) j s : ℝ) := by
       have h5 := nd_c_le_w (Y.Fl u w hg) (Y.vOf u w hg t0) s j hj1
       have h6 : (((Y.Fl u w hg).c : ℤ) : ℝ) ≤ ((Y.Fl u w hg).w (Y.vOf u w hg t0) j s : ℝ) := by exact_mod_cast h5
-      have h7 : (0 : ℝ) ≤ ((Y.Fl u w hg).c : ℝ) := Nat.cast_nonneg _
       push_cast at h6
       linarith
     have h8 : (NN (D.gat u w hg).P.m (Y.Fl u w hg).t j : ℝ) *
         (((Y.Fl u w hg).c : ℝ) + ((Y.Fl u w hg).w (Y.vOf u w hg t0) j s : ℝ)) ≤ L.sc.a * (4 * L.sc.a) :=
       mul_le_mul hN (by linarith) hw0 (by linarith)
-    have h9 : L.sc.a * (4 * L.sc.a) = (2 * L.sc.a) ^ 2 := by ring
     linarith
 
 

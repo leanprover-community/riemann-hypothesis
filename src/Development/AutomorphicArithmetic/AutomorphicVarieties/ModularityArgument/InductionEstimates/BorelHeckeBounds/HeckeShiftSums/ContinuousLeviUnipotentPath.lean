@@ -3,6 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.UnipotentBlockPairs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.BorelHeckeBounds.HeckeShiftSums.VolOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.ContLv
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.ContLv
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.DenseCc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.PmLaws
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.SecCrit
@@ -14,6 +15,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.BorelHeckeBounds.Full
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.BorelHeckeBounds.HeckeShiftSums.UnipMemIff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.FlatInt
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.FlatInt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.SwapInt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.UnipotentBlockMatrices.ClosedKernelMinors.BochnerOfLintegral
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ScatteringLimits.ConvolutionSpectra.ConvAdj
@@ -652,19 +654,7 @@ private theorem repSum {μ : Measure (G1 K (2 + 2))} [μ.IsHaarMeasure] {ι : Ty
 private theorem kerConv {d : ℕ} (κ : ℝ → Eu d →L[ℂ] Eu d) (hk : Ker κ) (β : ℝ → ℂ) (v : Eu d) (hβ : Continuous β)
     (hβc : HasCompactSupport β) :
     Continuous (fun x => ∫ t, β (x + t) • κ t v) ∧ HasCompactSupport (fun x => ∫ t, β (x + t) • κ t v) := by
-  have e : (fun x => ∫ t, β (x + t) • κ t v) =
-      MeasureTheory.convolution β (fun t => κ (-t) v) (ContinuousLinearMap.lsmul ℝ ℂ) volume := by
-    funext x
-    rw [MeasureTheory.convolution]
-    refine Eq.trans ?_ (integral_add_left_eq_self _ x)
-    simp
-  have c1 : Continuous fun t => κ (-t) v := (hk.1.comp continuous_neg).clm_apply continuous_const
-  have c2 : HasCompactSupport fun t => κ (-t) v :=
-    (hk.2.comp_homeomorph (Homeomorph.neg ℝ)).mono fun t ht h0 => ht (by
-      have : κ (-t) = 0 := h0
-      simp [this])
-  rw [e]
-  exact ⟨c2.continuous_convolution_right _ hβ.locallyIntegrable c1, hβc.convolution _ c2⟩
+  apply _root_.w_cc <;> assumption
 
 private theorem lineTerm [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K (2 + 2))) [μ.IsHaarMeasure] {μ₂ : Measure (G1 K 2)}
     [μ₂.IsHaarMeasure] {τ₁ τ₂ : Submodule ℂ (L2 μ₂)} (h₁ : CuspIrr μ₂ τ₁) (h₂ : CuspIrr μ₂ τ₂) {D : TypeDat K (2 + 2)}
@@ -1008,16 +998,7 @@ private theorem five {M₁ M₂ T Kc U : Type} [MeasurableSpace M₁] [Measurabl
     (h : Integrable G (a₁.prod (a₂.prod (τ.prod (κ.prod ν))))) :
     ∫ p, G p ∂(a₁.prod (a₂.prod (τ.prod (κ.prod ν)))) =
       ∫ m₁, ∫ m₂, ∫ t, ∫ k, ∫ X, G (m₁, m₂, t, k, X) ∂ν ∂κ ∂τ ∂a₂ ∂a₁ := by
-  rw [integral_prod _ h]
-  refine integral_congr_ae ?_
-  filter_upwards [h.prod_right_ae] with m₁ h1
-  rw [integral_prod _ h1]
-  refine integral_congr_ae ?_
-  filter_upwards [h1.prod_right_ae] with m₂ h2
-  rw [integral_prod _ h2]
-  refine integral_congr_ae ?_
-  filter_upwards [h2.prod_right_ae] with t h3
-  rw [integral_prod _ h3]
+  apply _root_.five <;> assumption
 
 private theorem swap {M Z : Type} [MeasurableSpace M] [MeasurableSpace Z] (a : Measure M) (ζ : Measure Z) [IsFiniteMeasure a]
     [SFinite ζ] (u : Z → ℂ) (hu : Integrable u ζ) (b : M → M → Z → ℂ)
@@ -1085,15 +1066,7 @@ private theorem oneS {ι M Kc : Type} [Fintype ι] [MeasurableSpace M] [Measurab
 private theorem bf_lv {K : Type} [Field K] [NumberField K] {f : G1 K (2 + 2) → ℂ} (hf : SFun f) (β : ℝ → ℂ) (x y : G1 K 2) (t : ℝ)
     (g : G1 K (2 + 2)) :
     bf β f (lv x y t * g) = β (t + HH g) * Complex.exp (2 * ((t : ℂ) + (HH g : ℂ))) * f (lv x y 0 * g) := by
-  have h1 : HP 2 2 (lv x y t * g) = t + HH g := by
-    have := (hpSpec (K := K)).1 0 x y t g
-    rwa [show nn (0 : UPos (2 + 2) 2 → 𝔸[K]) = 1 from unipOne_zero 2, one_mul] at this
-  have h2 : f (lv x y t * g) = f (lv x y 0 * g) := by
-    rw [← hf.ray t (lv x y 0 * g), ← mul_assoc, (blkLaws (K := K)).2.1, one_mul, one_mul, add_zero]
-  rw [bf, h1, h2]
-  congr 3
-  push_cast
-  ring
+  apply _root_.bf_lv <;> assumption
 
 private theorem innerX {K : Type} [Field K] [NumberField K] {f : G1 K (2 + 2) → ℂ} (hf : SFun f) (β : ℝ → ℂ) (hβ : Continuous β)
     (hβs : HasCompactSupport β) (Φ : G1 K (2 + 2) → ℂ) {d d' : ℕ} (sec : Eu d →ₗ[ℂ] (G1 K (2 + 2) → ℂ))

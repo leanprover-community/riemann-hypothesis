@@ -14,57 +14,10 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureConjugationInvariant
 public import Formalism.SharpRestriction.CuspSpanNormBounds.JExistsNatSmulMemL
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -1326,10 +1279,6 @@ theorem lemma_one_det_index_le_gram (D : D7) (Λ : VanishingOnXAndXPlusGluing.La
   · have hi' : 0 < (iIdx Λ g F F' : ℝ) := by exact_mod_cast hi
     have hle : (iIdx Λ g F F' : ℝ) ≤
         (Nat.card (BQ Λ F F') : ℝ) / NE (E := D.host.E) g ^ (D.R.rS + 1) := h1.trans h2
-    have hNpos : 0 < NE (E := D.host.E) g ^ (D.R.rS + 1) := by
-      rcases hN.lt_or_eq with h | h
-      · exact h
-      · rw [← h, div_zero] at hle; linarith
     have e1 : NG Λ F F' / ((Nat.card (BQ Λ F F') : ℝ) * (iIdx Λ g F F' : ℝ)) * (iIdx Λ g F F' : ℝ) ^ 2 =
         NG Λ F F' * ((iIdx Λ g F F' : ℝ) / (Nat.card (BQ Λ F F') : ℝ)) := by
       field_simp
@@ -5281,8 +5230,7 @@ theorem g_simple_len_ne {A B : Submodule (𝓞 E) W} {P₀ : Ideal (𝓞 E)} (hP
     (e : (A ⧸ B.comap A.subtype) ≃ₗ[𝓞 E] (𝓞 E ⧸ P₀)) (p : Ideal (𝓞 E)) [hp : p.IsPrime] (hne : p ≠ P₀) :
     locLen p A B = 0 := by
   have : ∃ s ∈ P₀, s ∉ p := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (hP.eq_of_le hp.ne_top hcon).symm
   obtain ⟨s, hs, hsp⟩ := this
   exact g_locLen_zero p hsp (fun x hx => g_simple_kill e hs hx)

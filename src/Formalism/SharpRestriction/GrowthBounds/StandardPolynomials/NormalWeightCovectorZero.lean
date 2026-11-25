@@ -42,15 +42,6 @@ theorem wh_Xpow (wt : σ → ℕ) (v1 v2 : σ) (a : ℕ) :
     IsWeightedHomogeneous wt ((MvPolynomial.X v1 : MvPolynomial σ K) * MvPolynomial.X v2 ^ a) (wt v1 + a * wt v2) := by
   exact (isWeightedHomogeneous_X K wt v1).mul ((isWeightedHomogeneous_X K wt v2).pow a)
 
-theorem wh_sub {wt : σ → ℕ} {n : ℕ} {P Q : MvPolynomial σ K} (hP : IsWeightedHomogeneous wt P n)
-    (hQ : IsWeightedHomogeneous wt Q n) : IsWeightedHomogeneous wt (P - Q) n := by
-  intro d hd
-  rw [MvPolynomial.coeff_sub] at hd
-  by_cases h : AddMonoidAlgebra.coeff P d = 0
-  · rw [h, zero_sub, neg_ne_zero] at hd
-    exact hQ hd
-  · exact hP h
-
 end Wts
 
 section Soft
@@ -139,7 +130,8 @@ theorem kW_pol (j : Fin (numSeg X.TT)) (i : Fin (segS X.TT j)) (c : Fin (X.m + 1
   rw [mem_Pol_iff]
   intro l
   unfold kWkey
-  exact wh_sub (wh_Xpow (K := KK O) (wL X l) _ _ _) (wh_Xpow (K := KK O) (wL X l) _ _ _)
+  exact IsWeightedHomogeneous.sub (wh_Xpow (K := KK O) (wL X l) _ _ _)
+    (wh_Xpow (K := KK O) (wL X l) _ _ _)
 
 theorem kW_inA (j : Fin (numSeg X.TT)) (i : Fin (segS X.TT j)) (c : Fin (X.m + 1)) : InA (kWkey O X j i c) := by
   intro m
@@ -185,7 +177,8 @@ theorem loc_pol (c : Fin (X.m + 1)) : locC O X c ∈ Pol (KK O) (ι := X.TT × B
   rw [mem_Pol_iff]
   intro l
   unfold locC
-  exact wh_sub (wh_prodStart (O := O) (wL X l) 0) (wh_prodStart (O := O) (wL X l) c)
+  exact IsWeightedHomogeneous.sub (wh_prodStart (O := O) (wL X l) 0)
+    (wh_prodStart (O := O) (wL X l) c)
 
 theorem prodStart_int (c : Fin (X.m + 1)) :
     (∏ j : Fin (numSeg X.TT), (MvPolynomial.X ((topStart X j, true), c) : RHH O X) ^ (X.p ^ segG X.TT j - 1)) ∈

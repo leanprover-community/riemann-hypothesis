@@ -11,6 +11,7 @@ public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LEhwLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.FockPairingHighestWeightProof
 
 @[expose] public section
 
@@ -54,28 +55,7 @@ theorem sw_kill (R : Type) [CommRing R] [IsDomain R] {r n : ℕ} (hn : n ≤ r) 
     (G : MvPolynomial (Fin r × Fin n) R) (hG : G ∈ dualWeyl R r n ν)
     (hGh : IsWeightedHomogeneous (rowW r n) G (rowNu (r := r) ν))
     (a b : Fin r) (hab : a < b) (k : ℕ) (hk : 1 ≤ k) : rowDiv R a b k G = 0 := by
-  classical
-  have hGp : IsWeightedHomogeneous (lehwP a) G
-      ((∑ a' : Fin r with a'.val < a.val + 1, rowNu (r := r) ν a' : ℕ) : ℤ) := by
-    intro m hm
-    rw [lehw_weight_P]
-    have hm' := hGh hm
-    congr 1
-    refine Finset.sum_congr rfl fun a' _ => ?_
-    rw [← lehw_weight_rowW, hm']
-  have hsh := lehw_rowDiv_shift R (lehwP a) 1 a b (highestWeightCount_self_eq_succ_of_lt hab) _ k G hGp
-  have hmem := rowDivStable R r n ν a b k G hG
-  by_contra hne
-  obtain ⟨m, hm⟩ := ne_zero_iff.mp hne
-  have h1 := hsh hm
-  rw [lehw_weight_P] at h1
-  have h2 := sw_dom R ν _ hmem m (mem_support_iff.mpr hm) (a.val + 1)
-  rw [← rowNuSum r n ν hn] at h2
-  have h3 : ((∑ a' : Fin r with a'.val < a.val + 1, rowDeg m a' : ℕ) : ℤ) ≤
-      ((∑ a' : Fin r with a'.val < a.val + 1, rowNu (r := r) ν a' : ℕ) : ℤ) := by exact_mod_cast h2
-  have hk' : (1 : ℤ) ≤ k := by exact_mod_cast hk
-  rw [h1] at h3
-  linarith
+  apply _root_.Formalism.L2.G.Model.TS.hw_kill <;> assumption
 
 theorem sw_eval_hw (R : Type) [CommRing R] {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) :
     eval (idPoint R r n) (hw R hn ν) = 1 := by

@@ -1144,7 +1144,6 @@ open MeasureTheory IsDedekindDomain NumberField GlobalTheory.AdelicU GlobalTheor
 open GlobalTheory.AutomorphicL2Unitary (starFn)
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (HypH)
 open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Proof.parabolic_and_constant_term
 theorem testFnConstTermVanishX : TestFnConstTermVanishX := by
   intro D V hodd S M T hH U μa _ μf _ f hf 𝔉 hP
@@ -1156,16 +1155,16 @@ theorem testFnConstTermVanishX : TestFnConstTermVanishX := by
   have hF := hff.isFinFamily
   have he := (T.frame v).idem_mem (μf v.1) (T.τ v)
   constructor
-  · refine GlobalTheory.T.unipotentIntegrals_pureTensor_vanish_of_local D V 𝔉 fa ff hA hF v.1 fun ν _ x y => ?_
-    exact (GlobalTheory.T.typeIdempotent_unipotentIntegral_vanish_splitPlace D V T v a ha0 (by omega) hv 𝔉 (hpar v).1 (μf v.1) _ (conv_mem_SB he hh) (ff v.1) (Or.inr e)
+  · refine _root_.GlobalTheory.TestConstTerm.unipIntegralsVanish_tensor D V 𝔉 fa ff hA hF v.1 fun ν _ x y => ?_
+    exact (_root_.GlobalTheory.LocConst.unip_integral_vanish D V T v a ha0 (by omega) hv 𝔉 (hpar v).1 (μf v.1) _ (conv_mem_SB he hh) (ff v.1) (Or.inr e)
       ν x y).2
   · rw [starFn_tensor]
-    refine GlobalTheory.T.unipotentIntegrals_pureTensor_vanish_of_local D V 𝔉 _ _ (fun w => starFn_mem_ccArch (hA w)) (isFinFamily_starFn hF) v.1 fun ν _ x y => ?_
+    refine _root_.GlobalTheory.TestConstTerm.unipIntegralsVanish_tensor D V 𝔉 _ _ (fun w => starFn_mem_ccArch (hA w)) (isFinFamily_starFn hF) v.1 fun ν _ x y => ?_
     have e' : starFn (ff v.1) = GlobalTheory.AutomorphicL2Unitary.conv (μf v.1) ((T.frame v).idem (μf v.1) (T.τ v))
         (GlobalTheory.AutomorphicL2Unitary.conv (μf v.1) (starFn h) ((T.frame v).idem (μf v.1) (T.τ v))) := by
       rw [e, starFn_conv, starFn_conv]
       simp only [TypeData.idem, SplitAt.starFn_idem]
-    exact (GlobalTheory.T.typeIdempotent_unipotentIntegral_vanish_splitPlace D V T v a ha0 (by omega) hv 𝔉 (hpar v).1 (μf v.1) _ (conv_mem_SB (starFn_mem_SB hh) he) _
+    exact (_root_.GlobalTheory.LocConst.unip_integral_vanish D V T v a ha0 (by omega) hv 𝔉 (hpar v).1 (μf v.1) _ (conv_mem_SB (starFn_mem_SB hh) he) _
       (Or.inl e') ν x y).2
 
 theorem parabolicAndConstTermX : ParabolicAndConstTermX := ⟨parabolicAtSplitPlaces, testFnConstTermVanishX⟩
@@ -1175,8 +1174,6 @@ end
 
 section
 
-theorem _root_.GlobalTheory.PsCo.Plug.parabolicT : GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing.ParabolicAndConstTermX := by
-  first | exact @GlobalTheory.Proof.parabolic_and_constant_term.parabolicAndConstTermX
 end
 
 section
@@ -1188,7 +1185,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt
 open scoped TensorProduct ENNReal
 noncomputable section
 namespace GlobalTheory.NonFieldType
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {V : HSp D}
 
 theorem productClauseX {S : D.what₂.Tau → SPar} {M : DSModel V S} {T : TypeDataG V} {U : AuxiliaryPlaceHermitianSpace V}
@@ -1237,8 +1233,6 @@ end
 
 section
 
-theorem _root_.GlobalTheory.PsCo.Plug.nonFieldT : GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.NonFieldTypeVanishingX := by
-  first | exact @GlobalTheory.NonFieldType.nonFieldTypeVanishingX
 end
 
 section

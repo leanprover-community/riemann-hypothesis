@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRAsmPS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPolyRadialCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCPDecompNu
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRCPDecompDer
@@ -68,19 +69,10 @@ lemma ps_conj : PS TT (fun ζ => conj ζ) := ⟨0, MvPolynomial.X 1, fun ζ _ =>
 lemma ps_sig : PS TT (fun ζ => sig TT ζ) := ⟨0, MvPolynomial.X 2, fun ζ _ => by simp⟩
 
 lemma ps_add {f g : ℂ → ℂ} (hf : PS TT f) (hg : PS TT g) : PS TT (fun ζ => f ζ + g ζ) := by
-  obtain ⟨m, p, hp⟩ := hf
-  obtain ⟨n, q, hq⟩ := hg
-  refine ⟨m + n, (MvPolynomial.X 0 * MvPolynomial.X 1 - MvPolynomial.C (TT : ℂ)) ^ n * p + (MvPolynomial.X 0 * MvPolynomial.X 1 - MvPolynomial.C (TT : ℂ)) ^ m * q, fun ζ hζ => ?_⟩
-  rw [MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_mul, MvPolynomial.eval_pow,
-    MvPolynomial.eval_pow, ← gg_eval, ← hp ζ hζ, ← hq ζ hζ]
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.Asm.PS.add <;> assumption
 
 lemma ps_mul {f g : ℂ → ℂ} (hf : PS TT f) (hg : PS TT g) : PS TT (fun ζ => f ζ * g ζ) := by
-  obtain ⟨m, p, hp⟩ := hf
-  obtain ⟨n, q, hq⟩ := hg
-  refine ⟨m + n, p * q, fun ζ hζ => ?_⟩
-  rw [MvPolynomial.eval_mul, ← hp ζ hζ, ← hq ζ hζ]
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.Asm.PS.mul <;> assumption
 
 lemma sig_sq {ζ : ℂ} (hζ : TT < Complex.normSq ζ) : sig TT ζ * sig TT ζ = gg TT ζ := by
   unfold Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.gg Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.sig
@@ -1401,8 +1393,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace CapWP
 

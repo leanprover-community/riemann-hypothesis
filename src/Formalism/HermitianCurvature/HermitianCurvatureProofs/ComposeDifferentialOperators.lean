@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.OpLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtEpart
 import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -91,12 +92,7 @@ lemma ckOn_list_sum {m : ℕ∞} {α : Type*} (L : List α) (f : α → Mat k r 
     simpa using ckOn_GV_add (h a (by simp)) (ih fun b hb => h b (by simp [hb]))
 
 lemma opOrder_le_of (Θ : DiffOp k r Wp Wq) {n : ℕ} (h : ∀ T ∈ Θ, T.word.length ≤ n) : opOrder Θ ≤ n := by
-  unfold opOrder
-  induction Θ with
-  | nil => simp
-  | cons T t ih =>
-    simp only [List.map_cons, List.foldr_cons]
-    exact max_le (h T (by simp)) (ih fun T' hT' => h T' (by simp [hT']))
+  apply _root_.Formalism.FourierDecayAlt.P.CutBP.LimitNormalForms.opOrder_le <;> assumption
 
 lemma one_uw (z : Fin (2 * r + k + 1) → ℂ) : (1 : Mat k r) ∈ UWset k r z := by
   simp only [UWset, Set.mem_setOf_eq, Matrix.one_mulVec, and_self, implies_true, and_true]

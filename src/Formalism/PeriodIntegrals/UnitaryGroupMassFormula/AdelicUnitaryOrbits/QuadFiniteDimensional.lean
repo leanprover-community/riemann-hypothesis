@@ -22,8 +22,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E)
 
 theorem quad_exists_not_mem (h2 : Module.finrank F E = 2) :
     ∃ a : E, a ∉ (algebraMap F E).range := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have htop : Submodule.span F ({1} : Set E) = ⊤ := by
     rw [eq_top_iff]
     intro x _

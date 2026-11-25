@@ -241,8 +241,7 @@ theorem residue_core : ∀ (p : ℕ) [Fact p.Prime] (O Ω : Type) [CommRing O] [
       rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_add (f := _), hab, map_one, sub_self]
     have hv1 := hvI _ hxy
     have key : v x = 1 ∨ v y = 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hx' : v x < 1 := lt_of_le_of_ne (hint _ x.2) hcon.1
       have hy' : v y < 1 := lt_of_le_of_ne (hint _ y.2) hcon.2
       have e1 : (1 : Ω) = ((x : Ω) + y) - ((x + y - 1 : Algebra.adjoin O (T : Set Ω)) : Ω) := by

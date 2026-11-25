@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
 public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.MulInvBlockDiagApplySameBlock
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
@@ -74,15 +75,7 @@ variable {K : Type} [CommRing K] (R : Subring K) (ψ : AddChar K ℂ)
 
 theorem psiKR_mk (hψ : ∀ r ∈ R, ψ r = 1) (a : K) :
     psiKR R ψ (Submodule.Quotient.mk a) = ψ a := by
-  unfold psiKR
-  have h1 : (Submodule.Quotient.mk (Quotient.out (Submodule.Quotient.mk a : KR R)) : KR R)
-      = Submodule.Quotient.mk a := Quotient.out_eq _
-  rw [Submodule.Quotient.eq] at h1
-  obtain ⟨r, hr⟩ := h1
-  have h2 : Quotient.out (Submodule.Quotient.mk a : KR R) = a + (r : K) := by
-    have : (r : K) = Quotient.out (Submodule.Quotient.mk a : KR R) - a := hr
-    rw [this]; ring
-  rw [h2, AddChar.map_add_eq_mul, hψ r r.2, mul_one]
+  apply _root_.Formalism.FourierDecayAlt.P.A5x6.psiKR_mk <;> assumption
 
 noncomputable def psiB (hψ : ∀ r ∈ R, ψ r = 1) : AddChar (KR R) ℂ where
   toFun := psiKR R ψ

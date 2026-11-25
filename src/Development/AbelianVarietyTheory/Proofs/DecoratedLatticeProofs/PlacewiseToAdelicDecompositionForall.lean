@@ -226,6 +226,5 @@ theorem placesToAdeles (D : D7) : PlacesToAdeles D := by
       _ = r * (κ * g) := by rw [hx]
       _ = r * g * κ := by rw [hcomm κ hκ g hg, mul_assoc]
 
-theorem placesToAdeles_all : ∀ D : D7, PlacesToAdeles D := placesToAdeles
 
 end GlobalTheory.FinPl

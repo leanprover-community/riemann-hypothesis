@@ -103,7 +103,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 open TopologicalSpace
@@ -380,7 +379,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -397,7 +395,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -415,7 +412,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -756,7 +752,7 @@ theorem exists_unit_kaVal (laws : Out.Laws) {O : Type} [CommRing O] [IsDomain O]
         haveI := x.P.isAb.comm
         have h₃ : ∀ I r, ξ I r ^ (k - j * n) = 1 := fun I r =>
           pow_eq_one_of_ker (hpos j hj) (hadm.2.2.2 _) (ξ I) (fun c => (List.prod_ofFn).symm.trans (h₂ I c)) r
-        obtain ⟨lam, hlam⟩ := T.exists_l2Val_field_or_dvr_split_kernel laws O x _ _ b ξ (hO _ (hpos j hj)) (hadm.2.2.2 _) hb (fun I I' hI p => by
+        obtain ⟨lam, hlam⟩ := _root_.GlobalTheory.SimilLocal.exists_l2Val laws O x _ _ b ξ (hO _ (hpos j hj)) (hadm.2.2.2 _) hb (fun I I' hI p => by
           by_contra h
           refine hI (h₁ (funext fun r => ?_))
           exact eq_of_pow_eq_one laws x (hpos j hj) (hO _ (hpos j hj)) (h₃ I r) (h₃ I' r) p
@@ -905,7 +901,7 @@ theorem isUnit_of_finite_zeros : Out.Laws → ∀ (O : Type) [CommRing O] [IsDom
         exact this
   have h₁ := T.keyInvariant_baseChange laws F Ω xF y i ψ v n l l' al hg₁ sF s₁ κ (hg.symm ▸ hadm) H₁ hs₁ hκ
   have h₂ : i κ = g u := congrArg Units.val
-    (T.keyInvariantFromIntersection_unique laws Ω y n l l' al s₁ _ _ ((hg₁.trans hg).symm ▸ hadm) h₁ hu)
+    (_root_.GlobalTheory.KaUnique.kaVal_unique laws Ω y n l l' al s₁ _ _ ((hg₁.trans hg).symm ▸ hadm) h₁ hu)
   have h₃ : g (j a) = g (u ^ e : O'ˣ) := by
     refine (RingHom.congr_fun hsq a).trans ?_
     rw [RingHom.comp_apply, ← ha, map_zpow₀, h₂]
@@ -925,7 +921,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1144,7 +1139,6 @@ noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1322,7 +1316,7 @@ theorem kaVal_eq_of_line : Out.Laws → ∀ (K : Type) [Field K] [CharZero K] [I
   · rintro L _ ψ κ κ' ⟨y, s, hy, hκ⟩ ⟨y', s', hy', hκ'⟩
     haveI : CharZero L := (RingHom.charZero_iff (ψ.comp C).injective).1 inferInstance
     obtain ⟨φ, w, hg, H, hs⟩ := hy.cancel (g := RingHom.id L) hy'
-    exact GlobalTheory.T.keyInvariantFromIntersection_unique hL L y' n l l' al s' _ _ (adm hy')
+    exact _root_.GlobalTheory.KaUnique.kaVal_unique hL L y' n l l' al s' _ _ (adm hy')
       (GlobalTheory.T.keyInvariant_baseChange hL L L y y' _ φ w n l l' al hg s s' κ (adm hy) H hs hκ) hκ'
   · rintro O _ _ _ ψ r κ hr ⟨yk, sk, hyk, zk, chk, -, -, -, -, -, -, -, hE, -⟩
     obtain ⟨y, s, hy⟩ := exists_isLinePt s₀ s₁ (ψ.comp C) (ψ X)
@@ -1364,7 +1358,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1592,7 +1585,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1610,7 +1602,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
@@ -1715,7 +1706,7 @@ theorem valAt_unique [CharZero K] (hL : Out.Laws) (hA : admitted x.P.g n l l' al
     simpa only [RingHom.id_comp, RingHom.coe_id, Function.id_comp] using h2
   have hk := h1.kaVal hL hA h2' hk1
   have hA2 : admitted x2.P.g n l l' al := by rw [h2.g_eq]; exact hA
-  have e := GlobalTheory.T.keyInvariantFromIntersection_unique hL F x2 n l l' al s2 _ _ hA2 hk hk2
+  have e := _root_.GlobalTheory.KaUnique.kaVal_unique hL F x2 n l l' al s2 _ _ hA2 hk hk2
   rw [← e]
   rfl
 
@@ -1852,13 +1843,10 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 
 
-theorem _root_.GlobalTheory.T.keyInvariant_independent_of_sections : Out.Laws → ∀ (K : Type) [Field K] [CharZero K] [IsAlgClosed K] (x : KeyIn K) (n l l' : ℕ) (al : ℕ → Matrix (Fin 4) (Fin 4) ℤ), admitted x.P.g n l l' al → ∃ κ : Kˣ, (∀ (K' : Type) [Field K'] [IsAlgClosed K'] (f : K →+* K') (x' : KeyIn K') (s' : Fin x'.P.g → RR x' n) (κ' : K'ˣ), KeyPB x' x f → KaVal x' n l l' al s' κ' → (κ' : K') = f κ) ∧ ∃ (K' : Type) (_ : Field K') (_ : IsAlgClosed K') (f : K →+* K') (x' : KeyIn K') (φ : _) (w : _) (s' : Fin x'.P.g → RR x' n) (κ' : K'ˣ), KeyVia x' x f φ w ∧ KaVal x' n l l' al s' κ' := by
-  first | exact @GlobalTheory.KaIndep.kaVal_independent
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyInvariantIndependentOfSectionsStatement =====

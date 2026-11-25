@@ -58,7 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZM GlobalTheory.SiegelTor
 open GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.BirigidRoot
 

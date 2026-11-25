@@ -32,8 +32,6 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def adKL {ε : Fin n → Bool} (k : KG ε) : (PCoord ε → ℂ) →ₗ[ℝ] (PCoord ε → ℂ) where
   toFun := adK k
   map_add' z w := by

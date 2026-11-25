@@ -412,8 +412,7 @@ theorem highest_weight_successive : StepHW := by
   intro K N q _ _ _ T ε hmul hone hcomm z μ hz hw
   classical
   have hex : ∃ b, ε b b z ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hz
     calc z = (∑ a, ε a a) z := by rw [hone]; rfl
       _ = ∑ a, ε a a z := LinearMap.sum_apply _ _ _

@@ -65,8 +65,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.GeoTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T1 : Type}
   {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T1 D.R.m} {T0 : CoreJ D} [Algebra T0.Q.c.F D.what₂.LL]
   {Rl : RealDat3 D A3 T0.Q.c.F} {cG : Formalism.L2.DIV.G0 Rl.Pg D.R.r ≃* G0g D.nd} {S : NX.RatDat D.ntw} (YS : NX.NExpRealS Rl cG S)
@@ -113,55 +111,6 @@ structure ThetaTie where
   side : ∀ i j b, SideTie YS fw T i j b
 
   isUnramified₂ : ∀ i, T.MaximalUnramifiedExtension i = kurAt YS (T.iC i) true ⊓ kurAt YS (T.iC i) false
-
-namespace SideTie
-
-variable {YS fw T} {i : D.ntw.Tw} {j : Fin D.R.m} {b : Bool} (Z : SideTie YS fw T i j b)
-
-theorem ev_some {y z} (h : Z.pt y = some z) (f) : T.ev i _ b f y = valAt YS fw j z.1 (toK YS j b f) := by
-  rw [Z.ev_eq, h]; rfl
-
-theorem ev_none {y} (h : Z.pt y = none) (f) : T.ev i _ b f y = 0 := by rw [Z.ev_eq, h]; rfl
-
-
-include Z in
-theorem exists_ev_eq (z : Pts YS (T.iC i) b ((j : ℕ) + 1)) :
-    ∃ (y : T.Pt i ((j : ℕ) + 1)) (u : ℂ_[D.ntw.l i]), ‖u‖ = 1 ∧ ∀ f, valAt YS fw j z.1 (toK YS j b f) = u * T.ev i _ b f y := by
-  obtain ⟨y, z', t, hy, ht, hb⟩ := Z.cover z
-  exact ⟨y, _, norm_wchar ht _, fun f => by rw [Z.ev_some hy]; exact valAt_frBor YS fw j hb _⟩
-
-
-
-include Z in
-theorem norm_le_iff {B : ℝ} (hB : 0 ≤ B) (f : D.nexp.Fm i ((j : ℕ) + 1) b) : (∀ y, ‖T.ev i _ b f y‖ ≤ B) ↔
-    ∀ z : Pts YS (T.iC i) b ((j : ℕ) + 1), ‖valAt YS fw j z.1 (toK YS j b f)‖ ≤ B := by
-  refine ⟨fun h z => ?_, fun h y => ?_⟩
-  · obtain ⟨y, u, hu, e⟩ := Z.exists_ev_eq z
-    rw [e, norm_mul, hu, one_mul]
-    exact h y
-  · rcases hy : Z.pt y with _ | z
-    · rw [Z.ev_none hy, norm_zero]; exact hB
-    · rw [Z.ev_some hy]; exact h z
-
-
-
-theorem hecke {k P} (h : HkIdx i k P) : ∃ s : T0.Q.c.F, ‖embC YS (T.iC i) b s‖ = 1 ∧ ∀ y z, Z.pt y = some z →
-    ∃ quot : HkKer P.asIdeal (charAt P) k z.1 → FrC YS (T.iC i) b ((j : ℕ) + 1),
-      (∀ C, IsHkQuot P.asIdeal (charAt P) k z.1 C (quot C)) ∧ ∀ f,
-        valAt YS fw j z.1 (toK YS j b (D.nexp.hkF i _ b k P f)) =
-          embC YS (T.iC i) b s * ∑ᶠ C, valAt YS fw j (quot C) (toK YS j b f) := by
-  obtain ⟨u, hu, H⟩ := Z.hk k P h
-  refine ⟨u, hu, fun y z hy => ?_⟩
-  obtain ⟨e, he⟩ := H y z hy
-  choose z' t w h1 h2 _ h4 h5 using he
-  refine ⟨fun C => w (e.symm C), fun C => by simpa using h2 (e.symm C), fun f => ?_⟩
-  rw [← Z.ev_some hy, T.hk_ev i _ b k P h.1 h.2.1 h.2.2.1 h.2.2.2, ← finsum_comp_equiv e, finsum_eq_sum_of_fintype,
-    Finset.mul_sum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  beta_reduce
-  rw [h5, Z.ev_some (h1 c), e.symm_apply_apply, valAt_frBor YS fw j (h4 c), mul_assoc]
-
-end SideTie
 
 section Record
 
@@ -433,8 +382,6 @@ namespace GlobalTheory.HeightCounting
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2 Formalism.L2.Host Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev
   Formalism.IndefR.RecTie Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP NumberField IsDedekindDomain GlobalTheory.Mem
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 set_option genInjectivity false

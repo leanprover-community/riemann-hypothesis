@@ -106,7 +106,6 @@ theorem cl_sd_ratio_le (a b : ℕ) (θ : ℝ) (hθ : 0 ≤ θ) (n : ℕ)
     have ht := h (n + 1) (by omega) le_rfl
     push_cast at ht
     have ha0 : (0 : ℝ) ≤ (sd n a : ℝ) := Nat.cast_nonneg _
-    have hb0 : (0 : ℝ) ≤ (sd n b : ℝ) := Nat.cast_nonneg _
     refine le_of_mul_le_mul_right ?_ hn
     calc (sd (n + 1) a : ℝ) * ((n : ℝ) + 1) = ((a : ℝ) + ((n : ℝ) + 1)) * (sd n a : ℝ) := hs.symm
       _ ≤ (θ * ((b : ℝ) + ((n : ℝ) + 1))) * (θ ^ n * (sd n b : ℝ)) :=
@@ -153,11 +152,6 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
   have hcastBL : ((B - (J + 1) : ℕ) : ℝ) = (B : ℝ) - ((J : ℝ) + 1) := by
     rw [Nat.cast_sub hJB]; push_cast; ring
   set θ : ℝ := 1 - ((J : ℝ) + 1) / ((B : ℝ) + m) with hθ
-  have hLB : (J : ℝ) + 1 ≤ (B : ℝ) + m := by
-    have : ((J + 1 : ℕ) : ℝ) ≤ (B : ℝ) := by exact_mod_cast hJB
-    push_cast at this
-    have : (0 : ℝ) ≤ m := Nat.cast_nonneg _
-    linarith
   have hθ0 : 0 ≤ θ := by
     rw [hθ, sub_nonneg, div_le_iff₀ hBm]; linarith
   have hratio : (sd m (B - (J + 1)) : ℝ) ≤ θ ^ m * (sd m B : ℝ) := by
@@ -165,10 +159,8 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
     intro t _ htm
     rw [hcastBL]
     have htm' : (t : ℝ) ≤ m := by exact_mod_cast htm
-    have ht0 : (0 : ℝ) ≤ t := Nat.cast_nonneg _
     have e : θ * ((B : ℝ) + t) = ((B : ℝ) + t) - ((J : ℝ) + 1) * ((B : ℝ) + t) / ((B : ℝ) + m) := by
       rw [hθ]; ring
-    have hJ0 : (0 : ℝ) ≤ (J : ℝ) + 1 := by positivity
     have : ((J : ℝ) + 1) * ((B : ℝ) + t) / ((B : ℝ) + m) ≤ (J : ℝ) + 1 := by
       rw [div_le_iff₀ hBm]; nlinarith
     rw [e]; linarith
@@ -183,7 +175,6 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
     have hq : ((m : ℝ) + 1) * ((B : ℝ) + m) ≤ 3 * m * B := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hBr) (by linarith : (0 : ℝ) ≤ 2 * m - 1),
         mul_nonneg (by linarith : (0 : ℝ) ≤ m + 1) (by linarith : (0 : ℝ) ≤ m - 1)]
-    have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg _
     have key : La * ((B : ℝ) + m) * ((m : ℝ) + 1) ≤ 3 * m * ((J : ℝ) + 1) * ((m : ℝ) + 1) := by
       calc La * ((B : ℝ) + m) * ((m : ℝ) + 1) = La * (((m : ℝ) + 1) * ((B : ℝ) + m)) := by ring
         _ ≤ La * (3 * m * B) := mul_le_mul_of_nonneg_left hq hLa0
@@ -256,7 +247,6 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
   have hs := hstd X hD hH hc
   have hkdef : X.k = (X.m : ℝ) + 1 := rfl
   have hk5 := hs.k5
-  have hk0 : 0 < X.k := by linarith
   have hLa1 := hs.La1
   have hLa0 : 0 ≤ X.La C0 := by linarith
   have hm4 : 4 ≤ X.m := by
@@ -363,9 +353,6 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
       (clC C0 CE1 CE2 X j rz ry) : ℚ) : ℝ) with hKS
   set Hr : ℝ := ((∑ jp ∈ range (⌊X.La C0 * ((X.seg C0 CE1 CE2 j).bPlus : ℝ) / ((X.m : ℝ) + 1)⌋₊ + 1),
         sdXi X.m ((X.seg C0 CE1 CE2 j).bPlus - jp) : ℕ) : ℝ) with hHr
-  have hP0 : (0 : ℝ) ≤ (Pi : ℝ) := Nat.cast_nonneg _
-  have hy0 : (0 : ℝ) ≤ (sd X.m (X.seg C0 CE1 CE2 j).bPlus : ℝ) := Nat.cast_nonneg _
-  have hx1 : (0 : ℝ) ≤ (sd X.m (A0n - ⌈m⌉₊) : ℝ) := Nat.cast_nonneg _
   have hKS0 : 0 ≤ KS := le_trans (by positivity) t1
   calc a1 * a2 * (1 - (X.m : ℝ) * (⌈m⌉₊ : ℝ) / (A0n : ℝ)) *
         ((sd X.m A0n : ℝ) * (Pi : ℝ) * (sd X.m (X.seg C0 CE1 CE2 j).bPlus : ℝ))

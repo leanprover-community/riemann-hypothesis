@@ -7,6 +7,7 @@ public import Formalism.LocalToGlobal.Columns.ChainTwCst
 import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 import Formalism.LocalToGlobal.Columns.StdBasisFlagSubmoduleOfBlockTriangular
 import Mathlib.RingTheory.SimpleRing.Principal
+import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SandwichNormalForm
 
 @[expose] public section
 
@@ -58,7 +59,7 @@ theorem twAn_phiQ_int (q : ℕ) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ r
   split_ifs at h with hc
   · have h1 := hc.1 (LocE.fPos k₀ c n l.1) (LocE.fPos k₀ c' n' s.1) (framePos_lt hk l.2) (framePos_lt hk' s.2)
     unfold LocE.entB at h1
-    rw [frameIndex_framePos hk l.2, frameIndex_framePos hk' s.2, basisVec_eq_single s.2] at h1
+    rw [frameIndex_framePos l.2, frameIndex_framePos s.2, basisVec_eq_single s.2] at h1
     unfold Loc.atN at h1
     rw [dite_eq_left l.2] at h1
     have e0 : ∀ (N : ℕ) (p : ℕ), LocE.scE N (0 : ℕ → ℕ) p = 0 := fun N p => by
@@ -419,16 +420,7 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m}
 
 theorem twAn_lam_mem {j : ℕ} {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∉ Pr.vGs) (v : Sp X.E (R.N j + cOf R j)) :
     v ∈ lamYat (Pr := Pr) (R := R) j P ↔ ∀ l, IntAt P (v l) := by
-  have e : lamYat (Pr := Pr) (R := R) j P = LocE.lamY P (qOf P) (R.N j) (cOf R j) 0 := by
-    unfold lamYat
-    rw [if_neg hP]
-  rw [e]
-  unfold LocE.lamY
-  rw [ciMem_sclLat]
-  have h0 : ∀ l : ℕ, LocE.scE (R.N j) 0 l = 0 := fun l => by
-    unfold LocE.scE
-    split_ifs <;> rfl
-  simp only [h0, zpow_zero, inv_one, one_mul]
+  apply _root_.GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.mem_lamYat <;> assumption
 
 theorem twAn_bdd_inv {j : ℕ} {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∉ Pr.vGs) {h : AutY X R j} (hb : TwBdd (Pr := Pr) j P h) :
     TwAnIntMap P (h⁻¹ : AutY X R j).toLinearMap := fun v hv =>

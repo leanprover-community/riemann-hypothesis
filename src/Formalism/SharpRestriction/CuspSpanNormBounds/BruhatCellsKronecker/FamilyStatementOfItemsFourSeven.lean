@@ -12,47 +12,6 @@ import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTopFalseIff
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -1038,10 +997,6 @@ theorem heightStatement_of_bounds (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC 
       (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (large₂.CGam * D.R.m) := mul_le_mul_of_nonneg_left hm (by positivity)
   have a3 : (D.R.m : ℝ) ^ 2 * Real.log S * (6 * C) ≤ (D.R.m : ℝ) ^ 2 * Real.log S * C2 :=
     mul_le_mul_of_nonneg_left h62 (by positivity)
-  have a4 : (D.R.f : ℝ) * (large₂.sc.L * (C * (D.R.m : ℝ) ^ 4)) + 4 * ξ * (C * (D.R.m : ℝ) ^ 2) +
-      (D.R.m : ℝ) * (2 * ξ * (C * (D.R.m : ℝ))) =
-      (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (C + 6 * C * Ch) + (D.R.m : ℝ) ^ 2 * Real.log S * (6 * C) := by
-    rw [hξ]; ring
   have a5 : large₂.CGam * (D.R.m : ℝ) ^ 5 * D.R.f * large₂.sc.L + Real.log S * (C2 * (D.R.m : ℝ) ^ 2) =
       (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (large₂.CGam * D.R.m) + (D.R.m : ℝ) ^ 2 * Real.log S * C2 := by ring
   linarith
@@ -1108,10 +1063,6 @@ theorem product_clause_at_record (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC :
     mul_le_mul_of_nonneg_left h22 (by positivity)
   have b7 : (D.R.m : ℝ) ^ 4 * Real.log S * C ≤ (D.R.m : ℝ) ^ 4 * Real.log S * C2 :=
     mul_le_mul_of_nonneg_left h12 (by positivity)
-  have b8 : ((D.R.f : ℝ) * (large₂.sc.L * (C * (D.R.m : ℝ))) + (D.R.m : ℝ) * ξ) * (C * (D.R.m : ℝ) ^ 3) =
-      C ^ 2 * (D.R.f * large₂.sc.L) * (D.R.m : ℝ) ^ 4 + (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * (C * Ch) +
-        (D.R.m : ℝ) ^ 4 * Real.log S * C := by
-    rw [hξ]; ring
   have b9 : C2 * (D.R.m : ℝ) ^ 6 * D.R.f * large₂.sc.L + Real.log S * (C2 * (D.R.m : ℝ) ^ 4) =
       (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * C2 + (D.R.m : ℝ) ^ 4 * Real.log S * C2 := by ring
   have b10 : (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * (C ^ 2 + C * Ch) =

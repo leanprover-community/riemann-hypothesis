@@ -150,8 +150,7 @@ private lemma leading_polynomial_eq_zero_iff_lt_weightedOrder {k : Type} [Field 
     · intro h; exact absurd he h
   constructor
   · intro h0
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have heq : MvPowerSeries.weightedOrder (![m, n] : Fin 2 → ℕ) f = D := le_antisymm hlt hD
     obtain ⟨e, hne, hwe⟩ := MvPowerSeries.exists_coeff_ne_zero_and_weightedOrder
       (![m, n] : Fin 2 → ℕ) (f := f) (by rw [heq]; rfl)

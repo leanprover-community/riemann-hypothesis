@@ -652,10 +652,8 @@ theorem chTh_ok_of_thHyp (hPr : Pr.Ok) (hL : L.Ok Ch sel mu cst G m2) (h : ThHyp
     ChTh.Ok (Ch := Ch) cst (chTh W Ch sel mu cst A u m2) := by
   have hm := hL.hm
   have hq := muqTie_of_ok Ch sel mu cst L hL
-  exact ⟨fun i hi => ChainTheta.stepC_ok_deg W Ch sel mu cst A u i (by omega) (i + 1) (hPr.T_prime u).pos hq (h.1 i hi).1 (h.1 i hi).2.1
-      (fun N N' c x hx m _ => (h.1 i hi).2.2 N N' c x hx m) (h.2.2.1 i hi),
-    ChainTheta.stepC_ok_deg W Ch sel mu cst A u (m2 + 1) (by omega) R.m (hPr.T_prime u).pos hq h.2.1.1 h.2.1.2.1
-      (fun N N' c x hx m _ => h.2.1.2.2 N N' c x hx m) h.2.2.2⟩
+  exact ⟨fun i hi => ChainTheta.stepC_ok_deg W Ch sel mu cst A u i (by omega) (i + 1) (hPr.T_prime u).pos hq (h.2.2.1 i hi),
+    ChainTheta.stepC_ok_deg W Ch sel mu cst A u (m2 + 1) (by omega) R.m (hPr.T_prime u).pos hq h.2.2.2⟩
 
 theorem anaStep_of_thHyp (hm : R.m = m2 + 2) (h : ThHyp W Ch sel mu cst A u m2) {i : ℕ} (hi : i < R.m) :
     A.AnaStep (R.N i) (R.N (i + 1)) (Sall sel mu u) (cAof sel mu cst * cBof sel mu cst u) := by
@@ -689,8 +687,6 @@ end General
 section True
 
 open GlobalTheory.Mem GlobalTheory.Mem.Chr Formalism.MainNotions
-
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X)
 

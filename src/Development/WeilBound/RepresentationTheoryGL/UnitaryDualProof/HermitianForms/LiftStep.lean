@@ -665,10 +665,10 @@ theorem decomp (Ξ : Sub1 k m) (hΞ : IsLat Ξ) (y : V)
   have hL : ∀ t, t ∈ L ↔ ∀ ξ ∈ Ξ, ψ (ξ ⬝ᵥ t) = 1 := fun t => forall₂_congr fun ξ _ => by rw [dotProduct_comm]
   have hUo : IsOpen ((L ⊓ A : Sub1 k m) : Set (V1 k m)) := by
     rw [AddSubgroup.coe_inf]; exact (annLat ψ hψ hψ1 hΞ).2.inter hA.2
-  obtain ⟨T, hT, hTr⟩ := GlobalTheory.T.exists_finite_coset_representatives A (L ⊓ A) hA.1 hUo inf_le_right
+  obtain ⟨T, hT, hTr⟩ := GlobalTheory.T.exists_finite_coset_representatives A (L ⊓ A) hA.1 hUo
   have hΞ'o : IsOpen ((Ξ ⊓ ann ψ A : Sub1 k m) : Set (V1 k m)) := by
     rw [AddSubgroup.coe_inf]; exact hΞ.2.inter (annLat ψ hψ hψ1 hA).2
-  obtain ⟨R, hR, hRtr⟩ := GlobalTheory.T.exists_finite_coset_representatives Ξ (Ξ ⊓ ann ψ A) hΞ.1 hΞ'o inf_le_left
+  obtain ⟨R, hR, hRtr⟩ := GlobalTheory.T.exists_finite_coset_representatives Ξ (Ξ ⊓ ann ψ A) hΞ.1 hΞ'o
   have hdata : ∀ ξ ∈ R, AvgData ψ h π ξ A y (L ⊓ A, T) := fun ξ hξ =>
     ⟨inf_le_right, hUo, fun a ha => hy a ((hL a).1 (AddSubgroup.mem_inf.1 ha).1),
       fun a ha => (hL a).1 (AddSubgroup.mem_inf.1 ha).1 ξ (hR ξ hξ), hT, hTr⟩

@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PTransFin
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.InfCharDataA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.EqZeroOfDatumEmbeddingEqZero
 import Mathlib.Tactic.TypeStar
@@ -106,16 +107,8 @@ theorem qdet_map {A B : Type*} [Ring A] [Algebra ℂ A] [Ring B] [Algebra ℂ B]
 
 theorem qdet_mem {B : Type*} [Ring B] [Algebra ℂ B] (S : Subalgebra ℂ B) (F : Fin n → Fin n → B)
     (hF : ∀ a b, F a b ∈ S) (u : ℂ) : Formalism.REAL.qdet F u ∈ S := by
-  unfold Formalism.REAL.qdet Formalism.REAL.qminor
-  refine S.sum_mem fun τ _ => S.mul_mem ?_ (list_prod_mem fun z hz => ?_)
-  · rw [← zsmul_one]
-    exact zsmul_mem S.one_mem _
-  · obtain ⟨k, rfl⟩ := (List.mem_ofFn' _ _).1 hz
-    unfold Formalism.REAL.Tm
-    refine S.add_mem ?_ (hF _ _)
-    split_ifs
-    · exact S.algebraMap_mem _
-    · exact S.zero_mem
+  intros
+  apply _root_.PositivityTheory.Rg.Cz.TF.qdet_mem <;> assumption
 
 variable {M₁ M₂ : Type*} [AddCommGroup M₁] [Module ℂ M₁] [AddCommGroup M₂] [Module ℂ M₂]
 

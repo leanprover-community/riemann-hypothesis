@@ -1,8 +1,10 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.UpperTriangularPlaces.OrdinaryFlagThree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.CommutingUpperTriangularDistinct
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.RtBasic
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.ConjStable
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryComponentUniquePrimeDimThirteenNearBase
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -91,12 +93,7 @@ private theorem triangular_form_of_injective_map {φ : A →+* C} {h : GL (Fin 3
 
 private theorem triangular_mul_diag {X Y : Matrix (Fin 3) (Fin 3) C} (hX : X.BlockTriangular id) (hY : Y.BlockTriangular id)
     (a : Fin 3) : (X * Y) a a = X a a * Y a a := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single a]
-  · intro b _ hb
-    rcases lt_or_gt_of_ne hb with h | h
-    · rw [hX h, zero_mul]
-    · rw [hY h, mul_zero]
-  · simp
+  apply _root_.UpperTheory.V.Z.Keep.OrdinaryFlagThree.diag_mul_of_tri <;> assumption
 
 private theorem triangular_form_borel_change {φ : A →+* C} {h : GL (Fin 3) C} (hT : T ⊆ S) (H : TriangularForm M d S T φ h) (k : GL (Fin 3) C)
     (hk : ((k * h : GL (Fin 3) C) : Matrix (Fin 3) (Fin 3) C).BlockTriangular id) : TriangularForm M d S T φ k⁻¹ := by

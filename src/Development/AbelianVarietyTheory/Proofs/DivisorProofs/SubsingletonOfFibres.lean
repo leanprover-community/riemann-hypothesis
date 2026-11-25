@@ -121,8 +121,6 @@ open GlobalTheory.Published GlobalTheory.Published.AbelianDeRham GlobalTheory.In
 open Limits (pullback)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Affine
 
 variable {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A] {g : ℕ}

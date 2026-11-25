@@ -1,5 +1,6 @@
 module
 
+import Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QaRowStrictMono
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.PolarizationDividedPowerSumSucc
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -57,29 +58,7 @@ theorem map_Psi' {R R' : Type*} [CommRing R] [CommRing R'] (φ : R →+* R') {N 
 
 theorem column_height_lt_iff {n : ℕ} {mu : Fin n → ℤ} (hmu : Dominant mu) (c : ℤ) (m : Fin n) :
     m.val < colH mu c ↔ c ≤ mu m := by
-  constructor
-  · intro h
-    by_contra hc
-    have hsub : (univ.filter fun x => c ≤ mu x) ⊆ Finset.Iio m := by
-      intro x hx
-      rw [Finset.mem_filter] at hx
-      rw [Finset.mem_Iio]
-      by_contra hxm
-      exact hc (hx.2.trans (hmu (not_lt.1 hxm)))
-    have := Finset.card_le_card hsub
-    rw [Fin.card_Iio] at this
-    unfold colH at h
-    omega
-  · intro h
-    have hsub : Finset.Iic m ⊆ (univ.filter fun x => c ≤ mu x) := by
-      intro x hx
-      rw [Finset.mem_Iic] at hx
-      rw [Finset.mem_filter]
-      exact ⟨mem_univ _, h.trans (hmu hx)⟩
-    have := Finset.card_le_card hsub
-    rw [Fin.card_Iic] at this
-    unfold colH
-    omega
+  apply _root_.Formalism.InvariantFactorPaths.ColumnFamilies.qa_lt_colH <;> assumption
 
 theorem abs_entry_le_total {N n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (i : Fin (N + 1)) (m : Fin n) :
     |mu i m| ≤ ∑ i, ∑ m, |mu i m| := by

@@ -403,8 +403,7 @@ theorem cechD_zero_eq_zero {M : Type} [AddCommGroup M] [Module (MRingOver S ι) 
   have hne : ∀ k, (I.1 k).Nonempty := I.2.1
   have hsum : ∑ k, ((I.1 k).card - 1) = 1 := I.2.2
   obtain ⟨k0, hk0ne⟩ : ∃ k0, (I.1 k0).card - 1 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [Finset.sum_eq_zero fun k _ => hc k] at hsum
     exact absurd hsum (by norm_num)
   have hsplit := Finset.add_sum_erase Finset.univ (fun k => (I.1 k).card - 1) (Finset.mem_univ k0)

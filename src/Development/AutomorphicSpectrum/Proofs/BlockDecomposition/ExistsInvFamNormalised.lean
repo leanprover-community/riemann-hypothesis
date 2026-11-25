@@ -316,18 +316,8 @@ theorem exists_cocycle_of_cochain (n : ℕ) (c : (Fin n → G) → A) (hc : IsLo
 
 theorem cohomologyπ_succ_eq_zero_iff (n : ℕ) (x : cocycles A (n + 1)) :
     cohomologyπ A (n + 1) x = 0 ↔ ∃ w : (Fin n → G) → A, IsLocallyConstant w ∧
-      (inhomogeneousCochains.d A n).hom w = cochainOf A (cocycleι A (n + 1) x) := by
-  change ((cochainsComplex A).homologyπ (n + 1)).hom x = 0 ↔ _
-  rw [homologyπ_eq_zero_iff, CochainComplex.prev_nat_succ]
-  constructor
-  · rintro ⟨w, hw⟩
-    refine ⟨cochainOf A w, isLocallyConstant_cochainOf w, ?_⟩
-    rw [← cochainOf_d]
-    exact congrArg (cochainOf A) hw
-  · rintro ⟨w, hw, h⟩
-    refine ⟨mkCochain A w hw, ?_⟩
-    apply cochainOf_injective (A := A)
-    exact (cochainOf_d (A := A) _).trans h
+      (inhomogeneousCochains.d A n).hom w = cochainOf A (cocycleι A (n + 1) x) :=
+  by apply _root_.CompanionTheory.LocalTateOrthogonality.Gcoh.pi_succ_eq_zero_iff
 
 end Coh
 

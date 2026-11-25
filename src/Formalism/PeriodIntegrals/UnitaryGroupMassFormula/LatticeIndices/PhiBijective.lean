@@ -69,8 +69,7 @@ theorem splitTheta_of {D : Formalism.BasicNotions.D7} (X : HidaSetting D) (p : T
   have hσ : ∀ x, X.B.I.cm.sig (X.B.I.cm.sig x) = x := fun x => star_star x
   have h2 : Module.finrank X.B.I.F X.B.I.E = 2 := X.B.I.cm.deg2
   have hex : ∃ a, X.B.I.cm.sig a ≠ a := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have htop : (⊥ : Subalgebra X.B.I.F X.B.I.E) = ⊤ := by
       refine eq_top_iff.mpr fun x _ => Algebra.mem_bot.mpr ?_
       obtain ⟨y, hy⟩ := (X.B.I.cm.fixed x).1 (hne x)

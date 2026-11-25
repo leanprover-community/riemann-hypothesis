@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FlagSpaceComponentCarriesEveryFrameFlag
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.RedDefs
@@ -263,8 +264,7 @@ private theorem stab (I : ℕ → Ideal B) (hI : Antitone I) (j : ℕ) :
 
 private theorem cofinal [IsAdicComplete (maximalIdeal B) B] (I : ℕ → Ideal B) (hI : Antitone I)
     (h0 : ⨅ N, I N = ⊥) (k : ℕ) : ∃ N, I N ≤ maximalIdeal B ^ k := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   choose e he using fun j => stab I hI (k + j)
 
   let E : ℕ → ℕ := fun j => (Finset.range (j + 1)).sup e + j
@@ -1116,18 +1116,8 @@ private theorem fx_alg {M : Type} [Ring M] (A0 Ai A1 B1 R Ri y : M) (h1 : A0 * A
 private theorem tri_mul {K : Type} [CommRing K] {n : ℕ} (M N : Matrix (Fin n) (Fin n) K)
     (hM : ∀ i j, j < i → M i j = 0) (hN : ∀ i j, j < i → N i j = 0) :
     (∀ i j, j < i → (M * N) i j = 0) ∧ ∀ i, (M * N) i i = M i i * N i i := by
-  refine ⟨fun i j hij => ?_, fun i => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun k _ => ?_
-    rcases lt_or_ge k i with h | h
-    · rw [hM i k h, zero_mul]
-    · rw [hN k j (lt_of_lt_of_le hij h), mul_zero]
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · intro k _ hk
-      rcases lt_or_gt_of_ne hk with h | h
-      · rw [hM i k h, zero_mul]
-      · rw [hN k i h, mul_zero]
-    · exact fun h => absurd (Finset.mem_univ i) h
+  intros
+  apply _root_.GlobalTheory.UpperTriangularMul.upperTriangular_mul <;> assumption
 private theorem fx_ord {H K : Type} [Group H] [Field K] {n : ℕ} (I : Subgroup H) (ρ : H →* GL (Fin n) K)
     (y : H → Matrix (Fin n) (Fin n) K) (ρ' : H →* GL (Fin n) (DualNumber K)) (ht : IsTan ρ y ρ')
     (ψ' : Fin n → H →* (DualNumber K)ˣ) (hfl : W.HasFlag ρ' ψ')

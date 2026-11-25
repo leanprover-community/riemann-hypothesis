@@ -76,15 +76,6 @@ private theorem rorth_functional_eq_zero_of_highest_weight_mem (hE : IsGlRep E) 
     exact hfV _ huV
   rw [← hu ⟨y, hk⟩, hu0, inner_zero_left]
 
-theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
-    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hgap : StdGap ε lam) (f : M →ₗ[ℂ] ℂ) (hfV : ∀ v ∈ V, f v = 0)
-    (hfd : ∀ a y, f (E a a y) = (lowK ε lam a : ℂ) * f y)
-    (hfl : ∀ a b, a < b → ε a = ε b → ∀ y, f (E b a y) = 0) :
-    ∀ y ∈ genSub E V, f y = 0 := by
-  exact rorth_functional_eq_zero_of_highest_weight_mem hE hU hV
-    (khw_lowK_mem hE hU hV hc hgap) f hfV hfd hfl
-
 end Alg
 
 section Mat
@@ -102,15 +93,9 @@ theorem rorth_actM_smul {M : Type*} [AddCommGroup M] [Module ℂ M]
 theorem rorth_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) :
     actM E (Matrix.single a b (1 : ℂ)) = E a b := by
-  unfold actM
-  rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
-  · simp [Matrix.single_apply_same]
-  · intro b' _ hb; rw [Matrix.single_apply_of_col_ne _ _ (Ne.symm hb), zero_smul]
-  · simp
-  · intro a' _ ha
-    refine Finset.sum_eq_zero fun b' _ => ?_
-    rw [Matrix.single_apply_of_row_ne (Ne.symm ha), zero_smul]
-  · simp
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.DS.actM_single'
+    | apply _root_.ReciprocityTheory.ChartRestriction.DS.actM_single' <;> first | assumption | rfl | infer_instance
 
 theorem rorth_mem_UJset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) :
     k ∈ UJset ε := by

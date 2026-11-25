@@ -55,7 +55,6 @@ theorem riseA_filter (n0 : ℕ) (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) (
   · rintro ⟨⟨h1, h2⟩, h3⟩
     refine ⟨⟨h1, h2⟩, ?_⟩
     by_contra h4
-    have h5 : t.val < m.val := not_le.mp h4
     exact h3 (by omega) h2
 
 theorem riseA_mono (n0 : ℕ) (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) {s t : ℕ} (h : s ≤ t) :
@@ -182,7 +181,6 @@ theorem path_eq_of_cut [NeZero r] {n0 : ℕ} (hN : n0 + r = N) {be : ℤ} {ν ν
   by_cases hi : i.val ≤ n0
   · exact hlow i.val hi
   · obtain ⟨t, ht⟩ : ∃ t, i.val = n0 + t := ⟨i.val - n0, by omega⟩
-    have hi' := i.isLt
     have htr : t ≤ r := by omega
     apply eq_of_colH
     · rw [← stg_eq ν i.val i.isLt]; exact hd i

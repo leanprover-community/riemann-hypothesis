@@ -93,47 +93,7 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPoly
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionHeight
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HeightComparisonBetweenModelsStatement
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuMeasureLimit
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
@@ -145,40 +105,28 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.Glo
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingPullbackIff
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionSystemHodgeDegree
-import Mathlib.LinearAlgebra.ExteriorPower.Basic
-import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TensorWedgeDetChange
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitValueFrameDomain
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAt
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Algebra.Order.Star.Real
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollB
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.MongeAmpereIntegralCongrPotentials
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Int
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LineIsomorphismDefectFunction
-import Mathlib.Tactic.Monotonicity.Lemmas
 import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ProjectionFormulaOfArithSystem
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeMetricSmooth
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.ProjectionOfChartAnalytic, Development.WeilBound.CoreStatements.PlurisubharmonicCones.HoloMapProj, Development.WeilBound.CoreStatements.PlurisubharmonicCones.LvExtCancel, Development.WeilBound.CoreStatements.PlurisubharmonicCones.MhChange, Development.WeilBound.CoreStatements.PlurisubharmonicCones.MolliLeOfLe, Development.WeilBound.CoreStatements.PlurisubharmonicCones.LeviShift, Development.WeilBound.CoreStatements.PlurisubharmonicCones.OneSlot, Development.WeilBound.CoreStatements.PlurisubharmonicCones.SmoothLogSub, Development.WeilBound.CoreStatements.PlurisubharmonicCones.GoodOriginTowerHeight, Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodOriginIntersectionRelay, Development.AutomorphicSpectrum.Proofs.GeometryProofs.PtsIntegralFibreAppendEqMulImage, Development.AutomorphicSpectrum.Proofs.GeometryProofs.StokesLimitIffPosOfResK, Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodOriginIntersectionTower
@@ -351,7 +299,7 @@ theorem contOn_Xo (Hd : HodgeData D) (ref : HermLine J) (ha : (muLine Hd).a = re
   have h0 := h.self_of_nhds hz₀.1
   have hoff : T z₀ ∈ offBd D a := ⟨hb, fun hm => hz₀.2 (bd_orbit D h0.2 hm)⟩
   have h1 : ContinuousAt (fun t => phMu Hd ((D.chart a).γ t)) (T z₀) :=
-    ((_root_.GlobalTheory.CompanionTheory.Relay.hodge_potential_smooth_off_boundary K J II Ψ Ω W D Hd).1 a).continuousOn.continuousAt ((SncPiece.isOpen_offBd D a).mem_nhds hoff)
+    ((_root_.LevelTowerAlt.mu_potential_smooth_off_boundary K J II Ψ Ω W D Hd).1 a).continuousOn.continuousAt ((SncPiece.isOpen_offBd D a).mem_nhds hoff)
   have hγ := ((D.chart a).analytic _ hb).continuousAt
   have hm := (D.chart a).mem _ hb
   have ho : IsOpen {z : (Σ k, J k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := by
@@ -855,7 +803,7 @@ theorem muHodge : MuHodge := by
   have htie : CoordTie ℤ Or.𝔐.ξ (fun c' : (k : K) → J k => ∏ k, Dc.y ⟨k, c' k⟩) := Or.𝔐.tie
   have hS : ∀ p ∈ Dc.SB B, p ∈ Dc.S := fun p hp => (Finset.mem_filter.1 hp).1
   have hmc : w ∈ mcPts (mCoordIdeal Dc.y) := (_root_.GlobalTheory.CompanionTheory.Ar.mem_mcPts_iff_exists_coordsAt Or.𝔐.X Ω Or.𝔐.ξ K J Dc.y htie w).2 ⟨z, h, hw⟩
-  obtain ⟨d⟩ := GlobalTheory.T.component_data_hodge_first E H D l (Xo l) c Y II K J Ω W Dc Hd S₀ Or z w hw
+  obtain ⟨d⟩ := _root_.GlobalTheory.CompanionTheory.Ar.MuFrame.nonempty_muFrameAt E H D l (Xo l) c Y II K J Ω W Dc Hd S₀ Or z w hw
   obtain ⟨s', hs'⟩ := PhMuFree.exists_smallPart Or d
   obtain ⟨Γ, hΓ, hpd, -⟩ := PhMuFree.norm_eq Or hw hi d hs'
   have hph := PhMuFree.phMu_eq Or hw hi d hs' hΓ
@@ -1390,7 +1338,7 @@ theorem one_coord₂ (hBr : ResBridgeStatement) (hG : GoodProjExistsStatement) {
   have r2 := hI.2.2 P e L M' g γ hP hL hM' hM'a hgγ hgP
   rw [recR_eq] at r1 r2
 
-  have hc := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.unitRatio_divisor_cycle_eq K ι P f g hU
+  have hc := _root_.PositivityTheory.UnitarySelfGeneration.i_cycle K ι P f g hU
   have hcyc : cycR I P L f = cycR I P L g := by
     unfold cycR
     refine finsum_mem_congr hc.1 fun W hW => ?_
@@ -1494,7 +1442,7 @@ theorem position_zero {I : Ideal (MRing J) → (n : ℕ) → (Fin n → HermLine
     linarith
   · filter_upwards [hsm, hw] with t h1 h2
     refine ⟨?_, h2.2.2⟩
-    obtain ⟨w', a1, -, a2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.defect_exists_smooth K J P B e R (A₁ t) (A₂ t) f g hP.2.1 h2.1 h1.1 h1.2
+    obtain ⟨w', a1, -, a2⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_defect K J P B e R (A₁ t) (A₂ t) f g hP.2.1 h2.1 h1.1 h1.2
     refine (OneModel.continuous_of_smooth R.A a2).congr fun x => ?_
     have hz := R.mem x x (R.mem_U x)
     obtain ⟨u, v, huv, hu, -⟩ := OneModel.exists_pair_ne h2.1.2 hz
@@ -1792,7 +1740,7 @@ theorem testPoly_eq_slX : PB.AgreementPos → PB.Proportional → Cmp.CmpSt → 
   intro hAg hPr hCmp hGiv hPts E _ _ _ _ H D Xo l c Y _ T o II hGl hEx hII hp hq B B₁ a K _ J _ Ω _ _ W _ _ Dc O Lt _ _ _ X Or hB hBB hqp hbg hsm hGood hgen hS
   have hIn : PB.Inputs := hGiv.2.2.2.2.2.2.2.2.2.1
   haveI : Nonempty (CMType H) := GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.cm_nonempty H
-  have hUnif := _root_.GlobalTheory.CompanionTheory.Relay.good_tower_real_agreement hGiv E H D Xo l c Y T o II hGl hEx hII hp hq
+  have hUnif := _root_.RootFieldNumerics.global_model_real_tower hGiv E H D Xo l c Y T o II hGl hEx hII hp hq
   have hProp : T.Proportional :=
     _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hPr hIn II hII (CMType H) (D.p + D.q) T (Top.realOf o.toTowerOrigin) hUnif
   have hJpos : 0 < Top.testDeg (CMType H) (D.p + D.q) T.j :=

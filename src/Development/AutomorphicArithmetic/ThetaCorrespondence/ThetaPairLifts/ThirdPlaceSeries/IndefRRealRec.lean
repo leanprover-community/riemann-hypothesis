@@ -106,11 +106,6 @@ theorem _root_.Formalism.IndefR.IndefiniteRealisationRecursion.tw_iff (Qr : _roo
     apply Qr.tupT_inj_used (Or.inr ⟨w, rfl⟩) (Or.inl rfl)
     rw [Qr.recR.tupAt w, Q.charW.tup.mu_off (D.plEq w) hw, h0]
 end RealRec
-namespace RealRec
-variable {Q : _root_.Formalism.IndefR.IndefiniteRealisation Rc P Dcf Spf Zscf S Ks}
-def _root_.Formalism.IndefR.IndefiniteRealisationRecursion.PartsRow (Qr : _root_.Formalism.IndefR.IndefiniteRealisationRecursion Q) : Prop :=
-  Formalism.IndefR.RecTie.PartsRec Q.Rl.toRealDat Q.F.lv2 Qr.tupT Qr.hm Qr.PY Qr.PW Qr.eFT Qr.E Qr.labPi Qr.piOf Qr.Ish.prt Qr.IL.prtW
-end RealRec
 end Formalism.IndefR
 end
 end

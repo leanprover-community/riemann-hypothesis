@@ -64,7 +64,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH 
 open scoped ENNReal
 open IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 theorem _root_.GlobalTheory.T.finiteUnitaryPart_isInvertibleUnitaryAdelic : ∀ (D : D7) (V : Formalism.BasicNotions.TH.HSp D) (g : GA D V),
@@ -87,7 +86,6 @@ noncomputable section
 
 open IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevGeo.Reps
 
@@ -136,12 +134,12 @@ theorem core (D : D7) (V : Formalism.BasicNotions.TH.HSp D) (r : ℕ) (hr : V.ra
       simp only [dif_pos hτ]
       exact h2 τ hτ
     · intro γ' hγ'
-      obtain ⟨γ, hγ, h2⟩ := GlobalTheory.T.principalCongruence_conj_mem_arithmeticGroup D V Comp X dict Kf th M x0 hK hth hD (fun c => (hx0 c).1) hact hG k (gA k)
+      obtain ⟨γ, hγ, h2⟩ := _root_.GlobalTheory.RepConv.conj_mem_of_cong D V Comp X dict Kf th M x0 hK hth hD (fun c => (hx0 c).1) hact hG k (gA k)
         (hgA k) (Λk k) (hΛk k).1 (hΛk k).2.2.2 γ' hγ'
       refine ⟨γ, hγ, fun τ hτ => ?_⟩
       simp only [dif_pos hτ]
       exact h2 τ hτ
-  · exact GlobalTheory.T.componentRepresentatives_injective_doubleCoset D V Comp X dict Kf th M gA hK hth hD (fun k => by rw [hgA k])
+  · exact _root_.GlobalTheory.RepsInj.reps_inj D V Comp X dict Kf th M gA hK hth hD (fun k => by rw [hgA k])
 
 end GlobalTheory.LevGeo.Reps
 

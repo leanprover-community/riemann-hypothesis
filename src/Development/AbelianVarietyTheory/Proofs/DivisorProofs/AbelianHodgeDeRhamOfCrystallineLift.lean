@@ -53,8 +53,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CechDR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AbelianHodge
 
 theorem exists_isCompl_ker {R M N : Type} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N]

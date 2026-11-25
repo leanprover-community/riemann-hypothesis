@@ -593,8 +593,7 @@ theorem exists_locus_of_span : ∀ (R₁ F : Type) [CommRing R₁] [Field F] (Y 
   have hsec : ∀ i, RegAt y (t i * g) := fun i => by
     have : t i ∈ Sec D₁ k := by rw [hS k]; exact subset_spanBy _ _ (ht i)
     exact hg.regularAt_iff.1 (this y)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply (zeroAt_iff.1 ?_).2 hunit
   rw [Finset.sum_mul]
   refine Finset.sum_induction _ (ZeroAt y) (fun _ _ => ZeroAt.add) (zeroAt_zero y) fun i _ => ?_
@@ -934,8 +933,7 @@ theorem cover (z : Proj (piece hN)) : ∃ k, 1 ≤ k ∧ ∃ b ∈ N k, z ∈ Dp
   classical
   obtain ⟨y, hy, hyz⟩ := Set.not_subset.1 z.not_irrelevant_le
   have : ∃ j, (DirectSum.decompose (piece hN) y j : ring hN) ∉ z.asHomogeneousIdeal := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hyz
     rw [← DirectSum.sum_support_decompose (piece hN) y]
     exact Ideal.sum_mem _ fun j _ => hc j
@@ -1417,12 +1415,6 @@ theorem sep (R : Type) [CommRing R] (P : Scheme.{0}) (p : P ⟶ Sp R) [IsSeparat
   rw [terminal.hom_ext (terminal.from P) (p ≫ terminal.from _)]
   infer_instance
 
-theorem gp_dom (Y : Scheme.{0}) [IsIntegral Y] : IsDominant (gp Y) := by
-  refine ⟨?_⟩
-  have h : genericPoint Y ∈ Set.range (gp Y) := ⟨closedPoint _, Scheme.fromSpecStalk_closedPoint⟩
-  refine Dense.mono (Set.singleton_subset_iff.2 h) ?_
-  rw [dense_iff_closure_eq, (genericPoint_spec Y).def]
-
 theorem regAt_pow {Y : Scheme.{0}} [IsIntegral Y] {y : Y} {x : Y.functionField} (h : RegAt y x) (m : ℕ) :
     RegAt y (x ^ m) := by
   induction m with
@@ -1524,7 +1516,7 @@ theorem exists_map_to_model : ∀ (R F : Type) [CommRing R] [IsDomain R] [Field 
     (θ.comp ψ) (hreg y)
   obtain ⟨m, hmU, hmg⟩ := _root_.GlobalTheory.Desc.GenGlue.exists_glue Y P U hyU f (spMap (θ.comp ψ) ≫ gp P) hf
   refine ⟨m, ?_, ⟨gp Y, Category.comp_id _, hmg⟩, ?_⟩
-  · haveI := gp_dom Y
+  · haveI := GlobalTheory.Desc.Sat.isDominant_gp Y
     refine ext_of_isDominant (gp Y) ?_
     rw [reassoc_of% hmg, _root_.GlobalTheory.Desc.gp_comp_eq_spMap_cst P R p, ← Category.assoc, _root_.GlobalTheory.Desc.gp_comp_eq_spMap_cst Y R₁ q, ← Spec.map_comp, ← Spec.map_comp]
     congr 1

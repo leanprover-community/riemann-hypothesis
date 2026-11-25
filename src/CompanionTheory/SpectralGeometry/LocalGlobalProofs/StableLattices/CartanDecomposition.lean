@@ -178,7 +178,7 @@ theorem exists_u (N : ℝ) (hN : 2 ≤ N) : ∃ u : ℝ, 0 < u ∧ u ≤ 1 ∧ u
     rw [hd]
     exact (Real.sqrt_lt' (by linarith)).mpr (by linarith)
   have hdge : N - 2 ≤ d := by
-    have h1 : (N - 2) ^ 2 ≤ N ^ 2 - 4 := by nlinarith
+    have h1 : (N - 2) ^ 2 ≤ N ^ 2 - 4 := by linarith only [hN]
     calc N - 2 = Real.sqrt ((N - 2) ^ 2) := (Real.sqrt_sq (by linarith)).symm
       _ ≤ d := Real.sqrt_le_sqrt h1
   set s := (N - d) / 2 with hs

@@ -144,11 +144,6 @@ theorem map_restr_comp {U V W : Scheme.{0}} (g : V ⟶ U) (k : W ⟶ V) :
   rw [op_comp, Functor.map_comp, Functor.map_comp, ModuleCat.hom_comp, ModuleCat.hom_comp,
     TensorProduct.map_comp]
 
-theorem nat_apply {U V : Scheme.{0}} (g : V ⟶ U) (p : P.obj (op U)) :
-    (φ.app (op V)).hom ((P.map g.op).hom p) = (Q.map g.op).hom ((φ.app (op U)).hom p) := by
-  have := congrArg (fun h => ModuleCat.Hom.hom h p) (φ.naturality g.op)
-  simpa using this
-
 end GlobalTheory.EtC.TensLocBij
 
 namespace GlobalTheory.EtC.TensLocBij

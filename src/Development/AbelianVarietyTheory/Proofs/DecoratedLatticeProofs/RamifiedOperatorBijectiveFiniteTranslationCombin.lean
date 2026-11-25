@@ -127,7 +127,7 @@ theorem ramBijective_at (q : Unif k) (χ₀ : AddChar k Circle) (hχ : HasConduc
           RamAt β P (c'.sum fun g a => a • β.rep g φ₀) := by
   set χ := resChar χ₀ hχ q with hχdef
   have hO : OperatorIdentities k n (GA D S → ℂ) q χ :=
-    ((GlobalTheory.PairOp.pairOperatorStatement k q χ₀ hχ n).1 (GA D S → ℂ)).2
+    (GlobalTheory.PairOp.pairOperatorStatement k q χ₀ hχ n (GA D S → ℂ)).2
   set r : ℂ := ((resCard k : ℂ) ^ Fintype.card n)⁻¹ with hr
 
   have hval : ∀ φ, IsRam β φ → sOp β P q χ ε (φ P) = dia ε (FFStar q χ φ) P := fun φ hφ => by

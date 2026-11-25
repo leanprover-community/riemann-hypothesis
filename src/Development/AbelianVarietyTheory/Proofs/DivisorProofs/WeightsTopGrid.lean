@@ -227,8 +227,7 @@ theorem strictInterlace_of_good {A B : Finset ℚ} (h : Good 0 1 1 A B) : Strict
   obtain ⟨hd, hc, hb⟩ := h
   rw [strictInterlace_iff]
   refine ⟨hd, card_pos.1 (by omega), fun y hy => ?_, fun y hy => ?_, fun x hx y hy hxy hz => ?_⟩
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     have h1 : 0 ≤ ((A.filter fun z => y ≤ z).card : ℤ) - (B.filter fun z => y ≤ z).card := by
       have := (hb _ (isUp_le y)).1; rw [cnt_decide] at this; exact this
     have e1 : A.filter (fun z => y ≤ z) = ∅ := filter_eq_empty_iff.2 fun z hz h' =>
@@ -236,8 +235,7 @@ theorem strictInterlace_of_good {A B : Finset ℚ} (h : Good 0 1 1 A B) : Strict
     have e2 : 1 ≤ (B.filter (fun z => y ≤ z)).card := card_pos.2 ⟨y, mem_filter.2 ⟨hy, le_rfl⟩⟩
     rw [e1, card_empty] at h1
     omega
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     have h1 : ((A.filter fun z => y < z).card : ℤ) - (B.filter fun z => y < z).card ≤ 1 := by
       have := (hb _ (isUp_lt y)).2; rw [cnt_decide] at this; exact this
     have e1 : A.filter (fun z => y < z) = A := filter_true_of_mem fun z hz =>

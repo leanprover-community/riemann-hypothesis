@@ -52,8 +52,7 @@ theorem hasSum_rst (x0 : ∀ p, X p) (f : ∀ p, X p → ℂ) (a : ι → ℂ) (
   have hzero : ∀ x ∉ Set.range j, (∏ᶠ p, f p (x.1 p)) = 0 := by
     intro x hx
     have : ∃ p ∉ S, x.1 p ≠ x0 p := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hx ⟨⟨x.1, h⟩, rfl⟩
     obtain ⟨p, hpS, hp⟩ := this
     exact finprod_eq_zero _ p (by rw [hoff p hpS, if_neg hp]) (hfin x)

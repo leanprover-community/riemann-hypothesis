@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.ReproducingKernels.OneLeGN
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.FixedUnitaryApplyFixedIndexRight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.InductiveHeisenbergInputs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.IntegrableUnitIndicator
@@ -1200,15 +1201,7 @@ namespace ReciprocityTheory.ChartRestriction.DS.Xi.DetB
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem entry_le_gN {k r : ℕ} (h : Mat k r) (m j : Fin (2 * r + k + 1)) : ‖h m j‖ ≤ gN h := by
-  unfold gN
-  apply Real.le_sqrt_of_sq_le
-  rw [← Complex.normSq_eq_norm_sq]
-  calc Complex.normSq (h m j) ≤ ∑ j', Complex.normSq (h m j') :=
-        Finset.single_le_sum (f := fun j' => Complex.normSq (h m j')) (fun _ _ => Complex.normSq_nonneg _)
-          (Finset.mem_univ j)
-    _ ≤ ∑ i, ∑ j', Complex.normSq (h i j') :=
-        Finset.single_le_sum (f := fun i => ∑ j', Complex.normSq (h i j'))
-          (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ m)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.S0.DecA.gN_entry <;> assumption
 
 def cst {k r : ℕ} (H : Mat k r) (v w : Fin (2 * r + k + 1) → ℂ) : ℝ :=
   ∑ i, ∑ m, ∑ j, ‖w i‖ * ‖H i m‖ * ‖v j‖

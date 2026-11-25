@@ -72,11 +72,6 @@ def theSecB (a b : Fin (k + 1) → ℂ) (T T' : ℝ) (ζ : ℂ) : Matrix (Fin (k
 def theSection (r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ :=
   theSecB k (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z')
 
-private theorem herm_mulVec_of_conjTranspose_mul_eq (H g : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hg : gᴴ * H * g = H)
-    (x y : Fin (k + 1) → ℂ) : herm H (g *ᵥ x) (g *ᵥ y) = herm H x y := by
-  unfold herm
-  rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hg]
-
 private theorem mul_conjTranspose_form_preserving (H A B : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (hA : Aᴴ * H * A = H)
     (hB : Bᴴ * H * B = H) : (A * B)ᴴ * H * (A * B) = H := by
   rw [Matrix.conjTranspose_mul]
@@ -115,60 +110,6 @@ private theorem nu_apply' (hk : 1 ≤ k) (w s : ℂ) (l m : Fin (k + 1)) :
           simp [h0L.symm]
         · simp [hl0, hlL, h0L.symm]
     · simp [hm0, hmL]
-
-private theorem nu_conjTranspose_mul_Hb_mul_nu (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s)
-    (hws : star w * w - s * s = 1) : (nu k w s)ᴴ * Hb k * nu k w s = Hb k := by
-  have h0L : (0 : Fin (k + 1)) ≠ Fin.last k := by
-    intro h
-    have h' := congrArg Fin.val h
-    simp only [Fin.val_zero, Fin.val_last] at h'
-    omega
-  ext i j
-  rw [Matrix.mul_apply]
-  simp only [Hb, Matrix.mul_diagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
-    nu_apply' k hk]
-  by_cases hi0 : i = 0
-  · subst hi0
-    rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-    · by_cases hj0 : j = 0
-      · subst hj0
-        simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
-        linear_combination hws
-      · by_cases hjL : j = Fin.last k
-        · subst hjL
-          simp only [h0L, h0L.symm, hs, star_star, ↓reduceIte, mul_one, mul_neg, neg_mul]
-          ring
-        · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
-    · intro x hx
-      simp [hx.1, hx.2]
-  · by_cases hiL : i = Fin.last k
-    · subst hiL
-      rw [Fintype.sum_eq_add 0 (Fin.last k) h0L]
-      · by_cases hj0 : j = 0
-        · subst hj0
-          simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
-          ring
-        · by_cases hjL : j = Fin.last k
-          · subst hjL
-            simp only [h0L, h0L.symm, hs, ↓reduceIte, mul_one, mul_neg, neg_mul]
-            linear_combination (-1 : ℂ) * hws
-          · simp [h0L, h0L.symm, hj0, hjL, Ne.symm hj0, Ne.symm hjL]
-      · intro x hx
-        simp [hx.1, hx.2]
-    · rw [Fintype.sum_eq_single i]
-      · simp only [hi0, hiL, ↓reduceIte, star_one, one_mul]
-        by_cases hj0 : j = 0
-        · subst hj0
-          simp [hi0]
-        · by_cases hjL : j = Fin.last k
-          · subst hjL
-            simp [hiL]
-          · by_cases hij : i = j
-            · subst hij
-              simp [hi0, hiL]
-            · simp [hj0, hjL, hij]
-      · intro x hx
-        simp [hi0, hiL, hx]
 
 private theorem nu_mulVec_single_last (hk : 1 ≤ k) (w s : ℂ) :
     nu k w s *ᵥ Pi.single (Fin.last k) 1 = s • Pi.single 0 1 + w • Pi.single (Fin.last k) 1 := by
@@ -270,11 +211,11 @@ theorem theSecB_core (hk : 1 ≤ k) (a b : Fin (k + 1) → ℂ) (T T' : ℝ) (hT
     have hB := gB_spec k hT' hb
     refine ⟨?_, ?_⟩
     · unfold theSecB
-      exact mul_conjTranspose_form_preserving k _ _ _ (mul_conjTranspose_form_preserving k _ _ _ hA.1 (nu_conjTranspose_mul_Hb_mul_nu k hk _ _ hsr hkey)) hB.1
+      exact mul_conjTranspose_form_preserving k _ _ _ (mul_conjTranspose_form_preserving k _ _ _ hA.1 (nu_unitary k hk _ _ hsr (by linear_combination -hkey))) hB.1
     · unfold theSecB
       rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hB.2]
       conv_lhs => arg 3; rw [← hA.2]
-      rw [herm_mulVec_of_conjTranspose_mul_eq k _ _ hA.1, Matrix.mulVec_smul, nu_mulVec_single_last k hk]
+      rw [form_of_unitary _ hA.1, Matrix.mulVec_smul, nu_mulVec_single_last k hk]
       have hcs : star ((Real.sqrt T : ℝ) : ℂ) = ((Real.sqrt T : ℝ) : ℂ) := Complex.conj_ofReal _
       have hT0 : ((Real.sqrt T : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.2 hT).ne'
       have hT0' : ((Real.sqrt T' : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.2 hT').ne'

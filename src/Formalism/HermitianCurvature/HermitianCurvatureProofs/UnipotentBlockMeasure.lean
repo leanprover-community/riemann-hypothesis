@@ -219,8 +219,7 @@ theorem ngen_nonneg (L : LocalNG Cl Nu) (C0 r : ℕ) (hb : L.Basic) (hM : L.Mass
     have h2 := hnn p
     have hpos : 0 < 8 * L.H p ^ (C0 * (r + 1) ^ 2 + 2 * (2 * r + 2)) :=
       mul_pos (by norm_num) (pow_pos (by linarith [hH p]) _)
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_neg_of_pos_of_neg hpos hneg
     linarith
   · rw [← hM.1 p hp]

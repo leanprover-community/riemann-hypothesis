@@ -363,27 +363,9 @@ structure NodeMatch (N : GlobalTheory.Grid.Node D) {G' : GlobalTheory.ChiGrid.Gr
 
 structure SpMatch (G : GlobalTheory.Grid.GridPre R) {G' : GlobalTheory.ChiGrid.GridData R.toLevCh sc} (W : G'.Weil) : Prop where
 
-  row : ∀ j, j ≤ D.R.m → NodeAgree (G.V 0 j) W (.grid 0 j)
-
   vert : ∀ i j, i ≤ D.R.m → j ≤ D.R.m → NodeMatch (G.V i j) W (.grid i j)
 
-  core : ∀ i, i ≤ D.R.m → NodeMatch (G.P i) W (.core i)
-
-  top : ∀ j, j ≤ D.R.m → NodeMatch (G.Xp j) W (.top j)
-
-  q0 : G.q0 = GlobalTheory.ChiGrid.q0 D
-
-  w0 : G.w0 = G'.pl.w G'.pl.v0
-
-  e0 : G.e0 = G'.pl.depth sc G'.pl.v0
-
-  places : G.toPlaceDat.W R.Pg = G'.pl.W0
-
   lvl : G.lvl R = G'.modul
-
-  chiH : ∀ i, 1 ≤ i → i ≤ D.R.m → G.chiH i = G'.ch.chiH i
-
-  chi : ∀ i, 1 ≤ i → i ≤ D.R.m → G.chi i = G'.ch.chi i
 
 def Match (G : GlobalTheory.Grid.GridPre R) {G' : GlobalTheory.ChiGrid.GridData R.toLevCh sc} (W : G'.Weil) : Prop :=
   SpMatch G W ∧ ArrAgree G W

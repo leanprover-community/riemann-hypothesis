@@ -17,8 +17,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Opposite
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Units
 
 variable {Z Z' : Scheme.{0}}

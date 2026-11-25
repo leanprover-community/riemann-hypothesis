@@ -64,12 +64,6 @@ end Lemmas
 
 section Examples
 
-section Simple
-
-variable {A : Type*} [CommRing A]
-
-end Simple
-
 theorem form_mem_of_divCycle_ne_zero {K : Type*} {ι : K → Type*} {R : Type*} [CommRing R]
     {P : Ideal (MRing ι R)} {x : MRing ι R} {W : Ideal (MRing ι R)} (h : divCycle P x W ≠ 0) : x ∈ W := by
   unfold divCycle at h

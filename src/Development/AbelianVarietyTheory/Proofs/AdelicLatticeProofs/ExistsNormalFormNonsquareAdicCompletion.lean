@@ -142,8 +142,7 @@ private theorem evenNorms_of_valuation_sub_one_le_four (F : Type) [Field F]
   have hint : Valued.v (x ^ 2 + x - ρ) ≤ 1 :=
     Valuation.map_sub_le _ (Valuation.map_add_le _ (by rw [map_pow]; exact pow_le_one₀ zero_le' hx) hx) hρ
   refine le_antisymm hint ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   apply hns
   obtain ⟨s, hs_def⟩ : ∃ s : v.adicCompletion F, s = 1 + 2 * x := ⟨_, rfl⟩
   have hdiff : e - s ^ 2 = -(4 * (x ^ 2 + x - ρ)) := by rw [heρ, hs_def]; ring
@@ -196,8 +195,7 @@ private theorem exists_normalForm_nonsquare_unit_lemma (F : Type) [Field F] [Num
     · have hj0 : j ≤ 0 := by
         rw [hj, ← WithZero.exp_zero, WithZero.exp_le_exp] at he1; exact he1
       have h2 : Valued.v (2 : v.adicCompletion F) < 1 := by
-        by_contra hge
-        push_neg at hge
+        by_contra! hge
         have : 1 ≤ Valued.v (4 : v.adicCompletion F) := by
           rw [show (4 : v.adicCompletion F) = 2 ^ 2 by norm_num, map_pow]
           exact one_le_pow₀ hge
@@ -274,8 +272,7 @@ private theorem exists_sq_near_of_valuation_two_lt_one {K : Type} [Field K] (w :
       rw [mul_assoc]
       exact mul_le_of_le_one_right zero_le'
         (mul_le_one' b.2 (Valuation.map_sub_le w a.2 b.2))
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     rw [map_pow] at hsq2
     exact absurd hsq2 (not_lt.mpr (one_le_pow₀ hge))
   have hsurj : Function.Surjective g := Finite.injective_iff_surjective.mp hinj

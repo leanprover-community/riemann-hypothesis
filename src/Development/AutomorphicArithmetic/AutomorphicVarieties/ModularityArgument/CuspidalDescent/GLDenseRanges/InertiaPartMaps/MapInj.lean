@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.CohomologySumBound
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.GLDenseRanges.KirCusp
 public import Mathlib.Analysis.Complex.Circle
@@ -432,8 +433,7 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 private theorem chi_orth {Q : Type} [Group Q] [Fintype Q] (f g : Q →* ℂˣ) (h : f ≠ g) :
     ∑ x, (((f x)⁻¹ : ℂˣ) : ℂ) * ((g x : ℂˣ) : ℂ) = 0 := by
   obtain ⟨y, hy⟩ : ∃ y, f y ≠ g y := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact h (MonoidHom.ext hne)
   have ha : ((f y)⁻¹ * g y : ℂˣ) ≠ 1 := by
     intro h1
@@ -548,40 +548,14 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 private theorem cardinal_sum_fintype {I : Type} [Fintype I] (f : I → Cardinal.{0}) :
     Cardinal.sum f = ∑ t, f t := by
-  have gen : ∀ (J : Type) [Fintype J] (β : J → Type), Cardinal.mk (Σ j, β j) = ∑ j, Cardinal.mk (β j) := by
-    intro J _
-    refine Fintype.induction_empty_option
-      (P := fun J _ => ∀ β : J → Type, Cardinal.mk (Σ j, β j) = ∑ j, Cardinal.mk (β j)) ?_ ?_ ?_ J
-    · intro α γ _ e h β
-      rw [← Cardinal.mk_congr (Equiv.sigmaCongrLeft (β := β) e), h (fun a => β (e a))]
-      exact @Equiv.sum_comp α γ Cardinal.{0} (Fintype.ofEquiv γ e.symm) _ _ e (fun b => Cardinal.mk (β b))
-    · intro β
-      simp
-    · intro α _ h β
-      let e : (Σ j : Option α, β j) ≃ (β none ⊕ Σ a : α, β (some a)) :=
-        { toFun := fun p => match p with
-            | ⟨none, b⟩ => Sum.inl b
-            | ⟨some a, b⟩ => Sum.inr ⟨a, b⟩
-          invFun := fun q => match q with
-            | Sum.inl b => ⟨none, b⟩
-            | Sum.inr ⟨a, b⟩ => ⟨some a, b⟩
-          left_inv := by rintro ⟨_ | a, b⟩ <;> rfl
-          right_inv := by rintro (b | ⟨a, b⟩) <;> rfl }
-      rw [Cardinal.mk_congr e, Cardinal.mk_sum, Cardinal.lift_id, Cardinal.lift_id,
-        h (fun a => β (some a)), Fintype.sum_option]
-  have hf : f = fun t => Cardinal.mk (Quotient.out (f t)) := by
-    funext t
-    exact (Cardinal.mk_out (f t)).symm
-  rw [hf, ← Cardinal.mk_sigma]
-  exact gen I _
+  apply _root_.UpperTheory.V.Af.CohB.cardSum_eq <;> assumption
 
 private theorem character_orthogonality_distinct {Q I : Type} [Group Q] [Fintype Q] (χ : I → Q →* ℂˣ)
     (hχ : Function.Injective χ) (s t : I) (hst : s ≠ t) :
     ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) = 0 := by
   have hne : χ s ≠ χ t := fun h => hst (hχ h)
   obtain ⟨y, hy⟩ : ∃ y, χ s y ≠ χ t y := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (MonoidHom.ext h)
   have hshift : ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) =
       ((((χ s y)⁻¹ * χ t y : ℂˣ)) : ℂ) * ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) := by

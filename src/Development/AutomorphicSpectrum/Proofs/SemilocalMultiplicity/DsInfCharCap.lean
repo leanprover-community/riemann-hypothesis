@@ -21,8 +21,5 @@ open CompanionTheory.D.DSIC
 
 theorem hHWMap : HWMap := GlobalTheory.CompanionTheory.DSICHWMap.hwMap_of_lowSpan _root_.GlobalTheory.CompanionTheory.KLowSpan.lowSpan_holds
 theorem hSmMod : SmMod := GlobalTheory.CompanionTheory.SmoothModule.smMod _root_.GlobalTheory.CompanionTheory.DSSmLin.smLin _root_.GlobalTheory.CompanionTheory.SmBracket.smBracket
-theorem hStabLink : StabLink := GlobalTheory.CompanionTheory.DSStabLink.stabLink _root_.GlobalTheory.CompanionTheory.DSICKExp.kExp
-theorem hHWofType : HWofType := GlobalTheory.CompanionTheory.DSHighestOfKType.hwOfType hStabLink _root_.GlobalTheory.CompanionTheory.WtLinkPf.wtLink
-theorem hTypeOfHW : TypeOfHW := GlobalTheory.CompanionTheory.DSKType.typeOfHW _root_.GlobalTheory.CompanionTheory.KLowSpan.lowSpan_holds hStabLink _root_.GlobalTheory.CompanionTheory.WtLinkPf.wtLink
 
 end GlobalTheory.CompanionTheory.TransS.InfChar

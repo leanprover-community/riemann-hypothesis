@@ -375,8 +375,7 @@ theorem exists_idem (K : Type) [CommRing K] [IsArtinianRing K] [IsReduced K] [No
   classical
   obtain ⟨m₁, hm₁⟩ := Ideal.exists_maximal K
   have hex : ∃ m₂ : Ideal K, m₂.IsMaximal ∧ m₂ ≠ m₁ := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     haveI : IsLocalRing K := IsLocalRing.of_unique_max_ideal ⟨m₁, hm₁, fun y hy => h y hy⟩
     exact hf (IsArtinianRing.isField_of_isReduced_of_isLocalRing K)
   obtain ⟨m₂, hm₂, hne⟩ := hex

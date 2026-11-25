@@ -10,60 +10,9 @@ public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Formalism.PieriBlockIdeals.LemmaWFromLattice
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HeightDescentMinors
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.LocalProperties.Reduced
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PieriBlockIdeals.PieriColumnMinors.MinorValuationBoundHolds, Formalism.PieriBlockIdeals.WEChain, Formalism.PieriBlockIdeals.PieriColumnMinors.ContentLinkageHolds, Formalism.PieriBlockIdeals.PieriColumnMinors.WeightExchangeBoundHolds, Formalism.PieriBlockIdeals.PieriColumnMinors.WeightExchangeChainHolds, Formalism.PieriBlockIdeals.PieriColumnMinors.RegularCuspidalTrace, Formalism.PieriBlockIdeals.PieriColumnMinors.HeckeLFunctionIdealEulerProduct
@@ -1397,7 +1346,7 @@ theorem sum_tail_le_sum_of_antitone {N : ℕ} (f : Fin N → ℤ) (hf : Antitone
     have hJ0 : J = ∅ := Finset.card_eq_zero.1 (by rw [hJ, hT0, Finset.card_empty])
     rw [hT0, hJ0]
 
-theorem card_filter_le_val_eq_sub (N m : ℕ) (hm : m ≤ N) :
+theorem card_filter_le_val_eq_sub (N m : ℕ) :
     (Finset.univ.filter fun a : Fin N => m ≤ (a : ℕ)).card = N - m := by
   have hm2 : (Finset.univ.filter fun a : Fin N => m ≤ (a : ℕ)).map Fin.valEmbedding =
       Finset.Ico m N := by
@@ -1420,7 +1369,7 @@ theorem weight_exponents_from_inputs : WEFromInputs := by
   have hwt := hW.1.2.2.1
   have hT0 : 0 ≤ ∑ a ∈ Finset.univ.filter (fun a : Fin (k + j + t + q) => k + j + q ≤ (a : ℕ)),
       U' τ a := Finset.sum_nonneg fun a _ => (hH1 τ a).1
-  have hcard := card_filter_le_val_eq_sub (k + j + t + q) (k + j + q) (by omega)
+  have hcard := card_filter_le_val_eq_sub (k + j + t + q) (k + j + q)
   refine weightExchangeFull_holds ι σ k j t q l h F (W.toWData l c σ) U U' bot cst kap
     (fun i => if i = τ then (∑ a ∈ Finset.univ.filter
       (fun a : Fin (k + j + t + q) => k + j + q ≤ (a : ℕ)), U' τ a).toNat else 0) τ Fact.out hsmall

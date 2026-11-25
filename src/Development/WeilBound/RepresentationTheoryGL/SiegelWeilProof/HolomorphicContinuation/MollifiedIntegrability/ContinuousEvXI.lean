@@ -4,51 +4,8 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.DensDefs
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.ContinuousEvX
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.NormMono
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisMore, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ContinuousEvXI
@@ -59,23 +16,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYka1.main :
-    ∀ {m n : ℕ} (x : Fin m → Fin n → ℂ), ‖x‖ ^ (2 : ℕ) ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := by
-  intro m n x
-  have hS : 0 ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) :=
-    Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun i _ => by positivity
-  have hle : ‖x‖ ≤ Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ)) := by
-    refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun a => ?_
-    refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun i => ?_
-    apply Real.le_sqrt_of_sq_le
-    calc ‖x a i‖ ^ (2 : ℕ) ≤ ∑ j : Fin n, ‖x a j‖ ^ (2 : ℕ) :=
-          Finset.single_le_sum (f := fun j : Fin n => ‖x a j‖ ^ (2 : ℕ))
-            (fun j _ => by positivity) (Finset.mem_univ i)
-      _ ≤ ∑ b : Fin m, ∑ j : Fin n, ‖x b j‖ ^ (2 : ℕ) :=
-          Finset.single_le_sum (f := fun b : Fin m => ∑ j : Fin n, ‖x b j‖ ^ (2 : ℕ))
-            (fun b _ => Finset.sum_nonneg fun j _ => by positivity) (Finset.mem_univ a)
-  calc ‖x‖ ^ (2 : ℕ) ≤ (Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ))) ^ (2 : ℕ) := by
-        gcongr
-    _ = ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := Real.sq_sqrt hS
+    ∀ {m n : ℕ} (x : Fin m → Fin n → ℂ), ‖x‖ ^ (2 : ℕ) ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := @_root_.UpperTheory.Reformulated.B.Yhb3.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisMore =====
@@ -194,31 +135,7 @@ instance haarNested (m n : ℕ) : (volume : Measure (Fin m → Fin n → ℂ)).I
   exact Measure.instIsAddHaarMeasureForallVolumeOfMeasurableAddOfSigmaFinite
 
 theorem intG : IntG := by
-  intro m n c hc P
-  obtain ⟨C, d, hP⟩ := evX_bound P
-  set r : ℕ := Module.finrank ℝ (Fin m → Fin n → ℂ) + 1 with hr
-  obtain ⟨K, hK⟩ := decay c hc (d + r)
-  have hint : Integrable (fun x : Fin m → Fin n → ℂ => (1 + ‖x‖) ^ (-(r : ℝ))) :=
-    integrable_one_add_norm (by rw [hr]; push_cast; linarith)
-  refine (hint.const_mul (|C| * K)).mono' ((continuous_evXI P).mul (continuous_gs c)).aestronglyMeasurable
-    (Filter.Eventually.of_forall fun x => ?_)
-  have h1 : (1 : ℝ) ≤ 1 + ‖x‖ := by linarith [norm_nonneg x]
-  have hpos : 0 < 1 + ‖x‖ := by linarith
-  have hK' : (1 + ‖x‖) ^ (d + r) * Real.exp (-(c * ‖x‖ ^ 2)) ≤ K :=
-    (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ h1 (by omega)) (Real.exp_pos _).le).trans
-      (hK ‖x‖ (norm_nonneg x))
-  have hrp : (1 + ‖x‖) ^ (-(r : ℝ)) = ((1 + ‖x‖) ^ r)⁻¹ := by
-    rw [Real.rpow_neg hpos.le, Real.rpow_natCast]
-  have hPx : ‖evX P x‖ ≤ |C| * (1 + ‖x‖) ^ d :=
-    (hP x).trans (mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity))
-  have hr0 : 0 < (1 + ‖x‖) ^ r := pow_pos hpos r
-  rw [norm_mul, hrp]
-  calc ‖evX P x‖ * ‖gs c x‖ ≤ (|C| * (1 + ‖x‖) ^ d) * Real.exp (-(c * ‖x‖ ^ 2)) :=
-        mul_le_mul hPx (norm_gs_le c hc x) (norm_nonneg _) (by positivity)
-    _ = |C| * ((1 + ‖x‖) ^ (d + r) * Real.exp (-(c * ‖x‖ ^ 2))) * ((1 + ‖x‖) ^ r)⁻¹ := by
-        rw [pow_add]; field_simp
-    _ ≤ |C| * K * ((1 + ‖x‖) ^ r)⁻¹ := by
-        gcongr
+  exact _root_.PositivityTheory.Rg.Sw.WR.G.GI.integP
 
 end PositivityTheory.Rg.Sw.WR.D
 end -- clump:auto

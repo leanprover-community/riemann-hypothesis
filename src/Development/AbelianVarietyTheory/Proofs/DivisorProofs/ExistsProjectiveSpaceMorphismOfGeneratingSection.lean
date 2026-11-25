@@ -77,7 +77,6 @@ open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.ChowHt GlobalTheory.CompHt
 open scoped Classical
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.HermLB
 

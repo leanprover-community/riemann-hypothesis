@@ -6,51 +6,9 @@ public import Formalism.LocalToGlobal.Divisibility.Numbers
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsMulInvolutionAddOneMemPow
 public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.KrullDimension.PID
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.Integral
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
@@ -522,23 +480,8 @@ lemma pos_add (N : NumDatum) (l : ℕ) (z : RPl N.R) (s t : ℕ) :
     rw [add_smul, add_assoc]
 
 lemma pos_mul_period (N : NumDatum) (l : ℕ) (z : RPl N.R) (c : ℕ) :
-    N.pos l z (N.ordP l * c) = z := by
-  unfold NumDatum.pos NumDatum.ordP
-  by_cases h : N.cls l = PrimeClass.signal
-  · rw [if_pos h]
-    refine Prod.ext ?_ ?_
-    · have : ¬ Odd (2 * addOrderOf (2 • N.hP l) * c) := by
-        rw [Nat.not_odd_iff_even, mul_assoc]; exact even_two_mul _
-      dsimp only
-      rw [decide_eq_false (fun hh => this hh.2), Bool.xor_false]
-    · dsimp only
-      rw [show 2 * addOrderOf (2 • N.hP l) * c = c * addOrderOf (2 • N.hP l) * 2 by ring,
-        mul_smul, mul_smul, addOrderOf_nsmul_eq_zero, smul_zero, add_zero]
-  · rw [if_neg h]
-    refine Prod.ext ?_ ?_
-    · simp [h]
-    · dsimp only
-      rw [mul_comm, mul_smul, addOrderOf_nsmul_eq_zero, smul_zero, add_zero]
+    N.pos l z (N.ordP l * c) = z :=
+  by apply _root_.GlobalTheory.LevelsOrbits.pos_mul_period
 
 lemma pos_mod (N : NumDatum) (l : ℕ) (z : RPl N.R) (e : ℕ) :
     N.pos l z (e % N.ordP l) = N.pos l z e := by

@@ -99,11 +99,6 @@ variable {C : Type} [Field C]
 def absDifferent (v : Valuation C ℝ≥0) {E : Type} [Field E] [NumberField E] (τ : E →+* C) : ℝ≥0 :=
   sSup {r | ∃ x ∈ differentIdeal ℤ (𝓞 E), v (τ x) = r}
 
-def IsPowMul_vp (p : ℕ) (v : Valuation C ℝ≥0) {O : Type} [CommRing O] [Algebra O C] {U : Type}
-    [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] (t : ℝ)
-    (La La' : Submodule O U) : Prop :=
-  ∃ u : C, (v u : ℝ) = (v (p : C) : ℝ) ^ t ∧ La' = scaleLat u La
-
 
 set_option autoImplicit false in
 open scoped NNReal NumberField Classical in
@@ -216,7 +211,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt
 
@@ -271,7 +265,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt.FlagBasis
 
@@ -367,7 +360,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt.TieFrame
 
@@ -519,7 +511,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt
 
@@ -643,7 +634,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -661,7 +651,6 @@ open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompHt
 
@@ -737,7 +726,6 @@ open CategoryTheory AlgebraicGeometry NumberField IsDedekindDomain
 open scoped TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovHt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CovHt.FrameCmp
 
@@ -1127,7 +1115,6 @@ open CategoryTheory AlgebraicGeometry NumberField IsDedekindDomain
 open scoped TensorProduct NNReal
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Formalism.L2.Pj GlobalTheory.HTLat GlobalTheory.EigenSplit GlobalTheory.Frames GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovHt
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.CovHt.FrameCmp
 section Different
 variable {C : Type} [Field C] [IsAlgClosed C] [CharZero C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C]

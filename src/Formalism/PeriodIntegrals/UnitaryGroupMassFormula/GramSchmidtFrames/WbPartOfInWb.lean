@@ -11,8 +11,6 @@ import Formalism.HermitianCurvature.BigCellVanishingOfCommute
 open MeasureTheory Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
 open Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.GsFr

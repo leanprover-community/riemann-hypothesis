@@ -152,8 +152,6 @@ section -- clump:auto
 
 open GlobalTheory.InertZeta
 
-theorem _root_.GlobalTheory.T.unitary_iwasawa_cells_disjoint : CosetInj := by
-  first | exact @GlobalTheory.InertZeta.cosetInj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryIwasawaCellsDisjointStatement =====

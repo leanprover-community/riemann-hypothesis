@@ -60,15 +60,7 @@ theorem kap_last : kap Zm (Fin.last r) = (Zm.submatrix Fin.castSucc Fin.castSucc
   simp [← two_mul, pow_mul]
 
 theorem nk_pos (hdet : Zm.det ≠ 0) : 0 < nk Zm := by
-  obtain ⟨b, hb⟩ : ∃ b, kap Zm b ≠ 0 := by
-    by_contra h
-    push_neg at h
-    have h2 := mul_kap Zm (Fin.last r)
-    simp [h] at h2
-    first
-      | exact hdet h2.symm
-  exact Finset.sum_pos' (fun i _ => Complex.normSq_nonneg _)
-    ⟨b, Finset.mem_univ _, Complex.normSq_pos.mpr hb⟩
+  apply _root_.Formalism.FourierDecayAlt.P.PBI.Sm.nk_pos_of_det <;> assumption
 
 theorem sum_kap_al (hT : 0 < T) (hT' : 0 < T') :
     ∑ b, kap Zm b * al T T' Zm b = -Zm.det / ((Real.sqrt (T * T') : ℝ) : ℂ) := by

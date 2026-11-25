@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LowVanishFockOfLowVanish
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsVacFOfIsVacVec
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
@@ -239,30 +240,7 @@ theorem fr_mul_inv : A.fr τ * (A.fr τ)⁻¹ = 1 :=
 theorem inv_mul_fr : (A.fr τ)⁻¹ * A.fr τ = 1 := mul_eq_one_comm.1 (fr_mul_inv A τ)
 
 theorem cart_isCartanInv : IsCartanInv (gramAt D V τ) (A.cart τ) := by
-  have h1 := fr_mul_inv A τ
-  have h2 := inv_mul_fr A τ
-  have hJ := Formalism.REAL.Jm_mul_self (A.ε τ)
-  have hJ' := Formalism.REAL.Jm_conjTranspose (A.ε τ)
-  have hG : gramAt D V τ * A.cart τ = (A.fr τ)ᴴ * A.fr τ := by
-    rw [← A.fr_gram τ]; unfold Fr.cart
-    calc _ = (A.fr τ)ᴴ * (Formalism.REAL.Jm (A.ε τ) * (A.fr τ * (A.fr τ)⁻¹) * Formalism.REAL.Jm (A.ε τ)) * A.fr τ := by
-          simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h1, Matrix.mul_one, hJ, Matrix.mul_one]
-  have hs : A.cart τ * A.cart τ = 1 := by
-    unfold Fr.cart
-    calc _ = (A.fr τ)⁻¹ * (Formalism.REAL.Jm (A.ε τ) * (A.fr τ * (A.fr τ)⁻¹) * Formalism.REAL.Jm (A.ε τ)) * A.fr τ := by
-          simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h1, Matrix.mul_one, hJ, Matrix.mul_one, h2]
-  refine ⟨hs, ?_, ?_⟩
-  · have hGh : (gramAt D V τ)ᴴ = gramAt D V τ := by
-      rw [← A.fr_gram τ]; simp [Matrix.conjTranspose_mul, hJ', Matrix.mul_assoc]
-    have h3 : (A.cart τ)ᴴ * gramAt D V τ = gramAt D V τ * A.cart τ := by
-      have := congrArg Matrix.conjTranspose hG
-      rw [Matrix.conjTranspose_mul, hGh, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose] at this
-      rw [this, hG]
-    rw [h3, Matrix.mul_assoc, hs, Matrix.mul_one]
-  · rw [hG]
-    exact Matrix.PosDef.conjTranspose_mul_self _ (Matrix.mulVec_injective_of_isUnit (A.fr_unit τ))
+  first | exact _root_.GlobalTheory.ChainFr.Model.isCartanInv_cart | exact @_root_.GlobalTheory.ChainFr.Model.isCartanInv_cart | apply _root_.GlobalTheory.ChainFr.Model.isCartanInv_cart <;> assumption
 
 variable {τ} {h : Matrix (Fin V.rank) (Fin V.rank) ℂ}
 

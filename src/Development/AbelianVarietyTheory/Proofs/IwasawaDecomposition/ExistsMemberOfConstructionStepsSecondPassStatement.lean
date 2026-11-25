@@ -947,14 +947,8 @@ theorem sel_under (v : HeightOneSpectrum (𝓞 H.F)) : (sel H v).under (𝓞 H.F
 
 theorem sel_underK (v : HeightOneSpectrum (𝓞 H.F)) : (sel H v).under (𝓞 H.K) = primeK H (ratP H v) := (sel_mem H v).2
 
-theorem sel_mem_of {p : ℕ} (hp : p.Prime) (v : HeightOneSpectrum (𝓞 H.F)) (hv : (p : 𝓞 H.F) ∈ v.asIdeal) :
-    sel H v ∈ PvSet H (primeK H p) v := by
-  have h := sel_mem H v
-  rwa [ratP_eq H v hp hv] at h
-
 def splitPlacesTwoPrimes : PlacesOverCommonPrime H :=
-  ⟨primeK H H.pde, primeK H H.pde', primeK_mem H H.pde_prime, primeK_mem H H.pde'_prime, fun v _ => sel H v,
-    fun v _ => sel H v, fun v hv => sel_mem_of H H.pde_prime v hv, fun v hv => sel_mem_of H H.pde'_prime v hv⟩
+  ⟨primeK H H.pde, primeK H H.pde', fun v _ => sel H v, fun v _ => sel H v⟩
 
 end GlobalTheory.Mem.Top.Bl.OnePrimeEach
 

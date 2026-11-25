@@ -125,8 +125,7 @@ theorem locVac_span_classes_indep : ∀ (L : Type) [Field L] [CharZero L] [Value
     (fun y => ρ y.out s) (fun y u => heig s hvac y.out u u.2) I
     (by
       intro y _ y' _ hyy
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       apply hyy
       have hm := hdist y.out y'.out (fun u hu => hcon ⟨u, hu⟩)
       rw [hΛ] at hm

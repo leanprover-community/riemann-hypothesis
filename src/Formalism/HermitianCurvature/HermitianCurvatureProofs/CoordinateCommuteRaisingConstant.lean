@@ -3163,10 +3163,7 @@ theorem coordinate_commute_raising_constant (u v : ℂ) : xA P D u * m0A P D v =
   rw [xA, kap_cz]
 
 theorem S12_commute_GGinv (u : ℂ) : S12 P D u * ggiA P D = ggiA P D * S12 P D u := by
-  unfold S12
-  rw [Finset.sum_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  rw [mul_assoc, G_sc, Ss_sc, ← mul_assoc, kap_sc, mul_assoc]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx1.D5.upper_sum_gamma_inv_comm <;> assumption
 
 theorem nf11 (hN : SSNorm) (hP : P.OK) {u : ℂ} (hu : Good P u) :
     t11 P D u = dA P D u + mt P D u * t22 P D u * lA P D u := by
@@ -3397,14 +3394,7 @@ theorem absCombo {C : Type*} [CommRing C] [Algebra ℂ C] (κ : C →ₐ[ℂ] R)
 
 theorem sum_anti {M : Type*} [AddCommGroup M] [Module ℂ M] (s : Finset ℕ) (D : ℕ → ℕ → M)
     (h : ∀ l ∈ s, ∀ j ∈ s, D l j + D j l = 0) : ∑ l ∈ s, ∑ j ∈ s, D l j = 0 := by
-  have hc : ∑ l ∈ s, ∑ j ∈ s, D l j = ∑ l ∈ s, ∑ j ∈ s, D j l := Finset.sum_comm
-  have h2 : ∑ l ∈ s, ∑ j ∈ s, D l j + ∑ l ∈ s, ∑ j ∈ s, D l j = 0 := by
-    calc ∑ l ∈ s, ∑ j ∈ s, D l j + ∑ l ∈ s, ∑ j ∈ s, D l j
-        = ∑ l ∈ s, ∑ j ∈ s, D l j + ∑ l ∈ s, ∑ j ∈ s, D j l := by rw [← hc]
-      _ = ∑ l ∈ s, ∑ j ∈ s, (D l j + D j l) := by simp only [Finset.sum_add_distrib]
-      _ = 0 := Finset.sum_eq_zero (fun l hl => Finset.sum_eq_zero (fun j hj => h l hl j hj))
-  have h3 : (2 : ℂ) • ∑ l ∈ s, ∑ j ∈ s, D l j = 0 := by rw [two_smul]; exact h2
-  exact (smul_eq_zero.1 h3).resolve_left two_ne_zero
+  apply _root_.Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.L3.sum_antisymm <;> assumption
 
 end abs
 

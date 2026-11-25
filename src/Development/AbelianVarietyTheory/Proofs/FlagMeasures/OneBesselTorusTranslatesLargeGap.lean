@@ -1257,14 +1257,12 @@ theorem oneBesselTor_of_gapHyp : GlobalTheory.GapIn.Hyp → ∃ Cgf : ℝ, ∀ D
   · have hs' := hs
     obtain ⟨m, x, y, X, hxy, -, hsdef⟩ := hs'
     have hx : ∃ x ∈ (rep L).TK, l x ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       apply hs0
       rw [hsdef]
       exact Finset.sum_eq_zero fun i _ => by rw [hne _ (hxy i).1, inner_zero_left]
     have hy : ∃ y ∈ (rep L).TK, l' y ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       apply hs0
       rw [hsdef]
       exact Finset.sum_eq_zero fun i _ => by rw [hne _ (hxy i).2, map_zero, inner_zero_right]

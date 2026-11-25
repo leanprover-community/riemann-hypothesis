@@ -134,17 +134,4 @@ def LIStat : Prop :=
       psiP S L 𝔭 = (Ideal.absNorm 𝔭 : ℝ) ^ ((finrank K V - 1) * (vF 𝔭 n + vd h L 𝔭)) *
         alphaStd K 𝔭 (finrank K V - 1) * alphaN h L 𝔭 n / alphaL h L 𝔭
 
-def LocalDensityRatio : Prop :=
-  ∀ (K F : Type) [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K],
-    Formalism.HermitianLatticesTheory.IsCMUnram K → IsFixF K F →
-    ∀ (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
-      [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (A₀ B₀ : Submodule (𝓞 K) V)
-      (𝔭 : Ideal (𝓞 F)),
-      h.IsSymm → IsTotPosDef h → 𝔭.IsMaximal → Submodule.IsFullLattice K A₀ →
-      Submodule.IsFullLattice K B₀ → Formalism.HermitianLatticesTheory.IsIntegralLat h A₀ → Formalism.HermitianLatticesTheory.IsIntegralLat h B₀ →
-      alphaL h (locF 𝔭 A₀) 𝔭 * (Ideal.absNorm 𝔭 : ℝ) ^ (finrank K V * vd h (locF 𝔭 B₀) 𝔭) *
-          orbCount h (locF 𝔭 B₀) (locF 𝔭 A₀) =
-        alphaL h (locF 𝔭 B₀) 𝔭 * (Ideal.absNorm 𝔭 : ℝ) ^ (finrank K V * vd h (locF 𝔭 A₀) 𝔭) *
-          orbCount h (locF 𝔭 A₀) (locF 𝔭 B₀)
-
 end Formalism.HermitianLattices.Ext.L3

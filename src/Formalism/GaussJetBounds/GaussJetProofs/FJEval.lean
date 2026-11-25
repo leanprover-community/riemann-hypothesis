@@ -2,7 +2,6 @@ module
 
 public import Formalism.GaussJetBounds.FrameJetEval
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

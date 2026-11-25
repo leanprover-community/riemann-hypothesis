@@ -182,8 +182,6 @@ theorem column_conditions_of_numeric_bounds (D : Formalism.BasicNotions.D7) (hV 
     have hQ : (0 : ℝ) ≤ ((p : ℝ) ^ X.Rj p K j) := by positivity
     have n0r : (X.dS K j e : ℝ) + (X.dV K j e : ℝ) ≤ (((r : ℝ) + K) * X.Ns) * (p : ℝ) ^ X.Rj p K j := by
       exact_mod_cast n0
-    have hdV : (0 : ℝ) ≤ (X.dV K j e : ℝ) := Nat.cast_nonneg _
-    have hs : (0 : ℝ) ≤ (X.sg p K j (segE X.F j i) : ℝ) := Nat.cast_nonneg _
     push_cast at n2
     have := mul_le_mul_of_nonneg_left cR hQ
     nlinarith

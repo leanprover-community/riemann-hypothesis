@@ -904,14 +904,12 @@ theorem coneCoord_le_pow_of_prod_eq_one : ∀ (a : ℕ) (t : ℝ), 0 < t → ∃
             _ ≤ K ^ a * ρ ^ a := mul_le_mul_of_nonneg_right (one_le_pow₀ hK1) (pow_nonneg hρ0 _)
   have hne : (Finset.univ : Finset (Fin a)).Nonempty := ⟨i, Finset.mem_univ _⟩
   have ex_le : ∃ j, r j ≤ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have := Finset.prod_lt_prod_of_nonempty₀ (s := Finset.univ) (f := fun _ => (1 : ℝ)) (g := r)
       (fun _ _ => one_pos) (fun j _ => hcon j) hne
     simp [hprod] at this
   have ex_ge : ∃ j, 1 ≤ r j := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have := Finset.prod_lt_prod_of_nonempty₀ (s := Finset.univ) (f := r) (g := fun _ => (1 : ℝ))
       (fun j _ => hr j) (fun j _ => hcon j) hne
     simp [hprod] at this

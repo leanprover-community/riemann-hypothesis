@@ -783,8 +783,7 @@ theorem dvd_of_not_isUnit (P : LocPrime l) (LL : FinExt l) {lam y : ↥(OL LL)} 
   have hy0' : (y : ↥LL.1) ≠ 0 := fun e => hy0 (Subtype.ext e)
   have hu0 : (y : ↥LL.1) / lam ≠ 0 := div_ne_zero hy0' hl0
   have key : 0 ≤ P.v LL ((y : ↥LL.1) / lam) ∨ 0 ≤ P.v LL ((y : ↥LL.1) / lam)⁻¹ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨h1, h2⟩ := hc
     have hs : P.v LL ((y : ↥LL.1) / lam) + P.v LL ((y : ↥LL.1) / lam)⁻¹ = 0 := by
       rw [← AddValuation.map_mul, mul_inv_cancel₀ hu0, AddValuation.map_one]
@@ -1451,7 +1450,6 @@ namespace GlobalTheory.UseLoc
 open Module
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
 theorem main : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i), tableLineDegreeTwo.aux₃ D HW F → tableLineDegreeTwo.adm20 D HW F → AdmissibleParameterJ.ConclusionJa D → GoodR D.nd i r → π ∈ D.nd.Z i → TruncatedSeriesCountingIdentities.admG2 i r ρ π → TruncatedSeriesCountingIdentities.admG3 i r ρ π → TruncatedSeriesCountingIdentities.FamilyContinuous i r → TruncatedSeriesCountingIdentities.SemisimpleDecomposition i r ρ π → TruncatedSeriesCountingIdentities.CyclotomicInertiaImage (D := D) i → 5 ≤ D.nd.l i → D.nd.l i ∉ D.host.small → D.nd.l i ≠ D.host.q → D.nd.l i ≠ D.host.d → (∀ (n : ℕ) [NeZero n] (up : ZMod n → Bool) (τ : ZMod n → D.what₂.Tau), ∃ (h w η : ZMod n → ℕ) (typ : ZMod n → Bool) (U : ZMod n → Multiset ℤ), tableLineDegreeTwo.PositionHyps (D.nd.l i) n D.R.t h w η typ U ∧ ∀ (a : ZMod n) (b : ℤ), ((U a).count (b + w a) = 1 ↔ (b : ℚ) ∈ AdmissibleParameterJ.JW D (up a) (D.nd.j i) (τ a)) ∧ (U a).count (b + w a) ≤ 1) → ∀ w (hw : w ∈ placesOver D.host.E (D.nd.l i)), (LocBound i w hw r Set.univ (WpO D.nd i ρ π) 0 ∧ (∀ c ∈ Finset.Icc 2 D.R.t, ∀ z ∈ cutCoc i w hw r Set.univ (chiRatO D.nd i c), z ∈ BD (Br.locLat D.nbr i w hw (chiRatO D.nd i c))) ∧ ∀ z ∈ cutCoc i w hw r Set.univ (chiRatO D.nd i 1), z ∈ Z1urD (Br.locLat D.nbr i w hw (chiRatO D.nd i 1)) (Br.inert D.nbr i w hw)) := by
   intro D HW F i r ρ π hconds hadm20 hJa hGood hπ hG2 hG3 hCont hDec hEps h5 hsm hq hd hposition w hw
   obtain ⟨C, hA, lam, hlam, θ, h, w', η, typ, U, hS⟩ :=

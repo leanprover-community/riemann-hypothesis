@@ -68,8 +68,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.CapelliExpansionLemmas
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.Qx6
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 theorem base_index_ne_first_index (l : Fin r) (j : Fin (mdim k r l.succ)) : v0 k l j ≠ e0 k l := by
@@ -303,8 +301,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx6
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace CapelliExpansionLemmas
 

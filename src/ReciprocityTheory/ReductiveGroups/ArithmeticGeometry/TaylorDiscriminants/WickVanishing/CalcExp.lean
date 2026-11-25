@@ -1,11 +1,8 @@
 module
 
 public import Mathlib.RingTheory.PowerSeries.Log
-import Mathlib.Algebra.Order.Star.Rat
 
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -145,24 +142,8 @@ theorem constantCoeff_exp {a : MvPowerSeries σ k} (ha : constantCoeff a = 0) :
     constantCoeff (PowerSeries.subst a (PowerSeries.exp k)) = 1 := by
   rw [constantCoeff_psubst ha, PowerSeries.constantCoeff_exp]
 
-private theorem powerSeries_subst_zero_eq_C_constantCoeff (f : PowerSeries k) :
-    PowerSeries.subst (0 : MvPowerSeries σ k) f = MvPowerSeries.C (PowerSeries.constantCoeff f) := by
-  classical
-  ext e
-  rw [PowerSeries.coeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero (by simp)),
-    finsum_eq_single _ 0 (fun d hd => by simp [zero_pow hd])]
-  by_cases he : e = 0
-  · subst he; simp
-  · simp only [smul_eq_mul, pow_zero, PowerSeries.coeff_zero_eq_constantCoeff_apply]
-    rw [MvPowerSeries.coeff_one, if_neg he, mul_zero, MvPowerSeries.coeff_C, if_neg he]
-
-private theorem powerSeries_subst_one (a : MvPowerSeries σ k) :
-    PowerSeries.subst a (1 : PowerSeries k) = 1 := by
-  rw [show (1 : PowerSeries k) = PowerSeries.C (1 : k) from (map_one _).symm, PowerSeries.subst_C,
-    map_one]
-
 theorem exp_zero : PowerSeries.subst (0 : MvPowerSeries σ k) (PowerSeries.exp k) = 1 := by
-  rw [powerSeries_subst_zero_eq_C_constantCoeff, PowerSeries.constantCoeff_exp, map_one]
+  rw [PowerSeries.subst_zero_eq_C_constantCoeff, PowerSeries.constantCoeff_exp, map_one, map_one]
 
 end General
 
@@ -176,40 +157,12 @@ theorem natCast_mul_eq_zero {x : k} {n : ℕ} (hn : n ≠ 0) (h : (n : k) * x = 
     exact (IsUnit.mk0 _ (by exact_mod_cast hn)).map _
   exact hu.mul_right_eq_zero.mp h
 
-private theorem one_add_X_mul_derivative_log_eq_one :
-    (1 + PowerSeries.X) * PowerSeries.derivative (R := k) (PowerSeries.log k) = 1 := by
-  have hD : ∀ n : ℕ,
-      PowerSeries.coeff n (PowerSeries.derivative (R := k) (PowerSeries.log k)) = (-1 : k) ^ n := by
-    intro n
-    rw [PowerSeries.coeff_derivative, PowerSeries.coeff_log, if_neg (Nat.succ_ne_zero n)]
-    have hn : ((n : ℚ) + 1) ≠ 0 := by positivity
-    rw [show ((n : k) + 1) = algebraMap ℚ k ((n : ℚ) + 1) by simp, ← map_mul]
-    rw [show ((-1 : ℚ) ^ (n + 1 + 1) / ((n + 1 : ℕ) : ℚ)) * ((n : ℚ) + 1) = (-1) ^ n by
-      push_cast; rw [div_mul_cancel₀ _ hn]; ring]
-    simp
-  ext n
-  rw [add_mul, one_mul, map_add (f := _)]
-  rcases n with _ | n
-  · simp [hD, PowerSeries.coeff_one]
-  · rw [PowerSeries.coeff_succ_X_mul, hD, hD, PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero n)]
-    ring
-
-private theorem isAddTorsionFree_coeff_ring : IsAddTorsionFree k := by
-  constructor
-  intro n hn a b _ hab
-  rw [nsmul_eq_mul, nsmul_eq_mul] at hab
-  have h : (n : k) * (a - b) = 0 := by
-    rw [mul_sub, hab, sub_self]
-  exact sub_eq_zero.mp (natCast_mul_eq_zero hn h)
-
 private theorem subst_log_subst_exp_sub_one_eq_self {a : MvPowerSeries σ k} (ha : constantCoeff a = 0) :
     PowerSeries.subst (PowerSeries.subst a (PowerSeries.exp k) - 1) (PowerSeries.log k) = a := by
   have ha' : PowerSeries.HasSubst a := PowerSeries.HasSubst.of_constantCoeff_zero ha
   have h1 : PowerSeries.subst a (PowerSeries.exp k) - 1 =
       PowerSeries.subst a (PowerSeries.exp k - 1) := by
-    have h2 := PowerSeries.subst_add ha' (PowerSeries.exp k - 1) 1
-    rw [sub_add_cancel, powerSeries_subst_one] at h2
-    rw [h2]; ring
+    rw [← PowerSeries.coe_substAlgHom ha', map_sub, map_one]
   have hs : PowerSeries.HasSubst (PowerSeries.exp k - 1) :=
     PowerSeries.HasSubst.of_constantCoeff_zero' (by simp)
   rw [h1, ← PowerSeries.subst_comp_subst_apply hs ha', PowerSeries.subst_log_exp_sub_one, PowerSeries.subst_X ha']
@@ -217,7 +170,7 @@ private theorem subst_log_subst_exp_sub_one_eq_self {a : MvPowerSeries σ k} (ha
 theorem eq_zero_of_exp_eq_one {c : MvPowerSeries σ k} (hc : constantCoeff c = 0)
     (h : PowerSeries.subst c (PowerSeries.exp k) = 1) : c = 0 := by
   have h1 := subst_log_subst_exp_sub_one_eq_self hc
-  rw [h, sub_self, powerSeries_subst_zero_eq_C_constantCoeff, PowerSeries.constantCoeff_log, map_zero] at h1
+  rw [h, sub_self, PowerSeries.subst_zero_of_constantCoeff_zero PowerSeries.constantCoeff_log] at h1
   exact h1.symm
 
 theorem exp_inj {a b : MvPowerSeries σ k} (ha : constantCoeff a = 0) (hb : constantCoeff b = 0)
@@ -238,25 +191,6 @@ section Log
 
 variable {k : Type} [CommRing k] [Algebra ℚ k] {σ : Type}
 
-private theorem eq_zero_of_one_add_X_mul_derivative_eq_self' (H : PowerSeries k) (h0 : PowerSeries.constantCoeff H = 0)
-    (h : (1 + PowerSeries.X) * PowerSeries.derivative (R := k) H = H) : H = 0 := by
-  have hc : ∀ n, PowerSeries.coeff n H = 0 := by
-    intro n
-    induction n with
-    | zero => rw [PowerSeries.coeff_zero_eq_constantCoeff_apply]; exact h0
-    | succ n ih =>
-      have h1 := congrArg (PowerSeries.coeff n) h
-      have hX : PowerSeries.coeff n (PowerSeries.X * PowerSeries.derivative (R := k) H) = 0 := by
-        rcases n with _ | m
-        · simp
-        · rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_derivative, ih, zero_mul]
-      rw [add_mul, one_mul, map_add (f := _), hX, add_zero, PowerSeries.coeff_derivative, ih] at h1
-      have h2 : ((n + 1 : ℕ) : k) * PowerSeries.coeff (n + 1) H = 0 := by
-        rw [mul_comm]; push_cast; exact h1
-      exact natCast_mul_eq_zero (Nat.succ_ne_zero n) h2
-  ext n
-  simp [hc n]
-
 theorem constantCoeff_logS {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
     constantCoeff (PowerSeries.subst (f - 1) (PowerSeries.log k)) = 0 := PowerSeries.constantCoeff_subst_eq_zero (by simp [hf]) _ PowerSeries.constantCoeff_log
 
@@ -265,8 +199,8 @@ theorem exp_log {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
   have hb : PowerSeries.HasSubst (f - 1) := PowerSeries.HasSubst.of_constantCoeff_zero (by simp [hf])
   have ha : PowerSeries.HasSubst (PowerSeries.log k) :=
     PowerSeries.HasSubst.of_constantCoeff_zero' PowerSeries.constantCoeff_log
-  rw [← PowerSeries.subst_comp_subst_apply ha hb, PowerSeries.subst_exp_log, PowerSeries.subst_add hb,
-    PowerSeries.subst_X hb, powerSeries_subst_one]
+  rw [← PowerSeries.subst_comp_subst_apply ha hb, PowerSeries.subst_exp_log,
+    ← PowerSeries.coe_substAlgHom hb, map_add, PowerSeries.substAlgHom_X, map_one]
   ring
 
 alias log_exp := _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.subst_log_subst_exp_sub_one_eq_self

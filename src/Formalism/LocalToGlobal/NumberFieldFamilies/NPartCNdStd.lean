@@ -220,8 +220,7 @@ theorem locsFin_of (hs : HeckeStd0 B) (hd : FinDimV B) : LocsFin B := by
 
 theorem tSep (i : LocT B) (x y : XOf B i) (hxy : x ≠ y) :
     ∃ f ∈ TOf B i, (f : XOf B i → OOf B i) x ≠ (f : XOf B i → OOf B i) y := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hxy
   apply Subtype.ext
   refine AlgHom.ext_of_adjoin_eq_top Algebra.adjoin_adjoin_coe_preimage ?_

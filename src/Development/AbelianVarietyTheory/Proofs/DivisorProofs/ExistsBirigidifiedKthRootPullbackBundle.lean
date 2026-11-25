@@ -26,7 +26,6 @@ open GlobalTheory.ZM GlobalTheory.SiegelTor
 
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.SharpPull
 namespace GlobalTheory.KthRoot
 

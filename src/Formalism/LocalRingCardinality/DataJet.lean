@@ -50,22 +50,13 @@ structure JetLoc1 where
 
 attribute [instance] JetLoc1.hl
 
-structure ThetaJet (R : Ranks) (host : Host R) : Type 1 where
+structure ThetaJet (R : Ranks) (_host : Host R) : Type 1 where
   Sit : Type
   loc : Sit → JetLoc
-
-  l_inert : ∀ i, host.cls (loc i).l = .signal ∨ host.cls (loc i).l = .inertClass
   jOf : Sit → ℕ
-  j_mem : ∀ i, 1 ≤ jOf i ∧ jOf i ≤ R.m
-  N0_eq : ∀ i, (loc i).N0 = R.N (jOf i - 1)
-  N1_eq_exponentN1 : ∀ i, (loc i).N1 = R.N (jOf i)
   Sit1 : Type
   loc1 : Sit1 → JetLoc1
-  l_inert1 : ∀ i, host.cls (loc1 i).l = .inertClass ∧ ¬ HNeZero host (loc1 i).l
   j1Of : Sit1 → ℕ
-  firstJetIndex_mem_range : ∀ i, 1 ≤ j1Of i ∧ j1Of i ≤ R.m
-  firstJet_lowerRank_eq : ∀ i, (loc1 i).N0 = R.N (j1Of i - 1)
-  firstJet_upperRank_eq : ∀ i, (loc1 i).N1 = R.N (j1Of i)
 
 end Formalism.BasicNotions
 

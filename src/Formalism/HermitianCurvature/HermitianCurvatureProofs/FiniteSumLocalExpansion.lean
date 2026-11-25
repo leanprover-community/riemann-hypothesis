@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnTInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieDecompositionLocal
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
@@ -449,8 +450,6 @@ namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 theorem gv_inv {y : Mat k r} (hy : y ∈ GV k r) : y * y⁻¹ = 1 ∧ y⁻¹ * y = 1 := by
@@ -494,17 +493,7 @@ def Mc (y : Mat k r) (a b : Fin (2 * r + k + 1)) : Mat k r := y⁻¹ * Msg k r a
 
 private theorem Hpk_inv_conjTranspose_conj_eq_conj_of_mem_GV {y : Mat k r} (hy : y ∈ GV k r) (Z : Mat k r) :
     (Hpk k r)⁻¹ * (y⁻¹ * Z * y)ᴴ * Hpk k r = y⁻¹ * ((Hpk k r)⁻¹ * Zᴴ * Hpk k r) * y := by
-  have hHH : Hpk k r * Hpk k r = 1 := Formalism.QuantumDeterminants.GBasic.Hpk_sq k r
-  have hHH' : ∀ A : Mat k r, Hpk k r * (Hpk k r * A) = A := fun A => by rw [← mul_assoc, hHH, one_mul]
-  have hinvH : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_left_inv hHH
-  have hy' : yᴴ * Hpk k r * y = Hpk k r := hy
-  have hinv : y⁻¹ = Hpk k r * yᴴ * Hpk k r := by
-    apply Matrix.inv_eq_left_inv
-    simp only [mul_assoc] at hy' ⊢
-    rw [hy', hHH]
-  rw [hinvH, hinv]
-  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Formalism.QuantumDeterminants.GBasic.Hpk_herm, mul_assoc,
-    hHH, mul_one, hHH']
+  apply _root_.Formalism.FourierDecayAlt.Q.TInvW.conj_part <;> assumption
 
 private theorem hermitian_half_one_conj_of_mem_GV {y : Mat k r} (hy : y ∈ GV k r) (Z : Mat k r) :
     hpart1 (Hpk k r) (y⁻¹ * Z * y) = y⁻¹ * hpart1 (Hpk k r) Z * y := by
@@ -562,8 +551,6 @@ namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -639,8 +626,6 @@ namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 theorem skewRow {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ) (Φ : Mat k r → E) (g : Mat k r)
@@ -694,25 +679,6 @@ theorem col_zero {t : ℕ} (a d : Fin t → Fin (2 * r + k + 1)) (u : ℂ) (Φ :
   have h2 := sub_eq_zero.mpr this
   rw [sub_neg_eq_add] at h2
   exact FourTermExpansion.half _ h2
-
-end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
-
-namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
-  Formalism.FourierDecayAlt.P.FourTermExpansion
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
-
-namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.CapelliWordSumExpansion
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 end -- clump:auto

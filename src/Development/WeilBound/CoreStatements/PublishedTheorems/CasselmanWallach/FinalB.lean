@@ -27,59 +27,9 @@ public import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWa
 public import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.U0Commute
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
 public import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.CwOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.PiTensorProduct
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Rat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.CasimirPowerCommute, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.CasimirRealOfCentral, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.CasimirRealScalar, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.ColumnMomentsOfSymmetric, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.CompactGroupFacts, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.EigenWeightedSumBound, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.EigenbasisOfBasic, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.FunctionalCalculusOfBasic, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.GelfandCentralHolds, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.GroupFactsHolds, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.GrowthOfBasic, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.GrowthPolynomialOperator, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.IdentityFiltrationBound, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.InversePowerBoundHolds, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.KFiniteInclusion, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.NilpotentOfPowerTraces, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.PMaxPr, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.SymmetricPowerHolds, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.WordFiltrationCommute, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.EtaleCohomologyNegativeVanishingDegreeZero, Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.FinalB
@@ -111,16 +61,13 @@ theorem word_mem (E : Fin n → Fin n → Module.End ℂ V) (l : List (Fin n × 
 
 theorem mul_E_mem (E : Fin n → Fin n → Module.End ℂ V) (a b : Fin n) {j : ℕ} {w : Module.End ℂ V}
     (hw : w ∈ U E j) : w * E a b ∈ U E (j + 1) := by
-  unfold U at hw
-  induction hw using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨l, hl, rfl⟩ := hx
-    apply Submodule.subset_span
-    refine ⟨l ++ [(a, b)], by simp; omega, ?_⟩
-    simp [List.prod_append]
-  | zero => simp
-  | add x y _ _ hx hy => rw [add_mul]; exact Submodule.add_mem _ hx hy
-  | smul c x _ hx => rw [smul_mul_assoc]; exact Submodule.smul_mem _ c hx
+  have hmul : U E j ≤ (U E (j + 1)).comap (LinearMap.mulRight ℂ (E a b)) := by
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨l, hl, rfl⟩
+    change _ ∈ U E (j + 1)
+    exact Submodule.subset_span
+      ⟨l ++ [(a, b)], by simpa using Nat.succ_le_succ hl, by simp [List.prod_append]⟩
+  exact hmul hw
 
 theorem adjSign_mul_self (ε : Fin n → Bool) (a b : Fin n) : adjSign ε a b * adjSign ε a b = 1 := by
   unfold adjSign; split_ifs <;> norm_num
@@ -271,8 +218,7 @@ lemma comm_casimirK (T : Module.End ℂ V) (hT : ∀ a b, E a b * T = T * E a b)
   rw [mul_assoc, hT b a, ← mul_assoc, hT a b, mul_assoc]
 
 lemma exists_eig_ne (h : Mod ε E) [Nontrivial V] : ∃ μ : ℝ, ∃ v : V, v ≠ 0 ∧ Eig ε E μ v := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hb : Submodule.span ℂ {v | ∃ μ : ℝ, Eig ε E μ v} = ⊥ := by
     rw [Submodule.span_eq_bot]
     rintro v ⟨μ, hv⟩

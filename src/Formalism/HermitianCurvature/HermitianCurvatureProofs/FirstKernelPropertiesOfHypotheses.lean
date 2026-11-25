@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CharacterOrthogonalityDual
 public import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.MulInvBlockDiagApplySameBlock
 import Mathlib.Analysis.CStarAlgebra.Classes
@@ -220,12 +221,7 @@ section KRfacts
 variable {K : Type} [CommRing K] (R : Subring K)
 
 theorem mem_rangeR (a : K) : a ∈ LinearMap.range (Algebra.linearMap R K) ↔ a ∈ R := by
-  constructor
-  · intro h
-    obtain ⟨r, rfl⟩ := LinearMap.mem_range.mp h
-    exact r.2
-  · intro ha
-    exact LinearMap.mem_range.mpr ⟨⟨a, ha⟩, rfl⟩
+  apply _root_.Formalism.FourierDecayAlt.P.A5x3.mem_rng <;> assumption
 
 theorem psiKR_mk (ψ : AddChar K ℂ) (hψ : ∀ r ∈ R, ψ r = 1) (a : K) :
     psiKR R ψ (Submodule.Quotient.mk a : KR R) = ψ a := by

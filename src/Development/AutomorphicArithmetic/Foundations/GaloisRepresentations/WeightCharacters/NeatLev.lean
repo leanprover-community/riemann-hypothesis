@@ -51,7 +51,11 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZer
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasExponentZeroIff
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.BlockCharacterApproximation.PolyApproxCut
+import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Analysis.Normed.Field.Basic
+import Mathlib.Basic.Complex.Basic
+import Mathlib.Data.ZMod.Defs
+import Mathlib.Topology.MetricSpace.Ultra.Basic
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.MaxCpt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -66,7 +70,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.DefU GlobalTheory.PRep
 open ValuativeRel
 
@@ -100,7 +103,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.DefU GlobalTheory.PRep
 open UpperTheory.Gal.CharacterCongruences
 
@@ -163,7 +165,7 @@ open UpperTheory.Gal.Wt
 theorem UpperTheory.Gal.Wt.neatLev_of :
     UpperTheory.Gal.Wt.NeatLev := by
   intro E _ _ _ l hl a ha w₀ hmem hs v' hv' hap K hK hint Kv hKv W f hf
-  obtain ⟨N, hN, hNf⟩ := UpperTheory.Gal.Gen.smoothAt_holds E a w₀ hs W f
+  obtain ⟨N, hN, hNf⟩ := _root_.UpperTheory.Gal.Gen.smoothAt_pf E a w₀ hs W f
   obtain ⟨J, hJ, hJN, hJt, -⟩ := UpperTheory.Gal.Gen.tower_holds E w₀ a l hl hmem ha N hN
   obtain ⟨hLev, hmemC, hcJ, -, -, -⟩ :=
     UpperTheory.Gal.Gen.levFacts_holds E a w₀ hs K hK (J 0) (hJ.isOpen 0) (hJ.compact 0)

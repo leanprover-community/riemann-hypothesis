@@ -79,7 +79,6 @@ noncomputable section
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory MonObj GlobalTheory.DeRham GlobalTheory.Cris
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.KSFull
 

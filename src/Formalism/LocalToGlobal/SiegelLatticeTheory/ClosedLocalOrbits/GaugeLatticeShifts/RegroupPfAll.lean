@@ -37,8 +37,6 @@ open Formalism.BasicNotions
 
 section NSAPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NDense : Prop :=
   ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u : D.what₂.Word) (n : X.B.I.Gf), n ∈ X.NfinU u →
     ∀ U : Set X.B.I.Gf, IsOpen U → n ∈ U →
@@ -73,8 +71,6 @@ open scoped Classical
 namespace Formalism.L2.SG.Pf.RegroupPf
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.Full
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ColUniqPf
 
@@ -201,8 +197,6 @@ theorem lintegral_slab (I : Formalism.MainNotions.S.AutInst) (μf : Measure I.Gf
   rw [hout, lintegral_mul_const _ hfa, mul_comm]
 
 section SlabAbsPf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.TermOp.KExpCut Formalism.L2.SG.Full
 
@@ -400,8 +394,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 namespace Formalism.L2.SG.Pf.RegroupPf
 
 open Formalism.L2.SG.NormCut
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section FrameCongSec
 
@@ -608,8 +600,6 @@ namespace Formalism.L2.SG.Pf.RegroupPf
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem reduction_mod_g_holds : ModGOfAtC := by
   intro D X g1 Λ hΛ v hv
   obtain ⟨c, hcop, hcv⟩ := hv
@@ -673,8 +663,6 @@ namespace Formalism.L2.SG.Pf.RegroupPf
 
 open Formalism.L2.SG.FoldBound Formalism.L2.SG.PoincareSeriesSquareIntegrable NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp
 open Formalism.L2.SG.HidaSetting Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp.KExpCut Formalism.L2.SG.Full
 

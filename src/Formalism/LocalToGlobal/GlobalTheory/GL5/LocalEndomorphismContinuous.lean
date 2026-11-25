@@ -534,8 +534,6 @@ theorem split_cont_of_homeo (hE : LocalEndHomeo) (F E : Type) [Field F] [NumberF
           rw [Algebra.smul_def, Algebra.smul_def, map_mul, hsym] }
     exact IsModuleTopology.continuous_of_linearMapₛₗ hτ'c L
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem colProG (hE : LocalEndHomeo) {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] {sp : Spaces R F E} {gp : Fin 2 → ℕ}
     {ι' : Type} [Fintype ι'] {hc : ι' → HCParam R} {C : ColumnChain R ι' hc} {A : ColumnsAtT R C}

@@ -6,6 +6,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DensFibV
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.IdeleRoots.TorusPowers.HeckeTensor
 
 @[expose] public section
 
@@ -102,18 +103,7 @@ theorem isCompact_oev : IsCompact (OEv (E := E) v) := by
 
 theorem exists_intBasis : ∃ b : Module.Basis (Fin (Module.finrank F E)) F E,
     ∀ i, IsIntegral ℤ (b i) := by
-  classical
-  let b0 := Module.finBasis F E
-  obtain ⟨y, hy0, hy⟩ := exists_integral_multiples ℤ ℚ (L := E) (Finset.univ.image b0)
-  have hu : ∀ i : Fin (Module.finrank F E), IsUnit ((y : F)) := fun _ =>
-    isUnit_iff_ne_zero.2 (by exact_mod_cast hy0)
-  refine ⟨b0.isUnitSMul hu, fun i => ?_⟩
-  have h := hy (b0 i) (Finset.mem_image_of_mem _ (Finset.mem_univ i))
-  rw [Module.Basis.isUnitSMul_apply]
-  have e : ((y : F)) • b0 i = y • b0 i := by
-    rw [← Int.cast_smul_eq_zsmul F y (b0 i)]
-  rw [e]
-  exact h
+  apply _root_.GroundTheory.BlockD.ThmBHecke.exists_basis_isIntegral <;> assumption
 
 theorem trace_inclR (x : E) :
     Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (inclR (F := F) (Fv F v) x) =

@@ -501,10 +501,6 @@ private theorem exists_iso_of_cart {A B : Over X} [GrpObj A] [GrpObj B] {φ : A.
     exact key.symm.trans (Category.id_comp _)
   exact ⟨Over.isoMk (asIso φ) hw, rfl, he, inferInstance⟩
 
-private theorem comp_pow_id {A B : Over X} [GrpObj A] [GrpObj B] (e : A ⟶ B) [IsMonHom e] (n : ℕ) :
-    ((𝟙 A) ^ n) ≫ e = e ≫ ((𝟙 B) ^ n) := by
-  rw [MonObj.pow_comp, MonObj.comp_pow, Category.id_comp, Category.comp_id]
-
 private theorem comp_iso_eq_one {A B T : Over X} [GrpObj A] [GrpObj B] (e : A ≅ B) [IsMonHom e.hom] [IsMonHom e.inv] (a : T ⟶ A) :
     a ≫ e.hom = 1 ↔ a = 1 := by
   constructor
@@ -543,10 +539,6 @@ private theorem lbIso_move {Y Y₁ Z Z₁ : Scheme.{0}} {P : LB Y} {P₁ : LB Y�
     intro z
     rw [← GlobalTheory.CechPic.pull_comp, IsIso.inv_hom_id, GlobalTheory.CechPic.pull_id]
   rw [← inj (c • _), h, inj]
-
-private theorem isIntAf_mul {p : ℕ} [Fact p.Prime] {a b : AfP p} (ha : IsIntAf a) (hb : IsIntAf b) : IsIntAf (a * b) := fun v => by
-  rw [map_mul]
-  exact mul_mem (ha v) (hb v)
 
 private theorem inAf_mem {p : ℕ} [Fact p.Prime] (D : Datum p) (x : D.La) : inAf D x ∈ LaHat D :=
   AddSubgroup.subset_closure ⟨1, x, fun v => by rw [map_one]; exact one_mem _, rfl⟩
@@ -609,7 +601,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.isogG_of :
     simp only [Subgroup.coe_mul, Prod.snd_mul, Units.val_mul] at hht
     have hc : c₀ = q ^ e := by
       refine (hMU p D G L).2 c₀ (q ^ e) (t₁ * _ * t') (t * t₂' * t₁') hc₀ hcop
-        (isIntAf_mul (isIntAf_mul ht₁ hu₂) ht') (isIntAf_mul (isIntAf_mul ht ht₂') ht₁') ?_ ?_
+        (GlobalTheory.HeckeApprox.isInt_mul (GlobalTheory.HeckeApprox.isInt_mul ht₁ hu₂) ht') (GlobalTheory.HeckeApprox.isInt_mul (GlobalTheory.HeckeApprox.isInt_mul ht ht₂') ht₁') ?_ ?_
       · rw [show ∀ a b c d f g : AfP p, a * b * c * (d * f * g) = (a * g) * (b * f) * (d * c) from
           fun _ _ _ _ _ _ => by ring, htt₁, htt₂, htt, _root_.one_mul, _root_.one_mul]
       · rw [← _root_.mul_one (c₀ : AfP p), ← htt, ← _root_.mul_assoc, ← hht, hh₁, hnorm]
@@ -632,9 +624,9 @@ theorem UpperTheory.Gal.FiniteEtaleModels.isogG_of :
     obtain ⟨ψ', mψ', h1, h2⟩ := hTB p D G L R' gb (h * u) X s N' N o' o ψ hψ (q ^ e) hcop hback
     refine ⟨e₂.inv ≫ ψ' ≫ e₁.hom, inferInstance, ?_, ?_⟩
     · simp only [Category.assoc, Iso.hom_inv_id_assoc]
-      rw [reassoc_of% h1, comp_pow_id, Iso.inv_hom_id_assoc]
+      rw [reassoc_of% h1, GlobalTheory.UPel.HT.SiegFactor.id_pow_comp, Iso.inv_hom_id_assoc]
     · simp only [Category.assoc, Iso.hom_inv_id_assoc]
-      rw [reassoc_of% h2, comp_pow_id, Iso.inv_hom_id_assoc]
+      rw [reassoc_of% h2, GlobalTheory.UPel.HT.SiegFactor.id_pow_comp, Iso.inv_hom_id_assoc]
   · intro k _ _ _ x
     obtain ⟨hT1, hT2⟩ := hTT p D G L R' gb (h * u) X s N' N o' o ψ hψ q r 𝔴 i h u atP hTj hInt hu1 rfl k x
     have hk : ∀ {T : Over X} (g : T ⟶ o₁.A) (a : D.O),
@@ -1863,9 +1855,9 @@ theorem stepA : StepA := stepA_holds (multUnit_of mIn) (latGen_of mIn) (clsEx_of
 theorem baseFet : BaseFet := baseFet_holds (powCart_of mIn) (piFet_of mIn)
 
 theorem stepB : StepB :=
-  stepB_of (tjExG_of esNorm_link esGen_link objTri_holds pullIsog_holds pullKer_holds)
-    (bRead_of (isogG_of (trEta_of mIn) (trBack_of mIn) (multUnit_of mIn) (trTj_of mIn)) (qObj_of mIn) (qComp_of mIn) objTri_holds)
-    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds pullKer_holds kerFromU_holds isoOfKer_holds) (trEtaPt_of mIn))
+  stepB_of (tjExG_of esNorm_link esGen_link _root_.UpperTheory.Gal.crystallineComparison.Mod.objTri_of pullIsog_holds _root_.UpperTheory.Gal.crystallineComparison.Mod.pullKer_of)
+    (bRead_of (isogG_of (trEta_of mIn) (trBack_of mIn) (multUnit_of mIn) (trTj_of mIn)) (qObj_of mIn) (qComp_of mIn) _root_.UpperTheory.Gal.crystallineComparison.Mod.objTri_of)
+    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds _root_.UpperTheory.Gal.crystallineComparison.Mod.pullKer_of kerFromU_holds isoOfKer_holds) (trEtaPt_of mIn))
     (bLev_of latB_holds etaPtB_holds etInj_holds) (descExt_of normExt_holds) baseFet O.baseOnto pulledEx_holds
 
 theorem quotOf : QuotOf := quotOf_holds (powCart_of mIn) (piInv_of mIn) (piFet_of mIn) (piSep_of mIn) (congCRT_of mIn) O.baseOnto

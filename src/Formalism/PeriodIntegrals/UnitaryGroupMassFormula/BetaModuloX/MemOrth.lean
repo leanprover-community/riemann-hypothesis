@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -23,15 +24,7 @@ theorem herm' (x y : S.V) : S.hT y x = star (S.hT x y) := by
   rw [← S.herm.eq x y, starRingEnd_apply]
 
 theorem hXz (F' : LFlag S r T') : ∀ x ∈ Xsp F', S.hT x F'.fl.z = 0 := by
-  intro x hx
-  change x ∈ Submodule.span E (Set.range F'.fl.e) at hx
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨j, rfl⟩ := hy
-    exact F'.fl.z_orth j
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _), LinearMap.add_apply, hx, hy, add_zero]
-  | smul a x _ hx => rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hx, smul_zero]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.flag_span_orth_normal_left <;> assumption
 
 theorem hzX (F' : LFlag S r T') : ∀ x ∈ Xsp F', S.hT F'.fl.z x = 0 := by
   intro x hx

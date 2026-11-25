@@ -12,8 +12,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace CompanionTheory.ObstructionTrivialLocus
 
 def H1StructureDimLe : Prop :=

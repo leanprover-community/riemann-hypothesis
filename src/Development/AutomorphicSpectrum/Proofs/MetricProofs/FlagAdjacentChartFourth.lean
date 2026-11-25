@@ -1,54 +1,14 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LowerUnipotentFamilyAnalytic
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameLUMinorValue
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartSecond
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentChartThird
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBlockDiagMapGenBlock
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -74,66 +34,12 @@ theorem minor_self_of_lowerUni {X : Matrix (Fin N) (Fin N) ℂ} (hX : IsLowerUni
 
 theorem minor_insert_of_lowerUni {X : Matrix (Fin N) (Fin N) ℂ} (hX : IsLowerUni X) {C : Finset (Fin N)} {a b : Fin N}
     (hb : b ∈ C) (htop : ∀ c ∈ C, c ≤ b) (hab : b < a) : minorIJ X (insert a (C.erase b)) C = X a b := by
-  have ha : a ∉ C.erase b := fun h => absurd (htop a (Finset.mem_of_mem_erase h)) (not_le.2 hab)
-  have hcard : (insert a (C.erase b)).card = C.card := by
-    rw [Finset.card_insert_of_notMem ha, Finset.card_erase_of_mem hb]
-    have := Finset.card_pos.2 ⟨b, hb⟩
-    omega
-  have hfm : ∀ r, C.orderEmbOfFin rfl r ∈ C := fun r => Finset.orderEmbOfFin_mem _ _ _
-  let g : Fin C.card → Fin N := fun r => if C.orderEmbOfFin rfl r = b then a else C.orderEmbOfFin rfl r
-  have hne : ∀ r s, r < s → C.orderEmbOfFin rfl r ≠ b := fun r s hrs =>
-    (((C.orderEmbOfFin rfl).strictMono hrs).trans_le (htop _ (hfm s))).ne
-  have hgr : ∀ r s, r < s → g r = C.orderEmbOfFin rfl r := fun r s hrs => if_neg (hne r s hrs)
-  have hg : StrictMono g := fun r s hrs => by
-    rw [hgr r s hrs]
-    have h1 := (C.orderEmbOfFin rfl).strictMono hrs
-    by_cases e : C.orderEmbOfFin rfl s = b
-    · show _ < ite _ _ _
-      rw [if_pos e]
-      exact (h1.trans_le (htop _ (hfm s))).trans hab
-    · show _ < ite _ _ _
-      rw [if_neg e]
-      exact h1
-  have hmem : ∀ r, g r ∈ insert a (C.erase b) := fun r => by
-    by_cases e : C.orderEmbOfFin rfl r = b
-    · show ite _ _ _ ∈ _
-      rw [if_pos e]
-      exact Finset.mem_insert_self _ _
-    · show ite _ _ _ ∈ _
-      rw [if_neg e]
-      exact Finset.mem_insert_of_mem (Finset.mem_erase.2 ⟨e, hfm r⟩)
-  have hu := Finset.orderEmbOfFin_unique hcard hmem hg
-  unfold minorIJ
-  rw [dif_pos hcard, ← hu, det_of_lowerTriangular (X.submatrix g (C.orderEmbOfFin rfl)) fun r s e => by
-    have hrs : r < s := e
-    show X (g r) _ = 0
-    rw [hgr r s hrs]
-    exact hX.2 _ _ ((C.orderEmbOfFin rfl).strictMono hrs)]
-  obtain ⟨r₀, hr₀⟩ : b ∈ Set.range (C.orderEmbOfFin rfl) := by
-    rw [Finset.range_orderEmbOfFin]
-    exact hb
-  rw [Finset.prod_eq_single r₀]
-  · show X (ite _ _ _) _ = _
-    rw [if_pos hr₀, hr₀]
-  · intro r _ hr
-    have e : C.orderEmbOfFin rfl r ≠ b := fun e => hr ((C.orderEmbOfFin rfl).injective (e.trans hr₀.symm))
-    show X (ite _ _ _) _ = _
-    rw [if_neg e]
-    exact hX.1 _
-  · simp
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.LowMinor.minorIJ_insert_erase_of_isLowerUni <;> assumption
 
 theorem mul_elem_apply (L : Matrix (Fin N) (Fin N) ℂ) (ca cb : Fin N) (t : ℂ) (a b : Fin N) :
     (L * (1 + Matrix.single cb ca t)) a b = L a b + if b = ca then L a cb * t else 0 := by
-  rw [Matrix.mul_add, Matrix.mul_one, Matrix.add_apply]
-  congr 1
-  rw [Matrix.mul_apply, Finset.sum_eq_single cb]
-  · by_cases e : b = ca
-    · subst e
-      simp
-    · simp [e, Ne.symm e]
-  · intro c _ hc
-    simp [Ne.symm hc]
-  · simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.LcFam.mul_elem_apply <;> assumption
 
 variable {j : ℕ}
 

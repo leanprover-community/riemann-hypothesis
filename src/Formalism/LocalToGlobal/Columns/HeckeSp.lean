@@ -170,17 +170,7 @@ section Cov
 variable {O K V I : Type} [CommRing O] [Field K] [Algebra O K]
   [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
 
-abbrev hAlg (O : Type) {K V I : Type} [CommRing O] [Field K] [Algebra O K] [AddCommGroup V] [Module K V]
-    [Module O V] [IsScalarTower O K V] (op : I → End K V) : Subalgebra O (End K V) :=
-  Algebra.adjoin O (Set.range op)
-
-def hGen (O : Type) {K V I : Type} [CommRing O] [Field K] [Algebra O K] [AddCommGroup V] [Module K V]
-    [Module O V] [IsScalarTower O K V] (op : I → End K V) (i : I) : hAlg O op :=
-  ⟨op i, Algebra.subset_adjoin ⟨i, rfl⟩⟩
-
 variable {op : I → End K V}
-
-def sysOf (ψ : hAlg O op →ₐ[O] O) : I → K := fun i => pt ψ (hGen O op i)
 
 variable [IsLocalRing O]
 

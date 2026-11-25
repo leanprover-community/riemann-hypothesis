@@ -111,8 +111,7 @@ theorem not_unrAt_of_ramified : ∀ (K M : Type) [Field K] [NumberField K] [Fiel
     exact hA (algebraMap (𝓞 F) (𝓞 E) x)
 
   have hmove : ∃ s ∈ Ine (F := F) A, ∃ e : E, s (algebraMap E Ω e) ≠ algebraMap E Ω e := by
-    by_contra hfix
-    push_neg at hfix
+    by_contra! hfix
     have he : w.asIdeal.ramificationIdx (𝓞 F) = 1 := by
       let K := F
       let L := E
@@ -237,8 +236,7 @@ theorem not_unrAt_of_ramified : ∀ (K M : Type) [Field K] [NumberField K] [Fiel
         rw [h0] at hpos
         simp at hpos
       have hle : w.asIdeal.ramificationIdx (𝓞 F) ≤ 1 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         have : 2 * P.ramificationIdx (𝓞 E) ≤ w.asIdeal.ramificationIdx (𝓞 F) * P.ramificationIdx (𝓞 E) :=
           Nat.mul_le_mul_right _ hc
         omega

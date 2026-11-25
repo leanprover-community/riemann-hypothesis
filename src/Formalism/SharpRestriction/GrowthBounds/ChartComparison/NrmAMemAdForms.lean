@@ -200,10 +200,6 @@ def embN (β : Ch) (X : DetTw (K β).lev (embT D) (cTw D i)) :
     (M.lat i).V →ₛₗ[D.what₂.embLL] ({c // chOf c = β} → Fr D i hi → ℂ) :=
   ((nrm X (K β).y).toLinearMap).comp (embCh M eY chOf β)
 
-theorem embN_apply (β : Ch) (X : DetTw (K β).lev (embT D) (cTw D i)) (x : (M.lat i).V) (cl : {c // chOf c = β})
-    (z : Fr D i hi) :
-    embN M eY chOf K β X x cl z = (X.ch ((K β).y cl) : ℂ) * detF (cTw D i) z * M.emb i x cl.1 (eY.symm z) := rfl
-
 variable {M eY chOf K}
 
 

@@ -325,22 +325,6 @@ namespace GlobalTheory.CompanionTheory.UGeo.GradNet
 
 variable {n : ℕ}
 
-theorem norm_entry_sq_le_hs (M : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
-    ‖M i j‖ ^ 2 ≤ Formalism.REAL.hs M := by
-  unfold Formalism.REAL.hs
-  calc ‖M i j‖ ^ 2 ≤ ∑ b, ‖M i b‖ ^ 2 :=
-        Finset.single_le_sum (f := fun b => ‖M i b‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ j)
-    _ ≤ ∑ a, ∑ b, ‖M a b‖ ^ 2 :=
-        Finset.single_le_sum (f := fun a => ∑ b, ‖M a b‖ ^ 2)
-          (fun _ _ => Finset.sum_nonneg fun _ _ => by positivity) (Finset.mem_univ i)
-
-theorem norm_entry_le {M : Matrix (Fin n) (Fin n) ℂ} (h : Formalism.REAL.hs M ≤ n) (i j : Fin n) :
-    ‖M i j‖ ≤ (n : ℝ) + 1 := by
-  have h1 := (norm_entry_sq_le_hs M i j).trans h
-  by_contra hc
-  push Not at hc
-  nlinarith
-
 theorem hs_le_quarter {M : Matrix (Fin n) (Fin n) ℂ}
     (h : ∀ i j, ‖M i j‖ < 1 / (2 * ((n : ℝ) + 1))) : Formalism.REAL.hs M ≤ 1 / 4 := by
   have h1 : Formalism.REAL.hs M ≤ ∑ _a : Fin n, ∑ _b : Fin n, (1 / (2 * ((n : ℝ) + 1))) ^ 2 := by
@@ -670,10 +654,6 @@ theorem GlobalTheory.T.inverse_gram_eigenvalues_sum_hs (n : ℕ) (ε : Fin n →
     rw [hs_j_right, hs_j_left, hs_ct]
   rw [hre, ← Formalism.REAL.f1auxiliary_hs_eq, hhs]
 
-theorem GlobalTheory.CompanionTheory.UGeo.specpos_inv_eigenvalues (n : ℕ) (ε : Fin n → Bool)
-    (g : S7.UJ ε) (hT : ((S7.toM g⁻¹)ᴴ * S7.toM g⁻¹).IsHermitian) :
-    (∀ i, 0 < hT.eigenvalues i) ∧ ∑ i, hT.eigenvalues i = Formalism.REAL.hs (S7.toM g) :=
-  GlobalTheory.T.inverse_gram_eigenvalues_sum_hs n ε g hT
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InverseGramEigenvaluesSumHsStatement =====
@@ -1022,8 +1002,7 @@ theorem gap (g : S7.UJ ε) (hn : (n : ℝ) < hs (S7.toM g)) :
   set h := hs (S7.toM g) with hh
   have hq : 1 < h / n := (one_lt_div hnR).2 hn
   obtain ⟨i₁, hi₁⟩ : ∃ i, h / n ≤ lam i := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty fun i (_ : i ∈ Finset.univ) => hc i
     rw [hsum] at this
     simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at this

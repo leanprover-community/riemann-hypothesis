@@ -142,8 +142,7 @@ theorem seg_pos_gen (u v : κ → σ) (pos : κ → Bool) (hu : Function.Injecti
     (hwV : ∀ e ∈ P.support, (sw e v pos : ℚ) = nuV)
     (hpU : ∀ e ∈ P.support, ∀ c, e (u c) ≠ 0 → nuU ≠ 0 ∧ (pos c = true ↔ 0 < nuU)) (hV : 0 < nuV) :
     0 < nuU := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have hnoU : ∀ c, pos c = true → NoVar P (u c) := by
     intro c hc e he
     by_contra hne
@@ -169,8 +168,7 @@ theorem seg_neg_gen (u v : κ → σ) (pos : κ → Bool) (hv : Function.Injecti
     (hwU : ∀ e ∈ P.support, (sw e u pos : ℚ) = nuU)
     (hpV : ∀ e ∈ P.support, ∀ c, e (v c) ≠ 0 → nuV ≠ 0 ∧ (pos c = true ↔ 0 < nuV)) (hU : nuU < 0) :
     nuV < 0 := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have hnoV : ∀ c, pos c = false → NoVar P (v c) := by
     intro c hc e he
     by_contra hne

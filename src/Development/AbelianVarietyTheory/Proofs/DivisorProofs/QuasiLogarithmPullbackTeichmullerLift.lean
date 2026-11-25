@@ -180,7 +180,7 @@ theorem quasiLog_pull : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP
     have h2 := hIU.1 _ _ hc
     have := ((RR _).2.2.2.1 _ _ _ _ h1 h2).1
     rwa [zero_add] at this
-  refine ⟨⟨GlobalTheory.T.subst_mem_integralDifferentialSubmodule p k (Fin e) (Fin d) _ f hΦ0
+  refine ⟨⟨_root_.GlobalTheory.Katz.subst_mem_quasiInt p k (Fin e) (Fin d) _ f hΦ0
       (fun j => ((RR _).1 _).2 ⟨φ j, hRedΦ j⟩) hf1, ?_⟩, part2, ?_⟩
   · obtain ⟨c, hc⟩ := ((RR _).1 _).1 hf2
     exact ((RR _).1 _).2 ⟨_, part2 c hc⟩

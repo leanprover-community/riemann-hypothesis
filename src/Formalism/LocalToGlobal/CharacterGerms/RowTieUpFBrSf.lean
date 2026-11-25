@@ -247,8 +247,7 @@ theorem cc_Psi {χ : PS C 1 dd} (hχ : Y.IsChar χ) : MvPowerSeries.constantCoef
   · simp [hu, hχ1]
   · intro d hd
     obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, Finsupp.prod, map_prod,
       Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs), smul_zero]

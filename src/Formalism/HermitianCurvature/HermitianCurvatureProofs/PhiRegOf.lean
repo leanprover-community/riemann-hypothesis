@@ -16,8 +16,6 @@ open scoped InnerProductSpace ENNReal NNReal
 
 namespace Formalism.FourierDecayAlt.P.S3dx4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 
 theorem ag_lt_a {k r : ℕ} {h : ℝ} (hG : GapOK k r h) : AG k r < aOf r h := by

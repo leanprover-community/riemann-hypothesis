@@ -162,14 +162,6 @@ def HasCuspLabel (C : LabelConv K) {ι : Type} [Fintype ι] [DecidableEq ι] (τ
           ∑ a ∈ Finset.range (Fintype.card ι), C.ι x ^ (m * Fintype.card K ^ a)
 
 
-variable {K} in
-def HasLabel (C : LabelConv K) {ι : Type} [Fintype ι] [DecidableEq ι] (τ : FDRep ℂ (GL ι K))
-    (f : K[X]) : Prop :=
-  ∃ (s : ℕ) (b : ι → Fin s) (lam : ∀ c : Fin s, FDRep ℂ (GL {i // b i = c} K)) (P : Fin s → K[X]),
-    Function.Surjective b ∧
-    (∀ c, Simple (lam c) ∧ IsCuspidal K (lam c) ∧ HasCuspLabel C (lam c) (P c)) ∧
-    IsConstituent τ (hcRep K b lam) ∧ f = ∏ c, P c
-
 abbrev q : ℕ := Fintype.card K
 
 def CuspParam (C : LabelConv K) : Prop :=

@@ -247,8 +247,7 @@ private theorem dom {ψ : AddChar k Circle} {t : Fin n → k} (hnt : ∃ x : k, 
   · intro i
     exact i.elim0
   refine Fin.antitone_iff_succ_le.2 fun i => ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hab : i.castSucc < i.succ := Fin.castSucc_lt_succ
   have habn : ((i.succ : Fin (m + 1)) : ℕ) = (i.castSucc : Fin (m + 1)) + 1 := by simp
   have hta : t i.castSucc ≠ 0 := fun e => by
@@ -313,8 +312,7 @@ theorem isoNe : IsoNe := by
     rw [← Module.End.mul_apply, ← map_mul, e, map_mul, Module.End.mul_apply, (memfix _ _).1 hv _ h1]
   obtain ⟨w0, hw0, hw0ne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hfix
   obtain ⟨p, hp⟩ : ∃ p, l (τ p w0) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hw0ne (hnd w0 fun p _ => hcon p)
   obtain ⟨u, hu, d, κ, hκ, rfl⟩ := exists_unipB_mul_diagT_mul_KO k n p
   set D := diagT k (Fin n) d with hD

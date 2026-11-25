@@ -379,26 +379,10 @@ theorem cPos : CPos := by
 lemma q_core' (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ) (hl1 : 1 ≤ l) (hlk : l ≤ k)
     (h : Interlaces k u u' ρ) (hA : u l + 2 ≤ -Y ∧ -Y ≤ u' l - 2) :
     ∏ i ∈ Icc 1 k, ((Y - 1 + 1/2 + u i) * (Y - 1 + 1/2 + u' i)) < 0 := by
-  have hu := antitone_on (u_step h)
-  have hu' := antitone_on (u_step (interlaces_swap h))
   have hl : l ∈ Icc 1 k := mem_Icc.2 ⟨hl1, hlk⟩
+  have hx : Y - 1 + 1/2 + u l < 0 ∧ 0 < Y - 1 + 1/2 + u' l := by constructor <;> linarith
   rw [← mul_prod_erase _ _ hl]
-  apply mul_neg_of_neg_of_pos
-  · apply mul_neg_of_neg_of_pos <;> linarith
-  · apply prod_pos
-    intro i hi
-    have hne := ne_of_mem_erase hi
-    have hi' := mem_Icc.1 (mem_of_mem_erase hi)
-    rcases lt_or_gt_of_ne hne with hil | hil
-    · obtain ⟨a, b, c, d⟩ := h i (mem_Icc.2 ⟨hi'.1, by omega⟩)
-      have h1 := hu' (i + 1) l (by omega) (by omega) hlk
-      have h2 := hu' i l hi'.1 (by omega) hlk
-      apply mul_pos <;> linarith
-    · obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
-      obtain ⟨a, b, c, d⟩ := h j (mem_Icc.2 ⟨by omega, by omega⟩)
-      have h1 := hu l (j + 1) hl1 (by omega) hi'.2
-      have h2 := hu l j hl1 (by omega) (by omega)
-      apply mul_pos_of_neg_of_neg <;> linarith
+  exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos hx.1 hx.2) (prod_erase_pos hl h hx)
 
 lemma q_core'' (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ) (hl1 : 1 ≤ l) (hlk : l ≤ k)
     (h : Interlaces k u u' ρ) (hA : u' l + 2 ≤ -Y ∧ -Y ≤ u l - 2) :

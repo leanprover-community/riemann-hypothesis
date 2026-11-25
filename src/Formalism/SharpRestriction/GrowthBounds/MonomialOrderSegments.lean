@@ -70,8 +70,7 @@ theorem br_ddiv_monomial (M α : Fin r →₀ ℕ) :
       omega
     simp [h0, hM]
   · obtain ⟨a, ha⟩ : ∃ a, α a < M a := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (Finsupp.le_def.2 hc)
     rw [Finset.prod_eq_zero (Finset.mem_univ a) (by simp [Nat.choose_eq_zero_of_lt ha]), monomial_zero]
 

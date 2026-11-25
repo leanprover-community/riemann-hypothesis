@@ -74,7 +74,6 @@ theorem base_of (K : Cst) (hK : K.Pos) (CH : ℝ) (hCH : K.TLP ≤ CH) (X : Dat)
     intro w u hw0 hw hu0 hu
     calc CH * w * u ≤ CH * (((X.m : ℝ) + 1) ^ 3 * X.TT.card * ((X.p : ℝ) ^ X.G') ^ 4 * X.Y) *
           ((X.cStar : ℝ) + X.TT.card * X.ccl + X.n' * X.ccl) := by
-            have h0 : (0 : ℝ) ≤ CH := by linarith
             gcongr
       _ = CH * ((X.m : ℝ) + 1) ^ 3 * X.TT.card * ((X.p : ℝ) ^ X.G') ^ 4 *
           ((X.cStar : ℝ) + X.TT.card * X.ccl + X.n' * X.ccl) * X.Y := by ring

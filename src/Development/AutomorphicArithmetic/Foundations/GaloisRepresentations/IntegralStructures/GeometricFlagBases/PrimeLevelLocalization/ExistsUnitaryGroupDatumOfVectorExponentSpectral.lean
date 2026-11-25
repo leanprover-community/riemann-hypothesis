@@ -336,8 +336,7 @@ private lemma tendsto_mat_of_v_le {E : Type} [Field E] [NumberField E] {n : ℕ}
 theorem UpperTheory.Gal.Int.Geo.Pl.nearNbhd_holds :
     UpperTheory.Gal.Int.Geo.Pl.NearNbhd := by
   intro E _ _ n w O hO h1
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   choose e' he g hgK hN hgO using hcon
   have hv : ∀ (e : ℕ) i k, Valued.v (((g e).val - 1) i k) ≤ WithZero.exp (-(e : ℤ)) := by
     intro e i k
@@ -370,7 +369,6 @@ open GlobalTheory.LFun (KGL satEig)
 open UpperTheory.Gal.CertificateRingHomMap (GUf Gam0 Plc GLw AfQ sim mat comp rat loc lev SameK IsCen Shape IsForm IsKap mOf)
 open UpperTheory.Gal.W2.Seed (Arith Setup)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Int.Geo.Pl
 
@@ -704,7 +702,6 @@ open GlobalTheory.Cong (Apart)
 open UpperTheory.Gal.CertificateRingHomMap (GUf Gam0 Plc GLw AfQ sim mat comp rat loc lev SameK IsCen Shape IsForm IsKap mOf)
 open UpperTheory.Gal.W2.Seed (Arith Setup)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.CongL GlobalTheory.RoadWGeo Formalism.MainNotions.N Formalism.BasicNotions Formalism.ConjugateSelfDual UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
 attribute [local instance] Ideal.Quotient.field
 open Neutral.B1 ReciprocityTheory.Gal

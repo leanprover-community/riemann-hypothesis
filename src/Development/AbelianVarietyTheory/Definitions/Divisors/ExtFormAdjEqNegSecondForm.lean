@@ -366,18 +366,6 @@ omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsHermFrame.eventually_herm (h : IsHermFrame U H) (hz : z ∈ U) :
     ∀ᶠ x in 𝓝 z, (H x).IsHermitian := mem_of_superset (h.isOpen.mem_nhds hz) h.herm
 
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.of_mContDiffAt (hU : IsOpen U) (h : ∀ z ∈ U, MContDiffAt ∞ H z)
-    (h1 : ∀ z ∈ U, (H z).IsHermitian) (h2 : ∀ z ∈ U, IsUnit (H z).det) : IsHermFrame U H :=
-  ⟨hU, fun a b z hz => (h z hz a b).contDiffWithinAt, h1, h2⟩
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.isPosFrame (h : IsHermFrame U H) (h' : ∀ z ∈ U, (H z).PosDef) :
-    IsPosFrame U H := ⟨h.isOpen, h.smooth, h'⟩
-
-
 theorem conn_eq_of_isSymm (h : ∀ᶠ x in 𝓝 z, (H x).IsSymm) (ξ : E) :
     conn H z ξ = (H z)⁻¹ * mdel H z ξ := by
   rw [conn, h.self_of_nhds.eq, ← mdel_transpose, mdel_congr (h.mono fun x hx => hx.eq)]
@@ -664,22 +652,6 @@ theorem MContDiffAt.quotGram (h : MContDiffAt k H z) (hu : IsUnit (HermFrame.sub
     MContDiffAt k (fun x => quotGram (H x)) z :=
   (h.submatrix Sum.inr Sum.inr).sub (((h.submatrix Sum.inr Sum.inl).mul (h.subGram.inv hu)).mul
     (h.submatrix Sum.inl Sum.inr))
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.sub (h : IsHermFrame U H) (hu : ∀ z ∈ U, IsUnit (subGram (H z)).det) :
-    IsHermFrame U fun x => subGram (H x) :=
-  .of_mContDiffAt h.isOpen (fun _ hz => (h.mContDiffAt hz).subGram)
-    (fun z hz => isHermitian_subGram (h.herm z hz)) hu
-
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsPosFrame.sub (h : IsPosFrame U H) : IsPosFrame U fun x => subGram (H x) :=
-  (h.isHermFrame.sub fun z hz =>
-    (isUnit_iff_isUnit_det _).1 (posDef_subGram (h.posDef z hz)).isUnit).isPosFrame
-    fun z hz => posDef_subGram (h.posDef z hz)
-
 
 theorem secondForm_eq (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ : E) :
     secondForm H z ξ = (conn H z ξ).toBlocks₂₁ := by

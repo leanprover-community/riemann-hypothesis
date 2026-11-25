@@ -461,8 +461,6 @@ end Sums
 
 section Main
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem sgLoF_map (L : Formalism.L2.SG.PairVal.MatR D) (ψ : D.host.E →+* ℂ) :
@@ -556,8 +554,6 @@ end Main
 
 section Main2
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem realPhase (u u' : D.what₂.Word) {γ γw g g' : X.B.I.Ginf} (hg : g ∈ X.SinfU u) (hg' : g' ∈ X.SinfU u')
@@ -623,8 +619,6 @@ open Matrix
 namespace Formalism.L2.SG.RealObj.RealPointRepresentatives
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj.HermitianBlockSpans Formalism.L2.SG.RealObj.RootCoordinateFrames Formalism.L2.SG.RealObj.FormRegularity
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
@@ -709,8 +703,6 @@ open scoped Classical ComplexConjugate
 namespace Formalism.L2.SG.Pf.FinitePhase
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.HidaSetting
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
   (κ : Term D u u' (X.Fu u) (Y.what₂ u) → ℕ)

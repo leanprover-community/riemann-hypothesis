@@ -59,7 +59,6 @@ def GermCompat {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] (c : Y ⟶ Z) (�
     ψ ((Z.presheaf.germ V (genericPoint Z) hV).hom g) = (Y.presheaf.germ (c ⁻¹ᵁ V) (genericPoint Y) hV').hom (c.app V g)
 
 
-set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry KaehlerDifferential in
 theorem _root_.GlobalTheory.W1.Lef.germCompat_id (Z : Scheme.{0}) [IsIntegral Z] :
     _root_.GlobalTheory.W1.Lef.GermCompat (𝟙 Z) (fun y => y) := by

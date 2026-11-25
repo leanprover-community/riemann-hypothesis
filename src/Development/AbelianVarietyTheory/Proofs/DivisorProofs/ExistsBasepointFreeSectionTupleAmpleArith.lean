@@ -614,10 +614,6 @@ open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier Glo
 noncomputable section
 namespace GlobalTheory.PowNowhereZero
 
-theorem tensSec (T : Scheme.{0}) [IsAffine T] (A B : LB T) (hA : A.IsLB) (hB : B.IsLB) :
-    Nonempty (TensorProduct Γ(T, ⊤) (LB.Sec A) (LB.Sec B) ≃ₗ[Γ(T, ⊤)] LB.Sec (CechPic.tens A B)) :=
-  _root_.GlobalTheory.SecTensor.tensorSecEquiv T A B hA hB
-
 variable {T : Scheme.{0}}
 
 def tp (L : LB T) (k : ℕ) : LB T :=

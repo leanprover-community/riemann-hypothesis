@@ -1,5 +1,6 @@
 module
 
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.HermitianLattices.FinalNeighbourConstruct
 public import Formalism.HermitianLattices.HermitianLatticesProofs.ClassSetAssembly
@@ -54,8 +55,7 @@ theorem hStd_pos (hE : PosStar E) (x : Sp E n) (hx : x ≠ 0) :
 
   simp only [hStd, LinearMap.mk₂'ₛₗ_apply, map_sum]
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (funext h)
   refine lt_of_lt_of_le (hE (x i) hi) ?_
   refine Finset.single_le_sum (f := fun j => Algebra.trace ℚ E (star (x j) * x j)) ?_ (Finset.mem_univ i)
@@ -331,21 +331,7 @@ theorem cO_cO (r : 𝓞 E) : cO E (cO E r) = r := by
   rw [algebraMap_cO, algebraMap_cO, star_star]
 
 theorem conjIdeal_eq (P : Ideal (𝓞 E)) : conjIdeal (K := E) P = P.comap (cO E) := by
-  have hset : {r : 𝓞 E | ∃ s ∈ P, algebraMap (𝓞 E) E r = star (algebraMap (𝓞 E) E s)} =
-      (P.comap (cO E) : Set (𝓞 E)) := by
-    ext r
-    simp only [Set.mem_setOf_eq, SetLike.mem_coe, Ideal.mem_comap]
-    constructor
-    · rintro ⟨s, hs, h⟩
-      have hrs : cO E r = s := by
-        apply IsFractionRing.injective (𝓞 E) E
-        rw [algebraMap_cO, h, star_star]
-      rw [hrs]
-      exact hs
-    · intro h
-      exact ⟨cO E r, h, by rw [algebraMap_cO, star_star]⟩
-  show Ideal.span {r : 𝓞 E | ∃ s ∈ P, algebraMap (𝓞 E) E r = star (algebraMap (𝓞 E) E s)} = _
-  rw [hset, Ideal.span_eq]
+  apply _root_.Formalism.HermitianLattices.Ext.L3.conjIdeal_eq_comap <;> assumption
 
 theorem mem_conjIdeal (P : Ideal (𝓞 E)) (r : 𝓞 E) : r ∈ conjIdeal (K := E) P ↔ cO E r ∈ P := by
   rw [conjIdeal_eq, Ideal.mem_comap]
@@ -511,8 +497,7 @@ theorem conjIdeal_asIdeal (P : HeightOneSpectrum (𝓞 E)) :
 
 theorem exists_mem_notMem {P Q : HeightOneSpectrum (𝓞 E)} (h : P ≠ Q) :
     ∃ s ∈ P.asIdeal, s ∉ Q.asIdeal := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   exact HeightOneSpectrum.ext (P.isMaximal.eq_of_le Q.isPrime.ne_top hc)
 
@@ -1331,20 +1316,7 @@ theorem upA_gmap (g : Sp E n ≃ₗ[E] Sp E n) (P : Ideal (𝓞 E)) (N : Submodu
 private theorem dual_gmap_lemma_3 {g : Sp E n ≃ₗ[E] Sp E n} (hg : g ∈ UF E n)
     (L : Submodule (𝓞 E) (Sp E n)) :
     dual (hStd E n) (gmap g L) = gmap g (dual (hStd E n) L) := by
-  have hg' : ∀ x y, hStd E n (g x) (g y) = hStd E n x y := hg
-  ext y
-  rw [_root_.Formalism.L2.Col.mem_dual]
-  simp only [gmap, Submodule.mem_map, LinearMap.restrictScalars_apply, LinearEquiv.coe_coe]
-  constructor
-  · intro h
-    refine ⟨g.symm y, ?_, by simp⟩
-    rw [_root_.Formalism.L2.Col.mem_dual]
-    intro x hx
-    have h1 := h (g x) ⟨x, hx, rfl⟩
-    rwa [← hg' x (g.symm y), LinearEquiv.apply_symm_apply]
-  · rintro ⟨z, hz, rfl⟩ x ⟨x', hx', rfl⟩
-    rw [hg']
-    exact (_root_.Formalism.L2.Col.mem_dual L z).mp hz x' hx'
+  apply _root_.Formalism.L2.Col.dual_gmap <;> assumption
 
 theorem upN_gmap {g : Sp E n ≃ₗ[E] Sp E n} (hg : g ∈ UF E n) (P : Ideal (𝓞 E))
     (N : Submodule (𝓞 E) (Sp E n)) (x : Sp E n) :

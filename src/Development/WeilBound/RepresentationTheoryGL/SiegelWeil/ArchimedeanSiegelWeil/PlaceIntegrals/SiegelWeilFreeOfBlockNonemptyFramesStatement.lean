@@ -1452,8 +1452,7 @@ theorem exists_value (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {n : ℕ}
   obtain ⟨hσ, δ, hδ, hδs⟩ := HaarCoord.conj_facts hCM
   have hherm := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.WittOne.hE_herm σ hσ T hT
   have hne : ∃ x, hE σ T x x ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have key : ∀ x y, hE σ T x y + hE σ T y x = 0 := by
       intro x y
       have h := hall (x + y)
@@ -1508,8 +1507,7 @@ theorem split_hyp (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {M : ℕ}
   have hherm := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.WittOne.hE_herm σ hσ J hJ.1
 
   have hex : ∃ y₀, hE σ J x y₀ ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hv : Matrix.vecMul (fun i => σ (x i)) J = 0 := by
       funext j
       have := hall (Pi.single j 1)
@@ -1865,8 +1863,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.WeilSiegel.Frame
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.siegelWeil_free_of_block_nonempty_frames : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), HeckeCharacterZeroLocus.SiegelWeilU.IsHermND σ J → ∀ (n t : ℕ) (T : Matrix (Fin n) (Fin n) E) (hT : ∀ a b, σ (T b a) = T a b), IsBlockM t T → 2 * n < M → (framesE σ J T).Nonempty → SWFree σ J T hT := by
-  first | exact @GlobalTheory.CompanionTheory.WeilSiegel.Free.swFree_block
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.SiegelWeil.ArchimedeanSiegelWeil.PlaceIntegrals.SiegelWeilFreeOfBlockNonemptyFramesStatement =====

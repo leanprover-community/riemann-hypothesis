@@ -61,7 +61,6 @@ private theorem eeN_mul_comm_of_val_le {n' : ℕ} (S : UniformizedDVR p O) (hR :
     eeN D K Dt ⟨j, a⟩ mu * eeN D K Dt ⟨j, b⟩ mu' = eeN D K Dt ⟨j, b⟩ mu' * eeN D K Dt ⟨j, a⟩ mu := by
   have hmono : Monotone (fun k : Fin 2 => if k.val = 0 then NSet (r := r) Dt.nL j a.val else NSet Dt.nL j b.val) := by
     intro x y hxy
-    have hxy' : x.val ≤ y.val := hxy
     dsimp only
     split_ifs <;> first | exact le_refl _ | exact NSet_mono Dt.nL j hab | omega
   have h := ((Formalism.MainNotions.G.GLWeightTheory.filtered_projector_corollary_field D) p n' O S hR K (TL J Dt.nL r) Dt.trueLet 2 _ hmono).2

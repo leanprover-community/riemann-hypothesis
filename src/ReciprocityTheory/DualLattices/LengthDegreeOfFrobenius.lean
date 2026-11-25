@@ -1103,8 +1103,7 @@ theorem wdetDegree_of_smith_restrict (hS : EigenQuotientSmithStatement) (hR : Re
       have hlt : (v (algebraMap R C cp) ^ d) ^ (p ^ 0 * (p - 1)) < 1 := by
         refine pow_lt_one₀ zero_le' (pow_lt_one₀ zero_le' ?_ (by omega)) (by simp; omega)
         have h1 := hSet.cp_val
-        by_contra hge
-        push_neg at hge
+        by_contra! hge
         have h2 : 1 ≤ v (algebraMap R C cp) ^ (p - 1) := one_le_pow₀ hge
         rw [h1] at h2
         exact absurd hSet.p_lt (not_lt.2 h2)

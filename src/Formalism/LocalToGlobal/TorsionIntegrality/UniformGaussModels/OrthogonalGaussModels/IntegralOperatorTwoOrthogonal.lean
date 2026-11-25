@@ -497,8 +497,7 @@ lemma psi_le (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ ≤ 1) (hb4 : ‖b4�
 
 lemma psi_zero_le (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ ≤ 1) (hb4 : ‖b4‖ ≤ 1) (hb6 : ‖b6‖ ≤ 1)
     (h0 : 4 * x ^ 3 + b2 * x ^ 2 + 2 * b4 * x + b6 = 0) : ‖x‖ ≤ 4 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have r0 : 0 ≤ ‖x‖ := norm_nonneg _
   have e1 : ‖x‖ ^ 2 < ‖x‖ ^ 3 / 4 := by linarith [mul_pos (pow_pos (by linarith : (0:ℝ) < ‖x‖) 2) (sub_pos.2 hlt)]
   have e2 : ‖x‖ / 2 < ‖x‖ ^ 3 / 4 := by linarith [mul_pos (by linarith : (0:ℝ) < ‖x‖) (sub_pos.2 hlt)]
@@ -539,8 +538,7 @@ lemma dup_core (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ ≤ 1) (hb4 : ‖b4
   have hp := psi_le h2 hb2 hb4 hb6 hx
   have hm := congrArg norm hX
   rw [norm_mul, hn] at hm
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hb : ‖X‖ * ‖4 * x ^ 3 + b2 * x ^ 2 + 2 * b4 * x + b6‖ ≤ 4 * (‖x‖ ^ 3 / 4) :=
     mul_le_mul hle hp (norm_nonneg _) (by norm_num)
   have r3 : 0 < ‖x‖ ^ 3 := pow_pos (by linarith) 3
@@ -553,8 +551,7 @@ lemma dup_core (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ ≤ 1) (hb4 : ‖b4
 lemma psi_zero_eq (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ = 1) (hb4 : ‖b4‖ ≤ 1) (hb6 : ‖b6‖ ≤ 1)
     (hx : 1 < ‖x‖) (h0 : 4 * x ^ 3 + b2 * x ^ 2 + 2 * b4 * x + b6 = 0) : ‖x‖ = 4 := by
   refine le_antisymm (psi_zero_le h2 hb2.le hb4 hb6 h0) ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have e1 : ‖x‖ ^ 3 / 4 < ‖x‖ ^ 2 := by linarith [mul_pos (pow_pos (by linarith : (0:ℝ) < ‖x‖) 2) (sub_pos.2 hlt)]
   have e2 : ‖x‖ / 2 < ‖x‖ ^ 2 := by
     calc ‖x‖ / 2 < ‖x‖ * 1 := by linarith
@@ -696,8 +693,7 @@ lemma dup_big (hW : IntCurve W) (h2 : ‖(2 : K)‖ = 2⁻¹) (P : W.toAffine.Po
 
 lemma tors_bound (hW : IntCurve W) (h2 : ‖(2 : K)‖ = 2⁻¹) (P : W.toAffine.Point) (k : ℕ)
     (hk : (2 ^ k) • P = 0) (hP : P + P ≠ 0) : ‖px W P‖ < 4 := by
-  by_contra hge
-  push_neg at hge
+  by_contra! hge
   have claim : ∀ j : ℕ, 4 < ‖px W ((2 ^ (j + 1)) • P)‖ := by
     intro j
     induction j with

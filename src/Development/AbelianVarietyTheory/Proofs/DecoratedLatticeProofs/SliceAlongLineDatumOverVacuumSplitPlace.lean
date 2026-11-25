@@ -66,8 +66,7 @@ theorem col_mem_SB {n n' : Type} {Ψ : Matrix n n' k → ℂ} {a : (n → k) →
     (h : tensCol Ψ a ∈ SB (Matrix n (n' ⊕ Fin 1) k)) (hΨ : Ψ ≠ 0) : a ∈ SB (n → k) := by
   haveI : T2Space k := GlobalTheory.SplitWeil.t2Space k
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, Ψ x₀ ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hΨ (funext h0)
   have hg := Comm.comp_mem_SB h
     (p := fun y : n → k => Matrix.of fun i j => Sum.elim (x₀ i) (fun _ => y i) j)

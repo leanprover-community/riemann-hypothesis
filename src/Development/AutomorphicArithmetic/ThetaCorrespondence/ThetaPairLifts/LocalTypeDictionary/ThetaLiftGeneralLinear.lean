@@ -241,8 +241,7 @@ theorem UpperTheory.Lit.Mix.comb :
       have h2 : 0 ≤ (E.card : ℤ) * ((E.card : ℤ) - 1) := mul_nonneg (by linarith) (by linarith)
       nlinarith
   have key : ∃ t, J t ∧ ∀ b ∈ L, g b ≠ t + 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hall : ∀ n : ℕ, J (g a0 + n) := by
       intro n
       induction n with
@@ -606,7 +605,7 @@ private theorem UpperTheory.Lit.Mix.front_support_decomposition (hG : GlobalTheo
     rfl
   have c₁ : ∑ a : Fin Sᶜ.card, (u (Sᶜ.orderEmbOfFin rfl a)).1 = m := (deg _ _ mC).trans hm₀
   have c₂ : ∑ a : Fin S.card, (u (S.orderEmbOfFin rfl a)).1 = n := (deg _ _ mS).trans hn₁
-  have hΦ := GlobalTheory.T.parabolicProduct_equiv_product_of_partition k s (fun a => (u a).1) σ S m n e₃
+  have hΦ := _root_.GlobalTheory.ProdReorder.reorder_split k s (fun a => (u a).1) σ S m n e₃
     (stdBlocks (fun a => (u (Sᶜ.orderEmbOfFin rfl a)).1) c₁) (stdBlocks (fun a => (u (S.orderEmbOfFin rfl a)).1) c₂)
     (fun a b ha hb n _ _ f f' => GlobalTheory.CompanionTheory.Hypotheses₂.TDZ.commute_pair hG hBZ hZ (fun i => u (![a, b] i)) (hc a) (hc b)
       (hU _ (mem0 a ha) _ (mem1 b hb)) f f')
@@ -831,8 +830,7 @@ theorem UpperTheory.Lit.Mix.nolow :
     · exact abs_of_pos (Real.rpow_pos_of_pos hzpos _)
   rw [hnorm] at hb
   have hexp : 0 ≤ ∑ a, E (u a) + (S.card * n : ℝ) / 2 := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h3 := Real.one_lt_rpow_of_pos_of_lt_one_of_neg hzpos hz1 hneg
     linarith
   rw [hEsum, Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul] at hexp

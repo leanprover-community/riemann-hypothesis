@@ -612,8 +612,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
 section Abs
@@ -869,8 +867,7 @@ private lemma existsNe (π : UnitaryRep G H) (τ : Submodule ℂ H) (hcl : IsClo
     (hirr : ∀ ρ : Submodule ℂ H, ρ ≤ τ → IsClosed (ρ : Set H) → (∀ g, ∀ v ∈ ρ, π g v ∈ ρ) → ρ = ⊥ ∨ ρ = τ)
     (hinv : ∀ g, ∀ v ∈ τ, π g v ∈ τ)
     {v₀ u : H} (hv₀ : v₀ ∈ τ) (h0 : v₀ ≠ 0) (hu : u ∈ τ) (hu0 : u ≠ 0) : ∃ y, ⟪v₀, π y u⟫_ℂ ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   let ρ : Submodule ℂ H :=
     { carrier := {v | v ∈ τ ∧ ∀ y, ⟪v₀, π y v⟫_ℂ = 0}
       add_mem' := fun ha hb => ⟨τ.add_mem ha.1 hb.1, fun y => by rw [map_add (f := _), inner_add_right, ha.2, hb.2, add_zero]⟩
@@ -923,8 +920,7 @@ private lemma occAbs {Gl V : Type*} [Group Gl] [AddCommGroup V] [Module ℂ V] (
     rw [hu, sub_zero] at h2
     exact inner_eq_zero_symm.1 h2
   obtain ⟨s, hs⟩ : ∃ s, f₀ s ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hf₀ (LinearMap.ext hc)
   obtain ⟨y, hy⟩ := existsNe π τ hcl hirr hinv hv₀ h0 (hf₀τ s) hs
   obtain ⟨x, g, rfl, hx⟩ := hsp y
@@ -1230,8 +1226,6 @@ private theorem irr_twist {G H V : Type} [Group G] [Group H] [AddCommGroup V] [M
     rw [twist_apply, twist_apply, map_smul] at h1
     exact smul_right_injective V (χ g).ne_zero h1
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.locDat :
     ∀ {K : Type} [Field K] [NumberField K] (w : Pl K) (σ₁ σ₂ : SmIrr (Gw 2 w)), IsUnitarisable σ₁.ρ → IsUnitarisable σ₂.ρ → LocOk (PW w) (rhoW w σ₁ σ₂) := by
   intro K _ _ w σ₁ σ₂ u₁ u₂
@@ -1392,12 +1386,10 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.exists_l
   refine ⟨σ₁.V ⊗[ℂ] σ₂.V, inferInstance, inferInstance, rhoW (w i) σ₁ σ₂, f,
     locDat (w i) σ₁ σ₂ (occUnit 2 μ τ₁ (w i) σ₁ o₁) (occUnit 2 μ τ₂ (w i) σ₂ o₂), ?_, ?_, ?_⟩
   · obtain ⟨a, ha⟩ : ∃ a, f₁ a ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact n₁ (LinearMap.ext hc)
     obtain ⟨b, hb⟩ : ∃ b, f₂ b ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact n₂ (LinearMap.ext hc)
     obtain ⟨x, hx⟩ := Function.ne_iff.1 ha
     obtain ⟨y, hy⟩ := Function.ne_iff.1 hb

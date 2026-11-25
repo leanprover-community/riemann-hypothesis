@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
@@ -36,16 +37,7 @@ theorem scale_neg_mono {O Kf X : Type*} [CommRing O] [Field Kf] [Algebra O Kf] [
     [Module O X] [IsScalarTower O Kf X] (w : O) (hw : algebraMap O Kf w ≠ 0) {t t' : ℕ} (h : t ≤ t')
     (M : Submodule O X) :
     scale (algebraMap O Kf w ^ (-(t : ℤ))) M ≤ scale (algebraMap O Kf w ^ (-(t' : ℤ))) M := by
-  intro x hx
-  obtain ⟨y, hy, rfl⟩ := Submodule.mem_map.mp hx
-  refine Submodule.mem_map.mpr ⟨(w ^ (t' - t)) • y, M.smul_mem _ hy, ?_⟩
-  simp only [LinearMap.restrictScalars_apply, LinearMap.lsmul_apply]
-  rw [← algebraMap_smul Kf (w ^ (t' - t)) y, smul_smul, map_pow]
-  congr 1
-  rw [← zpow_natCast, ← zpow_add₀ hw]
-  congr 1
-  push_cast [Nat.cast_sub h]
-  ring
+  apply _root_.Formalism.MainNotions.Pf14.scale_neg_mono <;> assumption
 
 theorem RS.w_ne {p n' : ℕ} (R : RS p n') : algebraMap R.O R.Kf R.w ≠ 0 := by
   haveI := R.std.1.frac_O

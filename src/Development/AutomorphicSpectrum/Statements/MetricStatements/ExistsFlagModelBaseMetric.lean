@@ -175,14 +175,6 @@ theorem colFrame_dual {V : Type} [AddCommGroup V] [Module Ω V] {r : ℕ} (φ : 
 
 variable {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ}
 
-theorem conj_mem_mcPts {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) :
-    (fun q => starRingEnd ℂ (z q)) ∈ mcPts P := by
-  refine ⟨fun k => (hz.1 k).imp fun i hi => (map_ne_zero _).2 hi, fun f hf => ?_⟩
-  have h := congrArg (starRingEnd ℂ) (hz.2 f hf)
-  rw [MvPolynomial.eval_map, MvPolynomial.eval₂_comp_left, map_zero] at h
-  rw [MvPolynomial.eval_map, ← h]
-  exact congrArg (fun g => MvPolynomial.eval₂ g _ f) (RingHom.ext_int _ _)
-
 variable {Ψ : Type} {N j n : ℕ} {M : FlagModel y Ψ N j}
 
 end Tests

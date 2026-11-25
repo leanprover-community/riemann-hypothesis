@@ -64,8 +64,7 @@ theorem coef_eq {n : ℕ} {P : Fin n → V} (hP : LinearIndependent ℝ P) {a b 
   funext i; exact sub_eq_zero.1 (this i)
 
 theorem exists_pos_of_sum_eq_one {n : ℕ} (f : Fin n → ℝ) (h : ∑ i, f i = 1) : ∃ i, 0 < f i := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have : ∑ i, f i ≤ 0 := Finset.sum_nonpos fun i _ => hc i
   linarith
 

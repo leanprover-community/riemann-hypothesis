@@ -117,24 +117,11 @@ lemma herm_smul_right {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (c : ℂ)
 
 lemma herm_sum {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (u v : Fin m → ℂ) :
     ∑ j, herm H (bvec j) v * u j = herm H u v := by
-  simp only [herm, dotProduct, mulVec, bvec, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, Finset.sum_mul, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl; intro i _
-  apply Finset.sum_congr rfl; intro j _
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.B2x6.herm_sum <;> assumption
 
 lemma heisAct (v u : Fin (2 * (1 + r') + k + 1) → ℂ) (b : ℂ) :
     heisG k r' v b *ᵥ u = u - herm (Hpk k (1 + r')) u v • e0 k r' + herm (Hpk k (1 + r')) u (e0 k r') • (v + b • e0 k r') := by
-  ext i
-  simp only [heisG, Matrix.add_mulVec, Matrix.sub_mulVec, Matrix.one_mulVec, Pi.add_apply, Pi.sub_apply, Pi.smul_apply,
-    smul_eq_mul]
-  have h1 : ∀ (w φ : Fin (2 * (1 + r') + k + 1) → ℂ), (Matrix.vecMulVec w φ *ᵥ u) i = (∑ j, φ j * u j) * w i := by
-    intro w φ
-    simp only [mulVec, dotProduct, vecMulVec_apply, Finset.sum_mul]
-    apply Finset.sum_congr rfl; intro j _; ring
-  rw [h1, h1, herm_sum, herm_sum]
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  apply _root_.Formalism.FourierDecayAlt.P.B2x6.heisAct <;> assumption
 
 lemma heisG_comm (g : Mat k (1 + r')) (hg : g ∈ GV k (1 + r')) (c : ℝ) (hc : g *ᵥ e0 k r' = (c : ℂ) • e0 k r')
     (v : Fin (2 * (1 + r') + k + 1) → ℂ) (b : ℂ) :

@@ -14,8 +14,7 @@ theorem interpolation_holds : Interp := by
   intro K τ W _ _ _ _ S w h m hm
   by_contra hne
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K W, φ (w m) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne ((Module.forall_dual_apply_eq_zero_iff K (w m)).1 hcon)
   let P : MvPolynomial τ K := ∑ m' ∈ S, monomial m' (φ (w m'))
   have hP : P = 0 := by

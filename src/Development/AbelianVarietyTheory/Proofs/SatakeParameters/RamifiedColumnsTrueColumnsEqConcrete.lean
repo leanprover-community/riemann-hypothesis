@@ -60,8 +60,6 @@ namespace GlobalTheory.Core.Ht2
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 section Gen
 
 open GlobalTheory.Mem.Col2.StepZero
@@ -124,8 +122,6 @@ noncomputable section
 namespace GlobalTheory.Core.ColRam
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core GlobalTheory.Core.Ht2
-
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (h : I.Ok) (u : B.Word) (a : I.ι)
 
@@ -321,8 +317,6 @@ namespace GlobalTheory.Core.ColZero
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Core GlobalTheory.Core.Ht2
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 theorem exists_colEquiv {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (h : I.Ok) (hX : B.fields.Ok) (l : I.Laws)
     (u : B.Word) (a : I.ι) :
     ∃ κ : ColsK I u ≃ₗ[B.fields.K] ((I.fm l u a).lat 0).V, ∀ φ, IsCol I u a l (κ φ) φ :=
@@ -341,8 +335,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.AtG
-
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 namespace GlobalTheory.AtG
 

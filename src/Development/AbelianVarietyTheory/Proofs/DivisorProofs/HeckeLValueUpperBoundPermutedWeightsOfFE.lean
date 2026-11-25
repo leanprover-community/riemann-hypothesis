@@ -134,8 +134,6 @@ open NumberField IsDedekindDomain GlobalTheory.SqTop GlobalTheory.FunObj.SqNum F
 
 namespace GlobalTheory.SqTop.SizesBound
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T}
 
 theorem auxiliaryProduct_mem_place_of_exceptionalSet (P : Places L) {v : HeightOneSpectrum (𝓞 D.host.F)} (hv : v ∈ P.S0) :
@@ -223,8 +221,6 @@ theorem kap_add_le (large₂ : SizeData₂ D) (h : GlobalTheory.IndefiniteRowSid
 end GlobalTheory.SqTop.SizesBound
 
 namespace GlobalTheory.SqTop.SizesBound
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem sizes (c : ℝ) : GBig fun {D} _ _ {sc} G _ C x b => ∀ (i j : Fin D.R.m) (s : ℕ), 1 ≤ s → s ≤ halfRank D i j →
     c * (Module.finrank ℚ D.host.E : ℝ) + Real.log |((discr D.host.E : ℤ) : ℝ)| + 2 * Real.log (levQ G.pl) +

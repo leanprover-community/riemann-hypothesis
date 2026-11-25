@@ -5,6 +5,7 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLattic
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.Separation.CompletelyRegular
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.MeasurePreservingPiProd
 
 @[expose] public section
 
@@ -287,17 +288,7 @@ theorem const_eq (k : ℕ) (lam : Fin r → ℝ) (hlam : ∀ a, 0 < lam a) :
   ring
 
 theorem goodC_meas (T T' : ℝ) : MeasurableSet (GoodC (r := r) T T') := by
-  have h1 : MeasurableSet {cv : Fin (r + 1) → ℂ | ∀ l, cv l ≠ 0} := by
-    have : {cv : Fin (r + 1) → ℂ | ∀ l, cv l ≠ 0} = ⋂ l, {cv | cv l ≠ 0} := by ext; simp
-    rw [this]
-    exact MeasurableSet.iInter fun l => (measurableSet_singleton (0 : ℂ)).compl.preimage (measurable_pi_apply l)
-  have hc : Continuous (fun cv : Fin (r + 1) → ℂ => Gv T T' (Matrix.diagonal cv)) := by
-    have hd : Continuous (fun cv : Fin (r + 1) → ℂ => Matrix.diagonal cv) := continuous_id.matrix_diagonal
-    have hD : ∀ l, Continuous (fun cv : Fin (r + 1) → ℂ => Formalism.L2.SG.RealObj.Dl (Matrix.diagonal cv) l) :=
-      fun l => (Formalism.L2.SG.RealObj.InfCut.dl_cont l).comp hd
-    unfold Gv
-    exact ((hD _).norm.pow 2).sub (continuous_const.mul ((hD _).norm.pow 2))
-  exact h1.inter (measurableSet_lt measurable_const hc.measurable)
+  apply _root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.measurableSet_goodLoc <;> assumption
 
 end Map
 

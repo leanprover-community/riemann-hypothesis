@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ProjectiveAutomorphicHecke.PSatVal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.IntegralDeterminants.PlaceConjAlt
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeVectorIffInverseDoubleCosets
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPolarizedTwistAbsPow
@@ -141,60 +142,7 @@ private theorem satVec_of_mem {σ : Submodule ℂ (UA E n → ℂ)} (hσ : IsAut
     (hc : IsCompAlong σ (locU n w) ((cLoc w).comp (locU n w).subtype) τ.ρ) (hB : HasSatGL w τ.ρ B)
     {φ : UA E n → ℂ} (hφ : φ ∈ σ) (hK : ∀ y ∈ locU n w, cLoc w y ∈ KGL w (n := n) → RU E n y φ = φ) (h0 : φ ≠ 0) :
     IsSatVecGL w (repG e) φ B := by
-  obtain ⟨hirr, f, hf0, hfσ, hfe⟩ := hc
-  have hpe : ∀ g, cLoc w ((e.symm g : locU n w) : UA E n) = g := fun g => by
-    rw [← he, e.apply_symm_apply]
-  have hrep : ∀ g, repG e g = RU E n ((e.symm g : locU n w) : UA E n) := fun g => rfl
-  let C : Subgroup (UA E n) := Subgroup.centralizer (locU n w : Set (UA E n))
-  let F : C → τ.V →ₗ[ℂ] (UA E n → ℂ) := fun c => (RU E n c.1) ∘ₗ f
-  have hF : ∀ c v, F c v = RU E n c.1 (f v) := fun c v => rfl
-  have hRm : ∀ (a b : UA E n) ψ, RU E n a (RU E n b ψ) = RU E n (a * b) ψ := fun a b ψ => by
-    rw [map_mul]; rfl
-  have hfg : ∀ g v, f (τ.ρ g v) = repG e g (f v) := fun g v => by
-    have h1 := hfe (e.symm g) v
-    rw [MonoidHom.comp_apply, Subgroup.subtype_apply, hpe] at h1
-    exact h1
-  have hFe : ∀ c g v, F c (τ.ρ g v) = repG e g (F c v) := by
-    intro c g v
-    rw [hF, hF, hfg, hrep, hRm, hRm]
-    have hcomm := Subgroup.mem_centralizer_iff.1 c.2 _ (e.symm g).2
-    rw [hcomm]
-  let S : Submodule ℂ (UA E n → ℂ) := ⨆ c, LinearMap.range (F c)
-  have hSσ : S ≤ σ := iSup_le fun c => by
-    rintro _ ⟨v, rfl⟩
-    exact hσ.stable _ _ (hfσ v)
-  have hSst : ∀ x, ∀ ψ ∈ S, RU E n x ψ ∈ S := by
-    intro x ψ hψ
-    have hle : S ≤ S.comap (RU E n x) := iSup_le fun c => by
-      rintro _ ⟨v, rfl⟩
-      set g := cLoc w x with hg
-      set x1 : UA E n := ((e.symm g : locU n w) : UA E n) with hx1
-      have h2 : cLoc w (x1⁻¹ * x) = 1 := by
-        rw [map_mul, map_inv, hx1, hpe, inv_mul_cancel]
-      have hx2 : x1⁻¹ * x ∈ C := Subgroup.mem_centralizer_iff.2 fun y hy => comm_of_cLoc hw _ h2 y hy
-      let c' : C := ⟨x1⁻¹ * x, hx2⟩ * c
-      have e1 : F c' (τ.ρ g v) = RU E n x (F c v) := by
-        have e2 : ((e.symm g : locU n w) : UA E n) * c'.1 = x * c.1 := by
-          show x1 * (x1⁻¹ * x * c.1) = x * c.1
-          group
-        rw [hFe, hrep, hF, hF, hRm, hRm, e2]
-      exact Submodule.mem_comap.2 (e1 ▸ Submodule.mem_iSup_of_mem c' ⟨_, rfl⟩)
-    exact hle hψ
-  have hS : S = σ := by
-    refine (hσ.irred S hSσ hSst).resolve_left fun hb => hf0 ?_
-    ext v : 1
-    have h1 : F 1 v ∈ S := Submodule.mem_iSup_of_mem 1 ⟨v, rfl⟩
-    rw [hb] at h1
-    have h2 : F 1 v = f v := by
-      rw [hF]; simp
-    rw [← h2]
-    simpa using h1
-  have hφS : φ ∈ S := hS.symm ▸ hφ
-  refine GlobalTheory.HeightCounting.Blocks.isSatVecGL_of_mem_iSup hirr hB F hFe hφS
-    (GlobalTheory.LGrp.mem_fixed.2 fun k hk => hK _ (e.symm k).2 ?_) h0
-  show cLoc w ((e.symm k : locU n w) : UA E n) ∈ KGL w (n := n)
-  rw [hpe]
-  exact hk
+  apply _root_.satVec_of_mem <;> assumption
 
 private theorem tj_one {L : Type} [Field L] {O : Subring L} {ϖ : L} {j : ℕ} (g : GL (Fin n) L)
     (hg : Tj ℂ n O ϖ j g ≠ 0) : Tj ℂ n O ϖ j g = 1 := by

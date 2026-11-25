@@ -2,10 +2,8 @@ module
 
 public import Formalism.HermitianLattices.DefsCS
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

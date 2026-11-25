@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GeneratorBoundOfHypotheses
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 public import Mathlib.RingTheory.AdicCompletion.Topology
@@ -44,15 +45,7 @@ theorem l_mem_max (P : LocPrime l) (LL : FinExt l) :
   exact (mem_maximalIdeal _).2 (mem_nonunits_iff.2 (l_not_unit P LL))
 
 theorem OL_dvr (P : LocPrime l) (LL : FinExt l) : IsDiscreteValuationRing ↥(OL LL) := by
-  letI := Formalism.MainNotions.LiftingTheory.lkd_local P LL
-  have hfd : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
-  have hded : IsDedekindDomain ↥(OL LL) :=
-    IsIntegralClosure.isDedekindDomain ℤ_[l] ℚ_[l] ↥LL.1 ↥(integralClosure ℤ_[l] ↥LL.1)
-  have hnf : ¬ IsField ↥(OL LL) := fun hf => by
-    have hm := l_mem_max P LL
-    rw [isField_iff_maximalIdeal_eq.mp hf, Ideal.mem_bot] at hm
-    exact l_ne_zero LL hm
-  exact ((IsDiscreteValuationRing.TFAE _ hnf).out 1 3).mpr hded
+  apply _root_.Formalism.MainNotions.N.Ln34.GenPf.isDVR <;> assumption
 
 theorem OL_complete_max (P : LocPrime l) (LL : FinExt l) :
     letI := Formalism.MainNotions.LiftingTheory.lkd_local P LL

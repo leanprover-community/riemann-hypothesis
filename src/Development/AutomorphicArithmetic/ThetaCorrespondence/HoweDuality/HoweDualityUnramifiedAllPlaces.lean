@@ -889,23 +889,10 @@ theorem exists_op {V : Type} [AddCommGroup V] [Module ℂ V] (P : Submodule ℂ 
 
 end Ops
 
-private theorem det_ne_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
-  obtain ⟨hrs, A, hA⟩ := h
-  let e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hrs)
-  let A' : Matrix (Fin n) (Fin n) ℂ := A.submatrix id e.symm
-  have h1 : A'ᵀ * M * A'.map star = (Matrix.fromBlocks (1 : Matrix (Fin r) (Fin r) ℂ) 0 0 (-1)).submatrix e.symm e.symm := by
-    rw [← hA]; ext i j; simp [A', Matrix.mul_apply, Matrix.submatrix_apply, Matrix.transpose_apply, Matrix.map_apply]
-  have h2 : (A'ᵀ * M * A'.map star).det ≠ 0 := by
-    rw [h1, Matrix.det_submatrix_equiv_self, Matrix.det_fromBlocks_zero₂₁]
-    simp [Matrix.det_neg]
-  intro h0
-  apply h2
-  rw [Matrix.det_mul, Matrix.det_mul, h0]; simp
-
 private theorem det_ne_sig_map {E : Type} [Field E] {n r s : ℕ} {J : Matrix (Fin n) (Fin n) E} (τ : E →+* ℂ) (c : ℂ)
     (h : HasSig (c • J.map τ) r s) : J.det ≠ 0 := by
   intro h0
-  apply det_ne_hasSig h
+  apply GlobalTheory.WeilSchrodingerHerm.det_ne_zero_of_hasSig h
   have e := RingHom.map_det τ J
   rw [RingHom.mapMatrix_apply] at e
   rw [Matrix.det_smul, ← e, h0, map_zero, mul_zero]
@@ -1483,8 +1470,7 @@ theorem UpperTheory.Lit.HoweDuality.radIrr :
     · exact h
     · exact absurd h hne
   obtain ⟨s, hs⟩ : ∃ s, s ∉ relFin om v := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hne
     rw [hK, eq_top_iff]
     intro x _

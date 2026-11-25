@@ -18,45 +18,13 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem subset_or_subset_of_isIrreducible {W : Type*} [TopologicalSpace W] {s a b : Set W}
-    (hs : IsIrreducible s) (ha : IsClosed a) (hb : IsClosed b) (h : s ⊆ a ∪ b) :
-    s ⊆ a ∨ s ⊆ b :=
-  isPreirreducible_iff_isClosed_union_isClosed.mp hs.2 a b ha hb h
-
-private theorem exists_mem_finset_subset_of_isIrreducible {W : Type*} [TopologicalSpace W]
-    {s : Set W} (hs : IsIrreducible s) (F : Finset (Set W))
-    (hcl : ∀ Z ∈ F, IsClosed Z) (hsub : s ⊆ ⋃₀ (F : Set (Set W))) :
-    ∃ Z ∈ F, s ⊆ Z := by
-  classical
-  revert hcl hsub
-  refine Finset.induction_on F ?_ ?_
-  · intro _ hsub'
-    obtain ⟨x, hx⟩ := hs.1
-    have hx' := hsub' hx
-    simp at hx'
-  · intro a G _ ih hcl' hsub'
-    have hcla : IsClosed a := hcl' a (Finset.mem_insert_self a G)
-    have hclG : ∀ Z ∈ G, IsClosed Z := fun Z hZ => hcl' Z (Finset.mem_insert_of_mem hZ)
-    have hclU : IsClosed (⋃₀ ((G : Finset (Set W)) : Set (Set W))) := by
-      rw [Set.sUnion_eq_biUnion]
-      exact Set.Finite.isClosed_biUnion G.finite_toSet (fun Z hZ => hclG Z hZ)
-    have hsub2 : s ⊆ a ∪ ⋃₀ ((G : Finset (Set W)) : Set (Set W)) := by
-      intro y hy
-      have hy' := hsub' hy
-      rw [Finset.coe_insert, Set.sUnion_insert] at hy'
-      exact hy'
-    rcases subset_or_subset_of_isIrreducible hs hcla hclU hsub2 with hh | hh
-    · exact ⟨a, Finset.mem_insert_self a G, hh⟩
-    · obtain ⟨Z, hZ, hZs⟩ := ih hclG hh
-      exact ⟨Z, Finset.mem_insert_of_mem hZ, hZs⟩
-
 theorem exists_mem_of_isIrreducible_subset_sUnion {W : Type*} [TopologicalSpace W]
     {s : Set W} (hs : IsIrreducible s) {F : Set (Set W)} (hF : F.Finite)
     (hcl : ∀ Z ∈ F, IsClosed Z) (hsub : s ⊆ ⋃₀ F) :
     ∃ Z ∈ F, s ⊆ Z := by
   classical
   obtain ⟨Z, hZ, hsZ⟩ :=
-    exists_mem_finset_subset_of_isIrreducible hs hF.toFinset
+    isIrreducible_iff_sUnion_isClosed.mp hs hF.toFinset
       (fun Z hZ => hcl Z (hF.mem_toFinset.mp hZ))
       (by
         intro y hy

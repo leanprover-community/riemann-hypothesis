@@ -69,8 +69,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -102,37 +100,6 @@ theorem nowhereZero_pow_zero : NowhereZero (H0.ofSec R.str ⊤ (R.Δ₁.pow 0)) 
 end GlobalTheory.HSApp.Sandwich
 
 
-open GlobalTheory.HSApp.Sandwich in
-theorem GlobalTheory.HSApp.sandwich : GlobalTheory.CovTop.Hypotheses₂ → GlobalTheory.Published.GrothendieckDeformation → ∀ (E : Type) [Field E] [NumberField E]
-    [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l)
-    (TF : TorFlag Xo c) (Z : Comp Xo c) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (P : WtPar Dw) (R : Choice TF.X Z U P)
-    (ω : CanId R.toModif), FnAlgClosed (Xo := Xo) (c := c) → ∀ h₁ : FreeOnOpen TF.X Z U P.u₁,
-    (∀ j, CuspIso TF.X Z U (P.wt j) → adjGlobal R j ≤ LinearMap.range (adjSec R ω h₁ j)) ∧
-    (CuspIso TF.X Z U (P.wt 0) → LinearMap.range (adjSec R ω h₁ 0) ≤ adjGlobal R 0) := by
-  intro hP hG E _ _ _ H Dw l Xo c TF Z r U P R ω hF h₁
-  have key := fun (j : ℕ) m => _root_.GlobalTheory.LogCanon.logCanon_iff hP hG E H Dw l Xo c TF Z hF R.toModif ω _ _ (P.kap_add j) m
-  refine ⟨fun j hj => ?_, fun hj => ?_⟩
-  · rintro _ ⟨f, rfl⟩
-    let e := R.adjEquiv ω.ω ω.unit h₁ j (P.kap_add j)
-    obtain ⟨m, hm⟩ := (R.bijective_pullOff (isLB_L₀ TF.X Z (P.wt j))).2 (e.symm (H0.restr le_top f))
-    have hmul : H0.restr le_top (R.mulPole j ⊤ f) =
-        (((common₀ TF.X Z).pull R.σ).canChart R.K.isLB (P.kap_add j)).mul ω.ω (R.pullOff m) := by
-      rw [restr_mulPole, hm]
-      have := R.mulPole_adjEquiv ω.ω ω.unit h₁ j (P.kap_add j) (e.symm (H0.restr le_top f))
-      rw [LinearEquiv.apply_symm_apply] at this
-      exact this
-    obtain ⟨g, hg, hgm⟩ := (key j m).2 ⟨R.mulPole j ⊤ f, hmul⟩
-    obtain ⟨c', hc'⟩ := hj.2 hg
-    refine ⟨c', ?_⟩
-    show e (R.pullOff (cuspSec TF.X Z U _ c')) = _
-    rw [hc', hgm, hm, LinearEquiv.apply_symm_apply]
-  · rintro _ ⟨c', rfl⟩
-    obtain ⟨s, hs, hsr⟩ := hj.1 c'
-    obtain ⟨g, hg⟩ := (key 0 _).1 ⟨s, hs, hsr⟩
-    obtain ⟨f, hf⟩ := ((R.com.poleChart R.K.isLB R.Δ₁.isLB rfl).mulEquiv (nowhereZero_pow_zero R)).surjective g
-    refine ⟨f, mulPole_injective R h₁ 0 ?_⟩
-    rw [← restr_mulPole, mulPole_adjSec]
-    exact (congrArg (H0.restr le_top) hf).trans hg
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -144,7 +111,6 @@ section -- clump:auto
 @[expose] public section
 
 section
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
@@ -200,7 +166,6 @@ section -- clump:auto
 @[expose] public section
 
 section
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
@@ -217,7 +182,7 @@ theorem exists_weight_sections_nonvanishing : _root_.GlobalTheory.CovTop.Hypothe
   obtain ⟨TF⟩ := @_root_.GlobalTheory.CompHS.TorFlagEx.nonempty_torFlag_alt hP _ _ _ _ _ _ _ Y.d.Xo₂ Y.d.c₂ hD
   have hV := @GlobalTheory.VarFlag.isVariety₀_flag _ _ _ _ _ _ _ _ _ TF Z hY.geo
   have hC : ∀ la, CuspIso TF.X Z Y.U la := fun la =>
-    ⟨GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace D T j Y e o hY hf Z TF la, @GlobalTheory.HSApp.vanBd_le_space D T j Y e o hY hf Z TF la⟩
+    ⟨_root_.GlobalTheory.CompHS.cusp_extends_comp D T j Y e o hY hf Z TF la, @GlobalTheory.HSApp.vanBd_le_space D T j Y e o hY hf Z TF la⟩
   have hW := GlobalTheory.HSApp.gaps_of_wtBig _ _ _ P hB
   have h₁ : FreeOnOpen TF.X Z Y.U P.u₁ :=
     _root_.GlobalTheory.HSApp.globally_generated_on_open_of_weight_gap_ge hP hGD hQ hN hPr hT hL _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ (hW _ (by simp)).2 (hC _)

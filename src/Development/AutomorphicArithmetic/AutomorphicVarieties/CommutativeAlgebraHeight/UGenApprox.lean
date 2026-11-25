@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSpan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LayerApproximation
@@ -60,12 +61,7 @@ open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg Uppe
 private theorem u_gen_dual (O : Type) [CommRing O] [IsLocalRing O] (M : Type) [AddCommGroup M] [Module O M]
     (h : Module.IsTorsionBySet O M (maximalIdeal O)) (x : M) (hx : x ≠ 0) :
     ∃ D : M →ₗ[O] ResidueField O, D x ≠ 0 := by
-  letI : Module (ResidueField O) M := h.module
-  haveI : IsScalarTower O (ResidueField O) M := h.isScalarTower
-  have := (Module.forall_dual_apply_eq_zero_iff (ResidueField O) x).not.2 hx
-  push Not at this
-  obtain ⟨φ, hφ⟩ := this
-  exact ⟨φ.restrictScalars O, hφ⟩
+  apply _root_.co_span_dual <;> assumption
 
 private theorem u_gen_span (O : Type) [CommRing O] [IsLocalRing O] (R : Type) [CommRing R] [Algebra O R]
     [IsCO O R] (S : Set R) (hS : S ⊆ maximalIdeal R)

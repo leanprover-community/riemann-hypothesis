@@ -3,42 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Edge1
 public import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsIntegralRBIff
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv
 
 @[expose] public section
@@ -49,13 +13,7 @@ private theorem isIntegral_map_iff {K L : Type} [Field K] [Field L] [Algebra ℂ
     [IsScalarTower ℂ K L] (B : Subalgebra ℂ K) (y : L) :
     IsIntegral (B.map (IsScalarTower.toAlgHom ℂ K L)) y ↔ IsIntegral B y := by
   let j := IsScalarTower.toAlgHom ℂ K L
-  let e : B →+* B.map j := (B.equivMapOfInjective j j.toRingHom.injective).toAlgHom.toRingHom
-  letI : Algebra B (B.map j) := e.toAlgebra
-  haveI : IsScalarTower B (B.map j) L := .of_algebraMap_eq fun a => rfl
-  haveI : Algebra.IsIntegral B (B.map j) := ⟨fun b => by
-    obtain ⟨a, rfl⟩ := (B.equivMapOfInjective j j.toRingHom.injective).surjective b
-    exact isIntegral_algebraMap (x := a)⟩
-  exact ⟨fun h => isIntegral_trans y h, fun h => h.tower_top⟩
+  exact ((B.equivMapOfInjective j j.toRingHom.injective).toRingEquiv.isIntegral_iff rfl y).symm
 
 private theorem dualNumberPoint_preimage_top_of_reduction {d : ℕ} {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ}
     [SmoothOfRelativeDimension d s] [SmoothOfRelativeDimension d s'] {c : Y ⟶ Z} (hc : c ≫ s = s') [IsFinite c] [Etale c]

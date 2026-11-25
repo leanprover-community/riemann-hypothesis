@@ -221,8 +221,6 @@ namespace Formalism.FourierDecayAlt.P.PBQ
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section conj
 
 variable {k p ρ : ℕ}

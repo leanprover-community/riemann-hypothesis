@@ -249,8 +249,7 @@ theorem gauge_local (N : ℕ) (ε : Fin N → Bool) (hε : ε = allPos N) (c : �
   have hne := GlobalTheory.UnitaryVolume.muG_univ_ne_zero N
   have ht : 0 < (Formalism.REAL.muG (allPos N) Set.univ).toReal := ENNReal.toReal_pos hne hlt.ne
   have hc0 : 0 < c := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     nlinarith [_root_.GlobalTheory.UnitaryVolume.volU_pos N]
   refine ⟨hc0.le, ?_⟩
   rw [← ENNReal.ofReal_toReal hlt.ne, ← ENNReal.ofReal_mul hc0.le, h1]

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.MemLevelsIff
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.CoarseCLower
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBoundUniformiser
 
@@ -17,7 +18,6 @@ variable {s : ℕ} {p r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) (b : SegBl
 
 theorem segChain_deg_even (x : Fin (2 * s + 1)) (u : Fin s) (hx : (x : ℕ) = 2 * (u : ℕ)) (hu : S.sigma ≤ (u : ℕ)) :
     (segChain p S aTop b).deg x = b.o u := by
-  have hu' := u.isLt
   have hne : (x : ℕ) ≠ 2 * s := by omega
   have ht : topOf x hne = u := Fin.ext (by simp [topOf]; omega)
   simp only [segChain]
@@ -25,7 +25,6 @@ theorem segChain_deg_even (x : Fin (2 * s + 1)) (u : Fin s) (hx : (x : ℕ) = 2 
 
 theorem segChain_deg_odd (x : Fin (2 * s + 1)) (u : Fin s) (hx : (x : ℕ) = 2 * (u : ℕ) + 1)
     (hu : S.sigma ≤ (u : ℕ)) : (segChain p S aTop b).deg x = coarseC p S aTop b u := by
-  have hu' := u.isLt
   have hne : (x : ℕ) ≠ 2 * s := by omega
   have ht : topOf x hne = u := Fin.ext (by simp [topOf]; omega)
   simp only [segChain]
@@ -39,17 +38,7 @@ end Chain
 
 theorem mem_levels_iff {N : ℕ} (G : Formalism.GM.M.BlockData N) (x : (Fin G.T.t → ℕ) × ℕ) :
     x ∈ levels G ↔ G.LevelOK x.1 x.2 := by
-  simp only [levels, Finset.mem_filter]
-  constructor
-  · exact fun h => h.2
-  · intro h
-    refine ⟨?_, h⟩
-    rw [Finset.mem_product, Fintype.mem_piFinset]
-    refine ⟨fun i => ?_, ?_⟩
-    · rw [Finset.mem_range, Nat.lt_succ_iff]
-      exact (h.1 i).1.trans (Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ _))
-    · rw [Finset.mem_range, Nat.lt_succ_iff]
-      exact h.2.trans (min_le_right _ _)
+  apply _root_.Formalism.MainNotions.G.SymmetricFormBlocks.mem_levels_iff' <;> assumption
 
 variable {C0 CE1 CE2 : ℝ} {X : flipOneThree.Inst}
 

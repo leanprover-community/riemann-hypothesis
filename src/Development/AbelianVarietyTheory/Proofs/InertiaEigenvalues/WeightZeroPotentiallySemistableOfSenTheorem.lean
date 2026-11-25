@@ -319,8 +319,7 @@ theorem norm_le_inv_of_lt_one_kur (c : ↥(MaximalUnramifiedExtension l)) (hc : 
   have hl1 : (1 : ℝ) < l := by exact_mod_cast hl.out.one_lt
   rw [hk] at hc ⊢
   have hk0 : k < 0 := by
-    by_contra hk0
-    push_neg at hk0
+    by_contra! hk0
     exact absurd hc (not_lt.2 (one_le_zpow₀ hl1.le hk0))
   exact zpow_le_zpow_right₀ hl1.le (by omega)
 
@@ -885,8 +884,7 @@ theorem matrix_inv_near_one : ∀ (E : Type) [NormedField E] [IsUltrametricDist 
     exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le_max (hX a b) hprod)
   have hs0 : 0 ≤ s := norm_nonneg _
   have hst : s ≤ t := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 := hbound i0 j0
     rw [← hs] at h1
     rcases le_max_iff.mp h1 with h | h

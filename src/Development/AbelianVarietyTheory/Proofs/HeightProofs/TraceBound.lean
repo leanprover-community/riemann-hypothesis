@@ -696,15 +696,6 @@ theorem casOp_translate (hσ : IsURepOn (UJset ε) σ) {d e : ℕ} {X : Fin d �
 
   simp only [casOp, h _ (hX _), h _ (hY _), map_sub, map_sum]
 
-theorem kk_orth (n : ℕ) (ε : Fin n → Bool) (i j : Fin (kList ε).length) :
-    (trace (kB ε i * kB ε j)).re = if i = j then -1 else 0 := _root_.GlobalTheory.TypeSum.CasBasis.kB_trace_orthonormal n ε i j
-theorem pp_orth (n : ℕ) (ε : Fin n → Bool) (a b : Fin (pList ε).length) :
-    (trace (pB ε a * pB ε b)).re = if a = b then 1 else 0 := _root_.GlobalTheory.TypeSum.CasBasis.pB_orthonormal n ε a b
-theorem kp_orth (n : ℕ) (ε : Fin n → Bool) (i : Fin (kList ε).length) (b : Fin (pList ε).length) :
-    (trace (kB ε i * pB ε b)).re = 0 := _root_.GlobalTheory.TypeSum.CasBasis.re_trace_kB_mul_pB n ε i b
-theorem expand (n : ℕ) (ε : Fin n → Bool) : ∀ U ∈ lieSet ε,
-    U = ∑ b, (trace (U * pB ε b)).re • pB ε b - ∑ i, (trace (U * kB ε i)).re • kB ε i := _root_.GlobalTheory.TypeSum.CasBasis.lieSet_expand_bases n ε
-
 theorem casOp_equivariant : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [CompleteSpace H] (σ : Mx n → (H →L[ℂ] H)), Std ε σ → ∀ g ∈ UJset ε, ∀ v, Sm ε σ v →
       casOp σ (kB ε) (pB ε) (σ g v) = σ g (casOp σ (kB ε) (pB ε) v) := by
@@ -1611,8 +1602,7 @@ theorem trace_bound : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddC
     rw [eQ, Complex.norm_real, Real.norm_eq_abs, sq_abs] at hH
     have hQ0 : 0 ≤ ∑ j, ‖x j‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
     have hQ : ∑ j, ‖x j‖ ^ 2 ≤ C0 * C' := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hK0 : 0 ≤ C0 * C' := mul_nonneg hC0 hC'0
       nlinarith
     refine le_of_eq_of_le (Finset.sum_congr rfl fun j _ => ?_) hQ

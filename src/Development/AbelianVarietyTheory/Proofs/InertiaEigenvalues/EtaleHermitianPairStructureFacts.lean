@@ -447,8 +447,7 @@ theorem okCompact : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
   have hc : Continuous h := continuous_finsetSum _ fun k _ => continuous_norm.comp ((hPc k).comp hes)
   have hpos : ∀ v ∈ T, 0 < h v := by
     intro v hv
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have hsum : h v = 0 := le_antisymm hle (Finset.sum_nonneg fun k _ => norm_nonneg _)
     have h0 : ∀ k < n, P k (e.symm v) = 0 := by
       intro k hk

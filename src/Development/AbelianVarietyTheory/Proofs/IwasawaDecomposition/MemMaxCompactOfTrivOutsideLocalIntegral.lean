@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelesCmFieldEqZeroOfComponents
 public import Formalism.AlgebraicWeights.InertDatumExists
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -95,19 +96,7 @@ theorem compAt_tmul (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (x : 
   rfl
 
 theorem eq_zero_of_compAt (z : AL L) (hz : ∀ v, compAt L v z = 0) : z = 0 := by
-  let b : Module.Basis (Fin 2) (maximalRealSubfield L) L := Module.finBasisOfFinrankEq _ _
-    (Algebra.IsQuadraticExtension.finrank_eq_two (maximalRealSubfield L) L)
-  obtain ⟨A, B, hAB⟩ := tensor_decomp b z
-  have hoff : ∀ w, A w = 0 ∧ B w = 0 := by
-    intro w
-    have h := hz w
-    rw [hAB, map_add (f := _), compAt_tmul, compAt_tmul] at h
-    exact tensor_decomp_zero b _ _ h
-  have hA : A = 0 := by
-    apply DFunLike.ext; intro w; exact (hoff w).1
-  have hB : B = 0 := by
-    apply DFunLike.ext; intro w; exact (hoff w).2
-  rw [hAB, hA, hB]; simp
+  apply _root_.GlobalTheory.AL_eq_zero_of_compAt <;> assumption
 
 
 open Classical in

@@ -2,6 +2,7 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.IsUnivChart
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.AlgChart
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.SpanEqTopOfForallMaximal
 
 @[expose] public section
 
@@ -53,21 +54,7 @@ private lemma spMap_inj_lemma_3 {A B : Type} [CommRing A] [Algebra R A] [CommRin
 
 private lemma exists_spMap_lemma_4 {A B : Type} [CommRing A] [Algebra R A] [CommRing B] [Algebra R B]
     (h : sp (R₀ := R) A ⟶ sp B) : ∃ φ : B →ₐ[R] A, h = spMap φ := by
-  let f : CommRingCat.of B ⟶ CommRingCat.of A :=
-    Spec.preimage (h.left : Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of B))
-  have hf : Spec.map f = h.left := Spec.map_preimage _
-  have hw : Spec.map f ≫ Spec.map (CommRingCat.ofHom (algebraMap R B)) =
-      Spec.map (CommRingCat.ofHom (algebraMap R A)) := by
-    rw [hf]; exact Over.w h
-  rw [← Spec.map_comp] at hw
-  have hw' := Spec.map_inj.mp hw
-  have hc : ∀ r : R, f.hom (algebraMap R B r) = algebraMap R A r := fun r => by
-    have h3 := congrArg (fun k : CommRingCat.of R ⟶ CommRingCat.of A => k.hom r) hw'
-    simpa using h3
-  refine ⟨{ f.hom with commutes' := hc }, ?_⟩
-  apply Over.OverMorphism.ext
-  rw [spMap_left, ← hf]
-  rfl
+  apply _root_.GlobalTheory.SqZero.exists_spMap <;> assumption
 
 private lemma one_left_lemma_5 (G : Over (Spec (CommRingCat.of R))) [GrpObj G]
     (X : Over (Spec (CommRingCat.of R))) :

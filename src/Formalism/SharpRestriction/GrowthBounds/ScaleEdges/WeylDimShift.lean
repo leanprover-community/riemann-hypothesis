@@ -38,15 +38,12 @@ theorem weylDim_cons_le_choose_mul (m : ℕ) (mu : Fin (m + 1) → ℤ) (a' : �
       0 ≤ ((a' : ℝ) + (mu 0 : ℝ) - (mu j : ℝ) + ((j : ℕ) : ℝ) + 1) / (((j : ℕ) : ℝ) + 1) := by
     intro j
     have h1 : ((mu j : ℤ) : ℝ) ≤ mu 0 := by exact_mod_cast hanti (Fin.zero_le j)
-    have h2 : (0 : ℝ) ≤ a' := Nat.cast_nonneg a'
-    have h3 : (0 : ℝ) ≤ ((j : ℕ) : ℝ) := Nat.cast_nonneg _
     apply div_nonneg <;> linarith
   have hfg : ∀ j : Fin (m + 1),
       ((a' : ℝ) + (mu 0 : ℝ) - (mu j : ℝ) + ((j : ℕ) : ℝ) + 1) / (((j : ℕ) : ℝ) + 1) ≤
         (1 + (c₀ : ℝ) / a) * (((a' : ℝ) + ((j : ℕ) : ℝ) + 1) / (((j : ℕ) : ℝ) + 1)) := by
     intro j
     have h1 : (0 : ℝ) ≤ mu j := by exact_mod_cast (hmu j).1
-    have h3 : (0 : ℝ) ≤ ((j : ℕ) : ℝ) := Nat.cast_nonneg _
     have h4 : (c₀ : ℝ) / a * a ≤ (c₀ : ℝ) / a * ((a' : ℝ) + ((j : ℕ) : ℝ) + 1) :=
       mul_le_mul_of_nonneg_left (by linarith) hx
     rw [← mul_div_assoc]

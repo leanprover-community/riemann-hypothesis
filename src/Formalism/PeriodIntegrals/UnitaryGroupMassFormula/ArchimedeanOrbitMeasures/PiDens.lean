@@ -24,19 +24,8 @@ theorem lintegral_fin_prod {n : ℕ} {E : Fin n → Type} {mE : ∀ i, Measurabl
 theorem lintegral_fintype_prod {ι : Type} [Fintype ι] {E : ι → Type} {mE : ∀ i, MeasurableSpace (E i)}
     {μ : (i : ι) → Measure (E i)} [∀ i, SigmaFinite (μ i)] (f : (i : ι) → E i → ℝ≥0∞)
     (hf : ∀ i, Measurable (f i)) :
-    ∫⁻ x : (i : ι) → E i, ∏ i, f i (x i) ∂(Measure.pi μ) = ∏ i, ∫⁻ x, f i x ∂(μ i) := by
-  classical
-  let e : Fin (Fintype.card ι) ≃ ι := (Fintype.equivFin ι).symm
-  have hmp := measurePreserving_piCongrLeft μ e
-  rw [← hmp.lintegral_comp_emb (MeasurableEquiv.measurableEmbedding _) (fun x => ∏ i, f i (x i))]
-  have h1 : ∀ y : (i' : Fin (Fintype.card ι)) → E (e i'),
-      ∏ i, f i ((MeasurableEquiv.piCongrLeft E e) y i) = ∏ i', f (e i') (y i') := by
-    intro y
-    exact (Fintype.prod_equiv e (fun i' => f (e i') (y i')) _
-      (fun i' => by simp [MeasurableEquiv.piCongrLeft_apply_apply])).symm
-  simp_rw [h1]
-  rw [lintegral_fin_prod (fun i' => f (e i')) (fun i' => hf (e i'))]
-  exact Fintype.prod_equiv e _ _ (fun _ => rfl)
+    ∫⁻ x : (i : ι) → E i, ∏ i, f i (x i) ∂(Measure.pi μ) = ∏ i, ∫⁻ x, f i x ∂(μ i) :=
+  by apply _root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.PiM.lintegral_pi_prod; assumption
 
 theorem withDensity_pi {ι : Type} [Fintype ι] {E : ι → Type} [∀ i, MeasurableSpace (E i)]
     (lam : (i : ι) → Measure (E i)) [∀ i, SigmaFinite (lam i)] (D : (i : ι) → E i → ℝ)

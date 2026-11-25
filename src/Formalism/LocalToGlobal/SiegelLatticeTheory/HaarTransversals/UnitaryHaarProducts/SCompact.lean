@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.CoefWeightedLocHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.IUnfold
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
@@ -293,24 +294,7 @@ end PureH
 
 theorem hJ_rv_sc (I : AutInst) (v : InfinitePlace I.F) (x y : Fin I.n → I.E) :
     hJ (I.ε v) (rv I v x) (rv I v y) = I.φ v (Formalism.UG.hform (starRingEnd I.E) I.J x y) := by
-  have hP : IsUnit (I.P v).det := (Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v)
-  have key : Formalism.REAL.Jm (I.ε v) *ᵥ rv I v y =
-      (I.P v)ᴴ *ᵥ ((I.J.map (I.φ v)) *ᵥ fun i => I.φ v (y i)) := by
-    rw [← I.P_spec v]
-    unfold rv
-    simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hP, Matrix.mul_one]
-  have hx : star (rv I v x) ᵥ* (I.P v)ᴴ = star fun i => I.φ v (x i) := by
-    rw [← Matrix.star_mulVec]
-    unfold rv
-    rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hP, Matrix.one_mulVec]
-  unfold hJ
-  rw [key, dotProduct_mulVec, hx]
-  unfold Formalism.UG.hform
-
-  simp only [map_sum, map_mul, dotProduct, Matrix.mulVec, Pi.star_apply, Matrix.map_apply,
-  starRingEnd_apply, PI.UnitaryGroupMassFormula.LCG.ap_star, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
+  apply _root_.PI.ScPiBuildW.Rv.hJ_rv <;> assumption
 
 section HFin
 

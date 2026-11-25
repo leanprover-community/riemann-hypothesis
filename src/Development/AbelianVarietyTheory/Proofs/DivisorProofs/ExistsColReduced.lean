@@ -128,8 +128,7 @@ theorem exists_col_reduced (g : GL (Fin n) F) :
       (∀ a c : Fin n, f c ≤ a.val → ((g * v : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) a c = 0) →
       ∀ c, ∃ a : Fin n, a.val + 1 = f c ∧ ((g * v : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) a c ≠ 0 := by
     intro v hv hzv c
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hlt : ∑ k, Function.update f c (f c - 1) k < Nat.find hex := by
       rw [← hf]
       refine Finset.sum_lt_sum (fun k _ => ?_) ⟨c, Finset.mem_univ _, ?_⟩

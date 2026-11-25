@@ -112,7 +112,6 @@ structure IsAutOn (K : Subgroup (GAd σ J)) (φ : GAd σ J → ℂ) : Prop where
   growth : ∃ N : ℕ, ∀ l : List (ℝ → GAd σ J), (∀ γ ∈ l, IsRealLine σ J γ) →
     ∃ C : ℝ, ∀ g, ‖l.foldr lineDer φ g‖ ≤ C * (height σ J g : ℝ) ^ N
   kfin : FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun g => φ (g * k)))
-  zfin : FiniteDimensional ℂ (Submodule.span ℂ {f | ∃ z, IsCentral σ J z ∧ f = dop z φ})
 
 def IsConstAlong (φ c : GAd σ J → ℂ) : Prop :=
   ∀ (μ : Measure (unip σ J X S)) (𝓕 : Set (unip σ J X S)), μ.IsHaarMeasure →

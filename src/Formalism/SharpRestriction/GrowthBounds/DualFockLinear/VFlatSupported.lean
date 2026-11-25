@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Tensor
 public import Formalism.GradedWeylDivisibility.StatementD
 public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Formalism.GradedWeylDivisibility.FinalD
@@ -411,23 +412,7 @@ end Lat
 
 theorem dualWeyl_zero_const {R : Type} [CommRing R] {r n : ℕ} (F : MvPolynomial (Fin r × Fin n) R)
     (hF : F ∈ dualWeyl R r n 0) : F = C (AddMonoidAlgebra.coeff F 0) := by
-  classical
-  have h1 : IsWeightedHomogeneous (colW r n) F 0 := (mem_dualWeyl_iff.1 hF).1
-  ext e
-  rw [coeff_C]
-  split_ifs with he
-  · rw [he]
-  · apply h1.coeff_eq_zero
-    intro hwt
-    apply he
-    symm
-    ext v
-    have h2 := congrFun hwt v.2
-    rw [Finsupp.weight_apply, Finsupp.sum, Finset.sum_apply] at h2
-    by_contra hv
-    have h3 := (Finset.sum_eq_zero_iff.1 h2) v (Finsupp.mem_support_iff.2 (by simpa using hv))
-    simp [colW] at h3
-    exact hv (by simpa using h3)
+  apply +allowSynthFailures _root_.Formalism.MainNotions.flipOneThree.Pf.tn_const <;> assumption
 
 end Formalism.MainNotions.TestSideCounting
 end -- clump:auto

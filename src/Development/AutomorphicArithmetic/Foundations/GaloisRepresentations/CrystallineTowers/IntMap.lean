@@ -2,47 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.CrystallineTowers.LocTower
 import GroundTheory.PAdicHodge.LocalBridge
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
@@ -153,7 +113,7 @@ private theorem isUnit_OK_iff {l : ℕ} [Fact l.Prime] {K : IntermediateField �
     have h2 := hle u
     have h3 := hle (↑u⁻¹ : ↥(OK l K))
     have h4 := norm_nonneg (((u : ↥(OK l K)) : ↥K) : PadicAlgCl l)
-    nlinarith
+    nlinarith only [h, h2, h3, h4]
   · intro h
     have hy0 : (y : ↥K) ≠ 0 := fun h0 => by
       rw [h0] at h
@@ -212,7 +172,7 @@ theorem intMap : IntMap := by
       rw [h4] at h3
       have h5 := hν1 (↑u⁻¹ : Ow w)
       have h6 := norm_nonneg t
-      nlinarith
+      nlinarith only [hpos, hy, h1, h2, h3, h5]
     have hmax : ξ ∈ Ideal.span {ϖ} := by
       rw [← (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ]
       exact (IsLocalRing.mem_maximalIdeal ξ).2 hnu
@@ -221,7 +181,7 @@ theorem intMap : IntMap := by
     have h4 := hν1 c
     have h5 : ‖t‖ ≤ ν ϖ := by
       rw [← hξ, h3]
-      nlinarith
+      nlinarith only [hϖp, h4]
     exact h2.trans h5
   set φ := ((kOf Bw).comp (algebraMap (Ow w) E)).codRestrict (OK l Bw.Kw.1) hφ with hφdef
   have hMϖ : M (φ ϖ) = ν ϖ := rfl
@@ -249,6 +209,6 @@ theorem intMap : IntMap := by
     have h1 := hbound a ha1 hap
     have h2 := hbound b hb1 hbp
     have h3 : M a * M b ≤ ν ϖ * ν ϖ := mul_le_mul h1 h2 hb0 hϖp.le
-    nlinarith
+    nlinarith only [hϖ1, hϖp, hprod, h3]
 
 end UpperTheory.Gal.Seam

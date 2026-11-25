@@ -238,8 +238,7 @@ theorem latticeBoundAtMaximum_of_transference (hD5 : CoveringRadiusStatement) : 
         (laStar / Real.sqrt (Fintype.card X.Ψ)) ^ 2 ≤
           ReciprocityTheory.MultiplicativeHeights.normSq ((mat x0 τ)⁻¹ *ᵥ ReciprocityTheory.MultiplicativeHeights.embVec τ.1 v) := by
       intro v hv hv0
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hlt : ∑ τ : X.Ψ, X.maj z0 τ (Data.emb τ.1 v) <
           ∑ _τ : X.Ψ, (laStar / Real.sqrt (Fintype.card X.Ψ)) ^ 2 := by
         apply Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty

@@ -162,8 +162,7 @@ theorem exists_unit_norm_one_det_ne_zero (L : Type) [Field L] [NumberField L] [I
   set c : L →+* L := (IsCMField.complexConj L : L →+* L) with hc
   have hcc : ∀ x, c (c x) = x := fun x => IsCMField.complexConj_apply_apply L x
   obtain ⟨y, hy⟩ : ∃ y : L, c y ≠ y := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply IsCMField.complexConj_ne_one L
     ext x
     exact h x

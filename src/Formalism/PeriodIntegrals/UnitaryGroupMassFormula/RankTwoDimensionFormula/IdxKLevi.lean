@@ -18,11 +18,6 @@ section AlgL
 
 variable {A : Type} [CommRing A] (σ : A →+* A) {n k : ℕ} (J : Matrix (Fin n) (Fin n) A)
 
-private lemma vecMulVec_mulVec_rank_two_dimension_formula (u v y : Fin n → A) : Matrix.vecMulVec u v *ᵥ y = (v ⬝ᵥ y) • u := by
-  ext q
-  simp only [Matrix.mulVec, dotProduct, Matrix.vecMulVec_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
-  exact Finset.sum_congr rfl fun r _ => by ring
-
 end AlgL
 
 section Main

@@ -58,8 +58,6 @@ namespace GlobalTheory.CompanionTheory.SecBd
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem basis_true_eq_single (a c : Fin n) : bs (true, a, c) = Matrix.single a c (1 : ℂ) := by simp [bs]
@@ -81,11 +79,6 @@ theorem Rd_sub {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (X X' : Mat
 theorem Rd_add {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (X X' : Mat n) (f : Mat n → V) (g : Mat n) :
     Rd (X + X') f g = Rd X f g + Rd X' f g := by
   simp [Rd, mul_add]
-
-theorem single_conj (a b : Fin n) (c : ℂ) : (Matrix.single a b c)ᴴ = Matrix.single b a (star c) := by
-  ext x y
-  simp only [Matrix.conjTranspose_apply, Matrix.single_apply]
-  by_cases h1 : a = y <;> by_cases h2 : b = x <;> simp [h1, h2]
 
 theorem skewY (a c : Fin n) :
     (Matrix.single a c (1 : ℂ) - Matrix.single c a (1 : ℂ) : Mat n)ᴴ = -(Matrix.single a c (1 : ℂ) - Matrix.single c a 1) := by

@@ -83,8 +83,7 @@ theorem norm_le_inv_of_lt_one {l : ℕ} (hl : 1 < l)
   rw [hk] at hy ⊢
   have hl' : (1 : ℝ) < l := by exact_mod_cast hl
   have hk' : k < 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : (1 : ℝ) ≤ (l : ℝ) ^ k := by
       first
       | exact one_le_zpow₀ hl'.le hc

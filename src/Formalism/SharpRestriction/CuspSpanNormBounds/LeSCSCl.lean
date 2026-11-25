@@ -17,8 +17,6 @@ def sC' (Fm : FamP eps) : ℝ := Fm.CkLow
 def sCl (Fm : FamP eps) : ℝ :=
   min Fm.CfL (min Fm.Cw (min Fm.CDel (min Fm.CCount (min Fm.Ch0r Fm.Cgap))))
 
-def scT : ℝ := 1 / 2
-
 def OwnEv (Fm : FamP eps) (P : ℝ → ℝ → ∀ x, Fm.Ix x → Prop) : Prop :=
   ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, P (sC' Fm) (sCl Fm) x i
 

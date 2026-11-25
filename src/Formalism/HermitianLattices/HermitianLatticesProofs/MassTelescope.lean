@@ -1,14 +1,11 @@
 module
 
-public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
+import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
@@ -111,8 +108,7 @@ lemma massTelescope_def (hCM : IsCMUnram K) (n : ℕ) (x : Fin n → K) (hx : x 
 
   rw [massTelescope_form_apply, map_sum]
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hx (funext hc)
   exact Finset.sum_pos' (fun j _ => massTelescope_trace_nonneg K hCM (x j))
     ⟨i, Finset.mem_univ _, massTelescope_trace_pos K hCM (x i) hi⟩

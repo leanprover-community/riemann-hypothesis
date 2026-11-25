@@ -15,8 +15,6 @@ namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem polynomial_bound : PolyB := by
   intro k r κ P hP
   obtain ⟨hsmooth, hbound⟩ := pb_poly hP

@@ -55,7 +55,6 @@ open scoped IntermediateField nonZeroDivisors
 
 namespace GlobalTheory.FieldSize
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField nonZeroDivisors in
 private theorem natCast_mul_pow_pred_mem_differentIdeal_of_pow_eq {K L : Type} [Field K]
@@ -72,7 +71,6 @@ private theorem natCast_mul_pow_pred_mem_differentIdeal_of_pow_eq {K L : Type} [
   exact Ideal.mul_mem_right _ _ hmem
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.natCast_mem_differentIdeal_of_root {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L]
@@ -181,7 +179,6 @@ theorem _root_.GlobalTheory.FieldSize.natCast_mem_differentIdeal_of_root {K L : 
   simpa using hfin
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain Polynomial in
 open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.sz_sup_adjoin_root : ∀ (F : IntermediateField ℚ ℂ) (a b : ℝ) (k : ℕ) (y : F) (I : Submodule (𝓞 F) F) (z : ℂ), _root_.GlobalTheory.FieldSize.Sz F a b → 0 < k → y ≠ 0 → I ^ k = Submodule.span (𝓞 F) {y} → z ^ k = (y : ℂ) → _root_.GlobalTheory.FieldSize.Sz (F ⊔ ℚ⟮z⟯) (a + Real.log k) (b + Real.log k) := by

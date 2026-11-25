@@ -10,6 +10,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Linear
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.MeanValue
 public import Mathlib.Analysis.SpecialFunctions.Exponential
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenAdelicUnipotentTimesIntegralOutsideSet
 
 @[expose] public section
 
@@ -77,20 +78,7 @@ lemma exp_mem_UH {n : ℕ} (H Y : Matrix (Fin n) (Fin n) ℂ) (hH : H * H = 1) (
 
 lemma glev_mul {k r : ℕ} {i : Fin (r + 1)} {g h : Mx k r} (hg : g ∈ Glev k r i) (hh : h ∈ Glev k r i) :
     g * h ∈ Glev k r i := by
-  obtain ⟨hgU, hgF⟩ := hg
-  obtain ⟨hhU, hhF⟩ := hh
-  refine ⟨?_, fun a ha => ?_⟩
-  · show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-    have e1 : gᴴ * Hpk k r * g = Hpk k r := hgU
-    have e2 : hᴴ * Hpk k r * h = Hpk k r := hhU
-    calc (g * h)ᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by
-          simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = Hpk k r := by rw [e1, e2]
-  · obtain ⟨g1, g2⟩ := hgF a ha
-    obtain ⟨h1, h2⟩ := hhF a ha
-    refine ⟨?_, ?_⟩
-    · rw [← Matrix.mulVec_mulVec, h1, g1]
-    · rw [← Matrix.mulVec_mulVec, h2, g2]
+  apply _root_.Formalism.FourierDecayAlt.P.Qx4.glev_mul <;> assumption
 
 lemma exp_mem_glev {k r : ℕ} {i : Fin (r + 1)} {X : Mx k r} (hX : inLieLev k r i X) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • X) ∈ Glev k r i := by

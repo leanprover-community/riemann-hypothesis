@@ -219,34 +219,13 @@ lemma herm_jV (u u' : Fin (k + 1) → ℂ) : herm (Hpk k r) (jV k r u) (jV k r u
   simp only [Pi.star_apply, jV_wI, Hpk_wI]
 
 lemma emb_mul (a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) : embWb k r (a * b) = embWb k r a * embWb k r b := by
-  ext i j
-  by_cases hi : mid k r i
-  · by_cases hj : mid k r j
-    · obtain ⟨x, rfl⟩ := mid_exists hi
-      obtain ⟨y, rfl⟩ := mid_exists hj
-      rw [mul_emb_mid, emb_wI, Matrix.mul_apply]
-      simp only [emb_wI]
-    · rw [mul_emb_out _ _ _ _ hj, emb_out_col _ _ _ hj, emb_out_col _ _ _ hj]
-  · rw [emb_mul_out _ _ _ _ hi, emb_out_row _ _ _ hi, emb_out_row _ _ _ hi]
+  apply _root_.Formalism.FourierDecayAlt.P.B2x3.emb_mul <;> assumption
 
 lemma emb_one : embWb k r 1 = 1 := by
-  ext i j
-  rw [Matrix.one_apply]
-  by_cases hi : mid k r i
-  · by_cases hj : mid k r j
-    · obtain ⟨x, rfl⟩ := mid_exists hi
-      obtain ⟨y, rfl⟩ := mid_exists hj
-      rw [emb_wI, Matrix.one_apply]
-      simp only [wI_inj.eq_iff]
-    · rw [emb_out_col _ _ _ hj]
-  · rw [emb_out_row _ _ _ hi]
+  apply _root_.Formalism.FourierDecayAlt.P.B2x3.emb_one <;> assumption
 
 lemma Hb_herm : (Hb k)ᴴ = Hb k := by
-  unfold Hb
-  rw [Matrix.diagonal_conjTranspose]
-  congr 1
-  funext j
-  by_cases h : j = Fin.last k <;> simp [h]
+  apply _root_.Formalism.FourierDecayAlt.P.B2x3.Hb_conjT <;> assumption
 
 lemma Hb_sq : Hb k * Hb k = 1 := by
   unfold Hb

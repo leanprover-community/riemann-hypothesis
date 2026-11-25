@@ -55,16 +55,9 @@ theorem ratio_eq_of_eq_smul_field {Ω' V : Type*} [Field Ω'] [AddCommGroup V] [
 
 theorem eq_ratio_base_smul (hd : d.AxH 𝒜) (c : ι) {f : A c} (hf : f ∈ 𝒜 c d.wL) :
     f = ratio (Ω := Ω c) f (d.w (d.jc c) c) • d.w (d.jc c) c := by
-  have hw := hd.w_mem (d.jc c) c
-  have hw0 := hd.w_base c
-  obtain ⟨a, ha⟩ := (finrank_eq_one_iff_of_nonzero' (⟨_, hw⟩ : 𝒜 c d.wL)
-    (by simpa using hw0)).1 (hd.finrank_one c d.wL) ⟨f, hf⟩
-  have hfa : f = a • d.w (d.jc c) c := by
-    have h1 := congrArg Subtype.val ha
-    simp only [SetLike.val_smul] at h1
-    exact h1.symm
-  rw [ratio_eq_of_eq_smul_field hw0 hfa]
-  exact hfa
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.x4v4_eq_smul
+    | apply _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.x4v4_eq_smul <;> first | assumption | rfl | infer_instance
 
 theorem ratio_base_ne_zero (hd : d.AxH 𝒜) (c : ι) {f : A c} (hf : f ∈ 𝒜 c d.wL) (hf0 : f ≠ 0) :
     ratio (Ω := Ω c) f (d.w (d.jc c) c) ≠ 0 := by

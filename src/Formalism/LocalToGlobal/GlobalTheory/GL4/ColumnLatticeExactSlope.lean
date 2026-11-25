@@ -943,8 +943,6 @@ theorem bc_mu (hc : CMData F E) (S : HSpace E) (hsig : S.SigOK) (hpos : S.IsPosD
 
 end BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem q_lattice_slope (D : D7) : QSlope D := by
   intro u CV c τ
   have H := columnHypotheses D u

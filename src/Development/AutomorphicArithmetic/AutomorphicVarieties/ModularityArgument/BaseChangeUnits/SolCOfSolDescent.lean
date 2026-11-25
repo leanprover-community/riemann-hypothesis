@@ -93,8 +93,4 @@ def PolK : Prop :=
         GlobalTheory.ContraPair.PolarizedPair P χ ∧ IsLAdicCharOf ι χ μ ∧
         μ.comp (res (maximalRealSubfield K) Ω K) = θ.comp (res ℚ Ω K) * cycBar K Ω l ^ ((n : ℤ) - 1)
 
-def AutQIso : Prop :=
-  ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ)
-    (r r' : G F Ω →* GL (Fin n) (Qbar l)), RepIso r r' → IsAutQ ι r' → IsAutQ ι r
-
 end UpperTheory.V.Z.Bc

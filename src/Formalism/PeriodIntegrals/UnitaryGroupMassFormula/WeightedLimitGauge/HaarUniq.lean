@@ -45,11 +45,6 @@ theorem tau_tau (i : Fin (2 * r + k + 1)) : tau k r (tau k r i) = i := by
   simp only
   split_ifs <;> omega
 
-theorem sgn_tau (i : Fin (2 * r + k + 1)) : sgn k r (tau k r i) = sgn k r i := by
-  unfold sgn tau
-  simp only
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 theorem sgn_mul_self (i : Fin (2 * r + k + 1)) : sgn k r i * sgn k r i = 1 := by
   unfold sgn
   split_ifs <;> norm_num

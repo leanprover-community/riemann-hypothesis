@@ -47,8 +47,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Poinc
 
 structure VPre {O : Type} [CommRing O] (bar : O → O) (q : ℕ) {s : ℕ} (W : Matrix (Fin s) (Fin s) ℤ)
@@ -213,14 +211,6 @@ def HasTraitsR : Prop :=
     ∃ (y : Φ.Y) (f : T.V →+* Φ.V y) (e : Φ.X y ≃+ T.D.toPre.X), Φ.m y = 1 ∧ IsPrincipalIdealRing (Φ.V y) ∧
       Function.Injective f ∧ IsLocalHom f ∧ f.comp ev = Φ.ev y ∧
       ∀ k, Φ.t y k = f T.ϖ ∧ ∀ a b, Φ.δ y k a b = T.β (e a) (e b)
-
-def IsChartMemberP [IsLocalRing V] (N₁ : ℕ) (Q : Data V) (ξ : Sp V ⟶ Z) {m : ℕ} (t : Fin m → V)
-    (δ : Fin m → LinearMap.BilinForm ℤ Q.X) (y : Φ.Y) (ρ : V →+* Φ.V y) (e : Φ.X y ≃+ Q.X) (h : Fin (Φ.m y) ≃ Fin m) : Prop :=
-  Function.Injective ρ ∧ ρ.Finite ∧ spMap (Φ.ev y) ≫ X₁.M.Z.fromSpecStalk z₁ ≫ X₁.π = spMap ρ ≫ ξ ∧
-    (∀ k, Φ.t y k = ρ (t (h k)) ∧ ∀ a b, Φ.δ y k a b = δ (h k) (e a) (e b)) ∧
-    ∃ (D : DegPre (Φ.V y)) (e₈ : (Fin 8 → Q.X) ≃+ D.X), SharpRef W Q ρ D e₈ ∧
-      IsThetaTerms₀ D N₁ e₈ fun mu c => Φ.term y (fun a => e.symm (mu a)) c
-
 end Sep
 
 end GlobalTheory.Poinc

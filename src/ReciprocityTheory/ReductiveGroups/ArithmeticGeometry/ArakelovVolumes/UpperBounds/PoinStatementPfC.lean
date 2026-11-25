@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PoinStatementPfB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PoinStatementPfA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ProdCastLESucc
@@ -274,15 +275,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
 theorem bchar_ne (X : Data E r) (la : Wt X.Ψ r) {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) :
     bchar la b ≠ 0 := by
-  simp only [Bor, Set.mem_setOf_eq] at hb
-  unfold bchar
-  refine Finset.prod_ne_zero_iff.mpr fun τ _ => Finset.prod_ne_zero_iff.mpr fun i _ => zpow_ne_zero _ ?_
-  obtain ⟨hd, ht⟩ := hb τ
-  have hT : Matrix.BlockTriangular (mat b τ) id := by
-    intro a c h
-    exact ht a c h
-  rw [Matrix.det_of_upperTriangular hT] at hd
-  exact (Finset.prod_ne_zero_iff.mp hd) i (Finset.mem_univ _)
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.bchar_ne <;> assumption
 
 theorem isBEq_lact (X : Data E r) (la : Wt X.Ψ r) {P : Frame X.Ψ r → ℂ} (hP : IsBEq X la P)
     {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) : IsBEq X la (fun y => P (lact γ y)) := by

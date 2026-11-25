@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ConstantCoeffQZeroEqP
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfLoc
@@ -143,14 +144,7 @@ theorem ValH.sum {T : LocLat G Qp LL O} {Pt : ZMod n → LL → (K →ₐ[Qp] LL
       (Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (hy k)), H.smul τ ζ hpt _ _ (hy j), ih]
 
 theorem φVB_inj' (T : LocLat G Qp LL O) : Function.Injective (φVB PD (LL := LL) (V := T.V)) := by
-  have h : ∀ y, φVB PD (LL := LL) (V := T.V) y = (PD.φ.toLinearMap.lTensor T.V) y := fun y => by
-    induction y using TensorProduct.inductionOn with
-    | tmul x b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : Function.Injective PD.φ.toLinearMap := PD.φ_inj
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hi hab
+  apply _root_.Formalism.MainNotions.UnusedSlot80.ArcF.φVB_inj <;> assumption
 
 theorem piNS_of_pi (T : LocLat G Qp LL O) {e s' : ℕ} {π' π₀ : LetA O n} {E : ZMod n → Polynomial O}
     (hp9 : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W e s' π' E) (hπ0 : ∀ i, PowerSeries.constantCoeff (π' i) = 0)

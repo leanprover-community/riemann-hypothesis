@@ -26,9 +26,6 @@ section CharField
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] (χ : Gal(L/K) →* ℂˣ)
 
-abbrev charField : IntermediateField K L :=
-  fixedField χ.ker
-
 end CharField
 
 section Hecke

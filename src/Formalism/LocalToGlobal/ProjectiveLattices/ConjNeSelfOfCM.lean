@@ -1,5 +1,7 @@
 module
 
+
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.HfRsmulRight
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeBase
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeMin
@@ -8,7 +10,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowerSeriesExpIntegralCanonGaugeAdditiveSecond
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.ProjectiveLattices.CrudeDiv, Formalism.LocalToGlobal.ProjectiveLattices.CrudeOrd, Formalism.LocalToGlobal.ProjectiveLattices.ConjNeSelfOfCM
 
@@ -176,8 +177,7 @@ theorem linMon_aeval_monomial {ι : Type} [Fintype ι] [DecidableEq ι] (cp : ι
     split_ifs with h0
     · have hle : α ≤ a := tsub_eq_zero_iff_le.mp h0
       obtain ⟨l, hl⟩ : ∃ l, α l < a l := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hEq (le_antisymm (Finsupp.le_def.mpr hcon) hle)
       exact Finset.prod_eq_zero (Finset.mem_univ l)
         (by rw [Nat.descFactorial_eq_zero_iff_lt.mpr hl, Nat.cast_zero])
@@ -599,11 +599,7 @@ def crudeBd {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K
 
 omit [StarRing (𝓞 E)] in
 theorem conj_ne_self_of_CM (τ : E →+* ℂ) : ComplexEmbedding.conjugate τ ≠ τ := by
-  haveI := NumberField.IsCMField.isTotallyComplex E
-  intro hτ
-  have hc := NumberField.IsTotallyComplex.isComplex (NumberField.InfinitePlace.mk τ)
-  rw [← NumberField.InfinitePlace.not_isReal_iff_isComplex, NumberField.InfinitePlace.isReal_mk_iff] at hc
-  exact hc hτ
+  apply _root_.ReciprocityTheory.ChartRestriction.G.I2.ChA.ne_conj <;> assumption
 
 theorem Crude.le_degree {σ : Type} (α : σ →₀ ℕ) (s : σ) : α s ≤ α.degree := by
   by_cases hs : s ∈ α.support

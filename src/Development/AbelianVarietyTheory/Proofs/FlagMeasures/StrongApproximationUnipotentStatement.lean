@@ -1339,8 +1339,7 @@ theorem strong_approx_params : ∀ {F E : Type} [Field F] [NumberField F] [Field
     refine (((((s1.union s2).union s3).union hint).union hd).union s6).subset ?_
     intro p hp
     simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_iUnion] at hp ⊢
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨⟨⟨⟨⟨h1, h2⟩, h3⟩, h4⟩, h5⟩, h6⟩ := hc
     apply hp
     refine ⟨h1, h2, h3, h4, h5, ?_⟩

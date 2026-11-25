@@ -18,13 +18,8 @@ def GeometricGenericComponents : Prop := ∀ (l : ℕ) [Fact l.Prime] (K : Inter
   ∀ d, M.Conn d → M.Geo
 
 structure FormalIn : Prop where
-  a1 : GlobalTheory.EtC.A1
-  a6nat : GlobalTheory.EtC.DivisorNaturality
   a6ring : GlobalTheory.EtC.DivisorRingCompatibility
-  a7 : GlobalTheory.EtC.A7
-  a8 : GlobalTheory.EtC.A8
   a9 : GlobalTheory.EtC.A9
-  a10 : GlobalTheory.EtC.A10
   et : E.EtIn
 
 def RootsOfUnityFormal : Prop := FormalIn → InRoot

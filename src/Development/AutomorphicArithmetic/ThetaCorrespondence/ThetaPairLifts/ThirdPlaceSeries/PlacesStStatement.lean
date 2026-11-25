@@ -58,8 +58,6 @@ open Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.BasicNot
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.BigOn.Exp.TupLe
 
 variable {D : D7}
@@ -168,7 +166,6 @@ open Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.BasicNot
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.TupLe
 variable {D : D7}
 open Classical in

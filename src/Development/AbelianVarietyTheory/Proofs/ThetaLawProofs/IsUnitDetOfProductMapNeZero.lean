@@ -231,8 +231,7 @@ theorem _root_.GlobalTheory.DiscrJacobian.isUnit_det_of_productMap_ne_zero [IsLo
   haveI : Module.Finite R B := Module.Finite.of_basis b
   haveI : Algebra.IsIntegral R B := Algebra.IsIntegral.of_finite R B
   obtain ⟨i0, hi0⟩ : ∃ i, ev (∑ j, M i j • b j) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply H
     have hrow : ∀ i, ∑ j, M i j • (ρ (b i) *
         (IsScalarTower.toAlgHom R (ResidueField R) C) (ev (b j))) =

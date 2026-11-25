@@ -56,7 +56,6 @@ open Filter Topology GlobalTheory.VolBr
 
 namespace GlobalTheory.VolBr
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma isBallFam_mono {G : Type} [AddCommGroup G] {Λ : AddSubgroup G} {B : ℝ → Set G}
     (hB : _root_.GlobalTheory.VolBr.IsBallFam Λ B) {r r' : ℝ} (hrr' : r ≤ r') : B r ⊆ B r' := by
@@ -64,7 +63,6 @@ private lemma isBallFam_mono {G : Type} [AddCommGroup G] {Λ : AddSubgroup G} {B
   have := hB.sub_mem r (r' - r) x 0 hx (hB.zero_mem _ (sub_nonneg.2 hrr'))
   simpa using this
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma encard_mul_encard_le_isBallFam {G : Type} [AddCommGroup G] {Λ : AddSubgroup G}
     {B : ℝ → Set G} (hB : _root_.GlobalTheory.VolBr.IsBallFam Λ B) {a b : ℝ} {m : ℕ} (hm : 0 < m)

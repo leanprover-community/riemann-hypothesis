@@ -192,9 +192,6 @@ def HX (N k rS t c : ℕ) (hk : k ≤ N) : Subgroup (GL (Fin N) κ) :=
 
 variable {κ}
 
-def lamX (ψ : AddChar κ ℂ) (χ : ℕ → MulChar κ ℂ) (N k rS t c nb : ℕ) (hk : k ≤ N) (M : Matrix (Fin N) (Fin N) κ) : ℂ :=
-  lamSym ψ χ k rS t nb (extMon κ N k c hk M)
-
 end Ext
 
 end Formalism.L2.Forms

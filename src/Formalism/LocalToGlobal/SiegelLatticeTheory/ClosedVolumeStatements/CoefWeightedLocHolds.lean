@@ -928,8 +928,7 @@ private theorem pos_of_vanish_lemma_2 (ε : Fin n → Bool) {r : ℕ} (σ : Fin 
     (hw : w ≠ 0) : 0 < (hJ ε w w).re := by
   rw [hJ_self_re]
   obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hw (funext h)
   have hεi : ε i = true := by
     cases hj : ε i
@@ -1241,8 +1240,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace ChkScMu
 
 theorem hform_crdA {D : D7} (A : UnitaryGroupInstance D) (v w : (VS D).V) :
@@ -1456,8 +1453,6 @@ noncomputable section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
 open scoped InnerProductSpace TensorProduct Classical ENNReal
 open Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ChkScPi
 

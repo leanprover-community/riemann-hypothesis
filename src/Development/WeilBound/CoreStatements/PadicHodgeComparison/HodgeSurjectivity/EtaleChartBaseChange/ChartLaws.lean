@@ -471,15 +471,6 @@ theorem etale_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A 
     (hf : f.Etale) (hg : g.Etale) : (g.comp f).Etale :=
   RingHom.Etale.stableUnderComposition f g hf hg
 
-theorem etale_reindex {K B σ τ : Type} [CommRing K] [CommRing B] (s : K →+* B) (y : σ → B) (e : τ ≃ σ)
-    (h : (MvPolynomial.eval₂Hom s y : MvPolynomial σ K →+* B).Etale) :
-    (MvPolynomial.eval₂Hom s (y ∘ e) : MvPolynomial τ K →+* B).Etale := by
-  have heq : (MvPolynomial.eval₂Hom s (y ∘ e) : MvPolynomial τ K →+* B) =
-      (MvPolynomial.eval₂Hom s y).comp (MvPolynomial.rename (R := K) e).toRingHom :=
-    RingHom.ext fun p => (MvPolynomial.eval₂Hom_rename s e y p).symm
-  rw [heq]
-  exact etale_comp _ _ (RingHom.Etale.of_bijective (MvPolynomial.renameEquiv K e).bijective) h
-
 theorem coord_nzd {K B σ : Type} [Field K] [CommRing B] [Algebra K B] (y : σ → B)
     (h : (MvPolynomial.eval₂Hom (algebraMap K B) y : MvPolynomial σ K →+* B).Etale) (j : σ) :
     ∀ (a : ℕ) (ω : Om K B a), y j • ω = 0 → ω = 0 := by

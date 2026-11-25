@@ -10,55 +10,7 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.BruhatFunctionExistsClosedSubgroup, Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.QuotIntegrableIffCutoff, Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
@@ -829,11 +781,6 @@ theorem norm_le_quotHeight_pow {f : GA D V → X} (hf : ∀ γ ∈ GQ V, ∀ g, 
 theorem ModGrowth.of_bounded {f : GA D V → X} {C : ℝ} (h : ∀ g, ‖f g‖ ≤ C) : ModGrowth V f :=
   ⟨C, 0, by simpa using h⟩
 
-theorem ModGrowth.of_le {Y : Type} [NormedAddCommGroup Y] {f : GA D V → X} {f' : GA D V → Y} (h : ModGrowth V f)
-    (hle : ∀ g, ‖f' g‖ ≤ ‖f g‖) : ModGrowth V f' := by
-  obtain ⟨C, A, hC⟩ := h
-  exact ⟨C, A, fun g => (hle g).trans (hC g)⟩
-
 theorem ModGrowth.add {f f' : GA D V → X} (h : ModGrowth V f) (h' : ModGrowth V f') : ModGrowth V (f + f') := by
   obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
   obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
@@ -843,10 +790,6 @@ theorem ModGrowth.mul {f f' : GA D V → ℂ} (h : ModGrowth V f) (h' : ModGrowt
   obtain ⟨A, hA⟩ := modGrowth_iff_exp.1 h
   obtain ⟨B, hB⟩ := modGrowth_iff_exp.1 h'
   exact modGrowth_iff_exp.2 ⟨A + B, hA.mul hB⟩
-
-theorem ModGrowth₂.right {f : GA D V → GA D W → X} (h : ModGrowth₂ V W f) (g : GA D V) : ModGrowth W (f g) := by
-  obtain ⟨C, A, hC⟩ := h
-  exact ⟨C * height V g ^ A, A, fun h => by rw [mul_assoc, ← mul_pow]; exact hC g h⟩
 
 variable (V)
 

@@ -370,7 +370,6 @@ theorem CrystallineSemistableComparison.P.dc_row : ∀ {R : Type} [CommRing R] {
   have := (P.upTo_alg (e.edge.mapH n) (φ.mapH n) 1 (s ^ (n + 2))).2.2.1 hg (hcomp ▸ hc)
   rwa [one_mul] at this
 
-theorem CrystallineSemistableComparison.P.coef_upTo : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {F F' : C ⥤ ModuleCat.{w} R} (α : F ⟶ F') (s : R), (∀ T, UpTo s (α.app T).hom) → ∀ n, UpTo (s ^ 2) ((Mor.ofNatTrans α).pull n) := _root_.GlobalTheory.CompanionTheory.CoefUpTo.coef_upTo
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.DcColSurj =====

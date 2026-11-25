@@ -8,7 +8,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

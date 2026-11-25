@@ -184,23 +184,10 @@ theorem affPt_mul {g : GL (n' ⊕ Fin (c + 1)) k} (hg : InN p g) (x₀ : Matrix 
     ring
   · rw [affPt_mul_nonfree hg _ _ _ _ h, affPt_nonfree _ _ _ _ h]
 
-private theorem secondCountable_local (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] : SecondCountableTopology k := by
-  let _ := IsTopologicalAddGroup.rightUniformSpace k
-  have := isUniformAddGroup_of_addCommGroup (G := k)
-  let _ : (Valued.v (R := k)).RankOne :=
-  { hom' := IsRankLeOne.nonempty.some.emb (R := k).comp MonoidWithZeroHom.ValueGroup₀.embedding
-    strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-        MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
-  open scoped Valued in
-  have : ProperSpace k := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace k
-  open scoped Valued in
-  exact secondCountable_of_proper
-
 theorem opE_om_source : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p ≤ c) (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ), ∀ g ∈ N k n' (c + 1) p, opE ψ ν p (om μ g 1 Φ) = (ψ (simpleSum g) : ℂ) • opE ψ ν p Φ := by
   intro k _ _ _ _ _ _ n n' _ _ _ _ c p _ _ ψ ν _ μ Φ g hgN
   classical
-  have := secondCountable_local k
+  have := GlobalTheory.SplitWeil.secondCountable k
   obtain ⟨h1, -, h3, -⟩ := GlobalTheory.RootEx.Radical.unipotent_radical_basic k n' (c + 1) p
   have hg : InN p g := (h1 g).1 hgN
   have hdet := h3 g hgN

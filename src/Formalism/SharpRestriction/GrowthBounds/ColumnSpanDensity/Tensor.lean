@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylEqSpanInt
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FactorsLEOfIndex
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankTensor
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
@@ -41,11 +42,7 @@ theorem tn_rowAct_C {K : Type} [CommRing K] {r n : ℕ} (g : Matrix (Fin r) (Fin
 
 theorem tn_rowAct_one {K : Type} [CommRing K] {r n : ℕ} (F : MvPolynomial (Fin r × Fin n) K) :
     rowAct K (n := n) (1 : Matrix (Fin r) (Fin r) K) F = F := by
-  have e : rowAct K (n := n) (1 : Matrix (Fin r) (Fin r) K) = AlgHom.id K _ := by
-    apply MvPolynomial.algHom_ext
-    intro v
-    simp [rowAct, Matrix.one_apply]
-  rw [e, AlgHom.id_apply]
+  apply _root_.Formalism.L2.G.RelativeIndexFlags.Core.rowAct_one <;> assumption
 
 private theorem rowAct_invariant_zero_weight_iff {K : Type} [CommRing K] {r n : ℕ} (g h : Matrix (Fin r) (Fin r) K)
     (F : MvPolynomial (Fin r × Fin n) K) : rowAct K (n := n) g (rowAct K h F) = rowAct K (h * g) F := by

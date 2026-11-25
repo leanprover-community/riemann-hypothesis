@@ -97,8 +97,7 @@ theorem charOrth : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ : AddC
     obtain ⟨η, rfl⟩ := hmem g hg
     rw [hadd, Bd_rat_rat, hF, one_mul]
   obtain ⟨l, hl⟩ : ∃ l, ξ l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hξ (funext h)
   have hc : (2 * a l * ξ l) ≠ 0 := mul_ne_zero (mul_ne_zero two_ne_zero (ha l)) hl
   set u₀ : Fin N → AF F := Pi.single l (algebraMap F (AF F) (2 * a l * ξ l)⁻¹ * x) with hu₀def

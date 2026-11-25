@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ExistsOpenNormalSubgroupKillsOfGroupDetLawIsCont
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.SymmetricPowerSymbols.IsSymb
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
@@ -722,19 +723,7 @@ open GlobalTheory.KZ GlobalTheory.K4 UpperTheory.V.Z.Kato.Sym UpperTheory.V.Z.Ka
 
 private theorem unif_lc {G A : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
     {f : G → A} (hf : IsLocallyConstant f) : ∀ᶠ h in nhds (1 : G), ∀ g : G, f (g * h) = f g := by
-  choose V hVo hV1 hVm using fun g : G => exists_open_nhds_one_mul_subset
-    (show {y : G | f (g * y) = f g} ∈ nhds (1 : G) from
-      ((hf.isOpen_fiber (f g)).preimage (continuous_const_mul g)).mem_nhds (by simp))
-  obtain ⟨t, ht⟩ := isCompact_univ.elim_finite_subcover (fun g : G => (fun x => g⁻¹ * x) ⁻¹' V g)
-    (fun g => (hVo g).preimage (continuous_const_mul g⁻¹))
-    (fun x _ => Set.mem_iUnion.2 ⟨x, by simpa using hV1 x⟩)
-  filter_upwards [(Filter.biInter_finset_mem t).2 (fun g _ => (hVo g).mem_nhds (hV1 g))] with h hh x
-  obtain ⟨g, hg, hx⟩ : ∃ g ∈ t, g⁻¹ * x ∈ V g := by
-    simpa using ht (Set.mem_univ x)
-  have h1 : f (g * (g⁻¹ * x * h)) = f g := hVm g (Set.mul_mem_mul hx (Set.mem_iInter₂.1 hh g hg))
-  have h2 : f (g * (g⁻¹ * x * 1)) = f g := hVm g (Set.mul_mem_mul hx (hV1 g))
-  simp only [mul_one, ← mul_assoc, mul_inv_cancel, one_mul] at h1 h2
-  rw [h1, h2]
+  apply _root_.lc_nhds <;> assumption
 
 theorem UpperTheory.V.Z.Kato.Sym.PT.lcGeo :
     UpperTheory.V.Z.Kato.Sym.PT.LcGeo := by

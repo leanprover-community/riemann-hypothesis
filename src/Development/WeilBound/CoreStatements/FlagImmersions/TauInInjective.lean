@@ -53,74 +53,18 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PointOverNumberFieldValue
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeLineLatticeTrivialMod
 public import Development.WeilBound.CoreStatements.FlagImmersions.SpecMapFactorisation
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ZmodTorsorBaseChangeTransportPoint
-import Mathlib.AlgebraicGeometry.Morphisms.Immersion
-import Mathlib.Order.CompletePartialOrder
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmTypeLatticeComparison
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeLineLatticeVectorBundle
@@ -427,12 +371,8 @@ theorem valAt_up {R : Type} [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.
 def curvePush {ϖ l : Ω} (Γ : FibreCurve ξ' ϖ) (hz : ValAt (ξ' ≫ g) (Γ.η ≫ g) l 0) : FibreCurve (ξ' ≫ g) l where
   k := Γ.k
   κ := Γ.κ
-  fg := Γ.fg
-  trdeg := Γ.trdeg
   C := Γ.C
   w_pos := Γ.w_pos
-  triv := Γ.triv
-  all := Γ.all
   η := Γ.η ≫ g
   η_spec := hz.1
   η_zero := hz
@@ -465,7 +405,7 @@ theorem order_at_place : ∀ (X X' : Scheme.{0}) (Ω : Type) [Field Ω] [CharZer
     SetLike.ext (hreg p (push ξ' g p) rfl)
   have hconst : ∀ (o : O) (p : Cpt ξ'), algebraMap O Ω o ∈ regAt ξ' p := fun o p =>
     (ConstReg.regular_const X' Ω ξ' O s hs p o).1
-  have hconn := _root_.GlobalTheory.CompanionTheory.Ar.Flat.isConnected_zeroSet_of_isProper X' Ω ξ' O s ϖ hirr hinj hs hc' hcc
+  have hconn := _root_.PositivityTheory.Xgn.zero_set_special_fibre_connected X' Ω ξ' O s ϖ hirr hinj hs hc' hcc
   have hgen' : ∀ p ∈ genFibre O ξ', (pullL hr L).IsGenAt p σ := fun p hp => by
     refine isGenAt_pull hr (hgen _ fun o ho => ?_)
     have e : algebraMap ℤ Ω o = algebraMap O Ω (o : O) := by simp
@@ -478,7 +418,7 @@ theorem order_at_place : ∀ (X X' : Scheme.{0}) (Ω : Type) [Field Ω] [CharZer
     rcases hT with hT | hT
     · exact hZ X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ (isVB_pull hr hVB)
         (trivMod_pull hr e (hconst ϖ) (hconst u) hT) hgen'
-    · exact _root_.GlobalTheory.CompanionTheory.Ar.Flat.propZ_numerical X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ
+    · exact _root_.PositivityTheory.Xgn.normal_proper_line_order X' Ω ξ' O s ϖ hirr hinj hs hc' (normal_pull hr hN) hconn (pullL hr L) σ
         (isVB_pull hr hVB) (numTrivMod_pull hr hc' e (hconst ϖ) (hconst u) hT) hgen'
   obtain ⟨M, a, hM, H⟩ := main
   refine ⟨M, a, hM, ?_⟩
@@ -1833,7 +1773,7 @@ theorem core (hSm : SmoothLine) (hLc : LocalCmp) (hNu : Numerics) (hF : HT.Fargu
   have hco : ∀ p ∈ genFibre ℤ 𝔐.ξ, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) (labelRk D (.inl τ)) (labelRk D (.inr τ))
       (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) p (d₁ / d₂)⁻¹ :=
     fun p hp => CptIn.isCoeffAt_of_smul h₁ h₂ ea eb (hfr p hp)
-  obtain ⟨hL1, hL2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.lineLat_isVBOn_gen_frames 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
+  obtain ⟨hL1, hL2, -⟩ := _root_.PositivityTheory.Xgn.line_lattice_vector_bundle 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
     (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) hVA hVB haF hbF
     ⟨x₀, trivial, _, hco x₀ hx₀⟩
   have hd0 : d₁ / d₂ ≠ 0 := div_ne_zero h₁ h₂

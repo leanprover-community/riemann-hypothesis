@@ -94,7 +94,7 @@ import Development.EtaleCohomology.CohomologicalPurity.FinLeafExc
 import Development.EtaleCohomology.CohomologicalPurity.FinLeafThom
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.EtaleCohomology.CohomologicalPurity.FinLeafBd, Development.EtaleCohomology.CohomologicalPurity.LeafSemiPf, Development.EtaleCohomology.CohomologicalPurity.FinLeafSemi, Development.EtaleCohomology.CohomologicalPurity.Imports, Development.EtaleCohomology.CohomologicalPurity.LeafAbvPf, Development.EtaleCohomology.CohomologicalPurity.LeafChainsSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfNbhd, Development.EtaleCohomology.CohomologicalPurity.LeafExcAffPf, Development.EtaleCohomology.CohomologicalPurity.LeafHKSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafHensHPf, Development.EtaleCohomology.CohomologicalPurity.LeafLevelPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocExcPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocFstPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocHenPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocIsoPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocPrdPfX, Development.EtaleCohomology.CohomologicalPurity.LeafMLevPf, Development.EtaleCohomology.CohomologicalPurity.LeafPbSumPfR, Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfQuot, Development.EtaleCohomology.CohomologicalPurity.LeafPrdHocPfX, Development.EtaleCohomology.CohomologicalPurity.LeafPurProjPf, Development.EtaleCohomology.CohomologicalPurity.LeafPurRedPf, Development.EtaleCohomology.CohomologicalPurity.LeafPushPf, Development.EtaleCohomology.CohomologicalPurity.LeafQisLocalPf, Development.EtaleCohomology.CohomologicalPurity.LeafQuotPf, Development.EtaleCohomology.CohomologicalPurity.LeafRefinePf, Development.EtaleCohomology.CohomologicalPurity.LeafUnivSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafZPf, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.PurTop
+-- Members: Development.EtaleCohomology.CohomologicalPurity.FinLeafBd, Development.EtaleCohomology.CohomologicalPurity.LeafSemiPf, Development.EtaleCohomology.CohomologicalPurity.FinLeafSemi, Development.EtaleCohomology.CohomologicalPurity.Imports, Development.EtaleCohomology.CohomologicalPurity.LeafAbvPf, Development.EtaleCohomology.CohomologicalPurity.LeafChainsSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafExcAffPf, Development.EtaleCohomology.CohomologicalPurity.LeafHKSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafHensHPf, Development.EtaleCohomology.CohomologicalPurity.LeafLevelPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocExcPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocFstPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocHenPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocIsoPf, Development.EtaleCohomology.CohomologicalPurity.LeafLocPrdPfX, Development.EtaleCohomology.CohomologicalPurity.LeafMLevPf, Development.EtaleCohomology.CohomologicalPurity.LeafPbSumPfR, Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfQuot, Development.EtaleCohomology.CohomologicalPurity.LeafPrdHocPfX, Development.EtaleCohomology.CohomologicalPurity.LeafPurProjPf, Development.EtaleCohomology.CohomologicalPurity.LeafPurRedPf, Development.EtaleCohomology.CohomologicalPurity.LeafPushPf, Development.EtaleCohomology.CohomologicalPurity.LeafQisLocalPf, Development.EtaleCohomology.CohomologicalPurity.LeafQuotPf, Development.EtaleCohomology.CohomologicalPurity.LeafRefinePf, Development.EtaleCohomology.CohomologicalPurity.LeafUnivSumPf, Development.EtaleCohomology.CohomologicalPurity.LeafZPf, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.PurTop
 
 -- ===== clump member: Development.EtaleCohomology.CohomologicalPurity.FinLeafBd =====
 -- clump-header: {"m": "Development.EtaleCohomology.CohomologicalPurity.FinLeafBd", "h": "module\n\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafBdCut\npublic import Development.EtaleCohomology.CohomologicalPurity.FreePMapMk\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafDeltaPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafExactPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafGoodPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafImgHomPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafImgPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafMonoPf\npublic import Development.EtaleCohomology.CohomologicalPurity.PresSheafify\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
@@ -317,30 +317,8 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.EtaleCohomology.CohomologicalPurity.LeafChainsSumPf =====
 
--- ===== clump member: Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfNbhd =====
--- clump-header: {"m": "Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfNbhd", "h": "module\n\npublic import Development.EtaleCohomology.CohomologicalPurity.InrFold\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
-
-namespace LateralTheory.CohomologicalPurity.TubeCut
-
-theorem indNbhd_of_nbhd {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (I : Ideal A) (h : Nbhd φ I) :
-    IndNbhd φ I :=
-  ⟨Discrete PUnit, inferInstance, inferInstance, (Functor.const _).obj (CommRingCat.of B),
-    (Functor.const _).map (CommRingCat.ofHom φ), 𝟙 _, ⟨isColimitConstCocone (Discrete PUnit) (CommRingCat.of B)⟩,
-    fun _ => ⟨h, Category.comp_id _⟩⟩
-
-end LateralTheory.CohomologicalPurity.TubeCut
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfNbhd =====
-
 -- ===== clump member: Development.EtaleCohomology.CohomologicalPurity.LeafExcAffPf =====
--- clump-header: {"m": "Development.EtaleCohomology.CohomologicalPurity.LeafExcAffPf", "h": "module\n\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPf\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPfNbhd\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.EtaleCohomology.CohomologicalPurity.LeafExcAffPf", "h": "module\n\npublic import Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -380,7 +358,7 @@ theorem leafExcAff_pf : LeafExcAff := by
   have hqP : IsUnit (q : MvPolynomial (Fin d) R) := by
     simpa using hq.map (MvPolynomial.C : R →+* MvPolynomial (Fin d) R)
   have hqB : IsUnit (q : B) := by simpa using hqP.map ψ
-  have e1 := hIE hyp.1 hyp.2.2.2.1 hyp.2.2.2.2.2.2.2.2.1 q ψ _ hJfg (indNbhd_of_nbhd ψ _ hψ) hqP (off_map_le ψ _)
+  have e1 := hIE hyp.1 hyp.2.2.2.1 hyp.2.2.2.2.2.2.2.2.1 q ψ _ hJfg (LateralTheory.CohomologicalPurity.TubeCut.prd_indNbhd_of_nbhd ψ _ hψ) hqP (off_map_le ψ _)
   have e2 := hIE hyp.1 hyp.2.2.2.1 hyp.2.2.2.2.2.2.2.2.1 q η _ hIfg hη hqB (off_map_le η _)
   have hle : off C ((Ideal.span (Set.range (MvPolynomial.X : Fin d → MvPolynomial (Fin d) R))).map ψ |>.map η) ≤
       Spec.map (CommRingCat.ofHom (η.comp ψ)) ⁻¹ᵁ off _ (Ideal.span (Set.range MvPolynomial.X)) := by
@@ -641,12 +619,6 @@ theorem eqv_base (a1 : A1) {X : Scheme.{0}} {E : Spc} {π : E ⟶ sch.obj X} (L 
   rw [e']
   exact eqv_comp (eqv_iso _ F) h1
 
-theorem fgt_nat (q : ℕ) {P' P : Arrow Spc} (φ : P' ⟶ P) (n i : ℤ) (x : Hs q P n i) :
-    Hs.fgt q P' n i (Hs.pull q φ n i x) = pull _ φ.right _ _ (Hs.fgt q P n i x) := by
-  have e : dbl.inl P' ≫ dbl.map φ = φ.right ≫ dbl.inl P := pushout.inl_desc (f := P'.hom) (g := P'.hom) _ _ _
-  change pull _ (dbl.inl P') _ n (pull _ (dbl.map φ) _ n x.1) = pull _ φ.right _ n (pull _ (dbl.inl P) _ n x.1)
-  rw [← pull_comp, ← pull_comp, e]
-
 theorem hom_nat (q : ℕ) {P' P : Arrow Spc} (φ : P' ⟶ P) (n i : ℤ) (x : Ht q P.right n i) :
     pull _ P'.hom (tw q i) n (pull _ φ.right _ _ x) = pull _ φ.left _ _ (pull _ P.hom _ n x) := by
   rw [← pull_comp, ← pull_comp, Arrow.w φ]
@@ -671,7 +643,7 @@ theorem LeafLocExc_of (bd : LeafBd) : LeafLocExc := by
     (pull _ (abvMap U π).right _ _) (pull _ (abvMap U π).left _ _)
     (ex q _ hm m i).2.1 (ex q _ hm m i).2.2 (ex q _ hm (m + 1) i).1
     (ex q _ hm' m i).2.1 (ex q _ hm' m i).2.2 (ex q _ hm' (m + 1) i).1
-    (hom_nat q _ m i) (fun x => (nat q _ _ (abvMap U π) hm' hm m i x).symm) (fgt_nat q _ (m + 1) i)
+    (hom_nat q _ m i) (fun x => (nat q _ _ (abvMap U π) hm' hm m i x).symm) (LateralTheory.CohomologicalPurity.Thom.ExcP.fgt_pull q _ (m + 1) i)
     (hom_nat q _ (m + 1) i)
     (eR i m).2 (eL i m) (eR i (m + 1)) (eL i (m + 1)).1
 
@@ -751,15 +723,6 @@ theorem abv_ext {X : Scheme.{0}} (U : X.Opens) {E : Spc} (π : E ⟶ sch.obj X) 
     exact wa.trans wb.symm
   · exact congrArg CommaMorphism.left hm
 
-theorem opnMap_comp {X'' X' X : Scheme.{0}} (f : X'' ⟶ X') (g : X' ⟶ X) (U'' : X''.Opens) (U' : X'.Opens) (U : X.Opens)
-    (h1 : U'' ≤ f ⁻¹ᵁ U') (h2 : U' ≤ g ⁻¹ᵁ U) (h3 : U'' ≤ (f ≫ g) ⁻¹ᵁ U) :
-    opnMap f U'' U' h1 ≫ opnMap g U' U h2 = opnMap (f ≫ g) U'' U h3 := by
-  apply Arrow.hom_ext
-  · change sch.map _ ≫ sch.map _ = sch.map _
-    rw [← Functor.map_comp, Scheme.Hom.resLE_comp_resLE]
-  · change sch.map _ ≫ sch.map _ = sch.map _
-    rw [← Functor.map_comp]
-
 theorem LeafLocHen_of (hI : LeafIndExc) (hZ : LeafZ) (hA : LeafAbv) : LeafLocHen := by
   intro hyp H d P V q hq hfg h
   obtain ⟨a1, -, -, a4, -, -, -, -, b1, -, -, -⟩ := hyp
@@ -787,7 +750,7 @@ theorem LeafLocHen_of (hI : LeafIndExc) (hZ : LeafZ) (hA : LeafAbv) : LeafLocHen
     apply abv_ext
     · rw [Arrow.comp_right, Arrow.comp_right, eBr, eAr]
       exact (Category.id_comp (sch.map f)).trans (Category.comp_id (sch.map f)).symm
-    · rw [Category.assoc, Category.assoc, abvRel_abvMap, eBm, eAm, opnMap_comp]
+    · rw [Category.assoc, Category.assoc, abvRel_abvMap, eBm, eAm, LateralTheory.CohomologicalPurity.Cl.opnMap_comp]
   have e : abvRel P.U (sch.map f) (sch.map (f ≫ g)) (sch.map g) h = eB.inv ≫ opnMap f _ _ hle ≫ eA.hom := by
     rw [Iso.eq_inv_comp, sq]
   rw [e]
@@ -874,15 +837,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CochainCo
 
 namespace LateralTheory.CohomologicalPurity.TubeCut
 
-theorem opnMap_comp_RLocP {X'' X' X : Scheme.{0}} (f : X'' ⟶ X') (g : X' ⟶ X) (U'' : X''.Opens) (U' : X'.Opens) (U : X.Opens)
-    (h : U'' ≤ f ⁻¹ᵁ U') (h' : U' ≤ g ⁻¹ᵁ U) (h'' : U'' ≤ (f ≫ g) ⁻¹ᵁ U) :
-    opnMap f U'' U' h ≫ opnMap g U' U h' = opnMap (f ≫ g) U'' U h'' := by
-  apply Arrow.hom_ext
-  · change sch.map _ ≫ sch.map _ = sch.map _
-    rw [← Functor.map_comp, Scheme.Hom.resLE_comp_resLE]
-  · change sch.map _ ≫ sch.map _ = sch.map _
-    rw [← Functor.map_comp]
-
 theorem hs_pull_id_RLocP (q : ℕ) (P : Arrow Spc) (n i : ℤ) (x : Hs q P n i) : Hs.pull q (𝟙 P) n i x = x := by
   apply Subtype.ext
   change pull _ (dbl.map (𝟙 P)) _ _ x.1 = x.1
@@ -918,7 +872,7 @@ theorem LeafLocPrd_of (hCl : LeafCl) (hPR : LeafPrdRing) (hZ : LeafZ) (hAbv : Le
     haveI : Etale (Spec.map (CommRingCat.ofHom φ)) := HasRingHomProperty.Spec_iff.mpr hφ
     have h' : off B ((P.ι.ker.ideal V).map φ) ≤ (Spec.map (CommRingCat.ofHom φ) ≫ V.2.fromSpec) ⁻¹ᵁ P.U :=
       le_of_eq (hoff B φ)
-    rw [hcdef, ← hs_pull_comp, opnMap_comp_RLocP _ _ _ _ _ _ _ h']
+    rw [hcdef, ← hs_pull_comp, LateralTheory.CohomologicalPurity.Cl.opnMap_comp _ _ _ _ _ _ _ h']
     exact (hcl q).1 P hq B _ x hx _ z h' inferInstance hz
   have key := hPR hyp H d q Γ(P.X, V.1) (P.ι.ker.ideal V) hqA hG.1 hG.2 c hc
 
@@ -942,7 +896,7 @@ theorem LeafLocPrd_of (hCl : LeafCl) (hPR : LeafPrdRing) (hZ : LeafZ) (hAbv : Le
     refine (hAN a6 q _ _ e.hom n (2 * d) i d a _).trans ?_
     rw [he1]
     erw [pull_id]
-    rw [← hs_pull_comp, he2, hcdef, ← hs_pull_comp, opnMap_comp_RLocP]
+    rw [← hs_pull_comp, he2, hcdef, ← hs_pull_comp, LateralTheory.CohomologicalPurity.Cl.opnMap_comp]
   refine (Function.Bijective.of_comp_iff' hpe _).1 ?_
   have hf := funext hcomp
   rw [show (⇑(Hs.pull q e.hom (n + 2 * d) (i + d)) ∘ fun a : Ht q (sch.obj (Spec (H.obj Γ(P.X, V.1) (P.ι.ker.ideal V)))) n i =>
@@ -1115,8 +1069,7 @@ theorem quotC_bij (d : ℕ) (R : Type) [CommRing R] :
     refine ⟨MvPolynomial.constantCoeff p, ?_⟩
     rw [RingHom.comp_apply, Ideal.Quotient.eq, hJ, MvPolynomial.mem_ideal_span_X_image]
     intro m hm
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : m = 0 := Finsupp.ext fun i => hcon i (Set.mem_univ i)
     subst this
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl,

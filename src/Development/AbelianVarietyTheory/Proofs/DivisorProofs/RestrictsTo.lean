@@ -49,8 +49,6 @@ open CategoryTheory AlgebraicGeometry Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.VB GlobalTheory.LieVB GlobalTheory.CurveRootGeometry
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.TwoSeq
 
 section General
@@ -87,36 +85,6 @@ structure Datum (α : O →+* End A) (β : O →+* End B) (α' : O →+* End A')
 variable (α : O →+* End A) (β : O →+* End B) (α' : O →+* End A') (β' : O →+* End B') (r : ℕ)
 
 variable {α β α' β' r}
-
-def biprodAct (α : O →+* End A) (β : O →+* End B) : O →+* End (A ⊞ B) where
-  toFun x := End.of (biprod.map (act α x) (act β x))
-  map_one' := by
-    refine End.ext (biprod.hom_ext _ _ ?_ ?_) <;> simp [act]
-  map_mul' x y := by
-    refine End.ext (biprod.hom_ext _ _ ?_ ?_) <;> simp [act, Category.assoc]
-  map_zero' := by
-    refine End.ext (biprod.hom_ext _ _ ?_ ?_) <;> simp [act]
-  map_add' x y := by
-    refine End.ext (biprod.hom_ext _ _ ?_ ?_) <;> simp [act]
-
-def Datum.split (α : O →+* End A) (β : O →+* End B) {m n : ℕ} (hA : IsVB A m) (hB : IsVB B n) :
-    Datum α β β α (m + n) where
-  D := A ⊞ B
-  ρ := biprodAct α β
-  a := biprod.inl
-  b := biprod.snd
-  u := biprod.inr
-  v := biprod.fst
-  w₁ := by simp
-  w₂ := by simp
-  isVB := hA.biprod hB
-  exact₁ := (ShortComplex.Splitting.ofHasBinaryBiproduct A B).shortExact
-  exact₂ := (ShortComplex.Splitting.mk (S := ShortComplex.mk (biprod.inr : B ⟶ A ⊞ B) biprod.fst (by simp))
-    biprod.snd biprod.inl (by simp) (by simp) (by rw [add_comm]; exact biprod.total)).shortExact
-  equiv_a x := by simp [act, biprodAct]
-  equiv_b x := by simp [act, biprodAct]
-  equiv_u x := by simp [act, biprodAct]
-  equiv_v x := by simp [act, biprodAct]
 
 end General
 

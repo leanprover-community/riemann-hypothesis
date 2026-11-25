@@ -61,9 +61,6 @@ attribute [local instance] GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAd
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem secondCountable_completion (v : InfinitePlace F) : SecondCountableTopology v.Completion :=
-  (InfinitePlace.Completion.isometry_extensionEmbedding v).isEmbedding.secondCountableTopology
-
 theorem t2Space_adeleRing_of_numberField : T2Space (AF F) := by
   haveI := _root_.GlobalTheory.AdelicUnitaryTop.t2Space_infiniteAdeleRing_of_numberField_field F
   exact inferInstanceAs (T2Space (InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F))

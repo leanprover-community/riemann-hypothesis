@@ -27,60 +27,15 @@ public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TensorEquivOfBasisExtension
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GMatIsGenericFlag
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
 import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieBc
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.Style
-import Mathlib.NumberTheory.Height.NumberField
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTriangularRegularFrameChange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsChgbasis, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsGenericTriangularFactorization, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsTie, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoordinateTieTransfer, Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsFlagsLieCompactDominated, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptDescentGenericPoint, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsDualflag, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptLatticeBaseChange, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsField, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsCharts, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsDegree, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsGenFamAlgebraicIndependentFinrank, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsRevgen, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsGenFamRevInvSubfamily, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsPullmap, Development.AutomorphicSpectrum.Proofs.MetricProofs.LatticePullSplitInjection, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDivisorFormula
@@ -1171,20 +1126,7 @@ theorem flagStep_colFrame {G M : Type} [Field G] [AddCommGroup M] [Module G M] {
 theorem linearIndependent_colFrame {G M : Type} [Field G] [AddCommGroup M] [Module G M] {r : ℕ} {e : Fin r → M}
     (he : LinearIndependent G e) (B : Matrix (Fin r) (Fin r) G) (hu : IsUnit B.det) :
     LinearIndependent G (colFrame e B) := by
-  rw [Fintype.linearIndependent_iff] at he ⊢
-  intro g hg
-  have h0 : B.mulVec g = 0 := by
-    funext l
-    refine he (fun l => B.mulVec g l) ?_ l
-    rw [← hg]
-    simp only [colFrame, Matrix.mulVec, dotProduct, Finset.sum_smul, Finset.smul_sum, smul_smul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-    rw [mul_comm]
-  have := Matrix.eq_zero_of_mulVec_eq_zero (hu.ne_zero) h0
-  intro k
-  rw [this]
-  rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.FrameTrans.linearIndependent_colFrame <;> assumption
 
 theorem exists_mat {Ω M : Type} [Field Ω] [AddCommGroup M] [Module Ω M] (W : Submodule Ω M) {r : ℕ} (C e : Fin r → M)
     (hC : LinearIndependent Ω C) (he : LinearIndependent Ω e) (hCm : ∀ k, C k ∈ W) (hem : ∀ k, e k ∈ W)

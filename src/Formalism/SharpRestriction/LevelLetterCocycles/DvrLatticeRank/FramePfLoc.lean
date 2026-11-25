@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusLiftLemmasOfAdmitted
 public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 
 @[expose] public section
@@ -45,16 +46,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     (Ct : CmpTie W E ιdR p1 tS zS) (T : LocLat G Qp LL O)
 
 theorem framepf_ιV_inj : Function.Injective (ιV PD (LL := LL) (V := T.V)) := by
-  have h : ∀ y, ιV PD (LL := LL) (V := T.V) y =
-      ((PD.ι.toLinearMap.restrictScalars Qp).lTensor T.V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [ιV]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : Function.Injective (PD.ι.toLinearMap.restrictScalars Qp) := PD.ι_inj
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hi hab
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.lemGA0_ιV_inj <;> assumption
 
 theorem framepf_levB_gam (hc : IsCrys PD T.ρ) (g : W.Gam)
     (hv : (0 : WithTop ℚ) ≤ v (algebraMap O LL (W.χΓ g : O) - 1)) (i : ZMod n) (x : ↥(W.N T))

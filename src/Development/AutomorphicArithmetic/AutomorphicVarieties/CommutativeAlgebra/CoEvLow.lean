@@ -65,8 +65,7 @@ private theorem mvPowerSeries_mem_span_X_of_constantCoeff_zero {σ R : Type} [Fi
     by_cases hd : d = 0
     · exact ⟨none, fun h => (h hd).elim⟩
     · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-        by_contra H
-        push_neg at H
+        by_contra! H
         exact hd (Finsupp.ext H)
       exact ⟨some s, fun _ => ⟨s, rfl, hs⟩⟩
   choose sel hsel using hex

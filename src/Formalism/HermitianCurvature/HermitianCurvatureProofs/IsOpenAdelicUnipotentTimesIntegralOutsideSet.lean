@@ -366,17 +366,8 @@ lemma weyl_cell_mem_level_group {c : ℂ} (hc : c ≠ 0) : w1 k r l c ∈ Glev k
   apply PI.IsotropicReflections.reflection_mem_Glev_castSucc <;> assumption
 
 lemma w1_commute_of_mem_Glev (c : ℂ) {g : Mx k r} (hg : g ∈ Glev k r l.succ) : w1 k r l c * g = g * w1 k r l c := by
-  obtain ⟨hg0, h1, h2⟩ := (glev_succ_iff l g).1 hg
-  apply mat_ext
-  intro y
-  have e1 : ⟪g *ᵥ y, 𝐞⟫ = ⟪y, 𝐞⟫ := by
-    conv_lhs => rw [← h1]
-    exact uh_herm hg0.1 _ _
-  have e2 : ⟪g *ᵥ y, 𝐬⟫ = ⟪y, 𝐬⟫ := by
-    conv_lhs => rw [← h2]
-    exact uh_herm hg0.1 _ _
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, weyl_cell_mulVec, weyl_cell_mulVec, e1, e2, Matrix.mulVec_add, Matrix.mulVec_add,
-    Matrix.mulVec_smul, Matrix.mulVec_smul, h1, h2]
+  intros
+  apply _root_.PI.IsotropicReflections.w1_commute_of_mem_Glev <;> assumption
 
 lemma weyl_cell_mul_conj {c : ℂ} (hc : c ≠ 0) : w1 k r l c * w1 k r l (conj c) = 1 := by
   have hc' : conj c ≠ 0 := (map_ne_zero _).2 hc

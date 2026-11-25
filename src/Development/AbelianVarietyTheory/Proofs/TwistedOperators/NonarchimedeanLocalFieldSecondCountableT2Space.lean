@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -158,16 +159,7 @@ theorem upU_mem_KO {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} (C : Matrix 
   all_goals first | rfl
 
 theorem nonarchimedeanLocalField_secondCountable_t2Space : SecondCountableTopology k ∧ T2Space k := by
-  let _ := IsTopologicalAddGroup.rightUniformSpace k
-  have := isUniformAddGroup_of_addCommGroup (G := k)
-  let _ : (Valued.v (R := k)).RankOne :=
-  { hom' := IsRankLeOne.nonempty.some.emb (R := k).comp MonoidWithZeroHom.ValueGroup₀.embedding
-    strictMono' := IsRankLeOne.nonempty.some.strictMono.comp
-        MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
-  open scoped Valued in
-  have : ProperSpace k := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace k
-  open scoped Valued in
-  exact ⟨secondCountable_of_proper, inferInstance⟩
+  apply _root_.GlobalTheory.SplitWeil.Model.secondCountable_and_t2_local_field <;> assumption
 
 theorem vanish {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ} (h1 : 1 ≤ p) (hc : p < c)
     {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {A : Type} [AddCommGroup A] [Module ℂ A]

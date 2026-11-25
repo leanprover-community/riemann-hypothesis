@@ -3,43 +3,7 @@ module
 public import Development.WeilBound.ThetaLifts.LocalTheory.AdmissiblePureTensorSchwartz
 import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 import Development.WeilBound.ThetaLifts.LocalTheory.UatClosure
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -178,8 +142,7 @@ theorem bump_pt {χX χW : Chr F E} {r s r' s' : ℕ} (H : Hyp) (hp : IsPair B M
     obtain ⟨T, hT, -⟩ := H.op F E σ B _ _ _ _ M₁ _ _ om₁ _ _ _ _ hp g hg 1 uat_one
     rw [(s₁.uniq f f₁ (T f)).1 _ ac (hT.2 f), hl, hl, ← s₁.arch a hT,
       H.unim F E σ B _ _ _ _ M₁ _ _ om₁ _ _ _ _ hp _ (admissible_pure_tensor_schwartz hp.good f ⟨fun v => s₁.le v (a.1 v), a.2⟩)]
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have : (l.comp L : _ → ℂ) = fun _ => 0 := (l.comp L).continuous.ext_on dn continuous_const fun g hg => by
     show l (L g) = 0
     rw [hl, s₁.kill _ (pol g hg) φ a (Or.inl (hn g hg))]; rfl
@@ -187,8 +150,7 @@ theorem bump_pt {χX χW : Chr F E} {r s r' s' : ℕ} (H : Hyp) (hp : IsPair B M
 
 theorem nz_pure (s₁ : Side B M₁ om₁ pi₁ p₁ S₁) (𝓖 : Set (Fn F n₁ d₁)) (h : ∀ Φ ∈ 𝓖, ∃ (f : SInf F _) (φ : _), admitted M₁ S₁ φ ∧ Φ = pure f φ)
     {Φ} (hΦ : Φ ∈ Submodule.span ℂ 𝓖) (h0 : M₁.I om₁ Φ ≠ 0) : ∃ (f : SInf F _) (φ : _), admitted M₁ S₁ φ ∧ M₁.I om₁ (pure f φ) ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   obtain ⟨𝓒, h1, h2⟩ := s₁.cls
   have : Φ ∈ 𝓒 ∧ M₁.I om₁ Φ = 0 := by
     clear h0

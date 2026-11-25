@@ -53,8 +53,6 @@ open Limits MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.
 
 namespace GlobalTheory.FramePairGram
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Generic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X X' : Scheme.{0}}

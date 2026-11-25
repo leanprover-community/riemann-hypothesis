@@ -45,8 +45,7 @@ theorem ddiv_monomial' (M α : σ →₀ ℕ) (c : K) :
   · rw [if_pos h, finsupp_prod_choose_eq_bin_of_le M α h]
   · rw [if_neg h]
     obtain ⟨x, hx⟩ : ∃ x, α x < M x := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply h
       exact Finsupp.le_def.2 hc
     have h0 : (bin M α : K) = 0 := by
@@ -822,7 +821,6 @@ theorem sum_ldeg_div_add_le_sl (D : TwistData K) (p : ℕ) (hp : 0 < p) (hr : 0 
   classical
   have hr' : (0 : ℝ) < D.r := by exact_mod_cast hr
   have hr1 : (1 : ℝ) ≤ D.r := by exact_mod_cast hr
-  have hc0 : (0 : ℝ) ≤ D.c := Nat.cast_nonneg _
   have e1 : (∑ t : D.Tau, (if t.1 = D.aux₃ j then (ldeg M (Sum.inr t) : ℝ) / (D.P p t : ℝ) + D.c else 0)) =
       ∑ m : Fin D.r, ((ldeg M (Sum.inr (D.aux₃ j, m)) : ℝ) / (D.P p (D.aux₃ j, m) : ℝ) + D.c) := by
     rw [Fintype.sum_prod_type, Finset.sum_eq_single (D.aux₃ j)]

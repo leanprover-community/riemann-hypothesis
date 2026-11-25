@@ -1021,16 +1021,9 @@ variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀
     {U : Type} [AddCommGroup U] [Module LL U] [Module Qp U] [IsScalarTower Qp LL U]
     {W : Type} [AddCommGroup W] [Module LL W] [Module Qp W] [IsScalarTower Qp LL W]
 
-theorem actVB_resH (ρ : Representation LL G V) (h : PC.H) (x : V ⊗[Qp] B) :
-    actVB PC.PD' (PC.resH ρ) h x = actVB PC.PD ρ h x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [map_add (f := _), ha, hc]
-  | tmul v c => simp [actVB, PC.actB_eq, PotCrysData.resH]
-
 theorem mem_Dpcris (ρ : Representation LL G V) (x : V ⊗[Qp] B) :
     x ∈ PC.Dpcris ρ ↔ ∀ h : PC.H, actVB PC.PD ρ h x = x := by
-  simp only [PotCrysData.Dpcris, mem_Dcris, actVB_resH]
+  simp only [PotCrysData.Dpcris, mem_Dcris, Formalism.WeaklyAdmissibleFiltrations.pc_actVB_res]
 
 theorem act_mem_Dpcris (ρ : Representation LL G V) (g : G) (x : V ⊗[Qp] B) (hx : x ∈ PC.Dpcris ρ) :
     actVB PC.PD ρ g x ∈ PC.Dpcris ρ := by
@@ -1411,10 +1404,6 @@ theorem first_le (f r t CT N r' e n : ℕ) (C : ℝ) (hC : 8 * (CT : ℝ) ≤ C)
     _ = 4 * (f : ℝ) * n * (C * (n : ℝ) ^ 2 * ((n : ℝ) + e + t)) := by ring
 
 end GlobalTheory.TypePrimeEta
-
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicValNatPowSubOneLe =====
@@ -1502,13 +1491,6 @@ section -- clump:auto
 @[expose] public section
 
 
-
-section
-open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.CongruenceModules
-
-theorem _root_.GlobalTheory.T.admT_of_artin_reciprocity_and_local_conditions : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (P : Pend D) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) (CT : ℕ), 8 * (CT : ℝ) ≤ C → SumRepresentations.adm5 D → EigSpan P → TieInePoly D → admT (D := D) CT → LocalPushoutProposition (D := D) → ResidualAbsIrreducible (D := D) → TypePrimeChoiceLemmas (D := D) → admDZ P → _root_.Formalism.MainNotions.PairedCharacterCondition.GaloisFamilyConditions' (D := D) → admG5 (D := D) → admG6 (D := D) → GlobalTheory.TypeLeaf.SerLoc D → admTB (D := D) HW F → admBK (D := D) → admBC (D := D) → _root_.Formalism.MainNotions.PairedCharacterCondition.LocalGlobalCompatibility' (D := D) → SumRepresentations.tie0 D → tieChi (D := D) → _root_.Formalism.MainNotions.PairedCharacterCondition.PairedCharacterConditionAlt (D := D) C CT := by
-  first | exact @_root_.GlobalTheory.admT_of_adm5_eigSpan_tieInePoly
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ConclusionOfAdmissiblesStatement =====

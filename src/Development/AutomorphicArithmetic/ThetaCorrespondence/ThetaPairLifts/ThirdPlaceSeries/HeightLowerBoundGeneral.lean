@@ -443,8 +443,7 @@ theorem quo_gaps {PP A M : ℝ} (hN : HostNum D L PP A M) (hw : WtNum p i PP) (h
   · have g := (g2 hbp).2
     have hT0 : (0 : ℤ) < 4 * (lenT p i PP : ℤ) := by nlinarith
     have hle : (lenT p i PP : ℤ) ≤ u1 τ a - u1 τ b - 3 * (((dat p i).p + (dat p i).q : ℕ) : ℤ) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have := mul_lt_mul_of_pos_left hc hT0
       nlinarith
     push_cast at hle
@@ -469,7 +468,6 @@ section -- clump:auto
 
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.CovHt
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovHt.GeomBound
@@ -536,7 +534,6 @@ section -- clump:auto
 section
 section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.CovHt
-set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovHt.GeomBound
@@ -595,10 +592,6 @@ section Places
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem vLa_nat_nonneg (la : HeightOneSpectrum (𝓞 K)) {n : ℕ} (hn : n ≠ 0) : 0 ≤ vLa la (n : K) := by
-  have := vAdd_int_nonneg la (a := (n : 𝓞 K)) (by simpa using hn)
-  simpa [vLa, Formalism.BasicNotions.vAdd] using this
-
 theorem vLa_pos {la : HeightOneSpectrum (𝓞 K)} {q : ℕ} (hq : q ≠ 0) (h : (q : 𝓞 K) ∈ la.asIdeal) :
     0 < vLa la (q : K) := by
   have h1 : la.valuation K (q : K) < 1 := by
@@ -645,7 +638,7 @@ theorem exists_spread {S : Finset ℕ} {a : ℕ → ℝ} {s : ℝ} (h : PrimeSum
       exact ⟨e₂, by rw [h3, h1, Finset.sum_insert hq]; ring, fun la => by rw [h4, h2, Finset.sum_insert hq]; ring⟩
   obtain ⟨e', h1, h2⟩ := all S fun q hq => (hp q hq).ne_zero
   have hn : ∀ la, ∀ q ∈ S, 0 ≤ (vLa la (q : K) : ℝ) * a q := fun la q hq =>
-    mul_nonneg (by exact_mod_cast vLa_nat_nonneg la (hp q hq).ne_zero) (h0 q)
+    mul_nonneg (by exact_mod_cast GlobalTheory.CovHtCmp.vLa_natCast_nonneg la (hp q hq).ne_zero) (h0 q)
   refine ⟨e', by linarith, fun la q => ?_⟩
   rw [h2]
   by_cases hq : q ∈ S

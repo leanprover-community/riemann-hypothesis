@@ -196,12 +196,7 @@ theorem exists_perm_first {d s : ℕ} (b : Fin d → Fin s) (z : Fin s) :
   classical
   set a := Fintype.card {i // b i = z} with ha
   have had : a ≤ d := (Fintype.card_subtype_le _).trans (by simp)
-  have hca : Fintype.card {k : Fin d // (k : ℕ) < a} = a := by
-    rw [Fintype.card_congr (show {k : Fin d // (k : ℕ) < a} ≃ Fin a from
-      { toFun := fun k => ⟨k.1, k.2⟩
-        invFun := fun i => ⟨⟨i, lt_of_lt_of_le i.2 had⟩, i.2⟩
-        left_inv := fun k => rfl
-        right_inv := fun i => rfl }), Fintype.card_fin]
+  have hca : Fintype.card {k : Fin d // (k : ℕ) < a} = a := Fintype.card_fin_lt_of_le had
   let e1 : {k : Fin d // (k : ℕ) < a} ≃ {i // b i = z} := Fintype.equivOfCardEq (by rw [hca])
   let e2 : {k : Fin d // ¬ (k : ℕ) < a} ≃ {i // ¬ b i = z} := Fintype.equivOfCardEq (by
     rw [Fintype.card_subtype_compl, Fintype.card_subtype_compl, hca])

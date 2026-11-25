@@ -60,8 +60,7 @@ theorem page_two_le_L_and_signs : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : 
     have hn : ka.n = D.R.nV := hS.1
     obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hC, hZ, -⟩ := hS
     obtain ⟨-, -, -, -, hlf, -, -, -, hln⟩ := hc
-    by_contra hL
-    push_neg at hL
+    by_contra! hL
     have hf0 : (0 : ℝ) < D.R.f := by exact_mod_cast (by omega : 0 < D.R.f)
     have hr0 : (0 : ℝ) < D.R.r := by exact_mod_cast (by omega : 0 < D.R.r)
     have hrn : (D.R.r : ℝ) ≤ ka.n := by

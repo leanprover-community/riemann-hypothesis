@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 
 @[expose] public section
@@ -50,17 +51,7 @@ theorem map_frDet {L : Type} [Field L] (σ : K →+* L) (τ : ι) :
 
 theorem map_subD {L : Type} [Field L] (σ : K →+* L) (P : Pol K ι a) :
     MvPolynomial.map σ (subD K ι a b P) = subD L ι a b (MvPolynomial.map σ P) := by
-  have h : (MvPolynomial.map σ).comp (subD K ι a b).toRingHom =
-      (subD L ι a b).toRingHom.comp (MvPolynomial.map σ) := by
-    apply MvPolynomial.ringHom_ext
-    · intro r
-      simp [subD]
-    · intro v
-      show MvPolynomial.map σ (subD K ι a b (MvPolynomial.X v)) = subD L ι a b (MvPolynomial.map σ (MvPolynomial.X v))
-      rw [MvPolynomial.map_X]
-      simp only [subD, MvPolynomial.aeval_X]
-      split_ifs <;> simp
-  exact RingHom.congr_fun h P
+  apply _root_.Formalism.L2.Ker.map_subD <;> assumption
 
 theorem map_jetMap {L : Type} [Field L] (σ : K →+* L) (J : (DVar ι a b →₀ ℕ) → K) (n : ι → ℕ) (P : Pol K ι a) :
     MvPolynomial.map σ (jetMap J n P) =

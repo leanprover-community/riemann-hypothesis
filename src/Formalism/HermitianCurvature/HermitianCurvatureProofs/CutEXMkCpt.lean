@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentLevelZeroEqOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX2
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
@@ -16,8 +17,6 @@ open Matrix MeasureTheory Formalism.REAL Formalism.QuantumDeterminants Formalism
 open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.CutEX.MkCptPf
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section casts
 
@@ -48,22 +47,11 @@ theorem glev_last_iff {k ρ : ℕ} (hρ : ρ = 0) (g : B.Mat k ρ) :
 
 theorem gf_eq_ggl {k ρ : ℕ} (hρ : ρ = 0) (z z' : Fin (2 * ρ + k + 1) → ℂ) (g : B.Mat k ρ) :
     Gf k ρ z z' g = Q.GGl k ρ z z' g := by
-  subst hρ
-  have h0 : Dmin k 0 z z' g ⟨0, by omega⟩ = 1 := by
-    unfold Dmin
-    exact Matrix.det_isEmpty
-  have h1 : Dmin k 0 z z' g (Fin.last 1) = Zhat k 0 z z' g (Fin.last 0) (Fin.last 0) := by
-    unfold Dmin
-    exact Matrix.det_fin_one _
-  unfold Gf Q.GGl
-  rw [Formalism.FourierDecayAlt.P.PBI.zetaL_eq_zhat, h0, h1]
-  simp
+  apply _root_.Formalism.FourierDecayAlt.P.PBI.gram_function_level_zero <;> assumption
 
 end Formalism.FourierDecayAlt.P.CutEX.MkCptPf
 
 namespace Formalism.FourierDecayAlt.P.CutEX.MkCptPf
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section top
 

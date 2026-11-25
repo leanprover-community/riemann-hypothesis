@@ -54,8 +54,6 @@ open MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRe
 
 namespace GlobalTheory.HodgeOnDomain
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Main
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}

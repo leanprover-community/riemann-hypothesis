@@ -388,8 +388,7 @@ theorem length_ball_quotient_eq_sum_mul_fdeg (K : Type*) [Field K] [Algebra K A]
   | succ n ih =>
     intro c m hm
     obtain ⟨ζ₀, hζ₀⟩ : ∃ ζ₀, m ζ₀ ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       simp [hcon] at hm
     let m' : Pts O A → ℕ := fun ζ => if ζ = ζ₀ then m ζ - 1 else m ζ
     have hmm : ∀ ζ, m ζ = m' ζ + if ζ = ζ₀ then 1 else 0 := by

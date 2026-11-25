@@ -79,8 +79,7 @@ private theorem natCast_p_ne_zero_Qq (j : Fin k) : (p : R.Qq) ≠ 0 := by
     rintro _ ⟨c, rfl⟩
     simp [dj, Matrix.diagonal_apply, h0]
   obtain ⟨c, hc⟩ : ∃ c, g j c ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hg.ne_zero (Matrix.det_eq_zero_of_row_eq_zero j hall)
   have hmem : (fun i => g i c) ∈ colSpan R.W (dj j (p : R.Qq)) := by
     have hgeq' : colSpan R.W (dj j (p : R.Qq)) = colSpan R.W g := hgeq

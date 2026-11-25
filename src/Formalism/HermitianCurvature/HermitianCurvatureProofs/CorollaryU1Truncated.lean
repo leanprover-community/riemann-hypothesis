@@ -1165,8 +1165,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.UsCost.DB
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open PI.UnitaryGroupMassFormula.UsCost PI.UnitaryGroupMassFormula.UsCost.DA
 
 lemma leviDifferential_add (k j ρ : ℕ) (Q Q' : Matrix (Fin j) (Fin j) ℂ) :
@@ -1248,13 +1246,7 @@ lemma rn_mem (hRad : RadicalParam) (k j ρ : ℕ) (x : RC k j ρ) : Rn k j ρ x 
 lemma ga_mem (hMem : SliceMem) (hRad : RadicalParam) {k p s ρ : ℕ} {σ : Equiv.Perm (Fin p)} {d : Fin p → ℂ}
     (hd : ∀ i, d i ≠ 0) (ξ : Xi k p s ρ σ) {Z : G.Mat s} {γ : B.Mat k ρ} (hZ : G.detM Z ≠ 0)
     (hγ : γ ∈ B.GV k ρ) : gaXi k ρ σ d ξ Z γ ∈ B.GV k (p + s + ρ) := by
-  have hdet : (ZjH σ d ξ.2 Z).det ≠ 0 := by
-    rw [P.level_determinant_z]
-    refine mul_ne_zero ?_ hZ
-    rw [hMat, Matrix.det_mul, Matrix.det_diagonal]
-    exact mul_ne_zero (P.Ux5.det_permutationMatrix_ne_zero σ) (Finset.prod_ne_zero_iff.mpr fun i _ => hd i)
-  exact P.BetaSesquilinearity.gv_mul (P.BetaSesquilinearity.gv_mul (P.BetaSesquilinearity.gv_inv (rn_mem hRad _ _ _ _)) ((hMem k (p + s) ρ).1 _ γ hdet hγ))
-    (rn_mem hRad _ _ _ _)
+  apply _root_.PI.UnitaryGroupMassFormula.UsCost.gaXi_mem_of <;> assumption
 
 variable {k p s ρ : ℕ} {σ : Equiv.Perm (Fin p)} {d : Fin p → ℂ}
 

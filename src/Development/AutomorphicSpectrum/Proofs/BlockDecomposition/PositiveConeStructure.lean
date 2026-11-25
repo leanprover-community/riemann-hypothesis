@@ -71,7 +71,7 @@ import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Algebra.Star.Unitary
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegrationStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormulaStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFiniteStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactor, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure
+-- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegrationStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFiniteStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactor, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegration", "h": "module\n\npublic import Mathlib.Analysis.CStarAlgebra.Classes\npublic import Mathlib.Analysis.InnerProductSpace.Basic\npublic import Mathlib.MeasureTheory.Integral.Bochner.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\npublic import Mathlib.Analysis.Matrix.Normed\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas\nimport Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero\npublic import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.DiscreteSeriesTopClasses.IsInvOne\npublic import Mathlib.MeasureTheory.Integral.Prod\npublic import Mathlib.MeasureTheory.Measure.Haar.Unique\n\n"}
@@ -83,7 +83,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GlobalTheory.CompanionTheory.ConeHaar
 
@@ -183,7 +182,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.compact_group_disintegration : ∀ {Γ K X : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ] [LocallyCompactSpace Γ] [SecondCountableTopology Γ] [MeasurableSpace Γ] [BorelSpace Γ] [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [T2Space K] [CompactSpace K] [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K] (e : K →* Γ) (_ : Continuous e) [MeasurableSpace X] (ρ : Measure X) [SFinite ρ] (s : X → Γ) (_ : Measurable s) (_ : ρ ≠ 0) (_ : ∀ g : Γ, ∃ a : X → X, Measurable a ∧ Measure.map a ρ = ρ ∧ ∀ᵐ x ∂ρ, ∃ k, g * s x = s (a x) * e k) (_ : ∀ A : Set Γ, IsCompact A → ρ (s ⁻¹' (A * Set.range e)) < ⊤) (μ : Measure Γ) [μ.IsHaarMeasure], ∃ c : ℝ, 0 < c ∧ ∀ F : Γ → ℂ, Continuous F → HasCompactSupport F → (∀ y k, F (y * e k) = F y) → ∫ y, F y ∂μ = c * ∫ x, F (s x) ∂ρ := by
   first | exact @GlobalTheory.CompanionTheory.ConeHaar.leftInvariant_of_section
@@ -201,7 +199,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 noncomputable section
 
@@ -290,7 +287,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end -- clump:auto
 end -- clump:auto
@@ -306,7 +302,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GlobalTheory.CompanionTheory.ConeHaar
 
@@ -373,24 +368,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula =====
 
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormulaStatement =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormulaStatement", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open MeasureTheory Matrix Topology Filter
-open scoped ContDiff ENNReal ComplexOrder Pointwise
-open PositivityTheory.RgTw (Mat G hb)
-open PositivityTheory.RgBcC
-open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-theorem _root_.GlobalTheory.T.cone_measure_density_formula : ∀ n : ℕ, (∀ᵐ v ∂(coneMeas n), v ∈ PositivityTheory.RgBcC.cone n) ∧ ∀ f : (Fin n × Fin n → ℝ) → ℂ, ∫ v, f v ∂(coneMeas n) = ∫ v in PositivityTheory.RgBcC.cone n, f v * ((hOf v).det ^ n)⁻¹ := by
-  first | exact @GlobalTheory.CompanionTheory.ConeHaar.cone_integral
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormulaStatement =====
-
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFinite", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwistHomotopyKernel\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpenStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
@@ -404,8 +381,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GlobalTheory.CompanionTheory.ConeHaar.Fin
 
@@ -503,7 +478,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.cone_measure_locally_finite : ∀ n : ℕ, coneMeas n ≠ 0 ∧ ∀ C : Set (Fin n × Fin n → ℝ), IsCompact C → C ⊆ PositivityTheory.RgBcC.cone n → coneMeas n C < ⊤ := by
   first | exact @GlobalTheory.CompanionTheory.ConeHaar.Fin.coneMeas_ne_zero_and_lt_top
@@ -521,7 +495,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.congruence_action_determinant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∃ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) ∧ LinearMap.det T = ‖g.det‖ ^ (2 * n) := by
   first | exact @GlobalTheory.CompanionTheory.ConeLin.cone_lin
@@ -751,16 +724,13 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem _root_.GlobalTheory.T.smooth_positive_definite_sqrt : ∀ n : ℕ, ∃ σ₀ : Mat n → Mat n, ContDiffOn ℝ ∞ σ₀ {P | P.PosDef} ∧ ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P := by
-  first | exact @GlobalTheory.CompanionTheory.ConeHaar.Chol.exists_smooth_section
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas\npublic import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegrationStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariantStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormulaStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFiniteStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwistHomotopyKernel\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpenStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Algebra.Group.Units\nimport Mathlib.Topology.Algebra.Star.Unitary\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeStructure", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas\npublic import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactGroupDisintegrationStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureCongruenceInvariantStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureDensityFormula\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeasureLocallyFiniteStatement\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceActionDeterminantStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwistHomotopyKernel\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpenStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothCholeskyFactorStatement\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Algebra.Group.Units\nimport Mathlib.Topology.Algebra.Star.Unitary\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -778,17 +748,14 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
-theorem cone_open (n : ℕ) : IsOpen (cone n) := GlobalTheory.T.positive_cone_isOpen n
-theorem cone_chol (n : ℕ) : ∃ σ₀ : Mat n → Mat n, ContDiffOn ℝ ∞ σ₀ {P | P.PosDef} ∧ ∀ P : Mat n, P.PosDef → σ₀ P * (σ₀ P)ᴴ = P :=
-  GlobalTheory.T.smooth_positive_definite_sqrt n
 theorem cone_lin (n : ℕ) (g : Mat n) (hg : g.det ≠ 0) : ∃ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ),
     (∀ v, hOf (T v) = g * hOf v * gᴴ) ∧ LinearMap.det T = ‖g.det‖ ^ (2 * n) := GlobalTheory.T.congruence_action_determinant n g hg
 theorem cone_fin (n : ℕ) (C : Set (Fin n × Fin n → ℝ)) (hC : IsCompact C) (hCc : C ⊆ cone n) : coneMeas n C < ⊤ :=
   (GlobalTheory.T.cone_measure_locally_finite n).2 C hC hCc
 theorem cone_ne (n : ℕ) : coneMeas n ≠ 0 := (GlobalTheory.T.cone_measure_locally_finite n).1
-theorem cone_ae (n : ℕ) : ∀ᵐ v ∂(coneMeas n), v ∈ cone n := (GlobalTheory.T.cone_measure_density_formula n).1
+theorem cone_ae (n : ℕ) : ∀ᵐ v ∂(coneMeas n), v ∈ cone n := (_root_.GlobalTheory.CompanionTheory.ConeHaar.cone_integral n).1
 theorem cone_int (n : ℕ) (f : (Fin n × Fin n → ℝ) → ℂ) :
-    ∫ v, f v ∂(coneMeas n) = ∫ v in cone n, f v * ((hOf v).det ^ n)⁻¹ := (GlobalTheory.T.cone_measure_density_formula n).2 f
+    ∫ v, f v ∂(coneMeas n) = ∫ v in cone n, f v * ((hOf v).det ^ n)⁻¹ := (_root_.GlobalTheory.CompanionTheory.ConeHaar.cone_integral n).2 f
 theorem cone_cpt (n : ℕ) (R : ℝ) : IsCompact {y : G n | lg y.val ≤ R} := GlobalTheory.CompanionTheory.LengthGL.isCompact_G R
 
 theorem trace_hOf_mul (v : Fin n × Fin n → ℝ) (q : Fin n × Fin n) : (hOf v * hb q).trace = (v q : ℂ) := by

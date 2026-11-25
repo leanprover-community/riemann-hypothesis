@@ -168,11 +168,7 @@ namespace Dec
 variable {d : ℕ}
 
 lemma contDiff_dw {f : E d → ℂ} (hf : ContDiff ℝ ∞ f) (w : List (Fin d)) : ContDiff ℝ ∞ (dw w f) := by
-  induction w with
-  | nil => exact hf
-  | cons j w ih =>
-    show ContDiff ℝ ∞ (fun x => fderiv ℝ (dw w f) x (ev j))
-    exact (contDiff_infty_iff_fderiv.mp ih).2.clm_apply contDiff_const
+  apply _root_.ZetaZeros.D.EllReg.WF.contDiff_dw <;> assumption
 
 lemma dw_add {f g : E d → ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) (w : List (Fin d)) :
     dw w (fun y => f y + g y) = fun y => dw w f y + dw w g y := by

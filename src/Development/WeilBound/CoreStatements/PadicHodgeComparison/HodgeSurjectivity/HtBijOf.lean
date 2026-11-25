@@ -1319,7 +1319,7 @@ theorem divisor_good_off_centre (B : Blow q i π D d) (V' : Y.Opens) (σ' : (V' 
 
 theorem good_open_off_centre [IsProper q] [Smooth q] (B : Blow q i π D d) (y : Y) (hy : π y ∈ B.U) :
     ∃ (V' : Y.Opens) (σ' : (V' : Scheme.{0}) ⟶ D.Y), y ∈ V' ∧ DGood2 B V' σ' := by
-  obtain ⟨Cv⟩ := (cov_ex q).1 inferInstance
+  obtain ⟨Cv⟩ := (_root_.GlobalTheory.CompanionTheory.CovEx.exists_cov q).1 inferInstance
   have hz : π y ∈ (⨆ β, Cv.U β) := by rw [Cv.cover]; trivial
   obtain ⟨β, hβ⟩ := TopologicalSpace.Opens.mem_iSup.mp hz
   obtain ⟨_, ⟨A, hAa, rfl⟩, hzA, hAle⟩ := Z.isBasis_affineOpens.exists_subset_of_mem_open

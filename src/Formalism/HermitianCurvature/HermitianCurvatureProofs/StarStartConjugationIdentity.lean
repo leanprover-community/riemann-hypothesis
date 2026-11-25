@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.MinusId
 public import Formalism.HermitianCurvature.StatementTL
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RuleGD
@@ -54,12 +55,7 @@ theorem star_comm_zfns (L : LevelData A r) (hL : IsStarLevel L) {u : A} (hu : �
 
 theorem xi_comm {L : LevelData A r} {st : Start A} (h : IsLevelStart L st) {Y : ℂ} (hY : Y ∈ st.inv) {g : A}
     (hg : Commute (st.x Y) g) : Commute (st.xi Y) g := by
-  obtain ⟨h1, h2⟩ := h.x_xi Y hY
-  show st.xi Y * g = g * st.xi Y
-  calc st.xi Y * g = st.xi Y * g * (st.x Y * st.xi Y) := by rw [h1, mul_one]
-    _ = st.xi Y * (st.x Y * g) * st.xi Y := by rw [hg.eq]; simp only [mul_assoc]
-    _ = st.xi Y * st.x Y * g * st.xi Y := by simp only [mul_assoc]
-    _ = g * st.xi Y := by rw [h2, one_mul]
+  apply _root_.Formalism.FourierDecayAlt.P.TLA.L1.xi_comm <;> assumption
 
 def Cz (st : Start A) (a : A) : Prop := ∀ b ∈ kAlg st, Commute b a
 

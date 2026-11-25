@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.TransportGeo
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HermMatrixMulVecFirst
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.InductiveHeisenbergInputs
 
@@ -60,20 +61,7 @@ private theorem Hpk_mulVec_apply_eq_ite (k r : ℕ) (y : Fin (2 * r + k + 1) →
 
 theorem herm_symm (k r : ℕ) (u w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) u w = star (herm (Hpk k r) w u) := by
-  have hsym : ∀ i j, Hpk k r i j = Hpk k r j i := by
-    intro i j
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  have hstar : ∀ i j, star (Hpk k r i j) = Hpk k r i j := by
-    intro i j
-    simp only [Hpk]
-    split_ifs <;> simp
-  simp only [herm, dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, hstar,
-    Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [hsym]
-  ring
+  apply ReciprocityTheory.ChartRestriction.DS.Lap.TransportGeo.herm_symm <;> assumption
 
 theorem lift_kills_first_basis (k r' : ℕ) (w : Fin (2 * r' + k + 1) → ℂ) : liftVec k 1 r' w (eI k (1 + r') (a0 r')) = 0 := by
   unfold liftVec

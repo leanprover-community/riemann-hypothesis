@@ -4,6 +4,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DecompositionData
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IotaTmulOneMem
 
 @[expose] public section
 
@@ -30,16 +31,7 @@ variable {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower 
   (ρ : Representation LL G V)
 
 theorem FilV_anti (a : ℤ) : FilV PD (LL := LL) (V := V) (a + 1) ≤ FilV PD (LL := LL) (V := V) a := by
-  unfold FilV
-  refine le_trans (le_of_eq ?_) (LinearMap.range_comp_le_range
-    (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V)
-      (Submodule.inclusion (show (PD.Fil (a + 1)).restrictScalars Qp ≤ (PD.Fil a).restrictScalars Qp from
-        fun x hx => PD.Fil_anti a hx)))
-    (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) ((PD.Fil a).restrictScalars Qp).subtype))
-  congr 1
-  apply TensorProduct.AlgebraTensorModule.ext
-  intro v w
-  first | rfl
+  apply _root_.GlobalTheory.HfZero.filV_succ_le <;> assumption
 
 theorem FildR_anti (τ : K →ₐ[Qp] LL) (a : ℤ) : FildR PD ρ τ (a + 1) ≤ FildR PD ρ τ a := by
   unfold FildR

@@ -326,8 +326,7 @@ theorem fpair_ne_zero (χ : AddChar k Circle) (hχ : Continuous χ) (ε : k) (h�
       simp
     · rw [Set.indicator_apply, if_neg hη]
       have hex : ∃ y ∈ L, χ (ε * (η ⬝ᵥ y)) ≠ 1 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hη ((hmT η).mpr hcon)
       obtain ⟨y₀, hy₀, hne⟩ := hex
       have hc : (χ (ε * (η ⬝ᵥ y₀)) : ℂ) ≠ 1 := fun h => hne (Circle.coe_injective (h.trans Circle.coe_one.symm))

@@ -97,8 +97,6 @@ namespace PositivityTheory.Rg.Sw.HSt.CompactCayleyBlocks
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.HSt PositivityTheory.Rg.Sw.HSt.LoweringDerivative
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem rhoP_add {Kg : Type} (ι : Kg → M2 n) (m : ℕ) (e : ℤ) (X Y : Matrix (Fin n) (Fin n) ℂ) (k : Kg) :
@@ -372,8 +370,6 @@ open scoped ContDiff
 namespace PositivityTheory.Rg.Sw.HSt.CompactCayleyBlocks
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.HSt PositivityTheory.Rg.Sw.HSt.LoweringDerivative
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 

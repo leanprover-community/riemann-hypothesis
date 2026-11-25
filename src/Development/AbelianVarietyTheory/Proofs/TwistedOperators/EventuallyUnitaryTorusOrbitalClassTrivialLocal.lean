@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsTorusClassOfIrreducibleCharpolyUnitary
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HermitianSpaceBaseLatticeEqFrameLattice
 public import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
@@ -431,16 +432,8 @@ theorem star'_star'_of_invol {F E : Type} [Field F] [Field E] [Algebra F E] {σ 
   exact RingHom.congr_fun h l
 
 theorem trace_star'_eq : ∀ (F E : Type) [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E), (∀ e, σ (σ e) = e) → ∀ (n : ℕ) (P : PPol σ n) (l : Fld P), Algebra.trace E (Fld P) (star' P l) = σ (Algebra.trace E (Fld P) l) := by
-  intro F E _ _ _ σ hσ n P l
-  let e₁ : E ≃+* E := RingEquiv.ofRingHom (σ : E →+* E) (σ : E →+* E) (RingHom.ext hσ) (RingHom.ext hσ)
-  let e₂ : Fld P ≃+* Fld P := RingEquiv.ofRingHom (star' P : Fld P →+* Fld P) (star' P : Fld P →+* Fld P)
-    (RingHom.ext (star'_star'_of_invol hσ P)) (RingHom.ext (star'_star'_of_invol hσ P))
-  have he : RingHom.comp (algebraMap E (Fld P)) (e₁ : E →+* E) = RingHom.comp (e₂ : Fld P →+* Fld P) (algebraMap E (Fld P)) := by
-    ext e
-    exact (star'_algebraMap P e).symm
-  have h := Algebra.trace_eq_of_equiv_equiv e₁ e₂ he l
-  change _ = σ (Algebra.trace E (Fld P) (star' P l)) at h
-  rw [h, hσ]
+  intros
+  apply _root_.GlobalTheory.TrEll.HermTrace.trace_star <;> assumption
 
 end GlobalTheory.TrEll
 end -- clump:auto

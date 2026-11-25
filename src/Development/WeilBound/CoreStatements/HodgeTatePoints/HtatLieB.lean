@@ -89,40 +89,8 @@ theorem exists_lieModel {S : Scheme.{0}} (G : Over S) [GrpObj G] (U : G.left.Ope
       (∀ a b, δ' (a * b) = v a * δ' b + v b * δ' a) →
       (∀ b, δ' ((G.hom.appLE V U hUV).hom b) = 0) → ∃ e, ∀ a, δ e a = δ' a) :
     ∃ M : LieModel G y E, ∀ e, ∃ φ : Γ(G.left, U) →+* DualNumber C,
-      (∀ a, (φ a).fst = v a) ∧ (∀ a, (φ a).snd = δ e a) ∧ (M.pt e).left = spMap φ ≫ hU.fromSpec := by
-  obtain ⟨c1, c2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.TanChart.tan_iff_der S G U V hU hV hUV C y v h1
-  let φ : E → (Γ(G.left, U) →+* DualNumber C) := fun e => dualOf v (δ e) (hadd e) (hmul e)
-  have φfst : ∀ e a, (φ e a).fst = v a := fun e a => dualOf_fst ..
-  have φsnd : ∀ e a, (φ e a).snd = δ e a := fun e a => dualOf_snd ..
-  have ex : ∀ e, ∃ t : epsAt y ⟶ G, IsTanAt G y t ∧ t.left = spMap (φ e) ≫ hU.fromSpec :=
-    fun e => c1 (φ e) (φfst e) fun b => by rw [φsnd, hker]
-  choose pt ptan pleft using ex
-  have spinj : ∀ ψ ψ' : Γ(G.left, U) →+* DualNumber C,
-      spMap ψ ≫ hU.fromSpec = spMap ψ' ≫ hU.fromSpec → ψ = ψ' := fun ψ ψ' h => by
-    have h2 := Spec.map_injective ((cancel_mono hU.fromSpec).1 h)
-    simpa using congrArg CommRingCat.Hom.hom h2
-  refine ⟨{ pt := pt, tan := ptan, inj := ?_, onto := ?_, add := ?_, smul := ?_ },
-    fun e => ⟨φ e, φfst e, φsnd e, pleft e⟩⟩
-  · intro e e' h
-    have h2 := spinj _ _ (by rw [← pleft, ← pleft, h] : spMap (φ e) ≫ hU.fromSpec = spMap (φ e') ≫ hU.fromSpec)
-    exact hinj _ _ fun a => by rw [← φsnd, h2, φsnd]
-  · intro t ht
-    obtain ⟨ψ, f1, f2, f3⟩ := c2 t ht
-    obtain ⟨e, he⟩ := hsurj (fun a => (ψ a).snd) (fun a b => by simp)
-      (fun a b => by
-        simp only [map_mul, TrivSqZeroExt.snd_mul, f1]
-        simp [mul_comm, add_comm]) f2
-    refine ⟨e, Over.OverMorphism.ext ?_⟩
-    have h2 : φ e = ψ := RingHom.ext fun a => TrivSqZeroExt.ext (by rw [φfst, f1]) (by rw [φsnd, he])
-    rw [pleft, f3, h2]
-  · intro e e'
-    refine Over.OverMorphism.ext ?_
-    rw [mul_left_eq S G U hU C y v h1 (pt e) (pt e') (ptan e) (ptan e') (φ e) (φ e') (φ (e + e'))
-      (φfst e) (φfst e') (φfst _) (fun a => by rw [φsnd, φsnd, φsnd, hEadd]) (pleft e) (pleft e'), pleft]
-  · intro c e
-    have h2 : φ (c • e) = (epsMul c).comp (φ e) := RingHom.ext fun a => TrivSqZeroExt.ext
-      (by simp [epsMul, φfst]) (by simp [epsMul, φsnd, hEsmul])
-    rw [pleft, pleft, h2, spMap_comp, Category.assoc]
+      (∀ a, (φ a).fst = v a) ∧ (∀ a, (φ a).snd = δ e a) ∧ (M.pt e).left = spMap φ ≫ hU.fromSpec :=
+  by apply _root_.GlobalTheory.CompanionTheory.Ar.ChartDer.exists_lieModel <;> assumption
 
 theorem lieChart_of_smooth_chart : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (R : Type) [CommRing R] (x : Sp R ⟶ S) (f : R) (U : G.left.Opens) (V : S.Opens)
   (hU : IsAffineOpen U) (hV : IsAffineOpen V) (hUV : U ≤ G.hom ⁻¹ᵁ V), RingHom.Smooth (G.hom.appLE V U hUV).hom →

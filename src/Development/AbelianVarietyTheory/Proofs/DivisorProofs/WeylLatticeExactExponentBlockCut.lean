@@ -103,8 +103,7 @@ theorem adjBdd_holds : AdjBdd := by
       by_cases hx : x = 0
       · simp [hx]
       have h1 : μ b - μ a ≤ K := by
-        by_contra hlt
-        push_neg at hlt
+        by_contra! hlt
         apply hx
         apply hbdd b hb a ha (μ b - μ a) x _ hlt
         rw [hμ b hb, hμ a ha]

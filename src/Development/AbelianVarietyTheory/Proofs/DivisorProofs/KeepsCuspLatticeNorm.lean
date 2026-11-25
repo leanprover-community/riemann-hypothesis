@@ -208,11 +208,6 @@ def levelK (V : HSpace E r) (N : ℕ) : Subgroup (GA F V) where
     obtain ⟨w, hw, e1⟩ := g3 _ ((s z).1 hz)
     exact ⟨-w, neg_mem hw, by rw [smul_neg, ← e1, e]; abel⟩
 
-def latAt (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (V : HSpace E r) (g : UA F (Af F) V) :
-    Submodule (𝓞 E) (Fin r → E) :=
-  Submodule.span (𝓞 E) {v | ∃ a ∈ 𝔄, ∃ x : Fin r → E,
-    (∃ z ∈ latHat F V.L, (fun i => incl F (Af F) (x i)) = g.1.val.mulVec z) ∧ v = a • x}
-
 end Adelic
 
 structure Nums (E : Type) [Field E] [NumberField E] where
@@ -761,16 +756,7 @@ open NumberField IsDedekindDomain MeasureTheory ReciprocityTheory.ChartRestricti
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
-
-def DatumSign {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} (Dw : Datum H) {r : ℕ} (V' : ConjugateFieldNorm.HSpace D.host.E r)
-    (ε : ℤˣ) : Prop :=
-  ∃ φ : Dw.La →ₗ[𝓞 D.host.E] (Fin r → D.host.E), Function.Injective φ ∧
-    LinearMap.range φ = ConjugateFieldNorm.latAt D.host.F D.host.AA V' 1 ∧
-    ∀ x y, ((Dw.EF x y : ℤ) : ℚ) =
-      ((ε : ℤ) : ℚ) * Algebra.trace ℚ D.host.E (-D.host.xi0 * herm V'.Gm (φ x) (φ y))
 
 theorem invProb_iff (V : HSp D) (hP : VolPairEx V) (hV : FinVol V) (ν : Measure (AutQ V)) :
     IsProbabilityMeasure ν ∧ RightInv V ν ↔ ν = muQ1 V := by
@@ -907,8 +893,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.FormTies (levFull)
 open scoped Matrix TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def rightEquiv (V : HSp D) (κ : GA D V) : AutQ V ≃ᵐ AutQ V :=
@@ -926,24 +910,6 @@ def rightEquiv (V : HSp D) (κ : GA D V) : AutQ V ≃ᵐ AutQ V :=
     right_inv := fun q => Quotient.inductionOn q fun a => congrArg (autMk V) (inv_mul_cancel_right a κ)
     measurable_toFun := hm κ
     measurable_invFun := hm κ⁻¹ }
-
-theorem eLpNorm_right (V : HSp D) (hs : V.SigOK) (κ : GA D V) (Φ : GA D V → ℝ)
-    (hΦ : ∀ γ ∈ GQ V, ∀ g, Φ (γ * g) = Φ g) (p : ENNReal) :
-    eLpNorm (fun q : AutQ V => Φ (q.out * κ)) p (muQ1 V) = eLpNorm (fun q : AutQ V => Φ q.out) p (muQ1 V) := by
-  obtain ⟨hP, hV⟩ := GlobalTheory.FinalJoin2.volPairEx_and_finVol D V hs
-  have hR := ((GlobalTheory.CoreLawsCompare.invProb_iff V hP hV _).2 rfl).2
-  have hmap : (muQ1 V).map (rightEquiv V κ) = muQ1 V := Measure.ext fun s hs => by
-    rw [MeasurableEquiv.map_apply]
-    exact hR κ _ (fun _ => rfl) s hs
-  have hout : ∀ g, Φ (autMk V g).out = Φ g := fun g => by
-    have e : (QuotientGroup.rightRel (GQ V)) g (autMk V g).out := Quotient.exact (Quotient.out_eq (autMk V g)).symm
-    rw [QuotientGroup.rightRel_apply] at e
-    rw [← hΦ _ e g, inv_mul_cancel_right]
-  conv_rhs => rw [← hmap, (rightEquiv V κ).measurableEmbedding.eLpNorm_map_measure]
-  congr 1
-  funext q
-  rw [← hout (q.out * κ)]
-  exact congrArg (fun q' : AutQ V => Φ (rightEquiv V κ q').out) (Quotient.out_eq q)
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H}
 
@@ -1040,8 +1006,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open scoped TensorProduct
 open GlobalTheory GlobalTheory.CovTop
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 
 theorem GlobalTheory.LevelIsometry.keeps_cusp_lattice_norm : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ G : WTZ D.host.E, Even G.2 → KeepsCusp Y.U G ∧ ∀ (γ : LevelAut (T.Q.Dw j) Y.d.l₂) (f g : Y.V G), (g : Rul Y.d.Xo₂ Y.d.c₂) = pull Y.d.Xo₂ Y.d.c₂ γ f → (f ∈ AllWt.latW Y.U G → g ∈ AllWt.latW Y.U G) ∧ ∀ σ, Y.nrm G σ g = Y.nrm G σ f := by
   intro D T hT j hp _ _ hj Y e o hY G hG

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.IntegralStabilizers.FinSLoc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.TraceFormulaEigenvalues.IsGenEig
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Mathlib.LinearAlgebra.Determinant
@@ -154,8 +155,7 @@ private theorem exists_nat_mul_mem_principal_of_rightIdeal_index_ne_zero {B : Ty
   have hm1 : m ^ k ≤ D := Nat.findGreatest_spec (P := fun m => m ^ k ≤ D) (Nat.zero_le D)
     (by rw [zero_pow hk.ne']; exact Nat.zero_le _)
   have hm2 : D < (m + 1) ^ k := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : m + 1 ≤ D := le_trans (Nat.le_self_pow hk.ne' _) hcon
     exact Nat.findGreatest_is_greatest (P := fun m => m ^ k ≤ D) (Nat.lt_succ_self m) hle hcon
   haveI : I.FiniteIndex := ⟨hD⟩
@@ -239,8 +239,7 @@ theorem cls_abs {A M Γ G : Type} [Ring A] [CharZero A] [Ring M] [Group Γ] [Gro
     calc z = σ γ⁻¹ * (σ γ * z) := by rw [← mul_assoc, (hunit γ).2, one_mul]
       _ = z' := by rw [h, ← mul_assoc, (hunit γ).2, one_mul]
   haveI : NoZeroSMulDivisors ℤ (R.comap j) := ⟨fun {c x} h => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨hc0, hx0⟩ := hc
     have hx0' : (x : A) ≠ 0 := fun h' => hx0 (Subtype.ext h')
     have h1 : (c : A) * (x : A) = 0 := by
@@ -776,17 +775,8 @@ theorem approx_F (a : ∀ v : Pl F, Kv v) {e f : F} (he : e ≠ 0) (hf : f ≠ 0
   field_simp
   ring
 
-theorem den_loc (v : Pl F) (x : Kv v) : ∃ n : ℕ, n ≠ 0 ∧ IsIntegral (Ov v) ((n : Kv v) * x) := by
-  have hU : IsOpen {w : Kv v | x - w ∈ v.adicCompletionIntegers F} :=
-    (Valued.isOpen_valuationSubring (Kv v)).preimage (continuous_const.sub continuous_id)
-  obtain ⟨z, hz⟩ := (HeightOneSpectrum.denseRange_algebraMap (K := F) v).exists_mem_open hU ⟨x, by simp⟩
-  obtain ⟨n, hn, h⟩ := den_glob z
-  refine ⟨n, hn, ?_⟩
-  have h1 := (int_glob _).1 h v
-  rw [map_mul, map_natCast] at h1
-  have e : (n : Kv v) * x = n * cv v z + n * (x - cv v z) := by ring
-  rw [e]
-  exact h1.add ((isIntegral_natCast (R := Ov v) (B := Kv v) n).mul ((int_iff v _).2 hz))
+theorem den_loc (v : Pl F) (x : Kv v) : ∃ n : ℕ, n ≠ 0 ∧ IsIntegral (Ov v) ((n : Kv v) * x) :=
+  _root_.UpperTheory.V.Z.Sym.Glob.exists_nat_mul_loc v x
 
 variable {Δ : F}
 

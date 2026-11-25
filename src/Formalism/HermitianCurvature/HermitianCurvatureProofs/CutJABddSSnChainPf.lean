@@ -11,8 +11,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDeca
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 structure Tm (k r : ℕ) where
   j : ℕ
   ws : Fin j → List (Bool × Mat k r)

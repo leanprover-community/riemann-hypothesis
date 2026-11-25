@@ -307,11 +307,11 @@ theorem exists_continuous_latBasis_of_arc : ∀ (E : Type) [Field E] [NumberFiel
       fun q hq => Set.mk_mem_prod (hB1 _ hq.1) (Set.mem_univ _)
   dsimp only at hhol1
   have hLF1 : IsLatFam (Metric.ball (0 : Fin 1 → ℂ) ρ) (fun b => {w | e' (b 0) w = 1}) :=
-    GlobalTheory.T.exponentialKernels_isHolomorphicLatticeFamily E H Z.X Z.t 1 g' (Metric.ball (0 : Fin 1 → ℂ) ρ) (fun b => spMap (ψ (b 0)) ≫ x ≫ genι Z) (fun b => e' (b 0))
+    _root_.GlobalTheory.ShFam.Hor.LogCh.isLatFam_ker E H Z.X Z.t 1 g' (Metric.ball (0 : Fin 1 → ℂ) ρ) (fun b => spMap (ψ (b 0)) ≫ x ≫ genι Z) (fun b => e' (b 0))
       Metric.isOpen_ball hhol1 fun b hb => hExp _ (hB1 b hb)
   have h00 : (0 : Fin 1 → ℂ) ∈ Metric.ball (0 : Fin 1 → ℂ) ρ := Metric.mem_ball_self hρ
   have h0c : (0 : ℂ) ∈ Metric.ball (0 : ℂ) ρ := Metric.mem_ball_self hρ
-  obtain ⟨r₀, b, hb⟩ := GlobalTheory.T.exists_real_independent_basis_lattice_family 1 g' _ _ 0 hLF1 h00
+  obtain ⟨r₀, b, hb⟩ := _root_.GlobalTheory.ShFam.Hor.LogCh.exists_isLatBasis_of_isLatFam 1 g' _ _ 0 hLF1 h00
   have hspan : Submodule.span ℂ {w | e' ((0 : Fin 1 → ℂ) 0) w = 1} = ⊤ :=
     span_of_isExpAt Z.t _ (e' 0) (hfive 0 h0c).2.1 (hfive 0 h0c).2.2.1 (hExp 0 h0c)
   obtain ⟨κ, hκ⟩ := exists_frame hb hspan
@@ -352,7 +352,7 @@ theorem exists_continuous_latBasis_of_arc : ∀ (E : Type) [Field E] [NumberFiel
     (Metric.isOpen_ball.prod isOpen_univ) (hd2.differentiableOn.prodMk hMv)
     fun q hq => Set.mk_mem_prod (hU _ hq.1) (Set.mem_univ _)
   dsimp only at hholN
-  have hLF := GlobalTheory.T.exponentialKernels_isHolomorphicLatticeFamily E H Z.X Z.t 1 g' (Metric.ball 0 1) (fun z => spMap (ψ ((ρ₂ : ℂ) * z 0)) ≫ x ≫ genι Z) exN
+  have hLF := _root_.GlobalTheory.ShFam.Hor.LogCh.isLatFam_ker E H Z.X Z.t 1 g' (Metric.ball 0 1) (fun z => spMap (ψ ((ρ₂ : ℂ) * z 0)) ≫ x ≫ genι Z) exN
     Metric.isOpen_ball hholN hExpN
   have hsliceN : ∀ z ∈ Metric.ball (0 : Fin 1 → ℂ) 1, IsHolTo Set.univ (fun w => (exN z w).left) := fun z hzb => by
     have h := GlobalTheory.HolPeriods.isHolTo_comp (φ := fun w : Fin g' → ℂ => M z *ᵥ w) (hfive _ (hU z hzb)).2.2.1 isOpen_univ
@@ -398,7 +398,7 @@ theorem exists_continuous_latBasis_of_arc : ∀ (E : Type) [Field E] [NumberFiel
     have h2 := GlobalTheory.HolPeriods.isHolTo_comp (φ := fun b => (φ' b, (N : ℂ)⁻¹ • w b)) hholN hB
       (hφ.prodMk ((differentiableOn_const ((N : ℂ)⁻¹)).smul hw)) fun b hb => Set.mk_mem_prod (hφm hb) (Set.mem_univ _)
     dsimp only at h1 h2
-    exact GlobalTheory.T.cubicalWeilPairing_torsion_const_holomorphic_family Z.X Z.t.G Z.t.PP Z.t.cub m N B (fun b => spMap (ψ ((ρ₂ : ℂ) * φ' b 0)) ≫ x ≫ genι Z)
+    exact _root_.GlobalTheory.TorsionPairFam.cubWeil_const_of_isHolTo Z.X Z.t.G Z.t.PP Z.t.cub m N B (fun b => spMap (ψ ((ρ₂ : ℂ) * φ' b 0)) ≫ x ≫ genι Z)
       (fun b => exN (φ' b) ((N : ℂ)⁻¹ • v b)) (fun b => exN (φ' b) ((N : ℂ)⁻¹ • w b)) c b₀ b₁ hN hB hBc h1 h2
       (fun b hb => ⟨pow_eq_one_of_map _ (hExpN _ (hφm hb)).1 (hzeroN _ (hφm hb)) hN (hK b hb).1,
         pow_eq_one_of_map _ (hExpN _ (hφm hb)).1 (hzeroN _ (hφm hb)) hN (hK b hb).2⟩) hb₀ hb₁ h
@@ -429,8 +429,8 @@ theorem exists_continuous_latBasis_of_arc : ∀ (E : Type) [Field E] [NumberFiel
       show e' _ (M 0 *ᵥ ((M 0)⁻¹ *ᵥ w)) = p
       rw [mulVec_mulVec_inv (hMdet 0 hmem0)]
       exact hw
-    obtain ⟨Tt, hT1, hT2, hTc⟩ := GlobalTheory.T.exists_toricTorsion_cubicalWeil_one_complexPoint E H Z.X Z.t _ g' N (exN 0) hN (hExpN 0 hmem0) hsurj (hsliceN 0 hmem0)
-    obtain ⟨S, hSc, hS⟩ := GlobalTheory.T.torsion_count_through_exponential_lattice_kernel _ g' r₀ N (exN 0) (ζ' 0) Tt hN (hExpN 0 hmem0).1 hsurj hB0 hT1 hTc
+    obtain ⟨Tt, hT1, hT2, hTc⟩ := _root_.GlobalTheory.exists_toric_torsion_cubWeil_one_of_exp E H Z.X Z.t _ g' N (exN 0) hN (hExpN 0 hmem0) hsurj (hsliceN 0 hmem0)
+    obtain ⟨S, hSc, hS⟩ := _root_.GlobalTheory.ShFam.Hor.LogCh.exp_lattice_torsion_count _ g' r₀ N (exN 0) (ζ' 0) Tt hN (hExpN 0 hmem0).1 hsurj hB0 hT1 hTc
     refine ⟨S, hSc, fun a a' ha => ?_⟩
     show GlobalTheory.UU.CubWeil Z.t.cub N (exN 0 ((N : ℂ)⁻¹ • ∑ j, a j • ζ' 0 j)) (exN 0 ((N : ℂ)⁻¹ • ∑ j, a' j • ζ' 0 j))
       (unitOn 1)
@@ -914,8 +914,7 @@ theorem _root_.GlobalTheory.T.exists_continuous_period_basis_along_arc : ∀ (E 
     intro w hw
     have h1 := hexp2 w hw
     rw [Complex.norm_exp] at h1
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := Real.one_le_exp hc
     linarith
   have hub : ∀ w : ℂ, T₀ < w.im → eTwoPi w ∈ Metric.closedBall (0 : ℂ) (ρ₀ / 2) := fun w hw =>

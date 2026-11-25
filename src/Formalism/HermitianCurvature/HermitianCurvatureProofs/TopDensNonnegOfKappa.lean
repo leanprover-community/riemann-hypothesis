@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumPairAtStarMul
 public import Formalism.HermitianCurvature.TopDensNonnegOfKappa
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.Interlace
@@ -111,12 +112,7 @@ end Act
 
 theorem hsInner_zero_left {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (V : Wq →L[ℂ] Wp) : B.hsInner 0 V = 0 := by
-  unfold B.hsInner
-  have h0 : B.hsVec (0 : Wq →L[ℂ] Wp) = 0 := by
-    unfold B.hsVec
-    ext i
-    simp
-  rw [h0, inner_zero_right]
+  apply _root_.Formalism.FourierDecayAlt.P5.HerA.hsInner_zero_left <;> assumption
 
 end WordTransvectionCongruences
 

@@ -40,7 +40,6 @@ structure SymmetricCompatibleData (D : D7) where
 structure FullTiedS (D : D7) extends SymmetricCompatibleData D where
   levelZeroCompatibility : SymmetricLevelZeroData D base.toHermColsCh atT
   g : SymmetricGroupCompatibility D base.toHermColsCh
-  ad : SymmetricAdelicCompatibility D base.toHermColsCh atT
   cof : SymmetricCofactorCompatibility D base.toHermColsCh atT
   piG : PiGConstS D base.toHermColsCh atT levelZeroCompatibility
   stabMap : SymmetricStabilizerMapCompatibility D base.toHermColsCh atT

@@ -756,8 +756,6 @@ theorem blockVacuum_coordinate_eq_coordinateEquiv_numbering (D : D7) (cc : Ideal
   simp [Pi.single_apply]
   rfl
 
-theorem coordB_bas_eq_phi : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Base D cc δ) (n n' : ℕ) (j : Fin (TaylorLogMetric.fF D * (n * 2) * (n' * 2))) (z : TaylorLogMetric.VC D (n * 2) (n' * 2)), StandardLatticesGL3.coordB D (TaylorLogMetric.tor0 D cc δ) (bas B n n') j z = phi B n n' z (ixE D n n' j) :=
-  blockVacuum_coordinate_eq_coordinateEquiv_numbering
 
 end GlobalTheory.BaseVacuum
 end -- clump:auto
@@ -779,7 +777,7 @@ theorem pullback_basis_theta_eq_F0 : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (
   intro D cc δ B n n' z
   have hth : GL3Theta.th0 (TaylorLogMetric.lamOf D cc δ) (B.ω₀ / 2) = Formalism.L2.Th1.F.th0 B.L (B.ω₀ / 2) := by
     exact (GlobalTheory.Mem.Col2.JetAlgebraic.thetaZero_periodLattice_eq B _).symm
-  simp only [StandardLatticesGL3.pullB, F0, prodFn, hth, _root_.GlobalTheory.BaseVacuum.coordB_bas_eq_phi]
+  simp only [StandardLatticesGL3.pullB, F0, prodFn, hth, _root_.GlobalTheory.BaseVacuum.blockVacuum_coordinate_eq_coordinateEquiv_numbering]
   exact Fintype.prod_equiv (ixE D n n') _ _ (fun _ => rfl)
 
 end GlobalTheory.BaseVacuum
@@ -995,8 +993,6 @@ end General
 end GlobalTheory.CharModOne
 
 namespace GlobalTheory.CharModOne
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem star_eq_conj (D : D7) (x : D.host.E) : star x = D.host.conj x := by
   apply D.host.φ₀.injective

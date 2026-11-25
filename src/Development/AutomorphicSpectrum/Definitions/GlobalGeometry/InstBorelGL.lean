@@ -43,12 +43,6 @@ instance instMeasGL {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalR
 instance instBorelGL {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (n : ℕ) :
     BorelSpace (GL (Fin n) K) := ⟨rfl⟩
 
-def omegaS {a : ℕ} {m : Type} [Fintype m] (χ : Fˣ →* ℂˣ) (nrm : AbsoluteValue F ℝ) (g : GL (Fin a) F)
-    (Φ : Matrix m (Fin a) F → ℂ) : Matrix m (Fin a) F → ℂ :=
-  fun x => ((χ (Matrix.GeneralLinearGroup.det g) : ℂˣ) : ℂ) *
-    (((nrm ((Matrix.GeneralLinearGroup.det g : Fˣ) : F)) ^ ((Fintype.card m : ℝ) / 2) : ℝ) : ℂ) *
-    Φ (x * (g : Matrix (Fin a) (Fin a) F))
-
 end Base
 
 section Local

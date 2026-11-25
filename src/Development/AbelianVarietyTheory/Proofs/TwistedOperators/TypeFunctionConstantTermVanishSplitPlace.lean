@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PlaceOverTransportRingIsoSymm
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.StandardMaximalParabolic
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.RadicalNoFixedVectors
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsAuxiliaryPlaceNotMemFinset
@@ -154,16 +155,7 @@ end Blocks
 theorem isIrreducible_comp {G Q W : Type} [Group G] [Group Q] [AddCommGroup W] [Module ℂ W]
     (ρ : Representation ℂ Q W) (f : G →* Q) (hf : Function.Surjective f) (h : ρ.IsIrreducible) :
     Representation.IsIrreducible (ρ.comp f : Representation ℂ G W) := by
-  let e : Subrepresentation (ρ.comp f : Representation ℂ G W) ≃o Subrepresentation ρ :=
-    { toFun := fun S => ⟨S.toSubmodule, fun g v hv => by
-        obtain ⟨x, rfl⟩ := hf g
-        exact S.apply_mem_toSubmodule x hv⟩
-      invFun := fun S => ⟨S.toSubmodule, fun g v hv => S.apply_mem_toSubmodule (f g) hv⟩
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_rel_iff' := Iff.rfl }
-  haveI : IsSimpleOrder (Subrepresentation ρ) := h
-  exact e.isSimpleOrder
+  apply _root_.GlobalTheory.WDTransport.isIrreducible_comp <;> assumption
 
 theorem conv_map {G H : Type} [Group G] [Group H] [TopologicalSpace G] [TopologicalSpace H]
     [MeasurableSpace G] [BorelSpace G] [MeasurableSpace H] [BorelSpace H] (e : G ≃ₜ* H) (μ : Measure G)

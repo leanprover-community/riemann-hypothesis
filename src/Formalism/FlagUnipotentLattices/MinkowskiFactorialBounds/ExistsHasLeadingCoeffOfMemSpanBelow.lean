@@ -179,8 +179,7 @@ lemma level_exists (F : FlagD H r) {x : V} (hx : x ∈ F.X) (h0 : x ≠ 0) :
 
 lemma level_lt_of_mem (F : FlagD H r) {x : V} {a : Fin r} {al : K} (h : F.HasLevel x a al) {n : ℕ}
     (hx : x ∈ F.Xa n) : a.val < n := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   exact (level_notMem F) h ((Xa_mono F) hlt hx)
 
 private theorem HermSpace_B_add_left (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (x y z : V) : H.B (x + y) z = H.B x z + H.B y z := by
@@ -194,9 +193,6 @@ private theorem HermSpace_B_smul_left (H : Formalism.HermitianLatticeCounting.S6
 
 private theorem HermSpace_B_zero_left (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (y : V) : H.B 0 y = 0 := by
   rw [map_zero, LinearMap.zero_apply]
-
-private theorem HermSpace_B_neg_left (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (x y : V) : H.B (-x) y = -H.B x y := by
-  rw [map_neg, LinearMap.neg_apply]
 
 private theorem HermSpace_B_add_right (H : Formalism.HermitianLatticeCounting.S6.HermSpace K V) (x y z : V) : H.B x (y + z) = H.B x y + H.B x z :=
   map_add _ _ _
@@ -328,8 +324,7 @@ theorem memOfOrthogonalOrthogonal : Formalism.HermitianLatticeCounting.S6.PerpPe
     rw [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
     exact hwS
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K (V ⧸ S), φ (S.mkQ w) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hq ((Module.forall_dual_apply_eq_zero_iff K _).1 h)
   obtain ⟨v, hv⟩ := HermSpace_exists_B_right_eq_linearForm H (φ.comp S.mkQ)
   apply hφ
@@ -1213,8 +1208,7 @@ lemma negperp_gen (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ : �
     (pos : ∀ w ∈ A, h w z₀ = 0 → w ∉ N → 0 < (σ (h w w)).re)
     (z : U) (hz : z ∈ A) (hzn : (σ (h z z)).re < 0) (w : U) (hw : w ∈ A) (hwz : h w z = 0)
     (hwN : w ∉ N) : 0 < (σ (h w w)).re := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have herm0 : ∀ x y : U, h x y = 0 → h y x = 0 := fun x y hxy => by rw [← herm x y, hxy, star_zero]
   have hzz : h z z ≠ 0 := by
     intro h0

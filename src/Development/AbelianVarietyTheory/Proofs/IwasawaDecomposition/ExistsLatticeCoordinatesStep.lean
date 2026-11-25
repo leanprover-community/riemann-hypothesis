@@ -184,8 +184,6 @@ open GlobalTheory.QCoh (pullbackSections)
 open ReciprocityTheory.ChartRestriction.G.Pdiv (specO ptMap dualScale)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LocM
 
 theorem cotMap_list_prod {S : Scheme.{0}} {T G : Over S} [GrpObj G] [QuasiSeparated G.hom] {s : 𝟙_ (Over S) ⟶ T} :

@@ -550,9 +550,6 @@ open scoped nonZeroDivisors
 noncomputable section
 
 namespace GlobalTheory.TransportProof
-theorem exists_sq_eq_neg : ∀ (K : Type) [Field K] [NumberField K] (d : ℕ) (h2 : Module.finrank ℚ K = 2) (hd : discr K = -(d : ℤ)), ∃ δ : K, δ ^ 2 = -(d : K) := _root_.GlobalTheory.exists_sq_eq_neg_of_discr_eq_neg
-
-theorem nrm_eq_modF : ∀ {K : Type} [Field K] [NumberField K] (t : (Af K)ˣ) (𝔞 : FractionalIdeal (𝓞 K)⁰ K) (h : IsInvIdealOf t 𝔞), nrm 𝔞 = modF t := _root_.GlobalTheory.LatVal.nrm_eq_modF_of_isInvIdealOf
 
 theorem modF_rat : ∀ {E : Type} [Field E] [NumberField E] (y : (Af E)ˣ), ∃ q : ℚ, modF y = q := _root_.GlobalTheory.CMVal.ModFRat.modF_rat
 
@@ -560,11 +557,7 @@ theorem card_eq_finrank : ∀ {K E : Type} [Field K] [NumberField K] [Field E] [
 
 theorem norm_conj_finPart : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I] (φ : I → E →+* ℂ) (hφ : IsCMType φ) (s : ℕ) (κ : I → ℕ) (c : Ideal (OF E)) (hc : c ≠ ⊥) (χ : HChar E) (hχ : HasInf χ φ (fun i => (κ i : ℤ) + s)) (hu : ∀ u ∈ hatOUnits c, finPart χ u = 1) (σ : ℂ ≃+* ℂ) (y : (Af E)ˣ), ‖σ (finPart χ y : ℂ)‖ = 1 := _root_.GlobalTheory.CMVal.norm_conj_finPart
 
-theorem algebraic_coordIn_toric : ∀ (hA : LatAlg) {K : Type} [Field K] [NumberField K] (d : ℕ) (δ : K) (ι : K →+* ℂ) (h2 : Module.finrank ℚ K = 2) (hd : 0 < d) (hδ : δ ^ 2 = -(d : K)) (Λ₀ : PeriodPair) (Ω₀ : ℂ) (hΛ : IsLatOf ι 1 Λ₀) (hΩ : Ω₀ ^ 12 = latDisc Λ₀) {E : Type} [Field E] [NumberField E] [IsCMField E] [Algebra K E] {I : Type} [Fintype I] (φ : I → E →+* ℂ) (hE : UnramFin E) (hφ : IsCMType φ) (hφK : ∀ i, (φ i).comp (algebraMap K E) = ι) (s : ℕ) (hs : 1 ≤ s) (κ : I → ℕ) (𝔣 : Ideal (OF E)) (h𝔣 : IsBaseCond 𝔣) (Q : Finset (HeightOneSpectrum (OF E))) (χ : HChar E) (T : ℂ) (hV : IsValSum φ s κ 𝔣 Q χ T), IsAlgebraic ℚ (coordIn E d s κ Ω₀ T) := _root_.GlobalTheory.ToricCoordAlg.isAlgebraic_coordIn
-
 theorem conj_coordIn_toric : ∀ (hC : LatConj) {K : Type} [Field K] [NumberField K] (d : ℕ) (δ : K) (ι : K →+* ℂ) (h2 : Module.finrank ℚ K = 2) (hd : 0 < d) (hδ : δ ^ 2 = -(d : K)) (g : ℂ ≃+* ℂ) (t : (Af K)ˣ) (Λ₀ Λ₁ : PeriodPair) (Ω₀ Ω₁ : ℂ) (hΩ : Ω₀ ^ 12 = latDisc Λ₀) (hT : TorsTransport ι g t Λ₀ Λ₁ Ω₀ Ω₁) {E : Type} [Field E] [NumberField E] [IsCMField E] [Algebra K E] {I : Type} [Fintype I] (φ : I → E →+* ℂ) (hE : UnramFin E) (hφ : IsCMType φ) (hφK : ∀ i, (φ i).comp (algebraMap K E) = ι) (s : ℕ) (hs : 1 ≤ s) (κ κ' : I → ℕ) (hκ' : IsConjWt φ g κ κ') (𝔣 : Ideal (OF E)) (h𝔣 : IsBaseCond 𝔣) (Q : Finset (HeightOneSpectrum (OF E))) (χ χ' : HChar E) (T T' : ℂ) (hV : IsValSum φ s κ 𝔣 Q χ T) (hV' : IsConjSum φ s κ' 𝔣 Q g χ χ' T'), g (coordIn E d s κ Ω₀ T) = coordIn E d s κ Ω₁ ((((modF t : ℝ) : ℂ) ^ (∑ i, κ i))⁻¹ * (lamF s χ' (upIdele K E t))⁻¹ * T') := _root_.GlobalTheory.ConjCoordToric.conj_coordIn_toric
-
-theorem equidistributed_of_j : ∀ (hH : GlobalTheory.Published.HilbertClassFieldJ) {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (h2 : Module.finrank ℚ K = 2) (φK : K →+* ℂ) (ΛK : PeriodPair) (hΛ : IsLatOf φK 1 ΛK) (𝔞 : (ℂ ≃+* ℂ) → (FractionalIdeal (𝓞 K)⁰ K)ˣ) (h𝔞 : ∀ σ : ℂ ≃+* ℂ, Fixes φK σ → ∃ Λ : PeriodPair, IsLatOf φK (𝔞 σ : FractionalIdeal (𝓞 K)⁰ K) Λ ∧ jLat Λ = σ (jLat ΛK)), Equidistributed φK (jLat ΛK) 𝔞 := _root_.GlobalTheory.EquidistJ.equidistributed_of_hilbertClassFieldJ
 
 theorem isTotallyComplex_of_discr_neg {K : Type} [Field K] [NumberField K] (h2 : Module.finrank ℚ K = 2)
     (h : discr K < 0) : IsTotallyComplex K := by
@@ -731,8 +724,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.FunObj.SqNum
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1342,8 +1333,6 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal Formalism.BasicNotions Form
 
 namespace GlobalTheory.SqTop
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem card_quot_of_isConjPl {D : D7} {P P' : HeightOneSpectrum (𝓞 D.host.E)} (h : Formalism.IndefR.Lev.IsConjPl P P') :
     Nat.card (𝓞 D.host.E ⧸ P'.asIdeal) = Nat.card (𝓞 D.host.E ⧸ P.asIdeal) := by
   let σ : 𝓞 D.host.E ≃+* 𝓞 D.host.E := RingOfIntegers.mapRingEquiv (starRingAut : D.host.E ≃+* D.host.E)
@@ -1458,16 +1447,6 @@ theorem finEps_eq_of_local {K : Type} [Field K] (σ : K →+* ℂ) (P : K → Pr
     finprod_eq_prod_of_mulSupport_subset _ hS3] at *
   rw [Finset.prod_congr rfl fun w _ => he w, Finset.prod_mul_distrib, Finset.prod_mul_distrib, hc, mul_one, map_prod]
 
-theorem exists_finsupp_expAt (χ : HChar E) : ∃ a : HeightOneSpectrum (𝓞 E) →₀ ℕ, ∀ w, ExpAt χ w (a w) := by
-  classical
-  have h := GlobalTheory.Mem.UnrAe.exists_levelLe χ
-  have hE : ∀ w, ExpAt χ w (Nat.find (h w)) := fun w m =>
-    ⟨fun hm => Nat.find_min' (h w) hm, fun hm x hx hx' => Nat.find_spec (h w) x hx (hx'.trans (by
-      rw [WithZero.exp_le_exp]; omega))⟩
-  have hsub : Function.support (fun w => Nat.find (h w)) ⊆ {v | ¬ χ.UnrAt v} := fun w hw hu =>
-    hw ((hE w).unique ((expAt_zero_iff χ w).2 hu))
-  exact ⟨Finsupp.ofSupportFinite _ ((GlobalTheory.Mem.UnrAe.finite_ramified χ).subset hsub), fun w => hE w⟩
-
 theorem expAt_mul_of_unrAt {χ ξ : HChar E} {w : HeightOneSpectrum (𝓞 E)} (h : ξ.UnrAt w) {n : ℕ} (hn : ExpAt χ w n) :
     ExpAt (χ * ξ) w n := fun m => by
   rw [← hn m]
@@ -1563,8 +1542,8 @@ theorem refl_square (hFE : GlobalTheory.Published.HeckeTateFunctionalEquation) {
     rw [e, Formalism.L2.Host.HChar.inf_mul, GlobalTheory.TypeValues.inf_eq_one ξ hN hf k, mul_one]
     exact hv.1.2.2.1 k
   have ht : TrivOnF (nuH G t i j) := by rw [e]; exact hv.1.2.1.mul (hL.xi_triv t)
-  obtain ⟨a, ha⟩ := exists_finsupp_expAt (nuH G t i j)
-  obtain ⟨a₀, ha₀⟩ := exists_finsupp_expAt ν₀
+  obtain ⟨a, ha⟩ := GlobalTheory.Published.HeckeFEModel.exists_exponents (nuH G t i j)
+  obtain ⟨a₀, ha₀⟩ := GlobalTheory.Published.HeckeFEModel.exists_exponents ν₀
   have hbig : ∀ τ, (e0 D i j : ℤ) < ((kap D sc.cGap i j 0 τ : ℕ) : ℤ) := fun τ => by
     have a0 := (GlobalTheory.FunObj.SqNum.Model.kap_add D sc.cGap i j τ (Nat.zero_le (halfRank D i j))).1
     have a1 := GlobalTheory.FunObj.SqNum.Model.kap_add D sc.cGap i j τ (le_refl (halfRank D i j))

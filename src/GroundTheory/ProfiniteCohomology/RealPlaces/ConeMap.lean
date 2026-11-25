@@ -51,13 +51,6 @@ theorem degZeroShortComplex_shortExact {S : ShortComplex (ModuleCat.{u} k)} (hS 
               epi_g := (ModuleCat.epi_iff_surjective _).2 fun y =>
                 ⟨PUnit.unit, Subsingleton.elim (α := PUnit) _ y⟩ }
 
-noncomputable def prodShortComplex (S T : ShortComplex (CochainComplex (ModuleCat.{u} k) ℕ)) :
-    ShortComplex (CochainComplex (ModuleCat.{u} k) ℕ) :=
-  ShortComplex.mk (prodMapCx S.f T.f) (prodMapCx S.g T.g)
-    (HomologicalComplex.hom_ext _ _ fun n => ModuleCat.hom_ext (LinearMap.ext fun x => Prod.ext
-      (hom_apply_hom_apply_of_comp_eq (congrArg (·.f n) S.zero) x.1)
-      (hom_apply_hom_apply_of_comp_eq (congrArg (·.f n) T.zero) x.2)))
-
 private theorem shortExact_prodMapCx
     {M₁ M₂ M₃ N₁ N₂ N₃ : CochainComplex (ModuleCat.{u} k) ℕ}
     {fM : M₁ ⟶ M₂} {gM : M₂ ⟶ M₃} {zM : fM ≫ gM = 0}
@@ -85,10 +78,6 @@ private theorem shortExact_prodMapCx
       obtain ⟨y1, hy1⟩ := (ModuleCat.epi_iff_surjective _).1 h1.epi_g z.1
       obtain ⟨y2, hy2⟩ := (ModuleCat.epi_iff_surjective _).1 h2.epi_g z.2
       exact ⟨(show (prodComplex M₂ N₂).X n from (y1, y2)), Prod.ext hy1 hy2⟩
-
-theorem prodShortComplex_shortExact {S T : ShortComplex (CochainComplex (ModuleCat.{u} k) ℕ)}
-    (hS : S.ShortExact) (hT : T.ShortExact) : (prodShortComplex S T).ShortExact :=
-  shortExact_prodMapCx hS hT
 
 end Complexes
 
@@ -332,16 +321,6 @@ theorem tateCompactCohomologyMap_f_g (n : ℕ) :
     ((congrArg (HomologicalComplex.homologyMap · n)
       (tateCompactCochainsMap₁₂_₂₃ φ ψ S Sᵥ s Sᵣ sr)).trans
       (HomologicalComplex.homologyMap_zero _ _ n))
-
-theorem mapShortComplex_tateResShortComplex_f :
-    (mappingCoconeNat.mapShortComplex (tateResShortComplex φ ψ S Sᵥ s Sᵣ sr)).f =
-      tateCompactCochainsMap₁₂ φ ψ S Sᵥ s Sᵣ sr :=
-  rfl
-
-theorem mapShortComplex_tateResShortComplex_g :
-    (mappingCoconeNat.mapShortComplex (tateResShortComplex φ ψ S Sᵥ s Sᵣ sr)).g =
-      tateCompactCochainsMap₂₃ φ ψ S Sᵥ s Sᵣ sr :=
-  rfl
 
 variable {S Sᵥ Sᵣ}
 

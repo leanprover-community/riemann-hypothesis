@@ -369,12 +369,6 @@ def bkW (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E))
     (HfD PD (stdLat N i (((WpO N i ρ π).comp (decS N w)).comp ι))).comap
       ((LinearMap.funLeft (N.O i) (KOr N i) ι).comp (Submodule.subtype _))).map (Submodule.mkQ _)
 
-def selPi (π : N.X i)
-    (Ll : ∀ v, Submodule (N.O i) (H1 ((WKO N i ρ π).comp (Dec (F := H.E) (N.plOm.1 v)).subtype))) :
-    Submodule (N.O i) (H1 (WKO N i ρ π)) :=
-  Formalism.GaloisCohomology.SelAll (WKO N i ρ π) N.plOm
-    (Formalism.GaloisCohomology.bkCond (WKO N i ρ π) N.plOm (N.l i) (↑(N.S i ∪ N.Q i)) Ll)
-
 def jW (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E))
     {G : Type} [Group G] [TopologicalSpace G] {K₀ Kw B BdR : Type} [Field K₀] [Field Kw]
     [Algebra ℚ_[N.l i] K₀] [Algebra ℚ_[N.l i] Kw] [Algebra K₀ Kw] [IsScalarTower ℚ_[N.l i] K₀ Kw]
@@ -383,12 +377,6 @@ def jW (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E))
     [IsScalarTower K₀ Kw BdR] [IsScalarTower ℚ_[N.l i] K₀ BdR]
     (PD : PeriodData G ℚ_[N.l i] K₀ Kw B BdR) (ι : G →* Gw N w) : ℕ :=
   finrank (KK N i) (FiniteCohomology PD (matRep (mapM (toK N i) (((WpO N i ρ π).comp (decS N w)).comp ι))))
-
-def h0W (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E)) : ℚ :=
-  lenUnit (O := N.O i) (N.l i) ↥(Representation.invariants ((WKO N i ρ π).comp (decS N w)))
-
-def lenCol (e' : ℕ) (j : ℕ) (π : N.X i) (w : HeightOneSpectrum (𝓞 H.E)) : ℚ :=
-  (e' : ℚ) + (j : ℚ) * ((e' : ℚ) + N.vdel i) + 2 * N.vdel i + h0W N i ρ π w
 
 end Sel
 

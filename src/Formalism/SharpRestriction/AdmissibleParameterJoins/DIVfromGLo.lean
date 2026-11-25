@@ -82,7 +82,6 @@ theorem entry_bd {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (hcL : 1 ≤ cL) (hN
   obtain ⟨s1, s2, s3, s4, s5, s6, s7⟩ := nums hcL u hN
   have hx1 := L.sc.one_lt_alt
   have hb0 : 0 < L.sc.b' := by linarith
-  have hxb : 0 ≤ L.sc.x * L.sc.b := mul_nonneg (by linarith) (by linarith)
   have hsq : 0 ≤ L.sc.b' * L.sc.b' / 64 := by positivity
   have hxb1 : L.sc.b ≤ L.sc.x * L.sc.b := le_mul_of_one_le_left (by linarith) hx1.le
 
@@ -147,7 +146,6 @@ theorem alcove_of {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (hcL : 1 ≤ cL) (h
     have : (4 : ℝ) ≤ D.R.m := by exact_mod_cast hm
     push_cast
     linarith
-  have hbb : L.sc.b ^ 2 = L.sc.b * L.sc.b := sq _
   have h24 : 24 * L.sc.b ≤ L.sc.b * L.sc.b := mul_le_mul_of_nonneg_right hb24 (by linarith)
   have h8 : 24 * L.sc.x * L.sc.b ≤ L.sc.b * L.sc.b := mul_le_mul_of_nonneg_right (s1.trans s2) (by linarith)
   have hq : L.sc.b' * L.sc.b' ≤ L.sc.b * L.sc.b := mul_le_mul s2 s2 hb'0 (by linarith)
@@ -268,7 +266,6 @@ theorem Wt_top_le {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (hcL : 1 ≤ cL) (h
       (((z - (n : ℤ)).natAbs : ℕ) : ℝ) ≤ 3 * L.sc.b' := by
     intro z n hz hn
     simp only [Nat.cast_natAbs, Int.cast_abs, Int.cast_sub, Int.cast_natCast]
-    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     rw [abs_le] at hz ⊢
     constructor <;> linarith [hz.1, hz.2]
   have key : product_first_zeroth_parts.Wt D u τ ≤ ⌊3 * L.sc.b'⌋₊ := by
@@ -401,7 +398,6 @@ theorem levelPrime_setting_of_sizes {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (
   have hx1 := L.sc.one_lt_alt
   have hb24 : 24 ≤ L.sc.b := by linarith
   have hb1 : 1 ≤ L.sc.b := by linarith
-  have hbb : L.sc.b ^ 2 = L.sc.b * L.sc.b := sq _
   have h24 : 24 * L.sc.b ≤ L.sc.b * L.sc.b := mul_le_mul_of_nonneg_right hb24 (by linarith)
   have hb2 : L.sc.b ^ 2 ≤ ((D.mem u).A.T : ℝ) := by
     refine le_trans ?_ (hT u)
@@ -415,7 +411,6 @@ theorem levelPrime_setting_of_sizes {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (
       have h1 := D.R.f_le_k
       have : D.R.f ≤ D.R.N D.R.m := by unfold Ranks.f Ranks.n Ranks.N; omega
       exact_mod_cast this
-    have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
     have hN0 : (0 : ℝ) ≤ D.R.N D.R.m := Nat.cast_nonneg _
     have h3 : 3 * (D.R.N D.R.m : ℝ) ≤ L.sc.b := by
       obtain ⟨_, _, _, _, _, _, _, _, _, _, n11, _⟩ := hN u

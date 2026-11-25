@@ -57,6 +57,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.EvalAtJetMap
 
 @[expose] public section
 
@@ -81,14 +82,7 @@ theorem mulFr_val {G : ι → Matrix (Fin n) (Fin n) ℂ} (g : ι → Matrix (Fi
     (y : Frames G) (τ : ι) : (mulFr g hg y).1 τ = g τ * y.1 τ := rfl
 
 theorem cspan_eq (lam : ι → DomWeight n) : CSpan lam = Formalism.L2.DIV.VV ℂ lam := by
-  refine le_antisymm ((Formalism.L2.Col.CSpan_le_span (RingHom.id ℂ) lam).trans ?_) fun F hF => ?_
-  · rw [Submodule.span_le]
-    rintro _ ⟨P, hP, rfl⟩
-    show MvPolynomial.map (RingHom.id ℂ) P ∈ _
-    rw [MvPolynomial.map_id]
-    exact hP
-  · have h := Formalism.L2.Col.map_mem_CSpan (RingHom.id ℂ) lam F hF
-    rwa [MvPolynomial.map_id] at h
+  apply _root_.GlobalTheory.KJInf.ClsVal.cSpan_eq_VV' <;> assumption
 
 theorem valC_tr (G : ι → Matrix (Fin n) (Fin n) ℂ) (lam : ι → DomWeight n) (g : ι → Matrix (Fin n) (Fin n) ℂ)
     (hg : ∀ τ, IsUnit (g τ).det) {v : Frames G → ℂ} (hv : v ∈ ValC G lam) :

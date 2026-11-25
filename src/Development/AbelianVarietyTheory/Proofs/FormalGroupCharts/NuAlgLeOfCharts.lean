@@ -81,7 +81,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 end -- clump:auto
@@ -98,7 +97,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.TB (dLin transF IsInvPair dAct)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ChartCmp
 
 namespace GlobalTheory.ChartCmp
@@ -128,9 +126,9 @@ theorem nuAlg_le_of_charts {E : Type} [Field E] [NumberField E] [IsCMField E] {H
     (ε k : ℕ) (a : (E →+* ℂ) × ℕ → ℕ) (N : ℕ) :
     nuAlg Dw T B h u ε k a N ≤ nuAlg Dw T B' h' u' ε k a N := by
   obtain ⟨x'', -, hx''u, -, -⟩ := GlobalTheory.T.pushChartAlt E H T.V t t' n d x
-  have hd : d = d' := GlobalTheory.T.universalJetCoordinates_dim_unique T.V t'.G d d' x'' x' (hx''u hu) hu'
+  have hd : d = d' := _root_.GlobalTheory.ChartCmp.univJ_dim_unique T.V t'.G d d' x'' x' (hx''u hu) hu'
   subst hd
-  obtain ⟨φ, φi, hrel, hlin⟩ := GlobalTheory.T.formal_biextensions_related_of_triple_map_over_id E H hs T.V t t' n hsurj d B B' (Fin d) (Fin d) tg tg' uv uv' x x' e e'
+  obtain ⟨φ, φi, hrel, hlin⟩ := _root_.GlobalTheory.ChartCmp.jrel_of_sabMap E H hs T.V t t' n hsurj d B B' (Fin d) (Fin d) tg tg' uv uv' x x' e e'
     hc hc' hu hu' hf hf'
   refine GlobalTheory.T.biextension_depth_le_of_related E H Dw l Xo c hs T io d B B' φ φi h h' u u' hrel hg hg' heig ?_ ε k a N
   intro ℓ

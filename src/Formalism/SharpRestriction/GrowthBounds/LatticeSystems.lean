@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GlobalTheory.MemIffOfLocBasisG
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod
 public import Formalism.SharpRestriction.GrowthBounds.SelectionLemmas
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
@@ -2240,15 +2241,7 @@ theorem fn_prod_fg {R A ι : Type*} [CommSemiring R] [CommSemiring A] [Algebra R
 
 theorem fn_prod_mem {R A ι : Type*} [CommSemiring R] [CommSemiring A] [Algebra R A] (s : Finset ι)
     (N : ι → Submodule R A) (a : ι → A) (h : ∀ i ∈ s, a i ∈ N i) : ∏ i ∈ s, a i ∈ ∏ i ∈ s, N i := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.prod_empty]
-    exact Submodule.one_le.1 le_rfl
-  | insert b s hb ih =>
-    rw [Finset.prod_insert hb, Finset.prod_insert hb]
-    exact Submodule.mul_mem_mul (h b (Finset.mem_insert_self _ _))
-      (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+  apply _root_.Formalism.L2.GlobalTheoryTheory.ColValS.prod_mem_prod' <;> assumption
 
 theorem H0_le_finitely_generated (G : GAtP p) (v : Fin G.P.nV) (s : Fin (G.P.n' v))
     (Lv : Submodule (G.P.W v) (Fin (G.P.m + 1) → G.P.Qq v)) (hLv : IsLattice (G.P.W v) Lv) :

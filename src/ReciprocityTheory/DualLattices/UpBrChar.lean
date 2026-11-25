@@ -124,8 +124,7 @@ lemma char_step (hv : v.Integers R) {g N : ℕ} (M : Matrix (Fin g) (Fin N) R) (
     | cast a =>
       simpa [hT, Finset.sum_apply, Pi.single_apply, hcast, Fin.castSucc_ne_last] using hl b a
   have hex : ∃ b, μ b ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hle : omTr M (s + 1) hs1 ≤ Submodule.span R (Set.range fun i => T (ι i)) := by
       rw [omTr, Submodule.span_le]
       rintro _ ⟨b, rfl⟩

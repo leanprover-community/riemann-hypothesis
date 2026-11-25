@@ -1173,8 +1173,7 @@ theorem exists_char_parity_mul_ne_one_mul_inv_ne_one : ∀ (N r : ℕ) (χ : Dir
       right
       have := eq_inv_of_mul_eq_one_left h2
       rwa [inv_inv] at this
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have ha := key θ₀ (fun h => by have := hno θ₀ hθ₀ h.1; exact h.2 this)
   have hb := key (θ₀ * η) (fun h => by
     have := hno (θ₀ * η) (by rw [MulChar.mul_apply, hθ₀, hη2, mul_one]) h.1; exact h.2 this)
@@ -1309,8 +1308,7 @@ theorem unitRoot_split : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃+* �
     have hmulN : ‖ι.symm a‖ * ‖ι.symm b‖ = ‖ι.symm D‖ := by
       rw [← norm_mul, ← map_mul, hmul]
     have hb : ‖ι.symm b‖ < 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : 1 ≤ ‖ι.symm a‖ * ‖ι.symm b‖ := by nlinarith
       linarith
     have hta : ι.symm a = ι.symm t + (-ι.symm b) := by
@@ -1349,14 +1347,6 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 noncomputable section
 
 namespace GlobalTheory.EisM
-
-theorem chapterM_theta : ∀ (N r : ℕ) (χ : DirichletCharacter ℂ N) (sg : ℂ), 0 < N → r.Prime → 7 ≤ r → r ∣ N →
-    (sg = 1 ∨ sg = -1) → ∃ θ : DirichletCharacter ℂ N, θ (-1) = sg ∧ θ * χ ≠ 1 ∧ θ * χ⁻¹ ≠ 1 := _root_.GlobalTheory.exists_char_parity_mul_ne_one_mul_inv_ne_one
-
-theorem chapterM_smooth : ∀ (N l e : ℕ) (θ₁ θ₂ : DirichletCharacter ℂ N) (ψ : DirichletCharacter ℂ l), 0 < N → l.Prime →
-    ¬ l ∣ N → 1 ≤ e → θ₁ ≠ 1 → θ₂ ≠ 1 → ∃ c d : ℕ, 1 < c ∧ 1 < d ∧ c.Coprime (6 * N * l) ∧ d.Coprime (6 * N * l) ∧
-      (∀ z : ℂ, ‖z‖ = 1 → (c : ℂ) ^ e ≠ z) ∧ ∀ n₁ n₂ : ℤ, (n₁ = 1 ∨ n₁ = -1) →
-        (d : ℂ) ^ 2 ≠ (d : ℂ) ^ (e + 1) * (θ₁ d ^ n₁ * ψ d ^ n₂) ∧ (d : ℂ) ^ 2 ≠ (d : ℂ) ^ (e + 1) * (θ₂ d ^ n₁ * ψ d ^ n₂) := _root_.GlobalTheory.smoothing_integers_two_characters
 
 theorem norm_symm_char_unit {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ) {N : ℕ} [NeZero N]
     (φ : DirichletCharacter ℂ N) (u : (ZMod N)ˣ) : ‖ι.symm (φ u)‖ = 1 := by

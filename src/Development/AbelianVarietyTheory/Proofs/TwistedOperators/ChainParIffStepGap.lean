@@ -44,13 +44,14 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HcParameterEAddHalfShiftLeBSucc
 
 @[expose] public section
 
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift (NcGapGt NcGapGe minSig shiftPar alV alW lamS lamT StepGap StepWeil VacVec fockOf)
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilSignShift (NcGapGt NcGapGe minSig shiftPar alV alW lamS lamT StepGap)
 
 namespace GlobalTheory.Chain.ItPairCompare
 
@@ -250,34 +251,10 @@ theorem gap_of_le {i j : Fin R.m} (h : i.1 ≤ j.1) : ((R.t : ℚ) + 3) / 2 ≤ 
   · have := gap_of_lt P h; have := P.gap_be i; have := P.gap_be j; linarith
 
 theorem v_anti : StrictAnti P.v := by
-  have hs : ∀ (a : ℕ) (h : a + 1 < R.k - 1), P.v ⟨a + 1, h⟩ < P.v ⟨a, by omega⟩ :=
-    fun a h => (P.u_gt_v ⟨a + 1, h⟩).trans (P.v_gt_u ⟨a, by omega⟩)
-  have hA : ∀ (d a : ℕ) (h : a + d + 1 < R.k - 1), P.v ⟨a + d + 1, h⟩ < P.v ⟨a, by omega⟩ := by
-    intro d
-    induction d with
-    | zero => exact hs
-    | succ d ih => intro a h; exact (hs (a + d + 1) h).trans (ih a (by omega))
-  rintro ⟨a, ha⟩ ⟨b, hb⟩ hab
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_lt (show a < b from hab)
-  exact hA d a hb
+  apply _root_.GlobalTheory.ForcedWeights.v_strictAnti <;> assumption
 
 theorem neg_b_lt_v (i : Fin (R.k - 1)) (j : Fin R.m) : -P.b j < P.v i := by
-  have hk := R.m_add_three_le_k
-  have hm := R.two_le_m
-  have h1 := P.u_last_gt (by omega) (by omega)
-  have h2 := P.v_gt_u ⟨R.k - 2, by omega⟩
-  have e : P.u ⟨R.k - 2 + 1, by omega⟩ = P.u ⟨R.k - 1, by omega⟩ := by congr 2; omega
-  have h3 : P.v ⟨R.k - 2, by omega⟩ ≤ P.v i := (v_anti P).antitone (show i.1 ≤ R.k - 2 by have := i.2; omega)
-  have h4 : P.b ⟨0, by omega⟩ ≤ P.b j := by
-    rcases Nat.eq_zero_or_pos j.1 with h | h
-    · exact le_of_eq (congrArg P.b (Fin.ext h.symm))
-    · have := gap_of_lt P (i := ⟨0, by omega⟩) (j := j) h
-      have := P.gap_be ⟨0, by omega⟩
-      have ht : (0 : ℚ) ≤ R.t := by positivity
-      linarith
-  simp only at h2
-  rw [e] at h2
-  linarith
+  apply _root_.GlobalTheory.ForcedWeights.negb_lt_v <;> assumption
 
 abbrev Idx (R : Ranks) (j : ℕ) : Type := Fin (R.k - 1) ⊕ Fin R.m ⊕ ({i : Fin R.m // (i : ℕ) < j} × Fin R.t)
 

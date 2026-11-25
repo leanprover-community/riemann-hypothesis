@@ -159,8 +159,7 @@ theorem psiRes0_ne {X : Loc} [Fact X.p.Prime] {O : Type} [CommRing O] [IsDomain 
 
 theorem resLineAt : ResLineAt := by
   intro X _ O _ _ _ _ S _ _ g _ hne h0
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hne
   have hcc : ∀ c : Fin X.m, WittVector.constantCoeff (g⁻¹ 0 c.succ) = 0 := by
     intro c

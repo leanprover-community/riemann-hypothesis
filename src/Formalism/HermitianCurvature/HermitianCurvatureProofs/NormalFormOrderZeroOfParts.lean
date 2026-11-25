@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.ActualZetaSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
@@ -944,20 +945,7 @@ theorem localization_quotient_separated_dvd (P : M.Par) (hP : P.OK) {ρ σ : M.T
   exact fun h => h1 h.symm
 
 theorem sep (P : M.Par) (hP : P.OK) {ρ σ : M.Ty P} (h : ρ ≠ σ) : ∃ Y : ℂ, M.xC P ρ Y ≠ M.xC P σ Y := by
-  classical
-  have hex : ∃ i, i ∈ Finset.Icc 1 (P.k - 1) ∧ M.rho P ρ i ≠ M.rho P σ i := by
-    by_contra hc
-    push_neg at hc
-    exact h ((Mx3.tyComplete P hP).2 ρ σ hc)
-  let i := Nat.find hex
-  have hi : i ∈ Finset.Icc 1 (P.k - 1) ∧ M.rho P ρ i ≠ M.rho P σ i := Nat.find_spec hex
-  have hmin : ∀ m ∈ Finset.Icc 1 (P.k - 1), m < i → M.rho P ρ m = M.rho P σ m := by
-    intro m hm hmi
-    by_contra hc
-    exact Nat.find_min hex hmi ⟨hm, hc⟩
-  rcases lt_or_gt_of_ne hi.2 with hl | hl
-  · exact ⟨_, fun e => localization_quotient_separated_dvd P hP hi.1 hl (fun m hm hmi => (hmin m hm hmi).symm) e.symm⟩
-  · exact ⟨_, localization_quotient_separated_dvd P hP hi.1 hl hmin⟩
+  apply _root_.Formalism.FourierDecayAlt.P.Qx8.xC_sep <;> assumption
 
 theorem comm_of_sep {T : Type} [Fintype T] [DecidableEq T] {A : Type} [Ring A] [Algebra ℂ A]
     (κ : (T → ℂ) →ₐ[ℂ] A) (w : A) (e : ℂ → T → ℂ)

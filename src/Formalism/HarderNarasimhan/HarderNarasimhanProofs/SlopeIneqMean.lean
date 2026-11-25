@@ -40,8 +40,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteD
 
 private lemma le_of_forall_nat_mul_le_mul_add {a b K : ℝ}
     (h : ∀ n : ℕ, 0 < n → (n : ℝ) * a ≤ n * b + K) : a ≤ b := by
-  by_contra hab
-  push_neg at hab
+  by_contra! hab
   have hpos : 0 < a - b := sub_pos.mpr hab
   obtain ⟨n, hn⟩ := exists_nat_gt (K / (a - b))
   have h1 := h (n + 1) n.succ_pos

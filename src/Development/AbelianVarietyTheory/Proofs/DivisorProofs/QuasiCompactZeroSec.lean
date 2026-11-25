@@ -51,8 +51,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open GlobalTheory.LieVB GlobalTheory.Conormal
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SqZeroPt
 
 section Op

@@ -110,8 +110,7 @@ theorem tsupport_psiL (n : ℕ) : tsupport (psiL n) ⊆
     rintro rfl
     exact hc' (by simp [psiL])
   have hlog : |Real.log ‖c‖| < 2 * ((n:ℝ) + 1) := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     exact hc' (psiL_zero_of n c hle)
   have hpos := norm_pos_iff.2 h0
   rw [abs_lt] at hlog
@@ -697,8 +696,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutSE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section Split
 

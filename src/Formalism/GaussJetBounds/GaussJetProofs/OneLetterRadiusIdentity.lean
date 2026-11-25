@@ -4,7 +4,6 @@ public import Formalism.GaussJetBounds.GenLogInverse
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

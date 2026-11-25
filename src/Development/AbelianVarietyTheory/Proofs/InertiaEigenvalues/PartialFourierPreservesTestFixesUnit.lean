@@ -107,8 +107,7 @@ theorem norm_pow_two_pow_sub_le {x y : K} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤
 
 theorem norm_sub_lt_one_of_sq {x y : K} (h2 : ‖(2 : K)‖ < 1) (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1)
     (h : ‖x ^ 2 - y ^ 2‖ < 1) : ‖x - y‖ < 1 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hle : ‖x - y‖ ≤ 1 := (norm_sub_le_max_of_ultra x y).trans (max_le hx hy)
   have heq : ‖x - y‖ = 1 := le_antisymm hle hc
   have e : x ^ 2 - y ^ 2 = (x - y) ^ 2 + 2 * y * (x - y) := by ring

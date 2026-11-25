@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 public import Formalism.HermitianCurvature.ThetaExistenceInductiveFromPieces
 public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
 public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
@@ -72,21 +73,11 @@ theorem psd_zero (F : Finset α) : IsPSD F (fun _ _ => (0 : ℂ)) := by
 
 theorem psd_add {F : Finset α} {k k' : α → α → ℂ} (h : IsPSD F k) (h' : IsPSD F k') :
     IsPSD F (fun x y => k x y + k' x y) := by
-  intro a
-  have : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * (k x y + k' x y) =
-      ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k x y + ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k' x y := by
-    simp only [mul_add, sum_add_distrib]
-  rw [this, Complex.add_im, Complex.add_re, (h a).1, (h' a).1]
-  exact ⟨by simp, add_nonneg (h a).2 (h' a).2⟩
+  apply _root_.Formalism.FourierDecayAlt.P.Jx9.psd_add <;> assumption
 
 theorem psd_sum {ι : Type} {F : Finset α} (s : Finset ι) (k : ι → α → α → ℂ)
     (h : ∀ i ∈ s, IsPSD F (k i)) : IsPSD F (fun x y => ∑ i ∈ s, k i x y) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using psd_zero F
-  | insert i s hi ih =>
-    have := psd_add (h i (mem_insert_self i s)) (ih fun j hj => h j (mem_insert_of_mem hj))
-    exact psd_congr this fun x _ y _ => by rw [sum_insert hi]
+  apply _root_.Formalism.FourierDecayAlt.P.Jx9.psd_sum <;> assumption
 
 end gen
 
@@ -990,24 +981,14 @@ variable {X : Type}
 
 theorem psd_congr {F : Finset X} {k k' : X → X → ℂ} (h : ∀ x ∈ F, ∀ y ∈ F, k x y = k' x y)
     (hk : IsPSD F k) : IsPSD F k' := by
-  intro a
-  have : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k' x y =
-      ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k x y :=
-    Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => by rw [h x hx y hy]
-  rw [this]; exact hk a
+  apply _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.psd_congr <;> assumption
 
 theorem psd_zero (F : Finset X) : IsPSD F (fun _ _ => (0 : ℂ)) := by
   intro a; simp
 
 theorem psd_add {F : Finset X} {k k' : X → X → ℂ} (hk : IsPSD F k) (hk' : IsPSD F k') :
     IsPSD F (fun x y => k x y + k' x y) := by
-  intro a
-  have : ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * (k x y + k' x y) =
-      (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k x y) +
-        ∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k' x y := by
-    simp only [mul_add, Finset.sum_add_distrib]
-  rw [this, Complex.add_im, Complex.add_re, (hk a).1, (hk' a).1]
-  exact ⟨by simp, add_nonneg (hk a).2 (hk' a).2⟩
+  apply _root_.Formalism.FourierDecayAlt.P.PositiveSemidefiniteClosure.psd_add <;> assumption
 
 theorem psd_sum {ι : Type} (S : Finset ι) {F : Finset X} {k : ι → X → X → ℂ}
     (hk : ∀ i ∈ S, IsPSD F (k i)) : IsPSD F (fun x y => ∑ i ∈ S, k i x y) := by
@@ -1708,8 +1689,6 @@ open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.FourierDecayAlt Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2
 
 namespace Formalism.L2.SG.TheoremS
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem pbApplied : ∀ C₄ Cthr : ℝ, 1 ≤ C₄ →
     ∃ CA C : ℝ, Cthr ≤ CA ∧ 1 ≤ CA ∧ 0 ≤ C ∧ C ≤ CA ∧

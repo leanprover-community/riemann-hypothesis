@@ -42,8 +42,7 @@ theorem divisible_small {σ : Type} {l : ℕ} (μ : σ →₀ ℕ) (hdiv : ∀ s
   right
   have hsum : μ.degree = ∑ t ∈ μ.support, μ t := rfl
   obtain ⟨s, hs⟩ : ∃ s, μ s ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact h0 (Finsupp.ext hall)
   have hmem : s ∈ μ.support := Finsupp.mem_support_iff.mpr hs
   have htot := Finset.add_sum_erase μ.support (fun t => μ t) hmem

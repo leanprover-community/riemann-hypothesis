@@ -109,8 +109,7 @@ theorem det_ne_of_gPoly (hT : 0 < T) (hT' : 0 < T') {M : Matrix (Fin (r + 1)) (F
 
 theorem nk_pos_of_det {M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hdet : M.det ≠ 0) : 0 < nk M := by
   unfold nk
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have hsum : ∑ b, Complex.normSq (kap M b) = 0 :=
     le_antisymm hle (Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _)
   have hz : ∀ b, kap M b = 0 := fun b =>

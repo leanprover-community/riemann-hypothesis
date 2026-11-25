@@ -34,8 +34,6 @@ open Formalism.L2.SG.FoldBound Formalism.L2.SG.PoincareSeriesSquareIntegrable Nu
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.TermOp.KExpCut Formalism.L2.SG.Full
   Formalism.L2.SG.Pf.Slab
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Eq
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
@@ -244,8 +242,6 @@ namespace Formalism.L2.SG.Pf.SlabCount
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.PoincareInHH.PoincareSetting
   Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.Full
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace LeviAlg
 
@@ -645,8 +641,7 @@ theorem wu_pos (ι : X.B.I.F →+* ℝ) (x : Fin X.B.I.n → X.B.I.E) (hx0 : x �
     rw [← phi_hform, ← ha, X.B.I.φ_over v a, hemb]; rfl
   have hre : ι a = (hJ (X.B.I.ε v) (rv X.B.I v x) (rv X.B.I v x)).re := by rw [← hval]; simp
   rw [hre]
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
 
   let nv : Fin (D.R.rS + 1) → Fin X.B.I.n → ℂ := fun j =>
     if h : j.1 < D.R.rS then rv X.B.I v (X.eR ⟨j.1, h⟩) - rv X.B.I v (X.fR ⟨j.1, h⟩) else rv X.B.I v (X.zR u)
@@ -782,8 +777,6 @@ namespace Formalism.L2.SG.Pf.SlabCount
 open Formalism.L2.SG.FoldBound Formalism.L2.SG.PoincareSeriesSquareIntegrable Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.TermOp.KExpCut Formalism.L2.SG.Full
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u' : D.what₂.Word)
 
 theorem xsp_le_usp : Xsp (lf D (X.Fu u')) ≤ Usp X u' := by
@@ -884,8 +877,6 @@ namespace Formalism.L2.SG.Pf.SlabCount
 
 open Formalism.L2.SG.FoldBound Formalism.L2.SG.PoincareSeriesSquareIntegrable NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.TermOp.KExpCut Formalism.L2.SG.Full
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Matrix
 

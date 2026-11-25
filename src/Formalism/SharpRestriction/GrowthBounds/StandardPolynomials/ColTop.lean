@@ -64,7 +64,6 @@ theorem column_first_coefficient_bound {a b' E0 Q Qj k N Y c N1 eps A0 : ℝ} (h
     have a2 : 2 * (k ^ 3 * Q ^ 4 * c) ≤ N * (k ^ 3 * Q ^ 4 * c) := mul_le_mul_of_nonneg_right hN2 a5
     have a6 : 0 ≤ N * (k ^ 3 * Q ^ 4 * c) := by positivity
     have a3 : N * (k ^ 3 * Q ^ 4 * c) * 1 ≤ N * (k ^ 3 * Q ^ 4 * c) * Y := mul_le_mul_of_nonneg_left hY1 a6
-    have a4 : 1 * k ^ 3 * N * Q ^ 4 * c * Y = N * (k ^ 3 * Q ^ 4 * c) * Y := by ring
     linarith
   have h8 : k * (2 * (k ^ 3 * Q ^ 4 * c)) ≤ k * b' := mul_le_mul_of_nonneg_left hb2 hk0.le
   have h9 : (k ^ 4 * Q ^ 3 * c) * Q < A0 * Q := by
@@ -89,8 +88,6 @@ theorem column_first_coefficient_bound {a b' E0 Q Qj k N Y c N1 eps A0 : ℝ} (h
   have hkQc : 0 ≤ k * Q * c := by positivity
   have h17 : N1 ^ 2 * (k * Q * c) ≤ (k / 2) ^ 2 * (k * Q * c) := mul_le_mul_of_nonneg_right hN12 hkQc
   have e3 : 13 * k * N1 ^ 2 * Q * c = 13 * (N1 ^ 2 * (k * Q * c)) := by ring
-  have e4 : (k / 2) ^ 2 * (k * Q * c) = (k ^ 3 * c * Q) / 4 := by ring
-  have e5 : k ^ 3 * Q ^ 3 * c = k ^ 3 * c * Q ^ 3 := by ring
   refine ⟨hA0p, ?_⟩
   rw [e3]
   linarith
@@ -109,9 +106,7 @@ theorem column_lower_ratio {b' gl gi Al Ai Pl Pi p k Q be : ℝ} (hb : 0 < b') (
     (hkQ : 2 * (k * Q) ≤ b') : Al * p ≤ 3 * Ai := by
   have h1 : Al * (p * Pi) ≤ Al * Pl := mul_le_mul_of_nonneg_left hP hAl0
   have h2 : b' * (1 + be) ≤ b' * (13 / 12) := mul_le_mul_of_nonneg_left (by linarith) hb.le
-  have h3 : b' * (11 / 12) ≤ b' * (1 - be) := mul_le_mul_of_nonneg_left (by linarith) hb.le
   have h4 : k * Pi ≤ k * Q := mul_le_mul_of_nonneg_left hPQ hk0
-  have h5 : b' * (5 / 12) < Ai * Pi := by linarith
   have h6 : Al * p * Pi ≤ 3 * Ai * Pi := by
     have e : Al * p * Pi = Al * (p * Pi) := by ring
     have e' : 3 * Ai * Pi = 3 * (Ai * Pi) := by ring
@@ -128,7 +123,6 @@ theorem column_second_goal {W S mu NE eps de A0 Ai B T N1 p : ℝ} (hW : W ≤ A
     (hp0 : 0 < p) (hN1p : 3 * N1 ≤ eps * p) (hAi0 : 0 ≤ Ai)
     (hS : S ≤ 2 * (eps * A0) + NE) (hmu : mu + NE ≤ B) (hB : B ≤ 4 * (eps * A0)) (heps0 : 0 ≤ eps)
     (h40 : 40 * eps ≤ de) (hde6 : de < 1 / 6) (hA0 : 0 ≤ A0) (hdich : Ai * (1 + de) < A0) : W + S + mu ≤ A0 := by
-  have hde0 : 0 ≤ de := by linarith
   have h1 : N1 * T ≤ eps * Ai := by
     have a1 : N1 * T * p ≤ eps * Ai * p := by
       have e : N1 * T * p = 3 * N1 * Ai := by
@@ -206,7 +200,6 @@ theorem three_level_le_eps_prime {C0 Cde CE1 CE2 : ℝ} {X : Loc} (St : Std C0 C
   have a3 : eps X C0 * X.k ^ 2 ≤ eps X C0 * X.p := mul_le_mul_of_nonneg_left a2 heps0
   have a4 : (X.N1 : ℝ) * X.k ≤ eps X C0 * X.k * X.k := mul_le_mul_of_nonneg_right a1 hk0.le
   have a5 : (X.N1 : ℝ) * 5 ≤ (X.N1 : ℝ) * X.k := mul_le_mul_of_nonneg_left hk5 (by linarith)
-  have e2 : eps X C0 * X.k * X.k = eps X C0 * X.k ^ 2 := by ring
   linarith
 
 theorem m1num_of_std {C0 Cde CE1 CE2 : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 1 X) (mm : ℝ)
@@ -550,7 +543,6 @@ theorem ph_seg {C0 Cde CE1 CE2 mu E : ℝ} {X : Loc} [NeZero X.m] {β : GlobalTh
     rw [hvec] at hi
     simp only [decide_eq_true_eq] at hi
     refine (y.1.1.dom i.succ (Fin.zero_le b)).trans ?_
-    have hi2 := i.2
     by_cases h1 : i.val = 2 * segS X.TT j
     · have hk := hy (Fin.last (X.seg C0 CE1 CE2 j).t)
       change ((y.1.1.mu (finPos _ ((BDk C0 CE1 CE2 mu X β j).T.J (Fin.last (X.seg C0 CE1 CE2 j).t))) 0 : ℤ) : WithTop ℤ) ≤
@@ -639,22 +631,6 @@ theorem change_count (h : PH vecc B ka nu) (S : Finset ℤ) (hS : colRange ka �
     congr 1
     exact Finset.filter_congr fun c _ => ne_comm
 
-theorem oc_sum (h : PH vecc B ka nu) (S : Finset ℤ) (hS : colRange ka ⊆ S) (om : Fin (N + 1) → ℕ) :
-    ∑ c ∈ S, oc om (muP nu ka) c = ∑ i : Fin N, om i.succ * (if vecc i then B i else 0) := by
-  rw [Finset.sum_congr rfl fun c _ => h.oc_eq om c, Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  by_cases hv : vecc i = true
-  · rw [if_pos hv, ← change_count h S hS i, Finset.card_filter, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun c _ => ?_
-    have := (h.stepV i hv c).1
-    by_cases hlt : colH (ka i.castSucc) c < colH (ka i.succ) c
-    · rw [if_pos hlt, if_pos (by omega), mul_one]
-    · rw [if_neg hlt, if_neg (by omega), mul_zero]
-  · rw [if_neg hv, mul_zero]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    have := (h.stepC i (by simpa using hv) c).1
-    rw [if_neg (by omega)]
-
 theorem pl_sum {σ : Type*} (nu : ℕ → ℤ) (h0 : 0 ≤ nu 0) (hm : ∀ t, nu t ≤ nu (t + 1)) (n : ℕ) (S : Finset ℤ)
     (hS : Finset.Icc 1 (nu n) ⊆ S) (v : Fin n → σ) (P : Fin n → ℕ) :
     ∑ c ∈ S, ∑ t : Fin n, (if nu t.val < c ∧ c ≤ nu (t.val + 1) then Finsupp.single (v t) (P t) else 0) =
@@ -729,12 +705,6 @@ theorem PS_even (l : Fin (segS X.TT j)) :
   congr 1
   unfold zS
   omega
-
-theorem PS_last : PS X j (⟨2 * segS X.TT j, by omega⟩ : Fin (2 * segS X.TT j + 1)).succ = 1 := by
-  unfold PS
-  rw [posS_succ_ge X j _ (by simp)]
-  unfold zS
-  simp
 
 theorem nuS_zero : nuS C0 CE1 CE2 mu X β j 0 = 0 := by
   unfold nuS
@@ -821,29 +791,6 @@ theorem plSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2
   show (Finsupp.single _ (_ * (nuS C0 CE1 CE2 mu X β j (2 * l.val + 1 + 1 + 1) -
     nuS C0 CE1 CE2 mu X β j (2 * l.val + 1 + 1)).toNat) : MonH X) = 0
   rw [nuS_cov, sub_self, Int.toNat_zero, mul_zero, Finsupp.single_zero]
-
-theorem oSum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 mu X β j)) :
-    ∑ c ∈ colsS C0 CE1 CE2 mu X β j y.1.1.mu, oCS C0 CE1 CE2 mu X β j y.1.1.mu c =
-      (∑ i : Fin (segS X.TT j), (X.seg C0 CE1 CE2 j).P X.p i *
-        (L.LL j).deg ⟨2 * (i : ℕ), by have := i.2; omega⟩) + (L.LL j).deg ⟨2 * segS X.TT j, by omega⟩ := by
-  have hsub : colRange y.1.1.mu ⊆ colsS C0 CE1 CE2 mu X β j y.1.1.mu := by
-    unfold colsS
-    exact Finset.subset_union_left
-  refine Eq.trans (oc_sum h _ hsub (PS X j)) ?_
-  rw [sum_fin_odd]
-  have v3 : (L.LL j).vec ⟨2 * segS X.TT j, by omega⟩ = true := by
-    show decide ((2 * segS X.TT j) % 2 = 0) = true
-    simp
-  rw [if_pos v3, PS_last, one_mul]
-  congr 1
-  refine Finset.sum_congr rfl fun l _ => ?_
-  have v1 : (L.LL j).vec ⟨2 * l.val, by have := l.2; omega⟩ = true := by
-    show decide ((2 * l.val) % 2 = 0) = true
-    simp
-  have v2 : (L.LL j).vec ⟨2 * l.val + 1, by have := l.2; omega⟩ = false := by
-    show decide ((2 * l.val + 1) % 2 = 0) = false
-    simp
-  rw [if_pos v1, if_neg (by rw [v2]; simp), mul_zero, add_zero, PS_even C0 CE1 CE2]
 
 theorem dKsum_seg (h : Col.PH (L.LL j).vec (L.LL j).deg y.1.1.mu (nuS C0 CE1 CE2 mu X β j))
     (i : Fin (2 * segS X.TT j + 1)) :
@@ -1457,11 +1404,7 @@ theorem colsAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hNum : ColumnNumericsA
     plSum := by
       rw [Finset.sum_coe_sort (colsS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu)
         (fun c => plS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j c)]
-      exact plSum_seg L j y h
-    oSum := by
-      rw [Finset.sum_coe_sort (colsS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu)
-        (fun c => oCS C0 CE1 CE2 (mm + (n : ℝ) * ka1 X) X β j y.1.1.mu c)]
-      exact oSum_seg L j y h }⟩
+      exact plSum_seg L j y h }⟩
 
 theorem restCols : RestCols :=
   TransportedAlt.mono (fun _ _ _ _ _ _ _ _ _ _ h => colsAt_of h) column_numerics_holds

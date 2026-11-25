@@ -110,8 +110,7 @@ theorem exists_bad (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (hm : IsMirab h) (
   have hlast : h (Fin.last n) (Fin.last n) = 1 ∧ ∀ b, b < Fin.last n → h (Fin.last n) b = 0 :=
     ⟨by rw [hm]; simp, fun b hb => by rw [hm, if_neg hb.ne]⟩
   have hex : ∃ j, ¬ (h j j = 1 ∧ ∀ b, b < j → h j b = 0) := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hu ⟨fun i => (hno i).1, fun i j hji => (hno i).2 j hji⟩
   obtain ⟨j1, hj1⟩ := hex
   let S := Finset.univ.filter fun j => ¬ (h j j = 1 ∧ ∀ b, b < j → h j b = 0)
@@ -130,8 +129,7 @@ theorem exists_bad (h : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (hm : IsMirab h) (
     exact hgood
   by_cases hd : h j0 j0 = 1
   · have hb : ∃ b, b < j0 ∧ h j0 b ≠ 0 := by
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       exact hj0 ⟨hd, hno⟩
     obtain ⟨b, hb0, hbne⟩ := hb
     have hbl : b ≠ Fin.last n := (lt_of_lt_of_le hb0 (Fin.le_last _)).ne
@@ -169,8 +167,7 @@ theorem mirabolic_mackey_pair : MirabolicMackey := by
     rw [hc]
     exact sub_ne_zero.2 (Ne.symm hbad)
   obtain ⟨x, hx⟩ : ∃ x, ψ x ≠ 1 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hψ (AddChar.ext ψ 1 fun y => by rw [hno y, AddChar.one_apply])
   obtain ⟨t, ht⟩ : ∃ t : k, t = x / c := ⟨_, rfl⟩
   have htc : t * c = x := by rw [ht]; field_simp

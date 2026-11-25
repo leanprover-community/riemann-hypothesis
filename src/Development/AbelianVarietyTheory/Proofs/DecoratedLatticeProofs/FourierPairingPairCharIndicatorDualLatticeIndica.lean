@@ -60,8 +60,7 @@ theorem fpair_charInd_dualInd : ∀ (k : Type) [Field k] [ValuativeRel k] [Topol
   haveI := secondCountable k
   set r := resChar χ hχ q with hr
   obtain ⟨a, ha⟩ : ∃ a, r a ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact resChar_ne_one hχ q (by ext x; simpa using h x)
   obtain ⟨e₁, he₁⟩ := Q.exists_hasVal_one
   obtain ⟨s, hs⟩ := residue_surjective (R := 𝒪[k]) (-a)

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.Tensor
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.QuotientHighestWeightTensorStandard
 import Mathlib.Tactic.TypeStar
 
@@ -34,34 +35,10 @@ theorem casimir_apply' (E : Fin n → Fin n → Module.End ℂ M) (x : M) :
   simp [casimir, LinearMap.sum_apply]
 
 theorem isGlRep_tensV (E : Fin n → Fin n → Module.End ℂ M) (hE : IsGlRep E) : IsGlRep (tensV E) := by
-  intro a b c d
-  refine LinearMap.ext fun f => funext fun e => ?_
-  have key := LinearMap.congr_fun (hE a b c d) (f e)
-  have key' : E a b (E c d (f e)) = E c d (E a b (f e)) +
-      ((if b = c then E a d (f e) else 0) - (if d = a then E c b (f e) else 0)) := by
-    by_cases h3 : b = c <;> by_cases h4 : d = a <;>
-      simp only [h3, h4, if_true, if_false, LinearMap.sub_apply, Module.End.mul_apply,
-        LinearMap.zero_apply] at key ⊢ <;> rw [← key] <;> abel
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, Pi.sub_apply,
-    tensV_apply', map_add, apply_ite (E a b), apply_ite (E c d), map_zero, key']
-  by_cases h3 : b = c <;> by_cases h4 : d = a <;>
-    simp only [h3, h4, if_true, if_false, LinearMap.zero_apply, Pi.zero_apply, tensV_apply'] <;>
-    split_ifs <;> subst_vars <;> (try simp) <;> first | exact absurd rfl h4 | exact absurd rfl h3 | abel
+  apply ReciprocityTheory.ChartRestriction.DS.Lap.Capelli.isGlRep_tensV <;> assumption
 
 theorem isGlRep_tensVd (E : Fin n → Fin n → Module.End ℂ M) (hE : IsGlRep E) : IsGlRep (tensVd E) := by
-  intro a b c d
-  refine LinearMap.ext fun f => funext fun e => ?_
-  have key := LinearMap.congr_fun (hE a b c d) (f e)
-  have key' : E a b (E c d (f e)) = E c d (E a b (f e)) +
-      ((if b = c then E a d (f e) else 0) - (if d = a then E c b (f e) else 0)) := by
-    by_cases h3 : b = c <;> by_cases h4 : d = a <;>
-      simp only [h3, h4, if_true, if_false, LinearMap.sub_apply, Module.End.mul_apply,
-        LinearMap.zero_apply] at key ⊢ <;> rw [← key] <;> abel
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, Pi.sub_apply,
-    tensVd_apply', map_sub, apply_ite (E a b), apply_ite (E c d), map_zero, key']
-  by_cases h3 : b = c <;> by_cases h4 : d = a <;>
-    simp only [h3, h4, if_true, if_false, LinearMap.zero_apply, Pi.zero_apply, tensVd_apply'] <;>
-    split_ifs <;> subst_vars <;> (try simp) <;> first | exact absurd rfl h4 | exact absurd rfl h3 | abel
+  apply ReciprocityTheory.ChartRestriction.DS.Lap.Capelli.isGlRep_tensVd <;> assumption
 
 theorem casimir_tensV' (E : Fin n → Fin n → Module.End ℂ M) (f : Fin n → M) :
     casimir (tensV E) f = (fun c => casimir E (f c)) + (n : ℂ) • f + (2 : ℂ) • eeV E f := by

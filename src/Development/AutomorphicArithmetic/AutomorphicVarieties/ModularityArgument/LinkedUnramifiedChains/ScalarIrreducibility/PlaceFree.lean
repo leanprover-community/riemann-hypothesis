@@ -94,7 +94,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial ValuativeRel GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.PsType
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.PsType
 
@@ -1067,8 +1066,7 @@ theorem exists_sep [Normal ℚ L] {A : ValuationSubring Ω} {w : Plc L} (h : IsP
   let g' : L ≃ₐ[ℚ] L := g.restrictNormal L
   have hg' : ∀ y : L, algebraMap L Ω (g' y) = g (algebraMap L Ω y) := fun y => g.restrictNormal_commutes L y
   obtain ⟨b, hb⟩ : ∃ b : 𝓞 L, g' (b : L) ≠ (b : L) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨a, c, hc, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 L) (K := L) x
     apply hx
     have e1 : g' (algebraMap (𝓞 L) L a) = algebraMap (𝓞 L) L a := hcon a
@@ -1249,16 +1247,14 @@ theorem UpperTheory.V.J.wtEx :
     have hbig : 5 < Φ.dv (R.K.e v) := R.big.2 (R.K.e v)
     rw [k.dv (R.K.e v)] at hbig
     obtain ⟨g, hgD, hgU⟩ : ∃ g ∈ Dec (F := ℚ) (k.pl (R.K.e v)), g ∉ upl Ω L := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h1 := Subgroup.relIndex_eq_one.2 hcon
       omega
     have hgD' : g ∈ Dec (F := ℚ) (R.s.A v.1) := by
       rw [R.A_pl v]
       exact hgD
     obtain ⟨y, -, hgy⟩ : ∃ y ∈ maximalRealSubfield L, g (algebraMap L Ω y) ≠ algebraMap L Ω y := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hgU hcon
     obtain ⟨b, τ₁, τ₂, hne⟩ := UpperTheory.V.J.Wu.exists_sep (R.s.hw v.1) hlw g hgD' y hgy
     obtain ⟨g', hc, hfree⟩ := place_free hG (R.s.hw v.1) hlw (Classical.choice ⟨τ₁⟩) b τ₁ τ₂ hne (x.psi v) ph

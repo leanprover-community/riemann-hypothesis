@@ -35,43 +35,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNonKlt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NotKltAtOfIsNkltCentre
 public import Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationClosed
 public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.NadelVanishingPairsOfPrincipalisation
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.CommGroupMulMulEqMulInvMulMulMul
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsChartOfIsLocalRing
@@ -83,17 +46,13 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEq
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidStA
-import Mathlib.Tactic.Basify
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLocModelIsPrimeOf
-import Mathlib.Algebra.Order.Star.Rat
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEtCoord
-import Mathlib.Algebra.Azumaya.Basic
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowMulIntersectionLeOfNefClassOnClosed
-import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
-import Mathlib.Algebra.Order.Star.Int
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDivisorNonKltAtPointsNotContainingCentre
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDivisorNonKltLocusFibre, Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierDivToWeilQDivisorAddOfEffective, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEffectiveQDivisorOffPointAmpleClass, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenKawamataLogTerminalLocusLogCanonicalLocus, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenKltOffIsolatedLcCentre, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsolatedLcCentreOfZeroLcThreshold, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDivisorNonKltPointsNumericallyMultiple, Development.AbelianVarietyTheory.Proofs.DivisorProofs.AngehrnSiuCutLowerCentreDimension, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAmpleEffectiveKltInductionStart, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogCanonicalCutAngehrnSiuInduction, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsolatedNonKltDivisorOfPrincipalisation, Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopIsolated, Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopNadel, Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopNSI
@@ -175,18 +134,14 @@ namespace GlobalTheory
 
 theorem exists_common_den_nonneg (q₁ q₂ : ℚ) (h₁ : 0 ≤ q₁) (h₂ : 0 ≤ q₂) :
     ∃ a b M : ℕ, 0 < M ∧ q₁ = a / M ∧ q₂ = b / M := by
+  have scaled (q : ℚ) (hq : 0 ≤ q) {d : ℕ} (hd : d ≠ 0) :
+      q = (↑(q.num.toNat * d) : ℚ) / ↑(q.den * d) := by
+    have hnum : (q.num.toNat : ℚ) = q.num := by
+      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 hq)
+    rw [Nat.cast_mul, Nat.cast_mul, hnum, mul_div_mul_right _ _ (Nat.cast_ne_zero.mpr hd), Rat.num_div_den]
   refine ⟨q₁.num.toNat * q₂.den, q₂.num.toNat * q₁.den, q₁.den * q₂.den,
-    Nat.mul_pos q₁.den_pos q₂.den_pos, ?_, ?_⟩
-  · have e : ((q₁.num.toNat : ℕ) : ℚ) = q₁.num := by
-      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 h₁)
-    have hd : (q₂.den : ℚ) ≠ 0 := by exact_mod_cast q₂.den_ne_zero
-    push_cast
-    rw [e, mul_div_mul_right _ _ hd, Rat.num_div_den]
-  · have e : ((q₂.num.toNat : ℕ) : ℚ) = q₂.num := by
-      exact_mod_cast Int.toNat_of_nonneg (Rat.num_nonneg.2 h₂)
-    have hd : (q₁.den : ℚ) ≠ 0 := by exact_mod_cast q₁.den_ne_zero
-    push_cast
-    rw [e, mul_comm (q₁.den : ℚ) (q₂.den : ℚ), mul_div_mul_right _ _ hd, Rat.num_div_den]
+    Nat.mul_pos q₁.den_pos q₂.den_pos, scaled q₁ h₁ q₂.den_ne_zero, ?_⟩
+  simpa only [Nat.mul_comm q₂.den q₁.den] using scaled q₂ h₂ q₁.den_ne_zero
 
 theorem exists_eff_off_pt_ample_class : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ), IsProjOver p → letI := algebraΓOfHom p; ∀ (N₀ : LB X) (A : CartierDiv X) (x : X) (r : ℕ) (lam μ : ℚ), N₀.IsLB → IsNef ℂ N₀ → IsAmpleLB (toLB A) → 0 < r → lam ≤ 1 → 0 < μ → ∃ (M : ℕ) (E : CartierDiv X), 0 < M ∧ E.Eff ∧ x ∉ E.supp ∧ ∀ C : Closeds X, IsCompleteCurve ℂ C → (interNumRed ℂ C ![toLB E] : ℚ) / M = (1 - lam) * interNumRed ℂ C ![N₀] / r + μ * interNumRed ℂ C ![toLB A] := by
   intro X _ _ p hp
@@ -399,18 +354,7 @@ variable {X : Scheme.{0}} [IsIntegral X]
 
 theorem generatesAt_add_vanishesAt {D : CartierDiv X} {x : X} {f u : X.functionField}
     (hf : D.GeneratesAt x f) (hu : D.VanishesAt x u) : D.GeneratesAt x (f + u) := by
-  obtain ⟨e, he⟩ := D.exists_isEqn x
-  rw [he.generatesAt_iff] at hf ⊢
-  rw [he.vanishesAt_iff] at hu
-  obtain ⟨a, ha, hae⟩ := hf
-  obtain ⟨b, hb, hbe⟩ := hu
-  refine ⟨a + b, ?_, by rw [map_add (f := _), hae, hbe, add_mul]⟩
-  by_contra hn
-  have h1 : a + b ∈ IsLocalRing.maximalIdeal _ := (IsLocalRing.mem_maximalIdeal _).2 hn
-  have h2 : a ∈ IsLocalRing.maximalIdeal _ := by
-    have := Ideal.sub_mem _ h1 hb
-    simpa using this
-  exact (IsLocalRing.mem_maximalIdeal _).1 h2 ha
+  apply _root_.GlobalTheory.Cartier.CommonEqn.generatesAt_add <;> assumption
 
 variable [IsLocallyNoetherian X]
 
@@ -572,8 +516,7 @@ theorem logCanonicalCut_lowers_centre_dimension : GlobalTheory.Published.Princip
     have hye : (((e : ℝ) ^ e * (r : ℝ) ^ e / I) ^ ((e : ℝ)⁻¹)) ^ e = (e : ℝ) ^ e * (r : ℝ) ^ e / I :=
       Real.rpow_inv_natCast_pow hx0 he0
     have hyc : ((e : ℝ) ^ e * (r : ℝ) ^ e / I) ^ ((e : ℝ)⁻¹) < e / c' := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h1 := pow_le_pow_left₀ (by positivity) hcon e
       rw [hye, div_pow, div_le_div_iff₀ hc'e hIpos] at h1
       nlinarith [mul_lt_mul_of_pos_left hIr hee]

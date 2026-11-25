@@ -1,10 +1,7 @@
 module
 
 public import Formalism.HermitianLattices.StatementJac
-public import Mathlib.LinearAlgebra.Matrix.Transvection
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
 public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section

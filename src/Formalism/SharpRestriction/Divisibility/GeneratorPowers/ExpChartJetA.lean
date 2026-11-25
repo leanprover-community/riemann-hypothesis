@@ -8,8 +8,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpChartJetA

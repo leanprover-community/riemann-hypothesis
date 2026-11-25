@@ -45,7 +45,6 @@ import Mathlib.Tactic.ReduceModChar
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CechDR KaehlerDifferential
 attribute [local instance] GlobalTheory.Cris.opModule GlobalTheory.Cris.isCentralScalar_kaehler GlobalTheory.Cris.isScalarTower_kaehler
 

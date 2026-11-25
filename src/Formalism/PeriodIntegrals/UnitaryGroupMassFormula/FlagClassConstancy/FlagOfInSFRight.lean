@@ -4,6 +4,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.ModLatticeA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.FourParts
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
 
 @[expose] public section
 
@@ -64,17 +65,7 @@ theorem Xsp_le_orth {T : E} (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := by
 
 theorem map_mem_Xflag {Λ : Submodule (𝓞 E) S.V} {T : E} {F : LFlag S r T} {n : S.V ≃ₗ[E] S.V}
     (hn : n ∈ NLam Λ F) (j : ℕ) {v : S.V} (hv : v ∈ Xflag F j) : n v ∈ Xflag F j := by
-  have hn' := hn
-  simp only [NLam, Set.mem_setOf_eq] at hn'
-  obtain ⟨-, hn1, -⟩ := hn'
-  cases j with
-  | zero =>
-    rw [Xflag_zero, Submodule.mem_bot] at hv
-    subst hv
-    simp
-  | succ k =>
-    have h1 : n v - v ∈ Xflag F (k + 1) := Xa_mono F.fl (Nat.le_succ k) (hn1 k v hv)
-    simpa only [sub_add_cancel] using add_mem h1 hv
+  apply _root_.Formalism.L2.SG.Pf.nlam_mapsTo <;> assumption
 
 theorem map_Xflag_eq {Λ : Submodule (𝓞 E) S.V} {T : E} {F : LFlag S r T} {n : S.V ≃ₗ[E] S.V}
     (hn : n ∈ NLam Λ F) (j : ℕ) : (Xflag F j).map (n : S.V →ₗ[E] S.V) = Xflag F j := by

@@ -101,34 +101,11 @@ theorem exists_decay_bound_tensor_cosetIndicator (w : InfinitePlace K) (φ : �
       ‖schwartzBruhatTensor φ (cosetIndicator I b)
         ((moduleSection w t * a) • algebraMap K 𝔸[K] ξ)‖ ≤ ((t : ℝ) ^ r)⁻¹ * u ξ := by
 
-  set S : Set 𝔸ᶠ[K] := (fun p : IdeleGroup K × 𝔸ᶠ[K] ↦
-      ((IdeleGroup.toFinite K p.1⁻¹ : (𝔸ᶠ[K])ˣ) : 𝔸ᶠ[K]) * p.2) ''
-    (C ×ˢ (b +ᵥ (idealFiniteAdeles I : Set 𝔸ᶠ[K])))
-  have hS : IsCompact S := (hC.prod ((isCompact_idealFiniteAdeles I).vadd b)).image
-    ((Units.continuous_val.comp ((IdeleGroup.continuous_toFinite (K := K)).comp
-      (continuous_inv.comp continuous_fst))).mul continuous_snd)
-  obtain ⟨d, hd0, hd⟩ := exists_mul_mem_integralFiniteAdeles_of_isCompact hS
+  obtain ⟨d, hd0, hJ⟩ := exists_fractionalIdeal_of_isCompact_coset I b hC
   set dK := algebraMap (𝓞 K) K d
   have hdK : dK ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hd0
   set J : (FractionalIdeal (𝓞 K)⁰ K)ˣ := Units.mk0 (FractionalIdeal.spanSingleton (𝓞 K)⁰ dK⁻¹)
     ((FractionalIdeal.spanSingleton_ne_zero_iff).mpr (inv_ne_zero hdK))
-  have hJ : ∀ a ∈ C, ∀ ξ : K,
-      ((IdeleGroup.toFinite K a : (𝔸ᶠ[K])ˣ) : 𝔸ᶠ[K]) * algebraMap K 𝔸ᶠ[K] ξ - b ∈
-        idealFiniteAdeles I → ξ ∈ (J : FractionalIdeal (𝓞 K)⁰ K) := by
-    intro a ha ξ hξ
-    have hmem : algebraMap K 𝔸ᶠ[K] ξ ∈ S := by
-      refine ⟨(a, ((IdeleGroup.toFinite K a : (𝔸ᶠ[K])ˣ) : 𝔸ᶠ[K]) * algebraMap K 𝔸ᶠ[K] ξ),
-        ⟨ha, mem_vadd_idealFiniteAdeles.mpr hξ⟩, ?_⟩
-      simp only [map_inv, Units.inv_mul_cancel_left]
-    have h1 := hd _ hmem
-    rw [← map_mul] at h1
-    have h2 : dK * ξ ∈ ((1 : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : FractionalIdeal (𝓞 K)⁰ K) := by
-      rw [← algebraMap_mem_idealFiniteAdeles_iff, ← SetLike.mem_coe, idealFiniteAdeles_one]
-      exact h1
-    rw [Units.val_one] at h2
-    obtain ⟨r, hr⟩ := (FractionalIdeal.mem_one_iff _).mp h2
-    refine (FractionalIdeal.mem_spanSingleton _).mpr ⟨r, ?_⟩
-    rw [Algebra.smul_def, hr, mul_comm dK, mul_assoc, mul_inv_cancel₀ hdK, mul_one]
 
   have hNd : ((Algebra.norm ℚ dK : ℚ) : ℝ) ≠ 0 := by
     rw [Rat.cast_ne_zero]

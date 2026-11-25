@@ -22,19 +22,11 @@ variable {n : ℕ}
 
 section Wt
 
-theorem partialSum_finset_sum_eq {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) (k : ℕ) :
-    kirrPs k (∑ i ∈ s, f i) = ∑ i ∈ s, kirrPs k (f i) := by
-  simp only [kirrPs, Finset.sum_apply]
-  exact Finset.sum_comm
-
 theorem rootCone_entry_int (k : ℕ) (μ ν : Fin n → ℝ) : kirrPs k (μ + ν) = kirrPs k μ + kirrPs k ν := by
   simp only [kirrPs, Pi.add_apply, Finset.sum_add_distrib]
 
 theorem partialSum_sub (k : ℕ) (μ ν : Fin n → ℝ) : kirrPs k (μ - ν) = kirrPs k μ - kirrPs k ν := by
   simp only [kirrPs, Pi.sub_apply, Finset.sum_sub_distrib]
-
-theorem partialSum_smul (k : ℕ) (c : ℝ) (μ : Fin n → ℝ) : kirrPs k (c • μ) = c * kirrPs k μ := by
-  simp only [kirrPs, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
 
 theorem partialSum_single (k : ℕ) (a : Fin n) :
     kirrPs k (Pi.single a (1 : ℝ)) = if a.val < k then 1 else 0 := by
@@ -133,8 +125,7 @@ theorem highestWeight_dominant {N : Type*} [NormedAddCommGroup N] [InnerProductS
     first
     | exact (Complex.ofReal_injective (by simpa using key))
   have hpos : 0 < ‖y‖ ^ 2 := pow_pos (norm_pos_iff.mpr hy0) 2
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have := mul_neg_of_neg_of_pos (sub_neg.mpr hlt) hpos
   nlinarith [sq_nonneg ‖A b a y‖]
 
@@ -217,8 +208,7 @@ theorem exists_minimal_kStable {X : Type*} [AddCommGroup X] [Module ℂ X] {ε :
     ⟨_, S, le_rfl, hne, hS, rfl⟩
   obtain ⟨W, hWS, hW0, hWst, hWd⟩ := Nat.find_spec hex
   refine ⟨W, hWS, hW0, hWst, fun W' hW'W hW'st => ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨h1, h2⟩ := hcon
   have hlt : W' < W := lt_of_le_of_ne hW'W h2
   haveI : FiniteDimensional ℂ W := Submodule.finiteDimensional_of_le hWS

@@ -126,14 +126,8 @@ theorem depth_rename (κ : Type) [Fintype κ] [DecidableEq κ] (d : κ → ℕ)
     depth G u (MvPolynomial.rename (fun x => (⟨e x.1, x.2⟩ : Σ b, ι b)) P) =
       depth (fun b => G (e b)) (fun b => u (e b)) P := by
   have hinj : ∀ (β : κ → Type),
-      Function.Injective (fun x : (Σ b : κ', β (e b)) => (⟨e x.1, x.2⟩ : Σ b, β b)) := by
-    intro β
-    rintro ⟨a, x⟩ ⟨c, y⟩ h
-    simp only [Sigma.mk.inj_iff] at h
-    obtain ⟨h1, h2⟩ := h
-    obtain rfl := e.injective h1
-    rw [heq_eq_eq] at h2
-    rw [h2]
+      Function.Injective (fun x : (Σ b : κ', β (e b)) => (⟨e x.1, x.2⟩ : Σ b, β b)) :=
+    fun β => e.injective.sigma_map (β₂ := β) (f₂ := fun _ => id) fun _ => Function.injective_id
   have hjt : Function.Injective (fun x : (Σ b : κ', ι (e b)) => (⟨e x.1, x.2⟩ : Σ b, ι b)) := hinj ι
   have hjv : Function.Injective (fun x : (Σ b : κ', Fin (d (e b))) => (⟨e x.1, x.2⟩ : Σ b, Fin (d b))) := hinj (fun b => Fin (d b))
   have hcc : ∀ {σ τ : Type} (j : τ → σ) (s : σ),

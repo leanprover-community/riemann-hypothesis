@@ -6,46 +6,10 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriPr
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriAndMaximalCompactCriteria
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryIwahoriFacts
 import GroundTheory.LocalFields.PadicLogSeries
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralCongruenceLevelEqCount
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalConjugationInvolutiveValuationPreserving
+import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.UnitTestFunctions.TestFun
 
 @[expose] public section
 
@@ -60,17 +24,8 @@ namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem iwf_exists_pow_lt {a γ : WithZero (Multiplicative ℤ)} (ha : a < 1) (hγ : γ ≠ 0) : ∃ n : ℕ, a ^ n < γ := by
-  by_cases ha0 : a = 0
-  · exact ⟨1, by rw [ha0, pow_one]; exact zero_lt_iff.2 hγ⟩
-  obtain ⟨k, rfl⟩ : ∃ k : ℤ, a = WithZero.exp k := ⟨WithZero.log a, (WithZero.exp_log ha0).symm⟩
-  obtain ⟨m, rfl⟩ : ∃ m : ℤ, γ = WithZero.exp m := ⟨WithZero.log γ, (WithZero.exp_log hγ).symm⟩
-  have hk : k < 0 := by rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at ha; exact ha
-  refine ⟨m.natAbs + 1, ?_⟩
-  rw [← WithZero.exp_nsmul, WithZero.exp_lt_exp, nsmul_eq_mul]
-  have h1 : (m.natAbs : ℤ) = |m| := Int.natCast_natAbs m
-  push_cast
-  have h2 : (|m| + 1) * k ≤ -(|m| + 1) := by nlinarith [abs_nonneg m]
-  linarith [neg_abs_le m]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.RgEis.InMTopPf.exists_pow_lt' <;> assumption
 
 theorem iwf_le_one_of_pow_mul {a b : WithZero (Multiplicative ℤ)} (hb : b ≠ 0)
     (h : ∀ n : ℕ, a ^ n * b < 1) : a ≤ 1 := by
@@ -87,23 +42,8 @@ theorem iwf_le_one_of_pow_mul {a b : WithZero (Multiplicative ℤ)} (hb : b ≠ 
   nlinarith [neg_abs_le m, abs_nonneg m]
 
 theorem iwf_lt_one {w : Pl E} (σ : w.adicCompletion E →+* w.adicCompletion E) (hσ : Continuous σ)
-    {x : w.adicCompletion E} (hx : Valued.v x < 1) : Valued.v (σ x) < 1 := by
-  have hU : {y : w.adicCompletion E | Valued.v y < 1} ∈ nhds (0 : w.adicCompletion E) :=
-    Valued.mem_nhds_zero.2 ⟨1, fun y hy => by simpa using hy⟩
-  have hpre : σ ⁻¹' {y : w.adicCompletion E | Valued.v y < 1} ∈ nhds (0 : w.adicCompletion E) := by
-    have := hσ.continuousAt (x := (0 : w.adicCompletion E))
-    rw [ContinuousAt, map_zero] at this
-    exact this hU
-  obtain ⟨γ, hγ⟩ := Valued.mem_nhds_zero.1 hpre
-  have hγ0 : MonoidWithZeroHom.ValueGroup₀.embedding γ.1 ≠ 0 :=
-    (γ.isUnit.map MonoidWithZeroHom.ValueGroup₀.embedding).ne_zero
-  obtain ⟨n, hn⟩ := iwf_exists_pow_lt hx hγ0
-  have hm : x ^ n ∈ σ ⁻¹' {y : w.adicCompletion E | Valued.v y < 1} :=
-    hγ (by simpa [Valuation.restrict_lt_iff_lt_embedding, map_pow] using hn)
-  have h1 : Valued.v (σ x) ^ n < 1 := by simpa [map_pow] using hm
-  by_contra h
-  push Not at h
-  exact absurd h1 (not_lt.2 (one_le_pow₀ h))
+    {x : w.adicCompletion E} (hx : Valued.v x < 1) : Valued.v (σ x) < 1 :=
+  _root_.GlobalTheory.CjInv.lt_one_of_map σ hσ hx
 
 theorem iwf_exists_small (w : Pl E) : ∃ y : w.adicCompletion E, y ≠ 0 ∧ Valued.v y < 1 := by
   obtain ⟨π, hπ⟩ := IsDedekindDomain.HeightOneSpectrum.valuation_exists_uniformizer E w

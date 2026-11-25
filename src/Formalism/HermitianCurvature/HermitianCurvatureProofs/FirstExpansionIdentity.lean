@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.DetTransposeApply
 public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AAvCongr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstPeelingMinorMemIdeal
@@ -15,12 +16,7 @@ namespace Formalism.FourierDecayAlt.P.SignAntidiagonal
 open Formalism.FourierDecayAlt.C3 Formalism.REAL Formalism.QuantumDeterminants
 
 theorem keyS_inj (k r : ℕ) : Function.Injective (keyS k r) := by
-  intro p q hpq
-  apply Fin.ext
-  have hp := p.isLt
-  have hq := q.isLt
-  unfold keyS at hpq
-  split_ifs at hpq <;> omega
+  apply _root_.AAInvW.keyS_inj <;> assumption
 
 theorem keyS_esI (k r : ℕ) (x : Fin r) : keyS k r (esI k r x) = x.val := by
   have hx := x.isLt

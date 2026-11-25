@@ -202,8 +202,7 @@ lemma polyAlg_sep : (polyAlg ε).SeparatesPoints := by
   intro x y hxy
   have hne : toMK x ≠ toMK y := fun h => hxy (toMK_injective h)
   obtain ⟨a, b, hab⟩ : ∃ a b, toMK x a b ≠ toMK y a b := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne (Matrix.ext hc)
   exact ⟨_, ⟨coordC (a, b), StarAlgebra.subset_adjoin ℂ _ ⟨(a, b), rfl⟩, rfl⟩, hab⟩
 

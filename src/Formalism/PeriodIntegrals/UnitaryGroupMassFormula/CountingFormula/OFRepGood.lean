@@ -5,6 +5,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.RingInverseMulEquiv
 import Mathlib.Algebra.AffineMonoid.Basic
 import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.LinearIndependentOfDetGram
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FrameDeterminant.DdSNeZero, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.OFRepGood
@@ -63,19 +64,7 @@ theorem one_mem_ddS_zpow (D : Formalism.BasicNotions.D7) (k : ℕ) :
 
 theorem flag_gram (D : Formalism.BasicNotions.D7) {T' : D.host.E} (G : FlagG (VS D) D.R.rS T') (a b : Fin (D.R.rS + 1)) :
     (VS D).hT (G.fvec a) (G.fvec b) = if a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS then -T' else 0 := by
-  have hs : ∀ x y, (VS D).hT y x = starRingEnd D.host.E ((VS D).hT x y) :=
-    fun x y => ((VS D).herm.eq x y).symm
-  induction a using Fin.lastCases with
-  | last =>
-    induction b using Fin.lastCases with
-    | last => simp [FlagG.fvec, G.z_norm]
-    | cast j =>
-      rw [hs]
-      simp [FlagG.fvec, G.z_orth j]
-  | cast i =>
-    induction b using Fin.lastCases with
-    | last => simp [FlagG.fvec, G.z_orth i]
-    | cast j => simp [FlagG.fvec, G.e_iso i j]
+  apply _root_.PI.UnitaryGroupMassFormula.CntFormula.R6.flag_gram <;> assumption
 
 theorem good_places_integral : GoodEZ := by
   intro D T T' F0 Λ Z F' hF'

@@ -56,8 +56,6 @@ open GlobalTheory.RealGeo GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Tr
 
 variable {B : Base} {C : Cols B} {a b : Late B C} {px : PreX B.toPre} {I : ColIn B px} {hX : B.fields.Ok} {T : Top.TwDat B}
@@ -116,26 +114,6 @@ theorem inGeo_transfer (h : InGeo z.geo) : InGeo (z.transfer s).geo := (by with_
 
 end Dat
 
-section Rows
-
-variable {ix : C.Tup ≃ I.ι} {p0 : BaseLevelRowSide a.D}
-
-def RowsAre.tr (c : Refill a) (r : RowsAre a.st I hX T Wt ix p0) : RowsAre c.to.st I hX T Wt ix (baseLevelRowSideTransport c p0) :=
-  @RowsAre.mk c.to.st px I hX T Wt ix (baseLevelRowSideTransport c p0)
-    (z := r.z.transfer c.same)
-    (intersectionNumber_baseChange := Dat.holds_transfer c.same r.intersectionNumber_baseChange)
-    (Y := (by with_unfolding_all exact ((read c r.Y) :)))
-    (Z := (by with_unfolding_all exact ((readL c r.Z) :)))
-    (tup_ix := (by with_unfolding_all exact (r.tup_ix :)))
-
-namespace RowsAre
-
-variable (c : Refill a) (r : RowsAre a.st I hX T Wt ix p0)
-
-end RowsAre
-
-end Rows
-
 end GlobalTheory.Mem.R3
 
 end
@@ -154,11 +132,6 @@ namespace GlobalTheory.HeightCounting.Fin3
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top
   GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P : Pre2 K w}
 

@@ -128,8 +128,7 @@ theorem GlobalTheory.TamePowTeich.exists_zeta_pow_close : ∀ {E Ω : Type} [Fie
     have := congrArg (Polynomial.eval U) (Polynomial.X_pow_sub_one_eq_prod hn hζ)
     simpa [Polynomial.eval_prod] using this
   have hex : ∃ μ ∈ Polynomial.nthRootsFinset n (1 : Ω), A.valuation (U - μ) < 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : 1 ≤ A.valuation (U ^ n - 1) := by
       rw [hprod, map_prod]
       exact Finset.one_le_prod' hcon

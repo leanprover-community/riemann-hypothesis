@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankDefs
 public import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.Algebra.Order.Star.Rat
@@ -146,17 +147,7 @@ theorem finrank_tensor (Kf : Type) [Field Kf] (S : Type) [Fintype S] [DecidableE
     (ν : S → Fin n → ℕ) :
     Module.finrank Kf (Formalism.GradedWeylDivisibility.tensorLat Kf Kf fun s => Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)) =
       ∏ s, Module.finrank Kf (Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)) := by
-  classical
-  have hb := fun s : S => Formalism.GradedWeylDivisibility.sSBasis Kf k n (ν s)
-  choose b hb1 _ using hb
-  have : IsFractionRing Kf Kf :=
-    IsLocalization.of_le_isUnit (fun x hx => IsUnit.mk0 x (nonZeroDivisors.ne_zero hx))
-  obtain ⟨hli, hsp⟩ := Formalism.GradedWeylDivisibility.tensorBasis Kf Kf S k n (fun s => ↥(Formalism.GradedWeylDivisibility.ssIdx k n (ν s)))
-    (fun s => Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)) b (fun s => (hb1 s).1) (fun s => (hb1 s).2.1)
-  have : ∀ s : S, Fintype ↥(Formalism.GradedWeylDivisibility.ssIdx k n (ν s)) := fun s => (Formalism.GradedWeylDivisibility.sSIdxFinite k n (ν s)).fintype
-  rw [← hsp, finrank_span_eq_card hli, Fintype.card_pi]
-  refine Finset.prod_congr rfl fun s _ => ?_
-  rw [← (hb1 s).2.1, finrank_span_eq_card (hb1 s).1]
+  apply _root_.Formalism.L2.G.Model.finrank_tensor' <;> assumption
 
 theorem dimHH_of {D : Formalism.BasicNotions.D7} (h3 : adm3 D) : DimHHAt := by
   intro Kf _ _ n' m TT aT bT hm

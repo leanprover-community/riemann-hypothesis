@@ -202,8 +202,7 @@ theorem UpperTheory.V.Z.Kato.Sym.KU.sgU :
   have a3 : W.valuation (siegel X c x) * W.valuation (siegel X c x)⁻¹ = 1 := by
     rw [← map_mul, mul_inv_cancel₀ hne, map_one]
   refine le_antisymm a1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have := mul_lt_one_of_lt_of_le hlt a2
   rw [a3] at this
   exact lt_irrefl _ this

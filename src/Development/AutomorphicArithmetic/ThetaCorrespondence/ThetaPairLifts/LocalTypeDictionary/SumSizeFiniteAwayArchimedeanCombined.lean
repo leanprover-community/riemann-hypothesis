@@ -201,7 +201,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem GlobalTheory.SumSize.TopSize.depSum {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) :
     ∃ S : Finset ℕ, GlobalTheory.NormSum.Exponents S (fun l => if l.Prime then (depL G l : ℝ) else 0) (sig G) := by
@@ -423,7 +422,6 @@ section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem _root_.GlobalTheory.T.divisor_decomposition_of_local_factors : ∃ C1 : ℝ, 0 < C1 ∧ ∀ (D : D7) (large₂ : SizeData₂ D) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 T : Type) (A : FamIn D.what₂.LL Γ Pl0 T D.R.m)
       (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), HidaSetting large₂ R F →
       ∀ (ch : Choice R) (CF : ℝ), ch.Is → ch.AtScale CF large₂.sc.b → ch.FieldOK → _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.NormSum.Inp D →
@@ -475,7 +473,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.SumSize.TopInt
 theorem finite_top_term_integral_bound_of_local (hPL : ∃ C1 : ℝ, 0 < C1 ∧ ∀ (D : D7) (large₂ : SizeData₂ D) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 T : Type) (A : FamIn D.what₂.LL Γ Pl0 T D.R.m)
       (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), HidaSetting large₂ R F →
@@ -909,7 +906,7 @@ namespace GlobalTheory.KerConjMean
 theorem archimedean_top_term_kernel_conj_mean : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → InfTopK := by
   intro hP hI hD hDp
   obtain ⟨C1, hC1, hmean⟩ := GlobalTheory.T.exists_const_mean_logArea_logThetaNorm_le
-  obtain ⟨CF0, hCF⟩ := _root_.GlobalTheory.T.kernel_conjugation_average hP hI hD hDp C1 hC1
+  obtain ⟨CF0, hCF⟩ := _root_.GlobalTheory.KerConjMean.conj_top_degree_in_kernel_mean hP hI hD hDp C1 hC1
   obtain ⟨CF0', hCF'⟩ := _root_.GlobalTheory.KerConjMean.ratTopAt_big
   refine ⟨max CF0 CF0', fun CF hCF0 => ?_⟩
   obtain ⟨C0, hC0⟩ := hCF CF (le_trans (le_max_left _ _) hCF0)
@@ -957,7 +954,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem false_of_coprime_natCast_mem_heightOne {R : Type*} [CommRing R] [IsDomain R] (v : HeightOneSpectrum R)
     (a b : ℕ) (hab : Nat.Coprime a b) (ha : (a : R) ∈ v.asIdeal) (hb : (b : R) ∈ v.asIdeal) : False := by
@@ -1088,7 +1084,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem expAdd {S S' : Finset ℕ} {f g : ℕ → ℝ} {a b : ℝ} (h : GlobalTheory.NormSum.Exponents S f a)
     (h' : GlobalTheory.NormSum.Exponents S' g b) : GlobalTheory.NormSum.Exponents (S ∪ S') (fun l => f l + g l) (a + b) := by
@@ -1217,7 +1212,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat GlobalTheory.SumSize
 open GlobalTheory.SumSize.TopInt
 open Formalism.DivisionValues (vw lw)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem _root_.GlobalTheory.T.pairIntRatK_of_thetaLocalInputs : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → GlobalTheory.SumSize.PairInt.PairIntRatK := by
   intro hP hI hD
   obtain ⟨C1, hC1, hPL⟩ := _root_.GlobalTheory.T.divisor_decomposition_of_local_factors
@@ -1335,7 +1329,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.UG
 open scoped ComplexOrder
 namespace GlobalTheory.CompanionTheory.TestVal
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 theorem test_value_psi_finite_infinite : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinPsiK ∧ InfPsiK := by
   intro _
@@ -1369,7 +1362,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.DivisionValues (vw lw)
 open GlobalTheory.SumSize
 namespace GlobalTheory.CompanionTheory.Twist
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Host in
 theorem twist_trivial_away_from_level : _root_.GlobalTheory.FunPr.ThetaLocalInputs → AwayK := by
   intro _
@@ -1419,7 +1411,7 @@ namespace GlobalTheory.SumSize.Join
 theorem sum_size_finite_away_archimedean_combined : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.SumSize.FinK ∧ GlobalTheory.SumSize.AwayK ∧ GlobalTheory.SumSize.InfK := by
   intro P
   have hInp : ∀ D, GlobalTheory.NormSum.Inp D := _root_.GlobalTheory.NormSum.inp_all
-  have hOK : GlobalTheory.RowClaim.SumOKK := _root_.GlobalTheory.T.sumOKK_of_theta_local_inputs P
+  have hOK : GlobalTheory.RowClaim.SumOKK := _root_.GlobalTheory.RowClaim.rowSum_of_hypotheses_alt P
   have hDep : GlobalTheory.SumSize.DepthK := _root_.GlobalTheory.DepthUnf.depthK_of_hypotheses_alt P hOK
   have hDict : GlobalTheory.SumSize.DictK := _root_.GlobalTheory.SumSize.sum_size_dictionary_of_local_bounds P hInp
   have hScal := _root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs P
@@ -1433,7 +1425,7 @@ theorem sum_size_finite_away_archimedean_combined : _root_.GlobalTheory.FunPr.Th
   refine ⟨?_, _root_.TwistAwayFromPlace.GlobalTheory.CompanionTheory.Twist.twist_trivial_away_from_level P, ?_⟩
   · exact _root_.DenominatorLossAdditivity.GlobalTheory.CompanionTheory.FinDen.fin_of_factors hOK hDep hScal.1 (_root_.ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.finCoefK_alt P) (_root_.GlobalTheory.FunDat.finDatK_alt P) (_root_.GlobalTheory.GamLoss.finite_place_gamma_loss_bound P)
       hTopF hRowF hPair.1 hPsi.1 hForm.1
-  · exact _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors hOK hDep hScal.2 (_root_.GlobalTheory.T.sum_size_archimedean_tensor_bound P) (_root_.GlobalTheory.T.sum_count_bound_archimedean P hDep) (_root_.GlobalTheory.T.class_count_bound_archimedean P)
+  · exact _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors hOK hDep hScal.2 (_root_.GlobalTheory.SumSize.archimedean_tensor_size_bound_of_local P) (_root_.GlobalTheory.SumCount.archimedean_sum_count_bound P hDep) (_root_.GlobalTheory.ClassCount.archimedean_class_count_bound P)
       hTopI hRowI hPair.2 hPsi.2 hForm.2
 end GlobalTheory.SumSize.Join
 end

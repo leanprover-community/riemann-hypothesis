@@ -20,8 +20,6 @@ namespace Formalism.MainNotions.Inhab
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.BasicNotions.Examples₂ NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Ext
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
@@ -78,8 +76,6 @@ namespace Formalism.L2.Fam.ThC
 
 open Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.MainNotions.Inhab Formalism.BasicNotions.Examples₂
 
 variable {D : D7}
@@ -116,10 +112,6 @@ def sigTow (D : D7) (t : ℕ) : Tow D t where
 
 open Classical in
 def towC (D : D7) (t : ℕ) : Tow D t := if h : t = D.R.t then h ▸ recTow D else sigTow D t
-
-def SpSig (D : D7) : Prop :=
-  ∀ j, j ≤ D.R.m → (D.sp.X j).IsPosDef ∧
-    ∀ τ, (D.sp.Y j).sig τ = (D.R.r + j * D.R.t - (D.R.m - j) / 2, (D.R.m - j) / 2)
 
 
 open Classical in

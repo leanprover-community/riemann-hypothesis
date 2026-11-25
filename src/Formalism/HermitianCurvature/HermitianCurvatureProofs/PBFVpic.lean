@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.InsertUnitMatrixZeroApply
 public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVnice
@@ -39,16 +40,7 @@ variable {A : Type} [Ring A] {n : ℕ}
 
 theorem sum_ix_succ {M : Type*} [AddCommMonoid M] (f : Ix (Fin (n + 1)) → M) :
     ∑ z, f z = ∑ i : Fin 2, ∑ e : Ix (Fin n), f (Fin.cons i e) := by
-  rw [← Fintype.sum_prod_type']
-  symm
-  refine Fintype.sum_bijective (fun p : Fin 2 × Ix (Fin n) => (Fin.cons p.1 p.2 : Ix (Fin (n + 1)))) ⟨?_, ?_⟩ _ _
-    (fun p => rfl)
-  · rintro ⟨i, e⟩ ⟨i', e'⟩ h
-    have h' := Fin.cons_injective2 h
-    simp only at h'
-    rw [h'.1, h'.2]
-  · intro z
-    exact ⟨(z 0, Fin.tail z), Fin.cons_self_tail z⟩
+  apply _root_.Formalism.FourierDecayAlt.P.PBF.sum_ix_succ <;> assumption
 
 theorem ix_ext_iff (z z' : Ix (Fin (n + 1))) : z = z' ↔ z 0 = z' 0 ∧ Fin.tail z = Fin.tail z' := by
   constructor
@@ -196,16 +188,7 @@ theorem cons_ne_zero_iff (i0 i' : Fin 2) (e e' : Ix (Fin n)) :
 theorem insert_unit_matrix_zero_apply {B : Type} [Ring B] (i j i0 : Fin 2) (e : Ix (Fin n)) (z' : Ix (Fin (n + 1))) :
     (eU (0 : Fin (n + 1)) i j : SlopeTestRemainingChoices (Fin (n + 1)) B) (Fin.cons i0 e) z' =
       if i0 = i ∧ z' = Fin.cons j e then 1 else 0 := by
-  simp only [eU, Matrix.of_apply, Fin.cons_zero]
-  have : (i0 = i ∧ z' 0 = j ∧ ∀ b, b ≠ 0 → (Fin.cons i0 e : Ix (Fin (n + 1))) b = z' b) ↔
-      (i0 = i ∧ z' = Fin.cons j e) := by
-    rw [← Fin.cons_self_tail z', cons_ne_zero_iff, Fin.cons_zero]
-    constructor
-    · rintro ⟨h1, h2, h3⟩; rw [h2, ← h3]; exact ⟨h1, rfl⟩
-    · rintro ⟨h1, h2⟩
-      have h2' := Fin.cons_injective2 h2
-      exact ⟨h1, h2'.1, h2'.2.symm⟩
-  simp only [this]
+  apply _root_.Formalism.FourierDecayAlt.P.PBF.insert_unit_matrix_zero_apply <;> assumption
 
 theorem act_addM (M N : SlopeTestRemainingChoices (Fin (n + 1)) (Pr (RadSp k r z z' π π'))) (X : Ix (Fin (n + 1)) → RadSp k r z z' π π') :
     act (M + N) X = act M X + act N X := by

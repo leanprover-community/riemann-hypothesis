@@ -54,7 +54,6 @@ open scoped IntermediateField nonZeroDivisors
 
 namespace GlobalTheory.FieldSize
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain in
 open scoped IntermediateField nonZeroDivisors in
 private lemma natAbs_discr_pow_finrank_le_natAbs_discr (K L : Type*) [Field K] [NumberField K] [Field L]
@@ -66,7 +65,6 @@ private lemma natAbs_discr_pow_finrank_le_natAbs_discr (K L : Type*) [Field K] [
   exact Dvd.intro_left _ rfl
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain in
 open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.log_finrank_rootDiscr_le_of_tower (K L : Type*) [Field K] [NumberField K] [Field L]
@@ -102,7 +100,6 @@ theorem _root_.GlobalTheory.FieldSize.log_finrank_rootDiscr_le_of_tower (K L : T
     nlinarith
 
 
-set_option autoImplicit false in
 open NumberField IsDedekindDomain in
 open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.sz_mono_and_of_le :

@@ -205,8 +205,6 @@ section Conj
 
 open NumberField IsDedekindDomain Matrix GlobalTheory.CuspRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 theorem UpperTheory.V.Z.J.D.Dc.int_conj (x : UA E n) (u : Pl E)
@@ -254,10 +252,6 @@ open UpperTheory.V.HV (Coef)
 open UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.Z.Mult (Cp At IsDec CompOf Mult)
 open scoped Matrix TensorProduct
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 
 namespace UpperTheory.V.Z.J.D.Dc
 
@@ -470,10 +464,6 @@ open UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.Z.Mult (Cp At IsDec CompOf Mult)
 open UpperTheory.V.Z.J.D
 open scoped Matrix TensorProduct
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 
 private theorem fixOf {L : Type} [Field L] [NumberField L] [IsCMField L] (hU : GlobalTheory.BCT.Unr L) {n : ℕ} (hn : 1 ≤ n)
     {S : Set (GlobalTheory.BCT.Pl L)} (hS : GlobalTheory.BCT.IsSection S) {lam : InfinitePlace L → DomWeight n}

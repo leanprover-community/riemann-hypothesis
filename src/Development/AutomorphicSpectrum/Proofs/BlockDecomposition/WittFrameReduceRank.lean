@@ -98,10 +98,6 @@ theorem Fr.adj (h : Fr s J J' P Q x y) {a b : ℕ} {U : Matrix (Fin n) (Fin a) R
   have := congrArg (cT s) e
   rwa [cT_mul, cT_mul, h.cc, h.herm, cT_zero, ← Matrix.mul_assoc] at this
 
-theorem Fr.yx (h : Fr s J J' P Q x y) : cT s y * J * x = 1 := by
-  have := congrArg (cT s) h.xy
-  rwa [cT_mul, cT_mul, h.cc, h.herm, cT_one, ← Matrix.mul_assoc] at this
-
 theorem Fr.Px (h : Fr s J J' P Q x y) : cT s P * J * x = 0 := h.adj h.xP
 theorem Fr.Py (h : Fr s J J' P Q x y) : cT s P * J * y = 0 := h.adj h.yP
 

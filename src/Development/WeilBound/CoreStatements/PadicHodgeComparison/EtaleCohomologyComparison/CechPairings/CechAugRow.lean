@@ -76,11 +76,6 @@ structure CxF (C : Type u) [Category.{v} C] (R : Type) [CommRing R] where
   δ : ∀ q, F q ⟶ F (q + 1)
   dd : ∀ q T x, ((δ (q + 1)).app T).hom (((δ q).app T).hom x) = 0
 
-abbrev CxF.obj (K : CxF.{w} C R) (T : C) : Cx.{w} R where
-  X q := (K.F q).obj T
-  d q := ((K.δ q).app T).hom
-  dd q := K.dd q T
-
 abbrev CxF.dcx (K : CxF.{w} C R) : DCx.{max u v w} R where
   X p q := Cn (K.F q) p
   dh p q := d (K.F q) p
@@ -146,28 +141,3 @@ def Powers.Good {A : C} (P : Powers j A) (F : C ⥤ ModuleCat.{w} R) (I : Ideal 
 end Ind
 
 end CrystallineSemistableComparison.CH
-
-namespace CrystallineSemistableComparison
-
-variable (R : Type) [CommRing R] (G : Type) [TopologicalSpace G] (M : Type w) [AddCommGroup M] [Module R M]
-
-abbrev lcCos : Cos.{w} R where
-  X n := LocallyConstant (Fin (n + 1) → G) M
-  δ n i := LocallyConstant.comapₗ R ⟨fun x k => x (i.succAbove k), by fun_prop⟩
-  rel n j i f := by
-    ext x
-    exact congrArg f (funext fun k => congrArg x (Fin.succAbove_succAbove_succAbove_predAbove j i k))
-
-variable {R G M} [AddCommGroup G]
-
-def eqv (ρ : Multiplicative G →* (M →ₗ[R] M)) (S : Set G) (n : ℕ) : Submodule R ((lcCos R G M).cx.X n) where
-  carrier := {f | ∀ g ∈ S, ∀ x : Fin (n + 1) → G, f (fun i => g + x i) = ρ (Multiplicative.ofAdd g) (f x)}
-  add_mem' {a b} ha hb g hg x := by
-    change a _ + b _ = ρ _ (a x + b x)
-    rw [ha g hg, hb g hg, map_add (f := _)]
-  zero_mem' g hg x := (map_zero _).symm
-  smul_mem' c a ha g hg x := by
-    change c • a _ = ρ _ (c • a x)
-    rw [ha g hg, map_smul]
-
-end CrystallineSemistableComparison

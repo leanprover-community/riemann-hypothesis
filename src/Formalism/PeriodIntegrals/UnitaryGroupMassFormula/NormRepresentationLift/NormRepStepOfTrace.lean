@@ -8,6 +8,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentati
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.NormRepLift, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.FrameActOneAdd, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.IntLatOfUnimod, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.ResidueOnto, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.GlobalDual, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.PreRowvec, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.NormRepStepOfTrace
@@ -24,8 +25,6 @@ open scoped Classical
 namespace PI.NormRepLift
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7) (u u' : D.what₂.Word)
 
@@ -64,14 +63,7 @@ theorem Xflag_mono (F : LFlag S r T) (j : ℕ) : Xflag F j ≤ Xflag F (j + 1) :
     omega)
 
 theorem X_le_orth (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := by
-  intro x hx
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro y hy
-  refine span_zero (φ := S.hT y) (fun z hz => ?_) hx
-  obtain ⟨i, rfl⟩ := hz
-  rw [herm_eq, span_zero (φ := S.hT (F.fl.e i)) (fun z hz => by
-    obtain ⟨k, rfl⟩ := hz
-    exact F.fl.e_iso i k) hy, star_zero]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.c_X_iso <;> assumption
 
 theorem NLam_mul (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) {n₁ n₂ : S.V ≃ₗ[E] S.V}
     (h₁ : n₁ ∈ NLam Λ F) (h₂ : n₂ ∈ NLam Λ F) : n₁ * n₂ ∈ NLam Λ F := by
@@ -207,8 +199,6 @@ open scoped Classical
 namespace PI.NRL
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def RowVec (D : D7) (u : D.what₂.Word) (T' : ℕ) : Prop :=
   PrimeHyp D u T' →
@@ -593,8 +583,6 @@ open scoped Classical
 namespace PI.NRL
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def TraceOne (D : D7) : Prop := ∃ ω : 𝓞 D.host.E, (ω : D.host.E) + star (ω : D.host.E) = 1
 

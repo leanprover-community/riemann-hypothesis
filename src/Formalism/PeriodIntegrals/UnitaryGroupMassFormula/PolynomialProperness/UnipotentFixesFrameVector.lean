@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.UnitriangularInversePolynomialBound
 import Mathlib.Tactic.Lemma
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.StabPairs
 
 @[expose] public section
 
@@ -12,12 +13,7 @@ noncomputable section
 namespace PI.PolynomialProperness
 
 lemma one_mem_UW (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : (1 : B.Mat k r) ∈ UWset k r z := by
-  refine ⟨?_, fun a => ⟨?_, ?_⟩, ?_⟩
-  · show (1 : B.Mat k r)ᴴ * Hpk k r * 1 = Hpk k r
-    simp
-  · simp
-  · simp
-  · simp
+  apply _root_.PI.StabPairs.Conv.one_mem_UW <;> assumption
 
 lemma UW_fix {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ UWset k r z)
     (b : Fin (r + 1)) : h *ᵥ fvec k r z b = fvec k r z b := by

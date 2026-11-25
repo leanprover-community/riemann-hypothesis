@@ -108,11 +108,6 @@ def ePl : D.what₂.Tau ≃ InfinitePlace D.host.E :=
   Equiv.ofBijective _ ((Fintype.bijective_iff_injective_and_card _).2
     ⟨mk_tauEmb_injective D, (card_places D).symm⟩)
 
-theorem finrank_E_eq : finrank ℚ D.host.E = 2 * D.R.f := by
-  have h2 : D.R.f = 2 * D.R.ord := rfl
-  rw [D.host.finrank_cmField, h2]
-  ring
-
 @[instance_reducible] def starE : StarRing D.host.E := starRingOfComm
 
 attribute [local instance] starE

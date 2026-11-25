@@ -1,5 +1,7 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcSIntWittAlg
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposition.ContinuousUMatApply
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.Vanish
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HermitianETransportInvariant
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
@@ -440,19 +442,7 @@ variable {n r : ℕ}
 
 theorem isClosed_InN (ε : Fin n → Bool) (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) :
     IsClosed {g : Matrix (Fin n) (Fin n) ℂ | InN ε e z g} := by
-  have hW : ∀ (W : Submodule ℂ (Fin n → ℂ)) (y : Fin n → ℂ),
-      IsClosed {g : Matrix (Fin n) (Fin n) ℂ | (g - 1) *ᵥ y ∈ W} := fun W y =>
-    (Submodule.closed_of_finiteDimensional W).preimage
-      ((continuous_id.sub continuous_const).matrix_mulVec continuous_const)
-  have : {g : Matrix (Fin n) (Fin n) ℂ | InN ε e z g} =
-      ((⋂ a, {g : Matrix (Fin n) (Fin n) ℂ | (g - 1) *ᵥ e a ∈ spanLt e a.1}) ∩
-        {g | (g - 1) *ᵥ z ∈ spanLt e r}) ∩
-        ⋂ y, ⋂ (_ : ∀ a, hJ ε (e a) y = 0), {g | (g - 1) *ᵥ y ∈ spanLt e r} := by
-    ext g
-    simp only [InN, InS, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter]
-  rw [this]
-  exact ((isClosed_iInter fun a => hW _ _).inter (hW _ _)).inter
-    (isClosed_iInter fun y => isClosed_iInter fun _ => hW _ _)
+  apply _root_.PI.ScMuExists.UnitaryGroupMassFormula.isClosed_inN <;> assumption
 
 theorem ninf_closed (I : AutInst) (e : Fin r → Fin I.n → I.E) (z : Fin I.n → I.E) : IsClosed (Ninf I e z) := by
   have : Ninf I e z = ⋂ v, (fun s : I.Ginf => uMat (s v)) ⁻¹'
@@ -533,20 +523,8 @@ end RatPtSec
 theorem unitary_of_hform {A : Type} [CommRing A] {m : ℕ} (σ : A →+* A) (J M : Matrix (Fin m) (Fin m) A)
     (h : ∀ x y, Formalism.UG.hform σ J (M *ᵥ x) (M *ᵥ y) = Formalism.UG.hform σ J x y) :
     Formalism.UG.cT σ M * J * M = J := by
-  ext i j
-  have hR : Formalism.UG.hform σ J (Pi.single i 1) (Pi.single j 1) = J i j := by
-    unfold Formalism.UG.hform
-    rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-    · simp
-    · intro b _ hb; simp [hb]
-    · simp
-    · intro b _ hb; simp [hb]
-    · simp
-  have hL : Formalism.UG.hform σ J (M *ᵥ Pi.single i 1) (M *ᵥ Pi.single j 1) = (Formalism.UG.cT σ M * J * M) i j := by
-    simp only [Matrix.mulVec_single_one, Formalism.UG.hform, Matrix.mul_apply, Formalism.UG.cT, Matrix.transpose_apply,
-      Matrix.map_apply, Matrix.col_apply, Finset.sum_mul]
-    exact Finset.sum_comm
-  rw [← hL, h, hR]
+  intros
+  apply _root_.Formalism.L2.SG.Pf.NcS.IntWittAlg.unitary_of <;> assumption
 
 def rtReal' (I : AutInst) (γ : GL (Fin I.n) I.E) (hγ : γ ∈ Formalism.UG.UJ (starRingEnd I.E) I.J)
     (v : InfinitePlace I.F) : Formalism.REAL.UJ (I.ε v) :=

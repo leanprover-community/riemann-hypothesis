@@ -18,8 +18,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mono_from_one (w : ℕ → ℤ) (hm : ∀ j, 1 ≤ j → w j ≤ w (j + 1)) {i j : ℕ} (hi : 1 ≤ i) (hij : i ≤ j) : w i ≤ w j := by
   induction j, hij using Nat.le_induction with
   | base => exact le_rfl
@@ -124,8 +122,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.UG Formalism.
 open scoped TensorProduct
 
 namespace Formalism.L2.G
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 structure CloudBound (D : D7) (u : D.what₂.Word) (c : ℕ) : Prop where
   top : ∀ g : D.R.Psi, (g : D.R.GG) ∈ D.host.topPlaces → ∀ i : Fin (D.R.k - 1 + 1), 0 < i.val → i.val < D.R.k - 1 →

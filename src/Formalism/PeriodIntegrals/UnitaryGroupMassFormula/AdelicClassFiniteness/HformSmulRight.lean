@@ -62,8 +62,7 @@ theorem hform_swap' (hJ : IsHerm (starRingEnd E) J) (x y : Fin m → E) :
 
 theorem hform_exists_ne (hdet : J.det ≠ 0) (S : Set (Fin m → E)) (hS : Submodule.span E S = ⊤)
     {x : Fin m → E} (hx : x ≠ 0) : ∃ z ∈ S, hform (starRingEnd E) J x z ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   let f : (Fin m → E) →ₗ[E] E :=
     { toFun := fun y => hform (starRingEnd E) J x y
       map_add' := fun y y' => hform_add_right' J x y y'

@@ -14,8 +14,6 @@ namespace PI.UnitaryGroupMassFormula.UsCompose
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def DegDP : Prop := ∀ (N : ℕ) (X : Matrix (Fin N) (Fin N) ℂ) (q : MvPolynomial (Vr N) ℂ),
   (dP X q).totalDegree ≤ q.totalDegree
 

@@ -106,8 +106,7 @@ variable {ρ κ : ℕ} {X Y : Matrix (Fin n) (Fin n) k}
 theorem step_up (hYX : Y * X = 1)
     (hP : ∀ p q : Fin n, Prec ρ κ p q → ∀ i j : Fin n, ¬ Prec ρ κ i j → X i p * Y q j = 0)
     {i p q : Fin n} (hip : X i p ≠ 0) (hpq : Prec ρ κ p q) : ∃ j : Fin n, Prec ρ κ i j ∧ X j q ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 : (Y * X) q q = 0 := by
     rw [Matrix.mul_apply]
     refine Finset.sum_eq_zero fun j _ => ?_
@@ -120,8 +119,7 @@ theorem step_up (hYX : Y * X = 1)
 theorem step_down (hXY : X * Y = 1)
     (hP' : ∀ p q : Fin n, Prec ρ κ p q → ∀ i j : Fin n, ¬ Prec ρ κ i j → Y i p * X q j = 0)
     {i a c : Fin n} (hia : X i a ≠ 0) (hci : Prec ρ κ c i) : ∃ j : Fin n, Prec ρ κ j a ∧ X c j ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 : (X * Y) c c = 0 := by
     rw [Matrix.mul_apply]
     refine Finset.sum_eq_zero fun j _ => ?_

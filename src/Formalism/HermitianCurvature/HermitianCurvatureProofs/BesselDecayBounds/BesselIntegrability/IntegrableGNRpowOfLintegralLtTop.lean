@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRpowNegIntegrable
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
@@ -39,24 +40,6 @@ theorem integrable_gN_rpow_of_lintegral_lt_top {k r : ℕ} {μ : Measure (Mt k r
     Real.rpow_nonneg (gN_nonneg_bessel_integrability _) _)).2 h
 
 theorem growth_group_bound : Formalism.FourierDecayAlt.ThreeDimData.GrowthG := by
-  intro k r μG A hG hA
-  have hG' : Formalism.FourierDecayAlt.B.IsHaarOn (Formalism.FourierDecayAlt.B.GV k r) μG :=
-    Formalism.MainNotions.BridgeLemma₃.hu_haarG k r μG ⟨hG.1, hG.2.1, hG.2.2.1, hG.2.2.2⟩
-  rcases Nat.eq_zero_or_pos (k + r) with h0 | hpos
-  · obtain ⟨rfl, rfl⟩ : k = 0 ∧ r = 0 := by omega
-    have h1 := Formalism.FourierDecayAlt.P.norm_power_integrable_sharp 0 0 μG 1 hG' (by simp [Formalism.FourierDecayAlt.B.AB])
-    have hI := integrable_gN_rpow_of_lintegral_lt_top h1
-    refine hI.congr ?_
-    rw [Filter.EventuallyEq, ae_iff]
-    refine measure_mono_null (fun x hx => ?_) hG.2.2.1
-    intro hxG
-    exact hx (by
-      rw [gN_eq_one_of_zero_dim (Matrix.of x : Formalism.FourierDecayAlt.B.Mat 0 0) hxG,
-        Real.one_rpow, Real.one_rpow])
-  · have hAB : Formalism.FourierDecayAlt.B.AB k r ≤ A := by
-      have hkr : (1 : ℝ) ≤ (k : ℝ) + r := by exact_mod_cast hpos
-      simp only [Formalism.FourierDecayAlt.B.AB, Formalism.FourierDecayAlt.ThreeDimData.AG] at hA ⊢
-      nlinarith
-    exact integrable_gN_rpow_of_lintegral_lt_top (Formalism.FourierDecayAlt.P.norm_power_integrable_sharp k r μG A hG' hAB)
+  apply _root_.GlobalTheory.gN_rpow_neg_integrable_haar <;> assumption
 
 end Formalism.FourierDecayAlt.P

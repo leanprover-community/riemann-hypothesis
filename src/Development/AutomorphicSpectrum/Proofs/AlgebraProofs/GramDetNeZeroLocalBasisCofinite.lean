@@ -33,8 +33,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.gram_det_ne_zero_local_basis_c
     norm_cast
   have hy : ∀ y : D.La, ∃ c : 𝓞 E, c ≠ 0 ∧ c • y ∈ Submodule.span (𝓞 E) (Set.range e) := by
     intro y
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hli' : LinearIndependent (𝓞 E) (fun o : Option I => Option.elim o y e) := by
       rw [Fintype.linearIndependent_iff]
       intro g hg

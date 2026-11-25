@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.TaylorSpanGeneratorsAlt
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.FinitePtsOfCurve
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.PoleLengthBound
 
 @[expose] public section
 
@@ -23,18 +24,7 @@ theorem ord_prod_eq_zero (ζ : Pts O A) [IsDVRAt ζ] (h : IsUnif A ϖ) {ι : Typ
   rw [ord_mul ζ h, ha, hb, add_zero]
 
 theorem eq_zero_of_ord_top [∀ ζ : Pts O A, IsDVRAt ζ] (h : IsUnif A ϖ) {x : A} (hx : ∀ ζ : Pts O A, ord ϖ ζ x = ⊤) : x = 0 := by
-  obtain ⟨n, hn⟩ := h.denom x
-  have h0 : (⟨ϖ ^ n • x, hn⟩ : ↥(As O A)) = 0 := by
-    refine eq_zero_of_localization _ fun J hJ => ?_
-    have h1 := hx ⟨J, hJ⟩
-    rw [ord_eq _ h hn, ordAt, WithTop.add_eq_top] at h1
-    rcases h1 with h1 | h1
-    · rw [ENat.map_eq_top_iff] at h1
-      exact (vL_eq_top_iff (ζ := (⟨J, hJ⟩ : Pts O A)) _).1 h1
-    · exact absurd h1 (WithTop.coe_ne_top)
-  have h2 : ϖ ^ n • x = 0 := congrArg Subtype.val h0
-  rw [Algebra.smul_def, map_pow] at h2
-  exact ((h.isUnit.pow n).mul_right_eq_zero).1 h2
+  apply +allowSynthFailures _root_.PI.UnitaryGroupMassFormula.BallQuotLen.eq_zero_of_ord_top <;> assumption
 
 end Ord
 

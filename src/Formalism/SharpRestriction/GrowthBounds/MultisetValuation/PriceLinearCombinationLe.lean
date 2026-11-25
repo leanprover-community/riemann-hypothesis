@@ -129,11 +129,6 @@ theorem ne_b_top (hS : Formalism.MainNotions.SizesAt L) (s : Fin ((D.gat u w hg)
 
 end Orbit
 
-def priceThreshold : ℝ := 9
-
-theorem price_threshold_ge_nine : 9 ≤ priceThreshold := by norm_num [priceThreshold]
-
-
 open Classical in
 theorem price_bound_small_primes : PriceBoundSmallPrimes := by
   intro D L X Y K hK hS hT hL u w hg hp t0 ht0 j hj
@@ -188,15 +183,6 @@ theorem price_bound_small_primes : PriceBoundSmallPrimes := by
       ((D.gat u w hg).P.n' (Y.vOf u w hg t0) : ℝ) * (Formalism.MainNotions.G.rG L.sc : ℝ) * ((j : ℝ) * ((D.R.t : ℝ) + 1) / 2) := by ring
   rw [e]
   exact hfin
-
-theorem priceBoundLargePrimes_priceThreshold : PriceBoundLargePrimes priceThreshold :=
-  fun D L X Y K hK => price_bound_large_primes D L X Y K (by linarith [price_threshold_ge_nine])
-
-theorem ne_priceThreshold : PriceBound priceThreshold :=
-  priceBound_of_largePrimes_of_smallPrimes priceThreshold priceBoundLargePrimes_priceThreshold price_bound_small_primes
-
-theorem numericalComparisonUniform_of_size (hS : nd_NeedSize) : Formalism.MainNotions.FormalGroupSystem.NumericalComparisonUniform :=
-  numerical_closed_of_threshold priceThreshold price_threshold_ge_nine (nc_need3_of priceThreshold hS ne_priceThreshold)
 
 end Formalism.MainNotions.FormalGroupSystem.Pf
 end -- clump:auto

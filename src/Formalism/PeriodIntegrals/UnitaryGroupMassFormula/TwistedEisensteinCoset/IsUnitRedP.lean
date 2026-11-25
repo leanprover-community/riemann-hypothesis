@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedCharacterOne.IsIntegralAtSuperdiagonalSum
 
 @[expose] public section
 
@@ -49,22 +50,7 @@ private lemma mk_mul_reduction_eq_mk {a : E} {r s : 𝓞 E} (hs : s ∉ P.asIdea
   ring
 
 theorem reduction_mul' {a b : E} (ha : IntAt P a) (hb : IntAt P b) : redP P (a * b) = redP P a * redP P b := by
-  haveI := P.isMaximal
-  letI := Ideal.Quotient.field P.asIdeal
-  obtain ⟨r, s, hs, h⟩ := ha
-  obtain ⟨r', s', hs', h'⟩ := hb
-  have hss : s * s' ∉ P.asIdeal := fun hm => (P.isPrime.mem_or_mem hm).elim hs hs'
-  have hab : algebraMap (𝓞 E) E (s * s') * (a * b) = algebraMap (𝓞 E) E (r * r') := by
-    rw [map_mul, map_mul, ← h, ← h']
-    ring
-  have h1 := mk_mul_reduction_eq_mk P hss hab
-  have ha' := mk_mul_reduction_eq_mk P hs h
-  have hb' := mk_mul_reduction_eq_mk P hs' h'
-  have hss0 : Ideal.Quotient.mk P.asIdeal (s * s') ≠ 0 :=
-    fun h0 => hss (Ideal.Quotient.eq_zero_iff_mem.1 h0)
-  apply mul_right_cancel₀ hss0
-  rw [h1, map_mul, map_mul, ← ha', ← hb']
-  ring
+  apply _root_.PI.TwChrOne.Pf.reduction_mul <;> assumption
 
 theorem reduction_one' : redP P (1 : E) = 1 := by
   have h1 : (1 : 𝓞 E) ∉ P.asIdeal := fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h)

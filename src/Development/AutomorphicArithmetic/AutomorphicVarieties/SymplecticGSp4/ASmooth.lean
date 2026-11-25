@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.KerPow
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ChartSum
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.EntryMem
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.PartSpan
@@ -60,38 +62,7 @@ variable {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
 
 private lemma exists_order {X : Type} [AddCommGroup X] (W : WPres O X R) (h : W.HasOrigin) (n : ℕ) :
     ∀ x ∈ RingHom.ker (W.origin h) ^ n, ∃ f, W.π f = x ∧ (n : ℕ∞) ≤ f.order := by
-  induction n with
-  | zero =>
-    intro x _
-    obtain ⟨f, rfl⟩ := W.surj x
-    exact ⟨f, rfl, by simp⟩
-  | succ n ih =>
-    let I : Ideal R :=
-      { carrier := {x | ∃ f, W.π f = x ∧ ((n + 1 : ℕ) : ℕ∞) ≤ f.order}
-        add_mem' := by
-          rintro _ _ ⟨f, rfl, hf⟩ ⟨g, rfl, hg⟩
-          exact ⟨f + g, map_add _ _ _, le_trans (le_min hf hg) MvPowerSeries.min_order_le_add⟩
-        zero_mem' := ⟨0, map_zero _, by simp⟩
-        smul_mem' := by
-          rintro c _ ⟨f, rfl, hf⟩
-          obtain ⟨g, rfl⟩ := W.surj c
-          refine ⟨g * f, by rw [map_mul, smul_eq_mul], le_trans ?_ MvPowerSeries.le_order_mul⟩
-          exact le_trans hf le_add_self }
-    have hle : RingHom.ker (W.origin h) ^ (n + 1) ≤ I := by
-      rw [pow_succ]
-      refine Ideal.mul_le.mpr fun a ha b hb => ?_
-      obtain ⟨f, rfl, hf⟩ := ih a ha
-      obtain ⟨g, rfl⟩ := W.surj b
-      have hg : ((1 : ℕ) : ℕ∞) ≤ g.order := by
-        refine MvPowerSeries.nat_le_order fun d hd => ?_
-        have hd0 : d = 0 := (Finsupp.degree_eq_zero_iff d).mp (by omega)
-        subst hd0
-        rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
-        rwa [RingHom.mem_ker, WPres.origin_π] at hb
-      refine ⟨f * g, map_mul _ _ _, le_trans ?_ MvPowerSeries.le_order_mul⟩
-      rw [Nat.cast_add]
-      exact add_le_add hf hg
-    exact fun x hx => hle hx
+  apply _root_.exists_order <;> assumption
 
 private lemma monomial_mem {X : Type} [AddCommGroup X] {σ : Type} (wt : σ → X) (m : σ →₀ ℕ) (c : O) :
     monomial m c ∈ wtPart O wt (Finsupp.weight wt m) := fun k hk => by
@@ -263,8 +234,7 @@ private lemma split_mono {σ : Type} (wt : σ → ℤ × ℤ) (hw : ∀ i, (wt i
       · exact absurd h this
       · exact Or.inl h
     obtain ⟨s, hs, hs1⟩ : ∃ s ∈ m.support, (wt s).1 = 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hlt : ∑ i ∈ m.support, (m i : ℤ) * (wt i).1 < 0 := by
         refine Finset.sum_neg (fun i hi => ?_) hne
         rcases hpm i hi with h | h
@@ -274,8 +244,7 @@ private lemma split_mono {σ : Type} (wt : σ → ℤ × ℤ) (hw : ∀ i, (wt i
           linarith
       linarith
     obtain ⟨t, ht, ht1⟩ : ∃ t ∈ m.support, (wt t).1 = -1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hlt : 0 < ∑ i ∈ m.support, (m i : ℤ) * (wt i).1 := by
         refine Finset.sum_pos (fun i hi => ?_) hne
         rcases hpm i hi with h | h
@@ -657,27 +626,7 @@ private theorem restrict {E τ' : Type} [CommRing E] [Algebra O E] (φ : A →�
     rfl
 
 private theorem exists_eq_single_one_of_degree_eq_one {κ : Type} {v : κ →₀ ℕ} (hv : v.degree = 1) : ∃ t, v = Finsupp.single t 1 := by
-  classical
-  have hv0 : v ≠ 0 := by
-    rintro rfl
-    simp at hv
-  obtain ⟨t, ht⟩ := Finsupp.ne_iff.mp hv0
-  have hle : Finsupp.single t 1 ≤ v := by
-    intro s
-    by_cases hs : s = t
-    · subst hs
-      rw [Finsupp.single_eq_same]
-      simp only [Finsupp.coe_zero, Pi.zero_apply] at ht
-      omega
-    · rw [Finsupp.single_eq_of_ne hs]
-      exact Nat.zero_le _
-  have hsum : v = Finsupp.single t 1 + (v - Finsupp.single t 1) := (add_tsub_cancel_of_le hle).symm
-  have hdeg : (v - Finsupp.single t 1).degree = 0 := by
-    have e := congrArg Finsupp.degree hsum
-    rw [map_add (f := _), Finsupp.degree_single, hv] at e
-    omega
-  refine ⟨t, ?_⟩
-  rw [hsum, (Finsupp.degree_eq_zero_iff _).mp hdeg, add_zero]
+  apply _root_.exists_single_of_degree_eq_one <;> assumption
 
 private theorem coeff_two {E : Type} [CommRing E] [IsDomain E] [DecidableEq τ] (p q : MvPowerSeries τ E) (k b j : τ)
     (hp0 : coeff 0 p = 0) (hq0 : coeff 0 q = 0) (hp : ∀ i, i ≠ k → coeff (Finsupp.single i 1) p = 0)

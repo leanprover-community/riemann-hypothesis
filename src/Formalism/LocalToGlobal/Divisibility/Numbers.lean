@@ -83,9 +83,6 @@ def frobUnitMod (M p : ℕ) : (ZMod M)ˣ := by
   exact if h : ∃ w : (ZMod M)ˣ, ((w : ZMod M).cast : ZMod (ordCompl[p] M)) = (p : ZMod (ordCompl[p] M)) ∧
     ((w : ZMod M).cast : ZMod (ordProj[p] M)) = 1 then h.choose else 1
 
-def hArt {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (p : ℕ) : φ.A :=
-  φ.iotaInv (H.art (frobUnitMod H.condN p)).2
-
 namespace NumDatum
 
 variable (N : NumDatum)

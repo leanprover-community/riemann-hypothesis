@@ -119,8 +119,7 @@ theorem intTwoSided : Formalism.DoubleCosetMeasures.IntTwoSided := by
     exact Finset.sum_congr rfl fun p _ => hpiece p
   · rw [integral_undef hint]
     have hex : ∃ p ∈ S, ¬ Integrable ((box K₁ K₂ p).indicator (fun _ => g p)) (μ₁.prod μ₂) := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       apply hint
       rw [hdecomp]
       exact MeasureTheory.integrable_finsetSum S hne

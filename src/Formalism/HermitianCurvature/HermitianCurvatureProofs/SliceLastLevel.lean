@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import Formalism.FormalDegreeBessel.FinalG
@@ -106,17 +107,7 @@ lemma tr_inv_GV {n : B.Mat k r} (hn : n ∈ B.GV k r) : n⁻¹ = Hpk k r * nᴴ 
     _ = 1 := by rw [h, (hpkFacts k r).2.1]
 
 lemma gN_inv_GV {n : B.Mat k r} (hn : n ∈ B.GV k r) : B.gN n⁻¹ = B.gN n := by
-  have hH1 : (Hpk k r)ᴴ = Hpk k r := (hpkFacts k r).1
-  have hH2 : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
-  have h2 : B.gN n⁻¹ ^ 2 = B.gN n ^ 2 := by
-    rw [P.HermitianFormFactor.gN_sq, P.HermitianFormFactor.gN_sq, tr_inv_GV hn]
-    have e : Hpk k r * nᴴ * Hpk k r * (Hpk k r * nᴴ * Hpk k r)ᴴ = Hpk k r * (nᴴ * n) * Hpk k r := by
-      rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hH1]
-      calc Hpk k r * nᴴ * Hpk k r * (Hpk k r * (n * Hpk k r))
-          = Hpk k r * nᴴ * (Hpk k r * Hpk k r) * n * Hpk k r := by simp only [Matrix.mul_assoc]
-        _ = _ := by rw [hH2, Matrix.mul_one]; simp only [Matrix.mul_assoc]
-    rw [e, Matrix.trace_mul_cycle, hH2, Matrix.one_mul, Matrix.trace_mul_comm]
-  rw [← Real.sqrt_sq (tr_gN_nonneg n⁻¹), h2, Real.sqrt_sq (tr_gN_nonneg n)]
+  apply _root_.PI.PolynomialProperness.GN.gN_inv <;> assumption
 
 lemma tr_f_meas (A : ℝ) : Measurable fun g : Mt k r => ENNReal.ofReal (B.gN (Matrix.of g : B.Mat k r) ^ (-A)) :=
   ENNReal.measurable_ofReal.comp ((P.HaarUniquenessConjugation.gN_meas k r).pow_const _)

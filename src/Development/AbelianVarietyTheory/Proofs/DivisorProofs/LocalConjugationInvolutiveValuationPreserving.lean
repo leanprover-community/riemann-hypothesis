@@ -88,8 +88,7 @@ theorem lt_one_of_map (s : w.adicCompletion E →+* w.adicCompletion E) (hs : Co
     have := (hs.tendsto 0).comp (tendsto_pow_zero h)
     simpa [Function.comp_def, map_pow] using this
   obtain ⟨N, hN⟩ := (h1.eventually lt_one_mem_nhds).exists
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have : 1 ≤ Valued.v (s x ^ N) := by rw [map_pow]; exact one_le_pow₀ hc
   exact absurd hN (not_lt.2 this)
 
@@ -106,8 +105,7 @@ theorem valued_map_eq (s : w.adicCompletion E →+* w.adicCompletion E) (hs : Co
 
   have hle : ∀ y : w.adicCompletion E, Valued.v y ≤ 1 → Valued.v (s y) ≤ 1 := by
     intro y hy
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hy0 : s y ≠ 0 := by
       intro h0; rw [h0, map_zero] at hc; exact absurd hc (not_lt.2 zero_le')
     have h1 : Valued.v (s y)⁻¹ < 1 := by rw [map_inv₀]; exact inv_lt_one_of_one_lt₀ hc

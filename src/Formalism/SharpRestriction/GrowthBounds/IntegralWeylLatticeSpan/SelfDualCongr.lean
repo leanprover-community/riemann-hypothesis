@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.GramInvIntV
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.RestGramW
 public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
@@ -164,22 +165,7 @@ theorem hb_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (I : CmpIn D X) (hJ : �
 
 theorem lcInt_of_cls {u : D.what₂.Word} {i : ℕ} {hi : i ≤ D.R.m} (K : ClsTied u i hi) (c : (D.mem u).C.cls i) :
     clsCrd D u i hi c ≤ Ld D u i hi c := by
-  intro x hx
-  apply Submodule.subset_span
-  intro x' hx'
-  have hglob : ∀ z ∈ clsCrd D u i hi c, z ∈ Formalism.UG.CS.globLat (K.y c).1 K.lev.Lb := by
-    intro z hz
-    exact (K.y_lat c _).1 (Submodule.subset_span ⟨z, hz, rfl⟩)
-  have hm : ∀ a ∈ K.lev.Lb, ∀ b ∈ K.lev.Lb,
-      IsIntegral ℤ (((1 : ℤ) : D.host.E) * Formalism.UG.hform (sigD D : D.host.E →+* D.host.E) (gramN D i hi) a b) := by
-    intro a ha b hb
-    obtain ⟨r, hr⟩ := K.lev.Lb_int b hb a ha
-    rw [Int.cast_one, one_mul, ← hr]
-    exact RingOfIntegers.isIntegral_coe r
-  have h := Formalism.UG.P.csScale_glob (sigD D) (gramN D i hi) K.lev.Lb 1 hm (K.y c).1
-    (K.y c).2 (hglob x' hx') (hglob x hx)
-  rw [Int.cast_one, one_mul] at h
-  exact Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwL_descent _ _ _ h
+  apply +allowSynthFailures _root_.GlobalTheory.LevelHecke.cls_le_dual <;> assumption
 
 
 theorem hle_rec (T : ∀ u : D.what₂.Word, Forms0 D u) (u : D.what₂.Word) (c : (D.mem u).C.cls 0) :

@@ -321,45 +321,6 @@ theorem _root_.GlobalTheory.LocalH1Finiteness.norm_toLL_le (x : O) : ‖Bw.toLL 
   (_root_.GlobalTheory.mem_integralClosure_padicInt_iff (Bw.LL : IntermediateField ℚ_[l] (PadicAlgCl l)) _).1
     (Bw.eO x).2
 
-theorem rep_apply {m : ℕ} (r : ↥Gw →* GL (Fin m) O) (g : ↥(GK Bw.Kw)) (v : Fin m → ↥Bw.LL.1)
-    (a : Fin m) :
-    Bw.rep r g v a = ∑ b, Bw.toLL ((r (Bw.e.symm g) : Matrix (Fin m) (Fin m) O) a b) * v b := rfl
-
-
-variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
-  {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
-  (Bw : _root_.Formalism.BasicNotions.LocBridge l E Ω Gw O) in
-theorem _root_.GlobalTheory.LocalH1Finiteness.finite_continuous_cocycles_localGaloisRep (hK : _root_.Formalism.GaloisCohomology.LocalFinitenessK) {m : ℕ}
-    (r : ↥Gw →* GL (Fin m) O)
-    (hr : Continuous fun g => (r g : Matrix (Fin m) (Fin m) O)) :
-    Module.Finite ↥Bw.LL.1 (_root_.Formalism.WeaklyAdmissibleFiltrations.continuousCocycles (Bw.rep r)) := by
-  haveI : FiniteDimensional ℚ_[l] ↥Bw.LL.1 := Bw.LL.2
-  haveI : FiniteDimensional ℚ_[l] ↥Bw.Kw.1 := Bw.Kw.2
-  have htoLL : Continuous Bw.toLL := by
-    show Continuous (fun x => ((Bw.eO x : _) : ↥Bw.LL.1))
-    exact continuous_subtype_val.comp Bw.eO_cont
-  let φ : _root_.Formalism.GaloisCohomology.GK l Bw.Kw.1 →* ↥(_root_.Formalism.BasicNotions.Loc.GK Bw.Kw) :=
-    (Bw.Kw.1.fixingSubgroupEquiv.symm : _ ≃* _).toMonoidHom
-  refine _root_.GlobalTheory.LocalH1Finiteness.finite_cocycles_of_compact_cover (l := l) (Bw.rep r) ?_ ?_ φ ?_ ?_ ?_
-  · unfold _root_.ReciprocityTheory.Gal.ContAction
-    have hent : ∀ a b, Continuous fun g : ↥(_root_.Formalism.BasicNotions.Loc.GK Bw.Kw) =>
-        Bw.toLL ((r (Bw.e.symm g) : Matrix (Fin m) (Fin m) O) a b) := fun a b =>
-      htoLL.comp ((hr.comp Bw.e_symm_cont).matrix_elem a b)
-    refine continuous_pi fun a => ?_
-    simp only [_root_.GlobalTheory.LocalH1Finiteness.rep_apply]
-    exact continuous_finsetSum _ fun b _ =>
-      ((hent a b).comp continuous_fst).mul ((continuous_apply b).comp continuous_snd)
-  · intro g v
-    refine (pi_norm_le_iff_of_nonneg (norm_nonneg v)).2 fun a => ?_
-    rw [_root_.GlobalTheory.LocalH1Finiteness.rep_apply]
-    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg v) fun b _ => ?_
-    rw [norm_mul]
-    exact (mul_le_of_le_one_left (norm_nonneg _) (_root_.GlobalTheory.LocalH1Finiteness.norm_toLL_le Bw _)).trans
-      (norm_le_pi_norm v b)
-  · exact (_root_.GlobalTheory.fixingSubgroupEquiv_bicontinuous _ _ Bw.Kw.1).2
-  · exact Bw.Kw.1.fixingSubgroupEquiv.symm.surjective
-  · intro r' M _ _ _ _ _ rho hr' hc
-    exact (hK l Bw.Kw.1 Bw.Kw.2 r' M rho hr' hc).2.1
 
 end Bridge
 

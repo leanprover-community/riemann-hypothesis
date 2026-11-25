@@ -109,8 +109,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CoverDescSpan
@@ -120,8 +118,6 @@ open GlobalTheory.LevelCusp (IsMatch)
 open GlobalTheory.Dict (castFr)
 open GlobalTheory.DictMove (Carries)
 open scoped TensorProduct Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

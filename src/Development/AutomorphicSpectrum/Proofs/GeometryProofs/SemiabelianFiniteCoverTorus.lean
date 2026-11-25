@@ -1,5 +1,7 @@
 module
 
+
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SABBaseChangeSt
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.GenericExistsUniqueOActOfIsGrpPullback
 public import Mathlib.AlgebraicGeometry.Normalization
 public import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -33,60 +35,13 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Exi
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmoothGroupRelDimGeneric
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SharpOverIff
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsaRos
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.BaseChangeKernels.PullbackSquarePartialSum
-import Mathlib.AlgebraicGeometry.Morphisms.Proper
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsPreimmersionToNormalization, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteNormalCoverGenericPoint, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.StratumGenericTorsionPoints, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionTwoTorsion, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TorusKernelTrivialSpreadsOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusKernelTrivialOpen, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TwoTorsionPointsSpreadOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwoTorsionSpreadOpen, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TwoTorsionRankBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwoTorsionCardBound, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.MaximalTorusInFibre, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionRankBound, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FiniteSurjectiveImageOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteSurjectiveOpenImage, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsSplitTorusExtension, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionSplitMap, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianFiniteCoverTorus
 
@@ -1335,24 +1290,7 @@ theorem core (hE : GlobalTheory.Published.SemiAbelianHomExtension) (Z : Scheme.{
   have hsm := hG.smooth
   have hsep := hG.separated
   have hG' : IsSemiAbelian ((Over.pullback π).obj G) := by
-    refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-    · have := hG.comm
-      infer_instance
-    · have := hG.smooth
-      change Smooth (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.separated
-      change IsSeparated (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.quasiCompact
-      change QuasiCompact (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.geomConnected
-      change GeometricallyConnected (pullback.snd G.hom π)
-      infer_instance
-    · intro Ω _ _ q
-      obtain ⟨E⟩ := hG.fibres Ω (q ≫ π)
-      exact ⟨torusExtOfIso (pullCompIso q π G) E⟩
+    apply _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsSemiAbelian.pullback <;> assumption
   have hsep' := hG'.separated
   have hLN : IsLocallyNoetherian Z' := LocallyOfFiniteType.isLocallyNoetherian π
   have hCS : CompactSpace Z' := QuasiCompact.compactSpace_of_compactSpace π

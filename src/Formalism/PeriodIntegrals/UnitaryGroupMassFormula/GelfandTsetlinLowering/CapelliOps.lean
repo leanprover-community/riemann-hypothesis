@@ -8,6 +8,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Formalism.LocalRingCardinality.Params
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.ProdMapPowSingle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.RealPlaceAnalysis.RealPlaceTaylor.SatisfiesGlRelationsBilinearLeft, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.CapelliOps
@@ -25,17 +26,7 @@ namespace Formalism.REAL
 
 lemma pderiv_pderiv_comm_real_place_taylor {σ : Type*} (v w : σ) (f : MvPolynomial σ ℂ) :
     pderiv v (pderiv w f) = pderiv w (pderiv v f) := by
-  classical
-  have hc : ⁅(pderiv v : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ)),
-      (pderiv w : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ))⁆ = 0 := by
-    apply MvPolynomial.derivation_ext
-    intro i
-    rw [Derivation.commutator_apply]
-    simp only [pderiv_X, Pi.single_apply]
-    split_ifs <;> simp
-  have hf := congrArg (fun D : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ) => D f) hc
-  simp only [Derivation.commutator_apply, Derivation.zero_apply] at hf
-  exact sub_eq_zero.mp hf
+  apply _root_.PositivityTheory.Rg.Sw.LC.CoreBb.pderiv_comm' <;> assumption
 
 lemma bilinear_commutator_identity {A : Type*} [Ring A] (p1 b1 p2 b2 d1 d2 : A)
     (h1 : b1 * p2 - p2 * b1 = d1) (h2 : b2 * p1 - p1 * b2 = d2)

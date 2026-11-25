@@ -1,5 +1,8 @@
 module
 
+
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockEstimatesSumForm
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Analysis.Convex.SpecificFunctions.Basic
@@ -15,7 +18,6 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 import Mathlib.Data.Finset.Functor
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.Statement, Formalism.HermitianCurvature.HermitianCurvatureProofs.RecText, Formalism.HermitianCurvature.HermitianCurvatureProofs.AntidiagMulDiagonal, Formalism.HermitianCurvature.HermitianCurvatureProofs.FinitePointSets, Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockStartPoints, Formalism.HermitianCurvature.HermitianCurvatureProofs.FormDomination, Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveSemidefinitePullback, Formalism.HermitianCurvature.HermitianCurvatureProofs.OneLevelInequalitySplitBySize, Formalism.HermitianCurvature.HermitianCurvatureProofs.RecursionWithDensities
 
@@ -443,17 +445,7 @@ variable {E W : Type} [Field E]
 
 lemma psd_sum_nonneg {α : Type} (Y : Finset α) (k g : α → α → ℂ) (hk : PSDOn Y k)
     (hg : PSDOn Y g) : 0 ≤ (∑ p ∈ Y, ∑ q ∈ Y, k p q * g p q).re := by
-  have h := (Matrix.PosSemidef.hadamard hk hg).dotProduct_mulVec_nonneg (fun _ => (1 : ℂ))
-  have e : star (fun _ : Y => (1 : ℂ)) ⬝ᵥ (Matrix.mulVec (Matrix.hadamard
-      (Matrix.of fun x y : Y => k x y) (Matrix.of fun x y : Y => g x y)) (fun _ => (1 : ℂ))) =
-      ∑ p ∈ Y, ∑ q ∈ Y, k p q * g p q := by
-    simp only [dotProduct, Matrix.mulVec, Matrix.hadamard_apply, Matrix.of_apply, Pi.star_apply,
-      star_one, one_mul, mul_one]
-    rw [← Finset.sum_coe_sort Y]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    rw [← Finset.sum_coe_sort Y]
-  rw [e] at h
-  exact (Complex.le_def.1 h).1
+  apply _root_.Formalism.FourierDecayAlt.P.BaseGramNonnegativity.sum_re_nonneg <;> assumption
 
 lemma psd_comp {α β : Type} (Y : Finset α) (Z : Finset β) (φ : α → β) (hφ : ∀ a ∈ Y, φ a ∈ Z)
     (k : β → β → ℂ) (hk : PSDOn Z k) : PSDOn Y (fun a b => k (φ a) (φ b)) :=
@@ -773,17 +765,7 @@ open scoped ComplexOrder
 
 theorem form_nonneg {α : Type} (Y : Finset α) (k g : α → α → ℂ) (hk : PSDOn Y k)
     (hg : PSDOn Y g) : 0 ≤ (∑ a ∈ Y, ∑ b ∈ Y, k a b * g a b).re := by
-  have H := (Matrix.PosSemidef.hadamard hk hg).dotProduct_mulVec_nonneg (fun _ => (1 : ℂ))
-  have e : star (fun _ : Y => (1 : ℂ)) ⬝ᵥ
-      ((Matrix.hadamard (Matrix.of fun x y : Y => k x y) (Matrix.of fun x y : Y => g x y)).mulVec
-        (fun _ => (1 : ℂ))) = ∑ a ∈ Y, ∑ b ∈ Y, k a b * g a b := by
-    simp only [dotProduct, Matrix.mulVec, Matrix.hadamard_apply, Matrix.of_apply, Pi.star_apply,
-      star_one, one_mul, mul_one]
-    rw [← Finset.sum_coe_sort Y]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [← Finset.sum_coe_sort Y]
-  rw [e] at H
-  exact (Complex.le_def.1 H).1
+  apply _root_.Formalism.FourierDecayAlt.P.BlockStartPoints.psd_sum_nonneg <;> assumption
 
 theorem form_dom {α ι : Type} (Y : Finset α) (R : Finset ι) (c : ℝ) (k g : α → α → ℂ)
     (Th : ι → α → α → ℂ)
@@ -1211,31 +1193,14 @@ open Classical
 
 theorem psd_congr {α : Type} {Y : Finset α} {k k' : α → α → ℂ}
     (h : ∀ x ∈ Y, ∀ y ∈ Y, k x y = k' x y) (hk : PSDOn Y k) : PSDOn Y k' := by
-  unfold TB.PSDOn at hk ⊢
-  have e : (Matrix.of fun x y : Y => k' x y) = Matrix.of fun x y : Y => k x y := by
-    ext x y
-    simp only [Matrix.of_apply]
-    exact (h x x.2 y y.2).symm
-  rw [e]
-  exact hk
+  apply _root_.Formalism.FourierDecayAlt.P.Jx7.psd_congr <;> assumption
 
 theorem psd_zero {α : Type} (Y : Finset α) : PSDOn Y (fun _ _ => (0 : ℂ)) := by
-  unfold TB.PSDOn
-  have e : (Matrix.of fun x y : Y => (0 : ℂ)) = 0 := by
-    ext x y
-    simp
-  rw [e]
-  exact Matrix.PosSemidef.zero
+  apply _root_.Formalism.FourierDecayAlt.P.Jx7.psd_zero <;> assumption
 
 theorem psd_add {α : Type} {Y : Finset α} {k k' : α → α → ℂ} (h : PSDOn Y k) (h' : PSDOn Y k') :
     PSDOn Y (fun x y => k x y + k' x y) := by
-  unfold TB.PSDOn at h h' ⊢
-  have e : (Matrix.of fun x y : Y => k x y + k' x y) =
-      (Matrix.of fun x y : Y => k x y) + Matrix.of fun x y : Y => k' x y := by
-    ext x y
-    simp
-  rw [e]
-  exact h.add h'
+  apply _root_.Formalism.FourierDecayAlt.P.Jx7.psd_add <;> assumption
 
 private theorem sum_attach_ite_eq {α : Type} (X : Finset α) (a : α) (F : α → ℂ) :
     (∑ j ∈ X.attach, if (j : α) = a then F j else 0) = if a ∈ X then F a else 0 := by

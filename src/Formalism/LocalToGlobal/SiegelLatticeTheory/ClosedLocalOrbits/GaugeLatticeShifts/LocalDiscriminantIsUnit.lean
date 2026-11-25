@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermAttractorConstant.LeadMinorEMulUpper
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.GramJoint
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.EFSymmCont
@@ -1208,21 +1209,7 @@ theorem bt_lead_tri {n l : ℕ} (hl : l ≤ n) {R : Type*} [CommRing R] (Z U : M
     (hU : ∀ a b, b < a → U a b = 0) :
     (Z * U).submatrix (Fin.castLE hl) (Fin.castLE hl) =
       Z.submatrix (Fin.castLE hl) (Fin.castLE hl) * U.submatrix (Fin.castLE hl) (Fin.castLE hl) := by
-  ext i j
-  simp only [Matrix.submatrix_apply, Matrix.mul_apply]
-  have e := (Finset.sum_image (s := Finset.univ) (g := Fin.castLE hl)
-    (f := fun k => Z (Fin.castLE hl i) k * U k (Fin.castLE hl j))
-    (fun a _ b _ h => Fin.castLE_injective hl h))
-  rw [← e]
-  symm
-  apply Finset.sum_subset (Finset.subset_univ _)
-  intro k _ hk
-  have hjk : Fin.castLE hl j < k := by
-    by_contra hkj
-    push Not at hkj
-    apply hk
-    refine Finset.mem_image.2 ⟨⟨k.val, lt_of_le_of_lt hkj j.isLt⟩, Finset.mem_univ _, Fin.ext rfl⟩
-  rw [hU k _ hjk, mul_zero]
+  apply _root_.PI.TermAttrConst.UnitaryGroupMassFormula.sub_mul_upper <;> assumption
 
 theorem bt_det_unitri_sub {n l : ℕ} (hl : l ≤ n) {R : Type*} [CommRing R] (U : Matrix (Fin n) (Fin n) R)
     (h1 : ∀ a b, b < a → U a b = 0) (h2 : ∀ a, U a a = 1) :
@@ -1730,9 +1717,6 @@ open BBTie
 
 section Tied
 
-
-variable (D) in
-def LocTied : Prop := ∀ p : PlF D, Nonempty (Formalism.L2.S.LocIso (D.s.atP p) (Formalism.L2.S.locC D p))
 
 
 

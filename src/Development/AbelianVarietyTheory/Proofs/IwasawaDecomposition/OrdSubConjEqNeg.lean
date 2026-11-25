@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjQuotientOfRationalUnitaryDeterminantMa
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmEmbeddingProperties
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalIdeleSndSelf
@@ -209,15 +210,7 @@ theorem phase_sq_eq {a u : ℂ} (ha : a ≠ 0) (h : u * starRingEnd ℂ a = a) :
 
 theorem exists_mul_conj_eq {L : Type} [Field L] (c : L →+* L) (hc : ∀ x, c (c x) = x) (hne : ∃ a, c a ≠ a)
     (z : L) (hz : z * c z = 1) : ∃ k : Lˣ, z * c (k : L) = k := by
-  by_cases h : 1 + z = 0
-  · obtain ⟨a, ha⟩ := hne
-    refine ⟨Units.mk0 (a - c a) (sub_ne_zero.2 ha.symm), ?_⟩
-    have hz1 : z = -1 := by linear_combination h
-    rw [Units.val_mk0, map_sub, hc, hz1]
-    ring
-  · refine ⟨Units.mk0 (1 + z) h, ?_⟩
-    rw [Units.val_mk0, map_add (f := _), map_one]
-    linear_combination hz
+  apply _root_.GlobalTheory.Mem.RatPts.exists_mul_apply_eq_of_mul_apply_eq_one_of_involution <;> assumption
 
 theorem isChi_chiId : ∀ (D : D7) (χ : HChar D.host.E), IsChiPsi D.host χ → Formalism.MainNotions.TaylorLogMetric.IsChi D (chiId χ) := by
   intro D χ hχ

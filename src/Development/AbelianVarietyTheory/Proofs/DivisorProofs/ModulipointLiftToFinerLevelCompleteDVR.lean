@@ -86,18 +86,12 @@ section Places
 variable {V K' : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K'] [Algebra V K']
   [IsFractionRing V K']
 
-theorem valV_le_one (v : V) : valV V (algebraMap V K' v) ≤ 1 :=
-  HeightOneSpectrum.valuation_le_one _ v
-
-theorem valV_lt_one_iff (v : V) : valV V (algebraMap V K' v) < 1 ↔ v ∈ maximalIdeal V :=
-  HeightOneSpectrum.valuation_lt_one_iff_mem _ v
-
 theorem valV_eq_one {v : V} (h : v ∉ maximalIdeal V) : valV V (algebraMap V K' v) = 1 :=
-  le_antisymm (valV_le_one v) (not_lt.1 fun h' => h ((valV_lt_one_iff v).1 h'))
+  le_antisymm (GlobalTheory.PlaceCompletion.valV_algebraMap_le_one v) (not_lt.1 fun h' => h ((GlobalTheory.PlaceCompletion.valV_algebraMap_lt_one_iff v).1 h'))
 
 theorem vV_pos {v : V} (h0 : v ≠ 0) (h : v ∈ maximalIdeal V) : 0 < vV V (algebraMap V K' v) := by
   have h1 : algebraMap V K' v ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective V K')).2 h0
-  have := (WithZero.log_lt_log (valV_ne_zero (V := V) h1) one_ne_zero).2 ((valV_lt_one_iff v).2 h)
+  have := (WithZero.log_lt_log (valV_ne_zero (V := V) h1) one_ne_zero).2 ((GlobalTheory.PlaceCompletion.valV_algebraMap_lt_one_iff v).2 h)
   simp only [WithZero.log_one] at this
   simp only [vV]; omega
 

@@ -307,8 +307,7 @@ theorem exists_node [CharZero K] (hS : IsLocUnif S ϖ) (n : Type*) [Fintype n] [
     · exact S.one_mem
     · exact S.zero_mem
   have hex : ∃ k ∈ s, R.eval (v k) * (ϖ⁻¹) ^ (l + 1) ∉ S := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hnot
     have h1 : R.eval 1 * ϖ⁻¹ ∈ S := by
       have e : R.eval 1 * ϖ⁻¹ =

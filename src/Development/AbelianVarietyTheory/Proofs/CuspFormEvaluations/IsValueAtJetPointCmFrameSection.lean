@@ -60,8 +60,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.TB.ValAt
 open scoped ContDiff
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Pt
 
 variable {K : Type} [Field K] {σ : Type} {m : ℕ}

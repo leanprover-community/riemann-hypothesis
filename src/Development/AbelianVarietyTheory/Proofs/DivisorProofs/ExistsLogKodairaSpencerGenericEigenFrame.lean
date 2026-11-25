@@ -60,8 +60,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GenFracChart
@@ -143,7 +141,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open scoped GlobalTheory.CompHt
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.LogKSDiv.GenKSProof

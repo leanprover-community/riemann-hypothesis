@@ -185,8 +185,6 @@ namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.KF
 
 open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Dp UpperTheory.V GroundTheory.Automorphic.UnitaryAdmissible
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 private theorem gen_orbit {Γ H : Type*} [Group Γ] [AddCommGroup H] [Module ℂ H] (ρ : Γ → H →ₗ[ℂ] H)
     (hm : ∀ a b x, ρ (a * b) x = ρ a (ρ b x)) (v : H) (k : Γ) :
     ∀ x ∈ Submodule.span ℂ (Set.range fun k => ρ k v), ρ k x ∈ Submodule.span ℂ (Set.range fun k => ρ k v) := by

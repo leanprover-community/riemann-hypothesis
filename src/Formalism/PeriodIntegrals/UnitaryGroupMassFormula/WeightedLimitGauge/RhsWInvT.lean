@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvO
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvD
 import Mathlib.Algebra.Order.Star.Real
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.RadialDecompositionOfParts
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvF, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvOA, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvU, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvT
@@ -156,20 +157,7 @@ theorem wb_posdef {z d : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 
 
 theorem herm_e_wb {d : Fin (2 * r + k + 1) → ℂ} (hd : inWb k r d) {j : Fin (2 * r + k + 1)}
     (hj : j.val < r ∨ r + k < j.val) : herm (Hpk k r) (bvec j) d = 0 := by
-  unfold herm bvec
-  rw [Matrix.mulVec_single_one]
-  refine Finset.sum_eq_zero fun i _ => ?_
-  show star (d i) * Hpk k r i j = 0
-  rw [HU.hpk_row]
-  split_ifs with h
-  · by_cases hi : i.val < r ∨ r + k < i.val
-    · rw [hd i hi, star_zero, zero_mul]
-    · exfalso
-      rw [Fin.ext_iff] at h
-      unfold HU.tau at h
-      simp only [hi, if_false] at h
-      omega
-  · exact mul_zero _
+  apply _root_.Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors.sv_herm_out <;> assumption
 
 theorem uwset_one (z : Fin (2 * r + k + 1) → ℂ) : (1 : Mat k r) ∈ UWset k r z :=
   ⟨HU.uh_one, fun a => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩, Matrix.one_mulVec _⟩

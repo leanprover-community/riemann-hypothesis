@@ -292,8 +292,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace RRFin
 
 theorem hasDerivAt_rotExp (m : ℂ) :

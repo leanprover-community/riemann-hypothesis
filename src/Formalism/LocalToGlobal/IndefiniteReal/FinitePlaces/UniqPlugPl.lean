@@ -56,18 +56,8 @@ theorem natCast_mul_apply' (N : ℕ) (z : Af F) (v : HeightOneSpectrum (𝓞 F))
   rfl
 
 theorem norm_natCast_lt_one' (v : HeightOneSpectrum (𝓞 F)) (c : ℕ) (hc : Ideal.absNorm v.asIdeal ∣ c) :
-    ‖(c : v.adicCompletion F)‖ < 1 := by
-  have hmem : ((c : ℕ) : 𝓞 F) ∈ v.asIdeal := by
-    obtain ⟨k, hk⟩ := hc
-    rw [hk, Nat.cast_mul]
-    exact Ideal.mul_mem_right _ _ (Ideal.absNorm_mem v.asIdeal)
-  rw [Valued.toNormedField.norm_lt_one_iff]
-  have h1 : ((c : v.adicCompletion F)) = ((algebraMap (𝓞 F) F (c : 𝓞 F) : F) : v.adicCompletion F) := by
-    rw [map_natCast]
-    first
-    | exact (map_natCast (algebraMap F (v.adicCompletion F)) c).symm
-  rw [h1, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', HeightOneSpectrum.valuation_of_algebraMap]
-  exact (v.intValuation_lt_one_iff_mem _).mpr hmem
+    ‖(c : v.adicCompletion F)‖ < 1 :=
+  by apply _root_.GlobalTheory.HeckeSplitAll.Approx.norm_natCast_lt_one; assumption
 
 theorem finNhd (U : Set (Af F)) (hU : U ∈ 𝓝 (0 : Af F)) :
     ∃ N : ℕ, 1 ≤ N ∧ ∀ z : Af F, (∀ v, z v ∈ v.adicCompletionIntegers F) → (N : Af F) * z ∈ U := by
@@ -164,8 +154,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.InjectiveDecompositionAction NumberField IsDedekindDomain
   Topology Filter
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace Formalism.IndefR.Fin.U1
 

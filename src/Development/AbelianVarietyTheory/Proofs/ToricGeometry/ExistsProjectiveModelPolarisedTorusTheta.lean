@@ -817,8 +817,7 @@ theorem exists_projModel_torus : (∀ (X : Over (Sp ℂ)) (U : X.left.Opens), Is
     intro z
     obtain ⟨f, hfq, hfz⟩ := hNZ g τ hτ N hN2 z
     have hf := hSpan g τ hτ N hN1 f hfq
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have h0 := hspan_rel z z 0 (fun c => by simp [hall c]) f hf
     simp only [zero_mul] at h0
     exact hfz h0

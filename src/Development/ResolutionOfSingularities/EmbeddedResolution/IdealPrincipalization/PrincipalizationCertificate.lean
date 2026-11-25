@@ -103,17 +103,6 @@ theorem PrincipalizationCertificate.toOrder {k : Type u} [Field k] {W : Scheme.{
     PrincipalizationCertificate W p I m Mem Z :=
   ResolutionCertificate.toOrder M N μ hI hM hmu hZ hcert
 
-theorem PrincipalizationCertificate.localize {k : Type u} [Field k] {W : Scheme.{u}}
-    {p : W ⟶ Spec (CommRingCat.of k)} {I : W.IdealSheafData} {m : ℕ}
-    {Mem : Set ↥W} {Z : W.IdealSheafData}
-    (U : ∀ z : ↥W, z ∈ Z.support → W.Opens)
-    (hU : ∀ (z : ↥W) (hz : z ∈ Z.support), z ∈ U z hz)
-    (hcert : ∀ (z : ↥W) (hz : z ∈ Z.support),
-      PrincipalizationCertificate (U z hz).toScheme ((U z hz).ι ≫ p) (I.comap (U z hz).ι) m
-        ((U z hz).ι.base ⁻¹' Mem) (Z.comap (U z hz).ι)) :
-    PrincipalizationCertificate W p I m Mem Z :=
-  ResolutionCertificate.localize U hU hcert
-
 theorem OrderCertificate.memory {k : Type u} [Field k] {W : Scheme.{u}}
     {p : W ⟶ Spec (CommRingCat.of k)} {N : W.IdealSheafData} {μ : ℕ}
     {Mem : Set ↥W} {Z : W.IdealSheafData} (h : (Z.support : Set ↥W) ⊆ Mem) :

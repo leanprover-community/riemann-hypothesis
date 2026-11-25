@@ -80,7 +80,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.PerfdLat
 open Coalgebra Bialgebra
 open GlobalTheory.DeRham (spOver spOver_comp)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PDivGroup.CotDim
 
@@ -174,7 +173,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.PerfdLat
 open Coalgebra Bialgebra
 open GlobalTheory.DeRham (spOver spOver_comp)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 
 open GlobalTheory.PDivGroup.CotDim in

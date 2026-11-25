@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.RingTheory.Complex
 public import Mathlib.Analysis.Calculus.Deriv.Inv
@@ -19,19 +20,11 @@ theorem blk_cc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) 
 
 theorem blk_cl {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i : Fin n) :
     blk A b a e i.castSucc (Fin.last n) = b i := by
-  have h : ∀ i : Fin n, finSumFinEquiv.symm (i.castSucc : Fin (n+1)) = Sum.inl i := fun i =>
-    finSumFinEquiv_symm_apply_castAdd (n := 1) i
-  have h2 : finSumFinEquiv.symm (Fin.last n : Fin (n+1)) = Sum.inr (0 : Fin 1) :=
-    finSumFinEquiv_symm_apply_natAdd (m := n) (0 : Fin 1)
-  simp [blk, h, h2]
+  apply _root_.Formalism.FourierDecayAlt.P.G5.blk_cl <;> assumption
 
 theorem blk_lc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (j : Fin n) :
     blk A b a e (Fin.last n) j.castSucc = a j := by
-  have h : ∀ i : Fin n, finSumFinEquiv.symm (i.castSucc : Fin (n+1)) = Sum.inl i := fun i =>
-    finSumFinEquiv_symm_apply_castAdd (n := 1) i
-  have h2 : finSumFinEquiv.symm (Fin.last n : Fin (n+1)) = Sum.inr (0 : Fin 1) :=
-    finSumFinEquiv_symm_apply_natAdd (m := n) (0 : Fin 1)
-  simp [blk, h, h2]
+  apply _root_.Formalism.FourierDecayAlt.P.G5.blk_lc <;> assumption
 
 theorem blk_ll {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) :
     blk A b a e (Fin.last n) (Fin.last n) = e := by
@@ -230,14 +223,7 @@ theorem scalePi (β z : ℂ) (ι : Type) [Fintype ι] (hz : z ≠ 0) :
     Finset.prod_const, Finset.card_univ, ENNReal.coe_pow]
 
 theorem card_UT (n : ℕ) : Fintype.card (UT n) = ∑ i ∈ range n, i := by
-  rw [Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type_right]
-  simp_rw [← Finset.card_filter]
-  have : ∀ y : Fin n, (univ.filter (fun x : Fin n => x < y)).card = (y : ℕ) := by
-    intro y
-    rw [show univ.filter (fun x : Fin n => x < y) = Finset.Iio y by ext; simp]
-    exact Fin.card_Iio y
-  simp_rw [this]
-  exact Fin.sum_univ_eq_sum_range (fun i => i) n
+  apply _root_.Formalism.FourierDecayAlt.P.G5.card_UT <;> assumption
 
 theorem strictUpper_smul {d : ℕ} (a : ℂ) (y : UT d → ℂ) : strictUpper (a • y) = a • strictUpper y := by
   ext i j

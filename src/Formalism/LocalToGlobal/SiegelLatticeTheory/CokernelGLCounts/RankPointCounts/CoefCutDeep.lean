@@ -360,8 +360,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 open Classical ValuativeRel
 open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.TermLoc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Count
 
 variable {D : Formalism.BasicNotions.D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
@@ -488,8 +486,6 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.B
   ValuativeRel
 
 namespace Formalism.L2.SG.Pf.LocalDenominators
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -738,8 +734,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
   Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.PCount
 open Classical ValuativeRel
 open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.TermLoc
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section SumFr
 
@@ -1138,8 +1132,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.ProdE
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
   (δ : ∀ p : PlF D, (D.s.atP p).Fp) (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1))
 
@@ -1486,8 +1478,6 @@ namespace PI.NRCW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat PI.PairValDefs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem glob_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T)
     (n : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hn : n ∈ NLam Λ G) (hXS : XLam Λ G = XS D G.fl) (hz : G.fl.z ∈ Λ)
     (a : Fin (D.R.rS + 1)) (h : a.val + 1 < D.R.rS + 1) :
@@ -1575,8 +1565,6 @@ namespace PI.NRCW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef PI.PairValDefs Matrix IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem normRepMove_of_steps (D : D7) (u u' : D.what₂.Word) (hE : TermEqIff D u u')
     (h1 : StepExp D) (h2 : StepGram D) (h3 : StepGlob D) (h4 : StepLoc D) (h5 : StepTr D) :
     PI.NormRepChange.NormRepMove D u u' := by
@@ -1622,8 +1610,6 @@ open scoped Classical
 namespace PI.NRCW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat PI.PairValDefs IsDedekindDomain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem gS_ne_zero (D : D7) : gS D ≠ 0 := by
   show D.host.g 0 * D.host.g 1 ≠ 0
@@ -1713,8 +1699,6 @@ noncomputable section
 
 open scoped Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem norm_representative_move (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) (hS : Formalism.L2.SG.TermDef.TermStable D u u') (hE : Formalism.L2.SG.TermDef.TermEqIff D u u') (hF : Formalism.L2.SG.TermDef.TermFun D u u') (hP : Formalism.MainNotions.S.Lat.PrimeHyp D u (Formalism.MainNotions.S.Lat.Tu D u')) (hsig : (Formalism.MainNotions.S.VS D).SigOK) : PI.NormRepChange.NormRepMove D u u' :=
   PI.NRCW.normRepMove_of_steps D u u' hE (PI.NRCW.stepExp D) (PI.NRCW.stepGram D) (PI.NRCW.stepGlob D)
     (PI.NRCW.stepLoc D) (PI.NRCW.stepTr D)
@@ -1735,8 +1719,6 @@ namespace Formalism.L2.SG.Pf.Coef
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
   Formalism.L2.SG.LsDatumB
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem cutAt_of_deep {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep}
     {δ : ∀ p : PlF D, (D.s.atP p).Fp} {L : CntLocal.LocSp D M} {u u' : D.what₂.Word}

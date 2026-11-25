@@ -125,8 +125,7 @@ theorem re_form_neg_of_orth_of_sigPosH_eq_one : ∀ {n : ℕ} (A : Matrix (Fin n
     have h := congrArg star hxy
     rw [star_zero] at h
     rw [← h, star_dotProduct, star_mulVec, hA.eq, ← dotProduct_mulVec]
-  by_contra hQ
-  push_neg at hQ
+  by_contra! hQ
   set a₀ := (star U *ᵥ x) i₀ with ha₀
   set b₀ := (star U *ᵥ y) i₀ with hb₀
   have hx0 : x ≠ 0 := by

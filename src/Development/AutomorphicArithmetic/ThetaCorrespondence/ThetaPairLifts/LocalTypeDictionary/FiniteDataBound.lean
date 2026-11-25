@@ -1847,7 +1847,7 @@ namespace GlobalTheory.FunDat
 end GlobalTheory.FunDat
 noncomputable section
 namespace GlobalTheory.FunDat
-theorem finDatK_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinDatK := fun _ => finDatK_of GlobalTheory.T.flips_loss_bounded_at_exceptional_places GlobalTheory.T.movedTensor_unfolding_integral_valuation_loss_bound
+theorem finDatK_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinDatK := fun _ => finDatK_of GlobalTheory.T.flips_loss_bounded_at_exceptional_places _root_.GlobalTheory.UnfoldLoss.unfold_loss
 end GlobalTheory.FunDat
 end
 end

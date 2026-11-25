@@ -34,49 +34,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwoModelsCommonCoverCompare
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistAutomorphism
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.Algebra.Order.Star.Real
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentTwistLatticeCompat
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
@@ -127,7 +86,7 @@ theorem lift_transfer {X X' W W' V : Scheme.{0}} {Ω : Type} [Field Ω] {R : Typ
   have hxu : ξp ≫ u' = x' := by
     rw [← cancel_mono j', Category.assoc, hu', ← Category.assoc, hξp, hf']
   have heq : u' ≫ Ψ.inv ≫ j = X'.fromSpecStalk p ≫ e.hom ≫ f := by
-    refine _root_.GlobalTheory.CompanionTheory.Ar.maps_eq_of_eq_at_generic R (Spec (X'.presheaf.stalk p)) W sW Ω ξp _ _ hproj hgp ?_
+    refine _root_.PositivityTheory.UnitarySelfGeneration.morphism_eq_of_generic_point_eq R (Spec (X'.presheaf.stalk p)) W sW Ω ξp _ _ hproj hgp ?_
     have h1 : ξp ≫ u' ≫ Ψ.inv ≫ j = x ≫ j := by rw [reassoc_of% hxu, reassoc_of% hx]
     have h2 : ξp ≫ X'.fromSpecStalk p ≫ e.hom ≫ f = x ≫ j := by rw [reassoc_of% hξp, reassoc_of% hξ, hf]
     rw [h1, h2]
@@ -732,7 +691,7 @@ theorem gramAt_iff_of_tied : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hξup : ξp ≫ up = x := by
     rw [hup_def, ← Category.assoc, hξu', hxx, Category.assoc, Iso.hom_inv_id, Category.comp_id]
   have hup : up ≫ Y.j = A'.X.fromSpecStalk (centre z) ≫ e.hom ≫ A.f := by
-    refine _root_.GlobalTheory.CompanionTheory.Ar.maps_eq_of_eq_at_generic O (Spec (A'.X.presheaf.stalk (centre z))) Y.X Y.s Ω ξp _ _ Y.proj hgen ?_
+    refine _root_.PositivityTheory.UnitarySelfGeneration.morphism_eq_of_generic_point_eq O (Spec (A'.X.presheaf.stalk (centre z))) Y.X Y.s Ω ξp _ _ Y.proj hgen ?_
     rw [← Category.assoc, hξup, ← hx, reassoc_of% hξp, ← hξ, Category.assoc]
   obtain ⟨tp, π⟩ : ∃ tp : SAB H (Spec (A'.X.presheaf.stalk (centre z))), Nonempty (SABMap tp Y.oF.t up) := by
     obtain ⟨_, _, _, _, _, π, -⟩ := sabPull ReciprocityTheory.ChartRestriction.G.Out.proved_CubePullSt up Y.oF.t

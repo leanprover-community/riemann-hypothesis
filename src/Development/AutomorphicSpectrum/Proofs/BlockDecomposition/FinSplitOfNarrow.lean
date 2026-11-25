@@ -1458,8 +1458,6 @@ namespace PositivityTheory.ThK.SplitAsm
 
 open NumberField IsDedekindDomain ValuativeRel
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem valuation_integers_eq_completion : IntEq := by
   intro F _ _ v x
   haveI : (Valued.v : Valuation (v.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
@@ -1586,8 +1584,6 @@ section Global
 
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open PositivityTheory.KCo PositivityTheory.ThK.SplitDict PositivityTheory.ThK PositivityTheory.ThK.SplitAsm
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 local instance measFv {F : Type} [Field F] [NumberField F] (v : Pl F) : MeasurableSpace (Fv F v) := borel _
 

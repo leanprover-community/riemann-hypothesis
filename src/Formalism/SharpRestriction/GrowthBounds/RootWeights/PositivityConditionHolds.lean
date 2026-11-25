@@ -259,13 +259,11 @@ theorem pie_B_sw {n : ℕ} {lam mu : Fin n → ℕ} {j : Fin n} (hj : j ∈ pie_
   apply le_antisymm
   · apply Finset.max'_le
     intro k hk
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hkj : k ≠ j := hlt.ne'
     have hkp : k ≠ pie_pr j := by
       intro e
       have h2 : k.val = j.val - 1 := congrArg Fin.val e
-      have h3 : j.val < k.val := hlt
       omega
     have hk' := pie_mem_B.1 hk
     rw [pie_sw_other mu hkj hkp] at hk'
@@ -291,7 +289,6 @@ theorem pie_bad_zero (n b : ℕ) (lam : Fin n → ℕ) (hlam : Antitone lam) :
       rw [← hjdef]
       exact Finset.le_max' _ k hk
     have hj := pie_mem_B.1 hjB
-    have hj2 := hj.2
     have hprj : pie_pr j ≤ j := by
       show (pie_pr j).val ≤ j.val
       exact Nat.sub_le _ _
@@ -356,8 +353,7 @@ theorem pie_good_iff {n : ℕ} (lam mu : Fin n → ℕ) :
     ¬ (pie_B lam mu).Nonempty ↔ ∀ i j : Fin n, i.val + 1 = j.val → mu j ≤ lam i := by
   constructor
   · intro hn i j hij
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hn
     have hpr : pie_pr j = i := Fin.ext (by show j.val - 1 = i.val; omega)
     exact ⟨j, pie_mem_B.2 ⟨by omega, by rw [hpr]; exact hc⟩⟩

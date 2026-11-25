@@ -173,7 +173,6 @@ theorem tau_count (D : Formalism.BasicNotions.D7) (h3 : admB3 D) (h4 : ColumnFam
         rw [hν]; exact hla _
       have hd' : Dominant (glueT (r := r) t (beA n0 B : ℤ) τ) := by
         intro m m' hmm
-        have hmm' : m.val ≤ m'.val := hmm
         by_cases h1 : m'.val < r - t
         · rw [glueT_lt t _ _ m' h1, glueT_lt t _ _ m (by omega)]
         · rw [glueT_ge t (by omega) _ _ m' (by omega)]
@@ -682,7 +681,6 @@ theorem oldest_threshold_eq (H : HypT N n0 r K LL B od bb a La p) (i : Fin N) (h
     · rw [Nat.min_eq_left h, hvc]; have := H.r1; omega
     · rw [Nat.min_eq_right h]
       have := vcount_tau_eq_add H (od i).val (by omega) i.val h (by omega)
-      have hi2 := i.2
       omega
   obtain ⟨he, hel⟩ := latest_list_get_of_count _ _ _ _ hx hc
   rw [List.getD_eq_getElem _ _ (by simpa using he), List.getElem_map, hel, toL_B LL B _ ⟨by omega, by omega⟩]
@@ -693,9 +691,6 @@ theorem threshold_letter_eq_Xi (H : HypT N n0 r K LL B od bb a La p) (i : Fin N)
   have hp0 : (0 : ℝ) < p := by
     have : (13 : ℝ) ≤ (p : ℝ) := by exact_mod_cast H.p13
     linarith
-  have hk0 : (0 : ℝ) < ((r + K : ℕ) : ℝ) := by
-    have : 0 < r + K := by have := H.r1; omega
-    exact_mod_cast this
   unfold BranchingDimensions.Letters.XT toB Xi
   rw [dite_eq_left ⟨by omega, by have := i.2; omega⟩]
   show La * (13 * bb ⟨i.val + 1 - 1, _⟩ / (p : ℝ)) / (((13 : ℕ) : ℝ) * ((r + K : ℕ) : ℝ)) = _

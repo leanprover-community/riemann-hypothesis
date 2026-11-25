@@ -88,17 +88,6 @@ def topLift (t : T) : (R.HX t).H →ₗ[ℂ] R.CC t (D.R.m - 1) := R.ioX t ∘�
 
 def botLift (t : T) : R.CC t 1 →ₗ[ℂ] MMap (R.MY 0) := postOn (R.MY 0) R.e0 ∘ₗ toMM R t 0 ∘ₗ R.ioY t 0
 
-theorem toMM_injective (t : T) (j : ℕ) : Function.Injective (toMM R t j) :=
-  (PiTensorProduct.lift.symm : (SmT (R.MY j) →ₗ[ℂ] (GA D (Yc D j) → ℂ)) ≃ₗ[ℂ] MMap (R.MY j)).injective.comp Subtype.val_injective
-
-theorem range_toMM (t : T) (j : ℕ) : LinearMap.range (toMM R t j) = multAt R R.triv t j := by
-  ext X
-  constructor
-  · rintro ⟨U, rfl⟩
-    exact (mem_multT R.θ (R.MY j) _ _ _).1 U.2
-  · intro hX
-    exact ⟨⟨PiTensorProduct.lift X, Submodule.mem_map_of_mem hX⟩, PiTensorProduct.lift.symm_apply_apply X⟩
-
 theorem multAt_le (P : LevelP R.Pg D.R.r ℂ) (t : T) (j : ℕ) : multAt R P t j ≤ multAt R R.triv t j :=
   mult_anti _ _ (principal_le_level (R.βY j) (R.datYt t j R.triv) P)
 

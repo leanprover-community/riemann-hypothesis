@@ -1303,10 +1303,10 @@ theorem dL_bij : Function.Bijective (dL k r) := by
     have h1 := sq_nonneg ‖v.1.1‖
     have h2 := sq_nonneg ‖v.1.2‖
     have h3 := sq_nonneg ‖v.2.2‖
-    have e1 : v.1.1 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; nlinarith
-    have e2 : v.1.2 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; nlinarith
-    have e3 : v.2.2 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; nlinarith
-    have e4 : ∑ a, ‖v.2.1 a‖ ^ 2 = 0 := by nlinarith
+    have e1 : v.1.1 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; linarith
+    have e2 : v.1.2 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; linarith
+    have e3 : v.2.2 = 0 := by rw [← norm_eq_zero, ← sq_eq_zero_iff]; linarith
+    have e4 : ∑ a, ‖v.2.1 a‖ ^ 2 = 0 := by linarith
     rw [Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => by positivity)] at e4
     have e5 : v.2.1 = 0 := funext fun a => by simpa using e4 a (Finset.mem_univ _)
     exact Prod.ext (Prod.ext e1 e2) (Prod.ext e5 e3)

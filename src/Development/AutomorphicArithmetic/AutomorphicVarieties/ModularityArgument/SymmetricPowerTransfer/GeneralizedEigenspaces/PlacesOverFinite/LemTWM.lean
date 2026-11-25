@@ -1,5 +1,7 @@
 module
 
+import PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.FinrankAdjoinSqrtNegOne
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.FrobeniusSignCompatibility
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TwistedAutomorphicForms.EqOneOfMemLev
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HilbertClassFieldOfGlobalArtinReciprocity
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicIntegersCompact.IsCompactAdicCompletionIntegers
@@ -197,33 +199,12 @@ private theorem exists_above {F L Ω : Type} [Field F] [NumberField F] [Field L]
 
 private theorem normV_under' {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
     (w : HeightOneSpectrum (𝓞 K')) : normV w = normV (w.under (𝓞 K)) ^ w.asIdeal.inertiaDeg (𝓞 K) := by
-  have : w.asIdeal.LiesOver (w.under (𝓞 K)).asIdeal := ⟨rfl⟩
-  have := w.isMaximal
-  have := (w.under (𝓞 K)).isMaximal
-  rw [show normV w = Ideal.absNorm w.asIdeal by
-        rw [normV, Ideal.absNorm_apply, Submodule.cardQuot_apply],
-      show normV (w.under (𝓞 K)) = Ideal.absNorm (w.under (𝓞 K)).asIdeal by
-        rw [normV, Ideal.absNorm_apply, Submodule.cardQuot_apply]]
-  rw [← Ideal.absNorm_relNorm (𝓞 K) (𝓞 K') w.asIdeal,
-    Ideal.relNorm_eq_pow_of_isMaximal w.asIdeal (w.under (𝓞 K)).asIdeal, map_pow]
+  intros
+  apply _root_.GlobalTheory.RealGal.AttRes.normV_eq_pow <;> assumption
 
 private theorem normV_le {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) {q : ℕ} (hq : 1 < q)
     (h : ∀ x : 𝓞 K, x - x ^ q ∈ w.asIdeal) : normV w ≤ q := by
-  have := w.isMaximal
-  letI : Field (𝓞 K ⧸ w.asIdeal) := Ideal.Quotient.field _
-  have : Finite (𝓞 K ⧸ w.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ w.ne_bot
-  letI := Fintype.ofFinite (𝓞 K ⧸ w.asIdeal)
-  have e : normV w = Fintype.card (𝓞 K ⧸ w.asIdeal) := Nat.card_eq_fintype_card
-  rw [e]
-  by_contra hlt
-  refine Polynomial.X_pow_sub_X_ne_zero (R := 𝓞 K ⧸ w.asIdeal) hq
-    (Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero' _ Finset.univ (fun y _ => ?_) ?_)
-  · obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective y
-    have := Ideal.Quotient.eq.2 (h x)
-    rw [map_pow] at this
-    rw [eval_sub, eval_pow, eval_X, ← this, sub_self]
-  · rw [Polynomial.natDegree_X_pow_sub_X hq, Finset.card_univ]
-    exact not_le.1 hlt
+  apply _root_.normV_le <;> assumption
 
 private theorem two_of_sum {ι : Type} [Fintype ι] (f : ι → ℕ) (hf : ∀ i, 0 < f i) (hs : ∑ i, f i = 2) (a : ι)
     (ha : f a = 1) : ∃ b, b ≠ a ∧ f b = 1 ∧ ∀ c, c = a ∨ c = b := by
@@ -971,8 +952,7 @@ theorem UpperTheory.V.Af.Tw.verGroup :
   have hnorm : R.Normal := Subgroup.normal_of_index_eq_two hidx
   have hsq : ∀ g, g ∉ R → g * g ∈ R := fun g _ => (hmem g g).mpr Iff.rfl
   obtain ⟨g0, hg0⟩ : ∃ g0 : Γ, g0 ∉ R := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have htop : R = ⊤ := eq_top_iff.mpr fun x _ => hcon x
     rw [htop, Subgroup.index_top] at hidx
     exact absurd hidx (by norm_num)

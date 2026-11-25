@@ -6,16 +6,12 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanAlg
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.FrTan
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Tan
 
