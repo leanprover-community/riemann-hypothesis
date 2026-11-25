@@ -55,16 +55,4 @@ theorem isMonHom_mulA (n : ℕ) : IsMonHom (mulA A n) := by
     conv_lhs => rw [e, mul_pow]
     rw [e, MonObj.comp_mul, tensorHom_fst, tensorHom_snd, MonObj.comp_pow, MonObj.comp_pow, Category.comp_id, Category.comp_id]
 
-omit [IsCommMonObj A] [GrpObj A] in
-theorem prod_end (φ : A ⟶ A) {a b : ℕ} {a' b' : ℤ} (ha : a' = a) (hb : b' = b) {T : Over S} (y : T ⟶ A) (U : Type) [CommGroup U]
-    (h : (T.left ⟶ A.left) → U) : ∏ i, h (y.left ≫ (![𝟙 A.left, φ.left] : Fin 2 → _) i) ^ (![a', -b'] : Fin 2 → ℤ) i =
-      h y.left ^ a * (h (y ≫ φ).left ^ b)⁻¹ := by
-  subst ha hb
-  rw [Fin.prod_univ_two]
-  simp [Over.comp_left, zpow_neg, zpow_natCast]
-
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-
 end ReciprocityTheory.ChartRestriction.G.Geo.Tor

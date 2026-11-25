@@ -260,32 +260,6 @@ theorem ix_add (hB : D.TauBimult) (z z' χ : D.X) : ix σ hJ (z + z') χ = ix σ
     have C := isCub_cubV D.cub (T := T) hJ
     exact eq_mul_inv_of_mul_eq ((congrArg _ ((C.s01 _ _ _).trans (C.s12 _ _ _))).trans (tau_mul σ hJ hB z z' χ)))
 
-theorem gx_add {g g' g'' : GtPtF D F} (h : g.IsAdd g' g'') (χ : D.X) : gx σ hJ g'' χ = gx σ hJ g χ * gx σ hJ g' χ := by
-  refine Ex.ext ((congrArg (σ ≫ ·) h.1).trans (MonObj.comp_mul _ _ _)) (eq_mul_inv_of_mul_eq ?_)
-  have e := (val_mul hJ _ _ _).symm.trans ((val_corr hJ (h.2 χ) σ.left).trans (val_mul hJ _ _ _))
-  refine Eq.trans (congrArg₂ (· * ·) rfl ?_) e
-  exact ((val_cub D.cub σ hJ _ _ _).trans (congrArg (fun c => cubV D.cub y J c _ _) (comp_cP D σ χ))).symm
-
-theorem gx_iota {z : D.X} {g : GtPtF D F} (h : GtPtF.IsIota z g) (χ : D.X) : gx σ hJ g χ = ix σ hJ z χ :=
-  Ex.ext ((congrArg (σ ≫ ·) h.1).trans (comp_cP D σ z)) ((val_corr hJ (h.2 χ) σ.left).trans (val_pull hJ _ _ _))
-
-theorem gx_qk {n : ℕ} (q : QkPt D F n) (χ : D.X) : gx σ hJ q.g χ ^ n = ix σ hJ q.y χ := by
-  obtain ⟨h, ⟨gs, g₀, st, rfl⟩, hi⟩ := q.eq
-  have : ∀ (i : ℕ) (hi : i < n + 1), gx σ hJ (gs ⟨i, hi⟩) χ = gx σ hJ q.g χ ^ i := fun i hi => by
-    induction i with
-    | zero => exact Ex.ext ((congrArg (σ ≫ ·) g₀.1).trans (MonObj.comp_one σ)) ((val_corr hJ (g₀.2 χ) σ.left).trans (val_one _))
-    | succ i ih => exact (gx_add σ hJ (st ⟨i, by omega⟩) χ).trans (by rw [pow_succ, ← ih (by omega)]; rfl)
-  exact (this n (Nat.lt_succ_self n)).symm.trans (gx_iota σ hJ hi χ)
-
-theorem gx_equiv {n : ℕ} {p p' : QkPt D F n} (h : QkPt.Equiv D F p p') :
-    ∃ z, p'.y = p.y + n • z ∧ ∀ χ, gx σ hJ p'.g χ = gx σ hJ p.g χ * ix σ hJ z χ := by
-  obtain ⟨z, hy, g, hi, ha⟩ := h
-  exact ⟨z, hy, fun χ => by rw [gx_add σ hJ ha, gx_iota σ hJ hi]⟩
-
-include hJ in
-theorem mult_gx (g : GtPtF D F) : Mult (th D y J) (cP D T) (σ ≫ g.b) fun χ => val (g.s χ) σ.left y J :=
-  ⟨(val_corr hJ g.s_zero _).trans (val_one _), gt_mul σ hJ g⟩
-
 end Fwd
 
 variable {y : (TF (R := R) F).left} {J : ((TF (R := R) F).left ⟶ D.P.A.left) → D.P.L.ι} (hJ : Good D.P.L y J)

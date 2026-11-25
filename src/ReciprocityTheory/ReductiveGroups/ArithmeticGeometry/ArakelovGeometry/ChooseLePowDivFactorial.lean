@@ -17,11 +17,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo Module Filter Asymptotics
 
 variable {Ω : Type*} [Field Ω] [CharZero Ω] {κ : Type*} [Fintype κ] {D : ℕ}
 
-theorem prod_div_pow_degree (x : κ → Ω) (j : κ) (m : κ →₀ ℕ) :
-    (m.prod fun i k => x i ^ k) / x j ^ (Finsupp.degree m) = m.prod fun i k => (x i / x j) ^ k := by
-  simp only [Finsupp.prod, Finsupp.degree, div_pow, Finset.prod_div_distrib, Finset.prod_pow_eq_pow_sum]
-  rfl
-
 theorem coord_ne_zero_of_free (y : Fin (D + 1) → Ω) (hy : coordIdeal ℤ y = ⊥) (l : Fin (D + 1)) : y l ≠ 0 := by
   intro h0
   have hX : (MvPolynomial.X l : MvPolynomial (Fin (D + 1)) ℤ) ∈ coordIdeal ℤ y := by

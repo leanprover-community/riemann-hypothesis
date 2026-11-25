@@ -23,10 +23,6 @@ theorem analyticAt_lift_chart (x : R.X) (j : Fin R.A.n) {u : Fin e → ℂ}
     AnalyticAt ℂ (fun v => R.lift x ((R.A.chart j).symm v)) u := by
   exact GroundTheory.Heights₂.Heights.HilbertSamuel.AnResBridge.analyticAt_lift_chart R.toAnRes x j hu
 
-theorem brQ_eq_local {x z : R.X} (hz : z ∈ R.U x) :
-    brQ R Ψ z = fun i => Ψ (segre (R.lift x z)) i.succ / Ψ (segre (R.lift x z)) 0 := by
-  exact GroundTheory.Heights₂.Heights.HilbertSamuel.AnResBridge.brQ_eq_local R.toAnRes Ψ hz
-
 theorem analyticAt_segre_lift (x : R.X) (j : Fin R.A.n) {u : Fin e → ℂ}
     (hu : u ∈ (R.A.chart j).target ∩ (R.A.chart j).symm ⁻¹' R.U x) :
     AnalyticAt ℂ (fun v => Ψ (segre (R.lift x ((R.A.chart j).symm v)))) u := by

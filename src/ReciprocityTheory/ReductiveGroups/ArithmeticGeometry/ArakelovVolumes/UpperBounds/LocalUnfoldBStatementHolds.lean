@@ -228,14 +228,6 @@ end
 
 end ReciprocityTheory.ChartRestriction.G.AR.Up.LUB
 
-namespace ReciprocityTheory.ChartRestriction.G.AR.Up
-
-open NumberField
-
-theorem localUnfoldB_of {E : Type} [Field E] [NumberField E] [IsCMField E] (hLU : LUStatement (E := E)) :
-    LocalUnfoldBStatement (E := E) := LUB.localUnfoldB_of hLU
-
-end ReciprocityTheory.ChartRestriction.G.AR.Up
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LocalUnfoldStatementPf =====

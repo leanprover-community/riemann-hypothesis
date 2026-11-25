@@ -95,34 +95,4 @@ lemma inner_sq_add_inner_I_sq (x y : EuclideanSpace ℂ ι) :
     Complex.I_re, Complex.I_im]
   ring
 
-theorem fsMetric_isSmooth : IsSmoothMetric (fsMetric (ι := ι)) := by
-  intro z hz
-  change ContDiffWithinAt ℝ _ (fun z => ‖fsLp ι z‖) _ z
-  have h0 : fsLp ι z ≠ 0 := fsLp_ne_zero hz
-  have hn : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun u : EuclideanSpace ℂ ι => ‖u‖) (fsLp ι z) := by
-    first
-    | exact contDiffAt_norm ℝ h0
-  exact (hn.comp z (fsLp ι).contDiff.contDiffAt).contDiffWithinAt
-
-theorem leviForm_fsMetric {z : ι → ℂ} (hz : z ≠ 0) (w : ι → ℂ) :
-    leviForm (fun z => Real.log ((fsMetric (ι := ι)).ρ z)) z w =
-      (‖fsLp ι w‖ ^ 2 * ‖fsLp ι z‖ ^ 2 - ‖inner ℂ (fsLp ι z) (fsLp ι w)‖ ^ 2) /
-        (2 * (‖fsLp ι z‖ ^ 2) ^ 2) := by
-  change leviForm (fun z => Real.log ‖fsLp ι z‖) z w = _
-  unfold leviForm
-  rw [hess_logFs hz, hess_logFs hz, fsLp_smul_I, norm_smul, Complex.norm_I, one_mul,
-    ← inner_sq_add_inner_I_sq]
-  have h0 := fsLp_normSq_ne_zero hz
-  field_simp
-  ring
-
-theorem fsMetric_isSemipositive : IsSemipositive (fsMetric (ι := ι)) := by
-  refine ⟨fsMetric_isSmooth, fun z hz w => ?_⟩
-  rw [leviForm_fsMetric hz]
-  have hcs := norm_inner_le_norm (𝕜 := ℂ) (fsLp ι z) (fsLp ι w)
-  have h2 := mul_self_le_mul_self (norm_nonneg _) hcs
-  apply div_nonneg
-  · nlinarith [h2]
-  · positivity
-
 end ReciprocityTheory.ChartRestriction.G.Geo

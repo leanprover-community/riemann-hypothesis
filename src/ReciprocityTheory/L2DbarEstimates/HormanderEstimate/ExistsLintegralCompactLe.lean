@@ -15,20 +15,6 @@ open scoped ENNReal
 
 noncomputable section
 
-theorem continuous_of_smoothR (n : ℕ) {M : Type*} [TopologicalSpace M] (z : M → V n)
-    (hz : IsLocalHomeomorph z) (ψ : M → ℝ) (hψ : SmoothR n z ψ) : Continuous ψ := by
-  rw [continuous_iff_continuousAt]
-  intro x
-  obtain ⟨e, hxe, he⟩ := hz x
-  have hc : IsChart n z e := fun y _ => by rw [he]
-  have hf := (hψ e hc).continuousOn.continuousAt (e.open_target.mem_nhds (e.map_source hxe))
-  have h2 := hf.comp (e.continuousAt hxe)
-  have h3 : ContinuousAt (fun y => (ψ y : ℂ)) x := by
-    refine h2.congr (Filter.eventually_of_mem (e.open_source.mem_nhds hxe) (fun y hy => ?_))
-    simp [Function.comp, e.left_inv hy]
-  have h4 : ContinuousAt (fun y => ((ψ y : ℂ)).re) x := Complex.continuous_re.continuousAt.comp h3
-  simpa using h4
-
 theorem exists_lintegral_compact_le (n : ℕ) {M : Type*} [TopologicalSpace M] [T2Space M]
     [MeasurableSpace M] [BorelSpace M] (z : M → V n) (ψ : M → ℝ) (hψ : Continuous ψ)
     (K : Set M) (hK : IsCompact K) :
