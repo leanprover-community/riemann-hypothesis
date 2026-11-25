@@ -318,60 +318,6 @@ def ChowHeightRecursion.Statement : Prop :=
 
 section Inhabitants
 
-theorem X_dvd_iff_constantCoeff_eq_zero {R : Type*} [CommRing R]
-    (f : MvPolynomial (Fin 1 × Fin 1) R) : X (0, 0) ∣ f ↔ constantCoeff f = 0 := by
-  rw [X_dvd_iff_modMonomial_eq_zero]
-  constructor
-  · intro h
-    have h0 := congrArg (AddMonoidAlgebra.coeff · 0) h
-    rw [coeff_modMonomial_of_not_le _ (by simp)] at h0
-    simpa [constantCoeff_eq] using h0
-  · intro h
-    ext s
-    rw [AddMonoidAlgebra.coeff_zero]
-    by_cases hs : Finsupp.single ((0 : Fin 1), (0 : Fin 1)) 1 ≤ s
-    · exact coeff_modMonomial_of_le _ hs
-    · rw [coeff_modMonomial_of_not_le _ hs]
-      have hs0 : s = 0 := by
-        ext ij
-        obtain rfl : ij = (0, 0) := Subsingleton.elim _ _
-        by_contra hne
-        exact hs (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hne))
-      rw [hs0]
-      simpa [constantCoeff_eq] using h
-
-theorem mem_incidence_point {F : Type*} [Field F] (u : Fin 1 × Fin 1 → AlgebraicClosure F) :
-    u ∈ incidence (⊥ : Ideal (MvPolynomial (Fin 1) F)) 1 ↔ u = 0 := by
-  constructor
-  · rintro ⟨x, hx, -, hu⟩
-    have hx0 : x 0 ≠ 0 := fun h => hx (funext fun j => by rw [Fin.fin_one_eq_zero j]; exact h)
-    have h := hu 0
-    simp only [Fin.sum_univ_one] at h
-    have hu0 : u (0, 0) = 0 := (mul_eq_zero.mp h).resolve_right hx0
-    funext ij
-    obtain rfl : ij = (0, 0) := Subsingleton.elim _ _
-    exact hu0
-  · rintro rfl
-    refine ⟨fun _ => 1, fun h => one_ne_zero (congrFun h 0), fun g hg => ?_, fun i => ?_⟩
-    · rw [Ideal.mem_bot] at hg
-      simp [hg]
-    · simp
-
-theorem isProjPrime_point (F : Type*) [Field F] :
-    IsProjPrime (⊥ : Ideal (MvPolynomial (Fin 1) F)) := by
-  refine ⟨Ideal.isPrime_bot, ?_, ?_⟩
-  · intro f hf d
-    rw [Ideal.mem_bot] at hf ⊢
-    simp [hf]
-  · exact ⟨0, by rw [Ideal.mem_bot]; exact X_ne_zero 0⟩
-
-theorem isChowForm_point (F : Type*) [Field F] :
-    IsChowForm (⊥ : Ideal (MvPolynomial (Fin 1) F)) 1 (X (0, 0)) := by
-  refine ⟨X_ne_zero _, fun g => ?_⟩
-  rw [X_dvd_iff_constantCoeff_eq_zero]
-  simp only [mem_incidence_point, forall_eq, aeval_zero]
-  exact map_eq_zero_iff _ (algebraMap F (AlgebraicClosure F)).injective
-
 end Inhabitants
 
 end

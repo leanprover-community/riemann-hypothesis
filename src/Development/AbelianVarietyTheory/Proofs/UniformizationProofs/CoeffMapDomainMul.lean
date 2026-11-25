@@ -157,7 +157,7 @@ theorem coeffSup_coeff_mul [Add G] [UniqueSums G] (f g : AddMonoidAlgebra R G) :
     obtain ⟨hp, hne⟩ := Finset.mem_sdiff.mp hp
     obtain ⟨hp₁, hp₂⟩ := Finset.mem_product.mp hp
     rw [Finset.mem_singleton] at hne
-    simp only [ite_true, map_mul, ha₂, hb₂]
+    simp only [if_true, map_mul, ha₂, hb₂]
     split_ifs with he
     · rw [map_mul]
       have h₁ := le_coeffSup v.map_zero f.coeff p.1
@@ -206,12 +206,6 @@ variable {R S Γ₀ σ τ : Type*} [CommRing R] [CommRing S] [LinearOrderedCommM
 
 def gaussVal : Valuation (MvPolynomial σ R) Γ₀ := gaussValAlg v
 
-theorem gaussVal_le_iff {f : MvPolynomial σ R} {γ : Γ₀} :
-    gaussVal v f ≤ γ ↔ ∀ m, v (AddMonoidAlgebra.coeff f m) ≤ γ := gaussValAlg_le_iff v
-
-theorem le_gaussVal (f : MvPolynomial σ R) (m : σ →₀ ℕ) : v (AddMonoidAlgebra.coeff f m) ≤ gaussVal v f :=
-  (gaussVal_le_iff v).mp le_rfl m
-
 theorem gaussVal_eq_zero_iff_forall {f : MvPolynomial σ R} :
     gaussVal v f = 0 ↔ ∀ m, v (AddMonoidAlgebra.coeff f m) = 0 := gaussValAlg_eq_zero_iff v
 
@@ -233,20 +227,6 @@ theorem gaussVal_supp :
 theorem gaussVal_supp_eq_bot_of_supp (hv : v.supp = ⊥) :
     (gaussVal (σ := σ) v).supp = ⊥ := by
   rw [gaussVal_supp, hv, Ideal.map_bot]
-
-theorem gaussVal_sum_C_mul_X (s : Finset σ) (a : σ → R) :
-    gaussVal v (∑ i ∈ s, C (a i) * X i : MvPolynomial σ R) = s.sup fun i => v (a i) := by
-  classical
-  refine le_antisymm (Valuation.map_sum_le _ fun i hi => ?_) (Finset.sup_le fun i hi => ?_)
-  · rw [map_mul, gaussVal_C, gaussVal_X, mul_one]
-    exact Finset.le_sup (f := fun i => v (a i)) hi
-  · refine le_trans (le_of_eq ?_) (le_gaussVal v _ (Finsupp.single i 1))
-    rw [coeff_sum, Finset.sum_eq_single i]
-    · simp
-    · intro j _ hj
-      rw [coeff_C_mul, coeff_X, ite_eq_right, mul_zero]
-      exact fun h => hj (Finsupp.single_left_injective one_ne_zero h)
-    · exact fun h => absurd hi h
 
 end Poly
 
@@ -278,9 +258,6 @@ variable {R Γ σ τ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop Γ
 
 def gaussAddVal : AddValuation (MvPolynomial σ R) Γ :=
   AddValuation.ofValuation (gaussVal (AddValuation.toValuation v))
-
-theorem gaussAddVal_mul (f g : MvPolynomial σ R) :
-    gaussAddVal v (f * g) = gaussAddVal v f + gaussAddVal v g := AddValuation.map_mul _ f g
 
 @[simp] theorem gaussAddVal_C (a : R) : gaussAddVal v (C a : MvPolynomial σ R) = v a :=
   gaussVal_C (AddValuation.toValuation v) a
@@ -345,12 +322,7 @@ open MvPolynomial Module
 variable {R Γ₀ ι κ σ : Type*} [CommRing R] [LinearOrderedCommMonoidWithZero Γ₀]
   (v : Valuation R Γ₀) {M N : Type*} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
 
-def basisVal (b : Basis ι R M) (x : M) : Γ₀ := coeffSup v (b.repr x)
-
 variable (b : Basis ι R M)
-
-theorem basisVal_le_iff {x : M} {γ : Γ₀} : basisVal v b x ≤ γ ↔ ∀ i, v (b.repr x i) ≤ γ :=
-  coeffSup_le_iff v.map_zero
 
 end Content
 
@@ -384,17 +356,6 @@ variable {R Γ ι κ σ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop
 section
 
 variable {M : Type*} [AddCommGroup M] [Module R M] (b : Basis ι R M)
-
-def basisAddVal (x : M) : Γ :=
-  OrderDual.ofDual (Multiplicative.toAdd (basisVal (AddValuation.toValuation v) b x))
-
-theorem le_basisAddVal_iff {x : M} {γ : Γ} :
-    γ ≤ basisAddVal v b x ↔ ∀ i, γ ≤ v (b.repr x i) :=
-  basisVal_le_iff (AddValuation.toValuation v) b (γ := Multiplicative.ofAdd (OrderDual.toDual γ))
-
-theorem basisAddVal_eq_inf_univ [Fintype ι] (x : M) :
-    basisAddVal v b x = Finset.univ.inf fun i => v (b.repr x i) :=
-  eq_of_forall_le_iff fun γ => by simp [le_basisAddVal_iff]
 
 end
 
@@ -466,7 +427,7 @@ theorem NullV.exists_trunc {X : Type} {A : X → F} (hA : NullV v A) (N : ℚ) :
     fun χ hχ => ?_⟩
   · rw [Set.Finite.mem_toFinset]
     by_contra hn
-    exact hχ (ite_eq_right hn)
+    exact hχ (if_neg hn)
   · simp only [Finsupp.onFinset_apply]
     split_ifs with hχ
     · simp
@@ -475,7 +436,7 @@ theorem NullV.exists_trunc {X : Type} {A : X → F} (hA : NullV v A) (N : ℚ) :
     split_ifs with hχ
     · exact le_rfl
     · simp
-  · simp only [Finsupp.onFinset_apply, ite_eq_left hχ]
+  · simp only [Finsupp.onFinset_apply, if_pos hχ]
 
 theorem coeff_mapDomain_mul {X : Type} [AddCommGroup X] (h : X →+ X) (a c : AddMonoidAlgebra F X)
     (T : Finset X) (hT : a.coeff.support ⊆ T) (α : X) :

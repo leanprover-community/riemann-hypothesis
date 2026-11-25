@@ -293,31 +293,6 @@ theorem twistSys_zero_twist (Q : SubSystem S x Ω) : (twistSys S x 0).twist Q = 
   · intro q hq
     exact Submodule.subset_span ⟨q, hq, 1, one_mem_twistMod_zero I, by rw [smul_eq_mul, mul_one]⟩
 
-theorem foldl_twist_zero {n : ℕ} (L : Fin n → SubSystem S x Ω) (hL : ∀ i, L i = twistSys S x 0)
-    (l : List (Fin n)) :
-    l.foldl (fun F i => F.twist (L i)) (twistSys S x 0) = twistSys S x 0 := by
-  induction l with
-  | nil => rfl
-  | cons a l ih =>
-    rw [List.foldl_cons, hL a, SubSystem.twist_twistSys_zero]
-    exact ih
-
-theorem tensorSub_of_forall_eq {n : ℕ} (L : Fin n → SubSystem S x Ω)
-    (hL : ∀ i, L i = twistSys S x 0) (T : Finset (Fin n)) : tensorSub L T = twistSys S x 0 :=
-  foldl_twist_zero L hL _
-
-theorem interNum_twistSys_zero (pp : Ideal (Poly S N)) : interNum pp ![twistSys S x 0] = 0 := by
-  have h0 : interSum pp ![twistSys S x 0] = fun _ => 0 := by
-    funext c
-    have hT : ∀ T : Finset (Fin 1), tensorSub ![twistSys S x 0] T = twistSys S x 0 :=
-      tensorSub_of_forall_eq _ (fun i => by fin_cases i; rfl)
-    simp only [interSum, hT]
-    rw [← Finset.powerset_univ, Finset.sum_powerset_apply_card
-      (f := fun j => (-1 : ℤ) ^ (1 - j) * restrLen pp ((twistSys S x 0).twist (twistSys S x (c : ℤ))))]
-    simp [Finset.sum_range_succ]
-  rw [interNum, h0]
-  exact tendsto_const_nhds.limUnder_eq
-
 end Lemmas
 
 section Inhabitants2

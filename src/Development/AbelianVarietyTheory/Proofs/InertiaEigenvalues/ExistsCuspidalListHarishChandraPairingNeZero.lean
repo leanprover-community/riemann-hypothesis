@@ -138,9 +138,6 @@ theorem degL_append (L₁ L₂ : List (Pc g)) : degL (L₁ ++ L₂) = degL L₁ 
 theorem class_hcL (L : List (Pc g)) (hL : ∀ p ∈ L, IsChar p.2) : IsClass (hcL L (degL L)) :=
   char_class (_root_.GlobalTheory.gl_list_product_perm_char g L L (degL L) rfl hL).1
 
-theorem char_hcL (L : List (Pc g)) (hL : ∀ p ∈ L, IsChar p.2) : IsChar (hcL L (degL L)) :=
-  (_root_.GlobalTheory.gl_list_product_perm_char g L L (degL L) rfl hL).1
-
 theorem hcL_append (L₁ L₂ : List (Pc g)) (h : ∀ p ∈ L₁ ++ L₂, IsChar p.2) (n : ℕ)
     (hn : n = degL L₁ + degL L₂) :
     hcL (L₁ ++ L₂) n = hc (degL L₁) (degL L₂) (hcL L₁ (degL L₁)) (hcL L₂ (degL L₂)) n := by

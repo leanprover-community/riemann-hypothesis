@@ -1378,7 +1378,6 @@ end Formalism.FourierDecayAlt.P.DiagonalScalarMatrices
 namespace Formalism.FourierDecayAlt.P
 
 open Finset Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
-open scoped ComplexOrder
 
 theorem head_weight_at_of_exists : DiagonalScalarMatrices.HeadWeightAtOfEx := by
   intro Wp Wq _ _ _ _ _ _ P p w X μ L st ν'r m₀r hD hcut hLF x hx γ₀ hγG hζ hγF hex h hh y e

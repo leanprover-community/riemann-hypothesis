@@ -105,7 +105,7 @@ theorem UpperTheory.etaleCohomology_corrOp_comm_pullback :
   have FB : FEtBasic := pFEtBasic pPtsOfSplits
   have hT : (et l (sp Ω')).Good := pEtGood (pEtnGood FB pEtTr) l _ (l_unit_of_charZero l Ω')
   have OE : OpEx.{1} := pOpEx pOpTr
-  have FI : FEtInj.{1} := pFEtInj (pGalClosD (pSplitsPts pIsoPts) (pOrdEx pOrdStep))
+  have FI : FEtInj.{1} := pFEtInj (pGalClosD (pSplitsPts pIsoPts) pOrdEx)
   haveI : IsFinite s₁ := MorphismProperty.of_isPullback (P := @IsFinite) hv ‹_›
   haveI : Etale s₁ := MorphismProperty.of_isPullback (P := @Etale) hv ‹_›
   obtain ⟨hσ, -⟩ := id hS

@@ -28,10 +28,7 @@ variable {V X Y : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddG
   [TopologicalSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] [T2Space X]
   [LocallyCompactSpace X]
 
-theorem densApprox_lc (μ : Measure V) [IsFiniteMeasureOnCompacts μ] (f : V → Y) (ι : X → Y)
-    (ν : Measure X) [IsFiniteMeasureOnCompacts ν] [ν.IsOpenPosMeasure] (U : Set V)
-    (hU : IsOpen U) (hNA : HasCOSub V) : DensApprox (IsLCcOn U) μ f ι ν U := by
-  apply PI.VolStabSW.densApprox_lc <;> assumption
+export PI.VolStabSW (densApprox_lc)
 
 end Main
 

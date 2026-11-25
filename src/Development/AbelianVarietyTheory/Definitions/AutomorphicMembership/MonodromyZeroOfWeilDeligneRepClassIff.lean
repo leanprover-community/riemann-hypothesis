@@ -405,11 +405,6 @@ theorem map_N_eigenspace (a : WDRep h V) {φ : Weil h} (hφ : deg φ = 1) {α : 
 theorem unr_diag {ι : Type*} [Finite ι] (c : ι → ℂˣ) : (diag (h := h) c).Unr :=
   ⟨rfl, fun σ => LinearMap.ext fun v => funext fun i => by simp⟩
 
-theorem tempered_sp (n : ℕ) : (sp (h := h) n).Tempered := fun φ hφ => by
-  rw [sp_ρ, sp_N, hφ]
-  refine isPurePair_diagEnd_shiftEnd (by exact_mod_cast one_lt_normV w) _ fun i => ?_
-  rw [zpow_one, spEig, norm_qPow]
-
 end WDRep
 
 def isoSetoid (h : IsPlaceOver A w) : Setoid (Σ n : ℕ, WDRep h (Fin n → ℂ)) where
@@ -613,11 +608,6 @@ theorem frobEig_diag {ι : Type*} [Fintype ι] (c : ι → ℂˣ) :
   rwa [Multiset.map_map] at this
 
 @[simp] theorem lpDim_lpSp (n : ℕ) : lpDim (lpSp (h := h) n) = n := by simp [lpSp]
-
-theorem tempered_lpSp (n : ℕ) : tempered (lpSp (h := h) n) := (tempered_mk _).mpr (WDRep.tempered_sp (h := h) n)
-
-theorem not_mono0_lpSp {n : ℕ} (hn : 2 ≤ n) : ¬ mono0 (lpSp (h := h) n) :=
-  fun h0 => shiftEnd_ne_zero hn ((monodromyZero_ofWeilDeligneRepClass_iff _).mp h0)
 
 theorem _root_.GlobalTheory.WeilDeligne.WDRep.Tempered.norm_eq_one {a : WDRep h V} (ha : a.Tempered)
     (hN : a.N = 0) {φ : Weil h} (hφ : deg φ = 1) : absSpace (a.ρ φ) 1 = ⊤ := by

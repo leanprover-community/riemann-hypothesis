@@ -862,11 +862,6 @@ theorem counit_addMonoidAlgebra [AddMonoid Γ] [Finite Γ]
     counit (R := R) φ = addMonoidAlgebraEquiv R Γ φ 0 := by
   rw [addMonoidAlgebraEquiv_apply]; rfl
 
-theorem antipode_addMonoidAlgebra [AddGroup Γ] [Finite Γ]
-    (φ : CartierDual R (AddMonoidAlgebra R Γ)) (γ : Γ) :
-    addMonoidAlgebraEquiv R Γ (antipode R φ) γ = addMonoidAlgebraEquiv R Γ φ (-γ) := by
-  simp [antipode_apply]
-
 end AddMonoidAlgebra
 
 end CartierDual
@@ -1148,18 +1143,6 @@ end PairingMap
 section Examples
 
 open CartierDual
-
-theorem canonical_zmod_two_ne_one (R : Type*) [CommRing R] [Nontrivial R] :
-    canonical R (AddMonoidAlgebra R (ZMod 2)) ≠ 1 := by
-  intro h
-  have h1 := pairingMap_canonical (R := R) (H := AddMonoidAlgebra R (ZMod 2))
-  rw [h, Algebra.TensorProduct.one_def] at h1
-  have h2 := congr(addMonoidAlgebraEquiv R (ZMod 2)
-    ($h1 ((addMonoidAlgebraEquiv R (ZMod 2)).symm (Pi.single 0 1))) 1)
-  rw [pairingMap_tmul, map_smul, LinearMap.id_apply, AlgEquiv.apply_symm_apply,
-    map_one (addMonoidAlgebraEquiv R (ZMod 2)), AddMonoidAlgebra.one_def,
-    addMonoidAlgebraEquiv_symm_single] at h2
-  simp at h2
 
 end Examples
 

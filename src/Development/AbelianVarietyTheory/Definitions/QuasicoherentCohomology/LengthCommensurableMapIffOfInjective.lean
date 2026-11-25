@@ -234,12 +234,6 @@ theorem relLength_submoduleOf {A W : Submodule R V} (h : A ≤ W) (B : Submodule
   relLength_comap_of_le_range W.subtype (by rwa [Submodule.range_subtype]) B
 
 
-open Pointwise in
-theorem relLength_smul_smul {G : Type*} [Monoid G] [DistribMulAction G V] [SMulCommClass G R V]
-    {a : G} (ha : IsSMulRegular V a) (A B : Submodule R V) :
-    relLength (a • A) (a • B) = relLength A B :=
-  relLength_map_of_injective (DistribSMul.toLinearMap R V a) ha A B
-
 
 open Pointwise in
 theorem lengthCommensurable_smul_smul_iff {G : Type*} [Monoid G] [DistribMulAction G V]
@@ -304,11 +298,6 @@ theorem relLength_top_of_isMaximal {R : Type*} [CommRing R] (I : Ideal R) [hI : 
     relLength (⊤ : Ideal R) I = 1 := by
   rw [relLength_top_left, Module.length_eq_one_iff, isSimpleModule_iff_isCoatom]
   exact hI.out
-
-theorem relLength_int_top_span_prime {p : ℤ} (hp : Prime p) :
-    relLength (⊤ : Ideal ℤ) (Ideal.span {p}) = 1 :=
-  have := PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
-  relLength_top_of_isMaximal _
 
 end Examples
 

@@ -1077,10 +1077,10 @@ theorem memberE_of_steps2 : GlobalTheory.NT.RayField → GlobalTheory.Published.
   have hB : BaseCond KPx := KPxCond.baseCond_KPx hR hP hC h2b
   have h1 : FirstG KPx (IsBuiltE 𝒮) :=
     step_hasCore (MemberEx2.step_start h2b)
-      (MemberEx2.stepW_builtE (fun _ _ _ _ _ h => h.1) h4 (_root_.GlobalTheory.Mem.Top.Bl.CoreAsm.stepW_core h2b 𝒮 hA hD hT) h3)
+      (MemberEx2.stepW_builtE (fun _ _ _ _ _ h => h.1) h4 (_root_.GlobalTheory.Mem.Top.Bl.CoreAsm.stepW_core 𝒮 hA hD hT) h3)
   have hW : StepW (fun K B f T w => Start K B f T w ∧ Has3 𝒮' K B f T w)
       (HasC fun K B f T w Z c => GoodE 𝒮 K B f T w Z c ∧ DQ.TwAllAt (w.D Z) c.O.nch c.O.xd) :=
-    (MemberEx2.stepW_builtE (fun _ _ _ _ _ h => h.1.1) h4' (_root_.GlobalTheory.Mem.Top.Bl.CoreAsm.stepW_core h2b 𝒮' hA' hD' hT')
+    (MemberEx2.stepW_builtE (fun _ _ _ _ _ h => h.1.1) h4' (_root_.GlobalTheory.Mem.Top.Bl.CoreAsm.stepW_core 𝒮' hA' hD' hT')
       (StepW.of_all fun _ _ _ _ _ _ _ h => h.2)).trans
       (StepW.of_all fun _ _ _ _ _ _ _ H => let ⟨Z, c, hc⟩ := H; ⟨Z, c, hL _ _ _ _ _ _ _ hc⟩)
   have hS := step_hasCore (admitted := fun K B f T => ∃ w : ColW B f T, Start K B f T w ∧ Has3 𝒮' K B f T w)

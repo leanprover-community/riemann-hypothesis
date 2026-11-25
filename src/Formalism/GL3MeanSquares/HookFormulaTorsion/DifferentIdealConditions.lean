@@ -99,17 +99,6 @@ namespace PfN
 section
 open Ideal UniqueFactorizationMonoid
 
-theorem nf_map {S : Type*} [CommRing S] [IsDedekindDomain S] (I : Ideal S) (hI : I ≠ ⊥)
-    (f : Ideal S ≃* Ideal S) : normalizedFactors (f I) = (normalizedFactors I).map f := by
-  have h1 : ∀ P ∈ (normalizedFactors I).map f, Prime P := by
-    intro P hP
-    obtain ⟨P', hP', rfl⟩ := Multiset.mem_map.mp hP
-    exact (MulEquiv.prime_iff f).mpr (prime_of_normalized_factor P' hP')
-  have h2 : ((normalizedFactors I).map f).prod = f I := by
-    rw [← map_multiset_prod, Ideal.prod_normalizedFactors_eq_self hI]
-  have h3 := normalizedFactors_prod_of_prime h1
-  rwa [h2] at h3
-
 theorem idealConjugateFactorizationUnique {S : Type*} [CommRing S] [IsDedekindDomain S] (D : Ideal S) (hD0 : D ≠ ⊥)
     (f : Ideal S ≃* Ideal S) (hfD : f D = D) (p : Ideal S → Prop)
     (hp : ∀ P ∈ normalizedFactors D, (p (f P) ↔ ¬ p P)) :
@@ -171,7 +160,8 @@ theorem int_mem_smul (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (n : ℤ) (P :
 
 theorem int_mem_of_cm (P : Ideal (𝓞 (hostE ζ a b))) (𝔭 : Ideal (𝓞 (KinE ζ a b))) (hP : cm P = 𝔭)
     (n : ℤ) (hn : (n : 𝓞 (KinE ζ a b)) ∈ 𝔭) : (n : 𝓞 (hostE ζ a b)) ∈ P := by
-  rwa [← hP, Ideal.mem_comap, map_intCast] at hn
+  rw [← hP, Ideal.mem_comap, map_intCast] at hn
+  exact hn
 
 theorem stab_Psi (hH : HostHyp q d) (h : IsLayer (e + 2) q d ζ a b) (r : ℕ) (hr : r = 2 ∨ r = q)
     (P : Ideal (𝓞 (hostE ζ a b))) [P.IsPrime] (hm : ((r : ℤ) : 𝓞 (hostE ζ a b)) ∈ P)
@@ -262,8 +252,10 @@ theorem key (hH : HostHyp q d) (h : IsLayer (e + 2) q d ζ a b)
     · exact Nat.prime_two
     · exact hH.1
   constructor
-  · exact fun h2 h1 => not_cm_eq_of_conj_smul_prime hH h c hc r hr 𝔭 P hm h1 h2
-  · exact fun h1 => (atLeast hH h c hc r hrp 𝔭 hm𝔭 P hm).resolve_left h1
+  · intro h2 h1
+    exact not_cm_eq_of_conj_smul_prime hH h c hc r hr 𝔭 P hm h1 h2
+  · intro h1
+    exact (atLeast hH h c hc r hrp 𝔭 hm𝔭 P hm).resolve_left h1
 
 theorem excl (r s : ℕ) (hrs : Nat.Coprime r s) (𝔭 : Ideal (𝓞 (KinE ζ a b)))
     (hs : ((s : ℤ) : 𝓞 (KinE ζ a b)) ∈ 𝔭)

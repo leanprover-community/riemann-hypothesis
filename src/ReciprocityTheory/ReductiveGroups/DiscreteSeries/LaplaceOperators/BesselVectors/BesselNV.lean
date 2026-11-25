@@ -146,7 +146,19 @@ open ReciprocityTheory.ChartRestriction.DS.Lap
 variable {k r : ℕ}
 
 theorem isClosed_UWset (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (Formalism.QuantumDeterminants.UWset k r z) := by
-  exact ReciprocityTheory.ChartRestriction.DS.Lap.S0.Dec.UW_closed k r z
+  have hU : IsClosed {g : Mat k r | gᴴ * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r} :=
+    isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id)
+      continuous_const
+  have h1 : IsClosed {g : Mat k r | ∀ a : Fin r,
+      g *ᵥ Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a) = Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.eI k r a) ∧
+        g *ᵥ Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI k r a) = Formalism.QuantumDeterminants.bvec (Formalism.QuantumDeterminants.esI k r a)} := by
+    simp only [Set.ofPred_forall, Set.ofPred_and]
+    exact isClosed_iInter fun a =>
+      (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const).inter
+        (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const)
+  have h2 : IsClosed {g : Mat k r | g *ᵥ z = z} :=
+    isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
+  exact hU.inter (h1.inter h2)
 
 theorem piInv_facts (z : Fin (2 * r + k + 1) → ℂ) (u : Fin k → ℝ) {Vp : Type} [NormedAddCommGroup Vp]
     [InnerProductSpace ℂ Vp] [FiniteDimensional ℂ Vp] (π : Mat k r → (Vp →L[ℂ] Vp))
@@ -208,21 +220,23 @@ section hpk
 
 variable (k r : ℕ)
 
-theorem hpk_out {i : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = 2 * r + k - i.val then 1 else 0 := by
-  exact ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_out k r h j
-
-theorem hpk_mid {i : Fin (2 * r + k + 1)} (h : ¬(i.val < r ∨ r + k < i.val)) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = i.val then (if i.val = r + k then -1 else 1) else 0 := by
-  exact ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mid k r h j
-
 theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) i = if i.val < r ∨ r + k < i.val then v ⟨2 * r + k - i.val, by omega⟩
       else if i.val = r + k then -v i else v i := by
   apply ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.hpk_mulVec
 
 theorem hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk k r *ᵥ v) = v := by
-  exact ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec k r v
+  funext i
+  have hi := i.isLt
+  by_cases h : i.val < r ∨ r + k < i.val
+  · have h' : (2 * r + k - i.val < r ∨ r + k < 2 * r + k - i.val) := by omega
+    rw [hpk_mulVec, if_pos h, hpk_mulVec, if_pos h']
+    congr 1
+    ext
+    simp only
+    omega
+  · rw [hpk_mulVec, if_neg h, hpk_mulVec, if_neg h]
+    split_ifs <;> simp
 
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
   apply Matrix.ext_of_mulVec_single
@@ -244,10 +258,24 @@ theorem mul_inv_UH (k r : ℕ) {g : Mat k r} (hg : g ∈ UH (Hpk k r)) : g * g�
   exact Matrix.mul_nonsing_inv g (Matrix.isUnit_det_of_left_inverse h)
 
 theorem mul_mem_UH (k r : ℕ) {g x : Mat k r} (hg : g ∈ UH (Hpk k r)) (hx : x ∈ UH (Hpk k r)) :
-    g * x ∈ UH (Hpk k r) := ReciprocityTheory.ChartRestriction.DS.Lap.mul_mem_UH' hg hx
+    g * x ∈ UH (Hpk k r) := by
+  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
+  have hx' : xᴴ * Hpk k r * x = Hpk k r := hx
+  show (g * x)ᴴ * Hpk k r * (g * x) = Hpk k r
+  rw [Matrix.conjTranspose_mul]
+  calc xᴴ * gᴴ * Hpk k r * (g * x) = xᴴ * (gᴴ * Hpk k r * g) * x := by
+        simp only [Matrix.mul_assoc]
+    _ = Hpk k r := by rw [hg', hx']
 
 theorem inv_mem_UH (k r : ℕ) (g : Mat k r) (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) := by
-  exact ReciprocityTheory.ChartRestriction.DS.Lap.inv_mem_UH' hg
+  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
+  have e := mul_inv_UH k r hg
+  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
+  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
+    _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by
+        rw [Matrix.conjTranspose_mul]
+        simp only [Matrix.mul_assoc]
+    _ = Hpk k r := by rw [e]; simp
 
 end ReciprocityTheory.ChartRestriction.DS.Lap.S0.Core
 end -- clump:auto

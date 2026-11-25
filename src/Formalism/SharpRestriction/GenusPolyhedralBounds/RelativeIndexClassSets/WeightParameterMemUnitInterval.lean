@@ -298,7 +298,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -383,7 +382,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -826,7 +824,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -901,7 +898,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1072,7 +1068,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1182,7 +1177,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1322,7 +1316,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1468,7 +1461,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1489,7 +1481,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -1519,7 +1510,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 

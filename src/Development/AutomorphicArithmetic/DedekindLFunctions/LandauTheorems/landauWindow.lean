@@ -263,17 +263,6 @@ theorem eq_ofReal_sub_of_dist_le_of_le_sub_re {w : ℂ} {σ D : ℝ} (h1 : dist 
   · rw [Complex.ofReal_re]; exact hre
   · rw [Complex.ofReal_im]; exact him
 
-/-- Include the cap among the candidate radii, so the minimum exists even with no competing poles. -/
-private theorem exists_capped_radius {α : Type*} {S : Set α} (hS : S.Finite) (f : α → ℝ)
-    {d cap : ℝ} (hcap : d < cap) (h : ∀ w ∈ S, d < f w) :
-    ∃ r, d < r ∧ r ≤ cap ∧ ∀ w ∈ S, r ≤ f w := by
-  obtain ⟨r, hr, hmin⟩ := Set.exists_min_image (insert cap (f '' S)) id
-    ((hS.image f).insert cap) ⟨cap, by simp⟩
-  refine ⟨r, ?_, hmin cap (by simp), fun w hw => hmin (f w) (Set.mem_insert_of_mem _ ⟨w, hw, rfl⟩)⟩
-  rcases Set.mem_insert_iff.mp hr with rfl | ⟨w, hw, rfl⟩
-  · exact hcap
-  · exact h w hw
-
 theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w in 𝓝[≠] z, w ∉ Z) {σ θ : ℝ}
     (hle : ∀ ρ ∈ Z, ρ.re < σ) (hθ : 0 < θ) (hθσ : θ < σ) {ρ₀ : ℂ} (h₀ : ρ₀ ∈ Z) (hρ₀ : θ < ρ₀.re) :
     (∃ D : ℝ, D ≤ σ - θ ∧ (∀ w ∈ Z, w ∉ Metric.ball (σ : ℂ) D) ∧ ∃ ρ₁ ∈ Z, σ - ρ₁.re < D) ∨

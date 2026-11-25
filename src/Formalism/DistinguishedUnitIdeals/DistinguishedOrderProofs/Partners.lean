@@ -252,7 +252,6 @@ end lev
 
 end XDivisibilityOfActions
 
-open XDivisibilityOfActions
 
 theorem partner_fourth_first_form : DivisibleIffOf := by
   intro O _ B n _ V _ _ L c ell hh H r S g h5 hH hM hU
@@ -531,7 +530,6 @@ end lev2
 
 end XDivisibilityOfActions
 
-open XDivisibilityOfActions
 
 theorem XDivisibilityOfActions.partner_gen {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V : Type}
     [AddCommGroup V] [Module (PowerSeries O) V] {L : Lat B n V} {c : ZMod n} {ell : ℕ}
@@ -796,7 +794,6 @@ end hinv
 
 end XDivisibilityOfActions
 
-open XDivisibilityOfActions
 
 theorem height_inverse_holds : HinvOf := by
   intro O _ B u₁ n _ M V _ _ L i r e hℓ hE h9 he m₀

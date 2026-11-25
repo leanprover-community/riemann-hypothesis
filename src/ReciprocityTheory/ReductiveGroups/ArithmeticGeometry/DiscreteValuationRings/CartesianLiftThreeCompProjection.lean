@@ -148,10 +148,6 @@ lemma single_two {α : Type} (a : α) : Finsupp.single a (2 : ℤ) = Finsupp.sin
   rw [← Finsupp.single_add]
   norm_num
 
-lemma single_neg_two {α : Type} (a : α) : Finsupp.single a (-2 : ℤ) = -Finsupp.single a 1 - Finsupp.single a 1 := by
-  rw [← Finsupp.single_neg, ← Finsupp.single_sub]
-  norm_num
-
 def psiP (w : A ⟶ A) (y : T ⟶ A) : (T ⟶ A) →₀ ℤ :=
   lamP y (y ≫ w) - Finsupp.single y 1 + Finsupp.single 1 1
 

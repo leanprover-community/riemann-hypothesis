@@ -53,13 +53,6 @@ section K2iff
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} (TR : TypedRed X)
 
-theorem res_ew_one (v : TR.Pl) : TR.res v ⟨X.ew, X.ew_int⟩ = 1 := by
-  have h := TR.res_ew v 1
-  rw [map_one] at h
-  rw [← h]
-  congr 1
-  exact Subtype.ext (by simp)
-
 theorem res_of_Z_delta (v : TR.Pl) {c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hc : c ∈ IntAf X.B.I.F X.B.I.E) (b : Prop)
     [Decidable b] (hZ : ZMod' X.B.I X.B.g (c - if b then X.ew else 0)) :
     TR.res v ⟨c, hc⟩ = if b then 1 else 0 := by

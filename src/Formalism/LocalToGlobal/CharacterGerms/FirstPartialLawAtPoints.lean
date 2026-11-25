@@ -267,66 +267,6 @@ theorem isIU_of_exp {U f : MvPowerSeries τ C} (hi : IntS V U) (he : U = mvExp f
   first
     | simp
 
-theorem biadd_left {c : Fin dd → MvPowerSeries τ C} (hc : GoodPt V c) :
-    ∀ l : List (Fin dd → MvPowerSeries τ C), (∀ a ∈ l, GoodPt V a) →
-      ∃ U : MvPowerSeries τ C, IsIU V U ∧ mvExp (hAt Y (sumL Y l) c) * U = (l.map fun a => mvExp (hAt Y a c)).prod := by
-  intro l
-  induction l with
-  | nil =>
-      intro _
-      refine ⟨1, IsIU.one, ?_⟩
-      show mvExp (hAt Y (fun _ => 0) c) * 1 = 1
-      rw [hAt_zero_left Y hc.1, rtj_mvExp_zero, one_mul]
-  | cons a l ih =>
-      intro h
-      have ha : GoodPt V a := h a (List.mem_cons_self (a := a) (l := l))
-      have hl := good_sumL Y l fun b hb => h b (List.mem_cons_of_mem _ hb)
-      obtain ⟨U, hU, e⟩ := ih fun b hb => h b (List.mem_cons_of_mem _ hb)
-      have hp := first_partial_law_at_points Y ha.1 hl.1 hc.1
-      have hpi : IntS V (MvPowerSeries.subst (P3 a (sumL Y l) c) Y.B.ph1) :=
-        IntS.subst (constantCoeff_triple_substitution ha.1 hl.1 hc.1) (integral_triple_substitution ha.2 hl.2 hc.2) Y.intPh1
-      refine ⟨MvPowerSeries.subst (P3 a (sumL Y l) c) Y.B.ph1 * U, (isIU_of_exp hpi hp).mul hU, ?_⟩
-      have c1 := cc_hAt Y ha.1 hc.1
-      have c2 := cc_hAt Y hl.1 hc.1
-      have c3 := cc_hAt Y (cc_addAt Y ha.1 hl.1) hc.1
-      have e2 : mvExp (hAt Y (addAt Y a (sumL Y l)) c) * MvPowerSeries.subst (P3 a (sumL Y l) c) Y.B.ph1 =
-          mvExp (hAt Y a c) * mvExp (hAt Y (sumL Y l) c) := by
-        rw [hp, ← exp_add c3 (by rw [map_sub, map_add (f := _), c1, c2, c3]; simp), ← exp_add c1 c2]
-        congr 1
-        ring
-      show mvExp (hAt Y (addAt Y a (sumL Y l)) c) * _ = _
-      rw [List.map_cons, List.prod_cons, ← e, ← mul_assoc, e2, mul_assoc]
-
-theorem biadd_right {c : Fin dd → MvPowerSeries τ C} (hc : GoodPt V c) :
-    ∀ l : List (Fin dd → MvPowerSeries τ C), (∀ a ∈ l, GoodPt V a) →
-      ∃ U : MvPowerSeries τ C, IsIU V U ∧ mvExp (hAt Y c (sumL Y l)) * U = (l.map fun a => mvExp (hAt Y c a)).prod := by
-  intro l
-  induction l with
-  | nil =>
-      intro _
-      refine ⟨1, IsIU.one, ?_⟩
-      show mvExp (hAt Y c (fun _ => 0)) * 1 = 1
-      rw [hAt_zero_right Y hc.1, rtj_mvExp_zero, one_mul]
-  | cons a l ih =>
-      intro h
-      have ha : GoodPt V a := h a (List.mem_cons_self (a := a) (l := l))
-      have hl := good_sumL Y l fun b hb => h b (List.mem_cons_of_mem _ hb)
-      obtain ⟨U, hU, e⟩ := ih fun b hb => h b (List.mem_cons_of_mem _ hb)
-      have hp := second_partial_law_at_points Y hc.1 ha.1 hl.1
-      have hpi : IntS V (MvPowerSeries.subst (P3 c a (sumL Y l)) Y.B.ph2) :=
-        IntS.subst (constantCoeff_triple_substitution hc.1 ha.1 hl.1) (integral_triple_substitution hc.2 ha.2 hl.2) Y.intPh2
-      refine ⟨MvPowerSeries.subst (P3 c a (sumL Y l)) Y.B.ph2 * U, (isIU_of_exp hpi hp).mul hU, ?_⟩
-      have c1 := cc_hAt Y hc.1 ha.1
-      have c2 := cc_hAt Y hc.1 hl.1
-      have c3 := cc_hAt Y hc.1 (cc_addAt Y ha.1 hl.1)
-      have e2 : mvExp (hAt Y c (addAt Y a (sumL Y l))) * MvPowerSeries.subst (P3 c a (sumL Y l)) Y.B.ph2 =
-          mvExp (hAt Y c a) * mvExp (hAt Y c (sumL Y l)) := by
-        rw [hp, ← exp_add c3 (by rw [map_sub, map_add (f := _), c1, c2, c3]; simp), ← exp_add c1 c2]
-        congr 1
-        ring
-      show mvExp (hAt Y c (addAt Y a (sumL Y l))) * _ = _
-      rw [List.map_cons, List.prod_cons, ← e, ← mul_assoc, e2, mul_assoc]
-
 end VP
 
 end Formalism.L2.FormalSeriesBounds

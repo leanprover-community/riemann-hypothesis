@@ -458,7 +458,6 @@ end Lat
 
 end PrismTransfer
 
-open PrismTransfer
 
 theorem transferPart_of (hMap : MapMu) (hPow : PowMu) : TransferPart := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b X hX A B n G x xs hA hB hA0 hn hG hxA hxsB hx1 hxs1 hinj hinj' hrk

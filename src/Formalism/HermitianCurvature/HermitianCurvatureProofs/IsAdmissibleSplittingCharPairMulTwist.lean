@@ -2045,11 +2045,6 @@ section Act
 
 variable (P : M.Par)
 
-def fstH : (DQ P).Pr →+ (DQ P).Op where
-  toFun x := x.1
-  map_zero' := rfl
-  map_add' _ _ := rfl
-
 alias actA_mul := _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_mul
 
 end Act

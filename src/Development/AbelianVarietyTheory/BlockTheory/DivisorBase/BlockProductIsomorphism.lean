@@ -168,18 +168,4 @@ def ProductIsoIff : Prop :=
 
 def IrrPar : Prop := ProductIrreducible ∧ ProductIsoIff
 
-theorem isIsotypicOf_self {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (τ : Representation ℂ G V) :
-    IsIsotypicOf τ τ := by
-  refine top_le_iff.1 (le_trans ?_ (le_iSup _ (Representation.IntertwiningMap.id τ)))
-  intro v _
-  exact ⟨v, rfl⟩
-
-theorem trivial_irreducible (G : Type) [Group G] : (Representation.trivial ℂ G ℂ).IsIrreducible := by
-  refine { toNontrivial := ⟨⟨⊥, ⊤, fun h => ?_⟩⟩, eq_bot_or_eq_top := fun S => ?_ }
-  · have := congrArg Subrepresentation.toSubmodule h
-    exact bot_ne_top (α := Submodule ℂ ℂ) this
-  · rcases eq_bot_or_eq_top (α := Submodule ℂ ℂ) S.toSubmodule with h | h
-    · exact Or.inl (Subrepresentation.ext h)
-    · exact Or.inr (Subrepresentation.ext h)
-
 end GlobalTheory.IndefiniteRowSideFullHecke.BlockProductIsomorphism

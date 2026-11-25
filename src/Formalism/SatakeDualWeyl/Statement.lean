@@ -355,14 +355,6 @@ def GLintComm : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F))
     (n : ℕ), IsCommensurated (GLint (Fin n) (v.adicCompletionIntegers F).toSubring)
 
-def PolyActMul : Prop :=
-  ∀ (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n] (g h : GL n O),
-    polyAct O n (g * h) = (polyAct O n g).comp (polyAct O n h) ∧ polyAct O n 1 = AlgHom.id O _
-
-def NablaStable : Prop :=
-  ∀ (O : Type) [CommRing O] (n : Type) [Fintype n] [DecidableEq n] (k : ℕ) (g : GL n O),
-    ∀ P ∈ nabla O n k, polyAct O n g P ∈ nabla O n k
-
 section More
 
 open NumberField IsDedekindDomain
@@ -430,8 +422,6 @@ def stabFun {A : Type} [CommRing A] {R : Type} [CommRing R] [Algebra R A] {M : T
     rw [← h1]
     congr 1; apply Subtype.ext
     simp [Matrix.mulVec_mulVec]
-
-def IsNeat {G : Type} [Group G] (Γ K : Subgroup G) : Prop := ∀ g : G, stabAt Γ K g = {1}
 
 def hActK {G₁ G₂ : Type} [Group G₁] [Group G₂] {k : Type} [CommRing k] {W : Type} [AddCommGroup W]
     [Module k W] (K₁ : Subgroup G₁) (f : G₁ → k) (φ : G₁ × G₂ → W) (g : G₁ × G₂) : W :=

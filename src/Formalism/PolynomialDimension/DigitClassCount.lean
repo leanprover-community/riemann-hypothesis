@@ -45,39 +45,12 @@ theorem binomial_ratio_bound : BinomRatio := by
   induction j with
   | zero => simp [div_self (dimPol_pos_real k' al).ne']
   | succ j ih =>
-    have p0 := dimPol_pos_real k' (al + j)
-    have pa := dimPol_pos_real k' al
-    have hrec := dimPol_succ_eq_real k' (al + j)
-    rw [show al + (j + 1) = al + j + 1 by omega, hrec]
-    push_cast at ih ⊢
-    set r : ℝ := (dimPol k' al : ℝ) / dimPol k' (al + j) with hr
-    have hr0 : 0 ≤ r := by positivity
-    have hkey : (dimPol k' al : ℝ) / (dimPol k' (al + j) * ((al : ℝ) + j + 1 + k') / ((al : ℝ) + j + 1))
-        = r * (((al : ℝ) + j + 1) / ((al : ℝ) + j + 1 + k')) := by
-      rw [hr]; field_simp
-    rw [hkey]
-    set t : ℝ := ((al : ℝ) + j + 1) / ((al : ℝ) + j + 1 + k') with ht
-    have hk0 : (0 : ℝ) ≤ k' := by positivity
-    have hj0 : (0 : ℝ) ≤ j := by positivity
-    have ht0 : 0 ≤ t := by positivity
-    have ht1 : t ≤ 1 := by rw [ht, div_le_one (by positivity)]; linarith
-    have h1t : 1 - t ≤ (k' : ℝ) / al := by
-      have : 1 - t = (k' : ℝ) / ((al : ℝ) + j + 1 + k') := by rw [ht]; field_simp; ring
-      rw [this]
-      exact div_le_div_of_nonneg_left hk0 hal' (by linarith)
-    have hexp : 1 - (k' : ℝ) * (j + 1) / al = (1 - (k' : ℝ) * j / al) - k' / al := by ring
-    rw [hexp]
-    by_cases ha : 1 - (k' : ℝ) * j / al ≤ 0
-    · have : (0 : ℝ) ≤ k' / al := by positivity
-      nlinarith [mul_nonneg hr0 ht0]
-    · rw [not_le] at ha
-      set a := 1 - (k' : ℝ) * j / al
-      have ha1 : a ≤ 1 := by
-        have : (0 : ℝ) ≤ k' * j / al := by positivity
-        linarith
-      have h2 : a * t ≤ r * t := mul_le_mul_of_nonneg_right ih ht0
-      have h3 : a * (1 - t) ≤ 1 - t := by nlinarith
-      nlinarith
+    rw [← Nat.add_assoc al j 1, dimPol_succ_eq_real, div_div_eq_mul_div, ← div_mul_div_comm]
+    push_cast
+    refine le_trans ?_ (mul_le_mul_of_nonneg_right ih (by positivity))
+    rw [← mul_div_assoc, le_div_iff₀ (by positivity)]
+    field_simp
+    linarith only [show 0 ≤ (k' : ℝ) * (j + 1) * (k' + 1) by positivity]
 
 theorem binomSeries_gen (k' B : ℕ) (hk : 2 ≤ k') :
     HasSum (fun j : ℕ => (dimPol k' B : ℝ) / dimPol k' (B + j)) (((B : ℝ) + k') / ((k' : ℝ) - 1)) := by

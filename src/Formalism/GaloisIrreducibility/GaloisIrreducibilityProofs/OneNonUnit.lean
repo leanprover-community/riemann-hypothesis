@@ -19,7 +19,6 @@ variable {R : Type} [CommRing R]
 
 end BorderedIndexCases
 
-open Matrix
 
 namespace BorderedIndexCases
 
@@ -27,7 +26,6 @@ variable {R : Type} [CommRing R]
 
 end BorderedIndexCases
 
-open Matrix
 
 namespace BorderedIndexCases
 

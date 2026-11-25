@@ -64,15 +64,6 @@ def OrbitCount : Prop :=
       Formalism.HermitianLatticesTheory.IsOrthoLattice h' L' (M - 1) →
       repMass h L 1 = Formalism.HermitianLatticesTheory.mass h' L'
 
-def LandherrUnram : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
-    ∀ (n : ℕ) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-      [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K),
-      h.IsSymm → IsTotPosDef h → finrank K V = n →
-      (∃ L : Submodule (𝓞 K) V, Submodule.IsLattice K L ∧
-        ∀ p : Ideal (𝓞 K), p.IsMaximal → Formalism.HermitianLatticesTheory.IsUnimodularAt h p L) →
-      ∃ L : Submodule (𝓞 K) V, Formalism.HermitianLatticesTheory.IsOrthoLattice h L n
-
 def LocalDensity : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K →
     ∀ (P : Ideal (𝓞 K)), P.IsMaximal → ∀ (M k : ℕ), 1 ≤ M → 1 ≤ k →

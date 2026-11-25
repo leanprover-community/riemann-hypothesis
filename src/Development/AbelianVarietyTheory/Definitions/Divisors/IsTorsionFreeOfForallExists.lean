@@ -78,16 +78,6 @@ theorem isCohSub_id [h : IsFiniteQC F] : IsCohSub (𝟙 F) := ⟨inferInstance, 
 
 theorem isCohSub_of_isZero (h : IsZero G) (i : G ⟶ F) : IsCohSub i := ⟨h.mono i, .of_isZero h⟩
 
-theorem isSubbundle_of_shortExact {S : ShortComplex X.Modules} (hS : S.ShortExact)
-    (h : IsVB S.X₃ s) : IsSubbundle S.f :=
-  ⟨hS.mono_f, s, h.of_iso (hS.gIsCokernel.coconePointUniqueUpToIso (colimit.isColimit _))⟩
-
-theorem isSubbundle_of_isIso (i : G ⟶ F) [IsIso i] : IsSubbundle i :=
-  ⟨inferInstance, 0, isVB_zero_iff.2 (isZero_cokernel_of_epi i)⟩
-
-theorem isSubbundle_inl (h : IsVB G s) : IsSubbundle (biprod.inl : F ⟶ F ⊞ G) :=
-  isSubbundle_of_shortExact (ShortComplex.Splitting.ofHasBinaryBiproduct F G).shortExact h
-
 theorem exists_app_eq_of_epi (φ : F ⟶ G) [Epi φ] (s : Γ(G, V)) {x : X} (hx : x ∈ V) :
     ∃ (W : X.Opens) (h : W ≤ V), x ∈ W ∧ ∃ t, φ.app W t = resM G h s := by
   obtain ⟨t, ht⟩ := QCoh.stalkLinear_surjective φ x (G.presheaf.germ V x hx s)
@@ -405,26 +395,6 @@ open ProjSpace ProjCoh
 attribute [local instance] MvPolynomial.gradedAlgebra
 
 variable (k : Type) [Field k]
-
-theorem isSmoothProjCurve_line : IsSmoothProjCurve k (PSpace k 1) := by
-  have e := strHom_eq (algebraMap_top_eq k 1)
-  refine ⟨⟨inferInstance, topologicalKrullDim_eq k 1, e ▸ isProjOver_str k 1⟩, e ▸ ?_⟩
-  have := HasRingHomProperty.instIsZariskiLocalAtSource (P := @Smooth.{0}) (Q := @RingHom.Smooth)
-  refine IsZariskiLocalAtSource.of_openCover (P := @Smooth.{0}) (chartCover k 1)
-    fun (i : Fin (1 + 1)) => ?_
-  change Smooth (chartι k 1 i ≫ _)
-  rw [chartι_str]
-  refine (HasRingHomProperty.Spec_iff (P := @Smooth)).2 ?_
-  exact RingHom.smooth_algebraMap.2
-    (⟨inferInstance, inferInstance⟩ : Algebra.Smooth k (MvPolynomial {j // j ≠ i} k))
-
-theorem isVB_sheafO (n : ℤ) : IsVB (sheafO k 1 n) 1 :=
-  (isVB_structureModule _).twist (On_isLB k 1 n)
-
-theorem deg_sheafO (n : ℤ) : deg k (sheafO k 1 n) = n := by
-  rw [deg_def, (isVB_sheafO k n).genRank_eq, chi_sheafO,
-    chi_congr k (Twist.twistZZeroIso (structureModule _) (O1_isLB k 1)), chi_sheafO]
-  simp
 
 end Line
 

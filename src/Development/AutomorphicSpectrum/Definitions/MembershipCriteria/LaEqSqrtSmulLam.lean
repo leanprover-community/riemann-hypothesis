@@ -95,10 +95,6 @@ def ip : M →ₗ[ℂ] M →ₗ⋆[ℂ] ℂ := S.B.flip
 
 @[simp] theorem ip_apply (u v : M) : ip S u v = S.B v u := rfl
 
-theorem ip_smul_left (a : ℂ) (u v : M) : ip S (a • u) v = a * ip S u v := by simp
-
-theorem ip_smul_right (a : ℂ) (u v : M) : ip S u (a • v) = (starRingEnd ℂ) a * ip S u v := by simp
-
 namespace Sys
 
 theorem c_mul_c_swap (x y : X) : S.c x y * S.c y x = 1 := by

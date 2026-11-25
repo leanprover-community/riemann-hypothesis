@@ -951,35 +951,6 @@ section TwoDirections
 
 variable {R : Type u} [Ring R]
 
-noncomputable def Cube.termOneFinTwo (A : Cube.{v} (Fin 2) R) :
-    Cube.Term A 1 ≃ₗ[R] A.obj {0} × A.obj {1} :=
-  (Cube.termOneEquiv A).symm ≪≫ₗ LinearEquiv.piFinTwo R fun i : Fin 2 => A.obj {i}
-
-theorem Cube.termOneFinTwo_apply (A : Cube.{v} (Fin 2) R) (x : Cube.Term A 1) :
-    Cube.termOneFinTwo A x = (x ⟨{0}, rfl⟩, x ⟨{1}, rfl⟩) := rfl
-
-def Cube.termTwoFinTwo (A : Cube.{v} (Fin 2) R) : Cube.Term A 2 ≃ₗ[R] A.obj {0, 1} where
-  toFun x := x ⟨{0, 1}, rfl⟩
-  map_add' _ _ := rfl
-  map_smul' _ _ := rfl
-  invFun a s := Cube.res A (by obtain ⟨s, hs⟩ := s; revert s; decide) a
-  left_inv x := by
-    ext ⟨s, hs⟩
-    obtain rfl : s = {0, 1} := by revert s; decide
-    simp
-  right_inv a := by simp
-
-theorem Cube.termTwoFinTwo_apply (A : Cube.{v} (Fin 2) R) (x : Cube.Term A 2) :
-    Cube.termTwoFinTwo A x = x ⟨{0, 1}, rfl⟩ := rfl
-
-theorem Cube.d_one_finTwo (A : Cube.{v} (Fin 2) R) (x : Cube.Term A 1) :
-    Cube.termTwoFinTwo A (Cube.d A 1 x) =
-      Cube.res A (by decide) (Cube.termOneFinTwo A x).2 -
-        Cube.res A (by decide) (Cube.termOneFinTwo A x).1 := by
-  have h := Cube.d_one_apply_pair A x (i := 0) (j := 1) (by decide)
-  rw [Cube.termOneFinTwo_apply]
-  exact (Cube.termTwoFinTwo_apply A _).trans h
-
 end TwoDirections
 
 section Examples

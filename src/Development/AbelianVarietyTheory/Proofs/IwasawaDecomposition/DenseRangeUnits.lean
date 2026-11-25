@@ -60,29 +60,6 @@ namespace GlobalTheory.FrobDense
 
 variable {E : Type} [Field E] [NumberField E]
 
-def abv (S : Finset (HeightOneSpectrum (𝓞 E))) : S ⊕ InfinitePlace E → AbsoluteValue E ℝ
-  | Sum.inl v => GlobalTheory.LocalQuad.Approx.abv S (Sum.inl v)
-  | Sum.inr w => w.1
-
-theorem abv_isNontrivial (S : Finset (HeightOneSpectrum (𝓞 E))) (i : S ⊕ InfinitePlace E) :
-    (abv S i).IsNontrivial := by
-  rcases i with v | w
-  · exact GlobalTheory.LocalQuad.Approx.abv_isNontrivial S (Sum.inl v)
-  · exact InfinitePlace.isNontrivial _
-
-theorem abv_not_isEquiv (S : Finset (HeightOneSpectrum (𝓞 E))) (v : S) (w : InfinitePlace E) :
-    ¬ (abv S (Sum.inl v)).IsEquiv (abv S (Sum.inr w)) :=
-  GroundTheory.Global.not_isEquiv_adicAbv_infinitePlace v.1 w
-
-theorem abv_pairwise (S : Finset (HeightOneSpectrum (𝓞 E))) :
-    Pairwise fun i j ↦ ¬(abv S i).IsEquiv (abv S j) := by
-  rintro (v | σ) (w | τ) hne h
-  · exact GlobalTheory.LocalQuad.Approx.abv_pairwise S (i := Sum.inl v) (j := Sum.inl w)
-      (fun e => hne (congrArg Sum.inl (Sum.inl_injective e))) h
-  · exact abv_not_isEquiv S v τ h
-  · exact abv_not_isEquiv S w σ h.symm
-  · exact hne (congrArg Sum.inr (InfinitePlace.eq_iff_isEquiv.2 h))
-
 abbrev Loc (S : Finset (HeightOneSpectrum (𝓞 E))) : Type :=
   ((w : InfinitePlace E) → w.Completion) × ((v : S) → v.1.adicCompletion E)
 

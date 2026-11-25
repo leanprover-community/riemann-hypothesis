@@ -73,41 +73,6 @@ theorem tube {X Y Z : Type} [TopologicalSpace X] [TopologicalSpace Y] [Topologic
     (hU.preimage hF) (by rintro ⟨a, b⟩ ⟨ha, hb⟩; rw [Set.mem_singleton_iff] at ha; subst ha; exact h b hb)
   exact ⟨u, hu.mem_nhds (hxu rfl), fun x hx y hy => huv ⟨hx, hCv hy⟩⟩
 
-theorem eq_zero_of_ideal (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 → IsUnit (n : K)) (x : K)
-    (hx : ∀ y : K, x * y ∈ R) : x = 0 := by
-  have := hD.t2
-  have := hD.red
-  have step1 : ∀ W ∈ 𝓝 (0 : K), ∃ k : ℕ, k ≠ 0 ∧ (k : K) * x ∈ W := by
-    intro W hW
-    have hseq : ∀ n : ℕ, (n : K) * x ∈ (R : Set K) := fun n => by rw [mul_comm]; exact hx _
-    obtain ⟨c, -, hc⟩ := hD.isCompact.exists_mapClusterPt (f := atTop)
-      (u := fun n : ℕ => (n : K) * x) (by
-        rw [Filter.le_principal_iff, Filter.mem_map]; exact Filter.univ_mem' hseq)
-    have ht : Tendsto (Prod.fst - Prod.snd : K × K → K) (𝓝 c ×ˢ 𝓝 c) (𝓝 0) := by
-      simpa [nhds_prod_eq, sub_self] using
-        (continuous_fst.sub continuous_snd : Continuous (Prod.fst - Prod.snd : K × K → K)).tendsto (c, c)
-    obtain ⟨U, hU, hUW⟩ := Filter.mem_prod_self_iff.1 (ht hW)
-    have hfr := mapClusterPt_iff_frequently.1 hc U hU
-    rw [Filter.frequently_atTop] at hfr
-    obtain ⟨n, -, hn⟩ := hfr 0
-    obtain ⟨m, hm, hm'⟩ := hfr (n + 1)
-    refine ⟨m - n, by omega, ?_⟩
-    rw [Nat.cast_sub (by omega), sub_mul]
-    exact hUW (Set.mk_mem_prod hm' hn)
-  by_contra hne
-  have hxx : x * x ≠ 0 := fun h =>
-    hne (IsReduced.eq_zero x ⟨2, by simpa [sq] using h⟩)
-  obtain ⟨V, hV, hVR⟩ := tube (fun p : K × K => p.1 * p.2) (continuous_fst.mul continuous_snd) 0
-    (R : Set K) hD.isCompact {y | y ≠ x * x} isOpen_ne (by
-      intro y _; simp only [zero_mul, Set.mem_ofPred_eq]; exact fun h => hxx h.symm)
-  obtain ⟨k, hk, hkV⟩ := step1 V hV
-  obtain ⟨u, hu⟩ := h0 k hk
-  have := hVR _ hkV (x * ((u⁻¹ : Kˣ) : K)) (hx _)
-  apply this
-  have h1 : (k : K) * ((u⁻¹ : Kˣ) : K) = 1 := by rw [← hu]; simp
-  show (k : K) * x * (x * ((u⁻¹ : Kˣ) : K)) = x * x
-  linear_combination (x * x) * h1
-
 theorem small (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 → IsUnit (n : K)) {ϖ : Kˣ}
     (hϖ : (ϖ : K) ∈ R) (hϖ' : ∀ x : K, ∃ m : ℕ, (ϖ : K) ^ m * x ∈ R) (V : Set K)
     (hV : V ∈ 𝓝 (0 : K)) : ∃ n : ℕ, ∀ r ∈ R, (ϖ : K) ^ n * r ∈ V := by
@@ -167,7 +132,6 @@ theorem perp_bdd (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 → IsUnit 
 
 end Formalism.FourierDecayAlt.P.A6x7
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6
 open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P
@@ -194,8 +158,6 @@ theorem kernel_as_coset_sum : Formalism.FourierDecayAlt.A6.KpFromBB := by
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Hess
 
@@ -471,7 +433,6 @@ theorem gauss_hessian_index_of_parts : Formalism.FourierDecayAlt.A6.GaussHessAss
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Osc
 
@@ -546,7 +507,6 @@ alias oscillatory_integral_invariant := _root_.Formalism.FourierDecayAlt.P.A6x7.
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.admitted
 
@@ -659,7 +619,6 @@ alias admissible_gauss_sum_small := _root_.Formalism.FourierDecayAlt.P.A6x7.admi
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Ind
 

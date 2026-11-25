@@ -69,27 +69,6 @@ structure Fam (I : Type) [Fintype I] (g : ℕ) (Λ : Type) [AddCommGroup Λ] whe
   τ : Λ →+ ((I → ℂ) → Fin g → ℂ)
   hol : ∀ l, AnalyticOnNhd ℂ (τ l) V
 
-def ellFam : Fam (Fin 1) 1 (ℤ × ℤ) where
-  V := ⟨{z | 0 < (z 0).im}, isOpen_lt continuous_const (Complex.continuous_im.comp (continuous_apply 0))⟩
-  τ := { toFun := fun l z _ ↦ l.1 * z 0 + l.2
-         map_zero' := by ext; simp
-         map_add' := fun l m ↦ by ext; simp; ring }
-  hol l := fun z _ ↦ by
-    refine AnalyticAt.pi fun _ ↦ ?_
-    change AnalyticAt ℂ (fun z : Fin 1 → ℂ ↦ (l.1 : ℂ) * z 0 + l.2) z
-    exact (analyticAt_const.mul ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin 1 ↦ ℂ) 0).analyticAt z)).add
-      analyticAt_const
-
-theorem ellFam_nontrivial : (fun _ ↦ Complex.I) ∈ ellFam.V ∧
-    ellFam.τ (1, 0) (fun _ ↦ Complex.I) = (fun _ ↦ Complex.I) ∧ ellFam.τ (0, 1) (fun _ ↦ Complex.I) = fun _ ↦ 1 := by
-  refine ⟨?_, ?_, ?_⟩
-  · change (0 : ℝ) < Complex.I.im
-    simp
-  · funext i
-    simp [ellFam]
-  · funext i
-    simp [ellFam]
-
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
 
 def Fam.shift (F : Fam I g Λ) (l : Λ) (p : Tot I g) : Tot I g := (p.1, p.2 + F.τ l p.1)
@@ -353,14 +332,6 @@ def Charts.dualAt {F : Fam I g Λ} (K : Charts F) (k : K.K) (p : Tot I g) (hp : 
   nil := ⟨2, by rw [Ideal.span_singleton_pow, sq, DualNumber.eps_mul_eps]; simp⟩
   ρ := (algebraMap ℂ (DualNumber ℂ)).comp (Hol.ev p hp).toRingHom
   ρ_cst _ := rfl
-
-theorem Charts.dualAt_J_ne_bot {F : Fam I g Λ} (K : Charts F) (k : K.K) (p : Tot I g) (hp : p ∈ K.W k) :
-    (K.dualAt k p hp).J ≠ ⊥ := by
-  change Ideal.span {DualNumber.eps} ≠ ⊥
-  rw [Ne, Ideal.span_singleton_eq_bot]
-  intro h
-  have := congrArg TrivSqZeroExt.snd h
-  simp at this
 
 def tangentAt {W : Opens (Tot I g)} (a : Fin g) (p : Tot I g) (hp : p ∈ W) : Hol W →+* DualNumber ℂ where
   toFun h := TrivSqZeroExt.inl (Hol.ev p hp h) + TrivSqZeroExt.inr (Hol.ev p hp (dw a h))

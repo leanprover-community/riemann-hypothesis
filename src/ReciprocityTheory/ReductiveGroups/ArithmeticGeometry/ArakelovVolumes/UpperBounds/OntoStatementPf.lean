@@ -81,38 +81,6 @@ open Classical in
 def TL {α : Type*} [MeasurableSpace α] (ν : Measure α) (f : α → ℂ) : Lp ℂ 2 ν :=
   if h : MemLp f 2 ν then h.toLp f else 0
 
-section TLs
-
-variable {α : Type*} [MeasurableSpace α] {ν : Measure α}
-
-theorem TL_eq {f : α → ℂ} (h : MemLp f 2 ν) : TL ν f = h.toLp f := by
-  unfold TL
-  rw [dite_eq_left h]
-
-theorem TL_congr {f g : α → ℂ} (hf : MemLp f 2 ν) (hfg : f =ᵐ[ν] g) : TL ν f = TL ν g := by
-  rw [TL_eq hf, TL_eq (hf.ae_eq hfg)]
-  exact (MemLp.toLp_eq_toLp_iff _ _).2 hfg
-
-theorem TL_add {f g : α → ℂ} (hf : MemLp f 2 ν) (hg : MemLp g 2 ν) :
-    TL ν (f + g) = TL ν f + TL ν g := by
-  rw [TL_eq (hf.add hg), TL_eq hf, TL_eq hg]
-  exact MemLp.toLp_add hf hg
-
-theorem TL_sub {f g : α → ℂ} (hf : MemLp f 2 ν) (hg : MemLp g 2 ν) :
-    TL ν (f - g) = TL ν f - TL ν g := by
-  rw [TL_eq (hf.sub hg), TL_eq hf, TL_eq hg]
-  exact MemLp.toLp_sub hf hg
-
-theorem TL_smul {f : α → ℂ} (a : ℂ) (hf : MemLp f 2 ν) : TL ν (a • f) = a • TL ν f := by
-  rw [TL_eq (hf.const_smul a), TL_eq hf]
-  exact MemLp.toLp_const_smul a hf
-
-theorem TL_zero : TL ν (0 : α → ℂ) = 0 := by
-  rw [TL_eq MeasureTheory.MemLp.zero]
-  exact MemLp.toLp_zero _
-
-end TLs
-
 variable (X : Data E r) (x0 : Frame X.Ψ r) {W : Frame X.Ψ r → ℝ≥0∞} {bb : ℝ} {la : Wt X.Ψ r}
 
 theorem ka_cont : ContinuousOn (kaF X x0 bb) (OmF X x0) :=

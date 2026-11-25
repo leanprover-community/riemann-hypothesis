@@ -93,35 +93,20 @@ section Tr
 
 variable {D : D7} (X : HidaSetting D)
 
-theorem emb_real (v : InfinitePlace X.B.I.F) (a : X.B.I.F) : conj (v.embedding a) = v.embedding a := by
-  have hv : v.IsReal := totReal_of X v
-  have h := NumberField.ComplexEmbedding.isReal_iff.1 (InfinitePlace.isReal_iff.1 hv)
-  have := RingHom.congr_fun h a
-  simpa [NumberField.ComplexEmbedding.conjugate_coe_eq] using this
-
 theorem phi_star (v : InfinitePlace X.B.I.F) (e : X.B.I.E) : X.B.I.φ v (star e) = conj (X.B.I.φ v e) :=
   X.B.I.cm.cmUnram.2.1 _ e
 
-theorem phi_notReal (v : InfinitePlace X.B.I.F) : ¬ ∀ e : X.B.I.E, conj (X.B.I.φ v e) = X.B.I.φ v e := by
-  exact PI.AprimeInfW.MuB.phi_notReal X v
-
-theorem emb_trace (v : InfinitePlace X.B.I.F) (e : X.B.I.E) :
-    v.embedding (Algebra.trace X.B.I.F X.B.I.E e) = X.B.I.φ v e + conj (X.B.I.φ v e) := by
-  apply PI.AprimeInfW.MuB.emb_trace
-
 theorem evInf_conj (v : InfinitePlace X.B.I.F) (a : Ainf X.B.I.F) :
     conj (PI.AprimeInfU.evInf X v a) = PI.AprimeInfU.evInf X v a := by
-  exact PI.AprimeInfW.MuB.evInf_conj X v a
+  have hv : v.IsReal := totReal_of X v
+  show conj (InfinitePlace.Completion.extensionEmbedding v (a v)) =
+    InfinitePlace.Completion.extensionEmbedding v (a v)
+  rw [← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply hv]
+  exact Complex.conj_ofReal _
 
 theorem evInf_alg (v : InfinitePlace X.B.I.F) (a : X.B.I.F) :
     PI.AprimeInfU.evInf X v (algebraMap X.B.I.F (Ainf X.B.I.F) a) = v.embedding a :=
   evV_algebraMap X.B.I v a
-
-theorem trace_one_tmul (e : X.B.I.E) :
-    Algebra.trace (Ainf X.B.I.F) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) ((1 : Ainf X.B.I.F) ⊗ₜ[X.B.I.F] e) =
-      algebraMap X.B.I.F (Ainf X.B.I.F) (Algebra.trace X.B.I.F X.B.I.E e) := by
-  haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
-  rw [Algebra.trace_apply, ← Algebra.baseChange_lmul, LinearMap.trace_baseChange, ← Algebra.trace_apply]
 
 theorem evInf_trace (v : InfinitePlace X.B.I.F) (z : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) :
     PI.AprimeInfU.evInf X v (Algebra.trace (Ainf X.B.I.F) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) z) =
@@ -130,7 +115,12 @@ theorem evInf_trace (v : InfinitePlace X.B.I.F) (z : Ainf X.B.I.F ⊗[X.B.I.F] X
 
 theorem theta_sigR (v : InfinitePlace X.B.I.F) (t : Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) :
     PI.AprimeInfU.thetaInf X v (sigR (Ainf X.B.I.F) X.B.I.cm.sig t) = conj (PI.AprimeInfU.thetaInf X v t) := by
-  exact PI.AprimeInfW.MuB.theta_sigR X v t
+  induction t using TensorProduct.induction_on with
+  | zero => simp
+  | tmul a e =>
+    have h : sigR (Ainf X.B.I.F) X.B.I.cm.sig (a ⊗ₜ[X.B.I.F] e) = a ⊗ₜ[X.B.I.F] (star e) := rfl
+    rw [h, thetaInf_tmul, thetaInf_tmul, map_mul, evInf_conj, phi_star]
+  | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
 theorem theta_alg (v : InfinitePlace X.B.I.F) (q : X.B.I.F) :
     PI.AprimeInfU.thetaInf X v (algebraMap X.B.I.F (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) q) = v.embedding q := by

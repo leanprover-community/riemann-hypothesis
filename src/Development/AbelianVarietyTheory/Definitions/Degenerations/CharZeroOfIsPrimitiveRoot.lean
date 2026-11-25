@@ -303,20 +303,6 @@ variable {K : Type} [CommRing K] [IsDomain K] {X : Type} [AddCommGroup X] [Modul
   (q : X → (FractionRing K)ˣ) (he : ∀ y, q (-y) = q y) (hb : ∀ a a' b, polar q (a + a') b = polar q a b * polar q a' b)
   (F : Type) [Field F] [Algebra (FractionRing K) F]
 
-def toricNum : NumD F where
-  toNumB := NumB.triv PUnit fun _ => 1
-  X := X
-  c _ := 1
-  c_add _ _ := rfl
-  ψ y := Units.map (algebraMap (FractionRing K) F).toMonoidHom (q y)
-  even y := by
-    change _ * 1 = _
-    rw [he, _root_.mul_one]
-  bimult a a' b := by
-    change _ * 1 = _
-    have := congrArg (Units.map (algebraMap (FractionRing K) F).toMonoidHom) (hb a a' b)
-    simpa only [polar, map_mul, map_inv, _root_.mul_one, div_eq_mul_inv] using this
-
 end Toric
 
 section ThetaShiftProofs

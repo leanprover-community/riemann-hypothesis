@@ -24,18 +24,6 @@ section Lin
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word) (hK : X.LevelSubgroupCharacter)
 
-theorem phVal_add (T T' : Cu X u hK) (yinf : X.B.I.Ginf) (n : X.B.I.Gf) (h : Hfin X u) (k : X.B.I.Gf) :
-    phVal X u hK (T + T') yinf n h k = phVal X u hK T yinf n h k + phVal X u hK T' yinf n h k := by
-  unfold phVal
-  simp only [Submodule.coe_add, LinearMap.add_apply, Pi.add_apply]
-  ring
-
-theorem phVal_smul (c : ℂ) (T : Cu X u hK) (yinf : X.B.I.Ginf) (n : X.B.I.Gf) (h : Hfin X u) (k : X.B.I.Gf) :
-    phVal X u hK (c • T) yinf n h k = c * phVal X u hK T yinf n h k := by
-  unfold phVal
-  simp only [Submodule.coe_smul, LinearMap.smul_apply, Pi.smul_apply, smul_eq_mul]
-  ring
-
 end Lin
 
 theorem puLinearC : PuLinearC := fun _ X Y u => _root_.Formalism.L2.SG.PoincareInHH.Cut.puLinear_holds X u Y.hK (Y.Dt u)

@@ -1185,7 +1185,6 @@ theorem hom_ext_gen {T : Over (Sp (FractionRing R))} {x y : T ⟶ (Over.pullback
     show x.left ≫ ((Over.pullback (jK R)).obj G).hom = y.left ≫ ((Over.pullback (jK R)).obj G).hom
     rw [Over.w, Over.w]))
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem genSec_sq (a : 𝟙_ (Over (Sp R)) ⟶ G) (ha : a ^ 2 = 1) : genSec a * genSec a = 1 := by
   have hp := (isGrpPullback_pullback G (jK R)).2
   let T : Over (Sp (FractionRing R)) := 𝟙_ _

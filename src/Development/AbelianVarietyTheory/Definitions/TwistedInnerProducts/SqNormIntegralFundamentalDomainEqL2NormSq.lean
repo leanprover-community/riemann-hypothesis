@@ -95,12 +95,6 @@ def wordSum (d : ℕ) (x : X) : ℝ≥0∞ :=
 
 @[simp] theorem wordSum_zero (x : X) : wordSum A p 0 x = p x := by simp [wordSum]
 
-theorem wordSum_one (x : X) : wordSum A p 1 x = p x + ∑ i, p (A i x) := by
-  simp only [wordSum, Finset.sum_range_succ, Finset.range_zero, Finset.sum_empty, zero_add]
-  congr 1
-  · simp
-  · exact Fintype.sum_equiv (Equiv.funUnique _ _) _ _ fun a => by simp
-
 variable {A p}
 
 theorem le_wordSum {d : ℕ} {l : List ι} (hl : l.length ≤ d) (x : X) : p (wordAct A l x) ≤ wordSum A p d x := by
@@ -555,13 +549,6 @@ theorem sobO_add_le (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (h : IsTheta
     rw [wordAct_cons, ih]
     exact dRho_add hψ hθ a.1 _ (theta_word hψ hθ l h) (theta_word hψ hθ l h')
 
-theorem sobO_eq_zero_iff (hψ : IsStdChar D ψ (-1)) (hμ : μ.IsAddHaarMeasure)
-    (h𝓕 : IsAddFundamentalDomain (ratL W V) 𝓕 μ) (h : IsThetaFunO ψ V W f) (d : ℕ) : sobO ψ θ μ 𝓕 d f = 0 ↔ f = 0 := by
-  refine ⟨fun h0 => (l2O_eq_zero_iff_of_isThetaFunO hψ hμ h𝓕 h).1 (le_zero_iff.1 ?_), fun h0 => ?_⟩
-  · exact (sobO_zero (ψ := ψ) (θ := θ)).ge.trans ((sobO_mono d.zero_le).trans h0.le)
-  · have := sobO_smul (ψ := ψ) (θ := θ) (μ := μ) (𝓕 := 𝓕) (f := f) d 0
-    rwa [zero_smul, enorm_zero, zero_mul, ← h0] at this
-
 theorem isTheta_iff_level : IsThetaFunO ψ V W f ↔
     ∃ U : AddSubgroup (WO V W), IsOpen (U : Set (WO V W)) ∧ f ∈ thetaLevel ψ V W U :=
   ⟨fun h => h.level.imp fun _ hU => ⟨hU.1, h, hU.2⟩, fun ⟨_, _, h⟩ => h.1⟩
@@ -580,25 +567,6 @@ section Examples
 
 variable {D : D7}
 
-
-open scoped ComplexOrder in
-theorem exists_theta_posSp (D : D7) (m n : ℕ) : ∃ (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D)
-    (μ : Measure (WO (posSp D m) (posSp D n))) (𝓕 : Set (WO (posSp D m) (posSp D n)))
-    (U : AddSubgroup (WO (posSp D m) (posSp D n))) (f : WO (posSp D m) (posSp D n) → ℂ),
-    IsStdChar D ψ (-1) ∧ IsInfFam θ ∧ IsCovolOne (ratL (posSp D n) (posSp D m)) μ 𝓕 ∧
-      IsOpen (U : Set (WO (posSp D m) (posSp D n))) ∧ f ∈ thetaLevel ψ _ _ U ∧ ipO μ 𝓕 f f ≠ 0 ∧
-      ∀ d, sobO ψ θ μ 𝓕 d f ≠ 0 ∧ sobO ψ θ μ 𝓕 d f ≠ ∞ := by
-  obtain ⟨⟨θ, hθ⟩, ψ, hψ⟩ := GlobalTheory.Ker.exists_infFam_and_stdChar D
-  have hc : ∀ k τ, IsCartanInv (gramAt D (posSp D k) τ) 1 := fun k τ => by
-    rw [gramAt_posSp]
-    exact ⟨by simp, by simp, by simpa using Matrix.PosDef.one⟩
-  obtain ⟨f, f0, hf⟩ := GlobalTheory.VacuumO.exists_ne_zero ψ θ hψ hθ (posSp D m) (posSp D n) _ _ (hc m) (hc n) _ _
-    (GlobalTheory.PlaceModel.isSelfDualC_latFrame _) (GlobalTheory.PlaceModel.isSelfDualC_latFrame _)
-  have h : IsThetaFunO ψ _ _ f := by simpa using (hf 1).1
-  obtain ⟨μ, 𝓕, hm⟩ := exists_isCovolOne (posSp D m) (posSp D n)
-  obtain ⟨U, hU, hl⟩ := isTheta_iff_level.1 h
-  exact ⟨ψ, θ, μ, 𝓕, U, f, hψ, hθ, hm, hU, hl, mt (ipO_self_eq_zero_iff hψ hm.1 hm.2.1 h).1 f0, fun d =>
-    ⟨mt (sobO_eq_zero_iff hψ hm.1 hm.2.1 h d).1 f0, sobO_ne_top hψ hθ hm.1 hm.2.1 h d⟩⟩
 
 end Examples
 

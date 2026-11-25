@@ -422,8 +422,6 @@ section Moderate
 def IsModerate {G X : Type*} [Norm X] (ht : G → ℝ≥0) (f : G → X) : Prop :=
   ∃ (C : ℝ) (N : ℕ), ∀ g, ‖f g‖ ≤ C * (ht g : ℝ) ^ N
 
-def ModerateGrowth {X : Type*} [Norm X] (f : GAd σ J → X) : Prop := IsModerate (height σ J) f
-
 variable {σ J}
 
 end Moderate

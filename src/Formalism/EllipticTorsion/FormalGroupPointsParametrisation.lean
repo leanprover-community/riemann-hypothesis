@@ -36,13 +36,4 @@ def FormalGroupPointsParametrisation : Prop :=
         x = (-x / y) / evalPS w (-x / y) ∧ y = -1 / evalPS w (-x / y))
 
 
-open scoped Classical in
-open Classical in
-def FormalGroupPointsHomomorphism : Prop :=
-  ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] [CompleteSpace K]
-    (W : WeierstrassCurve K) (w : PowerSeries K) (F₂ : MvPowerSeries (Fin 2) K),
-    IntegralModel W → WFixed W w → IntegralMv F₂ → MvPowerSeries.constantCoeff F₂ = 0 →
-    ChordAt W w (MvPowerSeries.X 0) (MvPowerSeries.X 1) F₂ →
-    ∀ P Q : W.toAffine.Point, InFormalGroupPoints P → InFormalGroupPoints Q → uOf (P + Q) = evalMv2 F₂ (uOf P) (uOf Q)
-
 end Formalism.ELL

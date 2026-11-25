@@ -58,25 +58,6 @@ open GlobalTheory.Points GlobalTheory.Twist GlobalTheory.ProjSpace
 
 attribute [local instance] MvPolynomial.gradedAlgebra
 
-theorem isStandardSmooth_mvPolynomial (R σ : Type) [CommRing R] [Finite σ] :
-    Algebra.IsStandardSmoothOfRelativeDimension (Nat.card σ) R (MvPolynomial σ R) := by
-  let P₀ : Algebra.Presentation R (MvPolynomial σ R) σ Empty :=
-    { __ := Algebra.Generators.mvPolynomial R σ
-      relation := Empty.elim
-      span_range_relation_eq_ker := by
-        rw [Algebra.Generators.ker_mvPolynomial]
-        simp }
-  let P₁ : Algebra.PreSubmersivePresentation R (MvPolynomial σ R) σ Empty :=
-    { __ := P₀
-      map := Empty.elim
-      map_inj := fun a => a.elim }
-  let P₂ : Algebra.SubmersivePresentation R (MvPolynomial σ R) σ Empty :=
-    { __ := P₁
-      jacobian_isUnit := by
-        rw [Algebra.PreSubmersivePresentation.jacobian_eq_jacobiMatrix_det]
-        simp }
-  exact P₂.isStandardSmoothOfRelativeDimension (by simp [Algebra.Presentation.dimension])
-
 theorem smoothOfRelativeDimension_pspace (R : Type) [CommRing R] (M : ℕ) :
     SmoothOfRelativeDimension M (PSpace.str R M) := by
   have := HasRingHomProperty.instIsZariskiLocalAtSource (P := @SmoothOfRelativeDimension.{0} M)
@@ -87,7 +68,7 @@ theorem smoothOfRelativeDimension_pspace (R : Type) [CommRing R] (M : ℕ) :
   rw [chartι_str]
   refine (HasRingHomProperty.Spec_iff (P := @SmoothOfRelativeDimension M)).2 ?_
   refine RingHom.locally_of RingHom.isStandardSmoothOfRelativeDimension_respectsIso _ ?_
-  have h := isStandardSmooth_mvPolynomial R {j : Fin (M + 1) // j ≠ i}
+  have h := Algebra.IsStandardSmoothOfRelativeDimension.mvPolynomial R {j : Fin (M + 1) // j ≠ i}
   rw [show Nat.card {j : Fin (M + 1) // j ≠ i} = M by simp] at h
   exact (RingHom.isStandardSmoothOfRelativeDimension_algebraMap M).2 h
 

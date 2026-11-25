@@ -979,8 +979,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -1118,8 +1116,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -1208,8 +1204,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -1385,8 +1379,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -1430,8 +1422,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 

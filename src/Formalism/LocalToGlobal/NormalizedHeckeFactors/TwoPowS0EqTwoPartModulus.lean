@@ -102,20 +102,6 @@ def ptsNd (i : D.nd.Loc) : D.nd.X i ≃ (D.nd.T i →ₐ[D.nd.O i] D.nd.O i) :=
 theorem zgoodSub : D.nd.ZgoodSub := fun i x hx =>
   (D.Z_tie i x).2 ((D.Zgood_tie i x).1 hx).1
 
-theorem s0_eq (i : D.nd.Loc) : D.nd.s0 i = max 1 (D.host.QS.factorization (D.nd.l i)) := by
-  by_cases h : D.nd.l i = 2
-  · have h1 : 1 ≤ D.host.QS.factorization 2 :=
-      (Nat.prime_two.dvd_iff_one_le_factorization D.host.QS_pos.ne').1
-        ((dvd_pow_self 2 (Nat.succ_ne_zero _)).trans D.host.tower_dvd)
-    rw [D.nd.restNLevelExponent_of_two i h, h, max_eq_right h1]
-  · exact D.nd.restNLevelExponent_of_odd i h
-
-theorem mem_S_iff (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) : v ∈ D.nd.S i ↔
-    (v ∈ placesOver D.host.E (D.host.g 0) ∨ v ∈ placesOver D.host.E (D.host.g 1) ∨
-      v ∈ placesOver D.host.E (if D.nd.l i = D.host.pde then D.host.pde' else D.host.pde)) ∧
-      v ∉ placesOver D.host.E (D.nd.l i) :=
-  D.nd.S_def i v
-
 theorem mem_Q_iff (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) :
     v ∈ D.nd.Q i ↔ ∃ σ ∈ Ine (F := D.host.E) (D.nd.plOm.1 v), D.ntw.psiL i σ ≠ 1 :=
   (D.ntw.psiL_ram i v (D.nd.plOm.1 v) (D.nd.plOm.2 v)).symm

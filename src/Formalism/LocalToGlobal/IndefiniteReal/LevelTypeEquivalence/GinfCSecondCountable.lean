@@ -35,10 +35,6 @@ theorem measurableMul_GA (V : HSp D) : MeasurableMul (GA D V) := by
   obtain ⟨h1, -, -, -, h5⟩ := ga_facts D V
   infer_instance
 
-theorem gfC_secondCountable (V : HSp D) : SecondCountableTopology (GfC V) := by
-  obtain ⟨-, -, -, h4, -⟩ := ga_facts D V
-  exact Topology.IsInducing.subtypeVal.secondCountableTopology
-
 theorem fundDomExists_holds : FundDomExists D := fun V => by
   obtain ⟨h1, -, -, h4, h5⟩ := ga_facts D V
   have := gQDiscrete_holds D V

@@ -306,19 +306,7 @@ theorem pairSetup_eq : @Fock.Sk.PairSetup b.D = @pairSetupB B C a b := by
   funext ψ θ S T x1 x2 x3 x4 x5 x6
   exact propext ⟨fun h => (pairSetup_imp a ψ θ S T x1 x2 x3 x4 x5 x6 h), fun h => (@pairSetup_imp B C a b ψ θ S T x1 x2 x3 x4 x5 x6 h)⟩
 
-theorem inertTie_imp : ∀ G i1 i2 P I Ty T m A x1 x2 x3, @Bridge.InertTie a.D G i1 i2 P I Ty T m A x1 x2 x3 → @Bridge.InertTie b.D G i1 i2 P I Ty T m ((A)) ((x1)) ((x2)) ((x3)) := fun G i1 i2 P I Ty T m A x1 x2 x3 h =>
-  { plI_inj := (h.plI_inj)
-    okI := (h.okI) }
 
-
-variable (a) in
-def inertTieB : type_of% (@Bridge.InertTie b.D) := @fun G i1 i2 P I Ty T m A x1 x2 x3 => @Bridge.InertTie a.D G i1 i2 P I Ty T m ((A)) ((x1)) ((x2)) ((x3))
-
-
-variable (a) in
-theorem inertTie_eq : @Bridge.InertTie b.D = @inertTieB B C a b := by
-  funext G i1 i2 P I Ty T m A x1 x2 x3
-  exact propext ⟨fun h => (inertTie_imp a G i1 i2 P I Ty T m A x1 x2 x3 h), fun h => (@inertTie_imp B C a b G i1 i2 P I Ty T m A x1 x2 x3 h)⟩
 
 theorem famTie_imp : ∀ G i1 i2 P T m A cR cL lR lL x x1 x2 x3 x4 x5 x6 x7 x8 x9, @Bridge.FamTie a.D G i1 i2 P T m A cR cL lR lL x x1 x2 x3 x4 x5 x6 x7 x8 x9 → @Bridge.FamTie b.D G i1 i2 P T m ((A)) ((cR)) ((cL)) ((lR)) ((lL)) ((@famReal B C a b G i1 i2 P T m A cR cL lR lL x)) ((x1)) ((x2)) ((x3)) ((x4)) ((x5)) ((x6)) ((x7)) ((x8)) ((x9)) := fun G i1 i2 P T m A cR cL lR lL x x1 x2 x3 x4 x5 x6 x7 x8 x9 h =>
   { ranks := (h.ranks)
@@ -358,14 +346,6 @@ theorem weilDatum_imp : ∀ ψ S T x1 x2 ω, @IsWeilDatumO a.D ψ S T x1 x2 ω �
     om_split := by rewrite [thetaFun_eq a b]; exact (h.om_split) }
 
 
-variable (a) in
-def weilDatumB : type_of% (@IsWeilDatumO b.D) := @fun ψ S T x1 x2 ω => @IsWeilDatumO a.D ((ψ)) ((S)) ((T)) ((x1)) ((x2)) ((ω))
-
-
-variable (a) in
-theorem weilDatum_eq : @IsWeilDatumO b.D = @weilDatumB B C a b := by
-  funext ψ S T x1 x2 ω
-  exact propext ⟨fun h => (weilDatum_imp a ψ S T x1 x2 ω h), fun h => (@weilDatum_imp B C a b ψ S T x1 x2 ω h)⟩
 
 theorem weilFull_imp : ∀ ψ S T x1 x2 ω, @WeilFull.IsWeilFull a.D ψ S T x1 x2 ω → @WeilFull.IsWeilFull b.D ((ψ)) ((S)) ((T)) ((x1)) ((x2)) ((ω)) := fun ψ S T x1 x2 ω h =>
   { datum := (weilDatum_imp b ψ S T x1 x2 ω h.datum)
@@ -373,14 +353,6 @@ theorem weilFull_imp : ∀ ψ S T x1 x2 ω, @WeilFull.IsWeilFull a.D ψ S T x1 x
     real := by delta WeilFull.RealAtO; rewrite [pairSetup_eq a b]; (try rewrite [thetaFun_eq a b]); exact (h.real) }
 
 
-variable (a) in
-def weilFullB : type_of% (@WeilFull.IsWeilFull b.D) := @fun ψ S T x1 x2 ω => @WeilFull.IsWeilFull a.D ((ψ)) ((S)) ((T)) ((x1)) ((x2)) ((ω))
-
-
-variable (a) in
-theorem weilFull_eq : @WeilFull.IsWeilFull b.D = @weilFullB B C a b := by
-  funext ψ S T x1 x2 ω
-  exact propext ⟨fun h => (weilFull_imp a ψ S T x1 x2 ω h), fun h => (@weilFull_imp B C a b ψ S T x1 x2 ω h)⟩
 
 
 variable (a) in

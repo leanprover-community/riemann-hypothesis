@@ -166,7 +166,7 @@ theorem a_mem_win : X.L.a ∈ X.winA := by
 
 end Deg
 
-theorem eps_num (Y D1 κ q h x0l fl E : ℝ) (hY : 1 ≤ Y) (hκ : 0 < κ) (hD : κ ≤ D1) (hq0 : 0 ≤ q) (hq : q ≤ 1 / (2 * Y))
+theorem eps_num (Y D1 κ q h x0l fl E : ℝ) (hY : 1 ≤ Y) (hκ : 0 < κ) (hD : κ ≤ D1) (hq : q ≤ 1 / (2 * Y))
     (hh0 : 0 ≤ h) (hh : h ≤ κ) (hx : x0l ≤ κ) (hfl : fl ≤ D1) (hE : Y * D1 ≤ E) :
     q + (x0l + fl + q * h) / E ≤ 5 / Y := by
   have hD1 : 0 < D1 := lt_of_lt_of_le hκ hD

@@ -293,9 +293,6 @@ theorem pt_const {C : Type} [CommRing C] (σ : B →+* C) (e : C) (h : IsUnit e)
   rw [RingHom.comp_apply, IsScalarTower.algebraMap_apply B B[X] (Ring B), pt, IsLocalization.Away.lift_eq]
   simp
 
-theorem pt_coord {C : Type} [CommRing C] (σ : B →+* C) (e : C) (h : IsUnit e) : pt σ e h (coord B) = e :=
-  (IsLocalization.Away.lift_eq _ _ _).trans (eval₂_X _ _)
-
 theorem comp_pt {C C' : Type} [CommRing C] [CommRing C'] (φ : C →+* C') {σ : B →+* C} {e : C} (h : IsUnit e)
     {σ' : B →+* C'} {e' : C'} (h' : IsUnit e') (hσ : ∀ b, φ (σ b) = σ' b) (he : φ e = e') :
     φ.comp (pt σ e h) = pt σ' e' h' :=
@@ -353,23 +350,6 @@ theorem isFor (K : Charts (fam I)) : (real σ K).IsFor (unif σ) := fun k p hp �
 
 theorem based : (unif σ).Based := ⟨⊤, isAffineOpen_top _, fun _ _ ↦ le_top⟩
 
-theorem unif_ne (z : I → ℂ) : (unif σ).E (z, 0) ≠ (unif σ).E (z, fun _ ↦ Real.pi * Complex.I) := fun h ↦ by
-  have e := congrArg (fun φ ↦ φ.hom (coord B)) (Spec.map_injective h)
-  simp only [CommRingCat.hom_ofHom, expPt, pt_coord] at e
-  simp at e
-  norm_num at e
-
-theorem isPeriod_unique {c : FirstDeRham (str B)} {per per' : ℤ →+ Hol (fam I).V} (h : IsPeriod (unif σ) c per)
-    (h' : IsPeriod (unif σ) c per') : per = per' :=
-  perCl_injective _ ((h _ _ (isFor σ _)).symm.trans (h' _ _ (isFor σ _)))
-
 end MulGrp
-
-theorem isPeriod_zero_zero {s : X ⟶ Sp B} {σ : B →+* Hol F.V} (u : Unif F s σ) : IsPeriod u 0 0 := fun K r _ ↦ by
-  rw [map_zero]
-  refine (H1.mk_eq_zero.2 ⟨0, ?_⟩).symm
-  rw [map_zero]
-  funext T T' f
-  exact (@map_zero _ _ _ _ _ _ _ (@algebraMap _ T'.C _ _ T'.alg)).symm
 
 end GlobalTheory.AnPer

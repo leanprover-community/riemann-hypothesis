@@ -94,6 +94,4 @@ theorem smBracket : CompanionTheory.D.DSIC.SmBracket := by
   have hex : ∀ Z, inG ε Z → ∀ t, ex Z t ∈ UJset ε := fun Z hZ t => Formalism.REAL.exp_indefinite_unitary_holds n ε Z hZ t
   exact ds_bracket h (hex X hX) (hex Y hY) (hex _ (lie_bracket hX hY)) hv
 
-theorem smBracket_of : CompanionTheory.D.DSIC.SmLin → CompanionTheory.D.DSIC.SmBracket := fun _ => smBracket
-
 end GlobalTheory.CompanionTheory.SmBracket

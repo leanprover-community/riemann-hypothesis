@@ -94,20 +94,6 @@ theorem cay_sub {M : ℕ} {y : S} (h0 : y ^ M = 0) :
         noncomm_ring
     _ = _ := by rw [a1]; simp
 
-theorem compact_mod_of_filtration [TopologicalSpace S] [IsTopologicalRing S] (S₀ : Subring S) (h : S) (K : Set S)
-    (N : ℕ → AddSubgroup S) (p : ℕ → S →+ S) (m : ℕ) (hcont : Continuous st)
-    (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x) = x)
-    (h0 : ∀ x ∈ S₀, st x ∈ S₀) (hh0 : h ∈ S₀) (hh : h + h = 1) (hc : ∀ x, h * x = x * h)
-    (hK : IsCompact K) (hcov : ∀ x, ∃ y ∈ S₀, x - y ∈ K)
-    (hp : ∀ i, Continuous (p i)) (hpN : ∀ i x, p i x ∈ N i) (hpf : ∀ i, ∀ x ∈ N i, p i x = x)
-    (hp0 : ∀ i, ∀ x ∈ S₀, p i x ∈ S₀) (hle : ∀ i, N (i + 1) ≤ N i)
-    (hmul : ∀ i, ∀ x ∈ N i, ∀ y ∈ N i, x * y ∈ N (i + 1)) (hst : ∀ i, ∀ x ∈ N i, st x ∈ N i)
-    (hz : ∀ x ∈ N m, x = 0) :
-    ∃ K' : Set S, IsCompact K' ∧ (∀ g ∈ K', (st g * g = 1 ∧ g * st g = 1) ∧ g - 1 ∈ N 0) ∧
-      ∀ g, (st g * g = 1 ∧ g * st g = 1) ∧ g - 1 ∈ N 0 →
-        ∃ γ ∈ S₀, ((st γ * γ = 1 ∧ γ * st γ = 1) ∧ γ - 1 ∈ N 0) ∧ ∃ k ∈ K', g = γ * k := by
-  apply GlobalTheory.UnipFlagCore.compact_mod_of_filtration <;> assumption
-
 variable {ι : Type} [Fintype ι] (ε : ι → S) (w : ι → ℤ)
 
 def raise (i : ℕ) : AddSubgroup S where

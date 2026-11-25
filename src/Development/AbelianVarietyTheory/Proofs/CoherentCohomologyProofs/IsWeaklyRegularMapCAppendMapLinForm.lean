@@ -137,21 +137,6 @@ def quotientSpanXEquiv (R : Type*) [CommRing R] (S : Set σ) :
   (Ideal.quotientEquivAlgOfEq R (ker_killVars S).symm).trans
     (Ideal.quotientKerAlgEquivOfSurjective (killVars_surjective S))
 
-theorem mem_map_C_of_X_mul_mem (x : σ) (I : Ideal R) {p : MvPolynomial σ R}
-    (hp : X x * p ∈ I.map (C : R →+* MvPolynomial σ R)) :
-    p ∈ I.map (C : R →+* MvPolynomial σ R) := by
-  rw [MvPolynomial.mem_map_C_iff] at hp ⊢
-  intro m
-  have := hp (Finsupp.single x 1 + m)
-  rwa [coeff_X_mul] at this
-
-theorem mem_of_X_mul_mem {S : Set σ} {x : σ} (hx : x ∉ S) (I : Ideal R) {p : MvPolynomial σ R}
-    (hp : X x * p ∈ I.map (C : R →+* MvPolynomial σ R) ⊔ Ideal.span (X '' S)) :
-    p ∈ I.map (C : R →+* MvPolynomial σ R) ⊔ Ideal.span (X '' S) := by
-  rw [← comap_killVars_map_C, Ideal.mem_comap] at hp ⊢
-  rw [map_mul, killVars_X_of_notMem hx] at hp
-  exact mem_map_C_of_X_mul_mem _ I hp
-
 end Variables
 
 section LinearForms

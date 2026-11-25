@@ -147,16 +147,6 @@ def Stab (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (x : (AfP p ⊗[�
   {y : grp G β // a.1.1⁻¹ * toAfF G β x t hx y * a.1.1 ∈ Kf ∧ a.1.2⁻¹ * toP1 G β y * a.1.2 ∈ K' ∧
     FixL G v β y a.2.1}
 
-def cxSumAt (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (β : G.Cˣ)
-    (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t) (Kf : Subgroup G.GAf) (f : G.GAf → ℂ)
-    (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  ∑ᶠ q : Pts G v β x t hx Kf K',
-    ((Nat.card (Stab G v β x t hx Kf K' (Quot.out q)) : ℕ) : ℂ)⁻¹ *
-      ∑ᶠ y : grp G β, if FixL G v β y (Quot.out q).2.1 then
-        f ((Quot.out q).1.1⁻¹ * toAfF G β x t hx y * (Quot.out q).1.1) *
-          f' ((Quot.out q).1.2⁻¹ * toP1 G β y * (Quot.out q).1.2) *
-          wt (minpoly G.F (((y : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C)) else 0
-
 structure Form (G : HTGroup p) where
 
   β : G.Cˣ
@@ -168,14 +158,6 @@ def Form.Rel {G : HTGroup p} (P Q : Form G) : Prop :=
   ∃ (y : G.Cˣ) (s : ℚ), 0 < s ∧ (Q.β : G.C) = algebraMap ℚ G.C s * (y * P.β * sh G y)
 
 def FCls (G : HTGroup p) : Type := Quot (Form.Rel (G := G))
-
-def cxSum (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (P : Form G) (Kf : Subgroup G.GAf)
-    (f : G.GAf → ℂ) (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  cxSumAt G v wt P.β P.trivAf.choose P.trivAf.choose_spec.choose P.trivAf.choose_spec.choose_spec Kf f K' f'
-
-def cxTotal (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (Kf : Subgroup G.GAf)
-    (f : G.GAf → ℂ) (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ) : ℂ :=
-  ∑ᶠ q : FCls G, cxSum G v wt (Quot.out q) Kf f K' f'
 
 def RegAf (G : HTGroup p) (g : G.GAf) : Prop :=
   ∃ w : AwayP p, ∀ a b : w.1.adicCompletion ℚ ⊗[ℚ] G.C,

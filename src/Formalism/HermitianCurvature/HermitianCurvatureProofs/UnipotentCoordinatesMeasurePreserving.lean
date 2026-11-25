@@ -2189,7 +2189,6 @@ end Formalism.FourierDecayAlt.P.Dx2.DF
 
 namespace Formalism.FourierDecayAlt.P.Dx2
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 section final
 

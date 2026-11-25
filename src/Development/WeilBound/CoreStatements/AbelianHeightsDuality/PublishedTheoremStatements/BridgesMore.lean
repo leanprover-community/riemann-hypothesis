@@ -71,10 +71,6 @@ section -- clump:auto
 
 namespace PositivityTheory.Prw
 
-theorem zelevinskyPolynomialRing_of (h₁ : GlobalTheory.Published.BernsteinZelevinskyFiniteness) (h₂ : GlobalTheory.Published.SegmentRepresentation)
-    (h₃ : GlobalTheory.Published.GrothendieckRingPolynomial) : GlobalTheory.Published.ZelevinskyPolynomialRing :=
-  _root_.GlobalTheory.zelevinskyPolynomialRing_of_parts h₁ h₂ h₃
-
 end PositivityTheory.Prw
 end -- clump:auto
 end -- clump:auto

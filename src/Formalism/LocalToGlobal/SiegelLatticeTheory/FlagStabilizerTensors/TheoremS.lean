@@ -1656,11 +1656,6 @@ theorem lattice_average_induction : Formalism.FourierDecayAlt.A5.ThetaExistsStep
     added_block_kernel_support head_size_one_in_GL rootStableExhaustion lattice_family_finite
     posSemidefEntryBound posSemidefClosed boundedSubsequence
 
-theorem lattice_average_lemma_full : Formalism.FourierDecayAlt.A5.LemmaA :=
-  lattice_average_lemma_from_parts second_gram_and_vanishing first_kernel_parseval
-    first_theta_kernel_equality first_theta_equals_first_kernel lattice_average_induction
-    zero_kernel_all_ones added_block_kernel_support added_block_kernel_block_diagonal
-
 end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto

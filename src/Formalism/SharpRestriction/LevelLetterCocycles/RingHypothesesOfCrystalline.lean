@@ -312,7 +312,6 @@ end Conv
 
 end Formalism.MainNotions.RamifiedCoefficientChains.Sh.ZT
 
-open Classical
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.ZT
 

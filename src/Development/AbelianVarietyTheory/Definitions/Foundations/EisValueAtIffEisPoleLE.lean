@@ -432,12 +432,6 @@ variable {K : Type} [Field K] [NumberField K] {T : Set (HeightOneSpectrum (𝓞 
 
 end Euler
 
-theorem eis_smul_indicator (V : HSp D) (c : ℂ → ℂ) :
-    IsEisFamily V (fun s => c s • indicator (siegelQ V : Set (GA D (dblSp V))) 1) ∧
-      ∀ s, eis V (c s • indicator (siegelQ V : Set (GA D (dblSp V))) 1) = c s • indicator (GQ (dblSp V) : Set _) 1 :=
-  ⟨IsEisFamily.smul (Φ := fun _ => _) (fun _ _ => ⟨(cosetSum_indicator 1).1, fun g => (cosetSum_indicator g).2.1⟩) c,
-    fun s => (eis_smul _ _).trans (congrArg _ (funext fun g => (cosetSum_indicator g).2.2))⟩
-
 end GlobalTheory.Eis
 
 end

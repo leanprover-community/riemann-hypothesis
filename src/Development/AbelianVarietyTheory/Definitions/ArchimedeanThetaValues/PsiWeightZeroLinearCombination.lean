@@ -390,19 +390,6 @@ theorem psiIn_iff (y : X) (J : Ideal K) :
 
 section Examples
 
-theorem polar_zpow_sq (u : (FractionRing K)ˣ) (a b : ℤ) :
-    polar (fun n : ℤ => u ^ (n ^ 2)) a b = u ^ (2 * a * b) := by
-  simp only [polar]
-  rw [← zpow_neg, ← zpow_neg, ← zpow_add, ← zpow_add]
-  congr 1
-  ring
-
-theorem toricPre_tate : toricPre InhTate.R ℤ (fun n => piK ^ (n ^ 2)) = tatePre := by
-  unfold toricPre tatePre P0 pi0
-  congr 1
-  funext n
-  exact congrArg (cg _ _) (unitOn_zpow _ _)
-
 end Examples
 
 end GlobalTheory.ToricData

@@ -57,7 +57,7 @@ end Frob
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-lemma root_frob {x : ℂ_[p]} {n : ℕ} (_hn : 0 < n) (hc : Nat.Coprime n p) (hx : x ^ n = 1) :
+lemma root_frob {x : ℂ_[p]} {n : ℕ} (hc : Nat.Coprime n p) (hx : x ^ n = 1) :
     x ^ p ^ Nat.totient n = x := by
   have hred : ∀ a : ℕ, x ^ a = x ^ (a % n) := fun a => by
     conv_lhs => rw [← Nat.div_add_mod a n]
@@ -91,7 +91,7 @@ theorem frob_congr (y : ℂ_[p]) (hy : y ∈ S0 p) :
         refine ⟨Nat.totient n, Nat.totient_pos.2 hn, ?_⟩
         rw [← map_pow]
         congr 1
-        exact Subtype.ext (by simpa using root_frob hn hc hxn)
+        exact Subtype.ext (by simpa using root_frob hc hxn)
     | zero => exact ⟨1, one_pos, by rw [show (⟨0, _⟩ : S0 p) = 0 from rfl, map_zero, zero_pow (pow_ne_zero _ hp.out.ne_zero)]⟩
     | one => exact ⟨1, one_pos, by rw [show (⟨1, _⟩ : S0 p) = 1 from rfl, map_one, one_pow]⟩
     | add x y hx hy ihx ihy =>

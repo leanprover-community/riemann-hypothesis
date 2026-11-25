@@ -357,18 +357,6 @@ section Unfold
 variable {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [MeasurableInv G]
   {μ : Measure G} [SFinite μ] [μ.IsMulLeftInvariant] (ν : Measure G) [SFinite ν]
 
-theorem ind_mul_right {M : Type*} [Zero M] [One M] {B : Set G} (x : G) :
-    (fun r => B.indicator (1 : G → M) (r * x)) = {r | r * x ∈ B}.indicator 1 := by
-  funext r
-  first
-  | rfl
-
-theorem ind_inv_mul {M : Type*} [Zero M] [One M] {A : Set G} (y : G) :
-    (fun r => A.indicator (1 : G → M) (r⁻¹ * y)) = {r | r⁻¹ * y ∈ A}.indicator 1 := by
-  funext r
-  first
-  | rfl
-
 private theorem measurable_one_ennreal : Measurable (1 : G → ℝ≥0∞) := by
   first
   | exact measurable_one

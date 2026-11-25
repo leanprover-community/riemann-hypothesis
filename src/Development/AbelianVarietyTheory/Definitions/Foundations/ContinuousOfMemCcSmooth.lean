@@ -268,8 +268,6 @@ variable {ι : H →* Matrix n n ℂ} {μ : Measure H} {π : H →* (V →L[ℂ]
 
 
 
-def circleMat : Circle →* Matrix (Fin 1) (Fin 1) ℂ := (Matrix.scalar (Fin 1)).toMonoidHom.comp Circle.coeHom
-
 end Real
 
 end GlobalTheory.Orb

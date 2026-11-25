@@ -399,7 +399,7 @@ theorem agree_truncLog {f : MvPowerSeries σ K} (hf : MvPowerSeries.constantCoef
 
 theorem coeff_log_succ_mul (k : ℕ) :
     PowerSeries.coeff (k + 1) (PowerSeries.log K) * ((k + 1 : ℕ) : K) = (-1) ^ k := by
-  rw [PowerSeries.coeff_log, ite_eq_right (Nat.succ_ne_zero k)]
+  rw [PowerSeries.coeff_log, if_neg (Nat.succ_ne_zero k)]
   simp only [map_div₀, map_pow, map_neg, map_one, map_natCast]
   have : ((k + 1 : ℕ) : K) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.succ_ne_zero k)
   field_simp
@@ -699,7 +699,7 @@ theorem expand {bar : O → O} {ψ : M → Q} (H : BiHyp bar ψ) {ι : Type*}
     have hse : ∀ e ∈ s, ∑ e' ∈ (insert a s).filter (fun e' => e < e'), quadDiff ψ (x e) (x e') =
         quadDiff ψ (x e) (x a) + ∑ e' ∈ s.filter (fun e' => e < e'), quadDiff ψ (x e) (x e') := by
       intro e he
-      rw [Finset.filter_insert, ite_eq_left (hlt e he),
+      rw [Finset.filter_insert, if_pos (hlt e he),
         Finset.sum_insert (fun h => ha (Finset.mem_filter.mp h).1)]
     rw [Finset.sum_insert ha, hdef, ih, Finset.sum_insert ha, Finset.sum_insert ha, hfa,
       Finset.sum_empty, Finset.sum_congr rfl hse, Finset.sum_add_distrib, qd_comm, sum1 H]
@@ -827,88 +827,6 @@ theorem norm_one_add {K : Type*} [NormedField K] [IsUltrametricDist K] {t : K} (
 
 end LegendreModelEllipticTorsion
 
-open LegendreModelEllipticTorsion Polynomial in
-theorem legendre_model : ModelLegendre := by
-  intro K _ _ _ h2 j hj
-  have h16 : ‖(16 : K)‖ = 1 := by
-    have : (16 : K) = 2 ^ 4 := by norm_num
-    rw [this, norm_pow, h2, one_pow]
-  have h256 : ‖(256 : K)‖ = 1 := by
-    have : (256 : K) = 2 ^ 8 := by norm_num
-    rw [this, norm_pow, h2, one_pow]
-  have h256ne : (256 : K) ≠ 0 := by
-    intro h; rw [h, norm_zero] at h256; exact zero_ne_one h256
-  have hdeg : (legPoly j).degree ≠ 0 := by
-    rw [degree_eq_natDegree, legPoly_natDegree h256ne]
-    · decide
-    · intro h0
-      have := legPoly_natDegree h256ne j
-      rw [h0, natDegree_zero] at this
-      exact absurd this (by decide)
-  obtain ⟨l, hl⟩ := IsAlgClosed.exists_root _ hdeg
-  have hroot : (256 : K) * (l ^ 2 - l + 1) ^ 3 = j * (l * (l - 1)) ^ 2 := by
-    have := hl.eq_zero
-    simp only [legPoly, eval_sub, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one] at this
-    exact sub_eq_zero.mp this
-  set t := l * (l - 1) with ht
-  have hu : l ^ 2 - l + 1 = 1 + t := by rw [ht]; ring
-  rw [hu] at hroot
-  have hnorm := congrArg norm hroot
-  simp only [norm_mul, norm_pow, h256, one_mul] at hnorm
-
-  have htn : ‖t‖ = 1 := by
-    by_contra hne
-    have e := norm_one_add hne
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · rw [e, max_eq_left hlt.le, one_pow] at hnorm
-      have : ‖j‖ * ‖t‖ ^ 2 < 1 := by
-        calc ‖j‖ * ‖t‖ ^ 2 ≤ 1 * ‖t‖ ^ 2 := by gcongr
-          _ < 1 := by rw [one_mul]; exact pow_lt_one₀ (norm_nonneg _) hlt (by norm_num)
-      linarith
-    · rw [e, max_eq_right hgt.le] at hnorm
-      have hpos : 0 < ‖t‖ ^ 2 := by positivity
-      have : ‖t‖ ^ 3 ≤ ‖t‖ ^ 2 := by
-        rw [hnorm]; calc ‖j‖ * ‖t‖ ^ 2 ≤ 1 * ‖t‖ ^ 2 := by gcongr
-          _ = ‖t‖ ^ 2 := one_mul _
-      have : ‖t‖ ^ 2 * ‖t‖ ≤ ‖t‖ ^ 2 * 1 := by nlinarith
-      have := le_of_mul_le_mul_left this hpos
-      linarith
-  have hprod : ‖l‖ * ‖l - 1‖ = 1 := by rw [← norm_mul, ← ht, htn]
-  have hle1 : ‖l - 1‖ ≤ max ‖l‖ 1 := by
-    have := IsUltrametricDist.norm_add_le_max l (-1 : K)
-    simpa [← sub_eq_add_neg] using this
-  have hle2 : ‖l‖ ≤ max ‖l - 1‖ 1 := by
-    have := IsUltrametricDist.norm_add_le_max (l - 1) (1 : K)
-    simpa using this
-  have hl1 : ‖l‖ = 1 := by
-    rcases lt_trichotomy ‖l‖ 1 with h | h | h
-    · exfalso
-      rw [max_eq_right h.le] at hle1
-      have : ‖l‖ * ‖l - 1‖ < 1 := by
-        calc ‖l‖ * ‖l - 1‖ ≤ ‖l‖ * 1 := by gcongr
-          _ < 1 := by rw [mul_one]; exact h
-      linarith
-    · exact h
-    · exfalso
-      have hpos : 0 < ‖l‖ := by linarith
-      have hlt : ‖l - 1‖ < 1 := by
-        by_contra hc
-        rw [not_lt] at hc
-        nlinarith
-      rw [max_eq_right hlt.le] at hle2
-      linarith
-  have hl2 : ‖l - 1‖ = 1 := by rw [hl1, one_mul] at hprod; exact hprod
-  obtain ⟨hΔ, hc4⟩ := legendre_invariant K l
-  refine ⟨l, hl1, hl2, ?_, ?_⟩
-  · rw [hΔ, hc4]
-    have : (l ^ 2 - l + 1) = 1 + t := hu
-    rw [this]
-    have e2 : (16 : K) * l ^ 2 * (l - 1) ^ 2 = 16 * t ^ 2 := by rw [ht]; ring
-    rw [e2]
-    linear_combination 16 * hroot
-  · rw [hΔ, norm_mul, norm_mul, h16, norm_pow, norm_pow, hl1, hl2]
-    norm_num
-
 end Formalism.ELL
 end -- clump:auto
 end -- clump:auto
@@ -976,12 +894,12 @@ theorem coeff_pow_of_cc {e : PowerSeries K} (he : constantCoeff e = 0) :
 theorem coeff_pow_eq_zero {e : PowerSeries K} (he : constantCoeff e = 0) {m n : ℕ} (h : n < m) :
     coeff n (e ^ m) = 0 := by
   obtain ⟨g, -, hg⟩ := coeff_pow_of_cc he
-  rw [hg, ite_eq_right (by omega)]
+  rw [hg, if_neg (by omega)]
 
 theorem coeff_pow_self {e : PowerSeries K} (he : constantCoeff e = 0) (n : ℕ) :
     coeff n (e ^ n) = coeff 1 e ^ n := by
   obtain ⟨g, hg1, hg⟩ := coeff_pow_of_cc he
-  rw [hg, ite_eq_left le_rfl, Nat.sub_self, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, hg1]
+  rw [hg, if_pos le_rfl, Nat.sub_self, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, hg1]
 
 theorem coeff_subst_eq_sum {l e : PowerSeries K} (he : constantCoeff e = 0) (n : ℕ) :
     coeff n (l.subst e) = ∑ m ∈ Finset.range (n + 1), coeff m l * coeff n (e ^ m) := by
@@ -1182,26 +1100,6 @@ namespace Formalism.ELL
 
 open Formalism.ELL.unitAtAlt
 
-theorem modelUnit_of (hL : Formalism.ELL.ModelLegendre.{u}) (hD : Formalism.ELL.ModelDeuring.{u}) :
-    Formalism.ELL.ModelUnit.{u} := by
-  intro K _ _ _ j hj
-  rcases two_or_three (K := K) with h2 | h3
-  · obtain ⟨l, hl, _hl1, hc, hΔ⟩ := hL K h2 j hj
-    refine of_model (legendre l) j ?_ hc hΔ
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> simp only [legendre]
-    · simp
-    · rw [norm_neg]
-      refine (IsUltrametricDist.norm_add_le_max _ _).trans ?_
-      simp [hl]
-    · simp
-    · exact hl.le
-    · simp
-  · obtain ⟨a, ha, hc, hΔ⟩ := hD K h3 j hj
-    refine of_model (deuring a) j ?_ hc hΔ
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> simp only [deuring]
-    · exact ha
-    all_goals simp
-
 end Formalism.ELL
 end -- clump:auto
 end -- clump:auto
@@ -1265,58 +1163,7 @@ def ball : Subring K where
     simp only [Set.mem_ofPred_eq] at *
     rwa [norm_neg]
 
-theorem veluGx_mem (W : WeierstrassCurve K) (hW : IntegralModel W) {x y : K}
-    (hx : x ∈ (ball : Subring K)) (hy : y ∈ (ball : Subring K)) :
-    veluGx W x y ∈ (ball : Subring K) := by
-  obtain ⟨h1, h2, h3, h4, h6⟩ := hW
-  unfold veluGx
-  refine sub_mem (add_mem (add_mem (mul_mem (ofNat_mem _ 3) (pow_mem hx 2))
-    (mul_mem (mul_mem (ofNat_mem _ 2) h2) hx)) h4) (mul_mem h1 hy)
-
-theorem veluGy_mem (W : WeierstrassCurve K) (hW : IntegralModel W) {x y : K}
-    (hx : x ∈ (ball : Subring K)) (hy : y ∈ (ball : Subring K)) :
-    veluGy W x y ∈ (ball : Subring K) := by
-  obtain ⟨h1, h2, h3, h4, h6⟩ := hW
-  unfold veluGy
-  exact sub_mem (sub_mem (mul_mem (neg_mem (ofNat_mem _ 2)) hy) (mul_mem h1 hx)) h3
-
-theorem veluV_mem (W : WeierstrassCurve K) (hW : IntegralModel W) {x y : K}
-    (hx : x ∈ (ball : Subring K)) (hy : y ∈ (ball : Subring K)) :
-    veluV W x y ∈ (ball : Subring K) := by
-  have gx := veluGx_mem W hW hx hy
-  have gy := veluGy_mem W hW hx hy
-  unfold veluV
-  split_ifs
-  · exact gx
-  · exact sub_mem (mul_mem (ofNat_mem _ 2) gx) (mul_mem hW.1 gy)
-
-theorem veluU_mem (W : WeierstrassCurve K) (hW : IntegralModel W) {x y : K}
-    (hx : x ∈ (ball : Subring K)) (hy : y ∈ (ball : Subring K)) :
-    veluU W x y ∈ (ball : Subring K) := by
-  unfold veluU
-  exact pow_mem (veluGy_mem W hW hx hy) 2
-
 end VeluIntegrality
-
-open VeluIntegrality in
-theorem velu_integral_model : VeluIntegralModel := by
-  intro K _ _ W k S hW hS
-  have hx : ∀ i, (S i).1 ∈ (ball : Subring K) := fun i => (hS i).1
-  have hy : ∀ i, (S i).2 ∈ (ball : Subring K) := fun i => (hS i).2
-  have hv : (∑ i, veluV W (S i).1 (S i).2) ∈ (ball : Subring K) :=
-    sum_mem fun i _ => veluV_mem W hW (hx i) (hy i)
-  have hw : (∑ i, (veluU W (S i).1 (S i).2 + (S i).1 * veluV W (S i).1 (S i).2))
-      ∈ (ball : Subring K) :=
-    sum_mem fun i _ => add_mem (veluU_mem W hW (hx i) (hy i))
-      (mul_mem (hx i) (veluV_mem W hW (hx i) (hy i)))
-  obtain ⟨h1, h2, h3, h4, h6⟩ := hW
-  refine ⟨h1, h2, h3, ?_, ?_⟩
-  · show W.a₄ - 5 * (∑ i, veluV W (S i).1 (S i).2) ∈ (ball : Subring K)
-    exact sub_mem h4 (mul_mem (ofNat_mem _ 5) hv)
-  · show W.a₆ - (W.a₁ ^ 2 + 4 * W.a₂) * (∑ i, veluV W (S i).1 (S i).2)
-      - 7 * (∑ i, (veluU W (S i).1 (S i).2 + (S i).1 * veluV W (S i).1 (S i).2)) ∈ (ball : Subring K)
-    exact sub_mem (sub_mem h6 (mul_mem (add_mem (pow_mem h1 2) (mul_mem (ofNat_mem _ 4) h2)) hv))
-      (mul_mem (ofNat_mem _ 7) hw)
 
 end Formalism.ELL
 end -- clump:auto
@@ -1345,23 +1192,6 @@ section Map
 
 variable {K L : Type*} [Field K] [Field L] (f : K →+* L) (W : WeierstrassCurve K) (a b : K)
 
-theorem gx_map : veluGx (W.map f) (f a) (f b) = f (veluGx W a b) := by
-  simp [veluGx, map_sub, map_add (f := _), map_mul, map_ofNat]
-
-theorem gy_map : veluGy (W.map f) (f a) (f b) = f (veluGy W a b) := by
-  simp [veluGy, map_sub, map_mul, map_neg, map_ofNat]
-
-theorem v_map : veluV (W.map f) (f a) (f b) = f (veluV W a b) := by
-  unfold veluV
-  rw [gx_map, gy_map]
-  by_cases h : veluGy W a b = 0
-  · rw [ite_eq_left (by rw [h, map_zero]), ite_eq_left h]
-  · rw [ite_eq_right (by rwa [map_eq_zero_iff f f.injective]), ite_eq_right h]
-    simp [map_sub, map_mul, map_ofNat]
-
-theorem u_map : veluU (W.map f) (f a) (f b) = f (veluU W a b) := by
-  simp [veluU, gy_map]
-
 end Map
 
 section Ball
@@ -1372,32 +1202,8 @@ theorem mem {a : K} : a ∈ unitBall K ↔ ‖a‖ ≤ 1 := Iff.rfl
 
 theorem two_mem : (2 : K) ∈ unitBall K := mem.mpr FormalGroupPointsParam.norm_two_le
 
-theorem three_mem : (3 : K) ∈ unitBall K := mem.mpr FormalGroupPointsParam.norm_three_le
-
 variable {W : WeierstrassCurve K} (hW : IntegralModel W) {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1)
 include hW ha hb
-
-theorem gx_mem : veluGx W a b ∈ unitBall K := by
-  unfold veluGx
-  exact sub_mem (add_mem (add_mem (mul_mem three_mem (pow_mem (mem.mpr ha) 2))
-    (mul_mem (mul_mem two_mem (mem.mpr hW.2.1)) (mem.mpr ha))) (mem.mpr hW.2.2.2.1))
-    (mul_mem (mem.mpr hW.1) (mem.mpr hb))
-
-theorem gy_mem : veluGy W a b ∈ unitBall K := by
-  unfold veluGy
-  exact sub_mem (sub_mem (mul_mem (neg_mem two_mem) (mem.mpr hb)) (mul_mem (mem.mpr hW.1) (mem.mpr ha)))
-    (mem.mpr hW.2.2.1)
-
-theorem v_mem : veluV W a b ∈ unitBall K := by
-  unfold veluV
-  split_ifs
-  · exact gx_mem hW ha hb
-  · exact sub_mem (mul_mem two_mem (gx_mem hW ha hb)) (mul_mem (mem.mpr hW.1) (gy_mem hW ha hb))
-
-theorem u_mem : veluU W a b ∈ unitBall K := pow_mem (gy_mem hW ha hb) 2
-
-theorem c_mem : W.a₁ * veluU W a b - veluGx W a b * veluGy W a b ∈ unitBall K :=
-  sub_mem (mul_mem (mem.mpr hW.1) (u_mem hW ha hb)) (mul_mem (gx_mem hW ha hb) (gy_mem hW ha hb))
 
 end Ball
 
@@ -1405,187 +1211,9 @@ section Terms
 
 variable {F : Type*} [Field F]
 
-theorem termX (x xQ u Di v uQ : F) (h : (x - xQ)⁻¹ = u ^ 2 * Di) :
-    (v / (x - xQ) + uQ / (x - xQ) ^ 2) * u ^ 2 = u ^ 4 * (v * Di + uQ * u ^ 2 * Di ^ 2) := by
-  simp only [div_eq_mul_inv, ← inv_pow, h]
-  ring
-
-theorem termY (x y xQ yQ u Di Ui v uQ c a1 a3 : F) (h : (x - xQ)⁻¹ = u ^ 2 * Di)
-    (hx : x * u ^ 2 = Ui) (hy : y * u ^ 3 = -Ui) :
-    (uQ * (2 * y + a1 * x + a3) / (x - xQ) ^ 3 + v * (a1 * (x - xQ) + y - yQ) / (x - xQ) ^ 2
-        + c / (x - xQ) ^ 2) * u ^ 3 =
-      u ^ 4 * (uQ * (-2 * Ui * u ^ 2 + a1 * Ui * u ^ 3 + a3 * u ^ 5) * Di ^ 3
-        + v * (a1 * (Ui - xQ * u ^ 2) * u - Ui - yQ * u ^ 3) * Di ^ 2 + c * u ^ 3 * Di ^ 2) := by
-  simp only [div_eq_mul_inv, ← inv_pow, h]
-  linear_combination (uQ * Di ^ 3 * a1 * u ^ 7 + v * Di ^ 2 * a1 * u ^ 5) * hx
-    + (2 * uQ * Di ^ 3 * u ^ 6 + v * Di ^ 2 * u ^ 4) * hy
-
 end Terms
 
 end VeluCoordinateMaps
-
-open Formalism.G VeluCoordinateMaps in
-theorem velu_u_series : VeluUSeries.{u} := by
-  intro K _ _ W w k S hW hw hS L WL SL x y
-
-  let φ : PowerSeries (unitBall K) →+* PowerSeries K := PowerSeries.map (unitBall K).subtype
-  let ι : MvPowerSeries Unit K →+* L := algebraMap (MvPowerSeries Unit K) L
-  let ψ : PowerSeries (unitBall K) →+* L := ι.comp φ
-  have hφcoeff : ∀ (g : PowerSeries (unitBall K)) (n : ℕ), coeff n (φ g) = ((coeff n g : unitBall K) : K) :=
-    fun g n => coeff_map _ n g
-  have hψC : ∀ (a : K) (h : a ∈ unitBall K), ψ (C ⟨a, h⟩) = algebraMap K L a := by
-    intro a h
-    show ι (PowerSeries.map (unitBall K).subtype (C ⟨a, h⟩)) = _
-    rw [map_C]
-    show algebraMap (MvPowerSeries Unit K) L (C a) = _
-    rw [C_eq_algebraMap, ← IsScalarTower.algebraMap_apply]
-  obtain ⟨u, hu⟩ : ∃ u : L, ι (PowerSeries.X : PowerSeries K) = u := ⟨_, rfl⟩
-  have hψX : ψ X = u := by
-    show ι (PowerSeries.map (unitBall K).subtype X) = u
-    rw [map_X, hu]
-  have hinj : Function.Injective ι := IsFractionRing.injective _ _
-  have hu0 : u ≠ 0 := by
-    rw [← hu]; intro h
-    exact PowerSeries.X_ne_zero (hinj (by rw [h, map_zero]))
-
-  obtain ⟨e, he⟩ := WeierstrassPointSeriesTail.factor W w hw
-  have hwI := FormalGroupPointsParam.integral_w hW hw
-  have hUI : ∀ n, ‖coeff n (1 + X * e)‖ ≤ 1 := by
-    intro n
-    have h := coeff_X_pow_mul (1 + X * e) 3 n
-    rw [← he] at h
-    rw [← h]; exact hwI _
-  obtain ⟨U', hU'⟩ : ∃ U' : PowerSeries (unitBall K), φ U' = 1 + X * e :=
-    ⟨PowerSeries.mk fun n => ⟨coeff n (1 + X * e), mem.mpr (hUI n)⟩, by
-      ext n; rw [hφcoeff, coeff_mk]⟩
-  have hcU : constantCoeff U' = 1 := by
-    apply Subtype.ext
-    have h := hφcoeff U' 0
-    rw [hU'] at h
-    rw [← coeff_zero_eq_constantCoeff_apply, ← h]
-    simp
-  obtain ⟨Ui', hUU'⟩ : ∃ Ui' : PowerSeries (unitBall K), U' * Ui' = 1 :=
-    ⟨invOfUnit U' 1, mul_invOfUnit _ _ (by rw [hcU]; rfl)⟩
-  have hcUi : constantCoeff Ui' = 1 := by
-    have h := congrArg constantCoeff hUU'
-    rwa [map_mul, hcU, one_mul, map_one] at h
-
-  let xq : Fin k → unitBall K := fun i => ⟨(S i).1, mem.mpr (hS i).1⟩
-  let yq : Fin k → unitBall K := fun i => ⟨(S i).2, mem.mpr (hS i).2⟩
-  have hcD : ∀ i, constantCoeff (Ui' - C (xq i) * X ^ 2) = 1 := by
-    intro i
-    rw [map_sub, map_mul, map_pow, constantCoeff_X, hcUi]
-    simp
-  have hDex : ∀ i, ∃ D : PowerSeries (unitBall K), (Ui' - C (xq i) * X ^ 2) * D = 1 :=
-    fun i => ⟨_, mul_invOfUnit (Ui' - C (xq i) * X ^ 2) 1 (by rw [hcD i]; rfl)⟩
-  choose Di hDD using hDex
-  let a1' : unitBall K := ⟨W.a₁, mem.mpr hW.1⟩
-  let a3' : unitBall K := ⟨W.a₃, mem.mpr hW.2.2.1⟩
-  let vq : Fin k → unitBall K := fun i => ⟨veluV W (S i).1 (S i).2, v_mem hW (hS i).1 (hS i).2⟩
-  let uq : Fin k → unitBall K := fun i => ⟨veluU W (S i).1 (S i).2, u_mem hW (hS i).1 (hS i).2⟩
-  let cq : Fin k → unitBall K := fun i =>
-    ⟨W.a₁ * veluU W (S i).1 (S i).2 - veluGx W (S i).1 (S i).2 * veluGy W (S i).1 (S i).2,
-      c_mem hW (hS i).1 (hS i).2⟩
-  obtain ⟨EX, hEX⟩ : ∃ EX : PowerSeries (unitBall K), EX = Ui' + X ^ 4 *
-      ∑ i, (C (vq i) * Di i + C (uq i) * X ^ 2 * Di i ^ 2) := ⟨_, rfl⟩
-  obtain ⟨EY, hEY⟩ : ∃ EY : PowerSeries (unitBall K), EY = Ui' + X ^ 4 *
-      ∑ i, (C (uq i) * (-2 * Ui' * X ^ 2 + C a1' * Ui' * X ^ 3 + C a3' * X ^ 5) * Di i ^ 3
-        + C (vq i) * (C a1' * (Ui' - C (xq i) * X ^ 2) * X - Ui' - C (yq i) * X ^ 3) * Di i ^ 2
-        + C (cq i) * X ^ 3 * Di i ^ 2) := ⟨_, rfl⟩
-  have hcEX : constantCoeff EX = 1 := by simp [hEX, hcUi]
-  have hcEY : constantCoeff EY = 1 := by simp [hEY, hcUi]
-  obtain ⟨EYi, hEE⟩ : ∃ EYi : PowerSeries (unitBall K), EY * EYi = 1 :=
-    ⟨invOfUnit EY 1, mul_invOfUnit _ _ (by rw [hcEY]; rfl)⟩
-  have hcEYi : constantCoeff EYi = 1 := by
-    have h := congrArg constantCoeff hEE
-    rwa [map_mul, hcEY, one_mul, map_one] at h
-  refine ⟨φ (X * EX * EYi), fun n => by rw [hφcoeff]; exact (coeff n (X * EX * EYi)).2, ?_, ?_, ?_⟩
-  · rw [hφcoeff, mul_assoc, coeff_zero_X_mul]; rfl
-  · rw [hφcoeff, mul_assoc, show (1 : ℕ) = 0 + 1 from rfl, coeff_succ_X_mul,
-      coeff_zero_eq_constantCoeff_apply, map_mul, hcEX, hcEYi, one_mul]
-    rfl
-
-  have hsub : w.subst (X : PowerSeries K) = w := X_subst w
-  have hιw : ι w = u ^ 3 * ψ U' := by
-    show ι w = u ^ 3 * ι (φ U')
-    rw [hU', ← hu, ← map_pow, ← map_mul, ← he]
-  have hUUl : ψ U' * ψ Ui' = 1 := by rw [← map_mul, hUU', map_one]
-  have hU0 : ψ U' ≠ 0 := left_ne_zero_of_mul_eq_one hUUl
-  have hu30 : u ^ 3 * ψ U' ≠ 0 := mul_ne_zero (pow_ne_zero 3 hu0) hU0
-  have hx : x * u ^ 2 = ψ Ui' := by
-    show ι (X : PowerSeries K) / ι (w.subst (X : PowerSeries K)) * u ^ 2 = ψ Ui'
-    rw [hsub, hιw, hu, div_mul_eq_mul_div, div_eq_iff hu30]
-    linear_combination (-u ^ 3) * hUUl
-  have hy : y * u ^ 3 = -ψ Ui' := by
-    show -1 / ι (w.subst (X : PowerSeries K)) * u ^ 3 = -ψ Ui'
-    rw [hsub, hιw, div_mul_eq_mul_div, div_eq_iff hu30]
-    linear_combination u ^ 3 * hUUl
-  have hxq : ∀ i, ψ (C (xq i)) = (SL i).1 := fun i => hψC _ _
-  have hyq : ∀ i, ψ (C (yq i)) = (SL i).2 := fun i => hψC _ _
-  have hinv : ∀ i, (x - (SL i).1)⁻¹ = u ^ 2 * ψ (Di i) := by
-    intro i
-    apply inv_eq_of_mul_eq_one_right
-    have h := congrArg ψ (hDD i)
-    rw [map_mul, map_sub, map_mul, map_pow, hψX, map_one, hxq] at h
-    linear_combination ψ (Di i) * hx + h
-  have hv : ∀ i, veluV WL (SL i).1 (SL i).2 = ψ (C (vq i)) := fun i =>
-    (v_map (algebraMap K L) W _ _).trans (hψC _ _).symm
-  have hU : ∀ i, veluU WL (SL i).1 (SL i).2 = ψ (C (uq i)) := fun i =>
-    (u_map (algebraMap K L) W _ _).trans (hψC _ _).symm
-  have hc : ∀ i, WL.a₁ * veluU WL (SL i).1 (SL i).2
-      - veluGx WL (SL i).1 (SL i).2 * veluGy WL (SL i).1 (SL i).2 = ψ (C (cq i)) := by
-    intro i
-    rw [hψC, map_sub, map_mul, map_mul, ← u_map, ← gx_map, ← gy_map]
-    rfl
-  have ha1 : WL.a₁ = ψ (C a1') := (hψC _ _).symm
-  have ha3 : WL.a₃ = ψ (C a3') := (hψC _ _).symm
-  have hXe : veluX WL SL x * u ^ 2 = ψ EX := by
-    have e1 : ψ EX = ψ Ui' + u ^ 4 * ∑ i, (ψ (C (vq i)) * ψ (Di i)
-        + ψ (C (uq i)) * u ^ 2 * ψ (Di i) ^ 2) := by
-
-      rw [hEX]; simp only [map_add (f := _), map_mul, map_pow, map_sum, hψX]
-    rw [e1]
-    simp only [veluX]
-    rw [add_mul, Finset.sum_mul, hx, Finset.mul_sum]
-    congr 1
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [termX _ _ _ _ _ _ (hinv i), hv i, hU i]
-  have hYe : veluY WL SL x y * u ^ 3 = -ψ EY := by
-    have e2 : ψ EY = ψ Ui' + u ^ 4 * ∑ i, (ψ (C (uq i)) * (-2 * ψ Ui' * u ^ 2
-        + ψ (C a1') * ψ Ui' * u ^ 3 + ψ (C a3') * u ^ 5) * ψ (Di i) ^ 3
-        + ψ (C (vq i)) * (ψ (C a1') * (ψ Ui' - ψ (C (xq i)) * u ^ 2) * u - ψ Ui'
-          - ψ (C (yq i)) * u ^ 3) * ψ (Di i) ^ 2
-        + ψ (C (cq i)) * u ^ 3 * ψ (Di i) ^ 2) := by
-
-      rw [hEY]; simp only [map_add (f := _), map_mul, map_pow, map_sum, map_sub, map_neg, map_ofNat, hψX]
-    have hs : ∀ i ∈ Finset.univ, (veluU WL (SL i).1 (SL i).2 * (2 * y + WL.a₁ * x + WL.a₃)
-          / (x - (SL i).1) ^ 3
-        + veluV WL (SL i).1 (SL i).2 * (WL.a₁ * (x - (SL i).1) + y - (SL i).2) / (x - (SL i).1) ^ 2
-        + (WL.a₁ * veluU WL (SL i).1 (SL i).2
-            - veluGx WL (SL i).1 (SL i).2 * veluGy WL (SL i).1 (SL i).2) / (x - (SL i).1) ^ 2)
-          * u ^ 3 =
-        u ^ 4 * (ψ (C (uq i)) * (-2 * ψ Ui' * u ^ 2
-        + ψ (C a1') * ψ Ui' * u ^ 3 + ψ (C a3') * u ^ 5) * ψ (Di i) ^ 3
-        + ψ (C (vq i)) * (ψ (C a1') * (ψ Ui' - ψ (C (xq i)) * u ^ 2) * u - ψ Ui'
-          - ψ (C (yq i)) * u ^ 3) * ψ (Di i) ^ 2
-        + ψ (C (cq i)) * u ^ 3 * ψ (Di i) ^ 2) := by
-      intro i _
-      rw [termY _ _ _ _ _ _ _ _ _ _ _ _ (hinv i) hx hy, hc i, hv i, hU i, ha1, ha3, hxq i, hyq i]
-    rw [e2]
-    simp only [veluY]
-    rw [sub_mul, Finset.sum_mul, Finset.sum_congr rfl hs, hy, ← Finset.mul_sum]
-    ring
-  have hEYl : ψ EY * ψ EYi = 1 := by rw [← map_mul, hEE, map_one]
-  have hY0 : veluY WL SL x y ≠ 0 := by
-    intro h
-    rw [h, zero_mul] at hYe
-    have h2 : ψ EY = 0 := by linear_combination hYe
-    rw [h2, zero_mul] at hEYl
-    exact zero_ne_one hEYl
-  show ψ (X * EX * EYi) = _
-  rw [map_mul, map_mul, hψX, eq_div_iff hY0]
-  apply mul_right_cancel₀ (pow_ne_zero 3 hu0)
-  linear_combination (u * ψ EX * ψ EYi) * hYe - (u * ψ EX) * hEYl + u * hXe
 
 end Formalism.ELL
 end -- clump:auto
@@ -1602,12 +1230,6 @@ universe u
 
 namespace Formalism.ELL
 
-theorem legendreInv : LegendreInv.{u} := legendre_invariant
-theorem deuringInv : DeuringInv.{u} := deuring_invariant
-theorem modelLegendre : ModelLegendre.{u} := legendre_model
-theorem modelDeuring : ModelDeuring.{u} := deuring_model
-theorem modelUnit : ModelUnit.{u} := by
-  apply modelUnit_of <;> first | exact modelLegendre | exact modelDeuring
 theorem intValuedZp : IntValuedZp.{u} := integer_valued_padic_integers
 theorem nAddSubgroup : NAddSubgroup.{u} := N_additive_subgroup
 theorem nZpSmul : NZpSmul.{u} := N_padic_integer_smul
@@ -1641,11 +1263,6 @@ theorem wFormalGroup : WFormalGroup.{u} := by
 
 theorem formal_group_points_param : FormalGroupPointsParametrisation.{u} := by
   apply formal_group_points_param_of <;> first | exact intValuedZp | exact nAddSubgroup | exact nZpSmul | exact nPderiv | exact lwP₂ | exact unitCancel | exact compExpWeight | exact lemma2Weights | exact frobExpand | exact wFormalGroup | exact formal_group_points_subgroup | exact formal_group_points_no_torsion | exact isoExpand | exact isoVanish | exact changeIntegral | exact wPoint | exact wSubstUnique
-theorem formal_group_points_hom : FormalGroupPointsHomomorphism.{u} := by
-  apply formal_group_points_hom_of <;> first | exact wSubstUnique | exact wChordSubst | exact _root_.Formalism.ELL.formal_group_points_param_holds | exact wFormalGroup
-
-theorem veluIntegralModel : VeluIntegralModel.{u} := velu_integral_model
-theorem veluUSeries : VeluUSeries.{u} := velu_u_series
 
 end Formalism.ELL
 end -- clump:auto

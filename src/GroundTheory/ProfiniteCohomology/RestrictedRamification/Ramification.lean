@@ -30,10 +30,6 @@ section Inertia
 variable {F E M : Type*} [Field F] [Field E] [Field M] [Algebra F E] [Algebra E M] [Algebra F M]
   [IsScalarTower F E M]
 
-theorem restrictScalars_mem_inertia_iff (Q : Ideal (𝓞 M)) (σ : Gal(M/E)) :
-    AlgEquiv.restrictScalarsHom F σ ∈ Q.inertia Gal(M/F) ↔ σ ∈ Q.inertia Gal(M/E) :=
-  Iff.rfl
-
 theorem mem_range_restrictScalarsHom_iff (σ : Gal(M/F)) :
     σ ∈ (AlgEquiv.restrictScalarsHom F : Gal(M/E) →* Gal(M/F)).range ↔
       ∀ x : E, σ (algebraMap E M x) = algebraMap E M x := by
@@ -60,29 +56,33 @@ theorem isUnramifiedAt_under_iff_inertia (Q : Ideal (𝓞 M)) [Q.IsPrime] :
   have htow : Q.ramificationIdx (𝓞 F) =
       (Q.under (𝓞 E)).ramificationIdx (𝓞 F) * Q.ramificationIdx (𝓞 E) :=
     Ideal.ramificationIdx_tower (q := Q.under (𝓞 E)) (r := Q)
-  set φ : Gal(M/E) →* Gal(M/F) := AlgEquiv.restrictScalarsHom F
+  set φ : Gal(M/E) →* Gal(M/F) := AlgEquiv.restrictScalarsHom F with hφ
+  have hinj : Function.Injective φ := AlgEquiv.restrictScalarsHom_injective F
+  have hcomap : (Q.inertia Gal(M/F)).comap φ = Q.inertia Gal(M/E) :=
+    Subgroup.ext fun _ => Iff.rfl
   have hmap : (Q.inertia Gal(M/E)).map φ = Q.inertia Gal(M/F) ⊓ φ.range := by
-    ext σ
-    constructor
-    · rintro ⟨τ, hτ, rfl⟩
-      exact ⟨(restrictScalars_mem_inertia_iff Q τ).2 hτ, τ, rfl⟩
-    · rintro ⟨hσ, τ, rfl⟩
-      exact ⟨τ, (restrictScalars_mem_inertia_iff Q τ).1 hσ, rfl⟩
+    rw [← hcomap, Subgroup.map_comap_eq, inf_comm]
   have hcardmap : Nat.card ((Q.inertia Gal(M/E)).map φ) = Nat.card (Q.inertia Gal(M/E)) :=
-    Subgroup.card_map_of_injective (AlgEquiv.restrictScalarsHom_injective F)
+    Subgroup.card_map_of_injective hinj
   have hpos : 0 < Nat.card (Q.inertia Gal(M/E)) := Nat.card_pos
   rw [← Ideal.ramificationIdx_eq_one_iff]
   constructor
   · intro h1 σ hσ
-    have heq := Subgroup.eq_of_le_of_card_ge (inf_le_left : Q.inertia Gal(M/F) ⊓ φ.range ≤ _)
-      (by rw [← hmap, hcardmap, cF, cE, htow, h1, one_mul])
+    have hc : Nat.card (Q.inertia Gal(M/F) ⊓ φ.range : Subgroup Gal(M/F)) ≥
+        Nat.card (Q.inertia Gal(M/F)) := by
+      rw [← hmap, hcardmap, cF, cE, htow, h1, one_mul]
+    have heq := Subgroup.eq_of_le_of_card_ge (inf_le_left : Q.inertia Gal(M/F) ⊓ φ.range ≤ _) hc
     have hσ' : σ ∈ Q.inertia Gal(M/F) ⊓ φ.range := by rw [heq]; exact hσ
     exact (mem_range_restrictScalarsHom_iff σ).1 hσ'.2
   · intro h
     have hle : Q.inertia Gal(M/F) ≤ φ.range := fun σ hσ =>
       (mem_range_restrictScalarsHom_iff σ).2 (h σ hσ)
-    exact Nat.eq_of_mul_eq_mul_right (cE ▸ hpos)
-      (by rw [← htow, ← cF, ← cE, ← hmap.trans (inf_eq_left.2 hle), hcardmap, one_mul])
+    have hmap' : (Q.inertia Gal(M/E)).map φ = Q.inertia Gal(M/F) := by
+      rw [hmap, inf_eq_left.2 hle]
+    have hc : (Q.under (𝓞 E)).ramificationIdx (𝓞 F) * Q.ramificationIdx (𝓞 E) =
+        1 * Q.ramificationIdx (𝓞 E) := by
+      rw [← htow, ← cF, ← cE, ← hmap', hcardmap, one_mul]
+    exact Nat.eq_of_mul_eq_mul_right (cE ▸ hpos) hc
 
 end Inertia
 

@@ -1432,13 +1432,6 @@ open Pb HT
 
 variable {K : Type} [CommRing K] {W Z : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z}
 
-theorem obj_ext {C : Type 1} [Category.{0} C] {P : ObjectProperty C} (a b : P.FullSubcategory) (h : a.obj = b.obj) :
-    a = b := by
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  subst h
-  rfl
-
 def preim [Mono i] {T₁ T₂ : Thick (smFun W (i ≫ q))}
     (g : (smS (p := q) i rfl).G.obj T₁ ⟶ (smS (p := q) i rfl).G.obj T₂) : T₁ ⟶ T₂ :=
   mkH (γ := dividedPowersBot K) (p := 0) (q := i ≫ q) (κ := Ideal.Quotient.mk ⊥) g.φ (fun r => g.comm r) g.dp g.hle (by
@@ -1481,7 +1474,7 @@ theorem essSurj [Mono i] (U : ObjectProperty (Thick (smFun Z q))) (U' : ObjectPr
     have hY : (U ⊓ On q i) Y.obj := Y.property
     obtain ⟨w, hw⟩ := hY.2
     have hY' : U' (lift Y.obj w hw) := hU _ (by rw [G_lift]; exact hY.1)
-    exact ⟨⟨lift Y.obj w hw, hY'⟩, ⟨eqToIso (obj_ext _ _ (G_lift Y.obj w hw))⟩⟩
+    exact ⟨⟨lift Y.obj w hw, hY'⟩, ⟨eqToIso (CategoryTheory.ObjectProperty.FullSubcategory.ext (G_lift Y.obj w hw))⟩⟩
 
 theorem full [Mono i] {U : ObjectProperty (Thick (smFun Z q))} {U' : ObjectProperty (Thick (smFun W (i ≫ q)))}
     (h : ∀ T, U' T → (U ⊓ On q i) ((smS i rfl).G.obj T)) (a : ℕ) : (morV i rfl a h).G.Full where

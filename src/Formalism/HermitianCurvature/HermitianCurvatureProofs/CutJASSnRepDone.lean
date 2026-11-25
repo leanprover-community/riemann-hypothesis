@@ -529,8 +529,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC.DT
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.MC
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
-open scoped ComplexConjugate Matrix
 
 noncomputable section
 

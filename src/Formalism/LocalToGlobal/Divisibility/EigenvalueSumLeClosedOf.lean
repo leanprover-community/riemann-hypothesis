@@ -1526,7 +1526,6 @@ noncomputable section
 namespace Formalism.L2.DIV.Arith4S
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef
-open NumberField IsDedekindDomain
 open Formalism.MainNotions.DIV.Proofs Formalism.MainNotions.DIV.Proofs.HHParts
 
 variable {D : D7} (L : SizeData₂ D) (Del h0 : ℕ)
@@ -1984,7 +1983,6 @@ noncomputable section
 namespace Formalism.L2.DIV.Arith4S
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef
-open NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D) (Del h0 : ℕ)
 

@@ -56,7 +56,7 @@ theorem FiniteH.of_shortExact₂ {S : ShortComplex X.Modules} (hS : S.ShortExact
   have := h₃ p
   let f := H.linearMap.{w'} A S.f p
   let g := H.linearMap.{w'} A S.g p
-  finite_of_exact_noetherian f g (H.exact₂.{w'} (shortExact_abSC hS) (n := p))
+  finite_of_exact_noetherian f g (CategoryTheory.Sheaf.H.longSequence_exact₂.{w'} (shortExact_abSC hS) (n := p))
 
 theorem FiniteH.of_shortExact₁ {S : ShortComplex X.Modules} (hS : S.ShortExact)
     (h₂ : FiniteH.{w'} A S.X₂) (h₃ : FiniteH.{w'} A S.X₃) : FiniteH.{w'} A S.X₁ := by

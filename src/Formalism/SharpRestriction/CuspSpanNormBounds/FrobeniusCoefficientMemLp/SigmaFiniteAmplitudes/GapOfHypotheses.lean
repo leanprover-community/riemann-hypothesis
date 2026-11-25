@@ -48,7 +48,7 @@ namespace Formalism.MainNotions.S.Pv.AmpDDPf
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.Pv.AmpDD
 
 theorem arith (N m s h Cl M AS AG : ℝ) (hN : 6 ≤ N) (hm2 : 2 ≤ m) (hmN : m ≤ N) (hs1 : 1 ≤ s) (hsm : s ≤ m)
-    (hCl : 1000 ≤ Cl) (hh : 8 * Cl * N ^ 19 ≤ h) (hM : M ≤ m ^ 2 / 2) (_hM0 : 0 ≤ M) (hAS : AS ≤ 2 * N ^ 3)
+    (hCl : 1000 ≤ Cl) (hh : 8 * Cl * N ^ 19 ≤ h) (hM : M ≤ m ^ 2 / 2) (hAS : AS ≤ 2 * N ^ 3)
     (hAS0 : 0 ≤ AS) (hAG : AG ≤ 4 * N ^ 3) (hAG0 : 0 ≤ AG) :
     120 * N ^ 3 ≤ h ∧ 2 * M * (AS + AG) + AG + 3 ≤ h / (8 * s) ∧
       9 * (m / 2) * N ^ 2 + 3 * AG + 3 ≤ h / (8 * s) ∧
@@ -174,7 +174,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     linarith
   ·
     have hk1 : 1 ≤ D.R.k := by omega
-    obtain ⟨cM, cM0, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
+    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
     have eN : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = N := by rw [hNdef, hr]
     have eM : (2 * (D.R.rS : ℝ) + 2) = m := by rw [hmdef, ← hrS]; push_cast; ring
     have eN' : 2 * (D.R.rS : ℝ) + D.R.k + 1 = N := by rw [← eN]; push_cast; ring
@@ -188,7 +188,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     have hh8 : 8 * Cl * N ^ 19 ≤ h0 / 2 := by
       rw [show 8 * Cl * N ^ 19 = 8 * (Cl * N ^ 19) by ring]; linarith
     obtain ⟨g1, g2, g3, -⟩ := arith N m (Real.sqrt m) (h0 / 2) Cl (Formalism.FourierDecayAlt.ThreeDimData.Mexp D.R.rS) (Formalism.FourierDecayAlt.ThreeDimData.AS D.R.k D.R.rS)
-      (Formalism.FourierDecayAlt.ThreeDimData.AG D.R.k D.R.rS) hN6 hm2' hmN hs1 hsm hCl hh8 cM cM0 cS cS0 cG cG0
+      (Formalism.FourierDecayAlt.ThreeDimData.AG D.R.k D.R.rS) hN6 hm2' hmN hs1 hsm hCl hh8 cM cS cS0 cG cG0
     unfold Formalism.FourierDecayAlt.ThreeDimData.GapOK Formalism.FourierDecayAlt.ThreeDimData.aOf
     rw [hsq, eN]
     have hrS1 : 9 * ((D.R.rS : ℝ) + 1) = 9 * (m / 2) := by rw [← eM]; ring
@@ -196,7 +196,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     rw [hrS1]; exact g3
   ·
     have hk1 : 1 ≤ D.R.k := by omega
-    obtain ⟨cM, cM0, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
+    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
     have eN : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = N := by rw [hNdef, hr]
     have eM : (2 * (D.R.rS : ℝ) + 2) = m := by rw [hmdef, ← hrS]; push_cast; ring
     have eN' : 2 * (D.R.rS : ℝ) + D.R.k + 1 = N := by rw [← eN]; push_cast; ring
@@ -210,7 +210,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     have hh8 : 8 * Cl * N ^ 19 ≤ h0 / 2 := by
       rw [show 8 * Cl * N ^ 19 = 8 * (Cl * N ^ 19) by ring]; linarith
     obtain ⟨-, -, -, g4⟩ := arith N m (Real.sqrt m) (h0 / 2) Cl (Formalism.FourierDecayAlt.ThreeDimData.Mexp D.R.rS) (Formalism.FourierDecayAlt.ThreeDimData.AS D.R.k D.R.rS)
-      (Formalism.FourierDecayAlt.ThreeDimData.AG D.R.k D.R.rS) hN6 hm2' hmN hs1 hsm hCl hh8 cM cM0 cS cS0 cG cG0
+      (Formalism.FourierDecayAlt.ThreeDimData.AG D.R.k D.R.rS) hN6 hm2' hmN hs1 hsm hCl hh8 cM cS cS0 cG cG0
     unfold GapCell Formalism.FourierDecayAlt.ThreeDimData.aOf
     rw [hsq]
     have hrS1 : 10 * ((D.R.rS : ℝ) + 1) ^ 2 = 10 * (m / 2) ^ 2 := by rw [← eM]; ring

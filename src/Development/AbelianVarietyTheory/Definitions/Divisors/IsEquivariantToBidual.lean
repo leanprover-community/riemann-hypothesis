@@ -100,30 +100,6 @@ instance isIso_dualQuotHom : IsIso (dualQuotHom ρ σ) := by
     resM_self]
   rfl
 
-def dualQuotIso : dual (eigenQuot ρ σ) ≅ eigen (dualAct ρ) σ := asIso (dualQuotHom ρ σ)
-
-theorem dualQuotIso_hom_ι :
-    (dualQuotIso ρ σ).hom ≫ eigenι _ _ =
-      dualMap (eigenπ ρ σ) := by
-  simp only [dualQuotIso, asIso_hom, dualQuotHom, eigenLift_ι]
-
-def pullbackQuotIso (f : Y ⟶ X) : eigenQuot (pullAct ρ f) (f.appTop.hom.comp σ) ≅
-    (Scheme.Modules.pullback f).obj (eigenQuot ρ σ) where
-  hom := eigenDesc ((Scheme.Modules.pullback f).map (eigenπ ρ σ)) fun a => by
-    rw [act_pullAct, ← Functor.map_comp, act_eigenπ, pullback_map_smul]; rfl
-  inv := adj f (eigenDesc ((Scheme.Modules.pullbackPushforwardAdjunction f).homEquiv _ _
-    (eigenπ (pullAct ρ f) (f.appTop.hom.comp σ))) fun a => by
-      rw [← Adjunction.homEquiv_naturality_left, smul_eq_smulHom_comp,
-        ← Adjunction.homEquiv_naturality_left, pullback_map_smulHom, ← smul_eq_smulHom_comp]
-      exact congrArg _ (act_eigenπ (pullAct ρ f) _ a))
-  hom_inv_id := by
-    rw [← cancel_epi (eigenπ _ _), eigenπ_desc_assoc, Category.comp_id, adj,
-      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply]
-  inv_hom_id := by
-    rw [← cancel_epi ((Scheme.Modules.pullback f).map (eigenπ ρ σ)), ← Category.assoc, adj,
-      ← Adjunction.homEquiv_naturality_left_symm, eigenπ_desc, Equiv.symm_apply_apply, eigenπ_desc,
-      Category.comp_id]
-
 theorem hom_ext_of_isFrame {κ : Type} [Fintype κ] {e : κ → Γ(F, ⊤)} (he : IsFrame e)
     {φ ψ : F ⟶ G} (h : ∀ i, φ.app ⊤ (e i) = ψ.app ⊤ (e i)) : φ = ψ := by
   ext V s

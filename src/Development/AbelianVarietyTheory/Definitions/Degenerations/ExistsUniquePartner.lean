@@ -157,18 +157,6 @@ def baseMap (C : Cmp φ U U' F) (e : ℕ) :
     Spec (CommRingCat.of (V ⧸ I' ^ (e + 1))) ⟶ Spec (CommRingCat.of (R ⧸ I ^ (e + 1))) :=
   spMap (Ideal.quotientMap (I' ^ (e + 1)) φ (C.pow_le e))
 
-theorem baseMap_thick (C : Cmp φ U U' F) (e : ℕ) : C.baseMap e ≫ thick R I e = thick V I' e ≫ spMap φ := by
-  simp only [baseMap, thick, spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, Ideal.quotientMap_comp_mk]
-
-def levMap (C : Cmp φ U U' F) (e : ℕ) : (thickObj V I' e G').left ⟶ (thickObj R I e G).left :=
-  pullback.lift ((fstG I' e G').left ≫ F) (pullback.snd G'.hom (thick V I' e) ≫ C.baseMap e) (by
-    simp only [Category.assoc]
-    rw [C.pb.1.w, C.baseMap_thick]
-    exact pullback.condition_assoc (f := G'.hom) (g := thick V I' e) _)
-
-theorem levMap_fst (C : Cmp φ U U' F) (e : ℕ) : C.levMap e ≫ (fstG I e G).left = (fstG I' e G').left ≫ F :=
-  pullback.lift_fst _ _ _
-
 end Cmp
 
 end GlobalTheory.LN

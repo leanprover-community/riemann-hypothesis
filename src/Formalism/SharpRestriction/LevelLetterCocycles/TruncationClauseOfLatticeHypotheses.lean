@@ -517,7 +517,6 @@ theorem zd [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 

@@ -1259,13 +1259,10 @@ theorem hasModel_of_maps {Y Z : Scheme.{0}} (a : Y ⟶ M) [IsOpenImmersion a] [I
   exact ⟨⟨Z, z, h₁, h₂, h₃, t, h₄, h₅, a.opensRange, a.denseRange, a.isoOpensRange.inv ≫ j, inferInstance, inferInstance,
     by rw [Category.assoc, h, ← Category.assoc, a.isoOpensRange_inv_comp], tW, k₁, k₂, A⟩, rfl, rfl, rfl⟩
 
-theorem isDominant_ι {X : Scheme.{0}} {W : X.Opens} (h : Dense (W : Set X)) : IsDominant W.ι :=
-  ⟨by rwa [DenseRange, Scheme.Opens.range_ι]⟩
-
 theorem HasModel.shrink (h : HasModel sM tM m n r s) {V : Scheme.{0}} (i : V ⟶ M) [IsOpenImmersion i] [IsDominant i]
     {tV : SAB H V} (k : SABMap tV tM i) : HasModel (i ≫ sM) tV m n r s := by
   obtain ⟨C, rfl, rfl, rfl⟩ := h
-  have := isDominant_ι C.dense
+  have := AlgebraicGeometry.Opens.isDominant_ι C.dense
   have := C.j_open
   have := C.j_dom
   have : IsDominant (pullback.fst i C.W.ι) := isDominant_pullback_fst_of_isOpenMap _ _ i.isOpenEmbedding.isOpenMap
@@ -1282,7 +1279,7 @@ theorem HasModel.shrink (h : HasModel sM tM m n r s) {V : Scheme.{0}} (i : V ⟶
 theorem HasModel.grow {V : Scheme.{0}} (i : V ⟶ M) [IsOpenImmersion i] [IsDominant i]
     {tV : SAB H V} (k : SABMap tV tM i) (h : HasModel (i ≫ sM) tV m n r s) : HasModel sM tM m n r s := by
   obtain ⟨C, rfl, rfl, rfl⟩ := h
-  have := isDominant_ι C.dense
+  have := AlgebraicGeometry.Opens.isDominant_ι C.dense
   have := C.j_open
   have := C.j_dom
   obtain ⟨p⟩ := map_comp C.m₁ k rfl
@@ -1358,10 +1355,10 @@ theorem HasModel.sum [IsNoetherianRing O] [IsReduced M] (hp : IsProper tM.G.hom)
     HasModel sM tM m n r s := by
   obtain ⟨C₁, rfl, rfl, rfl⟩ := h₁
   obtain ⟨C₂, hn, hr, hs⟩ := h₂
-  have := isDominant_ι C₁.dense
+  have := AlgebraicGeometry.Opens.isDominant_ι C₁.dense
   have := C₁.j_open
   have := C₁.j_dom
-  have := isDominant_ι C₂.dense
+  have := AlgebraicGeometry.Opens.isDominant_ι C₂.dense
   have := C₂.j_open
   have := C₂.j_dom
   have := C₁.flat
@@ -1559,7 +1556,7 @@ theorem Models.nonempty_zOn_of_components : ∀ (E : Type) [Field E] [NumberFiel
       have := (hasModel_rank hL hL' hp hA hK hg (k ξ) (C ξ) A).shrink (i ξ).isoOpensRange.inv q'
       rwa [← Category.assoc, (i ξ).isoOpensRange_inv_comp, e] at this) Finset.univ
   obtain ⟨t, ⟨q⟩⟩ := exists_pull (Finset.univ.sup fun ξ => (i ξ).opensRange : M.Opens).ι tM
-  have := isDominant_ι (W := Finset.univ.sup fun ξ => (i ξ).opensRange)
+  have := AlgebraicGeometry.Opens.isDominant_ι (U := Finset.univ.sup fun ξ => (i ξ).opensRange)
     ((dense_iff_closure_eq.2 (genericPoints.closure (α := M))).mono fun ξ hξ =>
       Finset.le_sup (f := fun ξ => (i ξ).opensRange) (Finset.mem_univ ⟨ξ, hξ⟩) (hm ⟨ξ, hξ⟩))
   exact ⟨(HasModel.grow _ q (key t q)).choose⟩

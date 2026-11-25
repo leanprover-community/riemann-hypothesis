@@ -1181,18 +1181,6 @@ theorem coheight_fromSpecStalk (X : Scheme.{0}) (x : X) (p : PrimeSpectrum (X.pr
 
 variable {X : Scheme.{0}} [IsIntegral X] [IsLocallyNoetherian X]
 
-theorem ord_algebraMap_of_isUnit (x : X) (g : X.presheaf.stalk x) (hg : IsUnit g) :
-    Scheme.ord (algebraMap (X.presheaf.stalk x) X.functionField g) x = 0 := by
-  by_cases hx : Order.coheight x = 1
-  · have hne : algebraMap (X.presheaf.stalk x) X.functionField g ≠ 0 :=
-      (map_ne_zero_iff _ (IsFractionRing.injective _ _)).2 hg.ne_zero
-    rw [Scheme.ord_eq_iff hx hne]
-    haveI : Ring.KrullDimLE 1 (X.presheaf.stalk x) := krullDimLE_of_coheight_le hx.le
-    change Ring.ordFrac _ _ = _
-    rw [Ring.ordFrac_of_isUnit hg]
-    rfl
-  · exact Scheme.ord_eq_zero_of_coheight_neq_one hx _
-
 theorem ord_algebraMap_ne_zero (x : X) (hx : Order.coheight x = 1) (g : X.presheaf.stalk x)
     (hg0 : g ≠ 0) (hg : g ∈ maximalIdeal (X.presheaf.stalk x)) :
     Scheme.ord (algebraMap (X.presheaf.stalk x) X.functionField g) x ≠ 0 := by
@@ -1241,7 +1229,7 @@ theorem exists_meet_point : ∀ (Y : Scheme.{0}) [IsIntegral Y] [IsLocallyNoethe
     by_contra hnm
     have hu : IsUnit (Y.presheaf.germ U (wf i) (hUmem _ (hc.spec i hi)) (z i)) := by
       by_contra h'; exact hnm ((mem_maximalIdeal _).2 h')
-    have h1 := GlobalTheory.SncMeet.ord_algebraMap_of_isUnit _ _ hu
+    have h1 := AlgebraicGeometry.Scheme.ord_algebraMap_eq_zero_of_isUnit hu
     rw [hfn _ _ i hi, hc.ord_self i hi] at h1
     exact one_ne_zero h1
   have hm : ∀ i ∈ J, Y.presheaf.germ U w hwU (z i) ∈ maximalIdeal (Y.presheaf.stalk w) := by

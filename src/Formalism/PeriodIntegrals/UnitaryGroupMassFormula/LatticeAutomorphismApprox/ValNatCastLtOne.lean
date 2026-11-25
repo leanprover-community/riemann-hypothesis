@@ -54,19 +54,6 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Matrix
 open scoped TensorProduct
 open Formalism.MainNotions.S PI.ScRefExists
 
-theorem val_natCast_lt_one (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (g : ℕ)
-    (hg : (g : 𝓞 F) ∈ v.asIdeal) : Valued.v ((g : v.adicCompletion F)) < 1 := by
-  have h1 : ((g : v.adicCompletion F)) = (((algebraMap (𝓞 F) F (g : 𝓞 F)) : F) : v.adicCompletion F) := by
-    rw [map_natCast (algebraMap (𝓞 F) F)]
-    first
-    | exact (map_natCast (algebraMap F (v.adicCompletion F)) g).symm
-  rw [h1]
-  first
-  | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
-    exact (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr hg
-  | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation]
-    exact (IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr hg
-
 theorem natCast_mem_max (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (g : ℕ)
     (hg : (g : 𝓞 F) ∈ v.asIdeal) :
     (g : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by

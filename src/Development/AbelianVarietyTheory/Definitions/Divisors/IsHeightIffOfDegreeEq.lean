@@ -305,18 +305,6 @@ theorem spans : (projTuple M).Spans := top_le_iff.1 fun u _ => by
   funext j
   simp [Matrix.one_apply, Pi.single_apply]
 
-theorem shortGenerators : (projTuple M).ShortGenerators := by
-  refine ⟨fun u hu => ?_, fun k σ => ?_, le_rfl⟩
-  · induction hu using Submodule.span_induction with
-    | mem _ h => exact Submodule.subset_span h
-    | zero => exact zero_mem _
-    | add a b _ _ ha hb => exact add_mem ha hb
-    | smul c a _ ha =>
-      obtain ⟨z, rfl⟩ := Rat.ringOfIntegersEquiv.symm.surjective c
-      rw [eq_intCast Rat.ringOfIntegersEquiv.symm z, Int.cast_smul_eq_zsmul]
-      exact Submodule.smul_mem _ _ ha
-  · simp [HermSys.normAt, frameNorm, Matrix.one_apply, apply_ite]
-
 end projTuple
 
 end GlobalTheory.Adelic

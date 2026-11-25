@@ -98,18 +98,6 @@ def ZariskiDense (P : ArithVariety n) (S : Set (Cone n (AlgebraicClosure ℚ))) 
     (∀ z ∈ S, evalCone z f = 0) → f ∈ P.ideal
 
 
-variable (n) in
-def whole : ArithVariety n where
-  ideal := ⊥
-  isPrime := Ideal.isPrime_bot
-  homogeneous f hf m := by
-    rw [Submodule.mem_bot] at hf ⊢
-    rw [hf, map_zero]
-  relevant k := ⟨0, by rw [Submodule.mem_bot]; exact X_ne_zero _⟩
-  horizontal a ha := by
-    rw [Submodule.mem_bot] at ha
-    exact C_eq_zero.mp ha
-
 
 end ArithVariety
 

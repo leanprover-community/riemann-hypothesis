@@ -83,41 +83,6 @@ def HidaLatticeInclusionAtCoarseWeightBound : Prop :=
     P.lJ < (l : ℝ) → X.WInputs l (kc P) W.j W.T2 (W.iW P l) →
     X.Incl l (W.coarseWeightBound P l) ∧ X.Jmin l ≤ W.coarseWeightBound P l
 
-def RecIncl7 : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → (X l).WInputs l (kc P) W.j W.T2 (W.iW P l)) →
-    ∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Jmin l ≤ W.Jrec7 P l
-
-def CorollaryOfRecord7 : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → (X l).WInputs l (kc P) W.j W.T2 (W.iW P l)) →
-    (∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Incl l ((X l).Jmin l) ∧
-      (X l).Jmin l ≤ W.Jrec7 P l) ∧
-    ∀ Q : Finset ℕ, (∀ l ∈ Q, l.Prime) →
-      ∑ l ∈ Q, (W.Jrec7 P l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2) ∧
-      ∑ l ∈ Q, ((X l).Jmin l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2)
-
-def CorollaryOfRecord7Link : Prop :=
-  LA.LemmaAZ → ∀ P : Par, P.Hyp → P.Large →
-    ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (W : Wts ι), W.Ok P → Fintype.card ι = P.f →
-    W.Sp.card ≤ 5 →
-    ∀ X : ℕ → HidaSetting ι P.Nr W.lam, (∀ l : ℕ, l.Prime → ¬ IsUnit ((l : ℕ) : (X l).O)) →
-    (∀ l : ℕ, l.Prime → W.WRange P l → WInputsLink P W (X l) l) →
-    (∀ l : ℕ, l.Prime → (X l).Incl l (W.Jrec7 P l) ∧ (X l).Incl l ((X l).Jmin l) ∧
-      (X l).Jmin l ≤ W.Jrec7 P l) ∧
-    ∀ Q : Finset ℕ, (∀ l ∈ Q, l.Prime) →
-      ∑ l ∈ Q, (W.Jrec7 P l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2) ∧
-      ∑ l ∈ Q, ((X l).Jmin l : ℝ) * Real.log (l : ℝ) ≤
-          totalBound P W.T2.card (30 * (P.m : ℝ) * P.b * P.L ^ 2)
-
 end SF09
 
 end Formalism.CohomologicalDescent.Top
@@ -464,7 +429,7 @@ theorem loop_sound (B : ℕ) : ∀ k n c Q : ℕ, loop B k n c Q = true → 1 �
     intro n c Q hrun hn hcount hcop m hnm hmk
     simp only [loop, force_eq] at hrun
     by_cases hg : Nat.gcd n Q = 1
-    · rw [ite_eq_left hg, Bool.and_eq_true] at hrun
+    · rw [if_pos hg, Bool.and_eq_true] at hrun
       obtain ⟨hb, hrest⟩ := hrun
       have hc1 : Nat.count Nat.Prime (n + 1) ≤ c + 1 := by
         rw [Nat.count_succ]; split_ifs <;> omega
@@ -476,11 +441,11 @@ theorem loop_sound (B : ℕ) : ∀ k n c Q : ℕ, loop B k n c Q = true → 1 �
         · exact Nat.Coprime.mul_right (hcop p hp (by omega))
             ((Nat.Prime.coprime_iff_not_dvd hp).2 (Nat.not_dvd_of_pos_of_lt (by omega) (by omega)))
         · exact hcop p hp (by omega)
-    · rw [ite_eq_right hg, Bool.and_eq_true] at hrun
+    · rw [if_neg hg, Bool.and_eq_true] at hrun
       obtain ⟨hb, hrest⟩ := hrun
       have hnp : ¬ n.Prime := fun hp => hg (hcop n hp le_rfl)
       have hc0 : Nat.count Nat.Prime (n + 1) ≤ c := by
-        rw [Nat.count_succ, ite_eq_right hnp]; omega
+        rw [Nat.count_succ, if_neg hnp]; omega
       rcases Nat.eq_or_lt_of_le hnm with rfl | hlt
       · exact ⟨c, hc0, hb⟩
       · exact ih (n + 1) c Q hrest (by omega) hc0 (fun p hp hnp' => hcop p hp (by omega)) m hlt
@@ -554,9 +519,6 @@ namespace PI.PC
 open Finset Real
 open ArithmeticFunction hiding log id
 open scoped Nat Chebyshev ArithmeticFunction.zeta
-
-theorem log_factorial_eq_sum_log (N : ℕ) : log ((N ! : ℕ) : ℝ) = ∑ m ∈ Ioc 0 N, log (m : ℝ) := by
-  exact PI.PrimeLogOverPWork.log_factorial_eq_sum_log N
 
 theorem log_factorial_eq_sum (N : ℕ) :
     log ((N ! : ℕ) : ℝ) = ∑ d ∈ Ioc 0 N, Λ d * ((N / d : ℕ) : ℝ) := by
@@ -725,7 +687,7 @@ theorem h_le {a b : ℝ} (ha : 1 ≤ a) (hab : a ≤ b) (hb : 2 ≤ b) :
     a * log a - a - log a / 2 ≤ b * log b - b - log b / 2 := by
   by_cases ha' : 3 / 2 ≤ a
   · exact h_mono ha' hab
-  push Not at ha'
+  push_neg at ha'
   have hb2 := h_mono (a := 2) (b := b) (by norm_num) hb
   have hla : log a ≤ a - 1 := Real.log_le_sub_one_of_pos (by linarith)
   have hq : (a - 1 / 2) * log a ≤ (a - 1 / 2) * (a - 1) :=

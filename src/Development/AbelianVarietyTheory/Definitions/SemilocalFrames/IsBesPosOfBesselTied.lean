@@ -203,10 +203,6 @@ def chr (ψ : AddChar (AF D.host.F) ℂ) (n : GA D B) : ℂ :=
 def theta (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (n : GA D B) (g : GA D A) : ℂ :=
   d.jac ψ n (Om g) 0
 
-def perFun (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (s : GA D A → GA D B) (φ : GA D A → ℂ)
-    (F : GA D B → ℂ) (g : GA D A) (n : d.N) : ℂ :=
-  star (φ g) * F ((n : GA D B) * s g) * d.theta ψ Om n g * star (d.chr ψ n)
-
 end FJDat
 
 section Comparison₂
@@ -217,61 +213,10 @@ variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
 end Comparison₂
 
-theorem kap_symm_tPt (L A : HSp D) (c : D.host.E) (a : Fin A.rank → AE D) (i : Fin L.rank) (k : Fin A.rank) :
-    (kap L A).symm (tPt L A c a) i k = incA D (-(c * L.hD (L.frame i) (lineVec L))) * a k := by
-  have : L.hD (L.frame i) (lineVec L) = ∑ m, L.gram m i := by
-
-    simp only [HSpace.hD, lineVec, map_sum, LinearMap.sum_apply, HSpace.gram]
-  rw [this, WeilTieCompare.kap_symm_apply]
-
-  simp only [Matrix.mul_apply, Matrix.transpose_apply, gramA, Matrix.map_apply, tPt, Matrix.of_apply, map_neg, map_mul,
-  map_sum, Finset.mul_sum, neg_mul, Finset.sum_mul, mul_neg, Finset.sum_neg_distrib]
-  congr 1
-  exact Finset.sum_congr rfl fun m _ => by ring
-
-theorem lineNorm_eq (L : HSp D) : lineNorm L = ∑ i, ∑ k, L.gram k i := by
-
-  simp only [lineNorm, HSpace.hD, lineVec, map_sum, LinearMap.sum_apply, HSpace.gram]
-
-theorem tPt_zero (L A : HSp D) (c : D.host.E) : tPt L A c 0 = 0 := by
-  ext i k; simp [tPt]
-
-theorem cenCo_zero (L : HSp D) (c : D.host.E) : cenCo L c 0 = 0 := by
-  simp only [cenCo, mul_zero, map_zero]
-
-theorem heis_zero (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (f : WA V W → ℂ) : Heisenberg₂ ψ V W 0 f = f := by
-  funext w
-  have := DualPairCheck.symplH_add_right V W w 0 0
-  rw [add_zero] at this
-  simp only [Heisenberg₂, left_eq_add.mp this, add_zero, AddChar.map_zero_eq_one, one_mul]
-
-theorem jacOp_centre (ψ : AddChar (AF D.host.F) ℂ) (L A : HSp D) (c : D.host.E) (t : AE D) (f : WA L A → ℂ) :
-    jacOp ψ L A c 0 t f = ψ (cenCo L c t) • f := by
-  funext w
-  simp only [jacOp, tPt_zero, heis_zero, Pi.smul_apply, smul_eq_mul]
-
 namespace FJDat
 
 variable {L A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : FJDat L A B ι)
 
-
-theorem hD_fTop (y : B.V) (h : ∀ i, B.hD (d.f i) y = 0) : B.hD d.fTop y = 0 := by
-  unfold HSpace.hD at h ⊢
-
-  rw [fTop, map_sum]
-  exact Finset.sum_eq_zero fun i _ => by split_ifs <;> simp [h]
-
-theorem jac_of_fix (ψ : AddChar (AF D.host.F) ℂ) (n : GA D B) (hn : actV B n d.fTop = vecA B d.fTop)
-    (f : WA L A → ℂ) : d.jac ψ n f = f := by
-  have ha : d.aCo n = 0 := by
-    unfold aCo
-    simp only [hn, BesselCompare.hA_vec, d.hD_fTop _ fun i => d.fA i _, map_zero]
-    exact Matrix.mulVec_zero _
-  have ht : d.tCo n = 0 := by
-    unfold tCo
-    rw [hn, BesselCompare.hA_vec, d.hD_fTop _ fun i =>
-      BesselCompare.hD_swap_zero (d.hD_fTop _ fun j => d.ff j i), map_zero]
-  rw [jac, ha, ht, jacOp_centre, cenCo_zero, AddChar.map_zero_eq_one, one_smul]
 
 end FJDat
 

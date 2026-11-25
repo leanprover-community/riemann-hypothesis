@@ -284,32 +284,6 @@ def tate (k : ℤ) : Data InhTate.R where
 
 
 
-open InhTate in
-theorem not_isPos_tate_zero : ¬ (tate 0).IsPos (maximalIdeal (PowerSeries ℚ)) := fun h => by
-  obtain ⟨r, hr, k, hk, u, -, hu⟩ := h (1 : ℤ) (one_ne_zero (α := ℤ))
-  let J : ((TK InhTate.R).left ⟶ (tate 0).B.left) → (tate 0).M.L.ι := fun _ => PUnit.unit
-  have hJ : ∀ z, Good (tate 0).M.L z J := fun _ _ => trivial
-  have hle : (⊤ : (Sp InhTate.R).Opens) ≤ (LB.LinComb (tate 0).M.L (lamPts ((tate 0).c (1 : ℤ)) ((tate 0).c (1 : ℤ))) negε).U
-      (fun _ => PUnit.unit) := fun _ _ => Set.mem_iInter.2 fun _ => trivial
-  let a : Γ(Sp InhTate.R, ⊤)ˣ := res hle (u.s fun _ => PUnit.unit)
-  have key : (1 : Γ((TK InhTate.R).left, ⊤)ˣ) = unitOn k * pullTop (jK InhTate.R) a := unit_ext fun z _ => by
-    have h₁ := hu z J (hJ z)
-    have h₂ : val ((tate 0).tau (1 : ℤ) (1 : ℤ)) (𝟙 _) z J = gm (𝟙 _) z ⊤ 1 := gm_res _ z _ ((hJ z).mem _ _) _
-    have h₃ : val u (toUnit (TK InhTate.R)).left z J = gm (𝟙 _) z ⊤ (pullTop (jK InhTate.R) a) := by
-      refine (gm_res _ z hle trivial _).symm.trans (Eq.trans ?_ (gm_pull (𝟙 _) (jK InhTate.R) z ⊤ trivial a).symm)
-      rfl
-    rw [map_mul, ← h₂, h₁, h₃]
-  let x : InhTate.R := (Scheme.ΓSpecIso (CommRingCat.of InhTate.R)).hom.hom a.val
-  have hx : IsUnit x := a.isUnit.map _
-  have nat := congrArg (fun g => g.hom a.val)
-    (Scheme.ΓSpecIso_naturality (CommRingCat.ofHom (algebraMap InhTate.R (FractionRing InhTate.R))))
-  have e := congrArg (fun v => (Scheme.ΓSpecIso (CommRingCat.of (FractionRing InhTate.R))).hom.hom v.val) key
-  have e' : algebraMap InhTate.R (FractionRing InhTate.R) 1 = algebraMap InhTate.R (FractionRing InhTate.R) (r * x) := by
-    rw [map_one, map_mul, ← hk]
-    refine (map_one _).symm.trans (e.trans ((map_mul _ _ _).trans (congrArg₂ (· * ·) ?_ nat)))
-    exact (Scheme.ΓSpecIso (CommRingCat.of (FractionRing InhTate.R))).inv_hom_id_apply k.val
-  exact (mem_maximalIdeal r).1 hr (IsUnit.of_mul_eq_one x (IsFractionRing.injective _ _ e').symm)
-
 
 end Wit
 

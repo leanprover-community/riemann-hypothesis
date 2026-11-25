@@ -69,18 +69,7 @@ def ContainsAt (τ : Representation ℂ (Kv V v) Z) (σ : Representation ℂ (Gf
   LocContains τ (σ.comp (locFin V v))
 
 
-variable (v) in
-def IsSphericalAt (σ : Representation ℂ (GfC V) W) : Prop := LGrp.IsSpherical (σ.comp (locFin V v)) (Kv V v)
-
-def IsSphericalOff (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) (σ : Representation ℂ (GfC V) W) : Prop :=
-  ∀ v ∉ S, IsSphericalAt v σ
-
 variable {σ : Representation ℂ (GfC V) W} {σv : Representation ℂ (Gv V v) Y} {τ : Representation ℂ (Kv V v) Z}
-
-theorem isSphericalOff_of_fixed {S : Finset (HeightOneSpectrum (𝓞 D.host.F))} (h : LGrp.IsSpherical σ (KOff V S)) :
-    IsSphericalOff S σ := fun _ hv =>
-  let ⟨x, hx, h0⟩ := (Submodule.ne_bot_iff _).1 h
-  (Submodule.ne_bot_iff _).2 ⟨x, LGrp.mem_fixed.2 fun _ hk => LGrp.mem_fixed.1 hx _ (emb_mem_levelOff hv hk), h0⟩
 
 end Types
 

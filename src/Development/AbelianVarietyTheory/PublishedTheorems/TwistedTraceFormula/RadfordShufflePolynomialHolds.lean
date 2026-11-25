@@ -541,11 +541,6 @@ theorem word_mem_of_lyndon_mem [CharZero K] (B : Subalgebra K (ShuffleAlgebra K 
   rw [eq_sub_of_add_eq hsum]
   exact B.sub_mem hxB hrest
 
-theorem monomial_eq_prod {σ : Type} (d : σ →₀ ℕ) :
-    (MvPolynomial.monomial d (1 : K)) = ((Finsupp.toMultiset d).map MvPolynomial.X).prod := by
-  classical
-  simp [Finset.prod_multiset_map_count, MvPolynomial.prod_X_pow_eq_monomial]
-
 theorem aeval_injective [CharZero K] : Function.Injective
     (MvPolynomial.aeval (fun l : {w : List A // IsLyndon w} => word K l.1) :
       MvPolynomial {w : List A // IsLyndon w} K →ₐ[K] ShuffleAlgebra K A) := by

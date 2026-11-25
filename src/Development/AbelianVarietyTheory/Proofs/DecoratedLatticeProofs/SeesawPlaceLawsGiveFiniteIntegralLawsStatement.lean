@@ -744,10 +744,6 @@ theorem eps_stable (V : HSp D) (P : Pl D → Prop) (x : GA D V) :
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-private lemma selfDual_isFullLattice (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (hΛ : Formalism.IndefR.Datum.IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ := by
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 theorem exists_level (D : D7) (V : HSp D) (N : Lat V) (A B : Finset (Pl D)) (JA JB : Subgroup (GA D V)) (b : GA D V)
     (hAB : Disjoint B A) (hN : Formalism.IndefR.Datum.IsSelfDualC V N) (_ : b ∈ GfC V)
     (lA : JA ≤ grpAt V fun x => x ∈ A) (cA : IsCompact (JA : Set (GA D V)))
@@ -767,7 +763,7 @@ theorem exists_level (D : D7) (V : HSp D) (N : Lat V) (A B : Finset (Pl D)) (JA 
   have hd : ∀ v, v ∈ A → ¬ v ∈ B := fun v hv h => Finset.disjoint_left.1 hAB h hv
   have hU : {a : AF D.host.F | sndA _ a ∈ intAf _} ∈ nhds 0 :=
     ((open_compact_hat D.host.F).1.preimage continuous_snd).mem_nhds fun v => zero_mem _
-  obtain ⟨l1, l2, l3, l4⟩ := lattice (selfDual_isFullLattice V N hN) (intOn fun p => p ∉ A ∧ p ∉ B) (compact_intOn _)
+  obtain ⟨l1, l2, l3, l4⟩ := lattice (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V N hN) (intOn fun p => p ∉ A ∧ p ∉ B) (compact_intOn _)
     (e := idem fun p => p ∉ A ∧ p ∉ B) ⟨rfl, idemF_int _, fun _ hv => idemF_neg hv⟩
     (fun a ha => (idem_mul_eq_iff _ a).2 ⟨ha.1, ha.2.2⟩) hU
     (fun a ha => ⟨by rw [map_mul, fst_idem, zero_mul],

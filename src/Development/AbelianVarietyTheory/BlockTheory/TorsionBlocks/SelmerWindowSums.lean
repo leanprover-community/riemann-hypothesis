@@ -159,17 +159,9 @@ def tateLat (P : LocPrime l) (K LL : FinExt l) (e : ℕ) :
     Lattice (O := ↥(OL LL)) (charRep (negTwist P K LL e)) :=
   charLat Subtype.val_injective _ fun g => ⟨⟨_, negTwist_mem P K LL e g⟩, rfl⟩
 
-def wittFixedFrobeniusPow (K : FinExt l) : Set (Ainf l) :=
-  {a | (WittVector.frobenius : Ainf l →+* Ainf l)^[Module.finrank ℚ_[l] ↥(K0 K)] a = a}
-
 variable {P : LocPrime l} (AI : LocAinf l P)
 
 def piS (s : ℕ) : Ainf l := WittVector.teichmuller l (AI.εroot s) - 1
-
-def ringAs (K : FinExt l) (s : ℕ) : Subring (Ainf l) :=
-  ⨅ m : ℕ, ((Subring.closure (insert (piS AI s) (wittFixedFrobeniusPow K))).map
-      (Ideal.Quotient.mk (Ideal.span {piS AI s ^ m}))).comap
-    (Ideal.Quotient.mk (Ideal.span {piS AI s ^ m}))
 
 abbrev Lat (K LL : FinExt l) : Type 1 := LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)
 

@@ -57,7 +57,6 @@ end Formalism.HermitianLatticesTheory
 
 namespace Formalism.HermitianLatticesTheory
 
-open NumberField
 
 def MassBasic : Prop :=
   ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
