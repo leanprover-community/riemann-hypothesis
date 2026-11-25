@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCha
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaxSlopeSqLeOfNoShortVector
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TamagawaSpecialUnitary
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DefiniteBound
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormOneTorusClassNumberBoundProof
 public import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds
@@ -346,7 +345,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBound =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TamagawaPeterssonLambdaSqNonneg =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TamagawaPeterssonLambdaSqNonneg", "h": "module\n\npublic import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.SupremumConstantLogBound\npublic import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegOfIsLocalModel\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNormLe\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.CanonicalExponents\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ClausesIffExistsUnique\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicProbabilityEqNormalisedFundamentalSets\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntitoneWeightLogBound\npublic import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.LevelCarrying\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsCoprimeOfNatCast\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCharacterFrameFirst\npublic import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EigenvectorLieDegree\npublic import Formalism.LocalToGlobal.Divisibility.NumbersLemmas\npublic import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogPeriodEqKroneckerCharacterLogPeriodOfHost\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaxSlopeSqLeOfNoShortVector\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanLogSupNormLossLeLinearInWeight\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalLevelLiftModuliLawsOfCore\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBound\nimport Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately\nimport Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormRankLeBergmanBoundGoodCover\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormsFiniteDimensional\nimport Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl\nimport Development.AbelianVarietyTheory.Definitions.ThetaValues.LeCovCoeff\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeepLevelCoverPrincipalLevelLawsGalois\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSelfDualDataTransvectionPrincipalLevel\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramePointsOverComponentOpenSet\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanLogSupNormLowerBoundPrincipalLevel\nimport Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DefiniteBound\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormOneTorusClassNumberBoundProof\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumWeightSpreadLeExponentNormAdd\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedFrameSumPositive\nimport Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FinMuUnconditional\nimport Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProbabilityMeasureAutQuotientNormalized\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ReadingLinearIndependentAndInjective\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SupNormDefiniteOnCuspFormsGoodEmbedding\nimport Development.AutomorphicArithmetic.FrobeniusLocalisation.RadBounds2\nimport Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.Imports\nimport Formalism.LocalRingCardinality.HostCls\nimport Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge\nimport Formalism.LocalToGlobal.ProjectiveLattices.NormLaws\nimport Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD\nimport Formalism.LocalToGlobal.ProjectiveLattices.TieReadSS\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds\nimport Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios\nimport Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.TamagawaPeterssonLambdaSqNonneg", "h": "module\n\npublic import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.SupremumConstantLogBound\npublic import Development.AbelianVarietyTheory.Definitions.CMLattices.ExistsIsThetaDegOfIsLocalModel\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.QuoIff\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.WedgeNrmLeOfWedgeNormLe\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.CanonicalExponents\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ClausesIffExistsUnique\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicProbabilityEqNormalisedFundamentalSets\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntitoneWeightLogBound\npublic import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.LevelCarrying\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IsCoprimeOfNatCast\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HostBoundHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KroneckerCharacterFrameFirst\npublic import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EigenvectorLieDegree\npublic import Formalism.LocalToGlobal.Divisibility.NumbersLemmas\npublic import Formalism.LocalToGlobal.ProjectiveLattices.PartitionExtendByZeroAntitone\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogPeriodEqKroneckerCharacterLogPeriodOfHost\npublic import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaxSlopeSqLeOfNoShortVector\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanLogSupNormLossLeLinearInWeight\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalLevelLiftModuliLawsOfCore\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeMaxSquaredBound\nimport Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LawsFieldsSeparately\nimport Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormRankLeBergmanBoundGoodCover\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormsFiniteDimensional\nimport Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl\nimport Development.AbelianVarietyTheory.Definitions.ThetaValues.LeCovCoeff\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeepLevelCoverPrincipalLevelLawsGalois\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSelfDualDataTransvectionPrincipalLevel\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramePointsOverComponentOpenSet\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeanLogSupNormLowerBoundPrincipalLevel\nimport Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DefiniteBound\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumWeightSpreadLeExponentNormAdd\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightBoundHolds\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedFrameSumPositive\nimport Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.FinMuUnconditional\nimport Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProbabilityMeasureAutQuotientNormalized\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ReadingLinearIndependentAndInjective\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SupNormDefiniteOnCuspFormsGoodEmbedding\nimport Development.AutomorphicArithmetic.FrobeniusLocalisation.RadBounds2\nimport Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.ConstantSupremum.Imports\nimport Formalism.LocalRingCardinality.HostCls\nimport Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge\nimport Formalism.LocalToGlobal.ProjectiveLattices.NormLaws\nimport Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD\nimport Formalism.LocalToGlobal.ProjectiveLattices.TieReadSS\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds\nimport Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios\nimport Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -380,7 +379,7 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH 
 open scoped ENNReal
 
 theorem UpperTheory.Lit.Tam.tamagawa_local_volume_factor :
-    True → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ)
+    True → ∀ (D : D7) (j : ℕ)
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H)
       (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l)
       (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r)
@@ -393,13 +392,13 @@ theorem UpperTheory.Lit.Tam.tamagawa_local_volume_factor :
         supE (U σ).X la P ^ 2 ≤
           ENNReal.ofReal (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M w) *
             petE (D.sp.W j) (dict σ) (muQ1 (D.sp.W j)) la P ^ 2 :=
-  fun _ _ D j H Dw l Xo c U dict hLw σ hσ la w hw0 hspread hχ P hP =>
+  fun _ D j H Dw l Xo c U dict hLw σ hσ la w hw0 hspread hχ P hP =>
     GlobalTheory.SupModel.supPet_principal_of_mass D j H Dw l Xo c U dict hLw σ hσ la w
       (MainStatements.Tam.massLev2 D.host.E D.R.r l.M) hw0 hspread hχ
       (MainStatements.Tam.Plug.comp D j H Dw l Xo c U dict hLw σ hσ) P hP
 
 theorem UpperTheory.Lit.Tam.finrank_cuspW_le_supConst2 :
-    True → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ)
+    True → ∀ (D : D7) (j : ℕ)
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H)
       (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l)
       (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r)
@@ -409,14 +408,14 @@ theorem UpperTheory.Lit.Tam.finrank_cuspW_le_supConst2 :
         (Module.finrank c.F (cuspW Xo c U (wtZ a n)) : ℝ) ≤
           MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M
             (((absA Dw a : ℕ) : ℝ) + ((fdeg D.host.E * D.R.r * n : ℕ) : ℝ) + 1) :=
-  fun hM hT D j H Dw l Xo c U dict hL a n hDom =>
+  fun hM D j H Dw l Xo c U dict hL a n hDom =>
     GlobalTheory.LevGeo.RankBd.finrank_cuspW_le_of_sup D j H Dw l Xo c U dict hL a n hDom _
       (MainStatements.Tam.Plug.supConst_nonneg2 _ _ _ _ _)
       fun σ hσ la w hw hsp hχ hw_eq => hw_eq ▸
-        UpperTheory.Lit.Tam.tamagawa_local_volume_factor hM hT D j H Dw l Xo c U dict hL σ hσ la w hw hsp hχ
+        UpperTheory.Lit.Tam.tamagawa_local_volume_factor hM D j H Dw l Xo c U dict hL σ hσ la w hw hsp hχ
 
 theorem UpperTheory.Lit.Tam.petersson_norm_tamagawa_formula :
-    True → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ)
+    True → ∀ (D : D7) (j : ℕ)
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H)
       (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l)
       (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r)
@@ -430,14 +429,14 @@ theorem UpperTheory.Lit.Tam.petersson_norm_tamagawa_formula :
             ((fdeg D.host.E * D.R.r * n : ℕ) : ℝ) ≤
           (∑ σ : c.F →+* ℂ, Real.log (normW U (xiR D) (fun _ => D.sp.W j) dict (wtZ a n) σ F)) /
             (Module.finrank ℚ c.F : ℝ) :=
-  fun hM hT D j H Dw l Xo c U dict hL _ χ hχ a n hD F hF hF0 =>
+  fun hM D j H Dw l Xo c U dict hL _ χ hχ a n hD F hF hF0 =>
     GlobalTheory.LamPet.mean_log_petersson_ge_of_sup D j H Dw l Xo c U dict hL χ hχ a n hD _
       (fun σ hσ la w hw hsp hchi hw_eq => hw_eq ▸
-        UpperTheory.Lit.Tam.tamagawa_local_volume_factor hM hT D j H Dw l Xo c U dict hL σ hσ la w hw hsp hchi)
+        UpperTheory.Lit.Tam.tamagawa_local_volume_factor hM D j H Dw l Xo c U dict hL σ hσ la w hw hsp hchi)
       F hF hF0
 
 theorem UpperTheory.Lit.Tam.petersson_norm_local_factor_eq :
-    True → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ)
+    True → ∀ (D : D7) (j : ℕ)
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H)
       (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l)
       (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r)
@@ -451,10 +450,10 @@ theorem UpperTheory.Lit.Tam.petersson_norm_local_factor_eq :
           2 * Real.log (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M
             (((absA Dw a : ℕ) : ℝ) + ((fdeg D.host.E * D.R.r * n : ℕ) : ℝ) + 1)) +
           Real.log |(discr c.F : ℝ)| / (Module.finrank ℚ c.F : ℝ) :=
-  fun hMass hTor D j H Dw l Xo c U dict hL _ χ hχ a n hD hG h0 =>
+  fun hMass D j H Dw l Xo c U dict hL _ χ hχ a n hD hG h0 =>
     GlobalTheory.LamMuMax.slopeMax_le_of_bounds D j H Dw l Xo c U dict a n _ _ hG h0
-      (fun F hF hF0 => (UpperTheory.Lit.Tam.petersson_norm_tamagawa_formula hMass hTor D j H Dw l Xo c U dict hL χ hχ a n hD F hF hF0).2)
-      (UpperTheory.Lit.Tam.finrank_cuspW_le_supConst2 hMass hTor D j H Dw l Xo c U dict hL a n hD)
+      (fun F hF hF0 => (UpperTheory.Lit.Tam.petersson_norm_tamagawa_formula hMass D j H Dw l Xo c U dict hL χ hχ a n hD F hF hF0).2)
+      (UpperTheory.Lit.Tam.finrank_cuspW_le_supConst2 hMass D j H Dw l Xo c U dict hL a n hD)
 
 theorem UpperTheory.Lit.Tam.holSub_supE_sq_le_supConst2_mul_petE_sq :
     True → ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E)
@@ -469,7 +468,7 @@ theorem UpperTheory.Lit.Tam.holSub_supE_sq_le_supConst2_mul_petE_sq :
         supE (U σ).X la P ^ 2 ≤
           ENNReal.ofReal (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M w) *
             petE (D.sp.W j) (dict σ) (muQ1 (D.sp.W j)) la P ^ 2 :=
-  fun _ => UpperTheory.Lit.Tam.tamagawa_local_volume_factor trivial _root_.GlobalTheory.UCls.torusBound
+  fun _ => UpperTheory.Lit.Tam.tamagawa_local_volume_factor trivial
 
 theorem UpperTheory.Lit.Tam.tamagawa_measure_comparison :
     True → ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E)
@@ -485,7 +484,7 @@ theorem UpperTheory.Lit.Tam.tamagawa_measure_comparison :
           2 * Real.log (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M
             (((absA Dw a : ℕ) : ℝ) + ((fdeg D.host.E * D.R.r * n : ℕ) : ℝ) + 1)) +
           Real.log |(discr c.F : ℝ)| / (Module.finrank ℚ c.F : ℝ) :=
-  fun _ => UpperTheory.Lit.Tam.petersson_norm_local_factor_eq trivial _root_.GlobalTheory.UCls.torusBound
+  fun _ => UpperTheory.Lit.Tam.petersson_norm_local_factor_eq trivial
 
 end
 
